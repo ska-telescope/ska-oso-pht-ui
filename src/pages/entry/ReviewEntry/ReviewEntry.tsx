@@ -10,7 +10,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import useTheme from '@mui/material/styles/useTheme';
-import { BANNER_PMT_SPACER, PANEL_DECISION_STATUS, PMT } from '@utils/constants.ts';
+import { BANNER_PMT_SPACER, PANEL_DECISION_STATUS, PMT, REVIEW_TYPE } from '@utils/constants.ts';
 import Typography from '@mui/material/Typography';
 import moment from 'moment';
 import SaveButton from '../../../components/button/Save/Save';
@@ -29,11 +29,6 @@ import { ProposalReview } from '@/utils/types/proposalReview';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import ObservatoryData from '@/utils/types/observatoryData';
 
-export const REVIEW_TYPE = {
-  SCIENCE: 'science',
-  TECHNICAL: 'technical'
-};
-
 interface ReviewEntryProps {
   reviewType: string;
 }
@@ -46,16 +41,16 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const { application, updateAppContent5 } = storageObject.useStore();
 
-  const isEdit = () => (locationProperties.state?.id ? true : false);
   const isView = () => (locationProperties.state?.reviews ? true : false);
 
   const [tabValuePDF, setTabValuePDF] = React.useState(0);
   const [tabValueReview, setTabValueReview] = React.useState(0);
-  const [reviewId, setReviewId] = React.useState('');
+  const [, setReviewId] = React.useState('');
   const [rank, setRank] = React.useState(0);
   const [generalComments, setGeneralComments] = React.useState('');
   const [srcNetComments, setSrcNetComments] = React.useState('');
   const [currentPDF, setCurrentPDF] = React.useState<string | null | undefined>(null);
+  const [isEdit, setIsEdit] = React.useState(false);
 
   const AREA_HEIGHT_NUM = 74;
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
@@ -65,11 +60,12 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const getUser = () => 'DefaultUser'; // TODO
 
   const getCycleData = () => application.content3 as ObservatoryData;
+  const getCycleId = () => getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId;
 
   const getDateFormatted = () => moment().format('YYYY-MM-DD');
 
   const getReviewId = () => {
-    return isEdit()
+    return isEdit
       ? locationProperties.state.id
       : 'rvw-' +
           getUser() +
@@ -81,12 +77,17 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const getReview = (submitted = false): ProposalReview => {
     return {
-      id: reviewId,
+      id: getReviewId(),
       prslId: getProposal().id,
-      rank: rank,
-      conflict: {
-        hasConflict: false,
-        reason: ''
+      // TODO implement technical review as well - reviewType below is only for science review
+      reviewType: {
+        kind: REVIEW_TYPE.SCIENCE,
+        rank: rank,
+        conflict: {
+          hasConflict: false,
+          reason: ''
+        },
+        excludedFromDecision: false
       },
       comments: generalComments,
       srcNet: srcNetComments,
@@ -127,19 +128,20 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const createReview = async (submitted = false) => {
     const response: string | { error: string } = await PostProposalReview(
       getReview(submitted),
-      getCycleData().observatoryPolicy.cycleInformation.cycleId
+      getCycleId()
     );
     if (typeof response === 'object' && response?.error) {
       NotifyError(response?.error);
     } else {
       NotifyOK(t('addReview.success'));
+      setIsEdit(true);
     }
   };
 
   const updateReview = async (submitted = false) => {
     const response: string | { error: string } = await PostProposalReview(
       getReview(submitted),
-      getCycleData().observatoryPolicy.cycleInformation.cycleId
+      getCycleId()
     );
     if (typeof response === 'object' && response?.error) {
       NotifyError(response?.error);
@@ -152,14 +154,16 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   React.useEffect(() => {
     setReviewId(getReviewId());
-    if (isEdit()) {
+    if (locationProperties.state?.id) {
       setGeneralComments(locationProperties.state?.comments);
       setSrcNetComments(locationProperties.state?.srcNet);
       setRank(locationProperties.state?.rank);
+      setIsEdit(false);
     } else {
       setGeneralComments('');
       setSrcNetComments('');
       setRank(0);
+      setIsEdit(true);
     }
   }, []);
 
@@ -172,7 +176,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   };
 
   const saveButtonAction = (submit: boolean) => {
-    isEdit() ? updateReview(submit) : createReview(submit);
+    isEdit ? updateReview(submit) : createReview(submit);
   };
   const saveButtonClicked = () => saveButtonAction(false);
   const submitButtonClicked = () => saveButtonAction(true);

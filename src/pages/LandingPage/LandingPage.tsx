@@ -99,8 +99,8 @@ export default function LandingPage() {
 
   React.useEffect(() => {
     const fetchCycleData = async () => {
-      const response = await GetCycleData(1);
-      if (response.error) {
+      const response = await GetCycleData(authClient, 1);
+      if (response.error || typeof response === 'string') {
         setAxiosError(response.toString());
       } else {
         // store osd data into storage 3

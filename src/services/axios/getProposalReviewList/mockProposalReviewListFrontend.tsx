@@ -1,4 +1,4 @@
-import { PANEL_DECISION_STATUS } from '@/utils/constants';
+import { PANEL_DECISION_STATUS, REVIEW_TYPE } from '@/utils/constants';
 import { ProposalReview } from '@/utils/types/proposalReview';
 
 export const MockProposalReviewListFrontend: ProposalReview[] = [
@@ -16,10 +16,14 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
     cycle: 'cycle1',
     reviewerId: 'reviewer-12345',
     prslId: 'prsl-t0001-20250716-00001',
-    rank: 8,
-    conflict: {
-      hasConflict: false,
-      reason: ''
+    reviewType: {
+      kind: REVIEW_TYPE.SCIENCE,
+      rank: 8,
+      conflict: {
+        hasConflict: false,
+        reason: ''
+      },
+      excludedFromDecision: false
     },
     comments: 'recommended even more',
     srcNet: 'great proposal',
@@ -41,10 +45,14 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
     cycle: 'cycle1',
     reviewerId: 'reviewer-12347',
     prslId: 'prsl-t0001-20250716-00001',
-    rank: 5,
-    conflict: {
-      hasConflict: false,
-      reason: ''
+    reviewType: {
+      kind: REVIEW_TYPE.SCIENCE,
+      rank: 5,
+      conflict: {
+        hasConflict: false,
+        reason: ''
+      },
+      excludedFromDecision: false
     },
     comments: 'ok',
     srcNet: '',
@@ -66,10 +74,14 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
     cycle: 'cycle1',
     reviewerId: 'reviewer-12345',
     prslId: 'prsl-t0001-20250716-00001',
-    rank: 9,
-    conflict: {
-      hasConflict: true,
-      reason: 'bias in proposal'
+    reviewType: {
+      kind: REVIEW_TYPE.SCIENCE,
+      rank: 9,
+      conflict: {
+        hasConflict: true,
+        reason: 'bias in proposal'
+      },
+      excludedFromDecision: true
     },
     comments: 'recommend for approval',
     srcNet: 'recommend as well',

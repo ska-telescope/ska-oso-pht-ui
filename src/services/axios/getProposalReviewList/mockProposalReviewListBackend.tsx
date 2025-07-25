@@ -1,4 +1,4 @@
-import { PANEL_DECISION_STATUS } from '@/utils/constants';
+import { PANEL_DECISION_STATUS, REVIEW_TYPE } from '@/utils/constants';
 import { ProposalReviewBackend } from '@/utils/types/proposalReview';
 
 export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
@@ -16,10 +16,14 @@ export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
     cycle: 'cycle1',
     reviewer_id: 'reviewer-12347',
     prsl_id: 'prsl-t0001-20250716-00001',
-    rank: 5,
-    conflict: {
-      has_conflict: false,
-      reason: ''
+    review_type: {
+      kind: REVIEW_TYPE.SCIENCE,
+      rank: 5,
+      conflict: {
+        has_conflict: false,
+        reason: ''
+      },
+      excluded_from_decision: false
     },
     comments: 'ok',
     src_net: '',
@@ -41,10 +45,14 @@ export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
     cycle: 'cycle1',
     reviewer_id: 'reviewer-12345',
     prsl_id: 'prsl-t0001-20250716-00001',
-    rank: 9,
-    conflict: {
-      has_conflict: true,
-      reason: 'bias in proposal'
+    review_type: {
+      kind: REVIEW_TYPE.SCIENCE,
+      rank: 9,
+      conflict: {
+        has_conflict: true,
+        reason: 'bias in proposal'
+      },
+      excluded_from_decision: true
     },
     comments: 'recommend for approval',
     src_net: 'recommend as well',
@@ -66,10 +74,14 @@ export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
     cycle: 'cycle1',
     reviewer_id: 'reviewer-12345',
     prsl_id: 'prsl-t0001-20250716-00001',
-    rank: 8,
-    conflict: {
-      has_conflict: false,
-      reason: ''
+    review_type: {
+      kind: REVIEW_TYPE.SCIENCE,
+      rank: 8,
+      conflict: {
+        has_conflict: false,
+        reason: ''
+      },
+      excluded_from_decision: false
     },
     comments: 'recommended',
     src_net: 'great proposal',
@@ -91,10 +103,14 @@ export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
     cycle: 'cycle1',
     reviewer_id: 'reviewer-12345',
     prsl_id: 'prsl-t0001-20250716-00001',
-    rank: 8,
-    conflict: {
-      has_conflict: false,
-      reason: ''
+    review_type: {
+      kind: REVIEW_TYPE.SCIENCE,
+      rank: 8,
+      conflict: {
+        has_conflict: false,
+        reason: ''
+      },
+      excluded_from_decision: false
     },
     comments: 'recommended even more',
     src_net: 'great proposal',

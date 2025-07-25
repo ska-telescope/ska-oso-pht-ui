@@ -14,6 +14,7 @@ import PostProposal from '../../../services/axios/postProposal/postProposal';
 import TimedAlert from '../../alerts/timedAlert/TimedAlert';
 import { useMockedLogin } from '@/contexts/MockedLoginContext';
 import ObservatoryData from '@/utils/types/observatoryData';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 interface PageFooterPPTProps {
   pageNo: number;
@@ -30,7 +31,7 @@ export default function PageFooterPPT({
   const navigate = useNavigate();
   const { application, updateAppContent2, updateAppContent5 } = storageObject.useStore();
   const [usedPageNo, setUsedPageNo] = React.useState(pageNo);
-
+  const authClient = useAxiosAuthClient();
   const { isMockedLoggedIn } = useMockedLogin();
   const loggedIn = isLoggedIn();
 
@@ -64,7 +65,8 @@ export default function PageFooterPPT({
     if (!isDisableEndpoints()) {
       NotifyWarning(t('addProposal.warning'));
       const response = await PostProposal(
-        { ...getProposal(), cycle: getCycleData().observatoryPolicy.cycleInformation.cycleId },
+        authClient,
+        { ...getProposal(), cycle: getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId },
         PROPOSAL_STATUS.DRAFT
       );
 
@@ -73,7 +75,7 @@ export default function PageFooterPPT({
         setProposal({
           ...getProposal(),
           id: response,
-          cycle: getCycleData().observatoryPolicy.cycleInformation.cycleId
+          cycle: getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId
         });
         navigate(NAV[1]);
       } else {
@@ -85,7 +87,7 @@ export default function PageFooterPPT({
       setProposal({
         ...getProposal(),
         id: dummyId,
-        cycle: getCycleData().observatoryPolicy.cycleInformation.cycleId
+        cycle: getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId
       });
       navigate(NAV[1]);
     }
