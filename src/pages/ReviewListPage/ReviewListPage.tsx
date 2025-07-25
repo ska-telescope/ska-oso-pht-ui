@@ -18,7 +18,8 @@ import {
   SEARCH_TYPE_OPTIONS,
   BANNER_PMT_SPACER,
   PANEL_DECISION_STATUS,
-  REVIEW_TYPE
+  REVIEW_TYPE,
+  TECHNICAL_FEASIBILITY
 } from '../../utils/constants';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
@@ -28,7 +29,7 @@ import { validateProposal } from '../../utils/proposalValidation';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import { PMT } from '@/utils/constants';
 import SubmitButton from '@/components/button/Submit/Submit';
-import { ProposalReview } from '@/utils/types/proposalReview';
+import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
 import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
 import GetPanelList from '@/services/axios/getPanelList/getPanelList';
 import { Panel } from '@/utils/types/panel';
@@ -121,19 +122,36 @@ export default function ReviewListPage() {
 
   const getCycleData = () => application.content3 as ObservatoryData;
 
+  const getScienceReviewType = (row: any): ScienceReview => {
+    return {
+      kind: row.reviewType.kind,
+      excludedFromDecision: false,
+      rank: row.reviewType.rank,
+      conflict: {
+        hasConflict: false,
+        reason: ''
+      }
+    };
+  };
+
+  const getTechnicalReviewType = (row: any): TechnicalReview => {
+    return {
+      kind: row.reviewType.kind,
+      feasibility: {
+        isFeasible: TECHNICAL_FEASIBILITY.YES,
+        comments: ''
+      }
+    };
+  };
+
   const getReview = (row: any): ProposalReview => {
     return {
       id: row.review_id,
       prslId: row.id,
-      reviewType: {
-        kind: row.reviewType.kind,
-        rank: row.reviewType.rank,
-        conflict: {
-          hasConflict: false,
-          reason: ''
-        },
-        excludedFromDecision: false
-      },
+      reviewType:
+        row.reviewType.kind === REVIEW_TYPE.SCIENCE
+          ? getScienceReviewType(row)
+          : getTechnicalReviewType(row),
       comments: row.comments,
       srcNet: row.srcNet,
       metadata: {

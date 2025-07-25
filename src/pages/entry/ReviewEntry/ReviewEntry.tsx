@@ -10,7 +10,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import useTheme from '@mui/material/styles/useTheme';
-import { BANNER_PMT_SPACER, PANEL_DECISION_STATUS, PMT } from '@utils/constants.ts';
+import { BANNER_PMT_SPACER, PANEL_DECISION_STATUS, PMT, REVIEW_TYPE } from '@utils/constants.ts';
 import Typography from '@mui/material/Typography';
 import moment from 'moment';
 import SaveButton from '../../../components/button/Save/Save';
@@ -79,9 +79,9 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     return {
       id: getReviewId(),
       prslId: getProposal().id,
-      // TODO implement technical review as well here - reviewType below is only for science review
+      // TODO implement technical review as well - reviewType below is only for science review
       reviewType: {
-        kind: reviewType,
+        kind: REVIEW_TYPE.SCIENCE,
         rank: rank,
         conflict: {
           hasConflict: false,
