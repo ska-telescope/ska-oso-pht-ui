@@ -4,6 +4,7 @@ ingress:
   enabled: true
   prependByNamespace: true
   path: pht
+  host:
 
 runtimeEnv:
   skipPreflightCheck: "true"
