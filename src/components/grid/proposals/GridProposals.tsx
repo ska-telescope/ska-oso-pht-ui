@@ -215,7 +215,7 @@ export default function GridProposals({
       }
     };
     cycleData();
-  }, [cycleData]);
+  }, []);
 
   const canEdit = (e: { row: { status: string } }) => e.row.status === PROPOSAL_STATUS.DRAFT;
   const canClone = () => true;
