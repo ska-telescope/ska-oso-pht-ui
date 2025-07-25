@@ -2,7 +2,7 @@ import React from 'react';
 import { useMsal } from '@azure/msal-react';
 import { Box, Divider, Menu, MenuItem } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { ButtonLogin, ButtonLogout, isLoggedIn } from '@ska-telescope/ska-login-page';
+import { ButtonLogin, ButtonLogout } from '@ska-telescope/ska-login-page';
 import {
   Button,
   ButtonColorTypes,

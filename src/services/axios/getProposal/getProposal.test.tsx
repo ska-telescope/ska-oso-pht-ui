@@ -1,17 +1,9 @@
 import { describe, expect, vi, beforeEach } from 'vitest';
-import axios from 'axios';
-import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import GetProposal, { GetMockProposal, mapping } from './getProposal';
 import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend';
 import { MockProposalFrontend, MockProposalFrontendZoom } from './mockProposalFrontend';
 import * as CONSTANTS from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
-
-const mockedAxios = (axios as unknown) as {
-  get: ReturnType<typeof vi.fn>;
-  post: ReturnType<typeof vi.fn>;
-  // add other axios methods as needed
-};
 
 describe('Helper Functions', () => {
   test('GetMockProposal returns mock proposal', () => {
@@ -31,49 +23,59 @@ describe('Helper Functions', () => {
 });
 
 describe('GetProposal Service', () => {
-  const authClient = useAxiosAuthClient();
+  let mockedAuthClient: any;
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
+    mockedAuthClient = {
+      put: vi.fn(),
+      get: vi.fn(),
+      post: vi.fn(),
+      delete: vi.fn(),
+      interceptors: {
+        request: { clear: vi.fn, eject: vi.fn(), use: vi.fn() },
+        response: { clear: vi.fn, eject: vi.fn(), use: vi.fn() }
+      }
+    };
   });
 
   test('should return mock data when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await GetProposal(authClient, MockProposalBackend.prsl_id);
+    const result = await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id);
     expect(result).toEqual(MockProposalFrontend);
   });
 
   test('returns mapped data from API when USE_LOCAL_DATA is false', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockResolvedValue({ data: MockProposalBackend });
-    const result = (await GetProposal(authClient, MockProposalBackend.prsl_id)) as Proposal;
+    mockedAuthClient.get.mockResolvedValue({ data: MockProposalBackend });
+    const result = (await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id)) as Proposal;
     expect(result).to.deep.equal(MockProposalFrontend);
   });
 
   test('returns error message on API failure', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockRejectedValue(new Error('Network Error'));
-    const result = await GetProposal(authClient, MockProposalBackend.prsl_id);
+    mockedAuthClient.get.mockRejectedValue(new Error('Network Error'));
+    const result = await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id);
     expect(result).toBe('Network Error');
   });
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockRejectedValue({ unexpected: 'object' });
-    const result = await GetProposal(authClient, MockProposalBackend.prsl_id);
+    mockedAuthClient.get.mockRejectedValue({ unexpected: 'object' });
+    const result = await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id);
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 
   test('returns error.API_UNKNOWN_ERROR when API returns non-array data', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockResolvedValue({ data: { not: 'an array' } });
-    const result = await GetProposal(authClient, MockProposalBackend.prsl_id);
+    mockedAuthClient.get.mockResolvedValue({ data: { not: 'an array' } });
+    const result = await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id);
     expect(result).toContain('Cannot read properties of undefined');
   });
 
   test('returns error.API_UNKNOWN_ERROR when API returns no data', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockResolvedValue(undefined);
-    const result = await GetProposal(authClient, MockProposalBackend.prsl_id);
+    mockedAuthClient.get.mockResolvedValue(undefined);
+    const result = await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id);
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 });
