@@ -103,11 +103,11 @@ const getBandLimits = (telescope: number, subarrayConfig: number, observingBand:
   }
 
   function getFrequencyLimitsBand5(observingBand: string) {
-    const band = data.capabilities.mid.basicCapabilities.receiverInformation.find(
-      item => item.rxId === observingBand
+    const band = data?.capabilities?.mid?.basicCapabilities?.receiverInformation.find(
+      item => item?.rxId === observingBand
     );
-    const minFrequencyHz = band.minFrequencyHz;
-    const maxFrequencyHz = band.maxFrequencyHz;
+    const minFrequencyHz = band?.minFrequencyHz;
+    const maxFrequencyHz = band?.maxFrequencyHz;
     return [minFrequencyHz, maxFrequencyHz];
   }
 
