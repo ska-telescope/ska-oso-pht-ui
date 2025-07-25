@@ -1,8 +1,8 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
 import axios from 'axios';
-import { MockProposalFrontend, MockProposalFrontendZoom } from './mockProposalFrontend';
-import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend';
+import { MockProposalFrontend } from './mockProposalFrontend';
+import { MockProposalBackend } from './mockProposalBackend';
 import PutProposal, { mockPutProposal } from './putProposal';
 import MappingPutProposal from './putProposalMapping';
 import { ProposalBackend } from '@/utils/types/proposal';

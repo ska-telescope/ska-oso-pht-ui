@@ -37,7 +37,7 @@ import {
 import { InvestigatorBackend } from '../../../utils/types/investigator';
 import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
 import { ObservationSetBackend } from '../../../utils/types/observationSet';
-import authAxiosClient from '../axiosAuthClient/axiosAuthClient';
+import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { MockProposalBackend } from './mockProposalBackend';
 import {
   DataProductSDP,
@@ -609,7 +609,10 @@ export function GetMockProposal(): Proposal {
   return mapping(MockProposalBackend);
 }
 
-async function GetProposal(id: string): Promise<Proposal | string> {
+async function GetProposal(
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  id: string
+): Promise<Proposal | string> {
   if (USE_LOCAL_DATA) {
     return GetMockProposal();
   }
