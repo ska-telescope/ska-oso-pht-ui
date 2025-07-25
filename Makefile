@@ -33,7 +33,7 @@ POSTGRES_HOST ?= $(RELEASE_NAME)-postgresql
 K8S_CHART_PARAMS += \
   --set ska-oso-pht-ui.backendURL=$(BACKEND_URL) \
   --set ska-db-oda-umbrella.pgadmin4.serverDefinitions.servers.firstServer.Host=$(POSTGRES_HOST) \
-  --set ska-oso-pht-ui.ingress.host=KUBE_HOST
+  --set ska-oso-pht-ui.ingress.host=$(KUBE_HOST)
 
 # include core makefile targets for release management
 -include .make/base.mk
