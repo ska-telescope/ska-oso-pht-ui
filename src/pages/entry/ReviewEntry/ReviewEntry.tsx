@@ -30,8 +30,8 @@ import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import ObservatoryData from '@/utils/types/observatoryData';
 
 export const REVIEW_TYPE = {
-  SCIENCE: 'science',
-  TECHNICAL: 'technical'
+  SCIENCE: 'Science Review',
+  TECHNICAL: 'Technical Review'
 };
 
 interface ReviewEntryProps {
@@ -84,10 +84,14 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     return {
       id: reviewId,
       prslId: getProposal().id,
-      rank: rank,
-      conflict: {
-        hasConflict: false,
-        reason: ''
+      reviewType: {
+        kind: reviewType,
+        rank: rank,
+        conflict: {
+          hasConflict: false,
+          reason: ''
+        },
+        excludedFromDecision: false
       },
       comments: generalComments,
       srcNet: srcNetComments,
@@ -126,7 +130,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
   const createReview = async (submitted = false) => {
-    console.log('In createReview');
     const response: string | { error: string } = await PostProposalReview(
       getReview(submitted),
       getCycleId()
@@ -139,7 +142,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   };
 
   const updateReview = async (submitted = false) => {
-    console.log('In updateReview');
     const response: string | { error: string } = await PostProposalReview(
       getReview(submitted),
       getCycleId()

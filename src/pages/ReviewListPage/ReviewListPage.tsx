@@ -124,10 +124,14 @@ export default function ReviewListPage() {
     return {
       id: row.review_id,
       prslId: row.id,
-      rank: row.rank,
-      conflict: {
-        hasConflict: false,
-        reason: ''
+      reviewType: {
+        kind: row.reviewType.kind,
+        rank: row.reviewType.rank,
+        conflict: {
+          hasConflict: false,
+          reason: ''
+        },
+        excludedFromDecision: false
       },
       comments: row.comments,
       srcNet: row.srcNet,
@@ -359,7 +363,7 @@ export default function ReviewListPage() {
           ...(review
             ? {
                 review_id: review.id,
-                rank: review.rank,
+                rank: review?.reviewType?.rank,
                 comments: review.comments,
                 srcNet: review.srcNet,
                 status: review.status
