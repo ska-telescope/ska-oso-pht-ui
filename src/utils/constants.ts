@@ -383,6 +383,7 @@ export const OBSERVATION = {
           value: OB_SUBARRAY_AA2,
           map: 'AA2',
           label: 'AA2',
+          //TODO: Use OSD data
           numOf15mAntennas: 64,
           numOf13mAntennas: 0,
           numOfStations: 0,
@@ -485,6 +486,7 @@ export const OBSERVATION = {
           label: 'AA2',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
+          //TODO: Use OSD data
           numOfStations: 64,
           disableForBand5: false,
           continuumSpectralAveragingMax: 13812

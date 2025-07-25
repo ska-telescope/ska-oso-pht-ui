@@ -37,9 +37,9 @@ export const getMaxContBandwidthHz = (telescope: number, subarrayConfig: number)
   //TODO: AA2 will be extended as OSD Data is extended
   if (isAA2(subarrayConfig)) {
     if (isLow(telescope)) {
-      return data?.capabilities.low.AA2.availableBandwidthHz;
+      return data?.capabilities?.low?.AA2?.availableBandwidthHz;
     } else {
-      return data?.capabilities.mid.AA2.availableBandwidthHz;
+      return data?.capabilities?.mid?.AA2?.availableBandwidthHz;
     }
   } else {
     return OBSERVATION.array
@@ -56,12 +56,25 @@ export const checkMaxContBandwidthHz = (
 ): boolean => (maxContBandwidthHz && scaledBandwidth > maxContBandwidthHz ? false : true);
 
 const getSubArrayAntennasCounts = (telescope: number, subarrayConfig: number) => {
+  console.log('inside here ');
   const observationArray = OBSERVATION.array.find(arr => arr.value === telescope);
   const subArray = observationArray?.subarray?.find(sub => sub.value === subarrayConfig);
-  return {
-    n15mAntennas: subArray?.numOf15mAntennas || 0,
-    n13mAntennas: subArray?.numOf13mAntennas || 0
-  };
+  //TODO: AA2 will be extended as OSD Data is extended
+  if (!isLow(telescope) && isAA2(subarrayConfig)) {
+    console.log('number of antennas', 900);
+    return {
+      n15mAntennas: 900 || 0,
+      n13mAntennas: subArray?.numOf13mAntennas || 0
+    };
+  }
+  else {
+    console.log('number of antennas', subArray?.numOf15mAntennas);
+    return {
+      // n15mAntennas: num15mAntennas || 0,
+      n15mAntennas: subArray?.numOf15mAntennas || 0,
+      n13mAntennas: subArray?.numOf13mAntennas || 0
+    };
+  }
 };
 
 const getBandLimitsForAntennaCounts = (
