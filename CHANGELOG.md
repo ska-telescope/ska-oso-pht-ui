@@ -18,6 +18,8 @@ UNRELEASED
 * Changed Sensitivity Calculator backend to V11.2.2
 * Changed Band 5a to pass mid_band_5a
 * Changed Band 5b to pass mid_band_5b
+* Added new OSD endpoint to retrieve observatory data
+* Changed existing constants to use osd data where available
 
 2.0.0
 
