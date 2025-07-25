@@ -365,7 +365,7 @@ export default function ReviewListPage() {
             ? {
                 review_id: review.id,
                 rank:
-                  review?.reviewType?.kind === REVIEW_TYPE.SCIENCE ? review?.reviewType?.rank : 0, // rank is only for science review
+                  review?.reviewType?.kind === REVIEW_TYPE.SCIENCE ? review?.reviewType?.rank?.toString() : '/', // rank is only for science review
                 comments: review.comments,
                 srcNet: review.srcNet,
                 status: review.status

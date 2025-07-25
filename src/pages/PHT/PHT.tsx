@@ -10,7 +10,7 @@ import { Typography, useTheme, CssBaseline, ThemeProvider } from '@mui/material'
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTranslation } from 'react-i18next';
 import React from 'react';
-import { NAV, PATH, PMT, USE_LOCAL_DATA } from '../../utils/constants';
+import { NAV, PATH, PMT, REVIEW_TYPE, USE_LOCAL_DATA } from '../../utils/constants';
 import AddDataProduct from '../add/AddDataProduct/AddDataProduct';
 import AddProposal from '../add/AddProposal/AddProposal';
 import SdpDataPage from '../SdpDataPage/SdpDataPage';
@@ -31,7 +31,7 @@ import ReviewDashboard from '../ReviewDashboard/ReviewDashboard';
 import ReviewPanelEntry from '../entry/ReviewPanelEntry/ReviewPanelEntry';
 import PanelReviewDecision from '../PanelReviewDecision/PanelReviewDecision';
 import PanelReviewDecisionList from '../PanelReviewDecisionList/PanelReviewDecisionList';
-import ReviewEntry, { REVIEW_TYPE } from '../entry/ReviewEntry/ReviewEntry';
+import ReviewEntry from '../entry/ReviewEntry/ReviewEntry';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import ButtonUserMenu from '@/components/button/UserMenu/UserMenu';
 
