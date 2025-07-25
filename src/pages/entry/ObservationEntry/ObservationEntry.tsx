@@ -10,7 +10,6 @@ import {
   SPACER_VERTICAL,
   TextEntry
 } from '@ska-telescope/ska-gui-components';
-import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
 import {
   BANDWIDTH_TELESCOPE,
   CENTRAL_FREQUENCY_MAX,
@@ -51,10 +50,11 @@ import {
   OB_SUBARRAY_AA_STAR_CORE,
   OB_SUBARRAY_AA2_CORE,
   OB_SUBARRAY_AA4_CORE
-} from '../../../utils/constants';
+} from '@utils/constants.ts';
+import { frequencyConversion, generateId, getMinimumChannelWidth } from '@utils/helpers.ts';
+import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Proposal from '../../../utils/types/proposal';
-import { frequencyConversion, generateId, getMinimumChannelWidth } from '../../../utils/helpers';
 import AddButton from '../../../components/button/Add/Add';
 import ImageWeightingField from '../../../components/fields/imageWeighting/imageWeighting';
 import GroupObservationsField from '../../../components/fields/groupObservations/groupObservations';

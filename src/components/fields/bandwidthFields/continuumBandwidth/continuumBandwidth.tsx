@@ -78,8 +78,9 @@ export default function ContinuumBandwidthField({
   };
 
   const errorMessage = () => {
-    const scaledBandwidth = getScaledBandwidthOrFrequency(value, continuumBandwidthUnits);
-    setScaledBandwidth(scaledBandwidth);
+    const scaledBandwidth = getScaledBandwidthOrFrequency(value, continuumBandwidthUnits ?? 0);
+    //TODO: Verify not required
+    // setScaledBandwidth(scaledBandwidth);
     const scaledFrequency = getScaledBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
 
     if (!checkMinimumChannelWidth(minimumChannelWidthHz, scaledBandwidth)) {
@@ -90,7 +91,6 @@ export default function ContinuumBandwidthField({
     if (!checkMaxContBandwidthHz(maxContBandwidthHz, scaledBandwidth)) {
       return displayMaxContBandwidthErrorMessage(maxContBandwidthHz);
     }
-
     if (
       !checkBandLimits(scaledBandwidth, scaledFrequency, telescope, subarrayConfig, observingBand)
     ) {
