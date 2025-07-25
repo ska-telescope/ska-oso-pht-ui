@@ -17,7 +17,8 @@ import GetProposal from '../../services/axios/getProposal/getProposal';
 import {
   SEARCH_TYPE_OPTIONS,
   BANNER_PMT_SPACER,
-  PANEL_DECISION_STATUS
+  PANEL_DECISION_STATUS,
+  REVIEW_TYPE
 } from '../../utils/constants';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
@@ -363,7 +364,8 @@ export default function ReviewListPage() {
           ...(review
             ? {
                 review_id: review.id,
-                rank: review?.reviewType?.rank,
+                rank:
+                  review?.reviewType?.kind === REVIEW_TYPE.SCIENCE ? review?.reviewType?.rank : 0, // rank is only for science review
                 comments: review.comments,
                 srcNet: review.srcNet,
                 status: review.status
@@ -386,8 +388,6 @@ export default function ReviewListPage() {
   }
 
   const filteredData = proposals ? filterProposals() : [];
-  console.log('Filtered Data', filteredData);
-  console.log('Proposal Reviews', proposalReviews);
 
   const searchDropdown = () => (
     <DropDown

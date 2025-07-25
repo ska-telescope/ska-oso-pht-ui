@@ -1,6 +1,14 @@
 import { Metadata } from './metadata';
 
-export type ReviewType = {
+export type TechnicalReview = {
+  kind: string;
+  feasibility: {
+    isFeasible: boolean;
+    comments: string | null;
+  };
+};
+
+export type ScienceReview = {
   kind: string;
   rank: number;
   conflict: {
@@ -17,7 +25,7 @@ export type ProposalReview = {
   cycle: string;
   reviewerId: string;
   prslId: string;
-  reviewType: ReviewType;
+  reviewType: ScienceReview | TechnicalReview;
   comments: string;
   srcNet: string;
   submittedOn: string;
@@ -25,7 +33,7 @@ export type ProposalReview = {
   status: string;
 };
 
-export type ReviewTypeBackend = {
+export type ScienceReviewBackend = {
   kind: string;
   rank: number;
   conflict: {
@@ -35,6 +43,14 @@ export type ReviewTypeBackend = {
   excluded_from_decision: boolean;
 };
 
+export type TechnicalReviewBackend = {
+  kind: string;
+  feasibility: {
+    is_feasible: boolean;
+    comments: string | null;
+  };
+};
+
 export type ProposalReviewBackend = {
   metadata: Metadata;
   panel_id: string;
@@ -42,7 +58,7 @@ export type ProposalReviewBackend = {
   cycle: string;
   reviewer_id: string;
   prsl_id: string;
-  review_type: ReviewTypeBackend;
+  review_type: ScienceReviewBackend | TechnicalReviewBackend;
   comments: string;
   src_net: string;
   submitted_on: string;

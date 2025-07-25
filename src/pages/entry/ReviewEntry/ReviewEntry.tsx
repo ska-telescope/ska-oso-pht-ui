@@ -29,11 +29,6 @@ import { ProposalReview } from '@/utils/types/proposalReview';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import ObservatoryData from '@/utils/types/observatoryData';
 
-export const REVIEW_TYPE = {
-  SCIENCE: 'Science Review',
-  TECHNICAL: 'Technical Review'
-};
-
 interface ReviewEntryProps {
   reviewType: string;
 }
@@ -84,6 +79,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     return {
       id: getReviewId(),
       prslId: getProposal().id,
+      // TODO implement technical review as well here - reviewType below is only for science review
       reviewType: {
         kind: reviewType,
         rank: rank,
