@@ -190,7 +190,7 @@ export default function ReviewListPage() {
   const updateReview = async (row: any) => {
     const response: string | { error: string } = await PostProposalReview(
       getReview(row),
-      getCycleData().observatoryPolicy.cycleInformation.cycleId
+      getCycleData().observatoryPolicy?.cycleInformation?.cycleId
     );
     if (typeof response === 'object' && response?.error) {
       NotifyError(response?.error);
