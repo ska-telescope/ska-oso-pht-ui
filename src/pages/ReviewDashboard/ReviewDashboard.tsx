@@ -128,11 +128,6 @@ export default function ReviewDashboard() {
     <>
       <PageBannerPMT title={t('overview.title')} />
       <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
-      <Grid2 container direction="row" alignItems="center" justifyContent="space-around">
-        {panelButton('page.15.title', 'page.15.tooltip', PMT[0])}
-        {panelButton('reviewProposalList.title', 'reviewProposalList.tooltip', PMT[1])}
-        {panelButton('homeBtn.title', 'homeBtn.tooltip', PATH[0])}
-      </Grid2>
 
       {/* Filters */}
       <Grid2 container spacing={2} px={5} py={2} alignItems="center" justifyContent="space-between">
@@ -223,27 +218,6 @@ export default function ReviewDashboard() {
               groupByOptions={['status', 'category', 'country']}
               allFields={['rank', 'telescope']}
             />
-          </ResizablePanel>
-        </Grid2>
-        <Grid2>
-          <ResizablePanel title="New Rank Distribution">
-            <D3ChartSelector data={proposals} />
-          </ResizablePanel>
-        </Grid2>
-
-        <Grid2>
-          <ResizablePanel title={t('panels.label')}>
-            <GridReviewPanels height={CONTENT_HEIGHT} updatedData={null} listOnly />
-          </ResizablePanel>
-        </Grid2>
-        <Grid2>
-          <ResizablePanel title={t('reviewProposalList.title')}>
-            <GridReviewers height={CONTENT_HEIGHT} />
-          </ResizablePanel>
-        </Grid2>
-        <Grid2>
-          <ResizablePanel title={t('homeBtn.title')}>
-            <GridProposals height={CONTENT_HEIGHT} />
           </ResizablePanel>
         </Grid2>
       </Grid2>
