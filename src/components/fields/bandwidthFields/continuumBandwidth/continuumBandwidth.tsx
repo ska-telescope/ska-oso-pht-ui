@@ -2,15 +2,10 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import {
-  LAB_IS_BOLD,
-  LAB_POSITION,
-  FREQUENCY_UNITS,
-  TYPE_CONTINUUM
-} from '../../../../utils/constants';
+import { LAB_IS_BOLD, LAB_POSITION, TYPE_CONTINUUM } from '@utils/constants.ts';
+import { getScaledBandwidthOrFrequency } from '@utils/helpers.ts';
 import sensCalHelpers from '../../../../services/axios/sensitivityCalculator/sensCalHelpers';
 import {
-  scaleBandwidthOrFrequency,
   getMaxContBandwidthHz,
   checkMinimumChannelWidth,
   checkMaxContBandwidthHz,
@@ -23,14 +18,13 @@ interface continuumBandwidthFieldProps {
   onFocus?: Function;
   setValue?: Function;
   value: number;
-  suffix?: any; // TODO figure out sufix type
+  suffix?: any; // TODO figure out suffix type
   telescope?: number;
   observingBand?: number;
   continuumBandwidthUnits?: number;
   centralFrequency?: number;
   centralFrequencyUnits?: number;
   subarrayConfig?: number;
-  setScaledBandwidth?: Function;
   minimumChannelWidthHz?: number;
 }
 
@@ -46,20 +40,10 @@ export default function ContinuumBandwidthField({
   centralFrequency,
   centralFrequencyUnits,
   subarrayConfig,
-  setScaledBandwidth,
   minimumChannelWidthHz
 }: continuumBandwidthFieldProps) {
   const { t } = useTranslation('pht');
   const FIELD = 'continuumBandwidth';
-
-  const getBandwidthOrFrequencyUnitsLabel = (incValue: number): string => {
-    return FREQUENCY_UNITS.find(item => item.value === incValue)?.label;
-  };
-
-  const getScaledBandwidthOrFrequency = (incValue: number, inUnits: number) => {
-    const unitsLabel = getBandwidthOrFrequencyUnitsLabel(inUnits);
-    return scaleBandwidthOrFrequency(incValue, unitsLabel);
-  };
 
   const displayMinimumChannelWidthErrorMessage = (minimumChannelWidthHz: number): string => {
     const minimumChannelWidthKHz = sensCalHelpers.format
@@ -79,8 +63,6 @@ export default function ContinuumBandwidthField({
 
   const errorMessage = () => {
     const scaledBandwidth = getScaledBandwidthOrFrequency(value, continuumBandwidthUnits ?? 0);
-    //TODO: Verify not required
-    // setScaledBandwidth(scaledBandwidth);
     const scaledFrequency = getScaledBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
 
     if (!checkMinimumChannelWidth(minimumChannelWidthHz, scaledBandwidth)) {

@@ -51,7 +51,12 @@ import {
   OB_SUBARRAY_AA2_CORE,
   OB_SUBARRAY_AA4_CORE
 } from '@utils/constants.ts';
-import { frequencyConversion, generateId, getMinimumChannelWidth } from '@utils/helpers.ts';
+import {
+  frequencyConversion,
+  generateId,
+  getMinimumChannelWidth,
+  getScaledBandwidthOrFrequency
+} from '@utils/helpers.ts';
 import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Proposal from '../../../utils/types/proposal';
@@ -118,7 +123,6 @@ export default function ObservationEntry() {
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
   const [numOfStations, setNumOfStations] = React.useState(512);
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [scaledBandwidth, setScaledBandwidth] = React.useState<number>(0);
   const [minimumChannelWidthHz, setMinimumChannelWidthHz] = React.useState<number>(0);
 
   const [groupObservation, setGroupObservation] = React.useState(0);
@@ -753,7 +757,6 @@ export default function ObservationEntry() {
         centralFrequency={centralFrequency}
         centralFrequencyUnits={centralFrequencyUnits}
         subarrayConfig={subarrayConfig}
-        setScaledBandwidth={setScaledBandwidth}
         minimumChannelWidthHz={minimumChannelWidthHz}
       />
     );
@@ -906,6 +909,10 @@ export default function ObservationEntry() {
       // The sub-band bandwidth defined by the bandwidth of the observation divided by the number of
       // sub-bands should be greater than the minimum allowed bandwidth
       if (!isLow() && isContinuum()) {
+        const scaledBandwidth = getScaledBandwidthOrFrequency(
+          continuumBandwidth,
+          continuumBandwidthUnits
+        );
         if (
           scaledBandwidth !== 0 &&
           subBands &&

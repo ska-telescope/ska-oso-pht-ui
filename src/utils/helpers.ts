@@ -1,3 +1,4 @@
+import { scaleBandwidthOrFrequency } from '@components/fields/bandwidthFields/bandwidthValidationCommon.tsx';
 import {
   FREQUENCY_HZ,
   FREQUENCY_UNITS,
@@ -23,6 +24,15 @@ export const generateId = (prefix: string, length: number) => {
     result += characters.charAt(Math.floor(Math.random() * characters.length));
   }
   return prefix + result;
+};
+
+export const getBandwidthOrFrequencyUnitsLabel = (incValue: number): string => {
+  return FREQUENCY_UNITS.find(item => item.value === incValue)?.label;
+};
+
+export const getScaledBandwidthOrFrequency = (incValue: number, inUnits: number) => {
+  const unitsLabel = getBandwidthOrFrequencyUnitsLabel(inUnits);
+  return scaleBandwidthOrFrequency(incValue, unitsLabel);
 };
 
 export const countWords = (text: string) => {
