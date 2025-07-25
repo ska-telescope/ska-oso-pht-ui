@@ -21,6 +21,7 @@ import PostPanelDecision from '@/services/axios/postPanelDecision/postPanelDecis
 import getPanelDecisionList from '@/services/axios/getPanelDecisionList/getPanelDecisionList';
 import { PanelDecision } from '@/utils/types/panelDecision';
 import ObservatoryData from '@/utils/types/observatoryData';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 /*
  * Process for retrieving the data for the list
@@ -48,6 +49,7 @@ export default function ReviewDecisionListPage() {
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
   const [reviewDecisions, setReviewDecisions] = React.useState<PanelDecision[]>([]);
+  const authClient = useAxiosAuthClient();
 
   /*--------------------------------------------------------------------------*/
 
@@ -152,7 +154,7 @@ export default function ReviewDecisionListPage() {
 
   React.useEffect(() => {
     const fetchProposalData = async () => {
-      const response = await GetProposalList(); // TODO : Temporary implementation to get all proposals
+      const response = await GetProposalList(authClient); // TODO : Temporary implementation to get all proposals
       if (typeof response === 'string') {
         NotifyError(response);
       } else {
@@ -166,7 +168,7 @@ export default function ReviewDecisionListPage() {
       }
     };
     const fetchProposalReviewData = async () => {
-      const response = await GetProposalReviewList(); // TODO : add id of the logged in user
+      const response = await GetProposalReviewList(authClient); // TODO : add id of the logged in user
       if (typeof response === 'string') {
         NotifyError(response);
       } else {

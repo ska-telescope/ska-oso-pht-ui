@@ -110,7 +110,7 @@ export default function ReviewListPage() {
       }
     };
     const fetchProposalReviewData = async () => {
-      const response = await GetProposalReviewList(); // TODO : add id of the logged in user
+      const response = await GetProposalReviewList(authClient); // TODO : add id of the logged in user
       if (typeof response === 'string') {
         NotifyError(response);
       } else {
