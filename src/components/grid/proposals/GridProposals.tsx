@@ -37,6 +37,7 @@ import { storeProposalCopy } from '@/utils/storage/proposalData';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 import { IdObject } from '@/utils/types/idObject';
 import { arraysAreEqual } from '@/utils/helpers';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 export function getProposalType(value: number): string {
   const type = PROJECTS.find(item => item.id === value)?.mapping;
@@ -111,6 +112,7 @@ export default function GridProposals({
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+  const authClient = useAxiosAuthClient();
 
   const deleteClicked = () => (
     <ProposalDisplay
@@ -150,7 +152,7 @@ export default function GridProposals({
 
   React.useEffect(() => {
     const fetchData = async () => {
-      const response = await GetProposalList();
+      const response = await GetProposalList(authClient);
       if (typeof response === 'string') {
         setAxiosError(response);
       } else {
@@ -408,7 +410,7 @@ export default function GridProposals({
     helpComponent({});
     updateAppContent5({});
 
-    const response = await GetProposal(id);
+    const response = await GetProposal(authClient, id);
     if (typeof response === 'string') {
       updateAppContent1({});
       updateAppContent2({});
@@ -471,7 +473,7 @@ export default function GridProposals({
   };
 
   const deleteConfirmed = async () => {
-    const response = await PutProposal(getProposal(), PROPOSAL_STATUS.WITHDRAWN);
+    const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.WITHDRAWN);
     if (response && !response.error) {
       setOpenDeleteDialog(false);
       setFetchList(!fetchList);

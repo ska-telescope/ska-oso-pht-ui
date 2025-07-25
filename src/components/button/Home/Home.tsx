@@ -61,7 +61,7 @@ export default function HomeButton({
         open={openWarningDialog}
         onClose={closeDialog}
         onDialogResponse={navigateToLandingPage}
-        title={t('homeBtn.warningNotLoggedIn.title')}
+        title={'homeBtn.warningNotLoggedIn.title'}
       >
         {t('homeBtn.warningNotLoggedIn.message')}
       </AlertDialog>

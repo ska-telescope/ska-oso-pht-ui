@@ -116,7 +116,10 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
   return outTargets;
 };
 
-const getDocuments = (sciencePDF: DocumentPDF, technicalPDF: DocumentPDF): DocumentBackend[] => {
+const getDocuments = (
+  sciencePDF: DocumentPDF | null,
+  technicalPDF: DocumentPDF | null
+): DocumentBackend[] => {
   const documents = [];
   if (sciencePDF) {
     documents.push({
@@ -156,8 +159,10 @@ const getDataProductSRC = (dataproducts: DataProductSRC[]): DataProductSRCNetBac
   return dataproducts?.map(dp => ({ data_products_src_id: dp?.id }));
 };
 
-const getGroupObservation = (obsId: string, observationGroups: GroupObservation[]) => {
-  const groupId = observationGroups.find(group => group.observationId === obsId)?.observationId;
+const getGroupObservation = (obsId: string, observationGroups: GroupObservation[] | undefined) => {
+  const groupId = observationGroups
+    ? observationGroups.find(group => group.observationId === obsId)?.observationId
+    : '';
   return groupId ? groupId : '';
 };
 
@@ -238,33 +243,35 @@ const getSupplied = (inObs: Observation) => {
 };
 
 const getObservationsSets = (
-  incObservationsSets: Observation[],
-  incObservationGroups: GroupObservation[]
+  incObservationsSets: Observation[] | undefined,
+  incObservationGroups: GroupObservation[] | undefined
 ): ObservationSetBackend[] => {
   const outObservationsSets = [];
-  for (let obs of incObservationsSets) {
-    const observation: ObservationSetBackend = {
-      observation_set_id: obs.id,
-      group_id: getGroupObservation(obs.id, incObservationGroups),
-      elevation: obs.elevation,
-      observing_band: getObservingBand(obs.observingBand),
-      array_details: getArrayDetails(obs),
-      observation_type_details: {
-        observation_type: OBSERVATION_TYPE_BACKEND[obs.type]?.toLowerCase(),
-        bandwidth: getBandwidth(obs),
-        central_frequency: getCentralFrequency(obs),
-        supplied: getSupplied(obs),
-        spectral_resolution: obs.spectralResolution,
-        effective_resolution: obs.effectiveResolution,
-        image_weighting: IMAGE_WEIGHTING.find(item => item.value === obs.imageWeighting)?.label,
-        spectral_averaging: obs.spectralAveraging.toString(),
-        robust:
-          obs.imageWeighting === IW_BRIGGS
-            ? ROBUST.find(item => item.value === obs.robust)?.label
-            : '0'
-      }
-    };
-    outObservationsSets.push(observation);
+  if (incObservationsSets) {
+    for (let obs of incObservationsSets) {
+      const observation: ObservationSetBackend = {
+        observation_set_id: obs.id,
+        group_id: getGroupObservation(obs.id, incObservationGroups),
+        elevation: obs.elevation,
+        observing_band: getObservingBand(obs.observingBand),
+        array_details: getArrayDetails(obs),
+        observation_type_details: {
+          observation_type: OBSERVATION_TYPE_BACKEND[obs.type]?.toLowerCase(),
+          bandwidth: getBandwidth(obs),
+          central_frequency: getCentralFrequency(obs),
+          supplied: getSupplied(obs),
+          spectral_resolution: obs.spectralResolution,
+          effective_resolution: obs.effectiveResolution,
+          image_weighting: IMAGE_WEIGHTING.find(item => item.value === obs.imageWeighting)?.label,
+          spectral_averaging: obs.spectralAveraging.toString(),
+          robust:
+            obs.imageWeighting === IW_BRIGGS
+              ? ROBUST.find(item => item.value === obs.robust)?.label
+              : '0'
+        }
+      };
+      outObservationsSets.push(observation);
+    }
   }
   return outObservationsSets;
 };
@@ -376,54 +383,56 @@ const getSpectralSection = (obsType: number) => (isContinuum(obsType) ? 'section
 
 const getResults = (incTargetObservations: TargetObservation[], incObs: Observation[]) => {
   const resultsArr = [];
-  for (let tarObs of incTargetObservations) {
-    if (tarObs.sensCalc?.error) {
-      break;
-    }
-    const obsType = getObsType(tarObs, incObs); // spectral or continuum
-    const spectralSection = getSpectralSection(obsType);
-    const suppliedType =
-      tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
-
-    const suppliedRelatedFields =
-      suppliedType === 'sensitivity'
-        ? getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs)
-        : getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection);
-    let result: SensCalcResultsBackend = {
-      observation_set_ref: tarObs.observationId,
-      target_ref: tarObs.sensCalc?.title,
-      result: {
-        supplied_type: suppliedType,
-        ...suppliedRelatedFields
-      },
-      continuum_confusion_noise: {
-        value: isContinuum(obsType)
-          ? Number(
-              tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.value
-            )
-          : 0,
-        unit: isContinuum(obsType)
-          ? tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.units
-          : ''
-      },
-      synthesized_beam_size: {
-        spectral: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
-          ?.value,
-        continuum: isContinuum(obsType)
-          ? tarObs.sensCalc.section1?.find(o => o.field === 'continuumSynthBeamSize')?.value
-          : 'dummy', // TODO: investigate typescript not taking empty string
-        unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
-          ?.units
-      },
-      spectral_confusion_noise: {
-        value: Number(
-          tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise')?.value
-        ),
-        unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise')
-          ?.units
+  if (incTargetObservations) {
+    for (let tarObs of incTargetObservations) {
+      if (tarObs.sensCalc?.error) {
+        break;
       }
-    };
-    resultsArr.push(result);
+      const obsType = getObsType(tarObs, incObs); // spectral or continuum
+      const spectralSection = getSpectralSection(obsType);
+      const suppliedType =
+        tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
+
+      const suppliedRelatedFields =
+        suppliedType === 'sensitivity'
+          ? getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs)
+          : getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection);
+      let result: SensCalcResultsBackend = {
+        observation_set_ref: tarObs.observationId,
+        target_ref: tarObs.sensCalc?.title,
+        result: {
+          supplied_type: suppliedType,
+          ...suppliedRelatedFields
+        },
+        continuum_confusion_noise: {
+          value: isContinuum(obsType)
+            ? Number(
+                tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.value
+              )
+            : 0,
+          unit: isContinuum(obsType)
+            ? tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.units
+            : ''
+        },
+        synthesized_beam_size: {
+          spectral: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
+            ?.value,
+          continuum: isContinuum(obsType)
+            ? tarObs.sensCalc.section1?.find(o => o.field === 'continuumSynthBeamSize')?.value
+            : 'dummy', // TODO: investigate typescript not taking empty string
+          unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
+            ?.units
+        },
+        spectral_confusion_noise: {
+          value: Number(
+            tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise')?.value
+          ),
+          unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise')
+            ?.units
+        }
+      };
+      resultsArr.push(result);
+    }
   }
   return resultsArr;
 };
@@ -452,20 +461,22 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
       science_category: GENERAL.ScienceCategory?.find(
         category => category.value === proposal?.scienceCategory
       )?.label as string,
-      targets: getTargets(proposal.targets),
+      targets: getTargets(proposal?.targets ? proposal.targets : []),
       documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF),
-      investigators: proposal.team.map(teamMember => {
-        return {
-          investigator_id: teamMember.id?.toString(),
-          status: teamMember.status,
-          given_name: teamMember.firstName,
-          family_name: teamMember.lastName,
-          email: teamMember.email,
-          organization: teamMember.affiliation,
-          for_phd: teamMember.phdThesis,
-          principal_investigator: teamMember.pi
-        };
-      }),
+      investigators: proposal?.team
+        ? proposal.team.map(teamMember => {
+            return {
+              investigator_id: teamMember.id?.toString(),
+              status: teamMember.status,
+              given_name: teamMember.firstName,
+              family_name: teamMember.lastName,
+              email: teamMember.email,
+              organization: teamMember.affiliation,
+              for_phd: teamMember.phdThesis,
+              principal_investigator: teamMember.pi
+            };
+          })
+        : null,
       observation_sets: getObservationsSets(proposal.observations, proposal.groupObservations),
       data_product_sdps:
         proposal.dataProductSDP?.length > 0 ? getDataProductSDP(proposal.dataProductSDP) : [],
