@@ -135,7 +135,7 @@ export default function ReviewPanelEntry() {
     NotifyWarning(t('addPanel.warning'));
     const response: string | { error: string } = await PostPanel(
       getPanel(),
-      getCycleData().observatoryPolicy.cycleInformation.cycleId
+      getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId
     );
     if (typeof response === 'object' && response?.error) {
       NotifyError(response?.error);

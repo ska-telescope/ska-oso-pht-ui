@@ -65,6 +65,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const getUser = () => 'DefaultUser'; // TODO
 
   const getCycleData = () => application.content3 as ObservatoryData;
+  const getCycleId = () => getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId;
 
   const getDateFormatted = () => moment().format('YYYY-MM-DD');
 
@@ -125,9 +126,10 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
   const createReview = async (submitted = false) => {
+    console.log('In createReview');
     const response: string | { error: string } = await PostProposalReview(
       getReview(submitted),
-      getCycleData().observatoryPolicy.cycleInformation.cycleId
+      getCycleId()
     );
     if (typeof response === 'object' && response?.error) {
       NotifyError(response?.error);
@@ -137,9 +139,10 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   };
 
   const updateReview = async (submitted = false) => {
+    console.log('In updateReview');
     const response: string | { error: string } = await PostProposalReview(
       getReview(submitted),
-      getCycleData().observatoryPolicy.cycleInformation.cycleId
+      getCycleId()
     );
     if (typeof response === 'object' && response?.error) {
       NotifyError(response?.error);
