@@ -12,8 +12,8 @@ import {
   TELESCOPE_LOW_NUM
 } from '../../../utils/constants';
 import { SENSCALC_CONTINUUM_MOCKED } from '../../axios/sensitivityCalculator/SensCalcResultsMOCK';
-import getZoomData from '../../api/getZoomData/getZoomData';
-import getContinuumData from '../../api/getContinuumData/getContinuumData';
+import GetZoomData from '../../api/getZoomData/getZoomData';
+import GetContinuumData from '../../api/getContinuumData/getContinuumData';
 
 const makeResponse = (target: Target, statusGUI: number, error: string) => {
   return {
@@ -78,8 +78,8 @@ async function getSensitivityCalculatorAPIData(
   const telescope: Telescope = getTelescope(observation.telescope);
 
   return observation.type === TYPE_CONTINUUM
-    ? getContinuumData(telescope, observation, target)
-    : getZoomData(telescope, observation, target);
+    ? GetContinuumData(telescope, observation, target)
+    : GetZoomData(telescope, observation, target);
 }
 
 export default getSensCalc;

@@ -39,6 +39,7 @@ import {
 } from '../../../utils/constants';
 import sensCalHelpers from '../../axios/sensitivityCalculator/sensCalHelpers';
 import { ResultsSection, SensCalcResults } from '../../../utils/types/sensCalcResults';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 const mapping = (data: any, target: Target, observation: Observation): SensCalcResults =>
   getFinalResults(target, data, observation);
@@ -311,7 +312,9 @@ const addPropertiesMID = (
   return properties;
 };
 
-async function getZoomData(telescope: Telescope, observation: Observation, target: Target) {
+async function GetZoomData(telescope: Telescope, observation: Observation, target: Target) {
+  const authClient = useAxiosAuthClient();
+
   const zoomData: ZoomData = {
     dataType: observation.type,
     bandwidth: {
@@ -370,6 +373,7 @@ async function getZoomData(telescope: Telescope, observation: Observation, targe
 
   // const mapping: Function = undefined;
   return Fetch(
+    authClient,
     telescope,
     URL_PATH,
     properties,
@@ -380,4 +384,4 @@ async function getZoomData(telescope: Telescope, observation: Observation, targe
     observation
   );
 }
-export default getZoomData;
+export default GetZoomData;

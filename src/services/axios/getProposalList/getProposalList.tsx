@@ -8,7 +8,7 @@ import {
   OSO_SERVICES_PROPOSAL_PATH
 } from '../../../utils/constants';
 import { InvestigatorBackend } from '../../../utils/types/investigator';
-import axiosAuthClient from '../axiosAuthClient/axiosAuthClient';
+import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import MockProposalBackendList from './mockProposalBackendList';
 
 /*********************************************************** filter *********************************************************/
@@ -89,25 +89,28 @@ const getScienceCategory = (scienceCat: string) => {
 export function mappingList(inRec: ProposalBackend[]): Proposal[] {
   const output = [];
   for (let i = 0; i < inRec.length; i++) {
+    const tmp = inRec[i];
     const rec: Proposal = {
-      id: inRec[i].prsl_id?.toString(),
-      status: inRec[i].status,
-      lastUpdated: inRec[i].metadata?.last_modified_on as string,
-      lastUpdatedBy: inRec[i].metadata?.last_modified_by as string,
-      createdOn: inRec[i].metadata?.created_on as string,
-      createdBy: inRec[i].metadata?.created_by as string,
-      version: inRec[i].metadata?.version as number,
-      proposalType: PROJECTS.find(p => p.mapping === inRec[i].info?.proposal_type.main_type)
+      id: tmp.prsl_id?.toString(),
+      status: tmp.status,
+      lastUpdated: tmp.metadata?.last_modified_on as string,
+      lastUpdatedBy: tmp.metadata?.last_modified_by as string,
+      createdOn: tmp.metadata?.created_on as string,
+      createdBy: tmp.metadata?.created_by as string,
+      version: tmp.metadata?.version as number,
+      proposalType: PROJECTS.find(p => p.mapping === tmp.info?.proposal_type.main_type)
         ?.id as number,
-      proposalSubType: inRec[i].info?.proposal_type?.attributes
-        ? getSubType(inRec[i].info?.proposal_type)
+      proposalSubType: tmp.info?.proposal_type?.attributes
+        ? getSubType(tmp.info?.proposal_type)
         : [],
-      scienceCategory: inRec[i].info?.science_category
-        ? (getScienceCategory(inRec[i].info.science_category) as number)
+      scienceCategory: tmp.info?.science_category
+        ? (getScienceCategory(
+            tmp?.info?.science_category !== null ? tmp.info.science_category : ''
+          ) as number)
         : ((null as unknown) as number),
-      title: inRec[i].info?.title,
-      cycle: inRec[i]?.cycle,
-      team: inRec[i].info?.investigators ? getTeam(inRec[i].info.investigators) : [],
+      title: tmp.info?.title,
+      cycle: tmp?.cycle,
+      team: tmp.info?.investigators ? getTeam(tmp.info.investigators) : [],
       sciencePDF: null,
       technicalPDF: null
     };
@@ -122,14 +125,16 @@ export function GetMockProposalList(): Proposal[] {
   return mappingList(MockProposalBackendList);
 }
 
-async function GetProposalList(): Promise<Proposal[] | string> {
+async function GetProposalList(
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>
+): Promise<Proposal[] | string> {
   if (USE_LOCAL_DATA) {
     return GetMockProposalList();
   }
 
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/list/DefaultUser`;
-    const result = await axiosAuthClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
+    const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
 
     if (!result || !Array.isArray(result.data)) {
       return 'error.API_UNKNOWN_ERROR';

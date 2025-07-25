@@ -35,6 +35,7 @@ import TechnicalIcon from '@/components/icon/technicalIcon/technicalIcon';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProposalReview';
 import ObservatoryData from '@/utils/types/observatoryData';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 /*
  * Process for retrieving the data for the list
@@ -71,6 +72,8 @@ export default function ReviewListPage() {
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
 
+  const authClient = useAxiosAuthClient();
+
   const DATA_GRID_HEIGHT = '60vh';
 
   React.useEffect(() => {
@@ -91,7 +94,7 @@ export default function ReviewListPage() {
 
   React.useEffect(() => {
     const fetchProposalData = async () => {
-      const response = await GetProposalList(); // TODO : Temporary implementation to get all proposals
+      const response = await GetProposalList(authClient); // TODO : Temporary implementation to get all proposals
       if (typeof response === 'string') {
         NotifyError(response);
       } else {
@@ -178,7 +181,7 @@ export default function ReviewListPage() {
   const getTheProposal = async (id: string) => {
     clearApp();
 
-    const response = await GetProposal(id);
+    const response = await GetProposal(authClient, id);
     if (typeof response === 'string') {
       NotifyError(t('proposal.error'));
       return false;

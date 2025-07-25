@@ -211,13 +211,15 @@ export default function ProposalDisplay({
       justifyContent="flex-start"
       pr={2}
     >
-      <Grid2>
-        <ConfirmButton
-          action={handleConfirm}
-          testId="displayConfirmationButton"
-          title={onConfirmLabel}
-        />
-      </Grid2>
+      {onConfirmLabel && (
+        <Grid2>
+          <ConfirmButton
+            action={handleConfirm}
+            testId="displayConfirmationButton"
+            title={onConfirmLabel}
+          />
+        </Grid2>
+      )}
     </Grid2>
   );
 

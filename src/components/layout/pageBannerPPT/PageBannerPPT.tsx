@@ -30,6 +30,7 @@ import { Proposal } from '../../../utils/types/proposal';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import PostProposalValidate from '../../../services/axios/postProposalValidate/postProposalValidate';
 import { useMockedLogin } from '@/contexts/MockedLoginContext';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 interface PageBannerPPTProps {
   pageNo: number;
@@ -48,6 +49,8 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const [openProposalDisplay, setOpenProposalDisplay] = React.useState(false);
   const [openValidationResults, setOpenValidationResults] = React.useState(false);
   const [validationResults, setValidationResults] = React.useState<string[]>([]);
+
+  const authClient = useAxiosAuthClient();
 
   const { isMockedLoggedIn } = useMockedLogin();
   const loggedIn = isLoggedIn();
@@ -114,7 +117,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   const updateProposal = async () => {
     if (isDisableEndpoints()) return;
-    const response = await PutProposal(getProposal(), PROPOSAL_STATUS.DRAFT);
+    const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.DRAFT);
     updateProposalResponse(response);
   };
 
@@ -124,7 +127,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   };
 
   const submitConfirmed = async () => {
-    const response = await PutProposal(getProposal(), PROPOSAL_STATUS.SUBMITTED);
+    const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.SUBMITTED);
     if (response && !response.error) {
       NotifyOK(response.valid);
       setOpenProposalDisplay(false);
