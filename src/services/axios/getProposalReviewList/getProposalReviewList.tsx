@@ -1,3 +1,4 @@
+import { r } from 'happy-dom/lib/PropertySymbol.js';
 import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
@@ -77,7 +78,10 @@ async function GetProposalReviewList(): Promise<ProposalReview[] | string> {
     }
     const uniqueResults =
       result.data?.length > 1 ? getUniqueMostRecentReviews(result.data) : result.data;
-    return mappingList(uniqueResults);
+    const resultData = mappingList(uniqueResults);
+    console.log('GetProposalReviewList resultData', resultData);
+    return resultData;
+    // return mappingList(uniqueResults);
   } catch (e) {
     if (e instanceof Error) {
       return e.message;

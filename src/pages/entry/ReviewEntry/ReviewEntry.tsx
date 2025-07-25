@@ -46,7 +46,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const { application, updateAppContent5 } = storageObject.useStore();
 
-  const isEdit = () => (locationProperties.state?.id ? true : false);
   const isView = () => (locationProperties.state?.reviews ? true : false);
 
   const [tabValuePDF, setTabValuePDF] = React.useState(0);
@@ -56,6 +55,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const [generalComments, setGeneralComments] = React.useState('');
   const [srcNetComments, setSrcNetComments] = React.useState('');
   const [currentPDF, setCurrentPDF] = React.useState<string | null | undefined>(null);
+  const [isEdit, setIsEdit] = React.useState(false);
 
   const AREA_HEIGHT_NUM = 74;
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
@@ -70,7 +70,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const getDateFormatted = () => moment().format('YYYY-MM-DD');
 
   const getReviewId = () => {
-    return isEdit()
+    return isEdit
       ? locationProperties.state.id
       : 'rvw-' +
           getUser() +
@@ -82,7 +82,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const getReview = (submitted = false): ProposalReview => {
     return {
-      id: reviewId,
+      id: getReviewId(),
       prslId: getProposal().id,
       reviewType: {
         kind: reviewType,
@@ -138,6 +138,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       NotifyError(response?.error);
     } else {
       NotifyOK(t('addReview.success'));
+      setIsEdit(true);
     }
   };
 
@@ -157,14 +158,16 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   React.useEffect(() => {
     setReviewId(getReviewId());
-    if (isEdit()) {
+    if (locationProperties.state?.id) {
       setGeneralComments(locationProperties.state?.comments);
       setSrcNetComments(locationProperties.state?.srcNet);
       setRank(locationProperties.state?.rank);
+      setIsEdit(false);
     } else {
       setGeneralComments('');
       setSrcNetComments('');
       setRank(0);
+      setIsEdit(true);
     }
   }, []);
 
@@ -177,7 +180,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   };
 
   const saveButtonAction = (submit: boolean) => {
-    isEdit() ? updateReview(submit) : createReview(submit);
+    isEdit ? updateReview(submit) : createReview(submit);
   };
   const saveButtonClicked = () => saveButtonAction(false);
   const submitButtonClicked = () => saveButtonAction(true);

@@ -386,6 +386,8 @@ export default function ReviewListPage() {
   }
 
   const filteredData = proposals ? filterProposals() : [];
+  console.log('Filtered Data', filteredData);
+  console.log('Proposal Reviews', proposalReviews);
 
   const searchDropdown = () => (
     <DropDown
