@@ -6,8 +6,14 @@ import PostProposalReview, {
   mappingReviewFrontendToBackend,
   postMockProposalReview
 } from './postProposalReview';
-import { MockProposalReviewFrontend } from './mockProposalReviewFrontend';
-import { MockProposalReviewBackend } from './mockProposalReviewBackend';
+import {
+  MockProposalReviewFrontend,
+  MockProposalTechnicalReviewFrontend
+} from './mockProposalReviewFrontend';
+import {
+  MockProposalReviewBackend,
+  MockProposalTechnicalReviewBackend
+} from './mockProposalReviewBackend';
 import { ProposalReviewBackend } from '@/utils/types/proposalReview';
 import * as CONSTANTS from '@/utils/constants';
 
@@ -34,6 +40,15 @@ describe('Helper Functions', () => {
       true
     );
     expect(reviewBackEnd).to.deep.equal(MockProposalReviewBackend);
+  });
+
+  test('mappingReviewFrontendToBackend returns mapped technical review from frontend to backend format', () => {
+    const technicalReviewBackEnd: ProposalReviewBackend = mappingReviewFrontendToBackend(
+      MockProposalTechnicalReviewFrontend,
+      cycleId,
+      true
+    );
+    expect(technicalReviewBackEnd).to.deep.equal(MockProposalTechnicalReviewBackend);
   });
 
   test('mappingReviewFrontendToBackend generates cycle id when not provided', () => {

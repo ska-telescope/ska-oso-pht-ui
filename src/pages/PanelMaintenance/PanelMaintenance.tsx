@@ -114,7 +114,7 @@ export default function PanelMaintenance() {
   const { application } = storageObject.useStore();
 
   const getCycleData = () => application.content3 as ObservatoryData;
-  const getCycleId = () => getCycleData().observatoryPolicy.cycleInformation.cycleId;
+  const getCycleId = () => getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId;
 
   React.useEffect(() => {
     const proposals = currentPanel?.proposals

@@ -318,6 +318,12 @@ export const REVIEW_TYPE = {
   TECHNICAL: 'Technical Review'
 };
 
+export const TECHNICAL_FEASIBILITY = {
+  YES: 'Yes',
+  NO: 'No',
+  MAYBE: 'Maybe'
+};
+
 export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
 

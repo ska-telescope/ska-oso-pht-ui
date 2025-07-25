@@ -1,4 +1,4 @@
-import { PANEL_DECISION_STATUS } from '@/utils/constants';
+import { PANEL_DECISION_STATUS, REVIEW_TYPE } from '@/utils/constants';
 import { ProposalReviewBackend } from '@/utils/types/proposalReview';
 
 export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
@@ -17,7 +17,7 @@ export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
     reviewer_id: 'reviewer-12347',
     prsl_id: 'prsl-t0001-20250716-00001',
     review_type: {
-      kind: 'Science Review',
+      kind: REVIEW_TYPE.SCIENCE,
       rank: 5,
       conflict: {
         has_conflict: false,
@@ -46,7 +46,7 @@ export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
     reviewer_id: 'reviewer-12345',
     prsl_id: 'prsl-t0001-20250716-00001',
     review_type: {
-      kind: 'Science Review',
+      kind: REVIEW_TYPE.SCIENCE,
       rank: 9,
       conflict: {
         has_conflict: true,
@@ -75,7 +75,7 @@ export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
     reviewer_id: 'reviewer-12345',
     prsl_id: 'prsl-t0001-20250716-00001',
     review_type: {
-      kind: 'Science Review',
+      kind: REVIEW_TYPE.SCIENCE,
       rank: 8,
       conflict: {
         has_conflict: false,
@@ -104,7 +104,7 @@ export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
     reviewer_id: 'reviewer-12345',
     prsl_id: 'prsl-t0001-20250716-00001',
     review_type: {
-      kind: 'Science Review',
+      kind: REVIEW_TYPE.SCIENCE,
       rank: 8,
       conflict: {
         has_conflict: false,

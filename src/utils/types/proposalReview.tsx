@@ -3,7 +3,7 @@ import { Metadata } from './metadata';
 export type TechnicalReview = {
   kind: string;
   feasibility: {
-    isFeasible: boolean;
+    isFeasible: string;
     comments: string | null;
   };
 };
@@ -46,7 +46,7 @@ export type ScienceReviewBackend = {
 export type TechnicalReviewBackend = {
   kind: string;
   feasibility: {
-    is_feasible: boolean;
+    is_feasible: string;
     comments: string | null;
   };
 };

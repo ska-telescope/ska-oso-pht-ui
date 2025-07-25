@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {
   OSO_SERVICES_REVIEWS_PATH,
+  REVIEW_TYPE,
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
 } from '../../../utils/constants';
@@ -50,7 +51,7 @@ export function mappingReviewFrontendToBackend(
     reviewer_id: review.reviewerId,
     prsl_id: review.prslId,
     review_type:
-      review.reviewType.kind === 'Science Review'
+      review.reviewType.kind === REVIEW_TYPE.SCIENCE
         ? getScienceReviewType(review.reviewType as ScienceReview)
         : getTechnicalReviewType(review.reviewType as TechnicalReview),
     comments: review.comments,
