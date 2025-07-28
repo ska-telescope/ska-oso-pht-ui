@@ -19,8 +19,8 @@ import SensCalcDisplaySingle from '../../components/alerts/sensCalcDisplay/singl
 import getSensCalc from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Observation from '../../utils/types/observation';
-import { Proposal } from '../../utils/types/proposal';
-import { validateObservationPage } from '../../utils/proposalValidation';
+import { Proposal } from '@utils/types/proposal.tsx';
+import { validateObservationPage } from '@utils/proposalValidation.tsx';
 import {
   BANDWIDTH_TELESCOPE,
   OB_SUBARRAY_CUSTOM,
@@ -31,14 +31,14 @@ import {
   STATUS_OK,
   STATUS_PARTIAL,
   SUPPLIED_TYPE_INTEGRATION
-} from '../../utils/constants';
+} from '@utils/constants.ts';
 import GroupObservation from '../../utils/types/groupObservation';
 import Target from '../../utils/types/target';
 import TargetObservation from '../../utils/types/targetObservation';
 import DeleteObservationConfirmation from '../../components/alerts/deleteObservationConfirmation/deleteObservationConfirmation';
 import SensCalcModalMultiple from '../../components/alerts/sensCalcModal/multiple/SensCalcModalMultiple';
 import StatusIconDisplay from '../../components/icon/status/statusIcon';
-import { FOOTER_SPACER } from '../../utils/constants';
+import { FOOTER_SPACER } from '@utils/constants.ts';
 
 const DATA_GRID_TARGET = '40vh';
 const DATA_GRID_OBSERVATION = '50vh';
