@@ -498,7 +498,7 @@ export default function ObservationPage() {
   return (
     <Shell page={PAGE}>
       <Grid2 container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid2 md={11} lg={5}>
+        <Grid2 size={{ md: 11, lg: 5 }}>
           <Grid2 container direction="column" alignItems="flex-start" justifyContent="space-around">
             <Grid2 container direction="row" alignItems="flex-start" justifyContent="space-between">
               <Grid2 pb={1}>
@@ -532,7 +532,7 @@ export default function ObservationPage() {
             )}
           </Grid2>
         </Grid2>
-        <Grid2 md={11} lg={6}>
+        <Grid2 size={{ md: 11, lg: 6 }}>
           <Card variant="outlined">
             <CardContent>
               <Grid2 container alignItems="baseline" justifyContent="space-between">

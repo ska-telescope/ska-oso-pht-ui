@@ -209,7 +209,7 @@ export default function GridProposals({
 
   React.useEffect(() => {
     const cycleData = async () => {
-      const response = await GetCycleData(1);
+      const response = await GetCycleData(authClient, 1);
       if (typeof response === 'string') {
         setAxiosError(response);
       } else {
