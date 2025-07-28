@@ -282,14 +282,20 @@ export default function ObservationEntry() {
   const setTheSubarrayConfig = (e: React.SetStateAction<number>) => {
     const record = OBSERVATION.array[telescope() - 1].subarray.find(element => element.value === e);
     if (record) {
+      const data: ObservatoryData = application.content3 as ObservatoryData;
+      //Set value using OSD Data if Low AA2
       if (isLow() && isAA2(record.value)) {
-        const data: ObservatoryData = application.content3 as ObservatoryData;
         setNumOfStations(data?.capabilities?.low?.AA2?.numberStations);
       } else {
         setNumOfStations(record.numOfStations);
       }
+      //Set value using OSD Data if Mid AA2
+      if (!isLow() && isAA2(record.value)) {
+        setNumOf15mAntennas(data?.capabilities?.mid?.AA2?.numberSkaDishes);
+      } else {
+        setNumOf15mAntennas(record.numOf15mAntennas);
+      }
     }
-    setNumOf15mAntennas(record.numOf15mAntennas);
     setNumOf13mAntennas(record.numOf13mAntennas);
     setDefaultCentralFrequency(observingBand, e as number);
     setDefaultContinuumBandwidth(observingBand, e as number);
