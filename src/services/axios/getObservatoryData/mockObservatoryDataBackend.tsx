@@ -1,6 +1,6 @@
 import { ObservatoryDataBackend } from '@/utils/types/observatoryData';
 
-export const MockCycleDataBackend: ObservatoryDataBackend = {
+export const MockObservatoryDataBackend: ObservatoryDataBackend = {
   observatory_policy: {
     cycle_number: 1,
     cycle_description: 'Science Verification',

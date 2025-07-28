@@ -87,7 +87,7 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
   };
 };
 
-async function GetCycleData(
+async function GetObservatoryData(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
   cycleNumber: number
 ): Promise<string | ObservatoryData> {
@@ -105,4 +105,4 @@ async function GetCycleData(
   }
 }
 
-export default GetCycleData;
+export default GetObservatoryData;

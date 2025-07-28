@@ -1,14 +1,14 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import axios from 'axios';
-import { mockCycleDataFrontend } from '../getCycleData/mockCycleDataFrontend';
+import { mockObservatoryDataFrontend } from '@services/axios/getObservatoryData/mockObservatoryDataFrontend.tsx';
 import getPanelDecisionList, { getMockPanelDecision, mappingList } from './getPanelDecisionList';
 import { MockPanelDecisionFrontendList } from './mockPanelDecisionFrontendList';
 import { MockPanelDecisionBackendList } from './mockPanelDecisionBackendList';
 import * as CONSTANTS from '@/utils/constants';
 import { PanelDecision } from '@/utils/types/panelDecision';
 
-const cycleId = mockCycleDataFrontend.observatoryPolicy.cycleInformation.cycleId;
+const cycleId = mockObservatoryDataFrontend.observatoryPolicy.cycleInformation.cycleId;
 
 const mockedAxios = (axios as unknown) as {
   get: ReturnType<typeof vi.fn>;

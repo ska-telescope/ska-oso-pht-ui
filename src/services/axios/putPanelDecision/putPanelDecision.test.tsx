@@ -1,10 +1,10 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
 import axios from 'axios';
+import { mockObservatoryDataFrontend } from '@services/axios/getObservatoryData/mockObservatoryDataFrontend.tsx';
 import { mappingPanelDecisionFrontendToBackend } from '../postPanelDecision/postPanelDecision';
 import { MockPanelDecisionFrontend } from '../postPanelDecision/mockPanelDecisionFrontend';
 import { MockPanelDecisionBackend } from '../postPanelDecision/mockPanelDecisionBackend';
-import { mockCycleDataFrontend } from '../getCycleData/mockCycleDataFrontend';
 import PutPanelDecision, {
   mappingPanelDecisionBackendToFrontend,
   putMockPanelDecision
@@ -12,7 +12,7 @@ import PutPanelDecision, {
 import * as CONSTANTS from '@/utils/constants';
 import { PanelDecision, PanelDecisionBackend } from '@/utils/types/panelDecision';
 
-const cycleId = mockCycleDataFrontend.observatoryPolicy.cycleInformation.cycleId;
+const cycleId = mockObservatoryDataFrontend.observatoryPolicy.cycleInformation.cycleId;
 
 vi.mock('axios');
 const mockedAxios = (axios as unknown) as {
@@ -57,7 +57,7 @@ describe('Helper Functions', () => {
     );
     const expectedPanelFrontend = {
       ...MockPanelDecisionFrontend,
-      cycle: mockCycleDataFrontend.observatoryPolicy.cycleInformation.cycleId
+      cycle: mockObservatoryDataFrontend.observatoryPolicy.cycleInformation.cycleId
     };
     expect(panelFrontEnd).to.deep.equal(expectedPanelFrontend);
   });

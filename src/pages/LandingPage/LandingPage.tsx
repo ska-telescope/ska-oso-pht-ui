@@ -13,7 +13,7 @@ import {
 import TeamMember from '@utils/types/teamMember';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { presentDate, presentLatex, presentTime } from '@utils/present/present';
-import GetCycleData from '../../services/axios/getCycleData/getCycleData';
+import GetObservatoryData from '@services/axios/getObservatoryData/getObservatoryData.tsx';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
 import {
@@ -62,7 +62,7 @@ export default function LandingPage() {
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openViewDialog, setOpenViewDialog] = React.useState(false);
 
-  const [cycleData, setCycleData] = React.useState(false);
+  const [observatoryData, setObservatoryData] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
 
   const { isMockedLoggedIn } = useMockedLogin();
@@ -79,7 +79,7 @@ export default function LandingPage() {
   React.useEffect(() => {
     updateAppContent2({});
     setFetchList(!fetchList);
-    setCycleData(!cycleData);
+    setObservatoryData(!observatoryData);
   }, []);
 
   React.useEffect(() => {
@@ -98,8 +98,8 @@ export default function LandingPage() {
   }, [fetchList, isDisableEndpoints()]);
 
   React.useEffect(() => {
-    const fetchCycleData = async () => {
-      const response = await GetCycleData(authClient, 1);
+    const fetchObservatoryData = async () => {
+      const response = await GetObservatoryData(authClient, 1);
       if (response.error || typeof response === 'string') {
         setAxiosError(response.toString());
       } else {
@@ -108,7 +108,7 @@ export default function LandingPage() {
       }
     };
 
-    fetchCycleData();
+    fetchObservatoryData();
   }, []);
 
   const getTheProposal = async (id: string) => {

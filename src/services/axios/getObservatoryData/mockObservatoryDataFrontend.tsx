@@ -1,6 +1,6 @@
 import ObservatoryData from '@/utils/types/observatoryData';
 
-export const mockCycleDataFrontend: ObservatoryData = {
+export const mockObservatoryDataFrontend: ObservatoryData = {
   observatoryPolicy: {
     cycleNumber: 1,
     cycleDescription: 'Science Verification',
