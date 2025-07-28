@@ -340,15 +340,15 @@ export default function ReviewListPage() {
     disableClickEventBubbling: true,
     renderCell: (e: { row: any }) => (
       <>
-        <ScienceIcon
-          onClick={() => scienceIconClicked(e.row)}
-          disabled={!canEditScience(e)}
-          toolTip={t(canEditScience(e) ? 'reviewProposal.science' : 'reviewProposal.disabled')}
-        />
         <TechnicalIcon
           onClick={() => technicalIconClicked(e.row)}
           disabled={!canEditTechnical(e)}
           toolTip={t(canEditTechnical(e) ? 'reviewProposal.technical' : 'reviewProposal.disabled')}
+        />
+        <ScienceIcon
+          onClick={() => scienceIconClicked(e.row)}
+          disabled={!canEditScience(e)}
+          toolTip={t(canEditScience(e) ? 'reviewProposal.science' : 'reviewProposal.disabled')}
         />
         <SubmitIcon
           onClick={() => submitIconClicked(e.row)}
