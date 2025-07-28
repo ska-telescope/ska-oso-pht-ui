@@ -11,14 +11,6 @@ import {
   TickBox
 } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
-import Shell from '../../components/layout/Shell/Shell';
-import AddButton from '../../components/button/Add/Add';
-import EditIcon from '../../components/icon/editIcon/editIcon';
-import TrashIcon from '../../components/icon/trashIcon/trashIcon';
-import SensCalcDisplaySingle from '../../components/alerts/sensCalcDisplay/single/SensCalcDisplaySingle';
-import getSensCalc from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
-import Alert from '../../components/alerts/standardAlert/StandardAlert';
-import Observation from '../../utils/types/observation';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { validateObservationPage } from '@utils/proposalValidation.tsx';
 import {
@@ -32,13 +24,21 @@ import {
   STATUS_PARTIAL,
   SUPPLIED_TYPE_INTEGRATION
 } from '@utils/constants.ts';
+import { FOOTER_SPACER } from '@utils/constants.ts';
+import Shell from '../../components/layout/Shell/Shell';
+import AddButton from '../../components/button/Add/Add';
+import EditIcon from '../../components/icon/editIcon/editIcon';
+import TrashIcon from '../../components/icon/trashIcon/trashIcon';
+import SensCalcDisplaySingle from '../../components/alerts/sensCalcDisplay/single/SensCalcDisplaySingle';
+import getSensCalc from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
+import Alert from '../../components/alerts/standardAlert/StandardAlert';
+import Observation from '../../utils/types/observation';
 import GroupObservation from '../../utils/types/groupObservation';
 import Target from '../../utils/types/target';
 import TargetObservation from '../../utils/types/targetObservation';
 import DeleteObservationConfirmation from '../../components/alerts/deleteObservationConfirmation/deleteObservationConfirmation';
 import SensCalcModalMultiple from '../../components/alerts/sensCalcModal/multiple/SensCalcModalMultiple';
 import StatusIconDisplay from '../../components/icon/status/statusIcon';
-import { FOOTER_SPACER } from '@utils/constants.ts';
 
 const DATA_GRID_TARGET = '40vh';
 const DATA_GRID_OBSERVATION = '50vh';
