@@ -259,6 +259,10 @@
     "label": "General Comments",
     "tooltip": ""
   },
+  "technicalComments": {
+    "label": "Technical Comments",
+    "tooltip": ""
+  },
   "getReviewers": {
     "short": "Get",
     "label": "Get Reviewers",

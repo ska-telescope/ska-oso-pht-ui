@@ -1,7 +1,7 @@
 // import axios from 'axios';
 import { OSO_SERVICES_PROPOSAL_PATH, SKA_OSO_SERVICES_URL } from '@utils/constants.ts';
-import { ObservatoryDataBackend, ObservatoryData } from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.tsx';
+import { ObservatoryDataBackend, ObservatoryData } from '@/utils/types/observatoryData';
 
 /*****************************************************************************************************************************/
 
@@ -87,7 +87,10 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
   };
 };
 
-async function GetCycleData(authAxiosClient: ReturnType<typeof useAxiosAuthClient>, cycleNumber: number): Promise<string | ObservatoryData> {
+async function GetCycleData(
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  cycleNumber: number
+): Promise<string | ObservatoryData> {
   try {
     const URL_PATH = `/osd/`;
     const result = await authAxiosClient.get(
