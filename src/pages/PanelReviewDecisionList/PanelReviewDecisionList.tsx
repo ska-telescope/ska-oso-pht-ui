@@ -63,7 +63,7 @@ export default function ReviewDecisionListPage() {
 
   const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
 
-  const getCycleData = () => application.content3 as ObservatoryData;
+  const getObservatoryData = () => application.content3 as ObservatoryData;
 
   const calculateRank = (details: Array<any>) => {
     if (!details || details?.length === 0) return 0;
@@ -124,7 +124,7 @@ export default function ReviewDecisionListPage() {
   }) => {
     const response: string | { error: string } = await PostPanelDecision(
       getReviewDecision(item),
-      getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId
+      getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
     );
     if (typeof response === 'object' && response?.error) {
       Notify(response?.error, AlertColorTypes.Error);
@@ -177,7 +177,7 @@ export default function ReviewDecisionListPage() {
     };
     const fetchReviewDecisionData = async () => {
       const response = await getPanelDecisionList(
-        getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId
+        getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
       ); // TODO : add id of the logged in user
       if (typeof response === 'string') {
         NotifyError(response);
