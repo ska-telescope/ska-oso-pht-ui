@@ -57,6 +57,7 @@ import {
   getMinimumChannelWidth,
   getScaledBandwidthOrFrequency
 } from '@utils/helpers.ts';
+import ObservatoryData from '@utils/types/observatoryData.tsx';
 import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Proposal from '../../../utils/types/proposal';
@@ -76,7 +77,6 @@ import SpectralResolutionField from '../../../components/fields/spectralResoluti
 import NumStations from '../../../components/fields/numStations/NumStations';
 import ContinuumBandwidthField from '../../../components/fields/bandwidthFields/continuumBandwidth/continuumBandwidth';
 import BandwidthField from '../../../components/fields/bandwidthFields/bandwidth/bandwidth';
-import ObservatoryData from '@utils/types/observatoryData.tsx';
 
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 6;
@@ -129,6 +129,7 @@ export default function ObservationEntry() {
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
   const [ob, setOb] = React.useState<Observation | null>(null);
+  const isAA2 = (subarrayConfig: number) => subarrayConfig === 3;
 
   const lookupArrayValue = (arr: any[], inValue: string | number) =>
     arr.find(e => e.lookup.toString() === inValue.toString())?.value;
@@ -279,26 +280,17 @@ export default function ObservationEntry() {
   };
 
   const setTheSubarrayConfig = (e: React.SetStateAction<number>) => {
-    const data: ObservatoryData = application.content3 as ObservatoryData;
     const record = OBSERVATION.array[telescope() - 1].subarray.find(element => element.value === e);
-    const isAA2 = (subarrayConfig: number) => subarrayConfig === 3;
-
     if (record) {
-      console.log('record data ', record);
-      setNumOf15mAntennas(record.numOf15mAntennas);
-      setNumOf13mAntennas(record.numOf13mAntennas);
-      console.log('condition 1 ', isLow());
-      console.log('condition 2  ', isAA2(subarrayConfig), 'subarray selected ', subarrayConfig);
-
-      if (isLow() && isAA2(subarrayConfig)) {
-        console.log('data check ', data?.capabilities?.low?.AA2?.numberStations);
-        setNumOfStations(record.numOfStations);
-      }else{
+      if (isLow() && isAA2(record.value)) {
+        const data: ObservatoryData = application.content3 as ObservatoryData;
+        setNumOfStations(data?.capabilities?.low?.AA2?.numberStations);
+      } else {
         setNumOfStations(record.numOfStations);
       }
-
     }
-
+    setNumOf15mAntennas(record.numOf15mAntennas);
+    setNumOf13mAntennas(record.numOf13mAntennas);
     setDefaultCentralFrequency(observingBand, e as number);
     setDefaultContinuumBandwidth(observingBand, e as number);
     setSubarrayConfig(e);
