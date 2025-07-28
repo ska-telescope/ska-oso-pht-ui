@@ -57,6 +57,7 @@ import {
   getMinimumChannelWidth,
   getScaledBandwidthOrFrequency
 } from '@utils/helpers.ts';
+import ObservatoryData from '@utils/types/observatoryData.tsx';
 import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Proposal from '../../../utils/types/proposal';
@@ -128,6 +129,7 @@ export default function ObservationEntry() {
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
   const [ob, setOb] = React.useState<Observation | null>(null);
+  const isAA2 = (subarrayConfig: number) => subarrayConfig === 3;
 
   const lookupArrayValue = (arr: any[], inValue: string | number) =>
     arr.find(e => e.lookup.toString() === inValue.toString())?.value;
@@ -280,11 +282,21 @@ export default function ObservationEntry() {
   const setTheSubarrayConfig = (e: React.SetStateAction<number>) => {
     const record = OBSERVATION.array[telescope() - 1].subarray.find(element => element.value === e);
     if (record) {
-      setNumOf15mAntennas(record.numOf15mAntennas);
-      setNumOf13mAntennas(record.numOf13mAntennas);
-      setNumOfStations(record.numOfStations);
+      const data: ObservatoryData = application.content3 as ObservatoryData;
+      //Set value using OSD Data if Low AA2
+      if (isLow() && isAA2(record.value)) {
+        setNumOfStations(data?.capabilities?.low?.AA2?.numberStations);
+      } else {
+        setNumOfStations(record.numOfStations);
+      }
+      //Set value using OSD Data if Mid AA2
+      if (!isLow() && isAA2(record.value)) {
+        setNumOf15mAntennas(data?.capabilities?.mid?.AA2?.numberSkaDishes);
+      } else {
+        setNumOf15mAntennas(record.numOf15mAntennas);
+      }
     }
-
+    setNumOf13mAntennas(record.numOf13mAntennas);
     setDefaultCentralFrequency(observingBand, e as number);
     setDefaultContinuumBandwidth(observingBand, e as number);
     setSubarrayConfig(e);

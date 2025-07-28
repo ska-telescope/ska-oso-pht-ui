@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
 import axios from 'axios';
-import { mockCycleDataFrontend } from '../getCycleData/mockCycleDataFrontend';
+import { MockObservatoryDataFrontend } from '@services/axios/getObservatoryData/mockObservatoryDataFrontend.tsx';
 import PostProposalReview, {
   mappingReviewFrontendToBackend,
   postMockProposalReview
@@ -17,7 +17,7 @@ import {
 import { ProposalReviewBackend } from '@/utils/types/proposalReview';
 import * as CONSTANTS from '@/utils/constants';
 
-const cycleId = mockCycleDataFrontend.observatoryPolicy.cycleInformation.cycleId;
+const cycleId = MockObservatoryDataFrontend.observatoryPolicy.cycleInformation.cycleId;
 
 vi.mock('axiosAuthClient');
 const mockedAxios = (axios as unknown) as {

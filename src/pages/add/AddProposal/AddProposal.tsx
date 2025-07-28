@@ -1,11 +1,10 @@
 import React from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Box } from '@mui/material';
+import { EMPTY_STATUS } from '@utils/constants.ts';
 import Shell from '../../../components/layout/Shell/Shell';
 import TitleEntry from '../../entry/TitleEntry/TitleEntry';
-import { EMPTY_STATUS } from '../../../utils/constants';
 import Proposal, { NEW_PROPOSAL } from '../../../utils/types/proposal';
-// import { fetchCycleData } from '../../../utils/storage/cycleData';
 
 const PAGE = 9;
 const PAGE_INNER = 0;
