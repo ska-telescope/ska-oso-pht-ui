@@ -473,7 +473,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           aria-label="basic tabs example"
         >
           <Tab label={t('rank.label')} {...a11yProps(0)} />
-          {!isTechnical(reviewType) && <Tab label={t('generalComments.label')} {...a11yProps(2)} />}
+          {!isTechnical(reviewType) && <Tab label={t('generalComments.label')} {...a11yProps(1)} />}
           {!isTechnical(reviewType) && <Tab label={t('srcNetComments.label')} {...a11yProps(2)} />}
           {/*{<Tab label={t('technicalComments.label')} {...a11yProps(3)} />}*/}
         </Tabs>
