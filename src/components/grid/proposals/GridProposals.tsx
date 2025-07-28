@@ -11,10 +11,11 @@ import { Tooltip, Typography, Box, Grid2 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LABEL_POSITION } from '@ska-telescope/ska-gui-components';
+import GetObservatoryData from '@services/axios/getObservatoryData/getObservatoryData.tsx';
+import { validateProposal } from '@utils/proposalValidation.tsx';
 import EditIcon from '../../icon/editIcon/editIcon';
 import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
-import { validateProposal } from '../../../utils/proposalValidation';
 import Proposal from '@/utils/types/proposal';
 import {
   NOT_SPECIFIED,
@@ -30,7 +31,6 @@ import { presentLatex } from '@/utils/present/present';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
 import ViewIcon from '@/components/icon/viewIcon/viewIcon';
 import PutProposal from '@/services/axios/putProposal/putProposal';
-import GetCycleData from '@/services/axios/getCycleData/getCycleData';
 import GetProposalList from '@/services/axios/getProposalList/getProposalList';
 import GetProposal from '@/services/axios/getProposal/getProposal';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
@@ -104,7 +104,7 @@ export default function GridProposals({
   const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openViewDialog, setOpenViewDialog] = React.useState(false);
-  const [cycleData, setCycleData] = React.useState(false);
+  const [observatoryData, setObservatoryData] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
   const [proposalsCollection, setProposalsCollection] = React.useState<IdObject[]>([]);
   const [selected, setSelected] = React.useState(true);
@@ -147,7 +147,7 @@ export default function GridProposals({
   React.useEffect(() => {
     updateAppContent2((null as unknown) as Proposal);
     setFetchList(!fetchList);
-    setCycleData(!cycleData);
+    setObservatoryData(!observatoryData);
   }, []);
 
   React.useEffect(() => {
@@ -208,15 +208,15 @@ export default function GridProposals({
   }, [selectedProposals]);
 
   React.useEffect(() => {
-    const cycleData = async () => {
-      const response = await GetCycleData(authClient, 1);
+    const observatoryData = async () => {
+      const response = await GetObservatoryData(authClient, 1);
       if (typeof response === 'string') {
         setAxiosError(response);
       } else {
-        setCycleData(response);
+        setObservatoryData(response);
       }
     };
-    cycleData();
+    observatoryData();
   }, []);
 
   const canEdit = (e: { row: { status: string } }) => e.row.status === PROPOSAL_STATUS.DRAFT;
