@@ -8,8 +8,8 @@ import { ObservatoryDataBackend, ObservatoryData } from '@/utils/types/observato
 const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
   return {
     observatoryPolicy: {
-      cycleDescription: inData.observatory_policy.cycle_description,
       cycleNumber: inData.observatory_policy.cycle_number,
+      cycleDescription: inData.observatory_policy.cycle_description,
       cycleInformation: {
         cycleId: inData.observatory_policy.cycle_information.cycle_id,
         proposalOpen: inData.observatory_policy.cycle_information.proposal_open,
@@ -39,21 +39,16 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
           numberSkaDishes: inData.capabilities.mid.AA2.number_ska_dishes,
           numberMeerkatDishes: inData.capabilities.mid.AA2.number_meerkat_dishes,
           numberMeerkatPlusDishes: inData.capabilities.mid.AA2.number_meerkatplus_dishes,
-          numberChannels: inData.capabilities.mid.AA2.number_channels,
-          numberStations: null,
-          numberSubstations: null,
           maxBaselineKm: inData.capabilities.mid.AA2.max_baseline_km,
           availableBandwidthHz: inData.capabilities.mid.AA2.available_bandwidth_hz,
+          numberChannels: inData.capabilities.mid.AA2.number_channels,
           cbfModes: inData.capabilities.mid.AA2.cbf_modes,
           numberZoomWindows: inData.capabilities.mid.AA2.number_zoom_windows,
           numberZoomChannels: inData.capabilities.mid.AA2.number_zoom_channels,
           numberPssBeams: inData.capabilities.mid.AA2.number_pss_beams,
           numberPstBeams: inData.capabilities.mid.AA2.number_pst_beams,
           psBeamBandwidthHz: inData.capabilities.mid.AA2.ps_beam_bandwidth_hz,
-          numberFsps: inData.capabilities.mid.AA2.number_fsps,
-          channelWidthHz: null,
-          numberBeams: null,
-          numberVlbiBeams: null
+          numberFsps: inData.capabilities.mid.AA2.number_fsps
         }
       },
       low: {
@@ -62,13 +57,8 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
           maxFrequencyHz: inData.capabilities.low.basic_capabilities.max_frequency_hz
         },
         AA2: {
-          availableReceivers: null,
-          numberSkaDishes: null,
-          numberMeerkatDishes: null,
-          numberMeerkatPlusDishes: null,
-          numberChannels: null,
-          numberStations: null,
-          numberSubstations: null,
+          numberStations: inData.capabilities.low.AA2.number_stations,
+          numberSubstations: inData.capabilities.low.AA2.number_substations,
           maxBaselineKm: inData.capabilities.low.AA2.max_baseline_km,
           availableBandwidthHz: inData.capabilities.low.AA2.available_bandwidth_hz,
           cbfModes: inData.capabilities.low.AA2.cbf_modes,
@@ -87,7 +77,7 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
   };
 };
 
-async function GetCycleData(
+async function GetObservatoryData(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
   cycleNumber: number
 ): Promise<string | ObservatoryData> {
@@ -105,4 +95,4 @@ async function GetCycleData(
   }
 }
 
-export default GetCycleData;
+export default GetObservatoryData;

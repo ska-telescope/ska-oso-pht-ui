@@ -123,7 +123,7 @@ export default function ReviewListPage() {
 
   const getUser = () => 'DefaultUser'; // TODO
 
-  const getCycleData = () => application.content3 as ObservatoryData;
+  const getObservatoryData = () => application.content3 as ObservatoryData;
 
   const getScienceReviewType = (row: any): ScienceReview => {
     return {
@@ -190,7 +190,7 @@ export default function ReviewListPage() {
   const updateReview = async (row: any) => {
     const response: string | { error: string } = await PostProposalReview(
       getReview(row),
-      getCycleData().observatoryPolicy?.cycleInformation?.cycleId
+      getObservatoryData().observatoryPolicy?.cycleInformation?.cycleId
     );
     if (typeof response === 'object' && response?.error) {
       NotifyError(response?.error);
