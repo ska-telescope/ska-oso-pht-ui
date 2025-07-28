@@ -68,12 +68,7 @@ export const MockObservatoryDataBackend: ObservatoryDataBackend = {
         number_pss_beams: 384,
         number_pst_beams: 6,
         ps_beam_bandwidth_hz: 800000000.0,
-        number_fsps: 4,
-        number_stations: null,
-        number_substations: null,
-        channel_width_hz: null,
-        number_beams: null,
-        number_vlbi_beams: null
+        number_fsps: 4
       }
     },
     low: {
@@ -95,12 +90,7 @@ export const MockObservatoryDataBackend: ObservatoryDataBackend = {
         number_pst_beams: 4,
         number_vlbi_beams: 0,
         ps_beam_bandwidth_hz: 118000000.0,
-        number_fsps: 10,
-        available_receivers: [],
-        number_ska_dishes: null,
-        number_meerkat_dishes: null,
-        number_meerkatplus_dishes: null,
-        number_channels: null
+        number_fsps: 10
       }
     }
   }
