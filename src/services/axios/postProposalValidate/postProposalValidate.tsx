@@ -8,14 +8,18 @@ import {
 } from '@/utils/constants.ts';
 import Proposal from '@/utils/types/proposal';
 
-interface ValidateResponseData {
+export interface ValidateResponseData {
   result: Boolean;
   validation_errors: string[];
 }
 
-interface ValidateServiceResponse {
+export interface ValidateServiceResponse {
   error?: string[];
   valid?: string;
+}
+
+export function postMockProposalValidate(): { valid: string } {
+  return { valid: 'success' };
 }
 
 async function PostProposalValidate(
@@ -23,7 +27,7 @@ async function PostProposalValidate(
   proposal: Proposal
 ): Promise<ValidateServiceResponse> {
   if (USE_LOCAL_DATA) {
-    return { valid: 'success' };
+    return postMockProposalValidate();
   }
 
   try {

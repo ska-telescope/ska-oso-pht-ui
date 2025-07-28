@@ -88,7 +88,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
           results.push(t('page.' + key + '.pageError'));
         }
       }
-      const response = await PostProposalValidate(getProposal());
+      const response = await PostProposalValidate(authClient, getProposal());
       if (response.valid && !response.error && results.length === 0) {
         NotifyOK(`validationBtn.${response.valid}`);
         setCanSubmit(true);
