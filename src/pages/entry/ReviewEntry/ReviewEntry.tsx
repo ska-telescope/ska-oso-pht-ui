@@ -49,6 +49,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const [rank, setRank] = React.useState(0);
   const [generalComments, setGeneralComments] = React.useState('');
   const [srcNetComments, setSrcNetComments] = React.useState('');
+  const [technicalComments, setTechnicalComments] = React.useState('');
   const [currentPDF, setCurrentPDF] = React.useState<string | null | undefined>(null);
   const [isEdit, setIsEdit] = React.useState(false);
 
@@ -58,6 +59,8 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const getProposal = () => application.content2 as Proposal;
 
   const getUser = () => 'DefaultUser'; // TODO
+  const isTechnical = (reviewType: string) => reviewType === REVIEW_TYPE.TECHNICAL;
+  console.log('type of review? ', reviewType);
 
   const getCycleData = () => application.content3 as ObservatoryData;
   const getCycleId = () => getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId;
@@ -407,6 +410,35 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       )}
     </>
   );
+//TODO: Implement
+  // const technicalCommentsField = () => (
+  //   <>
+  //     {!isView() && (
+  //       <TextEntry
+  //         label={''}
+  //         testId="technicalCommentsId"
+  //         rows={((AREA_HEIGHT_NUM / 100) * window.innerHeight) / 27}
+  //         setValue={setTechnicalComments}
+  //         value={technicalComments}
+  //       />
+  //     )}
+  //     {isView() && (
+  //       <Box
+  //         p={2}
+  //         sx={{
+  //           width: '100%',
+  //           height: '65vh',
+  //           overflow: 'auto',
+  //           backgroundColor: theme.palette.primary.main
+  //         }}
+  //       >
+  //         <Typography id="title-label" variant={'h6'}>
+  //           {locationProperties.state.reviews[0].technical}
+  //         </Typography>
+  //       </Box>
+  //     )}
+  //   </>
+  // );
 
   const reviewArea = () => {
     function a11yProps(index: number) {
@@ -441,8 +473,9 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           aria-label="basic tabs example"
         >
           <Tab label={t('rank.label')} {...a11yProps(0)} />
-          <Tab label={t('generalComments.label')} {...a11yProps(1)} />
-          <Tab label={t('srcNetComments.label')} {...a11yProps(2)} />
+          {!isTechnical(reviewType) && <Tab label={t('generalComments.label')} {...a11yProps(2)} />}
+          {!isTechnical(reviewType) && <Tab label={t('srcNetComments.label')} {...a11yProps(2)} />}
+          {/*{<Tab label={t('technicalComments.label')} {...a11yProps(3)} />}*/}
         </Tabs>
         {tabValueReview === 0 && (
           <Box
@@ -486,6 +519,20 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
             {srcNetCommentsField()}
           </Box>
         )}
+        {/*{tabValueReview === 3 && (*/}
+        {/*  <Box*/}
+        {/*    sx={{*/}
+        {/*      maxHeight: `calc('75vh' - 100px)`,*/}
+        {/*      overflowY: 'auto',*/}
+        {/*      width: '100%',*/}
+        {/*      display: 'flex',*/}
+        {/*      flexDirection: 'column',*/}
+        {/*      backgroundColor: 'transparent'*/}
+        {/*    }}*/}
+        {/*  >*/}
+        {/*    {technicalComments()}*/}
+        {/*  </Box>*/}
+        {/*)}*/}
       </Paper>
     );
   };

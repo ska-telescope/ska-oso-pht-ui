@@ -218,7 +218,7 @@ export default function ReviewListPage() {
 
   const theIconClicked = (row: any, route: string) => {
     getTheProposal(row.id).then(success => {
-      if (success === true) {
+      if (success) {
         navigate(route, { replace: true, state: row });
       }
     });
