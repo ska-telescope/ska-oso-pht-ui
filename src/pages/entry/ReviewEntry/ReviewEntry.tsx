@@ -127,7 +127,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const createReview = async (submitted = false) => {
     const response: string | { error: string } = await PostProposalReview(
       getReview(submitted),
-      getCycleData().observatoryPolicy.cycleInformation.cycleId
+      getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId
     );
     if (typeof response === 'object' && response?.error) {
       NotifyError(response?.error);
@@ -139,7 +139,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const updateReview = async (submitted = false) => {
     const response: string | { error: string } = await PostProposalReview(
       getReview(submitted),
-      getCycleData().observatoryPolicy.cycleInformation.cycleId
+      getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId
     );
     if (typeof response === 'object' && response?.error) {
       NotifyError(response?.error);

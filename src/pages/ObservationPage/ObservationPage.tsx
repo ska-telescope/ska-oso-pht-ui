@@ -495,6 +495,10 @@ export default function ObservationPage() {
     return results;
   };
 
+  // React.useEffect(()=>{
+  //   console.log('currObs', currObs)
+  // },[currObs])
+
   return (
     <Shell page={PAGE}>
       <Grid2 container direction="row" alignItems="space-evenly" justifyContent="space-around">

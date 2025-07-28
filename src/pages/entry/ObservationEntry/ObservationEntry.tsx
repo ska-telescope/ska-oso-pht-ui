@@ -129,6 +129,7 @@ export default function ObservationEntry() {
     arr.find(e => e.lookup.toString() === inValue.toString())?.value;
 
   const observationIn = (ob: Observation) => {
+    console.log('observationIn ob', ob);
     setOb(ob);
     setMyObsId(ob?.id);
     setSubarrayConfig(ob?.subarray);
@@ -221,10 +222,28 @@ export default function ObservationEntry() {
 
   // Change the central frequency & units only if they are currently the same as the existing defaults
   const setDefaultCentralFrequency = (inBand: number, inSubArray: number) => {
+    console.log(
+      'setDefaultCentralFrequency 1 inBand',
+      inBand,
+      'inSubArray',
+      inSubArray,
+      'centralFrequencyUnits'
+    );
+    console.log(
+      'setDefaultCentralFrequency 2 centralFrequencyUnits',
+      'centralFrequency',
+      centralFrequency
+    );
+    console.log(
+      'setDefaultCentralFrequency calculateCentralFrequency(observingBand, subarrayConfig) ',
+      calculateCentralFrequency(observingBand, subarrayConfig)
+    );
+
     if (
       Number(centralFrequency) === calculateCentralFrequency(observingBand, subarrayConfig) &&
       centralFrequencyUnits === (isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ)
     ) {
+      console.log('setDefaultCentralFrequency if 0');
       setCentralFrequency(
         calculateCentralFrequency(inBand, getDefaultSubArrayConfig(inBand, inSubArray))
       );
@@ -256,6 +275,9 @@ export default function ObservationEntry() {
     getProposal()?.observations?.find(t => t.id === myObsId) ? t('observationId.notUnique') : '';
 
   const setTheObservingBand = (e: React.SetStateAction<number>) => {
+    console.log('setTheObservingBand e', e);
+    console.log('setTheObservingBand subarrayConfig', subarrayConfig);
+
     if (isLow() && e !== 0) {
       setDefaultElevation(e as number);
       setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_S);
@@ -289,6 +311,7 @@ export default function ObservationEntry() {
   React.useEffect(() => {
     helpComponent(t('observationId.help'));
     if (isEdit()) {
+      console.log('isEdit() locationProperties.state', locationProperties.state);
       observationIn(locationProperties.state);
     } else {
       setMyObsId(generateId(t('addObservation.idPrefix'), 6));
@@ -357,6 +380,7 @@ export default function ObservationEntry() {
   };
 
   React.useEffect(() => {
+    console.log('useeffect [observingBand]');
     const calculateSubarray = () => {
       if (isEdit()) {
         return;
@@ -366,14 +390,25 @@ export default function ObservationEntry() {
 
     const setFrequencyUnits = () => {
       if (isLow()) {
+        console.log('isLow()');
         setCentralFrequencyUnits(FREQUENCY_MHZ);
       }
     };
 
     if (ob) {
+      const newOb = {
+        ...ob,
+        observingBand: observingBand
+      };
+
+      console.log('newOb', newOb);
       // We just need to do this one more time as some fields could not be updated until observingBand has changed.
-      observationIn(ob);
+      //observationIn(newOb);
       setOb(null);
+      //return
+    } else {
+      console.log('ob null');
+      return; // setOb null would also update observing band
     }
     const calculateMinimumChannelWidthHz = () =>
       setMinimumChannelWidthHz(getMinimumChannelWidth(telescope()));
@@ -381,6 +416,11 @@ export default function ObservationEntry() {
     calculateSubarray();
     setFrequencyUnits();
     calculateMinimumChannelWidthHz();
+
+    console.log('useEffect observingBand', observingBand, 'subArrayConfig', subarrayConfig);
+    // moving from setTheObservingBand
+    // setDefaultCentralFrequency(observingBand, subarrayConfig);
+    // setDefaultContinuumBandwidth(observingBand, subarrayConfig);
   }, [observingBand]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;

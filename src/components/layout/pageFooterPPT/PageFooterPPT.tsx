@@ -64,7 +64,7 @@ export default function PageFooterPPT({
     if (!isDisableEndpoints()) {
       NotifyWarning(t('addProposal.warning'));
       const response = await PostProposal(
-        { ...getProposal(), cycle: getCycleData().observatoryPolicy.cycleInformation.cycleId },
+        { ...getProposal(), cycle: getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId },
         PROPOSAL_STATUS.DRAFT
       );
 
@@ -73,7 +73,7 @@ export default function PageFooterPPT({
         setProposal({
           ...getProposal(),
           id: response,
-          cycle: getCycleData().observatoryPolicy.cycleInformation.cycleId
+          cycle: getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId
         });
         navigate(NAV[1]);
       } else {
@@ -85,7 +85,7 @@ export default function PageFooterPPT({
       setProposal({
         ...getProposal(),
         id: dummyId,
-        cycle: getCycleData().observatoryPolicy.cycleInformation.cycleId
+        cycle: getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId
       });
       navigate(NAV[1]);
     }
