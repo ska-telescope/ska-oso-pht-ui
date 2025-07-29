@@ -38,7 +38,7 @@ import {
 import Target, { PointingPatternParams } from '../../../utils/types/target';
 import { SensCalcResults, ResultsSection } from '../../../utils/types/sensCalcResults';
 import Observation from '../../../utils/types/observation';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import axiosClient from '@/services/axios/axiosClient/axiosClient';
 
 const mapping = (data: any, target: Target, observation: Observation): SensCalcResults =>
   getFinalResults(target, data, observation);
@@ -333,7 +333,6 @@ const addPropertiesMID = (standardData: StandardData, continuumData: ContinuumDa
 
 function GetContinuumData(telescope: Telescope, observation: Observation, target: Target) {
   const URL_PATH = `/continuum/calculate`;
-  const authClient = useAxiosAuthClient();
 
   const continuumData: ContinuumData = {
     dataType: observation.type,
@@ -362,13 +361,23 @@ function GetContinuumData(telescope: Telescope, observation: Observation, target
     tapering: observation?.tapering ?? 0
   };
 
-  const standardData: StandardData = {
-    observingBand: BANDWIDTH_TELESCOPE?.find(band => band.value === observation.observingBand)
-      ?.mapping, // TODO handle band 5a and 5b correctly
-    weather: { value: observation.weather ?? 0, unit: 'mm' },
-    subarray: OBSERVATION.array
+  const observingBand = (observation: Observation) => {
+    const result = BANDWIDTH_TELESCOPE?.find(band => band.value === observation.observingBand);
+    return result ? result.mapping : '';
+  };
+
+  // TODO handle custom subarray
+  const subArray = (observation: Observation) => {
+    const result = OBSERVATION.array
       .find(t => t.value === observation.telescope)
-      ?.subarray?.find(s => s.value === observation.subarray)?.map, // TODO handle custom subarray
+      ?.subarray?.find(s => s.value === observation.subarray);
+    return result ? result.map : '';
+  };
+
+  const standardData: StandardData = {
+    observingBand: observingBand(observation), // TODO handle band 5a and 5b correctly
+    weather: { value: observation.weather ?? 0, unit: 'mm' },
+    subarray: subArray(observation),
     num15mAntennas: observation.num15mAntennas ?? 0,
     num13mAntennas: observation.num13mAntennas ?? 0,
     numStations: observation.numStations ?? 0,
@@ -386,7 +395,7 @@ function GetContinuumData(telescope: Telescope, observation: Observation, target
     ? addPropertiesLOW(standardData, continuumData)
     : addPropertiesMID(standardData, continuumData);
   const response = Fetch(
-    authClient,
+    axiosClient,
     telescope,
     URL_PATH,
     properties,

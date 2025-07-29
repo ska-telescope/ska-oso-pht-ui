@@ -1,6 +1,5 @@
 import React from 'react';
 import { t } from 'i18next';
-import { IconButton } from '@mui/material';
 import { presentSensCalcError, presentUnits, presentValue } from '@utils/present/present';
 import StatusIconDisplay from '../../../icon/status/statusIcon';
 import SensCalcModalSingle from '../../sensCalcModal/single/SensCalcModalSingle';
@@ -47,33 +46,21 @@ export default function SensCalcDisplaySingle({
     return '';
   };
 
+  const isDisabled = () => sensCalc?.statusGUI !== STATUS_OK;
+
   return (
     <>
-      {show && field === 'icon' && sensCalc?.statusGUI === STATUS_OK && (
-        <IconButton style={{ cursor: 'pointer' }} onClick={IconClicked}>
-          <StatusIconDisplay
-            ariaDescription={ariaStatusMessage(sensCalc)}
-            ariaTitle={ariaStatusMessage(sensCalc)}
-            onClick={() => {}}
-            testId="statusId"
-            toolTip={ariaStatusMessage(sensCalc)}
-            level={sensCalc?.statusGUI}
-            size={SIZE}
-          />
-        </IconButton>
-      )}
-      {show && field === 'icon' && sensCalc?.statusGUI !== STATUS_OK && (
-        <IconButton style={{ cursor: 'not-allowed' }} disabled>
-          <StatusIconDisplay
-            ariaDescription={ariaStatusMessage(sensCalc)}
-            ariaTitle={ariaStatusMessage(sensCalc)}
-            onClick={() => {}}
-            testId="statusId"
-            toolTip={ariaStatusMessage(sensCalc)}
-            level={sensCalc?.statusGUI}
-            size={SIZE}
-          />
-        </IconButton>
+      {show && field === 'icon' && (
+        <StatusIconDisplay
+          ariaDescription={ariaStatusMessage(sensCalc)}
+          ariaTitle={ariaStatusMessage(sensCalc)}
+          disabled={isDisabled()}
+          onClick={isDisabled() ? undefined : IconClicked}
+          testId="statusId"
+          toolTip={ariaStatusMessage(sensCalc)}
+          level={sensCalc?.statusGUI}
+          size={SIZE}
+        />
       )}
       {show && field !== 'icon' && (
         <>
