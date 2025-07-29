@@ -12,10 +12,10 @@ import { useNavigate } from 'react-router-dom';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LABEL_POSITION } from '@ska-telescope/ska-gui-components';
 import GetObservatoryData from '@services/axios/getObservatoryData/getObservatoryData.tsx';
+import { validateProposal } from '@utils/proposalValidation.tsx';
 import EditIcon from '../../icon/editIcon/editIcon';
 import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
-import { validateProposal } from '../../../utils/proposalValidation';
 import Proposal from '@/utils/types/proposal';
 import {
   NOT_SPECIFIED,
