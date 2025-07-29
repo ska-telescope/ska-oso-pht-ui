@@ -2,7 +2,7 @@ import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
   OSO_SERVICES_REVIEWS_PATH
-} from '../../../utils/constants';
+} from '@utils/constants.ts';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { MockProposalReviewBackend } from '../postProposalReview.tsx/mockProposalReviewBackend';
 import { mappingReviewBackendToFrontend } from '../putProposalReview/putProposalReview';
