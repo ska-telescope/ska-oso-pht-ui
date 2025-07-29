@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
 import axios from 'axios';
-import { mockCycleDataFrontend } from '../getCycleData/mockCycleDataFrontend';
+import { MockObservatoryDataFrontend } from '@services/axios/getObservatoryData/mockObservatoryDataFrontend.tsx';
 import PostPanel, { mappingPostPanel, postMockPanel } from './postPanel';
 import {
   MockPanelFrontend,
@@ -16,7 +16,7 @@ import {
 import { PanelBackend } from '@/utils/types/panel';
 import * as CONSTANTS from '@/utils/constants';
 
-const cycleId = mockCycleDataFrontend.observatoryPolicy.cycleInformation.cycleId;
+const cycleId = MockObservatoryDataFrontend.observatoryPolicy.cycleInformation.cycleId;
 
 vi.mock('axios');
 const mockedAxios = (axios as unknown) as {

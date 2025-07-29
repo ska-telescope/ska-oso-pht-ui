@@ -37,7 +37,7 @@ export default function PageFooterPPT({
 
   const isDisableEndpoints = () => !loggedIn && !isMockedLoggedIn;
 
-  const getCycleData = () => application.content3 as ObservatoryData;
+  const getObservatoryData = () => application.content3 as ObservatoryData;
 
   React.useEffect(() => {
     const getProposal = () => application.content2 as Proposal;
@@ -66,7 +66,10 @@ export default function PageFooterPPT({
       NotifyWarning(t('addProposal.warning'));
       const response = await PostProposal(
         authClient,
-        { ...getProposal(), cycle: getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId },
+        {
+          ...getProposal(),
+          cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
+        },
         PROPOSAL_STATUS.DRAFT
       );
 
@@ -75,7 +78,7 @@ export default function PageFooterPPT({
         setProposal({
           ...getProposal(),
           id: response,
-          cycle: getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId
+          cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
         });
         navigate(NAV[1]);
       } else {
@@ -87,7 +90,7 @@ export default function PageFooterPPT({
       setProposal({
         ...getProposal(),
         id: dummyId,
-        cycle: getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId
+        cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
       });
       navigate(NAV[1]);
     }

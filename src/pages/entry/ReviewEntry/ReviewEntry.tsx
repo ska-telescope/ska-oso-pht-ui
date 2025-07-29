@@ -59,8 +59,8 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const getUser = () => 'DefaultUser'; // TODO
 
-  const getCycleData = () => application.content3 as ObservatoryData;
-  const getCycleId = () => getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId;
+  const getObservatoryData = () => application.content3 as ObservatoryData;
+  const getCycleId = () => getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId;
 
   const getDateFormatted = () => moment().format('YYYY-MM-DD');
 
