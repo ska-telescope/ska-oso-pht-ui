@@ -8,10 +8,14 @@ import {
   clickEditProposal,
   clickHome,
   clickObservationSetup,
+  clickAddObservationEntry,
+  verifySensitivityCalculatorStatusSuccess,
   clickSave,
   clickToAddTarget,
   clickToGeneralPage,
   clickToObservationPage,
+  clickObservationFromTable,
+  clickToLinkTargetAndObservation,
   clickToObservatoryDataProductPage,
   clickToSciencePage,
   clickToTargetPage,
@@ -56,18 +60,19 @@ describe('Edit Proposal', () => {
     clickToAddTarget();
     clickToObservationPage();
     clickObservationSetup();
-    clickAddObservation();
+    clickAddObservationEntry();
+    //clickObservationSetup();
     verifyObservationInTable();
-    // clickObservationFromTable();
-    // clickToLinkTargetAndObservation();
-    // verifySensitivityCalculatorStatusSuccess();
-    clickSave();
+    clickObservationFromTable();
+    clickToLinkTargetAndObservation();
+    verifySensitivityCalculatorStatusSuccess();
+    // clickSave(); // TODO uncomment once login is handled in e2e tests
     clickToTechnicalPage();
     clickToObservatoryDataProductPage();
     clickAddDataProduct();
     addObservatoryDataProduct();
     //validate proposal
-    validateProposal();
+    // validateProposal();  // TODO uncomment once login is handled in e2e tests
     //TODO: The remainder of this scenario can be reinstated upon completion of STAR-954
     // verifyProposalIsValid()
     //submit proposal
