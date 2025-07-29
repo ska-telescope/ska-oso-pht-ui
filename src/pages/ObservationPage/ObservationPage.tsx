@@ -341,18 +341,23 @@ export default function ObservationPage() {
         disableClickEventBubbling: true,
         renderCell: (e: { row: Observation }) => {
           const obs = elementsO.find(p => p.id === e.row.id);
+          // TODO TREVOR
           return (
-            <StatusIconDisplay
-              ariaDescription=" "
-              ariaTitle={t('sensCalc.' + getLevel(obs))}
-              level={getLevel(obs)}
-              onClick={() =>
-                getLevel(obs) === STATUS_INITIAL ? null : setOpenMultipleDialog(true)
-              }
-              size={SIZE}
-              testId="testId"
-              toolTip={t('sensCalc.' + getLevel(obs))}
-            />
+            <>
+              {false && (
+                <StatusIconDisplay
+                  ariaDescription=" "
+                  ariaTitle={t('sensCalc.' + getLevel(obs))}
+                  level={getLevel(obs)}
+                  onClick={() =>
+                    getLevel(obs) === STATUS_INITIAL ? null : setOpenMultipleDialog(true)
+                  }
+                  size={SIZE}
+                  testId="testId"
+                  toolTip={t('sensCalc.' + getLevel(obs))}
+                />
+              )}
+            </>
           );
         }
       },

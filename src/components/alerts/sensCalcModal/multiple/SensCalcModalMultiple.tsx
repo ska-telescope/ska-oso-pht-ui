@@ -204,7 +204,7 @@ export default function SensCalcModalMultiple({
           <StatusIcon
             ariaTitle={t('sensitivityCalculatorResults.status', {
               status: t('statusValue.' + e.row.statusGUI),
-              error: t(presentSensCalcError(e.row.error))
+              error: e.row.error ? t(presentSensCalcError(e.row.error)) : ''
             })}
             testId="statusId"
             icon
@@ -285,10 +285,12 @@ export default function SensCalcModalMultiple({
           }
           component={Box}
           title={t('sensitivityCalculatorResults.title') + ' (' + observation.id + ')'}
-          titleTypographyProps={{
-            align: 'center',
-            fontWeight: 'bold',
-            variant: 'h5'
+          slotProps={{
+            title: {
+              align: 'center',
+              fontWeight: 'bold',
+              variant: 'h5'
+            }
           }}
         />
         <CardContent>
