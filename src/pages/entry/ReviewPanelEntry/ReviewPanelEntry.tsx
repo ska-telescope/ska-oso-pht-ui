@@ -32,7 +32,7 @@ export default function ReviewPanelEntry() {
   const [panelDateCreated, setPanelDateCreated] = React.useState(moment().format('YYYY-MM-DD'));
   const [panelDateExpiry, setPanelDateExpiry] = React.useState(moment().format('yyyy-MM-DD'));
   const { application, updateAppContent5 } = storageObject.useStore();
-  const getCycleData = () => application.content3 as ObservatoryData;
+  const getObservatoryData = () => application.content3 as ObservatoryData;
 
   // const setPanel = (panel: Panel) => updateAppContent2(panel);
 
@@ -135,7 +135,7 @@ export default function ReviewPanelEntry() {
     NotifyWarning(t('addPanel.warning'));
     const response: string | { error: string } = await PostPanel(
       getPanel(),
-      getCycleData()?.observatoryPolicy?.cycleInformation?.cycleId
+      getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
     );
     if (typeof response === 'object' && response?.error) {
       NotifyError(response?.error);

@@ -73,13 +73,11 @@ export type BasicCapabilitiesLow = {
 };
 
 export type subarrayConfigurationMidBackend = {
-  available_receivers: string[]; // only for Mid
-  number_ska_dishes: number | null; // only for Mid
-  number_meerkat_dishes: number | null; // only for Mid
-  number_meerkatplus_dishes: number | null; // only for Mid
-  number_channels: number | null; // only for Mid
-  number_stations: number | null; // only for Low
-  number_substations: number | null; // only for Low
+  available_receivers: string[];
+  number_ska_dishes: number | null;
+  number_meerkat_dishes: number | null;
+  number_meerkatplus_dishes: number | null;
+  number_channels: number | null;
   max_baseline_km: number;
   available_bandwidth_hz: number;
   cbf_modes: string[];
@@ -89,19 +87,14 @@ export type subarrayConfigurationMidBackend = {
   number_pst_beams: number;
   ps_beam_bandwidth_hz: number;
   number_fsps: number;
-  channel_width_hz: number | null; // only for Low
-  number_beams: number | null; // only for Low
-  number_vlbi_beams: number | null; // only for Low
 };
 
 export type subarrayConfigurationMid = {
-  availableReceivers: string[]; // only for Mid
-  numberSkaDishes: number | null; // only for Mid
-  numberMeerkatDishes: number | null; // only for Mid
-  numberMeerkatPlusDishes: number | null; // only for Mid
-  numberChannels: number | null; // only for Mid
-  numberStations: number | null; // only for Low
-  numberSubstations: number | null; // only for Low
+  availableReceivers: string[];
+  numberSkaDishes: number | null;
+  numberMeerkatDishes: number | null;
+  numberMeerkatPlusDishes: number | null;
+  numberChannels: number | null;
   maxBaselineKm: number;
   availableBandwidthHz: number;
   cbfModes: string[];
@@ -111,19 +104,11 @@ export type subarrayConfigurationMid = {
   numberPstBeams: number;
   psBeamBandwidthHz: number;
   numberFsps: number;
-  channelWidthHz: number | null; // only for Low
-  numberBeams: number | null; // only for Low
-  numberVlbiBeams: number | null; // only for Low
 };
 
 export type subarrayConfigurationLowBackend = {
-  available_receivers: string[]; // only for Mid
-  number_ska_dishes: number | null; // only for Mid
-  number_meerkat_dishes: number | null; // only for Mid
-  number_meerkatplus_dishes: number | null; // only for Mid
-  number_channels: number | null; // only for Mid
-  number_stations: number | null; // only for Low
-  number_substations: number | null; // only for Low
+  number_stations: number | null;
+  number_substations: number | null;
   max_baseline_km: number;
   available_bandwidth_hz: number;
   cbf_modes: string[];
@@ -133,19 +118,14 @@ export type subarrayConfigurationLowBackend = {
   number_pst_beams: number;
   ps_beam_bandwidth_hz: number;
   number_fsps: number;
-  channel_width_hz: number | null; // only for Low
-  number_beams: number | null; // only for Low
-  number_vlbi_beams: number | null; // only for Low
+  channel_width_hz: number | null;
+  number_beams: number | null;
+  number_vlbi_beams: number | null;
 };
 
 export type subarrayConfigurationLow = {
-  availableReceivers: string[] | null; // only for Mid
-  numberSkaDishes: number | null; // only for Mid
-  numberMeerkatDishes: number | null; // only for Mid
-  numberMeerkatPlusDishes: number | null; // only for Mid
-  numberChannels: number | null; // only for Mid
-  numberStations: number | null; // only for Low
-  numberSubstations: number | null; // only for Low
+  numberStations: number | null;
+  numberSubstations: number | null;
   maxBaselineKm: number;
   availableBandwidthHz: number;
   cbfModes: string[];
@@ -155,9 +135,9 @@ export type subarrayConfigurationLow = {
   numberPstBeams: number;
   psBeamBandwidthHz: number;
   numberFsps: number;
-  channelWidthHz: number | null; // only for Low
-  numberBeams: number | null; // only for Low
-  numberVlbiBeams: number | null; // only for Low
+  channelWidthHz: number | null;
+  numberBeams: number | null;
+  numberVlbiBeams: number | null;
 };
 
 export type ObservatoryDataBackend = {
