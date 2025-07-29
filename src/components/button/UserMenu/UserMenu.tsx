@@ -44,10 +44,19 @@ export default function ButtonUserMenu({
 
   const { accounts } = useMsal();
   const username = accounts.length > 0 ? accounts[0].name : '';
+  // const permissions = useUserRoles();
 
   const { mockedLogin, mockedLogout, isMockedLoggedIn } = useMockedLogin();
 
   const displayName = isMockedLoggedIn ? 'Mocked' : username;
+
+  /* TODO : TREVOR : Keep until we can confirm we have all the permissions
+  React.useEffect(() => {
+    if (accounts) {
+      console.log('TREVOR PERMISSIONS', permissions);
+    }
+  }, [accounts]);
+  */
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     if (onClick) {

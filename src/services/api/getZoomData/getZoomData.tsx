@@ -39,7 +39,7 @@ import {
 } from '../../../utils/constants';
 import sensCalHelpers from '../../axios/sensitivityCalculator/sensCalHelpers';
 import { ResultsSection, SensCalcResults } from '../../../utils/types/sensCalcResults';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import axiosClient from '@/services/axios/axiosClient/axiosClient';
 
 const mapping = (data: any, target: Target, observation: Observation): SensCalcResults =>
   getFinalResults(target, data, observation);
@@ -313,8 +313,6 @@ const addPropertiesMID = (
 };
 
 async function GetZoomData(telescope: Telescope, observation: Observation, target: Target) {
-  const authClient = useAxiosAuthClient();
-
   const zoomData: ZoomData = {
     dataType: observation.type,
     bandwidth: {
@@ -341,13 +339,23 @@ async function GetZoomData(telescope: Telescope, observation: Observation, targe
     tapering: observation?.tapering ?? 0
   };
 
-  const standardData: StandardData = {
-    observingBand: BANDWIDTH_TELESCOPE.find(band => band.value === observation.observingBand)
-      ?.mapping,
-    weather: { value: observation.weather ?? 0, unit: 'mm' },
-    subarray: OBSERVATION.array
+  const observingBand = (observation: Observation) => {
+    const result = BANDWIDTH_TELESCOPE?.find(band => band.value === observation.observingBand);
+    return result ? result.mapping : '';
+  };
+
+  // TODO handle custom subarray
+  const subArray = (observation: Observation) => {
+    const result = OBSERVATION.array
       .find(t => t.value === observation.telescope)
-      ?.subarray?.find(s => s.value === observation.subarray)?.map,
+      ?.subarray?.find(s => s.value === observation.subarray);
+    return result ? result.map : '';
+  };
+
+  const standardData: StandardData = {
+    observingBand: observingBand(observation),
+    weather: { value: observation.weather ?? 0, unit: 'mm' },
+    subarray: subArray(observation),
     num15mAntennas: observation.num15mAntennas ?? 0,
     num13mAntennas: observation.num13mAntennas ?? 0,
     numStations: observation.numStations ?? 0,
@@ -373,7 +381,7 @@ async function GetZoomData(telescope: Telescope, observation: Observation, targe
 
   // const mapping: Function = undefined;
   return Fetch(
-    authClient,
+    axiosClient,
     telescope,
     URL_PATH,
     properties,
