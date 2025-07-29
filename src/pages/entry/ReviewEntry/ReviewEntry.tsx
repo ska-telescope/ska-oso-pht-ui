@@ -99,16 +99,12 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         last_modified_by: '',
         last_modified_on: ''
       },
-      panelId: 'ERROR',
+      panelId: locationProperties.state.panelId,
       cycle: '',
       reviewerId: getUser(),
-      submittedOn: '',
-      submittedBy: '',
-      status: submitted
-        ? PANEL_DECISION_STATUS.DECIDED
-        : // : !rank && !generalComments && !srcNetComments
-          PANEL_DECISION_STATUS.TO_DO
-      // : PANEL_DECISION_STATUS.IN_PROGRESS
+      submittedOn: submitted ? new Date().toISOString() : null,
+      submittedBy: submitted ? 'DefaultUser' : null,
+      status: submitted ? PANEL_DECISION_STATUS.DECIDED : PANEL_DECISION_STATUS.IN_PROGRESS
     };
   };
 
@@ -168,7 +164,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   }, []);
 
   const submitDisabled = () => {
-    return generalComments?.length === 0 || srcNetComments?.length === 0 || rank === 0;
+    return generalComments?.length === 0 || rank === 0;
   };
 
   const conflictButtonClicked = () => {
