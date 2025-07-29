@@ -42,15 +42,14 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const { application, updateAppContent5 } = storageObject.useStore();
 
   const isView = () => (locationProperties.state?.reviews ? true : false);
-
   const [tabValuePDF, setTabValuePDF] = React.useState(0);
   const [tabValueReview, setTabValueReview] = React.useState(0);
-  const [, setReviewId] = React.useState('');
+  const [reviewId, setReviewId] = React.useState('');
   const [rank, setRank] = React.useState(0);
   const [generalComments, setGeneralComments] = React.useState('');
   const [srcNetComments, setSrcNetComments] = React.useState('');
   const [currentPDF, setCurrentPDF] = React.useState<string | null | undefined>(null);
-  const [isEdit, setIsEdit] = React.useState(false);
+  const [isEdit, setIsEdit] = React.useState(!!locationProperties.state?.review_id);
 
   const AREA_HEIGHT_NUM = 74;
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
@@ -67,7 +66,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const getReviewId = () => {
     return isEdit
-      ? locationProperties.state.id
+      ? locationProperties.state.review_id
       : 'rvw-' +
           getUser() +
           '-' +
@@ -78,7 +77,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const getReview = (submitted = false): ProposalReview => {
     return {
-      id: getReviewId(),
+      id: reviewId,
       prslId: getProposal().id,
       // TODO implement technical review as well - reviewType below is only for science review
       reviewType: {
@@ -129,7 +128,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const createReview = async (submitted = false) => {
     const response: string | { error: string } = await PostProposalReview(
       getReview(submitted),
-      getCycleId()
+      'SKAO_2027_1'
     );
     if (typeof response === 'object' && response?.error) {
       NotifyError(response?.error);
@@ -142,7 +141,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const updateReview = async (submitted = false) => {
     const response: string | { error: string } = await PostProposalReview(
       getReview(submitted),
-      getCycleId()
+      'SKAO_2027_1'
     );
     if (typeof response === 'object' && response?.error) {
       NotifyError(response?.error);

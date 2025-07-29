@@ -82,6 +82,10 @@ export default function ReviewListPage() {
     setReset(!reset);
   }, []);
 
+//   React.useEffect(() => {
+// console.log('review ', proposalReviews)
+//   }, [proposalReviews]);
+
   React.useEffect(() => {
     const GetReviewPanels = async () => {
       const response = await GetPanelList(); // TODO : Add the user_id as a property to the function
