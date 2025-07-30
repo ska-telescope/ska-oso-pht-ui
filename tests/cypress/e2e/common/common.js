@@ -56,7 +56,6 @@ export const clickButton = testId => {
 
 export const clickAddButton = () => clickButton('addButton');
 export const clickAddDataProduct = () => clickButton('addDataProductButton');
-export const clickAddObservation = () => clickButton('addObservationButton');
 export const clickAddPanel = () => clickButton('plusIcon');
 export const clickAddPanelEntry = () => clickButton('addPanelButton');
 export const clickAddProposal = () => clickButton('addProposalButton');

@@ -4,7 +4,6 @@ import {
   addObservatoryDataProduct,
   addTeamMember,
   clickAddDataProduct,
-  clickAddObservation,
   clickEditProposal,
   clickHome,
   clickObservationSetup,
