@@ -789,7 +789,6 @@ export default function ObservationEntry() {
           centralFrequency={centralFrequency}
           centralFrequencyUnits={centralFrequencyUnits}
           subarrayConfig={subarrayConfig}
-          setScaledBandwidth={setScaledBandwidth}
           minimumChannelWidthHz={minimumChannelWidthHz}
         />
       )}
