@@ -28,8 +28,8 @@ export type ProposalReview = {
   reviewType: ScienceReview | TechnicalReview;
   comments: string;
   srcNet: string;
-  submittedOn: string;
-  submittedBy: string;
+  submittedOn: string | null;
+  submittedBy: string | null;
   status: string;
 };
 
@@ -61,7 +61,7 @@ export type ProposalReviewBackend = {
   review_type: ScienceReviewBackend | TechnicalReviewBackend;
   comments: string;
   src_net: string;
-  submitted_on: string;
+  submitted_on: string | null;
   submitted_by: string;
   status: string;
 };
