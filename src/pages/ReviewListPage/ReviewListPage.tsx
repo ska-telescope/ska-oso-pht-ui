@@ -273,6 +273,13 @@ export default function ReviewListPage() {
     renderCell: (e: { row: any }) => e.row.rank
   };
 
+  const colFeasibility = {
+    field: 'feasibility',
+    headerName: t('feasibility.label'),
+    width: 120,
+    renderCell: (e: { row: any }) => e.row.feasibility
+  };
+
   // TODO : Add the functionality so that clicking on this will show the conflict modal
   const colConflict = {
     field: 'conflict',
@@ -371,6 +378,7 @@ export default function ReviewListPage() {
       colReviewStatus,
       colConflict,
       colRank,
+      colFeasibility,
       colComments,
       colSrcNet,
       colDateUpdated,
