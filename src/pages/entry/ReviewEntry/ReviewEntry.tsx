@@ -3,14 +3,19 @@ import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Divider, Grid2, Paper, Stack, Tab, Tabs } from '@mui/material';
 import {
-  AlertColorTypes,
+  AlertColorTypes, DropDown,
   Spacer,
   SPACER_VERTICAL,
   TextEntry
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import useTheme from '@mui/material/styles/useTheme';
-import { BANNER_PMT_SPACER, PANEL_DECISION_STATUS, PMT, REVIEW_TYPE } from '@utils/constants.ts';
+import {
+  BANNER_PMT_SPACER, FEASIBILITY,
+  PANEL_DECISION_STATUS,
+  PMT,
+  REVIEW_TYPE
+} from '@utils/constants.ts';
 import Typography from '@mui/material/Typography';
 import moment from 'moment';
 import SaveButton from '../../../components/button/Save/Save';
@@ -25,7 +30,11 @@ import PDFViewer from '@/components/layout/PDFViewer/PDFViewer';
 import ConflictButton from '@/components/button/Conflict/Conflict';
 import GetPresignedDownloadUrl from '@/services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProposalReview';
-import { ProposalReview } from '@/utils/types/proposalReview';
+import {
+  ProposalReview,
+  ScienceReview,
+  TechnicalReview
+} from '@/utils/types/proposalReview';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import ObservatoryData from '@/utils/types/observatoryData';
 
@@ -47,6 +56,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const [reviewId, setReviewId] = React.useState('');
   const [rank, setRank] = React.useState(0);
   const [generalComments, setGeneralComments] = React.useState('');
+  const [feasibility, setFeasibility] = React.useState('Yes');
   const [srcNetComments, setSrcNetComments] = React.useState('');
   const [currentPDF, setCurrentPDF] = React.useState<string | null | undefined>(null);
   const [isEdit, setIsEdit] = React.useState(!!locationProperties.state?.review_id);
@@ -75,20 +85,34 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           Math.floor(Math.random() * 10000000).toString();
   };
 
+  function getTechnicalReview(): TechnicalReview {
+    return {
+      kind: REVIEW_TYPE.TECHNICAL,
+      feasibility: {
+        isFeasible: feasibility,
+        comments: generalComments
+      }
+    }
+  }
+
+  function getScienceReview(): ScienceReview {
+    return {
+      kind: REVIEW_TYPE.SCIENCE,
+      rank: rank,
+      conflict: {
+        hasConflict: false,
+        reason: ''
+      },
+      excludedFromDecision: false
+    };
+  }
+
   const getReview = (submitted = false): ProposalReview => {
     return {
       id: reviewId,
       prslId: getProposal().id,
       // TODO implement technical review as well - reviewType below is only for science review
-      reviewType: {
-        kind: REVIEW_TYPE.SCIENCE,
-        rank: rank,
-        conflict: {
-          hasConflict: false,
-          reason: ''
-        },
-        excludedFromDecision: false
-      },
+      reviewType: reviewType === REVIEW_TYPE.SCIENCE ? getScienceReview() : getTechnicalReview(),
       comments: generalComments,
       srcNet: srcNetComments,
       metadata: {
@@ -158,11 +182,13 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       setGeneralComments(locationProperties.state?.comments);
       setSrcNetComments(locationProperties.state?.srcNet);
       setRank(locationProperties.state?.rank);
+      setFeasibility(locationProperties.state?.feasibility);
       setIsEdit(false);
     } else {
       setGeneralComments('');
       setSrcNetComments('');
       setRank(0);
+      setFeasibility('');
       setIsEdit(true);
     }
   }, []);
@@ -379,6 +405,37 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     </>
   );
 
+  const feasibilityField = () => (
+  // const getOptions = () => FEASIBILITY;
+
+  <>
+      {!isView() && (
+        <DropDown
+          options={[1,2,3]}
+          testId={'feasibilityId'}
+          value={feasibility}
+          setValue={setFeasibility}
+          label={'feasibility.label'}
+        />
+      )}
+      {isView() && (
+        <Box
+          p={2}
+          sx={{
+            width: '100%',
+            height: '65vh',
+            overflow: 'auto',
+            backgroundColor: theme.palette.primary.main
+          }}
+        >
+          <Typography id="title-label" variant={'h6'}>
+            {locationProperties.state.feasibility}
+          </Typography>
+        </Box>
+      )}
+    </>
+  );
+
   const technicalCommentsField = () => (
     <>
       {!isView() && (
@@ -469,7 +526,8 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           onChange={handleTabChange}
           aria-label="basic tabs example"
         >
-          <Tab label={t('rank.label')} {...a11yProps(0)} />
+          {!isTechnical(reviewType) && <Tab label={t('rank.label')} {...a11yProps(0)} />}
+          {isTechnical(reviewType) && <Tab label={t('feasibility.label')} {...a11yProps(3)} />}
           {isTechnical(reviewType) ? (
             <Tab label={t('technicalComments.label')} {...a11yProps(1)} />
           ) : (
@@ -517,6 +575,20 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
             }}
           >
             {srcNetCommentsField()}
+          </Box>
+        )}
+        {tabValueReview === 3 && (
+          <Box
+            sx={{
+              maxHeight: `calc('75vh' - 100px)`,
+              overflowY: 'auto',
+              width: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              backgroundColor: 'transparent'
+            }}
+          >
+            {feasibilityField()}
           </Box>
         )}
       </Paper>

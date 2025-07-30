@@ -596,6 +596,10 @@
     "label": "No Specific Target",
     "toolTip": "Current functionality is not yet available"
   },
+  "feasibility": {
+    "label": "Feasibility",
+    "toolTip": "Feasibility"
+  },
   "rank": {
     "hovering": "Hovering - Click to select this rank",
     "label": "Rank",

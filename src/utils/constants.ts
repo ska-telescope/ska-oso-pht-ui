@@ -95,6 +95,8 @@ export const BANDWIDTH_TELESCOPE = [
   }
 ];
 
+export const FEASIBILITY = ['Yes', 'No', 'Maybe'];
+
 export const BANNER_PMT_SPACER = 100;
 
 export const CENTRAL_FREQUENCY_MAX = [350, 1.05, 1.76, 8.5, 15.4];
