@@ -789,7 +789,7 @@ export default function ObservationEntry() {
           centralFrequency={centralFrequency}
           centralFrequencyUnits={centralFrequencyUnits}
           subarrayConfig={subarrayConfig}
-          // setScaledBandwidth={setScaledBandwidth} TODO: can this be removed as setScaledBandwidth is undefined? 
+          // setScaledBandwidth={setScaledBandwidth} TODO: can this be removed as setScaledBandwidth is undefined?
           minimumChannelWidthHz={minimumChannelWidthHz}
         />
       )}
