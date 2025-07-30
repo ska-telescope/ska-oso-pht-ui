@@ -343,6 +343,6 @@ export const createObservation = () => {
   clickToObservationPage();
   //add default observation
   clickObservationSetup();
-  clickAddObservation();
+  clickAddObservationEntry();
   verifyUnlinkedObservationInTable();
 };
