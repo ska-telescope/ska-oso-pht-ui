@@ -5,8 +5,9 @@ import { STATUS_ERROR, STATUS_ERROR_SYMBOL } from '../../../utils/constants';
 interface StatusIconDisplayProps {
   ariaDescription: string;
   ariaTitle: string;
+  disabled?: boolean;
   level: number;
-  onClick: Function;
+  onClick?: Function;
   size?: number;
   text?: string;
   testId: string;
@@ -16,15 +17,29 @@ interface StatusIconDisplayProps {
 export default function StatusIconDisplay({
   ariaDescription,
   ariaTitle,
+  disabled = false,
   level,
-  onClick,
+  onClick = undefined,
   size = 25,
   text = '',
   testId,
   toolTip = ''
 }: StatusIconDisplayProps) {
+  const clickFunc = () => {
+    if (onClick) {
+      onClick();
+    }
+  };
+
+  const cursorType = () => (disabled ? 'not-allowed' : 'hand');
+
   return (
-    <IconButton aria-label="SensCalc Status" style={{ cursor: 'hand' }} onClick={onClick()}>
+    <IconButton
+      aria-label="SensCalc Status"
+      disabled={disabled}
+      style={{ cursor: cursorType() }}
+      onClick={() => clickFunc()}
+    >
       <StatusIcon
         ariaDescription={ariaDescription}
         ariaTitle={ariaTitle}

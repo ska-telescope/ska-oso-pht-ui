@@ -1,7 +1,6 @@
 import axios, { AxiosError } from 'axios';
 import { useMsal } from '@azure/msal-react';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
-import { SKA_OSO_SERVICES_URL } from '@/utils/constants';
 
 export enum LogLevel {
   Error,
@@ -15,7 +14,8 @@ export const loginRequest = {
   scopes: ['User.Read']
 };
 
-const useAxiosAuthClient = (baseURL: string = SKA_OSO_SERVICES_URL) => {
+const useAxiosAuthClient = (baseURL: string = '/') => {
+  // TODO: pull baseURL from somewhere else
   const { instance } = useMsal();
 
   const axiosClient = axios.create({

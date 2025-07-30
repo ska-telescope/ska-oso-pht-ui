@@ -1044,7 +1044,7 @@ export default function ObservationEntry() {
               action={buttonClicked}
               disabled={addButtonDisabled()}
               primary
-              testId={isEdit() ? 'updateObservationButton' : 'addObservationButton'}
+              testId={isEdit() ? 'updateObservationButtonEntry' : 'addObservationButtonEntry'}
               title={isEdit() ? 'updateBtn.label' : 'addBtn.label'}
             />
           </Grid2>
