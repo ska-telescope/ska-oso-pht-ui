@@ -61,7 +61,6 @@ describe('Edit Proposal', () => {
     clickToObservationPage();
     clickObservationSetup();
     clickAddObservationEntry();
-    //clickObservationSetup();
     verifyObservationInTable();
     clickObservationFromTable();
     clickToLinkTargetAndObservation();
