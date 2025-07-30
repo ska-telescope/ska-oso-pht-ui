@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Grid2 from '@mui/material/Grid2';
 import useTheme from '@mui/material/styles/useTheme';
@@ -23,6 +23,9 @@ import { D3ChartSelector } from '@/components/charts/D3ChartSelector';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import D3BarChartWithToggle from '@/components/charts/D3BarChartWithToggle';
 import ResetButton from '@/components/button/Reset/Reset';
+import getReviewDashboard from '@/services/axios/getReviewDashboard/getReviewDashboard';
+import { ReviewDashboard as ReviewDashboardType } from '@/utils/types/reviewDashboard';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 const MIN_CARD_WIDTH = 350;
 const CARD_HEIGHT = '45vh';
@@ -31,7 +34,7 @@ const CONTENT_HEIGHT = `calc(${CARD_HEIGHT} - 140px)`;
 function groupByField(
   data: typeof proposals,
   field: keyof typeof proposals[0],
-  filters: { telescope: string; country: string; date: string },
+  filters: { telescope: string; country: string },
   search: string
 ) {
   const filtered = data.filter(d => {
@@ -43,7 +46,6 @@ function groupByField(
     return (
       (!filters.telescope || d.telescope === filters.telescope) &&
       (!filters.country || d.country === filters.country) &&
-      (!filters.date || d.date === filters.date) &&
       (!search || searchMatch)
     );
   });
@@ -51,6 +53,35 @@ function groupByField(
   const counts = filtered.reduce((acc, item) => {
     const key = item[field];
     acc[key] = (acc[key] || 0) + 1;
+    return acc;
+  }, {} as Record<string, number>);
+
+  return Object.entries(counts).map(([name, value]) => ({ name, value }));
+}
+
+function groupByFieldNew(
+  data: ReviewDashboardType[],
+  field: keyof ReviewDashboardType,
+  filters: { telescope: string; country: string },
+  search: string
+) {
+  const filtered = data.filter(d => {
+    const searchMatch = Object.values(d).some(v =>
+      String(v)
+        .toLowerCase()
+        .includes(search.toLowerCase())
+    );
+    return (
+      (!filters.telescope || d.array === filters.telescope) &&
+      // (!filters.country || d.country === filters.country) && //TODO: pending on decision on country
+      (!search || searchMatch)
+    );
+  });
+
+  const counts = filtered.reduce((acc, item) => {
+    const key = item[field];
+    const keyStr = String(key); // Ensuring it's a string key
+    acc[keyStr] = (acc[keyStr] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
 
@@ -93,8 +124,14 @@ export default function ReviewDashboard() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const theme = useTheme();
-  const [filter, setFilter] = useState({ telescope: '', country: '', date: '' });
+  const [filter, setFilter] = useState({ telescope: '', country: '' });
   const [search, setSearch] = useState('');
+  const [currentReport, setCurrentReport] = React.useState([]);
+  const [axiosError, setAxiosError] = React.useState('');
+  const [proposalPieChartData, setProposalPieChartData] = React.useState([]);
+  const [reviewPieChartData, setReviewPieChartData] = React.useState([]);
+  const [scienceCategoryPieChartData, setScienceCategoryPieChartData] = React.useState([]);
+  const authClient = useAxiosAuthClient();
 
   const onPanelClick = (thePath: string) => {
     if (thePath?.length > 0) {
@@ -124,16 +161,57 @@ export default function ReviewDashboard() {
   const proposalStatusData = groupByField(proposals, 'status', filter, search);
   const scienceCategoryData = groupByField(proposals, 'category', filter, search);
 
+  const getReport = () => {
+    const fetchData = async () => {
+      setCurrentReport([]);
+
+      const response = await getReviewDashboard(authClient);
+      if (typeof response === 'string') {
+        setAxiosError(response);
+      } else {
+        setCurrentReport(response);
+        console.log('response', response);
+
+        //Proposal Pie Chart
+        const proposalGroupByData = groupByFieldNew(response, 'assignedProposal', filter, search);
+
+        //Reviewer Pie Chart
+        const reviewStatusGroupByData = groupByFieldNew(response, 'reviewStatus', filter, search);
+        const reviewStatusGroupbyDataWoNull = reviewStatusGroupByData.filter(
+          item => item.name !== 'undefined'
+        );
+
+        //Science Category Pie Chart
+        const scienceCategoryGroupByData = groupByFieldNew(
+          response,
+          'scienceCategory',
+          filter,
+          search
+        );
+
+        //Log
+        console.log('groupbyData ', proposalGroupByData);
+        console.log('reviewStatusGroupbyDataWoNull ', reviewStatusGroupbyDataWoNull);
+        console.log('scienceCategoryGroupByData ', scienceCategoryGroupByData);
+
+        setProposalPieChartData(proposalGroupByData);
+        setReviewPieChartData(reviewStatusGroupbyDataWoNull);
+        setScienceCategoryPieChartData(scienceCategoryGroupByData);
+      }
+    };
+    fetchData();
+  };
+
+  React.useEffect(() => {
+    getReport();
+    console.log('proposalStatusData', proposalStatusData);
+    console.log('scienceCategoryData', scienceCategoryData);
+  }, []);
+
   return (
     <>
       <PageBannerPMT title={t('overview.title')} />
       <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
-      <Grid2 container direction="row" alignItems="center" justifyContent="space-around">
-        {panelButton('page.15.title', 'page.15.tooltip', PMT[0])}
-        {panelButton('reviewProposalList.title', 'reviewProposalList.tooltip', PMT[1])}
-        {panelButton('homeBtn.title', 'homeBtn.tooltip', PATH[0])}
-      </Grid2>
-
       {/* Filters */}
       <Grid2 container spacing={2} px={5} py={2} alignItems="center" justifyContent="space-between">
         <Grid2 size={{ sm: 2 }}>
@@ -165,14 +243,6 @@ export default function ReviewDashboard() {
           />
         </Grid2>
         <Grid2 size={{ sm: 2 }}>
-          <DateEntry
-            label={'Date'}
-            setValue={(e: string) => setFilter({ ...filter, date: e })}
-            testId="effectiveResolution"
-            value={filter.date}
-          />
-        </Grid2>
-        <Grid2 size={{ sm: 2 }}>
           <TextEntry
             label={'Search'}
             setValue={setSearch}
@@ -184,14 +254,9 @@ export default function ReviewDashboard() {
           <ResetButton
             action={() => {
               setSearch('');
-              setFilter({ telescope: '', country: '', date: '' });
+              setFilter({ telescope: '', country: '' });
             }}
-            disabled={
-              filter.telescope === '' &&
-              filter.country === '' &&
-              filter.date === '' &&
-              search === ''
-            }
+            disabled={filter.telescope === '' && filter.country === '' && search === ''}
           />
         </Grid2>
       </Grid2>
@@ -199,24 +264,34 @@ export default function ReviewDashboard() {
       {/* Metrics */}
       <Grid2 container spacing={2} px={5} py={3} pb={10}>
         <Grid2>
-          <ResizablePanel title="Proposal Status">
+          <ResizablePanel title="Proposal Assigned">
             <D3PieChart
-              data={proposalStatusData}
+              // data={proposalStatusData}
+              data={proposalPieChartData}
               showTotal={true}
-              centerText={proposalStatusData.reduce((sum, d) => sum + d.value, 0).toString()}
+              //centerText={proposalStatusData.reduce((sum, d) => sum + d.value, 0).toString()}
+            />
+          </ResizablePanel>
+        </Grid2>
+        <Grid2>
+          <ResizablePanel title="Status of Review">
+            <D3PieChart
+              data={reviewPieChartData}
+              showTotal={true}
+              // centerText={scienceCategoryData.reduce((sum, d) => sum + d.value, 0).toString()}
             />
           </ResizablePanel>
         </Grid2>
         <Grid2>
           <ResizablePanel title="Science Categories">
             <D3PieChart
-              data={scienceCategoryData}
+              data={scienceCategoryPieChartData}
               showTotal={true}
-              centerText={scienceCategoryData.reduce((sum, d) => sum + d.value, 0).toString()}
+              // centerText={scienceCategoryData.reduce((sum, d) => sum + d.value, 0).toString()}
             />
           </ResizablePanel>
         </Grid2>
-        <Grid2>
+        {/* <Grid2>
           <ResizablePanel title="Reviewer Rank Distribution">
             <D3BarChartWithToggle
               data={proposals}
@@ -224,12 +299,12 @@ export default function ReviewDashboard() {
               allFields={['rank', 'telescope']}
             />
           </ResizablePanel>
-        </Grid2>
-        <Grid2>
+        </Grid2> */}
+        {/* <Grid2>
           <ResizablePanel title="New Rank Distribution">
             <D3ChartSelector data={proposals} />
           </ResizablePanel>
-        </Grid2>
+        </Grid2> */}
 
         <Grid2>
           <ResizablePanel title={t('panels.label')}>
