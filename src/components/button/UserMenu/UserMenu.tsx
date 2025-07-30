@@ -44,6 +44,8 @@ export default function ButtonUserMenu({
 
   const { accounts } = useMsal();
   const username = accounts.length > 0 ? accounts[0].name : '';
+
+  // console.log('TREVOR accounts', accounts[0]);
   // const permissions = useUserRoles();
 
   const { mockedLogin, mockedLogout, isMockedLoggedIn } = useMockedLogin();
