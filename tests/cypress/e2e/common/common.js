@@ -66,10 +66,11 @@ export const clickHome = () => clickButton('homeButtonTestId');
 export const clickHomeWarningConfirmation = () => clickButton('dialogConfirmationButton');
 export const clickLoginUser = () => clickButton('usernameMenu');
 export const clickObservationSetup = () => clickButton('addObservationButton');
+export const clickAddObservationEntry = () => clickButton('addObservationButtonEntry');
 export const clickPanelMaintenanceButton = () => clickButton('pmtBackButton');
 export const clickResolveButton = () => clickButton('resolveButton');
 export const clickReviewOverviewButton = () => clickButton('overviewButtonTestId');
-export const clickSave = () => clickButton('saveButtonTestId');
+export const clickSave = () => clickButton('saveBtn');
 export const clickSendInviteButton = () => clickButton('sendInviteButton');
 export const clickToAddTarget = () => clickButton('addTargetButton');
 export const clickToConfirmProposalSubmission = () => clickButton('displayConfirmationButton');
@@ -293,12 +294,12 @@ export const clickObservationFromTable = () => {
   cy.get('[data-rowindex="0"]').click({ multiple: true });
 };
 export const clickToLinkTargetAndObservation = () => {
-  cy.get('[data-testid="linkedTickBox"]').click();
+  cy.get('[data-testid="linkedTickBox"]').click({ multiple: true });
 };
 
 const clickToValidateProposal = () => {
-  cy.get('[data-testid="validationBtnTestId"]').should('exist');
-  cy.get('[data-testid="validationBtnTestId"]').click();
+  cy.get('[data-testid="validateBtn"]').should('exist');
+  cy.get('[data-testid="validateBtn"]').click();
 };
 
 const verifyProposalValidAlertFooter = () => {
