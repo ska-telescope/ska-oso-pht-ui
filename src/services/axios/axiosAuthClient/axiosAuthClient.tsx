@@ -15,7 +15,7 @@ export const loginRequest = {
   scopes: ['User.Read']
 };
 
-const useAxiosAuthClient = (baseURL: string = SKA_OSO_SERVICES_URL) => {
+const useAxiosAuthClient = (baseURL: string = "/") => { // TODO: pull baseURL from somewhere else
   const { instance } = useMsal();
 
   const axiosClient = axios.create({
