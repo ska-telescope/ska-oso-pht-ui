@@ -37,7 +37,7 @@ import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay
 import { IdObject } from '@/utils/types/idObject';
 import { arraysAreEqual } from '@/utils/helpers';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
-import GetProposalByStatusList from '@/services/axios/getProposalListByStatus/getProposalListByStatus';
+import GetProposalByStatusList from '@/services/axios/getProposalByStatusList/getProposalByStatusList';
 
 export function getProposalType(value: number): string {
   const type = PROJECTS.find(item => item.id === value)?.mapping;
