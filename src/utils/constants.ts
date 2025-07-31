@@ -834,6 +834,12 @@ export const SEARCH_PROPOSAL_TYPE_OPTIONS = [
   { label: 'Key Science Projects', value: PROJECTS[1].mapping },
   { label: "Director-General's Discretionary Time", value: PROJECTS[2].mapping }
 ];
+
+export const TECHNICAL_FEASIBILITY_OPTIONS = [
+  { label: 'Yes', value: FEASIBILITY[0] },
+  { label: 'No', value: FEASIBILITY[1] },
+  { label: "Maybe", value: FEASIBILITY[2]}
+];
 export const SPECTRAL_AVERAGING_MIN = 1;
 
 export const ZOOM_SPECTRAL_AVERAGING_MAX = 864;

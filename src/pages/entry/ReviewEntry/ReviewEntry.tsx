@@ -11,7 +11,13 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import useTheme from '@mui/material/styles/useTheme';
-import { BANNER_PMT_SPACER, FEASIBILITY, PANEL_DECISION_STATUS, PMT, REVIEW_TYPE } from '@utils/constants.ts';
+import {
+  BANNER_PMT_SPACER,
+  PANEL_DECISION_STATUS,
+  PMT,
+  REVIEW_TYPE,
+  TECHNICAL_FEASIBILITY_OPTIONS
+} from '@utils/constants.ts';
 import Typography from '@mui/material/Typography';
 import moment from 'moment';
 import SaveButton from '../../../components/button/Save/Save';
@@ -395,15 +401,11 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   );
 
   const feasibilityField = () => {
-    const getOptions = () => {
-      return FEASIBILITY;
-    };
-
     return (
       <>
         {!isView() && (
           <DropDown
-            options={getOptions()}
+            options={TECHNICAL_FEASIBILITY_OPTIONS}
             testId={'feasibilityId'}
             value={feasibility}
             setValue={setFeasibility}

@@ -141,6 +141,8 @@ export default function ReviewListPage() {
     return {
       kind: row.reviewType.kind,
       feasibility: {
+        //TODO: Chloe Check
+        // isFeasible: row.reviewType.feasibility.isFeasible,
         isFeasible: TECHNICAL_FEASIBILITY.YES,
         comments: ''
       }
@@ -273,6 +275,8 @@ export default function ReviewListPage() {
     field: 'feasibility',
     headerName: t('feasibility.label'),
     width: 120,
+    //TODO: Chloe Check
+    // renderCell: (e: { row: any }) => e.row.reviewType.feasibility.isFeasible
     renderCell: (e: { row: any }) => e.row.feasibility
   };
 
