@@ -2,7 +2,28 @@ import { describe, expect, test } from 'vitest';
 import '@testing-library/jest-dom';
 import Latex from 'react-latex-next';
 import { NOT_APPLICABLE } from '../constants';
-import { presentLatex, presentSensCalcError, presentUnits, presentValue } from './present';
+import {
+  presentDateTime,
+  presentLatex,
+  presentSensCalcError,
+  presentUnits,
+  presentValue
+} from './present';
+
+vi.mock('i18next', () => ({
+  t: (key: string) => {
+    switch (key) {
+      case 'date_format_one':
+        return '29-07-2025';
+      case 'date_format_two':
+        return '29-07-2025';
+      case 'time_format':
+        return '09:07:35';
+      default:
+        return '';
+    }
+  }
+}));
 
 describe('Present', () => {
   test('presentLatex : Dummy string', () => {
@@ -66,8 +87,7 @@ describe('Present', () => {
     expect(presentValue(3, 4)).toBe('3.0000');
   });
 
-  // TODO : Not sure what I've got wrong with this
-  // test('presentDateTime  : maxFaradayDepth', () => {
-  //   expect(presentDateTime('2025-07-29T08:07:35.338860Z')).toBe('29-07-2025 09:07:35');
-  // });
+  test('presentDateTime  : maxFaradayDepth', () => {
+    expect(presentDateTime('2025-07-29T08:07:35.338860Z')).toBe('29-07-2025 09:07:35');
+  });
 });

@@ -1,5 +1,4 @@
 import {
-  clickAddObservation,
   clickObservationFromTable,
   clickObservationSetup,
   clickToAddTarget,
@@ -10,7 +9,8 @@ import {
   clickToTargetPage,
   createStandardProposal,
   initialize,
-  verifyObservationInTable
+  verifyObservationInTable,
+  clickAddObservationEntry
 } from '../common/common';
 
 import sensitivityCalculatorResults from '../../fixtures/sensitivityCalculatorResults.json';
@@ -113,7 +113,7 @@ describe('Sensitivity Calculator', () => {
       updateBand(rec);
       updateSubarray(rec);
       updateObservationType(rec);
-      clickAddObservation();
+      clickAddObservationEntry();
       verifyObservationInTable();
       //
       clickObservationFromTable();
