@@ -62,6 +62,6 @@ export type ProposalReviewBackend = {
   comments: string;
   src_net: string;
   submitted_on: string | null;
-  submitted_by: string;
+  submitted_by: string | null;
   status: string;
 };
