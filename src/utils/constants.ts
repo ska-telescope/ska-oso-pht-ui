@@ -16,6 +16,7 @@ export const OSO_SERVICES_PANEL_DECISIONS_PATH = '/pht/panel-decisions';
 export const MSENTRA_CLIENT_ID = env.MSENTRA_CLIENT_ID;
 export const MSENTRA_TENANT_ID = env.MSENTRA_TENANT_ID;
 export const MSENTRA_REDIRECT_URI = env.MSENTRA_REDIRECT_URI;
+export const MSENTRA_API_URI = 'api://e4d6bb9b-cdd0-46c4-b30a-d045091b501b';
 
 /*****************************************/
 
