@@ -13,6 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { useMockedLogin } from '../../../contexts/MockedLoginContext';
 import { PMT, PATH } from '@/utils/constants';
+// import { useIsAuthenticated } from '@azure/msal-react';
 
 export type Children = JSX.Element | JSX.Element[] | null;
 

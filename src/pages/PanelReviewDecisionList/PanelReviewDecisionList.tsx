@@ -22,6 +22,7 @@ import getPanelDecisionList from '@/services/axios/getPanelDecisionList/getPanel
 import { PanelDecision } from '@/utils/types/panelDecision';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProposalReview';
 
 /*
  * Process for retrieving the data for the list
@@ -64,6 +65,7 @@ export default function ReviewDecisionListPage() {
   const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
 
   const getObservatoryData = () => application.content3 as ObservatoryData;
+  const getCycleId = () => getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId;
 
   const calculateRank = (details: Array<any>) => {
     if (!details || details?.length === 0) return 0;
@@ -99,6 +101,13 @@ export default function ReviewDecisionListPage() {
     setReviewDecisions(prev =>
       prev.map(proposal => (proposal.id === item.id ? { ...proposal, ...item } : proposal))
     );
+  };
+
+  const updateReview = async (review: ProposalReview) => {
+    const response: string | { error: string } = await PostProposalReview(review, getCycleId());
+    if (typeof response === 'object' && response?.error) {
+      Notify(response?.error, AlertColorTypes.Error);
+    }
   };
 
   const handleSubmitAction = async (item: {
@@ -200,7 +209,8 @@ export default function ReviewDecisionListPage() {
         return {
           ...proposal,
           decisions: decisions,
-          reviews: reviews
+          reviews: reviews,
+          key: proposal.id
         };
       });
     }
@@ -225,6 +235,18 @@ export default function ReviewDecisionListPage() {
     />
   );
 
+  function handleExcludeAction(review: any): void {
+    const results = proposalReviews?.map(rec => {
+      const el: ProposalReview = rec;
+      if (el.id === review.id) {
+        el.reviewType.excludedFromDecision = el.reviewType.excludedFromDecision ? false : true;
+        updateReview(el);
+      }
+      return el;
+    });
+    setProposalReviews(results);
+  }
+
   return (
     <>
       <PageBannerPMT title={t('reviewDecisionsList.title')} />
@@ -238,7 +260,11 @@ export default function ReviewDecisionListPage() {
         <Grid2 size={{ sm: 12 }}>
           <div>
             {filteredData && (
-              <TableReviewDecision data={filteredData} submitFunction={handleSubmitAction} />
+              <TableReviewDecision
+                data={filteredData}
+                excludeFunction={handleExcludeAction}
+                submitFunction={handleSubmitAction}
+              />
             )}
           </div>
         </Grid2>

@@ -17,7 +17,7 @@ import {
   Grid2
 } from '@mui/material';
 import { ChevronRight, ExpandMore } from '@mui/icons-material';
-import { AlertColorTypes, TextEntry } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes, StatusIcon, TextEntry } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { useNavigate } from 'react-router-dom';
 import Notification from '@/utils/types/notification';
@@ -25,20 +25,25 @@ import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
 import ViewIcon from '@/components/icon/viewIcon/viewIcon';
 import SubmitButton from '@/components/button/Submit/Submit';
 import { presentDate, presentLatex, presentTime } from '@/utils/present/present';
-import TickIcon from '@/components/icon/tickIcon/tickIcon';
 import GetProposal from '@/services/axios/getProposal/getProposal';
 import { validateProposal } from '@/utils/proposalValidation';
 import { PMT } from '@/utils/constants';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 const FINAL_COMMENTS_HEIGHT = 43; // Height in vh for the final comments field
+const STATUS_SIZE = 20;
 
 interface TableReviewDecisionProps {
   data: any;
+  excludeFunction: (detail: any) => void;
   submitFunction: (item: any) => void;
 }
 
-export default function TableReviewDecision({ data, submitFunction }: TableReviewDecisionProps) {
+export default function TableReviewDecision({
+  data,
+  excludeFunction,
+  submitFunction
+}: TableReviewDecisionProps) {
   const { t } = useTranslation('pht');
   const theme = useTheme();
   const navigate = useNavigate();
@@ -123,8 +128,10 @@ export default function TableReviewDecision({ data, submitFunction }: TableRevie
 
   const calculateRank = (details: Array<any>) => {
     if (!details || details?.length === 0) return 0;
-    const average = details.reduce((sum, detail) => sum + detail.rank, 0) / details.length;
-    return Math.round(average);
+    const filtered = details.filter(el => el.reviewType.excludedFromDecision === false);
+    const average =
+      filtered.reduce((sum, detail) => sum + detail.reviewType.rank, 0) / filtered.length;
+    return Math.round((average + Number.EPSILON) * 100) / 100;
   };
 
   return (
@@ -366,7 +373,7 @@ export default function TableReviewDecision({ data, submitFunction }: TableRevie
                                     }}
                                   >
                                     <Typography variant="body2" sx={{ color: 'text.primary' }}>
-                                      {detail.rank}
+                                      {detail.reviewType.rank}
                                     </Typography>
                                   </TableCell>
                                   <TableCell
@@ -382,12 +389,24 @@ export default function TableReviewDecision({ data, submitFunction }: TableRevie
                                       gap={1}
                                       wrap="nowrap"
                                     >
-                                      <Grid2>
-                                        <TickIcon
-                                          onClick={() => {}}
-                                          data-testid={`includeIcon-${item.id}-${detailIndex}`}
-                                          disabled
-                                        />
+                                      <Grid2 pt={1}>
+                                        <IconButton
+                                          onClick={() => excludeFunction(detail)}
+                                          style={{ cursor: 'hand' }}
+                                          disabled={
+                                            !detail.reviewType.excludedFromDecision &&
+                                            item.reviews.filter(
+                                              el => el.reviewType.excludedFromDecision === false
+                                            ).length < 2
+                                          }
+                                        >
+                                          <StatusIcon
+                                            testId={`includeIcon-${item.id}-${detailIndex}`}
+                                            icon
+                                            level={detail.reviewType.excludedFromDecision ? 1 : 0}
+                                            size={STATUS_SIZE}
+                                          />
+                                        </IconButton>
                                       </Grid2>
                                       <Grid2>
                                         <ViewIcon
