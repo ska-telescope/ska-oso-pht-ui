@@ -6,17 +6,11 @@ import { NOT_APPLICABLE } from '../constants';
 export const presentLatex = (inStr: string) => <Latex>{inStr}</Latex>;
 
 export const presentSensCalcError = (inArr: string, length = 0) => {
-  if (!inArr || inArr.length === 0) {
+  if (!inArr) {
     return '';
   }
-  if (typeof inArr === 'string') {
-    const arr = inArr.split('\n');
-    return arr[length];
-  }
-  if (typeof inArr === 'object') {
-    return inArr;
-  }
-  return 'Unknown error';
+  const arr = inArr.split('\n');
+  return arr[length];
 };
 
 export const presentUnits = (inUnits: string) => {
@@ -58,8 +52,9 @@ export const presentValue = (inValue: string | number, fractionLength = 2) => {
   return result < 0.01 || result > 999 ? result.toExponential(1) : result.toFixed(fractionLength);
 };
 
-export const presentDate = (inString: string, reverse: boolean = false) =>
-  t(reverse ? 'date_format_one' : 'date_format_two', { date: new Date(inString) });
+export const presentDate = (inString: string, reverse: boolean = false) => {
+  return t(reverse ? 'date_format_one' : 'date_format_two', { date: new Date(inString) });
+};
 export const presentTime = (inString: string) => t('time_format', { date: new Date(inString) });
 export const presentDateTime = (inString: string, reverse: boolean = false) =>
   presentDate(inString, reverse) + ' ' + presentTime(inString);

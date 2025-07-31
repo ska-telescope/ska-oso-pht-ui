@@ -197,8 +197,6 @@ deploy-integration:
   allow_failure: true
   tags:
     - $SKA_K8S_RUNNER
-  rules:
-    - when: manual
 
 js-e2e-deploy:
   allow_failure: true

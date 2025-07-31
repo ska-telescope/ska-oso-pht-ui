@@ -396,6 +396,7 @@ export default function ReviewListPage() {
           ...proposal,
           ...(review
             ? {
+                panelId: panelData[0].id,
                 review_id: review.id,
                 rank:
                   review?.reviewType?.kind === REVIEW_TYPE.SCIENCE
@@ -405,7 +406,13 @@ export default function ReviewListPage() {
                 srcNet: review.srcNet,
                 status: review.status
               }
-            : { rank: 0, comments: '', srcNet: '', status: proposal.status })
+            : {
+                panelId: panelData[0].id,
+                rank: 0,
+                comments: '',
+                srcNet: '',
+                status: proposal.status
+              })
         };
       });
     }
