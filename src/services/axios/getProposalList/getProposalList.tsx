@@ -34,7 +34,7 @@ const groupByProposalId = (data: ProposalBackend[]) => {
   }, {} as { [key: string]: ProposalBackend[] });
 };
 
-const getMostRecentProposals = (data: ProposalBackend[]) => {
+export const getMostRecentProposals = (data: ProposalBackend[]) => {
   let grouped: { [key: string]: ProposalBackend[] } = groupByProposalId(data);
   let sorted = (Object as any).values(grouped).map((arr: ProposalBackend[]) => {
     sortByLastUpdated(arr);
