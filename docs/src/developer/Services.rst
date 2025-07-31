@@ -28,6 +28,8 @@ axios
     "Proposal", "PUT", "", "", "Complete details of a proposal are sent to the API for storage"
     "Proposal/validate", "POST", "TBD", "TBD", "A request to validate the proposal is requested of the API, which return validation results"
     "coordinated", "GET", "TBD", "Point of reference", "The API is asked to supply the coordinate information for the provided point of reference"
+    "/osd{cycle}", "GET", "MockObservatoryDataBackend", "cycle", "Observatory data is obtained from the API"
+
 
 .. admonition:: REACT_APP_USE_LOCAL_DATA
     
