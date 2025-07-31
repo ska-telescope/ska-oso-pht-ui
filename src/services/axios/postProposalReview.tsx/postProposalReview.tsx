@@ -37,6 +37,16 @@ function getScienceReviewType(scienceReview: ScienceReview): ScienceReviewBacken
   };
 }
 
+function getSubmittedOnDate(review: ProposalReview, mocked: boolean): string | null {
+  if (mocked) {
+    return review.submittedOn;
+  }
+  if (review.submittedBy) {
+    return new Date().toISOString();
+  }
+  return null;
+}
+
 export function mappingReviewFrontendToBackend(
   review: ProposalReview,
   cycleId: string,
@@ -46,7 +56,7 @@ export function mappingReviewFrontendToBackend(
     review_id: review.id,
     panel_id: review.panelId,
     cycle: review.cycle ? review.cycle : cycleId,
-    submitted_on: review.submittedBy || mocked ? new Date().toISOString() : null,
+    submitted_on: getSubmittedOnDate(review, mocked),
     submitted_by: review.submittedBy,
     reviewer_id: review.reviewerId,
     prsl_id: review.prslId,

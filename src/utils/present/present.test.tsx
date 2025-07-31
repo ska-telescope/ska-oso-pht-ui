@@ -2,7 +2,13 @@ import { describe, expect, test } from 'vitest';
 import '@testing-library/jest-dom';
 import Latex from 'react-latex-next';
 import { NOT_APPLICABLE } from '../constants';
-import { presentDateTime, presentLatex, presentSensCalcError, presentUnits, presentValue } from './present';
+import {
+  presentDateTime,
+  presentLatex,
+  presentSensCalcError,
+  presentUnits,
+  presentValue
+} from './present';
 
 vi.mock('i18next', () => ({
   t: (key: string) => {
@@ -16,7 +22,7 @@ vi.mock('i18next', () => ({
       default:
         return '';
     }
-  },
+  }
 }));
 
 describe('Present', () => {
