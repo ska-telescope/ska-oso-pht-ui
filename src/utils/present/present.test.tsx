@@ -2,11 +2,18 @@ import { describe, expect, test } from 'vitest';
 import '@testing-library/jest-dom';
 import Latex from 'react-latex-next';
 import { NOT_APPLICABLE } from '../constants';
-import { presentLatex, presentUnits, presentValue } from './present';
+import { presentLatex, presentSensCalcError, presentUnits, presentValue } from './present';
 
 describe('Present', () => {
   test('presentLatex : Dummy string', () => {
     expect(presentLatex('Dummy string')).toStrictEqual(<Latex>Dummy string</Latex>);
+  });
+
+  test('presentSensCalcError : Entry string', () => {
+    expect(presentSensCalcError('')).toStrictEqual('');
+  });
+  test('presentSensCalcError : Entry string', () => {
+    expect(presentSensCalcError('string 1')).toStrictEqual('string 1');
   });
 
   test('presentUnits : kHz', () => {
@@ -58,4 +65,9 @@ describe('Present', () => {
   test('presentValue : maxFaradayDepth', () => {
     expect(presentValue(3, 4)).toBe('3.0000');
   });
+
+  // TODO : Not sure what I've got wrong with this
+  // test('presentDateTime  : maxFaradayDepth', () => {
+  //   expect(presentDateTime('2025-07-29T08:07:35.338860Z')).toBe('29-07-2025 09:07:35');
+  // });
 });
