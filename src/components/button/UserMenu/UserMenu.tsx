@@ -1,8 +1,8 @@
 import React from 'react';
-import { useMsal } from '@azure/msal-react';
+import { useIsAuthenticated, useMsal } from '@azure/msal-react';
 import { Box, Divider, Menu, MenuItem } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import { ButtonLogin, ButtonLogout } from '@ska-telescope/ska-login-page';
+import { ButtonLogin, ButtonLogout, getPhoto } from '@ska-telescope/ska-login-page';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
@@ -33,12 +33,13 @@ export default function ButtonUserMenu({
   const openMenu = Boolean(anchorEl);
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
+  const isAuthenticated = useIsAuthenticated();
 
   const { accounts } = useMsal();
   const username = accounts.length > 0 ? accounts[0].name : '';
-  const photo = null; // isAuthenticated ? getPhoto() : null;
+  const photo = isAuthenticated ? getPhoto() : null;
 
-  // console.log('TREVOR accounts', accounts[0]);
+  // console.log('TREVOR accounts', accounts[0], photo);
   // const permissions = useUserRoles();
 
   /* TODO : TREVOR : Keep until we can confirm we have all the permissions
