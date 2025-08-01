@@ -27,7 +27,7 @@ export const generateId = (prefix: string, length: number) => {
 };
 
 export const getBandwidthOrFrequencyUnitsLabel = (incValue: number): string => {
-  return FREQUENCY_UNITS.find(item => item.value === incValue)?.label;
+  return FREQUENCY_UNITS.find(item => item.value === incValue)?.label as string;
 };
 
 export const getScaledBandwidthOrFrequency = (incValue: number, inUnits: number) => {
@@ -104,7 +104,7 @@ export const helpers = {
   },
   transform: {
     // trim undefined and empty properties of an object
-    trimObject(obj) {
+    trimObject(obj: any) {
       Object.keys(obj).forEach(key => {
         const value = obj[key];
         if (value === undefined || value === '' || value === null) {
@@ -123,4 +123,41 @@ export const helpers = {
       });
     }
   }
+};
+
+/*********************************************************** filter *********************************************************/
+
+const sortByLastUpdated = (array: any[]): any[] => {
+  array.sort(function(a, b) {
+    return (
+      new Date(b.metadata?.last_modified_on as string)?.valueOf() -
+      new Date(a.metadata?.last_modified_on as string)?.valueOf()
+    );
+  });
+  return array;
+};
+
+const groupBylId = (data: any[], idKey: string) => {
+  return data.reduce((grouped: { [key: string]: any[] }, obj) => {
+    if (!grouped[obj[idKey]]) {
+      grouped[obj[idKey]] = [obj];
+    } else {
+      grouped[obj[idKey]].push(obj);
+    }
+    return grouped;
+  }, {} as { [key: string]: any[] });
+};
+
+export const getUniqueMostRecentItems = (data: any[], idKey: string) => {
+  // retrieve unique items based on idKey
+  let grouped: { [key: string]: any[] } = groupBylId(data, idKey);
+
+  // sort each group by last_modified_on and take the most recent item
+  let sorted = (Object as any).values(grouped).map((arr: any[]) => {
+    sortByLastUpdated(arr);
+    return arr[0];
+  });
+
+  // Final global sort by last_modified_on
+  return sortByLastUpdated(sorted);
 };
