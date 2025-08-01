@@ -12,39 +12,6 @@ import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import MockProposalBackendList from './mockProposalBackendList';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
 
-/*********************************************************** filter *********************************************************/
-
-// export const sortByLastUpdated = (array: ProposalBackend[]): ProposalBackend[] => {
-//   array.sort(function(a, b) {
-//     return (
-//       new Date(b.metadata?.last_modified_on as string)?.valueOf() -
-//       new Date(a.metadata?.last_modified_on as string)?.valueOf()
-//     );
-//   });
-//   return array;
-// };
-
-// const groupByProposalId = (data: ProposalBackend[]) => {
-//   return data.reduce((grouped: { [key: string]: ProposalBackend[] }, obj) => {
-//     if (!grouped[obj.prsl_id]) {
-//       grouped[obj.prsl_id] = [obj];
-//     } else {
-//       grouped[obj.prsl_id].push(obj);
-//     }
-//     return grouped;
-//   }, {} as { [key: string]: ProposalBackend[] });
-// };
-
-// export const getMostRecentProposals = (data: ProposalBackend[]) => {
-//   let grouped: { [key: string]: ProposalBackend[] } = groupByProposalId(data);
-//   let sorted = (Object as any).values(grouped).map((arr: ProposalBackend[]) => {
-//     sortByLastUpdated(arr);
-//     return arr;
-//   });
-//   const result = sorted.map((arr: ProposalBackend[]) => arr[0]);
-//   return result;
-// };
-
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
 
