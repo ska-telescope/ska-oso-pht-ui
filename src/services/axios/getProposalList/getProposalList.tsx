@@ -10,7 +10,7 @@ import {
 import { InvestigatorBackend } from '../../../utils/types/investigator';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import MockProposalBackendList from './mockProposalBackendList';
-import { getMostRecentItems } from '@/utils/helpers';
+import { getUniqueMostRecentItems } from '@/utils/helpers';
 
 /*********************************************************** filter *********************************************************/
 
@@ -142,7 +142,7 @@ async function GetProposalList(
     }
 
     const uniqueResults: ProposalBackend[] =
-      result.data.length > 1 ? getMostRecentItems(result.data, 'prsl_id') : result.data;
+      result.data.length > 1 ? getUniqueMostRecentItems(result.data, 'prsl_id') : result.data;
     return mappingList(uniqueResults);
   } catch (e) {
     if (e instanceof Error) {

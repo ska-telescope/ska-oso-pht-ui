@@ -4,7 +4,7 @@ import { MockProposalReviewListFrontend } from './mockProposalReviewListFrontend
 import { MockProposalReviewListBackend } from './mockProposalReviewListBackend';
 import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
 import * as CONSTANTS from '@/utils/constants';
-import { getMostRecentItems } from '@/utils/helpers';
+import { getUniqueMostRecentItems } from '@/utils/helpers';
 
 describe('Helper Functions', () => {
   test('GetMockProposalReviewList returns mock data', () => {
@@ -18,7 +18,7 @@ describe('Helper Functions', () => {
   });
 
   test('sorts by latest updated and removes duplicates', () => {
-    const result: ProposalReviewBackend[] = getMostRecentItems(
+    const result: ProposalReviewBackend[] = getUniqueMostRecentItems(
       MockProposalReviewListBackend,
       'review_id'
     );

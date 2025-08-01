@@ -8,7 +8,7 @@ import { MockPanelBackendList } from './mockPanelBackendList';
 import { Panel, PanelBackend } from '@/utils/types/panel';
 import { PanelProposal, PanelProposalBackend } from '@/utils/types/panelProposal';
 import { PanelReviewer, PanelReviewerBackend } from '@/utils/types/panelReviewer';
-import { getMostRecentItems } from '@/utils/helpers';
+import { getUniqueMostRecentItems } from '@/utils/helpers';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -55,7 +55,7 @@ export function mappingList(inRec: PanelBackend[]): Panel[] {
 /*****************************************************************************************************************************/
 
 export function GetMockPanelList(mock = MockPanelBackendList): Panel[] {
-  const uniqueResults = mock.length > 1 ? getMostRecentItems(mock, 'panel_id') : mock;
+  const uniqueResults = mock.length > 1 ? getUniqueMostRecentItems(mock, 'panel_id') : mock;
   return mappingList(uniqueResults);
 }
 
@@ -73,7 +73,7 @@ async function GetPanelList(user_id = 'DefaultUser'): Promise<Panel[] | string> 
     }
 
     const uniqueResults: PanelBackend[] =
-      result.data?.length > 1 ? getMostRecentItems(result.data, 'panel_id') : result.data;
+      result.data?.length > 1 ? getUniqueMostRecentItems(result.data, 'panel_id') : result.data;
     return mappingList(uniqueResults);
   } catch (e) {
     if (e instanceof Error) {

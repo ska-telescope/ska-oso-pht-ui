@@ -6,7 +6,7 @@ import {
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { mappingReviewBackendToFrontend } from '../putProposalReview/putProposalReview';
 import { MockProposalReviewListBackend } from './mockProposalReviewListBackend';
-import { getMostRecentItems } from '@/utils/helpers';
+import { getUniqueMostRecentItems } from '@/utils/helpers';
 import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
 
 /*****************************************************************************************************************************/
@@ -20,7 +20,7 @@ export function mappingList(inRec: ProposalReviewBackend[]): ProposalReview[] {
 /*****************************************************************************************************************************/
 
 export function GetMockProposalReviewList(mock = MockProposalReviewListBackend): ProposalReview[] {
-  const uniqueResults = mock.length > 1 ? getMostRecentItems(mock, 'review_id') : mock;
+  const uniqueResults = mock.length > 1 ? getUniqueMostRecentItems(mock, 'review_id') : mock;
   return mappingList(uniqueResults);
 }
 
@@ -39,7 +39,7 @@ async function GetProposalReviewList(
       return 'error.API_UNKNOWN_ERROR';
     }
     const uniqueResults =
-      result.data?.length > 1 ? getMostRecentItems(result.data, 'review_id') : result.data;
+      result.data?.length > 1 ? getUniqueMostRecentItems(result.data, 'review_id') : result.data;
     return mappingList(uniqueResults);
   } catch (e) {
     if (e instanceof Error) {

@@ -6,7 +6,7 @@ import { MockPanelBackendList } from './mockPanelBackendList';
 import { MockPanelFrontendList } from './mockPanelFrontendList';
 import * as CONSTANTS from '@/utils/constants';
 import { Panel, PanelBackend } from '@/utils/types/panel';
-import { getMostRecentItems } from '@/utils/helpers';
+import { getUniqueMostRecentItems } from '@/utils/helpers';
 
 vi.mock('axios');
 const mockedAxios = (axios as unknown) as {
@@ -17,7 +17,7 @@ const mockedAxios = (axios as unknown) as {
 
 describe('Helper Functions', () => {
   test('sorts by latest updated and removes duplicates', () => {
-    const result: PanelBackend[] = getMostRecentItems(MockPanelBackendList, 'panel_id');
+    const result: PanelBackend[] = getUniqueMostRecentItems(MockPanelBackendList, 'panel_id');
     expect(result).to.have.lengthOf(MockPanelBackendList.length - 2);
     expect(result[0].metadata?.last_modified_on).to.equal('2025-07-04T16:20:37.088Z');
     expect(result[1].metadata?.last_modified_on).to.equal('2025-07-03T16:20:37.088Z');
