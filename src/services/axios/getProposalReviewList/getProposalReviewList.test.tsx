@@ -1,12 +1,10 @@
 import { describe } from 'vitest';
-import GetProposalReviewList, {
-  GetMockProposalReviewList,
-  getUniqueMostRecentReviews
-} from './getProposalReviewList';
+import GetProposalReviewList, { GetMockProposalReviewList } from './getProposalReviewList';
 import { MockProposalReviewListFrontend } from './mockProposalReviewListFrontend';
 import { MockProposalReviewListBackend } from './mockProposalReviewListBackend';
 import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
 import * as CONSTANTS from '@/utils/constants';
+import { getMostRecentItems } from '@/utils/helpers';
 
 describe('Helper Functions', () => {
   test('GetMockProposalReviewList returns mock data', () => {
@@ -20,8 +18,9 @@ describe('Helper Functions', () => {
   });
 
   test('sorts by latest updated and removes duplicates', () => {
-    const result: ProposalReviewBackend[] = getUniqueMostRecentReviews(
-      MockProposalReviewListBackend
+    const result: ProposalReviewBackend[] = getMostRecentItems(
+      MockProposalReviewListBackend,
+      'review_id'
     );
     expect(result).to.have.lengthOf(MockProposalReviewListBackend.length - 1);
     expect(result[0].metadata?.last_modified_on).to.equal('2025-09-16T08:35:24.245Z');

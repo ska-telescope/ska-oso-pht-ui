@@ -1,4 +1,4 @@
-import Proposal from '../../../utils/types/proposal';
+import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
@@ -6,7 +6,8 @@ import {
 } from '../../../utils/constants';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import MockProposalBackendList from '../getProposalList/mockProposalBackendList';
-import { getMostRecentProposals, mappingList } from '../getProposalList/getProposalList';
+import { mappingList } from '../getProposalList/getProposalList';
+import { getMostRecentItems } from '@/utils/helpers';
 
 export function GetMockProposalList(): Proposal[] {
   return mappingList(MockProposalBackendList);
@@ -28,8 +29,8 @@ async function GetProposalByStatusList(
       return 'error.API_UNKNOWN_ERROR';
     }
 
-    const uniqueResults =
-      result.data.length > 1 ? getMostRecentProposals(result.data) : result.data;
+    const uniqueResults: ProposalBackend[] =
+      result.data.length > 1 ? getMostRecentItems(result.data, 'prsl_id') : result.data;
     return mappingList(uniqueResults);
   } catch (e) {
     if (e instanceof Error) {

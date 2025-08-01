@@ -1,18 +1,15 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import GetProposalList, {
-  GetMockProposalList,
-  sortByLastUpdated,
-  mappingList
-} from './getProposalList';
+import GetProposalList, { GetMockProposalList, mappingList } from './getProposalList';
 import MockProposalBackendList from './mockProposalBackendList';
 import MockProposalFrontendList from './mockProposalFrontendList';
 import * as CONSTANTS from '@/utils/constants';
 import Proposal, { ProposalBackend } from '@/utils/types/proposal';
+import { getMostRecentItems } from '@/utils/helpers';
 
 describe('Helper Functions', () => {
-  test('sortByLastUpdated returns proposals sorted by last updated date', () => {
-    const result: ProposalBackend[] = sortByLastUpdated(MockProposalBackendList);
+  test('getMostRecentItems returns most recent items based on specified key', () => {
+    const result: ProposalBackend[] = getMostRecentItems(MockProposalBackendList, 'prsl_id');
     expect(result).to.have.lengthOf(MockProposalBackendList.length);
     expect(result[0].metadata?.last_modified_on).to.equal('2022-09-23T15:43:53.971548Z');
     expect(result[1].metadata?.last_modified_on).to.equal('2022-09-23T15:43:53.971548Z');

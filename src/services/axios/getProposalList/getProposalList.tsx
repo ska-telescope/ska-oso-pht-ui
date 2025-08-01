@@ -10,39 +10,40 @@ import {
 import { InvestigatorBackend } from '../../../utils/types/investigator';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import MockProposalBackendList from './mockProposalBackendList';
+import { getMostRecentItems } from '@/utils/helpers';
 
 /*********************************************************** filter *********************************************************/
 
-export const sortByLastUpdated = (array: ProposalBackend[]): ProposalBackend[] => {
-  array.sort(function(a, b) {
-    return (
-      new Date(b.metadata?.last_modified_on as string)?.valueOf() -
-      new Date(a.metadata?.last_modified_on as string)?.valueOf()
-    );
-  });
-  return array;
-};
+// export const sortByLastUpdated = (array: ProposalBackend[]): ProposalBackend[] => {
+//   array.sort(function(a, b) {
+//     return (
+//       new Date(b.metadata?.last_modified_on as string)?.valueOf() -
+//       new Date(a.metadata?.last_modified_on as string)?.valueOf()
+//     );
+//   });
+//   return array;
+// };
 
-const groupByProposalId = (data: ProposalBackend[]) => {
-  return data.reduce((grouped: { [key: string]: ProposalBackend[] }, obj) => {
-    if (!grouped[obj.prsl_id]) {
-      grouped[obj.prsl_id] = [obj];
-    } else {
-      grouped[obj.prsl_id].push(obj);
-    }
-    return grouped;
-  }, {} as { [key: string]: ProposalBackend[] });
-};
+// const groupByProposalId = (data: ProposalBackend[]) => {
+//   return data.reduce((grouped: { [key: string]: ProposalBackend[] }, obj) => {
+//     if (!grouped[obj.prsl_id]) {
+//       grouped[obj.prsl_id] = [obj];
+//     } else {
+//       grouped[obj.prsl_id].push(obj);
+//     }
+//     return grouped;
+//   }, {} as { [key: string]: ProposalBackend[] });
+// };
 
-export const getMostRecentProposals = (data: ProposalBackend[]) => {
-  let grouped: { [key: string]: ProposalBackend[] } = groupByProposalId(data);
-  let sorted = (Object as any).values(grouped).map((arr: ProposalBackend[]) => {
-    sortByLastUpdated(arr);
-    return arr;
-  });
-  const result = sorted.map((arr: ProposalBackend[]) => arr[0]);
-  return result;
-};
+// export const getMostRecentProposals = (data: ProposalBackend[]) => {
+//   let grouped: { [key: string]: ProposalBackend[] } = groupByProposalId(data);
+//   let sorted = (Object as any).values(grouped).map((arr: ProposalBackend[]) => {
+//     sortByLastUpdated(arr);
+//     return arr;
+//   });
+//   const result = sorted.map((arr: ProposalBackend[]) => arr[0]);
+//   return result;
+// };
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -140,8 +141,8 @@ async function GetProposalList(
       return 'error.API_UNKNOWN_ERROR';
     }
 
-    const uniqueResults =
-      result.data.length > 1 ? getMostRecentProposals(result.data) : result.data;
+    const uniqueResults: ProposalBackend[] =
+      result.data.length > 1 ? getMostRecentItems(result.data, 'prsl_id') : result.data;
     return mappingList(uniqueResults);
   } catch (e) {
     if (e instanceof Error) {
