@@ -15,7 +15,8 @@ import {
   SEARCH_TYPE_OPTIONS,
   BANNER_PMT_SPACER,
   PANEL_DECISION_STATUS,
-  REVIEW_TYPE, FEASIBILITY, TECHNICAL_FEASIBILITY_OPTIONS
+  REVIEW_TYPE,
+  FEASIBILITY
 } from '@utils/constants.ts';
 import { validateProposal } from '@utils/proposalValidation.tsx';
 import GetProposalList from '../../services/axios/getProposalList/getProposalList';
@@ -229,9 +230,9 @@ export default function ReviewListPage() {
     updateReview(row);
   };
 
-  const canEditScience = (e: { row: { status: string, feasibility: string } }) => {
-    return e?.row?.feasibility !== FEASIBILITY[1] && e.row.status !== PANEL_DECISION_STATUS.DECIDED
-  }
+  const canEditScience = (e: { row: { status: string; feasibility: string } }) => {
+    return e?.row?.feasibility !== FEASIBILITY[1] && e.row.status !== PANEL_DECISION_STATUS.DECIDED;
+  };
 
   const canEditTechnical = (e: { row: { status: string } }) =>
     e.row.status !== PANEL_DECISION_STATUS.DECIDED;
