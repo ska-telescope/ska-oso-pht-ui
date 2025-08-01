@@ -3,15 +3,9 @@ import { useMsal } from '@azure/msal-react';
 import { Box, Divider, Menu, MenuItem } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { ButtonLogin, ButtonLogout } from '@ska-telescope/ska-login-page';
-import {
-  Button,
-  ButtonColorTypes,
-  ButtonVariantTypes,
-  TickBox
-} from '@ska-telescope/ska-gui-components';
+import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { useMockedLogin } from '../../../contexts/MockedLoginContext';
 import { PMT, PATH } from '@/utils/constants';
 // import { useIsAuthenticated } from '@azure/msal-react';
 
@@ -49,10 +43,6 @@ export default function ButtonUserMenu({
   // console.log('TREVOR accounts', accounts[0]);
   // const permissions = useUserRoles();
 
-  const { mockedLogin, mockedLogout, isMockedLoggedIn } = useMockedLogin();
-
-  const displayName = isMockedLoggedIn ? 'Mocked' : username;
-
   /* TODO : TREVOR : Keep until we can confirm we have all the permissions
   React.useEffect(() => {
     if (accounts) {
@@ -76,16 +66,9 @@ export default function ButtonUserMenu({
 
   return (
     <>
-      <TickBox
-        label="Mock login"
-        labelPosition="bottom"
-        testId="linkedTickBox"
-        checked={isMockedLoggedIn}
-        onChange={() => (isMockedLoggedIn ? mockedLogout() : mockedLogin())}
-      />
-      <Box pt={2}>
-        {!displayName && <ButtonLogin />}
-        {displayName && (
+      <Box>
+        {!username && <ButtonLogin />}
+        {username && (
           <Button
             icon={
               showPhoto && photo ? (
@@ -104,7 +87,7 @@ export default function ButtonUserMenu({
             aria-haspopup="true"
             aria-label={label}
             color={color}
-            label={displayName}
+            label={username}
             onClick={handleMenuOpen}
             testId="usernameMenu"
             toolTip={toolTip}
@@ -134,11 +117,7 @@ export default function ButtonUserMenu({
         </MenuItem>
         <Divider component="li" />
         <MenuItem key={-1} data-testid="menuItemPanelLogout">
-          {isMockedLoggedIn ? (
-            'Logout'
-          ) : (
-            <ButtonLogout isText variant={ButtonVariantTypes.Outlined} />
-          )}
+          <ButtonLogout isText variant={ButtonVariantTypes.Outlined} />
         </MenuItem>
       </Menu>
     </>

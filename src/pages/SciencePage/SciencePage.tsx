@@ -22,7 +22,6 @@ import { Proposal } from '../../utils/types/proposal';
 import Notification from '../../utils/types/notification';
 import { validateSciencePage } from '../../utils/proposalValidation';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
-import { useMockedLogin } from '@/contexts/MockedLoginContext';
 
 const PAGE = 3;
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
@@ -42,10 +41,9 @@ export default function SciencePage() {
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
 
-  const { isMockedLoggedIn } = useMockedLogin();
   const loggedIn = isLoggedIn();
 
-  const isDisableEndpoints = () => !loggedIn && !isMockedLoggedIn;
+  const isDisableEndpoints = () => !loggedIn;
 
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
 

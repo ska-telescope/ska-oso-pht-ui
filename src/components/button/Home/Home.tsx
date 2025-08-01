@@ -6,7 +6,6 @@ import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import BaseButton from '../Base/Button';
 import { PATH } from '../../../utils/constants';
 import AlertDialog from '../../alerts/alertDialog/AlertDialog';
-import { useMockedLogin } from '@/contexts/MockedLoginContext';
 
 interface HomeButtonProps {
   title?: string;
@@ -28,9 +27,7 @@ export default function HomeButton({
   const { t } = useTranslation('pht');
   const loggedIn = isLoggedIn();
 
-  const { isMockedLoggedIn } = useMockedLogin();
-
-  const isShowWarningWhenClicked = () => !loggedIn && !isMockedLoggedIn;
+  const isShowWarningWhenClicked = () => !loggedIn;
 
   const ClickFunction = () => {
     if (isShowWarningWhenClicked()) {

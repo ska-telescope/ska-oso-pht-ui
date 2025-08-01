@@ -29,7 +29,6 @@ import Notification from '../../../utils/types/notification';
 import { Proposal } from '../../../utils/types/proposal';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import PostProposalValidate from '../../../services/axios/postProposalValidate/postProposalValidate';
-import { useMockedLogin } from '@/contexts/MockedLoginContext';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 interface PageBannerPPTProps {
@@ -52,10 +51,9 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   const authClient = useAxiosAuthClient();
 
-  const { isMockedLoggedIn } = useMockedLogin();
   const loggedIn = isLoggedIn();
 
-  const isDisableEndpoints = () => !loggedIn && !isMockedLoggedIn;
+  const isDisableEndpoints = () => !loggedIn;
 
   const getProposal = () => application.content2 as Proposal;
 
@@ -76,7 +74,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   const validateClicked = () => {
     const ValidateTheProposal = async () => {
-      setValidationResults(null);
+      setValidationResults([]);
       let results = [];
 
       for (let key in application.content1) {
