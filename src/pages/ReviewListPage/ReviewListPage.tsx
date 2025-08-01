@@ -114,6 +114,7 @@ export default function ReviewListPage() {
     };
     const fetchProposalReviewData = async () => {
       const response = await GetProposalReviewList(authClient, getProposal()); // TODO : add id of the logged in user
+      console.log('proposal review data ', response);
       if (typeof response === 'string') {
         NotifyError(response);
       } else {
