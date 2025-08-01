@@ -34,7 +34,6 @@ import GetPresignedDownloadUrl from '@/services/axios/getPresignedDownloadUrl/ge
 import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProposalReview';
 import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
-import ObservatoryData from '@/utils/types/observatoryData';
 
 interface ReviewEntryProps {
   reviewType: string;
@@ -66,10 +65,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const getUser = () => 'DefaultUser'; // TODO
   const isTechnical = (reviewType: string) => reviewType === REVIEW_TYPE.TECHNICAL;
-
-  const getObservatoryData = () => application.content3 as ObservatoryData;
-  const getCycleId = () => getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId;
-
   const getDateFormatted = () => moment().format('YYYY-MM-DD');
 
   const getReviewId = () => {
@@ -143,10 +138,9 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
   const createReview = async (submitted = false) => {
-    //TODO: Remove hard-coded cycleId
     const response: string | { error: string } = await PostProposalReview(
       getReview(submitted),
-      'SKAO_2027_1'
+      locationProperties?.state?.cycle
     );
     if (typeof response === 'object' && response?.error) {
       NotifyError(response?.error);
@@ -159,7 +153,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const updateReview = async (submitted = false) => {
     const response: string | { error: string } = await PostProposalReview(
       getReview(submitted),
-      'SKAO_2027_1'
+      locationProperties?.state?.cycle
     );
     if (typeof response === 'object' && response?.error) {
       NotifyError(response?.error);
@@ -424,8 +418,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
             <Typography id="title-label" variant={'h6'}>
               {locationProperties.state.reviews[0].reviewType.feasibility.isFeasible}
               {locationProperties.state.reviews[0].reviewType.feasibility.comments}
-              {/*{locationProperties.state.feasibility.isFeasible}*/}
-              {/*{locationProperties.state.feasibility.comments}*/}
             </Typography>
           </Box>
         )}
