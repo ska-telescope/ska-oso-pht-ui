@@ -1,6 +1,5 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import axios from 'axios';
 import GetPanelList, {
   GetMockPanelList,
   getUniqueMostRecentPanels,
@@ -10,13 +9,6 @@ import { MockPanelBackendList } from './mockPanelBackendList';
 import { MockPanelFrontendList } from './mockPanelFrontendList';
 import * as CONSTANTS from '@/utils/constants';
 import { Panel, PanelBackend } from '@/utils/types/panel';
-
-vi.mock('axios');
-const mockedAxios = (axios as unknown) as {
-  get: ReturnType<typeof vi.fn>;
-  post: ReturnType<typeof vi.fn>;
-  // add other axios methods as needed
-};
 
 describe('Helper Functions', () => {
   test('sorts by latest updated and removes duplicates', () => {
@@ -53,49 +45,60 @@ describe('Helper Functions', () => {
   });
 });
 
-describe('GetProposalList Service', () => {
+describe('GetPanelList Service', () => {
+  let mockedAuthClient: any;
   beforeEach(() => {
     vi.resetAllMocks();
+    mockedAuthClient = {
+      put: vi.fn(),
+      get: vi.fn(),
+      post: vi.fn(),
+      delete: vi.fn(),
+      interceptors: {
+        request: { clear: vi.fn, eject: vi.fn(), use: vi.fn() },
+        response: { clear: vi.fn, eject: vi.fn(), use: vi.fn() }
+      }
+    };
   });
 
   test('returns mapped mock data when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await GetPanelList();
+    const result = await GetPanelList(mockedAuthClient);
     expect(result).toEqual(MockPanelFrontendList);
   });
 
   test('returns mapped data from API when USE_LOCAL_DATA is false', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockResolvedValue({ data: MockPanelBackendList });
-    const result = (await GetPanelList()) as Panel[];
+    mockedAuthClient.get.mockResolvedValue({ data: MockPanelBackendList });
+    const result = (await GetPanelList(mockedAuthClient)) as Panel[];
     expect(result).to.deep.equal(MockPanelFrontendList);
   });
 
   test('returns unsorted data when API returns only one panel', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockResolvedValue({ data: [MockPanelBackendList[1]] });
-    const result = await GetPanelList();
+    mockedAuthClient.get.mockResolvedValue({ data: [MockPanelBackendList[1]] });
+    const result = await GetPanelList(mockedAuthClient);
     expect(result).toEqual([MockPanelFrontendList[1]]);
   });
 
   test('returns error message on API failure', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockRejectedValue(new Error('Network Error'));
-    const result = await GetPanelList();
+    mockedAuthClient.get.mockRejectedValue(new Error('Network Error'));
+    const result = await GetPanelList(mockedAuthClient);
     expect(result).toBe('Network Error');
   });
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockRejectedValue({ unexpected: 'object' });
-    const result = await GetPanelList();
+    mockedAuthClient.get.mockRejectedValue({ unexpected: 'object' });
+    const result = await GetPanelList(mockedAuthClient);
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 
   test('returns error.API_UNKNOWN_ERROR when API returns non-array data', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockResolvedValue({ data: { not: 'an array' } });
-    const result = await GetPanelList();
+    mockedAuthClient.get.mockResolvedValue({ data: { not: 'an array' } });
+    const result = await GetPanelList(mockedAuthClient);
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 });

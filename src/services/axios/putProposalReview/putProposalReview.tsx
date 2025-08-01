@@ -1,4 +1,3 @@
-import axios from 'axios';
 import {
   OSO_SERVICES_REVIEWS_PATH,
   REVIEW_TYPE,
@@ -7,6 +6,7 @@ import {
 } from '@utils/constants';
 import { mappingReviewFrontendToBackend } from '../postProposalReview.tsx/postProposalReview';
 import { MockProposalReviewBackend } from '../postProposalReview.tsx/mockProposalReviewBackend';
+import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { helpers } from '@/utils/helpers';
 import {
   ProposalReview,
@@ -68,6 +68,7 @@ export function putMockProposalReview(): ProposalReview {
 }
 
 async function PutProposalReview(
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
   review: ProposalReview
 ): Promise<ProposalReview | { error: string }> {
   if (USE_LOCAL_DATA) {
@@ -78,7 +79,7 @@ async function PutProposalReview(
     const URL_PATH = `${OSO_SERVICES_REVIEWS_PATH}/${review.id}`;
     const convertedReview = mappingReviewFrontendToBackend(review, review.cycle, true);
 
-    const result = await axios.put(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, convertedReview);
+    const result = await authAxiosClient.put(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, convertedReview);
 
     if (!result) {
       return { error: 'error.API_UNKNOWN_ERROR' };

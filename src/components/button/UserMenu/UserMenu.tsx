@@ -7,7 +7,6 @@ import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { PMT, PATH } from '@/utils/constants';
-// import { useIsAuthenticated } from '@azure/msal-react';
 
 export type Children = JSX.Element | JSX.Element[] | null;
 
@@ -28,8 +27,6 @@ export default function ButtonUserMenu({
   color = ButtonColorTypes.Inherit,
   label = 'Mocked',
   onClick,
-  photo,
-  showPhoto = false,
   toolTip = 'Additional user functionality including sign out'
 }: ButtonUserMenuProps): JSX.Element {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
@@ -39,6 +36,7 @@ export default function ButtonUserMenu({
 
   const { accounts } = useMsal();
   const username = accounts.length > 0 ? accounts[0].name : '';
+  const photo = null; // isAuthenticated ? getPhoto() : null;
 
   // console.log('TREVOR accounts', accounts[0]);
   // const permissions = useUserRoles();
@@ -71,7 +69,7 @@ export default function ButtonUserMenu({
         {username && (
           <Button
             icon={
-              showPhoto && photo ? (
+              photo ? (
                 <img
                   src={photo}
                   alt="Profile"

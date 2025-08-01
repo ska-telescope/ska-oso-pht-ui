@@ -132,6 +132,7 @@ export default function ReviewDecisionListPage() {
     recommendation: any;
   }) => {
     const response: string | { error: string } = await PostPanelDecision(
+      authClient,
       getReviewDecision(item),
       getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
     );
@@ -186,6 +187,7 @@ export default function ReviewDecisionListPage() {
     };
     const fetchReviewDecisionData = async () => {
       const response = await getPanelDecisionList(
+        authClient,
         getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
       ); // TODO : add id of the logged in user
       if (typeof response === 'string') {
