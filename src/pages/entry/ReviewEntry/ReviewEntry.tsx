@@ -109,7 +109,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     return {
       id: reviewId,
       prslId: getProposal().id,
-      // TODO implement technical review as well - reviewType below is only for science review
       reviewType: reviewType === REVIEW_TYPE.SCIENCE ? getScienceReview() : getTechnicalReview(),
       comments: generalComments,
       srcNet: srcNetComments,
