@@ -5,6 +5,7 @@ import { Typography, Grid2 } from '@mui/material';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import { Panel } from '@/utils/types/panel';
 import GetPanelList from '@/services/axios/getPanelList/getPanelList';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 interface GridReviewPanelsProps {
   height?: string;
@@ -20,13 +21,14 @@ export default function GridReviewPanels({
   updatedData
 }: GridReviewPanelsProps) {
   const { t } = useTranslation('pht');
+  const authClient = useAxiosAuthClient();
 
   const [data, setData] = React.useState<Panel[]>([]);
   const [fetchList, setFetchList] = React.useState(false);
   const [, setAxiosError] = React.useState('');
 
   const GetReviewPanels = async () => {
-    const response = await GetPanelList();
+    const response = await GetPanelList(authClient);
     if (typeof response === 'string') {
       setAxiosError(response);
     } else {

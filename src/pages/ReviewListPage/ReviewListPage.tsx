@@ -84,7 +84,7 @@ export default function ReviewListPage() {
 
   React.useEffect(() => {
     const GetReviewPanels = async () => {
-      const response = await GetPanelList(); // TODO : Add the user_id as a property to the function
+      const response = await GetPanelList(authClient); // TODO : Add the user_id as a property to the function
       if (typeof response === 'string') {
         NotifyError(response);
       } else {

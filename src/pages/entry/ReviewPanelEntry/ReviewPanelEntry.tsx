@@ -20,6 +20,7 @@ import PostPanel from '@/services/axios/postPanel/postPanel';
 import { Panel } from '@/utils/types/panel';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import ObservatoryData from '@/utils/types/observatoryData';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 export default function ReviewPanelEntry() {
   const { t } = useTranslation('pht');
@@ -33,6 +34,7 @@ export default function ReviewPanelEntry() {
   const [panelDateExpiry, setPanelDateExpiry] = React.useState(moment().format('yyyy-MM-DD'));
   const { application, updateAppContent5 } = storageObject.useStore();
   const getObservatoryData = () => application.content3 as ObservatoryData;
+  const authClient = useAxiosAuthClient();
 
   // const setPanel = (panel: Panel) => updateAppContent2(panel);
 
@@ -134,6 +136,7 @@ export default function ReviewPanelEntry() {
   const createPanel = async () => {
     NotifyWarning(t('addPanel.warning'));
     const response: string | { error: string } = await PostPanel(
+      authClient,
       getPanel(),
       getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
     );

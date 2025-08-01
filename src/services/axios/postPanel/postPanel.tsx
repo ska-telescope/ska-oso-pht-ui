@@ -1,9 +1,9 @@
-import axios from 'axios';
 import {
   OSO_SERVICES_PANEL_PATH,
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
 } from '../../../utils/constants';
+import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { Panel, PanelBackend } from '@/utils/types/panel';
 import { helpers } from '@/utils/helpers';
 
@@ -33,7 +33,11 @@ export function postMockPanel(): string {
   return 'PANEL-ID-001';
 }
 
-async function PostPanel(panel: Panel, cycleId: string): Promise<string | { error: string }> {
+async function PostPanel(
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  panel: Panel,
+  cycleId: string
+): Promise<string | { error: string }> {
   if (USE_LOCAL_DATA) {
     return postMockPanel();
   }
@@ -42,7 +46,7 @@ async function PostPanel(panel: Panel, cycleId: string): Promise<string | { erro
     const URL_PATH = `${OSO_SERVICES_PANEL_PATH}/`;
     const convertedPanel = mappingPostPanel(panel, cycleId);
 
-    const result = await axios.post(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, convertedPanel);
+    const result = await authAxiosClient.post(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, convertedPanel);
 
     if (!result) {
       return { error: 'error.API_UNKNOWN_ERROR' };
