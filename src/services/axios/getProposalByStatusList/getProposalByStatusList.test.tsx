@@ -2,9 +2,9 @@ import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import MockProposalBackendList from '../getProposalList/mockProposalBackendList';
 import MockProposalFrontendList from '../getProposalList/mockProposalFrontendList';
+import GetProposalByStatusList from './getProposalByStatusList';
 import * as CONSTANTS from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
-import GetProposalByStatusList from './getProposalByStatusList';
 import { PROPOSAL_STATUS } from '@/utils/constants';
 
 describe('GetProposalList Service', () => {
@@ -32,7 +32,10 @@ describe('GetProposalList Service', () => {
   test('returns mapped data from API when USE_LOCAL_DATA is false', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.get.mockResolvedValue({ data: MockProposalBackendList });
-    const result = (await GetProposalByStatusList(mockedAuthClient, PROPOSAL_STATUS.DRAFT)) as Proposal[];
+    const result = (await GetProposalByStatusList(
+      mockedAuthClient,
+      PROPOSAL_STATUS.DRAFT
+    )) as Proposal[];
     expect(result).to.deep.equal(MockProposalFrontendList);
   });
 
