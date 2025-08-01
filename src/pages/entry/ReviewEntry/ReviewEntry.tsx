@@ -56,7 +56,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const [feasibility, setFeasibility] = React.useState('');
   const [srcNetComments, setSrcNetComments] = React.useState('');
   const [currentPDF, setCurrentPDF] = React.useState<string | null | undefined>(null);
-  const [isEdit, setIsEdit] = React.useState(!!locationProperties.state?.review_id);
+  const [isEdit, setIsEdit] = React.useState(!!locationProperties.state?.reviewType);
 
   const AREA_HEIGHT_NUM = 74;
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
@@ -68,14 +68,30 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const getDateFormatted = () => moment().format('YYYY-MM-DD');
 
   const getReviewId = () => {
-    return isEdit
-      ? locationProperties.state.review_id
-      : 'rvw-' +
-          getUser() +
-          '-' +
-          getDateFormatted() +
-          '-00001-' +
-          Math.floor(Math.random() * 10000000).toString();
+    if(isTechnical(reviewType)){
+      return isEdit
+        ? locationProperties.state.review_id
+        : 'rvw-' +
+        getUser() +
+        '-' +
+        'tec' +
+        '-' +
+        getDateFormatted() +
+        '-00001-' +
+        Math.floor(Math.random() * 10000000).toString();
+    }
+    else {
+      return isEdit
+        ? locationProperties.state.review_id
+        : 'rvw-' +
+        getUser() +
+        '-' +
+        'sci' +
+        '-' +
+        getDateFormatted() +
+        '-00001-' +
+        Math.floor(Math.random() * 10000000).toString();
+    }
   };
 
   function getTechnicalReview(): TechnicalReview {
@@ -101,6 +117,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   }
 
   const getReview = (submitted = false): ProposalReview => {
+    console.log('review-id', reviewId)
     return {
       id: reviewId,
       prslId: getProposal().id,
