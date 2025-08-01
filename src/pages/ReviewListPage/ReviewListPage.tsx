@@ -76,6 +76,9 @@ export default function ReviewListPage() {
 
   const authClient = useAxiosAuthClient();
 
+  const getProposal = () => application.content2 as Proposal;
+
+
   const DATA_GRID_HEIGHT = '60vh';
 
   React.useEffect(() => {
@@ -110,7 +113,7 @@ export default function ReviewListPage() {
       }
     };
     const fetchProposalReviewData = async () => {
-      const response = await GetProposalReviewList(authClient); // TODO : add id of the logged in user
+      const response = await GetProposalReviewList(authClient, getProposal()); // TODO : add id of the logged in user
       if (typeof response === 'string') {
         NotifyError(response);
       } else {
