@@ -26,6 +26,17 @@ import ResetButton from '@/components/button/Reset/Reset';
 import getReviewDashboard from '@/services/axios/getReviewDashboard/getReviewDashboard';
 import { ReviewDashboard as ReviewDashboardType } from '@/utils/types/reviewDashboard';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import groupBy from 'lodash/groupBy';
+import mapValues from 'lodash/mapValues';
+
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
+import { report } from 'process';
 
 const MIN_CARD_WIDTH = 350;
 const CARD_HEIGHT = '45vh';
@@ -120,6 +131,24 @@ const ResizablePanel = ({ children, title }: { children: ReactNode; title: strin
   </div>
 );
 
+function createData(
+  name: string,
+  calories: number,
+  fat: number,
+  carbs: number,
+  protein: number,
+) {
+  return { name, calories, fat, carbs, protein };
+}
+
+const rows = [
+  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
+  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
+  createData('Eclair', 262, 16.0, 24, 6.0),
+  createData('Cupcake', 305, 3.7, 67, 4.3),
+  createData('Gingerbread', 356, 16.0, 49, 3.9),
+];
+
 export default function ReviewDashboard() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
@@ -131,6 +160,9 @@ export default function ReviewDashboard() {
   const [proposalPieChartData, setProposalPieChartData] = React.useState([]);
   const [reviewPieChartData, setReviewPieChartData] = React.useState([]);
   const [scienceCategoryPieChartData, setScienceCategoryPieChartData] = React.useState([]);
+  const [panelTableData, setPanelTableData] = React.useState([])
+  const [panelReviewerTableData, setPanelReviewerTableData] = React.useState([])
+  const [panelScienceCategoryTableData, setPanelScienceCategoryTableData] = React.useState([])
   const authClient = useAxiosAuthClient();
 
   const onPanelClick = (thePath: string) => {
@@ -161,6 +193,221 @@ export default function ReviewDashboard() {
   const proposalStatusData = groupByField(proposals, 'status', filter, search);
   const scienceCategoryData = groupByField(proposals, 'category', filter, search);
 
+  const panelStatsTable = (report) => {
+
+    /**
+     * Group by Panel ID then separate node for group by Proposa ID and Reviewer ID
+     */
+
+    const reportGroupByPanal = groupBy(report, 'panelId')
+    const reportGroupByPanalWithKeys = Object.entries(reportGroupByPanal).map(([key, value]) => ({
+      panelId: key,
+      value: value
+    }));
+
+    const reportGroupByPanalsThenProposalsReviewers = reportGroupByPanalWithKeys.map(panel => {
+
+      const groupByProposal = Object.entries(groupBy(panel.value, 'prslId')).map(([key, value]) => ({
+      prslId: key,
+      value: value
+
+    }));
+
+      const groupByReviewer = Object.entries(groupBy(panel.value, 'reviewerId')).map(([key, value]) => ({
+      reviewerId: key,
+      value: value
+
+    }));
+      
+      return {
+        ...panel,
+        reviewGroupByPanelProposal: groupByProposal,
+        reviewGroupByPanelReviewer: groupByReviewer
+      }
+
+    })
+      
+
+    const resultPanelTable = reportGroupByPanalsThenProposalsReviewers.map(panel =>{
+      return {
+        panelId : panel.panelId,
+        panelName: panel.value[0].panelName,
+        numProposal: panel.reviewGroupByPanelProposal.length,
+        numReviewer: panel.reviewGroupByPanelReviewer.length,
+        totalReviewedPercentage: panel.value.filter(review => review.reviewStatus === 'To Do').length * 100 / panel.value.length,
+        pendingReviewedPercentage: panel.value.filter(review => review.reviewStatus === 'In Progress').length * 100 / panel.value.length,
+        numExcludedReviews: panel.value.filter(review => review.reviewStatus === 'In Progress').length * 100 / panel.value.length
+      }
+    })
+
+    setPanelTableData(resultPanelTable)
+
+
+    /**
+     * Group by Reviewer then Proposal
+     */
+
+
+    const reportGroupByReviewer = groupBy(report, 'reviewerId')
+    const reportGroupByReviewerWithKeys = Object.entries(reportGroupByReviewer).map(([key, value]) => ({
+      reviewerId: key,
+      value: value
+    }));
+
+    console.log('reportGroupByReviewerWithKeys', reportGroupByReviewerWithKeys)
+
+
+    const reportGroupByReivewersThenProposals = reportGroupByReviewerWithKeys.map(reviewer => {
+
+      console.log('reviewer item', reviewer)
+      const groupByProposal = Object.entries(groupBy(reviewer.value, 'prslId')).map(([key, value]) => ({
+      prslId: key,
+      value: value
+
+    }));
+
+      return {
+        ...reviewer,
+        reviewGroupByReviewerProposal: groupByProposal,
+      }
+
+    })
+
+    const resultPanelReviewerTable = reportGroupByReivewersThenProposals.map(reviewer => {
+
+      return {
+        panelId: reviewer.value[0].panelId,
+        panelName: reviewer.value[0].panelName,
+        reviewerId : reviewer.reviewerId,
+        numProposal: reviewer.reviewGroupByReviewerProposal.length,
+        numReviewed: reviewer.value.filter(review => review.reviewStatus === 'Decided').length * 100 / reviewer.value.length, //TODO: pdm has no status called reviewed, use Decided for now
+        numPendingReview: reviewer.value.filter(review =>review.reviewStatus === 'To Do').length * 100 / reviewer.value.length //TODO: do we need in progress?
+
+      }
+    })
+
+    setPanelReviewerTableData(resultPanelReviewerTable)
+    
+
+    /**
+     * Group by Science Category then Proposal ID
+     */
+
+    const reportGroupByScienceCategory = groupBy(report, 'scienceCategory')
+    const reportGroupByScienceCategoryWithKeys = Object.entries(reportGroupByScienceCategory).map(([key, value]) => ({
+      scienceCategory: key,
+      value: value
+    }));
+
+    const reportGroupByScienceCategoryThenProposals = reportGroupByScienceCategoryWithKeys.map(scienceCategory => {
+
+      console.log('reviewer item', scienceCategory)
+      const groupByProposal = Object.entries(groupBy(scienceCategory.value, 'prslId')).map(([key, value]) => ({
+      prslId: key,
+      value: value
+
+    }));
+
+      return {
+        ...scienceCategory,
+        reviewGroupByScienceCategoryProposal: groupByProposal,
+      }
+
+    })
+
+
+    console.log('reportGroupByScienceCategoryThenProposals', reportGroupByScienceCategoryThenProposals)
+    
+
+    const resultScienceCategoryTable = reportGroupByScienceCategoryThenProposals.map(scienceCategory => {
+
+      return {
+        scienceCategory: scienceCategory.scienceCategory,
+        numProposal: scienceCategory.reviewGroupByScienceCategoryProposal.length,
+        numReviewed: scienceCategory.value.filter(review => review.reviewStatus === 'Decided').length * 100 / scienceCategory.value.length, //TODO: pdm has no status called reviewed, use Decided for now
+        numPendingReview: scienceCategory.value.filter(review =>review.reviewStatus === 'To Do').length * 100 / scienceCategory.value.length //TODO: do we need in progress?
+
+      }
+    })
+
+    console.log('resultScienceCategoryTable', resultScienceCategoryTable)
+
+    setPanelScienceCategoryTableData(resultScienceCategoryTable)
+
+    //Pie chart data
+    const resultScienceCategoryPieChart = reportGroupByScienceCategoryThenProposals.map(scienceCategory => {
+
+      return {
+        name: scienceCategory.scienceCategory,
+        value: scienceCategory.reviewGroupByScienceCategoryProposal.length
+      }
+    })
+
+    console.log('resultScienceCategoryPieChart', resultScienceCategoryPieChart)
+    setScienceCategoryPieChartData(resultScienceCategoryPieChart)
+
+
+    /**
+     * Group by assignedProposal then proposal  
+     */
+
+    const reportGroupByassignedProposal = groupBy(report, 'assignedProposal')
+    const reportGroupByassignedProposalWithKeys = Object.entries(reportGroupByassignedProposal).map(([key, value]) => ({
+      assignedProposal: key,
+      value: value
+    }));
+
+    console.log('reportGroupByassignedProposalWithKeys', reportGroupByassignedProposalWithKeys)
+
+    const reportGroupByAssignedProposalThenProposals = reportGroupByassignedProposalWithKeys.map(assignedProposal => {
+
+      const groupByProposal = Object.entries(groupBy(assignedProposal.value, 'prslId')).map(([key, value]) => ({
+      prslId: key,
+      value: value
+
+    }));
+
+      return {
+        ...assignedProposal,
+        reviewGroupByAssignedProposalProposal: groupByProposal,
+      }
+
+    })
+
+    console.log('reportGroupByAssignedProposalThenProposals', reportGroupByAssignedProposalThenProposals)
+
+    const resultProposalPieChart = reportGroupByAssignedProposalThenProposals.map(assignedProposal => {
+
+      return {
+        name: assignedProposal.assignedProposal,
+        value: assignedProposal.reviewGroupByAssignedProposalProposal.length
+      }
+
+    }
+    )
+    console.log('resultProposalPieChart', resultProposalPieChart)
+
+    setProposalPieChartData(resultProposalPieChart)
+
+
+    /**
+     * Group by reviewStatus 
+     */
+
+    const reportGroupByReviewStatus = groupBy(report, 'reviewStatus')
+
+    const resultReviewStatusPieChart = Object.entries(reportGroupByReviewStatus).map(([key, value]) => ({
+      name: key,
+      value: value.length
+    }));
+
+
+    console.log('resultReviewStatusPieChart', resultReviewStatusPieChart)
+
+    setReviewPieChartData(resultReviewStatusPieChart)
+
+  }
+
   const getReport = () => {
     const fetchData = async () => {
       setCurrentReport([]);
@@ -189,14 +436,16 @@ export default function ReviewDashboard() {
           search
         );
 
-        //Log
-        console.log('groupbyData ', proposalGroupByData);
-        console.log('reviewStatusGroupbyDataWoNull ', reviewStatusGroupbyDataWoNull);
-        console.log('scienceCategoryGroupByData ', scienceCategoryGroupByData);
+        //Review Table
+        const reviewTableGroupByData = groupByFieldNew(response, 'panelId', filter, search);
 
-        setProposalPieChartData(proposalGroupByData);
-        setReviewPieChartData(reviewStatusGroupbyDataWoNull);
-        setScienceCategoryPieChartData(scienceCategoryGroupByData);
+
+        //lodash playground
+        panelStatsTable(response)
+
+        // setProposalPieChartData(proposalGroupByData);
+        // setReviewPieChartData(reviewStatusGroupbyDataWoNull);
+        //setScienceCategoryPieChartData(scienceCategoryGroupByData);
       }
     };
     fetchData();
@@ -269,7 +518,7 @@ export default function ReviewDashboard() {
               // data={proposalStatusData}
               data={proposalPieChartData}
               showTotal={true}
-              //centerText={proposalStatusData.reduce((sum, d) => sum + d.value, 0).toString()}
+            //centerText={proposalStatusData.reduce((sum, d) => sum + d.value, 0).toString()}
             />
           </ResizablePanel>
         </Grid2>
@@ -278,7 +527,7 @@ export default function ReviewDashboard() {
             <D3PieChart
               data={reviewPieChartData}
               showTotal={true}
-              // centerText={scienceCategoryData.reduce((sum, d) => sum + d.value, 0).toString()}
+            // centerText={scienceCategoryData.reduce((sum, d) => sum + d.value, 0).toString()}
             />
           </ResizablePanel>
         </Grid2>
@@ -287,7 +536,7 @@ export default function ReviewDashboard() {
             <D3PieChart
               data={scienceCategoryPieChartData}
               showTotal={true}
-              // centerText={scienceCategoryData.reduce((sum, d) => sum + d.value, 0).toString()}
+            // centerText={scienceCategoryData.reduce((sum, d) => sum + d.value, 0).toString()}
             />
           </ResizablePanel>
         </Grid2>
@@ -305,6 +554,113 @@ export default function ReviewDashboard() {
             <D3ChartSelector data={proposals} />
           </ResizablePanel>
         </Grid2> */}
+
+        <Grid2>
+          <ResizablePanel title={'No Title in ticket'}>
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Panel ID</TableCell>
+                    <TableCell>Panel Name</TableCell>
+                    <TableCell align="right">Number of Reviewers</TableCell>
+                    <TableCell align="right">Number of Proposals</TableCell>
+                    <TableCell align="right">Reviewed (%)</TableCell>
+                    <TableCell align="right">Pending Review (%)</TableCell>
+                    <TableCell align="right">Number of Excluded Reviews</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {panelTableData.map((row) => (
+                    <TableRow
+                      key={row.panelId}
+                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {row.panelId}
+                      </TableCell>
+                      <TableCell align="right">{row.panelName}</TableCell>
+                      <TableCell align="right">{row.numReviewer}</TableCell>
+                      <TableCell align="right">{row.numProposal}</TableCell>
+                      <TableCell align="right">{row.totalReviewedPercentage}</TableCell>
+                      <TableCell align="right">{row.pendingReviewedPercentage}</TableCell>
+                      <TableCell align="right">{row.numExcludedReviews}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </ResizablePanel>
+        </Grid2>
+
+
+        <Grid2>
+          <ResizablePanel title={'No Title in ticket 2'}>
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Panel ID</TableCell>
+                    <TableCell>Panel Name</TableCell>
+                    <TableCell>Reviewer ID</TableCell>
+                    <TableCell align="right">Number of Proposals</TableCell>
+                    <TableCell align="right">Reviewed (%)</TableCell>
+                    <TableCell align="right">Pending Review (%)</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {panelReviewerTableData.map((row) => (
+                    <TableRow
+                      key={row.reviewerId}
+                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {row.panelId}
+                      </TableCell>
+                      <TableCell align="right">{row.panelName}</TableCell>
+                      <TableCell align="right">{row.reviewerId}</TableCell>
+                       <TableCell align="right">{row.numProposal}</TableCell>
+                      <TableCell align="right">{row.numReviewed}</TableCell>
+                      <TableCell align="right">{row.numPendingReview}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </ResizablePanel>
+        </Grid2>
+
+        <Grid2>
+          <ResizablePanel title={'No Title in ticket 3'}>
+            <TableContainer component={Paper}>
+              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Science Category</TableCell>
+                    <TableCell>Number of Proposal</TableCell>
+                    <TableCell align="right">Reviewed (%)</TableCell>
+                    <TableCell align="right">Pending Review (%)</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {panelScienceCategoryTableData.map((row) => (
+                    <TableRow
+                      key={row.scienceCategory}
+                      sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
+                    >
+                      <TableCell component="th" scope="row">
+                        {row.scienceCategory}
+                      </TableCell>
+                      <TableCell align="right">{row.numProposal}</TableCell>
+                      <TableCell align="right">{row.numReviewed}</TableCell>
+                      <TableCell align="right">{row.numPendingReview}</TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </TableContainer>
+          </ResizablePanel>
+        </Grid2>
 
         <Grid2>
           <ResizablePanel title={t('panels.label')}>
