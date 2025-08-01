@@ -54,7 +54,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const [reviewId, setReviewId] = React.useState('');
   const [rank, setRank] = React.useState(0);
   const [generalComments, setGeneralComments] = React.useState('');
-  const [feasibility, setFeasibility] = React.useState('Yes');
+  const [feasibility, setFeasibility] = React.useState('');
   const [srcNetComments, setSrcNetComments] = React.useState('');
   const [currentPDF, setCurrentPDF] = React.useState<string | null | undefined>(null);
   const [isEdit, setIsEdit] = React.useState(!!locationProperties.state?.review_id);
@@ -177,7 +177,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       setGeneralComments(locationProperties.state?.comments);
       setSrcNetComments(locationProperties.state?.srcNet);
       setRank(locationProperties.state?.rank);
-      setFeasibility(locationProperties.state?.feasibility);
+      setFeasibility(locationProperties.state?.isFeasible);
       setIsEdit(false);
     } else {
       setGeneralComments('');
@@ -407,7 +407,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           <DropDown
             options={TECHNICAL_FEASIBILITY_OPTIONS}
             testId={'feasibilityId'}
-            value={feasibility}
+            value={feasibility ?? ''}
             setValue={setFeasibility}
             label={'Feasibility'}
           />
@@ -423,8 +423,10 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
             }}
           >
             <Typography id="title-label" variant={'h6'}>
-              {locationProperties.state.feasibility.isFeasible}
-              {locationProperties.state.feasibility.comments}
+              {locationProperties.state.reviews[0].reviewType.feasibility.isFeasible}
+              {locationProperties.state.reviews[0].reviewType.feasibility.comments}
+              {/*{locationProperties.state.feasibility.isFeasible}*/}
+              {/*{locationProperties.state.feasibility.comments}*/}
             </Typography>
           </Box>
         )}

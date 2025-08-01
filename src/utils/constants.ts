@@ -838,7 +838,7 @@ export const SEARCH_PROPOSAL_TYPE_OPTIONS = [
 export const TECHNICAL_FEASIBILITY_OPTIONS = [
   { label: 'Yes', value: FEASIBILITY[0] },
   { label: 'No', value: FEASIBILITY[1] },
-  { label: "Maybe", value: FEASIBILITY[2]}
+  { label: 'Maybe', value: FEASIBILITY[2] }
 ];
 export const SPECTRAL_AVERAGING_MIN = 1;
 

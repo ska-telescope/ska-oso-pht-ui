@@ -11,21 +11,20 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { presentDate, presentLatex, presentTime } from '@utils/present/present';
-import GetProposalList from '../../services/axios/getProposalList/getProposalList';
-import GetProposalReviewList from '../../services/axios/getProposalReviewList/getProposalReviewList';
-import GetProposal from '../../services/axios/getProposal/getProposal';
 import {
   SEARCH_TYPE_OPTIONS,
   BANNER_PMT_SPACER,
   PANEL_DECISION_STATUS,
-  REVIEW_TYPE,
-  TECHNICAL_FEASIBILITY
-} from '../../utils/constants';
+  REVIEW_TYPE
+} from '@utils/constants.ts';
+import { validateProposal } from '@utils/proposalValidation.tsx';
+import GetProposalList from '../../services/axios/getProposalList/getProposalList';
+import GetProposalReviewList from '../../services/axios/getProposalReviewList/getProposalReviewList';
+import GetProposal from '../../services/axios/getProposal/getProposal';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
 import Notification from '../../utils/types/notification';
-import { validateProposal } from '../../utils/proposalValidation';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import { PMT } from '@/utils/constants';
 import SubmitButton from '@/components/button/Submit/Submit';
@@ -141,10 +140,8 @@ export default function ReviewListPage() {
     return {
       kind: row.reviewType.kind,
       feasibility: {
-        //TODO: Chloe Check
-        // isFeasible: row.reviewType.feasibility.isFeasible,
-        isFeasible: TECHNICAL_FEASIBILITY.YES,
-        comments: ''
+        isFeasible: row.reviewType.feasibility.isFeasible,
+        comments: row.reviewType.feasibility.comments
       }
     };
   };
@@ -275,9 +272,9 @@ export default function ReviewListPage() {
     field: 'feasibility',
     headerName: t('feasibility.label'),
     width: 120,
-    //TODO: Chloe Check
-    // renderCell: (e: { row: any }) => e.row.reviewType.feasibility.isFeasible
-    renderCell: (e: { row: any }) => e.row.feasibility
+    renderCell: (e: { row: any }) => {
+      return e.row?.reviewType?.feasibility?.isFeasible.toLowerCase();
+    }
   };
 
   // TODO : Add the functionality so that clicking on this will show the conflict modal
@@ -401,7 +398,11 @@ export default function ReviewListPage() {
                 rank:
                   review?.reviewType?.kind === REVIEW_TYPE.SCIENCE
                     ? review?.reviewType?.rank?.toString()
-                    : '/', // rank is only for science review
+                    : '', // rank is only for science review
+                feasibility:
+                  review?.reviewType?.kind === REVIEW_TYPE.TECHNICAL
+                    ? review?.reviewType?.feasibility?.isFeasible
+                    : '', // feasibility is only for technical review,
                 comments: review.comments,
                 srcNet: review.srcNet,
                 status: review.status
