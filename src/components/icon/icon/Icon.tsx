@@ -4,11 +4,12 @@ interface IconProps {
   disabled?: boolean;
   onClick: Function;
   icon: JSX.Element;
+  sx?: any;
   testId: string;
   toolTip: string;
 }
 
-export default function Icon({ disabled = false, icon, onClick, testId, toolTip }: IconProps) {
+export default function Icon({ disabled = false, icon, onClick, sx, testId, toolTip }: IconProps) {
   return (
     <Tooltip data-testid={testId} title={toolTip} arrow>
       <span>
@@ -17,6 +18,7 @@ export default function Icon({ disabled = false, icon, onClick, testId, toolTip 
           disabled={disabled}
           onClick={() => onClick()}
           style={{ cursor: 'pointer' }}
+          sx={sx}
         >
           {icon}
         </IconButton>
