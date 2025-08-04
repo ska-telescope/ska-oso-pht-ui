@@ -27,7 +27,7 @@ export const MockProposalReviewFrontend: ProposalReview = {
       hasConflict: false,
       reason: 'string'
     },
-    excludedFromDecision: false
+    excludedFromDecision: 'True'
   }
 };
 

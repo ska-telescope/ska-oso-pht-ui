@@ -6,47 +6,8 @@ import {
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { mappingReviewBackendToFrontend } from '../putProposalReview/putProposalReview';
 import { MockProposalReviewListBackend } from './mockProposalReviewListBackend';
+import { getUniqueMostRecentItems } from '@/utils/helpers';
 import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
-
-/*********************************************************** filter *********************************************************/
-
-const groupByReviewId = (data: ProposalReviewBackend[]) => {
-  return data.reduce((grouped: { [key: string]: ProposalReviewBackend[] }, obj) => {
-    if (!grouped[obj.review_id]) {
-      grouped[obj.review_id] = [obj];
-    } else {
-      grouped[obj.review_id].push(obj);
-    }
-    return grouped;
-  }, {} as { [key: string]: ProposalReviewBackend[] });
-};
-
-const sortByLastUpdated = (array: ProposalReviewBackend[]): ProposalReviewBackend[] => {
-  array.sort(function(a, b) {
-    return (
-      new Date(b.metadata?.last_modified_on as string)?.valueOf() -
-      new Date(a.metadata?.last_modified_on as string)?.valueOf()
-    );
-  });
-  return array;
-};
-
-export const getUniqueMostRecentReviews = (data: ProposalReviewBackend[]) => {
-  const grouped = groupByReviewId(data);
-
-  const newestPerGroup = Object.values(grouped).map((arr: ProposalReviewBackend[]) => {
-    sortByLastUpdated(arr); // newest first
-    return arr[0]; // pick newest from group
-  });
-
-  newestPerGroup.sort(
-    (a, b) =>
-      new Date(b.metadata?.last_modified_on!).valueOf() -
-      new Date(a.metadata?.last_modified_on!).valueOf()
-  ); // TODO sort also by assigned_on
-
-  return newestPerGroup;
-};
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -59,7 +20,7 @@ export function mappingList(inRec: ProposalReviewBackend[]): ProposalReview[] {
 /*****************************************************************************************************************************/
 
 export function GetMockProposalReviewList(mock = MockProposalReviewListBackend): ProposalReview[] {
-  const uniqueResults = mock.length > 1 ? getUniqueMostRecentReviews(mock) : mock;
+  const uniqueResults = mock.length > 1 ? getUniqueMostRecentItems(mock, 'review_id') : mock;
   return mappingList(uniqueResults);
 }
 
@@ -78,7 +39,7 @@ async function GetProposalReviewList(
       return 'error.API_UNKNOWN_ERROR';
     }
     const uniqueResults =
-      result.data?.length > 1 ? getUniqueMostRecentReviews(result.data) : result.data;
+      result.data?.length > 1 ? getUniqueMostRecentItems(result.data, 'review_id') : result.data;
     return mappingList(uniqueResults);
   } catch (e) {
     if (e instanceof Error) {

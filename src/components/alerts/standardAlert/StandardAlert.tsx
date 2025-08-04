@@ -43,7 +43,6 @@ export default function StandardAlert({ color, testId, text, closeFunc }: Standa
             ariaDescription=" "
             ariaTitle=" "
             level={getLevel(color)}
-            onClick={() => {}}
             size={FONTSIZE}
             testId={testId + 'Icon'}
             toolTip=" "

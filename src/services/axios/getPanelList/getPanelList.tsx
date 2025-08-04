@@ -8,46 +8,7 @@ import { MockPanelBackendList } from './mockPanelBackendList';
 import { Panel, PanelBackend } from '@/utils/types/panel';
 import { PanelProposal, PanelProposalBackend } from '@/utils/types/panelProposal';
 import { PanelReviewer, PanelReviewerBackend } from '@/utils/types/panelReviewer';
-
-/*********************************************************** filter *********************************************************/
-
-const groupByPanelId = (data: PanelBackend[]) => {
-  return data.reduce((grouped: { [key: string]: PanelBackend[] }, obj) => {
-    if (!grouped[obj.panel_id]) {
-      grouped[obj.panel_id] = [obj];
-    } else {
-      grouped[obj.panel_id].push(obj);
-    }
-    return grouped;
-  }, {} as { [key: string]: PanelBackend[] });
-};
-
-const sortByLastUpdated = (array: PanelBackend[]): PanelBackend[] => {
-  array.sort(function(a, b) {
-    return (
-      new Date(b.metadata?.last_modified_on as string)?.valueOf() -
-      new Date(a.metadata?.last_modified_on as string)?.valueOf()
-    );
-  });
-  return array;
-};
-
-export const getUniqueMostRecentPanels = (data: PanelBackend[]) => {
-  const grouped = groupByPanelId(data);
-
-  const newestPerGroup = Object.values(grouped).map((arr: PanelBackend[]) => {
-    sortByLastUpdated(arr); // newest first
-    return arr[0]; // pick newest from group
-  });
-
-  newestPerGroup.sort(
-    (a, b) =>
-      new Date(b.metadata?.last_modified_on!).valueOf() -
-      new Date(a.metadata?.last_modified_on!).valueOf()
-  ); // TODO sort also by assigned_on
-
-  return newestPerGroup;
-};
+import { getUniqueMostRecentItems } from '@/utils/helpers';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -94,7 +55,7 @@ export function mappingList(inRec: PanelBackend[]): Panel[] {
 /*****************************************************************************************************************************/
 
 export function GetMockPanelList(mock = MockPanelBackendList): Panel[] {
-  const uniqueResults = mock.length > 1 ? getUniqueMostRecentPanels(mock) : mock;
+  const uniqueResults = mock.length > 1 ? getUniqueMostRecentItems(mock, 'panel_id') : mock;
   return mappingList(uniqueResults);
 }
 
@@ -114,8 +75,8 @@ async function GetPanelList(
       return 'error.API_UNKNOWN_ERROR';
     }
 
-    const uniqueResults =
-      result.data?.length > 1 ? getUniqueMostRecentPanels(result.data) : result.data;
+    const uniqueResults: PanelBackend[] =
+      result.data?.length > 1 ? getUniqueMostRecentItems(result.data, 'panel_id') : result.data;
     return mappingList(uniqueResults);
   } catch (e) {
     if (e instanceof Error) {

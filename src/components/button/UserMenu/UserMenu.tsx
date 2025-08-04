@@ -39,17 +39,6 @@ export default function ButtonUserMenu({
   const username = accounts.length > 0 ? accounts[0].name : '';
   const photo = isAuthenticated ? getPhoto() : null;
 
-  // console.log('TREVOR accounts', accounts[0], photo);
-  // const permissions = useUserRoles();
-
-  /* TODO : TREVOR : Keep until we can confirm we have all the permissions
-  React.useEffect(() => {
-    if (accounts) {
-      console.log('TREVOR PERMISSIONS', permissions);
-    }
-  }, [accounts]);
-  */
-
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     if (onClick) {
       onClick();

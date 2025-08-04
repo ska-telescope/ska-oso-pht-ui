@@ -28,6 +28,7 @@ import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProp
 import { ProposalReview } from '@/utils/types/proposalReview';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import ObservatoryData from '@/utils/types/observatoryData';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 interface ReviewEntryProps {
   reviewType: string;
@@ -56,6 +57,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
 
   const getProposal = () => application.content2 as Proposal;
+  const authClient = useAxiosAuthClient();
 
   const getUser = () => 'DefaultUser'; // TODO
 
@@ -87,7 +89,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           hasConflict: false,
           reason: ''
         },
-        excludedFromDecision: false
+        excludedFromDecision: 'false'
       },
       comments: generalComments,
       srcNet: srcNetComments,
@@ -123,6 +125,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const createReview = async (submitted = false) => {
     const response: string | { error: string } = await PostProposalReview(
+      authClient,
       getReview(submitted),
       getCycleId()
     );
@@ -136,6 +139,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const updateReview = async (submitted = false) => {
     const response: string | { error: string } = await PostProposalReview(
+      authClient,
       getReview(submitted),
       getCycleId()
     );
@@ -205,7 +209,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       const selectedFile =
         `${proposal.id}-` + t(`pdfDownload.${pdfLabel}.label`) + t('fileType.pdf');
 
-      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
 
       if (
         signedUrl === t('pdfDownload.sampleData') ||

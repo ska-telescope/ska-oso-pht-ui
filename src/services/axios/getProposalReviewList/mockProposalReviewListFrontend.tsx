@@ -23,7 +23,7 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
         hasConflict: false,
         reason: ''
       },
-      excludedFromDecision: false
+      excludedFromDecision: 'false'
     },
     comments: 'recommended even more',
     srcNet: 'great proposal',
@@ -52,7 +52,7 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
         hasConflict: false,
         reason: ''
       },
-      excludedFromDecision: false
+      excludedFromDecision: 'false'
     },
     comments: 'ok',
     srcNet: '',
@@ -81,7 +81,7 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
         hasConflict: true,
         reason: 'bias in proposal'
       },
-      excludedFromDecision: true
+      excludedFromDecision: 'true'
     },
     comments: 'recommend for approval',
     srcNet: 'recommend as well',
