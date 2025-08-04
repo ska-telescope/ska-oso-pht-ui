@@ -349,7 +349,8 @@ export default function ReviewDashboard() {
             label={'Telescope'}
           />
         </Grid2>
-        <Grid2 size={{ sm: 2 }}>
+        {/* note: Hide for now as requested */}
+        {/* <Grid2 size={{ sm: 2 }}>
           <DropDown
             options={[
               { value: '', label: 'All' },
@@ -370,7 +371,7 @@ export default function ReviewDashboard() {
             testId="effectiveResolution"
             value={search}
           />
-        </Grid2>
+        </Grid2> */}
         <Grid2 size={{ sm: 2 }}>
           <ResetButton
             action={() => {
