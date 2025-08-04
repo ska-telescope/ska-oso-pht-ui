@@ -18,7 +18,7 @@ import {
   clickUserMenuProposals,
   clickUserMenuReviews,
   initialize,
-  getProposals,
+  getSubmittedProposals,
   verifyMockedAPICall,
   getReviewers,
   clickLinkedTickdBox,
@@ -30,7 +30,7 @@ const panelName = Math.floor(Math.random() * 10000000).toString(); // name shoul
 describe('Review Coordinator', () => {
   beforeEach(() => {
     initialize();
-    getProposals(); // Load mocked proposals fixture
+    getSubmittedProposals(); // Load mocked proposals fixture
     getReviewers(); // Load mocked reviewers fixture
   });
   it('Navigate using the dropdown menu and then the overview panels', () => {
@@ -64,7 +64,8 @@ describe('Review Coordinator', () => {
   it('Display a list of proposals', () => {
     clickUserMenuPanels();
     clickFirstPanel();
-    clickPanelProposalsTab();
+    clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
+    verifyMockedAPICall('@getSubmittedProposals');
     verifyProposalOnGridIsVisible('The Milky Way View');
     verifyProposalOnGridIsVisible('In a galaxy far, far away');
   });
@@ -85,7 +86,7 @@ describe('Review Coordinator', () => {
     clickUserMenuPanels();
     clickFirstPanel();
     clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
-    verifyMockedAPICall('@getProposals');
+    verifyMockedAPICall('@getSubmittedProposals');
     clickLinkedTickdBox(0);
     verifyTickBoxIsSelected(0);
   });

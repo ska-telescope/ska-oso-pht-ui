@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Grid2 from '@mui/material/Grid2';
 import useTheme from '@mui/material/styles/useTheme';
-import { DropDown, TextEntry, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
+import { DropDown, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import { ReactNode } from 'react';
 import { Typography } from '@mui/material';
