@@ -31,10 +31,10 @@ function getScienceReviewType(scienceReview: ScienceReviewBackend): ScienceRevie
   return {
     kind: scienceReview.kind,
     excludedFromDecision:
-      scienceReview.excluded_from_decision === 'false' ||
-      scienceReview.excluded_from_decision === 'False'
-        ? false
-        : true,
+      scienceReview.excluded_from_decision === 'true' ||
+      scienceReview.excluded_from_decision === 'True'
+        ? true
+        : false,
     rank: scienceReview.rank,
     conflict: {
       hasConflict: scienceReview.conflict.has_conflict,
