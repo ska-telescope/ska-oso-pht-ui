@@ -157,10 +157,10 @@ export default function ReviewDashboard() {
         numProposal: reviewer.reviewGroupByReviewerProposal.length,
         numReviewed:
           (reviewer.value.filter(review => review.reviewStatus === 'Decided').length * 100) /
-          reviewer.value.length, //TODO: pdm has no status called reviewed, use Decided for now
+          reviewer.value.length,
         numPendingReview:
           (reviewer.value.filter(review => review.reviewStatus === 'To Do').length * 100) /
-          reviewer.value.length //TODO: do we need in progress?
+          reviewer.value.length
       };
     });
 
@@ -202,10 +202,10 @@ export default function ReviewDashboard() {
           numReviewed:
             (scienceCategory.value.filter(review => review.reviewStatus === 'Decided').length *
               100) /
-            scienceCategory.value.length, //TODO: pdm has no status called reviewed, use Decided for now
+            scienceCategory.value.length,
           numPendingReview:
             (scienceCategory.value.filter(review => review.reviewStatus === 'To Do').length * 100) /
-            scienceCategory.value.length //TODO: do we need in progress?
+            scienceCategory.value.length
         };
       }
     );
