@@ -23,6 +23,7 @@ import Notification from '../../utils/types/notification';
 import { validateSciencePage } from '../../utils/proposalValidation';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
 import { useMockedLogin } from '@/contexts/MockedLoginContext';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 const PAGE = 3;
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
@@ -44,6 +45,7 @@ export default function SciencePage() {
 
   const { isMockedLoggedIn } = useMockedLogin();
   const loggedIn = isLoggedIn();
+  const authClient = useAxiosAuthClient();
 
   const isDisableEndpoints = () => !loggedIn && !isMockedLoggedIn;
 
@@ -82,7 +84,7 @@ export default function SciencePage() {
 
     try {
       const proposal = getProposal();
-      const signedUrl = await GetPresignedUploadUrl(`${proposal.id}-science.pdf`);
+      const signedUrl = await GetPresignedUploadUrl(authClient, `${proposal.id}-science.pdf`);
 
       if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
 
@@ -113,7 +115,7 @@ export default function SciencePage() {
     try {
       const proposal = getProposal();
       const selectedFile = `${proposal.id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
-      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
 
       if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {
         window.open(signedUrl, '_blank');
@@ -126,7 +128,7 @@ export default function SciencePage() {
   const deletePdfUsingSignedUrl = async () => {
     try {
       const proposal = getProposal();
-      const signedUrl = await GetPresignedDeleteUrl(`${proposal.id}-science.pdf`);
+      const signedUrl = await GetPresignedDeleteUrl(authClient, `${proposal.id}-science.pdf`);
 
       if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
 
@@ -157,7 +159,7 @@ export default function SciencePage() {
     try {
       const proposal = getProposal();
       const selectedFile = `${proposal.id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
-      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
 
       if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {
         setCurrentFile(signedUrl);

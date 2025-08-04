@@ -20,6 +20,7 @@ UNRELEASED
 * Changed Band 5b to pass mid_band_5b
 * Added new OSD endpoint to retrieve observatory data
 * Changed existing constants to use osd data where available
+* Updated to oso-services v2.0.0
 
 2.0.0
 
