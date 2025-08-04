@@ -128,9 +128,9 @@ export default function TableReviewDecision({
 
   const calculateRank = (details: Array<any>) => {
     if (!details || details?.length === 0) return 0;
-    const filtered = details.filter(el => el.reviewType.excludedFromDecision === false);
+    const filtered = details?.filter(el => el?.reviewType?.excludedFromDecision === false);
     const average =
-      filtered.reduce((sum, detail) => sum + detail.reviewType.rank, 0) / filtered.length;
+      filtered.reduce((sum, detail) => sum + detail?.reviewType?.rank, 0) / filtered?.length;
     return Math.round((average + Number.EPSILON) * 100) / 100;
   };
 
