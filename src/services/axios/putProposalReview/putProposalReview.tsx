@@ -30,7 +30,11 @@ function getTechnicalReviewType(technicalReview: TechnicalReviewBackend): Techni
 function getScienceReviewType(scienceReview: ScienceReviewBackend): ScienceReview {
   return {
     kind: scienceReview.kind,
-    excludedFromDecision: scienceReview.excluded_from_decision,
+    excludedFromDecision:
+      scienceReview.excluded_from_decision === 'false' ||
+      scienceReview.excluded_from_decision === 'False'
+        ? false
+        : true,
     rank: scienceReview.rank,
     conflict: {
       hasConflict: scienceReview.conflict.has_conflict,
