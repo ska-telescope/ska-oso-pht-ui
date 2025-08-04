@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Grid2 from '@mui/material/Grid2';
-import useTheme from '@mui/material/styles/useTheme';
-import { DropDown, TextEntry, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
+import { DropDown, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import { ReactNode } from 'react';
 import { Typography } from '@mui/material';
@@ -56,12 +55,11 @@ const ResizablePanel = ({ children, title }: { children: ReactNode; title: strin
 
 export default function ReviewDashboard() {
   const { t } = useTranslation('pht');
-  const theme = useTheme(); // keep to fix dark mode pie chart
   const [filter, setFilter] = useState({ telescope: '', country: '' });
   const [search, setSearch] = useState('');
   const [currentReport, setCurrentReport] = React.useState([]);
   const [filteredReport, setFilteredReport] = React.useState([]);
-  const [axiosError, setAxiosError] = React.useState(''); // TODO: update to display axiosError
+  const [, setAxiosError] = React.useState(''); // TODO: update to display axiosError
   const [proposalPieChartData, setProposalPieChartData] = React.useState([]);
   const [reviewPieChartData, setReviewPieChartData] = React.useState([]);
   const [scienceCategoryPieChartData, setScienceCategoryPieChartData] = React.useState([]);

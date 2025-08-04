@@ -23,6 +23,7 @@ import DeleteButton from '../../components/button/Delete/Delete';
 import Notification from '../../utils/types/notification';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
 import { useMockedLogin } from '@/contexts/MockedLoginContext';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 const PAGE = 6;
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
@@ -51,6 +52,7 @@ export default function TechnicalPage() {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+  const authClient = useAxiosAuthClient();
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
@@ -82,7 +84,7 @@ export default function TechnicalPage() {
 
     try {
       const proposal = getProposal();
-      const signedUrl = await GetPresignedUploadUrl(`${proposal.id}-technical.pdf`);
+      const signedUrl = await GetPresignedUploadUrl(authClient, `${proposal.id}-technical.pdf`);
 
       if (typeof signedUrl != 'string') new Error('Not able to Get Technical PDF Upload URL');
 
@@ -113,7 +115,7 @@ export default function TechnicalPage() {
     try {
       const proposal = getProposal();
       const selectedFile = `${proposal.id}-` + t('pdfDownload.technical.label') + t('fileType.pdf');
-      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
 
       if (signedUrl === t('pdfDownload.sampleData') || proposal.technicalPDF != null) {
         window.open(signedUrl, '_blank');
@@ -126,7 +128,7 @@ export default function TechnicalPage() {
   const deletePdfUsingSignedUrl = async () => {
     try {
       const proposal = getProposal();
-      const signedUrl = await GetPresignedDeleteUrl(`${proposal.id}-technical.pdf`);
+      const signedUrl = await GetPresignedDeleteUrl(authClient, `${proposal.id}-technical.pdf`);
 
       if (typeof signedUrl != 'string') new Error('Not able to Get Technical PDF Upload URL');
 
@@ -158,7 +160,7 @@ export default function TechnicalPage() {
     try {
       const proposal = getProposal();
       const selectedFile = `${proposal.id}-` + t('pdfDownload.technical.label') + t('fileType.pdf');
-      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
 
       if (signedUrl === t('pdfDownload.sampleData') || proposal.technicalPDF != null) {
         setCurrentFile(signedUrl);
