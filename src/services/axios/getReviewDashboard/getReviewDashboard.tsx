@@ -1,16 +1,11 @@
-import axios from 'axios';
 import {
   OSO_SERVICES_REPORT_PATH,
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
 } from '../../../utils/constants';
-import { MockPanelDecisionBackend } from '../postPanelDecision/mockPanelDecisionBackend';
-import { mappingPanelDecisionBackendToFrontend } from '../putPanelDecision/putPanelDecision';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { mockReviewDashboard } from './mockReviewDashboard';
-import { PanelDecision } from '@/utils/types/panelDecision';
 import { ReviewDashboard, ReviewDashboardBackend } from '@/utils/types/reviewDashboard';
-import { helpers } from '@/utils/helpers';
 
 export function getMockReviewDashboard(): ReviewDashboard[] {
   return mappingReviewDashboardBackendToFrontend(mockReviewDashboard);

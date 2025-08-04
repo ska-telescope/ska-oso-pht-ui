@@ -1,17 +1,10 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import Grid2 from '@mui/material/Grid2';
 import useTheme from '@mui/material/styles/useTheme';
-import {
-  DateEntry,
-  DropDown,
-  TextEntry,
-  SPACER_VERTICAL,
-  Spacer
-} from '@ska-telescope/ska-gui-components';
+import { DropDown, TextEntry, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import { ReactNode } from 'react';
-import { Card, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import groupBy from 'lodash/groupBy';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -20,53 +13,14 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
-import { proposals } from './mocked';
-import { BANNER_PMT_SPACER, PATH, PMT } from '@/utils/constants';
-import GridProposals from '@/components/grid/proposals/GridProposals';
-import GridReviewers from '@/components/grid/reviewers/GridReviewers';
-import GridReviewPanels from '@/components/grid/reviewPanels/GridReviewPanels';
-import CardTitle from '@/components/cards/cardTitle/CardTitle';
+import { BANNER_PMT_SPACER } from '@/utils/constants';
 import D3PieChart from '@/components/charts/D3PieChart';
-import { D3ChartSelector } from '@/components/charts/D3ChartSelector';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
-import D3BarChartWithToggle from '@/components/charts/D3BarChartWithToggle';
 import ResetButton from '@/components/button/Reset/Reset';
 import getReviewDashboard from '@/services/axios/getReviewDashboard/getReviewDashboard';
-import { ReviewDashboard as ReviewDashboardType } from '@/utils/types/reviewDashboard';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
-const MIN_CARD_WIDTH = 350;
-const CARD_HEIGHT = '45vh';
-const CONTENT_HEIGHT = `calc(${CARD_HEIGHT} - 140px)`;
 const REFRESH_TIME = 5 * 60 * 1000;
-
-function groupByField(
-  data: typeof proposals,
-  field: keyof typeof proposals[0],
-  filters: { telescope: string; country: string },
-  search: string
-) {
-  const filtered = data.filter(d => {
-    const searchMatch = Object.values(d).some(v =>
-      String(v)
-        .toLowerCase()
-        .includes(search.toLowerCase())
-    );
-    return (
-      (!filters.telescope || d.telescope === filters.telescope) &&
-      (!filters.country || d.country === filters.country) &&
-      (!search || searchMatch)
-    );
-  });
-
-  const counts = filtered.reduce((acc, item) => {
-    const key = item[field];
-    acc[key] = (acc[key] || 0) + 1;
-    return acc;
-  }, {} as Record<string, number>);
-
-  return Object.entries(counts).map(([name, value]) => ({ name, value }));
-}
 
 const ResizablePanel = ({ children, title }: { children: ReactNode; title: string }) => (
   <div
@@ -102,13 +56,12 @@ const ResizablePanel = ({ children, title }: { children: ReactNode; title: strin
 
 export default function ReviewDashboard() {
   const { t } = useTranslation('pht');
-  const navigate = useNavigate();
-  const theme = useTheme();
+  const theme = useTheme(); // keep to fix dark mode pie chart
   const [filter, setFilter] = useState({ telescope: '', country: '' });
   const [search, setSearch] = useState('');
   const [currentReport, setCurrentReport] = React.useState([]);
   const [filteredReport, setFilteredReport] = React.useState([]);
-  const [axiosError, setAxiosError] = React.useState('');
+  const [axiosError, setAxiosError] = React.useState(''); // TODO: update to display axiosError
   const [proposalPieChartData, setProposalPieChartData] = React.useState([]);
   const [reviewPieChartData, setReviewPieChartData] = React.useState([]);
   const [scienceCategoryPieChartData, setScienceCategoryPieChartData] = React.useState([]);
@@ -117,37 +70,10 @@ export default function ReviewDashboard() {
   const [panelScienceCategoryTableData, setPanelScienceCategoryTableData] = React.useState([]);
   const authClient = useAxiosAuthClient();
 
-  const onPanelClick = (thePath: string) => {
-    if (thePath?.length > 0) {
-      navigate(thePath);
-    }
-  };
-
-  const panelButton = (title: string, toolTip: string, nav: string) => (
-    <Grid2 m={2} data-testid={title} minWidth={MIN_CARD_WIDTH}>
-      <Card data-testid={title}>
-        <CardTitle
-          className={''}
-          code={t(title)[0].toUpperCase()}
-          colorAvatarBG={theme.palette.primary.contrastText}
-          colorAvatarFG={theme.palette.primary.main}
-          colorCardBG={theme.palette.primary.main}
-          colorCardFG={theme.palette.primary.contrastText}
-          id={title}
-          onClick={() => onPanelClick(nav)}
-          title={t(title)}
-          toolTip={t(toolTip)}
-        />
-      </Card>
-    </Grid2>
-  );
-
   const calculateAllStats = report => {
     /**
      * Group by Panel ID then separate node for group by Proposa ID and Reviewer ID
      */
-
-    console.log('calculateAllStats filter');
 
     const reportGroupByPanal = groupBy(report, 'panelId');
     const reportGroupByPanalWithKeys = Object.entries(reportGroupByPanal).map(([key, value]) => ({
@@ -187,9 +113,9 @@ export default function ReviewDashboard() {
           (panel.value.filter(review => review.reviewStatus === 'Decided').length * 100) /
           panel.value.length,
         pendingReviewedPercentage:
-          (panel.value.filter(review => review.reviewStatus === 'In Progress').length * 100) /
+          (panel.value.filter(review => review.reviewStatus === 'To Do').length * 100) /
           panel.value.length,
-        numExcludedReviews:
+        numInProgressReviews:
           (panel.value.filter(review => review.reviewStatus === 'In Progress').length * 100) /
           panel.value.length
       };
@@ -209,10 +135,7 @@ export default function ReviewDashboard() {
       })
     );
 
-    console.log('reportGroupByReviewerWithKeys', reportGroupByReviewerWithKeys);
-
     const reportGroupByReivewersThenProposals = reportGroupByReviewerWithKeys.map(reviewer => {
-      console.log('reviewer item', reviewer);
       const groupByProposal = Object.entries(groupBy(reviewer.value, 'prslId')).map(
         ([key, value]) => ({
           prslId: key,
@@ -257,7 +180,6 @@ export default function ReviewDashboard() {
 
     const reportGroupByScienceCategoryThenProposals = reportGroupByScienceCategoryWithKeys.map(
       scienceCategory => {
-        console.log('reviewer item', scienceCategory);
         const groupByProposal = Object.entries(groupBy(scienceCategory.value, 'prslId')).map(
           ([key, value]) => ({
             prslId: key,
@@ -270,11 +192,6 @@ export default function ReviewDashboard() {
           reviewGroupByScienceCategoryProposal: groupByProposal
         };
       }
-    );
-
-    console.log(
-      'reportGroupByScienceCategoryThenProposals',
-      reportGroupByScienceCategoryThenProposals
     );
 
     const resultScienceCategoryTable = reportGroupByScienceCategoryThenProposals.map(
@@ -293,8 +210,6 @@ export default function ReviewDashboard() {
       }
     );
 
-    console.log('resultScienceCategoryTable', resultScienceCategoryTable);
-
     setPanelScienceCategoryTableData(resultScienceCategoryTable);
 
     //Pie chart data
@@ -307,7 +222,6 @@ export default function ReviewDashboard() {
       }
     );
 
-    console.log('resultScienceCategoryPieChart', resultScienceCategoryPieChart);
     setScienceCategoryPieChartData(resultScienceCategoryPieChart);
 
     /**
@@ -321,8 +235,6 @@ export default function ReviewDashboard() {
         value: value
       })
     );
-
-    console.log('reportGroupByassignedProposalWithKeys', reportGroupByassignedProposalWithKeys);
 
     const reportGroupByAssignedProposalThenProposals = reportGroupByassignedProposalWithKeys.map(
       assignedProposal => {
@@ -340,11 +252,6 @@ export default function ReviewDashboard() {
       }
     );
 
-    console.log(
-      'reportGroupByAssignedProposalThenProposals',
-      reportGroupByAssignedProposalThenProposals
-    );
-
     const resultProposalPieChart = reportGroupByAssignedProposalThenProposals.map(
       assignedProposal => {
         return {
@@ -353,7 +260,6 @@ export default function ReviewDashboard() {
         };
       }
     );
-    console.log('resultProposalPieChart', resultProposalPieChart);
 
     setProposalPieChartData(resultProposalPieChart);
 
@@ -369,8 +275,6 @@ export default function ReviewDashboard() {
         value: value.length
       })
     );
-
-    console.log('resultReviewStatusPieChart', resultReviewStatusPieChart);
 
     setReviewPieChartData(resultReviewStatusPieChart);
   };
@@ -400,8 +304,6 @@ export default function ReviewDashboard() {
       }
     });
 
-    console.log('filteredReport', filteredReport);
-
     return filteredReport;
   };
 
@@ -416,12 +318,11 @@ export default function ReviewDashboard() {
   }, []);
 
   React.useEffect(() => {
-    //generate data for all chart
     calculateAllStats(filteredReport);
   }, [filteredReport]);
 
   React.useEffect(() => {
-    //currently we are not filtering country / search
+    // currently we are not filtering country / search
 
     const filteredReport = filterReport(currentReport);
 
@@ -485,51 +386,24 @@ export default function ReviewDashboard() {
       <Grid2 container spacing={2} px={5} py={3} pb={10}>
         <Grid2>
           <ResizablePanel title="Proposal Assigned">
-            <D3PieChart
-              // data={proposalStatusData}
-              data={proposalPieChartData}
-              showTotal={true}
-              //centerText={proposalStatusData.reduce((sum, d) => sum + d.value, 0).toString()}
-            />
+            <D3PieChart data={proposalPieChartData} showTotal={true} />
           </ResizablePanel>
         </Grid2>
         <Grid2>
           <ResizablePanel title="Status of Review">
-            <D3PieChart
-              data={reviewPieChartData}
-              showTotal={true}
-              // centerText={scienceCategoryData.reduce((sum, d) => sum + d.value, 0).toString()}
-            />
+            <D3PieChart data={reviewPieChartData} showTotal={true} />
           </ResizablePanel>
         </Grid2>
         <Grid2>
           <ResizablePanel title="Science Categories">
-            <D3PieChart
-              data={scienceCategoryPieChartData}
-              showTotal={true}
-              // centerText={scienceCategoryData.reduce((sum, d) => sum + d.value, 0).toString()}
-            />
+            <D3PieChart data={scienceCategoryPieChartData} showTotal={true} />
           </ResizablePanel>
         </Grid2>
-        {/* <Grid2>
-          <ResizablePanel title="Reviewer Rank Distribution">
-            <D3BarChartWithToggle
-              data={proposals}
-              groupByOptions={['status', 'category', 'country']}
-              allFields={['rank', 'telescope']}
-            />
-          </ResizablePanel>
-        </Grid2> */}
-        {/* <Grid2>
-          <ResizablePanel title="New Rank Distribution">
-            <D3ChartSelector data={proposals} />
-          </ResizablePanel>
-        </Grid2> */}
-
         <Grid2>
-          <ResizablePanel title={'No Title in ticket'}>
+          <ResizablePanel title={'Review Distribution across Panels'}>
             <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              {/* TODO: refactor the grid / resizable panel - note: minWidth 560+560+16+16 from pie charts */}
+              <Table sx={{ minWidth: 1712 }}>
                 <TableHead>
                   <TableRow>
                     <TableCell>Panel ID</TableCell>
@@ -538,7 +412,7 @@ export default function ReviewDashboard() {
                     <TableCell align="right">Number of Proposals</TableCell>
                     <TableCell align="right">Reviewed (%)</TableCell>
                     <TableCell align="right">Pending Review (%)</TableCell>
-                    <TableCell align="right">Number of Excluded Reviews</TableCell>
+                    <TableCell align="right">In Progress (%)</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
@@ -550,12 +424,12 @@ export default function ReviewDashboard() {
                       <TableCell component="th" scope="row">
                         {row.panelId}
                       </TableCell>
-                      <TableCell align="right">{row.panelName}</TableCell>
+                      <TableCell>{row.panelName}</TableCell>
                       <TableCell align="right">{row.numReviewer}</TableCell>
                       <TableCell align="right">{row.numProposal}</TableCell>
                       <TableCell align="right">{row.totalReviewedPercentage}</TableCell>
                       <TableCell align="right">{row.pendingReviewedPercentage}</TableCell>
-                      <TableCell align="right">{row.numExcludedReviews}</TableCell>
+                      <TableCell align="right">{row.numInProgressReviews}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>
@@ -565,9 +439,9 @@ export default function ReviewDashboard() {
         </Grid2>
 
         <Grid2>
-          <ResizablePanel title={'No Title in ticket 2'}>
+          <ResizablePanel title={'Review Distribution across Reviewers'}>
             <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <Table sx={{ minWidth: 1712 }}>
                 <TableHead>
                   <TableRow>
                     <TableCell>Panel ID</TableCell>
@@ -587,8 +461,8 @@ export default function ReviewDashboard() {
                       <TableCell component="th" scope="row">
                         {row.panelId}
                       </TableCell>
-                      <TableCell align="right">{row.panelName}</TableCell>
-                      <TableCell align="right">{row.reviewerId}</TableCell>
+                      <TableCell>{row.panelName}</TableCell>
+                      <TableCell>{row.reviewerId}</TableCell>
                       <TableCell align="right">{row.numProposal}</TableCell>
                       <TableCell align="right">{row.numReviewed}</TableCell>
                       <TableCell align="right">{row.numPendingReview}</TableCell>
@@ -601,13 +475,13 @@ export default function ReviewDashboard() {
         </Grid2>
 
         <Grid2>
-          <ResizablePanel title={'No Title in ticket 3'}>
+          <ResizablePanel title={'Review Distribution across Science Category'}>
             <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 650 }} aria-label="simple table">
+              <Table sx={{ minWidth: 1712 }}>
                 <TableHead>
                   <TableRow>
                     <TableCell>Science Category</TableCell>
-                    <TableCell>Number of Proposal</TableCell>
+                    <TableCell align="right">Number of Proposal</TableCell>
                     <TableCell align="right">Reviewed (%)</TableCell>
                     <TableCell align="right">Pending Review (%)</TableCell>
                   </TableRow>
@@ -629,22 +503,6 @@ export default function ReviewDashboard() {
                 </TableBody>
               </Table>
             </TableContainer>
-          </ResizablePanel>
-        </Grid2>
-
-        <Grid2>
-          <ResizablePanel title={t('panels.label')}>
-            <GridReviewPanels height={CONTENT_HEIGHT} updatedData={null} listOnly />
-          </ResizablePanel>
-        </Grid2>
-        <Grid2>
-          <ResizablePanel title={t('reviewProposalList.title')}>
-            <GridReviewers height={CONTENT_HEIGHT} />
-          </ResizablePanel>
-        </Grid2>
-        <Grid2>
-          <ResizablePanel title={t('homeBtn.title')}>
-            <GridProposals height={CONTENT_HEIGHT} />
           </ResizablePanel>
         </Grid2>
       </Grid2>
