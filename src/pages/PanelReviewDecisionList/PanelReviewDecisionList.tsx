@@ -5,8 +5,7 @@ import { AlertColorTypes, SearchEntry } from '@ska-telescope/ska-gui-components'
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import moment from 'moment';
-import GetProposalList from '../../services/axios/getProposalList/getProposalList';
-import { BANNER_PMT_SPACER, PANEL_DECISION_STATUS } from '../../utils/constants';
+import { BANNER_PMT_SPACER, PANEL_DECISION_STATUS, PROPOSAL_STATUS } from '../../utils/constants';
 import Proposal from '../../utils/types/proposal';
 import { FOOTER_SPACER } from '../../utils/constants';
 
@@ -22,6 +21,7 @@ import getPanelDecisionList from '@/services/axios/getPanelDecisionList/getPanel
 import { PanelDecision } from '@/utils/types/panelDecision';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import GetProposalByStatusList from '@/services/axios/getProposalByStatusList/getProposalByStatusList';
 import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProposalReview';
 
 /*
@@ -33,8 +33,6 @@ import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProp
  * 4. Combine the data into a single array of objects
  *
  * NOTE
- * Step 1 : There is not a endpoint to retrieve all proposals by status, so all are currently retrieved
- *
  * Step 2 is currently inefficient as the appropriate endpoint is not available
  * In the meantime, the list of proposals is being retrieved and being filtered
  */
@@ -163,7 +161,7 @@ export default function ReviewDecisionListPage() {
 
   React.useEffect(() => {
     const fetchProposalData = async () => {
-      const response = await GetProposalList(authClient); // TODO : Temporary implementation to get all proposals
+      const response = await GetProposalByStatusList(authClient, PROPOSAL_STATUS.SUBMITTED); // TODO : Temporary implementation to get all proposals
       if (typeof response === 'string') {
         NotifyError(response);
       } else {

@@ -7,6 +7,7 @@ import {
 import { mappingPanelDecisionBackendToFrontend } from '../putPanelDecision/putPanelDecision';
 import { MockPanelDecisionBackendList } from './mockPanelDecisionBackendList';
 import { PanelDecision, PanelDecisionBackend } from '@/utils/types/panelDecision';
+import { getUniqueMostRecentItems } from '@/utils/helpers';
 
 export function mappingList(
   panelDecisionList: PanelDecisionBackend[],
@@ -34,7 +35,9 @@ async function getPanelDecisionList(cycleId: string): Promise<PanelDecision[] | 
     if (!result || !Array.isArray(result.data)) {
       return 'error.API_UNKNOWN_ERROR';
     }
-    return mappingList(result.data, cycleId) as PanelDecision[];
+    const uniqueResults: PanelDecisionBackend[] =
+      result.data?.length > 1 ? getUniqueMostRecentItems(result.data, 'decision_id') : result.data;
+    return mappingList(uniqueResults, cycleId) as PanelDecision[];
   } catch (e) {
     if (e instanceof Error) {
       return e.message;

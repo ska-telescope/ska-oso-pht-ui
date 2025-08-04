@@ -23,7 +23,7 @@ export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
         has_conflict: false,
         reason: ''
       },
-      excluded_from_decision: false
+      excluded_from_decision: 'False'
     },
     comments: 'ok',
     src_net: '',
@@ -52,7 +52,7 @@ export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
         has_conflict: true,
         reason: 'bias in proposal'
       },
-      excluded_from_decision: true
+      excluded_from_decision: 'True'
     },
     comments: 'recommend for approval',
     src_net: 'recommend as well',
@@ -81,7 +81,7 @@ export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
         has_conflict: false,
         reason: ''
       },
-      excluded_from_decision: false
+      excluded_from_decision: 'False'
     },
     comments: 'recommended',
     src_net: 'great proposal',
@@ -110,7 +110,7 @@ export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
         has_conflict: false,
         reason: ''
       },
-      excluded_from_decision: false
+      excluded_from_decision: 'False'
     },
     comments: 'recommended even more',
     src_net: 'great proposal',

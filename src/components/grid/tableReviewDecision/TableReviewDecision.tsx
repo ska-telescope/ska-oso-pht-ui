@@ -273,7 +273,7 @@ export default function TableReviewDecision({
                       </Typography>
                     </TableCell>
                     <TableCell role="gridcell">
-                      <Typography variant="body2">{calculateRank(item.decisions)}</Typography>
+                      <Typography variant="body2">{calculateRank(item.reviews)}</Typography>
                     </TableCell>
                     <TableCell role="gridcell">
                       <Box sx={{ display: 'flex', gap: 0.5 }}>
@@ -389,7 +389,7 @@ export default function TableReviewDecision({
                                       gap={1}
                                       wrap="nowrap"
                                     >
-                                      <Grid2 pt={1}>
+                                      <Grid2>
                                         <IconButton
                                           onClick={() => excludeFunction(detail)}
                                           style={{ cursor: 'hand' }}
