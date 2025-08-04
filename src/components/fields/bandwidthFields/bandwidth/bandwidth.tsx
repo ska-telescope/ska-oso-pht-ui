@@ -8,7 +8,7 @@ import {
   OBSERVATION,
   TELESCOPE_LOW_NUM,
   TYPE_ZOOM
-} from '../../../../utils/constants';
+} from '@utils/constants.ts';
 import sensCalHelpers from '../../../../services/axios/sensitivityCalculator/sensCalHelpers';
 import {
   scaleBandwidthOrFrequency,
@@ -33,7 +33,6 @@ interface BandwidthFieldProps {
   centralFrequency?: number;
   centralFrequencyUnits?: number;
   subarrayConfig?: number;
-  setScaledBandwidth?: Function;
   minimumChannelWidthHz?: number;
 }
 
@@ -52,7 +51,6 @@ export default function BandwidthField({
   centralFrequency = 0,
   centralFrequencyUnits,
   subarrayConfig = 0,
-  setScaledBandwidth,
   minimumChannelWidthHz = 0
 }: BandwidthFieldProps) {
   const { t } = useTranslation('pht');
@@ -105,9 +103,6 @@ export default function BandwidthField({
     const bandwidthValue = getBandwidthValue();
     const frequencyUnitsLabel = getFrequencyUnitsLabelFunc();
     const scaledBandwidth = scaleBandwidthOrFrequency(bandwidthValue, bandwidthUnitsLabel);
-    if (setScaledBandwidth) {
-      setScaledBandwidth(scaledBandwidth);
-    }
     const scaledFrequency = scaleBandwidthOrFrequency(centralFrequency, frequencyUnitsLabel ?? '');
 
     if (!checkMinimumChannelWidth(minimumChannelWidthHz, scaledBandwidth)) {

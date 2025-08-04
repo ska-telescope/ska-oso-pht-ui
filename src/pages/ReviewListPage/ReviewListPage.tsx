@@ -11,7 +11,6 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { presentDate, presentLatex, presentTime } from '@utils/present/present';
-import GetProposalList from '../../services/axios/getProposalList/getProposalList';
 import GetProposalReviewList from '../../services/axios/getProposalReviewList/getProposalReviewList';
 import GetProposal from '../../services/axios/getProposal/getProposal';
 import {
@@ -19,7 +18,8 @@ import {
   BANNER_PMT_SPACER,
   PANEL_DECISION_STATUS,
   REVIEW_TYPE,
-  TECHNICAL_FEASIBILITY
+  TECHNICAL_FEASIBILITY,
+  PROPOSAL_STATUS
 } from '../../utils/constants';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
@@ -38,6 +38,7 @@ import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProposalReview';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import GetProposalByStatusList from '@/services/axios/getProposalByStatusList/getProposalByStatusList';
 
 /*
  * Process for retrieving the data for the list
@@ -48,8 +49,6 @@ import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient
  * 4. Combine the data into a single array of objects
  *
  * NOTE
- * Step 1 : There is not a endpoint to retrieve all proposals by status, so all are currently retrieved
- *
  * Step 2 is currently inefficient as the appropriate endpoint is not available
  * In the meantime, the list of proposals is being retrieved and being filtered
  */
@@ -96,7 +95,7 @@ export default function ReviewListPage() {
 
   React.useEffect(() => {
     const fetchProposalData = async () => {
-      const response = await GetProposalList(authClient); // TODO : Temporary implementation to get all proposals
+      const response = await GetProposalByStatusList(authClient, PROPOSAL_STATUS.SUBMITTED); // TODO : Temporary implementation to get all submitted proposals
       if (typeof response === 'string') {
         NotifyError(response);
       } else {

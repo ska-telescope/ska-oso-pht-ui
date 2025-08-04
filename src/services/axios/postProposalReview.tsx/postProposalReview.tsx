@@ -28,13 +28,23 @@ function getTechnicalReviewType(technicalReview: TechnicalReview): TechnicalRevi
 function getScienceReviewType(scienceReview: ScienceReview): ScienceReviewBackend {
   return {
     kind: scienceReview.kind,
-    excluded_from_decision: scienceReview.excludedFromDecision,
+    excluded_from_decision: scienceReview.excludedFromDecision ? 'True' : 'False',
     rank: scienceReview.rank,
     conflict: {
       has_conflict: scienceReview.conflict.hasConflict,
       reason: scienceReview.conflict.reason
     }
   };
+}
+
+function getSubmittedOnDate(review: ProposalReview, mocked: boolean): string | null {
+  if (mocked) {
+    return review.submittedOn;
+  }
+  if (review.submittedBy) {
+    return new Date().toISOString();
+  }
+  return null;
 }
 
 export function mappingReviewFrontendToBackend(
@@ -46,7 +56,7 @@ export function mappingReviewFrontendToBackend(
     review_id: review.id,
     panel_id: review.panelId,
     cycle: review.cycle ? review.cycle : cycleId,
-    submitted_on: review.submittedBy || mocked ? new Date().toISOString() : null,
+    submitted_on: getSubmittedOnDate(review, mocked),
     submitted_by: review.submittedBy,
     reviewer_id: review.reviewerId,
     prsl_id: review.prslId,

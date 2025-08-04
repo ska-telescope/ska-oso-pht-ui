@@ -5,8 +5,7 @@ import { AlertColorTypes, SearchEntry } from '@ska-telescope/ska-gui-components'
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import moment from 'moment';
-import GetProposalList from '../../services/axios/getProposalList/getProposalList';
-import { BANNER_PMT_SPACER, PANEL_DECISION_STATUS } from '../../utils/constants';
+import { BANNER_PMT_SPACER, PANEL_DECISION_STATUS, PROPOSAL_STATUS } from '../../utils/constants';
 import Proposal from '../../utils/types/proposal';
 import { FOOTER_SPACER } from '../../utils/constants';
 
@@ -22,6 +21,8 @@ import getPanelDecisionList from '@/services/axios/getPanelDecisionList/getPanel
 import { PanelDecision } from '@/utils/types/panelDecision';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import GetProposalByStatusList from '@/services/axios/getProposalByStatusList/getProposalByStatusList';
+import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProposalReview';
 
 /*
  * Process for retrieving the data for the list
@@ -32,8 +33,6 @@ import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient
  * 4. Combine the data into a single array of objects
  *
  * NOTE
- * Step 1 : There is not a endpoint to retrieve all proposals by status, so all are currently retrieved
- *
  * Step 2 is currently inefficient as the appropriate endpoint is not available
  * In the meantime, the list of proposals is being retrieved and being filtered
  */
@@ -64,6 +63,7 @@ export default function ReviewDecisionListPage() {
   const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
 
   const getObservatoryData = () => application.content3 as ObservatoryData;
+  const getCycleId = () => getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId;
 
   const calculateRank = (details: Array<any>) => {
     if (!details || details?.length === 0) return 0;
@@ -99,6 +99,13 @@ export default function ReviewDecisionListPage() {
     setReviewDecisions(prev =>
       prev.map(proposal => (proposal.id === item.id ? { ...proposal, ...item } : proposal))
     );
+  };
+
+  const updateReview = async (review: ProposalReview) => {
+    const response: string | { error: string } = await PostProposalReview(review, getCycleId());
+    if (typeof response === 'object' && response?.error) {
+      Notify(response?.error, AlertColorTypes.Error);
+    }
   };
 
   const handleSubmitAction = async (item: {
@@ -154,7 +161,7 @@ export default function ReviewDecisionListPage() {
 
   React.useEffect(() => {
     const fetchProposalData = async () => {
-      const response = await GetProposalList(authClient); // TODO : Temporary implementation to get all proposals
+      const response = await GetProposalByStatusList(authClient, PROPOSAL_STATUS.SUBMITTED); // TODO : Temporary implementation to get all proposals
       if (typeof response === 'string') {
         NotifyError(response);
       } else {
@@ -200,7 +207,8 @@ export default function ReviewDecisionListPage() {
         return {
           ...proposal,
           decisions: decisions,
-          reviews: reviews
+          reviews: reviews,
+          key: proposal.id
         };
       });
     }
@@ -225,6 +233,18 @@ export default function ReviewDecisionListPage() {
     />
   );
 
+  function handleExcludeAction(review: any): void {
+    const results = proposalReviews?.map(rec => {
+      const el: ProposalReview = rec;
+      if (el.id === review.id) {
+        el.reviewType.excludedFromDecision = el.reviewType.excludedFromDecision ? false : true;
+        updateReview(el);
+      }
+      return el;
+    });
+    setProposalReviews(results);
+  }
+
   return (
     <>
       <PageBannerPMT title={t('reviewDecisionsList.title')} />
@@ -238,7 +258,11 @@ export default function ReviewDecisionListPage() {
         <Grid2 size={{ sm: 12 }}>
           <div>
             {filteredData && (
-              <TableReviewDecision data={filteredData} submitFunction={handleSubmitAction} />
+              <TableReviewDecision
+                data={filteredData}
+                excludeFunction={handleExcludeAction}
+                submitFunction={handleSubmitAction}
+              />
             )}
           </div>
         </Grid2>
