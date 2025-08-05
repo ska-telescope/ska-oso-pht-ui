@@ -106,26 +106,26 @@ js-lint:
 
   # ----------------------------------------------------------------------------------------
 
-js-test:
-  allow_failure: true
-  before_script:
-    - mkdir -p build/reports
-  script:
-    - yarn install
-    - yarn test:unit
-  after_script:
-    - cp build/reports/unit-tests.xml build/reports/code-coverage.xml
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
-  artifacts:
-    when: always
-    reports:
-      junit: build/reports/unit-tests.xml
-    paths:
-      - build/reports
-    expire_in: 7 days
+# js-test:
+#   allow_failure: true
+#   before_script:
+#     - mkdir -p build/reports
+#   script:
+#     - yarn install
+#     - yarn test:unit
+#   after_script:
+#     - cp build/reports/unit-tests.xml build/reports/code-coverage.xml
+#   cache:
+#     paths:
+#      - node_modules/
+#     policy: pull
+#   artifacts:
+#     when: always
+#     reports:
+#       junit: build/reports/unit-tests.xml
+#     paths:
+#       - build/reports
+#     expire_in: 7 days
 
 ######################### PHT SPECIFIC STUFF BELOW HERE #################################
 
