@@ -65,7 +65,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   const setTheRA = (inValue: string) => {
     setRA(inValue);
     if (setTarget !== null) {
-      setTarget({ ...target, ra: inValue });
+      setTarget({ ...target, raStr: inValue });
     }
   };
 
@@ -107,8 +107,8 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   const targetIn = (target: Target) => {
     setId(target?.id);
     setName(target?.name);
-    setRA(target?.ra);
-    setDec(target?.dec);
+    setRA(target?.raStr as string);
+    setDec(target?.decStr as string);
     setVelType(target?.velType);
     setVel(target?.vel);
     setVelUnit(target?.velUnit);
@@ -152,13 +152,13 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
       const highestId = highest ? highest.id : 0;
 
       const newTarget: Target = {
-        dec: dec,
+        decStr: dec,
         decUnit: raType.toString(),
         id: highestId + 1,
         name: name,
         latitude: null,
         longitude: null,
-        ra: ra,
+        raStr: ra,
         raUnit: raType.toString(),
         redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift : '',
         referenceFrame: referenceFrame,

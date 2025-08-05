@@ -1,5 +1,6 @@
 import { LABEL_POSITION, TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import { env } from '../env';
+import Target from './types/target';
 
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const USE_LOCAL_DATA_SENSITIVITY_CALC =
@@ -778,7 +779,7 @@ export const OBSERVATION = {
 export const SUPPLIED_INTEGRATION_TIME_UNITS_H = 2;
 export const SUPPLIED_INTEGRATION_TIME_UNITS_S = 4;
 
-export const RA_TYPE_EQUATORIAL = 0;
+export const RA_TYPE_EQUATORIAL = 0; // TODO this should b renamed RA_TYPE_ICRS
 export const RA_TYPE_GALACTIC = 1;
 export const ROBUST = [
   { label: '-2', value: 1 },
@@ -944,17 +945,21 @@ export const DEFAULT_PI = {
   pi: true
 };
 
-export const DEFAULT_TARGETS = {
-  dec: '123',
-  decUnit: '1',
+export const GALACTIC = 'galactic';
+export const ICRS = 'icrs';
+
+export const DEFAULT_TARGETS: Target = {
+  kind: ICRS,
+  decStr: '123',
+  // decUnit: '1', // TODO can this be removed?
   id: 1,
   latitude: '123',
   longitude: '123',
   name: 'DUMMY',
-  ra: '123',
-  raUnit: '1',
+  raStr: '123',
+  // raUnit: '1', // TODO can this be removed?
   redshift: '123',
-  referenceFrame: 0,
+  referenceFrame: '0',
   vel: '123',
   velType: 0,
   velUnit: 0

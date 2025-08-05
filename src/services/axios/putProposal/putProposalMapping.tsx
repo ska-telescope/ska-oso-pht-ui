@@ -1,4 +1,8 @@
-import Target, { TargetBackend } from '@utils/types/target';
+import Target, {
+  ReferenceCoordinateGalacticBackend,
+  ReferenceCoordinateICRSBackend,
+  TargetBackend
+} from '@utils/types/target';
 import Observation from '@utils/types/observation';
 import { ObservationSetBackend } from '@utils/types/observationSet';
 import GroupObservation from '@utils/types/groupObservation';
@@ -32,7 +36,9 @@ import {
   VEL_UNITS,
   VELOCITY_TYPE,
   ROBUST,
-  IW_BRIGGS
+  IW_BRIGGS,
+  GALACTIC,
+  ICRS
 } from '../../../utils/constants';
 
 const isContinuum = (type: number) => type === TYPE_CONTINUUM;
@@ -44,10 +50,36 @@ const getSubType = (proposalType: number, proposalSubType: number[]): any => {
   const subTypes: string[] = [];
   for (let subtype of proposalSubType) {
     if (subtype && project) {
-      subTypes.push(project.subProjects.find(item => item.id === subtype)?.mapping);
+      subTypes.push(project.subProjects.find(item => item.id === subtype)?.mapping as string);
     }
   }
   return subTypes;
+};
+
+const getReferenceCoordinate = (
+  tar: Target
+): ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend => {
+  if (tar.kind === GALACTIC) {
+    return {
+      kind: GALACTIC,
+      l: tar.l as number,
+      b: tar.b as number,
+      pm_l: tar.pmL as number,
+      pm_b: tar.pmB as number,
+      epoch: tar.epoch as number,
+      parallax: tar.parallax as number
+    } as ReferenceCoordinateGalacticBackend;
+  }
+  return {
+    kind: ICRS,
+    reference_frame: tar.referenceFrame ? tar.referenceFrame : ICRS, // TODO : hardcoded for now as not implemented in UI
+    ra_str: tar.raStr as string,
+    dec_str: tar.decStr as string,
+    pm_ra: tar.pmRa as number,
+    pm_dec: tar.pmDec as number,
+    epoch: tar.epoch as number,
+    parallax: tar.parallax as number
+  } as ReferenceCoordinateICRSBackend;
 };
 
 const getTargets = (targets: Target[]): TargetBackend[] => {
@@ -57,18 +89,19 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
     const outTarget: TargetBackend = {
       name: tar.name,
       target_id: tar.name,
-      reference_coordinate: {
-        kind: REF_COORDINATES_UNITS[0]?.label, // TODO :  hardcoded as galactic not handled in backend and not fully implemented in UI (not added to proposal)
-        epoch: tar.epoch,
-        ra: tar.ra,
-        dec: tar.dec,
-        unit: [REF_COORDINATES_UNITS[0].units[0], REF_COORDINATES_UNITS[0].units[1]], // TODO : hardcoded as not fully implemented in UI (not added to proposal)
-        reference_frame: tar.rcReferenceFrame ? tar.rcReferenceFrame : 'icrs' // TODO : hardcoded for now as not implemented in UI
-      },
+      reference_coordinate: getReferenceCoordinate(tar),
+      // reference_coordinate: {
+      //   kind: REF_COORDINATES_UNITS[0]?.label, // TODO :  hardcoded as galactic not handled in backend and not fully implemented in UI (not added to proposal)
+      //   epoch: tar.epoch,
+      //   ra: tar.ra,
+      //   dec: tar.dec,
+      //   unit: [REF_COORDINATES_UNITS[0].units[0], REF_COORDINATES_UNITS[0].units[1]], // TODO : hardcoded as not fully implemented in UI (not added to proposal)
+      //   reference_frame: tar.rcReferenceFrame ? tar.rcReferenceFrame : 'icrs' // TODO : hardcoded for now as not implemented in UI
+      // },
       radial_velocity: {
         quantity: {
           value: isVelocity(tar.velType) ? Number(tar.vel) : 0,
-          unit: VEL_UNITS.find(u => u.value === Number(tar.velUnit))?.label
+          unit: VEL_UNITS.find(u => u.value === Number(tar.velUnit))?.label as string
         },
         definition: 'RADIO', // TODO : hardcoded for now as not implemented in UI
         reference_frame: tar.raReferenceFrame ? tar.raReferenceFrame : 'LSRK',
@@ -202,13 +235,13 @@ const getArrayDetails = (incObs: Observation): ArrayDetailsLowBackend | ArrayDet
 };
 
 const getFrequencyAndBandwidthUnits = (incUnitValue: number): string => {
-  return FREQUENCY_UNITS.find(u => u.value === incUnitValue)?.mapping;
+  return FREQUENCY_UNITS.find(u => u.value === incUnitValue)?.mapping as string;
 };
 
 const getBandwidthContinuum = (incObs: Observation): ValueUnitPair => {
   return {
-    value: incObs.continuumBandwidth,
-    unit: getFrequencyAndBandwidthUnits(incObs.continuumBandwidthUnits)
+    value: incObs.continuumBandwidth as number,
+    unit: getFrequencyAndBandwidthUnits(incObs.continuumBandwidthUnits as number)
   };
 };
 const getBandwidthZoom = (incObs: Observation): ValueUnitPair => {
@@ -304,19 +337,23 @@ const getSuppliedFieldsSensitivity = (
   params.weighted_continuum_sensitivity = {
     value: isContinuum(obsType)
       ? Number(
-          tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted')?.value
+          tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumSensitivityWeighted')?.value
         )
       : 0,
     unit: isContinuum(obsType)
-      ? tarObs.sensCalc.section1.find(o => o.field === 'continuumSensitivityWeighted')?.units
+      ? (tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumSensitivityWeighted')
+          ?.units as string)
       : ''
   };
   params.total_continuum_sensitivity = {
     value: isContinuum(obsType)
-      ? Number(tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity')?.value)
+      ? Number(
+          tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumTotalSensitivity')?.value
+        )
       : 0,
     unit: isContinuum(obsType)
-      ? tarObs.sensCalc.section1?.find(o => o.field === 'continuumTotalSensitivity')?.units
+      ? (tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumTotalSensitivity')
+          ?.units as string)
       : ''
   };
 

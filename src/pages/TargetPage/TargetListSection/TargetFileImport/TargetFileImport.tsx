@@ -6,8 +6,9 @@ import { FileUpload, AlertColorTypes, FileUploadStatus } from '@ska-telescope/sk
 import Papa from 'papaparse';
 import { Proposal } from '../../../../utils/types/proposal';
 import Notification from '../../../../utils/types/notification';
-import { RA_TYPE_EQUATORIAL, UPLOAD_MAX_WIDTH_CSV } from '../../../../utils/constants';
+import { ICRS, RA_TYPE_EQUATORIAL, UPLOAD_MAX_WIDTH_CSV } from '../../../../utils/constants';
 import HelpPanel from '../../../../components/info/helpPanel/HelpPanel';
+import Target from '@/utils/types/target';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
 
@@ -52,21 +53,24 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
     return newTarget;
   };
 
-  const AddTheTargetEquatorial = (id, name, ra, dec) => {
+  const AddTheTargetEquatorial = (id: number, name: string, ra: string, dec: string): Target => {
+    console.log('Adding Equatorial Target:', { id, name, ra, dec });
     const newTarget = {
+      kind: ICRS,
       //Default values from AddTarget.tsx
-      dec,
-      decUnit: raType.toString(),
+      decStr: dec,
+      // decUnit: raType.toString(), // TODO can this be removed?
       id,
       name,
-      latitude: null,
-      longitude: null,
-      ra,
-      raUnit: raType.toString(),
-      redshift: null,
-      referenceFrame: 0,
+      latitude: '',
+      longitude: '',
+      raStr: ra,
+      // raUnit: raType.toString(), // TODO can this be removed?
+      redshift: '',
+      referenceFrame: '0',
+      velType: 0,
       vel: '',
-      velUnit: '0'
+      velUnit: 0
     };
 
     return newTarget;

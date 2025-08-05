@@ -162,8 +162,8 @@ export default function ObservationPage() {
     return {
       id: rec.id,
       name: rec.name,
-      ra: rec.ra,
-      dec: rec.dec,
+      raStr: rec.raStr,
+      decStr: rec.decStr,
       target: rec
     };
   };

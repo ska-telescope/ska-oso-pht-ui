@@ -1,7 +1,12 @@
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from '../../../utils/types/arrayDetails';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
-import Target, { PointingPatternParams, TargetBackend } from '../../../utils/types/target';
+import Target, {
+  PointingPatternParams,
+  ReferenceCoordinateGalacticBackend,
+  ReferenceCoordinateICRSBackend,
+  TargetBackend
+} from '../../../utils/types/target';
 import Observation from '../../../utils/types/observation';
 import {
   ResultsSection,
@@ -32,7 +37,9 @@ import {
   FREQUENCY_UNITS,
   ROBUST,
   OSO_SERVICES_PROPOSAL_PATH,
-  PDF_NAME_PREFIXES
+  PDF_NAME_PREFIXES,
+  ICRS,
+  GALACTIC
 } from '../../../utils/constants';
 import { InvestigatorBackend } from '../../../utils/types/investigator';
 import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
@@ -112,19 +119,31 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
     const e = inRec[i];
     const referenceCoordinate = e.reference_coordinate.kind;
     const target: Target = {
+      /*------- reference coordinate properties --------------------- */
+      kind: e.reference_coordinate.kind,
+      l: (e.reference_coordinate as ReferenceCoordinateGalacticBackend)?.l,
+      b: (e.reference_coordinate as ReferenceCoordinateGalacticBackend)?.b,
+      pmL: (e.reference_coordinate as ReferenceCoordinateGalacticBackend)?.pm_l,
+      pmB: (e.reference_coordinate as ReferenceCoordinateGalacticBackend)?.pm_b,
       epoch: e.reference_coordinate.epoch,
-      dec: referenceCoordinate === 'equatorial' ? e.reference_coordinate.dec?.toString() : '',
-      decUnit: e.reference_coordinate?.unit[1],
+      parallax: e.reference_coordinate.parallax,
+      referenceFrame: e.reference_coordinate.kind === ICRS ? ICRS : GALACTIC,
+      // rcReferenceFrame: e.reference_coordinate.reference_frame, // TODO can this be removed? or should it point to something else?
+      raStr: (e.reference_coordinate as ReferenceCoordinateICRSBackend)?.ra_str,
+      decStr: (e.reference_coordinate as ReferenceCoordinateICRSBackend)?.dec_str,
+      pmRa: (e.reference_coordinate as ReferenceCoordinateICRSBackend)?.pm_ra,
+      pmDec: (e.reference_coordinate as ReferenceCoordinateICRSBackend)?.pm_dec,
+      /*------- end of reference coordinate properties --------------------- */
+      // dec: referenceCoordinate === ICRS ? e.reference_coordinate.dec?.toString() : '', // TODO is this still needed or can it be removed?
+      // decUnit: e.reference_coordinate?.unit[1], // TODO can this be removed? (reference coordinate unit has been removed)
       id: i + 1, // TODO use e.target_id once it is a number => needs to be changed in ODA & PDM
       name: e?.target_id,
       latitude: '', // TODO add latitude when coming from the backend - no property to map to currently
       longitude: '', // TODO add longitude when coming from the backend - no property to map to currently
-      ra: referenceCoordinate === 'equatorial' ? e.reference_coordinate.ra?.toString() : '',
-      raUnit: e.reference_coordinate?.unit[0],
+      // ra: referenceCoordinate === 'equatorial' ? e.reference_coordinate.ra?.toString() : '', // TODO is this still needed or can it be removed?
+      // ra: (e.reference_coordinate as ReferenceCoordinateICRSBackend)?.ra_str,
+      // raUnit: e.reference_coordinate?.unit[0], // TODO can this be removed? (reference coordinate unit has been removed)
       redshift: e.radial_velocity.redshift.toString(),
-      referenceFrame:
-        e.reference_coordinate.kind === 'equatorial' ? RA_TYPE_EQUATORIAL : RA_TYPE_GALACTIC,
-      rcReferenceFrame: e.reference_coordinate.reference_frame,
       raReferenceFrame: e.radial_velocity.reference_frame,
       raDefinition: e.radial_velocity.definition, // TODO modify as definition not implemented in the front-end yet
       velType: getVelType(e.radial_velocity.definition), // TODO modify as definition not implemented in the front-end yet

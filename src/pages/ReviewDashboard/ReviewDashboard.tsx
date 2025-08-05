@@ -68,7 +68,7 @@ export default function ReviewDashboard() {
   const [panelScienceCategoryTableData, setPanelScienceCategoryTableData] = React.useState([]);
   const authClient = useAxiosAuthClient();
 
-  const calculateAllStats = report => {
+  const calculateAllStats = (report: any) => {
     /**
      * Group by Panel ID then separate node for group by Proposa ID and Reviewer ID
      */

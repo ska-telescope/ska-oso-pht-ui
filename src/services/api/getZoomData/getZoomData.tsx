@@ -360,8 +360,8 @@ async function GetZoomData(telescope: Telescope, observation: Observation, targe
     num13mAntennas: observation.num13mAntennas ?? 0,
     numStations: observation.numStations ?? 0,
     skyDirectionType: RA_TYPE_GALACTIC,
-    raGalactic: { value: target.ra, unit: RA_TYPE_GALACTIC },
-    decGalactic: { value: target.dec, unit: RA_TYPE_GALACTIC },
+    raGalactic: { value: target.raStr as string, unit: RA_TYPE_GALACTIC }, // TODO can unit be removed?
+    decGalactic: { value: target.decStr as string, unit: RA_TYPE_GALACTIC }, // TODO can unit be removed?
     raEquatorial: { value: 0, unit: RA_TYPE_EQUATORIAL },
     decEquatorial: { value: 0, unit: RA_TYPE_EQUATORIAL },
     elevation: { value: observation.elevation, unit: 'deg' },

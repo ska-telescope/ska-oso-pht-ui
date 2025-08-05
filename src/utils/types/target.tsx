@@ -18,6 +18,38 @@ export type PointingPatternParamsBackend = {
   offset_y_arcsec: number;
 };
 
+export type ReferenceCoordinateGalacticBackend = {
+  kind: string;
+  l: number;
+  b: number;
+  pm_l?: number;
+  pm_b?: number;
+  epoch?: number;
+  parallax?: number;
+};
+
+// this replaces equatorial
+export type ReferenceCoordinateICRSBackend = {
+  kind: string;
+  reference_frame: string;
+  ra_str: string;
+  dec_str: string;
+  pm_ra?: number;
+  pm_dec?: number;
+  parallax?: number;
+  epoch?: number;
+};
+
+// NOT USED TODO: remove
+// export type ReferenceCoordinateBackend = {
+//   kind: string;
+//   ra: number | string;
+//   dec: number | string;
+//   epoch?: number;
+//   unit: string[];
+//   reference_frame: string;
+// };
+
 export type TargetBackend = {
   target_id: string;
   name: string;
@@ -25,14 +57,7 @@ export type TargetBackend = {
     active: string;
     parameters: PointingPatternParamsBackend[];
   };
-  reference_coordinate: {
-    kind: string;
-    ra: number | string;
-    dec: number | string;
-    epoch?: number; // TODO check if this is a mandatory field
-    unit: string[];
-    reference_frame: string;
-  };
+  reference_coordinate: ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend;
   radial_velocity: {
     quantity: ValueUnitPair;
     definition: string;
@@ -70,23 +95,35 @@ export type PointingPatternParams = {
 };
 
 type Target = {
-  epoch?: number;
-  dec: string;
-  decUnit: string;
+  // dec: string; // TODO is this still needed or can it be removed?
+  // decUnit: string; // TODO is this still needed or can it be removed? (mapped to regference frame unit which has been removed)
   id: number;
   name: string;
   latitude: string;
   longitude: string;
-  ra: string;
-  raUnit: string;
+  // ra: string; // TODO is this still needed or can it be removed?
+  // raUnit: string; // TODO is this still needed or can it be removed? (mapped to regference frame unit which has been removed)
   redshift: string;
-  referenceFrame: number;
   rcReferenceFrame?: string; // NOT USED
   raReferenceFrame?: string; // NOT USED
   raDefinition?: string; // NOT USED
   velType: number;
   vel: string;
   velUnit: number;
+  /*------- reference coordinate properties --------------------- */
+  kind: string; // for both ICRS and Galactic
+  l?: number; // NOT USED YET // for Galactic
+  b?: number; // NOT USED YET // for Galactic
+  pmL?: number; // NOT USED YET // for Galactic
+  pmB?: number; // NOT USED YET // for Galactic
+  referenceFrame?: string; // NOT USED YET // for ICRS
+  raStr?: string; // NOT USED YET // for ICRS
+  decStr?: string; // NOT USED YET // for ICRS
+  pmRa?: number; // NOT USED YET // for ICRS
+  pmDec?: number; // NOT USED YET // for ICRS
+  parallax?: number; // NOT USED YET // for both Galactic & ICRS
+  epoch?: number; // NOT USED YET // for both Galactic & ICRS
+  /*------- end of reference coordinate properties --------------------- */
   pointingPattern?: {
     // NOT USED
     active: string; // NOT USED

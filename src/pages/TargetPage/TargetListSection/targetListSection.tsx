@@ -86,13 +86,13 @@ export default function TargetListSection() {
           label={t('skyDirection.label.1.' + RA_TYPE_EQUATORIAL)}
           labelWidth={LABEL_WIDTH}
         >
-          <Typography variant="body1">{rec?.ra}</Typography>
+          <Typography variant="body1">{rec?.raStr}</Typography>
         </FieldWrapper>
         <FieldWrapper
           label={t('skyDirection.label.2.' + RA_TYPE_EQUATORIAL)}
           labelWidth={LABEL_WIDTH}
         >
-          <Typography variant="body1">{rec?.dec}</Typography>
+          <Typography variant="body1">{rec?.decStr}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('velocity.0')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec?.vel}</Typography>
