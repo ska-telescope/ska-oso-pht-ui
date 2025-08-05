@@ -341,7 +341,6 @@ export default function ObservationPage() {
         disableClickEventBubbling: true,
         renderCell: (e: { row: Observation }) => {
           const obs = elementsO.find(p => p.id === e.row.id);
-          // TODO TREVOR
           return (
             <>
               {false && (

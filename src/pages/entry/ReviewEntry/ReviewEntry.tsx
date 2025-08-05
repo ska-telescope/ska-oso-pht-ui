@@ -28,6 +28,7 @@ import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProp
 import { ProposalReview } from '@/utils/types/proposalReview';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import ObservatoryData from '@/utils/types/observatoryData';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 interface ReviewEntryProps {
   reviewType: string;
@@ -45,7 +46,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const [tabValuePDF, setTabValuePDF] = React.useState(0);
   const [tabValueReview, setTabValueReview] = React.useState(0);
-  const [, setReviewId] = React.useState('');
+  const [reviewId, setReviewId] = React.useState(locationProperties?.state?.id);
   const [rank, setRank] = React.useState(0);
   const [generalComments, setGeneralComments] = React.useState('');
   const [srcNetComments, setSrcNetComments] = React.useState('');
@@ -56,6 +57,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
 
   const getProposal = () => application.content2 as Proposal;
+  const authClient = useAxiosAuthClient();
 
   const getUser = () => 'DefaultUser'; // TODO
 
@@ -66,7 +68,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const getReviewId = () => {
     return isEdit
-      ? locationProperties.state.id
+      ? reviewId
       : 'rvw-' +
           getUser() +
           '-' +
@@ -76,8 +78,10 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   };
 
   const getReview = (submitted = false): ProposalReview => {
+    const rwId = getReviewId();
+    setReviewId(rwId);
     return {
-      id: getReviewId(),
+      id: rwId,
       prslId: getProposal().id,
       // TODO implement technical review as well - reviewType below is only for science review
       reviewType: {
@@ -205,7 +209,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       const selectedFile =
         `${proposal.id}-` + t(`pdfDownload.${pdfLabel}.label`) + t('fileType.pdf');
 
-      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
 
       if (
         signedUrl === t('pdfDownload.sampleData') ||
