@@ -26,8 +26,6 @@ import {
   TYPE_CONTINUUM,
   TYPE_ZOOM,
   VEL_TYPES,
-  RA_TYPE_EQUATORIAL,
-  RA_TYPE_GALACTIC,
   VEL_UNITS,
   TELESCOPE_MID_BACKEND_MAPPING,
   TELESCOPE_LOW_BACKEND_MAPPING,
@@ -119,6 +117,9 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
     const e = inRec[i];
     const referenceCoordinate = e.reference_coordinate.kind;
     const target: Partial<Target> = {
+      kind: e?.reference_coordinate?.kind,
+      epoch: e?.reference_coordinate?.epoch,
+      parallax: e?.reference_coordinate?.parallax,
       // decUnit: e.reference_coordinate?.unit[1], // TODO can this be removed? (reference coordinate unit has been removed)
       id: i + 1, // TODO use e.target_id once it is a number => needs to be changed in ODA & PDM
       name: e?.target_id,
@@ -126,6 +127,10 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       longitude: '', // TODO add longitude when coming from the backend - no property to map to currently
       // raUnit: e.reference_coordinate?.unit[0], // TODO can this be removed? (reference coordinate unit has been removed)
       redshift: e.radial_velocity.redshift.toString(),
+      rcReferenceFrame:
+        referenceCoordinate === ICRS
+          ? (e.reference_coordinate as ReferenceCoordinateICRSBackend).reference_frame
+          : undefined, // TODO is this still needed or can it be removed?
       raReferenceFrame: e.radial_velocity.reference_frame,
       raDefinition: e.radial_velocity.definition, // TODO modify as definition not implemented in the front-end yet
       velType: getVelType(e.radial_velocity.definition), // TODO modify as definition not implemented in the front-end yet
@@ -149,6 +154,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       target.pmL = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_l;
       target.pmB = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_b;
     } else if (referenceCoordinate === ICRS) {
+      target.referenceFrame = (e.reference_coordinate as ReferenceCoordinateICRSBackend).reference_frame;
       target.raStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).ra_str;
       target.decStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).dec_str;
       target.pmRa = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_ra;

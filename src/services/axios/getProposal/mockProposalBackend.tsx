@@ -1,4 +1,5 @@
 import { ProposalBackend } from '../../../utils/types/proposal';
+import { ICRS } from '@/utils/constants';
 
 export const MockProposalBackend: ProposalBackend = {
   prsl_id: 'prsl-t0001-20250613-00002',
@@ -38,10 +39,10 @@ export const MockProposalBackend: ProposalBackend = {
           ]
         },
         reference_coordinate: {
-          kind: 'equatorial',
+          kind: ICRS,
           ra_str: '00:00:00.0',
           dec_str: '00:00:00.0',
-          reference_frame: 'icrs',
+          reference_frame: ICRS,
           epoch: 2000
           // unit: ['hourangle', 'deg'] // TODO: can this be removed? (reference frame unit which has been removed)
         },
@@ -69,10 +70,10 @@ export const MockProposalBackend: ProposalBackend = {
           ]
         },
         reference_coordinate: {
-          kind: 'equatorial',
+          kind: ICRS,
           ra_str: '05:34:30.900',
           dec_str: '+22:00:53.000',
-          reference_frame: 'icrs',
+          reference_frame: ICRS,
           epoch: 2000
           // unit: ['hourangle', 'deg'] // TODO: can this be removed? (reference frame unit which has been removed)
         },
@@ -100,10 +101,10 @@ export const MockProposalBackend: ProposalBackend = {
           ]
         },
         reference_coordinate: {
-          kind: 'equatorial',
+          kind: ICRS,
           ra_str: '21:33:27.0200',
           dec_str: '-00:49:23.700',
-          reference_frame: 'icrs',
+          reference_frame: ICRS,
           epoch: 2000
           // unit: ['hourangle', 'deg'] // TODO: can this be removed? (reference frame unit which has been removed)
         },
@@ -255,10 +256,10 @@ export const MockProposalBackendZoom: ProposalBackend = {
           ]
         },
         reference_coordinate: {
-          kind: 'equatorial',
+          kind: ICRS,
           ra_str: '21:33:27.0200',
           dec_str: '-00:49:23.700',
-          reference_frame: 'icrs',
+          reference_frame: ICRS,
           epoch: 2000
           // unit: ['hourangle', 'deg'] // TODO: can this be removed? (reference frame unit which has been removed)
         },
