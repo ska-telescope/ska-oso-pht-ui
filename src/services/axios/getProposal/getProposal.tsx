@@ -118,30 +118,12 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
   for (let i = 0; i < inRec?.length; i++) {
     const e = inRec[i];
     const referenceCoordinate = e.reference_coordinate.kind;
-    const target: Target = {
-      /*------- reference coordinate properties --------------------- */
-      kind: e.reference_coordinate.kind,
-      l: (e.reference_coordinate as ReferenceCoordinateGalacticBackend)?.l,
-      b: (e.reference_coordinate as ReferenceCoordinateGalacticBackend)?.b,
-      pmL: (e.reference_coordinate as ReferenceCoordinateGalacticBackend)?.pm_l,
-      pmB: (e.reference_coordinate as ReferenceCoordinateGalacticBackend)?.pm_b,
-      epoch: e.reference_coordinate.epoch,
-      parallax: e.reference_coordinate.parallax,
-      referenceFrame: e.reference_coordinate.kind === ICRS ? ICRS : GALACTIC,
-      // rcReferenceFrame: e.reference_coordinate.reference_frame, // TODO can this be removed? or should it point to something else?
-      raStr: (e.reference_coordinate as ReferenceCoordinateICRSBackend)?.ra_str,
-      decStr: (e.reference_coordinate as ReferenceCoordinateICRSBackend)?.dec_str,
-      pmRa: (e.reference_coordinate as ReferenceCoordinateICRSBackend)?.pm_ra,
-      pmDec: (e.reference_coordinate as ReferenceCoordinateICRSBackend)?.pm_dec,
-      /*------- end of reference coordinate properties --------------------- */
-      // dec: referenceCoordinate === ICRS ? e.reference_coordinate.dec?.toString() : '', // TODO is this still needed or can it be removed?
+    const target: Partial<Target> = {
       // decUnit: e.reference_coordinate?.unit[1], // TODO can this be removed? (reference coordinate unit has been removed)
       id: i + 1, // TODO use e.target_id once it is a number => needs to be changed in ODA & PDM
       name: e?.target_id,
       latitude: '', // TODO add latitude when coming from the backend - no property to map to currently
       longitude: '', // TODO add longitude when coming from the backend - no property to map to currently
-      // ra: referenceCoordinate === 'equatorial' ? e.reference_coordinate.ra?.toString() : '', // TODO is this still needed or can it be removed?
-      // ra: (e.reference_coordinate as ReferenceCoordinateICRSBackend)?.ra_str,
       // raUnit: e.reference_coordinate?.unit[0], // TODO can this be removed? (reference coordinate unit has been removed)
       redshift: e.radial_velocity.redshift.toString(),
       raReferenceFrame: e.radial_velocity.reference_frame,
@@ -160,9 +142,22 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
         })) as PointingPatternParams[]
       }
     };
+    /*------- reference coordinate properties --------------------- */
+    if (referenceCoordinate === GALACTIC) {
+      target.l = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).l;
+      target.b = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).b;
+      target.pmL = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_l;
+      target.pmB = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_b;
+    } else if (referenceCoordinate === ICRS) {
+      target.raStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).ra_str;
+      target.decStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).dec_str;
+      target.pmRa = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_ra;
+      target.pmDec = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_dec;
+    }
+    /*------- end of reference coordinate properties --------------------- */
     results.push(target);
   }
-  return results;
+  return results as Target[];
 };
 
 const getGroupObservations = (inValue: ObservationSetBackend[] | null) => {

@@ -39,11 +39,11 @@ export const MockProposalBackend: ProposalBackend = {
         },
         reference_coordinate: {
           kind: 'equatorial',
-          ra: '00:00:00.0',
-          dec: '00:00:00.0',
+          ra_str: '00:00:00.0',
+          dec_str: '00:00:00.0',
           reference_frame: 'icrs',
-          epoch: 2000,
-          unit: ['hourangle', 'deg']
+          epoch: 2000
+          // unit: ['hourangle', 'deg'] // TODO: can this be removed? (reference frame unit which has been removed)
         },
         radial_velocity: {
           quantity: {
@@ -70,11 +70,11 @@ export const MockProposalBackend: ProposalBackend = {
         },
         reference_coordinate: {
           kind: 'equatorial',
-          ra: '05:34:30.900',
-          dec: '+22:00:53.000',
+          ra_str: '05:34:30.900',
+          dec_str: '+22:00:53.000',
           reference_frame: 'icrs',
-          epoch: 2000,
-          unit: ['hourangle', 'deg']
+          epoch: 2000
+          // unit: ['hourangle', 'deg'] // TODO: can this be removed? (reference frame unit which has been removed)
         },
         radial_velocity: {
           quantity: {
@@ -101,11 +101,11 @@ export const MockProposalBackend: ProposalBackend = {
         },
         reference_coordinate: {
           kind: 'equatorial',
-          ra: '21:33:27.0200',
-          dec: '-00:49:23.700',
+          ra_str: '21:33:27.0200',
+          dec_str: '-00:49:23.700',
           reference_frame: 'icrs',
-          epoch: 2000,
-          unit: ['hourangle', 'deg']
+          epoch: 2000
+          // unit: ['hourangle', 'deg'] // TODO: can this be removed? (reference frame unit which has been removed)
         },
         radial_velocity: {
           quantity: {
@@ -256,11 +256,11 @@ export const MockProposalBackendZoom: ProposalBackend = {
         },
         reference_coordinate: {
           kind: 'equatorial',
-          ra: '21:33:27.0200',
-          dec: '-00:49:23.700',
+          ra_str: '21:33:27.0200',
+          dec_str: '-00:49:23.700',
           reference_frame: 'icrs',
-          epoch: 2000,
-          unit: ['hourangle', 'deg']
+          epoch: 2000
+          // unit: ['hourangle', 'deg'] // TODO: can this be removed? (reference frame unit which has been removed)
         },
         radial_velocity: {
           quantity: {
