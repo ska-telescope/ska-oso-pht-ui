@@ -77,9 +77,9 @@ info-integration:
   script:
     - *info_script
 
-info-staging:
-  script:
-    - *info_script
+# info-staging:
+#   script:
+#     - *info_script
 
 deploy-dev-environment:
   <<: *dev_env
