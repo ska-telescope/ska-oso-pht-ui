@@ -1,3 +1,4 @@
+import { ICRS } from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
 
 export const MockProposalFrontend: Proposal = {
@@ -29,18 +30,19 @@ export const MockProposalFrontend: Proposal = {
   targetOption: 1,
   targets: [
     {
+      kind: ICRS,
       epoch: 2000,
-      dec: '00:00:00.0',
-      decUnit: 'deg',
+      decStr: '00:00:00.0',
+      // decUnit: 'deg', // TODO remove
       id: 1,
       name: 'target',
       latitude: '',
       longitude: '',
-      ra: '00:00:00.0',
-      raUnit: 'hourangle',
+      raStr: '00:00:00.0',
+      // raUnit: 'hourangle', // TODO remove
       redshift: '0',
-      referenceFrame: 0,
-      rcReferenceFrame: 'icrs',
+      referenceFrame: ICRS,
+      rcReferenceFrame: ICRS,
       raReferenceFrame: 'LSRK',
       raDefinition: 'RADIO',
       velType: 1,
@@ -58,18 +60,19 @@ export const MockProposalFrontend: Proposal = {
       }
     },
     {
+      kind: ICRS,
       epoch: 2000,
-      dec: '+22:00:53.000',
-      decUnit: 'deg',
+      decStr: '+22:00:53.000',
+      // decUnit: 'deg',
       id: 2,
       name: 'target2',
       latitude: '',
       longitude: '',
-      ra: '05:34:30.900',
-      raUnit: 'hourangle',
+      raStr: '05:34:30.900',
+      // raUnit: 'hourangle',
       redshift: '0',
-      referenceFrame: 0,
-      rcReferenceFrame: 'icrs',
+      referenceFrame: ICRS,
+      rcReferenceFrame: ICRS,
       raReferenceFrame: 'LSRK',
       raDefinition: 'RADIO',
       velType: 1,
@@ -87,18 +90,19 @@ export const MockProposalFrontend: Proposal = {
       }
     },
     {
+      kind: ICRS,
       epoch: 2000,
-      dec: '-00:49:23.700',
-      decUnit: 'deg',
+      decStr: '-00:49:23.700',
+      // decUnit: 'deg',
       id: 3,
       name: 'M2',
       latitude: '',
       longitude: '',
-      ra: '21:33:27.0200',
-      raUnit: 'hourangle',
+      raStr: '21:33:27.0200',
+      // raUnit: 'hourangle',
       redshift: '0',
-      referenceFrame: 0,
-      rcReferenceFrame: 'icrs',
+      referenceFrame: ICRS,
+      rcReferenceFrame: ICRS,
       raReferenceFrame: 'LSRK',
       raDefinition: 'RADIO',
       velType: 1,
