@@ -1,158 +1,72 @@
-image: $SKA_K8S_TOOLS_BUILD_DEPLOY
+image: $SKA_K8S_TOOLS_DOCKER_BUILDER_IMAGE
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
-  NODE_IMAGE: 'node:22.16.0'
-  CYPRESS_IMAGE: 'cypress/browsers:22.16.0'
-  YARN_VERSION: '4.3.1'
-  JS_E2E_TEST_COMMAND: test:e2e
-
-include:
-  # Code quality
-  - template: Code-Quality.gitlab-ci.yml
-  # Accessibility
-  - template: 'Verify/Accessibility.gitlab-ci.yml'
-  # TS linting and unit testing
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/js.gitlab-ci.yml'
-    ref: '2aeb23b124241b4b9d56fbf2c9200c60a209be89'
-  # OCI - build - scan stages
-    project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/oci-image.gitlab-ci.yml'
-  # Docs pages
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/docs.gitlab-ci.yml'
-  # .post step finalisers eg: badges
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/finaliser.gitlab-ci.yml'
-  # Tag Based GitLab Release Management
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/release.gitlab-ci.yml'
-  # Upload BDD test results to JIRA X-ray
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/xray-publish.gitlab-ci.yml'
-    # TS linting and unit testing
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/js-lint.gitlab-ci.yml'
-  # Helm Chart linting and Publish
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/helm-chart.gitlab-ci.yml'
-  # Deploy steps
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/deploy.gitlab-ci.yml'
-  # JS E2E Testing
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/js-e2e-test.gitlab-ci.yml'
-    ref: '2aeb23b124241b4b9d56fbf2c9200c60a209be89'
 
 stages:
   - dependencies
-  - lint
   - build
+  - lint
   - test
-  - deploy # this is the name of the dev environment stage in the ST template
+  - deploy
   - publish
-  - pages
   - scan
+  - pages
   - integration
-  - staging
-  - production
-  - accessibility
-  - publish
+  # - staging
 
-install_dependencies:
-  image: $NODE_IMAGE
+#Install basic dependencies using yarn
+install-dependencies:
+  image: ${JS_BUILD_IMAGE}
   stage: dependencies
   tags:
-    - $SKA_K8S_RUNNER
+    - ${SKA_K8S_RUNNER}
   before_script:
     - rm -rf node_modules
   script:
-    - yarn install --immutable
-    - yarn list --depth=0 --json >> npm_deps.json
-    - yarn list --depth=0  >> npm_deps.txt
-    - mkdir .public
-    - cp npm_deps.txt .public/
-    - cp npm_deps.json .public/
-  artifacts:
-    paths:
-      - .public
+    - make js-install
   cache:
+    key:
+      files:
+        - ${JS_PROJECT_DIR}/yarn.lock
+      prefix: $CI_COMMIT_SHORT_SHA
     paths:
-      - node_modules/
+      - ${JS_PROJECT_DIR}/node_modules/
+      - ${JS_PROJECT_DIR}/cache/Cypress
     policy: push
 
-js-lint:
-  image: $NODE_IMAGE
-  allow_failure: true
-  tags:
-    - $SKA_DEFAULT_RUNNER
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
-  before_script:
-    - mkdir -p build/reports
-  script:
-    - yarn install --immutable
-    - yarn code-analysis
-  after_script:
-    - mv linting.xml build/reports/linting.xml
-  artifacts:
-    paths:
-      - build/
-    reports:
-      junit: build/reports/linting.xml
-
-  # ----------------------------------------------------------------------------------------
-
-js-test:
+ts-typecheck:
+  image: ${JS_BUILD_IMAGE}
+  stage: lint
   allow_failure: true
   before_script:
-    - mkdir -p build/reports
+    - make js-install
   script:
-    - yarn install
-    - yarn test:unit
-  after_script:
-    - cp build/reports/unit-tests.xml build/reports/code-coverage.xml
-  cache:
-    paths:
-      - node_modules/
-    policy: pull
-  artifacts:
-    when: always
-    reports:
-      junit: build/reports/unit-tests.xml
-    paths:
-      - build/reports
-    expire_in: 7 days
+    - make typecheck
 
-######################### PHT SPECIFIC STUFF BELOW HERE #################################
-
+# The info script in the templates is for a generic tango environment. We overwrite it to give more useful PHT information
 .info_script: &info_script
-  - |-
-    echo "Status of pods in $KUBE_NAMESPACE namespace:"
-    kubectl get pods -n $KUBE_NAMESPACE -o jsonpath="{range .items[*]}{'Pod: '}{.metadata.name}:{'\n'}{'\t'}{'Image: '}{.spec.containers[*].image}{'\n'}{'\t'}{'Status: '}{.status.phase}{'\n'}{end}{'\n'}"
-    echo "Addresses to connect to the deployment of the PHT: "
-    echo "  https://$KUBE_HOST/$KUBE_NAMESPACE/pht"
-    echo "Backend API:"
-    echo "  https://$KUBE_HOST/$KUBE_NAMESPACE/pht/api/v2/ui/"
+    - |-
+      echo "Status of pods in $KUBE_NAMESPACE namespace:"
+      kubectl get pods -n $KUBE_NAMESPACE -o jsonpath="{range .items[*]}{'Pod: '}{.metadata.name}:{'\n'}{'\t'}{'Image: '}{.spec.containers[*].image}{'\n'}{'\t'}{'Status: '}{.status.phase}{'\n'}{end}{'\n'}"
+      echo "Addresses to connect to the deployment of the PHT: "
+      echo "  https://k8s.stfc.skao.int/$KUBE_NAMESPACE/pht/"
 
-# xray-publish:
-#   variables:
-#     XRAY_TEST_RESULT_FILE: ctrf/ctrf-report.json
-#   rules:
-#     - if: '$CI_COMMIT_REF_NAME == "main"'
-#       when: always
-#     - if: '$CI_COMMIT_REF_NAME != "main"'
-#       when: manual
-
+# Currently, the dev template uses ci-dev-$CI_PROJECT_NAME which means only one branch can be deployed at a time, so we overwrite this
 .dev_env: &dev_env
   variables:
-    KUBE_NAMESPACE: 'dev-ska-oso-pht-ui-aaa'
-
+    KUBE_NAMESPACE: "dev-ska-oso-pht-ui-aaa"
+    KUBE_HOST: https://k8s.stfc.skao.int
   environment:
-    name: 'dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG'
+    name: "dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG"
+
+js-e2e-deploy:
+  variables: # use the loadbalancer as there is no authentication for back-end calls during tests
+    KUBE_HOST: https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
+
+js-e2e-test:
+  variables: # use the loadbalancer as the cypress tests would hit the log in page otherwise
+    KUBE_HOST: https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
 
 info-dev-environment:
   <<: *dev_env
@@ -163,9 +77,9 @@ info-integration:
   script:
     - *info_script
 
-info-staging:
-  script:
-    - *info_script
+# info-staging:
+#   script:
+#     - *info_script
 
 deploy-dev-environment:
   <<: *dev_env
@@ -178,65 +92,36 @@ test-dev-environment:
 stop-dev-environment:
   <<: *dev_env
 
-helm-chart-build:
-  allow_failure: true
-
-########################## PHT SPECIFIC STUFF ABOVE HERE #################################
-
-oci-image-lint:
-  allow_failure: true
-  tags:
-    - $SKA_DEFAULT_RUNNER
-
-oci-image-build:
-  allow_failure: true
-  tags:
-    - $SKA_K8S_RUNNER
-
 deploy-integration:
-  allow_failure: true
-  tags:
-    - $SKA_K8S_RUNNER
-
-js-e2e-deploy:
-  allow_failure: true
-  tags:
-    - $SKA_K8S_RUNNER
-
-js-e2e-test:
-  allow_failure: true
-  before_script:
-    - make js-install-reinstall
-    - mkdir -p artifacts/screenshots
-    - mkdir -p build/reports
-    - mkdir -p build/tests
-    - mkdir -p build/.nyc_output
   variables:
-    KUBE_HOST: 'http://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int'
-  after_script:
-    - cp artefacts/screenshots/**/*.png build/screenshots
-    - yarn test:e2e:coverage
-    - cp build/reports/cobertura-coverage.xml build/reports/e2e-coverage.xml
-  artifacts:
-    reports:
-      coverage_report:
-        coverage_format: cobertura
-        path: build/reports/e2e-coverage.xml
-      junit: build/reports/component-tests.xml, build/reports/e2e-coverage.xml
-  rules:
-    - exists:
-        - tests/cypress/e2e/**/*.test.js
+    KUBE_HOST: https://k8s.stfc.skao.int
 
-# code_quality:
-#   services: []
-#   tags:
-#     - $SKA_DEFAULT_RUNNER
-#   rules:
-#     - if: '$CODE_QUALITY_DISABLED'
-#       when: never
-#     - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS && $CI_PIPELINE_SOURCE == "push"
-#       when: never
-#     - if: $CI_MERGE_REQUEST_IID
-#     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-#     - if: '$CI_COMMIT_TAG'
-#     - if: '$CI_COMMIT_BRANCH'
+include:
+  # TS linting and unit testing
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/js.gitlab-ci.yml'
+  # OCI
+  - project: "ska-telescope/templates-repository"
+    file: "gitlab-ci/includes/oci-image.gitlab-ci.yml"
+  # Docs pages
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/docs.gitlab-ci.yml'
+  # .post step finalisers eg: badges
+  - project: "ska-telescope/templates-repository"
+    file: "gitlab-ci/includes/finaliser.gitlab-ci.yml"
+  # Helm Chart linting and Publish
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/helm-chart.gitlab-ci.yml'
+  # Tag Based GitLab Release Management
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/release.gitlab-ci.yml'
+    # .post step finalisers eg: badges
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/finaliser.gitlab-ci.yml'
+  # deploy steps
+  # - project: 'ska-telescope/templates-repository'
+  #   file: 'gitlab-ci/includes/deploy.gitlab-ci.yml'
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/deploy.dev.gitlab-ci.yml'
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/deploy.integration.gitlab-ci.yml'

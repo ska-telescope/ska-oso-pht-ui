@@ -72,6 +72,8 @@ export default function ReviewListPage() {
   const [panelData, setPanelData] = React.useState<Panel[]>([]);
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
+  const getObservatoryData = () => application.content3 as ObservatoryData;
+  const getCycleId = () => getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId;
 
   const authClient = useAxiosAuthClient();
 
@@ -122,8 +124,6 @@ export default function ReviewListPage() {
 
   const getUser = () => 'DefaultUser'; // TODO
 
-  const getObservatoryData = () => application.content3 as ObservatoryData;
-
   const getScienceReviewType = (row: any): ScienceReview => {
     return {
       kind: REVIEW_TYPE.SCIENCE,
@@ -166,7 +166,7 @@ export default function ReviewListPage() {
         last_modified_by: '',
         last_modified_on: ''
       },
-      panelId: 'ERROR',
+      panelId: getCycleId(),
       cycle: '',
       reviewerId: getUser(),
       submittedOn: '',
@@ -229,7 +229,7 @@ export default function ReviewListPage() {
     });
   };
   const scienceIconClicked = (row: any) => theIconClicked(row, PMT[5]);
-  const technicalIconClicked = (row: any) => theIconClicked(row, PMT[7]);
+  const technicalIconClicked = (row: any) => theIconClicked(row, PMT[6]);
 
   const submitIconClicked = (row: any) => {
     updateReview(row);
