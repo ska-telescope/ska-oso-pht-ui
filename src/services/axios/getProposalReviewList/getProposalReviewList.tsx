@@ -35,7 +35,6 @@ async function GetProposalReviewList(
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/reviews/${proposalId}`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
-    console.log('check result ', result);
     if (!result || !Array.isArray(result.data)) {
       return 'error.API_UNKNOWN_ERROR';
     }

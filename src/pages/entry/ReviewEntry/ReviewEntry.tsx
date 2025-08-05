@@ -12,7 +12,8 @@ import {
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import useTheme from '@mui/material/styles/useTheme';
 import {
-  BANNER_PMT_SPACER, FEASIBILITY,
+  BANNER_PMT_SPACER,
+  FEASIBILITY,
   PANEL_DECISION_STATUS,
   PMT,
   REVIEW_TYPE,
@@ -92,7 +93,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     };
   }
 
-
   const getReview = (submitted = false): ProposalReview => {
     return {
       id: reviewId,
@@ -158,13 +158,12 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   /*---------------------------------------------------------------------------*/
 
   const rightReviewId = (reviewId: string) => {
-    console.log('conditions ', isTechnical(), reviewId.includes('-tec'), !isTechnical(), reviewId.includes('-sci'), reviewId);
-
-    return (isTechnical() && reviewId.includes('-tec')) || (!isTechnical() && reviewId.includes('-sci'));
-};
+    return (
+      (isTechnical() && reviewId.includes('-tec')) || (!isTechnical() && reviewId.includes('-sci'))
+    );
+  };
 
   React.useEffect(() => {
-    console.log('log ', locationProperties?.state);
     if (locationProperties.state?.reviewId && rightReviewId(locationProperties.state?.reviewId)) {
       setReviewId(locationProperties.state?.reviewId);
       setGeneralComments(locationProperties.state?.comments);
@@ -174,13 +173,15 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       setIsEdit(true);
     } else {
       const prefix = isTechnical() ? 'tec-' : 'sci-';
-      setReviewId('rvw-' +
-        prefix +
-        getUser() +
-        '-' +
-        getDateFormatted() +
-        '-00001-' +
-        Math.floor(Math.random() * 10000000).toString())
+      setReviewId(
+        'rvw-' +
+          prefix +
+          getUser() +
+          '-' +
+          getDateFormatted() +
+          '-00001-' +
+          Math.floor(Math.random() * 10000000).toString()
+      );
       setGeneralComments('');
       setSrcNetComments('');
       setRank(0);
@@ -190,10 +191,9 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   }, []);
 
   const submitDisabled = () => {
-    if(isTechnical()){
+    if (isTechnical()) {
       return !hasGeneralComments() || !hasFeasibility();
-    }
-    else {
+    } else {
       return !hasGeneralComments() || rank === 0;
     }
   };
@@ -201,7 +201,11 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const hasGeneralComments = () => generalComments?.length > 0;
 
   const hasFeasibility = () => {
-    return feasibility === FEASIBILITY[0] || feasibility === FEASIBILITY[1] || feasibility === FEASIBILITY[2] ;
+    return (
+      feasibility === FEASIBILITY[0] ||
+      feasibility === FEASIBILITY[1] ||
+      feasibility === FEASIBILITY[2]
+    );
   };
 
   const conflictButtonClicked = () => {
