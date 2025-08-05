@@ -1,4 +1,4 @@
-image: $SKA_K8S_TOOLS_BUILD_DEPLOY
+image: $SKA_K8S_TOOLS_DOCKER_BUILDER_IMAGE
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
@@ -60,26 +60,24 @@ stages:
   - accessibility
   - publish
 
-install_dependencies:
-  image: $NODE_IMAGE
+#Install basic dependencies using yarn
+install-dependencies:
+  image: ${JS_BUILD_IMAGE}
   stage: dependencies
   tags:
-    - $SKA_K8S_RUNNER
+    - ${SKA_K8S_RUNNER}
   before_script:
     - rm -rf node_modules
   script:
-    - yarn install --immutable
-    - yarn list --depth=0 --json >> npm_deps.json
-    - yarn list --depth=0  >> npm_deps.txt
-    - mkdir .public
-    - cp npm_deps.txt .public/
-    - cp npm_deps.json .public/
-  artifacts:
-    paths:
-      - .public
+    - make js-install
   cache:
+    key:
+      files:
+        - ${JS_PROJECT_DIR}/yarn.lock
+      prefix: $CI_COMMIT_SHORT_SHA
     paths:
-      - node_modules/
+      - ${JS_PROJECT_DIR}/node_modules/
+      - ${JS_PROJECT_DIR}/cache/Cypress
     policy: push
 
 js-lint:
