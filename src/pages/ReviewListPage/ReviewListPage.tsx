@@ -97,6 +97,7 @@ export default function ReviewListPage() {
   React.useEffect(() => {
     const fetchProposalReviewData = async (proposalId: string) => {
       const response = await GetProposalReviewList(authClient, proposalId); // TODO : add id of the logged in user
+      console.log('data', response);
       if (typeof response === 'string') {
         NotifyError(response);
       } else {
@@ -154,7 +155,7 @@ export default function ReviewListPage() {
   };
 
   const getReview = (row: any): ProposalReview | null => {
-    const review = proposalReviews.find(p => p.id === row.review_id);
+    const review = proposalReviews.find(p => p.id === row.reviewId);
     if (!review) return null;
     return {
       id: review.id,
@@ -270,7 +271,7 @@ export default function ReviewListPage() {
     headerName: t('status.label'),
     width: 120,
     renderCell: (e: { row: any }) =>
-      e.row.review_id ? t('reviewStatus.' + e.row.status) : t('reviewStatus.to do')
+      e.row.reviewId ? t('reviewStatus.' + e.row.status) : t('reviewStatus.to do')
   };
 
   const colRank = {
@@ -400,24 +401,30 @@ export default function ReviewListPage() {
     function unionProposalsAndReviews() {
       return proposals.map(proposal => {
         const reviews = proposalReviews.filter(r => r.prslId === proposal.id);
-        const review = reviews.length > 0 ? reviews[reviews.length - 1] : undefined;
+        const technicalReviews = reviews.filter(r => r.reviewType?.kind === REVIEW_TYPE.TECHNICAL);
+        const technicalReview = technicalReviews.length > 0 ? technicalReviews[technicalReviews.length - 1] : undefined;
+        const scienceReviews = reviews.filter(r => r.reviewType?.kind === REVIEW_TYPE.SCIENCE);
+        const scienceReview = scienceReviews.length > 0 ? scienceReviews[scienceReviews.length - 1] : undefined;
+        console.log('technical reviews ', technicalReviews);
+        console.log('science reviews ', scienceReviews);
+        //prefix fields with reviewType
         return {
           ...proposal,
-          ...(review
+          ...(technicalReview
             ? {
                 panelId: panelData[0].id,
-                review_id: review.id,
+                reviewId: technicalReview.id,
                 rank:
-                  review?.reviewType?.kind === REVIEW_TYPE.SCIENCE
-                    ? review?.reviewType?.rank?.toString()
+                  technicalReview?.reviewType?.kind === REVIEW_TYPE.SCIENCE
+                    ? technicalReview?.reviewType?.rank?.toString()
                     : '', // rank is only for science review
                 feasibility:
-                  review?.reviewType?.kind === REVIEW_TYPE.TECHNICAL
-                    ? review?.reviewType?.feasibility?.isFeasible
+                  technicalReview?.reviewType?.kind === REVIEW_TYPE.TECHNICAL
+                    ? technicalReview?.reviewType?.feasibility?.isFeasible
                     : '', // feasibility is only for technical review,
-                comments: review.comments,
-                srcNet: review.srcNet,
-                status: review.status
+                comments: technicalReview.comments,
+                srcNet: technicalReview.srcNet,
+                status: technicalReview.status
               }
             : {
                 panelId: panelData[0].id,
@@ -443,6 +450,8 @@ export default function ReviewListPage() {
   }
 
   const filteredData = proposals ? filterProposals() : [];
+  console.log('filtered data ', filteredData);
+
 
   const searchDropdown = () => (
     <DropDown

@@ -12,7 +12,7 @@ import {
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import useTheme from '@mui/material/styles/useTheme';
 import {
-  BANNER_PMT_SPACER,
+  BANNER_PMT_SPACER, FEASIBILITY,
   PANEL_DECISION_STATUS,
   PMT,
   REVIEW_TYPE,
@@ -51,13 +51,13 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const isView = () => (locationProperties.state?.reviews ? true : false);
   const [tabValuePDF, setTabValuePDF] = React.useState(0);
   const [tabValueReview, setTabValueReview] = React.useState(0);
-  const [reviewId, setReviewId] = React.useState(locationProperties?.state?.id);
+  const [reviewId, setReviewId] = React.useState('');
   const [rank, setRank] = React.useState(0);
   const [generalComments, setGeneralComments] = React.useState('');
   const [feasibility, setFeasibility] = React.useState('');
   const [srcNetComments, setSrcNetComments] = React.useState('');
   const [currentPDF, setCurrentPDF] = React.useState<string | null | undefined>(null);
-  const [isEdit, setIsEdit] = React.useState(!!locationProperties.state?.reviewType);
+  const [isEdit, setIsEdit] = React.useState(false);
 
   const AREA_HEIGHT_NUM = 74;
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
@@ -66,34 +66,8 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const authClient = useAxiosAuthClient();
 
   const getUser = () => 'DefaultUser'; // TODO
-  const isTechnical = (reviewType: string) => reviewType === REVIEW_TYPE.TECHNICAL;
+  const isTechnical = () => reviewType === REVIEW_TYPE.TECHNICAL;
   const getDateFormatted = () => moment().format('YYYY-MM-DD');
-
-  const getReviewId = () => {
-    if (isTechnical(reviewType)) {
-      return isEdit
-        ? locationProperties.state.review_id
-        : 'rvw-' +
-            getUser() +
-            '-' +
-            'tec' +
-            '-' +
-            getDateFormatted() +
-            '-00001-' +
-            Math.floor(Math.random() * 10000000).toString();
-    } else {
-      return isEdit
-        ? locationProperties.state.review_id
-        : 'rvw-' +
-            getUser() +
-            '-' +
-            'sci' +
-            '-' +
-            getDateFormatted() +
-            '-00001-' +
-            Math.floor(Math.random() * 10000000).toString();
-    }
-  };
 
   const getReview = (submitted = false): ProposalReview => {
     return {
@@ -150,7 +124,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       NotifyError(response?.error);
     } else {
       NotifyOK(t('addReview.success'));
-      setIsEdit(true);
     }
   };
 
@@ -168,25 +141,51 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   /*---------------------------------------------------------------------------*/
 
+  const rightReviewId = (reviewId: string) => {
+    console.log('conditions ', isTechnical(), reviewId.includes('-tec'), !isTechnical(), reviewId.includes('-sci'), reviewId);
+
+    return (isTechnical() && reviewId.includes('-tec')) || (!isTechnical() && reviewId.includes('-sci'));
+};
+
   React.useEffect(() => {
-    setReviewId(getReviewId());
-    if (locationProperties.state?.id) {
+    console.log('log ', locationProperties?.state);
+    if (locationProperties.state?.reviewId && rightReviewId(locationProperties.state?.reviewId)) {
+      setReviewId(locationProperties.state?.reviewId);
       setGeneralComments(locationProperties.state?.comments);
       setSrcNetComments(locationProperties.state?.srcNet);
       setRank(locationProperties.state?.rank);
       setFeasibility(locationProperties.state?.isFeasible);
-      setIsEdit(false);
+      setIsEdit(true);
     } else {
+      const prefix = isTechnical() ? 'tec-' : 'sci-';
+      setReviewId('rvw-' +
+        prefix +
+        getUser() +
+        '-' +
+        getDateFormatted() +
+        '-00001-' +
+        Math.floor(Math.random() * 10000000).toString())
       setGeneralComments('');
       setSrcNetComments('');
       setRank(0);
       setFeasibility('');
-      setIsEdit(true);
+      setIsEdit(false);
     }
   }, []);
 
   const submitDisabled = () => {
-    return generalComments?.length === 0 || rank === 0;
+    if(isTechnical()){
+      return !hasGeneralComments() || !hasFeasibility();
+    }
+    else {
+      return !hasGeneralComments() || rank === 0;
+    }
+  };
+
+  const hasGeneralComments = () => generalComments?.length > 0;
+
+  const hasFeasibility = () => {
+    return feasibility === FEASIBILITY[0] || feasibility === FEASIBILITY[1] || feasibility === FEASIBILITY[2] ;
   };
 
   const conflictButtonClicked = () => {
