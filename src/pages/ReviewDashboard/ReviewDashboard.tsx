@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import Grid2 from '@mui/material/Grid2';
-import { DropDown, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
+import { DropDown, TextEntry, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import { ReactNode } from 'react';
 import { Typography } from '@mui/material';
@@ -292,10 +292,22 @@ export default function ReviewDashboard() {
   };
 
   const filterReport = currentReport => {
-    if (filter.telescope === '') return currentReport;
+    const filterReportBySearch = currentReport.filter(review => {
+      if (search === '') {
+        return true;
+      } else {
+        return Object.values(review).some(value =>
+          String(value)
+            .toLowerCase()
+            .includes(search.toLowerCase())
+        );
+      }
+    });
 
-    const filteredReport = currentReport.filter(review => {
-      if (filter.telescope === 'BOTH') {
+    const filteredReport = filterReportBySearch.filter(review => {
+      if (filter.telescope === '') {
+        return true;
+      } else if (filter.telescope === 'BOTH') {
         return review.array === 'MID' || review.array === 'LOW';
       } else {
         return review.array === filter.telescope;
@@ -325,7 +337,7 @@ export default function ReviewDashboard() {
     const filteredReport = filterReport(currentReport);
 
     setFilteredReport(filteredReport);
-  }, [filter, currentReport]);
+  }, [filter, currentReport, search]);
 
   return (
     <>
@@ -362,6 +374,7 @@ export default function ReviewDashboard() {
             label={'Country'}
           />
         </Grid2>
+        */}
         <Grid2 size={{ sm: 2 }}>
           <TextEntry
             label={'Search'}
@@ -369,7 +382,7 @@ export default function ReviewDashboard() {
             testId="effectiveResolution"
             value={search}
           />
-        </Grid2> */}
+        </Grid2>
         <Grid2 size={{ sm: 2 }}>
           <ResetButton
             action={() => {
