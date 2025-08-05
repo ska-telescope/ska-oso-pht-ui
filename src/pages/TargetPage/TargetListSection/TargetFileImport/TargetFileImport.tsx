@@ -54,7 +54,6 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
   };
 
   const AddTheTargetEquatorial = (id: number, name: string, ra: string, dec: string): Target => {
-    console.log('Adding Equatorial Target:', { id, name, ra, dec });
     const newTarget = {
       kind: ICRS,
       //Default values from AddTarget.tsx

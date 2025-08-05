@@ -90,14 +90,6 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
       name: tar.name,
       target_id: tar.name,
       reference_coordinate: getReferenceCoordinate(tar),
-      // reference_coordinate: {
-      //   kind: REF_COORDINATES_UNITS[0]?.label, // TODO :  hardcoded as galactic not handled in backend and not fully implemented in UI (not added to proposal)
-      //   epoch: tar.epoch,
-      //   ra: tar.ra,
-      //   dec: tar.dec,
-      //   unit: [REF_COORDINATES_UNITS[0].units[0], REF_COORDINATES_UNITS[0].units[1]], // TODO : hardcoded as not fully implemented in UI (not added to proposal)
-      //   reference_frame: tar.rcReferenceFrame ? tar.rcReferenceFrame : 'icrs' // TODO : hardcoded for now as not implemented in UI
-      // },
       radial_velocity: {
         quantity: {
           value: isVelocity(tar.velType) ? Number(tar.vel) : 0,

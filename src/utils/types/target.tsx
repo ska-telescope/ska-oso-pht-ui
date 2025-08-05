@@ -40,16 +40,6 @@ export type ReferenceCoordinateICRSBackend = {
   epoch?: number;
 };
 
-// NOT USED TODO: remove
-// export type ReferenceCoordinateBackend = {
-//   kind: string;
-//   ra: number | string;
-//   dec: number | string;
-//   epoch?: number;
-//   unit: string[];
-//   reference_frame: string;
-// };
-
 export type TargetBackend = {
   target_id: string;
   name: string;
