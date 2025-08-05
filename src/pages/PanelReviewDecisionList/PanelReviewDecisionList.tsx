@@ -98,12 +98,6 @@ export default function ReviewDecisionListPage() {
     };
   };
 
-  const updateList = (item: any) => {
-    setReviewDecisions(prev =>
-      prev.map(proposal => (proposal.id === item.id ? { ...proposal, ...item } : proposal))
-    );
-  };
-
   const updateReview = async (review: ProposalReview) => {
     const response: string | { error: string } = await PostProposalReview(review, getCycleId());
     if (typeof response === 'object' && response?.error) {
@@ -139,12 +133,23 @@ export default function ReviewDecisionListPage() {
     if (typeof response === 'object' && response?.error) {
       Notify(response?.error, AlertColorTypes.Error);
     } else {
-      updateList(item);
+      fetchReviewDecisionData();
       Notify(t('addReview.success'), AlertColorTypes.Success);
     }
   };
 
   /*--------------------------------------------------------------------------*/
+
+  const fetchReviewDecisionData = async () => {
+    const response = await getPanelDecisionList(
+      getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
+    ); // TODO : add id of the logged in user
+    if (typeof response === 'string') {
+      NotifyError(response);
+    } else {
+      setReviewDecisions(response);
+    }
+  };
 
   React.useEffect(() => {
     setReset(!reset);
@@ -183,16 +188,6 @@ export default function ReviewDecisionListPage() {
         NotifyError(response);
       } else {
         setProposalReviews(response);
-      }
-    };
-    const fetchReviewDecisionData = async () => {
-      const response = await getPanelDecisionList(
-        getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
-      ); // TODO : add id of the logged in user
-      if (typeof response === 'string') {
-        NotifyError(response);
-      } else {
-        setReviewDecisions(response);
       }
     };
     fetchProposalData();
