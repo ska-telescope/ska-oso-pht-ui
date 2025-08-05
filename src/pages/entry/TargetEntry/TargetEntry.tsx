@@ -13,7 +13,7 @@ import VelocityField from '../../../components/fields/velocity/Velocity';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import GetCoordinates from '../../../services/axios/getCoordinates/getCoordinates';
 import Target from '../../../utils/types/target';
-import { LAB_POSITION, VELOCITY_TYPE, WRAPPER_HEIGHT } from '../../../utils/constants';
+import { ICRS, LAB_POSITION, VELOCITY_TYPE, WRAPPER_HEIGHT } from '../../../utils/constants';
 import Notification from '../../../utils/types/notification';
 interface TargetEntryProps {
   raType: number;
@@ -152,16 +152,15 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
       const highestId = highest ? highest.id : 0;
 
       const newTarget: Target = {
+        kind: ICRS,
         decStr: dec,
-        decUnit: raType.toString(),
         id: highestId + 1,
         name: name,
-        latitude: null,
-        longitude: null,
+        latitude: '',
+        longitude: '',
         raStr: ra,
-        raUnit: raType.toString(),
         redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift : '',
-        referenceFrame: referenceFrame,
+        referenceFrame: ICRS,
         vel: velType === VELOCITY_TYPE.VELOCITY ? vel : '',
         velType: velType,
         velUnit: velUnit

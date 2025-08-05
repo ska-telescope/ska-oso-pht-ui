@@ -60,13 +60,11 @@ interface FinalIndividualResults {
 function getFinalResults(
   target: {
     dec?: string;
-    decUnit?: string;
     id: any;
     name: any;
     latitude?: string;
     longitude?: string;
     ra?: string;
-    raUnit?: string;
     redshift?: string;
     referenceFrame?: number;
     rcReferenceFrame?: string | undefined;

@@ -44,7 +44,6 @@ export const MockProposalBackend: ProposalBackend = {
           dec_str: '00:00:00.0',
           reference_frame: ICRS,
           epoch: 2000
-          // unit: ['hourangle', 'deg'] // TODO: can this be removed? (reference frame unit which has been removed)
         },
         radial_velocity: {
           quantity: {
@@ -75,7 +74,6 @@ export const MockProposalBackend: ProposalBackend = {
           dec_str: '+22:00:53.000',
           reference_frame: ICRS,
           epoch: 2000
-          // unit: ['hourangle', 'deg'] // TODO: can this be removed? (reference frame unit which has been removed)
         },
         radial_velocity: {
           quantity: {
@@ -106,7 +104,6 @@ export const MockProposalBackend: ProposalBackend = {
           dec_str: '-00:49:23.700',
           reference_frame: ICRS,
           epoch: 2000
-          // unit: ['hourangle', 'deg'] // TODO: can this be removed? (reference frame unit which has been removed)
         },
         radial_velocity: {
           quantity: {
@@ -261,7 +258,6 @@ export const MockProposalBackendZoom: ProposalBackend = {
           dec_str: '-00:49:23.700',
           reference_frame: ICRS,
           epoch: 2000
-          // unit: ['hourangle', 'deg'] // TODO: can this be removed? (reference frame unit which has been removed)
         },
         radial_velocity: {
           quantity: {

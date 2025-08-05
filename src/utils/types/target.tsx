@@ -85,12 +85,10 @@ export type PointingPatternParams = {
 };
 
 type Target = {
-  // decUnit: string; // TODO is this still needed or can it be removed? (mapped to regference frame unit which has been removed)
   id: number;
   name: string;
-  latitude: string;
-  longitude: string;
-  // raUnit: string; // TODO is this still needed or can it be removed? (mapped to regference frame unit which has been removed)
+  latitude?: string;
+  longitude?: string;
   redshift: string;
   rcReferenceFrame?: string; // NOT USED
   raReferenceFrame?: string; // NOT USED

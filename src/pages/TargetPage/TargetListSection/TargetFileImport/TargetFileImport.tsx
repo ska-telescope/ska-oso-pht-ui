@@ -33,17 +33,16 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
     helpComponent(t('targetImport.help'));
   }, []);
 
-  const AddTheTargetGalactic = (id, name, latitude, longitude) => {
+  const AddTheTargetGalactic = (id: string, name: string, latitude: string, longitude: string) => {
+    // TODO update with Galactic fields
     const newTarget = {
       //Default values from AddTarget.tsx
       dec: '',
-      decUnit: raType.toString(),
       id,
       name,
       latitude,
       longitude,
       ra: '',
-      raUnit: raType.toString(),
       redshift: null,
       referenceFrame: 0,
       vel: '',
@@ -58,13 +57,11 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
       kind: ICRS,
       //Default values from AddTarget.tsx
       decStr: dec,
-      // decUnit: raType.toString(), // TODO can this be removed?
       id,
       name,
       latitude: '',
       longitude: '',
       raStr: ra,
-      // raUnit: raType.toString(), // TODO can this be removed?
       redshift: '',
       referenceFrame: '0',
       velType: 0,

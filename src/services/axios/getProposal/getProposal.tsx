@@ -120,12 +120,10 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       kind: e?.reference_coordinate?.kind,
       epoch: e?.reference_coordinate?.epoch,
       parallax: e?.reference_coordinate?.parallax,
-      // decUnit: e.reference_coordinate?.unit[1], // TODO can this be removed? (reference coordinate unit has been removed)
       id: i + 1, // TODO use e.target_id once it is a number => needs to be changed in ODA & PDM
       name: e?.target_id,
       latitude: '', // TODO add latitude when coming from the backend - no property to map to currently
       longitude: '', // TODO add longitude when coming from the backend - no property to map to currently
-      // raUnit: e.reference_coordinate?.unit[0], // TODO can this be removed? (reference coordinate unit has been removed)
       redshift: e.radial_velocity.redshift.toString(),
       rcReferenceFrame:
         referenceCoordinate === ICRS

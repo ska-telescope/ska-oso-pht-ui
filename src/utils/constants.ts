@@ -802,19 +802,6 @@ export const VEL_UNITS = [
   { label: 'm/s', value: 1 }
 ];
 
-export const REF_COORDINATES_UNITS = [
-  {
-    value: 1,
-    label: 'equatorial',
-    units: ['hourangle', 'deg']
-  },
-  {
-    value: 2,
-    label: 'galactic',
-    units: ['deg', 'deg']
-  }
-];
-
 export const SEARCH_TYPE_OPTIONS = [
   { label: 'Draft', value: 'draft' },
   { label: 'Submitted', value: 'submitted' },
@@ -951,13 +938,11 @@ export const ICRS = 'icrs';
 export const DEFAULT_TARGETS: Target = {
   kind: ICRS,
   decStr: '123',
-  // decUnit: '1', // TODO can this be removed?
   id: 1,
   latitude: '123',
   longitude: '123',
   name: 'DUMMY',
   raStr: '123',
-  // raUnit: '1', // TODO can this be removed?
   redshift: '123',
   referenceFrame: '0',
   vel: '123',

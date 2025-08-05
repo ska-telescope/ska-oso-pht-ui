@@ -2,6 +2,7 @@ import { describe, test } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import GridTargets from './GridTargets';
+import { ICRS } from '@/utils/constants';
 
 describe('<GridTargets />', () => {
   test('renders correctly', () => {
@@ -13,16 +14,15 @@ describe('<GridTargets />', () => {
         raType={0}
         rows={[
           {
+            kind: ICRS,
             id: 1,
-            dec: '',
-            decUnit: '',
+            decStr: '',
             name: '',
             latitude: '',
             longitude: '',
-            ra: '',
-            raUnit: '',
+            raStr: '',
             redshift: '',
-            referenceFrame: 0,
+            referenceFrame: ICRS,
             velType: 0,
             vel: '',
             velUnit: 0
@@ -38,16 +38,15 @@ describe('<GridTargets />', () => {
         raType={0}
         rows={[
           {
+            kind: ICRS,
             id: 1,
-            dec: '',
-            decUnit: '',
+            decStr: '',
             name: '',
             latitude: '',
             longitude: '',
-            ra: '',
-            raUnit: '',
+            raStr: '',
             redshift: '',
-            referenceFrame: 0,
+            referenceFrame: ICRS,
             velType: 0,
             vel: '',
             velUnit: 0
@@ -63,16 +62,15 @@ describe('<GridTargets />', () => {
         raType={0}
         rows={[
           {
+            kind: ICRS,
             id: 1,
-            dec: '',
-            decUnit: '',
+            decStr: '',
             name: '',
             latitude: '',
             longitude: '',
-            ra: '',
-            raUnit: '',
+            raStr: '',
             redshift: '',
-            referenceFrame: 0,
+            referenceFrame: ICRS,
             velType: 0,
             vel: '',
             velUnit: 0
