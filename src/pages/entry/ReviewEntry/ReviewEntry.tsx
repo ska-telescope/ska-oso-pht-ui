@@ -32,7 +32,7 @@ import PDFViewer from '@/components/layout/PDFViewer/PDFViewer';
 import ConflictButton from '@/components/button/Conflict/Conflict';
 import GetPresignedDownloadUrl from '@/services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProposalReview';
-import { ProposalReview } from '@/utils/types/proposalReview';
+import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
@@ -69,20 +69,36 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const isTechnical = () => reviewType === REVIEW_TYPE.TECHNICAL;
   const getDateFormatted = () => moment().format('YYYY-MM-DD');
 
+  function getTechnicalReview(): TechnicalReview {
+    return {
+      kind: REVIEW_TYPE.TECHNICAL,
+      feasibility: {
+        isFeasible: feasibility,
+        //TODO: Update mapping for technical comments
+        comments: generalComments
+      }
+    };
+  }
+
+  function getScienceReview(): ScienceReview {
+    return {
+      kind: REVIEW_TYPE.SCIENCE,
+      rank: rank,
+      conflict: {
+        hasConflict: false,
+        reason: ''
+      },
+      excludedFromDecision: false
+    };
+  }
+
+
   const getReview = (submitted = false): ProposalReview => {
     return {
       id: reviewId,
       prslId: getProposal().id,
       // TODO implement technical review as well - reviewType below is only for science review
-      reviewType: {
-        kind: REVIEW_TYPE.SCIENCE,
-        rank: rank,
-        conflict: {
-          hasConflict: false,
-          reason: ''
-        },
-        excludedFromDecision: false
-      },
+      reviewType: reviewType === REVIEW_TYPE.SCIENCE ? getScienceReview() : getTechnicalReview(),
       comments: generalComments,
       srcNet: srcNetComments,
       metadata: {
