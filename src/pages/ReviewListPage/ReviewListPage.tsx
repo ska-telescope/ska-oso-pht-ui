@@ -11,13 +11,16 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { presentDate, presentLatex, presentTime } from '@utils/present/present';
+import GetProposalReviewList from '@services/axios/getProposalReviewList/getProposalReviewList.tsx';
+import GetProposal from '@services/axios/getProposal/getProposal.tsx';
+import { validateProposal } from '@utils/proposalValidation.tsx';
 import {
   SEARCH_TYPE_OPTIONS,
   BANNER_PMT_SPACER,
   PANEL_DECISION_STATUS,
   REVIEW_TYPE,
-  TECHNICAL_FEASIBILITY, FEASIBILITY
-} from '../../utils/constants';
+  FEASIBILITY
+} from '@utils/constants.ts';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
@@ -35,9 +38,6 @@ import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProp
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import GetProposalByStatusList from '@/services/axios/getProposalByStatusList/getProposalByStatusList';
-import GetProposalReviewList from '@services/axios/getProposalReviewList/getProposalReviewList.tsx';
-import GetProposal from '@services/axios/getProposal/getProposal.tsx';
-import { validateProposal } from '@utils/proposalValidation.tsx';
 
 /*
  * Process for retrieving the data for the list
@@ -76,9 +76,6 @@ export default function ReviewListPage() {
 
   const authClient = useAxiosAuthClient();
 
-  const getProposal = () => application.content2 as Proposal;
-
-
   const DATA_GRID_HEIGHT = '60vh';
 
   React.useEffect(() => {
@@ -98,6 +95,22 @@ export default function ReviewListPage() {
   }, [reset]);
 
   React.useEffect(() => {
+    const fetchProposalReviewData = async (proposalId: string) => {
+      const response = await GetProposalReviewList(authClient, proposalId); // TODO : add id of the logged in user
+      if (typeof response === 'string') {
+        NotifyError(response);
+      } else {
+        setProposalReviews(proposalReviews => [...proposalReviews, ...response]);
+      }
+    };
+
+    const loopProposals = (filtered: Proposal[]) => {
+      const proposalId = filtered.map(el => {
+        return el.id;
+      });
+      fetchProposalReviewData(proposalId[0]);
+    };
+
     const fetchProposalData = async () => {
       const response = await GetProposalByStatusList(authClient, PROPOSAL_STATUS.SUBMITTED); // TODO : Temporary implementation to get all submitted proposals
       if (typeof response === 'string') {
@@ -110,19 +123,10 @@ export default function ReviewListPage() {
           ? response.filter((proposal: Proposal) => panelProposalIds.includes(proposal.id))
           : [];
         setProposals(filtered);
-      }
-    };
-    const fetchProposalReviewData = async () => {
-      const response = await GetProposalReviewList(authClient, getProposal()); // TODO : add id of the logged in user
-      console.log('proposal review data ', response);
-      if (typeof response === 'string') {
-        NotifyError(response);
-      } else {
-        setProposalReviews(response);
+        loopProposals(filtered);
       }
     };
     fetchProposalData();
-    fetchProposalReviewData();
   }, [panelData]);
 
   const getUser = () => 'DefaultUser'; // TODO
@@ -281,7 +285,7 @@ export default function ReviewListPage() {
     headerName: t('feasibility.label'),
     width: 120,
     renderCell: (e: { row: any }) => {
-      return e.row?.reviewType?.feasibility?.isFeasible.toLowerCase();
+      return e?.row?.reviewType?.feasibility?.isFeasible.toLowerCase();
     }
   };
 

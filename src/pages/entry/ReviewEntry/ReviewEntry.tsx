@@ -32,9 +32,8 @@ import PDFViewer from '@/components/layout/PDFViewer/PDFViewer';
 import ConflictButton from '@/components/button/Conflict/Conflict';
 import GetPresignedDownloadUrl from '@/services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProposalReview';
-import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
+import { ProposalReview } from '@/utils/types/proposalReview';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
-import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 interface ReviewEntryProps {
@@ -71,29 +70,28 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const getDateFormatted = () => moment().format('YYYY-MM-DD');
 
   const getReviewId = () => {
-    if(isTechnical(reviewType)){
+    if (isTechnical(reviewType)) {
       return isEdit
         ? locationProperties.state.review_id
         : 'rvw-' +
-        getUser() +
-        '-' +
-        'tec' +
-        '-' +
-        getDateFormatted() +
-        '-00001-' +
-        Math.floor(Math.random() * 10000000).toString();
-    }
-    else {
+            getUser() +
+            '-' +
+            'tec' +
+            '-' +
+            getDateFormatted() +
+            '-00001-' +
+            Math.floor(Math.random() * 10000000).toString();
+    } else {
       return isEdit
         ? locationProperties.state.review_id
         : 'rvw-' +
-        getUser() +
-        '-' +
-        'sci' +
-        '-' +
-        getDateFormatted() +
-        '-00001-' +
-        Math.floor(Math.random() * 10000000).toString();
+            getUser() +
+            '-' +
+            'sci' +
+            '-' +
+            getDateFormatted() +
+            '-00001-' +
+            Math.floor(Math.random() * 10000000).toString();
     }
   };
 

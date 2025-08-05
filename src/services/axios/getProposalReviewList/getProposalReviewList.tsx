@@ -1,14 +1,13 @@
 import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
-  OSO_SERVICES_REVIEWS_PATH, OSO_SERVICES_PROPOSAL_PATH
-} from '../../../utils/constants';
+  OSO_SERVICES_PROPOSAL_PATH
+} from '@utils/constants.ts';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { mappingReviewBackendToFrontend } from '../putProposalReview/putProposalReview';
 import { MockProposalReviewListBackend } from './mockProposalReviewListBackend';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
 import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
-import Proposal from '@utils/types/proposal.tsx';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -27,14 +26,14 @@ export function GetMockProposalReviewList(mock = MockProposalReviewListBackend):
 
 async function GetProposalReviewList(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
-  proposal: Proposal
+  proposalId: string
 ): Promise<ProposalReview[] | string> {
   if (USE_LOCAL_DATA) {
     return GetMockProposalReviewList();
   }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/reviews/${proposal.id}`;
+    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/reviews/${proposalId}`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
     console.log('check result ', result);
     if (!result || !Array.isArray(result.data)) {
