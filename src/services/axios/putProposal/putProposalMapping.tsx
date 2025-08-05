@@ -62,23 +62,23 @@ const getReferenceCoordinate = (
   if (tar.kind === GALACTIC) {
     return {
       kind: GALACTIC,
-      l: tar.l as number,
-      b: tar.b as number,
-      pm_l: tar.pmL as number,
-      pm_b: tar.pmB as number,
-      epoch: tar.epoch as number,
-      parallax: tar.parallax as number
+      l: tar.l,
+      b: tar.b,
+      pm_l: tar.pmL,
+      pm_b: tar.pmB,
+      epoch: tar.epoch,
+      parallax: tar.parallax
     } as ReferenceCoordinateGalacticBackend;
   }
   return {
     kind: ICRS,
     reference_frame: tar.referenceFrame ? tar.referenceFrame : ICRS, // TODO : hardcoded for now as not implemented in UI
-    ra_str: tar.raStr as string,
-    dec_str: tar.decStr as string,
-    pm_ra: tar.pmRa as number,
-    pm_dec: tar.pmDec as number,
-    epoch: tar.epoch as number,
-    parallax: tar.parallax as number
+    ra_str: tar.raStr,
+    dec_str: tar.decStr,
+    pm_ra: tar.pmRa,
+    pm_dec: tar.pmDec,
+    epoch: tar.epoch,
+    parallax: tar.parallax
   } as ReferenceCoordinateICRSBackend;
 };
 
