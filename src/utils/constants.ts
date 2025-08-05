@@ -232,7 +232,6 @@ export const PMT = [
   '/review/panel/entry',
   '/review/panel/decisions',
   '/review/science',
-  '/review/panel/decision',
   '/review/technical'
 ];
 
