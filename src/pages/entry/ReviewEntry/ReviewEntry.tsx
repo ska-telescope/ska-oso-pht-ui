@@ -71,19 +71,35 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const getDateFormatted = () => moment().format('YYYY-MM-DD');
 
   const getReviewId = () => {
-    return isEdit
-      ? locationProperties.state.id
-      : 'rvw-' +
-          getUser() +
-          '-' +
-          getDateFormatted() +
-          '-00001-' +
-          Math.floor(Math.random() * 10000000).toString();
+    if(isTechnical(reviewType)){
+      return isEdit
+        ? locationProperties.state.review_id
+        : 'rvw-' +
+        getUser() +
+        '-' +
+        'tec' +
+        '-' +
+        getDateFormatted() +
+        '-00001-' +
+        Math.floor(Math.random() * 10000000).toString();
+    }
+    else {
+      return isEdit
+        ? locationProperties.state.review_id
+        : 'rvw-' +
+        getUser() +
+        '-' +
+        'sci' +
+        '-' +
+        getDateFormatted() +
+        '-00001-' +
+        Math.floor(Math.random() * 10000000).toString();
+    }
   };
 
   const getReview = (submitted = false): ProposalReview => {
     return {
-      id: getReviewId(),
+      id: reviewId,
       prslId: getProposal().id,
       // TODO implement technical review as well - reviewType below is only for science review
       reviewType: {
