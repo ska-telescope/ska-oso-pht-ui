@@ -332,7 +332,7 @@ export default function ReviewDashboard() {
   }, [filteredReport]);
 
   React.useEffect(() => {
-    // note: currently we are not filtering country 
+    // note: currently we are not filtering country
 
     const filteredReport = filterReport(currentReport);
 
