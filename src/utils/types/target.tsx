@@ -85,13 +85,11 @@ export type PointingPatternParams = {
 };
 
 type Target = {
-  // dec: string; // TODO is this still needed or can it be removed?
   // decUnit: string; // TODO is this still needed or can it be removed? (mapped to regference frame unit which has been removed)
   id: number;
   name: string;
   latitude: string;
   longitude: string;
-  // ra: string; // TODO is this still needed or can it be removed?
   // raUnit: string; // TODO is this still needed or can it be removed? (mapped to regference frame unit which has been removed)
   redshift: string;
   rcReferenceFrame?: string; // NOT USED
@@ -107,8 +105,8 @@ type Target = {
   pmL?: number; // NOT USED YET // for Galactic
   pmB?: number; // NOT USED YET // for Galactic
   referenceFrame?: string; // NOT USED YET // for ICRS
-  raStr?: string; // NOT USED YET // for ICRS
-  decStr?: string; // NOT USED YET // for ICRS
+  raStr?: string; // replaces ra for ICRS
+  decStr?: string; // replaces dec for ICRS
   pmRa?: number; // NOT USED YET // for ICRS
   pmDec?: number; // NOT USED YET // for ICRS
   parallax?: number; // NOT USED YET // for both Galactic & ICRS
