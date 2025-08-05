@@ -34,6 +34,8 @@ import GetPresignedDownloadUrl from '@/services/axios/getPresignedDownloadUrl/ge
 import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProposalReview';
 import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
+import ObservatoryData from '@/utils/types/observatoryData';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 interface ReviewEntryProps {
   reviewType: string;
@@ -50,7 +52,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const isView = () => (locationProperties.state?.reviews ? true : false);
   const [tabValuePDF, setTabValuePDF] = React.useState(0);
   const [tabValueReview, setTabValueReview] = React.useState(0);
-  const [reviewId, setReviewId] = React.useState('');
+  const [reviewId, setReviewId] = React.useState(locationProperties?.state?.id);
   const [rank, setRank] = React.useState(0);
   const [generalComments, setGeneralComments] = React.useState('');
   const [feasibility, setFeasibility] = React.useState('');
@@ -62,66 +64,37 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
 
   const getProposal = () => application.content2 as Proposal;
+  const authClient = useAxiosAuthClient();
 
   const getUser = () => 'DefaultUser'; // TODO
   const isTechnical = (reviewType: string) => reviewType === REVIEW_TYPE.TECHNICAL;
   const getDateFormatted = () => moment().format('YYYY-MM-DD');
 
   const getReviewId = () => {
-    if(isTechnical(reviewType)){
-      return isEdit
-        ? locationProperties.state.review_id
-        : 'rvw-' +
-        getUser() +
-        '-' +
-        'tec' +
-        '-' +
-        getDateFormatted() +
-        '-00001-' +
-        Math.floor(Math.random() * 10000000).toString();
-    }
-    else {
-      return isEdit
-        ? locationProperties.state.review_id
-        : 'rvw-' +
-        getUser() +
-        '-' +
-        'sci' +
-        '-' +
-        getDateFormatted() +
-        '-00001-' +
-        Math.floor(Math.random() * 10000000).toString();
-    }
+    return isEdit
+      ? locationProperties.state.id
+      : 'rvw-' +
+          getUser() +
+          '-' +
+          getDateFormatted() +
+          '-00001-' +
+          Math.floor(Math.random() * 10000000).toString();
   };
 
-  function getTechnicalReview(): TechnicalReview {
-    return {
-      kind: REVIEW_TYPE.TECHNICAL,
-      feasibility: {
-        isFeasible: feasibility,
-        comments: generalComments
-      }
-    };
-  }
-
-  function getScienceReview(): ScienceReview {
-    return {
-      kind: REVIEW_TYPE.SCIENCE,
-      rank: rank,
-      conflict: {
-        hasConflict: false,
-        reason: ''
-      },
-      excludedFromDecision: false
-    };
-  }
-
   const getReview = (submitted = false): ProposalReview => {
-    console.log('review-id', reviewId)
     return {
-      id: reviewId,
+      id: getReviewId(),
       prslId: getProposal().id,
-      reviewType: reviewType === REVIEW_TYPE.SCIENCE ? getScienceReview() : getTechnicalReview(),
+      // TODO implement technical review as well - reviewType below is only for science review
+      reviewType: {
+        kind: REVIEW_TYPE.SCIENCE,
+        rank: rank,
+        conflict: {
+          hasConflict: false,
+          reason: ''
+        },
+        excludedFromDecision: false
+      },
       comments: generalComments,
       srcNet: srcNetComments,
       metadata: {
@@ -240,7 +213,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       const selectedFile =
         `${proposal.id}-` + t(`pdfDownload.${pdfLabel}.label`) + t('fileType.pdf');
 
-      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
 
       if (
         signedUrl === t('pdfDownload.sampleData') ||

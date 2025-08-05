@@ -22,7 +22,7 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
     const margin = { top: 20, right: 80, bottom: 20, left: 80 };
     const svgWidth = chartWidth + margin.left + margin.right;
     const svgHeight = chartHeight + margin.top + margin.bottom;
-    const radius = Math.min(chartWidth, chartHeight) / 2 - 20;
+    const radius = Math.min(chartWidth, chartHeight) / 2.5 - 20;
     const total = d3.sum(data, d => d.value);
     const centerLabel = centerText || total.toString();
 

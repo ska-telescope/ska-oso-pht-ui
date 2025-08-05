@@ -5,15 +5,14 @@ import { AlertColorTypes, SearchEntry } from '@ska-telescope/ska-gui-components'
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import moment from 'moment';
-import GetProposalList from '../../services/axios/getProposalList/getProposalList';
-import { BANNER_PMT_SPACER, PANEL_DECISION_STATUS } from '../../utils/constants';
+import { BANNER_PMT_SPACER, PANEL_DECISION_STATUS, PROPOSAL_STATUS } from '../../utils/constants';
 import Proposal from '../../utils/types/proposal';
 import { FOOTER_SPACER } from '../../utils/constants';
 
 import Notification from '../../utils/types/notification';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import TableReviewDecision from '@/components/grid/tableReviewDecision/TableReviewDecision';
-import { ProposalReview } from '@/utils/types/proposalReview';
+import { ProposalReview, ScienceReview } from '@/utils/types/proposalReview';
 import GetPanelList from '@/services/axios/getPanelList/getPanelList';
 import GetProposalReviewList from '@/services/axios/getProposalReviewList/getProposalReviewList';
 import { Panel } from '@/utils/types/panel';
@@ -22,6 +21,7 @@ import getPanelDecisionList from '@/services/axios/getPanelDecisionList/getPanel
 import { PanelDecision } from '@/utils/types/panelDecision';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import GetProposalByStatusList from '@/services/axios/getProposalByStatusList/getProposalByStatusList';
 import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProposalReview';
 
 /*
@@ -33,8 +33,6 @@ import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProp
  * 4. Combine the data into a single array of objects
  *
  * NOTE
- * Step 1 : There is not a endpoint to retrieve all proposals by status, so all are currently retrieved
- *
  * Step 2 is currently inefficient as the appropriate endpoint is not available
  * In the meantime, the list of proposals is being retrieved and being filtered
  */
@@ -69,7 +67,9 @@ export default function ReviewDecisionListPage() {
 
   const calculateRank = (details: Array<any>) => {
     if (!details || details?.length === 0) return 0;
-    const average = details.reduce((sum, detail) => sum + detail.rank, 0) / details.length;
+    const average =
+      details.reduce((sum, detail) => sum + detail.reviewType.rank, 0) / details.length;
+    if (!average) return 0;
     return Math.round(average);
   };
 
@@ -78,6 +78,7 @@ export default function ReviewDecisionListPage() {
   const getDateFormatted = () => moment().format('YYYY-MM-DD');
 
   const getReviewDecision = (item: { id: any; recommendation: any; reviews: any[] }) => {
+    const filtered = item.reviews.filter(el => el.reviewType.excludedFromDecision === false);
     return {
       id:
         'pnld-' +
@@ -87,12 +88,12 @@ export default function ReviewDecisionListPage() {
         '-00001-' +
         Math.floor(Math.random() * 10000000).toString(),
       panelId: '1',
-      cycle: 'ERROR',
+      cycle: getCycleId(),
       proposalId: item.id,
       decidedOn: new Date().toISOString(),
       decidedBy: getUser(),
       recommendation: item.recommendation,
-      rank: calculateRank(item.reviews),
+      rank: calculateRank(filtered),
       status: PANEL_DECISION_STATUS.DECIDED
     };
   };
@@ -163,7 +164,7 @@ export default function ReviewDecisionListPage() {
 
   React.useEffect(() => {
     const fetchProposalData = async () => {
-      const response = await GetProposalList(authClient); // TODO : Temporary implementation to get all proposals
+      const response = await GetProposalByStatusList(authClient, PROPOSAL_STATUS.SUBMITTED); // TODO : Temporary implementation to get all proposals
       if (typeof response === 'string') {
         NotifyError(response);
       } else {
@@ -239,7 +240,8 @@ export default function ReviewDecisionListPage() {
     const results = proposalReviews?.map(rec => {
       const el: ProposalReview = rec;
       if (el.id === review.id) {
-        el.reviewType.excludedFromDecision = el.reviewType.excludedFromDecision ? false : true;
+        const tmp: ScienceReview = el.reviewType as ScienceReview;
+        tmp.excludedFromDecision = tmp.excludedFromDecision ? false : true;
         updateReview(el);
       }
       return el;

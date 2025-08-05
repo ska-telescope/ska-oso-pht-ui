@@ -16,18 +16,14 @@ import {
   BANNER_PMT_SPACER,
   PANEL_DECISION_STATUS,
   REVIEW_TYPE,
-  FEASIBILITY
-} from '@utils/constants.ts';
-import { validateProposal } from '@utils/proposalValidation.tsx';
-import GetProposalList from '../../services/axios/getProposalList/getProposalList';
-import GetProposalReviewList from '../../services/axios/getProposalReviewList/getProposalReviewList';
-import GetProposal from '../../services/axios/getProposal/getProposal';
+  TECHNICAL_FEASIBILITY, FEASIBILITY
+} from '../../utils/constants';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
 import Notification from '../../utils/types/notification';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
-import { PMT } from '@/utils/constants';
+import { PMT, PROPOSAL_STATUS } from '@/utils/constants';
 import SubmitButton from '@/components/button/Submit/Submit';
 import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
 import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
@@ -38,6 +34,10 @@ import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProposalReview';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import GetProposalByStatusList from '@/services/axios/getProposalByStatusList/getProposalByStatusList';
+import GetProposalReviewList from '@services/axios/getProposalReviewList/getProposalReviewList.tsx';
+import GetProposal from '@services/axios/getProposal/getProposal.tsx';
+import { validateProposal } from '@utils/proposalValidation.tsx';
 
 /*
  * Process for retrieving the data for the list
@@ -48,8 +48,6 @@ import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient
  * 4. Combine the data into a single array of objects
  *
  * NOTE
- * Step 1 : There is not a endpoint to retrieve all proposals by status, so all are currently retrieved
- *
  * Step 2 is currently inefficient as the appropriate endpoint is not available
  * In the meantime, the list of proposals is being retrieved and being filtered
  */
@@ -99,7 +97,7 @@ export default function ReviewListPage() {
 
   React.useEffect(() => {
     const fetchProposalData = async () => {
-      const response = await GetProposalList(authClient); // TODO : Temporary implementation to get all proposals
+      const response = await GetProposalByStatusList(authClient, PROPOSAL_STATUS.SUBMITTED); // TODO : Temporary implementation to get all submitted proposals
       if (typeof response === 'string') {
         NotifyError(response);
       } else {
@@ -151,16 +149,18 @@ export default function ReviewListPage() {
     };
   };
 
-  const getReview = (row: any): ProposalReview => {
+  const getReview = (row: any): ProposalReview | null => {
+    const review = proposalReviews.find(p => p.id === row.review_id);
+    if (!review) return null;
     return {
-      id: row.review_id,
+      id: review.id,
       prslId: row.id,
       reviewType:
-        row.reviewType.kind === REVIEW_TYPE.SCIENCE
-          ? getScienceReviewType(row)
-          : getTechnicalReviewType(row),
-      comments: row.comments,
-      srcNet: row.srcNet,
+        review.reviewType.kind === REVIEW_TYPE.SCIENCE
+          ? getScienceReviewType(review)
+          : getTechnicalReviewType(review),
+      comments: review.comments,
+      srcNet: review.srcNet,
       metadata: {
         version: 0,
         created_by: '',
@@ -192,8 +192,12 @@ export default function ReviewListPage() {
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
   const updateReview = async (row: any) => {
+    const rec = getReview(row);
+    if (!rec) {
+      NotifyError('Unable to find review'); // TODO : Should check this and add to json
+    }
     const response: string | { error: string } = await PostProposalReview(
-      getReview(row),
+      rec as ProposalReview,
       getObservatoryData().observatoryPolicy?.cycleInformation?.cycleId
     );
     if (typeof response === 'object' && response?.error) {
@@ -241,10 +245,7 @@ export default function ReviewListPage() {
   const canEditTechnical = (e: { row: { status: string } }) =>
     e.row.status !== PANEL_DECISION_STATUS.DECIDED;
   const canSubmit = (row: { srcNet: any; comments: any; rank: number; status: string }) =>
-    row.status !== PANEL_DECISION_STATUS.DECIDED &&
-    row?.rank > 0 &&
-    row?.comments?.length &&
-    row?.srcNet?.length;
+    row.status !== PANEL_DECISION_STATUS.DECIDED && row?.rank > 0 && row?.comments?.length;
 
   const colId = {
     field: 'id',
