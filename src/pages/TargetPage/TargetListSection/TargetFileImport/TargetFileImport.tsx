@@ -4,7 +4,6 @@ import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, AlertColorTypes, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Papa from 'papaparse';
-import { LabelImportantRounded } from '@mui/icons-material';
 import { Proposal } from '../../../../utils/types/proposal';
 import Notification from '../../../../utils/types/notification';
 import { GALACTIC, ICRS, RA_TYPE_ICRS, UPLOAD_MAX_WIDTH_CSV } from '../../../../utils/constants';

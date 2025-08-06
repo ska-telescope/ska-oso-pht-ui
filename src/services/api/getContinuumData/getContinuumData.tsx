@@ -67,7 +67,6 @@ function getFinalResults(
     raStr?: string;
     redshift?: string;
     referenceFrame?: string;
-    rcReferenceFrame?: string | undefined;
     raReferenceFrame?: string | undefined;
     raDefinition?: string | undefined;
     velType?: number;

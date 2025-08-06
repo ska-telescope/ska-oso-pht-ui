@@ -122,13 +122,9 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       parallax: e?.reference_coordinate?.parallax,
       id: i + 1, // TODO use e.target_id once it is a number => needs to be changed in ODA & PDM
       name: e?.target_id,
-      b: '', // TODO add latitude when coming from the backend - no property to map to currently // B
-      l: '', // TODO add longitude when coming from the backend - no property to map to currently // L
+      b: undefined,
+      l: undefined,
       redshift: e.radial_velocity.redshift.toString(),
-      rcReferenceFrame:
-        referenceCoordinate === ICRS
-          ? (e.reference_coordinate as ReferenceCoordinateICRSBackend).reference_frame
-          : undefined, // TODO is this still needed or can it be removed?
       raReferenceFrame: e.radial_velocity.reference_frame,
       raDefinition: e.radial_velocity.definition, // TODO modify as definition not implemented in the front-end yet
       velType: getVelType(e.radial_velocity.definition), // TODO modify as definition not implemented in the front-end yet

@@ -88,7 +88,6 @@ type Target = {
   id: number;
   name: string;
   redshift: string;
-  rcReferenceFrame?: string; // NOT USED // replaced by reference coordinate referenceFrame
   raReferenceFrame?: string; // NOT USED
   raDefinition?: string; // NOT USED
   velType: number;
