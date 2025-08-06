@@ -13,7 +13,7 @@ export const OSO_SERVICES_REVIEWS_PATH = '/pht/reviews';
 export const OSO_SERVICES_REVIEWERS_PATH = '/pht/reviewers';
 export const OSO_SERVICES_PANEL_PATH = '/pht/panels';
 export const OSO_SERVICES_PANEL_DECISIONS_PATH = '/pht/panel-decisions';
-export const OSO_SERVICES_REPORT_PATH = '/pht/report';
+export const OSO_SERVICES_REPORT_PATH = '/pht/report/';
 //
 export const MSENTRA_CLIENT_ID = env.MSENTRA_CLIENT_ID;
 export const MSENTRA_TENANT_ID = env.MSENTRA_TENANT_ID;
@@ -231,7 +231,6 @@ export const PMT = [
   '/review/panel/entry',
   '/review/panel/decisions',
   '/review/science',
-  '/review/panel/decision',
   '/review/technical'
 ];
 
