@@ -59,14 +59,14 @@ interface FinalIndividualResults {
 
 function getFinalResults(
   target: {
-    dec?: string;
+    decStr?: string;
     id: any;
     name: any;
     latitude?: string;
     longitude?: string;
-    ra?: string;
+    raStr?: string;
     redshift?: string;
-    referenceFrame?: number;
+    referenceFrame?: string;
     rcReferenceFrame?: string | undefined;
     raReferenceFrame?: string | undefined;
     raDefinition?: string | undefined;
@@ -87,9 +87,9 @@ function getFinalResults(
     elevation?: number;
     centralFrequency?: number;
     centralFrequencyUnits?: number;
-    bandwidth?: number;
-    continuumBandwidth?: number;
-    continuumBandwidthUnits?: number;
+    bandwidth: number | null;
+    continuumBandwidth: number | null;
+    continuumBandwidthUnits: number | null;
     spectralAveraging?: number | undefined;
     tapering?: number | undefined;
     imageWeighting?: number;
@@ -271,7 +271,7 @@ function getFinalIndividualResultsForContinuum(
     results10,
     results11
   };
-  return updated_results;
+  return updated_results as FinalIndividualResults;
 }
 
 const addPropertiesLOW = (standardData: StandardData, continuumData: ContinuumData) => {

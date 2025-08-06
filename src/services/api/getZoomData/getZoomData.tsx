@@ -207,7 +207,7 @@ function getFinalIndividualResultsForZoom(
     results10,
     results11
   };
-  return updated_results;
+  return updated_results as FinalIndividualResults;
 }
 
 const getSpectralResolution = (observation: Observation) => {
