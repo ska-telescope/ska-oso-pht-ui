@@ -58,7 +58,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   const setTheDec = (inValue: string) => {
     setDec(inValue);
     if (setTarget !== null) {
-      setTarget({ ...target, dec: inValue });
+      setTarget({ ...target, decStr: inValue });
     }
   };
 
