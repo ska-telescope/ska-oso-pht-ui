@@ -280,11 +280,12 @@ export default function ReviewDashboard() {
   const fetchReport = () => {
     const fetchData = async () => {
       setCurrentReport([]);
+      setAxiosError('');
 
       const response = await getReviewDashboard(authClient);
       if (typeof response === 'string') {
         setAxiosError(response);
-        return
+        return;
       } else {
         setCurrentReport(response);
       }
