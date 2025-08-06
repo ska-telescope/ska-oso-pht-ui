@@ -183,6 +183,7 @@ export default function ReviewDecisionListPage() {
       }
     };
     const fetchProposalReviewData = async () => {
+      //TODO: Add proposal id
       const response = await GetProposalReviewList(authClient); // TODO : add id of the logged in user
       if (typeof response === 'string') {
         NotifyError(response);
