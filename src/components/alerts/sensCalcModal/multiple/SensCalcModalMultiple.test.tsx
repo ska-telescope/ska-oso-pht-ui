@@ -3,7 +3,6 @@ import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import SensCalcModalMultiple from './SensCalcModalMultiple';
 import { STATUS_ERROR, TYPE_CONTINUUM, TYPE_ZOOM } from '@/utils/constants';
-import SensCalcModalSingle from '@components/alerts/sensCalcModal/single/SensCalcModalSingle.tsx';
 
 describe('<SensCalcModalMultiple />', () => {
   test('renders correctly', () => {

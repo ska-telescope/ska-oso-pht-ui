@@ -8,10 +8,12 @@ import PostProposalReview, {
 } from './postProposalReview';
 import {
   MockProposalScienceReviewExcludedFrontend,
-  MockProposalScienceReviewFrontend, MockProposalTechnicalReviewFrontend
+  MockProposalScienceReviewFrontend,
+  MockProposalTechnicalReviewFrontend
 } from './mockProposalReviewFrontend';
 import {
-  MockProposalScienceReviewBackend, MockProposalScienceReviewExcludedBackend,
+  MockProposalScienceReviewBackend,
+  MockProposalScienceReviewExcludedBackend,
   MockProposalTechnicalReviewBackend
 } from './mockProposalReviewBackend';
 import { ProposalReviewBackend } from '@/utils/types/proposalReview';

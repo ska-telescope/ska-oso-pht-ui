@@ -1,10 +1,8 @@
 import axios from 'axios';
+import { MockProposalScienceReviewFrontend } from '@services/axios/postProposalReview.tsx/mockProposalReviewFrontend.tsx';
 import { MockProposalScienceReviewBackend } from '../postProposalReview.tsx/mockProposalReviewBackend';
 import PutProposalReview, { putMockProposalReview } from './putProposalReview';
 import * as CONSTANTS from '@/utils/constants';
-import {
-  MockProposalScienceReviewFrontend
-} from '@services/axios/postProposalReview.tsx/mockProposalReviewFrontend.tsx';
 
 const mockedAxios = (axios as unknown) as {
   put: ReturnType<typeof vi.fn>;
