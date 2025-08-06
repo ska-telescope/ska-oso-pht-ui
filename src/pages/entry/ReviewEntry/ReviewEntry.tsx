@@ -97,7 +97,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     return {
       id: reviewId,
       prslId: getProposal().id,
-      // TODO implement technical review as well - reviewType below is only for science review
       reviewType: reviewType === REVIEW_TYPE.SCIENCE ? getScienceReview() : getTechnicalReview(),
       comments: generalComments,
       srcNet: srcNetComments,
@@ -439,8 +438,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
             }}
           >
             <Typography id="title-label" variant={'h6'}>
-              {locationProperties.state.reviews[0].reviewType.feasibility.isFeasible}
-              {locationProperties.state.reviews[0].reviewType.feasibility.comments}
+              {locationProperties.state.reviews[0].feasibility}
             </Typography>
           </Box>
         )}
