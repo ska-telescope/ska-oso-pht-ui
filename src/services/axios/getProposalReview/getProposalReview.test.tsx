@@ -1,11 +1,11 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import {
-  MockProposalReviewFrontend,
+  MockProposalScienceReviewFrontend,
   MockProposalTechnicalReviewFrontend
 } from '../postProposalReview.tsx/mockProposalReviewFrontend';
 import {
-  MockProposalReviewBackend,
+  MockProposalScienceReviewBackend,
   MockProposalTechnicalReviewBackend
 } from '../postProposalReview.tsx/mockProposalReviewBackend';
 import { mappingReviewBackendToFrontend } from '../putProposalReview/putProposalReview';
@@ -16,14 +16,14 @@ import * as CONSTANTS from '@/utils/constants';
 describe('Helper Functions', () => {
   test('GetMockReview returns mock review', () => {
     const result = GetMockReview();
-    expect(result).to.deep.equal(MockProposalReviewFrontend);
+    expect(result).to.deep.equal(MockProposalScienceReviewFrontend);
   });
 
   test('mapping returns mapped review from backend to frontend format', () => {
     const proposalReviewFrontEnd: ProposalReview = mappingReviewBackendToFrontend(
-      MockProposalReviewBackend
+      MockProposalScienceReviewBackend
     );
-    expect(proposalReviewFrontEnd).to.deep.equal(MockProposalReviewFrontend);
+    expect(proposalReviewFrontEnd).to.deep.equal(MockProposalScienceReviewFrontend);
   });
 
   test('mapping returns mapped technical review from backend to frontend format', () => {
@@ -53,14 +53,14 @@ describe('GetProposalReview Service', () => {
   test('returns mapped mock data when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
     const result = await GetProposalReview(mockedAuthClient, 'dummy_id');
-    expect(result).toEqual(MockProposalReviewFrontend);
+    expect(result).toEqual(MockProposalScienceReviewFrontend);
   });
 
   test('returns mapped data from API when USE_LOCAL_DATA is false', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAuthClient.get.mockResolvedValue({ data: MockProposalReviewBackend });
+    mockedAuthClient.get.mockResolvedValue({ data: MockProposalScienceReviewBackend });
     const result = (await GetProposalReview(mockedAuthClient, 'dummy_id')) as ProposalReview;
-    expect(result).to.deep.equal(MockProposalReviewFrontend);
+    expect(result).to.deep.equal(MockProposalScienceReviewFrontend);
   });
 
   test('returns error message on API failure', async () => {
