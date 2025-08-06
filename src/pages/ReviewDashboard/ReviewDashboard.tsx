@@ -284,6 +284,7 @@ export default function ReviewDashboard() {
       const response = await getReviewDashboard(authClient);
       if (typeof response === 'string') {
         setAxiosError(response);
+        return
       } else {
         setCurrentReport(response);
       }
