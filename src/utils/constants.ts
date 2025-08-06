@@ -943,7 +943,7 @@ export const DEFAULT_TARGETS: Target = {
   name: 'DUMMY',
   raStr: '123',
   redshift: '123',
-  referenceFrame: '0',
+  referenceFrame: ICRS,
   vel: '123',
   velType: 0,
   velUnit: 0

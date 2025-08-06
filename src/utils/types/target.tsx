@@ -20,15 +20,15 @@ export type PointingPatternParamsBackend = {
 
 export type ReferenceCoordinateGalacticBackend = {
   kind: string;
-  l: number;
-  b: number;
+  l: number; // replaces Galactic longitude
+  b: number; // replaces Galactic latitude
   pm_l?: number;
   pm_b?: number;
   epoch?: number;
   parallax?: number;
 };
 
-// this replaces equatorial
+// ICRS now replaces equatorial
 export type ReferenceCoordinateICRSBackend = {
   kind: string;
   reference_frame: string;

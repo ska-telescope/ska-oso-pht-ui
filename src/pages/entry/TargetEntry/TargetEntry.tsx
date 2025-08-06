@@ -45,7 +45,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   const [vel, setVel] = React.useState('');
   const [velUnit, setVelUnit] = React.useState(0);
   const [redshift, setRedshift] = React.useState('');
-  const [referenceFrame, setReferenceFrame] = React.useState(0);
+  const [referenceFrame, setReferenceFrame] = React.useState(ICRS);
   const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
   const setTheName = (inValue: string) => {
@@ -76,10 +76,10 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
     }
   };
 
-  const setTheReferenceFrame = (inValue: number) => {
+  const setTheReferenceFrame = (inValue: string) => {
     setReferenceFrame(inValue);
     if (setTarget !== null) {
-      setTarget({ ...target, referenceFrame: inValue });
+      setTarget({ ...target, kind: inValue });
     }
   };
 
@@ -113,7 +113,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
     setVel(target?.vel);
     setVelUnit(target?.velUnit);
     setRedshift(target?.redshift);
-    setReferenceFrame(target?.referenceFrame);
+    setReferenceFrame(target?.kind);
   };
 
   React.useEffect(() => {
@@ -125,7 +125,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   function formValidation() {
     let valid = true;
     const targets = getProposal()?.targets;
-    targets.forEach(rec => {
+    targets?.forEach(rec => {
       if (rec.name.toLowerCase() === name.toLowerCase()) {
         valid = false;
         setNameFieldError(t('addTarget.error'));
@@ -145,7 +145,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
 
     const AddTheTarget = () => {
       const highest = getProposal()?.targets?.length
-        ? getProposal().targets.reduce((prev, current) =>
+        ? getProposal()?.targets?.reduce((prev, current) =>
             prev && prev.id > current.id ? prev : current
           )
         : null;
@@ -165,7 +165,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
         velType: velType,
         velUnit: velUnit
       };
-      setProposal({ ...getProposal(), targets: [...getProposal().targets, newTarget] });
+      setProposal({ ...getProposal(), targets: [...(getProposal().targets ?? []), newTarget] });
       NotifyOK(t('addTarget.success'));
     };
 
@@ -193,7 +193,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
     );
   };
 
-  function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
+  function Notify(str: string, lvl = AlertColorTypes.Info) {
     const rec: Notification = {
       level: lvl,
       delay: NOTIFICATION_DELAY_IN_SECONDS,
@@ -205,7 +205,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
   const resolveButton = () => {
-    const processCoordinatesResults = response => {
+    const processCoordinatesResults = (response: any) => {
       if (response && !response.error) {
         const values = response.split(' ');
         const redshift =
