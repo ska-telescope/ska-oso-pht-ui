@@ -55,6 +55,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const [reviewId, setReviewId] = React.useState('');
   const [rank, setRank] = React.useState(0);
   const [generalComments, setGeneralComments] = React.useState('');
+  const [technicalComments, setTechnicalComments] = React.useState('');
   const [feasibility, setFeasibility] = React.useState('');
   const [srcNetComments, setSrcNetComments] = React.useState('');
   const [currentPDF, setCurrentPDF] = React.useState<string | null | undefined>(null);
@@ -76,7 +77,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       feasibility: {
         isFeasible: feasibility,
         //TODO: Update mapping for technical comments
-        comments: generalComments
+        comments: technicalComments
       }
     };
   }
@@ -164,8 +165,10 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   React.useEffect(() => {
     if (locationProperties.state?.reviewId && rightReviewId(locationProperties.state?.reviewId)) {
+      console.log('props ', locationProperties.state);
       setReviewId(locationProperties.state?.reviewId);
       setGeneralComments(locationProperties.state?.comments);
+      setTechnicalComments(locationProperties.state?.comments);
       setSrcNetComments(locationProperties.state?.srcNet);
       setRank(locationProperties.state?.rank);
       setFeasibility(locationProperties.state?.isFeasible);
@@ -183,6 +186,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       );
       setGeneralComments('');
       setSrcNetComments('');
+      setTechnicalComments('');
       setRank(0);
       setFeasibility('');
       setIsEdit(false);
@@ -191,7 +195,8 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const submitDisabled = () => {
     if (isTechnical()) {
-      return !hasGeneralComments() || !hasFeasibility();
+      //TODO: comments not required for technical? only if a maybe / no?
+      return !hasFeasibility();
     } else {
       return !hasGeneralComments() || rank === 0;
     }
@@ -438,7 +443,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
             }}
           >
             <Typography id="title-label" variant={'h6'}>
-              {locationProperties.state.reviews[0].feasibility}
+              {locationProperties.state.reviews[0].feasibility.isFeasible}
             </Typography>
           </Box>
         )}
@@ -453,8 +458,8 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           label={''}
           testId="technicalCommentsId"
           rows={((AREA_HEIGHT_NUM / 100) * window.innerHeight) / 27}
-          setValue={setGeneralComments}
-          value={generalComments}
+          setValue={setTechnicalComments}
+          value={technicalComments}
         />
       )}
       {isView() && (
@@ -468,7 +473,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           }}
         >
           <Typography id="title-label" variant={'h6'}>
-            {locationProperties.state.reviews[0].comments}
+            {locationProperties.state.reviews[0].feasibility.comments}
           </Typography>
         </Box>
       )}
@@ -536,17 +541,17 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           onChange={handleTabChange}
           aria-label="basic tabs example"
         >
-          {isTechnical(reviewType) ? (
+          {isTechnical() ? (
             <Tab label={t('feasibility.label')} {...a11yProps(0)} />
           ) : (
             <Tab label={t('rank.label')} {...a11yProps(0)} />
           )}
-          {isTechnical(reviewType) ? (
+          {isTechnical() ? (
             <Tab label={t('technicalComments.label')} {...a11yProps(1)} />
           ) : (
             <Tab label={t('generalComments.label')} {...a11yProps(1)} />
           )}
-          {!isTechnical(reviewType) && <Tab label={t('srcNetComments.label')} {...a11yProps(2)} />}
+          {!isTechnical() && <Tab label={t('srcNetComments.label')} {...a11yProps(2)} />}
         </Tabs>
         {tabValueReview === 0 && (
           <Box
@@ -559,7 +564,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
               flexDirection: 'column'
             }}
           >
-            {isTechnical(reviewType) ? feasibilityField() : rankField()}
+            {isTechnical() ? feasibilityField() : rankField()}
           </Box>
         )}
         {tabValueReview === 1 && (
@@ -573,7 +578,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
               backgroundColor: 'transparent'
             }}
           >
-            {isTechnical(reviewType) ? technicalCommentsField() : generalCommentsField()}
+            {isTechnical() ? technicalCommentsField() : generalCommentsField()}
           </Box>
         )}
         {tabValueReview === 2 && (

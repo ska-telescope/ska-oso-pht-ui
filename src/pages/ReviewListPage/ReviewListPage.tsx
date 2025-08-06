@@ -413,7 +413,7 @@ export default function ReviewListPage() {
                 panelId: panelData[0].id,
                 reviewId: technicalReview.id,
                 feasibility: technicalReview?.reviewType?.feasibility?.isFeasible,
-                comments: technicalReview.comments,
+                comments: technicalReview?.reviewType?.feasibility?.comments,
                 status: technicalReview.status
               }
             : {
