@@ -5,7 +5,7 @@ export default defineConfig({
   video: false,
   projectId: 'ssiwb9', //projectId to enable cypress cloud
   fixturesFolder: 'tests/cypress/fixtures',
-  screenshotsFolder: 'test/cypress/artefacts/screenshots',
+  screenshotsFolder: 'tests/cypress/artefacts/screenshots',
   videosFolder: 'tests/cypress/artefacts/videos',
   downloadsFolder: 'tests/cypress/artefacts/downloads',
   e2e: {
