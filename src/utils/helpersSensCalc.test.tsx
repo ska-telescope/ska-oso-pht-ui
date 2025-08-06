@@ -18,7 +18,7 @@ import {
   transformSurfaceBrightnessPerSubBandData,
   transformSynthesizedBeamSizePerSubBandData
 } from '@/utils/helpersSensCalc.ts';
-import { RA_TYPE_EQUATORIAL, RA_TYPE_GALACTIC } from '@/utils/constantsSensCalc.ts';
+import { RA_TYPE_ICRS, RA_TYPE_GALACTIC } from '@/utils/constantsSensCalc.ts';
 import { SUPPLIED_TYPE_INTEGRATION, SUPPLIED_TYPE_SENSITIVITY } from '@/utils/constants.ts';
 
 describe('Sensitivity Calculator helper functions', () => {
@@ -167,8 +167,8 @@ describe('Sensitivity Calculator helper functions', () => {
     expect(transformPerSubBandTime(minMax)).toStrictEqual('224.05 μs - 149.68 μs');
   });
 
-  test('Coordinate check, is Galactic, Returns false when supplied value is "RA_TYPE_EQUATORIAL"', () => {
-    expect(isGalactic(RA_TYPE_EQUATORIAL)).toBe(false);
+  test('Coordinate check, is Galactic, Returns false when supplied value is "RA_TYPE_ICRS"', () => {
+    expect(isGalactic(RA_TYPE_ICRS)).toBe(false);
   });
   test('Coordinate check, is Galactic, Returns true when supplied value is "RA_TYPE_GALACTIC"', () => {
     expect(isGalactic(RA_TYPE_GALACTIC)).toBe(true);

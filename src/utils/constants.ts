@@ -779,7 +779,7 @@ export const OBSERVATION = {
 export const SUPPLIED_INTEGRATION_TIME_UNITS_H = 2;
 export const SUPPLIED_INTEGRATION_TIME_UNITS_S = 4;
 
-export const RA_TYPE_EQUATORIAL = 0; // TODO this should b renamed RA_TYPE_ICRS
+export const RA_TYPE_ICRS = 0;
 export const RA_TYPE_GALACTIC = 1;
 export const ROBUST = [
   { label: '-2', value: 1 },
@@ -939,8 +939,8 @@ export const DEFAULT_TARGETS: Target = {
   kind: ICRS,
   decStr: '123',
   id: 1,
-  latitude: '123',
-  longitude: '123',
+  b: '123',
+  l: '123',
   name: 'DUMMY',
   raStr: '123',
   redshift: '123',

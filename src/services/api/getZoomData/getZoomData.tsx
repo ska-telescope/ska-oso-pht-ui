@@ -11,7 +11,7 @@ import {
   FREQUENCY_MHZ,
   DECIMAL_PLACES,
   RA_TYPE_GALACTIC,
-  RA_TYPE_EQUATORIAL,
+  RA_TYPE_ICRS,
   TIME_SECS
 } from '../../../utils/constantsSensCalc';
 import {
@@ -362,8 +362,8 @@ async function GetZoomData(telescope: Telescope, observation: Observation, targe
     skyDirectionType: RA_TYPE_GALACTIC,
     raGalactic: { value: target.raStr as string, unit: RA_TYPE_GALACTIC }, // TODO can unit be removed?
     decGalactic: { value: target.decStr as string, unit: RA_TYPE_GALACTIC }, // TODO can unit be removed?
-    raEquatorial: { value: 0, unit: RA_TYPE_EQUATORIAL },
-    decEquatorial: { value: 0, unit: RA_TYPE_EQUATORIAL },
+    raEquatorial: { value: 0, unit: RA_TYPE_ICRS },
+    decEquatorial: { value: 0, unit: RA_TYPE_ICRS },
     elevation: { value: observation.elevation, unit: 'deg' },
     advancedData: null,
     modules: []

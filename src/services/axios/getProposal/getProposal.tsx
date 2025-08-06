@@ -122,8 +122,8 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       parallax: e?.reference_coordinate?.parallax,
       id: i + 1, // TODO use e.target_id once it is a number => needs to be changed in ODA & PDM
       name: e?.target_id,
-      latitude: '', // TODO add latitude when coming from the backend - no property to map to currently
-      longitude: '', // TODO add longitude when coming from the backend - no property to map to currently
+      b: '', // TODO add latitude when coming from the backend - no property to map to currently // B
+      l: '', // TODO add longitude when coming from the backend - no property to map to currently // L
       redshift: e.radial_velocity.redshift.toString(),
       rcReferenceFrame:
         referenceCoordinate === ICRS

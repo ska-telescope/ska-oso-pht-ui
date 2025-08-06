@@ -87,10 +87,8 @@ export type PointingPatternParams = {
 type Target = {
   id: number;
   name: string;
-  latitude?: string;
-  longitude?: string;
   redshift: string;
-  rcReferenceFrame?: string; // NOT USED
+  rcReferenceFrame?: string; // NOT USED // replaced by reference coordinate referenceFrame
   raReferenceFrame?: string; // NOT USED
   raDefinition?: string; // NOT USED
   velType: number;
@@ -98,11 +96,11 @@ type Target = {
   velUnit: number;
   /*------- reference coordinate properties --------------------- */
   kind: string; // for both ICRS and Galactic
-  l?: number; // NOT USED YET // for Galactic
-  b?: number; // NOT USED YET // for Galactic
+  l?: number; // NOT USED YET replaces longitude // for Galactic
+  b?: number; // NOT USED YET replaces latitude // for Galactic
   pmL?: number; // NOT USED YET // for Galactic
   pmB?: number; // NOT USED YET // for Galactic
-  referenceFrame?: string; // NOT USED YET // for ICRS
+  referenceFrame?: string; // for ICRS
   raStr?: string; // replaces ra for ICRS
   decStr?: string; // replaces dec for ICRS
   pmRa?: number; // NOT USED YET // for ICRS

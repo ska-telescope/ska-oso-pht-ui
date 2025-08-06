@@ -4,9 +4,10 @@ import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, AlertColorTypes, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Papa from 'papaparse';
+import { LabelImportantRounded } from '@mui/icons-material';
 import { Proposal } from '../../../../utils/types/proposal';
 import Notification from '../../../../utils/types/notification';
-import { ICRS, RA_TYPE_EQUATORIAL, UPLOAD_MAX_WIDTH_CSV } from '../../../../utils/constants';
+import { GALACTIC, ICRS, RA_TYPE_ICRS, UPLOAD_MAX_WIDTH_CSV } from '../../../../utils/constants';
 import HelpPanel from '../../../../components/info/helpPanel/HelpPanel';
 import Target from '@/utils/types/target';
 
@@ -34,17 +35,14 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
   }, []);
 
   const AddTheTargetGalactic = (id: string, name: string, latitude: string, longitude: string) => {
-    // TODO update with Galactic fields
     const newTarget = {
       //Default values from AddTarget.tsx
-      dec: '',
+      kind: GALACTIC,
       id,
       name,
-      latitude,
-      longitude,
-      ra: '',
+      b: Number(latitude),
+      l: Number(longitude),
       redshift: null,
-      referenceFrame: 0,
       vel: '',
       velUnit: '0'
     };
@@ -59,11 +57,9 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
       decStr: dec,
       id,
       name,
-      latitude: '',
-      longitude: '',
       raStr: ra,
       redshift: '',
-      referenceFrame: '0',
+      referenceFrame: ICRS,
       velType: 0,
       vel: '',
       velUnit: 0
@@ -95,7 +91,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
             let errorInRows = false;
             let targets;
 
-            if (raType === RA_TYPE_EQUATORIAL) {
+            if (raType === RA_TYPE_ICRS) {
               if (!isSameHeader(result.meta.fields, validEquatorialCsvHeader))
                 throw t('uploadCsvBtn.uploadErrorEquatorialNotValidMsg');
               targets = result.data.reduce((result, target, index) => {

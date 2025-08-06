@@ -10,7 +10,7 @@ import {
   TIME_HOURS,
   TIME_SECS,
   RA_TYPE_GALACTIC,
-  RA_TYPE_EQUATORIAL
+  RA_TYPE_ICRS
 } from '../../../utils/constantsSensCalc';
 import {
   getImageWeightingMapping,
@@ -62,8 +62,8 @@ function getFinalResults(
     decStr?: string;
     id: any;
     name: any;
-    latitude?: string;
-    longitude?: string;
+    b?: string;
+    l?: string;
     raStr?: string;
     redshift?: string;
     referenceFrame?: string;
@@ -382,8 +382,8 @@ function GetContinuumData(telescope: Telescope, observation: Observation, target
     skyDirectionType: RA_TYPE_GALACTIC,
     raGalactic: { value: target.raStr as string, unit: RA_TYPE_GALACTIC }, // TODO can unit be removed?
     decGalactic: { value: target.decStr as string, unit: RA_TYPE_GALACTIC }, // TODO can unit be removed?
-    raEquatorial: { value: 0, unit: RA_TYPE_EQUATORIAL },
-    decEquatorial: { value: 0, unit: RA_TYPE_EQUATORIAL },
+    raEquatorial: { value: 0, unit: RA_TYPE_ICRS },
+    decEquatorial: { value: 0, unit: RA_TYPE_ICRS },
     elevation: { value: observation.elevation, unit: 'deg' },
     advancedData: null,
     modules: []

@@ -11,7 +11,7 @@ import FieldWrapper from '../../../components/wrappers/fieldWrapper/FieldWrapper
 import ReferenceCoordinatesField from '../../../components/fields/referenceCoordinates/ReferenceCoordinates';
 import {
   FOOTER_SPACER,
-  RA_TYPE_EQUATORIAL,
+  RA_TYPE_ICRS,
   VELOCITY_TYPE,
   WRAPPER_HEIGHT
 } from '../../../utils/constants';
@@ -82,16 +82,10 @@ export default function TargetListSection() {
         <FieldWrapper label={t('name.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec?.name}</Typography>
         </FieldWrapper>
-        <FieldWrapper
-          label={t('skyDirection.label.1.' + RA_TYPE_EQUATORIAL)}
-          labelWidth={LABEL_WIDTH}
-        >
+        <FieldWrapper label={t('skyDirection.label.1.' + RA_TYPE_ICRS)} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec?.raStr}</Typography>
         </FieldWrapper>
-        <FieldWrapper
-          label={t('skyDirection.label.2.' + RA_TYPE_EQUATORIAL)}
-          labelWidth={LABEL_WIDTH}
-        >
+        <FieldWrapper label={t('skyDirection.label.2.' + RA_TYPE_ICRS)} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec?.decStr}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('velocity.0')} labelWidth={LABEL_WIDTH}>
@@ -141,11 +135,7 @@ export default function TargetListSection() {
       <Grid2>
         {fieldWrapper(
           <Box pt={1}>
-            <ReferenceCoordinatesField
-              labelWidth={6}
-              setValue={undefined}
-              value={RA_TYPE_EQUATORIAL}
-            />
+            <ReferenceCoordinatesField labelWidth={6} setValue={undefined} value={RA_TYPE_ICRS} />
           </Box>
         )}
       </Grid2>
@@ -161,7 +151,7 @@ export default function TargetListSection() {
             deleteClicked={deleteIconClicked}
             editClicked={editIconClicked}
             height={DATA_GRID_HEIGHT}
-            raType={RA_TYPE_EQUATORIAL}
+            raType={RA_TYPE_ICRS}
             rows={getProposal().targets}
           />
         </Grid2>
@@ -192,8 +182,8 @@ export default function TargetListSection() {
                 sx={{ border: '1px solid grey', width: '100%' }}
               />
             </Tabs>
-            {value === 0 && <TargetEntry raType={RA_TYPE_EQUATORIAL} />}
-            {value === 1 && <TargetFileImport raType={RA_TYPE_EQUATORIAL} />}
+            {value === 0 && <TargetEntry raType={RA_TYPE_ICRS} />}
+            {value === 1 && <TargetFileImport raType={RA_TYPE_ICRS} />}
             {value === 2 && <SpatialImaging />}
           </Box>
         </Grid2>
@@ -224,7 +214,7 @@ export default function TargetListSection() {
           title="editTarget.label"
         >
           <TargetEntry
-            raType={RA_TYPE_EQUATORIAL}
+            raType={RA_TYPE_ICRS}
             setTarget={setRowTarget}
             target={rowTarget ? rowTarget : undefined}
           />
