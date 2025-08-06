@@ -20,6 +20,7 @@ export function mappingList(inRec: ProposalReviewBackend[]): ProposalReview[] {
 /*****************************************************************************************************************************/
 
 export function GetMockProposalReviewList(mock = MockProposalReviewListBackend): ProposalReview[] {
+  // this removes duplicates versions from the backend list and sorts by last modified date
   const uniqueResults = mock.length > 1 ? getUniqueMostRecentItems(mock, 'review_id') : mock;
   return mappingList(uniqueResults);
 }

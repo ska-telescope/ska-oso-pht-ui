@@ -93,7 +93,7 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
     metadata: {
       version: 1,
       created_by: 'user1',
-      created_on: '2025-07-16T08:35:24.245Z',
+      created_on: '2025-06-16T08:35:24.245Z',
       last_modified_by: 'user1',
       last_modified_on: '2024-09-16T08:35:24.245Z',
       pdm_version: '18.3.0'
@@ -112,7 +112,7 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
     },
     comments: 'recommend for approval',
     srcNet: 'recommend as well',
-    submittedOn: '2025-07-16T08:35:24.245Z',
+    submittedOn: '2025-06-16T08:35:24.245Z',
     submittedBy: 'user1',
     status: PANEL_DECISION_STATUS.DECIDED
   }
