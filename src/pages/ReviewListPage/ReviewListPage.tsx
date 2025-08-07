@@ -19,6 +19,7 @@ import {
   REVIEW_TYPE,
   FEASIBLE_NO
 } from '@utils/constants.ts';
+import GetProposal from '@services/axios/getProposal/getProposal.tsx';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
@@ -36,7 +37,6 @@ import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProp
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import GetProposalByStatusList from '@/services/axios/getProposalByStatusList/getProposalByStatusList';
-import GetProposal from '@services/axios/getProposal/getProposal.tsx';
 
 /*
  * Process for retrieving the data for the list
@@ -55,7 +55,7 @@ export default function ReviewListPage() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
 
-  const { application,updateAppContent2, updateAppContent5 } = storageObject.useStore();
+  const { application, updateAppContent2, updateAppContent5 } = storageObject.useStore();
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
@@ -218,7 +218,7 @@ export default function ReviewListPage() {
   const theIconClicked = (row: any, route: string) => {
     getTheProposal(row.id);
     navigate(route, { replace: true, state: row });
-  }
+  };
   const scienceIconClicked = (row: any) => theIconClicked(row, PMT[5]);
   const technicalIconClicked = (row: any) => theIconClicked(row, PMT[6]);
 
