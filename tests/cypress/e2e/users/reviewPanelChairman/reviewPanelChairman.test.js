@@ -1,9 +1,4 @@
-import {
-  clickUserMenuProposals,
-  clickUserMenuReviews,
-  clickUserMenuDecisions, // TODO: implment the function as doesn't exist yet
-  initialize
-} from '../../common/common';
+import { clickUserMenuProposals, clickUserMenuReviews, initialize } from '../../common/common';
 
 describe('Review Coordinator', () => {
   beforeEach(() => {
@@ -16,6 +11,7 @@ describe('Review Coordinator', () => {
     clickUserMenuProposals();
   });
   it('Make a review decision', () => {
+    // TODO: implement the function as doesn't exist yet
     // clickUserMenuDecisions();
     // TODO : Perhaps do some stuff in here ?
   });

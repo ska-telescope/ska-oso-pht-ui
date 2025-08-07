@@ -96,6 +96,11 @@ export const BANDWIDTH_TELESCOPE = [
   }
 ];
 
+export const FEASIBLE_MAYBE = 'Maybe';
+export const FEASIBLE_NO = 'No';
+export const FEASIBLE_YES = 'Yes';
+export const FEASIBILITY = [FEASIBLE_YES, FEASIBLE_NO, FEASIBLE_MAYBE];
+
 export const BANNER_PMT_SPACER = 100;
 
 export const CENTRAL_FREQUENCY_MAX = [350, 1.05, 1.76, 8.5, 15.4];
@@ -831,6 +836,12 @@ export const SEARCH_PROPOSAL_TYPE_OPTIONS = [
   { label: 'Principal Investigator (PI)', value: PROJECTS[0].mapping },
   { label: 'Key Science Projects', value: PROJECTS[1].mapping },
   { label: "Director-General's Discretionary Time", value: PROJECTS[2].mapping }
+];
+
+export const TECHNICAL_FEASIBILITY_OPTIONS = [
+  { label: 'Yes', value: FEASIBILITY[0] },
+  { label: 'No', value: FEASIBILITY[1] },
+  { label: 'Maybe', value: FEASIBILITY[2] }
 ];
 export const SPECTRAL_AVERAGING_MIN = 1;
 
