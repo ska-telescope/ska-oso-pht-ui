@@ -13,7 +13,12 @@ import VelocityField from '../../../components/fields/velocity/Velocity';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import GetCoordinates from '../../../services/axios/getCoordinates/getCoordinates';
 import Target from '../../../utils/types/target';
-import { ICRS, LAB_POSITION, VELOCITY_TYPE, WRAPPER_HEIGHT } from '../../../utils/constants';
+import {
+  RA_TYPE_ICRS,
+  LAB_POSITION,
+  VELOCITY_TYPE,
+  WRAPPER_HEIGHT
+} from '../../../utils/constants';
 import Notification from '../../../utils/types/notification';
 interface TargetEntryProps {
   raType: number;
@@ -45,7 +50,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   const [vel, setVel] = React.useState('');
   const [velUnit, setVelUnit] = React.useState(0);
   const [redshift, setRedshift] = React.useState('');
-  const [referenceFrame, setReferenceFrame] = React.useState(ICRS);
+  const [referenceFrame, setReferenceFrame] = React.useState(RA_TYPE_ICRS.value);
   const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
   const setTheName = (inValue: string) => {
@@ -152,7 +157,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
       const highestId = highest ? highest.id : 0;
 
       const newTarget: Target = {
-        kind: ICRS,
+        kind: RA_TYPE_ICRS.value,
         decStr: dec,
         id: highestId + 1,
         name: name,
@@ -160,7 +165,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
         l: undefined,
         raStr: ra,
         redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift : '',
-        referenceFrame: ICRS,
+        referenceFrame: RA_TYPE_ICRS.label,
         vel: velType === VELOCITY_TYPE.VELOCITY ? vel : '',
         velType: velType,
         velUnit: velUnit
@@ -193,7 +198,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
     );
   };
 
-  function Notify(str: string, lvl = AlertColorTypes.Info) {
+  function Notify(str: string, lvl: typeof AlertColorTypes = AlertColorTypes.Info) {
     const rec: Notification = {
       level: lvl,
       delay: NOTIFICATION_DELAY_IN_SECONDS,

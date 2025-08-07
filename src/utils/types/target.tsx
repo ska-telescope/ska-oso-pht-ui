@@ -94,7 +94,7 @@ type Target = {
   vel: string;
   velUnit: number;
   /*------- reference coordinate properties --------------------- */
-  kind: string; // for both ICRS and Galactic
+  kind: number; // for both ICRS and Galactic
   l?: number; // NOT USED YET replaces longitude // for Galactic
   b?: number; // NOT USED YET replaces latitude // for Galactic
   pmL?: number; // NOT USED YET // for Galactic

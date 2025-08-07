@@ -406,8 +406,8 @@ export default function ObservationPage() {
         }
       },
       { field: 'name', headerName: t('name.label'), flex: 1.5, minWidth: 120 },
-      { field: 'raStr', headerName: t('skyDirection.short.1.' + RA_TYPE_ICRS), width: 120 },
-      { field: 'decStr', headerName: t('skyDirection.short.2.' + RA_TYPE_ICRS), width: 120 },
+      { field: 'raStr', headerName: t('skyDirection.short.1.' + RA_TYPE_ICRS.value), width: 120 },
+      { field: 'decStr', headerName: t('skyDirection.short.2.' + RA_TYPE_ICRS.value), width: 120 },
       {
         field: 'actions',
         type: 'actions',

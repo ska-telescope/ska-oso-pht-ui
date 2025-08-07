@@ -2,7 +2,7 @@ import { describe, test } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import GridTargets from './GridTargets';
-import { GALACTIC, ICRS } from '@/utils/constants';
+import { RA_TYPE_GALACTIC, RA_TYPE_ICRS } from '@/utils/constants';
 
 describe('<GridTargets />', () => {
   test('renders correctly', () => {
@@ -14,7 +14,7 @@ describe('<GridTargets />', () => {
         raType={0}
         rows={[
           {
-            kind: GALACTIC,
+            kind: RA_TYPE_GALACTIC.value,
             id: 1,
             name: 'Galactic target',
             b: 45.0,
@@ -35,13 +35,13 @@ describe('<GridTargets />', () => {
         raType={0}
         rows={[
           {
-            kind: ICRS,
+            kind: RA_TYPE_ICRS.value,
             id: 1,
             decStr: '-45:00:00.0',
             name: 'ICRS target',
             raStr: '12:30:00.0',
             redshift: '',
-            referenceFrame: ICRS,
+            referenceFrame: RA_TYPE_ICRS.label,
             velType: 0,
             vel: '',
             velUnit: 0
@@ -57,13 +57,13 @@ describe('<GridTargets />', () => {
         raType={0}
         rows={[
           {
-            kind: ICRS,
+            kind: RA_TYPE_ICRS.value,
             id: 1,
             decStr: '-45:00:00.0',
             name: 'ICRS target',
             raStr: '12:30:00.0',
             redshift: '',
-            referenceFrame: ICRS,
+            referenceFrame: RA_TYPE_ICRS.label,
             velType: 0,
             vel: '',
             velUnit: 0

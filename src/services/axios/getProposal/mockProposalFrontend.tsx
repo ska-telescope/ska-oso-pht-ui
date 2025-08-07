@@ -1,4 +1,4 @@
-import { ICRS } from '@/utils/constants';
+import { RA_TYPE_ICRS } from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
 
 export const MockProposalFrontend: Proposal = {
@@ -30,7 +30,7 @@ export const MockProposalFrontend: Proposal = {
   targetOption: 1,
   targets: [
     {
-      kind: ICRS,
+      kind: RA_TYPE_ICRS.value,
       epoch: 2000,
       decStr: '00:00:00.0',
       id: 1,
@@ -42,7 +42,7 @@ export const MockProposalFrontend: Proposal = {
       pmRa: undefined,
       raStr: '00:00:00.0',
       redshift: '0',
-      referenceFrame: ICRS,
+      referenceFrame: RA_TYPE_ICRS.label,
       raReferenceFrame: 'LSRK',
       raDefinition: 'RADIO',
       velType: 1,
@@ -60,7 +60,7 @@ export const MockProposalFrontend: Proposal = {
       }
     },
     {
-      kind: ICRS,
+      kind: RA_TYPE_ICRS.value,
       epoch: 2000,
       decStr: '+22:00:53.000',
       id: 2,
@@ -72,7 +72,7 @@ export const MockProposalFrontend: Proposal = {
       pmRa: undefined,
       raStr: '05:34:30.900',
       redshift: '0',
-      referenceFrame: ICRS,
+      referenceFrame: RA_TYPE_ICRS.label,
       raReferenceFrame: 'LSRK',
       raDefinition: 'RADIO',
       velType: 1,
@@ -90,7 +90,7 @@ export const MockProposalFrontend: Proposal = {
       }
     },
     {
-      kind: ICRS,
+      kind: RA_TYPE_ICRS.value,
       epoch: 2000,
       decStr: '-00:49:23.700',
       id: 3,
@@ -102,7 +102,7 @@ export const MockProposalFrontend: Proposal = {
       pmRa: undefined,
       raStr: '21:33:27.0200',
       redshift: '0',
-      referenceFrame: ICRS,
+      referenceFrame: RA_TYPE_ICRS.label,
       raReferenceFrame: 'LSRK',
       raDefinition: 'RADIO',
       velType: 1,
@@ -275,7 +275,7 @@ export const MockProposalFrontendZoom: Proposal = {
   targetOption: 1,
   targets: [
     {
-      kind: ICRS,
+      kind: RA_TYPE_ICRS.value,
       epoch: 2000,
       decStr: '-00:49:23.700',
       id: 1,
@@ -287,7 +287,7 @@ export const MockProposalFrontendZoom: Proposal = {
       pmRa: undefined,
       raStr: '21:33:27.0200',
       redshift: '0',
-      referenceFrame: ICRS,
+      referenceFrame: RA_TYPE_ICRS.label,
       raReferenceFrame: 'LSRK',
       raDefinition: 'RADIO',
       velType: 1,

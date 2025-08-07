@@ -1,5 +1,5 @@
 import { ProposalBackend } from '../../../utils/types/proposal';
-import { ICRS } from '@/utils/constants';
+import { RA_TYPE_ICRS } from '@/utils/constants';
 
 export const MockProposalBackend: ProposalBackend = {
   prsl_id: 'prsl-t0001-20250613-00002',
@@ -39,10 +39,10 @@ export const MockProposalBackend: ProposalBackend = {
           ]
         },
         reference_coordinate: {
-          kind: ICRS,
+          kind: RA_TYPE_ICRS.label,
           ra_str: '00:00:00.0',
           dec_str: '00:00:00.0',
-          reference_frame: ICRS,
+          reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
         },
         radial_velocity: {
@@ -69,10 +69,10 @@ export const MockProposalBackend: ProposalBackend = {
           ]
         },
         reference_coordinate: {
-          kind: ICRS,
+          kind: RA_TYPE_ICRS.label,
           ra_str: '05:34:30.900',
           dec_str: '+22:00:53.000',
-          reference_frame: ICRS,
+          reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
         },
         radial_velocity: {
@@ -99,10 +99,10 @@ export const MockProposalBackend: ProposalBackend = {
           ]
         },
         reference_coordinate: {
-          kind: ICRS,
+          kind: RA_TYPE_ICRS.label,
           ra_str: '21:33:27.0200',
           dec_str: '-00:49:23.700',
-          reference_frame: ICRS,
+          reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
         },
         radial_velocity: {
@@ -253,10 +253,10 @@ export const MockProposalBackendZoom: ProposalBackend = {
           ]
         },
         reference_coordinate: {
-          kind: ICRS,
+          kind: RA_TYPE_ICRS.label,
           ra_str: '21:33:27.0200',
           dec_str: '-00:49:23.700',
-          reference_frame: ICRS,
+          reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
         },
         radial_velocity: {

@@ -778,8 +778,9 @@ export const OBSERVATION = {
 export const SUPPLIED_INTEGRATION_TIME_UNITS_H = 2;
 export const SUPPLIED_INTEGRATION_TIME_UNITS_S = 4;
 
-export const RA_TYPE_ICRS = 0;
-export const RA_TYPE_GALACTIC = 1;
+export const RA_TYPE_ICRS = { value: 0, label: 'icrs' };
+export const RA_TYPE_GALACTIC = { value: 1, label: 'galactic' };
+
 export const ROBUST = [
   { label: '-2', value: 1 },
   { label: '-1', value: 2 },
@@ -931,11 +932,8 @@ export const DEFAULT_PI = {
   pi: true
 };
 
-export const GALACTIC = 'galactic';
-export const ICRS = 'icrs';
-
 export const DEFAULT_TARGETS: Target = {
-  kind: ICRS,
+  kind: RA_TYPE_ICRS.value,
   decStr: '123',
   id: 1,
   b: 123,
@@ -943,7 +941,7 @@ export const DEFAULT_TARGETS: Target = {
   name: 'DUMMY',
   raStr: '123',
   redshift: '123',
-  referenceFrame: ICRS,
+  referenceFrame: RA_TYPE_ICRS.label,
   vel: '123',
   velType: 0,
   velUnit: 0

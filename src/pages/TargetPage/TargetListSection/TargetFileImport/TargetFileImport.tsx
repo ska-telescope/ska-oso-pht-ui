@@ -6,7 +6,7 @@ import { FileUpload, AlertColorTypes, FileUploadStatus } from '@ska-telescope/sk
 import Papa from 'papaparse';
 import { Proposal } from '../../../../utils/types/proposal';
 import Notification from '../../../../utils/types/notification';
-import { GALACTIC, ICRS, RA_TYPE_ICRS, UPLOAD_MAX_WIDTH_CSV } from '../../../../utils/constants';
+import { RA_TYPE_ICRS, RA_TYPE_GALACTIC, UPLOAD_MAX_WIDTH_CSV } from '../../../../utils/constants';
 import HelpPanel from '../../../../components/info/helpPanel/HelpPanel';
 import Target from '@/utils/types/target';
 
@@ -36,7 +36,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
   const AddTheTargetGalactic = (id: string, name: string, latitude: string, longitude: string) => {
     const newTarget = {
       //Default values from AddTarget.tsx
-      kind: GALACTIC,
+      kind: RA_TYPE_GALACTIC.value,
       id,
       name,
       b: Number(latitude),
@@ -51,14 +51,14 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
 
   const AddTheTargetEquatorial = (id: number, name: string, ra: string, dec: string): Target => {
     const newTarget = {
-      kind: ICRS,
+      kind: RA_TYPE_ICRS.value,
       //Default values from AddTarget.tsx
       decStr: dec,
       id,
       name,
       raStr: ra,
       redshift: '',
-      referenceFrame: ICRS,
+      referenceFrame: RA_TYPE_ICRS.label,
       velType: 0,
       vel: '',
       velUnit: 0
@@ -90,7 +90,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
             let errorInRows = false;
             let targets;
 
-            if (raType === RA_TYPE_ICRS) {
+            if (raType === RA_TYPE_ICRS.value) {
               if (!isSameHeader(result.meta.fields, validEquatorialCsvHeader))
                 throw t('uploadCsvBtn.uploadErrorEquatorialNotValidMsg');
               targets = result.data.reduce((result, target, index) => {
@@ -144,7 +144,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
     }
   };
 
-  function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
+  function Notify(str: string, lvl: typeof AlertColorTypes = AlertColorTypes.Info) {
     const rec: Notification = {
       level: lvl,
       delay: NOTIFICATION_DELAY_IN_SECONDS,

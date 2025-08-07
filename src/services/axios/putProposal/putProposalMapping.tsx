@@ -36,8 +36,8 @@ import {
   VELOCITY_TYPE,
   ROBUST,
   IW_BRIGGS,
-  GALACTIC,
-  ICRS
+  RA_TYPE_GALACTIC,
+  RA_TYPE_ICRS
 } from '../../../utils/constants';
 
 const isContinuum = (type: number) => type === TYPE_CONTINUUM;
@@ -58,9 +58,9 @@ const getSubType = (proposalType: number, proposalSubType: number[]): any => {
 const getReferenceCoordinate = (
   tar: Target
 ): ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend => {
-  if (tar.kind === GALACTIC) {
+  if (tar.kind === RA_TYPE_GALACTIC.value) {
     return {
-      kind: GALACTIC,
+      kind: RA_TYPE_GALACTIC.label,
       l: tar.l,
       b: tar.b,
       pm_l: tar.pmL,
@@ -70,8 +70,8 @@ const getReferenceCoordinate = (
     } as ReferenceCoordinateGalacticBackend;
   }
   return {
-    kind: ICRS,
-    reference_frame: tar.referenceFrame ? tar.referenceFrame : ICRS, // TODO : hardcoded for now as not implemented in UI
+    kind: RA_TYPE_ICRS.label,
+    reference_frame: tar.referenceFrame ? tar.referenceFrame : RA_TYPE_ICRS.label, // TODO : hardcoded for now as not implemented in UI
     ra_str: tar.raStr,
     dec_str: tar.decStr,
     pm_ra: tar.pmRa,
@@ -129,9 +129,9 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
         : mockPointingPattern.pointing_pattern?.active,
       parameters: [
         {
-          kind: singlePointParam?.kind,
-          offset_x_arcsec: singlePointParam?.offsetXArcsec,
-          offset_y_arcsec: singlePointParam?.offsetYArcsec
+          kind: singlePointParam?.kind as string,
+          offset_x_arcsec: singlePointParam?.offsetXArcsec as number,
+          offset_y_arcsec: singlePointParam?.offsetYArcsec as number
         }
       ]
     };

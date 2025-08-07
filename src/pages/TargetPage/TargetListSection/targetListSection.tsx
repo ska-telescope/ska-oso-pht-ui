@@ -82,10 +82,16 @@ export default function TargetListSection() {
         <FieldWrapper label={t('name.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec?.name}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('skyDirection.label.1.' + RA_TYPE_ICRS)} labelWidth={LABEL_WIDTH}>
+        <FieldWrapper
+          label={t('skyDirection.label.1.' + RA_TYPE_ICRS.value)}
+          labelWidth={LABEL_WIDTH}
+        >
           <Typography variant="body1">{rec?.raStr}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('skyDirection.label.2.' + RA_TYPE_ICRS)} labelWidth={LABEL_WIDTH}>
+        <FieldWrapper
+          label={t('skyDirection.label.2.' + RA_TYPE_ICRS.value)}
+          labelWidth={LABEL_WIDTH}
+        >
           <Typography variant="body1">{rec?.decStr}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('velocity.0')} labelWidth={LABEL_WIDTH}>
@@ -135,7 +141,11 @@ export default function TargetListSection() {
       <Grid2>
         {fieldWrapper(
           <Box pt={1}>
-            <ReferenceCoordinatesField labelWidth={6} setValue={undefined} value={RA_TYPE_ICRS} />
+            <ReferenceCoordinatesField
+              labelWidth={6}
+              setValue={undefined}
+              value={RA_TYPE_ICRS.value}
+            />
           </Box>
         )}
       </Grid2>
@@ -151,7 +161,7 @@ export default function TargetListSection() {
             deleteClicked={deleteIconClicked}
             editClicked={editIconClicked}
             height={DATA_GRID_HEIGHT}
-            raType={RA_TYPE_ICRS}
+            raType={RA_TYPE_ICRS.value}
             rows={getProposal().targets}
           />
         </Grid2>
@@ -182,8 +192,8 @@ export default function TargetListSection() {
                 sx={{ border: '1px solid grey', width: '100%' }}
               />
             </Tabs>
-            {value === 0 && <TargetEntry raType={RA_TYPE_ICRS} />}
-            {value === 1 && <TargetFileImport raType={RA_TYPE_ICRS} />}
+            {value === 0 && <TargetEntry raType={RA_TYPE_ICRS.value} />}
+            {value === 1 && <TargetFileImport raType={RA_TYPE_ICRS.value} />}
             {value === 2 && <SpatialImaging />}
           </Box>
         </Grid2>
@@ -214,7 +224,7 @@ export default function TargetListSection() {
           title="editTarget.label"
         >
           <TargetEntry
-            raType={RA_TYPE_ICRS}
+            raType={RA_TYPE_ICRS.value}
             setTarget={setRowTarget}
             target={rowTarget ? rowTarget : undefined}
           />

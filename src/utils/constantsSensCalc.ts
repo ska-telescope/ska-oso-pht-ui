@@ -162,8 +162,8 @@ export const BUTTON_HEIGHT = '40px'; // Height of the Reset & Calculate buttons
 export const BUTTON_FONT_SIZE = '18px'; // FontSize of the Reset & Calculate buttons
 export const DECIMAL_PLACES = 2; // Decimal places for all results
 
-export const RA_TYPE_ICRS = '0';
-export const RA_TYPE_GALACTIC = '1';
+export const RA_TYPE_ICRS = '0'; // TODO use RA_TYPE_ICRS and RA_TYPE_GALACTIC constants from constants instead and remove this
+export const RA_TYPE_GALACTIC = '1'; // TODO use RA_TYPE_ICRS and RA_TYPE_GALACTIC constants from constants instead and remove this
 export const DEFAULT_GALACTIC = '00:00:00.0';
 export const DEFAULT_EQUATORIAL = 0;
 

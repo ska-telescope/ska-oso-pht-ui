@@ -36,8 +36,8 @@ import {
   ROBUST,
   OSO_SERVICES_PROPOSAL_PATH,
   PDF_NAME_PREFIXES,
-  ICRS,
-  GALACTIC
+  RA_TYPE_ICRS,
+  RA_TYPE_GALACTIC
 } from '../../../utils/constants';
 import { InvestigatorBackend } from '../../../utils/types/investigator';
 import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
@@ -111,13 +111,18 @@ const getVelType = (InDefinition: string) => {
   return velType ? velType : 1; // fallback
 };
 
+const isTargetGalactic = (kind: string): boolean => kind === RA_TYPE_GALACTIC.label;
+
+const getTargetType = (kind: string): number =>
+  kind === RA_TYPE_GALACTIC.label ? RA_TYPE_GALACTIC.value : RA_TYPE_ICRS.value;
+
 const getTargets = (inRec: TargetBackend[]): Target[] => {
   let results = [];
   for (let i = 0; i < inRec?.length; i++) {
     const e = inRec[i];
     const referenceCoordinate = e.reference_coordinate.kind;
     const target: Partial<Target> = {
-      kind: e?.reference_coordinate?.kind,
+      kind: getTargetType(referenceCoordinate),
       epoch: e?.reference_coordinate?.epoch,
       parallax: e?.reference_coordinate?.parallax,
       id: i + 1, // TODO use e.target_id once it is a number => needs to be changed in ODA & PDM
@@ -142,12 +147,12 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       }
     };
     /*------- reference coordinate properties --------------------- */
-    if (referenceCoordinate === GALACTIC) {
+    if (isTargetGalactic(referenceCoordinate)) {
       target.l = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).l;
       target.b = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).b;
       target.pmL = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_l;
       target.pmB = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_b;
-    } else if (referenceCoordinate === ICRS) {
+    } else if (!isTargetGalactic(referenceCoordinate)) {
       target.referenceFrame = (e.reference_coordinate as ReferenceCoordinateICRSBackend).reference_frame;
       target.raStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).ra_str;
       target.decStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).dec_str;
