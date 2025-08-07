@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ------------
+* Updated layout of tables in Overview Page
 
 3.0.0
 

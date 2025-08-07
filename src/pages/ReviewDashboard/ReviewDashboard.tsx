@@ -309,8 +309,6 @@ export default function ReviewDashboard() {
     const filteredReport = filterReportBySearch.filter(review => {
       if (filter.telescope === '') {
         return true;
-      } else if (filter.telescope === 'BOTH') {
-        return review.array === 'MID' || review.array === 'LOW';
       } else {
         return review.array === filter.telescope;
       }
@@ -420,7 +418,6 @@ export default function ReviewDashboard() {
               <Table sx={{ minWidth: 1712 }}>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Panel ID</TableCell>
                     <TableCell>Panel Name</TableCell>
                     <TableCell align="right">Number of Reviewers</TableCell>
                     <TableCell align="right">Number of Proposals</TableCell>
@@ -436,9 +433,8 @@ export default function ReviewDashboard() {
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
                       <TableCell component="th" scope="row">
-                        {row.panelId}
+                        {row.panelName}
                       </TableCell>
-                      <TableCell>{row.panelName}</TableCell>
                       <TableCell align="right">{row.numReviewer}</TableCell>
                       <TableCell align="right">{row.numProposal}</TableCell>
                       <TableCell align="right">{row.totalReviewedPercentage}</TableCell>
@@ -458,7 +454,6 @@ export default function ReviewDashboard() {
               <Table sx={{ minWidth: 1712 }}>
                 <TableHead>
                   <TableRow>
-                    <TableCell>Panel ID</TableCell>
                     <TableCell>Panel Name</TableCell>
                     <TableCell>Reviewer ID</TableCell>
                     <TableCell align="right">Number of Proposals</TableCell>
@@ -473,9 +468,8 @@ export default function ReviewDashboard() {
                       sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
                     >
                       <TableCell component="th" scope="row">
-                        {row.panelId}
+                        {row.panelName}
                       </TableCell>
-                      <TableCell>{row.panelName}</TableCell>
                       <TableCell>{row.reviewerId}</TableCell>
                       <TableCell align="right">{row.numProposal}</TableCell>
                       <TableCell align="right">{row.numReviewed}</TableCell>
