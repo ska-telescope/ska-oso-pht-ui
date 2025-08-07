@@ -1,7 +1,12 @@
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from '../../../utils/types/arrayDetails';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
-import Target, { PointingPatternParams, TargetBackend } from '../../../utils/types/target';
+import Target, {
+  PointingPatternParams,
+  ReferenceCoordinateGalacticBackend,
+  ReferenceCoordinateICRSBackend,
+  TargetBackend
+} from '../../../utils/types/target';
 import Observation from '../../../utils/types/observation';
 import {
   ResultsSection,
@@ -21,8 +26,6 @@ import {
   TYPE_CONTINUUM,
   TYPE_ZOOM,
   VEL_TYPES,
-  RA_TYPE_EQUATORIAL,
-  RA_TYPE_GALACTIC,
   VEL_UNITS,
   TELESCOPE_MID_BACKEND_MAPPING,
   TELESCOPE_LOW_BACKEND_MAPPING,
@@ -32,7 +35,9 @@ import {
   FREQUENCY_UNITS,
   ROBUST,
   OSO_SERVICES_PROPOSAL_PATH,
-  PDF_NAME_PREFIXES
+  PDF_NAME_PREFIXES,
+  RA_TYPE_ICRS,
+  RA_TYPE_GALACTIC
 } from '../../../utils/constants';
 import { InvestigatorBackend } from '../../../utils/types/investigator';
 import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
@@ -106,25 +111,25 @@ const getVelType = (InDefinition: string) => {
   return velType ? velType : 1; // fallback
 };
 
+const isTargetGalactic = (kind: string): boolean => kind === RA_TYPE_GALACTIC.label;
+
+const getTargetType = (kind: string): number =>
+  kind === RA_TYPE_GALACTIC.label ? RA_TYPE_GALACTIC.value : RA_TYPE_ICRS.value;
+
 const getTargets = (inRec: TargetBackend[]): Target[] => {
   let results = [];
   for (let i = 0; i < inRec?.length; i++) {
     const e = inRec[i];
     const referenceCoordinate = e.reference_coordinate.kind;
-    const target: Target = {
-      epoch: e.reference_coordinate.epoch,
-      dec: referenceCoordinate === 'equatorial' ? e.reference_coordinate.dec?.toString() : '',
-      decUnit: e.reference_coordinate?.unit[1],
+    const target: Partial<Target> = {
+      kind: getTargetType(referenceCoordinate),
+      epoch: e?.reference_coordinate?.epoch,
+      parallax: e?.reference_coordinate?.parallax,
       id: i + 1, // TODO use e.target_id once it is a number => needs to be changed in ODA & PDM
       name: e?.target_id,
-      latitude: '', // TODO add latitude when coming from the backend - no property to map to currently
-      longitude: '', // TODO add longitude when coming from the backend - no property to map to currently
-      ra: referenceCoordinate === 'equatorial' ? e.reference_coordinate.ra?.toString() : '',
-      raUnit: e.reference_coordinate?.unit[0],
+      b: undefined,
+      l: undefined,
       redshift: e.radial_velocity.redshift.toString(),
-      referenceFrame:
-        e.reference_coordinate.kind === 'equatorial' ? RA_TYPE_EQUATORIAL : RA_TYPE_GALACTIC,
-      rcReferenceFrame: e.reference_coordinate.reference_frame,
       raReferenceFrame: e.radial_velocity.reference_frame,
       raDefinition: e.radial_velocity.definition, // TODO modify as definition not implemented in the front-end yet
       velType: getVelType(e.radial_velocity.definition), // TODO modify as definition not implemented in the front-end yet
@@ -141,9 +146,23 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
         })) as PointingPatternParams[]
       }
     };
+    /*------- reference coordinate properties --------------------- */
+    if (isTargetGalactic(referenceCoordinate)) {
+      target.l = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).l;
+      target.b = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).b;
+      target.pmL = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_l;
+      target.pmB = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_b;
+    } else if (!isTargetGalactic(referenceCoordinate)) {
+      target.referenceFrame = (e.reference_coordinate as ReferenceCoordinateICRSBackend).reference_frame;
+      target.raStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).ra_str;
+      target.decStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).dec_str;
+      target.pmRa = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_ra;
+      target.pmDec = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_dec;
+    }
+    /*------- end of reference coordinate properties --------------------- */
     results.push(target);
   }
-  return results;
+  return results as Target[];
 };
 
 const getGroupObservations = (inValue: ObservationSetBackend[] | null) => {
