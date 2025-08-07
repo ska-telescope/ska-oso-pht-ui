@@ -26,7 +26,6 @@ import Notification from '../../../utils/types/notification';
 import SubmitButton from '@/components/button/Submit/Submit';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import BackButton from '@/components/button/Back/Back';
-import Proposal from '@/utils/types/proposal';
 import { presentLatex } from '@/utils/present/present';
 import RankEntryField from '@/components/fields/rankEntryField/RankEntryField';
 import PDFViewer from '@/components/layout/PDFViewer/PDFViewer';
@@ -47,9 +46,9 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const navigate = useNavigate();
   const locationProperties = useLocation();
 
-  const { application, updateAppContent5 } = storageObject.useStore();
+  const { updateAppContent5 } = storageObject.useStore();
 
-  const isView = () => (locationProperties.state?.reviews ? true : false);
+  const isView = () => (locationProperties?.state?.reviews ? true : false);
   const [tabValuePDF, setTabValuePDF] = React.useState(0);
   const [tabValueReview, setTabValueReview] = React.useState(0);
   const [reviewId, setReviewId] = React.useState('');
@@ -64,7 +63,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const AREA_HEIGHT_NUM = 74;
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
 
-  const getProposal = () => application.content2 as Proposal;
+  const getProposal = () => locationProperties?.state?.proposal;
   const authClient = useAxiosAuthClient();
 
   const getUser = () => 'DefaultUser'; // TODO
@@ -76,7 +75,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       kind: REVIEW_TYPE.TECHNICAL,
       feasibility: {
         isFeasible: feasibility,
-        //TODO: Update mapping for technical comments
         comments: technicalComments
       }
     };
@@ -109,7 +107,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         last_modified_by: '',
         last_modified_on: ''
       },
-      panelId: locationProperties.state.panelId,
+      panelId: locationProperties?.state?.panelId,
       cycle: '',
       reviewerId: getUser(),
       submittedOn: submitted ? new Date().toISOString() : null,
@@ -134,7 +132,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const createReview = async (submitted = false) => {
     const response: string | { error: string } = await PostProposalReview(
       getReview(submitted),
-      locationProperties?.state?.cycle
+      locationProperties?.state?.proposal?.cycle
     );
     if (typeof response === 'object' && response?.error) {
       NotifyError(response?.error);
@@ -146,7 +144,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const updateReview = async (submitted = false) => {
     const response: string | { error: string } = await PostProposalReview(
       getReview(submitted),
-      locationProperties?.state?.cycle
+      locationProperties?.state?.proposal?.cycle
     );
     if (typeof response === 'object' && response?.error) {
       NotifyError(response?.error);
@@ -157,39 +155,39 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   /*---------------------------------------------------------------------------*/
 
-  const rightReviewId = (reviewId: string) => {
-    return (
-      (isTechnical() && reviewId.includes('-tec')) || (!isTechnical() && reviewId.includes('-sci'))
-    );
-  };
+  const makeReviewId = (prefix: string) =>
+    'rvw-' +
+    prefix +
+    getUser() +
+    '-' +
+    getDateFormatted() +
+    '-00001-' +
+    Math.floor(Math.random() * 10000000).toString();
 
   React.useEffect(() => {
-    if (locationProperties.state?.reviewId && rightReviewId(locationProperties.state?.reviewId)) {
-      console.log('props ', locationProperties.state);
-      setReviewId(locationProperties.state?.reviewId);
-      setGeneralComments(locationProperties.state?.comments);
-      setTechnicalComments(locationProperties.state?.comments);
-      setSrcNetComments(locationProperties.state?.srcNet);
-      setRank(locationProperties.state?.rank);
-      setFeasibility(locationProperties.state?.isFeasible);
-      setIsEdit(true);
+    if (!locationProperties) return;
+
+    if (isTechnical()) {
+      if (locationProperties?.state?.tecReview?.id) {
+        setReviewId(locationProperties?.state?.tecReview.id);
+        setIsEdit(true);
+      } else {
+        setReviewId(makeReviewId('tec-'));
+        setIsEdit(false);
+      }
+      setFeasibility(locationProperties?.state?.tecReview.reviewType?.feasibility?.isFeasible);
+      setTechnicalComments(locationProperties?.state?.tecReview.reviewType?.feasibility?.comments);
     } else {
-      const prefix = isTechnical() ? 'tec-' : 'sci-';
-      setReviewId(
-        'rvw-' +
-          prefix +
-          getUser() +
-          '-' +
-          getDateFormatted() +
-          '-00001-' +
-          Math.floor(Math.random() * 10000000).toString()
-      );
-      setGeneralComments('');
-      setSrcNetComments('');
-      setTechnicalComments('');
-      setRank(0);
-      setFeasibility('');
-      setIsEdit(false);
+      if (locationProperties?.state?.sciReview?.id) {
+        setReviewId(locationProperties?.state?.sciReview.id);
+        setIsEdit(true);
+      } else {
+        setReviewId(makeReviewId('sci-'));
+        setIsEdit(false);
+      }
+      setRank(locationProperties?.state?.sciReview.reviewType.rank);
+      setGeneralComments(locationProperties?.state?.sciReview?.comments);
+      setSrcNetComments(locationProperties?.state?.sciReview?.srcNet);
     }
   }, []);
 
@@ -245,17 +243,17 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     const pdfLabel = tabValuePDF === 0 ? 'science' : 'technical';
 
     try {
-      const proposal = getProposal();
+      const proposal = locationProperties?.state?.proposal;
 
       const selectedFile =
-        `${proposal.id}-` + t(`pdfDownload.${pdfLabel}.label`) + t('fileType.pdf');
+        `${proposal?.id}-` + t(`pdfDownload.${pdfLabel}.label`) + t('fileType.pdf');
 
       const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
 
       if (
         signedUrl === t('pdfDownload.sampleData') ||
-        proposal.technicalPDF != null ||
-        proposal.sciencePDF != null
+        proposal?.technicalPDF != null ||
+        proposal?.sciencePDF != null
       ) {
         setCurrentPDF(signedUrl);
       }
@@ -384,7 +382,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         {!isView() && <RankEntryField selectedRank={rank} setSelectedRank={setRank} />}
         {isView() && (
           <Typography id="title-label" variant={'h6'}>
-            {locationProperties.state.reviews[0].rank}
+            {locationProperties?.state?.reviews[0].rank}
           </Typography>
         )}
       </Box>
@@ -413,7 +411,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           }}
         >
           <Typography id="title-label" variant={'h6'}>
-            {locationProperties.state.reviews[0].comments}
+            {locationProperties?.state?.reviews[0].comments}
           </Typography>
         </Box>
       )}
@@ -424,13 +422,15 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     return (
       <>
         {!isView() && (
-          <DropDown
-            options={TECHNICAL_FEASIBILITY_OPTIONS}
-            testId={'feasibilityId'}
-            value={feasibility ?? ''}
-            setValue={setFeasibility}
-            label={'Feasibility'}
-          />
+          <>
+            <DropDown
+              options={TECHNICAL_FEASIBILITY_OPTIONS}
+              testId={'feasibilityId'}
+              value={feasibility ?? ''}
+              setValue={setFeasibility}
+              label={'Feasibility'}
+            />
+          </>
         )}
         {isView() && (
           <Box
@@ -443,7 +443,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
             }}
           >
             <Typography id="title-label" variant={'h6'}>
-              {locationProperties.state.reviews[0].feasibility.isFeasible}
+              {locationProperties?.state?.reviews[0].feasibility.isFeasible}
             </Typography>
           </Box>
         )}
@@ -473,7 +473,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           }}
         >
           <Typography id="title-label" variant={'h6'}>
-            {locationProperties.state.reviews[0].feasibility.comments}
+            {locationProperties?.state?.reviews[0].feasibility.comments}
           </Typography>
         </Box>
       )}
@@ -502,7 +502,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           }}
         >
           <Typography id="title-label" variant={'h6'}>
-            {locationProperties.state.reviews[0].srcNet}
+            {locationProperties?.state?.reviews[0].srcNet}
           </Typography>
         </Box>
       )}

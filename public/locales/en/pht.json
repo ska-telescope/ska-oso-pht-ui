@@ -726,7 +726,8 @@
     "decided": "Decided",
     "To Do": "To Do",
     "In Progress": "In Progress",
-    "Decided": "Decided"
+    "Decided": "Decided",
+    "submitted": "Submitted"
   },
   "reviewPanelEntry": {
     "title": "Review Panel Entry"
@@ -896,7 +897,9 @@
   },
   "status": {
     "0": "All status types",
-    "label": "Status"
+    "label": "Status",
+    "sci": "Sci. Status",
+    "tec": "Tec. Status"
   },
   "statusValue": {
     "0": "OK",

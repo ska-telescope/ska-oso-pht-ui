@@ -5,7 +5,6 @@ import { MockProposalReviewListBackend } from './mockProposalReviewListBackend';
 import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
 import * as CONSTANTS from '@/utils/constants';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
-import MockProposalFrontendList from '@services/axios/getProposalList/mockProposalFrontendList.tsx';
 
 describe('Helper Functions', () => {
   test('GetMockProposalReviewList returns mock data', () => {
@@ -30,7 +29,7 @@ describe('Helper Functions', () => {
 });
 
 describe('GetProposalReviewList Service', () => {
-  const proposalId = 'prsl-t0001-20250716-00001'
+  const proposalId = 'prsl-t0001-20250716-00001';
   let mockedAuthClient: any;
   beforeEach(() => {
     vi.resetAllMocks();
