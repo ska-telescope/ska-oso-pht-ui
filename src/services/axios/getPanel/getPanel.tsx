@@ -1,9 +1,5 @@
 import axios from 'axios';
-import {
-  SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA,
-  OSO_SERVICES_PANEL_PATH
-} from '@utils/constants.ts';
+import { SKA_OSO_SERVICES_URL, USE_LOCAL_DATA, OSO_SERVICES_PANEL_PATH } from '@utils/constants.ts';
 import { MockPanelBackend } from './mockPanelBackend';
 import { Panel, PanelBackend } from '@/utils/types/panel';
 import { PanelProposal, PanelProposalBackend } from '@/utils/types/panelProposal';
