@@ -1,4 +1,4 @@
-import { OSO_SERVICES_PROPOSAL_PATH, SKA_OSO_SERVICES_URL } from '../../../utils/constants';
+import { OSO_SERVICES_PROPOSAL_PATH, SKA_OSO_SERVICES_URL } from '@utils/constants.ts';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { EmailInviteBackend } from '@/utils/types/emailInvite.tsx';
 

@@ -6,7 +6,7 @@ import {
   USE_LOCAL_DATA
 } from '@utils/constants';
 import { mappingReviewFrontendToBackend } from '../postProposalReview.tsx/postProposalReview';
-import { MockProposalReviewBackend } from '../postProposalReview.tsx/mockProposalReviewBackend';
+import { MockProposalScienceReviewBackend } from '../postProposalReview.tsx/mockProposalReviewBackend';
 import { helpers } from '@/utils/helpers';
 import {
   ProposalReview,
@@ -68,7 +68,7 @@ export function mappingReviewBackendToFrontend(review: ProposalReviewBackend): P
 }
 
 export function putMockProposalReview(): ProposalReview {
-  return mappingReviewBackendToFrontend(MockProposalReviewBackend);
+  return mappingReviewBackendToFrontend(MockProposalScienceReviewBackend);
 }
 
 async function PutProposalReview(
