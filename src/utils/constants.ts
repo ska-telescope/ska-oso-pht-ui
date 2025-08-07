@@ -96,7 +96,10 @@ export const BANDWIDTH_TELESCOPE = [
   }
 ];
 
-export const FEASIBILITY = ['Yes', 'No', 'Maybe'];
+export const FEASIBLE_MAYBE = 'Maybe';
+export const FEASIBLE_NO = 'No';
+export const FEASIBLE_YES = 'Yes';
+export const FEASIBILITY = [FEASIBLE_YES, FEASIBLE_NO, FEASIBLE_MAYBE];
 
 export const BANNER_PMT_SPACER = 100;
 

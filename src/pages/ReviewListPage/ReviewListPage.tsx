@@ -17,7 +17,7 @@ import {
   BANNER_PMT_SPACER,
   PANEL_DECISION_STATUS,
   REVIEW_TYPE,
-  FEASIBILITY
+  FEASIBLE_NO
 } from '@utils/constants.ts';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
@@ -214,12 +214,19 @@ export default function ReviewListPage() {
     updateReview(row);
   };
 
-  const canEditScience = (e: { row: { status: string; feasibility: string } }) => {
-    return e?.row?.feasibility !== FEASIBILITY[1] && e.row.status !== PANEL_DECISION_STATUS.DECIDED;
+  const isFeasible = (row: { tecReview: any; sciReview?: { status: string } }) =>
+    row.tecReview.reviewType.feasibility.isFeasible
+      ? row.tecReview.reviewType.feasibility.isFeasible !== FEASIBLE_NO
+      : true;
+  const canEditScience = (row: {
+    tecReview: { reviewType: { feasibility: { isFeasible: string } } };
+    sciReview: { status: string };
+  }) => {
+    return isFeasible(row) && row?.sciReview.status !== PANEL_DECISION_STATUS.DECIDED;
   };
 
-  const canEditTechnical = (e: { row: { status: string } }) =>
-    e.row.status !== PANEL_DECISION_STATUS.DECIDED;
+  const canEditTechnical = (tecReview: { status: string }) =>
+    tecReview.status !== PANEL_DECISION_STATUS.DECIDED;
   const canSubmit = (row: { srcNet: any; comments: any; rank: number; status: string }) =>
     row.status !== PANEL_DECISION_STATUS.DECIDED && row?.rank > 0 && row?.comments?.length;
 
@@ -346,13 +353,17 @@ export default function ReviewListPage() {
       <>
         <TechnicalIcon
           onClick={() => technicalIconClicked(e.row)}
-          disabled={!canEditTechnical(e)}
-          toolTip={t(canEditTechnical(e) ? 'reviewProposal.technical' : 'reviewProposal.disabled')}
+          disabled={!canEditTechnical(e.row.tecReview)}
+          toolTip={t(
+            canEditTechnical(e.row.tecReview)
+              ? 'reviewProposal.technical'
+              : 'reviewProposal.disabled'
+          )}
         />
         <ScienceIcon
           onClick={() => scienceIconClicked(e.row)}
-          disabled={!canEditScience(e)}
-          toolTip={t(canEditScience(e) ? 'reviewProposal.science' : 'reviewProposal.disabled')}
+          disabled={!canEditScience(e.row)}
+          toolTip={t(canEditScience(e.row) ? 'reviewProposal.science' : 'reviewProposal.disabled')}
         />
         <SubmitIcon
           onClick={() => submitIconClicked(e.row)}

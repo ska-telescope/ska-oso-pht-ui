@@ -21,6 +21,7 @@ import {
 } from '@utils/constants.ts';
 import Typography from '@mui/material/Typography';
 import moment from 'moment';
+import PutProposalReview from '@services/axios/putProposalReview/putProposalReview';
 import SaveButton from '../../../components/button/Save/Save';
 import Notification from '../../../utils/types/notification';
 import SubmitButton from '@/components/button/Submit/Submit';
@@ -142,10 +143,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   };
 
   const updateReview = async (submitted = false) => {
-    const response: string | { error: string } = await PostProposalReview(
-      getReview(submitted),
-      locationProperties?.state?.proposal?.cycle
-    );
+    const response: string | { error: string } = await PutProposalReview(getReview(submitted));
     if (typeof response === 'object' && response?.error) {
       NotifyError(response?.error);
     } else {
