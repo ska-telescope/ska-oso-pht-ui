@@ -72,6 +72,8 @@ export default function ReviewListPage() {
   const [panelData, setPanelData] = React.useState<Panel[]>([]);
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
+  const getObservatoryData = () => application.content3 as ObservatoryData;
+  const getCycleId = () => getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId;
 
   const authClient = useAxiosAuthClient();
 
@@ -122,11 +124,9 @@ export default function ReviewListPage() {
 
   const getUser = () => 'DefaultUser'; // TODO
 
-  const getObservatoryData = () => application.content3 as ObservatoryData;
-
   const getScienceReviewType = (row: any): ScienceReview => {
     return {
-      kind: row.reviewType.kind,
+      kind: REVIEW_TYPE.SCIENCE,
       excludedFromDecision: false,
       rank: row.reviewType.rank,
       conflict: {
@@ -138,24 +138,26 @@ export default function ReviewListPage() {
 
   const getTechnicalReviewType = (row: any): TechnicalReview => {
     return {
-      kind: row.reviewType.kind,
+      kind: REVIEW_TYPE.TECHNICAL,
       feasibility: {
         isFeasible: TECHNICAL_FEASIBILITY.YES,
-        comments: ''
+        comments: row.feasibility.comments
       }
     };
   };
 
-  const getReview = (row: any): ProposalReview => {
+  const getReview = (row: any): ProposalReview | null => {
+    const review = proposalReviews.find(p => p.id === row.review_id);
+    if (!review) return null;
     return {
-      id: row.review_id,
+      id: review.id,
       prslId: row.id,
       reviewType:
-        row.reviewType.kind === REVIEW_TYPE.SCIENCE
-          ? getScienceReviewType(row)
-          : getTechnicalReviewType(row),
-      comments: row.comments,
-      srcNet: row.srcNet,
+        review.reviewType.kind === REVIEW_TYPE.SCIENCE
+          ? getScienceReviewType(review)
+          : getTechnicalReviewType(review),
+      comments: review.comments,
+      srcNet: review.srcNet,
       metadata: {
         version: 0,
         created_by: '',
@@ -164,7 +166,7 @@ export default function ReviewListPage() {
         last_modified_by: '',
         last_modified_on: ''
       },
-      panelId: 'ERROR',
+      panelId: getCycleId(),
       cycle: '',
       reviewerId: getUser(),
       submittedOn: '',
@@ -187,8 +189,12 @@ export default function ReviewListPage() {
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
   const updateReview = async (row: any) => {
+    const rec = getReview(row);
+    if (!rec) {
+      NotifyError('Unable to find review'); // TODO : Should check this and add to json
+    }
     const response: string | { error: string } = await PostProposalReview(
-      getReview(row),
+      rec as ProposalReview,
       getObservatoryData().observatoryPolicy?.cycleInformation?.cycleId
     );
     if (typeof response === 'object' && response?.error) {
@@ -223,7 +229,7 @@ export default function ReviewListPage() {
     });
   };
   const scienceIconClicked = (row: any) => theIconClicked(row, PMT[5]);
-  const technicalIconClicked = (row: any) => theIconClicked(row, PMT[7]);
+  const technicalIconClicked = (row: any) => theIconClicked(row, PMT[6]);
 
   const submitIconClicked = (row: any) => {
     updateReview(row);
@@ -234,10 +240,7 @@ export default function ReviewListPage() {
   const canEditTechnical = (e: { row: { status: string } }) =>
     e.row.status !== PANEL_DECISION_STATUS.DECIDED;
   const canSubmit = (row: { srcNet: any; comments: any; rank: number; status: string }) =>
-    row.status !== PANEL_DECISION_STATUS.DECIDED &&
-    row?.rank > 0 &&
-    row?.comments?.length &&
-    row?.srcNet?.length;
+    row.status !== PANEL_DECISION_STATUS.DECIDED && row?.rank > 0 && row?.comments?.length;
 
   const colId = {
     field: 'id',

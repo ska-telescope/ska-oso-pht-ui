@@ -46,7 +46,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const [tabValuePDF, setTabValuePDF] = React.useState(0);
   const [tabValueReview, setTabValueReview] = React.useState(0);
-  const [, setReviewId] = React.useState('');
+  const [reviewId, setReviewId] = React.useState(locationProperties?.state?.id);
   const [rank, setRank] = React.useState(0);
   const [generalComments, setGeneralComments] = React.useState('');
   const [srcNetComments, setSrcNetComments] = React.useState('');
@@ -68,7 +68,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const getReviewId = () => {
     return isEdit
-      ? locationProperties.state.id
+      ? reviewId
       : 'rvw-' +
           getUser() +
           '-' +
@@ -78,8 +78,10 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   };
 
   const getReview = (submitted = false): ProposalReview => {
+    const rwId = getReviewId();
+    setReviewId(rwId);
     return {
-      id: getReviewId(),
+      id: rwId,
       prslId: getProposal().id,
       // TODO implement technical review as well - reviewType below is only for science review
       reviewType: {

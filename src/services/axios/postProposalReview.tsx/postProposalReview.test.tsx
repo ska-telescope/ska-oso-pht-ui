@@ -6,11 +6,13 @@ import PostProposalReview, {
   postMockProposalReview
 } from './postProposalReview';
 import {
-  MockProposalReviewFrontend,
+  MockProposalScienceReviewExcludedFrontend,
+  MockProposalScienceReviewFrontend,
   MockProposalTechnicalReviewFrontend
 } from './mockProposalReviewFrontend';
 import {
-  MockProposalReviewBackend,
+  MockProposalScienceReviewBackend,
+  MockProposalScienceReviewExcludedBackend,
   MockProposalTechnicalReviewBackend
 } from './mockProposalReviewBackend';
 import { ProposalReviewBackend } from '@/utils/types/proposalReview';
@@ -29,11 +31,20 @@ describe('Helper Functions', () => {
 
   test('mappingReviewFrontendToBackend returns mapped review from frontend to backend format', () => {
     const reviewBackEnd: ProposalReviewBackend = mappingReviewFrontendToBackend(
-      MockProposalReviewFrontend,
+      MockProposalScienceReviewFrontend,
       cycleId,
       true
     );
-    expect(reviewBackEnd).to.deep.equal(MockProposalReviewBackend);
+    expect(reviewBackEnd).to.deep.equal(MockProposalScienceReviewBackend);
+  });
+
+  test('mappingReviewFrontendToBackend returns mapped review from frontend to backend format CHLOE', () => {
+    const reviewBackEnd: ProposalReviewBackend = mappingReviewFrontendToBackend(
+      MockProposalScienceReviewExcludedFrontend,
+      cycleId,
+      true
+    );
+    expect(reviewBackEnd).to.deep.equal(MockProposalScienceReviewExcludedBackend);
   });
 
   test('mappingReviewFrontendToBackend returns mapped technical review from frontend to backend format', () => {
@@ -48,14 +59,14 @@ describe('Helper Functions', () => {
   test('mappingReviewFrontendToBackend generates cycle id when not provided', () => {
     const reviewBackEnd: ProposalReviewBackend = mappingReviewFrontendToBackend(
       {
-        ...MockProposalReviewFrontend,
+        ...MockProposalScienceReviewFrontend,
         cycle: ''
       },
       cycleId,
       true
     );
     expect(reviewBackEnd).to.deep.equal({
-      ...MockProposalReviewBackend,
+      ...MockProposalScienceReviewBackend,
       cycle: 'SKAO_2027_1'
     });
   });

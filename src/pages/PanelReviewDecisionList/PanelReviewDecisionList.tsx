@@ -12,7 +12,7 @@ import { FOOTER_SPACER } from '../../utils/constants';
 import Notification from '../../utils/types/notification';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import TableReviewDecision from '@/components/grid/tableReviewDecision/TableReviewDecision';
-import { ProposalReview } from '@/utils/types/proposalReview';
+import { ProposalReview, ScienceReview } from '@/utils/types/proposalReview';
 import GetPanelList from '@/services/axios/getPanelList/getPanelList';
 import GetProposalReviewList from '@/services/axios/getProposalReviewList/getProposalReviewList';
 import { Panel } from '@/utils/types/panel';
@@ -67,7 +67,9 @@ export default function ReviewDecisionListPage() {
 
   const calculateRank = (details: Array<any>) => {
     if (!details || details?.length === 0) return 0;
-    const average = details.reduce((sum, detail) => sum + detail.rank, 0) / details.length;
+    const average =
+      details.reduce((sum, detail) => sum + detail.reviewType.rank, 0) / details.length;
+    if (!average) return 0;
     return Math.round(average);
   };
 
@@ -76,6 +78,7 @@ export default function ReviewDecisionListPage() {
   const getDateFormatted = () => moment().format('YYYY-MM-DD');
 
   const getReviewDecision = (item: { id: any; recommendation: any; reviews: any[] }) => {
+    const filtered = item.reviews.filter(el => el.reviewType.excludedFromDecision === false);
     return {
       id:
         'pnld-' +
@@ -85,20 +88,14 @@ export default function ReviewDecisionListPage() {
         '-00001-' +
         Math.floor(Math.random() * 10000000).toString(),
       panelId: '1',
-      cycle: 'ERROR',
+      cycle: getCycleId(),
       proposalId: item.id,
       decidedOn: new Date().toISOString(),
       decidedBy: getUser(),
       recommendation: item.recommendation,
-      rank: calculateRank(item.reviews),
+      rank: calculateRank(filtered),
       status: PANEL_DECISION_STATUS.DECIDED
     };
-  };
-
-  const updateList = (item: any) => {
-    setReviewDecisions(prev =>
-      prev.map(proposal => (proposal.id === item.id ? { ...proposal, ...item } : proposal))
-    );
   };
 
   const updateReview = async (review: ProposalReview) => {
@@ -137,12 +134,23 @@ export default function ReviewDecisionListPage() {
     if (typeof response === 'object' && response?.error) {
       Notify(response?.error, AlertColorTypes.Error);
     } else {
-      updateList(item);
+      fetchReviewDecisionData();
       Notify(t('addReview.success'), AlertColorTypes.Success);
     }
   };
 
   /*--------------------------------------------------------------------------*/
+
+  const fetchReviewDecisionData = async () => {
+    const response = await getPanelDecisionList(
+      getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
+    ); // TODO : add id of the logged in user
+    if (typeof response === 'string') {
+      NotifyError(response);
+    } else {
+      setReviewDecisions(response);
+    }
+  };
 
   React.useEffect(() => {
     setReset(!reset);
@@ -239,7 +247,8 @@ export default function ReviewDecisionListPage() {
     const results = proposalReviews?.map(rec => {
       const el: ProposalReview = rec;
       if (el.id === review.id) {
-        el.reviewType.excludedFromDecision = el.reviewType.excludedFromDecision ? false : true;
+        const tmp: ScienceReview = el.reviewType as ScienceReview;
+        tmp.excludedFromDecision = tmp.excludedFromDecision ? false : true;
         updateReview(el);
       }
       return el;

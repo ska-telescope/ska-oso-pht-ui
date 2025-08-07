@@ -42,6 +42,7 @@ export default function SciencePage() {
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
 
   const loggedIn = isLoggedIn();
+  const authClient = useAxiosAuthClient();
 
   const isDisableEndpoints = () => !loggedIn;
 
@@ -80,7 +81,7 @@ export default function SciencePage() {
 
     try {
       const proposal = getProposal();
-      const signedUrl = await GetPresignedUploadUrl(`${proposal.id}-science.pdf`);
+      const signedUrl = await GetPresignedUploadUrl(authClient, `${proposal.id}-science.pdf`);
 
       if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
 
@@ -111,7 +112,7 @@ export default function SciencePage() {
     try {
       const proposal = getProposal();
       const selectedFile = `${proposal.id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
-      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
 
       if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {
         window.open(signedUrl, '_blank');
@@ -124,7 +125,7 @@ export default function SciencePage() {
   const deletePdfUsingSignedUrl = async () => {
     try {
       const proposal = getProposal();
-      const signedUrl = await GetPresignedDeleteUrl(`${proposal.id}-science.pdf`);
+      const signedUrl = await GetPresignedDeleteUrl(authClient, `${proposal.id}-science.pdf`);
 
       if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
 
@@ -155,7 +156,7 @@ export default function SciencePage() {
     try {
       const proposal = getProposal();
       const selectedFile = `${proposal.id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
-      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
 
       if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {
         setCurrentFile(signedUrl);

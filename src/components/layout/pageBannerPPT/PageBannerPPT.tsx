@@ -120,8 +120,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   };
 
   const submitClicked = () => {
-    if (accounts.length === 0) return;
-    setOpenProposalDisplay(true);
+    if (loggedIn) setOpenProposalDisplay(true);
   };
 
   const submitConfirmed = async () => {

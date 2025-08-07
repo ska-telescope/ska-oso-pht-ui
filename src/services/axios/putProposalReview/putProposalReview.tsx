@@ -5,7 +5,6 @@ import {
   USE_LOCAL_DATA
 } from '@utils/constants';
 import { mappingReviewFrontendToBackend } from '../postProposalReview.tsx/postProposalReview';
-import { MockProposalReviewBackend } from '../postProposalReview.tsx/mockProposalReviewBackend';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { helpers } from '@/utils/helpers';
 import {
@@ -30,7 +29,11 @@ function getTechnicalReviewType(technicalReview: TechnicalReviewBackend): Techni
 function getScienceReviewType(scienceReview: ScienceReviewBackend): ScienceReview {
   return {
     kind: scienceReview.kind,
-    excludedFromDecision: scienceReview.excluded_from_decision,
+    excludedFromDecision:
+      scienceReview.excluded_from_decision === 'true' ||
+      scienceReview.excluded_from_decision === 'True'
+        ? true
+        : false,
     rank: scienceReview.rank,
     conflict: {
       hasConflict: scienceReview.conflict.has_conflict,
@@ -64,7 +67,7 @@ export function mappingReviewBackendToFrontend(review: ProposalReviewBackend): P
 }
 
 export function putMockProposalReview(): ProposalReview {
-  return mappingReviewBackendToFrontend(MockProposalReviewBackend);
+  return mappingReviewBackendToFrontend(MockProposalScienceReviewBackend);
 }
 
 async function PutProposalReview(

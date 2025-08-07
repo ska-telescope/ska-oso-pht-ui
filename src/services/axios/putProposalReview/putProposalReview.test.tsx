@@ -1,5 +1,4 @@
-import { MockProposalReviewFrontend } from '../postProposalReview.tsx/mockProposalReviewFrontend';
-import { MockProposalReviewBackend } from '../postProposalReview.tsx/mockProposalReviewBackend';
+import { MockProposalScienceReviewFrontend } from '@services/axios/postProposalReview.tsx/mockProposalReviewFrontend.tsx';
 import PutProposalReview, { putMockProposalReview } from './putProposalReview';
 import * as CONSTANTS from '@/utils/constants';
 
@@ -9,7 +8,7 @@ describe('Helper Functions', () => {
   });
   test('putMockProposalReview returns mock review', () => {
     const result = putMockProposalReview();
-    expect(result).to.deep.equal(MockProposalReviewFrontend);
+    expect(result).to.deep.equal(MockProposalScienceReviewFrontend);
   });
 });
 

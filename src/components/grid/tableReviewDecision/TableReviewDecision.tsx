@@ -61,6 +61,10 @@ export default function TableReviewDecision({
 
   const authClient = useAxiosAuthClient();
 
+  const submitFunctionClicked = (item: any) => {
+    submitFunction(item);
+  };
+
   const toggleRow = (id: number) => {
     const newExpandedRows = new Set(expandedRows);
     const wasExpanded = newExpandedRows.has(id);
@@ -128,9 +132,10 @@ export default function TableReviewDecision({
 
   const calculateRank = (details: Array<any>) => {
     if (!details || details?.length === 0) return 0;
-    const filtered = details.filter(el => el.reviewType.excludedFromDecision === false);
+    const filtered = details.filter(el => el?.reviewType?.excludedFromDecision === false);
+    if (filtered?.length === 0) return 0;
     const average =
-      filtered.reduce((sum, detail) => sum + detail.reviewType.rank, 0) / filtered.length;
+      filtered.reduce((sum, detail) => sum + detail?.reviewType?.rank, 0) / filtered?.length;
     return Math.round((average + Number.EPSILON) * 100) / 100;
   };
 
@@ -273,12 +278,12 @@ export default function TableReviewDecision({
                       </Typography>
                     </TableCell>
                     <TableCell role="gridcell">
-                      <Typography variant="body2">{calculateRank(item.decisions)}</Typography>
+                      <Typography variant="body2">{calculateRank(item.reviews)}</Typography>
                     </TableCell>
                     <TableCell role="gridcell">
                       <Box sx={{ display: 'flex', gap: 0.5 }}>
                         <SubmitIcon
-                          onClick={() => submitFunction(item)}
+                          onClick={() => submitFunctionClicked(item)}
                           aria-label={`Submit data for ${item.title}`}
                           data-testid={`submit-button-${item.id}`}
                           toolTip={t('decisionSubmit.help')}
@@ -389,16 +394,17 @@ export default function TableReviewDecision({
                                       gap={1}
                                       wrap="nowrap"
                                     >
-                                      <Grid2 pt={1}>
+                                      <Grid2>
                                         <IconButton
                                           onClick={() => excludeFunction(detail)}
                                           style={{ cursor: 'hand' }}
-                                          disabled={
-                                            !detail.reviewType.excludedFromDecision &&
-                                            item.reviews.filter(
-                                              el => el.reviewType.excludedFromDecision === false
-                                            ).length < 2
-                                          }
+                                          // CODE BELOW WILL BE IMPLEMENTED AT A LATER DATE
+                                          // disabled={
+                                          //   !detail.reviewType.excludedFromDecision &&
+                                          //   item.reviews.filter(
+                                          //     el => el.reviewType.excludedFromDecision === false
+                                          //   ).length < 2
+                                          // }
                                         >
                                           <StatusIcon
                                             testId={`includeIcon-${item.id}-${detailIndex}`}
@@ -451,7 +457,7 @@ export default function TableReviewDecision({
                                     </Grid2>
                                     <Grid2>
                                       <SubmitButton
-                                        action={() => submitFunction(item)}
+                                        action={() => submitFunctionClicked(item)}
                                         aria-label={`Submit employee data for ${item.title}`}
                                         data-testid={`submit-employee-button-${item.id}`}
                                         toolTip="decisionSubmit.help"

@@ -6,20 +6,27 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ------------
+* Updated layout of tables in Overview Page
+
+3.0.0
+
+-------
 
 * [BREAKING] Changed build system from Webpack to Vite
-* PHT-Services changed to OSO-services
+* Changed backend from PHT-Services to OSO-services
 * Added a mocked connected user
 * Added a navigation menu
 * Added an Overview page
 * Added a Panel Maintenance page
-* Added a Review page
+* Added a Proposal Review page
+* Added a Panel Decision page
 * Various improvements for to the CI/CD pipeline
 * Changed Sensitivity Calculator backend to V11.2.2
 * Changed Band 5a to pass mid_band_5a
 * Changed Band 5b to pass mid_band_5b
 * Added new OSD endpoint to retrieve observatory data
 * Changed existing constants to use osd data where available
+* Changed to oso-services v2.0.0
 
 2.0.0
 
