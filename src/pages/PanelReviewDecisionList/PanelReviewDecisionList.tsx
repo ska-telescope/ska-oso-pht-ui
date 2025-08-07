@@ -5,7 +5,12 @@ import { AlertColorTypes, SearchEntry } from '@ska-telescope/ska-gui-components'
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import moment from 'moment';
-import { BANNER_PMT_SPACER, PANEL_DECISION_STATUS, PROPOSAL_STATUS } from '../../utils/constants';
+import {
+  BANNER_PMT_SPACER,
+  PANEL_DECISION_STATUS,
+  PROPOSAL_STATUS,
+  TMP_REVIEWER_ID
+} from '../../utils/constants';
 import Proposal from '../../utils/types/proposal';
 import { FOOTER_SPACER } from '../../utils/constants';
 
@@ -73,7 +78,7 @@ export default function ReviewDecisionListPage() {
     return Math.round(average);
   };
 
-  const getUser = () => 'DefaultUser'; // TODO
+  const getUser = () => TMP_REVIEWER_ID; // TODO
 
   const getDateFormatted = () => moment().format('YYYY-MM-DD');
 

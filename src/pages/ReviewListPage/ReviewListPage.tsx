@@ -17,7 +17,8 @@ import {
   BANNER_PMT_SPACER,
   PANEL_DECISION_STATUS,
   REVIEW_TYPE,
-  FEASIBLE_NO
+  FEASIBLE_NO,
+  TMP_REVIEWER_ID
 } from '@utils/constants.ts';
 import GetProposal from '@services/axios/getProposal/getProposal.tsx';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
@@ -122,7 +123,7 @@ export default function ReviewListPage() {
     fetchProposalData();
   }, [panelData]);
 
-  const getUser = () => 'DefaultUser'; // TODO
+  const getUser = () => TMP_REVIEWER_ID; // TODO
 
   const getScienceReviewType = (row: any): ScienceReview => {
     return {

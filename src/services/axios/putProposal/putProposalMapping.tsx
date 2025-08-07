@@ -32,7 +32,8 @@ import {
   VEL_UNITS,
   VELOCITY_TYPE,
   ROBUST,
-  IW_BRIGGS
+  IW_BRIGGS,
+  TMP_REVIEWER_ID
 } from '../../../utils/constants';
 
 const isContinuum = (type: number) => type === TYPE_CONTINUUM;
@@ -444,7 +445,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     prsl_id: proposal?.id,
     status: status,
     submitted_on: status === PROPOSAL_STATUS.SUBMITTED ? new Date().toISOString() : null, // note: null since oso-services 1.1.0  does not support ''
-    submitted_by: status === PROPOSAL_STATUS.SUBMITTED ? `DefaultUser` : '', // TODO : Need to replaced with the logged in user.
+    submitted_by: status === PROPOSAL_STATUS.SUBMITTED ? TMP_REVIEWER_ID : '', // TODO : Need to replaced with the logged in user.
     investigator_refs: proposal.team?.map(investigator => {
       return investigator?.id?.toString();
     }),

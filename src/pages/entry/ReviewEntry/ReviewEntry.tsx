@@ -17,7 +17,8 @@ import {
   PANEL_DECISION_STATUS,
   PMT,
   REVIEW_TYPE,
-  TECHNICAL_FEASIBILITY_OPTIONS
+  TECHNICAL_FEASIBILITY_OPTIONS,
+  TMP_REVIEWER_ID
 } from '@utils/constants.ts';
 import Typography from '@mui/material/Typography';
 import moment from 'moment';
@@ -67,7 +68,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const getProposal = () => application.content2;
   const authClient = useAxiosAuthClient();
 
-  const getUser = () => 'DefaultUser'; // TODO
+  const getUser = () => TMP_REVIEWER_ID; // TODO
   const isTechnical = () => reviewType === REVIEW_TYPE.TECHNICAL;
   const getDateFormatted = () => moment().format('YYYY-MM-DD');
 
@@ -112,7 +113,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       cycle: '',
       reviewerId: getUser(),
       submittedOn: submitted ? new Date().toISOString() : null,
-      submittedBy: submitted ? 'DefaultUser' : null,
+      submittedBy: submitted ? TMP_REVIEWER_ID : null,
       status: submitted ? PANEL_DECISION_STATUS.DECIDED : PANEL_DECISION_STATUS.IN_PROGRESS
     };
   };
@@ -156,11 +157,11 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const makeReviewId = (prefix: string) =>
     'rvw-' +
     prefix +
-    getUser() +
-    '-' +
-    getDateFormatted() +
-    '-00001-' +
-    Math.floor(Math.random() * 10000000).toString();
+    getUser();
+    // '-' +
+    // getDateFormatted() +
+    // '-00001-' +
+    // Math.floor(Math.random() * 10000000).toString();
 
   React.useEffect(() => {
     if (!locationProperties) return;
