@@ -2,7 +2,7 @@ import { describe, test } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import SensCalcModalMultiple from './SensCalcModalMultiple';
-import { TYPE_CONTINUUM, TYPE_ZOOM } from '@/utils/constants';
+import { STATUS_ERROR, TYPE_CONTINUUM, TYPE_ZOOM } from '@/utils/constants';
 
 describe('<SensCalcModalMultiple />', () => {
   test('renders correctly', () => {
@@ -196,6 +196,56 @@ describe('<SensCalcModalMultiple />', () => {
         level={0}
         levelError={''}
         isCustom={true}
+      />
+    );
+  });
+  test('renders correctly (error)', () => {
+    render(
+      <SensCalcModalMultiple
+        open={false}
+        onClose={vi.fn()}
+        data={{
+          id: 0,
+          title: '',
+          statusGUI: STATUS_ERROR,
+          error: 'SOME ERROR',
+          section1: undefined,
+          section2: undefined,
+          section3: undefined
+        }}
+        isCustom={true}
+        level={1}
+        levelError={'1'}
+        observation={{
+          id: '',
+          telescope: 0,
+          subarray: 0,
+          linked: '',
+          type: TYPE_CONTINUUM,
+          observingBand: 0,
+          weather: undefined,
+          elevation: 0,
+          centralFrequency: 0,
+          centralFrequencyUnits: 0,
+          bandwidth: 0,
+          continuumBandwidth: 0,
+          continuumBandwidthUnits: 0,
+          spectralAveraging: undefined,
+          tapering: undefined,
+          imageWeighting: 0,
+          robust: 0,
+          supplied: {
+            type: 0,
+            value: 0,
+            units: 0
+          },
+          spectralResolution: '',
+          effectiveResolution: '',
+          numSubBands: undefined,
+          num15mAntennas: undefined,
+          num13mAntennas: undefined,
+          numStations: undefined
+        }}
       />
     );
   });

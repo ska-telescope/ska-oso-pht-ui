@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ------------
+* Updated layout of tables in Overview Page
 
 * Changed target types and mappings to use ADR-63 format
 
