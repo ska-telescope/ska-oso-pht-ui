@@ -107,7 +107,7 @@ export default function LandingPage() {
   }, []);
 
   const getTheProposal = async (id: string) => {
-    helpComponent('');
+    helpComponent({});
     updateAppContent5({});
 
     const response = await GetProposal(authClient, id);

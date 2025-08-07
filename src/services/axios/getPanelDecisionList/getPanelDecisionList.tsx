@@ -1,4 +1,5 @@
 import {
+  DEFAULT_USER,
   OSO_SERVICES_PANEL_DECISIONS_PATH,
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
@@ -31,7 +32,7 @@ async function getPanelDecisionList(
   }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}/list/DefaultUser`;
+    const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}/list/` + DEFAULT_USER;
 
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
 

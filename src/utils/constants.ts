@@ -97,6 +97,9 @@ export const BANDWIDTH_TELESCOPE = [
   }
 ];
 
+export const DEFAULT_USER = 'DefaultUser';
+export const TMP_REVIEWER_ID = 'c8f8f18a-3c70-4c39-8ed9-2d8d180d99a3';
+
 export const BANNER_PMT_SPACER = 100;
 
 export const CENTRAL_FREQUENCY_MAX = [350, 1.05, 1.76, 8.5, 15.4];
@@ -934,8 +937,8 @@ export const PDF_NAME_PREFIXES = {
 
 export const DEFAULT_PI = {
   id: 'prp-ska01-202204-01',
-  firstName: 'DefaultUser',
-  lastName: 'DefaultUser',
+  firstName: DEFAULT_USER,
+  lastName: DEFAULT_USER,
   email: 'ask.lop@map.com',
   country: 'Lagoon',
   affiliation: 'University of Free Town',

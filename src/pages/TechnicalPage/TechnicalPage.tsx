@@ -22,6 +22,7 @@ import DeleteButton from '../../components/button/Delete/Delete';
 
 import Notification from '../../utils/types/notification';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 const PAGE = 6;
 const NOTIFICATION_DELAY_IN_SECONDS = 5;

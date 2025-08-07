@@ -19,7 +19,8 @@ import {
   PANEL_DECISION_STATUS,
   REVIEW_TYPE,
   TECHNICAL_FEASIBILITY,
-  PROPOSAL_STATUS
+  PROPOSAL_STATUS,
+  TMP_REVIEWER_ID
 } from '../../utils/constants';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
@@ -122,12 +123,12 @@ export default function ReviewListPage() {
     fetchProposalReviewData();
   }, [panelData]);
 
-  const getUser = () => 'DefaultUser'; // TODO
+  const getUser = () => TMP_REVIEWER_ID; // TODO
 
   const getScienceReviewType = (row: any): ScienceReview => {
     return {
       kind: REVIEW_TYPE.SCIENCE,
-      excludedFromDecision: false,
+      excludedFromDecision: 'No',
       rank: row.reviewType.rank,
       conflict: {
         hasConflict: false,
@@ -194,6 +195,7 @@ export default function ReviewListPage() {
       NotifyError('Unable to find review'); // TODO : Should check this and add to json
     }
     const response: string | { error: string } = await PostProposalReview(
+      authClient,
       rec as ProposalReview,
       getObservatoryData().observatoryPolicy?.cycleInformation?.cycleId
     );

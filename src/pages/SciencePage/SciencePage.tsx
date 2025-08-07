@@ -22,6 +22,7 @@ import { Proposal } from '../../utils/types/proposal';
 import Notification from '../../utils/types/notification';
 import { validateSciencePage } from '../../utils/proposalValidation';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 const PAGE = 3;
 const NOTIFICATION_DELAY_IN_SECONDS = 10;

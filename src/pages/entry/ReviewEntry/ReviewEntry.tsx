@@ -13,6 +13,7 @@ import useTheme from '@mui/material/styles/useTheme';
 import { BANNER_PMT_SPACER, PANEL_DECISION_STATUS, PMT, REVIEW_TYPE } from '@utils/constants.ts';
 import Typography from '@mui/material/Typography';
 import moment from 'moment';
+import { TMP_REVIEWER_ID } from '@utils/constants';
 import SaveButton from '../../../components/button/Save/Save';
 import Notification from '../../../utils/types/notification';
 import SubmitButton from '@/components/button/Submit/Submit';
@@ -59,7 +60,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const getProposal = () => application.content2 as Proposal;
   const authClient = useAxiosAuthClient();
 
-  const getUser = () => 'DefaultUser'; // TODO
+  const getUser = () => TMP_REVIEWER_ID; // TODO
 
   const getObservatoryData = () => application.content3 as ObservatoryData;
   const getCycleId = () => getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId;
@@ -107,7 +108,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       cycle: '',
       reviewerId: getUser(),
       submittedOn: submitted ? new Date().toISOString() : null,
-      submittedBy: submitted ? 'DefaultUser' : null,
+      submittedBy: submitted ? TMP_REVIEWER_ID : null,
       status: submitted ? PANEL_DECISION_STATUS.DECIDED : PANEL_DECISION_STATUS.IN_PROGRESS
     };
   };

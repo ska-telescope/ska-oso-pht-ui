@@ -1,11 +1,12 @@
+import { DEFAULT_USER } from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
 
 export const MockProposalFrontend: Proposal = {
   metadata: {
     version: 10,
-    created_by: 'DefaultUser',
+    created_by: DEFAULT_USER,
     created_on: '2025-06-13T13:48:34.963103Z',
-    last_modified_by: 'DefaultUser',
+    last_modified_by: DEFAULT_USER,
     last_modified_on: '2025-06-24T16:48:47.127032Z',
     pdm_version: '18.1.0'
   },
@@ -15,9 +16,9 @@ export const MockProposalFrontend: Proposal = {
   proposalSubType: [3],
   status: 'draft',
   lastUpdated: '2025-06-24T16:48:47.127032Z',
-  lastUpdatedBy: 'DefaultUser',
+  lastUpdatedBy: DEFAULT_USER,
   createdOn: '2025-06-13T13:48:34.963103Z',
-  createdBy: 'DefaultUser',
+  createdBy: DEFAULT_USER,
   version: 10,
   cycle: 'SKA_1962_2024',
   team: [],
@@ -244,9 +245,9 @@ export const MockProposalFrontend: Proposal = {
 export const MockProposalFrontendZoom: Proposal = {
   metadata: {
     version: 5,
-    created_by: 'DefaultUser',
+    created_by: DEFAULT_USER,
     created_on: '2025-06-24T22:33:30.487950Z',
-    last_modified_by: 'DefaultUser',
+    last_modified_by: DEFAULT_USER,
     last_modified_on: '2025-06-24T22:35:19.489320Z',
     pdm_version: '18.1.0'
   },
@@ -256,9 +257,9 @@ export const MockProposalFrontendZoom: Proposal = {
   proposalSubType: [],
   status: 'draft',
   lastUpdated: '2025-06-24T22:35:19.489320Z',
-  lastUpdatedBy: 'DefaultUser',
+  lastUpdatedBy: DEFAULT_USER,
   createdOn: '2025-06-24T22:33:30.487950Z',
-  createdBy: 'DefaultUser',
+  createdBy: DEFAULT_USER,
   version: 5,
   cycle: 'SKA_1962_2024',
   team: [],

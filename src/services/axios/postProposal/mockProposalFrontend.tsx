@@ -1,3 +1,4 @@
+import { DEFAULT_USER } from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
 
 export const MockProposalFrontend: Proposal = {
@@ -7,9 +8,9 @@ export const MockProposalFrontend: Proposal = {
   proposalSubType: [3],
   status: 'draft',
   lastUpdated: '2025-06-24T16:48:47.127032Z',
-  lastUpdatedBy: 'DefaultUser',
+  lastUpdatedBy: DEFAULT_USER,
   createdOn: '2025-06-13T13:48:34.963103Z',
-  createdBy: 'DefaultUser',
+  createdBy: DEFAULT_USER,
   version: 10,
   cycle: 'SKAO_2027_1',
   team: [],

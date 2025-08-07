@@ -1,7 +1,8 @@
 import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
-  OSO_SERVICES_REVIEWS_PATH
+  OSO_SERVICES_REVIEWS_PATH,
+  DEFAULT_USER
 } from '../../../utils/constants';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { mappingReviewBackendToFrontend } from '../putProposalReview/putProposalReview';
@@ -32,7 +33,7 @@ async function GetProposalReviewList(
   }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_REVIEWS_PATH}/list/DefaultUser`;
+    const URL_PATH = `${OSO_SERVICES_REVIEWS_PATH}/list/` + DEFAULT_USER;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
 
     if (!result || !Array.isArray(result.data)) {

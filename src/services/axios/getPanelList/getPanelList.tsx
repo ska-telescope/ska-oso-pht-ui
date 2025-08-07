@@ -1,7 +1,8 @@
 import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
-  OSO_SERVICES_PANEL_PATH
+  OSO_SERVICES_PANEL_PATH,
+  DEFAULT_USER
 } from '../../../utils/constants';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { MockPanelBackendList } from './mockPanelBackendList';
@@ -61,7 +62,7 @@ export function GetMockPanelList(mock = MockPanelBackendList): Panel[] {
 
 async function GetPanelList(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
-  user_id = 'DefaultUser'
+  user_id = DEFAULT_USER
 ): Promise<Panel[] | string> {
   if (USE_LOCAL_DATA) {
     return GetMockPanelList();

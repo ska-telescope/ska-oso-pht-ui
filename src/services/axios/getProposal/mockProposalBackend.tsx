@@ -1,4 +1,5 @@
 import { ProposalBackend } from '../../../utils/types/proposal';
+import { DEFAULT_USER } from '@/utils/constants';
 
 export const MockProposalBackend: ProposalBackend = {
   prsl_id: 'prsl-t0001-20250613-00002',
@@ -7,9 +8,9 @@ export const MockProposalBackend: ProposalBackend = {
   submitted_on: null,
   metadata: {
     version: 10,
-    created_by: 'DefaultUser',
+    created_by: DEFAULT_USER,
     created_on: '2025-06-13T13:48:34.963103Z',
-    last_modified_by: 'DefaultUser',
+    last_modified_by: DEFAULT_USER,
     last_modified_on: '2025-06-24T16:48:47.127032Z',
     pdm_version: '18.1.0'
   },
@@ -225,9 +226,9 @@ export const MockProposalBackendZoom: ProposalBackend = {
   submitted_on: null,
   metadata: {
     version: 5,
-    created_by: 'DefaultUser',
+    created_by: DEFAULT_USER,
     created_on: '2025-06-24T22:33:30.487950Z',
-    last_modified_by: 'DefaultUser',
+    last_modified_by: DEFAULT_USER,
     last_modified_on: '2025-06-24T22:35:19.489320Z',
     pdm_version: '18.1.0'
   },
@@ -331,16 +332,16 @@ export const MockProposalBackendZoom: ProposalBackend = {
         result: {
           supplied_type: 'integration_time',
           weighted_continuum_sensitivity: {
-            value: 0
-            // TODO: check why unit is missing
+            value: 0,
+            unit: ''
           },
           weighted_spectral_sensitivity: {
             value: 29.69626339640881,
             unit: 'mJy/beam'
           },
           total_continuum_sensitivity: {
-            value: 0
-            // TODO: check why unit is missing
+            value: 0,
+            unit: ''
           },
           total_spectral_sensitivity: {
             value: 29.696271681672012,
@@ -353,8 +354,8 @@ export const MockProposalBackendZoom: ProposalBackend = {
           }
         },
         continuum_confusion_noise: {
-          value: 0
-          // TODO: check why unit is missing
+          value: 0,
+          unit: ''
         },
         synthesized_beam_size: {
           continuum: 'dummy',
