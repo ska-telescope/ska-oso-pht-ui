@@ -20,7 +20,6 @@ import {
   TECHNICAL_FEASIBILITY_OPTIONS
 } from '@utils/constants.ts';
 import Typography from '@mui/material/Typography';
-import moment from 'moment';
 import { TMP_REVIEWER_ID } from '@utils/constants';
 import PutProposalReview from '@services/axios/putProposalReview/putProposalReview';
 import SaveButton from '../../../components/button/Save/Save';
@@ -70,7 +69,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const getUser = () => TMP_REVIEWER_ID; // TODO
   const isTechnical = () => reviewType === REVIEW_TYPE.TECHNICAL;
-  const getDateFormatted = () => moment().format('YYYY-MM-DD');
 
   function getTechnicalReview(): TechnicalReview {
     return {
