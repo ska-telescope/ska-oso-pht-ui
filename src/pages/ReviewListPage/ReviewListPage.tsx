@@ -36,6 +36,7 @@ import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProp
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import GetProposalByStatusList from '@/services/axios/getProposalByStatusList/getProposalByStatusList';
+import GetProposal from '@services/axios/getProposal/getProposal.tsx';
 
 /*
  * Process for retrieving the data for the list
@@ -54,7 +55,7 @@ export default function ReviewListPage() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
 
-  const { application, updateAppContent5 } = storageObject.useStore();
+  const { application,updateAppContent2, updateAppContent5 } = storageObject.useStore();
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
@@ -204,9 +205,20 @@ export default function ReviewListPage() {
   };
 
   /*---------------------------------------------------------------------------*/
-
-  const theIconClicked = (row: any, route: string) =>
+  const getTheProposal = async (id: string) => {
+    const response = await GetProposal(authClient, id);
+    if (typeof response === 'string') {
+      updateAppContent2({});
+      return false;
+    } else {
+      updateAppContent2(response);
+      return true;
+    }
+  };
+  const theIconClicked = (row: any, route: string) => {
+    getTheProposal(row.id);
     navigate(route, { replace: true, state: row });
+  }
   const scienceIconClicked = (row: any) => theIconClicked(row, PMT[5]);
   const technicalIconClicked = (row: any) => theIconClicked(row, PMT[6]);
 
@@ -427,12 +439,12 @@ export default function ReviewListPage() {
         const technicalReview =
           technicalReviews.length > 0
             ? technicalReviews[technicalReviews.length - 1]
-            : blankReviewTec(panelData[0].id, proposal.status);
+            : blankReviewTec(panelData[0].id, 'To Do');
         const scienceReviews = reviews.filter(r => r.reviewType?.kind === REVIEW_TYPE.SCIENCE);
         const scienceReview =
           scienceReviews.length > 0
             ? scienceReviews[scienceReviews.length - 1]
-            : blankReviewSci(panelData[0].id, proposal.status);
+            : blankReviewSci(panelData[0].id, 'To Do');
         return {
           id: proposal.id,
           proposal: proposal,

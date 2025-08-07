@@ -47,7 +47,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const navigate = useNavigate();
   const locationProperties = useLocation();
 
-  const { updateAppContent5 } = storageObject.useStore();
+  const { application, updateAppContent5 } = storageObject.useStore();
 
   const isView = () => (locationProperties?.state?.reviews ? true : false);
   const [tabValuePDF, setTabValuePDF] = React.useState(0);
@@ -64,7 +64,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const AREA_HEIGHT_NUM = 74;
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
 
-  const getProposal = () => locationProperties?.state?.proposal;
+  const getProposal = () => application.content2;
   const authClient = useAxiosAuthClient();
 
   const getUser = () => 'DefaultUser'; // TODO
