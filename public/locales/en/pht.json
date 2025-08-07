@@ -8,6 +8,7 @@
   "localData": "LOCAL DATA",
   "yes": "Yes",
   "no": "No",
+  "maybe": "Maybe",
   "none": "None",
   "abstract": {
     "label": "Abstract",
@@ -257,6 +258,10 @@
   },
   "generalComments": {
     "label": "General Comments",
+    "tooltip": ""
+  },
+  "technicalComments": {
+    "label": "Technical Comments",
     "tooltip": ""
   },
   "getReviewers": {
@@ -592,6 +597,10 @@
     "label": "No Specific Target",
     "toolTip": "Current functionality is not yet available"
   },
+  "feasibility": {
+    "label": "Feasibility",
+    "toolTip": "Feasibility"
+  },
   "rank": {
     "hovering": "Hovering - Click to select this rank",
     "label": "Rank",
@@ -717,7 +726,8 @@
     "decided": "Decided",
     "To Do": "To Do",
     "In Progress": "In Progress",
-    "Decided": "Decided"
+    "Decided": "Decided",
+    "submitted": "Submitted"
   },
   "reviewPanelEntry": {
     "title": "Review Panel Entry"
@@ -887,7 +897,9 @@
   },
   "status": {
     "0": "All status types",
-    "label": "Status"
+    "label": "Status",
+    "sci": "Sci. Status",
+    "tec": "Tec. Status"
   },
   "statusValue": {
     "0": "OK",

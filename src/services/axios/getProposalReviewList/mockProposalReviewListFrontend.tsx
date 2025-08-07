@@ -88,5 +88,32 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
     submittedOn: '2025-07-16T08:35:24.245Z',
     submittedBy: 'user1',
     status: PANEL_DECISION_STATUS.DECIDED
+  },
+  {
+    metadata: {
+      version: 1,
+      created_by: 'user1',
+      created_on: '2025-06-16T08:35:24.245Z',
+      last_modified_by: 'user1',
+      last_modified_on: '2024-09-16T08:35:24.245Z',
+      pdm_version: '18.3.0'
+    },
+    panelId: 'panel-12345',
+    id: 'review-12348',
+    cycle: 'cycle1',
+    reviewerId: 'reviewer-12345',
+    prslId: 'prsl-t0001-20250716-00001',
+    reviewType: {
+      kind: REVIEW_TYPE.TECHNICAL,
+      feasibility: {
+        isFeasible: 'No',
+        comments: 'bias in proposal'
+      }
+    },
+    comments: 'recommend for approval',
+    srcNet: 'recommend as well',
+    submittedOn: '2025-06-16T08:35:24.245Z',
+    submittedBy: 'user1',
+    status: PANEL_DECISION_STATUS.DECIDED
   }
 ];

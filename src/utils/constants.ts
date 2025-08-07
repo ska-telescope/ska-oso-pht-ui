@@ -1,5 +1,6 @@
 import { LABEL_POSITION, TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import { env } from '../env';
+import Target from './types/target';
 
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const USE_LOCAL_DATA_SENSITIVITY_CALC =
@@ -99,6 +100,11 @@ export const BANDWIDTH_TELESCOPE = [
 
 export const DEFAULT_USER = 'DefaultUser';
 export const TMP_REVIEWER_ID = 'c8f8f18a-3c70-4c39-8ed9-2d8d180d99a3';
+
+export const FEASIBLE_MAYBE = 'Maybe';
+export const FEASIBLE_NO = 'No';
+export const FEASIBLE_YES = 'Yes';
+export const FEASIBILITY = [FEASIBLE_YES, FEASIBLE_NO, FEASIBLE_MAYBE];
 
 export const BANNER_PMT_SPACER = 100;
 
@@ -781,8 +787,9 @@ export const OBSERVATION = {
 export const SUPPLIED_INTEGRATION_TIME_UNITS_H = 2;
 export const SUPPLIED_INTEGRATION_TIME_UNITS_S = 4;
 
-export const RA_TYPE_EQUATORIAL = 0;
-export const RA_TYPE_GALACTIC = 1;
+export const RA_TYPE_ICRS = { value: 0, label: 'icrs' };
+export const RA_TYPE_GALACTIC = { value: 1, label: 'galactic' };
+
 export const ROBUST = [
   { label: '-2', value: 1 },
   { label: '-1', value: 2 },
@@ -804,19 +811,6 @@ export const VEL_UNITS = [
   { label: 'm/s', value: 1 }
 ];
 
-export const REF_COORDINATES_UNITS = [
-  {
-    value: 1,
-    label: 'equatorial',
-    units: ['hourangle', 'deg']
-  },
-  {
-    value: 2,
-    label: 'galactic',
-    units: ['deg', 'deg']
-  }
-];
-
 export const SEARCH_TYPE_OPTIONS = [
   { label: 'Draft', value: 'draft' },
   { label: 'Submitted', value: 'submitted' },
@@ -835,6 +829,12 @@ export const SEARCH_PROPOSAL_TYPE_OPTIONS = [
   { label: 'Principal Investigator (PI)', value: PROJECTS[0].mapping },
   { label: 'Key Science Projects', value: PROJECTS[1].mapping },
   { label: "Director-General's Discretionary Time", value: PROJECTS[2].mapping }
+];
+
+export const TECHNICAL_FEASIBILITY_OPTIONS = [
+  { label: 'Yes', value: FEASIBILITY[0] },
+  { label: 'No', value: FEASIBILITY[1] },
+  { label: 'Maybe', value: FEASIBILITY[2] }
 ];
 export const SPECTRAL_AVERAGING_MIN = 1;
 
@@ -947,17 +947,16 @@ export const DEFAULT_PI = {
   pi: true
 };
 
-export const DEFAULT_TARGETS = {
-  dec: '123',
-  decUnit: '1',
+export const DEFAULT_TARGETS: Target = {
+  kind: RA_TYPE_ICRS.value,
+  decStr: '123',
   id: 1,
-  latitude: '123',
-  longitude: '123',
+  b: 123,
+  l: 123,
   name: 'DUMMY',
-  ra: '123',
-  raUnit: '1',
+  raStr: '123',
   redshift: '123',
-  referenceFrame: 0,
+  referenceFrame: RA_TYPE_ICRS.label,
   vel: '123',
   velType: 0,
   velUnit: 0

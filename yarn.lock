@@ -2813,7 +2813,7 @@
     domhandler "^5.0.3"
     selderee "^0.11.0"
 
-"@ska-telescope/ska-gui-components@^2.3.25":
+"@ska-telescope/ska-gui-components@2.3.25":
   version "2.3.25"
   resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-2.3.25.tgz#783fd6451611598d91b1a99d6b5f9dfdd1e19376"
   integrity sha1-eD/WRRYRWY2Rsamda1+d/dHhk3Y=
@@ -2873,10 +2873,10 @@
     svgo "^3.2.0"
     vite "^6.1.0"
 
-"@ska-telescope/ska-login-page@^1.0.10":
-  version "1.0.10"
-  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-login-page/-/ska-login-page-1.0.10.tgz#0440b8552b2ddef2153c0864c20dd66ec846e3d7"
-  integrity sha512-OPQf3CQQczpGCieoi6OCfrdf8N7wmDwEVVXFL8F23JDdp4xUgOmPP9rQQzaK/mxsEaMc+zZvoTcnhuKPb3noJg==
+"@ska-telescope/ska-login-page@^1.0.13":
+  version "1.0.13"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-login-page/-/ska-login-page-1.0.13.tgz#add54b529661959c899a8f330d18ff30c491458e"
+  integrity sha512-3eC4rAkaxZPbcewFoAlNIgXmQKj6XHLYNVb6vg4jqsijk+inmnrRRAiTKB6s6rpnxvjlhm1LDQ9Wp9HWXkkgEQ==
   dependencies:
     "@azure/msal-browser" "^4.0.2"
     "@azure/msal-react" "^3.0.2"

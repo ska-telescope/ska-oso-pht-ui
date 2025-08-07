@@ -11,24 +11,22 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { presentDate, presentLatex, presentTime } from '@utils/present/present';
-import GetProposalReviewList from '../../services/axios/getProposalReviewList/getProposalReviewList';
-import GetProposal from '../../services/axios/getProposal/getProposal';
+import GetProposalReviewList from '@services/axios/getProposalReviewList/getProposalReviewList.tsx';
 import {
   SEARCH_TYPE_OPTIONS,
   BANNER_PMT_SPACER,
   PANEL_DECISION_STATUS,
   REVIEW_TYPE,
-  TECHNICAL_FEASIBILITY,
-  PROPOSAL_STATUS,
+  FEASIBLE_NO,
   TMP_REVIEWER_ID
-} from '../../utils/constants';
+} from '@utils/constants.ts';
+import GetProposal from '@services/axios/getProposal/getProposal.tsx';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
 import Notification from '../../utils/types/notification';
-import { validateProposal } from '../../utils/proposalValidation';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
-import { PMT } from '@/utils/constants';
+import { PMT, PROPOSAL_STATUS } from '@/utils/constants';
 import SubmitButton from '@/components/button/Submit/Submit';
 import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
 import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
@@ -58,13 +56,7 @@ export default function ReviewListPage() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
 
-  const {
-    application,
-    clearApp,
-    updateAppContent1,
-    updateAppContent2,
-    updateAppContent5
-  } = storageObject.useStore();
+  const { application, updateAppContent2, updateAppContent5 } = storageObject.useStore();
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
@@ -97,6 +89,22 @@ export default function ReviewListPage() {
   }, [reset]);
 
   React.useEffect(() => {
+    const fetchProposalReviewData = async (proposalId: string) => {
+      const response = await GetProposalReviewList(authClient, proposalId); // TODO : add id of the logged in user
+      if (typeof response === 'string') {
+        NotifyError(response);
+      } else {
+        setProposalReviews(proposalReviews => [...proposalReviews, ...response]);
+      }
+    };
+
+    const loopProposals = (filtered: Proposal[]) => {
+      filtered.map(el => {
+        fetchProposalReviewData(el.id);
+        return el.id;
+      });
+    };
+
     const fetchProposalData = async () => {
       const response = await GetProposalByStatusList(authClient, PROPOSAL_STATUS.SUBMITTED); // TODO : Temporary implementation to get all submitted proposals
       if (typeof response === 'string') {
@@ -109,18 +117,10 @@ export default function ReviewListPage() {
           ? response.filter((proposal: Proposal) => panelProposalIds.includes(proposal.id))
           : [];
         setProposals(filtered);
-      }
-    };
-    const fetchProposalReviewData = async () => {
-      const response = await GetProposalReviewList(authClient); // TODO : add id of the logged in user
-      if (typeof response === 'string') {
-        NotifyError(response);
-      } else {
-        setProposalReviews(response);
+        loopProposals(filtered);
       }
     };
     fetchProposalData();
-    fetchProposalReviewData();
   }, [panelData]);
 
   const getUser = () => TMP_REVIEWER_ID; // TODO
@@ -139,16 +139,16 @@ export default function ReviewListPage() {
 
   const getTechnicalReviewType = (row: any): TechnicalReview => {
     return {
-      kind: REVIEW_TYPE.TECHNICAL,
+      kind: row.reviewType.kind,
       feasibility: {
-        isFeasible: TECHNICAL_FEASIBILITY.YES,
-        comments: row.feasibility.comments
+        isFeasible: row.reviewType.feasibility.isFeasible,
+        comments: row.reviewType.feasibility.comments
       }
     };
   };
 
   const getReview = (row: any): ProposalReview | null => {
-    const review = proposalReviews.find(p => p.id === row.review_id);
+    const review = proposalReviews.find(p => p.id === row.reviewId);
     if (!review) return null;
     return {
       id: review.id,
@@ -207,28 +207,19 @@ export default function ReviewListPage() {
   };
 
   /*---------------------------------------------------------------------------*/
-
   const getTheProposal = async (id: string) => {
-    clearApp();
-
     const response = await GetProposal(authClient, id);
     if (typeof response === 'string') {
-      NotifyError(t('proposal.error'));
+      updateAppContent2({});
       return false;
     } else {
-      updateAppContent1(validateProposal(response));
       updateAppContent2(response);
-      validateProposal(response);
       return true;
     }
   };
-
   const theIconClicked = (row: any, route: string) => {
-    getTheProposal(row.id).then(success => {
-      if (success === true) {
-        navigate(route, { replace: true, state: row });
-      }
-    });
+    getTheProposal(row.id);
+    navigate(route, { replace: true, state: row });
   };
   const scienceIconClicked = (row: any) => theIconClicked(row, PMT[5]);
   const technicalIconClicked = (row: any) => theIconClicked(row, PMT[6]);
@@ -237,17 +228,27 @@ export default function ReviewListPage() {
     updateReview(row);
   };
 
-  const canEditScience = (e: { row: { status: string } }) =>
-    e.row.status !== PANEL_DECISION_STATUS.DECIDED;
-  const canEditTechnical = (e: { row: { status: string } }) =>
-    e.row.status !== PANEL_DECISION_STATUS.DECIDED;
+  const isFeasible = (row: { tecReview: any; sciReview?: { status: string } }) =>
+    row.tecReview.reviewType.feasibility.isFeasible
+      ? row.tecReview.reviewType.feasibility.isFeasible !== FEASIBLE_NO
+      : true;
+  const canEditScience = (row: {
+    tecReview: { reviewType: { feasibility: { isFeasible: string } } };
+    sciReview: { status: string };
+  }) => {
+    return isFeasible(row) && row?.sciReview.status !== PANEL_DECISION_STATUS.DECIDED;
+  };
+
+  const canEditTechnical = (tecReview: { status: string }) =>
+    tecReview.status !== PANEL_DECISION_STATUS.DECIDED;
   const canSubmit = (row: { srcNet: any; comments: any; rank: number; status: string }) =>
     row.status !== PANEL_DECISION_STATUS.DECIDED && row?.rank > 0 && row?.comments?.length;
 
   const colId = {
-    field: 'id',
+    field: 'prslId',
     headerName: t('proposalId.label'),
-    width: 200
+    width: 200,
+    renderCell: (e: any) => e.row.proposal?.id
   };
 
   const colTitle = {
@@ -255,37 +256,7 @@ export default function ReviewListPage() {
     headerName: t('title.label'),
     flex: 3,
     minWidth: 250,
-    renderCell: (e: any) => presentLatex(e.row.title)
-  };
-
-  const colReviewStatus = {
-    field: 'status',
-    headerName: t('status.label'),
-    width: 120,
-    renderCell: (e: { row: any }) =>
-      e.row.review_id ? t('reviewStatus.' + e.row.status) : t('reviewStatus.to do')
-  };
-
-  const colRank = {
-    field: 'rank',
-    headerName: t('rank.label'),
-    width: 120,
-    renderCell: (e: { row: any }) => e.row.rank
-  };
-
-  // TODO : Add the functionality so that clicking on this will show the conflict modal
-  const colConflict = {
-    field: 'conflict',
-    headerName: t('conflict.label'),
-    width: 120,
-    renderCell: (e: { row: any }) => (e.row.conflict?.has_conflict ? t('yes') : t('no'))
-  };
-
-  const colComments = {
-    field: 'comments',
-    headerName: t('comments.label'),
-    width: 120,
-    renderCell: (e: { row: any }) => (e.row.comments ? t('yes') : t('no'))
+    renderCell: (e: any) => presentLatex(e.row.proposal?.title)
   };
 
   const colScienceCategory = {
@@ -293,14 +264,61 @@ export default function ReviewListPage() {
     headerName: t('scienceCategory.label'),
     width: 120,
     renderCell: (e: { row: any }) =>
-      e.row.scienceCategory ? t('scienceCategory.' + e.row.scienceCategory) : ''
+      e.row.proposal.scienceCategory ? t('scienceCategory.' + e.row.proposal?.scienceCategory) : ''
+  };
+
+  const colSciReviewStatus = {
+    field: 'sciStatus',
+    headerName: t('status.sci'),
+    width: 120,
+    renderCell: (e: { row: any }) =>
+      e.row.sciReview.status ? t('reviewStatus.' + e.row.sciReview.status) : t('reviewStatus.to do')
+  };
+
+  const colTecReviewStatus = {
+    field: 'tecStatus',
+    headerName: t('status.tec'),
+    width: 120,
+    renderCell: (e: { row: any }) =>
+      e.row.tecReview.status ? t('reviewStatus.' + e.row.tecReview.status) : t('reviewStatus.to do')
+  };
+
+  const colFeasibility = {
+    field: 'feasibility',
+    headerName: t('feasibility.label'),
+    width: 120,
+    renderCell: (e: { row: any }) => {
+      return e?.row?.tecReview?.reviewType?.feasibility?.isFeasible; // TODO use i18n
+    }
+  };
+
+  // TODO : Add the functionality so that clicking on this will show the conflict modal
+  const colConflict = {
+    field: 'conflict',
+    headerName: t('conflict.label'),
+    width: 120,
+    renderCell: (e: { row: any }) => (e.row.sciReview.conflict?.has_conflict ? t('yes') : t('no'))
+  };
+
+  const colRank = {
+    field: 'rank',
+    headerName: t('rank.label'),
+    width: 120,
+    renderCell: (e: { row: any }) => e.row.sciReview.reviewType.rank
+  };
+
+  const colComments = {
+    field: 'comments',
+    headerName: t('comments.label'),
+    width: 120,
+    renderCell: (e: { row: any }) => (e.row.sciReview.comments ? t('yes') : t('no'))
   };
 
   const colSrcNet = {
     field: 'srcNet',
     headerName: t('srcNet.label'),
     width: 120,
-    renderCell: (e: { row: any }) => (e.row.srcNet ? t('yes') : t('no'))
+    renderCell: (e: { row: any }) => (e.row.sciReview.srcNet ? t('yes') : t('no'))
   };
 
   const colDateUpdated = {
@@ -308,7 +326,9 @@ export default function ReviewListPage() {
     headerName: t('updated.label'),
     width: 180,
     renderCell: (e: { row: any }) => {
-      return presentDate(e.row.lastUpdated) + ' ' + presentTime(e.row.lastUpdated);
+      return (
+        presentDate(e.row.proposal?.lastUpdated) + ' ' + presentTime(e.row.proposal?.lastUpdated)
+      );
     }
   };
 
@@ -319,11 +339,12 @@ export default function ReviewListPage() {
     renderCell: (e: { row: any }) => {
       const panel = panelData.find(
         panel =>
-          Array.isArray(panel.proposals) && panel.proposals.some(p => p.proposalId === e.row.id)
+          Array.isArray(panel.proposals) &&
+          panel.proposals.some(p => p.proposalId === e.row.proposal?.id)
       );
       let proposal = null;
       if (panel && panel.proposals && panel.proposals.length > 0) {
-        proposal = panel.proposals.find(p => p.proposalId === e.row.id);
+        proposal = panel.proposals.find(p => p.proposalId === e.row.proposal?.id);
       }
       // TODO : Add the functionality to get the reviewer from the panel
       // if (panel && panel.reviewers && panel.reviewers.length > 0) {
@@ -344,15 +365,19 @@ export default function ReviewListPage() {
     disableClickEventBubbling: true,
     renderCell: (e: { row: any }) => (
       <>
-        <ScienceIcon
-          onClick={() => scienceIconClicked(e.row)}
-          disabled={!canEditScience(e)}
-          toolTip={t(canEditScience(e) ? 'reviewProposal.science' : 'reviewProposal.disabled')}
-        />
         <TechnicalIcon
           onClick={() => technicalIconClicked(e.row)}
-          disabled={!canEditTechnical(e)}
-          toolTip={t(canEditTechnical(e) ? 'reviewProposal.technical' : 'reviewProposal.disabled')}
+          disabled={!canEditTechnical(e.row.tecReview)}
+          toolTip={t(
+            canEditTechnical(e.row.tecReview)
+              ? 'reviewProposal.technical'
+              : 'reviewProposal.disabled'
+          )}
+        />
+        <ScienceIcon
+          onClick={() => scienceIconClicked(e.row)}
+          disabled={!canEditScience(e.row)}
+          toolTip={t(canEditScience(e.row) ? 'reviewProposal.science' : 'reviewProposal.disabled')}
         />
         <SubmitIcon
           onClick={() => submitIconClicked(e.row)}
@@ -368,8 +393,10 @@ export default function ReviewListPage() {
       colId,
       colTitle,
       colScienceCategory,
-      colReviewStatus,
       colConflict,
+      colTecReviewStatus,
+      colFeasibility,
+      colSciReviewStatus,
       colRank,
       colComments,
       colSrcNet,
@@ -379,44 +406,64 @@ export default function ReviewListPage() {
     ]
   ];
 
+  const blankReviewSci = (panelId: string, status: any) => {
+    return {
+      panelId: panelId,
+      reviewType: {
+        rank: 0
+      },
+      comments: '',
+      srcNet: '',
+      status: status
+    };
+  };
+
+  const blankReviewTec = (panelId: string, status: any) => {
+    return {
+      panelId: panelId,
+      reviewType: {
+        feasibility: {
+          isFeasible: '',
+          comments: ''
+        }
+      },
+      comments: '',
+      srcNet: '',
+      status: status
+    };
+  };
+
   function filterProposals() {
     function unionProposalsAndReviews() {
       return proposals.map(proposal => {
         const reviews = proposalReviews.filter(r => r.prslId === proposal.id);
-        const review = reviews.length > 0 ? reviews[reviews.length - 1] : undefined;
+        const technicalReviews = reviews.filter(r => r.reviewType?.kind === REVIEW_TYPE.TECHNICAL);
+        const technicalReview =
+          technicalReviews.length > 0
+            ? technicalReviews[technicalReviews.length - 1]
+            : blankReviewTec(panelData[0].id, 'To Do');
+        const scienceReviews = reviews.filter(r => r.reviewType?.kind === REVIEW_TYPE.SCIENCE);
+        const scienceReview =
+          scienceReviews.length > 0
+            ? scienceReviews[scienceReviews.length - 1]
+            : blankReviewSci(panelData[0].id, 'To Do');
         return {
-          ...proposal,
-          ...(review
-            ? {
-                panelId: panelData[0].id,
-                review_id: review.id,
-                rank:
-                  review?.reviewType?.kind === REVIEW_TYPE.SCIENCE
-                    ? review?.reviewType?.rank?.toString()
-                    : '/', // rank is only for science review
-                comments: review.comments,
-                srcNet: review.srcNet,
-                status: review.status
-              }
-            : {
-                panelId: panelData[0].id,
-                rank: 0,
-                comments: '',
-                srcNet: '',
-                status: proposal.status
-              })
+          id: proposal.id,
+          proposal: proposal,
+          sciReview: scienceReview,
+          tecReview: technicalReview
         };
       });
     }
 
     return unionProposalsAndReviews().filter(item => {
-      const fieldsToSearch = [item.id, item.title];
+      const fieldsToSearch = [item.proposal.id, item.proposal.title];
       return (
         fieldsToSearch.some(
           field =>
             typeof field === 'string' && field.toLowerCase().includes(searchTerm?.toLowerCase())
         ) &&
-        (searchType === '' || item.status?.toLowerCase() === searchType?.toLowerCase())
+        (searchType === '' || item.sciReview?.status?.toLowerCase() === searchType?.toLowerCase())
       );
     });
   }
