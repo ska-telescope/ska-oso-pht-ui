@@ -13,7 +13,12 @@ import VelocityField from '../../../components/fields/velocity/Velocity';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import GetCoordinates from '../../../services/axios/getCoordinates/getCoordinates';
 import Target from '../../../utils/types/target';
-import { LAB_POSITION, VELOCITY_TYPE, WRAPPER_HEIGHT } from '../../../utils/constants';
+import {
+  RA_TYPE_ICRS,
+  LAB_POSITION,
+  VELOCITY_TYPE,
+  WRAPPER_HEIGHT
+} from '../../../utils/constants';
 import Notification from '../../../utils/types/notification';
 interface TargetEntryProps {
   raType: number;
@@ -45,7 +50,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   const [vel, setVel] = React.useState('');
   const [velUnit, setVelUnit] = React.useState(0);
   const [redshift, setRedshift] = React.useState('');
-  const [referenceFrame, setReferenceFrame] = React.useState(0);
+  const [referenceFrame, setReferenceFrame] = React.useState(RA_TYPE_ICRS.value);
   const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
   const setTheName = (inValue: string) => {
@@ -58,14 +63,14 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   const setTheDec = (inValue: string) => {
     setDec(inValue);
     if (setTarget !== null) {
-      setTarget({ ...target, dec: inValue });
+      setTarget({ ...target, decStr: inValue });
     }
   };
 
   const setTheRA = (inValue: string) => {
     setRA(inValue);
     if (setTarget !== null) {
-      setTarget({ ...target, ra: inValue });
+      setTarget({ ...target, raStr: inValue });
     }
   };
 
@@ -76,10 +81,10 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
     }
   };
 
-  const setTheReferenceFrame = (inValue: number) => {
+  const setTheReferenceFrame = (inValue: string) => {
     setReferenceFrame(inValue);
     if (setTarget !== null) {
-      setTarget({ ...target, referenceFrame: inValue });
+      setTarget({ ...target, kind: inValue });
     }
   };
 
@@ -107,13 +112,13 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   const targetIn = (target: Target) => {
     setId(target?.id);
     setName(target?.name);
-    setRA(target?.ra);
-    setDec(target?.dec);
+    setRA(target?.raStr as string);
+    setDec(target?.decStr as string);
     setVelType(target?.velType);
     setVel(target?.vel);
     setVelUnit(target?.velUnit);
     setRedshift(target?.redshift);
-    setReferenceFrame(target?.referenceFrame);
+    setReferenceFrame(target?.kind);
   };
 
   React.useEffect(() => {
@@ -125,7 +130,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   function formValidation() {
     let valid = true;
     const targets = getProposal()?.targets;
-    targets.forEach(rec => {
+    targets?.forEach(rec => {
       if (rec.name.toLowerCase() === name.toLowerCase()) {
         valid = false;
         setNameFieldError(t('addTarget.error'));
@@ -145,28 +150,27 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
 
     const AddTheTarget = () => {
       const highest = getProposal()?.targets?.length
-        ? getProposal().targets.reduce((prev, current) =>
+        ? getProposal()?.targets?.reduce((prev, current) =>
             prev && prev.id > current.id ? prev : current
           )
         : null;
       const highestId = highest ? highest.id : 0;
 
       const newTarget: Target = {
-        dec: dec,
-        decUnit: raType.toString(),
+        kind: RA_TYPE_ICRS.value,
+        decStr: dec,
         id: highestId + 1,
         name: name,
-        latitude: null,
-        longitude: null,
-        ra: ra,
-        raUnit: raType.toString(),
+        b: undefined,
+        l: undefined,
+        raStr: ra,
         redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift : '',
-        referenceFrame: referenceFrame,
+        referenceFrame: RA_TYPE_ICRS.label,
         vel: velType === VELOCITY_TYPE.VELOCITY ? vel : '',
         velType: velType,
         velUnit: velUnit
       };
-      setProposal({ ...getProposal(), targets: [...getProposal().targets, newTarget] });
+      setProposal({ ...getProposal(), targets: [...(getProposal().targets ?? []), newTarget] });
       NotifyOK(t('addTarget.success'));
     };
 
@@ -194,7 +198,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
     );
   };
 
-  function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
+  function Notify(str: string, lvl: typeof AlertColorTypes = AlertColorTypes.Info) {
     const rec: Notification = {
       level: lvl,
       delay: NOTIFICATION_DELAY_IN_SECONDS,
@@ -206,7 +210,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
   const resolveButton = () => {
-    const processCoordinatesResults = response => {
+    const processCoordinatesResults = (response: any) => {
       if (response && !response.error) {
         const values = response.split(' ');
         const redshift =

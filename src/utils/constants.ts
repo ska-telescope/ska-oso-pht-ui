@@ -1,5 +1,6 @@
 import { LABEL_POSITION, TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import { env } from '../env';
+import Target from './types/target';
 
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const USE_LOCAL_DATA_SENSITIVITY_CALC =
@@ -784,8 +785,9 @@ export const OBSERVATION = {
 export const SUPPLIED_INTEGRATION_TIME_UNITS_H = 2;
 export const SUPPLIED_INTEGRATION_TIME_UNITS_S = 4;
 
-export const RA_TYPE_EQUATORIAL = 0;
-export const RA_TYPE_GALACTIC = 1;
+export const RA_TYPE_ICRS = { value: 0, label: 'icrs' };
+export const RA_TYPE_GALACTIC = { value: 1, label: 'galactic' };
+
 export const ROBUST = [
   { label: '-2', value: 1 },
   { label: '-1', value: 2 },
@@ -805,19 +807,6 @@ export const VEL_TYPES = [
 export const VEL_UNITS = [
   { label: 'km/s', value: 0 },
   { label: 'm/s', value: 1 }
-];
-
-export const REF_COORDINATES_UNITS = [
-  {
-    value: 1,
-    label: 'equatorial',
-    units: ['hourangle', 'deg']
-  },
-  {
-    value: 2,
-    label: 'galactic',
-    units: ['deg', 'deg']
-  }
 ];
 
 export const SEARCH_TYPE_OPTIONS = [
@@ -956,17 +945,16 @@ export const DEFAULT_PI = {
   pi: true
 };
 
-export const DEFAULT_TARGETS = {
-  dec: '123',
-  decUnit: '1',
+export const DEFAULT_TARGETS: Target = {
+  kind: RA_TYPE_ICRS.value,
+  decStr: '123',
   id: 1,
-  latitude: '123',
-  longitude: '123',
+  b: 123,
+  l: 123,
   name: 'DUMMY',
-  ra: '123',
-  raUnit: '1',
+  raStr: '123',
   redshift: '123',
-  referenceFrame: 0,
+  referenceFrame: RA_TYPE_ICRS.label,
   vel: '123',
   velType: 0,
   velUnit: 0

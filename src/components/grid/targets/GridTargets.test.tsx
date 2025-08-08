@@ -2,6 +2,7 @@ import { describe, test } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import GridTargets from './GridTargets';
+import { RA_TYPE_GALACTIC, RA_TYPE_ICRS } from '@/utils/constants';
 
 describe('<GridTargets />', () => {
   test('renders correctly', () => {
@@ -13,16 +14,12 @@ describe('<GridTargets />', () => {
         raType={0}
         rows={[
           {
+            kind: RA_TYPE_GALACTIC.value,
             id: 1,
-            dec: '',
-            decUnit: '',
-            name: '',
-            latitude: '',
-            longitude: '',
-            ra: '',
-            raUnit: '',
+            name: 'Galactic target',
+            b: 45.0,
+            l: 180.0,
             redshift: '',
-            referenceFrame: 0,
             velType: 0,
             vel: '',
             velUnit: 0
@@ -38,16 +35,13 @@ describe('<GridTargets />', () => {
         raType={0}
         rows={[
           {
+            kind: RA_TYPE_ICRS.value,
             id: 1,
-            dec: '',
-            decUnit: '',
-            name: '',
-            latitude: '',
-            longitude: '',
-            ra: '',
-            raUnit: '',
+            decStr: '-45:00:00.0',
+            name: 'ICRS target',
+            raStr: '12:30:00.0',
             redshift: '',
-            referenceFrame: 0,
+            referenceFrame: RA_TYPE_ICRS.label,
             velType: 0,
             vel: '',
             velUnit: 0
@@ -63,16 +57,13 @@ describe('<GridTargets />', () => {
         raType={0}
         rows={[
           {
+            kind: RA_TYPE_ICRS.value,
             id: 1,
-            dec: '',
-            decUnit: '',
-            name: '',
-            latitude: '',
-            longitude: '',
-            ra: '',
-            raUnit: '',
+            decStr: '-45:00:00.0',
+            name: 'ICRS target',
+            raStr: '12:30:00.0',
             redshift: '',
-            referenceFrame: 0,
+            referenceFrame: RA_TYPE_ICRS.label,
             velType: 0,
             vel: '',
             velUnit: 0

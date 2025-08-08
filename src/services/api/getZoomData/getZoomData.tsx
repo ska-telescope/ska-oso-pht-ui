@@ -11,7 +11,7 @@ import {
   FREQUENCY_MHZ,
   DECIMAL_PLACES,
   RA_TYPE_GALACTIC,
-  RA_TYPE_EQUATORIAL,
+  RA_TYPE_ICRS,
   TIME_SECS
 } from '../../../utils/constantsSensCalc';
 import {
@@ -207,7 +207,7 @@ function getFinalIndividualResultsForZoom(
     results10,
     results11
   };
-  return updated_results;
+  return updated_results as FinalIndividualResults;
 }
 
 const getSpectralResolution = (observation: Observation) => {
@@ -360,10 +360,10 @@ async function GetZoomData(telescope: Telescope, observation: Observation, targe
     num13mAntennas: observation.num13mAntennas ?? 0,
     numStations: observation.numStations ?? 0,
     skyDirectionType: RA_TYPE_GALACTIC,
-    raGalactic: { value: target.ra, unit: RA_TYPE_GALACTIC },
-    decGalactic: { value: target.dec, unit: RA_TYPE_GALACTIC },
-    raEquatorial: { value: 0, unit: RA_TYPE_EQUATORIAL },
-    decEquatorial: { value: 0, unit: RA_TYPE_EQUATORIAL },
+    raGalactic: { value: target.raStr as string, unit: RA_TYPE_GALACTIC }, // TODO can unit be removed?
+    decGalactic: { value: target.decStr as string, unit: RA_TYPE_GALACTIC }, // TODO can unit be removed?
+    raEquatorial: { value: 0, unit: RA_TYPE_ICRS },
+    decEquatorial: { value: 0, unit: RA_TYPE_ICRS },
     elevation: { value: observation.elevation, unit: 'deg' },
     advancedData: null,
     modules: []

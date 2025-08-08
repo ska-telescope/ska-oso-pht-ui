@@ -21,7 +21,6 @@ import {
   TMP_REVIEWER_ID
 } from '@utils/constants.ts';
 import Typography from '@mui/material/Typography';
-import moment from 'moment';
 import PutProposalReview from '@services/axios/putProposalReview/putProposalReview';
 import SaveButton from '../../../components/button/Save/Save';
 import Notification from '../../../utils/types/notification';
@@ -70,7 +69,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const getUser = () => TMP_REVIEWER_ID; // TODO
   const isTechnical = () => reviewType === REVIEW_TYPE.TECHNICAL;
-  const getDateFormatted = () => moment().format('YYYY-MM-DD');
+  // const getDateFormatted = () => moment().format('YYYY-MM-DD');
 
   function getTechnicalReview(): TechnicalReview {
     return {
@@ -154,14 +153,11 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   /*---------------------------------------------------------------------------*/
 
-  const makeReviewId = (prefix: string) =>
-    'rvw-' +
-    prefix +
-    getUser();
-    // '-' +
-    // getDateFormatted() +
-    // '-00001-' +
-    // Math.floor(Math.random() * 10000000).toString();
+  const makeReviewId = (prefix: string) => 'rvw-' + prefix + getUser();
+  // '-' +
+  // getDateFormatted() +
+  // '-00001-' +
+  // Math.floor(Math.random() * 10000000).toString();
 
   React.useEffect(() => {
     if (!locationProperties) return;

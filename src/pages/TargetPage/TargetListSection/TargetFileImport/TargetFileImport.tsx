@@ -6,8 +6,9 @@ import { FileUpload, AlertColorTypes, FileUploadStatus } from '@ska-telescope/sk
 import Papa from 'papaparse';
 import { Proposal } from '../../../../utils/types/proposal';
 import Notification from '../../../../utils/types/notification';
-import { RA_TYPE_EQUATORIAL, UPLOAD_MAX_WIDTH_CSV } from '../../../../utils/constants';
+import { RA_TYPE_ICRS, RA_TYPE_GALACTIC, UPLOAD_MAX_WIDTH_CSV } from '../../../../utils/constants';
 import HelpPanel from '../../../../components/info/helpPanel/HelpPanel';
+import Target from '@/utils/types/target';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
 
@@ -32,19 +33,15 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
     helpComponent(t('targetImport.help'));
   }, []);
 
-  const AddTheTargetGalactic = (id, name, latitude, longitude) => {
+  const AddTheTargetGalactic = (id: string, name: string, latitude: string, longitude: string) => {
     const newTarget = {
       //Default values from AddTarget.tsx
-      dec: '',
-      decUnit: raType.toString(),
+      kind: RA_TYPE_GALACTIC.value,
       id,
       name,
-      latitude,
-      longitude,
-      ra: '',
-      raUnit: raType.toString(),
+      b: Number(latitude),
+      l: Number(longitude),
       redshift: null,
-      referenceFrame: 0,
       vel: '',
       velUnit: '0'
     };
@@ -52,21 +49,19 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
     return newTarget;
   };
 
-  const AddTheTargetEquatorial = (id, name, ra, dec) => {
+  const AddTheTargetEquatorial = (id: number, name: string, ra: string, dec: string): Target => {
     const newTarget = {
+      kind: RA_TYPE_ICRS.value,
       //Default values from AddTarget.tsx
-      dec,
-      decUnit: raType.toString(),
+      decStr: dec,
       id,
       name,
-      latitude: null,
-      longitude: null,
-      ra,
-      raUnit: raType.toString(),
-      redshift: null,
-      referenceFrame: 0,
+      raStr: ra,
+      redshift: '',
+      referenceFrame: RA_TYPE_ICRS.label,
+      velType: 0,
       vel: '',
-      velUnit: '0'
+      velUnit: 0
     };
 
     return newTarget;
@@ -95,7 +90,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
             let errorInRows = false;
             let targets;
 
-            if (raType === RA_TYPE_EQUATORIAL) {
+            if (raType === RA_TYPE_ICRS.value) {
               if (!isSameHeader(result.meta.fields, validEquatorialCsvHeader))
                 throw t('uploadCsvBtn.uploadErrorEquatorialNotValidMsg');
               targets = result.data.reduce((result, target, index) => {
@@ -149,7 +144,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
     }
   };
 
-  function Notify(str: string, lvl: AlertColorTypes = AlertColorTypes.Info) {
+  function Notify(str: string, lvl: typeof AlertColorTypes = AlertColorTypes.Info) {
     const rec: Notification = {
       level: lvl,
       delay: NOTIFICATION_DELAY_IN_SECONDS,

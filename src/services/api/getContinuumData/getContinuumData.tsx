@@ -10,7 +10,7 @@ import {
   TIME_HOURS,
   TIME_SECS,
   RA_TYPE_GALACTIC,
-  RA_TYPE_EQUATORIAL
+  RA_TYPE_ICRS
 } from '../../../utils/constantsSensCalc';
 import {
   getImageWeightingMapping,
@@ -59,17 +59,14 @@ interface FinalIndividualResults {
 
 function getFinalResults(
   target: {
-    dec?: string;
-    decUnit?: string;
+    decStr?: string;
     id: any;
     name: any;
-    latitude?: string;
-    longitude?: string;
-    ra?: string;
-    raUnit?: string;
+    b?: string;
+    l?: string;
+    raStr?: string;
     redshift?: string;
-    referenceFrame?: number;
-    rcReferenceFrame?: string | undefined;
+    referenceFrame?: string;
     raReferenceFrame?: string | undefined;
     raDefinition?: string | undefined;
     velType?: number;
@@ -89,9 +86,9 @@ function getFinalResults(
     elevation?: number;
     centralFrequency?: number;
     centralFrequencyUnits?: number;
-    bandwidth?: number;
-    continuumBandwidth?: number;
-    continuumBandwidthUnits?: number;
+    bandwidth: number | null;
+    continuumBandwidth: number | null;
+    continuumBandwidthUnits: number | null;
     spectralAveraging?: number | undefined;
     tapering?: number | undefined;
     imageWeighting?: number;
@@ -273,7 +270,7 @@ function getFinalIndividualResultsForContinuum(
     results10,
     results11
   };
-  return updated_results;
+  return updated_results as FinalIndividualResults;
 }
 
 const addPropertiesLOW = (standardData: StandardData, continuumData: ContinuumData) => {
@@ -382,10 +379,10 @@ function GetContinuumData(telescope: Telescope, observation: Observation, target
     num13mAntennas: observation.num13mAntennas ?? 0,
     numStations: observation.numStations ?? 0,
     skyDirectionType: RA_TYPE_GALACTIC,
-    raGalactic: { value: target.ra, unit: RA_TYPE_GALACTIC },
-    decGalactic: { value: target.dec, unit: RA_TYPE_GALACTIC },
-    raEquatorial: { value: 0, unit: RA_TYPE_EQUATORIAL },
-    decEquatorial: { value: 0, unit: RA_TYPE_EQUATORIAL },
+    raGalactic: { value: target.raStr as string, unit: RA_TYPE_GALACTIC }, // TODO can unit be removed?
+    decGalactic: { value: target.decStr as string, unit: RA_TYPE_GALACTIC }, // TODO can unit be removed?
+    raEquatorial: { value: 0, unit: RA_TYPE_ICRS },
+    decEquatorial: { value: 0, unit: RA_TYPE_ICRS },
     elevation: { value: observation.elevation, unit: 'deg' },
     advancedData: null,
     modules: []

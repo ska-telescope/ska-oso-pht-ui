@@ -18,6 +18,28 @@ export type PointingPatternParamsBackend = {
   offset_y_arcsec: number;
 };
 
+export type ReferenceCoordinateGalacticBackend = {
+  kind: string;
+  l: number; // replaces Galactic longitude
+  b: number; // replaces Galactic latitude
+  pm_l?: number;
+  pm_b?: number;
+  epoch?: number;
+  parallax?: number;
+};
+
+// ICRS now replaces equatorial
+export type ReferenceCoordinateICRSBackend = {
+  kind: string;
+  reference_frame: string;
+  ra_str: string;
+  dec_str: string;
+  pm_ra?: number;
+  pm_dec?: number;
+  parallax?: number;
+  epoch?: number;
+};
+
 export type TargetBackend = {
   target_id: string;
   name: string;
@@ -25,14 +47,7 @@ export type TargetBackend = {
     active: string;
     parameters: PointingPatternParamsBackend[];
   };
-  reference_coordinate: {
-    kind: string;
-    ra: number | string;
-    dec: number | string;
-    epoch?: number; // TODO check if this is a mandatory field
-    unit: string[];
-    reference_frame: string;
-  };
+  reference_coordinate: ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend;
   radial_velocity: {
     quantity: ValueUnitPair;
     definition: string;
@@ -70,23 +85,28 @@ export type PointingPatternParams = {
 };
 
 type Target = {
-  epoch?: number;
-  dec: string;
-  decUnit: string;
   id: number;
   name: string;
-  latitude: string;
-  longitude: string;
-  ra: string;
-  raUnit: string;
   redshift: string;
-  referenceFrame: number;
-  rcReferenceFrame?: string; // NOT USED
   raReferenceFrame?: string; // NOT USED
   raDefinition?: string; // NOT USED
   velType: number;
   vel: string;
   velUnit: number;
+  /*------- reference coordinate properties --------------------- */
+  kind: number; // for both ICRS and Galactic
+  l?: number; // NOT USED YET replaces longitude // for Galactic
+  b?: number; // NOT USED YET replaces latitude // for Galactic
+  pmL?: number; // NOT USED YET // for Galactic
+  pmB?: number; // NOT USED YET // for Galactic
+  referenceFrame?: string; // for ICRS
+  raStr?: string; // replaces ra for ICRS
+  decStr?: string; // replaces dec for ICRS
+  pmRa?: number; // NOT USED YET // for ICRS
+  pmDec?: number; // NOT USED YET // for ICRS
+  parallax?: number; // NOT USED YET // for both Galactic & ICRS
+  epoch?: number; // NOT USED YET // for both Galactic & ICRS
+  /*------- end of reference coordinate properties --------------------- */
   pointingPattern?: {
     // NOT USED
     active: string; // NOT USED
