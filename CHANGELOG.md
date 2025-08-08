@@ -6,9 +6,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ------------
-* Updated layout of tables in Overview Page
 
+3.1.0
+
+-------
+* Updated layout of tables in Overview Page
 * Changed target types and mappings to use ADR-63 format
+* Changed science and technical reviews to have distinct fields
 
 3.0.0
 
