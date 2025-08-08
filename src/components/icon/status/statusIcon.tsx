@@ -1,4 +1,3 @@
-import { IconButton } from '@mui/material';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { STATUS_ERROR, STATUS_ERROR_SYMBOL } from '../../../utils/constants';
 
@@ -19,37 +18,22 @@ export default function StatusIconDisplay({
   ariaTitle,
   disabled = false,
   level,
-  onClick = undefined,
   size = 25,
   text = '',
   testId,
   toolTip = ''
 }: StatusIconDisplayProps) {
-  const clickFunc = () => {
-    if (onClick) {
-      onClick();
-    }
-  };
-
-  const cursorType = () => (disabled ? 'not-allowed' : 'hand');
-
   return (
-    <IconButton
-      aria-label="SensCalc Status"
+    <StatusIcon
+      ariaDescription={ariaDescription}
+      ariaTitle={ariaTitle}
       disabled={disabled}
-      style={{ cursor: cursorType() }}
-      onClick={() => clickFunc()}
-    >
-      <StatusIcon
-        ariaDescription={ariaDescription}
-        ariaTitle={ariaTitle}
-        testId={testId}
-        toolTip={toolTip}
-        text={text ? text : level === STATUS_ERROR ? STATUS_ERROR_SYMBOL : ''}
-        icon={!text && level !== STATUS_ERROR}
-        level={level}
-        size={size}
-      />
-    </IconButton>
+      testId={testId}
+      toolTip={toolTip}
+      text={text ? text : level === STATUS_ERROR ? STATUS_ERROR_SYMBOL : ''}
+      icon={!text && level !== STATUS_ERROR}
+      level={level}
+      size={size}
+    />
   );
 }

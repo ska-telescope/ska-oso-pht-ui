@@ -7,6 +7,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 UNRELEASED
 ------------
 
+
+3.2.0
+
+-------
+
+* Implemented AAA across all OSO-SERVICES
+
 3.1.0
 
 -------

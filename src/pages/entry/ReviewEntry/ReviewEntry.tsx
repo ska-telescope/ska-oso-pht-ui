@@ -71,7 +71,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const getUser = () => TMP_REVIEWER_ID; // TODO
   const isTechnical = () => reviewType === REVIEW_TYPE.TECHNICAL;
-  // const getDateFormatted = () => moment().format('YYYY-MM-DD');
 
   function getTechnicalReview(): TechnicalReview {
     return {
@@ -134,6 +133,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const createReview = async (submitted = false) => {
     const response: string | { error: string } = await PostProposalReview(
+      authClient,
       getReview(submitted),
       locationProperties?.state?.proposal?.cycle
     );
@@ -146,6 +146,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const updateReview = async (submitted = false) => {
     const response: ProposalReview | string | { error: string } = await PutProposalReview(
+      authClient,
       getReview(submitted)
     );
     if (typeof response === 'object' && (response as { error: string })?.error) {

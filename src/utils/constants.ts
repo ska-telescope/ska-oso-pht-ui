@@ -18,6 +18,7 @@ export const OSO_SERVICES_REPORT_PATH = '/pht/report/';
 export const MSENTRA_CLIENT_ID = env.MSENTRA_CLIENT_ID;
 export const MSENTRA_TENANT_ID = env.MSENTRA_TENANT_ID;
 export const MSENTRA_REDIRECT_URI = env.MSENTRA_REDIRECT_URI;
+export const MSENTRA_API_URI = 'api://e4d6bb9b-cdd0-46c4-b30a-d045091b501b';
 
 /*****************************************/
 
@@ -935,8 +936,8 @@ export const PDF_NAME_PREFIXES = {
 
 export const DEFAULT_PI = {
   id: 'prp-ska01-202204-01',
-  firstName: 'DefaultUser',
-  lastName: 'DefaultUser',
+  firstName: DEFAULT_USER,
+  lastName: DEFAULT_USER,
   email: 'ask.lop@map.com',
   country: 'Lagoon',
   affiliation: 'University of Free Town',

@@ -1,5 +1,5 @@
-import axios from 'axios';
 import { SKA_OSO_SERVICES_URL, USE_LOCAL_DATA, OSO_SERVICES_PANEL_PATH } from '@utils/constants.ts';
+import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { MockPanelBackend } from './mockPanelBackend';
 import { Panel, PanelBackend } from '@/utils/types/panel';
 import { PanelProposal, PanelProposalBackend } from '@/utils/types/panelProposal';
@@ -49,14 +49,17 @@ export function GetMockPanel(mock = MockPanelBackend): Panel {
   return mapping(mock);
 }
 
-async function GetPanel(id: string): Promise<Panel | string> {
+async function GetPanel(
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  id: string
+): Promise<Panel | string> {
   if (USE_LOCAL_DATA) {
     return GetMockPanel();
   }
 
   try {
     const URL_PATH = `${OSO_SERVICES_PANEL_PATH}/${id}`;
-    const result = await axios.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
+    const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
 
     if (!result.data) {
       return 'error.API_UNKNOWN_ERROR';

@@ -1,6 +1,5 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import axios from 'axios';
 import { MockObservatoryDataFrontend } from '@services/axios/getObservatoryData/mockObservatoryDataFrontend.tsx';
 import PostPanel, { mappingPostPanel, postMockPanel } from './postPanel';
 import {
@@ -17,11 +16,6 @@ import { PanelBackend } from '@/utils/types/panel';
 import * as CONSTANTS from '@/utils/constants';
 
 const cycleId = MockObservatoryDataFrontend.observatoryPolicy.cycleInformation.cycleId;
-
-vi.mock('axios');
-const mockedAxios = (axios as unknown) as {
-  post: ReturnType<typeof vi.fn>;
-};
 
 describe('Helper Functions', () => {
   beforeEach(() => {
@@ -83,8 +77,19 @@ describe('Helper Functions', () => {
 });
 
 describe('PostPanel Service', () => {
+  let mockedAuthClient: any;
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
+    mockedAuthClient = {
+      put: vi.fn(),
+      get: vi.fn(),
+      post: vi.fn(),
+      delete: vi.fn(),
+      interceptors: {
+        request: { clear: vi.fn, eject: vi.fn(), use: vi.fn() },
+        response: { clear: vi.fn, eject: vi.fn(), use: vi.fn() }
+      }
+    };
   });
 
   test('returns mock data id when USE_LOCAL_DATA is true', async () => {
@@ -95,36 +100,36 @@ describe('PostPanel Service', () => {
 
   test('returns data id from API when USE_LOCAL_DATA is false', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.post.mockResolvedValue({ data: MockPanelFrontend.id });
-    const result = (await PostPanel(MockPanelFrontend, cycleId)) as string;
+    mockedAuthClient.post.mockResolvedValue({ data: MockPanelFrontend.id });
+    const result = (await PostPanel(mockedAuthClient, MockPanelFrontend, cycleId)) as string;
     expect(result).to.deep.equal(MockPanelBackend.panel_id);
   });
 
   test('returns error message on API failure', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.post.mockRejectedValue(new Error('Network Error'));
-    const result = await PostPanel(MockPanelFrontend, cycleId);
+    mockedAuthClient.post.mockRejectedValue(new Error('Network Error'));
+    const result = await PostPanel(mockedAuthClient, MockPanelFrontend, cycleId);
     expect(result).toStrictEqual({ error: 'Network Error' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.post.mockRejectedValue({ unexpected: 'object' });
-    const result = await PostPanel(MockPanelFrontend, cycleId);
+    mockedAuthClient.post.mockRejectedValue({ unexpected: 'object' });
+    const result = await PostPanel(mockedAuthClient, MockPanelFrontend, cycleId);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result undefined', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.post.mockResolvedValue(undefined);
-    const result = await PostPanel(MockPanelFrontend, cycleId);
+    mockedAuthClient.post.mockResolvedValue(undefined);
+    const result = await PostPanel(mockedAuthClient, MockPanelFrontend, cycleId);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result null', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.post.mockResolvedValue(null);
-    const result = await PostPanel(MockPanelFrontend, cycleId);
+    mockedAuthClient.post.mockResolvedValue(null);
+    const result = await PostPanel(mockedAuthClient, MockPanelFrontend, cycleId);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 });

@@ -1,6 +1,7 @@
 import axios, { AxiosError } from 'axios';
 import { useMsal } from '@azure/msal-react';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
+import { MSENTRA_API_URI } from '@/utils/constants';
 
 export enum LogLevel {
   Error,
@@ -11,7 +12,7 @@ export enum LogLevel {
 }
 
 export const loginRequest = {
-  scopes: ['User.Read']
+  scopes: [`${MSENTRA_API_URI}/pht:readwrite ${MSENTRA_API_URI}/pht:update `]
 };
 
 const useAxiosAuthClient = (baseURL: string = '/') => {

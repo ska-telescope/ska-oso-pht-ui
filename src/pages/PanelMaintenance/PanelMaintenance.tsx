@@ -27,6 +27,7 @@ import { IdObject } from '@/utils/types/idObject';
 import PostPanel from '@/services/axios/postPanel/postPanel';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import ObservatoryData from '@/utils/types/observatoryData';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
 import { ProposalReview, ScienceReview } from '@/utils/types/proposalReview';
 import { generateId } from '@/utils/helpers';
@@ -117,6 +118,7 @@ export default function PanelMaintenance() {
   const [panelReviewers, setPanelReviewers] = React.useState<IdObject[]>([]);
   const [, setAxiosError] = React.useState('');
   const { application } = storageObject.useStore();
+  const authClient = useAxiosAuthClient();
 
   const getObservatoryData = () => application.content3 as ObservatoryData;
   const getCycleId = () => getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId;
@@ -227,7 +229,7 @@ export default function PanelMaintenance() {
   };
 
   async function savePanel(panel: Panel): Promise<string | { error: string }> {
-    const response = await PostPanel(panel, getCycleId());
+    const response = await PostPanel(authClient, panel, getCycleId());
     if (typeof response === 'object' && response?.error) {
       // TODO notify user of error
       setAxiosError(

@@ -36,7 +36,6 @@ import emptyCell from '../../components/fields/emptyCell/emptyCell';
 import PutProposal from '../../services/axios/putProposal/putProposal';
 import { storeProposalCopy } from '../../utils/storage/proposalData';
 import { FOOTER_SPACER } from '../../utils/constants';
-import { useMockedLogin } from '@/contexts/MockedLoginContext';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
@@ -64,11 +63,7 @@ export default function LandingPage() {
 
   const [observatoryData, setObservatoryData] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
-
-  const { isMockedLoggedIn } = useMockedLogin();
   const loggedIn = isLoggedIn();
-
-  const isDisableEndpoints = () => !loggedIn && !isMockedLoggedIn;
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -85,7 +80,7 @@ export default function LandingPage() {
   React.useEffect(() => {
     const fetchData = async () => {
       setProposals([]);
-      if (isDisableEndpoints()) return;
+      if (!loggedIn) return;
 
       const response = await GetProposalList(authClient);
       if (typeof response === 'string') {
@@ -95,7 +90,7 @@ export default function LandingPage() {
       }
     };
     fetchData();
-  }, [fetchList, isDisableEndpoints()]);
+  }, [fetchList, loggedIn]);
 
   React.useEffect(() => {
     const fetchObservatoryData = async () => {
@@ -112,7 +107,7 @@ export default function LandingPage() {
   }, []);
 
   const getTheProposal = async (id: string) => {
-    helpComponent('');
+    helpComponent({});
     updateAppContent5({});
 
     const response = await GetProposal(authClient, id);
@@ -192,7 +187,7 @@ export default function LandingPage() {
   // TODO const canDelete = (e: { row: { status: string } }) =>
   // TODO  e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 
-  const displayProposalType = proposalType => {
+  const displayProposalType = (proposalType: any) => {
     return proposalType ? proposalType : NOT_SPECIFIED;
   };
 

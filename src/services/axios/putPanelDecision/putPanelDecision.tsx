@@ -1,4 +1,3 @@
-import axios from 'axios';
 import {
   OSO_SERVICES_PANEL_DECISIONS_PATH,
   SKA_OSO_SERVICES_URL,
@@ -6,6 +5,7 @@ import {
 } from '../../../utils/constants';
 import { mappingPanelDecisionFrontendToBackend } from '../postPanelDecision/postPanelDecision';
 import { MockPanelDecisionBackend } from '../postPanelDecision/mockPanelDecisionBackend';
+import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { PanelDecision, PanelDecisionBackend } from '@/utils/types/panelDecision';
 import { helpers } from '@/utils/helpers';
 
@@ -36,6 +36,7 @@ export function putMockPanelDecision(cycleId: string): PanelDecision {
 }
 
 async function PutPanelDecision(
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
   id: string,
   PanelDecision: PanelDecision,
   cycleId: string
@@ -48,7 +49,10 @@ async function PutPanelDecision(
     const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}/${id}`;
     const convertedPanelDecision = mappingPanelDecisionFrontendToBackend(PanelDecision, cycleId);
 
-    const result = await axios.put(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, convertedPanelDecision);
+    const result = await authAxiosClient.put(
+      `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
+      convertedPanelDecision
+    );
 
     if (!result || !result.data) {
       return { error: 'error.API_UNKNOWN_ERROR' };

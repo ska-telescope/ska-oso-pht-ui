@@ -1,4 +1,4 @@
-import axios from 'axios';
+import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
 import {
   OSO_SERVICES_REVIEWS_PATH,
   REVIEW_TYPE,
@@ -79,6 +79,7 @@ export function postMockProposalReview(): string {
 }
 
 async function PostProposalReview(
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
   review: ProposalReview,
   cycleId: string
 ): Promise<string | { error: string }> {
@@ -90,7 +91,10 @@ async function PostProposalReview(
     const URL_PATH = `${OSO_SERVICES_REVIEWS_PATH}/`;
     const convertedReview = mappingReviewFrontendToBackend(review, cycleId);
 
-    const result = await axios.post(`${SKA_OSO_SERVICES_URL}${URL_PATH}`, convertedReview);
+    const result = await authAxiosClient.post(
+      `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
+      convertedReview
+    );
 
     if (!result) {
       return { error: 'error.API_UNKNOWN_ERROR' };

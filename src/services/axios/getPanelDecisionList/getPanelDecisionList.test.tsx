@@ -1,6 +1,5 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import axios from 'axios';
 import { MockObservatoryDataFrontend } from '@services/axios/getObservatoryData/mockObservatoryDataFrontend.tsx';
 import getPanelDecisionList, { getMockPanelDecision, mappingList } from './getPanelDecisionList';
 import { MockPanelDecisionFrontendList } from './mockPanelDecisionFrontendList';
@@ -9,12 +8,6 @@ import * as CONSTANTS from '@/utils/constants';
 import { PanelDecision } from '@/utils/types/panelDecision';
 
 const cycleId = MockObservatoryDataFrontend.observatoryPolicy.cycleInformation.cycleId;
-
-const mockedAxios = (axios as unknown) as {
-  get: ReturnType<typeof vi.fn>;
-  post: ReturnType<typeof vi.fn>;
-  // add other axios methods as needed
-};
 
 describe('Helper Functions', () => {
   beforeEach(() => {
@@ -37,48 +30,59 @@ describe('Helper Functions', () => {
 });
 
 describe('getPanelDecisionList Service', () => {
+  let mockedAuthClient: any;
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
+    mockedAuthClient = {
+      put: vi.fn(),
+      get: vi.fn(),
+      post: vi.fn(),
+      delete: vi.fn(),
+      interceptors: {
+        request: { clear: vi.fn, eject: vi.fn(), use: vi.fn() },
+        response: { clear: vi.fn, eject: vi.fn(), use: vi.fn() }
+      }
+    };
   });
 
   test('returns mapped mock data when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await getPanelDecisionList(cycleId);
+    const result = await getPanelDecisionList(mockedAuthClient, cycleId);
     expect(result).toEqual(MockPanelDecisionFrontendList);
   });
 
   test('returns mapped data from API when USE_LOCAL_DATA is false', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockResolvedValue({ data: MockPanelDecisionBackendList });
-    const result = (await getPanelDecisionList(cycleId)) as PanelDecision[];
+    mockedAuthClient.get.mockResolvedValue({ data: MockPanelDecisionBackendList });
+    const result = (await getPanelDecisionList(mockedAuthClient, cycleId)) as PanelDecision[];
     expect(result).to.deep.equal(MockPanelDecisionFrontendList);
   });
 
   test('returns unsorted data when API returns only one panel', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockResolvedValue({ data: [MockPanelDecisionBackendList[1]] });
-    const result = await getPanelDecisionList(cycleId);
+    mockedAuthClient.get.mockResolvedValue({ data: [MockPanelDecisionBackendList[1]] });
+    const result = await getPanelDecisionList(mockedAuthClient, cycleId);
     expect(result).toEqual([MockPanelDecisionFrontendList[1]]);
   });
 
   test('returns error message on API failure', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockRejectedValue(new Error('Network Error'));
-    const result = await getPanelDecisionList(cycleId);
+    mockedAuthClient.get.mockRejectedValue(new Error('Network Error'));
+    const result = await getPanelDecisionList(mockedAuthClient, cycleId);
     expect(result).toBe('Network Error');
   });
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockRejectedValue({ unexpected: 'object' });
-    const result = await getPanelDecisionList(cycleId);
+    mockedAuthClient.get.mockRejectedValue({ unexpected: 'object' });
+    const result = await getPanelDecisionList(mockedAuthClient, cycleId);
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 
   test('returns error.API_UNKNOWN_ERROR when API returns non-array data', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.get.mockResolvedValue({ data: { not: 'an array' } });
-    const result = await getPanelDecisionList(cycleId);
+    mockedAuthClient.get.mockResolvedValue({ data: { not: 'an array' } });
+    const result = await getPanelDecisionList(mockedAuthClient, cycleId);
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 });

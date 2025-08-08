@@ -79,7 +79,7 @@ export default function ReviewListPage() {
 
   React.useEffect(() => {
     const GetReviewPanels = async () => {
-      const response = await GetPanelList(); // TODO : Add the user_id as a property to the function
+      const response = await GetPanelList(authClient); // TODO : Add the user_id as a property to the function
       if (typeof response === 'string') {
         NotifyError(response);
       } else {
@@ -129,8 +129,8 @@ export default function ReviewListPage() {
 
   const getScienceReviewType = (row: any): ScienceReview => {
     return {
-      kind: row.reviewType.kind,
-      excludedFromDecision: false,
+      kind: REVIEW_TYPE.SCIENCE,
+      excludedFromDecision: 'No',
       rank: row.reviewType.rank,
       conflict: {
         hasConflict: false,
@@ -197,6 +197,7 @@ export default function ReviewListPage() {
       NotifyError('Unable to find review'); // TODO : Should check this and add to json
     }
     const response: string | { error: string } = await PostProposalReview(
+      authClient,
       rec as ProposalReview,
       getObservatoryData().observatoryPolicy?.cycleInformation?.cycleId
     );

@@ -12,7 +12,6 @@ import Proposal from '../../../utils/types/proposal';
 import Notification from '../../../utils/types/notification';
 import PostProposal from '../../../services/axios/postProposal/postProposal';
 import TimedAlert from '../../alerts/timedAlert/TimedAlert';
-import { useMockedLogin } from '@/contexts/MockedLoginContext';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
@@ -32,10 +31,9 @@ export default function PageFooterPPT({
   const { application, updateAppContent2, updateAppContent5 } = storageObject.useStore();
   const [usedPageNo, setUsedPageNo] = React.useState(pageNo);
   const authClient = useAxiosAuthClient();
-  const { isMockedLoggedIn } = useMockedLogin();
   const loggedIn = isLoggedIn();
 
-  const isDisableEndpoints = () => !loggedIn && !isMockedLoggedIn;
+  const isDisableEndpoints = () => !loggedIn;
 
   const getObservatoryData = () => application.content3 as ObservatoryData;
 

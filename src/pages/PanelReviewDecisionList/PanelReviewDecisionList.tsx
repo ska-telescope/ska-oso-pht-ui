@@ -133,6 +133,7 @@ export default function ReviewDecisionListPage() {
     recommendation: any;
   }) => {
     const response: string | { error: string } = await PostPanelDecision(
+      authClient,
       getReviewDecision(item),
       getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
     );
@@ -163,7 +164,7 @@ export default function ReviewDecisionListPage() {
 
   React.useEffect(() => {
     const GetReviewPanels = async () => {
-      const response = await GetPanelList(); // TODO : Add the user_id as a property to the function
+      const response = await GetPanelList(authClient); // TODO : Add the user_id as a property to the function
       if (typeof response === 'string') {
         NotifyError(response);
       } else {
@@ -194,6 +195,17 @@ export default function ReviewDecisionListPage() {
         NotifyError(response);
       } else {
         setProposalReviews(response);
+      }
+    };
+    const fetchReviewDecisionData = async () => {
+      const response = await getPanelDecisionList(
+        authClient,
+        getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
+      ); // TODO : add id of the logged in user
+      if (typeof response === 'string') {
+        NotifyError(response);
+      } else {
+        setReviewDecisions(response);
       }
     };
     fetchProposalData();

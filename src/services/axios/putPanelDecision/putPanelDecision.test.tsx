@@ -1,6 +1,5 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import axios from 'axios';
 import { MockObservatoryDataFrontend } from '@services/axios/getObservatoryData/mockObservatoryDataFrontend.tsx';
 import { mappingPanelDecisionFrontendToBackend } from '../postPanelDecision/postPanelDecision';
 import { MockPanelDecisionFrontend } from '../postPanelDecision/mockPanelDecisionFrontend';
@@ -13,11 +12,6 @@ import * as CONSTANTS from '@/utils/constants';
 import { PanelDecision, PanelDecisionBackend } from '@/utils/types/panelDecision';
 
 const cycleId = MockObservatoryDataFrontend.observatoryPolicy.cycleInformation.cycleId;
-
-vi.mock('axios');
-const mockedAxios = (axios as unknown) as {
-  put: ReturnType<typeof vi.fn>;
-};
 
 describe('Helper Functions', () => {
   beforeEach(() => {
@@ -38,7 +32,7 @@ describe('Helper Functions', () => {
   });
 
   // this checks the putPanelDecision mapping to receive response from the api
-  test('mappingPanelDecisionBackendtoFrontend returns mapped panelDecision from backend to frontend format', () => {
+  test('mappingPanelDecisionBackendToFrontend returns mapped panelDecision from backend to frontend format', () => {
     const panelDecision: PanelDecision = mappingPanelDecisionBackendToFrontend(
       MockPanelDecisionBackend,
       cycleId
@@ -46,7 +40,7 @@ describe('Helper Functions', () => {
     expect(panelDecision).to.deep.equal(MockPanelDecisionFrontend);
   });
 
-  test('mappingPanelDecisionBackendtoFrontend generates cycle when not provided', () => {
+  test('mappingPanelDecisionBackendToFrontend generates cycle when not provided', () => {
     const receivedPanelDecision: PanelDecisionBackend = {
       ...MockPanelDecisionBackend,
       cycle: undefined
@@ -63,14 +57,26 @@ describe('Helper Functions', () => {
   });
 });
 
-describe('PostPanelDecision Service', () => {
+describe('PutPanelDecision Service', () => {
+  let mockedAuthClient: any;
   beforeEach(() => {
-    vi.clearAllMocks();
+    vi.resetAllMocks();
+    mockedAuthClient = {
+      put: vi.fn(),
+      get: vi.fn(),
+      post: vi.fn(),
+      delete: vi.fn(),
+      interceptors: {
+        request: { clear: vi.fn, eject: vi.fn(), use: vi.fn() },
+        response: { clear: vi.fn, eject: vi.fn(), use: vi.fn() }
+      }
+    };
   });
 
   test('returns mock data when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
     const result = await PutPanelDecision(
+      mockedAuthClient,
       MockPanelDecisionFrontend.id,
       MockPanelDecisionFrontend,
       cycleId
@@ -80,8 +86,9 @@ describe('PostPanelDecision Service', () => {
 
   test('returns data from API when USE_LOCAL_DATA is false', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.put.mockResolvedValue({ data: MockPanelDecisionBackend });
+    mockedAuthClient.put.mockResolvedValue({ data: MockPanelDecisionBackend });
     const result = (await PutPanelDecision(
+      mockedAuthClient,
       MockPanelDecisionFrontend.id,
       MockPanelDecisionFrontend,
       cycleId
@@ -91,8 +98,9 @@ describe('PostPanelDecision Service', () => {
 
   test('returns error message on API failure', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.put.mockRejectedValue(new Error('Network Error'));
+    mockedAuthClient.put.mockRejectedValue(new Error('Network Error'));
     const result = await PutPanelDecision(
+      mockedAuthClient,
       MockPanelDecisionFrontend.id,
       MockPanelDecisionFrontend,
       cycleId
@@ -102,8 +110,9 @@ describe('PostPanelDecision Service', () => {
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.put.mockRejectedValue({ unexpected: 'object' });
+    mockedAuthClient.put.mockRejectedValue({ unexpected: 'object' });
     const result = await PutPanelDecision(
+      mockedAuthClient,
       MockPanelDecisionFrontend.id,
       MockPanelDecisionFrontend,
       cycleId
@@ -113,8 +122,9 @@ describe('PostPanelDecision Service', () => {
 
   test('returns error.API_UNKNOWN_ERROR when result undefined', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.put.mockResolvedValue(undefined);
+    mockedAuthClient.put.mockResolvedValue(undefined);
     const result = await PutPanelDecision(
+      mockedAuthClient,
       MockPanelDecisionFrontend.id,
       MockPanelDecisionFrontend,
       cycleId
@@ -124,8 +134,9 @@ describe('PostPanelDecision Service', () => {
 
   test('returns error.API_UNKNOWN_ERROR when result null', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAxios.put.mockResolvedValue(null);
+    mockedAuthClient.put.mockResolvedValue(null);
     const result = await PutPanelDecision(
+      mockedAuthClient,
       MockPanelDecisionFrontend.id,
       MockPanelDecisionFrontend,
       cycleId

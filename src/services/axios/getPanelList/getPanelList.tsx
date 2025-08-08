@@ -1,9 +1,10 @@
-import axios from 'axios';
 import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
-  OSO_SERVICES_PANEL_PATH
+  OSO_SERVICES_PANEL_PATH,
+  DEFAULT_USER
 } from '../../../utils/constants';
+import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { MockPanelBackendList } from './mockPanelBackendList';
 import { Panel, PanelBackend } from '@/utils/types/panel';
 import { PanelProposal, PanelProposalBackend } from '@/utils/types/panelProposal';
@@ -59,14 +60,17 @@ export function GetMockPanelList(mock = MockPanelBackendList): Panel[] {
   return mappingList(uniqueResults);
 }
 
-async function GetPanelList(user_id = 'DefaultUser'): Promise<Panel[] | string> {
+async function GetPanelList(
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  user_id = DEFAULT_USER
+): Promise<Panel[] | string> {
   if (USE_LOCAL_DATA) {
     return GetMockPanelList();
   }
 
   try {
     const URL_PATH = `${OSO_SERVICES_PANEL_PATH}/list/${user_id}`;
-    const result = await axios.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
+    const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
 
     if (!result || !Array.isArray(result.data)) {
       return 'error.API_UNKNOWN_ERROR';

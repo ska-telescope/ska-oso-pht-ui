@@ -22,7 +22,6 @@ import DeleteButton from '../../components/button/Delete/Delete';
 
 import Notification from '../../utils/types/notification';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
-import { useMockedLogin } from '@/contexts/MockedLoginContext';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 const PAGE = 6;
@@ -42,11 +41,9 @@ export default function TechnicalPage() {
   const [originalFile, setOriginalFile] = React.useState<string | null>(null);
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
-
-  const { isMockedLoggedIn } = useMockedLogin();
   const loggedIn = isLoggedIn();
 
-  const isDisableEndpoints = () => !loggedIn && !isMockedLoggedIn;
+  const isDisableEndpoints = () => !loggedIn;
 
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
 
