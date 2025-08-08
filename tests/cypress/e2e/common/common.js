@@ -73,7 +73,7 @@ export const clickMockLoginButton = () => clickButton('linkedTickBox');
 export const clickCreateProposal = () => clickButton('nextButtonTestId');
 export const clickHome = () => clickButton('homeButtonTestId');
 export const clickHomeWarningConfirmation = () => clickButton('dialogConfirmationButton');
-export const clickLoginUser = () => clickButton('usernameMenu');
+export const clickLoginUser = () => clickButton('loginButton');
 export const clickObservationSetup = () => clickButton('addObservationButton');
 export const clickAddObservationEntry = () => clickButton('addObservationButtonEntry');
 export const clickPanelMaintenanceButton = () => clickButton('pmtBackButton');
