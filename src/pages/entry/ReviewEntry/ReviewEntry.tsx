@@ -17,10 +17,10 @@ import {
   PANEL_DECISION_STATUS,
   PMT,
   REVIEW_TYPE,
-  TECHNICAL_FEASIBILITY_OPTIONS
+  TECHNICAL_FEASIBILITY_OPTIONS,
+  TMP_REVIEWER_ID
 } from '@utils/constants.ts';
 import Typography from '@mui/material/Typography';
-import moment from 'moment';
 import PutProposalReview from '@services/axios/putProposalReview/putProposalReview';
 import SaveButton from '../../../components/button/Save/Save';
 import Notification from '../../../utils/types/notification';
@@ -32,10 +32,12 @@ import RankEntryField from '@/components/fields/rankEntryField/RankEntryField';
 import PDFViewer from '@/components/layout/PDFViewer/PDFViewer';
 import ConflictButton from '@/components/button/Conflict/Conflict';
 import GetPresignedDownloadUrl from '@/services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
-import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProposalReview';
 import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
+import { generateId } from '@/utils/helpers';
+import Proposal from '@/utils/types/proposal';
 
 interface ReviewEntryProps {
   reviewType: string;
@@ -64,12 +66,12 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const AREA_HEIGHT_NUM = 74;
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
 
-  const getProposal = () => application.content2;
+  const getProposal = () => application.content2 as Proposal;
   const authClient = useAxiosAuthClient();
 
-  const getUser = () => 'DefaultUser'; // TODO
+  const getUser = () => TMP_REVIEWER_ID; // TODO
   const isTechnical = () => reviewType === REVIEW_TYPE.TECHNICAL;
-  const getDateFormatted = () => moment().format('YYYY-MM-DD');
+  // const getDateFormatted = () => moment().format('YYYY-MM-DD');
 
   function getTechnicalReview(): TechnicalReview {
     return {
@@ -112,7 +114,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       cycle: '',
       reviewerId: getUser(),
       submittedOn: submitted ? new Date().toISOString() : null,
-      submittedBy: submitted ? 'DefaultUser' : null,
+      submittedBy: submitted ? TMP_REVIEWER_ID : null,
       status: submitted ? PANEL_DECISION_STATUS.DECIDED : PANEL_DECISION_STATUS.IN_PROGRESS
     };
   };
@@ -143,24 +145,17 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   };
 
   const updateReview = async (submitted = false) => {
-    const response: string | { error: string } = await PutProposalReview(getReview(submitted));
-    if (typeof response === 'object' && response?.error) {
-      NotifyError(response?.error);
+    const response: ProposalReview | string | { error: string } = await PutProposalReview(
+      getReview(submitted)
+    );
+    if (typeof response === 'object' && (response as { error: string })?.error) {
+      NotifyError((response as { error: string })?.error);
     } else {
       NotifyOK(t('addReview.success'));
     }
   };
 
   /*---------------------------------------------------------------------------*/
-
-  const makeReviewId = (prefix: string) =>
-    'rvw-' +
-    prefix +
-    getUser() +
-    '-' +
-    getDateFormatted() +
-    '-00001-' +
-    Math.floor(Math.random() * 10000000).toString();
 
   React.useEffect(() => {
     if (!locationProperties) return;
@@ -170,7 +165,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         setReviewId(locationProperties?.state?.tecReview.id);
         setIsEdit(true);
       } else {
-        setReviewId(makeReviewId('tec-'));
+        setReviewId(generateId('rvw-tec-'));
         setIsEdit(false);
       }
       setFeasibility(locationProperties?.state?.tecReview.reviewType?.feasibility?.isFeasible);
@@ -180,7 +175,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         setReviewId(locationProperties?.state?.sciReview.id);
         setIsEdit(true);
       } else {
-        setReviewId(makeReviewId('sci-'));
+        setReviewId(generateId('rvw-sci-'));
         setIsEdit(false);
       }
       setRank(locationProperties?.state?.sciReview.reviewType.rank);

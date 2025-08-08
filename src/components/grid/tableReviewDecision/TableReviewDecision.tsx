@@ -132,7 +132,20 @@ export default function TableReviewDecision({
 
   const calculateRank = (details: Array<any>) => {
     if (!details || details?.length === 0) return 0;
-    const filtered = details.filter(el => el?.reviewType?.excludedFromDecision === false);
+    const filtered = details.filter(
+      el => el?.reviewType?.excludedFromDecision === false && el?.status !== 'To Do'
+    );
+    if (filtered?.length === 0) return 0;
+    const average =
+      filtered.reduce((sum, detail) => sum + detail?.reviewType?.rank, 0) / filtered?.length;
+    return Math.round((average + Number.EPSILON) * 100) / 100;
+  };
+
+  const calculateScore = (details: Array<any>) => {
+    if (!details || details?.length === 0) return 0;
+    const filtered = details.filter(
+      el => el?.reviewType?.excludedFromDecision === false && el?.status !== 'To Do'
+    );
     if (filtered?.length === 0) return 0;
     const average =
       filtered.reduce((sum, detail) => sum + detail?.reviewType?.rank, 0) / filtered?.length;
@@ -174,6 +187,11 @@ export default function TableReviewDecision({
               <TableCell>
                 <Typography variant="subtitle2" fontWeight="bold">
                   {t('tableReviewDecision.lastUpdated')}
+                </Typography>
+              </TableCell>
+              <TableCell sx={{ width: 120 }}>
+                <Typography variant="subtitle2" fontWeight="bold">
+                  {t('tableReviewDecision.decisionScore')}
                 </Typography>
               </TableCell>
               <TableCell sx={{ width: 120 }}>
@@ -280,6 +298,7 @@ export default function TableReviewDecision({
                     <TableCell role="gridcell">
                       <Typography variant="body2">{calculateRank(item.reviews)}</Typography>
                     </TableCell>
+                    <TableCell role="gridcell">{calculateScore(item.reviews)}</TableCell>
                     <TableCell role="gridcell">
                       <Box sx={{ display: 'flex', gap: 0.5 }}>
                         <SubmitIcon
@@ -396,7 +415,11 @@ export default function TableReviewDecision({
                                     >
                                       <Grid2>
                                         <IconButton
-                                          onClick={() => excludeFunction(detail)}
+                                          onClick={() =>
+                                            detail.status === 'To Do'
+                                              ? null
+                                              : excludeFunction(detail)
+                                          }
                                           style={{ cursor: 'hand' }}
                                           // CODE BELOW WILL BE IMPLEMENTED AT A LATER DATE
                                           // disabled={
@@ -409,7 +432,12 @@ export default function TableReviewDecision({
                                           <StatusIcon
                                             testId={`includeIcon-${item.id}-${detailIndex}`}
                                             icon
-                                            level={detail.reviewType.excludedFromDecision ? 1 : 0}
+                                            level={
+                                              detail.status === 'To Do' ||
+                                              detail.reviewType.excludedFromDecision
+                                                ? 1
+                                                : 0
+                                            }
                                             size={STATUS_SIZE}
                                           />
                                         </IconButton>

@@ -17,7 +17,9 @@ import {
   BANNER_PMT_SPACER,
   PANEL_DECISION_STATUS,
   REVIEW_TYPE,
-  FEASIBLE_NO
+  FEASIBLE_NO,
+  TMP_REVIEWER_ID,
+  DEFAULT_USER
 } from '@utils/constants.ts';
 import GetProposal from '@services/axios/getProposal/getProposal.tsx';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
@@ -33,7 +35,7 @@ import GetPanelList from '@/services/axios/getPanelList/getPanelList';
 import { Panel } from '@/utils/types/panel';
 import TechnicalIcon from '@/components/icon/technicalIcon/technicalIcon';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
-import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProposalReview';
+import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import GetProposalByStatusList from '@/services/axios/getProposalByStatusList/getProposalByStatusList';
@@ -88,8 +90,8 @@ export default function ReviewListPage() {
   }, [reset]);
 
   React.useEffect(() => {
-    const fetchProposalReviewData = async (proposalId: string) => {
-      const response = await GetProposalReviewList(authClient, proposalId); // TODO : add id of the logged in user
+    const fetchProposalReviewData = async (_proposalId: string) => {
+      const response = await GetProposalReviewList(authClient, DEFAULT_USER);
       if (typeof response === 'string') {
         NotifyError(response);
       } else {
@@ -97,11 +99,12 @@ export default function ReviewListPage() {
       }
     };
 
-    const loopProposals = (filtered: Proposal[]) => {
-      filtered.map(el => {
-        fetchProposalReviewData(el.id);
-        return el.id;
-      });
+    const loopProposals = (_filtered: Proposal[]) => {
+      // filtered.map(el => {
+      // TODO : Need to sort this out
+      fetchProposalReviewData('1');
+      //   return el.id;
+      //  });
     };
 
     const fetchProposalData = async () => {
@@ -122,7 +125,7 @@ export default function ReviewListPage() {
     fetchProposalData();
   }, [panelData]);
 
-  const getUser = () => 'DefaultUser'; // TODO
+  const getUser = () => TMP_REVIEWER_ID; // TODO
 
   const getScienceReviewType = (row: any): ScienceReview => {
     return {
@@ -205,6 +208,7 @@ export default function ReviewListPage() {
   };
 
   /*---------------------------------------------------------------------------*/
+
   const getTheProposal = async (id: string) => {
     const response = await GetProposal(authClient, id);
     if (typeof response === 'string') {
@@ -440,11 +444,11 @@ export default function ReviewListPage() {
           technicalReviews.length > 0
             ? technicalReviews[technicalReviews.length - 1]
             : blankReviewTec(panelData[0].id, 'To Do');
-        const scienceReviews = reviews.filter(r => r.reviewType?.kind === REVIEW_TYPE.SCIENCE);
+        const scienceReviews = reviews.filter(
+          r => r.reviewType?.kind === REVIEW_TYPE.SCIENCE && r.reviewerId === TMP_REVIEWER_ID
+        );
         const scienceReview =
-          scienceReviews.length > 0
-            ? scienceReviews[scienceReviews.length - 1]
-            : blankReviewSci(panelData[0].id, 'To Do');
+          scienceReviews.length > 0 ? scienceReviews[0] : blankReviewSci(panelData[0].id, 'To Do');
         return {
           id: proposal.id,
           proposal: proposal,

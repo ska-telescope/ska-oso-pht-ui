@@ -11,15 +11,6 @@ import { ValueUnitPair } from '@utils/types/valueUnitPair';
 import TargetObservation from '@utils/types/targetObservation';
 import { SensCalcResultsBackend } from '@utils/types/sensCalcResults';
 import {
-  DataProductSDP,
-  DataProductSDPsBackend,
-  DataProductSRC,
-  DataProductSRCNetBackend
-} from '../../../utils/types/dataProduct';
-import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
-import { helpers } from '../../../utils/helpers';
-import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
-import {
   BANDWIDTH_TELESCOPE,
   FREQUENCY_UNITS,
   GENERAL,
@@ -37,8 +28,18 @@ import {
   ROBUST,
   IW_BRIGGS,
   RA_TYPE_GALACTIC,
-  RA_TYPE_ICRS
-} from '../../../utils/constants';
+  RA_TYPE_ICRS,
+  TMP_REVIEWER_ID
+} from '@utils/constants.ts';
+import {
+  DataProductSDP,
+  DataProductSDPsBackend,
+  DataProductSRC,
+  DataProductSRCNetBackend
+} from '@utils/types/dataProduct.tsx';
+import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
+import { helpers } from '@utils/helpers.ts';
+import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 
 const isContinuum = (type: number) => type === TYPE_CONTINUUM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
@@ -472,7 +473,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     prsl_id: proposal?.id,
     status: status,
     submitted_on: status === PROPOSAL_STATUS.SUBMITTED ? new Date().toISOString() : null, // note: null since oso-services 1.1.0  does not support ''
-    submitted_by: status === PROPOSAL_STATUS.SUBMITTED ? `DefaultUser` : '', // TODO : Need to replaced with the logged in user.
+    submitted_by: status === PROPOSAL_STATUS.SUBMITTED ? TMP_REVIEWER_ID : '', // TODO : Need to replaced with the logged in user.
     investigator_refs: proposal.team?.map(investigator => {
       return investigator?.id?.toString();
     }),
