@@ -1,29 +1,29 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import * as CONSTANTS from '@utils/constants.ts';
-import PutUploadPDF from '@services/axios/putUploadPDF/putUploadPDF.tsx';
+import DeleteDeletePDF from '@services/axios/deleteDeletePDF/deleteDeletePDF.tsx';
 
-describe('PutUploadPDF Service', () => {
+describe('DeleteDeletePDF Service', () => {
   let mockedAuthClient: any;
   beforeEach(() => {
     vi.resetAllMocks();
     mockedAuthClient = {
-      put: vi.fn()
+      delete: vi.fn()
     };
   });
 
   test('returns mock data when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await PutUploadPDF('dummy-url', 'test-file.txt');
-    expect(result).toEqual('https://httpbin.org/put');
+    const result = await DeleteDeletePDF('dummy-url');
+    expect(result).toEqual('https://httpbin.org/delete');
   });
 
   test('returns error.API_UNKNOWN_ERROR when API returns no data', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAuthClient.put.mockResolvedValue({
+    mockedAuthClient.delete.mockResolvedValue({
       signedUrl: 'dummy-url',
       selectedFile: 'test-file.txt'
     });
-    const result = await PutUploadPDF('dummy-url', 'test-file.txt');
+    const result = await DeleteDeletePDF('dummy-url');
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 });
