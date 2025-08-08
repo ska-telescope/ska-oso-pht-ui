@@ -169,7 +169,7 @@ export default function PanelMaintenance() {
 
   const getReview = (panelId: string, prslId: string, reviewerId: string): ProposalReview => {
     return {
-      id: 'rvw-sci-' + reviewerId,
+      id: 'rvw-sci-' + reviewerId + '-' + prslId,
       prslId: prslId,
       reviewType: getScienceReview(), // TODO : Extend so that there is a review for each time if the user can do it
       comments: '',

@@ -153,7 +153,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   /*---------------------------------------------------------------------------*/
 
-  const makeReviewId = (prefix: string) => 'rvw-' + prefix + getUser();
+  const makeReviewId = (prefix: string) => 'rvw-' + prefix + getUser() + '-' + getProposal();
   // '-' +
   // getDateFormatted() +
   // '-00001-' +
