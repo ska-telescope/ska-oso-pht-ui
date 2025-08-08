@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { MockProposalScienceReviewFrontend } from '@services/axios/postProposalReview.tsx/mockProposalReviewFrontend.tsx';
-import { MockProposalScienceReviewBackend } from '../postProposalReview.tsx/mockProposalReviewBackend';
+import { MockProposalScienceReviewBackend } from '../post/postProposalReview/mockProposalReviewBackend';
+import { MockProposalScienceReviewFrontend } from '../post/postProposalReview/mockProposalReviewFrontend';
 import PutProposalReview, { putMockProposalReview } from './putProposalReview';
 import * as CONSTANTS from '@/utils/constants';
 

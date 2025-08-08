@@ -5,8 +5,8 @@ import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
 } from '@utils/constants';
-import { mappingReviewFrontendToBackend } from '../postProposalReview.tsx/postProposalReview';
-import { MockProposalScienceReviewBackend } from '../postProposalReview.tsx/mockProposalReviewBackend';
+import { MockProposalScienceReviewBackend } from '../post/postProposalReview/mockProposalReviewBackend';
+import { mappingReviewFrontendToBackend } from '../post/postProposalReview/postProposalReview';
 import { helpers } from '@/utils/helpers';
 import {
   ProposalReview,

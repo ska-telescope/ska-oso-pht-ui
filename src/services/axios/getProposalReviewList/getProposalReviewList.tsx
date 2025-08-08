@@ -1,7 +1,7 @@
 import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
-  OSO_SERVICES_PROPOSAL_PATH
+  OSO_SERVICES_REVIEWS_PATH
 } from '@utils/constants.ts';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { mappingReviewBackendToFrontend } from '../putProposalReview/putProposalReview';
@@ -34,7 +34,7 @@ async function GetProposalReviewList(
   }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/reviews/${proposalId}`;
+    const URL_PATH = `${OSO_SERVICES_REVIEWS_PATH}/list/${proposalId}`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
     if (!result || !Array.isArray(result.data)) {
       return 'error.API_UNKNOWN_ERROR';

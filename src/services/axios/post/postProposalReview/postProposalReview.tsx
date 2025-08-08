@@ -4,7 +4,7 @@ import {
   REVIEW_TYPE,
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
-} from '../../../utils/constants';
+} from '@/utils/constants';
 import { helpers } from '@/utils/helpers';
 import {
   ProposalReview,

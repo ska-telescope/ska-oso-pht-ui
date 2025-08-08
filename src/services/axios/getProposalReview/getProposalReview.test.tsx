@@ -1,14 +1,14 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import {
-  MockProposalScienceReviewFrontend,
-  MockProposalTechnicalReviewFrontend
-} from '../postProposalReview.tsx/mockProposalReviewFrontend';
+import { mappingReviewBackendToFrontend } from '../putProposalReview/putProposalReview';
 import {
   MockProposalScienceReviewBackend,
   MockProposalTechnicalReviewBackend
-} from '../postProposalReview.tsx/mockProposalReviewBackend';
-import { mappingReviewBackendToFrontend } from '../putProposalReview/putProposalReview';
+} from '../post/postProposalReview/mockProposalReviewBackend';
+import {
+  MockProposalScienceReviewFrontend,
+  MockProposalTechnicalReviewFrontend
+} from '../post/postProposalReview/mockProposalReviewFrontend';
 import GetProposalReview, { GetMockReview } from './getProposalReview';
 import { ProposalReview } from '@/utils/types/proposalReview';
 import * as CONSTANTS from '@/utils/constants';
