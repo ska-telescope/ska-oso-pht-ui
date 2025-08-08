@@ -27,7 +27,7 @@ export const MockProposalScienceReviewFrontend: ProposalReview = {
       hasConflict: false,
       reason: 'string'
     },
-    excludedFromDecision: 'True'
+    excludedFromDecision: false
   }
 };
 
@@ -57,7 +57,7 @@ export const MockProposalScienceReviewExcludedFrontend: ProposalReview = {
       hasConflict: false,
       reason: 'string'
     },
-    excludedFromDecision: true
+    excludedFromDecision: false
   }
 };
 

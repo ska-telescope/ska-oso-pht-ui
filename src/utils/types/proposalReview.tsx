@@ -15,7 +15,7 @@ export type ScienceReview = {
     hasConflict: boolean;
     reason: string;
   };
-  excludedFromDecision: string;
+  excludedFromDecision: boolean;
 };
 
 export type ProposalReview = {

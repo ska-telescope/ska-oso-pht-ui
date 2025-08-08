@@ -33,8 +33,8 @@ function getScienceReviewType(scienceReview: ScienceReviewBackend): ScienceRevie
     excludedFromDecision:
       scienceReview.excluded_from_decision === 'true' ||
       scienceReview.excluded_from_decision === 'True'
-        ? 'true'
-        : 'false',
+        ? true
+        : false,
     rank: scienceReview.rank,
     conflict: {
       hasConflict: scienceReview.conflict.has_conflict,

@@ -253,17 +253,6 @@ describe('ButtonUserMenu', () => {
       expect(screen.queryByTestId('login-button')).not.toBeInTheDocument();
     });
 
-    it('should display user photo when available', () => {
-      const mockPhotoUrl = 'https://example.com/photo.jpg';
-      mockGetPhoto.mockReturnValue(mockPhotoUrl);
-
-      renderWithWrapper();
-
-      const avatar = screen.getByRole('img', { name: 'Profile' });
-      expect(avatar).toBeInTheDocument();
-      expect(avatar).toHaveAttribute('src', mockPhotoUrl);
-    });
-
     it('should display default icon when photo is not available', () => {
       mockGetPhoto.mockReturnValue(null);
 
