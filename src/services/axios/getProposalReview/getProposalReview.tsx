@@ -4,7 +4,7 @@ import {
   OSO_SERVICES_REVIEWS_PATH
 } from '@utils/constants.ts';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
-import { MockProposalScienceReviewBackend } from '../postProposalReview.tsx/mockProposalReviewBackend';
+import { MockProposalScienceReviewBackend } from '../post/postProposalReview/mockProposalReviewBackend';
 import { mappingReviewBackendToFrontend } from '../putProposalReview/putProposalReview';
 import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
 
