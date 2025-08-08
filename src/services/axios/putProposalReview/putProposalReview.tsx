@@ -4,7 +4,8 @@ import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
 } from '@utils/constants';
-import { mappingReviewFrontendToBackend } from '../postProposalReview.tsx/postProposalReview';
+import { MockProposalScienceReviewBackend } from '../post/postProposalReview/mockProposalReviewBackend';
+import { mappingReviewFrontendToBackend } from '../post/postProposalReview/postProposalReview';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { helpers } from '@/utils/helpers';
 import {
@@ -32,8 +33,8 @@ function getScienceReviewType(scienceReview: ScienceReviewBackend): ScienceRevie
     excludedFromDecision:
       scienceReview.excluded_from_decision === 'true' ||
       scienceReview.excluded_from_decision === 'True'
-        ? true
-        : false,
+        ? 'true'
+        : 'false',
     rank: scienceReview.rank,
     conflict: {
       hasConflict: scienceReview.conflict.has_conflict,

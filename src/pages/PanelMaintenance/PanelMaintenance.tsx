@@ -5,7 +5,13 @@ import { Box, Grid2, Tab, Tabs, Typography } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { BANNER_PMT_SPACER, PMT, REVIEWER_STATUS } from '../../utils/constants';
+import {
+  BANNER_PMT_SPACER,
+  PANEL_DECISION_STATUS,
+  PMT,
+  REVIEW_TYPE,
+  REVIEWER_STATUS
+} from '../../utils/constants';
 import BackButton from '@/components/button/Back/Back';
 import GridProposals from '@/components/grid/proposals/GridProposals';
 import GridReviewers from '@/components/grid/reviewers/GridReviewers';
@@ -22,6 +28,9 @@ import PostPanel from '@/services/axios/postPanel/postPanel';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
+import { ProposalReview, ScienceReview } from '@/utils/types/proposalReview';
+import { generateId } from '@/utils/helpers';
 
 const PANELS_HEIGHT = '66vh';
 const TABS_HEIGHT = '68vh';
@@ -114,6 +123,8 @@ export default function PanelMaintenance() {
   const getObservatoryData = () => application.content3 as ObservatoryData;
   const getCycleId = () => getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId;
 
+  let proposalForUpdate: Proposal | undefined = undefined;
+
   React.useEffect(() => {
     const proposals = currentPanel?.proposals
       ? convertPanelProposalToProposalIdList(currentPanel?.proposals)
@@ -147,6 +158,76 @@ export default function PanelMaintenance() {
     });
   };
 
+  function getScienceReview(): ScienceReview {
+    return {
+      kind: REVIEW_TYPE.SCIENCE,
+      rank: 0,
+      conflict: {
+        hasConflict: false,
+        reason: ''
+      },
+      excludedFromDecision: false
+    };
+  }
+
+  const getReview = (
+    panelId: string,
+    prslId: string,
+    reviewerId: string,
+    prefix: string
+  ): ProposalReview => {
+    return {
+      id: generateId(prefix),
+      prslId: prslId,
+      reviewType: getScienceReview(), // TODO : Extend so that there is a review for each time if the user can do it
+      comments: '',
+      srcNet: '',
+      metadata: {
+        version: 0,
+        created_by: '',
+        created_on: '',
+        pdm_version: '',
+        last_modified_by: '',
+        last_modified_on: ''
+      },
+      panelId: panelId,
+      cycle: '',
+      reviewerId: reviewerId,
+      submittedOn: null,
+      submittedBy: null,
+      status: PANEL_DECISION_STATUS.TO_DO
+    };
+  };
+
+  const createReview = async (
+    panel: Panel,
+    proposal: Proposal,
+    reviewer: PanelReviewer,
+    prefix: string
+  ) => {
+    const response: string | { error: string } = await PostProposalReview(
+      getReview(panel.id, proposal.id, reviewer.reviewerId, prefix),
+      getCycleId()
+    );
+    if (typeof response === 'object' && response?.error) {
+      // TODO notify user of error
+      setAxiosError(
+        typeof response === 'object' && 'error' in response ? response.error : String(response)
+      );
+    } else {
+      // Success notification goes in here
+    }
+  };
+
+  const addEmptyReviews = (panel: Panel) => {
+    if (!proposalForUpdate) return;
+    panel.reviewers.forEach(reviewer => {
+      createReview(panel, proposalForUpdate as Proposal, reviewer, 'rvw-sci-');
+      createReview(panel, proposalForUpdate as Proposal, reviewer, 'rvw-tec-');
+    });
+    proposalForUpdate = undefined;
+  };
+
   async function savePanel(panel: Panel): Promise<string | { error: string }> {
     const response = await PostPanel(authClient, panel, getCycleId());
     if (typeof response === 'object' && response?.error) {
@@ -155,7 +236,7 @@ export default function PanelMaintenance() {
         typeof response === 'object' && 'error' in response ? response.error : String(response)
       );
     } else {
-      // TODO notify user of success
+      addEmptyReviews(panel);
     }
     return response;
   }
@@ -179,8 +260,10 @@ export default function PanelMaintenance() {
 
   const proposalSelectedToggle = (proposal: Proposal, isSelected: boolean) => {
     if (isSelected) {
+      proposalForUpdate = undefined; // TODO : What happens if you unassign a proposal from a panel ?
       deleteProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
     } else {
+      proposalForUpdate = proposal;
       addProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
     }
   };

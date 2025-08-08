@@ -1,10 +1,10 @@
+import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
 import {
   OSO_SERVICES_REVIEWS_PATH,
   REVIEW_TYPE,
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
-} from '../../../utils/constants';
-import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
+} from '@/utils/constants';
 import { helpers } from '@/utils/helpers';
 import {
   ProposalReview,

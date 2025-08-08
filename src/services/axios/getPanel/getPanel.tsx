@@ -1,8 +1,4 @@
-import {
-  SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA,
-  OSO_SERVICES_PANEL_PATH
-} from '../../../utils/constants';
+import { SKA_OSO_SERVICES_URL, USE_LOCAL_DATA, OSO_SERVICES_PANEL_PATH } from '@utils/constants.ts';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { MockPanelBackend } from './mockPanelBackend';
 import { Panel, PanelBackend } from '@/utils/types/panel';

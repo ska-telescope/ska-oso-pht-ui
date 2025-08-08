@@ -7,6 +7,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import moment from 'moment';
 import {
   BANNER_PMT_SPACER,
+  DEFAULT_USER,
   PANEL_DECISION_STATUS,
   PROPOSAL_STATUS,
   TMP_REVIEWER_ID
@@ -27,7 +28,7 @@ import { PanelDecision } from '@/utils/types/panelDecision';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import GetProposalByStatusList from '@/services/axios/getProposalByStatusList/getProposalByStatusList';
-import PostProposalReview from '@/services/axios/postProposalReview.tsx/postProposalReview';
+import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
 
 /*
  * Process for retrieving the data for the list
@@ -189,8 +190,7 @@ export default function ReviewDecisionListPage() {
       }
     };
     const fetchProposalReviewData = async () => {
-      //TODO: Add proposal id
-      const response = await GetProposalReviewList(authClient); // TODO : add id of the logged in user
+      const response = await GetProposalReviewList(authClient, DEFAULT_USER);
       if (typeof response === 'string') {
         NotifyError(response);
       } else {
