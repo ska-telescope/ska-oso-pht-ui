@@ -29,6 +29,7 @@ import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import ObservatoryData from '@/utils/types/observatoryData';
 import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
 import { ProposalReview, ScienceReview } from '@/utils/types/proposalReview';
+import { generateId } from '@/utils/helpers';
 
 const PANELS_HEIGHT = '66vh';
 const TABS_HEIGHT = '68vh';
@@ -167,9 +168,14 @@ export default function PanelMaintenance() {
     };
   }
 
-  const getReview = (panelId: string, prslId: string, reviewerId: string): ProposalReview => {
+  const getReview = (
+    panelId: string,
+    prslId: string,
+    reviewerId: string,
+    prefix: string
+  ): ProposalReview => {
     return {
-      id: 'rvw-sci-' + reviewerId + '-' + prslId,
+      id: generateId(prefix),
       prslId: prslId,
       reviewType: getScienceReview(), // TODO : Extend so that there is a review for each time if the user can do it
       comments: '',
@@ -191,9 +197,14 @@ export default function PanelMaintenance() {
     };
   };
 
-  const createReview = async (panel: Panel, proposal: Proposal, reviewer: PanelReviewer) => {
+  const createReview = async (
+    panel: Panel,
+    proposal: Proposal,
+    reviewer: PanelReviewer,
+    prefix: string
+  ) => {
     const response: string | { error: string } = await PostProposalReview(
-      getReview(panel.id, proposal.id, reviewer.reviewerId),
+      getReview(panel.id, proposal.id, reviewer.reviewerId, prefix),
       getCycleId()
     );
     if (typeof response === 'object' && response?.error) {
@@ -209,7 +220,8 @@ export default function PanelMaintenance() {
   const addEmptyReviews = (panel: Panel) => {
     if (!proposalForUpdate) return;
     panel.reviewers.forEach(reviewer => {
-      createReview(panel, proposalForUpdate as Proposal, reviewer);
+      createReview(panel, proposalForUpdate as Proposal, reviewer, 'rvw-sci-');
+      createReview(panel, proposalForUpdate as Proposal, reviewer, 'rvw-tec-');
     });
     proposalForUpdate = undefined;
   };

@@ -17,7 +17,7 @@ export const arraysAreEqual = (a: any[], b: any[]) => {
   return a.every((val, index) => val === b[index]);
 };
 
-export const generateId = (prefix: string, length: number) => {
+export const generateId = (prefix: string, length: number = 8) => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';
   for (let i = 0; i < length; i++) {

@@ -36,6 +36,8 @@ import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/pr
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
+import { generateId } from '@/utils/helpers';
+import Proposal from '@/utils/types/proposal';
 
 interface ReviewEntryProps {
   reviewType: string;
@@ -64,7 +66,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const AREA_HEIGHT_NUM = 74;
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
 
-  const getProposal = () => application.content2;
+  const getProposal = () => application.content2 as Proposal;
   const authClient = useAxiosAuthClient();
 
   const getUser = () => TMP_REVIEWER_ID; // TODO
@@ -143,21 +145,17 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   };
 
   const updateReview = async (submitted = false) => {
-    const response: string | { error: string } = await PutProposalReview(getReview(submitted));
-    if (typeof response === 'object' && response?.error) {
-      NotifyError(response?.error);
+    const response: ProposalReview | string | { error: string } = await PutProposalReview(
+      getReview(submitted)
+    );
+    if (typeof response === 'object' && (response as { error: string })?.error) {
+      NotifyError((response as { error: string })?.error);
     } else {
       NotifyOK(t('addReview.success'));
     }
   };
 
   /*---------------------------------------------------------------------------*/
-
-  const makeReviewId = (prefix: string) => 'rvw-' + prefix + getUser() + '-' + getProposal();
-  // '-' +
-  // getDateFormatted() +
-  // '-00001-' +
-  // Math.floor(Math.random() * 10000000).toString();
 
   React.useEffect(() => {
     if (!locationProperties) return;
@@ -167,7 +165,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         setReviewId(locationProperties?.state?.tecReview.id);
         setIsEdit(true);
       } else {
-        setReviewId(makeReviewId('tec-'));
+        setReviewId(generateId('rvw-tec-'));
         setIsEdit(false);
       }
       setFeasibility(locationProperties?.state?.tecReview.reviewType?.feasibility?.isFeasible);
@@ -177,7 +175,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         setReviewId(locationProperties?.state?.sciReview.id);
         setIsEdit(true);
       } else {
-        setReviewId(makeReviewId('sci-'));
+        setReviewId(generateId('rvw-sci-'));
         setIsEdit(false);
       }
       setRank(locationProperties?.state?.sciReview.reviewType.rank);
