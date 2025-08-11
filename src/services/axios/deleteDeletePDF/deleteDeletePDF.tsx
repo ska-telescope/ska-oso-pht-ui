@@ -1,4 +1,4 @@
-import { USE_LOCAL_DATA } from '../../../utils/constants';
+import { USE_LOCAL_DATA } from '@utils/constants.ts';
 import axiosClient from '../axiosClient/axiosClient';
 
 async function DeleteDeletePDF(signedUrl: string) {
