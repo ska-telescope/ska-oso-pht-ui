@@ -20,7 +20,6 @@ describe('Creating Proposal without login', () => {
   });
   it('Create a basic proposal without login', () => {
     cy.wait(500);
-    clickMockLoginButton();
     clickAddProposal();
     enterProposalTitle();
     clickProposalTypePrincipleInvestigator();
