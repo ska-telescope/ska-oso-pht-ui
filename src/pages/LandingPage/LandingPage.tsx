@@ -2,7 +2,7 @@ import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Grid, Paper, Tooltip, Typography } from '@mui/material';
+import { Grid2, Paper, Tooltip, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DataGrid,
@@ -21,7 +21,8 @@ import {
   SEARCH_TYPE_OPTIONS,
   PROPOSAL_STATUS,
   PATH,
-  NOT_SPECIFIED
+  NOT_SPECIFIED,
+  FOOTER_HEIGHT_PHT
 } from '../../utils/constants';
 import AddButton from '../../components/button/Add/Add';
 import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
@@ -54,7 +55,7 @@ export default function LandingPage() {
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
-  const [proposals, setProposals] = React.useState([]);
+  const [proposals, setProposals] = React.useState<Proposal[]>([]);
   const [axiosError, setAxiosError] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
   const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
@@ -69,7 +70,7 @@ export default function LandingPage() {
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const authClient = useAxiosAuthClient();
 
-  const DATA_GRID_HEIGHT = '65vh';
+  const DATA_GRID_HEIGHT = '60vh';
 
   React.useEffect(() => {
     updateAppContent2({});
@@ -373,45 +374,49 @@ export default function LandingPage() {
 
   return (
     <>
-      <Grid container p={5} direction="row" alignItems="center" justifyContent="space-around">
-        <Grid item xs={12}>
-          {pageDescription()}
-        </Grid>
-        <Grid item p={2} sm={4} md={3} lg={2}>
+      <Grid2 container p={5} direction="row" alignItems="center" justifyContent="space-around">
+        <Grid2 size={{ xs: 12 }}>{pageDescription()}</Grid2>
+        <Grid2 size={{ sm: 4, md: 3, lg: 2 }} p={2}>
           {addProposalButton()}
-        </Grid>
-        <Grid item p={2} sm={4} md={4} lg={4}>
+        </Grid2>
+        <Grid2 size={{ sm: 4 }} p={2}>
           {searchDropdown()}
-        </Grid>
-        <Grid item p={2} sm={4} md={5} lg={6} mt={-1}>
+        </Grid2>
+        <Grid2 size={{ sm: 4, md: 6, lg: 6 }} p={2} mt={-1}>
           {searchEntryField('searchId')}
-        </Grid>
-        <Grid item xs={12} pt={1}>
+        </Grid2>
+        <Grid2 size={{ xs: 12 }} pt={1}>
           {!axiosViewError && (!filteredData || filteredData.length === 0) && (
             <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
           )}
           {!axiosViewError && filteredData.length > 0 && (
             <div>
               <DataGrid
-                testId="dataGridId"
+                testId="dataGrid2Id"
                 rows={filteredData}
                 columns={stdColumns}
                 height={DATA_GRID_HEIGHT}
               />
             </div>
           )}
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {openDeleteDialog && deleteClicked()}
       {openCloneDialog && cloneClicked()}
       {openViewDialog && viewClicked()}
       <Paper
-        sx={{ bgcolor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}
+        sx={{
+          bgcolor: 'transparent',
+          position: 'fixed',
+          bottom: FOOTER_HEIGHT_PHT,
+          left: 0,
+          right: 0
+        }}
         elevation={0}
       >
-        <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
-          <Grid item>
+        <Grid2 container direction="column" alignItems="center" justifyContent="space-evenly">
+          <Grid2>
             {axiosViewError && (
               <Alert
                 color={AlertColorTypes.Error}
@@ -422,8 +427,8 @@ export default function LandingPage() {
             {axiosError && (
               <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
             )}
-          </Grid>
-        </Grid>
+          </Grid2>
+        </Grid2>
       </Paper>
     </>
   );

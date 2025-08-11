@@ -4,14 +4,13 @@ import { DropDown, TextEntry, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska
 import { useTranslation } from 'react-i18next';
 import { ReactNode } from 'react';
 import { Typography } from '@mui/material';
-import groupBy from 'lodash/groupBy';
+import { groupBy } from 'lodash';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
 import { BANNER_PMT_SPACER } from '@/utils/constants';
 import D3PieChart from '@/components/charts/D3PieChart';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
@@ -413,9 +412,9 @@ export default function ReviewDashboard() {
         </Grid2>
         <Grid2>
           <ResizablePanel title={'Review Distribution across Panels'}>
-            <TableContainer component={Paper}>
+            <TableContainer sx={{ minWidth: '90vw' }}>
               {/* TODO: refactor the grid / resizable panel - note: minWidth 560+560+16+16 from pie charts */}
-              <Table sx={{ minWidth: 1712 }}>
+              <Table sx={{ width: '100%' }}>
                 <TableHead>
                   <TableRow>
                     <TableCell>Panel Name</TableCell>
@@ -450,8 +449,8 @@ export default function ReviewDashboard() {
 
         <Grid2>
           <ResizablePanel title={'Review Distribution across Reviewers'}>
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 1712 }}>
+            <TableContainer sx={{ minWidth: '90vw' }}>
+              <Table sx={{ width: '100%' }}>
                 <TableHead>
                   <TableRow>
                     <TableCell>Panel Name</TableCell>
@@ -484,8 +483,8 @@ export default function ReviewDashboard() {
 
         <Grid2>
           <ResizablePanel title={'Review Distribution across Science Category'}>
-            <TableContainer component={Paper}>
-              <Table sx={{ minWidth: 1712 }}>
+            <TableContainer sx={{ minWidth: '90vw' }}>
+              <Table sx={{ width: '100%' }}>
                 <TableHead>
                   <TableRow>
                     <TableCell>Science Category</TableCell>

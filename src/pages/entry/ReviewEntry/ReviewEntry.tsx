@@ -243,7 +243,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         `${proposal?.id}-` + t(`pdfDownload.${pdfLabel}.label`) + t('fileType.pdf');
 
       const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
-
       if (
         signedUrl === t('pdfDownload.sampleData') ||
         proposal?.technicalPDF != null ||
@@ -266,7 +265,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       }}
       elevation={0}
     >
-      {getProposal().sciencePDF !== null && currentPDF !== null ? (
+      {getProposal()?.sciencePDF !== null && currentPDF !== null ? (
         <PDFViewer url={currentPDF ?? ''} />
       ) : (
         <>{t('pdfPreview.science.notUploaded')}</>
@@ -284,7 +283,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       }}
       elevation={0}
     >
-      {getProposal().technicalPDF !== null && currentPDF !== null ? (
+      {getProposal()?.technicalPDF !== null && currentPDF !== null ? (
         <PDFViewer url={currentPDF ?? ''} />
       ) : (
         <> {t('pdfPreview.technical.notUploaded')}</>

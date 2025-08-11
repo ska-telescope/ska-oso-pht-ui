@@ -210,20 +210,16 @@ export default function ReviewListPage() {
 
   /*---------------------------------------------------------------------------*/
 
-  const getTheProposal = async (id: string) => {
-    const response = await GetProposal(authClient, id);
+  const getTheProposal = async (row: any, route: string) => {
+    const response = await GetProposal(authClient, row.id);
     if (typeof response === 'string') {
       updateAppContent2({});
-      return false;
     } else {
       updateAppContent2(response);
-      return true;
+      navigate(route, { replace: true, state: row });
     }
   };
-  const theIconClicked = (row: any, route: string) => {
-    getTheProposal(row.id);
-    navigate(route, { replace: true, state: row });
-  };
+  const theIconClicked = (row: any, route: string) => getTheProposal(row, route);
   const scienceIconClicked = (row: any) => theIconClicked(row, PMT[5]);
   const technicalIconClicked = (row: any) => theIconClicked(row, PMT[6]);
 
