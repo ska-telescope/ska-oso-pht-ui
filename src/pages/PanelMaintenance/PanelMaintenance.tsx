@@ -45,7 +45,6 @@ export const addReviewerPanel = (
   const rec: PanelReviewer = {
     reviewerId: reviewer.id,
     panelId: localPanel?.id ?? '',
-    // assignedOn: new Date().toISOString(), // TODO clarify if assignedOn should be set in the database
     status: REVIEWER_STATUS.PENDING
   };
   const updatedReviewers = [...localPanel?.reviewers, rec];
@@ -88,8 +87,6 @@ export const addProposalPanel = (
   const rec: PanelProposal = {
     proposalId: proposal.id,
     panelId: localPanel?.id ?? ''
-    // TODO clarify if assignedOn should be set in the database
-    // assignedOn: new Date().toISOString()
   };
   const updatedProposals = [...localPanel?.proposals, rec];
   setProposalPanels(updatedProposals);
@@ -210,7 +207,6 @@ export default function PanelMaintenance() {
       getCycleId()
     );
     if (typeof response === 'object' && response?.error) {
-      // TODO notify user of error
       setAxiosError(
         typeof response === 'object' && 'error' in response ? response.error : String(response)
       );
@@ -231,7 +227,6 @@ export default function PanelMaintenance() {
   async function savePanel(panel: Panel): Promise<string | { error: string }> {
     const response = await PostPanel(authClient, panel, getCycleId());
     if (typeof response === 'object' && response?.error) {
-      // TODO notify user of error
       setAxiosError(
         typeof response === 'object' && 'error' in response ? response.error : String(response)
       );

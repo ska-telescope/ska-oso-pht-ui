@@ -18,7 +18,7 @@ interface continuumBandwidthFieldProps {
   onFocus?: Function;
   setValue?: Function;
   value: number;
-  suffix?: any; // TODO figure out suffix type
+  suffix?: any;
   telescope?: number;
   observingBand?: number;
   continuumBandwidthUnits?: number;

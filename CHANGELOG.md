@@ -7,12 +7,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 UNRELEASED
 ------------
 
-
-3.2.0
-
--------
-
-* Implemented AAA across all OSO-SERVICES
+* Security : Added AAA across all oso-services
+* Changed  : oso-services v2.0.1
 
 3.1.0
 
