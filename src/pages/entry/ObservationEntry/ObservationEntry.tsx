@@ -49,7 +49,8 @@ import {
   OB_SUBARRAY_AA2,
   OB_SUBARRAY_AA_STAR_CORE,
   OB_SUBARRAY_AA2_CORE,
-  OB_SUBARRAY_AA4_CORE
+  OB_SUBARRAY_AA4_CORE,
+  FOOTER_HEIGHT_PHT
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -1026,7 +1027,13 @@ export default function ObservationEntry() {
 
     return (
       <Paper
-        sx={{ bgcolor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}
+        sx={{
+          bgcolor: 'transparent',
+          position: 'fixed',
+          bottom: FOOTER_HEIGHT_PHT,
+          left: 0,
+          right: 0
+        }}
         elevation={0}
       >
         <Grid2
@@ -1053,7 +1060,7 @@ export default function ObservationEntry() {
   };
 
   return (
-    <>
+    <Box pt={2}>
       <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
       <Grid2
         pl={4}
@@ -1125,6 +1132,6 @@ export default function ObservationEntry() {
       </Grid2>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {pageFooter()}
-    </>
+    </Box>
   );
 }

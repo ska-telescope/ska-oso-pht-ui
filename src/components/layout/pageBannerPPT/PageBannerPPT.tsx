@@ -26,7 +26,7 @@ import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
 import ValidationResults from '../../alerts/validationResults/ValidationResults';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
 import Notification from '../../../utils/types/notification';
-import { Proposal } from '../../../utils/types/proposal';
+import { Proposal, ProposalBackend } from '../../../utils/types/proposal';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import PostProposalValidate from '../../../services/axios/postProposalValidate/postProposalValidate';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
@@ -105,7 +105,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     }
   };
 
-  const updateProposalResponse = response => {
+  const updateProposalResponse = (response: ProposalBackend | { error: string }) => {
     if (response && !response.error) {
       NotifyOK('saveBtn.success');
     } else {
@@ -203,9 +203,8 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     </Grid2>
   );
 
-  // TODO : Remove the pt=(3) once the mock login tick-box has been removed, as it is upsetting the layout.
   const row1 = () => (
-    <Grid2 pt={3} container direction="row" alignItems="center" justifyContent="space-between">
+    <Grid2 container direction="row" alignItems="center" justifyContent="space-between">
       <Grid2>{buttonsLeft()}</Grid2>
       {wrapStatusArray ? (
         <Grid2 size={{ xs: 7 }} display={'none'}>
@@ -282,7 +281,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
           open={openProposalDisplay}
           onClose={() => setOpenProposalDisplay(false)}
           onConfirm={submitConfirmed}
-          onConfirmLabel={t('confirmSubmitBtn.label')}
+          onConfirmLabel={'confirmSubmitBtn.label'}
         />
       )}
       {openValidationResults && (

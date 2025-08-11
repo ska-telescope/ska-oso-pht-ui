@@ -1,14 +1,17 @@
 import BuildIcon from '@mui/icons-material/Build';
 import Icon from '../icon/Icon';
 
-interface ScienceIconProps {
+interface TechnicalIconProps {
   disabled?: boolean;
   onClick: Function;
   toolTip?: string;
 }
 
-// TODO : Update the icon import to the correct technical icon when available
-export default function ScienceIcon({ disabled = false, onClick, toolTip = '' }: ScienceIconProps) {
+export default function TechnicalIcon({
+  disabled = false,
+  onClick,
+  toolTip = ''
+}: TechnicalIconProps) {
   return (
     <Icon
       disabled={disabled}

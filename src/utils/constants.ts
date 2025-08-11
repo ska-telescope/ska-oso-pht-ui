@@ -131,6 +131,7 @@ export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5];
 export const ENTRY_HEIGHT = 40;
 
 export const FOOTER_HEIGHT = 20;
+export const FOOTER_HEIGHT_PHT = 60;
 export const FOOTER_SPACER = 130;
 
 export const FREQUENCY_GHZ = 1;
@@ -180,7 +181,7 @@ export const GENERAL = {
   ]
 };
 
-export const HEADER_HEIGHT = 106;
+export const HEADER_HEIGHT = 78;
 
 export const HELP_FONT = 16;
 export const HELP_VIEWPORT = '20vh';

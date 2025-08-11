@@ -13,7 +13,13 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
-import { HELP_FONT, NAV, STATUS_OK, WRAPPER_HEIGHT } from '../../../utils/constants';
+import {
+  FOOTER_HEIGHT_PHT,
+  HELP_FONT,
+  NAV,
+  STATUS_OK,
+  WRAPPER_HEIGHT
+} from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Proposal from '../../../utils/types/proposal';
 import ImageWeightingField from '../../../components/fields/imageWeighting/imageWeighting';
@@ -26,7 +32,6 @@ import { LAB_POSITION } from '../../../utils/constants';
 const BACK_PAGE = 7;
 const PAGE = 13;
 const PAGE_PREFIX = 'SDP';
-const FOOTER_HEIGHT = 40;
 const FIELD_OBS = 'observatoryDataProduct.options';
 const LABEL_WIDTH = 4;
 const LABEL_WIDTH_TICK = 11;
@@ -308,7 +313,13 @@ export default function AddDataProduct() {
 
     return (
       <Paper
-        sx={{ bgcolor: 'transparent', position: 'fixed', bottom: FOOTER_HEIGHT, left: 0, right: 0 }}
+        sx={{
+          bgcolor: 'transparent',
+          position: 'fixed',
+          bottom: FOOTER_HEIGHT_PHT,
+          left: 0,
+          right: 0
+        }}
         elevation={0}
       >
         <Grid2
@@ -329,7 +340,7 @@ export default function AddDataProduct() {
   };
 
   return (
-    <>
+    <Box pt={2}>
       <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
 
       <Grid2
@@ -363,6 +374,6 @@ export default function AddDataProduct() {
         </Grid2>
       </Grid2>
       {pageFooter()}
-    </>
+    </Box>
   );
 }
