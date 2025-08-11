@@ -4,7 +4,6 @@ import {
   clickCreateProposal,
   clickHome,
   clickHomeWarningConfirmation,
-  clickMockLoginButton,
   clickProposalTypePrincipleInvestigator,
   clickSubProposalTypeTargetOfOpportunity,
   initialize,
