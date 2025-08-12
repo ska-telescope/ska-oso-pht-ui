@@ -93,19 +93,19 @@ export default function LandingPage() {
     fetchData();
   }, [fetchList, loggedIn]);
 
-  React.useEffect(() => {
-    const fetchObservatoryData = async () => {
-      const response = await GetObservatoryData(authClient, 1);
-      if (response.error || typeof response === 'string') {
-        setAxiosError(response.toString());
-      } else {
-        // store osd data into storage 3
-        updateAppContent3(response as ObservatoryData);
-      }
-    };
-
-    fetchObservatoryData();
-  }, []);
+  // React.useEffect(() => {
+  //   const fetchObservatoryData = async () => {
+  //     const response = await GetObservatoryData(authClient, 1);
+  //     if (response.error || typeof response === 'string') {
+  //       setAxiosError(response.toString());
+  //     } else {
+  //       // store osd data into storage 3
+  //       updateAppContent3(response as ObservatoryData);
+  //     }
+  //   };
+  //
+  //   fetchObservatoryData();
+  // }, []);
 
   const getTheProposal = async (id: string) => {
     helpComponent({});

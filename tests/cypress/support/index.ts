@@ -15,3 +15,12 @@
 
 import './commands';
 import 'cypress-plugin-tab';
+
+// ✅ Inject mock MSAL instance for Cypress
+if (window.Cypress) {
+  window.msalInstance = {
+    loginRedirect: () => Promise.resolve({ account: { username: 'testuser@domain.com' } }),
+    acquireTokenSilent: () => Promise.resolve({ accessToken: 'fake-access-token' }),
+    getAllAccounts: () => [{ username: 'testuser@domain.com' }]
+  };
+}
