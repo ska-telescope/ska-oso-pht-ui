@@ -14,7 +14,7 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
   const tooltipRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (!svgRef.current || !tooltipRef.current) return;
+    // if (!svgRef.current || !tooltipRef.current) return;
 
     // Dimensions & margins
     const chartWidth = 400;
@@ -201,9 +201,10 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
 
   return (
     <div className="relative">
-      <svg ref={svgRef}></svg>
+      <svg ref={svgRef} role="img"></svg>
       <div
         ref={tooltipRef}
+        data-testid="toolTip"
         className="absolute bg-white border border-gray-300 p-2 rounded shadow-lg pointer-events-none opacity-0 transition-opacity duration-200 text-base"
       ></div>
     </div>

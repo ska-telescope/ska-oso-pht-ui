@@ -1,4 +1,3 @@
-import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
@@ -33,7 +32,9 @@ export default function NumStationsField({
     const str = Math.abs(e).toString();
     const num = Number(str);
     if (num >= rangeLower && num <= rangeUpper) {
-      setValue(num.toString());
+      if (setValue) {
+        setValue(num?.toString());
+      }
     }
   };
 

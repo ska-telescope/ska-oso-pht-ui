@@ -7,6 +7,7 @@ import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { PMT, PATH } from '@/utils/constants';
+import { isReviewerAdmin, isReviewerChair, isReviewer } from '@/utils/aaa/aaaUtils';
 
 export type Children = JSX.Element | JSX.Element[] | null;
 
@@ -36,7 +37,6 @@ export default function ButtonUserMenu({
 
   const { accounts } = useMsal();
   const username = accounts.length > 0 ? accounts[0].name : '';
-  const photo = null;
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     if (onClick) {
@@ -57,17 +57,7 @@ export default function ButtonUserMenu({
         {!username && <ButtonLogin />}
         {username && (
           <Button
-            icon={
-              photo ? (
-                <img
-                  src={photo}
-                  alt="Profile"
-                  style={{ borderRadius: '50%', width: '32px', height: '32px', objectFit: 'cover' }}
-                />
-              ) : (
-                <AccountCircleIcon />
-              )
-            }
+            icon={<AccountCircleIcon />}
             aria-controls={openMenu ? 'user-menu' : undefined}
             aria-description={ariaDescription}
             aria-expanded={openMenu ? 'true' : undefined}
@@ -76,6 +66,7 @@ export default function ButtonUserMenu({
             color={color}
             label={username}
             onClick={handleMenuOpen}
+            showPhoto={true}
             testId="usernameMenu"
             toolTip={toolTip}
             variant={ButtonVariantTypes.Text}
@@ -83,26 +74,36 @@ export default function ButtonUserMenu({
         )}
       </Box>
       <Menu id="user-menu" anchorEl={anchorEl} open={openMenu} onClose={() => setAnchorEl(null)}>
-        <MenuItem key={1} data-testid="menuItemOverview" onClick={() => onMenuSelect(PMT[2])}>
-          {t('overview.title')}
-        </MenuItem>
-        <MenuItem key={2} data-testid="menuItemProposals" onClick={() => onMenuSelect(PATH[0])}>
-          {t('homeBtn.title')}
-        </MenuItem>
-        <MenuItem key={3} data-testid="menuItemPanelSummary" onClick={() => onMenuSelect(PMT[0])}>
-          {t('page.15.title')}
-        </MenuItem>
-        <MenuItem key={4} data-testid="menuItemReviews" onClick={() => onMenuSelect(PMT[1])}>
-          {t('reviewProposalList.title')}
-        </MenuItem>
-        <MenuItem
-          key={5}
-          data-testid="menuItemReviewDecisions"
-          onClick={() => onMenuSelect(PMT[4])}
-        >
-          {t('reviewDecisionsList.title')}
-        </MenuItem>
-        <Divider component="li" />
+        {isReviewerAdmin() && (
+          <MenuItem key={1} data-testid="menuItemOverview" onClick={() => onMenuSelect(PMT[2])}>
+            {t('overview.title')}
+          </MenuItem>
+        )}
+        {(isReviewerAdmin() || isReviewer()) && (
+          <MenuItem key={2} data-testid="menuItemProposals" onClick={() => onMenuSelect(PATH[0])}>
+            {t('homeBtn.title')}
+          </MenuItem>
+        )}
+        {isReviewerAdmin() && (
+          <MenuItem key={3} data-testid="menuItemPanelSummary" onClick={() => onMenuSelect(PMT[0])}>
+            {t('page.15.title')}
+          </MenuItem>
+        )}
+        {isReviewer() && (
+          <MenuItem key={4} data-testid="menuItemReviews" onClick={() => onMenuSelect(PMT[1])}>
+            {t('reviewProposalList.title')}
+          </MenuItem>
+        )}
+        {isReviewerChair() && (
+          <MenuItem
+            key={5}
+            data-testid="menuItemReviewDecisions"
+            onClick={() => onMenuSelect(PMT[4])}
+          >
+            {t('reviewDecisionsList.title')}
+          </MenuItem>
+        )}
+        {(isReviewerAdmin() || isReviewer()) && <Divider component="li" />}
         <MenuItem key={-1} data-testid="menuItemPanelLogout">
           <ButtonLogout isText variant={ButtonVariantTypes.Outlined} />
         </MenuItem>
