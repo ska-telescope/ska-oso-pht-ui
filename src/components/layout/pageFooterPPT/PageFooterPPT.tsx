@@ -2,7 +2,7 @@ import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Grid, Paper } from '@mui/material';
+import { Grid2, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { DUMMY_PROPOSAL_ID, LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
@@ -18,14 +18,9 @@ import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient
 interface PageFooterPPTProps {
   pageNo: number;
   buttonDisabled?: boolean;
-  children?: JSX.Element;
 }
 
-export default function PageFooterPPT({
-  pageNo,
-  buttonDisabled = false,
-  children
-}: PageFooterPPTProps) {
+export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFooterPPTProps) {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const { application, updateAppContent2, updateAppContent5 } = storageObject.useStore();
@@ -120,8 +115,8 @@ export default function PageFooterPPT({
 
   return (
     <Paper sx={{ position: 'fixed', bottom: 40, left: 0, right: 0 }} elevation={0}>
-      <Grid p={4} container direction="row" alignItems="flex-end" justifyContent="space-between">
-        <Grid item>
+      <Grid2 p={4} container direction="row" alignItems="flex-end" justifyContent="space-between">
+        <Grid2>
           {usedPageNo > 0 && (
             <PreviousPageButton
               action={prevPageNav}
@@ -129,8 +124,8 @@ export default function PageFooterPPT({
               title={prevLabel()}
             />
           )}
-        </Grid>
-        <Grid item>
+        </Grid2>
+        <Grid2>
           {(application.content5 as Notification)?.message?.length > 0 && (
             <TimedAlert
               color={(application.content5 as Notification)?.level}
@@ -139,8 +134,8 @@ export default function PageFooterPPT({
               text={(application.content5 as Notification)?.message}
             />
           )}
-        </Grid>
-        <Grid item>
+        </Grid2>
+        <Grid2>
           {usedPageNo < LAST_PAGE - 1 && (
             <NextPageButton
               disabled={buttonDisabled}
@@ -151,8 +146,8 @@ export default function PageFooterPPT({
               action={nextPageClicked}
             />
           )}
-        </Grid>
-      </Grid>
+        </Grid2>
+      </Grid2>
     </Paper>
   );
 }

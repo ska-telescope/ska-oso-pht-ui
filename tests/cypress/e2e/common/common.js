@@ -69,7 +69,6 @@ export const clickAddDataProduct = () => clickButton('addDataProductButton');
 export const clickAddPanel = () => clickButton('plusIcon');
 export const clickAddPanelEntry = () => clickButton('addPanelButton');
 export const clickAddProposal = () => clickButton('addProposalButton');
-export const clickMockLoginButton = () => clickButton('linkedTickBox');
 export const clickCreateProposal = () => clickButton('nextButtonTestId');
 export const clickHome = () => clickButton('homeButtonTestId');
 export const clickHomeWarningConfirmation = () => clickButton('dialogConfirmationButton');

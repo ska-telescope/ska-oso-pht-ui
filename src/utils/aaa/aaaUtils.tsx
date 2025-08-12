@@ -1,7 +1,28 @@
-export const OPS_PROPOSAL_ADMIN = 'ce3627de-8ec2-4a35-ab1e-300eec6a0a50';
-export const OPS_REVIEWER_SCIENCE = '05883c37-b723-4b63-9216-0a789a61cb07';
-export const OPS_REVIEWER_TECHNICAL = '4c45b2ea-1b56-4b2d-b209-8d970b4e39dc';
+import { useUserGroups } from '@ska-telescope/ska-login-page';
+import { APP_OVERRIDE_GROUPS } from '../constants';
 
-export const inGroup = (_inGroup: string) => {
-  return true;
+const OPS_PROPOSAL_ADMIN = 'obs-oauth2role-opsproposaladmin-1-1535351309'; //'ce3627de-8ec2-4a35-ab1e-300eec6a0a50';
+const OPS_REVIEWER_SCIENCE = 'obs-oauth2role-opsreviewersci-1635769025'; // '05883c37-b723-4b63-9216-0a789a61cb07';
+const OPS_REVIEWER_TECHNICAL = 'obs-oauth2role-opsreviewertec-1-1994146425'; // '4c45b2ea-1b56-4b2d-b209-8d970b4e39dc';
+const SW_ENGINEER = 'obs-integrationenvs-oauth2role-sweng-11162868063';
+
+const hasOverride = () => APP_OVERRIDE_GROUPS && APP_OVERRIDE_GROUPS.length > 0;
+
+const testOverride = (group: string) => APP_OVERRIDE_GROUPS.split(',').includes(group);
+
+const PermissionGroup = () => {
+  return useUserGroups();
 };
+
+export const hasAccess = (group: string) =>
+  hasOverride() ? testOverride(group) : PermissionGroup().hasGroup(group);
+
+export const isSoftwareEngineer = () => hasAccess(SW_ENGINEER);
+
+export const isReviewerAdmin = () => hasAccess(SW_ENGINEER) || hasAccess(OPS_PROPOSAL_ADMIN);
+export const isReviewerScience = () => hasAccess(SW_ENGINEER) || hasAccess(OPS_REVIEWER_SCIENCE);
+export const isReviewerTechnical = () =>
+  hasAccess(SW_ENGINEER) || hasAccess(OPS_REVIEWER_TECHNICAL);
+export const isReviewer = () =>
+  hasAccess(SW_ENGINEER) || isReviewerScience() || isReviewerTechnical();
+export const isReviewerChair = () => hasAccess(SW_ENGINEER) || isReviewerAdmin(); // Placeholder for future implementation
