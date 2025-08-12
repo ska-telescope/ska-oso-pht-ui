@@ -1,65 +1,39 @@
-import { SKA_OSO_SERVICES_URL, USE_LOCAL_DATA, OSO_SERVICES_PANEL_PATH } from '@utils/constants.ts';
+import { SKA_OSO_SERVICES_URL, USE_LOCAL_DATA, MSENTRA_GRAPH_API_USERS_PATH } from '@utils/constants.ts';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
-import { MockPanelBackend } from './mockPanelBackend';
-import { Panel, PanelBackend } from '@/utils/types/panel';
-import { PanelProposal, PanelProposalBackend } from '@/utils/types/panelProposal';
-import { PanelReviewer, PanelReviewerBackend } from '@/utils/types/panelReviewer';
+import { EntraUser } from '@/utils/types/teamMember';
+import { MockEntraUserBackend } from './mockEntraUserFrontend';
+
+const MSENTRA_GRAPH_API_URL = "https://graph.microsoft.com/v1.0";
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
 
-const getProposal = (proposal: PanelProposalBackend, panelId: string): PanelProposal => {
+function mapping(data: any): EntraUser {
   return {
-    panelId: panelId,
-    proposalId: proposal.prsl_id,
-    assignedOn: proposal.assigned_on as string
+    userId: data.id,
+    email: data.email,
+    firstName: data.firstName,
+    lastName: data.lastName
   };
-};
-
-const getReviewer = (reviewer: PanelReviewerBackend, panelId: string): PanelReviewer => {
-  return {
-    panelId: panelId,
-    reviewerId: reviewer.reviewer_id,
-    assignedOn: reviewer.assigned_on as string,
-    status: reviewer.status
-  };
-};
-
-export function mapping(inRec: PanelBackend): Panel {
-  const rec: Panel = {
-    id: inRec.panel_id?.toString(),
-    metadata: inRec.metadata, // TODO create metadata backend type and mapping + modify frontend type to be camelCase
-    name: inRec.name,
-    expiresOn: inRec.expires_on, // TODO check why PDM doesn't have expiry date
-    proposals:
-      inRec.proposals?.length > 0
-        ? inRec.proposals.map(proposal => getProposal(proposal, inRec.panel_id))
-        : [],
-    reviewers:
-      inRec.reviewers?.length > 0
-        ? inRec.reviewers.map(reviewer => getReviewer(reviewer, inRec.panel_id))
-        : []
-  };
-  return rec;
 }
 
 /*****************************************************************************************************************************/
 
-export function GetMockPanel(mock = MockPanelBackend): Panel {
-  return mapping(mock);
+export function GetMockEntraUserByEmail(): EntraUser {
+  return mapping(MockEntraUserBackend);
 }
 
 async function GetEntraUserByEmail(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
-  id: string
-): Promise<Panel | string> {
+  skaEmail: string
+): Promise<EntraUser | string> {
   if (USE_LOCAL_DATA) {
-    return GetMockPanel();
+    return GetMockEntraUserByEmail();
   }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_PANEL_PATH}/${id}`;
-    const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
+    const URL_PATH = `https://graph.microsoft.com/v1.0${MSENTRA_GRAPH_API_USERS_PATH}/${skaEmail}`;
+    const result = await authAxiosClient.get(`${URL_PATH}`);
 
     if (!result.data) {
       return 'error.API_UNKNOWN_ERROR';

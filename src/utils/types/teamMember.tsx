@@ -16,6 +16,5 @@ export type EntraUser = {
   userId: string; // Entra ID
   firstName: string;
   lastName: string;
-  email: string;
-  affiliation: string;
+  email: string; // This should always be a SKAO email (@community.skao.int or @skao.int) // userPrincipalName in MS Graph 
 };
