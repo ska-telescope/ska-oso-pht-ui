@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid2, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import useTheme from '@mui/material/styles/useTheme';
 import HomeButton from '../../button/Home/Home';
@@ -25,11 +24,11 @@ import {
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
 import ValidationResults from '../../alerts/validationResults/ValidationResults';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
-import Notification from '../../../utils/types/notification';
 import { Proposal, ProposalBackend } from '../../../utils/types/proposal';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import PostProposalValidate from '../../../services/axios/postProposalValidate/postProposalValidate';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import { useNotify } from '@/utils/notify/useNotify';
 
 interface PageBannerPPTProps {
   pageNo: number;
@@ -43,30 +42,20 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const wrapStatusArray = useMediaQuery(`(max-width:${widthWrapStatusArray})`); // revisit to implement override breakpoint
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
-  const { application, updateAppContent5 } = storageObject.useStore();
+  const { application } = storageObject.useStore();
   const [canSubmit, setCanSubmit] = React.useState(false);
   const [openProposalDisplay, setOpenProposalDisplay] = React.useState(false);
   const [openValidationResults, setOpenValidationResults] = React.useState(false);
   const [validationResults, setValidationResults] = React.useState<string[]>([]);
 
   const authClient = useAxiosAuthClient();
+  const { notifyError, notifySuccess } = useNotify();
 
   const loggedIn = isLoggedIn();
 
   const isDisableEndpoints = () => !loggedIn;
 
   const getProposal = () => application.content2 as Proposal;
-
-  function Notify(str: string, lvl: typeof AlertColorTypes = AlertColorTypes.Info) {
-    const rec: Notification = {
-      level: lvl,
-      message: t(str),
-      okRequired: false
-    };
-    updateAppContent5(rec);
-  }
-  const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
-  const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
   const validateTooltip = () => {
     return 'validationBtn.tooltip';
@@ -88,7 +77,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       }
       const response = await PostProposalValidate(authClient, getProposal());
       if (response.valid && !response.error && results.length === 0) {
-        NotifyOK(`validationBtn.${response.valid}`);
+        notifySuccess(t(`validationBtn.${response.valid}`));
         setCanSubmit(true);
       } else {
         setValidationResults(response.error ? results.concat(response.error) : results);
@@ -106,10 +95,10 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   };
 
   const updateProposalResponse = (response: ProposalBackend | { error: string }) => {
-    if (response && !response.error) {
-      NotifyOK('saveBtn.success');
+    if (response && !('error' in response)) {
+      notifySuccess(t('saveBtn.success'));
     } else {
-      NotifyError(response.error ?? 'An unknown error occurred');
+      notifyError('error' in response ? response.error : 'An unknown error occurred');
     }
   };
 
@@ -125,12 +114,12 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   const submitConfirmed = async () => {
     const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.SUBMITTED);
-    if (response && !response.error) {
-      NotifyOK(response.valid);
+    if (response && !('error' in response)) {
+      notifySuccess(t('submitBtn.success'));
       setOpenProposalDisplay(false);
       navigate(PATH[0]);
     } else {
-      NotifyError(response.error ?? 'An unknown error occurred');
+      notifyError('error' in response ? response.error : 'An unknown error occurred');
       setOpenProposalDisplay(false);
     }
   };

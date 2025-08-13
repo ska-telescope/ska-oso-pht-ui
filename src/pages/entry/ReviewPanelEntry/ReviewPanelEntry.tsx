@@ -2,17 +2,11 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Grid2, Paper } from '@mui/material';
-import {
-  AlertColorTypes,
-  Spacer,
-  SPACER_VERTICAL,
-  DateEntry
-} from '@ska-telescope/ska-gui-components';
+import { Spacer, SPACER_VERTICAL, DateEntry } from '@ska-telescope/ska-gui-components';
 import { FOOTER_SPACER, WRAPPER_HEIGHT, PMT, BANNER_PMT_SPACER } from '@utils/constants.ts';
 import moment from 'moment';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import AddButton from '../../../components/button/Add/Add';
-import Notification from '../../../utils/types/notification';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import BackButton from '@/components/button/Back/Back';
 import PanelNameField from '@/components/fields/panelName/panelName';
@@ -21,18 +15,20 @@ import { Panel } from '@/utils/types/panel';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import { useNotify } from '@/utils/notify/useNotify';
 
 export default function ReviewPanelEntry() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const locationProperties = useLocation();
+  const { notifyError, notifySuccess, notifyWarning } = useNotify();
 
   const isEdit = () => locationProperties.state !== null;
 
   const [panelName, setPanelName] = React.useState('');
   const [panelDateCreated, setPanelDateCreated] = React.useState(moment().format('YYYY-MM-DD'));
   const [panelDateExpiry, setPanelDateExpiry] = React.useState(moment().format('yyyy-MM-DD'));
-  const { application, updateAppContent5 } = storageObject.useStore();
+  const { application } = storageObject.useStore();
   const getObservatoryData = () => application.content3 as ObservatoryData;
   const authClient = useAxiosAuthClient();
 
@@ -120,30 +116,17 @@ export default function ReviewPanelEntry() {
     };
   };
 
-  function Notify(str: string, lvl = AlertColorTypes.Info) {
-    const rec: Notification = {
-      level: lvl,
-      message: str,
-      okRequired: false
-    };
-    updateAppContent5(rec);
-  }
-
-  const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
-  const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
-  const NotifyWarning = (str: string) => Notify(str, AlertColorTypes.Warning);
-
   const createPanel = async () => {
-    NotifyWarning(t('addPanel.warning'));
+    notifyWarning(t('addPanel.warning'));
     const response: string | { error: string } = await PostPanel(
       authClient,
       getPanel(),
       getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
     );
     if (typeof response === 'object' && response?.error) {
-      NotifyError(response?.error);
+      notifyError(response?.error);
     } else {
-      NotifyOK(t('addPanel.success') + response);
+      notifySuccess(t('addPanel.success') + response);
       navigate(PMT[0]);
     }
   };

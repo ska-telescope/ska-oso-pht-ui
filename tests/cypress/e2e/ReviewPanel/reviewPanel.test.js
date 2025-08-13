@@ -12,8 +12,7 @@ import {
   clickPanelMaintenanceButton,
   enterPanelName,
   clickAddPanelEntry,
-  checkFieldDisabled,
-  verifyWarning
+  checkFieldDisabled
 } from '../common/common';
 
 describe('Review Panel', () => {

@@ -3,7 +3,7 @@ import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTranslation } from 'react-i18next';
 import { Grid2 } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { AlertColorTypes, FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
+import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
 import Shell from '../../components/layout/Shell/Shell';
 import HelpPanel from '../../components/info/helpPanel/HelpPanel';
@@ -20,21 +20,21 @@ import PDFWrapper from '../../components/layout/PDFWrapper/PDFWrapper';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 import DeleteButton from '../../components/button/Delete/Delete';
 
-import Notification from '../../utils/types/notification';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import { useNotify } from '@/utils/notify/useNotify';
 
-const PAGE = 6;
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
+const PAGE = 6;
 
 export default function TechnicalPage() {
   const { t } = useTranslation('pht');
+  const { notifyError, notifySuccess } = useNotify();
   const {
     application,
     helpComponent,
     updateAppContent1,
-    updateAppContent2,
-    updateAppContent5
+    updateAppContent2
   } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentFile, setCurrentFile] = React.useState<string | null | undefined>(null);
@@ -101,7 +101,7 @@ export default function TechnicalPage() {
         technicalPDF: technicalPDFUploaded,
         technicalLoadStatus: FileUploadStatus.OK
       });
-      NotifyOK('pdfUpload.technical.success');
+      notifySuccess(t('pdfUpload.technical.success'), NOTIFICATION_DELAY_IN_SECONDS);
     } catch (e) {
       setFile(null);
       setUploadStatus(FileUploadStatus.ERROR);
@@ -146,10 +146,10 @@ export default function TechnicalPage() {
         technicalLoadStatus: FileUploadStatus.INITIAL
       });
 
-      NotifyOK('pdfDelete.technical.success');
+      notifySuccess(t('pdfDelete.technical.success'), NOTIFICATION_DELAY_IN_SECONDS);
     } catch (e) {
       new Error(t('pdfDelete.technical.error'));
-      NotifyError('pdfDelete.technical.error');
+      notifyError(t('pdfDelete.technical.error'), NOTIFICATION_DELAY_IN_SECONDS);
     }
   };
 
@@ -167,19 +167,6 @@ export default function TechnicalPage() {
       new Error(t('pdfDownload.error'));
     }
   };
-
-  function Notify(str: string, lvl: typeof AlertColorTypes = AlertColorTypes.Info) {
-    const rec: Notification = {
-      level: lvl,
-      delay: NOTIFICATION_DELAY_IN_SECONDS,
-      message: t(str),
-      okRequired: false
-    };
-    updateAppContent5(rec);
-  }
-
-  const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
-  const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);

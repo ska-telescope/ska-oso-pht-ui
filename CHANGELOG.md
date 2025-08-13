@@ -8,7 +8,7 @@ UNRELEASED
 ------------
 
 * Security : Added AAA across all oso-services
-* Changed  : oso-services v2.0.1
+* Changed  : oso-services v2.0.3
 
 3.1.0
 

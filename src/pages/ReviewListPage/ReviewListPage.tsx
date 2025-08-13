@@ -18,14 +18,12 @@ import {
   PANEL_DECISION_STATUS,
   REVIEW_TYPE,
   FEASIBLE_NO,
-  TMP_REVIEWER_ID,
   DEFAULT_USER
 } from '@utils/constants.ts';
 import GetProposal from '@services/axios/getProposal/getProposal.tsx';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
-import Notification from '../../utils/types/notification';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import { PMT, PROPOSAL_STATUS } from '@/utils/constants';
 import SubmitButton from '@/components/button/Submit/Submit';
@@ -39,6 +37,8 @@ import PostProposalReview from '@/services/axios/post/postProposalReview/postPro
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import GetProposalByStatusList from '@/services/axios/getProposalByStatusList/getProposalByStatusList';
+import { useNotify } from '@/utils/notify/useNotify';
+import { getUserId } from '@/utils/aaa/aaaUtils';
 
 /*
  * Process for retrieving the data for the list
@@ -56,8 +56,9 @@ import GetProposalByStatusList from '@/services/axios/getProposalByStatusList/ge
 export default function ReviewListPage() {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
+  const { notifyError, notifySuccess } = useNotify();
 
-  const { application, updateAppContent2, updateAppContent5 } = storageObject.useStore();
+  const { application, updateAppContent2 } = storageObject.useStore();
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
@@ -70,6 +71,7 @@ export default function ReviewListPage() {
   const getCycleId = () => getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId;
 
   const authClient = useAxiosAuthClient();
+  const userId = getUserId();
 
   const DATA_GRID_HEIGHT = '60vh';
 
@@ -79,9 +81,9 @@ export default function ReviewListPage() {
 
   React.useEffect(() => {
     const GetReviewPanels = async () => {
-      const response = await GetPanelList(authClient); // TODO : Add the user_id as a property to the function
+      const response = await GetPanelList(authClient);
       if (typeof response === 'string') {
-        NotifyError(response);
+        notifyError(response);
       } else {
         setPanelData((response as unknown) as Panel[]);
       }
@@ -93,7 +95,7 @@ export default function ReviewListPage() {
     const fetchProposalReviewData = async (_proposalId: string) => {
       const response = await GetProposalReviewList(authClient, DEFAULT_USER);
       if (typeof response === 'string') {
-        NotifyError(response);
+        notifyError(response);
       } else {
         setProposalReviews(proposalReviews => [...proposalReviews, ...response]);
       }
@@ -110,7 +112,7 @@ export default function ReviewListPage() {
     const fetchProposalData = async () => {
       const response = await GetProposalByStatusList(authClient, PROPOSAL_STATUS.SUBMITTED); // TODO : Temporary implementation to get all submitted proposals
       if (typeof response === 'string') {
-        NotifyError(response);
+        notifyError(response);
       } else {
         const panelProposalIds = panelData.flatMap(panel =>
           Array.isArray(panel.proposals) ? panel.proposals.map(proposal => proposal.proposalId) : []
@@ -124,8 +126,6 @@ export default function ReviewListPage() {
     };
     fetchProposalData();
   }, [panelData]);
-
-  const getUser = () => TMP_REVIEWER_ID; // TODO
 
   const getScienceReviewType = (row: any): ScienceReview => {
     return {
@@ -171,7 +171,7 @@ export default function ReviewListPage() {
       },
       panelId: getCycleId(),
       cycle: '',
-      reviewerId: getUser(),
+      reviewerId: userId,
       submittedOn: '',
       submittedBy: '',
       status: PANEL_DECISION_STATUS.DECIDED
@@ -180,21 +180,10 @@ export default function ReviewListPage() {
 
   /*---------------------------------------------------------------------------*/
 
-  function Notify(str: string, lvl = AlertColorTypes.Info) {
-    const rec: Notification = {
-      level: lvl,
-      message: str
-    };
-    updateAppContent5(rec);
-  }
-
-  const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
-  const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
-
   const updateReview = async (row: any) => {
     const rec = getReview(row);
     if (!rec) {
-      NotifyError('Unable to find review'); // TODO : Should check this and add to json
+      notifyError('Unable to find review'); // TODO : Should check this and add to json
     }
     const response: string | { error: string } = await PostProposalReview(
       authClient,
@@ -202,9 +191,9 @@ export default function ReviewListPage() {
       getObservatoryData().observatoryPolicy?.cycleInformation?.cycleId
     );
     if (typeof response === 'object' && response?.error) {
-      NotifyError(response?.error);
+      notifyError(response?.error);
     } else {
-      NotifyOK(t('addReview.success'));
+      notifySuccess(t('addReview.success'));
     }
   };
 
@@ -442,7 +431,7 @@ export default function ReviewListPage() {
             ? technicalReviews[technicalReviews.length - 1]
             : blankReviewTec(panelData[0].id, 'To Do');
         const scienceReviews = reviews.filter(
-          r => r.reviewType?.kind === REVIEW_TYPE.SCIENCE && r.reviewerId === TMP_REVIEWER_ID
+          r => r.reviewType?.kind === REVIEW_TYPE.SCIENCE && r.reviewerId === userId
         );
         const scienceReview =
           scienceReviews.length > 0 ? scienceReviews[0] : blankReviewSci(panelData[0].id, 'To Do');
