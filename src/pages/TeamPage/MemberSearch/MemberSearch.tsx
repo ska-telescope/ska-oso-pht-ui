@@ -1,18 +1,13 @@
 /* eslint-disable react/no-unstable-nested-components */
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
-import GetEntraUserByEmail from '@/services/axios/getEntraUserByEmail/getEntraUserByEmail';
-import React from 'react';
+import GetUserByEmail from '@/services/axios/getUserByEmail/getUserByEmail';
 
 export default function MemberSearch() {
 
-  const authClient = useAxiosAuthClient();
-
   const fetchData = async () => {
-    const response = await GetEntraUserByEmail(authClient, 'sarah.sattar@community.skao.int');
-  }
+    const response = await GetUserByEmail();
+  };
 
   fetchData();
 
-  
   return <p>To be implemented at a later date</p>;
 }

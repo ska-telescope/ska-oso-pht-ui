@@ -1,6 +1,6 @@
 import { LABEL_POSITION, TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
-import { env } from '@/env';
 import Target from './types/target';
+import { env } from '@/env';
 
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const USE_LOCAL_DATA_SENSITIVITY_CALC =
@@ -14,15 +14,16 @@ export const OSO_SERVICES_REVIEWERS_PATH = '/pht/reviewers';
 export const OSO_SERVICES_PANEL_PATH = '/pht/panels';
 export const OSO_SERVICES_PANEL_DECISIONS_PATH = '/pht/panel-decisions';
 export const OSO_SERVICES_REPORT_PATH = '/pht/report/';
+export const OSO_SERVICES_USERS_PATH = '/pht/users';
 //
 export const MSENTRA_CLIENT_ID = env.MSENTRA_CLIENT_ID;
 export const MSENTRA_TENANT_ID = env.MSENTRA_TENANT_ID;
 export const MSENTRA_REDIRECT_URI = env.MSENTRA_REDIRECT_URI;
 export const MSENTRA_API_URI = 'api://e4d6bb9b-cdd0-46c4-b30a-d045091b501b';
 //
-export const MSENTRA_GRAPH_API_USERS_PATH = '/users';
 
 export const APP_OVERRIDE_GROUPS = env.REACT_APP_OVERRIDE_GROUPS; // Set to Let for testing purposes.
+export const TEMP_SARAH_TOKEN = env.TEMP_MS_GRAPH_TOKEN;
 
 /*****************************************/
 
