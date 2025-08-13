@@ -1,8 +1,7 @@
 import * as React from 'react';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import Notification from '../../../utils/types/notification';
 import StandardAlert from '../standardAlert/StandardAlert';
+import { useNotify } from '@/utils/notify/useNotify';
 
 const SECS = 2000;
 
@@ -15,19 +14,10 @@ interface TimedAlertProps {
 
 export default function TimedAlert({ color, delay = 2, testId, text }: TimedAlertProps) {
   const [show, setShow] = React.useState(false);
-  const { updateAppContent5 } = storageObject.useStore();
-
-  function Notify(str: string, lvl: typeof AlertColorTypes = AlertColorTypes.Info) {
-    const rec: Notification = {
-      level: lvl,
-      message: str,
-      okRequired: false
-    };
-    updateAppContent5(rec);
-  }
+  const { notifyClear } = useNotify();
 
   const closeFunction = () => {
-    Notify('');
+    notifyClear();
     setShow(false);
   };
 

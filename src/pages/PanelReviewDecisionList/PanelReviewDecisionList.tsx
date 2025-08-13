@@ -9,13 +9,11 @@ import {
   BANNER_PMT_SPACER,
   DEFAULT_USER,
   PANEL_DECISION_STATUS,
-  PROPOSAL_STATUS,
-  TMP_REVIEWER_ID
+  PROPOSAL_STATUS
 } from '../../utils/constants';
 import Proposal from '../../utils/types/proposal';
 import { FOOTER_SPACER } from '../../utils/constants';
 
-import Notification from '../../utils/types/notification';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import TableReviewDecision from '@/components/grid/tableReviewDecision/TableReviewDecision';
 import { ProposalReview, ScienceReview } from '@/utils/types/proposalReview';
@@ -29,6 +27,8 @@ import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import GetProposalByStatusList from '@/services/axios/getProposalByStatusList/getProposalByStatusList';
 import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
+import { useNotify } from '@/utils/notify/useNotify';
+import { getUserId } from '@/utils/aaa/aaaUtils';
 
 /*
  * Process for retrieving the data for the list
@@ -45,7 +45,8 @@ import PostProposalReview from '@/services/axios/post/postProposalReview/postPro
 
 export default function ReviewDecisionListPage() {
   const { t } = useTranslation('pht');
-  const { application, updateAppContent5 } = storageObject.useStore();
+  const { application } = storageObject.useStore();
+  const { notifyError, notifySuccess } = useNotify();
 
   const [searchTerm, setSearchTerm] = React.useState('');
 
@@ -56,17 +57,9 @@ export default function ReviewDecisionListPage() {
   const [reviewDecisions, setReviewDecisions] = React.useState<PanelDecision[]>([]);
   const authClient = useAxiosAuthClient();
 
+  const userId = getUserId();
+
   /*--------------------------------------------------------------------------*/
-
-  function Notify(str: string, lvl = AlertColorTypes.Info) {
-    const rec: Notification = {
-      level: lvl,
-      message: str
-    };
-    updateAppContent5(rec);
-  }
-
-  const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
 
   const getObservatoryData = () => application.content3 as ObservatoryData;
   const getCycleId = () => getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId;
@@ -79,8 +72,6 @@ export default function ReviewDecisionListPage() {
     return Math.round(average);
   };
 
-  const getUser = () => TMP_REVIEWER_ID; // TODO
-
   const getDateFormatted = () => moment().format('YYYY-MM-DD');
 
   const getReviewDecision = (item: { id: any; recommendation: any; reviews: any[] }) => {
@@ -88,7 +79,7 @@ export default function ReviewDecisionListPage() {
     return {
       id:
         'pnld-' +
-        getUser() +
+        userId +
         '-' +
         getDateFormatted() +
         '-00001-' +
@@ -97,7 +88,7 @@ export default function ReviewDecisionListPage() {
       cycle: getCycleId(),
       proposalId: item.id,
       decidedOn: new Date().toISOString(),
-      decidedBy: getUser(),
+      decidedBy: userId,
       recommendation: item.recommendation,
       rank: calculateRank(filtered),
       status: PANEL_DECISION_STATUS.DECIDED
@@ -105,9 +96,13 @@ export default function ReviewDecisionListPage() {
   };
 
   const updateReview = async (review: ProposalReview) => {
-    const response: string | { error: string } = await PostProposalReview(review, getCycleId());
+    const response: string | { error: string } = await PostProposalReview(
+      authClient,
+      review,
+      getCycleId()
+    );
     if (typeof response === 'object' && response?.error) {
-      Notify(response?.error, AlertColorTypes.Error);
+      notifyError(response?.error, AlertColorTypes.Error);
     }
   };
 
@@ -138,10 +133,10 @@ export default function ReviewDecisionListPage() {
       getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
     );
     if (typeof response === 'object' && response?.error) {
-      Notify(response?.error, AlertColorTypes.Error);
+      notifyError(response?.error, AlertColorTypes.Error);
     } else {
       fetchReviewDecisionData();
-      Notify(t('addReview.success'), AlertColorTypes.Success);
+      notifySuccess(t('addReview.success'), AlertColorTypes.Success);
     }
   };
 
@@ -149,10 +144,11 @@ export default function ReviewDecisionListPage() {
 
   const fetchReviewDecisionData = async () => {
     const response = await getPanelDecisionList(
+      authClient,
       getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
     ); // TODO : add id of the logged in user
     if (typeof response === 'string') {
-      NotifyError(response);
+      notifyError(response);
     } else {
       setReviewDecisions(response);
     }
@@ -166,7 +162,7 @@ export default function ReviewDecisionListPage() {
     const GetReviewPanels = async () => {
       const response = await GetPanelList(authClient); // TODO : Add the user_id as a property to the function
       if (typeof response === 'string') {
-        NotifyError(response);
+        notifyError(response);
       } else {
         setPanelData((response as unknown) as Panel[]);
       }
@@ -178,7 +174,7 @@ export default function ReviewDecisionListPage() {
     const fetchProposalData = async () => {
       const response = await GetProposalByStatusList(authClient, PROPOSAL_STATUS.SUBMITTED); // TODO : Temporary implementation to get all proposals
       if (typeof response === 'string') {
-        NotifyError(response);
+        notifyError(response);
       } else {
         const panelProposalIds = panelData.flatMap(panel =>
           Array.isArray(panel.proposals) ? panel.proposals.map(proposal => proposal.proposalId) : []
@@ -192,7 +188,7 @@ export default function ReviewDecisionListPage() {
     const fetchProposalReviewData = async () => {
       const response = await GetProposalReviewList(authClient, DEFAULT_USER);
       if (typeof response === 'string') {
-        NotifyError(response);
+        notifyError(response);
       } else {
         setProposalReviews(response);
       }
@@ -203,7 +199,7 @@ export default function ReviewDecisionListPage() {
         getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
       ); // TODO : add id of the logged in user
       if (typeof response === 'string') {
-        NotifyError(response);
+        notifyError(response);
       } else {
         setReviewDecisions(response);
       }

@@ -17,21 +17,13 @@ import {
   Grid2
 } from '@mui/material';
 import { ChevronRight, ExpandMore } from '@mui/icons-material';
-import { AlertColorTypes, StatusIcon, TextEntry } from '@ska-telescope/ska-gui-components';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { useNavigate } from 'react-router-dom';
-import Notification from '@/utils/types/notification';
+import { TextEntry } from '@ska-telescope/ska-gui-components';
 import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
-import ViewIcon from '@/components/icon/viewIcon/viewIcon';
 import SubmitButton from '@/components/button/Submit/Submit';
 import { presentDate, presentLatex, presentTime } from '@/utils/present/present';
-import GetProposal from '@/services/axios/getProposal/getProposal';
-import { validateProposal } from '@/utils/proposalValidation';
-import { PMT } from '@/utils/constants';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import TableScienceReviews from '@/components/grid/tableScienceReviews/TableScienceReviews';
 
 const FINAL_COMMENTS_HEIGHT = 43; // Height in vh for the final comments field
-const STATUS_SIZE = 20;
 
 interface TableReviewDecisionProps {
   data: any;
@@ -46,20 +38,10 @@ export default function TableReviewDecision({
 }: TableReviewDecisionProps) {
   const { t } = useTranslation('pht');
   const theme = useTheme();
-  const navigate = useNavigate();
-
-  const {
-    clearApp,
-    updateAppContent1,
-    updateAppContent2,
-    updateAppContent5
-  } = storageObject.useStore();
 
   const expandButtonRefs = React.useRef<{ [key: number]: HTMLButtonElement | null }>({});
 
   const [expandedRows, setExpandedRows] = React.useState(new Set<number>());
-
-  const authClient = useAxiosAuthClient();
 
   const submitFunctionClicked = (item: any) => {
     submitFunction(item);
@@ -93,41 +75,6 @@ export default function TableReviewDecision({
     setTimeout(() => {
       document.body.removeChild(announcement);
     }, 1000);
-  };
-
-  function Notify(str: string, lvl = AlertColorTypes.Info) {
-    const rec: Notification = {
-      level: lvl,
-      message: str
-    };
-    updateAppContent5(rec);
-  }
-
-  const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
-
-  const getTheProposal = async (id: string) => {
-    clearApp();
-
-    const response = await GetProposal(authClient, id);
-    if (typeof response === 'string') {
-      NotifyError(t('proposal.error'));
-      return false;
-    } else {
-      updateAppContent1(validateProposal(response));
-      updateAppContent2(response);
-      validateProposal(response);
-      return true;
-    }
-  };
-
-  const handleViewAction = async (item: any, detail: any) => {
-    const output = item;
-    output.reviews = [detail];
-    getTheProposal(item.id).then(success => {
-      if (success === true) {
-        navigate(PMT[5], { replace: true, state: output });
-      }
-    });
   };
 
   const calculateRank = (details: Array<any>) => {
@@ -317,210 +264,67 @@ export default function TableReviewDecision({
                       role="gridcell"
                     >
                       <Collapse in={expandedRows.has(item.id)} timeout="auto" unmountOnExit>
-                        <Box
-                          id={`employee-details-${item.id}`}
-                          role="region"
-                          aria-label={`Additional details for ${item.title}`}
-                          data-testid={`employee-details-${item.id}`}
-                          sx={{
-                            margin: 1,
-                            backgroundColor:
-                              theme.palette.mode === 'dark'
-                                ? theme.palette.grey[900]
-                                : theme.palette.grey[50],
-                            borderRadius: 1,
-                            border: `1px solid ${theme.palette.divider}`,
-                            overflow: 'hidden'
-                          }}
-                        >
-                          <Table aria-label={`Review comments and ranks for ${item.title}`}>
-                            <TableHead>
-                              <TableRow>
-                                <TableCell sx={{ fontWeight: 'bold', width: '60px' }}>
-                                  {t('status.label')}
-                                </TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }}>
-                                  {t('generalComments.label')}
-                                </TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }}>
-                                  {t('srcNetComments.label')}
-                                </TableCell>
-                                <TableCell sx={{ fontWeight: 'bold', width: '120px' }}>
-                                  {t('rank.label')}
-                                </TableCell>
-                                <TableCell sx={{ fontWeight: 'bold', width: '60px' }}>
-                                  {t('tableReviewDecision.actions')}
-                                </TableCell>
-                              </TableRow>
-                            </TableHead>
-                            <TableBody>
-                              {item.reviews?.map((detail, detailIndex) => (
-                                <TableRow key={detailIndex}>
-                                  <TableCell
-                                    sx={{
-                                      borderBottom: `1px solid ${theme.palette.divider}`,
-                                      py: 1.5,
-                                      px: 2
-                                    }}
-                                  >
-                                    <Typography variant="body2" sx={{ color: 'text.primary' }}>
-                                      {detail?.status}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell
-                                    sx={{
-                                      borderBottom: `1px solid ${theme.palette.divider}`,
-                                      py: 1.5,
-                                      px: 2
-                                    }}
-                                  >
-                                    <Typography variant="body2" sx={{ color: 'text.primary' }}>
-                                      {detail.comments}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell
-                                    sx={{
-                                      borderBottom: `1px solid ${theme.palette.divider}`,
-                                      py: 1.5,
-                                      px: 2
-                                    }}
-                                  >
-                                    <Typography variant="body2" sx={{ color: 'text.primary' }}>
-                                      {detail.srcNet}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell
-                                    sx={{
-                                      borderBottom: `1px solid ${theme.palette.divider}`,
-                                      py: 1.5,
-                                      px: 2
-                                    }}
-                                  >
-                                    <Typography variant="body2" sx={{ color: 'text.primary' }}>
-                                      {detail.reviewType.rank}
-                                    </Typography>
-                                  </TableCell>
-                                  <TableCell
-                                    sx={{
-                                      py: 1.5,
-                                      px: 2
-                                    }}
-                                  >
-                                    <Grid2
-                                      container
-                                      direction="row"
-                                      alignItems="center"
-                                      gap={1}
-                                      wrap="nowrap"
-                                    >
-                                      <Grid2>
-                                        <IconButton
-                                          onClick={() =>
-                                            detail.status === 'To Do'
-                                              ? null
-                                              : excludeFunction(detail)
-                                          }
-                                          style={{ cursor: 'hand' }}
-                                          // CODE BELOW WILL BE IMPLEMENTED AT A LATER DATE
-                                          // disabled={
-                                          //   !detail.reviewType.excludedFromDecision &&
-                                          //   item.reviews.filter(
-                                          //     el => el.reviewType.excludedFromDecision === false
-                                          //   ).length < 2
-                                          // }
-                                        >
-                                          <StatusIcon
-                                            testId={`includeIcon-${item.id}-${detailIndex}`}
-                                            icon
-                                            level={
-                                              detail.status === 'To Do' ||
-                                              detail.reviewType.excludedFromDecision
-                                                ? 1
-                                                : 0
-                                            }
-                                            size={STATUS_SIZE}
-                                          />
-                                        </IconButton>
-                                      </Grid2>
-                                      <Grid2>
-                                        <ViewIcon
-                                          onClick={() => handleViewAction(item, detail)}
-                                          aria-label={`View detail ${detailIndex + 1} for ${
-                                            item.title
-                                          }`}
-                                          data-testid={`view-detail-button-${item.id}-${detailIndex}`}
-                                          toolTip="View detail"
-                                        />
-                                      </Grid2>
-                                    </Grid2>
-                                  </TableCell>
-                                </TableRow>
-                              ))}
-                            </TableBody>
-                          </Table>
+                        <TableScienceReviews data={item} excludeFunction={excludeFunction} />
 
-                          <Box p={2}>
-                            <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start' }}>
-                              <Box sx={{ flex: 1 }}>
-                                <Stack>
-                                  <Grid2
-                                    p={2}
-                                    container
-                                    direction="row"
-                                    alignItems="center"
-                                    justifyContent="space-between"
-                                    gap={1}
-                                  >
-                                    <Grid2>
-                                      <Typography variant="h6" fontWeight="bold">
-                                        {t('tableReviewDecision.decisionComments')}
-                                      </Typography>
-                                    </Grid2>
-                                    <Grid2>
-                                      <Typography variant="h6">
-                                        {`${t('tableReviewDecision.decisionScore')} ${calculateRank(
-                                          item.reviews
-                                        )}`}
-                                      </Typography>
-                                    </Grid2>
-                                    <Grid2>
-                                      <SubmitButton
-                                        action={() => submitFunctionClicked(item)}
-                                        aria-label={`Submit employee data for ${item.title}`}
-                                        data-testid={`submit-employee-button-${item.id}`}
-                                        toolTip="decisionSubmit.help"
-                                      />
-                                    </Grid2>
+                        <Box p={2}>
+                          <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start' }}>
+                            <Box sx={{ flex: 1 }}>
+                              <Stack>
+                                <Grid2
+                                  p={2}
+                                  container
+                                  direction="row"
+                                  alignItems="center"
+                                  justifyContent="space-between"
+                                  gap={1}
+                                >
+                                  <Grid2>
+                                    <Typography variant="h6" fontWeight="bold">
+                                      {t('tableReviewDecision.decisionComments')}
+                                    </Typography>
                                   </Grid2>
-                                  <Box
-                                    m={1}
-                                    sx={{
-                                      maxHeight: `calc(75vh - 100px)`,
-                                      overflowY: 'auto',
-                                      width: '99%',
-                                      display: 'flex',
-                                      flexDirection: 'column',
-                                      backgroundColor: 'white',
-                                      borderColor: 'divider',
-                                      borderWidth: 1,
-                                      borderStyle: 'solid',
-                                      borderRadius: 2
-                                    }}
-                                  >
-                                    <TextEntry
-                                      label={''}
-                                      testId="finalCommentsId"
-                                      rows={
-                                        ((FINAL_COMMENTS_HEIGHT / 100) * window.innerHeight) / 27
-                                      }
-                                      setValue={(val: string) => {
-                                        item.recommendation = val;
-                                      }}
-                                      value={item.recommendation}
+                                  <Grid2>
+                                    <Typography variant="h6">
+                                      {`${t('tableReviewDecision.decisionScore')} ${calculateRank(
+                                        item.reviews
+                                      )}`}
+                                    </Typography>
+                                  </Grid2>
+                                  <Grid2>
+                                    <SubmitButton
+                                      action={() => submitFunctionClicked(item)}
+                                      aria-label={`Submit employee data for ${item.title}`}
+                                      data-testid={`submit-employee-button-${item.id}`}
+                                      toolTip="decisionSubmit.help"
                                     />
-                                  </Box>
-                                </Stack>
-                              </Box>
+                                  </Grid2>
+                                </Grid2>
+                                <Box
+                                  m={1}
+                                  sx={{
+                                    maxHeight: `calc(75vh - 100px)`,
+                                    overflowY: 'auto',
+                                    width: '99%',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    backgroundColor: 'white',
+                                    borderColor: 'divider',
+                                    borderWidth: 1,
+                                    borderStyle: 'solid',
+                                    borderRadius: 2
+                                  }}
+                                >
+                                  <TextEntry
+                                    label={''}
+                                    testId="finalCommentsId"
+                                    rows={((FINAL_COMMENTS_HEIGHT / 100) * window.innerHeight) / 27}
+                                    setValue={(val: string) => {
+                                      item.recommendation = val;
+                                    }}
+                                    value={item.recommendation}
+                                  />
+                                </Box>
+                              </Stack>
                             </Box>
                           </Box>
                         </Box>

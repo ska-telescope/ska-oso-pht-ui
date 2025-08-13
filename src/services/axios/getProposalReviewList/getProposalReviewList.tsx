@@ -27,14 +27,14 @@ export function GetMockProposalReviewList(mock = MockProposalReviewListBackend):
 
 async function GetProposalReviewList(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
-  proposalId: string
+  userId: string
 ): Promise<ProposalReview[] | string> {
   if (USE_LOCAL_DATA) {
     return GetMockProposalReviewList();
   }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_REVIEWS_PATH}/list/${proposalId}`;
+    const URL_PATH = `${OSO_SERVICES_REVIEWS_PATH}/list/${userId}`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
     if (!result || !Array.isArray(result.data)) {
       return 'error.API_UNKNOWN_ERROR';
