@@ -5,8 +5,7 @@ import {
   USE_LOCAL_DATA,
   PROJECTS,
   GENERAL,
-  OSO_SERVICES_PROPOSAL_PATH,
-  DEFAULT_USER
+  OSO_SERVICES_PROPOSAL_PATH
 } from '../../../utils/constants';
 import { InvestigatorBackend } from '../../../utils/types/investigator';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
@@ -102,7 +101,7 @@ async function GetProposalList(
   }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/list/` + DEFAULT_USER;
+    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/list/`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
 
     if (!result || !Array.isArray(result.data)) {
