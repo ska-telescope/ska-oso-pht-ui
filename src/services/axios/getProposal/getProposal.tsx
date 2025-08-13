@@ -594,7 +594,7 @@ export function mapping(inRec: ProposalBackend): Proposal {
     createdBy: inRec.metadata?.created_by,
     version: inRec.metadata?.version,
     cycle: inRec.cycle,
-    team: getTeamMembers(inRec.info.investigators),
+    investigators: getTeamMembers(inRec.info.investigators),
     abstract: inRec.info.abstract,
     scienceCategory: getScienceCategory(inRec.info.science_category),
     scienceSubCategory: [getScienceSubCategory()],

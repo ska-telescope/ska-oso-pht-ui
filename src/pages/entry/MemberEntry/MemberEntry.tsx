@@ -145,7 +145,7 @@ export default function MemberEntry() {
   };
 
   function AddTeamMember() {
-    const currentTeam = getProposal().team;
+    const currentTeam = getProposal().investigators;
     let highestId = currentTeam?.reduce(
       (acc, teamMember) => (Number(teamMember.id) > acc ? Number(teamMember.id) : acc),
       0
@@ -166,7 +166,7 @@ export default function MemberEntry() {
       officeLocation: null,
       jobTitle: null
     };
-    setProposal({ ...getProposal(), team: [...currentTeam, newTeamMember] });
+    setProposal({ ...getProposal(), investigators: [...currentTeam, newTeamMember] });
   }
 
   async function sendEmailInvite(email: string, prsl_id: string): Promise<boolean> {

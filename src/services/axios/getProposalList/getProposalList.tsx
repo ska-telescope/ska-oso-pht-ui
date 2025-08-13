@@ -78,7 +78,7 @@ export function mappingList(inRec: ProposalBackend[]): Proposal[] {
         : ((null as unknown) as number),
       title: tmp.info?.title,
       cycle: tmp?.cycle,
-      team: tmp.info?.investigators ? getTeam(tmp.info.investigators) : [],
+      investigators: tmp.info?.investigators ? getTeam(tmp.info.investigators) : [],
       sciencePDF: null,
       technicalPDF: null
     };

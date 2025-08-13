@@ -57,7 +57,7 @@ export type Proposal = {
   proposalSubType?: number[];
   scienceCategory: number | null;
   scienceSubCategory?: number[];
-  team?: Investigator[];
+  investigators?: Investigator[];
   abstract?: string;
   sciencePDF: DocumentPDF | null;
   scienceLoadStatus?: number;
@@ -88,7 +88,7 @@ export const NEW_PROPOSAL = {
   proposalSubType: [0],
   scienceCategory: 1,
   scienceSubCategory: [1],
-  team: [],
+  investigators: [],
   pi: '',
   abstract: '',
   sciencePDF: null,

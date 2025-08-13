@@ -240,7 +240,7 @@ export default function LandingPage() {
     headerName: t('pi.short'),
     width: 100,
     renderCell: (e: any) => {
-      return getPIs(e.row.team);
+      return getPIs(e.row.investigators);
     }
   };
 

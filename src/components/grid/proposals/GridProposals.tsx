@@ -159,10 +159,10 @@ export default function GridProposals({
         setProposals(response);
 
         // TODO : remove this once email invitation is working
-        // temporary hack to get team members into the proposals as the functionality is not working at the moment
+        // temporary hack to get investigatorsstigators members into the proposals as the functionality is not working at the moment
         response.forEach((proposal: Proposal) => {
-          if (proposal.team && proposal.team.length === 0) {
-            proposal.team = [
+          if (proposal.investigatorsstigators && proposal.investigatorsstigators.length === 0) {
+            proposal.investigators = [
               {
                 firstName: 'Alice',
                 lastName: 'Spears',
@@ -266,7 +266,7 @@ export default function GridProposals({
     headerName: t('pi.short'),
     flex: 2,
     renderCell: (e: any) => {
-      return getPIs(e.row.team);
+      return getPIs(e.row.investigators);
     }
   };
 
@@ -295,7 +295,7 @@ export default function GridProposals({
     flex: 2,
     minWidth: 300,
     renderCell: (e: any) => {
-      return getAuthors(e.row.team);
+      return getAuthors(e.row.investigators);
     }
   };
 

@@ -300,7 +300,7 @@ export default function ProposalDisplay({
         <Grid2>{label(t('members.label'))}</Grid2>
       </Grid2>
       <Grid2>
-        <GridMembers height={GRID_HEIGHT} rows={proposal?.team} />
+        <GridMembers height={GRID_HEIGHT} rows={proposal?.investigators} />
       </Grid2>
     </>
   );

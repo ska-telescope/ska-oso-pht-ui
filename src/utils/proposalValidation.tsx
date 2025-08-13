@@ -15,7 +15,7 @@ export const validateTitlePage = (proposal: Proposal) => {
 
 export const validateTeamPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_OK];
-  const count = proposal.team?.length > 0 ? 1 : 0;
+  const count = proposal.investigators?.length > 0 ? 1 : 0;
   return result[count];
 };
 

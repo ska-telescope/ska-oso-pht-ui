@@ -29,7 +29,7 @@ describe('<ValidationResults />', () => {
           proposalSubType: undefined,
           scienceCategory: null,
           scienceSubCategory: undefined,
-          team: undefined,
+          investigators: undefined,
           abstract: undefined,
           sciencePDF: null,
           scienceLoadStatus: undefined,
