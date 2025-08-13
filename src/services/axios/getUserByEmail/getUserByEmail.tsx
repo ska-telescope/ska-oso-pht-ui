@@ -27,15 +27,16 @@ export function GetMockUserByEmail(): TeamMember {
   return mapping(MockUserBackend);
 }
 
-async function GetUserByEmail(): Promise<TeamMember | string> {
-  // authAxiosClient: ReturnType<typeof useAxiosAuthClient>, // TODO implement when using real data
-  // skaEmail: string // TODO implement when using real data
-  // if (USE_LOCAL_DATA) { // TODO implement when using real data
-  return GetMockUserByEmail();
-  // }
+/* 
+// TODO implement this with correct path when the backend is ready
+async function GetUserByEmail(
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  skaEmail: string
+): Promise<TeamMember | string> {
+    if (USE_LOCAL_DATA) {
+      return GetMockUserByEmail();
+    }
 
-  // TODO implement this with correct path when the backend is ready
-  /*
   try {
     const URL_PATH = `${OSO_SERVICES_USERS_PATH}/${skaEmail}`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
@@ -50,7 +51,7 @@ async function GetUserByEmail(): Promise<TeamMember | string> {
     }
     return 'error.API_UNKNOWN_ERROR';
   }
-  */
-}
+} 
 
 export default GetUserByEmail;
+*/

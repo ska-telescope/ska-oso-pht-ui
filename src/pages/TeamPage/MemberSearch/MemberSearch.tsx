@@ -1,9 +1,9 @@
 /* eslint-disable react/no-unstable-nested-components */
-import GetUserByEmail from '@/services/axios/getUserByEmail/getUserByEmail';
+import { GetMockUserByEmail } from '@/services/axios/getUserByEmail/getUserByEmail';
 
 export default function MemberSearch() {
   const fetchData = async () => {
-    const response = await GetUserByEmail();
+    const response = await GetMockUserByEmail();
   };
 
   fetchData();

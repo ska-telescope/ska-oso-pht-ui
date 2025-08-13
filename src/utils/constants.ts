@@ -23,7 +23,6 @@ export const MSENTRA_API_URI = 'api://e4d6bb9b-cdd0-46c4-b30a-d045091b501b';
 //
 
 export const APP_OVERRIDE_GROUPS = env.REACT_APP_OVERRIDE_GROUPS; // Set to Let for testing purposes.
-export const TEMP_SARAH_TOKEN = env.TEMP_MS_GRAPH_TOKEN;
 
 /*****************************************/
 
