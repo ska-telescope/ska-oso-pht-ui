@@ -13,23 +13,15 @@ type Investigator = {
 
 export default Investigator;
 
-export type UserBackend = {
-  id: string;
-  givenName: string;
-  surname: string;
-  userPrincipalName: string; // This is the SKAO email address in the backend
-  displayName: string;
-  officeLocation: string | null;
-  jobTitle: string | null;
-};
-
 export type InvestigatorBackend = {
   investigator_id: string;
   status: string;
   given_name: string;
   family_name: string;
   email: string;
-  organization?: string;
+  organization?: string; // TODO should we remove organization and just use affiliation?
   for_phd?: boolean;
   principal_investigator?: boolean;
+  officeLocation: string | null;
+  jobTitle: string | null;
 };

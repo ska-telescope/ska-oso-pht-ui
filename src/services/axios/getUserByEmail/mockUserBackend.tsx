@@ -1,21 +1,25 @@
-import { UserBackend } from '@/utils/types/investigator';
+import { TEAM_STATUS_TYPE_OPTIONS } from '@/utils/constants';
+import { InvestigatorBackend } from '@/utils/types/investigator';
 
-export const MockUserBackendPartial: UserBackend = {
-  id: 'entra-123',
-  givenName: 'Paulo',
-  surname: 'Santos',
-  userPrincipalName: 'paulo.santos@community.skao.int',
-  displayName: 'Paulo Santos',
+export const MockUserBackendPartial: InvestigatorBackend = {
+  investigator_id: 'entra-123',
+  status: TEAM_STATUS_TYPE_OPTIONS.pending,
+  given_name: 'Paulo',
+  family_name: 'Santos',
+  email: 'paulo.santos@community.skao.int',
   officeLocation: null,
-  jobTitle: null
+  jobTitle: null,
+  for_phd: false
 };
 
-export const MockUserBackendComplete: UserBackend = {
-  id: 'entra-234',
-  givenName: 'Saba',
-  surname: 'Ali',
-  userPrincipalName: 'saba.ali@skao.int',
-  displayName: 'Saba Ali',
+export const MockUserBackendComplete: InvestigatorBackend = {
+  investigator_id: 'entra-234',
+  status: TEAM_STATUS_TYPE_OPTIONS.pending,
+  given_name: 'Saba',
+  family_name: 'Ali',
+  email: 'saba.ali@skao.int',
   officeLocation: 'SKAO HQ',
-  jobTitle: 'software engineer'
+  jobTitle: 'software engineer',
+  for_phd: false,
+  principal_investigator: false
 };

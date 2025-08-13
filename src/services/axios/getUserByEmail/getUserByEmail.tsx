@@ -1,16 +1,16 @@
 import { MockUserBackendPartial } from './mockUserBackend';
 import { TEAM_STATUS_TYPE_OPTIONS } from '@/utils/constants';
-import Investigator, { UserBackend } from '@/utils/types/investigator';
+import Investigator, { InvestigatorBackend } from '@/utils/types/investigator';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
 
-export function mapping(data: UserBackend): Investigator {
-  const teamMember = {
-    id: data.id,
-    email: data.userPrincipalName,
-    firstName: data.givenName,
-    lastName: data.surname,
+export function mapping(data: InvestigatorBackend): Investigator {
+  const investigator = {
+    id: data.investigator_id,
+    email: data.email, // This should always be a SKAO email (@community.skao.int or @skao.int)
+    firstName: data.given_name,
+    lastName: data.family_name,
     affiliation: '',
     phdThesis: false,
     status: TEAM_STATUS_TYPE_OPTIONS.pending,
@@ -18,7 +18,7 @@ export function mapping(data: UserBackend): Investigator {
     officeLocation: data.officeLocation ? data.officeLocation : null,
     jobTitle: data.jobTitle ? data.jobTitle : null
   };
-  return teamMember;
+  return investigator;
 }
 
 /*****************************************************************************************************************************/
