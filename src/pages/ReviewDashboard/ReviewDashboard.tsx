@@ -12,11 +12,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import { BANNER_PMT_SPACER } from '@/utils/constants';
-import D3PieChart from '@/components/charts/D3PieChart';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import ResetButton from '@/components/button/Reset/Reset';
 import getReviewDashboard from '@/services/axios/getReviewDashboard/getReviewDashboard';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import D3PieChart from '@/components/charts/pie/D3PieChart';
 
 const REFRESH_TIME = 5 * 60 * 1000;
 

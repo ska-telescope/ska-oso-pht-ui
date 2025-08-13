@@ -16,6 +16,12 @@ import { useIsAuthenticated, useMsal } from '@azure/msal-react';
 import { getPhoto } from '@ska-telescope/ska-login-page';
 import ButtonUserMenu, { ButtonUserMenuProps } from './UserMenu';
 
+const OPS_PROPOSAL_ADMIN = 'obs-oauth2role-opsproposaladmin-1-1535351309';
+const OPS_REVIEWER_SCIENCE = 'obs-oauth2role-opsreviewersci-1635769025';
+const OPS_REVIEWER_TECHNICAL = 'obs-oauth2role-opsreviewertec-1-1994146425';
+const SW_ENGINEER = 'obs-integrationenvs-oauth2role-sweng-11162868063';
+let overrideGroups = '';
+
 // Import the mocked modules
 
 // Mock the external dependencies
@@ -27,7 +33,10 @@ vi.mock('@azure/msal-react', () => ({
 vi.mock('@ska-telescope/ska-login-page', () => ({
   ButtonLogin: vi.fn(() => <button data-testid="login-button">Login</button>),
   ButtonLogout: vi.fn(() => <button data-testid="logout-button">Logout</button>),
-  getPhoto: vi.fn()
+  getPhoto: vi.fn(),
+  useUserGroups: vi.fn(() => ({
+    hasGroup: vi.fn(group => overrideGroups.split(',').includes(group))
+  }))
 }));
 
 vi.mock('@ska-telescope/ska-gui-components', () => ({
@@ -52,7 +61,10 @@ vi.mock('@ska-telescope/ska-gui-components', () => ({
 
 vi.mock('@/utils/constants', () => ({
   PMT: ['panel-summary', 'reviews', 'overview', 'other', 'review-decisions'],
-  PATH: ['proposals']
+  PATH: ['proposals'],
+  get APP_OVERRIDE_GROUPS() {
+    return overrideGroups;
+  }
 }));
 
 // Mock react-router-dom
@@ -219,6 +231,7 @@ describe('ButtonUserMenu', () => {
         inProgress: InteractionStatus.None,
         logger: mockLogger
       });
+      overrideGroups = '';
     });
 
     it('should render login button when user is not authenticated', () => {
@@ -243,6 +256,7 @@ describe('ButtonUserMenu', () => {
         inProgress: InteractionStatus.None,
         logger: mockLogger
       });
+      overrideGroups = '';
     });
 
     it('should render user button with username when authenticated', () => {
@@ -272,21 +286,82 @@ describe('ButtonUserMenu', () => {
       expect(screen.getByRole('menu')).toBeInTheDocument();
     });
 
-    it('should render all menu items when menu is open', async () => {
+    it('should render menu items when menu is open ( SW_ENGINEER )', async () => {
+      overrideGroups = SW_ENGINEER;
       const user = userEvent.setup();
       renderWithWrapper();
 
       await user.click(screen.getByTestId('usernameMenu'));
 
-      expect(screen.getByTestId('menuItemOverview')).toBeInTheDocument();
-      expect(screen.getByTestId('menuItemProposals')).toBeInTheDocument();
-      expect(screen.getByTestId('menuItemPanelSummary')).toBeInTheDocument();
-      expect(screen.getByTestId('menuItemReviews')).toBeInTheDocument();
-      expect(screen.getByTestId('menuItemReviewDecisions')).toBeInTheDocument();
-      expect(screen.getByTestId('menuItemPanelLogout')).toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemOverview')).toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemProposals')).toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemPanelSummary')).toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemReviews')).toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemReviewDecisions')).toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemPanelLogout')).toBeInTheDocument();
+    });
+
+    it('should render menu items when menu is open ( OPS_PROPOSAL_ADMIN )', async () => {
+      overrideGroups = OPS_PROPOSAL_ADMIN;
+      const user = userEvent.setup();
+      renderWithWrapper();
+
+      await user.click(screen.getByTestId('usernameMenu'));
+
+      expect(screen.queryByTestId('menuItemOverview')).toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemProposals')).toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemPanelSummary')).toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemReviews')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemReviewDecisions')).toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemPanelLogout')).toBeInTheDocument();
+    });
+
+    it('should render menu items when menu is open ( OPS_REVIEWER_SCIENCE )', async () => {
+      overrideGroups = OPS_REVIEWER_SCIENCE;
+      const user = userEvent.setup();
+      renderWithWrapper();
+
+      await user.click(screen.getByTestId('usernameMenu'));
+
+      expect(screen.queryByTestId('menuItemOverview')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemProposals')).toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemPanelSummary')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemReviews')).toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemReviewDecisions')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemPanelLogout')).toBeInTheDocument();
+    });
+
+    it('should render menu items when menu is open ( OPS_REVIEWER_TECHNICAL )', async () => {
+      overrideGroups = OPS_REVIEWER_TECHNICAL;
+      const user = userEvent.setup();
+      renderWithWrapper();
+
+      await user.click(screen.getByTestId('usernameMenu'));
+
+      expect(screen.queryByTestId('menuItemOverview')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemProposals')).toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemPanelSummary')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemReviews')).toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemReviewDecisions')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemPanelLogout')).toBeInTheDocument();
+    });
+    it('should render menu items when menu is open ( GUEST )', async () => {
+      overrideGroups = 'GUEST';
+      const user = userEvent.setup();
+      renderWithWrapper();
+
+      await user.click(screen.getByTestId('usernameMenu'));
+
+      expect(screen.queryByTestId('menuItemOverview')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemProposals')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemPanelSummary')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemReviews')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemReviewDecisions')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('menuItemPanelLogout')).toBeInTheDocument();
     });
 
     it('should navigate to correct path when menu item is clicked', async () => {
+      overrideGroups = SW_ENGINEER;
       const user = userEvent.setup();
       renderWithWrapper();
 
@@ -297,6 +372,7 @@ describe('ButtonUserMenu', () => {
     });
 
     it('should close menu after navigation', async () => {
+      overrideGroups = SW_ENGINEER;
       const user = userEvent.setup();
       renderWithWrapper();
 
