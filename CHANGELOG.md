@@ -9,6 +9,7 @@ UNRELEASED
 
 * Security : Added AAA across all oso-services
 * Changed  : oso-services v2.0.1
+* Added: getUserByEmail service using a mock user
 
 3.1.0
 

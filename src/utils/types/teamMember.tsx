@@ -1,14 +1,13 @@
 type TeamMember = {
   id: string;
-  userId?: string; // Entra ID // TODO make this mandatory
   firstName: string;
   lastName: string;
   email: string; // This should always be a SKAO email (@community.skao.int or @skao.int)
-  affiliation: string;
+  affiliation: string; // TODO should we remove affiliation and just use officeLocation?
   phdThesis: boolean;
   status: string;
   pi: boolean;
-  officeLocation: string | null; // TODO should we remove affiliation and replace it with officeLocation?
+  officeLocation: string | null;
   jobTitle: string | null;
 };
 
