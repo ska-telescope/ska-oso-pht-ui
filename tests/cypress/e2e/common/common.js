@@ -354,3 +354,56 @@ export const createObservation = () => {
   clickAddObservationEntry();
   verifyUnlinkedObservationInTable();
 };
+
+/*----------------------------------------------------------------------*/
+
+Cypress.Commands.add('mockLoginButton', (user = {}) => {
+  const defaultUser = {
+    username: 'testuser@example.com',
+    name: 'Test User',
+    homeAccountId: 'fake-home-id',
+    localAccountId: 'fake-local-id',
+    tenantId: 'fake-tenant-id',
+    environment: 'login.microsoftonline.com'
+  };
+
+  const fakeAccount = { ...defaultUser, ...user };
+
+  cy.get('[data-testid="loginButton"]')
+    .should('exist')
+    .then($btn => {
+      cy.window().then(win => {
+        const loginButton = $btn[0];
+        loginButton.onclick = null;
+
+        loginButton.addEventListener(
+          'click',
+          e => {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            // Try to find the real MSAL instance
+            const msal = Object.values(win).find(
+              val =>
+                val &&
+                typeof val.getAllAccounts === 'function' &&
+                typeof val.setActiveAccount === 'function'
+            );
+
+            if (msal) {
+              msal.setActiveAccount(fakeAccount);
+              msal.getActiveAccount = () => fakeAccount;
+              msal.getAllAccounts = () => [fakeAccount];
+            }
+
+            win.localStorage.setItem('msal.idtoken', 'fake-id-token');
+            win.localStorage.setItem('msal.account', JSON.stringify(fakeAccount));
+
+            // Trigger a navigation to force re-evaluation
+            win.location.href = '/';
+          },
+          { once: true }
+        );
+      });
+    });
+});
