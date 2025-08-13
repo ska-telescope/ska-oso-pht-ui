@@ -1,4 +1,4 @@
-import { UserBackend } from '@/utils/types/teamMember';
+import { UserBackend } from '@/utils/types/investigator';
 
 export const MockUserBackendPartial: UserBackend = {
   id: 'entra-123',

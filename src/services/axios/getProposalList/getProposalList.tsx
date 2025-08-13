@@ -1,4 +1,4 @@
-import TeamMember, { InvestigatorBackend } from '../../../utils/types/teamMember';
+import Investigator, { InvestigatorBackend } from '../../../utils/types/investigator';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import {
   SKA_OSO_SERVICES_URL,
@@ -26,10 +26,10 @@ const getSubType = (proposalType: {
   return subProjects?.filter(({ id }) => id)?.map(({ id }) => id);
 };
 
-const getTeam = (investigators: InvestigatorBackend[] | null): TeamMember[] => {
-  const teamMembers: TeamMember[] = [];
+const getTeam = (investigators: InvestigatorBackend[] | null): Investigator[] => {
+  const teamMembers: Investigator[] = [];
   if (!investigators) {
-    return teamMembers as TeamMember[];
+    return teamMembers as Investigator[];
   }
   for (let investigator of investigators) {
     const teamMember = {
@@ -44,7 +44,7 @@ const getTeam = (investigators: InvestigatorBackend[] | null): TeamMember[] => {
     };
     teamMembers.push(teamMember);
   }
-  return teamMembers as TeamMember[];
+  return teamMembers as Investigator[];
 };
 
 const getScienceCategory = (scienceCat: string) => {

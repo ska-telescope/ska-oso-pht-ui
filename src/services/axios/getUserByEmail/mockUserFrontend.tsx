@@ -1,7 +1,7 @@
 import { TEAM_STATUS_TYPE_OPTIONS } from '@/utils/constants';
-import TeamMember from '@/utils/types/teamMember';
+import Investigator from '@/utils/types/investigator';
 
-export const MockUserFrontendPartial: TeamMember = {
+export const MockUserFrontendPartial: Investigator = {
   id: 'entra-123',
   firstName: 'Paulo',
   lastName: 'Santos',
@@ -14,7 +14,7 @@ export const MockUserFrontendPartial: TeamMember = {
   jobTitle: null
 };
 
-export const MockUserFrontendComplete: TeamMember = {
+export const MockUserFrontendComplete: Investigator = {
   id: 'entra-234',
   firstName: 'Saba',
   lastName: 'Ali',

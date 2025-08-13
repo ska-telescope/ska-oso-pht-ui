@@ -12,7 +12,7 @@ import { SensCalcResultsBackend } from './sensCalcResults';
 // import { ScienceProgrammeBackend } from './scienceProgrammes';
 import Target, { TargetBackend } from './target';
 import TargetObservation from './targetObservation';
-import TeamMember, { InvestigatorBackend } from './teamMember';
+import Investigator, { InvestigatorBackend } from './investigator';
 import { ObservationSetBackend } from './observationSet';
 import { Metadata } from './metadata';
 
@@ -57,7 +57,7 @@ export type Proposal = {
   proposalSubType?: number[];
   scienceCategory: number | null;
   scienceSubCategory?: number[];
-  team?: TeamMember[];
+  team?: Investigator[];
   abstract?: string;
   sciencePDF: DocumentPDF | null;
   scienceLoadStatus?: number;

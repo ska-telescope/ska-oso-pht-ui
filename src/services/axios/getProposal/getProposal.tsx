@@ -49,10 +49,10 @@ import {
   DataProductSRC,
   DataProductSRCNetBackend
 } from '@/utils/types/dataProduct.tsx';
-import TeamMember, { InvestigatorBackend } from '@/utils/types/teamMember';
+import Investigator, { InvestigatorBackend } from '@/utils/types/investigator';
 
 const getTeamMembers = (inValue: InvestigatorBackend[] | null) => {
-  let members = [] as TeamMember[];
+  let members = [] as Investigator[];
   if (!inValue || inValue.length === 0) {
     return members;
   }

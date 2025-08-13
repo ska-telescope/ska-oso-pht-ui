@@ -1,4 +1,4 @@
-type TeamMember = {
+type Investigator = {
   id: string;
   firstName: string;
   lastName: string;
@@ -11,7 +11,7 @@ type TeamMember = {
   jobTitle: string | null;
 };
 
-export default TeamMember;
+export default Investigator;
 
 export type UserBackend = {
   id: string;

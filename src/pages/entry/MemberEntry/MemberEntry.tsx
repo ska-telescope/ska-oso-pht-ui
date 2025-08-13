@@ -9,7 +9,7 @@ import { Proposal } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
 import { LAB_POSITION, TEAM_STATUS_TYPE_OPTIONS, WRAPPER_HEIGHT } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
-import TeamMember from '../../../utils/types/teamMember';
+import Investigator from '../../../utils/types/investigator';
 import PostSendEmailInvite from '../../../services/axios/postSendEmailInvite/postSendEmailInvite';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
@@ -153,7 +153,7 @@ export default function MemberEntry() {
     if (highestId === undefined) {
       highestId = 0;
     }
-    const newTeamMember: TeamMember = {
+    const newTeamMember: Investigator = {
       id: (highestId + 1).toString(),
       firstName: formValues.firstName.value,
       lastName: formValues.lastName.value,
@@ -162,7 +162,9 @@ export default function MemberEntry() {
       affiliation: '',
       phdThesis: formValues.phdThesis.phdThesis,
       status: TEAM_STATUS_TYPE_OPTIONS.pending,
-      pi: formValues.pi.pi
+      pi: formValues.pi.pi,
+      officeLocation: null,
+      jobTitle: null
     };
     setProposal({ ...getProposal(), team: [...currentTeam, newTeamMember] });
   }
