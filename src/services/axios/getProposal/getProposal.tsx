@@ -39,7 +39,6 @@ import {
   RA_TYPE_ICRS,
   RA_TYPE_GALACTIC
 } from '../../../utils/constants';
-import { InvestigatorBackend } from '../../../utils/types/investigator';
 import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
 import { ObservationSetBackend } from '../../../utils/types/observationSet';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
@@ -50,7 +49,7 @@ import {
   DataProductSRC,
   DataProductSRCNetBackend
 } from '@/utils/types/dataProduct.tsx';
-import TeamMember from '@/utils/types/teamMember';
+import TeamMember, { InvestigatorBackend } from '@/utils/types/teamMember';
 
 const getTeamMembers = (inValue: InvestigatorBackend[] | null) => {
   let members = [] as TeamMember[];

@@ -1,4 +1,4 @@
-import TeamMember from '../../../utils/types/teamMember';
+import TeamMember, { InvestigatorBackend } from '../../../utils/types/teamMember';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import {
   SKA_OSO_SERVICES_URL,
@@ -8,7 +8,6 @@ import {
   OSO_SERVICES_PROPOSAL_PATH,
   DEFAULT_USER
 } from '../../../utils/constants';
-import { InvestigatorBackend } from '../../../utils/types/investigator';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import MockProposalBackendList from './mockProposalBackendList';
 import { getUniqueMostRecentItems } from '@/utils/helpers';

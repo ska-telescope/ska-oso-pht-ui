@@ -12,9 +12,8 @@ import { SensCalcResultsBackend } from './sensCalcResults';
 // import { ScienceProgrammeBackend } from './scienceProgrammes';
 import Target, { TargetBackend } from './target';
 import TargetObservation from './targetObservation';
-import TeamMember from './teamMember';
+import TeamMember, { InvestigatorBackend } from './teamMember';
 import { ObservationSetBackend } from './observationSet';
-import { InvestigatorBackend } from './investigator';
 import { Metadata } from './metadata';
 
 export type ProposalBackend = {
