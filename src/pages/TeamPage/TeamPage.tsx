@@ -80,7 +80,7 @@ export default function TeamPage() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = getProposal().team.filter(e => e.id !== currentMember);
+    const obs1 = getProposal()?.team?.filter(e => e.id !== currentMember);
 
     setProposal({ ...getProposal(), team: obs1 });
     setCurrentMember('');
@@ -89,7 +89,7 @@ export default function TeamPage() {
 
   const alertContent = () => {
     const LABEL_WIDTH = 6;
-    const rec = getProposal().team.find(p => p.id === currentMember);
+    const rec = getProposal()?.team?.find(p => p.id === currentMember);
     return (
       <Grid
         p={2}
@@ -99,19 +99,19 @@ export default function TeamPage() {
         justifyContent="space-around"
       >
         <FieldWrapper label={t('firstName.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.firstName}</Typography>
+          <Typography variant="body1">{rec?.firstName}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('lastName.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.lastName}</Typography>
+          <Typography variant="body1">{rec?.lastName}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('email.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec.email}</Typography>
+          <Typography variant="body1">{rec?.email}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('phdThesis.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{t(rec.phdThesis ? 'yes' : 'no')}</Typography>
+          <Typography variant="body1">{t(rec?.phdThesis ? 'yes' : 'no')}</Typography>
         </FieldWrapper>
         <FieldWrapper label={t('pi.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{t(rec.pi ? 'yes' : 'no')}</Typography>
+          <Typography variant="body1">{t(rec?.pi ? 'yes' : 'no')}</Typography>
         </FieldWrapper>
       </Grid>
     );
@@ -179,7 +179,6 @@ export default function TeamPage() {
                     label={t('searchForMember.label')}
                     {...a11yProps(2)}
                     sx={{ border: '1px solid grey' }}
-                    disabled
                   />
                 </Tabs>
               </Box>

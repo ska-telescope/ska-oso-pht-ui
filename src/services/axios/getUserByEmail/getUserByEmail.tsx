@@ -1,0 +1,57 @@
+import { MockUserBackendPartial } from './mockUserBackend';
+import { TEAM_STATUS_TYPE_OPTIONS } from '@/utils/constants';
+import TeamMember, { UserBackend } from '@/utils/types/teamMember';
+
+/*****************************************************************************************************************************/
+/*********************************************************** mapping *********************************************************/
+
+export function mapping(data: UserBackend): TeamMember {
+  const teamMember = {
+    id: data.id,
+    email: data.userPrincipalName,
+    firstName: data.givenName,
+    lastName: data.surname,
+    affiliation: '',
+    phdThesis: false,
+    status: TEAM_STATUS_TYPE_OPTIONS.pending,
+    pi: false,
+    officeLocation: data.officeLocation ? data.officeLocation : null,
+    jobTitle: data.jobTitle ? data.jobTitle : null
+  };
+  return teamMember;
+}
+
+/*****************************************************************************************************************************/
+
+export function GetMockUserByEmail(): TeamMember {
+  return mapping(MockUserBackendPartial);
+}
+
+/* 
+// TODO implement this with correct path when the backend is ready
+async function GetUserByEmail(
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  skaEmail: string
+): Promise<TeamMember | string> {
+    if (USE_LOCAL_DATA) {
+      return GetMockUserByEmail();
+    }
+
+  try {
+    const URL_PATH = `${OSO_SERVICES_USERS_PATH}/${skaEmail}`;
+    const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
+
+    if (!result.data) {
+      return 'error.API_UNKNOWN_ERROR';
+    }
+    return mapping(result.data);
+  } catch (e) {
+    if (e instanceof Error) {
+      return e.message;
+    }
+    return 'error.API_UNKNOWN_ERROR';
+  }
+} 
+
+export default GetUserByEmail;
+*/
