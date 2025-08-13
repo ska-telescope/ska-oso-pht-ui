@@ -3,7 +3,7 @@ import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTranslation } from 'react-i18next';
 import { Grid2 } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { AlertColorTypes, FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
+import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
 import DeleteDeletePDF from '../../services/axios/deleteDeletePDF/deleteDeletePDF';
 import GetPresignedDeleteUrl from '../../services/axios/getPresignedDeleteUrl/getPresignedDeleteUrl';
@@ -19,22 +19,21 @@ import Shell from '../../components/layout/Shell/Shell';
 import HelpPanel from '../../components/info/helpPanel/HelpPanel';
 
 import { Proposal } from '../../utils/types/proposal';
-import Notification from '../../utils/types/notification';
 import { validateSciencePage } from '../../utils/proposalValidation';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import { useNotify } from '@/utils/notify/useNotify';
 
 const PAGE = 3;
-const NOTIFICATION_DELAY_IN_SECONDS = 10;
 
 export default function SciencePage() {
   const { t } = useTranslation('pht');
+  const { notifyError, notifySuccess } = useNotify();
   const {
     application,
     helpComponent,
     updateAppContent1,
-    updateAppContent2,
-    updateAppContent5
+    updateAppContent2
   } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentFile, setCurrentFile] = React.useState<string | null | undefined>(null);
@@ -102,7 +101,7 @@ export default function SciencePage() {
         scienceLoadStatus: FileUploadStatus.OK
       });
 
-      NotifyOK('pdfUpload.science.success');
+      notifySuccess(t('pdfUpload.science.success'));
     } catch (e) {
       setFile(null);
       setUploadStatus(FileUploadStatus.ERROR);
@@ -146,10 +145,10 @@ export default function SciencePage() {
         sciencePDF: sciencePDFDeleted,
         scienceLoadStatus: FileUploadStatus.INITIAL
       });
-      NotifyOK('pdfDelete.science.success');
+      notifySuccess(t('pdfDelete.science.success'));
     } catch (e) {
       new Error(t('pdfDelete.science.error'));
-      NotifyError('pdfDelete.science.error');
+      notifyError(t('pdfDelete.science.error'));
     }
   };
 
@@ -167,19 +166,6 @@ export default function SciencePage() {
       new Error(t('pdfDownload.error'));
     }
   };
-
-  function Notify(str: string, lvl: typeof AlertColorTypes = AlertColorTypes.Info) {
-    const rec: Notification = {
-      level: lvl,
-      delay: NOTIFICATION_DELAY_IN_SECONDS,
-      message: t(str),
-      okRequired: false
-    };
-    updateAppContent5(rec);
-  }
-
-  const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
-  const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);

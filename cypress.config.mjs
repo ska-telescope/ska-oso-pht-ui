@@ -22,8 +22,15 @@ export default defineConfig({
     experimentalMemoryManagement: true,
     supportFile: 'tests/cypress/support/e2e.ts',
     specPattern: ['tests/cypress/e2e/**/*.test.{js,jsx,ts,tsx}'],
-    setupNodeEvents(on) {
+    setupNodeEvents(on, config) {
       on('file:preprocessor', vitePreprocessor());
+
+      // Add reporter configuration
+      config.reporter = 'mocha-junit-reporter';
+      config.reporterOptions = {
+        mochaFile: 'cypress/results/e2e-tests.xml',
+        toConsole: true
+      };
     }
   },
 

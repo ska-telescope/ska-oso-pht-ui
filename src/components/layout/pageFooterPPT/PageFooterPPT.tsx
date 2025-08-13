@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid2, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { DUMMY_PROPOSAL_ID, LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
 import NextPageButton from '../../button/NextPage/NextPage';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
@@ -14,6 +13,7 @@ import PostProposal from '../../../services/axios/postProposal/postProposal';
 import TimedAlert from '../../alerts/timedAlert/TimedAlert';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import { useNotify } from '@/utils/notify/useNotify';
 
 interface PageFooterPPTProps {
   pageNo: number;
@@ -23,9 +23,10 @@ interface PageFooterPPTProps {
 export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFooterPPTProps) {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
-  const { application, updateAppContent2, updateAppContent5 } = storageObject.useStore();
+  const { application, updateAppContent2 } = storageObject.useStore();
   const [usedPageNo, setUsedPageNo] = React.useState(pageNo);
   const authClient = useAxiosAuthClient();
+  const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const loggedIn = isLoggedIn();
 
   const isDisableEndpoints = () => !loggedIn;
@@ -39,24 +40,12 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     }
   }, []);
 
-  function Notify(str: string, lvl = AlertColorTypes.Info) {
-    const rec: Notification = {
-      level: lvl,
-      message: str,
-      okRequired: false
-    };
-    updateAppContent5(rec);
-  }
-  const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
-  const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
-  const NotifyWarning = (str: string) => Notify(str, AlertColorTypes.Warning);
-
   const createProposal = async () => {
     const getProposal = () => application.content2 as Proposal;
     const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
     if (!isDisableEndpoints()) {
-      NotifyWarning(t('addProposal.warning'));
+      notifyWarning(t('addProposal.warning'));
       const response = await PostProposal(
         authClient,
         {
@@ -67,7 +56,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       );
 
       if (response && !response.error) {
-        NotifyOK(t('addProposal.success') + response);
+        notifySuccess(t('addProposal.success') + response);
         setProposal({
           ...getProposal(),
           id: response,
@@ -75,11 +64,11 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
         });
         navigate(NAV[1]);
       } else {
-        NotifyError(response.error);
+        notifyError(response.error);
       }
     } else {
       const dummyId = DUMMY_PROPOSAL_ID;
-      NotifyOK(t('addProposal.success') + dummyId);
+      notifySuccess(t('addProposal.success') + dummyId);
       setProposal({
         ...getProposal(),
         id: dummyId,
