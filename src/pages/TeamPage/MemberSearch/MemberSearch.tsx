@@ -2,7 +2,6 @@
 import GetUserByEmail from '@/services/axios/getUserByEmail/getUserByEmail';
 
 export default function MemberSearch() {
-
   const fetchData = async () => {
     const response = await GetUserByEmail();
   };

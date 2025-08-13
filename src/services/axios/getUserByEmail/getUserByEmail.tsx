@@ -18,7 +18,6 @@ function mapping(data: UserBackend): TeamMember {
     officeLocation: data.officeLocation ? data.officeLocation : null,
     jobTitle: data.jobTitle ? data.jobTitle : null
   };
-  console.log('Mapping UserBackend to TeamMember:', teamMember);
   return teamMember;
 }
 
