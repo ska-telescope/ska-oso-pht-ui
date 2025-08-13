@@ -1,19 +1,19 @@
-import { MockUserBackend } from './mockUserBackend';
+import { MockUserBackendPartial } from './mockUserBackend';
+import { TEAM_STATUS_TYPE_OPTIONS } from '@/utils/constants';
 import TeamMember, { UserBackend } from '@/utils/types/teamMember';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
 
-function mapping(data: UserBackend): TeamMember {
+export function mapping(data: UserBackend): TeamMember {
   const teamMember = {
     id: data.id,
-    userId: data.id,
     email: data.userPrincipalName,
     firstName: data.givenName,
     lastName: data.surname,
     affiliation: '',
     phdThesis: false,
-    status: '',
+    status: TEAM_STATUS_TYPE_OPTIONS.pending,
     pi: false,
     officeLocation: data.officeLocation ? data.officeLocation : null,
     jobTitle: data.jobTitle ? data.jobTitle : null
@@ -24,7 +24,7 @@ function mapping(data: UserBackend): TeamMember {
 /*****************************************************************************************************************************/
 
 export function GetMockUserByEmail(): TeamMember {
-  return mapping(MockUserBackend);
+  return mapping(MockUserBackendPartial);
 }
 
 /* 
