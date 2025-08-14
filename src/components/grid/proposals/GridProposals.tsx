@@ -159,9 +159,9 @@ export default function GridProposals({
         setProposals(response);
 
         // TODO : remove this once email invitation is working
-        // temporary hack to get investigatorsstigators members into the proposals as the functionality is not working at the moment
+        // temporary hack to get investigators members into the proposals as the functionality is not working at the moment
         response.forEach((proposal: Proposal) => {
-          if (proposal.investigatorsstigators && proposal.investigatorsstigators.length === 0) {
+          if (proposal.investigators && proposal.investigators.length === 0) {
             proposal.investigators = [
               {
                 firstName: 'Alice',
