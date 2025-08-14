@@ -1,7 +1,7 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import MockProposalBackendList from '../getProposalList/mockProposalBackendList';
-import MockProposalFrontendList from '../getProposalList/mockProposalFrontendList';
+import MockProposalBackendList from '../get/getProposalList/mockProposalBackendList';
+import MockProposalFrontendList from '../get/getProposalList/mockProposalFrontendList';
 import GetProposalByStatusList from './getProposalByStatusList';
 import * as CONSTANTS from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';

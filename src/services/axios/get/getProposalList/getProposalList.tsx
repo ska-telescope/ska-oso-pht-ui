@@ -1,14 +1,14 @@
-import TeamMember from '../../../utils/types/teamMember';
-import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
+import TeamMember from '../../../../utils/types/teamMember';
+import Proposal, { ProposalBackend } from '../../../../utils/types/proposal';
 import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
   PROJECTS,
   GENERAL,
   OSO_SERVICES_PROPOSAL_PATH
-} from '../../../utils/constants';
-import { InvestigatorBackend } from '../../../utils/types/investigator';
-import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
+} from '../../../../utils/constants';
+import { InvestigatorBackend } from '../../../../utils/types/investigator';
+import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
 import MockProposalBackendList from './mockProposalBackendList';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
 
@@ -101,7 +101,7 @@ async function GetProposalList(
   }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/list/`;
+    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/mine/`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
 
     if (!result || !Array.isArray(result.data)) {
