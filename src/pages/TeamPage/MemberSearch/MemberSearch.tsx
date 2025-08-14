@@ -11,16 +11,18 @@ import { LAB_POSITION, WRAPPER_HEIGHT } from '@/utils/constants';
 import UserSearchButton from '@/components/button/UserSearch/UserSearch';
 import { helpers } from '@/utils/helpers';
 import { useNotify } from '@/utils/notify/useNotify';
+import ResetSearchButton from '@/components/button/ResetSearch/ResetSearch';
+import { MockUserFrontendPartial } from '@/services/axios/getUserByEmail/mockUserFrontend';
 
 export default function MemberSearch() {
   const { t } = useTranslation('pht');
   const [email, setEmail] = React.useState('');
   const [formInvalid, setFormInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);
-  // const [axiosError, setAxiosError] = React.useState('');
   const { helpComponent } = storageObject.useStore();
   const [errorTextEmail, setErrorTextEmail] = React.useState('');
   const { notifyError, notifySuccess } = useNotify();
+  const [showMemberEntry, setShowMemberEntry] = React.useState(false);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -43,7 +45,19 @@ export default function MemberSearch() {
     }
   };
 
-  const memberEntry = () => <MemberEntry />;
+  const memberEntry = () => <MemberEntry forSearch foundInvestigator={MockUserFrontendPartial} />; // TODO: Replace with actual user data from endpoint
+
+  const searchAgainButtonClick = () => {
+    setShowMemberEntry(false);
+  };
+
+  const searchAgainButton = () => {
+    return (
+      <Box mt={-17} p={5} ml={25}>
+        <ResetSearchButton action={searchAgainButtonClick} />
+      </Box>
+    );
+  };
 
   function clearForm() {
     formValues.email.setValue('');
@@ -106,57 +120,56 @@ export default function MemberSearch() {
   const clickFunction = async () => {
     if (await searchEmail(formValues.email.value)) {
       // show member entry with user details
+      setShowMemberEntry(true);
       clearForm();
     }
   };
 
-  const memberSearch = () => {
-    return (
-      <>
-        <Grid2
-          p={2}
-          pb={5}
-          container
-          direction="row"
-          alignItems="space-evenly"
-          justifyContent="space-between"
-        >
-          <Grid2 size={{ xs: 7 }}>
-            <Grid2
-              pt={1}
-              container
-              direction="column"
-              alignItems="stretch"
-              justifyContent="flex-start"
-            >
-              {emailField()}
-              <Box p={2}>
-                {
-                  <UserSearchButton
-                    action={clickFunction}
-                    disabled={formInvalid}
-                    primary
-                    testId="userSearchButton"
-                  />
-                }
-              </Box>
-            </Grid2>
-          </Grid2>
-          <Grid2 size={{ xs: 4 }}>
-            <HelpPanel />
+  const memberSearch = () => (
+    <>
+      <Grid2
+        p={2}
+        pb={5}
+        container
+        direction="row"
+        alignItems="space-evenly"
+        justifyContent="space-between"
+      >
+        <Grid2 size={{ xs: 7 }}>
+          <Grid2
+            pt={1}
+            container
+            direction="column"
+            alignItems="stretch"
+            justifyContent="flex-start"
+          >
+            {emailField()}
+            <Box p={2}>
+              {
+                <UserSearchButton
+                  action={clickFunction}
+                  disabled={formInvalid}
+                  primary
+                  testId="userSearchButton"
+                />
+              }
+            </Box>
           </Grid2>
         </Grid2>
+        <Grid2 size={{ xs: 4 }}>
+          <HelpPanel />
+        </Grid2>
+      </Grid2>
+    </>
+  );
 
-        {/* <Grid2 size={{ xs: 12 }} pt={1}>
-          {axiosError && (
-                    <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
-                  )}
-        </Grid2> */}
-      </>
-    );
-  };
-
-  return memberSearch();
-
-  // return memberEntry();
+  return (
+    <>
+      <Grid2>
+        {!showMemberEntry && memberSearch()}
+        {showMemberEntry && memberEntry()}
+        {showMemberEntry && searchAgainButton()}
+      </Grid2>
+    </>
+  );
 }

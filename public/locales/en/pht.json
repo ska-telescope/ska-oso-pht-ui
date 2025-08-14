@@ -246,7 +246,8 @@
       "body": "You have been invited to contribute to proposal {{id}}"
     },
     "success": "User was successfully found.",
-    "error": "User could not be found. Please check the email address and try again."
+    "error": "User could not be found. Please check the email address and try again.",
+    "reset": "Reset user search"
   },
   "empty": {
     "cell": "There are no contents for this cell"

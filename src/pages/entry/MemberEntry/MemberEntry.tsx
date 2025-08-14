@@ -16,7 +16,26 @@ import { useNotify } from '@/utils/notify/useNotify';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
-export default function MemberEntry() {
+interface MemberEntryProps {
+  forSearch?: boolean;
+  foundInvestigator?: Investigator;
+}
+
+export default function MemberEntry({
+  forSearch = false,
+  foundInvestigator = {
+    id: '',
+    firstName: '',
+    lastName: '',
+    email: '',
+    affiliation: '',
+    phdThesis: false,
+    status: '',
+    pi: false,
+    officeLocation: null,
+    jobTitle: null
+  }
+}: MemberEntryProps) {
   const { t } = useTranslation('pht');
   const LABEL_WIDTH = 6;
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
@@ -26,9 +45,9 @@ export default function MemberEntry() {
   const authClient = useAxiosAuthClient();
   const { notifyError, notifySuccess } = useNotify();
 
-  const [firstName, setFirstName] = React.useState('');
-  const [lastName, setLastName] = React.useState('');
-  const [email, setEmail] = React.useState('');
+  const [firstName, setFirstName] = React.useState(forSearch ? foundInvestigator.firstName : '');
+  const [lastName, setLastName] = React.useState(forSearch ? foundInvestigator.lastName : '');
+  const [email, setEmail] = React.useState(forSearch ? foundInvestigator.email : '');
   const [pi, setPi] = React.useState(false);
   const [phdThesis, setPhdThesis] = React.useState(false);
 
@@ -208,6 +227,7 @@ export default function MemberEntry() {
         onFocus={() => helpComponent(t('firstName.help'))}
         errorText={errorTextFirstName}
         required
+        disabled={forSearch}
       />
     );
   };
@@ -224,6 +244,7 @@ export default function MemberEntry() {
         onFocus={() => helpComponent(t('lastName.help'))}
         errorText={errorTextLastName}
         required
+        disabled={forSearch}
       />
     );
   };
@@ -240,6 +261,7 @@ export default function MemberEntry() {
         errorText={errorTextEmail ? t(errorTextEmail) : ''}
         onFocus={() => helpComponent(t('email.help'))}
         required
+        disabled={forSearch}
       />
     );
   };
