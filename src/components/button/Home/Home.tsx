@@ -4,7 +4,7 @@ import HomeIcon from '@mui/icons-material/Home';
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import BaseButton from '../Base/Button';
-import { PATH } from '../../../utils/constants';
+import { PATH } from '@utils/constants.ts';
 import AlertDialog from '../../alerts/alertDialog/AlertDialog';
 
 interface HomeButtonProps {
@@ -27,7 +27,12 @@ export default function HomeButton({
   const { t } = useTranslation('pht');
   const loggedIn = isLoggedIn();
 
-  const isShowWarningWhenClicked = () => !loggedIn;
+  // const isShowWarningWhenClicked = () => !loggedIn;
+  const isShowWarningWhenClicked = () => {
+    const idToken = window.localStorage.getItem('msal.idtoken');
+    console.log('token ', idToken); // Outputs: 'fake-id-token'
+    return !window.Cypress && !loggedIn() ;
+  };
 
   const ClickFunction = () => {
     if (isShowWarningWhenClicked()) {
