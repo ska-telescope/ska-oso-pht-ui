@@ -27,7 +27,7 @@ export default function MemberSearch() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    helpComponent(t('emailSearch.help')); // TODO update email help text for search user context
+    helpComponent(t('emailSearch.help'));
   }, []);
 
   React.useEffect(() => {
@@ -58,13 +58,13 @@ export default function MemberSearch() {
     />
   );
 
-  const searchAgainButtonClick = () => {
+  const resetSearchClickFunction = () => {
     setShowMemberEntry(false);
   };
 
-  const searchAgainButton = () => (
+  const resetSearchButton = () => (
     <Box mt={-17} p={5} ml={25}>
-      <ResetSearchButton action={searchAgainButtonClick} />
+      <ResetSearchButton action={resetSearchClickFunction} />
     </Box>
   );
 
@@ -72,7 +72,7 @@ export default function MemberSearch() {
     <Box p={2}>
       {
         <UserSearchButton
-          action={clickFunction}
+          action={userSearchClickFunction}
           disabled={formInvalid}
           primary
           testId="userSearchButton"
@@ -140,9 +140,8 @@ export default function MemberSearch() {
     }
   }
 
-  const clickFunction = async () => {
+  const userSearchClickFunction = async () => {
     if (await searchEmail(formValues.email.value)) {
-      // show member entry with user details
       setShowMemberEntry(true);
       clearForm();
     }
@@ -182,7 +181,7 @@ export default function MemberSearch() {
       <Grid2>
         {!showMemberEntry && memberSearch()}
         {showMemberEntry && memberEntry()}
-        {showMemberEntry && searchAgainButton()}
+        {showMemberEntry && resetSearchButton()}
       </Grid2>
     </>
   );

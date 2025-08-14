@@ -7,7 +7,12 @@ import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
 import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
 import { Proposal } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
-import { LAB_POSITION, TEAM_STATUS_TYPE_OPTIONS, WRAPPER_HEIGHT } from '../../../utils/constants';
+import {
+  DEFAULT_INVESTIGATOR,
+  LAB_POSITION,
+  TEAM_STATUS_TYPE_OPTIONS,
+  WRAPPER_HEIGHT
+} from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Investigator from '../../../utils/types/investigator';
 import PostSendEmailInvite from '../../../services/axios/postSendEmailInvite/postSendEmailInvite';
@@ -24,18 +29,7 @@ interface MemberEntryProps {
 
 export default function MemberEntry({
   forSearch = false,
-  foundInvestigator = {
-    id: '',
-    firstName: '',
-    lastName: '',
-    email: '',
-    affiliation: '',
-    phdThesis: false,
-    status: '',
-    pi: false,
-    officeLocation: null,
-    jobTitle: null
-  },
+  foundInvestigator = DEFAULT_INVESTIGATOR,
   invitationBtnClicked = () => {}
 }: MemberEntryProps) {
   const { t } = useTranslation('pht');
@@ -175,19 +169,21 @@ export default function MemberEntry({
       highestId = 0;
     }
     const newInvestigator: Investigator = {
-      id: (highestId + 1).toString(),
+      id: forSearch ? foundInvestigator?.id : (highestId + 1).toString(),
       firstName: formValues.firstName.value,
       lastName: formValues.lastName.value,
       email: formValues.email.value,
-      // country: '',
       affiliation: '',
       phdThesis: formValues.phdThesis.phdThesis,
       status: TEAM_STATUS_TYPE_OPTIONS.pending,
       pi: formValues.pi.pi,
-      officeLocation: null,
-      jobTitle: null
+      officeLocation: null, // TODO implement once data is available
+      jobTitle: null // TODO implement once data is available
     };
-    setProposal({ ...getProposal(), investigators: [...currentInvestigators, newInvestigator] });
+    setProposal({
+      ...getProposal(),
+      investigators: [...(currentInvestigators ?? []), newInvestigator]
+    });
   }
 
   async function sendEmailInvite(email: string, prsl_id: string): Promise<boolean> {
