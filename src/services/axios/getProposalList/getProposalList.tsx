@@ -1,4 +1,4 @@
-import TeamMember from '../../../utils/types/teamMember';
+import Investigator, { InvestigatorBackend } from '../../../utils/types/investigator';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import {
   SKA_OSO_SERVICES_URL,
@@ -8,7 +8,6 @@ import {
   OSO_SERVICES_PROPOSAL_PATH,
   DEFAULT_USER
 } from '../../../utils/constants';
-import { InvestigatorBackend } from '../../../utils/types/investigator';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import MockProposalBackendList from './mockProposalBackendList';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
@@ -27,25 +26,25 @@ const getSubType = (proposalType: {
   return subProjects?.filter(({ id }) => id)?.map(({ id }) => id);
 };
 
-const getTeam = (investigators: InvestigatorBackend[] | null): TeamMember[] => {
-  const teamMembers: TeamMember[] = [];
-  if (!investigators) {
-    return teamMembers as TeamMember[];
+const getInvestigators = (inc: InvestigatorBackend[] | null): Investigator[] => {
+  const investigators: Investigator[] = [];
+  if (!inc) {
+    return [];
   }
-  for (let investigator of investigators) {
-    const teamMember = {
-      id: investigator.investigator_id,
-      firstName: investigator.given_name,
-      lastName: investigator.family_name,
-      email: investigator.email,
-      affiliation: investigator.organization as string,
-      phdThesis: investigator.for_phd as boolean,
-      status: 'unknown', // TODO check if we need to remove status for team member? not in backend anymore
-      pi: investigator.principal_investigator as boolean
+  for (let item of inc) {
+    const investigator = {
+      id: item.investigator_id,
+      firstName: item.given_name,
+      lastName: item.family_name,
+      email: item.email,
+      affiliation: item.organization as string,
+      phdThesis: item.for_phd as boolean,
+      status: 'unknown',
+      pi: item.principal_investigator as boolean
     };
-    teamMembers.push(teamMember);
+    investigators.push(investigator);
   }
-  return teamMembers as TeamMember[];
+  return investigators as Investigator[];
 };
 
 const getScienceCategory = (scienceCat: string) => {
@@ -79,7 +78,7 @@ export function mappingList(inRec: ProposalBackend[]): Proposal[] {
         : ((null as unknown) as number),
       title: tmp.info?.title,
       cycle: tmp?.cycle,
-      team: tmp.info?.investigators ? getTeam(tmp.info.investigators) : [],
+      investigators: tmp.info?.investigators ? getInvestigators(tmp.info.investigators) : [],
       sciencePDF: null,
       technicalPDF: null
     };

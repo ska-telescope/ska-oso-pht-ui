@@ -80,16 +80,16 @@ export default function TeamPage() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = getProposal()?.team?.filter(e => e.id !== currentMember);
+    const obs1 = getProposal()?.investigators?.filter(e => e.id !== currentMember);
 
-    setProposal({ ...getProposal(), team: obs1 });
+    setProposal({ ...getProposal(), investigators: obs1 });
     setCurrentMember('');
     closeDeleteDialog();
   };
 
   const alertContent = () => {
     const LABEL_WIDTH = 6;
-    const rec = getProposal()?.team?.find(p => p.id === currentMember);
+    const rec = getProposal()?.investigators?.find(p => p.id === currentMember);
     return (
       <Grid
         p={2}
@@ -117,7 +117,7 @@ export default function TeamPage() {
     );
   };
 
-  const getRows = () => getProposal().team;
+  const getRows = () => getProposal().investigators;
 
   function a11yProps(index: number) {
     return {

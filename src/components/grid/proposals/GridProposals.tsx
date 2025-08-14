@@ -26,7 +26,7 @@ import {
   SEARCH_PROPOSAL_TYPE_OPTIONS
 } from '@/utils/constants';
 import emptyCell from '@/components/fields/emptyCell/emptyCell';
-import TeamMember from '@/utils/types/teamMember';
+import Investigator from '@/utils/types/investigator';
 import { presentLatex } from '@/utils/present/present';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
 import ViewIcon from '@/components/icon/viewIcon/viewIcon';
@@ -159,10 +159,10 @@ export default function GridProposals({
         setProposals(response);
 
         // TODO : remove this once email invitation is working
-        // temporary hack to get team members into the proposals as the functionality is not working at the moment
+        // temporary hack to get investigators members into the proposals as the functionality is not working at the moment
         response.forEach((proposal: Proposal) => {
-          if (proposal.team && proposal.team.length === 0) {
-            proposal.team = [
+          if (proposal.investigators && proposal.investigators.length === 0) {
+            proposal.investigators = [
               {
                 firstName: 'Alice',
                 lastName: 'Spears',
@@ -234,7 +234,7 @@ export default function GridProposals({
 
   const element = (inValue: number | string) => (inValue === NOT_SPECIFIED ? emptyCell() : inValue);
 
-  const getAuthors = (arr: TeamMember[]) => {
+  const getAuthors = (arr: Investigator[]) => {
     if (!arr || arr.length === 0) {
       return element(NOT_SPECIFIED);
     }
@@ -245,7 +245,7 @@ export default function GridProposals({
     return element(results.length > 1 ? results[0] + ' + ' + (results.length - 1) : results[0]);
   };
 
-  const getPIs = (arr: TeamMember[]) => {
+  const getPIs = (arr: Investigator[]) => {
     if (!arr || arr.length === 0) {
       return element(NOT_SPECIFIED);
     }
@@ -266,7 +266,7 @@ export default function GridProposals({
     headerName: t('pi.short'),
     flex: 2,
     renderCell: (e: any) => {
-      return getPIs(e.row.team);
+      return getPIs(e.row.investigators);
     }
   };
 
@@ -295,7 +295,7 @@ export default function GridProposals({
     flex: 2,
     minWidth: 300,
     renderCell: (e: any) => {
-      return getAuthors(e.row.team);
+      return getAuthors(e.row.investigators);
     }
   };
 

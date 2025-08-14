@@ -3,7 +3,7 @@ import { GetMockUserByEmail } from '@/services/axios/getUserByEmail/getUserByEma
 
 export default function MemberSearch() {
   const fetchData = async () => {
-    const response = await GetMockUserByEmail();
+    await GetMockUserByEmail();
   };
 
   fetchData();
