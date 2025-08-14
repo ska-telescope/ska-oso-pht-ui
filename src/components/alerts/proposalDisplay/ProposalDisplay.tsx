@@ -294,7 +294,7 @@ export default function ProposalDisplay({
     </>
   );
 
-  const teamContentGrid = () => (
+  const investigatorsContentGrid = () => (
     <>
       <Grid2>
         <Grid2>{label(t('members.label'))}</Grid2>
@@ -368,7 +368,7 @@ export default function ProposalDisplay({
             {sectionTitle()}
             {observationsContentGrid()}
             {sectionTitle()}
-            {teamContentGrid()}
+            {investigatorsContentGrid()}
           </Grid2>
         </DialogContent>
       )}

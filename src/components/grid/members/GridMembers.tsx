@@ -100,7 +100,7 @@ export default function GridMembers({
           columns={getColumns()}
           height={height}
           onRowClick={rowClick}
-          testId="teamTableId"
+          testId="investigatorsTableId"
         />
       )}
       {!rows ||
