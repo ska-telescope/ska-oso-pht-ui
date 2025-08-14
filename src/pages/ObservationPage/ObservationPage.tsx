@@ -51,7 +51,7 @@ export default function ObservationPage() {
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [currObs, setCurrObs] = React.useState(null);
+  const [currObs, setCurrObs] = React.useState<Observation | null>(null);
   const [selected, setSelected] = React.useState(true);
   const [notSelected, setNotSelected] = React.useState(true);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
@@ -131,7 +131,7 @@ export default function ObservationPage() {
   const deleteObservationTarget = (row: any) => {
     function filterRecords(id: number) {
       return getProposal().targetObservation?.filter(
-        item => !(item.observationId === currObs.id && item.targetId === id)
+        item => !(item.observationId === currObs?.id && item.targetId === id)
       );
     }
     setTargetObservationStorage(filterRecords(row.id));
@@ -194,16 +194,16 @@ export default function ObservationPage() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = getProposal().observations.filter(e => e.id !== currObs.id);
-    const obs2 = getProposal().targetObservation.filter(e => e.observationId !== currObs.id);
-    const obs3 = getProposal().groupObservations.filter(e => e.observationId !== currObs.id);
+    const obs1 = getProposal().observations.filter(e => e.id !== currObs?.id);
+    const obs2 = getProposal().targetObservation.filter(e => e.observationId !== currObs?.id);
+    const obs3 = getProposal().groupObservations.filter(e => e.observationId !== currObs?.id);
     setProposal({
       ...getProposal(),
       observations: obs1,
       targetObservation: obs2,
       groupObservations: obs3
     });
-    setElementsO(elementsO.filter(e => e.id !== currObs.id));
+    setElementsO(elementsO.filter(e => e.id !== currObs?.id));
     setCurrObs(null);
     closeDeleteDialog();
   };
@@ -343,7 +343,7 @@ export default function ObservationPage() {
           const obs = elementsO.find(p => p.id === e.row.id);
           return (
             <>
-              {false && (
+              {
                 <StatusIconDisplay
                   ariaDescription=" "
                   ariaTitle={t('sensCalc.' + getLevel(obs))}
@@ -355,7 +355,7 @@ export default function ObservationPage() {
                   testId="testId"
                   toolTip={t('sensCalc.' + getLevel(obs))}
                 />
-              )}
+              }
             </>
           );
         }
@@ -625,11 +625,11 @@ export default function ObservationPage() {
           setOpen={setOpenDeleteDialog}
         />
       )}
-      {openMultipleDialog && (
+      {openMultipleDialog && currObs && (
         <SensCalcModalMultiple
           open={openMultipleDialog}
           onClose={() => setOpenMultipleDialog(false)}
-          data={filteredByObservation(currObs.id)}
+          data={filteredByObservation(currObs?.id)}
           observation={currObs}
           level={getLevel(currObs)}
           levelError={getError(currObs)}
