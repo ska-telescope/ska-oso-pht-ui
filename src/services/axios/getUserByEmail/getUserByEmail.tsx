@@ -23,7 +23,7 @@ export function mapping(data: InvestigatorBackend): Investigator {
 
 /*****************************************************************************************************************************/
 
-export function GetMockUserByEmail(skaEmail: string): Investigator | string {
+export function GetMockUserByEmail(skaEmail: string): Investigator {
   return mapping(MockUserBackendPartial);
 }
 
