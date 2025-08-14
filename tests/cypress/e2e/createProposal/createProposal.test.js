@@ -25,7 +25,20 @@ describe('Creating Proposal', () => {
     enterProposalTitle();
     clickProposalTypePrincipleInvestigator();
     clickSubProposalTypeTargetOfOpportunity();
+    //mock create proposal endpoint
+    cy.window().then(win => {
+      const token = win.localStorage.getItem('cypress:token');
+      console.log('token ', token);
+    cy.intercept('POST', 'http://192.168.49.2/ska-oso-services/oso/api/v2/pht/prsls/create', (req) => {
+      req.headers['Authorization'] = `Bearer ${token}`;
+      req.reply({
+        statusCode: 200,
+        body: "prsl-test-20250814-00003",
+      });
+    }).as('mockCreateProposal');
+    });
     clickCreateProposal();
+    cy.wait('@mockCreateProposal');
     verifyProposalCreatedAlertFooter();
     clickHome();
     verifyOnLandingPage();
