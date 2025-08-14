@@ -23,16 +23,15 @@ export default function GridMembers({
   rows = []
 }: GridMembersProps) {
   const { t } = useTranslation('pht');
-
   const PIStar = ({ pi }: { pi: any }) => {
     if (pi) {
-      return <StarIcon />;
+      return <StarIcon onClick={() => {}} />;
     }
   };
 
   const PHDThesis = ({ value }: { value: any }) => {
     if (value) {
-      return <TickIcon />;
+      return <TickIcon onClick={() => {}} />;
     }
   };
 
@@ -76,7 +75,9 @@ export default function GridMembers({
     }
   ];
 
-  const trashClicked = () => (actionClicked ? actionClicked : null);
+  const trashClicked = (row: any) => {
+    if (actionClicked) actionClicked(row);
+  };
 
   const actionColumns = [
     {

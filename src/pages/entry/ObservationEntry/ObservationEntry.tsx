@@ -121,26 +121,25 @@ export default function ObservationEntry() {
   const [continuumBandwidth, setContinuumBandwidth] = React.useState(0);
   const [continuumBandwidthUnits, setContinuumBandwidthUnits] = React.useState(2);
   const [subBands, setSubBands] = React.useState(1);
-  const [numOf15mAntennas, setNumOf15mAntennas] = React.useState(4);
-  const [numOf13mAntennas, setNumOf13mAntennas] = React.useState(0);
-  const [numOfStations, setNumOfStations] = React.useState(512);
+  const [numOf15mAntennas, setNumOf15mAntennas] = React.useState<number | undefined>(4);
+  const [numOf13mAntennas, setNumOf13mAntennas] = React.useState<number | undefined>(0);
+  const [numOfStations, setNumOfStations] = React.useState<number | undefined>(512);
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [minimumChannelWidthHz, setMinimumChannelWidthHz] = React.useState<number>(0);
 
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
-  const [ob, setOb] = React.useState<Observation | null>(null);
+  const [obOnce, setObOnce] = React.useState<Observation | null>(null);
   const isAA2 = (subarrayConfig: number) => subarrayConfig === 3;
 
   const lookupArrayValue = (arr: any[], inValue: string | number) =>
     arr.find(e => e.lookup.toString() === inValue.toString())?.value;
 
   const observationIn = (ob: Observation) => {
-    setOb(ob);
     setMyObsId(ob?.id);
     setSubarrayConfig(ob?.subarray);
     setObservationType(ob?.type);
-    setObservingBand(ob?.observingBand);
+    if (!obOnce) setObservingBand(ob?.observingBand);
     setWeather(ob?.weather ?? Number(t('weather.default')));
     setElevation(ob?.elevation);
     setCentralFrequency(ob?.centralFrequency);
@@ -286,18 +285,18 @@ export default function ObservationEntry() {
       const data: ObservatoryData = application.content3 as ObservatoryData;
       //Set value using OSD Data if Low AA2
       if (isLow() && isAA2(record.value)) {
-        setNumOfStations(data?.capabilities?.low?.AA2?.numberStations);
+        setNumOfStations(data?.capabilities?.low?.AA2?.numberStations ?? undefined);
       } else {
         setNumOfStations(record.numOfStations);
       }
       //Set value using OSD Data if Mid AA2
       if (!isLow() && isAA2(record.value)) {
-        setNumOf15mAntennas(data?.capabilities?.mid?.AA2?.numberSkaDishes);
+        setNumOf15mAntennas(data?.capabilities?.mid?.AA2?.numberSkaDishes ?? undefined);
       } else {
         setNumOf15mAntennas(record.numOf15mAntennas);
       }
     }
-    setNumOf13mAntennas(record.numOf13mAntennas);
+    setNumOf13mAntennas(record?.numOf13mAntennas);
     setDefaultCentralFrequency(observingBand, e as number);
     setDefaultContinuumBandwidth(observingBand, e as number);
     setSubarrayConfig(e);
@@ -307,6 +306,7 @@ export default function ObservationEntry() {
     helpComponent(t('observationId.help'));
     if (isEdit()) {
       observationIn(locationProperties.state);
+      setObOnce(locationProperties.state);
     } else {
       setMyObsId(generateId(t('addObservation.idPrefix'), 6));
       setCentralFrequency(calculateCentralFrequency(observingBand, subarrayConfig));
@@ -387,10 +387,12 @@ export default function ObservationEntry() {
       }
     };
 
-    if (ob) {
+    if (obOnce) {
       // We just need to do this one more time as some fields could not be updated until observingBand has changed.
-      observationIn(ob);
-      setOb(null);
+      observationIn(obOnce);
+      setObOnce(null);
+      setDefaultCentralFrequency(observingBand, subarrayConfig);
+      setDefaultContinuumBandwidth(observingBand, subarrayConfig);
     }
     const calculateMinimumChannelWidthHz = () =>
       setMinimumChannelWidthHz(getMinimumChannelWidth(telescope()));
@@ -510,7 +512,7 @@ export default function ObservationEntry() {
         disabled={subarrayConfig !== OB_SUBARRAY_CUSTOM}
         widthLabel={TOP_LABEL_WIDTH}
         setValue={setNumOfStations}
-        value={numOfStations}
+        value={numOfStations ?? 0}
         rangeLower={Number(t('numStations.range.lower'))}
         rangeUpper={Number(t('numStations.range.upper'))}
       />
