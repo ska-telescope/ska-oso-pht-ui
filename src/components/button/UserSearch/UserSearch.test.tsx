@@ -8,7 +8,7 @@ describe('<UserSearchButton />', () => {
   test('renders correctly', () => {
     render(<UserSearchButton action={mockAction} />);
     expect(screen.getByTestId('investigatorSearchButtonTestId')).toHaveTextContent(
-      'sendInviteBtn.label'
+      'searchForMember.label'
     );
     screen.getByTestId('investigatorSearchButtonTestId').click();
     expect(mockAction).toBeCalled();
@@ -16,7 +16,7 @@ describe('<UserSearchButton />', () => {
   test('renders correctly with tooltip empty', () => {
     render(<UserSearchButton action={mockAction} toolTip="" />);
     expect(screen.getByTestId('investigatorSearchButtonTestId')).toHaveTextContent(
-      'sendInviteBtn.label'
+      'searchForMember.label'
     );
   });
 });
