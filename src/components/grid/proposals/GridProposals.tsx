@@ -157,45 +157,6 @@ export default function GridProposals({
         setAxiosError(response);
       } else {
         setProposals(response);
-
-        // TODO : remove this once email invitation is working
-        // temporary hack to get investigators members into the proposals as the functionality is not working at the moment
-        response.forEach((proposal: Proposal) => {
-          if (proposal.investigators && proposal.investigators.length === 0) {
-            proposal.investigators = [
-              {
-                firstName: 'Alice',
-                lastName: 'Spears',
-                pi: true,
-                phdThesis: true,
-                id: '123',
-                email: 'alice.spears@example.com',
-                affiliation: 'University of Cambridge',
-                status: 'reviewed'
-              },
-              {
-                firstName: 'Joshua',
-                lastName: 'Smith',
-                pi: false,
-                phdThesis: true,
-                id: '124',
-                email: 'joshua.smith@example.com',
-                affiliation: 'University of Cambridge',
-                status: 'accepted'
-              },
-              {
-                firstName: 'Sophie',
-                lastName: 'Dupont',
-                pi: false,
-                phdThesis: true,
-                id: '125',
-                email: 'sophie.dupont@example.com',
-                affiliation: 'University Paris Sorbonne',
-                status: 'accepted'
-              }
-            ];
-          }
-        });
       }
     };
     fetchData();
