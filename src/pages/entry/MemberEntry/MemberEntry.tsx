@@ -144,16 +144,16 @@ export default function MemberEntry() {
     setPi(event.target.checked);
   };
 
-  function AddTeamMember() {
-    const currentTeam = getProposal().investigators;
-    let highestId = currentTeam?.reduce(
-      (acc, teamMember) => (Number(teamMember.id) > acc ? Number(teamMember.id) : acc),
+  function AddInvestigator() {
+    const currentInvestigators = getProposal().investigators;
+    let highestId = currentInvestigators?.reduce(
+      (acc, investigator) => (Number(investigator.id) > acc ? Number(investigator.id) : acc),
       0
     );
     if (highestId === undefined) {
       highestId = 0;
     }
-    const newTeamMember: Investigator = {
+    const newInvestigator: Investigator = {
       id: (highestId + 1).toString(),
       firstName: formValues.firstName.value,
       lastName: formValues.lastName.value,
@@ -166,7 +166,7 @@ export default function MemberEntry() {
       officeLocation: null,
       jobTitle: null
     };
-    setProposal({ ...getProposal(), investigators: [...currentTeam, newTeamMember] });
+    setProposal({ ...getProposal(), investigators: [...currentInvestigators, newInvestigator] });
   }
 
   async function sendEmailInvite(email: string, prsl_id: string): Promise<boolean> {
@@ -191,7 +191,7 @@ export default function MemberEntry() {
 
   const clickFunction = async () => {
     if (await sendEmailInvite(formValues.email.value, getProposal().id)) {
-      AddTeamMember();
+      AddInvestigator();
       clearForm();
     }
   };

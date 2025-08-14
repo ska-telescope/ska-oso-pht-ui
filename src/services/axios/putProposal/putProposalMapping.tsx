@@ -494,16 +494,16 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
       targets: getTargets(proposal?.targets ? proposal.targets : []),
       documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF),
       investigators: proposal?.investigators
-        ? proposal.investigators.map(teamMember => {
+        ? proposal.investigators.map(investigator => {
             return {
-              investigator_id: teamMember.id?.toString(),
-              status: teamMember.status,
-              given_name: teamMember.firstName,
-              family_name: teamMember.lastName,
-              email: teamMember.email,
-              organization: teamMember.affiliation,
-              for_phd: teamMember.phdThesis,
-              principal_investigator: teamMember.pi
+              investigator_id: investigator.id?.toString(),
+              status: investigator.status,
+              given_name: investigator.firstName,
+              family_name: investigator.lastName,
+              email: investigator.email,
+              organization: investigator.affiliation,
+              for_phd: investigator.phdThesis,
+              principal_investigator: investigator.pi
             };
           })
         : null,

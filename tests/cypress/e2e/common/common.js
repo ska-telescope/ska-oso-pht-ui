@@ -208,7 +208,7 @@ export const clickToTeamPage = () => {
   pageConfirmed('TEAM');
 };
 
-export const addTeamMember = () => {
+export const addInvestigator = () => {
   entry('firstName', 'Test');
   entry('lastName', 'User');
   entry('email', 'TestUser@test.com');

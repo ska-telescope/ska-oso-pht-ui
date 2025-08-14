@@ -51,13 +51,13 @@ import {
 } from '@/utils/types/dataProduct.tsx';
 import Investigator, { InvestigatorBackend } from '@/utils/types/investigator';
 
-const getTeamMembers = (inValue: InvestigatorBackend[] | null) => {
-  let members = [] as Investigator[];
+const getInvestigators = (inValue: InvestigatorBackend[] | null) => {
+  let investigators = [] as Investigator[];
   if (!inValue || inValue.length === 0) {
-    return members;
+    return investigators;
   }
   for (let i = 0; i < inValue?.length; i++) {
-    members.push({
+    investigators.push({
       id: inValue[i].investigator_id,
       status: inValue[i].status,
       firstName: inValue[i].given_name,
@@ -68,7 +68,7 @@ const getTeamMembers = (inValue: InvestigatorBackend[] | null) => {
       pi: inValue[i].principal_investigator as boolean
     });
   }
-  return members;
+  return investigators;
 };
 
 const getScienceSubCategory = () => {
@@ -594,7 +594,7 @@ export function mapping(inRec: ProposalBackend): Proposal {
     createdBy: inRec.metadata?.created_by,
     version: inRec.metadata?.version,
     cycle: inRec.cycle,
-    investigators: getTeamMembers(inRec.info.investigators),
+    investigators: getInvestigators(inRec.info.investigators),
     abstract: inRec.info.abstract,
     scienceCategory: getScienceCategory(inRec.info.science_category),
     scienceSubCategory: [getScienceSubCategory()],

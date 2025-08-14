@@ -2,7 +2,7 @@ import {
   addAbstract,
   addM2TargetUsingResolve,
   addObservatoryDataProduct,
-  addTeamMember,
+  addInvestigator,
   clickAddDataProduct,
   clickEditProposal,
   clickHome,
@@ -48,7 +48,7 @@ describe('Edit Proposal', () => {
     pageConfirmed('TITLE');
     //complete mandatory fields
     clickToTeamPage();
-    addTeamMember();
+    addInvestigator();
     verifyEmailSentAlertFooter();
     clickToGeneralPage();
     addAbstract();
