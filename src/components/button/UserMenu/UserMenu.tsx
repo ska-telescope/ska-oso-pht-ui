@@ -41,9 +41,10 @@ export default function ButtonUserMenu({
   const username = accounts.length > 0 ? accounts[0].name + cypressLogin : cypressLogin;
 
   React.useEffect(() => {
-    const token = localStorage.getItem('msal.idtoken');
-    if (token && window.Cypress) {
-      setCypressLogin('Cypress User'); // or decode token if needed
+    const accountStr = localStorage.getItem('msal.account');
+    const account = accountStr ? JSON.parse(accountStr) : null;
+    if (account && window.Cypress) {
+      setCypressLogin(account.name);
     }
   }, []);
 

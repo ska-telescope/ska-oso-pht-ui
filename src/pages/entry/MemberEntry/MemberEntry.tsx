@@ -9,7 +9,7 @@ import { Proposal } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
 import { LAB_POSITION, TEAM_STATUS_TYPE_OPTIONS, WRAPPER_HEIGHT } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
-import TeamMember from '../../../utils/types/teamMember';
+import Investigator from '../../../utils/types/investigator';
 import PostSendEmailInvite from '../../../services/axios/postSendEmailInvite/postSendEmailInvite';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
@@ -144,16 +144,16 @@ export default function MemberEntry() {
     setPi(event.target.checked);
   };
 
-  function AddTeamMember() {
-    const currentTeam = getProposal().team;
-    let highestId = currentTeam?.reduce(
-      (acc, teamMember) => (Number(teamMember.id) > acc ? Number(teamMember.id) : acc),
+  function AddInvestigator() {
+    const currentInvestigators = getProposal().investigators;
+    let highestId = currentInvestigators?.reduce(
+      (acc, investigator) => (Number(investigator.id) > acc ? Number(investigator.id) : acc),
       0
     );
     if (highestId === undefined) {
       highestId = 0;
     }
-    const newTeamMember: TeamMember = {
+    const newInvestigator: Investigator = {
       id: (highestId + 1).toString(),
       firstName: formValues.firstName.value,
       lastName: formValues.lastName.value,
@@ -162,9 +162,11 @@ export default function MemberEntry() {
       affiliation: '',
       phdThesis: formValues.phdThesis.phdThesis,
       status: TEAM_STATUS_TYPE_OPTIONS.pending,
-      pi: formValues.pi.pi
+      pi: formValues.pi.pi,
+      officeLocation: null,
+      jobTitle: null
     };
-    setProposal({ ...getProposal(), team: [...currentTeam, newTeamMember] });
+    setProposal({ ...getProposal(), investigators: [...currentInvestigators, newInvestigator] });
   }
 
   async function sendEmailInvite(email: string, prsl_id: string): Promise<boolean> {
@@ -189,7 +191,7 @@ export default function MemberEntry() {
 
   const clickFunction = async () => {
     if (await sendEmailInvite(formValues.email.value, getProposal().id)) {
-      AddTeamMember();
+      AddInvestigator();
       clearForm();
     }
   };

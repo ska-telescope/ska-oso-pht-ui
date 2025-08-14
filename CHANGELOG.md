@@ -9,7 +9,9 @@ UNRELEASED
 
 * Security : Added AAA across all oso-services
 * Changed  : oso-services v2.0.3
-* Added: getUserByEmail service using a mock user
+* Added : getUserByEmail service using a mock user
+* Changed : rename frontend type "TeamMember" into "Investigator" for consistency
+* Changed : rename frontend property of proposal "team" into "investigators" for consistency
 
 3.1.0
 

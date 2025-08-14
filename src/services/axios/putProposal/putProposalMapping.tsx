@@ -475,7 +475,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     status: status,
     submitted_on: status === PROPOSAL_STATUS.SUBMITTED ? new Date().toISOString() : null, // note: null since oso-services 1.1.0  does not support ''
     submitted_by: status === PROPOSAL_STATUS.SUBMITTED ? userId : '', // TODO : Need to replaced with the logged in user.
-    investigator_refs: proposal.team?.map(investigator => {
+    investigator_refs: proposal.investigators?.map(investigator => {
       return investigator?.id?.toString();
     }),
     cycle: proposal.cycle,
@@ -493,17 +493,17 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
       )?.label as string,
       targets: getTargets(proposal?.targets ? proposal.targets : []),
       documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF),
-      investigators: proposal?.team
-        ? proposal.team.map(teamMember => {
+      investigators: proposal?.investigators
+        ? proposal.investigators.map(investigator => {
             return {
-              investigator_id: teamMember.id?.toString(),
-              status: teamMember.status,
-              given_name: teamMember.firstName,
-              family_name: teamMember.lastName,
-              email: teamMember.email,
-              organization: teamMember.affiliation,
-              for_phd: teamMember.phdThesis,
-              principal_investigator: teamMember.pi
+              investigator_id: investigator.id?.toString(),
+              status: investigator.status,
+              given_name: investigator.firstName,
+              family_name: investigator.lastName,
+              email: investigator.email,
+              organization: investigator.affiliation,
+              for_phd: investigator.phdThesis,
+              principal_investigator: investigator.pi
             };
           })
         : null,

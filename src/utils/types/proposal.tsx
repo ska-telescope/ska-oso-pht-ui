@@ -12,9 +12,8 @@ import { SensCalcResultsBackend } from './sensCalcResults';
 // import { ScienceProgrammeBackend } from './scienceProgrammes';
 import Target, { TargetBackend } from './target';
 import TargetObservation from './targetObservation';
-import TeamMember from './teamMember';
+import Investigator, { InvestigatorBackend } from './investigator';
 import { ObservationSetBackend } from './observationSet';
-import { InvestigatorBackend } from './investigator';
 import { Metadata } from './metadata';
 
 export type ProposalBackend = {
@@ -58,7 +57,7 @@ export type Proposal = {
   proposalSubType?: number[];
   scienceCategory: number | null;
   scienceSubCategory?: number[];
-  team?: TeamMember[];
+  investigators?: Investigator[];
   abstract?: string;
   sciencePDF: DocumentPDF | null;
   scienceLoadStatus?: number;
@@ -89,7 +88,7 @@ export const NEW_PROPOSAL = {
   proposalSubType: [0],
   scienceCategory: 1,
   scienceSubCategory: [1],
-  team: [],
+  investigators: [],
   pi: '',
   abstract: '',
   sciencePDF: null,

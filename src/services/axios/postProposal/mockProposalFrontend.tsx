@@ -13,7 +13,7 @@ export const MockProposalFrontend: Proposal = {
   createdBy: DEFAULT_USER,
   version: 10,
   cycle: 'SKAO_2027_1',
-  team: [],
+  investigators: [],
   abstract: '',
   scienceCategory: null,
   scienceSubCategory: [1],

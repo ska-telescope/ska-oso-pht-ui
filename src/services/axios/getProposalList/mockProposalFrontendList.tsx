@@ -16,7 +16,7 @@ const MockProposalFrontendList: Proposal[] = [
     cycle: 'SKA_5000_2023',
     sciencePDF: null,
     technicalPDF: null,
-    team: [
+    investigators: [
       {
         id: 'prp-ska01-202204-01',
         firstName: 'Tony',
@@ -44,7 +44,7 @@ const MockProposalFrontendList: Proposal[] = [
     cycle: 'SKA_5000_2023',
     sciencePDF: null,
     technicalPDF: null,
-    team: [
+    investigators: [
       {
         id: 'prp-ska01-202204-01',
         firstName: 'Tony',
@@ -72,7 +72,7 @@ const MockProposalFrontendList: Proposal[] = [
     cycle: 'SKA_5000_2023',
     sciencePDF: null,
     technicalPDF: null,
-    team: [
+    investigators: [
       {
         id: 'prp-ska01-202204-01',
         firstName: 'Tony',

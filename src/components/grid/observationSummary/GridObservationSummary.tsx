@@ -172,7 +172,7 @@ export default function GridObservationSummary({
           getRowHeight={() => 'auto'}
           height={height}
           onRowClick={rowClick}
-          testId="teamTableId"
+          testId="investigatorsTableId"
         />
       )}
       {!proposal?.observations ||
