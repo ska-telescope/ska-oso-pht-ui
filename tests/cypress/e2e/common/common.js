@@ -10,6 +10,7 @@ import {
   getCheckboxInRow,
   viewPort
 } from '../../fixtures/utils/cypress';
+import { defaultUser } from '../users/users';
 
 export const initialize = () => {
   viewPort();
@@ -73,6 +74,7 @@ export const clickCreateProposal = () => clickButton('nextButtonTestId');
 export const clickHome = () => clickButton('homeButtonTestId');
 export const clickHomeWarningConfirmation = () => clickButton('dialogConfirmationButton');
 export const clickLoginUser = () => clickButton('loginButton');
+export const clickUserMenu = () => clickButton('usernameMenu');
 export const clickObservationSetup = () => clickButton('addObservationButton');
 export const clickAddObservationEntry = () => clickButton('addObservationButtonEntry');
 export const clickPanelMaintenanceButton = () => clickButton('pmtBackButton');
@@ -141,7 +143,7 @@ export const verifyProposalOnGridIsVisible = ProposalName => {
   verifyContent('dataGridProposals', ProposalName);
 };
 
-export const clickLinkedTickdBox = index => {
+export const clickLinkedTickedBox = index => {
   getCheckboxInRow(index).click({ force: true });
 };
 
@@ -151,15 +153,18 @@ export const verifyTickBoxIsSelected = index => {
 
 /*----------------------------------------------------------------------*/
 
-export const clickUserMenu = (testId, title) => {
-  clickLoginUser();
+export const clickSignINBtns = (testId, title) => {
+  clickUserMenu();
   clickNav(testId, title);
 };
-export const clickUserMenuOverview = () => clickUserMenu('menuItemOverview', 'OVERVIEW');
-export const clickUserMenuProposals = () => clickUserMenu('menuItemProposals', '');
-export const clickUserMenuVerification = () => clickUserMenu('menuItemVerification', '');
-export const clickUserMenuPanels = () => clickUserMenu('menuItemPanelSummary', 'PANEL MAINTENANCE');
-export const clickUserMenuReviews = () => clickUserMenu('menuItemReviews', 'REVIEW PROPOSALS');
+export const clickUserMenuOverview = () => clickSignINBtns('menuItemOverview', 'OVERVIEW');
+export const clickUserMenuProposals = () => clickSignINBtns('menuItemProposals', '');
+export const clickUserMenuVerification = () => clickSignINBtns('menuItemVerification', '');
+export const clickUserMenuPanels = () =>
+  clickSignINBtns('menuItemPanelSummary', 'PANEL MAINTENANCE');
+export const clickUserMenuReviews = () => clickSignINBtns('menuItemReviews', 'REVIEW PROPOSALS');
+export const clickUserMenuDecisions = () =>
+  clickSignINBtns('menuItemReviewDecisions', 'REVIEW DECISIONS');
 export const clickUserMenuLogout = () => click('menuItemLogout');
 
 /*----------------------------------------------------------------------*/
@@ -355,18 +360,11 @@ export const createObservation = () => {
   verifyUnlinkedObservationInTable();
 };
 
-/*----------------------------------------------------------------------*/
+/*-------------------------- SHOULD BE MOVED OUT OF HERE AT SOME POINT -----------------------------*/
+
+// Note that it is possible to pass in the user object to this function to mock a specific user
 
 Cypress.Commands.add('mockLoginButton', (user = {}) => {
-  const defaultUser = {
-    username: 'testuser@example.com',
-    name: 'Test User',
-    homeAccountId: 'fake-home-id',
-    localAccountId: 'fake-local-id',
-    tenantId: 'fake-tenant-id',
-    environment: 'login.microsoftonline.com'
-  };
-
   const fakeAccount = { ...defaultUser, ...user };
 
   cy.get('[data-testid="loginButton"]')
@@ -396,7 +394,7 @@ Cypress.Commands.add('mockLoginButton', (user = {}) => {
               msal.getAllAccounts = () => [fakeAccount];
             }
 
-            win.localStorage.setItem('msal.idtoken', 'fake-id-token');
+            win.localStorage.setItem('cypress:group', fakeAccount.group);
             win.localStorage.setItem('msal.account', JSON.stringify(fakeAccount));
 
             // Trigger a navigation to force re-evaluation

@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid, Tab, Tabs, SvgIcon, Typography } from '@mui/material';
+import { Box, Grid2, Tab, Tabs, SvgIcon, Typography } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
@@ -19,13 +19,13 @@ import TeamFileImport from './TeamFileImport/TeamFileImport';
 
 const PAGE = 1;
 
-export function PIStar({ pi }) {
+export function PIStar(pi: boolean) {
   if (pi) {
-    return <StarIcon />;
+    return <StarIcon onClick={() => {}} />;
   }
 }
 
-export function PHDThesis({ value }) {
+export function PHDThesis(value: any) {
   if (value) {
     return <SvgIcon component={CheckIcon} viewBox="0 0 24 24" />;
   }
@@ -91,7 +91,7 @@ export default function TeamPage() {
     const LABEL_WIDTH = 6;
     const rec = getProposal()?.investigators?.find(p => p.id === currentMember);
     return (
-      <Grid
+      <Grid2
         p={2}
         container
         direction="column"
@@ -113,7 +113,7 @@ export default function TeamPage() {
         <FieldWrapper label={t('pi.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{t(rec?.pi ? 'yes' : 'no')}</Typography>
         </FieldWrapper>
-      </Grid>
+      </Grid2>
     );
   };
 
@@ -128,7 +128,7 @@ export default function TeamPage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid
+      <Grid2
         pr={3}
         pl={3}
         container
@@ -136,7 +136,7 @@ export default function TeamPage() {
         alignItems="space-evenly"
         justifyContent="space-around"
       >
-        <Grid
+        <Grid2
           p={1}
           container
           direction="row"
@@ -144,7 +144,7 @@ export default function TeamPage() {
           justifyContent="space-around"
           spacing={1}
         >
-          <Grid item md={11} lg={5} order={{ md: 2, lg: 1 }}>
+          <Grid2 size={{ md: 11, lg: 5 }} order={{ md: 2, lg: 1 }}>
             <GridMembers
               action
               actionClicked={deleteIconClicked}
@@ -152,8 +152,8 @@ export default function TeamPage() {
               rowClick={ClickMemberRow}
               rows={getRows()}
             />
-          </Grid>
-          <Grid item mb={5} md={11} lg={6} order={{ md: 1, lg: 2 }}>
+          </Grid2>
+          <Grid2 size={{ md: 11, lg: 6 }} order={{ md: 1, lg: 2 }}>
             <Box sx={{ width: '100%', border: '1px solid grey', minHeight: '558px' }}>
               <Box>
                 <Tabs
@@ -186,19 +186,17 @@ export default function TeamPage() {
               {theValue === 1 && <TeamFileImport />}
               {theValue === 2 && <MemberSearch />}
             </Box>
-          </Grid>
-        </Grid>
-      </Grid>
-      {openDialog && (
-        <AlertDialog
-          open={openDialog}
-          onClose={() => setOpenDialog(false)}
-          onDialogResponse={deleteConfirmed}
-          title="deleteTeamMember.label"
-        >
-          {alertContent()}
-        </AlertDialog>
-      )}
+          </Grid2>
+        </Grid2>
+      </Grid2>
+      <AlertDialog
+        open={openDialog}
+        onClose={() => setOpenDialog(false)}
+        onDialogResponse={deleteConfirmed}
+        title="deleteTeamMember.label"
+      >
+        {alertContent()}
+      </AlertDialog>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
     </Shell>
   );
