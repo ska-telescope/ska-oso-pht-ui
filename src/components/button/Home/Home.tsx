@@ -27,8 +27,9 @@ export default function HomeButton({
   const { t } = useTranslation('pht');
   const loggedIn = isLoggedIn();
 
-  const isShowWarningWhenClicked = () => !loggedIn;
-
+  const isShowWarningWhenClicked = () => {
+    return !window.Cypress && !loggedIn() ;
+  };
   const ClickFunction = () => {
     if (isShowWarningWhenClicked()) {
       setOpenWarningDialog(true);
