@@ -8,10 +8,14 @@ import MemberEntry from '@/pages/entry/MemberEntry/MemberEntry';
 import { GetMockUserByEmail } from '@/services/axios/getUserByEmail/getUserByEmail';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 import { LAB_POSITION, WRAPPER_HEIGHT } from '@/utils/constants';
+import UserSearchButton from '@/components/button/UserSearch/UserSearch';
+import { helpers } from '@/utils/helpers';
 
 export default function MemberSearch() {
   const { t } = useTranslation('pht');
   const [email, setEmail] = React.useState('');
+  const [formInvalid, setFormInvalid] = React.useState(true);
+  const [validateToggle, setValidateToggle] = React.useState(false);
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [errorTextEmail, setErrorTextEmail] = React.useState('');
 
@@ -21,10 +25,52 @@ export default function MemberSearch() {
 
   fetchData();
 
+  React.useEffect(() => {
+      setValidateToggle(!validateToggle);
+      helpComponent(t('email.help')); // TODO update email help text for search user context
+    }, []);
+  
+    React.useEffect(() => {
+      setValidateToggle(!validateToggle);
+    }, [email]);
+
+  React.useEffect(() => {
+      const invalidForm = Boolean(formValidation());
+      setFormInvalid(invalidForm);
+    }, [validateToggle]);
+
+  const formValues = {
+    email: {
+      value: email,
+      setValue: setEmail
+    }
+  };
+
+  const memberEntry = () => <MemberEntry />;
+
+  function clearForm() {
+    formValues.email.setValue('');
+  }
+
+  function formValidation() {
+    let count = 0;
+    let emptyField = email === '';
+    let isValid = !emptyField;
+    count += isValid ? 0 : 1;
+    if (!emptyField) {
+      isValid = helpers.validate.validateTextEntry(email, setEmail, setErrorTextEmail, 'EMAIL');
+      count += isValid ? 0 : 1;
+    } else {
+      setErrorTextEmail('');
+    }
+    return count;
+  }
+
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box
       p={0}
       pt={1}
+      mb={5}
       sx={{
         height: WRAPPER_HEIGHT
       }}
@@ -49,7 +95,18 @@ export default function MemberSearch() {
     );
   };
 
-  const memberEntry = () => <MemberEntry />;
+  const clickFunction = async () => {
+    if (await GetMockUserByEmail) {
+      /*
+      if user found: 
+        - show member entry with user details
+        - clearForm();
+
+        if not: 
+        - show error message
+      */
+    }
+  };
 
   const memberSearch = () => {
     return (
@@ -71,14 +128,14 @@ export default function MemberSearch() {
           >
             {emailField()}
             <Box p={2}>
-              {/* {
-            <TeamInviteButton
-              action={clickFunction}
-              disabled={formInvalid}
-              primary
-              testId="sendInviteButton"
-            />
-            } */}
+              {
+                <UserSearchButton
+                  action={clickFunction}
+                  disabled={formInvalid}
+                  primary
+                  testId="sendInviteButton"
+                />
+              }
             </Box>
           </Grid>
         </Grid>
