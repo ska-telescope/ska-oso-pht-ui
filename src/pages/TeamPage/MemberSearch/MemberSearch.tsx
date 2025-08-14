@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unstable-nested-components */
-import { Box, Grid } from '@mui/material';
+import { Box, Grid2 } from '@mui/material';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import React from 'react';
@@ -10,14 +10,17 @@ import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 import { LAB_POSITION, WRAPPER_HEIGHT } from '@/utils/constants';
 import UserSearchButton from '@/components/button/UserSearch/UserSearch';
 import { helpers } from '@/utils/helpers';
+import { useNotify } from '@/utils/notify/useNotify';
 
 export default function MemberSearch() {
   const { t } = useTranslation('pht');
   const [email, setEmail] = React.useState('');
   const [formInvalid, setFormInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
+  // const [axiosError, setAxiosError] = React.useState('');
+  const { helpComponent } = storageObject.useStore();
   const [errorTextEmail, setErrorTextEmail] = React.useState('');
+  const { notifyError, notifySuccess } = useNotify();
 
   const fetchData = async () => {
     await GetMockUserByEmail();
@@ -26,18 +29,18 @@ export default function MemberSearch() {
   fetchData();
 
   React.useEffect(() => {
-      setValidateToggle(!validateToggle);
-      helpComponent(t('email.help')); // TODO update email help text for search user context
-    }, []);
-  
-    React.useEffect(() => {
-      setValidateToggle(!validateToggle);
-    }, [email]);
+    setValidateToggle(!validateToggle);
+    helpComponent(t('emailSearch.help')); // TODO update email help text for search user context
+  }, []);
 
   React.useEffect(() => {
-      const invalidForm = Boolean(formValidation());
-      setFormInvalid(invalidForm);
-    }, [validateToggle]);
+    setValidateToggle(!validateToggle);
+  }, [email]);
+
+  React.useEffect(() => {
+    const invalidForm = Boolean(formValidation());
+    setFormInvalid(invalidForm);
+  }, [validateToggle]);
 
   const formValues = {
     email: {
@@ -82,67 +85,80 @@ export default function MemberSearch() {
   const emailField = () => {
     return fieldWrapper(
       <TextEntry
-        label={t('email.label')}
+        label={t('emailSearch.label')}
         labelBold
         labelPosition={LAB_POSITION}
         testId="email"
         value={email}
         setValue={setEmail}
         errorText={errorTextEmail ? t(errorTextEmail) : ''}
-        onFocus={() => helpComponent(t('email.help'))}
+        onFocus={() => helpComponent(t('emailSearch.help'))}
         required
       />
     );
   };
 
-  const clickFunction = async () => {
-    if (await GetMockUserByEmail) {
-      /*
-      if user found: 
-        - show member entry with user details
-        - clearForm();
+  async function searchEmail(email: string): Promise<boolean> {
+    const response = GetMockUserByEmail(email);
+    if (typeof response === 'string') {
+      notifyError(t('emailSearch.error'));
+      return false;
+    } else {
+      notifySuccess(t('emailSearch.success'));
+      return true;
+    }
+  }
 
-        if not: 
-        - show error message
-      */
+  const clickFunction = async () => {
+    if (await searchEmail(formValues.email.value)) {
+      // show member entry with user details
+      clearForm();
     }
   };
 
   const memberSearch = () => {
     return (
-      <Grid
-        p={2}
-        pb={5}
-        container
-        direction="row"
-        alignItems="space-evenly"
-        justifyContent="space-between"
-      >
-        <Grid item xs={7}>
-          <Grid
-            pt={1}
-            container
-            direction="column"
-            alignItems="stretch"
-            justifyContent="flex-start"
-          >
-            {emailField()}
-            <Box p={2}>
-              {
-                <UserSearchButton
-                  action={clickFunction}
-                  disabled={formInvalid}
-                  primary
-                  testId="sendInviteButton"
-                />
-              }
-            </Box>
-          </Grid>
-        </Grid>
-        <Grid item xs={4}>
-          <HelpPanel />
-        </Grid>
-      </Grid>
+      <>
+        <Grid2
+          p={2}
+          pb={5}
+          container
+          direction="row"
+          alignItems="space-evenly"
+          justifyContent="space-between"
+        >
+          <Grid2 size={{ xs: 7 }}>
+            <Grid2
+              pt={1}
+              container
+              direction="column"
+              alignItems="stretch"
+              justifyContent="flex-start"
+            >
+              {emailField()}
+              <Box p={2}>
+                {
+                  <UserSearchButton
+                    action={clickFunction}
+                    disabled={formInvalid}
+                    primary
+                    testId="userSearchButton"
+                  />
+                }
+              </Box>
+            </Grid2>
+          </Grid2>
+          <Grid2 size={{ xs: 4 }}>
+            <HelpPanel />
+          </Grid2>
+        </Grid2>
+
+        {/* <Grid2 size={{ xs: 12 }} pt={1}>
+          {axiosError && (
+                    <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
+                  )}
+        </Grid2> */}
+      </>
     );
   };
 
