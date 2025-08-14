@@ -12,7 +12,7 @@ import UserSearchButton from '@/components/button/UserSearch/UserSearch';
 import { helpers } from '@/utils/helpers';
 import { useNotify } from '@/utils/notify/useNotify';
 import ResetSearchButton from '@/components/button/ResetSearch/ResetSearch';
-import { MockUserFrontendPartial } from '@/services/axios/getUserByEmail/mockUserFrontend';
+import Investigator from '@/utils/types/investigator';
 
 export default function MemberSearch() {
   const { t } = useTranslation('pht');
@@ -23,6 +23,7 @@ export default function MemberSearch() {
   const [errorTextEmail, setErrorTextEmail] = React.useState('');
   const { notifyError, notifySuccess } = useNotify();
   const [showMemberEntry, setShowMemberEntry] = React.useState(false);
+  const [investigator, setInvestigator] = React.useState<Investigator | undefined>(undefined);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -45,19 +46,40 @@ export default function MemberSearch() {
     }
   };
 
-  const memberEntry = () => <MemberEntry forSearch foundInvestigator={MockUserFrontendPartial} />; // TODO: Replace with actual user data from endpoint
+  function invitationBtnClicked(): void {
+    setShowMemberEntry(false);
+  }
+
+  const memberEntry = () => (
+    <MemberEntry
+      forSearch
+      foundInvestigator={investigator}
+      invitationBtnClicked={invitationBtnClicked}
+    />
+  );
 
   const searchAgainButtonClick = () => {
     setShowMemberEntry(false);
   };
 
-  const searchAgainButton = () => {
-    return (
-      <Box mt={-17} p={5} ml={25}>
-        <ResetSearchButton action={searchAgainButtonClick} />
-      </Box>
-    );
-  };
+  const searchAgainButton = () => (
+    <Box mt={-17} p={5} ml={25}>
+      <ResetSearchButton action={searchAgainButtonClick} />
+    </Box>
+  );
+
+  const searchUserButton = () => (
+    <Box p={2}>
+      {
+        <UserSearchButton
+          action={clickFunction}
+          disabled={formInvalid}
+          primary
+          testId="userSearchButton"
+        />
+      }
+    </Box>
+  );
 
   function clearForm() {
     formValues.email.setValue('');
@@ -113,6 +135,7 @@ export default function MemberSearch() {
       return false;
     } else {
       notifySuccess(t('emailSearch.success'));
+      setInvestigator(response);
       return true;
     }
   }
@@ -144,16 +167,7 @@ export default function MemberSearch() {
             justifyContent="flex-start"
           >
             {emailField()}
-            <Box p={2}>
-              {
-                <UserSearchButton
-                  action={clickFunction}
-                  disabled={formInvalid}
-                  primary
-                  testId="userSearchButton"
-                />
-              }
-            </Box>
+            {searchUserButton()}
           </Grid2>
         </Grid2>
         <Grid2 size={{ xs: 4 }}>

@@ -19,6 +19,7 @@ const NOTIFICATION_DELAY_IN_SECONDS = 5;
 interface MemberEntryProps {
   forSearch?: boolean;
   foundInvestigator?: Investigator;
+  invitationBtnClicked?: () => void;
 }
 
 export default function MemberEntry({
@@ -34,7 +35,8 @@ export default function MemberEntry({
     pi: false,
     officeLocation: null,
     jobTitle: null
-  }
+  },
+  invitationBtnClicked = () => {}
 }: MemberEntryProps) {
   const { t } = useTranslation('pht');
   const LABEL_WIDTH = 6;
@@ -212,6 +214,7 @@ export default function MemberEntry({
     if (await sendEmailInvite(formValues.email.value, getProposal().id)) {
       AddInvestigator();
       clearForm();
+      invitationBtnClicked();
     }
   };
 

@@ -240,11 +240,7 @@
   },
   "emailSearch": {
     "label": "Email",
-    "help": "The email is a required field and must be provided. The investigator will be invited to participate in this proposal using this email so please ensure it is correct.",
-    "invitation": {
-      "subject": "Proposal invitation.",
-      "body": "You have been invited to contribute to proposal {{id}}"
-    },
+    "help": "This email should be of a registered user within SKAO systems. For example, @skao.int, @assoc.skao.int, or @community.skao.int.",
     "success": "User was successfully found.",
     "error": "User could not be found. Please check the email address and try again.",
     "reset": "Reset user search"
