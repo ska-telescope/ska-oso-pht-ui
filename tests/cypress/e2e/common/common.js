@@ -395,7 +395,8 @@ Cypress.Commands.add('mockLoginButton', (user = {}) => {
             }
 
             win.localStorage.setItem('cypress:group', fakeAccount.group);
-            win.localStorage.setItem('msal.account', JSON.stringify(fakeAccount));
+            win.localStorage.setItem('cypress:token', fakeAccount.token);
+            win.localStorage.setItem('cypress:account', JSON.stringify(fakeAccount));
 
             // Trigger a navigation to force re-evaluation
             win.location.href = '/';
