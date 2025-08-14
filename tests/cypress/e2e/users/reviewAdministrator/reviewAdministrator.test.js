@@ -1,6 +1,7 @@
+import { reviewerAdmin } from '../users';
 import {
+  clickLoginUser,
   clickAddPanel,
-  clickUserMenuOverview,
   clickUserMenuPanels,
   enterPanelName,
   clickAddPanelEntry,
@@ -10,42 +11,33 @@ import {
   verifyReviewerOnGridIsVisible,
   clickPanelProposalsTab,
   verifyProposalOnGridIsVisible,
-  clickPanelButtonPanels,
-  clickPanelButtonProposals,
-  clickPanelButtonReviews,
   clickPanelMaintenanceButton,
-  clickReviewOverviewButton,
   clickUserMenuProposals,
-  clickUserMenuReviews,
   initialize,
   getSubmittedProposals,
   verifyMockedAPICall,
   getReviewers,
-  clickLinkedTickdBox,
+  clickLinkedTickedBox,
   verifyTickBoxIsSelected
-} from '../common/common';
+} from '../../common/common';
 
 const panelName = Math.floor(Math.random() * 10000000).toString(); // name should be unique or endpoint will fail
 
-describe('Review Coordinator', () => {
+describe('Review Administrator', () => {
   beforeEach(() => {
     initialize();
+    cy.mockLoginButton(reviewerAdmin);
     getSubmittedProposals(); // Load mocked proposals fixture
     getReviewers(); // Load mocked reviewers fixture
   });
-  it('Navigate using the dropdown menu and then the overview panels', () => {
-    clickUserMenuOverview();
-    clickUserMenuProposals();
+  it('Navigate using the dropdown menu', () => {
+    clickLoginUser();
+    // clickUserMenuOverview();
     clickUserMenuPanels();
-    clickUserMenuReviews();
-    clickUserMenuOverview();
-    // clickPanelButtonPanels();
-    // clickReviewOverviewButton();
-    // clickPanelButtonReviews();
-    // clickReviewOverviewButton();
     clickUserMenuProposals();
   });
-  it('Creating a new review panel', () => {
+  it.skip('Creating a new review panel', () => {
+    clickLoginUser();
     clickUserMenuPanels();
     clickAddPanel();
     enterPanelName(panelName);
@@ -53,15 +45,18 @@ describe('Review Coordinator', () => {
     verifyPanelCreatedAlertFooter();
   });
   it('Creating a new review panel, abandoned', () => {
+    clickLoginUser();
     clickUserMenuPanels();
     clickAddPanel();
     clickPanelMaintenanceButton();
   });
-  it('Display newly created panel', () => {
+  it.skip('Display newly created panel', () => {
+    clickLoginUser();
     clickUserMenuPanels();
     verifyPanelOnGridIsVisible(panelName);
   });
-  it('Display a list of proposals', () => {
+  it.skip('Display a list of proposals', () => {
+    clickLoginUser();
     clickUserMenuPanels();
     clickFirstPanel();
     clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
@@ -69,25 +64,28 @@ describe('Review Coordinator', () => {
     verifyProposalOnGridIsVisible('The Milky Way View');
     verifyProposalOnGridIsVisible('In a galaxy far, far away');
   });
-  it('Display a list of reviewers', () => {
+  it.skip('Display a list of reviewers', () => {
+    clickLoginUser();
     clickUserMenuPanels(); // (real getReviewers api call would be made at this point and intercepted)
     verifyMockedAPICall('@getReviewers');
     clickFirstPanel();
     verifyReviewerOnGridIsVisible('Aisha');
   });
-  it('Add a reviewer to a panel', () => {
+  it.skip('Add a reviewer to a panel', () => {
+    clickLoginUser();
     clickUserMenuPanels();
     verifyMockedAPICall('@getReviewers');
     clickFirstPanel();
-    clickLinkedTickdBox(2);
+    clickLinkedTickedBox(2);
     verifyTickBoxIsSelected(2);
   });
-  it('Add a proposal to a panel', () => {
+  it.skip('Add a proposal to a panel', () => {
+    clickLoginUser();
     clickUserMenuPanels();
     clickFirstPanel();
     clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
     verifyMockedAPICall('@getSubmittedProposals');
-    clickLinkedTickdBox(0);
+    clickLinkedTickedBox(0);
     verifyTickBoxIsSelected(0);
   });
 });

@@ -21,8 +21,9 @@ export const MSENTRA_TENANT_ID = env.MSENTRA_TENANT_ID;
 export const MSENTRA_REDIRECT_URI = env.MSENTRA_REDIRECT_URI;
 export const MSENTRA_API_URI = 'api://e4d6bb9b-cdd0-46c4-b30a-d045091b501b';
 //
-
-export const APP_OVERRIDE_GROUPS = env.REACT_APP_OVERRIDE_GROUPS; // Set to Let for testing purposes.
+export const APP_OVERRIDE_GROUPS = window.Cypress
+  ? localStorage.getItem('cypress:group')
+  : env.REACT_APP_OVERRIDE_GROUPS;
 
 /*****************************************/
 

@@ -10,6 +10,7 @@ import {
   getCheckboxInRow,
   viewPort
 } from '../../fixtures/utils/cypress';
+
 import { defaultUser } from '../users/users';
 
 export const initialize = () => {
@@ -213,7 +214,7 @@ export const clickToTeamPage = () => {
   pageConfirmed('TEAM');
 };
 
-export const addInvestigator = () => {
+export const addTeamMember = () => {
   entry('firstName', 'Test');
   entry('lastName', 'User');
   entry('email', 'TestUser@test.com');
