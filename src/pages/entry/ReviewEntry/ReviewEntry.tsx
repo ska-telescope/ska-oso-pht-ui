@@ -2,13 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Divider, Grid2, Paper, Stack, Tab, Tabs } from '@mui/material';
-import {
-  AlertColorTypes,
-  DropDown,
-  Spacer,
-  SPACER_VERTICAL,
-  TextEntry
-} from '@ska-telescope/ska-gui-components';
+import { DropDown, Spacer, SPACER_VERTICAL, TextEntry } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import useTheme from '@mui/material/styles/useTheme';
 import {
@@ -17,13 +11,11 @@ import {
   PANEL_DECISION_STATUS,
   PMT,
   REVIEW_TYPE,
-  TECHNICAL_FEASIBILITY_OPTIONS,
-  TMP_REVIEWER_ID
+  TECHNICAL_FEASIBILITY_OPTIONS
 } from '@utils/constants.ts';
 import Typography from '@mui/material/Typography';
 import PutProposalReview from '@services/axios/putProposalReview/putProposalReview';
 import SaveButton from '../../../components/button/Save/Save';
-import Notification from '../../../utils/types/notification';
 import SubmitButton from '@/components/button/Submit/Submit';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import BackButton from '@/components/button/Back/Back';
@@ -38,6 +30,8 @@ import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient
 import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
 import { generateId } from '@/utils/helpers';
 import Proposal from '@/utils/types/proposal';
+import { getUserId } from '@/utils/aaa/aaaUtils';
+import { useNotify } from '@/utils/notify/useNotify';
 
 interface ReviewEntryProps {
   reviewType: string;
@@ -48,8 +42,9 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const theme = useTheme();
   const navigate = useNavigate();
   const locationProperties = useLocation();
+  const { notifyError, notifySuccess } = useNotify();
 
-  const { application, updateAppContent5 } = storageObject.useStore();
+  const { application } = storageObject.useStore();
 
   const isView = () => (locationProperties?.state?.reviews ? true : false);
   const [tabValuePDF, setTabValuePDF] = React.useState(0);
@@ -68,8 +63,8 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const getProposal = () => application.content2 as Proposal;
   const authClient = useAxiosAuthClient();
+  const userId = getUserId();
 
-  const getUser = () => TMP_REVIEWER_ID; // TODO
   const isTechnical = () => reviewType === REVIEW_TYPE.TECHNICAL;
 
   function getTechnicalReview(): TechnicalReview {
@@ -103,7 +98,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       srcNet: srcNetComments,
       metadata: {
         version: 0,
-        created_by: '',
+        created_by: userId,
         created_on: '',
         pdm_version: '',
         last_modified_by: '',
@@ -111,25 +106,14 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       },
       panelId: locationProperties?.state?.panelId,
       cycle: '',
-      reviewerId: getUser(),
+      reviewerId: userId,
       submittedOn: submitted ? new Date().toISOString() : null,
-      submittedBy: submitted ? TMP_REVIEWER_ID : null,
+      submittedBy: submitted ? userId : null,
       status: submitted ? PANEL_DECISION_STATUS.DECIDED : PANEL_DECISION_STATUS.IN_PROGRESS
     };
   };
 
   /*---------------------------------------------------------------------------*/
-
-  function Notify(str: string, lvl = AlertColorTypes.Info) {
-    const rec: Notification = {
-      level: lvl,
-      message: str
-    };
-    updateAppContent5(rec);
-  }
-
-  const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
-  const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
   const createReview = async (submitted = false) => {
     const response: string | { error: string } = await PostProposalReview(
@@ -138,9 +122,9 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       locationProperties?.state?.proposal?.cycle
     );
     if (typeof response === 'object' && response?.error) {
-      NotifyError(response?.error);
+      notifyError(response?.error);
     } else {
-      NotifyOK(t('addReview.success'));
+      notifySuccess(t('addReview.success'));
     }
   };
 
@@ -150,9 +134,9 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       getReview(submitted)
     );
     if (typeof response === 'object' && (response as { error: string })?.error) {
-      NotifyError((response as { error: string })?.error);
+      notifyError((response as { error: string })?.error);
     } else {
-      NotifyOK(t('addReview.success'));
+      notifySuccess(t('addReview.success'));
     }
   };
 

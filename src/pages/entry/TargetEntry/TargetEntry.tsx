@@ -2,7 +2,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { AlertColorTypes, TextEntry } from '@ska-telescope/ska-gui-components';
+import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '../../../utils/types/proposal';
 import AddButton from '../../../components/button/Add/Add';
 import ResolveButton from '../../../components/button/Resolve/Resolve';
@@ -19,24 +19,22 @@ import {
   VELOCITY_TYPE,
   WRAPPER_HEIGHT
 } from '../../../utils/constants';
-import Notification from '../../../utils/types/notification';
+import { useNotify } from '@/utils/notify/useNotify';
 interface TargetEntryProps {
   raType: number;
   setTarget?: Function;
   target?: Target;
 }
 
+const NOTIFICATION_DELAY_IN_SECONDS = 5;
+
 export default function TargetEntry({ raType, setTarget = null, target = null }: TargetEntryProps) {
   const { t } = useTranslation('pht');
+  const { notifySuccess } = useNotify();
 
   const LAB_WIDTH = 5;
   const HELP_MAX_HEIGHT = '40vh';
-  const {
-    application,
-    helpComponent,
-    updateAppContent2,
-    updateAppContent5
-  } = storageObject.useStore();
+  const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [nameFieldError, setNameFieldError] = React.useState('');
 
   const getProposal = () => application.content2 as Proposal;
@@ -51,7 +49,6 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   const [velUnit, setVelUnit] = React.useState(0);
   const [redshift, setRedshift] = React.useState('');
   const [referenceFrame, setReferenceFrame] = React.useState(RA_TYPE_ICRS.value);
-  const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
   const setTheName = (inValue: string) => {
     setName(inValue);
@@ -171,7 +168,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
         velUnit: velUnit
       };
       setProposal({ ...getProposal(), targets: [...(getProposal().targets ?? []), newTarget] });
-      NotifyOK(t('addTarget.success'));
+      notifySuccess(t('addTarget.success'), NOTIFICATION_DELAY_IN_SECONDS);
     };
 
     const clearForm = () => {
@@ -197,17 +194,6 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
       </Grid>
     );
   };
-
-  function Notify(str: string, lvl: typeof AlertColorTypes = AlertColorTypes.Info) {
-    const rec: Notification = {
-      level: lvl,
-      delay: NOTIFICATION_DELAY_IN_SECONDS,
-      message: t(str),
-      okRequired: false
-    };
-    updateAppContent5(rec);
-  }
-  const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
   const resolveButton = () => {
     const processCoordinatesResults = (response: any) => {

@@ -5,14 +5,14 @@ import StarIcon from '../../../components/icon/starIcon/starIcon';
 import TickIcon from '../../../components/icon/tickIcon/tickIcon';
 import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
-import TeamMember from '../../../utils/types/teamMember';
+import Investigator from '../../../utils/types/investigator';
 
 interface GridMembersProps {
   action?: boolean;
   actionClicked?: Function;
   height?: number;
   rowClick?: Function;
-  rows?: TeamMember[];
+  rows?: Investigator[];
 }
 
 export default function GridMembers({
@@ -23,16 +23,15 @@ export default function GridMembers({
   rows = []
 }: GridMembersProps) {
   const { t } = useTranslation('pht');
-
   const PIStar = ({ pi }: { pi: any }) => {
     if (pi) {
-      return <StarIcon />;
+      return <StarIcon onClick={() => {}} />;
     }
   };
 
   const PHDThesis = ({ value }: { value: any }) => {
     if (value) {
-      return <TickIcon />;
+      return <TickIcon onClick={() => {}} />;
     }
   };
 
@@ -76,7 +75,9 @@ export default function GridMembers({
     }
   ];
 
-  const trashClicked = () => (actionClicked ? actionClicked : null);
+  const trashClicked = (row: any) => {
+    if (actionClicked) actionClicked(row);
+  };
 
   const actionColumns = [
     {
@@ -100,7 +101,7 @@ export default function GridMembers({
           columns={getColumns()}
           height={height}
           onRowClick={rowClick}
-          testId="teamTableId"
+          testId="investigatorsTableId"
         />
       )}
       {!rows ||

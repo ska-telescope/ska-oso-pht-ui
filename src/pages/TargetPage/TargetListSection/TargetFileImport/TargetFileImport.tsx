@@ -2,13 +2,13 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { FileUpload, AlertColorTypes, FileUploadStatus } from '@ska-telescope/ska-gui-components';
+import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Papa from 'papaparse';
 import { Proposal } from '../../../../utils/types/proposal';
-import Notification from '../../../../utils/types/notification';
 import { RA_TYPE_ICRS, RA_TYPE_GALACTIC, UPLOAD_MAX_WIDTH_CSV } from '../../../../utils/constants';
 import HelpPanel from '../../../../components/info/helpPanel/HelpPanel';
 import Target from '@/utils/types/target';
+import { useNotify } from '@/utils/notify/useNotify';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
 
@@ -18,13 +18,9 @@ interface TargetFileImportProps {
 
 export default function TargetFileImport({ raType }: TargetFileImportProps) {
   const { t } = useTranslation('pht');
+  const { notifyError, notifySuccess } = useNotify();
 
-  const {
-    application,
-    helpComponent,
-    updateAppContent2,
-    updateAppContent5
-  } = storageObject.useStore();
+  const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [uploadButtonStatus, setUploadButtonStatus] = React.useState<FileUploadStatus>(null);
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -130,32 +126,22 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
             setProposal({ ...getProposal(), targets: [...getProposal().targets, ...targets] });
             if (errorInRows) throw t('uploadCsvBtn.uploadErrorPartialMsg');
             setUploadButtonStatus(FileUploadStatus.OK);
-            NotifyOK(t('uploadCsvBtn.uploadSuccessMsg'));
+            notifySuccess(t('uploadCsvBtn.uploadSuccessMsg'), NOTIFICATION_DELAY_IN_SECONDS);
           } catch (e) {
-            NotifyError(e);
+            notifyError(e, NOTIFICATION_DELAY_IN_SECONDS);
             setUploadButtonStatus(FileUploadStatus.ERROR);
           }
         },
         error: message => {
           setUploadButtonStatus(FileUploadStatus.ERROR);
-          NotifyError(t('uploadCsvBtn.uploadErrorUnknownParserMsg') + message);
+          notifyError(
+            t('uploadCsvBtn.uploadErrorUnknownParserMsg') + message,
+            NOTIFICATION_DELAY_IN_SECONDS
+          );
         }
       });
     }
   };
-
-  function Notify(str: string, lvl: typeof AlertColorTypes = AlertColorTypes.Info) {
-    const rec: Notification = {
-      level: lvl,
-      delay: NOTIFICATION_DELAY_IN_SECONDS,
-      message: t(str),
-      okRequired: false
-    };
-    updateAppContent5(rec);
-  }
-
-  const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
-  const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
   return (
     <Grid

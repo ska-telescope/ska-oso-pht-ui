@@ -3,30 +3,28 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { AlertColorTypes, TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
+import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
 import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
 import { Proposal } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
 import { LAB_POSITION, TEAM_STATUS_TYPE_OPTIONS, WRAPPER_HEIGHT } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
-import TeamMember from '../../../utils/types/teamMember';
+import Investigator from '../../../utils/types/investigator';
 import PostSendEmailInvite from '../../../services/axios/postSendEmailInvite/postSendEmailInvite';
-import Notification from '../../../utils/types/notification';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import { useNotify } from '@/utils/notify/useNotify';
+
+const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
 export default function MemberEntry() {
   const { t } = useTranslation('pht');
   const LABEL_WIDTH = 6;
-  const {
-    application,
-    helpComponent,
-    updateAppContent2,
-    updateAppContent5
-  } = storageObject.useStore();
+  const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const authClient = useAxiosAuthClient();
+  const { notifyError, notifySuccess } = useNotify();
 
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
@@ -40,8 +38,6 @@ export default function MemberEntry() {
 
   const [formInvalid, setFormInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);
-
-  const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box
@@ -148,16 +144,16 @@ export default function MemberEntry() {
     setPi(event.target.checked);
   };
 
-  function AddTeamMember() {
-    const currentTeam = getProposal().team;
-    let highestId = currentTeam?.reduce(
-      (acc, teamMember) => (Number(teamMember.id) > acc ? Number(teamMember.id) : acc),
+  function AddInvestigator() {
+    const currentInvestigators = getProposal().investigators;
+    let highestId = currentInvestigators?.reduce(
+      (acc, investigator) => (Number(investigator.id) > acc ? Number(investigator.id) : acc),
       0
     );
     if (highestId === undefined) {
       highestId = 0;
     }
-    const newTeamMember: TeamMember = {
+    const newInvestigator: Investigator = {
       id: (highestId + 1).toString(),
       firstName: formValues.firstName.value,
       lastName: formValues.lastName.value,
@@ -166,32 +162,21 @@ export default function MemberEntry() {
       affiliation: '',
       phdThesis: formValues.phdThesis.phdThesis,
       status: TEAM_STATUS_TYPE_OPTIONS.pending,
-      pi: formValues.pi.pi
+      pi: formValues.pi.pi,
+      officeLocation: null,
+      jobTitle: null
     };
-    setProposal({ ...getProposal(), team: [...currentTeam, newTeamMember] });
+    setProposal({ ...getProposal(), investigators: [...currentInvestigators, newInvestigator] });
   }
-
-  function Notify(str: string, lvl: typeof AlertColorTypes = AlertColorTypes.Info) {
-    const rec: Notification = {
-      level: lvl,
-      delay: NOTIFICATION_DELAY_IN_SECONDS,
-      message: t(str),
-      okRequired: false
-    };
-    updateAppContent5(rec);
-  }
-
-  const NotifyError = (str: string) => Notify(str, AlertColorTypes.Error);
-  const NotifyOK = (str: string) => Notify(str, AlertColorTypes.Success);
 
   async function sendEmailInvite(email: string, prsl_id: string): Promise<boolean> {
     const emailInvite = { email, prsl_id };
     const response = await PostSendEmailInvite(authClient, emailInvite);
     if (response && !response.error) {
-      NotifyOK('email.success');
+      notifySuccess(t('email.success'), NOTIFICATION_DELAY_IN_SECONDS);
       return true;
     } else {
-      NotifyError('email.error');
+      notifyError(t('email.error'), NOTIFICATION_DELAY_IN_SECONDS);
       return false;
     }
   }
@@ -206,7 +191,7 @@ export default function MemberEntry() {
 
   const clickFunction = async () => {
     if (await sendEmailInvite(formValues.email.value, getProposal().id)) {
-      AddTeamMember();
+      AddInvestigator();
       clearForm();
     }
   };

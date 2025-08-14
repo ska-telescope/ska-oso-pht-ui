@@ -16,13 +16,13 @@ describe('Helper Functions', () => {
     expect(result).to.have.lengthOf(MockProposalAccessBackend.length);
   });
 
-  test('GetMockProposalList returns mock proposal list', () => {
+  test('GetMockProposalAccess returns mock proposal access', () => {
     const result = GetMockProposalAccess();
     expect(result).to.have.lengthOf(MockProposalAccessFrontend.length);
     expect(result).to.deep.equal(MockProposalAccessFrontend);
   });
 
-  test('mappingList returns mapped proposal list from backend to frontend format', () => {
+  test('mappingList returns mapped proposal access from backend to frontend format', () => {
     const proposalFrontEnd: ProposalAccess[] = mappingList(MockProposalAccessBackend);
     expect(proposalFrontEnd).to.deep.equal(MockProposalAccessFrontend);
   });

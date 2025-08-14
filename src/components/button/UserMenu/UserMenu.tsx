@@ -6,6 +6,7 @@ import { ButtonLogin, ButtonLogout } from '@ska-telescope/ska-login-page';
 import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
+// import { ButtonLogin } from './LoginButton';
 import { PMT, PATH } from '@/utils/constants';
 import { isReviewerAdmin, isReviewerChair, isReviewer } from '@/utils/aaa/aaaUtils';
 
@@ -31,12 +32,21 @@ export default function ButtonUserMenu({
   toolTip = 'Additional user functionality including sign out'
 }: ButtonUserMenuProps): JSX.Element {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [cypressLogin, setCypressLogin] = React.useState('');
   const openMenu = Boolean(anchorEl);
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
 
   const { accounts } = useMsal();
-  const username = accounts.length > 0 ? accounts[0].name : '';
+  const username = accounts.length > 0 ? accounts[0].name + cypressLogin : cypressLogin;
+
+  React.useEffect(() => {
+    const accountStr = localStorage.getItem('msal.account');
+    const account = accountStr ? JSON.parse(accountStr) : null;
+    if (account && window.Cypress) {
+      setCypressLogin(account.name);
+    }
+  }, []);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     if (onClick) {

@@ -10,6 +10,7 @@ import {
   getCheckboxInRow,
   viewPort
 } from '../../fixtures/utils/cypress';
+import { defaultUser } from '../users/users';
 
 export const initialize = () => {
   viewPort();
@@ -73,6 +74,7 @@ export const clickCreateProposal = () => clickButton('nextButtonTestId');
 export const clickHome = () => clickButton('homeButtonTestId');
 export const clickHomeWarningConfirmation = () => clickButton('dialogConfirmationButton');
 export const clickLoginUser = () => clickButton('loginButton');
+export const clickUserMenu = () => clickButton('usernameMenu');
 export const clickObservationSetup = () => clickButton('addObservationButton');
 export const clickAddObservationEntry = () => clickButton('addObservationButtonEntry');
 export const clickPanelMaintenanceButton = () => clickButton('pmtBackButton');
@@ -141,7 +143,7 @@ export const verifyProposalOnGridIsVisible = ProposalName => {
   verifyContent('dataGridProposals', ProposalName);
 };
 
-export const clickLinkedTickdBox = index => {
+export const clickLinkedTickedBox = index => {
   getCheckboxInRow(index).click({ force: true });
 };
 
@@ -151,15 +153,18 @@ export const verifyTickBoxIsSelected = index => {
 
 /*----------------------------------------------------------------------*/
 
-export const clickUserMenu = (testId, title) => {
-  clickLoginUser();
+export const clickSignINBtns = (testId, title) => {
+  clickUserMenu();
   clickNav(testId, title);
 };
-export const clickUserMenuOverview = () => clickUserMenu('menuItemOverview', 'OVERVIEW');
-export const clickUserMenuProposals = () => clickUserMenu('menuItemProposals', '');
-export const clickUserMenuVerification = () => clickUserMenu('menuItemVerification', '');
-export const clickUserMenuPanels = () => clickUserMenu('menuItemPanelSummary', 'PANEL MAINTENANCE');
-export const clickUserMenuReviews = () => clickUserMenu('menuItemReviews', 'REVIEW PROPOSALS');
+export const clickUserMenuOverview = () => clickSignINBtns('menuItemOverview', 'OVERVIEW');
+export const clickUserMenuProposals = () => clickSignINBtns('menuItemProposals', '');
+export const clickUserMenuVerification = () => clickSignINBtns('menuItemVerification', '');
+export const clickUserMenuPanels = () =>
+  clickSignINBtns('menuItemPanelSummary', 'PANEL MAINTENANCE');
+export const clickUserMenuReviews = () => clickSignINBtns('menuItemReviews', 'REVIEW PROPOSALS');
+export const clickUserMenuDecisions = () =>
+  clickSignINBtns('menuItemReviewDecisions', 'REVIEW DECISIONS');
 export const clickUserMenuLogout = () => click('menuItemLogout');
 
 /*----------------------------------------------------------------------*/
@@ -208,7 +213,7 @@ export const clickToTeamPage = () => {
   pageConfirmed('TEAM');
 };
 
-export const addTeamMember = () => {
+export const addInvestigator = () => {
   entry('firstName', 'Test');
   entry('lastName', 'User');
   entry('email', 'TestUser@test.com');
@@ -354,3 +359,49 @@ export const createObservation = () => {
   clickAddObservationEntry();
   verifyUnlinkedObservationInTable();
 };
+
+/*-------------------------- SHOULD BE MOVED OUT OF HERE AT SOME POINT -----------------------------*/
+
+// Note that it is possible to pass in the user object to this function to mock a specific user
+
+Cypress.Commands.add('mockLoginButton', (user = {}) => {
+  const fakeAccount = { ...defaultUser, ...user };
+
+  cy.get('[data-testid="loginButton"]')
+    .should('exist')
+    .then($btn => {
+      cy.window().then(win => {
+        const loginButton = $btn[0];
+        loginButton.onclick = null;
+
+        loginButton.addEventListener(
+          'click',
+          e => {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+
+            // Try to find the real MSAL instance
+            const msal = Object.values(win).find(
+              val =>
+                val &&
+                typeof val.getAllAccounts === 'function' &&
+                typeof val.setActiveAccount === 'function'
+            );
+
+            if (msal) {
+              msal.setActiveAccount(fakeAccount);
+              msal.getActiveAccount = () => fakeAccount;
+              msal.getAllAccounts = () => [fakeAccount];
+            }
+
+            win.localStorage.setItem('cypress:group', fakeAccount.group);
+            win.localStorage.setItem('msal.account', JSON.stringify(fakeAccount));
+
+            // Trigger a navigation to force re-evaluation
+            win.location.href = '/';
+          },
+          { once: true }
+        );
+      });
+    });
+});

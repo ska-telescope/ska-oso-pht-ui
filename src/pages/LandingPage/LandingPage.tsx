@@ -13,7 +13,6 @@ import {
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 //
 import GetObservatoryData from '@services/axios/getObservatoryData/getObservatoryData.tsx';
-import TeamMember from '@utils/types/teamMember';
 import { presentDate, presentLatex, presentTime } from '@utils/present/present';
 import AddButton from '@/components/button/Add/Add';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
@@ -210,7 +209,7 @@ export default function LandingPage() {
 
   const element = (inValue: number | string) => (inValue === NOT_SPECIFIED ? emptyCell() : inValue);
 
-  const getPIs = (arr: TeamMember[]) => {
+  const getPIs = (arr: Investigator[]) => {
     if (!arr || arr.length === 0) {
       return element(NOT_SPECIFIED);
     }
@@ -256,7 +255,7 @@ export default function LandingPage() {
     headerName: t('pi.short'),
     width: 100,
     renderCell: (e: any) => {
-      return getPIs(e.row.team);
+      return getPIs(e.row.investigators);
     }
   };
 

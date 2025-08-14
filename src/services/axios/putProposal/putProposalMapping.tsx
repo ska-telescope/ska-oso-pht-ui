@@ -28,8 +28,7 @@ import {
   ROBUST,
   IW_BRIGGS,
   RA_TYPE_GALACTIC,
-  RA_TYPE_ICRS,
-  TMP_REVIEWER_ID
+  RA_TYPE_ICRS
 } from '@utils/constants.ts';
 import {
   DataProductSDP,
@@ -40,10 +39,12 @@ import {
 import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import { helpers } from '@utils/helpers.ts';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
+import { getUserId } from '@/utils/aaa/aaaUtils';
 
 const isContinuum = (type: number) => type === TYPE_CONTINUUM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
 const isRedshift = (type: number) => type === VELOCITY_TYPE.REDSHIFT;
+const userId = getUserId();
 
 const getSubType = (proposalType: number, proposalSubType: number[]): any => {
   const project = PROJECTS.find(({ id }) => id === proposalType);
@@ -473,8 +474,8 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     prsl_id: proposal?.id,
     status: status,
     submitted_on: status === PROPOSAL_STATUS.SUBMITTED ? new Date().toISOString() : null, // note: null since oso-services 1.1.0  does not support ''
-    submitted_by: status === PROPOSAL_STATUS.SUBMITTED ? TMP_REVIEWER_ID : '', // TODO : Need to replaced with the logged in user.
-    investigator_refs: proposal.team?.map(investigator => {
+    submitted_by: status === PROPOSAL_STATUS.SUBMITTED ? userId : '', // TODO : Need to replaced with the logged in user.
+    investigator_refs: proposal.investigators?.map(investigator => {
       return investigator?.id?.toString();
     }),
     cycle: proposal.cycle,
@@ -492,17 +493,17 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
       )?.label as string,
       targets: getTargets(proposal?.targets ? proposal.targets : []),
       documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF),
-      investigators: proposal?.team
-        ? proposal.team.map(teamMember => {
+      investigators: proposal?.investigators
+        ? proposal.investigators.map(investigator => {
             return {
-              investigator_id: teamMember.id?.toString(),
-              status: teamMember.status,
-              given_name: teamMember.firstName,
-              family_name: teamMember.lastName,
-              email: teamMember.email,
-              organization: teamMember.affiliation,
-              for_phd: teamMember.phdThesis,
-              principal_investigator: teamMember.pi
+              investigator_id: investigator.id?.toString(),
+              status: investigator.status,
+              given_name: investigator.firstName,
+              family_name: investigator.lastName,
+              email: investigator.email,
+              organization: investigator.affiliation,
+              for_phd: investigator.phdThesis,
+              principal_investigator: investigator.pi
             };
           })
         : null,
