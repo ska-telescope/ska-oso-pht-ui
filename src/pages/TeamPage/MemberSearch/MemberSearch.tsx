@@ -22,12 +22,6 @@ export default function MemberSearch() {
   const [errorTextEmail, setErrorTextEmail] = React.useState('');
   const { notifyError, notifySuccess } = useNotify();
 
-  const fetchData = async () => {
-    await GetMockUserByEmail();
-  };
-
-  fetchData();
-
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
     helpComponent(t('emailSearch.help')); // TODO update email help text for search user context
