@@ -174,7 +174,7 @@ export default function GridProposals({
       if (typeof response === 'string') {
         setAxiosError(response);
       } else {
-        setObservatoryData(response);
+        setObservatoryData(response); // TODO do we need osd data here? It doesn't seem to be used anywhere in the component (justs set to true/false)
       }
     };
     observatoryData();
@@ -435,7 +435,7 @@ export default function GridProposals({
 
   const deleteConfirmed = async () => {
     const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.WITHDRAWN);
-    if (response && !response.error) {
+    if (response && !('error' in response)) {
       setOpenDeleteDialog(false);
       setFetchList(!fetchList);
     } else {
