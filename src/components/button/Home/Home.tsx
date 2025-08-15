@@ -28,7 +28,7 @@ export default function HomeButton({
   const loggedIn = isLoggedIn();
 
   const isShowWarningWhenClicked = () => {
-    return !window.Cypress && !loggedIn() ;
+    return !window.Cypress && !loggedIn ;
   };
   const ClickFunction = () => {
     if (isShowWarningWhenClicked()) {

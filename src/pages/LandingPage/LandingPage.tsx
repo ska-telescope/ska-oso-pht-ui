@@ -41,6 +41,7 @@ import {
   FOOTER_HEIGHT_PHT
 } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
+import Investigator from '@utils/types/investigator.tsx';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -84,7 +85,7 @@ export default function LandingPage() {
   React.useEffect(() => {
     const fetchData = async () => {
       setProposals([]);
-      if (!loggedIn) return;
+      if (!window.Cypress && !loggedIn) return;
 
       const response = await GetProposalList(authClient);
       if (typeof response === 'string') {
