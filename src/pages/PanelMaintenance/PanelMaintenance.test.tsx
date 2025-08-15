@@ -9,7 +9,7 @@ import PanelMaintenance, {
   deleteReviewerPanel
 } from './PanelMaintenance';
 import { Panel } from '@/utils/types/panel';
-import MockProposalFrontendList from '@/services/axios/getProposalList/mockProposalFrontendList';
+import MockProposalFrontendList from '@/services/axios/get/getProposalList/mockProposalFrontendList';
 import Proposal from '@/utils/types/proposal';
 import MockReviewersBackendList from '@/services/axios/getReviewerList/mockReviewerList';
 import { REVIEWER_STATUS } from '@/utils/constants';

@@ -1,6 +1,6 @@
-import RestartAltIcon from '@mui/icons-material/RestartAlt';
+import SearchIcon from '@mui/icons-material/Search';
 import BaseButton from '../Base/Button';
-interface ResetSearchButtonProps {
+interface SearchButtonProps {
   title?: string;
   action: string | Function;
   disabled?: boolean;
@@ -9,19 +9,19 @@ interface ResetSearchButtonProps {
   toolTip?: string;
 }
 
-export default function ResetSearchButton({
+export default function SearchButton({
   disabled = false,
   action,
   primary = false,
-  title = 'emailSearch.reset',
-  testId = 'resetSearchButtonTestId',
+  title = 'search.label',
+  testId = 'SearchButtonTestId',
   toolTip
-}: ResetSearchButtonProps) {
+}: SearchButtonProps) {
   return (
     <BaseButton
       action={action}
       disabled={disabled}
-      icon={<RestartAltIcon />}
+      icon={<SearchIcon />}
       primary={primary}
       testId={testId}
       title={title}

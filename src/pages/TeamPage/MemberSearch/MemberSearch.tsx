@@ -4,15 +4,16 @@ import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import React from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { ButtonSizeTypes } from '@ska-telescope/ska-gui-components';
 import MemberEntry from '@/pages/entry/MemberEntry/MemberEntry';
 import { GetMockUserByEmail } from '@/services/axios/getUserByEmail/getUserByEmail';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 import { LAB_POSITION, WRAPPER_HEIGHT } from '@/utils/constants';
-import UserSearchButton from '@/components/button/UserSearch/UserSearch';
+import UserSearchButton from '@/components/button/Search/Search';
 import { helpers } from '@/utils/helpers';
 import { useNotify } from '@/utils/notify/useNotify';
-import ResetSearchButton from '@/components/button/ResetSearch/ResetSearch';
 import Investigator from '@/utils/types/investigator';
+import ResetButton from '@/components/button/Reset/Reset';
 
 export default function MemberSearch() {
   const { t } = useTranslation('pht');
@@ -24,6 +25,8 @@ export default function MemberSearch() {
   const { notifyError, notifySuccess } = useNotify();
   const [showMemberEntry, setShowMemberEntry] = React.useState(false);
   const [investigator, setInvestigator] = React.useState<Investigator | undefined>(undefined);
+
+  const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -64,7 +67,7 @@ export default function MemberSearch() {
 
   const resetSearchButton = () => (
     <Box mt={-17} p={5} ml={25}>
-      <ResetSearchButton action={resetSearchClickFunction} />
+      <ResetButton action={resetSearchClickFunction} size={ButtonSizeTypes.Medium} />
     </Box>
   );
 
@@ -131,7 +134,7 @@ export default function MemberSearch() {
   async function searchEmail(email: string): Promise<boolean> {
     const response = GetMockUserByEmail(email);
     if (typeof response === 'string') {
-      notifyError(t('emailSearch.error'));
+      notifyError(t('emailSearch.error'), NOTIFICATION_DELAY_IN_SECONDS);
       return false;
     } else {
       notifySuccess(t('emailSearch.success'));

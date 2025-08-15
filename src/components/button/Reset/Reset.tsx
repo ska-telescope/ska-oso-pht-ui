@@ -10,6 +10,7 @@ interface ResetButtonProps {
   primary?: boolean;
   testId?: string;
   toolTip?: string;
+  size?: typeof ButtonSizeTypes;
 }
 
 export default function ResetButton({
@@ -18,7 +19,8 @@ export default function ResetButton({
   title = 'reset.label',
   primary = false,
   testId = 'resetButtonTestId',
-  toolTip
+  toolTip,
+  size = ButtonSizeTypes.Small
 }: ResetButtonProps) {
   return (
     <Box pb={1}>
@@ -27,7 +29,7 @@ export default function ResetButton({
         disabled={disabled}
         icon={<RestartAltIcon />}
         primary={primary}
-        size={ButtonSizeTypes.Small}
+        size={size}
         testId={testId}
         title={title}
         toolTip={toolTip}

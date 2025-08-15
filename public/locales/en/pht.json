@@ -774,13 +774,13 @@
     "error": "A value is required",
     "all": "All science categories"
   },
+  "searchForMember": {
+    "label": "Search for a member"
+  },
   "scienceSubCategory": {
     "label": "Sub-category",
     "help": "SUB-CATEGORY: Select a sub-category that best describes your proposal.",
     "1": "Not specified"
-  },
-  "searchForMember": {
-    "label": "Search for a member"
   },
   "sendInviteBtn": {
     "label": "Send invitation"
