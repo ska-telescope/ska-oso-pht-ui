@@ -331,6 +331,11 @@
     "label": "List of Targets",
     "toolTip": "A list of targets can be created individually or imported from a csv file using the appropriate tab."
   },
+  "manageTeamMember": {
+    "label": "Manage Team Member Rights to the proposal",
+    "success": "Team member's access has been updated.",
+    "error": "Failed to update team member's access"
+  },
   "mediaSize": {
     "notSupported": "The application is not supported on a screen with these dimensions"
   },

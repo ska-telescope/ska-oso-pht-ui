@@ -13,7 +13,7 @@ import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import GridMembers from '../../components/grid/members/GridMembers';
 import StarIcon from '../../components/icon/starIcon/starIcon';
-import { FOOTER_SPACER } from '../../utils/constants';
+import { FOOTER_SPACER, GRID_MEMBERS_ACTIONS } from '../../utils/constants';
 import MemberSearch from './MemberSearch/MemberSearch';
 import TeamFileImport from './TeamFileImport/TeamFileImport';
 
@@ -36,8 +36,9 @@ export default function TeamPage() {
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [theValue, setTheValue] = React.useState(0);
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [openDialog, setOpenDialog] = React.useState(false);
   const [currentMember, setCurrentMember] = React.useState('');
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+  const [openAccessDialog, setOpenAccessDialog] = React.useState(false);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -68,11 +69,27 @@ export default function TeamPage() {
   };
 
   const deleteIconClicked = () => {
-    setOpenDialog(true);
+    // setOpenDialog(true);
+    setOpenDeleteDialog(true);
+  };
+
+  const accessIconClicked = () => {
+    setOpenAccessDialog(true);
+  };
+
+  const actionClicked = (action: string) => {
+    switch (action) {
+      case GRID_MEMBERS_ACTIONS.delete:
+        deleteIconClicked();
+        break;
+      case GRID_MEMBERS_ACTIONS.access:
+        accessIconClicked();
+        break;
+    }
   };
 
   const closeDeleteDialog = () => {
-    setOpenDialog(false);
+    setOpenDeleteDialog(false);
   };
 
   const ClickMemberRow = (e: { id: number }) => {
@@ -147,7 +164,7 @@ export default function TeamPage() {
           <Grid2 size={{ md: 11, lg: 5 }} order={{ md: 2, lg: 1 }}>
             <GridMembers
               action
-              actionClicked={deleteIconClicked}
+              actionClicked={actionClicked}
               height={400}
               rowClick={ClickMemberRow}
               rows={getRows()}
@@ -190,10 +207,18 @@ export default function TeamPage() {
         </Grid2>
       </Grid2>
       <AlertDialog
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
         onDialogResponse={deleteConfirmed}
         title="deleteTeamMember.label"
+      >
+        {alertContent()}
+      </AlertDialog>
+      <AlertDialog
+        open={openAccessDialog}
+        onClose={() => setOpenAccessDialog(false)}
+        onDialogResponse={deleteConfirmed}
+        title="manageTeamMember.label"
       >
         {alertContent()}
       </AlertDialog>

@@ -7,6 +7,7 @@ import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import Investigator from '../../../utils/types/investigator';
 import LockIcon from '@/components/icon/lockIcon/lockIcon';
+import { GRID_MEMBERS_ACTIONS } from '@/utils/constants';
 
 interface GridMembersProps {
   action?: boolean;
@@ -76,8 +77,12 @@ export default function GridMembers({
     }
   ];
 
-  const trashClicked = (row: any) => {
-    if (actionClicked) actionClicked(row);
+  const trashClicked = () => {
+    if (actionClicked) actionClicked(GRID_MEMBERS_ACTIONS.delete);
+  };
+
+  const lockClicked = () => {
+    if (actionClicked) actionClicked(GRID_MEMBERS_ACTIONS.access);
   };
 
   const actionColumns = [
@@ -91,7 +96,7 @@ export default function GridMembers({
       renderCell: () => (
         <>
           <TrashIcon onClick={trashClicked} toolTip="Delete team member" />
-          <LockIcon onClick={trashClicked} toolTip="Manage team member rights" />
+          <LockIcon onClick={lockClicked} toolTip="Manage team member rights" />
         </>
       )
     }

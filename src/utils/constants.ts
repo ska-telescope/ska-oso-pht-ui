@@ -189,6 +189,11 @@ export const GENERAL = {
   ]
 };
 
+export const GRID_MEMBERS_ACTIONS = {
+  delete: 'delete',
+  access: 'access'
+};
+
 export const HEADER_HEIGHT = 78;
 
 export const HELP_FONT = 16;
