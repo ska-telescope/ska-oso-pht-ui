@@ -6,6 +6,7 @@ import TickIcon from '../../../components/icon/tickIcon/tickIcon';
 import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import Investigator from '../../../utils/types/investigator';
+import LockIcon from '@/components/icon/lockIcon/lockIcon';
 
 interface GridMembersProps {
   action?: boolean;
@@ -87,7 +88,12 @@ export default function GridMembers({
       flex: 1,
       minWidth: 120,
       disableClickEventBubbling: true,
-      renderCell: () => <TrashIcon onClick={trashClicked} toolTip="Delete team member" />
+      renderCell: () => (
+        <>
+          <TrashIcon onClick={trashClicked} toolTip="Delete team member" />
+          <LockIcon onClick={trashClicked} toolTip="Manage team member rights" />
+        </>
+      )
     }
   ];
 
