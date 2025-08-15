@@ -10,6 +10,8 @@ import {
 } from '@/utils/constants';
 import Investigator, { InvestigatorBackend } from '@/utils/types/investigator';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
+import { mockProposal } from '../common/common';
+import MockProposal from '@services/axios/get/getProposalList/mockProposal.tsx';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -97,6 +99,10 @@ async function GetProposalList(
 ): Promise<Proposal[] | string> {
   if (USE_LOCAL_DATA) {
     return GetMockProposalList();
+  }
+  if (window.Cypress) {
+    console.log('return mock proposal')
+    return mappingList(MockProposal)
   }
 
   try {

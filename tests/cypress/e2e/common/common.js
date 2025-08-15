@@ -291,6 +291,9 @@ export const verifyFirstProposalOnLandingPageIsVisible = () => {
     .should('contain', 'Proposal Title');
 };
 
+export const verifyMockedProposalOnLandingPageIsVisible = () => {
+  cy.get('[data-field="id"]').should('contain', 'prsl-test')};
+
 export const verifyOnLandingPageNoProposalMsgIsVisible = () => {
   cy.get('[id="standardAlertId"]').should('contain', 'THERE ARE NO PROPOSALS TO BE DISPLAYED');
 };
