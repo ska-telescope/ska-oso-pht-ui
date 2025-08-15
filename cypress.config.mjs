@@ -28,7 +28,7 @@ export default defineConfig({
       // Add reporter configuration
       config.reporter = 'mocha-junit-reporter';
       config.reporterOptions = {
-        mochaFile: 'cypress/results/e2e-coverage.xml',
+        mochaFile: 'cypress/reports/e2e-coverage.xml',
         toConsole: true
       };
     }

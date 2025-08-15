@@ -2,6 +2,7 @@ image: $SKA_K8S_TOOLS_DOCKER_BUILDER_IMAGE
 
 variables:
   GIT_SUBMODULE_STRATEGY: recursive
+  JS_E2E_TEST_COMMAND: test:e2e
 
 stages:
   - dependencies
