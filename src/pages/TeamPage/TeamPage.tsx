@@ -16,6 +16,7 @@ import StarIcon from '../../components/icon/starIcon/starIcon';
 import { FOOTER_SPACER, GRID_MEMBERS_ACTIONS } from '../../utils/constants';
 import MemberSearch from './MemberSearch/MemberSearch';
 import TeamFileImport from './TeamFileImport/TeamFileImport';
+import MemberAccess from './MemberAccess/MemberAccess';
 
 const PAGE = 1;
 
@@ -69,7 +70,6 @@ export default function TeamPage() {
   };
 
   const deleteIconClicked = () => {
-    // setOpenDialog(true);
     setOpenDeleteDialog(true);
   };
 
@@ -104,7 +104,7 @@ export default function TeamPage() {
     closeDeleteDialog();
   };
 
-  const deleteAlertContent = () => {
+  const displayMemberInfo = () => {
     const LABEL_WIDTH = 6;
     const rec = getProposal()?.investigators?.find(p => p.id === currentMember);
     return (
@@ -134,28 +134,16 @@ export default function TeamPage() {
     );
   };
 
+  const deleteAlertContent = () => {
+    return displayMemberInfo();
+  };
+
   const accessAlertContent = () => {
-    const LABEL_WIDTH = 6;
-    const rec = getProposal()?.investigators?.find(p => p.id === currentMember);
     return (
-      <Grid2
-        p={2}
-        container
-        direction="column"
-        alignItems="space-evenly"
-        justifyContent="space-around"
-      >
-        <FieldWrapper label={t('firstName.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec?.firstName}</Typography>
-        </FieldWrapper>
-        <FieldWrapper label={t('lastName.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec?.lastName}</Typography>
-        </FieldWrapper>
-        <FieldWrapper label={t('email.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec?.email}</Typography>
-        </FieldWrapper>
-        TEST
-      </Grid2>
+      <>
+        {displayMemberInfo()}
+        <MemberAccess />
+      </>
     );
   };
 
