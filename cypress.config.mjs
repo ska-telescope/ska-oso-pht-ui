@@ -3,7 +3,7 @@ import vitePreprocessor from 'cypress-vite';
 
 export default defineConfig({
   video: false,
-  projectId: 'ssiwb9', //projectId to enable cypress cloud
+  // projectId: 'ssiwb9', //projectId to enable cypress cloud
   fixturesFolder: 'tests/cypress/fixtures',
   screenshotsFolder: 'tests/cypress/artefacts/screenshots',
   videosFolder: 'tests/cypress/artefacts/videos',
