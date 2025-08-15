@@ -62,7 +62,7 @@ export const mockCreateProposalAPI = () => {
     const token = win.localStorage.getItem('cypress:token');
     cy.intercept(
       'POST',
-      '**pht/prsls/create',
+      '**/pht/prsls/create',
       req => {
         req.headers['Authorization'] = `Bearer ${token}`;
         req.reply({
