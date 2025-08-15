@@ -154,7 +154,7 @@ export default function TeamPage() {
             />
           </Grid2>
           <Grid2 size={{ md: 11, lg: 6 }} order={{ md: 1, lg: 2 }}>
-            <Box sx={{ width: '100%', border: '1px solid grey' }}>
+            <Box sx={{ width: '100%', border: '1px solid grey', minHeight: '558px' }}>
               <Box>
                 <Tabs
                   variant="fullWidth"

@@ -12,6 +12,7 @@ UNRELEASED
 * Added : getUserByEmail service using a mock user
 * Changed : rename frontend type "TeamMember" into "Investigator" for consistency
 * Changed : rename frontend property of proposal "team" into "investigators" for consistency
+* Added : implement search user functionality on team page using mocked getUserByEmail service
 
 3.1.0
 
