@@ -57,6 +57,23 @@ export const verifyMockedAPICall = stubAlias => {
   });
 };
 
+export const mockCreateProposalAPI = () => {
+  cy.window().then(win => {
+    const token = win.localStorage.getItem('cypress:token');
+    cy.intercept(
+      'POST',
+      'http://192.168.49.2/ska-oso-services/oso/api/v2/pht/prsls/create',
+      req => {
+        req.headers['Authorization'] = `Bearer ${token}`;
+        req.reply({
+          statusCode: 200,
+          body: 'prsl-test-20250814-00003'
+        });
+      }
+    ).as('mockCreateProposal');
+  });
+}
+
 /*----------------------------------------------------------------------*/
 
 export const clickButton = testId => {
