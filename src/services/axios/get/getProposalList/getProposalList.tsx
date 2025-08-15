@@ -1,3 +1,4 @@
+import MockProposal from '@services/axios/get/getProposalList/mockProposal.tsx';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
 import MockProposalBackendList from './mockProposalBackendList';
 import Proposal, { ProposalBackend } from '@/utils/types/proposal';
@@ -10,8 +11,6 @@ import {
 } from '@/utils/constants';
 import Investigator, { InvestigatorBackend } from '@/utils/types/investigator';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
-import { mockProposal } from '../common/common';
-import MockProposal from '@services/axios/get/getProposalList/mockProposal.tsx';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -101,8 +100,7 @@ async function GetProposalList(
     return GetMockProposalList();
   }
   if (window.Cypress) {
-    console.log('return mock proposal')
-    return mappingList(MockProposal)
+    return mappingList(MockProposal);
   }
 
   try {

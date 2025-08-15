@@ -14,6 +14,7 @@ import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 //
 import GetObservatoryData from '@services/axios/getObservatoryData/getObservatoryData.tsx';
 import { presentDate, presentLatex, presentTime } from '@utils/present/present';
+import Investigator from '@utils/types/investigator.tsx';
 import AddButton from '@/components/button/Add/Add';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
 import EditIcon from '@/components/icon/editIcon/editIcon';
@@ -41,7 +42,6 @@ import {
   FOOTER_HEIGHT_PHT
 } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
-import Investigator from '@utils/types/investigator.tsx';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
