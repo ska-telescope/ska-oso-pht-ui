@@ -29,8 +29,9 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const loggedIn = isLoggedIn();
 
-  const isDisableEndpoints = () => !loggedIn;
-
+  const isDisableEndpoints = () => {
+    return !loggedIn && !window.Cypress;
+  };
   const getObservatoryData = () => application.content3 as ObservatoryData;
 
   React.useEffect(() => {

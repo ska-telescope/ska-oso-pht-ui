@@ -1,3 +1,4 @@
+import MockProposal from '@services/axios/get/getProposalList/mockProposal.tsx';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
 import MockProposalBackendList from './mockProposalBackendList';
 import Proposal, { ProposalBackend } from '@/utils/types/proposal';
@@ -97,6 +98,9 @@ async function GetProposalList(
 ): Promise<Proposal[] | string> {
   if (USE_LOCAL_DATA) {
     return GetMockProposalList();
+  }
+  if (window.Cypress) {
+    return mappingList(MockProposal);
   }
 
   try {

@@ -57,6 +57,23 @@ export const verifyMockedAPICall = stubAlias => {
   });
 };
 
+export const mockCreateProposalAPI = () => {
+  cy.window().then(win => {
+    const token = win.localStorage.getItem('cypress:token');
+    cy.intercept(
+      'POST',
+      '**/pht/prsls/create',
+      req => {
+        req.headers['Authorization'] = `Bearer ${token}`;
+        req.reply({
+          statusCode: 200,
+          body: 'prsl-test-20250814-00003'
+        });
+      }
+    ).as('mockCreateProposal');
+  });
+}
+
 /*----------------------------------------------------------------------*/
 
 export const clickButton = testId => {
@@ -291,6 +308,10 @@ export const verifyFirstProposalOnLandingPageIsVisible = () => {
     .should('contain', 'Proposal Title');
 };
 
+export const verifyMockedProposalOnLandingPageIsVisible = () => {
+  cy.get('[data-field="id"]').should('contain', 'prsl-test');
+};
+
 export const verifyOnLandingPageNoProposalMsgIsVisible = () => {
   cy.get('[id="standardAlertId"]').should('contain', 'THERE ARE NO PROPOSALS TO BE DISPLAYED');
 };
@@ -395,7 +416,8 @@ Cypress.Commands.add('mockLoginButton', (user = {}) => {
             }
 
             win.localStorage.setItem('cypress:group', fakeAccount.group);
-            win.localStorage.setItem('msal.account', JSON.stringify(fakeAccount));
+            win.localStorage.setItem('cypress:token', fakeAccount.token);
+            win.localStorage.setItem('cypress:account', JSON.stringify(fakeAccount));
 
             // Trigger a navigation to force re-evaluation
             win.location.href = '/';

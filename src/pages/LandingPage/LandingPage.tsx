@@ -14,6 +14,7 @@ import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 //
 import GetObservatoryData from '@services/axios/getObservatoryData/getObservatoryData.tsx';
 import { presentDate, presentLatex, presentTime } from '@utils/present/present';
+import Investigator from '@utils/types/investigator.tsx';
 import AddButton from '@/components/button/Add/Add';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
 import EditIcon from '@/components/icon/editIcon/editIcon';
@@ -84,7 +85,7 @@ export default function LandingPage() {
   React.useEffect(() => {
     const fetchData = async () => {
       setProposals([]);
-      if (!loggedIn) return;
+      if (!window.Cypress && !loggedIn) return;
 
       const response = await GetProposalList(authClient);
       if (typeof response === 'string') {
