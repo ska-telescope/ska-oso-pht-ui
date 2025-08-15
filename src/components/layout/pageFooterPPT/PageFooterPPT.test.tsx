@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import PostProposal from '../../../services/axios/postProposal/postProposal';
 import PageFooterPPT from './PageFooterPPT';
+import { NEW_PROPOSAL_ACCESS } from '@/utils/types/proposalAccess';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({ t: (key: string) => key })
@@ -37,6 +38,7 @@ const mockObservatoryData = {
     }
   }
 };
+const mockAccess = [NEW_PROPOSAL_ACCESS];
 
 const mockNotification = {
   level: AlertColorTypes.Info,
@@ -50,9 +52,11 @@ beforeEach(() => {
     application: {
       content2: mockProposal,
       content3: mockObservatoryData,
+      content4: mockAccess,
       content5: mockNotification
     },
     updateAppContent2: vi.fn(),
+    updateAppContent4: vi.fn(),
     updateAppContent5: vi.fn()
   });
 });

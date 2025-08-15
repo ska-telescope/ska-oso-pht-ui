@@ -58,7 +58,7 @@ const MockProposalFrontendList: Proposal[] = [
     ]
   },
   {
-    id: 'prp-ska01-202506-23',
+    id: 'prsl-t0001-20250814-00002',
     status: 'submitted',
     lastUpdated: '2022-09-23T15:43:53.971548Z',
     lastUpdatedBy: 'TestUser',

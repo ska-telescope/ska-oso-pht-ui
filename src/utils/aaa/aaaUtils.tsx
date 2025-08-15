@@ -1,6 +1,12 @@
 import { useUserGroups } from '@ska-telescope/ska-login-page';
 import { useMsal } from '@azure/msal-react';
 import { APP_OVERRIDE_GROUPS, TMP_REVIEWER_ID } from '../constants';
+import ProposalAccess from '../types/proposalAccess';
+
+export const PROPOSAL_ACCESS_VIEW = 'view';
+export const PROPOSAL_ACCESS_UPDATE = 'update';
+export const PROPOSAL_ACCESS_SUBMIT = 'submit';
+export const PROPOSAL_ROLE_PI = 'Principle Investigator';
 
 const OPS_PROPOSAL_ADMIN = 'obs-oauth2role-opsproposaladmin-1-1535351309'; //'ce3627de-8ec2-4a35-ab1e-300eec6a0a50';
 const OPS_REVIEWER_SCIENCE = 'obs-oauth2role-opsreviewersci-1635769025'; // '05883c37-b723-4b63-9216-0a789a61cb07';
@@ -50,4 +56,42 @@ export const getUserName = () => {
   return account && typeof account === 'object' && 'name' in account
     ? (account as { name?: string }).name ?? ''
     : '';
+};
+
+/*****************************************************************************/
+
+export const hasProposalAccess = (
+  accessList: ProposalAccess[],
+  prslId: string
+): ProposalAccess | null => {
+  return accessList.find(access => access.prslId === prslId) ?? null;
+};
+
+export const hasProposalAccessPermission = (
+  accessList: ProposalAccess[],
+  prslId: string,
+  permission: string
+): boolean => {
+  const access = hasProposalAccess(accessList, prslId);
+  return access?.permissions.includes(permission) ?? false;
+};
+
+export const accessPI = (accessList: ProposalAccess[], id: string): boolean => {
+  const access = hasProposalAccess(accessList, id);
+  return access?.role.includes(PROPOSAL_ROLE_PI) ?? false;
+};
+
+export const accessSubmit = (accessList: ProposalAccess[], id: string): boolean =>
+  hasProposalAccessPermission(accessList, id, PROPOSAL_ACCESS_SUBMIT);
+
+export const accessUpdate = (accessList: ProposalAccess[], id: string): boolean => {
+  const submit = accessSubmit(accessList, id);
+  const update = hasProposalAccessPermission(accessList, id, PROPOSAL_ACCESS_UPDATE);
+  return submit || update;
+};
+
+export const accessView = (accessList: ProposalAccess[], id: string): boolean => {
+  const update = accessUpdate(accessList, id);
+  const view = hasProposalAccessPermission(accessList, id, PROPOSAL_ACCESS_VIEW);
+  return update || view;
 };

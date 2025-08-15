@@ -5,11 +5,12 @@ type PieData = { name: string; value: number };
 
 type Props = {
   data: PieData[];
+  width?: number;
   showTotal?: boolean;
   centerText?: string;
 };
 
-const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' }) => {
+const D3PieChart: React.FC<Props> = ({ data, width = 200, showTotal = false, centerText = '' }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
 
@@ -17,7 +18,7 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
     // if (!svgRef.current || !tooltipRef.current) return;
 
     // Dimensions & margins
-    const chartWidth = 400;
+    const chartWidth = width;
     const chartHeight = 300;
     const margin = { top: 20, right: 80, bottom: 20, left: 80 };
     const svgWidth = chartWidth + margin.left + margin.right;

@@ -311,6 +311,7 @@ export const PROJECTS = [
     ]
   }
 ];
+
 export const PROPOSAL_STATUS = {
   DRAFT: 'draft',
   SUBMITTED: 'submitted',
