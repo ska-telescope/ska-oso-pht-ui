@@ -41,6 +41,7 @@ import {
   FOOTER_HEIGHT_PHT
 } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
+import { accessUpdate } from '@/utils/aaa/aaaUtils';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -52,13 +53,13 @@ export default function LandingPage() {
     updateAppContent1,
     updateAppContent2,
     updateAppContent3,
+    updateAppContent4,
     updateAppContent5
   } = storageObject.useStore();
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
-  const [, setProposalAccess] = React.useState<ProposalAccess[]>([]);
   const [axiosError, setAxiosError] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
   const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
@@ -69,6 +70,7 @@ export default function LandingPage() {
   const [fetchList, setFetchList] = React.useState(false);
   const loggedIn = isLoggedIn();
 
+  const setAccess = (access: ProposalAccess[]) => updateAppContent4(access);
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const authClient = useAxiosAuthClient();
@@ -101,7 +103,7 @@ export default function LandingPage() {
       if (typeof response === 'string') {
         setAxiosError(response);
       } else {
-        setProposalAccess(response);
+        setAccess(response);
       }
     };
     fetchData();
@@ -198,8 +200,10 @@ export default function LandingPage() {
     }
   };
 
-  const canEdit = (e: { row: { status: string } }) => e.row.status === PROPOSAL_STATUS.DRAFT;
-  const canClone = () => true;
+  const canEdit = (e: { row: { id: string; status: string } }) =>
+    e.row.status === PROPOSAL_STATUS.DRAFT && accessUpdate(e.row.id);
+  const canClone = (e: { row: any }) => accessUpdate(e.row.id);
+
   // TODO const canDelete = (e: { row: { status: string } }) =>
   // TODO  e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 
@@ -291,7 +295,7 @@ export default function LandingPage() {
         <ViewIcon onClick={() => viewIconClicked(e.row.id)} toolTip={t('viewProposal.toolTip')} />
         <CloneIcon
           onClick={() => cloneIconClicked(e.row.id)}
-          disabled={!canClone()}
+          disabled={!canClone(e)}
           toolTip={t('cloneProposal.toolTip')}
         />
         <TrashIcon

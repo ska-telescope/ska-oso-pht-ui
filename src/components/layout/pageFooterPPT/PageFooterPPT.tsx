@@ -4,7 +4,16 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid2, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DUMMY_PROPOSAL_ID, LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
+import {
+  DUMMY_PROPOSAL_ID,
+  LAST_PAGE,
+  NAV,
+  PROPOSAL_ACCESS_SUBMIT,
+  PROPOSAL_ACCESS_UPDATE,
+  PROPOSAL_ACCESS_VIEW,
+  PROPOSAL_ROLE_PI,
+  PROPOSAL_STATUS
+} from '@utils/constants.ts';
 import NextPageButton from '../../button/NextPage/NextPage';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import Proposal from '../../../utils/types/proposal';
@@ -14,6 +23,7 @@ import TimedAlert from '../../alerts/timedAlert/TimedAlert';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
+import ProposalAccess from '@/utils/types/proposalAccess';
 
 interface PageFooterPPTProps {
   pageNo: number;
@@ -23,7 +33,7 @@ interface PageFooterPPTProps {
 export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFooterPPTProps) {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
-  const { application, updateAppContent2 } = storageObject.useStore();
+  const { application, updateAppContent2, updateAppContent4 } = storageObject.useStore();
   const [usedPageNo, setUsedPageNo] = React.useState(pageNo);
   const authClient = useAxiosAuthClient();
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
@@ -41,6 +51,8 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   }, []);
 
   const createProposal = async () => {
+    const getAccess = () => application.content4 as ProposalAccess[];
+    const setAccess = (access: ProposalAccess[]) => updateAppContent4(access);
     const getProposal = () => application.content2 as Proposal;
     const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
@@ -62,6 +74,13 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
           id: response,
           cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
         });
+        // Create a new access entry for the PI.  Saves doing the endpoint
+        const newAcc = {
+          prslId: response,
+          role: PROPOSAL_ROLE_PI,
+          permissions: [PROPOSAL_ACCESS_VIEW, PROPOSAL_ACCESS_UPDATE, PROPOSAL_ACCESS_SUBMIT]
+        };
+        setAccess([...getAccess(), newAcc]);
         navigate(NAV[1]);
       } else {
         notifyError(response.error);

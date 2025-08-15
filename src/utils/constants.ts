@@ -311,6 +311,12 @@ export const PROJECTS = [
     ]
   }
 ];
+
+export const PROPOSAL_ACCESS_VIEW = 'view';
+export const PROPOSAL_ACCESS_UPDATE = 'update';
+export const PROPOSAL_ACCESS_SUBMIT = 'submit';
+export const PROPOSAL_ROLE_PI = 'Principle Investigator';
+
 export const PROPOSAL_STATUS = {
   DRAFT: 'draft',
   SUBMITTED: 'submitted',

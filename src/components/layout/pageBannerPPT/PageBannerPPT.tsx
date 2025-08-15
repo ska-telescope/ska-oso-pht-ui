@@ -29,6 +29,7 @@ import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import PostProposalValidate from '../../../services/axios/postProposalValidate/postProposalValidate';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
+import { accessSubmit } from '@/utils/aaa/aaaUtils';
 
 interface PageBannerPPTProps {
   pageNo: number;
@@ -78,7 +79,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       const response = await PostProposalValidate(authClient, getProposal());
       if (response.valid && !response.error && results.length === 0) {
         notifySuccess(t(`validationBtn.${response.valid}`));
-        setCanSubmit(true);
+        setCanSubmit(accessSubmit(getProposal().id));
       } else {
         setValidationResults(response.error ? results.concat(response.error) : results);
         setOpenValidationResults(true);

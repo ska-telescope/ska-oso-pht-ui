@@ -26,7 +26,7 @@ This is as follows:
 Application.Content1 => Status of the proposal for each page
 Application.Content2 => Proposal which is being edited
 Application.Content3 => Original copy of the loaded proposal for comparison
-Application.Content4 => Not used
+Application.Content4 => Contains the ProposalAccess[], used primarily for the submission process
 Application.Content5 => Notifications are placed in here for global presentation
 
 Help.component => Populated with field-dependant help
