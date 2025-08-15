@@ -80,7 +80,8 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
           role: PROPOSAL_ROLE_PI,
           permissions: [PROPOSAL_ACCESS_VIEW, PROPOSAL_ACCESS_UPDATE, PROPOSAL_ACCESS_SUBMIT]
         };
-        setAccess([...getAccess(), newAcc]);
+        const acc = getAccess();
+        setAccess([...acc, newAcc]);
         navigate(NAV[1]);
       } else {
         notifyError(response.error);
