@@ -1,6 +1,6 @@
 import SearchIcon from '@mui/icons-material/Search';
 import BaseButton from '../Base/Button';
-interface UserSearchButtonProps {
+interface SearchButtonProps {
   title?: string;
   action: string | Function;
   disabled?: boolean;
@@ -9,14 +9,14 @@ interface UserSearchButtonProps {
   toolTip?: string;
 }
 
-export default function UserSearchButton({
+export default function SearchButton({
   disabled = false,
   action,
   primary = false,
-  title = 'searchForMember.label',
-  testId = 'investigatorSearchButtonTestId',
+  title = 'search.label',
+  testId = 'SearchButtonTestId',
   toolTip
-}: UserSearchButtonProps) {
+}: SearchButtonProps) {
   return (
     <BaseButton
       action={action}

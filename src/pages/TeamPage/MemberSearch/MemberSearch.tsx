@@ -8,7 +8,7 @@ import MemberEntry from '@/pages/entry/MemberEntry/MemberEntry';
 import { GetMockUserByEmail } from '@/services/axios/getUserByEmail/getUserByEmail';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 import { LAB_POSITION, WRAPPER_HEIGHT } from '@/utils/constants';
-import UserSearchButton from '@/components/button/UserSearch/UserSearch';
+import UserSearchButton from '@/components/button/Search/Search';
 import { helpers } from '@/utils/helpers';
 import { useNotify } from '@/utils/notify/useNotify';
 import ResetSearchButton from '@/components/button/ResetSearch/ResetSearch';

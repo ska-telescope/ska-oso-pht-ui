@@ -779,9 +779,6 @@
     "help": "SUB-CATEGORY: Select a sub-category that best describes your proposal.",
     "1": "Not specified"
   },
-  "searchForMember": {
-    "label": "Search for a member"
-  },
   "sendInviteBtn": {
     "label": "Send invitation"
   },
