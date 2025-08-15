@@ -104,7 +104,7 @@ export default function TeamPage() {
     closeDeleteDialog();
   };
 
-  const alertContent = () => {
+  const deleteAlertContent = () => {
     const LABEL_WIDTH = 6;
     const rec = getProposal()?.investigators?.find(p => p.id === currentMember);
     return (
@@ -130,6 +130,31 @@ export default function TeamPage() {
         <FieldWrapper label={t('pi.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{t(rec?.pi ? 'yes' : 'no')}</Typography>
         </FieldWrapper>
+      </Grid2>
+    );
+  };
+
+  const accessAlertContent = () => {
+    const LABEL_WIDTH = 6;
+    const rec = getProposal()?.investigators?.find(p => p.id === currentMember);
+    return (
+      <Grid2
+        p={2}
+        container
+        direction="column"
+        alignItems="space-evenly"
+        justifyContent="space-around"
+      >
+        <FieldWrapper label={t('firstName.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{rec?.firstName}</Typography>
+        </FieldWrapper>
+        <FieldWrapper label={t('lastName.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{rec?.lastName}</Typography>
+        </FieldWrapper>
+        <FieldWrapper label={t('email.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{rec?.email}</Typography>
+        </FieldWrapper>
+        TEST
       </Grid2>
     );
   };
@@ -212,7 +237,7 @@ export default function TeamPage() {
         onDialogResponse={deleteConfirmed}
         title="deleteTeamMember.label"
       >
-        {alertContent()}
+        {deleteAlertContent()}
       </AlertDialog>
       <AlertDialog
         open={openAccessDialog}
@@ -220,7 +245,7 @@ export default function TeamPage() {
         onDialogResponse={deleteConfirmed}
         title="manageTeamMember.label"
       >
-        {alertContent()}
+        {accessAlertContent()}
       </AlertDialog>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
     </Shell>
