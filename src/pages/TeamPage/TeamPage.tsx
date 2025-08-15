@@ -92,6 +92,10 @@ export default function TeamPage() {
     setOpenDeleteDialog(false);
   };
 
+  const closeAccessDialog = () => {
+    setOpenAccessDialog(false);
+  };
+
   const ClickMemberRow = (e: { id: number }) => {
     setCurrentMember(e.id.toString());
   };
@@ -102,6 +106,11 @@ export default function TeamPage() {
     setProposal({ ...getProposal(), investigators: obs1 });
     setCurrentMember('');
     closeDeleteDialog();
+  };
+
+  const accessConfirmed = () => {
+    // TODO implement actions on close
+    closeAccessDialog();
   };
 
   const displayMemberInfo = () => {
@@ -230,7 +239,7 @@ export default function TeamPage() {
       <AlertDialog
         open={openAccessDialog}
         onClose={() => setOpenAccessDialog(false)}
-        onDialogResponse={deleteConfirmed}
+        onDialogResponse={accessConfirmed}
         title="manageTeamMember.label"
       >
         {accessAlertContent()}
