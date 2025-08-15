@@ -30,6 +30,7 @@ import PostProposalValidate from '../../../services/axios/postProposalValidate/p
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
 import { accessSubmit } from '@/utils/aaa/aaaUtils';
+import ProposalAccess from '@/utils/types/proposalAccess';
 
 interface PageBannerPPTProps {
   pageNo: number;
@@ -56,6 +57,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   const isDisableEndpoints = () => !loggedIn;
 
+  const getAccess = () => application.content4 as ProposalAccess[];
   const getProposal = () => application.content2 as Proposal;
 
   const validateTooltip = () => {
@@ -77,9 +79,10 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         }
       }
       const response = await PostProposalValidate(authClient, getProposal());
+      const submit = accessSubmit(getAccess(), getProposal().id);
       if (response.valid && !response.error && results.length === 0) {
         notifySuccess(t(`validationBtn.${response.valid}`));
-        setCanSubmit(accessSubmit(getProposal().id));
+        setCanSubmit(submit);
       } else {
         setValidationResults(response.error ? results.concat(response.error) : results);
         setOpenValidationResults(true);

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import Grid2 from '@mui/material/Grid2';
-import { DropDown, TextEntry, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
+import { DropDown, SearchEntry, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import { ReactNode } from 'react';
-import { Typography } from '@mui/material';
+import { Box, Card, Typography } from '@mui/material';
 import { groupBy } from 'lodash';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -19,12 +19,13 @@ import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient
 import D3PieChart from '@/components/charts/pie/D3PieChart';
 
 const REFRESH_TIME = 5 * 60 * 1000;
+const CHART_WIDTH = 370;
 
 const ResizablePanel = ({ children, title }: { children: ReactNode; title: string }) => (
   <div
     className="border rounded p-3 bg-white shadow flex flex-col resize overflow-auto mb-6 hover:bg-gray-100 hover:shadow-md transition-all duration-200"
     style={{
-      minWidth: '350px',
+      minWidth: '30vw',
       minHeight: '300px',
       resize: 'both',
       overflow: 'auto',
@@ -338,28 +339,27 @@ export default function ReviewDashboard() {
     setFilteredReport(filteredReport);
   }, [filter, currentReport, search]);
 
-  return (
-    <>
-      <PageBannerPMT title={t('overview.title')} />
-      <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
-      {/* Filters */}
-      <Grid2 container spacing={2} px={5} py={2} alignItems="center" justifyContent="space-between">
-        <Grid2 size={{ sm: 2 }}>
-          <DropDown
-            options={[
-              { value: '', label: 'All' },
-              { value: 'LOW', label: 'LOW' },
-              { value: 'MID', label: 'MID' },
-              { value: 'BOTH', label: 'BOTH' }
-            ]}
-            testId={'telescopeTestId'}
-            value={filter.telescope}
-            setValue={(e: string) => setFilter({ ...filter, telescope: e })}
-            label={'Telescope'}
-          />
-        </Grid2>
-        {/* note: Hide for now as requested */}
-        {/* <Grid2 size={{ sm: 2 }}>
+  const filters = () => (
+    <Box pl={5} pr={5}>
+      <Card>
+        {' '}
+        <Grid2 container spacing={2} alignItems="center" justifyContent="space-between">
+          <Grid2 pl={5} size={{ sm: 2 }}>
+            <DropDown
+              options={[
+                { value: '', label: 'All' },
+                { value: 'LOW', label: 'LOW' },
+                { value: 'MID', label: 'MID' },
+                { value: 'BOTH', label: 'BOTH' }
+              ]}
+              testId={'telescopeTestId'}
+              value={filter.telescope}
+              setValue={(e: string) => setFilter({ ...filter, telescope: e })}
+              label={'Telescope'}
+            />
+          </Grid2>
+          {/* note: Hide for now as requested */}
+          {/* <Grid2 size={{ sm: 2 }}>
           <DropDown
             options={[
               { value: '', label: 'All' },
@@ -374,45 +374,57 @@ export default function ReviewDashboard() {
           />
         </Grid2>
         */}
-        <Grid2 size={{ sm: 2 }}>
-          <TextEntry
-            label={'Search'}
-            setValue={setSearch}
-            testId="effectiveResolution"
-            value={search}
-          />
+          <Grid2 size={{ sm: 6 }}>
+            <SearchEntry
+              label=""
+              testId="effectiveResolution"
+              value={search}
+              setValue={setSearch}
+            />
+          </Grid2>
+          <Grid2 pr={5}>
+            <ResetButton
+              action={() => {
+                setSearch('');
+                setFilter({ telescope: '', country: '' });
+              }}
+              disabled={filter.telescope === '' && filter.country === '' && search === ''}
+            />
+          </Grid2>
         </Grid2>
-        <Grid2 size={{ sm: 2 }}>
-          <ResetButton
-            action={() => {
-              setSearch('');
-              setFilter({ telescope: '', country: '' });
-            }}
-            disabled={filter.telescope === '' && filter.country === '' && search === ''}
-          />
-        </Grid2>
-      </Grid2>
+      </Card>
+    </Box>
+  );
+
+  return (
+    <>
+      <PageBannerPMT title={t('overview.title')} />
+      <Spacer size={BANNER_PMT_SPACER - 20} axis={SPACER_VERTICAL} />
+      {filters()}
 
       {/* Metrics */}
-      <Grid2 container spacing={2} px={5} py={3} pb={10}>
+      <Grid2 p={5} spacing={5} container alignItems="center" justifyContent="space-between">
         <Grid2>
           <ResizablePanel title="Proposal Assigned">
-            <D3PieChart data={proposalPieChartData} showTotal={true} />
+            <D3PieChart data={proposalPieChartData} width={CHART_WIDTH} showTotal={true} />
           </ResizablePanel>
         </Grid2>
         <Grid2>
           <ResizablePanel title="Status of Review">
-            <D3PieChart data={reviewPieChartData} showTotal={true} />
+            <D3PieChart data={reviewPieChartData} width={CHART_WIDTH} showTotal={true} />
           </ResizablePanel>
         </Grid2>
         <Grid2>
           <ResizablePanel title="Science Categories">
-            <D3PieChart data={scienceCategoryPieChartData} showTotal={true} />
+            <D3PieChart data={scienceCategoryPieChartData} width={CHART_WIDTH} showTotal={true} />
           </ResizablePanel>
         </Grid2>
-        <Grid2>
+      </Grid2>
+
+      <Grid2 container alignItems="center" justifyContent="space-between">
+        <Grid2 pl={5} pr={5}>
           <ResizablePanel title={'Review Distribution across Panels'}>
-            <TableContainer sx={{ minWidth: '90vw' }}>
+            <TableContainer sx={{ minWidth: '100vw' }}>
               {/* TODO: refactor the grid / resizable panel - note: minWidth 560+560+16+16 from pie charts */}
               <Table sx={{ width: '100%' }}>
                 <TableHead>
@@ -447,9 +459,9 @@ export default function ReviewDashboard() {
           </ResizablePanel>
         </Grid2>
 
-        <Grid2>
+        <Grid2 p={5}>
           <ResizablePanel title={'Review Distribution across Reviewers'}>
-            <TableContainer sx={{ minWidth: '90vw' }}>
+            <TableContainer sx={{ minWidth: '100vw' }}>
               <Table sx={{ width: '100%' }}>
                 <TableHead>
                   <TableRow>
@@ -481,9 +493,9 @@ export default function ReviewDashboard() {
           </ResizablePanel>
         </Grid2>
 
-        <Grid2>
+        <Grid2 pl={5} pr={5}>
           <ResizablePanel title={'Review Distribution across Science Category'}>
-            <TableContainer sx={{ minWidth: '90vw' }}>
+            <TableContainer sx={{ minWidth: '100vw' }}>
               <Table sx={{ width: '100%' }}>
                 <TableHead>
                   <TableRow>

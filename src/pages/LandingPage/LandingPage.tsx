@@ -70,6 +70,7 @@ export default function LandingPage() {
   const [fetchList, setFetchList] = React.useState(false);
   const loggedIn = isLoggedIn();
 
+  const getAccess = () => application.content4 as ProposalAccess[];
   const setAccess = (access: ProposalAccess[]) => updateAppContent4(access);
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -200,9 +201,13 @@ export default function LandingPage() {
     }
   };
 
-  const canEdit = (e: { row: { id: string; status: string } }) =>
-    e.row.status === PROPOSAL_STATUS.DRAFT && accessUpdate(e.row.id);
-  const canClone = (e: { row: any }) => accessUpdate(e.row.id);
+  const CanEdit = (e: { row: { id: string; status: string } }) => {
+    return e.row.status === PROPOSAL_STATUS.DRAFT && accessUpdate(getAccess(), e.row.id);
+  };
+  const CanClone = (e: { row: any }) => {
+    const update = accessUpdate(getAccess(), e.row.id);
+    return update;
+  };
 
   // TODO const canDelete = (e: { row: { status: string } }) =>
   // TODO  e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
@@ -289,13 +294,13 @@ export default function LandingPage() {
       <>
         <EditIcon
           onClick={() => editIconClicked(e.row.id)}
-          disabled={!canEdit(e)}
-          toolTip={t(canEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
+          disabled={!CanEdit(e)}
+          toolTip={t(CanEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
         />
         <ViewIcon onClick={() => viewIconClicked(e.row.id)} toolTip={t('viewProposal.toolTip')} />
         <CloneIcon
           onClick={() => cloneIconClicked(e.row.id)}
-          disabled={!canClone(e)}
+          disabled={!CanClone(e)}
           toolTip={t('cloneProposal.toolTip')}
         />
         <TrashIcon
