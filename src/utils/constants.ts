@@ -1,5 +1,6 @@
 import { LABEL_POSITION, TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import Target from './types/target';
+import Investigator from './types/investigator';
 import { env } from '@/env';
 
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
@@ -942,16 +943,17 @@ export const PDF_NAME_PREFIXES = {
 
 /***************************************************************/
 
-export const DEFAULT_PI = {
-  id: 'prp-ska01-202204-01',
-  firstName: DEFAULT_USER,
-  lastName: DEFAULT_USER,
-  email: 'ask.lop@map.com',
-  country: 'Lagoon',
-  affiliation: 'University of Free Town',
+export const DEFAULT_INVESTIGATOR: Investigator = {
+  id: '',
+  firstName: '',
+  lastName: '',
+  email: '',
+  affiliation: '',
   phdThesis: false,
-  status: TEAM_STATUS_TYPE_OPTIONS.accepted,
-  pi: true
+  status: TEAM_STATUS_TYPE_OPTIONS.pending,
+  pi: false,
+  officeLocation: null,
+  jobTitle: null
 };
 
 export const DEFAULT_TARGETS: Target = {

@@ -7,7 +7,12 @@ import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
 import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
 import { Proposal } from '../../../utils/types/proposal';
 import { helpers } from '../../../utils/helpers';
-import { LAB_POSITION, TEAM_STATUS_TYPE_OPTIONS, WRAPPER_HEIGHT } from '../../../utils/constants';
+import {
+  DEFAULT_INVESTIGATOR,
+  LAB_POSITION,
+  TEAM_STATUS_TYPE_OPTIONS,
+  WRAPPER_HEIGHT
+} from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Investigator from '../../../utils/types/investigator';
 import PostSendEmailInvite from '../../../services/axios/postSendEmailInvite/postSendEmailInvite';
@@ -16,7 +21,17 @@ import { useNotify } from '@/utils/notify/useNotify';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
-export default function MemberEntry() {
+interface MemberEntryProps {
+  forSearch?: boolean;
+  foundInvestigator?: Investigator;
+  invitationBtnClicked?: () => void;
+}
+
+export default function MemberEntry({
+  forSearch = false,
+  foundInvestigator = DEFAULT_INVESTIGATOR,
+  invitationBtnClicked = () => {}
+}: MemberEntryProps) {
   const { t } = useTranslation('pht');
   const LABEL_WIDTH = 6;
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
@@ -26,9 +41,9 @@ export default function MemberEntry() {
   const authClient = useAxiosAuthClient();
   const { notifyError, notifySuccess } = useNotify();
 
-  const [firstName, setFirstName] = React.useState('');
-  const [lastName, setLastName] = React.useState('');
-  const [email, setEmail] = React.useState('');
+  const [firstName, setFirstName] = React.useState(forSearch ? foundInvestigator.firstName : '');
+  const [lastName, setLastName] = React.useState(forSearch ? foundInvestigator.lastName : '');
+  const [email, setEmail] = React.useState(forSearch ? foundInvestigator.email : '');
   const [pi, setPi] = React.useState(false);
   const [phdThesis, setPhdThesis] = React.useState(false);
 
@@ -154,19 +169,21 @@ export default function MemberEntry() {
       highestId = 0;
     }
     const newInvestigator: Investigator = {
-      id: (highestId + 1).toString(),
+      id: forSearch ? foundInvestigator?.id : (highestId + 1).toString(),
       firstName: formValues.firstName.value,
       lastName: formValues.lastName.value,
       email: formValues.email.value,
-      // country: '',
       affiliation: '',
       phdThesis: formValues.phdThesis.phdThesis,
       status: TEAM_STATUS_TYPE_OPTIONS.pending,
       pi: formValues.pi.pi,
-      officeLocation: null,
-      jobTitle: null
+      officeLocation: null, // TODO implement once data is available
+      jobTitle: null // TODO implement once data is available
     };
-    setProposal({ ...getProposal(), investigators: [...currentInvestigators, newInvestigator] });
+    setProposal({
+      ...getProposal(),
+      investigators: [...(currentInvestigators ?? []), newInvestigator]
+    });
   }
 
   async function sendEmailInvite(email: string, prsl_id: string): Promise<boolean> {
@@ -193,6 +210,7 @@ export default function MemberEntry() {
     if (await sendEmailInvite(formValues.email.value, getProposal().id)) {
       AddInvestigator();
       clearForm();
+      invitationBtnClicked();
     }
   };
 
@@ -208,6 +226,7 @@ export default function MemberEntry() {
         onFocus={() => helpComponent(t('firstName.help'))}
         errorText={errorTextFirstName}
         required
+        disabled={forSearch}
       />
     );
   };
@@ -224,6 +243,7 @@ export default function MemberEntry() {
         onFocus={() => helpComponent(t('lastName.help'))}
         errorText={errorTextLastName}
         required
+        disabled={forSearch}
       />
     );
   };
@@ -240,6 +260,7 @@ export default function MemberEntry() {
         errorText={errorTextEmail ? t(errorTextEmail) : ''}
         onFocus={() => helpComponent(t('email.help'))}
         required
+        disabled={forSearch}
       />
     );
   };
