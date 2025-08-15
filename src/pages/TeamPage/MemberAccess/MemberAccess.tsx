@@ -12,7 +12,7 @@ export default function MemberAccess() {
   const { helpComponent } = storageObject.useStore();
   const [submit, setSubmit] = React.useState(false);
   const [edit, setEdit] = React.useState(false);
-  const [view, setView] = React.useState(false);
+  const [view, setView] = React.useState(true);
 
   React.useEffect(() => {
     helpComponent(t('manageTeamMember.help'));
@@ -32,10 +32,22 @@ export default function MemberAccess() {
 
   const handleCheckboxChangeSubmit = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSubmit(event.target.checked);
+    if (event.target.checked) {
+      // submit rights automatically gives edit and view rights
+      setEdit(true);
+      setView(true);
+    }
+    if (!event.target.checked) {
+      setEdit(false);
+    }
   };
 
   const handleCheckboxChangeEdit = (event: React.ChangeEvent<HTMLInputElement>) => {
     setEdit(event.target.checked);
+    if (event.target.checked) {
+      // edit rights automatically gives view rights
+      setView(true);
+    }
   };
 
   const handleCheckboxChangeView = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -66,6 +78,7 @@ export default function MemberAccess() {
         checked={edit}
         onChange={handleCheckboxChangeEdit}
         onFocus={() => helpComponent(t('manageTeamMember.edit.help'))}
+        disabled={submit}
       />
     );
   };
@@ -80,6 +93,7 @@ export default function MemberAccess() {
         checked={view}
         onChange={handleCheckboxChangeView}
         onFocus={() => helpComponent(t('manageTeamMember.view.help'))}
+        disabled={view} // view rights given by default
       />
     );
   };
