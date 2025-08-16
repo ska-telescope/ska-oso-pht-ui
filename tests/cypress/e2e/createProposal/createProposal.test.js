@@ -10,14 +10,15 @@ import {
   verifyOnLandingPageFilterIsVisible,
   verifyProposalCreatedAlertFooter,
   clickLoginUser,
-  verifyMockedProposalOnLandingPageIsVisible, mockCreateProposalAPI
+  verifyMockedProposalOnLandingPageIsVisible,
+  mockCreateProposalAPI
 } from '../common/common';
 
 describe('Creating Proposal', () => {
   beforeEach(() => {
     initialize();
     cy.mockLoginButton();
-    mockCreateProposalAPI()
+    mockCreateProposalAPI();
   });
   it('Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
     clickLoginUser();

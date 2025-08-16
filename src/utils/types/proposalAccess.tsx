@@ -1,6 +1,9 @@
-import { PROPOSAL_ACCESS_SUBMIT, PROPOSAL_ACCESS_UPDATE, PROPOSAL_ACCESS_VIEW } from '../constants';
-
 import { Metadata } from './metadata';
+import {
+  PROPOSAL_ACCESS_SUBMIT,
+  PROPOSAL_ACCESS_UPDATE,
+  PROPOSAL_ACCESS_VIEW
+} from '@/utils/aaa/aaaUtils';
 
 export type ProposalAccessBackend = {
   access_id: string;
