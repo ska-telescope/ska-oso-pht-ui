@@ -6,17 +6,18 @@ import {
   clickSubProposalTypeTargetOfOpportunity,
   initialize,
   enterProposalTitle,
-  verifyFirstProposalOnLandingPageIsVisible,
   verifyOnLandingPage,
   verifyOnLandingPageFilterIsVisible,
   verifyProposalCreatedAlertFooter,
-  clickLoginUser
+  clickLoginUser,
+  verifyMockedProposalOnLandingPageIsVisible, mockCreateProposalAPI
 } from '../common/common';
 
 describe('Creating Proposal', () => {
   beforeEach(() => {
     initialize();
     cy.mockLoginButton();
+    mockCreateProposalAPI()
   });
   it('Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
     clickLoginUser();
@@ -26,10 +27,11 @@ describe('Creating Proposal', () => {
     clickProposalTypePrincipleInvestigator();
     clickSubProposalTypeTargetOfOpportunity();
     clickCreateProposal();
+    cy.wait('@mockCreateProposal');
     verifyProposalCreatedAlertFooter();
     clickHome();
     verifyOnLandingPage();
     verifyOnLandingPageFilterIsVisible();
-    verifyFirstProposalOnLandingPageIsVisible();
+    verifyMockedProposalOnLandingPageIsVisible();
   });
 });

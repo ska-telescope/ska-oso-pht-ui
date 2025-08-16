@@ -1,3 +1,5 @@
+import { PROPOSAL_ACCESS_SUBMIT, PROPOSAL_ACCESS_UPDATE, PROPOSAL_ACCESS_VIEW } from '../constants';
+
 import { Metadata } from './metadata';
 
 export type ProposalAccessBackend = {
@@ -21,9 +23,8 @@ export type ProposalAccess = {
 export const NEW_PROPOSAL_ACCESS = {
   id: '',
   prsl_id: '',
-  userId: '',
-  role: '',
-  permissions: []
+  role: 'Principle Investigator',
+  permissions: [PROPOSAL_ACCESS_VIEW, PROPOSAL_ACCESS_UPDATE, PROPOSAL_ACCESS_SUBMIT]
 };
 
 export default ProposalAccess;

@@ -662,7 +662,7 @@ const MockProposalBackendList: ProposalBackend[] = [
     }
   },
   {
-    prsl_id: 'prp-ska01-202506-23',
+    prsl_id: 'prsl-t0001-20250814-00002',
     status: 'submitted',
     submitted_on: '2022-09-23T15:43:53.971548Z',
     submitted_by: 'TestUser',

@@ -14,6 +14,7 @@ import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 //
 import GetObservatoryData from '@services/axios/getObservatoryData/getObservatoryData.tsx';
 import { presentDate, presentLatex, presentTime } from '@utils/present/present';
+import Investigator from '@utils/types/investigator.tsx';
 import AddButton from '@/components/button/Add/Add';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
 import EditIcon from '@/components/icon/editIcon/editIcon';
@@ -41,6 +42,7 @@ import {
   FOOTER_HEIGHT_PHT
 } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
+import { accessUpdate } from '@/utils/aaa/aaaUtils';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -52,13 +54,13 @@ export default function LandingPage() {
     updateAppContent1,
     updateAppContent2,
     updateAppContent3,
+    updateAppContent4,
     updateAppContent5
   } = storageObject.useStore();
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
-  const [, setProposalAccess] = React.useState<ProposalAccess[]>([]);
   const [axiosError, setAxiosError] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
   const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
@@ -69,6 +71,8 @@ export default function LandingPage() {
   const [fetchList, setFetchList] = React.useState(false);
   const loggedIn = isLoggedIn();
 
+  const getAccess = () => application.content4 as ProposalAccess[];
+  const setAccess = (access: ProposalAccess[]) => updateAppContent4(access);
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const authClient = useAxiosAuthClient();
@@ -84,7 +88,7 @@ export default function LandingPage() {
   React.useEffect(() => {
     const fetchData = async () => {
       setProposals([]);
-      if (!loggedIn) return;
+      if (!window.Cypress && !loggedIn) return;
 
       const response = await GetProposalList(authClient);
       if (typeof response === 'string') {
@@ -101,7 +105,7 @@ export default function LandingPage() {
       if (typeof response === 'string') {
         setAxiosError(response);
       } else {
-        setProposalAccess(response);
+        setAccess(response);
       }
     };
     fetchData();
@@ -198,8 +202,14 @@ export default function LandingPage() {
     }
   };
 
-  const canEdit = (e: { row: { status: string } }) => e.row.status === PROPOSAL_STATUS.DRAFT;
-  const canClone = () => true;
+  const CanEdit = (e: { row: { id: string; status: string } }) => {
+    return e.row.status === PROPOSAL_STATUS.DRAFT && accessUpdate(getAccess(), e.row.id);
+  };
+  const CanClone = (e: { row: any }) => {
+    const update = accessUpdate(getAccess(), e.row.id);
+    return update;
+  };
+
   // TODO const canDelete = (e: { row: { status: string } }) =>
   // TODO  e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 
@@ -285,13 +295,13 @@ export default function LandingPage() {
       <>
         <EditIcon
           onClick={() => editIconClicked(e.row.id)}
-          disabled={!canEdit(e)}
-          toolTip={t(canEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
+          disabled={!CanEdit(e)}
+          toolTip={t(CanEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
         />
         <ViewIcon onClick={() => viewIconClicked(e.row.id)} toolTip={t('viewProposal.toolTip')} />
         <CloneIcon
           onClick={() => cloneIconClicked(e.row.id)}
-          disabled={!canClone()}
+          disabled={!CanClone(e)}
           toolTip={t('cloneProposal.toolTip')}
         />
         <TrashIcon
