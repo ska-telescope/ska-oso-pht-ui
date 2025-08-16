@@ -122,7 +122,7 @@ export default function TeamPage() {
     if (typeof response === 'object' && 'error' in response) {
       notifyError(response.error, NOTIFICATION_DELAY_IN_SECONDS);
     } else {
-      notifySuccess(t('access.success'), NOTIFICATION_DELAY_IN_SECONDS); // TODO add translation text
+      notifySuccess(t('manageTeamMember.success'), NOTIFICATION_DELAY_IN_SECONDS); // TODO add translation text
     }
     closeAccessDialog();
   };
