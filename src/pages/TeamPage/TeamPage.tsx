@@ -17,6 +17,10 @@ import { FOOTER_SPACER, GRID_MEMBERS_ACTIONS } from '../../utils/constants';
 import MemberSearch from './MemberSearch/MemberSearch';
 import TeamFileImport from './TeamFileImport/TeamFileImport';
 import MemberAccess from './MemberAccess/MemberAccess';
+import PostProposalAccess from '@/services/axios/post/postProposalAccess/postProposalAccess';
+import ProposalAccess from '@/utils/types/proposalAccess';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import { useNotify } from '@/utils/notify/useNotify';
 
 const PAGE = 1;
 
@@ -40,6 +44,8 @@ export default function TeamPage() {
   const [currentMember, setCurrentMember] = React.useState('');
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openAccessDialog, setOpenAccessDialog] = React.useState(false);
+  const { notifyError, notifySuccess } = useNotify();
+  const authClient = useAxiosAuthClient();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -52,6 +58,8 @@ export default function TeamPage() {
     }
     updateAppContent1(temp);
   };
+
+  const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -108,8 +116,26 @@ export default function TeamPage() {
     closeDeleteDialog();
   };
 
+  const saveAccess = async (access: ProposalAccess) => {
+    // TODO - should use put endpoint here and post endpoint when adding team members on team entry page
+    const response = await PostProposalAccess(authClient, access);
+    if (typeof response === 'object' && 'error' in response) {
+      notifyError(response.error, NOTIFICATION_DELAY_IN_SECONDS);
+    } else {
+      notifySuccess(t('access.success'), NOTIFICATION_DELAY_IN_SECONDS); // TODO add translation text
+    }
+    closeAccessDialog();
+  };
+
   const accessConfirmed = () => {
-    // TODO implement actions on close
+    const access: ProposalAccess = {
+      id: 'random-id', // TODO: generate a unique ID
+      prslId: getProposal()?.id,
+      userId: 'user-id',
+      role: 'Co-Investigator', // TODO
+      permissions: ['submit', 'update', 'view'] // TODO
+    };
+    saveAccess(access);
     closeAccessDialog();
   };
 
