@@ -1,5 +1,5 @@
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
-import MockProposalAccessBackend from './mockProposalAccessBackend';
+import useAxiosAuthClient from '../../../axiosAuthClient/axiosAuthClient';
+import MockProposalAccessBackend from '../mockProposalAccessBackend';
 import ProposalAccess, { ProposalAccessBackend } from '@/utils/types/proposalAccess';
 import { USE_LOCAL_DATA, OSO_SERVICES_PROPOSAL_ACCESS_PATH } from '@/utils/constants';
 
@@ -23,15 +23,15 @@ export function mappingList(inRec: ProposalAccessBackend[]): ProposalAccess[] {
 
 /*****************************************************************************************************************************/
 
-export function GetMockProposalAccess(): ProposalAccess[] {
+export function GetMockProposalAccessForUser(): ProposalAccess[] {
   return mappingList(MockProposalAccessBackend);
 }
 
-async function GetProposalAccess(
+async function GetProposalAccessForUser(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>
 ): Promise<ProposalAccess[] | string> {
   if (USE_LOCAL_DATA) {
-    return GetMockProposalAccess();
+    return GetMockProposalAccessForUser();
   }
 
   try {
@@ -48,4 +48,4 @@ async function GetProposalAccess(
   }
 }
 
-export default GetProposalAccess;
+export default GetProposalAccessForUser;
