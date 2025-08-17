@@ -2,7 +2,9 @@ import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import MockProposalAccessBackend from '../mockProposalAccessBackend';
 import MockProposalAccessFrontend from '../mockProposalAccessFrontend';
-import GetProposalAccessForProposal, { GetMockProposalAccessForProposal } from './getProposalAccessForProposal';
+import GetProposalAccessForProposal, {
+  GetMockProposalAccessForProposal
+} from './getProposalAccessForProposal';
 import * as CONSTANTS from '@/utils/constants';
 import ProposalAccess, { ProposalAccessBackend } from '@/utils/types/proposalAccess';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
@@ -50,7 +52,10 @@ describe('GetProposalAccessForProposal Service', () => {
   test('returns mapped data from API when USE_LOCAL_DATA is false', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.get.mockResolvedValue({ data: MockProposalAccessBackend });
-    const result = (await GetProposalAccessForProposal(mockedAuthClient, mockProposalId)) as ProposalAccess[];
+    const result = (await GetProposalAccessForProposal(
+      mockedAuthClient,
+      mockProposalId
+    )) as ProposalAccess[];
     expect(result).to.deep.equal(MockProposalAccessFrontend);
   });
 

@@ -21,6 +21,7 @@ import ProposalAccess from '@/utils/types/proposalAccess';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
 import PutProposalAccess from '@/services/axios/put/putProposalAccess/putProposalAccess';
+import GetProposalAccessForProposal from '@/services/axios/get/getProposalAccess/proposal/getProposalAccessForProposal';
 
 const PAGE = 1;
 
@@ -44,9 +45,10 @@ export default function TeamPage() {
   const [currentMember, setCurrentMember] = React.useState('');
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openAccessDialog, setOpenAccessDialog] = React.useState(false);
-  const modalAccessContentRef = React.useRef<{ getSelectedOptions: () => string[] }>(null);
   const { notifyError, notifySuccess } = useNotify();
   const authClient = useAxiosAuthClient();
+  const [selectedOptions, setSelectedOptions] = React.useState<string[]>([]);
+  const [permissions, setPermissions] = React.useState<ProposalAccess[]>([]);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -64,7 +66,13 @@ export default function TeamPage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
+    fetchProposalAccessData();
   }, []);
+
+  React.useEffect(() => {
+    const memberPermissions = permissions.find(p => p.userId === currentMember);
+    setSelectedOptions(memberPermissions?.permissions || []);
+  }, [currentMember]);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -73,6 +81,17 @@ export default function TeamPage() {
   React.useEffect(() => {
     setTheProposalState(validateTeamPage(getProposal()));
   }, [validateToggle]);
+
+  const fetchProposalAccessData = async () => {
+    const response = await GetProposalAccessForProposal(authClient, getProposal()?.id);
+    if (typeof response === 'string') {
+      notifyError(response, NOTIFICATION_DELAY_IN_SECONDS);
+    } else if (typeof response === 'object' && 'error' in response) {
+      notifyError(response.error as string, NOTIFICATION_DELAY_IN_SECONDS);
+    } else {
+      setPermissions(response);
+    }
+  };
 
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTheValue(newValue);
@@ -140,7 +159,8 @@ export default function TeamPage() {
   // };
 
   const accessConfirmed = () => {
-    const selected = modalAccessContentRef.current?.getSelectedOptions();
+    // const selected = modalAccessContentRef.current?.getSelectedOptions();
+    const selected = selectedOptions;
     const access: ProposalAccess = {
       // id: generateId('access-'), // TODO - once replaced with put endpoint, get id from the backend
       id: 'prslacc-65495a-user-id', // TODO - hardcoded to current tested access, should be replaced with the id from the backend
@@ -150,7 +170,8 @@ export default function TeamPage() {
       role: 'Co-Investigator', // TODO - should this always be Co-I?
       permissions: selected as string[]
     };
-    updateAccess(access);
+    // console.log('selected', selected);
+    // updateAccess(access);
     closeAccessDialog();
   };
 
@@ -192,7 +213,7 @@ export default function TeamPage() {
     return (
       <>
         {displayMemberInfo()}
-        <MemberAccess ref={modalAccessContentRef} />
+        <MemberAccess selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions} />
       </>
     );
   };
