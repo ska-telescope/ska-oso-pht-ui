@@ -6,19 +6,20 @@ import { USE_LOCAL_DATA, OSO_SERVICES_PROPOSAL_ACCESS_PATH } from '@/utils/const
 
 /*****************************************************************************************************************************/
 
-export function GetMockProposalAccessForUser(): ProposalAccess[] {
+export function GetMockProposalAccessForProposal(): ProposalAccess[] {
   return mappingList(MockProposalAccessBackend);
 }
 
-async function GetProposalAccessForUser(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>
+async function GetProposalAccessForProposal(
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
+  proposalId: string
 ): Promise<ProposalAccess[] | string> {
   if (USE_LOCAL_DATA) {
-    return GetMockProposalAccessForUser();
+    return GetMockProposalAccessForProposal();
   }
 
   try {
-    const result = await authAxiosClient.get(`${OSO_SERVICES_PROPOSAL_ACCESS_PATH}/user`);
+    const result = await authAxiosClient.get(`${OSO_SERVICES_PROPOSAL_ACCESS_PATH}/${proposalId}`);
     if (!result || !Array.isArray(result.data)) {
       return 'error.API_UNKNOWN_ERROR';
     }
@@ -31,4 +32,4 @@ async function GetProposalAccessForUser(
   }
 }
 
-export default GetProposalAccessForUser;
+export default GetProposalAccessForProposal;

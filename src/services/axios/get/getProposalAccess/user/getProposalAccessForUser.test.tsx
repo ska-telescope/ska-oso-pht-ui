@@ -2,10 +2,7 @@ import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import MockProposalAccessBackend from '../mockProposalAccessBackend';
 import MockProposalAccessFrontend from '../mockProposalAccessFrontend';
-import GetProposalAccessForUser, {
-  GetMockProposalAccessForUser,
-  mappingList
-} from './getProposalAccessForUser';
+import GetProposalAccessForUser, { GetMockProposalAccessForUser } from './getProposalAccessForUser';
 import * as CONSTANTS from '@/utils/constants';
 import ProposalAccess, { ProposalAccessBackend } from '@/utils/types/proposalAccess';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
@@ -23,11 +20,6 @@ describe('Helper Functions', () => {
     const result = GetMockProposalAccessForUser();
     expect(result).to.have.lengthOf(MockProposalAccessFrontend.length);
     expect(result).to.deep.equal(MockProposalAccessFrontend);
-  });
-
-  test('mappingList returns mapped proposal access from backend to frontend format', () => {
-    const proposalFrontEnd: ProposalAccess[] = mappingList(MockProposalAccessBackend);
-    expect(proposalFrontEnd).to.deep.equal(MockProposalAccessFrontend);
   });
 });
 
