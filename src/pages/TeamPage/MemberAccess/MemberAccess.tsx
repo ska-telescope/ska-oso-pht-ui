@@ -7,16 +7,33 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LAB_POSITION, WRAPPER_HEIGHT } from '@/utils/constants';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 
-export default function MemberAccess() {
+const MemberAccess = React.forwardRef<{ getSelectedOptions: () => string[] }>((_props, ref) => {
   const { t } = useTranslation('pht');
   const { helpComponent } = storageObject.useStore();
   const [submit, setSubmit] = React.useState(false);
   const [edit, setEdit] = React.useState(false);
-  const [view, setView] = React.useState(true);
+  const [view, setView] = React.useState(false);
+  const [selectedOptions, setSelectedOptions] = React.useState<string[]>([]);
+
+  React.useImperativeHandle(ref, () => ({
+    getSelectedOptions: () => selectedOptions
+  }));
 
   React.useEffect(() => {
     helpComponent(t('manageTeamMember.help'));
   }, []);
+
+  React.useEffect(() => {
+    handleCheckboxChange('submit');
+  }, [submit]);
+
+  React.useEffect(() => {
+    handleCheckboxChange('update');
+  }, [edit]);
+
+  React.useEffect(() => {
+    handleCheckboxChange('view');
+  }, [view]);
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box
@@ -30,6 +47,12 @@ export default function MemberAccess() {
     </Box>
   );
 
+  const handleCheckboxChange = (value: string) => {
+    setSelectedOptions(prev =>
+      prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value]
+    );
+  };
+
   const handleCheckboxChangeSubmit = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSubmit(event.target.checked);
     if (event.target.checked) {
@@ -39,6 +62,7 @@ export default function MemberAccess() {
     }
     if (!event.target.checked) {
       setEdit(false);
+      setView(false);
     }
   };
 
@@ -47,6 +71,10 @@ export default function MemberAccess() {
     if (event.target.checked) {
       // edit rights automatically gives view rights
       setView(true);
+    }
+    if (!event.target.checked) {
+      // edit rights automatically gives view rights
+      setView(false);
     }
   };
 
@@ -93,7 +121,7 @@ export default function MemberAccess() {
         checked={view}
         onChange={handleCheckboxChangeView}
         onFocus={() => helpComponent(t('manageTeamMember.view.help'))}
-        disabled={view} // view rights given by default
+        disabled={edit}
       />
     );
   };
@@ -130,4 +158,6 @@ export default function MemberAccess() {
       </Grid2>
     </>
   );
-}
+});
+
+export default MemberAccess;

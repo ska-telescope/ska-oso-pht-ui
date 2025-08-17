@@ -17,10 +17,10 @@ import { FOOTER_SPACER, GRID_MEMBERS_ACTIONS } from '../../utils/constants';
 import MemberSearch from './MemberSearch/MemberSearch';
 import TeamFileImport from './TeamFileImport/TeamFileImport';
 import MemberAccess from './MemberAccess/MemberAccess';
-import PostProposalAccess from '@/services/axios/post/postProposalAccess/postProposalAccess';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
+import PutProposalAccess from '@/services/axios/put/putProposalAccess/putProposalAccess';
 
 const PAGE = 1;
 
@@ -44,6 +44,7 @@ export default function TeamPage() {
   const [currentMember, setCurrentMember] = React.useState('');
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openAccessDialog, setOpenAccessDialog] = React.useState(false);
+  const modalAccessContentRef = React.useRef<{ getSelectedOptions: () => string[] }>(null);
   const { notifyError, notifySuccess } = useNotify();
   const authClient = useAxiosAuthClient();
 
@@ -116,9 +117,8 @@ export default function TeamPage() {
     closeDeleteDialog();
   };
 
-  const saveAccess = async (access: ProposalAccess) => {
-    // TODO - should use put endpoint here and post endpoint when adding team members on team entry page
-    const response = await PostProposalAccess(authClient, access);
+  const updateAccess = async (access: ProposalAccess) => {
+    const response = await PutProposalAccess(authClient, access);
     if (typeof response === 'object' && 'error' in response) {
       notifyError(response.error, NOTIFICATION_DELAY_IN_SECONDS);
     } else {
@@ -127,15 +127,30 @@ export default function TeamPage() {
     closeAccessDialog();
   };
 
+  // // TODO - use on member entry page
+  // const saveAccess = async (access: ProposalAccess) => {
+  //   // TODO - should use put endpoint here and post endpoint when adding team members on team entry page
+  //   const response = await PostProposalAccess(authClient, access);
+  //   if (typeof response === 'object' && 'error' in response) {
+  //     notifyError(response.error, NOTIFICATION_DELAY_IN_SECONDS);
+  //   } else {
+  //     notifySuccess(t('manageTeamMember.success'), NOTIFICATION_DELAY_IN_SECONDS); // TODO add translation text
+  //   }
+  //   closeAccessDialog();
+  // };
+
   const accessConfirmed = () => {
+    const selected = modalAccessContentRef.current?.getSelectedOptions();
     const access: ProposalAccess = {
-      id: 'random-id', // TODO: generate a unique ID
+      // id: generateId('access-'), // TODO - once replaced with put endpoint, get id from the backend
+      id: 'prslacc-65495a-user-id', // TODO - hardcoded to current tested access, should be replaced with the id from the backend
+      // TODO - team page should pull access from backend and display on modal?
       prslId: getProposal()?.id,
-      userId: 'user-id',
-      role: 'Co-Investigator', // TODO
-      permissions: ['submit', 'update', 'view'] // TODO
+      userId: currentMember,
+      role: 'Co-Investigator', // TODO - should this always be Co-I?
+      permissions: selected as string[]
     };
-    saveAccess(access);
+    updateAccess(access);
     closeAccessDialog();
   };
 
@@ -177,7 +192,7 @@ export default function TeamPage() {
     return (
       <>
         {displayMemberInfo()}
-        <MemberAccess />
+        <MemberAccess ref={modalAccessContentRef} />
       </>
     );
   };
