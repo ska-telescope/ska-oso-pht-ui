@@ -15,6 +15,7 @@ interface GridMembersProps {
   height?: number;
   rowClick?: Function;
   rows?: Investigator[];
+  // TODO display team member access rights in new column
 }
 
 export default function GridMembers({

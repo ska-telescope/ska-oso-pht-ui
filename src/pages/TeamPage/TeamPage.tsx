@@ -22,6 +22,7 @@ import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient
 import { useNotify } from '@/utils/notify/useNotify';
 import PutProposalAccess from '@/services/axios/put/putProposalAccess/putProposalAccess';
 import GetProposalAccessForProposal from '@/services/axios/get/getProposalAccess/proposal/getProposalAccessForProposal';
+import { accessPI } from '@/utils/aaa/aaaUtils';
 
 const PAGE = 1;
 
@@ -52,6 +53,8 @@ export default function TeamPage() {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+
+  const getAccess = () => application.content4 as ProposalAccess[];
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
@@ -114,6 +117,10 @@ export default function TeamPage() {
         accessIconClicked();
         break;
     }
+  };
+
+  const actionsAvailable = () => {
+    return accessPI(getAccess(), getProposal().id);
   };
 
   const closeDeleteDialog = () => {
@@ -208,8 +215,10 @@ export default function TeamPage() {
   const accessAlertContent = () => {
     return (
       <>
-        {displayMemberInfo()}
-        <MemberAccess selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions} />
+        <Grid2>
+          {displayMemberInfo()}
+          <MemberAccess selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions} />
+        </Grid2>
       </>
     );
   };
@@ -243,7 +252,7 @@ export default function TeamPage() {
         >
           <Grid2 size={{ md: 11, lg: 5 }} order={{ md: 2, lg: 1 }}>
             <GridMembers
-              action
+              action={actionsAvailable()}
               actionClicked={actionClicked}
               height={400}
               rowClick={ClickMemberRow}
@@ -299,6 +308,7 @@ export default function TeamPage() {
         onClose={() => setOpenAccessDialog(false)}
         onDialogResponse={accessConfirmed}
         title="manageTeamMember.label"
+        maxWidth="md"
       >
         {accessAlertContent()}
       </AlertDialog>
