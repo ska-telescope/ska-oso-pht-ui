@@ -12,20 +12,16 @@ interface MemberAccessProps {
   setSelectedOptions: React.Dispatch<React.SetStateAction<string[]>>;
 }
 
-// const MemberAccess = React.forwardRef<{ getSelectedOptions: () => string[] }>(({ investigatorPermissions}: MemberAccessProps, ref) => {
 export default function MemberAccess({ selectedOptions, setSelectedOptions }: MemberAccessProps) {
   const { t } = useTranslation('pht');
   const { helpComponent } = storageObject.useStore();
-  const [submit, setSubmit] = React.useState(false);
-  const [edit, setEdit] = React.useState(false);
-  const [view, setView] = React.useState(false);
 
   React.useEffect(() => {
     helpComponent(t('manageTeamMember.help'));
   }, []);
 
     React.useEffect(() => {
-      console.log('selectedOptions in MemberAccess:', selectedOptions);
+      // console.log('selectedOptions in MemberAccess:', selectedOptions);
       if (selectedOptions.includes('submit') && !selectedOptions.includes('update')) {
         handleCheckboxChange('update');
       }
@@ -33,18 +29,6 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
         handleCheckboxChange('view');
       }
     }, [selectedOptions]);
-
-  //   React.useEffect(() => {
-  //     handleCheckboxChange('submit');
-  //   }, [submit]);
-
-  //   React.useEffect(() => {
-  //     handleCheckboxChange('update');
-  //   }, [edit]);
-
-  //   React.useEffect(() => {
-  //     handleCheckboxChange('view');
-  //   }, [view]);
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box
@@ -62,35 +46,6 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
     setSelectedOptions((prev: string[]) => {
       return prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value];
     });
-  };
-
-  const handleCheckboxChangeSubmit = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSubmit(event.target.checked);
-    // if (event.target.checked) {
-    //   // submit rights automatically gives edit and view rights
-    //   setEdit(true);
-    //   setView(true);
-    // }
-    // if (!event.target.checked) {
-    //   setEdit(false);
-    //   setView(false);
-    // }
-  };
-
-  const handleCheckboxChangeEdit = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setEdit(event.target.checked);
-    // if (event.target.checked) {
-    //   // edit rights automatically gives view rights
-    //   setView(true);
-    // }
-    // if (!event.target.checked) {
-    //   // edit rights automatically gives view rights
-    //   setView(false);
-    // }
-  };
-
-  const handleCheckboxChangeView = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setView(event.target.checked);
   };
 
   const submitField = () => {
@@ -117,7 +72,6 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
         checked={selectedOptions.includes('update')}
         onChange={() => handleCheckboxChange('update')}
         onFocus={() => helpComponent(t('manageTeamMember.edit.help'))}
-        // disabled={submit}
         disabled={selectedOptions.includes('submit')}
       />
     );
@@ -133,7 +87,6 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
         checked={selectedOptions.includes('view')}
         onChange={() => handleCheckboxChange('view')}
         onFocus={() => helpComponent(t('manageTeamMember.view.help'))}
-        // disabled={edit}
         disabled={selectedOptions.includes('update') || selectedOptions.includes('submit')}
       />
     );
