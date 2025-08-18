@@ -26,7 +26,7 @@ let overrideGroups = '';
 const PROPOSAL_ACCESS_VIEW = 'view';
 const PROPOSAL_ACCESS_UPDATE = 'update';
 const PROPOSAL_ACCESS_SUBMIT = 'submit';
-const PROPOSAL_ROLE_PI = 'Principle Investigator';
+const PROPOSAL_ROLE_PI = 'Principal Investigator';
 
 const mockAccessList: ProposalAccess[] = [
   {

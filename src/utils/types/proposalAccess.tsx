@@ -26,7 +26,7 @@ export type ProposalAccess = {
 export const NEW_PROPOSAL_ACCESS = {
   id: '',
   prsl_id: '',
-  role: 'Principle Investigator',
+  role: 'Principal Investigator',
   permissions: [PROPOSAL_ACCESS_VIEW, PROPOSAL_ACCESS_UPDATE, PROPOSAL_ACCESS_SUBMIT]
 };
 
