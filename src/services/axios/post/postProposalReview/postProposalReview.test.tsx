@@ -1,6 +1,5 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import { MockObservatoryDataFrontend } from '@services/axios/getObservatoryData/mockObservatoryDataFrontend.tsx';
 import PostProposalReview, {
   mappingReviewFrontendToBackend,
   postMockProposalReview
@@ -15,6 +14,7 @@ import {
   MockProposalScienceReviewExcludedBackend,
   MockProposalTechnicalReviewBackend
 } from './mockProposalReviewBackend';
+import { MockObservatoryDataFrontend } from '@/services/axios/get/getObservatoryData/mockObservatoryDataFrontend';
 import { ProposalReviewBackend } from '@/utils/types/proposalReview';
 import * as CONSTANTS from '@/utils/constants';
 

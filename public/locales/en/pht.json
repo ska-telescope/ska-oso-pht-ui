@@ -690,6 +690,26 @@
     "title": "Review Decisions",
     "toolTip": "Review Decisions"
   },
+  "reviewOverview": {
+    "panel1": {
+      "title": "Proposal Assignment"
+    },
+    "panel2": {
+      "title": "Review Status"
+    },
+    "panel3": {
+      "title": "Science Categories"
+    },
+    "panel4": {
+      "title": "Panel Distribution"
+    },
+    "panel5": {
+      "title": "Reviewer Distribution"
+    },
+    "panel6": {
+      "title": "Category Distribution"
+    }
+  },
   "reviewProposal": {
     "disabled": "This function is not available",
     "science": "Review proposal science",

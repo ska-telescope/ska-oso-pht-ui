@@ -19,7 +19,6 @@ import { Panel } from '@/utils/types/panel';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import GridReviewPanels from '@/components/grid/reviewPanels/GridReviewPanels';
 import { PanelReviewer } from '@/utils/types/panelReviewer';
-import PlusIcon from '@/components/icon/plusIcon/plusIcon';
 import { PanelProposal } from '@/utils/types/panelProposal';
 import Proposal from '@/utils/types/proposal';
 import Reviewer from '@/utils/types/reviewer';
@@ -29,7 +28,7 @@ import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
-import { ProposalReview, ScienceReview } from '@/utils/types/proposalReview';
+import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
 import { generateId } from '@/utils/helpers';
 
 const PANELS_HEIGHT = '66vh';
@@ -127,9 +126,7 @@ export default function PanelMaintenance() {
       ? convertPanelProposalToProposalIdList(currentPanel?.proposals)
       : [];
     setPanelProposals(proposals);
-  }, [currentPanel]);
 
-  React.useEffect(() => {
     const reviewers = currentPanel?.reviewers
       ? convertPanelReviewerToReviewerIdList(currentPanel?.reviewers)
       : [];
@@ -167,6 +164,16 @@ export default function PanelMaintenance() {
     };
   }
 
+  function getTechnicalReview(): TechnicalReview {
+    return {
+      kind: REVIEW_TYPE.TECHNICAL,
+      feasibility: {
+        isFeasible: '',
+        comments: null
+      }
+    };
+  }
+
   const getReview = (
     panelId: string,
     prslId: string,
@@ -176,7 +183,7 @@ export default function PanelMaintenance() {
     return {
       id: generateId(prefix),
       prslId: prslId,
-      reviewType: getScienceReview(), // TODO : Extend so that there is a review for each time if the user can do it
+      reviewType: prefix === 'rvw-sci-' ? getScienceReview() : getTechnicalReview(),
       comments: '',
       srcNet: '',
       metadata: {
@@ -203,6 +210,7 @@ export default function PanelMaintenance() {
     prefix: string
   ) => {
     const response: string | { error: string } = await PostProposalReview(
+      authClient,
       getReview(panel.id, proposal.id, reviewer.reviewerId, prefix),
       getCycleId()
     );
@@ -297,7 +305,7 @@ export default function PanelMaintenance() {
     />
   );
 
-  const addPanelIcon = () => <PlusIcon onClick={() => navigate(PMT[3])} />;
+  const addPanelIcon = () => <></>; // <PlusIcon onClick={() => navigate(PMT[3])} />;
 
   return (
     <>

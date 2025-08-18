@@ -1,6 +1,5 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import { MockObservatoryDataFrontend } from '@services/axios/getObservatoryData/mockObservatoryDataFrontend.tsx';
 import PostPanel, { mappingPostPanel, postMockPanel } from './postPanel';
 import {
   MockPanelFrontend,
@@ -12,6 +11,7 @@ import {
   MockPanelBackendWithProposals,
   MockPanelBackendWithReviewers
 } from './mockPanelBackend';
+import { MockObservatoryDataFrontend } from '@/services/axios/get/getObservatoryData/mockObservatoryDataFrontend';
 import { PanelBackend } from '@/utils/types/panel';
 import * as CONSTANTS from '@/utils/constants';
 

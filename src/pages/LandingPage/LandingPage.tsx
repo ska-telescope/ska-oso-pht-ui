@@ -12,9 +12,9 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 //
-import GetObservatoryData from '@services/axios/getObservatoryData/getObservatoryData.tsx';
 import { presentDate, presentLatex, presentTime } from '@utils/present/present';
 import Investigator from '@utils/types/investigator.tsx';
+import GetObservatoryData from '@/services/axios/get/getObservatoryData/getObservatoryData';
 import AddButton from '@/components/button/Add/Add';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
 import EditIcon from '@/components/icon/editIcon/editIcon';
@@ -43,6 +43,7 @@ import {
 } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { accessUpdate } from '@/utils/aaa/aaaUtils';
+import PostPanelGenerate from '@/services/axios/post/postPanelGenerate/postPanelGenerate';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -76,6 +77,7 @@ export default function LandingPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const authClient = useAxiosAuthClient();
+  let initialCall = true;
 
   const DATA_GRID_HEIGHT = '60vh';
 
@@ -113,17 +115,26 @@ export default function LandingPage() {
   }, [fetchList, loggedIn]);
 
   React.useEffect(() => {
+    const autoGeneratePanels = async (osd: ObservatoryData) => {
+      // This will trigger the backend to check and provide required panels
+      await PostPanelGenerate(authClient, osd.observatoryPolicy.cycleDescription);
+      // Note that we do not care about the response
+    };
+
     const fetchObservatoryData = async () => {
       const response = await GetObservatoryData(authClient, 1);
       if (typeof response === 'string' || (response && (response as any).error)) {
         setAxiosError(response.toString());
       } else {
-        // store osd data into storage 3
         updateAppContent3(response as ObservatoryData);
+        autoGeneratePanels(response);
       }
     };
 
-    fetchObservatoryData();
+    if (initialCall) {
+      initialCall = false;
+      fetchObservatoryData();
+    }
   }, []);
 
   const getTheProposal = async (id: string) => {
