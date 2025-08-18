@@ -14,7 +14,7 @@ type Investigator = {
 export default Investigator;
 
 export type InvestigatorBackend = {
-  investigator_id: string;
+  user_id: string;
   status: string;
   given_name: string;
   family_name: string;
