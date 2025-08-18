@@ -7,7 +7,7 @@ ingress:
 
 runtimeEnv:
   skipPreflightCheck: "true"
-  skaOsoServicesUrl: "/integration-ska-oso-services/oso/api/v2"
+  skaOsoServicesUrl: ""
   skaSensitivityCalcUrl: ""
   useLocalData: "false"
   domain: "https://sdhp.stfc.skao.int"
