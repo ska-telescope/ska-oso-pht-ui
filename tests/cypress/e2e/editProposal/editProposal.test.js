@@ -34,13 +34,14 @@ import {
   mockCreateProposalAPI,
   createStandardProposalLoggedIn,
   verifyMockedProposalOnLandingPageIsVisible,
-  verifyProposalCreatedAlertFooter
+  verifyProposalCreatedAlertFooter, mockEmailAPI
 } from '../common/common';
 
 beforeEach(() => {
   initialize();
   cy.mockLoginButton();
   mockCreateProposalAPI();
+  mockEmailAPI()
   createStandardProposalLoggedIn();
 });
 
@@ -59,6 +60,7 @@ describe('Edit Proposal', () => {
     //complete mandatory fields
     clickToTeamPage();
     addInvestigator();
+    cy.wait('@mockInviteUserByEmail');
     verifyEmailSentAlertFooter();
     // clickToGeneralPage();
     // addAbstract();

@@ -70,6 +70,19 @@ export const mockCreateProposalAPI = () => {
   });
 };
 
+export const mockEmailAPI = () => {
+  cy.window().then(win => {
+    const token = win.localStorage.getItem('cypress:token');
+    cy.intercept('POST', '**/pht/prsls/send-email/', req => {
+      req.headers['Authorization'] = `Bearer ${token}`;
+      req.reply({
+        statusCode: 200,
+        body: 'success'
+      });
+    }).as('mockInviteUserByEmail');
+  });
+};
+
 /*----------------------------------------------------------------------*/
 
 export const clickButton = testId => {
