@@ -301,6 +301,9 @@ export default function ReviewDashboard() {
       if (typeof response === 'string') {
         setAxiosError(response);
         return;
+      } else if (response && response.error) {
+        setAxiosError(response.error);
+        return;
       } else {
         setCurrentReport(response);
       }
@@ -308,7 +311,8 @@ export default function ReviewDashboard() {
     fetchData();
   };
 
-  const filterReport = currentReport => {
+  const filterReport = (currentReport: any[]) => {
+    if (!currentReport || currentReport.length === 0) return [];
     const filterReportBySearch = currentReport.filter(review => {
       if (search === '') {
         return true;
