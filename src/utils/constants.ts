@@ -28,6 +28,8 @@ export const APP_OVERRIDE_GROUPS = window.Cypress
   ? localStorage.getItem('cypress:group')
   : env.REACT_APP_OVERRIDE_GROUPS;
 
+export const isCypress = typeof window !== 'undefined' && window.Cypress;
+
 /*****************************************/
 
 export const BAND_LOW = 0;

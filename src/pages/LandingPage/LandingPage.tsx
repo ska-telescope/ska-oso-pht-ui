@@ -32,7 +32,7 @@ import Proposal from '@/utils/types/proposal';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
 import { validateProposal } from '@/utils/proposalValidation';
 import ObservatoryData from '@/utils/types/observatoryData';
-import { FOOTER_SPACER } from '@/utils/constants';
+import { FOOTER_SPACER, isCypress } from '@/utils/constants';
 import {
   NAV,
   SEARCH_TYPE_OPTIONS,
@@ -88,7 +88,9 @@ export default function LandingPage() {
   React.useEffect(() => {
     const fetchData = async () => {
       setProposals([]);
-      if (!window.Cypress && !loggedIn) return;
+      const noLoginTest = window.localStorage.getItem('proposal:noLogin') === 'true';
+
+      if ((!window.Cypress && !loggedIn) || (isCypress && noLoginTest)) return;
 
       const response = await GetProposalList(authClient);
       if (typeof response === 'string') {

@@ -60,19 +60,15 @@ export const verifyMockedAPICall = stubAlias => {
 export const mockCreateProposalAPI = () => {
   cy.window().then(win => {
     const token = win.localStorage.getItem('cypress:token');
-    cy.intercept(
-      'POST',
-      '**/pht/prsls/create',
-      req => {
-        req.headers['Authorization'] = `Bearer ${token}`;
-        req.reply({
-          statusCode: 200,
-          body: 'prsl-test-20250814-00003'
-        });
-      }
-    ).as('mockCreateProposal');
+    cy.intercept('POST', '**/pht/prsls/create', req => {
+      req.headers['Authorization'] = `Bearer ${token}`;
+      req.reply({
+        statusCode: 200,
+        body: 'prsl-test-20250814-00003'
+      });
+    }).as('mockCreateProposal');
   });
-}
+};
 
 /*----------------------------------------------------------------------*/
 
