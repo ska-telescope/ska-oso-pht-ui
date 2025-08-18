@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid2, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DUMMY_PROPOSAL_ID, LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
+import { DUMMY_PROPOSAL_ID, isCypress, LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
 import NextPageButton from '../../button/NextPage/NextPage';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import Proposal from '../../../utils/types/proposal';
@@ -37,7 +37,12 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const loggedIn = isLoggedIn();
 
   const isDisableEndpoints = () => {
-    return !loggedIn && !window.Cypress;
+    const noLoginTest = window.localStorage.getItem('proposal:noLogin') === 'true';
+    if (isCypress && noLoginTest) {
+      return true;
+    } else {
+      return !loggedIn && !window.Cypress;
+    }
   };
   const getObservatoryData = () => application.content3 as ObservatoryData;
   const getProposal = () => application.content2 as Proposal;
