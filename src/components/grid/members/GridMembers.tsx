@@ -6,6 +6,8 @@ import TickIcon from '../../../components/icon/tickIcon/tickIcon';
 import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import Investigator from '../../../utils/types/investigator';
+import LockIcon from '@/components/icon/lockIcon/lockIcon';
+import { GRID_MEMBERS_ACTIONS } from '@/utils/constants';
 
 interface GridMembersProps {
   action?: boolean;
@@ -13,6 +15,7 @@ interface GridMembersProps {
   height?: number;
   rowClick?: Function;
   rows?: Investigator[];
+  // TODO display team member access rights in new column
 }
 
 export default function GridMembers({
@@ -75,8 +78,12 @@ export default function GridMembers({
     }
   ];
 
-  const trashClicked = (row: any) => {
-    if (actionClicked) actionClicked(row);
+  const trashClicked = () => {
+    if (actionClicked) actionClicked(GRID_MEMBERS_ACTIONS.delete);
+  };
+
+  const lockClicked = () => {
+    if (actionClicked) actionClicked(GRID_MEMBERS_ACTIONS.access);
   };
 
   const actionColumns = [
@@ -87,7 +94,12 @@ export default function GridMembers({
       flex: 1,
       minWidth: 120,
       disableClickEventBubbling: true,
-      renderCell: () => <TrashIcon onClick={trashClicked} toolTip="Delete team member" />
+      renderCell: () => (
+        <>
+          <TrashIcon onClick={trashClicked} toolTip="Delete team member" />
+          <LockIcon onClick={lockClicked} toolTip="Manage team member rights" />
+        </>
+      )
     }
   ];
 

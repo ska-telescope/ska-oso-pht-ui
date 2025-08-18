@@ -1,4 +1,5 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
+import ProposalAccess from '../types/proposalAccess';
 import {
   hasAccess,
   isSoftwareEngineer,
@@ -25,16 +26,20 @@ let overrideGroups = '';
 const PROPOSAL_ACCESS_VIEW = 'view';
 const PROPOSAL_ACCESS_UPDATE = 'update';
 const PROPOSAL_ACCESS_SUBMIT = 'submit';
-const PROPOSAL_ROLE_PI = 'Principle Investigator';
+const PROPOSAL_ROLE_PI = 'Principal Investigator';
 
-const mockAccessList = [
+const mockAccessList: ProposalAccess[] = [
   {
+    id: 'access-001',
     prslId: 'prsl-001',
+    userId: 'user-001',
     permissions: [PROPOSAL_ACCESS_SUBMIT, PROPOSAL_ACCESS_VIEW],
     role: PROPOSAL_ROLE_PI
   },
   {
+    id: 'access-002',
     prslId: 'prsl-002',
+    userId: 'user-002',
     permissions: [PROPOSAL_ACCESS_UPDATE],
     role: 'Co-Investigator'
   }

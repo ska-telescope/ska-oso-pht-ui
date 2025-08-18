@@ -331,6 +331,24 @@
     "label": "List of Targets",
     "toolTip": "A list of targets can be created individually or imported from a csv file using the appropriate tab."
   },
+  "manageTeamMember": {
+    "label": "Manage Team Member Rights",
+    "success": "Team member's access has been updated.",
+    "error": "Failed to update team member's access.",
+    "help": "Select the rights for this team member. The Principal Investigator (PI) has all rights by default. The PI can assign rights to other team members as needed.",
+    "submit": {
+      "label": "Submit rights",
+      "help": "Check to indicate that this individual can submit, edit and view the proposal."
+    },
+    "edit": {
+      "label": "Edit rights",
+      "help": "Check to indicate that this individual can edit and view the proposal."
+    },
+    "view": {
+      "label": "View rights",
+      "help": "Check to indicate that this individual can view the proposal."
+    }
+  },
   "mediaSize": {
     "notSupported": "The application is not supported on a screen with these dimensions"
   },

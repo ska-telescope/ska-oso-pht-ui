@@ -6,7 +6,7 @@ import ProposalAccess from '../types/proposalAccess';
 export const PROPOSAL_ACCESS_VIEW = 'view';
 export const PROPOSAL_ACCESS_UPDATE = 'update';
 export const PROPOSAL_ACCESS_SUBMIT = 'submit';
-export const PROPOSAL_ROLE_PI = 'Principle Investigator';
+export const PROPOSAL_ROLE_PI = 'Principal Investigator';
 
 const OPS_PROPOSAL_ADMIN = 'obs-oauth2role-opsproposaladmin-1-1535351309'; //'ce3627de-8ec2-4a35-ab1e-300eec6a0a50';
 const OPS_REVIEWER_SCIENCE = 'obs-oauth2role-opsreviewersci-1635769025'; // '05883c37-b723-4b63-9216-0a789a61cb07';

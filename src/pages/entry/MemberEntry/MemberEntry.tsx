@@ -5,11 +5,12 @@ import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
 import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
-import { Proposal } from '../../../utils/types/proposal';
-import { helpers } from '../../../utils/helpers';
+import { Proposal, ProposalBackend } from '../../../utils/types/proposal';
+import { generateId, helpers } from '../../../utils/helpers';
 import {
   DEFAULT_INVESTIGATOR,
   LAB_POSITION,
+  PROPOSAL_STATUS,
   TEAM_STATUS_TYPE_OPTIONS,
   WRAPPER_HEIGHT
 } from '../../../utils/constants';
@@ -18,6 +19,9 @@ import Investigator from '../../../utils/types/investigator';
 import PostSendEmailInvite from '../../../services/axios/postSendEmailInvite/postSendEmailInvite';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
+import PostProposalAccess from '@/services/axios/post/postProposalAccess/postProposalAccess';
+import ProposalAccess from '@/utils/types/proposalAccess';
+import PutProposal from '@/services/axios/putProposal/putProposal';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
@@ -159,7 +163,37 @@ export default function MemberEntry({
     setPi(event.target.checked);
   };
 
-  function AddInvestigator() {
+  const updateProposalResponse = (response: ProposalBackend | { error: string }) => {
+    if (response && !('error' in response)) {
+      notifySuccess(t('saveBtn.success'));
+    } else {
+      notifyError('error' in response ? response.error : 'An unknown error occurred');
+    }
+  };
+
+  const updateProposal = async () => {
+    const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.DRAFT);
+    updateProposalResponse(response);
+  };
+
+  const createAccessRights = async (investigatorId: string): Promise<boolean> => {
+    const access: ProposalAccess = {
+      id: generateId('access-'),
+      prslId: getProposal().id,
+      userId: investigatorId,
+      role: 'Co-Investigator',
+      permissions: ['view']
+    };
+    const response = await PostProposalAccess(authClient, access);
+    if (typeof response === 'object' && 'error' in response) {
+      notifyError(response.error, NOTIFICATION_DELAY_IN_SECONDS);
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  async function AddInvestigator() {
     const currentInvestigators = getProposal().investigators;
     let highestId = currentInvestigators?.reduce(
       (acc, investigator) => (Number(investigator.id) > acc ? Number(investigator.id) : acc),
@@ -180,10 +214,16 @@ export default function MemberEntry({
       officeLocation: null, // TODO implement once data is available
       jobTitle: null // TODO implement once data is available
     };
-    setProposal({
-      ...getProposal(),
-      investigators: [...(currentInvestigators ?? []), newInvestigator]
-    });
+    // only add the investigator to the proposal once the access rights are created
+    // TODO: should we wait to save the investigators instead?
+    if (await createAccessRights(newInvestigator.id)) {
+      setProposal({
+        ...getProposal(),
+        investigators: [...(currentInvestigators ?? []), newInvestigator]
+      });
+      // save the proposal with new investigators as email has been sent & access rights have been created
+      await updateProposal();
+    }
   }
 
   async function sendEmailInvite(email: string, prsl_id: string): Promise<boolean> {

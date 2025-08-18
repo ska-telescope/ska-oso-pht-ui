@@ -27,7 +27,7 @@ import PutProposal from '@/services/axios/putProposal/putProposal';
 import GetProposal from '@/services/axios/getProposal/getProposal';
 import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
-import GetProposalAccess from '@/services/axios/get/getProposalAccess/getProposalAccess';
+import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
 import Proposal from '@/utils/types/proposal';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
 import { validateProposal } from '@/utils/proposalValidation';
@@ -105,7 +105,7 @@ export default function LandingPage() {
       setProposals([]);
       if (!loggedIn) return;
 
-      const response = await GetProposalAccess(authClient);
+      const response = await GetProposalAccessForUser(authClient);
       if (typeof response === 'string') {
         setAxiosError(response);
       } else {
