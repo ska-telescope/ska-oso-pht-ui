@@ -6,7 +6,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
 import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
 import { Proposal } from '../../../utils/types/proposal';
-import { helpers } from '../../../utils/helpers';
+import { generateId, helpers } from '../../../utils/helpers';
 import {
   DEFAULT_INVESTIGATOR,
   LAB_POSITION,
@@ -18,6 +18,8 @@ import Investigator from '../../../utils/types/investigator';
 import PostSendEmailInvite from '../../../services/axios/postSendEmailInvite/postSendEmailInvite';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
+import PostProposalAccess from '@/services/axios/post/postProposalAccess/postProposalAccess';
+import ProposalAccess from '@/utils/types/proposalAccess';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
@@ -159,7 +161,21 @@ export default function MemberEntry({
     setPi(event.target.checked);
   };
 
-  function AddInvestigator() {
+  const createAccessRights = async (investigatorId: string) => {
+    const access: ProposalAccess = {
+      id: generateId('access-'),
+      prslId: getProposal().id,
+      userId: investigatorId,
+      role: 'Co-Investigator',
+      permissions: ['view']
+    };
+    const response = await PostProposalAccess(authClient, access);
+    if (typeof response === 'object' && 'error' in response) {
+      notifyError(response.error, NOTIFICATION_DELAY_IN_SECONDS);
+    }
+  };
+
+  async function AddInvestigator() {
     const currentInvestigators = getProposal().investigators;
     let highestId = currentInvestigators?.reduce(
       (acc, investigator) => (Number(investigator.id) > acc ? Number(investigator.id) : acc),
@@ -180,6 +196,9 @@ export default function MemberEntry({
       officeLocation: null, // TODO implement once data is available
       jobTitle: null // TODO implement once data is available
     };
+    // only add the investigator to the proposal once the access rights are created
+    // TODO: should we wait to save the investigators instead?
+    await createAccessRights(newInvestigator.id);
     setProposal({
       ...getProposal(),
       investigators: [...(currentInvestigators ?? []), newInvestigator]

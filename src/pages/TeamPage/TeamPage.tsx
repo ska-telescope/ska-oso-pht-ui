@@ -69,13 +69,20 @@ export default function TeamPage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    fetchProposalAccessData();
   }, []);
 
   React.useEffect(() => {
+    // Set the selected options based on the current member's permissions when permissions change
     const memberPermissions = permissions.find(p => p.userId === currentMember);
     setSelectedOptions(memberPermissions?.permissions || []);
-  }, [currentMember]);
+  }, [permissions]);
+
+  React.useEffect(() => {
+    // Fetch proposal access data to set permissions:
+    //  * when the current member changes
+    //  * when the proposal's investigators change
+    fetchProposalAccessData();
+  }, [currentMember, getProposal().investigators]);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -153,25 +160,12 @@ export default function TeamPage() {
     closeAccessDialog();
   };
 
-  // // TODO - use on member entry page
-  // const saveAccess = async (access: ProposalAccess) => {
-  //   // TODO - should use put endpoint here and post endpoint when adding team members on team entry page
-  //   const response = await PostProposalAccess(authClient, access);
-  //   if (typeof response === 'object' && 'error' in response) {
-  //     notifyError(response.error, NOTIFICATION_DELAY_IN_SECONDS);
-  //   } else {
-  //     notifySuccess(t('manageTeamMember.success'), NOTIFICATION_DELAY_IN_SECONDS); // TODO add translation text
-  //   }
-  //   closeAccessDialog();
-  // };
-
   const accessConfirmed = () => {
     const access: ProposalAccess = {
-      // id: generateId('access-'), // TODO - once replaced with put endpoint, get id from the backend
       id: permissions.find(p => p.userId === currentMember)?.id as string,
       prslId: getProposal()?.id,
       userId: currentMember,
-      role: 'Co-Investigator', // TODO - should this always be Co-I?
+      role: 'Co-Investigator',
       permissions: selectedOptions
     };
     updateAccess(access);
