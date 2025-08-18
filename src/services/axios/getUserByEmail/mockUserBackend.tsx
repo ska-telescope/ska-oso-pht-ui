@@ -2,7 +2,7 @@ import { TEAM_STATUS_TYPE_OPTIONS } from '@/utils/constants';
 import { InvestigatorBackend } from '@/utils/types/investigator';
 
 export const MockUserBackendPartial: InvestigatorBackend = {
-  investigator_id: 'entra-123',
+  user_id: 'entra-123',
   status: TEAM_STATUS_TYPE_OPTIONS.pending,
   given_name: 'Paulo',
   family_name: 'Santos',
@@ -13,7 +13,7 @@ export const MockUserBackendPartial: InvestigatorBackend = {
 };
 
 export const MockUserBackendComplete: InvestigatorBackend = {
-  investigator_id: 'entra-234',
+  user_id: 'entra-234',
   status: TEAM_STATUS_TYPE_OPTIONS.pending,
   given_name: 'Saba',
   family_name: 'Ali',

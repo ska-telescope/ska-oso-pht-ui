@@ -1,6 +1,5 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import { MockObservatoryDataFrontend } from '@services/axios/getObservatoryData/mockObservatoryDataFrontend.tsx';
 import { mappingPanelDecisionFrontendToBackend } from '../postPanelDecision/postPanelDecision';
 import { MockPanelDecisionFrontend } from '../postPanelDecision/mockPanelDecisionFrontend';
 import { MockPanelDecisionBackend } from '../postPanelDecision/mockPanelDecisionBackend';
@@ -8,6 +7,7 @@ import PutPanelDecision, {
   mappingPanelDecisionBackendToFrontend,
   putMockPanelDecision
 } from './putPanelDecision';
+import { MockObservatoryDataFrontend } from '@/services/axios/get/getObservatoryData/mockObservatoryDataFrontend';
 import * as CONSTANTS from '@/utils/constants';
 import { PanelDecision, PanelDecisionBackend } from '@/utils/types/panelDecision';
 

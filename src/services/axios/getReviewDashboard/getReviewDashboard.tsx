@@ -4,11 +4,11 @@ import {
   USE_LOCAL_DATA
 } from '../../../utils/constants';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
-import { mockReviewDashboard } from './mockReviewDashboard';
+import { mockReviewDashboardBackend } from './mockReviewDashboard';
 import { ReviewDashboard, ReviewDashboardBackend } from '@/utils/types/reviewDashboard';
 
 export function getMockReviewDashboard(): ReviewDashboard[] {
-  return mappingReviewDashboardBackendToFrontend(mockReviewDashboard);
+  return mappingReviewDashboardBackendToFrontend(mockReviewDashboardBackend);
 }
 
 export function mappingReviewDashboardBackendToFrontend(

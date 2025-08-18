@@ -496,7 +496,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
       investigators: proposal?.investigators
         ? proposal.investigators.map(investigator => {
             return {
-              investigator_id: investigator.id?.toString(),
+              user_id: investigator.id?.toString(),
               status: investigator.status,
               given_name: investigator.firstName,
               family_name: investigator.lastName,

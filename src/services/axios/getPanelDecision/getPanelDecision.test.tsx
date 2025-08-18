@@ -1,10 +1,10 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import { MockObservatoryDataFrontend } from '@services/axios/getObservatoryData/mockObservatoryDataFrontend.tsx';
 import { MockPanelDecisionFrontend } from '../postPanelDecision/mockPanelDecisionFrontend';
 import { mappingPanelDecisionBackendToFrontend } from '../putPanelDecision/putPanelDecision';
 import { MockPanelDecisionBackend } from '../postPanelDecision/mockPanelDecisionBackend';
 import getPanelDecision, { getMockPanelDecision } from './getPanelDecision';
+import { MockObservatoryDataFrontend } from '@/services/axios/get/getObservatoryData/mockObservatoryDataFrontend';
 import { PanelDecision } from '@/utils/types/panelDecision';
 import * as CONSTANTS from '@/utils/constants';
 

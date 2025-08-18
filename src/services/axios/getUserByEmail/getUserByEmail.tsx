@@ -7,7 +7,7 @@ import Investigator, { InvestigatorBackend } from '@/utils/types/investigator';
 
 export function mapping(data: InvestigatorBackend): Investigator {
   const investigator = {
-    id: data.investigator_id,
+    id: data.user_id,
     email: data.email, // This should always be a SKAO email (@community.skao.int or @skao.int)
     firstName: data.given_name,
     lastName: data.family_name,

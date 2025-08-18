@@ -1,3 +1,4 @@
+/*
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -16,8 +17,10 @@ import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
+*/
 
 export default function ReviewPanelEntry() {
+  /* SUPPRESSED AS NOT CURRENTLY REQUIRED, BUT NEEDS TO BE KEPT
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
   const locationProperties = useLocation();
@@ -60,7 +63,6 @@ export default function ReviewPanelEntry() {
       {children}
     </Box>
   );
-  /******************************************************/
 
   const panelNameField = () =>
     fieldWrapper(
@@ -91,8 +93,6 @@ export default function ReviewPanelEntry() {
         setValue={setPanelDateExpiry}
       />
     );
-
-  /**************************************************************/
 
   const getDateFormatted = () => moment().format('YYYY-MM-DD');
 
@@ -160,7 +160,11 @@ export default function ReviewPanelEntry() {
       </Paper>
     );
   };
+  */
 
+  return <></>;
+
+  /* SUPPRESSED AS NOT CURRENTLY REQUIRED
   return (
     <>
       <PageBannerPMT
@@ -206,4 +210,5 @@ export default function ReviewPanelEntry() {
       <PageFooterPMT />
     </>
   );
+  */
 }

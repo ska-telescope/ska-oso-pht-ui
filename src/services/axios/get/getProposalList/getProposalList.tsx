@@ -33,7 +33,7 @@ const getInvestigators = (inc: InvestigatorBackend[] | null): Investigator[] => 
   }
   for (let item of inc) {
     const investigator = {
-      id: item.investigator_id,
+      id: item.user_id,
       firstName: item.given_name,
       lastName: item.family_name,
       email: item.email,
