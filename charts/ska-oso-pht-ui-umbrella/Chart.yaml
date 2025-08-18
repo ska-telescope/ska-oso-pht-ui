@@ -1,4 +1,4 @@
-apiVersion: v3
+apiVersion: v2
 name: ska-oso-pht-ui-umbrella
 description: Helm umbrella chart for Observation Design Tool application
 type: application
