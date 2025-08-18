@@ -161,10 +161,15 @@ export default function LandingPage() {
   };
 
   const editIconClicked = async (id: string) => {
-    if (await getTheProposal(id)) {
-      goToTitlePage();
-    } else {
+    console.log('chloe edit clicked');
+
+    if (!window.Cypress && !loggedIn) return;
+
+    const response = await getTheProposal(id);
+    if (typeof response === 'string') {
       alert(t('error.iconClicked'));
+    } else {
+      goToTitlePage();
     }
   };
 

@@ -221,6 +221,14 @@ export const createStandardProposal = () => {
   pageConfirmed('TEAM');
 };
 
+export const createStandardProposalLoggedIn = () => {
+  clickAddProposal();
+  enterProposalTitle();
+  clickProposalTypePrincipleInvestigator();
+  clickSubProposalTypeTargetOfOpportunity();
+  clickCreateProposal();
+};
+
 export const clickToTeamPage = () => {
   clickToNextPage();
   pageConfirmed('TEAM');
@@ -296,12 +304,6 @@ export const verifyOnLandingPageFilterIsVisible = () => {
   cy.get('[data-testid="proposalType"]').should('exist');
   cy.get('[data-testid="proposalType"]').click();
   cy.get('[data-value="draft"]').click({ force: true });
-};
-
-export const verifyFirstProposalOnLandingPageIsVisible = () => {
-  cy.get('[data-testid="dataGridId"]')
-    .should('contain', 'prsl-t0001-')
-    .should('contain', 'Proposal Title');
 };
 
 export const verifyMockedProposalOnLandingPageIsVisible = () => {

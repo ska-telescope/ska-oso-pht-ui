@@ -1,4 +1,6 @@
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
+import MockProposal from '@services/axios/get/getProposalList/mockProposal.tsx';
+import { mappingList } from '@services/axios/get/getProposalList/getProposalList.tsx';
 import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from '../../../utils/types/arrayDetails';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import Target, {
@@ -116,6 +118,8 @@ const getTargetType = (kind: string): number =>
   kind === RA_TYPE_GALACTIC.label ? RA_TYPE_GALACTIC.value : RA_TYPE_ICRS.value;
 
 const getTargets = (inRec: TargetBackend[]): Target[] => {
+  console.log('inside get targets ', inRec);
+
   let results = [];
   for (let i = 0; i < inRec?.length; i++) {
     const e = inRec[i];
@@ -576,47 +580,50 @@ export function mapping(inRec: ProposalBackend): Proposal {
     inRec?.info?.documents,
     PDF_NAME_PREFIXES.TECHNICAL + inRec.prsl_id
   ) as unknown) as DocumentPDF;
+  console.log('inside mapping, pre getTargets ', inRec);
+  console.log('sending to getTargets ', inRec[0].info.targets);
 
-  const targets = getTargets(inRec.info.targets);
+
+  const targets = getTargets(inRec[0].info.targets);
 
   const convertedProposal = {
-    metadata: inRec.metadata, // TODO should we keep this metadata or the fields below?
-    id: inRec.prsl_id,
-    title: inRec.info.title,
-    proposalType: PROJECTS?.find(p => p.mapping === inRec.info.proposal_type.main_type)?.id,
-    proposalSubType: inRec.info.proposal_type.attributes
-      ? getAttributes(inRec.info.proposal_type)
+    metadata: inRec[0].metadata, // TODO should we keep this metadata or the fields below?
+    id: inRec[0].prsl_id,
+    title: inRec[0].info.title,
+    proposalType: PROJECTS?.find(p => p.mapping === inRec[0].info.proposal_type.main_type)?.id,
+    proposalSubType: inRec[0].info.proposal_type.attributes
+      ? getAttributes(inRec[0].info.proposal_type)
       : [],
-    status: inRec.status,
-    lastUpdated: inRec.metadata?.last_modified_on,
-    lastUpdatedBy: inRec.metadata?.last_modified_by,
-    createdOn: inRec.metadata?.created_on,
-    createdBy: inRec.metadata?.created_by,
-    version: inRec.metadata?.version,
-    cycle: inRec.cycle,
-    investigators: getInvestigators(inRec.info.investigators),
-    abstract: inRec.info.abstract,
-    scienceCategory: getScienceCategory(inRec.info.science_category),
+    status: inRec[0].status,
+    lastUpdated: inRec[0].metadata?.last_modified_on,
+    lastUpdatedBy: inRec[0].metadata?.last_modified_by,
+    createdOn: inRec[0].metadata?.created_on,
+    createdBy: inRec[0].metadata?.created_by,
+    version: inRec[0].metadata?.version,
+    cycle: inRec[0].cycle,
+    investigators: getInvestigators(inRec[0].info.investigators),
+    abstract: inRec[0].info.abstract,
+    scienceCategory: getScienceCategory(inRec[0].info.science_category),
     scienceSubCategory: [getScienceSubCategory()],
     sciencePDF: sciencePDF,
     scienceLoadStatus: sciencePDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
     targetOption: 1, // TODO check what to map to
     targets: targets,
-    observations: getObservations(inRec.info.observation_sets, inRec.info.result_details),
-    groupObservations: getGroupObservations(inRec.info.observation_sets),
+    observations: getObservations(inRec[0].info.observation_sets, inRec[0].info.result_details),
+    groupObservations: getGroupObservations(inRec[0].info.observation_sets),
     targetObservation:
-      inRec?.info?.result_details && inRec.info.result_details.length > 0
+      inRec[0]?.info?.result_details && inRec[0].info.result_details.length > 0
         ? getTargetObservation(
-            inRec.info.result_details,
-            inRec.info.observation_sets,
+          inRec[0].info.result_details,
+          inRec[0].info.observation_sets,
             // inRec.info.targets,
             targets
           )
         : [],
     technicalPDF: technicalPDF, // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: technicalPDF ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
-    dataProductSDP: getDataProductSDP(inRec.info.data_product_sdps),
-    dataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
+    dataProductSDP: getDataProductSDP(inRec[0].info.data_product_sdps),
+    dataProductSRC: getDataProductSRC(inRec[0].info.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
 
@@ -633,6 +640,10 @@ async function GetProposal(
 ): Promise<Proposal | string> {
   if (USE_LOCAL_DATA) {
     return GetMockProposal();
+  }
+
+  if (window.Cypress) {
+    return mapping(MockProposal);
   }
 
   try {

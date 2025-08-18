@@ -13,15 +13,80 @@ const MockProposal: ProposalBackend[] = [
       last_modified_on: '2025-08-15T14:11:33.248432Z',
       pdm_version: '19.1.0'
     },
+    investigator_refs: [],
     cycle: 'SKAO_2027_1',
     info: {
       title: 'Proposal Title',
-      proposal_type: {
-        main_type: 'standard_proposal',
-        sub_type: 'target_of_opportunity'
-      },
-      abstract: ''
+      proposal_type: { main_type: 'standard_proposal', sub_type: 'target_of_opportunity',  attributes: [] },
+      abstract: '',
+      targets: [
+        {
+          target_id: 'M28',
+          pointing_pattern: {
+            active: 'SinglePointParameters',
+            parameters: [
+              {
+                kind: 'SinglePointParameters',
+                offset_x_arcsec: 0.0,
+                offset_y_arcsec: 0.0
+              }
+            ]
+          },
+          reference_coordinate: {
+            kind: 'equatorial',
+            ra: 250.0,
+            dec: 30.0,
+            unit: ['deg', 'deg'],
+            reference_frame: 'icrs'
+          },
+          radial_velocity: {
+            quantity: {
+              value: -12.345,
+              unit: 'm/s'
+            },
+            definition: 'OPTICAL',
+            reference_frame: 'LSRK',
+            redshift: 1.2
+          }
+        },
+        {
+          target_id: 'M1',
+          pointing_pattern: {
+            active: 'SinglePointParameters',
+            parameters: [
+              {
+                kind: 'SinglePointParameters',
+                offset_x_arcsec: 0.0,
+                offset_y_arcsec: 0.0
+              }
+            ]
+          },
+          reference_coordinate: {
+            kind: 'equatorial',
+            ra: 250.0,
+            dec: -30.0,
+            unit: ['deg', 'deg'],
+            reference_frame: 'icrs'
+          },
+          radial_velocity: {
+            quantity: {
+              value: 0.0,
+              unit: 'km/s'
+            },
+            definition: 'RADIO',
+            reference_frame: 'LSRK',
+            redshift: 0.0
+          }
+        }
+      ],
+      documents: [],
+      investigators: [],
+      observation_sets: [],
+      data_product_sdps: [],
+      data_product_src_nets: [],
+      result_details: []
     }
   }
 ];
+
 export default MockProposal;
