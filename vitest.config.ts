@@ -1,9 +1,19 @@
 import path from 'path';
 import react from '@vitejs/plugin-react';
 import { configDefaults, defineConfig } from 'vitest/config';
+import istanbul from 'vite-plugin-istanbul';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    istanbul({
+      include: 'src/**/*',
+      exclude: ['node_modules', 'tests/**/*'],
+      extension: ['.js', '.ts', '.vue'],
+      cypress: true,
+      requireEnv: false
+    })
+  ],
   test: {
     globals: true,
     environment: 'happy-dom',

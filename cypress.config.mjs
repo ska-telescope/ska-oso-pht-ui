@@ -1,5 +1,6 @@
 import { defineConfig } from 'cypress';
 import vitePreprocessor from 'cypress-vite';
+import codeCoverageTask from '@cypress/code-coverage/task'
 
 export default defineConfig({
   video: false,
@@ -24,6 +25,8 @@ export default defineConfig({
     specPattern: ['tests/cypress/e2e/**/*.test.{js,jsx,ts,tsx}'],
     setupNodeEvents(on, config) {
       on('file:preprocessor', vitePreprocessor());
+
+      codeCoverageTask(on, config)
 
       // Add reporter configuration
       config.reporter = 'mocha-junit-reporter';
