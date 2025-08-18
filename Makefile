@@ -65,6 +65,13 @@ K8S_CHART_PARAMS += --set ska-oso-pht-ui.image.tag=$(VERSION)-dev.c$(CI_COMMIT_S
 	--set ska-oso-pht-ui.image.registry=$(CI_REGISTRY)/ska-telescope/oso/ska-oso-pht-ui 
 endif
 
+# For dev - use oso-services integration
+ENV_CHECK_DEV := $(shell echo $(CI_ENVIRONMENT_SLUG) | grep 'dev')
+ifneq ($(ENV_CHECK_DEV),)
+K8S_CHART_PARAMS += \
+  --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl="/integration-ska-oso-services/oso/api/v3"
+endif
+
 set-dev-env-vars:
 	BASE_URL="/" BACKEND_URL=$(BACKEND_URL) ENVJS_FILE=./public/env.js ./nginx_env_config.sh
 	
