@@ -159,19 +159,15 @@ export default function TeamPage() {
   // };
 
   const accessConfirmed = () => {
-    // const selected = modalAccessContentRef.current?.getSelectedOptions();
-    const selected = selectedOptions;
     const access: ProposalAccess = {
       // id: generateId('access-'), // TODO - once replaced with put endpoint, get id from the backend
-      id: 'prslacc-65495a-user-id', // TODO - hardcoded to current tested access, should be replaced with the id from the backend
-      // TODO - team page should pull access from backend and display on modal?
+      id: permissions.find(p => p.userId === currentMember)?.id as string,
       prslId: getProposal()?.id,
       userId: currentMember,
       role: 'Co-Investigator', // TODO - should this always be Co-I?
-      permissions: selected as string[]
+      permissions: selectedOptions
     };
-    // console.log('selected', selected);
-    // updateAccess(access);
+    updateAccess(access);
     closeAccessDialog();
   };
 

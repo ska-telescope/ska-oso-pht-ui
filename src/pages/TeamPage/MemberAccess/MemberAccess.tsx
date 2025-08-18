@@ -20,15 +20,14 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
     helpComponent(t('manageTeamMember.help'));
   }, []);
 
-    React.useEffect(() => {
-      // console.log('selectedOptions in MemberAccess:', selectedOptions);
-      if (selectedOptions.includes('submit') && !selectedOptions.includes('update')) {
-        handleCheckboxChange('update');
-      }
-      if (selectedOptions.includes('update') && !selectedOptions.includes('view')) {
-        handleCheckboxChange('view');
-      }
-    }, [selectedOptions]);
+  React.useEffect(() => {
+    if (selectedOptions.includes('submit') && !selectedOptions.includes('update')) {
+      handleCheckboxChange('update');
+    }
+    if (selectedOptions.includes('update') && !selectedOptions.includes('view')) {
+      handleCheckboxChange('view');
+    }
+  }, [selectedOptions]);
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box
