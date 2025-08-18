@@ -24,6 +24,16 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
     helpComponent(t('manageTeamMember.help'));
   }, []);
 
+    React.useEffect(() => {
+      console.log('selectedOptions in MemberAccess:', selectedOptions);
+      if (selectedOptions.includes('submit') && !selectedOptions.includes('update')) {
+        handleCheckboxChange('update');
+      }
+      if (selectedOptions.includes('update') && !selectedOptions.includes('view')) {
+        handleCheckboxChange('view');
+      }
+    }, [selectedOptions]);
+
   //   React.useEffect(() => {
   //     handleCheckboxChange('submit');
   //   }, [submit]);
@@ -108,6 +118,7 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
         onChange={() => handleCheckboxChange('update')}
         onFocus={() => helpComponent(t('manageTeamMember.edit.help'))}
         // disabled={submit}
+        disabled={selectedOptions.includes('submit')}
       />
     );
   };
@@ -123,6 +134,7 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
         onChange={() => handleCheckboxChange('view')}
         onFocus={() => helpComponent(t('manageTeamMember.view.help'))}
         // disabled={edit}
+        disabled={selectedOptions.includes('update') || selectedOptions.includes('submit')}
       />
     );
   };
