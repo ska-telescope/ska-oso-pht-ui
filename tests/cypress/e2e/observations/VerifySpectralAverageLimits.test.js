@@ -17,6 +17,9 @@ import {
 
 beforeEach(() => {
   initialize();
+  cy.window().then(win => {
+    win.localStorage.setItem('proposal:noLogin', 'true');
+  });
   createStandardProposal();
   //navigate to observation page
   clickToGeneralPage();
