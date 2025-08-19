@@ -92,7 +92,7 @@ export default function LandingPage() {
       setProposals([]);
       const noLoginTest = window.localStorage.getItem('proposal:noLogin') === 'true';
 
-      if ((!window.Cypress && !loggedIn) || (isCypress && noLoginTest)) return;
+      if (noLoginTest || (!isCypress && !loggedIn)) return;
 
       const response = await GetProposalList(authClient);
       if (typeof response === 'string') {
@@ -172,10 +172,13 @@ export default function LandingPage() {
   };
 
   const editIconClicked = async (id: string) => {
-    if (await getTheProposal(id)) {
-      goToTitlePage();
-    } else {
+    if (!isCypress && !loggedIn) return;
+
+    const response = await getTheProposal(id);
+    if (typeof response === 'string') {
       alert(t('error.iconClicked'));
+    } else {
+      goToTitlePage();
     }
   };
 

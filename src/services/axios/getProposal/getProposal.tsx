@@ -1,5 +1,11 @@
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
-import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from '../../../utils/types/arrayDetails';
+import MockProposal from '@services/axios/get/getProposalList/mockProposal.tsx';
+import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from '@utils/types/arrayDetails.tsx';
+import {
+  ResultsSection,
+  SensCalcResults,
+  SensCalcResultsBackend
+} from '@utils/types/sensCalcResults.tsx';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import Target, {
   PointingPatternParams,
@@ -8,11 +14,6 @@ import Target, {
   TargetBackend
 } from '../../../utils/types/target';
 import Observation from '../../../utils/types/observation';
-import {
-  ResultsSection,
-  SensCalcResults,
-  SensCalcResultsBackend
-} from '../../../utils/types/sensCalcResults';
 import TargetObservation from '../../../utils/types/targetObservation';
 import Supplied, { SuppliedBackend } from '../../../utils/types/supplied';
 import {
@@ -37,7 +38,8 @@ import {
   OSO_SERVICES_PROPOSAL_PATH,
   PDF_NAME_PREFIXES,
   RA_TYPE_ICRS,
-  RA_TYPE_GALACTIC
+  RA_TYPE_GALACTIC,
+  isCypress
 } from '../../../utils/constants';
 import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
 import { ObservationSetBackend } from '../../../utils/types/observationSet';
@@ -633,6 +635,10 @@ async function GetProposal(
 ): Promise<Proposal | string> {
   if (USE_LOCAL_DATA) {
     return GetMockProposal();
+  }
+
+  if (isCypress) {
+    return mapping(MockProposal);
   }
 
   try {

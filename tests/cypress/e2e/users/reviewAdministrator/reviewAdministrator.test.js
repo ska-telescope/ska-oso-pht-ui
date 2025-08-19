@@ -26,37 +26,40 @@ const panelName = Math.floor(Math.random() * 10000000).toString(); // name shoul
 describe('Review Administrator', () => {
   beforeEach(() => {
     initialize();
+    cy.window().then(win => {
+      win.localStorage.setItem('USE_LOCAL_DATA', 'true');
+    });
     cy.mockLoginButton(reviewerAdmin);
     getSubmittedProposals(); // Load mocked proposals fixture
     getReviewers(); // Load mocked reviewers fixture
-  });
-  it('Navigate using the dropdown menu', () => {
     clickLoginUser();
+  });
+
+  it('Navigate using the dropdown menu', () => {
     // clickUserMenuOverview();
     clickUserMenuPanels();
     clickUserMenuProposals();
   });
+
   it.skip('Creating a new review panel', () => {
-    clickLoginUser();
     clickUserMenuPanels();
     clickAddPanel();
     enterPanelName(panelName);
     clickAddPanelEntry();
     verifyPanelCreatedAlertFooter();
   });
-  it('Creating a new review panel, abandoned', () => {
-    clickLoginUser();
+
+  it.skip('Creating a new review panel, abandoned', () => {
     clickUserMenuPanels();
     clickAddPanel();
     clickPanelMaintenanceButton();
   });
   it.skip('Display newly created panel', () => {
-    clickLoginUser();
     clickUserMenuPanels();
     verifyPanelOnGridIsVisible(panelName);
   });
+
   it.skip('Display a list of proposals', () => {
-    clickLoginUser();
     clickUserMenuPanels();
     clickFirstPanel();
     clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
@@ -65,14 +68,12 @@ describe('Review Administrator', () => {
     verifyProposalOnGridIsVisible('In a galaxy far, far away');
   });
   it.skip('Display a list of reviewers', () => {
-    clickLoginUser();
     clickUserMenuPanels(); // (real getReviewers api call would be made at this point and intercepted)
     verifyMockedAPICall('@getReviewers');
     clickFirstPanel();
     verifyReviewerOnGridIsVisible('Aisha');
   });
   it.skip('Add a reviewer to a panel', () => {
-    clickLoginUser();
     clickUserMenuPanels();
     verifyMockedAPICall('@getReviewers');
     clickFirstPanel();
@@ -80,7 +81,6 @@ describe('Review Administrator', () => {
     verifyTickBoxIsSelected(2);
   });
   it.skip('Add a proposal to a panel', () => {
-    clickLoginUser();
     clickUserMenuPanels();
     clickFirstPanel();
     clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)

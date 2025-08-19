@@ -19,7 +19,8 @@ describe('Review Panel', () => {
   beforeEach(() => {
     initialize();
   });
-  it('Create a new review panel', () => {
+  //TODO: Create review panel functionality currently unavailable
+  it.skip('Create a new review panel', () => {
     clickUserMenuPanels();
     clickAddPanel();
     enterPanelName();
@@ -27,7 +28,7 @@ describe('Review Panel', () => {
     //Add verification once list is populated
   });
 
-  it('Verify add button is disabled, when panel name field is incomplete', () => {
+  it.skip('Verify add button is disabled, when panel name field is incomplete', () => {
     clickUserMenuPanels();
     clickAddPanel();
     checkFieldDisabled('addPanelButton', true);

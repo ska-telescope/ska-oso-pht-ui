@@ -3,7 +3,7 @@ import {
   USE_LOCAL_DATA,
   OSO_SERVICES_PANEL_PATH,
   DEFAULT_USER
-} from '../../../utils/constants';
+} from '@utils/constants.ts';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { MockPanelBackendList } from './mockPanelBackendList';
 import { Panel, PanelBackend } from '@/utils/types/panel';
