@@ -30,9 +30,9 @@ export default function HomeButton({
   const isShowWarningWhenClicked = () => {
     const noLoginTest = window.localStorage.getItem('proposal:noLogin') === 'true';
 
-    if (isCypress && noLoginTest) {
+    if (noLoginTest) {
       return true;
-    } else return !window.Cypress && !loggedIn;
+    } else return !isCypress && !loggedIn;
   };
   const ClickFunction = () => {
     if (isShowWarningWhenClicked()) {

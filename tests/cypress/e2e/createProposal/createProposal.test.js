@@ -13,11 +13,12 @@ import {
   verifyMockedProposalOnLandingPageIsVisible,
   mockCreateProposalAPI
 } from '../common/common';
+import { defaultUser, reviewerChairman } from '../users/users.js';
 
 describe('Creating Proposal', () => {
   beforeEach(() => {
     initialize();
-    cy.mockLoginButton();
+    cy.mockLoginButton(defaultUser);
     mockCreateProposalAPI();
   });
   it('Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {

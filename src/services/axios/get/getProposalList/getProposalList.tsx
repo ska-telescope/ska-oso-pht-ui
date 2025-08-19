@@ -7,7 +7,8 @@ import {
   USE_LOCAL_DATA,
   PROJECTS,
   GENERAL,
-  OSO_SERVICES_PROPOSAL_PATH
+  OSO_SERVICES_PROPOSAL_PATH,
+  isCypress
 } from '@/utils/constants';
 import Investigator, { InvestigatorBackend } from '@/utils/types/investigator';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
@@ -99,7 +100,7 @@ async function GetProposalList(
   if (USE_LOCAL_DATA) {
     return GetMockProposalList();
   }
-  if (window.Cypress) {
+  if (isCypress) {
     return mappingList(MockProposal);
   }
 
