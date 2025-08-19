@@ -1,7 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { Typography } from '@mui/material';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
-import React from 'react';
 import StarIcon from '../../../components/icon/starIcon/starIcon';
 import TickIcon from '../../../components/icon/tickIcon/tickIcon';
 import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
@@ -29,11 +28,6 @@ export default function GridMembers({
   permissions = []
 }: GridMembersProps) {
   const { t } = useTranslation('pht');
-  const [access, setAccess] = React.useState<ProposalAccess[]>([]);
-
-  React.useEffect(() => {
-    setAccess(permissions);
-  }, [permissions]);
 
   const PIStar = ({ pi }: { pi: any }) => {
     if (pi) {
@@ -94,7 +88,6 @@ export default function GridMembers({
   const lockClicked = () => {
     if (actionClicked) actionClicked(GRID_MEMBERS_ACTIONS.access);
   };
-
   const actionColumns = [
     {
       field: 'permissions',
@@ -104,7 +97,7 @@ export default function GridMembers({
       minWidth: 160,
       disableClickEventBubbling: true,
       renderCell: (params: any) => {
-        const userAccess = access.find((acc: ProposalAccess) => acc.userId === params.row.id)
+        const userAccess = permissions.find((acc: ProposalAccess) => acc.userId === params.row.id)
           ?.permissions;
         const desiredOrder = ['view', 'update', 'submit'];
         const ordered = desiredOrder.filter(item => userAccess?.includes(item.toLowerCase()));
