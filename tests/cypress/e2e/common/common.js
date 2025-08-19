@@ -50,6 +50,15 @@ export const getReviewers = () => {
   });
 };
 
+export const getPanels = () => {
+  cy.fixture('panels.json').then(reviewers => {
+    cy.intercept('GET', '**/pht/panels/list/DefaultUser', {
+      statusCode: 200,
+      body: reviewers
+    }).as('getReviewers');
+  });
+};
+
 // TODO move cy. commands out of this file into cypress.js and create a function for it
 export const verifyMockedAPICall = stubAlias => {
   cy.wait(stubAlias).then(interception => {

@@ -35,7 +35,8 @@ import {
   createStandardProposalLoggedIn,
   verifyMockedProposalOnLandingPageIsVisible,
   verifyProposalCreatedAlertFooter,
-  mockEmailAPI
+  mockEmailAPI,
+  clickLoginUser
 } from '../common/common';
 import { defaultUser } from '../users/users.js';
 
@@ -45,6 +46,7 @@ beforeEach(() => {
     win.localStorage.setItem('cypress:defaultUserLoggedIn', 'true');
   });
   cy.mockLoginButton(defaultUser);
+  clickLoginUser();
   mockCreateProposalAPI();
   mockEmailAPI();
   createStandardProposalLoggedIn();

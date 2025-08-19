@@ -3,7 +3,7 @@ import {
   USE_LOCAL_DATA,
   OSO_SERVICES_PANEL_PATH,
   DEFAULT_USER
-} from '../../../utils/constants';
+} from '@utils/constants.ts';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { MockPanelBackendList } from './mockPanelBackendList';
 import { Panel, PanelBackend } from '@/utils/types/panel';
@@ -64,7 +64,7 @@ async function GetPanelList(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
   user_id = DEFAULT_USER
 ): Promise<Panel[] | string> {
-  if (USE_LOCAL_DATA) {
+  if (window.Cypress || USE_LOCAL_DATA) {
     return GetMockPanelList();
   }
 

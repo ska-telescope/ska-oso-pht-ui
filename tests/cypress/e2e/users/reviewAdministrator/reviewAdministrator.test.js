@@ -29,34 +29,34 @@ describe('Review Administrator', () => {
     cy.mockLoginButton(reviewerAdmin);
     getSubmittedProposals(); // Load mocked proposals fixture
     getReviewers(); // Load mocked reviewers fixture
-  });
-  it('Navigate using the dropdown menu', () => {
     clickLoginUser();
+  });
+
+  it('Navigate using the dropdown menu', () => {
     // clickUserMenuOverview();
     clickUserMenuPanels();
     clickUserMenuProposals();
   });
+
   it.skip('Creating a new review panel', () => {
-    clickLoginUser();
     clickUserMenuPanels();
     clickAddPanel();
     enterPanelName(panelName);
     clickAddPanelEntry();
     verifyPanelCreatedAlertFooter();
   });
-  it('Creating a new review panel, abandoned', () => {
-    clickLoginUser();
+
+  it.skip('Creating a new review panel, abandoned', () => {
     clickUserMenuPanels();
     clickAddPanel();
     clickPanelMaintenanceButton();
   });
   it.skip('Display newly created panel', () => {
-    clickLoginUser();
     clickUserMenuPanels();
     verifyPanelOnGridIsVisible(panelName);
   });
-  it.skip('Display a list of proposals', () => {
-    clickLoginUser();
+
+  it('Display a list of proposals', () => {
     clickUserMenuPanels();
     clickFirstPanel();
     clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
@@ -64,23 +64,20 @@ describe('Review Administrator', () => {
     verifyProposalOnGridIsVisible('The Milky Way View');
     verifyProposalOnGridIsVisible('In a galaxy far, far away');
   });
-  it.skip('Display a list of reviewers', () => {
-    clickLoginUser();
+  it('Display a list of reviewers', () => {
     clickUserMenuPanels(); // (real getReviewers api call would be made at this point and intercepted)
     verifyMockedAPICall('@getReviewers');
     clickFirstPanel();
     verifyReviewerOnGridIsVisible('Aisha');
   });
-  it.skip('Add a reviewer to a panel', () => {
-    clickLoginUser();
+  it('Add a reviewer to a panel', () => {
     clickUserMenuPanels();
     verifyMockedAPICall('@getReviewers');
     clickFirstPanel();
     clickLinkedTickedBox(2);
     verifyTickBoxIsSelected(2);
   });
-  it.skip('Add a proposal to a panel', () => {
-    clickLoginUser();
+  it('Add a proposal to a panel', () => {
     clickUserMenuPanels();
     clickFirstPanel();
     clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
