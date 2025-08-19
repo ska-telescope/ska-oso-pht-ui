@@ -2,8 +2,6 @@ import { LABEL_POSITION, TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska
 import Target from './types/target';
 import Investigator from './types/investigator';
 import { env } from '@/env';
-
-// export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const USE_LOCAL_DATA = localStorage.getItem('USE_LOCAL_DATA') === 'true';
 
 export const USE_LOCAL_DATA_SENSITIVITY_CALC =
