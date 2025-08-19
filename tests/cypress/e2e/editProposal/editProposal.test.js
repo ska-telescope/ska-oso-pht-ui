@@ -34,14 +34,15 @@ import {
   mockCreateProposalAPI,
   createStandardProposalLoggedIn,
   verifyMockedProposalOnLandingPageIsVisible,
-  verifyProposalCreatedAlertFooter, mockEmailAPI
+  verifyProposalCreatedAlertFooter,
+  mockEmailAPI
 } from '../common/common';
 
 beforeEach(() => {
   initialize();
   cy.mockLoginButton();
   mockCreateProposalAPI();
-  mockEmailAPI()
+  mockEmailAPI();
   createStandardProposalLoggedIn();
 });
 

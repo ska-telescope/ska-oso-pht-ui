@@ -77,7 +77,7 @@ export const mockEmailAPI = () => {
       req.headers['Authorization'] = `Bearer ${token}`;
       req.reply({
         statusCode: 200,
-        body: 'success'
+        body: { message: 'Email sent successfully' }
       });
     }).as('mockInviteUserByEmail');
   });

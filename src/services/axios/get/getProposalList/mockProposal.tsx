@@ -17,7 +17,11 @@ const MockProposal: ProposalBackend[] = [
     cycle: 'SKAO_2027_1',
     info: {
       title: 'Proposal Title',
-      proposal_type: { main_type: 'standard_proposal', sub_type: 'target_of_opportunity',  attributes: [] },
+      proposal_type: {
+        main_type: 'standard_proposal',
+        sub_type: 'target_of_opportunity',
+        attributes: []
+      },
       abstract: '',
       targets: [
         {

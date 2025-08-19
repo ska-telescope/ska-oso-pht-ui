@@ -172,8 +172,6 @@ export default function LandingPage() {
   };
 
   const editIconClicked = async (id: string) => {
-    console.log('chloe edit clicked');
-
     if (!window.Cypress && !loggedIn) return;
 
     const response = await getTheProposal(id);

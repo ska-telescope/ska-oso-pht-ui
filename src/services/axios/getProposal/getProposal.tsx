@@ -1,7 +1,11 @@
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import MockProposal from '@services/axios/get/getProposalList/mockProposal.tsx';
-import { mappingList } from '@services/axios/get/getProposalList/getProposalList.tsx';
-import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from '../../../utils/types/arrayDetails';
+import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from '@utils/types/arrayDetails.tsx';
+import {
+  ResultsSection,
+  SensCalcResults,
+  SensCalcResultsBackend
+} from '@utils/types/sensCalcResults.tsx';
 import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
 import Target, {
   PointingPatternParams,
@@ -10,11 +14,6 @@ import Target, {
   TargetBackend
 } from '../../../utils/types/target';
 import Observation from '../../../utils/types/observation';
-import {
-  ResultsSection,
-  SensCalcResults,
-  SensCalcResultsBackend
-} from '../../../utils/types/sensCalcResults';
 import TargetObservation from '../../../utils/types/targetObservation';
 import Supplied, { SuppliedBackend } from '../../../utils/types/supplied';
 import {
@@ -118,8 +117,6 @@ const getTargetType = (kind: string): number =>
   kind === RA_TYPE_GALACTIC.label ? RA_TYPE_GALACTIC.value : RA_TYPE_ICRS.value;
 
 const getTargets = (inRec: TargetBackend[]): Target[] => {
-  console.log('inside get targets ', inRec);
-
   let results = [];
   for (let i = 0; i < inRec?.length; i++) {
     const e = inRec[i];
@@ -580,9 +577,6 @@ export function mapping(inRec: ProposalBackend): Proposal {
     inRec?.info?.documents,
     PDF_NAME_PREFIXES.TECHNICAL + inRec.prsl_id
   ) as unknown) as DocumentPDF;
-  console.log('inside mapping, pre getTargets ', inRec);
-  console.log('sending to getTargets ', inRec[0].info.targets);
-
 
   const targets = getTargets(inRec[0].info.targets);
 
@@ -614,8 +608,8 @@ export function mapping(inRec: ProposalBackend): Proposal {
     targetObservation:
       inRec[0]?.info?.result_details && inRec[0].info.result_details.length > 0
         ? getTargetObservation(
-          inRec[0].info.result_details,
-          inRec[0].info.observation_sets,
+            inRec[0].info.result_details,
+            inRec[0].info.observation_sets,
             // inRec.info.targets,
             targets
           )

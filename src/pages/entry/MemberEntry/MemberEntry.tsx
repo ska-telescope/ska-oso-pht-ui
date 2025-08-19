@@ -248,7 +248,7 @@ export default function MemberEntry({
 
   const clickFunction = async () => {
     if (await sendEmailInvite(formValues.email.value, getProposal().id)) {
-      AddInvestigator();
+      await AddInvestigator();
       clearForm();
       invitationBtnClicked();
     }
