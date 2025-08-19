@@ -11,6 +11,7 @@ data:
         listen  [::]:80;
         server_name  localhost;
 
+        include /etc/nginx/mime.types;
         types {
           application/javascript js mjs;
         }
