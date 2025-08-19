@@ -11,6 +11,10 @@ data:
         listen  [::]:80;
         server_name  localhost;
 
+        types {
+          application/javascript js mjs;
+        }
+
         location / {
             root   /usr/share/nginx/html;
             index  index.html index.htm;
