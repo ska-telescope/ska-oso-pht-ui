@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import TableScienceReviews from './TableScienceReviews';
+import TableTechnicalReviews from './TableTechnicalReviews';
 import { REVIEW_TYPE } from '@/utils/constants';
 
 const mockNavigate = vi.fn();
@@ -57,52 +57,44 @@ const mockData = {
   reviews: [
     {
       status: 'Complete',
-      comments: 'General comments',
-      srcNet: 'SRCNet comments',
       reviewType: {
-        kind: REVIEW_TYPE.SCIENCE,
-        rank: 'A',
-        excludedFromDecision: false
+        kind: REVIEW_TYPE.TECHNICAL,
+        feasibility: {
+          isFeasible: 'No',
+          comments: 'I have no idea why they thought this might be possible'
+        }
       }
     },
     {
       status: 'To Do',
-      comments: 'General comments',
-      srcNet: 'SRCNet comments',
       reviewType: {
-        kind: REVIEW_TYPE.SCIENCE,
-        rank: 'B',
-        excludedFromDecision: true
+        kind: REVIEW_TYPE.TECHNICAL,
+        feasibility: {
+          isFeasible: 'Maybe',
+          comments: 'This might be possible, but will need to investigate a little further'
+        }
+      }
+    },
+    {
+      status: 'To Do',
+      reviewType: {
+        kind: REVIEW_TYPE.TECHNICAL,
+        feasibility: {
+          isFeasible: 'Yes',
+          comments: null
+        }
       }
     }
   ]
 };
 
-describe('TableScienceReviews', () => {
+describe('TableTechnicalReviews', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it('renders table headers and rows', () => {
-    render(<TableScienceReviews data={mockData} excludeFunction={vi.fn()} />);
+    render(<TableTechnicalReviews data={mockData} />);
     expect(screen.getByText('status.label')).toBeInTheDocument();
-  });
-
-  it('calls excludeFunction when status is not "To Do"', () => {
-    const excludeFn = vi.fn();
-    render(<TableScienceReviews data={mockData} excludeFunction={excludeFn} />);
-    // TODO
-    // const icon = screen.getByTestId('includeIcon-proposal-1-0');
-    // fireEvent.click(icon);
-    // expect(excludeFn).toHaveBeenCalledWith(mockData.reviews[0]);
-  });
-
-  it('does not call excludeFunction when status is "To Do"', () => {
-    const excludeFn = vi.fn();
-    render(<TableScienceReviews data={mockData} excludeFunction={excludeFn} />);
-    // TODO
-    // const icon = screen.getByTestId('includeIcon-proposal-1-1');
-    // fireEvent.click(icon);
-    // expect(excludeFn).not.toHaveBeenCalled();
   });
 });

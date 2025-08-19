@@ -10,7 +10,6 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import AddButton from '../../../components/button/Add/Add';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import BackButton from '@/components/button/Back/Back';
-import PanelNameField from '@/components/fields/panelName/panelName';
 import PostPanel from '@/services/axios/postPanel/postPanel';
 import { Panel } from '@/utils/types/panel';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
@@ -66,12 +65,16 @@ export default function ReviewPanelEntry() {
 
   const panelNameField = () =>
     fieldWrapper(
-      <PanelNameField
-        label={t('panelName.label')}
-        setValue={setPanelName}
-        value={panelName}
-        testId="panelName"
-      />
+      <Box pt={1}>
+          <TextEntry
+            label={t('panelName.label')}
+            required={required}
+            testId="panelName"
+            value={panelName}
+            setValue={setPanelName}
+            onFocus={onFocus}
+          />
+        </Box>
     );
 
   const panelDateCreatedField = () =>
