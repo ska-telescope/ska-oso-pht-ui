@@ -1,4 +1,4 @@
-import { MockUserBackendPartial } from './mockUserBackend';
+import { MockUserBackendList } from './mockUserBackend';
 import { TEAM_STATUS_TYPE_OPTIONS } from '@/utils/constants';
 import Investigator, { InvestigatorBackend } from '@/utils/types/investigator';
 
@@ -23,8 +23,14 @@ export function mapping(data: InvestigatorBackend): Investigator {
 
 /*****************************************************************************************************************************/
 
-export function GetMockUserByEmail(email: string): Investigator {
-  return mapping(MockUserBackendPartial);
+// This mocks fetching a user by email using Stargazer team
+export function GetMockUserByEmail(email: string): Investigator | string {
+  const teamList: Investigator[] = MockUserBackendList.map(mapping);
+  const user = teamList.find(user => user.email === email); // TODO make it not case sensitive
+  if (!user) {
+    return 'error.API_UNKNOWN_ERROR';
+  }
+  return user;
 }
 
 /* 
