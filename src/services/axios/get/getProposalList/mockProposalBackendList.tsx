@@ -1,4 +1,4 @@
-import { ProposalBackend } from '../../../utils/types/proposal';
+import { ProposalBackend } from '../../../../utils/types/proposal';
 
 const MockProposalBackendList: ProposalBackend[] = [
   {
@@ -99,7 +99,7 @@ const MockProposalBackendList: ProposalBackend[] = [
       ],
       investigators: [
         {
-          investigator_id: 'prp-ska01-202204-01',
+          user_id: 'prp-ska01-202204-01',
           given_name: 'Tony',
           family_name: 'Bennet',
           email: 'somewhere.vague@example.com',
@@ -429,7 +429,7 @@ const MockProposalBackendList: ProposalBackend[] = [
       ],
       investigators: [
         {
-          investigator_id: 'prp-ska01-202204-01',
+          user_id: 'prp-ska01-202204-01',
           given_name: 'Tony',
           family_name: 'Bennet',
           email: 'somewhere.vague@example.com',
@@ -662,7 +662,7 @@ const MockProposalBackendList: ProposalBackend[] = [
     }
   },
   {
-    prsl_id: 'prp-ska01-202506-23',
+    prsl_id: 'prsl-t0001-20250814-00002',
     status: 'submitted',
     submitted_on: '2022-09-23T15:43:53.971548Z',
     submitted_by: 'TestUser',
@@ -759,7 +759,7 @@ const MockProposalBackendList: ProposalBackend[] = [
       ],
       investigators: [
         {
-          investigator_id: 'prp-ska01-202204-01',
+          user_id: 'prp-ska01-202204-01',
           given_name: 'Tony',
           family_name: 'Bennet',
           email: 'somewhere.vague@example.com',

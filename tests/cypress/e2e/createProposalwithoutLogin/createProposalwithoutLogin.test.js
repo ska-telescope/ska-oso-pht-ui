@@ -16,6 +16,9 @@ import {
 describe('Creating Proposal without login', () => {
   beforeEach(() => {
     initialize();
+    cy.window().then(win => {
+      win.localStorage.setItem('proposal:noLogin', 'true');
+    });
   });
   it('Create a basic proposal without login', () => {
     cy.wait(500);

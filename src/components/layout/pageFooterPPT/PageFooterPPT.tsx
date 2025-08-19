@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid2, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DUMMY_PROPOSAL_ID, LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
+import { DUMMY_PROPOSAL_ID, isCypress, LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
 import NextPageButton from '../../button/NextPage/NextPage';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import Proposal from '../../../utils/types/proposal';
@@ -14,6 +14,13 @@ import TimedAlert from '../../alerts/timedAlert/TimedAlert';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
+import ProposalAccess from '@/utils/types/proposalAccess';
+import {
+  PROPOSAL_ACCESS_SUBMIT,
+  PROPOSAL_ACCESS_UPDATE,
+  PROPOSAL_ACCESS_VIEW,
+  PROPOSAL_ROLE_PI
+} from '@/utils/aaa/aaaUtils';
 
 interface PageFooterPPTProps {
   pageNo: number;
@@ -23,15 +30,23 @@ interface PageFooterPPTProps {
 export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFooterPPTProps) {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
-  const { application, updateAppContent2 } = storageObject.useStore();
+  const { application, updateAppContent2, updateAppContent4 } = storageObject.useStore();
   const [usedPageNo, setUsedPageNo] = React.useState(pageNo);
   const authClient = useAxiosAuthClient();
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const loggedIn = isLoggedIn();
 
-  const isDisableEndpoints = () => !loggedIn;
-
+  const isDisableEndpoints = () => {
+    const noLoginTest = window.localStorage.getItem('proposal:noLogin') === 'true';
+    if (isCypress && noLoginTest) {
+      return true;
+    } else {
+      return !loggedIn && !window.Cypress;
+    }
+  };
   const getObservatoryData = () => application.content3 as ObservatoryData;
+  const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   React.useEffect(() => {
     const getProposal = () => application.content2 as Proposal;
@@ -41,15 +56,12 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   }, []);
 
   const createProposal = async () => {
-    const getProposal = () => application.content2 as Proposal;
-    const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-
     if (!isDisableEndpoints()) {
       notifyWarning(t('addProposal.warning'));
       const response = await PostProposal(
         authClient,
         {
-          ...getProposal(),
+          ...getProposal(), // TODO add PI here
           cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
         },
         PROPOSAL_STATUS.DRAFT
@@ -62,6 +74,19 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
           id: response,
           cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
         });
+        // Create a new access entry for the PI.  Saves doing the endpoint
+        const newAcc: ProposalAccess = {
+          prslId: response,
+          role: PROPOSAL_ROLE_PI,
+          permissions: [PROPOSAL_ACCESS_VIEW, PROPOSAL_ACCESS_UPDATE, PROPOSAL_ACCESS_SUBMIT]
+        };
+
+        const acc = Array.isArray(application.content4)
+          ? (application.content4 as ProposalAccess[])
+          : [];
+
+        updateAppContent4([...acc, newAcc]);
+
         navigate(NAV[1]);
       } else {
         notifyError(response.error);

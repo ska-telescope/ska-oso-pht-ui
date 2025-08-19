@@ -26,7 +26,7 @@ This is as follows:
 Application.Content1 => Status of the proposal for each page
 Application.Content2 => Proposal which is being edited
 Application.Content3 => Original copy of the loaded proposal for comparison
-Application.Content4 => Not used
+Application.Content4 => Contains the ProposalAccess[], used primarily for the submission process
 Application.Content5 => Notifications are placed in here for global presentation
 
 Help.component => Populated with field-dependant help
@@ -55,7 +55,7 @@ Example .env file
 ```
 SKIP_PREFLIGHT_CHECK=true
 REACT_APP_SKA_PHT_BASE_URL=''
-REACT_APP_SKA_OSO_SERVICES_URL='http://192.168.49.2/ska-oso-services/oso/api/v2'
+REACT_APP_SKA_OSO_SERVICES_URL='http://192.168.49.2/ska-oso-services/oso/api/v3'
 REACT_APP_SKA_SENSITIVITY_CALC_URL='http://192.168.49.2/ska-ost-senscalc/api/v11/'
 REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC=false
 REACT_APP_USE_LOCAL_DATA=false

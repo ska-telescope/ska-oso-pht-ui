@@ -5,18 +5,37 @@ import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
 import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
-import { Proposal } from '../../../utils/types/proposal';
-import { helpers } from '../../../utils/helpers';
-import { LAB_POSITION, TEAM_STATUS_TYPE_OPTIONS, WRAPPER_HEIGHT } from '../../../utils/constants';
+import { Proposal, ProposalBackend } from '../../../utils/types/proposal';
+import { generateId, helpers } from '../../../utils/helpers';
+import {
+  DEFAULT_INVESTIGATOR,
+  LAB_POSITION,
+  PROPOSAL_STATUS,
+  TEAM_STATUS_TYPE_OPTIONS,
+  WRAPPER_HEIGHT
+} from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Investigator from '../../../utils/types/investigator';
 import PostSendEmailInvite from '../../../services/axios/postSendEmailInvite/postSendEmailInvite';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
+import PostProposalAccess from '@/services/axios/post/postProposalAccess/postProposalAccess';
+import ProposalAccess from '@/utils/types/proposalAccess';
+import PutProposal from '@/services/axios/putProposal/putProposal';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
-export default function MemberEntry() {
+interface MemberEntryProps {
+  forSearch?: boolean;
+  foundInvestigator?: Investigator;
+  invitationBtnClicked?: () => void;
+}
+
+export default function MemberEntry({
+  forSearch = false,
+  foundInvestigator = DEFAULT_INVESTIGATOR,
+  invitationBtnClicked = () => {}
+}: MemberEntryProps) {
   const { t } = useTranslation('pht');
   const LABEL_WIDTH = 6;
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
@@ -26,9 +45,9 @@ export default function MemberEntry() {
   const authClient = useAxiosAuthClient();
   const { notifyError, notifySuccess } = useNotify();
 
-  const [firstName, setFirstName] = React.useState('');
-  const [lastName, setLastName] = React.useState('');
-  const [email, setEmail] = React.useState('');
+  const [firstName, setFirstName] = React.useState(forSearch ? foundInvestigator.firstName : '');
+  const [lastName, setLastName] = React.useState(forSearch ? foundInvestigator.lastName : '');
+  const [email, setEmail] = React.useState(forSearch ? foundInvestigator.email : '');
   const [pi, setPi] = React.useState(false);
   const [phdThesis, setPhdThesis] = React.useState(false);
 
@@ -144,7 +163,37 @@ export default function MemberEntry() {
     setPi(event.target.checked);
   };
 
-  function AddInvestigator() {
+  const updateProposalResponse = (response: ProposalBackend | { error: string }) => {
+    if (response && !('error' in response)) {
+      notifySuccess(t('saveBtn.success'));
+    } else {
+      notifyError('error' in response ? response.error : 'An unknown error occurred');
+    }
+  };
+
+  const updateProposal = async () => {
+    const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.DRAFT);
+    updateProposalResponse(response);
+  };
+
+  const createAccessRights = async (investigatorId: string): Promise<boolean> => {
+    const access: ProposalAccess = {
+      id: generateId('access-'),
+      prslId: getProposal().id,
+      userId: investigatorId,
+      role: 'Co-Investigator',
+      permissions: ['view']
+    };
+    const response = await PostProposalAccess(authClient, access);
+    if (typeof response === 'object' && 'error' in response) {
+      notifyError(response.error, NOTIFICATION_DELAY_IN_SECONDS);
+      return false;
+    } else {
+      return true;
+    }
+  };
+
+  async function AddInvestigator() {
     const currentInvestigators = getProposal().investigators;
     let highestId = currentInvestigators?.reduce(
       (acc, investigator) => (Number(investigator.id) > acc ? Number(investigator.id) : acc),
@@ -154,19 +203,27 @@ export default function MemberEntry() {
       highestId = 0;
     }
     const newInvestigator: Investigator = {
-      id: (highestId + 1).toString(),
+      id: forSearch ? foundInvestigator?.id : (highestId + 1).toString(),
       firstName: formValues.firstName.value,
       lastName: formValues.lastName.value,
       email: formValues.email.value,
-      // country: '',
       affiliation: '',
       phdThesis: formValues.phdThesis.phdThesis,
       status: TEAM_STATUS_TYPE_OPTIONS.pending,
       pi: formValues.pi.pi,
-      officeLocation: null,
-      jobTitle: null
+      officeLocation: null, // TODO implement once data is available
+      jobTitle: null // TODO implement once data is available
     };
-    setProposal({ ...getProposal(), investigators: [...currentInvestigators, newInvestigator] });
+    // only add the investigator to the proposal once the access rights are created
+    // TODO: should we wait to save the investigators instead?
+    if (await createAccessRights(newInvestigator.id)) {
+      setProposal({
+        ...getProposal(),
+        investigators: [...(currentInvestigators ?? []), newInvestigator]
+      });
+      // save the proposal with new investigators as email has been sent & access rights have been created
+      await updateProposal();
+    }
   }
 
   async function sendEmailInvite(email: string, prsl_id: string): Promise<boolean> {
@@ -193,6 +250,7 @@ export default function MemberEntry() {
     if (await sendEmailInvite(formValues.email.value, getProposal().id)) {
       AddInvestigator();
       clearForm();
+      invitationBtnClicked();
     }
   };
 
@@ -208,6 +266,7 @@ export default function MemberEntry() {
         onFocus={() => helpComponent(t('firstName.help'))}
         errorText={errorTextFirstName}
         required
+        disabled={forSearch}
       />
     );
   };
@@ -224,6 +283,7 @@ export default function MemberEntry() {
         onFocus={() => helpComponent(t('lastName.help'))}
         errorText={errorTextLastName}
         required
+        disabled={forSearch}
       />
     );
   };
@@ -240,6 +300,7 @@ export default function MemberEntry() {
         errorText={errorTextEmail ? t(errorTextEmail) : ''}
         onFocus={() => helpComponent(t('email.help'))}
         required
+        disabled={forSearch}
       />
     );
   };

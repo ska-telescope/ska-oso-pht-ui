@@ -11,11 +11,11 @@ import { Tooltip, Typography, Box, Grid2 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LABEL_POSITION } from '@ska-telescope/ska-gui-components';
-import GetObservatoryData from '@services/axios/getObservatoryData/getObservatoryData.tsx';
 import { validateProposal } from '@utils/proposalValidation.tsx';
 import EditIcon from '../../icon/editIcon/editIcon';
 import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
+import GetObservatoryData from '@/services/axios/get/getObservatoryData/getObservatoryData';
 import Proposal from '@/utils/types/proposal';
 import {
   NOT_SPECIFIED,
@@ -157,45 +157,6 @@ export default function GridProposals({
         setAxiosError(response);
       } else {
         setProposals(response);
-
-        // TODO : remove this once email invitation is working
-        // temporary hack to get investigators members into the proposals as the functionality is not working at the moment
-        response.forEach((proposal: Proposal) => {
-          if (proposal.investigators && proposal.investigators.length === 0) {
-            proposal.investigators = [
-              {
-                firstName: 'Alice',
-                lastName: 'Spears',
-                pi: true,
-                phdThesis: true,
-                id: '123',
-                email: 'alice.spears@example.com',
-                affiliation: 'University of Cambridge',
-                status: 'reviewed'
-              },
-              {
-                firstName: 'Joshua',
-                lastName: 'Smith',
-                pi: false,
-                phdThesis: true,
-                id: '124',
-                email: 'joshua.smith@example.com',
-                affiliation: 'University of Cambridge',
-                status: 'accepted'
-              },
-              {
-                firstName: 'Sophie',
-                lastName: 'Dupont',
-                pi: false,
-                phdThesis: true,
-                id: '125',
-                email: 'sophie.dupont@example.com',
-                affiliation: 'University Paris Sorbonne',
-                status: 'accepted'
-              }
-            ];
-          }
-        });
       }
     };
     fetchData();
@@ -213,7 +174,7 @@ export default function GridProposals({
       if (typeof response === 'string') {
         setAxiosError(response);
       } else {
-        setObservatoryData(response);
+        setObservatoryData(response); // TODO do we need osd data here? It doesn't seem to be used anywhere in the component (justs set to true/false)
       }
     };
     observatoryData();
@@ -474,7 +435,7 @@ export default function GridProposals({
 
   const deleteConfirmed = async () => {
     const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.WITHDRAWN);
-    if (response && !response.error) {
+    if (response && !('error' in response)) {
       setOpenDeleteDialog(false);
       setFetchList(!fetchList);
     } else {

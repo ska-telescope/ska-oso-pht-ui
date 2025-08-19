@@ -1,15 +1,15 @@
-import Investigator, { InvestigatorBackend } from '../../../utils/types/investigator';
-import Proposal, { ProposalBackend } from '../../../utils/types/proposal';
+import MockProposal from '@services/axios/get/getProposalList/mockProposal.tsx';
+import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
+import MockProposalBackendList from './mockProposalBackendList';
+import Proposal, { ProposalBackend } from '@/utils/types/proposal';
 import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
   PROJECTS,
   GENERAL,
-  OSO_SERVICES_PROPOSAL_PATH,
-  DEFAULT_USER
-} from '../../../utils/constants';
-import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
-import MockProposalBackendList from './mockProposalBackendList';
+  OSO_SERVICES_PROPOSAL_PATH
+} from '@/utils/constants';
+import Investigator, { InvestigatorBackend } from '@/utils/types/investigator';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
 
 /*****************************************************************************************************************************/
@@ -33,7 +33,7 @@ const getInvestigators = (inc: InvestigatorBackend[] | null): Investigator[] => 
   }
   for (let item of inc) {
     const investigator = {
-      id: item.investigator_id,
+      id: item.user_id,
       firstName: item.given_name,
       lastName: item.family_name,
       email: item.email,
@@ -99,9 +99,12 @@ async function GetProposalList(
   if (USE_LOCAL_DATA) {
     return GetMockProposalList();
   }
+  if (window.Cypress) {
+    return mappingList(MockProposal);
+  }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/list/` + DEFAULT_USER;
+    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/mine`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
 
     if (!result || !Array.isArray(result.data)) {

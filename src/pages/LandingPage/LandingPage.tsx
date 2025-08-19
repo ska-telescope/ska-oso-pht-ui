@@ -11,10 +11,28 @@ import {
   AlertColorTypes
 } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+//
 import { presentDate, presentLatex, presentTime } from '@utils/present/present';
-import GetObservatoryData from '@services/axios/getObservatoryData/getObservatoryData.tsx';
-import GetProposalList from '../../services/axios/getProposalList/getProposalList';
-import GetProposal from '../../services/axios/getProposal/getProposal';
+import Investigator from '@utils/types/investigator.tsx';
+import GetObservatoryData from '@/services/axios/get/getObservatoryData/getObservatoryData';
+import AddButton from '@/components/button/Add/Add';
+import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
+import EditIcon from '@/components/icon/editIcon/editIcon';
+import TrashIcon from '@/components/icon/trashIcon/trashIcon';
+import ViewIcon from '@/components/icon/viewIcon/viewIcon';
+import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
+import Alert from '@/components/alerts/standardAlert/StandardAlert';
+import emptyCell from '@/components/fields/emptyCell/emptyCell';
+import PutProposal from '@/services/axios/putProposal/putProposal';
+import GetProposal from '@/services/axios/getProposal/getProposal';
+import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
+import Proposal from '@/utils/types/proposal';
+import { storeProposalCopy } from '@/utils/storage/proposalData';
+import { validateProposal } from '@/utils/proposalValidation';
+import ObservatoryData from '@/utils/types/observatoryData';
+import { FOOTER_SPACER, isCypress } from '@/utils/constants';
 import {
   NAV,
   SEARCH_TYPE_OPTIONS,
@@ -22,23 +40,10 @@ import {
   PATH,
   NOT_SPECIFIED,
   FOOTER_HEIGHT_PHT
-} from '../../utils/constants';
-import AddButton from '../../components/button/Add/Add';
-import CloneIcon from '../../components/icon/cloneIcon/cloneIcon';
-import EditIcon from '../../components/icon/editIcon/editIcon';
-import TrashIcon from '../../components/icon/trashIcon/trashIcon';
-import ViewIcon from '../../components/icon/viewIcon/viewIcon';
-import ProposalDisplay from '../../components/alerts/proposalDisplay/ProposalDisplay';
-import Alert from '../../components/alerts/standardAlert/StandardAlert';
-import Proposal from '../../utils/types/proposal';
-import { validateProposal } from '../../utils/proposalValidation';
-import emptyCell from '../../components/fields/emptyCell/emptyCell';
-import PutProposal from '../../services/axios/putProposal/putProposal';
-import { storeProposalCopy } from '../../utils/storage/proposalData';
-import { FOOTER_SPACER } from '../../utils/constants';
-import Investigator from '@/utils/types/investigator';
-import ObservatoryData from '@/utils/types/observatoryData';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+} from '@/utils/constants';
+import ProposalAccess from '@/utils/types/proposalAccess';
+import { accessUpdate } from '@/utils/aaa/aaaUtils';
+import PostPanelGenerate from '@/services/axios/post/postPanelGenerate/postPanelGenerate';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -50,6 +55,7 @@ export default function LandingPage() {
     updateAppContent1,
     updateAppContent2,
     updateAppContent3,
+    updateAppContent4,
     updateAppContent5
   } = storageObject.useStore();
 
@@ -66,9 +72,12 @@ export default function LandingPage() {
   const [fetchList, setFetchList] = React.useState(false);
   const loggedIn = isLoggedIn();
 
+  const getAccess = () => application.content4 as ProposalAccess[];
+  const setAccess = (access: ProposalAccess[]) => updateAppContent4(access);
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const authClient = useAxiosAuthClient();
+  let initialCall = true;
 
   const DATA_GRID_HEIGHT = '60vh';
 
@@ -81,7 +90,9 @@ export default function LandingPage() {
   React.useEffect(() => {
     const fetchData = async () => {
       setProposals([]);
-      if (!loggedIn) return;
+      const noLoginTest = window.localStorage.getItem('proposal:noLogin') === 'true';
+
+      if ((!window.Cypress && !loggedIn) || (isCypress && noLoginTest)) return;
 
       const response = await GetProposalList(authClient);
       if (typeof response === 'string') {
@@ -90,21 +101,42 @@ export default function LandingPage() {
         setProposals(response);
       }
     };
+    const fetchAccess = async () => {
+      setProposals([]);
+      if (!loggedIn) return;
+
+      const response = await GetProposalAccessForUser(authClient);
+      if (typeof response === 'string') {
+        setAxiosError(response);
+      } else {
+        setAccess(response);
+      }
+    };
     fetchData();
+    fetchAccess();
   }, [fetchList, loggedIn]);
 
   React.useEffect(() => {
+    const autoGeneratePanels = async (osd: ObservatoryData) => {
+      // This will trigger the backend to check and provide required panels
+      await PostPanelGenerate(authClient, osd.observatoryPolicy.cycleDescription);
+      // Note that we do not care about the response
+    };
+
     const fetchObservatoryData = async () => {
       const response = await GetObservatoryData(authClient, 1);
-      if (response.error || typeof response === 'string') {
+      if (typeof response === 'string' || (response && (response as any).error)) {
         setAxiosError(response.toString());
       } else {
-        // store osd data into storage 3
         updateAppContent3(response as ObservatoryData);
+        autoGeneratePanels(response);
       }
     };
 
-    fetchObservatoryData();
+    if (initialCall) {
+      initialCall = false;
+      fetchObservatoryData();
+    }
   }, []);
 
   const getTheProposal = async (id: string) => {
@@ -159,7 +191,7 @@ export default function LandingPage() {
     setOpenCloneDialog(false);
     setProposal({
       ...getProposal(),
-      id: null,
+      id: '',
       title: getProposal().title + ' ' + t('cloneProposal.suffix')
     });
     goToTitlePage();
@@ -175,7 +207,7 @@ export default function LandingPage() {
 
   const deleteConfirmed = async () => {
     const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.WITHDRAWN);
-    if (response && !response.error) {
+    if (response && !('error' in response)) {
       setOpenDeleteDialog(false);
       setFetchList(!fetchList);
     } else {
@@ -183,8 +215,14 @@ export default function LandingPage() {
     }
   };
 
-  const canEdit = (e: { row: { status: string } }) => e.row.status === PROPOSAL_STATUS.DRAFT;
-  const canClone = () => true;
+  const CanEdit = (e: { row: { id: string; status: string } }) => {
+    return e.row.status === PROPOSAL_STATUS.DRAFT && accessUpdate(getAccess(), e.row.id);
+  };
+  const CanClone = (e: { row: any }) => {
+    const update = accessUpdate(getAccess(), e.row.id);
+    return update;
+  };
+
   // TODO const canDelete = (e: { row: { status: string } }) =>
   // TODO  e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 
@@ -270,13 +308,13 @@ export default function LandingPage() {
       <>
         <EditIcon
           onClick={() => editIconClicked(e.row.id)}
-          disabled={!canEdit(e)}
-          toolTip={t(canEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
+          disabled={!CanEdit(e)}
+          toolTip={t(CanEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
         />
         <ViewIcon onClick={() => viewIconClicked(e.row.id)} toolTip={t('viewProposal.toolTip')} />
         <CloneIcon
           onClick={() => cloneIconClicked(e.row.id)}
-          disabled={!canClone()}
+          disabled={!CanClone(e)}
           toolTip={t('cloneProposal.toolTip')}
         />
         <TrashIcon

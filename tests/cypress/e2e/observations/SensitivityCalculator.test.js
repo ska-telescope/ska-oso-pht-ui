@@ -17,6 +17,9 @@ import sensitivityCalculatorResults from '../../fixtures/sensitivityCalculatorRe
 
 beforeEach(() => {
   initialize();
+  cy.window().then(win => {
+    win.localStorage.setItem('proposal:noLogin', 'true');
+  });
   cy.fixture('sensitivityCalculatorResults.json').as('sensitivityCalculatorResults');
   createStandardProposal();
   //navigate to observation page

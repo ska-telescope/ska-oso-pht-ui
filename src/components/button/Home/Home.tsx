@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import HomeIcon from '@mui/icons-material/Home';
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
+import { isCypress, PATH } from '@utils/constants.ts';
 import BaseButton from '../Base/Button';
-import { PATH } from '../../../utils/constants';
 import AlertDialog from '../../alerts/alertDialog/AlertDialog';
 
 interface HomeButtonProps {
@@ -27,8 +27,13 @@ export default function HomeButton({
   const { t } = useTranslation('pht');
   const loggedIn = isLoggedIn();
 
-  const isShowWarningWhenClicked = () => !loggedIn;
+  const isShowWarningWhenClicked = () => {
+    const noLoginTest = window.localStorage.getItem('proposal:noLogin') === 'true';
 
+    if (isCypress && noLoginTest) {
+      return true;
+    } else return !window.Cypress && !loggedIn;
+  };
   const ClickFunction = () => {
     if (isShowWarningWhenClicked()) {
       setOpenWarningDialog(true);

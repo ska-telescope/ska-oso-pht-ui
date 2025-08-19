@@ -4,8 +4,8 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import axios from 'axios';
 import GridProposals, { filterProposals, getProposalType } from './GridProposals';
-import MockProposalFrontendList from '@/services/axios/getProposalList/mockProposalFrontendList';
-import MockProposalBackendList from '@/services/axios/getProposalList/mockProposalBackendList';
+import MockProposalFrontendList from '@/services/axios/get/getProposalList/mockProposalFrontendList';
+import MockProposalBackendList from '@/services/axios/get/getProposalList/mockProposalBackendList';
 import { IdObject } from '@/utils/types/idObject';
 
 const mockedSelectedProposals: IdObject[] = [

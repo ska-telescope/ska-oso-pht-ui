@@ -6,25 +6,30 @@ const OPS_REVIEWER_TECHNICAL = 'obs-oauth2role-opsreviewertec-1-1994146425';
 
 export const defaultUser = {
   name: 'Cypress Default User',
-  group: ''
+  group: '',
+  token: 'default-token'
 };
 
 export const reviewerScience = {
   name: 'Cypress Science Reviewer',
-  group: OPS_REVIEWER_SCIENCE
+  group: OPS_REVIEWER_SCIENCE,
+  token: 'science-token'
 };
 
 export const reviewerTechnical = {
   name: 'Cypress Technical Reviewer',
-  group: OPS_REVIEWER_TECHNICAL
+  group: OPS_REVIEWER_TECHNICAL,
+  token: 'technical-token'
 };
 
 export const reviewerChairman = {
   name: 'Cypress Review Chairman',
-  group: OPS_PROPOSAL_ADMIN
+  group: OPS_PROPOSAL_ADMIN,
+  token: 'chairman-token'
 };
 
 export const reviewerAdmin = {
   name: 'Cypress Review Administrator',
-  group: OPS_PROPOSAL_ADMIN
+  group: OPS_PROPOSAL_ADMIN,
+  token: 'admin-token'
 };

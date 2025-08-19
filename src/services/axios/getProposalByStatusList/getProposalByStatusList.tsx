@@ -5,8 +5,8 @@ import {
   OSO_SERVICES_PROPOSAL_PATH
 } from '../../../utils/constants';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
-import MockProposalBackendList from '../getProposalList/mockProposalBackendList';
-import { mappingList } from '../getProposalList/getProposalList';
+import MockProposalBackendList from '../get/getProposalList/mockProposalBackendList';
+import { mappingList } from '../get/getProposalList/getProposalList';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
 
 export function GetMockProposalList(): Proposal[] {

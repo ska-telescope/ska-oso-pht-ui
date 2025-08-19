@@ -238,6 +238,13 @@
     "success": "Email invite has been sent.",
     "error": "Email invite was unsuccessful and member is not added"
   },
+  "emailSearch": {
+    "label": "Email",
+    "help": "This email should be of a registered user within SKAO systems. For example, @skao.int, @assoc.skao.int, or @community.skao.int.",
+    "success": "User was successfully found.",
+    "error": "User could not be found. Please check the email address and try again.",
+    "reset": "Reset user search"
+  },
   "empty": {
     "cell": "There are no contents for this cell"
   },
@@ -323,6 +330,24 @@
   "listOfTargets": {
     "label": "List of Targets",
     "toolTip": "A list of targets can be created individually or imported from a csv file using the appropriate tab."
+  },
+  "manageTeamMember": {
+    "label": "Manage Team Member Rights",
+    "success": "Team member's access has been updated.",
+    "error": "Failed to update team member's access.",
+    "help": "Select the rights for this team member. The Principal Investigator (PI) has all rights by default. The PI can assign rights to other team members as needed.",
+    "submit": {
+      "label": "Submit rights",
+      "help": "Check to indicate that this individual can submit, edit and view the proposal."
+    },
+    "edit": {
+      "label": "Edit rights",
+      "help": "Check to indicate that this individual can edit and view the proposal."
+    },
+    "view": {
+      "label": "View rights",
+      "help": "Check to indicate that this individual can view the proposal."
+    }
   },
   "mediaSize": {
     "notSupported": "The application is not supported on a screen with these dimensions"
@@ -683,6 +708,26 @@
     "title": "Review Decisions",
     "toolTip": "Review Decisions"
   },
+  "reviewOverview": {
+    "panel1": {
+      "title": "Proposal Assignment"
+    },
+    "panel2": {
+      "title": "Review Status"
+    },
+    "panel3": {
+      "title": "Science Categories"
+    },
+    "panel4": {
+      "title": "Panel Distribution"
+    },
+    "panel5": {
+      "title": "Reviewer Distribution"
+    },
+    "panel6": {
+      "title": "Category Distribution"
+    }
+  },
   "reviewProposal": {
     "disabled": "This function is not available",
     "science": "Review proposal science",
@@ -767,13 +812,13 @@
     "error": "A value is required",
     "all": "All science categories"
   },
+  "searchForMember": {
+    "label": "Search for a member"
+  },
   "scienceSubCategory": {
     "label": "Sub-category",
     "help": "SUB-CATEGORY: Select a sub-category that best describes your proposal.",
     "1": "Not specified"
-  },
-  "searchForMember": {
-    "label": "Search for a member"
   },
   "sendInviteBtn": {
     "label": "Send invitation"

@@ -1,5 +1,6 @@
 import { LABEL_POSITION, TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import Target from './types/target';
+import Investigator from './types/investigator';
 import { env } from '@/env';
 
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
@@ -8,13 +9,16 @@ export const USE_LOCAL_DATA_SENSITIVITY_CALC =
 export const SKA_OSO_SERVICES_URL = env.REACT_APP_SKA_OSO_SERVICES_URL;
 export const SKA_SENSITIVITY_CALCULATOR_API_URL = env.REACT_APP_SKA_SENSITIVITY_CALC_URL;
 export const API_VERSION = '/senscalc/api/v11';
-export const OSO_SERVICES_PROPOSAL_PATH = '/pht/prsls';
-export const OSO_SERVICES_REVIEWS_PATH = '/pht/reviews';
-export const OSO_SERVICES_REVIEWERS_PATH = '/pht/reviewers';
-export const OSO_SERVICES_PANEL_PATH = '/pht/panels';
-export const OSO_SERVICES_PANEL_DECISIONS_PATH = '/pht/panel-decisions';
-export const OSO_SERVICES_REPORT_PATH = '/pht/report/';
-export const OSO_SERVICES_USERS_PATH = '/pht/users';
+
+export const OSO_SERVICES_PHT = '/pht/';
+export const OSO_SERVICES_PANEL_PATH = `${OSO_SERVICES_PHT}panels`;
+export const OSO_SERVICES_PANEL_DECISIONS_PATH = `${OSO_SERVICES_PHT}panel/decision`;
+export const OSO_SERVICES_PROPOSAL_PATH = `${OSO_SERVICES_PHT}prsls`;
+export const OSO_SERVICES_PROPOSAL_ACCESS_PATH = `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PHT}proposal-access`;
+export const OSO_SERVICES_REPORT_PATH = `${OSO_SERVICES_PHT}report/`;
+export const OSO_SERVICES_REVIEWS_PATH = `${OSO_SERVICES_PHT}reviews`;
+export const OSO_SERVICES_REVIEWERS_PATH = `${OSO_SERVICES_PHT}reviewers`;
+export const OSO_SERVICES__PATH = `${OSO_SERVICES_PHT}reviewers`;
 //
 export const MSENTRA_CLIENT_ID = env.MSENTRA_CLIENT_ID;
 export const MSENTRA_TENANT_ID = env.MSENTRA_TENANT_ID;
@@ -24,6 +28,8 @@ export const MSENTRA_API_URI = 'api://e4d6bb9b-cdd0-46c4-b30a-d045091b501b';
 export const APP_OVERRIDE_GROUPS = window.Cypress
   ? localStorage.getItem('cypress:group')
   : env.REACT_APP_OVERRIDE_GROUPS;
+
+export const isCypress = typeof window !== 'undefined' && window.Cypress;
 
 /*****************************************/
 
@@ -186,6 +192,11 @@ export const GENERAL = {
   ]
 };
 
+export const GRID_MEMBERS_ACTIONS = {
+  delete: 'delete',
+  access: 'access'
+};
+
 export const HEADER_HEIGHT = 78;
 
 export const HELP_FONT = 16;
@@ -308,6 +319,7 @@ export const PROJECTS = [
     ]
   }
 ];
+
 export const PROPOSAL_STATUS = {
   DRAFT: 'draft',
   SUBMITTED: 'submitted',
@@ -940,16 +952,17 @@ export const PDF_NAME_PREFIXES = {
 
 /***************************************************************/
 
-export const DEFAULT_PI = {
-  id: 'prp-ska01-202204-01',
-  firstName: DEFAULT_USER,
-  lastName: DEFAULT_USER,
-  email: 'ask.lop@map.com',
-  country: 'Lagoon',
-  affiliation: 'University of Free Town',
+export const DEFAULT_INVESTIGATOR: Investigator = {
+  id: '',
+  firstName: '',
+  lastName: '',
+  email: '',
+  affiliation: '',
   phdThesis: false,
-  status: TEAM_STATUS_TYPE_OPTIONS.accepted,
-  pi: true
+  status: TEAM_STATUS_TYPE_OPTIONS.pending,
+  pi: false,
+  officeLocation: null,
+  jobTitle: null
 };
 
 export const DEFAULT_TARGETS: Target = {

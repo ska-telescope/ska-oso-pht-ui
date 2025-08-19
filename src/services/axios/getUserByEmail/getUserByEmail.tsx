@@ -7,7 +7,7 @@ import Investigator, { InvestigatorBackend } from '@/utils/types/investigator';
 
 export function mapping(data: InvestigatorBackend): Investigator {
   const investigator = {
-    id: data.investigator_id,
+    id: data.user_id,
     email: data.email, // This should always be a SKAO email (@community.skao.int or @skao.int)
     firstName: data.given_name,
     lastName: data.family_name,
@@ -23,7 +23,7 @@ export function mapping(data: InvestigatorBackend): Investigator {
 
 /*****************************************************************************************************************************/
 
-export function GetMockUserByEmail(): Investigator {
+export function GetMockUserByEmail(email: string): Investigator {
   return mapping(MockUserBackendPartial);
 }
 
@@ -31,14 +31,14 @@ export function GetMockUserByEmail(): Investigator {
 // TODO implement this with correct path when the backend is ready
 async function GetUserByEmail(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
-  skaEmail: string
+  email: string
 ): Promise<Investigator | string> {
     if (USE_LOCAL_DATA) {
       return GetMockUserByEmail();
     }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_USERS_PATH}/${skaEmail}`;
+    const URL_PATH = `${OSO_SERVICES_USERS_PATH}/${email}`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
 
     if (!result.data) {

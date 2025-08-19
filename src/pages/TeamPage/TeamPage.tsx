@@ -13,9 +13,16 @@ import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import GridMembers from '../../components/grid/members/GridMembers';
 import StarIcon from '../../components/icon/starIcon/starIcon';
-import { FOOTER_SPACER } from '../../utils/constants';
+import { FOOTER_SPACER, GRID_MEMBERS_ACTIONS } from '../../utils/constants';
 import MemberSearch from './MemberSearch/MemberSearch';
 import TeamFileImport from './TeamFileImport/TeamFileImport';
+import MemberAccess from './MemberAccess/MemberAccess';
+import ProposalAccess from '@/utils/types/proposalAccess';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import { useNotify } from '@/utils/notify/useNotify';
+import PutProposalAccess from '@/services/axios/put/putProposalAccess/putProposalAccess';
+import GetProposalAccessForProposal from '@/services/axios/get/getProposalAccess/proposal/getProposalAccessForProposal';
+import { accessPI } from '@/utils/aaa/aaaUtils';
 
 const PAGE = 1;
 
@@ -36,11 +43,18 @@ export default function TeamPage() {
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [theValue, setTheValue] = React.useState(0);
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [openDialog, setOpenDialog] = React.useState(false);
   const [currentMember, setCurrentMember] = React.useState('');
+  const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
+  const [openAccessDialog, setOpenAccessDialog] = React.useState(false);
+  const { notifyError, notifySuccess } = useNotify();
+  const authClient = useAxiosAuthClient();
+  const [selectedOptions, setSelectedOptions] = React.useState<string[]>([]);
+  const [permissions, setPermissions] = React.useState<ProposalAccess[]>([]);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+
+  const getAccess = () => application.content4 as ProposalAccess[];
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
@@ -51,9 +65,24 @@ export default function TeamPage() {
     updateAppContent1(temp);
   };
 
+  const NOTIFICATION_DELAY_IN_SECONDS = 5;
+
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
   }, []);
+
+  React.useEffect(() => {
+    // Set the selected options based on the current member's permissions when permissions change
+    const memberPermissions = permissions.find(p => p.userId === currentMember);
+    setSelectedOptions(memberPermissions?.permissions || []);
+  }, [permissions]);
+
+  React.useEffect(() => {
+    // Fetch proposal access data to set permissions:
+    //  * when the current member changes
+    //  * when the proposal's investigators change
+    fetchProposalAccessData();
+  }, [currentMember, getProposal().investigators]);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -63,16 +92,50 @@ export default function TeamPage() {
     setTheProposalState(validateTeamPage(getProposal()));
   }, [validateToggle]);
 
+  const fetchProposalAccessData = async () => {
+    const response = await GetProposalAccessForProposal(authClient, getProposal()?.id);
+    if (typeof response === 'string') {
+      notifyError(response, NOTIFICATION_DELAY_IN_SECONDS);
+    } else if (typeof response === 'object' && 'error' in response) {
+      notifyError(response.error as string, NOTIFICATION_DELAY_IN_SECONDS);
+    } else {
+      setPermissions(response);
+    }
+  };
+
   const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setTheValue(newValue);
   };
 
   const deleteIconClicked = () => {
-    setOpenDialog(true);
+    setOpenDeleteDialog(true);
+  };
+
+  const accessIconClicked = () => {
+    setOpenAccessDialog(true);
+  };
+
+  const actionClicked = (action: string) => {
+    switch (action) {
+      case GRID_MEMBERS_ACTIONS.delete:
+        deleteIconClicked();
+        break;
+      case GRID_MEMBERS_ACTIONS.access:
+        accessIconClicked();
+        break;
+    }
+  };
+
+  const actionsAvailable = () => {
+    return accessPI(getAccess(), getProposal().id);
   };
 
   const closeDeleteDialog = () => {
-    setOpenDialog(false);
+    setOpenDeleteDialog(false);
+  };
+
+  const closeAccessDialog = () => {
+    setOpenAccessDialog(false);
   };
 
   const ClickMemberRow = (e: { id: number }) => {
@@ -87,7 +150,29 @@ export default function TeamPage() {
     closeDeleteDialog();
   };
 
-  const alertContent = () => {
+  const updateAccess = async (access: ProposalAccess) => {
+    const response = await PutProposalAccess(authClient, access);
+    if (typeof response === 'object' && 'error' in response) {
+      notifyError(response.error, NOTIFICATION_DELAY_IN_SECONDS);
+    } else {
+      notifySuccess(t('manageTeamMember.success'), NOTIFICATION_DELAY_IN_SECONDS); // TODO add translation text
+    }
+    closeAccessDialog();
+  };
+
+  const accessConfirmed = () => {
+    const access: ProposalAccess = {
+      id: permissions.find(p => p.userId === currentMember)?.id as string,
+      prslId: getProposal()?.id,
+      userId: currentMember,
+      role: 'Co-Investigator',
+      permissions: selectedOptions
+    };
+    updateAccess(access);
+    closeAccessDialog();
+  };
+
+  const displayMemberInfo = () => {
     const LABEL_WIDTH = 6;
     const rec = getProposal()?.investigators?.find(p => p.id === currentMember);
     return (
@@ -114,6 +199,21 @@ export default function TeamPage() {
           <Typography variant="body1">{t(rec?.pi ? 'yes' : 'no')}</Typography>
         </FieldWrapper>
       </Grid2>
+    );
+  };
+
+  const deleteAlertContent = () => {
+    return displayMemberInfo();
+  };
+
+  const accessAlertContent = () => {
+    return (
+      <>
+        <Grid2>
+          {displayMemberInfo()}
+          <MemberAccess selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions} />
+        </Grid2>
+      </>
     );
   };
 
@@ -146,15 +246,15 @@ export default function TeamPage() {
         >
           <Grid2 size={{ md: 11, lg: 5 }} order={{ md: 2, lg: 1 }}>
             <GridMembers
-              action
-              actionClicked={deleteIconClicked}
+              action={actionsAvailable()}
+              actionClicked={actionClicked}
               height={400}
               rowClick={ClickMemberRow}
               rows={getRows()}
             />
           </Grid2>
           <Grid2 size={{ md: 11, lg: 6 }} order={{ md: 1, lg: 2 }}>
-            <Box sx={{ width: '100%', border: '1px solid grey' }}>
+            <Box sx={{ width: '100%', border: '1px solid grey', minHeight: '558px' }}>
               <Box>
                 <Tabs
                   variant="fullWidth"
@@ -190,12 +290,21 @@ export default function TeamPage() {
         </Grid2>
       </Grid2>
       <AlertDialog
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
+        open={openDeleteDialog}
+        onClose={() => setOpenDeleteDialog(false)}
         onDialogResponse={deleteConfirmed}
         title="deleteTeamMember.label"
       >
-        {alertContent()}
+        {deleteAlertContent()}
+      </AlertDialog>
+      <AlertDialog
+        open={openAccessDialog}
+        onClose={() => setOpenAccessDialog(false)}
+        onDialogResponse={accessConfirmed}
+        title="manageTeamMember.label"
+        maxWidth="md"
+      >
+        {accessAlertContent()}
       </AlertDialog>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
     </Shell>
