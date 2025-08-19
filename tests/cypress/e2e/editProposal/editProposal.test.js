@@ -37,10 +37,11 @@ import {
   verifyProposalCreatedAlertFooter,
   mockEmailAPI
 } from '../common/common';
+import { defaultUser } from '../users/users.js';
 
 beforeEach(() => {
   initialize();
-  cy.mockLoginButton();
+  cy.mockLoginButton(defaultUser);
   mockCreateProposalAPI();
   mockEmailAPI();
   createStandardProposalLoggedIn();
@@ -63,21 +64,22 @@ describe('Edit Proposal', () => {
     addInvestigator();
     cy.wait('@mockInviteUserByEmail');
     verifyEmailSentAlertFooter();
-    // clickToGeneralPage();
-    // addAbstract();
-    // selectCosmology();
-    // clickToSciencePage();
-    // clickToTargetPage();
-    // addM2TargetUsingResolve();
-    // clickToAddTarget();
-    // clickToObservationPage();
-    // clickObservationSetup();
-    // clickAddObservationEntry();
-    // verifyObservationInTable();
-    // clickObservationFromTable();
-    // clickToLinkTargetAndObservation();
-    // verifySensitivityCalculatorStatusSuccess();
-    // // clickSave(); // TODO uncomment once login is handled in e2e tests
+    //TODO: Mock add team member functionality
+    clickToGeneralPage();
+    addAbstract();
+    selectCosmology();
+    clickToSciencePage();
+    clickToTargetPage();
+    addM2TargetUsingResolve();
+    clickToAddTarget();
+    clickToObservationPage();
+    clickObservationSetup();
+    clickAddObservationEntry();
+    verifyObservationInTable();
+    clickObservationFromTable();
+    clickToLinkTargetAndObservation();
+    verifySensitivityCalculatorStatusSuccess();
+    // clickSave(); // TODO uncomment once login is handled in e2e tests
     // clickToTechnicalPage();
     // clickToObservatoryDataProductPage();
     // clickAddDataProduct();
