@@ -94,12 +94,17 @@ export default function GridMembers({
       flex: 1,
       minWidth: 120,
       disableClickEventBubbling: true,
-      renderCell: () => (
-        <>
-          <TrashIcon onClick={trashClicked} toolTip="Delete team member" />
-          <LockIcon onClick={lockClicked} toolTip="Manage team member rights" />
-        </>
-      )
+      renderCell: (params: any) => {
+        return (
+          <>
+            <TrashIcon onClick={trashClicked} toolTip="Delete team member" />
+            {/* Only show lock icon if the member is registered with entra id */}
+            {!params.row.id.includes('temp-') && (
+              <LockIcon onClick={lockClicked} toolTip="Manage team member rights" />
+            )}
+          </>
+        );
+      }
     }
   ];
 

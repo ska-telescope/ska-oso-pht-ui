@@ -193,17 +193,29 @@ export default function MemberEntry({
     }
   };
 
-  async function AddInvestigator() {
-    const currentInvestigators = getProposal().investigators;
-    let highestId = currentInvestigators?.reduce(
-      (acc, investigator) => (Number(investigator.id) > acc ? Number(investigator.id) : acc),
-      0
-    );
+  async function addToProposalAndSave(
+    currentInvestigators: Investigator[] | undefined,
+    newInvestigator: Investigator
+  ) {
+    setProposal({
+      ...getProposal(),
+      investigators: [...(currentInvestigators ?? []), newInvestigator]
+    });
+    // save the proposal with new investigators as email has been sent & access rights have been created
+    await updateProposal();
+  }
+
+  const getInvestigator = (currentInvestigators: Investigator[] | undefined): Investigator => {
+    let highestId = currentInvestigators?.reduce((acc, investigator) => {
+      const idNumber = Number(investigator.id.replace('mock-', ''));
+      return idNumber > acc ? idNumber : acc;
+    }, 0);
     if (highestId === undefined) {
       highestId = 0;
     }
-    const newInvestigator: Investigator = {
-      id: forSearch ? foundInvestigator?.id : (highestId + 1).toString(),
+
+    return {
+      id: forSearch ? foundInvestigator?.id : `temp-${(highestId + 1).toString()}`,
       firstName: formValues.firstName.value,
       lastName: formValues.lastName.value,
       email: formValues.email.value,
@@ -214,15 +226,22 @@ export default function MemberEntry({
       officeLocation: null, // TODO implement once data is available
       jobTitle: null // TODO implement once data is available
     };
-    // only add the investigator to the proposal once the access rights are created
-    // TODO: should we wait to save the investigators instead?
-    if (await createAccessRights(newInvestigator.id)) {
-      setProposal({
-        ...getProposal(),
-        investigators: [...(currentInvestigators ?? []), newInvestigator]
-      });
-      // save the proposal with new investigators as email has been sent & access rights have been created
-      await updateProposal();
+  };
+
+  async function AddInvestigator() {
+    const currentInvestigators = getProposal().investigators;
+    const newInvestigator: Investigator = getInvestigator(currentInvestigators);
+    // ---------------------------------------------------------------------------------------------------
+    // ---PATH 1---: found investigator with valid entra id (search path), should be added once rights are created
+    // ---------------------------------------------------------------------------------------------------
+    if (forSearch && foundInvestigator?.id && (await createAccessRights(newInvestigator.id))) {
+      addToProposalAndSave(currentInvestigators, newInvestigator);
+    }
+    // ---------------------------------------------------------------------------------------------------
+    // ---PATH 2---: for investigator without valid entra id (sent email path), don't create access rights
+    // ---------------------------------------------------------------------------------------------------
+    if (!forSearch && !foundInvestigator?.id) {
+      addToProposalAndSave(currentInvestigators, newInvestigator);
     }
   }
 
