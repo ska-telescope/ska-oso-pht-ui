@@ -64,7 +64,7 @@ async function GetPanelList(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
   user_id = DEFAULT_USER
 ): Promise<Panel[] | string> {
-  if (window.Cypress || USE_LOCAL_DATA) {
+  if (USE_LOCAL_DATA) {
     return GetMockPanelList();
   }
 

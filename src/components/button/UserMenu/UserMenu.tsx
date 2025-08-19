@@ -7,7 +7,7 @@ import { Button, ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 // import { ButtonLogin } from './LoginButton';
-import { PMT, PATH } from '@/utils/constants';
+import { PMT, PATH, isCypress } from '@/utils/constants';
 import { isReviewerAdmin, isReviewerChair, isReviewer } from '@/utils/aaa/aaaUtils';
 
 export type Children = JSX.Element | JSX.Element[] | null;
@@ -43,7 +43,7 @@ export default function ButtonUserMenu({
   React.useEffect(() => {
     const accountStr = localStorage.getItem('cypress:account');
     const account = accountStr ? JSON.parse(accountStr) : null;
-    if (account && window.Cypress) {
+    if (account && isCypress) {
       setCypressLogin(account.name);
     }
   }, []);

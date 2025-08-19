@@ -38,7 +38,8 @@ import {
   OSO_SERVICES_PROPOSAL_PATH,
   PDF_NAME_PREFIXES,
   RA_TYPE_ICRS,
-  RA_TYPE_GALACTIC
+  RA_TYPE_GALACTIC,
+  isCypress
 } from '../../../utils/constants';
 import { DocumentBackend, DocumentPDF } from '../../../utils/types/document';
 import { ObservationSetBackend } from '../../../utils/types/observationSet';
@@ -636,7 +637,7 @@ async function GetProposal(
     return GetMockProposal();
   }
 
-  if (window.Cypress) {
+  if (isCypress) {
     return mapping(MockProposal);
   }
 

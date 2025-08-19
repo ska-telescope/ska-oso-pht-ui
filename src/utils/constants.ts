@@ -3,7 +3,9 @@ import Target from './types/target';
 import Investigator from './types/investigator';
 import { env } from '@/env';
 
-export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
+// export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
+export const USE_LOCAL_DATA = localStorage.getItem('USE_LOCAL_DATA') === 'true';
+
 export const USE_LOCAL_DATA_SENSITIVITY_CALC =
   env.REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC === 'true';
 export const SKA_OSO_SERVICES_URL = env.REACT_APP_SKA_OSO_SERVICES_URL;
