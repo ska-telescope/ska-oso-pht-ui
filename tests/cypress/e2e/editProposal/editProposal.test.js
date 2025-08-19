@@ -84,13 +84,13 @@ describe('Edit Proposal', () => {
     clickObservationFromTable();
     clickToLinkTargetAndObservation();
     verifySensitivityCalculatorStatusSuccess();
-    clickSave(); // TODO uncomment once login is handled in e2e tests
+    clickSave();
     clickToTechnicalPage();
     clickToObservatoryDataProductPage();
     clickAddDataProduct();
     addObservatoryDataProduct();
     //validate proposal
-    validateProposal(); // TODO uncomment once login is handled in e2e tests
+    validateProposal();
     // //TODO: The remainder of this scenario can be reinstated upon completion of STAR-954
     // // verifyProposalIsValid()
     // //submit proposal
