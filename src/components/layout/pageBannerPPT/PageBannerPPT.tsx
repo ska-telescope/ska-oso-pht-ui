@@ -12,6 +12,7 @@ import StatusArray from '../../statusArray/StatusArray';
 import SubmitButton from '../../button/Submit/Submit';
 import ValidateButton from '../../button/Validate/Validate';
 import {
+  isCypress,
   LAST_PAGE,
   NAV,
   PAGE_SRC_NET,
@@ -55,8 +56,14 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   const loggedIn = isLoggedIn();
 
-  const isDisableEndpoints = () => !loggedIn;
-
+  const isDisableEndpoints = () => {
+    const testDefaultUser = window.localStorage.getItem('cypress:defaultUserLoggedIn') === 'true';
+    if (isCypress && testDefaultUser) {
+      return false;
+    } else {
+      return !loggedIn;
+    }
+  };
   const getAccess = () => application.content4 as ProposalAccess[];
   const getProposal = () => application.content2 as Proposal;
 

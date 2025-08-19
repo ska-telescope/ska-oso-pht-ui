@@ -41,6 +41,9 @@ import { defaultUser } from '../users/users.js';
 
 beforeEach(() => {
   initialize();
+  cy.window().then(win => {
+    win.localStorage.setItem('cypress:defaultUserLoggedIn', 'true');
+  });
   cy.mockLoginButton(defaultUser);
   mockCreateProposalAPI();
   mockEmailAPI();
@@ -79,13 +82,13 @@ describe('Edit Proposal', () => {
     clickObservationFromTable();
     clickToLinkTargetAndObservation();
     verifySensitivityCalculatorStatusSuccess();
-    // clickSave(); // TODO uncomment once login is handled in e2e tests
-    // clickToTechnicalPage();
-    // clickToObservatoryDataProductPage();
-    // clickAddDataProduct();
-    // addObservatoryDataProduct();
-    // //validate proposal
-    // // validateProposal();  // TODO uncomment once login is handled in e2e tests
+    clickSave(); // TODO uncomment once login is handled in e2e tests
+    clickToTechnicalPage();
+    clickToObservatoryDataProductPage();
+    clickAddDataProduct();
+    addObservatoryDataProduct();
+    //validate proposal
+    validateProposal(); // TODO uncomment once login is handled in e2e tests
     // //TODO: The remainder of this scenario can be reinstated upon completion of STAR-954
     // // verifyProposalIsValid()
     // //submit proposal
