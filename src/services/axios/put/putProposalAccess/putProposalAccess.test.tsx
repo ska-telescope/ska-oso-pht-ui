@@ -2,7 +2,6 @@ import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
 import PutProposalAccess from '@services/axios/put/putProposalAccess/putProposalAccess.tsx';
 import MockProposalAccessFrontend from '@services/axios/put/putProposalAccess/mockProposalAccessFrontend.tsx';
-import MockProposalAccessBackend from '@services/axios/put/putProposalAccess/mockProposalAccessBackend.tsx';
 import * as CONSTANTS from '@/utils/constants';
 
 describe('PutProposalAccess Service', () => {
