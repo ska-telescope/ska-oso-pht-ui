@@ -3,7 +3,7 @@ import { render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import MemberEntry from './MemberEntry';
-import { MockUserFrontendPartial } from '@/services/axios/getUserByEmail/mockUserFrontend';
+import { MockUserFrontendList } from '@/services/axios/getUserByEmail/mockUserFrontend';
 
 describe('<MemberEntry />', () => {
   test('renders correctly', () => {
@@ -52,16 +52,16 @@ describe('<MemberEntry /> foundInvestigator', () => {
   test('renders correctly, foundInvestigator provided', async () => {
     const { container } = render(
       <StoreProvider>
-        <MemberEntry forSearch foundInvestigator={MockUserFrontendPartial} />
+        <MemberEntry forSearch foundInvestigator={MockUserFrontendList[0]} />
       </StoreProvider>
     );
     await waitFor(() => {
       const firstNameField = container.querySelector('[id="firstName"]');
-      expect(firstNameField).toHaveValue(MockUserFrontendPartial.firstName);
+      expect(firstNameField).toHaveValue(MockUserFrontendList[0].firstName);
       const lastNameField = container.querySelector('[id="lastName"]');
-      expect(lastNameField).toHaveValue(MockUserFrontendPartial.lastName);
+      expect(lastNameField).toHaveValue(MockUserFrontendList[0].lastName);
       const emailField = container.querySelector('[id="email"]');
-      expect(emailField).toHaveValue(MockUserFrontendPartial.email);
+      expect(emailField).toHaveValue(MockUserFrontendList[0].email);
     });
   });
   test('renders correctly, foundInvestigator not provided', async () => {

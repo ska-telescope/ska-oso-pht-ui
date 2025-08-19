@@ -75,7 +75,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
           cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
         });
         // Create a new access entry for the PI.  Saves doing the endpoint
-        const newAcc: ProposalAccess = {
+        const newAcc: Partial<ProposalAccess> = {
           prslId: response,
           role: PROPOSAL_ROLE_PI,
           permissions: [PROPOSAL_ACCESS_VIEW, PROPOSAL_ACCESS_UPDATE, PROPOSAL_ACCESS_SUBMIT]

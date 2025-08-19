@@ -16,6 +16,7 @@ import GridMembers from '../../grid/members/GridMembers';
 import skaoIcon from '../../../components/icon/skaoIcon/skaoIcon';
 import GridObservationSummary from '../../../components/grid/observationSummary/GridObservationSummary';
 import emptyCell from '../../../components/fields/emptyCell/emptyCell';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
 interface ProposalDisplayProps {
   proposal: Proposal | null;
@@ -43,6 +44,7 @@ export default function ProposalDisplay({
 }: ProposalDisplayProps) {
   const { t } = useTranslation('pht');
   const theme = useTheme();
+  const authClient = useAxiosAuthClient();
 
   const getFont = (bold: boolean) => (bold ? 600 : 300);
 
@@ -61,7 +63,7 @@ export default function ProposalDisplay({
   const downloadPdf = async (fileType: string) => {
     try {
       const selectedFile = `${proposal?.id}-` + fileType + t('fileType.pdf');
-      const signedUrl = await GetPresignedDownloadUrl(selectedFile);
+      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
 
       window.open(signedUrl, '_blank');
 
