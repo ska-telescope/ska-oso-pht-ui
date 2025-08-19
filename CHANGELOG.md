@@ -8,11 +8,14 @@ UNRELEASED
 ------------
 
 * Security : Added AAA across all oso-services
-* Changed  : oso-services v2.0.3
+* Changed  : oso-services v3.0.0
 * Added : getUserByEmail service using a mock user
 * Changed : rename frontend type "TeamMember" into "Investigator" for consistency
 * Changed : rename frontend property of proposal "team" into "investigators" for consistency
 * Added : implement search user functionality on team page using mocked getUserByEmail service
+* Added : Application calls endpoint to check and add panels for reviews if needed
+* Changed : Landing page now using endpoint that limits so only the users own proposals can be seen
+* Removed : Ability to have a mocked logged in user
 
 3.1.0
 

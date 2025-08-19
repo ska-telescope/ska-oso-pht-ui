@@ -12,12 +12,13 @@ export const API_VERSION = '/senscalc/api/v11';
 
 export const OSO_SERVICES_PHT = '/pht/';
 export const OSO_SERVICES_PANEL_PATH = `${OSO_SERVICES_PHT}panels`;
-export const OSO_SERVICES_PANEL_DECISIONS_PATH = `${OSO_SERVICES_PHT}panel-decisions`;
+export const OSO_SERVICES_PANEL_DECISIONS_PATH = `${OSO_SERVICES_PHT}panel/decision`;
 export const OSO_SERVICES_PROPOSAL_PATH = `${OSO_SERVICES_PHT}prsls`;
 export const OSO_SERVICES_PROPOSAL_ACCESS_PATH = `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PHT}proposal-access`;
-export const OSO_SERVICES_REPORT_PATH = `${OSO_SERVICES_PHT}report`;
+export const OSO_SERVICES_REPORT_PATH = `${OSO_SERVICES_PHT}report/`;
 export const OSO_SERVICES_REVIEWS_PATH = `${OSO_SERVICES_PHT}reviews`;
 export const OSO_SERVICES_REVIEWERS_PATH = `${OSO_SERVICES_PHT}reviewers`;
+export const OSO_SERVICES__PATH = `${OSO_SERVICES_PHT}reviewers`;
 //
 export const MSENTRA_CLIENT_ID = env.MSENTRA_CLIENT_ID;
 export const MSENTRA_TENANT_ID = env.MSENTRA_TENANT_ID;
@@ -189,6 +190,11 @@ export const GENERAL = {
     { label: 'Transients', subCategory: [{ label: 'Not specified', value: 1 }], value: 13 },
     { label: 'VLBI', subCategory: [{ label: 'Not specified', value: 1 }], value: 14 }
   ]
+};
+
+export const GRID_MEMBERS_ACTIONS = {
+  delete: 'delete',
+  access: 'access'
 };
 
 export const HEADER_HEIGHT = 78;

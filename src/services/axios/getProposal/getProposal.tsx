@@ -60,7 +60,7 @@ const getInvestigators = (inValue: InvestigatorBackend[] | null) => {
   }
   for (let i = 0; i < inValue?.length; i++) {
     investigators.push({
-      id: inValue[i].investigator_id,
+      id: inValue[i].user_id,
       status: inValue[i].status,
       firstName: inValue[i].given_name,
       lastName: inValue[i].family_name,

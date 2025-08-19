@@ -99,7 +99,7 @@ const MockProposalBackendList: ProposalBackend[] = [
       ],
       investigators: [
         {
-          investigator_id: 'prp-ska01-202204-01',
+          user_id: 'prp-ska01-202204-01',
           given_name: 'Tony',
           family_name: 'Bennet',
           email: 'somewhere.vague@example.com',
@@ -429,7 +429,7 @@ const MockProposalBackendList: ProposalBackend[] = [
       ],
       investigators: [
         {
-          investigator_id: 'prp-ska01-202204-01',
+          user_id: 'prp-ska01-202204-01',
           given_name: 'Tony',
           family_name: 'Bennet',
           email: 'somewhere.vague@example.com',
@@ -759,7 +759,7 @@ const MockProposalBackendList: ProposalBackend[] = [
       ],
       investigators: [
         {
-          investigator_id: 'prp-ska01-202204-01',
+          user_id: 'prp-ska01-202204-01',
           given_name: 'Tony',
           family_name: 'Bennet',
           email: 'somewhere.vague@example.com',

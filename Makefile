@@ -27,7 +27,7 @@ js-pre-e2e-test:
 	mkdir -p build/.nyc_output
 
 # The default PHT_BACKEND_URL points to the umbrella chart PHT back-end deployment
-BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/api/v2
+BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/api/v3
 POSTGRES_HOST ?= $(RELEASE_NAME)-postgresql
 
 K8S_CHART_PARAMS += \
@@ -63,6 +63,13 @@ ENV_CHECK := $(shell echo $(CI_ENVIRONMENT_SLUG) | egrep 'test|dev|integration')
 ifneq ($(ENV_CHECK),)
 K8S_CHART_PARAMS += --set ska-oso-pht-ui.image.tag=$(VERSION)-dev.c$(CI_COMMIT_SHORT_SHA) \
 	--set ska-oso-pht-ui.image.registry=$(CI_REGISTRY)/ska-telescope/oso/ska-oso-pht-ui 
+endif
+
+# For dev - use oso-services integration
+ENV_CHECK_DEV := $(shell echo $(CI_ENVIRONMENT_SLUG) | grep 'dev')
+ifneq ($(ENV_CHECK_DEV),)
+K8S_CHART_PARAMS += \
+  --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl="/integration-ska-oso-services/oso/api/v3"
 endif
 
 set-dev-env-vars:

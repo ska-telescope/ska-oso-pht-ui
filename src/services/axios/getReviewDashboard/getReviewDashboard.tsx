@@ -4,11 +4,11 @@ import {
   USE_LOCAL_DATA
 } from '../../../utils/constants';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
-import { mockReviewDashboard } from './mockReviewDashboard';
+import { mockReviewDashboardBackend } from './mockReviewDashboard';
 import { ReviewDashboard, ReviewDashboardBackend } from '@/utils/types/reviewDashboard';
 
 export function getMockReviewDashboard(): ReviewDashboard[] {
-  return mappingReviewDashboardBackendToFrontend(mockReviewDashboard);
+  return mappingReviewDashboardBackendToFrontend(mockReviewDashboardBackend);
 }
 
 export function mappingReviewDashboardBackendToFrontend(
@@ -58,8 +58,7 @@ async function getReviewDashboard(
   }
 
   try {
-    const URL_PATH = OSO_SERVICES_REPORT_PATH;
-    const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
+    const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${OSO_SERVICES_REPORT_PATH}`);
 
     if (!result || !Array.isArray(result.data)) {
       return { error: 'error.API_UNKNOWN_ERROR' };

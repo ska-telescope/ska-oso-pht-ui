@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
-import GetObservatoryData from '@services/axios/getObservatoryData/getObservatoryData.tsx';
-import { MockObservatoryDataBackend } from '@services/axios/getObservatoryData/mockObservatoryDataBackend.tsx';
-import { MockObservatoryDataFrontend } from '@services/axios/getObservatoryData/mockObservatoryDataFrontend.tsx';
 import ObservatoryData from '@utils/types/observatoryData.tsx';
+import GetObservatoryData from '@/services/axios/get/getObservatoryData/getObservatoryData';
+import { MockObservatoryDataBackend } from '@/services/axios/get/getObservatoryData/mockObservatoryDataBackend';
+import { MockObservatoryDataFrontend } from '@/services/axios/get/getObservatoryData/mockObservatoryDataFrontend';
 
 describe('GetObservatoryData Service', () => {
   let mockedAuthClient: any;

@@ -33,7 +33,7 @@ const getInvestigators = (inc: InvestigatorBackend[] | null): Investigator[] => 
   }
   for (let item of inc) {
     const investigator = {
-      id: item.investigator_id,
+      id: item.user_id,
       firstName: item.given_name,
       lastName: item.family_name,
       email: item.email,
@@ -104,7 +104,7 @@ async function GetProposalList(
   }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/mine/`;
+    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/mine`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
 
     if (!result || !Array.isArray(result.data)) {
