@@ -26,7 +26,7 @@ export function mapping(data: InvestigatorBackend): Investigator {
 // This mocks fetching a user by email using Stargazer team
 export function GetMockUserByEmail(email: string): Investigator | string {
   const teamList: Investigator[] = MockUserBackendList.map(mapping);
-  const user = teamList.find(user => user.email === email); // TODO make it not case sensitive
+  const user = teamList.find(user => user.email.toLowerCase() === email.toLowerCase());
   if (!user) {
     return 'error.API_UNKNOWN_ERROR';
   }
