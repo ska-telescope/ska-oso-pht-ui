@@ -4,15 +4,14 @@ import { Grid2, Paper } from '@mui/material';
 import { AlertColorTypes, SearchEntry } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import moment from 'moment';
+import Proposal from '@/utils/types/proposal';
+import { FOOTER_SPACER } from '@/utils/constants';
 import {
   BANNER_PMT_SPACER,
   DEFAULT_USER,
   PANEL_DECISION_STATUS,
   PROPOSAL_STATUS
-} from '../../utils/constants';
-import Proposal from '../../utils/types/proposal';
-import { FOOTER_SPACER } from '../../utils/constants';
+} from '@/utils/constants';
 
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import TableReviewDecision from '@/components/grid/tableReviewDecision/TableReviewDecision';
@@ -29,6 +28,7 @@ import GetProposalByStatusList from '@/services/axios/getProposalByStatusList/ge
 import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
 import { useNotify } from '@/utils/notify/useNotify';
 import { getUserId } from '@/utils/aaa/aaaUtils';
+import { generateId } from '@/utils/helpers';
 
 /*
  * Process for retrieving the data for the list
@@ -72,18 +72,10 @@ export default function ReviewDecisionListPage() {
     return Math.round(average);
   };
 
-  const getDateFormatted = () => moment().format('YYYY-MM-DD');
-
   const getReviewDecision = (item: { id: any; recommendation: any; reviews: any[] }) => {
     const filtered = item.reviews.filter(el => el.reviewType.excludedFromDecision === false);
     return {
-      id:
-        'pnld-' +
-        userId +
-        '-' +
-        getDateFormatted() +
-        '-00001-' +
-        Math.floor(Math.random() * 10000000).toString(),
+      id: generateId('pnld-'),
       panelId: '1',
       cycle: getCycleId(),
       proposalId: item.id,
@@ -112,15 +104,7 @@ export default function ReviewDecisionListPage() {
     scienceCategory: string;
     title: string;
     details: any[];
-    reviewStatus:
-      | string
-      | number
-      | boolean
-      | React.ReactPortal
-      | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-      | Iterable<React.ReactNode>
-      | null
-      | undefined;
+    reviewStatus: string;
     lastUpdated: string;
     rank: number;
     comments: string;

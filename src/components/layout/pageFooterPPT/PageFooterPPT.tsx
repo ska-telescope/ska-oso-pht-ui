@@ -38,10 +38,10 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
 
   const isDisableEndpoints = () => {
     const noLoginTest = window.localStorage.getItem('proposal:noLogin') === 'true';
-    if (isCypress && noLoginTest) {
+    if (noLoginTest) {
       return true;
     } else {
-      return !loggedIn && !window.Cypress;
+      return !loggedIn && !isCypress;
     }
   };
   const getObservatoryData = () => application.content3 as ObservatoryData;

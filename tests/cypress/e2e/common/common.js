@@ -70,6 +70,19 @@ export const mockCreateProposalAPI = () => {
   });
 };
 
+export const mockEmailAPI = () => {
+  cy.window().then(win => {
+    const token = win.localStorage.getItem('cypress:token');
+    cy.intercept('POST', '**/pht/prsls/send-email/', req => {
+      req.headers['Authorization'] = `Bearer ${token}`;
+      req.reply({
+        statusCode: 200,
+        body: { message: 'Email sent successfully' }
+      });
+    }).as('mockInviteUserByEmail');
+  });
+};
+
 /*----------------------------------------------------------------------*/
 
 export const clickButton = testId => {
@@ -221,6 +234,14 @@ export const createStandardProposal = () => {
   pageConfirmed('TEAM');
 };
 
+export const createStandardProposalLoggedIn = () => {
+  clickAddProposal();
+  enterProposalTitle();
+  clickProposalTypePrincipleInvestigator();
+  clickSubProposalTypeTargetOfOpportunity();
+  clickCreateProposal();
+};
+
 export const clickToTeamPage = () => {
   clickToNextPage();
   pageConfirmed('TEAM');
@@ -296,12 +317,6 @@ export const verifyOnLandingPageFilterIsVisible = () => {
   cy.get('[data-testid="proposalType"]').should('exist');
   cy.get('[data-testid="proposalType"]').click();
   cy.get('[data-value="draft"]').click({ force: true });
-};
-
-export const verifyFirstProposalOnLandingPageIsVisible = () => {
-  cy.get('[data-testid="dataGridId"]')
-    .should('contain', 'prsl-t0001-')
-    .should('contain', 'Proposal Title');
 };
 
 export const verifyMockedProposalOnLandingPageIsVisible = () => {

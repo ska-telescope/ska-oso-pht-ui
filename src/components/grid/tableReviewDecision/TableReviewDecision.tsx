@@ -18,6 +18,7 @@ import {
 } from '@mui/material';
 import { ChevronRight, ExpandMore } from '@mui/icons-material';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
+import TableTechnicalReviews from '../tableTechnicalReview/TableTechnicalReviews';
 import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
 import SubmitButton from '@/components/button/Submit/Submit';
 import { presentDate, presentLatex, presentTime } from '@/utils/present/present';
@@ -57,24 +58,6 @@ export default function TableReviewDecision({
       newExpandedRows.add(id);
     }
     setExpandedRows(newExpandedRows);
-
-    // Announce the state change to screen readers
-    const employee = data.find((item: { id: number }) => item.id === id);
-    const message = wasExpanded
-      ? `Collapsed details for ${employee?.title}`
-      : `Expanded details for ${employee?.title}. ${employee?.reviews?.length} additional details available.`;
-
-    // Create a temporary live region for announcements
-    const announcement = document.createElement('div');
-    announcement.setAttribute('aria-live', 'polite');
-    announcement.setAttribute('aria-atomic', 'true');
-    announcement.className = 'sr-only';
-    announcement.textContent = message;
-    document.body.appendChild(announcement);
-
-    setTimeout(() => {
-      document.body.removeChild(announcement);
-    }, 1000);
   };
 
   const calculateRank = (details: Array<any>) => {
@@ -105,8 +88,8 @@ export default function TableReviewDecision({
         component={Paper}
         elevation={1}
         role="region"
-        aria-label="Employee data table with expandable details"
-        data-testid="employee-table"
+        aria-label="Review data table with expandable details"
+        data-testid="review-table"
       >
         <Table sx={{ minWidth: 650 }} aria-label="Employee information table">
           <TableHead>
@@ -154,27 +137,18 @@ export default function TableReviewDecision({
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map(
+            {(data && Array.isArray(data) ? data : []).map(
               (
                 item: {
                   id: number;
                   scienceCategory: string;
                   title: string;
                   details: any[];
-                  reviewStatus:
-                    | string
-                    | number
-                    | boolean
-                    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-                    | Iterable<React.ReactNode>
-                    | React.ReactPortal
-                    | null
-                    | undefined;
+                  reviewStatus: string;
                   lastUpdated: string;
                   rank: number;
                   comments: string;
                   reviews: any[];
-                  recommendation: any;
                   [key: string]: any;
                 },
                 index: number
@@ -197,7 +171,7 @@ export default function TableReviewDecision({
                           aria-label={`${
                             expandedRows.has(item.id) ? 'Collapse' : 'Expand'
                           } details for ${item.title}. ${
-                            item.reviews?.length
+                            item?.reviews?.length
                           } additional details available.`}
                           aria-expanded={expandedRows.has(item.id)}
                           aria-controls={`employee-details-${item.id}`}
@@ -214,9 +188,9 @@ export default function TableReviewDecision({
                         <Typography
                           variant="caption"
                           color="text.secondary"
-                          aria-label={`${item.reviews?.length} additional details`}
+                          aria-label={`${item?.reviews?.length} additional details`}
                         >
-                          {item.reviews?.length}
+                          {item?.reviews?.length}
                         </Typography>
                       </Box>
                     </TableCell>
@@ -232,9 +206,9 @@ export default function TableReviewDecision({
                     </TableCell>
                     <TableCell role="gridcell">
                       <Typography variant="body2" color="text.secondary">
-                        {item.decisions.length
-                          ? item.decisions[item.decisions.length - 1]?.status
-                          : 'To Do'}
+                        {item?.decisions?.length > 0
+                          ? item.decisions[item?.decisions?.length - 1]?.status
+                          : t('reviewStatus.to do')}
                       </Typography>
                     </TableCell>
                     <TableCell role="gridcell">
@@ -264,6 +238,7 @@ export default function TableReviewDecision({
                       role="gridcell"
                     >
                       <Collapse in={expandedRows.has(item.id)} timeout="auto" unmountOnExit>
+                        <TableTechnicalReviews data={item} />
                         <TableScienceReviews data={item} excludeFunction={excludeFunction} />
 
                         <Box p={2}>
@@ -293,8 +268,8 @@ export default function TableReviewDecision({
                                   <Grid2>
                                     <SubmitButton
                                       action={() => submitFunctionClicked(item)}
-                                      aria-label={`Submit employee data for ${item.title}`}
-                                      data-testid={`submit-employee-button-${item.id}`}
+                                      aria-label={`Submit review data for ${item.title}`}
+                                      data-testid={`submit-review-button-${item.id}`}
                                       toolTip="decisionSubmit.help"
                                     />
                                   </Grid2>

@@ -6,11 +6,6 @@ import { Box, Grid2, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import useTheme from '@mui/material/styles/useTheme';
-import HomeButton from '../../button/Home/Home';
-import SaveButton from '../../button/Save/Save';
-import StatusArray from '../../statusArray/StatusArray';
-import SubmitButton from '../../button/Submit/Submit';
-import ValidateButton from '../../button/Validate/Validate';
 import {
   LAST_PAGE,
   NAV,
@@ -20,11 +15,16 @@ import {
   STATUS_ERROR,
   STATUS_INITIAL,
   STATUS_PARTIAL
-} from '../../../utils/constants';
+} from '@utils/constants.ts';
+import { Proposal, ProposalBackend } from '@utils/types/proposal.tsx';
+import HomeButton from '../../button/Home/Home';
+import SaveButton from '../../button/Save/Save';
+import StatusArray from '../../statusArray/StatusArray';
+import SubmitButton from '../../button/Submit/Submit';
+import ValidateButton from '../../button/Validate/Validate';
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
 import ValidationResults from '../../alerts/validationResults/ValidationResults';
 import PutProposal from '../../../services/axios/putProposal/putProposal';
-import { Proposal, ProposalBackend } from '../../../utils/types/proposal';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import PostProposalValidate from '../../../services/axios/postProposalValidate/postProposalValidate';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
@@ -55,8 +55,14 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   const loggedIn = isLoggedIn();
 
-  const isDisableEndpoints = () => !loggedIn;
-
+  const isDisableEndpoints = () => {
+    const testDefaultUser = window.localStorage.getItem('cypress:defaultUserLoggedIn') === 'true';
+    if (testDefaultUser) {
+      return false;
+    } else {
+      return !loggedIn;
+    }
+  };
   const getAccess = () => application.content4 as ProposalAccess[];
   const getProposal = () => application.content2 as Proposal;
 
