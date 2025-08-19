@@ -1,6 +1,7 @@
 import { useTranslation } from 'react-i18next';
 import { Typography } from '@mui/material';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
+import React from 'react';
 import StarIcon from '../../../components/icon/starIcon/starIcon';
 import TickIcon from '../../../components/icon/tickIcon/tickIcon';
 import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
@@ -8,6 +9,7 @@ import Alert from '../../alerts/standardAlert/StandardAlert';
 import Investigator from '../../../utils/types/investigator';
 import LockIcon from '@/components/icon/lockIcon/lockIcon';
 import { GRID_MEMBERS_ACTIONS } from '@/utils/constants';
+import ProposalAccess from '@/utils/types/proposalAccess';
 
 interface GridMembersProps {
   action?: boolean;
@@ -15,7 +17,7 @@ interface GridMembersProps {
   height?: number;
   rowClick?: Function;
   rows?: Investigator[];
-  // TODO display team member access rights in new column
+  permissions?: ProposalAccess[];
 }
 
 export default function GridMembers({
@@ -23,9 +25,16 @@ export default function GridMembers({
   actionClicked,
   height = 171,
   rowClick,
-  rows = []
+  rows = [],
+  permissions = []
 }: GridMembersProps) {
   const { t } = useTranslation('pht');
+  const [access, setAccess] = React.useState<ProposalAccess[]>([]);
+
+  React.useEffect(() => {
+    setAccess(permissions);
+  }, [permissions]);
+
   const PIStar = ({ pi }: { pi: any }) => {
     if (pi) {
       return <StarIcon onClick={() => {}} />;
@@ -87,6 +96,26 @@ export default function GridMembers({
   };
 
   const actionColumns = [
+    {
+      field: 'permissions',
+      headerName: t('manageTeamMember.rights'),
+      sortable: false,
+      flex: 2,
+      minWidth: 160,
+      disableClickEventBubbling: true,
+      renderCell: (params: any) => {
+        const userAccess = access.find((acc: ProposalAccess) => acc.userId === params.row.id)
+          ?.permissions;
+        const desiredOrder = ['view', 'update', 'submit'];
+        const ordered = desiredOrder.filter(item => userAccess?.includes(item.toLowerCase()));
+        const accessDisplay = ordered
+          ?.map((perm: string) => {
+            return t(`manageTeamMember.${perm === 'update' ? 'edit' : perm}.short`);
+          })
+          .join(', ');
+        return <>{accessDisplay ? accessDisplay : ''}</>;
+      }
+    },
     {
       field: 'id',
       headerName: t('actions.label'),

@@ -77,6 +77,18 @@ export default function TeamPage() {
     setSelectedOptions(memberPermissions?.permissions || []);
   }, [permissions]);
 
+  const updateAccess = async (access: ProposalAccess) => {
+    const response = await PutProposalAccess(authClient, access);
+    if (typeof response === 'object' && 'error' in response) {
+      notifyError(response.error, NOTIFICATION_DELAY_IN_SECONDS);
+    } else {
+      notifySuccess(t('manageTeamMember.success'), NOTIFICATION_DELAY_IN_SECONDS); // TODO add translation text
+    }
+    closeAccessDialog();
+    // get the updated access data
+    fetchProposalAccessData();
+  };
+
   React.useEffect(() => {
     // Fetch proposal access data to set permissions:
     //  * when the current member changes
@@ -148,16 +160,6 @@ export default function TeamPage() {
     setProposal({ ...getProposal(), investigators: obs1 });
     setCurrentMember('');
     closeDeleteDialog();
-  };
-
-  const updateAccess = async (access: ProposalAccess) => {
-    const response = await PutProposalAccess(authClient, access);
-    if (typeof response === 'object' && 'error' in response) {
-      notifyError(response.error, NOTIFICATION_DELAY_IN_SECONDS);
-    } else {
-      notifySuccess(t('manageTeamMember.success'), NOTIFICATION_DELAY_IN_SECONDS); // TODO add translation text
-    }
-    closeAccessDialog();
   };
 
   const accessConfirmed = () => {
@@ -251,6 +253,7 @@ export default function TeamPage() {
               height={400}
               rowClick={ClickMemberRow}
               rows={getRows()}
+              permissions={permissions}
             />
           </Grid2>
           <Grid2 size={{ md: 11, lg: 6 }} order={{ md: 1, lg: 2 }}>
