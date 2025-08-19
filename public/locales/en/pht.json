@@ -995,6 +995,7 @@
   },
   "submitBtn": {
     "label": "Submit",
+    "success": "Submission was successful",
     "tooltip": "Progress the proposal to the submitted state"
   },
   "velocityType": {

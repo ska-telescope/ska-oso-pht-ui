@@ -13,16 +13,10 @@ import {
   useTheme,
   Grid2
 } from '@mui/material';
+import { Key } from 'react';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { useNavigate } from 'react-router-dom';
-import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal, Key } from 'react';
-import ViewIcon from '@/components/icon/viewIcon/viewIcon';
-import GetProposal from '@/services/axios/getProposal/getProposal';
-import { validateProposal } from '@/utils/proposalValidation';
-import { PMT } from '@/utils/constants';
-import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
-import { useNotify } from '@/utils/notify/useNotify';
+import { PANEL_DECISION_STATUS, REVIEW_TYPE } from '@/utils/constants';
+import { ScienceReview } from '@/utils/types/proposalReview';
 
 const STATUS_SIZE = 20;
 
@@ -34,37 +28,9 @@ interface TableScienceReviewsProps {
 export default function TableScienceReviews({ data, excludeFunction }: TableScienceReviewsProps) {
   const { t } = useTranslation('pht');
   const theme = useTheme();
-  const navigate = useNavigate();
-  const { notifyError } = useNotify();
 
-  const { clearApp, updateAppContent1, updateAppContent2 } = storageObject.useStore();
-
-  const authClient = useAxiosAuthClient();
-
-  const getTheProposal = async (id: string) => {
-    clearApp();
-
-    const response = await GetProposal(authClient, id);
-    if (typeof response === 'string') {
-      notifyError(t('proposal.error'));
-      return false;
-    } else {
-      updateAppContent1(validateProposal(response));
-      updateAppContent2(response);
-      validateProposal(response);
-      return true;
-    }
-  };
-
-  const handleViewAction = async (item: any, detail: any) => {
-    const output = item;
-    output.reviews = [detail];
-    getTheProposal(item.id).then(success => {
-      if (success === true) {
-        navigate(PMT[5], { replace: true, state: output });
-      }
-    });
-  };
+  const filteredData = (reviews: any[]) =>
+    reviews.filter(el => el?.reviewType?.kind === REVIEW_TYPE.SCIENCE);
 
   return (
     <Box sx={{ width: '100%', p: 3 }}>
@@ -88,47 +54,13 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.reviews?.map(
+            {filteredData(data.reviews)?.map(
               (
                 detail: {
-                  status:
-                    | string
-                    | number
-                    | boolean
-                    | ReactElement<any, string | JSXElementConstructor<any>>
-                    | Iterable<ReactNode>
-                    | null
-                    | undefined;
-                  comments:
-                    | string
-                    | number
-                    | boolean
-                    | ReactElement<any, string | JSXElementConstructor<any>>
-                    | Iterable<ReactNode>
-                    | ReactPortal
-                    | null
-                    | undefined;
-                  srcNet:
-                    | string
-                    | number
-                    | boolean
-                    | ReactElement<any, string | JSXElementConstructor<any>>
-                    | Iterable<ReactNode>
-                    | ReactPortal
-                    | null
-                    | undefined;
-                  reviewType: {
-                    rank:
-                      | string
-                      | number
-                      | boolean
-                      | ReactElement<any, string | JSXElementConstructor<any>>
-                      | Iterable<ReactNode>
-                      | ReactPortal
-                      | null
-                      | undefined;
-                    excludedFromDecision: any;
-                  };
+                  status: string;
+                  comments: string;
+                  srcNet: string;
+                  reviewType: ScienceReview;
                 },
                 detailIndex: Key | null | undefined
               ) => (
@@ -187,7 +119,9 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
                       <Grid2>
                         <IconButton
                           onClick={() =>
-                            detail.status === 'To Do' ? null : excludeFunction(detail)
+                            detail.status === PANEL_DECISION_STATUS.TO_DO
+                              ? null
+                              : excludeFunction(detail)
                           }
                           style={{ cursor: 'hand' }}
                           // CODE BELOW WILL BE IMPLEMENTED AT A LATER DATE
@@ -202,23 +136,14 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
                             testId={`includeIcon-${data.id}-${detailIndex}`}
                             icon
                             level={
-                              detail.status === 'To Do' || detail.reviewType.excludedFromDecision
+                              detail.status === PANEL_DECISION_STATUS.TO_DO ||
+                              detail.reviewType.excludedFromDecision
                                 ? 1
                                 : 0
                             }
                             size={STATUS_SIZE}
                           />
                         </IconButton>
-                      </Grid2>
-                      <Grid2>
-                        <ViewIcon
-                          onClick={() => handleViewAction(data, detail)}
-                          aria-label={`View detail ${
-                            typeof detailIndex === 'number' ? detailIndex + 1 : 1
-                          } for ${data.title}`}
-                          testId={`view-detail-button-${data.id}-${detailIndex}`}
-                          toolTip="View detail"
-                        />
                       </Grid2>
                     </Grid2>
                   </TableCell>
