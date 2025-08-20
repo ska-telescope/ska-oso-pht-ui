@@ -49,22 +49,6 @@ export const frequencyConversion = (inValue: any, from: number, to: number = FRE
   return (inValue * FREQUENCY_UNITS[to - 1].toHz) / FREQUENCY_UNITS[from - 1].toHz;
 };
 
-//TODO: Verify if this can be removed
-// export const getScaledValue = (value: any, multiplier: number, operator: string) => {
-//   let val_scaled = 0;
-//   switch (operator) {
-//     case '*':
-//       val_scaled = value * multiplier;
-//       break;
-//     case '/':
-//       val_scaled = value / multiplier;
-//       break;
-//     default:
-//       val_scaled = value;
-//   }
-//   return val_scaled;
-// };
-
 export const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
   const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * SPEED_OF_LIGHT : 0;
   const occ = velocity < 1000 ? 0 : 1;

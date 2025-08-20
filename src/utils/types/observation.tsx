@@ -31,38 +31,4 @@ type Observation = {
   // TODO: get right ascension + declination from target => store in target and send it as pointing_centre: '00:00:00.0 00:00:00.0',
 };
 
-/*
-TODO : this is unused, can it be removed?
-export const NEW_OBSERVATION: Observation = {
-  id: null,
-  telescope: 0,
-  subarray: 0,
-  linked: '',
-  type: 0,
-  observingBand: 0,
-  weather: 0,
-  elevation: 15,
-  centralFrequency: 0,
-  centralFrequencyUnits: 0,
-  bandwidth: 0,
-  continuumBandwidth: 0,
-  continuumBandwidthUnits: 0,
-  spectralAveraging: 0,
-  tapering: 0,
-  imageWeighting: 0,
-  robust: 3,
-  supplied: {
-    type: 0,
-    value: 0,
-    units: 0
-  },
-  spectralResolution: 'DUMMY',
-  effectiveResolution: 'DUMMY',
-  numSubBands: 0,
-  num15mAntennas: 4,
-  num13mAntennas: 0,
-  numStations: 0
-};
-*/
-
 export default Observation;
