@@ -79,4 +79,6 @@ describe('<MemberEntry /> foundInvestigator', () => {
       expect(emailField).toHaveTextContent('');
     });
   });
+
+  // TODO - Add more tests for MemberEntry component
 });
