@@ -1,5 +1,5 @@
 import { presentUnits } from '@utils/present/present';
-import { ContinuumData, StandardData, Telescope } from '../../../utils/types/typesSensCalc';
+import { ContinuumData, StandardData, Telescope } from '@utils/types/typesSensCalc.tsx';
 import {
   DECIMAL_PLACES,
   FREQUENCY_HZ,
@@ -11,14 +11,22 @@ import {
   TIME_SECS,
   RA_TYPE_GALACTIC,
   RA_TYPE_ICRS
-} from '../../../utils/constantsSensCalc';
+} from '@utils/constantsSensCalc.ts';
 import {
   getImageWeightingMapping,
   getSensitivitiesUnitsMapping,
   isLow,
   isSuppliedTime,
   shiftSensitivity
-} from '../../../utils/helpersSensCalc';
+} from '@utils/helpersSensCalc.ts';
+import {
+  BANDWIDTH_TELESCOPE,
+  OBS_TYPES,
+  OBSERVATION,
+  SUPPLIED_TYPE_SENSITIVITY,
+  TYPE_CONTINUUM
+} from '@utils/constants.ts';
+import { SensCalcResults, ResultsSection } from '@utils/types/sensCalcResults.tsx';
 import {
   addFrequency,
   addRobustProperty,
@@ -28,15 +36,7 @@ import {
   rxBand
 } from '../submissionEntries/submissionEntries';
 import Fetch from '../fetch/Fetch';
-import {
-  BANDWIDTH_TELESCOPE,
-  OBS_TYPES,
-  OBSERVATION,
-  SUPPLIED_TYPE_SENSITIVITY,
-  TYPE_CONTINUUM
-} from '../../../utils/constants';
 import Target, { PointingPatternParams } from '../../../utils/types/target';
-import { SensCalcResults, ResultsSection } from '../../../utils/types/sensCalcResults';
 import Observation from '../../../utils/types/observation';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 
