@@ -1,8 +1,7 @@
 import { describe, test } from 'vitest';
-import { addTime, addValue, rxBand } from '@services/api/submissionEntries/submissionEntries.tsx';
+import { addValue, rxBand } from '@services/api/submissionEntries/submissionEntries.tsx';
 
 describe('Submission entries functions', () => {
-
   test('rx Band', () => {
     expect(rxBand('mid_band_1')).toBe('&rx_band=Band 1');
     expect(rxBand('mid_band_2')).toBe('&rx_band=Band 2');

@@ -20,6 +20,14 @@ import {
   shiftSensitivity
 } from '@utils/helpersSensCalc.ts';
 import {
+  BANDWIDTH_TELESCOPE,
+  OBS_TYPES,
+  OBSERVATION,
+  SUPPLIED_TYPE_SENSITIVITY,
+  TYPE_CONTINUUM
+} from '@utils/constants.ts';
+import { SensCalcResults, ResultsSection } from '@utils/types/sensCalcResults.tsx';
+import {
   addFrequency,
   addRobustProperty,
   addTime,
@@ -28,15 +36,7 @@ import {
   rxBand
 } from '../submissionEntries/submissionEntries';
 import Fetch from '../fetch/Fetch';
-import {
-  BANDWIDTH_TELESCOPE,
-  OBS_TYPES,
-  OBSERVATION,
-  SUPPLIED_TYPE_SENSITIVITY,
-  TYPE_CONTINUUM
-} from '@utils/constants.ts';
 import Target, { PointingPatternParams } from '../../../utils/types/target';
-import { SensCalcResults, ResultsSection } from '@utils/types/sensCalcResults.tsx';
 import Observation from '../../../utils/types/observation';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 
