@@ -15,12 +15,7 @@ import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
 import ProposalAccess from '@/utils/types/proposalAccess';
-import {
-  PROPOSAL_ACCESS_SUBMIT,
-  PROPOSAL_ACCESS_UPDATE,
-  PROPOSAL_ACCESS_VIEW,
-  PROPOSAL_ROLE_PI
-} from '@/utils/aaa/aaaUtils';
+import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 
 interface PageFooterPPTProps {
   pageNo: number;
@@ -75,10 +70,10 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
           cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
         });
         // Create a new access entry for the PI.  Saves doing the endpoint
-        const newAcc: ProposalAccess = {
+        const newAcc: Partial<ProposalAccess> = {
           prslId: response,
           role: PROPOSAL_ROLE_PI,
-          permissions: [PROPOSAL_ACCESS_VIEW, PROPOSAL_ACCESS_UPDATE, PROPOSAL_ACCESS_SUBMIT]
+          permissions: PROPOSAL_ACCESS_PERMISSIONS
         };
 
         const acc = Array.isArray(application.content4)

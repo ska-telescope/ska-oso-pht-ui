@@ -12,4 +12,6 @@ describe('<MemberSearch />', () => {
       </StoreProvider>
     );
   });
+
+  // TODO - Add more tests for MemberSearch component
 });

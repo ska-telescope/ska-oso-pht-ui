@@ -6,6 +6,11 @@ import { useTranslation } from 'react-i18next';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LAB_POSITION, WRAPPER_HEIGHT } from '@/utils/constants';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
+import {
+  PROPOSAL_ACCESS_SUBMIT,
+  PROPOSAL_ACCESS_UPDATE,
+  PROPOSAL_ACCESS_VIEW
+} from '@/utils/aaa/aaaUtils';
 
 interface MemberAccessProps {
   selectedOptions: string[];
@@ -21,11 +26,17 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
   }, []);
 
   React.useEffect(() => {
-    if (selectedOptions.includes('submit') && !selectedOptions.includes('update')) {
-      handleCheckboxChange('update');
+    if (
+      selectedOptions.includes(PROPOSAL_ACCESS_SUBMIT) &&
+      !selectedOptions.includes(PROPOSAL_ACCESS_UPDATE)
+    ) {
+      handleCheckboxChange(PROPOSAL_ACCESS_UPDATE);
     }
-    if (selectedOptions.includes('update') && !selectedOptions.includes('view')) {
-      handleCheckboxChange('view');
+    if (
+      selectedOptions.includes(PROPOSAL_ACCESS_UPDATE) &&
+      !selectedOptions.includes(PROPOSAL_ACCESS_VIEW)
+    ) {
+      handleCheckboxChange(PROPOSAL_ACCESS_VIEW);
     }
   }, [selectedOptions]);
 
@@ -54,8 +65,8 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
         labelBold
         labelPosition={LAB_POSITION}
         testId="submitCheckbox"
-        checked={selectedOptions.includes('submit')}
-        onChange={() => handleCheckboxChange('submit')}
+        checked={selectedOptions.includes(PROPOSAL_ACCESS_SUBMIT)}
+        onChange={() => handleCheckboxChange(PROPOSAL_ACCESS_SUBMIT)}
         onFocus={() => helpComponent(t('manageTeamMember.submit.help'))}
       />
     );
@@ -68,10 +79,10 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
         labelBold
         labelPosition={LAB_POSITION}
         testId="editCheckbox"
-        checked={selectedOptions.includes('update')}
-        onChange={() => handleCheckboxChange('update')}
+        checked={selectedOptions.includes(PROPOSAL_ACCESS_UPDATE)}
+        onChange={() => handleCheckboxChange(PROPOSAL_ACCESS_UPDATE)}
         onFocus={() => helpComponent(t('manageTeamMember.edit.help'))}
-        disabled={selectedOptions.includes('submit')}
+        disabled={selectedOptions.includes(PROPOSAL_ACCESS_SUBMIT)}
       />
     );
   };
@@ -83,10 +94,13 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
         labelBold
         labelPosition={LAB_POSITION}
         testId="viewCheckbox"
-        checked={selectedOptions.includes('view')}
-        onChange={() => handleCheckboxChange('view')}
+        checked={selectedOptions.includes(PROPOSAL_ACCESS_VIEW)}
+        onChange={() => handleCheckboxChange(PROPOSAL_ACCESS_VIEW)}
         onFocus={() => helpComponent(t('manageTeamMember.view.help'))}
-        disabled={selectedOptions.includes('update') || selectedOptions.includes('submit')}
+        disabled={
+          selectedOptions.includes(PROPOSAL_ACCESS_UPDATE) ||
+          selectedOptions.includes(PROPOSAL_ACCESS_SUBMIT)
+        }
       />
     );
   };

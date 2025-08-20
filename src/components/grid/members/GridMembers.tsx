@@ -8,6 +8,8 @@ import Alert from '../../alerts/standardAlert/StandardAlert';
 import Investigator from '../../../utils/types/investigator';
 import LockIcon from '@/components/icon/lockIcon/lockIcon';
 import { GRID_MEMBERS_ACTIONS } from '@/utils/constants';
+import ProposalAccess from '@/utils/types/proposalAccess';
+import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ACCESS_UPDATE } from '@/utils/aaa/aaaUtils';
 
 interface GridMembersProps {
   action?: boolean;
@@ -15,7 +17,7 @@ interface GridMembersProps {
   height?: number;
   rowClick?: Function;
   rows?: Investigator[];
-  // TODO display team member access rights in new column
+  permissions?: ProposalAccess[];
 }
 
 export default function GridMembers({
@@ -23,9 +25,11 @@ export default function GridMembers({
   actionClicked,
   height = 171,
   rowClick,
-  rows = []
+  rows = [],
+  permissions = []
 }: GridMembersProps) {
   const { t } = useTranslation('pht');
+
   const PIStar = ({ pi }: { pi: any }) => {
     if (pi) {
       return <StarIcon onClick={() => {}} />;
@@ -85,8 +89,27 @@ export default function GridMembers({
   const lockClicked = () => {
     if (actionClicked) actionClicked(GRID_MEMBERS_ACTIONS.access);
   };
-
   const actionColumns = [
+    {
+      field: 'permissions',
+      headerName: t('manageTeamMember.rights'),
+      sortable: false,
+      flex: 2,
+      minWidth: 160,
+      disableClickEventBubbling: true,
+      renderCell: (params: any) => {
+        const userAccess = permissions.find((acc: ProposalAccess) => acc.userId === params.row.id)
+          ?.permissions;
+        const desiredOrder = PROPOSAL_ACCESS_PERMISSIONS;
+        const ordered = desiredOrder.filter(item => userAccess?.includes(item.toLowerCase()));
+        const accessDisplay = ordered
+          ?.map((perm: string) => {
+            return t(`manageTeamMember.${perm === PROPOSAL_ACCESS_UPDATE ? 'edit' : perm}.short`);
+          })
+          .join(', ');
+        return <>{accessDisplay ? accessDisplay : ''}</>;
+      }
+    },
     {
       field: 'id',
       headerName: t('actions.label'),
@@ -94,12 +117,17 @@ export default function GridMembers({
       flex: 1,
       minWidth: 120,
       disableClickEventBubbling: true,
-      renderCell: () => (
-        <>
-          <TrashIcon onClick={trashClicked} toolTip="Delete team member" />
-          <LockIcon onClick={lockClicked} toolTip="Manage team member rights" />
-        </>
-      )
+      renderCell: (params: any) => {
+        return (
+          <>
+            <TrashIcon onClick={trashClicked} toolTip={t('deleteTeamMember.toolTip')} />
+            {/* Only show lock icon if the member is registered with entra id */}
+            {!params.row.id.includes('temp-') && (
+              <LockIcon onClick={lockClicked} toolTip={t('manageTeamMember.tooltip')} />
+            )}
+          </>
+        );
+      }
     }
   ];
 

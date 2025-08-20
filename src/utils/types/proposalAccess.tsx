@@ -1,9 +1,5 @@
 import { Metadata } from './metadata';
-import {
-  PROPOSAL_ACCESS_SUBMIT,
-  PROPOSAL_ACCESS_UPDATE,
-  PROPOSAL_ACCESS_VIEW
-} from '@/utils/aaa/aaaUtils';
+import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 
 export type ProposalAccessBackend = {
   access_id: string;
@@ -26,8 +22,8 @@ export type ProposalAccess = {
 export const NEW_PROPOSAL_ACCESS = {
   id: '',
   prsl_id: '',
-  role: 'Principal Investigator',
-  permissions: [PROPOSAL_ACCESS_VIEW, PROPOSAL_ACCESS_UPDATE, PROPOSAL_ACCESS_SUBMIT]
+  role: PROPOSAL_ROLE_PI,
+  permissions: PROPOSAL_ACCESS_PERMISSIONS
 };
 
 export default ProposalAccess;

@@ -184,7 +184,8 @@
     "toolTip": "Delete the target"
   },
   "deleteTeamMember": {
-    "label": "Delete this team member ? "
+    "toolTip": "Delete team member",
+    "query": "Delete this team member ? "
   },
   "deleteObservation": {
     "label": "Delete this observation ? ",
@@ -334,18 +335,23 @@
   "manageTeamMember": {
     "label": "Manage Team Member Rights",
     "success": "Team member's access has been updated.",
+    "toolTip": "Manage Team Member Rights",
     "error": "Failed to update team member's access.",
     "help": "Select the rights for this team member. The Principal Investigator (PI) has all rights by default. The PI can assign rights to other team members as needed.",
+    "rights": "Rights",
     "submit": {
       "label": "Submit rights",
+      "short": "Submit",
       "help": "Check to indicate that this individual can submit, edit and view the proposal."
     },
     "edit": {
       "label": "Edit rights",
+      "short": "Edit",
       "help": "Check to indicate that this individual can edit and view the proposal."
     },
     "view": {
       "label": "View rights",
+      "short": "View",
       "help": "Check to indicate that this individual can view the proposal."
     }
   },
