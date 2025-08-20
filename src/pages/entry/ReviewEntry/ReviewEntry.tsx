@@ -181,7 +181,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       setSrcNetComments(locationProperties?.state?.sciReview?.srcNet);
     }
     previewSignedUrl(locationProperties.state.id, 'pdfDownload.science.label');
-    previewSignedUrl(locationProperties?.state.id, 'pdfDownload.science.label');
+    previewSignedUrl(locationProperties.state.id, 'pdfDownload.technical.label');
   }, []);
 
   const submitDisabled = () => {
