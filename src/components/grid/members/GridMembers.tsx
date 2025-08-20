@@ -9,6 +9,7 @@ import Investigator from '../../../utils/types/investigator';
 import LockIcon from '@/components/icon/lockIcon/lockIcon';
 import { GRID_MEMBERS_ACTIONS } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
+import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ACCESS_UPDATE } from '@/utils/aaa/aaaUtils';
 
 interface GridMembersProps {
   action?: boolean;
@@ -99,11 +100,11 @@ export default function GridMembers({
       renderCell: (params: any) => {
         const userAccess = permissions.find((acc: ProposalAccess) => acc.userId === params.row.id)
           ?.permissions;
-        const desiredOrder = ['view', 'update', 'submit'];
+        const desiredOrder = PROPOSAL_ACCESS_PERMISSIONS;
         const ordered = desiredOrder.filter(item => userAccess?.includes(item.toLowerCase()));
         const accessDisplay = ordered
           ?.map((perm: string) => {
-            return t(`manageTeamMember.${perm === 'update' ? 'edit' : perm}.short`);
+            return t(`manageTeamMember.${perm === PROPOSAL_ACCESS_UPDATE ? 'edit' : perm}.short`);
           })
           .join(', ');
         return <>{accessDisplay ? accessDisplay : ''}</>;
@@ -119,10 +120,10 @@ export default function GridMembers({
       renderCell: (params: any) => {
         return (
           <>
-            <TrashIcon onClick={trashClicked} toolTip="Delete team member" />
+            <TrashIcon onClick={trashClicked} toolTip={t('deleteTeamMember.toolTip')} />
             {/* Only show lock icon if the member is registered with entra id */}
             {!params.row.id.includes('temp-') && (
-              <LockIcon onClick={lockClicked} toolTip="Manage team member rights" />
+              <LockIcon onClick={lockClicked} toolTip={t('manageTeamMember.tooltip')} />
             )}
           </>
         );

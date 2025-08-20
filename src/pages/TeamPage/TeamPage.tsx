@@ -296,7 +296,7 @@ export default function TeamPage() {
         open={openDeleteDialog}
         onClose={() => setOpenDeleteDialog(false)}
         onDialogResponse={deleteConfirmed}
-        title="deleteTeamMember.label"
+        title="deleteTeamMember.query"
       >
         {deleteAlertContent()}
       </AlertDialog>

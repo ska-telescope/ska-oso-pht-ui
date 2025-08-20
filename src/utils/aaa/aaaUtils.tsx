@@ -6,6 +6,11 @@ import ProposalAccess from '../types/proposalAccess';
 export const PROPOSAL_ACCESS_VIEW = 'view';
 export const PROPOSAL_ACCESS_UPDATE = 'update';
 export const PROPOSAL_ACCESS_SUBMIT = 'submit';
+export const PROPOSAL_ACCESS_PERMISSIONS = [
+  PROPOSAL_ACCESS_VIEW,
+  PROPOSAL_ACCESS_UPDATE,
+  PROPOSAL_ACCESS_SUBMIT
+];
 export const PROPOSAL_ROLE_PI = 'Principal Investigator';
 
 const OPS_PROPOSAL_ADMIN = 'obs-oauth2role-opsproposaladmin-1-1535351309'; //'ce3627de-8ec2-4a35-ab1e-300eec6a0a50';

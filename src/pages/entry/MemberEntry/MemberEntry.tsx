@@ -22,6 +22,7 @@ import { useNotify } from '@/utils/notify/useNotify';
 import PostProposalAccess from '@/services/axios/post/postProposalAccess/postProposalAccess';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import PutProposal from '@/services/axios/putProposal/putProposal';
+import { PROPOSAL_ACCESS_VIEW } from '@/utils/aaa/aaaUtils';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
@@ -182,7 +183,7 @@ export default function MemberEntry({
       prslId: getProposal().id,
       userId: investigatorId,
       role: 'Co-Investigator',
-      permissions: ['view']
+      permissions: [PROPOSAL_ACCESS_VIEW]
     };
     const response = await PostProposalAccess(authClient, access);
     if (typeof response === 'object' && 'error' in response) {
