@@ -7,6 +7,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 UNRELEASED
 ------------
 
+3.2.0
+
+-------
 * Security : Added AAA across all oso-services
 * Changed  : oso-services v3.0.0
 * Added : getUserByEmail service using a mock user
