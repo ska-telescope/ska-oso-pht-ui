@@ -7,8 +7,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 UNRELEASED
 ------------
 
-* Security : Added AAA across all oso-services
-* Changed  : oso-services v3.0.0
+4.0.0
+
+-------
+* [BREAKING] Security : Added AAA across all oso-services
+* [BREAKING] Changed  : oso-services v3.0.0
 * Added : getUserByEmail service using a mock user
 * Changed : rename frontend type "TeamMember" into "Investigator" for consistency
 * Changed : rename frontend property of proposal "team" into "investigators" for consistency
