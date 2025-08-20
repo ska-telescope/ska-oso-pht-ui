@@ -13,11 +13,7 @@ import {
   accessUpdate,
   accessView,
   hasProposalAccess,
-  hasProposalAccessPermission,
-  PROPOSAL_ACCESS_VIEW,
-  PROPOSAL_ROLE_PI,
-  PROPOSAL_ACCESS_UPDATE,
-  PROPOSAL_ACCESS_PERMISSIONS
+  hasProposalAccessPermission
 } from './aaaUtils';
 
 const OPS_PROPOSAL_ADMIN = 'obs-oauth2role-opsproposaladmin-1-1535351309';
@@ -27,12 +23,17 @@ const SW_ENGINEER = 'obs-integrationenvs-oauth2role-sweng-11162868063';
 // 👇 Mutable override value
 let overrideGroups = '';
 
+const PROPOSAL_ACCESS_VIEW = 'view';
+const PROPOSAL_ACCESS_UPDATE = 'update';
+const PROPOSAL_ACCESS_SUBMIT = 'submit';
+const PROPOSAL_ROLE_PI = 'Principal Investigator';
+
 const mockAccessList: ProposalAccess[] = [
   {
     id: 'access-001',
     prslId: 'prsl-001',
     userId: 'user-001',
-    permissions: PROPOSAL_ACCESS_PERMISSIONS,
+    permissions: [PROPOSAL_ACCESS_SUBMIT, PROPOSAL_ACCESS_VIEW],
     role: PROPOSAL_ROLE_PI
   },
   {

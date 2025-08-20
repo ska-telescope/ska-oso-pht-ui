@@ -6,7 +6,11 @@ import { useTranslation } from 'react-i18next';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LAB_POSITION, WRAPPER_HEIGHT } from '@/utils/constants';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
-import { PROPOSAL_ACCESS_UPDATE, PROPOSAL_ACCESS_VIEW } from '@/utils/aaa/aaaUtils';
+import {
+  PROPOSAL_ACCESS_SUBMIT,
+  PROPOSAL_ACCESS_UPDATE,
+  PROPOSAL_ACCESS_VIEW
+} from '@/utils/aaa/aaaUtils';
 
 interface MemberAccessProps {
   selectedOptions: string[];
@@ -23,7 +27,7 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
 
   React.useEffect(() => {
     if (
-      selectedOptions.includes(PROPOSAL_ACCESS_VIEW) &&
+      selectedOptions.includes(PROPOSAL_ACCESS_SUBMIT) &&
       !selectedOptions.includes(PROPOSAL_ACCESS_UPDATE)
     ) {
       handleCheckboxChange(PROPOSAL_ACCESS_UPDATE);
@@ -61,8 +65,8 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
         labelBold
         labelPosition={LAB_POSITION}
         testId="submitCheckbox"
-        checked={selectedOptions.includes(PROPOSAL_ACCESS_VIEW)}
-        onChange={() => handleCheckboxChange(PROPOSAL_ACCESS_VIEW)}
+        checked={selectedOptions.includes(PROPOSAL_ACCESS_SUBMIT)}
+        onChange={() => handleCheckboxChange(PROPOSAL_ACCESS_SUBMIT)}
         onFocus={() => helpComponent(t('manageTeamMember.submit.help'))}
       />
     );
@@ -78,7 +82,7 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
         checked={selectedOptions.includes(PROPOSAL_ACCESS_UPDATE)}
         onChange={() => handleCheckboxChange(PROPOSAL_ACCESS_UPDATE)}
         onFocus={() => helpComponent(t('manageTeamMember.edit.help'))}
-        disabled={selectedOptions.includes(PROPOSAL_ACCESS_VIEW)}
+        disabled={selectedOptions.includes(PROPOSAL_ACCESS_SUBMIT)}
       />
     );
   };
@@ -95,7 +99,7 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
         onFocus={() => helpComponent(t('manageTeamMember.view.help'))}
         disabled={
           selectedOptions.includes(PROPOSAL_ACCESS_UPDATE) ||
-          selectedOptions.includes(PROPOSAL_ACCESS_VIEW)
+          selectedOptions.includes(PROPOSAL_ACCESS_SUBMIT)
         }
       />
     );

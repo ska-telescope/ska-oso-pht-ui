@@ -4,11 +4,11 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import React from 'react';
 import MemberAccess from './MemberAccess';
-import { PROPOSAL_ACCESS_UPDATE, PROPOSAL_ACCESS_VIEW } from '@/utils/aaa/aaaUtils';
+import { PROPOSAL_ACCESS_SUBMIT, PROPOSAL_ACCESS_UPDATE } from '@/utils/aaa/aaaUtils';
 
 const TestWrapper = () => {
   const [selectedOptions, setSelectedOptions] = React.useState<string[]>([
-    PROPOSAL_ACCESS_VIEW,
+    PROPOSAL_ACCESS_SUBMIT,
     PROPOSAL_ACCESS_UPDATE
   ]);
 
