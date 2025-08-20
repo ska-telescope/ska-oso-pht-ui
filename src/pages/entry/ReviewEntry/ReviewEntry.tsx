@@ -2,16 +2,14 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Divider, Grid2, Paper, Stack, Tab, Tabs } from '@mui/material';
-import { DropDown, Spacer, SPACER_VERTICAL, TextEntry } from '@ska-telescope/ska-gui-components';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { Spacer, SPACER_VERTICAL, TextEntry } from '@ska-telescope/ska-gui-components';
 import useTheme from '@mui/material/styles/useTheme';
 import {
   BANNER_PMT_SPACER,
   FEASIBILITY,
   PANEL_DECISION_STATUS,
   PMT,
-  REVIEW_TYPE,
-  TECHNICAL_FEASIBILITY_OPTIONS
+  REVIEW_TYPE
 } from '@utils/constants.ts';
 import Typography from '@mui/material/Typography';
 import PutProposalReview from '@services/axios/putProposalReview/putProposalReview';
@@ -29,9 +27,9 @@ import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
 import { generateId } from '@/utils/helpers';
-import Proposal from '@/utils/types/proposal';
 import { getUserId } from '@/utils/aaa/aaaUtils';
 import { useNotify } from '@/utils/notify/useNotify';
+import { ChoiceCards } from '@/components/fields/choiceCards/choiceCards';
 
 interface ReviewEntryProps {
   reviewType: string;
@@ -44,8 +42,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const locationProperties = useLocation();
   const { notifyError, notifySuccess } = useNotify();
 
-  const { application } = storageObject.useStore();
-
   const isView = () => (locationProperties?.state?.reviews ? true : false);
   const [tabValuePDF, setTabValuePDF] = React.useState(0);
   const [tabValueReview, setTabValueReview] = React.useState(0);
@@ -55,13 +51,15 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const [technicalComments, setTechnicalComments] = React.useState('');
   const [feasibility, setFeasibility] = React.useState('');
   const [srcNetComments, setSrcNetComments] = React.useState('');
-  const [currentPDF, setCurrentPDF] = React.useState<string | null | undefined>(null);
+  const [sciPDF, setSciPDF] = React.useState<string | undefined>(undefined);
+  const [tecPDF, setTecPDF] = React.useState<string | undefined>(undefined);
   const [isEdit, setIsEdit] = React.useState(false);
 
-  const AREA_HEIGHT_NUM = 74;
+  const TEC_HEIGHT_NUM = 55;
+
+  const AREA_HEIGHT_NUM = 73;
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
 
-  const getProposal = () => application.content2 as Proposal;
   const authClient = useAxiosAuthClient();
   const userId = getUserId();
 
@@ -92,7 +90,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const getReview = (submitted = false): ProposalReview => {
     return {
       id: reviewId,
-      prslId: getProposal().id,
+      prslId: locationProperties.state.id,
       reviewType: reviewType === REVIEW_TYPE.SCIENCE ? getScienceReview() : getTechnicalReview(),
       comments: generalComments,
       srcNet: srcNetComments,
@@ -142,6 +140,21 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   /*---------------------------------------------------------------------------*/
 
+  const previewSignedUrl = async (id: string, label: string) => {
+    try {
+      const selectedFile = `${id}-` + t(label) + t('fileType.pdf');
+      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
+
+      if (label === 'pdfDownload.science.label') {
+        setSciPDF(signedUrl);
+      } else {
+        setTecPDF(signedUrl);
+      }
+    } catch (e) {
+      return null;
+    }
+  };
+
   React.useEffect(() => {
     if (!locationProperties) return;
 
@@ -167,6 +180,8 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       setGeneralComments(locationProperties?.state?.sciReview?.comments);
       setSrcNetComments(locationProperties?.state?.sciReview?.srcNet);
     }
+    previewSignedUrl(locationProperties.state.id, 'pdfDownload.science.label');
+    previewSignedUrl(locationProperties?.state.id, 'pdfDownload.science.label');
   }, []);
 
   const submitDisabled = () => {
@@ -194,6 +209,9 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const saveButtonAction = (submit: boolean) => {
     isEdit ? updateReview(submit) : createReview(submit);
+    if (submit) {
+      navigate(PMT[1]);
+    }
   };
   const saveButtonClicked = () => saveButtonAction(false);
   const submitButtonClicked = () => saveButtonAction(true);
@@ -217,28 +235,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   /**************************************************************/
 
-  const previewSignedUrl = async (tabValuePDF: number) => {
-    const pdfLabel = tabValuePDF === 0 ? 'science' : 'technical';
-
-    try {
-      const proposal = locationProperties?.state?.proposal;
-
-      const selectedFile =
-        `${proposal?.id}-` + t(`pdfDownload.${pdfLabel}.label`) + t('fileType.pdf');
-
-      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
-      if (
-        signedUrl === t('pdfDownload.sampleData') ||
-        proposal?.technicalPDF != null ||
-        proposal?.sciencePDF != null
-      ) {
-        setCurrentPDF(signedUrl);
-      }
-    } catch (e) {
-      new Error(t('pdfDownload.error'));
-    }
-  };
-
   const sciencePDF = () => (
     <Paper
       sx={{
@@ -249,11 +245,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       }}
       elevation={0}
     >
-      {getProposal()?.sciencePDF !== null && currentPDF !== null ? (
-        <PDFViewer url={currentPDF ?? ''} />
-      ) : (
-        <>{t('pdfPreview.science.notUploaded')}</>
-      )}
+      <PDFViewer url={sciPDF} />
     </Paper>
   );
 
@@ -267,11 +259,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       }}
       elevation={0}
     >
-      {getProposal()?.technicalPDF !== null && currentPDF !== null ? (
-        <PDFViewer url={currentPDF ?? ''} />
-      ) : (
-        <> {t('pdfPreview.technical.notUploaded')}</>
-      )}
+      <PDFViewer url={tecPDF} />
     </Paper>
   );
 
@@ -321,7 +309,9 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
             {t('title.short')}
           </Typography>
           <Typography pl={2} pr={2} id="title" variant={'h6'}>
-            {getProposal()?.title?.length ? presentLatex(getProposal().title) : ''}
+            {locationProperties.state.proposal.title?.length
+              ? presentLatex(locationProperties.state.proposal.title)
+              : ''}
           </Typography>
           <Divider />
           <Typography id="abstract-label" variant={'h6'}>
@@ -339,8 +329,8 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
             }}
           >
             <Typography variant="body1">
-              {getProposal()?.abstract?.length
-                ? presentLatex(getProposal()?.abstract as string)
+              {locationProperties.state.proposal.abstract?.length
+                ? presentLatex(locationProperties.state.proposal.abstract as string)
                 : ''}
             </Typography>
           </Box>
@@ -395,64 +385,25 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     </>
   );
 
-  const feasibilityField = () => {
-    return (
-      <>
-        {!isView() && (
-          <>
-            <DropDown
-              options={TECHNICAL_FEASIBILITY_OPTIONS}
-              testId={'feasibilityId'}
-              value={feasibility ?? ''}
-              setValue={setFeasibility}
-              label={'Feasibility'}
-            />
-          </>
-        )}
-        {isView() && (
-          <Box
-            p={2}
-            sx={{
-              width: '100%',
-              height: '65vh',
-              overflow: 'auto',
-              backgroundColor: theme.palette.primary.main
-            }}
-          >
-            <Typography id="title-label" variant={'h6'}>
-              {locationProperties?.state?.reviews[0].feasibility.isFeasible}
-            </Typography>
-          </Box>
-        )}
-      </>
-    );
-  };
-
   const technicalCommentsField = () => (
     <>
       {!isView() && (
-        <TextEntry
-          label={''}
-          testId="technicalCommentsId"
-          rows={((AREA_HEIGHT_NUM / 100) * window.innerHeight) / 27}
-          setValue={setTechnicalComments}
-          value={technicalComments}
-        />
-      )}
-      {isView() && (
-        <Box
-          p={2}
-          sx={{
-            width: '100%',
-            height: '65vh',
-            overflow: 'auto',
-            backgroundColor: theme.palette.primary.main
-          }}
-        >
-          <Typography id="title-label" variant={'h6'}>
-            {locationProperties?.state?.reviews[0].feasibility.comments}
-          </Typography>
-        </Box>
+        <>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
+            <Typography variant="h6" color="text.secondary" sx={{ mt: 1 }}>
+              {t('technicalComments.label')}
+            </Typography>
+          </Box>
+          <Paper>
+            <TextEntry
+              label={''}
+              testId="technicalCommentsId"
+              rows={((TEC_HEIGHT_NUM / 100) * window.innerHeight) / 27}
+              setValue={setTechnicalComments}
+              value={technicalComments}
+            />
+          </Paper>
+        </>
       )}
     </>
   );
@@ -486,7 +437,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     </>
   );
 
-  const reviewArea = () => {
+  const reviewAreaSci = () => {
     function a11yProps(index: number) {
       return {
         id: `simple-tab-${index}`,
@@ -518,17 +469,9 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           onChange={handleTabChange}
           aria-label="basic tabs example"
         >
-          {isTechnical() ? (
-            <Tab label={t('feasibility.label')} {...a11yProps(0)} />
-          ) : (
-            <Tab label={t('rank.label')} {...a11yProps(0)} />
-          )}
-          {isTechnical() ? (
-            <Tab label={t('technicalComments.label')} {...a11yProps(1)} />
-          ) : (
-            <Tab label={t('generalComments.label')} {...a11yProps(1)} />
-          )}
-          {!isTechnical() && <Tab label={t('srcNetComments.label')} {...a11yProps(2)} />}
+          <Tab label={t('rank.label')} {...a11yProps(0)} />
+          <Tab label={t('generalComments.label')} {...a11yProps(1)} />
+          <Tab label={t('srcNetComments.label')} {...a11yProps(2)} />
         </Tabs>
         {tabValueReview === 0 && (
           <Box
@@ -541,7 +484,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
               flexDirection: 'column'
             }}
           >
-            {isTechnical() ? feasibilityField() : rankField()}
+            {rankField()}
           </Box>
         )}
         {tabValueReview === 1 && (
@@ -555,7 +498,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
               backgroundColor: 'transparent'
             }}
           >
-            {isTechnical() ? technicalCommentsField() : generalCommentsField()}
+            {generalCommentsField()}
           </Box>
         )}
         {tabValueReview === 2 && (
@@ -576,9 +519,27 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     );
   };
 
-  React.useEffect(() => {
-    previewSignedUrl(tabValuePDF);
-  }, [tabValuePDF]);
+  const reviewAreaTec = () => {
+    return (
+      <Paper
+        sx={{
+          position: 'fixed',
+          border: `2px solid ${theme.palette.primary.light}`,
+          borderRadius: '16px',
+          height: AREA_HEIGHT,
+          top: '150',
+          padding: 3,
+          backgroundColor: theme.palette.primary.main
+        }}
+        elevation={0}
+      >
+        <Stack sx={{ gap: 1 }}>
+          <ChoiceCards value={feasibility} onChange={setFeasibility} />
+          {technicalCommentsField()}
+        </Stack>
+      </Paper>
+    );
+  };
 
   /**************************************************************/
 
@@ -600,7 +561,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         sx={{ height: AREA_HEIGHT }}
       >
         <Grid2 size={{ sm: 9 }}>{displayArea()}</Grid2>
-        <Grid2 size={{ sm: 3 }}>{reviewArea()}</Grid2>
+        <Grid2 size={{ sm: 3 }}>{isTechnical() ? reviewAreaTec() : reviewAreaSci()}</Grid2>
       </Grid2>
       <PageFooterPMT />
     </>

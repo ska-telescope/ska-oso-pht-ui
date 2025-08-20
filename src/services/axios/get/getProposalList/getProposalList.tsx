@@ -80,6 +80,7 @@ export function mappingList(inRec: ProposalBackend[]): Proposal[] {
       title: tmp.info?.title,
       cycle: tmp?.cycle,
       investigators: tmp.info?.investigators ? getInvestigators(tmp.info.investigators) : [],
+      abstract: tmp.info?.abstract ?? undefined,
       sciencePDF: null,
       technicalPDF: null
     };

@@ -2,7 +2,6 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Grid2, Typography } from '@mui/material';
 import { Document, Page } from 'react-pdf';
-// import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import { pdfjs } from 'react-pdf';
 
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
@@ -90,7 +89,7 @@ export default function PDFViewer({
         <Grid2 sx={{ width: '90%' }}>
           {url?.length > 0 && (
             <Document file={url} onLoadSuccess={onDocumentLoadSuccess}>
-              <Page pageNumber={pageNumber} />
+              <Page renderTextLayer={false} renderAnnotationLayer={false} pageNumber={pageNumber} />
             </Document>
           )}
         </Grid2>

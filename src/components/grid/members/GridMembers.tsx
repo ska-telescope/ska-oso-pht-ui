@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Typography } from '@mui/material';
+import { Box, Tooltip, Typography } from '@mui/material';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import StarIcon from '../../../components/icon/starIcon/starIcon';
 import TickIcon from '../../../components/icon/tickIcon/tickIcon';
@@ -9,7 +9,7 @@ import Investigator from '../../../utils/types/investigator';
 import LockIcon from '@/components/icon/lockIcon/lockIcon';
 import { GRID_MEMBERS_ACTIONS } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
-import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ACCESS_UPDATE } from '@/utils/aaa/aaaUtils';
+import { PROPOSAL_ACCESS_PERMISSIONS } from '@/utils/aaa/aaaUtils';
 
 interface GridMembersProps {
   action?: boolean;
@@ -104,10 +104,19 @@ export default function GridMembers({
         const ordered = desiredOrder.filter(item => userAccess?.includes(item.toLowerCase()));
         const accessDisplay = ordered
           ?.map((perm: string) => {
-            return t(`manageTeamMember.${perm === PROPOSAL_ACCESS_UPDATE ? 'edit' : perm}.short`);
+            return t(`manageTeamMember.${perm}.short`);
           })
           .join(', ');
-        return <>{accessDisplay ? accessDisplay : ''}</>;
+        const highestAccess = accessDisplay.split(',');
+        return (
+          <Box pt={2}>
+            <Tooltip data-testid="accessLevel" title={accessDisplay ? accessDisplay : ''} arrow>
+              <Typography>
+                {highestAccess ? highestAccess[highestAccess.length - 1] : ''}
+              </Typography>
+            </Tooltip>
+          </Box>
+        );
       }
     },
     {
@@ -123,7 +132,7 @@ export default function GridMembers({
             <TrashIcon onClick={trashClicked} toolTip={t('deleteTeamMember.toolTip')} />
             {/* Only show lock icon if the member is registered with entra id */}
             {!params.row.id.includes('temp-') && (
-              <LockIcon onClick={lockClicked} toolTip={t('manageTeamMember.tooltip')} />
+              <LockIcon onClick={lockClicked} toolTip={t('manageTeamMember.toolTip')} />
             )}
           </>
         );

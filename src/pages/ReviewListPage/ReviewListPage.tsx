@@ -20,7 +20,6 @@ import {
   FEASIBLE_NO,
   DEFAULT_USER
 } from '@utils/constants.ts';
-import GetProposal from '@services/axios/getProposal/getProposal.tsx';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
@@ -58,7 +57,7 @@ export default function ReviewListPage() {
   const navigate = useNavigate();
   const { notifyError, notifySuccess } = useNotify();
 
-  const { application, updateAppContent2 } = storageObject.useStore();
+  const { application } = storageObject.useStore();
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
@@ -130,7 +129,7 @@ export default function ReviewListPage() {
   const getScienceReviewType = (row: any): ScienceReview => {
     return {
       kind: REVIEW_TYPE.SCIENCE,
-      excludedFromDecision: 'No',
+      excludedFromDecision: false,
       rank: row.reviewType.rank,
       conflict: {
         hasConflict: false,
@@ -199,16 +198,8 @@ export default function ReviewListPage() {
 
   /*---------------------------------------------------------------------------*/
 
-  const getTheProposal = async (row: any, route: string) => {
-    const response = await GetProposal(authClient, row.id);
-    if (typeof response === 'string') {
-      updateAppContent2({});
-    } else {
-      updateAppContent2(response);
-      navigate(route, { replace: true, state: row });
-    }
-  };
-  const theIconClicked = (row: any, route: string) => getTheProposal(row, route);
+  const theIconClicked = (row: any, route: string) =>
+    navigate(route, { replace: true, state: row });
   const scienceIconClicked = (row: any) => theIconClicked(row, PMT[5]);
   const technicalIconClicked = (row: any) => theIconClicked(row, PMT[6]);
 

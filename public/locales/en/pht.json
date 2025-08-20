@@ -344,7 +344,7 @@
       "short": "Submit",
       "help": "Check to indicate that this individual can submit, edit and view the proposal."
     },
-    "edit": {
+    "update": {
       "label": "Edit rights",
       "short": "Edit",
       "help": "Check to indicate that this individual can edit and view the proposal."

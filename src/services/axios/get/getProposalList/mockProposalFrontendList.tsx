@@ -16,6 +16,8 @@ const MockProposalFrontendList: Proposal[] = [
     cycle: 'SKA_5000_2023',
     sciencePDF: null,
     technicalPDF: null,
+    abstract:
+      'Pretty Looking frontend depends on hard work put into good wire-framing and requirement gathering',
     investigators: [
       {
         id: 'prp-ska01-202204-01',
@@ -44,6 +46,8 @@ const MockProposalFrontendList: Proposal[] = [
     cycle: 'SKA_5000_2023',
     sciencePDF: null,
     technicalPDF: null,
+    abstract:
+      'Pretty Looking frontend depends on hard work put into good wire-framing and requirement gathering',
     investigators: [
       {
         id: 'prp-ska01-202204-01',
@@ -72,6 +76,8 @@ const MockProposalFrontendList: Proposal[] = [
     cycle: 'SKA_5000_2023',
     sciencePDF: null,
     technicalPDF: null,
+    abstract:
+      'Pretty Looking frontend depends on hard work put into good wire-framing and requirement gathering',
     investigators: [
       {
         id: 'prp-ska01-202204-01',

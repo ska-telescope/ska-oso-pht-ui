@@ -3,6 +3,7 @@ import '@testing-library/jest-dom';
 import Latex from 'react-latex-next';
 import { NOT_APPLICABLE } from '../constants';
 import {
+  presentDate,
   presentDateTime,
   presentLatex,
   presentSensCalcError,
@@ -89,5 +90,11 @@ describe('Present', () => {
 
   test('presentDateTime  : maxFaradayDepth', () => {
     expect(presentDateTime('2025-07-29T08:07:35.338860Z')).toBe('29-07-2025 09:07:35');
+  });
+  test('presentDate : maxFaradayDepth', () => {
+    expect(presentDate('2025-07-29T08:07:35.338860Z')).toBe('29-07-2025');
+  });
+  test('presentDate : maxFaradayDepth reversed', () => {
+    expect(presentDate('2025-07-29T08:07:35.338860Z', true)).toBe('29-07-2025');
   });
 });
