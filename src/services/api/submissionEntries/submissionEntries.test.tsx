@@ -9,14 +9,10 @@ describe('Submission entries functions', () => {
     expect(rxBand('mid_band_4')).toBe('&rx_band=Band 4');
     expect(rxBand('mid_band_5a')).toBe('&rx_band=Band 5a');
     expect(rxBand('mid_band_5b')).toBe('&rx_band=Band 5b');
-    expect(rxBand('low')).toBe('&rx_band=?????');
+    expect(rxBand('')).toBe('&rx_band=?????');
   });
 
   test('addValue', () => {
     expect(addValue('testLabel', 'testValue')).toBe('&testLabel=testValue');
   });
-
-  // test('addTime', () => {
-  //   expect(addTime('testTimeLabel', { unit: 'min', value: 6000}, 4)).toBe('&testTimeLabel=testValue');
-  // });
 });
