@@ -22,8 +22,8 @@ async function GetProposalByStatusList(
   }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/status/${status}`;
-    const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
+    const URL_PATH = `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PROPOSAL_PATH}/status/${status}`;
+    const result = await authAxiosClient.get(URL_PATH);
 
     if (!result || !Array.isArray(result.data)) {
       return 'error.API_UNKNOWN_ERROR';

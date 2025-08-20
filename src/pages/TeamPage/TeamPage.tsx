@@ -93,7 +93,7 @@ export default function TeamPage() {
     // Fetch proposal access data to set permissions:
     //  * when the current member changes
     //  * when the proposal's investigators change
-    fetchProposalAccessData();
+    if (actionsAvailable()) fetchProposalAccessData();
   }, [currentMember, getProposal().investigators]);
 
   React.useEffect(() => {

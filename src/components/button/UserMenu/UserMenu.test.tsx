@@ -596,9 +596,6 @@ describe('ButtonUserMenu', () => {
 
     it('should handle logger configuration', () => {
       const customLogger = new Logger({
-        loggerCallback: vi.fn((_level, _message) => {
-          //   console.log(`[${level}] ${message}`)
-        }),
         piiLoggingEnabled: true,
         logLevel: LogLevel.Verbose
       });
