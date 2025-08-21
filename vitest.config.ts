@@ -20,7 +20,7 @@ export default defineConfig({
       enabled: true,
       provider: 'istanbul',
       reporter: ['cobertura', 'text', 'json', 'html'],
-      reportsDirectory: 'build/coverage',
+      reportsDirectory: 'build/reports',
       include: ['src/{components,pages,utils,services}/**/*.{ts,tsx}'],
       exclude: [
         'src/components/app/App.tsx',
