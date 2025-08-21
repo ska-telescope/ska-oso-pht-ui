@@ -2,7 +2,7 @@ import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import { ProposalReview } from '@utils/types/proposalReview.tsx';
 import * as CONSTANTS from '@utils/constants.ts';
-import { mappingReviewBackendToFrontend } from '../put/putProposalReview/putProposalReview';
+import { mappingReviewBackendToFrontend } from '@services/axios/put/putProposalReview/putProposalReview.tsx';
 import {
   MockProposalScienceReviewBackend,
   MockProposalTechnicalReviewBackend

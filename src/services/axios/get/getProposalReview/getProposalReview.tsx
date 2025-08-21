@@ -4,9 +4,9 @@ import {
   OSO_SERVICES_REVIEWS_PATH
 } from '@utils/constants.ts';
 import { ProposalReview, ProposalReviewBackend } from '@utils/types/proposalReview.tsx';
+import { mappingReviewBackendToFrontend } from '@services/axios/put/putProposalReview/putProposalReview.tsx';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
 import { MockProposalScienceReviewBackend } from '../../post/postProposalReview/mockProposalReviewBackend.tsx';
-import { mappingReviewBackendToFrontend } from '../put/putProposalReview/putProposalReview';
 
 export function GetMockReview(
   mock: ProposalReviewBackend = MockProposalScienceReviewBackend

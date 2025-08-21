@@ -5,8 +5,8 @@ import {
 } from '@utils/constants.ts';
 import { getUniqueMostRecentItems } from '@utils/helpers.ts';
 import { ProposalReview, ProposalReviewBackend } from '@utils/types/proposalReview.tsx';
+import { mappingReviewBackendToFrontend } from '@services/axios/put/putProposalReview/putProposalReview.tsx';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
-import { mappingReviewBackendToFrontend } from '../put/putProposalReview/putProposalReview';
 import { MockProposalReviewListBackend } from './mockProposalReviewListBackend.tsx';
 
 /*****************************************************************************************************************************/
