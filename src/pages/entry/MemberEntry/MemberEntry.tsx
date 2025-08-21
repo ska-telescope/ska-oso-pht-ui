@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid2 } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
 import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
@@ -172,8 +172,8 @@ export default function MemberEntry({
     }
   };
 
-  const updateProposal = async () => {
-    const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.DRAFT);
+  const updateProposal = async (rec: Proposal) => {
+    const response = await PutProposal(authClient, rec, PROPOSAL_STATUS.DRAFT);
     updateProposalResponse(response);
   };
 
@@ -198,12 +198,13 @@ export default function MemberEntry({
     currentInvestigators: Investigator[] | undefined,
     newInvestigator: Investigator
   ) {
-    setProposal({
+    const record = {
       ...getProposal(),
       investigators: [...(currentInvestigators ?? []), newInvestigator]
-    });
+    };
+    setProposal(record);
     // save the proposal with new investigators as email has been sent & access rights have been created
-    await updateProposal();
+    await updateProposal(record);
   }
 
   const getInvestigator = (currentInvestigators: Investigator[] | undefined): Investigator => {
@@ -356,7 +357,7 @@ export default function MemberEntry({
   };
 
   return (
-    <Grid
+    <Grid2
       p={2}
       pb={5}
       container
@@ -364,8 +365,8 @@ export default function MemberEntry({
       alignItems="space-evenly"
       justifyContent="space-between"
     >
-      <Grid item xs={7}>
-        <Grid pt={1} container direction="column" alignItems="stretch" justifyContent="flex-start">
+      <Grid2 size={{ xs: 7 }}>
+        <Grid2 pt={1} container direction="column" alignItems="stretch" justifyContent="flex-start">
           {firstNameField()}
           {lastNameField()}
           {emailField()}
@@ -379,11 +380,11 @@ export default function MemberEntry({
               testId="sendInviteButton"
             />
           </Box>
-        </Grid>
-      </Grid>
-      <Grid item xs={4}>
+        </Grid2>
+      </Grid2>
+      <Grid2 size={{ xs: 4 }}>
         <HelpPanel />
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 }

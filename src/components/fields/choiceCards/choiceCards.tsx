@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import HelpIcon from '@mui/icons-material/Help';
-import { Grid2, Box, Button, Typography, Paper } from '@mui/material';
+import { Button, Grid2, Box, Typography, Paper } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { FEASIBLE_MAYBE, FEASIBLE_NO, FEASIBLE_YES } from '@/utils/constants';
 
@@ -66,12 +66,12 @@ export function ChoiceCards({ value, onChange }: ChoiceCardsProps) {
         flexDirection: 'column',
         gap: 1,
         width: '100%',
-        height: '150px',
+        height: '100px',
         backgroundColor: theme.palette.primary.main
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
-        <Typography variant="h6" color="text.secondary" sx={{ mt: 1 }}>
+        <Typography variant="h6" color="text.secondary">
           {t('feasibility.label')}
         </Typography>
       </Box>
@@ -91,8 +91,7 @@ export function ChoiceCards({ value, onChange }: ChoiceCardsProps) {
                   display: 'flex',
                   alignItems: 'center',
                   gap: 1.5,
-                  p: 2,
-                  borderRadius: 2,
+                  borderRadius: 1,
                   borderWidth: 2,
                   borderColor: choice.color,
                   backgroundColor: isSelected ? choice.color : theme.palette.secondary.contrastText,
@@ -124,7 +123,7 @@ export function ChoiceCards({ value, onChange }: ChoiceCardsProps) {
       </Grid2>
       {selectedValue && selectedValue !== FEASIBLE_YES && (
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-          A description is required for this response.
+          {t('feasibility.info')}
         </Typography>
       )}
     </Paper>

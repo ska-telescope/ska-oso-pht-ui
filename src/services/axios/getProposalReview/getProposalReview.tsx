@@ -5,7 +5,7 @@ import {
 } from '@utils/constants.ts';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
 import { MockProposalScienceReviewBackend } from '../post/postProposalReview/mockProposalReviewBackend';
-import { mappingReviewBackendToFrontend } from '../putProposalReview/putProposalReview';
+import { mappingReviewBackendToFrontend } from '../put/putProposalReview/putProposalReview';
 import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';
 
 export function GetMockReview(

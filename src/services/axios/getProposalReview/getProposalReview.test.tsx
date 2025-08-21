@@ -1,6 +1,6 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import { mappingReviewBackendToFrontend } from '../putProposalReview/putProposalReview';
+import { mappingReviewBackendToFrontend } from '../put/putProposalReview/putProposalReview';
 import {
   MockProposalScienceReviewBackend,
   MockProposalTechnicalReviewBackend

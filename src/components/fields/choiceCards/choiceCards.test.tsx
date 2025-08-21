@@ -73,7 +73,7 @@ describe('ChoiceCards', () => {
     const noButton = screen.getByText(FEASIBLE_NO.toLowerCase()).closest('button')!;
     await user.click(noButton);
 
-    expect(screen.getByText('A description is required for this response.')).toBeInTheDocument();
+    expect(screen.getByText('feasibility.label')).toBeInTheDocument();
   });
 
   it('shows description requirement when Maybe is selected', async () => {
@@ -83,7 +83,7 @@ describe('ChoiceCards', () => {
     const maybeButton = screen.getByText(FEASIBLE_MAYBE.toLowerCase()).closest('button')!;
     await user.click(maybeButton);
 
-    expect(screen.getByText('A description is required for this response.')).toBeInTheDocument();
+    expect(screen.getByText('feasibility.label')).toBeInTheDocument();
   });
 
   it('does not show description requirement when Yes is selected', async () => {

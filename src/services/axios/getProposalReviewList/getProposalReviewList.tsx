@@ -4,7 +4,7 @@ import {
   OSO_SERVICES_REVIEWS_PATH
 } from '@utils/constants.ts';
 import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
-import { mappingReviewBackendToFrontend } from '../putProposalReview/putProposalReview';
+import { mappingReviewBackendToFrontend } from '../put/putProposalReview/putProposalReview';
 import { MockProposalReviewListBackend } from './mockProposalReviewListBackend';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
 import { ProposalReview, ProposalReviewBackend } from '@/utils/types/proposalReview';

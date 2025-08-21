@@ -6,7 +6,7 @@ import useTheme from '@mui/material/styles/useTheme';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
-  BANNER_PMT_SPACER,
+  BANNER_PMT_SPACER_MIN,
   PANEL_DECISION_STATUS,
   PMT,
   REVIEW_TYPE,
@@ -23,18 +23,18 @@ import { PanelProposal } from '@/utils/types/panelProposal';
 import Proposal from '@/utils/types/proposal';
 import Reviewer from '@/utils/types/reviewer';
 import { IdObject } from '@/utils/types/idObject';
-import PostPanel from '@/services/axios/postPanel/postPanel';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
-import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
+import PutProposalReview from '@/services/axios/put/putProposalReview/putProposalReview';
 import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
 import { generateId } from '@/utils/helpers';
+import PutPanel from '@/services/axios/put/putPanel/putPanel';
 
-const PANELS_HEIGHT = '66vh';
-const TABS_HEIGHT = '68vh';
-const TABS_CONTAINER_HEIGHT = '62vh';
-const TAB_GRID_HEIGHT = '44vh';
+const PANELS_HEIGHT = '74vh';
+const TABS_HEIGHT = '76vh';
+const TABS_CONTAINER_HEIGHT = '70vh';
+const TAB_GRID_HEIGHT = '52vh';
 
 export const addReviewerPanel = (
   reviewer: Reviewer,
@@ -209,10 +209,9 @@ export default function PanelMaintenance() {
     reviewer: PanelReviewer,
     prefix: string
   ) => {
-    const response: string | { error: string } = await PostProposalReview(
+    const response: any = await PutProposalReview(
       authClient,
-      getReview(panel.id, proposal.id, reviewer.reviewerId, prefix),
-      getCycleId()
+      getReview(panel.id, proposal.id, reviewer.reviewerId, prefix)
     );
     if (typeof response === 'object' && response?.error) {
       setAxiosError(
@@ -233,7 +232,7 @@ export default function PanelMaintenance() {
   };
 
   async function savePanel(panel: Panel): Promise<string | { error: string }> {
-    const response = await PostPanel(authClient, panel, getCycleId());
+    const response = await PutPanel(authClient, panel, getCycleId());
     if (typeof response === 'object' && response?.error) {
       setAxiosError(
         typeof response === 'object' && 'error' in response ? response.error : String(response)
@@ -310,7 +309,7 @@ export default function PanelMaintenance() {
   return (
     <>
       <PageBannerPMT title={t('page.15.desc')} backBtn={backButton()} />
-      <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
+      <Spacer size={BANNER_PMT_SPACER_MIN} axis={SPACER_VERTICAL} />
       <Grid2
         container
         pr={2}
@@ -319,7 +318,7 @@ export default function PanelMaintenance() {
         justifyContent="space-between"
         alignItems="flex-start"
       >
-        <Grid2 p={2} size={{ sm: 12, md: 6, lg: 4 }}>
+        <Grid2 p={2} size={{ sm: 12, md: 4, lg: 2.75 }}>
           <Box
             sx={{
               width: '100%',
@@ -350,7 +349,7 @@ export default function PanelMaintenance() {
         </Grid2>
 
         <Grid2
-          size={{ sm: 12, md: 6, lg: 8 }}
+          size={{ sm: 12, md: 8, lg: 9.25 }}
           pt={2}
           container
           direction="row"
@@ -372,7 +371,7 @@ export default function PanelMaintenance() {
                 onChange={handleChange}
                 aria-label="basic tabs example"
                 sx={{
-                  '& button': { backgroundColor: theme.palette.primary.main },
+                  '& button': { height: 75, backgroundColor: theme.palette.primary.main },
                   '& button.Mui-selected': { backgroundColor: 'transparent' }
                 }}
               >

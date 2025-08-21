@@ -9,7 +9,7 @@ import { Panel } from '@/utils/types/panel';
 import GetPanelList from '@/services/axios/getPanelList/getPanelList';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import ObservatoryData from '@/utils/types/observatoryData';
-import PostPanel from '@/services/axios/postPanel/postPanel';
+import PutPanel from '@/services/axios/put/putPanel/putPanel';
 
 interface GridReviewPanelsProps {
   height?: string;
@@ -75,7 +75,7 @@ export default function GridReviewPanels({
     };
 
     const createPanel = async () => {
-      const response: string | { error: string } = await PostPanel(
+      const response: string | { error: string } = await PutPanel(
         authClient,
         getPanel(),
         getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId

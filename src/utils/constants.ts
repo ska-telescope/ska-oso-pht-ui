@@ -117,6 +117,7 @@ export const FEASIBLE_YES = 'Yes';
 export const FEASIBILITY = [FEASIBLE_YES, FEASIBLE_NO, FEASIBLE_MAYBE];
 
 export const BANNER_PMT_SPACER = 100;
+export const BANNER_PMT_SPACER_MIN = 60;
 
 export const CENTRAL_FREQUENCY_MAX = [350, 1.05, 1.76, 8.5, 15.4];
 export const CENTRAL_FREQUENCY_MIN = [50, 0.35, 0.95, 4.6, 8.3];

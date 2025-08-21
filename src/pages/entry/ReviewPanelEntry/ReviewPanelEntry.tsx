@@ -10,7 +10,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import AddButton from '../../../components/button/Add/Add';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import BackButton from '@/components/button/Back/Back';
-import PostPanel from '@/services/axios/postPanel/postPanel';
+import PostPanel from '@/services/axios/post/postPanel/postPanel';
 import { Panel } from '@/utils/types/panel';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import ObservatoryData from '@/utils/types/observatoryData';
