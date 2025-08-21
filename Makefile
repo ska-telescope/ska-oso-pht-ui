@@ -15,7 +15,7 @@ $(info $(JS_E2E_TEST_BASE_URL))
 
 JS_COMMAND_RUNNER ?= yarn
 JS_TEST_COMMAND ?= vitest
-JS_TEST_DEFAULT_SWITCHES = run --coverage.enabled=true --reporter=junit --reporter=default --coverage.reportsDirectory=$(JS_BUILD_REPORTS_DIRECTORY) --outputFile=$(JS_BUILD_REPORTS_DIRECTORY)/unit-tests.xml
+JS_TEST_DEFAULT_SWITCHES = run --coverage --reporter=default --coverage.reportsDirectory=$(JS_BUILD_REPORTS_DIRECTORY) --outputFile=$(JS_BUILD_REPORTS_DIRECTORY)/unit-tests.xml
 
 # Post hook for coverage reports
 js-post-e2e-test:
