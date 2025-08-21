@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { useNavigate } from 'react-router-dom';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import PostProposal from '../../../services/axios/postProposal/postProposal';
+import PostProposal from '@services/axios/post/postProposal/postProposal';
 import PageFooterPPT from './PageFooterPPT';
 import { NEW_PROPOSAL_ACCESS } from '@/utils/types/proposalAccess';
 

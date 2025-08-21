@@ -2,8 +2,8 @@ import { describe, test, expect } from 'vitest';
 import { render, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 import MemberEntry from './MemberEntry';
-import { MockUserFrontendList } from '@/services/axios/getUserByEmail/mockUserFrontend';
 
 describe('<MemberEntry />', () => {
   test('renders correctly', () => {

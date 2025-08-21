@@ -4,6 +4,8 @@ import { useTranslation } from 'react-i18next';
 import { Box, Grid2 } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
+import PostSendEmailInvite from '@services/axios/post/postSendEmailInvite/postSendEmailInvite';
+import PutProposal from '@services/axios/put/putProposal/putProposal';
 import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
 import { Proposal, ProposalBackend } from '../../../utils/types/proposal';
 import { generateId, helpers } from '../../../utils/helpers';
@@ -16,12 +18,10 @@ import {
 } from '../../../utils/constants';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Investigator from '../../../utils/types/investigator';
-import PostSendEmailInvite from '../../../services/axios/postSendEmailInvite/postSendEmailInvite';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
 import PostProposalAccess from '@/services/axios/post/postProposalAccess/postProposalAccess';
 import ProposalAccess from '@/utils/types/proposalAccess';
-import PutProposal from '@/services/axios/putProposal/putProposal';
 import { PROPOSAL_ACCESS_VIEW } from '@/utils/aaa/aaaUtils';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;

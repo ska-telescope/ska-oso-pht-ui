@@ -11,7 +11,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { presentDate, presentLatex, presentTime } from '@utils/present/present';
-import GetProposalReviewList from '@services/axios/getProposalReviewList/getProposalReviewList.tsx';
+import GetProposalReviewList from '@services/axios/get/getProposalReviewList/getProposalReviewList.tsx';
 import {
   SEARCH_TYPE_OPTIONS,
   BANNER_PMT_SPACER,
@@ -21,6 +21,8 @@ import {
   DEFAULT_USER,
   FEASIBLE_YES
 } from '@utils/constants.ts';
+import GetPanelList from '@services/axios/get/getPanelList/getPanelList';
+import GetProposalByStatusList from '@services/axios/get/getProposalByStatusList/getProposalByStatusList';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
@@ -29,14 +31,12 @@ import { PMT, PROPOSAL_STATUS } from '@/utils/constants';
 import SubmitButton from '@/components/button/Submit/Submit';
 import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
 import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
-import GetPanelList from '@/services/axios/getPanelList/getPanelList';
 import { Panel } from '@/utils/types/panel';
 import TechnicalIcon from '@/components/icon/technicalIcon/technicalIcon';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
-import GetProposalByStatusList from '@/services/axios/getProposalByStatusList/getProposalByStatusList';
 import { useNotify } from '@/utils/notify/useNotify';
 import { getUserId } from '@/utils/aaa/aaaUtils';
 

@@ -2,6 +2,7 @@ import { describe, test, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import MockReviewersBackendList from '@services/axios/get/getReviewerList/mockReviewerList';
 import PanelMaintenance, {
   addProposalPanel,
   addReviewerPanel,
@@ -11,7 +12,6 @@ import PanelMaintenance, {
 import { Panel } from '@/utils/types/panel';
 import MockProposalFrontendList from '@/services/axios/get/getProposalList/mockProposalFrontendList';
 import Proposal from '@/utils/types/proposal';
-import MockReviewersBackendList from '@/services/axios/getReviewerList/mockReviewerList';
 import { REVIEWER_STATUS } from '@/utils/constants';
 import Reviewer from '@/utils/types/reviewer';
 

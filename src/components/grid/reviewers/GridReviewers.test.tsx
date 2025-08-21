@@ -3,8 +3,8 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import axios from 'axios';
+import MockReviewersBackendList from '@services/axios/get/getReviewerList/mockReviewerList';
 import GridReviewers, { filterReviewers } from './GridReviewers';
-import MockReviewersBackendList from '@/services/axios/getReviewerList/mockReviewerList';
 import { IdObject } from '@/utils/types/idObject';
 
 const mockedSelectedReviewers: IdObject[] = [

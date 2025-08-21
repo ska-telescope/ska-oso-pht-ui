@@ -4,6 +4,11 @@ import { Grid2, Paper } from '@mui/material';
 import { AlertColorTypes, SearchEntry } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import GetPanelList from '@services/axios/get/getPanelList/getPanelList';
+import GetProposalReviewList from '@services/axios/get/getProposalReviewList/getProposalReviewList';
+import PostPanelDecision from '@services/axios/post/postPanelDecision/postPanelDecision';
+import getPanelDecisionList from '@services/axios/get/getPanelDecisionList/getPanelDecisionList';
+import GetProposalByStatusList from '@services/axios/get/getProposalByStatusList/getProposalByStatusList';
 import Proposal from '@/utils/types/proposal';
 import { FOOTER_SPACER } from '@/utils/constants';
 import {
@@ -16,15 +21,10 @@ import {
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import TableReviewDecision from '@/components/grid/tableReviewDecision/TableReviewDecision';
 import { ProposalReview, ScienceReview } from '@/utils/types/proposalReview';
-import GetPanelList from '@/services/axios/getPanelList/getPanelList';
-import GetProposalReviewList from '@/services/axios/getProposalReviewList/getProposalReviewList';
 import { Panel } from '@/utils/types/panel';
-import PostPanelDecision from '@/services/axios/postPanelDecision/postPanelDecision';
-import getPanelDecisionList from '@/services/axios/getPanelDecisionList/getPanelDecisionList';
 import { PanelDecision } from '@/utils/types/panelDecision';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
-import GetProposalByStatusList from '@/services/axios/getProposalByStatusList/getProposalByStatusList';
 import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
 import { useNotify } from '@/utils/notify/useNotify';
 import { getUserId } from '@/utils/aaa/aaaUtils';

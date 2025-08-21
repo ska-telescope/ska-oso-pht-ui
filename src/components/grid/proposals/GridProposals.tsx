@@ -12,6 +12,9 @@ import { useNavigate } from 'react-router-dom';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LABEL_POSITION } from '@ska-telescope/ska-gui-components';
 import { validateProposal } from '@utils/proposalValidation.tsx';
+import PutProposal from '@services/axios/put/putProposal/putProposal';
+import GetProposal from '@services/axios/get/getProposal/getProposal';
+import GetProposalByStatusList from '@services/axios/get/getProposalByStatusList/getProposalByStatusList';
 import EditIcon from '../../icon/editIcon/editIcon';
 import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
@@ -30,14 +33,11 @@ import Investigator from '@/utils/types/investigator';
 import { presentLatex } from '@/utils/present/present';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
 import ViewIcon from '@/components/icon/viewIcon/viewIcon';
-import PutProposal from '@/services/axios/putProposal/putProposal';
-import GetProposal from '@/services/axios/getProposal/getProposal';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 import { IdObject } from '@/utils/types/idObject';
 import { arraysAreEqual } from '@/utils/helpers';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
-import GetProposalByStatusList from '@/services/axios/getProposalByStatusList/getProposalByStatusList';
 
 export function getProposalType(value: number): string {
   const type = PROJECTS.find(item => item.id === value)?.mapping;

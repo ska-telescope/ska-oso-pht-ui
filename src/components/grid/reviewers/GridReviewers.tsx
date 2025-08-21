@@ -9,9 +9,9 @@ import {
 import { Typography, Grid2, Box } from '@mui/material';
 import React from 'react';
 import { LABEL_POSITION } from '@ska-telescope/ska-gui-components';
+import GetReviewerList from '@services/axios/get/getReviewerList/getReviewerList';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import { NOT_SPECIFIED, SEARCH_TYPE_OPTIONS_REVIEWERS } from '@/utils/constants';
-import GetReviewerList from '@/services/axios/getReviewerList/getReviewerList';
 import Reviewer from '@/utils/types/reviewer';
 import { IdObject } from '@/utils/types/idObject';
 import { arraysAreEqual } from '@/utils/helpers';
