@@ -6,7 +6,8 @@ import { Spacer, SPACER_VERTICAL, TextEntry } from '@ska-telescope/ska-gui-compo
 import useTheme from '@mui/material/styles/useTheme';
 import {
   BANNER_PMT_SPACER,
-  FEASIBILITY,
+  FEASIBLE_MAYBE,
+  FEASIBLE_NO,
   FEASIBLE_YES,
   PANEL_DECISION_STATUS,
   PMT,
@@ -201,9 +202,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const hasFeasibility = () => {
     return (
-      feasibility === FEASIBLE_YES ||
-      feasibility === FEASIBILITY[1] ||
-      feasibility === FEASIBILITY[2]
+      feasibility === FEASIBLE_YES || feasibility === FEASIBLE_MAYBE || feasibility === FEASIBLE_NO
     );
   };
 

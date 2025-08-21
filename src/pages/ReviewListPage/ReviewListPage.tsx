@@ -226,7 +226,6 @@ export default function ReviewListPage() {
 
     return sciRec || tecRec;
   };
-  // row.status !== PANEL_DECISION_STATUS.DECIDED && row?.rank > 0 && row?.comments?.length;
 
   const colId = {
     field: 'prslId',
