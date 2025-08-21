@@ -32,10 +32,12 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const loggedIn = isLoggedIn();
 
   const isDisableEndpoints = () => {
+    /* c8 ignore start */
     const noLoginTest = window.localStorage.getItem('proposal:noLogin') === 'true';
     if (noLoginTest) {
       return true;
     } else {
+      /* c8 ignore end */
       return !loggedIn && !isCypress;
     }
   };

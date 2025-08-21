@@ -56,10 +56,12 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const loggedIn = isLoggedIn();
 
   const isDisableEndpoints = () => {
+    /* c8 ignore start */
     const testDefaultUser = window.localStorage.getItem('cypress:defaultUserLoggedIn') === 'true';
     if (testDefaultUser) {
       return false;
     } else {
+      /* c8 ignore end */
       return !loggedIn;
     }
   };

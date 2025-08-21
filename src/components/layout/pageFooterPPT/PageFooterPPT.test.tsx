@@ -3,7 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { useNavigate } from 'react-router-dom';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import PostProposal from '@services/axios/post/postProposal/postProposal';
+// import PostProposal from '@services/axios/post/postProposal/postProposal';
 import PageFooterPPT from './PageFooterPPT';
 import { NEW_PROPOSAL_ACCESS } from '@/utils/types/proposalAccess';
 
@@ -77,7 +77,7 @@ describe('PageFooterPPT', () => {
     expect(screen.getByTestId('timeAlertFooter')).toBeInTheDocument();
     expect(screen.getByText('Test message')).toBeInTheDocument();
   });
-//TODO: Resolve
+  //TODO: Resolve
   // it('calls createProposal when pageNo is -1 and user is logged in', async () => {
   //   ((PostProposal as unknown) as vi.Mock).mockResolvedValue({ error: null, id: '12345' });
   //
