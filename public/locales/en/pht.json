@@ -344,7 +344,7 @@
       "short": "Submit",
       "help": "Check to indicate that this individual can submit, edit and view the proposal."
     },
-    "update": {
+    "edit": {
       "label": "Edit rights",
       "short": "Edit",
       "help": "Check to indicate that this individual can edit and view the proposal."
@@ -630,6 +630,7 @@
   },
   "feasibility": {
     "label": "Feasibility",
+    "info": "A comment is required for this response",
     "toolTip": "Feasibility"
   },
   "rank": {

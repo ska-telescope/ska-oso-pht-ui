@@ -94,7 +94,7 @@ describe('PostPanel Service', () => {
 
   test('returns mock data id when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await PostPanel(MockPanelFrontend, cycleId);
+    const result = await PostPanel(mockedAuthClient, MockPanelFrontend, cycleId);
     expect(result).toEqual('PANEL-ID-001');
   });
 

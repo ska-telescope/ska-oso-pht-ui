@@ -1,11 +1,7 @@
-import {
-  OSO_SERVICES_PANEL_PATH,
-  SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA
-} from '../../../utils/constants';
-import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
+import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
 import { Panel, PanelBackend } from '@/utils/types/panel';
 import { helpers } from '@/utils/helpers';
+import { OSO_SERVICES_PANEL_PATH, SKA_OSO_SERVICES_URL, USE_LOCAL_DATA } from '@/utils/constants';
 
 export function mappingPostPanel(panel: Panel, cycleId: string): PanelBackend {
   const transformedPanel: PanelBackend = {

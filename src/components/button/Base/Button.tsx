@@ -14,8 +14,10 @@ interface BaseButtonProps {
   icon: string | JSX.Element;
   primary?: boolean;
   size?: string;
+  sx?: any;
   testId?: string;
   toolTip?: string;
+  variant?: string;
 }
 
 export default function BaseButton({
@@ -25,8 +27,10 @@ export default function BaseButton({
   icon,
   primary = false,
   size = ButtonSizeTypes.Medium,
+  sx = null,
   testId = 'baseButtonTestId',
-  toolTip = ''
+  toolTip = '',
+  variant = ButtonVariantTypes.Contained
 }: BaseButtonProps) {
   const { t } = useTranslation('pht');
   const navigate = useNavigate();
@@ -51,9 +55,10 @@ export default function BaseButton({
       icon={icon}
       label={theTitle}
       onClick={ClickFunction}
+      sx={sx}
       testId={testId}
       toolTip={theToolTip}
-      variant={ButtonVariantTypes.Contained}
+      variant={variant}
     />
   );
 }

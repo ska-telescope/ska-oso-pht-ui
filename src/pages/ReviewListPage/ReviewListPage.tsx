@@ -18,7 +18,8 @@ import {
   PANEL_DECISION_STATUS,
   REVIEW_TYPE,
   FEASIBLE_NO,
-  DEFAULT_USER
+  DEFAULT_USER,
+  FEASIBLE_YES
 } from '@utils/constants.ts';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
@@ -38,19 +39,6 @@ import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient
 import GetProposalByStatusList from '@/services/axios/getProposalByStatusList/getProposalByStatusList';
 import { useNotify } from '@/utils/notify/useNotify';
 import { getUserId } from '@/utils/aaa/aaaUtils';
-
-/*
- * Process for retrieving the data for the list
- *
- * 1. Fetch the list of proposals IDs that are in the panel that the user is in
- * 2. For each proposal ID, fetch the details of the proposal
- * 3. Fetch the details of the proposal's review decisions
- * 4. Combine the data into a single array of objects
- *
- * NOTE
- * Step 2 is currently inefficient as the appropriate endpoint is not available
- * In the meantime, the list of proposals is being retrieved and being filtered
- */
 
 export default function ReviewListPage() {
   const { t } = useTranslation('pht');
@@ -220,8 +208,24 @@ export default function ReviewListPage() {
 
   const canEditTechnical = (tecReview: { status: string }) =>
     tecReview.status !== PANEL_DECISION_STATUS.DECIDED;
-  const canSubmit = (row: { srcNet: any; comments: any; rank: number; status: string }) =>
-    row.status !== PANEL_DECISION_STATUS.DECIDED && row?.rank > 0 && row?.comments?.length;
+
+  const hasTechnicalComments = (review: any) =>
+    feasibleYes(review) ? true : review?.reviewType?.feasibility?.comments?.length > 0;
+  const feasibleYes = (review: any) => review?.reviewType?.feasibility?.isFeasible === FEASIBLE_YES;
+
+  const canSubmit = (row: any) => {
+    const sciRec =
+      row?.sciReview.status !== PANEL_DECISION_STATUS.DECIDED &&
+      row?.sciReview?.comments?.length > 0 &&
+      row?.sciReview?.reviewType?.rank > 0;
+
+    const tecRec =
+      row?.tecReview.status !== PANEL_DECISION_STATUS.DECIDED &&
+      row?.tecReview?.reviewType?.feasibility?.isFeasible?.length > 0 &&
+      hasTechnicalComments(row?.tecReview);
+
+    return sciRec || tecRec;
+  };
 
   const colId = {
     field: 'prslId',

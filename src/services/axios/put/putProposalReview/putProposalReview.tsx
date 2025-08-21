@@ -4,9 +4,9 @@ import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
 } from '@utils/constants';
-import { MockProposalScienceReviewBackend } from '../post/postProposalReview/mockProposalReviewBackend';
-import { mappingReviewFrontendToBackend } from '../post/postProposalReview/postProposalReview';
-import useAxiosAuthClient from '../axiosAuthClient/axiosAuthClient';
+import { MockProposalScienceReviewBackend } from '../../post/postProposalReview/mockProposalReviewBackend';
+import { mappingReviewFrontendToBackend } from '../../post/postProposalReview/postProposalReview';
+import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
 import { helpers } from '@/utils/helpers';
 import {
   ProposalReview,

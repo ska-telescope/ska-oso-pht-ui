@@ -6,14 +6,16 @@ import { Spacer, SPACER_VERTICAL, TextEntry } from '@ska-telescope/ska-gui-compo
 import useTheme from '@mui/material/styles/useTheme';
 import {
   BANNER_PMT_SPACER,
-  FEASIBILITY,
+  FEASIBLE_MAYBE,
+  FEASIBLE_NO,
+  FEASIBLE_YES,
   PANEL_DECISION_STATUS,
   PMT,
   REVIEW_TYPE
 } from '@utils/constants.ts';
 import Typography from '@mui/material/Typography';
-import PutProposalReview from '@services/axios/putProposalReview/putProposalReview';
 import SaveButton from '../../../components/button/Save/Save';
+import PutProposalReview from '@/services/axios/put/putProposalReview/putProposalReview';
 import SubmitButton from '@/components/button/Submit/Submit';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import BackButton from '@/components/button/Back/Back';
@@ -55,7 +57,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const [tecPDF, setTecPDF] = React.useState<string | undefined>(undefined);
   const [isEdit, setIsEdit] = React.useState(false);
 
-  const TEC_HEIGHT_NUM = 55;
+  const TEC_HEIGHT_NUM = 60;
 
   const AREA_HEIGHT_NUM = 73;
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
@@ -187,19 +189,20 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const submitDisabled = () => {
     if (isTechnical()) {
       //TODO: comments not required for technical? only if a maybe / no?
-      return !hasFeasibility();
+      return !hasFeasibility() || !hasTechnicalComments();
     } else {
       return !hasGeneralComments() || rank === 0;
     }
   };
 
   const hasGeneralComments = () => generalComments?.length > 0;
+  const hasTechnicalComments = () => (feasibleYes() ? true : technicalComments?.length > 0);
+
+  const feasibleYes = () => feasibility === FEASIBLE_YES;
 
   const hasFeasibility = () => {
     return (
-      feasibility === FEASIBILITY[0] ||
-      feasibility === FEASIBILITY[1] ||
-      feasibility === FEASIBILITY[2]
+      feasibility === FEASIBLE_YES || feasibility === FEASIBLE_MAYBE || feasibility === FEASIBLE_NO
     );
   };
 
@@ -240,7 +243,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       sx={{
         margin: 1,
         bgcolor: `${theme.palette.primary.main}`,
-        width: '90%',
+        // width: '90%',
         overflow: 'auto'
       }}
       elevation={0}
@@ -254,7 +257,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       sx={{
         margin: 1,
         bgcolor: `${theme.palette.primary.main}`,
-        width: '90%',
+        // width: '90%',
         overflow: 'auto'
       }}
       elevation={0}
@@ -303,41 +306,39 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const displayArea = () => {
     return (
-      <>
-        <Stack p={1}>
-          <Typography id="title-label" variant={'h6'}>
-            {t('title.short')}
-          </Typography>
-          <Typography pl={2} pr={2} id="title" variant={'h6'}>
-            {locationProperties.state.proposal.title?.length
-              ? presentLatex(locationProperties.state.proposal.title)
+      <Stack p={1}>
+        <Typography id="title-label" variant={'h6'}>
+          {t('title.short')}
+        </Typography>
+        <Typography pl={2} pr={2} id="title" variant={'h6'}>
+          {locationProperties.state.proposal.title?.length
+            ? presentLatex(locationProperties.state.proposal.title)
+            : ''}
+        </Typography>
+        <Divider />
+        <Typography id="abstract-label" variant={'h6'}>
+          {t('abstract.label')}
+        </Typography>
+        <Box
+          pl={2}
+          pr={2}
+          id="abstract"
+          sx={{
+            maxHeight: `calc(AREA_HEIGHT - 100px)`,
+            overflowY: 'auto',
+            borderRadius: 1,
+            p: 1
+          }}
+        >
+          <Typography variant="body1">
+            {locationProperties.state.proposal.abstract?.length
+              ? presentLatex(locationProperties.state.proposal.abstract as string)
               : ''}
           </Typography>
-          <Divider />
-          <Typography id="abstract-label" variant={'h6'}>
-            {t('abstract.label')}
-          </Typography>
-          <Box
-            pl={2}
-            pr={2}
-            id="abstract"
-            sx={{
-              maxHeight: `calc(AREA_HEIGHT - 100px)`,
-              overflowY: 'auto',
-              borderRadius: 1,
-              p: 1
-            }}
-          >
-            <Typography variant="body1">
-              {locationProperties.state.proposal.abstract?.length
-                ? presentLatex(locationProperties.state.proposal.abstract as string)
-                : ''}
-            </Typography>
-          </Box>
-          <Divider />
-          {pdfArea()}
-        </Stack>
-      </>
+        </Box>
+        <Divider />
+        {pdfArea()}
+      </Stack>
     );
   };
 
@@ -345,7 +346,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const rankField = () => {
     return (
-      <Box p={2} pl={4} sx={{ width: '95%', height: '65vh', overflow: 'auto' }}>
+      <Box p={2} pl={4} sx={{ height: '65vh', overflow: 'auto' }}>
         {!isView() && <RankEntryField selectedRank={rank} setSelectedRank={setRank} />}
         {isView() && (
           <Typography id="title-label" variant={'h6'}>
@@ -371,7 +372,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         <Box
           p={2}
           sx={{
-            width: '100%',
+            // width: '100%',
             height: '65vh',
             overflow: 'auto',
             backgroundColor: theme.palette.primary.main
@@ -389,7 +390,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     <>
       {!isView() && (
         <>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, width: '100%' }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
             <Typography variant="h6" color="text.secondary" sx={{ mt: 1 }}>
               {t('technicalComments.label')}
             </Typography>
@@ -423,7 +424,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         <Box
           p={2}
           sx={{
-            width: '100%',
+            // width: '100%',
             height: '65vh',
             overflow: 'auto',
             backgroundColor: theme.palette.primary.main
@@ -452,7 +453,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     return (
       <Paper
         sx={{
-          position: 'fixed',
           border: `2px solid ${theme.palette.primary.light}`,
           borderRadius: '16px',
           height: AREA_HEIGHT,
@@ -479,7 +479,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
               bgcolor: `${theme.palette.primary.main}`,
               maxHeight: `calc('75vh' - 100px)`,
               overflowY: 'auto',
-              width: '100%',
+              // width: '100%',
               display: 'flex',
               flexDirection: 'column'
             }}
@@ -492,7 +492,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
             sx={{
               maxHeight: `calc('75vh' - 100px)`,
               overflowY: 'auto',
-              width: '100%',
+              // width: '100%',
               display: 'flex',
               flexDirection: 'column',
               backgroundColor: 'transparent'
@@ -506,7 +506,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
             sx={{
               maxHeight: `calc('75vh' - 100px)`,
               overflowY: 'auto',
-              width: '100%',
+              // width: '100%',
               display: 'flex',
               flexDirection: 'column',
               backgroundColor: 'transparent'
@@ -521,23 +521,24 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const reviewAreaTec = () => {
     return (
-      <Paper
-        sx={{
-          position: 'fixed',
-          border: `2px solid ${theme.palette.primary.light}`,
-          borderRadius: '16px',
-          height: AREA_HEIGHT,
-          top: '150',
-          padding: 3,
-          backgroundColor: theme.palette.primary.main
-        }}
-        elevation={0}
-      >
-        <Stack sx={{ gap: 1 }}>
-          <ChoiceCards value={feasibility} onChange={setFeasibility} />
-          {technicalCommentsField()}
-        </Stack>
-      </Paper>
+      <Box pr={2}>
+        <Paper
+          sx={{
+            border: `2px solid ${theme.palette.primary.light}`,
+            borderRadius: '16px',
+            height: AREA_HEIGHT,
+            top: '150',
+            padding: 3,
+            backgroundColor: theme.palette.primary.main
+          }}
+          elevation={0}
+        >
+          <Stack sx={{ gap: 1 }}>
+            <ChoiceCards value={feasibility} onChange={setFeasibility} />
+            {technicalCommentsField()}
+          </Stack>
+        </Paper>
+      </Box>
     );
   };
 
@@ -557,11 +558,11 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         container
         spacing={2}
         direction="row"
-        justifyContent="space-around"
+        justifyContent="space-between"
         sx={{ height: AREA_HEIGHT }}
       >
         <Grid2 size={{ sm: 9 }}>{displayArea()}</Grid2>
-        <Grid2 size={{ sm: 3 }}>{isTechnical() ? reviewAreaTec() : reviewAreaSci()}</Grid2>
+        <Grid2>{isTechnical() ? reviewAreaTec() : reviewAreaSci()}</Grid2>
       </Grid2>
       <PageFooterPMT />
     </>

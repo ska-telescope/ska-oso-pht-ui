@@ -23,7 +23,7 @@ export function filterReviewers(
   searchTypeExpertise: string,
   searchTypeAffiliation: string
 ) {
-  const fields: (keyof Reviewer)[] = ['givenName', 'surname', 'jobTitle'];
+  const fields: (keyof Reviewer)[] = ['givenName', 'surname', 'jobTitle']; // TODO : All given field
   return reviewers.filter(
     item =>
       fields.some(field =>
@@ -98,12 +98,12 @@ export default function GridReviewers({
   const colSelect = {
     field: 'select',
     headerName: '',
-    flex: 0.6,
     disableClickEventBubbling: true,
     renderCell: (e: { row: any }) => (
       <Box pr={1}>
         <TickBox
           label=""
+          labelPosition="top"
           testId="linkedTickBox"
           checked={isReviewerSelected(e.row.id)}
           onChange={() => tickBoxClicked?.(e.row, isReviewerSelected(e.row.id))}
@@ -179,13 +179,15 @@ export default function GridReviewers({
   );
 
   const searchDropdownExpertise = () => (
-    <DropDown
-      options={[{ label: t('subjectExpertise.0'), value: '' }, ...SEARCH_TYPE_OPTIONS_REVIEWERS]}
-      testId="subExpertise"
-      value={searchTypeExpertise}
-      setValue={setSearchTypeExpertise}
-      label={t('subjectExpertise.0')}
-    />
+    <Box pt={2}>
+      <DropDown
+        options={[{ label: t('subjectExpertise.0'), value: '' }, ...SEARCH_TYPE_OPTIONS_REVIEWERS]}
+        testId="subExpertise"
+        value={searchTypeExpertise}
+        setValue={setSearchTypeExpertise}
+        label={t('subjectExpertise.0')}
+      />
+    </Box>
   );
 
   const getAffiliationOptions = () => {
@@ -199,13 +201,15 @@ export default function GridReviewers({
   };
 
   const searchDropdownAffiliation = () => (
-    <DropDown
-      options={[{ label: t('affiliation.0'), value: '' }, ...getAffiliationOptions()]}
-      testId="officeLocation"
-      value={searchTypeAffiliation}
-      setValue={setSearchTypeAffiliation}
-      label={t('affiliation.0')}
-    />
+    <Box pt={2}>
+      <DropDown
+        options={[{ label: t('affiliation.0'), value: '' }, ...getAffiliationOptions()]}
+        testId="officeLocation"
+        value={searchTypeAffiliation}
+        setValue={setSearchTypeAffiliation}
+        label={t('affiliation.0')}
+      />
+    </Box>
   );
 
   const searchEntryField = (testId: string) => (
@@ -220,7 +224,7 @@ export default function GridReviewers({
   return (
     <>
       {showTitle && (
-        <Grid2 p={2} size={{ lg: 12 }}>
+        <Grid2 container p={2} size={{ lg: 12 }}>
           {ReviewersSectionTitle()}
         </Grid2>
       )}
@@ -228,20 +232,26 @@ export default function GridReviewers({
       {showSearch && (
         <Grid2
           pt={2}
-          size={{ sm: 12, md: 8, lg: 12 }}
+          size={{ sm: 12 }}
           container
           direction="row"
           spacing={2}
           justifyContent="space-between"
           alignItems="center"
         >
-          <Grid2 size={{ sm: 12, lg: 8 }}>
-            <Grid2 container direction="row" spacing={2}>
-              <Grid2 size={{ sm: 6 }}>{searchDropdownExpertise()}</Grid2>
-              <Grid2 size={{ sm: 6 }}>{searchDropdownAffiliation()}</Grid2>
+          <Grid2 size={{ sm: 12 }}>
+            <Grid2
+              container
+              direction="row"
+              spacing={2}
+              justifyContent="space-around"
+              alignItems="center"
+            >
+              <Grid2 size={{ sm: 3 }}>{searchDropdownExpertise()}</Grid2>
+              <Grid2 size={{ sm: 3 }}>{searchDropdownAffiliation()}</Grid2>
+              <Grid2 size={{ sm: 5 }}>{searchEntryField('searchId')}</Grid2>
             </Grid2>
             <Grid2 container direction="row" spacing={2}>
-              <Grid2 size={{ sm: 6 }}>{searchEntryField('searchId')}</Grid2>
               <Grid2 size={{ sm: 6 }} mt={3}>
                 {showSelection && (
                   <Grid2

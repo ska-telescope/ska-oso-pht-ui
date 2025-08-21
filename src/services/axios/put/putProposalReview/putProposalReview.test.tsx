@@ -1,5 +1,5 @@
 import { MockProposalScienceReviewFrontend } from '@services/axios/post/postProposalReview/mockProposalReviewFrontend.tsx';
-import { MockProposalScienceReviewBackend } from '../post/postProposalReview/mockProposalReviewBackend';
+import { MockProposalScienceReviewBackend } from '../../post/postProposalReview/mockProposalReviewBackend';
 import PutProposalReview, { putMockProposalReview } from './putProposalReview';
 import * as CONSTANTS from '@/utils/constants';
 
