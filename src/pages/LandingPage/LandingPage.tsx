@@ -90,9 +90,14 @@ export default function LandingPage() {
   React.useEffect(() => {
     const fetchData = async () => {
       setProposals([]);
-      /* c8 ignore next */
+
+      /* c8 ignore start */
       const noLoginTest = window.localStorage.getItem('proposal:noLogin') === 'true';
-      if (noLoginTest || (!isCypress && !loggedIn)) return;
+      if (noLoginTest) {
+        return;
+      }
+      /* c8 ignore end */
+      if (!isCypress && !loggedIn) return;
 
       const response = await GetProposalList(authClient);
       if (typeof response === 'string') {
