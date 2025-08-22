@@ -28,12 +28,16 @@ export default function HomeButton({
   const loggedIn = isLoggedIn();
 
   const isShowWarningWhenClicked = () => {
+    /* c8 ignore start */
     const noLoginTest = window.localStorage.getItem('proposal:noLogin') === 'true';
-
     if (noLoginTest) {
       return true;
-    } else return !isCypress && !loggedIn;
+    }
+    /* c8 ignore end */
+
+    return !isCypress && !loggedIn;
   };
+
   const ClickFunction = () => {
     if (isShowWarningWhenClicked()) {
       setOpenWarningDialog(true);

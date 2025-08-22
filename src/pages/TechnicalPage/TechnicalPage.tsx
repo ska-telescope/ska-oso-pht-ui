@@ -5,14 +5,14 @@ import { Grid2 } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
-import Shell from '../../components/layout/Shell/Shell';
-import HelpPanel from '../../components/info/helpPanel/HelpPanel';
+import DeletePDF from '@services/axios/delete/deletePDF/deletePDF.tsx';
+import PutUploadPDF from '@services/axios/put/putUploadPDF/putUploadPDF';
+import GetPresignedDeleteUrl from '@services/axios/get/getPresignedDeleteUrl/getPresignedDeleteUrl';
+import GetPresignedDownloadUrl from '@services/axios/get/getPresignedDownloadUrl/getPresignedDownloadUrl';
+import GetPresignedUploadUrl from '@services/axios/get/getPresignedUploadUrl/getPresignedUploadUrl';
 import { Proposal } from '../../utils/types/proposal';
-import DeleteDeletePDF from '../../services/axios/deleteDeletePDF/deleteDeletePDF';
-import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
-import GetPresignedDeleteUrl from '../../services/axios/getPresignedDeleteUrl/getPresignedDeleteUrl';
-import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
-import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
+import HelpPanel from '../../components/info/helpPanel/HelpPanel';
+import Shell from '../../components/layout/Shell/Shell';
 
 import { validateTechnicalPage } from '../../utils/proposalValidation';
 import DownloadButton from '../../components/button/Download/Download';
@@ -129,7 +129,7 @@ export default function TechnicalPage() {
 
       if (typeof signedUrl != 'string') new Error('Not able to Get Technical PDF Upload URL');
 
-      const deleteResult = await DeleteDeletePDF(signedUrl);
+      const deleteResult = await DeletePDF(signedUrl);
 
       if (deleteResult.error || deleteResult === 'error.API_UNKNOWN_ERROR') {
         throw new Error('Not able to delete Technical PDF');

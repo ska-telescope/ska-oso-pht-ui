@@ -14,6 +14,8 @@ import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 //
 import { presentDate, presentLatex, presentTime } from '@utils/present/present';
 import Investigator from '@utils/types/investigator.tsx';
+import PutProposal from '@services/axios/put/putProposal/putProposal';
+import GetProposal from '@services/axios/get/getProposal/getProposal';
 import GetObservatoryData from '@/services/axios/get/getObservatoryData/getObservatoryData';
 import AddButton from '@/components/button/Add/Add';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
@@ -23,8 +25,6 @@ import ViewIcon from '@/components/icon/viewIcon/viewIcon';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import emptyCell from '@/components/fields/emptyCell/emptyCell';
-import PutProposal from '@/services/axios/putProposal/putProposal';
-import GetProposal from '@/services/axios/getProposal/getProposal';
 import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
@@ -90,9 +90,14 @@ export default function LandingPage() {
   React.useEffect(() => {
     const fetchData = async () => {
       setProposals([]);
-      const noLoginTest = window.localStorage.getItem('proposal:noLogin') === 'true';
 
-      if (noLoginTest || (!isCypress && !loggedIn)) return;
+      /* c8 ignore start */
+      const noLoginTest = window.localStorage.getItem('proposal:noLogin') === 'true';
+      if (noLoginTest) {
+        return;
+      }
+      /* c8 ignore end */
+      if (!isCypress && !loggedIn) return;
 
       const response = await GetProposalList(authClient);
       if (typeof response === 'string') {

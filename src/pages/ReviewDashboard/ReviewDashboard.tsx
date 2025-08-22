@@ -11,10 +11,10 @@ import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
+import getReviewDashboard from '@services/axios/get/getReviewDashboard/getReviewDashboard';
 import { BANNER_PMT_SPACER, PANEL_DECISION_STATUS } from '@/utils/constants';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import ResetButton from '@/components/button/Reset/Reset';
-import getReviewDashboard from '@/services/axios/getReviewDashboard/getReviewDashboard';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import D3PieChart from '@/components/charts/pie/D3PieChart';
 

@@ -17,6 +17,8 @@ import {
   STATUS_PARTIAL
 } from '@utils/constants.ts';
 import { Proposal, ProposalBackend } from '@utils/types/proposal.tsx';
+import PutProposal from '@services/axios/put/putProposal/putProposal';
+import PostProposalValidate from '@services/axios/post/postProposalValidate/postProposalValidate';
 import HomeButton from '../../button/Home/Home';
 import SaveButton from '../../button/Save/Save';
 import StatusArray from '../../statusArray/StatusArray';
@@ -24,9 +26,7 @@ import SubmitButton from '../../button/Submit/Submit';
 import ValidateButton from '../../button/Validate/Validate';
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
 import ValidationResults from '../../alerts/validationResults/ValidationResults';
-import PutProposal from '../../../services/axios/putProposal/putProposal';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
-import PostProposalValidate from '../../../services/axios/postProposalValidate/postProposalValidate';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
 import { accessSubmit } from '@/utils/aaa/aaaUtils';
@@ -56,13 +56,14 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const loggedIn = isLoggedIn();
 
   const isDisableEndpoints = () => {
+    /* c8 ignore start */
     const testDefaultUser = window.localStorage.getItem('cypress:defaultUserLoggedIn') === 'true';
     if (testDefaultUser) {
       return false;
-    } else {
-      return !loggedIn;
-    }
+    } /* c8 ignore end */
+    return !loggedIn;
   };
+
   const getAccess = () => application.content4 as ProposalAccess[];
   const getProposal = () => application.content2 as Proposal;
 

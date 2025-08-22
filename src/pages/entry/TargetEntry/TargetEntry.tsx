@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
+import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import { Proposal } from '../../../utils/types/proposal';
 import AddButton from '../../../components/button/Add/Add';
 import ResolveButton from '../../../components/button/Resolve/Resolve';
@@ -11,7 +12,6 @@ import SkyDirection1 from '../../../components/fields/skyDirection/SkyDirection1
 import SkyDirection2 from '../../../components/fields/skyDirection/SkyDirection2';
 import VelocityField from '../../../components/fields/velocity/Velocity';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
-import GetCoordinates from '../../../services/axios/getCoordinates/getCoordinates';
 import Target from '../../../utils/types/target';
 import {
   RA_TYPE_ICRS,

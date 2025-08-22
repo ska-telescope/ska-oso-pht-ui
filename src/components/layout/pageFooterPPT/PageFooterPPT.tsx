@@ -5,11 +5,11 @@ import { useTranslation } from 'react-i18next';
 import { Grid2, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DUMMY_PROPOSAL_ID, isCypress, LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
+import PostProposal from '@services/axios/post/postProposal/postProposal';
 import NextPageButton from '../../button/NextPage/NextPage';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import Proposal from '../../../utils/types/proposal';
 import Notification from '../../../utils/types/notification';
-import PostProposal from '../../../services/axios/postProposal/postProposal';
 import TimedAlert from '../../alerts/timedAlert/TimedAlert';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
@@ -32,13 +32,14 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const loggedIn = isLoggedIn();
 
   const isDisableEndpoints = () => {
+    /* c8 ignore start */
     const noLoginTest = window.localStorage.getItem('proposal:noLogin') === 'true';
     if (noLoginTest) {
       return true;
-    } else {
-      return !loggedIn && !isCypress;
-    }
+    } /* c8 ignore end */
+    return !loggedIn && !isCypress;
   };
+
   const getObservatoryData = () => application.content3 as ObservatoryData;
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);

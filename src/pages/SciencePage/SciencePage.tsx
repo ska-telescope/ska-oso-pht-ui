@@ -5,11 +5,11 @@ import { Grid2 } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
-import DeleteDeletePDF from '../../services/axios/deleteDeletePDF/deleteDeletePDF';
-import GetPresignedDeleteUrl from '../../services/axios/getPresignedDeleteUrl/getPresignedDeleteUrl';
-import GetPresignedDownloadUrl from '../../services/axios/getPresignedDownloadUrl/getPresignedDownloadUrl';
-import GetPresignedUploadUrl from '../../services/axios/getPresignedUploadUrl/getPresignedUploadUrl';
-import PutUploadPDF from '../../services/axios/putUploadPDF/putUploadPDF';
+import DeletePDF from '@services/axios/delete/deletePDF/deletePDF.tsx';
+import GetPresignedDeleteUrl from '@services/axios/get/getPresignedDeleteUrl/getPresignedDeleteUrl';
+import GetPresignedDownloadUrl from '@services/axios/get/getPresignedDownloadUrl/getPresignedDownloadUrl';
+import GetPresignedUploadUrl from '@services/axios/get/getPresignedUploadUrl/getPresignedUploadUrl';
+import PutUploadPDF from '@services/axios/put/putUploadPDF/putUploadPDF';
 
 import DeleteButton from '../../components/button/Delete/Delete';
 import DownloadButton from '../../components/button/Download/Download';
@@ -129,7 +129,7 @@ export default function SciencePage() {
 
       if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
 
-      const deleteResult = await DeleteDeletePDF(signedUrl);
+      const deleteResult = await DeletePDF(signedUrl);
 
       if (deleteResult.error || deleteResult === 'error.API_UNKNOWN_ERROR') {
         throw new Error('Not able to Delete Science PDF');
