@@ -36,11 +36,10 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     const noLoginTest = window.localStorage.getItem('proposal:noLogin') === 'true';
     if (noLoginTest) {
       return true;
-    } else {
-      /* c8 ignore end */
-      return !loggedIn && !isCypress;
-    }
+    } /* c8 ignore end */
+    return !loggedIn && !isCypress;
   };
+
   const getObservatoryData = () => application.content3 as ObservatoryData;
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);

@@ -60,11 +60,10 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     const testDefaultUser = window.localStorage.getItem('cypress:defaultUserLoggedIn') === 'true';
     if (testDefaultUser) {
       return false;
-    } else {
-      /* c8 ignore end */
-      return !loggedIn;
-    }
+    } /* c8 ignore end */
+    return !loggedIn;
   };
+
   const getAccess = () => application.content4 as ProposalAccess[];
   const getProposal = () => application.content2 as Proposal;
 
