@@ -24,7 +24,7 @@ export const MockPanelFrontend: Panel = {
       assignedOn: '2025-07-04T09:30:00Z'
     }
   ],
-  reviewers: [
+  sciReviewers: [
     {
       panelId: 'panel-t0001-20250704-00001',
       reviewerId: 'prsl-t0001-20250704-00001',
@@ -37,5 +37,6 @@ export const MockPanelFrontend: Panel = {
       assignedOn: '2025-02-04T09:30:00Z',
       status: 'pending'
     }
-  ]
+  ],
+  tecReviewers: []
 };

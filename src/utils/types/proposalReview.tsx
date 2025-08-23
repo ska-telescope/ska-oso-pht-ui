@@ -2,10 +2,7 @@ import { Metadata } from './metadata';
 
 export type TechnicalReview = {
   kind: string;
-  feasibility: {
-    isFeasible: string;
-    comments: string | null;
-  };
+  isFeasible: string;
 };
 
 export type ScienceReview = {
@@ -45,10 +42,7 @@ export type ScienceReviewBackend = {
 
 export type TechnicalReviewBackend = {
   kind: string;
-  feasibility: {
-    is_feasible: string;
-    comments: string | null;
-  };
+  is_feasible: string;
 };
 
 export type ProposalReviewBackend = {
@@ -58,10 +52,10 @@ export type ProposalReviewBackend = {
   cycle: string;
   reviewer_id: string;
   prsl_id: string;
-  review_type: ScienceReviewBackend | TechnicalReviewBackend;
   comments: string;
   src_net: string;
   submitted_on: string | null;
   submitted_by: string | null;
   status: string;
+  review_type: ScienceReviewBackend | TechnicalReviewBackend;
 };

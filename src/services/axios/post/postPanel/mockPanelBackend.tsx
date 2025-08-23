@@ -13,7 +13,8 @@ export const MockPanelBackend: PanelBackend = {
   name: 'string',
   cycle: 'string',
   proposals: [],
-  reviewers: []
+  sci_reviewers: [],
+  tech_reviewers: []
 };
 
 export const MockPanelBackendWithProposals: PanelBackend = {
@@ -34,7 +35,8 @@ export const MockPanelBackendWithProposals: PanelBackend = {
       assigned_on: '2025-07-04T11:48:38.435000Z'
     }
   ],
-  reviewers: []
+  sci_reviewers: [],
+  tech_reviewers: []
 };
 
 export const MockPanelBackendWithReviewers: PanelBackend = {
@@ -50,11 +52,12 @@ export const MockPanelBackendWithReviewers: PanelBackend = {
   name: 'string',
   cycle: 'string',
   proposals: [],
-  reviewers: [
+  sci_reviewers: [
     {
       reviewer_id: 'c8f8f18a-3c70-4c39-8ed9-2d8d180d99a1',
       assigned_on: '2025-07-03T16:20:37.088Z',
       status: 'pending'
     }
-  ]
+  ],
+  tech_reviewers: []
 };

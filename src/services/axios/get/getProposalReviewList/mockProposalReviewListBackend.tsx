@@ -134,10 +134,7 @@ export const MockProposalReviewListBackend: ProposalReviewBackend[] = [
     prsl_id: 'prsl-t0001-20250716-00001',
     review_type: {
       kind: REVIEW_TYPE.TECHNICAL,
-      feasibility: {
-        is_feasible: 'No',
-        comments: 'bias in proposal'
-      }
+      is_feasible: 'No'
     },
     comments: 'recommend for approval',
     src_net: 'recommend as well',

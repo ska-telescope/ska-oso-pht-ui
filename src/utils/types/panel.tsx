@@ -9,7 +9,8 @@ export type Panel = {
   expiresOn?: string;
   cycle?: string;
   proposals: PanelProposal[];
-  reviewers: PanelReviewer[];
+  sciReviewers: PanelReviewer[];
+  tecReviewers: PanelReviewer[];
 };
 
 export type PanelBackend = {
@@ -19,5 +20,6 @@ export type PanelBackend = {
   name: string;
   expires_on?: string;
   proposals: PanelProposalBackend[];
-  reviewers: PanelReviewerBackend[];
+  sci_reviewers: PanelReviewerBackend[];
+  tech_reviewers: PanelReviewerBackend[];
 };

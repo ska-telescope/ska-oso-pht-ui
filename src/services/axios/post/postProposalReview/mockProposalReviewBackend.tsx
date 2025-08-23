@@ -82,9 +82,6 @@ export const MockProposalTechnicalReviewBackend: ProposalReviewBackend = {
   status: PANEL_DECISION_STATUS.DECIDED,
   review_type: {
     kind: REVIEW_TYPE.TECHNICAL,
-    feasibility: {
-      is_feasible: TECHNICAL_FEASIBILITY.MAYBE,
-      comments: 'Technical improvements needed'
-    }
+    is_feasible: TECHNICAL_FEASIBILITY.MAYBE
   } as TechnicalReviewBackend
 };

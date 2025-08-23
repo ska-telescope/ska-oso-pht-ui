@@ -14,7 +14,7 @@ import PutPanel from '@/services/axios/put/putPanel/putPanel';
 interface GridReviewPanelsProps {
   height?: string;
   listOnly?: boolean;
-  onRowClick?: (row: any) => void;
+  onRowClick: (row: any) => void;
   updatedData: Panel | null;
 }
 
@@ -70,7 +70,8 @@ export default function GridReviewPanels({
         name: 'Science Verification',
         expiresOn: getDateFormatted(),
         proposals: [],
-        reviewers: []
+        sciReviewers: [],
+        tecReviewers: []
       };
     };
 
@@ -129,18 +130,16 @@ export default function GridReviewPanels({
           <Alert color={AlertColorTypes.Info} text={t('page.15.empty')} testId="helpPanelId" />
         )}
         {data.length > 0 && (
-          <div>
+          <>
             <DataGrid
               maxHeight={`calc(${height} - 50px)`}
               testId="dataGridId"
               rows={data}
               columns={stdColumns}
               height={`calc(${height} - 50px)`}
-              onRowClick={(e: any) => {
-                onRowClick?.(e.row);
-              }}
+              onRowClick={onRowClick}
             />
-          </div>
+          </>
         )}
       </Grid2>
     </>

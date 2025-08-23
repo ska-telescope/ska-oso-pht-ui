@@ -8,14 +8,14 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { Typography, Grid2, Box } from '@mui/material';
 import React from 'react';
-import { LABEL_POSITION } from '@ska-telescope/ska-gui-components';
 import GetReviewerList from '@services/axios/get/getReviewerList/getReviewerList';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import { NOT_SPECIFIED, SEARCH_TYPE_OPTIONS_REVIEWERS } from '@/utils/constants';
-import Reviewer from '@/utils/types/reviewer';
+import { Reviewer } from '@/utils/types/reviewer';
 import { IdObject } from '@/utils/types/idObject';
 import { arraysAreEqual } from '@/utils/helpers';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
 
 export function filterReviewers(
   reviewers: Reviewer[],
@@ -59,12 +59,14 @@ export default function GridReviewers({
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchTypeExpertise, setSearchTypeExpertise] = React.useState('');
   const [searchTypeAffiliation, setSearchTypeAffiliation] = React.useState('');
-  const [selected, setSelected] = React.useState(true);
-  const [notSelected, setNotSelected] = React.useState(true);
   const [axiosError, setAxiosError] = React.useState('');
   const [fetchList] = React.useState(false);
   const [reviewersCollection, setReviewersCollection] = React.useState<IdObject[]>([]);
   const authClient = useAxiosAuthClient();
+  const [checkState, setCheckState] = React.useState<'checked' | 'unchecked' | 'indeterminate'>(
+    'indeterminate'
+  );
+  const [typeState, setTypeState] = React.useState<'all' | 'sci' | 'tec'>('all');
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -95,12 +97,48 @@ export default function GridReviewers({
     return reviewersCollection?.filter(entry => entry.id === reviewerId).length > 0;
   };
 
+  const isReviewerType = (reviewer: Reviewer): boolean => {
+    return (
+      (reviewer.isScience && typeState !== 'tec') || (reviewer.isTechnical && typeState !== 'sci')
+    );
+  };
+
+  const getReviewerType = (rec: Reviewer) => {
+    if (rec.isScience && rec.isTechnical) return t('reviewerType.all');
+    else return rec.isScience ? t('reviewerType.science') : t('reviewerType.technical');
+  };
+
   const colSelect = {
     field: 'select',
-    headerName: '',
+    headerName: 'Select',
+    renderHeader: () => (
+      <Box
+        pl={2}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100%',
+          margin: 0
+        }}
+      >
+        <TriStateCheckbox state={checkState} setState={setCheckState} />
+      </Box>
+    ),
     disableClickEventBubbling: true,
+    filterable: false,
+    sortable: false,
+    disableColumnMenu: true,
     renderCell: (e: { row: any }) => (
-      <Box pr={1}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100%',
+          margin: 0
+        }}
+      >
         <TickBox
           label=""
           labelPosition="top"
@@ -133,11 +171,37 @@ export default function GridReviewers({
     renderCell: (e: { row: any }) => e.row.surname
   };
 
-  const colOfficeLocation = {
-    field: 'officeLocation',
-    headerName: t('reviewers.officeLocation'),
+  // TODO : Keep until we get confirmation that it should be removed from SciOps
+  // const colOfficeLocation = {
+  //   field: 'officeLocation',
+  //   headerName: t('reviewers.officeLocation'),
+  //   minWidth: 200,
+  //   renderCell: (e: { row: any }) => e.row.officeLocation
+  // };
+
+  const colReviewerType = {
+    field: 'reviewerType',
+    headerName: t('reviewers.reviewerType'),
+    filterable: false,
+    sortable: false,
+    disableColumnMenu: true,
+    renderHeader: () => (
+      <Box sx={{ minWidth: 150 }}>
+        <DropDown
+          options={[
+            { label: t('reviewerType.all'), value: 'all' },
+            { label: t('reviewerType.science'), value: 'sci' },
+            { label: t('reviewerType.technical'), value: 'tec' }
+          ]}
+          testId="subExpertise"
+          value={typeState}
+          setValue={setTypeState}
+          label={''}
+        />
+      </Box>
+    ),
     minWidth: 200,
-    renderCell: (e: { row: any }) => e.row.officeLocation
+    renderCell: (e: { row: any }) => getReviewerType(e.row)
   };
 
   const colSubExpertise = {
@@ -160,13 +224,18 @@ export default function GridReviewers({
     colTitle,
     colGivenName,
     colSurname,
-    colOfficeLocation,
+    // colOfficeLocation,
+    colReviewerType,
     colSubExpertise,
     colStatus
   ];
 
   const selectedData = reviewers
-    ? reviewers.filter(e => (isReviewerSelected(e.id) ? selected : notSelected))
+    ? reviewers.filter(
+        e =>
+          (isReviewerSelected(e.id) ? checkState !== 'unchecked' : checkState !== 'checked') &&
+          isReviewerType(e)
+      )
     : [];
   const filteredData = selectedData
     ? filterReviewers(selectedData, searchTerm, searchTypeExpertise, searchTypeAffiliation)
@@ -213,12 +282,14 @@ export default function GridReviewers({
   );
 
   const searchEntryField = (testId: string) => (
-    <SearchEntry
-      label={t('search.label')}
-      testId={testId}
-      value={searchTerm}
-      setValue={setSearchTerm}
-    />
+    <Box pt={1}>
+      <SearchEntry
+        label={t('search.label')}
+        testId={testId}
+        value={searchTerm}
+        setValue={setSearchTerm}
+      />
+    </Box>
   );
 
   return (
@@ -231,6 +302,7 @@ export default function GridReviewers({
 
       {showSearch && (
         <Grid2
+          pb={2}
           pt={2}
           size={{ sm: 12 }}
           container
@@ -251,45 +323,11 @@ export default function GridReviewers({
               <Grid2 size={{ sm: 3 }}>{searchDropdownAffiliation()}</Grid2>
               <Grid2 size={{ sm: 5 }}>{searchEntryField('searchId')}</Grid2>
             </Grid2>
-            <Grid2 container direction="row" spacing={2}>
-              <Grid2 size={{ sm: 6 }} mt={3}>
-                {showSelection && (
-                  <Grid2
-                    container
-                    flexDirection={'row'}
-                    flexWrap={'wrap'}
-                    justifyContent={'space-evenly'}
-                  >
-                    <Grid2>
-                      <TickBox
-                        label={t('selected.label')}
-                        labelPosition={LABEL_POSITION.END}
-                        testId="selectedTickBox"
-                        checked={selected}
-                        onChange={() => setSelected(!selected)}
-                      />
-                    </Grid2>
-                    <Grid2>
-                      <TickBox
-                        label={t('notSelected.label')}
-                        labelPosition={LABEL_POSITION.END}
-                        testId="notSelectedTickBox"
-                        checked={notSelected}
-                        onChange={() => setNotSelected(!notSelected)}
-                      />
-                    </Grid2>
-                  </Grid2>
-                )}
-              </Grid2>
-            </Grid2>
           </Grid2>
         </Grid2>
       )}
       <Grid2 size={{ xs: 12 }} pt={1}>
-        {!axiosError && (!filteredData || filteredData.length === 0) && (
-          <Alert color={AlertColorTypes.Info} text={t('reviewers.empty')} testId="helpPanelId" />
-        )}
-        {!axiosError && filteredData.length > 0 && (
+        {!axiosError && (
           <div>
             <DataGrid
               maxHeight={height}

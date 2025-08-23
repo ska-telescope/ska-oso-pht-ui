@@ -49,6 +49,7 @@ export default function TableTechnicalReviews({ data }: TableTechnicalReviewsPro
             {filteredData(data.reviews)?.map(
               (
                 detail: {
+                  comments: string;
                   status: string;
                   reviewType: TechnicalReview;
                 },
@@ -69,12 +70,12 @@ export default function TableTechnicalReviews({ data }: TableTechnicalReviewsPro
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" sx={{ color: 'text.primary' }}>
-                      {detail?.reviewType?.feasibility?.isFeasible}
+                      {detail?.reviewType?.isFeasible}
                     </Typography>
                   </TableCell>
                   <TableCell>
                     <Typography variant="body2" sx={{ color: 'text.primary' }}>
-                      {detail?.reviewType?.feasibility?.comments}
+                      {detail?.comments}
                     </Typography>
                   </TableCell>
                 </TableRow>

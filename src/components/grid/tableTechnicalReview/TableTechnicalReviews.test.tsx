@@ -59,30 +59,21 @@ const mockData = {
       status: 'Complete',
       reviewType: {
         kind: REVIEW_TYPE.TECHNICAL,
-        feasibility: {
-          isFeasible: 'No',
-          comments: 'I have no idea why they thought this might be possible'
-        }
+        isFeasible: 'No'
       }
     },
     {
       status: 'To Do',
       reviewType: {
         kind: REVIEW_TYPE.TECHNICAL,
-        feasibility: {
-          isFeasible: 'Maybe',
-          comments: 'This might be possible, but will need to investigate a little further'
-        }
+        isFeasible: 'Maybe'
       }
     },
     {
       status: 'To Do',
       reviewType: {
         kind: REVIEW_TYPE.TECHNICAL,
-        feasibility: {
-          isFeasible: 'Yes',
-          comments: null
-        }
+        isFeasible: 'Yes'
       }
     }
   ]
