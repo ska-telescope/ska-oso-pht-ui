@@ -1,8 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // ✅ Now import the hook
-import { InteractionRequiredAuthError } from '@azure/msal-browser';
-import useAxiosAuthClient, { loginRequest } from './axiosAuthClient';
+import useAxiosAuthClient from './axiosAuthClient';
 
 // ✅ Mock window.location before anything else
 vi.stubGlobal('window', {
@@ -107,7 +106,6 @@ describe('useAxiosAuthClient', () => {
   */
 
   it('handles ECONNABORTED timeout error', async () => {
-    const client = useAxiosAuthClient();
     const errorHandler = mockResponseInterceptor.use.mock.calls[0][1];
 
     const error = { code: 'ECONNABORTED', message: 'timeout exceeded' };
@@ -115,7 +113,6 @@ describe('useAxiosAuthClient', () => {
   });
 
   it('handles ESOCKETTIMEDOUT error', async () => {
-    const client = useAxiosAuthClient();
     const errorHandler = mockResponseInterceptor.use.mock.calls[0][1];
 
     const error = { code: 'ESOCKETTIMEDOUT', message: 'socket timeout' };
@@ -125,7 +122,6 @@ describe('useAxiosAuthClient', () => {
   });
 
   it('handles server response error', async () => {
-    const client = useAxiosAuthClient();
     const errorHandler = mockResponseInterceptor.use.mock.calls[0][1];
 
     const error = { response: { status: 500 } };
@@ -133,7 +129,6 @@ describe('useAxiosAuthClient', () => {
   });
 
   it('handles no response error', async () => {
-    const client = useAxiosAuthClient();
     const errorHandler = mockResponseInterceptor.use.mock.calls[0][1];
 
     const error = { request: {} };
@@ -141,7 +136,6 @@ describe('useAxiosAuthClient', () => {
   });
 
   it('handles generic setup error', async () => {
-    const client = useAxiosAuthClient();
     const errorHandler = mockResponseInterceptor.use.mock.calls[0][1];
 
     const error = { message: 'Something went wrong' };

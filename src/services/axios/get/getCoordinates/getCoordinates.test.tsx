@@ -1,7 +1,10 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import * as CONSTANTS from '@utils/constants.ts';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates.tsx';
-import { MockEquatorialCoordinates, MockGalacticCoordinates } from '@services/axios/get/getCoordinates/mockCoordinates.tsx';
+import {
+  MockEquatorialCoordinates,
+  MockGalacticCoordinates
+} from '@services/axios/get/getCoordinates/mockCoordinates.tsx';
 import axiosClient from '../../axiosClient/axiosClient';
 
 vi.mock('@services/axiosClient/axiosClient.tsx', () => ({
