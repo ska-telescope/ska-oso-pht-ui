@@ -43,9 +43,13 @@ export function mappingList(inRec: PanelBackend[]): Panel[] {
         inRec[i].proposals?.length > 0
           ? inRec[i].proposals.map(proposal => getProposal(proposal, inRec[i].panel_id))
           : [],
-      reviewers:
-        inRec[i].reviewers?.length > 0
-          ? inRec[i].reviewers.map(reviewer => getReviewer(reviewer, inRec[i].panel_id))
+      sciReviewers:
+        inRec[i].sci_reviewers?.length > 0
+          ? inRec[i].sci_reviewers.map(reviewer => getReviewer(reviewer, inRec[i].panel_id))
+          : [],
+      tecReviewers:
+        inRec[i].tech_reviewers?.length > 0
+          ? inRec[i].tech_reviewers.map(reviewer => getReviewer(reviewer, inRec[i].panel_id))
           : []
     };
     output.push(rec);

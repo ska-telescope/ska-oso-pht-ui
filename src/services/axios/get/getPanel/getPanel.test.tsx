@@ -19,9 +19,19 @@ describe('Helper Functions', () => {
   });
 
   test('mapping returns mapped panel from backend to frontend format with no proposals and reviewers', () => {
-    const backendPanel: PanelBackend = { ...MockPanelBackend, proposals: [], reviewers: [] };
+    const backendPanel: PanelBackend = {
+      ...MockPanelBackend,
+      proposals: [],
+      sci_reviewers: [],
+      tech_reviewers: []
+    };
     const panelFrontEnd: Panel = mapping(backendPanel);
-    expect(panelFrontEnd).to.deep.equal({ ...MockPanelFrontend, proposals: [], reviewers: [] });
+    expect(panelFrontEnd).to.deep.equal({
+      ...MockPanelFrontend,
+      proposals: [],
+      sciReviewers: [],
+      tecReviewers: []
+    });
   });
 });
 

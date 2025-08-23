@@ -532,7 +532,7 @@ export default function ObservationEntry() {
       };
 
       return (
-        <Box pt={1}>
+        <Box>
           <NumberEntry
             disabled={subarrayConfig !== 20}
             label={t('numOf15mAntennas.short')}
@@ -561,7 +561,7 @@ export default function ObservationEntry() {
       };
 
       return (
-        <Box pt={1}>
+        <Box>
           <NumberEntry
             disabled={subarrayConfig !== 20}
             label={t('numOf13mAntennas.short')}

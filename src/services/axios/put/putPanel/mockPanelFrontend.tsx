@@ -13,7 +13,8 @@ export const MockPanelFrontend: Panel = {
   name: 'string',
   cycle: 'string',
   proposals: [],
-  reviewers: []
+  sciReviewers: [],
+  tecReviewers: []
 };
 
 export const MockPanelFrontendWithProposals: Panel = {
@@ -35,7 +36,8 @@ export const MockPanelFrontendWithProposals: Panel = {
       assignedOn: '2025-07-04T11:48:38.435000Z'
     }
   ],
-  reviewers: []
+  sciReviewers: [],
+  tecReviewers: []
 };
 
 export const MockPanelFrontendWithReviewers: Panel = {
@@ -51,12 +53,13 @@ export const MockPanelFrontendWithReviewers: Panel = {
   name: 'string',
   cycle: 'string',
   proposals: [],
-  reviewers: [
+  sciReviewers: [
     {
       reviewerId: 'c8f8f18a-3c70-4c39-8ed9-2d8d180d99a1',
       panelId: 'panel-12345',
       assignedOn: '2025-07-03T16:20:37.088Z',
       status: 'pending'
     }
-  ]
+  ],
+  tecReviewers: []
 };

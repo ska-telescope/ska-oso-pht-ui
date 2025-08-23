@@ -10,6 +10,7 @@ import {
   PANEL_DECISION_STATUS,
   PMT,
   REVIEW_TYPE,
+  REVIEW_TYPE_PREFIX,
   REVIEWER_STATUS
 } from '../../utils/constants';
 import BackButton from '@/components/button/Back/Back';
@@ -21,12 +22,12 @@ import GridReviewPanels from '@/components/grid/reviewPanels/GridReviewPanels';
 import { PanelReviewer } from '@/utils/types/panelReviewer';
 import { PanelProposal } from '@/utils/types/panelProposal';
 import Proposal from '@/utils/types/proposal';
-import Reviewer from '@/utils/types/reviewer';
+import { Reviewer } from '@/utils/types/reviewer';
 import { IdObject } from '@/utils/types/idObject';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
-import PutProposalReview from '@/services/axios/put/putProposalReview/putProposalReview';
+import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
 import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
 import { generateId } from '@/utils/helpers';
 import PutPanel from '@/services/axios/put/putPanel/putPanel';
@@ -39,15 +40,21 @@ const TAB_GRID_HEIGHT = '52vh';
 export const addReviewerPanel = (
   reviewer: Reviewer,
   localPanel: Panel,
-  setReviewerPanels: (reviewers: PanelReviewer[]) => void
+  setReviewerPanels: (sciReviewers: PanelReviewer[], tecReviewers: PanelReviewer[]) => void
 ) => {
   const rec: PanelReviewer = {
     reviewerId: reviewer.id,
     panelId: localPanel?.id ?? '',
     status: REVIEWER_STATUS.PENDING
   };
-  const updatedReviewers = [...localPanel?.reviewers, rec];
-  setReviewerPanels(updatedReviewers);
+
+  const updatedSciReviewers = reviewer.isScience
+    ? [...localPanel?.sciReviewers, rec]
+    : localPanel?.sciReviewers;
+  const updatedTecReviewers = reviewer.isTechnical
+    ? [...localPanel?.tecReviewers, rec]
+    : localPanel?.tecReviewers;
+  setReviewerPanels(updatedSciReviewers, updatedTecReviewers);
 };
 
 export const deleteReviewerPanel = (
@@ -55,11 +62,15 @@ export const deleteReviewerPanel = (
   localPanel: Panel,
   setReviewerPanels: Function
 ) => {
-  function filterRecords(id: string) {
-    return localPanel?.reviewers?.filter(item => !(item.reviewerId === id));
+  function filterSciRecords(id: string) {
+    return localPanel?.sciReviewers?.filter(item => !(item.reviewerId === id));
   }
-  const filtered = filterRecords(reviewer.id);
-  setReviewerPanels(filtered);
+  function filterTecRecords(id: string) {
+    return localPanel?.tecReviewers?.filter(item => !(item.reviewerId === id));
+  }
+  const sciFiltered = filterSciRecords(reviewer.id);
+  const tecFiltered = filterTecRecords(reviewer.id);
+  setReviewerPanels(sciFiltered, tecFiltered);
 };
 
 export const convertPanelProposalToProposalIdList = (
@@ -127,23 +138,28 @@ export default function PanelMaintenance() {
       : [];
     setPanelProposals(proposals);
 
-    const reviewers = currentPanel?.reviewers
-      ? convertPanelReviewerToReviewerIdList(currentPanel?.reviewers)
+    const sciReviewers = currentPanel?.sciReviewers
+      ? convertPanelReviewerToReviewerIdList(currentPanel?.sciReviewers)
       : [];
-    setPanelReviewers(reviewers);
+    const tecReviewers = currentPanel?.tecReviewers
+      ? convertPanelReviewerToReviewerIdList(currentPanel?.tecReviewers)
+      : [];
+    // TODO : This will need to change if a reviewer can do both review types
+    setPanelReviewers([...sciReviewers, ...tecReviewers]);
   }, [currentPanel]);
 
   const handlePanelChange = (row: Panel) => {
     setCurrentPanel(row);
   };
 
-  const handleReviewersChange = (reviewersList: PanelReviewer[]) => {
+  const handleReviewersChange = (sciReviewers: PanelReviewer[], tecReviewers: PanelReviewer[]) => {
     // Update the current panel's reviewers with the new list
     setCurrentPanel(prevPanel => {
       if (!prevPanel) return prevPanel;
       const updatedPanel = {
         ...prevPanel,
-        reviewers: reviewersList
+        sciReviewers: sciReviewers,
+        tecReviewers: tecReviewers
       };
       // Save the updated panel to the backend
       savePanel(updatedPanel);
@@ -167,10 +183,7 @@ export default function PanelMaintenance() {
   function getTechnicalReview(): TechnicalReview {
     return {
       kind: REVIEW_TYPE.TECHNICAL,
-      feasibility: {
-        isFeasible: '',
-        comments: null
-      }
+      isFeasible: ''
     };
   }
 
@@ -183,7 +196,7 @@ export default function PanelMaintenance() {
     return {
       id: generateId(prefix),
       prslId: prslId,
-      reviewType: prefix === 'rvw-sci-' ? getScienceReview() : getTechnicalReview(),
+      reviewType: prefix === REVIEW_TYPE_PREFIX.SCIENCE ? getScienceReview() : getTechnicalReview(),
       comments: '',
       srcNet: '',
       metadata: {
@@ -209,9 +222,10 @@ export default function PanelMaintenance() {
     reviewer: PanelReviewer,
     prefix: string
   ) => {
-    const response: any = await PutProposalReview(
+    const response: any = await PostProposalReview(
       authClient,
-      getReview(panel.id, proposal.id, reviewer.reviewerId, prefix)
+      getReview(panel.id, proposal.id, reviewer.reviewerId, prefix),
+      getCycleId()
     );
     if (typeof response === 'object' && response?.error) {
       setAxiosError(
@@ -224,9 +238,8 @@ export default function PanelMaintenance() {
 
   const addEmptyReviews = (panel: Panel) => {
     if (!proposalForUpdate) return;
-    panel.reviewers.forEach(reviewer => {
-      createReview(panel, proposalForUpdate as Proposal, reviewer, 'rvw-sci-');
-      createReview(panel, proposalForUpdate as Proposal, reviewer, 'rvw-tec-');
+    panel.sciReviewers.forEach(reviewer => {
+      createReview(panel, proposalForUpdate as Proposal, reviewer, REVIEW_TYPE_PREFIX.SCIENCE);
     });
     proposalForUpdate = undefined;
   };
@@ -304,8 +317,6 @@ export default function PanelMaintenance() {
     />
   );
 
-  const addPanelIcon = () => <></>; // <PlusIcon onClick={() => navigate(PMT[3])} />;
-
   return (
     <>
       <PageBannerPMT title={t('page.15.desc')} backBtn={backButton()} />
@@ -337,7 +348,6 @@ export default function PanelMaintenance() {
               alignItems="center"
             >
               <Grid2 pt={2}>{panelsSectionTitle()}</Grid2>
-              <Grid2>{addPanelIcon()}</Grid2>
             </Grid2>
             <GridReviewPanels
               height={PANELS_HEIGHT}

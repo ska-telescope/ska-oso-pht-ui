@@ -67,11 +67,12 @@ describe('Helper Functions', () => {
     const today = new Date();
     const myPanel = {
       ...MockPanelFrontendWithReviewers,
-      reviewers: [{ ...MockPanelFrontendWithReviewers.reviewers[0], assignedOn: undefined }]
+      sciReviewers: [{ ...MockPanelFrontendWithReviewers.sciReviewers[0], assignedOn: undefined }],
+      tecReviewers: [{ ...MockPanelFrontendWithReviewers.tecReviewers[0], assignedOn: undefined }]
     };
     const expectedPanelBackend: PanelBackend = mappingPostPanel(myPanel, cycleId);
     expect(
-      new Date(expectedPanelBackend.reviewers[0].assigned_on as string).getTime()
+      new Date(expectedPanelBackend.sci_reviewers[0].assigned_on as string).getTime()
     ).to.be.closeTo(today.getTime(), 10); // 10ms tolerance
   });
 });

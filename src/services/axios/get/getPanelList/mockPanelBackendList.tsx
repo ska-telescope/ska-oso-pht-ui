@@ -14,7 +14,8 @@ export const MockPanelBackendList: PanelBackend[] = [
     name: 'Stargazers',
     cycle: 'cycle-0001',
     proposals: [],
-    reviewers: []
+    sci_reviewers: [],
+    tech_reviewers: []
   },
   {
     metadata: {
@@ -29,7 +30,8 @@ export const MockPanelBackendList: PanelBackend[] = [
     name: 'Buttons',
     cycle: 'cycle-0001',
     proposals: [],
-    reviewers: []
+    sci_reviewers: [],
+    tech_reviewers: []
   },
   {
     metadata: {
@@ -44,7 +46,8 @@ export const MockPanelBackendList: PanelBackend[] = [
     name: 'Nashrakra',
     cycle: 'cycle-0001',
     proposals: [],
-    reviewers: []
+    sci_reviewers: [],
+    tech_reviewers: []
   },
   // duplicate entry with proposals added
   {
@@ -69,7 +72,8 @@ export const MockPanelBackendList: PanelBackend[] = [
         assigned_on: '2025-07-04T09:30:00Z'
       }
     ],
-    reviewers: []
+    sci_reviewers: [],
+    tech_reviewers: []
   },
   {
     metadata: {
@@ -93,7 +97,8 @@ export const MockPanelBackendList: PanelBackend[] = [
         assigned_on: '2025-07-04T09:30:00Z'
       }
     ],
-    reviewers: []
+    sci_reviewers: [],
+    tech_reviewers: []
   },
   {
     metadata: {
@@ -108,7 +113,7 @@ export const MockPanelBackendList: PanelBackend[] = [
     name: 'Fusion',
     cycle: 'cycle-0001',
     proposals: [],
-    reviewers: [
+    sci_reviewers: [
       {
         reviewer_id: 'prsl-t0001-20250704-00001',
         assigned_on: '2025-02-04T09:30:00Z',
@@ -119,6 +124,7 @@ export const MockPanelBackendList: PanelBackend[] = [
         assigned_on: '2025-02-04T09:30:00Z',
         status: 'pending'
       }
-    ]
+    ],
+    tech_reviewers: []
   }
 ];
