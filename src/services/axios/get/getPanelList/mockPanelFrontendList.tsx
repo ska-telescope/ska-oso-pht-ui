@@ -25,7 +25,8 @@ export const MockPanelFrontendList: Panel[] = [
         assignedOn: '2025-07-04T09:30:00Z'
       }
     ],
-    reviewers: []
+    sciReviewers: [],
+    tecReviewers: []
   },
   {
     id: 'panel-t0001-20250702-00002',
@@ -40,7 +41,8 @@ export const MockPanelFrontendList: Panel[] = [
     name: 'Buttons',
     expiresOn: undefined,
     proposals: [],
-    reviewers: []
+    sciReviewers: [],
+    tecReviewers: []
   },
   {
     id: 'panel-t0001-20250704-00003',
@@ -55,7 +57,8 @@ export const MockPanelFrontendList: Panel[] = [
     name: 'Nashrakra',
     expiresOn: undefined,
     proposals: [],
-    reviewers: []
+    sciReviewers: [],
+    tecReviewers: []
   },
   {
     metadata: {
@@ -70,7 +73,7 @@ export const MockPanelFrontendList: Panel[] = [
     name: 'Fusion',
     expiresOn: undefined,
     proposals: [],
-    reviewers: [
+    sciReviewers: [
       {
         panelId: 'panel-t0001-20250704-00004',
         reviewerId: 'prsl-t0001-20250704-00001',
@@ -83,6 +86,7 @@ export const MockPanelFrontendList: Panel[] = [
         assignedOn: '2025-02-04T09:30:00Z',
         status: 'pending'
       }
-    ]
+    ],
+    tecReviewers: []
   }
 ];

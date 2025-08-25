@@ -10,7 +10,6 @@ import {
 import { Tooltip, Typography, Box, Grid2 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { LABEL_POSITION } from '@ska-telescope/ska-gui-components';
 import { validateProposal } from '@utils/proposalValidation.tsx';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
 import GetProposal from '@services/axios/get/getProposal/getProposal';
@@ -18,7 +17,6 @@ import GetProposalByStatusList from '@services/axios/get/getProposalByStatusList
 import EditIcon from '../../icon/editIcon/editIcon';
 import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
-import GetObservatoryData from '@/services/axios/get/getObservatoryData/getObservatoryData';
 import Proposal from '@/utils/types/proposal';
 import {
   NOT_SPECIFIED,
@@ -38,6 +36,7 @@ import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay
 import { IdObject } from '@/utils/types/idObject';
 import { arraysAreEqual } from '@/utils/helpers';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
 
 export function getProposalType(value: number): string {
   const type = PROJECTS.find(item => item.id === value)?.mapping;
@@ -104,11 +103,11 @@ export default function GridProposals({
   const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openViewDialog, setOpenViewDialog] = React.useState(false);
-  const [observatoryData, setObservatoryData] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
   const [proposalsCollection, setProposalsCollection] = React.useState<IdObject[]>([]);
-  const [selected, setSelected] = React.useState(true);
-  const [notSelected, setNotSelected] = React.useState(true);
+  const [checkState, setCheckState] = React.useState<'checked' | 'unchecked' | 'indeterminate'>(
+    'indeterminate'
+  );
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -147,7 +146,6 @@ export default function GridProposals({
   React.useEffect(() => {
     updateAppContent2((null as unknown) as Proposal);
     setFetchList(!fetchList);
-    setObservatoryData(!observatoryData);
   }, []);
 
   React.useEffect(() => {
@@ -167,18 +165,6 @@ export default function GridProposals({
       setProposalsCollection(selectedProposals);
     }
   }, [selectedProposals]);
-
-  React.useEffect(() => {
-    const observatoryData = async () => {
-      const response = await GetObservatoryData(authClient, 1);
-      if (typeof response === 'string') {
-        setAxiosError(response);
-      } else {
-        setObservatoryData(response); // TODO do we need osd data here? It doesn't seem to be used anywhere in the component (justs set to true/false)
-      }
-    };
-    observatoryData();
-  }, []);
 
   const canEdit = (e: { row: { status: string } }) => e.row.status === PROPOSAL_STATUS.DRAFT;
   const canClone = () => true;
@@ -270,13 +256,38 @@ export default function GridProposals({
 
   const colSelect = {
     field: 'select',
-    headerName: '',
-    flex: 0.6,
+    headerName: 'Select',
+    renderHeader: () => (
+      <Box
+        pl={2}
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100%',
+          margin: 0
+        }}
+      >
+        <TriStateCheckbox state={checkState} setState={setCheckState} />
+      </Box>
+    ),
     disableClickEventBubbling: true,
+    filterable: false,
+    sortable: false,
+    disableColumnMenu: true,
     renderCell: (e: { row: any }) => (
-      <Box pr={1}>
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          height: '100%',
+          margin: 0
+        }}
+      >
         <TickBox
           label=""
+          labelPosition="top"
           testId="linkedTickBox"
           checked={isProposalSelected(e.row.id)}
           onChange={() => tickBoxClicked?.(e.row, isProposalSelected(e.row.id))}
@@ -326,7 +337,9 @@ export default function GridProposals({
   const reviewColumns = [...[colType, colTitle, colAuthors, colScienceCategory]];
 
   const selectedData = proposals
-    ? proposals.filter(e => (isProposalSelected(e.id) ? selected : notSelected))
+    ? proposals.filter(e =>
+        isProposalSelected(e.id) ? checkState !== 'unchecked' : checkState !== 'checked'
+      )
     : [];
   const filteredData = selectedData
     ? filterProposals(selectedData, searchTerm, searchScienceCategory, searchProposalType)
@@ -453,65 +466,32 @@ export default function GridProposals({
 
       {showSearch && (
         <Grid2
-          p={2}
-          size={{ sm: 12, md: 8, lg: 12 }}
+          pb={2}
+          pt={2}
+          size={{ sm: 12 }}
           container
           direction="row"
           spacing={2}
           justifyContent="space-between"
           alignItems="center"
         >
-          <Grid2 size={{ sm: 12, lg: 8 }}>
-            <Grid2 container direction="row" spacing={2}>
-              <Grid2 size={{ sm: 6 }}>{proposalTypeDropdown()}</Grid2>
-              <Grid2 size={{ sm: 6 }}>{scienceCategoryDropdown()}</Grid2>
-            </Grid2>
-            <Grid2 container direction="row" spacing={2}>
-              <Grid2 size={{ sm: 6 }}>{searchEntryField('searchId')}</Grid2>
-              <Grid2 size={{ sm: 6 }} mt={3}>
-                {showSelection && (
-                  <Grid2
-                    container
-                    flexDirection={'row'}
-                    flexWrap={'wrap'}
-                    justifyContent={'space-evenly'}
-                  >
-                    <Grid2>
-                      <TickBox
-                        disabled={!proposalsCollection}
-                        label={t('selected.label')}
-                        labelPosition={LABEL_POSITION.END}
-                        testId="selectedTickBox"
-                        checked={selected}
-                        onChange={() => setSelected(!selected)}
-                      />
-                    </Grid2>
-                    <Grid2>
-                      <TickBox
-                        disabled={!proposalsCollection}
-                        label={t('notSelected.label')}
-                        labelPosition={LABEL_POSITION.END}
-                        testId="notSelectedTickBox"
-                        checked={notSelected}
-                        onChange={() => setNotSelected(!notSelected)}
-                      />
-                    </Grid2>
-                  </Grid2>
-                )}
-              </Grid2>
+          <Grid2 size={{ sm: 12 }}>
+            <Grid2
+              container
+              direction="row"
+              spacing={2}
+              justifyContent="space-around"
+              alignItems="center"
+            >
+              <Grid2 size={{ sm: 3 }}>{proposalTypeDropdown()}</Grid2>
+              <Grid2 size={{ sm: 3 }}>{scienceCategoryDropdown()}</Grid2>
+              <Grid2 size={{ sm: 5 }}>{searchEntryField('searchId')}</Grid2>
             </Grid2>
           </Grid2>
         </Grid2>
       )}
       <Grid2 size={{ xs: 12 }} pt={1}>
-        {!axiosViewError && (!filteredData || filteredData?.length === 0) && (
-          <Alert
-            color={AlertColorTypes.Info}
-            text={t('proposals.empty')}
-            testId="helpProposalsId"
-          />
-        )}
-        {!axiosViewError && filteredData.length > 0 && (
+        {!axiosViewError && (
           <div>
             <DataGrid
               maxHeight={height}

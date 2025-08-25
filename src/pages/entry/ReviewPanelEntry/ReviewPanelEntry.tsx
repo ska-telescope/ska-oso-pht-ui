@@ -115,7 +115,8 @@ export default function ReviewPanelEntry() {
       // createdOn: panelDateCreated, /// this is automatically generated in the backend
       expiresOn: panelDateExpiry, // note: this doesn't exist in the backend atm
       proposals: [],
-      reviewers: []
+    sciReviewers: [],
+    tecReviewers: []
     };
   };
 

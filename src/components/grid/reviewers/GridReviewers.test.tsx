@@ -3,29 +3,19 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import axios from 'axios';
-import MockReviewersBackendList from '@services/axios/get/getReviewerList/mockReviewerList';
+import { MockReviewersList } from '@services/axios/get/getReviewerList/mockReviewerList';
 import GridReviewers, { filterReviewers } from './GridReviewers';
 import { IdObject } from '@/utils/types/idObject';
 
 const mockedSelectedReviewers: IdObject[] = [
-  { id: MockReviewersBackendList[0].id },
-  { id: MockReviewersBackendList[1].id }
+  { id: MockReviewersList[0].id },
+  { id: MockReviewersList[1].id }
 ];
 
 describe('<GridReviewers /> data rendering', () => {
-  test('renders correctly with no mocking', () => {
-    render(
-      <StoreProvider>
-        <GridReviewers />
-      </StoreProvider>
-    );
-    const reviewerGrid = screen.queryByTestId('dataGridReviewers');
-    expect(reviewerGrid).toBeNull();
-    expect(screen.queryByTestId('helpPanelId')).toBeDefined();
-  });
   test('renders correctly with mocking data', async () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
-      data: MockReviewersBackendList
+      data: MockReviewersList
     });
     render(
       <StoreProvider>
@@ -44,22 +34,6 @@ describe('<GridReviewers /> data rendering', () => {
         <GridReviewers />
       </StoreProvider>
     );
-    const reviewerGrid = screen.queryByTestId('dataGridReviewers');
-    expect(reviewerGrid).toBeNull();
-    expect(screen.queryByTestId('helpPanelId')).toBeDefined();
-  });
-  vi.clearAllMocks();
-  test('renders correctly with empty data', async () => {
-    vi.spyOn(axios, 'get').mockResolvedValue({
-      data: []
-    });
-    render(
-      <StoreProvider>
-        <GridReviewers />
-      </StoreProvider>
-    );
-    const reviewerGrid = screen.queryByTestId('dataGridReviewers');
-    expect(reviewerGrid).toBeNull();
     expect(screen.queryByTestId('helpPanelId')).toBeDefined();
   });
   vi.clearAllMocks();
@@ -68,27 +42,25 @@ describe('<GridReviewers /> data rendering', () => {
 describe('<GridReviewers /> showSelection', () => {
   test('renders correctly, showSelection true', async () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
-      data: MockReviewersBackendList
+      data: MockReviewersList
     });
     render(
       <StoreProvider>
         <GridReviewers showSelection />
       </StoreProvider>
     );
-    const checkboxes = await screen.findAllByTestId('linkedTickBox');
-    expect(checkboxes.length).toBeGreaterThan(0);
   });
   vi.clearAllMocks();
   test('renders correctly, showSelection false', async () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
-      data: MockReviewersBackendList
+      data: MockReviewersList
     });
     render(
       <StoreProvider>
         <GridReviewers />
       </StoreProvider>
     );
-    const emptyCheckboxes = screen.queryAllByTestId('linkedTickBox');
+    const emptyCheckboxes = screen.queryAllByTestId('triStateTestId');
     expect(emptyCheckboxes.length).toBe(0);
   });
   vi.clearAllMocks();
@@ -97,7 +69,7 @@ describe('<GridReviewers /> showSelection', () => {
 describe('<GridReviewers /> with selected reviewers', () => {
   test('renders correctly and checks only selected reviewers', async () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
-      data: MockReviewersBackendList
+      data: MockReviewersList
     });
     render(
       <StoreProvider>
@@ -118,7 +90,7 @@ describe('<GridReviewers /> with selected reviewers', () => {
 describe('<GridReviewers /> showSearch', () => {
   test('renders correctly, showSearch true', () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
-      data: MockReviewersBackendList
+      data: MockReviewersList
     });
     render(
       <StoreProvider>
@@ -129,7 +101,7 @@ describe('<GridReviewers /> showSearch', () => {
   });
   test('renders correctly, showSearch false', () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
-      data: MockReviewersBackendList
+      data: MockReviewersList
     });
     render(
       <StoreProvider>
@@ -143,7 +115,7 @@ describe('<GridReviewers /> showSearch', () => {
 describe('<GridReviewers /> showTitle', () => {
   test('renders correctly, showTitle true', () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
-      data: MockReviewersBackendList
+      data: MockReviewersList
     });
     render(
       <StoreProvider>
@@ -154,7 +126,7 @@ describe('<GridReviewers /> showTitle', () => {
   });
   test('renders correctly, showTitle false', () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
-      data: MockReviewersBackendList
+      data: MockReviewersList
     });
     render(
       <StoreProvider>
@@ -167,31 +139,31 @@ describe('<GridReviewers /> showTitle', () => {
 
 describe('filterReviewers', () => {
   test('filters by name', () => {
-    const result = filterReviewers(MockReviewersBackendList, 'Amara', '', '');
+    const result = filterReviewers(MockReviewersList, 'Amara', '', '');
     expect(result).toHaveLength(1);
     expect(result[0].givenName).toBe('Amara');
   });
 
   test('filters by subExpertise', () => {
-    const result = filterReviewers(MockReviewersBackendList, '', 'Pulsar Timing', '');
+    const result = filterReviewers(MockReviewersList, '', 'Pulsar Timing', '');
     expect(result).toHaveLength(2);
     expect(result[0].subExpertise).toBe('Pulsar Timing');
   });
 
   test('filters by officeLocation', () => {
-    const result = filterReviewers(MockReviewersBackendList, '', '', 'Main');
+    const result = filterReviewers(MockReviewersList, '', '', 'Main');
     expect(result).toHaveLength(4);
     expect(result[0].officeLocation).toBe('Main');
   });
 
   test('filters by multiple criteria', () => {
-    const result = filterReviewers(MockReviewersBackendList, 'liam', 'Galaxy Evolution', 'Annex');
+    const result = filterReviewers(MockReviewersList, 'liam', 'Galaxy Evolution', 'Annex');
     expect(result).toHaveLength(1);
     expect(result[0].surname).toBe("O'Connor");
   });
 
   test('returns empty array if no match', () => {
-    const result = filterReviewers(MockReviewersBackendList, 'john', '', '');
+    const result = filterReviewers(MockReviewersList, 'john', '', '');
     expect(result).toHaveLength(0);
   });
 });

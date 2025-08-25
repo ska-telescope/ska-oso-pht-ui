@@ -22,7 +22,7 @@ export const MockPanelBackend: PanelBackend = {
       assigned_on: '2025-07-04T09:30:00Z'
     }
   ],
-  reviewers: [
+  sci_reviewers: [
     {
       reviewer_id: 'prsl-t0001-20250704-00001',
       assigned_on: '2025-02-04T09:30:00Z',

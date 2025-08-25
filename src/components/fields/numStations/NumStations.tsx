@@ -39,7 +39,7 @@ export default function NumStationsField({
   };
 
   return (
-    <Box pt={1}>
+    <Box>
       <NumberEntry
         disabled={disabled}
         label={t(FIELD + '.label')}

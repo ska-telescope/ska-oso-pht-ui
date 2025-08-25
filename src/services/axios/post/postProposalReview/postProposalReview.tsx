@@ -18,10 +18,7 @@ import {
 function getTechnicalReviewType(technicalReview: TechnicalReview): TechnicalReviewBackend {
   return {
     kind: technicalReview.kind,
-    feasibility: {
-      is_feasible: technicalReview.feasibility.isFeasible,
-      comments: technicalReview.feasibility.comments
-    }
+    is_feasible: technicalReview.isFeasible
   };
 }
 

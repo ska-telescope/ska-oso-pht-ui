@@ -14,7 +14,8 @@ async function PostPanelGenerate(
       `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PANEL_PATH}/auto-create`,
       {
         name: cycleDescription,
-        reviewers: [],
+        sci_reviewers: [],
+        tech_reviewers: [],
         proposals: []
       }
     );

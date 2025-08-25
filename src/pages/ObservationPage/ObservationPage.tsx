@@ -4,12 +4,7 @@ import { useTranslation } from 'react-i18next';
 import { Box, Card, CardContent, Grid2, Typography } from '@mui/material';
 import { GridRowSelectionModel } from '@mui/x-data-grid'; // TODO : Need to move this into the ska-gui-components
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import {
-  AlertColorTypes,
-  DataGrid,
-  LABEL_POSITION,
-  TickBox
-} from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes, DataGrid, TickBox } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
@@ -39,6 +34,7 @@ import DeleteObservationConfirmation from '../../components/alerts/deleteObserva
 import SensCalcModalMultiple from '../../components/alerts/sensCalcModal/multiple/SensCalcModalMultiple';
 import StatusIconDisplay from '../../components/icon/status/statusIcon';
 import { FOOTER_SPACER } from '../../utils/constants';
+import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
 
 const DATA_GRID_TARGET = '40vh';
 const DATA_GRID_OBSERVATION = '50vh';
@@ -52,12 +48,13 @@ export default function ObservationPage() {
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currObs, setCurrObs] = React.useState<Observation | null>(null);
-  const [selected, setSelected] = React.useState(true);
-  const [notSelected, setNotSelected] = React.useState(true);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openMultipleDialog, setOpenMultipleDialog] = React.useState(false);
   const [elementsO, setElementsO] = React.useState(null);
-  const [elementsT, setElementsT] = React.useState(null);
+  const [elementsT, setElementsT] = React.useState<ElementT[] | null>(null);
+  const [checkState, setCheckState] = React.useState<'checked' | 'unchecked' | 'indeterminate'>(
+    'indeterminate'
+  );
 
   const [rowSelectionModel, setRowSelectionModel] = React.useState<GridRowSelectionModel>([]);
 
@@ -386,15 +383,38 @@ export default function ObservationPage() {
     ...[
       {
         field: 'id',
-        headerName: '',
-        sortable: false,
-        flex: 0.6,
+        renderHeader: () => (
+          <Box
+            pl={2}
+            sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              height: '100%',
+              margin: 0
+            }}
+          >
+            {currObs ? <TriStateCheckbox state={checkState} setState={setCheckState} /> : <></>}
+          </Box>
+        ),
         disableClickEventBubbling: true,
+        filterable: false,
+        sortable: false,
+        disableColumnMenu: true,
         renderCell: (e: { row: ElementT }) => {
           return currObs ? (
-            <Box pr={1}>
+            <Box
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100%',
+                margin: 0
+              }}
+            >
               <TickBox
                 label=""
+                labelPosition="top"
                 testId="linkedTickBox"
                 checked={isTargetSelected(e.row.target.id)}
                 onChange={() => targetSelectedToggle(e.row)}
@@ -477,16 +497,11 @@ export default function ObservationPage() {
   ];
 
   const filteredTargets = () => {
-    if (selected) {
-      if (notSelected) {
-        return elementsT;
-      }
-      return elementsT.filter(e => isTargetSelected(e.id));
-    }
-    if (notSelected) {
-      return elementsT.filter(e => !isTargetSelected(e.id));
-    }
-    return [];
+    const safeElementsT = elementsT ?? [];
+    if (checkState === 'indeterminate') return safeElementsT;
+    else if (checkState === 'checked') return safeElementsT.filter(e => isTargetSelected(e.id));
+    else if (checkState === 'unchecked') return safeElementsT.filter(e => !isTargetSelected(e.id));
+    else return [];
   };
 
   const filteredByObservation = (obId: string) => {
@@ -541,58 +556,9 @@ export default function ObservationPage() {
             <CardContent>
               <Grid2 container alignItems="baseline" justifyContent="space-between">
                 <Grid2>
-                  <Typography id="targetObservationLabel" pt={2} variant="h6">
+                  <Typography id="targetObservationLabel" variant="h6">
                     {t('targetObservation.label')}
                   </Typography>
-                </Grid2>
-                <Grid2 size={{ lg: 6 }}>
-                  <Card variant="outlined">
-                    <CardContent>
-                      <Grid2
-                        container
-                        flexDirection={'row'}
-                        flexWrap={'wrap'}
-                        alignItems="space-evenly"
-                        justifyContent="space-between"
-                      >
-                        <Grid2>
-                          <Typography id="targetObservationLabel" pt={1} variant="h6">
-                            {t('targetObservation.filters')}
-                          </Typography>
-                        </Grid2>
-
-                        <Grid2>
-                          <Grid2
-                            container
-                            flexDirection={'row'}
-                            flexWrap={'wrap'}
-                            justifyContent={'flex-start'}
-                          >
-                            <Grid2>
-                              <TickBox
-                                disabled={!currObs}
-                                label={t('selected.label')}
-                                labelPosition={LABEL_POSITION.END}
-                                testId="selectedTickBox"
-                                checked={selected}
-                                onChange={() => setSelected(!selected)}
-                              />
-                            </Grid2>
-                            <Grid2>
-                              <TickBox
-                                disabled={!currObs}
-                                label={t('notSelected.label')}
-                                labelPosition={LABEL_POSITION.END}
-                                testId="notSelectedTickBox"
-                                checked={notSelected}
-                                onChange={() => setNotSelected(!notSelected)}
-                              />
-                            </Grid2>
-                          </Grid2>
-                        </Grid2>
-                      </Grid2>
-                    </CardContent>
-                  </Card>
                 </Grid2>
               </Grid2>
             </CardContent>

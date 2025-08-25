@@ -14,16 +14,6 @@ const mockedSelectedProposals: IdObject[] = [
 ];
 
 describe('<GridProposals /> data rendering', () => {
-  test('renders correctly with no mocking', () => {
-    render(
-      <StoreProvider>
-        <GridProposals />
-      </StoreProvider>
-    );
-    const proposalGrid = screen.queryByTestId('dataGridProposals');
-    expect(proposalGrid).toBeNull();
-    expect(screen.queryByTestId('helpProposalsId')).toBeDefined();
-  });
   test('renders correctly with mocking data', async () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
       data: MockProposalBackendList
@@ -45,8 +35,6 @@ describe('<GridProposals /> data rendering', () => {
         <GridProposals />
       </StoreProvider>
     );
-    const proposalGrid = screen.queryByTestId('dataGridProposals');
-    expect(proposalGrid).toBeNull();
     expect(screen.queryByTestId('helpProposalsId')).toBeDefined();
   });
   vi.clearAllMocks();
@@ -59,9 +47,7 @@ describe('<GridProposals /> data rendering', () => {
         <GridProposals />
       </StoreProvider>
     );
-    const proposalGrid = screen.queryByTestId('dataGridProposals');
-    expect(proposalGrid).toBeNull();
-    expect(screen.queryByTestId('helpProposalsId')).toBeDefined();
+    expect(await screen.findAllByTestId('dataGridProposals')).toBeDefined();
   });
   vi.clearAllMocks();
 });

@@ -756,7 +756,8 @@
     "surname": "Surname",
     "officeLocation": "Office Location",
     "overviewTooltip": "Tooltip for the card on the Overview",
-    "subExpertise": "Sub-expertise",
+    "reviewerType": "Reviewer type",
+    "subExpertise": "Expertise",
     "status": "Status",
     "subExpertiseCategory": {
       "Pulsar Timing": "Pulsar Timing",
@@ -771,6 +772,11 @@
       "declined": "Declined",
       "inviteSent": "Invite sent"
     }
+  },
+  "reviewerType": {
+    "all": "All review types",
+    "science": "Scientific",
+    "technical": "Technical"
   },
   "reviewStatus": {
     "to do": "To Do",

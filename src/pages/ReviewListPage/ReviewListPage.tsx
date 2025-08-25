@@ -84,7 +84,7 @@ export default function ReviewListPage() {
       if (typeof response === 'string') {
         notifyError(response);
       } else {
-        setProposalReviews(proposalReviews => [...proposalReviews, ...response]);
+        setProposalReviews(response);
       }
     };
 
@@ -118,7 +118,7 @@ export default function ReviewListPage() {
     return {
       kind: REVIEW_TYPE.SCIENCE,
       excludedFromDecision: false,
-      rank: row.reviewType.rank,
+      rank: row?.reviewType.rank,
       conflict: {
         hasConflict: false,
         reason: ''
@@ -128,11 +128,8 @@ export default function ReviewListPage() {
 
   const getTechnicalReviewType = (row: any): TechnicalReview => {
     return {
-      kind: row.reviewType.kind,
-      feasibility: {
-        isFeasible: row.reviewType.feasibility.isFeasible,
-        comments: row.reviewType.feasibility.comments
-      }
+      kind: row?.reviewType.kind,
+      isFeasible: row?.reviewType.isFeasible
     };
   };
 
@@ -143,11 +140,11 @@ export default function ReviewListPage() {
       id: review.id,
       prslId: row.id,
       reviewType:
-        review.reviewType.kind === REVIEW_TYPE.SCIENCE
+        review?.reviewType.kind === REVIEW_TYPE.SCIENCE
           ? getScienceReviewType(review)
           : getTechnicalReviewType(review),
-      comments: review.comments,
-      srcNet: review.srcNet,
+      comments: review?.comments,
+      srcNet: review?.srcNet,
       metadata: {
         version: 0,
         created_by: '',
@@ -196,32 +193,34 @@ export default function ReviewListPage() {
   };
 
   const isFeasible = (row: { tecReview: any; sciReview?: { status: string } }) =>
-    row.tecReview.reviewType.feasibility.isFeasible
-      ? row.tecReview.reviewType.feasibility.isFeasible !== FEASIBLE_NO
+    row.tecReview?.reviewType.isFeasible
+      ? row.tecReview?.reviewType.isFeasible !== FEASIBLE_NO
       : true;
   const canEditScience = (row: {
-    tecReview: { reviewType: { feasibility: { isFeasible: string } } };
+    tecReview: { reviewType: { isFeasible: string } };
     sciReview: { status: string };
   }) => {
-    return isFeasible(row) && row?.sciReview.status !== PANEL_DECISION_STATUS.DECIDED;
+    return (
+      row?.sciReview && isFeasible(row) && row?.sciReview?.status !== PANEL_DECISION_STATUS.DECIDED
+    );
   };
 
   const canEditTechnical = (tecReview: { status: string }) =>
-    tecReview.status !== PANEL_DECISION_STATUS.DECIDED;
+    tecReview && tecReview?.status !== PANEL_DECISION_STATUS.DECIDED;
 
   const hasTechnicalComments = (review: any) =>
-    feasibleYes(review) ? true : review?.reviewType?.feasibility?.comments?.length > 0;
-  const feasibleYes = (review: any) => review?.reviewType?.feasibility?.isFeasible === FEASIBLE_YES;
+    feasibleYes(review) ? true : review?.comments?.length > 0;
+  const feasibleYes = (review: any) => review?.reviewType?.isFeasible === FEASIBLE_YES;
 
   const canSubmit = (row: any) => {
     const sciRec =
-      row?.sciReview.status !== PANEL_DECISION_STATUS.DECIDED &&
+      row?.sciReview?.status !== PANEL_DECISION_STATUS.DECIDED &&
       row?.sciReview?.comments?.length > 0 &&
       row?.sciReview?.reviewType?.rank > 0;
 
     const tecRec =
-      row?.tecReview.status !== PANEL_DECISION_STATUS.DECIDED &&
-      row?.tecReview?.reviewType?.feasibility?.isFeasible?.length > 0 &&
+      row?.tecReview?.status !== PANEL_DECISION_STATUS.DECIDED &&
+      row?.tecReview?.reviewType?.isFeasible?.length > 0 &&
       hasTechnicalComments(row?.tecReview);
 
     return sciRec || tecRec;
@@ -255,7 +254,9 @@ export default function ReviewListPage() {
     headerName: t('status.sci'),
     width: 120,
     renderCell: (e: { row: any }) =>
-      e.row.sciReview.status ? t('reviewStatus.' + e.row.sciReview.status) : t('reviewStatus.to do')
+      e.row?.sciReview?.status
+        ? t('reviewStatus.' + e.row?.sciReview?.status)
+        : t('reviewStatus.to do')
   };
 
   const colTecReviewStatus = {
@@ -263,7 +264,9 @@ export default function ReviewListPage() {
     headerName: t('status.tec'),
     width: 120,
     renderCell: (e: { row: any }) =>
-      e.row.tecReview.status ? t('reviewStatus.' + e.row.tecReview.status) : t('reviewStatus.to do')
+      e.row.tecReview?.status
+        ? t('reviewStatus.' + e.row.tecReview?.status)
+        : t('reviewStatus.to do')
   };
 
   const colFeasibility = {
@@ -271,7 +274,7 @@ export default function ReviewListPage() {
     headerName: t('feasibility.label'),
     width: 120,
     renderCell: (e: { row: any }) => {
-      return e?.row?.tecReview?.reviewType?.feasibility?.isFeasible; // TODO use i18n
+      return e?.row?.tecReview?.reviewType?.isFeasible; // TODO use i18n
     }
   };
 
@@ -280,28 +283,28 @@ export default function ReviewListPage() {
     field: 'conflict',
     headerName: t('conflict.label'),
     width: 120,
-    renderCell: (e: { row: any }) => (e.row.sciReview.conflict?.has_conflict ? t('yes') : t('no'))
+    renderCell: (e: { row: any }) => (e.row?.sciReview?.conflict?.has_conflict ? t('yes') : t('no'))
   };
 
   const colRank = {
     field: 'rank',
     headerName: t('rank.label'),
     width: 120,
-    renderCell: (e: { row: any }) => e.row.sciReview.reviewType.rank
+    renderCell: (e: { row: any }) => e.row.sciReview?.reviewType.rank
   };
 
   const colComments = {
     field: 'comments',
     headerName: t('comments.label'),
     width: 120,
-    renderCell: (e: { row: any }) => (e.row.sciReview.comments ? t('yes') : t('no'))
+    renderCell: (e: { row: any }) => (e.row.sciReview?.comments ? t('yes') : t('no'))
   };
 
   const colSrcNet = {
     field: 'srcNet',
     headerName: t('srcNet.label'),
     width: 120,
-    renderCell: (e: { row: any }) => (e.row.sciReview.srcNet ? t('yes') : t('no'))
+    renderCell: (e: { row: any }) => (e.row.sciReview?.srcNet ? t('yes') : t('no'))
   };
 
   const colDateUpdated = {
@@ -389,47 +392,17 @@ export default function ReviewListPage() {
     ]
   ];
 
-  const blankReviewSci = (panelId: string, status: any) => {
-    return {
-      panelId: panelId,
-      reviewType: {
-        rank: 0
-      },
-      comments: '',
-      srcNet: '',
-      status: status
-    };
-  };
-
-  const blankReviewTec = (panelId: string, status: any) => {
-    return {
-      panelId: panelId,
-      reviewType: {
-        feasibility: {
-          isFeasible: '',
-          comments: ''
-        }
-      },
-      comments: '',
-      srcNet: '',
-      status: status
-    };
-  };
-
   function filterProposals() {
     function unionProposalsAndReviews() {
       return proposals.map(proposal => {
         const reviews = proposalReviews.filter(r => r.prslId === proposal.id);
-        const technicalReviews = reviews.filter(r => r.reviewType?.kind === REVIEW_TYPE.TECHNICAL);
+        const technicalReviews = reviews.filter(r => r?.reviewType?.kind === REVIEW_TYPE.TECHNICAL);
         const technicalReview =
-          technicalReviews.length > 0
-            ? technicalReviews[technicalReviews.length - 1]
-            : blankReviewTec(panelData[0].id, 'To Do');
+          technicalReviews.length > 0 ? technicalReviews[technicalReviews.length - 1] : null;
         const scienceReviews = reviews.filter(
-          r => r.reviewType?.kind === REVIEW_TYPE.SCIENCE && r.reviewerId === userId
+          r => r?.reviewType?.kind === REVIEW_TYPE.SCIENCE && r.reviewerId === userId
         );
-        const scienceReview =
-          scienceReviews.length > 0 ? scienceReviews[0] : blankReviewSci(panelData[0].id, 'To Do');
+        const scienceReview = scienceReviews.length > 0 ? scienceReviews[0] : null;
         return {
           id: proposal.id,
           proposal: proposal,
@@ -446,7 +419,7 @@ export default function ReviewListPage() {
           field =>
             typeof field === 'string' && field.toLowerCase().includes(searchTerm?.toLowerCase())
         ) &&
-        (searchType === '' || item.sciReview?.status?.toLowerCase() === searchType?.toLowerCase())
+        (searchType === '' || item?.sciReview?.status?.toLowerCase() === searchType?.toLowerCase())
       );
     });
   }
