@@ -360,7 +360,7 @@ export default function PanelMaintenance() {
 
         <Grid2
           size={{ sm: 12, md: 8, lg: 9.25 }}
-          pt={2}
+          pt={1}
           container
           direction="row"
           justifyContent="space-around"

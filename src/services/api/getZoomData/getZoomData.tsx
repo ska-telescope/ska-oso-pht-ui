@@ -37,7 +37,7 @@ import {
   OBSERVATION,
   SUPPLIED_TYPE_SENSITIVITY
 } from '../../../utils/constants';
-import sensCalHelpers from '../../axios/sensitivityCalculator/sensCalHelpers';
+import sensCalHelpers from '../sensitivityCalculator/sensCalHelpers';
 import { ResultsSection, SensCalcResults } from '../../../utils/types/sensCalcResults';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 

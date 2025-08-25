@@ -1,31 +1,74 @@
-import { describe, test } from 'vitest';
-import { render, screen } from '@testing-library/react';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, screen, act } from '@testing-library/react';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import '@testing-library/jest-dom';
 import TimedAlert from './TimedAlert';
+import { useNotify } from '@/utils/notify/useNotify';
 
-describe('<TimedAlert />', () => {
-  test('renders correctly (INFO)', () => {
-    render(
-      <StoreProvider>
-        <TimedAlert color={AlertColorTypes.Info} delay={1} testId={''} text={''} />
-      </StoreProvider>
-    );
+vi.mock('@/utils/notify/useNotify', () => ({
+  useNotify: vi.fn()
+}));
+
+const mockNotifyClear = vi.fn();
+
+beforeEach(() => {
+  vi.useFakeTimers();
+  (useNotify as any).mockReturnValue({ notifyClear: mockNotifyClear });
+});
+
+afterEach(() => {
+  vi.clearAllTimers();
+  vi.resetAllMocks();
+});
+
+describe('TimedAlert', () => {
+  const testId = 'alert-test';
+  const text = 'This is a test alert';
+
+  it('renders and auto-dismisses for Info alert', async () => {
+    render(<TimedAlert color={AlertColorTypes.Info} testId={testId} text={text} delay={1} />);
+    expect(screen.getByTestId(testId)).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(2000); // 1 * SECS
+    });
+
+    expect(mockNotifyClear).toHaveBeenCalled();
+    expect(screen.queryByTestId(testId)).not.toBeInTheDocument();
   });
-  test('renders correctly (WARNING)', () => {
-    render(
-      <StoreProvider>
-        <TimedAlert color={AlertColorTypes.Warning} testId={''} text={''} />
-      </StoreProvider>
-    );
+
+  it('renders and auto-dismisses for Success alert', async () => {
+    render(<TimedAlert color={AlertColorTypes.Success} testId={testId} text={text} delay={1} />);
+    expect(screen.getByTestId(testId)).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+
+    expect(mockNotifyClear).toHaveBeenCalled();
+    expect(screen.queryByTestId(testId)).not.toBeInTheDocument();
   });
-  test('renders correctly (ERROR)', () => {
-    render(
-      <StoreProvider>
-        <TimedAlert color={AlertColorTypes.Error} testId={''} text={''} />
-      </StoreProvider>
-    );
+
+  it('renders and does not auto-dismiss for Error alert', async () => {
+    render(<TimedAlert color={AlertColorTypes.Error} testId={testId} text={text} />);
+    expect(screen.getByTestId(testId)).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(6000); // Wait longer than default delay
+    });
+
+    expect(mockNotifyClear).not.toHaveBeenCalled();
+    expect(screen.getByTestId(testId)).toBeInTheDocument();
   });
-  screen.queryByTestId('CloseIcon')?.click();
+
+  it('renders and does not auto-dismiss for Warning alert', async () => {
+    render(<TimedAlert color={AlertColorTypes.Warning} testId={testId} text={text} />);
+    expect(screen.getByTestId(testId)).toBeInTheDocument();
+
+    act(() => {
+      vi.advanceTimersByTime(6000);
+    });
+
+    expect(mockNotifyClear).not.toHaveBeenCalled();
+    expect(screen.getByTestId(testId)).toBeInTheDocument();
+  });
 });
