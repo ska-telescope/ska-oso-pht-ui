@@ -11,9 +11,9 @@ import {
   OB_SUBARRAY_CUSTOM,
   TELESCOPE_LOW_NUM
 } from '../../../utils/constants';
-import { SENSCALC_CONTINUUM_MOCKED } from '../../axios/sensitivityCalculator/SensCalcResultsMOCK';
-import GetZoomData from '../../api/getZoomData/getZoomData';
-import GetContinuumData from '../../api/getContinuumData/getContinuumData';
+import GetZoomData from '../getZoomData/getZoomData';
+import GetContinuumData from '../getContinuumData/getContinuumData';
+import { SENSCALC_CONTINUUM_MOCKED } from './SensCalcResultsMOCK';
 
 const makeResponse = (target: Target, statusGUI: number, error: string) => {
   return {
@@ -73,7 +73,7 @@ const getTelescope = (telNum: number): Telescope =>
 async function getSensitivityCalculatorAPIData(
   observation: Observation,
   target: Target,
-  isCustom: boolean
+  _isCustom: boolean
 ) {
   const telescope: Telescope = getTelescope(observation.telescope);
 

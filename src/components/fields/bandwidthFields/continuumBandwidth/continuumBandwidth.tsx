@@ -4,7 +4,7 @@ import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import { LAB_IS_BOLD, LAB_POSITION, TYPE_CONTINUUM } from '@utils/constants.ts';
 import { getScaledBandwidthOrFrequency } from '@utils/helpers.ts';
-import sensCalHelpers from '../../../../services/axios/sensitivityCalculator/sensCalHelpers';
+import sensCalHelpers from '../../../../services/api/sensitivityCalculator/sensCalHelpers';
 import {
   getMaxContBandwidthHz,
   checkMinimumChannelWidth,

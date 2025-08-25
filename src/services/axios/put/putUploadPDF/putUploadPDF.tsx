@@ -1,5 +1,5 @@
 import { USE_LOCAL_DATA } from '@utils/constants.ts';
-import axiosClientPDF from '../../axiosClientPDF/axiosClientPDF.tsx';
+import axiosClientPDF from '../../axiosClientPDF/axiosClientPDF';
 
 async function PutUploadPDF(signedUrl: string, selectedFile: any) {
   const UPLOAD_URL_DUMMY = 'https://httpbin.org/put';

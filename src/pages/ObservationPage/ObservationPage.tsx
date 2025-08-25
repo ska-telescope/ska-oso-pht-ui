@@ -16,7 +16,7 @@ import AddButton from '../../components/button/Add/Add';
 import EditIcon from '../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import SensCalcDisplaySingle from '../../components/alerts/sensCalcDisplay/single/SensCalcDisplaySingle';
-import getSensCalc from '../../services/axios/sensitivityCalculator/getSensitivityCalculatorAPIData';
+import getSensCalc from '../../services/api/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Observation from '../../utils/types/observation';
 import { Proposal } from '../../utils/types/proposal';

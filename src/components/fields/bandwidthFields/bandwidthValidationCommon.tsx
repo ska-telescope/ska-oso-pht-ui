@@ -9,7 +9,7 @@ import {
   OBSERVATION,
   TELESCOPE_LOW_NUM
 } from '@utils/constants.ts';
-import sensCalHelpers from '../../../services/axios/sensitivityCalculator/sensCalHelpers';
+import sensCalHelpers from '../../../services/api/sensitivityCalculator/sensCalHelpers';
 import ObservatoryData from '@/utils/types/observatoryData';
 
 const isLow = (telescope: number) => telescope === TELESCOPE_LOW_NUM;
