@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid2 } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
@@ -28,7 +28,11 @@ interface TargetEntryProps {
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
-export default function TargetEntry({ raType, setTarget = null, target = null }: TargetEntryProps) {
+export default function TargetEntry({
+  raType,
+  setTarget = undefined,
+  target = undefined
+}: TargetEntryProps) {
   const { t } = useTranslation('pht');
   const { notifySuccess } = useNotify();
 
@@ -52,56 +56,56 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
 
   const setTheName = (inValue: string) => {
     setName(inValue);
-    if (setTarget !== null) {
+    if (setTarget !== undefined) {
       setTarget({ ...target, name: inValue });
     }
   };
 
   const setTheDec = (inValue: string) => {
     setDec(inValue);
-    if (setTarget !== null) {
+    if (setTarget !== undefined) {
       setTarget({ ...target, decStr: inValue });
     }
   };
 
   const setTheRA = (inValue: string) => {
     setRA(inValue);
-    if (setTarget !== null) {
+    if (setTarget !== undefined) {
       setTarget({ ...target, raStr: inValue });
     }
   };
 
   const setTheRedshift = (inValue: string) => {
     setRedshift(inValue);
-    if (setTarget !== null) {
+    if (setTarget !== undefined) {
       setTarget({ ...target, redshift: inValue });
     }
   };
 
-  const setTheReferenceFrame = (inValue: string) => {
+  const setTheReferenceFrame = (inValue: React.SetStateAction<number>) => {
     setReferenceFrame(inValue);
-    if (setTarget !== null) {
+    if (setTarget !== undefined) {
       setTarget({ ...target, kind: inValue });
     }
   };
 
   const setTheVel = (inValue: string) => {
     setVel(inValue);
-    if (setTarget !== null) {
+    if (setTarget !== undefined) {
       setTarget({ ...target, vel: inValue });
     }
   };
 
   const setTheVelType = (inValue: number) => {
     setVelType(inValue);
-    if (setTarget !== null) {
+    if (setTarget !== undefined) {
       setTarget({ ...target, velType: inValue });
     }
   };
 
   const setTheVelUnit = (inValue: number) => {
     setVelUnit(inValue);
-    if (setTarget !== null) {
+    if (setTarget !== undefined) {
       setTarget({ ...target, velUnit: inValue });
     }
   };
@@ -182,7 +186,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
     const disabled = () => !(name?.length && ra?.length && dec?.length);
 
     return (
-      <Grid item xs={12}>
+      <Grid2 size={{ xs: 12 }}>
         <AddButton
           action={addButtonAction}
           disabled={disabled()}
@@ -191,7 +195,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
           title="addTarget.label"
           toolTip="addTarget.toolTip"
         />
-      </Grid>
+      </Grid2>
     );
   };
 
@@ -329,7 +333,7 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
   );
 
   return (
-    <Grid
+    <Grid2
       p={2}
       container
       direction="row"
@@ -337,19 +341,19 @@ export default function TargetEntry({ raType, setTarget = null, target = null }:
       justifyContent="space-between"
       spacing={1}
     >
-      <Grid item xs={7}>
-        <Grid container direction="column" alignItems="stretch" justifyContent="flex-start">
-          <Grid item>{nameField()}</Grid>
-          <Grid item>{skyDirection1Field()}</Grid>
-          <Grid item>{skyDirection2Field()}</Grid>
-          <Grid item>{velocityField()}</Grid>
-          <Grid item>{velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}</Grid>
-          <Grid item>{!id && addButton()}</Grid>
-        </Grid>
-      </Grid>
-      <Grid item xs={4}>
+      <Grid2 size={{ xs: 7 }}>
+        <Grid2 container direction="column" alignItems="stretch" justifyContent="flex-start">
+          <Grid2>{nameField()}</Grid2>
+          <Grid2>{skyDirection1Field()}</Grid2>
+          <Grid2>{skyDirection2Field()}</Grid2>
+          <Grid2>{velocityField()}</Grid2>
+          <Grid2>{velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}</Grid2>
+          <Grid2>{!id && addButton()}</Grid2>
+        </Grid2>
+      </Grid2>
+      <Grid2 size={{ xs: 4 }}>
         <HelpPanel maxHeight={HELP_MAX_HEIGHT} />
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 }

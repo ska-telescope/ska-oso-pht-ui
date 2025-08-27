@@ -72,6 +72,10 @@
     "1": "SKA-MID",
     "2": "SKA-LOW"
   },
+  "assignBtn": {
+    "label": "Assign",
+    "toolTip": "Assign proposals to a review panel"
+  },
   "assignProposals": {
     "short": "Assign",
     "label": "Assign Proposals",
@@ -586,7 +590,7 @@
   },
   "proposals": {
     "empty": "THERE ARE NO PROPOSALS TO BE DISPLAYED",
-    "label": "Proposals",
+    "label": "proposals",
     "name": "Name",
     "overviewTooltip": "Tooltip for the card on the Overview"
   },
@@ -782,10 +786,9 @@
     "to do": "To Do",
     "in progress": "In Progress",
     "decided": "Decided",
-    "To Do": "To Do",
-    "In Progress": "In Progress",
-    "Decided": "Decided",
-    "submitted": "Submitted"
+    "reviewed": "Reviewed",
+    "submitted": "Submitted",
+    "under review": "Under review"
   },
   "reviewPanelEntry": {
     "title": "Review Panel Entry"
@@ -1009,7 +1012,7 @@
   "submitBtn": {
     "label": "Submit",
     "success": "Submission was successful",
-    "tooltip": "Progress the proposal to the submitted state"
+    "tooltip": "Progress the proposals to the submitted state"
   },
   "velocityType": {
     "help": "Select either Velocity or Redshift as required"
@@ -1033,8 +1036,10 @@
     "decisionComments": "Decision Comments",
     "decisionScore": "Decision Score",
     "decisionStatus": "Decision Status",
+    "feasible": "Feasible",
     "rank": "Rank",
     "reviews": "Reviews",
+    "sciReviews": "Science Reviews",
     "title": "Title"
   },
   "tapering": {

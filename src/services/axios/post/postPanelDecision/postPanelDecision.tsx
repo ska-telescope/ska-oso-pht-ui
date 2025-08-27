@@ -43,7 +43,7 @@ async function PostPanelDecision(
   }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}/`;
+    const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}/create`;
     const convertedPanelDecision = mappingPanelDecisionFrontendToBackend(PanelDecision, cycleId);
 
     const result = await authAxiosClient.post(

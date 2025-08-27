@@ -23,6 +23,7 @@ import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
 import SubmitButton from '@/components/button/Submit/Submit';
 import { presentDate, presentLatex, presentTime } from '@/utils/present/present';
 import TableScienceReviews from '@/components/grid/tableScienceReviews/TableScienceReviews';
+import { PANEL_DECISION_STATUS, REVIEW_TYPE } from '@/utils/constants';
 
 const FINAL_COMMENTS_HEIGHT = 43; // Height in vh for the final comments field
 
@@ -48,6 +49,22 @@ export default function TableReviewDecision({
     submitFunction(item);
   };
 
+  const getReviewsReviewed = (reviews: any[]) => {
+    const results =
+      getReviews(reviews, REVIEW_TYPE.SCIENCE)?.filter(el => {
+        return el?.status === PANEL_DECISION_STATUS.REVIEWED;
+      }) ?? [];
+    return results;
+  };
+
+  const getReviews = (reviews: any[], reviewType: string) => {
+    const results =
+      reviews?.filter(el => {
+        return el?.reviewType?.kind === reviewType;
+      }) ?? [];
+    return results;
+  };
+
   const toggleRow = (id: number) => {
     const newExpandedRows = new Set(expandedRows);
     const wasExpanded = newExpandedRows.has(id);
@@ -58,17 +75,6 @@ export default function TableReviewDecision({
       newExpandedRows.add(id);
     }
     setExpandedRows(newExpandedRows);
-  };
-
-  const calculateRank = (details: Array<any>) => {
-    if (!details || details?.length === 0) return 0;
-    const filtered = details.filter(
-      el => el?.reviewType?.excludedFromDecision === false && el?.status !== 'To Do'
-    );
-    if (filtered?.length === 0) return 0;
-    const average =
-      filtered.reduce((sum, detail) => sum + detail?.reviewType?.rank, 0) / filtered?.length;
-    return Math.round((average + Number.EPSILON) * 100) / 100;
   };
 
   const calculateScore = (details: Array<any>) => {
@@ -94,12 +100,17 @@ export default function TableReviewDecision({
         <Table sx={{ minWidth: 650 }} aria-label="Employee information table">
           <TableHead>
             <TableRow>
-              <TableCell>
+              <TableCell sx={{ width: 150 }}>
                 <Typography variant="subtitle2" fontWeight="bold">
-                  {t('tableReviewDecision.reviews')}
+                  {t('tableReviewDecision.sciReviews')}
                 </Typography>
               </TableCell>
-              <TableCell sx={{ width: 50 }}>
+              <TableCell sx={{ width: 60 }}>
+                <Typography variant="subtitle2" fontWeight="bold">
+                  {t('tableReviewDecision.feasible')}
+                </Typography>
+              </TableCell>
+              <TableCell sx={{ width: 120 }}>
                 <Typography variant="subtitle2" fontWeight="bold" className="sr-only">
                   {t('scienceCategory.label')}
                 </Typography>
@@ -171,7 +182,7 @@ export default function TableReviewDecision({
                           aria-label={`${
                             expandedRows.has(item.id) ? 'Collapse' : 'Expand'
                           } details for ${item.title}. ${
-                            item?.reviews?.length
+                            getReviews(item?.reviews, REVIEW_TYPE.SCIENCE)?.length
                           } additional details available.`}
                           aria-expanded={expandedRows.has(item.id)}
                           aria-controls={`employee-details-${item.id}`}
@@ -188,11 +199,25 @@ export default function TableReviewDecision({
                         <Typography
                           variant="caption"
                           color="text.secondary"
-                          aria-label={`${item?.reviews?.length} additional details`}
+                          aria-label={`${
+                            getReviews(item?.reviews, REVIEW_TYPE.SCIENCE)?.length
+                          } additional details`}
                         >
-                          {item?.reviews?.length}
+                          {getReviewsReviewed(item?.reviews)?.length}
+                          {' / '}
+                          {getReviews(item?.reviews, REVIEW_TYPE.SCIENCE)?.length}
                         </Typography>
                       </Box>
+                    </TableCell>
+                    <TableCell role="gridcell">
+                      <Typography variant="body2" color="text.secondary">
+                        {t(
+                          getReviews(
+                            item.reviews,
+                            REVIEW_TYPE.TECHNICAL
+                          )?.[0]?.reviewType?.isFeasible?.toLowerCase() ?? ''
+                        )}
+                      </Typography>
                     </TableCell>
                     <TableCell role="gridcell">
                       <Typography variant="body2" color="text.secondary">
@@ -217,9 +242,9 @@ export default function TableReviewDecision({
                       </Typography>
                     </TableCell>
                     <TableCell role="gridcell">
-                      <Typography variant="body2">{calculateRank(item.reviews)}</Typography>
+                      <Typography variant="body2">{calculateScore(item.reviews)}</Typography>
                     </TableCell>
-                    <TableCell role="gridcell">{calculateScore(item.reviews)}</TableCell>
+                    <TableCell role="gridcell">{item.rank}</TableCell>
                     <TableCell role="gridcell">
                       <Box sx={{ display: 'flex', gap: 0.5 }}>
                         <SubmitIcon
@@ -260,7 +285,7 @@ export default function TableReviewDecision({
                                   </Grid2>
                                   <Grid2>
                                     <Typography variant="h6">
-                                      {`${t('tableReviewDecision.decisionScore')} ${calculateRank(
+                                      {`${t('tableReviewDecision.decisionScore')} ${calculateScore(
                                         item.reviews
                                       )}`}
                                     </Typography>

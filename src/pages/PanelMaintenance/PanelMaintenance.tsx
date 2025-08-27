@@ -5,14 +5,7 @@ import { Box, Grid2, Tab, Tabs, Typography } from '@mui/material';
 import useTheme from '@mui/material/styles/useTheme';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import {
-  BANNER_PMT_SPACER_MIN,
-  PANEL_DECISION_STATUS,
-  PMT,
-  REVIEW_TYPE,
-  REVIEW_TYPE_PREFIX,
-  REVIEWER_STATUS
-} from '../../utils/constants';
+import { BANNER_PMT_SPACER_MIN, PMT, REVIEWER_STATUS } from '../../utils/constants';
 import BackButton from '@/components/button/Back/Back';
 import GridProposals from '@/components/grid/proposals/GridProposals';
 import GridReviewers from '@/components/grid/reviewers/GridReviewers';
@@ -27,10 +20,9 @@ import { IdObject } from '@/utils/types/idObject';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
-import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
-import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
-import { generateId } from '@/utils/helpers';
 import PutPanel from '@/services/axios/put/putPanel/putPanel';
+import AssignButton from '@/components/button/Assign/Assign';
+import PostPanelGenerate from '@/services/axios/post/postPanelGenerate/postPanelGenerate';
 
 const PANELS_HEIGHT = '74vh';
 const TABS_HEIGHT = '76vh';
@@ -123,6 +115,7 @@ export default function PanelMaintenance() {
   const [currentPanel, setCurrentPanel] = React.useState<Panel | null>(null);
   const [panelProposals, setPanelProposals] = React.useState<IdObject[]>([]);
   const [panelReviewers, setPanelReviewers] = React.useState<IdObject[]>([]);
+  const [makeAssignment, setMakeAssignment] = React.useState(false);
   const [, setAxiosError] = React.useState('');
   const { application } = storageObject.useStore();
   const authClient = useAxiosAuthClient();
@@ -130,7 +123,14 @@ export default function PanelMaintenance() {
   const getObservatoryData = () => application.content3 as ObservatoryData;
   const getCycleId = () => getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId;
 
-  let proposalForUpdate: Proposal | undefined = undefined;
+  // let proposalForUpdate: Proposal | undefined = undefined;
+
+  React.useEffect(() => {
+    const autoGeneratePanels = async (osd: ObservatoryData) => {
+      await PostPanelGenerate(authClient, osd?.observatoryPolicy?.cycleDescription);
+    };
+    autoGeneratePanels(getObservatoryData());
+  }, [makeAssignment]);
 
   React.useEffect(() => {
     const proposals = currentPanel?.proposals
@@ -152,6 +152,8 @@ export default function PanelMaintenance() {
     setCurrentPanel(row);
   };
 
+  // const getReviewerId = (reviewer: PanelReviewer) => TMP_REVIEWER_ID; // TODO reviewer.reviewerId;
+
   const handleReviewersChange = (sciReviewers: PanelReviewer[], tecReviewers: PanelReviewer[]) => {
     // Update the current panel's reviewers with the new list
     setCurrentPanel(prevPanel => {
@@ -168,6 +170,7 @@ export default function PanelMaintenance() {
     });
   };
 
+  /*
   function getScienceReview(): ScienceReview {
     return {
       kind: REVIEW_TYPE.SCIENCE,
@@ -179,14 +182,18 @@ export default function PanelMaintenance() {
       excludedFromDecision: false
     };
   }
+  */
 
+  /*
   function getTechnicalReview(): TechnicalReview {
     return {
       kind: REVIEW_TYPE.TECHNICAL,
       isFeasible: ''
     };
   }
+  */
 
+  /*
   const getReview = (
     panelId: string,
     prslId: string,
@@ -199,14 +206,6 @@ export default function PanelMaintenance() {
       reviewType: prefix === REVIEW_TYPE_PREFIX.SCIENCE ? getScienceReview() : getTechnicalReview(),
       comments: '',
       srcNet: '',
-      metadata: {
-        version: 0,
-        created_by: '',
-        created_on: '',
-        pdm_version: '',
-        last_modified_by: '',
-        last_modified_on: ''
-      },
       panelId: panelId,
       cycle: '',
       reviewerId: reviewerId,
@@ -215,7 +214,9 @@ export default function PanelMaintenance() {
       status: PANEL_DECISION_STATUS.TO_DO
     };
   };
+  */
 
+  /*
   const createReview = async (
     panel: Panel,
     proposal: Proposal,
@@ -224,7 +225,7 @@ export default function PanelMaintenance() {
   ) => {
     const response: any = await PostProposalReview(
       authClient,
-      getReview(panel.id, proposal.id, reviewer.reviewerId, prefix),
+      getReview(panel.id, proposal.id, getReviewerId(reviewer), prefix),
       getCycleId()
     );
     if (typeof response === 'object' && response?.error) {
@@ -235,7 +236,9 @@ export default function PanelMaintenance() {
       // Success notification goes in here
     }
   };
+  */
 
+  /*
   const addEmptyReviews = (panel: Panel) => {
     if (!proposalForUpdate) return;
     panel.sciReviewers.forEach(reviewer => {
@@ -243,6 +246,7 @@ export default function PanelMaintenance() {
     });
     proposalForUpdate = undefined;
   };
+  */
 
   async function savePanel(panel: Panel): Promise<string | { error: string }> {
     const response = await PutPanel(authClient, panel, getCycleId());
@@ -250,8 +254,8 @@ export default function PanelMaintenance() {
       setAxiosError(
         typeof response === 'object' && 'error' in response ? response.error : String(response)
       );
-    } else {
-      addEmptyReviews(panel);
+      // } else {
+      // addEmptyReviews(panel);
     }
     return response;
   }
@@ -275,10 +279,10 @@ export default function PanelMaintenance() {
 
   const proposalSelectedToggle = (proposal: Proposal, isSelected: boolean) => {
     if (isSelected) {
-      proposalForUpdate = undefined; // TODO : What happens if you unassign a proposal from a panel ?
+      // proposalForUpdate = undefined; // TODO : What happens if you unassign a proposal from a panel ?
       deleteProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
     } else {
-      proposalForUpdate = proposal;
+      // proposalForUpdate = proposal;
       addProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
     }
   };
@@ -317,9 +321,11 @@ export default function PanelMaintenance() {
     />
   );
 
+  const fwdButton = () => <AssignButton action={() => setMakeAssignment(!makeAssignment)} />;
+
   return (
     <>
-      <PageBannerPMT title={t('page.15.desc')} backBtn={backButton()} />
+      <PageBannerPMT title={t('page.15.desc')} backBtn={backButton()} fwdBtn={fwdButton()} />
       <Spacer size={BANNER_PMT_SPACER_MIN} axis={SPACER_VERTICAL} />
       <Grid2
         container
@@ -353,7 +359,7 @@ export default function PanelMaintenance() {
               height={PANELS_HEIGHT}
               listOnly
               onRowClick={row => handlePanelChange(row)}
-              updatedData={currentPanel}
+              // updatedData={currentPanel}
             />
           </Box>
         </Grid2>

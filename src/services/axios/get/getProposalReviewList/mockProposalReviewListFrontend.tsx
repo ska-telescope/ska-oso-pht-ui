@@ -29,7 +29,7 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
     srcNet: 'great proposal',
     submittedOn: '2025-06-16T08:35:24.245Z',
     submittedBy: 'user1',
-    status: PANEL_DECISION_STATUS.DECIDED
+    status: PANEL_DECISION_STATUS.REVIEWED
   },
   {
     metadata: {
@@ -58,7 +58,7 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
     srcNet: '',
     submittedOn: '2025-07-16T08:35:24.245Z',
     submittedBy: 'user3',
-    status: PANEL_DECISION_STATUS.DECIDED
+    status: PANEL_DECISION_STATUS.REVIEWED
   },
   {
     metadata: {
@@ -87,7 +87,7 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
     srcNet: 'recommend as well',
     submittedOn: '2025-07-16T08:35:24.245Z',
     submittedBy: 'user1',
-    status: PANEL_DECISION_STATUS.DECIDED
+    status: PANEL_DECISION_STATUS.REVIEWED
   },
   {
     metadata: {
@@ -111,6 +111,6 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
     srcNet: 'recommend as well',
     submittedOn: '2025-06-16T08:35:24.245Z',
     submittedBy: 'user1',
-    status: PANEL_DECISION_STATUS.DECIDED
+    status: PANEL_DECISION_STATUS.REVIEWED
   }
 ];

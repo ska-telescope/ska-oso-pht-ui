@@ -53,7 +53,10 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const [sciPDF, setSciPDF] = React.useState<string | undefined>(undefined);
   const [tecPDF, setTecPDF] = React.useState<string | undefined>(undefined);
 
-  const TEC_HEIGHT_NUM = 60;
+  const OFFSET_TOP = 150;
+  const ROW_HEIGHT_PX = 27; // approximate height of one row in pixels
+
+  const CHOICE_HEIGHT = 26; // This is in 'vh';
   const AREA_HEIGHT_NUM = 73;
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
 
@@ -61,6 +64,10 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const userId = getUserId();
 
   const isTechnical = () => reviewType === REVIEW_TYPE.TECHNICAL;
+  const tecRows = () =>
+    Math.floor((((AREA_HEIGHT_NUM - CHOICE_HEIGHT) / 100) * window.innerHeight) / ROW_HEIGHT_PX);
+  const genRows = () => ((AREA_HEIGHT_NUM / 100) * window.innerHeight) / ROW_HEIGHT_PX;
+  const srcRows = () => ((AREA_HEIGHT_NUM / 100) * window.innerHeight) / ROW_HEIGHT_PX;
 
   function getTechnicalReview(): TechnicalReview {
     return {
@@ -101,7 +108,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       reviewerId: userId,
       submittedOn: submitted ? new Date().toISOString() : null,
       submittedBy: submitted ? userId : null,
-      status: submitted ? PANEL_DECISION_STATUS.DECIDED : PANEL_DECISION_STATUS.IN_PROGRESS
+      status: submitted ? PANEL_DECISION_STATUS.REVIEWED : PANEL_DECISION_STATUS.IN_PROGRESS
     };
   };
 
@@ -142,10 +149,10 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     if (isTechnical()) {
       setReview(locationProperties?.state?.tecReview);
       setFeasibility(locationProperties?.state?.tecReview.reviewType?.isFeasible);
-      setComments(locationProperties?.state?.comments);
+      setComments(locationProperties?.state?.tecReview.comments);
     } else {
       setReview(locationProperties?.state?.sciReview);
-      setRank(locationProperties?.state?.sciReview.reviewType.rank);
+      setRank(locationProperties?.state?.sciReview.reviewType.rank ?? 0);
       setComments(locationProperties?.state?.sciReview?.comments);
       setSrcNetComments(locationProperties?.state?.sciReview?.srcNet);
     }
@@ -329,7 +336,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         <TextEntry
           label={''}
           testId="generalCommentsId"
-          rows={((AREA_HEIGHT_NUM / 100) * window.innerHeight) / 27}
+          rows={genRows()}
           setValue={setComments}
           value={comments}
         />
@@ -363,11 +370,13 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           </Box>
           <Paper>
             <TextEntry
+              disabledUnderline
               label={''}
               testId="technicalCommentsId"
-              rows={((TEC_HEIGHT_NUM / 100) * window.innerHeight) / 27}
+              rows={tecRows()}
               setValue={setComments}
               value={comments}
+              variant="standard"
             />
           </Paper>
         </>
@@ -381,7 +390,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         <TextEntry
           label={''}
           testId="srcNetCommentsId"
-          rows={((AREA_HEIGHT_NUM / 100) * window.innerHeight) / 27}
+          rows={srcRows()}
           setValue={setSrcNetComments}
           value={srcNetComments}
         />
@@ -422,7 +431,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           border: `2px solid ${theme.palette.primary.light}`,
           borderRadius: '16px',
           height: AREA_HEIGHT,
-          top: '150'
+          top: OFFSET_TOP
         }}
         elevation={0}
       >
@@ -493,13 +502,13 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
             border: `2px solid ${theme.palette.primary.light}`,
             borderRadius: '16px',
             height: AREA_HEIGHT,
-            top: '150',
+            top: OFFSET_TOP,
             padding: 3,
             backgroundColor: theme.palette.primary.main
           }}
           elevation={0}
         >
-          <Stack sx={{ gap: 1 }}>
+          <Stack sx={{ gap: 4 }}>
             <ChoiceCards value={feasibility} onChange={setFeasibility} />
             {technicalCommentsField()}
           </Stack>

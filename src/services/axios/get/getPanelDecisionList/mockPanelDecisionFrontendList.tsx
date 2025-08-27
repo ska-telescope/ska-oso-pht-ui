@@ -38,7 +38,7 @@ export const MockPanelDecisionFrontendList: PanelDecision[] = [
     recommendation: 'Recommendation 2',
     decidedBy: 'user1',
     decidedOn: '2023-01-02T00:00:00Z',
-    status: PANEL_DECISION_STATUS.DECIDED
+    status: PANEL_DECISION_STATUS.REVIEWED
   },
   {
     metaData: {
@@ -57,6 +57,6 @@ export const MockPanelDecisionFrontendList: PanelDecision[] = [
     recommendation: 'Recommendation 3',
     decidedBy: 'user1',
     decidedOn: '2023-01-02T00:00:00Z',
-    status: PANEL_DECISION_STATUS.DECIDED
+    status: PANEL_DECISION_STATUS.REVIEWED
   }
 ];

@@ -85,7 +85,7 @@ async function PostProposalReview(
   }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_REVIEWS_PATH}/`;
+    const URL_PATH = `${OSO_SERVICES_REVIEWS_PATH}/create`;
     const convertedReview = mappingReviewFrontendToBackend(review, cycleId);
 
     const result = await authAxiosClient.post(

@@ -326,7 +326,8 @@ export const PROPOSAL_STATUS = {
   SUBMITTED: 'submitted',
   ACCEPTED: 'accepted',
   WITHDRAWN: 'withdrawn',
-  REJECTED: 'rejected'
+  REJECTED: 'rejected',
+  UNDER_REVIEW: 'under review'
 };
 
 export const REVIEWER_STATUS = {
@@ -338,7 +339,7 @@ export const REVIEWER_STATUS = {
 export const PANEL_DECISION_STATUS = {
   TO_DO: 'To Do',
   IN_PROGRESS: 'In Progress',
-  DECIDED: 'Decided'
+  REVIEWED: 'Reviewed'
 };
 
 export const REVIEW_TYPE = {

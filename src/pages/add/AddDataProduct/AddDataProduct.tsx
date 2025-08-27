@@ -12,22 +12,15 @@ import {
   TickBox
 } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
-import {
-  FOOTER_HEIGHT_PHT,
-  HELP_FONT,
-  NAV,
-  STATUS_OK,
-  WRAPPER_HEIGHT
-} from '../../../utils/constants';
-import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
-import Proposal from '../../../utils/types/proposal';
-import ImageWeightingField from '../../../components/fields/imageWeighting/imageWeighting';
-import { SensCalcResults } from '../../../utils/types/sensCalcResults';
-import { DataProductSDP } from '../../../utils/types/dataProduct';
-import Observation from '../../../utils/types/observation';
-import AddButton from '../../../components/button/Add/Add';
-import { LAB_POSITION } from '../../../utils/constants';
+import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
+import { FOOTER_HEIGHT_PHT, HELP_FONT, NAV, STATUS_OK, WRAPPER_HEIGHT } from '@/utils/constants';
+import HelpPanel from '@/components/info/helpPanel/HelpPanel';
+import Proposal from '@/utils/types/proposal';
+import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
+import { SensCalcResults } from '@/utils/types/sensCalcResults';
+import { DataProductSDP } from '@/utils/types/dataProduct';
+import AddButton from '@/components/button/Add/Add';
+import { LAB_POSITION } from '@/utils/constants';
 
 const BACK_PAGE = 7;
 const PAGE = 13;
@@ -43,7 +36,9 @@ export default function AddDataProduct() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const [baseObservations, setBaseObservations] = React.useState([]);
+  const [baseObservations, setBaseObservations] = React.useState<
+    { label: string; value: string }[]
+  >([]);
   const [observationId, setObservationId] = React.useState('');
   const [dp1, setDP1] = React.useState(false);
   const [dp2, setDP2] = React.useState(false);
@@ -59,13 +54,13 @@ export default function AddDataProduct() {
 
   React.useEffect(() => {
     helpComponent(t('observations.dp.help'));
-    const results: Observation[] = getProposal()?.observations?.filter(
+    const results = getProposal()?.observations?.filter(
       ob =>
         typeof getProposal()?.targetObservation?.find(
           e => e.observationId === ob.id && e.sensCalc.statusGUI === STATUS_OK
         ) !== 'undefined'
     );
-    setBaseObservations([...results?.map(e => ({ label: e.id, value: e.id }))]);
+    setBaseObservations(results ? results.map(e => ({ label: e.id, value: e.id })) : []);
   }, []);
 
   React.useEffect(() => {
@@ -78,9 +73,12 @@ export default function AddDataProduct() {
       const DIVIDER = 3;
       const precisionStr = t('pixelSize.precision');
       const precision = Number(precisionStr);
-      const arr = sensCalc?.section1?.length > 2 ? sensCalc.section1[3].value.split(' x ') : [];
+      const arr =
+        sensCalc?.section1 && sensCalc.section1.length > 2
+          ? sensCalc.section1[3].value.split(' x ')
+          : [];
       const result = arr.length > 1 ? (Number(arr[1]) / DIVIDER).toFixed(precision) : 0;
-      if (pixelSizeUnits === '' && sensCalc?.section1?.length > 2) {
+      if (pixelSizeUnits === '' && sensCalc?.section1 && sensCalc.section1.length > 2) {
         setPixelSizeUnits(t('imageSize.2'));
       }
       return Number(result);
@@ -276,10 +274,11 @@ export default function AddDataProduct() {
       const hasRecord = getProposal().dataProductSDP;
       let highestId = 1;
       if (hasRecord) {
-        highestId = getProposal().dataProductSDP?.reduce(
-          (acc, dataProducts) => (dataProducts.id > acc ? dataProducts.id : acc),
-          0
-        );
+        highestId =
+          getProposal().dataProductSDP?.reduce(
+            (acc, dataProducts) => (dataProducts.id > acc ? dataProducts.id : acc),
+            0
+          ) ?? 0;
       }
       const observatoryDataProduct = [dp1, dp2, dp3, dp4];
       const newDataProduct: DataProductSDP = {
@@ -296,7 +295,7 @@ export default function AddDataProduct() {
       if (hasRecord) {
         setProposal({
           ...getProposal(),
-          dataProductSDP: [...getProposal().dataProductSDP, newDataProduct]
+          dataProductSDP: [...(getProposal()?.dataProductSDP ?? []), newDataProduct]
         });
       } else {
         setProposal({
