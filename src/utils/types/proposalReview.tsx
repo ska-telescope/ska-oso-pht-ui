@@ -16,7 +16,7 @@ export type ScienceReview = {
 };
 
 export type ProposalReview = {
-  metadata: Metadata;
+  metadata?: Metadata;
   panelId: string;
   id: string;
   cycle: string;

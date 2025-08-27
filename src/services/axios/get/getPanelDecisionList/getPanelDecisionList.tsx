@@ -32,7 +32,7 @@ async function getPanelDecisionList(
   }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}/list/` + DEFAULT_USER;
+    const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}/users/` + DEFAULT_USER + '/decisions';
 
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
 

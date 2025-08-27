@@ -21,15 +21,11 @@ export default defineConfig({
       provider: 'istanbul',
       reporter: ['cobertura', 'text', 'json', 'html'],
       reportsDirectory: 'build/coverage',
-      include: ['src/{components,pages,utils,services}/**/*.{ts,tsx}'],
+      include: ['src/{components,pages,utils,services}/**/*.tsx'],
       exclude: [
         'src/components/app/App.tsx',
         'src/services/theme/theme.tsx',
-        'src/services/api/*/*.testData.ts',
-        'src/services/api/getContinuumData/mockedContinuumResults.ts',
-        'src/services/api/getPSSData/mockedPSSResults.ts',
         'src/services/api/getSubArrayData/getSubArrayData.tsx',
-        'src/services/api/getZoomData/mockedZoomResults.ts',
         'src/utils/storage',
         'src/utils/testing',
         'src/utils/types'

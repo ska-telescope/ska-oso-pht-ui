@@ -144,7 +144,7 @@ export default function GridReviewers({
           labelPosition="top"
           testId="linkedTickBox"
           checked={isReviewerSelected(e.row.id)}
-          onChange={() => tickBoxClicked?.(e.row, isReviewerSelected(e.row.id))}
+          onChange={() => tickBoxClicked(e.row, isReviewerSelected(e.row.id))}
         />
       </Box>
     )

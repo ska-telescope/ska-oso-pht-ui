@@ -123,7 +123,7 @@ const mockData = [
     ],
     decisions: [
       {
-        status: PANEL_DECISION_STATUS.DECIDED
+        status: PANEL_DECISION_STATUS.REVIEWED
       }
     ]
   }

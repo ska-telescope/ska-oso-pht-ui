@@ -474,7 +474,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     prsl_id: proposal?.id,
     status: status,
     submitted_on: status === PROPOSAL_STATUS.SUBMITTED ? new Date().toISOString() : null, // note: null since oso-services 1.1.0  does not support ''
-    submitted_by: status === PROPOSAL_STATUS.SUBMITTED ? userId : '', // TODO : Need to replaced with the logged in user.
+    submitted_by: status === PROPOSAL_STATUS.SUBMITTED ? userId : '',
     investigator_refs: proposal.investigators?.map(investigator => {
       return investigator?.id?.toString();
     }),

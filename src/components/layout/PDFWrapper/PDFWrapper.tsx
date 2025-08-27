@@ -32,6 +32,7 @@ export default function PDFWrapper({ open, onClose, url }: PDFWrapperProps) {
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
       id="alert-dialog-proposal-change"
+      data-testid="pdf-wrapper"
     >
       <PDFViewer url={url} />
       {footerContent()}

@@ -19,7 +19,7 @@ export const MockProposalScienceReviewBackend: ProposalReviewBackend = {
   src_net: 'recommend as well',
   submitted_on: '2025-07-16T08:35:24.245Z',
   submitted_by: 'user1',
-  status: PANEL_DECISION_STATUS.DECIDED,
+  status: PANEL_DECISION_STATUS.REVIEWED,
   review_type: {
     kind: REVIEW_TYPE.SCIENCE,
     rank: 9,
@@ -49,7 +49,7 @@ export const MockProposalScienceReviewExcludedBackend: ProposalReviewBackend = {
   src_net: 'recommend as well',
   submitted_on: '2025-07-16T08:35:24.245Z',
   submitted_by: 'user1',
-  status: PANEL_DECISION_STATUS.DECIDED,
+  status: PANEL_DECISION_STATUS.REVIEWED,
   review_type: {
     kind: REVIEW_TYPE.SCIENCE,
     rank: 9,
@@ -79,7 +79,7 @@ export const MockProposalTechnicalReviewBackend: ProposalReviewBackend = {
   src_net: 'recommend as well',
   submitted_on: '2025-07-16T08:35:24.245Z',
   submitted_by: 'user1',
-  status: PANEL_DECISION_STATUS.DECIDED,
+  status: PANEL_DECISION_STATUS.REVIEWED,
   review_type: {
     kind: REVIEW_TYPE.TECHNICAL,
     is_feasible: TECHNICAL_FEASIBILITY.MAYBE

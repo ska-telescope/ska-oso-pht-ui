@@ -97,7 +97,7 @@ export default function ReviewListPage() {
     };
 
     const fetchProposalData = async () => {
-      const response = await GetProposalByStatusList(authClient, PROPOSAL_STATUS.SUBMITTED); // TODO : Temporary implementation to get all submitted proposals
+      const response = await GetProposalByStatusList(authClient, PROPOSAL_STATUS.UNDER_REVIEW);
       if (typeof response === 'string') {
         notifyError(response);
       } else {
@@ -158,7 +158,7 @@ export default function ReviewListPage() {
       reviewerId: userId,
       submittedOn: '',
       submittedBy: '',
-      status: PANEL_DECISION_STATUS.DECIDED
+      status: PANEL_DECISION_STATUS.REVIEWED
     };
   };
 
@@ -192,34 +192,35 @@ export default function ReviewListPage() {
     updateReview(row);
   };
 
+  const feasibleYes = (review: any) => review?.reviewType?.isFeasible === FEASIBLE_YES;
+  const feasibleNo = (review: any) => review?.reviewType?.isFeasible === FEASIBLE_NO;
+
   const isFeasible = (row: { tecReview: any; sciReview?: { status: string } }) =>
-    row.tecReview?.reviewType.isFeasible
-      ? row.tecReview?.reviewType.isFeasible !== FEASIBLE_NO
-      : true;
+    row.tecReview?.reviewType.isFeasible ? !feasibleNo(row.tecReview) : true;
+
   const canEditScience = (row: {
     tecReview: { reviewType: { isFeasible: string } };
     sciReview: { status: string };
   }) => {
     return (
-      row?.sciReview && isFeasible(row) && row?.sciReview?.status !== PANEL_DECISION_STATUS.DECIDED
+      row?.sciReview && isFeasible(row) && row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED
     );
   };
 
   const canEditTechnical = (tecReview: { status: string }) =>
-    tecReview && tecReview?.status !== PANEL_DECISION_STATUS.DECIDED;
+    tecReview && tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED;
 
   const hasTechnicalComments = (review: any) =>
     feasibleYes(review) ? true : review?.comments?.length > 0;
-  const feasibleYes = (review: any) => review?.reviewType?.isFeasible === FEASIBLE_YES;
 
   const canSubmit = (row: any) => {
     const sciRec =
-      row?.sciReview?.status !== PANEL_DECISION_STATUS.DECIDED &&
+      row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED &&
       row?.sciReview?.comments?.length > 0 &&
       row?.sciReview?.reviewType?.rank > 0;
 
     const tecRec =
-      row?.tecReview?.status !== PANEL_DECISION_STATUS.DECIDED &&
+      row?.tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED &&
       row?.tecReview?.reviewType?.isFeasible?.length > 0 &&
       hasTechnicalComments(row?.tecReview);
 
@@ -255,7 +256,7 @@ export default function ReviewListPage() {
     width: 120,
     renderCell: (e: { row: any }) =>
       e.row?.sciReview?.status
-        ? t('reviewStatus.' + e.row?.sciReview?.status)
+        ? t('reviewStatus.' + e.row?.sciReview?.status.toLowerCase())
         : t('reviewStatus.to do')
   };
 
@@ -265,7 +266,7 @@ export default function ReviewListPage() {
     width: 120,
     renderCell: (e: { row: any }) =>
       e.row.tecReview?.status
-        ? t('reviewStatus.' + e.row.tecReview?.status)
+        ? t('reviewStatus.' + e.row.tecReview?.status.toLowerCase())
         : t('reviewStatus.to do')
   };
 

@@ -579,7 +579,7 @@ export default function ObservationEntry() {
 
     return fieldWrapper(
       <Grid2 container direction="row">
-        <Grid2 pt={1} size={{ xs: TOP_LABEL_WIDTH }}>
+        <Grid2 pt={2} size={{ xs: TOP_LABEL_WIDTH }}>
           <InputLabel disabled={subarrayConfig !== 20} shrink={false} htmlFor="numOf15mAntennas">
             <Typography
               sx={{ fontWeight: subarrayConfig === OB_SUBARRAY_CUSTOM ? 'bold' : 'normal' }}

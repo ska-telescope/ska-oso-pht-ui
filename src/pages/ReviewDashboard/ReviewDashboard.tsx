@@ -88,12 +88,12 @@ export default function ReviewDashboard() {
         })
       );
 
-      const groupByReviewer = Object.entries(groupBy(panel.value, 'reviewerId')).map(
-        ([key, value]) => ({
+      const groupByReviewer = Object.entries(groupBy(panel.value, 'reviewerId'))
+        .filter(([key]) => key !== 'undefined' && key !== undefined)
+        .map(([key, value]) => ({
           reviewerId: key,
           value: value
-        })
-      );
+        }));
 
       return {
         ...panel,
@@ -109,7 +109,7 @@ export default function ReviewDashboard() {
         numProposal: panel.reviewGroupByPanelProposal.length,
         numReviewer: panel.reviewGroupByPanelReviewer.length,
         totalReviewedPercentage:
-          (panel.value.filter(review => review.reviewStatus === PANEL_DECISION_STATUS.DECIDED)
+          (panel.value.filter(review => review.reviewStatus === PANEL_DECISION_STATUS.REVIEWED)
             .length *
             100) /
           panel.value.length,
@@ -161,7 +161,7 @@ export default function ReviewDashboard() {
         reviewerId: reviewer.reviewerId,
         numProposal: reviewer.reviewGroupByReviewerProposal.length,
         numReviewed:
-          (reviewer.value.filter(review => review.reviewStatus === PANEL_DECISION_STATUS.DECIDED)
+          (reviewer.value.filter(review => review.reviewStatus === PANEL_DECISION_STATUS.REVIEWED)
             .length *
             100) /
           reviewer.value.length,
@@ -210,7 +210,7 @@ export default function ReviewDashboard() {
           numProposal: scienceCategory.reviewGroupByScienceCategoryProposal.length,
           numReviewed:
             (scienceCategory.value.filter(
-              review => review.reviewStatus === PANEL_DECISION_STATUS.DECIDED
+              review => review.reviewStatus === PANEL_DECISION_STATUS.REVIEWED
             ).length *
               100) /
             scienceCategory.value.length,

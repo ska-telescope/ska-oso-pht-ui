@@ -10,7 +10,7 @@ import PostPanelDecision from '@services/axios/post/postPanelDecision/postPanelD
 import getPanelDecisionList from '@services/axios/get/getPanelDecisionList/getPanelDecisionList';
 import GetProposalByStatusList from '@services/axios/get/getProposalByStatusList/getProposalByStatusList';
 import Proposal from '@/utils/types/proposal';
-import { FOOTER_SPACER } from '@/utils/constants';
+import { FEASIBLE_NO, FOOTER_SPACER, REVIEW_TYPE } from '@/utils/constants';
 import {
   BANNER_PMT_SPACER,
   DEFAULT_USER,
@@ -30,26 +30,12 @@ import { useNotify } from '@/utils/notify/useNotify';
 import { getUserId } from '@/utils/aaa/aaaUtils';
 import { generateId } from '@/utils/helpers';
 
-/*
- * Process for retrieving the data for the list
- *
- * 1. Fetch the list of proposals IDs that are in the panel that the user is in
- * 2. For each proposal ID, fetch the details of the proposal
- * 3. Fetch the details of the proposal's review decisions
- * 4. Combine the data into a single array of objects
- *
- * NOTE
- * Step 2 is currently inefficient as the appropriate endpoint is not available
- * In the meantime, the list of proposals is being retrieved and being filtered
- */
-
 export default function ReviewDecisionListPage() {
   const { t } = useTranslation('pht');
   const { application } = storageObject.useStore();
   const { notifyError, notifySuccess } = useNotify();
 
   const [searchTerm, setSearchTerm] = React.useState('');
-
   const [reset, setReset] = React.useState(false);
   const [panelData, setPanelData] = React.useState<Panel[]>([]);
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
@@ -58,11 +44,10 @@ export default function ReviewDecisionListPage() {
   const authClient = useAxiosAuthClient();
 
   const userId = getUserId();
-
-  /*--------------------------------------------------------------------------*/
-
   const getObservatoryData = () => application.content3 as ObservatoryData;
   const getCycleId = () => getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId;
+
+  /*--------------------------------------------------------------------------*/
 
   const calculateRank = (details: Array<any>) => {
     if (!details || details?.length === 0) return 0;
@@ -83,7 +68,7 @@ export default function ReviewDecisionListPage() {
       decidedBy: userId,
       recommendation: item.recommendation,
       rank: calculateRank(filtered),
-      status: PANEL_DECISION_STATUS.DECIDED
+      status: PANEL_DECISION_STATUS.REVIEWED
     };
   };
 
@@ -156,7 +141,7 @@ export default function ReviewDecisionListPage() {
 
   React.useEffect(() => {
     const fetchProposalData = async () => {
-      const response = await GetProposalByStatusList(authClient, PROPOSAL_STATUS.SUBMITTED); // TODO : Temporary implementation to get all proposals
+      const response = await GetProposalByStatusList(authClient, PROPOSAL_STATUS.SUBMITTED);
       if (typeof response === 'string') {
         notifyError(response);
       } else {
@@ -195,6 +180,32 @@ export default function ReviewDecisionListPage() {
 
   /*--------------------------------------------------------------------------*/
 
+  function computeGlobalRanks(data: any[]) {
+    const rankMap = [...data]
+      .map(item => {
+        const filtered = item.reviews?.filter(
+          (r: any) =>
+            r.reviewType.kind === REVIEW_TYPE.SCIENCE && r.reviewType.excludedFromDecision !== true
+        );
+        const avg = filtered?.length
+          ? filtered.reduce((sum: number, r: any) => sum + r.reviewType.rank, 0) / filtered.length
+          : 0;
+        const abandon =
+          item.reviews?.filter(
+            (r: any) =>
+              r.reviewType.kind === REVIEW_TYPE.TECHNICAL && r.reviewType.isFeasible === FEASIBLE_NO
+          )?.length > 0;
+        return { id: item.id, avg: abandon ? 0 : avg };
+      })
+      .sort((a, b) => b.avg - a.avg)
+      .map((item, index) => ({ ...item, rank: index + 1 }))
+      .reduce((acc, item) => {
+        acc[item.id] = item.rank;
+        return acc;
+      }, {} as Record<number, number>);
+    return rankMap;
+  }
+
   function filterProposals() {
     function unionProposalsAndReviews() {
       return proposals.map(proposal => {
@@ -218,7 +229,16 @@ export default function ReviewDecisionListPage() {
     });
   }
 
-  const filteredData = proposals ? filterProposals() : [];
+  const filteredData = proposals
+    ? (() => {
+        const raw = filterProposals();
+        const rankMap = computeGlobalRanks(raw);
+        return raw.map(item => ({
+          ...item,
+          rank: rankMap[item.id as any]
+        }));
+      })()
+    : [];
 
   const searchEntryField = (testId: string) => (
     <SearchEntry

@@ -293,7 +293,7 @@ export default function LandingPage() {
   const colStatus = {
     field: 'status',
     headerName: t('status.label'),
-    width: 120,
+    width: 160,
     renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
   };
 
