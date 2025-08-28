@@ -216,7 +216,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       sx={{
         margin: 1,
         bgcolor: `${theme.palette.primary.main}`,
-        // width: '90%',
+        width: '90%',
         overflow: 'auto'
       }}
       elevation={0}
@@ -230,7 +230,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       sx={{
         margin: 1,
         bgcolor: `${theme.palette.primary.main}`,
-        // width: '90%',
+        width: '90%',
         overflow: 'auto'
       }}
       elevation={0}
@@ -238,6 +238,24 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       <PDFViewer url={tecPDF} />
     </Paper>
   );
+
+  const showLabel = (id: string, label: string) => {
+    return (
+      <Typography id={id} variant={'h6'}>
+        {label?.length ? t(label) : ''}
+      </Typography>
+    );
+  };
+
+  const showLatex = (id: string, label: string) => {
+    return (
+      <Typography pl={2} pr={2} id={id} variant={'h6'}>
+        {label?.length ? presentLatex(label) : ''}
+      </Typography>
+    );
+  };
+
+  /**************************************************************/
 
   const pdfArea = () => {
     function a11yProps(index: number) {
@@ -280,35 +298,11 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const displayArea = () => {
     return (
       <Stack p={1}>
-        <Typography id="title-label" variant={'h6'}>
-          {t('title.short')}
-        </Typography>
-        <Typography pl={2} pr={2} id="title" variant={'h6'}>
-          {locationProperties.state.proposal.title?.length
-            ? presentLatex(locationProperties.state.proposal.title)
-            : ''}
-        </Typography>
+        {showLabel('title-label', 'title.short')}
+        {showLatex('title', locationProperties?.state?.proposal?.title)}
         <Divider />
-        <Typography id="abstract-label" variant={'h6'}>
-          {t('abstract.label')}
-        </Typography>
-        <Box
-          pl={2}
-          pr={2}
-          id="abstract"
-          sx={{
-            maxHeight: `calc(AREA_HEIGHT - 100px)`,
-            overflowY: 'auto',
-            borderRadius: 1,
-            p: 1
-          }}
-        >
-          <Typography variant="body1">
-            {locationProperties.state.proposal.abstract?.length
-              ? presentLatex(locationProperties.state.proposal.abstract as string)
-              : ''}
-          </Typography>
-        </Box>
+        {showLabel('abstract-label', 'abstract.label')}
+        {showLatex('abstract', locationProperties?.state?.proposal?.abstract)}
         <Divider />
         {pdfArea()}
       </Stack>
@@ -321,11 +315,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     return (
       <Box p={2} pl={4} sx={{ height: '65vh', overflow: 'auto' }}>
         {!isView() && <RankEntryField selectedRank={rank} setSelectedRank={setRank} />}
-        {isView() && (
-          <Typography id="title-label" variant={'h6'}>
-            {locationProperties?.state?.reviews[0].rank}
-          </Typography>
-        )}
+        {isView() && showLabel('rank', locationProperties?.state?.reviews[0].rank)}
       </Box>
     );
   };
@@ -345,15 +335,13 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         <Box
           p={2}
           sx={{
-            // width: '100%',
+            width: '100%',
             height: '65vh',
             overflow: 'auto',
             backgroundColor: theme.palette.primary.main
           }}
         >
-          <Typography id="title-label" variant={'h6'}>
-            {locationProperties?.state?.reviews[0].comments}
-          </Typography>
+          {showLatex('comments', locationProperties?.state?.reviews[0]?.comments)}
         </Box>
       )}
     </>
@@ -364,9 +352,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       {!isView() && (
         <>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="h6" color="text.secondary" sx={{ mt: 1 }}>
-              {t('technicalComments.label')}
-            </Typography>
+            {showLabel('technicalComments', 'technicalComments.label')}
           </Box>
           <Paper>
             <TextEntry
@@ -399,15 +385,13 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         <Box
           p={2}
           sx={{
-            // width: '100%',
+            width: '100%',
             height: '65vh',
             overflow: 'auto',
             backgroundColor: theme.palette.primary.main
           }}
         >
-          <Typography id="title-label" variant={'h6'}>
-            {locationProperties?.state?.reviews[0].srcNet}
-          </Typography>
+          {showLatex('srcNetComments', locationProperties?.state?.reviews[0]?.srcNet)}
         </Box>
       )}
     </>
@@ -454,7 +438,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
               bgcolor: `${theme.palette.primary.main}`,
               maxHeight: `calc('75vh' - 100px)`,
               overflowY: 'auto',
-              // width: '100%',
+              width: '100%',
               display: 'flex',
               flexDirection: 'column'
             }}
@@ -467,7 +451,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
             sx={{
               maxHeight: `calc('75vh' - 100px)`,
               overflowY: 'auto',
-              // width: '100%',
+              width: '100%',
               display: 'flex',
               flexDirection: 'column',
               backgroundColor: 'transparent'
@@ -481,7 +465,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
             sx={{
               maxHeight: `calc('75vh' - 100px)`,
               overflowY: 'auto',
-              // width: '100%',
+              width: '100%',
               display: 'flex',
               flexDirection: 'column',
               backgroundColor: 'transparent'
@@ -520,7 +504,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   /**************************************************************/
 
   return (
-    <>
+    <Box>
       <PageBannerPMT
         backBtn={backButton()}
         fwdBtn={isView() ? <></> : actionButtons()}
@@ -529,17 +513,17 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
       <Grid2
         pl={2}
-        pr={4}
+        pr={6}
         container
         spacing={2}
         direction="row"
         justifyContent="space-between"
-        sx={{ height: AREA_HEIGHT }}
+        sx={{ width: '90%', height: AREA_HEIGHT }}
       >
         <Grid2 size={{ sm: 9 }}>{displayArea()}</Grid2>
-        <Grid2>{isTechnical() ? reviewAreaTec() : reviewAreaSci()}</Grid2>
+        <Grid2 size={{ sm: 3 }}>{isTechnical() ? reviewAreaTec() : reviewAreaSci()}</Grid2>
       </Grid2>
       <PageFooterPMT />
-    </>
+    </Box>
   );
 }

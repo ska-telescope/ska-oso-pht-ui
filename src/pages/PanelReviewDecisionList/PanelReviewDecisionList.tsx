@@ -68,7 +68,7 @@ export default function ReviewDecisionListPage() {
       decidedBy: userId,
       recommendation: item.recommendation,
       rank: calculateRank(filtered),
-      status: PANEL_DECISION_STATUS.REVIEWED
+      status: PANEL_DECISION_STATUS.DECIDED
     };
   };
 

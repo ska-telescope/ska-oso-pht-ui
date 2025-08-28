@@ -265,14 +265,14 @@ export default function LandingPage() {
   const colType = {
     field: 'proposalType',
     headerName: t('proposalType.label'),
-    width: 110,
+    width: 160,
     renderCell: (e: { row: any }) => (
       <Tooltip title={t('proposalType.title.' + displayProposalType(e.row.proposalType))}>
         <>{t('proposalType.code.' + displayProposalType(e.row.proposalType))}</>
       </Tooltip>
     )
   };
-  const colCycle = { field: 'cycle', headerName: t('cycle.label'), width: 140 };
+  const colCycle = { field: 'cycle', headerName: t('cycle.label'), width: 160 };
 
   const colTitle = {
     field: 'title',
@@ -284,7 +284,7 @@ export default function LandingPage() {
   const colPI = {
     field: 'pi',
     headerName: t('pi.short'),
-    width: 100,
+    width: 160,
     renderCell: (e: any) => {
       return getPIs(e.row.investigators);
     }
@@ -310,7 +310,7 @@ export default function LandingPage() {
     type: 'actions',
     headerName: 'Actions',
     sortable: false,
-    width: 150,
+    width: 160,
     disableClickEventBubbling: true,
     renderCell: (e: { row: any }) => (
       <>
