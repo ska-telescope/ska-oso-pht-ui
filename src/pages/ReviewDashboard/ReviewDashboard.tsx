@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import Grid2 from '@mui/material/Grid2';
 import { DropDown, SearchEntry, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
-import { ReactNode } from 'react';
-import { Box, Card, Typography } from '@mui/material';
+import { Box, Card } from '@mui/material';
 import { groupBy } from 'lodash';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -17,42 +16,10 @@ import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import ResetButton from '@/components/button/Reset/Reset';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import D3PieChart from '@/components/charts/pie/D3PieChart';
+import ResizablePanel from '@/components/layout/resizablePanel/ResizablePanel';
 
 const REFRESH_TIME = 5 * 60 * 1000;
-const CHART_WIDTH = 220;
 const TABLE_WIDTH = '95vw';
-
-const ResizablePanel = ({ children, title }: { children: ReactNode; title: string }) => (
-  <div
-    className="border rounded p-3 bg-white shadow flex flex-col resize overflow-auto mb-6 hover:bg-gray-100 hover:shadow-md transition-all duration-200"
-    style={{
-      minWidth: '30vw',
-      minHeight: '300px',
-      resize: 'both',
-      overflow: 'auto',
-      border: '1px solid #ccc',
-      borderRadius: '16px'
-    }}
-  >
-    <Typography p={1} variant="h5">
-      {title}
-    </Typography>
-
-    <div className="flex-1 flex items-center justify-center w-full h-full">
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          width: '100%',
-          height: '100%'
-        }}
-      >
-        {children}
-      </div>
-    </div>
-  </div>
-);
 
 export default function ReviewDashboard() {
   const { t } = useTranslation('pht');
@@ -415,29 +382,17 @@ export default function ReviewDashboard() {
     </Box>
   );
 
-  const panel1 = () => {
+  const pieChart = (label: string, data: any[]) => {
     return (
-      <ResizablePanel title={t('reviewOverview.panel1.title')}>
-        <D3PieChart data={proposalPieChartData} width={CHART_WIDTH} showTotal={true} />
+      <ResizablePanel title={t(label)}>
+        <D3PieChart data={data} showTotal={true} />
       </ResizablePanel>
     );
   };
 
-  const panel2 = () => {
-    return (
-      <ResizablePanel title={t('reviewOverview.panel2.title')}>
-        <D3PieChart data={reviewPieChartData} width={CHART_WIDTH} showTotal={true} />
-      </ResizablePanel>
-    );
-  };
-
-  const panel3 = () => {
-    return (
-      <ResizablePanel title={t('reviewOverview.panel3.title')}>
-        <D3PieChart data={scienceCategoryPieChartData} width={CHART_WIDTH} showTotal={true} />
-      </ResizablePanel>
-    );
-  };
+  const panel1 = () => pieChart('reviewOverview.panel1.title', proposalPieChartData);
+  const panel2 = () => pieChart('reviewOverview.panel2.title', reviewPieChartData);
+  const panel3 = () => pieChart('reviewOverview.panel3.title', scienceCategoryPieChartData);
 
   const panel4 = () => {
     return (

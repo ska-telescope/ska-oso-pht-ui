@@ -1,29 +1,91 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
 
+import { useTheme } from '@mui/material/styles';
+
 type PieData = { name: string; value: number };
 
 type Props = {
   data: PieData[];
+  height?: number;
   width?: number;
   showTotal?: boolean;
   centerText?: string;
 };
 
-const D3PieChart: React.FC<Props> = ({ data, width = 200, showTotal = false, centerText = '' }) => {
+const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
+
+  const theme = useTheme();
+  const themeMode = theme.palette.mode;
+  const baseFontSize = theme.typography.htmlFontSize;
+  const scale = theme.typography.fontSize / baseFontSize;
+  const largerRem = `${scale + 0.25}rem`;
+
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [dimensions, setDimensions] = React.useState({ width: 150, height: 200 });
+
+  useEffect(() => {
+    const observer = new ResizeObserver(entries => {
+      for (let entry of entries) {
+        const { width, height } = entry.contentRect;
+        setDimensions({ width, height });
+      }
+    });
+
+    if (containerRef.current) observer.observe(containerRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  function wrapText(text: d3.Selection<SVGTextElement, any, any, any>, width: number) {
+    text.each(function() {
+      const el = d3.select(this);
+      const words = el.text().split(/\s+/);
+      el.text(null);
+
+      let line: string[] = [];
+      let lineNumber = 0;
+      const lineHeight = 1.1;
+      const x = el.attr('x') ?? '0';
+      const y = el.attr('y') ?? '0';
+      const dy = parseFloat(el.attr('dy') ?? '0');
+
+      let tspan = el
+        .append('tspan')
+        .attr('x', x)
+        .attr('y', y)
+        .attr('dy', `${dy}em`);
+
+      for (const word of words) {
+        line.push(word);
+        tspan.text(line.join(' '));
+        if (tspan.node()!.getComputedTextLength() > width) {
+          line.pop();
+          tspan.text(line.join(' '));
+          line = [word];
+          tspan = el
+            .append('tspan')
+            .attr('x', x)
+            .attr('y', y)
+            .attr('dy', `${++lineNumber * lineHeight + dy}em`)
+            .text(word);
+        }
+      }
+    });
+  }
 
   useEffect(() => {
     // if (!svgRef.current || !tooltipRef.current) return;
 
     // Dimensions & margins
-    const chartWidth = width;
-    const chartHeight = 300;
-    const margin = { top: 20, right: 80, bottom: 20, left: 80 };
+    const chartWidth = dimensions.width;
+    const chartHeight = dimensions.height;
+
+    const margin = { top: 0, right: 0, bottom: 0, left: 0 };
     const svgWidth = chartWidth + margin.left + margin.right;
     const svgHeight = chartHeight + margin.top + margin.bottom;
-    const radius = Math.min(chartWidth, chartHeight) / 2.5 - 20;
+    const radius = Math.min(chartWidth, chartHeight);
     const total = d3.sum(data, d => d.value);
     const centerLabel = centerText || total.toString();
 
@@ -50,8 +112,10 @@ const D3PieChart: React.FC<Props> = ({ data, width = 200, showTotal = false, cen
     // Setup SVG with pronounced emboss filter and overflow visible
     const svg = d3
       .select(svgRef.current)
-      .attr('width', svgWidth)
-      .attr('height', svgHeight)
+      .attr('viewBox', `0 0 ${svgWidth} ${svgHeight / 2}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet')
+      .style('width', '100%')
+      .style('height', '100%')
       .style('overflow', 'visible');
 
     // Define emboss filter
@@ -115,33 +179,44 @@ const D3PieChart: React.FC<Props> = ({ data, width = 200, showTotal = false, cen
       .append('path')
       .attr('d', arc)
       .attr('fill', d => colors(d.data.name))
-      .attr('stroke', '#fff')
+      .attr('stroke', theme.palette.divider)
       .attr('stroke-width', 2)
       .attr('filter', 'url(#emboss)')
       .each(function(d) {
         (this as any)._current = d;
       })
       .on('mouseover', (event, d) => {
-        const [x, y] = d3.pointer(event, svg.node());
-        d3.select(tooltipRef.current)
-          .style('left', `${x + 15}px`)
-          .style('top', `${y + 15}px`)
-          .style('opacity', 1)
-          .html(
-            `<strong>${d.data.name}</strong>: ${d.data.value} (${(
-              (d.data.value / total) *
-              100
-            ).toFixed(1)}%)`
-          );
+        const tooltipEl = tooltipRef.current;
+        const containerEl = svgRef.current?.parentElement;
+        if (!tooltipEl || !containerEl) return;
+
+        const containerRect = containerEl.getBoundingClientRect();
+        const mouseX = event.clientX - containerRect.left;
+        const mouseY = event.clientY - containerRect.top;
+
+        tooltipEl.style.left = `${mouseX + 10}px`;
+        tooltipEl.style.top = `${mouseY + 10}px`;
+        tooltipEl.style.opacity = '1';
+        tooltipEl.innerHTML = `
+    <strong>${d.data.name}</strong>: ${d.data.value} (${((d.data.value / total) * 100).toFixed(1)}%)
+  `;
       })
       .on('mousemove', event => {
-        const [x, y] = d3.pointer(event, svg.node());
-        d3.select(tooltipRef.current)
-          .style('left', `${x + 15}px`)
-          .style('top', `${y + 15}px`);
+        const tooltipEl = tooltipRef.current;
+        const containerEl = svgRef.current?.parentElement;
+        if (!tooltipEl || !containerEl) return;
+
+        const containerRect = containerEl.getBoundingClientRect();
+        const mouseX = event.clientX - containerRect.left;
+        const mouseY = event.clientY - containerRect.top;
+
+        tooltipEl.style.left = `${mouseX + 10}px`;
+        tooltipEl.style.top = `${mouseY + 10}px`;
       })
       .on('mouseout', () => {
-        d3.select(tooltipRef.current).style('opacity', 0);
+        const tooltipEl = tooltipRef.current;
+        if (!tooltipEl) return;
+        tooltipEl.style.opacity = '0';
       });
 
     // Animate slices
@@ -160,8 +235,9 @@ const D3PieChart: React.FC<Props> = ({ data, width = 200, showTotal = false, cen
         .append('text')
         .attr('text-anchor', 'middle')
         .attr('dy', '0.35em')
-        .attr('font-size', '20px')
-        .attr('font-weight', 'bold')
+        .attr('font-size', largerRem)
+        .attr('stroke', theme.palette.text.primary)
+        .attr('text-wrap', radius * 1.2)
         .text(centerLabel);
     }
 
@@ -179,7 +255,7 @@ const D3PieChart: React.FC<Props> = ({ data, width = 200, showTotal = false, cen
         return [p, outerArc.centroid(d), op] as any;
       })
       .attr('fill', 'none')
-      .attr('stroke', '#666')
+      .attr('stroke', theme.palette.text.primary)
       .attr('stroke-width', 1.5);
 
     chartGroup
@@ -196,18 +272,44 @@ const D3PieChart: React.FC<Props> = ({ data, width = 200, showTotal = false, cen
       })
       .attr('text-anchor', d => ((d.startAngle + d.endAngle) / 2 < Math.PI ? 'start' : 'end'))
       .attr('dy', '0.35em')
-      .attr('font-size', '14px')
-      .text(d => `${d.data.name} (${((d.data.value / total) * 100).toFixed(1)}%)`);
-  }, [data, showTotal, centerText]);
+      .attr('font-size', theme.typography.fontSize)
+      .attr('stroke', theme.palette.text.primary)
+      .attr('font-weight', 'normal')
+      .attr('text-wrap', radius * 1.2)
+      .attr('lengthAdjust', 'spacingAndGlyphs')
+      .text(d => `${d.data.name} (${((d.data.value / total) * 100).toFixed(1)}%)`)
+      .call(wrapText, 100);
+  }, [data, showTotal, centerText, themeMode]);
 
   return (
-    <div className="relative">
-      <svg ref={svgRef} role="img"></svg>
-      <div
-        ref={tooltipRef}
-        data-testid="toolTip"
-        className="absolute bg-white border border-gray-300 p-2 rounded shadow-lg pointer-events-none opacity-0 transition-opacity duration-200 text-base"
-      ></div>
+    <div
+      style={{
+        position: 'relative',
+        width: `100%`,
+        height: `100%`,
+        overflow: 'visible'
+      }}
+    >
+      <div ref={containerRef} style={{ width: '100%', height: '100%', position: 'relative' }}>
+        <svg ref={svgRef} role="img"></svg>
+        <div
+          ref={tooltipRef}
+          style={{
+            position: 'absolute',
+            backgroundColor: theme.palette.background.paper,
+            color: theme.palette.text.primary,
+            border: `1px solid ${theme.palette.divider}`,
+            padding: '8px',
+            borderRadius: '4px',
+            boxShadow: theme.shadows[3],
+            pointerEvents: 'none',
+            opacity: 0,
+            transition: 'opacity 0.2s ease',
+            fontSize: theme.typography.fontSize,
+            zIndex: 10
+          }}
+        ></div>
+      </div>
     </div>
   );
 };
