@@ -216,7 +216,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       sx={{
         margin: 1,
         bgcolor: `${theme.palette.primary.main}`,
-        // width: '90%',
+        width: '90%',
         overflow: 'auto'
       }}
       elevation={0}
@@ -230,7 +230,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       sx={{
         margin: 1,
         bgcolor: `${theme.palette.primary.main}`,
-        // width: '90%',
+        width: '90%',
         overflow: 'auto'
       }}
       elevation={0}
@@ -345,7 +345,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         <Box
           p={2}
           sx={{
-            // width: '100%',
+            width: '100%',
             height: '65vh',
             overflow: 'auto',
             backgroundColor: theme.palette.primary.main
@@ -399,7 +399,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         <Box
           p={2}
           sx={{
-            // width: '100%',
+            width: '100%',
             height: '65vh',
             overflow: 'auto',
             backgroundColor: theme.palette.primary.main
@@ -454,7 +454,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
               bgcolor: `${theme.palette.primary.main}`,
               maxHeight: `calc('75vh' - 100px)`,
               overflowY: 'auto',
-              // width: '100%',
+              width: '100%',
               display: 'flex',
               flexDirection: 'column'
             }}
@@ -467,7 +467,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
             sx={{
               maxHeight: `calc('75vh' - 100px)`,
               overflowY: 'auto',
-              // width: '100%',
+              width: '100%',
               display: 'flex',
               flexDirection: 'column',
               backgroundColor: 'transparent'
@@ -481,7 +481,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
             sx={{
               maxHeight: `calc('75vh' - 100px)`,
               overflowY: 'auto',
-              // width: '100%',
+              width: '100%',
               display: 'flex',
               flexDirection: 'column',
               backgroundColor: 'transparent'
@@ -520,7 +520,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   /**************************************************************/
 
   return (
-    <>
+    <Box sx={{ backgroundColor: 'pink', width: '95vw' }}>
       <PageBannerPMT
         backBtn={backButton()}
         fwdBtn={isView() ? <></> : actionButtons()}
@@ -529,17 +529,17 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
       <Grid2
         pl={2}
-        pr={4}
+        pr={6}
         container
         spacing={2}
         direction="row"
         justifyContent="space-between"
-        sx={{ height: AREA_HEIGHT }}
+        sx={{ backgroundColor: 'yellow', width: '90%', height: AREA_HEIGHT }}
       >
         <Grid2 size={{ sm: 9 }}>{displayArea()}</Grid2>
-        <Grid2>{isTechnical() ? reviewAreaTec() : reviewAreaSci()}</Grid2>
+        <Grid2 size={{ sm: 3 }}>{isTechnical() ? reviewAreaTec() : reviewAreaSci()}</Grid2>
       </Grid2>
       <PageFooterPMT />
-    </>
+    </Box>
   );
 }

@@ -63,6 +63,7 @@ export default function GeneralPage() {
 
   const cycleField = () => (
     <TextEntry
+      disabledUnderline
       label={t('cycle.label')}
       labelBold
       labelPosition={LAB_POSITION}

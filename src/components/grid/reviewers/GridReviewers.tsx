@@ -188,6 +188,7 @@ export default function GridReviewers({
     renderHeader: () => (
       <Box sx={{ minWidth: 150 }}>
         <DropDown
+          disabledUnderline={true}
           options={[
             { label: t('reviewerType.all'), value: 'all' },
             { label: t('reviewerType.science'), value: 'sci' },

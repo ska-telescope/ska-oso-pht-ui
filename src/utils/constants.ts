@@ -339,7 +339,8 @@ export const REVIEWER_STATUS = {
 export const PANEL_DECISION_STATUS = {
   TO_DO: 'To Do',
   IN_PROGRESS: 'In Progress',
-  REVIEWED: 'Reviewed'
+  REVIEWED: 'Reviewed',
+  DECIDED: 'Decided'
 };
 
 export const REVIEW_TYPE = {
