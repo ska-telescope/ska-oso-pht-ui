@@ -239,6 +239,38 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     </Paper>
   );
 
+  const showLabel = (id: string, label: string) => {
+    return (
+      <Typography id={id} variant={'h6'}>
+        {t(label)}
+      </Typography>
+    );
+  };
+
+  const showLatex = (id: string, label: string) => {
+    return (
+      <Typography pl={2} pr={2} id={id} variant={'h6'}>
+        {label?.length ? presentLatex(label) : ''}
+      </Typography>
+    );
+  };
+
+  /**************************************************************/
+
+  const titleArea = () => {
+    return (
+      <Stack>
+        {showLabel('title-label', 'title.short')}
+        {showLatex('title', locationProperties?.state?.proposal?.title)}
+        <Divider />
+        {showLabel('abstract-label', 'abstract.label')}
+        {showLatex('abstract', locationProperties?.state?.proposal?.abstract)}
+      </Stack>
+    );
+  };
+
+  /**************************************************************/
+
   const pdfArea = () => {
     function a11yProps(index: number) {
       return {
@@ -280,35 +312,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const displayArea = () => {
     return (
       <Stack p={1}>
-        <Typography id="title-label" variant={'h6'}>
-          {t('title.short')}
-        </Typography>
-        <Typography pl={2} pr={2} id="title" variant={'h6'}>
-          {locationProperties.state.proposal.title?.length
-            ? presentLatex(locationProperties.state.proposal.title)
-            : ''}
-        </Typography>
-        <Divider />
-        <Typography id="abstract-label" variant={'h6'}>
-          {t('abstract.label')}
-        </Typography>
-        <Box
-          pl={2}
-          pr={2}
-          id="abstract"
-          sx={{
-            maxHeight: `calc(AREA_HEIGHT - 100px)`,
-            overflowY: 'auto',
-            borderRadius: 1,
-            p: 1
-          }}
-        >
-          <Typography variant="body1">
-            {locationProperties.state.proposal.abstract?.length
-              ? presentLatex(locationProperties.state.proposal.abstract as string)
-              : ''}
-          </Typography>
-        </Box>
+        {titleArea()}
         <Divider />
         {pdfArea()}
       </Stack>
@@ -520,7 +524,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   /**************************************************************/
 
   return (
-    <Box sx={{ backgroundColor: 'pink', width: '95vw' }}>
+    <Box>
       <PageBannerPMT
         backBtn={backButton()}
         fwdBtn={isView() ? <></> : actionButtons()}
@@ -534,7 +538,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         spacing={2}
         direction="row"
         justifyContent="space-between"
-        sx={{ backgroundColor: 'yellow', width: '90%', height: AREA_HEIGHT }}
+        sx={{ width: '90%', height: AREA_HEIGHT }}
       >
         <Grid2 size={{ sm: 9 }}>{displayArea()}</Grid2>
         <Grid2 size={{ sm: 3 }}>{isTechnical() ? reviewAreaTec() : reviewAreaSci()}</Grid2>
