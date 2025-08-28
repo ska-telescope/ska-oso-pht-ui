@@ -2,7 +2,7 @@ import Observation from '@utils/types/observation';
 import Target from '@utils/types/target';
 import { presentUnits } from '@utils/present/present';
 import Fetch from '../fetch/Fetch';
-import { StandardData, ZoomData, Telescope } from '../../../utils/types/typesSensCalc';
+import { StandardData, ZoomData, Telescope } from '@utils/types/typesSensCalc.tsx';
 import {
   OB_SUBARRAY_CUSTOM,
   SEPARATOR0,
@@ -13,14 +13,14 @@ import {
   RA_TYPE_GALACTIC,
   RA_TYPE_ICRS,
   TIME_SECS
-} from '../../../utils/constantsSensCalc';
+} from '@utils/constantsSensCalc.ts';
 import {
   isLow,
   getImageWeightingMapping,
   shiftSensitivity,
   isSuppliedTime,
   getSensitivitiesUnitsMapping
-} from '../../../utils/helpersSensCalc';
+} from '@utils/helpersSensCalc.ts';
 
 import {
   pointingCentre,
@@ -36,9 +36,9 @@ import {
   FREQUENCY_UNITS,
   OBSERVATION,
   SUPPLIED_TYPE_SENSITIVITY
-} from '../../../utils/constants';
+} from '@utils/constants.ts';
 import sensCalHelpers from '../sensitivityCalculator/sensCalHelpers';
-import { ResultsSection, SensCalcResults } from '../../../utils/types/sensCalcResults';
+import { ResultsSection, SensCalcResults } from '@utils/types/sensCalcResults.tsx';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 
 const mapping = (data: any, target: Target, observation: Observation): SensCalcResults =>
