@@ -242,7 +242,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const showLabel = (id: string, label: string) => {
     return (
       <Typography id={id} variant={'h6'}>
-        {t(label)}
+        {label?.length ? t(label) : ''}
       </Typography>
     );
   };
@@ -252,20 +252,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       <Typography pl={2} pr={2} id={id} variant={'h6'}>
         {label?.length ? presentLatex(label) : ''}
       </Typography>
-    );
-  };
-
-  /**************************************************************/
-
-  const titleArea = () => {
-    return (
-      <Stack>
-        {showLabel('title-label', 'title.short')}
-        {showLatex('title', locationProperties?.state?.proposal?.title)}
-        <Divider />
-        {showLabel('abstract-label', 'abstract.label')}
-        {showLatex('abstract', locationProperties?.state?.proposal?.abstract)}
-      </Stack>
     );
   };
 
@@ -312,7 +298,11 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const displayArea = () => {
     return (
       <Stack p={1}>
-        {titleArea()}
+        {showLabel('title-label', 'title.short')}
+        {showLatex('title', locationProperties?.state?.proposal?.title)}
+        <Divider />
+        {showLabel('abstract-label', 'abstract.label')}
+        {showLatex('abstract', locationProperties?.state?.proposal?.abstract)}
         <Divider />
         {pdfArea()}
       </Stack>
@@ -325,11 +315,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     return (
       <Box p={2} pl={4} sx={{ height: '65vh', overflow: 'auto' }}>
         {!isView() && <RankEntryField selectedRank={rank} setSelectedRank={setRank} />}
-        {isView() && (
-          <Typography id="title-label" variant={'h6'}>
-            {locationProperties?.state?.reviews[0].rank}
-          </Typography>
-        )}
+        {isView() && showLabel('rank', locationProperties?.state?.reviews[0].rank)}
       </Box>
     );
   };
@@ -355,9 +341,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
             backgroundColor: theme.palette.primary.main
           }}
         >
-          <Typography id="title-label" variant={'h6'}>
-            {locationProperties?.state?.reviews[0].comments}
-          </Typography>
+          {showLatex('comments', locationProperties?.state?.reviews[0]?.comments)}
         </Box>
       )}
     </>
@@ -368,9 +352,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       {!isView() && (
         <>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            <Typography variant="h6" color="text.secondary" sx={{ mt: 1 }}>
-              {t('technicalComments.label')}
-            </Typography>
+            {showLabel('technicalComments', 'technicalComments.label')}
           </Box>
           <Paper>
             <TextEntry
@@ -409,9 +391,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
             backgroundColor: theme.palette.primary.main
           }}
         >
-          <Typography id="title-label" variant={'h6'}>
-            {locationProperties?.state?.reviews[0].srcNet}
-          </Typography>
+          {showLatex('srcNetComments', locationProperties?.state?.reviews[0]?.srcNet)}
         </Box>
       )}
     </>
