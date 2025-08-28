@@ -36,7 +36,7 @@ Create chart name and version as used by the chart label.
 {{- if .Values.runtimeEnv.skaOsoServicesUrl -}}
 {{ .Values.runtimeEnv.skaOsoServicesUrl }}
 {{- else -}}
-/{{ .Release.Namespace }}/oso/api/v3
+/{{ .Release.Namespace }}/oso/api/v4
 {{- end }}
 {{- end }}
 
