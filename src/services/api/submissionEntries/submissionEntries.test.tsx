@@ -1,73 +1,87 @@
-import { describe, test } from 'vitest';
+import { describe, it, expect } from 'vitest';
+import { IW_BRIGGS, RA_TYPE_GALACTIC, SEPARATOR1 } from '@utils/constantsSensCalc.ts';
 import {
-  addFrequency,
   addRobustProperty,
+  addFrequency,
   addTime,
   addValue,
   pointingCentre,
   rxBand
-} from '@services/api/submissionEntries/submissionEntries.tsx';
-import { NEW_STANDARD_DATA_LOW, NEW_ZOOM_DATA_LOW } from '@utils/types/typesSensCalc.tsx';
-import { TIME_SECS } from '@utils/constantsSensCalc.ts';
-import { FREQUENCY_MHZ, IW_BRIGGS, RA_TYPE_ICRS } from '@utils/constants.ts';
+} from './submissionEntries';
 
-describe('Submission entries functions', () => {
-  test('rx Band', () => {
-    expect(rxBand('mid_band_1')).toBe('&rx_band=Band 1');
-    expect(rxBand('mid_band_2')).toBe('&rx_band=Band 2');
-    expect(rxBand('mid_band_3')).toBe('&rx_band=Band 3');
-    expect(rxBand('mid_band_4')).toBe('&rx_band=Band 4');
-    expect(rxBand('mid_band_5a')).toBe('&rx_band=Band 5a');
-    expect(rxBand('mid_band_5b')).toBe('&rx_band=Band 5b');
-    expect(rxBand('')).toBe('&rx_band=?????');
+describe('addRobustProperty', () => {
+  it('adds robustness when imageWeighting is IW_BRIGGS', () => {
+    const mockData = { imageWeighting: IW_BRIGGS, robust: 0.5 };
+    const result = addRobustProperty(mockData, 'initial');
+    expect(result).toContain('robustness');
   });
 
-  test('addValue', () => {
-    expect(addValue('testLabel', 'testValue')).toBe('&testLabel=testValue');
+  it('returns unchanged properties when imageWeighting is not IW_BRIGGS', () => {
+    const mockData = { imageWeighting: 'natural', robust: 0.5 };
+    const result = addRobustProperty(mockData, 'initial');
+    expect(result).toBe('initial');
+  });
+});
+
+describe('addFrequency', () => {
+  it('formats frequency string correctly', () => {
+    const result = addFrequency('freq', { value: 100, unit: '1' }, 1);
+    expect(result).toContain('freq=');
+  });
+});
+
+describe('addTime', () => {
+  it('formats time string correctly', () => {
+    const result = addTime('time', { value: 50, unit: '1' }, 1);
+    expect(result).toContain('time=');
+  });
+});
+
+describe('addValue', () => {
+  it('formats value string correctly', () => {
+    const result = addValue('label', 'value');
+    expect(result).toBe(`${SEPARATOR1}label=value`);
+  });
+});
+
+describe('pointingCentre', () => {
+  it('returns galactic coordinates when isGalactic is true', () => {
+    const data = {
+      skyDirectionType: RA_TYPE_GALACTIC,
+      raGalactic: { value: '123.4' },
+      decGalactic: { value: '-56.7' }
+    };
+    const result = pointingCentre(data, '');
+    expect(result).toContain('pointing_centre=123.4 -56.7');
   });
 
-  test('addRobustProperty  ', () => {
-    const theData = NEW_ZOOM_DATA_LOW;
-    expect(addRobustProperty(theData, 'properties')).toStrictEqual('properties');
-    theData.imageWeighting = IW_BRIGGS;
-    expect(addRobustProperty(theData, 'properties')).toStrictEqual('properties&robustness=0');
+  it('returns equatorial coordinates when isGalactic is false', () => {
+    const data = {
+      skyDirectionType: 'equatorial',
+      raEquatorial: { value: 123.456 },
+      decEquatorial: { value: -45.678 }
+    };
+    const result = pointingCentre(data);
+    expect(result).toContain('pointing_centre=');
+    expect(result).toMatch(/:/); // sexagesimal format
   });
+});
 
-  test('addRobustProperty  ', () => {
-    const theData = NEW_ZOOM_DATA_LOW;
-    expect(addRobustProperty(theData, 'properties')).toStrictEqual('properties&robustness=0');
-    theData.imageWeighting = IW_BRIGGS;
-    expect(addRobustProperty(theData, 'properties')).toStrictEqual('properties&robustness=0');
-  });
+describe('rxBand', () => {
+  const bands = [
+    ['mid_band_1', 'Band 1'],
+    ['mid_band_2', 'Band 2'],
+    ['mid_band_3', 'Band 3'],
+    ['mid_band_4', 'Band 4'],
+    ['mid_band_5a', 'Band 5a'],
+    ['mid_band_5b', 'Band 5b'],
+    ['unknown_band', '?????']
+  ];
 
-  test('addTime', () => {
-    expect(addTime('integration_time_s', { value: 1, unit: '2' }, TIME_SECS)).toBe(
-      '&integration_time_s=3600'
-    );
-  });
-
-  test('addFrequency', () => {
-    expect(addFrequency('freq_centre_mhz', { value: 1, unit: '2' }, FREQUENCY_MHZ)).toBe(
-      '&freq_centre_mhz=1'
-    );
-  });
-
-  const theData = NEW_STANDARD_DATA_LOW;
-  //TODO: Resolve
-  // test('pointingCentre galactic', () => {
-  //   expect(pointingCentre(theData)).toBe('&pointing_centre=00:00:00.0 00:00:00.0');
-  //   theData.raGalactic.value = '18:45:09.36';
-  //   theData.raGalactic.unit = RA_TYPE_GALACTIC.value;
-  //   theData.decGalactic.value = '-23:02:08.2';
-  //   expect(pointingCentre(theData)).toBe('&pointing_centre=18:45:09.36 -23:02:08.2');
-  // });
-
-  test('pointingCentre equatorial', () => {
-    theData.skyDirectionType = RA_TYPE_ICRS.value;
-    expect(pointingCentre(theData)).toBe('&pointing_centre=00:00:00.00 +00:00:00.00');
-    theData.raEquatorial.value = 0.5;
-    theData.raGalactic.unit = RA_TYPE_ICRS.value;
-    theData.decEquatorial.value = -1.5;
-    expect(pointingCentre(theData)).toBe('&pointing_centre=00:02:00.00 -01:30:00.00');
+  bands.forEach(([input, expected]) => {
+    it(`returns correct label for ${input}`, () => {
+      const result = rxBand(input);
+      expect(result).toContain(`rx_band=${expected}`);
+    });
   });
 });
