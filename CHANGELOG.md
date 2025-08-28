@@ -5,7 +5,11 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
-------------
+----------
+
+5.0.0
+-----
+
 * [BREAKING] Changed  : oso-services v4.0.2
 
 4.0.0
