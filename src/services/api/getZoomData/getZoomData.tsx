@@ -1,7 +1,6 @@
 import Observation from '@utils/types/observation';
 import Target from '@utils/types/target';
 import { presentUnits } from '@utils/present/present';
-import Fetch from '../fetch/Fetch';
 import { StandardData, ZoomData, Telescope } from '@utils/types/typesSensCalc.tsx';
 import {
   OB_SUBARRAY_CUSTOM,
@@ -23,6 +22,14 @@ import {
 } from '@utils/helpersSensCalc.ts';
 
 import {
+  BANDWIDTH_TELESCOPE,
+  FREQUENCY_HZ,
+  FREQUENCY_UNITS,
+  OBSERVATION,
+  SUPPLIED_TYPE_SENSITIVITY
+} from '@utils/constants.ts';
+import { ResultsSection, SensCalcResults } from '@utils/types/sensCalcResults.tsx';
+import {
   pointingCentre,
   addValue,
   addTime,
@@ -30,15 +37,8 @@ import {
   addRobustProperty,
   rxBand
 } from '../submissionEntries/submissionEntries';
-import {
-  BANDWIDTH_TELESCOPE,
-  FREQUENCY_HZ,
-  FREQUENCY_UNITS,
-  OBSERVATION,
-  SUPPLIED_TYPE_SENSITIVITY
-} from '@utils/constants.ts';
 import sensCalHelpers from '../sensitivityCalculator/sensCalHelpers';
-import { ResultsSection, SensCalcResults } from '@utils/types/sensCalcResults.tsx';
+import Fetch from '../fetch/Fetch';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 
 const mapping = (data: any, target: Target, observation: Observation): SensCalcResults =>

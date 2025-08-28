@@ -1,6 +1,6 @@
-import { describe, it, expect, vi } from 'vitest';
-import Fetch from './path-to-fetch'; // adjust path accordingly
+import { it, expect, vi } from 'vitest';
 import { STATUS_ERROR } from '../../../utils/constants';
+import Fetch from './path-to-fetch'; // adjust path accordingly
 
 const mockTelescope = { code: 'TEST_TELESCOPE' };
 const mockBaseUrl = '/base';
@@ -35,9 +35,7 @@ it('should fetch data and map it successfully', async () => {
     mockObservation
   );
 
-  expect(mockAxiosClient.get).toHaveBeenCalledWith(
-    expect.stringContaining(mockTelescope.code)
-  );
+  expect(mockAxiosClient.get).toHaveBeenCalledWith(expect.stringContaining(mockTelescope.code));
   expect(mockMapping).toHaveBeenCalledWith(mockResponse.data, mockTarget, mockObservation);
   expect(result).toEqual({
     mapped: true,
