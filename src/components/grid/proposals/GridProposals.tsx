@@ -149,15 +149,18 @@ export default function GridProposals({
   }, []);
 
   React.useEffect(() => {
-    const fetchData = async () => {
-      const response = await GetProposalByStatusList(authClient, PROPOSAL_STATUS.SUBMITTED);
+    const fetchData = async (status: string) => {
+      const response = await GetProposalByStatusList(authClient, status);
+
       if (typeof response === 'string') {
         setAxiosError(response);
       } else {
-        setProposals(response);
+        setProposals(prevProposals => [...prevProposals, ...response]);
       }
     };
-    fetchData();
+    setProposals([]);
+    fetchData(PROPOSAL_STATUS.SUBMITTED);
+    fetchData(PROPOSAL_STATUS.UNDER_REVIEW);
   }, [fetchList]);
 
   React.useEffect(() => {

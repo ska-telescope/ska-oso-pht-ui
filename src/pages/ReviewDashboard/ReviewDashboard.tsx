@@ -20,7 +20,8 @@ import ResizablePanel from '@/components/layout/resizablePanel/ResizablePanel';
 
 const REFRESH_TIME = 5 * 60 * 1000;
 const TABLE_WIDTH = '95vw';
-
+const TABLE_CONTAINER_WIDTH = '97vw';
+;
 export default function ReviewDashboard() {
   const { t } = useTranslation('pht');
   const [filter, setFilter] = useState({ telescope: '', country: '' });
@@ -396,7 +397,7 @@ export default function ReviewDashboard() {
 
   const panel4 = () => {
     return (
-      <ResizablePanel title={t('reviewOverview.panel4.title')}>
+      <ResizablePanel title={t('reviewOverview.panel4.title')} width={TABLE_CONTAINER_WIDTH}>
         {/* TODO: refactor the grid / resizable panel - note: minWidth 560+560+16+16 from pie charts */}
         <TableContainer sx={{ minWidth: TABLE_WIDTH }}>
           <Table>
@@ -435,7 +436,7 @@ export default function ReviewDashboard() {
 
   const panel5 = () => {
     return (
-      <ResizablePanel title={t('reviewOverview.panel5.title')}>
+      <ResizablePanel title={t('reviewOverview.panel5.title')} width={TABLE_CONTAINER_WIDTH}>
         <TableContainer sx={{ minWidth: TABLE_WIDTH }}>
           <Table>
             <TableHead>
@@ -471,13 +472,13 @@ export default function ReviewDashboard() {
 
   const panel6 = () => {
     return (
-      <ResizablePanel title={t('reviewOverview.panel6.title')}>
+      <ResizablePanel title={t('reviewOverview.panel6.title')} width={TABLE_CONTAINER_WIDTH}>
         <TableContainer sx={{ minWidth: TABLE_WIDTH }}>
           <Table>
             <TableHead>
               <TableRow>
                 <TableCell>Science Category</TableCell>
-                <TableCell align="right">Number of Proposal</TableCell>
+                <TableCell align="right">Number of Proposals</TableCell>
                 <TableCell align="right">Reviewed (%)</TableCell>
                 <TableCell align="right">Pending Review (%)</TableCell>
               </TableRow>

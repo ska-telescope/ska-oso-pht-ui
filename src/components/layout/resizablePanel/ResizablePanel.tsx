@@ -3,15 +3,22 @@ import { Box, Typography } from '@mui/material';
 
 type ResizablePanelProps = {
   children: ReactNode;
+  height?: string;
   title: string;
+  width?: string;
 };
 
-const ResizablePanel: React.FC<ResizablePanelProps> = ({ children, title }) => (
+const ResizablePanel: React.FC<ResizablePanelProps> = ({
+  children,
+  height = '30vh',
+  title,
+  width = '30vw'
+}) => (
   <Box
     data-testid="resizable-panel"
     sx={{
-      width: '30vw',
-      height: '30vh',
+      width: width,
+      height: height,
       position: 'relative',
       overflow: 'auto',
       resize: 'both',

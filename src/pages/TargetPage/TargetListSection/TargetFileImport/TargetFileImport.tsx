@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid } from '@mui/material';
+import { Grid2 } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Papa from 'papaparse';
@@ -21,7 +21,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
   const { notifyError, notifySuccess } = useNotify();
 
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
-  const [uploadButtonStatus, setUploadButtonStatus] = React.useState<FileUploadStatus>(null);
+  const [uploadButtonStatus, setUploadButtonStatus] = React.useState(null);
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
@@ -63,11 +63,11 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
     return newTarget;
   };
 
-  const isSameHeader = (header1, header2) => {
+  const isSameHeader = (header1: any, header2: string[]) => {
     return JSON.stringify(header1) === JSON.stringify(header2);
   };
 
-  const validateUploadCsv = async theFile => {
+  const validateUploadCsv = async (theFile: any) => {
     const validEquatorialCsvHeader = ['name', 'ra', 'dec'];
     const validGalacticCsvHeader = ['name', 'longitude', 'latitude'];
 
@@ -75,13 +75,14 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
       Papa.parse(theFile, {
         header: true,
         skipEmptyLines: true,
-        complete: result => {
+        complete: (result: { meta: { fields: any }; data: any[] }) => {
           setUploadButtonStatus(FileUploadStatus.PENDING);
           try {
-            const highestId = getProposal().targets.reduce(
-              (acc, target) => (target.id > acc ? target.id : acc),
-              -1
-            );
+            const highestId: number =
+              getProposal()?.targets?.reduce(
+                (acc, target) => (target.id > acc ? target.id : acc),
+                -1
+              ) ?? 1;
 
             let errorInRows = false;
             let targets;
@@ -89,29 +90,37 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
             if (raType === RA_TYPE_ICRS.value) {
               if (!isSameHeader(result.meta.fields, validEquatorialCsvHeader))
                 throw t('uploadCsvBtn.uploadErrorEquatorialNotValidMsg');
-              targets = result.data.reduce((result, target, index) => {
-                if (target.name && target.ra && target.dec) {
-                  result.push(
-                    AddTheTargetEquatorial(
-                      index + highestId + 1,
-                      target.name,
-                      target.ra,
-                      target.dec
-                    )
-                  );
-                } else {
-                  errorInRows = true;
-                }
-                return result;
-              }, []);
+              targets = result.data.reduce(
+                (
+                  result: Target[],
+                  target: { name: string; ra: string; dec: string },
+                  index: number
+                ) => {
+                  if (target.name && target.ra && target.dec) {
+                    result.push(
+                      AddTheTargetEquatorial(
+                        index + highestId + 1,
+                        target.name,
+                        target.ra,
+                        target.dec
+                      )
+                    );
+                  } else {
+                    errorInRows = true;
+                  }
+                  return result;
+                },
+                []
+              );
             } else {
               if (!isSameHeader(result.meta.fields, validGalacticCsvHeader))
                 throw t('uploadCsvBtn.uploadErrorGalacticNotValidMsg');
-              targets = result.data.reduce((result, target, index) => {
+              targets = result.data.reduce((result: { //Default values from AddTarget.tsx
+                kind: number; id: string; name: string; b: number; l: number; redshift: null; vel: string; velUnit: string }[], target: { name: string; latitude: string; longitude: string }, index: number) => {
                 if (target.name && target.latitude && target.longitude) {
                   result.push(
                     AddTheTargetGalactic(
-                      index + highestId + 1,
+                      index + highestId.toString() + 1,
                       target.name,
                       target.latitude,
                       target.longitude
@@ -123,7 +132,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
                 return result;
               }, []);
             }
-            setProposal({ ...getProposal(), targets: [...getProposal().targets, ...targets] });
+            setProposal({ ...getProposal(), targets: [...getProposal()?.targets, ...targets] });
             if (errorInRows) throw t('uploadCsvBtn.uploadErrorPartialMsg');
             setUploadButtonStatus(FileUploadStatus.OK);
             notifySuccess(t('uploadCsvBtn.uploadSuccessMsg'), NOTIFICATION_DELAY_IN_SECONDS);
@@ -132,7 +141,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
             setUploadButtonStatus(FileUploadStatus.ERROR);
           }
         },
-        error: message => {
+        error: (message: string) => {
           setUploadButtonStatus(FileUploadStatus.ERROR);
           notifyError(
             t('uploadCsvBtn.uploadErrorUnknownParserMsg') + message,
@@ -144,7 +153,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
   };
 
   return (
-    <Grid
+    <Grid2
       p={1}
       spacing={1}
       container
@@ -152,7 +161,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
       alignItems="flex-start"
       justifyContent="space-around"
     >
-      <Grid item xs={7}>
+      <Grid2 size={{ xs: 7 }}>
         <FileUpload
           chooseToolTip={t('pdfUpload.science.tooltip.choose')}
           clearToolTip={t('clearBtn.tooltip')}
@@ -170,10 +179,10 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
           uploadToolTip={t('pdfUpload.science.tooltip.upload')}
           status={uploadButtonStatus}
         />
-      </Grid>
-      <Grid pb={12} item xs={4}>
+      </Grid2>
+      <Grid2 size={{ xs: 4 }} pb={12}>
         <HelpPanel />
-      </Grid>
-    </Grid>
+      </Grid2>
+    </Grid2>
   );
 }
