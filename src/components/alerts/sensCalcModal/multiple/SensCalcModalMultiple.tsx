@@ -3,13 +3,13 @@ import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-compone
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import { presentSensCalcError, presentUnits, presentValue } from '@utils/present/present';
-import CancelButton from '../../../button/Cancel/Cancel';
-import Observation from '../../../../utils/types/observation';
 import {
   CUSTOM_VALID_FIELDS,
   SUPPLIED_TYPE_SENSITIVITY,
   TYPE_CONTINUUM
-} from '../../../../utils/constants';
+} from '@utils/constants.ts';
+import CancelButton from '../../../button/Cancel/Cancel';
+import Observation from '../../../../utils/types/observation';
 
 export type Rec = { field: string; value: string; units: string };
 interface SensCalcModalMultipleProps {
