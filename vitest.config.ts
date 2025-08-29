@@ -18,11 +18,12 @@ export default defineConfig({
     },
     coverage: {
       enabled: true,
-      provider: 'istanbul',
+      provider: 'v8',
       reporter: ['cobertura', 'text', 'json', 'html'],
       reportsDirectory: 'build/coverage',
       include: ['src/{components,pages,utils,services}/**/*.tsx'],
       exclude: [
+        '**/node_modules/**',
         'src/components/app/App.tsx',
         'src/services/theme/theme.tsx',
         'src/services/api/getSubArrayData/getSubArrayData.tsx',
