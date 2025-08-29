@@ -363,6 +363,9 @@ export const TECHNICAL_FEASIBILITY = {
 export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
 
+export const TYPE_PSS = 2;
+export const PULSAR_MODE_FOLDED = 'folded_pulse';
+
 export const OSCILLATION_UNITS = [
   { label: 'Hz', toHz: 1 },
   { label: 'kHz', toHz: 1000 },
@@ -815,6 +818,9 @@ export const SUPPLIED_INTEGRATION_TIME_UNITS_S = 4;
 
 export const RA_TYPE_ICRS = { value: 0, label: 'icrs' };
 export const RA_TYPE_GALACTIC = { value: 1, label: 'galactic' };
+
+export const DEFAULT_GALACTIC = '00:00:00.0';
+export const DEFAULT_EQUATORIAL = 0;
 
 export const ROBUST = [
   { label: '-2', value: 1 },
