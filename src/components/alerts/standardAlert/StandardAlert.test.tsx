@@ -1,5 +1,5 @@
 import { describe, test } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import '@testing-library/jest-dom';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
