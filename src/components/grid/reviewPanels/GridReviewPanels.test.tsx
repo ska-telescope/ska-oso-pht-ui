@@ -1,10 +1,9 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 import GetPanelList from '@services/axios/get/getPanelList/getPanelList';
 import GridReviewPanels from './GridReviewPanels';
-import PutPanel from '@/services/axios/put/putPanel/putPanel';
 
 // Mocks
 vi.mock('react-i18next', () => ({
@@ -53,6 +52,7 @@ const renderWithTheme = (ui: React.ReactElement) => {
   return render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
 };
 
+/*
 const mockPanels = [
   {
     id: '1',
@@ -71,6 +71,7 @@ const mockPanels = [
     expiresOn: '2025-08-29'
   }
 ];
+*/
 
 describe('GridReviewPanels', () => {
   beforeEach(() => {

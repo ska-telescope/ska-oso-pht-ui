@@ -21,7 +21,6 @@ import ResizablePanel from '@/components/layout/resizablePanel/ResizablePanel';
 const REFRESH_TIME = 5 * 60 * 1000;
 const TABLE_WIDTH = '95vw';
 const TABLE_CONTAINER_WIDTH = '97vw';
-;
 export default function ReviewDashboard() {
   const { t } = useTranslation('pht');
   const [filter, setFilter] = useState({ telescope: '', country: '' });
