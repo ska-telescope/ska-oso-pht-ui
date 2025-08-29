@@ -167,34 +167,36 @@ export default function TargetListSection() {
         </Grid2>
         <Grid2 size={{ md: 12, lg: 6 }} order={{ md: 1, lg: 2 }}>
           {referenceCoordinatesField()}
-          <Box sx={{ width: '100%', border: '1px solid grey' }}>
-            <Tabs
-              textColor="secondary"
-              indicatorColor="secondary"
-              value={value}
-              variant="fullWidth"
-              onChange={handleChange}
-              aria-label="basic tabs example"
-            >
-              <Tab
-                label={t('addTarget.label')}
-                {...a11yProps(0)}
-                sx={{ border: '1px solid grey', width: '100%' }}
-              />
-              <Tab
-                label={t('importFromFile.label')}
-                {...a11yProps(1)}
-                sx={{ border: '1px solid grey', width: '100%' }}
-              />
-              <Tab
-                label={t('spatialImaging.label')}
-                {...a11yProps(2)}
-                sx={{ border: '1px solid grey', width: '100%' }}
-              />
-            </Tabs>
-            {value === 0 && <TargetEntry raType={RA_TYPE_ICRS.value} />}
-            {value === 1 && <TargetFileImport raType={RA_TYPE_ICRS.value} />}
-            {value === 2 && <SpatialImaging />}
+          <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+            <Box sx={{ width: '1400px', border: '1px solid grey' }}>
+              <Tabs
+                textColor="secondary"
+                indicatorColor="secondary"
+                value={value}
+                variant="fullWidth"
+                onChange={handleChange}
+                aria-label="basic tabs example"
+              >
+                <Tab
+                  label={t('addTarget.label')}
+                  {...a11yProps(0)}
+                  sx={{ border: '1px solid grey', width: '100%' }}
+                />
+                <Tab
+                  label={t('importFromFile.label')}
+                  {...a11yProps(1)}
+                  sx={{ border: '1px solid grey', width: '100%' }}
+                />
+                <Tab
+                  label={t('spatialImaging.label')}
+                  {...a11yProps(2)}
+                  sx={{ border: '1px solid grey', width: '100%' }}
+                />
+              </Tabs>
+              {value === 0 && <TargetEntry raType={RA_TYPE_ICRS.value} />}
+              {value === 1 && <TargetFileImport raType={RA_TYPE_ICRS.value} />}
+              {value === 2 && <SpatialImaging />}
+            </Box>
           </Box>
         </Grid2>
       </Grid2>

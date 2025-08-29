@@ -48,10 +48,11 @@
     "warning": "Please wait whilst the review is stored."
   },
   "addTarget": {
+    "error": "Failed to add target - check for duplicate",
     "label": "Add Target",
     "toolTip": "Will add the target to the list associated with this proposal.",
     "success": "Target is successfully added",
-    "error": "Failed to add target - check for duplicate"
+    "warning": "Saving the target"
   },
   "panelName": {
     "label": "Panel Name",

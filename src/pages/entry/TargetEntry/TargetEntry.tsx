@@ -1,24 +1,20 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid2 } from '@mui/material';
+import { Grid2 } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
-import { Proposal } from '../../../utils/types/proposal';
-import AddButton from '../../../components/button/Add/Add';
-import ResolveButton from '../../../components/button/Resolve/Resolve';
-import ReferenceFrameField from '../../../components/fields/referenceFrame/ReferenceFrame';
-import SkyDirection1 from '../../../components/fields/skyDirection/SkyDirection1';
-import SkyDirection2 from '../../../components/fields/skyDirection/SkyDirection2';
-import VelocityField from '../../../components/fields/velocity/Velocity';
-import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
-import Target from '../../../utils/types/target';
-import {
-  RA_TYPE_ICRS,
-  LAB_POSITION,
-  VELOCITY_TYPE,
-  WRAPPER_HEIGHT
-} from '../../../utils/constants';
+import { Proposal } from '@/utils/types/proposal';
+import AddButton from '@/components/button/Add/Add';
+import ResolveButton from '@/components/button/Resolve/Resolve';
+import ReferenceFrameField from '@/components/fields/referenceFrame/ReferenceFrame';
+import SkyDirection1 from '@/components/fields/skyDirection/SkyDirection1';
+import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
+import VelocityField from '@/components/fields/velocity/Velocity';
+import HelpPanel from '@/components/info/helpPanel/HelpPanel';
+import FieldWrapper from '@/components/wrappers/fieldWrapper/FieldWrapper';
+import Target from '@/utils/types/target';
+import { RA_TYPE_ICRS, LAB_POSITION, VELOCITY_TYPE } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 interface TargetEntryProps {
   raType: number;
@@ -128,6 +124,7 @@ export default function TargetEntry({
       targetIn(target);
     }
   }, []);
+
   function formValidation() {
     let valid = true;
     const targets = getProposal()?.targets;
@@ -231,13 +228,7 @@ export default function TargetEntry({
   };
 
   const nameField = () => (
-    <Box
-      p={0}
-      pt={2}
-      sx={{
-        height: WRAPPER_HEIGHT
-      }}
-    >
+    <FieldWrapper>
       <TextEntry
         required
         label={t('name.label')}
@@ -251,17 +242,11 @@ export default function TargetEntry({
         onFocus={() => helpComponent(t('name.help'))}
         errorText={nameFieldError}
       />
-    </Box>
+    </FieldWrapper>
   );
 
   const skyDirection1Field = () => (
-    <Box
-      p={0}
-      pt={2}
-      sx={{
-        height: WRAPPER_HEIGHT
-      }}
-    >
+    <FieldWrapper>
       <SkyDirection1
         labelWidth={LAB_WIDTH}
         setValue={setTheRA}
@@ -269,17 +254,11 @@ export default function TargetEntry({
         value={ra}
         valueFocus={() => helpComponent(t('skyDirection.help.1.value'))}
       />
-    </Box>
+    </FieldWrapper>
   );
 
   const skyDirection2Field = () => (
-    <Box
-      p={0}
-      pt={2}
-      sx={{
-        height: WRAPPER_HEIGHT
-      }}
-    >
+    <FieldWrapper>
       <SkyDirection2
         labelWidth={LAB_WIDTH}
         setValue={setTheDec}
@@ -287,17 +266,11 @@ export default function TargetEntry({
         value={dec}
         valueFocus={() => helpComponent(t('skyDirection.help.2.value'))}
       />
-    </Box>
+    </FieldWrapper>
   );
 
   const velocityField = () => (
-    <Box
-      p={0}
-      pt={1}
-      sx={{
-        height: WRAPPER_HEIGHT
-      }}
-    >
+    <FieldWrapper>
       <VelocityField
         labelWidth={LAB_WIDTH}
         setRedshift={setTheRedshift}
@@ -312,24 +285,18 @@ export default function TargetEntry({
         // velTypeFocus={() => helpComponent('')}   TODO : Need to find out why this is not working great
         velUnitFocus={() => helpComponent(t('velocity.help' + velType))}
       />
-    </Box>
+    </FieldWrapper>
   );
 
   const referenceFrameField = () => (
-    <Box
-      p={0}
-      pt={2}
-      sx={{
-        height: WRAPPER_HEIGHT
-      }}
-    >
+    <FieldWrapper>
       <ReferenceFrameField
         labelWidth={LAB_WIDTH}
         onFocus={() => helpComponent(t('referenceFrame.help'))}
         setValue={setTheReferenceFrame}
         value={referenceFrame}
       />
-    </Box>
+    </FieldWrapper>
   );
 
   return (

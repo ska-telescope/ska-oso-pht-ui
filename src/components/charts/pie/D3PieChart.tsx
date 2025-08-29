@@ -1,186 +1,143 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
+import { useTheme } from '@mui/material/styles';
 
 type PieData = { name: string; value: number };
-
 type Props = {
   data: PieData[];
-  width?: number;
   showTotal?: boolean;
   centerText?: string;
 };
 
-const D3PieChart: React.FC<Props> = ({ data, width = 200, showTotal = false, centerText = '' }) => {
+const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
+  const theme = useTheme();
 
   useEffect(() => {
-    // if (!svgRef.current || !tooltipRef.current) return;
+    if (!svgRef.current || data.length === 0) return;
 
-    // Dimensions & margins
-    const chartWidth = width;
-    const chartHeight = 300;
-    const margin = { top: 20, right: 80, bottom: 20, left: 80 };
-    const svgWidth = chartWidth + margin.left + margin.right;
-    const svgHeight = chartHeight + margin.top + margin.bottom;
-    const radius = Math.min(chartWidth, chartHeight) / 2.5 - 20;
-    const total = d3.sum(data, d => d.value);
+    const logicalSize = 300;
+    const radius = logicalSize / 2.2;
+    const total = d3.sum(data, d => (isFinite(Number(d.value)) ? Number(d.value) : 0));
     const centerLabel = centerText || total.toString();
 
-    // Accessible, color-blind friendly palette
-    const colors = d3
-      .scaleOrdinal<string>()
-      .domain(data.map(d => d.name))
-      .range(d3.schemeTableau10);
+    const chartColors = [
+      '#1b5e20',
+      '#0d47a1',
+      '#b71c1c',
+      '#4a148c',
+      '#e65100',
+      '#3e2723',
+      '#00695c',
+      '#827717',
+      '#880e4f',
+      '#263238'
+    ];
 
-    // Pie and arc generators
     const pie = d3
       .pie<PieData>()
-      .value(d => d.value)
+      .value(d => (isFinite(Number(d.value)) ? Number(d.value) : 0))
       .sort(null);
+
     const arc = d3
       .arc<d3.PieArcDatum<PieData>>()
       .innerRadius(showTotal ? radius / 2 : 0)
       .outerRadius(radius);
+
     const outerArc = d3
       .arc<d3.PieArcDatum<PieData>>()
-      .innerRadius(radius * 1.1)
-      .outerRadius(radius * 1.1);
+      .innerRadius(radius * 1.05)
+      .outerRadius(radius * 1.05);
 
-    // Setup SVG with pronounced emboss filter and overflow visible
-    const svg = d3
-      .select(svgRef.current)
-      .attr('width', svgWidth)
-      .attr('height', svgHeight)
-      .style('overflow', 'visible');
+    const svg = d3.select(svgRef.current);
+    svg.selectAll('*').remove();
 
-    // Define emboss filter
-    const defs = svg.append('defs');
-    const filter = defs.append('filter').attr('id', 'emboss');
-    filter
-      .append('feGaussianBlur')
-      .attr('in', 'SourceAlpha')
-      .attr('stdDeviation', 3)
-      .attr('result', 'blur');
-    filter
-      .append('feOffset')
-      .attr('in', 'blur')
-      .attr('dx', -2)
-      .attr('dy', -2)
-      .attr('result', 'offsetBlur');
-    filter
-      .append('feSpecularLighting')
-      .attr('in', 'blur')
-      .attr('surfaceScale', 4)
-      .attr('specularConstant', 1)
-      .attr('specularExponent', 30)
-      .attr('lighting-color', '#ffffff')
-      .append('fePointLight')
-      .attr('x', -5000)
-      .attr('y', -10000)
-      .attr('z', 20000);
-    filter
-      .append('feComposite')
-      .attr('in', 'specOut')
-      .attr('in2', 'SourceAlpha')
-      .attr('operator', 'in')
-      .attr('result', 'specOut');
-    filter
-      .append('feComposite')
-      .attr('in', 'SourceGraphic')
-      .attr('in2', 'specOut')
-      .attr('operator', 'arithmetic')
-      .attr('k1', 0)
-      .attr('k2', 1)
-      .attr('k3', 1)
-      .attr('k4', 0);
+    svg
+      .attr('viewBox', `0 0 ${logicalSize} ${logicalSize * 0.4}`)
+      .attr('preserveAspectRatio', 'xMidYMid meet')
+      .style('width', '100%')
+      .style('height', '100%')
+      .style('display', 'block');
 
-    svg.selectAll('*:not(defs)').remove();
-
-    // Main chart group
     const chartGroup = svg
       .append('g')
-      .attr(
-        'transform',
-        `translate(${margin.left + chartWidth / 2}, ${margin.top + chartHeight / 2})`
-      );
+      .attr('transform', `translate(${logicalSize / 2}, ${logicalSize / 5}) scale(0.3)`);
 
     const sliceData = pie(data);
 
-    // Draw slices with emboss effect
-    const slices = chartGroup
+    const paths = chartGroup
       .selectAll('path')
       .data(sliceData)
       .enter()
       .append('path')
-      .attr('d', arc)
-      .attr('fill', d => colors(d.data.name))
-      .attr('stroke', '#fff')
-      .attr('stroke-width', 2)
-      .attr('filter', 'url(#emboss)')
-      .each(function(d) {
-        (this as any)._current = d;
-      })
+      .attr('fill', (_, i) => chartColors[i % chartColors.length])
+      .attr('stroke', theme.palette.background.paper)
+      .attr('stroke-width', 1)
       .on('mouseover', (event, d) => {
-        const [x, y] = d3.pointer(event, svg.node());
-        d3.select(tooltipRef.current)
-          .style('left', `${x + 15}px`)
-          .style('top', `${y + 15}px`)
-          .style('opacity', 1)
-          .html(
-            `<strong>${d.data.name}</strong>: ${d.data.value} (${(
-              (d.data.value / total) *
-              100
-            ).toFixed(1)}%)`
-          );
+        const tooltip = tooltipRef.current;
+        const rect = svgRef.current?.getBoundingClientRect();
+        if (!tooltip || !rect) return;
+
+        tooltip.style.opacity = '1';
+        tooltip.style.left = `${event.clientX - rect.left + 10}px`;
+        tooltip.style.top = `${event.clientY - rect.top + 10}px`;
+        tooltip.innerHTML = `<strong>${d.data.name}</strong>: ${d.data.value} (${(
+          (d.data.value / total) *
+          100
+        ).toFixed(1)}%)`;
       })
       .on('mousemove', event => {
-        const [x, y] = d3.pointer(event, svg.node());
-        d3.select(tooltipRef.current)
-          .style('left', `${x + 15}px`)
-          .style('top', `${y + 15}px`);
+        const tooltip = tooltipRef.current;
+        const rect = svgRef.current?.getBoundingClientRect();
+        if (!tooltip || !rect) return;
+
+        tooltip.style.left = `${event.clientX - rect.left + 10}px`;
+        tooltip.style.top = `${event.clientY - rect.top + 10}px`;
       })
       .on('mouseout', () => {
-        d3.select(tooltipRef.current).style('opacity', 0);
+        const tooltip = tooltipRef.current;
+        if (!tooltip) return;
+        tooltip.style.opacity = '0';
       });
 
-    // Animate slices
-    slices
+    paths
       .transition()
-      .duration(800)
+      .duration(500)
       .attrTween('d', function(d) {
-        const interpolator = d3.interpolate((this as any)._current, d);
-        (this as any)._current = interpolator(0);
-        return t => arc(interpolator(t))!;
+        const i = d3.interpolate({ startAngle: 0, endAngle: 0 }, d);
+        return t => arc(i(t))!;
       });
 
-    // Center label with actual total
     if (showTotal) {
       chartGroup
         .append('text')
         .attr('text-anchor', 'middle')
         .attr('dy', '0.35em')
-        .attr('font-size', '20px')
-        .attr('font-weight', 'bold')
+
+        .attr('data-testid', 'pie-chart-center-text')
+
+        .style('fontSize', theme?.typography?.h6?.fontSize ?? 16)
+        .style('fill', theme.palette.text.primary)
+        .style('pointer-events', 'none')
         .text(centerLabel);
     }
 
-    // Annotations with larger label font
     chartGroup
       .selectAll('polyline')
       .data(sliceData)
       .enter()
       .append('polyline')
       .attr('points', d => {
-        const p = arc.centroid(d);
-        const op = outerArc.centroid(d);
-        const mid = (d.startAngle + d.endAngle) / 2;
-        op[0] = radius * 1.3 * (mid < Math.PI ? 1 : -1);
-        return [p, outerArc.centroid(d), op] as any;
+        const pos = outerArc.centroid(d);
+        const midAngle = (d.startAngle + d.endAngle) / 2;
+        pos[0] = radius * 1.15 * (midAngle < Math.PI ? 1 : -1);
+        return [arc.centroid(d), outerArc.centroid(d), pos];
       })
       .attr('fill', 'none')
-      .attr('stroke', '#666')
-      .attr('stroke-width', 1.5);
+      .attr('stroke', theme.palette.text.primary)
+      .attr('stroke-width', 1)
+      .style('pointer-events', 'none');
 
     chartGroup
       .selectAll('text.label')
@@ -188,26 +145,85 @@ const D3PieChart: React.FC<Props> = ({ data, width = 200, showTotal = false, cen
       .enter()
       .append('text')
       .attr('class', 'label')
+      .attr('data-testid', d => `pie-chart-label-${d.data.name}`)
+
       .attr('transform', d => {
         const pos = outerArc.centroid(d);
-        const mid = (d.startAngle + d.endAngle) / 2;
-        pos[0] = radius * 1.4 * (mid < Math.PI ? 1 : -1);
+        const midAngle = (d.startAngle + d.endAngle) / 2;
+        pos[0] = radius * 1.15 * (midAngle < Math.PI ? 1 : -1);
         return `translate(${pos})`;
       })
       .attr('text-anchor', d => ((d.startAngle + d.endAngle) / 2 < Math.PI ? 'start' : 'end'))
       .attr('dy', '0.35em')
-      .attr('font-size', '14px')
-      .text(d => `${d.data.name} (${((d.data.value / total) * 100).toFixed(1)}%)`);
-  }, [data, showTotal, centerText]);
+      .style('fontSize', theme?.typography?.caption?.fontSize ?? 16)
+      .style('fill', theme.palette.text.secondary)
+      .style('pointer-events', 'none')
+      .text(d => d.data.name)
+      .call(wrapText, 80);
+
+    function wrapText(text: d3.Selection<SVGTextElement, any, any, any>, width: number) {
+      text.each(function() {
+        const el = d3.select(this);
+        const words = el.text().split(/\s+/);
+        el.text(null);
+
+        let line: string[] = [];
+        let lineNumber = 0;
+        const lineHeight = 1.1;
+        const x = el.attr('x') ?? '0';
+        const y = el.attr('y') ?? '0';
+        const dy = parseFloat(el.attr('dy') ?? '0');
+
+        let tspan = el
+          .append('tspan')
+          .attr('x', x)
+          .attr('y', y)
+          .attr('dy', `${dy}em`);
+
+        for (const word of words) {
+          line.push(word);
+          tspan.text(line.join(' '));
+          if (tspan.node()!.getComputedTextLength() > width) {
+            line.pop();
+            tspan.text(line.join(' '));
+            line = [word];
+            tspan = el
+              .append('tspan')
+              .attr('x', x)
+              .attr('y', y)
+              .attr('dy', `${++lineNumber * lineHeight + dy}em`)
+              .text(word);
+          }
+        }
+      });
+    }
+  }, [data, showTotal, centerText, theme]);
 
   return (
-    <div className="relative">
-      <svg ref={svgRef} role="img"></svg>
+    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+      <svg
+        ref={svgRef}
+        role="presentation"
+        aria-label="Pie chart visualization"
+        data-testid="pie-chart-svg"
+      />
       <div
         ref={tooltipRef}
-        data-testid="toolTip"
-        className="absolute bg-white border border-gray-300 p-2 rounded shadow-lg pointer-events-none opacity-0 transition-opacity duration-200 text-base"
-      ></div>
+        data-testid="pie-chart-tooltip"
+        style={{
+          position: 'absolute',
+          backgroundColor: theme.palette.background.paper,
+          color: theme.palette.text.primary,
+          padding: theme.spacing(1.5),
+          borderRadius: theme.shape.borderRadius,
+          boxShadow: theme.shadows[3],
+          pointerEvents: 'none',
+          opacity: 0,
+          transition: 'opacity 0.2s ease',
+          fontSize: theme.typography.body2.fontSize,
+          zIndex: 10
+        }}
+      />
     </div>
   );
 };

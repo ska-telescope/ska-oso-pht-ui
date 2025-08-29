@@ -121,6 +121,10 @@ GridReviewPanelsProps) {
     </Typography>
   );
 
+  function filteredData(panels: Panel[]): Panel[] {
+    return [...panels].sort((a, b) => a.name.localeCompare(b.name));
+  }
+
   return (
     <>
       {!listOnly && <Grid2>{ProposalsSectionTitle()}</Grid2>}
@@ -134,7 +138,7 @@ GridReviewPanelsProps) {
             <DataGrid
               maxHeight={`calc(${height} - 50px)`}
               testId="dataGridId"
-              rows={data}
+              rows={filteredData(data)}
               columns={stdColumns}
               height={`calc(${height} - 50px)`}
               onRowClick={(e: any) => onRowClick(e.row)}
