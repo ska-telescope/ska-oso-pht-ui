@@ -1,14 +1,10 @@
 import React, { useEffect, useRef } from 'react';
 import * as d3 from 'd3';
-
 import { useTheme } from '@mui/material/styles';
 
 type PieData = { name: string; value: number };
-
 type Props = {
   data: PieData[];
-  height?: number;
-  width?: number;
   showTotal?: boolean;
   centerText?: string;
 };
@@ -16,247 +12,132 @@ type Props = {
 const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' }) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
-
   const theme = useTheme();
-  const themeMode = theme.palette.mode;
-  const baseFontSize = theme.typography.htmlFontSize;
-  const scale = theme.typography.fontSize / baseFontSize;
-  const largerRem = `${scale + 0.25}rem`;
-
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [dimensions, setDimensions] = React.useState({ width: 150, height: 200 });
 
   useEffect(() => {
-    const observer = new ResizeObserver(entries => {
-      for (let entry of entries) {
-        const { width, height } = entry.contentRect;
-        setDimensions({ width, height });
-      }
-    });
+    if (!svgRef.current || data.length === 0) return;
 
-    if (containerRef.current) observer.observe(containerRef.current);
-    return () => observer.disconnect();
-  }, []);
-
-  function wrapText(text: d3.Selection<SVGTextElement, any, any, any>, width: number) {
-    text.each(function() {
-      const el = d3.select(this);
-      const words = el.text().split(/\s+/);
-      el.text(null);
-
-      let line: string[] = [];
-      let lineNumber = 0;
-      const lineHeight = 1.1;
-      const x = el.attr('x') ?? '0';
-      const y = el.attr('y') ?? '0';
-      const dy = parseFloat(el.attr('dy') ?? '0');
-
-      let tspan = el
-        .append('tspan')
-        .attr('x', x)
-        .attr('y', y)
-        .attr('dy', `${dy}em`);
-
-      for (const word of words) {
-        line.push(word);
-        tspan.text(line.join(' '));
-        if (tspan.node()!.getComputedTextLength() > width) {
-          line.pop();
-          tspan.text(line.join(' '));
-          line = [word];
-          tspan = el
-            .append('tspan')
-            .attr('x', x)
-            .attr('y', y)
-            .attr('dy', `${++lineNumber * lineHeight + dy}em`)
-            .text(word);
-        }
-      }
-    });
-  }
-
-  useEffect(() => {
-    // if (!svgRef.current || !tooltipRef.current) return;
-
-    // Dimensions & margins
-    const chartWidth = dimensions.width;
-    const chartHeight = dimensions.height;
-
-    const margin = { top: 0, right: 0, bottom: 0, left: 0 };
-    const svgWidth = chartWidth + margin.left + margin.right;
-    const svgHeight = chartHeight + margin.top + margin.bottom;
-    const radius = Math.min(chartWidth, chartHeight);
-    const total = d3.sum(data, d => d.value);
+    const logicalSize = 300;
+    const radius = logicalSize / 2.2;
+    const total = d3.sum(data, d => (isFinite(Number(d.value)) ? Number(d.value) : 0));
     const centerLabel = centerText || total.toString();
 
-    // Accessible, color-blind friendly palette
-    const colors = d3
-      .scaleOrdinal<string>()
-      .domain(data.map(d => d.name))
-      .range(d3.schemeTableau10);
+    const chartColors = [
+      '#1b5e20',
+      '#0d47a1',
+      '#b71c1c',
+      '#4a148c',
+      '#e65100',
+      '#3e2723',
+      '#00695c',
+      '#827717',
+      '#880e4f',
+      '#263238'
+    ];
 
-    // Pie and arc generators
     const pie = d3
       .pie<PieData>()
-      .value(d => d.value)
+      .value(d => (isFinite(Number(d.value)) ? Number(d.value) : 0))
       .sort(null);
+
     const arc = d3
       .arc<d3.PieArcDatum<PieData>>()
       .innerRadius(showTotal ? radius / 2 : 0)
       .outerRadius(radius);
+
     const outerArc = d3
       .arc<d3.PieArcDatum<PieData>>()
-      .innerRadius(radius * 1.1)
-      .outerRadius(radius * 1.1);
+      .innerRadius(radius * 1.05)
+      .outerRadius(radius * 1.05);
 
-    // Setup SVG with pronounced emboss filter and overflow visible
-    const svg = d3
-      .select(svgRef.current)
-      .attr('viewBox', `0 0 ${svgWidth} ${svgHeight / 2}`)
+    const svg = d3.select(svgRef.current);
+    svg.selectAll('*').remove();
+
+    svg
+      .attr('viewBox', `0 0 ${logicalSize} ${logicalSize * 0.4}`)
       .attr('preserveAspectRatio', 'xMidYMid meet')
       .style('width', '100%')
       .style('height', '100%')
-      .style('overflow', 'visible');
+      .style('display', 'block');
 
-    // Define emboss filter
-    const defs = svg.append('defs');
-    const filter = defs.append('filter').attr('id', 'emboss');
-    filter
-      .append('feGaussianBlur')
-      .attr('in', 'SourceAlpha')
-      .attr('stdDeviation', 3)
-      .attr('result', 'blur');
-    filter
-      .append('feOffset')
-      .attr('in', 'blur')
-      .attr('dx', -2)
-      .attr('dy', -2)
-      .attr('result', 'offsetBlur');
-    filter
-      .append('feSpecularLighting')
-      .attr('in', 'blur')
-      .attr('surfaceScale', 4)
-      .attr('specularConstant', 1)
-      .attr('specularExponent', 30)
-      .attr('lighting-color', '#ffffff')
-      .append('fePointLight')
-      .attr('x', -5000)
-      .attr('y', -10000)
-      .attr('z', 20000);
-    filter
-      .append('feComposite')
-      .attr('in', 'specOut')
-      .attr('in2', 'SourceAlpha')
-      .attr('operator', 'in')
-      .attr('result', 'specOut');
-    filter
-      .append('feComposite')
-      .attr('in', 'SourceGraphic')
-      .attr('in2', 'specOut')
-      .attr('operator', 'arithmetic')
-      .attr('k1', 0)
-      .attr('k2', 1)
-      .attr('k3', 1)
-      .attr('k4', 0);
-
-    svg.selectAll('*:not(defs)').remove();
-
-    // Main chart group
     const chartGroup = svg
       .append('g')
-      .attr(
-        'transform',
-        `translate(${margin.left + chartWidth / 2}, ${margin.top + chartHeight / 2})`
-      );
+      .attr('transform', `translate(${logicalSize / 2}, ${logicalSize / 5}) scale(0.3)`);
 
     const sliceData = pie(data);
 
-    // Draw slices with emboss effect
-    const slices = chartGroup
+    const paths = chartGroup
       .selectAll('path')
       .data(sliceData)
       .enter()
       .append('path')
-      .attr('d', arc)
-      .attr('fill', d => colors(d.data.name))
-      .attr('stroke', theme.palette.divider)
-      .attr('stroke-width', 2)
-      .attr('filter', 'url(#emboss)')
-      .each(function(d) {
-        (this as any)._current = d;
-      })
+      .attr('fill', (_, i) => chartColors[i % chartColors.length])
+      .attr('stroke', theme.palette.background.paper)
+      .attr('stroke-width', 1)
       .on('mouseover', (event, d) => {
-        const tooltipEl = tooltipRef.current;
-        const containerEl = svgRef.current?.parentElement;
-        if (!tooltipEl || !containerEl) return;
+        const tooltip = tooltipRef.current;
+        const rect = svgRef.current?.getBoundingClientRect();
+        if (!tooltip || !rect) return;
 
-        const containerRect = containerEl.getBoundingClientRect();
-        const mouseX = event.clientX - containerRect.left;
-        const mouseY = event.clientY - containerRect.top;
-
-        tooltipEl.style.left = `${mouseX + 10}px`;
-        tooltipEl.style.top = `${mouseY + 10}px`;
-        tooltipEl.style.opacity = '1';
-        tooltipEl.innerHTML = `
-    <strong>${d.data.name}</strong>: ${d.data.value} (${((d.data.value / total) * 100).toFixed(1)}%)
-  `;
+        tooltip.style.opacity = '1';
+        tooltip.style.left = `${event.clientX - rect.left + 10}px`;
+        tooltip.style.top = `${event.clientY - rect.top + 10}px`;
+        tooltip.innerHTML = `<strong>${d.data.name}</strong>: ${d.data.value} (${(
+          (d.data.value / total) *
+          100
+        ).toFixed(1)}%)`;
       })
       .on('mousemove', event => {
-        const tooltipEl = tooltipRef.current;
-        const containerEl = svgRef.current?.parentElement;
-        if (!tooltipEl || !containerEl) return;
+        const tooltip = tooltipRef.current;
+        const rect = svgRef.current?.getBoundingClientRect();
+        if (!tooltip || !rect) return;
 
-        const containerRect = containerEl.getBoundingClientRect();
-        const mouseX = event.clientX - containerRect.left;
-        const mouseY = event.clientY - containerRect.top;
-
-        tooltipEl.style.left = `${mouseX + 10}px`;
-        tooltipEl.style.top = `${mouseY + 10}px`;
+        tooltip.style.left = `${event.clientX - rect.left + 10}px`;
+        tooltip.style.top = `${event.clientY - rect.top + 10}px`;
       })
       .on('mouseout', () => {
-        const tooltipEl = tooltipRef.current;
-        if (!tooltipEl) return;
-        tooltipEl.style.opacity = '0';
+        const tooltip = tooltipRef.current;
+        if (!tooltip) return;
+        tooltip.style.opacity = '0';
       });
 
-    // Animate slices
-    slices
+    paths
       .transition()
-      .duration(800)
+      .duration(500)
       .attrTween('d', function(d) {
-        const interpolator = d3.interpolate((this as any)._current, d);
-        (this as any)._current = interpolator(0);
-        return t => arc(interpolator(t))!;
+        const i = d3.interpolate({ startAngle: 0, endAngle: 0 }, d);
+        return t => arc(i(t))!;
       });
 
-    // Center label with actual total
     if (showTotal) {
       chartGroup
         .append('text')
         .attr('text-anchor', 'middle')
         .attr('dy', '0.35em')
-        .attr('font-size', largerRem)
-        .attr('stroke', theme.palette.text.primary)
-        .attr('text-wrap', radius * 1.2)
+
+        .attr('data-testid', 'pie-chart-center-text')
+
+        .style('fontSize', theme?.typography?.h6?.fontSize ?? 16)
+        .style('fill', theme.palette.text.primary)
+        .style('pointer-events', 'none')
         .text(centerLabel);
     }
 
-    // Annotations with larger label font
     chartGroup
       .selectAll('polyline')
       .data(sliceData)
       .enter()
       .append('polyline')
       .attr('points', d => {
-        const p = arc.centroid(d);
-        const op = outerArc.centroid(d);
-        const mid = (d.startAngle + d.endAngle) / 2;
-        op[0] = radius * 1.3 * (mid < Math.PI ? 1 : -1);
-        return [p, outerArc.centroid(d), op] as any;
+        const pos = outerArc.centroid(d);
+        const midAngle = (d.startAngle + d.endAngle) / 2;
+        pos[0] = radius * 1.15 * (midAngle < Math.PI ? 1 : -1);
+        return [arc.centroid(d), outerArc.centroid(d), pos];
       })
       .attr('fill', 'none')
       .attr('stroke', theme.palette.text.primary)
-      .attr('stroke-width', 1.5);
+      .attr('stroke-width', 1)
+      .style('pointer-events', 'none');
 
     chartGroup
       .selectAll('text.label')
@@ -264,52 +145,85 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
       .enter()
       .append('text')
       .attr('class', 'label')
+      .attr('data-testid', d => `pie-chart-label-${d.data.name}`)
+
       .attr('transform', d => {
         const pos = outerArc.centroid(d);
-        const mid = (d.startAngle + d.endAngle) / 2;
-        pos[0] = radius * 1.4 * (mid < Math.PI ? 1 : -1);
+        const midAngle = (d.startAngle + d.endAngle) / 2;
+        pos[0] = radius * 1.15 * (midAngle < Math.PI ? 1 : -1);
         return `translate(${pos})`;
       })
       .attr('text-anchor', d => ((d.startAngle + d.endAngle) / 2 < Math.PI ? 'start' : 'end'))
       .attr('dy', '0.35em')
-      .attr('font-size', theme.typography.fontSize)
-      .attr('stroke', theme.palette.text.primary)
-      .attr('font-weight', 'normal')
-      .attr('text-wrap', radius * 1.2)
-      .attr('lengthAdjust', 'spacingAndGlyphs')
-      .text(d => `${d.data.name} (${((d.data.value / total) * 100).toFixed(1)}%)`)
-      .call(wrapText, 100);
-  }, [data, showTotal, centerText, themeMode]);
+      .style('fontSize', theme?.typography?.caption?.fontSize ?? 16)
+      .style('fill', theme.palette.text.secondary)
+      .style('pointer-events', 'none')
+      .text(d => d.data.name)
+      .call(wrapText, 80);
+
+    function wrapText(text: d3.Selection<SVGTextElement, any, any, any>, width: number) {
+      text.each(function() {
+        const el = d3.select(this);
+        const words = el.text().split(/\s+/);
+        el.text(null);
+
+        let line: string[] = [];
+        let lineNumber = 0;
+        const lineHeight = 1.1;
+        const x = el.attr('x') ?? '0';
+        const y = el.attr('y') ?? '0';
+        const dy = parseFloat(el.attr('dy') ?? '0');
+
+        let tspan = el
+          .append('tspan')
+          .attr('x', x)
+          .attr('y', y)
+          .attr('dy', `${dy}em`);
+
+        for (const word of words) {
+          line.push(word);
+          tspan.text(line.join(' '));
+          if (tspan.node()!.getComputedTextLength() > width) {
+            line.pop();
+            tspan.text(line.join(' '));
+            line = [word];
+            tspan = el
+              .append('tspan')
+              .attr('x', x)
+              .attr('y', y)
+              .attr('dy', `${++lineNumber * lineHeight + dy}em`)
+              .text(word);
+          }
+        }
+      });
+    }
+  }, [data, showTotal, centerText, theme]);
 
   return (
-    <div
-      style={{
-        position: 'relative',
-        width: `100%`,
-        height: `100%`,
-        overflow: 'visible'
-      }}
-    >
-      <div ref={containerRef} style={{ width: '100%', height: '100%', position: 'relative' }}>
-        <svg ref={svgRef} role="img"></svg>
-        <div
-          ref={tooltipRef}
-          style={{
-            position: 'absolute',
-            backgroundColor: theme.palette.background.paper,
-            color: theme.palette.text.primary,
-            border: `1px solid ${theme.palette.divider}`,
-            padding: '8px',
-            borderRadius: '4px',
-            boxShadow: theme.shadows[3],
-            pointerEvents: 'none',
-            opacity: 0,
-            transition: 'opacity 0.2s ease',
-            fontSize: theme.typography.fontSize,
-            zIndex: 10
-          }}
-        ></div>
-      </div>
+    <div style={{ width: '100%', height: '100%', position: 'relative' }}>
+      <svg
+        ref={svgRef}
+        role="presentation"
+        aria-label="Pie chart visualization"
+        data-testid="pie-chart-svg"
+      />
+      <div
+        ref={tooltipRef}
+        data-testid="pie-chart-tooltip"
+        style={{
+          position: 'absolute',
+          backgroundColor: theme.palette.background.paper,
+          color: theme.palette.text.primary,
+          padding: theme.spacing(1.5),
+          borderRadius: theme.shape.borderRadius,
+          boxShadow: theme.shadows[3],
+          pointerEvents: 'none',
+          opacity: 0,
+          transition: 'opacity 0.2s ease',
+          fontSize: theme.typography.body2.fontSize,
+          zIndex: 10
+        }}
+      />
     </div>
   );
 };

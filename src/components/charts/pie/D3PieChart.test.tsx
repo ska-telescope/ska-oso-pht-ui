@@ -1,77 +1,96 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import D3PieChart from './D3PieChart';
 
-const mockData = [
+const mockTheme = createTheme({
+  palette: {
+    background: { paper: '#ffffff' },
+    text: { primary: '#000000', secondary: '#666666' },
+    divider: '#cccccc'
+  },
+  typography: {
+    h6: { fontSize: '20px' },
+    caption: { fontSize: '12px' },
+    body2: { fontSize: '14px' }
+  },
+  spacing: (factor: number) => `${factor * 8}px`,
+  shape: { borderRadius: 4 },
+  shadows: [
+    'none',
+    '0px 1px 3px rgba(0,0,0,0.2)',
+    '0px 3px 6px rgba(0,0,0,0.3)',
+    '0px 5px 10px rgba(0,0,0,0.4)'
+  ]
+});
+
+const renderWithTheme = (ui: React.ReactElement) =>
+  render(<ThemeProvider theme={mockTheme}>{ui}</ThemeProvider>);
+
+const sampleData = [
   { name: 'Apples', value: 30 },
   { name: 'Bananas', value: 70 }
 ];
 
 describe('D3PieChart', () => {
   beforeEach(() => {
-    vi.useFakeTimers(); // For D3 transitions
+    vi.useFakeTimers(); // for transitions
   });
 
-  it('renders the SVG with role="img"', () => {
-    render(<D3PieChart data={mockData} />);
-    const svg = screen.getByRole('img');
-    expect(svg).toBeInTheDocument();
-  });
-
-  it('renders the tooltip container', () => {
-    render(<D3PieChart data={mockData} />);
-    const tooltip = screen.getByTestId('toolTip');
-    expect(tooltip).toBeInTheDocument();
-  });
-
-  it('renders correct number of pie slices', () => {
-    render(<D3PieChart data={mockData} />);
-    const svg = screen.getByRole('img');
-    const slices = svg.querySelectorAll('path');
-    expect(slices.length).toBe(mockData.length);
-  });
-
-  it('renders labels with correct percentages', () => {
-    render(<D3PieChart data={mockData} />);
-    expect(screen.getByText(/Apples \(30.0%\)/)).toBeInTheDocument();
-    expect(screen.getByText(/Bananas \(70.0%\)/)).toBeInTheDocument();
+  it('renders the SVG container', () => {
+    renderWithTheme(<D3PieChart data={sampleData} />);
+    expect(screen.getByTestId('pie-chart-svg')).toBeInTheDocument();
   });
 
   it('renders center total when showTotal is true', () => {
-    render(<D3PieChart data={mockData} showTotal />);
-    expect(screen.getByText('100')).toBeInTheDocument(); // 30 + 70
+    renderWithTheme(<D3PieChart data={sampleData} showTotal />);
+    expect(screen.getByTestId('pie-chart-center-text')).toHaveTextContent('100');
   });
 
-  it('renders custom center text when provided', () => {
-    render(<D3PieChart data={mockData} showTotal centerText="Fruit Count" />);
-    expect(screen.getByText('Fruit Count')).toBeInTheDocument();
+  it('renders custom center text', () => {
+    renderWithTheme(<D3PieChart data={sampleData} showTotal centerText="Fruit Count" />);
+    expect(screen.getByTestId('pie-chart-center-text')).toHaveTextContent('Fruit Count');
   });
 
-  it('handles empty data without crashing', () => {
-    render(<D3PieChart data={[]} />);
-    const svg = screen.getByRole('img');
+  it('renders labels for each slice', () => {
+    renderWithTheme(<D3PieChart data={sampleData} />);
+    expect(screen.getByTestId('pie-chart-label-Apples')).toBeInTheDocument();
+    expect(screen.getByTestId('pie-chart-label-Bananas')).toBeInTheDocument();
+  });
+
+  it('does not render chart if data is empty', () => {
+    renderWithTheme(<D3PieChart data={[]} />);
+    const svg = screen.getByTestId('pie-chart-svg');
     expect(svg.querySelectorAll('path').length).toBe(0);
-    expect(svg.querySelectorAll('text.label').length).toBe(0);
   });
 
-  it('includes the emboss filter definition', () => {
-    render(<D3PieChart data={mockData} />);
-    // const svg = screen.getByRole('img');
-    // const filter = svg.querySelector('filter#emboss');
-    // expect(filter).toBeTruthy();
+  it('shows tooltip on mouseover and hides on mouseout', () => {
+    renderWithTheme(<D3PieChart data={sampleData} />);
+    const svg = screen.getByTestId('pie-chart-svg');
+    const path = svg.querySelector('path');
+    const tooltip = screen.getByTestId('pie-chart-tooltip');
+
+    expect(tooltip).toHaveStyle('opacity: 0');
+
+    fireEvent.mouseOver(path!);
+    expect(tooltip).toHaveStyle('opacity: 1');
+
+    fireEvent.mouseOut(path!);
+    expect(tooltip).toHaveStyle('opacity: 0');
   });
 
-  it('renders polylines for label annotations', () => {
-    render(<D3PieChart data={mockData} />);
-    const svg = screen.getByRole('img');
-    const polylines = svg.querySelectorAll('polyline');
-    expect(polylines.length).toBe(mockData.length);
-  });
+  it('positions tooltip on mousemove', () => {
+    renderWithTheme(<D3PieChart data={sampleData} />);
+    const svg = screen.getByTestId('pie-chart-svg');
+    const path = svg.querySelector('path');
 
-  it('renders label text elements for each slice', () => {
-    render(<D3PieChart data={mockData} />);
-    const svg = screen.getByRole('img');
-    const labels = svg.querySelectorAll('text.label');
-    expect(labels.length).toBe(mockData.length);
+    fireEvent.mouseMove(path!, {
+      clientX: 120,
+      clientY: 80
+    });
+
+    const tooltip = screen.getByTestId('pie-chart-tooltip');
+    expect(tooltip.style.left).toMatch(/px/);
+    expect(tooltip.style.top).toMatch(/px/);
   });
 });
