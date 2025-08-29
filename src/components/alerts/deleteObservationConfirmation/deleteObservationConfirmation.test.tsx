@@ -16,7 +16,7 @@ vi.mock('../alertDialog/AlertDialog', () => ({
   default: ({ open, onClose, children }: any) =>
     open ? (
       <div data-testid="mock-alert-dialog">
-        <button onClick={onClose}>Close</button>
+        <button onClick={onClose}>CANCEL</button>
         {children}
       </div>
     ) : null
@@ -85,7 +85,7 @@ describe('<DeleteObservationConfirmation />', () => {
       />
     );
 
-    const closeButton = screen.getByRole('button', { name: /close/i });
+    const closeButton = screen.getByRole('button', { name: /CANCEL/i });
     await userEvent.click(closeButton);
 
     expect(mockSetOpen).toHaveBeenCalledWith(false);
