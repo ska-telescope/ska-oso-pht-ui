@@ -1,9 +1,40 @@
 import { describe, test } from 'vitest';
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import userEvent from '@testing-library/user-event';
 import DeleteObservationConfirmation from './deleteObservationConfirmation';
 
+// Mock translation hook
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string) => key
+  })
+}));
+
+// Mock AlertDialog to expose the onClose handler
+vi.mock('../alertDialog/AlertDialog', () => ({
+  default: ({ open, onClose, children }: any) =>
+    open ? (
+      <div data-testid="mock-alert-dialog">
+        <button onClick={onClose}>Close</button>
+        {children}
+      </div>
+    ) : null
+}));
+
 describe('<DeleteObservationConfirmation />', () => {
+  const mockSetOpen = vi.fn();
+  const mockAction = vi.fn();
+  const mockObservation = {
+    telescope: 'testTelescope',
+    subarray: 'testSubArray',
+    type: 'testType'
+  };
+
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
   test('renders correctly', () => {
     render(
       <DeleteObservationConfirmation
@@ -42,5 +73,21 @@ describe('<DeleteObservationConfirmation />', () => {
         setOpen={vi.fn()}
       />
     );
+  });
+
+  test('calls setOpen(false) when dialog is closed', async () => {
+    render(
+      <DeleteObservationConfirmation
+        action={mockAction}
+        observation={mockObservation}
+        open={true}
+        setOpen={mockSetOpen}
+      />
+    );
+
+    const closeButton = screen.getByRole('button', { name: /close/i });
+    await userEvent.click(closeButton);
+
+    expect(mockSetOpen).toHaveBeenCalledWith(false);
   });
 });
