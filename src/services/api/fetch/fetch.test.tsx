@@ -107,7 +107,7 @@ it('should handle error with message fallback', async () => {
 });
 
 it('should handle error with generic string fallback', async () => {
-  const error = 'Generic error string';
+  const error = 'api.error';
 
   const mockAxiosClient = {
     get: vi.fn().mockRejectedValue(error)
@@ -127,7 +127,7 @@ it('should handle error with generic string fallback', async () => {
   expect(result).toEqual({
     id: 1,
     statusGUI: STATUS_ERROR,
-    error: 'Generic error string',
-    results: ['Generic error string']
+    error: 'api.error',
+    results: ['api.error']
   });
 });
