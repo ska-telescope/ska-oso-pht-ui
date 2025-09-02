@@ -2,7 +2,7 @@ import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Grid2, Paper, Tooltip, Typography } from '@mui/material';
+import { Grid, Paper, Tooltip, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DataGrid,
@@ -420,33 +420,33 @@ export default function LandingPage() {
 
   return (
     <>
-      <Grid2 container p={5} direction="row" alignItems="center" justifyContent="space-around">
-        <Grid2 size={{ xs: 12 }}>{pageDescription()}</Grid2>
-        <Grid2 size={{ sm: 4, md: 3, lg: 2 }} p={2}>
+      <Grid container p={5} direction="row" alignItems="center" justifyContent="space-around">
+        <Grid size={{ xs: 12 }}>{pageDescription()}</Grid>
+        <Grid size={{ sm: 4, md: 3, lg: 2 }} p={2}>
           {addProposalButton()}
-        </Grid2>
-        <Grid2 size={{ sm: 4 }} p={2}>
+        </Grid>
+        <Grid size={{ sm: 4 }} p={2}>
           {searchDropdown()}
-        </Grid2>
-        <Grid2 size={{ sm: 4, md: 6, lg: 6 }} p={2} mt={-1}>
+        </Grid>
+        <Grid size={{ sm: 4, md: 6, lg: 6 }} p={2} mt={-1}>
           {searchEntryField('searchId')}
-        </Grid2>
-        <Grid2 size={{ xs: 12 }} pt={1}>
+        </Grid>
+        <Grid size={{ xs: 12 }} pt={1}>
           {!axiosViewError && (!filteredData || filteredData.length === 0) && (
             <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
           )}
           {!axiosViewError && filteredData.length > 0 && (
             <div>
               <DataGrid
-                testId="dataGrid2Id"
+                testId="dataGridId"
                 rows={filteredData}
                 columns={stdColumns}
                 height={DATA_GRID_HEIGHT}
               />
             </div>
           )}
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {openDeleteDialog && deleteClicked()}
       {openCloneDialog && cloneClicked()}
@@ -461,8 +461,8 @@ export default function LandingPage() {
         }}
         elevation={0}
       >
-        <Grid2 container direction="column" alignItems="center" justifyContent="space-evenly">
-          <Grid2>
+        <Grid container direction="column" alignItems="center" justifyContent="space-evenly">
+          <Grid>
             {axiosViewError && (
               <Alert
                 color={AlertColorTypes.Error}
@@ -473,8 +473,8 @@ export default function LandingPage() {
             {axiosError && (
               <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
             )}
-          </Grid2>
-        </Grid2>
+          </Grid>
+        </Grid>
       </Paper>
     </>
   );

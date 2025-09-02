@@ -31,6 +31,7 @@ export default function ImageWeightingField({
     <Box pt={1}>
       <DropDown
         disabled={disabled}
+        disabledUnderline={disabled}
         value={value}
         label={t('imageWeighting.label')}
         labelBold={LAB_IS_BOLD}

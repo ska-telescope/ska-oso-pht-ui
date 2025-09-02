@@ -2,7 +2,7 @@ import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Grid2, Paper } from '@mui/material';
+import { Grid, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DUMMY_PROPOSAL_ID, isCypress, LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
 import PostProposal from '@services/axios/post/postProposal/postProposal';
@@ -125,8 +125,8 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
 
   return (
     <Paper sx={{ position: 'fixed', bottom: 40, left: 0, right: 0 }} elevation={0}>
-      <Grid2 p={4} container direction="row" alignItems="flex-end" justifyContent="space-between">
-        <Grid2>
+      <Grid p={4} container direction="row" alignItems="flex-end" justifyContent="space-between">
+        <Grid>
           {usedPageNo > 0 && (
             <PreviousPageButton
               action={prevPageNav}
@@ -134,8 +134,8 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
               title={prevLabel()}
             />
           )}
-        </Grid2>
-        <Grid2>
+        </Grid>
+        <Grid>
           {(application.content5 as Notification)?.message?.length > 0 && (
             <TimedAlert
               color={(application.content5 as Notification)?.level}
@@ -144,8 +144,8 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
               text={(application.content5 as Notification)?.message}
             />
           )}
-        </Grid2>
-        <Grid2>
+        </Grid>
+        <Grid>
           {usedPageNo < LAST_PAGE - 1 && (
             <NextPageButton
               disabled={buttonDisabled}
@@ -156,8 +156,8 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
               action={nextPageClicked}
             />
           )}
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </Paper>
   );
 }

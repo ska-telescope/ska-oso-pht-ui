@@ -315,8 +315,8 @@ export const addM2TargetUsingResolve = () => {
 
 export const verifyOnLandingPageFilterIsVisible = () => {
   cy.get('[data-testid="proposalType"]').should('exist');
-  cy.get('[data-testid="proposalType"]').click();
-  cy.get('[data-value="draft"]').click({ force: true });
+  cy.get('[data-testid="proposalType"]').realClick();
+  cy.get('[data-value="draft"]').realClick();
 };
 
 export const verifyMockedProposalOnLandingPageIsVisible = () => {

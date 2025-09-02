@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid2, Tab, Tabs, SvgIcon, Typography } from '@mui/material';
+import { Box, Grid, Tab, Tabs, SvgIcon, Typography } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
@@ -178,7 +178,7 @@ export default function TeamPage() {
     const LABEL_WIDTH = 6;
     const rec = getProposal()?.investigators?.find(p => p.id === currentMember);
     return (
-      <Grid2
+      <Grid
         p={2}
         container
         direction="column"
@@ -200,7 +200,7 @@ export default function TeamPage() {
         <FieldWrapper label={t('pi.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{t(rec?.pi ? 'yes' : 'no')}</Typography>
         </FieldWrapper>
-      </Grid2>
+      </Grid>
     );
   };
 
@@ -211,10 +211,10 @@ export default function TeamPage() {
   const accessAlertContent = () => {
     return (
       <>
-        <Grid2>
+        <Grid>
           {displayMemberInfo()}
           <MemberAccess selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions} />
-        </Grid2>
+        </Grid>
       </>
     );
   };
@@ -230,7 +230,7 @@ export default function TeamPage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid2
+      <Grid
         pr={3}
         pl={3}
         container
@@ -238,7 +238,7 @@ export default function TeamPage() {
         alignItems="space-evenly"
         justifyContent="space-around"
       >
-        <Grid2
+        <Grid
           p={1}
           container
           direction="row"
@@ -246,7 +246,7 @@ export default function TeamPage() {
           justifyContent="space-around"
           spacing={1}
         >
-          <Grid2 size={{ md: 11, lg: 5 }} order={{ md: 2, lg: 1 }}>
+          <Grid size={{ md: 11, lg: 5 }} order={{ md: 2, lg: 1 }}>
             <GridMembers
               action={actionsAvailable()}
               actionClicked={actionClicked}
@@ -255,8 +255,8 @@ export default function TeamPage() {
               rows={getRows()}
               permissions={permissions}
             />
-          </Grid2>
-          <Grid2 size={{ md: 11, lg: 6 }} order={{ md: 1, lg: 2 }}>
+          </Grid>
+          <Grid size={{ md: 11, lg: 6 }} order={{ md: 1, lg: 2 }}>
             <Box sx={{ width: '100%', border: '1px solid grey', minHeight: '558px' }}>
               <Box>
                 <Tabs
@@ -289,9 +289,9 @@ export default function TeamPage() {
               {theValue === 1 && <TeamFileImport />}
               {theValue === 2 && <MemberSearch />}
             </Box>
-          </Grid2>
-        </Grid2>
-      </Grid2>
+          </Grid>
+        </Grid>
+      </Grid>
       <AlertDialog
         open={openDeleteDialog}
         onClose={() => setOpenDeleteDialog(false)}

@@ -42,12 +42,12 @@ export default function SensCalcModalSingle({
   const displayElement = (eLabel: string, eValue: any, eUnits: string, eId: string) => {
     return (
       <Grid key={eId} container direction="row" justifyContent="center" alignItems="center">
-        <Grid item xs={4}>
+        <Grid size={{ xs: 4 }}>
           <Typography id={eId} sx={{ align: 'right', fontWeight: 'normal' }} variant="body1">
             {eLabel}
           </Typography>
         </Grid>
-        <Grid item xs={3}>
+        <Grid size={{ xs: 3 }}>
           <Typography id={eId + 'Label'} sx={{ align: 'left', fontWeight: 'bold' }} variant="body1">
             {eId === 'targetName' || isCustom
               ? PresentCustomResultValue(eValue, eId)

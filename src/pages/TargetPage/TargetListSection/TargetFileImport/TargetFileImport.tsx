@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid2 } from '@mui/material';
+import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Papa from 'papaparse';
@@ -153,7 +153,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
   };
 
   return (
-    <Grid2
+    <Grid
       p={1}
       spacing={1}
       container
@@ -161,7 +161,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
       alignItems="flex-start"
       justifyContent="space-around"
     >
-      <Grid2 size={{ xs: 7 }}>
+      <Grid size={{ xs: 7 }}>
         <FileUpload
           chooseToolTip={t('pdfUpload.science.tooltip.choose')}
           clearToolTip={t('clearBtn.tooltip')}
@@ -179,10 +179,10 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
           uploadToolTip={t('pdfUpload.science.tooltip.upload')}
           status={uploadButtonStatus}
         />
-      </Grid2>
-      <Grid2 size={{ xs: 4 }} pb={12}>
+      </Grid>
+      <Grid size={{ xs: 4 }} pb={12}>
         <HelpPanel />
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 }

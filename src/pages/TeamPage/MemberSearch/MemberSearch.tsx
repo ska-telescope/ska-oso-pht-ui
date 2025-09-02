@@ -1,5 +1,5 @@
 /* eslint-disable react/no-unstable-nested-components */
-import { Box, Grid2 } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import React from 'react';
@@ -152,7 +152,7 @@ export default function MemberSearch() {
 
   const memberSearch = () => (
     <>
-      <Grid2
+      <Grid
         p={2}
         pb={5}
         container
@@ -160,8 +160,8 @@ export default function MemberSearch() {
         alignItems="space-evenly"
         justifyContent="space-between"
       >
-        <Grid2 size={{ xs: 7 }}>
-          <Grid2
+        <Grid size={{ xs: 7 }}>
+          <Grid
             pt={1}
             container
             direction="column"
@@ -170,22 +170,22 @@ export default function MemberSearch() {
           >
             {emailField()}
             {searchUserButton()}
-          </Grid2>
-        </Grid2>
-        <Grid2 size={{ xs: 4 }}>
+          </Grid>
+        </Grid>
+        <Grid size={{ xs: 4 }}>
           <HelpPanel />
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </>
   );
 
   return (
     <>
-      <Grid2>
+      <Grid>
         {!showMemberEntry && memberSearch()}
         {showMemberEntry && memberEntry()}
         {showMemberEntry && resetSearchButton()}
-      </Grid2>
+      </Grid>
     </>
   );
 }

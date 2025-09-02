@@ -1,5 +1,5 @@
 import { useTranslation } from 'react-i18next';
-import { Grid2, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import CloseIcon from '../../../components/icon/closeIcon/closeIcon';
 import StatusIconDisplay from '../../../components/icon/status/statusIcon';
@@ -31,14 +31,14 @@ export default function StandardAlert({ color, testId, text, closeFunc }: Standa
 
   return (
     <Alert color={color} testId={testId}>
-      <Grid2
+      <Grid
         container
         spacing={1}
         direction="row"
         justifyContent="space-between"
         alignItems="center"
       >
-        <Grid2>
+        <Grid>
           <StatusIconDisplay
             ariaDescription=" "
             ariaTitle=" "
@@ -47,18 +47,18 @@ export default function StandardAlert({ color, testId, text, closeFunc }: Standa
             testId={testId + 'Icon'}
             toolTip=" "
           />
-        </Grid2>
-        <Grid2>
+        </Grid>
+        <Grid>
           <Typography id="standardAlertId">{text}</Typography>
-        </Grid2>
-        <Grid2>
+        </Grid>
+        <Grid>
           {closeFunc ? (
             <CloseIcon onClick={() => closeFunc()} toolTip={t('closeBtn.label')} />
           ) : (
             <></>
           )}
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </Alert>
   );
 }

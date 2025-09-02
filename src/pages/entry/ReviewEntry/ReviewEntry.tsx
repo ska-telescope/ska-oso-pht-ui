@@ -1,9 +1,9 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, Divider, Grid2, Paper, Stack, Tab, Tabs } from '@mui/material';
+import { Box, Divider, Grid, Paper, Stack, Tab, Tabs } from '@mui/material';
 import { Spacer, SPACER_VERTICAL, TextEntry } from '@ska-telescope/ska-gui-components';
-import useTheme from '@mui/material/styles/useTheme';
+import { useTheme } from '@mui/material/styles';
 import {
   BANNER_PMT_SPACER,
   FEASIBLE_MAYBE,
@@ -202,11 +202,11 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   );
 
   const actionButtons = () => (
-    <Grid2 spacing={1} container justifyContent="space-between" direction="row">
+    <Grid spacing={1} container justifyContent="space-between" direction="row">
       <ConflictButton action={conflictButtonClicked} disabled />
       <SaveButton action={saveButtonClicked} primary toolTip={''} />
       <SubmitButton action={submitButtonClicked} disabled={submitDisabled()} primary toolTip={''} />
-    </Grid2>
+    </Grid>
   );
 
   /**************************************************************/
@@ -511,7 +511,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         title={t('reviewProposal.title')}
       />
       <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
-      <Grid2
+      <Grid
         pl={2}
         pr={6}
         container
@@ -520,9 +520,9 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         justifyContent="space-between"
         sx={{ width: '90%', height: AREA_HEIGHT }}
       >
-        <Grid2 size={{ sm: 9 }}>{displayArea()}</Grid2>
-        <Grid2 size={{ sm: 3 }}>{isTechnical() ? reviewAreaTec() : reviewAreaSci()}</Grid2>
-      </Grid2>
+        <Grid size={{ sm: 9 }}>{displayArea()}</Grid>
+        <Grid size={{ sm: 3 }}>{isTechnical() ? reviewAreaTec() : reviewAreaSci()}</Grid>
+      </Grid>
       <PageFooterPMT />
     </Box>
   );

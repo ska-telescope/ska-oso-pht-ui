@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, Grid2, Paper, Stack, Typography } from '@mui/material';
+import { Card, CardContent, Grid, Paper, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DropDown,
@@ -168,23 +168,23 @@ export default function AddDataProduct() {
 
   const dataProductsFieldOld = () => {
     return (
-      <Grid2
+      <Grid
         container
         minWidth={800}
         direction="row"
         alignItems="space-between"
         justifyContent="space-between"
       >
-        <Grid2 size={{ xs: LABEL_WIDTH }}>
+        <Grid size={{ xs: LABEL_WIDTH }}>
           <Typography>{t('observatoryDataProduct.label') + ' *'}</Typography>
-        </Grid2>
-        <Grid2 size={{ xs: 12 - LABEL_WIDTH }}>
+        </Grid>
+        <Grid size={{ xs: 12 - LABEL_WIDTH }}>
           {tickElement(1, dp1, setDP1)}
           {tickElement(2, dp2, setDP2)}
           {tickElement(3, dp3, setDP3)}
           {tickElement(4, dp4, setDP4)}
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     );
   };
 
@@ -247,6 +247,7 @@ export default function AddDataProduct() {
           setValue={setPixelSizeValue}
           required
           disabled
+          disabledUnderline
           suffix={pixelSizeUnits}
         />
       </Box>
@@ -321,19 +322,19 @@ export default function AddDataProduct() {
         }}
         elevation={0}
       >
-        <Grid2
+        <Grid
           p={2}
           container
           direction="row"
           alignItems="space-between"
           justifyContent="space-between"
         >
-          <Grid2 />
-          <Grid2 />
-          <Grid2>
+          <Grid />
+          <Grid />
+          <Grid>
             <AddButton disabled={!enabled()} primary testId="addButton" action={buttonClicked} />
-          </Grid2>
-        </Grid2>
+          </Grid>
+        </Grid>
       </Paper>
     );
   };
@@ -342,7 +343,7 @@ export default function AddDataProduct() {
     <Box pt={2}>
       <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
 
-      <Grid2
+      <Grid
         p={2}
         container
         direction="row"
@@ -350,7 +351,7 @@ export default function AddDataProduct() {
         justifyContent="space-around"
         spacing={1}
       >
-        <Grid2 size={{ md: 11, lg: 4 }}>
+        <Grid size={{ md: 11, lg: 4 }}>
           <Stack>
             {fieldWrapper(observationsField())}
             {dataProductsFieldOld()}
@@ -358,9 +359,9 @@ export default function AddDataProduct() {
             {fieldWrapper(pixelSizeField())}
             {fieldWrapper(imageWeightingField())}
           </Stack>
-        </Grid2>
-        {false && <Grid2 size={{ md: 11, lg: 3 }}>{dataProductsField()}</Grid2>}
-        <Grid2 size={{ md: 11, lg: 3 }}>
+        </Grid>
+        {false && <Grid size={{ md: 11, lg: 3 }}>{dataProductsField()}</Grid>}
+        <Grid size={{ md: 11, lg: 3 }}>
           <Stack spacing={1}>
             <HelpPanel />
             <InfoCard
@@ -370,8 +371,8 @@ export default function AddDataProduct() {
               testId="developmentPanelId"
             />
           </Stack>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
       {pageFooter()}
     </Box>
   );

@@ -1,8 +1,8 @@
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
-import { DialogActions, DialogContent, Grid2, Typography } from '@mui/material';
+import { DialogActions, DialogContent, Grid, Typography } from '@mui/material';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import useTheme from '@mui/material/styles/useTheme';
+import { useTheme } from '@mui/material/styles';
 import { presentLatex } from '@utils/present/present';
 import GetPresignedDownloadUrl from '@services/axios/get/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import CancelButton from '../../button/Cancel/Cancel';
@@ -115,10 +115,10 @@ export default function ProposalDisplay({
 
   const details = (inLabel: string, inValue: string | number) => {
     return (
-      <Grid2 container direction="row" justifyContent="space-around" alignItems="center">
-        <Grid2 size={{ xs: LABEL_WIDTH + 1 }}>{label(inLabel)}</Grid2>
-        <Grid2 size={{ xs: 11 - LABEL_WIDTH }}>{content(inValue)}</Grid2>
-      </Grid2>
+      <Grid container direction="row" justifyContent="space-around" alignItems="center">
+        <Grid size={{ xs: LABEL_WIDTH + 1 }}>{label(inLabel)}</Grid>
+        <Grid size={{ xs: 11 - LABEL_WIDTH }}>{content(inValue)}</Grid>
+      </Grid>
     );
   };
 
@@ -130,13 +130,13 @@ export default function ProposalDisplay({
       <>
         {!optional && inArr?.length === 0 && emptyCell()}
         {inArr?.length > 0 && (
-          <Grid2 container direction="column" justifyContent="space-between" alignItems="left">
+          <Grid container direction="column" justifyContent="space-between" alignItems="left">
             {inArr.map(el => (
-              <Grid2 key={el} size={{ xs: 12 }}>
+              <Grid key={el} size={{ xs: 12 }}>
                 {element(el)}
-              </Grid2>
+              </Grid>
             ))}
-          </Grid2>
+          </Grid>
         )}
       </>
     );
@@ -148,49 +148,49 @@ export default function ProposalDisplay({
     optional: boolean = false
   ) => {
     return (
-      <Grid2 container direction="row" justifyContent="space-around" alignItems="center">
-        <Grid2 size={{ xs: 7 }}>{label(inLabel)}</Grid2>
-        <Grid2 size={{ xs: 5 }}>
+      <Grid container direction="row" justifyContent="space-around" alignItems="center">
+        <Grid size={{ xs: 7 }}>{label(inLabel)}</Grid>
+        <Grid size={{ xs: 5 }}>
           {typeof inValue !== 'number' &&
             typeof inValue !== 'string' &&
             elementArray(inValue, optional)}
           {typeof inValue === 'number' ||
             (typeof inValue === 'string' && element(inValue, optional))}
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     );
   };
 
   const link = (inLabel: string, toolTip: string, onClick: Function, contents: any) => {
     return (
-      <Grid2 container direction="row" justifyContent="space-around" alignItems="center">
-        <Grid2 size={{ xs: 7 }}>{label(inLabel)}</Grid2>
-        <Grid2 size={{ xs: 5 }}>
+      <Grid container direction="row" justifyContent="space-around" alignItems="center">
+        <Grid size={{ xs: 7 }}>{label(inLabel)}</Grid>
+        <Grid size={{ xs: 5 }}>
           {contents && <DownloadIcon toolTip={toolTip} onClick={onClick} />}
           {!contents && emptyCell()}
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     );
   };
 
   const sectionTitle = () => (
-    <Grid2>
-      <Grid2
+    <Grid>
+      <Grid
         container
         sx={{ minHeight: '0.5rem', backgroundColor: theme.palette.primary.main }}
         direction="row"
         justifyContent="space-around"
         alignItems="center"
       >
-        <Grid2>
+        <Grid>
           <Typography variant="button"> </Typography>
-        </Grid2>
-      </Grid2>
-    </Grid2>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 
   const buttonsLeft = () => (
-    <Grid2
+    <Grid
       container
       spacing={1}
       direction="row"
@@ -198,14 +198,14 @@ export default function ProposalDisplay({
       justifyContent="flex-end"
       pr={2}
     >
-      <Grid2>
+      <Grid>
         <CancelButton action={handleCancel} title="closeBtn.label" testId="cancelButtonTestId" />
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 
   const buttonsRight = () => (
-    <Grid2
+    <Grid
       container
       spacing={1}
       direction="row"
@@ -214,120 +214,118 @@ export default function ProposalDisplay({
       pr={2}
     >
       {onConfirmLabel && (
-        <Grid2>
+        <Grid>
           <ConfirmButton
             action={handleConfirm}
             testId="displayConfirmationButton"
             title={onConfirmLabel}
           />
-        </Grid2>
+        </Grid>
       )}
-    </Grid2>
+    </Grid>
   );
 
   const pageFooter = () => (
-    <Grid2
+    <Grid
       container
       direction="row"
       alignItems="center"
       justifyContent="space-between"
       sx={{ width: '100%' }}
     >
-      <Grid2 size={{ xs: 3 }}>
-        <Grid2 container direction="row" alignItems="center" justifyContent="flex-start">
-          <Grid2>{buttonsLeft()}</Grid2>
-        </Grid2>
-      </Grid2>
-      <Grid2>
+      <Grid size={{ xs: 3 }}>
+        <Grid container direction="row" alignItems="center" justifyContent="flex-start">
+          <Grid>{buttonsLeft()}</Grid>
+        </Grid>
+      </Grid>
+      <Grid>
         <DownloadButton action={handleDownload} disabled testId="downloadButtonTestId" />
-      </Grid2>
-      <Grid2 size={{ xs: 3 }}>
-        <Grid2 container direction="row" alignItems="center" justifyContent="flex-end">
-          <Grid2>{buttonsRight()}</Grid2>
-        </Grid2>
-      </Grid2>
-    </Grid2>
+      </Grid>
+      <Grid size={{ xs: 3 }}>
+        <Grid container direction="row" alignItems="center" justifyContent="flex-end">
+          <Grid>{buttonsRight()}</Grid>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 
   const headerContent = () => (
-    <Grid2>
-      <Grid2 container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid2 size={{ xs: 1 }}>{skaoIcon({ useSymbol: true })}</Grid2>
-        <Grid2 size={{ xs: 7 }}>{title(t('page.9.title') + '  ', proposal?.title ?? '')}</Grid2>
-        <Grid2 size={{ xs: 4 }}>
-          <Grid2 container direction="column" justifyContent="space-between" alignItems="right">
-            <Grid2>{details(t('page.12.short'), proposal?.cycle ?? '')}</Grid2>
-            <Grid2>{details(t('proposalId.label'), proposal?.id ?? '')}</Grid2>
-          </Grid2>
-        </Grid2>
-      </Grid2>
-    </Grid2>
+    <Grid>
+      <Grid container direction="row" justifyContent="space-between" alignItems="center">
+        <Grid size={{ xs: 1 }}>{skaoIcon({ useSymbol: true })}</Grid>
+        <Grid size={{ xs: 7 }}>{title(t('page.9.title') + '  ', proposal?.title ?? '')}</Grid>
+        <Grid size={{ xs: 4 }}>
+          <Grid container direction="column" justifyContent="space-between" alignItems="right">
+            <Grid>{details(t('page.12.short'), proposal?.cycle ?? '')}</Grid>
+            <Grid>{details(t('proposalId.label'), proposal?.id ?? '')}</Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 
   const abstractContent = () => (
-    <Grid2>
-      <Grid2 container direction="column" justifyContent="center" alignItems="center">
-        <Grid2>{label(t('abstract.label'))}</Grid2>
-        <Grid2>{proposal?.abstract?.length ? content(proposal?.abstract) : emptyCell()}</Grid2>
-      </Grid2>
-    </Grid2>
+    <Grid>
+      <Grid container direction="column" justifyContent="center" alignItems="center">
+        <Grid>{label(t('abstract.label'))}</Grid>
+        <Grid>{proposal?.abstract?.length ? content(proposal?.abstract) : emptyCell()}</Grid>
+      </Grid>
+    </Grid>
   );
 
   const titleContent = () => (
-    <Grid2>
-      <Grid2 container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid2 size={{ xs: 6 }}>{entry(t('proposalType.label'), proposalType())}</Grid2>
-        <Grid2 size={{ xs: 6 }}>{entry(t('scienceCategory.label'), scienceCategory())}</Grid2>
-        <Grid2 pt={2} size={{ xs: 6 }}>
+    <Grid>
+      <Grid container direction="row" justifyContent="space-between" alignItems="center">
+        <Grid size={{ xs: 6 }}>{entry(t('proposalType.label'), proposalType())}</Grid>
+        <Grid size={{ xs: 6 }}>{entry(t('scienceCategory.label'), scienceCategory())}</Grid>
+        <Grid pt={2} size={{ xs: 6 }}>
           {entry(t('proposalAttribute.plural'), proposalAttributes(), true)}
-        </Grid2>
-      </Grid2>
-    </Grid2>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 
   const observationsContentGrid = () => (
     <>
-      <Grid2>
-        <Grid2>{label(t('page.10.label'))}</Grid2>
-      </Grid2>
-      <Grid2>
-        {proposal && <GridObservationSummary height={GRID_HEIGHT} proposal={proposal} />}
-      </Grid2>
+      <Grid>
+        <Grid>{label(t('page.10.label'))}</Grid>
+      </Grid>
+      <Grid>{proposal && <GridObservationSummary height={GRID_HEIGHT} proposal={proposal} />}</Grid>
     </>
   );
 
   const investigatorsContentGrid = () => (
     <>
-      <Grid2>
-        <Grid2>{label(t('members.label'))}</Grid2>
-      </Grid2>
-      <Grid2>
+      <Grid>
+        <Grid>{label(t('members.label'))}</Grid>
+      </Grid>
+      <Grid>
         <GridMembers height={GRID_HEIGHT} rows={proposal?.investigators} />
-      </Grid2>
+      </Grid>
     </>
   );
 
   const justificationContent = () => (
-    <Grid2>
-      <Grid2 container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid2 size={{ xs: 6 }}>
+    <Grid>
+      <Grid container direction="row" justifyContent="space-between" alignItems="center">
+        <Grid size={{ xs: 6 }}>
           {link(
             t('page.3.label'),
             t('pdfDownload.science.toolTip'),
             () => downloadPdf('science'),
             proposal?.sciencePDF
           )}
-        </Grid2>
-        <Grid2 size={{ xs: 6 }}>
+        </Grid>
+        <Grid size={{ xs: 6 }}>
           {link(
             t('page.6.label'),
             t('pdfDownload.technical.toolTip'),
             () => downloadPdf('technical'),
             proposal?.technicalPDF
           )}
-        </Grid2>
-      </Grid2>
-    </Grid2>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 
   return (
@@ -353,7 +351,7 @@ export default function ProposalDisplay({
       )}
       {proposal !== null && (
         <DialogContent>
-          <Grid2
+          <Grid
             p={2}
             container
             direction="column"
@@ -371,7 +369,7 @@ export default function ProposalDisplay({
             {observationsContentGrid()}
             {sectionTitle()}
             {investigatorsContentGrid()}
-          </Grid2>
+          </Grid>
         </DialogContent>
       )}
       {proposal !== null && <DialogActions sx={{ padding: 5 }}>{pageFooter()}</DialogActions>}

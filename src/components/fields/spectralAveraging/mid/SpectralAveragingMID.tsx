@@ -32,7 +32,7 @@ export default function SpectralAveragingMIDField({
 
   return (
     <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
-      <Grid pl={suffix ? 1 : 0} item xs={suffix ? 12 - widthButton : 12}>
+      <Grid pl={suffix ? 1 : 0} size={{ xs: suffix ? 12 - widthButton : 12 }}>
         <DropDown
           disabled={disabled}
           options={getOptions()}
@@ -47,9 +47,7 @@ export default function SpectralAveragingMIDField({
           required={required}
         />
       </Grid>
-      <Grid item xs={suffix ? widthButton : 0}>
-        {suffix}
-      </Grid>
+      <Grid size={{ xs: suffix ? widthButton : 0 }}>{suffix}</Grid>
     </Grid>
   );
 }

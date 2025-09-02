@@ -39,7 +39,7 @@ export default function SrcDataPage() {
   return (
     <Shell page={PAGE}>
       <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="center">
-        <Grid item xs={4}>
+        <Grid size={{ xs: 4 }}>
           <Grid
             p={1}
             container
@@ -47,15 +47,15 @@ export default function SrcDataPage() {
             alignItems="space-evenly"
             justifyContent="center"
           >
-            <Grid item xs={4}></Grid>
-            <Grid item xs={4}>
+            <Grid size={{ xs: 4 }}></Grid>
+            <Grid size={{ xs: 4 }}>
               <Alert
                 color={AlertColorTypes.Info}
                 text="This page is a placeholder for future enhancements"
                 testId="developmentPanelId"
               />
             </Grid>
-            <Grid item xs={4}></Grid>
+            <Grid size={{ xs: 4 }}></Grid>
           </Grid>
         </Grid>
       </Grid>

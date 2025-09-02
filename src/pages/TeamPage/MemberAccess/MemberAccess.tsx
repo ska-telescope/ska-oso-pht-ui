@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
-import { Box, Grid2 } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { TickBox } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -107,7 +107,7 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
 
   return (
     <>
-      <Grid2
+      <Grid
         p={2}
         pb={5}
         container
@@ -115,8 +115,8 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
         alignItems="space-evenly"
         justifyContent="space-between"
       >
-        <Grid2 size={{ sm: 12, md: 6, lg: 6 }}>
-          <Grid2
+        <Grid size={{ sm: 12, md: 6, lg: 6 }}>
+          <Grid
             size={{ sm: 12, md: 12, lg: 10 }}
             pt={1}
             container
@@ -127,14 +127,14 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
             {submitField()}
             {editField()}
             {viewField()}
-          </Grid2>
-        </Grid2>
+          </Grid>
+        </Grid>
         {
-          <Grid2 size={{ sm: 12, md: 6, lg: 6 }}>
+          <Grid size={{ sm: 12, md: 6, lg: 6 }}>
             <HelpPanel />
-          </Grid2>
+          </Grid>
         }
-      </Grid2>
+      </Grid>
     </>
   );
 }

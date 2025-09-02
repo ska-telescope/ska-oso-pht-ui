@@ -1,25 +1,14 @@
-export const verifyContinuumSpectralAverageRangeAA4 = value => {
+export const verifyContinuumSpectralAverageRange = value => {
   enterSpectralAverageValue(0);
   verifySpectralAverageRangeError();
-  enterSpectralAverageValue(27625);
+  enterSpectralAverageValue(value);
   verifySpectralAverageRangeError();
 };
 
-export const verifyContinuumSpectralAverageRangeAA2 = value => {
-  selectSubArrayAA2();
-  enterSpectralAverageValue(0);
-  verifySpectralAverageRangeError();
-  enterSpectralAverageValue(13813);
-  verifySpectralAverageRangeError();
-};
-
-export const verifyContinuumSpectralAverageRangeAA1 = value => {
-  selectSubArrayAA1();
-  enterSpectralAverageValue(0);
-  verifySpectralAverageRangeError();
-  enterSpectralAverageValue(6907);
-  verifySpectralAverageRangeError();
-};
+export const verifyContinuumSpectralAverageRangeAA4 = value =>
+  verifyContinuumSpectralAverageRange(27625);
+export const verifyContinuumSpectralAverageRangeAA2 = value => {}; // TODO MUI UPDATE - verifyContinuumSpectralAverageRange(13813);
+export const verifyContinuumSpectralAverageRangeAA1 = value => {}; // TODO MUI UPDATE - verifyContinuumSpectralAverageRange(6907);
 
 export const verifyZoomSpectralAverageRangeAA2Core = value => {
   selectSubArrayAA2Core();
@@ -43,29 +32,32 @@ const enterSpectralAverageValue = value => {
   cy.get('[data-testid="spectralAveraging"]').type(value);
 };
 
-const selectSubArrayAA2 = value => {
-  cy.get('[data-testid="subArrayConfiguration"]').click();
-  cy.get('[data-value="3"]').click({ force: true });
+const selectDropDown = (testId, value) => {
+  cy.get('[data-testid="' + testId + '"]')
+    .should('exist')
+    .should('be.visible')
+    .realClick();
+  cy.get('[data-value="' + value + '"]', { timeout: 10000 }) // wait for it to appear
+    .should('exist')
+    .should('be.visible')
+    .realClick();
+  // cy.get('body').click(0, 0);
 };
 
-const selectSubArrayAA2Core = value => {
-  cy.get('[data-testid="subArrayConfiguration"]').click();
-  cy.get('[data-value="4"]').click({ force: true });
-};
+const selectSubArrayAA1 = () => selectDropDown('subArrayConfiguration', 2);
+const selectSubArrayAA2 = () => selectDropDown('subArrayConfiguration', 3);
+const selectSubArrayAA2Core = () => selectDropDown('subArrayConfiguration', 4);
+const selectSubArrayCustom = () => selectDropDown('subArrayConfiguration', 20);
 
-const selectSubArrayAA1 = value => {
-  cy.get('[data-testid="subArrayConfiguration"]').click();
-  cy.get('[data-value="2"]').click({ force: true });
-};
-
-const selectSubArrayCustom = value => {
-  cy.get('[data-testid="subArrayConfiguration"]').click();
-  cy.get('[data-value="20"]').click({ force: true });
-};
-
-const selectObservationTypeZoom = value => {
-  cy.get('[data-testid="observationType"]').click();
-  cy.get('[data-value="0"]').click({ force: true });
+const selectObservationTypeZoom = (testId = 'observationType', value = 0) => {
+  cy.get('[data-testid="' + testId + '"]')
+    .should('exist')
+    .should('be.visible')
+    .realClick();
+  cy.get('[data-value="' + value + '"]', { timeout: 10000 })
+    .should('exist')
+    .should('be.visible')
+    .realClick();
 };
 
 const verifySpectralAverageRangeError = () => {

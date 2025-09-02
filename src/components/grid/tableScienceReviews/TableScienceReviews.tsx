@@ -11,7 +11,7 @@ import {
   Box,
   Typography,
   useTheme,
-  Grid2
+  Grid
 } from '@mui/material';
 import { Key } from 'react';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
@@ -115,8 +115,8 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
                       px: 2
                     }}
                   >
-                    <Grid2 container direction="row" alignItems="center" gap={1} wrap="nowrap">
-                      <Grid2>
+                    <Grid container direction="row" alignItems="center" gap={1} wrap="nowrap">
+                      <Grid>
                         <IconButton
                           onClick={() =>
                             detail.status === PANEL_DECISION_STATUS.TO_DO
@@ -144,8 +144,8 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
                             size={STATUS_SIZE}
                           />
                         </IconButton>
-                      </Grid2>
-                    </Grid2>
+                      </Grid>
+                    </Grid>
                   </TableCell>
                 </TableRow>
               )

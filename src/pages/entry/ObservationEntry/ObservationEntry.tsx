@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, Card, CardContent, Grid2, InputLabel, Paper, Typography } from '@mui/material';
+import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DropDown,
@@ -532,19 +532,18 @@ export default function ObservationEntry() {
       };
 
       return (
-        <Box>
-          <NumberEntry
-            disabled={subarrayConfig !== 20}
-            label={t('numOf15mAntennas.short')}
-            labelBold={LAB_IS_BOLD}
-            labelPosition={LAB_POSITION}
-            labelWidth={BOTTOM_LABEL_WIDTH}
-            testId="numOf15mAntennas"
-            value={numOf15mAntennas}
-            setValue={validate}
-            onFocus={() => helpComponent(t('numOf15mAntennas.help'))}
-          />
-        </Box>
+        <NumberEntry
+          disabled={subarrayConfig !== 20}
+          disabledUnderline={subarrayConfig !== 20}
+          label={t('numOf15mAntennas.short')}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={BOTTOM_LABEL_WIDTH}
+          testId="numOf15mAntennas"
+          value={numOf15mAntennas}
+          setValue={validate}
+          onFocus={() => helpComponent(t('numOf15mAntennas.help'))}
+        />
       );
     };
 
@@ -561,25 +560,24 @@ export default function ObservationEntry() {
       };
 
       return (
-        <Box>
-          <NumberEntry
-            disabled={subarrayConfig !== 20}
-            label={t('numOf13mAntennas.short')}
-            labelBold={LAB_IS_BOLD}
-            labelPosition={LAB_POSITION}
-            labelWidth={BOTTOM_LABEL_WIDTH}
-            testId="numOf13mAntennas"
-            value={numOf13mAntennas}
-            setValue={validate}
-            onFocus={() => helpComponent(t('numOf13mAntennas.help'))}
-          />
-        </Box>
+        <NumberEntry
+          disabled={subarrayConfig !== 20}
+          disabledUnderline={subarrayConfig !== 20}
+          label={t('numOf13mAntennas.short')}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={BOTTOM_LABEL_WIDTH}
+          testId="numOf13mAntennas"
+          value={numOf13mAntennas}
+          setValue={validate}
+          onFocus={() => helpComponent(t('numOf13mAntennas.help'))}
+        />
       );
     };
 
     return fieldWrapper(
-      <Grid2 container direction="row">
-        <Grid2 pt={2} size={{ xs: TOP_LABEL_WIDTH }}>
+      <Grid container direction="row">
+        <Grid pt={2} size={{ xs: TOP_LABEL_WIDTH }}>
           <InputLabel disabled={subarrayConfig !== 20} shrink={false} htmlFor="numOf15mAntennas">
             <Typography
               sx={{ fontWeight: subarrayConfig === OB_SUBARRAY_CUSTOM ? 'bold' : 'normal' }}
@@ -587,10 +585,10 @@ export default function ObservationEntry() {
               {t('numOfAntennas.label')}
             </Typography>
           </InputLabel>
-        </Grid2>
-        <Grid2 size={{ xs: 3 }}>{NumOf15mAntennasField()}</Grid2>
-        <Grid2 size={{ xs: 3 }}>{numOf13mAntennasField()}</Grid2>
-      </Grid2>
+        </Grid>
+        <Grid size={{ xs: 3 }}>{NumOf15mAntennasField()}</Grid>
+        <Grid size={{ xs: 3 }}>{numOf13mAntennasField()}</Grid>
+      </Grid>
     );
   };
 
@@ -706,14 +704,14 @@ export default function ObservationEntry() {
     };
 
     return suppliedWrapper(
-      <Grid2 pt={0} m={0} container>
-        <Grid2 pt={1} pr={1} size={{ md: BOTTOM_LABEL_WIDTH }}>
+      <Grid pt={0} m={0} container>
+        <Grid pt={1} pr={1} size={{ md: BOTTOM_LABEL_WIDTH }}>
           {suppliedTypeField()}
-        </Grid2>
-        <Grid2 pt={0} size={{ md: 12 - BOTTOM_LABEL_WIDTH }}>
+        </Grid>
+        <Grid pt={0} size={{ md: 12 - BOTTOM_LABEL_WIDTH }}>
           {suppliedValueField()}
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     );
   };
 
@@ -778,7 +776,7 @@ export default function ObservationEntry() {
   };
 
   const bandwidthField = () => (
-    <Grid2>
+    <Grid>
       {fieldWrapper(
         <BandwidthField
           onFocus={() => helpComponent(t(`bandwidth.help.${TYPE_ZOOM}`))}
@@ -795,7 +793,7 @@ export default function ObservationEntry() {
           minimumChannelWidthHz={minimumChannelWidthHz}
         />
       )}
-    </Grid2>
+    </Grid>
   );
 
   const spectralResolutionField = () =>
@@ -876,8 +874,8 @@ export default function ObservationEntry() {
     value: string | number
   ) => {
     return fieldWrapper(
-      <Grid2 pt={1} spacing={0} container justifyContent="space-between" direction="row">
-        <Grid2 pl={suffix ? 1 : 0} size={{ xs: suffix ? 12 - WRAPPER_WIDTH_BUTTON : 12 }}>
+      <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
+        <Grid pl={suffix ? 1 : 0} size={{ xs: suffix ? 12 - WRAPPER_WIDTH_BUTTON : 12 }}>
           <DropDown
             disabled={disabled}
             options={options}
@@ -891,9 +889,9 @@ export default function ObservationEntry() {
             onFocus={() => helpComponent(t(field + '.help'))}
             required={required}
           />
-        </Grid2>
-        <Grid2 size={{ xs: suffix ? WRAPPER_WIDTH_BUTTON : 0 }}>{suffix}</Grid2>
-      </Grid2>
+        </Grid>
+        <Grid size={{ xs: suffix ? WRAPPER_WIDTH_BUTTON : 0 }}>{suffix}</Grid>
+      </Grid>
     );
   };
 
@@ -1038,16 +1036,16 @@ export default function ObservationEntry() {
         }}
         elevation={0}
       >
-        <Grid2
+        <Grid
           p={2}
           container
           direction="row"
           alignItems="space-between"
           justifyContent="space-between"
         >
-          <Grid2 />
-          <Grid2 />
-          <Grid2>
+          <Grid />
+          <Grid />
+          <Grid>
             <AddButton
               action={buttonClicked}
               disabled={addButtonDisabled()}
@@ -1055,8 +1053,8 @@ export default function ObservationEntry() {
               testId={isEdit() ? 'updateObservationButtonEntry' : 'addObservationButtonEntry'}
               title={isEdit() ? 'updateBtn.label' : 'addBtn.label'}
             />
-          </Grid2>
-        </Grid2>
+          </Grid>
+        </Grid>
       </Paper>
     );
   };
@@ -1064,7 +1062,7 @@ export default function ObservationEntry() {
   return (
     <Box pt={2}>
       <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
-      <Grid2
+      <Grid
         pl={4}
         pr={4}
         container
@@ -1073,8 +1071,8 @@ export default function ObservationEntry() {
         justifyContent="space-between"
         spacing={1}
       >
-        <Grid2 size={{ md: 12, lg: 9 }}>
-          <Grid2
+        <Grid size={{ md: 12, lg: 9 }}>
+          <Grid
             p={0}
             pl={2}
             container
@@ -1083,20 +1081,18 @@ export default function ObservationEntry() {
             spacing={1}
             justifyContent="space-around"
           >
-            <Grid2 size={{ md: 12, lg: 5 }}>{idField()}</Grid2>
-            <Grid2 size={{ lg: 5 }}></Grid2>
-            <Grid2 size={{ md: 12, lg: 5 }}>{groupObservationsField()}</Grid2>
-            <Grid2 size={{ md: 12, lg: 5 }}>{isLow() ? emptyField() : weatherField()}</Grid2>
-            <Grid2 size={{ md: 12, lg: 5 }}>{observationsBandField()}</Grid2>
-            <Grid2 size={{ md: 12, lg: 5 }}>{elevationField()}</Grid2>
-            <Grid2 size={{ md: 12, lg: 5 }}>{subArrayField()}</Grid2>
-            <Grid2 size={{ md: 12, lg: 5 }}>
-              {isLow() ? numStationsField() : antennasFields()}
-            </Grid2>
-          </Grid2>
+            <Grid size={{ md: 12, lg: 5 }}>{idField()}</Grid>
+            <Grid size={{ lg: 5 }}></Grid>
+            <Grid size={{ md: 12, lg: 5 }}>{groupObservationsField()}</Grid>
+            <Grid size={{ md: 12, lg: 5 }}>{isLow() ? emptyField() : weatherField()}</Grid>
+            <Grid size={{ md: 12, lg: 5 }}>{observationsBandField()}</Grid>
+            <Grid size={{ md: 12, lg: 5 }}>{elevationField()}</Grid>
+            <Grid size={{ md: 12, lg: 5 }}>{subArrayField()}</Grid>
+            <Grid size={{ md: 12, lg: 5 }}>{isLow() ? numStationsField() : antennasFields()}</Grid>
+          </Grid>
           <Card variant="outlined">
             <CardContent>
-              <Grid2
+              <Grid
                 p={0}
                 container
                 direction="row"
@@ -1104,34 +1100,34 @@ export default function ObservationEntry() {
                 spacing={1}
                 justifyContent="space-around"
               >
-                <Grid2 size={{ md: 12, lg: 5 }}>{observationTypeField()}</Grid2>
-                <Grid2 size={{ md: 12, lg: 5 }}>{suppliedField()}</Grid2>
-                <Grid2 size={{ md: 12, lg: 5 }}> {centralFrequencyField()}</Grid2>
-                <Grid2 size={{ md: 12, lg: 5 }}>
+                <Grid size={{ md: 12, lg: 5 }}>{observationTypeField()}</Grid>
+                <Grid size={{ md: 12, lg: 5 }}>{suppliedField()}</Grid>
+                <Grid size={{ md: 12, lg: 5 }}> {centralFrequencyField()}</Grid>
+                <Grid size={{ md: 12, lg: 5 }}>
                   {isContinuum() ? continuumBandwidthField() : bandwidthField()}
-                </Grid2>
-                <Grid2 size={{ md: 12, lg: 5 }}>{spectralResolutionField()}</Grid2>
-                <Grid2 size={{ md: 12, lg: 5 }}>{spectralAveragingField()}</Grid2>
-                <Grid2 size={{ md: 12, lg: 5 }}>{effectiveResolutionField()}</Grid2>
-                <Grid2 size={{ md: 12, lg: 5 }}>
+                </Grid>
+                <Grid size={{ md: 12, lg: 5 }}>{spectralResolutionField()}</Grid>
+                <Grid size={{ md: 12, lg: 5 }}>{spectralAveragingField()}</Grid>
+                <Grid size={{ md: 12, lg: 5 }}>{effectiveResolutionField()}</Grid>
+                <Grid size={{ md: 12, lg: 5 }}>
                   {isContinuum() ? SubBandsField() : emptyField()}
-                </Grid2>
-                <Grid2 size={{ md: 12, lg: 5 }}>{imageWeightingField()}</Grid2>
-                <Grid2 size={{ md: 12, lg: 5 }}>
+                </Grid>
+                <Grid size={{ md: 12, lg: 5 }}>{imageWeightingField()}</Grid>
+                <Grid size={{ md: 12, lg: 5 }}>
                   {imageWeighting === IW_BRIGGS ? robustField() : emptyField()}
-                </Grid2>
-                <Grid2 size={{ md: 12, lg: 5 }}>{isLow() ? emptyField() : taperingField()}</Grid2>
-                <Grid2 size={{ lg: 5 }}>{isLow() ? <></> : emptyField()}</Grid2>
-              </Grid2>
+                </Grid>
+                <Grid size={{ md: 12, lg: 5 }}>{isLow() ? emptyField() : taperingField()}</Grid>
+                <Grid size={{ lg: 5 }}>{isLow() ? <></> : emptyField()}</Grid>
+              </Grid>
             </CardContent>
           </Card>
-        </Grid2>
-        <Grid2 size={{ md: 12, lg: 3 }}>
+        </Grid>
+        <Grid size={{ md: 12, lg: 3 }}>
           <Box pl={4}>
             <HelpPanel minHeight={HELP_PANEL_HEIGHT} maxHeight={HELP_PANEL_HEIGHT} />
           </Box>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {pageFooter()}
     </Box>

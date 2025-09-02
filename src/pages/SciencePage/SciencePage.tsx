@@ -1,7 +1,7 @@
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTranslation } from 'react-i18next';
-import { Grid2 } from '@mui/material';
+import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
@@ -192,8 +192,8 @@ export default function SciencePage() {
   );
 
   const uploadSuffix = () => (
-    <Grid2 pt={1} spacing={1} container direction="row" alignItems="center" justifyContent="center">
-      <Grid2>
+    <Grid pt={1} spacing={1} container direction="row" alignItems="center" justifyContent="center">
+      <Grid>
         {getProposal()?.sciencePDF?.isUploadedPdf && (
           <PDFPreviewButton
             title="pdfUpload.science.label.preview"
@@ -201,8 +201,8 @@ export default function SciencePage() {
             action={previewSignedUrl}
           />
         )}
-      </Grid2>
-      <Grid2>
+      </Grid>
+      <Grid>
         {getProposal()?.sciencePDF?.isUploadedPdf && (
           <DownloadButton
             title="pdfUpload.science.label.download"
@@ -210,8 +210,8 @@ export default function SciencePage() {
             action={downloadPDFToSignedUrl}
           />
         )}
-      </Grid2>
-      <Grid2>
+      </Grid>
+      <Grid>
         {getProposal()?.sciencePDF?.isUploadedPdf && (
           <DeleteButton
             title={'pdfUpload.science.label.delete'}
@@ -219,14 +219,14 @@ export default function SciencePage() {
             action={deletePdfUsingSignedUrl}
           />
         )}
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 
   return (
     <Shell page={PAGE}>
-      <Grid2 container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid2 size={{ xs: 6 }}>
+      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
+        <Grid size={{ xs: 6 }}>
           {isDisableEndpoints() ? (
             <>{t('pdfUpload.disabled')}</>
           ) : (
@@ -253,11 +253,11 @@ export default function SciencePage() {
               suffix={uploadSuffix()}
             />
           )}
-        </Grid2>
-        <Grid2 pt={4} size={{ xs: 4 }}>
+        </Grid>
+        <Grid pt={4} size={{ xs: 4 }}>
           <HelpPanel />
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
       {PDFView()}
     </Shell>
   );

@@ -6,7 +6,7 @@ import {
   AlertColorTypes,
   TickBox
 } from '@ska-telescope/ska-gui-components';
-import { Typography, Grid2, Box } from '@mui/material';
+import { Typography, Grid, Box } from '@mui/material';
 import React from 'react';
 import GetReviewerList from '@services/axios/get/getReviewerList/getReviewerList';
 import Alert from '../../alerts/standardAlert/StandardAlert';
@@ -296,13 +296,13 @@ export default function GridReviewers({
   return (
     <>
       {showTitle && (
-        <Grid2 container p={2} size={{ lg: 12 }}>
+        <Grid container p={2} size={{ lg: 12 }}>
           {ReviewersSectionTitle()}
-        </Grid2>
+        </Grid>
       )}
 
       {showSearch && (
-        <Grid2
+        <Grid
           pb={2}
           pt={2}
           size={{ sm: 12 }}
@@ -312,22 +312,22 @@ export default function GridReviewers({
           justifyContent="space-between"
           alignItems="center"
         >
-          <Grid2 size={{ sm: 12 }}>
-            <Grid2
+          <Grid size={{ sm: 12 }}>
+            <Grid
               container
               direction="row"
               spacing={2}
               justifyContent="space-around"
               alignItems="center"
             >
-              <Grid2 size={{ sm: 3 }}>{searchDropdownExpertise()}</Grid2>
-              <Grid2 size={{ sm: 3 }}>{searchDropdownAffiliation()}</Grid2>
-              <Grid2 size={{ sm: 5 }}>{searchEntryField('searchId')}</Grid2>
-            </Grid2>
-          </Grid2>
-        </Grid2>
+              <Grid size={{ sm: 3 }}>{searchDropdownExpertise()}</Grid>
+              <Grid size={{ sm: 3 }}>{searchDropdownAffiliation()}</Grid>
+              <Grid size={{ sm: 5 }}>{searchEntryField('searchId')}</Grid>
+            </Grid>
+          </Grid>
+        </Grid>
       )}
-      <Grid2 size={{ xs: 12 }} pt={1}>
+      <Grid size={{ xs: 12 }} pt={1}>
         {!axiosError && (
           <div>
             <DataGrid
@@ -342,7 +342,7 @@ export default function GridReviewers({
         {axiosError && (
           <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
         )}
-      </Grid2>
+      </Grid>
     </>
   );
 }

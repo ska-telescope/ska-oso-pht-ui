@@ -14,7 +14,7 @@ export default function SpatialImaging() {
       justifyContent="space-around"
       sx={{ width: '56vw' }}
     >
-      <Grid item>
+      <Grid>
         <Alert
           color={AlertColorTypes.Info}
           text="This functionality is not currently available"

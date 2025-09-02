@@ -28,7 +28,7 @@
     "merge-component-reports": "jrm build/tests/component-tests.xml \"build/tests/*.xml\"",
     "prettier": "prettier --check \"**/*\"",
     "prettier:fix": "prettier --write \"**/*\"",
-    "skao:update": "yarn add @ska-telescope/ska-gui-local-storage@latest  @ska-telescope/ska-login-page@latest @ska-telescope/ska-gui-components@2.3.27",
+    "skao:update": "yarn add @ska-telescope/ska-gui-local-storage@latest  @ska-telescope/ska-login-page@latest @ska-telescope/ska-gui-components@latest",
     "start": "npx react-inject-env set -d public/ && NODE_ENV=test vite serve --open --port 6101",
     "test:remove:coverage:report": "npx nyc report --report-dir=build/reports --reporter=html",
     "test:remove:coverage:summary": "npx nyc report --reporter=text-summary",
@@ -48,12 +48,12 @@
   "dependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
-    "@mui/icons-material": "^6.1.8",
-    "@mui/material": "^6.1.8",
-    "@mui/system": "^6.1.8",
+    "@mui/icons-material": "^7.3.0",
+    "@mui/material": "^7.3.0",
+    "@mui/system": "^7.3.0",
     "@mui/x-data-grid": "^7.22.2",
     "@react-pdf/renderer": "^3.4.2",
-    "@ska-telescope/ska-gui-components": "2.3.27",
+    "@ska-telescope/ska-gui-components": "^2.3.28",
     "@ska-telescope/ska-gui-local-storage": "^2.0.6",
     "@ska-telescope/ska-login-page": "^1.0.15",
     "axios": "^1.6.3",
@@ -156,5 +156,8 @@
   ],
   "engines": {
     "node": "22.16.0"
+  },
+  "resolutions": {
+    "react-is": "^18.3.1"
   }
 }

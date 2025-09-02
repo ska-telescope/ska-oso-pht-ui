@@ -2,7 +2,7 @@ import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { DialogContent, Grid, Stack, Typography } from '@mui/material';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import useTheme from '@mui/material/styles/useTheme';
+import { useTheme } from '@mui/material/styles';
 import Proposal from '../../../utils/types/proposal';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import CancelButton from '../../button/Cancel/Cancel';
@@ -37,7 +37,7 @@ export default function ValidationResults({
   };
 
   const sectionTitle = () => (
-    <Grid item>
+    <Grid>
       <Grid
         container
         sx={{ minHeight: '0.5rem', backgroundColor: theme.palette.primary.main }}
@@ -45,7 +45,7 @@ export default function ValidationResults({
         justifyContent="space-around"
         alignItems="center"
       >
-        <Grid item>
+        <Grid>
           <Typography variant="button"> </Typography>
         </Grid>
       </Grid>
@@ -53,24 +53,24 @@ export default function ValidationResults({
   );
 
   const headerContent = () => (
-    <Grid item>
+    <Grid>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid item>
+        <Grid>
           <Typography id="title" variant={TITLE_STYLE} style={{ fontWeight: getFont(BOLD_LABEL) }}>
             {t('validationResults.title')}
           </Typography>
         </Grid>
-        <Grid item>{proposal?.id}</Grid>
+        <Grid>{proposal?.id}</Grid>
       </Grid>
     </Grid>
   );
 
   const resultsContent = (results: string[]) => (
-    <Grid item>
+    <Grid>
       <Stack>
         {results?.map(el => (
           <Grid p={1} key={el} container direction="row" justifyContent="left" alignItems="left">
-            <Grid item>
+            <Grid>
               <StatusIconDisplay
                 ariaDescription=""
                 ariaTitle=""
@@ -81,7 +81,7 @@ export default function ValidationResults({
                 toolTip=""
               />
             </Grid>
-            <Grid pt={1} pl={1} item>
+            <Grid pt={1} pl={1}>
               <Typography
                 id="title"
                 variant={CONTENT_STYLE}
@@ -97,9 +97,9 @@ export default function ValidationResults({
   );
 
   const footerContent = () => (
-    <Grid item>
+    <Grid>
       <Grid container direction="row" justifyContent="right" alignItems="right">
-        <Grid item pt={1}>
+        <Grid pt={1}>
           <CancelButton action={handleCancel} title="closeBtn.label" testId="cancelButtonTestId" />
         </Grid>
       </Grid>

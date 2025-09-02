@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Grid2 } from '@mui/material';
+import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DataGrid,
@@ -478,29 +478,29 @@ export default function ReviewListPage() {
     <>
       <PageBannerPMT title={t('reviewProposalList.title')} fwdBtn={fwdButton()} />
       <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
-      <Grid2 container direction="row" alignItems="center" justifyContent="space-around">
-        <Grid2 size={{ sm: 4, md: 4, lg: 4 }}>{searchDropdown()}</Grid2>
-        <Grid2 mt={-1} size={{ sm: 4, md: 5, lg: 6 }}>
+      <Grid container direction="row" alignItems="center" justifyContent="space-around">
+        <Grid size={{ sm: 4, md: 4, lg: 4 }}>{searchDropdown()}</Grid>
+        <Grid mt={-1} size={{ sm: 4, md: 5, lg: 6 }}>
           {searchEntryField('searchId')}
-        </Grid2>
-      </Grid2>
-      <Grid2 container p={5} direction="row" alignItems="center" justifyContent="space-between">
-        <Grid2 size={{ sm: 12 }}>
+        </Grid>
+      </Grid>
+      <Grid container p={5} direction="row" alignItems="center" justifyContent="space-between">
+        <Grid size={{ sm: 12 }}>
           {(!filteredData || filteredData.length === 0) && (
             <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
           )}
           {filteredData.length > 0 && (
             <div>
               <DataGrid
-                testId="dataGrid2Id"
+                testId="dataGridId"
                 rows={filteredData}
                 columns={stdColumns}
                 height={DATA_GRID_HEIGHT}
               />
             </div>
           )}
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
       <PageFooterPMT />
     </>
   );

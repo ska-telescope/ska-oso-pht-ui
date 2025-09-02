@@ -1,7 +1,7 @@
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTranslation } from 'react-i18next';
-import { Grid2 } from '@mui/material';
+import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 
@@ -193,8 +193,8 @@ export default function TechnicalPage() {
   );
 
   const uploadSuffix = () => (
-    <Grid2 pt={1} spacing={1} container direction="row" alignItems="center" justifyContent="center">
-      <Grid2>
+    <Grid pt={1} spacing={1} container direction="row" alignItems="center" justifyContent="center">
+      <Grid>
         {getProposal().technicalPDF?.isUploadedPdf && (
           <PDFPreviewButton
             title="pdfUpload.technical.label.preview"
@@ -202,8 +202,8 @@ export default function TechnicalPage() {
             action={previewSignedUrl}
           />
         )}
-      </Grid2>
-      <Grid2>
+      </Grid>
+      <Grid>
         {getProposal().technicalPDF?.isUploadedPdf && (
           <DownloadButton
             title="pdfUpload.technical.label.download"
@@ -211,8 +211,8 @@ export default function TechnicalPage() {
             action={downloadPDFToSignedUrl}
           />
         )}
-      </Grid2>
-      <Grid2>
+      </Grid>
+      <Grid>
         {getProposal().technicalPDF?.isUploadedPdf && (
           <DeleteButton
             title={'pdfUpload.technical.label.delete'}
@@ -220,14 +220,14 @@ export default function TechnicalPage() {
             action={deletePdfUsingSignedUrl}
           />
         )}
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 
   return (
     <Shell page={PAGE}>
-      <Grid2 container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid2 size={{ xs: 6 }}>
+      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
+        <Grid size={{ xs: 6 }}>
           {isDisableEndpoints() ? (
             <>{t('pdfUpload.disabled')}</>
           ) : (
@@ -254,11 +254,11 @@ export default function TechnicalPage() {
               suffix={getProposal()?.technicalPDF?.documentId ? uploadSuffix() : <></>}
             />
           )}
-        </Grid2>
-        <Grid2 pt={4} size={{ xs: 4 }}>
+        </Grid>
+        <Grid pt={4} size={{ xs: 4 }}>
           <HelpPanel />
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
       {PDFView()}
     </Shell>
   );

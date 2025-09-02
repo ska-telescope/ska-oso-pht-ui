@@ -42,6 +42,7 @@ export default function NumStationsField({
     <Box>
       <NumberEntry
         disabled={disabled}
+        disabledUnderline={disabled}
         label={t(FIELD + '.label')}
         labelBold={LAB_IS_BOLD}
         labelPosition={LAB_POSITION}
