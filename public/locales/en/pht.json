@@ -958,7 +958,7 @@
     "tooltip": ""
   },
   "status": {
-    "0": "All status types",
+    "0": "Status types",
     "label": "Status",
     "sci": "Sci. Status",
     "tec": "Tec. Status"
