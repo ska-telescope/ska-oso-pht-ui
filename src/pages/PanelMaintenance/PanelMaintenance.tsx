@@ -1,8 +1,8 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid2, Tab, Tabs, Typography } from '@mui/material';
-import useTheme from '@mui/material/styles/useTheme';
+import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { BANNER_PMT_SPACER_MIN, PMT, REVIEWER_STATUS } from '../../utils/constants';
@@ -327,7 +327,7 @@ export default function PanelMaintenance() {
     <>
       <PageBannerPMT title={t('page.15.desc')} backBtn={backButton()} fwdBtn={fwdButton()} />
       <Spacer size={BANNER_PMT_SPACER_MIN} axis={SPACER_VERTICAL} />
-      <Grid2
+      <Grid
         container
         pr={2}
         spacing={3}
@@ -335,7 +335,7 @@ export default function PanelMaintenance() {
         justifyContent="space-between"
         alignItems="flex-start"
       >
-        <Grid2 p={2} size={{ sm: 12, md: 4, lg: 2.75 }}>
+        <Grid p={2} size={{ sm: 12, md: 4, lg: 2.75 }}>
           <Box
             sx={{
               width: '100%',
@@ -344,7 +344,7 @@ export default function PanelMaintenance() {
             }}
             minHeight="50vh"
           >
-            <Grid2
+            <Grid
               sx={{ borderBottom: '1px solid lightGrey' }}
               pl={1}
               pr={1}
@@ -353,8 +353,8 @@ export default function PanelMaintenance() {
               justifyContent="space-between"
               alignItems="center"
             >
-              <Grid2 pt={2}>{panelsSectionTitle()}</Grid2>
-            </Grid2>
+              <Grid pt={2}>{panelsSectionTitle()}</Grid>
+            </Grid>
             <GridReviewPanels
               height={PANELS_HEIGHT}
               listOnly
@@ -362,9 +362,9 @@ export default function PanelMaintenance() {
               // updatedData={currentPanel}
             />
           </Box>
-        </Grid2>
+        </Grid>
 
-        <Grid2
+        <Grid
           size={{ sm: 12, md: 8, lg: 9.25 }}
           pt={1}
           container
@@ -426,8 +426,8 @@ export default function PanelMaintenance() {
               )}
             </Box>
           </Box>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
       <PageFooterPMT />
     </>
   );

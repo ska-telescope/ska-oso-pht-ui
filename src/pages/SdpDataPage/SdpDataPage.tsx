@@ -132,7 +132,7 @@ export default function SdpDataPage() {
   return (
     <Shell page={PAGE}>
       <Grid container direction="row" alignItems="flex-start" justifyContent="space-around">
-        <Grid item xs={11}>
+        <Grid size={{ xs: 11 }}>
           <Stack spacing={1}>
             <AddButton
               title="dataProduct.button"

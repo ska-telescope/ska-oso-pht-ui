@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid2 } from '@mui/material';
+import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
@@ -20,6 +20,7 @@ interface TargetEntryProps {
   raType: number;
   setTarget?: Function;
   target?: Target;
+  textAlign?: string;
 }
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
@@ -27,7 +28,8 @@ const NOTIFICATION_DELAY_IN_SECONDS = 5;
 export default function TargetEntry({
   raType,
   setTarget = undefined,
-  target = undefined
+  target = undefined,
+  textAlign = 'right'
 }: TargetEntryProps) {
   const { t } = useTranslation('pht');
   const { notifySuccess } = useNotify();
@@ -183,7 +185,7 @@ export default function TargetEntry({
     const disabled = () => !(name?.length && ra?.length && dec?.length);
 
     return (
-      <Grid2 size={{ xs: 12 }}>
+      <Grid size={{ xs: 12 }}>
         <AddButton
           action={addButtonAction}
           disabled={disabled()}
@@ -192,7 +194,7 @@ export default function TargetEntry({
           title="addTarget.label"
           toolTip="addTarget.toolTip"
         />
-      </Grid2>
+      </Grid>
     );
   };
 
@@ -227,8 +229,12 @@ export default function TargetEntry({
     );
   };
 
-  const nameField = () => (
-    <FieldWrapper>
+  const wrapper = (children: any) => (
+    <FieldWrapper labelWidth={textAlign === 'left' ? 0 : 6}>{children}</FieldWrapper>
+  );
+
+  const nameField = () =>
+    wrapper(
       <TextEntry
         required
         label={t('name.label')}
@@ -242,11 +248,10 @@ export default function TargetEntry({
         onFocus={() => helpComponent(t('name.help'))}
         errorText={nameFieldError}
       />
-    </FieldWrapper>
-  );
+    );
 
-  const skyDirection1Field = () => (
-    <FieldWrapper>
+  const skyDirection1Field = () =>
+    wrapper(
       <SkyDirection1
         labelWidth={LAB_WIDTH}
         setValue={setTheRA}
@@ -254,11 +259,10 @@ export default function TargetEntry({
         value={ra}
         valueFocus={() => helpComponent(t('skyDirection.help.1.value'))}
       />
-    </FieldWrapper>
-  );
+    );
 
-  const skyDirection2Field = () => (
-    <FieldWrapper>
+  const skyDirection2Field = () =>
+    wrapper(
       <SkyDirection2
         labelWidth={LAB_WIDTH}
         setValue={setTheDec}
@@ -266,11 +270,10 @@ export default function TargetEntry({
         value={dec}
         valueFocus={() => helpComponent(t('skyDirection.help.2.value'))}
       />
-    </FieldWrapper>
-  );
+    );
 
-  const velocityField = () => (
-    <FieldWrapper>
+  const velocityField = () =>
+    wrapper(
       <VelocityField
         labelWidth={LAB_WIDTH}
         setRedshift={setTheRedshift}
@@ -285,22 +288,20 @@ export default function TargetEntry({
         // velTypeFocus={() => helpComponent('')}   TODO : Need to find out why this is not working great
         velUnitFocus={() => helpComponent(t('velocity.help' + velType))}
       />
-    </FieldWrapper>
-  );
+    );
 
-  const referenceFrameField = () => (
-    <FieldWrapper>
+  const referenceFrameField = () =>
+    wrapper(
       <ReferenceFrameField
         labelWidth={LAB_WIDTH}
         onFocus={() => helpComponent(t('referenceFrame.help'))}
         setValue={setTheReferenceFrame}
         value={referenceFrame}
       />
-    </FieldWrapper>
-  );
+    );
 
   return (
-    <Grid2
+    <Grid
       p={2}
       container
       direction="row"
@@ -308,19 +309,25 @@ export default function TargetEntry({
       justifyContent="space-between"
       spacing={1}
     >
-      <Grid2 size={{ xs: 7 }}>
-        <Grid2 container direction="column" alignItems="stretch" justifyContent="flex-start">
-          <Grid2>{nameField()}</Grid2>
-          <Grid2>{skyDirection1Field()}</Grid2>
-          <Grid2>{skyDirection2Field()}</Grid2>
-          <Grid2>{velocityField()}</Grid2>
-          <Grid2>{velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}</Grid2>
-          <Grid2>{!id && addButton()}</Grid2>
-        </Grid2>
-      </Grid2>
-      <Grid2 size={{ xs: 4 }}>
+      <Grid size={{ xs: 7 }}>
+        <Grid
+          container
+          direction="column"
+          spacing={3}
+          alignItems="stretch"
+          justifyContent="flex-start"
+        >
+          <Grid>{nameField()}</Grid>
+          <Grid>{skyDirection1Field()}</Grid>
+          <Grid>{skyDirection2Field()}</Grid>
+          <Grid>{velocityField()}</Grid>
+          <Grid>{velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}</Grid>
+          <Grid>{!id && addButton()}</Grid>
+        </Grid>
+      </Grid>
+      <Grid size={{ xs: 4 }}>
         <HelpPanel maxHeight={HELP_MAX_HEIGHT} />
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 }

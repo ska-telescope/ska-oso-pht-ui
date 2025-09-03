@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid2, Paper } from '@mui/material';
+import { Grid, Paper } from '@mui/material';
 import { AlertColorTypes, SearchEntry } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -266,13 +266,13 @@ export default function ReviewDecisionListPage() {
     <>
       <PageBannerPMT title={t('reviewDecisionsList.title')} />
       <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
-      <Grid2 container direction="row" alignItems="center" justifyContent="space-around">
-        <Grid2 mt={-1} size={{ sm: 4, md: 5, lg: 6 }}>
+      <Grid container direction="row" alignItems="center" justifyContent="space-around">
+        <Grid mt={-1} size={{ sm: 4, md: 5, lg: 6 }}>
           {searchEntryField('searchId')}
-        </Grid2>
-      </Grid2>
-      <Grid2 container p={5} direction="row" alignItems="center" justifyContent="space-between">
-        <Grid2 size={{ sm: 12 }}>
+        </Grid>
+      </Grid>
+      <Grid container p={5} direction="row" alignItems="center" justifyContent="space-between">
+        <Grid size={{ sm: 12 }}>
           <div>
             {filteredData && (
               <TableReviewDecision
@@ -282,8 +282,8 @@ export default function ReviewDecisionListPage() {
               />
             )}
           </div>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       <Paper
         sx={{ bgcolor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}

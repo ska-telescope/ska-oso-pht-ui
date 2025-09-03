@@ -7,7 +7,7 @@ import {
   AlertColorTypes,
   TickBox
 } from '@ska-telescope/ska-gui-components';
-import { Tooltip, Typography, Box, Grid2 } from '@mui/material';
+import { Tooltip, Typography, Box, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { validateProposal } from '@utils/proposalValidation.tsx';
@@ -462,13 +462,13 @@ export default function GridProposals({
   return (
     <>
       {showTitle && (
-        <Grid2 p={2} size={{ lg: 12 }}>
+        <Grid p={2} size={{ lg: 12 }}>
           {ProposalsSectionTitle()}
-        </Grid2>
+        </Grid>
       )}
 
       {showSearch && (
-        <Grid2
+        <Grid
           pb={2}
           pt={2}
           size={{ sm: 12 }}
@@ -478,22 +478,22 @@ export default function GridProposals({
           justifyContent="space-between"
           alignItems="center"
         >
-          <Grid2 size={{ sm: 12 }}>
-            <Grid2
+          <Grid size={{ sm: 12 }}>
+            <Grid
               container
               direction="row"
               spacing={2}
               justifyContent="space-around"
               alignItems="center"
             >
-              <Grid2 size={{ sm: 3 }}>{proposalTypeDropdown()}</Grid2>
-              <Grid2 size={{ sm: 3 }}>{scienceCategoryDropdown()}</Grid2>
-              <Grid2 size={{ sm: 5 }}>{searchEntryField('searchId')}</Grid2>
-            </Grid2>
-          </Grid2>
-        </Grid2>
+              <Grid size={{ sm: 3 }}>{proposalTypeDropdown()}</Grid>
+              <Grid size={{ sm: 3 }}>{scienceCategoryDropdown()}</Grid>
+              <Grid size={{ sm: 5 }}>{searchEntryField('searchId')}</Grid>
+            </Grid>
+          </Grid>
+        </Grid>
       )}
-      <Grid2 size={{ xs: 12 }} pt={1}>
+      <Grid size={{ xs: 12 }} pt={1}>
         {!axiosViewError && (
           <div>
             <DataGrid
@@ -515,7 +515,7 @@ export default function GridProposals({
         {axiosError && (
           <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
         )}
-      </Grid2>
+      </Grid>
       {openDeleteDialog && deleteClicked()}
       {openCloneDialog && cloneClicked()}
       {openViewDialog && viewClicked()}

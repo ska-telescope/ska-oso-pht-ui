@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
-import Grid2 from '@mui/material/Grid2';
 import { DropDown, SearchEntry, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { useTranslation } from 'react-i18next';
-import { Box, Card } from '@mui/material';
+import { Box, Card, Grid } from '@mui/material';
 import { groupBy } from 'lodash';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -329,23 +328,22 @@ export default function ReviewDashboard() {
     <Box pl={5} pr={5}>
       <Card>
         {' '}
-        <Grid2 container spacing={2} alignItems="center" justifyContent="space-between">
-          <Grid2 pl={5} size={{ sm: 2 }}>
+        <Grid container spacing={2} alignItems="center" justifyContent="space-between">
+          <Grid pl={5} size={{ sm: 2 }}>
             <DropDown
               options={[
                 { value: '', label: 'All' },
                 { value: 'LOW', label: 'LOW' },
-                { value: 'MID', label: 'MID' },
-                { value: 'BOTH', label: 'BOTH' }
+                { value: 'MID', label: 'MID' }
               ]}
               testId={'telescopeTestId'}
               value={filter.telescope}
               setValue={(e: string) => setFilter({ ...filter, telescope: e })}
               label={'Telescope'}
             />
-          </Grid2>
+          </Grid>
           {/* note: Hide for now as requested */}
-          {/* <Grid2 size={{ sm: 2 }}>
+          {/* <Grid size={{ sm: 2 }}>
           <DropDown
             options={[
               { value: '', label: 'All' },
@@ -358,17 +356,17 @@ export default function ReviewDashboard() {
             setValue={(e: string) => setFilter({ ...filter, country: e })}
             label={'Country'}
           />
-        </Grid2>
+        </Grid>
         */}
-          <Grid2 size={{ sm: 6 }}>
+          <Grid size={{ sm: 6 }}>
             <SearchEntry
               label=""
               testId="effectiveResolution"
               value={search}
               setValue={setSearch}
             />
-          </Grid2>
-          <Grid2 pr={5}>
+          </Grid>
+          <Grid pr={5}>
             <ResetButton
               action={() => {
                 setSearch('');
@@ -376,8 +374,8 @@ export default function ReviewDashboard() {
               }}
               disabled={filter.telescope === '' && filter.country === '' && search === ''}
             />
-          </Grid2>
-        </Grid2>
+          </Grid>
+        </Grid>
       </Card>
     </Box>
   );
@@ -411,7 +409,7 @@ export default function ReviewDashboard() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {panelTableData.map(row => (
+              {panelTableData.map((row: any) => (
                 <TableRow
                   key={row.panelId}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -448,7 +446,7 @@ export default function ReviewDashboard() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {panelReviewerTableData.map(row => (
+              {panelReviewerTableData.map((row: any) => (
                 <TableRow
                   key={row.reviewerId}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -483,7 +481,7 @@ export default function ReviewDashboard() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {panelScienceCategoryTableData.map(row => (
+              {panelScienceCategoryTableData.map((row: any) => (
                 <TableRow
                   key={row.scienceCategory}
                   sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
@@ -510,13 +508,13 @@ export default function ReviewDashboard() {
       {filters()}
 
       {/* Metrics */}
-      <Grid2 p={5} spacing={5} container alignItems="center" justifyContent="space-between">
+      <Grid p={5} spacing={5} container alignItems="center" justifyContent="space-between">
         {panel1()}
         {panel2()}
         {panel3()}
-      </Grid2>
+      </Grid>
 
-      <Grid2
+      <Grid
         p={5}
         pt={0}
         pb={10}
@@ -528,7 +526,7 @@ export default function ReviewDashboard() {
         {panel4()}
         {panel5()}
         {panel6()}
-      </Grid2>
+      </Grid>
     </>
   );
 }

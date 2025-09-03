@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid2, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '../../../utils/types/proposal';
@@ -71,7 +71,7 @@ export default function TargetListSection() {
     const LABEL_WIDTH = 6;
     const rec = getProposal()?.targets?.find(p => p.id === rowTarget?.id);
     return (
-      <Grid2
+      <Grid
         p={2}
         pb={0}
         container
@@ -106,7 +106,7 @@ export default function TargetListSection() {
           text={t('deleteTarget.info')}
           testId="deleteTargetInfoId"
         />
-      </Grid2>
+      </Grid>
     );
   };
 
@@ -133,12 +133,12 @@ export default function TargetListSection() {
   );
 
   const emptyField = () => {
-    return <Grid2>{fieldWrapper()}</Grid2>;
+    return <Grid>{fieldWrapper()}</Grid>;
   };
 
   const referenceCoordinatesField = () => {
     return (
-      <Grid2>
+      <Grid>
         {fieldWrapper(
           <Box pt={1}>
             <ReferenceCoordinatesField
@@ -148,14 +148,14 @@ export default function TargetListSection() {
             />
           </Box>
         )}
-      </Grid2>
+      </Grid>
     );
   };
 
   const displayRow1 = () => {
     return (
-      <Grid2 container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
-        <Grid2 size={{ md: 12, lg: 5 }} order={{ md: 2, lg: 1 }}>
+      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
+        <Grid size={{ md: 12, lg: 5 }} order={{ md: 2, lg: 1 }}>
           {emptyField()}
           <GridTargets
             deleteClicked={deleteIconClicked}
@@ -164,8 +164,8 @@ export default function TargetListSection() {
             raType={RA_TYPE_ICRS.value}
             rows={getProposal().targets}
           />
-        </Grid2>
-        <Grid2 size={{ md: 12, lg: 6 }} order={{ md: 1, lg: 2 }}>
+        </Grid>
+        <Grid size={{ md: 12, lg: 6 }} order={{ md: 1, lg: 2 }}>
           {referenceCoordinatesField()}
           <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
             <Box sx={{ width: '1400px', border: '1px solid grey' }}>
@@ -193,18 +193,18 @@ export default function TargetListSection() {
                   sx={{ border: '1px solid grey', width: '100%' }}
                 />
               </Tabs>
-              {value === 0 && <TargetEntry raType={RA_TYPE_ICRS.value} />}
+              {value === 0 && <TargetEntry raType={RA_TYPE_ICRS.value} textAlign="left" />}
               {value === 1 && <TargetFileImport raType={RA_TYPE_ICRS.value} />}
               {value === 2 && <SpatialImaging />}
             </Box>
           </Box>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     );
   };
 
   return (
-    <Grid2 container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
+    <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
       {displayRow1()}
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {openDeleteDialog && (
@@ -232,6 +232,6 @@ export default function TargetListSection() {
           />
         </AlertDialog>
       )}
-    </Grid2>
+    </Grid>
   );
 }

@@ -3,8 +3,8 @@ import { useTranslation } from 'react-i18next';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import HelpIcon from '@mui/icons-material/Help';
-import { Button, Grid2, Box, Typography, Paper } from '@mui/material';
-import useTheme from '@mui/material/styles/useTheme';
+import { Button, Grid, Box, Typography, Paper } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { FEASIBLE_MAYBE, FEASIBLE_NO, FEASIBLE_YES } from '@/utils/constants';
 
 interface ChoiceOption {
@@ -76,13 +76,13 @@ export function ChoiceCards({ value, onChange }: ChoiceCardsProps) {
         </Typography>
       </Box>
 
-      <Grid2 container spacing={2}>
+      <Grid container spacing={2}>
         {choices.map(choice => {
           const Icon = choice.icon;
           const isSelected = selectedValue === choice.value;
 
           return (
-            <Grid2 size={{ xs: 4 }} key={choice.value}>
+            <Grid size={{ xs: 4 }} key={choice.value}>
               <Button
                 onClick={() => handleSelect(choice.value)}
                 fullWidth
@@ -117,10 +117,10 @@ export function ChoiceCards({ value, onChange }: ChoiceCardsProps) {
                   {choice.label}
                 </Typography>
               </Button>
-            </Grid2>
+            </Grid>
           );
         })}
-      </Grid2>
+      </Grid>
       {selectedValue && selectedValue !== FEASIBLE_YES && (
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
           {t('feasibility.info')}

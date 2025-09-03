@@ -95,6 +95,7 @@ export default function SpectralResolutionField({
     <Box pt={1}>
       <TextEntry
         disabled
+        disabledUnderline
         label={label}
         labelBold={LAB_IS_BOLD}
         labelPosition={LAB_POSITION}

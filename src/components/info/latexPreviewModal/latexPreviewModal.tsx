@@ -1,4 +1,4 @@
-import { Dialog, DialogContent, Grid2, DialogTitle } from '@mui/material';
+import { Dialog, DialogContent, Grid, DialogTitle } from '@mui/material';
 import { presentLatex } from '@utils/present/present';
 import CancelButton from '../../button/Cancel/Cancel';
 interface LatexPreviewProps {
@@ -31,7 +31,7 @@ export default function LatexPreviewModal({ value, open, onClose, title }: Latex
     >
       <DialogTitle>{title}</DialogTitle>
       <DialogContent>
-        <Grid2
+        <Grid
           p={2}
           container
           direction="column"
@@ -39,19 +39,19 @@ export default function LatexPreviewModal({ value, open, onClose, title }: Latex
           justifyContent="space-around"
           spacing={1}
         >
-          <Grid2 size={{ xs: 12 }}>{presentLatex(value)}</Grid2>
-          <Grid2>
-            <Grid2 container direction="row" justifyContent="right" alignItems="right">
-              <Grid2 pt={1}>
+          <Grid size={{ xs: 12 }}>{presentLatex(value)}</Grid>
+          <Grid>
+            <Grid container direction="row" justifyContent="right" alignItems="right">
+              <Grid pt={1}>
                 <CancelButton
                   action={handleClose}
                   title="closeBtn.label"
                   testId="cancelButtonTestId"
                 />
-              </Grid2>
-            </Grid2>
-          </Grid2>
-        </Grid2>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
       </DialogContent>
     </Dialog>
   );

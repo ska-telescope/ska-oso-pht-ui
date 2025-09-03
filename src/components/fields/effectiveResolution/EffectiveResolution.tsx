@@ -24,8 +24,8 @@ export default function EffectiveResolutionField({
   labelWidth = 6,
   observingBand,
   observationType,
-  onFocus = null,
-  setValue = null,
+  onFocus = undefined,
+  setValue = undefined,
   spectralAveraging,
   spectralResolution
 }: EffectiveResolutionFieldProps) {
@@ -35,7 +35,7 @@ export default function EffectiveResolutionField({
     const arr = String(spectralResolution).split(' ');
     if (arr.length > 2) {
       const resolution = Number(arr[0]);
-      const resolutionUnits = FREQUENCY_UNITS.find(e => e.label === arr[1]).value;
+      const resolutionUnits = FREQUENCY_UNITS?.find(e => e.label === arr[1])?.value ?? 0;
       const freq = frequencyConversion(frequency, frequencyUnits);
       const ave = resolution * spectralAveraging;
       const velocity = calculateVelocity(frequencyConversion(ave, resolutionUnits) * 10, freq);
@@ -47,7 +47,7 @@ export default function EffectiveResolutionField({
 
   const getDisplay = () => {
     setEffectiveResolution(calculateEffectiveResolution());
-    if (setValue !== null) {
+    if (setValue) {
       setValue(spectralResolution);
     }
   };
@@ -71,6 +71,7 @@ export default function EffectiveResolutionField({
     <Box pt={1}>
       <TextEntry
         disabled
+        disabledUnderline
         label={label}
         labelBold={LAB_IS_BOLD}
         labelPosition={LAB_POSITION}

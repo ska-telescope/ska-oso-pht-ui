@@ -846,6 +846,7 @@ export const VEL_UNITS = [
 export const SEARCH_TYPE_OPTIONS = [
   { label: 'Draft', value: 'draft' },
   { label: 'Submitted', value: 'submitted' },
+  { label: 'Under Review', value: 'under review' },
   { label: 'Accepted', value: 'accepted' },
   { label: 'Withdrawn', value: 'withdrawn' },
   { label: 'Rejected', value: 'rejected' }

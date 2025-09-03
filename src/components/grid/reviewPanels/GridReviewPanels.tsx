@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { DataGrid, AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import { Typography, Grid2 } from '@mui/material';
+import { Typography, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import moment from 'moment';
 import GetPanelList from '@services/axios/get/getPanelList/getPanelList';
@@ -127,9 +127,9 @@ GridReviewPanelsProps) {
 
   return (
     <>
-      {!listOnly && <Grid2>{ProposalsSectionTitle()}</Grid2>}
+      {!listOnly && <Grid>{ProposalsSectionTitle()}</Grid>}
 
-      <Grid2 pt={1}>
+      <Grid pt={1}>
         {(!data || data.length === 0) && (
           <Alert color={AlertColorTypes.Info} text={t('page.15.empty')} testId="helpPanelId" />
         )}
@@ -145,7 +145,7 @@ GridReviewPanelsProps) {
             />
           </>
         )}
-      </Grid2>
+      </Grid>
     </>
   );
 }

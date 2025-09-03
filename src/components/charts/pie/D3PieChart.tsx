@@ -22,18 +22,7 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
     const total = d3.sum(data, d => (isFinite(Number(d.value)) ? Number(d.value) : 0));
     const centerLabel = centerText || total.toString();
 
-    const chartColors = [
-      '#1b5e20',
-      '#0d47a1',
-      '#b71c1c',
-      '#4a148c',
-      '#e65100',
-      '#3e2723',
-      '#00695c',
-      '#827717',
-      '#880e4f',
-      '#263238'
-    ];
+    const chartColors = d3.schemeTableau10;
 
     const pie = d3
       .pie<PieData>()
@@ -117,7 +106,7 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
 
         .attr('data-testid', 'pie-chart-center-text')
 
-        .style('fontSize', theme?.typography?.h6?.fontSize ?? 16)
+        .style('fontSize', 24)
         .style('fill', theme.palette.text.primary)
         .style('pointer-events', 'none')
         .text(centerLabel);
@@ -155,8 +144,8 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
       })
       .attr('text-anchor', d => ((d.startAngle + d.endAngle) / 2 < Math.PI ? 'start' : 'end'))
       .attr('dy', '0.35em')
-      .style('fontSize', theme?.typography?.caption?.fontSize ?? 16)
-      .style('fill', theme.palette.text.secondary)
+      .style('fontSize', 24)
+      .style('fill', theme.palette.text.primary)
       .style('pointer-events', 'none')
       .text(d => d.data.name)
       .call(wrapText, 80);

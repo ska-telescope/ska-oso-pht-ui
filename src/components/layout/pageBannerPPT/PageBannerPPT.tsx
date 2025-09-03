@@ -2,10 +2,10 @@ import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid2, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import useTheme from '@mui/material/styles/useTheme';
+import { useTheme } from '@mui/material/styles';
 import {
   LAST_PAGE,
   NAV,
@@ -150,7 +150,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   );
 
   const buttonsLeft = () => (
-    <Grid2
+    <Grid
       container
       spacing={1}
       direction="row"
@@ -158,13 +158,13 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       justifyContent="flex-start"
       pl={2}
     >
-      <Grid2>
+      <Grid>
         {backPage && backPage > 0 && (
           <PreviousPageButton title="cancelBtn.label" action={prevPageNav} />
         )}
         {!backPage && <HomeButton />}
-      </Grid2>
-      <Grid2>
+      </Grid>
+      <Grid>
         {pageNo < LAST_PAGE && (
           <SaveButton
             primary
@@ -173,12 +173,12 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
             action={() => updateProposal()}
           />
         )}
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 
   const buttonsRight = () => (
-    <Grid2
+    <Grid
       container
       spacing={1}
       direction="row"
@@ -187,7 +187,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       wrap="nowrap"
       pr={2}
     >
-      <Grid2>
+      <Grid>
         {pageNo < LAST_PAGE && (
           <ValidateButton
             testId={'validateBtn'}
@@ -196,62 +196,62 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
             toolTip={validateTooltip()}
           />
         )}
-      </Grid2>
-      <Grid2>
+      </Grid>
+      <Grid>
         {pageNo < LAST_PAGE && <SubmitButton action={submitClicked} disabled={!canSubmit} />}
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 
   const row1 = () => (
-    <Grid2 container direction="row" alignItems="center" justifyContent="space-between">
-      <Grid2>{buttonsLeft()}</Grid2>
+    <Grid container direction="row" alignItems="center" justifyContent="space-between">
+      <Grid>{buttonsLeft()}</Grid>
       {wrapStatusArray ? (
-        <Grid2 size={{ xs: 7 }} display={'none'}>
+        <Grid size={{ xs: 7 }} display={'none'}>
           {pageNo < LAST_PAGE && <StatusArray />}
-        </Grid2>
+        </Grid>
       ) : (
-        <Grid2 size={{ xs: 7 }} display={'block'}>
+        <Grid size={{ xs: 7 }} display={'block'}>
           {pageNo < LAST_PAGE && <StatusArray />}
-        </Grid2>
+        </Grid>
       )}
 
       {wrapStatusArray ? (
-        <Grid2 display={'block'}>{pageTitle()}</Grid2>
+        <Grid display={'block'}>{pageTitle()}</Grid>
       ) : (
-        <Grid2 display={'none'}>{pageTitle()}</Grid2>
+        <Grid display={'none'}>{pageTitle()}</Grid>
       )}
 
-      <Grid2>{buttonsRight()}</Grid2>
-    </Grid2>
+      <Grid>{buttonsRight()}</Grid>
+    </Grid>
   );
 
   const row2 = () => (
-    <Grid2 container direction="row" alignItems="center" justifyContent="space-between">
+    <Grid container direction="row" alignItems="center" justifyContent="space-between">
       {wrapStatusArray ? (
-        <Grid2 size={{ xs: 12 }} display={'block'}>
+        <Grid size={{ xs: 12 }} display={'block'}>
           {pageNo < LAST_PAGE && <StatusArray />}
-        </Grid2>
+        </Grid>
       ) : (
-        <Grid2 size={{ xs: 12 }} display={'none'}>
+        <Grid size={{ xs: 12 }} display={'none'}>
           {pageNo < LAST_PAGE && <StatusArray />}
-        </Grid2>
+        </Grid>
       )}
-    </Grid2>
+    </Grid>
   );
 
   const row3 = () => (
-    <Grid2 container direction="row" alignItems="center" justifyContent="space-between">
+    <Grid container direction="row" alignItems="center" justifyContent="space-between">
       {wrapStatusArray && (
-        <Grid2 container justifyContent="center">
-          <Grid2 size={{ lg: 12 }}>{pageDesc()}</Grid2>
-        </Grid2>
+        <Grid container justifyContent="center">
+          <Grid size={{ lg: 12 }}>{pageDesc()}</Grid>
+        </Grid>
       )}
 
-      {!wrapStatusArray && <Grid2 size={{ lg: 4 }}>{pageTitle()}</Grid2>}
+      {!wrapStatusArray && <Grid size={{ lg: 4 }}>{pageTitle()}</Grid>}
 
-      {!wrapStatusArray && <Grid2 size={{ lg: 8 }}>{pageDesc()}</Grid2>}
-    </Grid2>
+      {!wrapStatusArray && <Grid size={{ lg: 8 }}>{pageDesc()}</Grid>}
+    </Grid>
   );
 
   return (
@@ -261,19 +261,19 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       {row3()}
 
       {/* TODO: revisit to implement override breakpoint and use grid */}
-      {/* <Grid2 container spacing={1} alignItems="center">
-        <Grid2 size={{ xs: 6, md: 6, lg: 2 }}>
+      {/* <Grid container spacing={1} alignItems="center">
+        <Grid size={{ xs: 6, md: 6, lg: 2 }}>
           {buttonsLeft()}
-        </Grid2>
-        <Grid2 xs={12} md={12} lg={8} order={{ lg: 2, md: 3 }}>
-          <Grid2 justifyContent="space-evenly">
+        </Grid>
+        <Grid xs={12} md={12} lg={8} order={{ lg: 2, md: 3 }}>
+          <Grid justifyContent="space-evenly">
             {pageNo < LAST_PAGE && <StatusArray />}
-          </Grid2>
-        </Grid2>
-        <Grid2 xs={6} md={6} lg={2} order={{ lg: 3, md: 2 }}>
+          </Grid>
+        </Grid>
+        <Grid xs={6} md={6} lg={2} order={{ lg: 3, md: 2 }}>
           {buttonsRight()}
-        </Grid2>
-      </Grid2> */}
+        </Grid>
+      </Grid> */}
 
       {openProposalDisplay && (
         <ProposalDisplay

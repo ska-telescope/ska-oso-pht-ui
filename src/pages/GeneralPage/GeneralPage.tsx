@@ -146,29 +146,23 @@ export default function GeneralPage() {
         container
         direction="row"
         p={3}
-        spacing={1}
+        spacing={2}
         alignItems="space-evenly"
         justifyContent="space-around"
       >
-        <Grid item pb={3} md={12} lg={8}>
+        <Grid pb={3} size={{ md: 12, lg: 8 }}>
           <Grid container direction="row">
-            <Grid item md={12} lg={12} pt={2}>
-              <Grid item md={12} lg={6}>
-                {cycleField()}
-              </Grid>
+            <Grid pt={2} size={{ md: 12, lg: 12 }}>
+              <Grid size={{ md: 12, lg: 6 }}>{cycleField()}</Grid>
             </Grid>
-            <Grid item md={12} lg={12} pt={2}>
-              <Grid item md={12} lg={6}>
-                {categoryField()}
-              </Grid>
+            <Grid pt={2} pb={2} size={{ md: 12, lg: 12 }}>
+              <Grid size={{ md: 12, lg: 6 }}>{categoryField()}</Grid>
             </Grid>
-            <Grid item md={12}>
-              {abstractField()}
-            </Grid>
+            <Grid size={{ md: 12 }}>{abstractField()}</Grid>
           </Grid>
-          <Grid item md={6}></Grid>
+          <Grid size={{ md: 6 }}></Grid>
         </Grid>
-        <Grid item md={12} lg={3}>
+        <Grid size={{ md: 12, lg: 3 }}>
           <HelpPanel maxHeight={HELP_VIEWPORT} />
         </Grid>
       </Grid>

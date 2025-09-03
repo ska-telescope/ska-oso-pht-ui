@@ -14,7 +14,7 @@ import {
   Collapse,
   useTheme,
   Stack,
-  Grid2
+  Grid
 } from '@mui/material';
 import { ChevronRight, ExpandMore } from '@mui/icons-material';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
@@ -270,7 +270,7 @@ export default function TableReviewDecision({
                           <Box sx={{ display: 'flex', gap: 3, alignItems: 'flex-start' }}>
                             <Box sx={{ flex: 1 }}>
                               <Stack>
-                                <Grid2
+                                <Grid
                                   p={2}
                                   container
                                   direction="row"
@@ -278,27 +278,27 @@ export default function TableReviewDecision({
                                   justifyContent="space-between"
                                   gap={1}
                                 >
-                                  <Grid2>
+                                  <Grid>
                                     <Typography variant="h6" fontWeight="bold">
                                       {t('tableReviewDecision.decisionComments')}
                                     </Typography>
-                                  </Grid2>
-                                  <Grid2>
+                                  </Grid>
+                                  <Grid>
                                     <Typography variant="h6">
                                       {`${t('tableReviewDecision.decisionScore')} ${calculateScore(
                                         item.reviews
                                       )}`}
                                     </Typography>
-                                  </Grid2>
-                                  <Grid2>
+                                  </Grid>
+                                  <Grid>
                                     <SubmitButton
                                       action={() => submitFunctionClicked(item)}
                                       aria-label={`Submit review data for ${item.title}`}
                                       data-testid={`submit-review-button-${item.id}`}
                                       toolTip="decisionSubmit.help"
                                     />
-                                  </Grid2>
-                                </Grid2>
+                                  </Grid>
+                                </Grid>
                                 <Box
                                   m={1}
                                   sx={{

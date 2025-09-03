@@ -50,7 +50,7 @@ export default function GridObservationSummary({
           <Grid container direction="column" justifyContent="space-between" alignItems="left">
             {inArr.map(el => {
               return (
-                <Grid key={el} item xs={12}>
+                <Grid key={el} size={{ xs: 12 }}>
                   {element(el)}
                 </Grid>
               );

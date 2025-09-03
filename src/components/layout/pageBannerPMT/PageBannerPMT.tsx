@@ -1,4 +1,4 @@
-import { Box, Grid2, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { HEADER_HEIGHT } from '@/utils/constants';
 
 interface PageBannerPMTProps {
@@ -15,7 +15,7 @@ export default function PageBannerPMT({ backBtn, fwdBtn, title }: PageBannerPMTP
   );
 
   const buttonsLeft = () => (
-    <Grid2
+    <Grid
       container
       spacing={1}
       direction="row"
@@ -23,12 +23,12 @@ export default function PageBannerPMT({ backBtn, fwdBtn, title }: PageBannerPMTP
       justifyContent="flex-end"
       pr={2}
     >
-      <Grid2>{backBtn}</Grid2>
-    </Grid2>
+      <Grid>{backBtn}</Grid>
+    </Grid>
   );
 
   const buttonsRight = () => (
-    <Grid2
+    <Grid
       container
       spacing={1}
       direction="row"
@@ -36,24 +36,24 @@ export default function PageBannerPMT({ backBtn, fwdBtn, title }: PageBannerPMTP
       justifyContent="flex-start"
       pr={2}
     >
-      <Grid2>{fwdBtn}</Grid2>
-    </Grid2>
+      <Grid>{fwdBtn}</Grid>
+    </Grid>
   );
 
   const row1 = () => (
-    <Grid2 container direction="row" alignItems="center" justifyContent="space-between">
-      <Grid2 size={{ xs: 3 }}>
-        <Grid2 container direction="row" alignItems="center" justifyContent="flex-start">
-          <Grid2>{buttonsLeft()}</Grid2>
-        </Grid2>
-      </Grid2>
-      <Grid2>{pageTitle()}</Grid2>
-      <Grid2 size={{ xs: 3 }}>
-        <Grid2 container direction="row" alignItems="center" justifyContent="flex-end">
-          <Grid2>{buttonsRight()}</Grid2>
-        </Grid2>
-      </Grid2>
-    </Grid2>
+    <Grid container direction="row" alignItems="center" justifyContent="space-between">
+      <Grid size={{ xs: 3 }}>
+        <Grid container direction="row" alignItems="center" justifyContent="flex-start">
+          <Grid>{buttonsLeft()}</Grid>
+        </Grid>
+      </Grid>
+      <Grid>{pageTitle()}</Grid>
+      <Grid size={{ xs: 3 }}>
+        <Grid container direction="row" alignItems="center" justifyContent="flex-end">
+          <Grid>{buttonsRight()}</Grid>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 
   return (

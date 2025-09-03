@@ -1,4 +1,4 @@
-import useTheme from '@mui/material/styles/useTheme';
+import { useTheme } from '@mui/material/styles';
 import { Logo, Symbol, THEME_DARK } from '@ska-telescope/ska-gui-components';
 interface SKAOIconProps {
   logoHeight?: number;

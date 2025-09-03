@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Box, Card, CardContent, Grid2, Typography } from '@mui/material';
+import { Box, Card, CardContent, Grid, Typography } from '@mui/material';
 import { GridRowSelectionModel } from '@mui/x-data-grid'; // TODO : Need to move this into the ska-gui-components
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, DataGrid, TickBox } from '@ska-telescope/ska-gui-components';
@@ -275,7 +275,7 @@ export default function ObservationPage() {
 
   const hasObservations = () => elementsO?.length > 0;
 
-  const getSensCalcForTargetGrid2 = (targetId: number) =>
+  const getSensCalcForTargetGrid = (targetId: number) =>
     getProposal()?.targetObservation?.find(
       p => p.observationId === currObs?.id && p.targetId === targetId
     )?.sensCalc;
@@ -438,7 +438,7 @@ export default function ObservationPage() {
         renderCell: (e: { row: any }) => {
           return (
             <SensCalcDisplaySingle
-              sensCalc={getSensCalcForTargetGrid2(e.row.id)}
+              sensCalc={getSensCalcForTargetGrid(e.row.id)}
               show={isTargetSelected(e.row.id)}
               field="icon"
               isCustom={isCustom()}
@@ -467,7 +467,7 @@ export default function ObservationPage() {
         renderCell: (e: { row: any }) => {
           return (
             <SensCalcDisplaySingle
-              sensCalc={getSensCalcForTargetGrid2(e.row.id)}
+              sensCalc={getSensCalcForTargetGrid(e.row.id)}
               show={isTargetSelected(e.row.id)}
               field={isIntegrationTime(currObs) ? 'SensitivityWeighted' : 'IntegrationTime'}
               isCustom={isCustom()}
@@ -485,7 +485,7 @@ export default function ObservationPage() {
         renderCell: (e: { row: any }) => {
           return (
             <SensCalcDisplaySingle
-              sensCalc={getSensCalcForTargetGrid2(e.row.id)}
+              sensCalc={getSensCalcForTargetGrid(e.row.id)}
               show={isTargetSelected(e.row.id)}
               field="SynthBeamSize"
               isCustom={isCustom()}
@@ -516,19 +516,19 @@ export default function ObservationPage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid2 container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid2 size={{ md: 11, lg: 5 }}>
-          <Grid2 container direction="column" alignItems="flex-start" justifyContent="space-around">
-            <Grid2 container direction="row" alignItems="flex-start" justifyContent="space-between">
-              <Grid2 pb={1}>
+      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
+        <Grid size={{ md: 11, lg: 5 }}>
+          <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
+            <Grid container direction="row" alignItems="flex-start" justifyContent="space-between">
+              <Grid pb={1}>
                 <AddButton
                   action={PATH[2]}
                   primary={!hasObservations()}
                   testId="addObservationButton"
                   title="addObservation.button"
                 />
-              </Grid2>
-            </Grid2>
+              </Grid>
+            </Grid>
             {hasObservations() && (
               <DataGrid
                 rows={elementsO}
@@ -549,18 +549,18 @@ export default function ObservationPage() {
                 testId="noObservationsNotification"
               />
             )}
-          </Grid2>
-        </Grid2>
-        <Grid2 size={{ md: 11, lg: 6 }}>
+          </Grid>
+        </Grid>
+        <Grid size={{ md: 11, lg: 6 }}>
           <Card variant="outlined">
             <CardContent>
-              <Grid2 container alignItems="baseline" justifyContent="space-between">
-                <Grid2>
+              <Grid container alignItems="baseline" justifyContent="space-between">
+                <Grid>
                   <Typography id="targetObservationLabel" variant="h6">
                     {t('targetObservation.label')}
                   </Typography>
-                </Grid2>
-              </Grid2>
+                </Grid>
+              </Grid>
             </CardContent>
             <CardContent>
               {hasTargets() && (
@@ -580,8 +580,8 @@ export default function ObservationPage() {
               )}
             </CardContent>
           </Card>
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {openDeleteDialog && (
         <DeleteObservationConfirmation

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid2, Typography } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { Document, Page } from 'react-pdf';
 import { pdfjs } from 'react-pdf';
 
@@ -41,14 +41,14 @@ export default function PDFViewer({
 
   const displayNavigation = () => {
     return (
-      <Grid2
+      <Grid
         container
         direction="row"
         alignItems="center"
         justifyContent="space-between"
         spacing={1}
       >
-        <Grid2>
+        <Grid>
           {numPages > 1 && (
             <PreviousPageButton
               disabled={pageNumber === 1}
@@ -56,8 +56,8 @@ export default function PDFViewer({
               action={goToPrevPage}
             />
           )}
-        </Grid2>
-        <Grid2>
+        </Grid>
+        <Grid>
           {numPages > 1 && (
             <NextPageButton
               disabled={pageNumber === numPages}
@@ -65,14 +65,14 @@ export default function PDFViewer({
               action={goToNextPage}
             />
           )}
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     );
   };
 
   return (
     <>
-      <Grid2
+      <Grid
         spacing={1}
         pl={1}
         pr={1}
@@ -81,19 +81,19 @@ export default function PDFViewer({
         justifyContent="space-between"
         alignItems="center"
       >
-        <Grid2>{displayNavigation()}</Grid2>
-        <Grid2>{displayPages()}</Grid2>
-      </Grid2>
+        <Grid>{displayNavigation()}</Grid>
+        <Grid>{displayPages()}</Grid>
+      </Grid>
 
-      <Grid2 container direction="row" justifyContent="center" alignItems="center">
-        <Grid2 sx={{ width: '90%' }}>
+      <Grid container direction="row" justifyContent="center" alignItems="center">
+        <Grid sx={{ width: '90%' }}>
           {url?.length > 0 && (
             <Document file={url} onLoadSuccess={onDocumentLoadSuccess}>
               <Page renderTextLayer={false} renderAnnotationLayer={false} pageNumber={pageNumber} />
             </Document>
           )}
-        </Grid2>
-      </Grid2>
+        </Grid>
+      </Grid>
     </>
   );
 }

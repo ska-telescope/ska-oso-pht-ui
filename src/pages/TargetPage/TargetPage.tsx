@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import useTheme from '@mui/material/styles/useTheme';
+import { useTheme } from '@mui/material/styles';
 import { Grid, Typography, Card, CardContent, CardActionArea, Tooltip } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import Shell from '../../components/layout/Shell/Shell';
@@ -56,7 +56,7 @@ export default function TargetPage() {
 
   function targetCard(occ: number) {
     return (
-      <Grid item>
+      <Grid>
         <Card
           style={{
             color: setCardFG(occ === getProposal().targetOption),

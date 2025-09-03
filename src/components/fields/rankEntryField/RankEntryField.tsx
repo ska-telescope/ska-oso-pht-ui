@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import useTheme from '@mui/material/styles/useTheme';
+import { useTheme } from '@mui/material/styles';
 import { Typography, Box, Paper } from '@mui/material';
 import { COLOR_PALETTES } from '@/utils/accessibility/accessibility';
 

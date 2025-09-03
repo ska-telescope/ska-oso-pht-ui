@@ -1,4 +1,4 @@
-import { Dialog, Grid2 } from '@mui/material';
+import { Dialog, Grid } from '@mui/material';
 import PDFViewer from '../PDFViewer/PDFViewer';
 import CancelButton from '@/components/button/Cancel/Cancel';
 
@@ -14,13 +14,13 @@ export default function PDFWrapper({ open, onClose, url }: PDFWrapperProps) {
   };
 
   const footerContent = () => (
-    <Grid2>
-      <Grid2 container direction="row" justifyContent="right" alignItems="right">
-        <Grid2 pt={1}>
+    <Grid>
+      <Grid container direction="row" justifyContent="right" alignItems="right">
+        <Grid pt={1}>
           <CancelButton action={handleClose} title="closeBtn.label" testId="cancelButtonTestId" />
-        </Grid2>
-      </Grid2>
-    </Grid2>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 
   return (

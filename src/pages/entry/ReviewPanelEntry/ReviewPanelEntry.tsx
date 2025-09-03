@@ -2,7 +2,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, Grid2, Paper } from '@mui/material';
+import { Box, Grid, Paper } from '@mui/material';
 import { Spacer, SPACER_VERTICAL, DateEntry } from '@ska-telescope/ska-gui-components';
 import { FOOTER_SPACER, WRAPPER_HEIGHT, PMT, BANNER_PMT_SPACER } from '@utils/constants.ts';
 import moment from 'moment';
@@ -142,16 +142,16 @@ export default function ReviewPanelEntry() {
 
     return (
       <Paper sx={{ bgcolor: 'transparent' }} elevation={0}>
-        <Grid2
+        <Grid
           p={2}
           container
           direction="row"
           alignItems="space-between"
           justifyContent="space-between"
         >
-          <Grid2 />
-          <Grid2 />
-          <Grid2>
+          <Grid />
+          <Grid />
+          <Grid>
             <AddButton
               action={buttonClicked}
               disabled={addButtonDisabled()}
@@ -159,8 +159,8 @@ export default function ReviewPanelEntry() {
               testId={isEdit() ? 'updatePanelButton' : 'addPanelButton'}
               title={isEdit() ? 'updateBtn.label' : 'addBtn.label'}
             />
-          </Grid2>
-        </Grid2>
+          </Grid>
+        </Grid>
       </Paper>
     );
   };
@@ -177,7 +177,7 @@ export default function ReviewPanelEntry() {
         title={t('reviewPanelEntry.title')}
       />
       <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
-      <Grid2
+      <Grid
         pl={4}
         pr={4}
         container
@@ -186,8 +186,8 @@ export default function ReviewPanelEntry() {
         justifyContent="space-between"
         spacing={1}
       >
-        <Grid2 size={{ md: 12, lg: 9 }}>
-          <Grid2
+        <Grid size={{ md: 12, lg: 9 }}>
+          <Grid
             p={0}
             pl={2}
             container
@@ -196,20 +196,20 @@ export default function ReviewPanelEntry() {
             spacing={1}
             justifyContent="space-around"
           >
-            <Grid2 container alignItems="center" justifyContent="center" size={{ md: 12, lg: 10 }}>
-              <Grid2 size={{ md: 12, lg: 10 }} justifyContent="center">
+            <Grid container alignItems="center" justifyContent="center" size={{ md: 12, lg: 10 }}>
+              <Grid size={{ md: 12, lg: 10 }} justifyContent="center">
                 {panelNameField()}
-              </Grid2>
-              <Grid2 size={{ md: 12, lg: 10 }} justifyContent="center">
+              </Grid>
+              <Grid size={{ md: 12, lg: 10 }} justifyContent="center">
                 {panelDateCreatedField()}
-              </Grid2>
-              <Grid2 size={{ md: 12, lg: 10 }} justifyContent="center">
+              </Grid>
+              <Grid size={{ md: 12, lg: 10 }} justifyContent="center">
                 {panelDateExpiryField()}
-              </Grid2>
-            </Grid2>
-          </Grid2>
-        </Grid2>
-      </Grid2>
+              </Grid>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       <PageFooterPMT />
     </>

@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Box, Grid2 } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
 import PostSendEmailInvite from '@services/axios/post/postSendEmailInvite/postSendEmailInvite';
@@ -357,7 +357,7 @@ export default function MemberEntry({
   };
 
   return (
-    <Grid2
+    <Grid
       p={2}
       pb={5}
       container
@@ -365,8 +365,8 @@ export default function MemberEntry({
       alignItems="space-evenly"
       justifyContent="space-between"
     >
-      <Grid2 size={{ xs: 7 }}>
-        <Grid2 pt={1} container direction="column" alignItems="stretch" justifyContent="flex-start">
+      <Grid size={{ xs: 7 }}>
+        <Grid pt={1} container direction="column" alignItems="stretch" justifyContent="flex-start">
           {firstNameField()}
           {lastNameField()}
           {emailField()}
@@ -380,11 +380,11 @@ export default function MemberEntry({
               testId="sendInviteButton"
             />
           </Box>
-        </Grid2>
-      </Grid2>
-      <Grid2 size={{ xs: 4 }}>
+        </Grid>
+      </Grid>
+      <Grid size={{ xs: 4 }}>
         <HelpPanel />
-      </Grid2>
-    </Grid2>
+      </Grid>
+    </Grid>
   );
 }

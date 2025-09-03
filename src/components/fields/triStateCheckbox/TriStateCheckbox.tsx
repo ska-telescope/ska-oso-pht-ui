@@ -1,5 +1,5 @@
 import { Checkbox } from '@mui/material';
-import useTheme from '@mui/material/styles/useTheme';
+import { useTheme } from '@mui/material/styles';
 type TriState = 'checked' | 'unchecked' | 'indeterminate';
 
 interface TriStateCheckboxProps {
