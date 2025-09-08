@@ -61,7 +61,7 @@ describe('Creating Observations, Verify spectral average limits, Zoom ', () => {
     // switch to Observation type Zoom
     selectObservationTypeZoom();
   });
-
+  //TODO: Resolve issue selecting subarray
   it.skip(
     'Verify Spectral average limits, Zoom Subarray AA2 (Core only)',
     { jiraKey: 'XTP-71407' },
