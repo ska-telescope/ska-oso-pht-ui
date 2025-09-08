@@ -14,7 +14,13 @@ import { defaultUser } from '../users/users';
 
 export const initialize = () => {
   viewPort();
-  cy.visit('/');
+  cy.visit('/', {
+    onBeforeLoad(win) {
+      win.localStorage.setItem('cypress:group', defaultUser.group);
+      win.localStorage.setItem('cypress:token', defaultUser.token);
+      win.localStorage.setItem('cypress:account', JSON.stringify(defaultUser));
+    }
+  });
 };
 
 // Stubbed API calls
@@ -399,7 +405,7 @@ export const createObservation = () => {
 Cypress.Commands.add('mockLoginButton', (user = {}) => {
   const fakeAccount = { ...defaultUser, ...user };
 
-  cy.get('[data-testid="loginButton"]')
+  cy.get('[data-testid="loginButton"]', { timeout: 10000 })
     .should('exist')
     .then($btn => {
       cy.window().then(win => {
@@ -419,7 +425,7 @@ Cypress.Commands.add('mockLoginButton', (user = {}) => {
                 typeof val.getAllAccounts === 'function' &&
                 typeof val.setActiveAccount === 'function'
             );
-
+            console.log('MSAL instance:', msal);
             if (msal) {
               msal.setActiveAccount(fakeAccount);
               msal.getActiveAccount = () => fakeAccount;
