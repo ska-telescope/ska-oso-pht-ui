@@ -1,10 +1,15 @@
-import { clickUserMenuProposals, clickUserMenuDecisions, initialize } from '../../common/common';
+import { clickUserMenuProposals, clickUserMenuDecisions, initialize, clearLocalStorage } from '../../common/common';
 import { reviewerChairman } from '../users.js';
 
 describe('Review Chairman', () => {
   beforeEach(() => {
     initialize(reviewerChairman);
   });
+
+  afterEach(() => {
+    clearLocalStorage();
+  });
+
   it('Navigate using the dropdown menu', () => {
     clickUserMenuProposals();
     clickUserMenuDecisions();

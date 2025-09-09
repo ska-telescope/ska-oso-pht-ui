@@ -10,7 +10,7 @@ import {
   verifyProposalCreatedAlertFooter,
   verifyMockedProposalOnLandingPageIsVisible,
   mockCreateProposalAPI,
-  initialize
+  initialize, clearLocalStorage
 } from '../common/common';
 import { defaultUser } from '../users/users.js';
 
@@ -19,6 +19,11 @@ describe('Creating Proposal', () => {
     initialize(defaultUser);
     mockCreateProposalAPI();
   });
+
+  afterEach(() => {
+    clearLocalStorage();
+  });
+
   it('Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
     clickAddProposal();
     enterProposalTitle();

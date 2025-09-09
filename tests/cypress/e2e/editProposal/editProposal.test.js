@@ -36,7 +36,7 @@ import {
   verifyProposalCreatedAlertFooter,
   mockEmailAPI,
   clickLoginUser,
-  initialize
+  initialize, clearLocalStorage
 } from '../common/common';
 import { defaultUser } from '../users/users.js';
 
@@ -48,6 +48,10 @@ beforeEach(() => {
   });
   mockEmailAPI();
   createStandardProposalLoggedIn();
+});
+
+afterEach(() => {
+  clearLocalStorage();
 });
 
 describe('Edit Proposal', () => {

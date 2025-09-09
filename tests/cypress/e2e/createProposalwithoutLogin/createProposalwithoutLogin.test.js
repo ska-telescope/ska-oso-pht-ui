@@ -10,17 +10,20 @@ import {
   verifyOnLandingPageNoProposalMsgIsVisible,
   verifyProposalCreatedAlertFooter,
   verifyHomeButtonWarningModal,
-  initialize
+  initializeUserNotLoggedIn, clearLocalStorage
 } from '../common/common';
-import { defaultUser } from '../users/users.js';
 
 describe('Creating Proposal without login', () => {
   beforeEach(() => {
-    initialize(defaultUser);
-    cy.window().then(win => {
-      win.localStorage.setItem('proposal:noLogin', 'true');
-    });
+    // cy.clearLocalStorage();
+    initializeUserNotLoggedIn()
   });
+
+  afterEach(() => {
+    clearLocalStorage();
+  });
+
+
   it('Create a basic proposal without login', () => {
     cy.wait(500);
     clickAddProposal();

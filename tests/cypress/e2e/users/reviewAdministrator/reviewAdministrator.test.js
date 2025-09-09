@@ -3,7 +3,7 @@ import {
   clickUserMenuProposals,
   getSubmittedProposals,
   getReviewers,
-  initialize
+  initialize, clearLocalStorage
 } from '../../common/common';
 import { reviewerAdmin } from '../users.js';
 
@@ -17,6 +17,10 @@ describe('Review Administrator', () => {
     });
     getSubmittedProposals(); // Load mocked proposals fixture
     getReviewers(); // Load mocked reviewers fixture
+  });
+
+  afterEach(() => {
+    clearLocalStorage();
   });
 
   it('Navigate using the dropdown menu', () => {

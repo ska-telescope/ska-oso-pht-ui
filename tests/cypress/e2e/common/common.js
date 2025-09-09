@@ -21,6 +21,21 @@ export const initialize = user => {
   });
 };
 
+export const initializeUserNotLoggedIn = () => {
+  viewPort();
+  cy.visit('/', {
+    onBeforeLoad(win) {
+      win.localStorage.setItem('proposal:noLogin', 'true');
+    }
+  });
+};
+
+export const clearLocalStorage = user => {
+  cy.window().then((win) => {
+    win.localStorage.clear();
+  });
+};
+
 // Stubbed API calls
 // see: https://docs.cypress.io/app/guides/network-requests#Routing
 
