@@ -5,7 +5,7 @@ import {
   clickToSciencePage,
   clickToTargetPage,
   createStandardProposal,
-  initialize
+  initializeAsDefaultUser
 } from '../common/common';
 import {
   verifyContinuumSpectralAverageRangeAA1,
@@ -16,7 +16,7 @@ import {
 } from './observations';
 
 beforeEach(() => {
-  initialize();
+  initializeAsDefaultUser();
   cy.window().then(win => {
     win.localStorage.setItem('proposal:noLogin', 'true');
   });

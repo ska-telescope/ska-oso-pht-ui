@@ -1,8 +1,8 @@
-import { initialize } from '../common/common';
+import { initializeAsDefaultUser } from '../common/common';
 
 describe('Review Panel', () => {
   beforeEach(() => {
-    initialize();
+    initializeAsDefaultUser();
   });
   /* Create review panel functionality currently unavailable
   it('Create a new review panel', () => {

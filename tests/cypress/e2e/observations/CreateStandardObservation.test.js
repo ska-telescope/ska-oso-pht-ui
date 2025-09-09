@@ -1,6 +1,10 @@
-import { createObservation, createStandardProposal, initialize } from '../common/common';
+import {
+  createObservation,
+  createStandardProposal,
+  initializeAsDefaultUser
+} from '../common/common';
 beforeEach(() => {
-  initialize();
+  initializeAsDefaultUser();
   cy.window().then(win => {
     win.localStorage.setItem('proposal:noLogin', 'true');
   });

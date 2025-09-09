@@ -10,15 +10,48 @@ import {
   getCheckboxInRow,
   viewPort
 } from '../../fixtures/utils/cypress';
-import { defaultUser } from '../users/users';
+import { defaultUser, reviewerAdmin, reviewerChairman, reviewerScience } from '../users/users';
 
-export const initialize = () => {
+export const initializeAsDefaultUser = () => {
   viewPort();
   cy.visit('/', {
     onBeforeLoad(win) {
       win.localStorage.setItem('cypress:group', defaultUser.group);
       win.localStorage.setItem('cypress:token', defaultUser.token);
       win.localStorage.setItem('cypress:account', JSON.stringify(defaultUser));
+    }
+  });
+};
+
+export const initializeAsReviewerAdmin = () => {
+  viewPort();
+  cy.visit('/', {
+    onBeforeLoad(win) {
+      win.localStorage.setItem('cypress:group', reviewerAdmin.group);
+      win.localStorage.setItem('cypress:token', reviewerAdmin.token);
+      win.localStorage.setItem('cypress:account', JSON.stringify(reviewerAdmin));
+    }
+  });
+};
+
+export const initializeAsReviewerChairman = () => {
+  viewPort();
+  cy.visit('/', {
+    onBeforeLoad(win) {
+      win.localStorage.setItem('cypress:group', reviewerChairman.group);
+      win.localStorage.setItem('cypress:token', reviewerChairman.token);
+      win.localStorage.setItem('cypress:account', JSON.stringify(reviewerChairman));
+    }
+  });
+};
+
+export const initializeAsReviewerScience = () => {
+  viewPort();
+  cy.visit('/', {
+    onBeforeLoad(win) {
+      win.localStorage.setItem('cypress:group', reviewerScience.group);
+      win.localStorage.setItem('cypress:token', reviewerScience.token);
+      win.localStorage.setItem('cypress:account', JSON.stringify(reviewerScience));
     }
   });
 };
