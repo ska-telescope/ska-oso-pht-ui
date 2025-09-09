@@ -8,6 +8,11 @@ import {
   initialize
 } from '../common/common';
 import {
+  selectObservationTypeZoom,
+  selectSubArrayAA1,
+  selectSubArrayAA2,
+  selectSubArrayAA2Core,
+  selectSubArrayCustom,
   verifyContinuumSpectralAverageRangeAA1,
   verifyContinuumSpectralAverageRangeAA2,
   verifyContinuumSpectralAverageRangeAA4,
@@ -16,7 +21,7 @@ import {
 } from './observations';
 import { defaultUser } from '../users/users.js';
 
-beforeEach(() => {
+function commonConfiguration() {
   initialize(defaultUser);
   cy.window().then(win => {
     win.localStorage.setItem('proposal:noLogin', 'true');
@@ -29,14 +34,50 @@ beforeEach(() => {
   clickToObservationPage();
   //add default observation
   clickObservationSetup();
+}
+
+describe('Creating Observations, Verify spectral average limits, Continuum', () => {
+  beforeEach(() => {
+    commonConfiguration();
+  });
+
+  it('Verify Spectral average limits, Continuum Subarray AA4', { jiraKey: 'XTP-71407' }, () => {
+    verifyContinuumSpectralAverageRangeAA4();
+  });
+  it('Verify Spectral average limits, Continuum Subarray AA2', { jiraKey: 'XTP-71407' }, () => {
+    //switch to subarray AA2
+    selectSubArrayAA2();
+    verifyContinuumSpectralAverageRangeAA2();
+  });
+
+  it('Verify Spectral average limits, Continuum Subarray AA1', { jiraKey: 'XTP-71407' }, () => {
+    //switch to subarray AA1
+    selectSubArrayAA1();
+    verifyContinuumSpectralAverageRangeAA1();
+  });
 });
 
-describe('Creating Observations', () => {
-  it('Verify Spectral average limits', { jiraKey: 'XTP-71407' }, () => {
-    verifyContinuumSpectralAverageRangeAA4();
-    verifyContinuumSpectralAverageRangeAA2();
-    verifyContinuumSpectralAverageRangeAA1();
-    // TODO MUI Update verifyZoomSpectralAverageRangeAA2Core();
-    // TODO MUI Update verifyZoomSpectralAverageRangeCustom();
+//TODO: Resolve issue selecting subarray
+describe('Creating Observations, Verify spectral average limits, Zoom ', () => {
+  beforeEach(() => {
+    commonConfiguration();
+    // switch to Observation type Zoom
+    selectObservationTypeZoom();
+  });
+
+  it.skip(
+    'Verify Spectral average limits, Zoom Subarray AA2 (Core only)',
+    { jiraKey: 'XTP-71407' },
+    () => {
+      // switch to subarray AA2 Core
+      selectSubArrayAA2Core();
+      verifyZoomSpectralAverageRangeAA2Core();
+    }
+  );
+
+  it.skip('Verify Spectral average limits, Zoom Subarray Custom', { jiraKey: 'XTP-71407' }, () => {
+    // switch to subarray Custom
+    selectSubArrayCustom();
+    verifyZoomSpectralAverageRangeCustom();
   });
 });
