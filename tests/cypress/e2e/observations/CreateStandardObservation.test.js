@@ -5,7 +5,7 @@ import {
   initializeUserNotLoggedIn
 } from '../common/common';
 beforeEach(() => {
-  initializeUserNotLoggedIn()
+  initializeUserNotLoggedIn();
   createStandardProposal();
 });
 

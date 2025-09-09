@@ -22,7 +22,7 @@ import {
 } from './observations';
 
 function commonConfiguration() {
-  initializeUserNotLoggedIn()
+  initializeUserNotLoggedIn();
   createStandardProposal();
   //navigate to observation page
   clickToGeneralPage();

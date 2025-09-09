@@ -1,4 +1,9 @@
-import { clearLocalStorage, clickUserMenuProposals, clickUserMenuReviews, initialize } from '../../common/common';
+import {
+  clearLocalStorage,
+  clickUserMenuProposals,
+  clickUserMenuReviews,
+  initialize
+} from '../../common/common';
 import { reviewerScience } from '../users';
 
 describe('Reviewer', () => {

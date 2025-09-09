@@ -30,8 +30,8 @@ export const initializeUserNotLoggedIn = () => {
   });
 };
 
-export const clearLocalStorage = user => {
-  cy.window().then((win) => {
+export const clearLocalStorage = () => {
+  cy.window().then(win => {
     win.localStorage.clear();
   });
 };

@@ -10,14 +10,14 @@ import {
   createStandardProposal,
   verifyObservationInTable,
   clickAddObservationEntry,
-  initializeUserNotLoggedIn, clearLocalStorage
+  initializeUserNotLoggedIn,
+  clearLocalStorage
 } from '../common/common';
 
 import sensitivityCalculatorResults from '../../fixtures/sensitivityCalculatorResults.json';
-import { defaultUser } from '../users/users.js';
 
 beforeEach(() => {
-  initializeUserNotLoggedIn()
+  initializeUserNotLoggedIn();
   cy.fixture('sensitivityCalculatorResults.json').as('sensitivityCalculatorResults');
   createStandardProposal();
   //navigate to observation page

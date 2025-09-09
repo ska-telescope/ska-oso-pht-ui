@@ -1,4 +1,9 @@
-import { clickUserMenuProposals, clickUserMenuDecisions, initialize, clearLocalStorage } from '../../common/common';
+import {
+  clickUserMenuProposals,
+  clickUserMenuDecisions,
+  initialize,
+  clearLocalStorage
+} from '../../common/common';
 import { reviewerChairman } from '../users.js';
 
 describe('Review Chairman', () => {

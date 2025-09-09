@@ -36,7 +36,8 @@ import {
   verifyProposalCreatedAlertFooter,
   mockEmailAPI,
   clickLoginUser,
-  initialize, clearLocalStorage
+  initialize,
+  clearLocalStorage
 } from '../common/common';
 import { defaultUser } from '../users/users.js';
 

@@ -3,7 +3,8 @@ import {
   clickUserMenuProposals,
   getSubmittedProposals,
   getReviewers,
-  initialize, clearLocalStorage
+  initialize,
+  clearLocalStorage
 } from '../../common/common';
 import { reviewerAdmin } from '../users.js';
 
