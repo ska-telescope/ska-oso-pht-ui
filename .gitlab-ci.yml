@@ -117,9 +117,6 @@ include:
   # Tag Based GitLab Release Management
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/release.gitlab-ci.yml'
-    # .post step finalisers eg: badges
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/finaliser.gitlab-ci.yml'
   # deploy steps
   # - project: 'ska-telescope/templates-repository'
   #   file: 'gitlab-ci/includes/deploy.gitlab-ci.yml'
