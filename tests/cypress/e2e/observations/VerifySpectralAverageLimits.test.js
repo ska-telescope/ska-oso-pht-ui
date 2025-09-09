@@ -1,11 +1,12 @@
 import {
+  clearLocalStorage,
   clickObservationSetup,
   clickToGeneralPage,
   clickToObservationPage,
   clickToSciencePage,
   clickToTargetPage,
   createStandardProposal,
-  initialize
+  initializeUserNotLoggedIn
 } from '../common/common';
 import {
   selectObservationTypeZoom,
@@ -21,10 +22,7 @@ import {
 } from './observations';
 
 function commonConfiguration() {
-  initialize();
-  cy.window().then(win => {
-    win.localStorage.setItem('proposal:noLogin', 'true');
-  });
+  initializeUserNotLoggedIn();
   createStandardProposal();
   //navigate to observation page
   clickToGeneralPage();
@@ -34,9 +32,14 @@ function commonConfiguration() {
   //add default observation
   clickObservationSetup();
 }
+
 describe('Creating Observations, Verify spectral average limits, Continuum', () => {
   beforeEach(() => {
     commonConfiguration();
+  });
+
+  afterEach(() => {
+    clearLocalStorage();
   });
 
   it('Verify Spectral average limits, Continuum Subarray AA4', { jiraKey: 'XTP-71407' }, () => {
@@ -55,13 +58,18 @@ describe('Creating Observations, Verify spectral average limits, Continuum', () 
   });
 });
 
+//TODO: Resolve issue selecting subarray
 describe('Creating Observations, Verify spectral average limits, Zoom ', () => {
   beforeEach(() => {
     commonConfiguration();
     // switch to Observation type Zoom
     selectObservationTypeZoom();
   });
-  //TODO: Resolve issue selecting subarray
+
+  afterEach(() => {
+    win.localStorage.clear();
+  });
+
   it.skip(
     'Verify Spectral average limits, Zoom Subarray AA2 (Core only)',
     { jiraKey: 'XTP-71407' },

@@ -8,18 +8,16 @@ import {
   clickToSciencePage,
   clickToTargetPage,
   createStandardProposal,
-  initialize,
   verifyObservationInTable,
-  clickAddObservationEntry
+  clickAddObservationEntry,
+  initializeUserNotLoggedIn,
+  clearLocalStorage
 } from '../common/common';
 
 import sensitivityCalculatorResults from '../../fixtures/sensitivityCalculatorResults.json';
 
 beforeEach(() => {
-  initialize();
-  cy.window().then(win => {
-    win.localStorage.setItem('proposal:noLogin', 'true');
-  });
+  initializeUserNotLoggedIn();
   cy.fixture('sensitivityCalculatorResults.json').as('sensitivityCalculatorResults');
   createStandardProposal();
   //navigate to observation page
@@ -30,6 +28,10 @@ beforeEach(() => {
   addTargetUsingCoordinates();
   clickToAddTarget();
   clickToObservationPage();
+});
+
+afterEach(() => {
+  clearLocalStorage();
 });
 
 const addTargetUsingCoordinates = () => {

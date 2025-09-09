@@ -1,8 +1,13 @@
-import { initialize } from '../common/common';
+import { defaultUser } from '../users/users.js';
+import { clearLocalStorage, initialize } from '../common/common.js';
 
 describe('Review Panel', () => {
   beforeEach(() => {
-    initialize();
+    initialize(defaultUser);
+  });
+
+  afterEach(() => {
+    clearLocalStorage();
   });
   /* Create review panel functionality currently unavailable
   it('Create a new review panel', () => {

@@ -21,7 +21,6 @@ import {
   clickToTeamPage,
   clickToTechnicalPage,
   createStandardProposal,
-  initialize,
   pageConfirmed,
   selectCosmology,
   validateProposal,
@@ -36,20 +35,24 @@ import {
   verifyMockedProposalOnLandingPageIsVisible,
   verifyProposalCreatedAlertFooter,
   mockEmailAPI,
-  clickLoginUser
+  clickLoginUser,
+  initialize,
+  clearLocalStorage
 } from '../common/common';
 import { defaultUser } from '../users/users.js';
 
 beforeEach(() => {
-  initialize();
+  initialize(defaultUser);
+  mockCreateProposalAPI();
   cy.window().then(win => {
     win.localStorage.setItem('cypress:defaultUserLoggedIn', 'true');
   });
-  cy.mockLoginButton(defaultUser);
-  clickLoginUser();
-  mockCreateProposalAPI();
   mockEmailAPI();
   createStandardProposalLoggedIn();
+});
+
+afterEach(() => {
+  clearLocalStorage();
 });
 
 describe('Edit Proposal', () => {
