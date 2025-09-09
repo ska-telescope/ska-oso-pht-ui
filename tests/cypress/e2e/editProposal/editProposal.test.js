@@ -21,7 +21,6 @@ import {
   clickToTeamPage,
   clickToTechnicalPage,
   createStandardProposal,
-  initializeAsDefaultUser,
   pageConfirmed,
   selectCosmology,
   validateProposal,
@@ -36,12 +35,13 @@ import {
   verifyMockedProposalOnLandingPageIsVisible,
   verifyProposalCreatedAlertFooter,
   mockEmailAPI,
-  clickLoginUser
+  clickLoginUser,
+  initialize
 } from '../common/common';
 import { defaultUser } from '../users/users.js';
 
 beforeEach(() => {
-  initializeAsDefaultUser();
+  initialize(defaultUser);
   mockCreateProposalAPI();
   cy.window().then(win => {
     win.localStorage.setItem('cypress:defaultUserLoggedIn', 'true');

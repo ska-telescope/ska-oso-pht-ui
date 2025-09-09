@@ -1,10 +1,7 @@
-import {
-  createObservation,
-  createStandardProposal,
-  initializeAsDefaultUser
-} from '../common/common';
+import { createObservation, createStandardProposal, initialize } from '../common/common';
+import { defaultUser } from '../users/users.js';
 beforeEach(() => {
-  initializeAsDefaultUser();
+  initialize(defaultUser);
   cy.window().then(win => {
     win.localStorage.setItem('proposal:noLogin', 'true');
   });

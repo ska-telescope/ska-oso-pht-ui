@@ -1,12 +1,9 @@
-import {
-  clickUserMenuProposals,
-  clickUserMenuDecisions,
-  initializeAsReviewerChairman
-} from '../../common/common';
+import { clickUserMenuProposals, clickUserMenuDecisions, initialize } from '../../common/common';
+import { reviewerChairman } from '../users.js';
 
 describe('Review Chairman', () => {
   beforeEach(() => {
-    initializeAsReviewerChairman();
+    initialize(reviewerChairman);
   });
   it('Navigate using the dropdown menu', () => {
     clickUserMenuProposals();

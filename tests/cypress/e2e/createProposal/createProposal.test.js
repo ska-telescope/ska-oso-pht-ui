@@ -4,20 +4,19 @@ import {
   clickHome,
   clickProposalTypePrincipleInvestigator,
   clickSubProposalTypeTargetOfOpportunity,
-  initializeAsDefaultUser,
   enterProposalTitle,
   verifyOnLandingPage,
   verifyOnLandingPageFilterIsVisible,
   verifyProposalCreatedAlertFooter,
-  clickLoginUser,
   verifyMockedProposalOnLandingPageIsVisible,
-  mockCreateProposalAPI
+  mockCreateProposalAPI,
+  initialize
 } from '../common/common';
-import { defaultUser, reviewerChairman } from '../users/users.js';
+import { defaultUser } from '../users/users.js';
 
 describe('Creating Proposal', () => {
   beforeEach(() => {
-    initializeAsDefaultUser();
+    initialize(defaultUser);
     mockCreateProposalAPI();
   });
   it('Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {

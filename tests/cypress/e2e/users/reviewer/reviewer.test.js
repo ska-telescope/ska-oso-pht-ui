@@ -1,13 +1,9 @@
-import {
-  clickUserMenuProposals,
-  clickUserMenuReviews,
-  initializeAsReviewerScience
-} from '../../common/common';
+import { clickUserMenuProposals, clickUserMenuReviews, initialize } from '../../common/common';
 import { reviewerScience } from '../users';
 
 describe('Reviewer', () => {
   beforeEach(() => {
-    initializeAsReviewerScience();
+    initialize(reviewerScience);
   });
   it('Navigate using the dropdown menu', () => {
     clickUserMenuProposals();

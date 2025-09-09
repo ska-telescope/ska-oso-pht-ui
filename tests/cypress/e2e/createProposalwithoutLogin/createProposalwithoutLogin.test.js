@@ -6,16 +6,17 @@ import {
   clickHomeWarningConfirmation,
   clickProposalTypePrincipleInvestigator,
   clickSubProposalTypeTargetOfOpportunity,
-  initializeAsDefaultUser,
   enterProposalTitle,
   verifyOnLandingPageNoProposalMsgIsVisible,
   verifyProposalCreatedAlertFooter,
-  verifyHomeButtonWarningModal
+  verifyHomeButtonWarningModal,
+  initialize
 } from '../common/common';
+import { defaultUser } from '../users/users.js';
 
 describe('Creating Proposal without login', () => {
   beforeEach(() => {
-    initializeAsDefaultUser();
+    initialize(defaultUser);
     cy.window().then(win => {
       win.localStorage.setItem('proposal:noLogin', 'true');
     });

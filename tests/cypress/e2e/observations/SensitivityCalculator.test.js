@@ -8,15 +8,16 @@ import {
   clickToSciencePage,
   clickToTargetPage,
   createStandardProposal,
-  initializeAsDefaultUser,
   verifyObservationInTable,
-  clickAddObservationEntry
+  clickAddObservationEntry,
+  initialize
 } from '../common/common';
 
 import sensitivityCalculatorResults from '../../fixtures/sensitivityCalculatorResults.json';
+import { defaultUser } from '../users/users.js';
 
 beforeEach(() => {
-  initializeAsDefaultUser();
+  initialize(defaultUser);
   cy.window().then(win => {
     win.localStorage.setItem('proposal:noLogin', 'true');
   });

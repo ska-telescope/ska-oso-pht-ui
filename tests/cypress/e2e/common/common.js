@@ -10,48 +10,13 @@ import {
   getCheckboxInRow,
   viewPort
 } from '../../fixtures/utils/cypress';
-import { defaultUser, reviewerAdmin, reviewerChairman, reviewerScience } from '../users/users';
-
-export const initializeAsDefaultUser = () => {
+export const initialize = user => {
   viewPort();
   cy.visit('/', {
     onBeforeLoad(win) {
-      win.localStorage.setItem('cypress:group', defaultUser.group);
-      win.localStorage.setItem('cypress:token', defaultUser.token);
-      win.localStorage.setItem('cypress:account', JSON.stringify(defaultUser));
-    }
-  });
-};
-
-export const initializeAsReviewerAdmin = () => {
-  viewPort();
-  cy.visit('/', {
-    onBeforeLoad(win) {
-      win.localStorage.setItem('cypress:group', reviewerAdmin.group);
-      win.localStorage.setItem('cypress:token', reviewerAdmin.token);
-      win.localStorage.setItem('cypress:account', JSON.stringify(reviewerAdmin));
-    }
-  });
-};
-
-export const initializeAsReviewerChairman = () => {
-  viewPort();
-  cy.visit('/', {
-    onBeforeLoad(win) {
-      win.localStorage.setItem('cypress:group', reviewerChairman.group);
-      win.localStorage.setItem('cypress:token', reviewerChairman.token);
-      win.localStorage.setItem('cypress:account', JSON.stringify(reviewerChairman));
-    }
-  });
-};
-
-export const initializeAsReviewerScience = () => {
-  viewPort();
-  cy.visit('/', {
-    onBeforeLoad(win) {
-      win.localStorage.setItem('cypress:group', reviewerScience.group);
-      win.localStorage.setItem('cypress:token', reviewerScience.token);
-      win.localStorage.setItem('cypress:account', JSON.stringify(reviewerScience));
+      win.localStorage.setItem('cypress:group', user.group);
+      win.localStorage.setItem('cypress:token', user.token);
+      win.localStorage.setItem('cypress:account', JSON.stringify(user));
     }
   });
 };
@@ -430,50 +395,3 @@ export const createObservation = () => {
   clickAddObservationEntry();
   verifyUnlinkedObservationInTable();
 };
-
-/*-------------------------- SHOULD BE MOVED OUT OF HERE AT SOME POINT -----------------------------*/
-
-// Note that it is possible to pass in the user object to this function to mock a specific user
-
-Cypress.Commands.add('mockLoginButton', (user = {}) => {
-  const fakeAccount = { ...defaultUser, ...user };
-
-  cy.get('[data-testid="loginButton"]', { timeout: 10000 })
-    .should('exist')
-    .then($btn => {
-      cy.window().then(win => {
-        const loginButton = $btn[0];
-        loginButton.onclick = null;
-
-        loginButton.addEventListener(
-          'click',
-          e => {
-            e.preventDefault();
-            e.stopImmediatePropagation();
-
-            // Try to find the real MSAL instance
-            const msal = Object.values(win).find(
-              val =>
-                val &&
-                typeof val.getAllAccounts === 'function' &&
-                typeof val.setActiveAccount === 'function'
-            );
-            console.log('MSAL instance:', msal);
-            if (msal) {
-              msal.setActiveAccount(fakeAccount);
-              msal.getActiveAccount = () => fakeAccount;
-              msal.getAllAccounts = () => [fakeAccount];
-            }
-
-            win.localStorage.setItem('cypress:group', fakeAccount.group);
-            win.localStorage.setItem('cypress:token', fakeAccount.token);
-            win.localStorage.setItem('cypress:account', JSON.stringify(fakeAccount));
-
-            // Trigger a navigation to force re-evaluation
-            win.location.href = '/';
-          },
-          { once: true }
-        );
-      });
-    });
-});

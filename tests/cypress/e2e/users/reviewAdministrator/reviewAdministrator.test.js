@@ -1,19 +1,17 @@
-import { reviewerAdmin } from '../users';
 import {
-  clickLoginUser,
   clickUserMenuPanels,
   clickUserMenuProposals,
-  initializeAsDefaultUser,
   getSubmittedProposals,
   getReviewers,
-  initializeAsReviewerAdmin
+  initialize
 } from '../../common/common';
+import { reviewerAdmin } from '../users.js';
 
 // const panelName = Math.floor(Math.random() * 10000000).toString(); // name should be unique or endpoint will fail
 
 describe('Review Administrator', () => {
   beforeEach(() => {
-    initializeAsReviewerAdmin();
+    initialize(reviewerAdmin);
     cy.window().then(win => {
       win.localStorage.setItem('USE_LOCAL_DATA', 'true');
     });
