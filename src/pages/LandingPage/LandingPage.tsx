@@ -363,7 +363,7 @@ export default function LandingPage() {
   const addProposalButton = () => (
     <AddButton
       action={clickFunction}
-      testId="addProposalButton"
+      testId={loggedIn ? 'addProposalButton' : 'addMockButton'}
       title={loggedIn ? 'addProposal.label' : 'addMockProposal.label'}
       toolTip={loggedIn ? 'addProposal.toolTip' : 'addMockProposal.toolTip'}
     />
