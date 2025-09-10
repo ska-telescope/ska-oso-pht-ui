@@ -45,7 +45,7 @@
   },
   "addMockProposal": {
     "short": "Add",
-    "label": "Add Mock Proposal",
+    "label": "Add Mock",
     "success": "Mock Proposal added with unique identifier ",
     "toolTip": "Click to add a new mock proposal."
   },

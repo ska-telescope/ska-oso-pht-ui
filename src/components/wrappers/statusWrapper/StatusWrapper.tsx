@@ -24,7 +24,6 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
   const disableIcons = () => {
     if (!loggedIn) {
       switch (pageName()) {
-        case 'Title':
         case 'Target':
         case 'Observation':
           return false;
