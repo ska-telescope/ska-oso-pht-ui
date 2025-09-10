@@ -104,10 +104,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       return `addBtn.label`;
     }
     if (usedPageNo === -1) {
-      return loggedIn ? `createBtn.label` : `page.4.title`;
-    }
-    if (!loggedIn && usedPageNo === 0) {
-      return `page.4.title`;
+      return `createBtn.label`;
     }
     return `page.${usedPageNo + 1}.title`;
   };

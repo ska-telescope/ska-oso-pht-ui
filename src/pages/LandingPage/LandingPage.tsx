@@ -351,7 +351,11 @@ export default function LandingPage() {
   const filteredData = proposals ? filterProposals() : [];
 
   const clickFunction = () => {
-    navigate(PATH[1]);
+    if (!loggedIn) {
+      navigate(NAV[4]);
+    } else {
+      navigate(PATH[1]);
+    }
   };
 
   const pageDescription = () => (
