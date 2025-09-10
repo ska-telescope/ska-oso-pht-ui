@@ -7,7 +7,7 @@
   "intlNumber": "{{val, number}}",
   "localData": "LOCAL DATA",
   "yes": "Yes",
-  "yes with revision": "Yes with Revision",
+  "yesWithRevision": "Yes with Revision",
   "maybe": "Maybe",
   "no": "No",
   "none": "None",
@@ -766,7 +766,7 @@
     },
     "technical": {
       "label_one": "Technical Review",
-      "label_other": "Technical Reviews"
+      "label_multiple": "Technical Reviews"
     }
   },
   "reviewers": {
