@@ -145,8 +145,15 @@
     "label": "Confirm Submission"
   },
   "conflict": {
-    "label": "Conflict",
-    "tooltip": "Indicate that there is a conflict of interest with this proposal. This will prevent the user from reviewing this proposal."
+    "button": "Confirm conflict declaration",
+    "label": "Conflict Declaration",
+    "reason": {
+      "0": "I have no conflict of interest",
+      "1": "I am a co-I on this science idea",
+      "2": "I am a current/recent collaborator of the author(s)",
+      "3": "Other reasons prevent me from rendering a fair and impartial judgement"
+    },
+    "tooltip": "Indicate whether there is a conflict of interest with this proposal"
   },
   "continuumUnits": {
     "help": "Enter the continuum desired bandwidth, which should be in the same units as the observing band selected."

@@ -38,7 +38,8 @@ import PostProposalReview from '@/services/axios/post/postProposalReview/postPro
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
-import { getUserId } from '@/utils/aaa/aaaUtils';
+import { getUserId, isReviewerScience, isReviewerTechnical } from '@/utils/aaa/aaaUtils';
+import ConflictConfirmation from '@/components/alerts/conflictConfirmation/ConflictConfirmation';
 
 export default function ReviewListPage() {
   const { t } = useTranslation('pht');
@@ -49,7 +50,11 @@ export default function ReviewListPage() {
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
-
+  //
+  const [conflictConfirm, setConflictConfirm] = React.useState(false);
+  const [conflictRow, setConflictRow] = React.useState<{ proposal: Proposal } | null>(null);
+  const [conflictRoute, setConflictRoute] = React.useState('');
+  //
   const [reset, setReset] = React.useState(false);
   const [panelData, setPanelData] = React.useState<Panel[]>([]);
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
@@ -183,8 +188,29 @@ export default function ReviewListPage() {
 
   /*---------------------------------------------------------------------------*/
 
-  const theIconClicked = (row: any, route: string) =>
-    navigate(route, { replace: true, state: row });
+  const conflictConfirmation = () =>
+    conflictRow ? (
+      <ConflictConfirmation
+        proposal={conflictRow.proposal}
+        open={conflictConfirm}
+        onClose={() => {
+          return;
+        }}
+        onConfirm={noConflictConfirmed}
+        onConfirmLabel={t('conflict.button')}
+        onConfirmToolTip={t('conflict.tooltip')}
+      />
+    ) : (
+      <></>
+    );
+
+  const noConflictConfirmed = () => navigate(conflictRoute, { replace: true, state: conflictRow });
+
+  const theIconClicked = (row: any, route: string) => {
+    setConflictConfirm(true);
+    setConflictRow(row);
+    setConflictRoute(route);
+  };
   const scienceIconClicked = (row: any) => theIconClicked(row, PMT[5]);
   const technicalIconClicked = (row: any) => theIconClicked(row, PMT[6]);
 
@@ -203,12 +229,15 @@ export default function ReviewListPage() {
     sciReview: { status: string };
   }) => {
     return (
-      row?.sciReview && isFeasible(row) && row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED
+      isReviewerScience() &&
+      row?.sciReview &&
+      isFeasible(row) &&
+      row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED
     );
   };
 
   const canEditTechnical = (tecReview: { status: string }) =>
-    tecReview && tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED;
+    isReviewerTechnical() && tecReview && tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED;
 
   const hasTechnicalComments = (review: any) =>
     feasibleYes(review) ? true : review?.comments?.length > 0;
@@ -225,13 +254,6 @@ export default function ReviewListPage() {
       hasTechnicalComments(row?.tecReview);
 
     return sciRec || tecRec;
-  };
-
-  const colId = {
-    field: 'prslId',
-    headerName: t('proposalId.label'),
-    width: 200,
-    renderCell: (e: any) => e.row.proposal?.id
   };
 
   const colTitle = {
@@ -377,7 +399,6 @@ export default function ReviewListPage() {
 
   const stdColumns = [
     ...[
-      colId,
       colTitle,
       colScienceCategory,
       colConflict,
@@ -502,6 +523,7 @@ export default function ReviewListPage() {
         </Grid>
       </Grid>
       <PageFooterPMT />
+      {conflictConfirm && conflictConfirmation()}
     </>
   );
 }
