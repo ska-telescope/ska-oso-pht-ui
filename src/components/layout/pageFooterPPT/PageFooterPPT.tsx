@@ -106,16 +106,27 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     if (usedPageNo === -1) {
       return loggedIn ? `createBtn.label` : `page.4.title`;
     }
+    if (!loggedIn && usedPageNo === 0) {
+      return `page.4.title`;
+    }
     return `page.${usedPageNo + 1}.title`;
   };
 
-  const prevLabel = () => `page.${usedPageNo - 1}.title`;
+  const prevLabel = () =>
+    !loggedIn && usedPageNo === 4 ? `page.0.title` : `page.${usedPageNo - 1}.title`;
 
-  const prevPageNav = () => (usedPageNo > 0 ? navigate(NAV[usedPageNo - 1]) : '');
+  const prevPageNav = () =>
+    !loggedIn && usedPageNo === 4
+      ? navigate(NAV[0])
+      : usedPageNo > 0
+      ? navigate(NAV[usedPageNo - 1])
+      : '';
 
   const nextPageNav = () =>
     !loggedIn && usedPageNo === 5
       ? ''
+      : !loggedIn && usedPageNo === 0
+      ? navigate(NAV[4])
       : usedPageNo < NAV.length
       ? navigate(NAV[usedPageNo + 1])
       : '';
