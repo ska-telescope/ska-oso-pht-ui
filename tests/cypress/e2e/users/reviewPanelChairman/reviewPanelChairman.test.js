@@ -1,25 +1,26 @@
 import {
-  clickLoginUser,
   clickUserMenuProposals,
   clickUserMenuDecisions,
-  initialize
+  initialize,
+  clearLocalStorage
 } from '../../common/common';
-import { reviewerChairman } from '../users';
+import { reviewerChairman } from '../users.js';
 
 describe('Review Chairman', () => {
   beforeEach(() => {
-    initialize();
-    cy.mockLoginButton(reviewerChairman);
+    initialize(reviewerChairman);
   });
+
+  afterEach(() => {
+    clearLocalStorage();
+  });
+
   it('Navigate using the dropdown menu', () => {
-    clickLoginUser();
     clickUserMenuProposals();
     clickUserMenuDecisions();
     clickUserMenuProposals();
   });
   it('Make a review decision', () => {
-    clickLoginUser();
-
     // TODO: implement the function as doesn't exist yet
     // clickUserMenuDecisions();
     // TODO : Perhaps do some stuff in here ?

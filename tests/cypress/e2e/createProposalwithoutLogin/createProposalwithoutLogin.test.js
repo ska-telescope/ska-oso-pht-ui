@@ -6,20 +6,23 @@ import {
   clickHomeWarningConfirmation,
   clickProposalTypePrincipleInvestigator,
   clickSubProposalTypeTargetOfOpportunity,
-  initialize,
   enterProposalTitle,
   verifyOnLandingPageNoProposalMsgIsVisible,
   verifyProposalCreatedAlertFooter,
-  verifyHomeButtonWarningModal
+  verifyHomeButtonWarningModal,
+  initializeUserNotLoggedIn,
+  clearLocalStorage
 } from '../common/common';
 
 describe('Creating Proposal without login', () => {
   beforeEach(() => {
-    initialize();
-    cy.window().then(win => {
-      win.localStorage.setItem('proposal:noLogin', 'true');
-    });
+    initializeUserNotLoggedIn();
   });
+
+  afterEach(() => {
+    clearLocalStorage();
+  });
+
   it('Create a basic proposal without login', () => {
     cy.wait(500);
     clickAddProposal();

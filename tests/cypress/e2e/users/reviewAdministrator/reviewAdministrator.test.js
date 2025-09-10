@@ -1,25 +1,27 @@
-import { reviewerAdmin } from '../users';
 import {
-  clickLoginUser,
   clickUserMenuPanels,
   clickUserMenuProposals,
-  initialize,
   getSubmittedProposals,
-  getReviewers
+  getReviewers,
+  initialize,
+  clearLocalStorage
 } from '../../common/common';
+import { reviewerAdmin } from '../users.js';
 
 // const panelName = Math.floor(Math.random() * 10000000).toString(); // name should be unique or endpoint will fail
 
 describe('Review Administrator', () => {
   beforeEach(() => {
-    initialize();
+    initialize(reviewerAdmin);
     cy.window().then(win => {
       win.localStorage.setItem('USE_LOCAL_DATA', 'true');
     });
-    cy.mockLoginButton(reviewerAdmin);
     getSubmittedProposals(); // Load mocked proposals fixture
     getReviewers(); // Load mocked reviewers fixture
-    clickLoginUser();
+  });
+
+  afterEach(() => {
+    clearLocalStorage();
   });
 
   it('Navigate using the dropdown menu', () => {

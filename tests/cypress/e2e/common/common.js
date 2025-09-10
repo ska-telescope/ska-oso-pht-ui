@@ -10,11 +10,30 @@ import {
   getCheckboxInRow,
   viewPort
 } from '../../fixtures/utils/cypress';
-import { defaultUser } from '../users/users';
-
-export const initialize = () => {
+export const initialize = user => {
   viewPort();
-  cy.visit('/');
+  cy.visit('/', {
+    onBeforeLoad(win) {
+      win.localStorage.setItem('cypress:group', user.group);
+      win.localStorage.setItem('cypress:token', user.token);
+      win.localStorage.setItem('cypress:account', JSON.stringify(user));
+    }
+  });
+};
+
+export const initializeUserNotLoggedIn = () => {
+  viewPort();
+  cy.visit('/', {
+    onBeforeLoad(win) {
+      win.localStorage.setItem('proposal:noLogin', 'true');
+    }
+  });
+};
+
+export const clearLocalStorage = () => {
+  cy.window().then(win => {
+    win.localStorage.clear();
+  });
 };
 
 // Stubbed API calls
@@ -391,50 +410,3 @@ export const createObservation = () => {
   clickAddObservationEntry();
   verifyUnlinkedObservationInTable();
 };
-
-/*-------------------------- SHOULD BE MOVED OUT OF HERE AT SOME POINT -----------------------------*/
-
-// Note that it is possible to pass in the user object to this function to mock a specific user
-
-Cypress.Commands.add('mockLoginButton', (user = {}) => {
-  const fakeAccount = { ...defaultUser, ...user };
-
-  cy.get('[data-testid="loginButton"]')
-    .should('exist')
-    .then($btn => {
-      cy.window().then(win => {
-        const loginButton = $btn[0];
-        loginButton.onclick = null;
-
-        loginButton.addEventListener(
-          'click',
-          e => {
-            e.preventDefault();
-            e.stopImmediatePropagation();
-
-            // Try to find the real MSAL instance
-            const msal = Object.values(win).find(
-              val =>
-                val &&
-                typeof val.getAllAccounts === 'function' &&
-                typeof val.setActiveAccount === 'function'
-            );
-
-            if (msal) {
-              msal.setActiveAccount(fakeAccount);
-              msal.getActiveAccount = () => fakeAccount;
-              msal.getAllAccounts = () => [fakeAccount];
-            }
-
-            win.localStorage.setItem('cypress:group', fakeAccount.group);
-            win.localStorage.setItem('cypress:token', fakeAccount.token);
-            win.localStorage.setItem('cypress:account', JSON.stringify(fakeAccount));
-
-            // Trigger a navigation to force re-evaluation
-            win.location.href = '/';
-          },
-          { once: true }
-        );
-      });
-    });
-});

@@ -1,30 +1,20 @@
-export const verifyContinuumSpectralAverageRange = value => {
+export const verifySpectralAverageRange = value => {
   enterSpectralAverageValue(0);
   verifySpectralAverageRangeError();
   enterSpectralAverageValue(value);
   verifySpectralAverageRangeError();
 };
 
-export const verifyContinuumSpectralAverageRangeAA4 = value =>
-  verifyContinuumSpectralAverageRange(27625);
-export const verifyContinuumSpectralAverageRangeAA2 = value => {}; // TODO MUI UPDATE - verifyContinuumSpectralAverageRange(13813);
-export const verifyContinuumSpectralAverageRangeAA1 = value => {}; // TODO MUI UPDATE - verifyContinuumSpectralAverageRange(6907);
+export const verifyContinuumSpectralAverageRangeAA4 = value => verifySpectralAverageRange(27625);
 
-export const verifyZoomSpectralAverageRangeAA2Core = value => {
-  selectSubArrayAA2Core();
-  selectObservationTypeZoom();
-  enterSpectralAverageValue(0);
-  verifySpectralAverageRangeError();
-  enterSpectralAverageValue(865);
-  verifySpectralAverageRangeError();
-};
+export const verifyContinuumSpectralAverageRangeAA2 = value => verifySpectralAverageRange(13813);
+
+export const verifyContinuumSpectralAverageRangeAA1 = value => verifySpectralAverageRange(6907);
+
+export const verifyZoomSpectralAverageRangeAA2Core = value => verifySpectralAverageRange(865);
 
 export const verifyZoomSpectralAverageRangeCustom = value => {
-  selectSubArrayCustom();
-  enterSpectralAverageValue(0);
-  verifySpectralAverageRangeError();
-  enterSpectralAverageValue(865);
-  verifySpectralAverageRangeError();
+  verifySpectralAverageRange(865);
 };
 
 const enterSpectralAverageValue = value => {
@@ -44,12 +34,12 @@ const selectDropDown = (testId, value) => {
   // cy.get('body').click(0, 0);
 };
 
-const selectSubArrayAA1 = () => selectDropDown('subArrayConfiguration', 2);
-const selectSubArrayAA2 = () => selectDropDown('subArrayConfiguration', 3);
-const selectSubArrayAA2Core = () => selectDropDown('subArrayConfiguration', 4);
-const selectSubArrayCustom = () => selectDropDown('subArrayConfiguration', 20);
+export const selectSubArrayAA1 = () => selectDropDown('subArrayConfiguration', 2);
+export const selectSubArrayAA2 = () => selectDropDown('subArrayConfiguration', 3);
+export const selectSubArrayAA2Core = () => selectDropDown('subArrayConfiguration', 4);
+export const selectSubArrayCustom = () => selectDropDown('subArrayConfiguration', 20);
 
-const selectObservationTypeZoom = (testId = 'observationType', value = 0) => {
+export const selectObservationTypeZoom = (testId = 'observationType', value = 0) => {
   cy.get('[data-testid="' + testId + '"]')
     .should('exist')
     .should('be.visible')
