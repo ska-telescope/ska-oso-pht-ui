@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { isCypress, LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
+import { LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
 import PostProposal from '@services/axios/post/postProposal/postProposal';
 import NextPageButton from '../../button/NextPage/NextPage';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
@@ -31,15 +31,6 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const loggedIn = isLoggedIn();
 
-  const isDisableEndpoints = () => {
-    /* c8 ignore start */
-    const noLoginTest = window.localStorage.getItem('proposal:noLogin') === 'true';
-    if (noLoginTest) {
-      return true;
-    } /* c8 ignore end */
-    return !loggedIn && !isCypress;
-  };
-
   const getObservatoryData = () => application.content3 as ObservatoryData;
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -52,7 +43,6 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   }, []);
 
   const createProposal = async () => {
-    if (!isDisableEndpoints()) {
       notifyWarning(t('addProposal.warning'));
       const response = await PostProposal(
         authClient,
@@ -87,7 +77,6 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       } else {
         notifyError(response.error);
       }
-    }
   };
 
   const nextLabel = () => {
