@@ -365,7 +365,7 @@ export default function LandingPage() {
       action={clickFunction}
       testId="addProposalButton"
       title={loggedIn ? 'addProposal.label' : 'addMockProposal.label'}
-      toolTip="addProposal.toolTip"
+      toolTip={loggedIn ? 'addProposal.toolTip' : 'addMockProposal.toolTip'}
     />
   );
 
