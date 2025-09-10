@@ -113,7 +113,12 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
 
   const prevPageNav = () => (usedPageNo > 0 ? navigate(NAV[usedPageNo - 1]) : '');
 
-  const nextPageNav = () => (usedPageNo < NAV.length ? navigate(NAV[usedPageNo + 1]) : '');
+  const nextPageNav = () =>
+    !loggedIn && usedPageNo === 5
+      ? ''
+      : usedPageNo < NAV.length
+      ? navigate(NAV[usedPageNo + 1])
+      : '';
 
   const nextPageClicked = () => {
     if (usedPageNo === -1) {
@@ -146,16 +151,17 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
           )}
         </Grid>
         <Grid>
-          {usedPageNo < LAST_PAGE - 1 && (
-            <NextPageButton
-              disabled={buttonDisabled}
-              testId="nextButtonTestId"
-              title={nextLabel()}
-              page={usedPageNo}
-              primary
-              action={nextPageClicked}
-            />
-          )}
+          {(!loggedIn && usedPageNo === 5) ||
+            (usedPageNo < LAST_PAGE - 1 && (
+              <NextPageButton
+                disabled={buttonDisabled}
+                testId="nextButtonTestId"
+                title={nextLabel()}
+                page={usedPageNo}
+                primary
+                action={nextPageClicked}
+              />
+            ))}
         </Grid>
       </Grid>
     </Paper>
