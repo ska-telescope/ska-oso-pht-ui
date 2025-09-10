@@ -95,7 +95,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
         id: dummyId,
         cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
       });
-      navigate(NAV[1]);
+      navigate(NAV[4]);
     }
   };
 
@@ -104,7 +104,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       return `addBtn.label`;
     }
     if (usedPageNo === -1) {
-      return `createBtn.label`;
+      return loggedIn ? `createBtn.label` : `page.4.title`;
     }
     return `page.${usedPageNo + 1}.title`;
   };
