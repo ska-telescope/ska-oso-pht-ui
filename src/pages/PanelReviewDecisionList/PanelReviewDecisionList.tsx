@@ -11,12 +11,7 @@ import getPanelDecisionList from '@services/axios/get/getPanelDecisionList/getPa
 import GetProposalByStatusList from '@services/axios/get/getProposalByStatusList/getProposalByStatusList';
 import Proposal from '@/utils/types/proposal';
 import { FEASIBLE_NO, FOOTER_SPACER, REVIEW_TYPE } from '@/utils/constants';
-import {
-  BANNER_PMT_SPACER,
-  DEFAULT_USER,
-  PANEL_DECISION_STATUS,
-  PROPOSAL_STATUS
-} from '@/utils/constants';
+import { BANNER_PMT_SPACER, DEFAULT_USER, PANEL_DECISION_STATUS } from '@/utils/constants';
 
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import TableReviewDecision from '@/components/grid/tableReviewDecision/TableReviewDecision';
@@ -129,7 +124,7 @@ export default function ReviewDecisionListPage() {
 
   React.useEffect(() => {
     const GetReviewPanels = async () => {
-      const response = await GetPanelList(authClient); // TODO : Add the user_id as a property to the function
+      const response = await GetPanelList(authClient);
       if (typeof response === 'string') {
         notifyError(response);
       } else {
@@ -141,7 +136,7 @@ export default function ReviewDecisionListPage() {
 
   React.useEffect(() => {
     const fetchProposalData = async () => {
-      const response = await GetProposalByStatusList(authClient, PROPOSAL_STATUS.SUBMITTED);
+      const response = await GetProposalByStatusList(authClient);
       if (typeof response === 'string') {
         notifyError(response);
       } else {

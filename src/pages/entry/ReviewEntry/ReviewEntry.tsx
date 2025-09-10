@@ -22,7 +22,6 @@ import BackButton from '@/components/button/Back/Back';
 import { presentLatex } from '@/utils/present/present';
 import RankEntryField from '@/components/fields/rankEntryField/RankEntryField';
 import PDFViewer from '@/components/layout/PDFViewer/PDFViewer';
-import ConflictButton from '@/components/button/Conflict/Conflict';
 import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
@@ -56,7 +55,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const OFFSET_TOP = 150;
   const ROW_HEIGHT_PX = 27; // approximate height of one row in pixels
 
-  const CHOICE_HEIGHT = 26; // This is in 'vh';
+  const CHOICE_HEIGHT = 32; // This is in 'vh';
   const AREA_HEIGHT_NUM = 73;
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
 
@@ -179,10 +178,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     );
   };
 
-  const conflictButtonClicked = () => {
-    // TODO
-  };
-
   const saveButtonAction = (submit: boolean) => {
     updateReview(submit);
     if (submit) {
@@ -203,7 +198,6 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const actionButtons = () => (
     <Grid spacing={1} container justifyContent="space-between" direction="row">
-      <ConflictButton action={conflictButtonClicked} disabled />
       <SaveButton action={saveButtonClicked} primary toolTip={''} />
       <SubmitButton action={submitButtonClicked} disabled={submitDisabled()} primary toolTip={''} />
     </Grid>
@@ -239,19 +233,54 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     </Paper>
   );
 
+  const technicalReviews = () => (
+    <Paper
+      sx={{
+        margin: 1,
+        bgcolor: `${theme.palette.primary.main}`,
+        width: '90%',
+        overflow: 'auto'
+      }}
+      elevation={0}
+    ></Paper>
+  );
+
   const showLabel = (id: string, label: string) => {
     return (
-      <Typography id={id} variant={'h6'}>
-        {label?.length ? t(label) : ''}
-      </Typography>
+      <Box
+        id={id}
+        p={1}
+        sx={{
+          width: '100%',
+          maxWidth: '100%',
+          overflowWrap: 'break-word',
+          wordBreak: 'break-word',
+          boxSizing: 'border-box'
+        }}
+      >
+        <Typography id={id} fontWeight="bold" variant={'h6'}>
+          {label?.length ? t(label) : ''}
+        </Typography>
+      </Box>
     );
   };
 
   const showLatex = (id: string, label: string) => {
     return (
-      <Typography pl={2} pr={2} id={id} variant={'h6'}>
-        {label?.length ? presentLatex(label) : ''}
-      </Typography>
+      <Box
+        id={id}
+        sx={{
+          pl: 2,
+          pr: 2,
+          width: '100%',
+          maxWidth: '100%',
+          overflowWrap: 'break-word',
+          wordBreak: 'break-word',
+          boxSizing: 'border-box'
+        }}
+      >
+        <Typography variant="h6">{label?.length ? presentLatex(label) : ''}</Typography>
+      </Box>
     );
   };
 
@@ -283,12 +312,20 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           value={tabValuePDF}
           onChange={handleTabChange}
           aria-label="basic tabs example"
+          sx={{
+            '& button': { height: 75, backgroundColor: theme.palette.primary.main },
+            '& button.Mui-selected': { backgroundColor: 'transparent' }
+          }}
         >
-          <Tab label={t('page.3.title')} {...a11yProps(0)} />
-          <Tab label={t('page.6.title')} {...a11yProps(1)} />
+          <Tab label={t('pdfPreview.science.label')} {...a11yProps(0)} />
+          <Tab label={t('pdfPreview.technical.label')} {...a11yProps(1)} />
+          {false && !isTechnical() && (
+            <Tab label={t('reviewType.technical.label_other')} {...a11yProps(2)} />
+          )}
         </Tabs>
         {tabValuePDF === 0 && sciencePDF()}
         {tabValuePDF === 1 && technicalPDF()}
+        {tabValuePDF === 1 && technicalReviews()}
       </Paper>
     );
   };
@@ -297,7 +334,12 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const displayArea = () => {
     return (
-      <Stack p={1}>
+      <Stack
+        sx={{
+          width: '100%', // Ensures it fills the Grid container
+          boxSizing: 'border-box' // Prevents padding from overflowing
+        }}
+      >
         {showLabel('title-label', 'title.short')}
         {showLatex('title', locationProperties?.state?.proposal?.title)}
         <Divider />
@@ -512,17 +554,32 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       />
       <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
       <Grid
-        pl={2}
-        pr={6}
         container
         spacing={2}
         direction="row"
         justifyContent="space-between"
-        sx={{ width: '90%', height: AREA_HEIGHT }}
+        pl={2}
+        pr={6}
+        sx={{
+          height: AREA_HEIGHT,
+          backgroundColor: 'background.default'
+        }}
       >
-        <Grid size={{ sm: 9 }}>{displayArea()}</Grid>
+        <Grid
+          size={{ sm: 9 }}
+          sx={{
+            padding: 2,
+            border: 2,
+            borderColor: 'primary.light',
+            borderRadius: 2
+          }}
+        >
+          {displayArea()}
+        </Grid>
+
         <Grid size={{ sm: 3 }}>{isTechnical() ? reviewAreaTec() : reviewAreaSci()}</Grid>
       </Grid>
+
       <PageFooterPMT />
     </Box>
   );

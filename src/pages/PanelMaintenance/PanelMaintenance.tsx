@@ -123,13 +123,14 @@ export default function PanelMaintenance() {
   const getObservatoryData = () => application.content3 as ObservatoryData;
   const getCycleId = () => getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId;
 
-  // let proposalForUpdate: Proposal | undefined = undefined;
-
   React.useEffect(() => {
     const autoGeneratePanels = async (osd: ObservatoryData) => {
       await PostPanelGenerate(authClient, osd?.observatoryPolicy?.cycleDescription);
     };
-    autoGeneratePanels(getObservatoryData());
+    if (makeAssignment) {
+      autoGeneratePanels(getObservatoryData());
+      setMakeAssignment(false);
+    }
   }, [makeAssignment]);
 
   React.useEffect(() => {
@@ -144,7 +145,6 @@ export default function PanelMaintenance() {
     const tecReviewers = currentPanel?.tecReviewers
       ? convertPanelReviewerToReviewerIdList(currentPanel?.tecReviewers)
       : [];
-    // TODO : This will need to change if a reviewer can do both review types
     setPanelReviewers([...sciReviewers, ...tecReviewers]);
   }, [currentPanel]);
 
@@ -152,10 +152,7 @@ export default function PanelMaintenance() {
     setCurrentPanel(row);
   };
 
-  // const getReviewerId = (reviewer: PanelReviewer) => TMP_REVIEWER_ID; // TODO reviewer.reviewerId;
-
   const handleReviewersChange = (sciReviewers: PanelReviewer[], tecReviewers: PanelReviewer[]) => {
-    // Update the current panel's reviewers with the new list
     setCurrentPanel(prevPanel => {
       if (!prevPanel) return prevPanel;
       const updatedPanel = {
@@ -170,92 +167,12 @@ export default function PanelMaintenance() {
     });
   };
 
-  /*
-  function getScienceReview(): ScienceReview {
-    return {
-      kind: REVIEW_TYPE.SCIENCE,
-      rank: 0,
-      conflict: {
-        hasConflict: false,
-        reason: ''
-      },
-      excludedFromDecision: false
-    };
-  }
-  */
-
-  /*
-  function getTechnicalReview(): TechnicalReview {
-    return {
-      kind: REVIEW_TYPE.TECHNICAL,
-      isFeasible: ''
-    };
-  }
-  */
-
-  /*
-  const getReview = (
-    panelId: string,
-    prslId: string,
-    reviewerId: string,
-    prefix: string
-  ): ProposalReview => {
-    return {
-      id: generateId(prefix),
-      prslId: prslId,
-      reviewType: prefix === REVIEW_TYPE_PREFIX.SCIENCE ? getScienceReview() : getTechnicalReview(),
-      comments: '',
-      srcNet: '',
-      panelId: panelId,
-      cycle: '',
-      reviewerId: reviewerId,
-      submittedOn: null,
-      submittedBy: null,
-      status: PANEL_DECISION_STATUS.TO_DO
-    };
-  };
-  */
-
-  /*
-  const createReview = async (
-    panel: Panel,
-    proposal: Proposal,
-    reviewer: PanelReviewer,
-    prefix: string
-  ) => {
-    const response: any = await PostProposalReview(
-      authClient,
-      getReview(panel.id, proposal.id, getReviewerId(reviewer), prefix),
-      getCycleId()
-    );
-    if (typeof response === 'object' && response?.error) {
-      setAxiosError(
-        typeof response === 'object' && 'error' in response ? response.error : String(response)
-      );
-    } else {
-      // Success notification goes in here
-    }
-  };
-  */
-
-  /*
-  const addEmptyReviews = (panel: Panel) => {
-    if (!proposalForUpdate) return;
-    panel.sciReviewers.forEach(reviewer => {
-      createReview(panel, proposalForUpdate as Proposal, reviewer, REVIEW_TYPE_PREFIX.SCIENCE);
-    });
-    proposalForUpdate = undefined;
-  };
-  */
-
   async function savePanel(panel: Panel): Promise<string | { error: string }> {
     const response = await PutPanel(authClient, panel, getCycleId());
     if (typeof response === 'object' && response?.error) {
       setAxiosError(
         typeof response === 'object' && 'error' in response ? response.error : String(response)
       );
-      // } else {
-      // addEmptyReviews(panel);
     }
     return response;
   }
@@ -321,7 +238,7 @@ export default function PanelMaintenance() {
     />
   );
 
-  const fwdButton = () => <AssignButton action={() => setMakeAssignment(!makeAssignment)} />;
+  const fwdButton = () => <AssignButton action={() => setMakeAssignment(true)} />;
 
   return (
     <>

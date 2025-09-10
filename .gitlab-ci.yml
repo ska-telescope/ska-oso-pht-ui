@@ -107,16 +107,13 @@ include:
   # Docs pages
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/docs.gitlab-ci.yml'
-  # .post step finalisers eg: badges
-  - project: "ska-telescope/templates-repository"
-    file: "gitlab-ci/includes/finaliser.gitlab-ci.yml"
   # Helm Chart linting and Publish
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/helm-chart.gitlab-ci.yml'
   # Tag Based GitLab Release Management
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/release.gitlab-ci.yml'
-    # .post step finalisers eg: badges
+  # .post step finalisers eg: badges
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/finaliser.gitlab-ci.yml'
   # deploy steps

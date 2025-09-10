@@ -151,16 +151,17 @@ export default function GridProposals({
   React.useEffect(() => {
     const fetchData = async (status: string) => {
       const response = await GetProposalByStatusList(authClient, status);
+      const prevProposals = status === PROPOSAL_STATUS.UNDER_REVIEW ? [] : proposals;
 
       if (typeof response === 'string') {
         setAxiosError(response);
       } else {
-        setProposals(prevProposals => [...prevProposals, ...response]);
+        setProposals([...prevProposals, ...response]);
       }
     };
     setProposals([]);
-    fetchData(PROPOSAL_STATUS.SUBMITTED);
     fetchData(PROPOSAL_STATUS.UNDER_REVIEW);
+    fetchData(PROPOSAL_STATUS.SUBMITTED);
   }, [fetchList]);
 
   React.useEffect(() => {
@@ -218,6 +219,13 @@ export default function GridProposals({
     renderCell: (e: any) => {
       return getPIs(e.row.investigators);
     }
+  };
+
+  const colStatus = {
+    field: 'status',
+    headerName: t('status.label'),
+    width: 160,
+    renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
   };
 
   const colType = {
@@ -331,6 +339,7 @@ export default function GridProposals({
   const proposalColumns = [
     ...(showSelection ? [colSelect] : []),
     colTitle,
+    colStatus,
     colScienceCategory,
     colType,
     colPI,

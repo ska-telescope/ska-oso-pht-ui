@@ -10,15 +10,15 @@ import ConfirmButton from '../../button/Confirm/Confirm';
 import Proposal from '../../../utils/types/proposal';
 import { NOT_SPECIFIED } from '../../../utils/constants';
 import DownloadButton from '../../button/Download/Download';
-import Alert from '../../alerts/standardAlert/StandardAlert';
+import Alert from '../standardAlert/StandardAlert';
 import DownloadIcon from '../../icon/downloadIcon/downloadIcon';
 import GridMembers from '../../grid/members/GridMembers';
-import skaoIcon from '../../../components/icon/skaoIcon/skaoIcon';
-import GridObservationSummary from '../../../components/grid/observationSummary/GridObservationSummary';
-import emptyCell from '../../../components/fields/emptyCell/emptyCell';
+import skaoIcon from '../../icon/skaoIcon/skaoIcon';
+import GridObservationSummary from '../../grid/observationSummary/GridObservationSummary';
+import emptyCell from '../../fields/emptyCell/emptyCell';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 
-interface ProposalDisplayProps {
+interface ConflictConfirmationProps {
   proposal: Proposal | null;
   open: boolean;
   onClose: Function;
@@ -35,13 +35,13 @@ const CONTENT_STYLE = 'subtitle2';
 const BOLD_LABEL = true;
 const BOLD_CONTENT = false;
 
-export default function ProposalDisplay({
+export default function ConflictConfirmation({
   proposal,
   open,
   onClose,
   onConfirm,
   onConfirmLabel = ''
-}: ProposalDisplayProps) {
+}: ConflictConfirmationProps) {
   const { t } = useTranslation('pht');
   const theme = useTheme();
   const authClient = useAxiosAuthClient();

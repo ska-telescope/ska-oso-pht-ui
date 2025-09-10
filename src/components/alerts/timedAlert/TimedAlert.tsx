@@ -36,7 +36,13 @@ export default function TimedAlert({ color, delay = 2, testId, text }: TimedAler
   return (
     <>
       {show && (
-        <StandardAlert color={color} testId={testId} text={text} closeFunc={closeFunction} />
+        <StandardAlert
+          color={color}
+          testId={testId}
+          text={text}
+          closeFunc={closeFunction}
+          fadeDuration={2000}
+        />
       )}
     </>
   );

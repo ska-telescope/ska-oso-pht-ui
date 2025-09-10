@@ -137,7 +137,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
             setUploadButtonStatus(FileUploadStatus.OK);
             notifySuccess(t('uploadCsvBtn.uploadSuccessMsg'), NOTIFICATION_DELAY_IN_SECONDS);
           } catch (e) {
-            notifyError(e, NOTIFICATION_DELAY_IN_SECONDS);
+            notifyError(e as string, NOTIFICATION_DELAY_IN_SECONDS);
             setUploadButtonStatus(FileUploadStatus.ERROR);
           }
         },

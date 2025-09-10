@@ -28,7 +28,6 @@ import ReviewListPage from '../ReviewListPage/ReviewListPage';
 import packageJson from '../../../package.json';
 import PanelMaintenance from '../PanelMaintenance/PanelMaintenance';
 import ReviewDashboard from '../ReviewDashboard/ReviewDashboard';
-import ReviewPanelEntry from '../entry/ReviewPanelEntry/ReviewPanelEntry';
 import PanelReviewDecisionList from '../PanelReviewDecisionList/PanelReviewDecisionList';
 import ReviewEntry from '../entry/ReviewEntry/ReviewEntry';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
@@ -55,7 +54,7 @@ const ROUTES = [
   { path: PMT[0], element: <PanelMaintenance /> },
   { path: PMT[1], element: <ReviewListPage /> },
   { path: PMT[2], element: <ReviewDashboard /> },
-  { path: PMT[3], element: <ReviewPanelEntry /> },
+  { path: PMT[3], element: null },
   { path: PMT[4], element: <PanelReviewDecisionList /> },
   { path: PMT[5], element: <ReviewEntry reviewType={REVIEW_TYPE.SCIENCE} /> },
   { path: PMT[6], element: <ReviewEntry reviewType={REVIEW_TYPE.TECHNICAL} /> }

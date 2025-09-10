@@ -27,7 +27,7 @@ import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
-import { PMT, PROPOSAL_STATUS } from '@/utils/constants';
+import { PMT } from '@/utils/constants';
 import SubmitButton from '@/components/button/Submit/Submit';
 import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
 import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
@@ -97,7 +97,7 @@ export default function ReviewListPage() {
     };
 
     const fetchProposalData = async () => {
-      const response = await GetProposalByStatusList(authClient, PROPOSAL_STATUS.UNDER_REVIEW);
+      const response = await GetProposalByStatusList(authClient);
       if (typeof response === 'string') {
         notifyError(response);
       } else {

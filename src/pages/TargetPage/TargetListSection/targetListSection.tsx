@@ -154,8 +154,16 @@ export default function TargetListSection() {
 
   const displayRow1 = () => {
     return (
-      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
-        <Grid size={{ md: 12, lg: 5 }} order={{ md: 2, lg: 1 }}>
+      <Grid
+        p={1}
+        container
+        direction="row"
+        justifyContent="space-between"
+        alignItems="centre"
+        spacing={4}
+        sx={{ width: '95vw' }}
+      >
+        <Grid size={{ md: 12, lg: 6 }} order={{ md: 2, lg: 1 }}>
           {emptyField()}
           <GridTargets
             deleteClicked={deleteIconClicked}
@@ -167,36 +175,34 @@ export default function TargetListSection() {
         </Grid>
         <Grid size={{ md: 12, lg: 6 }} order={{ md: 1, lg: 2 }}>
           {referenceCoordinatesField()}
-          <Box sx={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
-            <Box sx={{ width: '1400px', border: '1px solid grey' }}>
-              <Tabs
-                textColor="secondary"
-                indicatorColor="secondary"
-                value={value}
-                variant="fullWidth"
-                onChange={handleChange}
-                aria-label="basic tabs example"
-              >
-                <Tab
-                  label={t('addTarget.label')}
-                  {...a11yProps(0)}
-                  sx={{ border: '1px solid grey', width: '100%' }}
-                />
-                <Tab
-                  label={t('importFromFile.label')}
-                  {...a11yProps(1)}
-                  sx={{ border: '1px solid grey', width: '100%' }}
-                />
-                <Tab
-                  label={t('spatialImaging.label')}
-                  {...a11yProps(2)}
-                  sx={{ border: '1px solid grey', width: '100%' }}
-                />
-              </Tabs>
-              {value === 0 && <TargetEntry raType={RA_TYPE_ICRS.value} textAlign="left" />}
-              {value === 1 && <TargetFileImport raType={RA_TYPE_ICRS.value} />}
-              {value === 2 && <SpatialImaging />}
-            </Box>
+          <Box sx={{ width: '100%', border: '1px solid grey' }}>
+            <Tabs
+              textColor="secondary"
+              indicatorColor="secondary"
+              value={value}
+              variant="fullWidth"
+              onChange={handleChange}
+              aria-label="basic tabs example"
+            >
+              <Tab
+                label={t('addTarget.label')}
+                {...a11yProps(0)}
+                sx={{ border: '1px solid grey', width: '100%' }}
+              />
+              <Tab
+                label={t('importFromFile.label')}
+                {...a11yProps(1)}
+                sx={{ border: '1px solid grey', width: '100%' }}
+              />
+              <Tab
+                label={t('spatialImaging.label')}
+                {...a11yProps(2)}
+                sx={{ border: '1px solid grey', width: '100%' }}
+              />
+            </Tabs>
+            {value === 0 && <TargetEntry raType={RA_TYPE_ICRS.value} textAlign="left" />}
+            {value === 1 && <TargetFileImport raType={RA_TYPE_ICRS.value} />}
+            {value === 2 && <SpatialImaging />}
           </Box>
         </Grid>
       </Grid>

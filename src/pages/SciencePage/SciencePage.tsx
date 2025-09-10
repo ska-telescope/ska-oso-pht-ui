@@ -28,7 +28,7 @@ const PAGE = 3;
 
 export default function SciencePage() {
   const { t } = useTranslation('pht');
-  const { notifyError, notifySuccess } = useNotify();
+  const { notifyError, notifyWarning, notifySuccess } = useNotify();
   const {
     application,
     helpComponent,
@@ -80,6 +80,7 @@ export default function SciencePage() {
     setUploadStatus(FileUploadStatus.PENDING);
 
     try {
+      notifyWarning(t('pdfUpload.science.warning'));
       const proposal = getProposal();
       const signedUrl = await GetPresignedUploadUrl(authClient, `${proposal.id}-science.pdf`);
 
