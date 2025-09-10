@@ -89,7 +89,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       }
     } else {
       const dummyId = DUMMY_PROPOSAL_ID;
-      notifySuccess(t('addProposal.success') + dummyId);
+      notifySuccess(t('addMockProposal.success') + dummyId);
       setProposal({
         ...getProposal(),
         id: dummyId,

@@ -43,6 +43,12 @@
     "toolTip": "Click to add a new proposal.",
     "warning": "Please wait whilst we create a new proposal."
   },
+  "addMockProposal": {
+    "short": "Add",
+    "label": "Add Mock Proposal",
+    "success": "Mock Proposal added with unique identifier ",
+    "toolTip": "Click to add a new mock proposal."
+  },
   "addReview": {
     "success": "Review record has been updated",
     "warning": "Please wait whilst the review is stored."
