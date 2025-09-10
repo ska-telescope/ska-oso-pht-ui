@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DUMMY_PROPOSAL_ID, isCypress, LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
+import { isCypress, LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
 import PostProposal from '@services/axios/post/postProposal/postProposal';
 import NextPageButton from '../../button/NextPage/NextPage';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
@@ -87,15 +87,6 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       } else {
         notifyError(response.error);
       }
-    } else {
-      const dummyId = DUMMY_PROPOSAL_ID;
-      notifySuccess(t('addMockProposal.success') + dummyId);
-      setProposal({
-        ...getProposal(),
-        id: dummyId,
-        cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
-      });
-      navigate(NAV[4]);
     }
   };
 

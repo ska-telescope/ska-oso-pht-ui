@@ -16,6 +16,7 @@ import { presentDate, presentLatex, presentTime } from '@utils/present/present';
 import Investigator from '@utils/types/investigator.tsx';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
 import GetProposal from '@services/axios/get/getProposal/getProposal';
+import { useNotify } from '@utils/notify/useNotify.tsx';
 import GetObservatoryData from '@/services/axios/get/getObservatoryData/getObservatoryData';
 import AddButton from '@/components/button/Add/Add';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
@@ -32,7 +33,7 @@ import Proposal from '@/utils/types/proposal';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
 import { validateProposal } from '@/utils/proposalValidation';
 import ObservatoryData from '@/utils/types/observatoryData';
-import { FOOTER_SPACER, isCypress } from '@/utils/constants';
+import { DUMMY_PROPOSAL_ID, FOOTER_SPACER, isCypress } from '@/utils/constants';
 import {
   NAV,
   SEARCH_TYPE_OPTIONS,
@@ -71,6 +72,8 @@ export default function LandingPage() {
   const [observatoryData, setObservatoryData] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
   const loggedIn = isLoggedIn();
+  const { notifySuccess } = useNotify();
+  const getObservatoryData = () => application.content3 as ObservatoryData;
 
   const getAccess = () => application.content4 as ProposalAccess[];
   const setAccess = (access: ProposalAccess[]) => updateAppContent4(access);
@@ -350,9 +353,20 @@ export default function LandingPage() {
 
   const filteredData = proposals ? filterProposals() : [];
 
+  const createMock = async () => {
+    const dummyId = DUMMY_PROPOSAL_ID;
+    notifySuccess(t('addMockProposal.success') + dummyId);
+    setProposal({
+      ...getProposal(),
+      id: dummyId,
+      cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
+    });
+    navigate(NAV[4]);
+  };
+
   const clickFunction = () => {
     if (!loggedIn) {
-      navigate(NAV[4]);
+      createMock();
     } else {
       navigate(PATH[1]);
     }
