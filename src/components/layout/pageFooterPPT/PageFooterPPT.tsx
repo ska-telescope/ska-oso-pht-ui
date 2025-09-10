@@ -131,13 +131,14 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     <Paper sx={{ position: 'fixed', bottom: 40, left: 0, right: 0 }} elevation={0}>
       <Grid p={4} container direction="row" alignItems="flex-end" justifyContent="space-between">
         <Grid>
-          {usedPageNo > 0 && (
-            <PreviousPageButton
-              action={prevPageNav}
-              testId="prevButtonTestId"
-              title={prevLabel()}
-            />
-          )}
+          {(!loggedIn && usedPageNo === 4) ||
+            (usedPageNo > 0 && (
+              <PreviousPageButton
+                action={prevPageNav}
+                testId="prevButtonTestId"
+                title={prevLabel()}
+              />
+            ))}
         </Grid>
         <Grid>
           {(application.content5 as Notification)?.message?.length > 0 && (
