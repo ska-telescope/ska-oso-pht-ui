@@ -91,7 +91,7 @@ export default function RankEntryField({
       {suggestedRank > 0 && (
         <Box pt={1} textAlign="center">
           <Typography variant="body2" component="p">
-            Suggested Rank:{' '}
+            {t('rank.selected')}:{' '}
             <Typography component="span" variant="body2" fontWeight="bold">
               {suggestedRank}
             </Typography>
@@ -228,7 +228,7 @@ export default function RankEntryField({
 
         <Box textAlign="center">
           <Typography variant="h6" component="p">
-            Selected Rank:{' '}
+            {t('rank.selected')}:{' '}
             <Typography component="span" variant="h4" fontWeight="bold">
               {selectedRank}
             </Typography>

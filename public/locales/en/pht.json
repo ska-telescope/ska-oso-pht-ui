@@ -7,8 +7,9 @@
   "intlNumber": "{{val, number}}",
   "localData": "LOCAL DATA",
   "yes": "Yes",
-  "no": "No",
+  "yesWithRevision": "Yes with Revision",
   "maybe": "Maybe",
+  "no": "No",
   "none": "None",
   "abstract": {
     "label": "Abstract",
@@ -223,12 +224,12 @@
     "toolTip": "Edit the target"
   },
   "effectiveResolution": {
-    "help": "This field displays the channel width after applying the spectral averaging.",
+    "help": "This field displays the channel width after applying the spectral averaging",
     "label": "Effective Resolution",
     "error": "Unable to calculate value"
   },
   "elevation": {
-    "help": "Specify the minimum elevation angle at which the target will be observed. This value must fall between the horizon and the target's zenith elevation. If the specified elevation is outside this range, an error message will be displayed. The default minimum elevation is 20 deg for LOW and 45 deg for MID.",
+    "help": "Specify the minimum elevation angle at which the target will be observed. This value must fall between the horizon and the target's zenith elevation. If the specified elevation is outside this range, an error message will be displayed. The default minimum elevation is 20 deg for LOW and 45 deg for MID",
     "label": "Minimum Elevation",
     "range": {
       "error": "Value must be within the range of {{min}} to {{max}} degrees inclusive"
@@ -242,6 +243,7 @@
       "body": "You have been invited to contribute to proposal {{id}}"
     },
     "success": "Email invite has been sent.",
+    "warning": "Sending email request for processing",
     "error": "Email invite was unsuccessful and member is not added"
   },
   "emailSearch": {
@@ -490,9 +492,11 @@
   },
   "pdfPreview": {
     "science": {
+      "label": "Science Justification",
       "notUploaded": "No Science Justification PDF uploaded"
     },
     "technical": {
+      "label": "Technical justification",
       "notUploaded": "No Technical Justification PDF uploaded"
     }
   },
@@ -515,7 +519,8 @@
         "download": "Download the science justification PDF",
         "preview": "This is the PDF preview button on the science page",
         "upload": "Upload the selected PDF for use as the science justification"
-      }
+      },
+      "warning": "Science Justification PDF being processed"
     },
     "technical": {
       "label": {
@@ -534,7 +539,8 @@
         "download": "Download the technical justification PDF",
         "preview": "This is the PDF preview button on the technical page",
         "upload": "Upload the selected PDF for use as the technical justification"
-      }
+      },
+      "warning": "Technical Justification PDF being processed"
     }
   },
   "phdThesis": {
@@ -640,6 +646,7 @@
   },
   "rank": {
     "hovering": "Hovering - Click to select this rank",
+    "selected": "Selected rank",
     "label": "Rank",
     "helper": "Click on the center (0) or any segment (1-9) to set your ranking",
     "0": {
@@ -752,6 +759,15 @@
     "title": "Review Proposals",
     "toolTip": "List of proposals for review",
     "disabled": "This function is not available"
+  },
+  "reviewType": {
+    "science": {
+      "label": "Science Review"
+    },
+    "technical": {
+      "label_one": "Technical Review",
+      "label_multiple": "Technical Reviews"
+    }
   },
   "reviewers": {
     "label": "Reviewers",
@@ -1033,10 +1049,11 @@
   "tableReviewDecision": {
     "actions": "Actions",
     "expandDetails": "Expand Details",
+    "excluded": "Excluded?",
     "lastUpdated": "Last Updated",
     "decisionComments": "Decision Comments",
-    "decisionScore": "Decision Score",
-    "decisionStatus": "Decision Status",
+    "decisionScore": "Score",
+    "decisionStatus": "Status",
     "feasible": "Feasible",
     "rank": "Rank",
     "reviews": "Reviews",

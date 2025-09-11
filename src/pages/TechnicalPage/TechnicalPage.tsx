@@ -29,7 +29,7 @@ const PAGE = 6;
 
 export default function TechnicalPage() {
   const { t } = useTranslation('pht');
-  const { notifyError, notifySuccess } = useNotify();
+  const { notifyError, notifyWarning, notifySuccess } = useNotify();
   const {
     application,
     helpComponent,
@@ -80,6 +80,7 @@ export default function TechnicalPage() {
     setUploadStatus(FileUploadStatus.PENDING);
 
     try {
+      notifyWarning(t('pdfUpload.technical.warning'));
       const proposal = getProposal();
       const signedUrl = await GetPresignedUploadUrl(authClient, `${proposal.id}-technical.pdf`);
 

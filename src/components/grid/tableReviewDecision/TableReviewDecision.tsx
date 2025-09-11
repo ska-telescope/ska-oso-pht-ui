@@ -88,6 +88,11 @@ export default function TableReviewDecision({
     return Math.round((average + Number.EPSILON) * 100) / 100;
   };
 
+  const trimText = (text: string, maxLength: number): string => {
+    if (!text || maxLength <= 0) return '';
+    return text.length > maxLength ? text.slice(0, maxLength).trimEnd() + '...' : text;
+  };
+
   return (
     <Box sx={{ width: '100%', p: 3 }}>
       <TableContainer
@@ -105,12 +110,7 @@ export default function TableReviewDecision({
                   {t('tableReviewDecision.sciReviews')}
                 </Typography>
               </TableCell>
-              <TableCell sx={{ width: 60 }}>
-                <Typography variant="subtitle2" fontWeight="bold">
-                  {t('tableReviewDecision.feasible')}
-                </Typography>
-              </TableCell>
-              <TableCell sx={{ width: 120 }}>
+              <TableCell sx={{ whiteSpace: 'nowrap', width: '1%', paddingRight: 2 }}>
                 <Typography variant="subtitle2" fontWeight="bold" className="sr-only">
                   {t('scienceCategory.label')}
                 </Typography>
@@ -125,9 +125,14 @@ export default function TableReviewDecision({
                   {t('tableReviewDecision.decisionStatus')}
                 </Typography>
               </TableCell>
-              <TableCell>
+              <TableCell sx={{ whiteSpace: 'nowrap', width: '1%', paddingRight: 2 }}>
                 <Typography variant="subtitle2" fontWeight="bold">
                   {t('tableReviewDecision.lastUpdated')}
+                </Typography>
+              </TableCell>
+              <TableCell sx={{ width: 60 }}>
+                <Typography variant="subtitle2" fontWeight="bold">
+                  {t('tableReviewDecision.feasible')}
                 </Typography>
               </TableCell>
               <TableCell sx={{ width: 120 }}>
@@ -211,22 +216,12 @@ export default function TableReviewDecision({
                     </TableCell>
                     <TableCell role="gridcell">
                       <Typography variant="body2" color="text.secondary">
-                        {t(
-                          getReviews(
-                            item.reviews,
-                            REVIEW_TYPE.TECHNICAL
-                          )?.[0]?.reviewType?.isFeasible?.toLowerCase() ?? ''
-                        )}
-                      </Typography>
-                    </TableCell>
-                    <TableCell role="gridcell">
-                      <Typography variant="body2" color="text.secondary">
                         {t('scienceCategory.' + item.scienceCategory)}
                       </Typography>
                     </TableCell>
                     <TableCell role="gridcell">
                       <Typography variant="body2" fontWeight="medium">
-                        {presentLatex(item.title)}
+                        {presentLatex(trimText(item.title, 50))}
                       </Typography>
                     </TableCell>
                     <TableCell role="gridcell">
@@ -239,6 +234,16 @@ export default function TableReviewDecision({
                     <TableCell role="gridcell">
                       <Typography variant="body2">
                         {presentDate(item.lastUpdated)} {presentTime(item.lastUpdated)}
+                      </Typography>
+                    </TableCell>
+                    <TableCell role="gridcell">
+                      <Typography variant="body2" color="text.secondary">
+                        {t(
+                          getReviews(
+                            item.reviews,
+                            REVIEW_TYPE.TECHNICAL
+                          )?.[0]?.reviewType?.isFeasible?.toLowerCase() ?? ''
+                        )}
                       </Typography>
                     </TableCell>
                     <TableCell role="gridcell">

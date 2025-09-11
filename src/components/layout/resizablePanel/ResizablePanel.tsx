@@ -10,9 +10,9 @@ type ResizablePanelProps = {
 
 const ResizablePanel: React.FC<ResizablePanelProps> = ({
   children,
-  height = '30vh',
+  height = '40vh',
   title,
-  width = '30vw'
+  width = '31vw'
 }) => (
   <Box
     data-testid="resizable-panel"

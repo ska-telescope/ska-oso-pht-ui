@@ -49,7 +49,7 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
               <TableCell sx={{ fontWeight: 'bold' }}>{t('srcNetComments.label')}</TableCell>
               <TableCell sx={{ fontWeight: 'bold', width: '120px' }}>{t('rank.label')}</TableCell>
               <TableCell sx={{ fontWeight: 'bold', width: '60px' }}>
-                {t('tableReviewDecision.actions')}
+                {t('tableReviewDecision.excluded')}
               </TableCell>
             </TableRow>
           </TableHead>

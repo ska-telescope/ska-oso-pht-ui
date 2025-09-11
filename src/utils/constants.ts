@@ -111,7 +111,7 @@ export const BANDWIDTH_TELESCOPE = [
 export const DEFAULT_USER = 'DefaultUser';
 export const TMP_REVIEWER_ID = 'c8f8f18a-3c70-4c39-8ed9-2d8d180d99a3';
 
-export const FEASIBLE_MAYBE = 'Maybe';
+export const FEASIBLE_MAYBE = 'Maybe'; // TODO 'Yes with revision';
 export const FEASIBLE_NO = 'No';
 export const FEASIBLE_YES = 'Yes';
 export const FEASIBILITY = [FEASIBLE_YES, FEASIBLE_NO, FEASIBLE_MAYBE];
@@ -254,7 +254,7 @@ export const PMT = [
   '/review/panel',
   '/review/list',
   '/review/proposal',
-  '/review/panel/entry',
+  '',
   '/review/panel/decisions',
   '/review/science',
   '/review/technical'

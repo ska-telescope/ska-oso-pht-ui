@@ -52,7 +52,7 @@ export const getProposals = () => {
 // TODO move cy. commands out of this file into cypress.js and create a function for it
 export const getSubmittedProposals = () => {
   cy.fixture('proposals.json').then(proposals => {
-    cy.intercept('GET', '**/pht/prsls/status/submitted', {
+    cy.intercept('GET', '**/pht/prsls/submitted', {
       statusCode: 200,
       body: proposals
     }).as('getSubmittedProposals');

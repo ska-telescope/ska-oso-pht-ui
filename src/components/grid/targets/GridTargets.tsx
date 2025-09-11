@@ -25,7 +25,7 @@ export default function GridTargets({
   const { t } = useTranslation('pht');
 
   const basicColumns = [
-    { field: 'name', headerName: t('name.label'), flex: 3 },
+    { field: 'name', headerName: t('name.label'), flex: 2 },
     { field: 'raStr', headerName: t('skyDirection.short.1.' + raType), width: 120 },
     { field: 'decStr', headerName: t('skyDirection.short.2.' + raType), width: 120 },
     {
