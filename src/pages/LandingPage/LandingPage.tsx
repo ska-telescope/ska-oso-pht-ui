@@ -35,6 +35,7 @@ import { storeProposalCopy } from '@/utils/storage/proposalData';
 import { validateProposal } from '@/utils/proposalValidation';
 import ObservatoryData from '@/utils/types/observatoryData';
 import {
+  cypressToken,
   DUMMY_PROPOSAL_ID,
   FOOTER_HEIGHT_PHT,
   FOOTER_SPACER,
@@ -118,7 +119,7 @@ export default function LandingPage() {
   const DATA_GRID_HEIGHT = '60vh';
 
   React.useEffect(() => {
-    if (!loggedIn) {
+    if (!loggedIn && !cypressToken) {
       updateAppContent2(mock);
     } else {
       updateAppContent2({});
@@ -397,7 +398,7 @@ export default function LandingPage() {
   };
 
   const clickFunction = () => {
-    if (!loggedIn) {
+    if (!loggedIn && !cypressToken) {
       createMock();
     } else {
       navigate(PATH[1]);
@@ -413,12 +414,20 @@ export default function LandingPage() {
   const addProposalButton = () => (
     <AddButton
       action={clickFunction}
-      testId={loggedIn ? 'addProposalButton' : 'addMockButton'}
-      title={loggedIn ? 'addProposal.label' : 'addMockProposal.label'}
-      toolTip={loggedIn ? 'addProposal.toolTip' : 'addMockProposal.toolTip'}
+      testId={'addProposalButton'}
+      title={'addProposal.label'}
+      toolTip={'addProposal.toolTip'}
     />
   );
 
+  const addMockButton = () => (
+    <AddButton
+      action={clickFunction}
+      testId={'addMockButton'}
+      title={'addMockProposal.label'}
+      toolTip={'addMockProposal.toolTip'}
+    />
+  );
   const searchDropdown = () => (
     <DropDown
       options={[{ label: t('status.0'), value: '' }, ...SEARCH_TYPE_OPTIONS]}
@@ -473,7 +482,7 @@ export default function LandingPage() {
       <Grid container p={5} direction="row" alignItems="center" justifyContent="space-around">
         <Grid size={{ xs: 12 }}>{pageDescription()}</Grid>
         <Grid size={{ sm: 4, md: 3, lg: 2 }} p={2}>
-          {addProposalButton()}
+          {loggedIn || cypressToken ? addProposalButton() : addMockButton()}
         </Grid>
         <Grid size={{ sm: 4 }} p={2}>
           {searchDropdown()}

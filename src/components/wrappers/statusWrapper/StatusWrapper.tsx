@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, IconButton, Typography } from '@mui/material';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
-import { NAV, STATUS_ERROR, STATUS_ERROR_SYMBOL } from '@utils/constants.ts';
+import { cypressToken, NAV, STATUS_ERROR, STATUS_ERROR_SYMBOL } from '@utils/constants.ts';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 
 interface StatusWrapperProps {
@@ -22,7 +22,7 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
   };
 
   const disableIcons = () => {
-    if (!loggedIn) {
+    if (!loggedIn && !cypressToken) {
       switch (pageName()) {
         case 'Target':
         case 'Observation':

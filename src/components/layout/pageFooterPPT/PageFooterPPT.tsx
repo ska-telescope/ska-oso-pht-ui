@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { Grid, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
+import { cypressToken, LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
 import PostProposal from '@services/axios/post/postProposal/postProposal';
 import NextPageButton from '../../button/NextPage/NextPage';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
@@ -80,13 +80,13 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   };
 
   const showPrevNav = () => {
-    if (loggedIn && usedPageNo > 0) {
+    if (loggedIn || (cypressToken && usedPageNo > 0)) {
       return true;
     } else return !loggedIn && usedPageNo !== 4;
   };
 
   const showNextNav = () => {
-    if (loggedIn && usedPageNo < LAST_PAGE - 1) {
+    if (loggedIn || (cypressToken && usedPageNo < LAST_PAGE - 1)) {
       return true;
     } else return !loggedIn && usedPageNo !== 5;
   };
