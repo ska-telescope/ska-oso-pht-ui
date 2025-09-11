@@ -1,20 +1,20 @@
 import {
   checkFieldDisabled,
-  clickAddProposal,
-  clickCreateProposal,
   clickHome,
   clickHomeWarningConfirmation,
-  clickProposalTypePrincipleInvestigator,
-  clickSubProposalTypeTargetOfOpportunity,
-  enterProposalTitle,
   verifyOnLandingPageNoProposalMsgIsVisible,
-  verifyProposalCreatedAlertFooter,
   verifyHomeButtonWarningModal,
   initializeUserNotLoggedIn,
-  clearLocalStorage
+  clearLocalStorage,
+  clickAddMock,
+  clickToNextPage,
+  verifyMockCreatedAlertFooter,
+  createObservation,
+  addM2TargetUsingResolve,
+  clickListOfTargets
 } from '../common/common';
 
-describe('Creating Proposal without login', () => {
+describe('Creating a Mock without login', () => {
   beforeEach(() => {
     initializeUserNotLoggedIn();
   });
@@ -23,16 +23,33 @@ describe('Creating Proposal without login', () => {
     clearLocalStorage();
   });
 
-  it('Create a basic proposal without login', () => {
+  it('Create a mock without login', () => {
     cy.wait(500);
-    clickAddProposal();
-    enterProposalTitle();
-    clickProposalTypePrincipleInvestigator();
-    clickSubProposalTypeTargetOfOpportunity();
-    clickCreateProposal();
-    verifyProposalCreatedAlertFooter();
+    clickAddMock();
+    verifyMockCreatedAlertFooter();
+
+    //add target
+    clickListOfTargets();
+    addM2TargetUsingResolve();
+
+    //go to observation page
+    clickToNextPage();
+    createObservation();
+
     checkFieldDisabled('saveBtn', true);
     checkFieldDisabled('validateBtn', true);
+
+    //verify statusIcons disabled excluding target & observation
+    checkFieldDisabled('statusId0', true);
+    checkFieldDisabled('statusId1', true);
+    checkFieldDisabled('statusId2', true);
+    checkFieldDisabled('statusId3', true);
+    checkFieldDisabled('statusId4', false);
+    checkFieldDisabled('statusId5', false);
+    checkFieldDisabled('statusId6', true);
+    checkFieldDisabled('statusId7', true);
+    checkFieldDisabled('statusId8', true);
+
     clickHome();
     verifyHomeButtonWarningModal();
     clickHomeWarningConfirmation();

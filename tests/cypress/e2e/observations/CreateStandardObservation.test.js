@@ -1,12 +1,14 @@
 import {
   clearLocalStorage,
+  clickToObservationPage,
+  createMock,
   createObservation,
-  createStandardProposal,
   initializeUserNotLoggedIn
 } from '../common/common';
 beforeEach(() => {
   initializeUserNotLoggedIn();
-  createStandardProposal();
+  createMock();
+  clickToObservationPage();
 });
 
 afterEach(() => {

@@ -115,6 +115,7 @@ export const clickAddDataProduct = () => clickButton('addDataProductButton');
 export const clickAddPanel = () => clickButton('plusIcon');
 export const clickAddPanelEntry = () => clickButton('addPanelButton');
 export const clickAddProposal = () => clickButton('addProposalButton');
+export const clickAddMock = () => clickButton('addMockButton');
 export const clickCreateProposal = () => clickButton('nextButtonTestId');
 export const clickHome = () => clickButton('homeButtonTestId');
 export const clickHomeWarningConfirmation = () => clickButton('dialogConfirmationButton');
@@ -211,6 +212,7 @@ export const clickUserMenuReviews = () => clickSignINBtns('menuItemReviews', 'RE
 export const clickUserMenuDecisions = () =>
   clickSignINBtns('menuItemReviewDecisions', 'REVIEW DECISIONS');
 export const clickUserMenuLogout = () => click('menuItemLogout');
+export const clickListOfTargets = () => cy.get('#listOfTargets').click();
 
 /*----------------------------------------------------------------------*/
 
@@ -228,6 +230,9 @@ export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalA
 
 export const verifyProposalCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Proposal added with unique identifier');
+
+export const verifyMockCreatedAlertFooter = () =>
+  verifyContent('timeAlertFooter', 'Mock added with unique identifier');
 
 export const clickEditProposal = () => {
   get('EditRoundedIcon')
@@ -251,6 +256,12 @@ export const createStandardProposal = () => {
   clickCreateProposal();
   verifyProposalCreatedAlertFooter();
   pageConfirmed('TEAM');
+};
+
+export const createMock = () => {
+  clickAddMock();
+  verifyMockCreatedAlertFooter();
+  pageConfirmed('TARGET');
 };
 
 export const createStandardProposalLoggedIn = () => {
@@ -331,7 +342,6 @@ export const addM2TargetUsingResolve = () => {
   cy.get('[id="name"]').type('M2');
   clickResolveButton();
 };
-
 export const verifyOnLandingPageFilterIsVisible = () => {
   cy.get('[data-testid="proposalType"]').should('exist');
   cy.get('[data-testid="proposalType"]').realClick();
@@ -400,11 +410,6 @@ export const verifyUnlinkedObservationInTable = () => {
 };
 
 export const createObservation = () => {
-  //navigate to observation page
-  clickToGeneralPage();
-  clickToSciencePage();
-  clickToTargetPage();
-  clickToObservationPage();
   //add default observation
   clickObservationSetup();
   clickAddObservationEntry();

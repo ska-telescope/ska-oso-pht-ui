@@ -5,6 +5,7 @@ import {
   clickToObservationPage,
   clickToSciencePage,
   clickToTargetPage,
+  createMock,
   createStandardProposal,
   initializeUserNotLoggedIn
 } from '../common/common';
@@ -23,11 +24,8 @@ import {
 
 function commonConfiguration() {
   initializeUserNotLoggedIn();
-  createStandardProposal();
+  createMock();
   //navigate to observation page
-  clickToGeneralPage();
-  clickToSciencePage();
-  clickToTargetPage();
   clickToObservationPage();
   //add default observation
   clickObservationSetup();
