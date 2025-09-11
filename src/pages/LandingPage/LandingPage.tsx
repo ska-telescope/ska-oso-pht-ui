@@ -77,7 +77,6 @@ export default function LandingPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const authClient = useAxiosAuthClient();
-  let initialCall = true;
 
   const DATA_GRID_HEIGHT = '60vh';
 
@@ -123,9 +122,7 @@ export default function LandingPage() {
 
   React.useEffect(() => {
     const autoGeneratePanels = async (osd: ObservatoryData) => {
-      // This will trigger the backend to check and provide required panels
       await PostPanelGenerate(authClient, osd.observatoryPolicy.cycleDescription);
-      // Note that we do not care about the response
     };
 
     const fetchObservatoryData = async () => {
@@ -134,14 +131,17 @@ export default function LandingPage() {
         setAxiosError(response.toString());
       } else {
         updateAppContent3(response as ObservatoryData);
-        autoGeneratePanels(response);
+
+        // Only run autoGeneratePanels if it hasn't run before
+        const hasRun = localStorage.getItem('autoPanelsGenerated');
+        if (!hasRun) {
+          await autoGeneratePanels(response);
+          localStorage.setItem('autoPanelsGenerated', 'true');
+        }
       }
     };
 
-    if (initialCall) {
-      initialCall = false;
-      fetchObservatoryData();
-    }
+    fetchObservatoryData();
   }, []);
 
   const getTheProposal = async (id: string) => {

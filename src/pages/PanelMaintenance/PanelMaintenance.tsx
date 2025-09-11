@@ -130,6 +130,7 @@ export default function PanelMaintenance() {
     if (makeAssignment) {
       autoGeneratePanels(getObservatoryData());
       setMakeAssignment(false);
+      setCurrentPanel(null);
     }
   }, [makeAssignment]);
 
