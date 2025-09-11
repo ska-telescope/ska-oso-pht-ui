@@ -224,12 +224,12 @@
     "toolTip": "Edit the target"
   },
   "effectiveResolution": {
-    "help": "This field displays the channel width after applying the spectral averaging.",
+    "help": "This field displays the channel width after applying the spectral averaging",
     "label": "Effective Resolution",
     "error": "Unable to calculate value"
   },
   "elevation": {
-    "help": "Specify the minimum elevation angle at which the target will be observed. This value must fall between the horizon and the target's zenith elevation. If the specified elevation is outside this range, an error message will be displayed. The default minimum elevation is 20 deg for LOW and 45 deg for MID.",
+    "help": "Specify the minimum elevation angle at which the target will be observed. This value must fall between the horizon and the target's zenith elevation. If the specified elevation is outside this range, an error message will be displayed. The default minimum elevation is 20 deg for LOW and 45 deg for MID",
     "label": "Minimum Elevation",
     "range": {
       "error": "Value must be within the range of {{min}} to {{max}} degrees inclusive"
