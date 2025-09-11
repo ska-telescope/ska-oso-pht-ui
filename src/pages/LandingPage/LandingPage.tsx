@@ -5,12 +5,13 @@ import { useTranslation } from 'react-i18next';
 import { Grid, Paper, Tooltip, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
+  AlertColorTypes,
   DataGrid,
   DropDown,
   SearchEntry,
-  AlertColorTypes
+  Spacer,
+  SPACER_VERTICAL
 } from '@ska-telescope/ska-gui-components';
-import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 //
 import { presentDate, presentLatex, presentTime } from '@utils/present/present';
 import Investigator from '@utils/types/investigator.tsx';
@@ -33,14 +34,16 @@ import Proposal from '@/utils/types/proposal';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
 import { validateProposal } from '@/utils/proposalValidation';
 import ObservatoryData from '@/utils/types/observatoryData';
-import { DUMMY_PROPOSAL_ID, FOOTER_SPACER, isCypress } from '@/utils/constants';
 import {
+  DUMMY_PROPOSAL_ID,
+  FOOTER_HEIGHT_PHT,
+  FOOTER_SPACER,
+  isCypress,
   NAV,
-  SEARCH_TYPE_OPTIONS,
-  PROPOSAL_STATUS,
-  PATH,
   NOT_SPECIFIED,
-  FOOTER_HEIGHT_PHT
+  PATH,
+  PROPOSAL_STATUS,
+  SEARCH_TYPE_OPTIONS
 } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { accessUpdate } from '@/utils/aaa/aaaUtils';
@@ -73,11 +76,41 @@ export default function LandingPage() {
   const [fetchList, setFetchList] = React.useState(false);
   const loggedIn = isLoggedIn();
   const { notifySuccess } = useNotify();
-  const getObservatoryData = () => application.content3 as ObservatoryData;
-
   const getAccess = () => application.content4 as ProposalAccess[];
   const setAccess = (access: ProposalAccess[]) => updateAppContent4(access);
   const getProposal = () => application.content2 as Proposal;
+
+  const mock = {
+    abstract: '',
+    createdBy: '',
+    createdOn: '',
+    cycle: 'SKAO_2027_1',
+    dataProductSDP: [],
+    dataProductSRC: [],
+    groupObservations: [],
+    id: DUMMY_PROPOSAL_ID,
+    investigators: [],
+    lastUpdated: '',
+    lastUpdatedBy: '',
+    metadata: undefined,
+    observations: [],
+    pipeline: '',
+    proposalSubType: [],
+    proposalType: 0,
+    scienceCategory: undefined,
+    scienceLoadStatus: 0,
+    sciencePDF: undefined,
+    scienceSubCategory: [],
+    status: '',
+    targetObservation: [],
+    targetOption: 1,
+    targets: [],
+    technicalLoadStatus: 0,
+    technicalPDF: undefined,
+    title: '',
+    version: 0
+  } as Proposal;
+
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const authClient = useAxiosAuthClient();
   let initialCall = true;
@@ -85,9 +118,13 @@ export default function LandingPage() {
   const DATA_GRID_HEIGHT = '60vh';
 
   React.useEffect(() => {
-    updateAppContent2({});
-    setFetchList(!fetchList);
-    setObservatoryData(!observatoryData);
+    if (!loggedIn) {
+      updateAppContent2(mock);
+    } else {
+      updateAppContent2({});
+      setFetchList(!fetchList);
+      setObservatoryData(!observatoryData);
+    }
   }, []);
 
   React.useEffect(() => {
@@ -354,13 +391,8 @@ export default function LandingPage() {
   const filteredData = proposals ? filterProposals() : [];
 
   const createMock = async () => {
-    const dummyId = DUMMY_PROPOSAL_ID;
-    notifySuccess(t('addMockProposal.success') + dummyId);
-    setProposal({
-      ...getProposal(),
-      id: dummyId,
-      cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
-    });
+    notifySuccess(t('addMockProposal.success') + DUMMY_PROPOSAL_ID);
+    setProposal(getProposal());
     navigate(NAV[4]);
   };
 
