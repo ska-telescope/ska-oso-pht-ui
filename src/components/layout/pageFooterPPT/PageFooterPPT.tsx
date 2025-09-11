@@ -79,6 +79,18 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     }
   };
 
+  const showPrevNav = () => {
+    if (loggedIn && usedPageNo > 0) {
+      return true;
+    } else return !loggedIn && usedPageNo !== 4;
+  };
+
+  const showNextNav = () => {
+    if (loggedIn && usedPageNo < LAST_PAGE - 1) {
+      return true;
+    } else return !loggedIn && usedPageNo !== 5;
+  };
+
   const nextLabel = () => {
     if (usedPageNo === -2) {
       return `addBtn.label`;
@@ -120,14 +132,13 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     <Paper sx={{ position: 'fixed', bottom: 40, left: 0, right: 0 }} elevation={0}>
       <Grid p={4} container direction="row" alignItems="flex-end" justifyContent="space-between">
         <Grid>
-          {(!loggedIn && usedPageNo === 4) ||
-            (usedPageNo > 0 && (
-              <PreviousPageButton
-                action={prevPageNav}
-                testId="prevButtonTestId"
-                title={prevLabel()}
-              />
-            ))}
+          {showPrevNav() && (
+            <PreviousPageButton
+              action={prevPageNav}
+              testId="prevButtonTestId"
+              title={prevLabel()}
+            />
+          )}
         </Grid>
         <Grid>
           {(application.content5 as Notification)?.message?.length > 0 && (
@@ -140,17 +151,16 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
           )}
         </Grid>
         <Grid>
-          {(!loggedIn && usedPageNo === 5) ||
-            (usedPageNo < LAST_PAGE - 1 && (
-              <NextPageButton
-                disabled={buttonDisabled}
-                testId="nextButtonTestId"
-                title={nextLabel()}
-                page={usedPageNo}
-                primary
-                action={nextPageClicked}
-              />
-            ))}
+          {showNextNav() && (
+            <NextPageButton
+              disabled={buttonDisabled}
+              testId="nextButtonTestId"
+              title={nextLabel()}
+              page={usedPageNo}
+              primary
+              action={nextPageClicked}
+            />
+          )}
         </Grid>
       </Grid>
     </Paper>
