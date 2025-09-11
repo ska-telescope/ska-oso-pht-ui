@@ -43,40 +43,40 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   }, []);
 
   const createProposal = async () => {
-      notifyWarning(t('addProposal.warning'));
-      const response = await PostProposal(
-        authClient,
-        {
-          ...getProposal(), // TODO add PI here
-          cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
-        },
-        PROPOSAL_STATUS.DRAFT
-      );
+    notifyWarning(t('addProposal.warning'));
+    const response = await PostProposal(
+      authClient,
+      {
+        ...getProposal(), // TODO add PI here
+        cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
+      },
+      PROPOSAL_STATUS.DRAFT
+    );
 
-      if (response && !response.error) {
-        notifySuccess(t('addProposal.success') + response);
-        setProposal({
-          ...getProposal(),
-          id: response,
-          cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
-        });
-        // Create a new access entry for the PI.  Saves doing the endpoint
-        const newAcc: Partial<ProposalAccess> = {
-          prslId: response,
-          role: PROPOSAL_ROLE_PI,
-          permissions: PROPOSAL_ACCESS_PERMISSIONS
-        };
+    if (response && !response.error) {
+      notifySuccess(t('addProposal.success') + response);
+      setProposal({
+        ...getProposal(),
+        id: response,
+        cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
+      });
+      // Create a new access entry for the PI.  Saves doing the endpoint
+      const newAcc: Partial<ProposalAccess> = {
+        prslId: response,
+        role: PROPOSAL_ROLE_PI,
+        permissions: PROPOSAL_ACCESS_PERMISSIONS
+      };
 
-        const acc = Array.isArray(application.content4)
-          ? (application.content4 as ProposalAccess[])
-          : [];
+      const acc = Array.isArray(application.content4)
+        ? (application.content4 as ProposalAccess[])
+        : [];
 
-        updateAppContent4([...acc, newAcc]);
+      updateAppContent4([...acc, newAcc]);
 
-        navigate(NAV[1]);
-      } else {
-        notifyError(response.error);
-      }
+      navigate(NAV[1]);
+    } else {
+      notifyError(response.error);
+    }
   };
 
   const nextLabel = () => {
