@@ -21,7 +21,7 @@ async function GetProposalByStatusList(
   }
 
   try {
-    const URL_PATH = `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PROPOSAL_PATH}/status/submitted`;
+    const URL_PATH = `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PROPOSAL_PATH}/reviewable`;
     const result = await authAxiosClient.get(URL_PATH);
 
     if (!result || !Array.isArray(result.data)) {

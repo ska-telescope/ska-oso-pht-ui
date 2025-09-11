@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import TableScienceReviews from './TableScienceReviews';
-import { REVIEW_TYPE } from '@/utils/constants';
+import { CONFLICT_REASONS, REVIEW_TYPE } from '@/utils/constants';
 
 const mockNavigate = vi.fn();
 const mockUpdateAppContent1 = vi.fn();
@@ -62,7 +62,11 @@ const mockData = {
       reviewType: {
         kind: REVIEW_TYPE.SCIENCE,
         rank: 'A',
-        excludedFromDecision: false
+        excludedFromDecision: false,
+        conflict: {
+          hasConflict: false,
+          reason: CONFLICT_REASONS[0]
+        }
       }
     },
     {
@@ -72,7 +76,11 @@ const mockData = {
       reviewType: {
         kind: REVIEW_TYPE.SCIENCE,
         rank: 'B',
-        excludedFromDecision: true
+        excludedFromDecision: true,
+        conflict: {
+          hasConflict: false,
+          reason: CONFLICT_REASONS[0]
+        }
       }
     }
   ]
