@@ -122,6 +122,13 @@ export const BANNER_PMT_SPACER_MIN = 65;
 export const CENTRAL_FREQUENCY_MAX = [350, 1.05, 1.76, 8.5, 15.4];
 export const CENTRAL_FREQUENCY_MIN = [50, 0.35, 0.95, 4.6, 8.3];
 
+export const CONFLICT_REASONS = [
+  'conflict-none',
+  'conflict-investigator',
+  'conflict-collaborator',
+  'conflict-other'
+];
+
 export const DATA_PRODUCT = {
   observatoryDataProduct: [
     { label: 'Continuum Image', value: 1 },

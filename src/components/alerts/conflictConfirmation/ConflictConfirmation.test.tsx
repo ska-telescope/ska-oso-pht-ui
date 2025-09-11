@@ -1,5 +1,5 @@
-import { describe, expect, test } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, test } from 'vitest';
+import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import ConflictConfirmation from './ConflictConfirmation';
 
@@ -11,47 +11,7 @@ describe('<ConflictConfirmation />', () => {
       <ConflictConfirmation proposal={null} open={false} onClose={vi.fn()} onConfirm={vi.fn()} />
     );
   });
-  test('renders correctly ( type 0 )', () => {
-    render(
-      <ConflictConfirmation
-        proposal={{
-          id: '',
-          title: '',
-          status: '',
-          lastUpdated: '',
-          lastUpdatedBy: '',
-          createdOn: '',
-          createdBy: '',
-          version: 0,
-          cycle: '',
-          proposalType: 0,
-          proposalSubType: undefined,
-          scienceCategory: undefined,
-          scienceSubCategory: undefined,
-          investigators: undefined,
-          abstract: undefined,
-          sciencePDF: undefined,
-          scienceLoadStatus: undefined,
-          targetOption: undefined,
-          targets: undefined,
-          observations: undefined,
-          groupObservations: undefined,
-          targetObservation: undefined,
-          technicalPDF: undefined,
-          technicalLoadStatus: undefined,
-          dataProductSDP: undefined,
-          dataProductSRC: undefined,
-          pipeline: undefined
-        }}
-        open={true}
-        onClose={mockActionClose}
-        onConfirm={mockActionConfirm}
-      />
-    );
-    screen.getByTestId('cancelButtonTestId').click();
-    expect(mockActionClose).toBeCalled();
-  });
-  test('renders correctly ( type 1 )', () => {
+  test('renders correctly', () => {
     render(
       <ConflictConfirmation
         proposal={{
@@ -70,14 +30,14 @@ describe('<ConflictConfirmation />', () => {
           scienceSubCategory: undefined,
           investigators: undefined,
           abstract: 'This is an abstract for a proposal.',
-          sciencePDF: undefined,
+          sciencePDF: null,
           scienceLoadStatus: undefined,
           targetOption: undefined,
           targets: undefined,
           observations: undefined,
           groupObservations: undefined,
           targetObservation: undefined,
-          technicalPDF: undefined,
+          technicalPDF: null,
           technicalLoadStatus: undefined,
           dataProductSDP: undefined,
           dataProductSRC: undefined,
@@ -88,7 +48,5 @@ describe('<ConflictConfirmation />', () => {
         onConfirm={mockActionConfirm}
       />
     );
-    // screen.getByTestId('displayConfirmationButton').click();
-    // expect(mockActionConfirm).toBeCalled();
   });
 });

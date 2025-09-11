@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Grid } from '@mui/material';
+import { Grid, Tooltip, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DataGrid,
@@ -19,7 +19,8 @@ import {
   REVIEW_TYPE,
   FEASIBLE_NO,
   DEFAULT_USER,
-  FEASIBLE_YES
+  FEASIBLE_YES,
+  CONFLICT_REASONS
 } from '@utils/constants.ts';
 import GetPanelList from '@services/axios/get/getPanelList/getPanelList';
 import GetProposalByStatusList from '@services/axios/get/getProposalByStatusList/getProposalByStatusList';
@@ -52,8 +53,13 @@ export default function ReviewListPage() {
   const [searchType, setSearchType] = React.useState('');
   //
   const [conflictConfirm, setConflictConfirm] = React.useState(false);
-  const [conflictRow, setConflictRow] = React.useState<{ proposal: Proposal } | null>(null);
+  const [conflictRow, setConflictRow] = React.useState<{
+    proposal: Proposal;
+    sciReview: ProposalReview;
+    tecReview: ProposalReview | null;
+  } | null>(null);
   const [conflictRoute, setConflictRoute] = React.useState('');
+  const [filteredData, setFilteredData] = React.useState([]);
   //
   const [reset, setReset] = React.useState(false);
   const [panelData, setPanelData] = React.useState<Panel[]>([]);
@@ -119,6 +125,11 @@ export default function ReviewListPage() {
     fetchProposalData();
   }, [panelData]);
 
+  React.useEffect(() => {
+    const data = proposals ? filterProposals() : [];
+    setFilteredData(data);
+  }, [proposals, proposalReviews]);
+
   const getScienceReviewType = (row: any): ScienceReview => {
     return {
       kind: REVIEW_TYPE.SCIENCE,
@@ -169,8 +180,7 @@ export default function ReviewListPage() {
 
   /*---------------------------------------------------------------------------*/
 
-  const updateReview = async (row: any) => {
-    const rec = getReview(row);
+  const updateReviewRec = async (rec: any) => {
     if (!rec) {
       notifyError('Unable to find review'); // TODO : Should check this and add to json
     }
@@ -186,6 +196,10 @@ export default function ReviewListPage() {
     }
   };
 
+  const updateReview = async (row: any) => {
+    updateReviewRec(getReview(row));
+  };
+
   /*---------------------------------------------------------------------------*/
 
   const conflictConfirmation = () =>
@@ -196,20 +210,68 @@ export default function ReviewListPage() {
         onClose={() => {
           return;
         }}
-        onConfirm={noConflictConfirmed}
-        onConfirmLabel={t('conflict.button')}
-        onConfirmToolTip={t('conflict.tooltip')}
+        onConfirm={conflictDeclarationResponse}
+        onConfirmLabel={'conflict.button'}
+        onConfirmToolTip={'conflict.tooltip'}
       />
     ) : (
       <></>
     );
 
-  const noConflictConfirmed = () => navigate(conflictRoute, { replace: true, state: conflictRow });
+  const conflictDeclarationResponse = (reason: string) => {
+    if (reason === 'cancel') {
+      setConflictConfirm(false);
+      return;
+    } else if (conflictRow) {
+      const conflict = {
+        hasConflict: reason !== CONFLICT_REASONS[0],
+        reason: reason
+      };
+      const updatedRow = {
+        ...conflictRow,
+        sciReview: {
+          ...conflictRow.sciReview,
+          reviewType: {
+            ...conflictRow.sciReview.reviewType,
+            conflict: conflict
+          }
+        }
+      };
+      setConflictRow(updatedRow);
+      if (reason === CONFLICT_REASONS[0]) {
+        // Do not save, as this should be done as part of the review submission
+        setConflictConfirm(false);
+        navigate(conflictRoute, { replace: true, state: updatedRow });
+      } else {
+        let forDB = null;
+        const updatedProposalReviews = proposalReviews.map(review => {
+          let rec = review;
+          if (review.id === conflictRow?.sciReview.id) {
+            rec.reviewType.conflict.reason = reason;
+            rec.reviewType.conflict.hasConflict = reason !== CONFLICT_REASONS[0];
+            rec.status = PANEL_DECISION_STATUS.REVIEWED;
+            rec.reviewType.excludedFromDecision = true;
+            forDB = rec;
+          }
+          return rec;
+        });
+        setProposalReviews(updatedProposalReviews);
+        setConflictConfirm(false);
+        updateReviewRec(forDB);
+      }
+    }
+  };
 
   const theIconClicked = (row: any, route: string) => {
-    setConflictConfirm(true);
-    setConflictRow(row);
-    setConflictRoute(route);
+    // If the technical reviewer ever needs to go thru the conflict
+    // declaration, then all that is needed is this if to be removed.
+    if (route === PMT[5]) {
+      setConflictConfirm(true);
+      setConflictRow(row);
+      setConflictRoute(route);
+    } else {
+      navigate(route, { replace: true, state: row });
+    }
   };
   const scienceIconClicked = (row: any) => theIconClicked(row, PMT[5]);
   const technicalIconClicked = (row: any) => theIconClicked(row, PMT[6]);
@@ -226,12 +288,13 @@ export default function ReviewListPage() {
 
   const canEditScience = (row: {
     tecReview: { reviewType: { isFeasible: string } };
-    sciReview: { status: string };
+    sciReview: { status: string; reviewType: { conflict: { hasConflict: boolean } } };
   }) => {
     return (
       isReviewerScience() &&
       row?.sciReview &&
       isFeasible(row) &&
+      row?.sciReview?.reviewType.conflict.hasConflict === false &&
       row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED
     );
   };
@@ -301,12 +364,26 @@ export default function ReviewListPage() {
     }
   };
 
-  // TODO : Add the functionality so that clicking on this will show the conflict modal
   const colConflict = {
     field: 'conflict',
-    headerName: t('conflict.label'),
+    headerName: t('conflict.column'),
     width: 120,
-    renderCell: (e: { row: any }) => (e.row?.sciReview?.conflict?.has_conflict ? t('yes') : t('no'))
+    renderCell: (e: { row: any }) => {
+      const conflict = e.row?.sciReview?.reviewType?.conflict;
+      const hasConflict = conflict?.hasConflict;
+      const reason = conflict?.reason;
+      const label = hasConflict ? t('yes') : t('no');
+
+      return reason ? (
+        <Tooltip title={t('conflict.reason.' + reason)}>
+          <Typography pt={2} variant="body2">
+            {label}
+          </Typography>
+        </Tooltip>
+      ) : (
+        <></>
+      );
+    }
   };
 
   const colRank = {
@@ -446,8 +523,6 @@ export default function ReviewListPage() {
     });
   }
 
-  const filteredData = proposals ? filterProposals() : [];
-
   const searchDropdown = () => (
     <DropDown
       options={[{ label: t('status.0'), value: '' }, ...SEARCH_TYPE_OPTIONS]}
@@ -483,7 +558,7 @@ export default function ReviewListPage() {
         await updateReview(row);
       }
     }
-    setReset(!reset); // Reset the state to refresh the data
+    setReset(!reset);
   };
 
   const fwdButton = () => (

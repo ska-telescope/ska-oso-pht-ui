@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import TableReviewDecision from './TableReviewDecision';
-import { PANEL_DECISION_STATUS, REVIEW_TYPE } from '@/utils/constants';
+import { CONFLICT_REASONS, PANEL_DECISION_STATUS, REVIEW_TYPE } from '@/utils/constants';
 
 const mockNavigate = vi.fn();
 const mockUpdateAppContent1 = vi.fn();
@@ -71,7 +71,11 @@ const mockDataToDo = [
         reviewType: {
           kind: REVIEW_TYPE.SCIENCE,
           rank: 'A',
-          excludedFromDecision: false
+          excludedFromDecision: false,
+          conflict: {
+            hasConflict: false,
+            reason: CONFLICT_REASONS[0]
+          }
         }
       },
       {
@@ -81,7 +85,11 @@ const mockDataToDo = [
         reviewType: {
           kind: REVIEW_TYPE.SCIENCE,
           rank: 'B',
-          excludedFromDecision: true
+          excludedFromDecision: true,
+          conflict: {
+            hasConflict: false,
+            reason: CONFLICT_REASONS[0]
+          }
         }
       }
     ],
@@ -107,7 +115,11 @@ const mockData = [
         reviewType: {
           kind: REVIEW_TYPE.SCIENCE,
           rank: 'A',
-          excludedFromDecision: false
+          excludedFromDecision: false,
+          conflict: {
+            hasConflict: false,
+            reason: CONFLICT_REASONS[0]
+          }
         }
       },
       {
@@ -117,7 +129,11 @@ const mockData = [
         reviewType: {
           kind: REVIEW_TYPE.SCIENCE,
           rank: 'B',
-          excludedFromDecision: true
+          excludedFromDecision: true,
+          conflict: {
+            hasConflict: false,
+            reason: CONFLICT_REASONS[0]
+          }
         }
       }
     ],

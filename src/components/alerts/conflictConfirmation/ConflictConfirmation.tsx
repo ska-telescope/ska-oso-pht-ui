@@ -10,6 +10,8 @@ import Alert from '../standardAlert/StandardAlert';
 import GridMembers from '../../grid/members/GridMembers';
 import skaoIcon from '../../icon/skaoIcon/skaoIcon';
 import ConfirmButton from '@/components/button/Confirm/Confirm';
+import CancelButton from '@/components/button/Cancel/Cancel';
+import { CONFLICT_REASONS } from '@/utils/constants';
 
 interface ConflictConfirmationProps {
   proposal: Proposal | null;
@@ -32,7 +34,6 @@ const BOLD_CONTENT = false;
 export default function ConflictConfirmation({
   proposal,
   open,
-  onClose,
   onConfirm,
   onConfirmLabel = '',
   onConfirmToolTip = ''
@@ -41,14 +42,14 @@ export default function ConflictConfirmation({
   const theme = useTheme();
 
   const getFont = (bold: boolean) => (bold ? 600 : 300);
-  const [reason, setReason] = React.useState(0);
+  const [reason, setReason] = React.useState(CONFLICT_REASONS[0]);
 
   const handleConfirm = () => {
-    onConfirm();
+    onConfirm(reason);
   };
 
   const handleCancel = () => {
-    onClose();
+    onConfirm('cancel');
   };
 
   const title = (inLabel: string, inValue: string) => {
@@ -114,10 +115,25 @@ export default function ConflictConfirmation({
   );
 
   const getOptions = () => {
-    return [0, 1, 2, 3].map(e => ({ label: t('conflict.reason.' + e), value: e }));
+    return CONFLICT_REASONS.map(e => ({ label: t('conflict.reason.' + e), value: e }));
   };
 
-  const footerRight = () => (
+  const buttonLeft = () => (
+    <Grid
+      container
+      spacing={1}
+      direction="row"
+      alignItems="center"
+      justifyContent="flex-end"
+      pr={2}
+    >
+      <Grid>
+        <CancelButton action={handleCancel} testId="cancelButtonTestId" />
+      </Grid>
+    </Grid>
+  );
+
+  const buttonRight = () => (
     <Grid
       container
       spacing={1}
@@ -148,6 +164,11 @@ export default function ConflictConfirmation({
       justifyContent="space-between"
       sx={{ width: '100%' }}
     >
+      <Grid>
+        <Grid container direction="row" alignItems="center" justifyContent="flex-start">
+          <Grid>{buttonLeft()}</Grid>
+        </Grid>
+      </Grid>
       <Grid size={{ xs: 8 }}>
         <DropDown
           value={reason}
@@ -161,7 +182,7 @@ export default function ConflictConfirmation({
       </Grid>
       <Grid>
         <Grid container direction="row" alignItems="center" justifyContent="flex-end">
-          <Grid>{footerRight()}</Grid>
+          <Grid>{buttonRight()}</Grid>
         </Grid>
       </Grid>
     </Grid>

@@ -7,7 +7,7 @@
   "intlNumber": "{{val, number}}",
   "localData": "LOCAL DATA",
   "yes": "Yes",
-  "yes with revision": "Yes with Revision",
+  "yesWithRevision": "Yes with Revision",
   "maybe": "Maybe",
   "no": "No",
   "none": "None",
@@ -146,12 +146,13 @@
   },
   "conflict": {
     "button": "Confirm conflict declaration",
+    "column": "Conflict?",
     "label": "Conflict Declaration",
     "reason": {
-      "0": "I have no conflict of interest",
-      "1": "I am a co-I on this science idea",
-      "2": "I am a current/recent collaborator of the author(s)",
-      "3": "Other reasons prevent me from rendering a fair and impartial judgement"
+      "conflict-none": "I have no conflict of interest",
+      "conflict-investigator": "I am an investigator on this science idea",
+      "conflict-collaborator": "I am a current / recent collaborator of the author(s)",
+      "conflict-other": "Other reasons prevent me from rendering a fair and impartial judgement"
     },
     "tooltip": "Indicate whether there is a conflict of interest with this proposal"
   },
@@ -773,7 +774,7 @@
     },
     "technical": {
       "label_one": "Technical Review",
-      "label_other": "Technical Reviews"
+      "label_multiple": "Technical Reviews"
     }
   },
   "reviewers": {
