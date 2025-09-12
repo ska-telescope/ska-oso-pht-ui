@@ -937,15 +937,18 @@ export const TEXT_ENTRY_PARAMS = {
   EMAIL: {
     MAX_LENGTH: 25,
     ERROR_TEXT: 'specialCharacters.email',
+    // eslint-disable-next-line no-useless-escape
     PATTERN: /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
   },
   TITLE: {
     MAX_LENGTH: 20,
     ERROR_TEXT: 'specialCharacters.invalid',
+    // eslint-disable-next-line no-useless-escape
     PATTERN: /^[a-zA-Z0-9\s\-_:;$^!&><#.,"%*+='{}/\\?]*$/
   },
   NUMBER_ONLY: {
     ERROR_TEXT: 'error.invalidString',
+    // eslint-disable-next-line no-useless-escape
     PATTERN: /^[0-9]+(\.[0-9]+)?$/
   }
 };
