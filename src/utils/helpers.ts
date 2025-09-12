@@ -58,8 +58,9 @@ export const calculateVelocity = (resolutionHz: number, frequencyHz: number, pre
 };
 
 // fundamental limit of the bandwidth provided by SKA MID or LOW
-export const getMinimumChannelWidth = (telescope: number): number =>
-  BANDWIDTH_MIN_CHANNEL_WIDTH_HZ[telescope];
+export const getMinimumChannelWidth = (
+  telescope: keyof typeof BANDWIDTH_MIN_CHANNEL_WIDTH_HZ
+): number => BANDWIDTH_MIN_CHANNEL_WIDTH_HZ[telescope];
 
 export const helpers = {
   validate: {
@@ -67,7 +68,7 @@ export const helpers = {
       text: string,
       setText: Function,
       setErrorText: Function,
-      textType?: string
+      textType?: keyof typeof TEXT_ENTRY_PARAMS
     ): boolean {
       // eslint-disable-next-line react-hooks/rules-of-hooks
       textType = textType ?? 'DEFAULT';
