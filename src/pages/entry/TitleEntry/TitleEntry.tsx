@@ -155,13 +155,13 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         <Tooltip title={t('proposalAttribute.desc.' + id)} arrow>
           <Card
             style={{
-              color: setCardFG2(getProposal().proposalSubType, id),
-              backgroundColor: setCardBG2(getProposal().proposalSubType, id),
+              color: setCardFG2(getProposal().proposalSubType ?? [], id),
+              backgroundColor: setCardBG2(getProposal().proposalSubType ?? [], id),
               display: 'flex',
               justifyContent: 'center',
               minHeight: '90px'
             }}
-            className={setCardClassName2(getProposal().proposalSubType, id)}
+            className={setCardClassName2(getProposal().proposalSubType ?? [], id)}
             onClick={() => clickSubProposal(id)}
             variant="outlined"
             id={`proposalAttribute-${id}`}
@@ -172,8 +172,8 @@ export default function TitleEntry({ page }: TitleEntryProps) {
                   <Avatar
                     variant="rounded"
                     style={{
-                      color: setCardBG2(getProposal().proposalSubType, id),
-                      backgroundColor: setCardFG2(getProposal().proposalSubType, id)
+                      color: setCardBG2(getProposal().proposalSubType ?? [], id),
+                      backgroundColor: setCardFG2(getProposal().proposalSubType ?? [], id)
                     }}
                   >
                     <Typography variant="body2" component="div">
