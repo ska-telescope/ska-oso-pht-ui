@@ -944,7 +944,6 @@ export const TEXT_ENTRY_PARAMS = {
     MAX_LENGTH: 20,
     ERROR_TEXT: 'specialCharacters.invalid',
     // eslint-disable-next-line no-useless-escape
-    // PATTERN: /^[a-zA-Z0-9\s\-_:;$^!&><#.,"%*+='{}/\\?]*$/
     PATTERN: /^[a-zA-Z0-9\s\-_:;$^!><#.,"%*+='{}/\\?]*$/
   },
   NUMBER_ONLY: {
