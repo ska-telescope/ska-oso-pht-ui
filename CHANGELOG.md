@@ -11,6 +11,7 @@ UNRELEASED
 -----
 
 * [BREAKING] Changed  : oso-services v4.0.2
+* Changed: Allow "?" character in proposals titles
 
 4.0.0
 
