@@ -11,7 +11,8 @@ import {
   verifyMockCreatedAlertFooter,
   createObservation,
   addM2TargetUsingResolve,
-  clickListOfTargets
+  clickListOfTargets,
+  createMock
 } from '../common/common';
 
 describe('Creating a Mock without login', () => {
@@ -24,9 +25,7 @@ describe('Creating a Mock without login', () => {
   });
 
   it('Create a mock without login', () => {
-    cy.wait(500);
-    clickAddMock();
-    verifyMockCreatedAlertFooter();
+    createMock();
 
     //add target
     clickListOfTargets();
@@ -34,6 +33,8 @@ describe('Creating a Mock without login', () => {
 
     //go to observation page
     clickToNextPage();
+
+    //add observation
     createObservation();
 
     checkFieldDisabled('saveBtn', true);
