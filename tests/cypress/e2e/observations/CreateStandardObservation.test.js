@@ -3,7 +3,8 @@ import {
   clickToObservationPage,
   createMock,
   createObservation,
-  initializeUserNotLoggedIn
+  initializeUserNotLoggedIn,
+  verifyUnlinkedObservationInTable
 } from '../common/common';
 beforeEach(() => {
   initializeUserNotLoggedIn();
@@ -18,5 +19,6 @@ afterEach(() => {
 describe('Creating Observation', () => {
   it('Create a default observation', { jiraKey: 'XTP-71406' }, () => {
     createObservation();
+    verifyUnlinkedObservationInTable();
   });
 });

@@ -12,7 +12,8 @@ import {
   createObservation,
   addM2TargetUsingResolve,
   clickListOfTargets,
-  createMock
+  createMock,
+  verifyUnlinkedObservationInTable
 } from '../common/common';
 
 describe('Creating a Mock without login', () => {
@@ -36,6 +37,7 @@ describe('Creating a Mock without login', () => {
 
     //add observation
     createObservation();
+    verifyUnlinkedObservationInTable();
 
     checkFieldDisabled('saveBtn', true);
     checkFieldDisabled('validateBtn', true);

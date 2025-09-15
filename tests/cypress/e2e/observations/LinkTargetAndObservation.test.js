@@ -3,12 +3,16 @@ import {
   clearLocalStorage,
   clickAddMock,
   clickListOfTargets,
+  clickToAddTarget,
+  clickToLinkTargetObservation,
   clickToNextPage,
   clickToObservationPage,
+  clickUnlinkedObservationInTable,
   createMock,
   createObservation,
   initializeUserNotLoggedIn,
-  verifyMockCreatedAlertFooter
+  verifyMockCreatedAlertFooter,
+  verifySensCalcStatus
 } from '../common/common';
 beforeEach(() => {
   initializeUserNotLoggedIn();
@@ -17,6 +21,7 @@ beforeEach(() => {
   //add target
   clickListOfTargets();
   addM2TargetUsingResolve();
+  clickToAddTarget();
 
   //go to observation page
   clickToNextPage();
@@ -31,6 +36,8 @@ afterEach(() => {
 
 describe('Link Target and Observation', () => {
   it('Link a target and observation', { jiraKey: 'XTP-71406' }, () => {
-    //TODO: Link target and observation
+    clickUnlinkedObservationInTable();
+    clickToLinkTargetObservation();
+    verifySensCalcStatus();
   });
 });

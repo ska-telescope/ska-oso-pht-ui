@@ -133,6 +133,8 @@ export const clickToConfirmProposalSubmission = () => clickButton('displayConfir
 export const clickToNextPage = () => clickButton('nextButtonTestId');
 export const clickToPreviousPage = () => clickButton('prevButtonTestId');
 
+export const clickToLinkTargetObservation = () => clickButton('linkedTickBox');
+
 /*----------------------------------------------------------------------*/
 
 export const clickDropdown = (testId, value) => {
@@ -409,9 +411,23 @@ export const verifyUnlinkedObservationInTable = () => {
     .should('have.length', 1);
 };
 
+export const clickUnlinkedObservationInTable = () => {
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .should('contain', 'obs-')
+    .should('contain', 'AA4')
+    .click({ multiple: true });
+};
+
+export const verifySensCalcStatus = () => {
+  cy.get('[data-testid="statusId"]')
+    .should('be.visible')
+    .invoke('attr', 'aria-label')
+    .should('include', 'Status : OK');
+};
+
 export const createObservation = () => {
   //add default observation
   clickObservationSetup();
   clickAddObservationEntry();
-  verifyUnlinkedObservationInTable();
 };
