@@ -1,11 +1,11 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { DataGrid, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Typography, Grid } from '@mui/material';
 import GetPanelList from '@services/axios/get/getPanelList/getPanelList';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import { Panel } from '@/utils/types/panel';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface GridReviewPanelsProps {
   height?: string;
@@ -19,7 +19,7 @@ export default function GridReviewPanels({
   listOnly = false,
   onRowClick
 }: GridReviewPanelsProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const authClient = useAxiosAuthClient();
 
   const [data, setData] = React.useState<Panel[]>([]);

@@ -1,10 +1,9 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import ObservatoryData from '@utils/types/observatoryData.tsx';
 import { LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface ElevationFieldProps {
   disabled?: boolean;
@@ -36,7 +35,7 @@ export default function ElevationField({
   value,
   widthLabel = 6
 }: ElevationFieldProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
 
   const errorMessage = () => {
     const { application } = storageObject.useStore();

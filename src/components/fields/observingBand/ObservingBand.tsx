@@ -1,8 +1,8 @@
-import { useTranslation } from 'react-i18next';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Grid } from '@mui/material';
 import { BANDWIDTH_TELESCOPE, LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface ObservingBandFieldProps {
   disabled?: boolean;
@@ -23,7 +23,7 @@ export default function ObservingBandField({
   widthButton = 2,
   widthLabel = 6
 }: ObservingBandFieldProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const { helpComponent } = storageObject.useStore();
   const FIELD = 'observingBand';
 

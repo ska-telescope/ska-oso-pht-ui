@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import HomeIcon from '@mui/icons-material/Home';
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { isCypress, PATH } from '@utils/constants.ts';
 import BaseButton from '../Base/Button';
 import AlertDialog from '../../alerts/alertDialog/AlertDialog';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface HomeButtonProps {
   title?: string;
@@ -24,7 +24,7 @@ export default function HomeButton({
 }: HomeButtonProps) {
   const [openWarningDialog, setOpenWarningDialog] = React.useState(false);
   const navigate = useNavigate();
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const loggedIn = isLoggedIn();
 
   const isShowWarningWhenClicked = () => {

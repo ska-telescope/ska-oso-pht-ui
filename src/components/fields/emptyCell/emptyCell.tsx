@@ -1,9 +1,9 @@
-import { useTranslation } from 'react-i18next';
 import StatusIconDisplay from '../../icon/status/statusIcon';
 import { STATUS_ERROR } from '../../../utils/constants';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 export default function EmptyCell() {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const SIZE = 20;
 
   return (

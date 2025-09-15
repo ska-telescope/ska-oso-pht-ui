@@ -1,7 +1,6 @@
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { Box, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import useMediaQuery from '@mui/material/useMediaQuery';
@@ -31,6 +30,7 @@ import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient
 import { useNotify } from '@/utils/notify/useNotify';
 import { accessSubmit } from '@/utils/aaa/aaaUtils';
 import ProposalAccess from '@/utils/types/proposalAccess';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface PageBannerPPTProps {
   pageNo: number;
@@ -42,7 +42,7 @@ const widthWrapStatusArray = '1500px';
 export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) {
   const LG = useMediaQuery(useTheme().breakpoints.down('lg'));
   const wrapStatusArray = useMediaQuery(`(max-width:${widthWrapStatusArray})`); // revisit to implement override breakpoint
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const { application } = storageObject.useStore();
   const [canSubmit, setCanSubmit] = React.useState(false);

@@ -1,8 +1,8 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
 import { Typography, Box, Paper } from '@mui/material';
 import { COLOR_PALETTES } from '@/utils/accessibility/accessibility';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface RankEntryFieldProps {
   setSelectedRank: Function;
@@ -21,7 +21,7 @@ export default function RankEntryField({
   colorIndex = 0,
   isProgressive = true
 }: RankEntryFieldProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const theme = useTheme();
   const [hoveredRank, setHoveredRank] = React.useState<number | null>(null);
   const validMaxRank = 9;

@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   DataGrid,
   DropDown,
@@ -37,6 +36,7 @@ import { IdObject } from '@/utils/types/idObject';
 import { arraysAreEqual } from '@/utils/helpers';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 export function getProposalType(value: number): string {
   const type = PROJECTS.find(item => item.id === value)?.mapping;
@@ -81,7 +81,7 @@ export default function GridProposals({
   showActions = false,
   tickBoxClicked = () => {}
 }: GridProposalsProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
 
   const navigate = useNavigate();
 

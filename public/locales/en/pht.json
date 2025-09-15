@@ -39,7 +39,7 @@
   },
   "addProposal": {
     "short": "Add",
-    "label": "Add Proposal",
+    "label": "Add",
     "success": "Proposal added with unique identifier ",
     "toolTip": "Click to add a new proposal.",
     "warning": "Please wait whilst we create a new proposal."
@@ -629,8 +629,8 @@
       "3": "Time allocated by the Director-General outside the normal process of assessment by the Time Allocation Committee (TMC)."
     },
     "help": "Select from the options below the most appropriate type classification for the proposal. This can be changed later if needed, however be aware that this may affect information previously entered.",
-    "label": "Proposal Type",
-    "plural": "Proposal Types",
+    "label": "Type",
+    "plural": "Types",
     "short": "Type",
     "all": "All proposal types",
     "title": {
@@ -1092,7 +1092,7 @@
     "empty": "There are no targets associated with this proposal"
   },
   "title": {
-    "label": "Proposal Title",
+    "label": "Title",
     "short": "Title",
     "empty": "A value is required",
     "maxChar": "939",

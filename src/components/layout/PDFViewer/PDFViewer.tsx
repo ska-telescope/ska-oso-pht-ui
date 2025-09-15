@@ -1,11 +1,11 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
 import { Document, Page } from 'react-pdf';
 import { pdfjs } from 'react-pdf';
 
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import NextPageButton from '../../button/NextPage/NextPage';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 pdfjs.GlobalWorkerOptions.workerSrc = new URL(
   'pdfjs-dist/build/pdf.worker.min.mjs',
@@ -19,7 +19,7 @@ interface PDFViewerProps {
 export default function PDFViewer({
   url = '../../../../public/how-to-conduct-your-own-heuristic-evaluation.pdf'
 }: PDFViewerProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const [numPages, setNumPages] = React.useState<number>(0);
   const [pageNumber, setPageNumber] = React.useState(1);
 

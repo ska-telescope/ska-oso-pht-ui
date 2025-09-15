@@ -1,7 +1,6 @@
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { Grid, Paper, Tooltip, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
@@ -44,9 +43,10 @@ import {
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { accessUpdate } from '@/utils/aaa/aaaUtils';
 import PostPanelGenerate from '@/services/axios/post/postPanelGenerate/postPanelGenerate';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 export default function LandingPage() {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const navigate = useNavigate();
 
   const {
@@ -131,17 +131,13 @@ export default function LandingPage() {
         setAxiosError(response.toString());
       } else {
         updateAppContent3(response as ObservatoryData);
-
-        // Only run autoGeneratePanels if it hasn't run before
-        const hasRun = sessionStorage.getItem('autoPanelsGenerated');
-        if (!hasRun) {
-          await autoGeneratePanels(response);
-          sessionStorage.setItem('autoPanelsGenerated', 'true');
-        }
+        await autoGeneratePanels(response);
       }
     };
 
-    fetchObservatoryData();
+    if (application.content3 === undefined || application.content3 === null) {
+      fetchObservatoryData();
+    }
   }, []);
 
   const getTheProposal = async (id: string) => {
@@ -301,7 +297,7 @@ export default function LandingPage() {
   const colUpdated = {
     field: 'lastUpdated',
     headerName: t('updated.label'),
-    width: 180,
+    width: 240,
     renderCell: (e: { row: any }) =>
       presentDate(e.row.lastUpdated) + ' ' + presentTime(e.row.lastUpdated)
   };
