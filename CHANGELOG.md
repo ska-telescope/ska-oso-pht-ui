@@ -9,7 +9,7 @@ UNRELEASED
 * Added: Conflict declarations for Scientific reviews
 * Changed: oso-services v5.0.0
 * Changed: Allow "?" character in proposals titles
-* Changed: Updated endpoints where possible
+* Changed: Updated usage of DefaultUser in endpoints where possible
 * Changed: Some screens made more resilient
 * Changed: Status added to the proposals on the Panel Maintenance
 * Removed: Old code related to conflicts
