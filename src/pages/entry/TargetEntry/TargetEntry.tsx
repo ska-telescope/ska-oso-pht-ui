@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
@@ -12,7 +12,6 @@ import SkyDirection1 from '@/components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
 import VelocityField from '@/components/fields/velocity/Velocity';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
-import FieldWrapper from '@/components/wrappers/fieldWrapper/FieldWrapper';
 import Target from '@/utils/types/target';
 import { RA_TYPE_ICRS, LAB_POSITION, VELOCITY_TYPE } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
@@ -229,9 +228,7 @@ export default function TargetEntry({
     );
   };
 
-  const wrapper = (children: any) => (
-    <FieldWrapper labelWidth={textAlign === 'left' ? 0 : 6}>{children}</FieldWrapper>
-  );
+  const wrapper = (children: any) => <Box sx={{ width: '100%' }}>{children}</Box>;
 
   const nameField = () =>
     wrapper(
@@ -309,7 +306,7 @@ export default function TargetEntry({
       justifyContent="space-between"
       spacing={1}
     >
-      <Grid size={{ xs: 7 }}>
+      <Grid size={{ xs: 8 }}>
         <Grid
           container
           direction="column"

@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
-import { DialogActions, DialogContent, Grid, Typography } from '@mui/material';
+import { Box, DialogActions, DialogContent, Grid, Typography } from '@mui/material';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { useTheme } from '@mui/material/styles';
 import { presentLatex } from '@utils/present/present';
@@ -97,11 +97,53 @@ export default function ProposalDisplay({
     return scienceCat ? t(`scienceCategory.${scienceCat}`) : NOT_SPECIFIED;
   };
 
-  const title = (inLabel: string, inValue: string) => (
-    <Typography id="title" variant={TITLE_STYLE} style={{ fontWeight: getFont(BOLD_LABEL) }}>
-      {inLabel} {presentLatex(inValue)}
-    </Typography>
-  );
+  const title = (inLabel: string, inValue: string) => {
+    const trimText = (text: string, maxLength: number): string => {
+      if (!text || maxLength <= 0) return '';
+      return text.length > maxLength ? text.slice(0, maxLength).trimEnd() + '...' : text;
+    };
+
+    return (
+      <Box
+        id={'title-box'}
+        sx={{
+          pl: 2,
+          pr: 2,
+          width: '100%',
+          maxWidth: '100%',
+          overflowWrap: 'break-word',
+          wordBreak: 'break-word',
+          boxSizing: 'border-box'
+        }}
+      >
+        <Typography id="title" variant={TITLE_STYLE} style={{ fontWeight: getFont(BOLD_LABEL) }}>
+          {inLabel} {presentLatex(trimText(inValue, 30))}
+        </Typography>
+      </Box>
+    );
+  };
+
+  const showLaTex = (inValue: string) => {
+    return (
+      <Box
+        id={'title-box'}
+        sx={{
+          pl: 2,
+          pr: 2,
+          width: '100%',
+          maxWidth: '100%',
+          overflowWrap: 'break-word',
+          wordBreak: 'break-word',
+          boxSizing: 'border-box'
+        }}
+      >
+        <Typography id="title" variant={CONTENT_STYLE}>
+          {presentLatex(inValue)}
+        </Typography>
+      </Box>
+    );
+  };
+
   const label = (inValue: string) => (
     <Typography variant={LABEL_STYLE} style={{ fontWeight: getFont(BOLD_LABEL) }}>
       {inValue}
@@ -268,7 +310,7 @@ export default function ProposalDisplay({
     <Grid>
       <Grid container direction="column" justifyContent="center" alignItems="center">
         <Grid>{label(t('abstract.label'))}</Grid>
-        <Grid>{proposal?.abstract?.length ? content(proposal?.abstract) : emptyCell()}</Grid>
+        <Grid>{proposal?.abstract?.length ? showLaTex(proposal?.abstract) : emptyCell()}</Grid>
       </Grid>
     </Grid>
   );

@@ -44,7 +44,7 @@ export default function MemberEntry({
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const authClient = useAxiosAuthClient();
-  const { notifyError, notifySuccess } = useNotify();
+  const { notifyError, notifyWarning, notifySuccess } = useNotify();
 
   const [firstName, setFirstName] = React.useState(forSearch ? foundInvestigator.firstName : '');
   const [lastName, setLastName] = React.useState(forSearch ? foundInvestigator.lastName : '');
@@ -248,6 +248,7 @@ export default function MemberEntry({
   }
 
   async function sendEmailInvite(email: string, prsl_id: string): Promise<boolean> {
+    notifyWarning(t('email.warning'));
     const emailInvite = { email, prsl_id };
     const response = await PostSendEmailInvite(authClient, emailInvite);
     if (response && !response.error) {

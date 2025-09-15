@@ -79,13 +79,7 @@ export default function TargetPage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-evenly"
-        alignItems="baseline"
-        spacing={2}
-      >
+      <Grid container direction="row" justifyContent="space-evenly" spacing={2}>
         {targetCard(TARGET_OPTION.LIST_OF_TARGETS)}
         {targetCard(TARGET_OPTION.TARGET_MOSAIC)}
         {targetCard(TARGET_OPTION.NO_SPECIFIC_TARGET)}

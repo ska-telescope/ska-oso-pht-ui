@@ -1,5 +1,6 @@
+import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { Grid, Typography } from '@mui/material';
+import { Grid, Typography, Fade, Box } from '@mui/material';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import CloseIcon from '../../../components/icon/closeIcon/closeIcon';
 import StatusIconDisplay from '../../../components/icon/status/statusIcon';
@@ -8,14 +9,24 @@ interface StandardAlertProps {
   color: typeof AlertColorTypes;
   testId: string;
   text: string;
-  closeFunc?: Function;
+  closeFunc?: () => void;
+  fadeDuration?: number;
 }
 
-const FONTSIZE = 25;
+const FONTSIZE = 30;
 
-export default function StandardAlert({ color, testId, text, closeFunc }: StandardAlertProps) {
+export default function StandardAlert({
+  color,
+  testId,
+  text,
+  closeFunc,
+  fadeDuration = 0
+}: StandardAlertProps) {
   const { t } = useTranslation('pht');
-  function getLevel(color: typeof AlertColorTypes): number {
+  const [visible, setVisible] = React.useState(true);
+  const [shouldRender, setShouldRender] = React.useState(true);
+
+  const getLevel = (color: typeof AlertColorTypes): number => {
     switch (color) {
       case AlertColorTypes.Success:
         return 0;
@@ -27,38 +38,51 @@ export default function StandardAlert({ color, testId, text, closeFunc }: Standa
       default:
         return 4;
     }
-  }
+  };
+
+  const handleClose = () => {
+    setVisible(false); // triggers fade-out
+    setTimeout(() => {
+      setShouldRender(false); // unmount after fade
+      closeFunc?.();
+    }, fadeDuration);
+  };
+
+  if (!shouldRender) return null;
 
   return (
-    <Alert color={color} testId={testId}>
-      <Grid
-        container
-        spacing={1}
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        <Grid>
-          <StatusIconDisplay
-            ariaDescription=" "
-            ariaTitle=" "
-            level={getLevel(color)}
-            size={FONTSIZE}
-            testId={testId + 'Icon'}
-            toolTip=" "
-          />
-        </Grid>
-        <Grid>
-          <Typography id="standardAlertId">{text}</Typography>
-        </Grid>
-        <Grid>
-          {closeFunc ? (
-            <CloseIcon onClick={() => closeFunc()} toolTip={t('closeBtn.label')} />
-          ) : (
-            <></>
-          )}
-        </Grid>
-      </Grid>
-    </Alert>
+    <Box>
+      <Fade in={visible} timeout={fadeDuration}>
+        <div>
+          <Alert color={color} testId={testId}>
+            <Grid
+              sx={{
+                display: 'grid',
+                gridTemplateColumns: 'auto 1fr auto',
+                alignItems: 'center',
+                gap: 1
+              }}
+            >
+              <Box p={1}>
+                <StatusIconDisplay
+                  ariaDescription=" "
+                  ariaTitle=" "
+                  level={getLevel(color)}
+                  size={FONTSIZE}
+                  testId={`${testId}Icon`}
+                  toolTip=" "
+                />
+              </Box>
+              <Box>
+                <Typography id="standardAlertId">{text}</Typography>
+              </Box>
+              <Box>
+                {closeFunc && <CloseIcon onClick={handleClose} toolTip={t('closeBtn.label')} />}
+              </Box>
+            </Grid>
+          </Alert>
+        </div>
+      </Fade>
+    </Box>
   );
 }

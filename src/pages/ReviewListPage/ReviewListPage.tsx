@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { Grid } from '@mui/material';
+import { Grid, Tooltip, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DataGrid,
@@ -19,7 +19,8 @@ import {
   REVIEW_TYPE,
   FEASIBLE_NO,
   DEFAULT_USER,
-  FEASIBLE_YES
+  FEASIBLE_YES,
+  CONFLICT_REASONS
 } from '@utils/constants.ts';
 import GetPanelList from '@services/axios/get/getPanelList/getPanelList';
 import GetProposalByStatusList from '@services/axios/get/getProposalByStatusList/getProposalByStatusList';
@@ -27,7 +28,7 @@ import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
-import { PMT, PROPOSAL_STATUS } from '@/utils/constants';
+import { PMT } from '@/utils/constants';
 import SubmitButton from '@/components/button/Submit/Submit';
 import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
 import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
@@ -38,7 +39,8 @@ import PostProposalReview from '@/services/axios/post/postProposalReview/postPro
 import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
-import { getUserId } from '@/utils/aaa/aaaUtils';
+import { getUserId, isReviewerScience, isReviewerTechnical } from '@/utils/aaa/aaaUtils';
+import ConflictConfirmation from '@/components/alerts/conflictConfirmation/ConflictConfirmation';
 
 export default function ReviewListPage() {
   const { t } = useTranslation('pht');
@@ -49,7 +51,16 @@ export default function ReviewListPage() {
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
-
+  //
+  const [conflictConfirm, setConflictConfirm] = React.useState(false);
+  const [conflictRow, setConflictRow] = React.useState<{
+    proposal: Proposal;
+    sciReview: ProposalReview;
+    tecReview: ProposalReview | null;
+  } | null>(null);
+  const [conflictRoute, setConflictRoute] = React.useState('');
+  const [filteredData, setFilteredData] = React.useState([]);
+  //
   const [reset, setReset] = React.useState(false);
   const [panelData, setPanelData] = React.useState<Panel[]>([]);
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
@@ -97,7 +108,7 @@ export default function ReviewListPage() {
     };
 
     const fetchProposalData = async () => {
-      const response = await GetProposalByStatusList(authClient, PROPOSAL_STATUS.UNDER_REVIEW);
+      const response = await GetProposalByStatusList(authClient);
       if (typeof response === 'string') {
         notifyError(response);
       } else {
@@ -113,6 +124,11 @@ export default function ReviewListPage() {
     };
     fetchProposalData();
   }, [panelData]);
+
+  React.useEffect(() => {
+    const data = proposals ? filterProposals() : [];
+    setFilteredData(data);
+  }, [proposals, proposalReviews]);
 
   const getScienceReviewType = (row: any): ScienceReview => {
     return {
@@ -164,8 +180,7 @@ export default function ReviewListPage() {
 
   /*---------------------------------------------------------------------------*/
 
-  const updateReview = async (row: any) => {
-    const rec = getReview(row);
+  const updateReviewRec = async (rec: any) => {
     if (!rec) {
       notifyError('Unable to find review'); // TODO : Should check this and add to json
     }
@@ -181,10 +196,83 @@ export default function ReviewListPage() {
     }
   };
 
+  const updateReview = async (row: any) => {
+    updateReviewRec(getReview(row));
+  };
+
   /*---------------------------------------------------------------------------*/
 
-  const theIconClicked = (row: any, route: string) =>
-    navigate(route, { replace: true, state: row });
+  const conflictConfirmation = () =>
+    conflictRow ? (
+      <ConflictConfirmation
+        proposal={conflictRow.proposal}
+        open={conflictConfirm}
+        onClose={() => {
+          return;
+        }}
+        onConfirm={conflictDeclarationResponse}
+        onConfirmLabel={'conflict.button'}
+        onConfirmToolTip={'conflict.tooltip'}
+      />
+    ) : (
+      <></>
+    );
+
+  const conflictDeclarationResponse = (reason: string) => {
+    if (reason === 'cancel') {
+      setConflictConfirm(false);
+      return;
+    } else if (conflictRow) {
+      const conflict = {
+        hasConflict: reason !== CONFLICT_REASONS[0],
+        reason: reason
+      };
+      const updatedRow = {
+        ...conflictRow,
+        sciReview: {
+          ...conflictRow.sciReview,
+          reviewType: {
+            ...conflictRow.sciReview.reviewType,
+            conflict: conflict
+          }
+        }
+      };
+      setConflictRow(updatedRow);
+      if (reason === CONFLICT_REASONS[0]) {
+        // Do not save, as this should be done as part of the review submission
+        setConflictConfirm(false);
+        navigate(conflictRoute, { replace: true, state: updatedRow });
+      } else {
+        let forDB = null;
+        const updatedProposalReviews = proposalReviews.map(review => {
+          let rec = review;
+          if (review.id === conflictRow?.sciReview.id) {
+            rec.reviewType.conflict.reason = reason;
+            rec.reviewType.conflict.hasConflict = reason !== CONFLICT_REASONS[0];
+            rec.status = PANEL_DECISION_STATUS.REVIEWED;
+            rec.reviewType.excludedFromDecision = true;
+            forDB = rec;
+          }
+          return rec;
+        });
+        setProposalReviews(updatedProposalReviews);
+        setConflictConfirm(false);
+        updateReviewRec(forDB);
+      }
+    }
+  };
+
+  const theIconClicked = (row: any, route: string) => {
+    // If the technical reviewer ever needs to go thru the conflict
+    // declaration, then all that is needed is this if to be removed.
+    if (route === PMT[5]) {
+      setConflictConfirm(true);
+      setConflictRow(row);
+      setConflictRoute(route);
+    } else {
+      navigate(route, { replace: true, state: row });
+    }
+  };
   const scienceIconClicked = (row: any) => theIconClicked(row, PMT[5]);
   const technicalIconClicked = (row: any) => theIconClicked(row, PMT[6]);
 
@@ -200,15 +288,19 @@ export default function ReviewListPage() {
 
   const canEditScience = (row: {
     tecReview: { reviewType: { isFeasible: string } };
-    sciReview: { status: string };
+    sciReview: { status: string; reviewType: { conflict: { hasConflict: boolean } } };
   }) => {
     return (
-      row?.sciReview && isFeasible(row) && row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED
+      isReviewerScience() &&
+      row?.sciReview &&
+      isFeasible(row) &&
+      row?.sciReview?.reviewType.conflict.hasConflict === false &&
+      row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED
     );
   };
 
   const canEditTechnical = (tecReview: { status: string }) =>
-    tecReview && tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED;
+    isReviewerTechnical() && tecReview && tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED;
 
   const hasTechnicalComments = (review: any) =>
     feasibleYes(review) ? true : review?.comments?.length > 0;
@@ -225,13 +317,6 @@ export default function ReviewListPage() {
       hasTechnicalComments(row?.tecReview);
 
     return sciRec || tecRec;
-  };
-
-  const colId = {
-    field: 'prslId',
-    headerName: t('proposalId.label'),
-    width: 200,
-    renderCell: (e: any) => e.row.proposal?.id
   };
 
   const colTitle = {
@@ -279,12 +364,26 @@ export default function ReviewListPage() {
     }
   };
 
-  // TODO : Add the functionality so that clicking on this will show the conflict modal
   const colConflict = {
     field: 'conflict',
-    headerName: t('conflict.label'),
+    headerName: t('conflict.column'),
     width: 120,
-    renderCell: (e: { row: any }) => (e.row?.sciReview?.conflict?.has_conflict ? t('yes') : t('no'))
+    renderCell: (e: { row: any }) => {
+      const conflict = e.row?.sciReview?.reviewType?.conflict;
+      const hasConflict = conflict?.hasConflict;
+      const reason = conflict?.reason;
+      const label = hasConflict ? t('yes') : t('no');
+
+      return reason ? (
+        <Tooltip title={t('conflict.reason.' + reason)}>
+          <Typography pt={2} variant="body2">
+            {label}
+          </Typography>
+        </Tooltip>
+      ) : (
+        <></>
+      );
+    }
   };
 
   const colRank = {
@@ -377,7 +476,6 @@ export default function ReviewListPage() {
 
   const stdColumns = [
     ...[
-      colId,
       colTitle,
       colScienceCategory,
       colConflict,
@@ -425,8 +523,6 @@ export default function ReviewListPage() {
     });
   }
 
-  const filteredData = proposals ? filterProposals() : [];
-
   const searchDropdown = () => (
     <DropDown
       options={[{ label: t('status.0'), value: '' }, ...SEARCH_TYPE_OPTIONS]}
@@ -462,7 +558,7 @@ export default function ReviewListPage() {
         await updateReview(row);
       }
     }
-    setReset(!reset); // Reset the state to refresh the data
+    setReset(!reset);
   };
 
   const fwdButton = () => (
@@ -502,6 +598,7 @@ export default function ReviewListPage() {
         </Grid>
       </Grid>
       <PageFooterPMT />
+      {conflictConfirm && conflictConfirmation()}
     </>
   );
 }

@@ -39,7 +39,7 @@ describe('RankEntryField', () => {
   describe('Initial Rendering', () => {
     it('renders with default props', () => {
       renderWithTheme(<RankEntryField selectedRank={0} setSelectedRank={mockOnRankChange} />);
-      expect(screen.getByText('Selected Rank:')).toBeInTheDocument();
+      expect(screen.getByText('rank.selected:')).toBeInTheDocument();
       expect(screen.getByText('1')).toBeInTheDocument();
     });
 

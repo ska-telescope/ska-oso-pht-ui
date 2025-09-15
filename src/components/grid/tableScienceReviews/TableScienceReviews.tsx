@@ -49,7 +49,7 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
               <TableCell sx={{ fontWeight: 'bold' }}>{t('srcNetComments.label')}</TableCell>
               <TableCell sx={{ fontWeight: 'bold', width: '120px' }}>{t('rank.label')}</TableCell>
               <TableCell sx={{ fontWeight: 'bold', width: '60px' }}>
-                {t('tableReviewDecision.actions')}
+                {t('tableReviewDecision.excluded')}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -84,7 +84,9 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
                     }}
                   >
                     <Typography variant="body2" sx={{ color: 'text.primary' }}>
-                      {detail.comments}
+                      {detail.reviewType.conflict.hasConflict
+                        ? t('conflict.reason.' + detail.reviewType.conflict.reason)
+                        : detail.comments}
                     </Typography>
                   </TableCell>
                   <TableCell
@@ -137,7 +139,8 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
                             icon
                             level={
                               detail.status === PANEL_DECISION_STATUS.TO_DO ||
-                              detail.reviewType.excludedFromDecision
+                              detail.reviewType.excludedFromDecision ||
+                              detail.reviewType.conflict.hasConflict
                                 ? 1
                                 : 0
                             }

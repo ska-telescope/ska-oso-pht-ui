@@ -18,7 +18,7 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
     if (!svgRef.current || data.length === 0) return;
 
     const logicalSize = 300;
-    const radius = logicalSize / 2.2;
+    const radius = logicalSize / 1.5;
     const total = d3.sum(data, d => (isFinite(Number(d.value)) ? Number(d.value) : 0));
     const centerLabel = centerText || total.toString();
 
@@ -43,7 +43,7 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
     svg.selectAll('*').remove();
 
     svg
-      .attr('viewBox', `0 0 ${logicalSize} ${logicalSize * 0.4}`)
+      .attr('viewBox', `0 0 ${logicalSize} ${logicalSize * 0.6}`)
       .attr('preserveAspectRatio', 'xMidYMid meet')
       .style('width', '100%')
       .style('height', '100%')
@@ -105,8 +105,7 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
         .attr('dy', '0.35em')
 
         .attr('data-testid', 'pie-chart-center-text')
-
-        .style('fontSize', 24)
+        .style('font-size', theme.typography.h4.fontSize)
         .style('fill', theme.palette.text.primary)
         .style('pointer-events', 'none')
         .text(centerLabel);
@@ -144,7 +143,7 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
       })
       .attr('text-anchor', d => ((d.startAngle + d.endAngle) / 2 < Math.PI ? 'start' : 'end'))
       .attr('dy', '0.35em')
-      .style('fontSize', 24)
+      .style('font-size', theme.typography.h5.fontSize)
       .style('fill', theme.palette.text.primary)
       .style('pointer-events', 'none')
       .text(d => d.data.name)
