@@ -131,17 +131,13 @@ export default function LandingPage() {
         setAxiosError(response.toString());
       } else {
         updateAppContent3(response as ObservatoryData);
-
-        // Only run autoGeneratePanels if it hasn't run before
-        const hasRun = localStorage.getItem('autoPanelsGenerated');
-        if (!hasRun) {
-          await autoGeneratePanels(response);
-          localStorage.setItem('autoPanelsGenerated', 'true');
-        }
+        await autoGeneratePanels(response);
       }
     };
 
-    fetchObservatoryData();
+    if (application.content3 === undefined || application.content3 === null) {
+      fetchObservatoryData();
+    }
   }, []);
 
   const getTheProposal = async (id: string) => {
