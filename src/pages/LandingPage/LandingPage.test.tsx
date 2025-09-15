@@ -6,6 +6,10 @@ import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
 import LandingPage from './LandingPage';
 
+vi.mock('react-router-dom', () => ({
+  useNavigate: vi.fn()
+}));
+
 vi.mock('@ska-telescope/ska-login-page', () => ({
   isLoggedIn: vi.fn(() => false)
 }));
