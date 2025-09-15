@@ -112,6 +112,9 @@ export const clickButton = testId => {
 
 export const clickAddButton = () => clickButton('addButton');
 export const clickAddDataProduct = () => clickButton('addDataProductButton');
+export const clickSearchForMember = () => cy.get('#simple-tab-2').click();
+export const clickUserSearch = () => clickButton('userSearchButton');
+export const clickPICheckbox = () => clickButton('piCheckbox');
 export const clickAddPanel = () => clickButton('plusIcon');
 export const clickAddPanelEntry = () => clickButton('addPanelButton');
 export const clickAddProposal = () => clickButton('addProposalButton');

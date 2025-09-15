@@ -6,8 +6,13 @@ import {
   mockEmailAPI,
   pageConfirmed,
   initialize,
-  verifyProposalCreatedAlertFooter
+  verifyProposalCreatedAlertFooter,
+  clickSearchForMember,
+  clickUserSearch,
+  clickPICheckbox,
+  clickSendInviteButton
 } from '../../common/common.js';
+import { entry } from '../../../fixtures/utils/cypress.js';
 
 describe('Delegate Editing Rights', () => {
   beforeEach(() => {
@@ -18,6 +23,9 @@ describe('Delegate Editing Rights', () => {
     });
     mockEmailAPI();
     createStandardProposalLoggedIn();
+    cy.wait('@mockCreateProposal');
+    verifyProposalCreatedAlertFooter();
+    pageConfirmed('TEAM');
   });
 
   afterEach(() => {
@@ -25,9 +33,11 @@ describe('Delegate Editing Rights', () => {
   });
 
   //TODO: Add new jira/xray key
-  it('Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
-    cy.wait('@mockCreateProposal');
-    verifyProposalCreatedAlertFooter();
-    pageConfirmed('TEAM');
+  it('Delegate editing rights to a co-investigator', { jiraKey: 'XTP-' }, () => {
+    clickSearchForMember();
+    entry('email', 'Trevor.Swain@community.skao.int');
+    clickUserSearch();
+    clickPICheckbox();
+    clickSendInviteButton();
   });
 });
