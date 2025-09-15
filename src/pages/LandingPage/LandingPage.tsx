@@ -81,12 +81,6 @@ export default function LandingPage() {
   const DATA_GRID_HEIGHT = '60vh';
 
   React.useEffect(() => {
-    updateAppContent2({});
-    setFetchList(!fetchList);
-    setObservatoryData(!observatoryData);
-  }, []);
-
-  React.useEffect(() => {
     const fetchData = async () => {
       setProposals([]);
 
@@ -135,7 +129,12 @@ export default function LandingPage() {
       }
     };
 
-    if (application.content3 === undefined || application.content3 === null) {
+    updateAppContent2({});
+    setFetchList(!fetchList);
+    setObservatoryData(!observatoryData);
+    const content = application?.content3;
+    const isEmpty = !content || (Array.isArray(content) && content.length === 0);
+    if (isEmpty) {
       fetchObservatoryData();
     }
   }, []);
