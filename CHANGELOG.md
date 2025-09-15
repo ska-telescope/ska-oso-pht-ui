@@ -6,10 +6,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Changed: oso-services v5.0.0
+* Changed: Allow "?" character in proposals titles
 
 5.0.0
 -----
-
 * [BREAKING] Changed  : oso-services v4.0.2
 
 4.0.0
