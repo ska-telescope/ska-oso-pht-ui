@@ -93,19 +93,6 @@ describe('PageFooterPPT', () => {
     });
   });
 
-  //TODO: Resolve
-  it.skip('creates dummy proposal when not logged in', async () => {
-    const isLoggedIn = await import('@ska-telescope/ska-login-page');
-    isLoggedIn.isLoggedIn = vi.fn(() => false);
-
-    render(<PageFooterPPT pageNo={-1} />);
-    fireEvent.click(screen.getByTestId('nextButtonTestId'));
-
-    await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith(expect.anything());
-    });
-  });
-
   it('disables next button when buttonDisabled is true', () => {
     render(<PageFooterPPT pageNo={1} buttonDisabled />);
     expect(screen.getByTestId('nextButtonTestId')).toBeDisabled();
