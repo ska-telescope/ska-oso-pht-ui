@@ -32,8 +32,7 @@ describe('Delegate Editing Rights', () => {
     clearLocalStorage();
   });
 
-  //TODO: Add new jira/xray key
-  it('Delegate editing rights to a co-investigator', { jiraKey: 'XTP-' }, () => {
+  it('Delegate editing rights to a co-investigator', { jiraKey: 'XTP-89609' }, () => {
     clickSearchForMember();
     entry('email', 'Trevor.Swain@community.skao.int');
     clickUserSearch();
