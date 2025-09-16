@@ -2,10 +2,13 @@ import React from 'react';
 import { DataGrid, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Typography, Grid } from '@mui/material';
 import GetPanelList from '@services/axios/get/getPanelList/getPanelList';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import { Panel } from '@/utils/types/panel';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import PostPanelGenerate from '@/services/axios/post/postPanelGenerate/postPanelGenerate';
+import ObservatoryData from '@/utils/types/observatoryData';
 
 interface GridReviewPanelsProps {
   height?: string;
@@ -21,8 +24,10 @@ export default function GridReviewPanels({
 }: GridReviewPanelsProps) {
   const { t } = useScopedTranslation();
   const authClient = useAxiosAuthClient();
+  const { application } = storageObject.useStore();
 
   const [data, setData] = React.useState<Panel[]>([]);
+  const [createList, setCreateList] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
   const [, setAxiosError] = React.useState('');
 
@@ -40,13 +45,25 @@ export default function GridReviewPanels({
   }, []);
 
   React.useEffect(() => {
+    const getObservatoryData = () => application.content3 as ObservatoryData;
+    const autoGeneratePanels = async (osd: ObservatoryData) => {
+      await PostPanelGenerate(authClient, osd?.observatoryPolicy?.cycleDescription);
+      setFetchList(!fetchList);
+    };
+    if (createList) {
+      autoGeneratePanels(getObservatoryData());
+    }
+  }, [createList]);
+
+  React.useEffect(() => {
     const fetchData = async () => {
       const response = await GetReviewPanels();
       if (response) {
         const panels = (response as unknown) as Panel[];
         if (panels?.length > 0) {
           setData(panels);
-          // TODO : } else {
+        } else {
+          setCreateList(!createList);
         }
       }
     };

@@ -42,7 +42,6 @@ import {
 } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { accessUpdate } from '@/utils/aaa/aaaUtils';
-import PostPanelGenerate from '@/services/axios/post/postPanelGenerate/postPanelGenerate';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 export default function LandingPage() {
@@ -81,12 +80,6 @@ export default function LandingPage() {
   const DATA_GRID_HEIGHT = '60vh';
 
   React.useEffect(() => {
-    updateAppContent2({});
-    setFetchList(!fetchList);
-    setObservatoryData(!observatoryData);
-  }, []);
-
-  React.useEffect(() => {
     const fetchData = async () => {
       setProposals([]);
 
@@ -121,21 +114,21 @@ export default function LandingPage() {
   }, [fetchList, loggedIn]);
 
   React.useEffect(() => {
-    const autoGeneratePanels = async (osd: ObservatoryData) => {
-      await PostPanelGenerate(authClient, osd.observatoryPolicy.cycleDescription);
-    };
-
     const fetchObservatoryData = async () => {
       const response = await GetObservatoryData(authClient, 1);
       if (typeof response === 'string' || (response && (response as any).error)) {
         setAxiosError(response.toString());
       } else {
         updateAppContent3(response as ObservatoryData);
-        await autoGeneratePanels(response);
       }
     };
 
-    if (application.content3 === undefined || application.content3 === null) {
+    updateAppContent2({});
+    setFetchList(!fetchList);
+    setObservatoryData(!observatoryData);
+    const content = application?.content3;
+    const isEmpty = !content || (Array.isArray(content) && content.length === 0);
+    if (isEmpty) {
       fetchObservatoryData();
     }
   }, []);
