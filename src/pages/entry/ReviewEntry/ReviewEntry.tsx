@@ -53,9 +53,8 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const [tecPDF, setTecPDF] = React.useState<string | undefined>(undefined);
 
   const OFFSET_TOP = 150;
-  const ROW_HEIGHT_PX = 27; // approximate height of one row in pixels
-
-  const CHOICE_HEIGHT = 32; // This is in 'vh';
+  const ROW_HEIGHT_PX = 27; /* approximate height of one row in pixels */
+  const CHOICE_HEIGHT = 32; /* This is in 'vh'; */
   const AREA_HEIGHT_NUM = 73;
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
 
@@ -336,8 +335,8 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     return (
       <Stack
         sx={{
-          width: '100%', // Ensures it fills the Grid container
-          boxSizing: 'border-box' // Prevents padding from overflowing
+          width: '100%',
+          boxSizing: 'border-box'
         }}
       >
         {showLabel('title-label', 'title.short')}

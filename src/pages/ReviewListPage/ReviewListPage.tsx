@@ -18,7 +18,6 @@ import {
   PANEL_DECISION_STATUS,
   REVIEW_TYPE,
   FEASIBLE_NO,
-  DEFAULT_USER,
   FEASIBLE_YES,
   CONFLICT_REASONS
 } from '@utils/constants.ts';
@@ -51,7 +50,7 @@ export default function ReviewListPage() {
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
-  //
+
   const [conflictConfirm, setConflictConfirm] = React.useState(false);
   const [conflictRow, setConflictRow] = React.useState<{
     proposal: Proposal;
@@ -60,7 +59,7 @@ export default function ReviewListPage() {
   } | null>(null);
   const [conflictRoute, setConflictRoute] = React.useState('');
   const [filteredData, setFilteredData] = React.useState([]);
-  //
+
   const [reset, setReset] = React.useState(false);
   const [panelData, setPanelData] = React.useState<Panel[]>([]);
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
@@ -91,7 +90,7 @@ export default function ReviewListPage() {
 
   React.useEffect(() => {
     const fetchProposalReviewData = async (_proposalId: string) => {
-      const response = await GetProposalReviewList(authClient, DEFAULT_USER);
+      const response = await GetProposalReviewList(authClient);
       if (typeof response === 'string') {
         notifyError(response);
       } else {
@@ -100,11 +99,7 @@ export default function ReviewListPage() {
     };
 
     const loopProposals = (_filtered: Proposal[]) => {
-      // filtered.map(el => {
-      // TODO : Need to sort this out
       fetchProposalReviewData('1');
-      //   return el.id;
-      //  });
     };
 
     const fetchProposalData = async () => {
@@ -263,8 +258,6 @@ export default function ReviewListPage() {
   };
 
   const theIconClicked = (row: any, route: string) => {
-    // If the technical reviewer ever needs to go thru the conflict
-    // declaration, then all that is needed is this if to be removed.
     if (route === PMT[5]) {
       setConflictConfirm(true);
       setConflictRow(row);
