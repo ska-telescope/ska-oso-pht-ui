@@ -26,7 +26,11 @@ describe('TimedAlert', () => {
   const text = 'This is a test alert';
 
   it('renders and auto-dismisses for Info alert', async () => {
-    render(<StoreProvider><TimedAlert color={AlertColorTypes.Info} testId={testId} text={text} delay={1} /></StoreProvider>);
+    render(
+      <StoreProvider>
+        <TimedAlert color={AlertColorTypes.Info} testId={testId} text={text} delay={1} />
+      </StoreProvider>
+    );
     expect(screen.getByTestId(testId)).toBeInTheDocument();
 
     act(() => {
@@ -38,7 +42,11 @@ describe('TimedAlert', () => {
   });
 
   it('renders and auto-dismisses for Success alert', async () => {
-    render(<StoreProvider><TimedAlert color={AlertColorTypes.Success} testId={testId} text={text} delay={1} /></StoreProvider>);
+    render(
+      <StoreProvider>
+        <TimedAlert color={AlertColorTypes.Success} testId={testId} text={text} delay={1} />
+      </StoreProvider>
+    );
     expect(screen.getByTestId(testId)).toBeInTheDocument();
 
     act(() => {
@@ -50,7 +58,11 @@ describe('TimedAlert', () => {
   });
 
   it('renders and does not auto-dismiss for Error alert', async () => {
-    render(<StoreProvider><TimedAlert color={AlertColorTypes.Error} testId={testId} text={text} /></StoreProvider>);
+    render(
+      <StoreProvider>
+        <TimedAlert color={AlertColorTypes.Error} testId={testId} text={text} />
+      </StoreProvider>
+    );
     expect(screen.getByTestId(testId)).toBeInTheDocument();
 
     act(() => {
@@ -62,7 +74,11 @@ describe('TimedAlert', () => {
   });
 
   it('renders and does not auto-dismiss for Warning alert', async () => {
-    render(<StoreProvider><TimedAlert color={AlertColorTypes.Warning} testId={testId} text={text} /></StoreProvider>);
+    render(
+      <StoreProvider>
+        <TimedAlert color={AlertColorTypes.Warning} testId={testId} text={text} />
+      </StoreProvider>
+    );
     expect(screen.getByTestId(testId)).toBeInTheDocument();
 
     act(() => {
