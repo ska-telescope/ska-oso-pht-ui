@@ -1,7 +1,10 @@
 import {
   checkFieldDisabled,
   clickHome,
-  clickHomeWarningConfirmation,
+  clickDialogConfirm,
+  clickProposalTypePrincipleInvestigator,
+  clickSubProposalTypeTargetOfOpportunity,
+  enterProposalTitle,
   verifyOnLandingPageNoProposalMsgIsVisible,
   verifyHomeButtonWarningModal,
   initializeUserNotLoggedIn,
@@ -55,7 +58,7 @@ describe('Creating a Mock without login', () => {
 
     clickHome();
     verifyHomeButtonWarningModal();
-    clickHomeWarningConfirmation();
+    clickDialogConfirm();
     verifyOnLandingPageNoProposalMsgIsVisible();
   });
 });
