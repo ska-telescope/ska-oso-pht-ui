@@ -68,7 +68,7 @@ async function GetPanelList(
 
   try {
     const URL_PATH = `${OSO_SERVICES_PANEL_PATH}`;
-    const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
+    const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}/`);
 
     if (!result || !Array.isArray(result.data)) {
       return 'error.API_UNKNOWN_ERROR';
