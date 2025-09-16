@@ -11,7 +11,7 @@ import getPanelDecisionList from '@services/axios/get/getPanelDecisionList/getPa
 import GetProposalByStatusList from '@services/axios/get/getProposalByStatusList/getProposalByStatusList';
 import Proposal from '@/utils/types/proposal';
 import { FEASIBLE_NO, FOOTER_SPACER, REVIEW_TYPE } from '@/utils/constants';
-import { BANNER_PMT_SPACER, DEFAULT_USER, PANEL_DECISION_STATUS } from '@/utils/constants';
+import { BANNER_PMT_SPACER, PANEL_DECISION_STATUS } from '@/utils/constants';
 
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import TableReviewDecision from '@/components/grid/tableReviewDecision/TableReviewDecision';
@@ -150,7 +150,7 @@ export default function ReviewDecisionListPage() {
       }
     };
     const fetchProposalReviewData = async () => {
-      const response = await GetProposalReviewList(authClient, DEFAULT_USER);
+      const response = await GetProposalReviewList(authClient);
       if (typeof response === 'string') {
         notifyError(response);
       } else {
