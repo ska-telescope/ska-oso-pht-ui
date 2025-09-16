@@ -70,6 +70,18 @@ js-e2e-test:
   variables: # use the loadbalancer as the cypress tests would hit the log in page otherwise
     KUBE_HOST: https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
 
+xray-publish:
+  variables:
+    DEFAULT_TEST_PLAN: XTP-59737  # Default to XTP-59737 if TEST_PLAN_KEY is not set
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "main"'
+      when: always
+    - if: '$CI_COMMIT_REF_NAME != "main"'
+      when: manual
+  script:
+    - poetry config virtualenvs.create false
+    - poetry install --only dev
+    - make xray-publish
 info-dev-environment:
   <<: *dev_env
   script:
@@ -127,4 +139,7 @@ include:
   # Finalize badges
   - project: "ska-telescope/templates-repository"
     file: "gitlab-ci/includes/finaliser.gitlab-ci.yml"
+  # Upload BDD test results to JIRA X-ray
+  - project: "ska-telescope/templates-repository"
+    file: "gitlab-ci/includes/xray-publish.gitlab-ci.yml"
     
