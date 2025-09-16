@@ -3,7 +3,7 @@ import {
   clickAddProposal,
   clickCreateProposal,
   clickHome,
-  clickHomeWarningConfirmation,
+  clickDialogConfirm,
   clickProposalTypePrincipleInvestigator,
   clickSubProposalTypeTargetOfOpportunity,
   enterProposalTitle,
@@ -35,7 +35,7 @@ describe('Creating Proposal without login', () => {
     checkFieldDisabled('validateBtn', true);
     clickHome();
     verifyHomeButtonWarningModal();
-    clickHomeWarningConfirmation();
+    clickDialogConfirm();
     verifyOnLandingPageNoProposalMsgIsVisible();
   });
 });

@@ -1,6 +1,6 @@
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
 import ProposalAccess, { ProposalAccessBackend } from '@/utils/types/proposalAccess';
-import { USE_LOCAL_DATA, OSO_SERVICES_PROPOSAL_ACCESS_PATH } from '@/utils/constants';
+import { USE_LOCAL_DATA, OSO_SERVICES_PROPOSAL_ACCESS_PATH, isCypress } from '@/utils/constants';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
@@ -25,7 +25,7 @@ async function PostProposalAccess(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
   proposalAccess: ProposalAccess
 ): Promise<string | { error: string }> {
-  if (USE_LOCAL_DATA) {
+  if (USE_LOCAL_DATA || isCypress) {
     return PostMockProposalAccess();
   }
 
