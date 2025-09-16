@@ -43,7 +43,6 @@ import {
 } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { accessUpdate } from '@/utils/aaa/aaaUtils';
-import PostPanelGenerate from '@/services/axios/post/postPanelGenerate/postPanelGenerate';
 
 export default function LandingPage() {
   const { t } = useTranslation('pht');
@@ -115,17 +114,12 @@ export default function LandingPage() {
   }, [fetchList, loggedIn]);
 
   React.useEffect(() => {
-    const autoGeneratePanels = async (osd: ObservatoryData) => {
-      await PostPanelGenerate(authClient, osd.observatoryPolicy.cycleDescription);
-    };
-
     const fetchObservatoryData = async () => {
       const response = await GetObservatoryData(authClient, 1);
       if (typeof response === 'string' || (response && (response as any).error)) {
         setAxiosError(response.toString());
       } else {
         updateAppContent3(response as ObservatoryData);
-        await autoGeneratePanels(response);
       }
     };
 
