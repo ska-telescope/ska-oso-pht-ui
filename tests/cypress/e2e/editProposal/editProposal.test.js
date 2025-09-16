@@ -29,7 +29,7 @@ import {
   verifyOnLandingPage,
   verifyOnLandingPageFilterIsVisible,
   verifyHomeButtonWarningModal,
-  clickHomeWarningConfirmation,
+  clickDialogConfirm,
   mockCreateProposalAPI,
   createStandardProposalLoggedIn,
   verifyMockedProposalOnLandingPageIsVisible,

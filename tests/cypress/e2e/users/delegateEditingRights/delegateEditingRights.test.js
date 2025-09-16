@@ -10,7 +10,13 @@ import {
   clickSearchForMember,
   clickUserSearch,
   clickPICheckbox,
-  clickSendInviteButton
+  clickSendInviteButton,
+  verifyUserFoundAlertFooter,
+  verifyUserInvitedAlertFooter,
+  clickManageTeamMemberRights,
+  clickSubmitRights,
+  clickDialogConfirm,
+  verifyTeamMemberAccessUpdatedAlertFooter
 } from '../../common/common.js';
 import { entry } from '../../../fixtures/utils/cypress.js';
 
@@ -36,7 +42,14 @@ describe('Delegate Editing Rights', () => {
     clickSearchForMember();
     entry('email', 'Trevor.Swain@community.skao.int');
     clickUserSearch();
+    verifyUserFoundAlertFooter();
     clickPICheckbox();
     clickSendInviteButton();
+    cy.wait('@mockInviteUserByEmail');
+    verifyUserInvitedAlertFooter();
+    clickManageTeamMemberRights();
+    clickSubmitRights();
+    clickDialogConfirm();
+    verifyTeamMemberAccessUpdatedAlertFooter();
   });
 });

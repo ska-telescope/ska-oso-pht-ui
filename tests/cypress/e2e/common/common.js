@@ -114,13 +114,15 @@ export const clickAddButton = () => clickButton('addButton');
 export const clickAddDataProduct = () => clickButton('addDataProductButton');
 export const clickSearchForMember = () => cy.get('#simple-tab-2').click();
 export const clickUserSearch = () => clickButton('userSearchButton');
+export const clickManageTeamMemberRights = () => clickButton('lockIcon');
+export const clickSubmitRights = () => clickButton('submitCheckbox');
 export const clickPICheckbox = () => clickButton('piCheckbox');
 export const clickAddPanel = () => clickButton('plusIcon');
 export const clickAddPanelEntry = () => clickButton('addPanelButton');
 export const clickAddProposal = () => clickButton('addProposalButton');
 export const clickCreateProposal = () => clickButton('nextButtonTestId');
 export const clickHome = () => clickButton('homeButtonTestId');
-export const clickHomeWarningConfirmation = () => clickButton('dialogConfirmationButton');
+export const clickDialogConfirm = () => clickButton('dialogConfirmationButton');
 export const clickLoginUser = () => clickButton('loginButton');
 export const clickUserMenu = () => clickButton('usernameMenu');
 export const clickObservationSetup = () => clickButton('addObservationButton');
@@ -231,6 +233,15 @@ export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalA
 
 export const verifyProposalCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Proposal added with unique identifier');
+
+export const verifyUserFoundAlertFooter = () =>
+  verifyContent('timeAlertFooter', 'User was successfully found.');
+
+export const verifyUserInvitedAlertFooter = () =>
+  verifyContent('timeAlertFooter', 'Email invite has been sent.');
+
+export const verifyTeamMemberAccessUpdatedAlertFooter = () =>
+  verifyContent('timeAlertFooter', "Team member's access has been updated.");
 
 export const clickEditProposal = () => {
   get('EditRoundedIcon')
