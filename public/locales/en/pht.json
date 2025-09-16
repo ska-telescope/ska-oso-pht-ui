@@ -1140,8 +1140,8 @@
   "velocity": {
     "label": "Velocity",
     "helpType": "Specify either velocity or redshift",
-    "help0": "This can be specified as either a velocity in km/s or m/s, or as a redshift using the field dropdown.  This field will be populated by the Resolve functionality if the value is in SIMBAD or NED.",
-    "help1": "This can be specified as either a velocity in km/s or m/s, or as a redshift using the field dropdown.  This field will be populated by the Resolve functionality if the value is in SIMBAD or NED.",
+    "help0": "This can be specified as either a velocity in km/s or m/s, or as a redshift using the field dropdown.  This field will be populated by the Resolve functionality if the value is in SIMBAD or NED",
+    "help1": "This can be specified as either a velocity in km/s or m/s, or as a redshift using the field dropdown.  This field will be populated by the Resolve functionality if the value is in SIMBAD or NED",
     "help": "Selected either velocity or redshift",
     "units": {
       "0": "km/s",
