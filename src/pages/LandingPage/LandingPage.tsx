@@ -194,8 +194,9 @@ export default function LandingPage() {
     goToTitlePage();
   };
 
-  const deleteIconClicked = (id: string) => {
-    if (getTheProposal(id)) {
+  const deleteIconClicked = async (id: string) => {
+    const isValid = await getTheProposal(id);
+    if (isValid) {
       setTimeout(() => {
         setOpenDeleteDialog(true);
       }, 1000);
@@ -327,11 +328,15 @@ export default function LandingPage() {
     ...[colId, colType, colCycle, colTitle, colPI, colStatus, colUpdated, colActions]
   ];
 
+  const searchableFields: (keyof Proposal)[] = ['id', 'title', 'cycle', 'investigators'];
+
   function filterProposals() {
     return proposals.filter(
       item =>
-        ['id', 'title', 'cycle', 'pi'].some(field =>
-          item[field]?.toLowerCase().includes(searchTerm?.toLowerCase())
+        searchableFields.some(field =>
+          String(item[field])
+            ?.toLowerCase()
+            .includes(searchTerm?.toLowerCase() || '')
         ) &&
         (searchType === '' || item.status?.toLowerCase() === searchType?.toLowerCase())
     );

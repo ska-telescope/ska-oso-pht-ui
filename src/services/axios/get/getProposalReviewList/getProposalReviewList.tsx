@@ -26,8 +26,7 @@ export function GetMockProposalReviewList(mock = MockProposalReviewListBackend):
 }
 
 async function GetProposalReviewList(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
-  userId: string
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>
 ): Promise<ProposalReview[] | string> {
   if (USE_LOCAL_DATA) {
     return GetMockProposalReviewList();
