@@ -2,21 +2,16 @@ import {
   checkFieldDisabled,
   clickHome,
   clickDialogConfirm,
-  clickProposalTypePrincipleInvestigator,
-  clickSubProposalTypeTargetOfOpportunity,
-  enterProposalTitle,
-  verifyOnLandingPageNoProposalMsgIsVisible,
   verifyHomeButtonWarningModal,
   initializeUserNotLoggedIn,
   clearLocalStorage,
-  clickAddMock,
   clickToNextPage,
-  verifyMockCreatedAlertFooter,
   createObservation,
   addM2TargetUsingResolve,
   clickListOfTargets,
   createMock,
-  verifyUnlinkedObservationInTable
+  verifyUnlinkedObservationInTable,
+  verifyOnLandingPageNotLoggedInMsgIsVisible
 } from '../common/common';
 
 describe('Creating a Mock without login', () => {
@@ -59,6 +54,6 @@ describe('Creating a Mock without login', () => {
     clickHome();
     verifyHomeButtonWarningModal();
     clickDialogConfirm();
-    verifyOnLandingPageNoProposalMsgIsVisible();
+    verifyOnLandingPageNotLoggedInMsgIsVisible();
   });
 });

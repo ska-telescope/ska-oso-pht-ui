@@ -238,8 +238,7 @@ export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalA
 export const verifyProposalCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Proposal added with unique identifier');
 
-export const verifyMockCreatedAlertFooter = () =>
-  verifyContent('timeAlertFooter', 'Mock added with unique identifier');
+export const verifyMockCreatedAlertFooter = () => verifyContent('timeAlertFooter', 'Mock created');
 
 export const verifyUserFoundAlertFooter = () =>
   verifyContent('timeAlertFooter', 'User was successfully found.');
@@ -370,6 +369,10 @@ export const verifyMockedProposalOnLandingPageIsVisible = () => {
 
 export const verifyOnLandingPageNoProposalMsgIsVisible = () => {
   cy.get('[id="standardAlertId"]').should('contain', 'THERE ARE NO PROPOSALS TO BE DISPLAYED');
+};
+
+export const verifyOnLandingPageNotLoggedInMsgIsVisible = () => {
+  cy.get('[id="standardAlertId"]').should('contain', 'NOT LOGGED IN, NO PROPOSALS AVAILABLE');
 };
 
 export const verifyObservationInTable = () => {
