@@ -12,6 +12,7 @@ interface SensCalcDisplaySingleProps {
   onClose: Function;
   data: SensCalcResults;
   isCustom: boolean;
+  isNatural: boolean;
 }
 
 const SIZE = 30;
@@ -21,7 +22,8 @@ export default function SensCalcModalSingle({
   open,
   onClose,
   data,
-  isCustom
+  isCustom,
+  isNatural
 }: SensCalcDisplaySingleProps) {
   const handleClose = () => {
     onClose();
@@ -34,7 +36,10 @@ export default function SensCalcModalSingle({
       return eValue;
     }
     if (!CUSTOM_VALID_FIELDS.includes(eId)) {
-      return t('customArray.result');
+      if (isNatural) {
+        return t('sensitivityCalculatorResults.nonGaussian');
+      }
+      return t('sensitivityCalculatorResults.customArray');
     }
     return `${presentValue(eValue)}`;
   };
@@ -49,10 +54,10 @@ export default function SensCalcModalSingle({
         </Grid>
         <Grid size={{ xs: 3 }}>
           <Typography id={eId + 'Label'} sx={{ align: 'left', fontWeight: 'bold' }} variant="body1">
-            {eId === 'targetName' || isCustom
+            {eId === 'targetName' || isCustom || isNatural
               ? PresentCustomResultValue(eValue, eId)
               : presentValue(eValue)}{' '}
-            {presentUnits(eUnits)}
+            {eId === 'targetName' || isCustom || isNatural ? '' : presentUnits(eUnits)}
           </Typography>
         </Grid>
       </Grid>

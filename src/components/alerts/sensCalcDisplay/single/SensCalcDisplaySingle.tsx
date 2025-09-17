@@ -14,13 +14,15 @@ interface SensCalcDisplaySingleProps {
   show?: boolean;
   field: string;
   isCustom?: boolean;
+  isNatural?: boolean;
 }
 
 export default function SensCalcDisplaySingle({
   sensCalc,
   show = false,
   field,
-  isCustom = false
+  isCustom = false,
+  isNatural = false
 }: SensCalcDisplaySingleProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
 
@@ -74,6 +76,7 @@ export default function SensCalcDisplaySingle({
           onClose={() => setOpenDialog(false)}
           data={sensCalc}
           isCustom={isCustom}
+          isNatural={isNatural}
         />
       )}
     </>

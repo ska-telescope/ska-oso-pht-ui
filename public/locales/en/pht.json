@@ -162,9 +162,6 @@
   "createBtn": {
     "label": "Create"
   },
-  "customArray": {
-    "result": "N/A (no beam information available)"
-  },
   "cycle": {
     "label": "Cycle",
     "error": "Unable to retrieve Cycle data"
@@ -956,7 +953,9 @@
     "weightedSensitivity": "Weighted sensitivity",
     "status": "Status : {{status}} {{error}}",
     "errorUnknown": "The error is undetermined at this time",
-    "partial": "Fetching results..."
+    "partial": "Fetching results...",
+    "nonGaussian": "N/A (non-Gaussian beam)",
+    "customArray": "N/A (no beam information available)"
   },
   "specialCharacters": {
     "invalid": "Invalid input: only alphanumeric characters, spaces, and some special characters are allowed",

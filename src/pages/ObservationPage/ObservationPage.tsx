@@ -18,6 +18,7 @@ import { Proposal } from '../../utils/types/proposal';
 import { validateObservationPage } from '../../utils/proposalValidation';
 import {
   BANDWIDTH_TELESCOPE,
+  IW_NATURAL,
   OB_SUBARRAY_CUSTOM,
   PATH,
   RA_TYPE_ICRS,
@@ -281,6 +282,8 @@ export default function ObservationPage() {
     )?.sensCalc;
 
   const isCustom = () => currObs?.subarray === OB_SUBARRAY_CUSTOM;
+  const isNatural = () =>
+    currObs?.subarray !== OB_SUBARRAY_CUSTOM && currObs?.imageWeighting === IW_NATURAL;
 
   const extendedColumnsObservations = [
     ...[
@@ -442,6 +445,7 @@ export default function ObservationPage() {
               show={isTargetSelected(e.row.id)}
               field="icon"
               isCustom={isCustom()}
+              isNatural={isNatural()}
             />
           );
         }

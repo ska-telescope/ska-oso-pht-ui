@@ -47,7 +47,7 @@ export default function SensCalcModalMultiple({
       return rec.value;
     }
     if (!CUSTOM_VALID_FIELDS.includes(rec.field)) {
-      return t('customArray.result');
+      return t('sensitivityCalculatorResults.customArray');
     }
     return `${presentValue(rec.value)} ${presentUnits(rec.units)}`;
   };
