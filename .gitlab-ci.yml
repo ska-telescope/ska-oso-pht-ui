@@ -68,7 +68,6 @@ js-e2e-deploy:
 
 js-e2e-test:
   variables: # use the loadbalancer as the cypress tests would hit the log in page otherwise
-    JS_E2E_COVERAGE_ENABLED: "true"
     KUBE_HOST: https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
 
 #xray-publish:
