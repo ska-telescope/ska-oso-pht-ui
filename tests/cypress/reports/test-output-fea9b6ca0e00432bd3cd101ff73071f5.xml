@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="5.518" tests="2" failures="0">
+  <testsuite name="Root Suite" timestamp="2025-09-17T15:49:30" tests="0" file="tests/cypress/e2e/users/reviewer/reviewer.test.js" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Reviewer" timestamp="2025-09-17T15:49:30" tests="2" time="5.516" failures="0">
+    <testcase name="Reviewer Navigate using the dropdown menu" time="3.555" classname="Navigate using the dropdown menu">
+    </testcase>
+    <testcase name="Reviewer Perform a review" time="1.605" classname="Perform a review">
+    </testcase>
+  </testsuite>
+</testsuites>

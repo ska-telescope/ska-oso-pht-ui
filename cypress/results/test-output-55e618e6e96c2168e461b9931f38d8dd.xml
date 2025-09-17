@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<testsuites name="Mocha Tests" time="0.024" tests="4" failures="0" skipped="4">
-  <testsuite name="Root Suite" timestamp="2025-09-17T13:36:11" tests="0" file="tests/cypress/e2e/observations/SensitivityCalculator.test.js" time="0.000" failures="0">
-  </testsuite>
-  <testsuite name="Sensitivity Calculator" timestamp="2025-09-17T13:36:11" tests="4" time="0.024" failures="0">
-  </testsuite>
-</testsuites>

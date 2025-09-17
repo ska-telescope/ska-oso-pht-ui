@@ -10,7 +10,7 @@ export default defineConfig({
   downloadsFolder: 'tests/cypress/artefacts/downloads',
   reporter: "junit-xray-cypress-reporter",
   reporterOptions: {
-    mochaFile: "cypress/results/test-output-[hash].xml"
+    mochaFile: "tests/cypress/reports/test-output-[hash].xml"
   },
   e2e: {
     baseUrl: 'http://localhost:6101',

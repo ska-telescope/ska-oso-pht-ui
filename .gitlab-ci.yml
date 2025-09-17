@@ -71,18 +71,19 @@ js-e2e-test:
     KUBE_HOST: https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
     JS_E2E_VARS_BEFORE_COVERAGE: --report-dir=build/reports/e2e --reporter=cobertura --reporter=lcov --reporter=text-summary ## used to include needed argument variables to pass to start command before nyc
 
-#xray-publish:
-#  variables:
-#    DEFAULT_TEST_PLAN: XTP-59737  # Default to XTP-59737 if TEST_PLAN_KEY is not set
-#  rules:
-#    - if: '$CI_COMMIT_REF_NAME == "main"'
-#      when: always
-#    - if: '$CI_COMMIT_REF_NAME != "main"'
-#      when: manual
-#  script:
-#    - poetry config virtualenvs.create false
-#    - poetry install --only dev
-#    - make xray-publish
+xray-publish:
+  variables:
+    DEFAULT_TEST_PLAN: XTP-59737  # Default to XTP-59737 if TEST_PLAN_KEY is not set
+    XRAY_TEST_RESULT_FILE: "tests/cypress/reports/test-output-e6d5cbcf9c8cf3cd14abe4ca97cf64a9.xml"
+  rules:
+    - if: '$CI_COMMIT_REF_NAME == "main"'
+      when: always
+    - if: '$CI_COMMIT_REF_NAME != "main"'
+      when: manual
+  script:
+    - poetry config virtualenvs.create false
+    - poetry install --only dev
+    - make xray-publish
 
 info-dev-environment:
   <<: *dev_env

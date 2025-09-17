@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="5.579" tests="2" failures="0">
+  <testsuite name="Root Suite" timestamp="2025-09-17T15:49:23" tests="0" file="tests/cypress/e2e/users/reviewPanelChairman/reviewPanelChairman.test.js" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Review Chairman" timestamp="2025-09-17T15:49:23" tests="2" time="5.579" failures="0">
+    <testcase name="Review Chairman Navigate using the dropdown menu" time="4.393" classname="Navigate using the dropdown menu">
+    </testcase>
+    <testcase name="Review Chairman Make a review decision" time="0.924" classname="Make a review decision">
+    </testcase>
+  </testsuite>
+</testsuites>

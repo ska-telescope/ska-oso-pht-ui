@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="22.039" tests="5" failures="0" skipped="2">
+  <testsuite name="Root Suite" timestamp="2025-09-17T15:48:44" tests="0" file="tests/cypress/e2e/observations/VerifySpectralAverageLimits.test.js" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Creating Observations, Verify spectral average limits, Continuum" timestamp="2025-09-17T15:48:44" tests="3" time="22.009" failures="0">
+    <testcase name="Creating Observations, Verify spectral average limits, Continuum Verify Spectral average limits, Continuum Subarray AA4" time="8.166" classname="Verify Spectral average limits, Continuum Subarray AA4">
+      <properties>
+        <property name="test_key" value="XTP-71407"/>
+      </properties>
+    </testcase>
+    <testcase name="Creating Observations, Verify spectral average limits, Continuum Verify Spectral average limits, Continuum Subarray AA2" time="6.821" classname="Verify Spectral average limits, Continuum Subarray AA2">
+      <properties>
+        <property name="test_key" value="XTP-71407"/>
+      </properties>
+    </testcase>
+    <testcase name="Creating Observations, Verify spectral average limits, Continuum Verify Spectral average limits, Continuum Subarray AA1" time="6.758" classname="Verify Spectral average limits, Continuum Subarray AA1">
+      <properties>
+        <property name="test_key" value="XTP-71407"/>
+      </properties>
+    </testcase>
+  </testsuite>
+  <testsuite name="Creating Observations, Verify spectral average limits, Zoom " timestamp="2025-09-17T15:49:06" tests="2" time="0.029" failures="0">
+  </testsuite>
+</testsuites>

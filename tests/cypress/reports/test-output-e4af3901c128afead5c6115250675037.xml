@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="6.127" tests="1" failures="0">
+  <testsuite name="Root Suite" timestamp="2025-09-17T15:48:25" tests="0" file="tests/cypress/e2e/editProposal/editProposal.test.js" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Edit Proposal" timestamp="2025-09-17T15:48:25" tests="1" time="6.123" failures="0">
+    <testcase name="Edit Proposal Edit a basic proposal" time="6.076" classname="Edit a basic proposal">
+      <properties>
+        <property name="test_key" value="XTP-71405"/>
+      </properties>
+    </testcase>
+  </testsuite>
+</testsuites>
