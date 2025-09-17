@@ -38,7 +38,7 @@
     "test:remove:cypress:component:ci": "cypress run --component --headless --reporter junit --reporter-options mochaFile=build/tests/unit-tests[hash].xml --config video=false",
     "test:remove:e2e:headless": "cypress run --e2e --headless",
     "test:e2e": "cypress run --record --key 4a3a14b8-b3ce-429e-b960-6183c885513e",
-    "test:e2e:coverage": "nyc report --report-dir=build/reports/e2e --reporter=cobertura",
+    "test:e2e:coverage": "nyc report --report-dir=build/reports --reporter=cobertura",
     "test:e2e:ui": "cypress open",
     "test:unit": "vitest --reporter=junit --outputFile=build/reports/unit-tests.xml --typecheck --coverage.enabled=true --coverage.reportsDirectory=build/coverage",
     "test:unit:coverage": "npx nyc report --report-dir=build/reports --reporter=cobertura",

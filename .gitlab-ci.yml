@@ -73,14 +73,15 @@ js-e2e-test:
 xray-publish:
   variables:
     DEFAULT_TEST_PLAN: XTP-59737  # Default to XTP-59737 if TEST_PLAN_KEY is not set
-    XRAY_EXECUTION_CONFIG_FILE: "cypress/xray-config.json"
-    XRAY_TEST_RESULT_FILE: build/reports/e2e-tests.xml
   rules:
     - if: '$CI_COMMIT_REF_NAME == "main"'
       when: always
     - if: '$CI_COMMIT_REF_NAME != "main"'
       when: manual
-
+  script:
+    - poetry config virtualenvs.create false
+    - poetry install --only dev
+    - make xray-publish
 info-dev-environment:
   <<: *dev_env
   script:
