@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+
+5.1.0
+----------
 * Added: Conflict declarations for Scientific reviews
 * Changed: oso-services v5.0.0
 * Changed: Allow "?" character in proposals titles
