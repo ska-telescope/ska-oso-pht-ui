@@ -385,7 +385,7 @@ export default function LandingPage() {
   const filteredData = proposals ? filterProposals() : [];
 
   const createMock = async () => {
-    notifySuccess(t('addMockProposal.success') + DUMMY_PROPOSAL_ID);
+    notifySuccess(t('addMockProposal.success'));
     setProposal(getProposal());
     navigate(NAV[4]);
   };
@@ -473,19 +473,23 @@ export default function LandingPage() {
   return (
     <>
       <Grid container p={5} direction="row" alignItems="center" justifyContent="space-around">
-        <Grid size={{ xs: 12 }}>{pageDescription()}</Grid>
+        <Grid size={{ xs: 12 }}>{loggedIn && pageDescription()}</Grid>
         <Grid size={{ sm: 4, md: 3, lg: 2 }} p={2}>
           {loggedIn || cypressToken ? addProposalButton() : addMockButton()}
         </Grid>
         <Grid size={{ sm: 4 }} p={2}>
-          {searchDropdown()}
+          {loggedIn && searchDropdown()}
         </Grid>
         <Grid size={{ sm: 4, md: 6, lg: 6 }} p={2} mt={-1}>
-          {searchEntryField('searchId')}
+          {loggedIn && searchEntryField('searchId')}
         </Grid>
         <Grid size={{ xs: 12 }} pt={1}>
           {!axiosViewError && (!filteredData || filteredData.length === 0) && (
-            <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
+            <Alert
+              color={AlertColorTypes.Info}
+              text={loggedIn ? t('proposals.empty') : t('proposals.loggedOut')}
+              testId="helpPanelId"
+            />
           )}
           {!axiosViewError && filteredData.length > 0 && (
             <div>

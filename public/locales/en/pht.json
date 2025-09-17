@@ -46,8 +46,8 @@
   },
   "addMockProposal": {
     "short": "Add",
-    "label": "Add Mock",
-    "success": "Mock added with unique identifier ",
+    "label": "Add",
+    "success": "Mock created ",
     "toolTip": "Click to add a new mock."
   },
   "addReview": {
@@ -611,6 +611,7 @@
   },
   "proposals": {
     "empty": "THERE ARE NO PROPOSALS TO BE DISPLAYED",
+    "loggedOut": "NOT LOGGED IN, NO PROPOSALS AVAILABLE",
     "label": "proposals",
     "name": "Name",
     "overviewTooltip": "Tooltip for the card on the Overview"
@@ -1095,7 +1096,8 @@
   },
   "targets": {
     "label": "Targets",
-    "empty": "There are no targets associated with this proposal"
+    "empty": "There are no targets associated with this proposal",
+    "loggedOut": "There are no targets created"
   },
   "title": {
     "label": "Proposal Title",
@@ -1306,6 +1308,7 @@
       "format": "Unexpected data format returned from API."
     },
     "noObservations": "NO OBSERVATION SETUP IS ASSOCIATED WITH THIS PROPOSAL",
+    "noObservationsLoggedOut": "NO OBSERVATION SETUP CREATED",
     "pdf": "Syntax error or PDF not available",
     "iconClicked": "An error was encountered, please refresh page to continue",
     "invalidString": "Invalid input: Only numeric characters are allowed"

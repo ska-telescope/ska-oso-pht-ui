@@ -6,6 +6,7 @@ import { GridRowSelectionModel } from '@mui/x-data-grid'; // TODO : Need to move
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, DataGrid, TickBox } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import EditIcon from '../../components/icon/editIcon/editIcon';
@@ -55,6 +56,7 @@ export default function ObservationPage() {
   const [checkState, setCheckState] = React.useState<'checked' | 'unchecked' | 'indeterminate'>(
     'indeterminate'
   );
+  const loggedIn = isLoggedIn();
 
   const [rowSelectionModel, setRowSelectionModel] = React.useState<GridRowSelectionModel>([]);
 
@@ -545,7 +547,7 @@ export default function ObservationPage() {
             {!hasObservations() && (
               <Alert
                 color={AlertColorTypes.Error}
-                text={t('error.noObservations')}
+                text={loggedIn ? t('error.noObservations') : t('error.noObservationsLoggedOut')}
                 testId="noObservationsNotification"
               />
             )}
@@ -574,7 +576,7 @@ export default function ObservationPage() {
               {!hasTargets() && (
                 <Alert
                   color={AlertColorTypes.Error}
-                  text={t('targets.empty')}
+                  text={loggedIn ? t('targets.empty') : t('targets.loggedOut')}
                   testId="noTargetsNotification"
                 />
               )}
