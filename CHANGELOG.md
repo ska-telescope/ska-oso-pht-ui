@@ -6,11 +6,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Changed: Non logged in users have restricted use of the PHT
 
 5.1.0
 ----------
 * Added: Conflict declarations for Scientific reviews
-* Changed: Non logged in users have restricted use of the PHT
 * Changed: oso-services v5.0.0
 * Changed: Allow "?" character in proposals titles
 * Changed: Updated usage of DefaultUser in endpoints where possible
