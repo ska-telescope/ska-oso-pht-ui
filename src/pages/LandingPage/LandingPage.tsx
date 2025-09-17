@@ -398,6 +398,10 @@ export default function LandingPage() {
     }
   };
 
+  const displayField = () => {
+    return !!(loggedIn || cypressToken);
+  };
+
   const pageDescription = () => (
     <Typography align="center" variant="h6" minHeight="5vh">
       {t('page.11.desc')}
@@ -478,10 +482,10 @@ export default function LandingPage() {
           {loggedIn || cypressToken ? addProposalButton() : addMockButton()}
         </Grid>
         <Grid size={{ sm: 4 }} p={2}>
-          {!loggedIn || (!cypressToken && searchDropdown())}
+          {displayField() && searchDropdown()}
         </Grid>
         <Grid size={{ sm: 4, md: 6, lg: 6 }} p={2} mt={-1}>
-          {!loggedIn || (!cypressToken && searchEntryField('searchId'))}
+          {displayField() && searchEntryField('searchId')}
         </Grid>
         <Grid size={{ xs: 12 }} pt={1}>
           {!axiosViewError && (!filteredData || filteredData.length === 0) && (
