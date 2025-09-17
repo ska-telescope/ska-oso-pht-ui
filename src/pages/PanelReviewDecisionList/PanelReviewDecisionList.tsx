@@ -6,7 +6,7 @@ import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import GetPanelList from '@services/axios/get/getPanelList/getPanelList';
 import GetProposalReviewList from '@services/axios/get/getProposalReviewList/getProposalReviewList';
-import PostPanelDecision from '@services/axios/post/postPanelDecision/postPanelDecision';
+import PutPanelDecision from '@services/axios/put/putPanelDecision/putPanelDecision';
 import getPanelDecisionList from '@services/axios/get/getPanelDecisionList/getPanelDecisionList';
 import GetProposalByStatusList from '@services/axios/get/getProposalByStatusList/getProposalByStatusList';
 import Proposal from '@/utils/types/proposal';
@@ -44,6 +44,23 @@ export default function ReviewDecisionListPage() {
 
   /*--------------------------------------------------------------------------*/
 
+  const handleUpdateDecisionItem = async (item: any) => {
+    const updatedDecision = getReviewDecision(item);
+
+    const response = await PutPanelDecision(authClient, item.id, updatedDecision, getCycleId());
+
+    if (typeof response === 'object' && response?.error) {
+      notifyError(response?.error, AlertColorTypes.Error);
+    } else {
+      // Update local state directly without re-fetching
+      setReviewDecisions(prev =>
+        prev.some(d => d.proposalId === item.id)
+          ? prev.map(d => (d.proposalId === item.id ? { ...d, ...updatedDecision } : d))
+          : [...prev, updatedDecision]
+      );
+    }
+  };
+
   const calculateRank = (details: Array<any>) => {
     if (!details || details?.length === 0) return 0;
     const average =
@@ -78,9 +95,21 @@ export default function ReviewDecisionListPage() {
     }
   };
 
+  const fetchReviewDecisionData = async () => {
+    const response = await getPanelDecisionList(
+      authClient,
+      getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
+    );
+    if (typeof response === 'string') {
+      notifyError(response);
+    } else {
+      setReviewDecisions(response);
+    }
+  };
+
   const handleSubmitAction = async (item: {
     [x: string]: any;
-    id: number;
+    id: string;
     scienceCategory: string;
     title: string;
     details: any[];
@@ -91,8 +120,9 @@ export default function ReviewDecisionListPage() {
     reviews: any[];
     recommendation: any;
   }) => {
-    const response: string | { error: string } = await PostPanelDecision(
+    const response: PanelDecision | string | { error: string } = await PutPanelDecision(
       authClient,
+      item.id,
       getReviewDecision(item),
       getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
     );
@@ -105,18 +135,6 @@ export default function ReviewDecisionListPage() {
   };
 
   /*--------------------------------------------------------------------------*/
-
-  const fetchReviewDecisionData = async () => {
-    const response = await getPanelDecisionList(
-      authClient,
-      getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
-    ); // TODO : add id of the logged in user
-    if (typeof response === 'string') {
-      notifyError(response);
-    } else {
-      setReviewDecisions(response);
-    }
-  };
 
   React.useEffect(() => {
     setReset(!reset);
@@ -155,17 +173,6 @@ export default function ReviewDecisionListPage() {
         notifyError(response);
       } else {
         setProposalReviews(response);
-      }
-    };
-    const fetchReviewDecisionData = async () => {
-      const response = await getPanelDecisionList(
-        authClient,
-        getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
-      ); // TODO : add id of the logged in user
-      if (typeof response === 'string') {
-        notifyError(response);
-      } else {
-        setReviewDecisions(response);
       }
     };
     fetchProposalData();
@@ -274,6 +281,7 @@ export default function ReviewDecisionListPage() {
                 data={filteredData}
                 excludeFunction={handleExcludeAction}
                 submitFunction={handleSubmitAction}
+                updateFunction={handleUpdateDecisionItem}
               />
             )}
           </div>

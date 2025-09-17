@@ -300,11 +300,13 @@ export default function ReviewListPage() {
 
   const canSubmit = (row: any) => {
     const sciRec =
+      isReviewerScience() &&
       row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED &&
       row?.sciReview?.comments?.length > 0 &&
       row?.sciReview?.reviewType?.rank > 0;
 
     const tecRec =
+      isReviewerTechnical() &&
       row?.tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED &&
       row?.tecReview?.reviewType?.isFeasible?.length > 0 &&
       hasTechnicalComments(row?.tecReview);

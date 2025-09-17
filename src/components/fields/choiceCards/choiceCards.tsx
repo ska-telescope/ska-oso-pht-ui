@@ -10,18 +10,27 @@ import { FEASIBLE_MAYBE, FEASIBLE_NO, FEASIBLE_YES } from '@/utils/constants';
 interface ChoiceOption {
   value: string;
   label: string;
-  icon: React.ComponentType;
+  icon: React.ElementType;
   color: string;
   hoverColor: string;
   styledIcon?: boolean;
 }
 
 interface ChoiceCardsProps {
+  colorBG?: string;
+  label?: string;
+  noWrap?: boolean;
   value?: string;
   onChange?: (value: string) => void;
 }
 
-export function ChoiceCards({ value, onChange }: ChoiceCardsProps) {
+export function ChoiceCards({
+  colorBG = 'transparent',
+  label = 'feasibility.label',
+  noWrap = false,
+  value,
+  onChange
+}: ChoiceCardsProps) {
   const { t } = useTranslation('pht');
   const theme = useTheme();
   const [selectedValue, setSelectedValue] = React.useState<string | undefined>(value);
@@ -40,20 +49,20 @@ export function ChoiceCards({ value, onChange }: ChoiceCardsProps) {
       styledIcon: true
     },
     {
-      value: FEASIBLE_NO,
-      label: t(FEASIBLE_NO.toLowerCase()),
-      icon: CloseIcon,
-      color: theme.palette.error.main,
-      hoverColor: theme.palette.error.dark,
-      styledIcon: true
-    },
-    {
       value: FEASIBLE_MAYBE,
       label: t(FEASIBLE_MAYBE.toLowerCase()),
       icon: HelpIcon,
       color: theme.palette.warning.main,
       hoverColor: theme.palette.warning.dark,
       styledIcon: false
+    },
+    {
+      value: FEASIBLE_NO,
+      label: t(FEASIBLE_NO.toLowerCase()),
+      icon: CloseIcon,
+      color: theme.palette.error.main,
+      hoverColor: theme.palette.error.dark,
+      styledIcon: true
     }
   ];
 
@@ -71,27 +80,28 @@ export function ChoiceCards({ value, onChange }: ChoiceCardsProps) {
         gap: 2,
         width: '100%',
         padding: 2,
-        bgcolor: `${theme.palette.primary.main}`
+        bgcolor: colorBG
       }}
     >
       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
         <Typography variant="h6" color="text.secondary">
-          {t('feasibility.label')}
+          {label.length ? t(label) : ''}
         </Typography>
       </Box>
 
-      <Grid container spacing={2}>
-        {choices.slice(0, 2).map(choice => {
-          const Icon = choice.icon;
-          const isSelected = selectedValue === choice.value;
+      {noWrap ? (
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
+          {choices.map(choice => {
+            const Icon = choice.icon;
+            const isSelected = selectedValue === choice.value;
 
-          return (
-            <Grid size={{ xs: 6 }} key={choice.value}>
+            return (
               <Button
+                key={choice.value}
                 onClick={() => handleSelect(choice.value)}
-                fullWidth
                 variant="outlined"
                 sx={{
+                  flex: 1,
                   display: 'flex',
                   alignItems: 'center',
                   gap: 1.5,
@@ -116,79 +126,145 @@ export function ChoiceCards({ value, onChange }: ChoiceCardsProps) {
                   }
                 }}
               >
-                <Box
-                  sx={{
-                    backgroundColor: choice.color,
-                    borderRadius: '50%',
-                    padding: 0.5,
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center'
-                  }}
-                >
-                  <Icon sx={{ color: 'white', fontSize: 20 }} />
-                </Box>
+                {choice.value === FEASIBLE_MAYBE ? (
+                  <Icon sx={{ color: isSelected ? 'white' : choice.color, fontSize: 30 }} />
+                ) : (
+                  <Box
+                    sx={{
+                      backgroundColor: isSelected ? 'white' : choice.color,
+                      borderRadius: '50%',
+                      padding: 0.5,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}
+                  >
+                    <Icon sx={{ color: isSelected ? choice.color : 'white', fontSize: 20 }} />
+                  </Box>
+                )}
                 <Typography variant="body1" fontWeight="medium">
                   {choice.label}
                 </Typography>
               </Button>
-            </Grid>
-          );
-        })}
-      </Grid>
+            );
+          })}
+        </Box>
+      ) : (
+        <>
+          <Grid container spacing={2}>
+            {choices
+              .filter(c => c.value !== FEASIBLE_MAYBE)
+              .map(choice => {
+                const Icon = choice.icon;
+                const isSelected = selectedValue === choice.value;
 
-      {/* Maybe button below */}
-      {(() => {
-        const maybe = choices.find(c => c.value === FEASIBLE_MAYBE);
-        if (!maybe) return null;
-        const Icon = maybe.icon;
-        const isSelected = selectedValue === maybe.value;
+                return (
+                  <Grid size={{ xs: 6 }} key={choice.value}>
+                    <Button
+                      onClick={() => handleSelect(choice.value)}
+                      fullWidth
+                      variant="outlined"
+                      sx={{
+                        width: '100%',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 1.5,
+                        borderRadius: 1,
+                        borderWidth: 2,
+                        borderColor: choice.color,
+                        backgroundColor: isSelected
+                          ? choice.color
+                          : theme.palette.background.default,
+                        color: isSelected ? 'white' : choice.color,
+                        transition: 'all 0.2s ease-in-out',
+                        '&:hover': {
+                          color: 'white',
+                          backgroundColor: isSelected ? choice.color : choice.hoverColor,
+                          borderColor: choice.color,
+                          transform: 'scale(1.05)'
+                        },
+                        '&:active': {
+                          borderColor: choice.color
+                        },
+                        '&:focus': {
+                          outline: 'none',
+                          boxShadow: `0 0 0 2px ${choice.color}40`
+                        }
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          backgroundColor: choice.color,
+                          borderRadius: '50%',
+                          padding: 0.5,
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center'
+                        }}
+                      >
+                        <Icon sx={{ color: 'white', fontSize: 20 }} />
+                      </Box>
+                      <Typography variant="body1" fontWeight="medium">
+                        {choice.label}
+                      </Typography>
+                    </Button>
+                  </Grid>
+                );
+              })}
+          </Grid>
 
-        return (
-          <Box key={maybe.value} sx={{ mt: 2 }}>
-            <Button
-              onClick={() => handleSelect(maybe.value)}
-              fullWidth
-              variant="outlined"
-              sx={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 1.5,
-                borderRadius: 1,
-                borderWidth: 2,
-                borderColor: maybe.color,
-                backgroundColor: isSelected ? maybe.color : theme.palette.background.default,
-                color: isSelected ? 'white' : maybe.color,
-                transition: 'all 0.2s ease-in-out',
-                '&:hover': {
-                  color: 'white',
-                  backgroundColor: isSelected ? maybe.color : maybe.hoverColor,
-                  borderColor: maybe.color,
-                  transform: 'scale(1.05)'
-                },
-                '&:active': {
-                  borderColor: maybe.color
-                },
-                '&:focus': {
-                  outline: 'none',
-                  boxShadow: `0 0 0 2px ${maybe.color}40`
-                }
-              }}
-            >
-              <Icon sx={{ color: maybe.color, fontSize: 30 }} />
-              <Typography variant="body1" fontWeight="medium">
-                {maybe.label}
-              </Typography>
-            </Button>
-          </Box>
-        );
-      })()}
+          {/* Maybe button below */}
+          {(() => {
+            const maybe = choices.find(c => c.value === FEASIBLE_MAYBE);
+            if (!maybe) return null;
+            const Icon = maybe.icon;
+            const isSelected = selectedValue === maybe.value;
 
-      {selectedValue && selectedValue !== FEASIBLE_YES && (
-        <Typography variant="body2" color="text.secondary" sx={{ mt: 2 }}>
-          {t('feasibility.info')}
-        </Typography>
+            return (
+              <Box key={maybe.value} sx={{ mt: 2 }}>
+                <Button
+                  onClick={() => handleSelect(maybe.value)}
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 1.5,
+                    borderRadius: 1,
+                    borderWidth: 2,
+                    borderColor: maybe.color,
+                    backgroundColor: isSelected ? maybe.color : theme.palette.background.default,
+                    color: isSelected ? 'white' : maybe.color,
+                    transition: 'all 0.2s ease-in-out',
+                    '&:hover': {
+                      color: 'white',
+                      backgroundColor: isSelected ? maybe.color : maybe.hoverColor,
+                      borderColor: maybe.color,
+                      transform: 'scale(1.05)'
+                    },
+                    '&:active': {
+                      borderColor: maybe.color
+                    },
+                    '&:focus': {
+                      outline: 'none',
+                      boxShadow: `0 0 0 2px ${maybe.color}40`
+                    }
+                  }}
+                >
+                  <Icon sx={{ color: isSelected ? 'white' : maybe.color, fontSize: 30 }} />
+                  <Typography variant="body1" fontWeight="medium">
+                    {maybe.label}
+                  </Typography>
+                </Button>
+              </Box>
+            );
+          })()}
+        </>
       )}
+
+      <Typography variant="body2" color="text.secondary" sx={{ minHeight: '25px' }}>
+        {selectedValue && selectedValue !== FEASIBLE_YES ? t('feasibility.info') : ''}
+      </Typography>
     </Paper>
   );
 }

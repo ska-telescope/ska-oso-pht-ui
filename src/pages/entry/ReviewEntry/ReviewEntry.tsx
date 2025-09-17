@@ -390,24 +390,20 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const technicalCommentsField = () => (
     <>
-      {!isView() && (
-        <>
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-            {showLabel('technicalComments', 'technicalComments.label')}
-          </Box>
-          <Paper>
-            <TextEntry
-              disabledUnderline
-              label={''}
-              testId="technicalCommentsId"
-              rows={tecRows()}
-              setValue={setComments}
-              value={comments}
-              variant="standard"
-            />
-          </Paper>
-        </>
-      )}
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+        {showLabel('technicalComments', 'technicalComments.label')}
+      </Box>
+      <Paper>
+        <TextEntry
+          disabledUnderline
+          label={''}
+          testId="technicalCommentsId"
+          rows={tecRows()}
+          setValue={setComments}
+          value={comments}
+          variant="standard"
+        />
+      </Paper>
     </>
   );
 
@@ -533,7 +529,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           }}
           elevation={0}
         >
-          <Stack sx={{ gap: 4 }}>
+          <Stack>
             <ChoiceCards value={feasibility} onChange={setFeasibility} />
             {technicalCommentsField()}
           </Stack>
