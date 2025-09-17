@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
-* Changed: Non logged in users have restricted use of the PHT
+* Changed: Non logged in users have restricted use of the PHT to target and observation pages.
 
 5.1.0
 ----------
