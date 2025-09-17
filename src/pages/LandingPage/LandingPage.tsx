@@ -478,10 +478,10 @@ export default function LandingPage() {
           {loggedIn || cypressToken ? addProposalButton() : addMockButton()}
         </Grid>
         <Grid size={{ sm: 4 }} p={2}>
-          {loggedIn || (cypressToken && searchDropdown())}
+          {!loggedIn || (!cypressToken && searchDropdown())}
         </Grid>
         <Grid size={{ sm: 4, md: 6, lg: 6 }} p={2} mt={-1}>
-          {loggedIn || (cypressToken && searchEntryField('searchId'))}
+          {!loggedIn || (!cypressToken && searchEntryField('searchId'))}
         </Grid>
         <Grid size={{ xs: 12 }} pt={1}>
           {!axiosViewError && (!filteredData || filteredData.length === 0) && (
