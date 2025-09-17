@@ -69,6 +69,7 @@ js-e2e-deploy:
 js-e2e-test:
   variables: # use the loadbalancer as the cypress tests would hit the log in page otherwise
     KUBE_HOST: https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
+    JS_E2E_VARS_BEFORE_COVERAGE: --report-dir=build/reports/e2e --reporter=cobertura --reporter=lcov --reporter=text-summary ## used to include needed argument variables to pass to start command before nyc
 
 #xray-publish:
 #  variables:
