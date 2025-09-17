@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="5.895" tests="1" failures="0">
+  <testsuite name="Root Suite" timestamp="2025-09-17T13:36:04" tests="0" file="tests/cypress/e2e/observations/CreateStandardObservation.test.js" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Creating Observation" timestamp="2025-09-17T13:36:04" tests="1" time="5.893" failures="0">
+    <testcase name="Creating Observation Create a default observation" time="5.810" classname="Create a default observation">
+      <properties>
+        <property name="test_key" value="XTP-71406"/>
+      </properties>
+    </testcase>
+  </testsuite>
+</testsuites>

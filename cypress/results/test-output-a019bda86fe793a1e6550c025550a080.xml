@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="6.801" tests="1" failures="0">
+  <testsuite name="Root Suite" timestamp="2025-09-17T13:36:30" tests="0" file="tests/cypress/e2e/users/delegateEditingRights/delegateEditingRights.test.js" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Delegate Editing Rights" timestamp="2025-09-17T13:36:30" tests="1" time="6.798" failures="0">
+    <testcase name="Delegate Editing Rights Delegate editing rights to a co-investigator" time="6.611" classname="Delegate editing rights to a co-investigator">
+      <properties>
+        <property name="test_key" value="XTP-89609"/>
+      </properties>
+    </testcase>
+  </testsuite>
+</testsuites>

@@ -8,6 +8,10 @@ export default defineConfig({
   screenshotsFolder: 'tests/cypress/artefacts/screenshots',
   videosFolder: 'tests/cypress/artefacts/videos',
   downloadsFolder: 'tests/cypress/artefacts/downloads',
+  reporter: "junit-xray-cypress-reporter",
+  reporterOptions: {
+    mochaFile: "cypress/results/test-output-[hash].xml"
+  },
   e2e: {
     baseUrl: 'http://localhost:6101',
     //
@@ -24,13 +28,6 @@ export default defineConfig({
     specPattern: ['tests/cypress/e2e/**/*.test.{js,jsx,ts,tsx}'],
     setupNodeEvents(on, config) {
       on('file:preprocessor', vitePreprocessor());
-
-      // Add reporter configuration
-      config.reporter = 'mocha-junit-reporter';
-      config.reporterOptions = {
-        mochaFile: 'cypress/results/e2e-coverage.xml',
-        toConsole: true
-      };
     }
   },
 

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="Mocha Tests" time="4.556" tests="1" failures="0">
+  <testsuite name="Root Suite" timestamp="2025-09-17T13:35:53" tests="0" file="tests/cypress/e2e/createProposalwithoutLogin/createProposalwithoutLogin.test.js" time="0.000" failures="0">
+  </testsuite>
+  <testsuite name="Creating Proposal without login" timestamp="2025-09-17T13:35:53" tests="1" time="4.552" failures="0">
+    <testcase name="Creating Proposal without login Create a basic proposal without login" time="4.491" classname="Create a basic proposal without login">
+    </testcase>
+  </testsuite>
+</testsuites>
