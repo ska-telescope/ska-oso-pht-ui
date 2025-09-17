@@ -38,7 +38,7 @@ describe('Delegate Editing Rights', () => {
     clearLocalStorage();
   });
 
-  it('Delegate editing rights to a co-investigator', { jiraKey: 'XTP-89609' }, () => {
+  it('XTP-89609 Delegate editing rights to a co-investigator', { jiraKey: 'XTP-89609' }, () => {
     clickSearchForMember();
     entry('email', 'Trevor.Swain@community.skao.int');
     clickUserSearch();
