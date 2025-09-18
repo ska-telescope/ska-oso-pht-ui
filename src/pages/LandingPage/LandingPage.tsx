@@ -30,7 +30,7 @@ import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
 import Proposal from '@/utils/types/proposal';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
-import { validateProposal } from '@/utils/proposalValidation';
+import { validateProposal } from '@/utils/validation/proposalValidation';
 import ObservatoryData from '@/utils/types/observatoryData';
 import { FOOTER_SPACER, isCypress } from '@/utils/constants';
 import {

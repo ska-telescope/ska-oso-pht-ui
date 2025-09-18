@@ -15,7 +15,7 @@ import getSensCalc from '../../services/api/sensitivityCalculator/getSensitivity
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Observation from '../../utils/types/observation';
 import { Proposal } from '../../utils/types/proposal';
-import { validateObservationPage } from '../../utils/proposalValidation';
+import { validateObservationPage } from '../../utils/validation/proposalValidation';
 import {
   BANDWIDTH_TELESCOPE,
   OB_SUBARRAY_CUSTOM,

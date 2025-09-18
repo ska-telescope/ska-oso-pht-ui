@@ -8,7 +8,7 @@ import Shell from '../../components/layout/Shell/Shell';
 import { GENERAL, LAB_POSITION } from '../../utils/constants';
 import { countWords } from '../../utils/helpers';
 import { Proposal } from '../../utils/types/proposal';
-import { validateGeneralPage } from '../../utils/proposalValidation';
+import { validateGeneralPage } from '../../utils/validation/proposalValidation';
 import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPreviewModal';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 

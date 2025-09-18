@@ -19,7 +19,7 @@ import Shell from '../../components/layout/Shell/Shell';
 import HelpPanel from '../../components/info/helpPanel/HelpPanel';
 
 import { Proposal } from '../../utils/types/proposal';
-import { validateSciencePage } from '../../utils/proposalValidation';
+import { validateSciencePage } from '../../utils/validation/proposalValidation';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';

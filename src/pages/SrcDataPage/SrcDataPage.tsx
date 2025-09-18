@@ -2,7 +2,7 @@ import React from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Grid } from '@mui/material';
-import { validateSRCPage } from '../../utils/proposalValidation';
+import { validateSRCPage } from '../../utils/validation/proposalValidation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';

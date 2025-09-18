@@ -1,5 +1,5 @@
-import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from './constants';
-import Proposal from './types/proposal';
+import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from '../constants';
+import Proposal from '../types/proposal';
 
 export const validateTitlePage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
@@ -15,7 +15,7 @@ export const validateTitlePage = (proposal: Proposal) => {
 
 export const validateTeamPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_OK];
-  const count = proposal.investigators?.length > 0 ? 1 : 0;
+  const count = (proposal.investigators?.length ?? 0) > 0 ? 1 : 0;
   return result[count];
 };
 
@@ -23,10 +23,10 @@ export const validateGeneralPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
   let count = 0;
 
-  if (proposal?.abstract?.length > 0) {
+  if ((proposal.abstract?.length ?? 0) > 0) {
     count++;
   }
-  if (proposal?.scienceCategory > 0) {
+  if ((proposal?.scienceCategory ?? 0) > 0) {
     count++;
   }
   return result[count];
@@ -45,8 +45,8 @@ export const validateTargetPage = (proposal: Proposal) =>
 
 export const validateObservationPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-  const hasObservations = () => proposal?.observations?.length > 0;
-  const hasTargetObservations = () => proposal?.targetObservation?.length > 0;
+  const hasObservations = () => (proposal.observations?.length ?? 0) > 0;
+  const hasTargetObservations = () => (proposal.targetObservation?.length ?? 0) > 0;
 
   let count = hasObservations() ? 1 : 0;
   count += hasTargetObservations() ? 1 : 0;
@@ -62,7 +62,7 @@ export const validateTechnicalPage = (proposal: Proposal) => {
 
 export const validateSDPPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_OK];
-  const count = proposal.dataProductSDP?.length > 0 ? 1 : 0;
+  const count = proposal.dataProductSDP && proposal.dataProductSDP.length > 0 ? 1 : 0;
   return result[count];
 };
 

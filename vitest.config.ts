@@ -10,6 +10,10 @@ export default defineConfig({
     include: ['**/*.test.tsx'],
     setupFiles: ['src/setupTests.ts'],
 
+    onConsoleLog(log, type) {
+      if (log.includes('Sourcemap') && log.includes('missing source files')) return false;
+    },
+
     includeTaskLocation: true,
     server: {
       deps: {

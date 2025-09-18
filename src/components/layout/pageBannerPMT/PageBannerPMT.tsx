@@ -62,7 +62,6 @@ export default function PageBannerPMT({ backBtn, fwdBtn, title }: PageBannerPMTP
       pr={2}
       sx={{
         backgroundColor: theme => theme.palette.background.paper,
-        zIndex: theme => theme.zIndex.appBar + 1,
         position: 'fixed',
         top: HEADER_HEIGHT,
         left: 0,

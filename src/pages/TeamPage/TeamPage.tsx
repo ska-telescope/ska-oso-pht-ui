@@ -5,7 +5,7 @@ import { Box, Grid, Tab, Tabs, SvgIcon, Typography } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
-import { validateTeamPage } from '../../utils/proposalValidation';
+import { validateTeamPage } from '../../utils/validation/proposalValidation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import MemberEntry from '../entry/MemberEntry/MemberEntry';

@@ -8,7 +8,7 @@ import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
 import { LAB_IS_BOLD, LAB_POSITION, PROJECTS } from '../../../utils/constants';
 import { countWords, helpers } from '../../../utils/helpers';
 import { Proposal } from '../../../utils/types/proposal';
-import { validateTitlePage } from '../../../utils/proposalValidation';
+import { validateTitlePage } from '../../../utils/validation/proposalValidation';
 import LatexPreviewModal from '../../../components/info/latexPreviewModal/latexPreviewModal';
 import ViewIcon from '../../../components/icon/viewIcon/viewIcon';
 import CardTitle from '@/components/cards/cardTitle/CardTitle';

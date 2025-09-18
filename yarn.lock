@@ -2843,16 +2843,15 @@
     svgo "^3.2.0"
     vite "7.1.5"
 
-"@ska-telescope/ska-login-page@^1.0.16":
-  version "1.0.16"
-  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-login-page/-/ska-login-page-1.0.16.tgz#3d561d86a56ce7336758bc35419c18a958545f95"
-  integrity sha512-82XtYOiouifEVWRE1JCCiOZPOjY6w0A50K4mDBN6TCIcAAo6/pONkTC7b+rrEEhDCzobPEkKZejedU7dXu/DVQ==
+"@ska-telescope/ska-login-page@^1.0.17":
+  version "1.0.17"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-login-page/-/ska-login-page-1.0.17.tgz#7484acc4ce3dcd68e4f8987842c73ea039a3bda8"
+  integrity sha512-0bNOGw2shX/f25Hx85FcTmI3sjHGnZmY/zz4k4j0UW0Oe1Foj2svtvJTmXvRAaCaa8BjV2c+zPomVS7wsGebjQ==
   dependencies:
     "@azure/msal-browser" "^4.0.2"
     "@azure/msal-react" "^3.0.2"
     "@react-spring/web" "^9.7.3"
     "@types/uuid" "^9.0.4"
-    junit-report-merger "^6.0.2"
     react-dropzone "^14.3.5"
     styled-components "^6.1.13"
 

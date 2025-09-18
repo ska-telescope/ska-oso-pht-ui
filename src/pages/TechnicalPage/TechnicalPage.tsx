@@ -14,7 +14,7 @@ import { Proposal } from '../../utils/types/proposal';
 import HelpPanel from '../../components/info/helpPanel/HelpPanel';
 import Shell from '../../components/layout/Shell/Shell';
 
-import { validateTechnicalPage } from '../../utils/proposalValidation';
+import { validateTechnicalPage } from '../../utils/validation/proposalValidation';
 import DownloadButton from '../../components/button/Download/Download';
 import PDFWrapper from '../../components/layout/PDFWrapper/PDFWrapper';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
