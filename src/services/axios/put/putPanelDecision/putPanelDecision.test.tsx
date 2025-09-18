@@ -75,12 +75,7 @@ describe('PutPanelDecision Service', () => {
 
   test('returns mock data when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await PutPanelDecision(
-      mockedAuthClient,
-      MockPanelDecisionFrontend.id,
-      MockPanelDecisionFrontend,
-      cycleId
-    );
+    const result = await PutPanelDecision(mockedAuthClient, MockPanelDecisionFrontend, cycleId);
     expect(result).toEqual(MockPanelDecisionFrontend);
   });
 
@@ -89,7 +84,6 @@ describe('PutPanelDecision Service', () => {
     mockedAuthClient.put.mockResolvedValue({ data: MockPanelDecisionBackend });
     const result = (await PutPanelDecision(
       mockedAuthClient,
-      MockPanelDecisionFrontend.id,
       MockPanelDecisionFrontend,
       cycleId
     )) as PanelDecision;
@@ -99,48 +93,28 @@ describe('PutPanelDecision Service', () => {
   test('returns error message on API failure', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.put.mockRejectedValue(new Error('Network Error'));
-    const result = await PutPanelDecision(
-      mockedAuthClient,
-      MockPanelDecisionFrontend.id,
-      MockPanelDecisionFrontend,
-      cycleId
-    );
+    const result = await PutPanelDecision(mockedAuthClient, MockPanelDecisionFrontend, cycleId);
     expect(result).toStrictEqual({ error: 'Network Error' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.put.mockRejectedValue({ unexpected: 'object' });
-    const result = await PutPanelDecision(
-      mockedAuthClient,
-      MockPanelDecisionFrontend.id,
-      MockPanelDecisionFrontend,
-      cycleId
-    );
+    const result = await PutPanelDecision(mockedAuthClient, MockPanelDecisionFrontend, cycleId);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result undefined', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.put.mockResolvedValue(undefined);
-    const result = await PutPanelDecision(
-      mockedAuthClient,
-      MockPanelDecisionFrontend.id,
-      MockPanelDecisionFrontend,
-      cycleId
-    );
+    const result = await PutPanelDecision(mockedAuthClient, MockPanelDecisionFrontend, cycleId);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result null', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.put.mockResolvedValue(null);
-    const result = await PutPanelDecision(
-      mockedAuthClient,
-      MockPanelDecisionFrontend.id,
-      MockPanelDecisionFrontend,
-      cycleId
-    );
+    const result = await PutPanelDecision(mockedAuthClient, MockPanelDecisionFrontend, cycleId);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 });

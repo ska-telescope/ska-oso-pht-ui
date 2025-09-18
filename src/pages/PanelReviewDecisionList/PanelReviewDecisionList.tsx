@@ -11,7 +11,7 @@ import getPanelDecisionList from '@services/axios/get/getPanelDecisionList/getPa
 import GetProposalByStatusList from '@services/axios/get/getProposalByStatusList/getProposalByStatusList';
 import Proposal from '@/utils/types/proposal';
 import { FEASIBLE_NO, FOOTER_SPACER, REVIEW_TYPE } from '@/utils/constants';
-import { BANNER_PMT_SPACER, PANEL_DECISION_STATUS } from '@/utils/constants';
+import { BANNER_PMT_SPACER } from '@/utils/constants';
 
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import TableReviewDecision from '@/components/grid/tableReviewDecision/TableReviewDecision';
@@ -22,8 +22,6 @@ import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
 import { useNotify } from '@/utils/notify/useNotify';
-import { getUserId } from '@/utils/aaa/aaaUtils';
-import { generateId } from '@/utils/helpers';
 
 export default function ReviewDecisionListPage() {
   const { t } = useTranslation('pht');
@@ -38,26 +36,49 @@ export default function ReviewDecisionListPage() {
   const [reviewDecisions, setReviewDecisions] = React.useState<PanelDecision[]>([]);
   const authClient = useAxiosAuthClient();
 
-  const userId = getUserId();
   const getObservatoryData = () => application.content3 as ObservatoryData;
   const getCycleId = () => getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId;
 
   /*--------------------------------------------------------------------------*/
 
-  const handleUpdateDecisionItem = async (item: any) => {
+  const handlePanelDecision = async (
+    item: any,
+    options: {
+      useObservatoryCycle?: boolean;
+      onSuccess?: () => void;
+      updateLocalState?: boolean;
+    } = {}
+  ) => {
     const updatedDecision = getReviewDecision(item);
+    const cycleId = options.useObservatoryCycle
+      ? getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
+      : getCycleId();
 
-    const response = await PutPanelDecision(authClient, item.id, updatedDecision, getCycleId());
+    const response: PanelDecision | { error: string } = await PutPanelDecision(
+      authClient,
+      updatedDecision,
+      cycleId
+    );
 
-    if (typeof response === 'object' && response?.error) {
-      notifyError(response?.error, AlertColorTypes.Error);
-    } else {
-      // Update local state directly without re-fetching
+    const isErrorResponse = (
+      response: PanelDecision | { error: string }
+    ): response is { error: string } => typeof response === 'object' && 'error' in response;
+
+    if (isErrorResponse(response)) {
+      notifyError(response.error, AlertColorTypes.Error);
+      return;
+    }
+
+    if (options.updateLocalState) {
       setReviewDecisions(prev =>
         prev.some(d => d.proposalId === item.id)
           ? prev.map(d => (d.proposalId === item.id ? { ...d, ...updatedDecision } : d))
           : [...prev, updatedDecision]
       );
+    }
+
+    if (options.onSuccess) {
+      options.onSuccess();
     }
   };
 
@@ -69,19 +90,11 @@ export default function ReviewDecisionListPage() {
     return Math.round(average);
   };
 
-  const getReviewDecision = (item: { id: any; recommendation: any; reviews: any[] }) => {
-    const filtered = item.reviews.filter(el => el.reviewType.excludedFromDecision === false);
-    return {
-      id: generateId('pnld-'),
-      panelId: '1',
-      cycle: getCycleId(),
-      proposalId: item.id,
-      decidedOn: new Date().toISOString(),
-      decidedBy: userId,
-      recommendation: item.recommendation,
-      rank: calculateRank(filtered),
-      status: PANEL_DECISION_STATUS.DECIDED
-    };
+  const getReviewDecision = (item: any) => {
+    const filtered = item.reviews.filter((el: any) => el.reviewType.excludedFromDecision === false);
+    const decision = item.decisions[0];
+    decision.rank = calculateRank(filtered);
+    return decision;
   };
 
   const updateReview = async (review: ProposalReview) => {
@@ -106,35 +119,6 @@ export default function ReviewDecisionListPage() {
       setReviewDecisions(response);
     }
   };
-
-  const handleSubmitAction = async (item: {
-    [x: string]: any;
-    id: string;
-    scienceCategory: string;
-    title: string;
-    details: any[];
-    reviewStatus: string;
-    lastUpdated: string;
-    rank: number;
-    comments: string;
-    reviews: any[];
-    recommendation: any;
-  }) => {
-    const response: PanelDecision | string | { error: string } = await PutPanelDecision(
-      authClient,
-      item.id,
-      getReviewDecision(item),
-      getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
-    );
-    if (typeof response === 'object' && response?.error) {
-      notifyError(response?.error, AlertColorTypes.Error);
-    } else {
-      fetchReviewDecisionData();
-      notifySuccess(t('addReview.success'), AlertColorTypes.Success);
-    }
-  };
-
-  /*--------------------------------------------------------------------------*/
 
   React.useEffect(() => {
     setReset(!reset);
@@ -280,8 +264,20 @@ export default function ReviewDecisionListPage() {
               <TableReviewDecision
                 data={filteredData}
                 excludeFunction={handleExcludeAction}
-                submitFunction={handleSubmitAction}
-                updateFunction={handleUpdateDecisionItem}
+                submitFunction={(item: any) =>
+                  handlePanelDecision(item, {
+                    useObservatoryCycle: true,
+                    onSuccess: () => {
+                      fetchReviewDecisionData();
+                      notifySuccess(t('addReview.success'), AlertColorTypes.Success);
+                    }
+                  })
+                }
+                updateFunction={(item: any) =>
+                  handlePanelDecision(item, {
+                    updateLocalState: true
+                  })
+                }
               />
             )}
           </div>

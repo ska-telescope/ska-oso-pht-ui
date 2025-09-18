@@ -37,7 +37,6 @@ export function putMockPanelDecision(cycleId: string): PanelDecision {
 
 async function PutPanelDecision(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
-  id: string,
   PanelDecision: PanelDecision,
   cycleId: string
 ): Promise<PanelDecision | { error: string }> {
@@ -46,7 +45,7 @@ async function PutPanelDecision(
   }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}/${id}`;
+    const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}/${PanelDecision.id}`;
     const convertedPanelDecision = mappingPanelDecisionFrontendToBackend(PanelDecision, cycleId);
 
     const result = await authAxiosClient.put(

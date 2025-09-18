@@ -33,6 +33,7 @@ async function getPanelDecisionList(
 
   try {
     const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}/users/` + DEFAULT_USER + '/decisions';
+    // TODO : Waiting on oso-service update    const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}/`;
 
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
 

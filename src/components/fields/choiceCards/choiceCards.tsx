@@ -5,7 +5,21 @@ import CloseIcon from '@mui/icons-material/Close';
 import HelpIcon from '@mui/icons-material/Help';
 import { Button, Grid, Box, Typography, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { FEASIBLE_MAYBE, FEASIBLE_NO, FEASIBLE_YES } from '@/utils/constants';
+import {
+  FEASIBLE_MAYBE,
+  FEASIBLE_NO,
+  FEASIBLE_YES,
+  RECOMMENDATION_ACCEPT,
+  RECOMMENDATION_ACCEPT_REVISION,
+  RECOMMENDATION_REJECT
+} from '@/utils/constants';
+
+export const FEASIBLE = 'feasible';
+export const RECOMMENDED = 'recommended';
+export enum CHOICE_TYPE {
+  FEASIBLE,
+  RECOMMENDED
+}
 
 interface ChoiceOption {
   value: string;
@@ -17,6 +31,7 @@ interface ChoiceOption {
 }
 
 interface ChoiceCardsProps {
+  choiceType?: CHOICE_TYPE;
   colorBG?: string;
   label?: string;
   noWrap?: boolean;
@@ -25,6 +40,7 @@ interface ChoiceCardsProps {
 }
 
 export function ChoiceCards({
+  choiceType = CHOICE_TYPE.FEASIBLE,
   colorBG = 'transparent',
   label = 'feasibility.label',
   noWrap = false,
@@ -39,7 +55,7 @@ export function ChoiceCards({
     setSelectedValue(value);
   }, [value]);
 
-  const choices: ChoiceOption[] = [
+  const choicesFeasible: ChoiceOption[] = [
     {
       value: FEASIBLE_YES,
       label: t(FEASIBLE_YES.toLowerCase()),
@@ -66,10 +82,42 @@ export function ChoiceCards({
     }
   ];
 
+  const choicesRecommendation: ChoiceOption[] = [
+    {
+      value: RECOMMENDATION_ACCEPT,
+      label: t('recommendations.' + RECOMMENDATION_ACCEPT),
+      icon: CheckIcon,
+      color: theme.palette.success.main,
+      hoverColor: theme.palette.success.dark,
+      styledIcon: true
+    },
+    {
+      value: RECOMMENDATION_ACCEPT_REVISION,
+      label: t('recommendations.' + RECOMMENDATION_ACCEPT_REVISION),
+      icon: HelpIcon,
+      color: theme.palette.warning.main,
+      hoverColor: theme.palette.warning.dark,
+      styledIcon: false
+    },
+    {
+      value: RECOMMENDATION_REJECT,
+      label: t('recommendations.' + RECOMMENDATION_REJECT),
+      icon: CloseIcon,
+      color: theme.palette.error.main,
+      hoverColor: theme.palette.error.dark,
+      styledIcon: true
+    }
+  ];
+
+  const getChoices = () =>
+    choiceType === CHOICE_TYPE.FEASIBLE ? choicesFeasible : choicesRecommendation;
   const handleSelect = (choiceValue: string) => {
     setSelectedValue(choiceValue);
     onChange?.(choiceValue);
   };
+
+  const isMiddleChoice = (value: string) =>
+    value === FEASIBLE_MAYBE || value === RECOMMENDATION_ACCEPT_REVISION;
 
   return (
     <Paper
@@ -91,7 +139,7 @@ export function ChoiceCards({
 
       {noWrap ? (
         <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2 }}>
-          {choices.map(choice => {
+          {getChoices().map(choice => {
             const Icon = choice.icon;
             const isSelected = selectedValue === choice.value;
 
@@ -126,7 +174,7 @@ export function ChoiceCards({
                   }
                 }}
               >
-                {choice.value === FEASIBLE_MAYBE ? (
+                {isMiddleChoice(choice.value) ? (
                   <Icon sx={{ color: isSelected ? 'white' : choice.color, fontSize: 30 }} />
                 ) : (
                   <Box
@@ -152,7 +200,7 @@ export function ChoiceCards({
       ) : (
         <>
           <Grid container spacing={2}>
-            {choices
+            {getChoices()
               .filter(c => c.value !== FEASIBLE_MAYBE)
               .map(choice => {
                 const Icon = choice.icon;
@@ -215,7 +263,7 @@ export function ChoiceCards({
 
           {/* Maybe button below */}
           {(() => {
-            const maybe = choices.find(c => c.value === FEASIBLE_MAYBE);
+            const maybe = getChoices().find(c => c.value === FEASIBLE_MAYBE);
             if (!maybe) return null;
             const Icon = maybe.icon;
             const isSelected = selectedValue === maybe.value;

@@ -11,10 +11,17 @@ vi.mock('react-i18next', () => ({
 
 // Mock sub components
 vi.mock('@/components/fields/choiceCards/choiceCards', () => ({
-  ChoiceCards: ({ value, onChange }: any) => (
-    <button data-testid="choice-cards" onClick={() => onChange('FEASIBLE_YES')}>
-      {value}
-    </button>
+  CHOICE_TYPE: { RECOMMENDED: 'recommended' },
+  ChoiceCards: (props: any) => (
+    <select
+      data-testid="choice-cards"
+      value={props.value}
+      onChange={e => props.onChange(e.target.value)}
+    >
+      <option value="accept">Accept</option>
+      <option value="revise">Revise</option>
+      <option value="reject">Reject</option>
+    </select>
   )
 }));
 
@@ -58,8 +65,9 @@ describe('DecisionEntry', () => {
     id: '123',
     title: 'Test Proposal',
     reviews: [{ score: 4 }, { score: 5 }],
-    recommendation: 'FEASIBLE_MAYBE',
-    comments: 'Initial comment'
+    decisions: [{ recommendation: '', comment: '' }],
+    recommendation: 'FEASIBLE_YES',
+    comments: 'Updated comment'
   };
 
   const mockCalculateScore = vi.fn(() => 9);
@@ -80,7 +88,7 @@ describe('DecisionEntry', () => {
     expect(screen.getByText('tableReviewDecision.decisionScore 9')).toBeInTheDocument();
     expect(screen.getByTestId('choice-cards')).toBeInTheDocument();
     expect(screen.getByTestId('submit-review-button-123')).toBeInTheDocument();
-    expect(screen.getByTestId('finalCommentsId')).toHaveValue('Initial comment');
+    expect(screen.getByTestId('finalCommentsId')).toHaveValue('Updated comment');
   });
 
   it('handles recommendation change', () => {

@@ -1,9 +1,14 @@
 import { Box, Typography, Grid, Stack } from '@mui/material';
 import { useTranslation } from 'react-i18next';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
-import { ChoiceCards } from '@/components/fields/choiceCards/choiceCards';
+import { CHOICE_TYPE, ChoiceCards } from '@/components/fields/choiceCards/choiceCards';
 import SubmitButton from '@/components/button/Submit/Submit';
-import { FEASIBLE_YES, FEASIBLE_MAYBE, FEASIBLE_NO } from '@/utils/constants';
+import {
+  RECOMMENDATION_ACCEPT,
+  RECOMMENDATION_ACCEPT_REVISION,
+  RECOMMENDATION_REJECT
+} from '@/utils/constants';
+import { isReviewerAdminOnly } from '@/utils/aaa/aaaUtils';
 
 const FINAL_COMMENTS_HEIGHT = 43;
 
@@ -14,8 +19,8 @@ interface DecisionEntryProps {
     reviews: any[];
     decisions: {
       recommendation: string;
+      comment: string;
     }[];
-    comments: string;
   };
   calculateScore: (reviews: any[]) => number;
   updateItem: Function;
@@ -32,19 +37,25 @@ export default function DecisionEntry({
 
   const hasRecommendation = (recommendation: string) => {
     return (
-      recommendation === FEASIBLE_YES ||
-      recommendation === FEASIBLE_MAYBE ||
-      recommendation === FEASIBLE_NO
+      recommendation === RECOMMENDATION_ACCEPT ||
+      recommendation === RECOMMENDATION_ACCEPT_REVISION ||
+      recommendation === RECOMMENDATION_REJECT
     );
   };
 
-  const recommendedYes = (recommendation: string) => recommendation === FEASIBLE_YES;
+  const recommendedYes = (recommendation: string) => recommendation === RECOMMENDATION_ACCEPT;
 
-  const hasComments = (item: { recommendation: string; comments: string }) =>
-    recommendedYes(item.recommendation) ? true : item.comments?.length > 0;
+  const hasComments = (item: any) =>
+    recommendedYes(item?.decisions[item?.decisions?.length - 1]?.recommendation)
+      ? true
+      : item.comments?.length > 0;
 
   const submitDisabled = (item: any) => {
-    return !hasRecommendation(item?.recommendation) || !hasComments(item);
+    return (
+      isReviewerAdminOnly() ||
+      !hasRecommendation(item?.decisions[item?.decisions?.length - 1]?.recommendation) ||
+      !hasComments(item)
+    );
   };
 
   return (
@@ -72,16 +83,19 @@ export default function DecisionEntry({
               </Grid>
               <Grid>
                 <Box pt={2}>
-                  <ChoiceCards
-                    label=""
-                    value={item?.decisions[item?.decisions?.length - 1]?.recommendation ?? ''}
-                    noWrap
-                    onChange={(val: string) => {
-                      const rec = item;
-                      rec.decisions[item.decisions.length - 1].recommendation = val;
-                      updateItem(rec);
-                    }}
-                  />
+                  {!isReviewerAdminOnly() && (
+                    <ChoiceCards
+                      choiceType={CHOICE_TYPE.RECOMMENDED}
+                      label=""
+                      value={item?.decisions[item?.decisions?.length - 1]?.recommendation ?? ''}
+                      noWrap
+                      onChange={(val: string) => {
+                        const rec = item;
+                        rec.decisions[item.decisions.length - 1].recommendation = val;
+                        updateItem(rec);
+                      }}
+                    />
+                  )}
                 </Box>
               </Grid>
               <Grid>
@@ -111,16 +125,18 @@ export default function DecisionEntry({
               }}
             >
               <TextEntry
+                disabled={isReviewerAdminOnly()}
                 label=""
                 testId="finalCommentsId"
                 rows={((FINAL_COMMENTS_HEIGHT / 100) * window.innerHeight) / 27}
                 disabledUnderline
                 setValue={(val: string) => {
-                  const rec = item;
-                  rec.comments = val;
-                  updateItem(rec);
+                  // const rec = item;
+                  // TODO : DB needs the field.
+                  // rec.comments = val;
+                  // updateItem(rec);
                 }}
-                value={item.comments}
+                value={item.decisions[0].comment}
               />
             </Box>
           </Stack>

@@ -10,7 +10,15 @@ import { Typography, Grid, Box } from '@mui/material';
 import React from 'react';
 import GetReviewerList from '@services/axios/get/getReviewerList/getReviewerList';
 import Alert from '../../alerts/standardAlert/StandardAlert';
-import { NOT_SPECIFIED, SEARCH_TYPE_OPTIONS_REVIEWERS } from '@/utils/constants';
+import {
+  getColTitle,
+  getColDisplayName,
+  getColReviewerLocation,
+  getColReviewerType,
+  getColSubExpertise,
+  getColStatus
+} from '../columns/Columns';
+import { SEARCH_TYPE_OPTIONS_REVIEWERS } from '@/utils/constants';
 import { Reviewer } from '@/utils/types/reviewer';
 import { IdObject } from '@/utils/types/idObject';
 import { arraysAreEqual } from '@/utils/helpers';
@@ -21,7 +29,7 @@ export function filterReviewers(
   reviewers: Reviewer[],
   searchTerm: string,
   searchTypeExpertise: string,
-  searchTypeAffiliation: string
+  searchTypeLocation: string
 ) {
   const fields: (keyof Reviewer)[] = ['givenName', 'surname', 'jobTitle']; // TODO : All given field
   return reviewers.filter(
@@ -31,8 +39,8 @@ export function filterReviewers(
       ) &&
       (searchTypeExpertise === '' ||
         item.subExpertise?.toLowerCase() === searchTypeExpertise?.toLowerCase()) &&
-      (searchTypeAffiliation === '' ||
-        item.officeLocation?.toLowerCase() === searchTypeAffiliation?.toLowerCase())
+      (searchTypeLocation === '' ||
+        item.officeLocation?.toLowerCase() === searchTypeLocation?.toLowerCase())
   );
 }
 
@@ -58,7 +66,7 @@ export default function GridReviewers({
   const [reviewers, setReviewers] = React.useState<Reviewer[]>([]);
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchTypeExpertise, setSearchTypeExpertise] = React.useState('');
-  const [searchTypeAffiliation, setSearchTypeAffiliation] = React.useState('');
+  const [searchTypeLocation, setSearchTypeLocation] = React.useState('');
   const [axiosError, setAxiosError] = React.useState('');
   const [fetchList] = React.useState(false);
   const [reviewersCollection, setReviewersCollection] = React.useState<IdObject[]>([]);
@@ -87,12 +95,6 @@ export default function GridReviewers({
     }
   }, [selectedReviewers]);
 
-  const displayStatus = (status: any) => {
-    return status
-      ? t('reviewers.statusCategory.' + status)
-      : t('reviewers.statusCategory.' + NOT_SPECIFIED);
-  };
-
   const isReviewerSelected = (reviewerId: string): boolean => {
     return reviewersCollection?.filter(entry => entry.id === reviewerId).length > 0;
   };
@@ -101,11 +103,6 @@ export default function GridReviewers({
     return (
       (reviewer.isScience && typeState !== 'tec') || (reviewer.isTechnical && typeState !== 'sci')
     );
-  };
-
-  const getReviewerType = (rec: Reviewer) => {
-    if (rec.isScience && rec.isTechnical) return t('reviewerType.all');
-    else return rec.isScience ? t('reviewerType.science') : t('reviewerType.technical');
   };
 
   const colSelect = {
@@ -150,85 +147,14 @@ export default function GridReviewers({
     )
   };
 
-  const colTitle = {
-    field: 'title',
-    headerName: t('reviewers.title'),
-    minWidth: 120,
-    renderCell: (e: any) => e.row.jobTitle
-  };
-
-  const colGivenName = {
-    field: 'givenName',
-    headerName: t('reviewers.givenName'),
-    minWidth: 180,
-    renderCell: (e: { row: any }) => e.row.givenName
-  };
-
-  const colSurname = {
-    field: 'surname',
-    headerName: t('reviewers.surname'),
-    minWidth: 180,
-    renderCell: (e: { row: any }) => e.row.surname
-  };
-
-  // TODO : Keep until we get confirmation that it should be removed from SciOps
-  // const colOfficeLocation = {
-  //   field: 'officeLocation',
-  //   headerName: t('reviewers.officeLocation'),
-  //   minWidth: 200,
-  //   renderCell: (e: { row: any }) => e.row.officeLocation
-  // };
-
-  const colReviewerType = {
-    field: 'reviewerType',
-    headerName: t('reviewers.reviewerType'),
-    filterable: false,
-    sortable: false,
-    disableColumnMenu: true,
-    renderHeader: () => (
-      <Box sx={{ minWidth: 150 }}>
-        <DropDown
-          disabledUnderline={true}
-          options={[
-            { label: t('reviewerType.all'), value: 'all' },
-            { label: t('reviewerType.science'), value: 'sci' },
-            { label: t('reviewerType.technical'), value: 'tec' }
-          ]}
-          testId="subExpertise"
-          value={typeState}
-          setValue={setTypeState}
-          label={''}
-        />
-      </Box>
-    ),
-    minWidth: 200,
-    renderCell: (e: { row: any }) => getReviewerType(e.row)
-  };
-
-  const colSubExpertise = {
-    field: 'subExpertise',
-    headerName: t('reviewers.subExpertise'),
-    flex: 2,
-    minWidth: 200,
-    renderCell: (e: { row: any }) => t('reviewers.subExpertiseCategory.' + e.row.subExpertise)
-  };
-
-  const colStatus = {
-    field: 'status',
-    headerName: t('reviewers.status'),
-    minWidth: 150,
-    renderCell: (e: { row: any }) => displayStatus(e.row.status)
-  };
-
   const stdColumns = [
     ...(showSelection ? [colSelect] : []),
-    colTitle,
-    colGivenName,
-    colSurname,
-    // colOfficeLocation,
-    colReviewerType,
-    colSubExpertise,
-    colStatus
+    getColTitle(),
+    getColDisplayName(),
+    getColReviewerLocation(),
+    getColReviewerType(typeState, setTypeState),
+    getColSubExpertise(),
+    getColStatus()
   ];
 
   const selectedData = reviewers
@@ -239,7 +165,7 @@ export default function GridReviewers({
       )
     : [];
   const filteredData = selectedData
-    ? filterReviewers(selectedData, searchTerm, searchTypeExpertise, searchTypeAffiliation)
+    ? filterReviewers(selectedData, searchTerm, searchTypeExpertise, searchTypeLocation)
     : [];
 
   const ReviewersSectionTitle = () => (
@@ -260,24 +186,24 @@ export default function GridReviewers({
     </Box>
   );
 
-  const getAffiliationOptions = () => {
-    const affiliations = reviewers
+  const getLocationOptions = () => {
+    const locations = reviewers
       .map(reviewer => reviewer.officeLocation)
       .filter((value, index, self) => self.indexOf(value) === index && value !== '');
-    return affiliations.map(affiliation => ({
-      label: affiliation,
-      value: affiliation
+    return locations.map(location => ({
+      label: location,
+      value: location
     }));
   };
 
-  const searchDropdownAffiliation = () => (
+  const searchDropdownLocation = () => (
     <Box pt={2}>
       <DropDown
-        options={[{ label: t('affiliation.0'), value: '' }, ...getAffiliationOptions()]}
+        options={[{ label: t('location.0'), value: '' }, ...getLocationOptions()]}
         testId="officeLocation"
-        value={searchTypeAffiliation}
-        setValue={setSearchTypeAffiliation}
-        label={t('affiliation.0')}
+        value={searchTypeLocation}
+        setValue={setSearchTypeLocation}
+        label={t('location.0')}
       />
     </Box>
   );
@@ -321,7 +247,7 @@ export default function GridReviewers({
               alignItems="center"
             >
               <Grid size={{ sm: 3 }}>{searchDropdownExpertise()}</Grid>
-              <Grid size={{ sm: 3 }}>{searchDropdownAffiliation()}</Grid>
+              <Grid size={{ sm: 3 }}>{searchDropdownLocation()}</Grid>
               <Grid size={{ sm: 5 }}>{searchEntryField('searchId')}</Grid>
             </Grid>
           </Grid>

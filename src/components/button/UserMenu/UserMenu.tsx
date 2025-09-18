@@ -101,12 +101,12 @@ export default function ButtonUserMenu({
             {t('page.15.title')}
           </MenuItem>
         )}
-        {(isReviewerAdmin() || isReviewer()) && (
+        {isReviewer() && (
           <MenuItem data-testid="menuItemReviews" onClick={() => onMenuSelect(PMT[1])}>
             {t('reviewProposalList.title')}
           </MenuItem>
         )}
-        {isReviewerChair() && (
+        {(isReviewerAdmin() || isReviewerChair()) && (
           <MenuItem data-testid="menuItemReviewDecisions" onClick={() => onMenuSelect(PMT[4])}>
             {t('reviewDecisionsList.title')}
           </MenuItem>

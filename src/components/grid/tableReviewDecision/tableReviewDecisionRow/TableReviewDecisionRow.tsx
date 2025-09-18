@@ -14,6 +14,7 @@ import TableScienceReviews from '@/components/grid/tableScienceReviews/TableScie
 import DecisionEntry from '@/pages/entry/DecisionEntry/DecisionEntry';
 import { presentDate, presentLatex, presentTime } from '@/utils/present/present';
 import { REVIEW_TYPE } from '@/utils/constants';
+import { isReviewerAdminOnly } from '@/utils/aaa/aaaUtils';
 
 interface TableReviewDecisionRowProps {
   item: any;
@@ -126,12 +127,15 @@ export default function TableReviewDecisionRow({
         <TableCell role="gridcell">{item.rank}</TableCell>
 
         <TableCell role="gridcell">
-          {item?.decisions[item?.decisions?.length - 1]?.recommendation ?? ''}
+          <Typography variant="body2">
+            {t('recommendations.' + item?.decisions[0]?.recommendation)}
+          </Typography>
         </TableCell>
 
         <TableCell role="gridcell">
           <Box sx={{ display: 'flex', gap: 0.5 }}>
             <SubmitIcon
+              disabled={isReviewerAdminOnly()}
               onClick={() => submitFunctionClicked(item)}
               aria-label={`Submit data for ${item.title}`}
               data-testid={`submit-button-${item.id}`}

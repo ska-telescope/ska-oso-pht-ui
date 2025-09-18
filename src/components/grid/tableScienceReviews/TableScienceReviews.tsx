@@ -17,6 +17,7 @@ import { Key } from 'react';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { PANEL_DECISION_STATUS, REVIEW_TYPE } from '@/utils/constants';
 import { ScienceReview } from '@/utils/types/proposalReview';
+import { isReviewerAdmin } from '@/utils/aaa/aaaUtils';
 
 const STATUS_SIZE = 20;
 
@@ -126,13 +127,7 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
                               : excludeFunction(detail)
                           }
                           style={{ cursor: 'hand' }}
-                          // CODE BELOW WILL BE IMPLEMENTED AT A LATER DATE
-                          // disabled={
-                          //   !detail.reviewType.excludedFromDecision &&
-                          //   item.reviews.filter(
-                          //     el => el.reviewType.excludedFromDecision === false
-                          //   ).length < 2
-                          // }
+                          disabled={isReviewerAdmin() || !detail.reviewType.excludedFromDecision}
                         >
                           <StatusIcon
                             testId={`includeIcon-${data.id}-${detailIndex}`}
@@ -143,6 +138,10 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
                               detail.reviewType.conflict.hasConflict
                                 ? 1
                                 : 0
+                            }
+                            noBorder
+                            softColors={
+                              isReviewerAdmin() || !detail.reviewType.excludedFromDecision
                             }
                             size={STATUS_SIZE}
                           />
