@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { Box, DialogActions, DialogContent, Grid, Typography } from '@mui/material';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
@@ -17,6 +16,7 @@ import skaoIcon from '../../../components/icon/skaoIcon/skaoIcon';
 import GridObservationSummary from '../../../components/grid/observationSummary/GridObservationSummary';
 import emptyCell from '../../../components/fields/emptyCell/emptyCell';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface ProposalDisplayProps {
   proposal: Proposal | null;
@@ -42,7 +42,7 @@ export default function ProposalDisplay({
   onConfirm,
   onConfirmLabel = ''
 }: ProposalDisplayProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const theme = useTheme();
   const authClient = useAxiosAuthClient();
 

@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, Grid, Paper, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -21,6 +20,7 @@ import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import { DataProductSDP } from '@/utils/types/dataProduct';
 import AddButton from '@/components/button/Add/Add';
 import { LAB_POSITION } from '@/utils/constants';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const BACK_PAGE = 7;
 const PAGE = 13;
@@ -50,7 +50,7 @@ export default function AddDataProduct() {
   const [pixelSizeUnits, setPixelSizeUnits] = React.useState('');
   const [weighting, setWeighting] = React.useState(0);
 
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
 
   React.useEffect(() => {
     helpComponent(t('observations.dp.help'));

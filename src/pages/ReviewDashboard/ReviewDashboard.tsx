@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { DropDown, SearchEntry, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
-import { useTranslation } from 'react-i18next';
 import { Box, Card, Grid } from '@mui/material';
 import { groupBy } from 'lodash';
 import Table from '@mui/material/Table';
@@ -16,12 +15,13 @@ import ResetButton from '@/components/button/Reset/Reset';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import D3PieChart from '@/components/charts/pie/D3PieChart';
 import ResizablePanel from '@/components/layout/resizablePanel/ResizablePanel';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const REFRESH_TIME = 5 * 60 * 1000;
 const TABLE_WIDTH = '95vw';
 const TABLE_CONTAINER_WIDTH = '97vw';
 export default function ReviewDashboard() {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const [filter, setFilter] = useState({ telescope: '', country: '' });
   const [search, setSearch] = useState('');
   const [currentReport, setCurrentReport] = React.useState([]);

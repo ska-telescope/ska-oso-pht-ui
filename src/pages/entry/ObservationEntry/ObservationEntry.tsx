@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -78,6 +77,7 @@ import SpectralResolutionField from '../../../components/fields/spectralResoluti
 import NumStations from '../../../components/fields/numStations/NumStations';
 import ContinuumBandwidthField from '../../../components/fields/bandwidthFields/continuumBandwidth/continuumBandwidth';
 import BandwidthField from '../../../components/fields/bandwidthFields/bandwidth/bandwidth';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 6;
@@ -88,7 +88,7 @@ const WRAPPER_WIDTH_BUTTON = 2;
 const HELP_PANEL_HEIGHT = '50vh';
 
 export default function ObservationEntry() {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const locationProperties = useLocation();
 

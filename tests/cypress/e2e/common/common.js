@@ -118,6 +118,7 @@ export const clickManageTeamMemberRights = () => clickButton('lockIcon');
 export const clickSubmitRights = () => clickButton('submitCheckbox');
 export const clickPICheckbox = () => clickButton('piCheckbox');
 export const clickAddProposal = () => clickButton('addProposalButton');
+export const clickAddMock = () => clickButton('addMockButton');
 export const clickCreateProposal = () => clickButton('nextButtonTestId');
 export const clickHome = () => clickButton('homeButtonTestId');
 export const clickDialogConfirm = () => clickButton('dialogConfirmationButton');
@@ -134,6 +135,8 @@ export const clickToAddTarget = () => clickButton('addTargetButton');
 export const clickToConfirmProposalSubmission = () => clickButton('displayConfirmationButton');
 export const clickToNextPage = () => clickButton('nextButtonTestId');
 export const clickToPreviousPage = () => clickButton('prevButtonTestId');
+
+export const clickToLinkTargetObservation = () => clickButton('linkedTickBox');
 
 /*----------------------------------------------------------------------*/
 
@@ -209,6 +212,7 @@ export const clickUserMenuReviews = () => clickSignINBtns('menuItemReviews', 'RE
 export const clickUserMenuDecisions = () =>
   clickSignINBtns('menuItemReviewDecisions', 'REVIEW DECISIONS');
 export const clickUserMenuLogout = () => click('menuItemLogout');
+export const clickListOfTargets = () => cy.get('#listOfTargets').click();
 
 /*----------------------------------------------------------------------*/
 
@@ -258,6 +262,11 @@ export const createStandardProposal = () => {
   clickCreateProposal();
   verifyProposalCreatedAlertFooter();
   pageConfirmed('TEAM');
+};
+
+export const createMock = () => {
+  clickAddMock();
+  pageConfirmed('TARGET');
 };
 
 export const createStandardProposalLoggedIn = () => {
@@ -338,7 +347,6 @@ export const addM2TargetUsingResolve = () => {
   cy.get('[id="name"]').type('M2');
   clickResolveButton();
 };
-
 export const verifyOnLandingPageFilterIsVisible = () => {
   cy.get('[data-testid="proposalType"]').should('exist');
   cy.get('[data-testid="proposalType"]').realClick();
@@ -351,6 +359,10 @@ export const verifyMockedProposalOnLandingPageIsVisible = () => {
 
 export const verifyOnLandingPageNoProposalMsgIsVisible = () => {
   cy.get('[id="standardAlertId"]').should('contain', 'THERE ARE NO PROPOSALS TO BE DISPLAYED');
+};
+
+export const verifyOnLandingPageNotLoggedInMsgIsVisible = () => {
+  cy.get('[id="standardAlertId"]').should('contain', 'NOT LOGGED IN, NO PROPOSALS AVAILABLE');
 };
 
 export const verifyObservationInTable = () => {
@@ -406,14 +418,23 @@ export const verifyUnlinkedObservationInTable = () => {
     .should('have.length', 1);
 };
 
+export const clickUnlinkedObservationInTable = () => {
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .should('contain', 'obs-')
+    .should('contain', 'AA4')
+    .click({ multiple: true });
+};
+
+export const verifySensCalcStatus = () => {
+  cy.get('[data-testid="statusId"]')
+    .should('be.visible')
+    .invoke('attr', 'aria-label')
+    .should('include', 'Status : OK');
+};
+
 export const createObservation = () => {
-  //navigate to observation page
-  clickToGeneralPage();
-  clickToSciencePage();
-  clickToTargetPage();
-  clickToObservationPage();
   //add default observation
   clickObservationSetup();
   clickAddObservationEntry();
-  verifyUnlinkedObservationInTable();
 };

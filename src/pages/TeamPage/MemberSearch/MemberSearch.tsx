@@ -1,7 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 import { Box, Grid } from '@mui/material';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
-import { useTranslation } from 'react-i18next';
 import React from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { ButtonSizeTypes } from '@ska-telescope/ska-gui-components';
@@ -14,9 +13,10 @@ import { helpers } from '@/utils/helpers';
 import { useNotify } from '@/utils/notify/useNotify';
 import Investigator from '@/utils/types/investigator';
 import ResetButton from '@/components/button/Reset/Reset';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 export default function MemberSearch() {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const [email, setEmail] = React.useState('');
   const [formInvalid, setFormInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);

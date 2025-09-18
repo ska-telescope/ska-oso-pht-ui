@@ -1,11 +1,12 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Box, Grid, Typography } from '@mui/material';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
+import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import Proposal from '../../../utils/types/proposal';
 import { BANDWIDTH_TELESCOPE, NOT_SPECIFIED, OBSERVATION } from '../../../utils/constants';
 import emptyCell from '../../../components/fields/emptyCell/emptyCell';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const FIELD_OBS = 'observatoryDataProduct.options';
 
@@ -20,7 +21,8 @@ export default function GridObservationSummary({
   proposal,
   rowClick
 }: GridObservationSummaryProps) {
-  const { t } = useTranslation('pht');
+  const loggedIn = isLoggedIn();
+  const { t } = useScopedTranslation();
   const headerDisplay = (inValue: string, inValue2?: string) => (
     <Typography variant="subtitle1" style={{ fontWeight: 600 }}>
       {t(inValue)}
@@ -179,7 +181,7 @@ export default function GridObservationSummary({
         (proposal?.observations?.length === 0 && (
           <Alert
             color={AlertColorTypes.Error}
-            text={t('error.noObservations')}
+            text={loggedIn ? t('error.noObservations') : t('error.noObservationsLoggedOut')}
             testId="noObservationsNotification"
           />
         ))}

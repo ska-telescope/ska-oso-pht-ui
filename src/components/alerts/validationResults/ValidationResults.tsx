@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { DialogContent, Grid, Stack, Typography } from '@mui/material';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
@@ -7,6 +6,7 @@ import Proposal from '../../../utils/types/proposal';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import CancelButton from '../../button/Cancel/Cancel';
 import StatusIconDisplay from '../../icon/status/statusIcon';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 interface ValidationResultsProps {
   open: boolean;
   onClose: Function;
@@ -27,7 +27,7 @@ export default function ValidationResults({
   proposal,
   results
 }: ValidationResultsProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const theme = useTheme();
 
   const getFont = (bold: boolean) => (bold ? 600 : 300);

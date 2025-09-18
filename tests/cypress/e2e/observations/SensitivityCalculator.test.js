@@ -11,7 +11,9 @@ import {
   verifyObservationInTable,
   clickAddObservationEntry,
   initializeUserNotLoggedIn,
-  clearLocalStorage
+  clearLocalStorage,
+  createMock,
+  clickListOfTargets
 } from '../common/common';
 
 import sensitivityCalculatorResults from '../../fixtures/sensitivityCalculatorResults.json';
@@ -19,12 +21,9 @@ import sensitivityCalculatorResults from '../../fixtures/sensitivityCalculatorRe
 beforeEach(() => {
   initializeUserNotLoggedIn();
   cy.fixture('sensitivityCalculatorResults.json').as('sensitivityCalculatorResults');
-  createStandardProposal();
-  //navigate to observation page
-  clickToGeneralPage();
-  clickToSciencePage();
-  clickToTargetPage();
+  createMock();
   //add target
+  clickListOfTargets();
   addTargetUsingCoordinates();
   clickToAddTarget();
   clickToObservationPage();

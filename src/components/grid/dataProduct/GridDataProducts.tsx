@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { Tooltip, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
@@ -7,6 +6,7 @@ import EditIcon from '../../icon/editIcon/editIcon';
 import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import { DataProductSDP } from '../../../utils/types/dataProduct';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface GridDataProductsProps {
   baseObservations: any[];
@@ -25,7 +25,7 @@ export default function GridDataProducts({
   rowClick,
   rows = []
 }: GridDataProductsProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
 
   const PAGE = 7;
   const hasObservations = () => (baseObservations?.length > 0 ? true : false);

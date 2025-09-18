@@ -3,8 +3,8 @@ import { Grid, Divider } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { NAV } from '@utils/constants.ts';
 import StatusWrapper from '../wrappers/statusWrapper/StatusWrapper';
-import { NAV } from '../../utils/constants';
 
 export default function StatusArrayOriginal() {
   const { application } = storageObject.useStore();

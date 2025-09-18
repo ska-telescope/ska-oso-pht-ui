@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { Box, Tooltip, Typography } from '@mui/material';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import StarIcon from '../../../components/icon/starIcon/starIcon';
@@ -10,6 +9,7 @@ import LockIcon from '@/components/icon/lockIcon/lockIcon';
 import { GRID_MEMBERS_ACTIONS } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS } from '@/utils/aaa/aaaUtils';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface GridMembersProps {
   action?: boolean;
@@ -28,7 +28,7 @@ export default function GridMembers({
   rows = [],
   permissions = []
 }: GridMembersProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
 
   const PIStar = ({ pi }: { pi: any }) => {
     if (pi) {
