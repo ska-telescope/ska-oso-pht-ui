@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Grid, Paper } from '@mui/material';
 import { AlertColorTypes, SearchEntry } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
@@ -24,9 +23,10 @@ import PostProposalReview from '@/services/axios/post/postProposalReview/postPro
 import { useNotify } from '@/utils/notify/useNotify';
 import { getUserId } from '@/utils/aaa/aaaUtils';
 import { generateId } from '@/utils/helpers';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 export default function ReviewDecisionListPage() {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const { application } = storageObject.useStore();
   const { notifyError, notifySuccess } = useNotify();
 

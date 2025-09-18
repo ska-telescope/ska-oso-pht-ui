@@ -1,5 +1,3 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Box } from '@mui/system';
@@ -10,6 +8,7 @@ import {
   SPECTRAL_AVERAGING_MIN,
   ZOOM_SPECTRAL_AVERAGING_MAX
 } from '../../../../utils/constants';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface SpectralAveragingLOWFieldProps {
   disabled?: boolean;
@@ -31,7 +30,7 @@ export default function SpectralAveragingLOWField({
   subarray,
   type
 }: SpectralAveragingLOWFieldProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const { helpComponent } = storageObject.useStore();
   const FIELD = 'spectralAveraging';
 

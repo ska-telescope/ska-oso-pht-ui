@@ -1,6 +1,5 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
@@ -23,6 +22,7 @@ import { useNotify } from '@/utils/notify/useNotify';
 import PostProposalAccess from '@/services/axios/post/postProposalAccess/postProposalAccess';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_VIEW } from '@/utils/aaa/aaaUtils';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
@@ -37,7 +37,7 @@ export default function MemberEntry({
   foundInvestigator = DEFAULT_INVESTIGATOR,
   invitationBtnClicked = () => {}
 }: MemberEntryProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const LABEL_WIDTH = 6;
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
 

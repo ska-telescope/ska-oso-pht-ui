@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import Dialog from '@mui/material/Dialog';
 import { Box, DialogActions, DialogContent, Grid, Typography } from '@mui/material';
 import { AlertColorTypes, DropDown } from '@ska-telescope/ska-gui-components';
@@ -12,6 +11,7 @@ import skaoIcon from '../../icon/skaoIcon/skaoIcon';
 import ConfirmButton from '@/components/button/Confirm/Confirm';
 import CancelButton from '@/components/button/Cancel/Cancel';
 import { CONFLICT_REASONS } from '@/utils/constants';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface ConflictConfirmationProps {
   proposal: Proposal | null;
@@ -38,7 +38,7 @@ export default function ConflictConfirmation({
   onConfirmLabel = '',
   onConfirmToolTip = ''
 }: ConflictConfirmationProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const theme = useTheme();
 
   const getFont = (bold: boolean) => (bold ? 600 : 300);

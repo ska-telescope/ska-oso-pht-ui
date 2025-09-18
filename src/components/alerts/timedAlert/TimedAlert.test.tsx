@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen, act } from '@testing-library/react';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import TimedAlert from './TimedAlert';
 import { useNotify } from '@/utils/notify/useNotify';
@@ -25,7 +26,11 @@ describe('TimedAlert', () => {
   const text = 'This is a test alert';
 
   it('renders and auto-dismisses for Info alert', async () => {
-    render(<TimedAlert color={AlertColorTypes.Info} testId={testId} text={text} delay={1} />);
+    render(
+      <StoreProvider>
+        <TimedAlert color={AlertColorTypes.Info} testId={testId} text={text} delay={1} />
+      </StoreProvider>
+    );
     expect(screen.getByTestId(testId)).toBeInTheDocument();
 
     act(() => {
@@ -37,7 +42,11 @@ describe('TimedAlert', () => {
   });
 
   it('renders and auto-dismisses for Success alert', async () => {
-    render(<TimedAlert color={AlertColorTypes.Success} testId={testId} text={text} delay={1} />);
+    render(
+      <StoreProvider>
+        <TimedAlert color={AlertColorTypes.Success} testId={testId} text={text} delay={1} />
+      </StoreProvider>
+    );
     expect(screen.getByTestId(testId)).toBeInTheDocument();
 
     act(() => {
@@ -49,7 +58,11 @@ describe('TimedAlert', () => {
   });
 
   it('renders and does not auto-dismiss for Error alert', async () => {
-    render(<TimedAlert color={AlertColorTypes.Error} testId={testId} text={text} />);
+    render(
+      <StoreProvider>
+        <TimedAlert color={AlertColorTypes.Error} testId={testId} text={text} />
+      </StoreProvider>
+    );
     expect(screen.getByTestId(testId)).toBeInTheDocument();
 
     act(() => {
@@ -61,7 +74,11 @@ describe('TimedAlert', () => {
   });
 
   it('renders and does not auto-dismiss for Warning alert', async () => {
-    render(<TimedAlert color={AlertColorTypes.Warning} testId={testId} text={text} />);
+    render(
+      <StoreProvider>
+        <TimedAlert color={AlertColorTypes.Warning} testId={testId} text={text} />
+      </StoreProvider>
+    );
     expect(screen.getByTestId(testId)).toBeInTheDocument();
 
     act(() => {

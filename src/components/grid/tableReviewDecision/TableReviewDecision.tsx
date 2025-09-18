@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import {
   Table,
   TableBody,
@@ -24,6 +23,7 @@ import SubmitButton from '@/components/button/Submit/Submit';
 import { presentDate, presentLatex, presentTime } from '@/utils/present/present';
 import TableScienceReviews from '@/components/grid/tableScienceReviews/TableScienceReviews';
 import { PANEL_DECISION_STATUS, REVIEW_TYPE } from '@/utils/constants';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const FINAL_COMMENTS_HEIGHT = 43; // Height in vh for the final comments field
 
@@ -38,7 +38,7 @@ export default function TableReviewDecision({
   excludeFunction,
   submitFunction
 }: TableReviewDecisionProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const theme = useTheme();
 
   const expandButtonRefs = React.useRef<{ [key: number]: HTMLButtonElement | null }>({});
