@@ -89,7 +89,7 @@
     "typescript": "5.1.6"
   },
   "devDependencies": {
-    "@badeball/cypress-cucumber-preprocessor": "^22.0.1",
+    "@badeball/cypress-cucumber-preprocessor": "^23.1.0",
     "@bahmutov/cypress-esbuild-preprocessor": "^2.2.1",
     "@cypress/vite-dev-server": "^6.0.3",
     "@rollup/plugin-image": "^3.0.3",
