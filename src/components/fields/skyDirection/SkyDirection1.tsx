@@ -1,7 +1,7 @@
-import { useTranslation } from 'react-i18next';
 import { NumberEntry, TextEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/material';
 import { LAB_POSITION } from '../../../utils/constants';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface SkyDirection1FieldProps {
   labelWidth?: number;
@@ -19,7 +19,7 @@ export default function SkyDirection1Field({
   value,
   valueFocus
 }: SkyDirection1FieldProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const FIELD = 'skyDirection';
 
   const SkyDirectionValueText = () => (

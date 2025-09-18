@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Grid, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { presentUnits } from '@utils/present/present';
@@ -14,13 +13,14 @@ import GridDataProducts from '../../components/grid/dataProduct/GridDataProducts
 import { PATH } from '../../utils/constants';
 import { DataProductSDP } from '../../utils/types/dataProduct';
 import Observation from '../../utils/types/observation';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const PAGE = 7;
 const DATA_GRID_HEIGHT = 450;
 const LABEL_WIDTH = 6;
 
 export default function SdpDataPage() {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);

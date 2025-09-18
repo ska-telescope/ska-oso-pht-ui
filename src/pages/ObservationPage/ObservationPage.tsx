@@ -1,11 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { Box, Card, CardContent, Grid, Typography } from '@mui/material';
 import { GridRowSelectionModel } from '@mui/x-data-grid'; // TODO : Need to move this into the ska-gui-components
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, DataGrid, TickBox } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import EditIcon from '../../components/icon/editIcon/editIcon';
@@ -36,6 +36,7 @@ import SensCalcModalMultiple from '../../components/alerts/sensCalcModal/multipl
 import StatusIconDisplay from '../../components/icon/status/statusIcon';
 import { FOOTER_SPACER } from '../../utils/constants';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const DATA_GRID_TARGET = '40vh';
 const DATA_GRID_OBSERVATION = '50vh';
@@ -43,7 +44,7 @@ const PAGE = 5;
 const SIZE = 20;
 
 export default function ObservationPage() {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const navigate = useNavigate();
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
@@ -56,6 +57,7 @@ export default function ObservationPage() {
   const [checkState, setCheckState] = React.useState<'checked' | 'unchecked' | 'indeterminate'>(
     'indeterminate'
   );
+  const loggedIn = isLoggedIn();
 
   const [rowSelectionModel, setRowSelectionModel] = React.useState<GridRowSelectionModel>([]);
 
@@ -540,7 +542,7 @@ export default function ObservationPage() {
             {!hasObservations() && (
               <Alert
                 color={AlertColorTypes.Error}
-                text={t('error.noObservations')}
+                text={loggedIn ? t('error.noObservations') : t('error.noObservationsLoggedOut')}
                 testId="noObservationsNotification"
               />
             )}
@@ -569,7 +571,7 @@ export default function ObservationPage() {
               {!hasTargets() && (
                 <Alert
                   color={AlertColorTypes.Error}
-                  text={t('targets.empty')}
+                  text={loggedIn ? t('targets.empty') : t('targets.loggedOut')}
                   testId="noTargetsNotification"
                 />
               )}

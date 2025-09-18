@@ -1,6 +1,6 @@
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
-import { useTranslation } from 'react-i18next';
+
 import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
@@ -23,11 +23,12 @@ import { validateSciencePage } from '../../utils/proposalValidation';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const PAGE = 3;
 
 export default function SciencePage() {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const { notifyError, notifyWarning, notifySuccess } = useNotify();
   const {
     application,

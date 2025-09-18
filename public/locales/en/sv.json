@@ -1,0 +1,187 @@
+{
+  "abstract": {
+    "help": "The Science Idea abstract should clearly communicate the Science Idea’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the Science Idea's essential points. The abstract should be succinct yet detailed enough to convey the essence of the Science Idea, highlighting its innovation and relevance to the field. The text should be a maximum of 250 words.",
+    "helper": "Please enter the abstract of your Science Idea. This field allows latex syntax. - Word count {{current}} / {{max}}"
+  },
+  "addProposal": {
+    "success": "Science Idea added with unique identifier ",
+    "toolTip": "Click to add a new Science Idea.",
+    "warning": "Please wait whilst we create a new Science Idea."
+  },
+  "addTarget": {
+    "toolTip": "Will add the target to the list associated with this Science Idea."
+  },
+  "assignBtn": {
+    "toolTip": "Assign Science Ideas to a review panel"
+  },
+  "assignProposals": {
+    "label": "Assign Science Ideas",
+    "success": "Science Ideas assigned successfully.",
+    "toolTip": "Click to assign Science Ideas to the panel.",
+    "warning": "Please wait whilst we assign the Science Ideas."
+  },
+  "changeProposal": {
+    "label": "Change Science Idea's type?",
+    "content1": "You are about to change the type of your Science Idea.",
+    "content2": "Some data specific to the Science Idea type may be lost."
+  },
+  "cloneProposal": {
+    "toolTip": "Clone Science Idea",
+    "confirm": "Clone this Science Idea."
+  },
+  "conflict": {
+    "tooltip": "Indicate whether there is a conflict of interest with this Science Idea"
+  },
+  "decisionComments": {
+    "help": "Comments provided by the chairperson when making a decision on the Science Idea."
+  },
+  "deleteProposal": {
+    "toolTip": "Delete Science Idea",
+    "confirm": "Confirm Science Idea Deletion."
+  },
+  "displayProposal": {
+    "warning": "Please wait whilst we load the selected Science Idea."
+  },
+  "downloadProposal": {
+    "label": "Download Science Idea"
+  },
+  "editProposal": {
+    "toolTip": "Edit Science Idea"
+  },
+  "email": {
+    "help": "The email is a required field and must be provided. The investigator will be invited to participate in this Science Idea using this email so please ensure it is correct.",
+    "invitation": {
+      "subject": "Science Idea invitation.",
+      "body": "You have been invited to contribute to Science Idea {{id}}"
+    }
+  },
+  "homeBtn": {
+    "title": "Science Ideas",
+    "tooltip": "Returns to the list of Science Ideas"
+  },
+  "manageTeamMember": {
+    "submit": {
+      "help": "Check to indicate that this individual can submit, edit and view the Science Idea."
+    },
+    "edit": {
+      "help": "Check to indicate that this individual can edit and view the Science Idea."
+    },
+    "view": {
+      "help": "Check to indicate that this individual can view the Science Idea."
+    }
+  },
+  "overview": {
+    "toolTip": "Overview of Science Ideas"
+  },
+  "phdThesis": {
+    "help": "Check to indicate that part of the data from this Science Idea will be used towards a PhD thesis."
+  },
+  "pi": {
+    "help": "Check to indicate that this individual is the Principal Investigator of this Science Idea."
+  },
+  "proposal": {
+    "error": "Unable to retrieve the Science Idea from the server"
+  },
+  "proposalId": {
+    "label": "Science Idea ID"
+  },
+  "proposalAttribute": {
+    "desc": {
+      "4": "These projects require more than one Science Idea cycle to complete (e.g., long-term monitoring campaigns) but are too short in overall observing time, limited in observatory resources and/or scientific scope to qualify as a KSP."
+    },
+    "help": "One or more of these optional attributes may be selected to further refine the Science Idea",
+    "title": {
+      "2": "Joint SKA Science Idea"
+    }
+  },
+  "proposals": {
+    "empty": "THERE ARE NO SCIENCE IDEAS TO BE DISPLAYED",
+    "label": "Science Ideas"
+  },
+  "proposalType": {
+    "help": "Select from the options below the most appropriate type classification for the Science Idea. This can be changed later if needed, however be aware that this may affect information previously entered.",
+    "all": "All Science Idea types"
+  },
+  "members": {
+    "empty": "THERE ARE NO INVESTIGATORS ASSOCIATED WITH THIS SCIENCE IDEA"
+  },
+  "reviewOverview": {
+    "panel1": {
+      "title": "Science Idea Assignment"
+    }
+  },
+  "reviewProposal": {
+    "science": "Review Science Idea science",
+    "submit": "Submit the review of the Science Idea",
+    "technical": "Review Science Idea technical",
+    "title": "Review Science Idea",
+    "toolTip": "Review Science Idea"
+  },
+  "reviewProposalList": {
+    "title": "Review Science Ideas",
+    "toolTip": "List of Science Ideas for review"
+  },
+  "saveBtn": {
+    "tooltip": "Saves the Science Idea in the current state to the database"
+  },
+  "scienceCategory": {
+    "help": "Select a category that best describes the science of your Science Idea."
+  },
+  "scienceSubCategory": {
+    "help": "SUB-CATEGORY: Select a sub-category that best describes your Science Idea."
+  },
+  "submitAllBtn": {
+    "tooltip": "Submit all reviewed Science Ideas"
+  },
+  "submitBtn": {
+    "tooltip": "Progress the Science Ideas to the submitted state"
+  },
+  "targets": {
+    "empty": "There are no targets associated with this Science Idea"
+  },
+  "uploadCsvBtn": {
+    "uploadSuccessMsg": "All targets in file have been uploaded into the Science Idea"
+  },
+  "validationBtn": {
+    "success": "Science Idea is Valid",
+    "tooltip": "Performs enhanced validation upon the Science Idea"
+  },
+  "viewProposal": {
+    "toolTip": "View Science Idea"
+  },
+  "viewProposalIcon": {
+    "clicked": "View Science Idea Icon clicked"
+  },
+  "page": {
+    "0": {
+      "desc": "This page allows users to provide the title and Science Idea category"
+    },
+    "1": {
+      "desc": "Principal investigators should ensure that co-investigators are registered through the SKAO portal. Co-investigators with pending status will be removed from the Science Idea during validation of a submitted Science Idea."
+    },
+    "2": {
+      "desc": "This page allows the user to provide general information about the Science Idea."
+    },
+    "3": {
+      "desc": "Upload a Science justification for this Science Idea in a portable document format (pdf)."
+    },
+    "4": {
+      "desc": "Select a category to associate target(s) with this Science Idea."
+    },
+    "6": {
+      "desc": "Upload a Technical justification for this Science Idea in a portable document format (pdf)."
+    },
+    "7": {
+      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS SCIENCE IDEA",
+      "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS SCIENCE IDEA"
+    },
+    "9": {
+      "desc": "Provide a title of your Science Idea. Science Idea sub-types below are optional."
+    },
+    "11": {
+      "desc": "Science Ideas where the user is listed as either principal investigator or co-investigator.",
+      "empty": "NO Science IdeaS AVAILABLE"
+    },
+    "noObservations": "NO OBSERVATION SETUP IS ASSOCIATED WITH THIS SCIENCE IDEA"
+  }
+}

@@ -1,6 +1,7 @@
 import React from 'react';
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import userEvent from '@testing-library/user-event';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { ChoiceCards } from './choiceCards';
@@ -17,7 +18,11 @@ const theme = createTheme({
 });
 
 const renderWithTheme = (component: React.ReactElement) => {
-  return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
+  return render(
+    <ThemeProvider theme={theme}>
+      <StoreProvider>{component}</StoreProvider>
+    </ThemeProvider>
+  );
 };
 
 describe('ChoiceCards', () => {

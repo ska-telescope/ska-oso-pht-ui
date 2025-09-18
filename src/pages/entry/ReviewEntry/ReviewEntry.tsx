@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Divider, Grid, Paper, Stack, Tab, Tabs } from '@mui/material';
 import { Spacer, SPACER_VERTICAL, TextEntry } from '@ska-telescope/ska-gui-components';
@@ -29,13 +28,14 @@ import PutProposalReview from '@/services/axios/put/putProposalReview/putProposa
 import { getUserId } from '@/utils/aaa/aaaUtils';
 import { useNotify } from '@/utils/notify/useNotify';
 import { ChoiceCards } from '@/components/fields/choiceCards/choiceCards';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface ReviewEntryProps {
   reviewType: string;
 }
 
 export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const theme = useTheme();
   const navigate = useNavigate();
   const locationProperties = useLocation();

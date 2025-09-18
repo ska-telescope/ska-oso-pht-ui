@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
@@ -15,6 +14,7 @@ import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 import Target from '@/utils/types/target';
 import { RA_TYPE_ICRS, LAB_POSITION, VELOCITY_TYPE } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 interface TargetEntryProps {
   raType: number;
   setTarget?: Function;
@@ -30,7 +30,7 @@ export default function TargetEntry({
   target = undefined,
   textAlign = 'right'
 }: TargetEntryProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const { notifySuccess } = useNotify();
 
   const LAB_WIDTH = 5;

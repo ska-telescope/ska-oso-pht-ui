@@ -1,7 +1,6 @@
 import { Box, Card, CardContent, CardHeader, Dialog, Stack, Typography } from '@mui/material';
 import { Alert, AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
-import { useTranslation } from 'react-i18next';
 import { presentSensCalcError, presentUnits, presentValue } from '@utils/present/present';
 import {
   CUSTOM_VALID_FIELDS,
@@ -10,6 +9,7 @@ import {
 } from '@utils/constants.ts';
 import CancelButton from '../../../button/Cancel/Cancel';
 import Observation from '../../../../utils/types/observation';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 export type Rec = { field: string; value: string; units: string };
 interface SensCalcModalMultipleProps {
@@ -39,7 +39,7 @@ export default function SensCalcModalMultiple({
     onClose();
   };
 
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
 
   const isContinuum = () => observation.type === TYPE_CONTINUUM;
   const isSensitivity = () => observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;

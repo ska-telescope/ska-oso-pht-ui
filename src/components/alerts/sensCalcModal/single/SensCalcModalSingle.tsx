@@ -1,11 +1,11 @@
 import { Box, Card, CardContent, CardHeader, Dialog, Grid, Typography } from '@mui/material';
 import { Alert, AlertColorTypes, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
-import { useTranslation } from 'react-i18next';
 import { presentUnits, presentValue } from '@utils/present/present';
 import CancelButton from '../../../button/Cancel/Cancel';
 import { CUSTOM_VALID_FIELDS, STATUS_INITIAL } from '../../../../utils/constants';
 import { SensCalcResults } from '../../../../utils/types/sensCalcResults';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface SensCalcDisplaySingleProps {
   open: boolean;
@@ -29,7 +29,7 @@ export default function SensCalcModalSingle({
     onClose();
   };
 
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
 
   const PresentCustomResultValue = (eValue: any, eId: string) => {
     if (eId === 'targetName') {
