@@ -17,7 +17,6 @@ import { presentDate, presentLatex, presentTime } from '@utils/present/present';
 import Investigator from '@utils/types/investigator.tsx';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
 import GetProposal from '@services/axios/get/getProposal/getProposal';
-import { useNotify } from '@utils/notify/useNotify.tsx';
 import GetObservatoryData from '@/services/axios/get/getObservatoryData/getObservatoryData';
 import AddButton from '@/components/button/Add/Add';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
@@ -75,7 +74,6 @@ export default function LandingPage() {
   const [observatoryData, setObservatoryData] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
   const loggedIn = isLoggedIn();
-  const { notifySuccess } = useNotify();
   const getAccess = () => application.content4 as ProposalAccess[];
   const setAccess = (access: ProposalAccess[]) => updateAppContent4(access);
   const getProposal = () => application.content2 as Proposal;
@@ -385,7 +383,6 @@ export default function LandingPage() {
   const filteredData = proposals ? filterProposals() : [];
 
   const createMock = async () => {
-    notifySuccess(t('addMockProposal.success'));
     setProposal(getProposal());
     navigate(NAV[4]);
   };

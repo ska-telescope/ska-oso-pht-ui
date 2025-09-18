@@ -1,17 +1,14 @@
 import {
   addM2TargetUsingResolve,
   clearLocalStorage,
-  clickAddMock,
   clickListOfTargets,
   clickToAddTarget,
   clickToLinkTargetObservation,
   clickToNextPage,
-  clickToObservationPage,
   clickUnlinkedObservationInTable,
   createMock,
   createObservation,
   initializeUserNotLoggedIn,
-  verifyMockCreatedAlertFooter,
   verifySensCalcStatus
 } from '../common/common';
 beforeEach(() => {

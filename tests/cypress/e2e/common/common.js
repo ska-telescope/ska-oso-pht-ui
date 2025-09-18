@@ -238,8 +238,6 @@ export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalA
 export const verifyProposalCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Proposal added with unique identifier');
 
-export const verifyMockCreatedAlertFooter = () => verifyContent('timeAlertFooter', 'Mock created');
-
 export const verifyUserFoundAlertFooter = () =>
   verifyContent('timeAlertFooter', 'User was successfully found.');
 
@@ -275,7 +273,6 @@ export const createStandardProposal = () => {
 
 export const createMock = () => {
   clickAddMock();
-  verifyMockCreatedAlertFooter();
   pageConfirmed('TARGET');
 };
 

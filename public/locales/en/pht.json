@@ -47,8 +47,7 @@
   "addMockProposal": {
     "short": "Add",
     "label": "Add",
-    "success": "Mock created",
-    "toolTip": "Click to add a new mock."
+    "toolTip": "Add"
   },
   "addReview": {
     "success": "Review record has been updated",
