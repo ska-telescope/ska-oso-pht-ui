@@ -9,7 +9,8 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Typography, useTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import React from 'react';
-import { NAV, PATH, PMT, REVIEW_TYPE, USE_LOCAL_DATA } from '../../utils/constants';
+import { isLoggedIn } from '@ska-telescope/ska-login-page';
+import { cypressToken, NAV, PATH, PMT, REVIEW_TYPE, USE_LOCAL_DATA } from '../../utils/constants';
 import AddDataProduct from '../add/AddDataProduct/AddDataProduct';
 import AddProposal from '../add/AddProposal/AddProposal';
 import SdpDataPage from '../SdpDataPage/SdpDataPage';
@@ -73,6 +74,7 @@ export default function PHT() {
   const LG = () => useMediaQuery(theTheme.breakpoints.down('lg')); // Allows us to code depending upon screen size
   const REQUIRED_WIDTH = useMediaQuery('(min-width:600px)');
   const LOCAL_DATA = USE_LOCAL_DATA ? t('localData') : '';
+  const loggedIn = isLoggedIn();
   const location = useLocation();
   React.useEffect(() => {
     if (location.pathname !== '/') {
@@ -107,7 +109,7 @@ export default function PHT() {
         application={t(LG() ? 'pht.short' : 'pht.title')}
         footerChildren={
           <Typography pt={1} variant="body1">
-            {getProposal()?.id}
+            {loggedIn || cypressToken ? getProposal()?.id : ''}
             {LOCAL_DATA}
           </Typography>
         }

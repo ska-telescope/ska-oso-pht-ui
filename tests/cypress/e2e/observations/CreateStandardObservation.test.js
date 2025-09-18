@@ -1,12 +1,15 @@
 import {
   clearLocalStorage,
+  clickToObservationPage,
+  createMock,
   createObservation,
-  createStandardProposal,
-  initializeUserNotLoggedIn
+  initializeUserNotLoggedIn,
+  verifyUnlinkedObservationInTable
 } from '../common/common';
 beforeEach(() => {
   initializeUserNotLoggedIn();
-  createStandardProposal();
+  createMock();
+  clickToObservationPage();
 });
 
 afterEach(() => {
@@ -16,5 +19,6 @@ afterEach(() => {
 describe('Creating Observation', () => {
   it('Create a default observation', { jiraKey: 'XTP-71406' }, () => {
     createObservation();
+    verifyUnlinkedObservationInTable();
   });
 });

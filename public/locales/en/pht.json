@@ -44,6 +44,11 @@
     "toolTip": "Click to add a new proposal.",
     "warning": "Please wait whilst we create a new proposal."
   },
+  "addMockProposal": {
+    "short": "Add",
+    "label": "Add",
+    "toolTip": "Add"
+  },
   "addReview": {
     "success": "Review record has been updated",
     "warning": "Please wait whilst the review is stored."
@@ -605,6 +610,7 @@
   },
   "proposals": {
     "empty": "THERE ARE NO PROPOSALS TO BE DISPLAYED",
+    "loggedOut": "NOT LOGGED IN, NO PROPOSALS AVAILABLE",
     "label": "proposals",
     "name": "Name",
     "overviewTooltip": "Tooltip for the card on the Overview"
@@ -1089,7 +1095,8 @@
   },
   "targets": {
     "label": "Targets",
-    "empty": "There are no targets associated with this proposal"
+    "empty": "There are no targets associated with this proposal",
+    "loggedOut": "There are no targets created"
   },
   "title": {
     "label": "Title",
@@ -1300,6 +1307,7 @@
       "format": "Unexpected data format returned from API."
     },
     "noObservations": "NO OBSERVATION SETUP IS ASSOCIATED WITH THIS PROPOSAL",
+    "noObservationsLoggedOut": "NO OBSERVATION SETUP CREATED",
     "pdf": "Syntax error or PDF not available",
     "iconClicked": "An error was encountered, please refresh page to continue",
     "invalidString": "Invalid input: Only numeric characters are allowed"

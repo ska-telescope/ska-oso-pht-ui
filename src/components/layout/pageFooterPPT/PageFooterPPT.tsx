@@ -3,7 +3,7 @@ import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DUMMY_PROPOSAL_ID, isCypress, LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
+import { cypressToken, LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
 import PostProposal from '@services/axios/post/postProposal/postProposal';
 import NextPageButton from '../../button/NextPage/NextPage';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
@@ -31,15 +31,6 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const loggedIn = isLoggedIn();
 
-  const isDisableEndpoints = () => {
-    /* c8 ignore start */
-    const noLoginTest = window.localStorage.getItem('proposal:noLogin') === 'true';
-    if (noLoginTest) {
-      return true;
-    } /* c8 ignore end */
-    return !loggedIn && !isCypress;
-  };
-
   const getObservatoryData = () => application.content3 as ObservatoryData;
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -52,51 +43,52 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   }, []);
 
   const createProposal = async () => {
-    if (!isDisableEndpoints()) {
-      notifyWarning(t('addProposal.warning'));
-      const response = await PostProposal(
-        authClient,
-        {
-          ...getProposal(), // TODO add PI here
-          cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
-        },
-        PROPOSAL_STATUS.DRAFT
-      );
+    notifyWarning(t('addProposal.warning'));
+    const response = await PostProposal(
+      authClient,
+      {
+        ...getProposal(), // TODO add PI here
+        cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
+      },
+      PROPOSAL_STATUS.DRAFT
+    );
 
-      if (response && !response.error) {
-        notifySuccess(t('addProposal.success') + response);
-        setProposal({
-          ...getProposal(),
-          id: response,
-          cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
-        });
-        // Create a new access entry for the PI.  Saves doing the endpoint
-        const newAcc: Partial<ProposalAccess> = {
-          prslId: response,
-          role: PROPOSAL_ROLE_PI,
-          permissions: PROPOSAL_ACCESS_PERMISSIONS
-        };
-
-        const acc = Array.isArray(application.content4)
-          ? (application.content4 as ProposalAccess[])
-          : [];
-
-        updateAppContent4([...acc, newAcc]);
-
-        navigate(NAV[1]);
-      } else {
-        notifyError(response.error);
-      }
-    } else {
-      const dummyId = DUMMY_PROPOSAL_ID;
-      notifySuccess(t('addProposal.success') + dummyId);
+    if (response && !response.error) {
+      notifySuccess(t('addProposal.success') + response);
       setProposal({
         ...getProposal(),
-        id: dummyId,
+        id: response,
         cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
       });
+      // Create a new access entry for the PI.  Saves doing the endpoint
+      const newAcc: Partial<ProposalAccess> = {
+        prslId: response,
+        role: PROPOSAL_ROLE_PI,
+        permissions: PROPOSAL_ACCESS_PERMISSIONS
+      };
+
+      const acc = Array.isArray(application.content4)
+        ? (application.content4 as ProposalAccess[])
+        : [];
+
+      updateAppContent4([...acc, newAcc]);
+
       navigate(NAV[1]);
+    } else {
+      notifyError(response.error);
     }
+  };
+
+  const showPrevNav = () => {
+    if ((loggedIn && usedPageNo > 0) || (cypressToken && usedPageNo > 0)) {
+      return true;
+    } else return !loggedIn && usedPageNo !== 4;
+  };
+
+  const showNextNav = () => {
+    if ((loggedIn && usedPageNo < LAST_PAGE - 1) || (cypressToken && usedPageNo < LAST_PAGE - 1)) {
+      return true;
+    } else return !loggedIn && usedPageNo !== 5;
   };
 
   const nextLabel = () => {
@@ -109,11 +101,24 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     return `page.${usedPageNo + 1}.title`;
   };
 
-  const prevLabel = () => `page.${usedPageNo - 1}.title`;
+  const prevLabel = () =>
+    !loggedIn && usedPageNo === 4 ? `page.0.title` : `page.${usedPageNo - 1}.title`;
 
-  const prevPageNav = () => (usedPageNo > 0 ? navigate(NAV[usedPageNo - 1]) : '');
+  const prevPageNav = () =>
+    !loggedIn && usedPageNo === 4
+      ? navigate(NAV[0])
+      : usedPageNo > 0
+      ? navigate(NAV[usedPageNo - 1])
+      : '';
 
-  const nextPageNav = () => (usedPageNo < NAV.length ? navigate(NAV[usedPageNo + 1]) : '');
+  const nextPageNav = () =>
+    !loggedIn && usedPageNo === 5
+      ? ''
+      : !loggedIn && usedPageNo === 0
+      ? navigate(NAV[4])
+      : usedPageNo < NAV.length
+      ? navigate(NAV[usedPageNo + 1])
+      : '';
 
   const nextPageClicked = () => {
     if (usedPageNo === -1) {
@@ -134,7 +139,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
         justifyContent="space-between"
       >
         <Grid>
-          {usedPageNo > 0 && (
+          {showPrevNav() && (
             <PreviousPageButton
               action={prevPageNav}
               testId="prevButtonTestId"
@@ -153,7 +158,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
           )}
         </Grid>
         <Grid>
-          {usedPageNo < LAST_PAGE - 1 && (
+          {showNextNav() && (
             <NextPageButton
               disabled={buttonDisabled}
               testId="nextButtonTestId"

@@ -4,12 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { Grid, Paper, Tooltip, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
+  AlertColorTypes,
   DataGrid,
   DropDown,
   SearchEntry,
-  AlertColorTypes
+  Spacer,
+  SPACER_VERTICAL
 } from '@ska-telescope/ska-gui-components';
-import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 //
 import { presentDate, presentLatex, presentTime } from '@utils/present/present';
 import Investigator from '@utils/types/investigator.tsx';
@@ -31,14 +32,17 @@ import Proposal from '@/utils/types/proposal';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
 import { validateProposal } from '@/utils/proposalValidation';
 import ObservatoryData from '@/utils/types/observatoryData';
-import { FOOTER_SPACER, isCypress } from '@/utils/constants';
 import {
+  cypressToken,
+  DUMMY_PROPOSAL_ID,
+  FOOTER_HEIGHT_PHT,
+  FOOTER_SPACER,
+  isCypress,
   NAV,
-  SEARCH_TYPE_OPTIONS,
-  PROPOSAL_STATUS,
-  PATH,
   NOT_SPECIFIED,
-  FOOTER_HEIGHT_PHT
+  PATH,
+  PROPOSAL_STATUS,
+  SEARCH_TYPE_OPTIONS
 } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { accessUpdate } from '@/utils/aaa/aaaUtils';
@@ -70,10 +74,41 @@ export default function LandingPage() {
   const [observatoryData, setObservatoryData] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
   const loggedIn = isLoggedIn();
-
   const getAccess = () => application.content4 as ProposalAccess[];
   const setAccess = (access: ProposalAccess[]) => updateAppContent4(access);
   const getProposal = () => application.content2 as Proposal;
+
+  const mock = {
+    abstract: '',
+    createdBy: '',
+    createdOn: '',
+    cycle: 'SKAO_2027_1',
+    dataProductSDP: [],
+    dataProductSRC: [],
+    groupObservations: [],
+    id: DUMMY_PROPOSAL_ID,
+    investigators: [],
+    lastUpdated: '',
+    lastUpdatedBy: '',
+    metadata: undefined,
+    observations: [],
+    pipeline: '',
+    proposalSubType: [],
+    proposalType: 0,
+    scienceCategory: undefined,
+    scienceLoadStatus: 0,
+    sciencePDF: undefined,
+    scienceSubCategory: [],
+    status: '',
+    targetObservation: [],
+    targetOption: 1,
+    targets: [],
+    technicalLoadStatus: 0,
+    technicalPDF: undefined,
+    title: '',
+    version: 0
+  } as Proposal;
+
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const authClient = useAxiosAuthClient();
 
@@ -122,10 +157,13 @@ export default function LandingPage() {
         updateAppContent3(response as ObservatoryData);
       }
     };
-
-    updateAppContent2({});
-    setFetchList(!fetchList);
-    setObservatoryData(!observatoryData);
+    if (!loggedIn && !cypressToken) {
+      updateAppContent2(mock);
+    } else {
+      updateAppContent2({});
+      setFetchList(!fetchList);
+      setObservatoryData(!observatoryData);
+    }
     const content = application?.content3;
     const isEmpty = !content || (Array.isArray(content) && content.length === 0);
     if (isEmpty) {
@@ -344,8 +382,21 @@ export default function LandingPage() {
 
   const filteredData = proposals ? filterProposals() : [];
 
+  const createMock = async () => {
+    setProposal(getProposal());
+    navigate(NAV[4]);
+  };
+
   const clickFunction = () => {
-    navigate(PATH[1]);
+    if (!loggedIn && !cypressToken) {
+      createMock();
+    } else {
+      navigate(PATH[1]);
+    }
+  };
+
+  const displayField = () => {
+    return !!(loggedIn || cypressToken);
   };
 
   const pageDescription = () => (
@@ -357,12 +408,20 @@ export default function LandingPage() {
   const addProposalButton = () => (
     <AddButton
       action={clickFunction}
-      testId="addProposalButton"
+      testId={'addProposalButton'}
       title={'addProposal.label'}
-      toolTip="addProposal.toolTip"
+      toolTip={'addProposal.toolTip'}
     />
   );
 
+  const addMockButton = () => (
+    <AddButton
+      action={clickFunction}
+      testId={'addMockButton'}
+      title={'addMockProposal.label'}
+      toolTip={'addMockProposal.toolTip'}
+    />
+  );
   const searchDropdown = () => (
     <DropDown
       options={[{ label: t('status.0'), value: '' }, ...SEARCH_TYPE_OPTIONS]}
@@ -415,19 +474,23 @@ export default function LandingPage() {
   return (
     <>
       <Grid container p={5} direction="row" alignItems="center" justifyContent="space-around">
-        <Grid size={{ xs: 12 }}>{pageDescription()}</Grid>
+        <Grid size={{ xs: 12 }}>{loggedIn && pageDescription()}</Grid>
         <Grid size={{ sm: 4, md: 3, lg: 2 }} p={2}>
-          {addProposalButton()}
+          {loggedIn || cypressToken ? addProposalButton() : addMockButton()}
         </Grid>
         <Grid size={{ sm: 4 }} p={2}>
-          {searchDropdown()}
+          {displayField() && searchDropdown()}
         </Grid>
         <Grid size={{ sm: 4, md: 6, lg: 6 }} p={2} mt={-1}>
-          {searchEntryField('searchId')}
+          {displayField() && searchEntryField('searchId')}
         </Grid>
         <Grid size={{ xs: 12 }} pt={1}>
           {!axiosViewError && (!filteredData || filteredData.length === 0) && (
-            <Alert color={AlertColorTypes.Info} text={t('proposals.empty')} testId="helpPanelId" />
+            <Alert
+              color={AlertColorTypes.Info}
+              text={loggedIn || cypressToken ? t('proposals.empty') : t('proposals.loggedOut')}
+              testId="helpPanelId"
+            />
           )}
           {!axiosViewError && filteredData.length > 0 && (
             <div>

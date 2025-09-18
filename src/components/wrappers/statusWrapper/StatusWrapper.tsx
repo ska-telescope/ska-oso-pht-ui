@@ -1,7 +1,8 @@
 import { useNavigate } from 'react-router-dom';
 import { Grid, IconButton, Typography } from '@mui/material';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
-import { NAV, STATUS_ERROR, STATUS_ERROR_SYMBOL } from '../../../utils/constants';
+import { cypressToken, NAV, STATUS_ERROR, STATUS_ERROR_SYMBOL } from '@utils/constants.ts';
+import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface StatusWrapperProps {
@@ -13,9 +14,22 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const SIZE = 30;
+  const loggedIn = isLoggedIn();
 
   const ClickFunction = () => {
     navigate(NAV[page]);
+  };
+
+  const disableIcons = () => {
+    if (!loggedIn && !cypressToken) {
+      switch (pageName()) {
+        case 'Target':
+        case 'Observation':
+          return false;
+        default:
+          return true;
+      }
+    }
   };
 
   const getLevel = () => (level > 5 ? 0 : level);
@@ -24,7 +38,12 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
   };
 
   return (
-    <IconButton aria-label="Page Status" onClick={ClickFunction} style={{ cursor: 'hand' }}>
+    <IconButton
+      aria-label="Page Status"
+      onClick={ClickFunction}
+      style={{ cursor: 'hand' }}
+      disabled={disableIcons()}
+    >
       <Grid container direction="column" alignItems="center" justifyContent="center">
         <StatusIcon
           ariaDescription={t('pageStatus.toolTip', {
