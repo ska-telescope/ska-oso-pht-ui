@@ -9,6 +9,7 @@ describe('Review Panel', () => {
   afterEach(() => {
     clearLocalStorage();
   });
+
   /* Create review panel functionality currently unavailable
   it('Create a new review panel', () => {
     clickUserMenuPanels();

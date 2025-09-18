@@ -4,7 +4,15 @@ import {
   getSubmittedProposals,
   getReviewers,
   initialize,
-  clearLocalStorage
+  clearLocalStorage,
+  clickUserMenuOverview,
+  clickFirstPanel,
+  clickPanelProposalsTab,
+  verifyMockedAPICall,
+  verifyProposalOnGridIsVisible,
+  verifyReviewerOnGridIsVisible,
+  clickLinkedTickedBox,
+  verifyTickBoxIsSelected
 } from '../../common/common';
 import { reviewerAdmin } from '../users.js';
 
@@ -25,38 +33,40 @@ describe('Review Administrator', () => {
   });
 
   it('Navigate using the dropdown menu', () => {
-    // clickUserMenuOverview();
+    clickUserMenuOverview();
     clickUserMenuPanels();
     clickUserMenuProposals();
   });
 
-  // it('Display a list of proposals', () => {
-  //   clickUserMenuPanels();
-  //   clickFirstPanel();
-  //   clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
-  //   verifyMockedAPICall('@getSubmittedProposals');
-  //   verifyProposalOnGridIsVisible('The Milky Way View');
-  //   verifyProposalOnGridIsVisible('In a galaxy far, far away');
-  // });
-  // it('Display a list of reviewers', () => {
-  //   clickUserMenuPanels(); // (real getReviewers api call would be made at this point and intercepted)
-  //   verifyMockedAPICall('@getReviewers');
-  //   clickFirstPanel();
-  //   verifyReviewerOnGridIsVisible('Aisha');
-  // });
-  // it('Add a reviewer to a panel', () => {
-  //   clickUserMenuPanels();
-  //   verifyMockedAPICall('@getReviewers');
-  //   clickFirstPanel();
-  //   clickLinkedTickedBox(2);
-  //   verifyTickBoxIsSelected(2);
-  // });
-  // it('Add a proposal to a panel', () => {
-  //   clickUserMenuPanels();
-  //   clickFirstPanel();
-  //   clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
-  //   verifyMockedAPICall('@getSubmittedProposals');
-  //   clickLinkedTickedBox(0);
-  //   verifyTickBoxIsSelected(0);
-  // });
+  it('Display a list of proposals', () => {
+    clickUserMenuPanels();
+    clickFirstPanel();
+    clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
+    // verifyMockedAPICall('@getSubmittedProposals');
+    // verifyProposalOnGridIsVisible('The Milky Way View');
+    // verifyProposalOnGridIsVisible('In a galaxy far, far away');
+  });
+  it('Display a list of reviewers', () => {
+    clickUserMenuPanels(); // (real getReviewers api call would be made at this point and intercepted)
+    verifyMockedAPICall('@getReviewers');
+    clickFirstPanel();
+    // verifyReviewerOnGridIsVisible('Aisha');
+  });
+
+  it('Add a reviewer to a panel', () => {
+    clickUserMenuPanels();
+    verifyMockedAPICall('@getReviewers');
+    clickFirstPanel();
+    // clickLinkedTickedBox(2);
+    // verifyTickBoxIsSelected(2);
+  });
+
+  it('Add a proposal to a panel', () => {
+    clickUserMenuPanels();
+    clickFirstPanel();
+    // clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
+    // verifyMockedAPICall('@getSubmittedProposals');
+    // clickLinkedTickedBox(0);
+    // verifyTickBoxIsSelected(0);
+  });
 });
