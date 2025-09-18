@@ -117,8 +117,6 @@ export const clickUserSearch = () => clickButton('userSearchButton');
 export const clickManageTeamMemberRights = () => clickButton('lockIcon');
 export const clickSubmitRights = () => clickButton('submitCheckbox');
 export const clickPICheckbox = () => clickButton('piCheckbox');
-export const clickAddPanel = () => clickButton('plusIcon');
-export const clickAddPanelEntry = () => clickButton('addPanelButton');
 export const clickAddProposal = () => clickButton('addProposalButton');
 export const clickCreateProposal = () => clickButton('nextButtonTestId');
 export const clickHome = () => clickButton('homeButtonTestId');
@@ -176,11 +174,6 @@ export const clickFirstPanel = () =>
     .click();
 
 export const clickPanelProposalsTab = () => selectId('simple-tab-1');
-
-export const enterPanelName = uniqueName => entry('panelName', uniqueName || 'Panel Name');
-
-export const verifyPanelCreatedAlertFooter = () =>
-  verifyContent('timeAlertFooter', 'Panel added with unique identifier');
 
 export const verifyPanelOnGridIsVisible = PanelName => {
   verifyContent('dataGridId', PanelName);

@@ -30,53 +30,33 @@ describe('Review Administrator', () => {
     clickUserMenuProposals();
   });
 
-  /* TODO
-  it('Creating a new review panel', () => {
-    clickUserMenuPanels();
-    clickAddPanel();
-    enterPanelName(panelName);
-    clickAddPanelEntry();
-    verifyPanelCreatedAlertFooter();
-  });
-
-  it('Creating a new review panel, abandoned', () => {
-    clickUserMenuPanels();
-    clickAddPanel();
-    clickPanelMaintenanceButton();
-  });
-  it('Display newly created panel', () => {
-    clickUserMenuPanels();
-    verifyPanelOnGridIsVisible(panelName);
-  });
-
-  itp('Display a list of proposals', () => {
-    clickUserMenuPanels();
-    clickFirstPanel();
-    clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
-    verifyMockedAPICall('@getSubmittedProposals');
-    verifyProposalOnGridIsVisible('The Milky Way View');
-    verifyProposalOnGridIsVisible('In a galaxy far, far away');
-  });
-  it('Display a list of reviewers', () => {
-    clickUserMenuPanels(); // (real getReviewers api call would be made at this point and intercepted)
-    verifyMockedAPICall('@getReviewers');
-    clickFirstPanel();
-    verifyReviewerOnGridIsVisible('Aisha');
-  });
-  it('Add a reviewer to a panel', () => {
-    clickUserMenuPanels();
-    verifyMockedAPICall('@getReviewers');
-    clickFirstPanel();
-    clickLinkedTickedBox(2);
-    verifyTickBoxIsSelected(2);
-  });
-  it('Add a proposal to a panel', () => {
-    clickUserMenuPanels();
-    clickFirstPanel();
-    clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
-    verifyMockedAPICall('@getSubmittedProposals');
-    clickLinkedTickedBox(0);
-    verifyTickBoxIsSelected(0);
-  });
-  */
+  // it('Display a list of proposals', () => {
+  //   clickUserMenuPanels();
+  //   clickFirstPanel();
+  //   clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
+  //   verifyMockedAPICall('@getSubmittedProposals');
+  //   verifyProposalOnGridIsVisible('The Milky Way View');
+  //   verifyProposalOnGridIsVisible('In a galaxy far, far away');
+  // });
+  // it('Display a list of reviewers', () => {
+  //   clickUserMenuPanels(); // (real getReviewers api call would be made at this point and intercepted)
+  //   verifyMockedAPICall('@getReviewers');
+  //   clickFirstPanel();
+  //   verifyReviewerOnGridIsVisible('Aisha');
+  // });
+  // it('Add a reviewer to a panel', () => {
+  //   clickUserMenuPanels();
+  //   verifyMockedAPICall('@getReviewers');
+  //   clickFirstPanel();
+  //   clickLinkedTickedBox(2);
+  //   verifyTickBoxIsSelected(2);
+  // });
+  // it('Add a proposal to a panel', () => {
+  //   clickUserMenuPanels();
+  //   clickFirstPanel();
+  //   clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
+  //   verifyMockedAPICall('@getSubmittedProposals');
+  //   clickLinkedTickedBox(0);
+  //   verifyTickBoxIsSelected(0);
+  // });
 });
