@@ -20,6 +20,7 @@ interface SensCalcModalMultipleProps {
   level: number;
   levelError: string;
   isCustom: boolean;
+  isNatural: boolean;
 }
 
 const SIZE = 30;
@@ -31,7 +32,8 @@ export default function SensCalcModalMultiple({
   observation,
   level,
   levelError,
-  isCustom
+  isCustom,
+  isNatural
 }: SensCalcModalMultipleProps) {
   const handleClose = () => {
     onClose();
@@ -47,6 +49,9 @@ export default function SensCalcModalMultiple({
       return rec.value;
     }
     if (!CUSTOM_VALID_FIELDS.includes(rec.field)) {
+      if (isNatural) {
+        return t('sensitivityCalculatorResults.nonGaussian');
+      }
       return t('sensitivityCalculatorResults.customArray');
     }
     return `${presentValue(rec.value)} ${presentUnits(rec.units)}`;
@@ -73,7 +78,7 @@ export default function SensCalcModalMultiple({
 
   const presentation = (rec: Rec | null) => {
     if (rec) {
-      return isCustom
+      return isCustom || isNatural
         ? PresentCustomResultValue(rec) + ' '
         : presentValue(rec.value) + ' ' + presentUnits(rec.units);
     } else {
