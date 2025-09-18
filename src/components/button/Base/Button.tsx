@@ -1,11 +1,11 @@
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import {
   Button,
   ButtonColorTypes,
   ButtonSizeTypes,
   ButtonVariantTypes
 } from '@ska-telescope/ska-gui-components';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface BaseButtonProps {
   title?: string;
@@ -32,7 +32,7 @@ export default function BaseButton({
   toolTip = '',
   variant = ButtonVariantTypes.Contained
 }: BaseButtonProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const navigate = useNavigate();
 
   const ClickFunction = () => {

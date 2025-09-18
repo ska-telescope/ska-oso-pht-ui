@@ -1,8 +1,7 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import { IMAGE_WEIGHTING, LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface ImageWeightingFieldProps {
   disabled?: boolean;
@@ -19,7 +18,7 @@ export default function ImageWeightingField({
   setValue,
   value
 }: ImageWeightingFieldProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const FIELD = 'imageWeighting';
 
   const options = () =>

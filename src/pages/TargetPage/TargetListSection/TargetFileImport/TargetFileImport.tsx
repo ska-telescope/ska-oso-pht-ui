@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
@@ -9,6 +8,7 @@ import { RA_TYPE_ICRS, RA_TYPE_GALACTIC, UPLOAD_MAX_WIDTH_CSV } from '../../../.
 import HelpPanel from '../../../../components/info/helpPanel/HelpPanel';
 import Target from '@/utils/types/target';
 import { useNotify } from '@/utils/notify/useNotify';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
 
@@ -17,7 +17,7 @@ interface TargetFileImportProps {
 }
 
 export default function TargetFileImport({ raType }: TargetFileImportProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const { notifyError, notifySuccess } = useNotify();
 
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();

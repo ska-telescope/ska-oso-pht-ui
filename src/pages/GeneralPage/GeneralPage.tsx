@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
@@ -11,6 +10,7 @@ import { Proposal } from '../../utils/types/proposal';
 import { validateGeneralPage } from '../../utils/validation/proposalValidation';
 import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPreviewModal';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const PAGE = 2;
 const LINE_OFFSET = 30;
@@ -18,7 +18,7 @@ const LABEL_WIDTH = 2;
 const HELP_VIEWPORT = '40vh';
 
 export default function GeneralPage() {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
 
   const {
     application,

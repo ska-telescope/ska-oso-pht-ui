@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Avatar, Card, CardActionArea, CardHeader, Grid, Tooltip, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -12,6 +11,7 @@ import { validateTitlePage } from '../../../utils/validation/proposalValidation'
 import LatexPreviewModal from '../../../components/info/latexPreviewModal/latexPreviewModal';
 import ViewIcon from '../../../components/icon/viewIcon/viewIcon';
 import CardTitle from '@/components/cards/cardTitle/CardTitle';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const LABEL_WIDTH = 2;
 const FIELD_WIDTH = 10;
@@ -20,7 +20,7 @@ interface TitleEntryProps {
 }
 
 export default function TitleEntry({ page }: TitleEntryProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const theme = useTheme();
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
 

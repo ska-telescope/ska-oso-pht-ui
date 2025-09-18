@@ -1,9 +1,10 @@
-import { useTranslation } from 'react-i18next';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
+import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import EditIcon from '../../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import Target from '../../../utils/types/target';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface GridTargetsProps {
   deleteClicked?: Function;
@@ -22,7 +23,8 @@ export default function GridTargets({
   rowClick,
   rows = []
 }: GridTargetsProps) {
-  const { t } = useTranslation('pht');
+  const loggedIn = isLoggedIn();
+  const { t } = useScopedTranslation();
 
   const basicColumns = [
     { field: 'name', headerName: t('name.label'), flex: 2 },
@@ -97,7 +99,11 @@ export default function GridTargets({
       )}
       {!rows ||
         (rows.length === 0 && (
-          <Alert color={AlertColorTypes.Error} text={t('targets.empty')} testId="helpPanelId" />
+          <Alert
+            color={AlertColorTypes.Error}
+            text={loggedIn ? t('targets.empty') : t('targets.loggedOut')}
+            testId="helpPanelId"
+          />
         ))}
     </>
   );

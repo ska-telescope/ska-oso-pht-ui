@@ -4,14 +4,14 @@ import { Box, Divider, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { ButtonUserMenu } from '@ska-telescope/ska-login-page';
 import { ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { PMT, PATH, isCypress } from '@/utils/constants';
 import { isReviewerAdmin, isReviewerChair, isReviewer } from '@/utils/aaa/aaaUtils';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 export default function UserMenuWrapper(): JSX.Element {
   const [cypressLogin, setCypressLogin] = React.useState('');
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
   const { accounts } = useMsal();

@@ -1,9 +1,9 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Grid, Typography, Fade, Box } from '@mui/material';
 import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import CloseIcon from '../../../components/icon/closeIcon/closeIcon';
 import StatusIconDisplay from '../../../components/icon/status/statusIcon';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface StandardAlertProps {
   color: typeof AlertColorTypes;
@@ -22,7 +22,7 @@ export default function StandardAlert({
   closeFunc,
   fadeDuration = 0
 }: StandardAlertProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const [visible, setVisible] = React.useState(true);
   const [shouldRender, setShouldRender] = React.useState(true);
 

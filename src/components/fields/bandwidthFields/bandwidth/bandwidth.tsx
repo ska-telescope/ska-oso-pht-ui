@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { Grid } from '@mui/material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import {
@@ -17,6 +16,7 @@ import {
   checkMaxContBandwidthHz,
   checkBandLimits
 } from '../bandwidthValidationCommon';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface BandwidthFieldProps {
   disabled?: boolean;
@@ -53,7 +53,7 @@ export default function BandwidthField({
   subarrayConfig = 0,
   minimumChannelWidthHz = 0
 }: BandwidthFieldProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const isLow = () => telescope === TELESCOPE_LOW_NUM;
 
   const getOptions = () => {

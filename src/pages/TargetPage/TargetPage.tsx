@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { useTheme } from '@mui/material/styles';
 import { Grid, Typography, Card, CardContent, CardActionArea, Tooltip } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -10,13 +9,14 @@ import { TARGET_OPTION } from '../../utils/constants';
 import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';
 import TargetNoSpecificSection from './TargetNoSpecificSection/targetNoSpecificSection';
 import TargetListSection from './TargetListSection/targetListSection';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const TITLE = ['', 'listOfTargets', 'targetMosaic', 'noSpecificTarget'];
 
 const PAGE = 4;
 
 export default function TargetPage() {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const theme = useTheme();
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
