@@ -1,9 +1,9 @@
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { Grid, IconButton, Typography } from '@mui/material';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { cypressToken, NAV, STATUS_ERROR, STATUS_ERROR_SYMBOL } from '@utils/constants.ts';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface StatusWrapperProps {
   level?: number;
@@ -11,7 +11,7 @@ interface StatusWrapperProps {
 }
 
 export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const SIZE = 30;
   const loggedIn = isLoggedIn();

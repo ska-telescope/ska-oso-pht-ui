@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import {
   Breakpoint,
   Dialog,
@@ -10,6 +9,7 @@ import {
 } from '@mui/material';
 import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface AlertDialogProps {
   maxWidth?: Breakpoint;
@@ -28,7 +28,7 @@ export default function AlertDialog({
   title = '',
   children
 }: AlertDialogProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
 
   const handleContinue = () => {
     onDialogResponse();

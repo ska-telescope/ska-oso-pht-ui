@@ -1,7 +1,6 @@
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { Grid, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { cypressToken, LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
@@ -16,6 +15,7 @@ import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient
 import { useNotify } from '@/utils/notify/useNotify';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface PageFooterPPTProps {
   pageNo: number;
@@ -23,7 +23,7 @@ interface PageFooterPPTProps {
 }
 
 export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFooterPPTProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const { application, updateAppContent2, updateAppContent4 } = storageObject.useStore();
   const [usedPageNo, setUsedPageNo] = React.useState(pageNo);

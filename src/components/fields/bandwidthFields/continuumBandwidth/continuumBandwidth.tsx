@@ -1,5 +1,3 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import { LAB_IS_BOLD, LAB_POSITION, TYPE_CONTINUUM } from '@utils/constants.ts';
@@ -11,6 +9,7 @@ import {
   checkMaxContBandwidthHz,
   checkBandLimits
 } from '../bandwidthValidationCommon';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface continuumBandwidthFieldProps {
   disabled?: boolean;
@@ -42,7 +41,7 @@ export default function ContinuumBandwidthField({
   subarrayConfig,
   minimumChannelWidthHz
 }: continuumBandwidthFieldProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const FIELD = 'continuumBandwidth';
 
   const displayMinimumChannelWidthErrorMessage = (minimumChannelWidthHz: number): string => {

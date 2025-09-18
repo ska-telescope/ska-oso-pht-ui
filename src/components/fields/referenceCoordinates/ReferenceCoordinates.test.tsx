@@ -1,10 +1,15 @@
 import { describe, test } from 'vitest';
 import { render } from '@testing-library/react';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import '@testing-library/jest-dom';
 import ReferenceCoordinates from './ReferenceCoordinates';
 
 describe('<ReferenceCoordinates />', () => {
   test('renders correctly', () => {
-    render(<ReferenceCoordinates value={0} />);
+    render(
+      <StoreProvider>
+        <ReferenceCoordinates value={0} />
+      </StoreProvider>
+    );
   });
 });

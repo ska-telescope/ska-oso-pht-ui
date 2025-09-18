@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import {
   Table,
   TableBody,
@@ -14,13 +13,14 @@ import {
 import { Key } from 'react';
 import { REVIEW_TYPE } from '@/utils/constants';
 import { TechnicalReview } from '@/utils/types/proposalReview';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface TableTechnicalReviewsProps {
   data: any;
 }
 
 export default function TableTechnicalReviews({ data }: TableTechnicalReviewsProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const theme = useTheme();
 
   const filteredData = (reviews: any[]) =>

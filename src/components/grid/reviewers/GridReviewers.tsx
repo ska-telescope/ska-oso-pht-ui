@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import {
   DataGrid,
   DropDown,
@@ -16,6 +15,7 @@ import { IdObject } from '@/utils/types/idObject';
 import { arraysAreEqual } from '@/utils/helpers';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 export function filterReviewers(
   reviewers: Reviewer[],
@@ -53,7 +53,7 @@ export default function GridReviewers({
   showSelection = false,
   tickBoxClicked = () => {}
 }: GridReviewersProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
 
   const [reviewers, setReviewers] = React.useState<Reviewer[]>([]);
   const [searchTerm, setSearchTerm] = React.useState('');

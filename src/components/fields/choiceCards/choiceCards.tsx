@@ -1,11 +1,11 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import HelpIcon from '@mui/icons-material/Help';
 import { Button, Grid, Box, Typography, Paper } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { FEASIBLE_MAYBE, FEASIBLE_NO, FEASIBLE_YES } from '@/utils/constants';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface ChoiceOption {
   value: string;
@@ -22,7 +22,7 @@ interface ChoiceCardsProps {
 }
 
 export function ChoiceCards({ value, onChange }: ChoiceCardsProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const theme = useTheme();
   const [selectedValue, setSelectedValue] = React.useState<string | undefined>(value);
 

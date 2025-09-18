@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { Box, Card, CardContent, Grid, Typography } from '@mui/material';
 import { GridRowSelectionModel } from '@mui/x-data-grid'; // TODO : Need to move this into the ska-gui-components
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -36,6 +35,7 @@ import SensCalcModalMultiple from '../../components/alerts/sensCalcModal/multipl
 import StatusIconDisplay from '../../components/icon/status/statusIcon';
 import { FOOTER_SPACER } from '../../utils/constants';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const DATA_GRID_TARGET = '40vh';
 const DATA_GRID_OBSERVATION = '50vh';
@@ -43,7 +43,7 @@ const PAGE = 5;
 const SIZE = 20;
 
 export default function ObservationPage() {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const navigate = useNavigate();
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();

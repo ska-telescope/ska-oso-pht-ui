@@ -1,12 +1,10 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TableReviewDecision from './TableReviewDecision';
 import { CONFLICT_REASONS, PANEL_DECISION_STATUS, REVIEW_TYPE } from '@/utils/constants';
 
 const mockNavigate = vi.fn();
-const mockUpdateAppContent1 = vi.fn();
-const mockUpdateAppContent2 = vi.fn();
-const mockUpdateAppContent5 = vi.fn();
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -17,19 +15,6 @@ vi.mock('react-i18next', () => ({
 vi.mock('react-router-dom', () => {
   return {
     useNavigate: () => mockNavigate
-  };
-});
-
-vi.mock('@ska-telescope/ska-gui-local-storage', () => {
-  return {
-    storageObject: {
-      useStore: () => ({
-        clearApp: vi.fn(),
-        updateAppContent1: mockUpdateAppContent1,
-        updateAppContent2: mockUpdateAppContent2,
-        updateAppContent5: mockUpdateAppContent5
-      })
-    }
   };
 });
 
@@ -152,24 +137,30 @@ describe('TableReviewDecision', () => {
 
   it('renders with null data', () => {
     render(
-      <TableReviewDecision
-        data={mockDataEmpty}
-        excludeFunction={vi.fn()}
-        submitFunction={vi.fn()}
-      />
+      <StoreProvider>
+        <TableReviewDecision
+          data={mockDataEmpty}
+          excludeFunction={vi.fn()}
+          submitFunction={vi.fn()}
+        />
+      </StoreProvider>
     );
   });
 
   it('renders table headers and rows', () => {
     render(
-      <TableReviewDecision data={mockData} excludeFunction={vi.fn()} submitFunction={vi.fn()} />
+      <StoreProvider>
+        <TableReviewDecision data={mockData} excludeFunction={vi.fn()} submitFunction={vi.fn()} />
+      </StoreProvider>
     );
   });
 
   it('calls excludeFunction when status is not "To Do"', () => {
     const excludeFn = vi.fn();
     render(
-      <TableReviewDecision data={mockData} excludeFunction={excludeFn} submitFunction={vi.fn()} />
+      <StoreProvider>
+        <TableReviewDecision data={mockData} excludeFunction={excludeFn} submitFunction={vi.fn()} />
+      </StoreProvider>
     );
     const expandIcon = screen.getByTestId('expand-button-proposal-1');
     fireEvent.click(expandIcon);
@@ -181,11 +172,13 @@ describe('TableReviewDecision', () => {
   it('does not call excludeFunction when status is "To Do"', () => {
     const excludeFn = vi.fn();
     render(
-      <TableReviewDecision
-        data={mockDataToDo}
-        excludeFunction={excludeFn}
-        submitFunction={vi.fn()}
-      />
+      <StoreProvider>
+        <TableReviewDecision
+          data={mockDataToDo}
+          excludeFunction={excludeFn}
+          submitFunction={vi.fn()}
+        />
+      </StoreProvider>
     );
     const expandIcon = screen.getByTestId('expand-button-proposal-1');
     fireEvent.click(expandIcon);

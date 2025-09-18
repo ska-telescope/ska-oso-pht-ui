@@ -1,10 +1,10 @@
-import { useTranslation } from 'react-i18next';
 import { Grid, Typography } from '@mui/material';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import AlertDialog from '../alertDialog/AlertDialog';
 import FieldWrapper from '../../wrappers/fieldWrapper/FieldWrapper';
 import Observation from '../../../utils/types/observation';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const LABEL_WIDTH = 6;
 
@@ -21,7 +21,7 @@ export default function DeleteObservationConfirmation({
   open,
   setOpen
 }: DeleteObservationConfirmationProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
 
   const alertContent = (rec: any) => {
     return (

@@ -8,7 +8,6 @@ import {
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Typography, useTheme, CssBaseline, ThemeProvider } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { useTranslation } from 'react-i18next';
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { cypressToken, NAV, PATH, PMT, REVIEW_TYPE, USE_LOCAL_DATA } from '../../utils/constants';
@@ -37,6 +36,7 @@ import ButtonUserMenu from '@/components/button/UserMenu/UserMenu';
 // import getProposal from '@/services/axios/getProposal/getProposal';
 import Proposal from '@/utils/types/proposal';
 import theme from '@/services/theme/theme';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
@@ -62,7 +62,7 @@ const ROUTES = [
 ];
 
 export default function PHT() {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const { application, help, helpToggle } = storageObject.useStore();
   const theTheme = useTheme();
   const navigate = useNavigate();
