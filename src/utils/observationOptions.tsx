@@ -5,6 +5,5 @@ export const subArrayOptions = (inObj: { telescope: number; isBand5: any }) => {
     return [];
   }
   let results = OBSERVATION.array[inObj.telescope - 1]?.subarray;
-  if (inObj.isBand5) results = results.filter(e => !e.disableForBand5);
   return results;
 };
