@@ -155,10 +155,12 @@ export default function LandingPage() {
       if (typeof response === 'string' || (response && (response as any).error)) {
         setAxiosError(response.toString());
       } else {
-        console.log('osd api response ', response);
-        const combined = [...OBSERVATION.array, ...response];
-        updateAppContent3(combined);
-        // updateAppContent3(response as ObservatoryData);
+        const combined = {
+            constantData: OBSERVATION.array,
+            osdData: response
+          };
+        console.log('combined data ', combined);
+        updateAppContent3(response as ObservatoryData);
       }
     };
     if (!loggedIn && !cypressToken) {
