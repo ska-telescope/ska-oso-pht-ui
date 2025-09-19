@@ -1,4 +1,4 @@
-import { OBSERVATION } from './constants';
+import { OBSERVATION } from '@utils/observationConstantData.ts';
 
 export const subArrayOptions = (inObj: { telescope: number; isBand5: any }) => {
   if (!inObj) {

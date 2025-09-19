@@ -20,74 +20,10 @@ export const OBSERVATION = {
       subarray: [
         // MID
         {
-          value: OB_SUBARRAY_AA05,
-          map: 'AA0.5',
-          label: 'AA0.5',
-          numOf15mAntennas: 4,
-          numOf13mAntennas: 0,
-          numOfStations: 0,
-          disableForBand5: false,
-          maxContBandwidthHz: 800e6
-        },
-        {
-          value: OB_SUBARRAY_AA1,
-          map: 'AA1',
-          label: 'AA1',
-          numOf15mAntennas: 8,
-          numOf13mAntennas: 0,
-          numOfStations: 0,
-          disableForBand5: false,
-          maxContBandwidthHz: 800e6
-        },
-        {
-          value: OB_SUBARRAY_AA2,
-          map: 'AA2',
-          label: 'AA2',
-          numOf13mAntennas: 0,
-          numOfStations: 0,
-          disableForBand5: false
-        },
-        {
-          value: OB_SUBARRAY_AA_STAR,
-          map: 'AA*',
-          label: 'AA*',
-          numOf15mAntennas: 80,
-          numOf13mAntennas: 64,
-          numOfStations: 0,
-          disableForBand5: true
-        },
-        {
-          value: OB_SUBARRAY_AA_STAR_15,
-          map: 'AA* (15-m antennas only)',
-          label: 'AA* (15-m antennas only)',
-          numOf15mAntennas: 80,
-          numOf13mAntennas: 0,
-          numOfStations: 0,
-          disableForBand5: false
-        },
-        {
           value: OB_SUBARRAY_AA4,
           map: 'AA4',
           label: 'AA4',
           numOf15mAntennas: 133,
-          numOf13mAntennas: 64,
-          numOfStations: 0,
-          disableForBand5: true
-        },
-        {
-          value: OB_SUBARRAY_AA4_15,
-          map: 'AA4 (15-m antennas only)',
-          label: 'AA4 (15-m antennas only)',
-          numOf15mAntennas: 133,
-          numOf13mAntennas: 0,
-          numOfStations: 0,
-          disableForBand5: false
-        },
-        {
-          value: OB_SUBARRAY_AA4_13,
-          map: 'AA*/AA4 (13.5-m antennas only)',
-          label: 'AA*/AA4 (13.5-m antennas only)',
-          numOf15mAntennas: 0,
           numOf13mAntennas: 64,
           numOfStations: 0,
           disableForBand5: true
@@ -117,84 +53,12 @@ export const OBSERVATION = {
       subarray: [
         // LOW
         {
-          value: OB_SUBARRAY_AA05,
-          map: 'LOW_AA05_all',
-          label: 'AA0.5',
-          numOf15mAntennas: 0,
-          numOf13mAntennas: 0,
-          numOfStations: 6,
-          disableForBand5: false,
-          continuumSpectralAveragingMax: 6906,
-          maxContBandwidthHz: 75e6
-        },
-        {
-          value: OB_SUBARRAY_AA1,
-          map: 'LOW_AA1_all',
-          label: 'AA1',
-          numOf15mAntennas: 0,
-          numOf13mAntennas: 0,
-          numOfStations: 18,
-          disableForBand5: false,
-          continuumSpectralAveragingMax: 6906,
-          maxContBandwidthHz: 75e6
-        },
-        {
-          value: OB_SUBARRAY_AA2,
-          map: 'LOW_AA2_all',
-          label: 'AA2',
-          numOf15mAntennas: 0,
-          numOf13mAntennas: 0,
-          disableForBand5: false,
-          continuumSpectralAveragingMax: 13812
-        },
-        {
-          value: OB_SUBARRAY_AA2_CORE,
-          map: 'LOW_AA2_core_only',
-          label: 'AA2 (core only)',
-          numOf15mAntennas: 0,
-          numOf13mAntennas: 0,
-          numOfStations: 40,
-          disableForBand5: false,
-          continuumSpectralAveragingMax: 13812,
-          maxContBandwidthHz: 150e6
-        },
-        {
-          value: OB_SUBARRAY_AA_STAR,
-          map: 'LOW_AAstar_all',
-          label: 'AA*',
-          numOf15mAntennas: 0,
-          numOf13mAntennas: 0,
-          numOfStations: 307,
-          disableForBand5: false,
-          continuumSpectralAveragingMax: 27624
-        },
-        {
-          value: OB_SUBARRAY_AA_STAR_CORE,
-          map: 'LOW_AAstar_core_only',
-          label: 'AA* (core only)',
-          numOf15mAntennas: 0,
-          numOf13mAntennas: 0,
-          numOfStations: 199,
-          disableForBand5: false,
-          continuumSpectralAveragingMax: 27624
-        },
-        {
           value: OB_SUBARRAY_AA4,
           map: 'LOW_AA4_all',
           label: 'AA4',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           numOfStations: 512,
-          disableForBand5: false,
-          continuumSpectralAveragingMax: 27624
-        },
-        {
-          value: OB_SUBARRAY_AA4_CORE,
-          map: 'LOW_AA4_core_only',
-          label: 'AA4 (core only)',
-          numOf15mAntennas: 0,
-          numOf13mAntennas: 0,
-          numOfStations: 224,
           disableForBand5: false,
           continuumSpectralAveragingMax: 27624
         },
