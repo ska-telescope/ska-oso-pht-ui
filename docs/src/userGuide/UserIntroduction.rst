@@ -6,7 +6,7 @@ The Proposal Preparation Tool (PPT) allows you to prepare and submit a proposal 
 
 The PPT supports both light and dark modes and can be accessed at the top right corner of the application through the |icostatus| icon.
 
-When using the tool as a non-logged in user, functionality is restricted to only the target and technical page.
+When using the tool as a non-logged in user, functionality is restricted to only the target and observation page.
 
 
 
