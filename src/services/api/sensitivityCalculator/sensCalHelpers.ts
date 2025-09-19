@@ -1,4 +1,4 @@
-import { OBSERVATION } from '@utils/constants.ts';
+import { OBSERVATION } from '@utils/observationConstantData.ts';
 
 const sensCalHelpers = {
   format: {

@@ -156,9 +156,9 @@ export default function LandingPage() {
         setAxiosError(response.toString());
       } else {
         const combined = {
-            constantData: OBSERVATION.array,
-            osdData: response
-          };
+          constantData: OBSERVATION.array,
+          osdData: response
+        };
         console.log('combined data ', combined);
         updateAppContent3(response as ObservatoryData);
       }

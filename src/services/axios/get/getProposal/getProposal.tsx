@@ -21,7 +21,6 @@ import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
   GENERAL,
-  OBSERVATION,
   OBSERVATION_TYPE_BACKEND,
   BANDWIDTH_TELESCOPE,
   TYPE_CONTINUUM,
@@ -50,6 +49,7 @@ import {
   DataProductSRCNetBackend
 } from '@utils/types/dataProduct.tsx';
 import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
+import { OBSERVATION } from '@utils/observationConstantData.ts';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
 

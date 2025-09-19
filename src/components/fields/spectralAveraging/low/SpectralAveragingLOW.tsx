@@ -4,10 +4,10 @@ import { Box } from '@mui/system';
 import {
   LAB_IS_BOLD,
   LAB_POSITION,
-  OBSERVATION,
   SPECTRAL_AVERAGING_MIN,
   ZOOM_SPECTRAL_AVERAGING_MAX
-} from '../../../../utils/constants';
+} from '@utils/constants.ts';
+import { OBSERVATION } from '@utils/observationConstantData.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface SpectralAveragingLOWFieldProps {

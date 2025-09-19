@@ -15,7 +15,6 @@ import {
   FREQUENCY_UNITS,
   GENERAL,
   IMAGE_WEIGHTING,
-  OBSERVATION,
   OBSERVATION_TYPE_BACKEND,
   PROJECTS,
   PROPOSAL_STATUS,
@@ -40,6 +39,7 @@ import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import { helpers } from '@utils/helpers.ts';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
+import { OBSERVATION } from '@utils/observationConstantData.ts';
 
 const isContinuum = (type: number) => type === TYPE_CONTINUUM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
