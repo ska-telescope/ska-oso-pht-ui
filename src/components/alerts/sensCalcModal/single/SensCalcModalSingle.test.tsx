@@ -1,9 +1,13 @@
-import { describe, test } from 'vitest';
-import { render } from '@testing-library/react';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { describe, expect, test } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import SensCalcModalSingle from './SensCalcModalSingle';
 import { STATUS_ERROR, STATUS_INITIAL } from '@/utils/constants';
+
+vi.mock('i18next', () => ({
+  t: (key: string) => key
+}));
 
 describe('<SensCalcModalSingle />', () => {
   test('renders correctly ( INITIAL )', () => {
@@ -22,6 +26,7 @@ describe('<SensCalcModalSingle />', () => {
             section3: undefined
           }}
           isCustom={false}
+          isNatural={false}
         />
       </StoreProvider>
     );
@@ -30,87 +35,186 @@ describe('<SensCalcModalSingle />', () => {
     render(
       <StoreProvider>
         <SensCalcModalSingle
-          open={false}
+          open={true}
           onClose={vi.fn()}
           data={{
             id: 0,
-            title: '',
+            title: 'm1',
             statusGUI: 0,
             error: undefined,
             section1: [
               {
-                field: 'targetName',
-                value: 'testValue',
-                units: 'testUnits'
-              },
-              {
                 field: 'testField1',
-                value: 'testValue1',
+                value: '1',
                 units: 'testUnits1'
               }
             ],
             section2: [
               {
                 field: 'sensitivity',
-                value: 'testValue2',
+                value: '200',
                 units: 'testUnits2'
               },
               {
-                field: 'testField1',
-                value: 'testValue1',
-                units: 'testUnits1'
-              }
-            ],
-            section3: [
-              {
-                field: 'testField1',
-                value: 'testValue1',
-                units: 'testUnits1'
-              }
-            ]
-          }}
-          isCustom={false}
-        />
-      </StoreProvider>
-    );
-  });
-  test('renders correctly ( OK, custom )', () => {
-    render(
-      <StoreProvider>
-        <SensCalcModalSingle
-          open={false}
-          onClose={vi.fn()}
-          data={{
-            id: 0,
-            title: '',
-            statusGUI: 0,
-            error: undefined,
-            section1: [
-              {
-                field: 'targetName',
-                value: 'testValue1',
-                units: 'testUnits1'
-              }
-            ],
-            section2: [
-              {
-                field: 'sensitivity',
-                value: 'testValue2',
+                field: 'testField2',
+                value: '50',
                 units: 'testUnits2'
               }
             ],
             section3: [
               {
                 field: 'testField3',
-                value: 'testValue3',
+                value: '2',
+                units: 'testUnits3'
+              }
+            ]
+          }}
+          isCustom={false}
+          isNatural={false}
+        />
+      </StoreProvider>
+    );
+    screen.debug();
+    const target = screen.getByTestId('field-targetName');
+    expect(target).toBeInTheDocument();
+    expect(target).toHaveTextContent('m1');
+
+    const element1 = screen.getByTestId('field-testField1');
+    expect(element1).toBeInTheDocument();
+    expect(element1).toHaveTextContent('1');
+
+    const element2 = screen.getByTestId('field-sensitivity');
+    expect(element2).toBeInTheDocument();
+    expect(element2).toHaveTextContent('200');
+
+    const element3 = screen.getByTestId('field-testField2');
+    expect(element3).toBeInTheDocument();
+    expect(element3).toHaveTextContent('50');
+
+    const element4 = screen.getByTestId('field-testField3');
+    expect(element4).toBeInTheDocument();
+    expect(element4).toHaveTextContent('2');
+  });
+  test('renders correctly ( OK, custom )', async () => {
+    render(
+      <StoreProvider>
+        <SensCalcModalSingle
+          open={true}
+          onClose={vi.fn()}
+          data={{
+            id: 0,
+            title: 'm2',
+            statusGUI: 0,
+            error: undefined,
+            section1: [
+              {
+                field: 'customField1',
+                value: 'customValue1',
+                units: 'testUnits'
+              }
+            ],
+            section2: [
+              {
+                field: 'sensitivity',
+                value: '1052.5',
+                units: 'Jy/beam'
+              }
+            ],
+            section3: [
+              {
+                field: 'customField2',
+                value: 'customValue2',
                 units: 'testUnits3'
               }
             ]
           }}
           isCustom={true}
+          isNatural={false}
         />
       </StoreProvider>
     );
+    await waitFor(() => {
+      const target = screen.getByTestId('field-targetName');
+      expect(target).toBeInTheDocument();
+      expect(target).toHaveTextContent('m2');
+
+      const element1 = screen.getByTestId('field-customField1');
+      expect(element1).toBeInTheDocument();
+      expect(element1).toHaveTextContent('sensitivityCalculatorResults.custom');
+
+      const element2 = screen.getByTestId('field-sensitivity');
+      expect(element2).toBeInTheDocument();
+      expect(element2).toHaveTextContent('1.1e+3');
+
+      const element3 = screen.getByTestId('field-customField2');
+      expect(element3).toBeInTheDocument();
+      expect(element3).toHaveTextContent('sensitivityCalculatorResults.custom');
+    });
+  });
+  test('renders correctly ( OK, natural )', async () => {
+    render(
+      <StoreProvider>
+        <SensCalcModalSingle
+          open={true}
+          onClose={vi.fn()}
+          data={{
+            id: 0,
+            title: 'm2',
+            statusGUI: 0,
+            error: undefined,
+            section1: [
+              {
+                field: 'naturalField1',
+                value: 'naturalValue1',
+                units: 'testUnits'
+              }
+            ],
+            section2: [
+              {
+                field: 'integrationTime',
+                value: '1',
+                units: 'h'
+              },
+              {
+                field: 'continuumSensitivityWeighted',
+                value: '7.18',
+                units: 'jy/beam'
+              }
+            ],
+            section3: [
+              {
+                field: 'naturalField2',
+                value: 'naturalValue2',
+                units: 'testUnits3'
+              }
+            ]
+          }}
+          isCustom={false}
+          isNatural={true}
+        />
+      </StoreProvider>
+    );
+    await waitFor(() => {
+      const target = screen.getByTestId('field-targetName');
+      expect(target).toBeInTheDocument();
+      expect(target).toHaveTextContent('m2');
+
+      const element1 = screen.getByTestId('field-naturalField1');
+      expect(element1).toBeInTheDocument();
+      expect(element1).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
+
+      const element2 = screen.getByTestId('field-sensitivity');
+      expect(element2).toBeInTheDocument();
+      expect(element2).toHaveTextContent('1');
+
+      const element3 = screen.getByTestId('field-continuumSensitivityWeighted');
+      expect(element3).toBeInTheDocument();
+      expect(element3).toHaveTextContent('7.18');
+
+      const element4 = screen.getByTestId('field-naturalField2');
+      expect(element4).toBeInTheDocument();
+      expect(element4).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
+    });
   });
   test('renders correctly (error)', () => {
     render(
@@ -128,8 +232,10 @@ describe('<SensCalcModalSingle />', () => {
             section3: undefined
           }}
           isCustom={true}
+          isNatural={false}
         />
       </StoreProvider>
     );
+    // TODO
   });
 });

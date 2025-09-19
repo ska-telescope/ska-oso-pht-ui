@@ -53,7 +53,12 @@ export default function SensCalcModalSingle({
           </Typography>
         </Grid>
         <Grid size={{ xs: 3 }}>
-          <Typography id={eId + 'Label'} sx={{ align: 'left', fontWeight: 'bold' }} variant="body1">
+          <Typography
+            id={eId + 'Label'}
+            data-testid={`field-${eId}`}
+            sx={{ align: 'left', fontWeight: 'bold' }}
+            variant="body1"
+          >
             {eId === 'targetName' || isCustom || isNatural
               ? PresentCustomResultValue(eValue, eId)
               : presentValue(eValue)}{' '}
