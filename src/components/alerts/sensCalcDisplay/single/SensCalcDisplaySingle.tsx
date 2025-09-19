@@ -50,6 +50,13 @@ export default function SensCalcDisplaySingle({
 
   const isDisabled = () => sensCalc?.statusGUI !== STATUS_OK;
 
+  const PresentCustomResultValue = () => {
+    if (isNatural) {
+      return t('sensitivityCalculatorResults.nonGaussian');
+    }
+    return t('sensitivityCalculatorResults.customArray');
+  };
+
   return (
     <>
       {show && field === 'icon' && (
@@ -65,10 +72,12 @@ export default function SensCalcDisplaySingle({
         />
       )}
       {show && field !== 'icon' && (
-        <>
-          {presentValue(FieldFetch(VALUE, field))}{' '}
+        <div data-testid={`field-${field}`}>
+          {(isNatural || isCustom) && field === 'BeamSize'
+            ? PresentCustomResultValue()
+            : presentValue(FieldFetch(VALUE, field))}
           {isCustom ? '' : presentUnits(FieldFetch(UNITS, field))}
-        </>
+        </div>
       )}
       {show && field === 'icon' && openDialog && (
         <SensCalcModalSingle
