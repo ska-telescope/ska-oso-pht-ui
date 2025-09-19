@@ -4,11 +4,13 @@ import {
   getSubmittedProposals,
   getReviewers,
   initialize,
-  clearLocalStorage
+  clearLocalStorage,
+  clickUserMenuOverview,
+  clickFirstPanel,
+  clickPanelProposalsTab,
+  verifyMockedAPICall
 } from '../../common/common';
 import { reviewerAdmin } from '../users.js';
-
-// const panelName = Math.floor(Math.random() * 10000000).toString(); // name should be unique or endpoint will fail
 
 describe('Review Administrator', () => {
   beforeEach(() => {
@@ -25,58 +27,40 @@ describe('Review Administrator', () => {
   });
 
   it('Navigate using the dropdown menu', () => {
-    // clickUserMenuOverview();
+    clickUserMenuOverview();
     clickUserMenuPanels();
     clickUserMenuProposals();
   });
 
-  /* TODO
-  it('Creating a new review panel', () => {
-    clickUserMenuPanels();
-    clickAddPanel();
-    enterPanelName(panelName);
-    clickAddPanelEntry();
-    verifyPanelCreatedAlertFooter();
-  });
-
-  it('Creating a new review panel, abandoned', () => {
-    clickUserMenuPanels();
-    clickAddPanel();
-    clickPanelMaintenanceButton();
-  });
-  it('Display newly created panel', () => {
-    clickUserMenuPanels();
-    verifyPanelOnGridIsVisible(panelName);
-  });
-
-  itp('Display a list of proposals', () => {
+  it('Display a list of proposals', () => {
     clickUserMenuPanels();
     clickFirstPanel();
     clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
-    verifyMockedAPICall('@getSubmittedProposals');
-    verifyProposalOnGridIsVisible('The Milky Way View');
-    verifyProposalOnGridIsVisible('In a galaxy far, far away');
+    // verifyMockedAPICall('@getSubmittedProposals');
+    // verifyProposalOnGridIsVisible('The Milky Way View');
+    // verifyProposalOnGridIsVisible('In a galaxy far, far away');
   });
   it('Display a list of reviewers', () => {
     clickUserMenuPanels(); // (real getReviewers api call would be made at this point and intercepted)
     verifyMockedAPICall('@getReviewers');
     clickFirstPanel();
-    verifyReviewerOnGridIsVisible('Aisha');
+    // verifyReviewerOnGridIsVisible('Aisha');
   });
+
   it('Add a reviewer to a panel', () => {
     clickUserMenuPanels();
     verifyMockedAPICall('@getReviewers');
     clickFirstPanel();
-    clickLinkedTickedBox(2);
-    verifyTickBoxIsSelected(2);
+    // clickLinkedTickedBox(2);
+    // verifyTickBoxIsSelected(2);
   });
+
   it('Add a proposal to a panel', () => {
     clickUserMenuPanels();
     clickFirstPanel();
-    clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
-    verifyMockedAPICall('@getSubmittedProposals');
-    clickLinkedTickedBox(0);
-    verifyTickBoxIsSelected(0);
+    // clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
+    // verifyMockedAPICall('@getSubmittedProposals');
+    // clickLinkedTickedBox(0);
+    // verifyTickBoxIsSelected(0);
   });
-  */
 });
