@@ -167,9 +167,6 @@ export const clickNavId = (testId, title) => {
     verifyContent('pageTitle', title);
   }
 };
-export const clickPanelButtonPanels = () => clickNavId('Panel Maintenance', 'Panel Maintenance');
-export const clickPanelButtonReviews = () => clickNavId('REVIEW PROPOSALS', 'REVIEW PROPOSALS');
-export const clickPanelButtonProposals = () => clickNavId('panelBtn3', '');
 export const clickFirstPanel = () =>
   get('dataGridId')
     .find('.MuiDataGrid-row')
