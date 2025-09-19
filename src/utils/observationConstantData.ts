@@ -20,13 +20,12 @@ export const OBSERVATION = {
       subarray: [
         // MID
         {
-          value: OB_SUBARRAY_AA4,
-          map: 'AA4',
-          label: 'AA4',
-          numOf15mAntennas: 133,
-          numOf13mAntennas: 64,
+          value: OB_SUBARRAY_AA2,
+          map: 'AA2',
+          label: 'AA2',
+          numOf13mAntennas: 0,
           numOfStations: 0,
-          disableForBand5: true
+          disableForBand5: false
         },
         {
           value: OB_SUBARRAY_CUSTOM,
@@ -53,14 +52,13 @@ export const OBSERVATION = {
       subarray: [
         // LOW
         {
-          value: OB_SUBARRAY_AA4,
-          map: 'LOW_AA4_all',
-          label: 'AA4',
+          value: OB_SUBARRAY_AA2,
+          map: 'LOW_AA2_all',
+          label: 'AA2',
           numOf15mAntennas: 0,
           numOf13mAntennas: 0,
-          numOfStations: 512,
           disableForBand5: false,
-          continuumSpectralAveragingMax: 27624
+          continuumSpectralAveragingMax: 13812
         },
         {
           value: OB_SUBARRAY_CUSTOM,
