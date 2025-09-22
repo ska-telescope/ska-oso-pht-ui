@@ -21,7 +21,6 @@ export const OBSERVATION = {
           map: 'AA2',
           label: 'AA2',
           numOf13mAntennas: 0,
-          numOfStations: 0
         },
         {
           value: OB_SUBARRAY_CUSTOM,
@@ -50,7 +49,6 @@ export const OBSERVATION = {
           value: OB_SUBARRAY_AA2,
           map: 'LOW_AA2_all',
           label: 'AA2',
-          numOf15mAntennas: 0,
           numOf13mAntennas: 0,
           continuumSpectralAveragingMax: 13812
         },

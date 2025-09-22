@@ -100,7 +100,6 @@ const getBandLimitsForAntennaCounts = (
 };
 
 const getBandLimits = (telescope: number, subarrayConfig: number, observingBand: number) => {
-  console.log('data logged ', getObservatoryData());
   const bandLimits = BANDWIDTH_TELESCOPE.find(band => band.value === observingBand)?.bandLimits;
   if (!bandLimits) {
     return [];
@@ -114,8 +113,6 @@ const getBandLimits = (telescope: number, subarrayConfig: number, observingBand:
   }
 
   function getMidFrequencyLimits(observingBand: string) {
-    console.log('data logged ', getObservatoryData());
-
     const band = getObservatoryData().osdData.capabilities?.mid?.basicCapabilities?.receiverInformation.find(
       item => item?.rxId === observingBand
     );
