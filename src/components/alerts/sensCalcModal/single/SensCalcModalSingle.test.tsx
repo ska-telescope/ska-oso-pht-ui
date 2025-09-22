@@ -74,7 +74,6 @@ describe('<SensCalcModalSingle />', () => {
         />
       </StoreProvider>
     );
-    screen.debug();
     const target = screen.getByTestId('field-targetName');
     expect(target).toBeInTheDocument();
     expect(target).toHaveTextContent('m1');
@@ -83,6 +82,7 @@ describe('<SensCalcModalSingle />', () => {
     expect(element1).toBeInTheDocument();
     expect(element1).toHaveTextContent('1');
 
+    screen.debug();
     const element2 = screen.getByTestId('field-sensitivity');
     expect(element2).toBeInTheDocument();
     expect(element2).toHaveTextContent('200');
@@ -203,7 +203,7 @@ describe('<SensCalcModalSingle />', () => {
       expect(element1).toBeInTheDocument();
       expect(element1).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
 
-      const element2 = screen.getByTestId('field-sensitivity');
+      const element2 = screen.getByTestId('field-integrationTime');
       expect(element2).toBeInTheDocument();
       expect(element2).toHaveTextContent('1');
 
