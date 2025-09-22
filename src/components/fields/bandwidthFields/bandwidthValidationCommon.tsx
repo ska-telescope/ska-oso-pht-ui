@@ -27,24 +27,18 @@ export const checkMinimumChannelWidth = (
 
 function getObservatoryData() {
   const { application } = storageObject.useStore();
-  return application.content3 as ObservatoryData;
+  return application.content3;
 }
 
 // get maximum bandwidth defined for the subarray
 export const getMaxContBandwidthHz = (telescope: number, subarrayConfig: number): any => {
-  const data = getObservatoryData();
-
   //TODO: AA2 will be extended as OSD Data is extended
   if (isAA2(subarrayConfig)) {
     if (isLow(telescope)) {
-      return data?.capabilities?.low?.AA2?.availableBandwidthHz;
+      return getObservatoryData().osdData?.capabilities?.low?.AA2?.availableBandwidthHz;
     } else {
-      return data?.capabilities?.mid?.AA2?.availableBandwidthHz;
+      return getObservatoryData().osdData?.capabilities?.mid?.AA2?.availableBandwidthHz;
     }
-  } else {
-    return OBSERVATION.array
-      .find(item => item.value === telescope)
-      ?.subarray?.find(ar => ar.value === subarrayConfig)?.maxContBandwidthHz;
   }
 };
 
@@ -61,6 +55,9 @@ const getSubArrayAntennasCounts = (
   subarrayConfig: number
 ) => {
   const observationArray = OBSERVATION.array.find(arr => arr.value === telescope);
+  const observationArray2 = getObservatoryData().constantData?.find(arr => arr.value === telescope);
+  console.log('original ', observationArray);
+  console.log('new ', observationArray2);
   const subArray = observationArray?.subarray?.find(sub => sub.value === subarrayConfig);
   //TODO: AA2 will be extended as OSD Data is extended
   if (!isLow(telescope) && isAA2(subarrayConfig)) {
@@ -100,8 +97,6 @@ const getBandLimitsForAntennaCounts = (
 };
 
 const getBandLimits = (telescope: number, subarrayConfig: number, observingBand: number) => {
-  const observatoryData: ObservatoryData = getObservatoryData();
-
   const bandLimits = BANDWIDTH_TELESCOPE.find(band => band.value === observingBand)?.bandLimits;
   if (!bandLimits) {
     return [];
@@ -109,13 +104,13 @@ const getBandLimits = (telescope: number, subarrayConfig: number, observingBand:
 
   if (isLow(telescope)) {
     return [
-      observatoryData.capabilities?.low?.basicCapabilities?.minFrequencyHz,
-      observatoryData.capabilities?.low?.basicCapabilities?.maxFrequencyHz
+      getObservatoryData().osdData?.capabilities?.low?.basicCapabilities?.minFrequencyHz,
+      getObservatoryData().osdData?.capabilities?.low?.basicCapabilities?.maxFrequencyHz
     ];
   }
 
   function getFrequencyLimitsBand5(observingBand: string) {
-    const band = observatoryData?.capabilities?.mid?.basicCapabilities?.receiverInformation.find(
+    const band = getObservatoryData().osdData?.capabilities?.mid?.basicCapabilities?.receiverInformation.find(
       item => item?.rxId === observingBand
     );
     const minFrequencyHz = band?.minFrequencyHz;

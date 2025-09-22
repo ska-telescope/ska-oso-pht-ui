@@ -159,8 +159,7 @@ export default function LandingPage() {
           constantData: OBSERVATION.array,
           osdData: response
         };
-        console.log('combined data ', combined);
-        updateAppContent3(response as ObservatoryData);
+        updateAppContent3(combined);
       }
     };
     if (!loggedIn && !cypressToken) {

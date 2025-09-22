@@ -9,6 +9,7 @@ import {
   SUPPLIED_TYPE_SENSITIVITY
 } from '@utils/constants.ts';
 
+//NOTE:: not to be referenced directly
 export const OBSERVATION = {
   array: [
     {
