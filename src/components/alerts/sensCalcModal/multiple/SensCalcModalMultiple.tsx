@@ -97,63 +97,70 @@ export default function SensCalcModalMultiple({
     field: 'field1',
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section1[0].field),
-    renderCell: (e: { row: { section1: Rec[] } }) =>
-      presentation(e?.row?.section1 ? e.row.section1[0] : null)
+    renderHeader: () => headerDisplay(data[headerNumber].section1[0]?.field),
+    renderCell: (e: { row: { section1: Rec[] } }) => (
+      <div data-testId="field1">{presentation(e?.row?.section1 ? e.row.section1[0] : null)}</div>
+    )
   };
 
   const colField2 = {
     field: 'field2',
     flex: 2.5,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section1[1].field),
-    renderCell: (e: { row: { section1: Rec[] } }) =>
-      presentation(e?.row?.section1 ? e.row.section1[1] : null)
+    renderHeader: () => headerDisplay(data[headerNumber].section1[1]?.field),
+    renderCell: (e: { row: { section1: Rec[] } }) => (
+      <div data-testId="field2">{presentation(e?.row?.section1 ? e.row.section1[1] : null)}</div>
+    )
   };
 
   const colField3 = {
     field: 'field3',
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section1[2].field),
-    renderCell: (e: { row: { section1: Rec[] } }) =>
-      presentation(e?.row?.section1 ? e.row.section1[2] : null)
+    renderHeader: () => headerDisplay(data[headerNumber].section1[2]?.field),
+    renderCell: (e: { row: { section1: Rec[] } }) => (
+      <div data-testId="field3">{presentation(e?.row?.section1 ? e.row.section1[2] : null)}</div>
+    )
   };
 
   const colField4 = {
     field: 'field4',
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section1[3].field),
-    renderCell: (e: { row: { section1: Rec[] } }) =>
-      presentation(e?.row?.section1 ? e.row.section1[3] : null)
+    renderHeader: () => headerDisplay(data[headerNumber].section1[3]?.field),
+    renderCell: (e: { row: { section1: Rec[] } }) => (
+      <div data-testId="field4">{presentation(e?.row?.section1 ? e.row.section1[3] : null)}</div>
+    )
   };
 
   const colField5 = {
     field: 'field5',
     flex: 4,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section1[4].field),
-    renderCell: (e: { row: { section1: Rec[] } }) =>
-      presentation(e?.row?.section1 ? e.row.section1[4] : null)
+    renderHeader: () => headerDisplay(data[headerNumber].section1[4]?.field),
+    renderCell: (e: { row: { section1: Rec[] } }) => (
+      <div data-testId="field5">{presentation(e?.row?.section1 ? e.row.section1[4] : null)}</div>
+    )
   };
 
   const colField6 = {
     field: 'field6',
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section2[0].field),
-    renderCell: (e: { row: { section2: Rec[] } }) =>
-      presentation(e?.row?.section2 ? e.row.section2[0] : null)
+    renderHeader: () => headerDisplay(data[headerNumber].section2[0]?.field),
+    renderCell: (e: { row: { section2: Rec[] } }) => (
+      <div data-testId="field6">{presentation(e?.row?.section2 ? e.row.section2[0] : null)}</div>
+    )
   };
 
   const colField7 = {
     field: 'field7',
     flex: 2.5,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section2[1].field),
-    renderCell: (e: { row: { section2: Rec[] } }) =>
-      presentation(e?.row?.section2 ? e.row.section2[1] : null),
+    renderHeader: () => headerDisplay(data[headerNumber].section2[1]?.field),
+    renderCell: (e: { row: { section2: Rec[] } }) => (
+      <div data-testId="field7">{presentation(e?.row?.section2 ? e.row.section2[1] : null)}</div>
+    ),
     optional: (params: { value: null }) => params.value !== null
   };
 
@@ -161,9 +168,10 @@ export default function SensCalcModalMultiple({
     field: 'field8',
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section2[2].field),
-    renderCell: (e: { row: { section2: Rec[] } }) =>
-      presentation(e?.row?.section2 ? e.row.section2[2] : null),
+    renderHeader: () => headerDisplay(data[headerNumber].section2[2]?.field),
+    renderCell: (e: { row: { section2: Rec[] } }) => (
+      <div data-testId="field8">{presentation(e?.row?.section2 ? e.row.section2[2] : null)}</div>
+    ),
     optional: (params: { value: null }) => params.value !== null
   };
 
@@ -171,9 +179,10 @@ export default function SensCalcModalMultiple({
     field: 'field9',
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section2[3].field),
-    renderCell: (e: { row: { section2: Rec[] } }) =>
-      presentation(e?.row?.section2 ? e.row.section2[3] : null),
+    renderHeader: () => headerDisplay(data[headerNumber].section2[3]?.field),
+    renderCell: (e: { row: { section2: Rec[] } }) => (
+      <div data-testId="field9">{presentation(e?.row?.section2 ? e.row.section2[3] : null)}</div>
+    ),
     optional: (params: { value: null }) => params.value !== null
   };
 
@@ -181,9 +190,10 @@ export default function SensCalcModalMultiple({
     field: 'field10',
     flex: 4,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section2[4].field),
-    renderCell: (e: { row: { section2: Rec[] } }) =>
-      presentation(e?.row?.section2 ? e.row.section2[4] : null),
+    renderHeader: () => headerDisplay(data[headerNumber].section2[4]?.field),
+    renderCell: (e: { row: { section2: Rec[] } }) => (
+      <div data-testId="field10">{presentation(e?.row?.section2 ? e.row.section2[4] : null)}</div>
+    ),
     optional: (params: { value: null }) => params.value !== null
   };
 
@@ -191,9 +201,10 @@ export default function SensCalcModalMultiple({
     field: 'field11',
     flex: 3,
     AutoResizeColumnHeadersHeight: true,
-    renderHeader: () => headerDisplay(data[headerNumber].section3[0].field),
-    renderCell: (e: { row: { section3: Rec[] } }) =>
-      presentation(e?.row?.section3 ? e.row.section3[0] : null),
+    renderHeader: () => headerDisplay(data[headerNumber].section3[0]?.field),
+    renderCell: (e: { row: { section3: Rec[] } }) => (
+      <div data-testId="field11">{presentation(e?.row?.section3 ? e.row.section3[0] : null)}</div>
+    ),
     optional: (params: { value: null }) => params.value !== null
   };
 
@@ -306,6 +317,7 @@ export default function SensCalcModalMultiple({
               columnHeaderHeight={100}
               height={500}
               testId="sensCalcDetailsList"
+              // getRowId={(row: { field: any; value: any; }) => `${row.field}-${row.value}`}
             />
           ) : (
             <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
