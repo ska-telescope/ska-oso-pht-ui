@@ -8,6 +8,7 @@ UNRELEASED
 ----------
 * Changed: Non logged in users have restricted use of the PHT to target and observation pages.
 * Removed: E2E tests related to functionality which is no longer required.
+* Fixed: Inaccurate validation message shown after pairing a valid target–observation following an invalid one
 
 5.1.0
 ----------
