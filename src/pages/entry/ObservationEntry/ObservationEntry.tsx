@@ -315,8 +315,6 @@ export default function ObservationEntry() {
   ]);
 
   const calculateCentralFrequency = (obsBand: number, subarrayConfig: number) => {
-    console.log('data? ', getObservatoryData());
-
     switch (obsBand) {
       case BAND_1:
         return lookupArrayValue(getObservatoryData()?.constantData?.CentralFrequencyOB1, subarrayConfig);
