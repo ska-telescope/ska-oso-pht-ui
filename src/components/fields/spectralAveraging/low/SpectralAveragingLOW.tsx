@@ -7,8 +7,8 @@ import {
   SPECTRAL_AVERAGING_MIN,
   ZOOM_SPECTRAL_AVERAGING_MAX
 } from '@utils/constants.ts';
-import { OBSERVATION } from '@utils/observationConstantData.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import ObservatoryData from '@utils/types/observatoryData.tsx';
 
 interface SpectralAveragingLOWFieldProps {
   disabled?: boolean;
@@ -34,8 +34,13 @@ export default function SpectralAveragingLOWField({
   const { helpComponent } = storageObject.useStore();
   const FIELD = 'spectralAveraging';
 
+  const { application} = storageObject.useStore();
+
+  const getObservatoryData = () => application.content3 as ObservatoryData;
+
+
   const errorMessage = () => {
-    const subarrayConfig = OBSERVATION.array[1].subarray.find(item => item.value === subarray);
+    const subarrayConfig = getObservatoryData().constantData?.array[1].subarray.find(item => item.value === subarray);
     let spectralAverageMax: number;
     spectralAverageMax =
       type === 1 ? subarrayConfig?.continuumSpectralAveragingMax : ZOOM_SPECTRAL_AVERAGING_MAX;
