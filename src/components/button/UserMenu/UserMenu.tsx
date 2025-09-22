@@ -91,11 +91,11 @@ export default function ButtonUserMenu({
             {t('overview.title')}
           </MenuItem>
         )}
-        {(isReviewerAdmin() || isReviewer() || isReviewerChair()) && (
+        {
           <MenuItem data-testid="menuItemProposals" onClick={() => onMenuSelect(PATH[0])}>
             {t('homeBtn.title')}
           </MenuItem>
-        )}
+        }
         {isReviewerAdmin() && (
           <MenuItem data-testid="menuItemPanelSummary" onClick={() => onMenuSelect(PMT[0])}>
             {t('page.15.title')}
@@ -111,7 +111,7 @@ export default function ButtonUserMenu({
             {t('reviewDecisionsList.title')}
           </MenuItem>
         )}
-        {(isReviewerAdmin() || isReviewer() || isReviewerChair()) && <Divider component="li" />}
+        {(isReviewerChair() || isReviewerAdmin() || isReviewer()) && <Divider component="li" />}
         <MenuItem data-testid="menuItemPanelLogout">
           <ButtonLogout
             isText

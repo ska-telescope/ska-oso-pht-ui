@@ -1,4 +1,5 @@
 import {
+  clickUserMenu,
   clickUserMenuPanels,
   clickUserMenuProposals,
   getSubmittedProposals,
@@ -8,7 +9,12 @@ import {
   clickUserMenuOverview,
   clickFirstPanel,
   clickPanelProposalsTab,
-  verifyMockedAPICall
+  verifyMockedAPICall,
+  verifyUserMenuOverview,
+  verifyUserMenuProposals,
+  verifyUserMenuPanels,
+  verifyUserMenuReviews,
+  verifyUserMenuDecisions
 } from '../../common/common';
 import { reviewerAdmin } from '../users.js';
 
@@ -24,6 +30,15 @@ describe('Review Administrator', () => {
 
   afterEach(() => {
     clearLocalStorage();
+  });
+
+  it('Validate menu options', () => {
+    clickUserMenu();
+    verifyUserMenuOverview(true);
+    verifyUserMenuProposals(true);
+    verifyUserMenuPanels(true);
+    verifyUserMenuReviews(false);
+    verifyUserMenuDecisions(false);
   });
 
   it('Navigate using the dropdown menu', () => {

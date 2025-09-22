@@ -10,11 +10,12 @@ import {
   addM2TargetUsingResolve,
   clickListOfTargets,
   createMock,
+  verify,
   verifyUnlinkedObservationInTable,
   verifyOnLandingPageNotLoggedInMsgIsVisible
-} from '../common/common';
+} from '../../common/common';
 
-describe('Creating a Mock without login', () => {
+describe('Guest User', () => {
   beforeEach(() => {
     initializeUserNotLoggedIn();
   });
@@ -23,7 +24,11 @@ describe('Creating a Mock without login', () => {
     clearLocalStorage();
   });
 
-  it('Create a mock without login', () => {
+  it('Validate not signed in', () => {
+    verify('loginButton');
+  });
+
+  it('Access proposal screens without login', () => {
     createMock();
 
     //add target
