@@ -1,8 +1,6 @@
 import {
-  clearLocalStorage,
   clickUserMenu,
-  clickUserMenuProposals,
-  clickUserMenuDecisions,
+  clearLocalStorage,
   initialize,
   verifyUserMenuOverview,
   verifyUserMenuProposals,
@@ -10,11 +8,11 @@ import {
   verifyUserMenuReviews,
   verifyUserMenuDecisions
 } from '../../common/common';
-import { reviewerChairman } from '../users.js';
+import { standardUser } from '../users.js';
 
-describe('Review Chairman', () => {
+describe('Standard', () => {
   beforeEach(() => {
-    initialize(reviewerChairman);
+    initialize(standardUser);
     cy.window().then(win => {
       win.localStorage.setItem('USE_LOCAL_DATA', 'true');
     });
@@ -27,17 +25,9 @@ describe('Review Chairman', () => {
   it('Validate menu options', () => {
     clickUserMenu();
     verifyUserMenuOverview(false);
-    verifyUserMenuProposals(true);
+    verifyUserMenuProposals(false);
     verifyUserMenuPanels(false);
     verifyUserMenuReviews(false);
-    verifyUserMenuDecisions(true);
-  });
-
-  it('Navigate using the dropdown menu', () => {
-    clickUserMenuDecisions();
-    clickUserMenuProposals();
-  });
-  it('Make a review decision', () => {
-    clickUserMenuDecisions();
+    verifyUserMenuDecisions(false);
   });
 });

@@ -1,11 +1,11 @@
 // There are also in the aaaUtils.tsx file, but I didn't want to import them at this time
 
 const OPS_PROPOSAL_ADMIN = 'obs-oauth2role-opsproposaladmin-1-1535351309';
-const OPS_REVIEWER_CHAIR = 'obs-oauth2role-opsproposaladmin-1-1535351309';
+const OPS_REVIEWER_CHAIR = 'obs-oauth2role-opsreviewerchair-11741547065';
 const OPS_REVIEWER_SCIENCE = 'obs-oauth2role-opsreviewersci-1635769025';
 const OPS_REVIEWER_TECHNICAL = 'obs-oauth2role-opsreviewertec-1-1994146425';
 
-export const defaultUser = {
+export const standardUser = {
   name: 'Cypress Default User',
   group: '',
   token: 'default-token'
