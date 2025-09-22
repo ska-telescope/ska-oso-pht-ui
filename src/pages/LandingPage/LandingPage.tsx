@@ -156,7 +156,7 @@ export default function LandingPage() {
         setAxiosError(response.toString());
       } else {
         const combined = {
-          constantData: OBSERVATION.array,
+          constantData: OBSERVATION,
           osdData: response
         };
         updateAppContent3(combined);
