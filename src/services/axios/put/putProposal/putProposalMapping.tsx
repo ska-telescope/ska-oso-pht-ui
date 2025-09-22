@@ -416,7 +416,7 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
   if (incTargetObservations) {
     for (let tarObs of incTargetObservations) {
       if (tarObs.sensCalc?.error) {
-        break;
+        continue;
       }
       const obsType = getObsType(tarObs, incObs); // spectral or continuum
       const spectralSection = getSpectralSection(obsType);

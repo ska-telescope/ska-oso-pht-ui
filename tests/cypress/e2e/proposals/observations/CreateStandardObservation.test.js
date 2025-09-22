@@ -5,7 +5,7 @@ import {
   createObservation,
   initializeUserNotLoggedIn,
   verifyUnlinkedObservationInTable
-} from '../common/common';
+} from '../../common/common';
 beforeEach(() => {
   initializeUserNotLoggedIn();
   createMock();

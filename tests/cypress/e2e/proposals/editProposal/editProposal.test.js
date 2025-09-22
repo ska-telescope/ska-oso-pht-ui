@@ -1,48 +1,20 @@
 import {
-  addAbstract,
-  addM2TargetUsingResolve,
-  addObservatoryDataProduct,
-  addInvestigator,
-  clickAddDataProduct,
-  clickEditProposal,
   clickHome,
-  clickObservationSetup,
-  clickAddObservationEntry,
-  verifySensitivityCalculatorStatusSuccess,
-  clickSave,
-  clickToAddTarget,
-  clickToGeneralPage,
-  clickToObservationPage,
-  clickObservationFromTable,
-  clickToLinkTargetAndObservation,
-  clickToObservatoryDataProductPage,
-  clickToSciencePage,
-  clickToTargetPage,
-  clickToTeamPage,
-  clickToTechnicalPage,
-  createStandardProposal,
   pageConfirmed,
-  selectCosmology,
-  validateProposal,
-  verifyEmailSentAlertFooter,
-  verifyObservationInTable,
   verifyOnLandingPage,
   verifyOnLandingPageFilterIsVisible,
-  verifyHomeButtonWarningModal,
-  clickDialogConfirm,
   mockCreateProposalAPI,
   createStandardProposalLoggedIn,
   verifyMockedProposalOnLandingPageIsVisible,
   verifyProposalCreatedAlertFooter,
   mockEmailAPI,
-  clickLoginUser,
   initialize,
   clearLocalStorage
-} from '../common/common';
-import { defaultUser } from '../users/users.js';
+} from '../../common/common.js';
+import { standardUser } from '../../users/users.js';
 
 beforeEach(() => {
-  initialize(defaultUser);
+  initialize(standardUser);
   mockCreateProposalAPI();
   cy.window().then(win => {
     win.localStorage.setItem('cypress:defaultUserLoggedIn', 'true');

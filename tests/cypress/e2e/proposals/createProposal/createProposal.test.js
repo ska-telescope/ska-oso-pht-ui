@@ -12,12 +12,12 @@ import {
   mockCreateProposalAPI,
   initialize,
   clearLocalStorage
-} from '../common/common';
-import { defaultUser } from '../users/users.js';
+} from '../../common/common.js';
+import { standardUser } from '../../users/users.js';
 
 describe('Creating Proposal', () => {
   beforeEach(() => {
-    initialize(defaultUser);
+    initialize(standardUser);
     mockCreateProposalAPI();
   });
 

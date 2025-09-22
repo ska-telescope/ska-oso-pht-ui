@@ -79,7 +79,7 @@ export default function LandingPage() {
   const setAccess = (access: ProposalAccess[]) => updateAppContent4(access);
   const getProposal = () => application.content2 as Proposal;
 
-  const mock = {
+  const mock = ({
     abstract: '',
     createdBy: '',
     createdOn: '',
@@ -108,7 +108,7 @@ export default function LandingPage() {
     technicalPDF: undefined,
     title: '',
     version: 0
-  } as Proposal;
+  } as unknown) as Proposal;
 
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const authClient = useAxiosAuthClient();
