@@ -1,4 +1,9 @@
-import { SKA_OSO_SERVICES_URL, USE_LOCAL_DATA, OSO_SERVICES_PANEL_PATH } from '@utils/constants.ts';
+import {
+  SKA_OSO_SERVICES_URL,
+  USE_LOCAL_DATA,
+  OSO_SERVICES_PANEL_PATH,
+  cypressToken
+} from '@utils/constants.ts';
 import { Panel, PanelBackend } from '@utils/types/panel.tsx';
 import { PanelProposal, PanelProposalBackend } from '@utils/types/panelProposal.tsx';
 import { PanelReviewer, PanelReviewerBackend } from '@utils/types/panelReviewer.tsx';
@@ -62,7 +67,7 @@ export function GetMockPanelList(mock = MockPanelBackendList): Panel[] {
 async function GetPanelList(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>
 ): Promise<Panel[] | string> {
-  if (USE_LOCAL_DATA) {
+  if (USE_LOCAL_DATA || cypressToken) {
     return GetMockPanelList();
   }
 
