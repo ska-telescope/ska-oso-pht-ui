@@ -1,23 +1,30 @@
 import {
-  clearLocalStorage,
   clickUserMenu,
+  clickUserMenuPanels,
   clickUserMenuProposals,
+  clickUserMenuReviews,
+  getSubmittedProposals,
   clickUserMenuDecisions,
+  getReviewers,
   initialize,
+  clearLocalStorage,
+  clickUserMenuOverview,
   verifyUserMenuOverview,
   verifyUserMenuProposals,
   verifyUserMenuPanels,
   verifyUserMenuReviews,
   verifyUserMenuDecisions
-} from '../../common/common';
-import { reviewerChairman } from '../users.js';
+} from '../../common/common.js';
+import { reviewerAdmin } from '../users.js';
 
-describe('Review Chairman', () => {
+describe('Software Engineer', () => {
   beforeEach(() => {
-    initialize(reviewerChairman);
+    initialize(reviewerAdmin);
     cy.window().then(win => {
       win.localStorage.setItem('USE_LOCAL_DATA', 'true');
     });
+    getSubmittedProposals(); // Load mocked proposals fixture
+    getReviewers(); // Load mocked reviewers fixture
   });
 
   afterEach(() => {
@@ -26,18 +33,18 @@ describe('Review Chairman', () => {
 
   it('Validate menu options', () => {
     clickUserMenu();
-    verifyUserMenuOverview(false);
+    verifyUserMenuOverview(true);
     verifyUserMenuProposals(true);
-    verifyUserMenuPanels(false);
-    verifyUserMenuReviews(false);
+    verifyUserMenuPanels(true);
+    verifyUserMenuReviews(true);
     verifyUserMenuDecisions(true);
   });
 
   it('Navigate using the dropdown menu', () => {
-    clickUserMenuDecisions();
+    clickUserMenuOverview();
     clickUserMenuProposals();
-  });
-  it('Make a review decision', () => {
+    clickUserMenuPanels();
+    clickUserMenuReviews();
     clickUserMenuDecisions();
   });
 });

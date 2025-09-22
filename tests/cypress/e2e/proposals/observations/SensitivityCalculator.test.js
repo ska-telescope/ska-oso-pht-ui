@@ -2,21 +2,17 @@ import {
   clickObservationFromTable,
   clickObservationSetup,
   clickToAddTarget,
-  clickToGeneralPage,
   clickToLinkTargetAndObservation,
   clickToObservationPage,
-  clickToSciencePage,
-  clickToTargetPage,
-  createStandardProposal,
   verifyObservationInTable,
   clickAddObservationEntry,
   initializeUserNotLoggedIn,
   clearLocalStorage,
   createMock,
   clickListOfTargets
-} from '../common/common';
+} from '../../common/common';
 
-import sensitivityCalculatorResults from '../../fixtures/sensitivityCalculatorResults.json';
+import sensitivityCalculatorResults from '../../../fixtures/sensitivityCalculatorResults.json';
 
 beforeEach(() => {
   initializeUserNotLoggedIn();
