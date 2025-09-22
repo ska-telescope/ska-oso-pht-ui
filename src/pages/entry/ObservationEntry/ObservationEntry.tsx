@@ -25,8 +25,6 @@ import {
   BAND_5B,
   BAND_2,
   BAND_1,
-  OB_SUBARRAY_AA1,
-  OB_SUBARRAY_AA05,
   OB_SUBARRAY_CUSTOM,
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_INTEGRATION_TIME_UNITS_S,
@@ -93,7 +91,7 @@ export default function ObservationEntry() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const [subarrayConfig, setSubarrayConfig] = React.useState(8);
+  const [subarrayConfig, setSubarrayConfig] = React.useState(3);
   const [observingBand, setObservingBand] = React.useState(0);
   const [observationType, setObservationType] = React.useState(1);
   const [effectiveResolution, setEffectiveResolution] = React.useState('');
@@ -199,14 +197,8 @@ export default function ObservationEntry() {
 
   // Change the continuum bandwidth & units only if they are currently the same as the existing defaults
   const setDefaultContinuumBandwidth = (inBand: number, inSubArray: number) => {
-    if (
-      isContinuum() &&
-      Number(continuumBandwidth) === calculateContinuumBandwidth(observingBand, subarrayConfig) &&
-      continuumBandwidthUnits === (isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ)
-    ) {
-      setContinuumBandwidth(calculateContinuumBandwidth(inBand, OB_SUBARRAY_AA2));
+      setContinuumBandwidth(calculateContinuumBandwidth(inBand, inSubArray));
       setContinuumBandwidthUnits(inBand === BAND_LOW ? FREQUENCY_MHZ : FREQUENCY_GHZ);
-    }
   };
 
   const setDefaultElevation = (inBand: number) => {
@@ -232,7 +224,7 @@ export default function ObservationEntry() {
     }
 
     setDefaultCentralFrequency(e as number, subarrayConfig);
-    setDefaultContinuumBandwidth(e as number, subarrayConfig);
+    setDefaultContinuumBandwidth(e as number);
     setObservingBand(e);
   };
 
@@ -363,10 +355,7 @@ export default function ObservationEntry() {
   const isLow = () => observingBand === BAND_LOW;
   const telescope = (band = observingBand) => BANDWIDTH_TELESCOPE[band]?.telescope;
 
-  const isContinuumOnly = () =>
-    subarrayConfig === OB_SUBARRAY_AA05 ||
-    subarrayConfig === OB_SUBARRAY_AA1 ||
-    (observingBand !== 0 && subarrayConfig === OB_SUBARRAY_AA2);
+  const isContinuumOnly = () => observingBand !== 0 && subarrayConfig === OB_SUBARRAY_AA2;
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>

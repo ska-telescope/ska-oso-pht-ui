@@ -380,9 +380,6 @@ export const OSCILLATION_UNITS = [
   { label: 'MHz', toHz: 10000000 },
   { label: 'GHz', toHz: 10000000000 }
 ];
-
-export const OB_SUBARRAY_AA05 = 1;
-export const OB_SUBARRAY_AA1 = 2;
 export const OB_SUBARRAY_AA2 = 3;
 export const OB_SUBARRAY_CUSTOM = 20;
 
