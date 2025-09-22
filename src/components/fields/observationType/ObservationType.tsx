@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Grid } from '@mui/material';
@@ -8,6 +7,7 @@ import {
   OBSERVATION_TYPE,
   TYPE_CONTINUUM
 } from '../../../utils/constants';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface ObservationTypeFieldProps {
   isContinuumOnly?: boolean;
@@ -30,7 +30,7 @@ export default function ObservationTypeField({
   widthButton = 2,
   widthLabel = 6
 }: ObservationTypeFieldProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const { helpComponent } = storageObject.useStore();
   const FIELD = 'observationType';
 

@@ -1,6 +1,5 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Box, Grid, Tab, Tabs, SvgIcon, Typography } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -23,6 +22,7 @@ import { useNotify } from '@/utils/notify/useNotify';
 import PutProposalAccess from '@/services/axios/put/putProposalAccess/putProposalAccess';
 import GetProposalAccessForProposal from '@/services/axios/get/getProposalAccess/proposal/getProposalAccessForProposal';
 import { accessPI } from '@/utils/aaa/aaaUtils';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const PAGE = 1;
 
@@ -39,7 +39,7 @@ export function PHDThesis(value: any) {
 }
 
 export default function TeamPage() {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [theValue, setTheValue] = React.useState(0);
   const [validateToggle, setValidateToggle] = React.useState(false);

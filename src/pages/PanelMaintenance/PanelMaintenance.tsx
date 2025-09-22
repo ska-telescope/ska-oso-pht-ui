@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
@@ -23,6 +22,7 @@ import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient
 import PutPanel from '@/services/axios/put/putPanel/putPanel';
 import AssignButton from '@/components/button/Assign/Assign';
 import PostPanelGenerate from '@/services/axios/post/postPanelGenerate/postPanelGenerate';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const PANELS_HEIGHT = '74vh';
 const TABS_HEIGHT = '76vh';
@@ -107,7 +107,7 @@ export const deleteProposalPanel = (
 };
 
 export default function PanelMaintenance() {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
 

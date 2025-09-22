@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
@@ -19,12 +18,13 @@ import Target from '../../../utils/types/target';
 import GridTargets from '../../../components/grid/targets/GridTargets';
 import SpatialImaging from './SpatialImaging/SpatialImaging';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const DATA_GRID_HEIGHT = '50vh';
 const WRAPPER_WIDTH = '500px';
 
 export default function TargetListSection() {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const { application, updateAppContent2 } = storageObject.useStore();
   const [openEditDialog, setOpenEditDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);

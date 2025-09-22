@@ -4,7 +4,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import GroupObservationsField from './groupObservations';
 
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
+  useScopedTranslation: () => ({
     t: (key: string) => key
   })
 }));

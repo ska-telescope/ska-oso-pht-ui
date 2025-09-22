@@ -1,6 +1,5 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useTranslation } from 'react-i18next';
 import { Grid, Tooltip, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
@@ -40,9 +39,10 @@ import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient
 import { useNotify } from '@/utils/notify/useNotify';
 import { getUserId, isReviewerScience, isReviewerTechnical } from '@/utils/aaa/aaaUtils';
 import ConflictConfirmation from '@/components/alerts/conflictConfirmation/ConflictConfirmation';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 export default function ReviewListPage() {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const { notifyError, notifySuccess } = useNotify();
 
@@ -355,7 +355,8 @@ export default function ReviewListPage() {
     headerName: t('feasibility.label'),
     width: 120,
     renderCell: (e: { row: any }) => {
-      return e?.row?.tecReview?.reviewType?.isFeasible; // TODO use i18n
+      const str = e?.row?.tecReview?.reviewType?.isFeasible;
+      return str ? t(str) : '';
     }
   };
 

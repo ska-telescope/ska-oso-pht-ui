@@ -6,7 +6,7 @@ import TargetListSection from './targetListSection';
 
 // Mock translations
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
+  useScopedTranslation: () => ({
     t: (key: string) => key
   })
 }));

@@ -23,7 +23,6 @@ interface TableReviewDecisionRowProps {
   toggleRow: (id: number) => void;
   expandButtonRef: (el: HTMLButtonElement | null) => void;
   excludeFunction: (detail: any) => void;
-  submitFunctionClicked: (item: any) => void;
   updateDecisionItem: (item: any) => void;
   getReviews: (reviews: any[], reviewType: string) => any[];
   getReviewsReviewed: (reviews: any[]) => any[];
@@ -39,7 +38,6 @@ export default function TableReviewDecisionRow({
   toggleRow,
   expandButtonRef,
   excludeFunction,
-  submitFunctionClicked,
   updateDecisionItem,
   getReviews,
   getReviewsReviewed,
@@ -48,6 +46,12 @@ export default function TableReviewDecisionRow({
   t
 }: TableReviewDecisionRowProps) {
   const theme = useTheme();
+
+  const getFeasibility = () => {
+    const reviews = getReviews(item.reviews, REVIEW_TYPE.TECHNICAL);
+    const str = reviews?.[0]?.reviewType?.isFeasible?.toLowerCase() ?? '';
+    return str.length ? t(str) : '';
+  };
 
   return (
     <>
@@ -111,12 +115,7 @@ export default function TableReviewDecisionRow({
 
         <TableCell role="gridcell">
           <Typography variant="body2" color="text.secondary">
-            {t(
-              getReviews(
-                item.reviews,
-                REVIEW_TYPE.TECHNICAL
-              )?.[0]?.reviewType?.isFeasible?.toLowerCase() ?? ''
-            )}
+            {getFeasibility()}
           </Typography>
         </TableCell>
 
@@ -136,7 +135,7 @@ export default function TableReviewDecisionRow({
           <Box sx={{ display: 'flex', gap: 0.5 }}>
             <SubmitIcon
               disabled={isReviewerAdminOnly()}
-              onClick={() => submitFunctionClicked(item)}
+              onClick={() => updateDecisionItem(item)}
               aria-label={`Submit data for ${item.title}`}
               data-testid={`submit-button-${item.id}`}
               toolTip={t('decisionSubmit.help')}
@@ -153,7 +152,6 @@ export default function TableReviewDecisionRow({
             <DecisionEntry
               item={item}
               calculateScore={calculateScore}
-              submitFunctionClicked={submitFunctionClicked}
               updateItem={updateDecisionItem}
             />
           </Collapse>

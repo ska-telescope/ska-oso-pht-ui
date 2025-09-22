@@ -4,10 +4,10 @@ import { Box, Divider, Menu, MenuItem } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { ButtonLogin, ButtonUser, ButtonLogout } from '@ska-telescope/ska-login-page';
 import { ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
-import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 import { PMT, PATH, isCypress } from '@/utils/constants';
 import { isReviewerAdmin, isReviewerChair, isReviewer } from '@/utils/aaa/aaaUtils';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 export interface ButtonUserMenuProps {
   ariaDescription?: string;
@@ -27,7 +27,7 @@ export default function ButtonUserMenu({
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [cypressLogin, setCypressLogin] = React.useState('');
   const openMenu = Boolean(anchorEl);
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
   const buttonWrapperRef = React.useRef<HTMLDivElement>(null);

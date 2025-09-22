@@ -1,5 +1,4 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import CheckIcon from '@mui/icons-material/Check';
 import CloseIcon from '@mui/icons-material/Close';
 import HelpIcon from '@mui/icons-material/Help';
@@ -13,6 +12,7 @@ import {
   RECOMMENDATION_ACCEPT_REVISION,
   RECOMMENDATION_REJECT
 } from '@/utils/constants';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 export const FEASIBLE = 'feasible';
 export const RECOMMENDED = 'recommended';
@@ -47,7 +47,7 @@ export function ChoiceCards({
   value,
   onChange
 }: ChoiceCardsProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const theme = useTheme();
   const [selectedValue, setSelectedValue] = React.useState<string | undefined>(value);
 

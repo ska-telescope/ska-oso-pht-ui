@@ -1,10 +1,10 @@
 import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { Table, TableBody } from '@mui/material';
 import TableReviewDecisionHeader from './tableReviewDecisionHeader/TableReviewDecisionHeader';
 import TableReviewDecisionRow from './tableReviewDecisionRow/TableReviewDecisionRow';
 import TableContainer from '@/components/grid/tableContainer/TableContainer';
 import { PANEL_DECISION_STATUS, REVIEW_TYPE } from '@/utils/constants';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface TableReviewDecisionProps {
   data: any;
@@ -19,7 +19,7 @@ export default function TableReviewDecision({
   submitFunction,
   updateFunction
 }: TableReviewDecisionProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
 
   const expandButtonRefs = React.useRef<{ [key: number]: HTMLButtonElement | null }>({});
   const [expandedRows, setExpandedRows] = React.useState(new Set<number>());

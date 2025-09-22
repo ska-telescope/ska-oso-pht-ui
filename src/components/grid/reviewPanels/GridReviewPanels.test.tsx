@@ -7,7 +7,7 @@ import GridReviewPanels from './GridReviewPanels';
 
 // Mocks
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
+  useScopedTranslation: () => ({
     t: (key: string) => {
       return key;
     }

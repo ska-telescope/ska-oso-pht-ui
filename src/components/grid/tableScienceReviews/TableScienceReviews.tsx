@@ -1,4 +1,3 @@
-import { useTranslation } from 'react-i18next';
 import {
   Table,
   TableBody,
@@ -17,6 +16,7 @@ import { Key } from 'react';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { PANEL_DECISION_STATUS, REVIEW_TYPE } from '@/utils/constants';
 import { ScienceReview } from '@/utils/types/proposalReview';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { isReviewerAdmin } from '@/utils/aaa/aaaUtils';
 
 const STATUS_SIZE = 20;
@@ -27,7 +27,7 @@ interface TableScienceReviewsProps {
 }
 
 export default function TableScienceReviews({ data, excludeFunction }: TableScienceReviewsProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const theme = useTheme();
 
   const filteredData = (reviews: any[]) =>

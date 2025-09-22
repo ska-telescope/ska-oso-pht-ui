@@ -1,8 +1,8 @@
 import { TableHead, TableRow, TableCell, Typography } from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 export default function TableReviewDecisionHeader() {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
 
   return (
     <TableHead>
@@ -49,7 +49,7 @@ export default function TableReviewDecisionHeader() {
         </TableCell>
         <TableCell sx={{ width: 120 }}>
           <Typography variant="subtitle2" fontWeight="bold">
-            {t('tableReviewDecision.recommendation')}
+            {t('recommendation.label')}
           </Typography>
         </TableCell>
         <TableCell sx={{ width: 120 }}>

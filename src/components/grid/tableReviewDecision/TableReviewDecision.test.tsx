@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import TableReviewDecision from './TableReviewDecision';
 
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
+  useScopedTranslation: () => ({
     t: (key: string) => `translated(${key})`
   })
 }));

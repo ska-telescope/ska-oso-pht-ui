@@ -1,9 +1,8 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Grid } from '@mui/material';
 import { LAB_IS_BOLD, LAB_POSITION, OBSERVATION } from '../../../../utils/constants';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface SpectralAveragingMIDFieldProps {
   disabled?: boolean;
@@ -24,7 +23,7 @@ export default function SpectralAveragingMIDField({
   widthButton = 2,
   widthLabel = 6
 }: SpectralAveragingMIDFieldProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const { helpComponent } = storageObject.useStore();
   const FIELD = 'spectralAveraging';
 

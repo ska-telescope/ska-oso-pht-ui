@@ -3,6 +3,7 @@ import Target from './types/target';
 import Investigator from './types/investigator';
 import { env } from '@/env';
 export const USE_LOCAL_DATA = localStorage.getItem('USE_LOCAL_DATA') === 'true';
+export const cypressToken = window.localStorage.getItem('cypress:token');
 
 export const USE_LOCAL_DATA_SENSITIVITY_CALC =
   env.REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC === 'true';
@@ -344,6 +345,15 @@ export const RECOMMENDATION = [
   RECOMMENDATION_ACCEPT,
   RECOMMENDATION_REJECT,
   RECOMMENDATION_ACCEPT_REVISION
+];
+
+export const RECOMMENDATION_STATUS_IN_PROGRESS = 'IN Progress';
+export const RECOMMENDATION_STATUS_DECIDED = 'Decided';
+export const RECOMMENDATION_STATUS_TO_DO = 'To Do';
+export const RECOMMENDATION_STATUS = [
+  RECOMMENDATION_STATUS_IN_PROGRESS,
+  RECOMMENDATION_STATUS_DECIDED,
+  RECOMMENDATION_STATUS_TO_DO
 ];
 
 export const REVIEWER_STATUS = {

@@ -44,6 +44,11 @@
     "toolTip": "Click to add a new proposal.",
     "warning": "Please wait whilst we create a new proposal."
   },
+  "addMockProposal": {
+    "short": "Add",
+    "label": "Add",
+    "toolTip": "Add"
+  },
   "addReview": {
     "success": "Review record has been updated",
     "warning": "Please wait whilst the review is stored."
@@ -605,6 +610,7 @@
   },
   "proposals": {
     "empty": "THERE ARE NO PROPOSALS TO BE DISPLAYED",
+    "loggedOut": "NOT LOGGED IN, NO PROPOSALS AVAILABLE",
     "label": "proposals",
     "name": "Name",
     "overviewTooltip": "Tooltip for the card on the Overview"
@@ -629,8 +635,8 @@
       "3": "Time allocated by the Director-General outside the normal process of assessment by the Time Allocation Committee (TMC)."
     },
     "help": "Select from the options below the most appropriate type classification for the proposal. This can be changed later if needed, however be aware that this may affect information previously entered.",
-    "label": "Proposal Type",
-    "plural": "Proposal Types",
+    "label": "Type",
+    "plural": "Types",
     "short": "Type",
     "all": "All proposal types",
     "title": {
@@ -699,7 +705,7 @@
     }
   },
   "recommendations": {
-    "label": "Recommendations",
+    "label": "Recommendation",
     "RECOMMEND-ACCEPT": "Accepted",
     "RECOMMEND-ACCEPT-REVISION": "Accepted with revision",
     "RECOMMEND-REJECT": "Rejected"
@@ -1069,7 +1075,6 @@
     "decisionStatus": "Status",
     "feasible": "Feasible",
     "rank": "Rank",
-    "recommendation": "Recommendation",
     "reviews": "Reviews",
     "sciReviews": "Science Reviews",
     "title": "Title"
@@ -1095,10 +1100,11 @@
   },
   "targets": {
     "label": "Targets",
-    "empty": "There are no targets associated with this proposal"
+    "empty": "There are no targets associated with this proposal",
+    "loggedOut": "There are no targets created"
   },
   "title": {
-    "label": "Proposal Title",
+    "label": "Title",
     "short": "Title",
     "empty": "A value is required",
     "maxChar": "939",
@@ -1306,6 +1312,7 @@
       "format": "Unexpected data format returned from API."
     },
     "noObservations": "NO OBSERVATION SETUP IS ASSOCIATED WITH THIS PROPOSAL",
+    "noObservationsLoggedOut": "NO OBSERVATION SETUP CREATED",
     "pdf": "Syntax error or PDF not available",
     "iconClicked": "An error was encountered, please refresh page to continue",
     "invalidString": "Invalid input: Only numeric characters are allowed"

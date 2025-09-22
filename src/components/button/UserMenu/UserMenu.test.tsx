@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { useMsal } from '@azure/msal-react';
 import { useNavigate } from 'react-router-dom';
 import ButtonUserMenu from './UserMenu';
@@ -11,7 +12,7 @@ vi.mock('@azure/msal-react', () => ({
 }));
 
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
+  useScopedTranslation: () => ({
     t: (key: string) => key
   })
 }));
@@ -53,20 +54,32 @@ describe('UserMenu', () => {
 
   it('renders login button when no user is present', () => {
     (useMsal as any).mockReturnValue({ accounts: [] });
-    render(<ButtonUserMenu />);
+    render(
+      <StoreProvider>
+        <ButtonUserMenu />
+      </StoreProvider>
+    );
     expect(screen.getByTestId('login-button')).toBeInTheDocument();
   });
 
   it('renders user button when user is present', () => {
     (useMsal as any).mockReturnValue({ accounts: [{ name: 'TestUser' }] });
-    render(<ButtonUserMenu />);
+    render(
+      <StoreProvider>
+        <ButtonUserMenu />
+      </StoreProvider>
+    );
     expect(screen.getByTestId('user-button')).toBeInTheDocument();
     expect(screen.getByText('TestUser')).toBeInTheDocument();
   });
 
   it('opens menu on user button click', () => {
     (useMsal as any).mockReturnValue({ accounts: [{ name: 'TestUser' }] });
-    render(<ButtonUserMenu />);
+    render(
+      <StoreProvider>
+        <ButtonUserMenu />
+      </StoreProvider>
+    );
     fireEvent.click(screen.getByTestId('user-button'));
     expect(screen.getByRole('menu')).toBeVisible();
   });
@@ -74,7 +87,11 @@ describe('UserMenu', () => {
   it('calls onClick override if provided', () => {
     const onClick = vi.fn();
     (useMsal as any).mockReturnValue({ accounts: [{ name: 'TestUser' }] });
-    render(<ButtonUserMenu onClick={onClick} />);
+    render(
+      <StoreProvider>
+        <ButtonUserMenu onClick={onClick} />
+      </StoreProvider>
+    );
     fireEvent.click(screen.getByTestId('user-button'));
     expect(onClick).toHaveBeenCalled();
   });
@@ -85,7 +102,11 @@ describe('UserMenu', () => {
     (isReviewer as any).mockReturnValue(true);
     (isReviewerChair as any).mockReturnValue(true);
 
-    render(<ButtonUserMenu />);
+    render(
+      <StoreProvider>
+        <ButtonUserMenu />
+      </StoreProvider>
+    );
     fireEvent.click(screen.getByTestId('user-button'));
 
     expect(screen.getByTestId('menuItemOverview')).toBeInTheDocument();
@@ -100,7 +121,11 @@ describe('UserMenu', () => {
     (useMsal as any).mockReturnValue({ accounts: [{ name: 'TestUser' }] });
     (isReviewerAdmin as any).mockReturnValue(true);
 
-    render(<ButtonUserMenu />);
+    render(
+      <StoreProvider>
+        <ButtonUserMenu />
+      </StoreProvider>
+    );
     fireEvent.click(screen.getByTestId('user-button'));
     fireEvent.click(screen.getByTestId('menuItemOverview'));
     expect(mockNavigate).toHaveBeenCalledWith('/overview');

@@ -1,28 +1,13 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import DecisionEntry from './DecisionEntry';
+import { RECOMMENDATION_STATUS_DECIDED } from '@/utils/constants';
 
 // Mock translations
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
+  useScopedTranslation: () => ({
     t: (key: string) => key
   })
-}));
-
-// Mock sub components
-vi.mock('@/components/fields/choiceCards/choiceCards', () => ({
-  CHOICE_TYPE: { RECOMMENDED: 'recommended' },
-  ChoiceCards: (props: any) => (
-    <select
-      data-testid="choice-cards"
-      value={props.value}
-      onChange={e => props.onChange(e.target.value)}
-    >
-      <option value="accept">Accept</option>
-      <option value="revise">Revise</option>
-      <option value="reject">Reject</option>
-    </select>
-  )
 }));
 
 vi.mock('@/components/button/Submit/Submit', () => ({
@@ -65,13 +50,10 @@ describe('DecisionEntry', () => {
     id: '123',
     title: 'Test Proposal',
     reviews: [{ score: 4 }, { score: 5 }],
-    decisions: [{ recommendation: '', comment: '' }],
-    recommendation: 'FEASIBLE_YES',
-    comments: 'Updated comment'
+    decisions: [{ recommendation: 'FEASIBLE_YES', status: RECOMMENDATION_STATUS_DECIDED }]
   };
 
   const mockCalculateScore = vi.fn(() => 9);
-  const mockSubmitFunctionClicked = vi.fn();
   const mockUpdateItem = vi.fn(() => false);
 
   it('renders all elements correctly', () => {
@@ -79,7 +61,6 @@ describe('DecisionEntry', () => {
       <DecisionEntry
         item={mockItem}
         calculateScore={mockCalculateScore}
-        submitFunctionClicked={mockSubmitFunctionClicked}
         updateItem={mockUpdateItem}
       />
     );
@@ -96,30 +77,12 @@ describe('DecisionEntry', () => {
       <DecisionEntry
         item={mockItem}
         calculateScore={mockCalculateScore}
-        submitFunctionClicked={mockSubmitFunctionClicked}
         updateItem={mockUpdateItem}
       />
     );
 
     fireEvent.click(screen.getByTestId('choice-cards'));
-    expect(mockItem.recommendation).toBe('FEASIBLE_YES');
-  });
-
-  it('handles comment change', () => {
-    render(
-      <DecisionEntry
-        item={mockItem}
-        calculateScore={mockCalculateScore}
-        submitFunctionClicked={mockSubmitFunctionClicked}
-        updateItem={mockUpdateItem}
-      />
-    );
-
-    fireEvent.change(screen.getByTestId('finalCommentsId'), {
-      target: { value: 'Updated comment' }
-    });
-
-    expect(mockItem.comments).toBe('Updated comment');
+    expect(mockItem.decisions[0].recommendation).toBe('FEASIBLE_YES');
   });
 
   /*
@@ -128,7 +91,6 @@ describe('DecisionEntry', () => {
       <DecisionEntry
         item={mockItem}
         calculateScore={mockCalculateScore}
-        submitFunctionClicked={mockSubmitFunctionClicked}
         updateItem={mockUpdateItem}
       />
     );
@@ -142,12 +104,7 @@ describe('DecisionEntry', () => {
     const disabledFn = vi.fn(() => true);
 
     render(
-      <DecisionEntry
-        item={mockItem}
-        calculateScore={mockCalculateScore}
-        submitFunctionClicked={mockSubmitFunctionClicked}
-        updateItem={disabledFn}
-      />
+      <DecisionEntry item={mockItem} calculateScore={mockCalculateScore} updateItem={disabledFn} />
     );
 
     expect(screen.getByTestId('submit-review-button-123')).toBeDisabled();

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import userEvent from '@testing-library/user-event';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import RankEntryField from './RankEntryField';
@@ -26,7 +27,11 @@ const darkTheme = createTheme({
 });
 
 const renderWithTheme = (component: React.ReactElement, theme = lightTheme) => {
-  return render(<ThemeProvider theme={theme}>{component}</ThemeProvider>);
+  return render(
+    <ThemeProvider theme={theme}>
+      <StoreProvider>{component}</StoreProvider>
+    </ThemeProvider>
+  );
 };
 
 describe('RankEntryField', () => {

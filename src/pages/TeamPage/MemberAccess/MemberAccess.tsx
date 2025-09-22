@@ -2,7 +2,6 @@
 import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { TickBox } from '@ska-telescope/ska-gui-components';
-import { useTranslation } from 'react-i18next';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LAB_POSITION, WRAPPER_HEIGHT } from '@/utils/constants';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
@@ -11,6 +10,7 @@ import {
   PROPOSAL_ACCESS_UPDATE,
   PROPOSAL_ACCESS_VIEW
 } from '@/utils/aaa/aaaUtils';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface MemberAccessProps {
   selectedOptions: string[];
@@ -18,7 +18,7 @@ interface MemberAccessProps {
 }
 
 export default function MemberAccess({ selectedOptions, setSelectedOptions }: MemberAccessProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const { helpComponent } = storageObject.useStore();
 
   React.useEffect(() => {

@@ -1,8 +1,7 @@
-import React from 'react';
-import { useTranslation } from 'react-i18next';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/material';
 import { LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface ReferenceFrameFieldProps {
   labelWidth?: number;
@@ -17,7 +16,7 @@ export default function ReferenceFrameField({
   setValue,
   value
 }: ReferenceFrameFieldProps) {
-  const { t } = useTranslation('pht');
+  const { t } = useScopedTranslation();
   const FIELD = 'referenceFrame';
 
   const OPTIONS = [0, 1];

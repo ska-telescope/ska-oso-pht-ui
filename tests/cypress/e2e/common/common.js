@@ -112,12 +112,16 @@ export const clickButton = testId => {
 
 export const clickAddButton = () => clickButton('addButton');
 export const clickAddDataProduct = () => clickButton('addDataProductButton');
-export const clickAddPanel = () => clickButton('plusIcon');
-export const clickAddPanelEntry = () => clickButton('addPanelButton');
+export const clickSearchForMember = () => cy.get('#simple-tab-2').click();
+export const clickUserSearch = () => clickButton('userSearchButton');
+export const clickManageTeamMemberRights = () => clickButton('lockIcon');
+export const clickSubmitRights = () => clickButton('submitCheckbox');
+export const clickPICheckbox = () => clickButton('piCheckbox');
 export const clickAddProposal = () => clickButton('addProposalButton');
+export const clickAddMock = () => clickButton('addMockButton');
 export const clickCreateProposal = () => clickButton('nextButtonTestId');
 export const clickHome = () => clickButton('homeButtonTestId');
-export const clickHomeWarningConfirmation = () => clickButton('dialogConfirmationButton');
+export const clickDialogConfirm = () => clickButton('dialogConfirmationButton');
 export const clickLoginUser = () => clickButton('loginButton');
 export const clickUserMenu = () => clickButton('usernameMenu');
 export const clickObservationSetup = () => clickButton('addObservationButton');
@@ -131,6 +135,8 @@ export const clickToAddTarget = () => clickButton('addTargetButton');
 export const clickToConfirmProposalSubmission = () => clickButton('displayConfirmationButton');
 export const clickToNextPage = () => clickButton('nextButtonTestId');
 export const clickToPreviousPage = () => clickButton('prevButtonTestId');
+
+export const clickToLinkTargetObservation = () => clickButton('linkedTickBox');
 
 /*----------------------------------------------------------------------*/
 
@@ -161,9 +167,6 @@ export const clickNavId = (testId, title) => {
     verifyContent('pageTitle', title);
   }
 };
-export const clickPanelButtonPanels = () => clickNavId('Panel Maintenance', 'Panel Maintenance');
-export const clickPanelButtonReviews = () => clickNavId('REVIEW PROPOSALS', 'REVIEW PROPOSALS');
-export const clickPanelButtonProposals = () => clickNavId('panelBtn3', '');
 export const clickFirstPanel = () =>
   get('dataGridId')
     .find('.MuiDataGrid-row')
@@ -171,11 +174,6 @@ export const clickFirstPanel = () =>
     .click();
 
 export const clickPanelProposalsTab = () => selectId('simple-tab-1');
-
-export const enterPanelName = uniqueName => entry('panelName', uniqueName || 'Panel Name');
-
-export const verifyPanelCreatedAlertFooter = () =>
-  verifyContent('timeAlertFooter', 'Panel added with unique identifier');
 
 export const verifyPanelOnGridIsVisible = PanelName => {
   verifyContent('dataGridId', PanelName);
@@ -211,6 +209,7 @@ export const clickUserMenuReviews = () => clickSignINBtns('menuItemReviews', 'RE
 export const clickUserMenuDecisions = () =>
   clickSignINBtns('menuItemReviewDecisions', 'REVIEW DECISIONS');
 export const clickUserMenuLogout = () => click('menuItemLogout');
+export const clickListOfTargets = () => cy.get('#listOfTargets').click();
 
 /*----------------------------------------------------------------------*/
 
@@ -228,6 +227,15 @@ export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalA
 
 export const verifyProposalCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Proposal added with unique identifier');
+
+export const verifyUserFoundAlertFooter = () =>
+  verifyContent('timeAlertFooter', 'User was successfully found.');
+
+export const verifyUserInvitedAlertFooter = () =>
+  verifyContent('timeAlertFooter', 'Email invite has been sent.');
+
+export const verifyTeamMemberAccessUpdatedAlertFooter = () =>
+  verifyContent('timeAlertFooter', "Team member's access has been updated.");
 
 export const clickEditProposal = () => {
   get('EditRoundedIcon')
@@ -251,6 +259,11 @@ export const createStandardProposal = () => {
   clickCreateProposal();
   verifyProposalCreatedAlertFooter();
   pageConfirmed('TEAM');
+};
+
+export const createMock = () => {
+  clickAddMock();
+  pageConfirmed('TARGET');
 };
 
 export const createStandardProposalLoggedIn = () => {
@@ -331,7 +344,6 @@ export const addM2TargetUsingResolve = () => {
   cy.get('[id="name"]').type('M2');
   clickResolveButton();
 };
-
 export const verifyOnLandingPageFilterIsVisible = () => {
   cy.get('[data-testid="proposalType"]').should('exist');
   cy.get('[data-testid="proposalType"]').realClick();
@@ -344,6 +356,10 @@ export const verifyMockedProposalOnLandingPageIsVisible = () => {
 
 export const verifyOnLandingPageNoProposalMsgIsVisible = () => {
   cy.get('[id="standardAlertId"]').should('contain', 'THERE ARE NO PROPOSALS TO BE DISPLAYED');
+};
+
+export const verifyOnLandingPageNotLoggedInMsgIsVisible = () => {
+  cy.get('[id="standardAlertId"]').should('contain', 'NOT LOGGED IN, NO PROPOSALS AVAILABLE');
 };
 
 export const verifyObservationInTable = () => {
@@ -399,14 +415,23 @@ export const verifyUnlinkedObservationInTable = () => {
     .should('have.length', 1);
 };
 
+export const clickUnlinkedObservationInTable = () => {
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .should('contain', 'obs-')
+    .should('contain', 'AA4')
+    .click({ multiple: true });
+};
+
+export const verifySensCalcStatus = () => {
+  cy.get('[data-testid="statusId"]')
+    .should('be.visible')
+    .invoke('attr', 'aria-label')
+    .should('include', 'Status : OK');
+};
+
 export const createObservation = () => {
-  //navigate to observation page
-  clickToGeneralPage();
-  clickToSciencePage();
-  clickToTargetPage();
-  clickToObservationPage();
   //add default observation
   clickObservationSetup();
   clickAddObservationEntry();
-  verifyUnlinkedObservationInTable();
 };

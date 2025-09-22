@@ -5,7 +5,7 @@ import TechnicalPage from './TechnicalPage';
 
 // Mock translations
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
+  useScopedTranslation: () => ({
     t: (key: string) => key
   })
 }));

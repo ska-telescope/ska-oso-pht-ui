@@ -1,15 +1,13 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TableScienceReviews from './TableScienceReviews';
 import { CONFLICT_REASONS, REVIEW_TYPE } from '@/utils/constants';
 
 const mockNavigate = vi.fn();
-const mockUpdateAppContent1 = vi.fn();
-const mockUpdateAppContent2 = vi.fn();
-const mockUpdateAppContent5 = vi.fn();
 
 vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
+  useScopedTranslation: () => ({
     t: (key: string) => key
   })
 }));
@@ -17,19 +15,6 @@ vi.mock('react-i18next', () => ({
 vi.mock('react-router-dom', () => {
   return {
     useNavigate: () => mockNavigate
-  };
-});
-
-vi.mock('@ska-telescope/ska-gui-local-storage', () => {
-  return {
-    storageObject: {
-      useStore: () => ({
-        clearApp: vi.fn(),
-        updateAppContent1: mockUpdateAppContent1,
-        updateAppContent2: mockUpdateAppContent2,
-        updateAppContent5: mockUpdateAppContent5
-      })
-    }
   };
 });
 
@@ -92,13 +77,21 @@ describe('TableScienceReviews', () => {
   });
 
   it('renders table headers and rows', () => {
-    render(<TableScienceReviews data={mockData} excludeFunction={vi.fn()} />);
+    render(
+      <StoreProvider>
+        <TableScienceReviews data={mockData} excludeFunction={vi.fn()} />
+      </StoreProvider>
+    );
     expect(screen.getByText('status.label')).toBeInTheDocument();
   });
 
   it('calls excludeFunction when status is not "To Do"', () => {
     const excludeFn = vi.fn();
-    render(<TableScienceReviews data={mockData} excludeFunction={excludeFn} />);
+    render(
+      <StoreProvider>
+        <TableScienceReviews data={mockData} excludeFunction={excludeFn} />
+      </StoreProvider>
+    );
     // TODO
     // const icon = screen.getByTestId('includeIcon-proposal-1-0');
     // fireEvent.click(icon);
@@ -107,7 +100,11 @@ describe('TableScienceReviews', () => {
 
   it('does not call excludeFunction when status is "To Do"', () => {
     const excludeFn = vi.fn();
-    render(<TableScienceReviews data={mockData} excludeFunction={excludeFn} />);
+    render(
+      <StoreProvider>
+        <TableScienceReviews data={mockData} excludeFunction={excludeFn} />
+      </StoreProvider>
+    );
     // TODO
     // const icon = screen.getByTestId('includeIcon-proposal-1-1');
     // fireEvent.click(icon);
