@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 UNRELEASED
 ----------
 * Changed: Non logged in users have restricted use of the PHT to target and observation pages.
+* Fixed: Display of Non-Gaussian Sensitivity Calculator results
 
 5.1.0
 ----------
