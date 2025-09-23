@@ -40,6 +40,9 @@ export const BAND_2 = 2;
 export const BAND_5A = 3;
 export const BAND_5B = 4;
 
+export const BAND_1_STR = 'Band_1';
+export const BAND_2_STR = 'Band_2';
+
 export const BAND_5A_STR = 'Band_5a';
 export const BAND_5B_STR = 'Band_5b';
 

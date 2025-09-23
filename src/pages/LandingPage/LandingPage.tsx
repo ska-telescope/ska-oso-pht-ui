@@ -32,7 +32,6 @@ import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/use
 import Proposal from '@/utils/types/proposal';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
 import { validateProposal } from '@/utils/proposalValidation';
-import ObservatoryData from '@/utils/types/observatoryData';
 import {
   cypressToken,
   DUMMY_PROPOSAL_ID,
