@@ -16,6 +16,7 @@ import { presentDate, presentLatex, presentTime } from '@utils/present/present';
 import Investigator from '@utils/types/investigator.tsx';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
 import GetProposal from '@services/axios/get/getProposal/getProposal';
+import ObservatoryData from '@/utils/types/observatoryData';
 import GetObservatoryData from '@/services/axios/get/getObservatoryData/getObservatoryData';
 import AddButton from '@/components/button/Add/Add';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
@@ -31,7 +32,6 @@ import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/use
 import Proposal from '@/utils/types/proposal';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
 import { validateProposal } from '@/utils/proposalValidation';
-import ObservatoryData from '@/utils/types/observatoryData';
 import {
   cypressToken,
   DUMMY_PROPOSAL_ID,

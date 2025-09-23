@@ -22,11 +22,11 @@ import {
 import {
   BANDWIDTH_TELESCOPE,
   OBS_TYPES,
-  OBSERVATION,
   SUPPLIED_TYPE_SENSITIVITY,
   TYPE_CONTINUUM
 } from '@utils/constants.ts';
 import { SensCalcResults, ResultsSection } from '@utils/types/sensCalcResults.tsx';
+import { OBSERVATION } from '@utils/observationConstantData.ts';
 import {
   addFrequency,
   addRobustProperty,

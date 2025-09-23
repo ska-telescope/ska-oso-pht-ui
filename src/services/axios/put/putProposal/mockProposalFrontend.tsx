@@ -116,7 +116,7 @@ export const MockProposalFrontend: Proposal = {
     {
       id: 'obs-obR1Ej',
       telescope: 2,
-      subarray: 8,
+      subarray: 3,
       type: 1,
       imageWeighting: 1,
       observingBand: 0,
@@ -137,9 +137,9 @@ export const MockProposalFrontend: Proposal = {
       bandwidth: null,
       tapering: undefined,
       weather: undefined,
-      continuumBandwidth: 300,
+      continuumBandwidth: 150,
       continuumBandwidthUnits: 2,
-      numStations: 512,
+      numStations: 68,
       num13mAntennas: undefined,
       num15mAntennas: undefined
     }
@@ -298,7 +298,7 @@ export const MockProposalFrontendZoom: Proposal = {
     {
       id: 'obs-arMIoY',
       telescope: 2,
-      subarray: 8,
+      subarray: 3,
       type: 0,
       imageWeighting: 1,
       observingBand: 0,
@@ -321,7 +321,7 @@ export const MockProposalFrontendZoom: Proposal = {
       effectiveResolution: '14.13 Hz (21.2 m/s)',
       spectralAveraging: 1,
       linked: 'm2',
-      numStations: 512,
+      numStations: 68,
       num13mAntennas: undefined,
       num15mAntennas: undefined
     }

@@ -127,13 +127,13 @@ export const MockProposalBackend: ProposalBackend = {
         elevation: 20,
         array_details: {
           array: 'ska_low',
-          subarray: 'aa4',
-          number_of_stations: 512
+          subarray: 'aa2',
+          number_of_stations: 68
         },
         observation_type_details: {
           observation_type: 'continuum',
           bandwidth: {
-            value: 300,
+            value: 150,
             unit: 'MHz'
           },
           central_frequency: {
@@ -278,8 +278,8 @@ export const MockProposalBackendZoom: ProposalBackend = {
         elevation: 20,
         array_details: {
           array: 'ska_low',
-          subarray: 'aa4',
-          number_of_stations: 512
+          subarray: 'aa2',
+          number_of_stations: 68
         },
         observation_type_details: {
           observation_type: 'zoom',

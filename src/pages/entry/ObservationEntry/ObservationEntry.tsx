@@ -18,7 +18,6 @@ import {
   LAB_POSITION,
   NAV,
   BAND_LOW,
-  OBSERVATION,
   STATUS_PARTIAL,
   SUPPLIED_VALUE_DEFAULT_MID,
   TYPE_CONTINUUM,
@@ -58,6 +57,7 @@ import {
   getScaledBandwidthOrFrequency
 } from '@utils/helpers.ts';
 import ObservatoryData from '@utils/types/observatoryData.tsx';
+import { OBSERVATION } from '@utils/observationConstantData.ts';
 import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Proposal from '../../../utils/types/proposal';
@@ -101,7 +101,7 @@ export default function ObservationEntry() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const [subarrayConfig, setSubarrayConfig] = React.useState(8);
+  const [subarrayConfig, setSubarrayConfig] = React.useState(3);
   const [observingBand, setObservingBand] = React.useState(0);
   const [observationType, setObservationType] = React.useState(1);
   const [effectiveResolution, setEffectiveResolution] = React.useState('');
