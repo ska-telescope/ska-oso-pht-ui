@@ -11,7 +11,7 @@ import {
   Spacer,
   SPACER_VERTICAL
 } from '@ska-telescope/ska-gui-components';
-//
+import moment from 'moment';
 import { presentDate, presentLatex, presentTime } from '@utils/present/present';
 import Investigator from '@utils/types/investigator.tsx';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
@@ -77,6 +77,7 @@ export default function LandingPage() {
   const getAccess = () => application.content4 as ProposalAccess[];
   const setAccess = (access: ProposalAccess[]) => updateAppContent4(access);
   const getProposal = () => application.content2 as Proposal;
+  const osdData = () => application.content3 as ObservatoryData;
 
   const mock = ({
     abstract: '',
@@ -164,8 +165,7 @@ export default function LandingPage() {
       setFetchList(!fetchList);
       setObservatoryData(!observatoryData);
     }
-    const content = application?.content3;
-    const isEmpty = !content || (Array.isArray(content) && content.length === 0);
+    const isEmpty = !osdData || (Array.isArray(osdData) && osdData.length === 0);
     if (isEmpty) {
       fetchObservatoryData();
     }
@@ -251,9 +251,22 @@ export default function LandingPage() {
     }
   };
 
-  const CanEdit = (e: { row: { id: string; status: string } }) => {
-    return e.row.status === PROPOSAL_STATUS.DRAFT && accessUpdate(getAccess(), e.row.id);
+  const osdClosed = () => {
+    const osd = osdData();
+    if (osd) {
+      const closes = osd?.observatoryPolicy?.cycleInformation?.proposalClose;
+      return moment(closes).isBefore(moment());
+    } else {
+      return true;
+    }
   };
+
+  const CanEdit = (e: { row: { id: string; status: string } }) => {
+    return (
+      e.row.status === PROPOSAL_STATUS.DRAFT && !osdClosed() && accessUpdate(getAccess(), e.row.id)
+    );
+  };
+
   const CanClone = (e: { row: any }) => {
     const update = accessUpdate(getAccess(), e.row.id);
     return update;

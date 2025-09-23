@@ -1,8 +1,12 @@
-import { describe, test } from 'vitest';
-import { render } from '@testing-library/react';
+import { describe, expect, test } from 'vitest';
+import { render, screen, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import SensCalcDisplaySingle from './SensCalcDisplaySingle';
 import { STATUS_INITIAL, STATUS_OK } from '@/utils/constants';
+
+vi.mock('i18next', () => ({
+  t: (key: string) => key
+}));
 
 describe('<SensCalcDisplaySingle />', () => {
   test('renders correctly', () => {
@@ -103,5 +107,105 @@ describe('<SensCalcDisplaySingle />', () => {
         isCustom
       />
     );
+  });
+
+  test('renders correctly ( field, custom )', async () => {
+    render(
+      <SensCalcDisplaySingle
+        sensCalc={{
+          statusGUI: STATUS_OK,
+          section1: [
+            {
+              field: 'targetName',
+              value: 'testValue',
+              units: 'testUnits'
+            },
+            {
+              field: 'testField1',
+              value: 'testValue1',
+              units: 'testUnits1'
+            }
+          ],
+          section2: [
+            {
+              field: 'sensitivity',
+              value: 'testValue2',
+              units: 'testUnits2'
+            },
+            {
+              field: 'testField2',
+              value: 'testValue2',
+              units: 'testUnits2'
+            }
+          ],
+          section3: [
+            {
+              field: 'testField3',
+              value: 'testValue3',
+              units: 'testUnits3'
+            }
+          ]
+        }}
+        show={true}
+        field={'BeamSize'}
+        isCustom
+      />
+    );
+
+    await waitFor(() => {
+      const element = screen.getByTestId('field-BeamSize');
+      expect(element).toBeInTheDocument();
+      expect(element).toHaveTextContent('sensitivityCalculatorResults.custom');
+    });
+  });
+
+  test('renders correctly ( field, natural )', async () => {
+    render(
+      <SensCalcDisplaySingle
+        sensCalc={{
+          statusGUI: STATUS_OK,
+          section1: [
+            {
+              field: 'targetName',
+              value: 'testValue',
+              units: 'testUnits'
+            },
+            {
+              field: 'testField1',
+              value: 'testValue1',
+              units: 'testUnits1'
+            }
+          ],
+          section2: [
+            {
+              field: 'sensitivity',
+              value: 'testValue2',
+              units: 'testUnits2'
+            },
+            {
+              field: 'testField2',
+              value: 'testValue2',
+              units: 'testUnits2'
+            }
+          ],
+          section3: [
+            {
+              field: 'testField3',
+              value: 'testValue3',
+              units: 'testUnits3'
+            }
+          ]
+        }}
+        show={true}
+        field={'BeamSize'}
+        isNatural={true}
+      />
+    );
+
+    await waitFor(() => {
+      const element = screen.getByTestId('field-BeamSize');
+      expect(element).toBeInTheDocument();
+      expect(element).toHaveTextContent('sensitivityCalculatorResults.nonGaussian');
+    });
   });
 });

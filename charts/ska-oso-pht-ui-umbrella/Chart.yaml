@@ -14,6 +14,7 @@ dependencies:
 # for all ODA operations (load proposal, save proposal, etc.)
 - name: ska-oso-services
   version: 5.1.0
+  version: 5.1.0
   repository: https://artefact.skao.int/repository/helm-internal
 
 # Sensitivity calculator services required by the PHT for the observation page

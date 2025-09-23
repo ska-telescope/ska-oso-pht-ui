@@ -45,7 +45,7 @@ export const isReviewerChair = () => hasAccess(SW_ENGINEER) || hasAccess(OPS_REV
 
 const Account = () => {
   const { accounts } = useMsal();
-  return accounts.length > 0 ? accounts[0] : '';
+  return accounts?.length > 0 ? accounts[0] : '';
 };
 
 export const getUserId = () => {

@@ -14,13 +14,15 @@ interface SensCalcDisplaySingleProps {
   show?: boolean;
   field: string;
   isCustom?: boolean;
+  isNatural?: boolean;
 }
 
 export default function SensCalcDisplaySingle({
   sensCalc,
   show = false,
   field,
-  isCustom = false
+  isCustom = false,
+  isNatural = false
 }: SensCalcDisplaySingleProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
 
@@ -48,6 +50,13 @@ export default function SensCalcDisplaySingle({
 
   const isDisabled = () => sensCalc?.statusGUI !== STATUS_OK;
 
+  const PresentCustomResultValue = () => {
+    if (isNatural) {
+      return t('sensitivityCalculatorResults.nonGaussian');
+    }
+    return t('sensitivityCalculatorResults.customArray');
+  };
+
   return (
     <>
       {show && field === 'icon' && (
@@ -63,10 +72,12 @@ export default function SensCalcDisplaySingle({
         />
       )}
       {show && field !== 'icon' && (
-        <>
-          {presentValue(FieldFetch(VALUE, field))}{' '}
+        <div data-testid={`field-${field}`}>
+          {(isNatural || isCustom) && field === 'BeamSize'
+            ? PresentCustomResultValue()
+            : presentValue(FieldFetch(VALUE, field))}
           {isCustom ? '' : presentUnits(FieldFetch(UNITS, field))}
-        </>
+        </div>
       )}
       {show && field === 'icon' && openDialog && (
         <SensCalcModalSingle
@@ -74,6 +85,7 @@ export default function SensCalcDisplaySingle({
           onClose={() => setOpenDialog(false)}
           data={sensCalc}
           isCustom={isCustom}
+          isNatural={isNatural}
         />
       )}
     </>
