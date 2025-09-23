@@ -250,7 +250,7 @@
   },
   "email": {
     "label": "Email",
-    "help": "The email is a required field and must be provided. The investigator will be invited to participate in this proposal using this email so please ensure it is correct.",
+    "help": "The email is a required field. The investigator will be invited to participate in this proposal using this email, so please ensure it is correct.",
     "invitation": {
       "subject": "Proposal invitation.",
       "body": "You have been invited to contribute to proposal {{id}}"
@@ -380,7 +380,7 @@
   },
   "name": {
     "label": "Name",
-    "help": "Name of the target/object. If you want to automatically populate the coordinates then provide a name of a known object and use the resolve button to query SIMBAD first and NED if not found. However, you can provide an arbitrary target/object name which can contain any character and enter the coordinate values."
+    "help": "Name of the target/object. If you want to automatically populate the coordinates, then provide a name of a known object and use the resolve button to query SIMBAD first and NED if not found. However, you can provide an arbitrary target/object name which can contain any character and enter the coordinate values."
   },
   "notSelected": {
     "label": "Not Selected"
@@ -524,6 +524,7 @@
         "preview": "Preview",
         "upload": "Upload"
       },
+      "error": "It was unable to upload the Science Justification PDF",
       "success": "Science Justification PDF successfully uploaded",
       "tooltip": {
         "choose": "Choose the science justification PDF for upload",
@@ -544,6 +545,7 @@
         "preview": "Preview",
         "upload": "Upload"
       },
+      "error": "It was unable to upload the Technical Justification PDF",
       "success": "Technical Justification PDF successfully uploaded",
       "tooltip": {
         "choose": "Choose the technical justification PDF for upload",
@@ -705,7 +707,11 @@
     }
   },
   "recommendations": {
-    "label": "Recommendations"
+    "label": "Recommendation",
+    "RECOMMEND-ACCEPT": "Accepted",
+    "RECOMMEND-ACCEPT-REVISION": "Accepted with revision",
+    "RECOMMEND-REJECT": "Rejected",
+    "undefined": ""
   },
   "referenceCoordinates": {
     "help": "Only Galactic and ICRS reference systems are available.",
@@ -799,7 +805,8 @@
       "Galaxy Evolution": "Galaxy Evolution",
       "Radio Transients": "Radio Transients",
       "Cosmic Magnetism": "Cosmic Magnetism",
-      "HI Surveys": "HI Surveys"
+      "HI Surveys": "HI Surveys",
+      "undefined": ""
     },
     "statusCategory": {
       "notSpecified": "Not specified",
@@ -810,6 +817,7 @@
   },
   "reviewerType": {
     "all": "Review types",
+    "both": "Scientific / Technical",
     "science": "Scientific",
     "technical": "Technical"
   },
@@ -981,10 +989,10 @@
     "label": "Spectral Resolution"
   },
   "srcNet": {
-    "label": "SrcNet"
+    "label": "SRCNet"
   },
   "srcNetComments": {
-    "label": "SrcNet Comments",
+    "label": "SRCNet Comments",
     "tooltip": ""
   },
   "status": {
@@ -1241,11 +1249,11 @@
       "pageError": "The DATA PRODUCTS page is not complete"
     },
     "8": {
-      "status": "SrcNet",
-      "title": "SrcNet Resources",
-      "titleShort": "SrcNet",
-      "desc": "This page allows you to request and define SRC Net data products.",
-      "pageError": "The SRC NET page is not complete"
+      "status": "SRCNet",
+      "title": "SRCNet Resources",
+      "titleShort": "SRCNet",
+      "desc": "This page allows you to request and define SRCNet data products.",
+      "pageError": "The SRCNet page is not complete"
     },
     "9": {
       "title": "Title",

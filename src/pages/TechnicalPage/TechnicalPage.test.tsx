@@ -3,13 +3,6 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import TechnicalPage from './TechnicalPage';
 
-// Mock translations
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key
-  })
-}));
-
 // Mock login
 vi.mock('@ska-telescope/ska-login-page', () => ({
   isLoggedIn: () => true

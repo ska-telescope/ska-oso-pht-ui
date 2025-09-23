@@ -90,6 +90,8 @@ export default function SciencePage() {
       const uploadResult = await PutUploadPDF(signedUrl, theFile);
 
       if (uploadResult.error) {
+        setUploadStatus(FileUploadStatus.ERROR);
+        notifyError(t('pdfUpload.science.error'));
         throw new Error('Science PDF Not Uploaded');
       }
       const sciencePDFUploaded = {

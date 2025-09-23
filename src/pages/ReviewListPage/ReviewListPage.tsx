@@ -283,11 +283,19 @@ export default function ReviewListPage() {
     tecReview: { reviewType: { isFeasible: string } };
     sciReview: { status: string; reviewType: { conflict: { hasConflict: boolean } } };
   }) => {
+    console.log(
+      'TREVOR',
+      isReviewerScience(),
+      row?.sciReview,
+      isFeasible(row),
+      row?.sciReview?.reviewType.conflict.hasConflict !== true,
+      row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED
+    );
     return (
       isReviewerScience() &&
       row?.sciReview &&
       isFeasible(row) &&
-      row?.sciReview?.reviewType.conflict.hasConflict === false &&
+      row?.sciReview?.reviewType.conflict.hasConflict !== true &&
       row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED
     );
   };
@@ -300,11 +308,13 @@ export default function ReviewListPage() {
 
   const canSubmit = (row: any) => {
     const sciRec =
+      isReviewerScience() &&
       row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED &&
       row?.sciReview?.comments?.length > 0 &&
       row?.sciReview?.reviewType?.rank > 0;
 
     const tecRec =
+      isReviewerTechnical() &&
       row?.tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED &&
       row?.tecReview?.reviewType?.isFeasible?.length > 0 &&
       hasTechnicalComments(row?.tecReview);
@@ -353,7 +363,8 @@ export default function ReviewListPage() {
     headerName: t('feasibility.label'),
     width: 120,
     renderCell: (e: { row: any }) => {
-      return e?.row?.tecReview?.reviewType?.isFeasible; // TODO use i18n
+      const str = e?.row?.tecReview?.reviewType?.isFeasible;
+      return str ? t(str) : '';
     }
   };
 

@@ -6,12 +6,6 @@ import { CONFLICT_REASONS, REVIEW_TYPE } from '@/utils/constants';
 
 const mockNavigate = vi.fn();
 
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key
-  })
-}));
-
 vi.mock('react-router-dom', () => {
   return {
     useNavigate: () => mockNavigate
