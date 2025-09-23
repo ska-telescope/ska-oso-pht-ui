@@ -283,14 +283,6 @@ export default function ReviewListPage() {
     tecReview: { reviewType: { isFeasible: string } };
     sciReview: { status: string; reviewType: { conflict: { hasConflict: boolean } } };
   }) => {
-    console.log(
-      'TREVOR',
-      isReviewerScience(),
-      row?.sciReview,
-      isFeasible(row),
-      row?.sciReview?.reviewType.conflict.hasConflict !== true,
-      row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED
-    );
     return (
       isReviewerScience() &&
       row?.sciReview &&
