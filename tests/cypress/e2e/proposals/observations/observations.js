@@ -5,7 +5,6 @@ export const verifySpectralAverageRange = value => {
   verifySpectralAverageRangeError();
 };
 
-
 export const verifyContinuumSpectralAverageRangeAA2 = value => verifySpectralAverageRange(13813);
 
 export const verifyZoomSpectralAverageRangeAA2 = value => {
