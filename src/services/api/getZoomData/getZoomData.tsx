@@ -25,10 +25,10 @@ import {
   BANDWIDTH_TELESCOPE,
   FREQUENCY_HZ,
   FREQUENCY_UNITS,
-  OBSERVATION,
   SUPPLIED_TYPE_SENSITIVITY
 } from '@utils/constants.ts';
 import { ResultsSection, SensCalcResults } from '@utils/types/sensCalcResults.tsx';
+import { OBSERVATION } from '@utils/observationConstantData.ts';
 import {
   pointingCentre,
   addValue,

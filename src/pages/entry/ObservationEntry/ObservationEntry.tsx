@@ -18,7 +18,6 @@ import {
   LAB_POSITION,
   NAV,
   BAND_LOW,
-  OBSERVATION,
   STATUS_PARTIAL,
   SUPPLIED_VALUE_DEFAULT_MID,
   TYPE_CONTINUUM,
@@ -58,6 +57,7 @@ import {
   getScaledBandwidthOrFrequency
 } from '@utils/helpers.ts';
 import ObservatoryData from '@utils/types/observatoryData.tsx';
+import { OBSERVATION } from '@utils/observationConstantData.ts';
 import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Proposal from '../../../utils/types/proposal';

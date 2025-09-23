@@ -6,9 +6,9 @@ import {
   BAND_5A_STR,
   BAND_5B_STR,
   BANDWIDTH_TELESCOPE,
-  OBSERVATION,
   TELESCOPE_LOW_NUM
 } from '@utils/constants.ts';
+import { OBSERVATION } from '@utils/observationConstantData.ts';
 import sensCalHelpers from '../../../services/api/sensitivityCalculator/sensCalHelpers';
 import ObservatoryData from '@/utils/types/observatoryData';
 
