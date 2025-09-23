@@ -104,9 +104,13 @@ export const mockEmailAPI = () => {
 
 /*----------------------------------------------------------------------*/
 
-export const clickButton = testId => {
+export const verify = testId => {
   verifyExists(testId);
   verifyVisible(testId);
+};
+
+export const clickButton = testId => {
+  verify(testId);
   click(testId);
 };
 
@@ -210,6 +214,32 @@ export const clickUserMenuDecisions = () =>
   clickSignINBtns('menuItemReviewDecisions', 'REVIEW DECISIONS');
 export const clickUserMenuLogout = () => click('menuItemLogout');
 export const clickListOfTargets = () => cy.get('#listOfTargets').click();
+
+/*----------------------------------------------------------------------*/
+
+function verifyUserMenu(testId, shouldExist) {
+  const selector = `[data-testid="${testId}"]`;
+
+  if (shouldExist) {
+    cy.get(selector)
+      .should('exist')
+      .and('be.visible');
+  } else {
+    cy.get('body').then($body => {
+      if ($body.find(selector).length > 0) {
+        cy.get(selector).should('not.be.visible');
+      } else {
+        cy.log(`Menu item "${testId}" not found, as expected`);
+      }
+    });
+  }
+}
+export const verifyUserMenuOverview = exists => verifyUserMenu('menuItemOverview', exists);
+export const verifyUserMenuProposals = exists => verifyUserMenu('menuItemProposals', exists);
+export const verifyUserMenuVerification = exists => verifyUserMenu('menuItemVerification', exists);
+export const verifyUserMenuPanels = exists => verifyUserMenu('menuItemPanelSummary', exists);
+export const verifyUserMenuReviews = exists => verifyUserMenu('menuItemReviews', exists);
+export const verifyUserMenuDecisions = exists => verifyUserMenu('menuItemReviewDecisions', exists);
 
 /*----------------------------------------------------------------------*/
 

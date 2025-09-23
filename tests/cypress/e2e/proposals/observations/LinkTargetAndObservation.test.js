@@ -10,7 +10,7 @@ import {
   createObservation,
   initializeUserNotLoggedIn,
   verifySensCalcStatus
-} from '../common/common';
+} from '../../common/common';
 beforeEach(() => {
   initializeUserNotLoggedIn();
   createMock();

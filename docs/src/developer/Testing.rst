@@ -71,7 +71,7 @@ import {
   clickAddProposal,
   clickCreateProposal, clickHome, clickSaveProposal,
   clickStandardProposalSubTypeTargetOfOpportunity, verifyProposalOnLandingPage
-} from '../common/common';
+} from '../../common/common';
 
 Given('I am a PHT user who wants to create a proposal', () => {
   clickAddProposal()

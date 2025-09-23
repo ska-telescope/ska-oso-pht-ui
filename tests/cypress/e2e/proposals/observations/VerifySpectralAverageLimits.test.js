@@ -1,14 +1,10 @@
 import {
   clearLocalStorage,
   clickObservationSetup,
-  clickToGeneralPage,
   clickToObservationPage,
-  clickToSciencePage,
-  clickToTargetPage,
   createMock,
-  createStandardProposal,
   initializeUserNotLoggedIn
-} from '../common/common';
+} from '../../common/common';
 import {
   selectObservationTypeZoom,
   selectSubArrayAA1,
@@ -62,10 +58,6 @@ describe('Creating Observations, Verify spectral average limits, Zoom ', () => {
     commonConfiguration();
     // switch to Observation type Zoom
     selectObservationTypeZoom();
-  });
-
-  afterEach(() => {
-    win.localStorage.clear();
   });
 
   it.skip(
