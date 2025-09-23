@@ -1,6 +1,8 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
+import { useMsal } from '@azure/msal-react';
 import ProposalAccess from '../types/proposalAccess';
 import {
+  getUserName,
   hasAccess,
   isSoftwareEngineer,
   isReviewerAdmin,
@@ -21,6 +23,7 @@ import {
   SW_ENGINEER
 } from './aaaUtils';
 
+type Mock = ReturnType<typeof vi.fn>;
 let overrideGroups = '';
 
 const PROPOSAL_ACCESS_VIEW = 'view';
@@ -45,16 +48,54 @@ const mockAccessList: ProposalAccess[] = [
   }
 ];
 
+vi.mock('@azure/msal-react', () => ({
+  useMsal: vi.fn()
+}));
+
 vi.mock('../constants', () => ({
   get APP_OVERRIDE_GROUPS() {
     return overrideGroups;
   }
 }));
 
+describe('getUserName', () => {
+  it('returns name when account has name property', () => {
+    (useMsal as Mock).mockReturnValue({
+      accounts: [{ name: 'Jane Doe' }]
+    });
+
+    expect(getUserName()).toBe('Jane Doe');
+  });
+
+  it('returns empty string when account has no name', () => {
+    (useMsal as Mock).mockReturnValue({
+      accounts: [{}]
+    });
+
+    expect(getUserName()).toBe('');
+  });
+
+  it('returns empty string when accounts array is empty', () => {
+    (useMsal as Mock).mockReturnValue({
+      accounts: []
+    });
+
+    expect(getUserName()).toBe('');
+  });
+
+  it('returns empty string when accounts is undefined', () => {
+    (useMsal as Mock).mockReturnValue({
+      accounts: undefined
+    });
+
+    expect(getUserName()).toBe('');
+  });
+});
+
 describe('Permission utilities', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    overrideGroups = ''; // Reset override before each test
+    overrideGroups = '';
   });
 
   it('hasAccess returns true when override matches', () => {
@@ -202,8 +243,8 @@ describe('Access Utilities', () => {
   });
 
   it('accessUpdate returns true if update or submit permission exists', () => {
-    expect(accessUpdate(mockAccessList, 'prsl-001')).toBe(true); // submit
-    expect(accessUpdate(mockAccessList, 'prsl-002')).toBe(true); // update
+    expect(accessUpdate(mockAccessList, 'prsl-001')).toBe(true);
+    expect(accessUpdate(mockAccessList, 'prsl-002')).toBe(true);
   });
 
   it('accessUpdate returns false if neither permission exists', () => {
@@ -212,8 +253,8 @@ describe('Access Utilities', () => {
   });
 
   it('accessView returns true if view or update or submit permission exists', () => {
-    expect(accessView(mockAccessList, 'prsl-001')).toBe(true); // view + submit
-    expect(accessView(mockAccessList, 'prsl-002')).toBe(true); // update
+    expect(accessView(mockAccessList, 'prsl-001')).toBe(true);
+    expect(accessView(mockAccessList, 'prsl-002')).toBe(true);
   });
 
   it('accessView returns false if no relevant permission exists', () => {
