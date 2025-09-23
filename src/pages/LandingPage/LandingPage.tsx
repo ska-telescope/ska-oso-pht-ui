@@ -16,6 +16,7 @@ import { presentDate, presentLatex, presentTime } from '@utils/present/present';
 import Investigator from '@utils/types/investigator.tsx';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
 import GetProposal from '@services/axios/get/getProposal/getProposal';
+import { OBSERVATION } from '@utils/observationConstantData.ts';
 import GetObservatoryData from '@/services/axios/get/getObservatoryData/getObservatoryData';
 import AddButton from '@/components/button/Add/Add';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
@@ -154,7 +155,11 @@ export default function LandingPage() {
       if (typeof response === 'string' || (response && (response as any).error)) {
         setAxiosError(response.toString());
       } else {
-        updateAppContent3(response as ObservatoryData);
+        const combined = {
+          constantData: OBSERVATION,
+          osdData: response
+        };
+        updateAppContent3(combined);
       }
     };
     if (!loggedIn && !cypressToken) {
