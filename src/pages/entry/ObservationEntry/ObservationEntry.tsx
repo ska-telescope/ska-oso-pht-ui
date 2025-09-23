@@ -67,6 +67,7 @@ import NumStations from '../../../components/fields/numStations/NumStations';
 import ContinuumBandwidthField from '../../../components/fields/bandwidthFields/continuumBandwidth/continuumBandwidth';
 import BandwidthField from '../../../components/fields/bandwidthFields/bandwidth/bandwidth';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { OBSERVATION } from '@utils/observationConstantData.ts';
 
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 6;
@@ -86,7 +87,6 @@ export default function ObservationEntry() {
   const PAGE = isEdit() ? 14 : 10;
 
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
-  const getObservatoryData = () => application.content3 as ObservatoryData;
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -189,7 +189,6 @@ export default function ObservationEntry() {
         return OB_SUBARRAY_AA2;
     } else if (inBand === BAND_5A || inBand === BAND_5B) {
         return OB_SUBARRAY_AA2;
-
     } else if (inBand === BAND_1 || inBand === BAND_2) {
         return OB_SUBARRAY_AA2;
     }
@@ -251,18 +250,18 @@ export default function ObservationEntry() {
   };
 
   const setTheSubarrayConfig = (e: React.SetStateAction<number>) => {
-    const record = getObservatoryData().constantData?.array[telescope() - 1].subarray.find(element => element.value === e);
-
+    const record = OBSERVATION.array[telescope() - 1].subarray.find(element => element.value === e);
     if (record) {
+      const data: ObservatoryData = application.content3 as ObservatoryData;
       //Set value using OSD Data if Low AA2
       if (isLow() && isAA2(record.value)) {
-        setNumOfStations(getObservatoryData().osdData?.capabilities?.low?.AA2?.numberStations ?? undefined);
+        setNumOfStations(data?.capabilities?.low?.AA2?.numberStations ?? undefined);
       } else {
         setNumOfStations(record.numOfStations);
       }
       //Set value using OSD Data if Mid AA2
       if (!isLow() && isAA2(record.value)) {
-        setNumOf15mAntennas(getObservatoryData().osdData?.capabilities?.mid?.AA2?.numberSkaDishes ?? undefined);
+        setNumOf15mAntennas(data?.capabilities?.mid?.AA2?.numberSkaDishes ?? undefined);
       } else {
         setNumOf15mAntennas(record.numOf15mAntennas);
       }
@@ -317,30 +316,30 @@ export default function ObservationEntry() {
   const calculateCentralFrequency = (obsBand: number, subarrayConfig: number) => {
     switch (obsBand) {
       case BAND_1:
-        return lookupArrayValue(getObservatoryData()?.constantData?.CentralFrequencyOB1, subarrayConfig);
+        return lookupArrayValue(OBSERVATION.CentralFrequencyOB1, subarrayConfig);
       case BAND_2:
-        return lookupArrayValue(getObservatoryData()?.constantData?.CentralFrequencyOB2, subarrayConfig);
+        return lookupArrayValue(OBSERVATION.CentralFrequencyOB2, subarrayConfig);
       case BAND_5A:
-        return getObservatoryData()?.constantData?.CentralFrequencyOB5a[0].value;
+        return OBSERVATION.CentralFrequencyOB5a[0].value;
       case BAND_5B:
-        return getObservatoryData()?.constantData?.CentralFrequencyOB5b[0].value;
+        return OBSERVATION.CentralFrequencyOB5b[0].value;
       default:
-        return getObservatoryData()?.constantData?.CentralFrequencyOBLow[0].value;
+        return OBSERVATION.CentralFrequencyOBLow[0].value;
     }
   };
 
   const calculateContinuumBandwidth = (ob: number, sc: number) => {
     switch (ob) {
       case BAND_1:
-        return lookupArrayValue(getObservatoryData()?.constantData?.ContinuumBandwidthOB1, sc);
+        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOB1, sc);
       case BAND_2:
-        return lookupArrayValue(getObservatoryData()?.constantData?.ContinuumBandwidthOB2, sc);
+        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOB2, sc);
       case BAND_5A:
-        return lookupArrayValue(getObservatoryData()?.constantData?.ContinuumBandwidthOB5a, sc);
+        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5a, sc);
       case BAND_5B:
-        return lookupArrayValue(getObservatoryData()?.constantData?.ContinuumBandwidthOB5b, sc);
+        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5b, sc);
       default:
-        return lookupArrayValue(getObservatoryData()?.constantData?.ContinuumBandwidthOBLow, sc);
+        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOBLow, sc);
     }
   };
 
@@ -618,7 +617,7 @@ export default function ObservationEntry() {
 
   const suppliedField = () => {
     const suppliedTypeField = () => {
-      const getOptions = () => (isLow() ? [getObservatoryData()?.constantData?.Supplied[0]] : getObservatoryData()?.constantData?.Supplied);
+      const getOptions = () => (isLow() ? [OBSERVATION?.Supplied[0]] : OBSERVATION?.Supplied);
 
       return (
         <Box pt={1}>
@@ -638,7 +637,7 @@ export default function ObservationEntry() {
 
     const suppliedUnitsField = () => {
       const getOptions = () => {
-        return suppliedType && suppliedType > 0 ? getObservatoryData()?.constantData?.Supplied[suppliedType - 1].units : [];
+        return suppliedType && suppliedType > 0 ? OBSERVATION.Supplied[suppliedType - 1].units : [];
       };
 
       return (
