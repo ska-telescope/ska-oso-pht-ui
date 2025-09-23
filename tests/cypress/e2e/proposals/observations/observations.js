@@ -5,14 +5,12 @@ export const verifySpectralAverageRange = value => {
   verifySpectralAverageRangeError();
 };
 
-export const verifyContinuumSpectralAverageRangeAA4 = value => verifySpectralAverageRange(27625);
 
 export const verifyContinuumSpectralAverageRangeAA2 = value => verifySpectralAverageRange(13813);
 
-export const verifyContinuumSpectralAverageRangeAA1 = value => verifySpectralAverageRange(6907);
-
-export const verifyZoomSpectralAverageRangeAA2Core = value => verifySpectralAverageRange(865);
-
+export const verifyZoomSpectralAverageRangeAA2 = value => {
+  verifySpectralAverageRange(865);
+};
 export const verifyZoomSpectralAverageRangeCustom = value => {
   verifySpectralAverageRange(865);
 };
