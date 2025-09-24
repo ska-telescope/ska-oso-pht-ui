@@ -28,7 +28,6 @@ import {
   SUPPLIED_TYPE_SENSITIVITY
 } from '@utils/constants.ts';
 import { ResultsSection, SensCalcResults } from '@utils/types/sensCalcResults.tsx';
-import { OBSERVATION } from '@utils/observationConstantData.ts';
 import {
   pointingCentre,
   addValue,
@@ -40,7 +39,12 @@ import {
 import sensCalHelpers from '../sensitivityCalculator/sensCalHelpers';
 import Fetch from '../fetch/Fetch';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 
+function getObservatoryData() {
+  const { application } = storageObject.useStore();
+  return application.content3;
+}
 const mapping = (data: any, target: Target, observation: Observation): SensCalcResults =>
   getFinalResults(target, data, observation);
 interface FinalIndividualResults {
@@ -98,7 +102,7 @@ function getFinalIndividualResultsForZoom(
 
   let transformed_result = results.transformed_result[0]; // ui only uses first result
 
-  const suppliedType = OBSERVATION.Supplied.find(sup => sup.value === theObservation.supplied.type)
+  const suppliedType = getObservatoryData()?.constantData?.Supplied.find(sup => sup.value === theObservation.supplied.type)
     ?.sensCalcResultsLabel;
 
   const shifted1 = shiftSensitivity(transformed_result?.weighted_continuum_sensitivity);
@@ -189,7 +193,7 @@ function getFinalIndividualResultsForZoom(
     field: suppliedType,
     value: theObservation?.supplied?.value?.toString(),
     units:
-      OBSERVATION.Supplied.find(s => s.sensCalcResultsLabel === suppliedType)?.units?.find(
+      getObservatoryData()?.constantData.Supplied.find(s => s.sensCalcResultsLabel === suppliedType)?.units?.find(
         u => u.value === theObservation.supplied.units
       )?.label ?? ''
   };
@@ -224,7 +228,7 @@ const addPropertiesLOW = (
   observation: Observation
 ) => {
   const getBandwidthValues = () =>
-    OBSERVATION.array?.find(item => item.value === observation.telescope)?.bandWidth;
+    getObservatoryData()?.constantData.array?.find(item => item.value === observation.telescope)?.bandWidth;
 
   function getZoomBandwidthValueUnit() {
     const bandWidthValue = getBandwidthValues()?.find(item => item.value === observation?.bandwidth)
@@ -267,7 +271,7 @@ const addPropertiesMID = (
   observation: Observation
 ) => {
   const getBandwidthValues = () =>
-    OBSERVATION.array.find(item => item.value === observation.telescope)?.bandWidth;
+    getObservatoryData()?.constantData.array.find(item => item.value === observation.telescope)?.bandWidth;
 
   function getZoomBandwidthValueUnit() {
     const bandWidthValue = getBandwidthValues()?.find(item => item.value === observation?.bandwidth)
@@ -346,7 +350,7 @@ async function GetZoomData(telescope: Telescope, observation: Observation, targe
 
   // TODO handle custom subarray
   const subArray = (observation: Observation) => {
-    const result = OBSERVATION.array
+    const result = getObservatoryData()?.constantData.array
       .find(t => t.value === observation.telescope)
       ?.subarray?.find(s => s.value === observation.subarray);
     return result ? result.map : '';
