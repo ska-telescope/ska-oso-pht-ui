@@ -83,12 +83,14 @@ export default function TechnicalPage() {
       notifyWarning(t('pdfUpload.technical.warning'));
       const proposal = getProposal();
       const signedUrl = await GetPresignedUploadUrl(authClient, `${proposal.id}-technical.pdf`);
-
-      if (typeof signedUrl != 'string') new Error('Not able to Get Technical PDF Upload URL');
-
+      if (typeof signedUrl != 'string') {
+        setUploadStatus(FileUploadStatus.ERROR);
+        new Error('Not able to Get Technical PDF Upload URL');
+      }
       const uploadResult = await PutUploadPDF(signedUrl, theFile);
-
       if (uploadResult.error) {
+        setUploadStatus(FileUploadStatus.ERROR);
+        notifyError(t('pdfUpload.technical.error'));
         throw new Error('Technical PDF Not Uploaded');
       }
 

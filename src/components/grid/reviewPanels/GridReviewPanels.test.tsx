@@ -5,15 +5,6 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import GetPanelList from '@services/axios/get/getPanelList/getPanelList';
 import GridReviewPanels from './GridReviewPanels';
 
-// Mocks
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => {
-      return key;
-    }
-  })
-}));
-
 vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
   default: () => {
     return {};

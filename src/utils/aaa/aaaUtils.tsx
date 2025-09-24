@@ -32,7 +32,8 @@ export const hasAccess = (group: string) =>
 
 export const isSoftwareEngineer = () => hasAccess(SW_ENGINEER);
 
-export const isReviewerAdmin = () => hasAccess(SW_ENGINEER) || hasAccess(OPS_PROPOSAL_ADMIN);
+export const isReviewerAdminOnly = () => !isSoftwareEngineer() && hasAccess(OPS_PROPOSAL_ADMIN);
+export const isReviewerAdmin = () => isSoftwareEngineer() || isReviewerAdminOnly();
 export const isReviewerScience = () => hasAccess(SW_ENGINEER) || hasAccess(OPS_REVIEWER_SCIENCE);
 export const isReviewerTechnical = () =>
   hasAccess(SW_ENGINEER) || hasAccess(OPS_REVIEWER_TECHNICAL);
