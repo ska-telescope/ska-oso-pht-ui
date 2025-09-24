@@ -16,8 +16,6 @@ import { presentDate, presentLatex, presentTime } from '@utils/present/present';
 import Investigator from '@utils/types/investigator.tsx';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
 import GetProposal from '@services/axios/get/getProposal/getProposal';
-import ObservatoryData from '@/utils/types/observatoryData';
-import GetObservatoryData from '@/services/axios/get/getObservatoryData/getObservatoryData';
 import AddButton from '@/components/button/Add/Add';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
 import EditIcon from '@/components/icon/editIcon/editIcon';
@@ -47,6 +45,7 @@ import {
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { accessUpdate } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useOSD } from '@/services/axios/use/useOSD/useOSD';
 
 export default function LandingPage() {
   const { t } = useScopedTranslation();
@@ -57,7 +56,6 @@ export default function LandingPage() {
     helpComponent,
     updateAppContent1,
     updateAppContent2,
-    updateAppContent3,
     updateAppContent4,
     updateAppContent5
   } = storageObject.useStore();
@@ -70,14 +68,12 @@ export default function LandingPage() {
   const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openViewDialog, setOpenViewDialog] = React.useState(false);
-
-  const [observatoryData, setObservatoryData] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
   const loggedIn = isLoggedIn();
   const getAccess = () => application.content4 as ProposalAccess[];
   const setAccess = (access: ProposalAccess[]) => updateAppContent4(access);
   const getProposal = () => application.content2 as Proposal;
-  const osdData = () => application.content3 as ObservatoryData;
+  const { osdData } = useOSD(setAxiosError);
 
   const mock = ({
     abstract: '',
@@ -150,24 +146,11 @@ export default function LandingPage() {
   }, [fetchList, loggedIn]);
 
   React.useEffect(() => {
-    const fetchObservatoryData = async () => {
-      const response = await GetObservatoryData(authClient, 1);
-      if (typeof response === 'string' || (response && (response as any).error)) {
-        setAxiosError(response.toString());
-      } else {
-        updateAppContent3(response as ObservatoryData);
-      }
-    };
     if (!loggedIn && !cypressToken) {
       updateAppContent2(mock);
     } else {
       updateAppContent2({});
       setFetchList(!fetchList);
-      setObservatoryData(!observatoryData);
-    }
-    const isEmpty = !osdData || (Array.isArray(osdData) && osdData.length === 0);
-    if (isEmpty) {
-      fetchObservatoryData();
     }
   }, []);
 
@@ -251,23 +234,26 @@ export default function LandingPage() {
     }
   };
 
-  const osdClosed = () => {
-    const osd = osdData();
-    if (osd) {
-      const closes = osd?.observatoryPolicy?.cycleInformation?.proposalClose;
-      return moment(closes).isBefore(moment());
+  const osdOpen = () => {
+    // TODO : We need to extend to also check the open date of the OSD record
+    if (osdData) {
+      const closes = osdData?.observatoryPolicy?.cycleInformation?.proposalClose;
+      const formattedTimestamp = closes.replace(/^(\d{4})(\d{2})(\d{2})T/, '$1-$2-$3T');
+      // Use strict ISO parsing
+      const closeMoment = moment.utc(formattedTimestamp, moment.ISO_8601, true);
+      return closeMoment.isValid() ? closeMoment.isAfter(moment.utc()) : true;
     } else {
       return true;
     }
   };
 
-  const CanEdit = (e: { row: { id: string; status: string } }) => {
+  const canEdit = (e: { row: { id: string; status: string } }) => {
     return (
-      e.row.status === PROPOSAL_STATUS.DRAFT && !osdClosed() && accessUpdate(getAccess(), e.row.id)
+      e.row.status === PROPOSAL_STATUS.DRAFT && osdOpen() && accessUpdate(getAccess(), e.row.id)
     );
   };
 
-  const CanClone = (e: { row: any }) => {
+  const canClone = (e: { row: any }) => {
     const update = accessUpdate(getAccess(), e.row.id);
     return update;
   };
@@ -357,13 +343,13 @@ export default function LandingPage() {
       <>
         <EditIcon
           onClick={() => editIconClicked(e.row.id)}
-          disabled={!CanEdit(e)}
-          toolTip={t(CanEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
+          disabled={!canEdit(e)}
+          toolTip={t(canEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
         />
         <ViewIcon onClick={() => viewIconClicked(e.row.id)} toolTip={t('viewProposal.toolTip')} />
         <CloneIcon
           onClick={() => cloneIconClicked(e.row.id)}
-          disabled={!CanClone(e)}
+          disabled={!canClone(e)}
           toolTip={t('cloneProposal.toolTip')}
         />
         <TrashIcon

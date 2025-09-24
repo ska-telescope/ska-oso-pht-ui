@@ -4,13 +4,6 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TargetListSection from './targetListSection';
 
-// Mock translations
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key
-  })
-}));
-
 // Mock proposal data
 const mockProposal = {
   targets: [

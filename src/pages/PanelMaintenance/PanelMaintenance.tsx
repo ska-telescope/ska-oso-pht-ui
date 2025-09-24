@@ -116,7 +116,6 @@ export default function PanelMaintenance() {
   const [panelProposals, setPanelProposals] = React.useState<IdObject[]>([]);
   const [panelReviewers, setPanelReviewers] = React.useState<IdObject[]>([]);
   const [makeAssignment, setMakeAssignment] = React.useState(false);
-  const [, setAxiosError] = React.useState('');
   const { application } = storageObject.useStore();
   const authClient = useAxiosAuthClient();
 
@@ -171,9 +170,7 @@ export default function PanelMaintenance() {
   async function savePanel(panel: Panel): Promise<string | { error: string }> {
     const response = await PutPanel(authClient, panel, getCycleId());
     if (typeof response === 'object' && response?.error) {
-      setAxiosError(
-        typeof response === 'object' && 'error' in response ? response.error : String(response)
-      );
+      // TODO
     }
     return response;
   }

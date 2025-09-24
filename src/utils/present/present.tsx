@@ -58,3 +58,8 @@ export const presentDate = (inString: string, reverse: boolean = false) => {
 export const presentTime = (inString: string) => t('time_format', { date: new Date(inString) });
 export const presentDateTime = (inString: string, reverse: boolean = false) =>
   presentDate(inString, reverse) + ' ' + presentTime(inString);
+
+export const trimText = (text: string, maxLength: number): string => {
+  if (!text || maxLength <= 0) return '';
+  return text.length > maxLength ? text.slice(0, maxLength).trimEnd() + '...' : text;
+};

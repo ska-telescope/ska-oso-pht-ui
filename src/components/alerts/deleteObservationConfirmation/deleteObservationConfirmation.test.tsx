@@ -5,13 +5,6 @@ import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import DeleteObservationConfirmation from './deleteObservationConfirmation';
 
-// Mock translation hook
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key
-  })
-}));
-
 // Mock AlertDialog to expose the onClose handler
 vi.mock('../alertDialog/AlertDialog', () => ({
   default: ({ open, onClose, children }: any) =>

@@ -7,10 +7,6 @@ import PostProposal from '@services/axios/post/postProposal/postProposal.tsx';
 import PageFooterPPT from './PageFooterPPT';
 import { NEW_PROPOSAL_ACCESS } from '@/utils/types/proposalAccess';
 
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({ t: (key: string) => key })
-}));
-
 vi.mock('react-router-dom', () => ({
   useNavigate: vi.fn()
 }));

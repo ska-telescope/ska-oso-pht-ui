@@ -11,12 +11,6 @@ vi.mock('@azure/msal-react', () => ({
   useMsal: vi.fn()
 }));
 
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key
-  })
-}));
-
 vi.mock('react-router-dom', () => ({
   useNavigate: vi.fn()
 }));

@@ -37,17 +37,18 @@ export function putMockPanelDecision(cycleId: string): PanelDecision {
 
 async function PutPanelDecision(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
-  id: string,
-  PanelDecision: PanelDecision,
-  cycleId: string
+  PanelDecision: PanelDecision
 ): Promise<PanelDecision | { error: string }> {
   if (USE_LOCAL_DATA) {
-    return putMockPanelDecision(cycleId);
+    return putMockPanelDecision(PanelDecision.cycle);
   }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}/${id}`;
-    const convertedPanelDecision = mappingPanelDecisionFrontendToBackend(PanelDecision, cycleId);
+    const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}/${PanelDecision.id}`;
+    const convertedPanelDecision = mappingPanelDecisionFrontendToBackend(
+      PanelDecision,
+      PanelDecision.cycle
+    );
 
     const result = await authAxiosClient.put(
       `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
@@ -57,7 +58,7 @@ async function PutPanelDecision(
     if (!result || !result.data) {
       return { error: 'error.API_UNKNOWN_ERROR' };
     }
-    return mappingPanelDecisionBackendToFrontend(result.data, cycleId) as PanelDecision;
+    return mappingPanelDecisionBackendToFrontend(result.data, PanelDecision.cycle) as PanelDecision;
   } catch (e) {
     if (e instanceof Error) {
       return { error: e.message };

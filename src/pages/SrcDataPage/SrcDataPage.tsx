@@ -47,15 +47,13 @@ export default function SrcDataPage() {
             alignItems="space-evenly"
             justifyContent="center"
           >
-            <Grid size={{ xs: 4 }}></Grid>
-            <Grid size={{ xs: 4 }}>
+            <Grid>
               <Alert
                 color={AlertColorTypes.Info}
                 text="This page is a placeholder for future enhancements"
                 testId="developmentPanelId"
               />
             </Grid>
-            <Grid size={{ xs: 4 }}></Grid>
           </Grid>
         </Grid>
       </Grid>

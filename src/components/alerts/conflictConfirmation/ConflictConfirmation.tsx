@@ -2,7 +2,7 @@ import Dialog from '@mui/material/Dialog';
 import { Box, DialogActions, DialogContent, Grid, Typography } from '@mui/material';
 import { AlertColorTypes, DropDown } from '@ska-telescope/ska-gui-components';
 import { useTheme } from '@mui/material/styles';
-import { presentLatex } from '@utils/present/present';
+import { presentLatex, trimText } from '@utils/present/present';
 import React from 'react';
 import Proposal from '../../../utils/types/proposal';
 import Alert from '../standardAlert/StandardAlert';
@@ -53,11 +53,6 @@ export default function ConflictConfirmation({
   };
 
   const title = (inLabel: string, inValue: string) => {
-    const trimText = (text: string, maxLength: number): string => {
-      if (!text || maxLength <= 0) return '';
-      return text.length > maxLength ? text.slice(0, maxLength).trimEnd() + '...' : text;
-    };
-
     return (
       <Box
         id={'title-box'}
