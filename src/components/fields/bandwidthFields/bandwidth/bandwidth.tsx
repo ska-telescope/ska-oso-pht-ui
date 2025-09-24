@@ -7,7 +7,6 @@ import {
   TELESCOPE_LOW_NUM,
   TYPE_ZOOM
 } from '@utils/constants.ts';
-import { OBSERVATION } from '@utils/observationConstantData.ts';
 import sensCalHelpers from '../../../../services/api/sensitivityCalculator/sensCalHelpers';
 import {
   scaleBandwidthOrFrequency,
@@ -17,6 +16,7 @@ import {
   checkBandLimits
 } from '../bandwidthValidationCommon';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 
 interface BandwidthFieldProps {
   disabled?: boolean;
@@ -54,10 +54,13 @@ export default function BandwidthField({
   minimumChannelWidthHz = 0
 }: BandwidthFieldProps) {
   const { t } = useScopedTranslation();
+  const { application } = storageObject.useStore();
+  const observatoryData = application.content3;
+
   const isLow = () => telescope === TELESCOPE_LOW_NUM;
 
   const getOptions = () => {
-    return OBSERVATION.array[telescope - 1].bandWidth;
+    return observatoryData?.constantData?.array[telescope - 1].bandWidth;
   };
   const roundBandwidthValue = (options: any[]) =>
     options.map((obj: { label: string; value: any; mapping: any }) => {
@@ -69,7 +72,7 @@ export default function BandwidthField({
     });
 
   const lookupBandwidth = (inValue: number): any =>
-    OBSERVATION.array[telescope - 1]?.bandWidth.find(bw => bw.value === inValue);
+    observatoryData?.constantData?.array[telescope - 1]?.bandWidth.find(bw => bw.value === inValue);
 
   const getBandwidthUnitsLabel = (): string => {
     return lookupBandwidth(value)?.mapping;
