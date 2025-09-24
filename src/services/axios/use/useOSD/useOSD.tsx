@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
 import GetObservatoryData from '../../get/getObservatoryData/getObservatoryData';
 import ObservatoryData from '@/utils/types/observatoryData';
+import { OBSERVATION } from '@utils/observationConstantData.ts';
 
 export const useOSD = (setAxiosError: (error: string) => void) => {
   const { application, updateAppContent3 } = storageObject.useStore();
@@ -31,7 +32,13 @@ export const useOSD = (setAxiosError: (error: string) => void) => {
         if (typeof response === 'string' || (response && (response as any).error)) {
           setAxiosError(response.toString());
         } else if (isObservatoryData(response)) {
+          //TODO: Update osd with constantData
+          const combined = {
+            constantData: OBSERVATION,
+            osdData: response
+          };
           updateAppContent3(response);
+          console.log('combined Data', combined);
           setOsdData(response);
         } else {
           setAxiosError('Invalid observatory data format received.');
