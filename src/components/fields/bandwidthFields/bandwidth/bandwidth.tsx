@@ -54,13 +54,16 @@ export default function BandwidthField({
   minimumChannelWidthHz = 0
 }: BandwidthFieldProps) {
   const { t } = useScopedTranslation();
-  const { application } = storageObject.useStore();
-  const observatoryData = application.content3;
+
+  function getObservatoryData() {
+    const { application } = storageObject.useStore();
+    return application.content3;
+  }
 
   const isLow = () => telescope === TELESCOPE_LOW_NUM;
 
   const getOptions = () => {
-    return observatoryData?.constantData?.array[telescope - 1].bandWidth;
+    return getObservatoryData()?.constantData?.array[telescope - 1].bandWidth;
   };
   const roundBandwidthValue = (options: any[]) =>
     options.map((obj: { label: string; value: any; mapping: any }) => {
@@ -72,7 +75,9 @@ export default function BandwidthField({
     });
 
   const lookupBandwidth = (inValue: number): any =>
-    observatoryData?.constantData?.array[telescope - 1]?.bandWidth.find(bw => bw.value === inValue);
+    getObservatoryData()?.constantData?.array[telescope - 1]?.bandWidth.find(
+      bw => bw.value === inValue
+    );
 
   const getBandwidthUnitsLabel = (): string => {
     return lookupBandwidth(value)?.mapping;

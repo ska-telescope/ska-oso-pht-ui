@@ -27,9 +27,11 @@ export default function SpectralAveragingMIDField({
   const { application, helpComponent } = storageObject.useStore();
   const FIELD = 'spectralAveraging';
 
-  const observatoryData = application.content3;
+  function getObservatoryData() {
+    return application.content3;
+  }
 
-  const getOptions = () => observatoryData?.constantData?.SpectralAveraging;
+  const getOptions = () => getObservatoryData()?.constantData?.SpectralAveraging;
 
   return (
     <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">

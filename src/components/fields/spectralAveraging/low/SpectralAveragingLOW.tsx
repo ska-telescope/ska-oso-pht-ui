@@ -32,11 +32,13 @@ export default function SpectralAveragingLOWField({
   const { t } = useScopedTranslation();
   const { helpComponent } = storageObject.useStore();
   const FIELD = 'spectralAveraging';
-  const { application } = storageObject.useStore();
+  function getObservatoryData() {
+    const { application } = storageObject.useStore();
+    return application.content3;
+  }
 
   const errorMessage = () => {
-    const observatoryData = application.content3;
-    const subarrayConfig = observatoryData?.constantData?.array[1].subarray.find(
+    const subarrayConfig = getObservatoryData()?.constantData?.array[1].subarray.find(
       item => item.value === subarray
     );
 
