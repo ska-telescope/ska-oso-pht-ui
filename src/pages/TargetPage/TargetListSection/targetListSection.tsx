@@ -2,18 +2,13 @@ import React from 'react';
 import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
-import { Proposal } from '../../../utils/types/proposal';
+import { Proposal } from '@utils/types/proposal.tsx';
+import { FOOTER_SPACER, RA_TYPE_ICRS, VELOCITY_TYPE, WRAPPER_HEIGHT } from '@utils/constants.ts';
 import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../../components/wrappers/fieldWrapper/FieldWrapper';
 import ReferenceCoordinatesField from '../../../components/fields/referenceCoordinates/ReferenceCoordinates';
-import {
-  FOOTER_SPACER,
-  RA_TYPE_ICRS,
-  VELOCITY_TYPE,
-  WRAPPER_HEIGHT
-} from '../../../utils/constants';
 import Target from '../../../utils/types/target';
 import GridTargets from '../../../components/grid/targets/GridTargets';
 import SpatialImaging from './SpatialImaging/SpatialImaging';
