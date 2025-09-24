@@ -158,9 +158,8 @@ export default function TableReviewDecisionRow({
               disabled={
                 isReviewerAdminOnly() || item.decisions.status === RECOMMENDATION_STATUS_DECIDED
               }
-              onClick={(val: string) => {
+              onClick={() => {
                 const rec = item;
-                rec.decisions.recommendation = val;
                 rec.decisions.status = RECOMMENDATION_STATUS_DECIDED;
                 updateDecisionItem(rec);
               }}
