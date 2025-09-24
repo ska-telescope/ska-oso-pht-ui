@@ -49,9 +49,15 @@ import {
   DataProductSRCNetBackend
 } from '@utils/types/dataProduct.tsx';
 import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
-import { OBSERVATION } from '@utils/observationConstantData.ts';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+
+function getObservatoryData() {
+  const { application } = storageObject.useStore();
+  // Use obsData here
+  return application.content3;
+}
 
 const getInvestigators = (inValue: InvestigatorBackend[] | null) => {
   let investigators = [] as Investigator[];
@@ -236,7 +242,7 @@ const getObservingBand = (inObsBand: string | null, inObsArray: string | null): 
 const getSupplied = (inSupplied: SuppliedBackend | null): Supplied => {
   const typeLabel =
     inSupplied?.supplied_type === 'sensitivity' ? 'Sensitivity' : 'Integration Time';
-  const suppliedType = OBSERVATION.Supplied?.find(s => s.label === typeLabel);
+  const suppliedType = getObservatoryData()?.constantData?.Supplied?.find(s => s.label === typeLabel);
   const suppliedUnits = suppliedType?.units?.find(u => u.label === inSupplied?.quantity.unit)
     ?.value;
   const supplied = {
@@ -263,7 +269,7 @@ const getFrequencyAndBandwidthUnits = (
 };
 
 const getBandwidth = (incBandwidth: number, telescope: number): number => {
-  const array = OBSERVATION.array?.find(item => item?.value === telescope);
+  const array = getObservatoryData()?.constantData?.array?.find(item => item?.value === telescope);
   const bandwidth = array?.bandWidth?.find(bandwidth =>
     bandwidth?.label?.includes(String(incBandwidth?.toString()))
   )?.value;
@@ -289,7 +295,7 @@ const getObservations = (
   }
   for (let i = 0; i < inValue?.length; i++) {
     const arr = inValue[i]?.array_details?.array === TELESCOPE_MID_BACKEND_MAPPING ? 1 : 2;
-    const sub = OBSERVATION.array[arr - 1].subarray?.find(
+    const sub = getObservatoryData()?.constantData?.array[arr - 1].subarray?.find(
       p => p.label.toLowerCase() === inValue[i]?.array_details?.subarray?.toLocaleLowerCase()
     )?.value;
     const type =
