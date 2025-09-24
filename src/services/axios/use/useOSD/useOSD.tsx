@@ -1,9 +1,9 @@
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { useState, useEffect } from 'react';
+import { OBSERVATION } from '@utils/observationConstantData.ts';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
 import GetObservatoryData from '../../get/getObservatoryData/getObservatoryData';
 import ObservatoryData from '@/utils/types/observatoryData';
-import { OBSERVATION } from '@utils/observationConstantData.ts';
 
 export const useOSD = (setAxiosError: (error: string) => void) => {
   const { application, updateAppContent3 } = storageObject.useStore();
@@ -37,8 +37,7 @@ export const useOSD = (setAxiosError: (error: string) => void) => {
             constantData: OBSERVATION,
             osdData: response
           };
-          updateAppContent3(response);
-          console.log('combined Data', combined);
+          updateAppContent3(combined);
           setOsdData(response);
         } else {
           setAxiosError('Invalid observatory data format received.');
