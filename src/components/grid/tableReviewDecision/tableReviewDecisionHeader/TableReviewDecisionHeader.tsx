@@ -22,7 +22,7 @@ export default function TableReviewDecisionHeader() {
             {t('tableReviewDecision.title')}
           </Typography>
         </TableCell>
-        <TableCell>
+        <TableCell sx={{ width: 150 }}>
           <Typography variant="subtitle2" fontWeight="bold">
             {t('tableReviewDecision.decisionStatus')}
           </Typography>

@@ -109,7 +109,7 @@ export default function TableReviewDecisionRow({
 
         <TableCell role="gridcell">
           <Typography variant="body2" color="text.secondary">
-            {item?.decisions?.length > 0 ? item.decisions?.status : t('reviewStatus.to do')}
+            {item?.decisions?.status ?? t('reviewStatus.to do')}
           </Typography>
         </TableCell>
 
@@ -132,12 +132,12 @@ export default function TableReviewDecisionRow({
         <TableCell role="gridcell">{item.rank}</TableCell>
 
         <TableCell role="gridcell">
-          <Box pb={2} sx={{ minWidth: 300 }}>
+          <Box sx={{ minWidth: 300 }}>
             <DropDown
               disabled={
                 isReviewerAdminOnly() || item.decisions.status === RECOMMENDATION_STATUS_DECIDED
               }
-              label={t('recommendations.label')}
+              label={''}
               options={getOptions()}
               required
               setValue={(val: string) => {
