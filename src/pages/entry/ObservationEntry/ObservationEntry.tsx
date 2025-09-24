@@ -285,7 +285,6 @@ export default function ObservationEntry() {
       element => element.value === e
     );
     if (record) {
-      //TODO CHLOE
       //Set value using OSD Data if Low AA2
       if (isLow() && isAA2(record.value)) {
         setNumOfStations(
