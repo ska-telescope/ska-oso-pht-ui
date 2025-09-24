@@ -48,7 +48,8 @@ export default function GridTargets({
       headerName: t('velocity.1'),
       width: 160,
       disableClickEventBubbling: true
-    }
+    },
+    { field: 'pstBeam', headerName: t('pstBeam.label'), flex: 2 }
   ];
 
   const actionColumns = [
