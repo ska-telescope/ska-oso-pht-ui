@@ -7,6 +7,7 @@ import {
   TELESCOPE_LOW_NUM,
   TYPE_ZOOM
 } from '@utils/constants.ts';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import sensCalHelpers from '../../../../services/api/sensitivityCalculator/sensCalHelpers';
 import {
   scaleBandwidthOrFrequency,
@@ -16,7 +17,6 @@ import {
   checkBandLimits
 } from '../bandwidthValidationCommon';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 
 interface BandwidthFieldProps {
   disabled?: boolean;

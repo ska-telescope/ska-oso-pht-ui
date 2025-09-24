@@ -1,4 +1,9 @@
-import { OBSERVATION } from '@utils/observationConstantData.ts';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+function getObservatoryData() {
+  const { application } = storageObject.useStore();
+  // Use obsData here
+  return application.content3;
+}
 
 const sensCalHelpers = {
   format: {
@@ -28,7 +33,9 @@ const sensCalHelpers = {
     },
     convertBandwidthToHz(bandwidthValue, bandwidthUnits): number {
       if (typeof bandwidthUnits === 'number') {
-        bandwidthUnits = OBSERVATION.Units.find(item => item.value === bandwidthUnits)?.label;
+        bandwidthUnits = getObservatoryData()?.constantData?.Units.find(
+          item => item.value === bandwidthUnits
+        )?.label;
       }
       const unitMap: { [key: string]: number } = {
         GHz: 1000000000,
