@@ -60,7 +60,7 @@ export default function ReviewDecisionListPage() {
     const filtered = item.reviews.filter(el => el.reviewType.excludedFromDecision === false);
     return {
       id: item.decisions.id,
-      panelId: '1',
+      panelId: item.decisions.panelId,
       cycle: getCycleId(),
       proposalId: item.id,
       decidedOn: new Date().toISOString(),
