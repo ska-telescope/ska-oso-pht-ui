@@ -4,10 +4,10 @@ import {
   FREQUENCY_UNITS,
   LAB_IS_BOLD,
   LAB_POSITION,
-  OBSERVATION,
   TELESCOPE_LOW_NUM,
   TYPE_ZOOM
 } from '@utils/constants.ts';
+import { OBSERVATION } from '@utils/observationConstantData.ts';
 import sensCalHelpers from '../../../../services/api/sensitivityCalculator/sensCalHelpers';
 import {
   scaleBandwidthOrFrequency,

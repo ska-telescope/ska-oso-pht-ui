@@ -3,12 +3,14 @@ import {
   ANTENNA_13M,
   ANTENNA_15M,
   ANTENNA_MIXED,
+  BAND_1_STR,
+  BAND_2_STR,
   BAND_5A_STR,
   BAND_5B_STR,
   BANDWIDTH_TELESCOPE,
-  OBSERVATION,
   TELESCOPE_LOW_NUM
 } from '@utils/constants.ts';
+import { OBSERVATION } from '@utils/observationConstantData.ts';
 import sensCalHelpers from '../../../services/api/sensitivityCalculator/sensCalHelpers';
 import ObservatoryData from '@/utils/types/observatoryData';
 
@@ -114,7 +116,7 @@ const getBandLimits = (telescope: number, subarrayConfig: number, observingBand:
     ];
   }
 
-  function getFrequencyLimitsBand5(observingBand: string) {
+  function getMidFrequencyLimits(observingBand: string) {
     const band = observatoryData?.capabilities?.mid?.basicCapabilities?.receiverInformation.find(
       item => item?.rxId === observingBand
     );
@@ -124,10 +126,15 @@ const getBandLimits = (telescope: number, subarrayConfig: number, observingBand:
   }
 
   if (!isLow(telescope)) {
-    if (observingBand === 3) {
-      return getFrequencyLimitsBand5(BAND_5A_STR);
-    } else if (observingBand === 4) {
-      return getFrequencyLimitsBand5(BAND_5B_STR);
+    switch (observingBand) {
+      case 1:
+        return getMidFrequencyLimits(BAND_1_STR);
+      case 2:
+        return getMidFrequencyLimits(BAND_2_STR);
+      case 3:
+        return getMidFrequencyLimits(BAND_5A_STR);
+      case 4:
+        return getMidFrequencyLimits(BAND_5B_STR);
     }
   }
 

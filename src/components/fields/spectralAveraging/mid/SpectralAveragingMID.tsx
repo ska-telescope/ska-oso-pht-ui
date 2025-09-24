@@ -1,7 +1,8 @@
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Grid } from '@mui/material';
-import { LAB_IS_BOLD, LAB_POSITION, OBSERVATION } from '../../../../utils/constants';
+import { LAB_IS_BOLD, LAB_POSITION } from '@utils/constants.ts';
+import { OBSERVATION } from '@utils/observationConstantData.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface SpectralAveragingMIDFieldProps {
