@@ -55,7 +55,6 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 
 function getObservatoryData() {
   const { application } = storageObject.useStore();
-  // Use obsData here
   return application.content3;
 }
 

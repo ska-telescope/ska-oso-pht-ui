@@ -39,8 +39,12 @@ import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import { helpers } from '@utils/helpers.ts';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
-import { OBSERVATION } from '@utils/observationConstantData.ts';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 
+function getObservatoryData() {
+  const { application } = storageObject.useStore();
+  return application.content3;
+}
 const isContinuum = (type: number) => type === TYPE_CONTINUUM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
 const isRedshift = (type: number) => type === VELOCITY_TYPE.REDSHIFT;
@@ -198,7 +202,7 @@ const getObservingBand = (observingBand: number) => {
 };
 
 const getSubArray = (incSubArray: number, incTelescope: number): string => {
-  const array = OBSERVATION.array.find(a => a.value === incTelescope);
+  const array = getObservatoryData()?.constantData?.array.find(a => a.value === incTelescope);
   const subArray = array?.subarray
     ?.find(sub => sub.value === incSubArray)
     ?.label?.toLocaleLowerCase();
@@ -238,7 +242,7 @@ const getBandwidthContinuum = (incObs: Observation): ValueUnitPair => {
   };
 };
 const getBandwidthZoom = (incObs: Observation): ValueUnitPair => {
-  const obsTelescopeArray = OBSERVATION.array.find(o => o.value === incObs.telescope);
+  const obsTelescopeArray = getObservatoryData()?.constantData?.array.find(o => o.value === incObs.telescope);
   const bandwidth = obsTelescopeArray?.bandWidth?.find(b => b.value === incObs.bandwidth);
   const valueUnit = bandwidth?.label.split(' ');
   const value = Number(valueUnit[0]);
@@ -258,7 +262,7 @@ const getCentralFrequency = (incObs: Observation): ValueUnitPair => {
 };
 
 const getSupplied = (inObs: Observation) => {
-  const supplied = OBSERVATION.Supplied.find(s => s.value === inObs?.supplied?.type);
+  const supplied = getObservatoryData()?.constantData?.Supplied.find(s => s.value === inObs?.supplied?.type);
   return {
     supplied_type: supplied?.mappingLabel,
     quantity: {
