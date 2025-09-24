@@ -37,6 +37,7 @@ export const useOSD = (setAxiosError: (error: string) => void) => {
             constantData: OBSERVATION,
             osdData: response
           };
+          console.log('data ', combined);
           updateAppContent3(combined);
           setOsdData(response);
         } else {
