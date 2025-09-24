@@ -10,6 +10,9 @@ UNRELEASED
 * Removed: E2E tests related to functionality which is no longer required.
 * Fixed: Inaccurate validation message shown after pairing a valid target–observation following an invalid one
 * Fixed: Display of Non-Gaussian Sensitivity Calculator results
+* Changed the way that OSD is retrieved
+* Changed the way that the Decisions are captured
+* Added user targeted e2e testing
 
 5.1.0
 ----------
