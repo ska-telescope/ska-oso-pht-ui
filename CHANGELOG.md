@@ -10,9 +10,11 @@ UNRELEASED
 * Removed: E2E tests related to functionality which is no longer required.
 * Fixed: Inaccurate validation message shown after pairing a valid target–observation following an invalid one
 * Fixed: Display of Non-Gaussian Sensitivity Calculator results
-* Changed the way that OSD is retrieved
-* Changed the way that the Decisions are captured
-* Added user targeted e2e testing
+* Changed: OSD is retrieval
+* Changed: Final review decision capture
+* Added: User targeted e2e testing
+* Changed: ODA v11.7.1
+* Changed: OSO-services : v5.1.0
 
 5.1.0
 ----------
