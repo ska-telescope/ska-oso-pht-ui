@@ -26,6 +26,7 @@ import {
   TYPE_CONTINUUM
 } from '@utils/constants.ts';
 import { SensCalcResults, ResultsSection } from '@utils/types/sensCalcResults.tsx';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   addFrequency,
   addRobustProperty,
@@ -38,7 +39,6 @@ import Fetch from '../fetch/Fetch';
 import Target, { PointingPatternParams } from '../../../utils/types/target';
 import Observation from '../../../utils/types/observation';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 
 function getObservatoryData() {
   const { application } = storageObject.useStore();
@@ -166,8 +166,9 @@ function getFinalIndividualResultsForContinuum(
   let transformed_result = results.transformed_result;
 
   const observationTypeLabel: string = OBS_TYPES[theObservation.type as number];
-  const suppliedType = getObservatoryData()?.constantData?.Supplied.find(sup => sup.value === theObservation.supplied.type)
-    ?.sensCalcResultsLabel;
+  const suppliedType = getObservatoryData()?.constantData?.Supplied.find(
+    sup => sup.value === theObservation.supplied.type
+  )?.sensCalcResultsLabel;
 
   const shifted1 = shiftSensitivity(transformed_result?.weighted_continuum_sensitivity);
   const results1 = {
@@ -257,9 +258,9 @@ function getFinalIndividualResultsForContinuum(
     field: suppliedType,
     value: theObservation?.supplied?.value?.toString(),
     units:
-      getObservatoryData()?.constantData?.Supplied.find(s => s.sensCalcResultsLabel === suppliedType)?.units?.find(
-        u => u.value === theObservation.supplied.units
-      )?.label ?? ''
+      getObservatoryData()
+        ?.constantData?.Supplied.find(s => s.sensCalcResultsLabel === suppliedType)
+        ?.units?.find(u => u.value === theObservation.supplied.units)?.label ?? ''
   };
 
   const updated_results = {
@@ -370,8 +371,8 @@ function GetContinuumData(telescope: Telescope, observation: Observation, target
 
   // TODO handle custom subarray
   const subArray = (observation: Observation) => {
-    const result = getObservatoryData()?.constantData?.array
-      .find(t => t.value === observation.telescope)
+    const result = getObservatoryData()
+      ?.constantData?.array.find(t => t.value === observation.telescope)
       ?.subarray?.find(s => s.value === observation.subarray);
     return result ? result.map : '';
   };

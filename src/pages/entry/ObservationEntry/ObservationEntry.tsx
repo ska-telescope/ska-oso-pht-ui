@@ -56,7 +56,6 @@ import {
   getMinimumChannelWidth,
   getScaledBandwidthOrFrequency
 } from '@utils/helpers.ts';
-import ObservatoryData from '@utils/types/observatoryData.tsx';
 import { OBSERVATION } from '@utils/observationConstantData.ts';
 import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
@@ -123,7 +122,7 @@ export default function ObservationEntry() {
   const [subBands, setSubBands] = React.useState(1);
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState<number | undefined>(4);
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState<number | undefined>(0);
-  const [numOfStations, setNumOfStations] = React.useState<number | undefined>(512);
+  const [numOfStations, setNumOfStations] = React.useState<number | undefined>(68);
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [minimumChannelWidthHz, setMinimumChannelWidthHz] = React.useState<number>(0);
 
@@ -280,18 +279,26 @@ export default function ObservationEntry() {
   };
 
   const setTheSubarrayConfig = (e: React.SetStateAction<number>) => {
-    const record = OBSERVATION.array[telescope() - 1].subarray.find(element => element.value === e);
+    const observatoryData = application.content3;
+
+    const record = observatoryData?.constantData?.array[telescope() - 1].subarray.find(
+      element => element.value === e
+    );
     if (record) {
-      const data: ObservatoryData = application.content3 as ObservatoryData;
+      //TODO CHLOE
       //Set value using OSD Data if Low AA2
       if (isLow() && isAA2(record.value)) {
-        setNumOfStations(data?.capabilities?.low?.AA2?.numberStations ?? undefined);
+        setNumOfStations(
+          observatoryData?.osdData?.capabilities?.low?.AA2?.numberStations ?? undefined
+        );
       } else {
         setNumOfStations(record.numOfStations);
       }
       //Set value using OSD Data if Mid AA2
       if (!isLow() && isAA2(record.value)) {
-        setNumOf15mAntennas(data?.capabilities?.mid?.AA2?.numberSkaDishes ?? undefined);
+        setNumOf15mAntennas(
+          observatoryData?.osdData?.capabilities?.mid?.AA2?.numberSkaDishes ?? undefined
+        );
       } else {
         setNumOf15mAntennas(record.numOf15mAntennas);
       }

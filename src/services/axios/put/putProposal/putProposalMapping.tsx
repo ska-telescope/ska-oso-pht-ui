@@ -242,7 +242,9 @@ const getBandwidthContinuum = (incObs: Observation): ValueUnitPair => {
   };
 };
 const getBandwidthZoom = (incObs: Observation): ValueUnitPair => {
-  const obsTelescopeArray = getObservatoryData()?.constantData?.array.find(o => o.value === incObs.telescope);
+  const obsTelescopeArray = getObservatoryData()?.constantData?.array.find(
+    o => o.value === incObs.telescope
+  );
   const bandwidth = obsTelescopeArray?.bandWidth?.find(b => b.value === incObs.bandwidth);
   const valueUnit = bandwidth?.label.split(' ');
   const value = Number(valueUnit[0]);
@@ -262,7 +264,9 @@ const getCentralFrequency = (incObs: Observation): ValueUnitPair => {
 };
 
 const getSupplied = (inObs: Observation) => {
-  const supplied = getObservatoryData()?.constantData?.Supplied.find(s => s.value === inObs?.supplied?.type);
+  const supplied = getObservatoryData()?.constantData?.Supplied.find(
+    s => s.value === inObs?.supplied?.type
+  );
   return {
     supplied_type: supplied?.mappingLabel,
     quantity: {

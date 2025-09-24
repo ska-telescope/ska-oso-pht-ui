@@ -49,9 +49,9 @@ import {
   DataProductSRCNetBackend
 } from '@utils/types/dataProduct.tsx';
 import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 
 function getObservatoryData() {
   const { application } = storageObject.useStore();
@@ -241,7 +241,9 @@ const getObservingBand = (inObsBand: string | null, inObsArray: string | null): 
 const getSupplied = (inSupplied: SuppliedBackend | null): Supplied => {
   const typeLabel =
     inSupplied?.supplied_type === 'sensitivity' ? 'Sensitivity' : 'Integration Time';
-  const suppliedType = getObservatoryData()?.constantData?.Supplied?.find(s => s.label === typeLabel);
+  const suppliedType = getObservatoryData()?.constantData?.Supplied?.find(
+    s => s.label === typeLabel
+  );
   const suppliedUnits = suppliedType?.units?.find(u => u.label === inSupplied?.quantity.unit)
     ?.value;
   const supplied = {
