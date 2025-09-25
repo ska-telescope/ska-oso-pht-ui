@@ -18,6 +18,8 @@ UNRELEASED
 * Changed: PDF Viewer now responds to light / dark mode
 * Changed: Retrieval of OSD information now possible via utilities
 * Added: Cycle dates to Landing and General pages
+* Changed: OSD constant data is combined with OSD API data into one accessor
+* Changed: Reduced direct usage of OSD constant data
 
 5.1.0
 ----------
