@@ -130,7 +130,8 @@ export default function BandwidthField({
         subarrayConfig,
         observingBand,
         osdMID,
-        osdLOW
+        osdLOW,
+        observatoryConstants
       )
     ) {
       return t('bandwidth.range.rangeError');

@@ -82,7 +82,8 @@ export default function ContinuumBandwidthField({
       subarrayConfig,
       observingBand,
       osdMID,
-      osdLOW
+      osdLOW,
+      observatoryConstants
     );
     if (result1) {
       return displayMinimumChannelWidthErrorMessage(minimumChannelWidthHz);

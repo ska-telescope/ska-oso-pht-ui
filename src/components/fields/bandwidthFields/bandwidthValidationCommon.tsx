@@ -9,7 +9,6 @@ import {
   BANDWIDTH_TELESCOPE,
   TELESCOPE_LOW_NUM
 } from '@utils/constants.ts';
-import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import sensCalHelpers from '../../../services/api/sensitivityCalculator/sensCalHelpers';
 const isLow = (telescope: number) => telescope === TELESCOPE_LOW_NUM;
 const isAA2 = (subarrayConfig: number) => subarrayConfig === 3;
@@ -54,8 +53,14 @@ export const checkMaxContBandwidthHz = (
   scaledBandwidth: number
 ): boolean => (maxContBandwidthHz && scaledBandwidth > maxContBandwidthHz ? false : true);
 
-const getSubArrayAntennasCounts = (osdMID, osdLOW, telescope: number, subarrayConfig: number) => {
-  const observationArray = OSD_CONSTANTS.array.find(arr => arr.value === telescope);
+const getSubArrayAntennasCounts = (
+  osdMID,
+  osdLOW,
+  observatoryConstants,
+  telescope: number,
+  subarrayConfig: number
+) => {
+  const observationArray = observatoryConstants.array.find(arr => arr.value === telescope);
   const subArray = observationArray?.subarray?.find(sub => sub.value === subarrayConfig);
   //TODO: AA2 will be extended as OSD Data is extended
   if (!isLow(telescope) && isAA2(subarrayConfig)) {
@@ -99,7 +104,8 @@ const getBandLimits = (
   subarrayConfig: number,
   observingBand: number,
   osdMID,
-  osdLOW
+  osdLOW,
+  observatoryConstants
 ) => {
   const bandLimits = BANDWIDTH_TELESCOPE.find(band => band.value === observingBand)?.bandLimits;
   if (!bandLimits) {
@@ -135,6 +141,7 @@ const getBandLimits = (
   const { n15mAntennas, n13mAntennas } = getSubArrayAntennasCounts(
     osdMID,
     osdLOW,
+    observatoryConstants,
     telescope,
     subarrayConfig
   );
@@ -153,12 +160,20 @@ export const checkBandLimits = (
   subarrayConfig: number,
   observingBand: number,
   osdMID,
-  osdLOW
+  osdLOW,
+  observatoryConstants
 ) => {
   const halfBandwidth: number = scaledBandwidth / 2.0;
   const lowerBound: number = scaledFrequency - halfBandwidth;
   const upperBound: number = scaledFrequency + halfBandwidth;
-  const bandLimits = getBandLimits(telescope, subarrayConfig, observingBand, osdMID, osdLOW);
+  const bandLimits = getBandLimits(
+    telescope,
+    subarrayConfig,
+    observingBand,
+    osdMID,
+    osdLOW,
+    observatoryConstants
+  );
   return !(
     (bandLimits && lowerBound < bandLimits[0]) ||
     (bandLimits && upperBound > bandLimits[1])
