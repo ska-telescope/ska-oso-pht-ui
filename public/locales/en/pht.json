@@ -714,7 +714,7 @@
   "recommendations": {
     "label": "Recommendation",
     "RECOMMEND-ACCEPT": "Accepted",
-    "RECOMMEND-ACCEPT-REVISION": "Accepted with revision",
+    "RECOMMEND-ACCEPT-REVISION": "Accepted with Revision",
     "RECOMMEND-REJECT": "Rejected",
     "undefined": ""
   },
