@@ -1,8 +1,6 @@
 import React from 'react';
-import { Grid, Typography } from '@mui/material';
-import { Document, Page } from 'react-pdf';
-import { pdfjs } from 'react-pdf';
-
+import { Box, Grid, Typography, useTheme } from '@mui/material';
+import { Document, Page, pdfjs } from 'react-pdf';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import NextPageButton from '../../button/NextPage/NextPage';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -17,44 +15,77 @@ interface PDFViewerProps {
 }
 
 export default function PDFViewer({
-  url = '../../../../public/how-to-conduct-your-own-heuristic-evaluation.pdf'
+  url = '/how-to-conduct-your-own-heuristic-evaluation.pdf'
 }: PDFViewerProps) {
   const { t } = useScopedTranslation();
+  const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
+
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [containerWidth, setContainerWidth] = React.useState<number>(700);
   const [numPages, setNumPages] = React.useState<number>(0);
-  const [pageNumber, setPageNumber] = React.useState(1);
+  const [pageNumber, setPageNumber] = React.useState<number>(1);
+  const [loadError, setLoadError] = React.useState<string | null>(null);
 
-  const onDocumentLoadSuccess = (numPages: number) => {
+  React.useEffect(() => {
+    const updateWidth = () => {
+      if (containerRef.current) {
+        setContainerWidth(containerRef.current.offsetWidth);
+      }
+    };
+    updateWidth();
+    window.addEventListener('resize', updateWidth);
+    return () => window.removeEventListener('resize', updateWidth);
+  }, []);
+
+  React.useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === 'ArrowRight') goToNextPage();
+      if (e.key === 'ArrowLeft') goToPrevPage();
+    };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [numPages, pageNumber]);
+
+  const onDocumentLoadSuccess = React.useCallback(({ numPages }: { numPages: number }) => {
     setNumPages(numPages);
-  };
+    setPageNumber(1);
+    setLoadError(null);
+  }, []);
 
-  const goToPrevPage = () => setPageNumber(pageNumber - 1 <= 1 ? 1 : pageNumber - 1);
+  const onDocumentLoadError = React.useCallback(
+    (_error: Error) => {
+      setLoadError(t('pdfViewer.error'));
+    },
+    [t]
+  );
 
-  const goToNextPage = () => setPageNumber(pageNumber + 1 >= numPages ? numPages : pageNumber + 1);
+  const goToPrevPage = React.useCallback(() => {
+    setPageNumber(prev => Math.max(prev - 1, 1));
+  }, []);
 
-  const displayPages = () => {
-    return (
-      <Typography p={2} variant="body1">
-        {numPages > 1 ? t('page.pageOf', { current: pageNumber, max: numPages }) : ''}
-      </Typography>
-    );
-  };
+  const goToNextPage = React.useCallback(() => {
+    setPageNumber(prev => Math.min(prev + 1, numPages));
+  }, [numPages]);
 
-  const displayNavigation = () => {
-    return (
-      <Grid
-        container
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-        spacing={1}
-      >
+  return (
+    <Box p={2} sx={{ backgroundColor: theme.palette.background.default }}>
+      <Grid container spacing={1} px={1} alignItems="center" justifyContent="space-between">
         <Grid>
           {numPages > 1 && (
             <PreviousPageButton
               disabled={pageNumber === 1}
               title={'page.previous'}
               action={goToPrevPage}
+              aria-label={t('page.previous')}
             />
+          )}
+        </Grid>
+        <Grid>
+          {numPages > 1 && (
+            <Typography variant="body1" color="text.primary">
+              {t('page.pageOf', { current: pageNumber, max: numPages })}
+            </Typography>
           )}
         </Grid>
         <Grid>
@@ -63,37 +94,44 @@ export default function PDFViewer({
               disabled={pageNumber === numPages}
               title={'page.next'}
               action={goToNextPage}
+              aria-label={t('page.next')}
             />
           )}
         </Grid>
       </Grid>
-    );
-  };
 
-  return (
-    <>
-      <Grid
-        spacing={1}
-        pl={1}
-        pr={1}
-        container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-      >
-        <Grid>{displayNavigation()}</Grid>
-        <Grid>{displayPages()}</Grid>
-      </Grid>
-
-      <Grid container direction="row" justifyContent="center" alignItems="center">
-        <Grid sx={{ width: '90%' }}>
-          {url?.length > 0 && (
-            <Document file={url} onLoadSuccess={onDocumentLoadSuccess}>
-              <Page renderTextLayer={false} renderAnnotationLayer={false} pageNumber={pageNumber} />
+      <Box mt={2} display="flex" justifyContent="center">
+        <Box
+          ref={containerRef}
+          sx={{
+            width: '90%',
+            maxWidth: 800,
+            '& .pdf-dark canvas': {
+              filter: 'invert(1) hue-rotate(180deg)'
+            }
+          }}
+        >
+          {url ? (
+            <Document
+              file={url}
+              onLoadSuccess={onDocumentLoadSuccess}
+              onLoadError={onDocumentLoadError}
+              loading={<Typography color="text.secondary">{t('pdfViewer.loading')}</Typography>}
+              error={<Typography color="error">{loadError}</Typography>}
+            >
+              <Page
+                pageNumber={pageNumber}
+                width={containerWidth}
+                renderTextLayer={false}
+                renderAnnotationLayer={false}
+                className={isDark ? 'pdf-dark' : ''}
+              />
             </Document>
+          ) : (
+            <Typography color="error">{t('pdfViewer.noFile')}</Typography>
           )}
-        </Grid>
-      </Grid>
-    </>
+        </Box>
+      </Box>
+    </Box>
   );
 }

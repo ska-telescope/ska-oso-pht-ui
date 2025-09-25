@@ -1,7 +1,7 @@
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
-import { Grid, Paper, Tooltip, Typography } from '@mui/material';
+import { Grid, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   AlertColorTypes,
@@ -12,8 +12,6 @@ import {
   SPACER_VERTICAL
 } from '@ska-telescope/ska-gui-components';
 import moment from 'moment';
-import { presentDate, presentLatex, presentTime } from '@utils/present/present';
-import Investigator from '@utils/types/investigator.tsx';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
 import GetProposal from '@services/axios/get/getProposal/getProposal';
 import AddButton from '@/components/button/Add/Add';
@@ -23,7 +21,6 @@ import TrashIcon from '@/components/icon/trashIcon/trashIcon';
 import ViewIcon from '@/components/icon/viewIcon/viewIcon';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
-import emptyCell from '@/components/fields/emptyCell/emptyCell';
 import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
@@ -37,7 +34,6 @@ import {
   FOOTER_SPACER,
   isCypress,
   NAV,
-  NOT_SPECIFIED,
   PATH,
   PROPOSAL_STATUS,
   SEARCH_TYPE_OPTIONS
@@ -45,7 +41,17 @@ import {
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { accessUpdate } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { useOSD } from '@/services/axios/use/useOSD/useOSD';
+import { useOSDAPI } from '@/services/axios/use/useOSDAPI/useOSDAPI';
+import {
+  getColCycle,
+  getColProposalId,
+  getColProposalPI,
+  getColProposalStatus,
+  getColProposalTitle,
+  getColProposalType,
+  getColProposalUpdated,
+  getColCycleClose
+} from '@/components/grid/gridColumns/GridColumns';
 
 export default function LandingPage() {
   const { t } = useScopedTranslation();
@@ -73,7 +79,7 @@ export default function LandingPage() {
   const getAccess = () => application.content4 as ProposalAccess[];
   const setAccess = (access: ProposalAccess[]) => updateAppContent4(access);
   const getProposal = () => application.content2 as Proposal;
-  const { osdData } = useOSD(setAxiosError);
+  const { osdData } = useOSDAPI(setAxiosError);
 
   const mock = ({
     abstract: '',
@@ -261,77 +267,6 @@ export default function LandingPage() {
   // TODO const canDelete = (e: { row: { status: string } }) =>
   // TODO  e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 
-  const displayProposalType = (proposalType: any) => {
-    return proposalType ? proposalType : NOT_SPECIFIED;
-  };
-
-  const element = (inValue: number | string) => (inValue === NOT_SPECIFIED ? emptyCell() : inValue);
-
-  const getPIs = (arr: Investigator[]) => {
-    if (!arr || arr.length === 0) {
-      return element(NOT_SPECIFIED);
-    }
-    const results: string[] = [];
-    arr.forEach(e => {
-      if (e.pi) {
-        results.push(e.lastName + ', ' + e.firstName);
-      }
-    });
-    if (results.length === 0) {
-      return element(NOT_SPECIFIED);
-    }
-    return element(results.length > 1 ? results[0] + ' + ' + (results.length - 1) : results[0]);
-  };
-
-  const colId = {
-    field: 'id',
-    headerName: t('proposalId.label'),
-    width: 200
-  };
-
-  const colType = {
-    field: 'proposalType',
-    headerName: t('proposalType.label'),
-    width: 160,
-    renderCell: (e: { row: any }) => (
-      <Tooltip title={t('proposalType.title.' + displayProposalType(e.row.proposalType))}>
-        <>{t('proposalType.code.' + displayProposalType(e.row.proposalType))}</>
-      </Tooltip>
-    )
-  };
-  const colCycle = { field: 'cycle', headerName: t('cycle.label'), width: 160 };
-
-  const colTitle = {
-    field: 'title',
-    headerName: t('title.label'),
-    flex: 3,
-    minWidth: 250,
-    renderCell: (e: any) => presentLatex(e.row.title)
-  };
-  const colPI = {
-    field: 'pi',
-    headerName: t('pi.short'),
-    width: 160,
-    renderCell: (e: any) => {
-      return getPIs(e.row.investigators);
-    }
-  };
-
-  const colStatus = {
-    field: 'status',
-    headerName: t('status.label'),
-    width: 160,
-    renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
-  };
-
-  const colUpdated = {
-    field: 'lastUpdated',
-    headerName: t('updated.label'),
-    width: 240,
-    renderCell: (e: { row: any }) =>
-      presentDate(e.row.lastUpdated) + ' ' + presentTime(e.row.lastUpdated)
-  };
-
   const colActions = {
     field: 'actions',
     type: 'actions',
@@ -362,7 +297,17 @@ export default function LandingPage() {
   };
 
   const stdColumns = [
-    ...[colId, colType, colCycle, colTitle, colPI, colStatus, colUpdated, colActions]
+    ...[
+      getColProposalId(),
+      getColProposalType(),
+      getColCycle(),
+      getColProposalTitle(),
+      getColProposalPI(),
+      getColProposalStatus(),
+      getColProposalUpdated(),
+      getColCycleClose(),
+      colActions
+    ]
   ];
 
   const searchableFields: (keyof Proposal)[] = ['id', 'title', 'cycle', 'investigators'];

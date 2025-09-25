@@ -1,9 +1,8 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import ObservatoryData from '@utils/types/observatoryData.tsx';
 import { LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 interface ElevationFieldProps {
   disabled?: boolean;
@@ -27,7 +26,7 @@ export const ELEVATION_UNITS = 'deg';
 export default function ElevationField({
   disabled = false,
   isLow = false,
-  onFocus = null,
+  onFocus = undefined,
   label = '',
   required = false,
   setValue,
@@ -36,13 +35,12 @@ export default function ElevationField({
   widthLabel = 6
 }: ElevationFieldProps) {
   const { t } = useScopedTranslation();
+  const { osdMID } = useOSDAccessors();
 
   const errorMessage = () => {
-    const { application } = storageObject.useStore();
-    const data: ObservatoryData = application.content3 as ObservatoryData;
     const minElevation = isLow
       ? ELEVATION_MIN_LOW
-      : data.capabilities?.mid?.basicCapabilities?.dishElevationLimitDeg;
+      : osdMID?.basicCapabilities?.dishElevationLimitDeg;
     return value < minElevation || value > ELEVATION_MAX
       ? t('elevation.range.error', {
           min: minElevation,

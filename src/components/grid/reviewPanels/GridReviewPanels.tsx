@@ -2,13 +2,12 @@ import React from 'react';
 import { DataGrid, AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Typography, Grid } from '@mui/material';
 import GetPanelList from '@services/axios/get/getPanelList/getPanelList';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import { Panel } from '@/utils/types/panel';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import PostPanelGenerate from '@/services/axios/post/postPanelGenerate/postPanelGenerate';
-import ObservatoryData from '@/utils/types/observatoryData';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 interface GridReviewPanelsProps {
   height?: string;
@@ -24,12 +23,11 @@ export default function GridReviewPanels({
 }: GridReviewPanelsProps) {
   const { t } = useScopedTranslation();
   const authClient = useAxiosAuthClient();
-  const { application } = storageObject.useStore();
-
   const [data, setData] = React.useState<Panel[]>([]);
   const [createList, setCreateList] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
   const [, setAxiosError] = React.useState('');
+  const { osdCycleDescription } = useOSDAccessors();
 
   const GetReviewPanels = async () => {
     const response = await GetPanelList(authClient);
@@ -45,13 +43,12 @@ export default function GridReviewPanels({
   }, []);
 
   React.useEffect(() => {
-    const getObservatoryData = () => application.content3 as ObservatoryData;
-    const autoGeneratePanels = async (osd: ObservatoryData) => {
-      await PostPanelGenerate(authClient, osd?.observatoryPolicy?.cycleDescription);
+    const autoGeneratePanels = async () => {
+      await PostPanelGenerate(authClient, osdCycleDescription);
       setFetchList(!fetchList);
     };
     if (createList) {
-      autoGeneratePanels(getObservatoryData());
+      autoGeneratePanels();
     }
   }, [createList]);
 
