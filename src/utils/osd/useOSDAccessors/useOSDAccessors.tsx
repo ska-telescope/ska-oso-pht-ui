@@ -1,6 +1,6 @@
+import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { useOSD } from '../useOSD/useOSD';
 import { presentDate, presentTime } from '@/utils/present/present';
-import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 
 export function useOSDAccessors() {
   const osd = useOSD();

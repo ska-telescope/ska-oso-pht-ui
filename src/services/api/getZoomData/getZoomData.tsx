@@ -98,8 +98,9 @@ function getFinalIndividualResultsForZoom(
 
   let transformed_result = results.transformed_result[0]; // ui only uses first result
 
-  const suppliedType = OSD_CONSTANTS.Supplied.find(sup => sup.value === theObservation.supplied.type)
-    ?.sensCalcResultsLabel;
+  const suppliedType = OSD_CONSTANTS.Supplied.find(
+    sup => sup.value === theObservation.supplied.type
+  )?.sensCalcResultsLabel;
 
   const shifted1 = shiftSensitivity(transformed_result?.weighted_continuum_sensitivity);
   const results1 = {

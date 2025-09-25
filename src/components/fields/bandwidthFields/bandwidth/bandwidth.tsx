@@ -8,6 +8,7 @@ import {
   TYPE_ZOOM
 } from '@utils/constants.ts';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
+import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import sensCalHelpers from '../../../../services/api/sensitivityCalculator/sensCalHelpers';
 import {
   scaleBandwidthOrFrequency,
@@ -54,6 +55,8 @@ export default function BandwidthField({
   minimumChannelWidthHz = 0
 }: BandwidthFieldProps) {
   const { t } = useScopedTranslation();
+  const { osdMID, osdLOW } = useOSDAccessors();
+
   const isLow = () => telescope === TELESCOPE_LOW_NUM;
 
   const getOptions = () => {
@@ -109,7 +112,12 @@ export default function BandwidthField({
       return displayMinimumChannelWidthErrorMessage(minimumChannelWidthHz);
     }
 
-    const maxContBandwidthHz: number = getMaxContBandwidthHz(telescope, subarrayConfig);
+    const maxContBandwidthHz: number = getMaxContBandwidthHz(
+      telescope,
+      subarrayConfig,
+      osdMID,
+      osdLOW
+    );
     if (!checkMaxContBandwidthHz(maxContBandwidthHz, scaledBandwidth)) {
       return displayMaxContBandwidthErrorMessage(maxContBandwidthHz);
     }

@@ -281,7 +281,9 @@ export default function ObservationEntry() {
   };
 
   const setTheSubarrayConfig = (e: React.SetStateAction<number>) => {
-    const record = OSD_CONSTANTS.array[telescope() - 1].subarray.find(element => element.value === e);
+    const record = OSD_CONSTANTS.array[telescope() - 1].subarray.find(
+      element => element.value === e
+    );
     if (record) {
       //Set value using OSD Data if Low AA2
       if (isLow() && isAA2(record.value)) {
@@ -669,7 +671,9 @@ export default function ObservationEntry() {
 
     const suppliedUnitsField = () => {
       const getOptions = () => {
-        return suppliedType && suppliedType > 0 ? OSD_CONSTANTS.Supplied[suppliedType - 1].units : [];
+        return suppliedType && suppliedType > 0
+          ? OSD_CONSTANTS.Supplied[suppliedType - 1].units
+          : [];
       };
 
       return (

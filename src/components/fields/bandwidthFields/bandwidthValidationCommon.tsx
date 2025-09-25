@@ -13,8 +13,6 @@ import {
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import sensCalHelpers from '../../../services/api/sensitivityCalculator/sensCalHelpers';
 import ObservatoryData from '@/utils/types/observatoryData';
-import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
-
 const isLow = (telescope: number) => telescope === TELESCOPE_LOW_NUM;
 const isAA2 = (subarrayConfig: number) => subarrayConfig === 3;
 
@@ -34,9 +32,12 @@ function getObservatoryData() {
 }
 
 // get maximum bandwidth defined for the subarray
-export const getMaxContBandwidthHz = (telescope: number, subarrayConfig: number): any => {
-  const { osdMID, osdLOW } = useOSDAccessors();
-
+export const getMaxContBandwidthHz = (
+  telescope: number,
+  subarrayConfig: number,
+  osdMID,
+  osdLOW
+): any => {
   //TODO: AA2 will be extended as OSD Data is extended
   if (isAA2(subarrayConfig)) {
     if (isLow(telescope)) {
