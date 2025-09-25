@@ -3,6 +3,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Grid } from '@mui/material';
 import { BANDWIDTH_TELESCOPE, LAB_IS_BOLD, LAB_POSITION } from '@utils/constants.ts';
 import { subArrayOptions } from '@utils/observationOptions.tsx';
+import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface SubArrayFieldProps {
@@ -31,10 +32,11 @@ export default function SubArrayField({
   const { t } = useScopedTranslation();
   const { helpComponent } = storageObject.useStore();
   const FIELD = 'subArrayConfiguration';
+  const { observatoryConstants } = useOSDAccessors();
 
   const getOptions = () => {
     if (telescope > 0) {
-      const options = subArrayOptions(BANDWIDTH_TELESCOPE[observingBand]);
+      const options = subArrayOptions(BANDWIDTH_TELESCOPE[observingBand], observatoryConstants);
       return options?.map(e => {
         return {
           label: t('subArrayConfiguration.' + e.value),
