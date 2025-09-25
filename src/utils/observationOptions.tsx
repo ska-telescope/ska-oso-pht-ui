@@ -1,6 +1,6 @@
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 
-export const subArrayOptions = (inObj: { telescope: number;}) => {
+export const subArrayOptions = (inObj: { telescope: number }) => {
   if (!inObj) {
     return [];
   }

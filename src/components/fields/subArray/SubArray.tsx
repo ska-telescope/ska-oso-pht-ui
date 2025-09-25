@@ -1,10 +1,9 @@
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Grid } from '@mui/material';
-import { BANDWIDTH_TELESCOPE, LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
-import { subArrayOptions } from '../../../utils/observationOptions';
+import { BANDWIDTH_TELESCOPE, LAB_IS_BOLD, LAB_POSITION } from '@utils/constants.ts';
+import { subArrayOptions } from '@utils/observationOptions.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 
 interface SubArrayFieldProps {
   observingBand: number;

@@ -56,7 +56,6 @@ import {
   getMinimumChannelWidth,
   getScaledBandwidthOrFrequency
 } from '@utils/helpers.ts';
-import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Proposal from '../../../utils/types/proposal';
@@ -91,7 +90,7 @@ export default function ObservationEntry() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const locationProperties = useLocation();
-  const { osdLOW, osdMID } = useOSDAccessors();
+  const { osdLOW, osdMID, observatoryConstants } = useOSDAccessors();
 
   const isEdit = () => locationProperties.state !== null;
 
@@ -281,7 +280,7 @@ export default function ObservationEntry() {
   };
 
   const setTheSubarrayConfig = (e: React.SetStateAction<number>) => {
-    const record = OSD_CONSTANTS.array[telescope() - 1].subarray.find(
+    const record = observatoryConstants.array[telescope() - 1].subarray.find(
       element => element.value === e
     );
     if (record) {
@@ -348,30 +347,30 @@ export default function ObservationEntry() {
   const calculateCentralFrequency = (obsBand: number, subarrayConfig: number) => {
     switch (obsBand) {
       case BAND_1:
-        return lookupArrayValue(OSD_CONSTANTS.CentralFrequencyOB1, subarrayConfig);
+        return lookupArrayValue(observatoryConstants.CentralFrequencyOB1, subarrayConfig);
       case BAND_2:
-        return lookupArrayValue(OSD_CONSTANTS.CentralFrequencyOB2, subarrayConfig);
+        return lookupArrayValue(observatoryConstants.CentralFrequencyOB2, subarrayConfig);
       case BAND_5A:
-        return OSD_CONSTANTS.CentralFrequencyOB5a[0].value;
+        return observatoryConstants.CentralFrequencyOB5a[0].value;
       case BAND_5B:
-        return OSD_CONSTANTS.CentralFrequencyOB5b[0].value;
+        return observatoryConstants.CentralFrequencyOB5b[0].value;
       default:
-        return OSD_CONSTANTS.CentralFrequencyOBLow[0].value;
+        return observatoryConstants.CentralFrequencyOBLow[0].value;
     }
   };
 
   const calculateContinuumBandwidth = (ob: number, sc: number) => {
     switch (ob) {
       case BAND_1:
-        return lookupArrayValue(OSD_CONSTANTS.ContinuumBandwidthOB1, sc);
+        return lookupArrayValue(observatoryConstants.ContinuumBandwidthOB1, sc);
       case BAND_2:
-        return lookupArrayValue(OSD_CONSTANTS.ContinuumBandwidthOB2, sc);
+        return lookupArrayValue(observatoryConstants.ContinuumBandwidthOB2, sc);
       case BAND_5A:
-        return lookupArrayValue(OSD_CONSTANTS.ContinuumBandwidthOB5a, sc);
+        return lookupArrayValue(observatoryConstants.ContinuumBandwidthOB5a, sc);
       case BAND_5B:
-        return lookupArrayValue(OSD_CONSTANTS.ContinuumBandwidthOB5b, sc);
+        return lookupArrayValue(observatoryConstants.ContinuumBandwidthOB5b, sc);
       default:
-        return lookupArrayValue(OSD_CONSTANTS.ContinuumBandwidthOBLow, sc);
+        return lookupArrayValue(observatoryConstants.ContinuumBandwidthOBLow, sc);
     }
   };
 
@@ -651,7 +650,8 @@ export default function ObservationEntry() {
 
   const suppliedField = () => {
     const suppliedTypeField = () => {
-      const getOptions = () => (isLow() ? [OSD_CONSTANTS?.Supplied[0]] : OSD_CONSTANTS?.Supplied);
+      const getOptions = () =>
+        isLow() ? [observatoryConstants?.Supplied[0]] : observatoryConstants?.Supplied;
 
       return (
         <Box pt={1}>
@@ -672,7 +672,7 @@ export default function ObservationEntry() {
     const suppliedUnitsField = () => {
       const getOptions = () => {
         return suppliedType && suppliedType > 0
-          ? OSD_CONSTANTS.Supplied[suppliedType - 1].units
+          ? observatoryConstants.Supplied[suppliedType - 1].units
           : [];
       };
 
