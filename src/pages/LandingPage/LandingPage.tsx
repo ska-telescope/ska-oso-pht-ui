@@ -52,6 +52,7 @@ import {
   getColProposalUpdated,
   getColCycleClose
 } from '@/components/grid/gridColumns/GridColumns';
+import CycleSelection from '@/components/alerts/cycleSelection/CycleSelection';
 
 export default function LandingPage() {
   const { t } = useScopedTranslation();
@@ -74,6 +75,7 @@ export default function LandingPage() {
   const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openViewDialog, setOpenViewDialog] = React.useState(false);
+  const [openCycleDialog, setOpenCycleDialog] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
   const loggedIn = isLoggedIn();
   const getAccess = () => application.content4 as ProposalAccess[];
@@ -326,18 +328,35 @@ export default function LandingPage() {
 
   const filteredData = proposals ? filterProposals() : [];
 
-  const createMock = async () => {
-    setProposal(getProposal());
-    navigate(NAV[4]);
-  };
+  /*--------------------------------------------------------------------*/
 
-  const clickFunction = () => {
-    if (!loggedIn && !cypressToken) {
-      createMock();
-    } else {
+  const addSubmissionButton = () => (
+    <AddButton
+      action={() => setOpenCycleDialog(true)}
+      testId={'addSubmissionButton'}
+      title={loggedIn || cypressToken ? 'addProposal.label' : 'addMockProposal.label'}
+      toolTip={loggedIn || cypressToken ? 'addProposal.toolTip' : 'addMockProposal.toolTip'}
+    />
+  );
+
+  const cycleConfirmed = async () => {
+    if (loggedIn || cypressToken) {
       navigate(PATH[1]);
+    } else {
+      setProposal(getProposal());
+      navigate(NAV[4]);
     }
   };
+
+  const cycleClicked = () => (
+    <CycleSelection
+      open={openCycleDialog}
+      onClose={() => setOpenCycleDialog(false)}
+      onConfirm={cycleConfirmed}
+    />
+  );
+
+  /*--------------------------------------------------------------------*/
 
   const displayField = () => {
     return !!(loggedIn || cypressToken);
@@ -349,23 +368,6 @@ export default function LandingPage() {
     </Typography>
   );
 
-  const addProposalButton = () => (
-    <AddButton
-      action={clickFunction}
-      testId={'addProposalButton'}
-      title={'addProposal.label'}
-      toolTip={'addProposal.toolTip'}
-    />
-  );
-
-  const addMockButton = () => (
-    <AddButton
-      action={clickFunction}
-      testId={'addMockButton'}
-      title={'addMockProposal.label'}
-      toolTip={'addMockProposal.toolTip'}
-    />
-  );
   const searchDropdown = () => (
     <DropDown
       options={[{ label: t('status.0'), value: '' }, ...SEARCH_TYPE_OPTIONS]}
@@ -420,7 +422,7 @@ export default function LandingPage() {
       <Grid container p={5} direction="row" alignItems="center" justifyContent="space-around">
         <Grid size={{ xs: 12 }}>{loggedIn && pageDescription()}</Grid>
         <Grid size={{ sm: 4, md: 3, lg: 2 }} p={2}>
-          {loggedIn || cypressToken ? addProposalButton() : addMockButton()}
+          {addSubmissionButton()}
         </Grid>
         <Grid size={{ sm: 4 }} p={2}>
           {displayField() && searchDropdown()}
@@ -452,6 +454,7 @@ export default function LandingPage() {
       {openDeleteDialog && deleteClicked()}
       {openCloneDialog && cloneClicked()}
       {openViewDialog && viewClicked()}
+      {openCycleDialog && cycleClicked()}
       <Paper
         sx={{
           bgcolor: 'transparent',
