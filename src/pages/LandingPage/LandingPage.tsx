@@ -165,7 +165,8 @@ export default function LandingPage() {
       setFetchList(!fetchList);
       setObservatoryData(!observatoryData);
     }
-    const isEmpty = !osdData || (Array.isArray(osdData) && osdData.length === 0);
+    const isEmpty =
+      !osdData() || (Array.isArray(osdData()) && ((osdData() as unknown) as []).length === 0);
     if (isEmpty) {
       fetchObservatoryData();
     }

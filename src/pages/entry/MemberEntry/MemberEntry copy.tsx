@@ -23,8 +23,6 @@ import PostProposalAccess from '@/services/axios/post/postProposalAccess/postPro
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_VIEW } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import UserSearchButton from '@/components/button/Search/Search';
-import { GetMockUserByEmail } from '@/services/axios/get/getUserByEmail/getUserByEmail';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
@@ -59,15 +57,7 @@ export default function MemberEntry({
   const [errorTextEmail, setErrorTextEmail] = React.useState('');
 
   const [formInvalid, setFormInvalid] = React.useState(true);
-  const [emailInvalid, setEmailInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);
-
-  const [investigator, setInvestigator] = React.useState<Investigator | undefined>(undefined);
-
-  React.useEffect(() => {
-    const invalidEmail = Boolean(emailValidation());
-    setEmailInvalid(invalidEmail);
-  }, [validateToggle]);
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box
@@ -80,20 +70,6 @@ export default function MemberEntry({
       {children}
     </Box>
   );
-
-  function emailValidation() {
-    let count = 0;
-    let emptyField = email === '';
-    let isValid = !emptyField;
-    count += isValid ? 0 : 1;
-    if (!emptyField) {
-      isValid = helpers.validate.validateTextEntry(email, setEmail, setErrorTextEmail, 'EMAIL');
-      count += isValid ? 0 : 1;
-    } else {
-      setErrorTextEmail('');
-    }
-    return count;
-  }
 
   function formValidation() {
     let count = 0;
@@ -284,66 +260,6 @@ export default function MemberEntry({
     }
   }
 
-  const resolveButton = () => {
-    // const processCoordinatesResults = (response: any) => {
-    //   if (response && !response.error) {
-    //     const values = response.split(' ');
-    //     const redshift =
-    //       values?.length > 2 && values[2] !== 'null'
-    //         ? Number(values[2])
-    //             .toExponential(2)
-    //             .toString()
-    //         : '';
-    //     const vel = values?.length > 3 && values[3] !== 'null' ? values[3] : '';
-    //     setDec(values[0]);
-    //     setRA(values[1]);
-    //     setRedshift(redshift);
-    //     setVel(vel);
-    //     setNameFieldError('');
-    //   } else {
-    //     setNameFieldError(t('resolve.error.' + response.error));
-    //   }
-    // };
-
-    // const getCoordinates = async () => {
-    //   const response = await GetCoordinates(name, raType);
-    //   processCoordinatesResults(response);
-    // };
-
-    // return (
-    //   <ResolveButton action={() => getCoordinates()} disabled={!name} testId={'resolveButton'} />
-    // );
-
-    async function searchEmail(email: string): Promise<boolean> {
-      const response = GetMockUserByEmail(email);
-      if (typeof response === 'string') {
-        notifyError(t('emailSearch.error'), NOTIFICATION_DELAY_IN_SECONDS);
-        return false;
-      } else {
-        notifySuccess(t('emailSearch.success'));
-        setInvestigator(response);
-        return true;
-      }
-    }
-
-    const userSearchClickFunction = async () => {
-      if (await searchEmail(formValues.email.value)) {
-        forSearch = true;
-        // setShowMemberEntry(true);
-        // clearForm();
-      }
-    };
-
-    return (
-      <UserSearchButton
-        action={userSearchClickFunction}
-        disabled={emailInvalid}
-        primary
-        testId="userSearchButton"
-      />
-    );
-  };
-
   function clearForm() {
     formValues.firstName.setValue('');
     formValues.lastName.setValue('');
@@ -407,7 +323,6 @@ export default function MemberEntry({
         onFocus={() => helpComponent(t('email.help'))}
         required
         disabled={forSearch}
-        suffix={resolveButton()}
       />
     );
   };
@@ -453,9 +368,9 @@ export default function MemberEntry({
     >
       <Grid size={{ xs: 7 }}>
         <Grid pt={1} container direction="column" alignItems="stretch" justifyContent="flex-start">
-          {emailField()}
           {firstNameField()}
           {lastNameField()}
+          {emailField()}
           {piField()}
           {phdThesisField()}
           <Box p={2}>
