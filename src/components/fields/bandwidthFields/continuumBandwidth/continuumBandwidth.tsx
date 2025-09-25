@@ -79,7 +79,9 @@ export default function ContinuumBandwidthField({
       scaledFrequency,
       telescope,
       subarrayConfig,
-      observingBand
+      observingBand,
+      osdMID,
+      osdLOW
     );
     if (result1) {
       return displayMinimumChannelWidthErrorMessage(minimumChannelWidthHz);

@@ -123,7 +123,15 @@ export default function BandwidthField({
     }
 
     if (
-      !checkBandLimits(scaledBandwidth, scaledFrequency, telescope, subarrayConfig, observingBand)
+      !checkBandLimits(
+        scaledBandwidth,
+        scaledFrequency,
+        telescope,
+        subarrayConfig,
+        observingBand,
+        osdMID,
+        osdLOW
+      )
     ) {
       return t('bandwidth.range.rangeError');
     }

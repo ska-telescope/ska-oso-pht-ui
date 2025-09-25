@@ -1,4 +1,3 @@
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   ANTENNA_13M,
   ANTENNA_15M,
@@ -12,7 +11,6 @@ import {
 } from '@utils/constants.ts';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import sensCalHelpers from '../../../services/api/sensitivityCalculator/sensCalHelpers';
-import ObservatoryData from '@/utils/types/observatoryData';
 const isLow = (telescope: number) => telescope === TELESCOPE_LOW_NUM;
 const isAA2 = (subarrayConfig: number) => subarrayConfig === 3;
 
@@ -25,11 +23,6 @@ export const checkMinimumChannelWidth = (
   minimumChannelWidthHz: number,
   scaledBandwidth: number
 ): boolean => (scaledBandwidth < minimumChannelWidthHz ? false : true);
-
-function getObservatoryData() {
-  const { application } = storageObject.useStore();
-  return application.content3 as ObservatoryData;
-}
 
 // get maximum bandwidth defined for the subarray
 export const getMaxContBandwidthHz = (
@@ -60,17 +53,13 @@ export const checkMaxContBandwidthHz = (
   scaledBandwidth: number
 ): boolean => (maxContBandwidthHz && scaledBandwidth > maxContBandwidthHz ? false : true);
 
-const getSubArrayAntennasCounts = (
-  observatoryData: ObservatoryData,
-  telescope: number,
-  subarrayConfig: number
-) => {
+const getSubArrayAntennasCounts = (osdMID, osdLOW, telescope: number, subarrayConfig: number) => {
   const observationArray = OSD_CONSTANTS.array.find(arr => arr.value === telescope);
   const subArray = observationArray?.subarray?.find(sub => sub.value === subarrayConfig);
   //TODO: AA2 will be extended as OSD Data is extended
   if (!isLow(telescope) && isAA2(subarrayConfig)) {
     return {
-      n15mAntennas: observatoryData?.capabilities?.mid?.AA2?.numberSkaDishes || 0,
+      n15mAntennas: osdMID?.AA2?.numberSkaDishes || 0,
       n13mAntennas: subArray?.numOf13mAntennas || 0
     };
   } else {
@@ -104,23 +93,24 @@ const getBandLimitsForAntennaCounts = (
   return limits;
 };
 
-const getBandLimits = (telescope: number, subarrayConfig: number, observingBand: number) => {
-  const observatoryData: ObservatoryData = getObservatoryData();
-
+const getBandLimits = (
+  telescope: number,
+  subarrayConfig: number,
+  observingBand: number,
+  osdMID,
+  osdLOW
+) => {
   const bandLimits = BANDWIDTH_TELESCOPE.find(band => band.value === observingBand)?.bandLimits;
   if (!bandLimits) {
     return [];
   }
 
   if (isLow(telescope)) {
-    return [
-      observatoryData.capabilities?.low?.basicCapabilities?.minFrequencyHz,
-      observatoryData.capabilities?.low?.basicCapabilities?.maxFrequencyHz
-    ];
+    return [osdLOW?.basicCapabilities?.minFrequencyHz, osdLOW?.basicCapabilities?.maxFrequencyHz];
   }
 
   function getMidFrequencyLimits(observingBand: string) {
-    const band = observatoryData?.capabilities?.mid?.basicCapabilities?.receiverInformation.find(
+    const band = osdMID?.basicCapabilities?.receiverInformation.find(
       item => item?.rxId === observingBand
     );
     const minFrequencyHz = band?.minFrequencyHz;
@@ -142,7 +132,8 @@ const getBandLimits = (telescope: number, subarrayConfig: number, observingBand:
   }
 
   const { n15mAntennas, n13mAntennas } = getSubArrayAntennasCounts(
-    observatoryData,
+    osdMID,
+    osdLOW,
     telescope,
     subarrayConfig
   );
@@ -159,12 +150,14 @@ export const checkBandLimits = (
   scaledFrequency: number,
   telescope: number,
   subarrayConfig: number,
-  observingBand: number
+  observingBand: number,
+  osdMID,
+  osdLOW
 ) => {
   const halfBandwidth: number = scaledBandwidth / 2.0;
   const lowerBound: number = scaledFrequency - halfBandwidth;
   const upperBound: number = scaledFrequency + halfBandwidth;
-  const bandLimits = getBandLimits(telescope, subarrayConfig, observingBand);
+  const bandLimits = getBandLimits(telescope, subarrayConfig, observingBand, osdMID, osdLOW);
   return !(
     (bandLimits && lowerBound < bandLimits[0]) ||
     (bandLimits && upperBound > bandLimits[1])
