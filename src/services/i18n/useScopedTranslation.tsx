@@ -6,11 +6,9 @@ import { useTranslation } from 'react-i18next';
 const isDev = process.env.NODE_ENV === 'development';
 
 export const useScopedTranslation = (namespaces?: string[]) => {
-  // TODO : Put these back for implementation const { application } = storageObject.useStore();
-  // TODO : Put these back for implementation const getObservatoryData = () => application.content3 as ObservatoryData;
   const isSV = () => false;
   // TODO : Put these back for implementation !isCypress &&
-  // TODO : Put these back for implementation getObservatoryData()?.observatoryPolicy?.cycleDescription === 'Science Verification';
+  // TODO : Put these back for implementation osd()?.observatoryPolicy?.cycleDescription === 'Science Verification';
 
   const defaultNamespaces = isSV() ? ['sv', 'pht'] : ['pht'];
   const { t: rawT, ...rest } = useTranslation(namespaces || defaultNamespaces);

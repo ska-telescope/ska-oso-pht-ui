@@ -9,7 +9,15 @@ import { Typography, Grid, Box } from '@mui/material';
 import React from 'react';
 import GetReviewerList from '@services/axios/get/getReviewerList/getReviewerList';
 import Alert from '../../alerts/standardAlert/StandardAlert';
-import { NOT_SPECIFIED, SEARCH_TYPE_OPTIONS_REVIEWERS } from '@/utils/constants';
+import {
+  getColJobTitle,
+  getColDisplayName,
+  getColReviewerLocation,
+  getColReviewerType,
+  getColSubExpertise,
+  getColStatus
+} from '../gridColumns/GridColumns';
+import { SEARCH_TYPE_OPTIONS_REVIEWERS } from '@/utils/constants';
 import { Reviewer } from '@/utils/types/reviewer';
 import { IdObject } from '@/utils/types/idObject';
 import { arraysAreEqual } from '@/utils/helpers';
@@ -87,12 +95,6 @@ export default function GridReviewers({
     }
   }, [selectedReviewers]);
 
-  const displayStatus = (status: any) => {
-    return status
-      ? t('reviewers.statusCategory.' + status)
-      : t('reviewers.statusCategory.' + NOT_SPECIFIED);
-  };
-
   const isReviewerSelected = (reviewerId: string): boolean => {
     return reviewersCollection?.filter(entry => entry.id === reviewerId).length > 0;
   };
@@ -101,11 +103,6 @@ export default function GridReviewers({
     return (
       (reviewer.isScience && typeState !== 'tec') || (reviewer.isTechnical && typeState !== 'sci')
     );
-  };
-
-  const getReviewerType = (rec: Reviewer) => {
-    if (rec.isScience && rec.isTechnical) return t('reviewerType.all');
-    else return rec.isScience ? t('reviewerType.science') : t('reviewerType.technical');
   };
 
   const colSelect = {
@@ -150,85 +147,14 @@ export default function GridReviewers({
     )
   };
 
-  const colTitle = {
-    field: 'title',
-    headerName: t('reviewers.title'),
-    minWidth: 120,
-    renderCell: (e: any) => e.row.jobTitle
-  };
-
-  const colGivenName = {
-    field: 'givenName',
-    headerName: t('reviewers.givenName'),
-    minWidth: 180,
-    renderCell: (e: { row: any }) => e.row.givenName
-  };
-
-  const colSurname = {
-    field: 'surname',
-    headerName: t('reviewers.surname'),
-    minWidth: 180,
-    renderCell: (e: { row: any }) => e.row.surname
-  };
-
-  // TODO : Keep until we get confirmation that it should be removed from SciOps
-  // const colOfficeLocation = {
-  //   field: 'officeLocation',
-  //   headerName: t('reviewers.officeLocation'),
-  //   minWidth: 200,
-  //   renderCell: (e: { row: any }) => e.row.officeLocation
-  // };
-
-  const colReviewerType = {
-    field: 'reviewerType',
-    headerName: t('reviewers.reviewerType'),
-    filterable: false,
-    sortable: false,
-    disableColumnMenu: true,
-    renderHeader: () => (
-      <Box sx={{ minWidth: 150 }}>
-        <DropDown
-          disabledUnderline={true}
-          options={[
-            { label: t('reviewerType.all'), value: 'all' },
-            { label: t('reviewerType.science'), value: 'sci' },
-            { label: t('reviewerType.technical'), value: 'tec' }
-          ]}
-          testId="subExpertise"
-          value={typeState}
-          setValue={setTypeState}
-          label={''}
-        />
-      </Box>
-    ),
-    minWidth: 200,
-    renderCell: (e: { row: any }) => getReviewerType(e.row)
-  };
-
-  const colSubExpertise = {
-    field: 'subExpertise',
-    headerName: t('reviewers.subExpertise'),
-    flex: 2,
-    minWidth: 200,
-    renderCell: (e: { row: any }) => t('reviewers.subExpertiseCategory.' + e.row.subExpertise)
-  };
-
-  const colStatus = {
-    field: 'status',
-    headerName: t('reviewers.status'),
-    minWidth: 150,
-    renderCell: (e: { row: any }) => displayStatus(e.row.status)
-  };
-
   const stdColumns = [
     ...(showSelection ? [colSelect] : []),
-    colTitle,
-    colGivenName,
-    colSurname,
-    // colOfficeLocation,
-    colReviewerType,
-    colSubExpertise,
-    colStatus
+    getColJobTitle(),
+    getColDisplayName(),
+    getColReviewerLocation(),
+    getColReviewerType(typeState, setTypeState),
+    getColSubExpertise(),
+    getColStatus()
   ];
 
   const selectedData = reviewers

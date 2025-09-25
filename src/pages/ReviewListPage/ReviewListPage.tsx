@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Tooltip, Typography } from '@mui/material';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DataGrid,
   DropDown,
@@ -34,19 +33,17 @@ import { Panel } from '@/utils/types/panel';
 import TechnicalIcon from '@/components/icon/technicalIcon/technicalIcon';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
-import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
 import { getUserId, isReviewerScience, isReviewerTechnical } from '@/utils/aaa/aaaUtils';
 import ConflictConfirmation from '@/components/alerts/conflictConfirmation/ConflictConfirmation';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 export default function ReviewListPage() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const { notifyError, notifySuccess } = useNotify();
-
-  const { application } = storageObject.useStore();
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
@@ -64,10 +61,9 @@ export default function ReviewListPage() {
   const [panelData, setPanelData] = React.useState<Panel[]>([]);
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
-  const getObservatoryData = () => application.content3 as ObservatoryData;
-  const getCycleId = () => getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId;
 
   const authClient = useAxiosAuthClient();
+  const { osdCycleId } = useOSDAccessors();
   const userId = getUserId();
 
   const DATA_GRID_HEIGHT = '60vh';
@@ -164,7 +160,7 @@ export default function ReviewListPage() {
         last_modified_by: '',
         last_modified_on: ''
       },
-      panelId: getCycleId(),
+      panelId: osdCycleId,
       cycle: '',
       reviewerId: userId,
       submittedOn: '',
@@ -182,7 +178,7 @@ export default function ReviewListPage() {
     const response: string | { error: string } = await PostProposalReview(
       authClient,
       rec as ProposalReview,
-      getObservatoryData().observatoryPolicy?.cycleInformation?.cycleId
+      osdCycleId
     );
     if (typeof response === 'object' && response?.error) {
       notifyError(response?.error);

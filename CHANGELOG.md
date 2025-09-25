@@ -15,6 +15,9 @@ UNRELEASED
 * Added: User targeted e2e testing
 * Changed: ODA v11.7.1
 * Changed: OSO-services : v5.1.0
+* Changed: PDF Viewer now responds to light / dark mode
+* Changed: Retrieval of OSD information now possible via utilities
+* Added: Cycle dates to Landing and General pages
 
 5.1.0
 ----------

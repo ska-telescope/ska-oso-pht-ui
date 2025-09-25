@@ -171,6 +171,9 @@
     "label": "Cycle",
     "error": "Unable to retrieve Cycle data"
   },
+  "cycleClose": {
+    "label": "Cycle closes"
+  },
   "dataProduct": {
     "button": "Add Data Product"
   },
@@ -554,6 +557,11 @@
       },
       "warning": "Technical Justification PDF being processed"
     }
+  },
+  "pdfViewer": {
+    "error": "It was unable to preview the PDF",
+    "loading": "...",
+    "noFile": "There is no PDF file"
   },
   "phdThesis": {
     "grid": "PhD",
