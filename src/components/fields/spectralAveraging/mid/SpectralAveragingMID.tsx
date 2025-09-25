@@ -2,7 +2,7 @@ import { DropDown } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Grid } from '@mui/material';
 import { LAB_IS_BOLD, LAB_POSITION } from '@utils/constants.ts';
-import { OBSERVATION } from '@utils/observationConstantData.ts';
+import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface SpectralAveragingMIDFieldProps {
@@ -28,7 +28,7 @@ export default function SpectralAveragingMIDField({
   const { helpComponent } = storageObject.useStore();
   const FIELD = 'spectralAveraging';
 
-  const getOptions = () => OBSERVATION.SpectralAveraging;
+  const getOptions = () => OSD_CONSTANTS.SpectralAveraging;
 
   return (
     <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">

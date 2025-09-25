@@ -10,7 +10,7 @@ import {
 } from '@utils/constants.ts';
 
 //NOTE:: not to be referenced directly, outside the landing page
-export const OBSERVATION = {
+export const OSD_CONSTANTS = {
   array: [
     {
       value: 1,

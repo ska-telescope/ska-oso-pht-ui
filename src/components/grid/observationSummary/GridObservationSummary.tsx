@@ -3,7 +3,7 @@ import { Box, Grid, Typography } from '@mui/material';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { BANDWIDTH_TELESCOPE, NOT_SPECIFIED } from '@utils/constants.ts';
-import { OBSERVATION } from '@utils/observationConstantData.ts';
+import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import Proposal from '../../../utils/types/proposal';
 import emptyCell from '../../../components/fields/emptyCell/emptyCell';
@@ -68,7 +68,7 @@ export default function GridObservationSummary({
     return (
       rec.supplied.value +
       ' ' +
-      OBSERVATION?.Supplied[rec.supplied.type]?.units.find(e => (e.value = rec.supplied.units))
+      OSD_CONSTANTS?.Supplied[rec.supplied.type]?.units.find(e => (e.value = rec.supplied.units))
         ?.label
     );
   };

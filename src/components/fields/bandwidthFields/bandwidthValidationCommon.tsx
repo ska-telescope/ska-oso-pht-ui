@@ -10,9 +10,10 @@ import {
   BANDWIDTH_TELESCOPE,
   TELESCOPE_LOW_NUM
 } from '@utils/constants.ts';
-import { OBSERVATION } from '@utils/observationConstantData.ts';
+import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import sensCalHelpers from '../../../services/api/sensitivityCalculator/sensCalHelpers';
 import ObservatoryData from '@/utils/types/observatoryData';
+import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 
 const isLow = (telescope: number) => telescope === TELESCOPE_LOW_NUM;
 const isAA2 = (subarrayConfig: number) => subarrayConfig === 3;
@@ -34,17 +35,18 @@ function getObservatoryData() {
 
 // get maximum bandwidth defined for the subarray
 export const getMaxContBandwidthHz = (telescope: number, subarrayConfig: number): any => {
-  const data = getObservatoryData();
+  const { osdMID, osdLOW } = useOSDAccessors();
 
   //TODO: AA2 will be extended as OSD Data is extended
   if (isAA2(subarrayConfig)) {
     if (isLow(telescope)) {
-      return data?.capabilities?.low?.AA2?.availableBandwidthHz;
+      return osdLOW?.AA2?.availableBandwidthHz;
     } else {
-      return data?.capabilities?.mid?.AA2?.availableBandwidthHz;
+      return osdMID?.AA2?.availableBandwidthHz;
     }
   } else {
-    return OBSERVATION.array
+    //TODO: Refactor as custom does not have this field
+    return OSD_CONSTANTS.array
       .find(item => item.value === telescope)
       ?.subarray?.find(ar => ar.value === subarrayConfig)?.maxContBandwidthHz;
   }
@@ -62,7 +64,7 @@ const getSubArrayAntennasCounts = (
   telescope: number,
   subarrayConfig: number
 ) => {
-  const observationArray = OBSERVATION.array.find(arr => arr.value === telescope);
+  const observationArray = OSD_CONSTANTS.array.find(arr => arr.value === telescope);
   const subArray = observationArray?.subarray?.find(sub => sub.value === subarrayConfig);
   //TODO: AA2 will be extended as OSD Data is extended
   if (!isLow(telescope) && isAA2(subarrayConfig)) {

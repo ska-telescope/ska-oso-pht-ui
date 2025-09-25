@@ -26,7 +26,7 @@ import {
   TYPE_CONTINUUM
 } from '@utils/constants.ts';
 import { SensCalcResults, ResultsSection } from '@utils/types/sensCalcResults.tsx';
-import { OBSERVATION } from '@utils/observationConstantData.ts';
+import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import {
   addFrequency,
   addRobustProperty,
@@ -161,7 +161,7 @@ function getFinalIndividualResultsForContinuum(
   let transformed_result = results.transformed_result;
 
   const observationTypeLabel: string = OBS_TYPES[theObservation.type as number];
-  const suppliedType = OBSERVATION.Supplied.find(sup => sup.value === theObservation.supplied.type)
+  const suppliedType = OSD_CONSTANTS.Supplied.find(sup => sup.value === theObservation.supplied.type)
     ?.sensCalcResultsLabel;
 
   const shifted1 = shiftSensitivity(transformed_result?.weighted_continuum_sensitivity);
@@ -252,7 +252,7 @@ function getFinalIndividualResultsForContinuum(
     field: suppliedType,
     value: theObservation?.supplied?.value?.toString(),
     units:
-      OBSERVATION.Supplied.find(s => s.sensCalcResultsLabel === suppliedType)?.units?.find(
+      OSD_CONSTANTS.Supplied.find(s => s.sensCalcResultsLabel === suppliedType)?.units?.find(
         u => u.value === theObservation.supplied.units
       )?.label ?? ''
   };
@@ -365,7 +365,7 @@ function GetContinuumData(telescope: Telescope, observation: Observation, target
 
   // TODO handle custom subarray
   const subArray = (observation: Observation) => {
-    const result = OBSERVATION.array
+    const result = OSD_CONSTANTS.array
       .find(t => t.value === observation.telescope)
       ?.subarray?.find(s => s.value === observation.subarray);
     return result ? result.map : '';

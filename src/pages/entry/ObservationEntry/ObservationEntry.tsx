@@ -56,7 +56,7 @@ import {
   getMinimumChannelWidth,
   getScaledBandwidthOrFrequency
 } from '@utils/helpers.ts';
-import { OBSERVATION } from '@utils/observationConstantData.ts';
+import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Proposal from '../../../utils/types/proposal';
@@ -281,7 +281,7 @@ export default function ObservationEntry() {
   };
 
   const setTheSubarrayConfig = (e: React.SetStateAction<number>) => {
-    const record = OBSERVATION.array[telescope() - 1].subarray.find(element => element.value === e);
+    const record = OSD_CONSTANTS.array[telescope() - 1].subarray.find(element => element.value === e);
     if (record) {
       //Set value using OSD Data if Low AA2
       if (isLow() && isAA2(record.value)) {
@@ -346,30 +346,30 @@ export default function ObservationEntry() {
   const calculateCentralFrequency = (obsBand: number, subarrayConfig: number) => {
     switch (obsBand) {
       case BAND_1:
-        return lookupArrayValue(OBSERVATION.CentralFrequencyOB1, subarrayConfig);
+        return lookupArrayValue(OSD_CONSTANTS.CentralFrequencyOB1, subarrayConfig);
       case BAND_2:
-        return lookupArrayValue(OBSERVATION.CentralFrequencyOB2, subarrayConfig);
+        return lookupArrayValue(OSD_CONSTANTS.CentralFrequencyOB2, subarrayConfig);
       case BAND_5A:
-        return OBSERVATION.CentralFrequencyOB5a[0].value;
+        return OSD_CONSTANTS.CentralFrequencyOB5a[0].value;
       case BAND_5B:
-        return OBSERVATION.CentralFrequencyOB5b[0].value;
+        return OSD_CONSTANTS.CentralFrequencyOB5b[0].value;
       default:
-        return OBSERVATION.CentralFrequencyOBLow[0].value;
+        return OSD_CONSTANTS.CentralFrequencyOBLow[0].value;
     }
   };
 
   const calculateContinuumBandwidth = (ob: number, sc: number) => {
     switch (ob) {
       case BAND_1:
-        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOB1, sc);
+        return lookupArrayValue(OSD_CONSTANTS.ContinuumBandwidthOB1, sc);
       case BAND_2:
-        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOB2, sc);
+        return lookupArrayValue(OSD_CONSTANTS.ContinuumBandwidthOB2, sc);
       case BAND_5A:
-        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5a, sc);
+        return lookupArrayValue(OSD_CONSTANTS.ContinuumBandwidthOB5a, sc);
       case BAND_5B:
-        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5b, sc);
+        return lookupArrayValue(OSD_CONSTANTS.ContinuumBandwidthOB5b, sc);
       default:
-        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOBLow, sc);
+        return lookupArrayValue(OSD_CONSTANTS.ContinuumBandwidthOBLow, sc);
     }
   };
 
@@ -649,7 +649,7 @@ export default function ObservationEntry() {
 
   const suppliedField = () => {
     const suppliedTypeField = () => {
-      const getOptions = () => (isLow() ? [OBSERVATION?.Supplied[0]] : OBSERVATION?.Supplied);
+      const getOptions = () => (isLow() ? [OSD_CONSTANTS?.Supplied[0]] : OSD_CONSTANTS?.Supplied);
 
       return (
         <Box pt={1}>
@@ -669,7 +669,7 @@ export default function ObservationEntry() {
 
     const suppliedUnitsField = () => {
       const getOptions = () => {
-        return suppliedType && suppliedType > 0 ? OBSERVATION.Supplied[suppliedType - 1].units : [];
+        return suppliedType && suppliedType > 0 ? OSD_CONSTANTS.Supplied[suppliedType - 1].units : [];
       };
 
       return (
