@@ -63,21 +63,25 @@ export default function ContinuumBandwidthField({
   const errorMessage = () => {
     const scaledBandwidth = getScaledBandwidthOrFrequency(value, continuumBandwidthUnits ?? 0);
     const scaledFrequency = getScaledBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
-
-    if (!checkMinimumChannelWidth(minimumChannelWidthHz, scaledBandwidth)) {
+    const maxContBandwidthHz: number | undefined = getMaxContBandwidthHz(telescope, subarrayConfig);
+    const result1 = !checkMinimumChannelWidth(minimumChannelWidthHz, scaledBandwidth);
+    const result2 = !checkMaxContBandwidthHz(maxContBandwidthHz, scaledBandwidth);
+    const result3 = !checkBandLimits(
+      scaledBandwidth,
+      scaledFrequency,
+      telescope,
+      subarrayConfig,
+      observingBand
+    );
+    if (result1) {
       return displayMinimumChannelWidthErrorMessage(minimumChannelWidthHz);
     }
-
-    const maxContBandwidthHz: number | undefined = getMaxContBandwidthHz(telescope, subarrayConfig);
-    if (!checkMaxContBandwidthHz(maxContBandwidthHz, scaledBandwidth)) {
+    if (result2) {
       return displayMaxContBandwidthErrorMessage(maxContBandwidthHz);
     }
-    if (
-      !checkBandLimits(scaledBandwidth, scaledFrequency, telescope, subarrayConfig, observingBand)
-    ) {
+    if (result3) {
       return t('bandwidth.range.rangeError');
     }
-
     return '';
   };
 
