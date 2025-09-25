@@ -18,6 +18,7 @@ UNRELEASED
 * Changed: PDF Viewer now responds to light / dark mode
 * Changed: Retrieval of OSD information now possible via utilities
 * Added: Cycle dates to Landing and General pages
+* Added: Cycle conformation when adding a submission
 
 5.1.0
 ----------
