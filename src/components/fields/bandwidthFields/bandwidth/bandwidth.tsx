@@ -7,7 +7,6 @@ import {
   TELESCOPE_LOW_NUM,
   TYPE_ZOOM
 } from '@utils/constants.ts';
-import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import sensCalHelpers from '../../../../services/api/sensitivityCalculator/sensCalHelpers';
 import {
@@ -55,12 +54,12 @@ export default function BandwidthField({
   minimumChannelWidthHz = 0
 }: BandwidthFieldProps) {
   const { t } = useScopedTranslation();
-  const { osdMID, osdLOW } = useOSDAccessors();
+  const { osdMID, osdLOW, observatoryConstants } = useOSDAccessors();
 
   const isLow = () => telescope === TELESCOPE_LOW_NUM;
 
   const getOptions = () => {
-    return OSD_CONSTANTS.array[telescope - 1].bandWidth;
+    return observatoryConstants.array[telescope - 1].bandWidth;
   };
   const roundBandwidthValue = (options: any[]) =>
     options.map((obj: { label: string; value: any; mapping: any }) => {
@@ -72,7 +71,7 @@ export default function BandwidthField({
     });
 
   const lookupBandwidth = (inValue: number): any =>
-    OSD_CONSTANTS.array[telescope - 1]?.bandWidth.find(bw => bw.value === inValue);
+    observatoryConstants.array[telescope - 1]?.bandWidth.find(bw => bw.value === inValue);
 
   const getBandwidthUnitsLabel = (): string => {
     return lookupBandwidth(value)?.mapping;
@@ -116,7 +115,8 @@ export default function BandwidthField({
       telescope,
       subarrayConfig,
       osdMID,
-      osdLOW
+      osdLOW,
+      observatoryConstants
     );
     if (!checkMaxContBandwidthHz(maxContBandwidthHz, scaledBandwidth)) {
       return displayMaxContBandwidthErrorMessage(maxContBandwidthHz);

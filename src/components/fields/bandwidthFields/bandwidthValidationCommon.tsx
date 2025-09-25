@@ -29,7 +29,8 @@ export const getMaxContBandwidthHz = (
   telescope: number,
   subarrayConfig: number,
   osdMID,
-  osdLOW
+  osdLOW,
+  observatoryConstants
 ): any => {
   //TODO: AA2 will be extended as OSD Data is extended
   if (isAA2(subarrayConfig)) {
@@ -40,7 +41,7 @@ export const getMaxContBandwidthHz = (
     }
   } else {
     //TODO: Refactor as custom does not have this field
-    return OSD_CONSTANTS.array
+    return observatoryConstants.array
       .find(item => item.value === telescope)
       ?.subarray?.find(ar => ar.value === subarrayConfig)?.maxContBandwidthHz;
   }

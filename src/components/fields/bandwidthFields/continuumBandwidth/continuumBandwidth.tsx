@@ -45,7 +45,7 @@ export default function ContinuumBandwidthField({
   const { t } = useScopedTranslation();
   const FIELD = 'continuumBandwidth';
 
-  const { osdMID, osdLOW } = useOSDAccessors();
+  const { osdMID, osdLOW, observatoryConstants } = useOSDAccessors();
 
   const displayMinimumChannelWidthErrorMessage = (minimumChannelWidthHz: number): string => {
     const minimumChannelWidthKHz = sensCalHelpers.format
@@ -70,7 +70,8 @@ export default function ContinuumBandwidthField({
       telescope,
       subarrayConfig,
       osdMID,
-      osdLOW
+      osdLOW,
+      observatoryConstants
     );
     const result1 = !checkMinimumChannelWidth(minimumChannelWidthHz, scaledBandwidth);
     const result2 = !checkMaxContBandwidthHz(maxContBandwidthHz, scaledBandwidth);
