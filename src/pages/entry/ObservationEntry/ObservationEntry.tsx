@@ -25,11 +25,6 @@ import {
   BAND_5B,
   BAND_2,
   BAND_1,
-  OB_SUBARRAY_AA4,
-  OB_SUBARRAY_AA4_13,
-  OB_SUBARRAY_AA4_15,
-  OB_SUBARRAY_AA_STAR,
-  OB_SUBARRAY_AA_STAR_15,
   OB_SUBARRAY_CUSTOM,
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_INTEGRATION_TIME_UNITS_S,
@@ -43,9 +38,6 @@ import {
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_NUM,
   OB_SUBARRAY_AA2,
-  OB_SUBARRAY_AA_STAR_CORE,
-  OB_SUBARRAY_AA2_CORE,
-  OB_SUBARRAY_AA4_CORE,
   FOOTER_HEIGHT_PHT
 } from '@utils/constants.ts';
 import {
@@ -192,46 +184,13 @@ export default function ObservationEntry() {
     return newObservation;
   };
 
-  const getDefaultSubArrayConfig = (inBand: number, inSubArray: number) => {
-    if (inBand === BAND_LOW) {
-      if (
-        inSubArray === OB_SUBARRAY_AA4_15 ||
-        inSubArray === OB_SUBARRAY_AA_STAR_15 ||
-        inSubArray === OB_SUBARRAY_AA4_13
-      ) {
-        return OB_SUBARRAY_AA4;
-      }
-    } else if (inBand === BAND_5A || inBand === BAND_5B) {
-      if (
-        inSubArray === OB_SUBARRAY_AA2_CORE ||
-        inSubArray === OB_SUBARRAY_AA_STAR ||
-        inSubArray === OB_SUBARRAY_AA_STAR_CORE ||
-        inSubArray === OB_SUBARRAY_AA4 ||
-        inSubArray === OB_SUBARRAY_AA4_CORE
-      ) {
-        return OB_SUBARRAY_AA4_15;
-      }
-    } else if (inBand === BAND_1 || inBand === BAND_2) {
-      if (
-        inSubArray === OB_SUBARRAY_AA2_CORE ||
-        inSubArray === OB_SUBARRAY_AA_STAR_CORE ||
-        inSubArray === OB_SUBARRAY_AA4_CORE
-      ) {
-        return OB_SUBARRAY_AA4;
-      }
-    }
-    return inSubArray;
-  };
-
   // Change the central frequency & units only if they are currently the same as the existing defaults
   const setDefaultCentralFrequency = (inBand: number, inSubArray: number) => {
     if (
       Number(centralFrequency) === calculateCentralFrequency(observingBand, subarrayConfig) &&
       centralFrequencyUnits === (isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ)
     ) {
-      setCentralFrequency(
-        calculateCentralFrequency(inBand, getDefaultSubArrayConfig(inBand, inSubArray))
-      );
+      setCentralFrequency(calculateCentralFrequency(inBand, inSubArray));
       setCentralFrequencyUnits(inBand === BAND_LOW ? FREQUENCY_MHZ : FREQUENCY_GHZ);
     }
   };
@@ -243,9 +202,7 @@ export default function ObservationEntry() {
       Number(continuumBandwidth) === calculateContinuumBandwidth(observingBand, subarrayConfig) &&
       continuumBandwidthUnits === (isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ)
     ) {
-      setContinuumBandwidth(
-        calculateContinuumBandwidth(inBand, getDefaultSubArrayConfig(inBand, inSubArray))
-      );
+      setContinuumBandwidth(calculateContinuumBandwidth(inBand, inSubArray));
       setContinuumBandwidthUnits(inBand === BAND_LOW ? FREQUENCY_MHZ : FREQUENCY_GHZ);
     }
   };
@@ -377,7 +334,7 @@ export default function ObservationEntry() {
       if (isEdit()) {
         return;
       }
-      setSubarrayConfig(getDefaultSubArrayConfig(observingBand, subarrayConfig));
+      setSubarrayConfig(subarrayConfig);
     };
 
     const setFrequencyUnits = () => {
