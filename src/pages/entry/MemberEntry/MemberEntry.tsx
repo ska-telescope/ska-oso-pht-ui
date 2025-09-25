@@ -9,7 +9,6 @@ import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
 import { Proposal, ProposalBackend } from '../../../utils/types/proposal';
 import { generateId, helpers } from '../../../utils/helpers';
 import {
-  DEFAULT_INVESTIGATOR,
   LAB_POSITION,
   PROPOSAL_STATUS,
   TEAM_STATUS_TYPE_OPTIONS,
@@ -29,16 +28,10 @@ import { GetMockUserByEmail } from '@/services/axios/get/getUserByEmail/getUserB
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
 interface MemberEntryProps {
-  forSearch?: boolean;
-  foundInvestigator?: Investigator;
   invitationBtnClicked?: () => void;
 }
 
-export default function MemberEntry({
-  forSearch = false,
-  foundInvestigator = DEFAULT_INVESTIGATOR,
-  invitationBtnClicked = () => {}
-}: MemberEntryProps) {
+export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberEntryProps) {
   const { t } = useScopedTranslation();
   const LABEL_WIDTH = 6;
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
@@ -48,9 +41,9 @@ export default function MemberEntry({
   const authClient = useAxiosAuthClient();
   const { notifyError, notifyWarning, notifySuccess } = useNotify();
 
-  const [firstName, setFirstName] = React.useState(forSearch ? foundInvestigator.firstName : '');
-  const [lastName, setLastName] = React.useState(forSearch ? foundInvestigator.lastName : '');
-  const [email, setEmail] = React.useState(forSearch ? foundInvestigator.email : '');
+  const [firstName, setFirstName] = React.useState('');
+  const [lastName, setLastName] = React.useState('');
+  const [email, setEmail] = React.useState('');
   const [pi, setPi] = React.useState(false);
   const [phdThesis, setPhdThesis] = React.useState(false);
 
@@ -63,6 +56,8 @@ export default function MemberEntry({
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   const [investigator, setInvestigator] = React.useState<Investigator | undefined>(undefined);
+
+  const [forSearch, setForSearch] = React.useState(false);
 
   React.useEffect(() => {
     const invalidEmail = Boolean(emailValidation());
@@ -145,7 +140,7 @@ export default function MemberEntry({
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    helpComponent(t('firstName.help'));
+    helpComponent({ text: t('firstName.help') });
   }, []);
 
   React.useEffect(() => {
@@ -233,7 +228,7 @@ export default function MemberEntry({
 
   const getInvestigator = (currentInvestigators: Investigator[] | undefined): Investigator => {
     let highestId = currentInvestigators?.reduce((acc, investigator) => {
-      const idNumber = Number(investigator.id.replace('mock-', ''));
+      const idNumber = Number(investigator.id.replace('temp-', ''));
       return idNumber > acc ? idNumber : acc;
     }, 0);
     if (highestId === undefined) {
@@ -241,7 +236,7 @@ export default function MemberEntry({
     }
 
     return {
-      id: forSearch ? foundInvestigator?.id : `temp-${(highestId + 1).toString()}`,
+      id: forSearch && investigator ? investigator?.id : `temp-${(highestId + 1).toString()}`,
       firstName: formValues.firstName.value,
       lastName: formValues.lastName.value,
       email: formValues.email.value,
@@ -260,13 +255,13 @@ export default function MemberEntry({
     // ---------------------------------------------------------------------------------------------------
     // ---PATH 1---: found investigator with valid entra id (search path), should be added once rights are created
     // ---------------------------------------------------------------------------------------------------
-    if (forSearch && foundInvestigator?.id && (await createAccessRights(newInvestigator.id))) {
+    if (forSearch && (await createAccessRights(newInvestigator.id))) {
       addToProposalAndSave(currentInvestigators, newInvestigator);
     }
     // ---------------------------------------------------------------------------------------------------
     // ---PATH 2---: for investigator without valid entra id (sent email path), don't create access rights
     // ---------------------------------------------------------------------------------------------------
-    if (!forSearch && !foundInvestigator?.id) {
+    if (!forSearch) {
       addToProposalAndSave(currentInvestigators, newInvestigator);
     }
   }
@@ -285,35 +280,6 @@ export default function MemberEntry({
   }
 
   const resolveButton = () => {
-    // const processCoordinatesResults = (response: any) => {
-    //   if (response && !response.error) {
-    //     const values = response.split(' ');
-    //     const redshift =
-    //       values?.length > 2 && values[2] !== 'null'
-    //         ? Number(values[2])
-    //             .toExponential(2)
-    //             .toString()
-    //         : '';
-    //     const vel = values?.length > 3 && values[3] !== 'null' ? values[3] : '';
-    //     setDec(values[0]);
-    //     setRA(values[1]);
-    //     setRedshift(redshift);
-    //     setVel(vel);
-    //     setNameFieldError('');
-    //   } else {
-    //     setNameFieldError(t('resolve.error.' + response.error));
-    //   }
-    // };
-
-    // const getCoordinates = async () => {
-    //   const response = await GetCoordinates(name, raType);
-    //   processCoordinatesResults(response);
-    // };
-
-    // return (
-    //   <ResolveButton action={() => getCoordinates()} disabled={!name} testId={'resolveButton'} />
-    // );
-
     async function searchEmail(email: string): Promise<boolean> {
       const response = GetMockUserByEmail(email);
       if (typeof response === 'string') {
@@ -322,15 +288,16 @@ export default function MemberEntry({
       } else {
         notifySuccess(t('emailSearch.success'));
         setInvestigator(response);
+        setFirstName(response?.firstName);
+        setLastName(response?.lastName);
+        setEmail(response?.email);
         return true;
       }
     }
 
     const userSearchClickFunction = async () => {
       if (await searchEmail(formValues.email.value)) {
-        forSearch = true;
-        // setShowMemberEntry(true);
-        // clearForm();
+        setForSearch(true);
       }
     };
 
@@ -350,6 +317,7 @@ export default function MemberEntry({
     formValues.email.setValue('');
     formValues.pi.setValue(false);
     formValues.phdThesis.setValue(false);
+    setForSearch(false);
   }
 
   const clickFunction = async () => {
@@ -369,7 +337,7 @@ export default function MemberEntry({
         testId="firstName"
         value={firstName}
         setValue={setFirstName}
-        onFocus={() => helpComponent(t('firstName.help'))}
+        onFocus={() => helpComponent({ text: t('firstName.help') })}
         errorText={errorTextFirstName}
         required
         disabled={forSearch}
@@ -386,7 +354,7 @@ export default function MemberEntry({
         testId="lastName"
         value={lastName}
         setValue={setLastName}
-        onFocus={() => helpComponent(t('lastName.help'))}
+        onFocus={() => helpComponent({ text: t('lastName.help') })}
         errorText={errorTextLastName}
         required
         disabled={forSearch}
@@ -404,7 +372,7 @@ export default function MemberEntry({
         value={email}
         setValue={setEmail}
         errorText={errorTextEmail ? t(errorTextEmail) : ''}
-        onFocus={() => helpComponent(t('email.help'))}
+        onFocus={() => helpComponent({ text: t('email.help') })}
         required
         disabled={forSearch}
         suffix={resolveButton()}
@@ -422,7 +390,7 @@ export default function MemberEntry({
         testId="piCheckbox"
         checked={pi}
         onChange={handleCheckboxChangePI}
-        onFocus={() => helpComponent(t('pi.help'))}
+        onFocus={() => helpComponent({ text: t('pi.help') })}
       />
     );
   };
@@ -437,7 +405,7 @@ export default function MemberEntry({
         testId="PhDCheckbox"
         checked={phdThesis}
         onChange={handleCheckboxChangePhD}
-        onFocus={() => helpComponent(t('phdThesis.help'))}
+        onFocus={() => helpComponent({ text: t('phdThesis.help') })}
       />
     );
   };

@@ -30,7 +30,7 @@ export default function MemberSearch() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    helpComponent(t('emailSearch.help'));
+    helpComponent({ text: t('emailSearch.help') });
   }, []);
 
   React.useEffect(() => {
@@ -125,7 +125,7 @@ export default function MemberSearch() {
         value={email}
         setValue={setEmail}
         errorText={errorTextEmail ? t(errorTextEmail) : ''}
-        onFocus={() => helpComponent(t('emailSearch.help'))}
+        onFocus={() => helpComponent({ text: t('emailSearch.help') })}
         required
       />
     );
