@@ -4,6 +4,7 @@ import { Grid } from '@mui/material';
 import { BANDWIDTH_TELESCOPE, LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 import { subArrayOptions } from '../../../utils/observationOptions';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 
 interface SubArrayFieldProps {
   observingBand: number;

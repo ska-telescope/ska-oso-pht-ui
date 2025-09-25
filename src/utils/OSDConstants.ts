@@ -9,7 +9,7 @@ import {
   SUPPLIED_TYPE_SENSITIVITY
 } from '@utils/constants.ts';
 
-//NOTE:: not to be referenced directly, outside the landing page
+//NOTE:: not to be referenced directly, outside useOSDAccessors
 export const OSD_CONSTANTS = {
   array: [
     {
