@@ -431,6 +431,8 @@ export const RA_TYPE_GALACTIC = { value: 1, label: 'galactic' };
 export const DEFAULT_GALACTIC = '00:00:00.0';
 export const DEFAULT_EQUATORIAL = 0;
 
+export const DEFAULT_PULSAR_TIMING_BEAM_SELECTION = 'No Beam';
+
 export const ROBUST = [
   { label: '-2', value: 1 },
   { label: '-1', value: 2 },

@@ -4,6 +4,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
+import PulsarTimingBeamField from '@components/fields/RadioButton/RadioButton.tsx';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import ResolveButton from '@/components/button/Resolve/Resolve';
@@ -13,7 +14,12 @@ import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
 import VelocityField from '@/components/fields/velocity/Velocity';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 import Target from '@/utils/types/target';
-import { RA_TYPE_ICRS, LAB_POSITION, VELOCITY_TYPE } from '@/utils/constants';
+import {
+  RA_TYPE_ICRS,
+  LAB_POSITION,
+  VELOCITY_TYPE,
+  DEFAULT_PULSAR_TIMING_BEAM_SELECTION
+} from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 interface TargetEntryProps {
@@ -51,6 +57,8 @@ export default function TargetEntry({
   const [velUnit, setVelUnit] = React.useState(0);
   const [redshift, setRedshift] = React.useState('');
   const [referenceFrame, setReferenceFrame] = React.useState(RA_TYPE_ICRS.value);
+  const [referenceCoordinates, setReferenceCoordinates] = React.useState(RA_TYPE_ICRS.label);
+  const [pulsarTiming, setPulsarTiming] = React.useState(DEFAULT_PULSAR_TIMING_BEAM_SELECTION);
 
   const setTheName = (inValue: string) => {
     setName(inValue);
@@ -235,9 +243,14 @@ export default function TargetEntry({
     wrapper(
       <ReferenceCoordinatesField
         labelWidth={6}
-        setValue={undefined}
-        value={RA_TYPE_ICRS.label.toUpperCase()}
+        setValue={setReferenceCoordinates}
+        value={referenceCoordinates.toUpperCase()}
       />
+    );
+
+  const pulsarTimingBeamField = () =>
+    wrapper(
+      <PulsarTimingBeamField labelWidth={6} setValue={setPulsarTiming} value={pulsarTiming} />
     );
 
   const nameField = () =>
@@ -334,6 +347,7 @@ export default function TargetEntry({
           <label>
             <strong>PULSAR TIMING BEAM</strong>
           </label>
+          <Grid>{pulsarTimingBeamField()}</Grid>
           <label>
             <strong>RADIAL MOTION</strong>
           </label>
