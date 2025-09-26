@@ -7,7 +7,7 @@ import {
   TELESCOPE_LOW_NUM,
   TYPE_ZOOM
 } from '@utils/constants.ts';
-import { OBSERVATION } from '@utils/observationConstantData.ts';
+import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import sensCalHelpers from '../../../../services/api/sensitivityCalculator/sensCalHelpers';
 import {
   scaleBandwidthOrFrequency,
@@ -54,10 +54,12 @@ export default function BandwidthField({
   minimumChannelWidthHz = 0
 }: BandwidthFieldProps) {
   const { t } = useScopedTranslation();
+  const { osdMID, osdLOW, observatoryConstants } = useOSDAccessors();
+
   const isLow = () => telescope === TELESCOPE_LOW_NUM;
 
   const getOptions = () => {
-    return OBSERVATION.array[telescope - 1].bandWidth;
+    return observatoryConstants.array[telescope - 1].bandWidth;
   };
   const roundBandwidthValue = (options: any[]) =>
     options.map((obj: { label: string; value: any; mapping: any }) => {
@@ -69,7 +71,7 @@ export default function BandwidthField({
     });
 
   const lookupBandwidth = (inValue: number): any =>
-    OBSERVATION.array[telescope - 1]?.bandWidth.find(bw => bw.value === inValue);
+    observatoryConstants.array[telescope - 1]?.bandWidth.find(bw => bw.value === inValue);
 
   const getBandwidthUnitsLabel = (): string => {
     return lookupBandwidth(value)?.mapping;
@@ -109,13 +111,28 @@ export default function BandwidthField({
       return displayMinimumChannelWidthErrorMessage(minimumChannelWidthHz);
     }
 
-    const maxContBandwidthHz: number = getMaxContBandwidthHz(telescope, subarrayConfig);
+    const maxContBandwidthHz: number = getMaxContBandwidthHz(
+      telescope,
+      subarrayConfig,
+      osdMID,
+      osdLOW,
+      observatoryConstants
+    );
     if (!checkMaxContBandwidthHz(maxContBandwidthHz, scaledBandwidth)) {
       return displayMaxContBandwidthErrorMessage(maxContBandwidthHz);
     }
 
     if (
-      !checkBandLimits(scaledBandwidth, scaledFrequency, telescope, subarrayConfig, observingBand)
+      !checkBandLimits(
+        scaledBandwidth,
+        scaledFrequency,
+        telescope,
+        subarrayConfig,
+        observingBand,
+        osdMID,
+        osdLOW,
+        observatoryConstants
+      )
     ) {
       return t('bandwidth.range.rangeError');
     }

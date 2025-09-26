@@ -1,3 +1,4 @@
+import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { useOSD } from '../useOSD/useOSD';
 import { presentDate, presentTime } from '@/utils/present/present';
 
@@ -7,6 +8,7 @@ export function useOSDAccessors() {
   const capabilities = osd?.capabilities;
   const observatoryPolicy = osd?.observatoryPolicy;
   const cycleInformation = observatoryPolicy?.cycleInformation;
+  const observatoryConstants = OSD_CONSTANTS;
 
   const format = (val: string) => val?.replace(/^(\d{4})(\d{2})(\d{2})T/, '$1-$2-$3T');
   const present = (val: string, shouldPresent: boolean) =>
@@ -17,6 +19,7 @@ export function useOSDAccessors() {
     osdMID: capabilities?.mid,
     osdCycleDescription: observatoryPolicy?.cycleDescription,
     osdCycleId: cycleInformation?.cycleId,
+    observatoryConstants: observatoryConstants,
     osdCloses: (shouldPresent = false) =>
       present(format(cycleInformation?.proposalClose), shouldPresent),
     osdOpens: (shouldPresent = false) =>
