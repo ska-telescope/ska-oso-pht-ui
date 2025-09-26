@@ -1,5 +1,5 @@
-import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from './constants';
-import Proposal from './types/proposal';
+import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from './../constants';
+import Proposal from './../types/proposal';
 
 export const validateTitlePage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];

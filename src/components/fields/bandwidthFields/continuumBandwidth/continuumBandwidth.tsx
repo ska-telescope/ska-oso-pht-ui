@@ -47,7 +47,9 @@ export default function ContinuumBandwidthField({
 
   const { osdMID, osdLOW, observatoryConstants } = useOSDAccessors();
 
-  const displayMinimumChannelWidthErrorMessage = (minimumChannelWidthHz: number): string => {
+  const displayMinimumChannelWidthErrorMessage = (
+    minimumChannelWidthHz: number | undefined
+  ): string => {
     const minimumChannelWidthKHz = sensCalHelpers.format
       .convertBandwidthToKHz(minimumChannelWidthHz, 'Hz')
       .toFixed(2);
@@ -56,7 +58,7 @@ export default function ContinuumBandwidthField({
     });
   };
 
-  const displayMaxContBandwidthErrorMessage = (maxContBandwidthHz: number): string => {
+  const displayMaxContBandwidthErrorMessage = (maxContBandwidthHz: number | undefined): string => {
     const maxContBandwidthMHz = sensCalHelpers.format
       .convertBandwidthToMHz(maxContBandwidthHz, 'Hz')
       .toFixed(2);

@@ -30,7 +30,10 @@ export const getBandwidthOrFrequencyUnitsLabel = (incValue: number): string => {
   return FREQUENCY_UNITS.find(item => item.value === incValue)?.label as string;
 };
 
-export const getScaledBandwidthOrFrequency = (incValue: number, inUnits: number) => {
+export const getScaledBandwidthOrFrequency = (
+  incValue: number | undefined,
+  inUnits: number | undefined
+) => {
   const unitsLabel = getBandwidthOrFrequencyUnitsLabel(inUnits);
   return scaleBandwidthOrFrequency(incValue, unitsLabel);
 };

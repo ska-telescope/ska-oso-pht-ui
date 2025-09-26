@@ -1,6 +1,18 @@
 import { describe, it, expect, vi } from 'vitest';
-import { renderHook } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { useOSDAccessors } from './useOSDAccessors';
+
+vi.mock('react-i18next', () => ({
+  useTranslation: () => ({
+    t: (key: string, vars?: Record<string, any>) => {
+      if (key === 'cycleCloses.countdown') {
+        const { days, hours, minutes, seconds } = vars || {};
+        return `Cycle closes in ${days}d ${hours}h ${minutes}m ${seconds}s`;
+      }
+      return key;
+    }
+  })
+}));
 
 vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
   storageObject: {
@@ -113,5 +125,42 @@ describe('useOSDAccessors hook', () => {
     expect(result.current.osdOpens(true)).toBe(
       'date(2025-09-01T08:00:00) time(2025-09-01T08:00:00)'
     );
+  });
+
+  it('returns countdown string with correct values', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2025-09-25T12:00:00'));
+
+    const { result } = renderHook(() => useOSDAccessors());
+    expect(result.current.osdCountdown).toBe('Cycle closes in 5d 0h 0m 0s');
+
+    vi.useRealTimers();
+  });
+
+  it('returns countdown as zero when date has passed', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2025-10-01T00:00:00'));
+
+    const { result } = renderHook(() => useOSDAccessors());
+    expect(result.current.osdCountdown).toBe('Cycle closes in 0d 0h 0m 0s');
+
+    vi.useRealTimers();
+  });
+
+  it('updates countdown over time', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date('2025-09-30T11:59:00'));
+
+    const { result } = renderHook(() => useOSDAccessors());
+
+    expect(result.current.osdCountdown).toBe('Cycle closes in 0d 0h 1m 0s');
+
+    act(() => {
+      vi.advanceTimersByTime(1000); // simulate 1 second
+    });
+
+    expect(result.current.osdCountdown).toBe('Cycle closes in 0d 0h 0m 59s');
+
+    vi.useRealTimers();
   });
 });

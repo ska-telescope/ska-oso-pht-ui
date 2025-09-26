@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import { Grid, Typography, Card, CardContent, CardActionArea, Tooltip } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import Shell from '../../components/layout/Shell/Shell';
-import { validateTargetPage } from '../../utils/proposalValidation';
+import { validateTargetPage } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
 import { TARGET_OPTION } from '../../utils/constants';
 import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';

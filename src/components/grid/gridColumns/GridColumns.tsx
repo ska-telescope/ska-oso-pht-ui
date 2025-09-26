@@ -115,7 +115,7 @@ const CycleCloseCell = () => {
 
 export const getColCycleClose = () => ({
   field: 'cycleClose',
-  headerName: t('cycleClose.label'),
+  headerName: t('cycleCloses.label'),
   width: 240,
   renderCell: () => <CycleCloseCell />
 });

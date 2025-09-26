@@ -242,7 +242,7 @@ describe('Proposal and Cycle Column Definitions', () => {
   it('getColCycleClose renders correct value', () => {
     const col = getColCycleClose();
     expect(col.field).toBe('cycleClose');
-    expect(col.headerName).toBe('translated(cycleClose.label)');
+    expect(col.headerName).toBe('translated(cycleCloses.label)');
     expect(col.width).toBe(240);
     const Cell = col.renderCell;
     render(<Cell />);

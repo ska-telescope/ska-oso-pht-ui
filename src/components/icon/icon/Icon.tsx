@@ -2,7 +2,7 @@ import { IconButton, Tooltip } from '@mui/material';
 
 interface IconProps {
   disabled?: boolean;
-  onClick: Function;
+  onClick: Function | undefined;
   icon: JSX.Element;
   sx?: any;
   testId: string;
@@ -16,7 +16,7 @@ export default function Icon({ disabled = false, icon, onClick, sx, testId, tool
         <IconButton
           aria-label={toolTip}
           disabled={disabled}
-          onClick={() => onClick()}
+          onClick={() => (onClick ? onClick() : null)}
           style={{ cursor: 'pointer' }}
           sx={sx}
         >

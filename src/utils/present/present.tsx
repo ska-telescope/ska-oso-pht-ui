@@ -19,6 +19,8 @@ export const presentUnits = (inUnits: string) => {
       return 'arcsec\xb2';
     case 'arcsecs2':
       return 'arcsecs\xb2';
+    case 'degrees2':
+      return 'degrees\xb2';
     case 'pc/cm3':
       return 'pc/cm\xb3';
     case 'Jy / beam':

@@ -73,7 +73,7 @@ export default function GridDataProducts({
     flex: 0.5,
     disableClickEventBubbling: true,
     renderCell: (e: { row: DataProductSDP }) =>
-      e.row.imageSizeValue + ' ' + t('imageSize.' + e.row.imageSizeUnits)
+      e.row.imageSizeValue + ' ' + presentUnits(t('imageSize.' + e.row.imageSizeUnits))
   };
 
   const colPixelSize = {

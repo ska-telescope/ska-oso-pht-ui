@@ -3,7 +3,7 @@ import { Grid, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { presentUnits } from '@utils/present/present';
 import { STATUS_OK } from '../../utils/constants';
-import { validateSDPPage } from '../../utils/proposalValidation';
+import { validateSDPPage } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';

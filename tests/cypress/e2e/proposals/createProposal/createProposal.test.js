@@ -11,7 +11,8 @@ import {
   verifyMockedProposalOnLandingPageIsVisible,
   mockCreateProposalAPI,
   initialize,
-  clearLocalStorage
+  clearLocalStorage,
+  clickCycleConfirm
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -27,6 +28,7 @@ describe('Creating Proposal', () => {
 
   it('Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
     clickAddProposal();
+    clickCycleConfirm();
     enterProposalTitle();
     clickProposalTypePrincipleInvestigator();
     clickSubProposalTypeTargetOfOpportunity();
