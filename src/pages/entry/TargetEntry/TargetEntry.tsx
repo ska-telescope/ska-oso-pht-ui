@@ -325,11 +325,23 @@ export default function TargetEntry({
           justifyContent="flex-start"
         >
           <Grid>{referenceCoordinatesField()}</Grid>
+          <label>
+            <strong>COORDINATE</strong>
+          </label>
           <Grid>{nameField()}</Grid>
           <Grid>{skyDirection1Field()}</Grid>
           <Grid>{skyDirection2Field()}</Grid>
+          <label>
+            <strong>PULSAR TIMING BEAM</strong>
+          </label>
+          <label>
+            <strong>RADIAL MOTION</strong>
+          </label>
           <Grid>{velocityField()}</Grid>
           <Grid>{velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}</Grid>
+          <label>
+            <strong>FIELD PATTERN</strong>
+          </label>
           <Grid>{!id && addButton()}</Grid>
         </Grid>
       </Grid>
