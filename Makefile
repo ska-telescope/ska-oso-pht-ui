@@ -69,7 +69,6 @@ endif
 ENV_CHECK_DEV := $(shell echo $(CI_ENVIRONMENT_SLUG) | grep 'dev')
 ifneq ($(ENV_CHECK_DEV),)
 K8S_CHART_PARAMS += \
-#   --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl="/integration-ska-oso-services/oso/api/v5"
   --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl="/dev-ska-oso-services-star-1654/oso/api/v5"
 endif
 
