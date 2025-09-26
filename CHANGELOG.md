@@ -22,6 +22,7 @@ UNRELEASED
 * Changed: OSD constant data is combined with OSD API data into one accessor
 * Changed: Reduced direct usage of OSD constant data
 * Added: Cycle conformation when adding a submission
+* Changed : Code added to switch text depending upon Cycle description
 
 5.1.0
 ----------
