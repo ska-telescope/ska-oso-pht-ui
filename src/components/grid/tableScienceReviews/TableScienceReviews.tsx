@@ -47,6 +47,9 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
               <TableCell sx={{ fontWeight: 'bold', width: '60px' }}>{t('status.label')}</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>{t('generalComments.label')}</TableCell>
               <TableCell sx={{ fontWeight: 'bold' }}>{t('srcNetComments.label')}</TableCell>
+              <TableCell sx={{ fontWeight: 'bold', width: '60px' }}>
+                {t('conflict.column')}
+              </TableCell>
               <TableCell sx={{ fontWeight: 'bold', width: '120px' }}>{t('rank.label')}</TableCell>
               <TableCell sx={{ fontWeight: 'bold', width: '60px' }}>
                 {t('tableReviewDecision.excluded')}
@@ -84,9 +87,7 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
                     }}
                   >
                     <Typography variant="body2" sx={{ color: 'text.primary' }}>
-                      {detail.reviewType.conflict.hasConflict
-                        ? t('conflict.reason.' + detail.reviewType.conflict.reason)
-                        : detail.comments}
+                      {detail.comments}
                     </Typography>
                   </TableCell>
                   <TableCell
@@ -98,6 +99,17 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
                   >
                     <Typography variant="body2" sx={{ color: 'text.primary' }}>
                       {detail.srcNet}
+                    </Typography>
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      borderBottom: `1px solid ${theme.palette.divider}`,
+                      py: 1.5,
+                      px: 2
+                    }}
+                  >
+                    <Typography variant="body2" sx={{ color: 'text.primary' }}>
+                      {detail.reviewType.conflict.hasConflict ? t('yes') : ''}
                     </Typography>
                   </TableCell>
                   <TableCell
@@ -126,16 +138,12 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
                               : excludeFunction(detail)
                           }
                           style={{ cursor: 'hand' }}
-                          // CODE BELOW WILL BE IMPLEMENTED AT A LATER DATE
-                          // disabled={
-                          //   !detail.reviewType.excludedFromDecision &&
-                          //   item.reviews.filter(
-                          //     el => el.reviewType.excludedFromDecision === false
-                          //   ).length < 2
-                          // }
+                          disabled={detail.reviewType.conflict.hasConflict}
                         >
                           <StatusIcon
                             testId={`includeIcon-${data.id}-${detailIndex}`}
+                            noBorder
+                            softColors={detail.reviewType.conflict.hasConflict}
                             icon
                             level={
                               detail.status === PANEL_DECISION_STATUS.TO_DO ||

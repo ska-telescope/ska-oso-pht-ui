@@ -8,8 +8,6 @@ vi.stubEnv('BASE_URL', '/');
 vi.stubEnv('BACKEND_URL', 'https://192.168.49.2/ska-oso-odt-ui/odt/api/v1/sbds');
 vi.stubEnv('ENVJS_FILE', './public/env.js');
 
-const mockedUseNavigate = vi.fn();
-
 const mockedUseState = vi.fn();
 
 vi.mock('react-router', async () => {
@@ -21,13 +19,34 @@ vi.mock('react-router', async () => {
 });
 
 vi.mock('react-router-dom', async () => {
-  const actual = await vi.importActual<typeof import('react-router-dom')>('react-router-dom');
+  const actual = await vi.importActual('react-router-dom');
+  const mockedUsedNavigate = vi.fn();
+
   return {
     ...actual,
     useLocation: () => ({
-      pathname: 'path'
+      pathname: 'path',
+      state: {
+        id: 'prsl-t0001-20250807-00001',
+        proposal: {},
+        sciReview: {
+          comments: 'Gen comments 4',
+          id: 'rvw-sci-DefaultUser-2025-08-07-00001-1411367',
+          reviewerId: 'DefaultUser',
+          reviewType: {
+            excludedFromDecision: false,
+            kind: 'Science Review',
+            rank: 7
+          },
+          srcNet: 'SRC COMMENTS 2',
+          status: 'Decided',
+          submittedBy: 'DefaultUser',
+          submittedOn: '2025-08-07T08:43:18.249000Z'
+        },
+        tecReview: {}
+      }
     }),
-    useNavigate: () => mockedUseNavigate
+    useNavigate: () => mockedUsedNavigate
   };
 });
 
