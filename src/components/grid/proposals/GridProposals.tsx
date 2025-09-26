@@ -9,7 +9,7 @@ import {
 import { Tooltip, Typography, Box, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { validateProposal } from '@utils/proposalValidation.tsx';
+import { validateProposal } from '@utils/validation/validation';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
 import GetProposal from '@services/axios/get/getProposal/getProposal';
 import GetProposalByStatusList from '@services/axios/get/getProposalByStatusList/getProposalByStatusList';

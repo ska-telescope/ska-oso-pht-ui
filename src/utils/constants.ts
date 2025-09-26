@@ -401,18 +401,8 @@ export const OSCILLATION_UNITS = [
   { label: 'MHz', toHz: 10000000 },
   { label: 'GHz', toHz: 10000000000 }
 ];
-
-export const OB_SUBARRAY_AA05 = 1;
-export const OB_SUBARRAY_AA1 = 2;
+//TODO: Refactor such that these identifiers are no longer needed and references can be per array label
 export const OB_SUBARRAY_AA2 = 3;
-export const OB_SUBARRAY_AA2_CORE = 4;
-export const OB_SUBARRAY_AA_STAR = 5;
-export const OB_SUBARRAY_AA_STAR_15 = 6;
-export const OB_SUBARRAY_AA_STAR_CORE = 7;
-export const OB_SUBARRAY_AA4 = 8;
-export const OB_SUBARRAY_AA4_15 = 9;
-export const OB_SUBARRAY_AA4_13 = 10;
-export const OB_SUBARRAY_AA4_CORE = 11;
 export const OB_SUBARRAY_CUSTOM = 20;
 
 export const SECOND_LABEL = 's';

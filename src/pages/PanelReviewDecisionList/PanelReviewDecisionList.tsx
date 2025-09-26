@@ -2,7 +2,6 @@ import React from 'react';
 import { Grid, Paper } from '@mui/material';
 import { AlertColorTypes, SearchEntry } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import GetPanelList from '@services/axios/get/getPanelList/getPanelList';
 import GetProposalReviewList from '@services/axios/get/getProposalReviewList/getProposalReviewList';
 import getPanelDecisionList from '@services/axios/get/getPanelDecisionList/getPanelDecisionList';
@@ -16,17 +15,16 @@ import TableReviewDecision from '@/components/grid/tableReviewDecision/TableRevi
 import { ProposalReview, ScienceReview } from '@/utils/types/proposalReview';
 import { Panel } from '@/utils/types/panel';
 import { PanelDecision } from '@/utils/types/panelDecision';
-import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
 import { useNotify } from '@/utils/notify/useNotify';
 import { getUserId } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import PutPanelDecision from '@/services/axios/put/putPanelDecision/putPanelDecision';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 export default function ReviewDecisionListPage() {
   const { t } = useScopedTranslation();
-  const { application } = storageObject.useStore();
   const { notifyError, notifySuccess } = useNotify();
 
   const [searchTerm, setSearchTerm] = React.useState('');
@@ -36,10 +34,8 @@ export default function ReviewDecisionListPage() {
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
   const [reviewDecisions, setReviewDecisions] = React.useState<PanelDecision[]>([]);
   const authClient = useAxiosAuthClient();
-
+  const { osdCycleId } = useOSDAccessors();
   const userId = getUserId();
-  const getObservatoryData = () => application.content3 as ObservatoryData;
-  const getCycleId = () => getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId;
 
   /*--------------------------------------------------------------------------*/
 
@@ -60,8 +56,8 @@ export default function ReviewDecisionListPage() {
     const filtered = item.reviews.filter(el => el.reviewType.excludedFromDecision === false);
     return {
       id: item.decisions.id,
-      panelId: '1',
-      cycle: getCycleId(),
+      panelId: item.decisions.panelId,
+      cycle: osdCycleId,
       proposalId: item.id,
       decidedOn: new Date().toISOString(),
       decidedBy: userId,
@@ -75,7 +71,7 @@ export default function ReviewDecisionListPage() {
     const response: string | { error: string } = await PostProposalReview(
       authClient,
       review,
-      getCycleId()
+      osdCycleId
     );
     if (typeof response === 'object' && response?.error) {
       notifyError(response?.error, AlertColorTypes.Error);
@@ -104,10 +100,7 @@ export default function ReviewDecisionListPage() {
   /*--------------------------------------------------------------------------*/
 
   const fetchReviewDecisionData = async () => {
-    const response = await getPanelDecisionList(
-      authClient,
-      getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
-    ); // TODO : add id of the logged in user
+    const response = await getPanelDecisionList(authClient, osdCycleId);
     if (typeof response === 'string') {
       notifyError(response);
     } else {

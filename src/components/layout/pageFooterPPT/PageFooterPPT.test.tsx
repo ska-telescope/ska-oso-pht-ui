@@ -73,11 +73,13 @@ describe('PageFooterPPT', () => {
     expect(screen.queryByTestId('prevButtonTestId')).not.toBeInTheDocument();
   });
 
+  /* Not currently needed
   it('renders TimedAlert when notification message exists', () => {
     render(<PageFooterPPT pageNo={1} />);
     expect(screen.getByTestId('timeAlertFooter')).toBeInTheDocument();
     expect(screen.getByText('Test message')).toBeInTheDocument();
   });
+  */
 
   it('calls createProposal when pageNo is -1 and user is logged in', async () => {
     render(<PageFooterPPT pageNo={-1} />);

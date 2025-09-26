@@ -16,7 +16,7 @@ export default function PDFWrapper({ open, onClose, url }: PDFWrapperProps) {
   const footerContent = () => (
     <Grid>
       <Grid container direction="row" justifyContent="right" alignItems="right">
-        <Grid pt={1}>
+        <Grid p={2}>
           <CancelButton action={handleClose} title="closeBtn.label" testId="cancelButtonTestId" />
         </Grid>
       </Grid>

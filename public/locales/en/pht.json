@@ -46,8 +46,8 @@
   },
   "addMockProposal": {
     "short": "Add",
-    "label": "Add",
-    "toolTip": "Add"
+    "label": "Add Proposal",
+    "toolTip": "Click to navigate to the Target and Observations screens"
   },
   "addReview": {
     "success": "Review record has been updated",
@@ -170,6 +170,16 @@
   "cycle": {
     "label": "Cycle",
     "error": "Unable to retrieve Cycle data"
+  },
+  "cycleCloses": {
+    "label": "Cycle closes",
+    "countdown": "Cycle closes in {{days}}d {{hours}}h {{minutes}}m {{seconds}}s"
+  },
+  "cycleDescription": {
+    "label": "Cycle description"
+  },
+  "cycleOpens": {
+    "label": "Cycle opens"
   },
   "dataProduct": {
     "button": "Add Data Product"
@@ -559,6 +569,11 @@
       "warning": "Technical Justification PDF being processed"
     }
   },
+  "pdfViewer": {
+    "error": "It was unable to preview the PDF",
+    "loading": "...",
+    "noFile": "There is no PDF file"
+  },
   "phdThesis": {
     "grid": "PhD",
     "title": "PhD Thesis",
@@ -710,7 +725,7 @@
   "recommendations": {
     "label": "Recommendation",
     "RECOMMEND-ACCEPT": "Accepted",
-    "RECOMMEND-ACCEPT-REVISION": "Accepted with revision",
+    "RECOMMEND-ACCEPT-REVISION": "Accepted with Revision",
     "RECOMMEND-REJECT": "Rejected",
     "undefined": ""
   },

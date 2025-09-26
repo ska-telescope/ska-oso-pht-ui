@@ -4,7 +4,7 @@ import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
 import GetObservatoryData from '../../get/getObservatoryData/getObservatoryData';
 import ObservatoryData from '@/utils/types/observatoryData';
 
-export const useOSD = (setAxiosError: (error: string) => void) => {
+export const useOSDAPI = (setAxiosError: (error: string) => void) => {
   const { application, updateAppContent3 } = storageObject.useStore();
   const authClient = useAxiosAuthClient();
 

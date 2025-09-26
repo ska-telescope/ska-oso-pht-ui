@@ -2,6 +2,7 @@ import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import { LAB_IS_BOLD, LAB_POSITION, TYPE_CONTINUUM } from '@utils/constants.ts';
 import { getScaledBandwidthOrFrequency } from '@utils/helpers.ts';
+import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import sensCalHelpers from '../../../../services/api/sensitivityCalculator/sensCalHelpers';
 import {
   getMaxContBandwidthHz,
@@ -44,7 +45,11 @@ export default function ContinuumBandwidthField({
   const { t } = useScopedTranslation();
   const FIELD = 'continuumBandwidth';
 
-  const displayMinimumChannelWidthErrorMessage = (minimumChannelWidthHz: number): string => {
+  const { osdMID, osdLOW, observatoryConstants } = useOSDAccessors();
+
+  const displayMinimumChannelWidthErrorMessage = (
+    minimumChannelWidthHz: number | undefined
+  ): string => {
     const minimumChannelWidthKHz = sensCalHelpers.format
       .convertBandwidthToKHz(minimumChannelWidthHz, 'Hz')
       .toFixed(2);
@@ -53,7 +58,7 @@ export default function ContinuumBandwidthField({
     });
   };
 
-  const displayMaxContBandwidthErrorMessage = (maxContBandwidthHz: number): string => {
+  const displayMaxContBandwidthErrorMessage = (maxContBandwidthHz: number | undefined): string => {
     const maxContBandwidthMHz = sensCalHelpers.format
       .convertBandwidthToMHz(maxContBandwidthHz, 'Hz')
       .toFixed(2);
@@ -63,21 +68,34 @@ export default function ContinuumBandwidthField({
   const errorMessage = () => {
     const scaledBandwidth = getScaledBandwidthOrFrequency(value, continuumBandwidthUnits ?? 0);
     const scaledFrequency = getScaledBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
-
-    if (!checkMinimumChannelWidth(minimumChannelWidthHz, scaledBandwidth)) {
+    const maxContBandwidthHz: number | undefined = getMaxContBandwidthHz(
+      telescope,
+      subarrayConfig,
+      osdMID,
+      osdLOW,
+      observatoryConstants
+    );
+    const result1 = !checkMinimumChannelWidth(minimumChannelWidthHz, scaledBandwidth);
+    const result2 = !checkMaxContBandwidthHz(maxContBandwidthHz, scaledBandwidth);
+    const result3 = !checkBandLimits(
+      scaledBandwidth,
+      scaledFrequency,
+      telescope,
+      subarrayConfig,
+      observingBand,
+      osdMID,
+      osdLOW,
+      observatoryConstants
+    );
+    if (result1) {
       return displayMinimumChannelWidthErrorMessage(minimumChannelWidthHz);
     }
-
-    const maxContBandwidthHz: number | undefined = getMaxContBandwidthHz(telescope, subarrayConfig);
-    if (!checkMaxContBandwidthHz(maxContBandwidthHz, scaledBandwidth)) {
+    if (result2) {
       return displayMaxContBandwidthErrorMessage(maxContBandwidthHz);
     }
-    if (
-      !checkBandLimits(scaledBandwidth, scaledFrequency, telescope, subarrayConfig, observingBand)
-    ) {
+    if (result3) {
       return t('bandwidth.range.rangeError');
     }
-
     return '';
   };
 

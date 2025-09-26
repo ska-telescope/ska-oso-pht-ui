@@ -10,12 +10,12 @@ import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import Proposal from '../../../utils/types/proposal';
 import Notification from '../../../utils/types/notification';
 import TimedAlert from '../../alerts/timedAlert/TimedAlert';
-import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 interface PageFooterPPTProps {
   pageNo: number;
@@ -31,9 +31,9 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const loggedIn = isLoggedIn();
 
-  const getObservatoryData = () => application.content3 as ObservatoryData;
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+  const { osdCycleId } = useOSDAccessors();
 
   React.useEffect(() => {
     const getProposal = () => application.content2 as Proposal;
@@ -48,7 +48,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       authClient,
       {
         ...getProposal(), // TODO add PI here
-        cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
+        cycle: osdCycleId
       },
       PROPOSAL_STATUS.DRAFT
     );
@@ -58,7 +58,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       setProposal({
         ...getProposal(),
         id: response,
-        cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
+        cycle: osdCycleId
       });
       // Create a new access entry for the PI.  Saves doing the endpoint
       const newAcc: Partial<ProposalAccess> = {
@@ -129,7 +129,10 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   };
 
   return (
-    <Paper sx={{ position: 'fixed', bottom: 40, left: 0, right: 0 }} elevation={0}>
+    <Paper
+      sx={{ backgroundColor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}
+      elevation={0}
+    >
       <Grid
         p={4}
         pt={0}
@@ -147,16 +150,18 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
             />
           )}
         </Grid>
-        <Grid>
-          {(application.content5 as Notification)?.message?.length > 0 && (
-            <TimedAlert
-              color={(application.content5 as Notification)?.level}
-              delay={(application.content5 as Notification)?.delay}
-              testId="timeAlertFooter"
-              text={(application.content5 as Notification)?.message}
-            />
-          )}
-        </Grid>
+        {false && ( // Keep until it has been decided if we want to show messages here
+          <Grid>
+            {(application.content5 as Notification)?.message?.length > 0 && (
+              <TimedAlert
+                color={(application.content5 as Notification)?.level}
+                delay={(application.content5 as Notification)?.delay}
+                testId="timeAlertFooter"
+                text={(application.content5 as Notification)?.message}
+              />
+            )}
+          </Grid>
+        )}
         <Grid>
           {showNextNav() && (
             <NextPageButton

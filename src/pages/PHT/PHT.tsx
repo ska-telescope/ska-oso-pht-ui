@@ -6,7 +6,7 @@ import {
   THEME_LIGHT
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { Typography, useTheme, CssBaseline, ThemeProvider } from '@mui/material';
+import { Typography, useTheme, CssBaseline, ThemeProvider, Tooltip } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
@@ -30,6 +30,7 @@ import PanelMaintenance from '../PanelMaintenance/PanelMaintenance';
 import ReviewDashboard from '../ReviewDashboard/ReviewDashboard';
 import PanelReviewDecisionList from '../PanelReviewDecisionList/PanelReviewDecisionList';
 import ReviewEntry from '../entry/ReviewEntry/ReviewEntry';
+import Notification from '@/utils/types/notification';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import ButtonUserMenu from '@/components/button/UserMenu/UserMenu';
 
@@ -37,6 +38,8 @@ import ButtonUserMenu from '@/components/button/UserMenu/UserMenu';
 import Proposal from '@/utils/types/proposal';
 import theme from '@/services/theme/theme';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import TimedAlert from '@/components/alerts/timedAlert/TimedAlert';
 
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
@@ -64,6 +67,7 @@ const ROUTES = [
 export default function PHT() {
   const { t } = useScopedTranslation();
   const { application, help, helpToggle } = storageObject.useStore();
+  const { osdCloses, osdCountdown, osdCycleId, osdCycleDescription, osdOpens } = useOSDAccessors();
   const theTheme = useTheme();
   const navigate = useNavigate();
   const [theMode, setTheMode] = React.useState(
@@ -112,6 +116,45 @@ export default function PHT() {
             {loggedIn || cypressToken ? getProposal()?.id : ''}
             {LOCAL_DATA}
           </Typography>
+        }
+        footerChildrenMiddle={
+          <>
+            {!((application.content5 as Notification)?.message?.length > 0) && (
+              <Tooltip
+                title={
+                  <>
+                    <div>
+                      <strong>Cycle:</strong> {osdCycleId}
+                    </div>
+                    <div>
+                      <strong>Description:</strong> {osdCycleDescription}
+                    </div>
+                    <div>
+                      <strong>Opens:</strong> {osdOpens(true)}
+                    </div>
+                    <div>
+                      <strong>Closes:</strong> {osdCloses(true)}
+                    </div>
+                  </>
+                }
+                arrow
+                placement="top"
+              >
+                <Typography pt={1} variant="body1">
+                  {(loggedIn || cypressToken) & getProposal()?.id?.length ? osdCountdown : ''}
+                </Typography>
+              </Tooltip>
+            )}
+            {(application.content5 as Notification)?.message?.length > 0 && (
+              <TimedAlert
+                color={(application.content5 as Notification)?.level}
+                gap={0}
+                delay={(application.content5 as Notification)?.delay}
+                testId="timeAlertFooter"
+                text={(application.content5 as Notification)?.message}
+              />
+            )}
+          </>
         }
         headerChildren={null}
         iconDocsToolTip={t('toolTip.button.docs')}
