@@ -375,6 +375,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
         onFocus={() => helpComponent({ text: t('email.help') })}
         required
         disabled={forSearch}
+        // onChange={(e: any) => setEmail(e.target.value)}
         suffix={resolveButton()}
       />
     );
