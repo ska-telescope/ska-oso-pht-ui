@@ -119,7 +119,7 @@ export default function PHT() {
         }
         footerChildrenMiddle={
           <>
-            {(application.content5 as Notification)?.message?.length === 0 && (
+            {!((application.content5 as Notification)?.message?.length > 0) && (
               <Tooltip
                 title={
                   <>

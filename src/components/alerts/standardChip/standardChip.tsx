@@ -12,7 +12,7 @@ interface StandardChipProps {
   fadeDuration?: number;
 }
 
-const FONTSIZE = 26;
+const FONTSIZE = 27;
 
 export default function StandardChip({
   color,

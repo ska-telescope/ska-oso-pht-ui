@@ -5,7 +5,7 @@ import Notification from '@/utils/types/notification';
 export function useNotify() {
   const { updateAppContent5 } = storageObject.useStore();
 
-  function notify(str: string, lvl: typeof AlertColorTypes, delay: number | undefined = undefined) {
+  function notify(str: string, lvl: any, delay: number | undefined = undefined) {
     const rec: Notification = {
       level: lvl,
       delay: delay,
@@ -18,7 +18,7 @@ export function useNotify() {
     notifyClear: () => notify('', AlertColorTypes.Info),
     notifyError: (msg: string, delay: number | undefined = undefined) =>
       notify(msg, AlertColorTypes.Error, delay),
-    notifySuccess: (msg: string, delay: number | undefined = undefined) =>
+    notifySuccess: (msg: string, delay: number | undefined = 2) =>
       notify(msg, AlertColorTypes.Success, delay),
     notifyWarning: (msg: string, delay: number | undefined = undefined) =>
       notify(msg, AlertColorTypes.Warning, delay),

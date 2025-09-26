@@ -29,12 +29,11 @@ export default function TimedAlert({ color, gap = 1, delay = 2, testId, text }: 
         closeFunction();
       }, delay * SECS);
     };
-
     setShow(true);
     if (color === AlertColorTypes.Info || color === AlertColorTypes.Success) {
       timer();
     }
-  }, []);
+  }, [color, delay, text]);
   return (
     <>
       {show && gap !== 0 && (
