@@ -41,6 +41,7 @@ describe('useNotify hook', () => {
     const { result } = renderHook(() => useNotify());
     result.current.notifySuccess('Success message');
     expect(mockUpdateAppContent5).toHaveBeenCalledWith({
+      delay: 2,
       level: AlertColorTypes.Success,
       message: 'Success message'
     });

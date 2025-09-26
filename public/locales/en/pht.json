@@ -46,8 +46,8 @@
   },
   "addMockProposal": {
     "short": "Add",
-    "label": "Add",
-    "toolTip": "Add"
+    "label": "Add Proposal",
+    "toolTip": "Click to navigate to the Target and Observations screens"
   },
   "addReview": {
     "success": "Review record has been updated",
@@ -171,15 +171,8 @@
     "label": "Cycle",
     "error": "Unable to retrieve Cycle data"
   },
-  "cycleCloses": {
-    "label": "Cycle closes",
-    "countdown": "Cycle closes in {{days}}d {{hours}}h {{minutes}}m {{seconds}}s"
-  },
-  "cycleDescription": {
-    "label": "Cycle description"
-  },
-  "cycleOpens": {
-    "label": "Cycle opens"
+  "cycleClose": {
+    "label": "Cycle closes"
   },
   "dataProduct": {
     "button": "Add Data Product"
@@ -327,7 +320,7 @@
     "label": "Id"
   },
   "imageSize": {
-    "0": "degrees2",
+    "0": "degrees",
     "1": "arcmins",
     "2": "arcsecs",
     "label": "Image Size",
