@@ -135,7 +135,7 @@ export default function TableReviewDecisionRow({
           <Box sx={{ minWidth: 300 }}>
             <DropDown
               disabled={
-                isReviewerAdminOnly() || item.decisions.status === RECOMMENDATION_STATUS_DECIDED
+                isReviewerAdminOnly() || item?.decisions?.status === RECOMMENDATION_STATUS_DECIDED
               }
               label={''}
               options={getOptions()}

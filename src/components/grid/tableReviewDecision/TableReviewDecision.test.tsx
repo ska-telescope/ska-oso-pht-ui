@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TableReviewDecision from './TableReviewDecision';
 
 vi.mock('./tableReviewDecisionHeader/TableReviewDecisionHeader', () => ({
@@ -43,11 +44,13 @@ describe('TableReviewDecision', () => {
 
   it('passes props correctly to row component', () => {
     render(
-      <TableReviewDecision
-        data={mockData}
-        excludeFunction={mockExclude}
-        updateFunction={mockUpdate}
-      />
+      <StoreProvider>
+        <TableReviewDecision
+          data={mockData}
+          excludeFunction={mockExclude}
+          updateFunction={mockUpdate}
+        />
+      </StoreProvider>
     );
 
     expect(screen.getByText('Galaxy Formation')).toBeInTheDocument();
