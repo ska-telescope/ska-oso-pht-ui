@@ -231,21 +231,14 @@ export default function TargetEntry({
 
   const wrapper = (children: any) => <Box sx={{ width: '100%' }}>{children}</Box>;
 
-  const referenceCoordinatesField = () => {
-    return (
-      <Grid>
-        {wrapper(
-          <Box pt={1}>
-            <ReferenceCoordinatesField
-              labelWidth={6}
-              setValue={undefined}
-              value={RA_TYPE_ICRS.label.toUpperCase()}
-            />
-          </Box>
-        )}
-      </Grid>
+  const referenceCoordinatesField = () =>
+    wrapper(
+      <ReferenceCoordinatesField
+        labelWidth={6}
+        setValue={undefined}
+        value={RA_TYPE_ICRS.label.toUpperCase()}
+      />
     );
-  };
 
   const nameField = () =>
     wrapper(
