@@ -19,6 +19,8 @@ UNRELEASED
 * Changed: Retrieval of OSD information now possible via utilities
 * Changed: Notifications moved into the standard footer
 * Added: Cycle dates to Landing and General pages
+* Changed: OSD constant data is combined with OSD API data into one accessor
+* Changed: Reduced direct usage of OSD constant data
 * Added: Cycle conformation when adding a submission
 
 5.1.0

@@ -1,4 +1,4 @@
-import { OBSERVATION } from '@utils/observationConstantData.ts';
+import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 
 const sensCalHelpers = {
   format: {
@@ -28,7 +28,7 @@ const sensCalHelpers = {
     },
     convertBandwidthToHz(bandwidthValue, bandwidthUnits): number {
       if (typeof bandwidthUnits === 'number') {
-        bandwidthUnits = OBSERVATION.Units.find(item => item.value === bandwidthUnits)?.label;
+        bandwidthUnits = OSD_CONSTANTS.Units.find(item => item.value === bandwidthUnits)?.label;
       }
       const unitMap: { [key: string]: number } = {
         GHz: 1000000000,

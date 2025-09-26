@@ -2,6 +2,7 @@ import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import { LAB_IS_BOLD, LAB_POSITION, TYPE_CONTINUUM } from '@utils/constants.ts';
 import { getScaledBandwidthOrFrequency } from '@utils/helpers.ts';
+import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import sensCalHelpers from '../../../../services/api/sensitivityCalculator/sensCalHelpers';
 import {
   getMaxContBandwidthHz,
@@ -44,6 +45,8 @@ export default function ContinuumBandwidthField({
   const { t } = useScopedTranslation();
   const FIELD = 'continuumBandwidth';
 
+  const { osdMID, osdLOW, observatoryConstants } = useOSDAccessors();
+
   const displayMinimumChannelWidthErrorMessage = (
     minimumChannelWidthHz: number | undefined
   ): string => {
@@ -65,7 +68,13 @@ export default function ContinuumBandwidthField({
   const errorMessage = () => {
     const scaledBandwidth = getScaledBandwidthOrFrequency(value, continuumBandwidthUnits ?? 0);
     const scaledFrequency = getScaledBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
-    const maxContBandwidthHz: number | undefined = getMaxContBandwidthHz(telescope, subarrayConfig);
+    const maxContBandwidthHz: number | undefined = getMaxContBandwidthHz(
+      telescope,
+      subarrayConfig,
+      osdMID,
+      osdLOW,
+      observatoryConstants
+    );
     const result1 = !checkMinimumChannelWidth(minimumChannelWidthHz, scaledBandwidth);
     const result2 = !checkMaxContBandwidthHz(maxContBandwidthHz, scaledBandwidth);
     const result3 = !checkBandLimits(
@@ -73,7 +82,10 @@ export default function ContinuumBandwidthField({
       scaledFrequency,
       telescope,
       subarrayConfig,
-      observingBand
+      observingBand,
+      osdMID,
+      osdLOW,
+      observatoryConstants
     );
     if (result1) {
       return displayMinimumChannelWidthErrorMessage(minimumChannelWidthHz);
