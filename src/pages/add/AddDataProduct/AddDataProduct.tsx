@@ -21,12 +21,13 @@ import { DataProductSDP } from '@/utils/types/dataProduct';
 import AddButton from '@/components/button/Add/Add';
 import { LAB_POSITION } from '@/utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { presentUnits } from '@/utils/present/present';
 
 const BACK_PAGE = 7;
 const PAGE = 13;
 const PAGE_PREFIX = 'SDP';
 const FIELD_OBS = 'observatoryDataProduct.options';
-const LABEL_WIDTH = 4;
+const LABEL_WIDTH = 5;
 const LABEL_WIDTH_TICK = 11;
 
 export default function AddDataProduct() {
@@ -191,7 +192,7 @@ export default function AddDataProduct() {
   const imageSizeUnitsField = () => {
     const getOptions = () => {
       return [0, 1, 2].map(e => ({
-        label: t('imageSize.' + e),
+        label: presentUnits(t('imageSize.' + e)),
         value: e
       }));
     };

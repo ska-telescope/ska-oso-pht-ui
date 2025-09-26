@@ -24,7 +24,7 @@ vi.mock('@/services/axios/getProposal/getProposal', () => {
   };
 });
 
-vi.mock('@/utils/proposalValidation', () => {
+vi.mock('@/utils/validation/validation', () => {
   return {
     validateProposal: vi.fn()
   };

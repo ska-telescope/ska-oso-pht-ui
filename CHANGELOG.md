@@ -17,6 +17,7 @@ UNRELEASED
 * Changed: OSO-services : v5.1.0
 * Changed: PDF Viewer now responds to light / dark mode
 * Changed: Retrieval of OSD information now possible via utilities
+* Changed: Notifications moved into the standard footer
 * Added: Cycle dates to Landing and General pages
 * Added: Cycle conformation when adding a submission
 

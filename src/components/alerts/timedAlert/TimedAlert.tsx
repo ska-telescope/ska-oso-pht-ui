@@ -1,18 +1,20 @@
 import * as React from 'react';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import StandardAlert from '../standardAlert/StandardAlert';
+import StandardChip from '../standardChip/standardChip';
 import { useNotify } from '@/utils/notify/useNotify';
 
 const SECS = 2000;
 
 interface TimedAlertProps {
   color: typeof AlertColorTypes;
+  gap?: number;
   delay?: number;
   testId: string;
   text: string;
 }
 
-export default function TimedAlert({ color, delay = 2, testId, text }: TimedAlertProps) {
+export default function TimedAlert({ color, gap = 1, delay = 2, testId, text }: TimedAlertProps) {
   const [show, setShow] = React.useState(false);
   const { notifyClear } = useNotify();
 
@@ -35,8 +37,17 @@ export default function TimedAlert({ color, delay = 2, testId, text }: TimedAler
   }, []);
   return (
     <>
-      {show && (
+      {show && gap !== 0 && (
         <StandardAlert
+          color={color}
+          testId={testId}
+          text={text}
+          closeFunc={closeFunction}
+          fadeDuration={2000}
+        />
+      )}
+      {show && gap === 0 && (
+        <StandardChip
           color={color}
           testId={testId}
           text={text}

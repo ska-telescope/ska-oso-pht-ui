@@ -62,7 +62,6 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
           text={getLevel() === STATUS_ERROR ? STATUS_ERROR_SYMBOL : ''}
           icon={getLevel() !== STATUS_ERROR}
           level={getLevel()}
-          noBorder
           size={SIZE}
         />
         <Typography variant="caption">{pageName()}</Typography>
