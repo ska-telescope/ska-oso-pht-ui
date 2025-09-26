@@ -8,7 +8,6 @@ import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../../components/wrappers/fieldWrapper/FieldWrapper';
-import ReferenceCoordinatesField from '../../../components/fields/referenceCoordinates/ReferenceCoordinates';
 import Target from '../../../utils/types/target';
 import GridTargets from '../../../components/grid/targets/GridTargets';
 import SpatialImaging from './SpatialImaging/SpatialImaging';
@@ -131,22 +130,6 @@ export default function TargetListSection() {
     return <Grid>{fieldWrapper()}</Grid>;
   };
 
-  const referenceCoordinatesField = () => {
-    return (
-      <Grid>
-        {fieldWrapper(
-          <Box pt={1}>
-            <ReferenceCoordinatesField
-              labelWidth={6}
-              setValue={undefined}
-              value={RA_TYPE_ICRS.value}
-            />
-          </Box>
-        )}
-      </Grid>
-    );
-  };
-
   const displayRow1 = () => {
     return (
       <Grid
@@ -169,7 +152,6 @@ export default function TargetListSection() {
           />
         </Grid>
         <Grid size={{ md: 12, lg: 6 }} order={{ md: 1, lg: 2 }}>
-          {referenceCoordinatesField()}
           <Box sx={{ width: '100%', border: '1px solid grey' }}>
             <Tabs
               textColor="secondary"

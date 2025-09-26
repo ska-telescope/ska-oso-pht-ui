@@ -731,7 +731,7 @@
   },
   "referenceCoordinates": {
     "help": "Only Galactic and ICRS reference systems are available.",
-    "label": "Reference System",
+    "label": "Coordinate Type",
     "tooltip": "This feature is currently disabled",
     "0": "ICRS",
     "1": "Galactic"

@@ -3,6 +3,7 @@ import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
+import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import ResolveButton from '@/components/button/Resolve/Resolve';
@@ -230,6 +231,22 @@ export default function TargetEntry({
 
   const wrapper = (children: any) => <Box sx={{ width: '100%' }}>{children}</Box>;
 
+  const referenceCoordinatesField = () => {
+    return (
+      <Grid>
+        {wrapper(
+          <Box pt={1}>
+            <ReferenceCoordinatesField
+              labelWidth={6}
+              setValue={undefined}
+              value={RA_TYPE_ICRS.label.toUpperCase()}
+            />
+          </Box>
+        )}
+      </Grid>
+    );
+  };
+
   const nameField = () =>
     wrapper(
       <TextEntry
@@ -314,6 +331,7 @@ export default function TargetEntry({
           alignItems="stretch"
           justifyContent="flex-start"
         >
+          <Grid>{referenceCoordinatesField()}</Grid>
           <Grid>{nameField()}</Grid>
           <Grid>{skyDirection1Field()}</Grid>
           <Grid>{skyDirection2Field()}</Grid>
