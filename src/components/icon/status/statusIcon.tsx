@@ -38,9 +38,10 @@ export default function StatusIconDisplay({
         testId={testId}
         toolTip={toolTip}
         icon={text?.length > 0 ? false : true}
-        text={text?.length > 0 ? text : 'X'}
         level={level}
         size={size}
+        iconOffset={0}
+        iconSizingFactor={1}
       />
     </IconButton>
   );

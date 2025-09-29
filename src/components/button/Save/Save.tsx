@@ -11,6 +11,7 @@ interface SaveButtonProps {
   primary?: boolean;
   testId?: string;
   toolTip?: string;
+  showCountdown?: boolean;
   autoSaveInterval?: number;
 }
 
@@ -21,7 +22,8 @@ export default function SaveButton({
   title = 'saveBtn.label',
   primary = false,
   testId = 'saveButtonTestId',
-  toolTip = 'saveBtn.tooltip'
+  toolTip = 'saveBtn.tooltip',
+  showCountdown = false
 }: SaveButtonProps) {
   const theme = useTheme();
   const [countdown, setCountdown] = React.useState(autoSaveInterval);
@@ -58,11 +60,11 @@ export default function SaveButton({
       <SaveIcon
         sx={{
           fontSize: 18,
-          color: warn ? theme.palette.warning.main : 'inherit',
+          color: showCountdown && warn ? theme.palette.warning.main : 'inherit',
           transition: 'color 0.3s ease'
         }}
       />
-      {autoSaveInterval > 0 && (
+      {showCountdown && autoSaveInterval > 0 && (
         <CircularProgress
           variant="determinate"
           value={(countdown / autoSaveInterval) * 100}

@@ -30,6 +30,9 @@ import { useNotify } from '@/utils/notify/useNotify';
 import { ChoiceCards } from '@/components/fields/choiceCards/choiceCards';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
+// TODO : This needed to be implemented properly
+const SHOW_TEC_REVIEW = false;
+
 interface ReviewEntryProps {
   reviewType: string;
 }
@@ -53,9 +56,9 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const [tecPDF, setTecPDF] = React.useState<string | undefined>(undefined);
 
   const OFFSET_TOP = 150;
-  const ROW_HEIGHT_PX = 27; /* approximate height of one row in pixels */
+  const ROW_HEIGHT_PX = 28.5; /* approximate height of one row in pixels */
   const CHOICE_HEIGHT = 32; /* This is in 'vh'; */
-  const AREA_HEIGHT_NUM = 73;
+  const AREA_HEIGHT_NUM = 70;
   const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
 
   const authClient = useAxiosAuthClient();
@@ -318,13 +321,13 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         >
           <Tab label={t('pdfPreview.science.label')} {...a11yProps(0)} />
           <Tab label={t('pdfPreview.technical.label')} {...a11yProps(1)} />
-          {!isTechnical() && (
+          {SHOW_TEC_REVIEW && !isTechnical() && (
             <Tab label={t('reviewType.technical.label_multiple')} {...a11yProps(2)} />
           )}
         </Tabs>
         {tabValuePDF === 0 && sciencePDF()}
         {tabValuePDF === 1 && technicalPDF()}
-        {tabValuePDF === 1 && technicalReviews()}
+        {SHOW_TEC_REVIEW && tabValuePDF === 1 && technicalReviews()}
       </Paper>
     );
   };

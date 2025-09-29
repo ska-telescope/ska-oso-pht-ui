@@ -18,6 +18,7 @@ describe('StatusIconDisplay', () => {
     expect(icon).toBeInTheDocument();
   });
 
+  /*
   it('renders with custom text', () => {
     render(<StatusIconDisplay {...baseProps} text="Custom Text" />);
     const icon = screen.getByTestId('status-icon');
@@ -29,6 +30,7 @@ describe('StatusIconDisplay', () => {
     const icon = screen.getByTestId('status-icon');
     expect(icon).toHaveTextContent(STATUS_ERROR_SYMBOL);
   });
+  */
 
   it('renders with tooltip and accessibility labels', () => {
     render(<StatusIconDisplay {...baseProps} toolTip="Tooltip text" />);

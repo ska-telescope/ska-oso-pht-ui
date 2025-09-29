@@ -18,7 +18,7 @@ const TITLE_STYLE = 'h5';
 const CONTENT_STYLE = 'subtitle2';
 const BOLD_LABEL = true;
 const BOLD_CONTENT = false;
-const SIZE = 20;
+const SIZE = 40;
 
 export default function ValidationResults({
   open,
@@ -73,7 +73,7 @@ export default function ValidationResults({
               <StatusIcon
                 ariaDescription=""
                 ariaTitle=""
-                icon
+                text={'!'}
                 level={1}
                 size={SIZE}
                 testId="statusId"

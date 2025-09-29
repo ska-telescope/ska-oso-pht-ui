@@ -84,7 +84,7 @@ export default function GeneralPage() {
       labelBold
       labelPosition={LAB_POSITION}
       labelWidth={LABEL_WIDTH}
-      testId="cycleId"
+      testId="cycleCloses"
       value={osdCloses(true)}
       onFocus={() => helpComponent(t('abstract.help'))}
       disabled
@@ -98,7 +98,7 @@ export default function GeneralPage() {
       labelBold
       labelPosition={LAB_POSITION}
       labelWidth={LABEL_WIDTH}
-      testId="cycleId"
+      testId="cycleOpens"
       value={osdOpens(true)}
       onFocus={() => helpComponent(t('abstract.help'))}
       disabled
