@@ -15,7 +15,7 @@ interface SensCalcDisplaySingleProps {
   isNatural: boolean;
 }
 
-const SIZE = 30;
+const SIZE = 20;
 const SPACER_HEIGHT = 30;
 
 export default function SensCalcModalSingle({

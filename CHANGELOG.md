@@ -14,7 +14,7 @@ UNRELEASED
 * Changed: Final review decision capture
 * Added: User targeted e2e testing
 * Changed: ODA v11.7.1
-* Changed: OSO-services : v5.1.0
+* Changed: OSO-services : v6.0.0
 * Changed: PDF Viewer now responds to light / dark mode
 * Changed: Retrieval of OSD information now possible via utilities
 * Changed: Notifications moved into the standard footer

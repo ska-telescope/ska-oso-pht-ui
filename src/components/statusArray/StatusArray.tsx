@@ -22,6 +22,15 @@ export default function StatusArrayOriginal() {
     return null;
   };
 
+  const generateStatus = (index: number) => {
+    const lvl = (application.content1 as number[])[index];
+    return (
+      <Grid>
+        <StatusWrapper level={lvl} page={index} />
+      </Grid>
+    );
+  };
+
   return (
     <Grid
       sx={{ bgcolor: 'transparent' }}
@@ -33,9 +42,7 @@ export default function StatusArrayOriginal() {
       {NAV.map((_page, index) => (
         // eslint-disable-next-line react/no-array-index-key
         <React.Fragment key={index}>
-          <Grid>
-            <StatusWrapper level={application.content1[index]} page={index} />
-          </Grid>
+          {generateStatus(index)}
           {generateDivider(index)}
         </React.Fragment>
       ))}

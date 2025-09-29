@@ -13,6 +13,7 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
   const svgRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const theme = useTheme();
+  const isDark = theme.palette.mode === 'dark';
 
   useEffect(() => {
     if (!svgRef.current || data.length === 0) return;
@@ -185,7 +186,7 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
         }
       });
     }
-  }, [data, showTotal, centerText, theme]);
+  }, [data, showTotal, centerText, isDark]);
 
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>

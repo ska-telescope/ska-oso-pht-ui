@@ -1,9 +1,9 @@
 import React from 'react';
 import { Grid, Typography, Fade, Box } from '@mui/material';
-import { Alert, AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import { Alert, AlertColorTypes, StatusIcon } from '@ska-telescope/ska-gui-components';
 import CloseIcon from '../../../components/icon/closeIcon/closeIcon';
-import StatusIconDisplay from '../../../components/icon/status/statusIcon';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { STATUS_ERROR_SYMBOL } from '@/utils/constants';
 
 interface StandardAlertProps {
   color: typeof AlertColorTypes;
@@ -14,7 +14,7 @@ interface StandardAlertProps {
   fadeDuration?: number;
 }
 
-const FONTSIZE_0 = 26;
+const FONTSIZE_0 = 20;
 const FONTSIZE_1 = 30;
 
 export default function StandardAlert({
@@ -67,12 +67,14 @@ export default function StandardAlert({
               }}
             >
               <Box p={gap}>
-                <StatusIconDisplay
+                <StatusIcon
                   ariaDescription=" "
                   ariaTitle=" "
+                  icon={AlertColorTypes.Error === color ? false : true}
                   level={getLevel(color)}
                   size={gap === 0 ? FONTSIZE_0 : FONTSIZE_1}
                   testId={`${testId}Icon`}
+                  text={AlertColorTypes.Error === color ? STATUS_ERROR_SYMBOL : ''}
                   toolTip=" "
                 />
               </Box>
