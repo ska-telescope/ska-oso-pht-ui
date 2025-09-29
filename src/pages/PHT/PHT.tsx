@@ -106,6 +106,11 @@ export default function PHT() {
 
   const signIn = () => <ButtonUserMenu />;
 
+  const showNotification = () => {
+    const note = application.content5 as Notification;
+    return note?.message?.length > 0 && note?.level !== AlertColorTypes.Error;
+  };
+
   return (
     <ThemeProvider theme={theme(theMode)}>
       <CssBaseline enableColorScheme />
@@ -119,7 +124,7 @@ export default function PHT() {
         }
         footerChildrenMiddle={
           <>
-            {!((application.content5 as Notification)?.message?.length > 0) && (
+            {!showNotification && (loggedIn || cypressToken) & getProposal()?.id?.length && (
               <Tooltip
                 title={
                   <>
@@ -141,11 +146,11 @@ export default function PHT() {
                 placement="top"
               >
                 <Typography pt={1} variant="body1">
-                  {(loggedIn || cypressToken) & getProposal()?.id?.length ? osdCountdown : ''}
+                  {osdCountdown}
                 </Typography>
               </Tooltip>
             )}
-            {(application.content5 as Notification)?.message?.length > 0 && (
+            {showNotification() && (
               <TimedAlert
                 color={(application.content5 as Notification)?.level}
                 gap={0}

@@ -1,10 +1,15 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TableReviewDecisionHeader from './TableReviewDecisionHeader';
 
 describe('ReviewDecisionTableHeader', () => {
   it('renders all expected table headers', () => {
-    render(<TableReviewDecisionHeader />);
+    render(
+      <StoreProvider>
+        <TableReviewDecisionHeader />
+      </StoreProvider>
+    );
 
     expect(screen.getByText(/sciReviews/i)).toBeInTheDocument();
     expect(screen.getByText(/title/i)).toBeInTheDocument();

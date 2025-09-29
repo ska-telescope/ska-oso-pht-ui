@@ -39,14 +39,14 @@
   },
   "addProposal": {
     "short": "Add",
-    "label": "Add Proposal",
-    "success": "Proposal added with unique identifier ",
-    "toolTip": "Click to add a new proposal.",
-    "warning": "Please wait whilst we create a new proposal."
+    "label": "Submission",
+    "success": "Submission added with unique identifier ",
+    "toolTip": "Click to add a new submission.",
+    "warning": "Please wait whilst we create a new submission."
   },
   "addMockProposal": {
     "short": "Add",
-    "label": "Add Proposal",
+    "label": "Submission",
     "toolTip": "Click to navigate to the Target and Observations screens"
   },
   "addReview": {
@@ -308,7 +308,7 @@
   },
   "groupObservations": {
     "label": "Group",
-    "help": "This field allows you to group observations. To create a group select the `New Group` from the dropdown and type a name of choice. 'None' is the default, in which case, the observation is not added to any group. After creating a group, observations can be added to same group using the dropdown and selecting the created group name or a new one can be created.",
+    "help": "This field allows you to group observations. To create a group select the `New Group` from the dropdown and type a name of choice. 'None' is the default, in which case, the observation is not added to any group. After creating a group, observations can be added to the same group using the dropdown and selecting the created group name or a new one can be created.",
     "new": "New Group",
     "none": "None",
     "idPrefix": "group-",
@@ -353,7 +353,7 @@
   },
   "lastName": {
     "label": "Last Name",
-    "help": "Last name of the principal investigator or co-investigator."
+    "help": "Last name of the Principal Investigator or co-investigator."
   },
   "listOfTargets": {
     "label": "List of Targets",
@@ -601,7 +601,7 @@
     "error": "Unable to retrieve the proposal from the server"
   },
   "proposalId": {
-    "label": "Proposal ID"
+    "label": "Submission ID"
   },
   "proposalAttribute": {
     "code": {
@@ -616,7 +616,7 @@
       "3": "A project requiring SKA observations to be coordinated with another facility (either ground-based or space-based) with user-specified scheduling constraints provided. A common example of a CP will be a VLBI project, which will require the synchronized participation of a number of additional radio facilities.",
       "4": "These projects require more than one proposal cycle to complete (e.g., long-term monitoring campaigns) but are too short in overall observing time, limited in observatory resources and/or scientific scope to qualify as a KSP."
     },
-    "help": "One or more of these optional attributes may be selected to further refine the proposal",
+    "help": "One or more of these optional attributes may be selected to further refine the proposal.",
     "label": "Attribute",
     "plural": "Attributes",
     "title": {
@@ -649,8 +649,8 @@
     },
     "desc": {
       "1": "Observing projects that require less time than a KSP, typically over a single time allocation cycle.",
-      "2": "Observing projects that require the allocation of significant observing time and resources often over a period longer than a single observing cycle. Specific criteria that define a KSP will be described in each call for proposals.",
-      "3": "Time allocated by the Director-General outside the normal process of assessment by the Time Allocation Committee (TMC)."
+      "2": "Observing projects that require the allocation of significant observing time and resources, often over a period longer than a single observing cycle. Specific criteria that define a KSP will be described in each call for proposals.",
+      "3": "Time allocated by the Director-General outside the normal process of assessment by the Time Allocation Committee (TAC)."
     },
     "help": "Select from the options below the most appropriate type classification for the proposal. This can be changed later if needed, however be aware that this may affect information previously entered.",
     "label": "Type",
@@ -881,7 +881,7 @@
     "help": "Select a category that best describes the science of your proposal.",
     "notSpecified": "Not specified",
     "error": "A value is required",
-    "all": "All science categories"
+    "all": "All Science Categories"
   },
   "searchForMember": {
     "label": "Search for a member"
@@ -897,10 +897,10 @@
   "skyDirection": {
     "help": {
       "1": {
-        "value": "This field takes the right ascension of a target in Sexagesimal format '+/-HH:MM:SS.S'."
+        "value": "Right ascension of a target in Sexagesimal format '+/-HH:MM:SS.S'."
       },
       "2": {
-        "value": "This field takes the declination of a target in Sexagesimal format '+/-DD:MM:SS.S'."
+        "value": "Declination of a target in Sexagesimal format '+/-DD:MM:SS.S'."
       }
     },
     "label": {
@@ -1213,7 +1213,7 @@
       "status": "Team",
       "title": "Team",
       "titleShort": "Team",
-      "desc": "Principal investigators should ensure that co-investigators are registered through the SKAO portal. Co-investigators with pending status will be removed from the proposal during validation of a submitted proposal.",
+      "desc": "Principal Investigators should ensure that co-investigators are registered through the SKAO portal. Co-investigators with pending status will be removed from the proposal during validation of a submitted proposal.",
       "pageError": "The TEAM page is not complete"
     },
     "2": {
@@ -1285,7 +1285,7 @@
     },
     "11": {
       "title": "Landing page",
-      "desc": "Proposals where the user is listed as either principal investigator or co-investigator.",
+      "desc": "Proposals where the user is listed as either Principal Investigator or co-investigator.",
       "empty": "NO PROPOSALS AVAILABLE"
     },
     "12": {
