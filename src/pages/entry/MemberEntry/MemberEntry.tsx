@@ -2,7 +2,7 @@
 import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
+import { TextEntry, TickBox, ButtonSizeTypes } from '@ska-telescope/ska-gui-components';
 import PostSendEmailInvite from '@services/axios/post/postSendEmailInvite/postSendEmailInvite';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
 import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
@@ -24,6 +24,7 @@ import { PROPOSAL_ACCESS_VIEW } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import UserSearchButton from '@/components/button/Search/Search';
 import { GetMockUserByEmail } from '@/services/axios/get/getUserByEmail/getUserByEmail';
+import ResetButton from '@/components/button/Reset/Reset';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
@@ -302,14 +303,23 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
     };
 
     return (
-      <UserSearchButton
-        action={userSearchClickFunction}
-        disabled={emailInvalid}
-        primary
-        testId="userSearchButton"
-      />
+      <Box p={0} mt={-1}>
+        <UserSearchButton
+          action={userSearchClickFunction}
+          disabled={emailInvalid}
+          primary
+          testId="userSearchButton"
+          size={ButtonSizeTypes.Small}
+        />
+      </Box>
     );
   };
+
+  const resetSearchButton = () => (
+    <Box mt={-17} p={5} ml={25}>
+      <ResetButton action={clearForm} size={ButtonSizeTypes.Medium} />
+    </Box>
+  );
 
   function clearForm() {
     formValues.firstName.setValue('');
@@ -375,7 +385,6 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
         onFocus={() => helpComponent({ text: t('email.help') })}
         required
         disabled={forSearch}
-        // onChange={(e: any) => setEmail(e.target.value)}
         suffix={resolveButton()}
       />
     );
@@ -427,14 +436,19 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
           {lastNameField()}
           {piField()}
           {phdThesisField()}
-          <Box p={2}>
-            <TeamInviteButton
-              action={clickFunction}
-              disabled={formInvalid}
-              primary
-              testId="sendInviteButton"
-            />
-          </Box>
+          <Grid size={{ xs: 12 }}>
+            <Box p={2}>
+              <TeamInviteButton
+                action={clickFunction}
+                disabled={formInvalid}
+                primary
+                testId="sendInviteButton"
+              />
+            </Box>
+            <Box mt={6} p={0}>
+              {forSearch && resetSearchButton()}
+            </Box>
+          </Grid>
         </Grid>
       </Grid>
       <Grid size={{ xs: 4 }}>
