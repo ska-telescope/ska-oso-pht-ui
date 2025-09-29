@@ -1,61 +1,35 @@
-import React, { useState } from 'react';
-import { Radio, RadioGroup, FormControlLabel, FormControl, Box } from '@mui/material';
-import { useScopedTranslation } from '@services/i18n/useScopedTranslation.tsx';
+import React from 'react';
+import { Radio, FormControlLabel } from '@mui/material';
 
-type Choice = 'No Beam' | 'Multiple Beams';
+export default function PulsarTimingBeamField() {
+  const [selectedValue, setSelectedValue] = React.useState('noBeam');
 
-interface PulsarTimingBeamFieldProps {
-  setValue?: Function;
-  value: String;
-  valueFocus?: Function;
-}
-
-export default function PulsarTimingBeamField({
-  setValue,
-  value,
-  valueFocus
-}: PulsarTimingBeamFieldProps) {
-  const FIELD = 'pulsarTimingBeam';
-  const { t } = useScopedTranslation();
-
-  const PulsarTimingBeamField = () => {
-    const [selected, setSelected] = useState<Choice>('No Beam');
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setSelected(event.target.value as Choice);
-    };
-    return (
-      <Box pt={1}>
-        <FormControl>
-          <RadioGroup
-            row
-            aria-labelledby="demo-radio-buttons-group-label"
-            defaultValue="No Beam"
-            name="radio-buttons-group"
-          >
-            <FormControlLabel
-              onFocus={valueFocus}
-              value="No Beam"
-              control={<Radio />}
-              label={t(FIELD + '.noBeam.label')}
-              toolTip={t(FIELD + '.noBeam.toolTip')}
-            />
-            <FormControlLabel
-              onFocus={valueFocus}
-              value="Multiple Beams"
-              control={<Radio />}
-              label={t(FIELD + '.multipleBeams.label')}
-              toolTip={t(FIELD + '.multipleBeams.toolTip')}
-            />
-          </RadioGroup>
-        </FormControl>
-      </Box>
-    );
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedValue(event.target.value);
   };
 
+  const controlProps = (item: string) => ({
+    checked: selectedValue === item,
+    onChange: handleChange,
+    value: item,
+    name: 'color-radio-button-demo',
+    inputProps: { 'aria-label': item }
+  });
+
   return (
-    <Box p={1} pb={0} pt={0} sx={{ width: '100%' }}>
-      {PulsarTimingBeamField()}
-    </Box>
+    <div>
+      <FormControlLabel
+        control={<Radio {...controlProps('noBeam')} color="default" />}
+        //TODO: Use translation
+        label="No Beam"
+        data-testid="No BeamTestId"
+      />
+      <FormControlLabel
+        control={<Radio {...controlProps('multipleBeams')} color="default" />}
+        //TODO: Use translation
+        label="Multiple Beams"
+        data-testid="Multiple BeamsTestId"
+      />
+    </div>
   );
 }
