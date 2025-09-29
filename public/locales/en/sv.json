@@ -183,5 +183,15 @@
       "empty": "NO Science IdeaS AVAILABLE"
     },
     "noObservations": "NO OBSERVATION SETUP IS ASSOCIATED WITH THIS SCIENCE IDEA"
+  },
+  "pulsarTimingBeam": {
+    "noBeam": {
+      "label": "No Beam",
+      "toolTip": "No Beam selected."
+    },
+    "multipleBeams": {
+      "label": "Multiple Beams",
+      "toolTip": "Multiple Beams selected."
+    }
   }
 }

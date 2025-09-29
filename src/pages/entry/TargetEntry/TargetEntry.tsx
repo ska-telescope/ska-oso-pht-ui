@@ -58,7 +58,9 @@ export default function TargetEntry({
   const [redshift, setRedshift] = React.useState('');
   const [referenceFrame, setReferenceFrame] = React.useState(RA_TYPE_ICRS.value);
   const [referenceCoordinates, setReferenceCoordinates] = React.useState(RA_TYPE_ICRS.label);
-  const [pulsarTiming, setPulsarTiming] = React.useState(DEFAULT_PULSAR_TIMING_BEAM_SELECTION);
+  const [pulsarTimingBeam, setPulsarTimingBeam] = React.useState(
+    DEFAULT_PULSAR_TIMING_BEAM_SELECTION
+  );
 
   const setTheName = (inValue: string) => {
     setName(inValue);
@@ -249,9 +251,7 @@ export default function TargetEntry({
     );
 
   const pulsarTimingBeamField = () =>
-    wrapper(
-      <PulsarTimingBeamField labelWidth={6} setValue={setPulsarTiming} value={pulsarTiming} />
-    );
+    wrapper(<PulsarTimingBeamField setValue={setPulsarTimingBeam} value={pulsarTimingBeam} />);
 
   const nameField = () =>
     wrapper(

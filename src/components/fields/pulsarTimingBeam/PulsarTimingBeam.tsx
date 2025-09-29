@@ -1,21 +1,23 @@
 import React, { useState } from 'react';
 import { Radio, RadioGroup, FormControlLabel, FormControl, Box } from '@mui/material';
+import { useScopedTranslation } from '@services/i18n/useScopedTranslation.tsx';
 
 type Choice = 'No Beam' | 'Multiple Beams';
 
 interface PulsarTimingBeamFieldProps {
-  labelWidth?: number;
   setValue?: Function;
   value: String;
   valueFocus?: Function;
 }
 
 export default function PulsarTimingBeamField({
-  labelWidth = 5,
   setValue,
   value,
   valueFocus
 }: PulsarTimingBeamFieldProps) {
+  const FIELD = 'pulsarTimingBeam';
+  const { t } = useScopedTranslation();
+
   const PulsarTimingBeamField = () => {
     const [selected, setSelected] = useState<Choice>('No Beam');
 
@@ -31,8 +33,20 @@ export default function PulsarTimingBeamField({
             defaultValue="No Beam"
             name="radio-buttons-group"
           >
-            <FormControlLabel value="No Beam" control={<Radio />} label="No Beam" />
-            <FormControlLabel value="Multiple Beams" control={<Radio />} label="Multiple Beams" />
+            <FormControlLabel
+              onFocus={valueFocus}
+              value="No Beam"
+              control={<Radio />}
+              label={t(FIELD + '.noBeam.label')}
+              toolTip={t(FIELD + '.noBeam.toolTip')}
+            />
+            <FormControlLabel
+              onFocus={valueFocus}
+              value="Multiple Beams"
+              control={<Radio />}
+              label={t(FIELD + '.multipleBeams.label')}
+              toolTip={t(FIELD + '.multipleBeams.toolTip')}
+            />
           </RadioGroup>
         </FormControl>
       </Box>

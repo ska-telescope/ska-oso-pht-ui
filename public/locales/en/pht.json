@@ -736,6 +736,16 @@
     "0": "ICRS",
     "1": "Galactic"
   },
+  "pulsarTimingBeam": {
+    "noBeam": {
+      "label": "No Beam",
+      "toolTip": "No Beam selected."
+    },
+    "multipleBeams": {
+      "label": "Multiple Beams",
+      "toolTip": "Multiple Beams selected."
+    }
+  },
   "referenceFrame": {
     "label": "Reference Frame",
     "help": "The reference frame of the velocity entered. The default is Heliocentric.",
