@@ -22,19 +22,17 @@ export default function PulsarTimingBeamField({
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       setSelected(event.target.value as Choice);
     };
-
     return (
       <Box pt={1}>
         <FormControl>
           <RadioGroup
             row
-            aria-labelledby="choice-label"
-            name="choice"
-            value={selected}
-            onChange={handleChange}
+            aria-labelledby="demo-radio-buttons-group-label"
+            defaultValue="No Beam"
+            name="radio-buttons-group"
           >
-            <FormControlLabel value="No Beam" control={<Radio />} label="Multiple Beams" />
-            <FormControlLabel value="No Beam" control={<Radio />} label="Multiple Beams" />
+            <FormControlLabel value="No Beam" control={<Radio />} label="No Beam" />
+            <FormControlLabel value="Multiple Beams" control={<Radio />} label="Multiple Beams" />
           </RadioGroup>
         </FormControl>
       </Box>
