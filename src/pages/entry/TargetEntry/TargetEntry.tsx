@@ -247,13 +247,11 @@ export default function TargetEntry({
       />
     );
 
-  // const pulsarTimingBeamField = () =>
-  //   wrapper(<PulsarTimingBeamField setValue={setPulsarTimingBeam} value={pulsarTimingBeam} />);
-
   const pulsarTimingBeamField = () => {
     return wrapper(
       <TickBox
         label={t('pulsarTimingBeam.label')}
+        toolTip={t('pulsarTimingBeam.toolTip')}
         labelBold
         labelPosition={LAB_POSITION}
         labelWidth={LABEL_WIDTH}
