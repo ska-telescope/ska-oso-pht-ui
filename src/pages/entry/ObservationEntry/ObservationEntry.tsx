@@ -25,13 +25,6 @@ import {
   BAND_5B,
   BAND_2,
   BAND_1,
-  OB_SUBARRAY_AA1,
-  OB_SUBARRAY_AA05,
-  OB_SUBARRAY_AA4,
-  OB_SUBARRAY_AA4_13,
-  OB_SUBARRAY_AA4_15,
-  OB_SUBARRAY_AA_STAR,
-  OB_SUBARRAY_AA_STAR_15,
   OB_SUBARRAY_CUSTOM,
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_INTEGRATION_TIME_UNITS_S,
@@ -45,9 +38,6 @@ import {
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_NUM,
   OB_SUBARRAY_AA2,
-  OB_SUBARRAY_AA_STAR_CORE,
-  OB_SUBARRAY_AA2_CORE,
-  OB_SUBARRAY_AA4_CORE,
   FOOTER_HEIGHT_PHT
 } from '@utils/constants.ts';
 import {
@@ -56,8 +46,6 @@ import {
   getMinimumChannelWidth,
   getScaledBandwidthOrFrequency
 } from '@utils/helpers.ts';
-import ObservatoryData from '@utils/types/observatoryData.tsx';
-import { OBSERVATION } from '@utils/observationConstantData.ts';
 import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
 import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Proposal from '../../../utils/types/proposal';
@@ -78,6 +66,7 @@ import NumStations from '../../../components/fields/numStations/NumStations';
 import ContinuumBandwidthField from '../../../components/fields/bandwidthFields/continuumBandwidth/continuumBandwidth';
 import BandwidthField from '../../../components/fields/bandwidthFields/bandwidth/bandwidth';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 6;
@@ -91,6 +80,7 @@ export default function ObservationEntry() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const locationProperties = useLocation();
+  const { osdLOW, osdMID, observatoryConstants } = useOSDAccessors();
 
   const isEdit = () => locationProperties.state !== null;
 
@@ -194,46 +184,13 @@ export default function ObservationEntry() {
     return newObservation;
   };
 
-  const getDefaultSubArrayConfig = (inBand: number, inSubArray: number) => {
-    if (inBand === BAND_LOW) {
-      if (
-        inSubArray === OB_SUBARRAY_AA4_15 ||
-        inSubArray === OB_SUBARRAY_AA_STAR_15 ||
-        inSubArray === OB_SUBARRAY_AA4_13
-      ) {
-        return OB_SUBARRAY_AA4;
-      }
-    } else if (inBand === BAND_5A || inBand === BAND_5B) {
-      if (
-        inSubArray === OB_SUBARRAY_AA2_CORE ||
-        inSubArray === OB_SUBARRAY_AA_STAR ||
-        inSubArray === OB_SUBARRAY_AA_STAR_CORE ||
-        inSubArray === OB_SUBARRAY_AA4 ||
-        inSubArray === OB_SUBARRAY_AA4_CORE
-      ) {
-        return OB_SUBARRAY_AA4_15;
-      }
-    } else if (inBand === BAND_1 || inBand === BAND_2) {
-      if (
-        inSubArray === OB_SUBARRAY_AA2_CORE ||
-        inSubArray === OB_SUBARRAY_AA_STAR_CORE ||
-        inSubArray === OB_SUBARRAY_AA4_CORE
-      ) {
-        return OB_SUBARRAY_AA4;
-      }
-    }
-    return inSubArray;
-  };
-
   // Change the central frequency & units only if they are currently the same as the existing defaults
   const setDefaultCentralFrequency = (inBand: number, inSubArray: number) => {
     if (
       Number(centralFrequency) === calculateCentralFrequency(observingBand, subarrayConfig) &&
       centralFrequencyUnits === (isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ)
     ) {
-      setCentralFrequency(
-        calculateCentralFrequency(inBand, getDefaultSubArrayConfig(inBand, inSubArray))
-      );
+      setCentralFrequency(calculateCentralFrequency(inBand, inSubArray));
       setCentralFrequencyUnits(inBand === BAND_LOW ? FREQUENCY_MHZ : FREQUENCY_GHZ);
     }
   };
@@ -245,9 +202,7 @@ export default function ObservationEntry() {
       Number(continuumBandwidth) === calculateContinuumBandwidth(observingBand, subarrayConfig) &&
       continuumBandwidthUnits === (isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ)
     ) {
-      setContinuumBandwidth(
-        calculateContinuumBandwidth(inBand, getDefaultSubArrayConfig(inBand, inSubArray))
-      );
+      setContinuumBandwidth(calculateContinuumBandwidth(inBand, inSubArray));
       setContinuumBandwidthUnits(inBand === BAND_LOW ? FREQUENCY_MHZ : FREQUENCY_GHZ);
     }
   };
@@ -280,18 +235,19 @@ export default function ObservationEntry() {
   };
 
   const setTheSubarrayConfig = (e: React.SetStateAction<number>) => {
-    const record = OBSERVATION.array[telescope() - 1].subarray.find(element => element.value === e);
+    const record = observatoryConstants.array[telescope() - 1].subarray.find(
+      element => element.value === e
+    );
     if (record) {
-      const data: ObservatoryData = application.content3 as ObservatoryData;
       //Set value using OSD Data if Low AA2
       if (isLow() && isAA2(record.value)) {
-        setNumOfStations(data?.capabilities?.low?.AA2?.numberStations ?? undefined);
+        setNumOfStations(osdLOW?.AA2?.numberStations ?? undefined);
       } else {
         setNumOfStations(record.numOfStations);
       }
       //Set value using OSD Data if Mid AA2
       if (!isLow() && isAA2(record.value)) {
-        setNumOf15mAntennas(data?.capabilities?.mid?.AA2?.numberSkaDishes ?? undefined);
+        setNumOf15mAntennas(osdMID?.AA2?.numberSkaDishes ?? undefined);
       } else {
         setNumOf15mAntennas(record.numOf15mAntennas);
       }
@@ -346,30 +302,30 @@ export default function ObservationEntry() {
   const calculateCentralFrequency = (obsBand: number, subarrayConfig: number) => {
     switch (obsBand) {
       case BAND_1:
-        return lookupArrayValue(OBSERVATION.CentralFrequencyOB1, subarrayConfig);
+        return lookupArrayValue(observatoryConstants.CentralFrequencyOB1, subarrayConfig);
       case BAND_2:
-        return lookupArrayValue(OBSERVATION.CentralFrequencyOB2, subarrayConfig);
+        return lookupArrayValue(observatoryConstants.CentralFrequencyOB2, subarrayConfig);
       case BAND_5A:
-        return OBSERVATION.CentralFrequencyOB5a[0].value;
+        return observatoryConstants.CentralFrequencyOB5a[0].value;
       case BAND_5B:
-        return OBSERVATION.CentralFrequencyOB5b[0].value;
+        return observatoryConstants.CentralFrequencyOB5b[0].value;
       default:
-        return OBSERVATION.CentralFrequencyOBLow[0].value;
+        return observatoryConstants.CentralFrequencyOBLow[0].value;
     }
   };
 
   const calculateContinuumBandwidth = (ob: number, sc: number) => {
     switch (ob) {
       case BAND_1:
-        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOB1, sc);
+        return lookupArrayValue(observatoryConstants.ContinuumBandwidthOB1, sc);
       case BAND_2:
-        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOB2, sc);
+        return lookupArrayValue(observatoryConstants.ContinuumBandwidthOB2, sc);
       case BAND_5A:
-        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5a, sc);
+        return lookupArrayValue(observatoryConstants.ContinuumBandwidthOB5a, sc);
       case BAND_5B:
-        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOB5b, sc);
+        return lookupArrayValue(observatoryConstants.ContinuumBandwidthOB5b, sc);
       default:
-        return lookupArrayValue(OBSERVATION.ContinuumBandwidthOBLow, sc);
+        return lookupArrayValue(observatoryConstants.ContinuumBandwidthOBLow, sc);
     }
   };
 
@@ -378,7 +334,7 @@ export default function ObservationEntry() {
       if (isEdit()) {
         return;
       }
-      setSubarrayConfig(getDefaultSubArrayConfig(observingBand, subarrayConfig));
+      setSubarrayConfig(subarrayConfig);
     };
 
     const setFrequencyUnits = () => {
@@ -406,10 +362,7 @@ export default function ObservationEntry() {
   const isLow = () => observingBand === BAND_LOW;
   const telescope = (band = observingBand) => BANDWIDTH_TELESCOPE[band]?.telescope;
 
-  const isContinuumOnly = () =>
-    subarrayConfig === OB_SUBARRAY_AA05 ||
-    subarrayConfig === OB_SUBARRAY_AA1 ||
-    (observingBand !== 0 && subarrayConfig === OB_SUBARRAY_AA2);
+  const isContinuumOnly = () => observingBand !== 0 && subarrayConfig === OB_SUBARRAY_AA2;
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
@@ -649,7 +602,8 @@ export default function ObservationEntry() {
 
   const suppliedField = () => {
     const suppliedTypeField = () => {
-      const getOptions = () => (isLow() ? [OBSERVATION?.Supplied[0]] : OBSERVATION?.Supplied);
+      const getOptions = () =>
+        isLow() ? [observatoryConstants?.Supplied[0]] : observatoryConstants?.Supplied;
 
       return (
         <Box pt={1}>
@@ -669,7 +623,9 @@ export default function ObservationEntry() {
 
     const suppliedUnitsField = () => {
       const getOptions = () => {
-        return suppliedType && suppliedType > 0 ? OBSERVATION.Supplied[suppliedType - 1].units : [];
+        return suppliedType && suppliedType > 0
+          ? observatoryConstants.Supplied[suppliedType - 1].units
+          : [];
       };
 
       return (

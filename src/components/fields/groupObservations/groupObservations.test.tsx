@@ -3,12 +3,6 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import GroupObservationsField from './groupObservations';
 
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key
-  })
-}));
-
 const mockUpdateAppContent2 = vi.fn();
 
 vi.mock('@ska-telescope/ska-gui-local-storage', () => ({

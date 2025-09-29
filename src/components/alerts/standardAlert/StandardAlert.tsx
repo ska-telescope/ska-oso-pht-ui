@@ -7,16 +7,19 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface StandardAlertProps {
   color: typeof AlertColorTypes;
+  gap?: number;
   testId: string;
   text: string;
   closeFunc?: () => void;
   fadeDuration?: number;
 }
 
-const FONTSIZE = 30;
+const FONTSIZE_0 = 26;
+const FONTSIZE_1 = 30;
 
 export default function StandardAlert({
   color,
+  gap = 1,
   testId,
   text,
   closeFunc,
@@ -60,24 +63,26 @@ export default function StandardAlert({
                 display: 'grid',
                 gridTemplateColumns: 'auto 1fr auto',
                 alignItems: 'center',
-                gap: 1
+                gap: gap
               }}
             >
-              <Box p={1}>
+              <Box p={gap}>
                 <StatusIconDisplay
                   ariaDescription=" "
                   ariaTitle=" "
                   level={getLevel(color)}
-                  size={FONTSIZE}
+                  size={gap === 0 ? FONTSIZE_0 : FONTSIZE_1}
                   testId={`${testId}Icon`}
                   toolTip=" "
                 />
               </Box>
-              <Box>
+              <Box pl={2} pr={2}>
                 <Typography id="standardAlertId">{text}</Typography>
               </Box>
               <Box>
-                {closeFunc && <CloseIcon onClick={handleClose} toolTip={t('closeBtn.label')} />}
+                {closeFunc && (
+                  <CloseIcon onClick={handleClose} padding={gap} toolTip={t('closeBtn.label')} />
+                )}
               </Box>
             </Grid>
           </Alert>

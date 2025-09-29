@@ -2,6 +2,7 @@ import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Paper } from '@mui/material';
+import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { cypressToken, LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
 import PostProposal from '@services/axios/post/postProposal/postProposal';
@@ -10,12 +11,12 @@ import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
 import Proposal from '../../../utils/types/proposal';
 import Notification from '../../../utils/types/notification';
 import TimedAlert from '../../alerts/timedAlert/TimedAlert';
-import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 interface PageFooterPPTProps {
   pageNo: number;
@@ -31,9 +32,9 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const loggedIn = isLoggedIn();
 
-  const getObservatoryData = () => application.content3 as ObservatoryData;
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+  const { osdCycleId } = useOSDAccessors();
 
   React.useEffect(() => {
     const getProposal = () => application.content2 as Proposal;
@@ -48,7 +49,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       authClient,
       {
         ...getProposal(), // TODO add PI here
-        cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
+        cycle: osdCycleId
       },
       PROPOSAL_STATUS.DRAFT
     );
@@ -58,7 +59,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       setProposal({
         ...getProposal(),
         id: response,
-        cycle: getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
+        cycle: osdCycleId
       });
       // Create a new access entry for the PI.  Saves doing the endpoint
       const newAcc: Partial<ProposalAccess> = {
@@ -128,8 +129,16 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     }
   };
 
+  const showNotification = () => {
+    const note = application.content5 as Notification;
+    return note?.message?.length > 0 && note?.level === AlertColorTypes.Error;
+  };
+
   return (
-    <Paper sx={{ position: 'fixed', bottom: 40, left: 0, right: 0 }} elevation={0}>
+    <Paper
+      sx={{ backgroundColor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}
+      elevation={0}
+    >
       <Grid
         p={4}
         pt={0}
@@ -148,7 +157,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
           )}
         </Grid>
         <Grid>
-          {(application.content5 as Notification)?.message?.length > 0 && (
+          {showNotification() && (
             <TimedAlert
               color={(application.content5 as Notification)?.level}
               delay={(application.content5 as Notification)?.delay}

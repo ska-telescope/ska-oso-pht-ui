@@ -19,7 +19,7 @@ import Shell from '../../components/layout/Shell/Shell';
 import HelpPanel from '../../components/info/helpPanel/HelpPanel';
 
 import { Proposal } from '../../utils/types/proposal';
-import { validateSciencePage } from '../../utils/proposalValidation';
+import { validateSciencePage } from '../../utils/validation/validation';
 import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
@@ -90,6 +90,8 @@ export default function SciencePage() {
       const uploadResult = await PutUploadPDF(signedUrl, theFile);
 
       if (uploadResult.error) {
+        setUploadStatus(FileUploadStatus.ERROR);
+        notifyError(t('pdfUpload.science.error'));
         throw new Error('Science PDF Not Uploaded');
       }
       const sciencePDFUploaded = {

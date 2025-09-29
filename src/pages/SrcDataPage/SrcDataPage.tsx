@@ -2,7 +2,7 @@ import React from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Grid } from '@mui/material';
-import { validateSRCPage } from '../../utils/proposalValidation';
+import { validateSRCPage } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
@@ -47,15 +47,13 @@ export default function SrcDataPage() {
             alignItems="space-evenly"
             justifyContent="center"
           >
-            <Grid size={{ xs: 4 }}></Grid>
-            <Grid size={{ xs: 4 }}>
+            <Grid>
               <Alert
                 color={AlertColorTypes.Info}
                 text="This page is a placeholder for future enhancements"
                 testId="developmentPanelId"
               />
             </Grid>
-            <Grid size={{ xs: 4 }}></Grid>
           </Grid>
         </Grid>
       </Grid>

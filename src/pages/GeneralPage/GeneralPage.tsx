@@ -7,10 +7,11 @@ import Shell from '../../components/layout/Shell/Shell';
 import { GENERAL, LAB_POSITION } from '../../utils/constants';
 import { countWords } from '../../utils/helpers';
 import { Proposal } from '../../utils/types/proposal';
-import { validateGeneralPage } from '../../utils/proposalValidation';
+import { validateGeneralPage } from '../../utils/validation/validation';
 import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPreviewModal';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 const PAGE = 2;
 const LINE_OFFSET = 30;
@@ -30,6 +31,7 @@ export default function GeneralPage() {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+  const { osdCloses, osdOpens } = useOSDAccessors();
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
@@ -67,11 +69,10 @@ export default function GeneralPage() {
       label={t('cycle.label')}
       labelBold
       labelPosition={LAB_POSITION}
-      labelWidth={LABEL_WIDTH * 2}
+      labelWidth={LABEL_WIDTH}
       testId="cycleId"
-      value={getProposal().cycle}
+      value={getProposal().cycle + ' [ ' + osdOpens(true) + ' --> ' + osdCloses(true) + ' ] '}
       onFocus={() => helpComponent(t('abstract.help'))}
-      required
       disabled
     />
   );
@@ -152,9 +153,7 @@ export default function GeneralPage() {
       >
         <Grid pb={3} size={{ md: 12, lg: 8 }}>
           <Grid container direction="row">
-            <Grid pt={2} size={{ md: 12, lg: 12 }}>
-              <Grid size={{ md: 12, lg: 6 }}>{cycleField()}</Grid>
-            </Grid>
+            <Grid size={{ md: 12 }}>{cycleField()}</Grid>
             <Grid pt={2} pb={2} size={{ md: 12, lg: 12 }}>
               <Grid size={{ md: 12, lg: 6 }}>{categoryField()}</Grid>
             </Grid>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
-import { Grid, Paper, Tooltip, Typography } from '@mui/material';
+import { Grid, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   AlertColorTypes,
@@ -12,12 +12,8 @@ import {
   SPACER_VERTICAL
 } from '@ska-telescope/ska-gui-components';
 import moment from 'moment';
-import { presentDate, presentLatex, presentTime } from '@utils/present/present';
-import Investigator from '@utils/types/investigator.tsx';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
 import GetProposal from '@services/axios/get/getProposal/getProposal';
-import ObservatoryData from '@/utils/types/observatoryData';
-import GetObservatoryData from '@/services/axios/get/getObservatoryData/getObservatoryData';
 import AddButton from '@/components/button/Add/Add';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
 import EditIcon from '@/components/icon/editIcon/editIcon';
@@ -25,13 +21,12 @@ import TrashIcon from '@/components/icon/trashIcon/trashIcon';
 import ViewIcon from '@/components/icon/viewIcon/viewIcon';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
-import emptyCell from '@/components/fields/emptyCell/emptyCell';
 import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
 import Proposal from '@/utils/types/proposal';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
-import { validateProposal } from '@/utils/proposalValidation';
+import { validateProposal } from '@/utils/validation/validation';
 import {
   cypressToken,
   DUMMY_PROPOSAL_ID,
@@ -39,7 +34,6 @@ import {
   FOOTER_SPACER,
   isCypress,
   NAV,
-  NOT_SPECIFIED,
   PATH,
   PROPOSAL_STATUS,
   SEARCH_TYPE_OPTIONS
@@ -47,6 +41,18 @@ import {
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { accessUpdate } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useOSDAPI } from '@/services/axios/use/useOSDAPI/useOSDAPI';
+import {
+  getColCycle,
+  getColProposalId,
+  getColProposalPI,
+  getColProposalStatus,
+  getColProposalTitle,
+  getColProposalType,
+  getColProposalUpdated,
+  getColCycleClose
+} from '@/components/grid/gridColumns/GridColumns';
+import CycleSelection from '@/components/alerts/cycleSelection/CycleSelection';
 
 export default function LandingPage() {
   const { t } = useScopedTranslation();
@@ -57,7 +63,6 @@ export default function LandingPage() {
     helpComponent,
     updateAppContent1,
     updateAppContent2,
-    updateAppContent3,
     updateAppContent4,
     updateAppContent5
   } = storageObject.useStore();
@@ -70,14 +75,13 @@ export default function LandingPage() {
   const [openCloneDialog, setOpenCloneDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openViewDialog, setOpenViewDialog] = React.useState(false);
-
-  const [observatoryData, setObservatoryData] = React.useState(false);
+  const [openCycleDialog, setOpenCycleDialog] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
   const loggedIn = isLoggedIn();
   const getAccess = () => application.content4 as ProposalAccess[];
   const setAccess = (access: ProposalAccess[]) => updateAppContent4(access);
   const getProposal = () => application.content2 as Proposal;
-  const osdData = () => application.content3 as ObservatoryData;
+  const { osdData } = useOSDAPI(setAxiosError);
 
   const mock = ({
     abstract: '',
@@ -150,25 +154,11 @@ export default function LandingPage() {
   }, [fetchList, loggedIn]);
 
   React.useEffect(() => {
-    const fetchObservatoryData = async () => {
-      const response = await GetObservatoryData(authClient, 1);
-      if (typeof response === 'string' || (response && (response as any).error)) {
-        setAxiosError(response.toString());
-      } else {
-        updateAppContent3(response as ObservatoryData);
-      }
-    };
     if (!loggedIn && !cypressToken) {
       updateAppContent2(mock);
     } else {
       updateAppContent2({});
       setFetchList(!fetchList);
-      setObservatoryData(!observatoryData);
-    }
-    const isEmpty =
-      !osdData() || (Array.isArray(osdData()) && ((osdData() as unknown) as []).length === 0);
-    if (isEmpty) {
-      fetchObservatoryData();
     }
   }, []);
 
@@ -252,100 +242,32 @@ export default function LandingPage() {
     }
   };
 
-  const osdClosed = () => {
-    const osd = osdData();
-    if (osd) {
-      const closes = osd?.observatoryPolicy?.cycleInformation?.proposalClose;
-      return moment(closes).isBefore(moment());
+  const osdOpen = () => {
+    // TODO : We need to extend to also check the open date of the OSD record
+    if (osdData) {
+      const closes = osdData?.observatoryPolicy?.cycleInformation?.proposalClose;
+      const formattedTimestamp = closes.replace(/^(\d{4})(\d{2})(\d{2})T/, '$1-$2-$3T');
+      // Use strict ISO parsing
+      const closeMoment = moment.utc(formattedTimestamp, moment.ISO_8601, true);
+      return closeMoment.isValid() ? closeMoment.isAfter(moment.utc()) : true;
     } else {
       return true;
     }
   };
 
-  const CanEdit = (e: { row: { id: string; status: string } }) => {
+  const canEdit = (e: { row: { id: string; status: string } }) => {
     return (
-      e.row.status === PROPOSAL_STATUS.DRAFT && !osdClosed() && accessUpdate(getAccess(), e.row.id)
+      e.row.status === PROPOSAL_STATUS.DRAFT && osdOpen() && accessUpdate(getAccess(), e.row.id)
     );
   };
 
-  const CanClone = (e: { row: any }) => {
+  const canClone = (e: { row: any }) => {
     const update = accessUpdate(getAccess(), e.row.id);
     return update;
   };
 
   // TODO const canDelete = (e: { row: { status: string } }) =>
   // TODO  e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
-
-  const displayProposalType = (proposalType: any) => {
-    return proposalType ? proposalType : NOT_SPECIFIED;
-  };
-
-  const element = (inValue: number | string) => (inValue === NOT_SPECIFIED ? emptyCell() : inValue);
-
-  const getPIs = (arr: Investigator[]) => {
-    if (!arr || arr.length === 0) {
-      return element(NOT_SPECIFIED);
-    }
-    const results: string[] = [];
-    arr.forEach(e => {
-      if (e.pi) {
-        results.push(e.lastName + ', ' + e.firstName);
-      }
-    });
-    if (results.length === 0) {
-      return element(NOT_SPECIFIED);
-    }
-    return element(results.length > 1 ? results[0] + ' + ' + (results.length - 1) : results[0]);
-  };
-
-  const colId = {
-    field: 'id',
-    headerName: t('proposalId.label'),
-    width: 200
-  };
-
-  const colType = {
-    field: 'proposalType',
-    headerName: t('proposalType.label'),
-    width: 160,
-    renderCell: (e: { row: any }) => (
-      <Tooltip title={t('proposalType.title.' + displayProposalType(e.row.proposalType))}>
-        <>{t('proposalType.code.' + displayProposalType(e.row.proposalType))}</>
-      </Tooltip>
-    )
-  };
-  const colCycle = { field: 'cycle', headerName: t('cycle.label'), width: 160 };
-
-  const colTitle = {
-    field: 'title',
-    headerName: t('title.label'),
-    flex: 3,
-    minWidth: 250,
-    renderCell: (e: any) => presentLatex(e.row.title)
-  };
-  const colPI = {
-    field: 'pi',
-    headerName: t('pi.short'),
-    width: 160,
-    renderCell: (e: any) => {
-      return getPIs(e.row.investigators);
-    }
-  };
-
-  const colStatus = {
-    field: 'status',
-    headerName: t('status.label'),
-    width: 160,
-    renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
-  };
-
-  const colUpdated = {
-    field: 'lastUpdated',
-    headerName: t('updated.label'),
-    width: 240,
-    renderCell: (e: { row: any }) =>
-      presentDate(e.row.lastUpdated) + ' ' + presentTime(e.row.lastUpdated)
-  };
 
   const colActions = {
     field: 'actions',
@@ -358,13 +280,13 @@ export default function LandingPage() {
       <>
         <EditIcon
           onClick={() => editIconClicked(e.row.id)}
-          disabled={!CanEdit(e)}
-          toolTip={t(CanEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
+          disabled={!canEdit(e)}
+          toolTip={t(canEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
         />
         <ViewIcon onClick={() => viewIconClicked(e.row.id)} toolTip={t('viewProposal.toolTip')} />
         <CloneIcon
           onClick={() => cloneIconClicked(e.row.id)}
-          disabled={!CanClone(e)}
+          disabled={!canClone(e)}
           toolTip={t('cloneProposal.toolTip')}
         />
         <TrashIcon
@@ -377,7 +299,17 @@ export default function LandingPage() {
   };
 
   const stdColumns = [
-    ...[colId, colType, colCycle, colTitle, colPI, colStatus, colUpdated, colActions]
+    ...[
+      getColProposalId(),
+      getColProposalType(),
+      getColCycle(),
+      getColProposalTitle(),
+      getColProposalPI(),
+      getColProposalStatus(),
+      getColProposalUpdated(),
+      getColCycleClose(),
+      colActions
+    ]
   ];
 
   const searchableFields: (keyof Proposal)[] = ['id', 'title', 'cycle', 'investigators'];
@@ -396,18 +328,35 @@ export default function LandingPage() {
 
   const filteredData = proposals ? filterProposals() : [];
 
-  const createMock = async () => {
-    setProposal(getProposal());
-    navigate(NAV[4]);
-  };
+  /*--------------------------------------------------------------------*/
 
-  const clickFunction = () => {
-    if (!loggedIn && !cypressToken) {
-      createMock();
-    } else {
+  const addSubmissionButton = () => (
+    <AddButton
+      action={() => setOpenCycleDialog(true)}
+      testId={'addSubmissionButton'}
+      title={loggedIn || cypressToken ? 'addProposal.label' : 'addMockProposal.label'}
+      toolTip={loggedIn || cypressToken ? 'addProposal.toolTip' : 'addMockProposal.toolTip'}
+    />
+  );
+
+  const cycleConfirmed = async () => {
+    if (loggedIn || cypressToken) {
       navigate(PATH[1]);
+    } else {
+      setProposal(getProposal());
+      navigate(NAV[4]);
     }
   };
+
+  const cycleClicked = () => (
+    <CycleSelection
+      open={openCycleDialog}
+      onClose={() => setOpenCycleDialog(false)}
+      onConfirm={cycleConfirmed}
+    />
+  );
+
+  /*--------------------------------------------------------------------*/
 
   const displayField = () => {
     return !!(loggedIn || cypressToken);
@@ -419,23 +368,6 @@ export default function LandingPage() {
     </Typography>
   );
 
-  const addProposalButton = () => (
-    <AddButton
-      action={clickFunction}
-      testId={'addProposalButton'}
-      title={'addProposal.label'}
-      toolTip={'addProposal.toolTip'}
-    />
-  );
-
-  const addMockButton = () => (
-    <AddButton
-      action={clickFunction}
-      testId={'addMockButton'}
-      title={'addMockProposal.label'}
-      toolTip={'addMockProposal.toolTip'}
-    />
-  );
   const searchDropdown = () => (
     <DropDown
       options={[{ label: t('status.0'), value: '' }, ...SEARCH_TYPE_OPTIONS]}
@@ -490,7 +422,7 @@ export default function LandingPage() {
       <Grid container p={5} direction="row" alignItems="center" justifyContent="space-around">
         <Grid size={{ xs: 12 }}>{loggedIn && pageDescription()}</Grid>
         <Grid size={{ sm: 4, md: 3, lg: 2 }} p={2}>
-          {loggedIn || cypressToken ? addProposalButton() : addMockButton()}
+          {addSubmissionButton()}
         </Grid>
         <Grid size={{ sm: 4 }} p={2}>
           {displayField() && searchDropdown()}
@@ -522,6 +454,7 @@ export default function LandingPage() {
       {openDeleteDialog && deleteClicked()}
       {openCloneDialog && cloneClicked()}
       {openViewDialog && viewClicked()}
+      {openCycleDialog && cycleClicked()}
       <Paper
         sx={{
           bgcolor: 'transparent',

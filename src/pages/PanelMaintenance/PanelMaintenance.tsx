@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { BANNER_PMT_SPACER_MIN, PMT, REVIEWER_STATUS } from '../../utils/constants';
 import BackButton from '@/components/button/Back/Back';
 import GridProposals from '@/components/grid/proposals/GridProposals';
@@ -17,12 +16,12 @@ import Proposal from '@/utils/types/proposal';
 import { Reviewer } from '@/utils/types/reviewer';
 import { IdObject } from '@/utils/types/idObject';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
-import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import PutPanel from '@/services/axios/put/putPanel/putPanel';
 import AssignButton from '@/components/button/Assign/Assign';
 import PostPanelGenerate from '@/services/axios/post/postPanelGenerate/postPanelGenerate';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 const PANELS_HEIGHT = '74vh';
 const TABS_HEIGHT = '76vh';
@@ -116,19 +115,15 @@ export default function PanelMaintenance() {
   const [panelProposals, setPanelProposals] = React.useState<IdObject[]>([]);
   const [panelReviewers, setPanelReviewers] = React.useState<IdObject[]>([]);
   const [makeAssignment, setMakeAssignment] = React.useState(false);
-  const [, setAxiosError] = React.useState('');
-  const { application } = storageObject.useStore();
   const authClient = useAxiosAuthClient();
-
-  const getObservatoryData = () => application.content3 as ObservatoryData;
-  const getCycleId = () => getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId;
+  const { osdCycleDescription, osdCycleId } = useOSDAccessors();
 
   React.useEffect(() => {
-    const autoGeneratePanels = async (osd: ObservatoryData) => {
-      await PostPanelGenerate(authClient, osd?.observatoryPolicy?.cycleDescription);
+    const autoGeneratePanels = async () => {
+      await PostPanelGenerate(authClient, osdCycleDescription);
     };
     if (makeAssignment) {
-      autoGeneratePanels(getObservatoryData());
+      autoGeneratePanels();
       setMakeAssignment(false);
       setCurrentPanel(null);
     }
@@ -169,11 +164,9 @@ export default function PanelMaintenance() {
   };
 
   async function savePanel(panel: Panel): Promise<string | { error: string }> {
-    const response = await PutPanel(authClient, panel, getCycleId());
+    const response = await PutPanel(authClient, panel, osdCycleId);
     if (typeof response === 'object' && response?.error) {
-      setAxiosError(
-        typeof response === 'object' && 'error' in response ? response.error : String(response)
-      );
+      // TODO
     }
     return response;
   }

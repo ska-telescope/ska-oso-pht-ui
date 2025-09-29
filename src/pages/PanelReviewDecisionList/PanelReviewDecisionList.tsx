@@ -2,32 +2,29 @@ import React from 'react';
 import { Grid, Paper } from '@mui/material';
 import { AlertColorTypes, SearchEntry } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import GetPanelList from '@services/axios/get/getPanelList/getPanelList';
 import GetProposalReviewList from '@services/axios/get/getProposalReviewList/getProposalReviewList';
-import PostPanelDecision from '@services/axios/post/postPanelDecision/postPanelDecision';
 import getPanelDecisionList from '@services/axios/get/getPanelDecisionList/getPanelDecisionList';
 import GetProposalByStatusList from '@services/axios/get/getProposalByStatusList/getProposalByStatusList';
 import Proposal from '@/utils/types/proposal';
 import { FEASIBLE_NO, FOOTER_SPACER, REVIEW_TYPE } from '@/utils/constants';
-import { BANNER_PMT_SPACER, PANEL_DECISION_STATUS } from '@/utils/constants';
+import { BANNER_PMT_SPACER } from '@/utils/constants';
 
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import TableReviewDecision from '@/components/grid/tableReviewDecision/TableReviewDecision';
 import { ProposalReview, ScienceReview } from '@/utils/types/proposalReview';
 import { Panel } from '@/utils/types/panel';
 import { PanelDecision } from '@/utils/types/panelDecision';
-import ObservatoryData from '@/utils/types/observatoryData';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
 import { useNotify } from '@/utils/notify/useNotify';
 import { getUserId } from '@/utils/aaa/aaaUtils';
-import { generateId } from '@/utils/helpers';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import PutPanelDecision from '@/services/axios/put/putPanelDecision/putPanelDecision';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 export default function ReviewDecisionListPage() {
   const { t } = useScopedTranslation();
-  const { application } = storageObject.useStore();
   const { notifyError, notifySuccess } = useNotify();
 
   const [searchTerm, setSearchTerm] = React.useState('');
@@ -37,10 +34,8 @@ export default function ReviewDecisionListPage() {
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
   const [reviewDecisions, setReviewDecisions] = React.useState<PanelDecision[]>([]);
   const authClient = useAxiosAuthClient();
-
+  const { osdCycleId } = useOSDAccessors();
   const userId = getUserId();
-  const getObservatoryData = () => application.content3 as ObservatoryData;
-  const getCycleId = () => getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId;
 
   /*--------------------------------------------------------------------------*/
 
@@ -52,18 +47,23 @@ export default function ReviewDecisionListPage() {
     return Math.round(average);
   };
 
-  const getReviewDecision = (item: { id: any; recommendation: any; reviews: any[] }) => {
+  const getReviewDecision = (item: {
+    id: any;
+    recommendation: any;
+    decisions: any;
+    reviews: any[];
+  }) => {
     const filtered = item.reviews.filter(el => el.reviewType.excludedFromDecision === false);
     return {
-      id: generateId('pnld-'),
-      panelId: '1',
-      cycle: getCycleId(),
+      id: item.decisions.id,
+      panelId: item.decisions.panelId,
+      cycle: osdCycleId,
       proposalId: item.id,
       decidedOn: new Date().toISOString(),
       decidedBy: userId,
-      recommendation: item.recommendation,
+      recommendation: item.decisions.recommendation,
       rank: calculateRank(filtered),
-      status: PANEL_DECISION_STATUS.DECIDED
+      status: item.decisions.status
     };
   };
 
@@ -71,33 +71,26 @@ export default function ReviewDecisionListPage() {
     const response: string | { error: string } = await PostProposalReview(
       authClient,
       review,
-      getCycleId()
+      osdCycleId
     );
     if (typeof response === 'object' && response?.error) {
       notifyError(response?.error, AlertColorTypes.Error);
     }
   };
 
-  const handleSubmitAction = async (item: {
-    [x: string]: any;
-    id: number;
-    scienceCategory: string;
-    title: string;
-    details: any[];
-    reviewStatus: string;
-    lastUpdated: string;
-    rank: number;
-    comments: string;
-    reviews: any[];
+  const updateDecisionAction = async (item: {
+    id: any;
     recommendation: any;
+    decisions: any;
+    reviews: any[];
   }) => {
-    const response: string | { error: string } = await PostPanelDecision(
+    const response: PanelDecision | { error: string } = await PutPanelDecision(
       authClient,
-      getReviewDecision(item),
-      getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
+      getReviewDecision(item)
     );
-    if (typeof response === 'object' && response?.error) {
-      notifyError(response?.error, AlertColorTypes.Error);
+
+    if ('error' in response) {
+      notifyError(response.error, AlertColorTypes.Error);
     } else {
       fetchReviewDecisionData();
       notifySuccess(t('addReview.success'), AlertColorTypes.Success);
@@ -107,10 +100,7 @@ export default function ReviewDecisionListPage() {
   /*--------------------------------------------------------------------------*/
 
   const fetchReviewDecisionData = async () => {
-    const response = await getPanelDecisionList(
-      authClient,
-      getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
-    ); // TODO : add id of the logged in user
+    const response = await getPanelDecisionList(authClient, osdCycleId);
     if (typeof response === 'string') {
       notifyError(response);
     } else {
@@ -157,17 +147,6 @@ export default function ReviewDecisionListPage() {
         setProposalReviews(response);
       }
     };
-    const fetchReviewDecisionData = async () => {
-      const response = await getPanelDecisionList(
-        authClient,
-        getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId
-      ); // TODO : add id of the logged in user
-      if (typeof response === 'string') {
-        notifyError(response);
-      } else {
-        setReviewDecisions(response);
-      }
-    };
     fetchProposalData();
     fetchProposalReviewData();
     fetchReviewDecisionData();
@@ -208,7 +187,7 @@ export default function ReviewDecisionListPage() {
         const decisions = reviewDecisions.filter(d => d.proposalId === proposal.id);
         return {
           ...proposal,
-          decisions: decisions,
+          decisions: decisions[0],
           reviews: reviews,
           key: proposal.id
         };
@@ -273,7 +252,7 @@ export default function ReviewDecisionListPage() {
               <TableReviewDecision
                 data={filteredData}
                 excludeFunction={handleExcludeAction}
-                submitFunction={handleSubmitAction}
+                updateFunction={updateDecisionAction}
               />
             )}
           </div>

@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Tooltip, Typography } from '@mui/material';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DataGrid,
   DropDown,
@@ -33,20 +32,25 @@ import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
 import { Panel } from '@/utils/types/panel';
 import TechnicalIcon from '@/components/icon/technicalIcon/technicalIcon';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
-import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
-import ObservatoryData from '@/utils/types/observatoryData';
+import PutProposalReview from '@/services/axios/put/putProposalReview/putProposalReview';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
 import { getUserId, isReviewerScience, isReviewerTechnical } from '@/utils/aaa/aaaUtils';
 import ConflictConfirmation from '@/components/alerts/conflictConfirmation/ConflictConfirmation';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 export default function ReviewListPage() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const { notifyError, notifySuccess } = useNotify();
 
-  const { application } = storageObject.useStore();
+  type FilteredItem = {
+    id: string;
+    proposal: Proposal;
+    sciReview: ProposalReview | null;
+    tecReview: ProposalReview | null;
+  };
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [searchType, setSearchType] = React.useState('');
@@ -58,16 +62,15 @@ export default function ReviewListPage() {
     tecReview: ProposalReview | null;
   } | null>(null);
   const [conflictRoute, setConflictRoute] = React.useState('');
-  const [filteredData, setFilteredData] = React.useState([]);
+  const [filteredData, setFilteredData] = React.useState<FilteredItem[]>([]);
 
   const [reset, setReset] = React.useState(false);
   const [panelData, setPanelData] = React.useState<Panel[]>([]);
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
-  const getObservatoryData = () => application.content3 as ObservatoryData;
-  const getCycleId = () => getObservatoryData()?.observatoryPolicy?.cycleInformation?.cycleId;
 
   const authClient = useAxiosAuthClient();
+  const { osdCycleId } = useOSDAccessors();
   const userId = getUserId();
 
   const DATA_GRID_HEIGHT = '60vh';
@@ -164,7 +167,7 @@ export default function ReviewListPage() {
         last_modified_by: '',
         last_modified_on: ''
       },
-      panelId: getCycleId(),
+      panelId: osdCycleId,
       cycle: '',
       reviewerId: userId,
       submittedOn: '',
@@ -177,15 +180,17 @@ export default function ReviewListPage() {
 
   const updateReviewRec = async (rec: any) => {
     if (!rec) {
-      notifyError('Unable to find review'); // TODO : Should check this and add to json
+      notifyError('Unable to find review');
+      return;
     }
-    const response: string | { error: string } = await PostProposalReview(
+
+    const response: ProposalReview | { error: string } = await PutProposalReview(
       authClient,
-      rec as ProposalReview,
-      getObservatoryData().observatoryPolicy?.cycleInformation?.cycleId
+      rec as ProposalReview
     );
-    if (typeof response === 'object' && response?.error) {
-      notifyError(response?.error);
+
+    if ('error' in response) {
+      notifyError(response.error);
     } else {
       notifySuccess(t('addReview.success'));
     }
@@ -241,11 +246,12 @@ export default function ReviewListPage() {
         let forDB = null;
         const updatedProposalReviews = proposalReviews.map(review => {
           let rec = review;
-          if (review.id === conflictRow?.sciReview.id) {
+          if (review.id === conflictRow?.sciReview.id && 'conflict' in rec.reviewType) {
             rec.reviewType.conflict.reason = reason;
             rec.reviewType.conflict.hasConflict = reason !== CONFLICT_REASONS[0];
             rec.status = PANEL_DECISION_STATUS.REVIEWED;
             rec.reviewType.excludedFromDecision = true;
+            rec.reviewType.rank = 0;
             forDB = rec;
           }
           return rec;
@@ -287,7 +293,7 @@ export default function ReviewListPage() {
       isReviewerScience() &&
       row?.sciReview &&
       isFeasible(row) &&
-      row?.sciReview?.reviewType.conflict.hasConflict === false &&
+      row?.sciReview?.reviewType.conflict.hasConflict !== true &&
       row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED
     );
   };
@@ -300,11 +306,13 @@ export default function ReviewListPage() {
 
   const canSubmit = (row: any) => {
     const sciRec =
+      isReviewerScience() &&
       row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED &&
       row?.sciReview?.comments?.length > 0 &&
       row?.sciReview?.reviewType?.rank > 0;
 
     const tecRec =
+      isReviewerTechnical() &&
       row?.tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED &&
       row?.tecReview?.reviewType?.isFeasible?.length > 0 &&
       hasTechnicalComments(row?.tecReview);
@@ -353,7 +361,8 @@ export default function ReviewListPage() {
     headerName: t('feasibility.label'),
     width: 120,
     renderCell: (e: { row: any }) => {
-      return e?.row?.tecReview?.reviewType?.isFeasible; // TODO use i18n
+      const str = e?.row?.tecReview?.reviewType?.isFeasible;
+      return str ? t(str) : '';
     }
   };
 
@@ -425,10 +434,6 @@ export default function ReviewListPage() {
       if (panel && panel.proposals && panel.proposals.length > 0) {
         proposal = panel.proposals.find(p => p.proposalId === e.row.proposal?.id);
       }
-      // TODO : Add the functionality to get the reviewer from the panel
-      // if (panel && panel.reviewers && panel.reviewers.length > 0) {
-      //   const reviewer = panel.reviewers.find(r => r.userId === getUser());
-      // }
       return proposal && proposal.assignedOn
         ? presentDate(proposal.assignedOn) + ' ' + presentTime(proposal.assignedOn)
         : '';
@@ -491,16 +496,15 @@ export default function ReviewListPage() {
         const technicalReviews = reviews.filter(r => r?.reviewType?.kind === REVIEW_TYPE.TECHNICAL);
         const technicalReview =
           technicalReviews.length > 0 ? technicalReviews[technicalReviews.length - 1] : null;
-        const scienceReviews = reviews.filter(
-          r => r?.reviewType?.kind === REVIEW_TYPE.SCIENCE && r.reviewerId === userId
-        );
+        const scienceReviews = reviews.filter(r => r?.reviewType?.kind === REVIEW_TYPE.SCIENCE);
         const scienceReview = scienceReviews.length > 0 ? scienceReviews[0] : null;
-        return {
+        const output = {
           id: proposal.id,
           proposal: proposal,
           sciReview: scienceReview,
           tecReview: technicalReview
         };
+        return output;
       });
     }
 

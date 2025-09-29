@@ -87,7 +87,7 @@ export default function ValidationResults({
                 variant={CONTENT_STYLE}
                 style={{ fontWeight: getFont(BOLD_CONTENT) }}
               >
-                {t(el)}
+                {el}
               </Typography>
             </Grid>
           </Grid>

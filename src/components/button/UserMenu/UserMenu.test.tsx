@@ -11,12 +11,6 @@ vi.mock('@azure/msal-react', () => ({
   useMsal: vi.fn()
 }));
 
-vi.mock('react-i18next', () => ({
-  useTranslation: () => ({
-    t: (key: string) => key
-  })
-}));
-
 vi.mock('react-router-dom', () => ({
   useNavigate: vi.fn()
 }));
@@ -37,11 +31,13 @@ vi.mock('@/utils/aaa/aaaUtils', () => ({
   isReviewer: vi.fn()
 }));
 
-vi.mock('@/utils/constants', () => ({
-  PMT: ['/panel-summary', '/reviews', '/overview', '/unused', '/decisions'],
-  PATH: ['/proposals'],
-  isCypress: false
-}));
+vi.mock('@/utils/constants', async () => {
+  const actual = await vi.importActual<typeof import('@/utils/constants')>('@/utils/constants');
+  return {
+    ...actual,
+    isCypress: false // override only what you need
+  };
+});
 
 describe('UserMenu', () => {
   const mockNavigate = vi.fn();
@@ -128,6 +124,6 @@ describe('UserMenu', () => {
     );
     fireEvent.click(screen.getByTestId('user-button'));
     fireEvent.click(screen.getByTestId('menuItemOverview'));
-    expect(mockNavigate).toHaveBeenCalledWith('/overview');
+    expect(mockNavigate).toHaveBeenCalledWith('/review/proposal');
   });
 });
