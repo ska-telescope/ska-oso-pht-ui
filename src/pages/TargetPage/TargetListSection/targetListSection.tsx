@@ -14,7 +14,7 @@ import SpatialImaging from './SpatialImaging/SpatialImaging';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
-const DATA_GRID_HEIGHT = '50vh';
+const DATA_GRID_HEIGHT = '100vh';
 const WRAPPER_WIDTH = '500px';
 
 export default function TargetListSection() {

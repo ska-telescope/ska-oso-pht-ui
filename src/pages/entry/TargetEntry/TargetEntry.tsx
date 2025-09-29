@@ -1,9 +1,11 @@
 import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
+import { TextEntry } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
+import AlertDialog from '@components/alerts/alertDialog/AlertDialog.tsx';
+import PulsarTimingBeamField from '@components/fields/pulsarTimingBeam/PulsarTimingBeam.tsx';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import ResolveButton from '@/components/button/Resolve/Resolve';
@@ -13,7 +15,12 @@ import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
 import VelocityField from '@/components/fields/velocity/Velocity';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 import Target from '@/utils/types/target';
-import { RA_TYPE_ICRS, LAB_POSITION, VELOCITY_TYPE } from '@/utils/constants';
+import {
+  RA_TYPE_ICRS,
+  LAB_POSITION,
+  VELOCITY_TYPE,
+  DEFAULT_PULSAR_TIMING_BEAM_SELECTION
+} from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 interface TargetEntryProps {
@@ -38,6 +45,7 @@ export default function TargetEntry({
   const HELP_MAX_HEIGHT = '40vh';
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [nameFieldError, setNameFieldError] = React.useState('');
+  const [openPulsarTimingBeamDialog, setOpenPulsarTimingBeamDialog] = React.useState(false);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -52,7 +60,9 @@ export default function TargetEntry({
   const [redshift, setRedshift] = React.useState('');
   const [referenceFrame, setReferenceFrame] = React.useState(RA_TYPE_ICRS.value);
   const [referenceCoordinates, setReferenceCoordinates] = React.useState(RA_TYPE_ICRS.label);
-  const [pulsarTimingBeam, setPulsarTimingBeam] = React.useState(false);
+  const [pulsarTimingBeam, setPulsarTimingBeam] = React.useState(
+    DEFAULT_PULSAR_TIMING_BEAM_SELECTION
+  );
   const LABEL_WIDTH = 6;
 
   const setTheName = (inValue: string) => {
@@ -113,6 +123,15 @@ export default function TargetEntry({
 
   const handleCheckboxChangePulsarTimingBeam = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPulsarTimingBeam(event.target.checked);
+    setOpenPulsarTimingBeamDialog(true);
+  };
+
+  const closeDialog = () => {
+    setOpenPulsarTimingBeamDialog(false);
+  };
+
+  const addPulsarTimingBeamsConfirmed = () => {
+    closeDialog();
   };
 
   const targetIn = (target: Target) => {
@@ -249,20 +268,9 @@ export default function TargetEntry({
 
   const pulsarTimingBeamField = () => {
     return wrapper(
-      <TickBox
-        label={t('pulsarTimingBeam.label')}
-        toolTip={t('pulsarTimingBeam.toolTip')}
-        labelBold
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH}
-        testId="pulsarTimingBeamCheckbox"
-        checked={pulsarTimingBeam}
-        onChange={handleCheckboxChangePulsarTimingBeam}
-        onFocus={() => helpComponent(t('pulsarTimingBeam.help'))}
-      />
+      <PulsarTimingBeamField setValue={setPulsarTimingBeam} value={pulsarTimingBeam} />
     );
   };
-
   const nameField = () =>
     wrapper(
       <TextEntry
@@ -330,15 +338,18 @@ export default function TargetEntry({
       />
     );
 
+  const alertPulsarTimingBeamsContent = () => {
+    return (
+      <Grid container direction="column" alignItems="center" justifyContent="space-around">
+        <Grid>{nameField()}</Grid>
+        <Grid>{skyDirection1Field()}</Grid>
+        <Grid>{skyDirection2Field()}</Grid>
+      </Grid>
+    );
+  };
+
   return (
-    <Grid
-      p={2}
-      container
-      direction="row"
-      alignItems="space-evenly"
-      justifyContent="space-between"
-      spacing={1}
-    >
+    <Grid p={2} container direction="row" alignItems="space-evenly" justifyContent="space-between">
       <Grid size={{ xs: 8 }}>
         <Grid
           container
@@ -358,6 +369,16 @@ export default function TargetEntry({
             <strong>PULSAR TIMING BEAM</strong>
           </label>
           <Grid>{pulsarTimingBeamField()}</Grid>
+          {openPulsarTimingBeamDialog && (
+            <AlertDialog
+              open={openPulsarTimingBeamDialog}
+              onClose={closeDialog}
+              onDialogResponse={addPulsarTimingBeamsConfirmed}
+              title="pulsarTimingBeam.title"
+            >
+              {alertPulsarTimingBeamsContent()}
+            </AlertDialog>
+          )}
           <label>
             <strong>RADIAL MOTION</strong>
           </label>
