@@ -1,5 +1,5 @@
-import StatusIconDisplay from '../../icon/status/statusIcon';
-import { STATUS_ERROR } from '../../../utils/constants';
+import { StatusIcon } from '@ska-telescope/ska-gui-components';
+import { STATUS_ERROR, STATUS_ERROR_SYMBOL } from '../../../utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 export default function EmptyCell() {
@@ -7,11 +7,11 @@ export default function EmptyCell() {
   const SIZE = 20;
 
   return (
-    <StatusIconDisplay
+    <StatusIcon
       ariaDescription={t('empty.cell')}
       ariaTitle={t('empty.cell')}
+      text={STATUS_ERROR_SYMBOL}
       level={STATUS_ERROR}
-      onClick={() => {}}
       size={SIZE}
       testId="emptyCell"
       toolTip={t('empty.cell')}

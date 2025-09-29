@@ -64,6 +64,7 @@ export default function SensCalcDisplaySingle({
           ariaDescription={ariaStatusMessage(sensCalc)}
           ariaTitle={ariaStatusMessage(sensCalc)}
           disabled={isDisabled()}
+          text={''}
           onClick={isDisabled() ? undefined : IconClicked}
           testId="statusId"
           toolTip={ariaStatusMessage(sensCalc)}

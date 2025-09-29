@@ -63,7 +63,7 @@ export default function GeneralPage() {
     setProposal({ ...getProposal(), scienceCategory: id, scienceSubCategory: [1] });
   };
 
-  const cycleField = () => (
+  const cycleIdField = () => (
     <TextEntry
       disabledUnderline
       label={t('cycle.label')}
@@ -71,7 +71,35 @@ export default function GeneralPage() {
       labelPosition={LAB_POSITION}
       labelWidth={LABEL_WIDTH}
       testId="cycleId"
-      value={getProposal().cycle + ' [ ' + osdOpens(true) + ' --> ' + osdCloses(true) + ' ] '}
+      value={getProposal().cycle}
+      onFocus={() => helpComponent(t('abstract.help'))}
+      disabled
+    />
+  );
+
+  const cycleClosesField = () => (
+    <TextEntry
+      disabledUnderline
+      label={t('cycleCloses.label')}
+      labelBold
+      labelPosition={LAB_POSITION}
+      labelWidth={LABEL_WIDTH}
+      testId="cycleId"
+      value={osdCloses(true)}
+      onFocus={() => helpComponent(t('abstract.help'))}
+      disabled
+    />
+  );
+
+  const cycleOpensField = () => (
+    <TextEntry
+      disabledUnderline
+      label={t('cycleOpens.label')}
+      labelBold
+      labelPosition={LAB_POSITION}
+      labelWidth={LABEL_WIDTH}
+      testId="cycleId"
+      value={osdOpens(true)}
       onFocus={() => helpComponent(t('abstract.help'))}
       disabled
     />
@@ -111,12 +139,12 @@ export default function GeneralPage() {
           value={getProposal().abstract}
           setValue={(e: string) => setValue(e)}
           onFocus={() => helpComponent(t('abstract.help'))}
-          helperText={helperFunction(getProposal().abstract)}
-          errorText={validateWordCount(getProposal().abstract)}
+          helperText={helperFunction(getProposal().abstract as string)}
+          errorText={validateWordCount(getProposal().abstract as string)}
           suffix={<ViewIcon onClick={handleOpenAbstractLatexModal} toolTip="preview latex" />}
         />
         <LatexPreviewModal
-          value={getProposal().abstract}
+          value={getProposal().abstract as string}
           open={openAbstractLatexModal}
           onClose={handleCloseAbstractLatexModal}
           title={t('abstract.latexPreviewTitle')}
@@ -153,7 +181,9 @@ export default function GeneralPage() {
       >
         <Grid pb={3} size={{ md: 12, lg: 8 }}>
           <Grid container direction="row">
-            <Grid size={{ md: 12 }}>{cycleField()}</Grid>
+            <Grid size={{ md: 12 }}>{cycleIdField()}</Grid>
+            <Grid size={{ md: 12 }}>{cycleOpensField()}</Grid>
+            <Grid size={{ md: 12 }}>{cycleClosesField()}</Grid>
             <Grid pt={2} pb={2} size={{ md: 12, lg: 12 }}>
               <Grid size={{ md: 12, lg: 6 }}>{categoryField()}</Grid>
             </Grid>

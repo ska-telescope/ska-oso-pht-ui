@@ -1,11 +1,10 @@
 import Dialog from '@mui/material/Dialog';
 import { DialogContent, Grid, Stack, Typography } from '@mui/material';
-import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes, StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTheme } from '@mui/material/styles';
 import Proposal from '../../../utils/types/proposal';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import CancelButton from '../../button/Cancel/Cancel';
-import StatusIconDisplay from '../../icon/status/statusIcon';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 interface ValidationResultsProps {
   open: boolean;
@@ -71,11 +70,11 @@ export default function ValidationResults({
         {results?.map(el => (
           <Grid p={1} key={el} container direction="row" justifyContent="left" alignItems="left">
             <Grid>
-              <StatusIconDisplay
+              <StatusIcon
                 ariaDescription=""
                 ariaTitle=""
+                icon
                 level={1}
-                onClick={() => {}}
                 size={SIZE}
                 testId="statusId"
                 toolTip=""

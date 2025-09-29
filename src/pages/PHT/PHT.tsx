@@ -111,6 +111,51 @@ export default function PHT() {
     return note?.message?.length > 0 && note?.level !== AlertColorTypes.Error;
   };
 
+  const footerMainChildren = () => {
+    const opt1 = !showNotification() && (loggedIn || cypressToken) & getProposal()?.id?.length;
+    const opt2 = showNotification();
+    if (!opt1 && !opt2) return null;
+    return (
+      <>
+        {opt1 && (
+          <Tooltip
+            title={
+              <>
+                <div>
+                  <strong>Cycle:</strong> {osdCycleId}
+                </div>
+                <div>
+                  <strong>Description:</strong> {osdCycleDescription}
+                </div>
+                <div>
+                  <strong>Opens:</strong> {osdOpens(true)}
+                </div>
+                <div>
+                  <strong>Closes:</strong> {osdCloses(true)}
+                </div>
+              </>
+            }
+            arrow
+            placement="top"
+          >
+            <Typography pt={1} variant="body1">
+              {osdCountdown}
+            </Typography>
+          </Tooltip>
+        )}
+        {opt2 && (
+          <TimedAlert
+            color={(application.content5 as Notification)?.level}
+            gap={0}
+            delay={(application.content5 as Notification)?.delay}
+            testId="timeAlertFooter"
+            text={(application.content5 as Notification)?.message}
+          />
+        )}
+      </>
+    );
+  };
+
   return (
     <ThemeProvider theme={theme(theMode)}>
       <CssBaseline enableColorScheme />
@@ -122,45 +167,7 @@ export default function PHT() {
             {LOCAL_DATA}
           </Typography>
         }
-        footerChildrenMiddle={
-          <>
-            {!showNotification && (loggedIn || cypressToken) & getProposal()?.id?.length && (
-              <Tooltip
-                title={
-                  <>
-                    <div>
-                      <strong>Cycle:</strong> {osdCycleId}
-                    </div>
-                    <div>
-                      <strong>Description:</strong> {osdCycleDescription}
-                    </div>
-                    <div>
-                      <strong>Opens:</strong> {osdOpens(true)}
-                    </div>
-                    <div>
-                      <strong>Closes:</strong> {osdCloses(true)}
-                    </div>
-                  </>
-                }
-                arrow
-                placement="top"
-              >
-                <Typography pt={1} variant="body1">
-                  {osdCountdown}
-                </Typography>
-              </Tooltip>
-            )}
-            {showNotification() && (
-              <TimedAlert
-                color={(application.content5 as Notification)?.level}
-                gap={0}
-                delay={(application.content5 as Notification)?.delay}
-                testId="timeAlertFooter"
-                text={(application.content5 as Notification)?.message}
-              />
-            )}
-          </>
-        }
+        footerChildrenMiddle={footerMainChildren()}
         headerChildren={null}
         iconDocsToolTip={t('toolTip.button.docs')}
         iconDocsURL={t('toolTip.button.docsURL', { version: packageJson.version })}

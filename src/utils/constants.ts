@@ -34,6 +34,7 @@ export const isCypress = typeof window !== 'undefined' && window.Cypress;
 
 /*****************************************/
 
+export const AUTO_SAVE_INTERVAL = 30; // seconds
 export const BAND_LOW = 0;
 export const BAND_1 = 1;
 export const BAND_2 = 2;

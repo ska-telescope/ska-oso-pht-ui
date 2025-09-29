@@ -32,9 +32,7 @@ async function getPanelDecisionList(
   }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}/users/` + DEFAULT_USER + '/decisions';
-    // TODO : STAR-1654  const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
-
+    const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
 
     if (!result || !Array.isArray(result.data)) {

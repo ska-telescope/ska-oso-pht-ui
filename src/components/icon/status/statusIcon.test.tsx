@@ -8,7 +8,8 @@ describe('StatusIconDisplay', () => {
     ariaDescription: 'Test description',
     ariaTitle: 'Test title',
     level: 1,
-    testId: 'status-icon'
+    testId: 'status-icon',
+    text: STATUS_ERROR_SYMBOL
   };
 
   it('renders with default props and icon', () => {

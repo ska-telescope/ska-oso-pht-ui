@@ -318,7 +318,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         >
           <Tab label={t('pdfPreview.science.label')} {...a11yProps(0)} />
           <Tab label={t('pdfPreview.technical.label')} {...a11yProps(1)} />
-          {false && !isTechnical() && (
+          {!isTechnical() && (
             <Tab label={t('reviewType.technical.label_multiple')} {...a11yProps(2)} />
           )}
         </Tabs>

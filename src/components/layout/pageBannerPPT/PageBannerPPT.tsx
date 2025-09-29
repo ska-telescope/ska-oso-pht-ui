@@ -6,6 +6,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import {
+  AUTO_SAVE_INTERVAL,
   LAST_PAGE,
   NAV,
   PAGE_SRC_NET,
@@ -107,7 +108,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   const updateProposalResponse = (response: ProposalBackend | { error: string }) => {
     if (response && !('error' in response)) {
-      notifySuccess(t('saveBtn.success'));
+      // Not needed as the save is not automatic : notifySuccess(t('saveBtn.success'));
     } else {
       notifyError('error' in response ? response.error : 'An unknown error occurred');
     }
@@ -149,6 +150,10 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     </Typography>
   );
 
+  const handleSave = React.useCallback(() => {
+    updateProposal();
+  }, []);
+
   const buttonsLeft = () => (
     <Grid
       container
@@ -167,10 +172,10 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       <Grid>
         {pageNo < LAST_PAGE && (
           <SaveButton
-            primary
             testId={'saveBtn'}
             disabled={isDisableEndpoints()}
-            action={() => updateProposal()}
+            action={handleSave}
+            autoSaveInterval={AUTO_SAVE_INTERVAL}
           />
         )}
       </Grid>
