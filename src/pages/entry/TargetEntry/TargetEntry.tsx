@@ -23,6 +23,9 @@ import {
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import ExtendedStrikethroughLabel from '@components/info/extendedStrikethroughLabel/ExtendedStrikethroughLabel.tsx';
+import ExtendedStrikethroughLabelBehindText
+  from '@components/info/extendedStrikethroughLabelBehindText/ExtendedStrikethroughLabelBehindText.tsx';
 interface TargetEntryProps {
   raType: number;
   setTarget?: Function;
@@ -358,19 +361,13 @@ export default function TargetEntry({
           alignItems="stretch"
           justifyContent="flex-start"
         >
-          <label>
-            <strong>COORDINATE TYPE</strong>
-          </label>
+          <ExtendedStrikethroughLabel labelText="COORDINATE TYPE" />
           <Grid>{referenceCoordinatesField()}</Grid>
-          <label>
-            <strong>COORDINATE</strong>
-          </label>
+          <ExtendedStrikethroughLabelBehindText labelText="COORDINATE" />
           <Grid>{nameField()}</Grid>
           <Grid>{skyDirection1Field()}</Grid>
           <Grid>{skyDirection2Field()}</Grid>
-          <label>
-            <strong>PULSAR TIMING BEAM</strong>
-          </label>
+          <ExtendedStrikethroughLabelBehindText labelText="PULSAR TIMING BEAM" />
           <Grid>{pulsarTimingBeamField()}</Grid>
           {openPulsarTimingBeamDialog && (
             <AlertDialog
@@ -382,14 +379,10 @@ export default function TargetEntry({
               {alertPulsarTimingBeamsContent()}
             </AlertDialog>
           )}
-          <label>
-            <strong>RADIAL MOTION</strong>
-          </label>
+          <ExtendedStrikethroughLabelBehindText labelText="RADIAL MOTION" />
           <Grid>{velocityField()}</Grid>
           <Grid>{velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}</Grid>
-          <label>
-            <strong>FIELD PATTERN</strong>
-          </label>
+          <ExtendedStrikethroughLabelBehindText labelText="FIELD PATTERN" />
           <Grid>{!id && addButton()}</Grid>
         </Grid>
       </Grid>
