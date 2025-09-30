@@ -27,23 +27,34 @@ export default function PulsarTimingBeamField() {
     name: 'radio-group',
     inputProps: { 'aria-label': item }
   });
+  const emptyRows = [];
+
+  // Add a dummy row with a unique ID
+  const addRow = { id: 1, isAddRow: true };
+
+  const rows = [addRow, ...emptyRows];
 
   const columns = [
-    { field: 'name', headerName: t('name.label'), flex: 2 },
+    { field: 'name', headerName: t('name.label') },
     { field: 'raStr', headerName: t('skyDirection.short.1.' + RA_TYPE_ICRS.value), width: 120 },
     { field: 'decStr', headerName: t('skyDirection.short.2.' + RA_TYPE_ICRS.value), width: 120 },
-    //TODO: Resolve action button
     {
       field: 'actions',
       headerName: t('actions.label'),
-      renderCell: () => (
-        <AddButton
-          action={() => setOpenPulsarTimingBeamDialog(true)}
-          testId={'addPulsarTimingBeamButton'}
-          title={'pulsarTimingBeam.add'}
-          toolTip={'pulsarTimingBeam.toolTip'}
-        />
-      )
+      flex: 2,
+      renderCell: params => {
+        if (params.row.isAddRow) {
+          return (
+            <AddButton
+              action={() => setOpenPulsarTimingBeamDialog(true)}
+              testId={'addPulsarTimingBeamButton'}
+              title={'pulsarTimingBeam.add'}
+              toolTip={'pulsarTimingBeam.toolTip'}
+            />
+          );
+        }
+        return params.value;
+      }
     }
   ];
 
@@ -81,7 +92,12 @@ export default function PulsarTimingBeamField() {
       />
       {showGrid && (
         <div style={{ height: 300, width: '100%' }}>
-          <DataGrid columns={getColumns()} height={171} testId="pulsarTimingBeamColumns" />
+          <DataGrid
+            rows={rows}
+            columns={getColumns()}
+            height={171}
+            testId="pulsarTimingBeamColumns"
+          />
         </div>
       )}
       {openPulsarTimingBeamDialog && (
