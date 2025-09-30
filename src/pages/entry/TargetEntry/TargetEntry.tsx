@@ -358,6 +358,9 @@ export default function TargetEntry({
           alignItems="stretch"
           justifyContent="flex-start"
         >
+          <label>
+            <strong>COORDINATE TYPE</strong>
+          </label>
           <Grid>{referenceCoordinatesField()}</Grid>
           <label>
             <strong>COORDINATE</strong>
