@@ -5,7 +5,6 @@ import StatusIconDisplay from '../../../icon/status/statusIcon';
 import SensCalcModalSingle from '../../sensCalcModal/single/SensCalcModalSingle';
 import { OBS_TYPES, STATUS_OK } from '../../../../utils/constants';
 
-const SIZE = 20;
 const VALUE = 'value';
 const UNITS = 'units';
 
@@ -64,11 +63,11 @@ export default function SensCalcDisplaySingle({
           ariaDescription={ariaStatusMessage(sensCalc)}
           ariaTitle={ariaStatusMessage(sensCalc)}
           disabled={isDisabled()}
+          text={''}
           onClick={isDisabled() ? undefined : IconClicked}
           testId="statusId"
           toolTip={ariaStatusMessage(sensCalc)}
           level={sensCalc?.statusGUI}
-          size={SIZE}
         />
       )}
       {show && field !== 'icon' && (

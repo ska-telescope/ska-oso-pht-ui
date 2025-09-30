@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { Grid, IconButton, Typography } from '@mui/material';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
-import { cypressToken, NAV, STATUS_ERROR, STATUS_ERROR_SYMBOL } from '@utils/constants.ts';
+import { cypressToken, NAV, STATUS_ERROR_SYMBOL } from '@utils/constants.ts';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
@@ -45,25 +45,27 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
       disabled={disableIcons()}
     >
       <Grid container direction="column" alignItems="center" justifyContent="center">
-        <StatusIcon
-          ariaDescription={t('pageStatus.toolTip', {
-            pageName: pageName().toLowerCase(),
-            status: t('statusValue.' + getLevel())
-          })}
-          ariaTitle={t('pageStatus.toolTip', {
-            pageName: pageName().toLowerCase(),
-            status: t('statusValue.' + getLevel())
-          })}
-          testId={'statusId' + page}
-          toolTip={t('pageStatus.toolTip', {
-            pageName: pageName().toLowerCase(),
-            status: t('statusValue.' + getLevel())
-          })}
-          text={getLevel() === STATUS_ERROR ? STATUS_ERROR_SYMBOL : ''}
-          icon={getLevel() !== STATUS_ERROR}
-          level={getLevel()}
-          size={SIZE}
-        />
+        <div style={{ all: 'initial', display: 'inline-block' }}>
+          <StatusIcon
+            ariaDescription={t('pageStatus.toolTip', {
+              pageName: pageName().toLowerCase(),
+              status: t('statusValue.' + getLevel())
+            })}
+            ariaTitle={t('pageStatus.toolTip', {
+              pageName: pageName().toLowerCase(),
+              status: t('statusValue.' + getLevel())
+            })}
+            testId={'statusId' + page}
+            toolTip={t('pageStatus.toolTip', {
+              pageName: pageName().toLowerCase(),
+              status: t('statusValue.' + getLevel())
+            })}
+            icon={getLevel() === 1 ? false : true}
+            text={getLevel() === 1 ? STATUS_ERROR_SYMBOL : ''}
+            level={getLevel()}
+            size={SIZE}
+          />
+        </div>
         <Typography variant="caption">{pageName()}</Typography>
       </Grid>
     </IconButton>

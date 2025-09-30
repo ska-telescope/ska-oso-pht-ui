@@ -63,8 +63,8 @@ export function mappingReviewFrontendToBackend(
         : getTechnicalReviewType(review.reviewType as TechnicalReview),
     comments: review.comments,
     src_net: review.srcNet,
-    status: review.status,
-    metadata: review.metadata
+    status: review.status
+    // Do not send metadata
   };
   // trim undefined properties
   helpers.transform.trimObject(transformedPanel);

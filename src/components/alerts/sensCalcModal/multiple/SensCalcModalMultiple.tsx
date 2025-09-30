@@ -23,7 +23,7 @@ interface SensCalcModalMultipleProps {
   isNatural: boolean;
 }
 
-const SIZE = 30;
+const SIZE = 20;
 
 export default function SensCalcModalMultiple({
   open,

@@ -2,14 +2,6 @@ import { PANEL_DECISION_STATUS, REVIEW_TYPE, TECHNICAL_FEASIBILITY } from '@/uti
 import { ProposalReview, TechnicalReview } from '@/utils/types/proposalReview';
 
 export const MockProposalScienceReviewFrontend: ProposalReview = {
-  metadata: {
-    version: 1,
-    created_by: 'user1',
-    created_on: '2025-07-16T08:35:24.245Z',
-    last_modified_by: 'user1',
-    last_modified_on: '2025-07-16T08:35:24.245Z',
-    pdm_version: '18.3.0'
-  },
   panelId: 'panel-12345',
   id: 'review-12345',
   cycle: 'cycle1',
@@ -32,14 +24,6 @@ export const MockProposalScienceReviewFrontend: ProposalReview = {
 };
 
 export const MockProposalScienceReviewExcludedFrontend: ProposalReview = {
-  metadata: {
-    version: 1,
-    created_by: 'user1',
-    created_on: '2025-07-16T08:35:24.245Z',
-    last_modified_by: 'user1',
-    last_modified_on: '2025-07-16T08:35:24.245Z',
-    pdm_version: '18.3.0'
-  },
   panelId: 'panel-12345',
   id: 'review-12345',
   cycle: 'cycle1',
@@ -62,14 +46,6 @@ export const MockProposalScienceReviewExcludedFrontend: ProposalReview = {
 };
 
 export const MockProposalTechnicalReviewFrontend: ProposalReview = {
-  metadata: {
-    version: 1,
-    created_by: 'user1',
-    created_on: '2025-07-16T08:35:24.245Z',
-    last_modified_by: 'user1',
-    last_modified_on: '2025-07-16T08:35:24.245Z',
-    pdm_version: '18.3.0'
-  },
   panelId: 'panel-12345',
   id: 'review-12345',
   cycle: 'cycle1',

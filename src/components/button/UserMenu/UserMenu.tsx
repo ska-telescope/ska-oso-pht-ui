@@ -5,6 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import { ButtonLogin, ButtonUser, ButtonLogout } from '@ska-telescope/ska-login-page';
 import { ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import { useNavigate } from 'react-router-dom';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { PMT, PATH, isCypress } from '@/utils/constants';
 import { isReviewerAdmin, isReviewerChair, isReviewer } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -31,7 +32,7 @@ export default function ButtonUserMenu({
   const navigate = useNavigate();
   const theme = useTheme();
   const buttonWrapperRef = React.useRef<HTMLDivElement>(null);
-
+  const { updateAppContent2 } = storageObject.useStore();
   const { accounts } = useMsal();
   const username = accounts.length > 0 ? accounts[0].name + cypressLogin : cypressLogin;
 
@@ -52,6 +53,7 @@ export default function ButtonUserMenu({
   };
 
   const onMenuSelect = (thePath: string) => {
+    updateAppContent2(null);
     navigate(thePath);
     setAnchorEl(null);
   };

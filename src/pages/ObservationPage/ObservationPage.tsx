@@ -41,7 +41,6 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 const DATA_GRID_TARGET = '40vh';
 const DATA_GRID_OBSERVATION = '50vh';
 const PAGE = 5;
-const SIZE = 20;
 
 export default function ObservationPage() {
   const { t } = useScopedTranslation();
@@ -363,7 +362,6 @@ export default function ObservationPage() {
                   onClick={() =>
                     getLevel(obs) === STATUS_INITIAL ? null : setOpenMultipleDialog(true)
                   }
-                  size={SIZE}
                   testId="testId"
                   toolTip={t('sensCalc.' + getLevel(obs))}
                 />

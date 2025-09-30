@@ -14,8 +14,7 @@ export function GetMockProposalList(): Proposal[] {
 }
 
 async function GetProposalByStatusList(
-  authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
-  status: string
+  authAxiosClient: ReturnType<typeof useAxiosAuthClient>
 ): Promise<Proposal[] | string> {
   if (USE_LOCAL_DATA) {
     return GetMockProposalList();

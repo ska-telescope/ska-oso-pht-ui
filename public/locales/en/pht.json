@@ -359,6 +359,9 @@
     "label": "List of Targets",
     "toolTip": "A list of targets can be created individually or imported from a csv file using the appropriate tab."
   },
+  "location": {
+    "label": "Location"
+  },
   "manageTeamMember": {
     "label": "Manage Team Member Rights",
     "success": "Team member's access has been updated.",
@@ -805,6 +808,7 @@
     "label": "Reviewers",
     "empty": "THERE ARE NO REVIEWERS TO BE DISPLAYED",
     "title": "Title",
+    "displayName": "Name",
     "givenName": "Given Name",
     "surname": "Surname",
     "officeLocation": "Office Location",

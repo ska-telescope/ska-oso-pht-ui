@@ -46,7 +46,7 @@ export type TechnicalReviewBackend = {
 };
 
 export type ProposalReviewBackend = {
-  metadata: Metadata;
+  metadata?: Metadata;
   panel_id: string;
   review_id: string;
   cycle: string;

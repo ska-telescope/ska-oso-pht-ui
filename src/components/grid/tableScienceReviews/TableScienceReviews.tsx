@@ -18,7 +18,7 @@ import { PANEL_DECISION_STATUS, REVIEW_TYPE } from '@/utils/constants';
 import { ScienceReview } from '@/utils/types/proposalReview';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
-const STATUS_SIZE = 20;
+const STATUS_SIZE = 30;
 
 interface TableScienceReviewsProps {
   data: any;
@@ -142,7 +142,6 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
                         >
                           <StatusIcon
                             testId={`includeIcon-${data.id}-${detailIndex}`}
-                            noBorder
                             softColors={detail.reviewType.conflict.hasConflict}
                             icon
                             level={
@@ -153,6 +152,8 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
                                 : 0
                             }
                             size={STATUS_SIZE}
+                            iconOffset={0}
+                            iconSizingFactor={1}
                           />
                         </IconButton>
                       </Grid>
