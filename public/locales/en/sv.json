@@ -189,6 +189,7 @@
     "title": "Add Pulsar Timing Beams",
     "help": "Default is No Beam, to add a pulsar timing beam(s), click the checkbox",
     "toolTip": "Click to add Pulsar Timing Beam(s)",
+    "add": "Add Beam",
     "noBeam": {
       "label": "No Beam",
       "toolTip": "No Beam selected."
@@ -202,5 +203,8 @@
     "label": "Type",
     "toolTip": "Field Pattern selected.",
     "help": "Default value is Pointing Centres. Field Pattern selection currently unavailable."
+  },
+  "actions": {
+    "label": "Actions"
   }
 }
