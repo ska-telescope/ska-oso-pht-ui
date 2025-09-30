@@ -19,12 +19,26 @@ const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelB
         justifyContent: 'center',
       }}
     >
-      {/* Full-width line behind text */}
+      {/* Left line */}
       <Box
         sx={{
           position: 'absolute',
           top: '50%',
           left: 0,
+          right: 'calc(100% - 60%)',
+          height: '1px',
+          backgroundColor: 'black',
+          transform: 'translateY(-50%)',
+          zIndex: 1,
+        }}
+      />
+
+      {/* Right line */}
+      <Box
+        sx={{
+          position: 'absolute',
+          top: '50%',
+          left: 'calc(100% - 30%)',
           right: 0,
           height: '1px',
           backgroundColor: 'black',
@@ -33,30 +47,30 @@ const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelB
         }}
       />
 
-      {/* Left bullet at start of line */}
+      {/* Left bullet */}
       <Box
         sx={{
           position: 'absolute',
           left: 0,
           top: '50%',
           transform: 'translateY(-50%)',
-          width: '0.6rem',
-          height: '0.6rem',
+          width: '15px',
+          height: '15px',
           backgroundColor: 'black',
           borderRadius: '50%',
           zIndex: 2,
         }}
       />
 
-      {/* Right bullet at end of line */}
+      {/* Right bullet */}
       <Box
         sx={{
           position: 'absolute',
           right: 0,
           top: '50%',
           transform: 'translateY(-50%)',
-          width: '0.6rem',
-          height: '0.6rem',
+          width: '15px',
+          height: '15px',
           backgroundColor: 'black',
           borderRadius: '50%',
           zIndex: 2,
@@ -69,6 +83,7 @@ const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelB
         sx={{
           px: 2,
           zIndex: 2,
+          backgroundColor: 'white', // optional: ensures line doesn't show through translucent text
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
