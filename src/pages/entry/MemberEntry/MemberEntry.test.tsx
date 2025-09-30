@@ -7,29 +7,28 @@ import userEvent from '@testing-library/user-event';
 import MemberEntry from './MemberEntry';
 import * as mockService from '@/services/axios/get/getUserByEmail/getUserByEmail';
 
-const notifyErrorMock = vi.fn();
+const updateAppContent5Mock = vi.fn();
 
-vi.mock('@/utils/notify/useNotify', () => ({
-  useNotify: () => ({
-    notifyError: notifyErrorMock,
-    notifyWarning: vi.fn(),
-    notifySuccess: vi.fn()
-  })
-}));
+vi.mock('@ska-telescope/ska-gui-local-storage', async () => {
+  const actual = await vi.importActual<typeof import('@ska-telescope/ska-gui-local-storage')>(
+    '@ska-telescope/ska-gui-local-storage'
+  );
 
-describe('<MemberEntry />', () => {
-  test('renders correctly', () => {
-    render(
-      <StoreProvider>
-        <MemberEntry />
-      </StoreProvider>
-    );
-  });
+  return {
+    ...actual,
+    storageObject: {
+      ...actual.storageObject,
+      useStore: () => ({
+        ...actual.storageObject.useStore(),
+        updateAppContent5: updateAppContent5Mock
+      })
+    }
+  };
 });
 
 describe('<MemberEntry /> search for user', () => {
   beforeEach(() => {
-    notifyErrorMock.mockReset();
+    updateAppContent5Mock.mockReset();
   });
 
   test('search for user successfully', async () => {
@@ -101,10 +100,15 @@ describe('<MemberEntry /> search for user', () => {
       expect(firstNameField).not.toBeDisabled();
       const lastNameField = screen.findByDisplayValue(MockUserFrontendList[0].lastName);
       expect(lastNameField).not.toBeDisabled();
-      // TODO double-check these 2 assertions are working as expected
-      expect(notifyErrorMock).not.toHaveBeenCalledTimes(1);
-      expect(notifyErrorMock).toHaveBeenCalledWith('email.error', 5);
+      // // TODO double-check these 2 assertions are working as expected
+      expect(updateAppContent5Mock).toHaveBeenCalledWith({
+        level: 'error',
+        delay: 5,
+        message: 'email.error'
+      });
+      expect(updateAppContent5Mock).toHaveBeenCalled();
     });
+    // console.log(updateAppContent5Mock.mock.calls);
   });
 
   test('fill user details manually', async () => {
