@@ -70,7 +70,8 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
       p={0}
       pt={1}
       sx={{
-        height: WRAPPER_HEIGHT
+        height: WRAPPER_HEIGHT,
+        width: '97%'
       }}
     >
       {children}
@@ -316,8 +317,8 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   };
 
   const resetSearchButton = () => (
-    <Box mt={-17} p={5} ml={25}>
-      <ResetButton action={clearForm} size={ButtonSizeTypes.Medium} />
+    <Box mt={-12} p={2} ml={25}>
+      <ResetButton action={clearForm} size={ButtonSizeTypes.Small} />
     </Box>
   );
 
@@ -429,7 +430,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
       alignItems="space-evenly"
       justifyContent="space-between"
     >
-      <Grid size={{ xs: 7 }}>
+      <Grid size={{ xs: 8 }}>
         <Grid pt={1} container direction="column" alignItems="stretch" justifyContent="flex-start">
           {emailField()}
           {firstNameField()}
@@ -437,7 +438,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
           {piField()}
           {phdThesisField()}
           <Grid size={{ xs: 12 }}>
-            <Box p={2}>
+            <Box>
               <TeamInviteButton
                 action={clickFunction}
                 disabled={formInvalid}
