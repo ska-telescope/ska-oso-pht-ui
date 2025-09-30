@@ -257,7 +257,7 @@
   },
   "email": {
     "label": "Email",
-    "help": "The email is a required field. The investigator will be invited to participate in this proposal using this email, so please ensure it is correct.",
+    "help": "The email is a required field. The investigator will be invited to participate in this proposal using this email, so please ensure it is correct. If using the search functionality, the email should be of a registered user within SKAO systems. For example, @skao.int, @assoc.skao.int, or @community.skao.int.",
     "invitation": {
       "subject": "Proposal invitation.",
       "body": "You have been invited to contribute to proposal {{id}}"
@@ -267,8 +267,6 @@
     "error": "Email invite was unsuccessful and member is not added"
   },
   "emailSearch": {
-    "label": "Email",
-    "help": "This email should be of a registered user within SKAO systems. For example, @skao.int, @assoc.skao.int, or @community.skao.int.",
     "success": "User was successfully found.",
     "error": "User could not be found. Please check the email address and try again.",
     "reset": "Reset user search"

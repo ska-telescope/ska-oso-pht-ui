@@ -142,7 +142,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    helpComponent({ text: t('firstName.help') });
+    helpComponent(t('email.help'));
   }, []);
 
   React.useEffect(() => {
@@ -348,7 +348,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
         testId="firstName"
         value={firstName}
         setValue={setFirstName}
-        onFocus={() => helpComponent({ text: t('firstName.help') })}
+        onFocus={() => helpComponent(t('firstName.help'))}
         errorText={errorTextFirstName}
         required
         disabled={forSearch}
@@ -365,7 +365,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
         testId="lastName"
         value={lastName}
         setValue={setLastName}
-        onFocus={() => helpComponent({ text: t('lastName.help') })}
+        onFocus={() => helpComponent(t('lastName.help'))}
         errorText={errorTextLastName}
         required
         disabled={forSearch}
@@ -383,7 +383,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
         value={email}
         setValue={setEmail}
         errorText={errorTextEmail ? t(errorTextEmail) : ''}
-        onFocus={() => helpComponent({ text: t('email.help') })}
+        onFocus={() => helpComponent(t('email.help'))}
         required
         disabled={forSearch}
         suffix={resolveButton()}
@@ -401,7 +401,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
         testId="piCheckbox"
         checked={pi}
         onChange={handleCheckboxChangePI}
-        onFocus={() => helpComponent({ text: t('pi.help') })}
+        onFocus={() => helpComponent(t('pi.help'))}
       />
     );
   };
@@ -416,7 +416,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
         testId="PhDCheckbox"
         checked={phdThesis}
         onChange={handleCheckboxChangePhD}
-        onFocus={() => helpComponent({ text: t('phdThesis.help') })}
+        onFocus={() => helpComponent(t('phdThesis.help'))}
       />
     );
   };
@@ -453,7 +453,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
         </Grid>
       </Grid>
       <Grid size={{ xs: 4 }}>
-        <HelpPanel />
+        <HelpPanel minHeight="400px" />
       </Grid>
     </Grid>
   );
