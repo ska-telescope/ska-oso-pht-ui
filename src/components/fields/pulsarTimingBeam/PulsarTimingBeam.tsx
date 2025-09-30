@@ -6,7 +6,16 @@ import AddButton from '@components/button/Add/Add.tsx';
 import AlertDialog from '@components/alerts/alertDialog/AlertDialog.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
-export default function PulsarTimingBeamField() {
+interface PulsarTimingBeamFieldProps {
+  nameField: () => JSX.Element;
+  skyDirection1Field: () => JSX.Element;
+  skyDirection2Field: () => JSX.Element;
+}
+export default function PulsarTimingBeamField({
+  nameField,
+  skyDirection1Field,
+  skyDirection2Field
+}: PulsarTimingBeamFieldProps) {
   const { t } = useScopedTranslation();
   const [selectedValue, setSelectedValue] = React.useState('noBeam');
   const [showGrid, setShowGrid] = React.useState(false);
@@ -69,9 +78,9 @@ export default function PulsarTimingBeamField() {
   const alertPulsarTimingBeamsContent = () => {
     return (
       <Grid container direction="column" alignItems="center" justifyContent="space-around">
-        {/*<Grid>{nameField()}</Grid>*/}
-        {/*<Grid>{skyDirection1Field()}</Grid>*/}
-        {/*<Grid>{skyDirection2Field()}</Grid>*/}
+        <Grid>{nameField()}</Grid>
+        <Grid>{skyDirection1Field()}</Grid>
+        <Grid>{skyDirection2Field()}</Grid>
       </Grid>
     );
   };

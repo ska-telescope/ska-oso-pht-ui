@@ -19,7 +19,6 @@ import {
   RA_TYPE_ICRS,
   LAB_POSITION,
   VELOCITY_TYPE,
-  DEFAULT_PULSAR_TIMING_BEAM_SELECTION,
   LAB_IS_BOLD,
   FIELD_PATTERN_POINTING_CENTRES
 } from '@/utils/constants';
@@ -61,9 +60,6 @@ export default function TargetEntry({
   const [redshift, setRedshift] = React.useState('');
   const [referenceFrame, setReferenceFrame] = React.useState(RA_TYPE_ICRS.value);
   const [referenceCoordinates, setReferenceCoordinates] = React.useState(RA_TYPE_ICRS.label);
-  const [pulsarTimingBeam, setPulsarTimingBeam] = React.useState(
-    DEFAULT_PULSAR_TIMING_BEAM_SELECTION
-  );
   const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
   const LABEL_WIDTH = 6;
 
@@ -276,7 +272,11 @@ export default function TargetEntry({
 
   const pulsarTimingBeamField = () => {
     return wrapper(
-      <PulsarTimingBeamField setValue={setPulsarTimingBeam} value={pulsarTimingBeam} />
+      <PulsarTimingBeamField
+        nameField={nameField}
+        skyDirection1Field={skyDirection1Field}
+        skyDirection2Field={skyDirection2Field}
+      />
     );
   };
   const nameField = () =>
