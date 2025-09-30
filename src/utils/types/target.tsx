@@ -40,6 +40,13 @@ export type ReferenceCoordinateICRSBackend = {
   epoch?: number;
 };
 
+export type TiedArrayBeamsBackend = {
+  beam_id: string;
+  beam_name: string;
+  beam_coordinate: ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend;
+  stn_weights: [number];
+};
+
 export type TargetBackend = {
   target_id: string;
   name: string;
@@ -54,6 +61,7 @@ export type TargetBackend = {
     reference_frame: string;
     redshift: number;
   };
+  tied_array_beams: TiedArrayBeamsBackend;
 };
 
 /************************************************************************************
@@ -112,6 +120,12 @@ type Target = {
     active: string; // NOT USED
     parameters: PointingPatternParams[]; // NOT USED
   }; // NOT USED
+  /*------- tied array beams properties --------------------- */
+  tiedArrayBeams?: {
+    beamId: number;
+    beamName: string;
+  };
+  /*------- end of tied array beams properties --------------------- */
 };
 
 export default Target;
