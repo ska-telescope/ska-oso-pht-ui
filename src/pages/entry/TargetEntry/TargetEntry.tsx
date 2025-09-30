@@ -20,7 +20,9 @@ import {
   RA_TYPE_ICRS,
   LAB_POSITION,
   VELOCITY_TYPE,
-  DEFAULT_PULSAR_TIMING_BEAM_SELECTION
+  DEFAULT_PULSAR_TIMING_BEAM_SELECTION,
+  LAB_IS_BOLD,
+  FIELD_PATTERN_POINTING_CENTRES
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -64,6 +66,7 @@ export default function TargetEntry({
   const [pulsarTimingBeam, setPulsarTimingBeam] = React.useState(
     DEFAULT_PULSAR_TIMING_BEAM_SELECTION
   );
+  const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
   const LABEL_WIDTH = 6;
 
   const setTheName = (inValue: string) => {
@@ -267,6 +270,25 @@ export default function TargetEntry({
       />
     );
 
+  const fieldPatternTypeField = () => {
+    return wrapper(
+      <Box pt={1}>
+        <TextEntry
+          disabled={true}
+          label={t('fieldPattern.label')}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={LABEL_WIDTH}
+          onFocus={() => helpComponent(t('fieldPattern.help'))}
+          testId="fieldPatternId"
+          value={fieldPattern}
+          setValue={setFieldPattern}
+          toolTip={t('fieldPattern.toolTip')}
+        />
+      </Box>
+    );
+  };
+
   const pulsarTimingBeamField = () => {
     return wrapper(
       <PulsarTimingBeamField setValue={setPulsarTimingBeam} value={pulsarTimingBeam} />
@@ -381,6 +403,7 @@ export default function TargetEntry({
           <Grid>{velocityField()}</Grid>
           <Grid>{velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}</Grid>
           <ExtendedStrikethroughLabelBehindText labelText="FIELD PATTERN" />
+          <Grid>{fieldPatternTypeField()}</Grid>
           <Grid>{!id && addButton()}</Grid>
         </Grid>
       </Grid>

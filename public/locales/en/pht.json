@@ -1351,5 +1351,10 @@
     "pdf": "Syntax error or PDF not available",
     "iconClicked": "An error was encountered, please refresh page to continue",
     "invalidString": "Invalid input: Only numeric characters are allowed"
+  },
+  "fieldPattern": {
+    "label": "Type",
+    "toolTip": "Field Pattern selected.",
+    "help": "Default value is Pointing Centres. Field Pattern selection currently unavailable."
   }
 }
