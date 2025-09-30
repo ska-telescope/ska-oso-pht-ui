@@ -5,18 +5,20 @@ interface ExtendedStrikethroughLabelBehindTextProps {
   labelText: string;
 }
 
-const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelBehindTextProps> = ({ labelText }) => {
+const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelBehindTextProps> = ({
+  labelText
+}) => {
   return (
     <Box
       sx={{
         position: 'relative',
         width: '100%',
-        maxWidth: '400px',
+        maxWidth: '600px',
         height: '3rem',
-        ml: '-1rem', // Shift slightly left
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
+        mx: 'auto'
       }}
     >
       {/* Left line */}
@@ -25,11 +27,11 @@ const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelB
           position: 'absolute',
           top: '50%',
           left: 0,
-          right: 'calc(100% - 60%)',
+          right: 'calc(100% - 50%)',
           height: '1px',
           backgroundColor: 'black',
           transform: 'translateY(-50%)',
-          zIndex: 1,
+          zIndex: 1
         }}
       />
 
@@ -38,12 +40,12 @@ const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelB
         sx={{
           position: 'absolute',
           top: '50%',
-          left: 'calc(100% - 30%)',
+          left: 'calc(100% - 50%)',
           right: 0,
           height: '1px',
           backgroundColor: 'black',
           transform: 'translateY(-50%)',
-          zIndex: 1,
+          zIndex: 1
         }}
       />
 
@@ -58,7 +60,7 @@ const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelB
           height: '12px',
           backgroundColor: 'black',
           borderRadius: '50%',
-          zIndex: 2,
+          zIndex: 2
         }}
       />
 
@@ -73,7 +75,7 @@ const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelB
           height: '12px',
           backgroundColor: 'black',
           borderRadius: '50%',
-          zIndex: 2,
+          zIndex: 2
         }}
       />
 
@@ -83,11 +85,11 @@ const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelB
         sx={{
           px: 2,
           zIndex: 2,
-          backgroundColor: 'white', // optional: ensures line doesn't show through translucent text
+          backgroundColor: 'white',
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
-          textAlign: 'center',
+          textAlign: 'center'
         }}
       >
         {labelText}

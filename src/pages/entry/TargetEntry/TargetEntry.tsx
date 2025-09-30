@@ -6,6 +6,8 @@ import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
 import AlertDialog from '@components/alerts/alertDialog/AlertDialog.tsx';
 import PulsarTimingBeamField from '@components/fields/pulsarTimingBeam/PulsarTimingBeam.tsx';
+import ExtendedStrikethroughLabel from '@components/info/extendedStrikethroughLabel/ExtendedStrikethroughLabel.tsx';
+import ExtendedStrikethroughLabelBehindText from '@components/info/extendedStrikethroughLabelBehindText/ExtendedStrikethroughLabelBehindText.tsx';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import ResolveButton from '@/components/button/Resolve/Resolve';
@@ -23,9 +25,6 @@ import {
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import ExtendedStrikethroughLabel from '@components/info/extendedStrikethroughLabel/ExtendedStrikethroughLabel.tsx';
-import ExtendedStrikethroughLabelBehindText
-  from '@components/info/extendedStrikethroughLabelBehindText/ExtendedStrikethroughLabelBehindText.tsx';
 interface TargetEntryProps {
   raType: number;
   setTarget?: Function;

@@ -12,7 +12,7 @@ const ExtendedStrikethroughLabel: React.FC<ExtendedStrikethroughLabelProps> = ({
         position: 'relative',
         display: 'inline-block',
         minWidth: '200px',
-        px: 2,
+        px: 2
       }}
     >
       <Typography component="span" sx={{ position: 'relative', zIndex: 2 }}>
@@ -28,7 +28,7 @@ const ExtendedStrikethroughLabel: React.FC<ExtendedStrikethroughLabelProps> = ({
           height: '1px',
           backgroundColor: 'black',
           transform: 'translateY(-50%)',
-          zIndex: 1,
+          zIndex: 1
         }}
       />
     </Box>
