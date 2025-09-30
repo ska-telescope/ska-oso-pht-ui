@@ -5,8 +5,8 @@ export const MockUserFrontendList: Investigator[] = [
   {
     id: 'ee5d98ec-2100-429a-be9e-bef3a8e355df',
     status: TEAM_STATUS_TYPE_OPTIONS.pending,
-    firstName: 'Sattar',
-    lastName: 'Sarah',
+    firstName: 'Sarah',
+    lastName: 'Sattar',
     email: 'Sarah.Sattar@community.skao.int',
     officeLocation: null,
     jobTitle: null,
@@ -17,8 +17,8 @@ export const MockUserFrontendList: Investigator[] = [
   {
     id: '733d6b8e-63f1-43e5-b378-abeb2375f28f',
     status: TEAM_STATUS_TYPE_OPTIONS.pending,
-    firstName: 'Swain',
-    lastName: 'Trevor',
+    firstName: 'Trevor',
+    lastName: 'Swain',
     email: 'Trevor.Swain@community.skao.int',
     officeLocation: null,
     jobTitle: 'Dev Team',
