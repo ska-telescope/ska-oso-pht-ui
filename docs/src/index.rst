@@ -27,21 +27,22 @@ The Proposal Handling Tool (PHT) allows you to prepare and submit a proposal to 
    :maxdepth: 2
    :caption: User Guide
 
-   userGuide/UserIntroduction
-   userGuide/LandingPage
-   userGuide/TitlePage
-   userGuide/TeamPage
-   userGuide/GeneralPage
-   userGuide/SciencePage
-   userGuide/TargetPage
-   userGuide/ObservationPage
-   userGuide/TechnicalPage
-   userGuide/SDPDataPage
-   userGuide/SrcNetPage
-   userGuide/SubmitConfirmation
-   userGuide/UserQuestions
-   userGuide/UserTroubleShooting
-   userGuide/UserFeedback
+   userGuide/PPT/UserIntroduction
+   userGuide/PPT/LandingPage
+   userGuide/PPT/TitlePage
+   userGuide/PPT/TeamPage
+   userGuide/PPT/GeneralPage
+   userGuide/PPT/SciencePage
+   userGuide/PPT/TargetPage
+   userGuide/PPT/ObservationPage
+   userGuide/PPT/TechnicalPage
+   userGuide/PPT/SDPDataPage
+   userGuide/SPPT/rcNetPage
+   userGuide/PPT/SubmitConfirmation
+   userGuide/PPT/UserQuestions
+   userGuide/PPT/UserTroubleShooting
+   userGuide/PPT/UserFeedback
+   userGuide/PMT/PanelManagement
 
 .. toctree::
    :maxdepth: 2
