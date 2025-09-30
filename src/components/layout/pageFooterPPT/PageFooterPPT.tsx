@@ -54,16 +54,18 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       PROPOSAL_STATUS.DRAFT
     );
 
-    if (response && !response.error) {
-      notifySuccess(t('addProposal.success') + response);
+    if (response && typeof response === 'object' && 'error' in response) {
+      notifyError((response as { error: string }).error);
+    } else {
+      notifySuccess(t('addProposal.success') + response.id);
       setProposal({
         ...getProposal(),
-        id: response,
+        id: response.id,
         cycle: osdCycleId
       });
       // Create a new access entry for the PI.  Saves doing the endpoint
       const newAcc: Partial<ProposalAccess> = {
-        prslId: response,
+        prslId: response.id,
         role: PROPOSAL_ROLE_PI,
         permissions: PROPOSAL_ACCESS_PERMISSIONS
       };
@@ -75,8 +77,6 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       updateAppContent4([...acc, newAcc]);
 
       navigate(NAV[1]);
-    } else {
-      notifyError(response.error);
     }
   };
 
