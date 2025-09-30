@@ -377,7 +377,7 @@ export default function TargetEntry({
         <Grid
           container
           direction="column"
-          spacing={3}
+          spacing={2}
           alignItems="stretch"
           justifyContent="flex-start"
         >
