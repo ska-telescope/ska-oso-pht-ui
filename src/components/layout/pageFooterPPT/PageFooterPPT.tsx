@@ -59,9 +59,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     } else {
       notifySuccess(t('addProposal.success') + response.id);
       setProposal({
-        ...getProposal(),
-        id: response.id,
-        cycle: osdCycleId
+        ...(response as Proposal)
       });
       // Create a new access entry for the PI.  Saves doing the endpoint
       const newAcc: Partial<ProposalAccess> = {
