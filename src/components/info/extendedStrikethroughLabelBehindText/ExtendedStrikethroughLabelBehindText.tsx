@@ -13,7 +13,7 @@ const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelB
       sx={{
         position: 'relative',
         width: '100%',
-        maxWidth: '600px',
+        maxWidth: '500px', // Slightly reduced width
         height: '3rem',
         display: 'flex',
         alignItems: 'center',
@@ -27,7 +27,7 @@ const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelB
           position: 'absolute',
           top: '50%',
           left: 0,
-          right: 'calc(100% - 50%)',
+          right: 'calc(100% - 50%)', // Balanced line
           height: '1px',
           backgroundColor: 'black',
           transform: 'translateY(-50%)',
@@ -40,7 +40,7 @@ const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelB
         sx={{
           position: 'absolute',
           top: '50%',
-          left: 'calc(100% - 50%)',
+          left: 'calc(100% - 50%)', // Balanced line
           right: 0,
           height: '1px',
           backgroundColor: 'black',
