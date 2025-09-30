@@ -218,7 +218,7 @@ export default function ReviewListPage() {
       <></>
     );
 
-  const conflictDeclarationResponse = (reason: string) => {
+  const conflictDeclarationResponse = async (reason: string) => {
     if (reason === 'cancel') {
       setConflictConfirm(false);
       return;
@@ -238,6 +238,15 @@ export default function ReviewListPage() {
         }
       };
       setConflictRow(updatedRow);
+      const response: ProposalReview | string | { error: string } = await PutProposalReview(
+        authClient,
+        updatedRow.sciReview
+      );
+      if (typeof response === 'object' && (response as { error: string })?.error) {
+        notifyError((response as { error: string })?.error);
+      }
+
+      // TREVOR
       if (reason === CONFLICT_REASONS[0]) {
         // Do not save, as this should be done as part of the review submission
         setConflictConfirm(false);
@@ -265,9 +274,13 @@ export default function ReviewListPage() {
 
   const theIconClicked = (row: any, route: string) => {
     if (route === PMT[5]) {
-      setConflictConfirm(true);
-      setConflictRow(row);
-      setConflictRoute(route);
+      if (row.sciReview?.reviewType?.conflict.reason === undefined) {
+        setConflictConfirm(true);
+        setConflictRow(row);
+        setConflictRoute(route);
+      } else {
+        navigate(route, { replace: true, state: row });
+      }
     } else {
       navigate(route, { replace: true, state: row });
     }
@@ -362,7 +375,7 @@ export default function ReviewListPage() {
     width: 120,
     renderCell: (e: { row: any }) => {
       const str = e?.row?.tecReview?.reviewType?.isFeasible;
-      return str ? t(str) : '';
+      return str ? str : '';
     }
   };
 

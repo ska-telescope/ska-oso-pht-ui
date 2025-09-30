@@ -58,8 +58,7 @@ export default function TableReviewDecisionRow({
     return str.length ? t(str) : '';
   };
 
-  const getOptions = () =>
-    RECOMMENDATION.map(e => ({ label: t('recommendations.' + e), value: e }));
+  const getOptions = () => RECOMMENDATION.map(e => ({ label: e, value: e }));
 
   return (
     <>

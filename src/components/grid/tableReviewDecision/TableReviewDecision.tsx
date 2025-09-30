@@ -41,7 +41,10 @@ export default function TableReviewDecision({
   const calculateScore = (details: Array<any>) => {
     if (!details || details.length === 0) return 0;
     const filtered = details.filter(
-      el => !el?.reviewType?.excludedFromDecision && el?.status !== 'To Do'
+      el =>
+        el?.reviewType.kind === 'Science Review' &&
+        !el?.reviewType?.excludedFromDecision &&
+        el?.status !== 'To Do'
     );
     if (filtered.length === 0) return 0;
     const average =

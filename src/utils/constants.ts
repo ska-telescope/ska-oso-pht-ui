@@ -34,6 +34,7 @@ export const isCypress = typeof window !== 'undefined' && window.Cypress;
 
 /*****************************************/
 
+export const AUTO_SAVE_INTERVAL = 30; // seconds
 export const BAND_LOW = 0;
 export const BAND_1 = 1;
 export const BAND_2 = 2;
@@ -341,9 +342,9 @@ export const PROPOSAL_STATUS = {
   UNDER_REVIEW: 'under review'
 };
 
-export const RECOMMENDATION_ACCEPT_REVISION = 'RECOMMEND-ACCEPT-REVISION';
-export const RECOMMENDATION_REJECT = 'RECOMMEND-REJECT';
-export const RECOMMENDATION_ACCEPT = 'RECOMMEND-ACCEPT';
+export const RECOMMENDATION_ACCEPT_REVISION = 'Accepted with Revision';
+export const RECOMMENDATION_REJECT = 'Rejected';
+export const RECOMMENDATION_ACCEPT = 'Accepted';
 export const RECOMMENDATION = [
   RECOMMENDATION_ACCEPT,
   RECOMMENDATION_REJECT,

@@ -1,8 +1,7 @@
 import React from 'react';
 import { Chip, Fade, Box } from '@mui/material';
-import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes, StatusIcon } from '@ska-telescope/ska-gui-components';
 import CancelIcon from '@mui/icons-material/Cancel';
-import StatusIconDisplay from '../../../components/icon/status/statusIcon';
 
 interface StandardChipProps {
   color: typeof AlertColorTypes;
@@ -12,7 +11,7 @@ interface StandardChipProps {
   fadeDuration?: number;
 }
 
-const FONTSIZE = 27;
+const FONTSIZE = 20;
 
 export default function StandardChip({
   color,
@@ -59,14 +58,16 @@ export default function StandardChip({
             data-testid={testId}
             label={text}
             icon={
-              <StatusIconDisplay
-                ariaDescription=" "
-                ariaTitle=" "
-                level={getLevel(color)}
-                size={FONTSIZE}
-                testId={`${testId}Icon`}
-                toolTip=" "
-              />
+              <Box p={0.5} pt={1.5}>
+                <StatusIcon
+                  ariaDescription=" "
+                  ariaTitle=" "
+                  level={getLevel(color)}
+                  size={FONTSIZE}
+                  testId={`${testId}Icon`}
+                  toolTip=" "
+                />
+              </Box>
             }
             onDelete={handleClose}
             deleteIcon={<CancelIcon />}
