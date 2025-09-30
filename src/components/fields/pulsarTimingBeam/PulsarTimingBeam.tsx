@@ -1,7 +1,9 @@
 import React from 'react';
 import { Radio, FormControlLabel } from '@mui/material';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 export default function PulsarTimingBeamField() {
+  const { t } = useScopedTranslation();
   const [selectedValue, setSelectedValue] = React.useState('noBeam');
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -20,14 +22,12 @@ export default function PulsarTimingBeamField() {
     <div>
       <FormControlLabel
         control={<Radio {...controlProps('noBeam')} color="default" />}
-        //TODO: Use translation
-        label="No Beam"
+        label={t('pulsarTimingBeam.noBeam.label')}
         data-testid="No BeamTestId"
       />
       <FormControlLabel
         control={<Radio {...controlProps('multipleBeams')} color="default" />}
-        //TODO: Use translation
-        label="Multiple Beams"
+        label={t('pulsarTimingBeam.multipleBeams.label')}
         data-testid="Multiple BeamsTestId"
       />
     </div>
