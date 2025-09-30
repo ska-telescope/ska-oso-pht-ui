@@ -739,16 +739,6 @@
     "0": "ICRS",
     "1": "Galactic"
   },
-  "pulsarTimingBeam": {
-    "noBeam": {
-      "label": "No Beam",
-      "toolTip": "No Beam selected."
-    },
-    "multipleBeams": {
-      "label": "Multiple Beams",
-      "toolTip": "Multiple Beams selected."
-    }
-  },
   "referenceFrame": {
     "label": "Reference Frame",
     "help": "The reference frame of the velocity entered. The default is Heliocentric.",
@@ -1351,6 +1341,21 @@
     "pdf": "Syntax error or PDF not available",
     "iconClicked": "An error was encountered, please refresh page to continue",
     "invalidString": "Invalid input: Only numeric characters are allowed"
+  },
+  "pulsarTimingBeam": {
+    "label": "Beam(s)",
+    "title": "Add Pulsar Timing Beam",
+    "help": "Default is No Beam, to add a pulsar timing beam(s), click the checkbox",
+    "toolTip": "Click to add Pulsar Timing Beam",
+    "add": "Add Beam",
+    "noBeam": {
+      "label": "No Beam",
+      "toolTip": "No Beam selected."
+    },
+    "multipleBeams": {
+      "label": "Multiple Beams",
+      "toolTip": "Multiple Beams selected."
+    }
   },
   "fieldPattern": {
     "label": "Type",

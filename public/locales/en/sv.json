@@ -186,7 +186,7 @@
   },
   "pulsarTimingBeam": {
     "label": "Beam(s)",
-    "title": "Add Pulsar Timing Beams",
+    "title": "Add Pulsar Timing Beam",
     "help": "Default is No Beam, to add a pulsar timing beam(s), click the checkbox",
     "toolTip": "Click to add Pulsar Timing Beam",
     "add": "Add Beam",
