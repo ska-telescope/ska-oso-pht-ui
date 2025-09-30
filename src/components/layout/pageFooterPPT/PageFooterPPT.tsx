@@ -48,7 +48,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     const response = await PostProposal(
       authClient,
       {
-        ...getProposal(), // TODO add PI here
+        ...getProposal(),
         cycle: osdCycleId
       },
       PROPOSAL_STATUS.DRAFT

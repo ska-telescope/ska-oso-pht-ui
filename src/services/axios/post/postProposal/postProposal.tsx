@@ -8,6 +8,7 @@ import {
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
 import { mapping } from '../../get/getProposal/getProposal.tsx';
+import { MockProposalBackend } from './mockProposalBackend.tsx';
 
 export function mappingPostProposal(
   proposal: Proposal,
@@ -28,6 +29,7 @@ export function mappingPostProposal(
     prsl_id: proposal?.id?.toString(),
     status: status as string,
     submitted_by: '',
+    submitted_on: null,
     investigator_refs: [],
     cycle: proposal.cycle,
     info: {
@@ -55,7 +57,7 @@ export function mappingPostProposal(
 }
 
 export function mockPostProposal() {
-  return 'PROPOSAL-ID-001';
+  return mapping(MockProposalBackend);
 }
 
 async function PostProposal(
