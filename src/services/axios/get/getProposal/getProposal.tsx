@@ -645,7 +645,7 @@ async function GetProposal(
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${id}`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
-    if (!result?.data) {
+    if (!result || !result?.data) {
       return 'error.API_UNKNOWN_ERROR';
     }
     return mapping(result.data);

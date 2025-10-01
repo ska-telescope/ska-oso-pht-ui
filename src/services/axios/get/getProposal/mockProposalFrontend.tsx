@@ -403,3 +403,34 @@ export const MockProposalFrontendZoom: Proposal = {
   dataProductSRC: [],
   pipeline: ''
 };
+
+export const MockNullProposalFrontend: Proposal = {
+  metadata: undefined,
+  id: undefined as any,
+  title: undefined as any,
+  proposalType: undefined as any,
+  proposalSubType: [],
+  status: undefined as any,
+  lastUpdated: undefined as any,
+  lastUpdatedBy: undefined as any,
+  createdOn: undefined as any,
+  createdBy: undefined as any,
+  version: undefined as any,
+  cycle: undefined as any,
+  investigators: [],
+  abstract: undefined,
+  scienceCategory: null,
+  scienceSubCategory: [1],
+  sciencePDF: null,
+  scienceLoadStatus: 9,
+  targetOption: 1,
+  targets: [],
+  observations: [],
+  groupObservations: [],
+  targetObservation: [],
+  technicalPDF: null,
+  technicalLoadStatus: 9,
+  dataProductSDP: undefined,
+  dataProductSRC: [],
+  pipeline: ''
+};

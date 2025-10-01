@@ -3,7 +3,11 @@ import * as CONSTANTS from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
 import GetProposal, { GetMockProposal, mapping } from './getProposal.tsx';
 import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend.tsx';
-import { MockProposalFrontend, MockProposalFrontendZoom } from './mockProposalFrontend.tsx';
+import {
+  MockNullProposalFrontend,
+  MockProposalFrontend,
+  MockProposalFrontendZoom
+} from './mockProposalFrontend.tsx';
 
 describe('Helper Functions', () => {
   test('GetMockProposal returns mock proposal', () => {
@@ -65,11 +69,11 @@ describe('GetProposal Service', () => {
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 
-  test('returns error.API_UNKNOWN_ERROR when API returns non-array data', async () => {
+  test("mapping doesn't crash when receiving unexpected data", async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAuthClient.get.mockResolvedValue({ data: { not: 'an array' } });
+    mockedAuthClient.get.mockResolvedValue({ data: { not: 'expected' } });
     const result = await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id);
-    expect(result).toContain('Cannot read properties of undefined');
+    expect(result).toEqual(MockNullProposalFrontend);
   });
 
   test('returns error.API_UNKNOWN_ERROR when API returns no data', async () => {
