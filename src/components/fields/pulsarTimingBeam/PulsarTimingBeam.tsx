@@ -106,6 +106,9 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
         actions: null
       };
       setRows(prevRows => [...prevRows, newRow]);
+      setBeamName('');
+      setRA('');
+      setDec('');
       closeDialog();
     }
   };
@@ -213,7 +216,7 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
           <DataGrid
             rows={rows}
             columns={getColumns()}
-            height={171}
+            height={rows.length * 60 + 100} // 40px per row + 71px for header
             testId="pulsarTimingBeamColumns"
           />
         </div>
