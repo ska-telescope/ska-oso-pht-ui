@@ -4,6 +4,7 @@ import {
   createStandardProposalLoggedIn,
   mockCreateProposalAPI,
   mockEmailAPI,
+  mockgetUserByEmailAPI,
   pageConfirmed,
   initialize,
   verifyProposalCreatedAlertFooter,
@@ -27,6 +28,7 @@ describe('Delegate Editing Rights', () => {
     cy.window().then(win => {
       win.localStorage.setItem('cypress:defaultUserLoggedIn', 'true');
     });
+    mockgetUserByEmailAPI();
     mockEmailAPI();
     createStandardProposalLoggedIn();
     cy.wait('@mockCreateProposal');
@@ -42,6 +44,7 @@ describe('Delegate Editing Rights', () => {
     // clickSearchForMember(); // TODO remove entirely
     entry('email', 'Trevor.Swain@community.skao.int');
     clickUserSearch();
+    cy.wait('@mockgetUserByEmailAPI');
     verifyUserFoundAlertFooter();
     clickPICheckbox();
     clickSendInviteButton();

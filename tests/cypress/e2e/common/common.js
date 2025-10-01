@@ -91,6 +91,21 @@ export const mockCreateProposalAPI = () => {
   });
 };
 
+export const mockgetUserByEmailAPI = () => {
+  cy.window().then(win => {
+    const token = win.localStorage.getItem('cypress:token');
+    cy.fixture('userMSGraph.json').then(user => {
+      cy.intercept('GET', '**/pht/prsls/member/Trevor.Swain@community.skao.int', req => {
+        req.headers['Authorization'] = `Bearer ${token}`;
+        req.reply({
+          statusCode: 200,
+          body: user
+        });
+      }).as('mockgetUserByEmailAPI');
+    });
+  });
+};
+
 export const mockEmailAPI = () => {
   cy.window().then(win => {
     const token = win.localStorage.getItem('cypress:token');
