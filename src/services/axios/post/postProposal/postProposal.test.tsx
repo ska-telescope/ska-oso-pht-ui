@@ -63,7 +63,7 @@ describe('PostProposal Service', () => {
 
   test('returns proposal from API when USE_LOCAL_DATA is false', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAuthClient.post.mockResolvedValue({ data: MockProposalBackend.prsl_id });
+    mockedAuthClient.post.mockResolvedValue({ data: MockProposalBackend });
     const result = (await PostProposal(
       mockedAuthClient,
       MockProposalFrontend,

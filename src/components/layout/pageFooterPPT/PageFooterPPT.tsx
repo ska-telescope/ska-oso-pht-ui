@@ -54,9 +54,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       PROPOSAL_STATUS.DRAFT
     );
 
-    if (response && typeof response === 'object' && 'error' in response) {
-      notifyError((response as { error: string }).error);
-    } else {
+    if (response && !('error' in response)) {
       notifySuccess(t('addProposal.success') + response.id);
       setProposal({
         ...(response as Proposal)
@@ -75,6 +73,8 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       updateAppContent4([...acc, newAcc]);
 
       navigate(NAV[1]);
+    } else {
+      notifyError((response as { error: string }).error);
     }
   };
 
