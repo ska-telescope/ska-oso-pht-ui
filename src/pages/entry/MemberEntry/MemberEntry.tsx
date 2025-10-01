@@ -283,7 +283,6 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
 
   const resolveButton = () => {
     async function searchEmail(email: string): Promise<boolean> {
-      // const response = GetMockUserByEmail(email);
       const response = await GetUserByEmail(authClient, email);
       if (typeof response === 'string') {
         notifyError(t('emailSearch.error'), NOTIFICATION_DELAY_IN_SECONDS);
@@ -293,7 +292,6 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
         setInvestigator(response);
         setFirstName(response?.firstName);
         setLastName(response?.lastName);
-        setEmail(response?.email);
         return true;
       }
     }
