@@ -4,6 +4,7 @@ export const MockProposalBackend: ProposalBackend = {
   prsl_id: 'prsl-t0001-20250613-00002',
   status: 'draft',
   submitted_by: '',
+  submitted_on: null,
   cycle: 'SKAO_2027_1',
   investigator_refs: [],
   info: {
