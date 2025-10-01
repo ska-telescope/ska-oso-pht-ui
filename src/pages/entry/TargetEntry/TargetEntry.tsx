@@ -271,13 +271,7 @@ export default function TargetEntry({
   };
 
   const pulsarTimingBeamField = () => {
-    return wrapper(
-      <PulsarTimingBeamField
-        nameField={nameField}
-        skyDirection1Field={skyDirection1Field}
-        skyDirection2Field={skyDirection2Field}
-      />
-    );
+    return wrapper(<PulsarTimingBeamField setTarget={setTarget} target={target} />);
   };
   const nameField = () =>
     wrapper(
