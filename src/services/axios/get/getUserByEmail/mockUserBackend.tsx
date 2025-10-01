@@ -5,8 +5,8 @@ export const MockUserBackendList: InvestigatorBackend[] = [
   {
     user_id: 'ee5d98ec-2100-429a-be9e-bef3a8e355df',
     status: TEAM_STATUS_TYPE_OPTIONS.pending,
-    given_name: 'Sattar',
-    family_name: 'Sarah',
+    given_name: 'Sarah',
+    family_name: 'Sattar',
     email: 'Sarah.Sattar@community.skao.int',
     officeLocation: null,
     jobTitle: null,
@@ -16,8 +16,8 @@ export const MockUserBackendList: InvestigatorBackend[] = [
   {
     user_id: '733d6b8e-63f1-43e5-b378-abeb2375f28f',
     status: TEAM_STATUS_TYPE_OPTIONS.pending,
-    given_name: 'Swain',
-    family_name: 'Trevor',
+    given_name: 'Trevor',
+    family_name: 'Swain',
     email: 'Trevor.Swain@community.skao.int',
     officeLocation: null,
     jobTitle: 'Dev Team',

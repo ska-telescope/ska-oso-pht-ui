@@ -49,11 +49,20 @@
     "toolTip": "Edit Science Idea"
   },
   "email": {
-    "help": "The email is a required field. The investigator will be invited to participate in this Science Idea using this email, so please ensure it is correct.",
+    "label": "Email",
+    "help": "The email is a required field. The investigator will be invited to participate in this proposal using this email, so please ensure it is correct. If using the search functionality, the email should be of a registered user within SKAO systems. For example, @skao.int, @assoc.skao.int, or @community.skao.int.",
     "invitation": {
-      "subject": "Science Idea invitation.",
-      "body": "You have been invited to contribute to Science Idea {{id}}"
-    }
+      "subject": "Proposal invitation.",
+      "body": "You have been invited to contribute to proposal {{id}}"
+    },
+    "success": "Email invite has been sent.",
+    "warning": "Sending email request for processing",
+    "error": "Email invite was unsuccessful and member is not added"
+  },
+  "emailSearch": {
+    "success": "User was successfully found.",
+    "error": "User could not be found. Please check the email address and try again.",
+    "reset": "Reset user search"
   },
   "homeBtn": {
     "title": "Science Ideas",

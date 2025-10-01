@@ -7,6 +7,7 @@ interface SearchButtonProps {
   primary?: boolean;
   testId?: string;
   toolTip?: string;
+  size?: 'small' | 'medium' | 'large';
 }
 
 export default function SearchButton({
@@ -15,7 +16,8 @@ export default function SearchButton({
   primary = false,
   title = 'search.label',
   testId = 'SearchButtonTestId',
-  toolTip
+  toolTip,
+  size = 'medium'
 }: SearchButtonProps) {
   return (
     <BaseButton
@@ -26,6 +28,7 @@ export default function SearchButton({
       testId={testId}
       title={title}
       toolTip={toolTip}
+      size={size}
     />
   );
 }
