@@ -215,5 +215,15 @@
   },
   "actions": {
     "label": "Actions"
+  },
+  "resolve": {
+    "label": "Resolve",
+    "toolTip": "Query SIMBAD and NED",
+    "error": {
+      "mapping": "Unable to map results from API.",
+      "name": "Unable to resolve provided name",
+      "Request failed with status code 500": "Unable to resolve provided name",
+      "Request failed with status code 404": "Object not found in SIMBAD or NED"
+    }
   }
 }

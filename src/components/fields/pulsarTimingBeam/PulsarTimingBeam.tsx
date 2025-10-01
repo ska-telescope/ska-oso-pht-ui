@@ -102,15 +102,27 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
   };
 
   const addPulsarTimingBeamsConfirmed = () => {
+    //update table with beamName, ra and dec values
     closeDialog();
   };
 
   const resolveBeamNameButton = () => {
-    //TODO: Update table
     const processCoordinatesResults = (response: any) => {
       if (response && !response.error) {
         //add to table
         const values = response.split(' ');
+        // const redshift =
+        //   values?.length > 2 && values[2] !== 'null'
+        //     ? Number(values[2])
+        //       .toExponential(2)
+        //       .toString()
+        //     : '';
+        // const vel = values?.length > 3 && values[3] !== 'null' ? values[3] : '';
+        setDec(values[0]);
+        setRA(values[1]);
+        // setRedshift(redshift);
+        // setVel(vel);
+        setNameFieldError('');
       } else {
         setNameFieldError(t('resolve.error.' + response.error));
       }
