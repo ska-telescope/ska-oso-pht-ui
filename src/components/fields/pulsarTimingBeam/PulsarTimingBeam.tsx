@@ -29,7 +29,14 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
   const [dec, setDec] = React.useState('');
   const [rows, setRows] = React.useState([{ id: 1, isAddRow: true }]);
   const LAB_WIDTH = 5;
+  const ROW_HEIGHT = 52;
+  const BASE_HEIGHT = 171;
   const wrapper = (children: any) => <Box sx={{ width: '100%' }}>{children}</Box>;
+
+  const calculateHeight = () => {
+    const visibleRows = Math.max(rows.length, 3);
+    return Math.min(BASE_HEIGHT + visibleRows * ROW_HEIGHT, 600);
+  };
 
   const handleClick = event => {
     setSelectedValue(event.target.value);
@@ -106,8 +113,8 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
         actions: null // Placeholder for actions if needed
       };
       setRows(prevRows => [...prevRows, newRow]); // Append the new row
+      closeDialog();
     }
-    closeDialog();
   };
 
   const resolveBeamNameButton = () => {
@@ -209,16 +216,13 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
         label={t('pulsarTimingBeam.multipleBeams.label')}
         data-testid="MultipleBeamsTestId"
       />
-      {showGrid && (
-        <div style={{ height: 300, width: '100%' }}>
-          <DataGrid
-            rows={rows}
-            columns={getColumns()}
-            height={171}
-            testId="pulsarTimingBeamColumns"
-          />
-        </div>
-      )}
+      <div>
+        {showGrid && (
+          <div style={{ height: calculateHeight(), width: '100%' }}>
+            <DataGrid rows={rows} columns={getColumns()} testId="pulsarTimingBeamTable" />
+          </div>
+        )}
+      </div>
       {openPulsarTimingBeamDialog && (
         <AlertDialog
           open={openPulsarTimingBeamDialog}
