@@ -79,12 +79,22 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
       renderCell: params => {
         if (params.row.isAddRow) {
           return (
-            <AddButton
-              action={() => setOpenPulsarTimingBeamDialog(true)}
-              testId={'addPulsarTimingBeamButton'}
-              title={'pulsarTimingBeam.add'}
-              toolTip={'pulsarTimingBeam.toolTip'}
-            />
+            <>
+              <AddButton
+                action={() => setOpenPulsarTimingBeamDialog(true)}
+                testId={'addPulsarTimingBeamButton'}
+                toolTip={'pulsarTimingBeam.toolTip'}
+              />
+              {rows.length > 1 && (
+                <AddButton
+                  //TODO: Update text and action
+                  action={() => console.log('Second AddButton clicked')}
+                  title={'pulsarTimingBeam.submit'}
+                  testId={'secondAddButton'}
+                  toolTip={'Second AddButton'}
+                />
+              )}
+            </>
           );
         }
         return params.value;
