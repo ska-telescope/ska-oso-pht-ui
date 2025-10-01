@@ -27,6 +27,7 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
   const [beamName, setBeamName] = React.useState('');
   const [ra, setRA] = React.useState('');
   const [dec, setDec] = React.useState('');
+  const [rows, setRows] = React.useState([{ id: 1, isAddRow: true }]);
   const LAB_WIDTH = 5;
   const wrapper = (children: any) => <Box sx={{ width: '100%' }}>{children}</Box>;
 
@@ -66,12 +67,6 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
     name: 'radio-group',
     inputProps: { 'aria-label': item }
   });
-  const emptyRows = [];
-
-  // Add a dummy row with a unique ID
-  const addRow = { id: 1, isAddRow: true };
-
-  const rows = [addRow, ...emptyRows];
 
   const columns = [
     { field: 'name', headerName: t('name.label') },
@@ -102,7 +97,16 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
   };
 
   const addPulsarTimingBeamsConfirmed = () => {
-    //update table with beamName, ra and dec values
+    if (beamName && ra && dec) {
+      const newRow = {
+        id: rows.length + 1, // Unique ID for the new row
+        name: beamName,
+        raStr: ra,
+        decStr: dec,
+        actions: null // Placeholder for actions if needed
+      };
+      setRows(prevRows => [...prevRows, newRow]); // Append the new row
+    }
     closeDialog();
   };
 
