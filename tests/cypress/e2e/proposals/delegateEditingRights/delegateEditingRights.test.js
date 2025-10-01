@@ -39,7 +39,7 @@ describe('Delegate Editing Rights', () => {
   });
 
   it('Delegate editing rights to a co-investigator', { jiraKey: 'XTP-89609' }, () => {
-    clickSearchForMember();
+    // clickSearchForMember(); // TODO remove entirely
     entry('email', 'Trevor.Swain@community.skao.int');
     clickUserSearch();
     verifyUserFoundAlertFooter();
