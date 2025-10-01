@@ -25,6 +25,7 @@ UNRELEASED
 * Changed : Code added to switch text depending upon Cycle description
 * Removed : Member search tab
 * Changed: Member search functionality combined with member entry
+* Fixed: Handling of post proposal response since response format update
 
 5.1.0
 ----------
