@@ -479,7 +479,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
       return investigator?.id?.toString();
     }),
     cycle: proposal.cycle,
-    info: {
+    proposal_info: {
       title: proposal.title,
       proposal_type: {
         main_type: PROJECTS.find(item => item.id === proposal.proposalType)?.mapping,
@@ -491,8 +491,6 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
       science_category: GENERAL.ScienceCategory?.find(
         category => category.value === proposal?.scienceCategory
       )?.label as string,
-      targets: getTargets(proposal?.targets ? proposal.targets : []),
-      documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF),
       investigators: proposal?.investigators
         ? proposal.investigators.map(investigator => {
             return {
@@ -503,10 +501,16 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
               email: investigator.email,
               organization: investigator.affiliation,
               for_phd: investigator.phdThesis,
-              principal_investigator: investigator.pi
+              principal_investigator: investigator.pi,
+              officeLocation: investigator.officeLocation,
+              jobTitle: investigator.jobTitle
             };
           })
-        : null,
+        : null
+    },
+    observation_info: {
+      targets: getTargets(proposal?.targets ? proposal.targets : []),
+      documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF),
       observation_sets: getObservationsSets(proposal.observations, proposal.groupObservations),
       data_product_sdps:
         proposal.dataProductSDP?.length > 0 ? getDataProductSDP(proposal.dataProductSDP) : [],

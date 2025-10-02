@@ -38,9 +38,9 @@ describe('Helper Functions', () => {
     const proposalBackEnd: ProposalBackend = MappingPutProposal(proposal, PROPOSAL_STATUS.DRAFT);
     expect(proposalBackEnd).to.deep.equal({
       ...MockProposalBackend,
-      info: {
-        ...MockProposalBackend.info,
-        proposal_type: { ...MockProposalBackend.info.proposal_type, attributes: [] }
+      proposal_info: {
+        ...MockProposalBackend.proposal_info,
+        proposal_type: { ...MockProposalBackend.proposal_info.proposal_type, attributes: [] }
       }
     });
   });

@@ -32,7 +32,7 @@ export function mappingPostProposal(
     submitted_on: null,
     investigator_refs: [],
     cycle: proposal.cycle,
-    info: {
+    proposal_info: {
       title: proposal.title,
       proposal_type: {
         main_type: PROJECTS.find(item => item.id === proposal.proposalType)?.mapping as string,
@@ -42,9 +42,11 @@ export function mappingPostProposal(
       },
       abstract: '',
       science_category: '',
+      investigators: [] // TODO: check if investigator_refs replaces investigators in PDM
+    },
+    observation_info: {
       targets: [],
       documents: [],
-      investigators: [], // TODO: check if investigator_refs replaces investigators in PDM
       observation_sets: [],
       data_product_sdps: [],
       data_product_src_nets: [],

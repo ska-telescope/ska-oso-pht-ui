@@ -7,16 +7,18 @@ export const MockProposalBackend: ProposalBackend = {
   submitted_on: null,
   cycle: 'SKAO_2027_1',
   investigator_refs: [],
-  info: {
+  proposal_info: {
     title: 'New Proposal',
     proposal_type: {
       main_type: 'standard_proposal',
       attributes: ['coordinated_proposal']
     },
     abstract: '',
+    investigators: []
+  },
+  observation_info: {
     targets: [],
     documents: [],
-    investigators: [],
     observation_sets: [],
     data_product_sdps: [],
     data_product_src_nets: [],
