@@ -9,6 +9,7 @@ import Target from '@utils/types/target.tsx';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates.tsx';
 import ResolveButton from '@components/button/Resolve/Resolve.tsx';
 import SubmitButton from '@components/button/Submit/Submit.tsx';
+import Proposal from '@utils/types/proposal.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import SkyDirection1 from '@/components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
@@ -19,13 +20,13 @@ interface PulsarTimingBeamFieldProps {
 }
 export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimingBeamFieldProps) {
   const { t } = useScopedTranslation();
-  const { helpComponent } = storageObject.useStore();
-
+  const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [selectedValue, setSelectedValue] = React.useState('noBeam');
   const [showGrid, setShowGrid] = React.useState(false);
   const [openPulsarTimingBeamDialog, setOpenPulsarTimingBeamDialog] = React.useState(false);
   const [nameFieldError, setNameFieldError] = React.useState('');
   const [beamName, setBeamName] = React.useState('');
+  const [name, setName] = React.useState('');
   const [ra, setRA] = React.useState('');
   const [dec, setDec] = React.useState('');
   const [velType, setVelType] = React.useState(0);
@@ -45,13 +46,13 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
 
   const handleSubmit = event => {
     //TODO: Update
-    console.log('Submit beams clicked')
-     const highest = getProposal()?.targets?.length
-        ? getProposal()?.targets?.reduce((prev, current) =>
+    console.log('Submit beams clicked');
+    const highest = getProposal()?.targets?.length
+      ? getProposal()?.targets?.reduce((prev, current) =>
           prev && prev.id > current.id ? prev : current
         )
-        : null;
-      const highestId = highest ? highest.id : 0;
+      : null;
+    const highestId = highest ? highest.id : 0;
 
     const newTarget: Target = {
       kind: RA_TYPE_ICRS.value,
@@ -72,12 +73,12 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
         beamCoordinate: {
           kind: RA_TYPE_ICRS.value,
           raStr: ra,
-          decStr: dec,
+          decStr: dec
         },
-        stn_weights: [1], // Example value
-      },
+        stn_weights: [1] // Example value
+      }
     };
-      setProposal({ ...getProposal(), targets: [...(getProposal().targets ?? []), newTarget] });
+    setProposal({ ...getProposal(), targets: [...(getProposal().targets ?? []), newTarget] });
   };
 
   React.useEffect(() => {
