@@ -274,13 +274,13 @@ export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalA
 export const verifyProposalCreatedAlertFooter = () => true; //  Chip responds too fast for this : verifyContent('timeAlertFooter', 'Proposal added with unique identifier');
 
 export const verifyUserFoundAlertFooter = () =>
-  verifyContent('footerId', 'User was successfully found.');
+  verifyContent('timeAlertFooter', 'User was successfully found.');
 
 export const verifyUserInvitedAlertFooter = () =>
-  verifyContent('footerId', 'Email invite has been sent.');
+  verifyContent('timeAlertFooter', 'Email invite has been sent.');
 
 export const verifyTeamMemberAccessUpdatedAlertFooter = () =>
-  verifyContent('footerId', "Team member's access has been updated.");
+  verifyContent('timeAlertFooter', "Team member's access has been updated.");
 
 export const clickEditProposal = () => {
   get('EditRoundedIcon')
