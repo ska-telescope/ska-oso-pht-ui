@@ -54,6 +54,9 @@ export default function TargetEntry({
   const [name, setName] = React.useState('');
   const [ra, setRA] = React.useState('');
   const [dec, setDec] = React.useState('');
+  const [beamName, setBeamName] = React.useState('');
+  const [beamRA, setBeamRA] = React.useState('');
+  const [beamDec, setBeamDec] = React.useState('');
   const [velType, setVelType] = React.useState(0);
   const [vel, setVel] = React.useState('');
   const [velUnit, setVelUnit] = React.useState(0);
@@ -179,9 +182,22 @@ export default function TargetEntry({
         referenceFrame: RA_TYPE_ICRS.label,
         vel: velType === VELOCITY_TYPE.VELOCITY ? vel : '',
         velType: velType,
-        velUnit: velUnit
+        velUnit: velUnit,
+        tiedArrayBeams: {
+          beamId: highestId + 1,
+          beamName: beamName,
+          beamCoordinate: {
+            kind: RA_TYPE_ICRS.label,
+            referenceFrame: RA_TYPE_ICRS.label,
+            raStr: beamRA,
+            decStr: beamDec
+          },
+          //TODO: What should this number be?
+          stnWeights: [1]
+        }
       };
       setProposal({ ...getProposal(), targets: [...(getProposal().targets ?? []), newTarget] });
+      console.log('target TargetEntry', newTarget);
       notifySuccess(t('addTarget.success'), NOTIFICATION_DELAY_IN_SECONDS);
     };
 

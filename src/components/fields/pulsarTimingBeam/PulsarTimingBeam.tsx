@@ -156,7 +156,8 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
         stnWeights: [1]
       }
     };
-    setProposal({ ...getProposal(), targets: [...(getProposal().targets ?? []), newTarget] });
+    // setProposal({ ...getProposal(), targets: [...(getProposal().targets ?? []), newTarget] });
+    //TODO: Instead of setProposal set new TiedArrayBeams?
     console.log('target ', newTarget);
     closeDialog();
   };
