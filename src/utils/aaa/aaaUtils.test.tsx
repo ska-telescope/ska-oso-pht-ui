@@ -19,7 +19,7 @@ import {
   OPS_PROPOSAL_ADMIN,
   OPS_REVIEW_CHAIR,
   OPS_REVIEWER_SCIENCE,
-  TECHNICAL_REVIEWER,
+  EXT_REVIEWER_TECHNICAL,
   SW_ENGINEER
 } from './aaaUtils';
 
@@ -111,7 +111,7 @@ describe('Permission utilities', () => {
     expect(isSoftwareEngineer()).toBe(false);
     overrideGroups = OPS_REVIEWER_SCIENCE;
     expect(isSoftwareEngineer()).toBe(false);
-    overrideGroups = TECHNICAL_REVIEWER;
+    overrideGroups = EXT_REVIEWER_TECHNICAL;
     expect(isSoftwareEngineer()).toBe(false);
     overrideGroups = SW_ENGINEER;
     expect(isSoftwareEngineer()).toBe(true);
@@ -124,7 +124,7 @@ describe('Permission utilities', () => {
     expect(isReviewerAdmin()).toBe(false);
     overrideGroups = OPS_REVIEWER_SCIENCE;
     expect(isReviewerAdmin()).toBe(false);
-    overrideGroups = TECHNICAL_REVIEWER;
+    overrideGroups = EXT_REVIEWER_TECHNICAL;
     expect(isReviewerAdmin()).toBe(false);
     overrideGroups = SW_ENGINEER;
     expect(isReviewerAdmin()).toBe(true);
@@ -137,7 +137,7 @@ describe('Permission utilities', () => {
     expect(isReviewerAdmin()).toBe(false);
     overrideGroups = OPS_REVIEWER_SCIENCE;
     expect(isReviewerAdmin()).toBe(false);
-    overrideGroups = TECHNICAL_REVIEWER;
+    overrideGroups = EXT_REVIEWER_TECHNICAL;
     expect(isReviewerAdmin()).toBe(false);
     overrideGroups = SW_ENGINEER;
     expect(isReviewerAdmin()).toBe(true);
@@ -150,20 +150,20 @@ describe('Permission utilities', () => {
     expect(isReviewerScience()).toBe(false);
     overrideGroups = OPS_REVIEWER_SCIENCE;
     expect(isReviewerScience()).toBe(true);
-    overrideGroups = TECHNICAL_REVIEWER;
+    overrideGroups = EXT_REVIEWER_TECHNICAL;
     expect(isReviewerScience()).toBe(false);
     overrideGroups = SW_ENGINEER;
     expect(isReviewerScience()).toBe(true);
   });
 
-  it('isReviewerTechnical returns true if SW_ENGINEER or TECHNICAL_REVIEWER', () => {
+  it('isReviewerTechnical returns true if SW_ENGINEER or EXT_REVIEWER_TECHNICAL', () => {
     overrideGroups = OPS_PROPOSAL_ADMIN;
     expect(isReviewerTechnical()).toBe(false);
     overrideGroups = OPS_REVIEW_CHAIR;
     expect(isReviewerTechnical()).toBe(false);
     overrideGroups = OPS_REVIEWER_SCIENCE;
     expect(isReviewerTechnical()).toBe(false);
-    overrideGroups = TECHNICAL_REVIEWER;
+    overrideGroups = EXT_REVIEWER_TECHNICAL;
     expect(isReviewerTechnical()).toBe(true);
     overrideGroups = SW_ENGINEER;
     expect(isReviewerTechnical()).toBe(true);
@@ -176,7 +176,7 @@ describe('Permission utilities', () => {
     expect(isReviewer()).toBe(false);
     overrideGroups = OPS_REVIEWER_SCIENCE;
     expect(isReviewer()).toBe(true);
-    overrideGroups = TECHNICAL_REVIEWER;
+    overrideGroups = EXT_REVIEWER_TECHNICAL;
     expect(isReviewer()).toBe(true);
     overrideGroups = SW_ENGINEER;
     expect(isReviewer()).toBe(true);
@@ -189,7 +189,7 @@ describe('Permission utilities', () => {
     expect(isReviewerChair()).toBe(true);
     overrideGroups = OPS_REVIEWER_SCIENCE;
     expect(isReviewerChair()).toBe(false);
-    overrideGroups = TECHNICAL_REVIEWER;
+    overrideGroups = EXT_REVIEWER_TECHNICAL;
     expect(isReviewerChair()).toBe(false);
     overrideGroups = SW_ENGINEER;
     expect(isReviewerChair()).toBe(true);

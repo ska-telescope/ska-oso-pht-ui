@@ -14,17 +14,9 @@ export const PROPOSAL_ACCESS_PERMISSIONS = [
 export const PROPOSAL_ROLE_PI = 'Principal Investigator';
 
 export const OPS_PROPOSAL_ADMIN = 'obs-oauth2role-opsproposaladmin-1-1535351309';
-// export const OPS_PROPOSAL_ADMIN = 'ce3627de-8ec2-4a35-ab1e-300eec6a0a50';
-
 export const OPS_REVIEW_CHAIR = 'obs-oauth2role-opsreviewerchair-11741547065';
-// export const OPS_REVIEW_CHAIR = '2670cf1b-8688-47c7-bf97-674eb7bf0043';
-
 export const OPS_REVIEWER_SCIENCE = 'obs-oauth2role-scireviewer-1635769025';
-// export const SCIENCE_REVIEWER = '05883c37-b723-4b63-9216-0a789a61cb07';
-
-export const TECHNICAL_REVIEWER = 'obs-oauth2role-tecreviewer-1-1994146425';
-// export const TECHNICAL_REVIEWER = '4c45b2ea-1b56-4b2d-b209-8d970b4e39dc';
-
+export const EXT_REVIEWER_TECHNICAL = 'obs-oauth2role-tecreviewer-1-1994146425';
 export const SW_ENGINEER = 'obs-integrationenvs-oauth2role-sweng-11162868063';
 
 const hasOverride = () => APP_OVERRIDE_GROUPS && APP_OVERRIDE_GROUPS.length > 0;
@@ -43,7 +35,8 @@ export const isSoftwareEngineer = () => hasAccess(SW_ENGINEER);
 export const isReviewerAdminOnly = () => !isSoftwareEngineer() && hasAccess(OPS_PROPOSAL_ADMIN);
 export const isReviewerAdmin = () => isSoftwareEngineer() || isReviewerAdminOnly();
 export const isReviewerScience = () => hasAccess(SW_ENGINEER) || hasAccess(OPS_REVIEWER_SCIENCE);
-export const isReviewerTechnical = () => hasAccess(SW_ENGINEER) || hasAccess(TECHNICAL_REVIEWER);
+export const isReviewerTechnical = () =>
+  hasAccess(SW_ENGINEER) || hasAccess(EXT_REVIEWER_TECHNICAL);
 export const isReviewer = () =>
   hasAccess(SW_ENGINEER) || isReviewerScience() || isReviewerTechnical();
 export const isReviewerChair = () => hasAccess(SW_ENGINEER) || hasAccess(OPS_REVIEW_CHAIR);
