@@ -28,6 +28,8 @@ UNRELEASED
 * Fixed: Handling of post proposal response since response changed from id to full proposal
 * Added: PI automatically retrieved from Proposal after creation following services updates
 * Fixed: fixed permission group names for chair and technical reviewer
+* Fixed: get proposal mapping handles incomplete proposal
+* Changed: Use the real endpoint for getUserByEmail indstead of mocked data
 
 5.1.0
 ----------

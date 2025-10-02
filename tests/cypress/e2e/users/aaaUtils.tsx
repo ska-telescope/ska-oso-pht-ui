@@ -19,7 +19,7 @@ export const OPS_PROPOSAL_ADMIN = 'ce3627de-8ec2-4a35-ab1e-300eec6a0a50';
 // export const OPS_REVIEW_CHAIR = 'obs-oauth2role-opsreviewerchair-11741547065';
 export const OPS_REVIEW_CHAIR = '2670cf1b-8688-47c7-bf97-674eb7bf0043';
 
-// export const OPS_REVIEWER_SCIENCE = 'obs-oauth2role-opsreviewersci-1635769025';
+// export const SCIENCE_REVIEWER = 'obs-oauth2role-opsreviewersci-1635769025';
 export const SCIENCE_REVIEWER = '05883c37-b723-4b63-9216-0a789a61cb07';
 
 // export const TECHNICAL_REVIEWER = 'obs-oauth2role-opsreviewertec-1-1994146425';
