@@ -27,7 +27,7 @@ export type InvestigatorBackend = {
 };
 
 export type InvestigatorMSGraph = {
-  user_id: string;
+  id: string;
   givenName: string;
   surname: string;
   email: string;

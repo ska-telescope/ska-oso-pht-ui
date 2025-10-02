@@ -13,7 +13,7 @@ import { MockUserMSGraphList } from './mockUserMSGraph.tsx';
 
 export function mapping(data: InvestigatorMSGraph): Investigator {
   const investigator = {
-    id: data.user_id,
+    id: data.id,
     email: data.email,
     firstName: data.givenName,
     lastName: data.surname,

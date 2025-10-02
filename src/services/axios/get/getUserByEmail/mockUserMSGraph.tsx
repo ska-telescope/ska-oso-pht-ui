@@ -2,7 +2,7 @@ import { InvestigatorMSGraph } from '@utils/types/investigator.tsx';
 
 export const MockUserMSGraphList: InvestigatorMSGraph[] = [
   {
-    user_id: 'ee5d98ec-2100-429a-be9e-bef3a8e355df',
+    id: 'ee5d98ec-2100-429a-be9e-bef3a8e355df',
     givenName: 'Sarah',
     surname: 'Sattar',
     email: 'Sarah.Sattar@community.skao.int',
@@ -10,7 +10,7 @@ export const MockUserMSGraphList: InvestigatorMSGraph[] = [
     jobTitle: null
   },
   {
-    user_id: '733d6b8e-63f1-43e5-b378-abeb2375f28f',
+    id: '733d6b8e-63f1-43e5-b378-abeb2375f28f',
     givenName: 'Trevor',
     surname: 'Swain',
     email: 'Trevor.Swain@community.skao.int',
@@ -18,7 +18,7 @@ export const MockUserMSGraphList: InvestigatorMSGraph[] = [
     jobTitle: 'Dev Team'
   },
   {
-    user_id: 'fd7719af-ee36-4e6b-90a0-ba2137995534',
+    id: 'fd7719af-ee36-4e6b-90a0-ba2137995534',
     givenName: 'Jack',
     surname: 'Tam',
     email: 'Jack.Tam@community.skao.int',
@@ -26,7 +26,7 @@ export const MockUserMSGraphList: InvestigatorMSGraph[] = [
     jobTitle: null
   },
   {
-    user_id: 'a3e51298-97cd-4304-ab80-760ba440b93f',
+    id: 'a3e51298-97cd-4304-ab80-760ba440b93f',
     givenName: 'Chloe',
     surname: 'Gallacher',
     email: 'Chloe.Gallacher@community.skao.int',
@@ -34,7 +34,7 @@ export const MockUserMSGraphList: InvestigatorMSGraph[] = [
     jobTitle: 'Dev Team'
   },
   {
-    user_id: '460d6ddc-7722-4c68-90a3-073055cf2d5a',
+    id: '460d6ddc-7722-4c68-90a3-073055cf2d5a',
     givenName: 'Tonye',
     surname: 'Irabor',
     email: 'Tonye.Irabor@community.skao.int',
@@ -42,7 +42,7 @@ export const MockUserMSGraphList: InvestigatorMSGraph[] = [
     jobTitle: null
   },
   {
-    user_id: 'e45e8733-5cf4-47eb-9e94-a1109367ba16',
+    id: 'e45e8733-5cf4-47eb-9e94-a1109367ba16',
     givenName: 'Meenu',
     surname: 'Mohan',
     email: 'Meenu.Mohan@assoc.skao.int',
