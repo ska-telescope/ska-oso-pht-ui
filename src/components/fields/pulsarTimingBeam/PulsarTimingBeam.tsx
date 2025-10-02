@@ -44,43 +44,6 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
     setSelectedValue(event.target.value);
   };
 
-  const handleSubmit = event => {
-    //TODO: Update
-    console.log('Submit beams clicked');
-    const highest = getProposal()?.targets?.length
-      ? getProposal()?.targets?.reduce((prev, current) =>
-          prev && prev.id > current.id ? prev : current
-        )
-      : null;
-    const highestId = highest ? highest.id : 0;
-
-    const newTarget: Target = {
-      kind: RA_TYPE_ICRS.value,
-      decStr: dec,
-      id: highestId + 1,
-      name: name,
-      b: undefined,
-      l: undefined,
-      raStr: ra,
-      redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift : '',
-      referenceFrame: RA_TYPE_ICRS.label,
-      vel: velType === VELOCITY_TYPE.VELOCITY ? vel : '',
-      velType: velType,
-      velUnit: velUnit,
-      tiedArrayBeams: {
-        beamId: highestId + 1,
-        beamName: beamName,
-        beamCoordinate: {
-          kind: RA_TYPE_ICRS.value,
-          raStr: ra,
-          decStr: dec
-        },
-        stn_weights: [1] // Example value
-      }
-    };
-    setProposal({ ...getProposal(), targets: [...(getProposal().targets ?? []), newTarget] });
-  };
-
   React.useEffect(() => {
     setShowGrid(selectedValue === 'multipleBeams');
   }, [selectedValue]);
@@ -125,21 +88,11 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
       renderCell: params => {
         if (params.row.isAddRow) {
           return (
-            <>
-              <AddButton
-                action={() => setOpenPulsarTimingBeamDialog(true)}
-                testId={'addPulsarTimingBeamButton'}
-                toolTip={'pulsarTimingBeam.toolTip'}
-              />
-              {rows.length > 1 && (
-                <SubmitButton
-                  //TODO: Update action
-                  action={handleSubmit}
-                  testId={'submitPulsarTimingBeamButton'}
-                  toolTip={'pulsarTimingBeam.submitToolTip'}
-                />
-              )}
-            </>
+            <AddButton
+              action={() => setOpenPulsarTimingBeamDialog(true)}
+              testId={'addPulsarTimingBeamButton'}
+              toolTip={'pulsarTimingBeam.toolTip'}
+            />
           );
         }
         return params.value;
@@ -164,8 +117,48 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
       setBeamName('');
       setRA('');
       setDec('');
-      closeDialog();
     }
+
+    //TODO: Set Target with tied array beams
+    const highest = getProposal()?.targets?.length
+      ? getProposal()?.targets?.reduce((prev, current) =>
+          prev && prev.id > current.id ? prev : current
+        )
+      : null;
+    const highestId = highest ? highest.id : 0;
+
+    const newTarget: Target = {
+      kind: RA_TYPE_ICRS.value,
+      decStr: dec,
+      id: highestId + 1,
+      name: name,
+      b: undefined,
+      l: undefined,
+      raStr: ra,
+      redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift : '',
+      referenceFrame: RA_TYPE_ICRS.label,
+      vel: velType === VELOCITY_TYPE.VELOCITY ? vel : '',
+      velType: velType,
+      velUnit: velUnit,
+      tiedArrayBeams: {
+        beamId: highestId + 1,
+        beamName: beamName,
+        beamCoordinate: {
+          kind: RA_TYPE_ICRS.label,
+          referenceFrame: RA_TYPE_ICRS.label,
+          raStr: ra,
+          decStr: dec,
+          pmRa: 3,
+          pmDec: 3,
+          parallax: 3,
+          epoch: 3
+        },
+        stnWeights: [1]
+      }
+    };
+    setProposal({ ...getProposal(), targets: [...(getProposal().targets ?? []), newTarget] });
+    console.log('target ', newTarget);
+    closeDialog();
   };
 
   const resolveBeamNameButton = () => {

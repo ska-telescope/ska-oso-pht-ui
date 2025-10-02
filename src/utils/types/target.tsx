@@ -72,8 +72,8 @@ export type TargetBackend = {
 
 /************************************************************************************
  *  NOTE : velType is currently mapped as follows:
-    "0": "Velocity",
-    "1": "Redshift"
+ "0": "Velocity",
+ "1": "Redshift"
  ***********************************************************************************/
 
 /************************************************************************************
@@ -146,7 +146,7 @@ type Target = {
     beamId: number;
     beamName: string;
     beamCoordinate: ReferenceCoordinateICRS | ReferenceCoordinateGalactic;
-    stn_weights: [number];
+    stnWeights: number[];
   };
   /*------- end of tied array beams properties --------------------- */
 };
