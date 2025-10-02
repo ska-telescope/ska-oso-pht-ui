@@ -2,7 +2,7 @@
 
 const OPS_PROPOSAL_ADMIN = 'obs-oauth2role-opsproposaladmin-1-1535351309';
 const OPS_REVIEW_CHAIR = 'obs-oauth2role-opsreviewerchair-11741547065';
-const SCIENCE_REVIEWER = 'obs-oauth2role-opsreviewersci-1635769025';
+const OPS_REVIEWER_SCIENCE = 'obs-oauth2role-opsreviewersci-1635769025';
 const TECHNICAL_REVIEWER = 'obs-oauth2role-opsreviewertec-1-1994146425';
 
 export const standardUser = {
@@ -13,7 +13,7 @@ export const standardUser = {
 
 export const reviewerScience = {
   name: 'Cypress Science Reviewer',
-  group: SCIENCE_REVIEWER,
+  group: OPS_REVIEWER_SCIENCE,
   token: 'science-token'
 };
 
