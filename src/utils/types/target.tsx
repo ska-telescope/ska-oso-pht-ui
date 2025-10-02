@@ -92,6 +92,27 @@ export type PointingPatternParams = {
   offsetYArcsec: number;
 };
 
+export type ReferenceCoordinateGalactic = {
+  kind: string;
+  l: number; // replaces Galactic longitude
+  b: number; // replaces Galactic latitude
+  pmL?: number;
+  pmB?: number;
+  epoch?: number;
+  parallax?: number;
+};
+
+export type ReferenceCoordinateICRS = {
+  kind: string;
+  referenceFrame: string;
+  raStr: string;
+  decStr: string;
+  pmRa?: number;
+  pmDec?: number;
+  parallax?: number;
+  epoch?: number;
+};
+
 type Target = {
   id: number;
   name: string;
@@ -124,8 +145,7 @@ type Target = {
   tiedArrayBeams?: {
     beamId: number;
     beamName: string;
-    //TODO: Resolve
-    // beamCoordinate: ReferenceCoordinateICRS | ReferenceCoordinateGalactic;
+    beamCoordinate: ReferenceCoordinateICRS | ReferenceCoordinateGalactic;
     stn_weights: [number];
   };
   /*------- end of tied array beams properties --------------------- */
