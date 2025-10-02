@@ -5,10 +5,9 @@ import { LAB_POSITION, RA_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
 import AddButton from '@components/button/Add/Add.tsx';
 import AlertDialog from '@components/alerts/alertDialog/AlertDialog.tsx';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import Target from '@utils/types/target.tsx';
+import Target, { TiedArrayBeam } from '@utils/types/target.tsx';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates.tsx';
 import ResolveButton from '@components/button/Resolve/Resolve.tsx';
-import SubmitButton from '@components/button/Submit/Submit.tsx';
 import Proposal from '@utils/types/proposal.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import SkyDirection1 from '@/components/fields/skyDirection/SkyDirection1';
@@ -26,18 +25,12 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
   const [openPulsarTimingBeamDialog, setOpenPulsarTimingBeamDialog] = React.useState(false);
   const [nameFieldError, setNameFieldError] = React.useState('');
   const [beamName, setBeamName] = React.useState('');
-  const [name, setName] = React.useState('');
   const [ra, setRA] = React.useState('');
   const [dec, setDec] = React.useState('');
-  const [velType, setVelType] = React.useState(0);
-  const [vel, setVel] = React.useState('');
-  const [velUnit, setVelUnit] = React.useState(0);
-  const [redshift, setRedshift] = React.useState('');
   const [rows, setRows] = React.useState([{ id: 1, isAddRow: true }]);
   const LAB_WIDTH = 5;
 
   const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const wrapper = (children: any) => <Box sx={{ width: '100%' }}>{children}</Box>;
 
   const handleClick = event => {
@@ -127,38 +120,20 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
       : null;
     const highestId = highest ? highest.id : 0;
 
-    const newTarget: Target = {
-      kind: RA_TYPE_ICRS.value,
-      decStr: dec,
-      id: highestId + 1,
-      name: name,
-      b: undefined,
-      l: undefined,
-      raStr: ra,
-      redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift : '',
-      referenceFrame: RA_TYPE_ICRS.label,
-      vel: velType === VELOCITY_TYPE.VELOCITY ? vel : '',
-      velType: velType,
-      velUnit: velUnit,
-      tiedArrayBeams: {
-        beamId: highestId + 1,
-        beamName: beamName,
-        beamCoordinate: {
-          kind: RA_TYPE_ICRS.label,
-          referenceFrame: RA_TYPE_ICRS.label,
-          raStr: ra,
-          decStr: dec,
-          pmRa: 3,
-          pmDec: 3,
-          parallax: 3,
-          epoch: 3
-        },
-        stnWeights: [1]
-      }
+    const newBeam: TiedArrayBeam = {
+      beamId: highestId + 1,
+      beamName: beamName,
+      beamCoordinate: {
+        kind: RA_TYPE_ICRS.label,
+        referenceFrame: RA_TYPE_ICRS.label,
+        raStr: ra,
+        decStr: dec
+      },
+      stnWeights: [1]
     };
-    // setProposal({ ...getProposal(), targets: [...(getProposal().targets ?? []), newTarget] });
     //TODO: Instead of setProposal set new TiedArrayBeams?
-    console.log('target ', newTarget);
+    console.log('beam ', newBeam);
+    setTarget && setTarget({ ...target, tiedArrayBeams: newBeam });
     closeDialog();
   };
 
@@ -166,17 +141,8 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
     const processCoordinatesResults = (response: any) => {
       if (response && !response.error) {
         const values = response.split(' ');
-        // const redshift =
-        //   values?.length > 2 && values[2] !== 'null'
-        //     ? Number(values[2])
-        //       .toExponential(2)
-        //       .toString()
-        //     : '';
-        // const vel = values?.length > 3 && values[3] !== 'null' ? values[3] : '';
         setDec(values[0]);
         setRA(values[1]);
-        // setRedshift(redshift);
-        // setVel(vel);
         setNameFieldError('');
       } else {
         setNameFieldError(t('resolve.error.' + response.error));

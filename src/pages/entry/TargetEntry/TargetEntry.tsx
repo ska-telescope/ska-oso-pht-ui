@@ -87,6 +87,15 @@ export default function TargetEntry({
     }
   };
 
+  const setBeamData = () => {
+    const tiedArrayBeams = target?.tiedArrayBeams;
+    console.log('Accessed newBeam data:', tiedArrayBeams);
+    // setName(inValue);
+    // if (setTarget !== undefined) {
+    //   setTarget({ ...target, name: inValue });
+    // }
+  };
+
   const setTheRedshift = (inValue: string) => {
     setRedshift(inValue);
     if (setTarget !== undefined) {
