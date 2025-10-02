@@ -1,7 +1,7 @@
 import React from 'react';
 import { Radio, FormControlLabel, Grid, Box } from '@mui/material';
 import { DataGrid, TextEntry } from '@ska-telescope/ska-gui-components';
-import { LAB_POSITION, RA_TYPE_ICRS } from '@utils/constants.ts';
+import { LAB_POSITION, RA_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
 import AddButton from '@components/button/Add/Add.tsx';
 import AlertDialog from '@components/alerts/alertDialog/AlertDialog.tsx';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -28,12 +28,56 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
   const [beamName, setBeamName] = React.useState('');
   const [ra, setRA] = React.useState('');
   const [dec, setDec] = React.useState('');
+  const [velType, setVelType] = React.useState(0);
+  const [vel, setVel] = React.useState('');
+  const [velUnit, setVelUnit] = React.useState(0);
+  const [redshift, setRedshift] = React.useState('');
   const [rows, setRows] = React.useState([{ id: 1, isAddRow: true }]);
   const LAB_WIDTH = 5;
+
+  const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const wrapper = (children: any) => <Box sx={{ width: '100%' }}>{children}</Box>;
 
   const handleClick = event => {
     setSelectedValue(event.target.value);
+  };
+
+  const handleSubmit = event => {
+    //TODO: Update
+    console.log('Submit beams clicked')
+     const highest = getProposal()?.targets?.length
+        ? getProposal()?.targets?.reduce((prev, current) =>
+          prev && prev.id > current.id ? prev : current
+        )
+        : null;
+      const highestId = highest ? highest.id : 0;
+
+    const newTarget: Target = {
+      kind: RA_TYPE_ICRS.value,
+      decStr: dec,
+      id: highestId + 1,
+      name: name,
+      b: undefined,
+      l: undefined,
+      raStr: ra,
+      redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift : '',
+      referenceFrame: RA_TYPE_ICRS.label,
+      vel: velType === VELOCITY_TYPE.VELOCITY ? vel : '',
+      velType: velType,
+      velUnit: velUnit,
+      tiedArrayBeams: {
+        beamId: highestId + 1,
+        beamName: beamName,
+        beamCoordinate: {
+          kind: RA_TYPE_ICRS.value,
+          raStr: ra,
+          decStr: dec,
+        },
+        stn_weights: [1], // Example value
+      },
+    };
+      setProposal({ ...getProposal(), targets: [...(getProposal().targets ?? []), newTarget] });
   };
 
   React.useEffect(() => {
@@ -88,8 +132,8 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
               />
               {rows.length > 1 && (
                 <SubmitButton
-                  //TODO: Update text and action
-                  action={() => console.log('Submit beams clicked')}
+                  //TODO: Update action
+                  action={handleSubmit}
                   testId={'submitPulsarTimingBeamButton'}
                   toolTip={'pulsarTimingBeam.submitToolTip'}
                 />
