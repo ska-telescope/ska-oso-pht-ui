@@ -43,15 +43,15 @@ describe('Delegate Editing Rights', () => {
   it('Delegate editing rights to a co-investigator', { jiraKey: 'XTP-89609' }, () => {
     entry('email', 'Trevor.Swain@community.skao.int');
     clickUserSearch();
-    // cy.wait('@mockgetUserByEmailAPI');
-    // verifyUserFoundAlertFooter();
+    // cy.wait('@mockgetUserByEmailAPI'); // TODO see if this is needed
+    verifyUserFoundAlertFooter();
     clickPICheckbox();
     clickSendInviteButton();
     cy.wait('@mockInviteUserByEmail');
-    // verifyUserInvitedAlertFooter();
+    verifyUserInvitedAlertFooter();
     clickManageTeamMemberRights();
     clickSubmitRights();
     clickDialogConfirm();
-    // verifyTeamMemberAccessUpdatedAlertFooter();
+    verifyTeamMemberAccessUpdatedAlertFooter();
   });
 });
