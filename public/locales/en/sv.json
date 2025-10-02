@@ -192,39 +192,5 @@
       "empty": "NO Science IdeaS AVAILABLE"
     },
     "noObservations": "NO OBSERVATION SETUP IS ASSOCIATED WITH THIS SCIENCE IDEA"
-  },
-  "pulsarTimingBeam": {
-    "label": "Beam(s)",
-    "title": "Add Pulsar Timing Beam",
-    "submit": "Submit Beam(s)",
-    "help": "Default is No Beam, to add a pulsar timing beam(s), click the checkbox",
-    "toolTip": "Click to add Pulsar Timing Beam",
-    "add": "Add Beam",
-    "noBeam": {
-      "label": "No Beam",
-      "toolTip": "No Beam selected."
-    },
-    "multipleBeams": {
-      "label": "Multiple Beams",
-      "toolTip": "Multiple Beams selected."
-    }
-  },
-  "fieldPattern": {
-    "label": "Type",
-    "toolTip": "Field Pattern selected.",
-    "help": "Default value is Pointing Centres. Field Pattern selection currently unavailable."
-  },
-  "actions": {
-    "label": "Actions"
-  },
-  "resolve": {
-    "label": "Resolve",
-    "toolTip": "Query SIMBAD and NED",
-    "error": {
-      "mapping": "Unable to map results from API.",
-      "name": "Unable to resolve provided name",
-      "Request failed with status code 500": "Unable to resolve provided name",
-      "Request failed with status code 404": "Object not found in SIMBAD or NED"
-    }
   }
 }

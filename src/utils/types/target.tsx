@@ -124,6 +124,9 @@ type Target = {
   tiedArrayBeams?: {
     beamId: number;
     beamName: string;
+    //TODO: Resolve
+    // beamCoordinate: ReferenceCoordinateICRS | ReferenceCoordinateGalactic;
+    stn_weights: [number];
   };
   /*------- end of tied array beams properties --------------------- */
 };

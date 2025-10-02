@@ -88,7 +88,7 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
               {rows.length > 1 && (
                 <AddButton
                   //TODO: Update text and action
-                  action={() => console.log('Second AddButton clicked')}
+                  action={''}
                   title={'pulsarTimingBeam.submit'}
                   testId={'secondAddButton'}
                   toolTip={'Second AddButton'}
