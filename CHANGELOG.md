@@ -30,6 +30,7 @@ UNRELEASED
 * Fixed: fixed permission group names for chair and technical reviewer
 * Fixed: get proposal mapping handles incomplete proposal
 * Changed: Use the real endpoint for getUserByEmail indstead of mocked data
+* Added: type InvestigatorMSGraph
 
 5.1.0
 ----------
