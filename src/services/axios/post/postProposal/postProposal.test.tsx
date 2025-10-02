@@ -1,16 +1,17 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import { ProposalBackend } from '@utils/types/proposal.tsx';
+import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import { PROPOSAL_STATUS } from '@utils/constants.ts';
 import * as CONSTANTS from '@utils/constants.ts';
+import { mapping } from '../../get/getProposal/getProposal.tsx';
 import PostProposal, { mappingPostProposal, mockPostProposal } from './postProposal.tsx';
 import { MockProposalFrontend } from './mockProposalFrontend.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
 
 describe('Helper Functions', () => {
-  test('mockPostProposal returns mock id', () => {
+  test('mockPostProposal returns mock proposal', () => {
     const result = mockPostProposal();
-    expect(result).to.equal('PROPOSAL-ID-001');
+    expect(result).to.deep.equal(mapping(MockProposalBackend));
   });
 
   test('mappingPostProposal returns mapped proposal from frontend to backend format', () => {
@@ -50,25 +51,25 @@ describe('PostProposal Service', () => {
     };
   });
 
-  test('returns mock data id when USE_LOCAL_DATA is true', async () => {
+  test('returns mock proposal when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
     const result = await PostProposal(
       mockedAuthClient,
       MockProposalFrontend,
       PROPOSAL_STATUS.DRAFT
     );
-    expect(result).toEqual('PROPOSAL-ID-001');
+    expect(result).to.deep.equal(mapping(MockProposalBackend));
   });
 
-  test('returns data id from API when USE_LOCAL_DATA is false', async () => {
+  test('returns proposal from API when USE_LOCAL_DATA is false', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-    mockedAuthClient.post.mockResolvedValue({ data: MockProposalBackend.prsl_id });
+    mockedAuthClient.post.mockResolvedValue({ data: MockProposalBackend });
     const result = (await PostProposal(
       mockedAuthClient,
       MockProposalFrontend,
       PROPOSAL_STATUS.DRAFT
-    )) as string;
-    expect(result).to.deep.equal(MockProposalBackend.prsl_id);
+    )) as Proposal;
+    expect(result).to.deep.equal(mapping(MockProposalBackend));
   });
 
   test('returns error message on API failure', async () => {

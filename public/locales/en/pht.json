@@ -377,6 +377,11 @@
       "short": "Edit",
       "help": "Check to indicate that this individual can edit and view the proposal."
     },
+    "update": {
+      "label": "Update rights",
+      "short": "Update",
+      "help": "Check to indicate that this individual can update and view the proposal."
+    },
     "view": {
       "label": "View rights",
       "short": "View",

@@ -7,6 +7,8 @@ import {
 } from '@utils/constants.ts';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import { mapping } from '../../get/getProposal/getProposal.tsx';
+import { MockProposalBackend } from './mockProposalBackend.tsx';
 
 export function mappingPostProposal(
   proposal: Proposal,
@@ -27,6 +29,7 @@ export function mappingPostProposal(
     prsl_id: proposal?.id?.toString(),
     status: status as string,
     submitted_by: '',
+    submitted_on: null,
     investigator_refs: [],
     cycle: proposal.cycle,
     info: {
@@ -54,14 +57,14 @@ export function mappingPostProposal(
 }
 
 export function mockPostProposal() {
-  return 'PROPOSAL-ID-001';
+  return mapping(MockProposalBackend);
 }
 
 async function PostProposal(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
   proposal: Proposal,
   status?: string
-) {
+): Promise<Proposal | { error: string }> {
   if (USE_LOCAL_DATA) {
     return mockPostProposal();
   }
@@ -74,7 +77,7 @@ async function PostProposal(
       `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
       convertedProposal
     );
-    return !result || !result?.data ? { error: 'error.API_UNKNOWN_ERROR' } : result.data;
+    return !result || !result?.data ? { error: 'error.API_UNKNOWN_ERROR' } : mapping(result.data);
   } catch (e) {
     if (e instanceof Error) {
       return { error: e.message };

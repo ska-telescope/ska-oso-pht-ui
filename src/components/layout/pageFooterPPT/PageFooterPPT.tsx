@@ -48,22 +48,20 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     const response = await PostProposal(
       authClient,
       {
-        ...getProposal(), // TODO add PI here
+        ...getProposal(),
         cycle: osdCycleId
       },
       PROPOSAL_STATUS.DRAFT
     );
 
-    if (response && !response.error) {
-      notifySuccess(t('addProposal.success') + response);
+    if (response && !('error' in response)) {
+      notifySuccess(t('addProposal.success') + response.id);
       setProposal({
-        ...getProposal(),
-        id: response,
-        cycle: osdCycleId
+        ...(response as Proposal)
       });
       // Create a new access entry for the PI.  Saves doing the endpoint
       const newAcc: Partial<ProposalAccess> = {
-        prslId: response,
+        prslId: response.id,
         role: PROPOSAL_ROLE_PI,
         permissions: PROPOSAL_ACCESS_PERMISSIONS
       };
@@ -76,7 +74,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
 
       navigate(NAV[1]);
     } else {
-      notifyError(response.error);
+      notifyError((response as { error: string }).error);
     }
   };
 
