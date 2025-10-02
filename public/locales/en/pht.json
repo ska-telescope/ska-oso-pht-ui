@@ -1349,9 +1349,9 @@
   "pulsarTimingBeam": {
     "label": "Beam(s)",
     "title": "Add Pulsar Timing Beam",
-    "submit": "Submit Beam(s)",
     "help": "Default is No Beam, to add a pulsar timing beam(s), click the checkbox",
     "toolTip": "Click to add Pulsar Timing Beam",
+    "submitToolTip": "Click to submit Pulsar Timing Beam(s)",
     "add": "Add Beam",
     "noBeam": {
       "label": "No Beam",

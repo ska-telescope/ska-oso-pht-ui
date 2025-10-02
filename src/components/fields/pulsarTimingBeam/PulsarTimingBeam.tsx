@@ -8,6 +8,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import Target from '@utils/types/target.tsx';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates.tsx';
 import ResolveButton from '@components/button/Resolve/Resolve.tsx';
+import SubmitButton from '@components/button/Submit/Submit.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import SkyDirection1 from '@/components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
@@ -86,12 +87,11 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
                 toolTip={'pulsarTimingBeam.toolTip'}
               />
               {rows.length > 1 && (
-                <AddButton
+                <SubmitButton
                   //TODO: Update text and action
-                  action={''}
-                  title={'pulsarTimingBeam.submit'}
-                  testId={'secondAddButton'}
-                  toolTip={'Second AddButton'}
+                  action={() => console.log('Submit beams clicked')}
+                  testId={'submitPulsarTimingBeamButton'}
+                  toolTip={'pulsarTimingBeam.submitToolTip'}
                 />
               )}
             </>
