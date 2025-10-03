@@ -89,22 +89,6 @@ export default function TargetEntry({
     }
   };
 
-  // const setBeamData = (allBeams: any[]) => {
-  //   console.log('Accessed allBeams data:', allBeams);
-  //
-  //   if (allBeams.length > 0) {
-  //     const latestBeam = allBeams[allBeams.length - 1]; // Get the most recently added beam
-  //     setBeamName(latestBeam.beamName);
-  //     setBeamRA(latestBeam.beamCoordinate.raStr);
-  //     setBeamDec(latestBeam.beamCoordinate.decStr);
-  //   }
-  //
-  //   if (setTarget) {
-  //     setTarget({ ...target, tiedArrayBeams: allBeams });
-  //     setBeamArrayData(allBeams)
-  //   }
-  // };
-
   const setBeamData = (allBeams: any[]) => {
     console.log('Accessed allBeams data:', allBeams);
 
@@ -116,15 +100,10 @@ export default function TargetEntry({
     }
 
     if (setTarget) {
-      const updatedTiedArrayBeams: TiedArrayBeams = {
-        pstBeams: allBeams,
-        pssBeams: [],
-        vlbiBeams: []
-      };
-
-      setTarget({ ...target, tiedArrayBeams: updatedTiedArrayBeams });
-      setBeamArrayData(allBeams);
+      setTarget({ ...target, tiedArrayBeams: allBeams });
     }
+    console.log('allBeams data ', allBeams);
+    setBeamArrayData(allBeams);
   };
 
   const setTheRedshift = (inValue: string) => {
@@ -210,6 +189,8 @@ export default function TargetEntry({
         : null;
       const highestId = highest ? highest.id : 0;
 
+      console.log('beam array data ', beamArrayData);
+
       const newTarget: Target = {
         kind: RA_TYPE_ICRS.value,
         decStr: dec,
@@ -223,13 +204,7 @@ export default function TargetEntry({
         vel: velType === VELOCITY_TYPE.VELOCITY ? vel : '',
         velType: velType,
         velUnit: velUnit,
-        tiedArrayBeams: Array.isArray(beamArrayData)
-          ? beamArrayData.map(beam => ({
-              pstBeams: Array.isArray(beam?.pstBeams) ? beam.pstBeams : [],
-              pssBeams: Array.isArray(beam?.pssBeams) ? beam.pssBeams : [],
-              vlbiBeams: Array.isArray(beam?.vlbiBeams) ? beam.vlbiBeams : []
-            }))
-          : []
+        tiedArrayBeams: beamArrayData
       };
 
       setProposal({ ...getProposal(), targets: [...(getProposal().targets ?? []), newTarget] });
