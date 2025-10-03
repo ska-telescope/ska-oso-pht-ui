@@ -49,7 +49,7 @@ export default function GridTargets({
       width: 160,
       disableClickEventBubbling: true
     },
-    { field: 'pstBeam', headerName: t('pstBeam.label'), flex: 2 }
+    { field: 'beamName', headerName: t('pstBeam.label'), flex: 2 }
   ];
 
   const actionColumns = [

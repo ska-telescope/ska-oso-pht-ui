@@ -18,7 +18,11 @@ interface PulsarTimingBeamFieldProps {
   target?: Target;
   onDialogResponse?: Function;
 }
-export default function PulsarTimingBeamField({ setTarget, target, onDialogResponse }: PulsarTimingBeamFieldProps) {
+export default function PulsarTimingBeamField({
+  setTarget,
+  target,
+  onDialogResponse
+}: PulsarTimingBeamFieldProps) {
   const { t } = useScopedTranslation();
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [selectedValue, setSelectedValue] = React.useState('noBeam');
@@ -42,6 +46,11 @@ export default function PulsarTimingBeamField({ setTarget, target, onDialogRespo
     setShowGrid(selectedValue === 'multipleBeams');
   }, [selectedValue]);
 
+  // Log the updated target using useEffect
+  React.useEffect(() => {
+    console.log('Updated target in PulsarTimingBeamField:', target);
+  }, [target]);
+
   const setTheName = (inValue: string) => {
     setBeamName(inValue);
     if (setTarget !== undefined) {
@@ -60,6 +69,7 @@ export default function PulsarTimingBeamField({ setTarget, target, onDialogRespo
     setRA(inValue);
     if (setTarget !== undefined) {
       setTarget({ ...target, raStr: inValue });
+      // setTarget({ ...(target || {}), raStr: inValue });
     }
   };
 
@@ -72,7 +82,7 @@ export default function PulsarTimingBeamField({ setTarget, target, onDialogRespo
   });
 
   const columns = [
-    { field: 'name', headerName: t('name.label'), flex: 1.5},
+    { field: 'name', headerName: t('name.label'), flex: 1.5 },
     { field: 'raStr', headerName: t('skyDirection.short.1.' + RA_TYPE_ICRS.value), width: 120 },
     { field: 'decStr', headerName: t('skyDirection.short.2.' + RA_TYPE_ICRS.value), width: 120 },
     {
@@ -133,7 +143,7 @@ export default function PulsarTimingBeamField({ setTarget, target, onDialogRespo
     };
     //TODO: Instead of setProposal set new TiedArrayBeams?
     console.log('beam ', newBeam);
-    setTarget && setTarget({ ...target, tiedArrayBeams: newBeam });
+    onDialogResponse(newBeam);
     closeDialog();
   };
 

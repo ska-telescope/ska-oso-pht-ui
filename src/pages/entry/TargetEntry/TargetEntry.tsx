@@ -68,79 +68,81 @@ export default function TargetEntry({
 
   const setTheName = (inValue: string) => {
     setName(inValue);
-    if (setTarget !== undefined) {
+    if (setTarget) {
       setTarget({ ...target, name: inValue });
     }
   };
 
   const setTheDec = (inValue: string) => {
     setDec(inValue);
-    if (setTarget !== undefined) {
+    if (setTarget) {
       setTarget({ ...target, decStr: inValue });
     }
   };
 
   const setTheRA = (inValue: string) => {
     setRA(inValue);
-    if (setTarget !== undefined) {
+    if (setTarget) {
       setTarget({ ...target, raStr: inValue });
     }
   };
 
-  const setBeamData = () => {
-    const tiedArrayBeams = target?.tiedArrayBeams;
-    console.log('Accessed newBeam data:', tiedArrayBeams);
-    // setName(inValue);
-    // if (setTarget !== undefined) {
-    //   setTarget({ ...target, name: inValue });
-    // }
+  const setBeamData = (updatedBeamData: any) => {
+    console.log('Accessed newBeam data:', updatedBeamData);
+    setBeamName(updatedBeamData.beamName);
+    setBeamRA(updatedBeamData.beamCoordinate.raStr);
+    setBeamDec(updatedBeamData.beamCoordinate.decStr);
+
+    if (setTarget) {
+      setTarget({ ...target, tiedArrayBeams: updatedBeamData });
+    }
   };
 
   const setTheRedshift = (inValue: string) => {
     setRedshift(inValue);
-    if (setTarget !== undefined) {
+    if (setTarget) {
       setTarget({ ...target, redshift: inValue });
     }
   };
 
   const setTheReferenceFrame = (inValue: React.SetStateAction<number>) => {
     setReferenceFrame(inValue);
-    if (setTarget !== undefined) {
+    if (setTarget) {
       setTarget({ ...target, kind: inValue });
     }
   };
 
   const setTheVel = (inValue: string) => {
     setVel(inValue);
-    if (setTarget !== undefined) {
+    if (setTarget) {
       setTarget({ ...target, vel: inValue });
     }
   };
 
   const setTheVelType = (inValue: number) => {
     setVelType(inValue);
-    if (setTarget !== undefined) {
+    if (setTarget) {
       setTarget({ ...target, velType: inValue });
     }
   };
 
   const setTheVelUnit = (inValue: number) => {
     setVelUnit(inValue);
-    if (setTarget !== undefined) {
+    if (setTarget) {
       setTarget({ ...target, velUnit: inValue });
     }
   };
 
   const targetIn = (target: Target) => {
-    setId(target?.id);
-    setName(target?.name);
-    setRA(target?.raStr as string);
-    setDec(target?.decStr as string);
-    setVelType(target?.velType);
-    setVel(target?.vel);
-    setVelUnit(target?.velUnit);
-    setRedshift(target?.redshift);
-    setReferenceFrame(target?.kind);
+    setId(target?.id ?? 0);
+    setName(target?.name ?? '');
+    setRA(target?.raStr ?? '');
+    setDec(target?.decStr ?? '');
+    setVelType(target?.velType ?? 0);
+    setVel(target?.vel ?? '');
+    setVelUnit(target?.velUnit ?? 0);
+    setRedshift(target?.redshift ?? '');
+    setReferenceFrame(target?.kind ?? 0);
   };
 
   React.useEffect(() => {
@@ -196,7 +198,7 @@ export default function TargetEntry({
           beamId: highestId + 1,
           beamName: beamName,
           beamCoordinate: {
-            kind: RA_TYPE_ICRS.label,
+            kind: RA_TYPE_ICRS.value.toString(),
             referenceFrame: RA_TYPE_ICRS.label,
             raStr: beamRA,
             decStr: beamDec
@@ -296,8 +298,9 @@ export default function TargetEntry({
   };
 
   const pulsarTimingBeamField = () => {
-    return wrapper(<PulsarTimingBeamField setTarget={setTarget} target={target} onDialogResponse={setBeamData}
-    />);
+    return wrapper(
+      <PulsarTimingBeamField setTarget={setTarget} target={target} onDialogResponse={setBeamData} />
+    );
   };
   const nameField = () =>
     wrapper(
