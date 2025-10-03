@@ -1,14 +1,13 @@
 import React from 'react';
 import { Radio, FormControlLabel, Grid, Box } from '@mui/material';
 import { DataGrid, TextEntry } from '@ska-telescope/ska-gui-components';
-import { LAB_POSITION, RA_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
+import { LAB_POSITION, RA_TYPE_ICRS } from '@utils/constants.ts';
 import AddButton from '@components/button/Add/Add.tsx';
 import AlertDialog from '@components/alerts/alertDialog/AlertDialog.tsx';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import Target, { TiedArrayBeam } from '@utils/types/target.tsx';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates.tsx';
 import ResolveButton from '@components/button/Resolve/Resolve.tsx';
-import Proposal from '@utils/types/proposal.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import SkyDirection1 from '@/components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
@@ -24,7 +23,7 @@ export default function PulsarTimingBeamField({
   onDialogResponse
 }: PulsarTimingBeamFieldProps) {
   const { t } = useScopedTranslation();
-  const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
+  const { helpComponent } = storageObject.useStore();
   const [selectedValue, setSelectedValue] = React.useState('noBeam');
   const [showGrid, setShowGrid] = React.useState(false);
   const [openPulsarTimingBeamDialog, setOpenPulsarTimingBeamDialog] = React.useState(false);
@@ -35,7 +34,6 @@ export default function PulsarTimingBeamField({
   const [rows, setRows] = React.useState([{ id: 1, isAddRow: true }]);
   const LAB_WIDTH = 5;
 
-  const getProposal = () => application.content2 as Proposal;
   const wrapper = (children: any) => <Box sx={{ width: '100%' }}>{children}</Box>;
 
   const handleClick = event => {
@@ -101,47 +99,6 @@ export default function PulsarTimingBeamField({
     setOpenPulsarTimingBeamDialog(false);
   };
 
-  // const addPulsarTimingBeamsConfirmed = () => {
-  //   if (beamName && ra && dec) {
-  //     const newRow = {
-  //       id: rows.length + 1, // Unique ID for the new row
-  //       name: beamName,
-  //       raStr: ra,
-  //       decStr: dec,
-  //       actions: null
-  //     };
-  //     setRows(prevRows => [...prevRows, newRow]);
-  //     setBeamName('');
-  //     setRA('');
-  //     setDec('');
-  //   }
-  //
-  //   //TODO: Set Target with tied array beams
-  //   const highest = getProposal()?.targets?.length
-  //     ? getProposal()?.targets?.reduce((prev, current) =>
-  //         prev && prev.id > current.id ? prev : current
-  //       )
-  //     : null;
-  //   const highestId = highest ? highest.id : 0;
-  //
-  //   const newBeam: TiedArrayBeam = {
-  //     beamId: highestId + 1,
-  //     beamName: beamName,
-  //     beamCoordinate: {
-  //       kind: RA_TYPE_ICRS.value.toString(),
-  //       referenceFrame: RA_TYPE_ICRS.label,
-  //       raStr: ra,
-  //       decStr: dec
-  //     },
-  //     stnWeights: [1]
-  //   };
-  //   console.log('beam ', newBeam);
-  //   if (onDialogResponse) {
-  //     onDialogResponse(newBeam);
-  //   }
-  //   closeDialog();
-  // };
-
   const addPulsarTimingBeamsConfirmed = () => {
     if (beamName && ra && dec) {
       const newRow = {
@@ -151,36 +108,30 @@ export default function PulsarTimingBeamField({
         decStr: dec,
         actions: null
       };
-      setRows(prevRows => [...prevRows, { id: newRow.id, isAddRow: false }]);
+      setRows(prevRows => [...prevRows, newRow]);
       setBeamName('');
       setRA('');
       setDec('');
     }
 
-    const highest = getProposal()?.targets?.length
-      ? getProposal()?.targets?.reduce((prev, current) =>
-          prev && prev.id > current.id ? prev : current
-        )
-      : null;
-    const highestId = highest ? highest.id : 0;
-
     const newBeam: TiedArrayBeam = {
-      beamId: highestId + 1,
+      beamId: rows.length,
       beamName: beamName,
       beamCoordinate: {
-        kind: RA_TYPE_ICRS.value.toString(),
+        kind: RA_TYPE_ICRS.label,
         referenceFrame: RA_TYPE_ICRS.label,
         raStr: ra,
         decStr: dec
       },
       stnWeights: [1]
     };
-    console.log('beam ', newBeam);
+    console.log('beam created ', newBeam);
     if (onDialogResponse) {
       onDialogResponse(newBeam);
     }
     closeDialog();
   };
+
   const resolveBeamNameButton = () => {
     const processCoordinatesResults = (response: any) => {
       if (response && !response.error) {
