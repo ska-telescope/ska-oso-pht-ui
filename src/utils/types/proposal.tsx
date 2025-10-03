@@ -24,7 +24,7 @@ export type ProposalBackend = {
   investigator_refs?: string[];
   metadata?: Metadata;
   cycle: string | null;
-  info: {
+  proposal_info: {
     title: string;
     proposal_type: {
       main_type: string;
@@ -32,9 +32,11 @@ export type ProposalBackend = {
     };
     abstract: string | null;
     science_category?: string;
+    investigators: InvestigatorBackend[] | null;
+  };
+  observation_info: {
     targets: TargetBackend[];
     documents: DocumentBackend[] | null;
-    investigators: InvestigatorBackend[] | null;
     observation_sets: ObservationSetBackend[] | null;
     data_product_sdps: DataProductSDPsBackend[] | null;
     data_product_src_nets: DataProductSRCNetBackend[] | null;

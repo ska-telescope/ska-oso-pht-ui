@@ -67,20 +67,22 @@ export function mappingList(inRec: ProposalBackend[]): Proposal[] {
       createdOn: tmp.metadata?.created_on as string,
       createdBy: tmp.metadata?.created_by as string,
       version: tmp.metadata?.version as number,
-      proposalType: PROJECTS.find(p => p.mapping === tmp.info?.proposal_type.main_type)
+      proposalType: PROJECTS.find(p => p.mapping === tmp.proposal_info?.proposal_type.main_type)
         ?.id as number,
-      proposalSubType: tmp.info?.proposal_type?.attributes
-        ? getSubType(tmp.info?.proposal_type)
+      proposalSubType: tmp.proposal_info?.proposal_type?.attributes
+        ? getSubType(tmp.proposal_info?.proposal_type)
         : [],
-      scienceCategory: tmp.info?.science_category
+      scienceCategory: tmp.proposal_info?.science_category
         ? (getScienceCategory(
-            tmp?.info?.science_category !== null ? tmp.info.science_category : ''
+            tmp?.proposal_info?.science_category !== null ? tmp.proposal_info.science_category : ''
           ) as number)
         : ((null as unknown) as number),
-      title: tmp.info?.title,
+      title: tmp.proposal_info?.title,
       cycle: tmp?.cycle,
-      investigators: tmp.info?.investigators ? getInvestigators(tmp.info.investigators) : [],
-      abstract: tmp.info?.abstract ?? undefined,
+      investigators: tmp.proposal_info?.investigators
+        ? getInvestigators(tmp.proposal_info.investigators)
+        : [],
+      abstract: tmp.proposal_info?.abstract ?? undefined,
       sciencePDF: null,
       technicalPDF: null
     };

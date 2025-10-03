@@ -67,7 +67,9 @@ const getInvestigators = (inValue: InvestigatorBackend[] | null) => {
       email: inValue[i]?.email,
       affiliation: inValue[i].organization as string,
       phdThesis: inValue[i].for_phd as boolean,
-      pi: inValue[i].principal_investigator as boolean
+      pi: inValue[i].principal_investigator as boolean,
+      officeLocation: inValue[i].officeLocation,
+      jobTitle: inValue[i].jobTitle
     });
   }
   return investigators;
@@ -572,23 +574,24 @@ export function mapping(inRec: ProposalBackend): Proposal {
   let technicalPDF: DocumentPDF;
 
   sciencePDF = (getPDF(
-    inRec?.info?.documents,
+    inRec?.observation_info?.documents,
     PDF_NAME_PREFIXES.SCIENCE + inRec.prsl_id
   ) as unknown) as DocumentPDF;
   technicalPDF = (getPDF(
-    inRec?.info?.documents,
+    inRec?.observation_info?.documents,
     PDF_NAME_PREFIXES.TECHNICAL + inRec.prsl_id
   ) as unknown) as DocumentPDF;
 
-  const targets = getTargets(inRec.info?.targets);
+  const targets = getTargets(inRec.observation_info?.targets);
 
   const convertedProposal = {
     metadata: inRec.metadata, // TODO should we keep this metadata or the fields below?
     id: inRec.prsl_id,
-    title: inRec.info?.title,
-    proposalType: PROJECTS?.find(p => p.mapping === inRec.info?.proposal_type?.main_type)?.id,
-    proposalSubType: inRec.info?.proposal_type?.attributes
-      ? getAttributes(inRec.info?.proposal_type)
+    title: inRec.proposal_info?.title,
+    proposalType: PROJECTS?.find(p => p.mapping === inRec.proposal_info?.proposal_type?.main_type)
+      ?.id,
+    proposalSubType: inRec.proposal_info?.proposal_type?.attributes
+      ? getAttributes(inRec.proposal_info?.proposal_type)
       : [],
     status: inRec.status,
     lastUpdated: inRec.metadata?.last_modified_on,
@@ -597,29 +600,31 @@ export function mapping(inRec: ProposalBackend): Proposal {
     createdBy: inRec.metadata?.created_by,
     version: inRec.metadata?.version,
     cycle: inRec.cycle,
-    investigators: getInvestigators(inRec.info?.investigators),
-    abstract: inRec.info?.abstract,
-    scienceCategory: getScienceCategory(inRec.info?.science_category as string),
+    investigators: getInvestigators(inRec.proposal_info?.investigators),
+    abstract: inRec.proposal_info?.abstract,
+    scienceCategory: getScienceCategory((inRec.proposal_info?.science_category as string) || ''),
     scienceSubCategory: [getScienceSubCategory()],
     sciencePDF: sciencePDF,
     scienceLoadStatus: sciencePDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
     targetOption: 1, // TODO check what to map to
     targets: targets,
-    observations: getObservations(inRec.info?.observation_sets, inRec.info?.result_details),
-    groupObservations: getGroupObservations(inRec.info?.observation_sets),
+    observations: getObservations(
+      inRec.observation_info?.observation_sets,
+      inRec.observation_info?.result_details
+    ),
+    groupObservations: getGroupObservations(inRec.observation_info?.observation_sets),
     targetObservation:
-      inRec?.info?.result_details && inRec.info?.result_details.length > 0
+      inRec?.observation_info?.result_details && inRec.observation_info?.result_details.length > 0
         ? getTargetObservation(
-            inRec.info?.result_details,
-            inRec.info?.observation_sets,
-            // inRec.info.targets,
+            inRec.observation_info?.result_details,
+            inRec.observation_info?.observation_sets,
             targets
           )
         : [],
     technicalPDF: technicalPDF, // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: technicalPDF ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
-    dataProductSDP: getDataProductSDP(inRec.info?.data_product_sdps),
-    dataProductSRC: getDataProductSRC(inRec.info?.data_product_src_nets),
+    dataProductSDP: getDataProductSDP(inRec.observation_info?.data_product_sdps),
+    dataProductSRC: getDataProductSRC(inRec.observation_info?.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
 
@@ -639,7 +644,7 @@ async function GetProposal(
   }
 
   if (isCypress) {
-    return mapping(MockProposal);
+    return mapping(MockProposal[0]);
   }
 
   try {
