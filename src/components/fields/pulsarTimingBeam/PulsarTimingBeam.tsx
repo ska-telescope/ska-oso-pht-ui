@@ -16,8 +16,9 @@ import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
 interface PulsarTimingBeamFieldProps {
   setTarget?: Function;
   target?: Target;
+  onDialogResponse?: Function;
 }
-export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimingBeamFieldProps) {
+export default function PulsarTimingBeamField({ setTarget, target, onDialogResponse }: PulsarTimingBeamFieldProps) {
   const { t } = useScopedTranslation();
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [selectedValue, setSelectedValue] = React.useState('noBeam');

@@ -296,7 +296,8 @@ export default function TargetEntry({
   };
 
   const pulsarTimingBeamField = () => {
-    return wrapper(<PulsarTimingBeamField setTarget={setTarget} target={target} />);
+    return wrapper(<PulsarTimingBeamField setTarget={setTarget} target={target} onDialogResponse={setBeamData}
+    />);
   };
   const nameField = () =>
     wrapper(
