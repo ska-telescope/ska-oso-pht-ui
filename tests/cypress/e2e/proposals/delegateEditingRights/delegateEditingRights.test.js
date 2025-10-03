@@ -4,10 +4,10 @@ import {
   createStandardProposalLoggedIn,
   mockCreateProposalAPI,
   mockEmailAPI,
+  mockGetUserByEmailAPI,
   pageConfirmed,
   initialize,
   verifyProposalCreatedAlertFooter,
-  clickSearchForMember,
   clickUserSearch,
   clickPICheckbox,
   clickSendInviteButton,
@@ -27,6 +27,7 @@ describe('Delegate Editing Rights', () => {
     cy.window().then(win => {
       win.localStorage.setItem('cypress:defaultUserLoggedIn', 'true');
     });
+    mockGetUserByEmailAPI();
     mockEmailAPI();
     createStandardProposalLoggedIn();
     cy.wait('@mockCreateProposal');
@@ -39,9 +40,9 @@ describe('Delegate Editing Rights', () => {
   });
 
   it('Delegate editing rights to a co-investigator', { jiraKey: 'XTP-89609' }, () => {
-    clickSearchForMember();
     entry('email', 'Trevor.Swain@community.skao.int');
     clickUserSearch();
+    // cy.wait('@mockGetUserByEmailAPI'); // TODO see if this is needed
     verifyUserFoundAlertFooter();
     clickPICheckbox();
     clickSendInviteButton();

@@ -25,3 +25,12 @@ export type InvestigatorBackend = {
   officeLocation: string | null;
   jobTitle: string | null;
 };
+
+export type InvestigatorMSGraph = {
+  id: string;
+  givenName: string;
+  surname: string;
+  email: string;
+  officeLocation: string | null;
+  jobTitle: string | null;
+};

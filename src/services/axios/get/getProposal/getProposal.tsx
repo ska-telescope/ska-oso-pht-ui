@@ -580,15 +580,15 @@ export function mapping(inRec: ProposalBackend): Proposal {
     PDF_NAME_PREFIXES.TECHNICAL + inRec.prsl_id
   ) as unknown) as DocumentPDF;
 
-  const targets = getTargets(inRec.info.targets);
+  const targets = getTargets(inRec.info?.targets);
 
   const convertedProposal = {
     metadata: inRec.metadata, // TODO should we keep this metadata or the fields below?
     id: inRec.prsl_id,
-    title: inRec.info.title,
-    proposalType: PROJECTS?.find(p => p.mapping === inRec.info.proposal_type.main_type)?.id,
-    proposalSubType: inRec.info.proposal_type.attributes
-      ? getAttributes(inRec.info.proposal_type)
+    title: inRec.info?.title,
+    proposalType: PROJECTS?.find(p => p.mapping === inRec.info?.proposal_type?.main_type)?.id,
+    proposalSubType: inRec.info?.proposal_type?.attributes
+      ? getAttributes(inRec.info?.proposal_type)
       : [],
     status: inRec.status,
     lastUpdated: inRec.metadata?.last_modified_on,
@@ -597,29 +597,29 @@ export function mapping(inRec: ProposalBackend): Proposal {
     createdBy: inRec.metadata?.created_by,
     version: inRec.metadata?.version,
     cycle: inRec.cycle,
-    investigators: getInvestigators(inRec.info.investigators),
-    abstract: inRec.info.abstract,
-    scienceCategory: getScienceCategory(inRec.info.science_category),
+    investigators: getInvestigators(inRec.info?.investigators),
+    abstract: inRec.info?.abstract,
+    scienceCategory: getScienceCategory(inRec.info?.science_category as string),
     scienceSubCategory: [getScienceSubCategory()],
     sciencePDF: sciencePDF,
     scienceLoadStatus: sciencePDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
     targetOption: 1, // TODO check what to map to
     targets: targets,
-    observations: getObservations(inRec.info.observation_sets, inRec.info.result_details),
-    groupObservations: getGroupObservations(inRec.info.observation_sets),
+    observations: getObservations(inRec.info?.observation_sets, inRec.info?.result_details),
+    groupObservations: getGroupObservations(inRec.info?.observation_sets),
     targetObservation:
-      inRec?.info?.result_details && inRec.info.result_details.length > 0
+      inRec?.info?.result_details && inRec.info?.result_details.length > 0
         ? getTargetObservation(
-            inRec.info.result_details,
-            inRec.info.observation_sets,
+            inRec.info?.result_details,
+            inRec.info?.observation_sets,
             // inRec.info.targets,
             targets
           )
         : [],
     technicalPDF: technicalPDF, // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: technicalPDF ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
-    dataProductSDP: getDataProductSDP(inRec.info.data_product_sdps),
-    dataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
+    dataProductSDP: getDataProductSDP(inRec.info?.data_product_sdps),
+    dataProductSRC: getDataProductSRC(inRec.info?.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
 
@@ -645,7 +645,7 @@ async function GetProposal(
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${id}`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
-    if (!result?.data) {
+    if (!result || !result?.data) {
       return 'error.API_UNKNOWN_ERROR';
     }
     return mapping(result.data);

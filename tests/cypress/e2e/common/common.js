@@ -79,13 +79,30 @@ export const verifyMockedAPICall = stubAlias => {
 export const mockCreateProposalAPI = () => {
   cy.window().then(win => {
     const token = win.localStorage.getItem('cypress:token');
-    cy.intercept('POST', '**/pht/prsls/create', req => {
-      req.headers['Authorization'] = `Bearer ${token}`;
-      req.reply({
-        statusCode: 200,
-        body: 'prsl-test-20250814-00003'
-      });
-    }).as('mockCreateProposal');
+    cy.fixture('proposal.json').then(proposal => {
+      cy.intercept('POST', '**/pht/prsls/create', req => {
+        req.headers['Authorization'] = `Bearer ${token}`;
+        req.reply({
+          statusCode: 200,
+          body: proposal
+        });
+      }).as('mockCreateProposal');
+    });
+  });
+};
+
+export const mockGetUserByEmailAPI = () => {
+  cy.window().then(win => {
+    const token = win.localStorage.getItem('cypress:token');
+    cy.fixture('userMSGraph.json').then(user => {
+      cy.intercept('GET', '**/pht/prsls/member/Trevor.Swain@community.skao.int', req => {
+        req.headers['Authorization'] = `Bearer ${token}`;
+        req.reply({
+          statusCode: 200,
+          body: user
+        });
+      }).as('mockgetUserByEmailAPI');
+    });
   });
 };
 
@@ -116,7 +133,6 @@ export const clickButton = testId => {
 
 export const clickAddButton = () => clickButton('addButton');
 export const clickAddDataProduct = () => clickButton('addDataProductButton');
-export const clickSearchForMember = () => cy.get('#simple-tab-2').click();
 export const clickUserSearch = () => clickButton('userSearchButton');
 export const clickManageTeamMemberRights = () => clickButton('lockIcon');
 export const clickSubmitRights = () => clickButton('submitCheckbox');

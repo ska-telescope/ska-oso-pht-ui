@@ -2,8 +2,8 @@
 
 const OPS_PROPOSAL_ADMIN = 'obs-oauth2role-opsproposaladmin-1-1535351309';
 const OPS_REVIEW_CHAIR = 'obs-oauth2role-opsreviewerchair-11741547065';
-const OPS_REVIEWER_SCIENCE = 'obs-oauth2role-opsreviewersci-1635769025';
-const EXT_REVIEWER_TECHNICAL = 'obs-oauth2role-opsreviewertec-1-1994146425';
+const OPS_REVIEWER_SCIENCE = 'obs-oauth2role-scireviewer-1635769025';
+const EXT_REVIEWER_TECHNICAL = 'obs-oauth2role-tecreviewer-1-1994146425';
 
 export const standardUser = {
   name: 'Cypress Default User',
