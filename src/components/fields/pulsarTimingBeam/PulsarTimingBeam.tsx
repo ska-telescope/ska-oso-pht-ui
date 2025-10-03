@@ -129,11 +129,22 @@ export default function PulsarTimingBeamField({
     };
 
     const newTiedArrayBeams: TiedArrayBeams = {
-      pssBeams: [], pstBeams: [newBeam], vlbiBeams: []
+      pssBeams: [],
+      pstBeams: [newBeam],
+      vlbiBeams: []
     };
 
     setAllBeams(prevBeams => {
-      const updatedBeams = [...prevBeams, newTiedArrayBeams];
+      const updatedBeams = [...prevBeams];
+      if (updatedBeams.length > 0) {
+        const lastBeamGroup = updatedBeams[updatedBeams.length - 1];
+        const isDuplicate = lastBeamGroup.pstBeams.some(beam => beam.beamName === newBeam.beamName);
+        if (!isDuplicate) {
+          lastBeamGroup.pstBeams.push(newBeam);
+        }
+      } else {
+        updatedBeams.push(newTiedArrayBeams);
+      }
       if (onDialogResponse) {
         onDialogResponse(updatedBeams);
       }
