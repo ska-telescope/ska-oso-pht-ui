@@ -31,6 +31,7 @@ UNRELEASED
 * Fixed: get proposal mapping handles incomplete proposal
 * Changed: Use the real endpoint for getUserByEmail indstead of mocked data
 * Added: type InvestigatorMSGraph
+* Removed: use of panel in review list page
 
 5.1.0
 ----------
