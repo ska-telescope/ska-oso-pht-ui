@@ -23,7 +23,7 @@ import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_VIEW } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import UserSearchButton from '@/components/button/Search/Search';
-import { GetMockUserByEmail } from '@/services/axios/get/getUserByEmail/getUserByEmail';
+import GetUserByEmail from '@/services/axios/get/getUserByEmail/getUserByEmail';
 import ResetButton from '@/components/button/Reset/Reset';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
@@ -283,7 +283,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
 
   const resolveButton = () => {
     async function searchEmail(email: string): Promise<boolean> {
-      const response = GetMockUserByEmail(email);
+      const response = await GetUserByEmail(authClient, email);
       if (typeof response === 'string') {
         notifyError(t('emailSearch.error'), NOTIFICATION_DELAY_IN_SECONDS);
         return false;
@@ -292,7 +292,6 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
         setInvestigator(response);
         setFirstName(response?.firstName);
         setLastName(response?.lastName);
-        setEmail(response?.email);
         return true;
       }
     }
