@@ -49,7 +49,14 @@ export default function GridTargets({
       width: 160,
       disableClickEventBubbling: true
     },
-    { field: 'beamName', headerName: t('pstBeam.label'), flex: 2 }
+    {
+      field: 'beamName',
+      headerName: t('pstBeam.label'),
+      flex: 3,
+      renderCell: (e: { row: Target }) => {
+        return e.row.tiedArrayBeams?.beamName;
+      }
+    }
   ];
 
   const actionColumns = [
