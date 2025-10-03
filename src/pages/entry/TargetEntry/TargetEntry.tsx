@@ -14,7 +14,7 @@ import SkyDirection1 from '@/components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
 import VelocityField from '@/components/fields/velocity/Velocity';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
-import Target from '@/utils/types/target';
+import Target, { TiedArrayBeams } from '@/utils/types/target';
 import {
   RA_TYPE_ICRS,
   LAB_POSITION,
@@ -64,6 +64,8 @@ export default function TargetEntry({
   const [referenceFrame, setReferenceFrame] = React.useState(RA_TYPE_ICRS.value);
   const [referenceCoordinates, setReferenceCoordinates] = React.useState(RA_TYPE_ICRS.label);
   const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
+  const [beamArrayData, setBeamArrayData] = React.useState<TiedArrayBeams[]>([]);
+
   const LABEL_WIDTH = 6;
 
   const setTheName = (inValue: string) => {
@@ -87,6 +89,22 @@ export default function TargetEntry({
     }
   };
 
+  // const setBeamData = (allBeams: any[]) => {
+  //   console.log('Accessed allBeams data:', allBeams);
+  //
+  //   if (allBeams.length > 0) {
+  //     const latestBeam = allBeams[allBeams.length - 1]; // Get the most recently added beam
+  //     setBeamName(latestBeam.beamName);
+  //     setBeamRA(latestBeam.beamCoordinate.raStr);
+  //     setBeamDec(latestBeam.beamCoordinate.decStr);
+  //   }
+  //
+  //   if (setTarget) {
+  //     setTarget({ ...target, tiedArrayBeams: allBeams });
+  //     setBeamArrayData(allBeams)
+  //   }
+  // };
+
   const setBeamData = (allBeams: any[]) => {
     console.log('Accessed allBeams data:', allBeams);
 
@@ -98,7 +116,14 @@ export default function TargetEntry({
     }
 
     if (setTarget) {
-      setTarget({ ...target, tiedArrayBeams: allBeams });
+      const updatedTiedArrayBeams: TiedArrayBeams = {
+        pstBeams: allBeams,
+        pssBeams: [],
+        vlbiBeams: []
+      };
+
+      setTarget({ ...target, tiedArrayBeams: updatedTiedArrayBeams });
+      setBeamArrayData(allBeams);
     }
   };
 
@@ -198,19 +223,15 @@ export default function TargetEntry({
         vel: velType === VELOCITY_TYPE.VELOCITY ? vel : '',
         velType: velType,
         velUnit: velUnit,
-        tiedArrayBeams: {
-          beamId: highestId + 1,
-          beamName: beamName,
-          beamCoordinate: {
-            kind: RA_TYPE_ICRS.value.toString(),
-            referenceFrame: RA_TYPE_ICRS.label,
-            raStr: beamRA,
-            decStr: beamDec
-          },
-          //TODO: What should this number be?
-          stnWeights: [1]
-        }
+        tiedArrayBeams: Array.isArray(beamArrayData)
+          ? beamArrayData.map(beam => ({
+              pstBeams: Array.isArray(beam?.pstBeams) ? beam.pstBeams : [],
+              pssBeams: Array.isArray(beam?.pssBeams) ? beam.pssBeams : [],
+              vlbiBeams: Array.isArray(beam?.vlbiBeams) ? beam.vlbiBeams : []
+            }))
+          : []
       };
+
       setProposal({ ...getProposal(), targets: [...(getProposal().targets ?? []), newTarget] });
       console.log('target TargetEntry', newTarget);
       notifySuccess(t('addTarget.success'), NOTIFICATION_DELAY_IN_SECONDS);
