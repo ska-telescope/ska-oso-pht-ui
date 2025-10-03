@@ -46,11 +46,6 @@ export default function PulsarTimingBeamField({
     setShowGrid(selectedValue === 'multipleBeams');
   }, [selectedValue]);
 
-  // Log the updated target using useEffect
-  React.useEffect(() => {
-    console.log('Updated target in PulsarTimingBeamField:', target);
-  }, [target]);
-
   const setTheName = (inValue: string) => {
     setBeamName(inValue);
     if (setTarget !== undefined) {
@@ -69,7 +64,6 @@ export default function PulsarTimingBeamField({
     setRA(inValue);
     if (setTarget !== undefined) {
       setTarget({ ...target, raStr: inValue });
-      // setTarget({ ...(target || {}), raStr: inValue });
     }
   };
 
@@ -107,6 +101,47 @@ export default function PulsarTimingBeamField({
     setOpenPulsarTimingBeamDialog(false);
   };
 
+  // const addPulsarTimingBeamsConfirmed = () => {
+  //   if (beamName && ra && dec) {
+  //     const newRow = {
+  //       id: rows.length + 1, // Unique ID for the new row
+  //       name: beamName,
+  //       raStr: ra,
+  //       decStr: dec,
+  //       actions: null
+  //     };
+  //     setRows(prevRows => [...prevRows, newRow]);
+  //     setBeamName('');
+  //     setRA('');
+  //     setDec('');
+  //   }
+  //
+  //   //TODO: Set Target with tied array beams
+  //   const highest = getProposal()?.targets?.length
+  //     ? getProposal()?.targets?.reduce((prev, current) =>
+  //         prev && prev.id > current.id ? prev : current
+  //       )
+  //     : null;
+  //   const highestId = highest ? highest.id : 0;
+  //
+  //   const newBeam: TiedArrayBeam = {
+  //     beamId: highestId + 1,
+  //     beamName: beamName,
+  //     beamCoordinate: {
+  //       kind: RA_TYPE_ICRS.value.toString(),
+  //       referenceFrame: RA_TYPE_ICRS.label,
+  //       raStr: ra,
+  //       decStr: dec
+  //     },
+  //     stnWeights: [1]
+  //   };
+  //   console.log('beam ', newBeam);
+  //   if (onDialogResponse) {
+  //     onDialogResponse(newBeam);
+  //   }
+  //   closeDialog();
+  // };
+
   const addPulsarTimingBeamsConfirmed = () => {
     if (beamName && ra && dec) {
       const newRow = {
@@ -116,13 +151,12 @@ export default function PulsarTimingBeamField({
         decStr: dec,
         actions: null
       };
-      setRows(prevRows => [...prevRows, newRow]);
+      setRows(prevRows => [...prevRows, { id: newRow.id, isAddRow: false }]);
       setBeamName('');
       setRA('');
       setDec('');
     }
 
-    //TODO: Set Target with tied array beams
     const highest = getProposal()?.targets?.length
       ? getProposal()?.targets?.reduce((prev, current) =>
           prev && prev.id > current.id ? prev : current
@@ -134,19 +168,19 @@ export default function PulsarTimingBeamField({
       beamId: highestId + 1,
       beamName: beamName,
       beamCoordinate: {
-        kind: RA_TYPE_ICRS.label,
+        kind: RA_TYPE_ICRS.value.toString(),
         referenceFrame: RA_TYPE_ICRS.label,
         raStr: ra,
         decStr: dec
       },
       stnWeights: [1]
     };
-    //TODO: Instead of setProposal set new TiedArrayBeams?
     console.log('beam ', newBeam);
-    onDialogResponse(newBeam);
+    if (onDialogResponse) {
+      onDialogResponse(newBeam);
+    }
     closeDialog();
   };
-
   const resolveBeamNameButton = () => {
     const processCoordinatesResults = (response: any) => {
       if (response && !response.error) {
