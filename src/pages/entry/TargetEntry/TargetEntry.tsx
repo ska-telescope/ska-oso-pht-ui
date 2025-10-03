@@ -87,14 +87,18 @@ export default function TargetEntry({
     }
   };
 
-  const setBeamData = (updatedBeamData: any) => {
-    console.log('Accessed newBeam data:', updatedBeamData);
-    setBeamName(updatedBeamData.beamName);
-    setBeamRA(updatedBeamData.beamCoordinate.raStr);
-    setBeamDec(updatedBeamData.beamCoordinate.decStr);
+  const setBeamData = (allBeams: any[]) => {
+    console.log('Accessed allBeams data:', allBeams);
+
+    if (allBeams.length > 0) {
+      const latestBeam = allBeams[allBeams.length - 1]; // Get the most recently added beam
+      setBeamName(latestBeam.beamName);
+      setBeamRA(latestBeam.beamCoordinate.raStr);
+      setBeamDec(latestBeam.beamCoordinate.decStr);
+    }
 
     if (setTarget) {
-      setTarget({ ...target, tiedArrayBeams: updatedBeamData });
+      setTarget({ ...target, tiedArrayBeams: allBeams });
     }
   };
 

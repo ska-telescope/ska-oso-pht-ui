@@ -32,6 +32,8 @@ export default function PulsarTimingBeamField({
   const [beamRA, setBeamRA] = React.useState('');
   const [beamDec, setBeamDec] = React.useState('');
   const [rows, setRows] = React.useState([{ id: 1, isAddRow: true }]);
+  const [, setAllBeams] = React.useState<TiedArrayBeam[]>([]);
+
   const LAB_WIDTH = 5;
 
   const wrapper = (children: any) => <Box sx={{ width: '100%' }}>{children}</Box>;
@@ -125,10 +127,16 @@ export default function PulsarTimingBeamField({
       },
       stnWeights: [1]
     };
-    console.log('beam created ', newBeam);
-    if (onDialogResponse) {
-      onDialogResponse(newBeam);
-    }
+
+    // Update the allBeams array
+    setAllBeams(prevBeams => {
+      const updatedBeams = [...prevBeams, newBeam];
+      if (onDialogResponse) {
+        onDialogResponse(updatedBeams); // Send the updated array
+      }
+      return updatedBeams;
+    });
+
     closeDialog();
   };
 
