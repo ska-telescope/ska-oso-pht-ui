@@ -181,6 +181,7 @@ export default function TargetEntry({
 
       console.log('beam array data ', beamArrayData);
 
+      //TODO: Resolve mapping error
       const newTarget: Target = {
         kind: RA_TYPE_ICRS.value,
         decStr: dec,
