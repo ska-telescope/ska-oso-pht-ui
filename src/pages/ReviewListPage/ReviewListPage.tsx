@@ -19,7 +19,7 @@ import {
   FEASIBLE_YES,
   CONFLICT_REASONS
 } from '@utils/constants.ts';
-import GetPanelList from '@services/axios/get/getPanelList/getPanelList';
+// import GetPanelList from '@services/axios/get/getPanelList/getPanelList';
 import GetProposalByStatusList from '@services/axios/get/getProposalByStatusList/getProposalByStatusList';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
@@ -29,7 +29,7 @@ import { PMT } from '@/utils/constants';
 import SubmitButton from '@/components/button/Submit/Submit';
 import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
 import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
-import { Panel } from '@/utils/types/panel';
+// simport { Panel } from '@/utils/types/panel';
 import TechnicalIcon from '@/components/icon/technicalIcon/technicalIcon';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import PutProposalReview from '@/services/axios/put/putProposalReview/putProposalReview';
@@ -65,7 +65,7 @@ export default function ReviewListPage() {
   const [filteredData, setFilteredData] = React.useState<FilteredItem[]>([]);
 
   const [reset, setReset] = React.useState(false);
-  const [panelData, setPanelData] = React.useState<Panel[]>([]);
+  // const [panelData, setPanelData] = React.useState<Panel[]>([]);
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
 
@@ -79,17 +79,18 @@ export default function ReviewListPage() {
     setReset(!reset);
   }, []);
 
-  React.useEffect(() => {
-    const GetReviewPanels = async () => {
-      const response = await GetPanelList(authClient);
-      if (typeof response === 'string') {
-        notifyError(response);
-      } else {
-        setPanelData((response as unknown) as Panel[]);
-      }
-    };
-    GetReviewPanels();
-  }, [reset]);
+  // // SARAH
+  // React.useEffect(() => {
+  //   const GetReviewPanels = async () => {
+  //     const response = await GetPanelList(authClient);
+  //     if (typeof response === 'string') {
+  //       notifyError(response);
+  //     } else {
+  //       setPanelData((response as unknown) as Panel[]);
+  //     }
+  //   };
+  //   GetReviewPanels();
+  // }, [reset]);
 
   React.useEffect(() => {
     const fetchProposalReviewData = async (_proposalId: string) => {
@@ -106,22 +107,27 @@ export default function ReviewListPage() {
     };
 
     const fetchProposalData = async () => {
+      // SARAH 1) get all reviewable proposals
       const response = await GetProposalByStatusList(authClient);
       if (typeof response === 'string') {
         notifyError(response);
       } else {
-        const panelProposalIds = panelData.flatMap(panel =>
-          Array.isArray(panel.proposals) ? panel.proposals.map(proposal => proposal.proposalId) : []
-        );
-        const filtered = response
-          ? response.filter((proposal: Proposal) => panelProposalIds.includes(proposal.id))
-          : [];
-        setProposals(filtered);
-        loopProposals(filtered);
+        // // SARAH 2) get all proposal ids that are in the panel
+        // const panelProposalIds = panelData.flatMap(panel =>
+        //   Array.isArray(panel.proposals) ? panel.proposals.map(proposal => proposal.proposalId) : []
+        // );
+        // const filtered = response
+        //   ? response.filter((proposal: Proposal) => panelProposalIds.includes(proposal.id))
+        //   : [];
+        // // SARAH 2) Get proposals from reviewable that are in the panel only
+        // setProposals(filtered);
+        setProposals(response); // just return all available proposals to review without filtering by panel
+        // loopProposals(filtered);
+        loopProposals(response);
       }
     };
     fetchProposalData();
-  }, [panelData]);
+  }, []); // [panelData]
 
   React.useEffect(() => {
     const data = proposals ? filterProposals() : [];
@@ -438,18 +444,21 @@ export default function ReviewListPage() {
     headerName: t('dateAssigned.label'),
     width: 180,
     renderCell: (e: { row: any }) => {
-      const panel = panelData.find(
-        panel =>
-          Array.isArray(panel.proposals) &&
-          panel.proposals.some(p => p.proposalId === e.row.proposal?.id)
-      );
-      let proposal = null;
-      if (panel && panel.proposals && panel.proposals.length > 0) {
-        proposal = panel.proposals.find(p => p.proposalId === e.row.proposal?.id);
-      }
-      return proposal && proposal.assignedOn
-        ? presentDate(proposal.assignedOn) + ' ' + presentTime(proposal.assignedOn)
-        : '';
+      // // SARAH panelData used here as well to get assigned date
+      // console.log('panelData', panelData);
+      // const panel = panelData.find(
+      //   panel =>
+      //     Array.isArray(panel.proposals) &&
+      //     panel.proposals.some(p => p.proposalId === e.row.proposal?.id)
+      // );
+      // let proposal = null;
+      // if (panel && panel.proposals && panel.proposals.length > 0) {
+      //   proposal = panel.proposals.find(p => p.proposalId === e.row.proposal?.id);
+      // }
+      // return proposal && proposal.assignedOn
+      //   ? presentDate(proposal.assignedOn) + ' ' + presentTime(proposal.assignedOn)
+      //   : '';
+      return 'unavailable';
     }
   };
 
