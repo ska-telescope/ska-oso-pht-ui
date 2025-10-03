@@ -66,7 +66,6 @@ js-e2e-deploy:
     KUBE_HOST: https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
 
 js-e2e-test:
-  allow_failure: true
   variables: # use the loadbalancer as the cypress tests would hit the log in page otherwise
     KUBE_HOST: https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
 

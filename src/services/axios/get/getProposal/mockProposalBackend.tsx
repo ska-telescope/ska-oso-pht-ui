@@ -232,7 +232,6 @@ export const MockProposalBackendZoom: ProposalBackend = {
     last_modified_on: '2025-06-24T22:35:19.489320Z',
     pdm_version: '18.1.0'
   },
-  investigator_refs: [],
   cycle: 'SKA_1962_2024',
   proposal_info: {
     title: 'Proposal Zoom',
@@ -241,6 +240,11 @@ export const MockProposalBackendZoom: ProposalBackend = {
     },
     abstract: 'My zoom abstract.',
     science_category: 'High Energy Cosmic Particles',
+    investigators: []
+  },
+  observation_info: {
+    documents: null,
+    data_product_src_nets: null,
     targets: [
       {
         target_id: 'm2',
