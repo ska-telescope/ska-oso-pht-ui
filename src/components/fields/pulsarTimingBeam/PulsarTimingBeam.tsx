@@ -71,13 +71,12 @@ export default function PulsarTimingBeamField({ setTarget, target }: PulsarTimin
   });
 
   const columns = [
-    { field: 'name', headerName: t('name.label') },
+    { field: 'name', headerName: t('name.label'), flex: 1.5},
     { field: 'raStr', headerName: t('skyDirection.short.1.' + RA_TYPE_ICRS.value), width: 120 },
     { field: 'decStr', headerName: t('skyDirection.short.2.' + RA_TYPE_ICRS.value), width: 120 },
     {
       field: 'actions',
       headerName: t('actions.label'),
-      flex: 2,
       renderCell: params => {
         if (params.row.isAddRow) {
           return (
