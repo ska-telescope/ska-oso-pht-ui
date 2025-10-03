@@ -5,7 +5,7 @@ import { LAB_POSITION, RA_TYPE_ICRS } from '@utils/constants.ts';
 import AddButton from '@components/button/Add/Add.tsx';
 import AlertDialog from '@components/alerts/alertDialog/AlertDialog.tsx';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import Target, { TiedArrayBeam } from '@utils/types/target.tsx';
+import Target, { Beam, TiedArrayBeams } from '@utils/types/target.tsx';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates.tsx';
 import ResolveButton from '@components/button/Resolve/Resolve.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -32,7 +32,7 @@ export default function PulsarTimingBeamField({
   const [beamRA, setBeamRA] = React.useState('');
   const [beamDec, setBeamDec] = React.useState('');
   const [rows, setRows] = React.useState([{ id: 1, isAddRow: true }]);
-  const [, setAllBeams] = React.useState<TiedArrayBeam[]>([]);
+  const [, setAllBeams] = React.useState<TiedArrayBeams[]>([]);
 
   const LAB_WIDTH = 5;
 
@@ -116,7 +116,7 @@ export default function PulsarTimingBeamField({
       setBeamDec('');
     }
 
-    const newBeam: TiedArrayBeam = {
+    const newBeam: Beam = {
       beamId: rows.length,
       beamName: beamName,
       beamCoordinate: {
@@ -128,15 +128,17 @@ export default function PulsarTimingBeamField({
       stnWeights: [1]
     };
 
-    // Update the allBeams array
+    const newTiedArrayBeams: TiedArrayBeams = {
+      pssBeams: [], pstBeams: [newBeam], vlbiBeams: []
+    };
+
     setAllBeams(prevBeams => {
-      const updatedBeams = [...prevBeams, newBeam];
+      const updatedBeams = [...prevBeams, newTiedArrayBeams];
       if (onDialogResponse) {
-        onDialogResponse(updatedBeams); // Send the updated array
+        onDialogResponse(updatedBeams);
       }
       return updatedBeams;
     });
-
     closeDialog();
   };
 

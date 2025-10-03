@@ -54,7 +54,7 @@ export default function GridTargets({
       headerName: t('pstBeam.label'),
       flex: 3,
       renderCell: (e: { row: Target }) => {
-        return e.row.tiedArrayBeams?.beamName;
+        return e.row.tiedArrayBeams?.map((beam: any) => beam.beamName).join(', ');
       }
     }
   ];

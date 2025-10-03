@@ -54,9 +54,6 @@ export default function TargetEntry({
   const [name, setName] = React.useState('');
   const [ra, setRA] = React.useState('');
   const [dec, setDec] = React.useState('');
-  const [beamName, setBeamName] = React.useState('');
-  const [beamRA, setBeamRA] = React.useState('');
-  const [beamDec, setBeamDec] = React.useState('');
   const [velType, setVelType] = React.useState(0);
   const [vel, setVel] = React.useState('');
   const [velUnit, setVelUnit] = React.useState(0);
@@ -91,13 +88,6 @@ export default function TargetEntry({
 
   const setBeamData = (allBeams: any[]) => {
     console.log('Accessed allBeams data:', allBeams);
-
-    if (allBeams.length > 0) {
-      const latestBeam = allBeams[allBeams.length - 1]; // Get the most recently added beam
-      setBeamName(latestBeam.beamName);
-      setBeamRA(latestBeam.beamCoordinate.raStr);
-      setBeamDec(latestBeam.beamCoordinate.decStr);
-    }
 
     if (setTarget) {
       setTarget({ ...target, tiedArrayBeams: allBeams });
