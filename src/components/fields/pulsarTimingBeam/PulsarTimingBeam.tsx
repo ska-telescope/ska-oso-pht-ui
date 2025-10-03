@@ -29,8 +29,8 @@ export default function PulsarTimingBeamField({
   const [openPulsarTimingBeamDialog, setOpenPulsarTimingBeamDialog] = React.useState(false);
   const [nameFieldError, setNameFieldError] = React.useState('');
   const [beamName, setBeamName] = React.useState('');
-  const [ra, setRA] = React.useState('');
-  const [dec, setDec] = React.useState('');
+  const [beamRA, setBeamRA] = React.useState('');
+  const [beamDec, setBeamDec] = React.useState('');
   const [rows, setRows] = React.useState([{ id: 1, isAddRow: true }]);
   const LAB_WIDTH = 5;
 
@@ -52,14 +52,14 @@ export default function PulsarTimingBeamField({
   };
 
   const setTheDec = (inValue: string) => {
-    setDec(inValue);
+    setBeamDec(inValue);
     if (setTarget !== undefined) {
       setTarget({ ...target, decStr: inValue });
     }
   };
 
   const setTheRA = (inValue: string) => {
-    setRA(inValue);
+    setBeamRA(inValue);
     if (setTarget !== undefined) {
       setTarget({ ...target, raStr: inValue });
     }
@@ -100,18 +100,18 @@ export default function PulsarTimingBeamField({
   };
 
   const addPulsarTimingBeamsConfirmed = () => {
-    if (beamName && ra && dec) {
+    if (beamName && beamRA && beamDec) {
       const newRow = {
         id: rows.length + 1, // Unique ID for the new row
         name: beamName,
-        raStr: ra,
-        decStr: dec,
-        actions: null
+        raStr: beamRA,
+        decStr: beamDec,
+        isAddRow: false
       };
       setRows(prevRows => [...prevRows, newRow]);
       setBeamName('');
-      setRA('');
-      setDec('');
+      setBeamRA('');
+      setBeamDec('');
     }
 
     const newBeam: TiedArrayBeam = {
@@ -120,8 +120,8 @@ export default function PulsarTimingBeamField({
       beamCoordinate: {
         kind: RA_TYPE_ICRS.label,
         referenceFrame: RA_TYPE_ICRS.label,
-        raStr: ra,
-        decStr: dec
+        raStr: beamRA,
+        decStr: beamDec
       },
       stnWeights: [1]
     };
@@ -136,8 +136,8 @@ export default function PulsarTimingBeamField({
     const processCoordinatesResults = (response: any) => {
       if (response && !response.error) {
         const values = response.split(' ');
-        setDec(values[0]);
-        setRA(values[1]);
+        setBeamDec(values[0]);
+        setBeamRA(values[1]);
         setNameFieldError('');
       } else {
         setNameFieldError(t('resolve.error.' + response.error));
@@ -181,7 +181,7 @@ export default function PulsarTimingBeamField({
         labelWidth={LAB_WIDTH}
         skyUnits={RA_TYPE_ICRS.value}
         setValue={setTheRA}
-        value={ra}
+        value={beamRA}
         valueFocus={() => helpComponent(t('skyDirection.help.1.value'))}
       />
     );
@@ -192,7 +192,7 @@ export default function PulsarTimingBeamField({
         labelWidth={LAB_WIDTH}
         skyUnits={RA_TYPE_ICRS.value}
         setValue={setTheDec}
-        value={dec}
+        value={beamDec}
         valueFocus={() => helpComponent(t('skyDirection.help.2.value'))}
       />
     );
