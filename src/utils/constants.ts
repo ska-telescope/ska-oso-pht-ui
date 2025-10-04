@@ -20,6 +20,7 @@ export const OSO_SERVICES_REPORT_PATH = `${OSO_SERVICES_PHT}report/`;
 export const OSO_SERVICES_REVIEWS_PATH = `${OSO_SERVICES_PHT}reviews`;
 export const OSO_SERVICES_REVIEWERS_PATH = `${OSO_SERVICES_PHT}reviewers`;
 export const OSO_SERVICES__PATH = `${OSO_SERVICES_PHT}reviewers`;
+export const OSO_SERVICES_MEMBER_PATH = `${OSO_SERVICES_PHT}prsls/member`;
 //
 export const MSENTRA_CLIENT_ID = env.MSENTRA_CLIENT_ID;
 export const MSENTRA_TENANT_ID = env.MSENTRA_TENANT_ID;

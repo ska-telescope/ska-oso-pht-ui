@@ -17,7 +17,7 @@ export const MockProposalBackend: ProposalBackend = {
   },
   investigator_refs: [],
   cycle: 'SKA_1962_2024',
-  info: {
+  proposal_info: {
     title: 'New Proposal test2',
     proposal_type: {
       main_type: 'standard_proposal',
@@ -25,6 +25,9 @@ export const MockProposalBackend: ProposalBackend = {
     },
     abstract: 'My scienceTest abstract',
     science_category: 'Cosmology',
+    investigators: []
+  },
+  observation_info: {
     targets: [
       {
         target_id: 'target',
@@ -119,7 +122,6 @@ export const MockProposalBackend: ProposalBackend = {
     ],
     data_product_src_nets: [],
     documents: [],
-    investigators: [],
     observation_sets: [
       {
         observation_set_id: 'obs-obR1Ej',
@@ -230,15 +232,19 @@ export const MockProposalBackendZoom: ProposalBackend = {
     last_modified_on: '2025-06-24T22:35:19.489320Z',
     pdm_version: '18.1.0'
   },
-  investigator_refs: [],
   cycle: 'SKA_1962_2024',
-  info: {
+  proposal_info: {
     title: 'Proposal Zoom',
     proposal_type: {
       main_type: 'key_science_proposal'
     },
     abstract: 'My zoom abstract.',
     science_category: 'High Energy Cosmic Particles',
+    investigators: []
+  },
+  observation_info: {
+    documents: null,
+    data_product_src_nets: null,
     targets: [
       {
         target_id: 'm2',

@@ -1,16 +1,22 @@
-import { TEAM_STATUS_TYPE_OPTIONS } from '@utils/constants.ts';
-import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
-import { MockUserBackendList } from './mockUserBackend.tsx';
+import {
+  OSO_SERVICES_MEMBER_PATH,
+  SKA_OSO_SERVICES_URL,
+  TEAM_STATUS_TYPE_OPTIONS,
+  USE_LOCAL_DATA
+} from '@utils/constants.ts';
+import Investigator, { InvestigatorMSGraph } from '@utils/types/investigator.tsx';
+import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.ts';
+import { MockUserMSGraphList } from './mockUserMSGraph.tsx';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
 
-export function mapping(data: InvestigatorBackend): Investigator {
+export function mapping(data: InvestigatorMSGraph): Investigator {
   const investigator = {
-    id: data.user_id,
-    email: data.email, // This should always be a SKAO email (@community.skao.int or @skao.int)
-    firstName: data.given_name,
-    lastName: data.family_name,
+    id: data.id,
+    email: data.email,
+    firstName: data.givenName,
+    lastName: data.surname,
     affiliation: '',
     phdThesis: false,
     status: TEAM_STATUS_TYPE_OPTIONS.pending,
@@ -25,7 +31,7 @@ export function mapping(data: InvestigatorBackend): Investigator {
 
 // This mocks fetching a user by email using Stargazer team
 export function GetMockUserByEmail(email: string): Investigator | string {
-  const teamList: Investigator[] = MockUserBackendList.map(mapping);
+  const teamList: Investigator[] = MockUserMSGraphList.map(mapping);
   const user = teamList.find(user => user?.email?.toLowerCase() === email?.toLowerCase());
   if (!user) {
     return 'error.API_UNKNOWN_ERROR';
@@ -33,21 +39,19 @@ export function GetMockUserByEmail(email: string): Investigator | string {
   return user;
 }
 
-/* 
-// TODO implement this with correct path when the backend is ready
 async function GetUserByEmail(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
   email: string
 ): Promise<Investigator | string> {
-    if (USE_LOCAL_DATA) {
-      return GetMockUserByEmail();
-    }
+  if (USE_LOCAL_DATA) {
+    return GetMockUserByEmail(email);
+  }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_USERS_PATH}/${email}`;
+    const URL_PATH = `${OSO_SERVICES_MEMBER_PATH}/${email}`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
 
-    if (!result.data) {
+    if (!result || !result.data || typeof result.data !== 'object') {
       return 'error.API_UNKNOWN_ERROR';
     }
     return mapping(result.data);
@@ -57,7 +61,6 @@ async function GetUserByEmail(
     }
     return 'error.API_UNKNOWN_ERROR';
   }
-} 
+}
 
 export default GetUserByEmail;
-*/

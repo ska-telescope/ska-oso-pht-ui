@@ -15,14 +15,16 @@ const MockProposal: ProposalBackend[] = [
     },
     investigator_refs: [],
     cycle: 'SKAO_2027_1',
-    info: {
+    proposal_info: {
       title: 'Proposal Title',
       proposal_type: {
         main_type: 'standard_proposal',
-        sub_type: 'target_of_opportunity',
         attributes: []
       },
       abstract: '',
+      investigators: []
+    },
+    observation_info: {
       targets: [
         {
           target_id: 'M28',
@@ -84,7 +86,6 @@ const MockProposal: ProposalBackend[] = [
         }
       ],
       documents: [],
-      investigators: [],
       observation_sets: [],
       data_product_sdps: [],
       data_product_src_nets: [],

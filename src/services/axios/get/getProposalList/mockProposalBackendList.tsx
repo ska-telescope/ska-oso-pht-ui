@@ -16,7 +16,7 @@ const MockProposalBackendList: ProposalBackend[] = [
       pdm_version: '1.0.0'
     },
     cycle: 'SKA_5000_2023',
-    info: {
+    proposal_info: {
       title: 'In a galaxy far, far away',
       proposal_type: {
         main_type: 'standard_proposal',
@@ -25,6 +25,19 @@ const MockProposalBackendList: ProposalBackend[] = [
       abstract:
         'Pretty Looking frontend depends on hard work put into good wire-framing and requirement gathering',
       science_category: 'Science Category',
+      investigators: [
+        {
+          user_id: 'prp-ska01-202204-01',
+          given_name: 'Tony',
+          family_name: 'Bennet',
+          email: 'somewhere.vague@example.com',
+          organization: '',
+          for_phd: false,
+          principal_investigator: true
+        }
+      ]
+    },
+    observation_info: {
       targets: [
         {
           target_id: 'M28',
@@ -95,17 +108,6 @@ const MockProposalBackendList: ProposalBackend[] = [
           document_id: 'doc_ref_02',
           link: 'https://freetestdata.com/wp-content/uploads/2021/09/Free_Test_Data_100KB_PDF.pdf',
           type: 'proposal_technical'
-        }
-      ],
-      investigators: [
-        {
-          user_id: 'prp-ska01-202204-01',
-          given_name: 'Tony',
-          family_name: 'Bennet',
-          email: 'somewhere.vague@example.com',
-          organization: '',
-          for_phd: false,
-          principal_investigator: true
         }
       ],
       observation_sets: [
@@ -346,7 +348,7 @@ const MockProposalBackendList: ProposalBackend[] = [
       pdm_version: '1.0.0'
     },
     cycle: 'SKA_5000_2023',
-    info: {
+    proposal_info: {
       title: 'The Milky Way View',
       proposal_type: {
         main_type: 'standard_proposal',
@@ -355,6 +357,19 @@ const MockProposalBackendList: ProposalBackend[] = [
       abstract:
         'Pretty Looking frontend depends on hard work put into good wire-framing and requirement gathering',
       science_category: 'Science Category',
+      investigators: [
+        {
+          user_id: 'prp-ska01-202204-01',
+          given_name: 'Tony',
+          family_name: 'Bennet',
+          email: 'somewhere.vague@example.com',
+          organization: '',
+          for_phd: false,
+          principal_investigator: true
+        }
+      ]
+    },
+    observation_info: {
       targets: [
         {
           target_id: 'M28',
@@ -425,17 +440,6 @@ const MockProposalBackendList: ProposalBackend[] = [
           document_id: 'doc_ref_02',
           link: 'https://freetestdata.com/wp-content/uploads/2021/09/Free_Test_Data_100KB_PDF.pdf',
           type: 'proposal_technical'
-        }
-      ],
-      investigators: [
-        {
-          user_id: 'prp-ska01-202204-01',
-          given_name: 'Tony',
-          family_name: 'Bennet',
-          email: 'somewhere.vague@example.com',
-          organization: '',
-          for_phd: false,
-          principal_investigator: true
         }
       ],
       observation_sets: [
@@ -676,7 +680,7 @@ const MockProposalBackendList: ProposalBackend[] = [
       pdm_version: '1.0.0'
     },
     cycle: 'SKA_5000_2023',
-    info: {
+    proposal_info: {
       title: 'Incomplete Proposal',
       proposal_type: {
         main_type: 'standard_proposal'
@@ -685,6 +689,19 @@ const MockProposalBackendList: ProposalBackend[] = [
       abstract:
         'Pretty Looking frontend depends on hard work put into good wire-framing and requirement gathering',
       science_category: 'Extragalactic continuum',
+      investigators: [
+        {
+          user_id: 'prp-ska01-202204-01',
+          given_name: 'Tony',
+          family_name: 'Bennet',
+          email: 'somewhere.vague@example.com',
+          organization: '',
+          for_phd: false,
+          principal_investigator: true
+        }
+      ]
+    },
+    observation_info: {
       targets: [
         {
           target_id: 'M28',
@@ -755,17 +772,6 @@ const MockProposalBackendList: ProposalBackend[] = [
           document_id: 'doc_ref_02',
           link: 'https://freetestdata.com/wp-content/uploads/2021/09/Free_Test_Data_100KB_PDF.pdf',
           type: 'proposal_technical'
-        }
-      ],
-      investigators: [
-        {
-          user_id: 'prp-ska01-202204-01',
-          given_name: 'Tony',
-          family_name: 'Bennet',
-          email: 'somewhere.vague@example.com',
-          organization: '',
-          for_phd: false,
-          principal_investigator: true
         }
       ],
       observation_sets: [

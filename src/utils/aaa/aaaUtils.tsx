@@ -15,8 +15,8 @@ export const PROPOSAL_ROLE_PI = 'Principal Investigator';
 
 export const OPS_PROPOSAL_ADMIN = 'obs-oauth2role-opsproposaladmin-1-1535351309';
 export const OPS_REVIEW_CHAIR = 'obs-oauth2role-opsreviewerchair-11741547065';
-export const OPS_REVIEWER_SCIENCE = 'obs-oauth2role-opsreviewersci-1635769025';
-export const EXT_REVIEWER_TECHNICAL = 'obs-oauth2role-opsreviewertec-1-1994146425';
+export const OPS_REVIEWER_SCIENCE = 'obs-oauth2role-scireviewer-1635769025';
+export const EXT_REVIEWER_TECHNICAL = 'obs-oauth2role-tecreviewer-1-1994146425';
 export const SW_ENGINEER = 'obs-integrationenvs-oauth2role-sweng-11162868063';
 
 const hasOverride = () => APP_OVERRIDE_GROUPS && APP_OVERRIDE_GROUPS.length > 0;

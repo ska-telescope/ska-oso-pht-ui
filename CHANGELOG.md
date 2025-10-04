@@ -27,7 +27,11 @@ UNRELEASED
 * Changed: Member search functionality combined with member entry
 * Fixed: Handling of post proposal response since response changed from id to full proposal
 * Added: PI automatically retrieved from Proposal after creation following services updates
-* Fixed: fixed permission group names for chair and technical reviewer
+* Fixed: fixed permission groups
+* Fixed: get proposal mapping handles incomplete proposal
+* Changed: Use the real endpoint for getUserByEmail indstead of mocked data
+* Added: type InvestigatorMSGraph
+* Removed: use of panel in review list page
 
 5.1.0
 ----------
