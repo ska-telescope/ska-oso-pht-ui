@@ -87,12 +87,9 @@ export default function TargetEntry({
   };
 
   const setBeamData = (allBeams: any[]) => {
-    console.log('Accessed allBeams data:', allBeams);
-
     if (setTarget) {
       setTarget({ ...target, tiedArrayBeams: allBeams });
     }
-    console.log('allBeams data ', allBeams);
     setBeamArrayData(allBeams);
   };
 
