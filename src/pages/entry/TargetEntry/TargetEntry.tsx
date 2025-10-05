@@ -62,6 +62,7 @@ export default function TargetEntry({
   const [referenceCoordinates, setReferenceCoordinates] = React.useState(RA_TYPE_ICRS.label);
   const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
   const [beamArrayData, setBeamArrayData] = React.useState<TiedArrayBeams[]>([]);
+  const [resetBeamArrayData, setResetBeamArrayData] = React.useState(false);
 
   const LABEL_WIDTH = 6;
 
@@ -165,6 +166,7 @@ export default function TargetEntry({
       } else {
         AddTheTarget();
         clearForm();
+        setResetBeamArrayData(true);
       }
     };
 
@@ -287,7 +289,12 @@ export default function TargetEntry({
 
   const pulsarTimingBeamField = () => {
     return wrapper(
-      <PulsarTimingBeamField setTarget={setTarget} target={target} onDialogResponse={setBeamData} />
+      <PulsarTimingBeamField
+        setTarget={setTarget}
+        target={target}
+        onDialogResponse={setBeamData}
+        resetBeamData={resetBeamArrayData}
+      />
     );
   };
   const nameField = () =>

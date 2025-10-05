@@ -18,6 +18,7 @@ interface PulsarTimingBeamFieldProps {
   onDialogResponse?: Function;
 }
 export default function PulsarTimingBeamField({
+  resetBeamData,
   setTarget,
   target,
   onDialogResponse
@@ -31,9 +32,14 @@ export default function PulsarTimingBeamField({
   const [beamName, setBeamName] = React.useState('');
   const [beamRA, setBeamRA] = React.useState('');
   const [beamDec, setBeamDec] = React.useState('');
+  const initialRows = [{ id: 1, isAddRow: true }];
   const [rows, setRows] = React.useState([{ id: 1, isAddRow: true }]);
   const [allBeams, setAllBeams] = React.useState<TiedArrayBeams[]>([]);
   const LAB_WIDTH = 5;
+
+  React.useEffect(() => {
+    setShowGrid(selectedValue === 'multipleBeams');
+  }, [selectedValue]);
 
   React.useEffect(() => {
     if (allBeams.length > 0 && onDialogResponse) {
@@ -41,15 +47,22 @@ export default function PulsarTimingBeamField({
     }
   }, [allBeams, onDialogResponse]);
 
+  React.useEffect(() => {
+    if (resetBeamData) {
+      console.log('Resetting beam data');
+      setInitialRows(); // Reset rows to initial state
+    }
+  }, [resetBeamData]);
+
   const wrapper = (children: any) => <Box sx={{ width: '100%' }}>{children}</Box>;
+
+  const setInitialRows = () => {
+    setRows(initialRows);
+  };
 
   const handleClick = event => {
     setSelectedValue(event.target.value);
   };
-
-  React.useEffect(() => {
-    setShowGrid(selectedValue === 'multipleBeams');
-  }, [selectedValue]);
 
   const setTheName = (inValue: string) => {
     setBeamName(inValue);
