@@ -32,6 +32,8 @@ UNRELEASED
 * Changed: Use the real endpoint for getUserByEmail indstead of mocked data
 * Added: type InvestigatorMSGraph
 * Removed: use of panel in review list page
+* Removed: use of panel in decision list page
+* Removed: metadata not sent to backend anymore
 
 5.1.0
 ----------
