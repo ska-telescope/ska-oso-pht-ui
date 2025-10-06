@@ -29,7 +29,6 @@ describe('Helper Functions', () => {
 });
 
 describe('GetProposalReviewList Service', () => {
-  const proposalId = 'prsl-t0001-20250716-00001';
   let mockedAuthClient: any;
   beforeEach(() => {
     vi.resetAllMocks();
@@ -47,42 +46,42 @@ describe('GetProposalReviewList Service', () => {
 
   test('returns mapped mock data when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await GetProposalReviewList(mockedAuthClient, proposalId);
+    const result = await GetProposalReviewList(mockedAuthClient);
     expect(result).to.deep.equal(MockProposalReviewListFrontend);
   });
 
   test('returns mapped data from API when USE_LOCAL_DATA is false', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.get.mockResolvedValue({ data: MockProposalReviewListBackend });
-    const result = (await GetProposalReviewList(mockedAuthClient, proposalId)) as ProposalReview[];
+    const result = (await GetProposalReviewList(mockedAuthClient)) as ProposalReview[];
     expect(result).to.deep.equal(MockProposalReviewListFrontend);
   });
 
   test('returns unsorted data when API returns only one proposal review', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.get.mockResolvedValue({ data: [MockProposalReviewListBackend[0]] });
-    const result = await GetProposalReviewList(mockedAuthClient, proposalId);
+    const result = await GetProposalReviewList(mockedAuthClient);
     expect(result).to.deep.equal([MockProposalReviewListFrontend[1]]);
   });
 
   test('returns error message on API failure', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.get.mockRejectedValue(new Error('Network Error'));
-    const result = await GetProposalReviewList(mockedAuthClient, proposalId);
+    const result = await GetProposalReviewList(mockedAuthClient);
     expect(result).to.deep.equal('Network Error');
   });
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.get.mockRejectedValue({ unexpected: 'object' });
-    const result = await GetProposalReviewList(mockedAuthClient, proposalId);
+    const result = await GetProposalReviewList(mockedAuthClient);
     expect(result).to.deep.equal('error.API_UNKNOWN_ERROR');
   });
 
   test('returns error.API_UNKNOWN_ERROR when API returns non-array data', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.get.mockResolvedValue({ data: { not: 'an array' } });
-    const result = await GetProposalReviewList(mockedAuthClient, proposalId);
+    const result = await GetProposalReviewList(mockedAuthClient);
     expect(result).to.deep.equal('error.API_UNKNOWN_ERROR');
   });
 });

@@ -19,7 +19,6 @@ export function mappingPanelDecisionFrontendToBackend(
     prsl_id: decision.proposalId,
     decided_on: decision.decidedOn,
     decided_by: decision.decidedBy,
-    metaData: decision.metaData,
     recommendation: decision.recommendation,
     rank: decision.rank,
     status: decision.status

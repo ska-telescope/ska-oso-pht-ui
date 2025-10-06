@@ -108,7 +108,6 @@ describe('<MemberEntry /> search for user', () => {
       });
       expect(updateAppContent5Mock).toHaveBeenCalled();
     });
-    // console.log(updateAppContent5Mock.mock.calls);
   });
 
   test('fill user details manually', async () => {
