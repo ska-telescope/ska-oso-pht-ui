@@ -91,7 +91,7 @@ export default function TargetEntry({
     if (setTarget) {
       setTarget({ ...target, tiedArrayBeams: allBeams });
     }
-    setBeamArrayData(allBeams);
+    setBeamArrayData(allBeams ?? []);
   };
 
   const setTheRedshift = (inValue: string) => {
@@ -139,6 +139,7 @@ export default function TargetEntry({
     setVelUnit(target?.velUnit ?? 0);
     setRedshift(target?.redshift ?? '');
     setReferenceFrame(target?.kind ?? 0);
+    setBeamArrayData(target?.tiedArrayBeams ?? []);
   };
 
   React.useEffect(() => {
@@ -163,6 +164,7 @@ export default function TargetEntry({
   const addButton = () => {
     const addButtonAction = () => {
       if (!formValidation()) {
+        return;
       } else {
         AddTheTarget();
         clearForm();
@@ -178,9 +180,6 @@ export default function TargetEntry({
         : null;
       const highestId = highest ? highest.id : 0;
 
-      console.log('beam array data ', beamArrayData);
-
-      //TODO: Resolve mapping error
       const newTarget: Target = {
         kind: RA_TYPE_ICRS.value,
         decStr: dec,
@@ -198,7 +197,7 @@ export default function TargetEntry({
       };
 
       setProposal({ ...getProposal(), targets: [...(getProposal().targets ?? []), newTarget] });
-      console.log('target TargetEntry', newTarget);
+      // console.log('target TargetEntry', newTarget);
       notifySuccess(t('addTarget.success'), NOTIFICATION_DELAY_IN_SECONDS);
     };
 
@@ -208,6 +207,7 @@ export default function TargetEntry({
       setDec('');
       setVel('');
       setRedshift('');
+      setBeamArrayData([]);
     };
 
     const disabled = () => !(name?.length && ra?.length && dec?.length);

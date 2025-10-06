@@ -16,12 +16,13 @@ interface PulsarTimingBeamFieldProps {
   setTarget?: Function;
   target?: Target;
   onDialogResponse?: Function;
+  resetBeamData?: boolean;
 }
 export default function PulsarTimingBeamField({
-  resetBeamData,
   setTarget,
   target,
-  onDialogResponse
+  onDialogResponse,
+  resetBeamData
 }: PulsarTimingBeamFieldProps) {
   const { t } = useScopedTranslation();
   const { helpComponent } = storageObject.useStore();
@@ -42,17 +43,20 @@ export default function PulsarTimingBeamField({
   }, [selectedValue]);
 
   React.useEffect(() => {
-    if (allBeams.length > 0 && onDialogResponse) {
+    if (onDialogResponse) {
       onDialogResponse(allBeams); // Trigger callback after state update
     }
   }, [allBeams, onDialogResponse]);
 
   React.useEffect(() => {
     if (resetBeamData) {
-      console.log('Resetting beam data');
       setInitialRows(); // Reset rows to initial state
+      setBeamDec('');
+      setBeamRA('');
+      setBeamName('');
+      setAllBeams([]);
     }
-  }, [resetBeamData]);
+  }, [resetBeamData, target]);
 
   const wrapper = (children: any) => <Box sx={{ width: '100%' }}>{children}</Box>;
 
