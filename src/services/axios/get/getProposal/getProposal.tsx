@@ -11,7 +11,8 @@ import Target, {
   PointingPatternParams,
   ReferenceCoordinateGalacticBackend,
   ReferenceCoordinateICRSBackend,
-  TargetBackend, TiedArrayBeams
+  TargetBackend,
+  TiedArrayBeams
 } from '@utils/types/target.tsx';
 import Observation from '@utils/types/observation.tsx';
 import TargetObservation from '@utils/types/targetObservation.tsx';

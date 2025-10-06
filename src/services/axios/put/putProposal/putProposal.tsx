@@ -24,6 +24,7 @@ async function PutProposal(
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${proposal.id}`;
     // TODO: add testing for proposal conversion format
+    console.log('proposal sending to put mapping ', proposal);
     const convertedProposal = MappingPutProposal(proposal, status as string);
     console.log('convertedProposal ', convertedProposal);
     const result = await authAxiosClient.put(

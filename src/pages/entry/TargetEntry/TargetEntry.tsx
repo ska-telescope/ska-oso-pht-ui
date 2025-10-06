@@ -149,9 +149,9 @@ export default function TargetEntry({
     }
   }, []);
 
-  React.useEffect(() => {
-  console.log('proposal ', getProposal())
-  }, [setProposal]);
+  // React.useEffect(() => {
+  // // console.log('TargetEntry proposal ', getProposal())
+  // }, [setProposal]);
 
   function formValidation() {
     let valid = true;
@@ -200,8 +200,13 @@ export default function TargetEntry({
         tiedArrayBeams: beamArrayData
       };
 
-      setProposal({ ...getProposal(), targets: [...(getProposal().targets ?? []), newTarget] });
-      console.log('target TargetEntry', newTarget);
+      const updatedProposal = {
+        ...getProposal(),
+        targets: [...(getProposal().targets ?? []), newTarget]
+      };
+      setProposal(updatedProposal);
+      // console.log('target TargetEntry', newTarget);
+      console.log('Updated proposal: ', updatedProposal);
       notifySuccess(t('addTarget.success'), NOTIFICATION_DELAY_IN_SECONDS);
     };
 

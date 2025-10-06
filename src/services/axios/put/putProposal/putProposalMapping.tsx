@@ -60,7 +60,6 @@ const getSubType = (proposalType: number, proposalSubType: number[]): any => {
 const getReferenceCoordinate = (
   tar: Target
 ): ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend => {
-  console.log('tar ', tar);
   if (tar.kind === RA_TYPE_GALACTIC.value) {
     return {
       kind: RA_TYPE_GALACTIC.label,
@@ -85,11 +84,12 @@ const getReferenceCoordinate = (
 };
 
 const getTargets = (targets: Target[]): TargetBackend[] => {
-  console.log('targets ',targets);
+  console.log('inside getTargets ', targets);
+
   const outTargets = [];
   for (let i = 0; i < targets.length; i++) {
     const tar = targets[i];
-    console.log('targets ',tar);
+    console.log('targets ', tar);
     const outTarget: TargetBackend = {
       name: tar.name,
       target_id: tar.name,
@@ -492,6 +492,7 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
 /*************************************************************************************************************************/
 
 export default function MappingPutProposal(proposal: Proposal, status: string) {
+  console.log('proposal inside putMapping ', proposal);
   const transformedProposal: ProposalBackend = {
     metadata: proposal.metadata,
     prsl_id: proposal?.id,
@@ -532,7 +533,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
         : null
     },
     observation_info: {
-      targets: getTargets(proposal?.targets ? proposal.targets : []),
+      targets: getTargets(proposal?.targets) || [],
       documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF),
       observation_sets: getObservationsSets(proposal.observations, proposal.groupObservations),
       data_product_sdps:
