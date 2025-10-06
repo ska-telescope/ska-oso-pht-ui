@@ -34,6 +34,7 @@ UNRELEASED
 * Removed: use of panel in review list page
 * Removed: use of panel in decision list page
 * Removed: metadata not sent to backend anymore
+* Changed: OSO-services : v7.0.0
 
 5.1.0
 ----------
