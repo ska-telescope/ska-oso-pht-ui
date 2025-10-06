@@ -149,6 +149,10 @@ export default function TargetEntry({
     }
   }, []);
 
+  React.useEffect(() => {
+  console.log('proposal ', getProposal())
+  }, [setProposal]);
+
   function formValidation() {
     let valid = true;
     const targets = getProposal()?.targets;
@@ -197,7 +201,7 @@ export default function TargetEntry({
       };
 
       setProposal({ ...getProposal(), targets: [...(getProposal().targets ?? []), newTarget] });
-      // console.log('target TargetEntry', newTarget);
+      console.log('target TargetEntry', newTarget);
       notifySuccess(t('addTarget.success'), NOTIFICATION_DELAY_IN_SECONDS);
     };
 

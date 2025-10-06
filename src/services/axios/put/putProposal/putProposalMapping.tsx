@@ -60,6 +60,7 @@ const getSubType = (proposalType: number, proposalSubType: number[]): any => {
 const getReferenceCoordinate = (
   tar: Target
 ): ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend => {
+  console.log('tar ', tar);
   if (tar.kind === RA_TYPE_GALACTIC.value) {
     return {
       kind: RA_TYPE_GALACTIC.label,
@@ -84,9 +85,11 @@ const getReferenceCoordinate = (
 };
 
 const getTargets = (targets: Target[]): TargetBackend[] => {
+  console.log('targets ',targets);
   const outTargets = [];
   for (let i = 0; i < targets.length; i++) {
     const tar = targets[i];
+    console.log('targets ',tar);
     const outTarget: TargetBackend = {
       name: tar.name,
       target_id: tar.name,
@@ -102,6 +105,26 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
         // but UI uses LSRK (Kinematic Local Standard of Rest) & Heliocentric for referenceFrame
         // -> using raReferenceFrame for now as data format is different
         redshift: isRedshift(tar.velType) ? Number(tar.redshift) : 0
+      },
+      tiedArrayBeams: {
+        pstBeams: tar.tiedArrayBeams?.pstBeams.map(beam => ({
+          beamId: beam.beamId,
+          beamName: beam.beamName,
+          beamCoordinate: beam.beamCoordinate,
+          stnWeights: beam.stnWeights
+        })),
+        pssBeams: tar.tiedArrayBeams?.pssBeams.map(beam => ({
+          beamId: beam.beamId,
+          beamName: beam.beamName,
+          beamCoordinate: beam.beamCoordinate,
+          stnWeights: beam.stnWeights
+        })),
+        vlbiBeams: tar.tiedArrayBeams?.vlbiBeams.map(beam => ({
+          beamId: beam.beamId,
+          beamName: beam.beamName,
+          beamCoordinate: beam.beamCoordinate,
+          stnWeights: beam.stnWeights
+        }))
       }
     };
     /********************* pointing pattern *********************/

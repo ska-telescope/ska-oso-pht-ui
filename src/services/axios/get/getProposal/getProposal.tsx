@@ -11,7 +11,7 @@ import Target, {
   PointingPatternParams,
   ReferenceCoordinateGalacticBackend,
   ReferenceCoordinateICRSBackend,
-  TargetBackend
+  TargetBackend, TiedArrayBeams
 } from '@utils/types/target.tsx';
 import Observation from '@utils/types/observation.tsx';
 import TargetObservation from '@utils/types/targetObservation.tsx';
@@ -147,6 +147,26 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
           offsetXArcsec: p.offset_x_arcsec,
           offsetYArcsec: p.offset_y_arcsec
         })) as PointingPatternParams[]
+      },
+      tiedArrayBeams: {
+        pstBeams: e.tied_array_beams?.pst_beams?.map(beam => ({
+          beamId: beam.beam_id,
+          beamName: beam.beam_name,
+          beamCoordinate: beam.beam_coordinate,
+          stnWeights: beam.stn_weights
+        })),
+        pssBeams: e.tied_array_beams?.pss_beams?.map(beam => ({
+          beamId: beam.beam_id,
+          beamName: beam.beam_name,
+          beamCoordinate: beam.beam_coordinate,
+          stnWeights: beam.stn_weights
+        })),
+        vlbiBeams: e.tied_array_beams?.vlbi_beams?.map(beam => ({
+          beamId: beam.beam_id,
+          beamName: beam.beam_name,
+          beamCoordinate: beam.beam_coordinate,
+          stnWeights: beam.stn_weights
+        }))
       }
     };
     /*------- reference coordinate properties --------------------- */
