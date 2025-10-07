@@ -45,7 +45,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const wrapStatusArray = useMediaQuery(`(max-width:${widthWrapStatusArray})`); // revisit to implement override breakpoint
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
-  const { application, updateAppContent2 } = storageObject.useStore();
+  const { application } = storageObject.useStore();
   const [canSubmit, setCanSubmit] = React.useState(false);
   const [openProposalDisplay, setOpenProposalDisplay] = React.useState(false);
   const [openValidationResults, setOpenValidationResults] = React.useState(false);
@@ -58,15 +58,6 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   const getAccess = () => application.content4 as ProposalAccess[];
   const getProposal = () => application.content2 as Proposal;
-
-  React.useEffect(() => {
-    const proposal = application.content2;
-    if (proposal) {
-      console.log(' Updated proposal - page banner :', proposal); //target data visible
-      // Handle the updated proposal data here
-      console.log('verify proposal', getProposal()); //target data visible
-    }
-  }, [application.content2]);
 
   const isDisableEndpoints = () => {
     /* c8 ignore start */
@@ -125,7 +116,6 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   const updateProposal = async () => {
     if (isDisableEndpoints()) return;
-    console.log('proposal page banner ', getProposal()); //target data not visible
     const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.DRAFT);
     updateProposalResponse(response);
   };
