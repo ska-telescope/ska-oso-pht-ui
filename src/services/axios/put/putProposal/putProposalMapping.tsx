@@ -444,7 +444,7 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
       const obsType = getObsType(tarObs, incObs); // spectral or continuum
       const spectralSection = getSpectralSection(obsType);
       const suppliedType =
-        tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
+        tarObs?.sensCalc?.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
 
       const suppliedRelatedFields =
         suppliedType === 'sensitivity'
@@ -494,7 +494,6 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
 export default function MappingPutProposal(proposal: Proposal, status: string) {
   console.log('proposal inside putMapping ', proposal);
   const transformedProposal: ProposalBackend = {
-    metadata: proposal.metadata,
     prsl_id: proposal?.id,
     status: status,
     submitted_on: status === PROPOSAL_STATUS.SUBMITTED ? new Date().toISOString() : null, // note: null since oso-services 1.1.0  does not support ''
@@ -506,7 +505,7 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     proposal_info: {
       title: proposal.title,
       proposal_type: {
-        main_type: PROJECTS.find(item => item.id === proposal.proposalType)?.mapping,
+        main_type: PROJECTS.find(item => item.id === proposal.proposalType)?.mapping as string,
         attributes: proposal.proposalSubType
           ? getSubType(proposal.proposalType, proposal.proposalSubType)
           : []
@@ -537,10 +536,17 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
       documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF),
       observation_sets: getObservationsSets(proposal.observations, proposal.groupObservations),
       data_product_sdps:
-        proposal.dataProductSDP?.length > 0 ? getDataProductSDP(proposal.dataProductSDP) : [],
+        proposal?.dataProductSDP && proposal?.dataProductSDP?.length > 0
+          ? getDataProductSDP(proposal.dataProductSDP as DataProductSDP[])
+          : [],
       data_product_src_nets:
-        proposal.dataProductSRC?.length > 0 ? getDataProductSRC(proposal.dataProductSRC) : [],
-      result_details: getResults(proposal.targetObservation, proposal.observations)
+        proposal?.dataProductSRC && proposal?.dataProductSRC?.length > 0
+          ? getDataProductSRC(proposal.dataProductSRC as DataProductSRC[])
+          : [],
+      result_details: getResults(
+        proposal.targetObservation as TargetObservation[],
+        proposal.observations as Observation[]
+      )
     }
   };
   helpers.transform.trimObject(transformedProposal);

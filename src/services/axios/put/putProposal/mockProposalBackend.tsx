@@ -1,5 +1,4 @@
 import { ProposalBackend } from '@utils/types/proposal.tsx';
-import { DEFAULT_USER } from '@utils/constants.ts';
 import { RA_TYPE_ICRS } from '@utils/constants.ts';
 
 export const MockProposalBackend: ProposalBackend = {
@@ -7,14 +6,6 @@ export const MockProposalBackend: ProposalBackend = {
   status: 'draft',
   submitted_by: '',
   submitted_on: null,
-  metadata: {
-    version: 10,
-    created_by: DEFAULT_USER,
-    created_on: '2025-06-13T13:48:34.963103Z',
-    last_modified_by: DEFAULT_USER,
-    last_modified_on: '2025-06-24T16:48:47.127032Z',
-    pdm_version: '18.1.0'
-  },
   investigator_refs: [],
   cycle: 'SKA_1962_2024',
   proposal_info: {
@@ -224,23 +215,18 @@ export const MockProposalBackendZoom: ProposalBackend = {
   status: 'draft',
   submitted_by: '',
   submitted_on: null,
-  metadata: {
-    version: 5,
-    created_by: DEFAULT_USER,
-    created_on: '2025-06-24T22:33:30.487950Z',
-    last_modified_by: DEFAULT_USER,
-    last_modified_on: '2025-06-24T22:35:19.489320Z',
-    pdm_version: '18.1.0'
-  },
   investigator_refs: [],
   cycle: 'SKA_1962_2024',
-  info: {
+  proposal_info: {
     title: 'Proposal Zoom',
     proposal_type: {
       main_type: 'key_science_proposal'
     },
     abstract: 'My zoom abstract.',
     science_category: 'High Energy Cosmic Particles',
+    investigators: []
+  },
+  observation_info: {
     targets: [
       {
         target_id: 'm2',
@@ -366,6 +352,8 @@ export const MockProposalBackendZoom: ProposalBackend = {
           unit: 'uJy/beam'
         }
       }
-    ]
+    ],
+    documents: [],
+    data_product_src_nets: []
   }
 };

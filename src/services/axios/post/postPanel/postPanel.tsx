@@ -9,7 +9,6 @@ export function mappingPostPanel(panel: Panel, cycleId: string): PanelBackend {
     cycle: panel.cycle ? panel.cycle : cycleId,
     name: panel.name,
     expires_on: panel.expiresOn,
-    metadata: panel.metadata,
     proposals: panel.proposals.map(proposal => ({
       prsl_id: proposal.proposalId,
       assigned_on: proposal.assignedOn ? proposal.assignedOn : new Date().toISOString()

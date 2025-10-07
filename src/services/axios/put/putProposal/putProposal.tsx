@@ -3,13 +3,13 @@ import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
 } from '@utils/constants.ts';
-import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend.tsx';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
 import MappingPutProposal from './putProposalMapping.tsx';
+import { MockProposalFrontend } from './mockProposalFrontend.tsx';
 
 export function mockPutProposal() {
-  return MockProposalBackend; // TODO check if this is the correct mock return value
+  return MappingPutProposal(MockProposalFrontend, 'draft');
 }
 
 async function PutProposal(
@@ -23,10 +23,7 @@ async function PutProposal(
 
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${proposal.id}`;
-    // TODO: add testing for proposal conversion format
-    console.log('proposal sending to put mapping ', proposal);
     const convertedProposal = MappingPutProposal(proposal, status as string);
-    console.log('convertedProposal ', convertedProposal);
     const result = await authAxiosClient.put(
       `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
       convertedProposal
