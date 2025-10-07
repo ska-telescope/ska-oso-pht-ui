@@ -36,7 +36,8 @@ UNRELEASED
 * Removed: metadata not sent to backend anymore
 * [BREAKING]: Changed: OSO-services : v7.0.0
 * Changed: ODA updated to v.11.8.0
-* Changed: Admin can see decison list and review list pages
+* Changed: Admin can view decison list and review list pages
+* Changed: Sensitivity Calculator updated to v11.3.0
 
 5.1.0
 ----------
