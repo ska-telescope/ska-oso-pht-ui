@@ -34,7 +34,9 @@ UNRELEASED
 * Removed: use of panel in review list page
 * Removed: use of panel in decision list page
 * Removed: metadata not sent to backend anymore
-* Changed: OSO-services : v7.0.0
+* [BREAKING]: Changed: OSO-services : v7.0.0
+* Changed: ODA updated to v.11.8.0
+* Changed: Admin can see decison list and review list pages
 
 5.1.0
 ----------
