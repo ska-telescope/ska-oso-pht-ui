@@ -1,10 +1,10 @@
 ---
 apiVersion: v2
-appVersion: 5.1.0
+appVersion: 6.0.0
 description: A Helm chart to deploy the oso proposal handling tool
 home: https://gitlab.com/ska-telescope/oso/ska-oso-pht
 maintainers:
   - email: stargazer@sarao.ac.za
     name: STARGAZER
 name: ska-oso-pht-ui
-version: 5.1.0
+version: 6.0.0
