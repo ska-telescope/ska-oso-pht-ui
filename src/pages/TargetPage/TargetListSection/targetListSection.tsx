@@ -43,7 +43,6 @@ export default function TargetListSection() {
   };
 
   const editIconClicked = (e: Target) => {
-    console.log('target when edit icon clicked ', e);
     setRowTarget(e);
     setOpenEditDialog(true);
   };
@@ -57,8 +56,6 @@ export default function TargetListSection() {
     const obs1 = getProposal().targets?.map(rec => {
       return rec.id === rowTarget?.id ? rowTarget : rec;
     });
-    console.log('rowTarget ', rowTarget);
-    console.log('obs1 ', obs1);
     setProposal({ ...getProposal(), targets: obs1 });
     setRowTarget(null);
     closeDialog();
