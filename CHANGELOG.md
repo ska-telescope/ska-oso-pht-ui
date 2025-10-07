@@ -7,7 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 UNRELEASED
 ----------
 
-6.0.0
+7.0.0
 ----------
 * Changed: Non logged in users have restricted use of the PHT to target and observation pages.
 * Removed: E2E tests related to functionality which is no longer required.
