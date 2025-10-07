@@ -16,11 +16,13 @@ interface PulsarTimingBeamFieldProps {
   target?: Target;
   onDialogResponse?: Function;
   resetBeamData?: boolean;
+  showBeamData?: boolean;
 }
 export default function PulsarTimingBeamField({
   target,
   onDialogResponse,
-  resetBeamData
+  resetBeamData,
+  showBeamData
 }: PulsarTimingBeamFieldProps) {
   const { t } = useScopedTranslation();
   const { helpComponent } = storageObject.useStore();
@@ -45,6 +47,13 @@ export default function PulsarTimingBeamField({
       onDialogResponse(allBeams); // Trigger callback after state update
     }
   }, [allBeams, onDialogResponse]);
+
+  React.useEffect(() => {
+    if (showBeamData) {
+      console.log('PulsarTimingBeamField :: showBeamData:: ', showBeamData);
+      console.log('PST BEAM target ', target);
+    }
+  }, [showBeamData]);
 
   React.useEffect(() => {
     if (resetBeamData) {

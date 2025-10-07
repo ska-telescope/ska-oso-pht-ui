@@ -29,6 +29,7 @@ interface TargetEntryProps {
   setTarget?: Function;
   target?: Target;
   textAlign?: string;
+  showBeamData?: boolean;
 }
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
@@ -37,7 +38,8 @@ export default function TargetEntry({
   raType,
   setTarget = undefined,
   target = undefined,
-  textAlign = 'right'
+  textAlign = 'right',
+  showBeamData
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
   const { notifySuccess } = useNotify();
@@ -296,6 +298,7 @@ export default function TargetEntry({
         target={target}
         onDialogResponse={setBeamData}
         resetBeamData={resetBeamArrayData}
+        showBeamData={showBeamData}
       />
     );
   };

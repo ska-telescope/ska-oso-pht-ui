@@ -212,6 +212,7 @@ export default function TargetListSection() {
             raType={RA_TYPE_ICRS.value}
             setTarget={setRowTarget}
             target={rowTarget ? rowTarget : undefined}
+            showBeamData={!!rowTarget?.tiedArrayBeams && rowTarget.tiedArrayBeams.length > 0}
           />
         </AlertDialog>
       )}
