@@ -13,13 +13,11 @@ import SkyDirection1 from '@/components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
 
 interface PulsarTimingBeamFieldProps {
-  setTarget?: Function;
   target?: Target;
   onDialogResponse?: Function;
   resetBeamData?: boolean;
 }
 export default function PulsarTimingBeamField({
-  setTarget,
   target,
   onDialogResponse,
   resetBeamData
@@ -70,23 +68,14 @@ export default function PulsarTimingBeamField({
 
   const setTheName = (inValue: string) => {
     setBeamName(inValue);
-    if (setTarget !== undefined) {
-      setTarget({ ...target, name: inValue });
-    }
   };
 
   const setTheDec = (inValue: string) => {
     setBeamDec(inValue);
-    if (setTarget !== undefined) {
-      setTarget({ ...target, decStr: inValue });
-    }
   };
 
   const setTheRA = (inValue: string) => {
     setBeamRA(inValue);
-    if (setTarget !== undefined) {
-      setTarget({ ...target, raStr: inValue });
-    }
   };
 
   const controlProps = item => ({
@@ -207,7 +196,7 @@ export default function PulsarTimingBeamField({
         labelBold
         labelPosition={LAB_POSITION}
         labelWidth={LAB_WIDTH}
-        testId={'name'}
+        testId={'beamName'}
         setValue={setTheName}
         value={beamName}
         suffix={resolveBeamNameButton()}

@@ -130,6 +130,7 @@ export default function TargetEntry({
   };
 
   const targetIn = (target: Target) => {
+    console.log('target in targetIn ', target);
     setId(target?.id ?? 0);
     setName(target?.name ?? '');
     setRA(target?.raStr ?? '');
@@ -201,7 +202,7 @@ export default function TargetEntry({
         targets: [...(getProposal().targets ?? []), newTarget]
       };
       setProposal(updatedProposal);
-      // console.log('Updated proposal: ', updatedProposal);
+      console.log('Updated proposal: ', updatedProposal);
       notifySuccess(t('addTarget.success'), NOTIFICATION_DELAY_IN_SECONDS);
     };
 
@@ -294,7 +295,6 @@ export default function TargetEntry({
   const pulsarTimingBeamField = () => {
     return wrapper(
       <PulsarTimingBeamField
-        setTarget={setTarget}
         target={target}
         onDialogResponse={setBeamData}
         resetBeamData={resetBeamArrayData}
