@@ -353,23 +353,23 @@ const getSuppliedFieldsSensitivity = (
   params.weighted_continuum_sensitivity = {
     value: isContinuum(obsType)
       ? Number(
-          tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumSensitivityWeighted')?.value
-        )
+        tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumSensitivityWeighted')?.value
+      )
       : 0,
     unit: isContinuum(obsType)
       ? (tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumSensitivityWeighted')
-          ?.units as string)
+        ?.units as string)
       : ''
   };
   params.total_continuum_sensitivity = {
     value: isContinuum(obsType)
       ? Number(
-          tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumTotalSensitivity')?.value
-        )
+        tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumTotalSensitivity')?.value
+      )
       : 0,
     unit: isContinuum(obsType)
       ? (tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumTotalSensitivity')
-          ?.units as string)
+        ?.units as string)
       : ''
   };
 
@@ -389,9 +389,9 @@ const getSuppliedFieldsSensitivity = (
   params.surface_brightness_sensitivity = {
     continuum: isContinuum(obsType)
       ? Number(
-          tarObs.sensCalc.section1?.find(o => o.field === 'continuumSurfaceBrightnessSensitivity')
-            ?.value
-        )
+        tarObs.sensCalc.section1?.find(o => o.field === 'continuumSurfaceBrightnessSensitivity')
+          ?.value
+      )
       : 0,
     spectral: Number(
       tarObs.sensCalc[spectralSection]?.find(
@@ -460,8 +460,8 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
         continuum_confusion_noise: {
           value: isContinuum(obsType)
             ? Number(
-                tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.value
-              )
+              tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.value
+            )
             : 0,
           unit: isContinuum(obsType)
             ? tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.units
@@ -516,23 +516,23 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
       )?.label as string,
       investigators: proposal?.investigators
         ? proposal.investigators.map(investigator => {
-            return {
-              user_id: investigator.id?.toString(),
-              status: investigator.status,
-              given_name: investigator.firstName,
-              family_name: investigator.lastName,
-              email: investigator.email,
-              organization: investigator.affiliation,
-              for_phd: investigator.phdThesis,
-              principal_investigator: investigator.pi,
-              officeLocation: investigator.officeLocation,
-              jobTitle: investigator.jobTitle
-            };
-          })
+          return {
+            user_id: investigator.id?.toString(),
+            status: investigator.status,
+            given_name: investigator.firstName,
+            family_name: investigator.lastName,
+            email: investigator.email,
+            organization: investigator.affiliation,
+            for_phd: investigator.phdThesis,
+            principal_investigator: investigator.pi,
+            officeLocation: investigator.officeLocation,
+            jobTitle: investigator.jobTitle
+          };
+        })
         : null
     },
     observation_info: {
-      targets: getTargets(proposal?.targets) || [],
+      targets: getTargets(proposal?.targets ? proposal.targets : []),
       documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF),
       observation_sets: getObservationsSets(proposal.observations, proposal.groupObservations),
       data_product_sdps:
