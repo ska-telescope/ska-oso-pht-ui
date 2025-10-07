@@ -34,12 +34,14 @@ export const isSoftwareEngineer = () => hasAccess(SW_ENGINEER);
 
 export const isReviewerAdminOnly = () => !isSoftwareEngineer() && hasAccess(OPS_PROPOSAL_ADMIN);
 export const isReviewerAdmin = () => isSoftwareEngineer() || isReviewerAdminOnly();
-export const isReviewerScience = () => hasAccess(SW_ENGINEER) || hasAccess(OPS_REVIEWER_SCIENCE) || isReviewerAdminOnly();
+export const isReviewerScience = () =>
+  hasAccess(SW_ENGINEER) || hasAccess(OPS_REVIEWER_SCIENCE) || isReviewerAdminOnly();
 export const isReviewerTechnical = () =>
   isReviewerAdminOnly() || hasAccess(SW_ENGINEER) || hasAccess(EXT_REVIEWER_TECHNICAL);
 export const isReviewer = () =>
   hasAccess(SW_ENGINEER) || isReviewerScience() || isReviewerTechnical();
-export const isReviewerChair = () => isReviewerAdminOnly() || hasAccess(SW_ENGINEER) || hasAccess(OPS_REVIEW_CHAIR);
+export const isReviewerChair = () =>
+  isReviewerAdminOnly() || hasAccess(SW_ENGINEER) || hasAccess(OPS_REVIEW_CHAIR);
 
 /*****************************************************************************/
 
