@@ -17,6 +17,7 @@ import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { PANEL_DECISION_STATUS, REVIEW_TYPE } from '@/utils/constants';
 import { ScienceReview } from '@/utils/types/proposalReview';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { isReviewerAdminOnly } from '@/utils/aaa/aaaUtils';
 
 const STATUS_SIZE = 30;
 
@@ -138,7 +139,7 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
                               : excludeFunction(detail)
                           }
                           style={{ cursor: 'hand' }}
-                          disabled={detail.reviewType.conflict.hasConflict}
+                          disabled={isReviewerAdminOnly() || detail.reviewType.conflict.hasConflict}
                         >
                           <StatusIcon
                             testId={`includeIcon-${data.id}-${detailIndex}`}
