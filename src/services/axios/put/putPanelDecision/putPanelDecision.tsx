@@ -44,7 +44,7 @@ async function PutPanelDecision(
   }
 
   try {
-    const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}/${PanelDecision.id}`;
+    const URL_PATH = `${OSO_SERVICES_PANEL_DECISIONS_PATH}${PanelDecision.id}`;
     const convertedPanelDecision = mappingPanelDecisionFrontendToBackend(
       PanelDecision,
       PanelDecision.cycle
