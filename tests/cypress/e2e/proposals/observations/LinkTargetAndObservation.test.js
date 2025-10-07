@@ -9,15 +9,18 @@ import {
   createMock,
   createObservation,
   initializeUserNotLoggedIn,
-  verifySensCalcStatus
+  verifySensCalcStatus,
+  mockResolveTargetAPI
 } from '../../common/common';
 beforeEach(() => {
   initializeUserNotLoggedIn();
   createMock();
+  mockResolveTargetAPI();
 
   //add target
   clickListOfTargets();
   addM2TargetUsingResolve();
+  cy.wait('@mockResolveTarget');
   clickToAddTarget();
 
   //go to observation page
