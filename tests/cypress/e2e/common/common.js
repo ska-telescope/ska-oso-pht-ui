@@ -120,17 +120,11 @@ export const mockEmailAPI = () => {
 };
 
 export const mockResolveTargetAPI = () => {
-  cy.window().then(win => {
-    const token = win.localStorage.getItem('cypress:token');
-    cy.fixture('target.json').then(target => {
-      cy.intercept('GET', '**/coordinates/M2/equatorial', req => {
-        req.headers['Authorization'] = `Bearer ${token}`;
-        req.reply({
-          statusCode: 200,
-          body: target
-        });
-      }).as('mockResolveTarget');
-    });
+  cy.fixture('target.json').then(target => {
+    cy.intercept('GET', '**/coordinates/M2/equatorial', {
+      statusCode: 200,
+      body: target
+    }).as('mockResolveTarget');
   });
 };
 
