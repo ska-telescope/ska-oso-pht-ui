@@ -98,6 +98,19 @@ export default function PulsarTimingBeamField({
 
         console.log('uniqueRows: ', uniqueRows);
         setRows(uniqueRows);
+
+        // Extract tiedArrayBeams data and update setAllBeams
+        const extractedBeams = target.tiedArrayBeams.map(beamGroup => ({
+          ...beamGroup,
+          pstBeams: beamGroup.pstBeams.map(beam => ({
+            beamId: beam.beamId,
+            beamName: beam.beamName,
+            beamCoordinate: beam.beamCoordinate,
+            stnWeights: beam.stnWeights,
+          })),
+        }));
+        console.log('extractedBeams', extractedBeams);
+        setAllBeams(extractedBeams);
       }
       setSelectedValue('multipleBeams');
       setShowGrid(true);
