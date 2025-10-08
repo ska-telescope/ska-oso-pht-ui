@@ -55,7 +55,7 @@ export default function GridTargets({
       flex: 3,
       renderCell: (e: { row: Target }) => {
         return e.row.tiedArrayBeams
-          ?.flatMap((beam: any) => beam.pstBeams.map((pstBeam: any) => pstBeam.beamName))
+          ?.flatMap((beam: any) => beam.pstBeams?.map((pstBeam: any) => pstBeam.beamName) ?? [])
           .join(', ');
       }
     }

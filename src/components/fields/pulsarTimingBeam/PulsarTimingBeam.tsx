@@ -18,6 +18,20 @@ interface PulsarTimingBeamFieldProps {
   resetBeamData?: boolean;
   showBeamData?: boolean;
 }
+
+interface Row {
+  id: number;
+  isAddRow: boolean;
+  beamId?: number;
+  beamName?: string;
+  beamCoordinate?: {
+    kind: number;
+    referenceFrame: string;
+    raStr: string;
+    decStr: string;
+  };
+  stnWeights?: number[];
+}
 export default function PulsarTimingBeamField({
   target,
   onDialogResponse,
@@ -34,7 +48,7 @@ export default function PulsarTimingBeamField({
   const [beamRA, setBeamRA] = React.useState('');
   const [beamDec, setBeamDec] = React.useState('');
   const initialRows = [{ id: 1, isAddRow: true }];
-  const [rows, setRows] = React.useState([{ id: 1, isAddRow: true }]);
+  const [rows, setRows] = React.useState<Row[]>([{ id: 1, isAddRow: true }]);
   const [allBeams, setAllBeams] = React.useState<TiedArrayBeams[]>([]);
   const LAB_WIDTH = 5;
 
@@ -50,23 +64,41 @@ export default function PulsarTimingBeamField({
 
   React.useEffect(() => {
     if (showBeamData) {
-      console.log('PulsarTimingBeamField :: showBeamData:: ', showBeamData);
       console.log('PST BEAM target ', target);
 
       if (target && target.tiedArrayBeams) {
         console.log('beams', target.tiedArrayBeams);
+
+        // Generate updatedRows
         const updatedRows = target.tiedArrayBeams.flatMap(beamGroup =>
           beamGroup.pstBeams.map(beam => ({
-            id: beam.beamId,
+            id: beam.beamId + 1, // Use beamId as the unique identifier
+            beamId: beam.beamId,
             name: beam.beamName,
             raStr: beam.beamCoordinate.raStr,
             decStr: beam.beamCoordinate.decStr,
             isAddRow: false,
           }))
         );
-        setRows(updatedRows);
-      }
 
+        console.log('updatedRows: ', updatedRows);
+
+        // Combine initialRows, rows, and updatedRows, ensuring no duplicates
+        const uniqueRows = [
+          ...initialRows.filter(
+            initialRow =>
+              !rows.some(existingRow => existingRow.id === initialRow.id) &&
+              !updatedRows.some(updatedRow => updatedRow.id === initialRow.id)
+          ),
+          ...rows.filter(
+            existingRow => !updatedRows.some(updatedRow => updatedRow.id === existingRow.id)
+          ),
+          ...updatedRows,
+        ];
+
+        console.log('uniqueRows: ', uniqueRows);
+        setRows(uniqueRows);
+      }
       setSelectedValue('multipleBeams');
       setShowGrid(true);
     }
