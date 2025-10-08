@@ -7,29 +7,30 @@ import userEvent from '@testing-library/user-event';
 import MemberEntry from './MemberEntry';
 import * as mockService from '@/services/axios/get/getUserByEmail/getUserByEmail';
 
-const updateAppContent5Mock = vi.fn();
+// TODO rework this
+// const updateAppContent5Mock = vi.fn();
 
-vi.mock('@ska-telescope/ska-gui-local-storage', async () => {
-  const actual = await vi.importActual<typeof import('@ska-telescope/ska-gui-local-storage')>(
-    '@ska-telescope/ska-gui-local-storage'
-  );
+// vi.mock('@ska-telescope/ska-gui-local-storage', async () => {
+//   const actual = await vi.importActual<typeof import('@ska-telescope/ska-gui-local-storage')>(
+//     '@ska-telescope/ska-gui-local-storage'
+//   );
 
-  return {
-    ...actual,
-    storageObject: {
-      ...actual.storageObject,
-      useStore: () => ({
-        ...actual.storageObject.useStore(),
-        updateAppContent5: updateAppContent5Mock
-      })
-    }
-  };
-});
+//   return {
+//     ...actual,
+//     storageObject: {
+//       ...actual.storageObject,
+//       useStore: () => ({
+//         ...actual.storageObject.useStore(),
+//         updateAppContent5: updateAppContent5Mock
+//       })
+//     }
+//   };
+// });
 
 describe('<MemberEntry /> search for user', () => {
-  beforeEach(() => {
-    updateAppContent5Mock.mockReset();
-  });
+  // beforeEach(() => {
+  //   updateAppContent5Mock.mockReset();
+  // });
 
   test('search for user successfully', async () => {
     vi.spyOn(mockService, 'GetMockUserByEmail').mockResolvedValue(MockUserFrontendList[0]);

@@ -37,8 +37,8 @@ describe('Review Administrator', () => {
     verifyUserMenuOverview(true);
     verifyUserMenuProposals(true);
     verifyUserMenuPanels(true);
-    verifyUserMenuReviews(false);
-    verifyUserMenuDecisions(false);
+    verifyUserMenuReviews(true);
+    verifyUserMenuDecisions(true);
   });
 
   it('Navigate using the dropdown menu', () => {

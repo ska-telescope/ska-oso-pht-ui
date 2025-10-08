@@ -33,7 +33,12 @@ import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import PutProposalReview from '@/services/axios/put/putProposalReview/putProposalReview';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
-import { getUserId, isReviewerScience, isReviewerTechnical } from '@/utils/aaa/aaaUtils';
+import {
+  getUserId,
+  isReviewerAdminOnly,
+  isReviewerScience,
+  isReviewerTechnical
+} from '@/utils/aaa/aaaUtils';
 import ConflictConfirmation from '@/components/alerts/conflictConfirmation/ConflictConfirmation';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
@@ -282,6 +287,7 @@ export default function ReviewListPage() {
     sciReview: { status: string; reviewType: { conflict: { hasConflict: boolean } } };
   }) => {
     return (
+      !isReviewerAdminOnly() &&
       isReviewerScience() &&
       row?.sciReview &&
       isFeasible(row) &&
@@ -291,19 +297,24 @@ export default function ReviewListPage() {
   };
 
   const canEditTechnical = (tecReview: { status: string }) =>
-    isReviewerTechnical() && tecReview && tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED;
+    !isReviewerAdminOnly() &&
+    isReviewerTechnical() &&
+    tecReview &&
+    tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED;
 
   const hasTechnicalComments = (review: any) =>
     feasibleYes(review) ? true : review?.comments?.length > 0;
 
   const canSubmit = (row: any) => {
     const sciRec =
+      !isReviewerAdminOnly() &&
       isReviewerScience() &&
       row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED &&
       row?.sciReview?.comments?.length > 0 &&
       row?.sciReview?.reviewType?.rank > 0;
 
     const tecRec =
+      !isReviewerAdminOnly() &&
       isReviewerTechnical() &&
       row?.tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED &&
       row?.tecReview?.reviewType?.isFeasible?.length > 0 &&
