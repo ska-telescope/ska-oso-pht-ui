@@ -23,16 +23,6 @@ export const MockProposalBackend: ProposalBackend = {
       {
         target_id: 'target',
         name: 'target',
-        pointing_pattern: {
-          active: 'SinglePointParameters',
-          parameters: [
-            {
-              kind: 'SinglePointParameters',
-              offset_x_arcsec: 0.5,
-              offset_y_arcsec: 0.5
-            }
-          ]
-        },
         reference_coordinate: {
           kind: RA_TYPE_ICRS.label,
           ra_str: '00:00:00.0',
@@ -53,16 +43,6 @@ export const MockProposalBackend: ProposalBackend = {
       {
         target_id: 'target2',
         name: 'target2',
-        pointing_pattern: {
-          active: 'SinglePointParameters',
-          parameters: [
-            {
-              kind: 'SinglePointParameters',
-              offset_x_arcsec: 0.5,
-              offset_y_arcsec: 0.5
-            }
-          ]
-        },
         reference_coordinate: {
           kind: RA_TYPE_ICRS.label,
           ra_str: '05:34:30.900',
@@ -83,16 +63,6 @@ export const MockProposalBackend: ProposalBackend = {
       {
         target_id: 'M2',
         name: 'M2',
-        pointing_pattern: {
-          active: 'SinglePointParameters',
-          parameters: [
-            {
-              kind: 'SinglePointParameters',
-              offset_x_arcsec: 0.5,
-              offset_y_arcsec: 0.5
-            }
-          ]
-        },
         reference_coordinate: {
           kind: RA_TYPE_ICRS.label,
           ra_str: '21:33:27.0200',
