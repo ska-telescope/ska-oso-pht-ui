@@ -30,6 +30,11 @@ export const MockProposalBackend: ProposalBackend = {
           reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
         },
+        tied_array_beams: {
+          pst_beams: [],
+          pss_beams: [],
+          vlbi_beams: []
+        },
         radial_velocity: {
           quantity: {
             value: 0,
@@ -50,6 +55,11 @@ export const MockProposalBackend: ProposalBackend = {
           reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
         },
+        tied_array_beams: {
+          pst_beams: [],
+          pss_beams: [],
+          vlbi_beams: []
+        },
         radial_velocity: {
           quantity: {
             value: 0,
@@ -69,6 +79,11 @@ export const MockProposalBackend: ProposalBackend = {
           dec_str: '-00:49:23.700',
           reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
+        },
+        tied_array_beams: {
+          pst_beams: [],
+          pss_beams: [],
+          vlbi_beams: []
         },
         radial_velocity: {
           quantity: {
@@ -217,6 +232,11 @@ export const MockProposalBackendZoom: ProposalBackend = {
           dec_str: '-00:49:23.700',
           reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
+        },
+        tied_array_beams: {
+          pst_beams: [],
+          pss_beams: [],
+          vlbi_beams: []
         },
         radial_velocity: {
           quantity: {
