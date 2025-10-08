@@ -2,29 +2,29 @@ apiVersion: v2
 name: ska-oso-pht-ui-umbrella
 description: Helm umbrella chart for Observation Design Tool application
 type: application
-version: 5.1.0
-appVersion: 5.1.0
+version: 7.0.0
+appVersion: 7.0.0
 icon: https://www.skatelescope.org/wp-content/uploads/2016/07/09545_NEW_LOGO_2014.png
 dependencies:
 - name: ska-oso-pht-ui
-  version: 5.1.0
+  version: 7.0.0
   repository: file://../ska-oso-pht-ui
 
 # OSO services provides services required by the PHT UI and acts as the proxy
 # for all ODA operations (load proposal, save proposal, etc.)
 - name: ska-oso-services
-  version: 6.0.0
+  version: 7.0.0
   repository: https://artefact.skao.int/repository/helm-internal
 
 # Sensitivity calculator services required by the PHT for the observation page
 - name: ska-ost-senscalc
-  version: 11.2.2
+  version: 11.3.0
   repository: https://artefact.skao.int/repository/helm-internal
 
 # ODA is a dependency of PHT Services. Include it for data persistence
 # The ODA umbrella chart includes ODA API, PostgreSQL database and SKU ID
 - name: ska-db-oda-umbrella
-  version: 11.7.1
+  version: 11.8.0
   repository: https://artefact.skao.int/repository/helm-internal
   condition: ska-db-oda.enabled
 

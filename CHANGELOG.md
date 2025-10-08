@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+
+7.0.0
+----------
 * Changed: Non logged in users have restricted use of the PHT to target and observation pages.
 * Removed: E2E tests related to functionality which is no longer required.
 * Fixed: Inaccurate validation message shown after pairing a valid target–observation following an invalid one
@@ -13,8 +16,6 @@ UNRELEASED
 * Changed: OSD is retrieval
 * Changed: Final review decision capture
 * Added: User targeted e2e testing
-* Changed: ODA v11.7.1
-* Changed: OSO-services : v6.0.0
 * Changed: PDF Viewer now responds to light / dark mode
 * Changed: Retrieval of OSD information now possible via utilities
 * Changed: Notifications moved into the standard footer
@@ -34,7 +35,10 @@ UNRELEASED
 * Removed: use of panel in review list page
 * Removed: use of panel in decision list page
 * Removed: metadata not sent to backend anymore
-* Changed: OSO-services : v7.0.0
+* [BREAKING]: Changed: OSO-services : v7.0.0
+* Changed: ODA updated to v.11.8.0
+* Changed: Admin can view decison list and review list pages
+* Changed: Sensitivity Calculator updated to v11.3.0
 
 5.1.0
 ----------

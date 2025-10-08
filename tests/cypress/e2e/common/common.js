@@ -119,6 +119,15 @@ export const mockEmailAPI = () => {
   });
 };
 
+export const mockResolveTargetAPI = () => {
+  cy.fixture('target.json').then(target => {
+    cy.intercept('GET', '**/coordinates/M2/equatorial', {
+      statusCode: 200,
+      body: target
+    }).as('mockResolveTarget');
+  });
+};
+
 /*----------------------------------------------------------------------*/
 
 export const verify = testId => {
