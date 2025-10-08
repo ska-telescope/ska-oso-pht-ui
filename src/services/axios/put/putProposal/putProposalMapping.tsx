@@ -94,68 +94,44 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
       radial_velocity: {
         quantity: {
           value: isVelocity(tar.velType) ? Number(tar.vel) : 0,
-          unit: VEL_UNITS.find(u => u.value === Number(tar.velUnit))?.label as string
+          unit: VEL_UNITS.find(u => u.value === Number(tar.velUnit))?.label ?? ''
         },
-        definition: 'RADIO', // TODO : hardcoded for now as not implemented in UI
+        definition: 'RADIO',
         reference_frame: tar.raReferenceFrame ? tar.raReferenceFrame : 'LSRK',
-        // TODO : hardcoded for now as backend uses TOPOCENTRIC, LSRK & BARYCENTRIC
-        // but UI uses LSRK (Kinematic Local Standard of Rest) & Heliocentric for referenceFrame
-        // -> using raReferenceFrame for now as data format is different
         redshift: isRedshift(tar.velType) ? Number(tar.redshift) : 0
       },
-      tiedArrayBeams: {
-        pstBeams: tar.tiedArrayBeams?.pstBeams.map(beam => ({
-          beamId: beam.beamId,
-          beamName: beam.beamName,
-          beamCoordinate: beam.beamCoordinate,
-          stnWeights: beam.stnWeights
-        })),
-        pssBeams: tar.tiedArrayBeams?.pssBeams.map(beam => ({
-          beamId: beam.beamId,
-          beamName: beam.beamName,
-          beamCoordinate: beam.beamCoordinate,
-          stnWeights: beam.stnWeights
-        })),
-        vlbiBeams: tar.tiedArrayBeams?.vlbiBeams.map(beam => ({
-          beamId: beam.beamId,
-          beamName: beam.beamName,
-          beamCoordinate: beam.beamCoordinate,
-          stnWeights: beam.stnWeights
-        }))
+      tied_array_beams: {
+        pst_beams:
+          tar.tiedArrayBeams?.flatMap(
+            beamGroup =>
+              beamGroup.pstBeams?.map(beam => ({
+                beam_id: beam.beamId,
+                beam_name: beam.beamName,
+                beam_coordinate: beam.beamCoordinate,
+                stn_weights: beam.stnWeights
+              })) ?? []
+          ) ?? [],
+        pss_beams:
+          tar.tiedArrayBeams?.flatMap(
+            beamGroup =>
+              beamGroup.pssBeams?.map(beam => ({
+                beam_id: beam.beamId,
+                beam_name: beam.beamName,
+                beam_coordinate: beam.beamCoordinate,
+                stn_weights: beam.stnWeights
+              })) ?? []
+          ) ?? [],
+        vlbi_beams:
+          tar.tiedArrayBeams?.flatMap(
+            beamGroup =>
+              beamGroup.vlbiBeams?.map(beam => ({
+                beam_id: beam.beamId,
+                beam_name: beam.beamName,
+                beam_coordinate: beam.beamCoordinate,
+                stn_weights: beam.stnWeights
+              })) ?? []
+          ) ?? []
       }
-    };
-    /********************* pointing pattern *********************/
-    const mockPointingPattern = {
-      pointing_pattern: {
-        active: 'SinglePointParameters',
-        parameters: [
-          {
-            kind: 'SinglePointParameters',
-            epoch: tar.epoch,
-            offsetXArcsec: 0.5,
-            offsetYArcsec: 0.5
-          }
-        ]
-      }
-    };
-    // TODO : As pointingPattern is not currently used in the UI, mock it if it doesn't exist
-    const usedSingleParam = tar.pointingPattern
-      ? tar.pointingPattern
-      : mockPointingPattern.pointing_pattern;
-    const singlePointParam = usedSingleParam?.parameters?.find(
-      param => param.kind === 'SinglePointParameters'
-    );
-    outTarget['pointing_pattern'] = {
-      active: tar.pointingPattern
-        ? tar.pointingPattern?.active
-        : mockPointingPattern.pointing_pattern?.active,
-      parameters: [
-        {
-          kind: singlePointParam?.kind as string,
-          offset_x_arcsec: singlePointParam?.offsetXArcsec as number,
-          offset_y_arcsec: singlePointParam?.offsetYArcsec as number
-        }
-      ]
     };
     outTargets.push(outTarget);
   }

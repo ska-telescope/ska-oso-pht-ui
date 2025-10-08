@@ -68,7 +68,7 @@ export default function PulsarTimingBeamField({
         // Generate updatedRows
         const updatedRows = target.tiedArrayBeams.flatMap(beamGroup =>
           beamGroup.pstBeams.map(beam => ({
-            id: beam.beamId + 1, // Use beamId as the unique identifier
+            id: beam.beamId, // Use beamId as the unique identifier
             beamId: beam.beamId,
             name: beam.beamName,
             raStr: beam.beamCoordinate.raStr,

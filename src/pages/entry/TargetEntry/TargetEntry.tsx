@@ -132,16 +132,16 @@ export default function TargetEntry({
   };
 
   const targetIn = (target: Target) => {
-    setId(target?.id);
-    setName(target?.name);
-    setRA(target?.raStr);
-    setDec(target?.decStr);
-    setVelType(target?.velType);
-    setVel(target?.vel);
-    setVelUnit(target?.velUnit);
-    setRedshift(target?.redshift);
-    setReferenceFrame(target?.kind);
-    setBeamArrayData(target?.tiedArrayBeams);
+    setId(target?.id ?? 0);
+    setName(target?.name ?? '');
+    setRA(target?.raStr ?? '');
+    setDec(target?.decStr ?? '');
+    setVelType(target?.velType ?? 0);
+    setVel(target?.vel ?? '');
+    setVelUnit(target?.velUnit ?? 0);
+    setRedshift(target?.redshift ?? '');
+    setReferenceFrame(target?.kind ?? RA_TYPE_ICRS.value);
+    setBeamArrayData((target?.tiedArrayBeams as TiedArrayBeams[]) ?? []);
   };
 
   React.useEffect(() => {
@@ -184,18 +184,18 @@ export default function TargetEntry({
 
       const newTarget: Target = {
         kind: RA_TYPE_ICRS.value,
-        decStr: dec,
+        decStr: dec ?? '',
         id: highestId + 1,
-        name: name,
-        b: undefined,
-        l: undefined,
-        raStr: ra,
-        redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift : '',
+        name: name ?? '',
+        b: 0, // Default value for `b`
+        l: 0, // Default value for `l`
+        raStr: ra ?? '',
+        redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift ?? '' : '',
         referenceFrame: RA_TYPE_ICRS.label,
-        vel: velType === VELOCITY_TYPE.VELOCITY ? vel : '',
-        velType: velType,
-        velUnit: velUnit,
-        tiedArrayBeams: beamArrayData
+        vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : '',
+        velType: velType ?? 0,
+        velUnit: velUnit ?? 0,
+        tiedArrayBeams: (beamArrayData as TiedArrayBeams[]) ?? []
       };
 
       const updatedProposal = {
