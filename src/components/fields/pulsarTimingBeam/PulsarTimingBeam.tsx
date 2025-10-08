@@ -52,6 +52,8 @@ export default function PulsarTimingBeamField({
     if (showBeamData) {
       console.log('PulsarTimingBeamField :: showBeamData:: ', showBeamData);
       console.log('PST BEAM target ', target);
+      setSelectedValue('multipleBeams');
+      setShowGrid(true);
     }
   }, [showBeamData]);
 
