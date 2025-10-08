@@ -133,16 +133,16 @@ export default function TargetEntry({
   };
 
   const targetIn = (target: Target) => {
-    setId(target?.id ?? 0);
-    setName(target?.name ?? '');
-    setRA(target?.raStr ?? '');
-    setDec(target?.decStr ?? '');
-    setVelType(target?.velType ?? 0);
-    setVel(target?.vel ?? '');
-    setVelUnit(target?.velUnit ?? 0);
-    setRedshift(target?.redshift ?? '');
-    setReferenceFrame(target?.kind ?? 0);
-    setBeamArrayData(target?.tiedArrayBeams ?? []);
+    setId(target?.id);
+    setName(target?.name);
+    setRA(target?.raStr);
+    setDec(target?.decStr);
+    setVelType(target?.velType);
+    setVel(target?.vel);
+    setVelUnit(target?.velUnit);
+    setRedshift(target?.redshift);
+    setReferenceFrame(target?.kind);
+    setBeamArrayData(target?.tiedArrayBeams);
   };
 
   React.useEffect(() => {

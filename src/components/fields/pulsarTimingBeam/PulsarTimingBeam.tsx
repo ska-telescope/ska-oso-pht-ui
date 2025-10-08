@@ -54,6 +54,10 @@ export default function PulsarTimingBeamField({
 
   React.useEffect(() => {
     setShowGrid(selectedValue === 'multipleBeams');
+    if (selectedValue === 'noBeam') {
+      setRows(initialRows); // Reset rows to initial state
+      setAllBeams([]); // Clear tiedArrayBeam data
+    }
   }, [selectedValue]);
 
   React.useEffect(() => {
