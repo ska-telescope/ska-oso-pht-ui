@@ -370,7 +370,14 @@ export default function TargetEntry({
     );
 
   return (
-    <Grid p={2} container direction="row" alignItems="space-evenly" justifyContent="space-between">
+    <Grid
+      p={2}
+      container
+      direction="row"
+      alignItems="space-evenly"
+      justifyContent="space-between"
+      sx={{ height: '100%' }}
+    >
       <Grid size={{ xs: 8 }}>
         <Grid
           container

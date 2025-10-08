@@ -64,7 +64,12 @@ export const MockProposalFrontend: Proposal = {
           {
             beamName: 'beam1',
             beamId: 1,
-            beamCoordinate: {ra_str: '21:33:27.0200', dec_str: '-00:49:23.700', reference_frame: 'ICRS', kind: 'ICRS'},
+            beamCoordinate: {
+              ra_str: '21:33:27.0200',
+              dec_str: '-00:49:23.700',
+              reference_frame: 'ICRS',
+              kind: 'ICRS'
+            },
             stnWeights: []
           }
         ],
@@ -106,7 +111,12 @@ export const MockProposalFrontend: Proposal = {
           {
             beamName: 'beam1',
             beamId: 1,
-            beamCoordinate: {ra_str: '21:33:27.0200', dec_str: '-00:49:23.700', reference_frame: 'ICRS', kind: 'ICRS'},
+            beamCoordinate: {
+              ra_str: '21:33:27.0200',
+              dec_str: '-00:49:23.700',
+              reference_frame: 'ICRS',
+              kind: 'ICRS'
+            },
             stnWeights: []
           }
         ],
@@ -148,7 +158,12 @@ export const MockProposalFrontend: Proposal = {
           {
             beamName: 'beam1',
             beamId: 1,
-            beamCoordinate: {ra_str: '21:33:27.0200', dec_str: '-00:49:23.700', reference_frame: 'ICRS', kind: 'ICRS'},
+            beamCoordinate: {
+              ra_str: '21:33:27.0200',
+              dec_str: '-00:49:23.700',
+              reference_frame: 'ICRS',
+              kind: 'ICRS'
+            },
             stnWeights: []
           }
         ],
@@ -345,7 +360,12 @@ export const MockProposalFrontendZoom: Proposal = {
           {
             beamName: 'beam1',
             beamId: 1,
-            beamCoordinate: {ra_str: '21:33:27.0200', dec_str: '-00:49:23.700', reference_frame: 'ICRS', kind: 'ICRS'},
+            beamCoordinate: {
+              ra_str: '21:33:27.0200',
+              dec_str: '-00:49:23.700',
+              reference_frame: 'ICRS',
+              kind: 'ICRS'
+            },
             stnWeights: []
           }
         ],

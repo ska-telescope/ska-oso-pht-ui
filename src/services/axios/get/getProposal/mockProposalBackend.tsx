@@ -47,10 +47,16 @@ export const MockProposalBackend: ProposalBackend = {
             {
               beam_name: 'beam1',
               beam_id: 1,
-              beam_coordinate: {ra_str: '21:33:27.0200', dec_str: '-00:49:23.700', reference_frame: 'ICRS', kind: 'ICRS'},
+              beam_coordinate: {
+                ra_str: '21:33:27.0200',
+                dec_str: '-00:49:23.700',
+                reference_frame: 'ICRS',
+                kind: 'ICRS'
+              },
               stn_weights: []
             }
-          ],          pss_beams: [],
+          ],
+          pss_beams: [],
           vlbi_beams: []
         },
         reference_coordinate: {
@@ -88,7 +94,12 @@ export const MockProposalBackend: ProposalBackend = {
             {
               beam_name: 'beam1',
               beam_id: 1,
-              beam_coordinate: {ra_str: '21:33:27.0200', dec_str: '-00:49:23.700', reference_frame: 'ICRS', kind: 'ICRS'},
+              beam_coordinate: {
+                ra_str: '21:33:27.0200',
+                dec_str: '-00:49:23.700',
+                reference_frame: 'ICRS',
+                kind: 'ICRS'
+              },
               stn_weights: []
             }
           ],
@@ -130,7 +141,12 @@ export const MockProposalBackend: ProposalBackend = {
             {
               beam_name: 'beam1',
               beam_id: 1,
-              beam_coordinate: {ra_str: '21:33:27.0200', dec_str: '-00:49:23.700', reference_frame: 'ICRS', kind: 'ICRS'},
+              beam_coordinate: {
+                ra_str: '21:33:27.0200',
+                dec_str: '-00:49:23.700',
+                reference_frame: 'ICRS',
+                kind: 'ICRS'
+              },
               stn_weights: []
             }
           ],
@@ -300,10 +316,16 @@ export const MockProposalBackendZoom: ProposalBackend = {
             {
               beam_name: 'beam1',
               beam_id: 1,
-              beam_coordinate: {ra_str: '21:33:27.0200', dec_str: '-00:49:23.700', reference_frame: 'ICRS', kind: 'ICRS'},
+              beam_coordinate: {
+                ra_str: '21:33:27.0200',
+                dec_str: '-00:49:23.700',
+                reference_frame: 'ICRS',
+                kind: 'ICRS'
+              },
               stn_weights: []
             }
-          ],          pss_beams: [],
+          ],
+          pss_beams: [],
           vlbi_beams: []
         },
         reference_coordinate: {

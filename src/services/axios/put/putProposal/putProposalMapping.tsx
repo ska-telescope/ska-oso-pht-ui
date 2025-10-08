@@ -83,59 +83,40 @@ const getReferenceCoordinate = (
   } as ReferenceCoordinateICRSBackend;
 };
 
+const flattenBeams = (beamGroup: any, beamType: string) => {
+  const validBeamGroup = Array.isArray(beamGroup) ? beamGroup : [];
+  return validBeamGroup
+    .map(group =>
+      group[beamType]?.map(beam => ({
+        beam_id: beam.beamId,
+        beam_name: beam.beamName,
+        beam_coordinate: beam.beamCoordinate,
+        stn_weights: beam.stnWeights
+      }))
+    )
+    .flat();
+};
+
 const getTargets = (targets: Target[]): TargetBackend[] => {
-  const outTargets = [];
-  for (let i = 0; i < targets.length; i++) {
-    const tar = targets[i];
-    const outTarget: TargetBackend = {
-      name: tar.name,
-      target_id: tar.name,
-      reference_coordinate: getReferenceCoordinate(tar),
-      radial_velocity: {
-        quantity: {
-          value: isVelocity(tar.velType) ? Number(tar.vel) : 0,
-          unit: VEL_UNITS.find(u => u.value === Number(tar.velUnit))?.label ?? ''
-        },
-        definition: 'RADIO',
-        reference_frame: tar.raReferenceFrame ? tar.raReferenceFrame : 'LSRK',
-        redshift: isRedshift(tar.velType) ? Number(tar.redshift) : 0
+  return targets.map(tar => ({
+    name: tar.name,
+    target_id: tar.name,
+    reference_coordinate: getReferenceCoordinate(tar),
+    radial_velocity: {
+      quantity: {
+        value: isVelocity(tar.velType) ? Number(tar.vel) : 0,
+        unit: VEL_UNITS.find(u => u.value === Number(tar.velUnit))?.label ?? ''
       },
-      tied_array_beams: {
-        pst_beams:
-          tar.tiedArrayBeams?.flatMap(
-            beamGroup =>
-              beamGroup.pstBeams?.map(beam => ({
-                beam_id: beam.beamId,
-                beam_name: beam.beamName,
-                beam_coordinate: beam.beamCoordinate,
-                stn_weights: beam.stnWeights
-              })) ?? []
-          ) ?? [],
-        pss_beams:
-          tar.tiedArrayBeams?.flatMap(
-            beamGroup =>
-              beamGroup.pssBeams?.map(beam => ({
-                beam_id: beam.beamId,
-                beam_name: beam.beamName,
-                beam_coordinate: beam.beamCoordinate,
-                stn_weights: beam.stnWeights
-              })) ?? []
-          ) ?? [],
-        vlbi_beams:
-          tar.tiedArrayBeams?.flatMap(
-            beamGroup =>
-              beamGroup.vlbiBeams?.map(beam => ({
-                beam_id: beam.beamId,
-                beam_name: beam.beamName,
-                beam_coordinate: beam.beamCoordinate,
-                stn_weights: beam.stnWeights
-              })) ?? []
-          ) ?? []
-      }
-    };
-    outTargets.push(outTarget);
-  }
-  return outTargets;
+      definition: 'RADIO',
+      reference_frame: tar.raReferenceFrame ?? 'LSRK',
+      redshift: isRedshift(tar.velType) ? Number(tar.redshift) : 0
+    },
+    tied_array_beams: {
+      pst_beams: flattenBeams(tar.tiedArrayBeams ?? [], 'pstBeams'),
+      pss_beams: flattenBeams(tar.tiedArrayBeams ?? [], 'pssBeams'),
+      vlbi_beams: flattenBeams(tar.tiedArrayBeams ?? [], 'vlbiBeams')
+    }
+  }));
 };
 
 const getDocuments = (

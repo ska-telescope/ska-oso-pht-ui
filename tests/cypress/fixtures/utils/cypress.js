@@ -9,6 +9,7 @@ export const viewPort = (format = 'pc') => {
 
 export const click = testId =>
   get(testId)
+    .scrollIntoView()
     .should('exist')
     .should('be.visible')
     .click();
