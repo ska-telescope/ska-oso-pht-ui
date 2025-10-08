@@ -52,6 +52,21 @@ export default function PulsarTimingBeamField({
     if (showBeamData) {
       console.log('PulsarTimingBeamField :: showBeamData:: ', showBeamData);
       console.log('PST BEAM target ', target);
+
+      if (target && target.tiedArrayBeams) {
+        console.log('beams', target.tiedArrayBeams);
+        const updatedRows = target.tiedArrayBeams.flatMap(beamGroup =>
+          beamGroup.pstBeams.map(beam => ({
+            id: beam.beamId,
+            name: beam.beamName,
+            raStr: beam.beamCoordinate.raStr,
+            decStr: beam.beamCoordinate.decStr,
+            isAddRow: false,
+          }))
+        );
+        setRows(updatedRows);
+      }
+
       setSelectedValue('multipleBeams');
       setShowGrid(true);
     }
@@ -65,7 +80,7 @@ export default function PulsarTimingBeamField({
       setBeamName('');
       setAllBeams([]);
     }
-  }, [resetBeamData, target]);
+  }, [resetBeamData]);
 
   const wrapper = (children: any) => <Box sx={{ width: '100%' }}>{children}</Box>;
 
