@@ -90,7 +90,6 @@ export default function TargetEntry({
   };
 
   const setBeamData = (allBeams: any[]) => {
-    // console.log('allBeams received ', allBeams);
     if (setTarget) {
       setTarget({ ...target, tiedArrayBeams: allBeams });
     }

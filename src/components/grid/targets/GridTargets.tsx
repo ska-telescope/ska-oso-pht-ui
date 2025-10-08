@@ -56,7 +56,11 @@ export default function GridTargets({
       renderCell: (e: { row: Target }) => {
         const tiedArrayBeams = Array.isArray(e.row.tiedArrayBeams) ? e.row.tiedArrayBeams : [];
         return tiedArrayBeams
-          .map((beam: any) => Array.isArray(beam.pstBeams) ? beam.pstBeams.map((pstBeam: any) => pstBeam.beamName) : [])
+          .map((beam: any) =>
+            Array.isArray(beam.pstBeams)
+              ? beam.pstBeams.map((pstBeam: any) => pstBeam.beamName)
+              : []
+          )
           .flat()
           .join(', ');
       }
