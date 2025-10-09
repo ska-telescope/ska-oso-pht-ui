@@ -293,7 +293,7 @@ export default function PulsarTimingBeamField({
           <DataGrid
             rows={rows}
             columns={getColumns()}
-            height={rows.length * 60 + 100} // 40px per row + 71px for header
+            height={rows.length * 60 + 100}
             testId="pulsarTimingBeamColumns"
           />
         </div>

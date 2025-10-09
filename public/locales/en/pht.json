@@ -1351,15 +1351,12 @@
     "title": "Add Pulsar Timing Beam",
     "help": "Default is No Beam, to add a pulsar timing beam(s), click the checkbox",
     "toolTip": "Click to add Pulsar Timing Beam",
-    "submitToolTip": "Click to submit Pulsar Timing Beam(s)",
     "add": "Add Beam",
     "noBeam": {
-      "label": "No Beam",
-      "toolTip": "No Beam selected."
+      "label": "No Beam"
     },
     "multipleBeams": {
-      "label": "Multiple Beams",
-      "toolTip": "Multiple Beams selected."
+      "label": "Multiple Beams"
     }
   },
   "fieldPattern": {
