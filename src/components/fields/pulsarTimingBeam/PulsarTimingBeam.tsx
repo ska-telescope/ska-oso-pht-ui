@@ -78,12 +78,9 @@ export default function PulsarTimingBeamField({
         );
 
         // Combine rows, and updatedRows, ensuring no duplicates
-        const uniqueRows = [
-          ...rows.filter(
-            existingRow => !updatedRows.some(updatedRow => updatedRow.id === existingRow.id)
-          ),
-          ...updatedRows
-        ];
+        const uniqueRows = updatedRows.filter(
+          (updatedRow, index, self) => index === self.findIndex(row => row.id === updatedRow.id)
+        );
         setRows(uniqueRows);
 
         // Extract tiedArrayBeams data and update setAllBeams
