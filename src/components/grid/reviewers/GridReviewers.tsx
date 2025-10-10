@@ -74,9 +74,7 @@ export default function GridReviewers({
   const [checkState, setCheckState] = React.useState<'checked' | 'unchecked' | 'indeterminate'>(
     'indeterminate'
   );
-  //TODO: Confirm science is the expected default
-  const [typeState, setTypeState] = React.useState<'sci' | 'tec'>('sci');
-
+  const [typeState, setTypeState] = React.useState<'all' | 'sci' | 'tec'>('all');
   React.useEffect(() => {
     const fetchData = async () => {
       const response = await GetReviewerList(authClient);

@@ -375,6 +375,7 @@ export const PANEL_DECISION_STATUS = {
 };
 
 export const REVIEW_TYPE = {
+  ALL: 'All',
   SCIENCE: 'Science Review',
   TECHNICAL: 'Technical Review'
 };
