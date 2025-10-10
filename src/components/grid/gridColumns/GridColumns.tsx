@@ -16,9 +16,9 @@ const getReviewerStatus = (status: any) => {
 };
 
 const getReviewerType = (rec: Reviewer) => {
+  //TODO: Add condition if header is science only show science
   if (rec.isScience) return t('reviewerType.science');
   if (rec.isTechnical) return t('reviewerType.technical');
-  else return '';
 };
 
 const displayProposalType = (proposalType: any) => {
@@ -157,8 +157,8 @@ export const getColReviewerLocation = () => ({
 });
 
 export const getColReviewerType = (
-  typeState: 'all' | 'sci' | 'tec',
-  setTypeState: Dispatch<SetStateAction<'all' | 'sci' | 'tec'>>
+  typeState: 'sci' | 'tec',
+  setTypeState: Dispatch<SetStateAction<'sci' | 'tec'>>
 ) => ({
   field: 'reviewerType',
   headerName: t('reviewers.reviewerType'),
@@ -171,11 +171,10 @@ export const getColReviewerType = (
       <DropDown
         disabledUnderline={true}
         options={[
-          { label: t('reviewerType.all'), value: 'all' },
           { label: t('reviewerType.science'), value: 'sci' },
           { label: t('reviewerType.technical'), value: 'tec' }
         ]}
-        testId="subExpertise"
+        testId="reviewerType"
         value={typeState}
         setValue={setTypeState}
         label={''}

@@ -835,7 +835,6 @@
     }
   },
   "reviewerType": {
-    "all": "Review types",
     "science": "Scientific",
     "technical": "Technical"
   },
