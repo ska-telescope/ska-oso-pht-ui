@@ -108,12 +108,6 @@ describe('Reviewer Column Definitions', () => {
       expect(col.renderCell({ row })).toBe('translated(reviewerType.technical)');
     });
 
-    it('renders both', () => {
-      const row = { ...baseRow, isScience: true, isTechnical: true };
-      const col = getColReviewerType('all', mockSetType);
-      expect(col.renderCell({ row })).toBe('translated(reviewerType.both)');
-    });
-
     it('renders empty string', () => {
       const row = { ...baseRow, isScience: false, isTechnical: false };
       const col = getColReviewerType('all', mockSetType);
