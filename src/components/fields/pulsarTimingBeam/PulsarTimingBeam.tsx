@@ -5,7 +5,7 @@ import { LAB_POSITION, RA_TYPE_ICRS } from '@utils/constants.ts';
 import AddButton from '@components/button/Add/Add.tsx';
 import AlertDialog from '@components/alerts/alertDialog/AlertDialog.tsx';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import Target, { Beam, TiedArrayBeams } from '@utils/types/target.tsx';
+import Target, { Beam, ReferenceCoordinateICRS, TiedArrayBeams } from '@utils/types/target.tsx';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates.tsx';
 import ResolveButton from '@components/button/Resolve/Resolve.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -34,7 +34,7 @@ export default function PulsarTimingBeamField({
   target,
   onDialogResponse,
   resetBeamData,
-  showBeamData
+  showBeamData = false
 }: PulsarTimingBeamFieldProps) {
   const { t } = useScopedTranslation();
   const { helpComponent } = storageObject.useStore();
@@ -46,7 +46,7 @@ export default function PulsarTimingBeamField({
   const [beamRA, setBeamRA] = React.useState('');
   const [beamDec, setBeamDec] = React.useState('');
   const [rows, setRows] = React.useState<Row[]>([]);
-  const [allBeams, setAllBeams] = React.useState<TiedArrayBeams[]>([]);
+  const [allBeams, setAllBeams] = React.useState<Beam[]>([]);
   const LAB_WIDTH = 5;
 
   React.useEffect(() => {
@@ -57,25 +57,38 @@ export default function PulsarTimingBeamField({
   }, [selectedValue]);
 
   React.useEffect(() => {
+    console.log('/////// allBeams', allBeams);
+  }, [setAllBeams]);
+
+  React.useEffect(() => {
     if (onDialogResponse) {
       onDialogResponse(allBeams); // Trigger callback after state update
     }
-  }, [allBeams, onDialogResponse]);
+  }, [allBeams]);
 
   React.useEffect(() => {
     if (showBeamData) {
       if (target && target.tiedArrayBeams) {
         // Generate updatedRows
-        const updatedRows = target.tiedArrayBeams.flatMap(beamGroup =>
-          beamGroup.pstBeams.map(beam => ({
-            id: beam.beamId, // Use beamId as the unique identifier
+        // const updatedRows = target.tiedArrayBeams.flatMap(beamGroup =>
+        //   beamGroup.pstBeams.map(beam => ({
+        //     id: beam.beamId, // Use beamId as the unique identifier
+        //     beamId: beam.beamId,
+        //     name: beam.beamName,
+        //     raStr: beam.beamCoordinate.raStr,
+        //     decStr: beam.beamCoordinate.decStr,
+        //     isAddRow: false
+        //   }))
+        // );
+
+        const updatedRows = target.tiedArrayBeams.pstBeams.map((beam: Beam) => ({
+            id: beam.beamId,
             beamId: beam.beamId,
             name: beam.beamName,
-            raStr: beam.beamCoordinate.raStr,
-            decStr: beam.beamCoordinate.decStr,
+            raStr: (beam.beamCoordinate as ReferenceCoordinateICRS).raStr,
+            decStr: (beam.beamCoordinate as ReferenceCoordinateICRS).decStr,
             isAddRow: false
-          }))
-        );
+          }));
 
         // Combine rows, and updatedRows, ensuring no duplicates
         const uniqueRows = updatedRows.filter(
@@ -83,16 +96,24 @@ export default function PulsarTimingBeamField({
         );
         setRows(uniqueRows);
 
+        // // Extract tiedArrayBeams data and update setAllBeams
+        // const extractedBeams = target.tiedArrayBeams.map(beamGroup => ({
+        //   ...beamGroup,
+        //   pstBeams: beamGroup.pstBeams.map(beam => ({
+        //     beamId: beam.beamId,
+        //     beamName: beam.beamName,
+        //     beamCoordinate: beam.beamCoordinate,
+        //     stnWeights: beam.stnWeights
+        //   }))
+        // }));
+        // setAllBeams(extractedBeams);
         // Extract tiedArrayBeams data and update setAllBeams
-        const extractedBeams = target.tiedArrayBeams.map(beamGroup => ({
-          ...beamGroup,
-          pstBeams: beamGroup.pstBeams.map(beam => ({
-            beamId: beam.beamId,
-            beamName: beam.beamName,
-            beamCoordinate: beam.beamCoordinate,
-            stnWeights: beam.stnWeights
-          }))
-        }));
+        const extractedBeams = target.tiedArrayBeams.pstBeams.map(pstBeam => ({
+            beamId: pstBeam.beamId,
+            beamName: pstBeam.beamName,
+            beamCoordinate: pstBeam.beamCoordinate,
+            stnWeights: pstBeam.stnWeights
+          }));
         setAllBeams(extractedBeams);
       }
       setSelectedValue('multipleBeams');
@@ -149,7 +170,7 @@ export default function PulsarTimingBeamField({
   const addPulsarTimingBeamsConfirmed = () => {
     if (beamName && beamRA && beamDec) {
       const newRow = {
-        id: rows.length + 1, // Unique ID for the new row
+        id: Math.floor(Math.random() * 100), // TODO improve id generation
         name: beamName,
         raStr: beamRA,
         decStr: beamDec
@@ -161,7 +182,7 @@ export default function PulsarTimingBeamField({
     }
 
     const newBeam: Beam = {
-      beamId: rows.length,
+      beamId: Math.floor(Math.random() * 100), // TODO improve id generation
       beamName: beamName,
       beamCoordinate: {
         kind: RA_TYPE_ICRS.label,
@@ -178,17 +199,24 @@ export default function PulsarTimingBeamField({
       vlbiBeams: []
     };
 
+    console.log('----------- newTiedArrayBeams', newTiedArrayBeams);
+
+    // setAllBeams(prevBeams => {
+    //   const updatedBeams = [...prevBeams];
+    //   if (updatedBeams.length > 0) {
+    //     const lastBeamGroup = updatedBeams[updatedBeams.length - 1];
+    //     const isDuplicate = lastBeamGroup.pstBeams.some(beam => beam.beamName === newBeam.beamName);
+    //     if (!isDuplicate) {
+    //       lastBeamGroup.push(newBeam);
+    //     }
+    //   } else {
+    //     updatedBeams.push(newBeam);
+    //   }
+    //   return updatedBeams;
+    // });
     setAllBeams(prevBeams => {
       const updatedBeams = [...prevBeams];
-      if (updatedBeams.length > 0) {
-        const lastBeamGroup = updatedBeams[updatedBeams.length - 1];
-        const isDuplicate = lastBeamGroup.pstBeams.some(beam => beam.beamName === newBeam.beamName);
-        if (!isDuplicate) {
-          lastBeamGroup.pstBeams.push(newBeam);
-        }
-      } else {
-        updatedBeams.push(newTiedArrayBeams);
-      }
+      updatedBeams.push(newBeam);
       return updatedBeams;
     });
 

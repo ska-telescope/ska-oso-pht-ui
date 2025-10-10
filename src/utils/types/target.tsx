@@ -31,7 +31,6 @@ export type ReferenceCoordinateGalacticBackend = {
 // ICRS now replaces equatorial
 export type ReferenceCoordinateICRSBackend = {
   kind: string;
-  reference_frame: string;
   ra_str: string;
   dec_str: string;
   pm_ra?: number;
@@ -110,7 +109,7 @@ export type ReferenceCoordinateGalactic = {
 
 export type ReferenceCoordinateICRS = {
   kind: string;
-  referenceFrame: string;
+  referenceFrame: string; // TODO check if this can be removed, not used in backend
   raStr: string;
   decStr: string;
   pmRa?: number;
@@ -161,7 +160,7 @@ type Target = {
     parameters: PointingPatternParams[]; // NOT USED
   }; // NOT USED
   /*------- tied array beams properties --------------------- */
-  tiedArrayBeams?: TiedArrayBeams;
+  tiedArrayBeams: TiedArrayBeams | null;
   /*------- end of tied array beams properties --------------------- */
 };
 

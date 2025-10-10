@@ -1,5 +1,9 @@
 import Target, {
+  Beam,
+  BeamBackend,
+  ReferenceCoordinateGalactic,
   ReferenceCoordinateGalacticBackend,
+  ReferenceCoordinateICRS,
   ReferenceCoordinateICRSBackend,
   TargetBackend
 } from '@utils/types/target.tsx';
@@ -40,6 +44,7 @@ import { helpers } from '@utils/helpers.ts';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
+import { get } from 'lodash';
 
 const isContinuum = (type: number) => type === TYPE_CONTINUUM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
@@ -58,47 +63,60 @@ const getSubType = (proposalType: number, proposalSubType: number[]): any => {
 };
 
 const getReferenceCoordinate = (
-  tar: Target
+  tar: Target | ReferenceCoordinateICRS | ReferenceCoordinateGalactic
 ): ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend => {
-  if (tar.kind === RA_TYPE_GALACTIC.value) {
+  if ('kind' in tar && tar.kind === RA_TYPE_GALACTIC.value) {
     return {
       kind: RA_TYPE_GALACTIC.label,
-      l: tar.l,
-      b: tar.b,
-      pm_l: tar.pmL,
-      pm_b: tar.pmB,
+      l: (tar as Target).l,
+      b: (tar as Target).b,
+      pm_l: (tar as Target).pmL,
+      pm_b: (tar as Target).pmB,
       epoch: tar.epoch,
       parallax: tar.parallax
     } as ReferenceCoordinateGalacticBackend;
   }
   return {
     kind: RA_TYPE_ICRS.label,
-    reference_frame: tar.referenceFrame ? tar.referenceFrame : RA_TYPE_ICRS.label, // TODO : hardcoded for now as not implemented in UI
-    ra_str: tar.raStr,
-    dec_str: tar.decStr,
-    pm_ra: tar.pmRa,
-    pm_dec: tar.pmDec,
-    epoch: tar.epoch,
-    parallax: tar.parallax
+    // reference_frame: tar.referenceFrame ? tar.referenceFrame : RA_TYPE_ICRS.label, // TODO : hardcoded for now as not implemented in UI TODO check if needed
+    ra_str: ((tar as Target) || (tar as ReferenceCoordinateICRS)).raStr,
+    dec_str: ((tar as Target) || (tar as ReferenceCoordinateICRS)).decStr,
+    pm_ra: ((tar as Target) || (tar as ReferenceCoordinateICRS)).pmRa,
+    pm_dec: ((tar as Target) || (tar as ReferenceCoordinateICRS)).pmDec,
+    epoch: ((tar as Target) || (tar as ReferenceCoordinateICRS)).epoch,
+    parallax: ((tar as Target) || (tar as ReferenceCoordinateICRS)).parallax
   } as ReferenceCoordinateICRSBackend;
 };
 
-const flattenBeams = (beamGroup: any, beamType: string) => {
-  const validBeamGroup = Array.isArray(beamGroup) ? beamGroup : [];
-  return validBeamGroup
-    .map(group =>
-      group[beamType]?.map(beam => ({
-        beam_id: beam.beamId,
-        beam_name: beam.beamName,
-        beam_coordinate: beam.beamCoordinate,
-        stn_weights: beam.stnWeights
-      }))
-    )
-    .flat();
-};
+const getBeam = (beam: Beam): BeamBackend => {
+  console.log('getBeam', { beam });
+  return {
+    beam_id: beam.beamId + Math.floor(Math.random() * 100),
+    beam_name: beam.beamName,
+    beam_coordinate: getReferenceCoordinate(beam.beamCoordinate),
+    stn_weights: beam.stnWeights // TODO
+  };
+}
+
+// const flattenBeams = (beamGroup: Beam[], beamType: string) => {
+//   const validBeamGroup = Array.isArray(beamGroup) ? beamGroup : [];
+//   console.log('validBeamGroup', { validBeamGroup });
+//   return validBeamGroup
+//     .map(group =>
+//       group[beamType]?.map((beam: Beam) => ({
+//         beam_id: beam.beamId + Math.floor(Math.random() * 100),
+//         beam_name: beam.beamName,
+//         beam_coordinate: beam.beamCoordinate,
+//         stn_weights: beam.stnWeights
+//       }))
+//     )
+//     .flat();
+// };
 
 const getTargets = (targets: Target[]): TargetBackend[] => {
-  return targets.map(tar => ({
+  console.log('getTargets', { targets });
+  console.log('getTargets tiedArrayBeams', targets[0]?.tiedArrayBeams);
+  const  mappedTargets = targets.map(tar => ({
     name: tar.name,
     target_id: tar.name,
     reference_coordinate: getReferenceCoordinate(tar),
@@ -112,11 +130,24 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
       redshift: isRedshift(tar.velType) ? Number(tar.redshift) : 0
     },
     tied_array_beams: {
-      pst_beams: flattenBeams(tar.tiedArrayBeams ?? [], 'pstBeams'),
-      pss_beams: flattenBeams(tar.tiedArrayBeams ?? [], 'pssBeams'),
-      vlbi_beams: flattenBeams(tar.tiedArrayBeams ?? [], 'vlbiBeams')
+      pst_beams: tar.tiedArrayBeams && Array.isArray(tar.tiedArrayBeams.pstBeams)
+        ? tar.tiedArrayBeams.pstBeams.map((beam: Beam) => getBeam(beam))
+        : [],
+      pss_beams: tar.tiedArrayBeams && Array.isArray(tar.tiedArrayBeams.pssBeams) && tar.tiedArrayBeams.pssBeams
+        ? tar.tiedArrayBeams.pssBeams.map((beam: Beam) => getBeam(beam))
+        : [],
+      vlbi_beams: tar.tiedArrayBeams && Array.isArray(tar.tiedArrayBeams.vlbiBeams) && tar.tiedArrayBeams.vlbiBeams
+        ? tar.tiedArrayBeams.vlbiBeams.map((beam: Beam) => getBeam(beam))
+        : []
     }
+    // tied_array_beams: {
+    //   pst_beams: flattenBeams(tar.tiedArrayBeams ?? [], 'pstBeams'),
+    //   pss_beams: flattenBeams(tar.tiedArrayBeams ?? [], 'pssBeams'),
+    //   vlbi_beams: flattenBeams(tar.tiedArrayBeams ?? [], 'vlbiBeams')
+    // }
   }));
+  console.log('mappedTargets', { mappedTargets });
+  return mappedTargets;
 };
 
 const getDocuments = (
@@ -446,6 +477,7 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
 /*************************************************************************************************************************/
 
 export default function MappingPutProposal(proposal: Proposal, status: string) {
+  console.log('putProposalMapping before', { proposal });
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
     status: status,
@@ -502,6 +534,8 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
       )
     }
   };
-  helpers.transform.trimObject(transformedProposal);
+  console.log('putProposalMapping after', { transformedProposal });
+  // helpers.transform.trimObject(transformedProposal);
+  console.log('putProposalMapping after trim', { transformedProposal });
   return transformedProposal;
 }

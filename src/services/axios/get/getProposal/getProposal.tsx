@@ -149,6 +149,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
         })) as PointingPatternParams[]
       },
       tiedArrayBeams: {
+        // TODO check by kind and handle galactic
         pstBeams: e.tied_array_beams?.pst_beams?.map(beam => ({
           beamId: beam.beam_id,
           beamName: beam.beam_name,
@@ -590,6 +591,7 @@ const getTargetObservation = (
 /*************************************************************************************************************************/
 
 export function mapping(inRec: ProposalBackend): Proposal {
+  console.log('GetProposal mapping before', { inRec });
   let sciencePDF: DocumentPDF;
   let technicalPDF: DocumentPDF;
 
@@ -647,6 +649,8 @@ export function mapping(inRec: ProposalBackend): Proposal {
     dataProductSRC: getDataProductSRC(inRec.observation_info?.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
+
+  console.log('GetProposal mapping after', { convertedProposal });
 
   return convertedProposal as Proposal;
 }

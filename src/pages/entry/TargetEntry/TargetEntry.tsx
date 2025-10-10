@@ -14,7 +14,7 @@ import SkyDirection1 from '@/components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
 import VelocityField from '@/components/fields/velocity/Velocity';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
-import Target, { TiedArrayBeams } from '@/utils/types/target';
+import Target, { Beam, TiedArrayBeams } from '@/utils/types/target';
 import {
   RA_TYPE_ICRS,
   LAB_POSITION,
@@ -63,7 +63,7 @@ export default function TargetEntry({
   const [referenceFrame, setReferenceFrame] = React.useState(RA_TYPE_ICRS.value);
   const [referenceCoordinates, setReferenceCoordinates] = React.useState(RA_TYPE_ICRS.label);
   const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
-  const [beamArrayData, setBeamArrayData] = React.useState<TiedArrayBeams[]>([]);
+  const [beamArrayData, setBeamArrayData] = React.useState<TiedArrayBeams | null>(null);
   const [resetBeamArrayData, setResetBeamArrayData] = React.useState(false);
 
   const LABEL_WIDTH = 6;
@@ -89,11 +89,18 @@ export default function TargetEntry({
     }
   };
 
-  const setBeamData = (allBeams: any[]) => {
-    if (setTarget) {
-      setTarget({ ...target, tiedArrayBeams: allBeams });
+  const setBeamData = (incPstBeams: Beam[]) => {
+    console.log('/////// incPstBeams', incPstBeams);
+    const tiedArrayBeams: TiedArrayBeams = {
+      pstBeams: incPstBeams,
+      vlbiBeams: [],
+      pssBeams: []
     }
-    setBeamArrayData(allBeams ?? []);
+    console.log('/////// tiedArrayBeams', tiedArrayBeams);
+    if (setTarget) {
+      setTarget({ ...target, tiedArrayBeams: tiedArrayBeams });
+    }
+    setBeamArrayData(tiedArrayBeams);
   };
 
   const setTheRedshift = (inValue: string) => {
@@ -141,7 +148,7 @@ export default function TargetEntry({
     setVelUnit(target?.velUnit ?? 0);
     setRedshift(target?.redshift ?? '');
     setReferenceFrame(target?.kind ?? RA_TYPE_ICRS.value);
-    setBeamArrayData((target?.tiedArrayBeams as TiedArrayBeams[]) ?? []);
+    setBeamArrayData((target?.tiedArrayBeams as TiedArrayBeams));
   };
 
   React.useEffect(() => {
@@ -150,6 +157,11 @@ export default function TargetEntry({
       targetIn(target);
     }
   }, []);
+
+  // React.useEffect(() => {
+  //   console.log('/////// proposal changed', getProposal());
+  // }, [setProposal]);
+
 
   function formValidation() {
     let valid = true;
@@ -195,7 +207,7 @@ export default function TargetEntry({
         vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : '',
         velType: velType ?? 0,
         velUnit: velUnit ?? 0,
-        tiedArrayBeams: (beamArrayData as TiedArrayBeams[]) ?? []
+        tiedArrayBeams: beamArrayData ? beamArrayData as TiedArrayBeams : null
       };
 
       const updatedProposal = {
@@ -212,7 +224,7 @@ export default function TargetEntry({
       setDec('');
       setVel('');
       setRedshift('');
-      setBeamArrayData([]);
+      setBeamArrayData(null);
     };
 
     const disabled = () => !(name?.length && ra?.length && dec?.length);
