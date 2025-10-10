@@ -23,6 +23,7 @@ async function PutProposal(
 
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${proposal.id}`;
+    console.log('before MappingPutProposal');
     const convertedProposal = MappingPutProposal(proposal, status as string);
     const result = await authAxiosClient.put(
       `${SKA_OSO_SERVICES_URL}${URL_PATH}`,

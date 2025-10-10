@@ -11,10 +11,11 @@ import SkyDirection1 from '@/components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
 import VelocityField from '@/components/fields/velocity/Velocity';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
-import Target from '@/utils/types/target';
+import Target, { Beam, TiedArrayBeams } from '@/utils/types/target';
 import { RA_TYPE_ICRS, LAB_POSITION, VELOCITY_TYPE } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import PulsarTimingBeamField from '@/components/fields/PulsarTimingBeam/PulsarTimingBeam';
 interface TargetEntryProps {
   raType: number;
   setTarget?: Function;
@@ -50,6 +51,7 @@ export default function TargetEntry({
   const [velUnit, setVelUnit] = React.useState(0);
   const [redshift, setRedshift] = React.useState('');
   const [referenceFrame, setReferenceFrame] = React.useState(RA_TYPE_ICRS.value);
+  const [tiedArrayBeams, setTiedArrayBeams] = React.useState<TiedArrayBeams | null>(null);
 
   const setTheName = (inValue: string) => {
     setName(inValue);
@@ -117,6 +119,7 @@ export default function TargetEntry({
     setVelUnit(target?.velUnit);
     setRedshift(target?.redshift);
     setReferenceFrame(target?.kind);
+    setTiedArrayBeams(target?.tiedArrayBeams);
   };
 
   React.useEffect(() => {
@@ -125,6 +128,12 @@ export default function TargetEntry({
       targetIn(target);
     }
   }, []);
+
+  React.useEffect(() => {
+    if (setTarget !== undefined) {
+      console.log('Target changed', target);
+    }
+  }, [target]);
 
   function formValidation() {
     let valid = true;
@@ -167,7 +176,8 @@ export default function TargetEntry({
         referenceFrame: RA_TYPE_ICRS.label,
         vel: velType === VELOCITY_TYPE.VELOCITY ? vel : '',
         velType: velType,
-        velUnit: velUnit
+        velUnit: velUnit,
+        tiedArrayBeams: tiedArrayBeams
       };
       setProposal({ ...getProposal(), targets: [...(getProposal().targets ?? []), newTarget] });
       notifySuccess(t('addTarget.success'), NOTIFICATION_DELAY_IN_SECONDS);
@@ -297,6 +307,30 @@ export default function TargetEntry({
       />
     );
 
+  const getTiedArrayBeams = (beams: Beam[]): TiedArrayBeams => {
+    return {
+      pstBeams: beams,
+      pssBeams: [],
+      vlbiBeams: []
+    };
+  };
+
+  const addTiedArrayBeams = (beams: Beam[]) => {
+    console.log('New PST Beams:', beams);
+    if (setTarget !== undefined) {
+      setTarget({ ...target, tiedArrayBeams: getTiedArrayBeams(beams) });
+    }
+    setTiedArrayBeams(getTiedArrayBeams(beams));
+  };
+
+  const pstBeam = () =>
+    wrapper(
+      <PulsarTimingBeamField
+        target={{ name: name, raStr: ra, decStr: dec }}
+        onNewBeams={addTiedArrayBeams}
+      />
+    );
+
   return (
     <Grid
       p={2}
@@ -319,6 +353,7 @@ export default function TargetEntry({
           <Grid>{skyDirection2Field()}</Grid>
           <Grid>{velocityField()}</Grid>
           <Grid>{velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}</Grid>
+          <Grid>{pstBeam()}</Grid>
           <Grid>{!id && addButton()}</Grid>
         </Grid>
       </Grid>

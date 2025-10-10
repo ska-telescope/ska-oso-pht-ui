@@ -147,6 +147,27 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
           offsetXArcsec: p.offset_x_arcsec,
           offsetYArcsec: p.offset_y_arcsec
         })) as PointingPatternParams[]
+      },
+      tiedArrayBeams: {
+        // TODO check by kind and handle galactic
+        pstBeams: e.tied_array_beams?.pst_beams?.map(beam => ({
+          beamId: beam.beam_id,
+          beamName: beam.beam_name,
+          beamCoordinate: beam.beam_coordinate,
+          stnWeights: beam.stn_weights
+        })),
+        pssBeams: e.tied_array_beams?.pss_beams?.map(beam => ({
+          beamId: beam.beam_id,
+          beamName: beam.beam_name,
+          beamCoordinate: beam.beam_coordinate,
+          stnWeights: beam.stn_weights
+        })),
+        vlbiBeams: e.tied_array_beams?.vlbi_beams?.map(beam => ({
+          beamId: beam.beam_id,
+          beamName: beam.beam_name,
+          beamCoordinate: beam.beam_coordinate,
+          stnWeights: beam.stn_weights
+        }))
       }
     };
     /*------- reference coordinate properties --------------------- */
@@ -570,6 +591,7 @@ const getTargetObservation = (
 /*************************************************************************************************************************/
 
 export function mapping(inRec: ProposalBackend): Proposal {
+  console.log('GetProposal mapping before', { inRec });
   let sciencePDF: DocumentPDF;
   let technicalPDF: DocumentPDF;
 
@@ -627,6 +649,8 @@ export function mapping(inRec: ProposalBackend): Proposal {
     dataProductSRC: getDataProductSRC(inRec.observation_info?.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
+
+  console.log('GetProposal mapping after', { convertedProposal });
 
   return convertedProposal as Proposal;
 }
