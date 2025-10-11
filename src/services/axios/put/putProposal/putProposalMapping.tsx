@@ -89,34 +89,16 @@ const getReferenceCoordinate = (
 };
 
 const getBeam = (beam: Beam): BeamBackend => {
-  console.log('getBeam', { beam });
   return {
-    beam_id: beam.beamId + Math.floor(Math.random() * 100),
+    beam_id: beam.id,
     beam_name: beam.beamName,
     beam_coordinate: getReferenceCoordinate(beam.beamCoordinate),
     stn_weights: beam.stnWeights // TODO
   };
-}
-
-// const flattenBeams = (beamGroup: Beam[], beamType: string) => {
-//   const validBeamGroup = Array.isArray(beamGroup) ? beamGroup : [];
-//   console.log('validBeamGroup', { validBeamGroup });
-//   return validBeamGroup
-//     .map(group =>
-//       group[beamType]?.map((beam: Beam) => ({
-//         beam_id: beam.beamId + Math.floor(Math.random() * 100),
-//         beam_name: beam.beamName,
-//         beam_coordinate: beam.beamCoordinate,
-//         stn_weights: beam.stnWeights
-//       }))
-//     )
-//     .flat();
-// };
+};
 
 const getTargets = (targets: Target[]): TargetBackend[] => {
-  console.log('getTargets', { targets });
-  console.log('getTargets tiedArrayBeams', targets[0]?.tiedArrayBeams);
-  const  mappedTargets = targets.map(tar => ({
+  const mappedTargets = targets.map(tar => ({
     name: tar.name,
     target_id: tar.name,
     reference_coordinate: getReferenceCoordinate(tar),
@@ -130,23 +112,24 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
       redshift: isRedshift(tar.velType) ? Number(tar.redshift) : 0
     },
     tied_array_beams: {
-      pst_beams: tar.tiedArrayBeams && Array.isArray(tar.tiedArrayBeams.pstBeams)
-        ? tar.tiedArrayBeams.pstBeams.map((beam: Beam) => getBeam(beam))
-        : [],
-      pss_beams: tar.tiedArrayBeams && Array.isArray(tar.tiedArrayBeams.pssBeams) && tar.tiedArrayBeams.pssBeams
-        ? tar.tiedArrayBeams.pssBeams.map((beam: Beam) => getBeam(beam))
-        : [],
-      vlbi_beams: tar.tiedArrayBeams && Array.isArray(tar.tiedArrayBeams.vlbiBeams) && tar.tiedArrayBeams.vlbiBeams
-        ? tar.tiedArrayBeams.vlbiBeams.map((beam: Beam) => getBeam(beam))
-        : []
+      pst_beams:
+        tar.tiedArrayBeams && Array.isArray(tar.tiedArrayBeams.pstBeams)
+          ? tar.tiedArrayBeams.pstBeams.map((beam: Beam) => getBeam(beam))
+          : [],
+      pss_beams:
+        tar.tiedArrayBeams &&
+        Array.isArray(tar.tiedArrayBeams.pssBeams) &&
+        tar.tiedArrayBeams.pssBeams
+          ? tar.tiedArrayBeams.pssBeams.map((beam: Beam) => getBeam(beam))
+          : [],
+      vlbi_beams:
+        tar.tiedArrayBeams &&
+        Array.isArray(tar.tiedArrayBeams.vlbiBeams) &&
+        tar.tiedArrayBeams.vlbiBeams
+          ? tar.tiedArrayBeams.vlbiBeams.map((beam: Beam) => getBeam(beam))
+          : []
     }
-    // tied_array_beams: {
-    //   pst_beams: flattenBeams(tar.tiedArrayBeams ?? [], 'pstBeams'),
-    //   pss_beams: flattenBeams(tar.tiedArrayBeams ?? [], 'pssBeams'),
-    //   vlbi_beams: flattenBeams(tar.tiedArrayBeams ?? [], 'vlbiBeams')
-    // }
   }));
-  console.log('mappedTargets', { mappedTargets });
   return mappedTargets;
 };
 
@@ -477,7 +460,6 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
 /*************************************************************************************************************************/
 
 export default function MappingPutProposal(proposal: Proposal, status: string) {
-  console.log('putProposalMapping before', { proposal });
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
     status: status,
@@ -534,8 +516,6 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
       )
     }
   };
-  console.log('putProposalMapping after', { transformedProposal });
   // helpers.transform.trimObject(transformedProposal);
-  console.log('putProposalMapping after trim', { transformedProposal });
   return transformedProposal;
 }

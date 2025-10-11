@@ -5,7 +5,7 @@ import { LAB_POSITION, RA_TYPE_ICRS } from '@utils/constants.ts';
 import AddButton from '@components/button/Add/Add.tsx';
 import AlertDialog from '@components/alerts/alertDialog/AlertDialog.tsx';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import Target, { Beam, ReferenceCoordinateICRS, TiedArrayBeams } from '@utils/types/target.tsx';
+import Target, { Beam, ReferenceCoordinateICRS } from '@utils/types/target.tsx';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates.tsx';
 import ResolveButton from '@components/button/Resolve/Resolve.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -19,17 +19,17 @@ interface PulsarTimingBeamFieldProps {
   showBeamData?: boolean;
 }
 
-interface Row {
-  beamId?: number;
-  beamName?: string;
-  beamCoordinate?: {
-    kind: number;
-    referenceFrame: string;
-    raStr: string;
-    decStr: string;
-  };
-  stnWeights?: number[];
-}
+// interface Row {
+//   beamId?: number;
+//   beamName?: string;
+//   beamCoordinate?: {
+//     kind: number;
+//     referenceFrame: string;
+//     raStr: string;
+//     decStr: string;
+//   };
+//   stnWeights?: number[];
+// }
 export default function PulsarTimingBeamField({
   target,
   onDialogResponse,
@@ -45,20 +45,16 @@ export default function PulsarTimingBeamField({
   const [beamName, setBeamName] = React.useState('');
   const [beamRA, setBeamRA] = React.useState('');
   const [beamDec, setBeamDec] = React.useState('');
-  const [rows, setRows] = React.useState<Row[]>([]);
+  // const [rows, setRows] = React.useState<Row[]>([]);
   const [allBeams, setAllBeams] = React.useState<Beam[]>([]);
   const LAB_WIDTH = 5;
 
   React.useEffect(() => {
     if (selectedValue === 'noBeam') {
-      setRows([]); // Reset rows to initial state
+      // setRows([]); // Reset rows to initial state
       setAllBeams([]); // Clear tiedArrayBeam data
     }
   }, [selectedValue]);
-
-  React.useEffect(() => {
-    console.log('/////// allBeams', allBeams);
-  }, [setAllBeams]);
 
   React.useEffect(() => {
     if (onDialogResponse) {
@@ -66,64 +62,64 @@ export default function PulsarTimingBeamField({
     }
   }, [allBeams]);
 
-  React.useEffect(() => {
-    if (showBeamData) {
-      if (target && target.tiedArrayBeams) {
-        // Generate updatedRows
-        // const updatedRows = target.tiedArrayBeams.flatMap(beamGroup =>
-        //   beamGroup.pstBeams.map(beam => ({
-        //     id: beam.beamId, // Use beamId as the unique identifier
-        //     beamId: beam.beamId,
-        //     name: beam.beamName,
-        //     raStr: beam.beamCoordinate.raStr,
-        //     decStr: beam.beamCoordinate.decStr,
-        //     isAddRow: false
-        //   }))
-        // );
+  // React.useEffect(() => {
+  //   if (showBeamData) {
+  //     if (target && target.tiedArrayBeams) {
+  //       // Generate updatedRows
+  //       // const updatedRows = target.tiedArrayBeams.flatMap(beamGroup =>
+  //       //   beamGroup.pstBeams.map(beam => ({
+  //       //     id: beam.beamId, // Use beamId as the unique identifier
+  //       //     beamId: beam.beamId,
+  //       //     name: beam.beamName,
+  //       //     raStr: beam.beamCoordinate.raStr,
+  //       //     decStr: beam.beamCoordinate.decStr,
+  //       //     isAddRow: false
+  //       //   }))
+  //       // );
 
-        const updatedRows = target.tiedArrayBeams.pstBeams.map((beam: Beam) => ({
-            id: beam.beamId,
-            beamId: beam.beamId,
-            name: beam.beamName,
-            raStr: (beam.beamCoordinate as ReferenceCoordinateICRS).raStr,
-            decStr: (beam.beamCoordinate as ReferenceCoordinateICRS).decStr,
-            isAddRow: false
-          }));
+  //       const updatedRows = target.tiedArrayBeams.pstBeams.map((beam: Beam) => ({
+  //           id: beam.beamId,
+  //           beamId: beam.beamId,
+  //           name: beam.beamName,
+  //           raStr: (beam.beamCoordinate as ReferenceCoordinateICRS).raStr,
+  //           decStr: (beam.beamCoordinate as ReferenceCoordinateICRS).decStr,
+  //           isAddRow: false
+  //         }));
 
-        // Combine rows, and updatedRows, ensuring no duplicates
-        const uniqueRows = updatedRows.filter(
-          (updatedRow, index, self) => index === self.findIndex(row => row.id === updatedRow.id)
-        );
-        setRows(uniqueRows);
+  //       // Combine rows, and updatedRows, ensuring no duplicates
+  //       const uniqueRows = updatedRows.filter(
+  //         (updatedRow, index, self) => index === self.findIndex(row => row.id === updatedRow.id)
+  //       );
+  //       setRows(uniqueRows);
 
-        // // Extract tiedArrayBeams data and update setAllBeams
-        // const extractedBeams = target.tiedArrayBeams.map(beamGroup => ({
-        //   ...beamGroup,
-        //   pstBeams: beamGroup.pstBeams.map(beam => ({
-        //     beamId: beam.beamId,
-        //     beamName: beam.beamName,
-        //     beamCoordinate: beam.beamCoordinate,
-        //     stnWeights: beam.stnWeights
-        //   }))
-        // }));
-        // setAllBeams(extractedBeams);
-        // Extract tiedArrayBeams data and update setAllBeams
-        const extractedBeams = target.tiedArrayBeams.pstBeams.map(pstBeam => ({
-            beamId: pstBeam.beamId,
-            beamName: pstBeam.beamName,
-            beamCoordinate: pstBeam.beamCoordinate,
-            stnWeights: pstBeam.stnWeights
-          }));
-        setAllBeams(extractedBeams);
-      }
-      setSelectedValue('multipleBeams');
-      setShowGrid(true);
-    }
-  }, [showBeamData]);
+  //       // // Extract tiedArrayBeams data and update setAllBeams
+  //       // const extractedBeams = target.tiedArrayBeams.map(beamGroup => ({
+  //       //   ...beamGroup,
+  //       //   pstBeams: beamGroup.pstBeams.map(beam => ({
+  //       //     beamId: beam.beamId,
+  //       //     beamName: beam.beamName,
+  //       //     beamCoordinate: beam.beamCoordinate,
+  //       //     stnWeights: beam.stnWeights
+  //       //   }))
+  //       // }));
+  //       // setAllBeams(extractedBeams);
+  //       // Extract tiedArrayBeams data and update setAllBeams
+  //       const extractedBeams = target.tiedArrayBeams.pstBeams.map(pstBeam => ({
+  //           beamId: pstBeam.beamId,
+  //           beamName: pstBeam.beamName,
+  //           beamCoordinate: pstBeam.beamCoordinate,
+  //           stnWeights: pstBeam.stnWeights
+  //         }));
+  //       setAllBeams(extractedBeams);
+  //     }
+  //     setSelectedValue('multipleBeams');
+  //     setShowGrid(true);
+  //   }
+  // }, [showBeamData]);
 
   React.useEffect(() => {
     if (resetBeamData) {
-      setRows([]);
+      // setRows([]);
       setBeamDec('');
       setBeamRA('');
       setBeamName('');
@@ -133,7 +129,7 @@ export default function PulsarTimingBeamField({
 
   const wrapper = (children: any) => <Box sx={{ width: '100%' }}>{children}</Box>;
 
-  const handleClick = event => {
+  const handleClick = (event: any) => {
     setSelectedValue(event.target.value);
   };
 
@@ -149,7 +145,7 @@ export default function PulsarTimingBeamField({
     setBeamRA(inValue);
   };
 
-  const controlProps = item => ({
+  const controlProps = (item: any) => ({
     checked: selectedValue === item,
     onClick: handleClick,
     value: item,
@@ -158,9 +154,19 @@ export default function PulsarTimingBeamField({
   });
 
   const columns = [
-    { field: 'name', headerName: t('name.label'), flex: 1.5 },
-    { field: 'raStr', headerName: t('skyDirection.short.1.' + RA_TYPE_ICRS.value), width: 120 },
-    { field: 'decStr', headerName: t('skyDirection.short.2.' + RA_TYPE_ICRS.value), width: 120 }
+    { field: 'beamName', headerName: t('name.label'), flex: 1.5 },
+    {
+      field: 'raStr',
+      headerName: t('skyDirection.short.1.' + RA_TYPE_ICRS.value),
+      width: 120,
+      renderCell: (e: { row: Beam }) => (e.row?.beamCoordinate as ReferenceCoordinateICRS)?.raStr
+    },
+    {
+      field: 'decStr',
+      headerName: t('skyDirection.short.2.' + RA_TYPE_ICRS.value),
+      width: 120,
+      renderCell: (e: { row: Beam }) => (e.row?.beamCoordinate as ReferenceCoordinateICRS)?.decStr
+    }
   ];
 
   const closeDialog = () => {
@@ -169,59 +175,27 @@ export default function PulsarTimingBeamField({
 
   const addPulsarTimingBeamsConfirmed = () => {
     if (beamName && beamRA && beamDec) {
-      const newRow = {
-        id: Math.floor(Math.random() * 100), // TODO improve id generation
-        name: beamName,
-        raStr: beamRA,
-        decStr: beamDec
+      const newBeam: Beam = {
+        id: Math.floor(Math.random() * 1000), // TODO improve id generation
+        beamName: beamName,
+        beamCoordinate: {
+          kind: RA_TYPE_ICRS.label,
+          raStr: beamRA,
+          decStr: beamDec
+        },
+        stnWeights: []
       };
-      setRows(prevRows => [...prevRows, newRow]);
+      setAllBeams(prevBeams => {
+        const updatedBeams = [...prevBeams];
+        updatedBeams.push(newBeam);
+        return updatedBeams;
+      });
       setBeamName('');
       setBeamRA('');
       setBeamDec('');
     }
-
-    const newBeam: Beam = {
-      beamId: Math.floor(Math.random() * 100), // TODO improve id generation
-      beamName: beamName,
-      beamCoordinate: {
-        kind: RA_TYPE_ICRS.label,
-        referenceFrame: RA_TYPE_ICRS.label,
-        raStr: beamRA,
-        decStr: beamDec
-      },
-      stnWeights: [1]
-    };
-
-    const newTiedArrayBeams: TiedArrayBeams = {
-      pssBeams: [],
-      pstBeams: [newBeam],
-      vlbiBeams: []
-    };
-
-    console.log('----------- newTiedArrayBeams', newTiedArrayBeams);
-
-    // setAllBeams(prevBeams => {
-    //   const updatedBeams = [...prevBeams];
-    //   if (updatedBeams.length > 0) {
-    //     const lastBeamGroup = updatedBeams[updatedBeams.length - 1];
-    //     const isDuplicate = lastBeamGroup.pstBeams.some(beam => beam.beamName === newBeam.beamName);
-    //     if (!isDuplicate) {
-    //       lastBeamGroup.push(newBeam);
-    //     }
-    //   } else {
-    //     updatedBeams.push(newBeam);
-    //   }
-    //   return updatedBeams;
-    // });
-    setAllBeams(prevBeams => {
-      const updatedBeams = [...prevBeams];
-      updatedBeams.push(newBeam);
-      return updatedBeams;
-    });
-
     closeDialog();
-    setShowGrid(selectedValue === 'multipleBeams');
+    setShowGrid(true);
   };
 
   const resolveBeamNameButton = () => {
@@ -316,9 +290,9 @@ export default function PulsarTimingBeamField({
       {showGrid && (
         <div style={{ height: '100%', width: '100%' }}>
           <DataGrid
-            rows={rows}
+            rows={allBeams}
             columns={getColumns()}
-            height={rows.length * 60 + 100}
+            height={allBeams.length * 60 + 100}
             testId="pulsarTimingBeamColumns"
           />
         </div>

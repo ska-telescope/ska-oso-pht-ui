@@ -109,7 +109,7 @@ export type ReferenceCoordinateGalactic = {
 
 export type ReferenceCoordinateICRS = {
   kind: string;
-  referenceFrame: string; // TODO check if this can be removed, not used in backend
+  // referenceFrame: string; // TODO check if this can be removed, not used in backend
   raStr: string;
   decStr: string;
   pmRa?: number;
@@ -119,7 +119,7 @@ export type ReferenceCoordinateICRS = {
 };
 
 export type Beam = {
-  beamId: number;
+  id: number;
   beamName: string;
   beamCoordinate: ReferenceCoordinateICRS | ReferenceCoordinateGalactic;
   stnWeights: number[];

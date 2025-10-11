@@ -8,8 +8,12 @@ import {
 } from '@utils/types/sensCalcResults.tsx';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import Target, {
+  Beam,
+  BeamBackend,
   PointingPatternParams,
+  ReferenceCoordinateGalactic,
   ReferenceCoordinateGalacticBackend,
+  ReferenceCoordinateICRS,
   ReferenceCoordinateICRSBackend,
   TargetBackend
 } from '@utils/types/target.tsx';
@@ -50,6 +54,7 @@ import {
 } from '@utils/types/dataProduct.tsx';
 import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
+import { get } from 'lodash';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
 
@@ -114,6 +119,40 @@ const getVelType = (InDefinition: string) => {
   return velType ? velType : 1; // fallback
 };
 
+const getReferenceCoordinate = (
+  tar: ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend
+): ReferenceCoordinateICRS | ReferenceCoordinateGalactic => {
+  if ('kind' in tar && tar.kind === RA_TYPE_GALACTIC.label) {
+    return {
+      kind: RA_TYPE_GALACTIC.label,
+      l: (tar as ReferenceCoordinateGalacticBackend).l,
+      b: (tar as ReferenceCoordinateGalacticBackend).b,
+      pmL: (tar as ReferenceCoordinateGalacticBackend).pm_l,
+      pmB: (tar as ReferenceCoordinateGalacticBackend).pm_b,
+      epoch: tar.epoch,
+      parallax: tar.parallax
+    };
+  }
+  return {
+    kind: RA_TYPE_ICRS.label,
+    raStr: (tar as ReferenceCoordinateICRSBackend).ra_str,
+    decStr: (tar as ReferenceCoordinateICRSBackend).dec_str,
+    pmRa: (tar as ReferenceCoordinateICRSBackend).pm_ra,
+    pmDec: (tar as ReferenceCoordinateICRSBackend).pm_dec,
+    epoch: (tar as ReferenceCoordinateICRSBackend).epoch,
+    parallax: (tar as ReferenceCoordinateICRSBackend).parallax
+  };
+};
+
+const getBeam = (beam: BeamBackend): Beam => {
+  return {
+    id: beam.beam_id,
+    beamName: beam.beam_name,
+    beamCoordinate: getReferenceCoordinate(beam.beam_coordinate),
+    stnWeights: beam.stn_weights
+  };
+};
+
 const isTargetGalactic = (kind: string): boolean => kind === RA_TYPE_GALACTIC.label;
 
 const getTargetType = (kind: string): number =>
@@ -149,25 +188,9 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
         })) as PointingPatternParams[]
       },
       tiedArrayBeams: {
-        // TODO check by kind and handle galactic
-        pstBeams: e.tied_array_beams?.pst_beams?.map(beam => ({
-          beamId: beam.beam_id,
-          beamName: beam.beam_name,
-          beamCoordinate: beam.beam_coordinate,
-          stnWeights: beam.stn_weights
-        })),
-        pssBeams: e.tied_array_beams?.pss_beams?.map(beam => ({
-          beamId: beam.beam_id,
-          beamName: beam.beam_name,
-          beamCoordinate: beam.beam_coordinate,
-          stnWeights: beam.stn_weights
-        })),
-        vlbiBeams: e.tied_array_beams?.vlbi_beams?.map(beam => ({
-          beamId: beam.beam_id,
-          beamName: beam.beam_name,
-          beamCoordinate: beam.beam_coordinate,
-          stnWeights: beam.stn_weights
-        }))
+        pstBeams: e.tied_array_beams?.pst_beams?.map(beam => getBeam(beam)),
+        pssBeams: e.tied_array_beams?.pss_beams?.map(beam => getBeam(beam)),
+        vlbiBeams: e.tied_array_beams?.vlbi_beams?.map(beam => getBeam(beam))
       }
     };
     /*------- reference coordinate properties --------------------- */
@@ -177,7 +200,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       target.pmL = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_l;
       target.pmB = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_b;
     } else if (!isTargetGalactic(referenceCoordinate)) {
-      target.referenceFrame = (e.reference_coordinate as ReferenceCoordinateICRSBackend).reference_frame;
+      // target.referenceFrame = (e.reference_coordinate as ReferenceCoordinateICRSBackend).reference_frame;
       target.raStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).ra_str;
       target.decStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).dec_str;
       target.pmRa = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_ra;
@@ -591,7 +614,6 @@ const getTargetObservation = (
 /*************************************************************************************************************************/
 
 export function mapping(inRec: ProposalBackend): Proposal {
-  console.log('GetProposal mapping before', { inRec });
   let sciencePDF: DocumentPDF;
   let technicalPDF: DocumentPDF;
 
@@ -649,8 +671,6 @@ export function mapping(inRec: ProposalBackend): Proposal {
     dataProductSRC: getDataProductSRC(inRec.observation_info?.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
-
-  console.log('GetProposal mapping after', { convertedProposal });
 
   return convertedProposal as Proposal;
 }

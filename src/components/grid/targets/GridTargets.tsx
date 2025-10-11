@@ -54,16 +54,12 @@ export default function GridTargets({
       headerName: t('pstBeam.label'),
       flex: 3,
       renderCell: (e: { row: Target }) => {
-        // console.log('/////// e.row.tiedArrayBeams', e.row.tiedArrayBeams?.pstBeams);
-        const beamNames = e.row.tiedArrayBeams?.pstBeams?.map((beam: Beam) => { return beam.beamName });
-        const beamName = e.row.tiedArrayBeams?.pstBeams[0]?.beamName;
-        //console.log('/////// pst beam name', beamName);
-        const tiedArrayBeams = Array.isArray(e.row.tiedArrayBeams?.pstBeams)
+        // const beamNames = e.row?.tiedArrayBeams?.pstBeams?.map((beam: Beam) => { return beam?.beamName });
+        // const beamName = e.row?.tiedArrayBeams?.pstBeams[0]?.beamName;
+        const tiedArrayBeams = Array.isArray(e.row?.tiedArrayBeams?.pstBeams)
           ? e.row.tiedArrayBeams.pstBeams
           : [];
-        return tiedArrayBeams
-          .map((beam: any) => (beam.beamName))
-          .join(', ');
+        return tiedArrayBeams.map((beam: any) => beam?.beamName).join(', ');
       }
     }
   ];

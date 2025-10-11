@@ -90,13 +90,12 @@ export default function TargetEntry({
   };
 
   const setBeamData = (incPstBeams: Beam[]) => {
-    console.log('/////// incPstBeams', incPstBeams);
+    // ('/////// incPstBeams', incPstBeams);
     const tiedArrayBeams: TiedArrayBeams = {
       pstBeams: incPstBeams,
       vlbiBeams: [],
       pssBeams: []
-    }
-    console.log('/////// tiedArrayBeams', tiedArrayBeams);
+    };
     if (setTarget) {
       setTarget({ ...target, tiedArrayBeams: tiedArrayBeams });
     }
@@ -148,7 +147,7 @@ export default function TargetEntry({
     setVelUnit(target?.velUnit ?? 0);
     setRedshift(target?.redshift ?? '');
     setReferenceFrame(target?.kind ?? RA_TYPE_ICRS.value);
-    setBeamArrayData((target?.tiedArrayBeams as TiedArrayBeams));
+    setBeamArrayData(target?.tiedArrayBeams as TiedArrayBeams);
   };
 
   React.useEffect(() => {
@@ -157,11 +156,6 @@ export default function TargetEntry({
       targetIn(target);
     }
   }, []);
-
-  // React.useEffect(() => {
-  //   console.log('/////// proposal changed', getProposal());
-  // }, [setProposal]);
-
 
   function formValidation() {
     let valid = true;
@@ -207,7 +201,7 @@ export default function TargetEntry({
         vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : '',
         velType: velType ?? 0,
         velUnit: velUnit ?? 0,
-        tiedArrayBeams: beamArrayData ? beamArrayData as TiedArrayBeams : null
+        tiedArrayBeams: beamArrayData ? (beamArrayData as TiedArrayBeams) : null
       };
 
       const updatedProposal = {
