@@ -40,10 +40,10 @@ import {
   DataProductSRCNetBackend
 } from '@utils/types/dataProduct.tsx';
 import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
-// import { helpers } from '@utils/helpers.ts';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
+import { helpers } from '@/utils/helpers';
 
 const isContinuum = (type: number) => type === TYPE_CONTINUUM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
@@ -515,6 +515,6 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
       )
     }
   };
-  // helpers.transform.trimObject(transformedProposal);
+  helpers.transform.trimObject(transformedProposal);
   return transformedProposal;
 }

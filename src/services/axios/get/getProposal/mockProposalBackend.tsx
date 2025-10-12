@@ -50,8 +50,11 @@ export const MockProposalBackend: ProposalBackend = {
               beam_coordinate: {
                 ra_str: '21:33:27.0200',
                 dec_str: '-00:49:23.700',
-                reference_frame: 'ICRS',
-                kind: 'ICRS'
+                kind: RA_TYPE_ICRS.label,
+                pm_ra: 4.8,
+                pm_dec: -3.3,
+                parallax: 0.0,
+                epoch: 2000.0
               },
               stn_weights: []
             }
@@ -63,7 +66,6 @@ export const MockProposalBackend: ProposalBackend = {
           kind: RA_TYPE_ICRS.label,
           ra_str: '00:00:00.0',
           dec_str: '00:00:00.0',
-          reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
         },
         radial_velocity: {
@@ -97,8 +99,11 @@ export const MockProposalBackend: ProposalBackend = {
               beam_coordinate: {
                 ra_str: '21:33:27.0200',
                 dec_str: '-00:49:23.700',
-                reference_frame: 'ICRS',
-                kind: 'ICRS'
+                kind: RA_TYPE_ICRS.label,
+                pm_ra: 4.8,
+                pm_dec: -3.3,
+                parallax: 0.0,
+                epoch: 2000.0
               },
               stn_weights: []
             }
@@ -110,7 +115,6 @@ export const MockProposalBackend: ProposalBackend = {
           kind: RA_TYPE_ICRS.label,
           ra_str: '05:34:30.900',
           dec_str: '+22:00:53.000',
-          reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
         },
         radial_velocity: {
@@ -144,8 +148,11 @@ export const MockProposalBackend: ProposalBackend = {
               beam_coordinate: {
                 ra_str: '21:33:27.0200',
                 dec_str: '-00:49:23.700',
-                reference_frame: 'ICRS',
-                kind: 'ICRS'
+                kind: RA_TYPE_ICRS.label,
+                pm_ra: 4.8,
+                pm_dec: -3.3,
+                parallax: 0.0,
+                epoch: 2000.0
               },
               stn_weights: []
             }
@@ -157,7 +164,6 @@ export const MockProposalBackend: ProposalBackend = {
           kind: RA_TYPE_ICRS.label,
           ra_str: '21:33:27.0200',
           dec_str: '-00:49:23.700',
-          reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
         },
         radial_velocity: {
@@ -319,8 +325,11 @@ export const MockProposalBackendZoom: ProposalBackend = {
               beam_coordinate: {
                 ra_str: '21:33:27.0200',
                 dec_str: '-00:49:23.700',
-                reference_frame: 'ICRS',
-                kind: 'ICRS'
+                kind: RA_TYPE_ICRS.label,
+                pm_ra: 4.8,
+                pm_dec: -3.3,
+                parallax: 0.0,
+                epoch: 2000.0
               },
               stn_weights: []
             }
@@ -332,7 +341,6 @@ export const MockProposalBackendZoom: ProposalBackend = {
           kind: RA_TYPE_ICRS.label,
           ra_str: '21:33:27.0200',
           dec_str: '-00:49:23.700',
-          reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
         },
         radial_velocity: {

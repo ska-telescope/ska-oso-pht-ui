@@ -27,7 +27,6 @@ export const MockProposalBackend: ProposalBackend = {
           kind: RA_TYPE_ICRS.label,
           ra_str: '00:00:00.0',
           dec_str: '00:00:00.0',
-          reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
         },
         tied_array_beams: {
@@ -52,7 +51,6 @@ export const MockProposalBackend: ProposalBackend = {
           kind: RA_TYPE_ICRS.label,
           ra_str: '05:34:30.900',
           dec_str: '+22:00:53.000',
-          reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
         },
         tied_array_beams: {
@@ -77,7 +75,6 @@ export const MockProposalBackend: ProposalBackend = {
           kind: RA_TYPE_ICRS.label,
           ra_str: '21:33:27.0200',
           dec_str: '-00:49:23.700',
-          reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
         },
         tied_array_beams: {
@@ -230,7 +227,6 @@ export const MockProposalBackendZoom: ProposalBackend = {
           kind: RA_TYPE_ICRS.label,
           ra_str: '21:33:27.0200',
           dec_str: '-00:49:23.700',
-          reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
         },
         tied_array_beams: {
