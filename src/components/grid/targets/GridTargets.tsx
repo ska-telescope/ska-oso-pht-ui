@@ -3,7 +3,7 @@ import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import EditIcon from '../../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
-import Target, { Beam } from '../../../utils/types/target';
+import Target from '../../../utils/types/target';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface GridTargetsProps {
@@ -54,8 +54,6 @@ export default function GridTargets({
       headerName: t('pstBeam.label'),
       flex: 3,
       renderCell: (e: { row: Target }) => {
-        // const beamNames = e.row?.tiedArrayBeams?.pstBeams?.map((beam: Beam) => { return beam?.beamName });
-        // const beamName = e.row?.tiedArrayBeams?.pstBeams[0]?.beamName;
         const tiedArrayBeams = Array.isArray(e.row?.tiedArrayBeams?.pstBeams)
           ? e.row.tiedArrayBeams.pstBeams
           : [];

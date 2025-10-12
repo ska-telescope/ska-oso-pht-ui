@@ -40,11 +40,10 @@ import {
   DataProductSRCNetBackend
 } from '@utils/types/dataProduct.tsx';
 import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
-import { helpers } from '@utils/helpers.ts';
+// import { helpers } from '@utils/helpers.ts';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
-import { get } from 'lodash';
 
 const isContinuum = (type: number) => type === TYPE_CONTINUUM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;

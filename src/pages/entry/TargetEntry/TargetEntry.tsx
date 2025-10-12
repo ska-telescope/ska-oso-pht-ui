@@ -63,7 +63,7 @@ export default function TargetEntry({
   const [referenceFrame, setReferenceFrame] = React.useState(RA_TYPE_ICRS.value);
   const [referenceCoordinates, setReferenceCoordinates] = React.useState(RA_TYPE_ICRS.label);
   const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
-  const [beamArrayData, setBeamArrayData] = React.useState<TiedArrayBeams | null>(null);
+  const [tiedArrayBeams, setTiedArrayBeams] = React.useState<TiedArrayBeams | null>(null);
   const [resetBeamArrayData, setResetBeamArrayData] = React.useState(false);
 
   const LABEL_WIDTH = 6;
@@ -89,17 +89,20 @@ export default function TargetEntry({
     }
   };
 
-  const setBeamData = (incPstBeams: Beam[]) => {
-    // ('/////// incPstBeams', incPstBeams);
-    const tiedArrayBeams: TiedArrayBeams = {
-      pstBeams: incPstBeams,
-      vlbiBeams: [],
-      pssBeams: []
+  const getTiedArrayBeams = (beams: Beam[]): TiedArrayBeams => {
+    return {
+      pstBeams: beams,
+      pssBeams: [],
+      vlbiBeams: []
     };
-    if (setTarget) {
+  };
+
+  const handleBeamData = (beams: Beam[]) => {
+    const tiedArrayBeams: TiedArrayBeams = getTiedArrayBeams(beams);
+    if (setTarget !== undefined) {
       setTarget({ ...target, tiedArrayBeams: tiedArrayBeams });
     }
-    setBeamArrayData(tiedArrayBeams);
+    setTiedArrayBeams(tiedArrayBeams);
   };
 
   const setTheRedshift = (inValue: string) => {
@@ -147,7 +150,7 @@ export default function TargetEntry({
     setVelUnit(target?.velUnit ?? 0);
     setRedshift(target?.redshift ?? '');
     setReferenceFrame(target?.kind ?? RA_TYPE_ICRS.value);
-    setBeamArrayData(target?.tiedArrayBeams as TiedArrayBeams);
+    setTiedArrayBeams(target?.tiedArrayBeams as TiedArrayBeams);
   };
 
   React.useEffect(() => {
@@ -201,7 +204,7 @@ export default function TargetEntry({
         vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : '',
         velType: velType ?? 0,
         velUnit: velUnit ?? 0,
-        tiedArrayBeams: beamArrayData ? (beamArrayData as TiedArrayBeams) : null
+        tiedArrayBeams: tiedArrayBeams ? (tiedArrayBeams as TiedArrayBeams) : null
       };
 
       const updatedProposal = {
@@ -218,7 +221,7 @@ export default function TargetEntry({
       setDec('');
       setVel('');
       setRedshift('');
-      setBeamArrayData(null);
+      setTiedArrayBeams(null);
     };
 
     const disabled = () => !(name?.length && ra?.length && dec?.length);
@@ -302,7 +305,7 @@ export default function TargetEntry({
     return wrapper(
       <PulsarTimingBeamField
         target={target}
-        onDialogResponse={setBeamData}
+        onDialogResponse={handleBeamData}
         resetBeamData={resetBeamArrayData}
         showBeamData={showBeamData}
       />

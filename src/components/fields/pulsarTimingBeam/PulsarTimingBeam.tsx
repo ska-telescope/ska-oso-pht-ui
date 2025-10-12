@@ -19,17 +19,6 @@ interface PulsarTimingBeamFieldProps {
   showBeamData?: boolean;
 }
 
-// interface Row {
-//   beamId?: number;
-//   beamName?: string;
-//   beamCoordinate?: {
-//     kind: number;
-//     referenceFrame: string;
-//     raStr: string;
-//     decStr: string;
-//   };
-//   stnWeights?: number[];
-// }
 export default function PulsarTimingBeamField({
   target,
   onDialogResponse,
@@ -45,13 +34,11 @@ export default function PulsarTimingBeamField({
   const [beamName, setBeamName] = React.useState('');
   const [beamRA, setBeamRA] = React.useState('');
   const [beamDec, setBeamDec] = React.useState('');
-  // const [rows, setRows] = React.useState<Row[]>([]);
   const [allBeams, setAllBeams] = React.useState<Beam[]>([]);
   const LAB_WIDTH = 5;
 
   React.useEffect(() => {
     if (selectedValue === 'noBeam') {
-      // setRows([]); // Reset rows to initial state
       setAllBeams([]); // Clear tiedArrayBeam data
     }
   }, [selectedValue]);
@@ -62,64 +49,22 @@ export default function PulsarTimingBeamField({
     }
   }, [allBeams]);
 
-  // React.useEffect(() => {
-  //   if (showBeamData) {
-  //     if (target && target.tiedArrayBeams) {
-  //       // Generate updatedRows
-  //       // const updatedRows = target.tiedArrayBeams.flatMap(beamGroup =>
-  //       //   beamGroup.pstBeams.map(beam => ({
-  //       //     id: beam.beamId, // Use beamId as the unique identifier
-  //       //     beamId: beam.beamId,
-  //       //     name: beam.beamName,
-  //       //     raStr: beam.beamCoordinate.raStr,
-  //       //     decStr: beam.beamCoordinate.decStr,
-  //       //     isAddRow: false
-  //       //   }))
-  //       // );
-
-  //       const updatedRows = target.tiedArrayBeams.pstBeams.map((beam: Beam) => ({
-  //           id: beam.beamId,
-  //           beamId: beam.beamId,
-  //           name: beam.beamName,
-  //           raStr: (beam.beamCoordinate as ReferenceCoordinateICRS).raStr,
-  //           decStr: (beam.beamCoordinate as ReferenceCoordinateICRS).decStr,
-  //           isAddRow: false
-  //         }));
-
-  //       // Combine rows, and updatedRows, ensuring no duplicates
-  //       const uniqueRows = updatedRows.filter(
-  //         (updatedRow, index, self) => index === self.findIndex(row => row.id === updatedRow.id)
-  //       );
-  //       setRows(uniqueRows);
-
-  //       // // Extract tiedArrayBeams data and update setAllBeams
-  //       // const extractedBeams = target.tiedArrayBeams.map(beamGroup => ({
-  //       //   ...beamGroup,
-  //       //   pstBeams: beamGroup.pstBeams.map(beam => ({
-  //       //     beamId: beam.beamId,
-  //       //     beamName: beam.beamName,
-  //       //     beamCoordinate: beam.beamCoordinate,
-  //       //     stnWeights: beam.stnWeights
-  //       //   }))
-  //       // }));
-  //       // setAllBeams(extractedBeams);
-  //       // Extract tiedArrayBeams data and update setAllBeams
-  //       const extractedBeams = target.tiedArrayBeams.pstBeams.map(pstBeam => ({
-  //           beamId: pstBeam.beamId,
-  //           beamName: pstBeam.beamName,
-  //           beamCoordinate: pstBeam.beamCoordinate,
-  //           stnWeights: pstBeam.stnWeights
-  //         }));
-  //       setAllBeams(extractedBeams);
-  //     }
-  //     setSelectedValue('multipleBeams');
-  //     setShowGrid(true);
-  //   }
-  // }, [showBeamData]);
+  React.useEffect(() => {
+    // Use existing beam data if available (edit)
+    if (
+      target &&
+      showBeamData &&
+      target.tiedArrayBeams &&
+      Array.isArray(target.tiedArrayBeams.pstBeams)
+    ) {
+      setAllBeams(target.tiedArrayBeams.pstBeams);
+      setSelectedValue('multipleBeams');
+      setShowGrid(true);
+    }
+  }, [target]);
 
   React.useEffect(() => {
     if (resetBeamData) {
-      // setRows([]);
       setBeamDec('');
       setBeamRA('');
       setBeamName('');
@@ -176,7 +121,7 @@ export default function PulsarTimingBeamField({
   const addPulsarTimingBeamsConfirmed = () => {
     if (beamName && beamRA && beamDec) {
       const newBeam: Beam = {
-        id: Math.floor(Math.random() * 1000), // TODO improve id generation
+        id: allBeams.length > 0 ? Math.max(...allBeams.map(beam => beam.id)) + 1 : 1,
         beamName: beamName,
         beamCoordinate: {
           kind: RA_TYPE_ICRS.label,
