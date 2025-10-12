@@ -55,7 +55,8 @@ export default function PulsarTimingBeamField({
       target &&
       showBeamData &&
       target.tiedArrayBeams &&
-      Array.isArray(target.tiedArrayBeams.pstBeams)
+      Array.isArray(target.tiedArrayBeams.pstBeams) &&
+      target.tiedArrayBeams.pstBeams.length > 0
     ) {
       setAllBeams(target.tiedArrayBeams.pstBeams);
       setSelectedValue('multipleBeams');
