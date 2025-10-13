@@ -50,7 +50,7 @@ export default function PulsarTimingBeamField({
   }, [allBeams]);
 
   React.useEffect(() => {
-    // Use existing beam data if available (edit)
+    // Use existing beam data if available (for target edit)
     if (
       target &&
       showBeamData &&

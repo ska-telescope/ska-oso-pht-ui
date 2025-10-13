@@ -148,7 +148,7 @@ const getBeam = (beam: BeamBackend): Beam => {
     id: beam.beam_id,
     beamName: beam.beam_name,
     beamCoordinate: getReferenceCoordinate(beam.beam_coordinate),
-    stnWeights: beam.stn_weights
+    stnWeights: beam.stn_weights ?? [] // not used yet
   };
 };
 

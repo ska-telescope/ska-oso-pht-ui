@@ -14,7 +14,8 @@ import SpatialImaging from './SpatialImaging/SpatialImaging';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
-const DATA_GRID_HEIGHT = '100vh';
+const DATA_GRID_HEIGHT = '45vh';
+const TARGET_ENTRY_HEIGHT = '50vh';
 const WRAPPER_WIDTH = '500px';
 
 export default function TargetListSection() {
@@ -152,7 +153,14 @@ export default function TargetListSection() {
           />
         </Grid>
         <Grid size={{ md: 12, lg: 6 }} order={{ md: 1, lg: 2 }}>
-          <Box sx={{ width: '100%', border: '1px solid grey' }}>
+          <Box
+            sx={{
+              width: '100%',
+              height: TARGET_ENTRY_HEIGHT,
+              border: '1px solid grey',
+              overflowY: 'auto'
+            }}
+          >
             <Tabs
               textColor="secondary"
               indicatorColor="secondary"

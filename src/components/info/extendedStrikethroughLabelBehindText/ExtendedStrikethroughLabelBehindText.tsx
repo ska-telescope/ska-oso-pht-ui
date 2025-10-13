@@ -13,7 +13,6 @@ const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelB
       sx={{
         position: 'relative',
         width: '100%',
-        maxWidth: '500px', // Slightly reduced width
         height: '3rem',
         display: 'flex',
         alignItems: 'center',

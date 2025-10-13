@@ -77,7 +77,6 @@ const getReferenceCoordinate = (
   }
   return {
     kind: RA_TYPE_ICRS.label,
-    // reference_frame: tar.referenceFrame ? tar.referenceFrame : RA_TYPE_ICRS.label, // TODO : hardcoded for now as not implemented in UI TODO check if needed
     ra_str: ((tar as Target) || (tar as ReferenceCoordinateICRS)).raStr,
     dec_str: ((tar as Target) || (tar as ReferenceCoordinateICRS)).decStr,
     pm_ra: ((tar as Target) || (tar as ReferenceCoordinateICRS)).pmRa,
@@ -92,7 +91,7 @@ const getBeam = (beam: Beam): BeamBackend => {
     beam_id: beam.id,
     beam_name: beam.beamName,
     beam_coordinate: getReferenceCoordinate(beam.beamCoordinate),
-    stn_weights: beam.stnWeights // TODO
+    stn_weights: beam.stnWeights ?? [] // not used yet
   };
 };
 

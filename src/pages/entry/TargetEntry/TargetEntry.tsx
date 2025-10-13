@@ -227,7 +227,7 @@ export default function TargetEntry({
     const disabled = () => !(name?.length && ra?.length && dec?.length);
 
     return (
-      <Grid size={{ xs: 12 }}>
+      <Grid size={{ xs: 12 }} sx={{ position: 'relative', zIndex: 99 }} mb={2}>
         <AddButton
           action={addButtonAction}
           disabled={disabled()}
@@ -379,36 +379,40 @@ export default function TargetEntry({
     );
 
   return (
-    <Grid
-      p={2}
-      container
-      direction="row"
-      alignItems="space-evenly"
-      justifyContent="space-between"
-      sx={{ height: '100%' }}
-    >
-      <Grid size={{ xs: 8 }}>
+    <Grid p={2} container direction="row" alignItems="space-evenly" justifyContent="space-between">
+      <Grid size={{ xs: 8 }} sx={{ position: 'relative' }}>
         <Grid
           container
           direction="column"
           spacing={2}
           alignItems="stretch"
           justifyContent="flex-start"
+          sx={{ margin: '0px 35px 15px 0px' }}
         >
           <ExtendedStrikethroughLabelBehindText labelText="COORDINATE TYPE" />
-          <Grid>{referenceCoordinatesField()}</Grid>
+          <Grid mb={1} mt={1}>
+            {referenceCoordinatesField()}
+          </Grid>
           <ExtendedStrikethroughLabelBehindText labelText="COORDINATE" />
           <Grid>{nameField()}</Grid>
           <Grid>{skyDirection1Field()}</Grid>
-          <Grid>{skyDirection2Field()}</Grid>
+          <Grid mb={1} mt={1}>
+            {skyDirection2Field()}
+          </Grid>
           <ExtendedStrikethroughLabelBehindText labelText="PULSAR TIMING BEAM" />
-          <Grid>{pulsarTimingBeamField()}</Grid>
+          <Grid mb={1} mt={1}>
+            {pulsarTimingBeamField()}
+          </Grid>
           <ExtendedStrikethroughLabelBehindText labelText="RADIAL MOTION" />
           <Grid>{velocityField()}</Grid>
-          <Grid>{velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}</Grid>
+          <Grid mb={1} mt={1}>
+            {velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}
+          </Grid>
           <ExtendedStrikethroughLabelBehindText labelText="FIELD PATTERN" />
           <Grid>{fieldPatternTypeField()}</Grid>
-          <Grid>{!id && addButton()}</Grid>
+          <Grid mb={1} mt={1}>
+            {!id && addButton()}
+          </Grid>
         </Grid>
       </Grid>
       <Grid size={{ xs: 4 }}>
