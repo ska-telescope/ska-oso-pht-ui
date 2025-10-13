@@ -5,7 +5,6 @@ Introductory text for the PPT documentation goes here.
 
 .. toctree::
    :maxdepth: 2
-   :titlesonly:
    :caption: Proposal Preparation Tool
 
    UserIntroduction
