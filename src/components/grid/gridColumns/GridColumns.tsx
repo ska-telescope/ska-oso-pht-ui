@@ -16,9 +16,9 @@ const getReviewerStatus = (status: any) => {
 };
 
 const getReviewerType = (rec: Reviewer) => {
-  if (rec.isScience && rec.isTechnical) return t('reviewerType.both');
-  else if (rec.isScience) return t('reviewerType.science');
-  else if (rec.isTechnical) return t('reviewerType.technical');
+  // console.log('reviewer received: ', rec);
+  if (rec.isScience) return t('reviewerType.science');
+  if (rec.isTechnical) return t('reviewerType.technical');
   else return '';
 };
 
@@ -176,14 +176,20 @@ export const getColReviewerType = (
           { label: t('reviewerType.science'), value: 'sci' },
           { label: t('reviewerType.technical'), value: 'tec' }
         ]}
-        testId="subExpertise"
+        testId="reviewerType"
         value={typeState}
         setValue={setTypeState}
         label={''}
       />
     </Box>
   ),
-  renderCell: (e: { row: any }) => getReviewerType(e.row)
+  renderCell: (e: { row: any }) => {
+    // Use the `reviewType` property if it exists, otherwise fallback to `isScience` and `isTechnical`
+    if (e.row.reviewType) {
+      return t(`reviewerType.${e.row.reviewType}`);
+    }
+    return getReviewerType(e.row);
+  }
 });
 
 export const getColSubExpertise = () => ({

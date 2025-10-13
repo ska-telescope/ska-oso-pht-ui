@@ -75,6 +75,7 @@ export const convertPanelProposalToProposalIdList = (
 export const convertPanelReviewerToReviewerIdList = (
   panelReviewers: PanelReviewer[]
 ): IdObject[] => {
+  //reviewer per id
   return panelReviewers.map(panelReviewer => ({
     id: panelReviewer.reviewerId
   }));
@@ -141,6 +142,8 @@ export default function PanelMaintenance() {
     const tecReviewers = currentPanel?.tecReviewers
       ? convertPanelReviewerToReviewerIdList(currentPanel?.tecReviewers)
       : [];
+    console.log('sci reviewers', sciReviewers);
+    console.log('tec reviewers ', tecReviewers);
     setPanelReviewers([...sciReviewers, ...tecReviewers]);
   }, [currentPanel]);
 

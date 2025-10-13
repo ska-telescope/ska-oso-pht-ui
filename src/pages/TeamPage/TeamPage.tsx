@@ -93,7 +93,7 @@ export default function TeamPage() {
     //  * when the current member changes
     //  * when the proposal's investigators change
     if (actionsAvailable()) fetchProposalAccessData();
-  }, [currentMember, getProposal().investigators]);
+  }, [currentMember, getProposal()?.investigators]);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);

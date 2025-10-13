@@ -157,16 +157,25 @@ export default function GridReviewers({
     getColStatus()
   ];
 
-  const selectedData = reviewers
-    ? reviewers.filter(
-        e =>
-          (isReviewerSelected(e.id) ? checkState !== 'unchecked' : checkState !== 'checked') &&
-          isReviewerType(e)
-      )
-    : [];
-  const filteredData = selectedData
-    ? filterReviewers(selectedData, searchTerm, searchTypeExpertise, searchTypeAffiliation)
-    : [];
+  const expandedReviewers = reviewers.flatMap(reviewer => {
+    if (reviewer.isScience && reviewer.isTechnical) {
+      return [
+        { ...reviewer, reviewType: 'science', id: `${reviewer.id}-scientific` },
+        { ...reviewer, reviewType: 'technical', id: `${reviewer.id}-technical` }
+      ];
+    }
+    return [reviewer];
+  });
+
+  const selectedData = expandedReviewers.filter(
+    e =>
+      (isReviewerSelected(e.id) ? checkState !== 'unchecked' : checkState !== 'checked') &&
+      isReviewerType(e)
+  );
+
+  const filteredData = selectedData.filter(e =>
+    filterReviewers(selectedData, searchTerm, searchTypeExpertise, searchTypeAffiliation)
+  );
 
   const ReviewersSectionTitle = () => (
     <Typography align="center" variant="h6" minHeight="4vh" textAlign={'left'}>
