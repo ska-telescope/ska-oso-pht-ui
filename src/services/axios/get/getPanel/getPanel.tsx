@@ -16,8 +16,9 @@ const getProposal = (proposal: PanelProposalBackend, panelId: string): PanelProp
   };
 };
 
-const getReviewer = (reviewer: PanelReviewerBackend, panelId: string): PanelReviewer => {
+const getReviewer = (reviewer: PanelReviewerBackend, panelId: string, reviewType: string): PanelReviewer => {
   return {
+    reviewType: reviewType,
     panelId: panelId,
     reviewerId: reviewer.reviewer_id,
     assignedOn: reviewer.assigned_on as string,
@@ -26,6 +27,7 @@ const getReviewer = (reviewer: PanelReviewerBackend, panelId: string): PanelRevi
 };
 
 export function mapping(inRec: PanelBackend): Panel {
+  console.log('rec ', inRec);
   const rec: Panel = {
     id: inRec.panel_id?.toString(),
     metadata: inRec.metadata, // TODO create metadata backend type and mapping + modify frontend type to be camelCase

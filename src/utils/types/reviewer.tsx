@@ -9,6 +9,7 @@ export type Reviewer = {
   subExpertise: string;
   isScience: boolean;
   isTechnical: boolean;
+  reviewType: string;
 };
 
 export type ReviewerBackend = {

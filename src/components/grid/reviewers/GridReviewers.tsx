@@ -160,11 +160,16 @@ export default function GridReviewers({
   const expandedReviewers = reviewers.flatMap(reviewer => {
     if (reviewer.isScience && reviewer.isTechnical) {
       return [
-        { ...reviewer, reviewType: 'science', id: `${reviewer.id}-scientific` },
+        { ...reviewer, reviewType: 'science', id: `${reviewer.id}-science` },
         { ...reviewer, reviewType: 'technical', id: `${reviewer.id}-technical` }
       ];
     }
-    return [reviewer];
+    else if (reviewer.isScience) {
+      return { ...reviewer, reviewType: 'science', id: `${reviewer.id}-science` };
+    }
+    else if (reviewer.isTechnical) {
+      return { ...reviewer, reviewType: 'technical', id: `${reviewer.id}-technical` };
+    }
   });
 
   const selectedData = expandedReviewers.filter(

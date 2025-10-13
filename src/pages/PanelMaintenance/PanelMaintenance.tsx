@@ -22,6 +22,7 @@ import AssignButton from '@/components/button/Assign/Assign';
 import PostPanelGenerate from '@/services/axios/post/postPanelGenerate/postPanelGenerate';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { items } from 'happy-dom/lib/PropertySymbol.d.ts.js';
 
 const PANELS_HEIGHT = '74vh';
 const TABS_HEIGHT = '76vh';
@@ -33,16 +34,18 @@ export const addReviewerPanel = (
   localPanel: Panel,
   setReviewerPanels: (sciReviewers: PanelReviewer[], tecReviewers: PanelReviewer[]) => void
 ) => {
+  console.log('reviewer check ', reviewer);
   const rec: PanelReviewer = {
+    reviewType: reviewer.reviewType,
     reviewerId: reviewer.id,
     panelId: localPanel?.id ?? '',
     status: REVIEWER_STATUS.PENDING
   };
 
-  const updatedSciReviewers = reviewer.isScience
+  const updatedSciReviewers = reviewer.reviewType === 'science'
     ? [...localPanel?.sciReviewers, rec]
     : localPanel?.sciReviewers;
-  const updatedTecReviewers = reviewer.isTechnical
+  const updatedTecReviewers = reviewer.reviewType === 'technical'
     ? [...localPanel?.tecReviewers, rec]
     : localPanel?.tecReviewers;
   setReviewerPanels(updatedSciReviewers, updatedTecReviewers);
@@ -53,14 +56,24 @@ export const deleteReviewerPanel = (
   localPanel: Panel,
   setReviewerPanels: Function
 ) => {
+  console.log('reviewer delete ', reviewer);
+
   function filterSciRecords(id: string) {
-    return localPanel?.sciReviewers?.filter(item => !(item.reviewerId === id));
+    console.log('science reviewers', localPanel?.sciReviewers);
+    console.log('id check ', id);
+    console.log('local panel check', localPanel?.sciReviewers);
+    return localPanel?.sciReviewers?.filter(item => {
+      console.log('Filtering sciReviewers, current reviewerId:', item.reviewerId);
+      return !(item.reviewerId === id);
+    });
   }
   function filterTecRecords(id: string) {
     return localPanel?.tecReviewers?.filter(item => !(item.reviewerId === id));
   }
   const sciFiltered = filterSciRecords(reviewer.id);
   const tecFiltered = filterTecRecords(reviewer.id);
+
+  console.log('sciFiltered ', sciFiltered);
   setReviewerPanels(sciFiltered, tecFiltered);
 };
 
@@ -75,6 +88,7 @@ export const convertPanelProposalToProposalIdList = (
 export const convertPanelReviewerToReviewerIdList = (
   panelReviewers: PanelReviewer[]
 ): IdObject[] => {
+  console.log('panelReviewers ', panelReviewers);
   //reviewer per id
   return panelReviewers.map(panelReviewer => ({
     id: panelReviewer.reviewerId
@@ -152,6 +166,9 @@ export default function PanelMaintenance() {
   };
 
   const handleReviewersChange = (sciReviewers: PanelReviewer[], tecReviewers: PanelReviewer[]) => {
+    console.log('sciReviewers ', sciReviewers);
+    console.log('tecReviewers ', tecReviewers);
+
     setCurrentPanel(prevPanel => {
       if (!prevPanel) return prevPanel;
       const updatedPanel = {
@@ -202,6 +219,7 @@ export default function PanelMaintenance() {
   };
 
   const reviewerSelectedToggle = (reviewer: Reviewer, isSelected: boolean) => {
+    console.log('selected reviewer ', reviewer);
     if (isSelected) {
       deleteReviewerPanel(reviewer, currentPanel as Panel, handleReviewersChange);
     } else {
