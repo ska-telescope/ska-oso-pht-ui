@@ -9,20 +9,20 @@ A short intro to the user guides goes here.
 
 
    PPT/UserIntroduction
-   PPT/ULandingPage
-   PPT/UTitlePage
-   PPT/UTeamPage
-   PPT/UGeneralPage
-   PPT/USciencePage
-   PPT/UTargetPage
-   PPT/UObservationPage
-   PPT/UTechnicalPage
-   PPT/USDPDataPage
-   PPT/USrcNetPage
-   PPT/USubmitConfirmation
-   PPT/UUserQuestions
-   PPT/UUserTroubleShooting
-   PPT/UUserFeedback
+   PPT/LandingPage
+   PPT/TitlePage
+   PPT/TeamPage
+   PPT/GeneralPage
+   PPT/SciencePage
+   PPT/TargetPage
+   PPT/ObservationPage
+   PPT/TechnicalPage
+   PPT/SDPDataPage
+   PPT/SrcNetPage
+   PPT/SubmitConfirmation
+   PPT/UserQuestions
+   PPT/UserTroubleShooting
+   PPT/UserFeedback
 
 .. toctree::
    :maxdepth: 2
