@@ -31,7 +31,6 @@ install-dependencies:
     key:
       files:
         - ${JS_PROJECT_DIR}/yarn.lock
-      prefix: $CI_COMMIT_SHORT_SHA
     paths:
       - ${JS_PROJECT_DIR}/node_modules/
       - ${JS_PROJECT_DIR}/cache/Cypress
@@ -67,7 +66,6 @@ js-e2e-deploy:
     KUBE_HOST: https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
 
 js-e2e-test:
-  allow_failure: true
   variables: # use the loadbalancer as the cypress tests would hit the log in page otherwise
     KUBE_HOST: https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
 

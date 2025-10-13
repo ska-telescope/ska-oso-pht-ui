@@ -20,10 +20,9 @@ export function useOSDAccessors() {
   const [countdown, setCountdown] = useState<string | null>(null);
 
   useEffect(() => {
-    const raw = cycleInformation?.proposalClose;
-    if (!raw) return;
+    if (!cycleInformation?.proposalClose) return;
 
-    const formatted = format(raw);
+    const formatted = format(cycleInformation.proposalClose);
     const closeDate = new Date(formatted);
 
     const updateCountdown = () => {

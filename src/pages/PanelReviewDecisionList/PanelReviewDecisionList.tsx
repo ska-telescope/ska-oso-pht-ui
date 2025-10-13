@@ -2,7 +2,6 @@ import React from 'react';
 import { Grid, Paper } from '@mui/material';
 import { AlertColorTypes, SearchEntry } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
-import GetPanelList from '@services/axios/get/getPanelList/getPanelList';
 import GetProposalReviewList from '@services/axios/get/getProposalReviewList/getProposalReviewList';
 import getPanelDecisionList from '@services/axios/get/getPanelDecisionList/getPanelDecisionList';
 import GetProposalByStatusList from '@services/axios/get/getProposalByStatusList/getProposalByStatusList';
@@ -13,7 +12,6 @@ import { BANNER_PMT_SPACER } from '@/utils/constants';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import TableReviewDecision from '@/components/grid/tableReviewDecision/TableReviewDecision';
 import { ProposalReview, ScienceReview } from '@/utils/types/proposalReview';
-import { Panel } from '@/utils/types/panel';
 import { PanelDecision } from '@/utils/types/panelDecision';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import PostProposalReview from '@/services/axios/post/postProposalReview/postProposalReview';
@@ -29,7 +27,6 @@ export default function ReviewDecisionListPage() {
 
   const [searchTerm, setSearchTerm] = React.useState('');
   const [reset, setReset] = React.useState(false);
-  const [panelData, setPanelData] = React.useState<Panel[]>([]);
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
   const [reviewDecisions, setReviewDecisions] = React.useState<PanelDecision[]>([]);
@@ -113,30 +110,12 @@ export default function ReviewDecisionListPage() {
   }, []);
 
   React.useEffect(() => {
-    const GetReviewPanels = async () => {
-      const response = await GetPanelList(authClient);
-      if (typeof response === 'string') {
-        notifyError(response);
-      } else {
-        setPanelData((response as unknown) as Panel[]);
-      }
-    };
-    GetReviewPanels();
-  }, [reset]);
-
-  React.useEffect(() => {
     const fetchProposalData = async () => {
       const response = await GetProposalByStatusList(authClient);
       if (typeof response === 'string') {
         notifyError(response);
       } else {
-        const panelProposalIds = panelData.flatMap(panel =>
-          Array.isArray(panel.proposals) ? panel.proposals.map(proposal => proposal.proposalId) : []
-        );
-        const filtered = response
-          ? response.filter((proposal: Proposal) => panelProposalIds.includes(proposal.id))
-          : [];
-        setProposals(filtered);
+        setProposals(response);
       }
     };
     const fetchProposalReviewData = async () => {
@@ -150,7 +129,7 @@ export default function ReviewDecisionListPage() {
     fetchProposalData();
     fetchProposalReviewData();
     fetchReviewDecisionData();
-  }, [panelData]);
+  }, [reset]);
 
   /*--------------------------------------------------------------------------*/
 

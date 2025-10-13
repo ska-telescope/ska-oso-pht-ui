@@ -31,13 +31,25 @@ export type ReferenceCoordinateGalacticBackend = {
 // ICRS now replaces equatorial
 export type ReferenceCoordinateICRSBackend = {
   kind: string;
-  reference_frame: string;
   ra_str: string;
   dec_str: string;
   pm_ra?: number;
   pm_dec?: number;
   parallax?: number;
   epoch?: number;
+};
+
+export type TiedArrayBeamsBackend = {
+  pst_beams: BeamBackend[];
+  pss_beams: BeamBackend[];
+  vlbi_beams: BeamBackend[];
+};
+
+export type BeamBackend = {
+  beam_id: number;
+  beam_name: string;
+  beam_coordinate: ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend;
+  stn_weights: number[];
 };
 
 export type TargetBackend = {
@@ -54,6 +66,7 @@ export type TargetBackend = {
     reference_frame: string;
     redshift: number;
   };
+  tied_array_beams: TiedArrayBeamsBackend;
 };
 
 /************************************************************************************
@@ -64,8 +77,8 @@ export type TargetBackend = {
 
 /************************************************************************************
  *  NOTE : velType is currently mapped as follows:
-    "0": "Velocity",
-    "1": "Redshift"
+ "0": "Velocity",
+ "1": "Redshift"
  ***********************************************************************************/
 
 /************************************************************************************
@@ -82,6 +95,40 @@ export type PointingPatternParams = {
   kind: string;
   offsetXArcsec: number;
   offsetYArcsec: number;
+};
+
+export type ReferenceCoordinateGalactic = {
+  kind: string;
+  l: number; // replaces Galactic longitude
+  b: number; // replaces Galactic latitude
+  pmL?: number;
+  pmB?: number;
+  epoch?: number;
+  parallax?: number;
+};
+
+export type ReferenceCoordinateICRS = {
+  kind: string;
+  // referenceFrame: string; // TODO check if this can be removed, not used in backend
+  raStr: string;
+  decStr: string;
+  pmRa?: number;
+  pmDec?: number;
+  parallax?: number;
+  epoch?: number;
+};
+
+export type Beam = {
+  id: number;
+  beamName: string;
+  beamCoordinate: ReferenceCoordinateICRS | ReferenceCoordinateGalactic;
+  stnWeights: number[];
+};
+
+export type TiedArrayBeams = {
+  pstBeams: Beam[];
+  pssBeams: Beam[];
+  vlbiBeams: Beam[];
 };
 
 type Target = {
@@ -112,6 +159,9 @@ type Target = {
     active: string; // NOT USED
     parameters: PointingPatternParams[]; // NOT USED
   }; // NOT USED
+  /*------- tied array beams properties --------------------- */
+  tiedArrayBeams: TiedArrayBeams | null;
+  /*------- end of tied array beams properties --------------------- */
 };
 
 export default Target;

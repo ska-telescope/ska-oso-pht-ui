@@ -8,8 +8,12 @@ import {
 } from '@utils/types/sensCalcResults.tsx';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import Target, {
+  Beam,
+  BeamBackend,
   PointingPatternParams,
+  ReferenceCoordinateGalactic,
   ReferenceCoordinateGalacticBackend,
+  ReferenceCoordinateICRS,
   ReferenceCoordinateICRSBackend,
   TargetBackend
 } from '@utils/types/target.tsx';
@@ -67,7 +71,9 @@ const getInvestigators = (inValue: InvestigatorBackend[] | null) => {
       email: inValue[i]?.email,
       affiliation: inValue[i].organization as string,
       phdThesis: inValue[i].for_phd as boolean,
-      pi: inValue[i].principal_investigator as boolean
+      pi: inValue[i].principal_investigator as boolean,
+      officeLocation: inValue[i].officeLocation,
+      jobTitle: inValue[i].jobTitle
     });
   }
   return investigators;
@@ -112,6 +118,40 @@ const getVelType = (InDefinition: string) => {
   return velType ? velType : 1; // fallback
 };
 
+const getReferenceCoordinate = (
+  tar: ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend
+): ReferenceCoordinateICRS | ReferenceCoordinateGalactic => {
+  if ('kind' in tar && tar.kind === RA_TYPE_GALACTIC.label) {
+    return {
+      kind: RA_TYPE_GALACTIC.label,
+      l: (tar as ReferenceCoordinateGalacticBackend).l,
+      b: (tar as ReferenceCoordinateGalacticBackend).b,
+      pmL: (tar as ReferenceCoordinateGalacticBackend).pm_l,
+      pmB: (tar as ReferenceCoordinateGalacticBackend).pm_b,
+      epoch: tar.epoch,
+      parallax: tar.parallax
+    };
+  }
+  return {
+    kind: RA_TYPE_ICRS.label,
+    raStr: (tar as ReferenceCoordinateICRSBackend).ra_str,
+    decStr: (tar as ReferenceCoordinateICRSBackend).dec_str,
+    pmRa: (tar as ReferenceCoordinateICRSBackend).pm_ra,
+    pmDec: (tar as ReferenceCoordinateICRSBackend).pm_dec,
+    epoch: (tar as ReferenceCoordinateICRSBackend).epoch,
+    parallax: (tar as ReferenceCoordinateICRSBackend).parallax
+  };
+};
+
+const getBeam = (beam: BeamBackend): Beam => {
+  return {
+    id: beam.beam_id,
+    beamName: beam.beam_name,
+    beamCoordinate: getReferenceCoordinate(beam.beam_coordinate),
+    stnWeights: beam.stn_weights ?? [] // not used yet
+  };
+};
+
 const isTargetGalactic = (kind: string): boolean => kind === RA_TYPE_GALACTIC.label;
 
 const getTargetType = (kind: string): number =>
@@ -145,6 +185,11 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
           offsetXArcsec: p.offset_x_arcsec,
           offsetYArcsec: p.offset_y_arcsec
         })) as PointingPatternParams[]
+      },
+      tiedArrayBeams: {
+        pstBeams: e.tied_array_beams?.pst_beams?.map(beam => getBeam(beam)),
+        pssBeams: e.tied_array_beams?.pss_beams?.map(beam => getBeam(beam)),
+        vlbiBeams: e.tied_array_beams?.vlbi_beams?.map(beam => getBeam(beam))
       }
     };
     /*------- reference coordinate properties --------------------- */
@@ -154,7 +199,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       target.pmL = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_l;
       target.pmB = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_b;
     } else if (!isTargetGalactic(referenceCoordinate)) {
-      target.referenceFrame = (e.reference_coordinate as ReferenceCoordinateICRSBackend).reference_frame;
+      // target.referenceFrame = (e.reference_coordinate as ReferenceCoordinateICRSBackend).reference_frame;
       target.raStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).ra_str;
       target.decStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).dec_str;
       target.pmRa = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_ra;
@@ -572,23 +617,24 @@ export function mapping(inRec: ProposalBackend): Proposal {
   let technicalPDF: DocumentPDF;
 
   sciencePDF = (getPDF(
-    inRec?.info?.documents,
+    inRec?.observation_info?.documents,
     PDF_NAME_PREFIXES.SCIENCE + inRec.prsl_id
   ) as unknown) as DocumentPDF;
   technicalPDF = (getPDF(
-    inRec?.info?.documents,
+    inRec?.observation_info?.documents,
     PDF_NAME_PREFIXES.TECHNICAL + inRec.prsl_id
   ) as unknown) as DocumentPDF;
 
-  const targets = getTargets(inRec.info.targets);
+  const targets = getTargets(inRec.observation_info?.targets);
 
   const convertedProposal = {
     metadata: inRec.metadata, // TODO should we keep this metadata or the fields below?
     id: inRec.prsl_id,
-    title: inRec.info.title,
-    proposalType: PROJECTS?.find(p => p.mapping === inRec.info.proposal_type.main_type)?.id,
-    proposalSubType: inRec.info.proposal_type.attributes
-      ? getAttributes(inRec.info.proposal_type)
+    title: inRec.proposal_info?.title,
+    proposalType: PROJECTS?.find(p => p.mapping === inRec.proposal_info?.proposal_type?.main_type)
+      ?.id,
+    proposalSubType: inRec.proposal_info?.proposal_type?.attributes
+      ? getAttributes(inRec.proposal_info?.proposal_type)
       : [],
     status: inRec.status,
     lastUpdated: inRec.metadata?.last_modified_on,
@@ -597,29 +643,31 @@ export function mapping(inRec: ProposalBackend): Proposal {
     createdBy: inRec.metadata?.created_by,
     version: inRec.metadata?.version,
     cycle: inRec.cycle,
-    investigators: getInvestigators(inRec.info.investigators),
-    abstract: inRec.info.abstract,
-    scienceCategory: getScienceCategory(inRec.info.science_category),
+    investigators: getInvestigators(inRec.proposal_info?.investigators),
+    abstract: inRec.proposal_info?.abstract,
+    scienceCategory: getScienceCategory((inRec.proposal_info?.science_category as string) || ''),
     scienceSubCategory: [getScienceSubCategory()],
     sciencePDF: sciencePDF,
     scienceLoadStatus: sciencePDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
     targetOption: 1, // TODO check what to map to
     targets: targets,
-    observations: getObservations(inRec.info.observation_sets, inRec.info.result_details),
-    groupObservations: getGroupObservations(inRec.info.observation_sets),
+    observations: getObservations(
+      inRec.observation_info?.observation_sets,
+      inRec.observation_info?.result_details
+    ),
+    groupObservations: getGroupObservations(inRec.observation_info?.observation_sets),
     targetObservation:
-      inRec?.info?.result_details && inRec.info.result_details.length > 0
+      inRec?.observation_info?.result_details && inRec.observation_info?.result_details.length > 0
         ? getTargetObservation(
-            inRec.info.result_details,
-            inRec.info.observation_sets,
-            // inRec.info.targets,
+            inRec.observation_info?.result_details,
+            inRec.observation_info?.observation_sets,
             targets
           )
         : [],
     technicalPDF: technicalPDF, // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: technicalPDF ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
-    dataProductSDP: getDataProductSDP(inRec.info.data_product_sdps),
-    dataProductSRC: getDataProductSRC(inRec.info.data_product_src_nets),
+    dataProductSDP: getDataProductSDP(inRec.observation_info?.data_product_sdps),
+    dataProductSRC: getDataProductSRC(inRec.observation_info?.data_product_src_nets),
     pipeline: '' // TODO check if we can remove this or what should it be mapped to
   };
 
@@ -639,13 +687,13 @@ async function GetProposal(
   }
 
   if (isCypress) {
-    return mapping(MockProposal);
+    return mapping(MockProposal[0]);
   }
 
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${id}`;
     const result = await authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${URL_PATH}`);
-    if (!result?.data) {
+    if (!result || !result?.data) {
       return 'error.API_UNKNOWN_ERROR';
     }
     return mapping(result.data);

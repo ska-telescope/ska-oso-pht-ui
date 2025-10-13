@@ -2,14 +2,13 @@
 import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
+import { TextEntry, TickBox, ButtonSizeTypes } from '@ska-telescope/ska-gui-components';
 import PostSendEmailInvite from '@services/axios/post/postSendEmailInvite/postSendEmailInvite';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
 import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
 import { Proposal, ProposalBackend } from '../../../utils/types/proposal';
 import { generateId, helpers } from '../../../utils/helpers';
 import {
-  DEFAULT_INVESTIGATOR,
   LAB_POSITION,
   PROPOSAL_STATUS,
   TEAM_STATUS_TYPE_OPTIONS,
@@ -23,20 +22,17 @@ import PostProposalAccess from '@/services/axios/post/postProposalAccess/postPro
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_VIEW } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import UserSearchButton from '@/components/button/Search/Search';
+import GetUserByEmail from '@/services/axios/get/getUserByEmail/getUserByEmail';
+import ResetButton from '@/components/button/Reset/Reset';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
 interface MemberEntryProps {
-  forSearch?: boolean;
-  foundInvestigator?: Investigator;
   invitationBtnClicked?: () => void;
 }
 
-export default function MemberEntry({
-  forSearch = false,
-  foundInvestigator = DEFAULT_INVESTIGATOR,
-  invitationBtnClicked = () => {}
-}: MemberEntryProps) {
+export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberEntryProps) {
   const { t } = useScopedTranslation();
   const LABEL_WIDTH = 6;
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
@@ -46,9 +42,9 @@ export default function MemberEntry({
   const authClient = useAxiosAuthClient();
   const { notifyError, notifyWarning, notifySuccess } = useNotify();
 
-  const [firstName, setFirstName] = React.useState(forSearch ? foundInvestigator.firstName : '');
-  const [lastName, setLastName] = React.useState(forSearch ? foundInvestigator.lastName : '');
-  const [email, setEmail] = React.useState(forSearch ? foundInvestigator.email : '');
+  const [firstName, setFirstName] = React.useState('');
+  const [lastName, setLastName] = React.useState('');
+  const [email, setEmail] = React.useState('');
   const [pi, setPi] = React.useState(false);
   const [phdThesis, setPhdThesis] = React.useState(false);
 
@@ -57,19 +53,44 @@ export default function MemberEntry({
   const [errorTextEmail, setErrorTextEmail] = React.useState('');
 
   const [formInvalid, setFormInvalid] = React.useState(true);
+  const [emailInvalid, setEmailInvalid] = React.useState(true);
   const [validateToggle, setValidateToggle] = React.useState(false);
+
+  const [investigator, setInvestigator] = React.useState<Investigator | undefined>(undefined);
+
+  const [forSearch, setForSearch] = React.useState(false);
+
+  React.useEffect(() => {
+    const invalidEmail = Boolean(emailValidation());
+    setEmailInvalid(invalidEmail);
+  }, [validateToggle]);
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box
       p={0}
       pt={1}
       sx={{
-        height: WRAPPER_HEIGHT
+        height: WRAPPER_HEIGHT,
+        width: '97%'
       }}
     >
       {children}
     </Box>
   );
+
+  function emailValidation() {
+    let count = 0;
+    let emptyField = email === '';
+    let isValid = !emptyField;
+    count += isValid ? 0 : 1;
+    if (!emptyField) {
+      isValid = helpers.validate.validateTextEntry(email, setEmail, setErrorTextEmail, 'EMAIL');
+      count += isValid ? 0 : 1;
+    } else {
+      setErrorTextEmail('');
+    }
+    return count;
+  }
 
   function formValidation() {
     let count = 0;
@@ -121,7 +142,7 @@ export default function MemberEntry({
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    helpComponent(t('firstName.help'));
+    helpComponent(t('email.help'));
   }, []);
 
   React.useEffect(() => {
@@ -209,7 +230,7 @@ export default function MemberEntry({
 
   const getInvestigator = (currentInvestigators: Investigator[] | undefined): Investigator => {
     let highestId = currentInvestigators?.reduce((acc, investigator) => {
-      const idNumber = Number(investigator.id.replace('mock-', ''));
+      const idNumber = Number(investigator.id.replace('temp-', ''));
       return idNumber > acc ? idNumber : acc;
     }, 0);
     if (highestId === undefined) {
@@ -217,7 +238,7 @@ export default function MemberEntry({
     }
 
     return {
-      id: forSearch ? foundInvestigator?.id : `temp-${(highestId + 1).toString()}`,
+      id: forSearch && investigator ? investigator?.id : `temp-${(highestId + 1).toString()}`,
       firstName: formValues.firstName.value,
       lastName: formValues.lastName.value,
       email: formValues.email.value,
@@ -236,13 +257,13 @@ export default function MemberEntry({
     // ---------------------------------------------------------------------------------------------------
     // ---PATH 1---: found investigator with valid entra id (search path), should be added once rights are created
     // ---------------------------------------------------------------------------------------------------
-    if (forSearch && foundInvestigator?.id && (await createAccessRights(newInvestigator.id))) {
+    if (forSearch && (await createAccessRights(newInvestigator.id))) {
       addToProposalAndSave(currentInvestigators, newInvestigator);
     }
     // ---------------------------------------------------------------------------------------------------
     // ---PATH 2---: for investigator without valid entra id (sent email path), don't create access rights
     // ---------------------------------------------------------------------------------------------------
-    if (!forSearch && !foundInvestigator?.id) {
+    if (!forSearch) {
       addToProposalAndSave(currentInvestigators, newInvestigator);
     }
   }
@@ -260,12 +281,53 @@ export default function MemberEntry({
     }
   }
 
+  const resolveButton = () => {
+    async function searchEmail(email: string): Promise<boolean> {
+      const response = await GetUserByEmail(authClient, email);
+      if (typeof response === 'string') {
+        notifyError(t('emailSearch.error'), NOTIFICATION_DELAY_IN_SECONDS);
+        return false;
+      } else {
+        notifySuccess(t('emailSearch.success'));
+        setInvestigator(response);
+        setFirstName(response?.firstName);
+        setLastName(response?.lastName);
+        return true;
+      }
+    }
+
+    const userSearchClickFunction = async () => {
+      if (await searchEmail(formValues.email.value)) {
+        setForSearch(true);
+      }
+    };
+
+    return (
+      <Box p={0} mt={-1}>
+        <UserSearchButton
+          action={userSearchClickFunction}
+          disabled={emailInvalid}
+          primary
+          testId="userSearchButton"
+          size={ButtonSizeTypes.Small}
+        />
+      </Box>
+    );
+  };
+
+  const resetSearchButton = () => (
+    <Box mt={-12} p={2} ml={25}>
+      <ResetButton action={clearForm} size={ButtonSizeTypes.Small} />
+    </Box>
+  );
+
   function clearForm() {
     formValues.firstName.setValue('');
     formValues.lastName.setValue('');
     formValues.email.setValue('');
     formValues.pi.setValue(false);
     formValues.phdThesis.setValue(false);
+    setForSearch(false);
   }
 
   const clickFunction = async () => {
@@ -323,6 +385,7 @@ export default function MemberEntry({
         onFocus={() => helpComponent(t('email.help'))}
         required
         disabled={forSearch}
+        suffix={resolveButton()}
       />
     );
   };
@@ -366,25 +429,30 @@ export default function MemberEntry({
       alignItems="space-evenly"
       justifyContent="space-between"
     >
-      <Grid size={{ xs: 7 }}>
+      <Grid size={{ xs: 8 }}>
         <Grid pt={1} container direction="column" alignItems="stretch" justifyContent="flex-start">
+          {emailField()}
           {firstNameField()}
           {lastNameField()}
-          {emailField()}
           {piField()}
           {phdThesisField()}
-          <Box p={2}>
-            <TeamInviteButton
-              action={clickFunction}
-              disabled={formInvalid}
-              primary
-              testId="sendInviteButton"
-            />
-          </Box>
+          <Grid size={{ xs: 12 }}>
+            <Box>
+              <TeamInviteButton
+                action={clickFunction}
+                disabled={formInvalid}
+                primary
+                testId="sendInviteButton"
+              />
+            </Box>
+            <Box mt={6} p={0}>
+              {forSearch && resetSearchButton()}
+            </Box>
+          </Grid>
         </Grid>
       </Grid>
       <Grid size={{ xs: 4 }}>
-        <HelpPanel />
+        <HelpPanel minHeight="400px" />
       </Grid>
     </Grid>
   );

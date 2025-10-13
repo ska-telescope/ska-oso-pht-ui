@@ -257,7 +257,7 @@
   },
   "email": {
     "label": "Email",
-    "help": "The email is a required field. The investigator will be invited to participate in this proposal using this email, so please ensure it is correct.",
+    "help": "The email is a required field. The investigator will be invited to participate in this proposal using this email, so please ensure it is correct. If using the search functionality, the email should be of a registered user within SKAO systems. For example, @skao.int, @assoc.skao.int, or @community.skao.int.",
     "invitation": {
       "subject": "Proposal invitation.",
       "body": "You have been invited to contribute to proposal {{id}}"
@@ -267,8 +267,6 @@
     "error": "Email invite was unsuccessful and member is not added"
   },
   "emailSearch": {
-    "label": "Email",
-    "help": "This email should be of a registered user within SKAO systems. For example, @skao.int, @assoc.skao.int, or @community.skao.int.",
     "success": "User was successfully found.",
     "error": "User could not be found. Please check the email address and try again.",
     "reset": "Reset user search"
@@ -283,7 +281,7 @@
   "fileType": {
     "pdf": ".pdf"
   },
-
+  "unavailable": "Unavailable",
   "firstName": {
     "label": "First Name",
     "help": "First name of the principal investigator or co-investigator."
@@ -379,6 +377,11 @@
       "short": "Edit",
       "help": "Check to indicate that this individual can edit and view the proposal."
     },
+    "update": {
+      "label": "Update rights",
+      "short": "Update",
+      "help": "Check to indicate that this individual can update and view the proposal."
+    },
     "view": {
       "label": "View rights",
       "short": "View",
@@ -391,6 +394,10 @@
   "name": {
     "label": "Name",
     "help": "Name of the target/object. If you want to automatically populate the coordinates, then provide a name of a known object and use the resolve button to query SIMBAD first and NED if not found. However, you can provide an arbitrary target/object name which can contain any character and enter the coordinate values."
+  },
+  "pstBeam": {
+    "label": "PST Beam",
+    "help": "Name of the PST Beam. If you want to automatically populate the coordinates then provide a name of a known object and use the resolve button to query SIMBAD first and NED if not found. However, you can provide an arbitrary beam/object name which can contain any character and enter the coordinate values."
   },
   "notSelected": {
     "label": "Not Selected"
@@ -730,7 +737,7 @@
   },
   "referenceCoordinates": {
     "help": "Only Galactic and ICRS reference systems are available.",
-    "label": "Reference System",
+    "label": "Coordinate Type",
     "tooltip": "This feature is currently disabled",
     "0": "ICRS",
     "1": "Galactic"
@@ -751,7 +758,8 @@
     "error": {
       "mapping": "Unable to map results from API.",
       "name": "Unable to resolve provided name",
-      "Request failed with status code 500": "Unable to resolve provided name"
+      "Request failed with status code 500": "Unable to resolve provided name",
+      "Request failed with status code 404": "Object not found in SIMBAD or NED"
     }
   },
   "reviewDecision": {
@@ -1337,5 +1345,23 @@
     "pdf": "Syntax error or PDF not available",
     "iconClicked": "An error was encountered, please refresh page to continue",
     "invalidString": "Invalid input: Only numeric characters are allowed"
+  },
+  "pulsarTimingBeam": {
+    "label": "Beam(s)",
+    "title": "Add Pulsar Timing Beam",
+    "help": "Default is No Beam, to add a pulsar timing beam(s), click the checkbox",
+    "toolTip": "Click to add Pulsar Timing Beam",
+    "add": "Add Beam",
+    "noBeam": {
+      "label": "No Beam"
+    },
+    "multipleBeams": {
+      "label": "Multiple Beams"
+    }
+  },
+  "fieldPattern": {
+    "label": "Type",
+    "toolTip": "Field Pattern selected.",
+    "help": "Default value is Pointing Centres. Field Pattern selection currently unavailable."
   }
 }

@@ -19,7 +19,6 @@ import {
   FEASIBLE_YES,
   CONFLICT_REASONS
 } from '@utils/constants.ts';
-import GetPanelList from '@services/axios/get/getPanelList/getPanelList';
 import GetProposalByStatusList from '@services/axios/get/getProposalByStatusList/getProposalByStatusList';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
@@ -29,13 +28,17 @@ import { PMT } from '@/utils/constants';
 import SubmitButton from '@/components/button/Submit/Submit';
 import { ProposalReview, ScienceReview, TechnicalReview } from '@/utils/types/proposalReview';
 import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
-import { Panel } from '@/utils/types/panel';
 import TechnicalIcon from '@/components/icon/technicalIcon/technicalIcon';
 import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import PutProposalReview from '@/services/axios/put/putProposalReview/putProposalReview';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
-import { getUserId, isReviewerScience, isReviewerTechnical } from '@/utils/aaa/aaaUtils';
+import {
+  getUserId,
+  isReviewerAdminOnly,
+  isReviewerScience,
+  isReviewerTechnical
+} from '@/utils/aaa/aaaUtils';
 import ConflictConfirmation from '@/components/alerts/conflictConfirmation/ConflictConfirmation';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
@@ -65,7 +68,6 @@ export default function ReviewListPage() {
   const [filteredData, setFilteredData] = React.useState<FilteredItem[]>([]);
 
   const [reset, setReset] = React.useState(false);
-  const [panelData, setPanelData] = React.useState<Panel[]>([]);
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
 
@@ -78,18 +80,6 @@ export default function ReviewListPage() {
   React.useEffect(() => {
     setReset(!reset);
   }, []);
-
-  React.useEffect(() => {
-    const GetReviewPanels = async () => {
-      const response = await GetPanelList(authClient);
-      if (typeof response === 'string') {
-        notifyError(response);
-      } else {
-        setPanelData((response as unknown) as Panel[]);
-      }
-    };
-    GetReviewPanels();
-  }, [reset]);
 
   React.useEffect(() => {
     const fetchProposalReviewData = async (_proposalId: string) => {
@@ -110,18 +100,12 @@ export default function ReviewListPage() {
       if (typeof response === 'string') {
         notifyError(response);
       } else {
-        const panelProposalIds = panelData.flatMap(panel =>
-          Array.isArray(panel.proposals) ? panel.proposals.map(proposal => proposal.proposalId) : []
-        );
-        const filtered = response
-          ? response.filter((proposal: Proposal) => panelProposalIds.includes(proposal.id))
-          : [];
-        setProposals(filtered);
-        loopProposals(filtered);
+        setProposals(response);
+        loopProposals(response);
       }
     };
     fetchProposalData();
-  }, [panelData]);
+  }, [reset]);
 
   React.useEffect(() => {
     const data = proposals ? filterProposals() : [];
@@ -303,6 +287,7 @@ export default function ReviewListPage() {
     sciReview: { status: string; reviewType: { conflict: { hasConflict: boolean } } };
   }) => {
     return (
+      !isReviewerAdminOnly() &&
       isReviewerScience() &&
       row?.sciReview &&
       isFeasible(row) &&
@@ -312,19 +297,24 @@ export default function ReviewListPage() {
   };
 
   const canEditTechnical = (tecReview: { status: string }) =>
-    isReviewerTechnical() && tecReview && tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED;
+    !isReviewerAdminOnly() &&
+    isReviewerTechnical() &&
+    tecReview &&
+    tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED;
 
   const hasTechnicalComments = (review: any) =>
     feasibleYes(review) ? true : review?.comments?.length > 0;
 
   const canSubmit = (row: any) => {
     const sciRec =
+      !isReviewerAdminOnly() &&
       isReviewerScience() &&
       row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED &&
       row?.sciReview?.comments?.length > 0 &&
       row?.sciReview?.reviewType?.rank > 0;
 
     const tecRec =
+      !isReviewerAdminOnly() &&
       isReviewerTechnical() &&
       row?.tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED &&
       row?.tecReview?.reviewType?.isFeasible?.length > 0 &&
@@ -438,18 +428,10 @@ export default function ReviewListPage() {
     headerName: t('dateAssigned.label'),
     width: 180,
     renderCell: (e: { row: any }) => {
-      const panel = panelData.find(
-        panel =>
-          Array.isArray(panel.proposals) &&
-          panel.proposals.some(p => p.proposalId === e.row.proposal?.id)
-      );
-      let proposal = null;
-      if (panel && panel.proposals && panel.proposals.length > 0) {
-        proposal = panel.proposals.find(p => p.proposalId === e.row.proposal?.id);
-      }
-      return proposal && proposal.assignedOn
-        ? presentDate(proposal.assignedOn) + ' ' + presentTime(proposal.assignedOn)
-        : '';
+      // TODO retrieve assigned_on from reviewable response once backend updated & update type + mapping
+      return e.row?.proposal?.assignedOn
+        ? presentDate(e.row.proposal?.assignedOn)
+        : t('unavailable');
     }
   };
 

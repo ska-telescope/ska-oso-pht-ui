@@ -104,7 +104,7 @@ export default function GridMembers({
         const ordered = desiredOrder.filter(item => userAccess?.includes(item.toLowerCase()));
         const accessDisplay = ordered
           ?.map((perm: string) => {
-            return t(`manageTeamMember.${perm}.short`);
+            return t(`manageTeamMember.${perm}.short`); // TODO investigate why we need both update and edit in the translation files and and only use edit
           })
           .join(', ');
         const highestAccess = accessDisplay.split(',');

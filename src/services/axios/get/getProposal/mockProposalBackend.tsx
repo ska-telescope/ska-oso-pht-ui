@@ -17,7 +17,7 @@ export const MockProposalBackend: ProposalBackend = {
   },
   investigator_refs: [],
   cycle: 'SKA_1962_2024',
-  info: {
+  proposal_info: {
     title: 'New Proposal test2',
     proposal_type: {
       main_type: 'standard_proposal',
@@ -25,6 +25,9 @@ export const MockProposalBackend: ProposalBackend = {
     },
     abstract: 'My scienceTest abstract',
     science_category: 'Cosmology',
+    investigators: []
+  },
+  observation_info: {
     targets: [
       {
         target_id: 'target',
@@ -39,11 +42,30 @@ export const MockProposalBackend: ProposalBackend = {
             }
           ]
         },
+        tied_array_beams: {
+          pst_beams: [
+            {
+              beam_name: 'beam1',
+              beam_id: 1,
+              beam_coordinate: {
+                ra_str: '21:33:27.0200',
+                dec_str: '-00:49:23.700',
+                kind: RA_TYPE_ICRS.label,
+                pm_ra: 4.8,
+                pm_dec: -3.3,
+                parallax: 0.0,
+                epoch: 2000.0
+              },
+              stn_weights: []
+            }
+          ],
+          pss_beams: [],
+          vlbi_beams: []
+        },
         reference_coordinate: {
           kind: RA_TYPE_ICRS.label,
           ra_str: '00:00:00.0',
           dec_str: '00:00:00.0',
-          reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
         },
         radial_velocity: {
@@ -69,11 +91,30 @@ export const MockProposalBackend: ProposalBackend = {
             }
           ]
         },
+        tied_array_beams: {
+          pst_beams: [
+            {
+              beam_name: 'beam1',
+              beam_id: 1,
+              beam_coordinate: {
+                ra_str: '21:33:27.0200',
+                dec_str: '-00:49:23.700',
+                kind: RA_TYPE_ICRS.label,
+                pm_ra: 4.8,
+                pm_dec: -3.3,
+                parallax: 0.0,
+                epoch: 2000.0
+              },
+              stn_weights: []
+            }
+          ],
+          pss_beams: [],
+          vlbi_beams: []
+        },
         reference_coordinate: {
           kind: RA_TYPE_ICRS.label,
           ra_str: '05:34:30.900',
           dec_str: '+22:00:53.000',
-          reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
         },
         radial_velocity: {
@@ -99,11 +140,30 @@ export const MockProposalBackend: ProposalBackend = {
             }
           ]
         },
+        tied_array_beams: {
+          pst_beams: [
+            {
+              beam_name: 'beam1',
+              beam_id: 1,
+              beam_coordinate: {
+                ra_str: '21:33:27.0200',
+                dec_str: '-00:49:23.700',
+                kind: RA_TYPE_ICRS.label,
+                pm_ra: 4.8,
+                pm_dec: -3.3,
+                parallax: 0.0,
+                epoch: 2000.0
+              },
+              stn_weights: []
+            }
+          ],
+          pss_beams: [],
+          vlbi_beams: []
+        },
         reference_coordinate: {
           kind: RA_TYPE_ICRS.label,
           ra_str: '21:33:27.0200',
           dec_str: '-00:49:23.700',
-          reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
         },
         radial_velocity: {
@@ -119,7 +179,6 @@ export const MockProposalBackend: ProposalBackend = {
     ],
     data_product_src_nets: [],
     documents: [],
-    investigators: [],
     observation_sets: [
       {
         observation_set_id: 'obs-obR1Ej',
@@ -230,15 +289,20 @@ export const MockProposalBackendZoom: ProposalBackend = {
     last_modified_on: '2025-06-24T22:35:19.489320Z',
     pdm_version: '18.1.0'
   },
-  investigator_refs: [],
   cycle: 'SKA_1962_2024',
-  info: {
+  proposal_info: {
     title: 'Proposal Zoom',
     proposal_type: {
-      main_type: 'key_science_proposal'
+      main_type: 'key_science_proposal',
+      attributes: []
     },
     abstract: 'My zoom abstract.',
     science_category: 'High Energy Cosmic Particles',
+    investigators: []
+  },
+  observation_info: {
+    documents: [],
+    data_product_src_nets: [],
     targets: [
       {
         target_id: 'm2',
@@ -253,11 +317,30 @@ export const MockProposalBackendZoom: ProposalBackend = {
             }
           ]
         },
+        tied_array_beams: {
+          pst_beams: [
+            {
+              beam_name: 'beam1',
+              beam_id: 1,
+              beam_coordinate: {
+                ra_str: '21:33:27.0200',
+                dec_str: '-00:49:23.700',
+                kind: RA_TYPE_ICRS.label,
+                pm_ra: 4.8,
+                pm_dec: -3.3,
+                parallax: 0.0,
+                epoch: 2000.0
+              },
+              stn_weights: []
+            }
+          ],
+          pss_beams: [],
+          vlbi_beams: []
+        },
         reference_coordinate: {
           kind: RA_TYPE_ICRS.label,
           ra_str: '21:33:27.0200',
           dec_str: '-00:49:23.700',
-          reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
         },
         radial_velocity: {

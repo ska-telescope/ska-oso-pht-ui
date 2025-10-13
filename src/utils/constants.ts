@@ -13,13 +13,14 @@ export const API_VERSION = '/senscalc/api/v11';
 
 export const OSO_SERVICES_PHT = '/pht/';
 export const OSO_SERVICES_PANEL_PATH = `${OSO_SERVICES_PHT}panels`;
-export const OSO_SERVICES_PANEL_DECISIONS_PATH = `${OSO_SERVICES_PHT}panel/decision`;
+export const OSO_SERVICES_PANEL_DECISIONS_PATH = `${OSO_SERVICES_PHT}panel/decision/`;
 export const OSO_SERVICES_PROPOSAL_PATH = `${OSO_SERVICES_PHT}prsls`;
 export const OSO_SERVICES_PROPOSAL_ACCESS_PATH = `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PHT}proposal-access`;
 export const OSO_SERVICES_REPORT_PATH = `${OSO_SERVICES_PHT}report/`;
 export const OSO_SERVICES_REVIEWS_PATH = `${OSO_SERVICES_PHT}reviews`;
 export const OSO_SERVICES_REVIEWERS_PATH = `${OSO_SERVICES_PHT}reviewers`;
 export const OSO_SERVICES__PATH = `${OSO_SERVICES_PHT}reviewers`;
+export const OSO_SERVICES_MEMBER_PATH = `${OSO_SERVICES_PHT}prsls/member`;
 //
 export const MSENTRA_CLIENT_ID = env.MSENTRA_CLIENT_ID;
 export const MSENTRA_TENANT_ID = env.MSENTRA_TENANT_ID;
@@ -429,9 +430,10 @@ export const SUPPLIED_INTEGRATION_TIME_UNITS_S = 4;
 export const RA_TYPE_ICRS = { value: 0, label: 'icrs' };
 export const RA_TYPE_GALACTIC = { value: 1, label: 'galactic' };
 
+export const FIELD_PATTERN_POINTING_CENTRES = 'Pointing centres';
+
 export const DEFAULT_GALACTIC = '00:00:00.0';
 export const DEFAULT_EQUATORIAL = 0;
-
 export const ROBUST = [
   { label: '-2', value: 1 },
   { label: '-1', value: 2 },

@@ -49,25 +49,51 @@
     "toolTip": "Edit Science Idea"
   },
   "email": {
-    "help": "The email is a required field. The investigator will be invited to participate in this Science Idea using this email, so please ensure it is correct.",
+    "label": "Email",
+    "help": "The email is a required field. The investigator will be invited to participate in this proposal using this email, so please ensure it is correct. If using the search functionality, the email should be of a registered user within SKAO systems. For example, @skao.int, @assoc.skao.int, or @community.skao.int.",
     "invitation": {
-      "subject": "Science Idea invitation.",
-      "body": "You have been invited to contribute to Science Idea {{id}}"
-    }
+      "subject": "Proposal invitation.",
+      "body": "You have been invited to contribute to proposal {{id}}"
+    },
+    "success": "Email invite has been sent.",
+    "warning": "Sending email request for processing",
+    "error": "Email invite was unsuccessful and member is not added"
+  },
+  "emailSearch": {
+    "success": "User was successfully found.",
+    "error": "User could not be found. Please check the email address and try again.",
+    "reset": "Reset user search"
   },
   "homeBtn": {
     "title": "Science Ideas",
     "tooltip": "Returns to the list of Science Ideas"
   },
   "manageTeamMember": {
+    "label": "Manage Team Member Rights",
+    "success": "Team member's access has been updated.",
+    "toolTip": "Manage Team Member Rights",
+    "error": "Failed to update team member's access.",
+    "help": "Select the rights for this team member. The Principal Investigator (PI) has all rights by default. The PI can assign rights to other team members as needed.",
+    "rights": "Rights",
     "submit": {
-      "help": "Check to indicate that this individual can submit, edit and view the Science Idea."
+      "label": "Submit rights",
+      "short": "Submit",
+      "help": "Check to indicate that this individual can submit, edit and view the proposal."
     },
     "edit": {
-      "help": "Check to indicate that this individual can edit and view the Science Idea."
+      "label": "Edit rights",
+      "short": "Edit",
+      "help": "Check to indicate that this individual can edit and view the proposal."
+    },
+    "update": {
+      "label": "Update rights",
+      "short": "Update",
+      "help": "Check to indicate that this individual can update and view the proposal."
     },
     "view": {
-      "help": "Check to indicate that this individual can view the Science Idea."
+      "label": "View rights",
+      "short": "View",
+      "help": "Check to indicate that this individual can view the proposal."
     }
   },
   "overview": {

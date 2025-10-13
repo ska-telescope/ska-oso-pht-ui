@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
 import StatusIconDisplay from './statusIcon';
-import { STATUS_ERROR, STATUS_ERROR_SYMBOL } from '@/utils/constants';
+import { STATUS_ERROR_SYMBOL } from '@/utils/constants';
 
 describe('StatusIconDisplay', () => {
   const baseProps = {

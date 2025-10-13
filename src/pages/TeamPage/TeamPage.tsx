@@ -13,7 +13,6 @@ import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import GridMembers from '../../components/grid/members/GridMembers';
 import StarIcon from '../../components/icon/starIcon/starIcon';
 import { FOOTER_SPACER, GRID_MEMBERS_ACTIONS } from '../../utils/constants';
-import MemberSearch from './MemberSearch/MemberSearch';
 import TeamFileImport from './TeamFileImport/TeamFileImport';
 import MemberAccess from './MemberAccess/MemberAccess';
 import ProposalAccess from '@/utils/types/proposalAccess';
@@ -278,16 +277,10 @@ export default function TeamPage() {
                     sx={{ border: '1px solid grey' }}
                     disabled
                   />
-                  <Tab
-                    label={t('searchForMember.label')}
-                    {...a11yProps(2)}
-                    sx={{ border: '1px solid grey' }}
-                  />
                 </Tabs>
               </Box>
               {theValue === 0 && <MemberEntry />}
               {theValue === 1 && <TeamFileImport />}
-              {theValue === 2 && <MemberSearch />}
             </Box>
           </Grid>
         </Grid>
