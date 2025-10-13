@@ -1,6 +1,7 @@
-import { DropDown } from '@ska-telescope/ska-gui-components';
+import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/material';
-import { LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
+import { LAB_IS_BOLD, LAB_POSITION } from '@utils/constants.ts';
+import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 // TODO : DISABLED AT THIS TIME UNTIL GALACTIC IS IMPLEMENTED FULLY
@@ -8,7 +9,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 interface ReferenceCoordinatesFieldProps {
   labelWidth?: number;
   setValue?: Function;
-  value: number;
+  value: String;
   valueFocus?: Function;
 }
 
@@ -30,18 +31,18 @@ export default function ReferenceCoordinatesField({
 
     return (
       <Box pt={1}>
-        <DropDown
+        <TextEntry
           disabled={OPTIONS.length < 2}
           options={getOptions()}
-          testId={FIELD + 'Type'}
-          value={value}
-          setValue={setValue}
+          required
           label={t(FIELD + '.label')}
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
           labelWidth={labelWidth}
+          testId={FIELD + 'Type'}
+          value={value}
+          setValue={setValue}
           onFocus={valueFocus}
-          required
           toolTip={t(FIELD + '.tooltip')}
         />
       </Box>

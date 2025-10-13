@@ -101,7 +101,8 @@ export const helpers = {
             key === 'submitted_on' ||
             key === 'abstract' ||
             key === 'reason' ||
-            key === 'srcNet'
+            key === 'srcNet' ||
+            key === 'tied_array_beams'
           )
             return; //TODO: review null values in data model
           delete obj[key];

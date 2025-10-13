@@ -48,6 +48,17 @@ export default function GridTargets({
       headerName: t('velocity.1'),
       width: 160,
       disableClickEventBubbling: true
+    },
+    {
+      field: 'beamName',
+      headerName: t('pstBeam.label'),
+      flex: 3,
+      renderCell: (e: { row: Target }) => {
+        const tiedArrayBeams = Array.isArray(e.row?.tiedArrayBeams?.pstBeams)
+          ? e.row.tiedArrayBeams.pstBeams
+          : [];
+        return tiedArrayBeams.map((beam: any) => beam?.beamName).join(', ');
+      }
     }
   ];
 

@@ -1,7 +1,7 @@
 export const viewPort = (format = 'pc') => {
   const isPC = () => format === 'pc';
   const xAxis = isPC() ? 2000 : 600;
-  const yAxis = isPC() ? 1200 : 600;
+  const yAxis = isPC() ? 1500 : 600;
   cy.viewport(xAxis, yAxis);
 };
 
@@ -9,6 +9,7 @@ export const viewPort = (format = 'pc') => {
 
 export const click = testId =>
   get(testId)
+    .scrollIntoView()
     .should('exist')
     .should('be.visible')
     .click();

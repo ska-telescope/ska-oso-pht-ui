@@ -8,8 +8,12 @@ import {
 } from '@utils/types/sensCalcResults.tsx';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import Target, {
+  Beam,
+  BeamBackend,
   PointingPatternParams,
+  ReferenceCoordinateGalactic,
   ReferenceCoordinateGalacticBackend,
+  ReferenceCoordinateICRS,
   ReferenceCoordinateICRSBackend,
   TargetBackend
 } from '@utils/types/target.tsx';
@@ -114,6 +118,40 @@ const getVelType = (InDefinition: string) => {
   return velType ? velType : 1; // fallback
 };
 
+const getReferenceCoordinate = (
+  tar: ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend
+): ReferenceCoordinateICRS | ReferenceCoordinateGalactic => {
+  if ('kind' in tar && tar.kind === RA_TYPE_GALACTIC.label) {
+    return {
+      kind: RA_TYPE_GALACTIC.label,
+      l: (tar as ReferenceCoordinateGalacticBackend).l,
+      b: (tar as ReferenceCoordinateGalacticBackend).b,
+      pmL: (tar as ReferenceCoordinateGalacticBackend).pm_l,
+      pmB: (tar as ReferenceCoordinateGalacticBackend).pm_b,
+      epoch: tar.epoch,
+      parallax: tar.parallax
+    };
+  }
+  return {
+    kind: RA_TYPE_ICRS.label,
+    raStr: (tar as ReferenceCoordinateICRSBackend).ra_str,
+    decStr: (tar as ReferenceCoordinateICRSBackend).dec_str,
+    pmRa: (tar as ReferenceCoordinateICRSBackend).pm_ra,
+    pmDec: (tar as ReferenceCoordinateICRSBackend).pm_dec,
+    epoch: (tar as ReferenceCoordinateICRSBackend).epoch,
+    parallax: (tar as ReferenceCoordinateICRSBackend).parallax
+  };
+};
+
+const getBeam = (beam: BeamBackend): Beam => {
+  return {
+    id: beam.beam_id,
+    beamName: beam.beam_name,
+    beamCoordinate: getReferenceCoordinate(beam.beam_coordinate),
+    stnWeights: beam.stn_weights ?? [] // not used yet
+  };
+};
+
 const isTargetGalactic = (kind: string): boolean => kind === RA_TYPE_GALACTIC.label;
 
 const getTargetType = (kind: string): number =>
@@ -147,6 +185,11 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
           offsetXArcsec: p.offset_x_arcsec,
           offsetYArcsec: p.offset_y_arcsec
         })) as PointingPatternParams[]
+      },
+      tiedArrayBeams: {
+        pstBeams: e.tied_array_beams?.pst_beams?.map(beam => getBeam(beam)),
+        pssBeams: e.tied_array_beams?.pss_beams?.map(beam => getBeam(beam)),
+        vlbiBeams: e.tied_array_beams?.vlbi_beams?.map(beam => getBeam(beam))
       }
     };
     /*------- reference coordinate properties --------------------- */
@@ -156,7 +199,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       target.pmL = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_l;
       target.pmB = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_b;
     } else if (!isTargetGalactic(referenceCoordinate)) {
-      target.referenceFrame = (e.reference_coordinate as ReferenceCoordinateICRSBackend).reference_frame;
+      // target.referenceFrame = (e.reference_coordinate as ReferenceCoordinateICRSBackend).reference_frame;
       target.raStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).ra_str;
       target.decStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).dec_str;
       target.pmRa = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_ra;

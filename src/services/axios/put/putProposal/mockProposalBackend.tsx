@@ -23,22 +23,16 @@ export const MockProposalBackend: ProposalBackend = {
       {
         target_id: 'target',
         name: 'target',
-        pointing_pattern: {
-          active: 'SinglePointParameters',
-          parameters: [
-            {
-              kind: 'SinglePointParameters',
-              offset_x_arcsec: 0.5,
-              offset_y_arcsec: 0.5
-            }
-          ]
-        },
         reference_coordinate: {
           kind: RA_TYPE_ICRS.label,
           ra_str: '00:00:00.0',
           dec_str: '00:00:00.0',
-          reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
+        },
+        tied_array_beams: {
+          pst_beams: [],
+          pss_beams: [],
+          vlbi_beams: []
         },
         radial_velocity: {
           quantity: {
@@ -53,22 +47,16 @@ export const MockProposalBackend: ProposalBackend = {
       {
         target_id: 'target2',
         name: 'target2',
-        pointing_pattern: {
-          active: 'SinglePointParameters',
-          parameters: [
-            {
-              kind: 'SinglePointParameters',
-              offset_x_arcsec: 0.5,
-              offset_y_arcsec: 0.5
-            }
-          ]
-        },
         reference_coordinate: {
           kind: RA_TYPE_ICRS.label,
           ra_str: '05:34:30.900',
           dec_str: '+22:00:53.000',
-          reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
+        },
+        tied_array_beams: {
+          pst_beams: [],
+          pss_beams: [],
+          vlbi_beams: []
         },
         radial_velocity: {
           quantity: {
@@ -83,22 +71,16 @@ export const MockProposalBackend: ProposalBackend = {
       {
         target_id: 'M2',
         name: 'M2',
-        pointing_pattern: {
-          active: 'SinglePointParameters',
-          parameters: [
-            {
-              kind: 'SinglePointParameters',
-              offset_x_arcsec: 0.5,
-              offset_y_arcsec: 0.5
-            }
-          ]
-        },
         reference_coordinate: {
           kind: RA_TYPE_ICRS.label,
           ra_str: '21:33:27.0200',
           dec_str: '-00:49:23.700',
-          reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
+        },
+        tied_array_beams: {
+          pst_beams: [],
+          pss_beams: [],
+          vlbi_beams: []
         },
         radial_velocity: {
           quantity: {
@@ -245,8 +227,12 @@ export const MockProposalBackendZoom: ProposalBackend = {
           kind: RA_TYPE_ICRS.label,
           ra_str: '21:33:27.0200',
           dec_str: '-00:49:23.700',
-          reference_frame: RA_TYPE_ICRS.label,
           epoch: 2000
+        },
+        tied_array_beams: {
+          pst_beams: [],
+          pss_beams: [],
+          vlbi_beams: []
         },
         radial_velocity: {
           quantity: {

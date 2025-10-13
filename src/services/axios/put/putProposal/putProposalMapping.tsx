@@ -1,5 +1,9 @@
 import Target, {
+  Beam,
+  BeamBackend,
+  ReferenceCoordinateGalactic,
   ReferenceCoordinateGalacticBackend,
+  ReferenceCoordinateICRS,
   ReferenceCoordinateICRSBackend,
   TargetBackend
 } from '@utils/types/target.tsx';
@@ -36,10 +40,10 @@ import {
   DataProductSRCNetBackend
 } from '@utils/types/dataProduct.tsx';
 import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
-import { helpers } from '@utils/helpers.ts';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
+import { helpers } from '@/utils/helpers';
 
 const isContinuum = (type: number) => type === TYPE_CONTINUUM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
@@ -58,88 +62,73 @@ const getSubType = (proposalType: number, proposalSubType: number[]): any => {
 };
 
 const getReferenceCoordinate = (
-  tar: Target
+  tar: Target | ReferenceCoordinateICRS | ReferenceCoordinateGalactic
 ): ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend => {
-  if (tar.kind === RA_TYPE_GALACTIC.value) {
+  if ('kind' in tar && tar.kind === RA_TYPE_GALACTIC.value) {
     return {
       kind: RA_TYPE_GALACTIC.label,
-      l: tar.l,
-      b: tar.b,
-      pm_l: tar.pmL,
-      pm_b: tar.pmB,
+      l: (tar as Target).l,
+      b: (tar as Target).b,
+      pm_l: (tar as Target).pmL,
+      pm_b: (tar as Target).pmB,
       epoch: tar.epoch,
       parallax: tar.parallax
     } as ReferenceCoordinateGalacticBackend;
   }
   return {
     kind: RA_TYPE_ICRS.label,
-    reference_frame: tar.referenceFrame ? tar.referenceFrame : RA_TYPE_ICRS.label, // TODO : hardcoded for now as not implemented in UI
-    ra_str: tar.raStr,
-    dec_str: tar.decStr,
-    pm_ra: tar.pmRa,
-    pm_dec: tar.pmDec,
-    epoch: tar.epoch,
-    parallax: tar.parallax
+    ra_str: ((tar as Target) || (tar as ReferenceCoordinateICRS)).raStr,
+    dec_str: ((tar as Target) || (tar as ReferenceCoordinateICRS)).decStr,
+    pm_ra: ((tar as Target) || (tar as ReferenceCoordinateICRS)).pmRa,
+    pm_dec: ((tar as Target) || (tar as ReferenceCoordinateICRS)).pmDec,
+    epoch: ((tar as Target) || (tar as ReferenceCoordinateICRS)).epoch,
+    parallax: ((tar as Target) || (tar as ReferenceCoordinateICRS)).parallax
   } as ReferenceCoordinateICRSBackend;
 };
 
+const getBeam = (beam: Beam): BeamBackend => {
+  return {
+    beam_id: beam.id,
+    beam_name: beam.beamName,
+    beam_coordinate: getReferenceCoordinate(beam.beamCoordinate),
+    stn_weights: beam.stnWeights ?? [] // not used yet
+  };
+};
+
 const getTargets = (targets: Target[]): TargetBackend[] => {
-  const outTargets = [];
-  for (let i = 0; i < targets.length; i++) {
-    const tar = targets[i];
-    const outTarget: TargetBackend = {
-      name: tar.name,
-      target_id: tar.name,
-      reference_coordinate: getReferenceCoordinate(tar),
-      radial_velocity: {
-        quantity: {
-          value: isVelocity(tar.velType) ? Number(tar.vel) : 0,
-          unit: VEL_UNITS.find(u => u.value === Number(tar.velUnit))?.label as string
-        },
-        definition: 'RADIO', // TODO : hardcoded for now as not implemented in UI
-        reference_frame: tar.raReferenceFrame ? tar.raReferenceFrame : 'LSRK',
-        // TODO : hardcoded for now as backend uses TOPOCENTRIC, LSRK & BARYCENTRIC
-        // but UI uses LSRK (Kinematic Local Standard of Rest) & Heliocentric for referenceFrame
-        // -> using raReferenceFrame for now as data format is different
-        redshift: isRedshift(tar.velType) ? Number(tar.redshift) : 0
-      }
-    };
-    /********************* pointing pattern *********************/
-    const mockPointingPattern = {
-      pointing_pattern: {
-        active: 'SinglePointParameters',
-        parameters: [
-          {
-            kind: 'SinglePointParameters',
-            epoch: tar.epoch,
-            offsetXArcsec: 0.5,
-            offsetYArcsec: 0.5
-          }
-        ]
-      }
-    };
-    // TODO : As pointingPattern is not currently used in the UI, mock it if it doesn't exist
-    const usedSingleParam = tar.pointingPattern
-      ? tar.pointingPattern
-      : mockPointingPattern.pointing_pattern;
-    const singlePointParam = usedSingleParam?.parameters?.find(
-      param => param.kind === 'SinglePointParameters'
-    );
-    outTarget['pointing_pattern'] = {
-      active: tar.pointingPattern
-        ? tar.pointingPattern?.active
-        : mockPointingPattern.pointing_pattern?.active,
-      parameters: [
-        {
-          kind: singlePointParam?.kind as string,
-          offset_x_arcsec: singlePointParam?.offsetXArcsec as number,
-          offset_y_arcsec: singlePointParam?.offsetYArcsec as number
-        }
-      ]
-    };
-    outTargets.push(outTarget);
-  }
-  return outTargets;
+  const mappedTargets = targets.map(tar => ({
+    name: tar.name,
+    target_id: tar.name,
+    reference_coordinate: getReferenceCoordinate(tar),
+    radial_velocity: {
+      quantity: {
+        value: isVelocity(tar.velType) ? Number(tar.vel) : 0,
+        unit: VEL_UNITS.find(u => u.value === Number(tar.velUnit))?.label ?? ''
+      },
+      definition: 'RADIO',
+      reference_frame: tar.raReferenceFrame ?? 'LSRK',
+      redshift: isRedshift(tar.velType) ? Number(tar.redshift) : 0
+    },
+    tied_array_beams: {
+      pst_beams:
+        tar.tiedArrayBeams && Array.isArray(tar.tiedArrayBeams.pstBeams)
+          ? tar.tiedArrayBeams.pstBeams.map((beam: Beam) => getBeam(beam))
+          : [],
+      pss_beams:
+        tar.tiedArrayBeams &&
+        Array.isArray(tar.tiedArrayBeams.pssBeams) &&
+        tar.tiedArrayBeams.pssBeams
+          ? tar.tiedArrayBeams.pssBeams.map((beam: Beam) => getBeam(beam))
+          : [],
+      vlbi_beams:
+        tar.tiedArrayBeams &&
+        Array.isArray(tar.tiedArrayBeams.vlbiBeams) &&
+        tar.tiedArrayBeams.vlbiBeams
+          ? tar.tiedArrayBeams.vlbiBeams.map((beam: Beam) => getBeam(beam))
+          : []
+    }
+  }));
+  return mappedTargets;
 };
 
 const getDocuments = (
