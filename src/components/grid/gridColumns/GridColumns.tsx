@@ -16,7 +16,6 @@ const getReviewerStatus = (status: any) => {
 };
 
 const getReviewerType = (rec: Reviewer) => {
-  // console.log('reviewer received: ', rec);
   if (rec.isScience) return t('reviewerType.science');
   if (rec.isTechnical) return t('reviewerType.technical');
   else return '';

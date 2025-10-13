@@ -15,12 +15,12 @@ export function mappingPutPanel(panel: Panel, cycleId: string): PanelBackend {
       assigned_on: proposal.assignedOn ? proposal.assignedOn : new Date().toISOString()
     })),
     sci_reviewers: panel.sciReviewers.map(reviewer => ({
-      reviewer_id: reviewer.reviewerId,
+      reviewer_id: reviewer.reviewerId.replace('-science', ''),
       assigned_on: reviewer.assignedOn ? reviewer.assignedOn : new Date().toISOString(),
       status: reviewer.status
     })),
     tech_reviewers: panel.tecReviewers.map(reviewer => ({
-      reviewer_id: reviewer.reviewerId,
+      reviewer_id: reviewer.reviewerId.replace('-technical', ''),
       assigned_on: reviewer.assignedOn ? reviewer.assignedOn : new Date().toISOString(),
       status: reviewer.status
     }))
