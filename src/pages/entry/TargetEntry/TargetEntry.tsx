@@ -3,6 +3,9 @@ import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
+import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
+import PulsarTimingBeamField from '@components/fields/pulsarTimingBeam/PulsarTimingBeam.tsx';
+import ExtendedStrikethroughLabelBehindText from '@components/info/extendedStrikethroughLabelBehindText/ExtendedStrikethroughLabelBehindText.tsx';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import ResolveButton from '@/components/button/Resolve/Resolve';
@@ -11,8 +14,14 @@ import SkyDirection1 from '@/components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
 import VelocityField from '@/components/fields/velocity/Velocity';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
-import Target from '@/utils/types/target';
-import { RA_TYPE_ICRS, LAB_POSITION, VELOCITY_TYPE } from '@/utils/constants';
+import Target, { Beam, TiedArrayBeams } from '@/utils/types/target';
+import {
+  RA_TYPE_ICRS,
+  LAB_POSITION,
+  VELOCITY_TYPE,
+  LAB_IS_BOLD,
+  FIELD_PATTERN_POINTING_CENTRES
+} from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 interface TargetEntryProps {
@@ -20,6 +29,7 @@ interface TargetEntryProps {
   setTarget?: Function;
   target?: Target;
   textAlign?: string;
+  showBeamData?: boolean;
 }
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
@@ -28,7 +38,8 @@ export default function TargetEntry({
   raType,
   setTarget = undefined,
   target = undefined,
-  textAlign = 'right'
+  textAlign = 'right',
+  showBeamData
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
   const { notifySuccess } = useNotify();
@@ -50,73 +61,96 @@ export default function TargetEntry({
   const [velUnit, setVelUnit] = React.useState(0);
   const [redshift, setRedshift] = React.useState('');
   const [referenceFrame, setReferenceFrame] = React.useState(RA_TYPE_ICRS.value);
+  const [referenceCoordinates, setReferenceCoordinates] = React.useState(RA_TYPE_ICRS.label);
+  const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
+  const [tiedArrayBeams, setTiedArrayBeams] = React.useState<TiedArrayBeams | null>(null);
+  const [resetBeamArrayData, setResetBeamArrayData] = React.useState(false);
+
+  const LABEL_WIDTH = 6;
 
   const setTheName = (inValue: string) => {
     setName(inValue);
-    if (setTarget !== undefined) {
+    if (setTarget) {
       setTarget({ ...target, name: inValue });
     }
   };
 
   const setTheDec = (inValue: string) => {
     setDec(inValue);
-    if (setTarget !== undefined) {
+    if (setTarget) {
       setTarget({ ...target, decStr: inValue });
     }
   };
 
   const setTheRA = (inValue: string) => {
     setRA(inValue);
-    if (setTarget !== undefined) {
+    if (setTarget) {
       setTarget({ ...target, raStr: inValue });
     }
   };
 
+  const getTiedArrayBeams = (beams: Beam[]): TiedArrayBeams => {
+    return {
+      pstBeams: beams,
+      pssBeams: [],
+      vlbiBeams: []
+    };
+  };
+
+  const handleBeamData = (beams: Beam[]) => {
+    const tiedArrayBeams: TiedArrayBeams = getTiedArrayBeams(beams);
+    if (setTarget !== undefined) {
+      setTarget({ ...target, tiedArrayBeams: tiedArrayBeams });
+    }
+    setTiedArrayBeams(tiedArrayBeams);
+  };
+
   const setTheRedshift = (inValue: string) => {
     setRedshift(inValue);
-    if (setTarget !== undefined) {
+    if (setTarget) {
       setTarget({ ...target, redshift: inValue });
     }
   };
 
   const setTheReferenceFrame = (inValue: React.SetStateAction<number>) => {
     setReferenceFrame(inValue);
-    if (setTarget !== undefined) {
+    if (setTarget) {
       setTarget({ ...target, kind: inValue });
     }
   };
 
   const setTheVel = (inValue: string) => {
     setVel(inValue);
-    if (setTarget !== undefined) {
+    if (setTarget) {
       setTarget({ ...target, vel: inValue });
     }
   };
 
   const setTheVelType = (inValue: number) => {
     setVelType(inValue);
-    if (setTarget !== undefined) {
+    if (setTarget) {
       setTarget({ ...target, velType: inValue });
     }
   };
 
   const setTheVelUnit = (inValue: number) => {
     setVelUnit(inValue);
-    if (setTarget !== undefined) {
+    if (setTarget) {
       setTarget({ ...target, velUnit: inValue });
     }
   };
 
   const targetIn = (target: Target) => {
-    setId(target?.id);
-    setName(target?.name);
-    setRA(target?.raStr as string);
-    setDec(target?.decStr as string);
-    setVelType(target?.velType);
-    setVel(target?.vel);
-    setVelUnit(target?.velUnit);
-    setRedshift(target?.redshift);
-    setReferenceFrame(target?.kind);
+    setId(target?.id ?? 0);
+    setName(target?.name ?? '');
+    setRA(target?.raStr ?? '');
+    setDec(target?.decStr ?? '');
+    setVelType(target?.velType ?? 0);
+    setVel(target?.vel ?? '');
+    setVelUnit(target?.velUnit ?? 0);
+    setRedshift(target?.redshift ?? '');
+    setReferenceFrame(target?.kind ?? RA_TYPE_ICRS.value);
+    setTiedArrayBeams(target?.tiedArrayBeams as TiedArrayBeams);
   };
 
   React.useEffect(() => {
@@ -141,9 +175,11 @@ export default function TargetEntry({
   const addButton = () => {
     const addButtonAction = () => {
       if (!formValidation()) {
+        return;
       } else {
         AddTheTarget();
         clearForm();
+        setResetBeamArrayData(true);
       }
     };
 
@@ -157,19 +193,25 @@ export default function TargetEntry({
 
       const newTarget: Target = {
         kind: RA_TYPE_ICRS.value,
-        decStr: dec,
+        decStr: dec ?? '',
         id: highestId + 1,
-        name: name,
-        b: undefined,
-        l: undefined,
-        raStr: ra,
-        redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift : '',
+        name: name ?? '',
+        b: 0, // Default value for `b`
+        l: 0, // Default value for `l`
+        raStr: ra ?? '',
+        redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift ?? '' : '',
         referenceFrame: RA_TYPE_ICRS.label,
-        vel: velType === VELOCITY_TYPE.VELOCITY ? vel : '',
-        velType: velType,
-        velUnit: velUnit
+        vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : '',
+        velType: velType ?? 0,
+        velUnit: velUnit ?? 0,
+        tiedArrayBeams: tiedArrayBeams ? (tiedArrayBeams as TiedArrayBeams) : null
       };
-      setProposal({ ...getProposal(), targets: [...(getProposal().targets ?? []), newTarget] });
+
+      const updatedProposal = {
+        ...getProposal(),
+        targets: [...(getProposal().targets ?? []), newTarget]
+      };
+      setProposal(updatedProposal);
       notifySuccess(t('addTarget.success'), NOTIFICATION_DELAY_IN_SECONDS);
     };
 
@@ -179,12 +221,13 @@ export default function TargetEntry({
       setDec('');
       setVel('');
       setRedshift('');
+      setTiedArrayBeams(null);
     };
 
     const disabled = () => !(name?.length && ra?.length && dec?.length);
 
     return (
-      <Grid size={{ xs: 12 }}>
+      <Grid size={{ xs: 12 }} sx={{ position: 'relative', zIndex: 99 }} mb={2}>
         <AddButton
           action={addButtonAction}
           disabled={disabled()}
@@ -230,6 +273,44 @@ export default function TargetEntry({
 
   const wrapper = (children: any) => <Box sx={{ width: '100%' }}>{children}</Box>;
 
+  const referenceCoordinatesField = () =>
+    wrapper(
+      <ReferenceCoordinatesField
+        labelWidth={LABEL_WIDTH}
+        setValue={setReferenceCoordinates}
+        value={referenceCoordinates.toUpperCase()}
+      />
+    );
+
+  const fieldPatternTypeField = () => {
+    return wrapper(
+      <Box pt={1}>
+        <TextEntry
+          disabled={true}
+          label={t('fieldPattern.label')}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={LABEL_WIDTH}
+          onFocus={() => helpComponent(t('fieldPattern.help'))}
+          testId="fieldPatternId"
+          value={fieldPattern}
+          setValue={setFieldPattern}
+          toolTip={t('fieldPattern.toolTip')}
+        />
+      </Box>
+    );
+  };
+
+  const pulsarTimingBeamField = () => {
+    return wrapper(
+      <PulsarTimingBeamField
+        target={target}
+        onDialogResponse={handleBeamData}
+        resetBeamData={resetBeamArrayData}
+        showBeamData={showBeamData}
+      />
+    );
+  };
   const nameField = () =>
     wrapper(
       <TextEntry
@@ -298,28 +379,40 @@ export default function TargetEntry({
     );
 
   return (
-    <Grid
-      p={2}
-      container
-      direction="row"
-      alignItems="space-evenly"
-      justifyContent="space-between"
-      spacing={1}
-    >
-      <Grid size={{ xs: 8 }}>
+    <Grid p={2} container direction="row" alignItems="space-evenly" justifyContent="space-between">
+      <Grid size={{ xs: 8 }} sx={{ position: 'relative' }}>
         <Grid
           container
           direction="column"
-          spacing={3}
+          spacing={2}
           alignItems="stretch"
           justifyContent="flex-start"
+          sx={{ margin: '0px 35px 15px 0px' }}
         >
+          <ExtendedStrikethroughLabelBehindText labelText="COORDINATE TYPE" />
+          <Grid mb={1} mt={1}>
+            {referenceCoordinatesField()}
+          </Grid>
+          <ExtendedStrikethroughLabelBehindText labelText="COORDINATE" />
           <Grid>{nameField()}</Grid>
           <Grid>{skyDirection1Field()}</Grid>
-          <Grid>{skyDirection2Field()}</Grid>
+          <Grid mb={1} mt={1}>
+            {skyDirection2Field()}
+          </Grid>
+          <ExtendedStrikethroughLabelBehindText labelText="PULSAR TIMING BEAM" />
+          <Grid mb={1} mt={1}>
+            {pulsarTimingBeamField()}
+          </Grid>
+          <ExtendedStrikethroughLabelBehindText labelText="RADIAL MOTION" />
           <Grid>{velocityField()}</Grid>
-          <Grid>{velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}</Grid>
-          <Grid>{!id && addButton()}</Grid>
+          <Grid mb={1} mt={1}>
+            {velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}
+          </Grid>
+          <ExtendedStrikethroughLabelBehindText labelText="FIELD PATTERN" />
+          <Grid>{fieldPatternTypeField()}</Grid>
+          <Grid mb={1} mt={1}>
+            {!id && addButton()}
+          </Grid>
         </Grid>
       </Grid>
       <Grid size={{ xs: 4 }}>

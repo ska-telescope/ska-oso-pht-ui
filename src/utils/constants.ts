@@ -430,9 +430,10 @@ export const SUPPLIED_INTEGRATION_TIME_UNITS_S = 4;
 export const RA_TYPE_ICRS = { value: 0, label: 'icrs' };
 export const RA_TYPE_GALACTIC = { value: 1, label: 'galactic' };
 
+export const FIELD_PATTERN_POINTING_CENTRES = 'Pointing centres';
+
 export const DEFAULT_GALACTIC = '00:00:00.0';
 export const DEFAULT_EQUATORIAL = 0;
-
 export const ROBUST = [
   { label: '-2', value: 1 },
   { label: '-1', value: 2 },

@@ -43,7 +43,7 @@ export const MockProposalFrontend: Proposal = {
       pmRa: undefined,
       raStr: '00:00:00.0',
       redshift: '0',
-      referenceFrame: RA_TYPE_ICRS.label,
+      // referenceFrame: RA_TYPE_ICRS.label,
       raReferenceFrame: 'LSRK',
       raDefinition: 'RADIO',
       velType: 1,
@@ -58,6 +58,26 @@ export const MockProposalFrontend: Proposal = {
             offsetYArcsec: 0.5
           }
         ]
+      },
+      tiedArrayBeams: {
+        pstBeams: [
+          {
+            beamName: 'beam1',
+            id: 1,
+            beamCoordinate: {
+              raStr: '21:33:27.0200',
+              decStr: '-00:49:23.700',
+              kind: RA_TYPE_ICRS.label,
+              pmRa: 4.8,
+              pmDec: -3.3,
+              parallax: 0.0,
+              epoch: 2000.0
+            },
+            stnWeights: []
+          }
+        ],
+        pssBeams: [],
+        vlbiBeams: []
       }
     },
     {
@@ -73,7 +93,7 @@ export const MockProposalFrontend: Proposal = {
       pmRa: undefined,
       raStr: '05:34:30.900',
       redshift: '0',
-      referenceFrame: RA_TYPE_ICRS.label,
+      // referenceFrame: RA_TYPE_ICRS.label,
       raReferenceFrame: 'LSRK',
       raDefinition: 'RADIO',
       velType: 1,
@@ -88,6 +108,26 @@ export const MockProposalFrontend: Proposal = {
             offsetYArcsec: 0.5
           }
         ]
+      },
+      tiedArrayBeams: {
+        pstBeams: [
+          {
+            beamName: 'beam1',
+            id: 1,
+            beamCoordinate: {
+              raStr: '21:33:27.0200',
+              decStr: '-00:49:23.700',
+              kind: RA_TYPE_ICRS.label,
+              pmRa: 4.8,
+              pmDec: -3.3,
+              parallax: 0.0,
+              epoch: 2000.0
+            },
+            stnWeights: []
+          }
+        ],
+        pssBeams: [],
+        vlbiBeams: []
       }
     },
     {
@@ -103,7 +143,7 @@ export const MockProposalFrontend: Proposal = {
       pmRa: undefined,
       raStr: '21:33:27.0200',
       redshift: '0',
-      referenceFrame: RA_TYPE_ICRS.label,
+      // referenceFrame: RA_TYPE_ICRS.label,
       raReferenceFrame: 'LSRK',
       raDefinition: 'RADIO',
       velType: 1,
@@ -118,6 +158,26 @@ export const MockProposalFrontend: Proposal = {
             offsetYArcsec: 0.5
           }
         ]
+      },
+      tiedArrayBeams: {
+        pstBeams: [
+          {
+            beamName: 'beam1',
+            id: 1,
+            beamCoordinate: {
+              raStr: '21:33:27.0200',
+              decStr: '-00:49:23.700',
+              kind: RA_TYPE_ICRS.label,
+              pmRa: 4.8,
+              pmDec: -3.3,
+              parallax: 0.0,
+              epoch: 2000.0
+            },
+            stnWeights: []
+          }
+        ],
+        pssBeams: [],
+        vlbiBeams: []
       }
     }
   ],
@@ -288,7 +348,7 @@ export const MockProposalFrontendZoom: Proposal = {
       pmRa: undefined,
       raStr: '21:33:27.0200',
       redshift: '0',
-      referenceFrame: RA_TYPE_ICRS.label,
+      // referenceFrame: RA_TYPE_ICRS.label,
       raReferenceFrame: 'LSRK',
       raDefinition: 'RADIO',
       velType: 1,
@@ -303,6 +363,26 @@ export const MockProposalFrontendZoom: Proposal = {
             offsetYArcsec: 0.5
           }
         ]
+      },
+      tiedArrayBeams: {
+        pstBeams: [
+          {
+            beamName: 'beam1',
+            id: 1,
+            beamCoordinate: {
+              raStr: '21:33:27.0200',
+              decStr: '-00:49:23.700',
+              kind: RA_TYPE_ICRS.label,
+              pmRa: 4.8,
+              pmDec: -3.3,
+              parallax: 0.0,
+              epoch: 2000.0
+            },
+            stnWeights: []
+          }
+        ],
+        pssBeams: [],
+        vlbiBeams: []
       }
     }
   ],

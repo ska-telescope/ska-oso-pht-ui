@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Changed: Display of Add target tab on target page
+* Added: Pulsar timing beam functionality when creating/editing a target
 
 7.0.0
 ----------

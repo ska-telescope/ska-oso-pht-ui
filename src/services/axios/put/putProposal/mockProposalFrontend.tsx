@@ -55,6 +55,11 @@ export const MockProposalFrontend: Proposal = {
             offsetYArcsec: 0.5
           }
         ]
+      },
+      tiedArrayBeams: {
+        pstBeams: [],
+        pssBeams: [],
+        vlbiBeams: []
       }
     },
     {
@@ -82,6 +87,11 @@ export const MockProposalFrontend: Proposal = {
             offsetYArcsec: 0.5
           }
         ]
+      },
+      tiedArrayBeams: {
+        pstBeams: [],
+        pssBeams: [],
+        vlbiBeams: []
       }
     },
     {
@@ -109,6 +119,11 @@ export const MockProposalFrontend: Proposal = {
             offsetYArcsec: 0.5
           }
         ]
+      },
+      tiedArrayBeams: {
+        pstBeams: [],
+        pssBeams: [],
+        vlbiBeams: []
       }
     }
   ],
@@ -291,6 +306,11 @@ export const MockProposalFrontendZoom: Proposal = {
             offsetYArcsec: 0.5
           }
         ]
+      },
+      tiedArrayBeams: {
+        pstBeams: [],
+        pssBeams: [],
+        vlbiBeams: []
       }
     }
   ],
