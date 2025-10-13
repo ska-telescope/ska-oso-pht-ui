@@ -8,25 +8,11 @@ A short intro to the user guides goes here.
    :caption: PPT
 
 
-   PPT/UserIntroduction
-   PPT/LandingPage
-   PPT/TitlePage
-   PPT/TeamPage
-   PPT/GeneralPage
-   PPT/SciencePage
-   PPT/TargetPage
-   PPT/ObservationPage
-   PPT/TechnicalPage
-   PPT/SDPDataPage
-   PPT/SrcNetPage
-   PPT/SubmitConfirmation
-   PPT/UserQuestions
-   PPT/UserTroubleShooting
-   PPT/UserFeedback
+   PPT/index
 
 .. toctree::
    :maxdepth: 2
    :caption: PMT
 
 
-   PMT/PanelManagement
+   PMT/index
