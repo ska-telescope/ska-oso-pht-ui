@@ -24,7 +24,7 @@ The Proposal Handling Tool (PHT) allows you to prepare and submit a proposal to 
    deploy/Environments
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 1
    :caption: User Guide
 
    userGuide/PPT/index
