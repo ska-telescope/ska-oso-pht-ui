@@ -470,10 +470,7 @@
     "label": "Observatory Data Product",
     "help": "Select the desired data product(s) by checking the boxes as appropriate.",
     "options": {
-      "1": "Image Products 1 : Image Cubes",
-      "2": "Image Products 2 : UV Grids",
-      "3": "LSM Catalogue",
-      "4": "Visibilities"
+      "1": "Continuum Image"
     }
   },
   "observationDetails": {
@@ -1114,7 +1111,7 @@
     "0": "No tapering"
   },
   "targetImport": {
-    "help": "Upload a list of targets in .csv format in the reference system selected. Currently only Equatorial is available so define targets in ra: 'hh:mm:ss.s' and dec: 'dd:mm:ss.s' format."
+    "help": "Upload a list of targets in .csv format in the reference system selected. Currently only ICRS is available so define targets in ra: 'hh:mm:ss.s' and dec: 'dd:mm:ss.s' format. Example is .csv file with name, ra, dec. Fields with incomplete row entry and duplicate target names will be removed when uploaded."
   },
   "targetObservation": {
     "filters": "Filters",
