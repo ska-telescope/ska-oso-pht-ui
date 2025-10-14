@@ -3,7 +3,7 @@ Introduction
 
 
 The Proposal Management Tool covers **management of already-submitted proposals**. It assumes proposals
-have been created and submitted by PIs/CoIs; here we focus on **assignment,
+have been created and submitted by PIs/CoIs; here we focus on **assignment**,
 review and panel decisions.
 
 Who this is for

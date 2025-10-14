@@ -658,7 +658,7 @@
       "2": "Observing projects that require the allocation of significant observing time and resources, often over a period longer than a single observing cycle. Specific criteria that define a KSP will be described in each call for proposals.",
       "3": "Time allocated by the Director-General outside the normal process of assessment by the Time Allocation Committee (TAC)."
     },
-    "help": "Select from the options below the most appropriate type classification for the proposal. This can be changed later if needed, however be aware that this may affect information previously entered.",
+    "help": "Select from the options below the most appropriate type classification for the proposal. This can be changed later if needed, but be aware that this may affect information previously entered.",
     "label": "Type",
     "plural": "Types",
     "short": "Type",
