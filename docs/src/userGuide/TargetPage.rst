@@ -24,6 +24,24 @@ The Target Page allows you to add target(s) to your proposal (see :numref:`Figur
 
    Target page for 'List of Targets'
 
+.. _targetpagenopstbeam:
+
+.. figure:: /images/targetPageDefaultNoPSTBeam.png
+   :width: 90%
+   :align: center
+   :alt: Image of the Target page for 'Pulsar Timing Beam' section. Default selection is 'No Beam'.
+
+   Target page for 'Pulsar Timing Beam' section. Default selection is 'No Beam'.
+
+.. _targetpageaddpstbeams:
+
+.. figure:: /images/targetPageAddPSTBeam.png
+   :width: 90%
+   :align: center
+   :alt: Image of the Target page for 'Pulsar Timing Beam' section. To add a new PST Beam.
+
+   Target page for 'Pulsar Timing Beam' section. Selected 'Multiple Beams'.
+
 .. _targetpageimport:
 
 .. figure:: /images/targetPageimport.png
