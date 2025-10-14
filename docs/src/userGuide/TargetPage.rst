@@ -48,9 +48,9 @@ The Target Page allows you to add target(s) to your proposal (see :numref:`Figur
 .. figure:: /images/targetPagedelete.png
    :width: 90%
    :align: center
-   :alt: Target page showing modal to edit target. 
+   :alt: Target page showing modal to delete target.
 
-   Target page showing modal to edit target
+   Target page showing modal to delete target
 
 
 
