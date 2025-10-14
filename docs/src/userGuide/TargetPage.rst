@@ -68,11 +68,12 @@ The layout of the Target Page shows three different ways to specify targets (top
        - Declination in Sexagesimal format.
        - Velocity in the selected unit.
        - Redshift
+       - PST Beam
        - Actions: |editicon| icon to edit (see :numref:`Figure %s <targetpageedit>`) and |deleteicon| to delete a target from the list (see :numref:`Figure %s <targetpagedelete>`).
   
    - **Right side**:
   
-       - **Add Target**: Add individual targets by providing details of the target such as the name and coordinates (see :numref:`Figure %s <targetpage>`). The velocity/redshift field is optional to specify the velocity (km/s or m/s) or redshift. For known targets, these parameters can be auto-populated by querying the *SIMBAD* or *NED* database using the |icoresolve| button with the name e.g ``M2``. If the target name is not recognised, the error text ``Unable to resolve provided name`` is displayed.
+       - **Add Target**: Add individual targets by providing details of the target such as the name and coordinates (see :numref:`Figure %s <targetpage>`). The velocity/redshift field is optional to specify the velocity (km/s or m/s) or redshift. For known targets, these parameters can be auto-populated by querying the *SIMBAD* or *NED* database using the |icoresolve| button with the name e.g ``M2``. If the target name is not recognised, the error text ``Unable to resolve provided name`` is displayed. PST Beam(s) can be added to the target by clicking the 'Multiple Beams' radio button. Click the 'Add' button and provide details of the beam such as the name and coordinates before clicking the 'Confirm button'. For known beams, these parameters can be auto-populated by querying the SIMBAD or NED database using the 'Resolve' button.
        - **Import from file**: Add a list of targets by uploading a ``.csv`` file (see :numref:`Figure %s <targetpageimport>`). This is controlled by the selected reference system. For ICRS, the csv header should be ``name, ra, dec``. If a file with a wrong format is uploaded, the error ``ICRS schema is invalid``. For rows with empty values in any fields, the rows will be omitted. 
        - **Spatial Imaging**: *Not available at the moment*.
   
@@ -89,7 +90,7 @@ Key Information and Actions
 ===========================
 
 - Add target:
-  Use the entry form on the right of the page, under the tab ''**Add Target**''
+  Use the entry form on the right of the page, under the tab ''**Add Target**'' If adding multiple PST Beams, these will display in a comma separated format under the column ''PST Beam'' in the target list.
 
 - Edit target:
   When selected, a modal is displayed with a form containing details of the selected target (see :numref:`Figure %s <targetpageedit>`).
