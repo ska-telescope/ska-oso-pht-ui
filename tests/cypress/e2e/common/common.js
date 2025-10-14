@@ -128,6 +128,15 @@ export const mockResolveTargetAPI = () => {
   });
 };
 
+export const mockResolveBeamAPI = () => {
+  cy.fixture('target.json').then(target => {
+    cy.intercept('GET', '**/coordinates/PSR B0329+54/equatorial', {
+      statusCode: 200,
+      body: target
+    }).as('mockResolveBeam');
+  });
+};
+
 /*----------------------------------------------------------------------*/
 
 export const verify = testId => {
@@ -161,6 +170,9 @@ export const clickReviewOverviewButton = () => clickButton('overviewButtonTestId
 export const clickSave = () => clickButton('saveBtn');
 export const clickSendInviteButton = () => clickButton('sendInviteButton');
 export const clickToAddTarget = () => clickButton('addTargetButton');
+export const clickToAddPSTBeam = () => clickButton('addPulsarTimingBeamButton');
+export const clickMultipleBeamsRadioButton = () => clickButton('MultipleBeamsTestId');
+
 export const clickToConfirmProposalSubmission = () => clickButton('displayConfirmationButton');
 export const clickToNextPage = () => clickButton('nextButtonTestId');
 export const clickToPreviousPage = () => clickButton('prevButtonTestId');
@@ -272,6 +284,9 @@ export const pageConfirmed = label => cy.get('#pageTitle').contains(label);
 export const verifyOnLandingPage = () => verifyExists('addSubmissionButton');
 export const verifyNoBeamRadioButtonSelected = () => {
   cy.get('[data-testid="NoBeamTestId"] input[type="radio"]').should('be.checked');
+};
+export const verifyMultipleBeamsRadioButtonSelected = () => {
+  cy.get('[data-testid="MultipleBeamsTestId"] input[type="radio"]').should('be.checked');
 };
 
 /*----------------------------------------------------------------------*/

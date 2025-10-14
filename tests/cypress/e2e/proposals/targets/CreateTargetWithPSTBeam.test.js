@@ -10,24 +10,27 @@ import {
   createObservation,
   initializeUserNotLoggedIn,
   verifySensCalcStatus,
-  mockResolveTargetAPI
+  mockResolveTargetAPI,
+  clickEdit,
+  verifyMultipleBeamsRadioButtonSelected,
+  clickMultipleBeamsRadioButton,
+  clickToAddPSTBeam,
+  mockResolveBeamAPI
 } from '../../common/common';
 beforeEach(() => {
   initializeUserNotLoggedIn();
   createMock();
   mockResolveTargetAPI();
+  mockResolveBeamAPI();
 
   //add target
   clickListOfTargets();
   addM2TargetUsingResolve();
   cy.wait('@mockResolveTarget');
+  clickMultipleBeamsRadioButton(); //Select Multiple beams
+  verifyMultipleBeamsRadioButtonSelected(); //verify Multiple beams is selected
+  clickToAddPSTBeam()
   clickToAddTarget();
-
-  //go to observation page
-  clickToNextPage();
-
-  //add observation
-  createObservation();
 });
 
 afterEach(() => {
@@ -36,9 +39,16 @@ afterEach(() => {
 
 describe('Create Target with PST Beam', () => {
   it('Create target with pst beam, then link to observation', () => {
-    //TODO: Link obs verification, reinstate once scenario completed
-    // clickUnlinkedObservationInTable();
-    // clickToLinkTargetObservation();
-    // verifySensCalcStatus();
+    clickToNextPage(); // go to observation page
+
+    createObservation(); //add observation
+    clickUnlinkedObservationInTable();
+    clickToLinkTargetObservation(); //link target to observation
+    verifySensCalcStatus(); //verify sens calc status
   });
+
+  // it("Verify on target edit, with pst beam, 'Multiple Beams' remains selected", () => {
+  //   clickEdit();
+  //   verifyNoBeamRadioButtonSelected(); //verify Multiple beams is selected
+  // });
 });

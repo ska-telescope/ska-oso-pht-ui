@@ -12,10 +12,8 @@ import {
   verifySensCalcStatus,
   mockResolveTargetAPI,
   verifyNoBeamRadioButtonSelected,
-  clickToPreviousPage,
   clickEdit
 } from '../../common/common';
-import { verifyContent } from '../../../fixtures/utils/cypress.js';
 beforeEach(() => {
   initializeUserNotLoggedIn();
   createMock();
@@ -43,7 +41,7 @@ describe('Create Target with no PST Beam', () => {
     verifySensCalcStatus(); //verify sens calc status
   });
 
-  it("Verify on target edit, with no pst beam, ' No Beam' remains selected", () => {
+  it("Verify on target edit, with no pst beam, 'No Beam' remains selected", () => {
     clickEdit();
     verifyNoBeamRadioButtonSelected(); //verify No beam is selected (default value)
   });
