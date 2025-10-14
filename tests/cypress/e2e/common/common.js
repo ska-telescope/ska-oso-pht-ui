@@ -324,9 +324,11 @@ export const verifyTeamMemberAccessUpdatedAlertFooter = () =>
   verifyContent('timeAlertFooter', "Team member's access has been updated.");
 
 export const clickEdit = () => {
-  get('EditRoundedIcon')
-    .eq(0)
-    .click();
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .within(() => {
+      cy.get('[data-testId="EditRoundedIcon"]').click();
+    });
 };
 
 export const validateProposal = () => {
