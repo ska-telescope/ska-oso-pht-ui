@@ -286,14 +286,10 @@ export const verifyUserMenuDecisions = exists => verifyUserMenu('menuItemReviewD
 export const pageConfirmed = label => cy.get('#pageTitle').contains(label);
 export const verifyOnLandingPage = () => verifyExists('addSubmissionButton');
 export const verifyNoBeamRadioButtonSelected = () => {
-  cy.get('[data-testid="NoBeamTestId"] input[type="radio"]')
-    .scrollIntoView()
-    .should('be.checked');
+  cy.get('[data-testid="NoBeamTestId"] input[type="radio"]').should('be.checked');
 };
 export const verifyMultipleBeamsRadioButtonSelected = () => {
-  cy.get('[data-testid="MultipleBeamsTestId"] input[type="radio"]')
-    .scrollIntoView()
-    .should('be.checked');
+  cy.get('[data-testid="MultipleBeamsTestId"] input[type="radio"]').should('be.checked');
 };
 export const verifyMultipleBeamsRadioButtonSelectedOnTargetEdit = () => {
   cy.get('[data-testid="MultipleBeamsTestIdEdit"] input[type="radio"]').should('be.checked');
@@ -522,6 +518,18 @@ export const verifyMultipleBeamsInTargetTable = () => {
       cy.get('[data-field="raStr"]').should('contain', '21:33:27.0200');
       cy.get('[data-field="decStr"]').should('contain', '-00:49:23.700');
       cy.get('[data-field="beamName"]').should('contain', 'PSR B0329+54, M2');
+    });
+};
+
+export const verifyTargetNoBeamInTable = () => {
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .eq(0)
+    .within(() => {
+      cy.get('[data-field="name"]').should('contain', 'M2');
+      cy.get('[data-field="raStr"]').should('contain', '21:33:27.0200');
+      cy.get('[data-field="decStr"]').should('contain', '-00:49:23.700');
+      cy.get('[data-field="beamName"]').should('contain', '');
     });
 };
 
