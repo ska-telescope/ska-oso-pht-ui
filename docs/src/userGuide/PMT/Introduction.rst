@@ -4,7 +4,7 @@ Introduction
 
 The Proposal Management Tool covers **management of already-submitted proposals**. It assumes proposals
 have been created and submitted by PIs/CoIs; here we focus on **assignment,
-review, panel decisions, and project readiness**.
+review and panel decisions.
 
 Who this is for
 ---------------
@@ -12,18 +12,13 @@ Who this is for
 - **Review Chairs**: Oversee reviews, record decisions.
 - **Reviewers** : Reviews proposals.
 
-What you can do here
+Key concepts
 --------------------
-- **Assignments**: bulk-assign reviewers, update assignments.
-- **Review orchestration**: monitor submission status.
-- **Panel workflow**: Ctreate panel, assignments.
+- **Panel Workflow**: create panel, auto-assign reviewers and proposals, update assignments.
+- **Review orchestration**: conflict mangement, submission status.
 - **Decisions**: finalize decisions, updates proposals with outcomes.
 - **Reporting**: view proposal review progress.
 
-Key concepts
-------------
-- **State**: *submitted* --> *under review*.
-- **Reviews**: conflicts must be resolved before review.
 
 Quick navigation
 ----------------
@@ -34,8 +29,10 @@ Quick navigation
 
 Tips
 ----
-- Add a brief **decision rationale** to support transparency and appeals.
+- Panel decision i smade based on outcome from independent technical and science review.
 
 .. note::
-   This guide does **not** cover proposal authoring or submission. For that, see the
-   Proposer documentation.
+   This guide does **not** cover proposal authoring or submission. For that, see the :doc:`Title Page </userGuide/PPT/LandingPage>`.
+
+
+|helpdesk|

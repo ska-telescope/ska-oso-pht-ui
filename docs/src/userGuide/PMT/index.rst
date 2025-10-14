@@ -8,3 +8,6 @@ Proposal Management Tool
 
    Introduction 
    PanelManagement
+   reviews
+   PanelManagement
+   overview
