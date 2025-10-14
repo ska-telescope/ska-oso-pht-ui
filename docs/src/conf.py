@@ -10,15 +10,12 @@ version = '7.0.0'
 # The full version, including alpha/beta/rc tags
 release = '7.0.0'
 
-# -- General configuration ---------------------------------------------------
-rst_prolog = """
-.. |footer| raw:: html
 
-   <hr>
-   <div class="doc-footer">
-     © 2025 Your Org
-   </div>
+rst_prolog = r"""
+.. |helpdesk| replace:: **Need help?** Contact the Help Desk:
+   `support@example.com <mailto:support@example.com>`__ · Slack `#helpdesk <https://mylink>`__
 """
+# -- General configuration ---------------------------------------------------
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',

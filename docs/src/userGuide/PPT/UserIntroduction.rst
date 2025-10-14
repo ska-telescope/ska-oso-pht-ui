@@ -64,7 +64,7 @@ Common elements are recurring components found across multiple pages in the tool
    "Dynamic Help", "Always on the right side of the page. Hovering over fields provides contextual descriptions and guidance for elements across all pages."
 
 
-
+|helpdesk|
 
 .. admonition:: Please note
 
@@ -76,4 +76,4 @@ Common elements are recurring components found across multiple pages in the tool
      - Add Observatory data products (Currently under development, with full functionality coming soon.)
 
 
-|footer|
+|helpdesk|
