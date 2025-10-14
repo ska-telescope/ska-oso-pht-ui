@@ -227,7 +227,7 @@ export const IMAGE_WEIGHTING = [
 
 export const LAB_IS_BOLD = true;
 export const LAB_POSITION = LABEL_POSITION.START;
-export const LAST_PAGE = 9;
+export const LAST_PAGE = 10;
 
 export const MULTIPLIER_HZ_GHZ = [1, 1, 1000, 1000000, 1000000000];
 
@@ -240,7 +240,8 @@ export const NAV = [
   '/proposal/observation',
   '/proposal/technical',
   '/proposal/data',
-  '/proposal/src'
+  '/proposal/src',
+  '/proposal/calibration'
 ];
 export const NOT_SPECIFIED = 'notSpecified';
 export const NOT_APPLICABLE = 'N/A';

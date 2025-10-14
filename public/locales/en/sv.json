@@ -202,7 +202,7 @@
       "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS SCIENCE IDEA"
     },
     "9": {
-      "desc": "Provide a title of your Science Idea. Science Idea sub-types below are optional."
+      "desc": "Confirm a calibration strategy for this Science Idea."
     },
     "11": {
       "desc": "Science Ideas where the user is listed as either principal investigator or co-investigator.",

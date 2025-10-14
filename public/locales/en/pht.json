@@ -1282,8 +1282,11 @@
       "pageError": "The SRCNet page is not complete"
     },
     "9": {
-      "title": "Title",
-      "desc": "Provide a title of your proposal. Proposal sub-types below are optional."
+      "status": "Calibration",
+      "title": "Calibration",
+      "titleShort": "Calibration",
+      "desc": "This page allows you to request and define Calibration straetegies.",
+      "pageError": "The Calibration page is not complete"
     },
     "10": {
       "title": "Observation Setup",
@@ -1317,6 +1320,12 @@
       "desc": "Panel maintenance",
       "empty": "NO PANELS AVAILABLE",
       "toolTip": "Panel Maintenance tooltip"
+    },
+    "16": {
+      "title": "Calibration",
+      "desc": "Calibration strategies",
+      "empty": "NO CALIBRATION STRATEGIES AVAILABLE",
+      "toolTip": "Calibration tooltip"
     },
     "next": "Next",
     "pageOf": "Page {{current}} of {{max}}",
