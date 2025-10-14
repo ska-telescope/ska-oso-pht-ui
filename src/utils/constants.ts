@@ -238,10 +238,10 @@ export const NAV = [
   '/proposal/science',
   '/proposal/target',
   '/proposal/observation',
+  '/proposal/calibration',
   '/proposal/technical',
   '/proposal/data',
-  '/proposal/src',
-  '/proposal/calibration'
+  '/proposal/src'
 ];
 export const NOT_SPECIFIED = 'notSpecified';
 export const NOT_APPLICABLE = 'N/A';

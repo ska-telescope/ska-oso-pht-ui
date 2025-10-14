@@ -5,7 +5,7 @@ import { Proposal } from '../../utils/types/proposal';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import Shell from '@/components/layout/Shell/Shell';
 
-const PAGE = 9;
+const PAGE = 6;
 
 export default function CalibrationPage() {
   const { t } = useScopedTranslation();

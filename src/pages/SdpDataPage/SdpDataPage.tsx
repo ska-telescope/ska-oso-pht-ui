@@ -15,7 +15,7 @@ import { DataProductSDP } from '../../utils/types/dataProduct';
 import Observation from '../../utils/types/observation';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
-const PAGE = 7;
+const PAGE = 8;
 const DATA_GRID_HEIGHT = 450;
 const LABEL_WIDTH = 6;
 

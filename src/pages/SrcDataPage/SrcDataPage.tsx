@@ -7,7 +7,7 @@ import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 
-const PAGE = 8;
+const PAGE = 9;
 
 export default function SrcDataPage() {
   const { application, updateAppContent1 } = storageObject.useStore();
