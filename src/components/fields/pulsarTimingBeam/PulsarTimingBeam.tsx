@@ -165,7 +165,7 @@ export default function PulsarTimingBeamField({
       <ResolveButton
         action={() => getCoordinates()}
         disabled={!beamName}
-        testId={'resolveButton'}
+        testId={'resolveBeamButton'}
       />
     );
   };

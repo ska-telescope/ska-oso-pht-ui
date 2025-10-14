@@ -129,10 +129,10 @@ export const mockResolveTargetAPI = () => {
 };
 
 export const mockResolveBeamAPI = () => {
-  cy.fixture('target.json').then(target => {
-    cy.intercept('GET', '**/coordinates/PSR B0329+54/equatorial', {
+  cy.fixture('beam.json').then(beam => {
+    cy.intercept('GET', '**/coordinates/PSR%20B0329+54/equatorial', {
       statusCode: 200,
-      body: target
+      body: beam
     }).as('mockResolveBeam');
   });
 };
@@ -166,6 +166,7 @@ export const clickObservationSetup = () => clickButton('addObservationButton');
 export const clickAddObservationEntry = () => clickButton('addObservationButtonEntry');
 export const clickPanelMaintenanceButton = () => clickButton('pmtBackButton');
 export const clickResolveButton = () => clickButton('resolveButton');
+export const clickResolveBeamButton = () => clickButton('resolveBeamButton');
 export const clickReviewOverviewButton = () => clickButton('overviewButtonTestId');
 export const clickSave = () => clickButton('saveBtn');
 export const clickSendInviteButton = () => clickButton('sendInviteButton');
@@ -418,6 +419,12 @@ export const addM2TargetUsingResolve = () => {
   cy.get('[id="name"]').type('M2');
   clickResolveButton();
 };
+
+export const addBeamUsingResolve = () => {
+  cy.get('[id="beamName"]').should('exist');
+  cy.get('[id="beamName"]').type('PSR B0329+54');
+  clickResolveBeamButton();
+};
 export const verifyOnLandingPageFilterIsVisible = () => {
   cy.get('[data-testid="proposalType"]').should('exist');
   cy.get('[data-testid="proposalType"]').realClick();
@@ -449,6 +456,14 @@ export const clickObservationFromTable = () => {
 };
 export const clickToLinkTargetAndObservation = () => {
   cy.get('[data-testid="linkedTickBox"]').click({ multiple: true });
+};
+
+export const verifyBeamInTable = () => {
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .should('contain', 'PSR B0329+54')
+    .should('contain', '03:32:59.3371')
+    .should('contain', '+54:34:45.028');
 };
 
 const clickToValidateProposal = () => {
