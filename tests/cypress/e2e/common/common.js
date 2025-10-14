@@ -530,6 +530,7 @@ export const verifyTargetNoBeamInTable = () => {
       cy.get('[data-field="raStr"]').should('contain', '21:33:27.0200');
       cy.get('[data-field="decStr"]').should('contain', '-00:49:23.700');
       cy.get('[data-field="beamName"]').should('contain', '');
+      cy.get('[data-field="Actions"] [data-testId="EditRoundedIcon"]').should('be.visible');
     });
 };
 
