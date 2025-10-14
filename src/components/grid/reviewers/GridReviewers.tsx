@@ -96,8 +96,7 @@ export default function GridReviewers({
   }, [selectedReviewers]);
 
   const isReviewerSelected = (reviewerId: string): boolean => {
-    // console.log('check ID ', reviewerId.replace(/-science|-technical$/, ''));
-    return reviewersCollection?.filter(entry => entry.id === reviewerId.replace(/-science|-technical$/, '')).length > 0; // remove reviewType suffix from id
+    return reviewersCollection?.filter(entry => entry.id === reviewerId).length > 0;
   };
 
   const isReviewerType = (reviewer: Reviewer): boolean => {

@@ -26,7 +26,6 @@ export function combineReviewers(
     combinedMap.set(reviewer.id, {
       ...reviewer,
       isScience: true,
-      reviewType: 'science',
       isTechnical: false
     });
   }
@@ -41,7 +40,6 @@ export function combineReviewers(
       combinedMap.set(reviewer.id, {
         ...reviewer,
         isScience: false,
-        reviewType: 'technical',
         isTechnical: true
       });
     }
