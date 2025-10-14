@@ -65,7 +65,6 @@ Common elements are recurring components found across multiple pages in the tool
 
 
 
-|helpdesk|
 
 
 .. admonition:: Please note

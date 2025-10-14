@@ -12,7 +12,8 @@ Who this is for
 - **Review Chairs**: Oversee reviews, record decisions.
 - **Reviewers** : Reviews proposals.
 
-Key concepts
+
+Key Information and Actions
 --------------------
 - **Panel Workflow**: create panel, auto-assign reviewers and proposals, update assignments.
 - **Review orchestration**: conflict mangement, submission status.
@@ -20,16 +21,9 @@ Key concepts
 - **Reporting**: view proposal review progress.
 
 
-Quick navigation
-----------------
-- **Assignments**: reviewer allocation, panel creation.
-- **Reviews** : status dashboard, reminders, locks.
-- **Panel & Decisions** : final outcomes.
-- **Reports**: 
 
-Tips
-----
-- Panel decision i smade based on outcome from independent technical and science review.
+.. tip:: 
+- Panel decision is made based on outcome from independent technical and science review.
 
 .. note::
    This guide does **not** cover proposal authoring or submission. For that, see the :doc:`Title Page </userGuide/PPT/LandingPage>`.

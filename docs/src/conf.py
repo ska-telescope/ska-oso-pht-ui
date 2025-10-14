@@ -12,7 +12,7 @@ release = '7.0.0'
 
 
 rst_prolog = r"""
-.. |helpdesk| replace:: **Need help or have questions or just or need technical assistance,?** Contact the Help Desk:
+.. |helpdesk| replace:: **Have questions or need technical assistance?** Contact the Help Desk:
    `SKAO Help desk <https://www.skao.int/en/contact-us/>`__ ·
 """
 
