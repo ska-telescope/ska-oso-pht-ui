@@ -324,12 +324,8 @@ export const verifyTeamMemberAccessUpdatedAlertFooter = () =>
   verifyContent('timeAlertFooter', "Team member's access has been updated.");
 
 export const clickEdit = () => {
-  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
-    .children('div[role="row"]')
-    .within(() => {
-      cy.get('[data-testId="EditRoundedIcon"]').should('be.visible');
-      cy.get('[data-testId="EditRoundedIcon"]').click();
-    });
+  cy.get('[data-testId="EditRoundedIcon"]').should('be.visible');
+  cy.get('[data-testId="EditRoundedIcon"]').click();
 };
 
 export const validateProposal = () => {
@@ -530,7 +526,9 @@ export const verifyTargetNoBeamInTable = () => {
       cy.get('[data-field="raStr"]').should('contain', '21:33:27.0200');
       cy.get('[data-field="decStr"]').should('contain', '-00:49:23.700');
       cy.get('[data-field="beamName"]').should('contain', '');
-      cy.get('[data-field="Actions"] [data-testId="EditRoundedIcon"]').should('be.visible');
+      cy.get('[data-field="actions"]')
+        .find('[data-testid="EditRoundedIcon"]')
+        .should('be.visible');
     });
 };
 
