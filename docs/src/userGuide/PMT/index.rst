@@ -1,7 +1,6 @@
-PMT User Guide
-==============
+Proposal Management Tool
+========================
 
-Introductory text for the PMT documentation goes here.
 
 .. toctree::
    :maxdepth: 2

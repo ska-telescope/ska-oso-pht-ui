@@ -1,7 +1,6 @@
-Proposal Preparation Tool User Guide
-====================================
+Proposal Preparation Tool
+=========================
 
-Introductory text for the PPT documentation goes here.
 
 .. toctree::
    :maxdepth: 2
