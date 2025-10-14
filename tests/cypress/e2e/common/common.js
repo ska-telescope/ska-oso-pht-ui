@@ -480,24 +480,42 @@ export const clickToLinkTargetAndObservation = () => {
 export const verifyBeamInTable = () => {
   cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
     .children('div[role="row"]')
-    .should('contain', 'PSR B0329+54')
-    .should('contain', '03:32:59.3371')
-    .should('contain', '+54:34:45.028');
+    .within(() => {
+      cy.get('[data-field="raStr"]').should('contain', '03:32:59.3371');
+      cy.get('[data-field="decStr"]').should('contain', '+54:34:45.028');
+      cy.get('[data-field="beamName"]').should('contain', 'PSR B0329+54');
+    });
 };
 
 export const verifyMultipleBeamsInTable = () => {
   cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
     .children('div[role="row"]')
     .eq(0)
-    .should('contain', 'PSR B0329+54')
-    .should('contain', '03:32:59.3371')
-    .should('contain', '+54:34:45.028');
+    .within(() => {
+      cy.get('[data-field="raStr"]').should('contain', '03:32:59.3371');
+      cy.get('[data-field="decStr"]').should('contain', '+54:34:45.028');
+      cy.get('[data-field="beamName"]').should('contain', 'PSR B0329+54');
+    });
   cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
     .children('div[role="row"]')
     .eq(1)
-    .should('contain', 'M2')
-    .should('contain', '21:33:27.0200')
-    .should('contain', '-00:49:23.700');
+    .within(() => {
+      cy.get('[data-field="raStr"]').should('contain', '21:33:27.0200');
+      cy.get('[data-field="decStr"]').should('contain', '-00:49:23.700');
+      cy.get('[data-field="beamName"]').should('contain', 'M2');
+    });
+};
+
+export const verifyMultipleBeamsInTargetTable = () => {
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .eq(0)
+    .within(() => {
+      cy.get('[data-field="name"]').should('contain', 'M2');
+      cy.get('[data-field="raStr"]').should('contain', '21:33:27.0200');
+      cy.get('[data-field="decStr"]').should('contain', '-00:49:23.700');
+      cy.get('[data-field="beamName"]').should('contain', 'PSR B0329+54, M2');
+    });
 };
 
 export const verifyBeamInTableOnTargetEdit = () => {

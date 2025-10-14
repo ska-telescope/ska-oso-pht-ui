@@ -20,7 +20,8 @@ import {
   clickDialogConfirm,
   verifyBeamInTable,
   verifyBeamInTableOnTargetEdit,
-  verifyMultipleBeamsInTable
+  verifyMultipleBeamsInTable,
+  verifyMultipleBeamsInTargetTable
 } from '../../common/common';
 beforeEach(() => {
   initializeUserNotLoggedIn();
@@ -68,5 +69,7 @@ describe('Create Target with PST Beam', () => {
     cy.wait('@mockResolveTarget'); //Add M2 as second beam
     clickDialogConfirm();
     verifyMultipleBeamsInTable(); //verify both beams are in table
+    clickToAddTarget();
+    verifyMultipleBeamsInTargetTable(); //verify both beams are in main target table after adding target
   });
 });
