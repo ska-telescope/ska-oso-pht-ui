@@ -107,4 +107,7 @@ Next Steps
 ==========
 
 - |ico1| takes you to the :doc:`Title Page </userGuide/TitlePage>`.
-- If you have any questions or need technical assistance, please contact the `SKAO Help desk <https://www.skao.int/en/contact-us/>`_.
+
+
+
+|helpdesk|

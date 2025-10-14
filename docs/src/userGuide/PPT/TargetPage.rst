@@ -104,3 +104,7 @@ Key Information and Actions
   Resolve targets by name using the |icoresolve| button which allows you to query SIMBAD or NED.
   This is available as part of the functionality of ''**Add Target**''
 
+
+
+
+|helpdesk|

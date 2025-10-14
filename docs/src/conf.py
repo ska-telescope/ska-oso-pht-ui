@@ -12,9 +12,10 @@ release = '7.0.0'
 
 
 rst_prolog = r"""
-.. |helpdesk| replace:: **Need help?** Contact the Help Desk:
-   `support@example.com <mailto:support@example.com>`__ · Slack `#helpdesk <https://mylink>`__
+.. |helpdesk| replace:: **Need help or have questions or just need technical assistance?** Contact the Help Desk:
+   `SKAO Help desk <https://www.skao.int/en/contact-us/>`_·
 """
+
 # -- General configuration ---------------------------------------------------
 extensions = [
     'sphinx.ext.autodoc',
