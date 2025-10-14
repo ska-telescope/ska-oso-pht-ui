@@ -15,7 +15,6 @@ import {
   clickEdit,
   clickToAddPSTBeam,
   clickDialogConfirm,
-  verifyBeamInTable,
   addBeamUsingResolveOnTargetEdit,
   clickMultipleBeamsRadioButtonOnTargetEdit,
   verifyMultipleBeamsRadioButtonSelectedOnTargetEdit,

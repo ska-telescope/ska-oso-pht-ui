@@ -19,14 +19,14 @@ import {
   addBeamUsingResolve,
   clickDialogConfirm,
   verifyBeamInTable,
-  verifyBeamInTableOnTargetEdit
+  verifyBeamInTableOnTargetEdit,
+  verifyMultipleBeamsInTable
 } from '../../common/common';
 beforeEach(() => {
   initializeUserNotLoggedIn();
   createMock();
   mockResolveTargetAPI();
   mockResolveBeamAPI();
-
   //add target
   clickListOfTargets();
   addM2TargetUsingResolve();
@@ -34,11 +34,10 @@ beforeEach(() => {
   clickMultipleBeamsRadioButton(); //Select Multiple beams
   verifyMultipleBeamsRadioButtonSelected(); //verify Multiple beams is selected
   clickToAddPSTBeam();
-  addBeamUsingResolve();
+  addBeamUsingResolve('PSR B0329+54');
   cy.wait('@mockResolveBeam');
   clickDialogConfirm();
   verifyBeamInTable(); //confirm beam is in table before adding target
-  clickToAddTarget();
 });
 
 afterEach(() => {
@@ -47,6 +46,7 @@ afterEach(() => {
 
 describe('Create Target with PST Beam', () => {
   it('Create target with pst beam, then link to observation', () => {
+    clickToAddTarget();
     clickToNextPage(); // go to observation page
 
     createObservation(); //add observation
@@ -56,8 +56,17 @@ describe('Create Target with PST Beam', () => {
   });
 
   it("Verify on target edit, with pst beam, 'Multiple Beams' remains selected", () => {
+    clickToAddTarget();
     clickEdit();
     verifyMultipleBeamsRadioButtonSelected(); //verify Multiple beams is selected
     verifyBeamInTableOnTargetEdit(); //confirm previously added beam is in table
+  });
+
+  it('Add multiple beams', () => {
+    clickToAddPSTBeam();
+    addBeamUsingResolve('M2');
+    cy.wait('@mockResolveTarget'); //Add M2 as second beam
+    clickDialogConfirm();
+    verifyMultipleBeamsInTable(); //verify both beams are in table
   });
 });

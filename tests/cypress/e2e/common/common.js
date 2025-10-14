@@ -433,9 +433,9 @@ export const addM2TargetUsingResolve = () => {
   clickResolveButton();
 };
 
-export const addBeamUsingResolve = () => {
+export const addBeamUsingResolve = beamName => {
   cy.get('[id="beamName"]').should('exist');
-  cy.get('[id="beamName"]').type('PSR B0329+54');
+  cy.get('[id="beamName"]').type(beamName);
   clickResolveBeamButton();
 };
 
@@ -483,6 +483,21 @@ export const verifyBeamInTable = () => {
     .should('contain', 'PSR B0329+54')
     .should('contain', '03:32:59.3371')
     .should('contain', '+54:34:45.028');
+};
+
+export const verifyMultipleBeamsInTable = () => {
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .eq(0)
+    .should('contain', 'PSR B0329+54')
+    .should('contain', '03:32:59.3371')
+    .should('contain', '+54:34:45.028');
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .eq(1)
+    .should('contain', 'M2')
+    .should('contain', '21:33:27.0200')
+    .should('contain', '-00:49:23.700');
 };
 
 export const verifyBeamInTableOnTargetEdit = () => {
