@@ -20,7 +20,8 @@ import {
   clickMultipleBeamsRadioButtonOnTargetEdit,
   verifyMultipleBeamsRadioButtonSelectedOnTargetEdit,
   mockResolveBeamAPI,
-  clickConfirmButtonWithinPopup
+  clickConfirmButtonWithinPopup,
+  verifyBeamInTableOnTargetEdit
 } from '../../common/common';
 beforeEach(() => {
   initializeUserNotLoggedIn();
@@ -64,7 +65,7 @@ describe('Create Target with no PST Beam', () => {
     addBeamUsingResolveOnTargetEdit();
     cy.wait('@mockResolveBeam');
     clickConfirmButtonWithinPopup(); // confirm adding beam in popup
-    verifyBeamInTable(); //confirm beam is in table before adding target
+    verifyBeamInTableOnTargetEdit();
     clickDialogConfirm();
   });
 });

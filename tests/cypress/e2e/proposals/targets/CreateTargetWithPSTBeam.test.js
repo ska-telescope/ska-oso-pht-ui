@@ -18,7 +18,8 @@ import {
   mockResolveBeamAPI,
   addBeamUsingResolve,
   clickDialogConfirm,
-  verifyBeamInTable
+  verifyBeamInTable,
+  verifyBeamInTableOnTargetEdit
 } from '../../common/common';
 beforeEach(() => {
   initializeUserNotLoggedIn();
@@ -57,6 +58,6 @@ describe('Create Target with PST Beam', () => {
   it("Verify on target edit, with pst beam, 'Multiple Beams' remains selected", () => {
     clickEdit();
     verifyMultipleBeamsRadioButtonSelected(); //verify Multiple beams is selected
-    verifyBeamInTable(); //confirm previously added beam is in table
+    verifyBeamInTableOnTargetEdit(); //confirm previously added beam is in table
   });
 });

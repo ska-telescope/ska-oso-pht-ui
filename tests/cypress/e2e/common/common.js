@@ -485,6 +485,16 @@ export const verifyBeamInTable = () => {
     .should('contain', '+54:34:45.028');
 };
 
+export const verifyBeamInTableOnTargetEdit = () => {
+  cy.get('[role="dialog"]').within(() => {
+    cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+      .children('div[role="row"]')
+      .should('contain', 'PSR B0329+54')
+      .should('contain', '03:32:59.3371')
+      .should('contain', '+54:34:45.028');
+  });
+};
+
 const clickToValidateProposal = () => {
   cy.get('[data-testid="validateBtn"]').should('exist');
   cy.get('[data-testid="validateBtn"]').click();
