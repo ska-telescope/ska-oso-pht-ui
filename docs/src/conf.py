@@ -12,9 +12,10 @@ release = '7.0.0'
 
 
 rst_prolog = r"""
-.. |helpdesk| replace:: **Need help or have questions or just need technical assistance?** Contact the Help Desk:
-   `SKAO Help desk <https://www.skao.int/en/contact-us/>`_·
+.. |helpdesk| replace:: **Need help or have questions or just or need technical assistance,?** Contact the Help Desk:
+   `SKAO Help desk <https://www.skao.int/en/contact-us/>`__ · Slack `#helpdesk <https://mylink>`__
 """
+
 
 # -- General configuration ---------------------------------------------------
 extensions = [

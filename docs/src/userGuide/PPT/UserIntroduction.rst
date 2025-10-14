@@ -64,6 +64,10 @@ Common elements are recurring components found across multiple pages in the tool
    "Dynamic Help", "Always on the right side of the page. Hovering over fields provides contextual descriptions and guidance for elements across all pages."
 
 
+
+|helpdesk|
+
+
 .. admonition:: Please note
 
    This is an MVP version of PPT which offers a subset of the functionalities planned. At the moment, one can 
