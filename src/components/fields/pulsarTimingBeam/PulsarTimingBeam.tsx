@@ -227,11 +227,13 @@ export default function PulsarTimingBeamField({
         control={<Radio {...controlProps('noBeam')} color="default" />}
         label={t('pulsarTimingBeam.noBeam.label')}
         data-testid="NoBeamTestId"
+        onFocus={() => helpComponent(t('pulsarTimingBeam.noBeam.help'))}
       />
       <FormControlLabel
         control={<Radio {...controlProps('multipleBeams')} color="default" />}
         label={t('pulsarTimingBeam.multipleBeams.label')}
         data-testId={showBeamData ? 'MultipleBeamsTestIdEdit' : 'MultipleBeamsTestId'} // Differentiate test IDs for add/edit of target
+        onFocus={() => helpComponent(t('pulsarTimingBeam.multipleBeams.help'))}
       />
       {showGrid && (
         <div style={{ height: '100%', width: '100%' }}>
