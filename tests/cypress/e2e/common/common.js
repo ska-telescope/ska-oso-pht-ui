@@ -286,10 +286,14 @@ export const verifyUserMenuDecisions = exists => verifyUserMenu('menuItemReviewD
 export const pageConfirmed = label => cy.get('#pageTitle').contains(label);
 export const verifyOnLandingPage = () => verifyExists('addSubmissionButton');
 export const verifyNoBeamRadioButtonSelected = () => {
-  cy.get('[data-testid="NoBeamTestId"] input[type="radio"]').should('be.checked');
+  cy.get('[data-testid="NoBeamTestId"] input[type="radio"]')
+    .scrollIntoView()
+    .should('be.checked');
 };
 export const verifyMultipleBeamsRadioButtonSelected = () => {
-  cy.get('[data-testid="MultipleBeamsTestId"] input[type="radio"]').should('be.checked');
+  cy.get('[data-testid="MultipleBeamsTestId"] input[type="radio"]')
+    .scrollIntoView()
+    .should('be.checked');
 };
 export const verifyMultipleBeamsRadioButtonSelectedOnTargetEdit = () => {
   cy.get('[data-testid="MultipleBeamsTestIdEdit"] input[type="radio"]').should('be.checked');
@@ -327,6 +331,7 @@ export const clickEdit = () => {
   cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
     .children('div[role="row"]')
     .within(() => {
+      cy.get('[data-testId="EditRoundedIcon"]').should('be.visible');
       cy.get('[data-testId="EditRoundedIcon"]').click();
     });
 };
