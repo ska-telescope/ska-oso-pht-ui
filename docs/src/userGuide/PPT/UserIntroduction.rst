@@ -74,3 +74,6 @@ Common elements are recurring components found across multiple pages in the tool
      - Specify individual targets or upload a list of targets in ICRS.
      - Define observation sets.
      - Add Observatory data products (Currently under development, with full functionality coming soon.)
+
+
+|footer|

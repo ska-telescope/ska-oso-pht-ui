@@ -11,15 +11,14 @@ version = '7.0.0'
 release = '7.0.0'
 
 # -- General configuration ---------------------------------------------------
-rst_epilog = """
-.. raw:: html
+rst_prolog = """
+.. |footer| raw:: html
 
    <hr>
    <div class="doc-footer">
-     © 2025 Your Org Testing my big ideas Built with Sphinx
+     © 2025 Your Org
    </div>
 """
-
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
