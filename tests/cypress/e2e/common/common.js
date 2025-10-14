@@ -270,6 +270,9 @@ export const verifyUserMenuDecisions = exists => verifyUserMenu('menuItemReviewD
 
 export const pageConfirmed = label => cy.get('#pageTitle').contains(label);
 export const verifyOnLandingPage = () => verifyExists('addSubmissionButton');
+export const verifyNoBeamRadioButtonSelected = () => {
+  cy.get('[data-testid="NoBeamTestId"] input[type="radio"]').should('be.checked');
+};
 
 /*----------------------------------------------------------------------*/
 
@@ -291,7 +294,7 @@ export const verifyUserInvitedAlertFooter = () =>
 export const verifyTeamMemberAccessUpdatedAlertFooter = () =>
   verifyContent('timeAlertFooter', "Team member's access has been updated.");
 
-export const clickEditProposal = () => {
+export const clickEdit = () => {
   get('EditRoundedIcon')
     .eq(0)
     .click();
