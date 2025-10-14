@@ -178,7 +178,7 @@ export default function PulsarTimingBeamField({
         labelBold
         labelPosition={LAB_POSITION}
         labelWidth={LAB_WIDTH}
-        testId={'beamName'}
+        testId={showBeamData ? 'beamNameEdit' : 'beamName'} // Differentiate test IDs for add/edit of target
         setValue={setTheName}
         value={beamName}
         suffix={resolveBeamNameButton()}
@@ -231,7 +231,7 @@ export default function PulsarTimingBeamField({
       <FormControlLabel
         control={<Radio {...controlProps('multipleBeams')} color="default" />}
         label={t('pulsarTimingBeam.multipleBeams.label')}
-        data-testid="MultipleBeamsTestId"
+        data-testId={showBeamData ? 'MultipleBeamsTestIdEdit' : 'MultipleBeamsTestId'} // Differentiate test IDs for add/edit of target
       />
       {showGrid && (
         <div style={{ height: '100%', width: '100%' }}>

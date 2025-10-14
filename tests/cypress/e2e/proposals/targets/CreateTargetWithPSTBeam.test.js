@@ -15,7 +15,10 @@ import {
   verifyMultipleBeamsRadioButtonSelected,
   clickMultipleBeamsRadioButton,
   clickToAddPSTBeam,
-  mockResolveBeamAPI, addBeamUsingResolve, clickDialogConfirm, verifyBeamInTable
+  mockResolveBeamAPI,
+  addBeamUsingResolve,
+  clickDialogConfirm,
+  verifyBeamInTable
 } from '../../common/common';
 beforeEach(() => {
   initializeUserNotLoggedIn();
@@ -29,11 +32,11 @@ beforeEach(() => {
   cy.wait('@mockResolveTarget');
   clickMultipleBeamsRadioButton(); //Select Multiple beams
   verifyMultipleBeamsRadioButtonSelected(); //verify Multiple beams is selected
-  clickToAddPSTBeam()
+  clickToAddPSTBeam();
   addBeamUsingResolve();
   cy.wait('@mockResolveBeam');
-  clickDialogConfirm()
-  verifyBeamInTable() //confirm beam is in table before adding target
+  clickDialogConfirm();
+  verifyBeamInTable(); //confirm beam is in table before adding target
   clickToAddTarget();
 });
 
@@ -54,6 +57,6 @@ describe('Create Target with PST Beam', () => {
   it("Verify on target edit, with pst beam, 'Multiple Beams' remains selected", () => {
     clickEdit();
     verifyMultipleBeamsRadioButtonSelected(); //verify Multiple beams is selected
-    verifyBeamInTable() //confirm previously added beam is in table
+    verifyBeamInTable(); //confirm previously added beam is in table
   });
 });

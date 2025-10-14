@@ -12,12 +12,21 @@ import {
   verifySensCalcStatus,
   mockResolveTargetAPI,
   verifyNoBeamRadioButtonSelected,
-  clickEdit
+  clickEdit,
+  clickToAddPSTBeam,
+  clickDialogConfirm,
+  verifyBeamInTable,
+  addBeamUsingResolveOnTargetEdit,
+  clickMultipleBeamsRadioButtonOnTargetEdit,
+  verifyMultipleBeamsRadioButtonSelectedOnTargetEdit,
+  mockResolveBeamAPI,
+  clickConfirmButtonWithinPopup
 } from '../../common/common';
 beforeEach(() => {
   initializeUserNotLoggedIn();
   createMock();
   mockResolveTargetAPI();
+  mockResolveBeamAPI();
 
   //add target
   clickListOfTargets();
@@ -41,8 +50,21 @@ describe('Create Target with no PST Beam', () => {
     verifySensCalcStatus(); //verify sens calc status
   });
 
-  it("Verify on target edit, with no pst beam, 'No Beam' remains selected", () => {
+  it("Verify on target edit, 'No Beam' remains selected", () => {
     clickEdit();
     verifyNoBeamRadioButtonSelected(); //verify No beam is selected (default value)
+  });
+
+  it("Verify on target edit, when No Beam' is selected, a PST Beam can be added ", () => {
+    clickEdit();
+    verifyNoBeamRadioButtonSelected(); //verify No beam is selected (default value)
+    clickMultipleBeamsRadioButtonOnTargetEdit(); //Select Multiple beams
+    verifyMultipleBeamsRadioButtonSelectedOnTargetEdit(); //verify Multiple beams is selected
+    clickToAddPSTBeam();
+    addBeamUsingResolveOnTargetEdit();
+    cy.wait('@mockResolveBeam');
+    clickConfirmButtonWithinPopup(); // confirm adding beam in popup
+    verifyBeamInTable(); //confirm beam is in table before adding target
+    clickDialogConfirm();
   });
 });

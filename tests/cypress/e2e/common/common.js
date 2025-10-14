@@ -173,6 +173,8 @@ export const clickSendInviteButton = () => clickButton('sendInviteButton');
 export const clickToAddTarget = () => clickButton('addTargetButton');
 export const clickToAddPSTBeam = () => clickButton('addPulsarTimingBeamButton');
 export const clickMultipleBeamsRadioButton = () => clickButton('MultipleBeamsTestId');
+export const clickMultipleBeamsRadioButtonOnTargetEdit = () =>
+  clickButton('MultipleBeamsTestIdEdit');
 
 export const clickToConfirmProposalSubmission = () => clickButton('displayConfirmationButton');
 export const clickToNextPage = () => clickButton('nextButtonTestId');
@@ -288,6 +290,17 @@ export const verifyNoBeamRadioButtonSelected = () => {
 };
 export const verifyMultipleBeamsRadioButtonSelected = () => {
   cy.get('[data-testid="MultipleBeamsTestId"] input[type="radio"]').should('be.checked');
+};
+export const verifyMultipleBeamsRadioButtonSelectedOnTargetEdit = () => {
+  cy.get('[data-testid="MultipleBeamsTestIdEdit"] input[type="radio"]').should('be.checked');
+};
+
+export const clickConfirmButtonWithinPopup = () => {
+  cy.get('[role="dialog"]')
+    .eq(1)
+    .within(() => {
+      cy.get('[data-testid="dialogConfirmationButton"]').click();
+    });
 };
 
 /*----------------------------------------------------------------------*/
@@ -423,6 +436,12 @@ export const addM2TargetUsingResolve = () => {
 export const addBeamUsingResolve = () => {
   cy.get('[id="beamName"]').should('exist');
   cy.get('[id="beamName"]').type('PSR B0329+54');
+  clickResolveBeamButton();
+};
+
+export const addBeamUsingResolveOnTargetEdit = () => {
+  cy.get('[id="beamNameEdit"]').should('exist');
+  cy.get('[id="beamNameEdit"]').type('PSR B0329+54');
   clickResolveBeamButton();
 };
 export const verifyOnLandingPageFilterIsVisible = () => {
