@@ -1,24 +1,19 @@
 import React from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { Grid } from '@mui/system';
+import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import { Grid } from '@mui/material';
+import { validateCalibrationPage } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
-import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import Shell from '@/components/layout/Shell/Shell';
+import Shell from '../../components/layout/Shell/Shell';
+import Alert from '../../components/alerts/standardAlert/StandardAlert';
 
 const PAGE = 6;
 
 export default function CalibrationPage() {
-  const { t } = useScopedTranslation();
-  const {
-    application,
-    helpComponent,
-    updateAppContent1,
-    updateAppContent2
-  } = storageObject.useStore();
+  const { application, updateAppContent1 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
@@ -34,13 +29,33 @@ export default function CalibrationPage() {
   }, []);
 
   React.useEffect(() => {
-    setTheProposalState(1); // TODO
+    setValidateToggle(!validateToggle);
+  }, [getProposal()]);
+
+  React.useEffect(() => {
+    setTheProposalState(validateCalibrationPage());
   }, [validateToggle]);
 
   return (
     <Shell page={PAGE}>
-      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        Calibration Page - under construction
+      <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="center">
+        <Grid size={{ xs: 4 }}>
+          <Grid
+            p={1}
+            container
+            direction="column"
+            alignItems="space-evenly"
+            justifyContent="center"
+          >
+            <Grid>
+              <Alert
+                color={AlertColorTypes.Info}
+                text="This page is a placeholder for future enhancements"
+                testId="developmentPanelId"
+              />
+            </Grid>
+          </Grid>
+        </Grid>
       </Grid>
     </Shell>
   );

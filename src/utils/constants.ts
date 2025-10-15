@@ -260,7 +260,7 @@ export const SBS_CONV_FACTOR_DEFAULT = 1;
 
 export const INFINITY = 'Infinity';
 
-export const PAGE_SRC_NET = 8;
+export const PAGE_SRC_NET = 9;
 
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
 
