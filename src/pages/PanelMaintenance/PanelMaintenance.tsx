@@ -105,7 +105,7 @@ export const deleteProposalPanel = (
   setProposalPanels(filtered);
 };
 
-export default function PanelMaintenance() {
+export default function Panel Management() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const theme = useTheme();

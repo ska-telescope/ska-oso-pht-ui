@@ -155,7 +155,7 @@ export const clickCycleConfirm = () => clickButton('cycleConfirmationButton');
 export const clickUserMenu = () => clickButton('usernameMenu');
 export const clickObservationSetup = () => clickButton('addObservationButton');
 export const clickAddObservationEntry = () => clickButton('addObservationButtonEntry');
-export const clickPanelMaintenanceButton = () => clickButton('pmtBackButton');
+export const clickPanel ManagementButton = () => clickButton('pmtBackButton');
 export const clickResolveButton = () => clickButton('resolveButton');
 export const clickReviewOverviewButton = () => clickButton('overviewButtonTestId');
 export const clickSave = () => clickButton('saveBtn');
