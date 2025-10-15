@@ -22,7 +22,9 @@ import {
   verifyBeamInTableOnTargetEdit,
   verifyMultipleBeamsInTable,
   verifyMultipleBeamsInTargetTable,
-  verifyTargetWithBeamB0329InTable
+  verifyTargetWithBeamB0329InTargetTable,
+  clickFirstRowOfTargetTable,
+  verifyMultipleBeamsRadioButtonSelectedWithinPopup
 } from '../../common/common';
 beforeEach(() => {
   initializeUserNotLoggedIn();
@@ -59,9 +61,10 @@ describe('Create Target with PST Beam', () => {
 
   it("Verify on target edit, with pst beam, 'Multiple Beams' remains selected", () => {
     clickToAddTarget();
-    verifyTargetWithBeamB0329InTable();
+    verifyTargetWithBeamB0329InTargetTable();
+    clickFirstRowOfTargetTable();
     clickEdit();
-    verifyMultipleBeamsRadioButtonSelected(); //verify Multiple beams is selected
+    verifyMultipleBeamsRadioButtonSelectedWithinPopup(); //verify Multiple beams is selected
     verifyBeamInTableOnTargetEdit(); //confirm previously added beam is in table
   });
 

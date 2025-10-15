@@ -291,6 +291,10 @@ export const verifyNoBeamRadioButtonSelected = () => {
 export const verifyMultipleBeamsRadioButtonSelected = () => {
   cy.get('[data-testid="MultipleBeamsTestId"] input[type="radio"]').should('be.checked');
 };
+
+export const verifyMultipleBeamsRadioButtonSelectedWithinPopup = () => {
+  cy.get('[data-testid="MultipleBeamsTestIdEdit"] input[type="radio"]').should('be.checked');
+};
 export const verifyMultipleBeamsRadioButtonSelectedOnTargetEdit = () => {
   cy.get('[data-testid="MultipleBeamsTestIdEdit"] input[type="radio"]').should('be.checked');
 };
@@ -532,7 +536,7 @@ export const verifyTargetNoBeamInTable = () => {
     });
 };
 
-export const verifyTargetWithBeamB0329InTable = () => {
+export const verifyTargetWithBeamB0329InTargetTable = () => {
   cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
     .children('div[role="row"]')
     .eq(0)
@@ -545,6 +549,18 @@ export const verifyTargetWithBeamB0329InTable = () => {
         .find('[data-testid="EditRoundedIcon"]')
         .should('be.visible');
     });
+};
+
+export const clickFirstRowOfTargetTable = () => {
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .eq(0)
+    .within(() => {
+      cy.get('[data-field="actions"]')
+        .find('[data-testid="EditRoundedIcon"]')
+        .should('be.visible');
+    })
+    .click();
 };
 
 export const verifyBeamInTableOnTargetEdit = () => {
