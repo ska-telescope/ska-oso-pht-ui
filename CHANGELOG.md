@@ -10,7 +10,6 @@ UNRELEASED
 * Added: Pulsar timing beam functionality when creating/editing a target
 * Adds PMT to User Guide structure.
 * Added: Calibration page
-* Changed: ODA updated to v12.0.0
 
 7.0.0
 ----------
