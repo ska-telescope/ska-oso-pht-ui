@@ -389,26 +389,36 @@ export default function TargetEntry({
           justifyContent="flex-start"
           sx={{ margin: '0px 35px 15px 0px' }}
         >
-          <ExtendedStrikethroughLabelBehindText labelText="COORDINATE TYPE" />
+          <Grid mb={1} mt={2}>
+            <ExtendedStrikethroughLabelBehindText labelText="COORDINATE TYPE" />
+          </Grid>
           <Grid mb={1} mt={1}>
             {referenceCoordinatesField()}
           </Grid>
-          <ExtendedStrikethroughLabelBehindText labelText="COORDINATE" />
+          <Grid mb={1} mt={2}>
+            <ExtendedStrikethroughLabelBehindText labelText="COORDINATE" />
+          </Grid>
           <Grid>{nameField()}</Grid>
           <Grid>{skyDirection1Field()}</Grid>
           <Grid mb={1} mt={1}>
             {skyDirection2Field()}
           </Grid>
-          <ExtendedStrikethroughLabelBehindText labelText="PULSAR TIMING BEAM" />
+          <Grid mb={1} mt={2}>
+            <ExtendedStrikethroughLabelBehindText labelText="PULSAR TIMING BEAM" />
+          </Grid>
           <Grid mb={1} mt={1}>
             {pulsarTimingBeamField()}
           </Grid>
-          <ExtendedStrikethroughLabelBehindText labelText="RADIAL MOTION" />
+          <Grid mb={1} mt={2}>
+            <ExtendedStrikethroughLabelBehindText labelText="RADIAL MOTION" />
+          </Grid>
           <Grid>{velocityField()}</Grid>
           <Grid mb={1} mt={1}>
             {velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}
           </Grid>
-          <ExtendedStrikethroughLabelBehindText labelText="FIELD PATTERN" />
+          <Grid mb={1} mt={2}>
+            <ExtendedStrikethroughLabelBehindText labelText="FIELD PATTERN" />
+          </Grid>
           <Grid>{fieldPatternTypeField()}</Grid>
           <Grid mb={1} mt={1}>
             {!id && addButton()}
