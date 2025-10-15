@@ -40,3 +40,8 @@ The General Page has a clear structure:
    * VLBI
 - Abstract area: A text box for the proposal abstract (maximum of 250 words). This field accepts latex syntax, which can be previewed by clicking the |icoview| icon next to the abstract field.
 
+
+
+
+
+|helpdesk|

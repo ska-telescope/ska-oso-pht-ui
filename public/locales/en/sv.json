@@ -115,7 +115,7 @@
     "desc": {
       "4": "These projects require more than one Science Idea cycle to complete (e.g., long-term monitoring campaigns) but are too short in overall observing time, limited in observatory resources and/or scientific scope to qualify as a KSP."
     },
-    "help": "One or more of these optional attributes may be selected to further refine the Science Idea",
+    "help": "One or more of these optional attributes may be selected to further refine the Science Idea.",
     "title": {
       "2": "Joint SKA Science Idea"
     }
@@ -125,7 +125,7 @@
     "label": "Science Ideas"
   },
   "proposalType": {
-    "help": "Select from the options below the most appropriate type classification for the Science Idea. This can be changed later if needed, however be aware that this may affect information previously entered.",
+    "help": "Select from the options below the most appropriate type classification for the Science Idea. This can be changed later if needed, but be aware that this may affect information previously entered.",
     "all": "All Science Idea types"
   },
   "members": {

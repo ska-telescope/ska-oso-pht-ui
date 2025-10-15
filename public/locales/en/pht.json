@@ -470,10 +470,7 @@
     "label": "Observatory Data Product",
     "help": "Select the desired data product(s) by checking the boxes as appropriate.",
     "options": {
-      "1": "Image Products 1 : Image Cubes",
-      "2": "Image Products 2 : UV Grids",
-      "3": "LSM Catalogue",
-      "4": "Visibilities"
+      "1": "Continuum Image"
     }
   },
   "observationDetails": {
@@ -658,7 +655,7 @@
       "2": "Observing projects that require the allocation of significant observing time and resources, often over a period longer than a single observing cycle. Specific criteria that define a KSP will be described in each call for proposals.",
       "3": "Time allocated by the Director-General outside the normal process of assessment by the Time Allocation Committee (TAC)."
     },
-    "help": "Select from the options below the most appropriate type classification for the proposal. This can be changed later if needed, however be aware that this may affect information previously entered.",
+    "help": "Select from the options below the most appropriate type classification for the proposal. This can be changed later if needed, but be aware that this may affect information previously entered.",
     "label": "Type",
     "plural": "Types",
     "short": "Type",
@@ -1114,7 +1111,7 @@
     "0": "No tapering"
   },
   "targetImport": {
-    "help": "Upload a list of targets in .csv format in the reference system selected. Currently only Equatorial is available so define targets in ra: 'hh:mm:ss.s' and dec: 'dd:mm:ss.s' format."
+    "help": "Upload a list of targets in .csv format in the reference system selected. Currently only ICRS is available so define targets in ra: 'hh:mm:ss.s' and dec: 'dd:mm:ss.s' format. Example is .csv file with name, ra, dec. Fields with incomplete row entry and duplicate target names will be removed when uploaded."
   },
   "targetObservation": {
     "filters": "Filters",
