@@ -50,7 +50,7 @@ UNRELEASED
 * Changed: Allow "?" character in proposals titles
 * Changed: Updated usage of DefaultUser in endpoints where possible
 * Changed: Some screens made more resilient
-* Changed: Status added to the proposals on the Panel Maintenance
+* Changed: Status added to the proposals on the Panel Management
 * Removed: Old code related to conflicts
 
 5.0.0
@@ -86,7 +86,7 @@ UNRELEASED
 * Added a mocked connected user
 * Added a navigation menu
 * Added an Overview page
-* Added a Panel Maintenance page
+* Added a Panel Management page
 * Added a Proposal Review page
 * Added a Panel Decision page
 * Various improvements for to the CI/CD pipeline

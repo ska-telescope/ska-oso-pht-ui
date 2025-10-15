@@ -237,7 +237,8 @@ export default function PanelMaintenance() {
   return (
     <>
       <PageBannerPMT title={t('page.15.desc')} backBtn={backButton()} fwdBtn={fwdButton()} />
-      <Spacer size={BANNER_PMT_SPACER_MIN} axis={SPACER_VERTICAL} />
+      <Spacer size={BANNER_PMT_SPACER_MIN} axis={{ SPACER_VERTICAL }} />
+      <Spacer size={BANNER_PMT_SPACER_MIN} axis={{ SPACER_VERTICAL }} />
       <Grid
         container
         pr={2}

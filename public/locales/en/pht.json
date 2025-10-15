@@ -1310,10 +1310,10 @@
       "desc": "Edit an existing observation. Note that this will effect any existing Sensitivity calculations to linked Targets."
     },
     "15": {
-      "title": "Panel Maintenance",
-      "desc": "Panel maintenance",
+      "title": "Panel Management",
+      "desc": "Panel Management",
       "empty": "NO PANELS AVAILABLE",
-      "toolTip": "Panel Maintenance tooltip"
+      "toolTip": "Panel Management tooltip"
     },
     "next": "Next",
     "pageOf": "Page {{current}} of {{max}}",

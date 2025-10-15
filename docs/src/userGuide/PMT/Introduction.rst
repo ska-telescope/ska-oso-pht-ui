@@ -26,7 +26,7 @@ Key Information and Actions
 - Panel decision is made based on outcome from independent technical and science reviews.
 
 .. note::
-   This guide does **not** cover proposal authoring or submission. For that, see the :doc:`Title Page </userGuide/PPT/UserIntroduction>`.
+   This guide does **not** cover proposal submission. For that, see the :doc:`Proposal Preparation </userGuide/PPT/UserIntroduction>`.
 
 
 |helpdesk|
