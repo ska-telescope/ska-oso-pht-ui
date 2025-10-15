@@ -485,7 +485,7 @@ export default function ObservationPage() {
         minWidth: 150,
         disableClickEventBubbling: true,
         renderCell: (e: { row: any }) => {
-          return getSensCalcSingle(e.row.id, 'BeamSize');
+          return getSensCalcSingle(e.row.id, 'SynthBeamSize');
         }
       }
     ]
