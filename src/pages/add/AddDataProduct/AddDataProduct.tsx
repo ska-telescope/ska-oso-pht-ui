@@ -42,6 +42,9 @@ export default function AddDataProduct() {
   >([]);
   const [observationId, setObservationId] = React.useState('');
   const [dp1, setDP1] = React.useState(false);
+  const [dp2, setDP2] = React.useState(false);
+  const [dp3, setDP3] = React.useState(false);
+  const [dp4, setDP4] = React.useState(false);
   const [imageSizeValue, setImageSizeValue] = React.useState('0');
   const [imageSizeUnits, setImageSizeUnits] = React.useState(0);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
@@ -154,7 +157,12 @@ export default function AddDataProduct() {
         <Typography p={1} variant="h6">
           {t('observatoryDataProduct.label') + ' *'}
         </Typography>
-        <CardContent>{tickElement(1, dp1, setDP1)}</CardContent>
+        <CardContent>
+          {tickElement(1, dp1, setDP1)}
+          {tickElement(2, dp2, setDP2)}
+          {tickElement(3, dp3, setDP3)}
+          {tickElement(4, dp4, setDP4)}
+        </CardContent>
       </Card>
     );
   };
@@ -171,7 +179,10 @@ export default function AddDataProduct() {
         <Grid size={{ xs: LABEL_WIDTH }}>
           <Typography>{t('observatoryDataProduct.label') + ' *'}</Typography>
         </Grid>
-        <Grid size={{ xs: 12 - LABEL_WIDTH }}>{tickElement(1, dp1, setDP1)}</Grid>
+        <Grid size={{ xs: 12 - LABEL_WIDTH }}>{tickElement(1, dp1, setDP1)}
+          {tickElement(2, dp2, setDP2)}
+          {tickElement(3, dp3, setDP3)}
+          {tickElement(4, dp4, setDP4)}</Grid>
       </Grid>
     );
   };
