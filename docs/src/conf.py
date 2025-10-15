@@ -10,8 +10,14 @@ version = '7.0.0'
 # The full version, including alpha/beta/rc tags
 release = '7.0.0'
 
-# -- General configuration ---------------------------------------------------
 
+rst_prolog = r"""
+.. |helpdesk| replace:: **Have questions or need technical assistance?** Contact the Help Desk:
+   `SKAO Help desk <https://www.skao.int/en/contact-us/>`__ ·
+"""
+
+
+# -- General configuration ---------------------------------------------------
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
