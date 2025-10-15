@@ -159,9 +159,6 @@ export default function AddDataProduct() {
         </Typography>
         <CardContent>
           {tickElement(1, dp1, setDP1)}
-          {tickElement(2, dp2, setDP2)}
-          {tickElement(3, dp3, setDP3)}
-          {tickElement(4, dp4, setDP4)}
         </CardContent>
       </Card>
     );
@@ -181,9 +178,6 @@ export default function AddDataProduct() {
         </Grid>
         <Grid size={{ xs: 12 - LABEL_WIDTH }}>
           {tickElement(1, dp1, setDP1)}
-          {tickElement(2, dp2, setDP2)}
-          {tickElement(3, dp3, setDP3)}
-          {tickElement(4, dp4, setDP4)}
         </Grid>
       </Grid>
     );

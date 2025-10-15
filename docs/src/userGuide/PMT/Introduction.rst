@@ -15,10 +15,10 @@ Who this is for
 
 Key Information and Actions
 --------------------
-- **Panel Workflow**: create panel, auto-assign reviewers and proposals, update assignments.
-- **Review orchestration**: conflict mangement, submission status.
-- **Decisions**: finalize decisions, updates proposals with outcomes.
-- **Reporting**: view proposal review progress.
+- **Panel Workflow**: Create panel, auto-assign reviewers and proposals, update assignments.
+- **Review orchestration**: Conflict mangement, submission status.
+- **Decisions**: Finalize decisions, updates proposals with outcomes.
+- **Reporting**: View proposal review progress.
 
 
 
