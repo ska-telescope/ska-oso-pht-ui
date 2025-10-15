@@ -66,6 +66,7 @@ Common elements are recurring components found across multiple pages in the tool
 
 
 
+
 .. admonition:: Please note
 
    This is an MVP version of PPT which offers a subset of the functionalities planned. At the moment, one can 
@@ -74,3 +75,7 @@ Common elements are recurring components found across multiple pages in the tool
      - Specify individual targets or upload a list of targets in ICRS.
      - Define observation sets.
      - Add Observatory data products (Currently under development, with full functionality coming soon.)
+
+
+
+|helpdesk|
