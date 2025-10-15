@@ -21,6 +21,7 @@ Key Information and Actions
 ===========================
 
 
+
 .. _overview:
 .. figure:: /images/panelDecisionOpen.png
    :width: 95%
