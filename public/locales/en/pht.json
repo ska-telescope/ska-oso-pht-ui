@@ -1253,6 +1253,13 @@
       "pageError": "The OBSERVATION page is not complete"
     },
     "6": {
+      "status": "Calibration",
+      "title": "Calibration",
+      "titleShort": "Calibration",
+      "desc": "This page allows you to request and define Calibration strategies.",
+      "pageError": "The Calibration page is not complete"
+    },
+    "7": {
       "status": "Technical",
       "title": "Technical",
       "titleShort": "Technical",
@@ -1261,7 +1268,7 @@
       "pageError": "The TECHNICAL JUSTIFICATION page is not complete",
       "help": "This is help for the Technical Page"
     },
-    "7": {
+    "8": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL",
       "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL",
       "status": "Data Product",
@@ -1271,16 +1278,12 @@
       "desc": "This page allows you to request and define observatory data products for Observation(s).",
       "pageError": "The DATA PRODUCTS page is not complete"
     },
-    "8": {
+    "9": {
       "status": "SRCNet",
       "title": "SRCNet Resources",
       "titleShort": "SRCNet",
       "desc": "This page allows you to request and define SRCNet data products.",
       "pageError": "The SRCNet page is not complete"
-    },
-    "9": {
-      "title": "Title",
-      "desc": "Provide a title of your proposal. Proposal sub-types below are optional."
     },
     "10": {
       "title": "Observation Setup",
@@ -1314,6 +1317,12 @@
       "desc": "Panel maintenance",
       "empty": "NO PANELS AVAILABLE",
       "toolTip": "Panel Maintenance tooltip"
+    },
+    "16": {
+      "title": "Calibration",
+      "desc": "Calibration strategies",
+      "empty": "NO CALIBRATION STRATEGIES AVAILABLE",
+      "toolTip": "Calibration tooltip"
     },
     "next": "Next",
     "pageOf": "Page {{current}} of {{max}}",

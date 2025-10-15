@@ -2,14 +2,14 @@ import React from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Grid } from '@mui/material';
-import { validateSRCPage } from '../../utils/validation/validation';
+import { validateCalibrationPage } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 
-const PAGE = 9;
+const PAGE = 6;
 
-export default function SrcDataPage() {
+export default function CalibrationPage() {
   const { application, updateAppContent1 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
 
@@ -33,7 +33,7 @@ export default function SrcDataPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    setTheProposalState(validateSRCPage());
+    setTheProposalState(validateCalibrationPage());
   }, [validateToggle]);
 
   return (

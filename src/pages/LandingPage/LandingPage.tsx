@@ -154,9 +154,7 @@ export default function LandingPage() {
   }, [fetchList, loggedIn]);
 
   React.useEffect(() => {
-    if (!loggedIn && !cypressToken) {
-      updateAppContent2(mock);
-    } else {
+    if (loggedIn || cypressToken) {
       updateAppContent2({});
       setFetchList(!fetchList);
     }

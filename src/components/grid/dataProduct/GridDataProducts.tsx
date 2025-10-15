@@ -27,7 +27,7 @@ export default function GridDataProducts({
 }: GridDataProductsProps) {
   const { t } = useScopedTranslation();
 
-  const PAGE = 7;
+  const PAGE = 8;
   const hasObservations = () => (baseObservations?.length > 0 ? true : false);
   const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
 
