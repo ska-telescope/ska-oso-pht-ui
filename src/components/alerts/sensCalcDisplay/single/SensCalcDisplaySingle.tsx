@@ -72,10 +72,9 @@ export default function SensCalcDisplaySingle({
       )}
       {show && field !== 'icon' && (
         <div data-testid={`field-${field}`}>
-          {(isNatural || isCustom) && field === 'BeamSize'
+          {(isNatural || isCustom) && field === 'SynthBeamSize'
             ? PresentCustomResultValue()
-            : presentValue(FieldFetch(VALUE, field))}
-          {isCustom ? '' : presentUnits(FieldFetch(UNITS, field))}
+            : presentValue(FieldFetch(VALUE, field)) + ' ' + presentUnits(FieldFetch(UNITS, field))}
         </div>
       )}
       {show && field === 'icon' && openDialog && (
