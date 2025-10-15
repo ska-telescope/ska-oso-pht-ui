@@ -8,6 +8,7 @@ UNRELEASED
 ----------
 * Changed: Display of Add target tab on target page
 * Added: Pulsar timing beam functionality when creating/editing a target
+* Added: Calibration page
 
 7.0.0
 ----------
