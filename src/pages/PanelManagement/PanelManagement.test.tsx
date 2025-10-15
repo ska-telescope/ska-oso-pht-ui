@@ -3,12 +3,12 @@ import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { MockReviewersList } from '@services/axios/get/getReviewerList/mockReviewerList';
-import Panel Management, {
+import PanelManagement, {
   addProposalPanel,
   addReviewerPanel,
   deleteProposalPanel,
   deleteReviewerPanel
-} from './Panel Management';
+} from './PanelManagement';
 import { Panel } from '@/utils/types/panel';
 import MockProposalFrontendList from '@/services/axios/get/getProposalList/mockProposalFrontendList';
 import Proposal from '@/utils/types/proposal';
@@ -42,11 +42,11 @@ const mockedPanels: Panel[] = [
   }
 ];
 
-describe('<Panel Management />', () => {
+describe('<PanelManagement />', () => {
   test('renders correctly', () => {
     render(
       <StoreProvider>
-        <Panel Management />
+        <PanelManagement />
       </StoreProvider>
     );
   });

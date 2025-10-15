@@ -26,7 +26,7 @@ import TitlePage from '../TitlePage/TitlePage';
 import LandingPage from '../LandingPage/LandingPage';
 import ReviewListPage from '../ReviewListPage/ReviewListPage';
 import packageJson from '../../../package.json';
-import Panel Management from '../Panel Management/Panel Management';
+import PanelManagement from '../PanelManagement/PanelManagement';
 import ReviewDashboard from '../ReviewDashboard/ReviewDashboard';
 import PanelReviewDecisionList from '../PanelReviewDecisionList/PanelReviewDecisionList';
 import ReviewEntry from '../entry/ReviewEntry/ReviewEntry';
@@ -55,7 +55,7 @@ const ROUTES = [
   { path: PATH[1], element: <AddProposal /> },
   { path: PATH[2], element: <ObservationEntry /> },
   { path: PATH[3], element: <AddDataProduct /> },
-  { path: PMT[0], element: <Panel Management /> },
+  { path: PMT[0], element: <PanelManagement /> },
   { path: PMT[1], element: <ReviewListPage /> },
   { path: PMT[2], element: <ReviewDashboard /> },
   { path: PMT[3], element: null },
