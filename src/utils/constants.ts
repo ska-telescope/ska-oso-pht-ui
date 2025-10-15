@@ -152,7 +152,7 @@ export const DATA_PRODUCT = {
 };
 export const DEFAULT_HELP = ['', ' ', ''];
 
-export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5];
+export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
 export const ENTRY_HEIGHT = 40;
 
 export const FOOTER_HEIGHT = 20;
