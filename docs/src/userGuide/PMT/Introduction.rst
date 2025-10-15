@@ -1,5 +1,5 @@
 Introduction
-============
+~~~~~~~~~~~~
 
 
 The Proposal Management Tool covers **management of already-submitted proposals**. It assumes proposals
