@@ -1256,7 +1256,7 @@
       "status": "Calibration",
       "title": "Calibration",
       "titleShort": "Calibration",
-      "desc": "This page allows you to request and define Calibration straetegies.",
+      "desc": "This page allows you to request and define Calibration strategies.",
       "pageError": "The Calibration page is not complete"
     },
     "7": {
