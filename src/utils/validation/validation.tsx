@@ -68,6 +68,8 @@ export const validateSDPPage = (proposal: Proposal) => {
 
 export const validateSRCPage = () => STATUS_OK;
 
+export const validateCalibrationPage = () => STATUS_OK; // TODO : implement validation logic
+
 export const validateProposal = (proposal: Proposal) => {
   const results = [
     validateTitlePage(proposal),
@@ -76,6 +78,7 @@ export const validateProposal = (proposal: Proposal) => {
     validateSciencePage(proposal),
     validateTargetPage(proposal),
     validateObservationPage(proposal),
+    validateCalibrationPage(),
     validateTechnicalPage(proposal),
     validateSDPPage(proposal),
     validateSRCPage()
