@@ -15,12 +15,18 @@ The panel decison page view presents a collapsible card for each proposal as sho
 
    Landing page of the panel decision at proposal level.
 
+.. |ico1| image:: /images/good.png
+   :height: 4ex
+   :alt: Add proposal button
+
 
 
 Key Information and Actions
 ===========================
 - Click on the arrow on each card to display review and decision details as shown in :numref:`Figure %s <paneldecison2>`.
-- As a review chair, click on the -- to exclude a review from the overall score fo the proposal.
+- As a review chair, click on the |ico1| to exclude a review from the overall score for the proposal.
+- The score is the average of all the individual review ranks.
+- The rank is based on the score such that if a a proposal is 4.5 and another is 5, the 5 is ranked as 1.
 
 
 .. _paneldecison2:
