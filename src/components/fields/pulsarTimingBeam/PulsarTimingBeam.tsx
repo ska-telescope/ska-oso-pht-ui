@@ -211,7 +211,7 @@ export default function PulsarTimingBeamField({
 
   const alertPulsarTimingBeamsContent = () => {
     return (
-      <Grid container direction="column" alignItems="center" justifyContent="space-around">
+      <Grid container direction="column" alignItems="left" justifyContent="space-around">
         <Grid>{beamNameField()}</Grid>
         <Grid>{skyDirection1Field()}</Grid>
         <Grid>{skyDirection2Field()}</Grid>
