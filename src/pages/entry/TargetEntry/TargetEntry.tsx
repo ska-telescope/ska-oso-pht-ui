@@ -65,9 +65,6 @@ export default function TargetEntry({
   const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
   const [tiedArrayBeams, setTiedArrayBeams] = React.useState<TiedArrayBeams | null>(null);
   const [resetBeamArrayData, setResetBeamArrayData] = React.useState(false);
-
-  const LABEL_WIDTH = 6;
-
   const setTheName = (inValue: string) => {
     setName(inValue);
     if (setTarget) {
@@ -276,7 +273,7 @@ export default function TargetEntry({
   const referenceCoordinatesField = () =>
     wrapper(
       <ReferenceCoordinatesField
-        labelWidth={LABEL_WIDTH}
+        labelWidth={LAB_WIDTH}
         setValue={setReferenceCoordinates}
         value={referenceCoordinates.toUpperCase()}
       />
@@ -290,7 +287,7 @@ export default function TargetEntry({
           label={t('fieldPattern.label')}
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH}
+          labelWidth={LAB_WIDTH}
           onFocus={() => helpComponent(t('fieldPattern.help'))}
           testId="fieldPatternId"
           value={fieldPattern}
