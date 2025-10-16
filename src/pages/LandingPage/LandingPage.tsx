@@ -331,7 +331,9 @@ export default function LandingPage() {
   const addSubmissionButton = () => (
     <AddButton
       action={() => {
-        updateAppContent2(mock);
+        if (!loggedIn && !cypressToken) {
+          updateAppContent2(mock);
+        }
         setOpenCycleDialog(true);
       }}
       testId={'addSubmissionButton'}

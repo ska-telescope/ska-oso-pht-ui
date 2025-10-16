@@ -1,4 +1,4 @@
-import PublishIcon from '@mui/icons-material/Publish';
+import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import BaseButton from '../Base/Button';
 
 interface SubmitButtonProps {
@@ -22,7 +22,7 @@ export default function SubmitButton({
     <BaseButton
       action={action}
       disabled={disabled}
-      icon={<PublishIcon />}
+      icon={<SendOutlinedIcon />}
       primary={primary}
       testId={testId}
       title={title}
