@@ -5,7 +5,7 @@ import { TextEntry } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
 import PulsarTimingBeamField from '@components/fields/pulsarTimingBeam/PulsarTimingBeam.tsx';
-import ExtendedStrikethroughLabelBehindText from '@components/info/extendedStrikethroughLabelBehindText/ExtendedStrikethroughLabelBehindText.tsx';
+import GroupLabel from '@components/info/groupLabel/groupLabel.tsx';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import ResolveButton from '@/components/button/Resolve/Resolve';
@@ -65,9 +65,6 @@ export default function TargetEntry({
   const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
   const [tiedArrayBeams, setTiedArrayBeams] = React.useState<TiedArrayBeams | null>(null);
   const [resetBeamArrayData, setResetBeamArrayData] = React.useState(false);
-
-  const LABEL_WIDTH = 6;
-
   const setTheName = (inValue: string) => {
     setName(inValue);
     if (setTarget) {
@@ -276,7 +273,7 @@ export default function TargetEntry({
   const referenceCoordinatesField = () =>
     wrapper(
       <ReferenceCoordinatesField
-        labelWidth={LABEL_WIDTH}
+        labelWidth={LAB_WIDTH}
         setValue={setReferenceCoordinates}
         value={referenceCoordinates.toUpperCase()}
       />
@@ -290,7 +287,7 @@ export default function TargetEntry({
           label={t('fieldPattern.label')}
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH}
+          labelWidth={LAB_WIDTH}
           onFocus={() => helpComponent(t('fieldPattern.help'))}
           testId="fieldPatternId"
           value={fieldPattern}
@@ -389,26 +386,36 @@ export default function TargetEntry({
           justifyContent="flex-start"
           sx={{ margin: '0px 35px 15px 0px' }}
         >
-          <ExtendedStrikethroughLabelBehindText labelText="COORDINATE TYPE" />
+          <Grid mb={1} mt={2}>
+            <GroupLabel labelText={t('referenceCoordinates.label').toUpperCase()} />
+          </Grid>
           <Grid mb={1} mt={1}>
             {referenceCoordinatesField()}
           </Grid>
-          <ExtendedStrikethroughLabelBehindText labelText="COORDINATE" />
+          <Grid mb={1} mt={2}>
+            <GroupLabel labelText={t('coordinate.label').toUpperCase()} />
+          </Grid>
           <Grid>{nameField()}</Grid>
           <Grid>{skyDirection1Field()}</Grid>
           <Grid mb={1} mt={1}>
             {skyDirection2Field()}
           </Grid>
-          <ExtendedStrikethroughLabelBehindText labelText="PULSAR TIMING BEAM" />
+          <Grid mb={1} mt={2}>
+            <GroupLabel labelText={t('pulsarTimingBeam.groupLabel').toUpperCase()} />
+          </Grid>
           <Grid mb={1} mt={1}>
             {pulsarTimingBeamField()}
           </Grid>
-          <ExtendedStrikethroughLabelBehindText labelText="RADIAL MOTION" />
+          <Grid mb={1} mt={2}>
+            <GroupLabel labelText={t('radialMotion.label').toUpperCase()} />
+          </Grid>
           <Grid>{velocityField()}</Grid>
           <Grid mb={1} mt={1}>
             {velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}
           </Grid>
-          <ExtendedStrikethroughLabelBehindText labelText="FIELD PATTERN" />
+          <Grid mb={1} mt={2}>
+            <GroupLabel labelText={t('fieldPattern.groupLabel').toUpperCase()} />
+          </Grid>
           <Grid>{fieldPatternTypeField()}</Grid>
           <Grid mb={1} mt={1}>
             {!id && addButton()}
