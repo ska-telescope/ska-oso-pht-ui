@@ -183,7 +183,7 @@
       "desc": "This page allows users to provide the title and Science Idea category"
     },
     "1": {
-      "desc": "Principal investigators should ensure that co-investigators are registered through the SKAO portal. Co-investigators with pending status will be removed from the Science Idea during validation of a submitted Science Idea."
+      "desc": "Principal Investigators should ensure that co-investigators are registered through the SKAO portal. Co-investigators with pending status will be removed from the Science Idea during validation of a submitted Science Idea."
     },
     "2": {
       "desc": "This page allows the user to provide general information about the Science Idea."
@@ -205,7 +205,7 @@
       "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS SCIENCE IDEA"
     },
     "11": {
-      "desc": "Science Ideas where the user is listed as either principal investigator or co-investigator.",
+      "desc": "Science Ideas where the user is listed as either Principal Investigator or co-investigator.",
       "empty": "NO Science IdeaS AVAILABLE"
     },
     "noObservations": "NO OBSERVATION SETUP IS ASSOCIATED WITH THIS SCIENCE IDEA"
