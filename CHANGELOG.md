@@ -12,7 +12,7 @@ UNRELEASED
 * Added: PMT to User Guide structure.
 * Added: Calibration page
 * [BREAKING]: Changed: OSO-services : v8.0.0
-* [BREAKING]: Changed: ODA : v12.0.0
+* [BREAKING]: Changed: ODA : v12.0.1
 
 7.0.0
 ----------
