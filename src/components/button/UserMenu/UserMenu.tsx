@@ -105,7 +105,7 @@ export default function ButtonUserMenu({
         )}
         {isReviewer() && (
           <MenuItem data-testid="menuItemReviews" onClick={() => onMenuSelect(PMT[1])}>
-            {t('reviewProposalList.title')}
+            {t('reviewProposalList.short')}
           </MenuItem>
         )}
         {isReviewerChair() && (

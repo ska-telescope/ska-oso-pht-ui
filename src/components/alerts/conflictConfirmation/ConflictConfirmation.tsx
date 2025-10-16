@@ -128,7 +128,7 @@ export default function ConflictConfirmation({
   const pageDropdown = () => (
     <Grid p={5} container direction="row" alignItems="center" justifyContent="space-around">
       <Grid>
-        <Box minWidth={200}>
+        <Box minWidth={800}>
           <DropDown
             value={reason}
             label={t('conflict.label')}
@@ -158,8 +158,8 @@ export default function ConflictConfirmation({
   const headerContent = () => (
     <Grid>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid size={{ xs: 1 }}>{skaoIcon({ useSymbol: true })}</Grid>
-        <Grid size={{ xs: 7 }}>{title(t('page.9.title') + '  ', proposal?.title ?? '')}</Grid>
+        <Grid size={{ xs: 2 }}>{skaoIcon({ useSymbol: false })}</Grid>
+        <Grid size={{ xs: 6 }}>{title(t('page.9.title') + '  ', proposal?.title ?? '')}</Grid>
         <Grid size={{ xs: 4 }}>
           <Grid container direction="column" justifyContent="space-between" alignItems="right">
             <Grid>{details(t('page.12.short'), proposal?.cycle ?? '')}</Grid>

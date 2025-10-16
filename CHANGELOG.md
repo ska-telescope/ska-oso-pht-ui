@@ -15,7 +15,7 @@ UNRELEASED
 * Added: PMT to User Guide structure.
 * Added: Calibration page
 * [BREAKING]: Changed: OSO-services : v8.0.0
-* [BREAKING]: Changed: ODA : v12.0.0
+* [BREAKING]: Changed: ODA : v12.0.1
 * Added: End-to-End tests for target page, testing pulsar timing beam functionality
 * Changed: Target page documentation, includes updated screenshots
 

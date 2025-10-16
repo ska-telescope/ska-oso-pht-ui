@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, CardContent, Grid, Paper, Stack, Typography } from '@mui/material';
+import { Grid, Paper, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   DropDown,
@@ -23,7 +23,7 @@ import { LAB_POSITION } from '@/utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { presentUnits } from '@/utils/present/present';
 
-const BACK_PAGE = 7;
+const BACK_PAGE = 8;
 const PAGE = 13;
 const PAGE_PREFIX = 'SDP';
 const FIELD_OBS = 'observatoryDataProduct.options';
@@ -41,10 +41,7 @@ export default function AddDataProduct() {
     { label: string; value: string }[]
   >([]);
   const [observationId, setObservationId] = React.useState('');
-  const [dp1, setDP1] = React.useState(false);
-  const [dp2, setDP2] = React.useState(false);
-  const [dp3, setDP3] = React.useState(false);
-  const [dp4, setDP4] = React.useState(false);
+  const [dp1, setDP1] = React.useState(true);
   const [imageSizeValue, setImageSizeValue] = React.useState('0');
   const [imageSizeUnits, setImageSizeUnits] = React.useState(0);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
@@ -153,23 +150,9 @@ export default function AddDataProduct() {
 
   const dataProductsField = () => {
     return (
-      <Card>
-        <Typography p={1} variant="h6">
-          {t('observatoryDataProduct.label') + ' *'}
-        </Typography>
-        <CardContent>
-          {tickElement(1, dp1, setDP1)}
-          {tickElement(2, dp2, setDP2)}
-          {tickElement(3, dp3, setDP3)}
-          {tickElement(4, dp4, setDP4)}
-        </CardContent>
-      </Card>
-    );
-  };
-
-  const dataProductsFieldOld = () => {
-    return (
       <Grid
+        pl={1}
+        pt={3}
         container
         minWidth={800}
         direction="row"
@@ -179,12 +162,7 @@ export default function AddDataProduct() {
         <Grid size={{ xs: LABEL_WIDTH }}>
           <Typography>{t('observatoryDataProduct.label') + ' *'}</Typography>
         </Grid>
-        <Grid size={{ xs: 12 - LABEL_WIDTH }}>
-          {tickElement(1, dp1, setDP1)}
-          {tickElement(2, dp2, setDP2)}
-          {tickElement(3, dp3, setDP3)}
-          {tickElement(4, dp4, setDP4)}
-        </Grid>
+        <Grid size={{ xs: 12 - LABEL_WIDTH }}>{tickElement(1, dp1, setDP1)}</Grid>
       </Grid>
     );
   };
@@ -268,7 +246,7 @@ export default function AddDataProduct() {
 
   const pageFooter = () => {
     const enabled = () => {
-      const dp = dp1 || dp2 || dp3 || dp4;
+      const dp = dp1;
       return dp && pixelSizeValue > 0 && Number(imageSizeValue) > 0;
     };
 
@@ -282,7 +260,7 @@ export default function AddDataProduct() {
             0
           ) ?? 0;
       }
-      const observatoryDataProduct = [dp1, dp2, dp3, dp4];
+      const observatoryDataProduct = [dp1];
       const newDataProduct: DataProductSDP = {
         id: highestId + 1,
         dataProductsSDPId: `${PAGE_PREFIX}-${highestId + 1}`,
@@ -309,7 +287,7 @@ export default function AddDataProduct() {
 
     const buttonClicked = () => {
       addToProposal();
-      navigate(NAV[7]);
+      navigate(NAV[BACK_PAGE]);
     };
 
     return (
@@ -355,7 +333,7 @@ export default function AddDataProduct() {
         <Grid size={{ md: 11, lg: 4 }}>
           <Stack>
             {fieldWrapper(observationsField())}
-            {dataProductsFieldOld()}
+            {dataProductsField()}
             {fieldWrapper(imageSizeField())}
             {fieldWrapper(pixelSizeField())}
             {fieldWrapper(imageWeightingField())}
