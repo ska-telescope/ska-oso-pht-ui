@@ -7,9 +7,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 UNRELEASED
 ----------
 * Changed: Display of Add target tab on target page
+* Changed: Panel Maintenance to Panel Management.
 * Added: Pulsar timing beam functionality when creating/editing a target
-* Adds PMT to User Guide structure.
-* Changed Panel Maintenance to Panel Management.
+* Added: PMT to User Guide structure.
+* Added: Calibration page
+* [BREAKING]: Changed: OSO-services : v8.0.0
+* [BREAKING]: Changed: ODA : v12.0.0
 
 7.0.0
 ----------
@@ -34,14 +37,14 @@ UNRELEASED
 * Added: PI automatically retrieved from Proposal after creation following services updates
 * Fixed: fixed permission groups
 * Fixed: get proposal mapping handles incomplete proposal
-* Changed: Use the real endpoint for getUserByEmail indstead of mocked data
+* Changed: Use the real endpoint for getUserByEmail instead of mocked data
 * Added: type InvestigatorMSGraph
 * Removed: use of panel in review list page
 * Removed: use of panel in decision list page
 * Removed: metadata not sent to backend anymore
 * [BREAKING]: Changed: OSO-services : v7.0.0
 * Changed: ODA updated to v.11.8.0
-* Changed: Admin can view decison list and review list pages
+* Changed: Admin can view decision list and review list pages
 * Changed: Sensitivity Calculator updated to v11.3.0
 
 5.1.0
