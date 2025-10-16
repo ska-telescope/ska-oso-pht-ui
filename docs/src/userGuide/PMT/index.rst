@@ -9,5 +9,5 @@ Proposal Management Tool
    Introduction 
    PanelManagement
    reviews
-   PanelManagement
+   PanelDecision
    overview
