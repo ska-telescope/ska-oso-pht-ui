@@ -70,17 +70,7 @@ export default function RankEntryField({
   };
 
   return (
-    <Paper
-      elevation={2}
-      sx={{
-        p: theme.spacing(1),
-        borderRadius: theme.spacing(2),
-        backgroundColor: theme.palette.background.paper,
-        transition: theme.transitions.create(['background-color'], {
-          duration: theme.transitions.duration.standard
-        })
-      }}
-    >
+    <>
       {/* Visual feedback */}
       <Box textAlign="center">
         <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
@@ -265,6 +255,6 @@ export default function RankEntryField({
           </Box>
         </Paper>
       </Box>
-    </Paper>
+    </>
   );
 }

@@ -802,6 +802,7 @@
     "toolTip": "Review proposal"
   },
   "reviewProposalList": {
+    "short": "Panel Reviews",
     "title": "Review Proposals",
     "toolTip": "List of proposals for review",
     "disabled": "This function is not available"

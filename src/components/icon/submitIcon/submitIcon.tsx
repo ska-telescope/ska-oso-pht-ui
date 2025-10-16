@@ -1,4 +1,4 @@
-import PublishIcon from '@mui/icons-material/Publish';
+import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import Icon from '../icon/Icon';
 
 interface SubmitIconProps {
@@ -12,7 +12,7 @@ export default function SubmitIcon({ disabled = false, onClick, toolTip = '' }: 
     <Icon
       disabled={disabled}
       onClick={onClick}
-      icon={<PublishIcon />}
+      icon={<SendOutlinedIcon />}
       testId="submitIcon"
       toolTip={toolTip}
     />

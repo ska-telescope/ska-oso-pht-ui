@@ -30,6 +30,8 @@ export default function GridMembers({
 }: GridMembersProps) {
   const { t } = useScopedTranslation();
 
+  const isPI = ({ pi }: { pi: any }) => pi;
+
   const PIStar = ({ pi }: { pi: any }) => {
     if (pi) {
       return <StarIcon onClick={() => {}} />;
@@ -126,10 +128,14 @@ export default function GridMembers({
       flex: 1,
       minWidth: 120,
       disableClickEventBubbling: true,
-      renderCell: (params: any) => {
+      renderCell: (params: { row: { id: string; pi: string } }) => {
         return (
           <>
-            <TrashIcon onClick={trashClicked} toolTip={t('deleteTeamMember.toolTip')} />
+            <TrashIcon
+              disabled={isPI({ pi: params.row.pi })}
+              onClick={trashClicked}
+              toolTip={t('deleteTeamMember.toolTip')}
+            />
             {/* Only show lock icon if the member is registered with entra id */}
             {!params.row.id.includes('temp-') && (
               <LockIcon onClick={lockClicked} toolTip={t('manageTeamMember.toolTip')} />
