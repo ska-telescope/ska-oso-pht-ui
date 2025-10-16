@@ -11,7 +11,6 @@ import {
   initializeUserNotLoggedIn,
   verifySensCalcStatus,
   mockResolveTargetAPI,
-  clickEdit,
   verifyMultipleBeamsRadioButtonSelected,
   clickMultipleBeamsRadioButton,
   clickToAddPSTBeam,
@@ -24,7 +23,8 @@ import {
   verifyMultipleBeamsInTargetTable,
   verifyTargetWithBeamB0329InTargetTable,
   clickFirstRowOfTargetTable,
-  verifyMultipleBeamsRadioButtonSelectedWithinPopup
+  verifyMultipleBeamsRadioButtonSelectedWithinPopup,
+  tabToEditTarget
 } from '../../common/common';
 beforeEach(() => {
   initializeUserNotLoggedIn();
@@ -63,7 +63,7 @@ describe('Create Target with PST Beam', () => {
     clickToAddTarget();
     verifyTargetWithBeamB0329InTargetTable();
     clickFirstRowOfTargetTable();
-    clickEdit();
+    tabToEditTarget(); // use tab to click edit target from target table
     verifyMultipleBeamsRadioButtonSelectedWithinPopup(); //verify Multiple beams is selected
     verifyBeamInTableOnTargetEdit(); //confirm previously added beam is in table
   });

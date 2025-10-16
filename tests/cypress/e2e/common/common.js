@@ -331,6 +331,10 @@ export const clickEdit = () => {
   cy.get('[data-testId="EditRoundedIcon"]').should('be.visible');
   cy.get('[data-testId="EditRoundedIcon"]').click();
 };
+export const tabToEditTarget = () => {
+  cy.press('Tab');
+  cy.focused().click(); //click edit target
+};
 
 export const validateProposal = () => {
   clickToValidateProposal();
