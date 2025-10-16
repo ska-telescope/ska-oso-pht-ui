@@ -284,7 +284,7 @@
   "unavailable": "Unavailable",
   "firstName": {
     "label": "First Name",
-    "help": "First name of the principal investigator or co-investigator."
+    "help": "First name of the Principal Investigator or Co-Investigator."
   },
   "frequencyUnits": {
     "help": "Select the appropriate unit."
@@ -351,7 +351,7 @@
   },
   "lastName": {
     "label": "Last Name",
-    "help": "Last name of the Principal Investigator or co-investigator."
+    "help": "Last name of the Principal Investigator or Co-Investigator."
   },
   "listOfTargets": {
     "label": "List of Targets",
@@ -397,7 +397,7 @@
   },
   "pstBeam": {
     "label": "PST Beam",
-    "help": "Name of the PST Beam. If you want to automatically populate the coordinates then provide a name of a known object and use the resolve button to query SIMBAD first and NED if not found. However, you can provide an arbitrary beam/object name which can contain any character and enter the coordinate values."
+    "help": "Name of the PST Beam. If you want to automatically populate the coordinates, then provide a name of a known object and use the resolve button to query SIMBAD first and NED if not found. However, you can provide an arbitrary beam/object name which can contain any character and enter the coordinate values."
   },
   "notSelected": {
     "label": "Not Selected"
@@ -1224,7 +1224,7 @@
       "status": "Team",
       "title": "Team",
       "titleShort": "Team",
-      "desc": "Principal Investigators should ensure that co-investigators are registered through the SKAO portal. Co-investigators with pending status will be removed from the proposal during validation of a submitted proposal.",
+      "desc": "Principal Investigators should ensure that Co-Investigators are registered through the SKAO portal. Co-Investigators with pending status will be removed from the proposal during validation of a submitted proposal.",
       "pageError": "The TEAM page is not complete"
     },
     "2": {
@@ -1299,7 +1299,7 @@
     },
     "11": {
       "title": "Landing page",
-      "desc": "Proposals where the user is listed as either Principal Investigator or co-investigator.",
+      "desc": "Proposals where the user is listed as either Principal Investigator or Co-Investigator.",
       "empty": "NO PROPOSALS AVAILABLE"
     },
     "12": {
