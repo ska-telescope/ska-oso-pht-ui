@@ -1,13 +1,13 @@
 import React from 'react';
 import { Typography, Box } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 
 interface ExtendedStrikethroughLabelBehindTextProps {
   labelText: string;
 }
 
-const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelBehindTextProps> = ({
-  labelText
-}) => {
+const GroupLabel: React.FC<ExtendedStrikethroughLabelBehindTextProps> = ({ labelText }) => {
+  const theme = useTheme();
   return (
     <Box
       sx={{
@@ -28,7 +28,7 @@ const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelB
           left: 0,
           right: 'calc(100% - 50%)', // Balanced line
           height: '1px',
-          backgroundColor: 'black',
+          backgroundColor: theme.palette.primary.contrastText,
           transform: 'translateY(-50%)',
           zIndex: 1
         }}
@@ -42,7 +42,7 @@ const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelB
           left: 'calc(100% - 50%)', // Balanced line
           right: 0,
           height: '1px',
-          backgroundColor: 'black',
+          backgroundColor: theme.palette.primary.contrastText,
           transform: 'translateY(-50%)',
           zIndex: 1
         }}
@@ -57,7 +57,7 @@ const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelB
           transform: 'translateY(-50%)',
           width: '12px',
           height: '12px',
-          backgroundColor: 'black',
+          backgroundColor: theme.palette.primary.contrastText,
           borderRadius: '50%',
           zIndex: 2
         }}
@@ -72,7 +72,7 @@ const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelB
           transform: 'translateY(-50%)',
           width: '12px',
           height: '12px',
-          backgroundColor: 'black',
+          backgroundColor: theme.palette.primary.contrastText,
           borderRadius: '50%',
           zIndex: 2
         }}
@@ -84,7 +84,7 @@ const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelB
         sx={{
           px: 2,
           zIndex: 2,
-          backgroundColor: 'white',
+          backgroundColor: theme.palette.secondary.contrastText,
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',
@@ -97,4 +97,4 @@ const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelB
   );
 };
 
-export default ExtendedStrikethroughLabelBehindText;
+export default GroupLabel;
