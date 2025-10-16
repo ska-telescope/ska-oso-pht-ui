@@ -39,7 +39,7 @@ describe('Delegate Editing Rights', () => {
     clearLocalStorage();
   });
 
-  it('Delegate editing rights to a co-investigator', { jiraKey: 'XTP-89609' }, () => {
+  it('Delegate editing rights to a Co-Investigator', { jiraKey: 'XTP-89609' }, () => {
     entry('email', 'Trevor.Swain@community.skao.int');
     clickUserSearch();
     // cy.wait('@mockGetUserByEmailAPI'); // TODO see if this is needed
