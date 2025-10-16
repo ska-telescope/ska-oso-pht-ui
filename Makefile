@@ -50,12 +50,24 @@ XRAY_EXECUTION_CONFIG_FILE ?= tests/xray-config.json
 # CI_ENVIRONMENT_SLUG should only be defined when running on the CI/CD pipeline, so these variables are set for a local deployment
 # Set cluster_domain to minikube default (cluster.local) in local development
 ifeq ($(CI_ENVIRONMENT_SLUG),)
+OSO_SERVICES_URL=http://`minikube ip`/$(KUBE_NAMESPACE)/oso/api/v$(MAJOR_VERSION)
+SGCLUSTER = oda
+SGCLUSTER_NAMESPACE = oda
+
 K8S_CHART_PARAMS += \
   --set global.cluster_domain="cluster.local" \
+  --set ska-oso-services.rest.image.tag=$(VERSION) \
   --set ska-db-oda-umbrella.vault.enabled=false \
   --set ska-oso-services.vault.enabled=false \
-  --set ska-oso-pht-ui.vault.enabled=false
+  --set global.oda.postgres.secret.vault.enabled=false \
+  --set global.oda.postgres.cluster=$(SGCLUSTER) \
+  --set global.oda.postgres.clusterNamespace=$(SGCLUSTER_NAMESPACE)
 endif
+
+PGDATABASE ?= $(subst -,_,$(KUBE_NAMESPACE))
+PGUSER = $(PGDATABASE)_admin
+K8S_CHART_PARAMS += --set global.oda.postgres.database=$(PGDATABASE) \
+	--set global.oda.postgres.user=$(PGUSER)
 
 
 # For the test, dev and integration environment, use the freshly built image in the GitLab registry
