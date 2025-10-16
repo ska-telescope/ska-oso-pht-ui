@@ -164,7 +164,7 @@ export const clickCycleConfirm = () => clickButton('cycleConfirmationButton');
 export const clickUserMenu = () => clickButton('usernameMenu');
 export const clickObservationSetup = () => clickButton('addObservationButton');
 export const clickAddObservationEntry = () => clickButton('addObservationButtonEntry');
-export const clickPanelMaintenanceButton = () => clickButton('pmtBackButton');
+export const clickPanelManagementButton = () => clickButton('pmtBackButton');
 export const clickResolveButton = () => clickButton('resolveButton');
 export const clickResolveBeamButton = () => clickButton('resolveBeamButton');
 export const clickReviewOverviewButton = () => clickButton('overviewButtonTestId');
@@ -248,7 +248,7 @@ export const clickUserMenuOverview = () => clickSignINBtns('menuItemOverview', '
 export const clickUserMenuProposals = () => clickSignINBtns('menuItemProposals', '');
 export const clickUserMenuVerification = () => clickSignINBtns('menuItemVerification', '');
 export const clickUserMenuPanels = () =>
-  clickSignINBtns('menuItemPanelSummary', 'PANEL MAINTENANCE');
+  clickSignINBtns('menuItemPanelSummary', 'PANEL MANAGEMENT');
 export const clickUserMenuReviews = () => clickSignINBtns('menuItemReviews', 'REVIEW PROPOSALS');
 export const clickUserMenuDecisions = () =>
   clickSignINBtns('menuItemReviewDecisions', 'REVIEW DECISIONS');

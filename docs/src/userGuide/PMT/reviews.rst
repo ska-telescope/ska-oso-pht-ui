@@ -1,5 +1,5 @@
 Review
-======
+~~~~~~~
 
 This page displays reviews assigned assigned based on the signed-in user. If the user has no proposals assigned to them then this page will be empty.
 Where the reviewers are added to a panel and proposals assigned to that panel, then the user can see those proposals and based on if
@@ -27,7 +27,7 @@ they are science or technical reviewers then they can either review the technica
 
 
 Key Information and Actions
-===========================
+---------------------------
 
 -  Conflict declaration
 -  View and review Proposal

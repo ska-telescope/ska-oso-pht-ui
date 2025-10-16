@@ -10,6 +10,7 @@ UNRELEASED
 * Added: Pulsar timing beam functionality when creating/editing a target
 * Adds PMT to User Guide structure.
 * Added: Calibration page
+* Changed Panel Maintenance to Panel Management.
 * Added: End-to-End tests for target page, testing pulsar timing beam functionality
 * Changed: Target page documentation, includes updated screenshots
 
