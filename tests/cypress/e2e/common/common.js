@@ -128,6 +128,15 @@ export const mockResolveTargetAPI = () => {
   });
 };
 
+export const mockResolveBeamAPI = () => {
+  cy.fixture('beam.json').then(beam => {
+    cy.intercept('GET', '**/coordinates/PSR%20B0329+54/equatorial', {
+      statusCode: 200,
+      body: beam
+    }).as('mockResolveBeam');
+  });
+};
+
 /*----------------------------------------------------------------------*/
 
 export const verify = testId => {
@@ -157,10 +166,16 @@ export const clickObservationSetup = () => clickButton('addObservationButton');
 export const clickAddObservationEntry = () => clickButton('addObservationButtonEntry');
 export const clickPanelManagementButton = () => clickButton('pmtBackButton');
 export const clickResolveButton = () => clickButton('resolveButton');
+export const clickResolveBeamButton = () => clickButton('resolveBeamButton');
 export const clickReviewOverviewButton = () => clickButton('overviewButtonTestId');
 export const clickSave = () => clickButton('saveBtn');
 export const clickSendInviteButton = () => clickButton('sendInviteButton');
 export const clickToAddTarget = () => clickButton('addTargetButton');
+export const clickToAddPSTBeam = () => clickButton('addPulsarTimingBeamButton');
+export const clickMultipleBeamsRadioButton = () => clickButton('MultipleBeamsTestId');
+export const clickMultipleBeamsRadioButtonOnTargetEdit = () =>
+  clickButton('MultipleBeamsTestIdEdit');
+
 export const clickToConfirmProposalSubmission = () => clickButton('displayConfirmationButton');
 export const clickToNextPage = () => clickButton('nextButtonTestId');
 export const clickToPreviousPage = () => clickButton('prevButtonTestId');
@@ -270,6 +285,27 @@ export const verifyUserMenuDecisions = exists => verifyUserMenu('menuItemReviewD
 
 export const pageConfirmed = label => cy.get('#pageTitle').contains(label);
 export const verifyOnLandingPage = () => verifyExists('addSubmissionButton');
+export const verifyNoBeamRadioButtonSelected = () => {
+  cy.get('[data-testid="NoBeamTestId"] input[type="radio"]').should('be.checked');
+};
+export const verifyMultipleBeamsRadioButtonSelected = () => {
+  cy.get('[data-testid="MultipleBeamsTestId"] input[type="radio"]').should('be.checked');
+};
+
+export const verifyMultipleBeamsRadioButtonSelectedWithinPopup = () => {
+  cy.get('[data-testid="MultipleBeamsTestIdEdit"] input[type="radio"]').should('be.checked');
+};
+export const verifyMultipleBeamsRadioButtonSelectedOnTargetEdit = () => {
+  cy.get('[data-testid="MultipleBeamsTestIdEdit"] input[type="radio"]').should('be.checked');
+};
+
+export const clickConfirmButtonWithinPopup = () => {
+  cy.get('[role="dialog"]')
+    .eq(1)
+    .within(() => {
+      cy.get('[data-testid="dialogConfirmationButton"]').click();
+    });
+};
 
 /*----------------------------------------------------------------------*/
 
@@ -291,10 +327,13 @@ export const verifyUserInvitedAlertFooter = () =>
 export const verifyTeamMemberAccessUpdatedAlertFooter = () =>
   verifyContent('timeAlertFooter', "Team member's access has been updated.");
 
-export const clickEditProposal = () => {
-  get('EditRoundedIcon')
-    .eq(0)
-    .click();
+export const clickEdit = () => {
+  cy.get('[data-testId="EditRoundedIcon"]').should('be.visible');
+  cy.get('[data-testId="EditRoundedIcon"]').click();
+};
+export const tabToEditTarget = () => {
+  cy.press('Tab');
+  cy.focused().click(); //click edit target
 };
 
 export const validateProposal = () => {
@@ -400,6 +439,18 @@ export const addM2TargetUsingResolve = () => {
   cy.get('[id="name"]').type('M2');
   clickResolveButton();
 };
+
+export const addBeamUsingResolve = beamName => {
+  cy.get('[id="beamName"]').should('exist');
+  cy.get('[id="beamName"]').type(beamName);
+  clickResolveBeamButton();
+};
+
+export const addBeamUsingResolveOnTargetEdit = () => {
+  cy.get('[id="beamNameEdit"]').should('exist');
+  cy.get('[id="beamNameEdit"]').type('PSR B0329+54');
+  clickResolveBeamButton();
+};
 export const verifyOnLandingPageFilterIsVisible = () => {
   cy.get('[data-testid="proposalType"]').should('exist');
   cy.get('[data-testid="proposalType"]').realClick();
@@ -431,6 +482,93 @@ export const clickObservationFromTable = () => {
 };
 export const clickToLinkTargetAndObservation = () => {
   cy.get('[data-testid="linkedTickBox"]').click({ multiple: true });
+};
+
+export const verifyBeamInTable = () => {
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .within(() => {
+      cy.get('[data-field="raStr"]').should('contain', '03:32:59.3371');
+      cy.get('[data-field="decStr"]').should('contain', '+54:34:45.028');
+      cy.get('[data-field="beamName"]').should('contain', 'PSR B0329+54');
+    });
+};
+
+export const verifyMultipleBeamsInTable = () => {
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .eq(0)
+    .within(() => {
+      cy.get('[data-field="raStr"]').should('contain', '03:32:59.3371');
+      cy.get('[data-field="decStr"]').should('contain', '+54:34:45.028');
+      cy.get('[data-field="beamName"]').should('contain', 'PSR B0329+54');
+    });
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .eq(1)
+    .within(() => {
+      cy.get('[data-field="raStr"]').should('contain', '21:33:27.0200');
+      cy.get('[data-field="decStr"]').should('contain', '-00:49:23.700');
+      cy.get('[data-field="beamName"]').should('contain', 'M2');
+    });
+};
+
+export const verifyMultipleBeamsInTargetTable = () => {
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .eq(0)
+    .within(() => {
+      cy.get('[data-field="name"]').should('contain', 'M2');
+      cy.get('[data-field="raStr"]').should('contain', '21:33:27.0200');
+      cy.get('[data-field="decStr"]').should('contain', '-00:49:23.700');
+      cy.get('[data-field="beamName"]').should('contain', 'PSR B0329+54, M2');
+    });
+};
+
+export const verifyTargetNoBeamInTable = () => {
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .eq(0)
+    .within(() => {
+      cy.get('[data-field="name"]').should('contain', 'M2');
+      cy.get('[data-field="raStr"]').should('contain', '21:33:27.0200');
+      cy.get('[data-field="decStr"]').should('contain', '-00:49:23.700');
+      cy.get('[data-field="beamName"]').should('contain', '');
+      cy.get('[data-field="actions"]').should('be.visible');
+    });
+};
+
+export const verifyTargetWithBeamB0329InTargetTable = () => {
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .eq(0)
+    .within(() => {
+      cy.get('[data-field="name"]').should('contain', 'M2');
+      cy.get('[data-field="raStr"]').should('contain', '21:33:27.0200');
+      cy.get('[data-field="decStr"]').should('contain', '-00:49:23.700');
+      cy.get('[data-field="beamName"]').should('contain', 'PSR B0329+54');
+      cy.get('[data-field="actions"]').should('be.visible');
+    });
+};
+
+export const clickFirstRowOfTargetTable = () => {
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .eq(0)
+    .within(() => {
+      cy.get('[data-field="actions"]').should('be.visible');
+    })
+    .click();
+};
+
+export const verifyBeamInTableOnTargetEdit = () => {
+  cy.get('[role="dialog"]').within(() => {
+    cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+      .children('div[role="row"]')
+      .should('contain', 'PSR B0329+54')
+      .should('contain', '03:32:59.3371')
+      .should('contain', '+54:34:45.028');
+  });
 };
 
 const clickToValidateProposal = () => {

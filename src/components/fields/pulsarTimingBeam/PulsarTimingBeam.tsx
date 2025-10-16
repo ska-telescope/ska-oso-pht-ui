@@ -131,17 +131,22 @@ export default function PulsarTimingBeamField({
         },
         stnWeights: []
       };
-      setAllBeams(prevBeams => {
-        const updatedBeams = [...prevBeams];
-        updatedBeams.push(newBeam);
-        return updatedBeams;
-      });
-      setBeamName('');
-      setBeamRA('');
-      setBeamDec('');
+
+      if (allBeams.some(beam => beam.beamName.toLowerCase() === beamName.toLowerCase())) {
+        setNameFieldError(t('addTarget.error'));
+      } else {
+        setAllBeams(prevBeams => {
+          const updatedBeams = [...prevBeams];
+          updatedBeams.push(newBeam);
+          return updatedBeams;
+        });
+        setBeamName('');
+        setBeamRA('');
+        setBeamDec('');
+        closeDialog();
+        setShowGrid(true);
+      }
     }
-    closeDialog();
-    setShowGrid(true);
   };
 
   const resolveBeamNameButton = () => {
@@ -165,7 +170,7 @@ export default function PulsarTimingBeamField({
       <ResolveButton
         action={() => getCoordinates()}
         disabled={!beamName}
-        testId={'resolveButton'}
+        testId={'resolveBeamButton'}
       />
     );
   };
@@ -178,7 +183,7 @@ export default function PulsarTimingBeamField({
         labelBold
         labelPosition={LAB_POSITION}
         labelWidth={LAB_WIDTH}
-        testId={'beamName'}
+        testId={showBeamData ? 'beamNameEdit' : 'beamName'} // Differentiate test IDs for add/edit of target
         setValue={setTheName}
         value={beamName}
         suffix={resolveBeamNameButton()}
@@ -211,7 +216,7 @@ export default function PulsarTimingBeamField({
 
   const alertPulsarTimingBeamsContent = () => {
     return (
-      <Grid container direction="column" alignItems="center" justifyContent="space-around">
+      <Grid container direction="column" alignItems="left" justifyContent="space-around">
         <Grid>{beamNameField()}</Grid>
         <Grid>{skyDirection1Field()}</Grid>
         <Grid>{skyDirection2Field()}</Grid>
@@ -227,18 +232,20 @@ export default function PulsarTimingBeamField({
         control={<Radio {...controlProps('noBeam')} color="default" />}
         label={t('pulsarTimingBeam.noBeam.label')}
         data-testid="NoBeamTestId"
+        onFocus={() => helpComponent(t('pulsarTimingBeam.noBeam.help'))}
       />
       <FormControlLabel
         control={<Radio {...controlProps('multipleBeams')} color="default" />}
         label={t('pulsarTimingBeam.multipleBeams.label')}
-        data-testid="MultipleBeamsTestId"
+        data-testId={showBeamData ? 'MultipleBeamsTestIdEdit' : 'MultipleBeamsTestId'} // Differentiate test IDs for add/edit of target
+        onFocus={() => helpComponent(t('pulsarTimingBeam.multipleBeams.help'))}
       />
-      {showGrid && (
+      {selectedValue !== 'noBeam' && showGrid && (
         <div style={{ height: '100%', width: '100%' }}>
           <DataGrid
             rows={allBeams}
             columns={getColumns()}
-            height={allBeams.length * 60 + 100}
+            height={Math.max(allBeams.length * 60 + 100, 2 * 60 + 100)}
             testId="pulsarTimingBeamColumns"
           />
         </div>
