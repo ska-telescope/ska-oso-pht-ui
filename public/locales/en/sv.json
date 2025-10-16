@@ -195,14 +195,14 @@
       "desc": "Select a category to associate target(s) with this Science Idea."
     },
     "6": {
-      "desc": "Upload a Technical justification for this Science Idea in a portable document format (pdf)."
+      "desc": "Confirm a calibration strategy for this Science Idea."
     },
     "7": {
+      "desc": "Upload a Technical justification for this Science Idea in a portable document format (pdf)."
+    },
+    "8": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS SCIENCE IDEA",
       "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS SCIENCE IDEA"
-    },
-    "9": {
-      "desc": "Provide a title of your Science Idea. Science Idea sub-types below are optional."
     },
     "11": {
       "desc": "Science Ideas where the user is listed as either principal investigator or co-investigator.",
