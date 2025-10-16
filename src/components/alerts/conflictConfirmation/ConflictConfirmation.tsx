@@ -1,5 +1,5 @@
 import Dialog from '@mui/material/Dialog';
-import { Box, DialogActions, DialogContent, Grid, Typography } from '@mui/material';
+import { Box, DialogContent, Grid, Typography } from '@mui/material';
 import { AlertColorTypes, DropDown } from '@ska-telescope/ska-gui-components';
 import { useTheme } from '@mui/material/styles';
 import { presentLatex, trimText } from '@utils/present/present';
@@ -113,41 +113,32 @@ export default function ConflictConfirmation({
     return CONFLICT_REASONS.map(e => ({ label: t('conflict.reason.' + e), value: e }));
   };
 
-  const buttonLeft = () => (
-    <Grid
-      container
-      spacing={1}
-      direction="row"
-      alignItems="center"
-      justifyContent="flex-end"
-      pr={2}
-    >
-      <Grid>
-        <CancelButton action={handleCancel} testId="cancelButtonTestId" />
-      </Grid>
-    </Grid>
-  );
+  const buttonLeft = () => <CancelButton action={handleCancel} testId="cancelButtonTestId" />;
 
   const buttonRight = () => (
-    <Grid
-      container
-      spacing={1}
-      direction="row"
-      alignItems="center"
-      justifyContent="flex-start"
-      pr={2}
-    >
-      {onConfirmLabel && (
-        <Grid>
-          <ConfirmButton
-            action={handleConfirm}
-            primary
-            testId="displayConfirmationButton"
-            title={onConfirmLabel}
-            toolTip={onConfirmToolTip}
+    <ConfirmButton
+      action={handleConfirm}
+      primary
+      testId="displayConfirmationButton"
+      title={onConfirmLabel}
+      toolTip={onConfirmToolTip}
+    />
+  );
+
+  const pageDropdown = () => (
+    <Grid p={5} container direction="row" alignItems="center" justifyContent="space-around">
+      <Grid>
+        <Box minWidth={200}>
+          <DropDown
+            value={reason}
+            label={t('conflict.label')}
+            options={getOptions()}
+            required
+            setValue={setReason}
+            testId={'conflictConfirmationGroupDropDown'}
           />
-        </Grid>
-      )}
+        </Box>
+      </Grid>
     </Grid>
   );
 
@@ -159,27 +150,8 @@ export default function ConflictConfirmation({
       justifyContent="space-between"
       sx={{ width: '100%' }}
     >
-      <Grid>
-        <Grid container direction="row" alignItems="center" justifyContent="flex-start">
-          <Grid>{buttonLeft()}</Grid>
-        </Grid>
-      </Grid>
-      <Grid size={{ xs: 8 }}>
-        <DropDown
-          value={reason}
-          label={t('conflict.label')}
-          options={getOptions()}
-          required
-          setValue={setReason}
-          testId={'conflictConfirmationGroupDropDown'}
-          sx={{ minWidth: 500 }}
-        />
-      </Grid>
-      <Grid>
-        <Grid container direction="row" alignItems="center" justifyContent="flex-end">
-          <Grid>{buttonRight()}</Grid>
-        </Grid>
-      </Grid>
+      <Grid>{buttonLeft()}</Grid>
+      <Grid>{buttonRight()}</Grid>
     </Grid>
   );
 
@@ -242,10 +214,12 @@ export default function ConflictConfirmation({
             {headerContent()}
             {sectionTitle()}
             {investigatorsContentGrid()}
+            {sectionTitle()}
+            {pageDropdown()}
+            {pageFooter()}
           </Grid>
         </DialogContent>
       )}
-      <DialogActions sx={{ padding: 5 }}>{pageFooter()}</DialogActions>
     </Dialog>
   );
 }
