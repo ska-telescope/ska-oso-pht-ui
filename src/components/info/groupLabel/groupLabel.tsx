@@ -5,9 +5,7 @@ interface ExtendedStrikethroughLabelBehindTextProps {
   labelText: string;
 }
 
-const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelBehindTextProps> = ({
-  labelText
-}) => {
+const GroupLabel: React.FC<ExtendedStrikethroughLabelBehindTextProps> = ({ labelText }) => {
   return (
     <Box
       sx={{
@@ -97,4 +95,4 @@ const ExtendedStrikethroughLabelBehindText: React.FC<ExtendedStrikethroughLabelB
   );
 };
 
-export default ExtendedStrikethroughLabelBehindText;
+export default GroupLabel;

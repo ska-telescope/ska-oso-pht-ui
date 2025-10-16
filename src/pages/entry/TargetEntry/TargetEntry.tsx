@@ -5,7 +5,7 @@ import { TextEntry } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
 import PulsarTimingBeamField from '@components/fields/pulsarTimingBeam/PulsarTimingBeam.tsx';
-import ExtendedStrikethroughLabelBehindText from '@components/info/extendedStrikethroughLabelBehindText/ExtendedStrikethroughLabelBehindText.tsx';
+import GroupLabel from '@components/info/groupLabel/groupLabel.tsx';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import ResolveButton from '@/components/button/Resolve/Resolve';
@@ -387,15 +387,13 @@ export default function TargetEntry({
           sx={{ margin: '0px 35px 15px 0px' }}
         >
           <Grid mb={1} mt={2}>
-            <ExtendedStrikethroughLabelBehindText
-              labelText={t('referenceCoordinates.label').toUpperCase()}
-            />
+            <GroupLabel labelText={t('referenceCoordinates.label').toUpperCase()} />
           </Grid>
           <Grid mb={1} mt={1}>
             {referenceCoordinatesField()}
           </Grid>
           <Grid mb={1} mt={2}>
-            <ExtendedStrikethroughLabelBehindText labelText={t('coordinate.label').toUpperCase()} />
+            <GroupLabel labelText={t('coordinate.label').toUpperCase()} />
           </Grid>
           <Grid>{nameField()}</Grid>
           <Grid>{skyDirection1Field()}</Grid>
@@ -403,26 +401,20 @@ export default function TargetEntry({
             {skyDirection2Field()}
           </Grid>
           <Grid mb={1} mt={2}>
-            <ExtendedStrikethroughLabelBehindText
-              labelText={t('pulsarTimingBeam.groupLabel').toUpperCase()}
-            />
+            <GroupLabel labelText={t('pulsarTimingBeam.groupLabel').toUpperCase()} />
           </Grid>
           <Grid mb={1} mt={1}>
             {pulsarTimingBeamField()}
           </Grid>
           <Grid mb={1} mt={2}>
-            <ExtendedStrikethroughLabelBehindText
-              labelText={t('radialMotion.label').toUpperCase()}
-            />
+            <GroupLabel labelText={t('radialMotion.label').toUpperCase()} />
           </Grid>
           <Grid>{velocityField()}</Grid>
           <Grid mb={1} mt={1}>
             {velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}
           </Grid>
           <Grid mb={1} mt={2}>
-            <ExtendedStrikethroughLabelBehindText
-              labelText={t('fieldPattern.groupLabel').toUpperCase()}
-            />
+            <GroupLabel labelText={t('fieldPattern.groupLabel').toUpperCase()} />
           </Grid>
           <Grid>{fieldPatternTypeField()}</Grid>
           <Grid mb={1} mt={1}>
