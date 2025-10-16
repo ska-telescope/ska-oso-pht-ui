@@ -152,7 +152,7 @@ export default function GridObservationSummary({
 
   const colSensCalcBandwidth = {
     field: 'bandwidth',
-    renderHeader: () => headerDisplay('page.7.plural'),
+    renderHeader: () => headerDisplay('page.8.plural'),
     flex: 1.5,
     disableClickEventBubbling: true,
     renderCell: (e: { row: { type: number } }) => elementArray(getDataProducts(e.row))

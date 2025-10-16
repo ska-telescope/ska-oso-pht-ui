@@ -355,7 +355,7 @@ export default function ProposalDisplay({
         </Grid>
         <Grid size={{ xs: 6 }}>
           {link(
-            t('page.6.label'),
+            t('page.7.label'),
             t('pdfDownload.technical.toolTip'),
             () => downloadPdf('technical'),
             proposal?.technicalPDF
