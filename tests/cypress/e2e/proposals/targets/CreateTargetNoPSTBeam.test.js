@@ -12,7 +12,6 @@ import {
   verifySensCalcStatus,
   mockResolveTargetAPI,
   verifyNoBeamRadioButtonSelected,
-  clickEdit,
   clickToAddPSTBeam,
   clickDialogConfirm,
   addBeamUsingResolveOnTargetEdit,
@@ -22,7 +21,8 @@ import {
   clickConfirmButtonWithinPopup,
   verifyBeamInTableOnTargetEdit,
   verifyTargetNoBeamInTable,
-  clickFirstRowOfTargetTable
+  clickFirstRowOfTargetTable,
+  tabToEditTarget
 } from '../../common/common';
 beforeEach(() => {
   initializeUserNotLoggedIn();
@@ -55,14 +55,14 @@ describe('Create Target with no PST Beam', () => {
   it("Verify on target edit, 'No Beam' remains selected", () => {
     verifyTargetNoBeamInTable();
     clickFirstRowOfTargetTable();
-    clickEdit();
+    tabToEditTarget(); // use tab to click edit target from target table
     verifyNoBeamRadioButtonSelected(); //verify No beam is selected (default value)
   });
 
   it("Verify on target edit, when No Beam' is selected, a PST Beam can be added ", () => {
     verifyTargetNoBeamInTable();
     clickFirstRowOfTargetTable();
-    clickEdit();
+    tabToEditTarget(); // use tab to click edit target from target table
     verifyNoBeamRadioButtonSelected(); //verify No beam is selected (default value)
     clickMultipleBeamsRadioButtonOnTargetEdit(); //Select Multiple beams
     verifyMultipleBeamsRadioButtonSelectedOnTargetEdit(); //verify Multiple beams is selected
