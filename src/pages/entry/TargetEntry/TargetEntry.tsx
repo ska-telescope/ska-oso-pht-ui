@@ -387,13 +387,15 @@ export default function TargetEntry({
           sx={{ margin: '0px 35px 15px 0px' }}
         >
           <Grid mb={1} mt={2}>
-            <ExtendedStrikethroughLabelBehindText labelText="COORDINATE TYPE" />
+            <ExtendedStrikethroughLabelBehindText
+              labelText={t('referenceCoordinates.label').toUpperCase()}
+            />
           </Grid>
           <Grid mb={1} mt={1}>
             {referenceCoordinatesField()}
           </Grid>
           <Grid mb={1} mt={2}>
-            <ExtendedStrikethroughLabelBehindText labelText="COORDINATE" />
+            <ExtendedStrikethroughLabelBehindText labelText={t('coordinate.label').toUpperCase()} />
           </Grid>
           <Grid>{nameField()}</Grid>
           <Grid>{skyDirection1Field()}</Grid>
@@ -401,20 +403,26 @@ export default function TargetEntry({
             {skyDirection2Field()}
           </Grid>
           <Grid mb={1} mt={2}>
-            <ExtendedStrikethroughLabelBehindText labelText="PULSAR TIMING BEAM" />
+            <ExtendedStrikethroughLabelBehindText
+              labelText={t('pulsarTimingBeam.groupLabel').toUpperCase()}
+            />
           </Grid>
           <Grid mb={1} mt={1}>
             {pulsarTimingBeamField()}
           </Grid>
           <Grid mb={1} mt={2}>
-            <ExtendedStrikethroughLabelBehindText labelText="RADIAL MOTION" />
+            <ExtendedStrikethroughLabelBehindText
+              labelText={t('radialMotion.label').toUpperCase()}
+            />
           </Grid>
           <Grid>{velocityField()}</Grid>
           <Grid mb={1} mt={1}>
             {velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}
           </Grid>
           <Grid mb={1} mt={2}>
-            <ExtendedStrikethroughLabelBehindText labelText="FIELD PATTERN" />
+            <ExtendedStrikethroughLabelBehindText
+              labelText={t('fieldPattern.groupLabel').toUpperCase()}
+            />
           </Grid>
           <Grid>{fieldPatternTypeField()}</Grid>
           <Grid mb={1} mt={1}>
