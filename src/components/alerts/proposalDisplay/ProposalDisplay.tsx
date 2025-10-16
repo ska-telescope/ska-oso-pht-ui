@@ -290,7 +290,7 @@ export default function ProposalDisplay({
     <Grid>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid size={{ xs: 1 }}>{skaoIcon({ useSymbol: true })}</Grid>
-        <Grid size={{ xs: 7 }}>{title(t('page.9.title') + '  ', proposal?.title ?? '')}</Grid>
+        <Grid size={{ xs: 7 }}>{title(t('page.0.title') + '  ', proposal?.title ?? '')}</Grid>
         <Grid size={{ xs: 4 }}>
           <Grid container direction="column" justifyContent="space-between" alignItems="right">
             <Grid>{details(t('page.12.short'), proposal?.cycle ?? '')}</Grid>
