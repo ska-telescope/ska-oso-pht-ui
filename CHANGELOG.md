@@ -9,6 +9,7 @@ UNRELEASED
 * Changed: Display of Add target tab on target page
 * Added: Pulsar timing beam functionality when creating/editing a target
 * Adds PMT to User Guide structure.
+* Changed Panel Maintenance to Panel Management.
 
 7.0.0
 ----------
@@ -50,7 +51,7 @@ UNRELEASED
 * Changed: Allow "?" character in proposals titles
 * Changed: Updated usage of DefaultUser in endpoints where possible
 * Changed: Some screens made more resilient
-* Changed: Status added to the proposals on the Panel Management
+* Changed: Status added to the proposals on the Panel Maintenance
 * Removed: Old code related to conflicts
 
 5.0.0
@@ -86,7 +87,7 @@ UNRELEASED
 * Added a mocked connected user
 * Added a navigation menu
 * Added an Overview page
-* Added a Panel Management page
+* Added a Panel Maintenance page
 * Added a Proposal Review page
 * Added a Panel Decision page
 * Various improvements for to the CI/CD pipeline
