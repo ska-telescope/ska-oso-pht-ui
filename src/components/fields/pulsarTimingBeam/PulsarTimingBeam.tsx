@@ -240,12 +240,12 @@ export default function PulsarTimingBeamField({
         data-testId={showBeamData ? 'MultipleBeamsTestIdEdit' : 'MultipleBeamsTestId'} // Differentiate test IDs for add/edit of target
         onFocus={() => helpComponent(t('pulsarTimingBeam.multipleBeams.help'))}
       />
-      {showGrid && (
+      {selectedValue !== 'noBeam' && showGrid && (
         <div style={{ height: '100%', width: '100%' }}>
           <DataGrid
             rows={allBeams}
             columns={getColumns()}
-            height={allBeams.length * 60 + 100}
+            height={Math.max(allBeams.length * 60 + 100, 2 * 60 + 100)}
             testId="pulsarTimingBeamColumns"
           />
         </div>
