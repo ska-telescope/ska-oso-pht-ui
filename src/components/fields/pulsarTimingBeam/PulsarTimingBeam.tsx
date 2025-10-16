@@ -131,17 +131,22 @@ export default function PulsarTimingBeamField({
         },
         stnWeights: []
       };
-      setAllBeams(prevBeams => {
-        const updatedBeams = [...prevBeams];
-        updatedBeams.push(newBeam);
-        return updatedBeams;
-      });
-      setBeamName('');
-      setBeamRA('');
-      setBeamDec('');
+
+      if (allBeams.some(beam => beam.beamName.toLowerCase() === beamName.toLowerCase())) {
+        setNameFieldError(t('addTarget.error'));
+      } else {
+        setAllBeams(prevBeams => {
+          const updatedBeams = [...prevBeams];
+          updatedBeams.push(newBeam);
+          return updatedBeams;
+        });
+        setBeamName('');
+        setBeamRA('');
+        setBeamDec('');
+        closeDialog();
+        setShowGrid(true);
+      }
     }
-    closeDialog();
-    setShowGrid(true);
   };
 
   const resolveBeamNameButton = () => {
