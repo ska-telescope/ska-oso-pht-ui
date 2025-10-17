@@ -87,6 +87,7 @@ export default function ReviewListPage() {
       if (typeof response === 'string') {
         notifyError(response);
       } else {
+        console.log('Proposal Reviews fetched:', response);
         setProposalReviews(response);
       }
     };
