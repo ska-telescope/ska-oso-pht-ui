@@ -65,8 +65,6 @@ export default function ButtonUserMenu({
           <ButtonLogin
             colorBG={theme.palette.secondary.main}
             colorFG={theme.palette.secondary.contrastText}
-            onError={() => onMenuSelect(PATH[0])}
-            onSuccess={() => onMenuSelect(PATH[0])}
           />
         )}
         {username && (

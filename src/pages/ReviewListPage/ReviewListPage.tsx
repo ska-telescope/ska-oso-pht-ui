@@ -230,9 +230,7 @@ export default function ReviewListPage() {
         notifyError((response as { error: string })?.error);
       }
 
-      // TREVOR
       if (reason === CONFLICT_REASONS[0]) {
-        // Do not save, as this should be done as part of the review submission
         setConflictConfirm(false);
         navigate(conflictRoute, { replace: true, state: updatedRow });
       } else {
@@ -334,7 +332,7 @@ export default function ReviewListPage() {
   const colScienceCategory = {
     field: 'scienceCategory',
     headerName: t('scienceCategory.label'),
-    width: 120,
+    width: 240,
     renderCell: (e: { row: any }) =>
       e.row.proposal.scienceCategory ? t('scienceCategory.' + e.row.proposal?.scienceCategory) : ''
   };
@@ -379,14 +377,12 @@ export default function ReviewListPage() {
       const reason = conflict?.reason;
       const label = hasConflict ? t('yes') : t('no');
 
-      return reason ? (
-        <Tooltip title={t('conflict.reason.' + reason)}>
+      return (
+        <Tooltip title={t('conflict.reason.' + (reason?.length > 0 ? reason : 'conflict-none'))}>
           <Typography pt={2} variant="body2">
             {label}
           </Typography>
         </Tooltip>
-      ) : (
-        <></>
       );
     }
   };
@@ -415,7 +411,7 @@ export default function ReviewListPage() {
   const colDateUpdated = {
     field: 'lastUpdated',
     headerName: t('updated.label'),
-    width: 180,
+    width: 240,
     renderCell: (e: { row: any }) => {
       return (
         presentDate(e.row.proposal?.lastUpdated) + ' ' + presentTime(e.row.proposal?.lastUpdated)
@@ -423,6 +419,7 @@ export default function ReviewListPage() {
     }
   };
 
+  /* SUPPRESSED UNTIL A PROPER RESOLUTION AS TO WHAT TO BE DISPLAYED IS DEFINED
   const colDateAssigned = {
     field: 'dateAssigned',
     headerName: t('dateAssigned.label'),
@@ -434,6 +431,7 @@ export default function ReviewListPage() {
         : t('unavailable');
     }
   };
+  */
 
   const colActions = {
     field: 'actions',
@@ -479,20 +477,29 @@ export default function ReviewListPage() {
       colComments,
       colSrcNet,
       colDateUpdated,
-      colDateAssigned,
+      // SEE BELOW colDateAssigned,
       colActions
     ]
   ];
 
   function filterProposals() {
+    function getMostRecentReview(reviews: any[]): any | null {
+      if (reviews.length === 0) return null;
+
+      return reviews.reduce((latest, current) => {
+        const latestDate = new Date(latest.metadata.last_modified_on);
+        const currentDate = new Date(current.metadata.last_modified_on);
+        return currentDate > latestDate ? current : latest;
+      });
+    }
+
     function unionProposalsAndReviews() {
       return proposals.map(proposal => {
         const reviews = proposalReviews.filter(r => r.prslId === proposal.id);
         const technicalReviews = reviews.filter(r => r?.reviewType?.kind === REVIEW_TYPE.TECHNICAL);
-        const technicalReview =
-          technicalReviews.length > 0 ? technicalReviews[technicalReviews.length - 1] : null;
+        const technicalReview = getMostRecentReview(technicalReviews);
         const scienceReviews = reviews.filter(r => r?.reviewType?.kind === REVIEW_TYPE.SCIENCE);
-        const scienceReview = scienceReviews.length > 0 ? scienceReviews[0] : null;
+        const scienceReview = getMostRecentReview(scienceReviews);
         const output = {
           id: proposal.id,
           proposal: proposal,
