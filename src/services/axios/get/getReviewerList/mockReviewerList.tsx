@@ -1,5 +1,20 @@
 import { Reviewer } from '@utils/types/reviewer.tsx';
 
+export const MockReviewerInternal: Reviewer[] = [
+  {
+    id: 'c8f8f18a-3c70-4c39-8ed9-2d8d180d99a1-science',
+    jobTitle: 'Prof.',
+    givenName: 'Sofia',
+    surname: 'Martinez',
+    displayName: 'Sofia Martinez',
+    mail: 'sofia.martinez@example.com',
+    officeLocation: 'Main',
+    subExpertise: 'Pulsar Timing',
+    isScience: true,
+    isTechnical: false
+  }
+];
+
 export const MockReviewersList: Reviewer[] = [
   {
     id: 'c8f8f18a-3c70-4c39-8ed9-2d8d180d99a1',

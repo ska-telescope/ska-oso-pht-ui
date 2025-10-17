@@ -18,6 +18,7 @@ UNRELEASED
 * [BREAKING]: Changed: ODA : v12.0.1
 * Added: End-to-End tests for target page, testing pulsar timing beam functionality
 * Changed: Target page documentation, includes updated screenshots
+* Changed: Amended Panel Management so that reviewers will be shown once for each review type they are capable of performing
 
 7.0.0
 ----------

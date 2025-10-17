@@ -34,15 +34,18 @@ export const addReviewerPanel = (
   setReviewerPanels: (sciReviewers: PanelReviewer[], tecReviewers: PanelReviewer[]) => void
 ) => {
   const rec: PanelReviewer = {
-    reviewerId: reviewer.id,
+    reviewerId: reviewer.id.replace(/-(science|technical)$/, ''),
     panelId: localPanel?.id ?? '',
     status: REVIEWER_STATUS.PENDING
   };
 
-  const updatedSciReviewers = reviewer.isScience
+  const isScience = (str: string): boolean => str.endsWith('-science');
+  const isTechnical = (str: string): boolean => str.endsWith('-technical');
+
+  const updatedSciReviewers = isScience(reviewer.id)
     ? [...localPanel?.sciReviewers, rec]
     : localPanel?.sciReviewers;
-  const updatedTecReviewers = reviewer.isTechnical
+  const updatedTecReviewers = isTechnical(reviewer.id)
     ? [...localPanel?.tecReviewers, rec]
     : localPanel?.tecReviewers;
   setReviewerPanels(updatedSciReviewers, updatedTecReviewers);
@@ -54,10 +57,12 @@ export const deleteReviewerPanel = (
   setReviewerPanels: Function
 ) => {
   function filterSciRecords(id: string) {
-    return localPanel?.sciReviewers?.filter(item => !(item.reviewerId === id));
+    const stripped = id.replace('-science', '');
+    return localPanel?.sciReviewers?.filter(item => !(item.reviewerId === stripped));
   }
   function filterTecRecords(id: string) {
-    return localPanel?.tecReviewers?.filter(item => !(item.reviewerId === id));
+    const stripped = id.replace('-technical', '');
+    return localPanel?.tecReviewers?.filter(item => !(item.reviewerId === stripped));
   }
   const sciFiltered = filterSciRecords(reviewer.id);
   const tecFiltered = filterTecRecords(reviewer.id);
@@ -141,7 +146,10 @@ export default function PanelManagement() {
     const tecReviewers = currentPanel?.tecReviewers
       ? convertPanelReviewerToReviewerIdList(currentPanel?.tecReviewers)
       : [];
-    setPanelReviewers([...sciReviewers, ...tecReviewers]);
+    setPanelReviewers([
+      ...sciReviewers.map(reviewer => ({ id: reviewer.id + '-science' })),
+      ...tecReviewers.map(reviewer => ({ id: reviewer.id + '-technical' }))
+    ]);
   }, [currentPanel]);
 
   const handlePanelChange = (row: Panel) => {

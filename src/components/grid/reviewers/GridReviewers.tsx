@@ -77,13 +77,37 @@ export default function GridReviewers({
   const [typeState, setTypeState] = React.useState<'all' | 'sci' | 'tec'>('all');
 
   React.useEffect(() => {
+    const filterScienceAndTechnical = (users: any[]) => {
+      const result: any[] = [];
+
+      users.forEach(user => {
+        if (user.isScience) {
+          result.push({
+            ...user,
+            id: `${user.id}-science`,
+            isScience: true,
+            isTechnical: false
+          });
+        }
+        if (user.isTechnical) {
+          result.push({
+            ...user,
+            id: `${user.id}-technical`,
+            isScience: false,
+            isTechnical: true
+          });
+        }
+      });
+      return result;
+    };
+
     const fetchData = async () => {
       const response = await GetReviewerList(authClient);
 
       if (typeof response === 'string') {
         setAxiosError(response);
       } else {
-        setReviewers(response);
+        setReviewers(filterScienceAndTechnical(response));
       }
     };
     fetchData();
