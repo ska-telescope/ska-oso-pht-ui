@@ -53,7 +53,7 @@ export default function ButtonUserMenu({
   };
 
   const onMenuSelect = (thePath: string) => {
-    updateAppContent2(null);
+    updateAppContent2([]);
     navigate(thePath);
     setAnchorEl(null);
   };
@@ -65,6 +65,7 @@ export default function ButtonUserMenu({
           <ButtonLogin
             colorBG={theme.palette.secondary.main}
             colorFG={theme.palette.secondary.contrastText}
+            onSuccess={() => onMenuSelect(PATH[0])}
           />
         )}
         {username && (
