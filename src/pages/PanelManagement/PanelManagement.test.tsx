@@ -2,7 +2,10 @@ import { describe, test, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import { MockReviewersList } from '@services/axios/get/getReviewerList/mockReviewerList';
+import {
+  MockReviewerInternal,
+  MockReviewersList
+} from '@services/axios/get/getReviewerList/mockReviewerList';
 import PanelManagement, {
   addProposalPanel,
   addReviewerPanel,
@@ -114,11 +117,11 @@ describe('Adds Proposal', () => {
 describe('Adds Reviewer', () => {
   test('adds a reviewer and calls setReviewerPanels with updated list', () => {
     const setReviewerPanels = vi.fn();
-    addReviewerPanel(MockReviewersList[0], mockedPanels[0], setReviewerPanels);
+    addReviewerPanel(MockReviewerInternal[0], mockedPanels[0], setReviewerPanels);
     expect(setReviewerPanels).toHaveBeenCalledWith(
       [
         expect.objectContaining({
-          reviewerId: MockReviewersList[0].id,
+          reviewerId: MockReviewerInternal[0].id.replace('-science', ''),
           panelId: mockedPanels[0].id,
           status: REVIEWER_STATUS.PENDING
         })
@@ -132,19 +135,19 @@ describe('Deletes Reviewer', () => {
   const panel = mockedPanels[0];
   const PanelReviewers = [
     {
-      reviewerId: MockReviewersList[0].id,
+      reviewerId: MockReviewersList[0].id.replace('-science', ''),
       panelId: panel.id,
       assignedOn: new Date().toISOString(),
       status: REVIEWER_STATUS.PENDING
     },
     {
-      reviewerId: MockReviewersList[1].id,
+      reviewerId: MockReviewersList[1].id.replace('-science', ''),
       panelId: panel.id,
       assignedOn: new Date().toISOString(),
       status: REVIEWER_STATUS.PENDING
     },
     {
-      reviewerId: MockReviewersList[2].id,
+      reviewerId: MockReviewersList[2].id.replace('-science', ''),
       panelId: panel.id,
       assignedOn: new Date().toISOString(),
       status: REVIEWER_STATUS.PENDING
@@ -154,7 +157,19 @@ describe('Deletes Reviewer', () => {
     const setReviewerPanels = vi.fn();
     const myPanel = panel;
     myPanel.sciReviewers = PanelReviewers;
-    deleteReviewerPanel(MockReviewersList[0], myPanel, setReviewerPanels);
+    const rec = {
+      id: 'c8f8f18a-3c70-4c39-8ed9-2d8d180d99a1',
+      jobTitle: 'Prof.',
+      givenName: 'Sofia',
+      surname: 'Martinez',
+      displayName: 'Sofia Martinez',
+      mail: 'sofia.martinez@example.com',
+      officeLocation: 'Main',
+      subExpertise: 'Pulsar Timing',
+      isScience: true,
+      isTechnical: false
+    };
+    deleteReviewerPanel(rec, myPanel, setReviewerPanels);
     expect(setReviewerPanels).toHaveBeenCalledWith(
       [myPanel.sciReviewers[1], myPanel.sciReviewers[2]],
       []
