@@ -41,22 +41,17 @@ describe('<MemberEntry /> search for user', () => {
       </StoreProvider>
     );
 
-    const emailField = container.querySelector('input[id="email"]');
-    act(() => {
-      userEvent.clear(emailField!);
-      userEvent.type(emailField!, MockUserFrontendList[0].email);
-    });
-
-    waitFor(() => {
-      expect(emailField).toHaveValue(MockUserFrontendList[0].email);
-    });
+    const emailField = await screen.getByTestId('email');
+    userEvent.clear(emailField!);
+    userEvent.type(emailField!, MockUserFrontendList[0].email);
+    expect(emailField).toHaveValue(MockUserFrontendList[0].email);
 
     const resolveButton = screen.getByTestId('userSearchButton');
     act(() => {
       fireEvent.click(resolveButton);
     });
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(emailField).toBeDisabled();
       expect(emailField).toHaveValue(MockUserFrontendList[0].email);
       const firstNameField = screen.findByDisplayValue(MockUserFrontendList[0].firstName);
@@ -85,7 +80,7 @@ describe('<MemberEntry /> search for user', () => {
       userEvent.type(emailField!, 'unknown@skao.int');
     });
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(emailField).toHaveValue('unknown@skao.int');
     });
 
@@ -94,7 +89,7 @@ describe('<MemberEntry /> search for user', () => {
       fireEvent.click(resolveButton);
     });
 
-    waitFor(() => {
+    await waitFor(() => {
       expect(emailField).not.toBeDisabled();
       expect(emailField).toHaveValue('unknown@skao.int');
       const firstNameField = screen.findByDisplayValue(MockUserFrontendList[0].firstName);
