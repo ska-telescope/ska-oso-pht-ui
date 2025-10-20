@@ -24,15 +24,15 @@ The layout of the page is presented in :numref:`Figure %s <panelmanagement1>`.
 
    Panel Management default display.
 
-   
+
 
 Key Information and Actions
 ===========================
 
 This section describes the key functionality available on the **Panel Management** page.
 
-Panel Creation
---------------
+* Panel Creation
+
 Panel creation is **automatic**.  
 Currently, only one panel named ``Science Verification`` is created by default.  
 It appears on the **left-hand side** of the page, as shown in :numref:`Figure %s <panelmanagement1>`.
@@ -41,8 +41,9 @@ It appears on the **left-hand side** of the page, as shown in :numref:`Figure %s
    Additional panels may be introduced in future cycles.  
    For now, all proposals are associated with the default *Science Verification* panel.
 
-Assignment of Proposals
------------------------
+* Assignment of Proposals
+
+
 Click the |assignicon| icon at the **top-right corner** of the page to automatically assign proposals to the active panel.  
 The **Admin** can also manually re-assign or remove a proposal from a panel by toggling the check box next to each item.
 
