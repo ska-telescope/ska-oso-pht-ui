@@ -26,19 +26,61 @@ The panel decison page view presents a collapsible card for each proposal as sho
 
 Key Information and Actions
 ===========================
-- Click on the arrow on each card to display review and decision details as shown in :numref:`Figure %s <paneldecison2>`.
-- As a review chair, click on the |ico1| to exclude a review from the overall score for the proposal. This will change the score and update the rank.
-- The score is the average of all the individual review ranks.
-- The rank is based on the score such that if a proposal is 4.5 and another is 5, the 5 is ranked as 1 and 4.5 as 2.
-- Click on the recommendation drop-down to `Accept`, `reject` or `Accept With Revision`.
-- Click on the |submitico| icon next to this field to submit the recommendation. Once the recommendation is submitted, the status will update to `Decided`.
+
+This section outlines the main features and interactions available on the **Panel Decision** page.
+
+Search Proposals
+----------------
+Use the search bar at the top of the page to quickly find proposals by their *Title*.
+
+.. tip::
+   Partial or case-insensitive matches are supported, making it easy to locate proposals
+   even if you remember only part of the title.
+
+View Review and Decision Details
+--------------------------------
+Click the card for each proposal to expand and view its corresponding reviews
+and decision details, as illustrated in :numref:`Figure %s <paneldecison2>`.
+
+Exclude a Review
+----------------
+
+Click the |ico1| icon on any review to **exclude** it from the proposal's overall score.
+When a review is excluded, the system will automatically:
+- Recalculate the **average score** based on remaining active reviews.
+- Update the **rank** accordingly.
+
+Understanding Scores and Ranks
+------------------------------
+- **Score:** The average of all individual review scores (excluding any marked as excluded).  
+- **Rank:** Determined by average score such that higher scores yield higher ranks.  
+  For example, if one proposal has a score of *5.0* and another *4.5*,  
+  the *5.0* will be ranked **1**, and *4.5* will be ranked **2**.
+
+Submit a Recommendation
+-----------------------
+From the **Recommendation** drop-down list, select one of the following options:
+- *Accept*  
+- *Reject*  
+- *Accept with Revision*
+
+Finalize the Decision
+---------------------
+Once a recommendation has been selected:
+1. Click the |submitico| icon next to the drop-down to **submit** the decision.
+2. The proposal's status will automatically update to **Decided**.
+3. After submission, **no further updates** can be made to the proposal review.
+
+.. warning::
+   Submitting a recommendation is **final**. Ensure your decision is correct
+   before clicking the |submitico| icon.
 
 
 .. _paneldecison2:
 .. figure:: /images/panelDecisonOpen.png
    :width: 95%
    :align: center
-   :alt: A view of the reviews and decison panel for each proposal.
+   :alt: A view of the decison panel for each proposal.
 
    A view of the reviews and decison panel for each proposal.
 
