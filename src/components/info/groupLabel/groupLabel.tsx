@@ -9,7 +9,7 @@ interface ExtendedStrikethroughLabelBehindTextProps {
 const GroupLabel: React.FC<ExtendedStrikethroughLabelBehindTextProps> = ({ labelText }) => {
   const theme = useTheme();
   const clearColor = theme.palette.secondary.contrastText;
-  const darkColor = theme.palette.primary.dark;
+  const darkColor = theme.palette.primary.light;
 
   return (
     <Box

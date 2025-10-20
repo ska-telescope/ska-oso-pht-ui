@@ -410,8 +410,8 @@ export default function TargetEntry({
                 <Grid p={1}>{nameField()}</Grid>
                 <Grid p={1}>{skyDirection1Field()}</Grid>
                 <Grid p={1}>{skyDirection2Field()}</Grid>
-                <Grid pt={1}>
-                  <GroupLabel labelText={t('pulsarTimingBeam.groupLabel').toUpperCase()} isLeft />
+                <Grid pt={5}>
+                  <GroupLabel labelText={t('pulsarTimingBeam.groupLabel').toUpperCase()} />
                 </Grid>
                 <Grid p={1}>{pulsarTimingBeamField()}</Grid>
                 <Grid>

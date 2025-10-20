@@ -135,6 +135,7 @@ export default function TargetListSection() {
     return (
       <Grid
         p={1}
+        pt={5}
         container
         direction="row"
         justifyContent="space-between"
