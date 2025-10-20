@@ -8,12 +8,14 @@ interface ExtendedStrikethroughLabelBehindTextProps {
 
 const GroupLabel: React.FC<ExtendedStrikethroughLabelBehindTextProps> = ({ labelText }) => {
   const theme = useTheme();
+  const clearColor = theme.palette.secondary.contrastText;
+  const darkColor = theme.palette.primary.dark;
+
   return (
     <Box
       sx={{
         position: 'relative',
         width: '100%',
-        height: '3rem',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -26,9 +28,9 @@ const GroupLabel: React.FC<ExtendedStrikethroughLabelBehindTextProps> = ({ label
           position: 'absolute',
           top: '50%',
           left: 0,
-          right: 'calc(100% - 50%)', // Balanced line
+          right: 'calc(100% - 50%)',
           height: '1px',
-          backgroundColor: theme.palette.primary.contrastText,
+          backgroundColor: darkColor,
           transform: 'translateY(-50%)',
           zIndex: 1
         }}
@@ -42,7 +44,7 @@ const GroupLabel: React.FC<ExtendedStrikethroughLabelBehindTextProps> = ({ label
           left: 'calc(100% - 50%)', // Balanced line
           right: 0,
           height: '1px',
-          backgroundColor: theme.palette.primary.contrastText,
+          backgroundColor: darkColor,
           transform: 'translateY(-50%)',
           zIndex: 1
         }}
@@ -57,7 +59,7 @@ const GroupLabel: React.FC<ExtendedStrikethroughLabelBehindTextProps> = ({ label
           transform: 'translateY(-50%)',
           width: '12px',
           height: '12px',
-          backgroundColor: theme.palette.primary.contrastText,
+          backgroundColor: darkColor,
           borderRadius: '50%',
           zIndex: 2
         }}
@@ -72,7 +74,7 @@ const GroupLabel: React.FC<ExtendedStrikethroughLabelBehindTextProps> = ({ label
           transform: 'translateY(-50%)',
           width: '12px',
           height: '12px',
-          backgroundColor: theme.palette.primary.contrastText,
+          backgroundColor: darkColor,
           borderRadius: '50%',
           zIndex: 2
         }}
@@ -84,7 +86,8 @@ const GroupLabel: React.FC<ExtendedStrikethroughLabelBehindTextProps> = ({ label
         sx={{
           px: 2,
           zIndex: 2,
-          backgroundColor: theme.palette.secondary.contrastText,
+          backgroundColor: clearColor,
+          color: darkColor,
           whiteSpace: 'nowrap',
           overflow: 'hidden',
           textOverflow: 'ellipsis',

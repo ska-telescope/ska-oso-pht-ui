@@ -33,19 +33,18 @@ interface TargetEntryProps {
 }
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
+const PANEL_HEIGHT = '54vh';
 
 export default function TargetEntry({
   raType,
   setTarget = undefined,
   target = undefined,
-  textAlign = 'right',
   showBeamData
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
   const { notifySuccess } = useNotify();
 
   const LAB_WIDTH = 5;
-  const HELP_MAX_HEIGHT = '40vh';
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [nameFieldError, setNameFieldError] = React.useState('');
 
@@ -376,55 +375,77 @@ export default function TargetEntry({
     );
 
   return (
-    <Grid p={2} container direction="row" alignItems="space-evenly" justifyContent="space-between">
-      <Grid size={{ xs: 8 }} sx={{ position: 'relative' }}>
+    <>
+      <Box sx={{ width: '100%', height: '85%' }}>
         <Grid
+          p={2}
           container
-          direction="column"
-          spacing={2}
-          alignItems="stretch"
-          justifyContent="flex-start"
-          sx={{ margin: '0px 35px 15px 0px' }}
+          direction="row"
+          alignItems="space-evenly"
+          justifyContent="space-between"
         >
-          <Grid mb={1} mt={2}>
-            <GroupLabel labelText={t('referenceCoordinates.label').toUpperCase()} />
+          <Grid size={{ xs: 8 }} sx={{ position: 'relative' }}>
+            <Box
+              sx={{
+                width: '100%',
+                height: PANEL_HEIGHT,
+                overflowY: 'auto'
+              }}
+            >
+              <Grid
+                container
+                direction="column"
+                spacing={2}
+                alignItems="stretch"
+                justifyContent="flex-start"
+                pb={2}
+              >
+                <Grid>
+                  <GroupLabel labelText={t('referenceCoordinates.label').toUpperCase()} />
+                </Grid>
+                <Grid>{referenceCoordinatesField()}</Grid>
+                <Grid pt={1}>
+                  <GroupLabel labelText={t('coordinate.label').toUpperCase()} />
+                </Grid>
+                <Grid p={1}>{nameField()}</Grid>
+                <Grid p={1}>{skyDirection1Field()}</Grid>
+                <Grid p={1}>{skyDirection2Field()}</Grid>
+                <Grid pt={1}>
+                  <GroupLabel labelText={t('pulsarTimingBeam.groupLabel').toUpperCase()} isLeft />
+                </Grid>
+                <Grid p={1}>{pulsarTimingBeamField()}</Grid>
+                <Grid>
+                  <GroupLabel labelText={t('radialMotion.label').toUpperCase()} />
+                </Grid>
+                <Grid p={1}>{velocityField()}</Grid>
+                <Grid p={1}>{velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}</Grid>
+                <Grid pt={1}>
+                  <GroupLabel labelText={t('fieldPattern.groupLabel').toUpperCase()} />
+                </Grid>
+                <Grid p={1}>{fieldPatternTypeField()}</Grid>
+              </Grid>
+            </Box>
           </Grid>
-          <Grid mb={1} mt={1}>
-            {referenceCoordinatesField()}
-          </Grid>
-          <Grid mb={1} mt={2}>
-            <GroupLabel labelText={t('coordinate.label').toUpperCase()} />
-          </Grid>
-          <Grid>{nameField()}</Grid>
-          <Grid>{skyDirection1Field()}</Grid>
-          <Grid mb={1} mt={1}>
-            {skyDirection2Field()}
-          </Grid>
-          <Grid mb={1} mt={2}>
-            <GroupLabel labelText={t('pulsarTimingBeam.groupLabel').toUpperCase()} />
-          </Grid>
-          <Grid mb={1} mt={1}>
-            {pulsarTimingBeamField()}
-          </Grid>
-          <Grid mb={1} mt={2}>
-            <GroupLabel labelText={t('radialMotion.label').toUpperCase()} />
-          </Grid>
-          <Grid>{velocityField()}</Grid>
-          <Grid mb={1} mt={1}>
-            {velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}
-          </Grid>
-          <Grid mb={1} mt={2}>
-            <GroupLabel labelText={t('fieldPattern.groupLabel').toUpperCase()} />
-          </Grid>
-          <Grid>{fieldPatternTypeField()}</Grid>
-          <Grid mb={1} mt={1}>
-            {!id && addButton()}
+
+          <Grid size={{ xs: 4 }} sx={{ position: 'relative', height: PANEL_HEIGHT }}>
+            <Box sx={{ height: '100%' }}>
+              <HelpPanel maxHeight={'HELP_MAX_HEIGHT'} />
+            </Box>
+
+            {!id && (
+              <Box
+                sx={{
+                  position: 'absolute',
+                  bottom: 0,
+                  right: 0
+                }}
+              >
+                {addButton()}
+              </Box>
+            )}
           </Grid>
         </Grid>
-      </Grid>
-      <Grid size={{ xs: 4 }}>
-        <HelpPanel maxHeight={HELP_MAX_HEIGHT} />
-      </Grid>
-    </Grid>
+      </Box>
+    </>
   );
 }

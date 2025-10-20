@@ -1,9 +1,9 @@
 import React from 'react';
 import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { AlertColorTypes, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '@utils/types/proposal.tsx';
-import { FOOTER_SPACER, RA_TYPE_ICRS, VELOCITY_TYPE, WRAPPER_HEIGHT } from '@utils/constants.ts';
+import { RA_TYPE_ICRS, VELOCITY_TYPE, WRAPPER_HEIGHT } from '@utils/constants.ts';
 import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
@@ -14,8 +14,8 @@ import SpatialImaging from './SpatialImaging/SpatialImaging';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
-const DATA_GRID_HEIGHT = '45vh';
-const TARGET_ENTRY_HEIGHT = '50vh';
+const DATA_GRID_HEIGHT = '55vh';
+const TARGET_ENTRY_HEIGHT = '60vh';
 const WRAPPER_WIDTH = '500px';
 
 export default function TargetListSection() {
@@ -140,7 +140,7 @@ export default function TargetListSection() {
         justifyContent="space-between"
         alignItems="centre"
         spacing={4}
-        sx={{ width: '95vw' }}
+        sx={{ height: '60vh', width: '95vw' }}
       >
         <Grid size={{ md: 12, lg: 6 }} order={{ md: 2, lg: 1 }}>
           {emptyField()}
@@ -157,8 +157,7 @@ export default function TargetListSection() {
             sx={{
               width: '100%',
               height: TARGET_ENTRY_HEIGHT,
-              border: '1px solid grey',
-              overflowY: 'auto'
+              border: '1px solid grey'
             }}
           >
             <Tabs
@@ -197,7 +196,6 @@ export default function TargetListSection() {
   return (
     <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
       {displayRow1()}
-      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {openDeleteDialog && (
         <AlertDialog
           open={openDeleteDialog}
