@@ -1,5 +1,5 @@
-Panel Decision
-~~~~~~~~~~~~~~
+Review Decision
+~~~~~~~~~~~~~~~
 
 The panel decison page can be viewed by both Admin and the review Chair. However, as an Admin, you cannot make any updates on this page and it is only for view purposes.
 
