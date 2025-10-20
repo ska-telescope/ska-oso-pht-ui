@@ -37,7 +37,8 @@ import {
   getUserId,
   isReviewerAdminOnly,
   isReviewerScience,
-  isReviewerTechnical
+  isReviewerTechnical,
+  useInitializeAccessStore
 } from '@/utils/aaa/aaaUtils';
 import ConflictConfirmation from '@/components/alerts/conflictConfirmation/ConflictConfirmation';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -47,6 +48,7 @@ export default function ReviewListPage() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const { notifyError, notifySuccess } = useNotify();
+  useInitializeAccessStore();
 
   type FilteredItem = {
     id: string;

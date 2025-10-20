@@ -6,7 +6,7 @@ import Shell from '../../../components/layout/Shell/Shell';
 import TitleEntry from '../../entry/TitleEntry/TitleEntry';
 import Proposal, { NEW_PROPOSAL } from '../../../utils/types/proposal';
 
-const PAGE = 9;
+const PAGE = 0;
 const PAGE_INNER = 0;
 const PAGE_FOOTER = -1;
 

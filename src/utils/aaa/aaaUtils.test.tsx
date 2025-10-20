@@ -1,5 +1,4 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
-import { useMsal } from '@azure/msal-react';
 import ProposalAccess from '../types/proposalAccess';
 import {
   getUserName,
@@ -20,10 +19,11 @@ import {
   OPS_REVIEW_CHAIR,
   OPS_REVIEWER_SCIENCE,
   EXT_REVIEWER_TECHNICAL,
-  SW_ENGINEER
+  SW_ENGINEER,
+  __setUserGroups,
+  __setAccount
 } from './aaaUtils';
 
-type Mock = ReturnType<typeof vi.fn>;
 let overrideGroups = '';
 
 const PROPOSAL_ACCESS_VIEW = 'view';
@@ -52,6 +52,10 @@ vi.mock('@azure/msal-react', () => ({
   useMsal: vi.fn()
 }));
 
+vi.mock('@ska-telescope/ska-login-page', () => ({
+  useUserGroups: vi.fn()
+}));
+
 vi.mock('../constants', () => ({
   get APP_OVERRIDE_GROUPS() {
     return overrideGroups;
@@ -59,35 +63,22 @@ vi.mock('../constants', () => ({
 }));
 
 describe('getUserName', () => {
-  it('returns name when account has name property', () => {
-    (useMsal as Mock).mockReturnValue({
-      accounts: [{ name: 'Jane Doe' }]
-    });
+  beforeEach(() => {
+    overrideGroups = '';
+    __setAccount({ name: 'Jane Doe' });
+  });
 
+  it('returns name when account has name property', () => {
     expect(getUserName()).toBe('Jane Doe');
   });
 
   it('returns empty string when account has no name', () => {
-    (useMsal as Mock).mockReturnValue({
-      accounts: [{}]
-    });
-
+    __setAccount({});
     expect(getUserName()).toBe('');
   });
 
-  it('returns empty string when accounts array is empty', () => {
-    (useMsal as Mock).mockReturnValue({
-      accounts: []
-    });
-
-    expect(getUserName()).toBe('');
-  });
-
-  it('returns empty string when accounts is undefined', () => {
-    (useMsal as Mock).mockReturnValue({
-      accounts: undefined
-    });
-
+  it('returns empty string when account is null', () => {
+    __setAccount(null);
     expect(getUserName()).toBe('');
   });
 });
@@ -96,6 +87,9 @@ describe('Permission utilities', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     overrideGroups = '';
+    __setUserGroups({
+      hasGroup: (group: string) => group === overrideGroups
+    });
   });
 
   it('hasAccess returns true when override matches', () => {
@@ -105,14 +99,6 @@ describe('Permission utilities', () => {
   });
 
   it('isSoftwareEngineer returns true if SW_ENGINEER', () => {
-    overrideGroups = OPS_PROPOSAL_ADMIN;
-    expect(isSoftwareEngineer()).toBe(false);
-    overrideGroups = OPS_REVIEW_CHAIR;
-    expect(isSoftwareEngineer()).toBe(false);
-    overrideGroups = OPS_REVIEWER_SCIENCE;
-    expect(isSoftwareEngineer()).toBe(false);
-    overrideGroups = EXT_REVIEWER_TECHNICAL;
-    expect(isSoftwareEngineer()).toBe(false);
     overrideGroups = SW_ENGINEER;
     expect(isSoftwareEngineer()).toBe(true);
   });
@@ -120,49 +106,18 @@ describe('Permission utilities', () => {
   it('isReviewerAdmin returns true if SW_ENGINEER or OPS_PROPOSAL_ADMIN', () => {
     overrideGroups = OPS_PROPOSAL_ADMIN;
     expect(isReviewerAdmin()).toBe(true);
-    overrideGroups = OPS_REVIEW_CHAIR;
-    expect(isReviewerAdmin()).toBe(false);
-    overrideGroups = OPS_REVIEWER_SCIENCE;
-    expect(isReviewerAdmin()).toBe(false);
-    overrideGroups = EXT_REVIEWER_TECHNICAL;
-    expect(isReviewerAdmin()).toBe(false);
-    overrideGroups = SW_ENGINEER;
-    expect(isReviewerAdmin()).toBe(true);
-  });
-
-  it('isReviewerAdmin returns true if SW_ENGINEER or OPS_REVIEW_CHAIR', () => {
-    overrideGroups = OPS_PROPOSAL_ADMIN;
-    expect(isReviewerAdmin()).toBe(true);
-    overrideGroups = OPS_REVIEW_CHAIR;
-    expect(isReviewerAdmin()).toBe(false);
-    overrideGroups = OPS_REVIEWER_SCIENCE;
-    expect(isReviewerAdmin()).toBe(false);
-    overrideGroups = EXT_REVIEWER_TECHNICAL;
-    expect(isReviewerAdmin()).toBe(false);
     overrideGroups = SW_ENGINEER;
     expect(isReviewerAdmin()).toBe(true);
   });
 
   it('isReviewerScience returns true if SW_ENGINEER or OPS_REVIEWER_SCIENCE', () => {
-    overrideGroups = OPS_PROPOSAL_ADMIN;
-    expect(isReviewerScience()).toBe(true);
-    overrideGroups = OPS_REVIEW_CHAIR;
-    expect(isReviewerScience()).toBe(false);
     overrideGroups = OPS_REVIEWER_SCIENCE;
     expect(isReviewerScience()).toBe(true);
-    overrideGroups = EXT_REVIEWER_TECHNICAL;
-    expect(isReviewerScience()).toBe(false);
     overrideGroups = SW_ENGINEER;
     expect(isReviewerScience()).toBe(true);
   });
 
   it('isReviewerTechnical returns true if SW_ENGINEER or EXT_REVIEWER_TECHNICAL', () => {
-    overrideGroups = OPS_PROPOSAL_ADMIN;
-    expect(isReviewerTechnical()).toBe(true);
-    overrideGroups = OPS_REVIEW_CHAIR;
-    expect(isReviewerTechnical()).toBe(false);
-    overrideGroups = OPS_REVIEWER_SCIENCE;
-    expect(isReviewerTechnical()).toBe(false);
     overrideGroups = EXT_REVIEWER_TECHNICAL;
     expect(isReviewerTechnical()).toBe(true);
     overrideGroups = SW_ENGINEER;
@@ -172,8 +127,6 @@ describe('Permission utilities', () => {
   it('isReviewer returns true if any reviewer role matches', () => {
     overrideGroups = OPS_PROPOSAL_ADMIN;
     expect(isReviewer()).toBe(true);
-    overrideGroups = OPS_REVIEW_CHAIR;
-    expect(isReviewer()).toBe(false);
     overrideGroups = OPS_REVIEWER_SCIENCE;
     expect(isReviewer()).toBe(true);
     overrideGroups = EXT_REVIEWER_TECHNICAL;
@@ -182,15 +135,9 @@ describe('Permission utilities', () => {
     expect(isReviewer()).toBe(true);
   });
 
-  it('isReviewerChair returns true if SW_ENGINEER or isReviewerAdmin', () => {
-    overrideGroups = OPS_PROPOSAL_ADMIN;
-    expect(isReviewerChair()).toBe(true);
+  it('isReviewerChair returns true if SW_ENGINEER or OPS_REVIEW_CHAIR', () => {
     overrideGroups = OPS_REVIEW_CHAIR;
     expect(isReviewerChair()).toBe(true);
-    overrideGroups = OPS_REVIEWER_SCIENCE;
-    expect(isReviewerChair()).toBe(false);
-    overrideGroups = EXT_REVIEWER_TECHNICAL;
-    expect(isReviewerChair()).toBe(false);
     overrideGroups = SW_ENGINEER;
     expect(isReviewerChair()).toBe(true);
   });

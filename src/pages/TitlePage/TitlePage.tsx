@@ -1,4 +1,3 @@
-import React from 'react';
 import Shell from '../../components/layout/Shell/Shell';
 import TitleEntry from '../entry/TitleEntry/TitleEntry';
 
