@@ -31,17 +31,17 @@ Key Information and Actions
 
 This section describes the key functionality available on the **Panel Management** page.
 
-* Panel Creation
-
-Panel creation is **automatic**.  
-Currently, only one panel named ``Science Verification`` is created by default.  
+Panel Creation
+--------------
+Panel creation is **automatic**.  Currently, only one panel named ``Science Verification`` is created by default.  
 It appears on the **left-hand side** of the page, as shown in :numref:`Figure %s <panelmanagement1>`.
 
 .. note::
    Additional panels may be introduced in future cycles.  
    For now, all proposals are associated with the default *Science Verification* panel.
 
-* Assignment of Proposals
+Assignment of Proposals
+~~~~~~~~~~~~~~~~~~~~~~~
 
 
 Click the |assignicon| icon at the **top-right corner** of the page to automatically assign proposals to the active panel.  
@@ -53,7 +53,7 @@ Reviewable proposals or science ideas are those that have been **submitted** or 
 
 
 Assignment of Reviewers
------------------------
+~~~~~~~~~~~~~~~~~~~~~~~
 When the **Admin** opens this page, the default view lists all available reviewers, both *Science* and *Technical*.  
 By selecting or deselecting the check boxes, the Admin can **add** or **remove** reviewers from the active panel.
 
@@ -61,7 +61,7 @@ By selecting or deselecting the check boxes, the Admin can **add** or **remove**
    Notification for reviewers will be implemented in the future.
 
 Creation of Reviews and Decisions
----------------------------------
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 Once reviewers are assigned to a panel, the corresponding **Review** and **Decision** records for the proposals in that panel are created automatically.  
 These records enable reviewers to submit scores and comments, and allow chairs to make final recommendations.
 

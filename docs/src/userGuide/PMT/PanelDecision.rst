@@ -43,8 +43,7 @@ Click the card for each proposal to expand and view its corresponding reviews
 and decision details, as illustrated in :numref:`Figure %s <paneldecison2>`.
 
 Exclude a Review
-----------------
-
+---------------
 Click the |ico1| icon on any review to **exclude** it from the proposal's overall score.
 When a review is excluded, the system will automatically:
 - Recalculate the **average score** based on remaining active reviews.
