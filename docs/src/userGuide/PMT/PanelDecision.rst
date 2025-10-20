@@ -19,14 +19,19 @@ The panel decison page view presents a collapsible card for each proposal as sho
    :height: 4ex
    :alt: Add proposal button
 
+.. |submitico| image:: /images/submiticon.png
+   :height: 4ex
+   :alt: Add proposal button
 
 
 Key Information and Actions
 ===========================
 - Click on the arrow on each card to display review and decision details as shown in :numref:`Figure %s <paneldecison2>`.
-- As a review chair, click on the |ico1| to exclude a review from the overall score for the proposal.
+- As a review chair, click on the |ico1| to exclude a review from the overall score for the proposal. This will change the score and update the rank.
 - The score is the average of all the individual review ranks.
-- The rank is based on the score such that if a a proposal is 4.5 and another is 5, the 5 is ranked as 1.
+- The rank is based on the score such that if a proposal is 4.5 and another is 5, the 5 is ranked as 1 and 4.5 as 2.
+- Click on the recommendation drop-down to `Accept`, `reject` or `Accept With Revision`.
+- Click on the |submitico| icon next to this field to submit the recommendation. Once the recommendation is submitted, the status will update to `Decided`.
 
 
 .. _paneldecison2:
