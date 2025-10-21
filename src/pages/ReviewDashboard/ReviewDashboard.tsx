@@ -501,6 +501,10 @@ export default function ReviewDashboard() {
     );
   };
 
+  const panel7 = () => pieChart('reviewOverview.panel1.title', proposalPieChartData);
+  const panel8 = () => pieChart('reviewOverview.panel2.title', reviewPieChartData);
+  const panel9 = () => pieChart('reviewOverview.panel3.title', scienceCategoryPieChartData);
+
   return (
     <>
       <PageBannerPMT title={t('overview.title')} />
@@ -512,6 +516,12 @@ export default function ReviewDashboard() {
         {panel1()}
         {panel2()}
         {panel3()}
+      </Grid>
+
+      <Grid p={5} spacing={5} container alignItems="center" justifyContent="space-between">
+        {panel7()}
+        {panel8()}
+        {panel9()}
       </Grid>
 
       <Grid
