@@ -19,7 +19,7 @@ The panel decison page view presents a collapsible card for each proposal as sho
    :height: 5ex
    :alt: Add proposal button
 
-.. |submitico| image:: /images/submiticon.png
+.. |submiticon| image:: /images/submiticon.png
    :height: 5ex
    :alt: Add proposal button
 
@@ -66,13 +66,13 @@ From the **Recommendation** drop-down list, select one of the following options:
 Finalize the Decision
 ---------------------
 Once a recommendation has been selected:
-1. Click the |submitico| icon next to the drop-down to **submit** the decision.
+1. Click the |submiticon| icon next to the drop-down to **submit** the decision.
 2. The proposal's status will automatically update to **Decided**.
 3. After submission, **no further updates** can be made to the proposal review.
 
 .. warning::
    Submitting a recommendation is **final**. Ensure your decision is correct
-   before clicking the |submitico| icon.
+   before clicking the |submiticon| icon.
 
 
 .. _paneldecison2:
