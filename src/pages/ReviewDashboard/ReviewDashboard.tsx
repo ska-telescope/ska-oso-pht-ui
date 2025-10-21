@@ -16,6 +16,7 @@ import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient
 import D3PieChart from '@/components/charts/pie/D3PieChart';
 import ResizablePanel from '@/components/layout/resizablePanel/ResizablePanel';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import CardTitle from '@/components/cards/cardTitle/CardTitle';
 
 const REFRESH_TIME = 5 * 60 * 1000;
 const TABLE_WIDTH = '95vw';
@@ -380,6 +381,38 @@ export default function ReviewDashboard() {
     </Box>
   );
 
+  /*------------------------------------ */
+
+  function clickCard(id: number) {
+    // DO SOMETHING HERE
+  }
+
+  function DataType(id: number) {
+    return (
+      <Grid key={id} size={{ md: 4, lg: 3 }}>
+        <CardTitle
+          code={String(id)}
+          id={String(id)}
+          onClick={() => clickCard(id)}
+          title={'title' + id}
+          toolTip={'tooltip' + id}
+        />
+      </Grid>
+    );
+  }
+
+  const card1 = () => {
+    return DataType(0);
+  };
+  const card2 = () => {
+    return DataType(1);
+  };
+  const card3 = () => {
+    return DataType(2);
+  };
+
+  /*------------------------------------ */
+
   const pieChart = (label: string, data: any[]) => {
     return (
       <ResizablePanel title={t(label)}>
@@ -501,14 +534,17 @@ export default function ReviewDashboard() {
     );
   };
 
-  const panel7 = () => pieChart('reviewOverview.panel1.title', proposalPieChartData);
-  const panel8 = () => pieChart('reviewOverview.panel2.title', reviewPieChartData);
-  const panel9 = () => pieChart('reviewOverview.panel3.title', scienceCategoryPieChartData);
-
   return (
     <>
       <PageBannerPMT title={t('overview.title')} />
       <Spacer size={BANNER_PMT_SPACER - 20} axis={SPACER_VERTICAL} />
+
+      <Grid p={5} spacing={5} container alignItems="center" justifyContent="space-between">
+        {card1()}
+        {card2()}
+        {card3()}
+      </Grid>
+
       {filters()}
 
       {/* Metrics */}
@@ -516,12 +552,6 @@ export default function ReviewDashboard() {
         {panel1()}
         {panel2()}
         {panel3()}
-      </Grid>
-
-      <Grid p={5} spacing={5} container alignItems="center" justifyContent="space-between">
-        {panel7()}
-        {panel8()}
-        {panel9()}
       </Grid>
 
       <Grid
