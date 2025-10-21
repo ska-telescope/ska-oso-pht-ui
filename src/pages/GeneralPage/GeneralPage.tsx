@@ -111,14 +111,20 @@ export default function GeneralPage() {
     const numRows = Number(t('abstract.minDisplayRows'));
 
     const setValue = (e: string) => {
-      setProposal({ ...getProposal(), abstract: e.substring(0, MAX_CHAR) });
+      if (countWords(e) < MAX_WORD || (countWords(e) === MAX_WORD && !/\s$/.test(e))) {
+        setProposal({ ...getProposal(), abstract: e.substring(0, MAX_CHAR) });
+      }
     };
 
-    const helperFunction = (title: string) =>
-      t('abstract.helper', {
+    const helperFunction = (title: string) => {
+      const baseHelperText = t('abstract.helper', {
         current: countWords(title),
         max: MAX_WORD
       });
+      return countWords(title) === MAX_WORD
+        ? `${baseHelperText} (MAX WORD COUNT REACHED)`
+        : baseHelperText;
+    };
 
     function validateWordCount(title: string) {
       if (countWords(title) > MAX_WORD) {
