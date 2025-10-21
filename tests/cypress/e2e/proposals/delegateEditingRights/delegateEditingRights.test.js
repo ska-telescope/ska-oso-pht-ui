@@ -1,4 +1,4 @@
-import { reviewerAdmin, standardUser } from '../../users/users.js';
+import { reviewerAdmin } from '../../users/users.js';
 import {
   clearLocalStorage,
   createStandardProposalLoggedIn,
