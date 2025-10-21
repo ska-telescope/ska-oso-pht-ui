@@ -221,7 +221,9 @@ export default function TitleEntry({ page }: TitleEntryProps) {
 
   const titleField = (ipad: boolean = false) => {
     const setTitle = (e: string) => {
-      setProposal({ ...getProposal(), title: e.substring(0, MAX_CHAR) });
+      if (countWords(e) < MAX_WORD || (countWords(e) === MAX_WORD && !/\s$/.test(e))) {
+        setProposal({ ...getProposal(), title: e.substring(0, MAX_CHAR) });
+      }
     };
 
     return (
