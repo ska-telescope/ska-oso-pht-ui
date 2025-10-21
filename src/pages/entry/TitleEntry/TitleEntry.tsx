@@ -213,9 +213,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     if (!title || title?.length === 0) {
       return `${t('title.empty')}`;
     } else if (countWords(title) > MAX_WORD) {
-      return `${t('title.error')} - ${t('specialCharacters.numWord')} ${countWords(
-        title
-      )} / ${MAX_WORD}`;
+      return `${t('specialCharacters.numWord')} ${countWords(title)} / ${MAX_WORD}`;
     }
   }
 
