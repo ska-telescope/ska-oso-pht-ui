@@ -3,6 +3,26 @@ import { useMsal } from '@azure/msal-react';
 import { APP_OVERRIDE_GROUPS, TMP_REVIEWER_ID } from '../constants';
 import ProposalAccess from '../types/proposalAccess';
 
+// Internal access store
+let _userGroups: ReturnType<typeof useUserGroups> | null = null;
+let _account: any = null;
+
+export function useInitializeAccessStore() {
+  _userGroups = useUserGroups();
+  const { accounts } = useMsal();
+  _account = accounts?.[0] ?? null;
+}
+
+function getUserGroups() {
+  if (!_userGroups) throw new Error('Access store not initialized');
+  return _userGroups;
+}
+
+function getAccount() {
+  return _account;
+}
+
+// Constants
 export const PROPOSAL_ACCESS_VIEW = 'view';
 export const PROPOSAL_ACCESS_UPDATE = 'update';
 export const PROPOSAL_ACCESS_SUBMIT = 'submit';
@@ -19,16 +39,12 @@ export const OPS_REVIEWER_SCIENCE = 'obs-oauth2role-scireviewer-1635769025';
 export const EXT_REVIEWER_TECHNICAL = 'obs-oauth2role-tecreviewer-1-1994146425';
 export const SW_ENGINEER = 'obs-integrationenvs-oauth2role-sweng-11162868063';
 
+// Access logic
 const hasOverride = () => APP_OVERRIDE_GROUPS && APP_OVERRIDE_GROUPS.length > 0;
-
 const testOverride = (group: string) => APP_OVERRIDE_GROUPS.split(',').includes(group);
 
-const PermissionGroup = () => {
-  return useUserGroups();
-};
-
 export const hasAccess = (group: string) =>
-  hasOverride() ? testOverride(group) : PermissionGroup().hasGroup(group);
+  hasOverride() ? testOverride(group) : getUserGroups().hasGroup(group);
 
 export const isSoftwareEngineer = () => hasAccess(SW_ENGINEER);
 
@@ -43,32 +59,25 @@ export const isReviewer = () =>
 export const isReviewerChair = () =>
   isReviewerAdminOnly() || hasAccess(SW_ENGINEER) || hasAccess(OPS_REVIEW_CHAIR);
 
-/*****************************************************************************/
-
-const Account = () => {
-  const { accounts } = useMsal();
-  return accounts?.length > 0 ? accounts[0] : '';
-};
-
+// Account access
 export const getUserId = () => {
   return TMP_REVIEWER_ID;
-  /* This is ready for implementation when appropriate, just double check the Id is the correct one
-  const account = Account();
+  /* Ready for implementation when appropriate
+  const account = getAccount();
   return account && typeof account === 'object' && 'localAccountId' in account
     ? (account as { localAccountId?: string }).localAccountId ?? ''
     : '';
-    */
+  */
 };
 
 export const getUserName = () => {
-  const account = Account();
+  const account = getAccount();
   return account && typeof account === 'object' && 'name' in account
     ? (account as { name?: string }).name ?? ''
     : '';
 };
 
-/*****************************************************************************/
-
+// Proposal access
 export const hasProposalAccess = (
   accessList: ProposalAccess[],
   prslId: string
@@ -104,3 +113,11 @@ export const accessView = (accessList: ProposalAccess[], id: string): boolean =>
   const view = hasProposalAccessPermission(accessList, id, PROPOSAL_ACCESS_VIEW);
   return update || view;
 };
+
+export function __setAccount(account: any) {
+  _account = account;
+}
+
+export function __setUserGroups(groups: any) {
+  _userGroups = groups;
+}

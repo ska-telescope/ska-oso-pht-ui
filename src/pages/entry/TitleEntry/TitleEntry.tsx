@@ -64,7 +64,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     setTheProposalState(validateTitlePage(getProposal()));
   }, [validateToggle]);
 
-  const getTitle = () => getProposal()?.title;
+  const getTitle = () => (getProposal() ? getProposal().title : '');
 
   const setTheErrorText = (str: string) => setErrorText(str ? t(str) : '');
 
@@ -213,9 +213,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     if (!title || title?.length === 0) {
       return `${t('title.empty')}`;
     } else if (countWords(title) > MAX_WORD) {
-      return `${t('title.error')} - ${t('specialCharacters.numWord')} ${countWords(
-        title
-      )} / ${MAX_WORD}`;
+      return `${t('specialCharacters.numWord')} ${countWords(title)} / ${MAX_WORD}`;
     }
   }
 
@@ -300,30 +298,32 @@ export default function TitleEntry({ page }: TitleEntryProps) {
 
   const row1 = () => {
     return (
-      <Grid
-        pl={2}
-        pb={4}
-        container
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-        spacing={2}
-      >
-        <Grid size={{ xs: FIELD_WIDTH }} display={{ xs: 'block', lg: 'none' }}>
-          <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
-            <Grid size={{ xs: LABEL_WIDTH }}>{displayLabel(t('title.label') + ' *')}</Grid>
-            <Grid size={{ xs: 12 - LABEL_WIDTH }}>{titleField(true)}</Grid>
+      getProposal().title !== undefined && (
+        <Grid
+          pl={2}
+          pb={4}
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+          spacing={2}
+        >
+          <Grid size={{ xs: FIELD_WIDTH }} display={{ xs: 'block', lg: 'none' }}>
+            <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+              <Grid size={{ xs: LABEL_WIDTH }}>{displayLabel(t('title.label') + ' *')}</Grid>
+              <Grid size={{ xs: 12 - LABEL_WIDTH }}>{titleField(true)}</Grid>
+            </Grid>
           </Grid>
-        </Grid>
 
-        <Grid size={{ xs: FIELD_WIDTH }} display={{ xs: 'none', lg: 'block' }}>
-          <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
-            <Grid size={{ xs: LABEL_WIDTH }}>{displayLabel(t('title.label') + ' *')}</Grid>
-            <Grid size={{ xs: 8 - LABEL_WIDTH }}>{titleField()}</Grid>
-            <Grid size={{ md: 4 }}></Grid>
+          <Grid size={{ xs: FIELD_WIDTH }} display={{ xs: 'none', lg: 'block' }}>
+            <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+              <Grid size={{ xs: LABEL_WIDTH }}>{displayLabel(t('title.label') + ' *')}</Grid>
+              <Grid size={{ xs: 8 - LABEL_WIDTH }}>{titleField()}</Grid>
+              <Grid size={{ md: 4 }}></Grid>
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
+      )
     );
   };
 

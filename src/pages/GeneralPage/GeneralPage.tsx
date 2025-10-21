@@ -165,7 +165,7 @@ export default function GeneralPage() {
       errorText={getProposal().scienceCategory ? '' : t('scienceCategory.error')}
       required
       testId="categoryId"
-      value={getProposal().scienceCategory}
+      value={getProposal().scienceCategory ?? ''}
       setValue={checkCategory}
       label={t('scienceCategory.label')}
       labelBold

@@ -180,7 +180,7 @@
   },
   "page": {
     "0": {
-      "desc": "This page allows users to provide the title and Science Idea category"
+      "desc": "This page allows users to provide the title and Science Idea type"
     },
     "1": {
       "desc": "Principal Investigators should ensure that Co-Investigators are registered through the SKAO portal. Co-Investigators with pending status will be removed from the Science Idea during validation of a submitted Science Idea."

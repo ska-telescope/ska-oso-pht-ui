@@ -1,4 +1,4 @@
-import { standardUser } from '../../users/users.js';
+import { reviewerAdmin } from '../../users/users.js';
 import {
   clearLocalStorage,
   createStandardProposalLoggedIn,
@@ -22,7 +22,7 @@ import { entry } from '../../../fixtures/utils/cypress.js';
 
 describe('Delegate Editing Rights', () => {
   beforeEach(() => {
-    initialize(standardUser);
+    initialize(reviewerAdmin);
     mockCreateProposalAPI();
     cy.window().then(win => {
       win.localStorage.setItem('cypress:defaultUserLoggedIn', 'true');
