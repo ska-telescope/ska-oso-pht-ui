@@ -23,6 +23,7 @@ UNRELEASED
 * Changed: Updated helper text, to highlight to the user when max word count reached
 * Added: Unit tests for word count functionality 
 * Changed: Cypress vesion to 15.5.0
+* Changed: Length of the abstract fiel display
 
 7.0.0
 ----------
