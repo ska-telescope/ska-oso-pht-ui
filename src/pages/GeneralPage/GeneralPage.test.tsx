@@ -53,3 +53,34 @@ describe('setValue function', () => {
     });
   });
 });
+
+describe('Abstract helperFunction', () => {
+  const t = vi.fn((key, params) => {
+    if (key === 'abstract.helper') {
+      return `Current: ${params.current}, Max: ${params.max}`;
+    }
+  });
+  const countWords = vi.fn();
+
+  const helperFunction = (abstract: string) => {
+    const baseHelperText = t('abstract.helper', {
+      current: countWords(abstract),
+      max: 10
+    });
+    return countWords(abstract) === 10
+      ? `${baseHelperText} (MAX WORD COUNT REACHED)`
+      : baseHelperText;
+  };
+
+  test('returns helper text with current and max word count, without max word count message when word count is below max', () => {
+    countWords.mockReturnValue(8);
+    const result = helperFunction('This abstract has less than ten words');
+    expect(result).toBe('Current: 8, Max: 10');
+  });
+
+  test('appends max word count reached message when word count equals max', () => {
+    countWords.mockReturnValue(10);
+    const result = helperFunction('This abstract has exactly ten words now');
+    expect(result).toBe('Current: 10, Max: 10 (MAX WORD COUNT REACHED)');
+  });
+});
