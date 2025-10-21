@@ -30,7 +30,7 @@ Key Information and Actions
 This section describes the core actions available to a **Science/Technical Reviewer** when performing proposal reviews.
 
 Search and Filter Proposals
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------
 Use the **search bar** at the top of the page to quickly locate proposals by *Title*.  
 You can also use the **Status** drop-down menu to filter proposals based on their current **Science Review** status.
 
@@ -38,7 +38,7 @@ You can also use the **Status** drop-down menu to filter proposals based on thei
    Combine both the title search and status filter to narrow down proposals efficiently.
 
 Conflict of Interest Declaration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------
 When a Science Reviewer clicks the |sciencereviewicon| icon for the **first time**,  
 a **Conflict of Interest Declaration** dialog appears, as shown in :numref:`Figure %s <reviewConflict>`.
 
@@ -66,14 +66,14 @@ The available options are:
 
 
 Reviewing a Proposal
-~~~~~~~~~~~~~~~~~~~~
+--------------------
 - If **no conflict** is declared, the proposal science review screen will be accessible fro science reviews, as shown in :numref:`Figure %s <reviewScreen>`.
 
 - The review screen allows you to view key proposal details, enter comments, and assign ranks.
 - For technical reviews, the screen is shown in :numref:`Figure %s <techreviewScreen>`
 
 Ranking Proposals and Adding Comments
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------------------
 On the **right-hand side** of each proposal in read-only mode:
 
 1. Click the corresponding **rank field** to assign your score for science review or one of *Yes*, *Maybe*, *No* for technical review.
@@ -85,7 +85,7 @@ On the **right-hand side** of each proposal in read-only mode:
    especially when entering extended comments.
 
 Submitting a Review
-~~~~~~~~~~~~~~~~~~~
+-------------------
 Once you are satisfied with your assigned rank and comments, click the **|submiticon| Submit Review** button  
 to finalise your review for that proposal.
 
