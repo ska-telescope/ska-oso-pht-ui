@@ -111,7 +111,9 @@ export default function GeneralPage() {
     const numRows = Number(t('abstract.minDisplayRows'));
 
     const setValue = (e: string) => {
-      setProposal({ ...getProposal(), abstract: e.substring(0, MAX_CHAR) });
+      if (countWords(e) <= MAX_WORD) {
+        setProposal({ ...getProposal(), abstract: e.substring(0, MAX_CHAR) });
+      }
     };
 
     const helperFunction = (title: string) =>
