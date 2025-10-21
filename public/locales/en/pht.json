@@ -17,7 +17,7 @@
     "helper": "Please enter the abstract of your proposal. This field allows latex syntax. - Word count {{current}} / {{max}}",
     "maxChar": "2300",
     "maxWord": "250",
-    "minDisplayRows": "5",
+    "minDisplayRows": "10",
     "latexPreviewTitle": "Abstract Preview"
   },
   "actions": {
