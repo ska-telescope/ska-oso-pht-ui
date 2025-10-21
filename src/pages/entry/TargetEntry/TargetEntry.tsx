@@ -35,6 +35,8 @@ interface TargetEntryProps {
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 const PANEL_HEIGHT = '54vh';
 
+const isSV = () => true;
+
 export default function TargetEntry({
   raType,
   setTarget = undefined,
@@ -410,19 +412,23 @@ export default function TargetEntry({
                 <Grid p={1}>{nameField()}</Grid>
                 <Grid p={1}>{skyDirection1Field()}</Grid>
                 <Grid p={1}>{skyDirection2Field()}</Grid>
-                <Grid pt={5}>
-                  <GroupLabel labelText={t('pulsarTimingBeam.groupLabel').toUpperCase()} />
-                </Grid>
-                <Grid p={1}>{pulsarTimingBeamField()}</Grid>
+                {!isSV() && (
+                  <Grid pt={5}>
+                    <GroupLabel labelText={t('pulsarTimingBeam.groupLabel').toUpperCase()} />
+                  </Grid>
+                )}
+                {!isSV() && <Grid p={1}>{pulsarTimingBeamField()}</Grid>}
                 <Grid>
                   <GroupLabel labelText={t('radialMotion.label').toUpperCase()} />
                 </Grid>
                 <Grid p={1}>{velocityField()}</Grid>
                 <Grid p={1}>{velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}</Grid>
-                <Grid pt={1}>
-                  <GroupLabel labelText={t('fieldPattern.groupLabel').toUpperCase()} />
-                </Grid>
-                <Grid p={1}>{fieldPatternTypeField()}</Grid>
+                {!isSV() && (
+                  <Grid pt={1}>
+                    <GroupLabel labelText={t('fieldPattern.groupLabel').toUpperCase()} />
+                  </Grid>
+                )}
+                <Grid p={1}>{!isSV() && fieldPatternTypeField()}</Grid>
               </Grid>
             </Box>
           </Grid>
