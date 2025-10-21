@@ -21,6 +21,7 @@ UNRELEASED
 * Changed: Amended Panel Management so that reviewers will be shown once for each review type they are capable of performing
 * Changed: Restricted title and abstract fields, disabling the entry of more than the max word count
 * Changed: Cypress vesion to 15.5.0
+* Changed: Fixed help panel display on observation page 
 
 7.0.0
 ----------
