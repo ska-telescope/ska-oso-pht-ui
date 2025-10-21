@@ -25,7 +25,7 @@ they are science or technical reviewers then they can either review the technica
 
 
 Key Information and Actions
----------------------------
+===========================
 
 This section describes the core actions available to a **Science/Technical Reviewer** when performing proposal reviews.
 

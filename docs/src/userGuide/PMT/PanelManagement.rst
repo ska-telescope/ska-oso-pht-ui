@@ -33,6 +33,7 @@ This section describes the key functionality available on the **Panel Management
 
 Panel Creation
 --------------
+
 Panel creation is **automatic**.  Currently, only one panel named ``Science Verification`` is created by default.  
 It appears on the **left-hand side** of the page, as shown in :numref:`Figure %s <panelmanagement1>`.
 
