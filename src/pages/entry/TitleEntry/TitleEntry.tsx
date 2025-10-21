@@ -226,6 +226,16 @@ export default function TitleEntry({ page }: TitleEntryProps) {
       }
     };
 
+    const helperFunction = (title: string) => {
+      const baseHelperText = t('title.helper', {
+        current: countWords(title),
+        max: MAX_WORD
+      });
+      return countWords(title) === MAX_WORD
+        ? `${baseHelperText} (MAX WORD COUNT REACHED)`
+        : baseHelperText;
+    };
+
     return (
       <TextEntry
         label=""
@@ -238,14 +248,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
           helpers.validate.validateTextEntry(title, setTitle, setTheErrorText, 'TITLE')
         }
         errorText={validateWordCount(getProposal().title)}
-        helperText={
-          getProposal()?.title?.length > 0
-            ? t('title.helper', {
-                current: countWords(getProposal().title),
-                max: MAX_WORD
-              })
-            : ''
-        }
+        helperText={helperFunction(getProposal().title as string)}
         suffix={<ViewIcon toolTip={t('latex.toolTip')} onClick={handleOpenTitleLatexModal} />}
       />
     );

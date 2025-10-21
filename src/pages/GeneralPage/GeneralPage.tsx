@@ -116,11 +116,15 @@ export default function GeneralPage() {
       }
     };
 
-    const helperFunction = (title: string) =>
-      t('abstract.helper', {
+    const helperFunction = (title: string) => {
+      const baseHelperText = t('abstract.helper', {
         current: countWords(title),
         max: MAX_WORD
       });
+      return countWords(title) === MAX_WORD
+        ? `${baseHelperText} (MAX WORD COUNT REACHED)`
+        : baseHelperText;
+    };
 
     function validateWordCount(title: string) {
       if (countWords(title) > MAX_WORD) {
