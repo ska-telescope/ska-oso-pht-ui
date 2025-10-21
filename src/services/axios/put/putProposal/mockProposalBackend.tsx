@@ -191,6 +191,7 @@ export const MockProposalBackend: ProposalBackend = {
         weighting: '1'
       }
     ],
+    // calibration_strategy: null, // TODO
     result_details: [
       {
         observation_set_ref: 'obs-obR1Ej',
@@ -356,6 +357,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
         weighting: '2'
       }
     ],
+    // calibration_strategy: null, // TODO
     result_details: [
       {
         observation_set_ref: 'obs-arMIoY',

@@ -294,6 +294,7 @@ export const MockProposalFrontend: Proposal = {
     }
   ],
   dataProductSRC: [],
+  calibrationStrategy: [],
   pipeline: ''
 };
 
@@ -469,5 +470,6 @@ export const MockProposalFrontendZoom: Proposal = {
     }
   ],
   dataProductSRC: [],
+  calibrationStrategy: [],
   pipeline: ''
 };

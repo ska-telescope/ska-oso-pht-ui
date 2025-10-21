@@ -288,6 +288,7 @@ export const MockProposalFrontend: Proposal = {
     }
   ],
   technicalPDF: null,
+  calibrationStrategy: [],
   technicalLoadStatus: 9,
   dataProductSDP: [
     {
@@ -333,6 +334,7 @@ export const MockProposalFrontendZoom: Proposal = {
   scienceLoadStatus: 9,
   sciencePDF: null,
   technicalPDF: null,
+  calibrationStrategy: [],
   targetOption: 1,
   targets: [
     {
@@ -509,6 +511,7 @@ export const MockNullProposalFrontend: Proposal = {
   groupObservations: [],
   targetObservation: [],
   technicalPDF: null,
+  calibrationStrategy: [],
   technicalLoadStatus: 9,
   dataProductSDP: undefined,
   dataProductSRC: [],
