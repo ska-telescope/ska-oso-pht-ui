@@ -41,7 +41,11 @@ interface PageBannerPPTProps {
 const widthWrapStatusArray = '1500px';
 
 export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) {
-  const LG = useMediaQuery(useTheme().breakpoints.down('lg'));
+  const theme = useTheme();
+  const LG = useMediaQuery(theme.breakpoints.down('lg'), {
+    defaultMatches: false,
+    noSsr: true
+  });
   const wrapStatusArray = useMediaQuery(`(max-width:${widthWrapStatusArray})`); // revisit to implement override breakpoint
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
@@ -57,7 +61,6 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const loggedIn = isLoggedIn();
 
   const getAccess = () => application.content4 as ProposalAccess[];
-  const getProposal = () => application.content2 as Proposal;
 
   const isDisableEndpoints = () => {
     /* c8 ignore start */
@@ -86,8 +89,8 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
           results.push(t('page.' + key + '.pageError'));
         }
       }
-      const response = await PostProposalValidate(authClient, getProposal());
-      const submit = accessSubmit(getAccess(), getProposal().id);
+      const response = await PostProposalValidate(authClient, application.content2 as Proposal);
+      const submit = accessSubmit(getAccess(), (application.content2 as Proposal).id);
       if (response.valid && !response.error && results.length === 0) {
         notifySuccess(t(`validationBtn.${response.valid}`));
         setCanSubmit(submit);
@@ -114,10 +117,11 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     }
   };
 
-  const updateProposal = async () => {
-    if (isDisableEndpoints() || pageNo === 0) return;
-    const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.DRAFT);
-    updateProposalResponse(response);
+  const updateProposal = async (proposal: Proposal) => {
+    if (!isDisableEndpoints() || pageNo === 0) {
+      const response = await PutProposal(authClient, proposal, PROPOSAL_STATUS.DRAFT);
+      updateProposalResponse(response);
+    }
   };
 
   const submitClicked = () => {
@@ -125,7 +129,11 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   };
 
   const submitConfirmed = async () => {
-    const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.SUBMITTED);
+    const response = await PutProposal(
+      authClient,
+      application.content2 as Proposal,
+      PROPOSAL_STATUS.SUBMITTED
+    );
     if (response && !('error' in response)) {
       notifySuccess(t('submitBtn.success'));
       setOpenProposalDisplay(false);
@@ -151,8 +159,8 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   );
 
   const handleSave = React.useCallback(() => {
-    updateProposal();
-  }, []);
+    updateProposal(application.content2 as Proposal);
+  }, [application.content2]);
 
   const buttonsLeft = () => (
     <Grid
@@ -282,7 +290,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
       {openProposalDisplay && (
         <ProposalDisplay
-          proposal={getProposal()}
+          proposal={application.content2 as Proposal}
           open={openProposalDisplay}
           onClose={() => setOpenProposalDisplay(false)}
           onConfirm={submitConfirmed}
@@ -293,7 +301,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         <ValidationResults
           open={openValidationResults}
           onClose={() => setOpenValidationResults(false)}
-          proposal={getProposal()}
+          proposal={application.content2 as Proposal}
           results={validationResults}
         />
       )}
