@@ -1,4 +1,3 @@
-import React from 'react';
 import { Grid } from '@mui/material';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import Alert from '../../../../components/alerts/standardAlert/StandardAlert';
@@ -12,9 +11,9 @@ export default function SpatialImaging() {
       direction="row"
       alignItems="flex-start"
       justifyContent="space-around"
-      sx={{ width: '56vw' }}
+      sx={{ width: '100%' }}
     >
-      <Grid>
+      <Grid p={10}>
         <Alert
           color={AlertColorTypes.Info}
           text="This functionality is not currently available"

@@ -1,14 +1,7 @@
-import {
-  TableRow,
-  TableCell,
-  IconButton,
-  Box,
-  Typography,
-  Collapse,
-  useTheme
-} from '@mui/material';
+import { TableRow, TableCell, IconButton, Box, Typography, Collapse } from '@mui/material';
 import { ChevronRight, ExpandMore } from '@mui/icons-material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
+import { useTheme } from '@mui/material/styles';
 import TableTechnicalReviews from '../../tableTechnicalReview/TableTechnicalReviews';
 import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
 import TableScienceReviews from '@/components/grid/tableScienceReviews/TableScienceReviews';
@@ -19,7 +12,7 @@ import {
   RECOMMENDATION_STATUS_IN_PROGRESS,
   REVIEW_TYPE
 } from '@/utils/constants';
-import { isReviewerAdminOnly } from '@/utils/aaa/aaaUtils';
+import { isReviewerAdminOnly, useInitializeAccessStore } from '@/utils/aaa/aaaUtils';
 
 interface TableReviewDecisionRowProps {
   item: any;
@@ -51,6 +44,7 @@ export default function TableReviewDecisionRow({
   t
 }: TableReviewDecisionRowProps) {
   const theme = useTheme();
+  useInitializeAccessStore();
 
   const getFeasibility = () => {
     const reviews = getReviews(item.reviews, REVIEW_TYPE.TECHNICAL);

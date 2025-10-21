@@ -1102,6 +1102,7 @@
     "actions": "Actions",
     "expandDetails": "Expand Details",
     "excluded": "Excluded?",
+    "included": "Included?",
     "lastUpdated": "Last Updated",
     "decisionComments": "Decision Comments",
     "decisionScore": "Score",
@@ -1218,7 +1219,7 @@
       "status": "Title",
       "title": "Title",
       "titleShort": "Title",
-      "desc": "This page allows users to provide the title and proposal category",
+      "desc": "This page allows users to provide the title and proposal type",
       "pageError": "The TITLE page is not complete"
     },
     "1": {
