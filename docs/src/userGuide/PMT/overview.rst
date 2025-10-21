@@ -1,14 +1,17 @@
-Reporting
+Overview
 ---------
-
+This page provides Admin with an overview of progress across proposal status, reviews status and panel decison status. 
+It also provides a view into the reviews in terms of score distribution etc. :numref:`Figure %s <overview>`
+shows example charts on this page. 
 
 .. _overview:
 .. figure:: /images/overview.png
    :width: 95%
    :align: center
-   :alt: Status, navigation, and validation displayed at the top of each page in a proposal.
+   :alt: Example charts on the overview page.
 
-   Status, Navigation and Validation displayed at the top of each page in a proposal.
+   Example charts on the overview page.
+
 
 
 
