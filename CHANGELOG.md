@@ -20,10 +20,7 @@ UNRELEASED
 * Changed: Target page documentation, includes updated screenshots
 * Changed: Amended Panel Management so that reviewers will be shown once for each review type they are capable of performing
 * Changed: Restricted title and abstract fields, disabling the entry of more than the max word count
-* Changed: Updated helper text, to highlight to the user when max word count reached
-* Added: Unit tests for word count functionality 
 * Changed: Cypress vesion to 15.5.0
-* Changed: Length of the abstract fiel display
 
 7.0.0
 ----------
