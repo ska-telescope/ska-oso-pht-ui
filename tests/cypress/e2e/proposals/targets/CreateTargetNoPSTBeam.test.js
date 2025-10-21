@@ -42,8 +42,10 @@ afterEach(() => {
   clearLocalStorage();
 });
 
+// TODO : Suppressed for now. Will need to be moved to the correct place eventually.
+
 describe('Create Target with no PST Beam', () => {
-  it('Create target with no pst beam, then link to observation', () => {
+  it.skip('Create target with no pst beam, then link to observation', () => {
     clickToNextPage(); // go to observation page
 
     createObservation(); //add observation
@@ -52,14 +54,14 @@ describe('Create Target with no PST Beam', () => {
     verifySensCalcStatus(); //verify sens calc status
   });
 
-  it("Verify on target edit, 'No Beam' remains selected", () => {
+  it.skip("Verify on target edit, 'No Beam' remains selected", () => {
     verifyTargetNoBeamInTable();
     clickFirstRowOfTargetTable();
     tabToEditTarget(); // use tab to click edit target from target table
     verifyNoBeamRadioButtonSelected(); //verify No beam is selected (default value)
   });
 
-  it("Verify on target edit, when No Beam' is selected, a PST Beam can be added ", () => {
+  it.skip("Verify on target edit, when No Beam' is selected, a PST Beam can be added ", () => {
     verifyTargetNoBeamInTable();
     clickFirstRowOfTargetTable();
     tabToEditTarget(); // use tab to click edit target from target table

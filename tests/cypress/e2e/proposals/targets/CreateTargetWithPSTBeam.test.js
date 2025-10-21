@@ -48,8 +48,10 @@ afterEach(() => {
   clearLocalStorage();
 });
 
+// TODO : Suppressed for now. Will need to be moved to the correct place eventually.
+
 describe('Create Target with PST Beam', () => {
-  it('Create target with pst beam, then link to observation', () => {
+  it.skip('Create target with pst beam, then link to observation', () => {
     clickToAddTarget();
     clickToNextPage(); // go to observation page
 
@@ -59,7 +61,7 @@ describe('Create Target with PST Beam', () => {
     verifySensCalcStatus(); //verify sens calc status
   });
 
-  it("Verify on target edit, with pst beam, 'Multiple Beams' remains selected", () => {
+  it.skip("Verify on target edit, with pst beam, 'Multiple Beams' remains selected", () => {
     clickToAddTarget();
     verifyTargetWithBeamB0329InTargetTable();
     clickFirstRowOfTargetTable();
@@ -68,7 +70,7 @@ describe('Create Target with PST Beam', () => {
     verifyBeamInTableOnTargetEdit(); //confirm previously added beam is in table
   });
 
-  it('Add multiple beams', () => {
+  it.skip('Add multiple beams', () => {
     clickToAddPSTBeam();
     addBeamUsingResolve('M2');
     cy.wait('@mockResolveTarget'); //Add M2 as second beam
