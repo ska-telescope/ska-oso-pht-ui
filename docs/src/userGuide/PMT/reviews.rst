@@ -15,12 +15,12 @@ they are science or technical reviewers then they can either review the technica
    Overview of the Panel review landing page.
 
 .. |sciencereviewicon| image:: /images/sciencereviewicon.png
-   :width: 10%
+   :width: 15%
    :alt: Page filter
 
 
 .. |technicalreviewicon| image:: /images/technicalreviewicon.png
-   :width: 10%
+   :width: 15%
    :alt: Page filter
 
 

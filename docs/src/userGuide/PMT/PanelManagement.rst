@@ -66,12 +66,12 @@ These records enable reviewers to submit scores and comments, and allow chairs t
 
 
 .. |assignicon| image:: /images/assignIcon.png
-   :width: 10%
+   :width: 15%
    :alt: Page filter
 
 
 .. |overviewicon| image:: /images/overviewicon.png
-   :width: 10%
+   :width: 15%
    :alt: Page filter
    
 

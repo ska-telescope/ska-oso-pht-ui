@@ -16,11 +16,11 @@ The panel decison page view presents a collapsible card for each proposal as sho
    Landing page of the panel decision at proposal level.
 
 .. |ico1| image:: /images/good.png
-   :height: 4ex
+   :height: 5ex
    :alt: Add proposal button
 
 .. |submitico| image:: /images/submiticon.png
-   :height: 4ex
+   :height: 5ex
    :alt: Add proposal button
 
 
@@ -46,8 +46,8 @@ Exclude a Review
 ---------------
 Click the |ico1| icon on any review to **exclude** it from the proposal's overall score.
 When a review is excluded, the system will automatically:
-- Recalculate the **average score** based on remaining active reviews.
-- Update the **rank** accordingly.
+-  Recalculate the **average score** based on remaining active reviews.
+-  Update the **rank** accordingly.
 
 Understanding Scores and Ranks
 ------------------------------
