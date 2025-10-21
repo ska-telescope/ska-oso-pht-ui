@@ -10,8 +10,7 @@ The layout of the page is presented in :numref:`Figure %s <panelmanagement1>`.
 
 *  |overviewicon| in the top-left of the page takes you to the :doc:`Overview Page </userGuide/PMT/overview>`. 
 *  |assignicon| performs auto-assignment of proposals to the panel.
-*  There are search fields that allows you to filter on `Expertize` of the reviewers, `Location` of the reviewers and the `Name` of the reviewers on the `REVIEWERS` tab.
-  On the `PROPOSALS/SCIENCE IDEAS` tab, the search fields are on the `type` of proposal/science ideas, `Science Category` and free search on the title of the proposals/science ideas.
+*  There are search fields that allows you to filter on `Expertize` of the reviewers, `Location` of the reviewers and the `Name` of the reviewers on the `REVIEWERS` tab. On the `PROPOSALS/SCIENCE IDEAS` tab, the search fields are on the `type` of proposal/science ideas, `Science Category` and free search on the title of the proposals/science ideas.
 *  The default view is the `REVIEWERS` to see all available reviewers and the `PROPOSAL/SCIENCE IDEAS` tab displays all the proposals that are reviewable (submitted and under review).
 
 
@@ -81,9 +80,9 @@ These records enable reviewers to submit scores and comments, and allow chairs t
 .. figure:: /images/panelProposal.png
    :width: 95%
    :align: center
-   :alt: Status, navigation, and validation displayed at the top of each page in a proposal.
+   :alt: Panel Management Proposals display.
 
-   Status, Navigation and Validation displayed at the top of each page in a proposal.
+   Panel Management Proposals display.
 
 
 
