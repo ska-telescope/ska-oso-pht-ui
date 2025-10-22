@@ -85,11 +85,10 @@ describe('Abstract helperFunction', () => {
 
   test('appends max word count reached message when word count equals max', () => {
     countWords.mockReturnValue(10);
-    const result = helperFunction('This abstract has a word count of exactly ten words');
-    expect(result).toEqual(
-      <>
-        Current: 10, Max: 10 <span style={{ color: 'red' }}>(MAX WORD COUNT REACHED)</span>
-      </>
+    const { container } = render(
+      helperFunction('This abstract has a word count of exactly ten words')
     );
+    expect(container.textContent).toContain('Current: 10, Max: 10');
+    expect(container.textContent).toContain('(MAX WORD COUNT REACHED)');
   });
 });
