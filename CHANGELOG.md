@@ -6,18 +6,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+
+8.0.0
+----------
 * Changed: Display of Add target tab on target page
 * Changed: Panel Maintenance to Panel Management.
 * Added: Pulsar timing beam functionality when creating/editing a target
 * Adds PMT to User Guide structure.
 * Added: Calibration page
-* Changed Panel Maintenance to Panel Management.
-* Added: PMT to User Guide structure.
-* Added: Calibration page
 * [BREAKING]: Changed: OSO-services : v8.0.0
 * [BREAKING]: Changed: ODA : v12.0.1
-* Added: End-to-End tests for target page, testing pulsar timing beam functionality
-* Changed: Target page documentation, includes updated screenshots
 * Changed: Amended Panel Management so that reviewers will be shown once for each review type they are capable of performing
 * Changed: Restricted title and abstract fields, disabling the entry of more than the max word count
 * Changed: Cypress vesion to 15.5.0
