@@ -3,6 +3,8 @@ import { Grid, IconButton, Typography } from '@mui/material';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
 import { cypressToken, NAV, STATUS_ERROR_SYMBOL } from '@utils/constants.ts';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
+import Proposal from '@utils/types/proposal.tsx';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface StatusWrapperProps {
@@ -15,6 +17,8 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
   const navigate = useNavigate();
   const SIZE = 30;
   const loggedIn = isLoggedIn();
+  const { application } = storageObject.useStore();
+  const getProposal = () => application.content2 as Proposal;
 
   const ClickFunction = () => {
     navigate(NAV[page]);
@@ -25,6 +29,13 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
       switch (pageName()) {
         case 'Target':
         case 'Observation':
+          return false;
+        default:
+          return true;
+      }
+    } else if (loggedIn && getProposal().id == null) {
+      switch (pageName()) {
+        case 'Title':
           return false;
         default:
           return true;
