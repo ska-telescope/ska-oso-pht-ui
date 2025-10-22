@@ -79,13 +79,18 @@ describe('Abstract helperFunction', () => {
 
   test('returns helper text with current and max word count, without max word count message when word count is below max', () => {
     countWords.mockReturnValue(8);
-    const result = helperFunction('This abstract has less than ten words');
+    const result = helperFunction('This abstract has less than ten words altogether');
     expect(result).toBe('Current: 8, Max: 10');
   });
 
   test('appends max word count reached message when word count equals max', () => {
     countWords.mockReturnValue(10);
-    const result = helperFunction('This abstract has exactly ten words now');
-    expect(result).toBe('Current: 10, Max: 10 (MAX WORD COUNT REACHED)');
+    const result = helperFunction('This abstract has a word count of exactly ten words');
+    expect(result).toEqual(
+      <>
+        Current: 10, Max: 10{' '}
+        <span style={{ color: 'red' }}>(MAX WORD COUNT REACHED)</span>
+      </>
+    );
   });
 });
