@@ -48,8 +48,7 @@ describe('Title helperFunction', () => {
     const result = helperFunction('This title has a word count of exactly ten words');
     expect(result).toEqual(
       <>
-        Current: 10, Max: 10{' '}
-        <span style={{ color: 'red' }}>(MAX WORD COUNT REACHED)</span>
+        Current: 10, Max: 10 <span style={{ color: 'red' }}>(MAX WORD COUNT REACHED)</span>
       </>
     );
   });
