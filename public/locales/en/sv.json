@@ -27,7 +27,8 @@
   },
   "cloneProposal": {
     "toolTip": "Clone Science Idea",
-    "confirm": "Clone this Science Idea."
+    "confirm": "Clone this Science Idea.",
+    "suffix": " - copy"
   },
   "conflict": {
     "tooltip": "Indicate whether there is a conflict of interest with this Science Idea"
@@ -170,7 +171,7 @@
   },
   "validationBtn": {
     "success": "Science Idea is Valid",
-    "tooltip": "Performs enhanced validation upon the Science Idea"
+    "tooltip": "Performs validation upon the Science Idea"
   },
   "viewProposal": {
     "toolTip": "View Science Idea"

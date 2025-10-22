@@ -76,7 +76,7 @@ export default function PHT() {
   const [theMode, setTheMode] = React.useState(
     localStorage.getItem('skao_theme_mode') !== THEME_DARK ? THEME_LIGHT : THEME_DARK
   );
-  const [apiVersion] = React.useState('2.2.0'); // TODO : Obtain real api version number
+  const [apiVersion] = React.useState('8.0.1'); // TODO : Obtain real api version number
 
   const LG = () => useMediaQuery(theTheme.breakpoints.down('lg')); // Allows us to code depending upon screen size
   const REQUIRED_WIDTH = useMediaQuery('(min-width:600px)');
