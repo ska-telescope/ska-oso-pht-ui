@@ -181,7 +181,6 @@ export const clickToNextPage = () => clickButton('nextButtonTestId');
 export const clickToPreviousPage = () => clickButton('prevButtonTestId');
 
 export const clickToLinkTargetObservation = () => clickButton('linkedTickBox');
-
 /*----------------------------------------------------------------------*/
 
 export const clickDropdown = (testId, value) => {
