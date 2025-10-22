@@ -63,13 +63,18 @@ describe('Abstract helperFunction', () => {
   const countWords = vi.fn();
 
   const helperFunction = (abstract: string) => {
+    const color = 'red'; // Simplified for testing
     const baseHelperText = t('abstract.helper', {
       current: countWords(abstract),
       max: 10
     });
-    return countWords(abstract) === 10
-      ? `${baseHelperText} (MAX WORD COUNT REACHED)`
-      : baseHelperText;
+    return countWords(abstract) === 10 ? (
+      <>
+        {baseHelperText} <span style={{ color: color }}>(MAX WORD COUNT REACHED)</span>
+      </>
+    ) : (
+      baseHelperText
+    );
   };
 
   test('returns helper text with current and max word count, without max word count message when word count is below max', () => {
