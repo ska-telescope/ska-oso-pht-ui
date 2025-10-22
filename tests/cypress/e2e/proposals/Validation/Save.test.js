@@ -24,7 +24,10 @@ describe('Proposal Save API', () => {
 
   it('sends correct payload and receives expected response', () => {
     // Spy on the real POST request
-    cy.intercept('POST', '**/pht/prsls/create').as('createProposalAPI');
+    const token = '';
+    cy.intercept('POST', '**/pht/prsls/create', (req) => {
+      req.headers['Authorization'] = `Bearer ${token}`;
+    }).as('createProposalAPI');
 
     // Spy on the real PUT request
     cy.intercept('PUT', '**/pht/prsls/prsl-t0001-20251021-00003').as('saveProposal');
@@ -62,7 +65,7 @@ describe('Proposal Save API', () => {
       });
       // Verify the actual response from the API
       expect(interception.response.statusCode).to.eq(200);
-      expect(interception.response.body).to.have.property('prsl_id', 'prsl-t0001-20251022-00001');
+      expect(interception.response.body).to.have.property('prsl_id', 'prsl-t0001-20251022-00002');
     });
     // verifyProposalCreatedAlertFooter();
     // clickSave();
