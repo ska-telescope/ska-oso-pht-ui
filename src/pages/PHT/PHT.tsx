@@ -63,7 +63,8 @@ const ROUTES = [
   { path: PMT[3], element: null },
   { path: PMT[4], element: <PanelReviewDecisionList /> },
   { path: PMT[5], element: <ReviewEntry reviewType={REVIEW_TYPE.SCIENCE} /> },
-  { path: PMT[6], element: <ReviewEntry reviewType={REVIEW_TYPE.TECHNICAL} /> }
+  { path: PMT[6], element: <ReviewEntry reviewType={REVIEW_TYPE.TECHNICAL} /> },
+  { path: '*', element: <LandingPage /> }
 ];
 
 export default function PHT() {
