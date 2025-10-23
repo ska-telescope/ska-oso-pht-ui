@@ -6,7 +6,9 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import {
-  AUTO_SAVE_INTERVAL, cypressProposal, cypressToken,
+  AUTO_SAVE_INTERVAL,
+  cypressProposal,
+  cypressToken,
   LAST_PAGE,
   NAV,
   PAGE_SRC_NET,

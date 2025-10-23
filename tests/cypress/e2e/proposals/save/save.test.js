@@ -8,7 +8,8 @@ import {
   clickProposalTypePrincipleInvestigator,
   clickSubProposalTypeTargetOfOpportunity,
   clickCreateProposal,
-  verifyProposalCreatedAlertFooter, checkFieldDisabled
+  verifyProposalCreatedAlertFooter,
+  checkFieldDisabled
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -32,7 +33,7 @@ describe('Verify Save', () => {
     clickAddProposal();
     clickCycleConfirm();
     //Verify save is disabled before proposal creation
-    checkFieldDisabled('saveBtn', true)
+    checkFieldDisabled('saveBtn', true);
   });
 
   it('Verify save functionality is not restricted after proposal creation', () => {
@@ -45,6 +46,6 @@ describe('Verify Save', () => {
     cy.wait('@mockCreateProposal');
     verifyProposalCreatedAlertFooter();
     //Verify save is enabled after proposal creation
-    checkFieldDisabled('saveBtn', false)
+    checkFieldDisabled('saveBtn', false);
   });
 });
