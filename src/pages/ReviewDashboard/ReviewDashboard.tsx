@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { DropDown, SearchEntry, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
-import { Box, Card, Grid } from '@mui/material';
+import { Box, Card, Grid, Typography } from '@mui/material';
 import { groupBy } from 'lodash';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -14,32 +14,41 @@ import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import ResetButton from '@/components/button/Reset/Reset';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import D3PieChart from '@/components/charts/pie/D3PieChart';
+// NEW: Grouped/Single D3 bar chart
+import D3CategoryBarChart from '@/components/charts/bar/D3CategoryBarChart';
 import ResizablePanel from '@/components/layout/resizablePanel/ResizablePanel';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+
+
 
 const REFRESH_TIME = 5 * 60 * 1000;
 const TABLE_WIDTH = '95vw';
 const TABLE_CONTAINER_WIDTH = '97vw';
+
+type DashboardView = 'proposal' | 'review' | 'decision';
+
 export default function ReviewDashboard() {
   const { t } = useScopedTranslation();
   const [filter, setFilter] = useState({ telescope: '', country: '' });
   const [search, setSearch] = useState('');
-  const [currentReport, setCurrentReport] = React.useState([]);
-  const [filteredReport, setFilteredReport] = React.useState([]);
+  const [currentReport, setCurrentReport] = React.useState<any[]>([]);
+  const [filteredReport, setFilteredReport] = React.useState<any[]>([]);
   const [, setAxiosError] = React.useState(''); // TODO: update to display axiosError
-  const [proposalPieChartData, setProposalPieChartData] = React.useState([]);
-  const [reviewPieChartData, setReviewPieChartData] = React.useState([]);
-  const [scienceCategoryPieChartData, setScienceCategoryPieChartData] = React.useState([]);
-  const [panelTableData, setPanelTableData] = React.useState([]);
-  const [panelReviewerTableData, setPanelReviewerTableData] = React.useState([]);
-  const [panelScienceCategoryTableData, setPanelScienceCategoryTableData] = React.useState([]);
+  const [proposalPieChartData, setProposalPieChartData] = React.useState<any[]>([]);
+  const [reviewPieChartData, setReviewPieChartData] = React.useState<any[]>([]);
+  const [scienceCategoryPieChartData, setScienceCategoryPieChartData] = React.useState<any[]>([]);
+  const [panelTableData, setPanelTableData] = React.useState<any[]>([]);
+  const [panelReviewerTableData, setPanelReviewerTableData] = React.useState<any[]>([]);
+  const [panelScienceCategoryTableData, setPanelScienceCategoryTableData] = React.useState<any[]>([]);
   const authClient = useAxiosAuthClient();
 
-  const calculateAllStats = (report: any) => {
+  // NEW: Active dashboard section (cards)
+  const [activeView, setActiveView] = useState<DashboardView>('proposal');
+
+  const calculateAllStats = (report: any[]) => {
     /**
      * Group by Panel ID then separate node for group by proposals a ID and Reviewer ID
      */
-
     const reportGroupByPanel = groupBy(report, 'panelId');
     const reportGroupByPanelWithKeys = Object.entries(reportGroupByPanel).map(([key, value]) => ({
       panelId: key,
@@ -97,7 +106,6 @@ export default function ReviewDashboard() {
     /**
      * Group by Reviewer then Proposal
      */
-
     const reportGroupByReviewer = groupBy(report, 'reviewerId');
     const reportGroupByReviewerWithKeys = Object.entries(reportGroupByReviewer).map(
       ([key, value]) => ({
@@ -144,7 +152,6 @@ export default function ReviewDashboard() {
     /**
      * Group by Science Category then Proposal ID
      */
-
     const reportGroupByScienceCategory = groupBy(report, 'scienceCategory');
     const reportGroupByScienceCategoryWithKeys = Object.entries(reportGroupByScienceCategory).map(
       ([key, value]) => ({
@@ -192,22 +199,18 @@ export default function ReviewDashboard() {
 
     setPanelScienceCategoryTableData(resultScienceCategoryTable);
 
-    //Pie chart data
+    // Pie chart data
     const resultScienceCategoryPieChart = reportGroupByScienceCategoryThenProposals.map(
-      scienceCategory => {
-        return {
-          name: scienceCategory.scienceCategory,
-          value: scienceCategory.reviewGroupByScienceCategoryProposal.length
-        };
-      }
+      scienceCategory => ({
+        name: scienceCategory.scienceCategory,
+        value: scienceCategory.reviewGroupByScienceCategoryProposal.length
+      })
     );
-
     setScienceCategoryPieChartData(resultScienceCategoryPieChart);
 
     /**
      * Group by assignedProposal then proposal
      */
-
     const reportGroupByAssignedProposal = groupBy(report, 'assignedProposal');
     const reportGroupByAssignedProposalWithKeys = Object.entries(reportGroupByAssignedProposal).map(
       ([key, value]) => ({
@@ -233,22 +236,17 @@ export default function ReviewDashboard() {
     );
 
     const resultProposalPieChart = reportGroupByAssignedProposalThenProposals.map(
-      assignedProposal => {
-        return {
-          name: assignedProposal.assignedProposal,
-          value: assignedProposal.reviewGroupByAssignedProposalProposal.length
-        };
-      }
+      assignedProposal => ({
+        name: assignedProposal.assignedProposal,
+        value: assignedProposal.reviewGroupByAssignedProposalProposal.length
+      })
     );
-
     setProposalPieChartData(resultProposalPieChart);
 
     /**
      * Group by reviewStatus
      */
-
     const reportGroupByReviewStatus = groupBy(report, 'reviewStatus');
-
     const resultReviewStatusPieChart = Object.entries(reportGroupByReviewStatus).map(
       ([key, value]) => ({
         name: key === 'undefined' ? 'Unassigned' : key,
@@ -277,21 +275,19 @@ export default function ReviewDashboard() {
     fetchData();
   };
 
-  const filterReport = (currentReport: any[]) => {
-    if (!currentReport || currentReport.length === 0) return [];
-    const filterReportBySearch = currentReport.filter(review => {
+  const filterReport = (report: any[]) => {
+    if (!report || report.length === 0) return [];
+    const filterReportBySearch = report.filter(review => {
       if (search === '') {
         return true;
       } else {
         return Object.values(review).some(value =>
-          String(value)
-            .toLowerCase()
-            .includes(search.toLowerCase())
+          String(value).toLowerCase().includes(search.toLowerCase())
         );
       }
     });
 
-    const filteredReport = filterReportBySearch.filter(review => {
+    const filtered = filterReportBySearch.filter(review => {
       if (filter.telescope === '') {
         return true;
       } else {
@@ -299,7 +295,7 @@ export default function ReviewDashboard() {
       }
     });
 
-    return filteredReport;
+    return filtered;
   };
 
   React.useEffect(() => {
@@ -317,17 +313,14 @@ export default function ReviewDashboard() {
   }, [filteredReport]);
 
   React.useEffect(() => {
-    // note: currently we are not filtering country
-
-    const filteredReport = filterReport(currentReport);
-
-    setFilteredReport(filteredReport);
+    const fr = filterReport(currentReport);
+    setFilteredReport(fr);
   }, [filter, currentReport, search]);
 
+  // ---------- UI bits ----------
   const filters = () => (
     <Box pl={5} pr={5}>
       <Card>
-        {' '}
         <Grid container spacing={2} alignItems="center" justifyContent="space-between">
           <Grid pl={5} size={{ sm: 2 }}>
             <DropDown
@@ -342,22 +335,7 @@ export default function ReviewDashboard() {
               label={'Telescope'}
             />
           </Grid>
-          {/* note: Hide for now as requested */}
-          {/* <Grid size={{ sm: 2 }}>
-          <DropDown
-            options={[
-              { value: '', label: 'All' },
-              { value: 'South Africa', label: 'South Africa' },
-              { value: 'United Kingdom', label: 'United Kingdom' },
-              { value: 'Namibia', label: 'Namibia' }
-            ]}
-            testId={'countryTestId'}
-            value={filter.country}
-            setValue={(e: string) => setFilter({ ...filter, country: e })}
-            label={'Country'}
-          />
-        </Grid>
-        */}
+
           <Grid size={{ sm: 6 }}>
             <SearchEntry
               label=""
@@ -395,7 +373,6 @@ export default function ReviewDashboard() {
   const panel4 = () => {
     return (
       <ResizablePanel title={t('reviewOverview.panel4.title')} width={TABLE_CONTAINER_WIDTH}>
-        {/* TODO: refactor the grid / resizable panel - note: minWidth 560+560+16+16 from pie charts */}
         <TableContainer sx={{ minWidth: TABLE_WIDTH }}>
           <Table>
             <TableHead>
@@ -410,10 +387,7 @@ export default function ReviewDashboard() {
             </TableHead>
             <TableBody>
               {panelTableData.map((row: any) => (
-                <TableRow
-                  key={row.panelId}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
+                <TableRow key={row.panelId} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell component="th" scope="row">
                     {row.panelName}
                   </TableCell>
@@ -447,10 +421,7 @@ export default function ReviewDashboard() {
             </TableHead>
             <TableBody>
               {panelReviewerTableData.map((row: any) => (
-                <TableRow
-                  key={row.reviewerId}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
+                <TableRow key={row.reviewerId} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell component="th" scope="row">
                     {row.panelName}
                   </TableCell>
@@ -482,10 +453,7 @@ export default function ReviewDashboard() {
             </TableHead>
             <TableBody>
               {panelScienceCategoryTableData.map((row: any) => (
-                <TableRow
-                  key={row.scienceCategory}
-                  sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-                >
+                <TableRow key={row.scienceCategory} sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                   <TableCell component="th" scope="row">
                     {row.scienceCategory}
                   </TableCell>
@@ -501,32 +469,110 @@ export default function ReviewDashboard() {
     );
   };
 
+  // ---------- NEW: Top cards (Proposal / Review / Decision) ----------
+  const card = (key: DashboardView, title: string, subtitle?: string) => {
+    const active = activeView === key;
+    return (
+      <Grid item xs={12} sm={4}>
+        <Card
+          onClick={() => setActiveView(key)}
+          sx={{
+            cursor: 'pointer',
+            p: 2.5,
+            border: active ? '2px solid #1976d2' : '1px solid rgba(0,0,0,0.12)',
+            boxShadow: active ? 4 : 1,
+            transition: 'all .2s ease',
+            '&:hover': { boxShadow: 6 }
+          }}
+        >
+          <Typography variant="h6" sx={{ mb: 0.5 }}>
+            {title}
+          </Typography>
+          {subtitle && (
+            <Typography variant="body2" color="text.secondary">
+              {subtitle}
+            </Typography>
+          )}
+        </Card>
+      </Grid>
+    );
+  };
+
+  // ---------- REVIEW VIEW: Grouped Bar Chart data (uses filteredReport) ----------
+
   return (
     <>
       <PageBannerPMT title={t('overview.title')} />
       <Spacer size={BANNER_PMT_SPACER - 20} axis={SPACER_VERTICAL} />
+
+      {/* NEW: Cards at very top */}
+      <Grid p={5} pt={0} container spacing={3} alignItems="stretch">
+        {card('proposal', 'Proposal', 'Overview charts & tables')}
+        {card('review', 'Review', 'Grouped/Single bar chart')}
+        {card('decision', 'Decision', 'Decisions overview')}
+      </Grid>
+
+      {/* Filters appear AFTER the cards, shared across views */}
       {filters()}
 
-      {/* Metrics */}
-      <Grid p={5} spacing={5} container alignItems="center" justifyContent="space-between">
-        {panel1()}
-        {panel2()}
-        {panel3()}
-      </Grid>
+      {/* Content switches by active card */}
+      {activeView === 'proposal' && (
+        <>
+          {/* Metrics */}
+          <Grid p={5} spacing={5} container alignItems="center" justifyContent="space-between">
+            {panel1()}
+            {panel2()}
+            {panel3()}
+          </Grid>
 
-      <Grid
-        p={5}
-        pt={0}
-        pb={10}
-        spacing={5}
-        container
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        {panel4()}
-        {panel5()}
-        {panel6()}
-      </Grid>
+          <Grid
+            p={5}
+            pt={0}
+            pb={10}
+            spacing={5}
+            container
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            {panel4()}
+            {panel5()}
+            {panel6()}
+          </Grid>
+        </>
+      )}
+
+      {activeView === 'review' && (
+        <Grid p={5} pt={3} container>
+          <Grid item xs={12}>
+            <ResizablePanel title="Review Distribution (Grouped / Single)">
+              <D3CategoryBarChart
+                data={filteredReport}
+                fields={['scienceCategory', 'reviewStatus', 'assignedProposal', 'array']}
+                title="Review Dashboard — Category Counts"
+                initialXField="scienceCategory"
+                initialGroupField=""   // or "reviewStatus"
+              />
+            </ResizablePanel>
+          </Grid>
+        </Grid>
+
+
+
+      )}
+
+      {activeView === 'decision' && (
+        <Grid p={5} pt={3} container>
+          <Grid item xs={12}>
+            <ResizablePanel title="Decision Overview">
+              <Box p={2}>
+                <Typography variant="body2" color="text.secondary">
+                  Placeholder for Decision visuals. Plug in your decision charts/tables here.
+                </Typography>
+              </Box>
+            </ResizablePanel>
+          </Grid>
+        </Grid>
+      )}
     </>
   );
 }
