@@ -61,6 +61,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const loggedIn = isLoggedIn();
 
   const getAccess = () => application.content4 as ProposalAccess[];
+  const getProposal = () => application.content2 as Proposal;
 
   const isDisableEndpoints = () => {
     /* c8 ignore start */
@@ -68,7 +69,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     if (testDefaultUser) {
       return false;
     } /* c8 ignore end */
-    return !loggedIn;
+    return !loggedIn || (loggedIn && getProposal().id == null);
   };
 
   const validateTooltip = () => {
