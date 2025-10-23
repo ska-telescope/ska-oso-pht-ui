@@ -170,7 +170,7 @@
   },
   "validationBtn": {
     "success": "Science Idea is Valid",
-    "tooltip": "Performs enhanced validation upon the Science Idea"
+    "tooltip": "Performs validation upon the Science Idea"
   },
   "viewProposal": {
     "toolTip": "View Science Idea"
