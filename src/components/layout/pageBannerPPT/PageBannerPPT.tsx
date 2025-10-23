@@ -8,7 +8,6 @@ import { useTheme } from '@mui/material/styles';
 import {
   AUTO_SAVE_INTERVAL,
   cypressProposal,
-  cypressToken,
   LAST_PAGE,
   NAV,
   PAGE_SRC_NET,
@@ -16,7 +15,8 @@ import {
   PROPOSAL_STATUS,
   STATUS_ERROR,
   STATUS_INITIAL,
-  STATUS_PARTIAL
+  STATUS_PARTIAL,
+  testDefaultUser
 } from '@utils/constants.ts';
 import { Proposal, ProposalBackend } from '@utils/types/proposal.tsx';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
@@ -66,12 +66,12 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const getProposal = () => application.content2 as Proposal;
 
   const isDisableEndpoints = () => {
-    /* c8 ignore start */
-    const testDefaultUser = window.localStorage.getItem('cypress:defaultUserLoggedIn') === 'true';
-    if (testDefaultUser || !cypressProposal) {
+    if (!loggedIn || getProposal().id == null) {
+      return true;
+    } else if (testDefaultUser || !cypressProposal) {
+      /* c8 ignore start */
       return false;
     } /* c8 ignore end */
-    return !loggedIn || getProposal().id == null;
   };
 
   const validateTooltip = () => {

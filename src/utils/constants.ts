@@ -6,6 +6,9 @@ export const USE_LOCAL_DATA = localStorage.getItem('USE_LOCAL_DATA') === 'true';
 export const cypressToken = window.localStorage.getItem('cypress:token');
 export const cypressProposal = window.localStorage.getItem('cypress:proposalCreated') === 'true';
 
+export const testDefaultUser =
+  window.localStorage.getItem('cypress:defaultUserLoggedIn') === 'true';
+
 export const USE_LOCAL_DATA_SENSITIVITY_CALC =
   env.REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC === 'true';
 export const SKA_OSO_SERVICES_URL = env.REACT_APP_SKA_OSO_SERVICES_URL;
