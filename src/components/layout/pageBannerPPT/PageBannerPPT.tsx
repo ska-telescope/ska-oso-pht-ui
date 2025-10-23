@@ -69,7 +69,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     if (testDefaultUser) {
       return false;
     } /* c8 ignore end */
-    return !loggedIn || (loggedIn && getProposal().id == null);
+    return !loggedIn || getProposal().id == null;
   };
 
   const validateTooltip = () => {

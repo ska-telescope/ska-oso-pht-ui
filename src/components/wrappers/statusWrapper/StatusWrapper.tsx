@@ -33,7 +33,7 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
         default:
           return true;
       }
-    } else if (loggedIn && getProposal().id == null) {
+    } else if (getProposal().id == null) {
       switch (pageName()) {
         case 'Title':
           return false;
