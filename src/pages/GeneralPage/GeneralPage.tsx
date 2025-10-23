@@ -2,12 +2,13 @@ import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
-import HelpPanel from '../../components/info/helpPanel/HelpPanel';
+import { GENERAL, LAB_POSITION } from '@utils/constants.ts';
+import { countWords } from '@utils/helpers.ts';
+import { Proposal } from '@utils/types/proposal.tsx';
+import { validateGeneralPage } from '@utils/validation/validation.tsx';
+import { useTheme } from '@mui/material/styles';
 import Shell from '../../components/layout/Shell/Shell';
-import { GENERAL, LAB_POSITION } from '../../utils/constants';
-import { countWords } from '../../utils/helpers';
-import { Proposal } from '../../utils/types/proposal';
-import { validateGeneralPage } from '../../utils/validation/validation';
+import HelpPanel from '../../components/info/helpPanel/HelpPanel';
 import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPreviewModal';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -20,6 +21,7 @@ const HELP_VIEWPORT = '40vh';
 
 export default function GeneralPage() {
   const { t } = useScopedTranslation();
+  const theme = useTheme();
 
   const {
     application,
@@ -116,14 +118,20 @@ export default function GeneralPage() {
       }
     };
 
-    const helperFunction = (title: string) => {
+    const helperFunction = (abstract: string) => {
+      const color = theme.palette.error.dark;
+
       const baseHelperText = t('abstract.helper', {
-        current: countWords(title),
+        current: countWords(abstract),
         max: MAX_WORD
       });
-      return countWords(title) === MAX_WORD
-        ? `${baseHelperText} (MAX WORD COUNT REACHED)`
-        : baseHelperText;
+      return countWords(abstract) === MAX_WORD ? (
+        <>
+          {baseHelperText} <span style={{ color: color }}>(MAX WORD COUNT REACHED)</span>
+        </>
+      ) : (
+        baseHelperText
+      );
     };
 
     function validateWordCount(title: string) {
