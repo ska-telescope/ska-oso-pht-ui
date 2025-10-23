@@ -119,8 +119,7 @@ export default function ValidationResults({
       id="alert-dialog-proposal-change"
       PaperProps={{
         style: {
-          minWidth: MODAL_WIDTH,
-          maxWidth: MODAL_WIDTH
+          minWidth: MODAL_WIDTH
         }
       }}
     >
