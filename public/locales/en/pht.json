@@ -593,7 +593,7 @@
     "help": "Check to indicate that this individual is the Principal Investigator of this proposal.",
     "short": "PI"
   },
-  "pixelSize": {
+  "imageCellSize": {
     "label": "Pixel Size",
     "help": "Pixel size of the image requested.",
     "notFound": "No value found",

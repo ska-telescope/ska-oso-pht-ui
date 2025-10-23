@@ -4,17 +4,11 @@ import * as d3 from "d3";
 type Datum = Record<string, string | number | null | undefined>;
 
 type Props = {
-  /** Array of objects */
   data: Datum[];
-  /** Title shown above the chart */
   title?: string;
-  /** Explicit list of categorical fields to expose in the dropdowns (no auto-detect) */
   fields: string[];
-  /** Initial X-axis field (must be in `fields`) */
   initialXField?: string;
-  /** Initial Group-by field (must be in `fields`; empty string means "none") */
-  initialGroupField?: string;
-  /** SVG width/height (uses viewBox for responsive fit) */
+  initialGroupField?: string; // "" or undefined means none
   width?: number;
   height?: number;
 };
@@ -39,10 +33,8 @@ const D3CategoryBarChart: React.FC<Props> = ({
   const yAxisGRef = useRef<SVGGElement | null>(null);
   const legendRef = useRef<HTMLDivElement | null>(null);
 
-  // Guard against empty fields
   const safeFields = useMemo(() => Array.isArray(fields) ? fields.filter(Boolean) : [], [fields]);
 
-  // Initialize x/group with explicit fields only
   const [xField, setXField] = useState<string>(
     initialXField && safeFields.includes(initialXField) ? initialXField : (safeFields[0] ?? "")
   );
@@ -50,21 +42,18 @@ const D3CategoryBarChart: React.FC<Props> = ({
     initialGroupField && safeFields.includes(initialGroupField) ? initialGroupField : ""
   );
 
-  // If parent changes `fields` and current selections become invalid, coerce to valid ones
   useEffect(() => {
-    if (!safeFields.length) {
-      setXField(""); setGroupField("");
-      return;
-    }
+    if (!safeFields.length) { setXField(""); setGroupField(""); return; }
     if (!safeFields.includes(xField)) setXField(safeFields[0]);
     if (groupField && !safeFields.includes(groupField)) setGroupField("");
-    if (groupField && groupField === xField) setGroupField(""); // prevent same field for both
-  }, [safeFields.join("|")]); // join for shallow dependency
+    if (groupField && groupField === xField) setGroupField("");
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [safeFields.join("|")]);
 
   useEffect(() => {
     if (!svgRef.current) return;
-
     const svg = d3.select(svgRef.current);
+
     if (!barsGRef.current || !xAxisGRef.current || !yAxisGRef.current) {
       const gRoot = svg.select<SVGGElement>("g.g-root").data([null]).join("g").attr("class", "g-root");
       const gBars = gRoot.select<SVGGElement>("g.bars").data([null]).join("g").attr("class", "bars");
@@ -75,7 +64,7 @@ const D3CategoryBarChart: React.FC<Props> = ({
       xAxisGRef.current = gX.node();
       yAxisGRef.current = gY.node();
 
-      // emboss filter (one-time)
+      // emboss filter
       const defs = svg.select("defs").empty() ? svg.append("defs") : svg.select("defs");
       const filter = defs.select("#emboss").empty()
         ? defs.append("filter").attr("id", "emboss")
@@ -94,8 +83,8 @@ const D3CategoryBarChart: React.FC<Props> = ({
     if (!svgRef.current || !barsGRef.current || !xAxisGRef.current || !yAxisGRef.current) return;
     if (!xField || !safeFields.includes(xField)) return;
 
-    // layout
-    const margin = { top: 48, right: 28, bottom: 126, left: 78 };
+    // Layout — add safe top margin; bottom kept compact
+    const margin = { top: 52, right: 20, bottom: 56, left: 64 };
     const innerW = width - margin.left - margin.right;
     const innerH = height - margin.top - margin.bottom;
 
@@ -106,6 +95,7 @@ const D3CategoryBarChart: React.FC<Props> = ({
     const gY = d3.select(yAxisGRef.current);
 
     const darker = (hex: string, k = 0.6) => d3.color(hex)!.darker(k).formatHex();
+    const withHeadroom = (maxVal: number, pad = 0.10) => (maxVal <= 0 ? 1 : maxVal * (1 + pad));
 
     // clear bars + legend each render
     gBars.selectAll("*").remove();
@@ -124,10 +114,11 @@ const D3CategoryBarChart: React.FC<Props> = ({
       const x = d3.scaleBand<string>()
         .domain(grouped.map(d => d.key))
         .range([0, innerW])
-        .padding(0.2);
+        .padding(0.12);
 
+      const maxY = d3.max(grouped, d => d.value) || 1;
       const y = d3.scaleLinear()
-        .domain([0, d3.max(grouped, d => d.value) || 1])
+        .domain([0, withHeadroom(maxY, 0.10)]) // headroom so bars don't clip
         .nice()
         .range([innerH, 0]);
 
@@ -136,7 +127,7 @@ const D3CategoryBarChart: React.FC<Props> = ({
         .range(TABLEAU10);
 
       gX.transition().duration(450).call(d3.axisBottom(x) as any)
-        .selectAll("text").attr("transform", "rotate(-28)").style("text-anchor", "end");
+        .selectAll("text").attr("transform", "rotate(-24)").style("text-anchor", "end");
       gY.transition().duration(450).call(d3.axisLeft(y).ticks(7) as any)
         .call(g => g.select(".domain").remove());
 
@@ -156,11 +147,17 @@ const D3CategoryBarChart: React.FC<Props> = ({
         .attr("filter", "url(#emboss)")
         .on("mousemove", (event, d) => {
           const tip = document.getElementById("__d3_tip__");
-          if (!tip) return;
+          const svgEl = svgRef.current;
+          if (!tip || !svgEl) return;
+          const card = svgEl.closest(".chart-card") as HTMLElement;
+          const rect = card?.getBoundingClientRect();
+          if (!rect) return;
+          const xPos = event.clientX - rect.left;
+          const yPos = event.clientY - rect.top;
           tip.style.opacity = "1";
           tip.innerHTML = `<b>${d.key}</b><br/>Count: ${d.value}`;
-          tip.style.left = `${event.pageX}px`;
-          tip.style.top = `${event.pageY - 14}px`;
+          tip.style.left = `${xPos + 10}px`;
+          tip.style.top  = `${yPos - 18}px`;
         })
         .on("mouseleave", () => {
           const tip = document.getElementById("__d3_tip__");
@@ -206,15 +203,16 @@ const D3CategoryBarChart: React.FC<Props> = ({
       const x0 = d3.scaleBand<string>()
         .domain(grouped.map(d => d.key))
         .range([0, innerW])
-        .padding(0.18);
+        .padding(0.12);
 
       const x1 = d3.scaleBand<string>()
         .domain(seriesKeys)
         .range([0, x0.bandwidth()])
-        .padding(0.16);
+        .padding(0.08);
 
+      const rawMax = d3.max(grouped, d => d3.max(d.series, s => s.value)) || 1;
       const y = d3.scaleLinear()
-        .domain([0, d3.max(grouped, d => d3.max(d.series, s => s.value)) || 1])
+        .domain([0, withHeadroom(rawMax, 0.10)]) // headroom
         .nice()
         .range([innerH, 0]);
 
@@ -223,7 +221,7 @@ const D3CategoryBarChart: React.FC<Props> = ({
         .range(TABLEAU10);
 
       gX.transition().duration(450).call(d3.axisBottom(x0) as any)
-        .selectAll("text").attr("transform", "rotate(-28)").style("text-anchor", "end");
+        .selectAll("text").attr("transform", "rotate(-24)").style("text-anchor", "end");
       gY.transition().duration(450).call(d3.axisLeft(y).ticks(7) as any)
         .call(g => g.select(".domain").remove());
 
@@ -247,11 +245,17 @@ const D3CategoryBarChart: React.FC<Props> = ({
         .attr("filter", "url(#emboss)")
         .on("mousemove", (event, s) => {
           const tip = document.getElementById("__d3_tip__");
-          if (!tip) return;
+          const svgEl = svgRef.current;
+          if (!tip || !svgEl) return;
+          const card = svgEl.closest(".chart-card") as HTMLElement;
+          const rect = card?.getBoundingClientRect();
+          if (!rect) return;
+          const xPos = event.clientX - rect.left;
+          const yPos = event.clientY - rect.top;
           tip.style.opacity = "1";
           tip.innerHTML = `<b>${s.sKey}</b><br/>Count: ${s.value}`;
-          tip.style.left = `${event.pageX}px`;
-          tip.style.top = `${event.pageY - 14}px`;
+          tip.style.left = `${xPos + 10}px`;
+          tip.style.top  = `${yPos - 18}px`;
         })
         .on("mouseleave", () => {
           const tip = document.getElementById("__d3_tip__");
@@ -296,7 +300,6 @@ const D3CategoryBarChart: React.FC<Props> = ({
             onChange={(e) => {
               const next = e.target.value;
               setXField(next);
-              // prevent same field used for both
               if (groupField === next) setGroupField("");
             }}
           >
@@ -346,7 +349,6 @@ const D3CategoryBarChart: React.FC<Props> = ({
         </div>
       </div>
 
-      {/* Scoped styles */}
       <style>{`
         :root { --ink:#333; --ink-soft:#666; }
         .wrap { max-width: 980px; margin: 28px auto; padding: 0 16px; color: var(--ink); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; }
@@ -358,7 +360,7 @@ const D3CategoryBarChart: React.FC<Props> = ({
                       inset 0 1px 0 rgba(255,255,255,.85), inset 0 -2px 6px rgba(0,0,0,.08);
           border: 1px solid rgba(0,0,0,.06);
         }
-        .controls { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin: 8px 8px 14px; }
+        .controls { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin: 8px 8px 12px; }
         .controls label { font-size: 14px; color: var(--ink-soft); }
         select {
           padding:8px 12px; border-radius:12px; border:1px solid #d9d9d9; background:#fff;
@@ -366,21 +368,23 @@ const D3CategoryBarChart: React.FC<Props> = ({
         }
         .chart-card {
           position: relative;
+          overflow: visible; /* allow tooltip to float */
           background: linear-gradient(180deg,#fafafa 0%,#e6e6e6 100%);
-          border-radius: 20px; padding: 12px;
+          border-radius: 20px; padding: 8px;
           box-shadow: 0 12px 28px rgba(0,0,0,.12),
                       inset 0 1px 0 rgba(255,255,255,.9),
                       inset 0 -3px 10px rgba(0,0,0,.10);
           border: 1px solid rgba(0,0,0,.06);
         }
-        .title { text-align:center; font-weight:700; margin: 6px 0 8px; color:#444; letter-spacing:.2px; }
-        .axis text { fill:#444; font-size:12px; }
+        .title { text-align:center; font-weight:700; margin: 4px 0 36px; color:#444; letter-spacing:.2px; }
+        .axis text { fill:#444; font-size:11px; }
         .axis path, .axis line { stroke:#bdbdbd; }
         .bar { shape-rendering: crispEdges; }
         .tooltip {
           position: absolute; pointer-events: none; background: rgba(0,0,0,.84); color:#fff;
-          padding:6px 8px; border-radius:10px; font-size:12px; line-height:1.2; transform: translate(-50%,-120%);
+          padding:6px 8px; border-radius:10px; font-size:12px; line-height:1.2;
           white-space: nowrap; box-shadow: 0 6px 16px rgba(0,0,0,.25); opacity: 0; transition: opacity .15s ease-out;
+          z-index: 20;
         }
         .y-label {
           position: absolute; left: 0; top: 0;
@@ -389,7 +393,10 @@ const D3CategoryBarChart: React.FC<Props> = ({
           transform-origin: left center;
           pointer-events: none;
         }
-        .legend { display:flex; flex-wrap:wrap; gap:10px; align-items:center; justify-content:center; margin-top:6px; }
+        .legend {
+          display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center;
+          margin-top:4px; padding: 6px 8px; border-top: 1px solid rgba(0,0,0,.06);
+        }
         .legend-item { display:flex; align-items:center; gap:6px; font-size:12px; color:#444; }
         .legend-swatch { width:14px; height:14px; border-radius:4px; border:1px solid rgba(0,0,0,.25); }
       `}</style>

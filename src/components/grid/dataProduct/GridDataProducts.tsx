@@ -76,13 +76,13 @@ export default function GridDataProducts({
       e.row.imageSizeValue + ' ' + presentUnits(t('imageSize.' + e.row.imageSizeUnits))
   };
 
-  const colPixelSize = {
-    field: 'pixelSize',
-    headerName: t('pixelSize.label'),
+  const colImageCellSize = {
+    field: 'imageCellSize',
+    headerName: t('imageCellSize.label'),
     flex: 0.5,
     disableClickEventBubbling: true,
     renderCell: (e: { row: DataProductSDP }) =>
-      `${e.row.pixelSizeValue} ${presentUnits(e.row.pixelSizeUnits)}`
+      `${e.row.imageCellSizeValue} ${presentUnits(e.row.imageCellSizeUnits)}`
   };
 
   const colImageWeighting = {
@@ -124,7 +124,7 @@ export default function GridDataProducts({
   };
 
   const getColumns = () => [
-    ...[colObservationId, colDataProduct, colImageSize, colPixelSize, colImageWeighting, colActions]
+    ...[colObservationId, colDataProduct, colImageSize, colImageCellSize, colImageWeighting, colActions]
   ];
 
   return (

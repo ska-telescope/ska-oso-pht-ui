@@ -24,8 +24,8 @@ describe('<ReferenceFrame />', () => {
               observatoryDataProduct: [true, true, true, true],
               imageSizeValue: 0,
               imageSizeUnits: 0,
-              pixelSizeValue: 0,
-              pixelSizeUnits: '',
+              imageCellSizeValue: 0,
+              imageCellSizeUnits: '',
               weighting: 0
             }
           ]}
@@ -48,8 +48,8 @@ describe('<ReferenceFrame />', () => {
               observatoryDataProduct: [true, true, true, true],
               imageSizeValue: 0,
               imageSizeUnits: 0,
-              pixelSizeValue: 0,
-              pixelSizeUnits: '',
+              imageCellSizeValue: 0,
+              imageCellSizeUnits: '',
               weighting: 0
             }
           ]}

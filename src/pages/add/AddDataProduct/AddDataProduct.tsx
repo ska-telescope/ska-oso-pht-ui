@@ -44,8 +44,8 @@ export default function AddDataProduct() {
   const [dp1, setDP1] = React.useState(true);
   const [imageSizeValue, setImageSizeValue] = React.useState('0');
   const [imageSizeUnits, setImageSizeUnits] = React.useState(0);
-  const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
-  const [pixelSizeUnits, setPixelSizeUnits] = React.useState('');
+  const [imageCellSizeValue, setImageCellSizeValue] = React.useState(0);
+  const [imageCellSizeUnits, setImageCellSizeUnits] = React.useState('');
   const [weighting, setWeighting] = React.useState(0);
 
   const { t } = useScopedTranslation();
@@ -67,26 +67,26 @@ export default function AddDataProduct() {
       return temp ? temp.imageWeighting : 0;
     };
 
-    const getPixelSize = (sensCalc: SensCalcResults): number => {
+    const getImageCellSize = (sensCalc: SensCalcResults): number => {
       const DIVIDER = 3;
-      const precisionStr = t('pixelSize.precision');
+      const precisionStr = t('imageCellSize.precision');
       const precision = Number(precisionStr);
       const arr =
         sensCalc?.section1 && sensCalc.section1.length > 2
           ? sensCalc.section1[3].value.split(' x ')
           : [];
       const result = arr.length > 1 ? (Number(arr[1]) / DIVIDER).toFixed(precision) : 0;
-      if (pixelSizeUnits === '' && sensCalc?.section1 && sensCalc.section1.length > 2) {
-        setPixelSizeUnits(t('imageSize.2'));
+      if (imageCellSizeUnits === '' && sensCalc?.section1 && sensCalc.section1.length > 2) {
+        setImageCellSizeUnits(t('imageSize.2'));
       }
       return Number(result);
     };
 
-    const calcPixelSize = (count: number, total: number): number => {
+    const calcImageCellSize = (count: number, total: number): number => {
       if (count === 0 || total === 0) {
         return 0;
       }
-      const precision = Number(t('pixelSize.precision'));
+      const precision = Number(t('imageCellSize.precision'));
       const result = Number((total / count).toFixed(precision));
       return result;
     };
@@ -101,10 +101,10 @@ export default function AddDataProduct() {
       getProposal().targetObservation?.forEach(rec => {
         if (rec.observationId === observationId) {
           pixelCount++;
-          pixelTotal += rec?.sensCalc ? getPixelSize(rec.sensCalc) : 0;
+          pixelTotal += rec?.sensCalc ? getImageCellSize(rec.sensCalc) : 0;
         }
       });
-      setPixelSizeValue(calcPixelSize(pixelCount, pixelTotal));
+      setImageCellSizeValue(calcImageCellSize(pixelCount, pixelTotal));
     }
   }, [baseObservations, observationId]);
 
@@ -213,21 +213,21 @@ export default function AddDataProduct() {
     );
   };
 
-  const pixelSizeField = () => {
+  const imageCellSizeField = () => {
     return (
       <Box pt={1}>
         <NumberEntry
-          label={t('pixelSize.label')}
+          label={t('imageCellSize.label')}
           labelBold
           labelPosition={LAB_POSITION}
           labelWidth={LABEL_WIDTH}
-          testId="pixelSize"
-          value={pixelSizeValue}
-          setValue={setPixelSizeValue}
+          testId="imageCellSize"
+          value={imageCellSizeValue}
+          setValue={setImageCellSizeValue}
           required
           disabled
           disabledUnderline
-          suffix={pixelSizeUnits}
+          suffix={imageCellSizeUnits}
         />
       </Box>
     );
@@ -247,7 +247,7 @@ export default function AddDataProduct() {
   const pageFooter = () => {
     const enabled = () => {
       const dp = dp1;
-      return dp && pixelSizeValue > 0 && Number(imageSizeValue) > 0;
+      return dp && imageCellSizeValue > 0 && Number(imageSizeValue) > 0;
     };
 
     const addToProposal = () => {
@@ -268,8 +268,8 @@ export default function AddDataProduct() {
         observationId: [observationId],
         imageSizeValue: Number(imageSizeValue),
         imageSizeUnits,
-        pixelSizeValue,
-        pixelSizeUnits,
+        imageCellSizeValue,
+        imageCellSizeUnits,
         weighting
       };
       if (hasRecord) {
@@ -335,7 +335,7 @@ export default function AddDataProduct() {
             {fieldWrapper(observationsField())}
             {dataProductsField()}
             {fieldWrapper(imageSizeField())}
-            {fieldWrapper(pixelSizeField())}
+            {fieldWrapper(imageCellSizeField())}
             {fieldWrapper(imageWeightingField())}
           </Stack>
         </Grid>

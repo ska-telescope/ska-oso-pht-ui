@@ -297,8 +297,8 @@ export const MockProposalFrontend: Proposal = {
       observationId: ['obs-obR1Ej'],
       imageSizeValue: 15,
       imageSizeUnits: 0,
-      pixelSizeValue: 1.007,
-      pixelSizeUnits: 'arcsecs',
+      imageCellSizeValue: 1.007,
+      imageCellSizeUnits: 'arcsecs',
       weighting: 1
     }
   ],
@@ -475,8 +475,8 @@ export const MockProposalFrontendZoom: Proposal = {
       observationId: ['obs-arMIoY'],
       imageSizeValue: 100,
       imageSizeUnits: 0,
-      pixelSizeValue: 3.7,
-      pixelSizeUnits: 'arcsecs',
+      imageCellSizeValue: 3.7,
+      imageCellSizeUnits: 'arcsecs',
       weighting: 2
     }
   ],
