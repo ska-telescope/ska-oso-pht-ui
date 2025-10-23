@@ -45,7 +45,7 @@ describe('Verify navigation', () => {
     checkStatusIndicatorDisabled('statusId9', true);
   });
 
-  it('Verify navigation functionality is restricted after proposal creation', () => {
+  it('Verify navigation functionality is not restricted after proposal creation', () => {
     clickAddProposal();
     clickCycleConfirm();
     enterProposalTitle();

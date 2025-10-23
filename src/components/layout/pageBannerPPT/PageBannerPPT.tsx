@@ -6,7 +6,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import {
-  AUTO_SAVE_INTERVAL,
+  AUTO_SAVE_INTERVAL, cypressProposal, cypressToken,
   LAST_PAGE,
   NAV,
   PAGE_SRC_NET,
@@ -66,7 +66,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const isDisableEndpoints = () => {
     /* c8 ignore start */
     const testDefaultUser = window.localStorage.getItem('cypress:defaultUserLoggedIn') === 'true';
-    if (testDefaultUser) {
+    if (testDefaultUser || !cypressProposal) {
       return false;
     } /* c8 ignore end */
     return !loggedIn || getProposal().id == null;
