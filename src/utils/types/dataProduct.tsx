@@ -1,11 +1,11 @@
 import { ValueUnitPair } from './valueUnitPair';
 
 export type DataProductSDPsBackend = {
-  data_products_sdp_id: string;
-  options: string[];
+  data_product_id: string;
+  products: string[];
   observation_set_refs: string[];
   image_size: ValueUnitPair;
-  pixel_size?: ValueUnitPair;
+  image_cellsize?: ValueUnitPair;
   weighting?: string;
 };
 
@@ -20,8 +20,8 @@ export type DataProductSDP = {
   observationId: string[];
   imageSizeValue: number;
   imageSizeUnits: number;
-  pixelSizeValue: number;
-  pixelSizeUnits: string;
+  imageCellSizeValue: number;
+  imageCellSizeUnits: string;
   weighting: number;
 };
 
