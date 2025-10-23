@@ -390,9 +390,9 @@ export default function ReviewDashboard() {
       <Spacer size={BANNER_PMT_SPACER - 20} axis={SPACER_VERTICAL} />
 
       <Grid p={5} pt={0} container spacing={3} alignItems="stretch">
-        {card('proposal', 'Proposal', 'Overview charts & tables')}
-        {card('review', 'Review', 'Pie + Grouped/Single bar')}
-        {card('decision', 'Decision', 'Decision pie')}
+        {card('proposal', 'Proposal', 'Proposal Statistics')}
+        {card('review', 'Review', 'Review Statistics')}
+        {card('decision', 'Decision', 'Decision Statistics')}
       </Grid>
 
       {filters()}
