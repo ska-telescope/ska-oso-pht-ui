@@ -24,9 +24,6 @@ describe('Delegate Editing Rights', () => {
   beforeEach(() => {
     initialize(reviewerAdmin);
     mockCreateProposalAPI();
-    cy.window().then(win => {
-      win.localStorage.setItem('cypress:defaultUserLoggedIn', 'true');
-    });
     mockGetUserByEmailAPI();
     mockEmailAPI();
     createStandardProposalLoggedIn();
