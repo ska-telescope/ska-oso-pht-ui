@@ -2,6 +2,7 @@ import { TableRow, TableCell, IconButton, Box, Typography, Collapse } from '@mui
 import { ChevronRight, ExpandMore } from '@mui/icons-material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { useTheme } from '@mui/material/styles';
+import React from 'react';
 import TableTechnicalReviews from '../../tableTechnicalReview/TableTechnicalReviews';
 import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
 import TableScienceReviews from '@/components/grid/tableScienceReviews/TableScienceReviews';
@@ -25,6 +26,7 @@ interface TableReviewDecisionRowProps {
   getReviews: (reviews: any[], reviewType: string) => any[];
   getReviewsReviewed: (reviews: any[]) => any[];
   calculateScore: (details: any[]) => number;
+  tableLength: number;
   trimText: (text: string, maxLength: number) => string;
   t: any;
 }
@@ -40,6 +42,7 @@ export default function TableReviewDecisionRow({
   getReviews,
   getReviewsReviewed,
   calculateScore,
+  tableLength,
   trimText,
   t
 }: TableReviewDecisionRowProps) {
@@ -52,18 +55,31 @@ export default function TableReviewDecisionRow({
     return str.length ? t(str) : '';
   };
 
+  const hasRecommendation = (el: string) =>
+    el === RECOMMENDATION[0] || el === RECOMMENDATION[1] || el === RECOMMENDATION[2];
+
   const getOptions = () => RECOMMENDATION.map(e => ({ label: e, value: e }));
+
+  React.useEffect(() => {
+    const rec = item;
+    const newRank = item.displayRank === tableLength ? 0 : item.displayRank;
+    if (newRank !== rec.decisions.rank) {
+      rec.decisions.rank = item.displayRank === tableLength ? 0 : item.displayRank;
+      updateDecisionItem(rec);
+    }
+  }, [item.displayRank]);
 
   return (
     <>
       <TableRow
         key={item.id}
+        data-testid={`row-${item.id}`}
         sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}
         role="row"
         aria-rowindex={index + 2}
       >
         <TableCell role="gridcell">
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, overflowX: 'hidden' }}>
             <IconButton
               ref={expandButtonRef}
               aria-label={`${expanded ? 'Collapse' : 'Expand'} details for ${item.title}. ${
@@ -81,7 +97,16 @@ export default function TableReviewDecisionRow({
             >
               {expanded ? <ExpandMore /> : <ChevronRight />}
             </IconButton>
-            <Typography variant="caption" color="text.secondary">
+            <Typography
+              variant="caption"
+              color="text.secondary"
+              sx={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                maxWidth: '100%'
+              }}
+            >
               {getReviewsReviewed(item?.reviews)?.length} /{' '}
               {getReviews(item?.reviews, REVIEW_TYPE.SCIENCE)?.length}
             </Typography>
@@ -89,43 +114,97 @@ export default function TableReviewDecisionRow({
         </TableCell>
 
         <TableCell role="gridcell">
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              maxWidth: '100%'
+            }}
+          >
             {t('scienceCategory.' + item.scienceCategory)}
           </Typography>
         </TableCell>
 
         <TableCell role="gridcell">
-          <Typography variant="body2" fontWeight="medium">
+          <Typography
+            variant="body2"
+            fontWeight="medium"
+            sx={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              maxWidth: '100%'
+            }}
+          >
             {presentLatex(trimText(item.title, 50))}
           </Typography>
         </TableCell>
 
         <TableCell role="gridcell">
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              maxWidth: '100%'
+            }}
+          >
             {item?.decisions?.status ?? t('reviewStatus.to do')}
           </Typography>
         </TableCell>
 
         <TableCell role="gridcell">
-          <Typography variant="body2">
+          <Typography
+            variant="body2"
+            sx={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              maxWidth: '100%'
+            }}
+          >
             {presentDate(item.lastUpdated)} {presentTime(item.lastUpdated)}
           </Typography>
         </TableCell>
 
         <TableCell role="gridcell">
-          <Typography variant="body2" color="text.secondary">
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              maxWidth: '100%'
+            }}
+          >
             {getFeasibility()}
           </Typography>
         </TableCell>
 
-        <TableCell role="gridcell">
+        <TableCell
+          role="gridcell"
+          sx={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            maxWidth: '100%'
+          }}
+        >
           <Typography variant="body2">{calculateScore(item.reviews)}</Typography>
         </TableCell>
 
-        <TableCell role="gridcell">{item.rank}</TableCell>
+        <TableCell role="gridcell" data-testid={`rank-${item.id}`}>
+          {item.displayRank}
+        </TableCell>
 
         <TableCell role="gridcell">
-          <Box sx={{ minWidth: 300 }}>
+          <Box sx={{ maxWidth: 200, overflowX: 'hidden' }}>
             <DropDown
               disabled={
                 isReviewerAdminOnly() || item?.decisions?.status === RECOMMENDATION_STATUS_DECIDED
@@ -146,10 +225,12 @@ export default function TableReviewDecisionRow({
         </TableCell>
 
         <TableCell role="gridcell">
-          <Box sx={{ display: 'flex', gap: 0.5 }}>
+          <Box sx={{ display: 'flex', gap: 0.5, msOverflowX: 'hidden' }}>
             <SubmitIcon
               disabled={
-                isReviewerAdminOnly() || item.decisions.status === RECOMMENDATION_STATUS_DECIDED
+                isReviewerAdminOnly() ||
+                !hasRecommendation(item?.decisions?.recommendation) ||
+                item?.decisions?.status === RECOMMENDATION_STATUS_DECIDED
               }
               onClick={() => {
                 const rec = item;
@@ -167,8 +248,10 @@ export default function TableReviewDecisionRow({
       <TableRow key={`${item.id}-expanded`}>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9} role="gridcell">
           <Collapse in={expanded} timeout="auto" unmountOnExit>
-            <TableTechnicalReviews data={item} />
-            <TableScienceReviews data={item} excludeFunction={excludeFunction} />
+            <Box sx={{ overflowX: 'hidden' }}>
+              <TableTechnicalReviews data={item} />
+              <TableScienceReviews data={item} excludeFunction={excludeFunction} />
+            </Box>
           </Collapse>
         </TableCell>
       </TableRow>
