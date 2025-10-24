@@ -190,6 +190,15 @@ export const clickDropdown = (testId, value) => {
   selectValue(value);
 };
 
+export const clickTargetPageFromBannerNav = () => {
+  cy.get('button')
+    .find('svg[data-testid="statusId4"]')
+    .eq(0)
+    .should('exist')
+    .should('be.visible')
+    .click();
+};
+
 export const checkFieldDisabled = (testId, disabled) => {
   if (disabled) {
     cy.get('[data-testid="' + testId + '"]').should('not.be.enabled');
