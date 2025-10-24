@@ -7,6 +7,8 @@ import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import {
   AUTO_SAVE_INTERVAL,
+  cypressProposal,
+  cypressToken,
   LAST_PAGE,
   NAV,
   PAGE_SRC_NET,
@@ -61,14 +63,14 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const loggedIn = isLoggedIn();
 
   const getAccess = () => application.content4 as ProposalAccess[];
+  const getProposal = () => application.content2 as Proposal;
 
   const isDisableEndpoints = () => {
-    /* c8 ignore start */
-    const testDefaultUser = window.localStorage.getItem('cypress:defaultUserLoggedIn') === 'true';
-    if (testDefaultUser) {
-      return false;
-    } /* c8 ignore end */
-    return !loggedIn;
+    if (cypressProposal || (loggedIn && getProposal().id == null)) {
+      return true;
+    } else if (!loggedIn) {
+      return !cypressToken;
+    }
   };
 
   const validateTooltip = () => {

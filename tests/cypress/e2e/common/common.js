@@ -197,6 +197,18 @@ export const checkFieldDisabled = (testId, disabled) => {
     cy.get('[data-testid="' + testId + '"]').should('not.be.disabled');
   }
 };
+
+export const checkStatusIndicatorDisabled = (testId, disabled) => {
+  if (disabled) {
+    cy.get('[data-testid="' + testId + '"]')
+      .closest('button')
+      .should('be.disabled');
+  } else {
+    cy.get('[data-testid="' + testId + '"]')
+      .closest('button')
+      .should('be.enabled');
+  }
+};
 /*----------------------------------------------------------------------*/
 
 export const clickNav = (testId, title) => {

@@ -1,7 +1,7 @@
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
 import { OSO_SERVICES_PANEL_PATH, SKA_OSO_SERVICES_URL, USE_LOCAL_DATA } from '@/utils/constants';
 
-async function PostPanelGenerate(
+async function PostPanelAssignments(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
   cycleDescription: string
 ): Promise<string | { error: string }> {
@@ -11,7 +11,7 @@ async function PostPanelGenerate(
 
   try {
     const result = await authAxiosClient.post(
-      `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PANEL_PATH}/generate?param=${cycleDescription}`
+      `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PANEL_PATH}/assignments?param=${cycleDescription}`
     );
 
     if (!result) {
@@ -26,4 +26,4 @@ async function PostPanelGenerate(
   }
 }
 
-export default PostPanelGenerate;
+export default PostPanelAssignments;

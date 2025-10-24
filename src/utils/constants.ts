@@ -4,6 +4,7 @@ import Investigator from './types/investigator';
 import { env } from '@/env';
 export const USE_LOCAL_DATA = localStorage.getItem('USE_LOCAL_DATA') === 'true';
 export const cypressToken = window.localStorage.getItem('cypress:token');
+export const cypressProposal = window.localStorage.getItem('cypress:proposalCreated') === 'true';
 
 export const USE_LOCAL_DATA_SENSITIVITY_CALC =
   env.REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC === 'true';
