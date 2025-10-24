@@ -64,7 +64,7 @@ const D3CategoryBarChart: React.FC<Props> = ({
       xAxisGRef.current = gX.node();
       yAxisGRef.current = gY.node();
 
-      // emboss filter
+      // Emboss filter (used ONLY on bars)
       const defs = svg.select("defs").empty() ? svg.append("defs") : svg.select("defs");
       const filter = defs.select("#emboss").empty()
         ? defs.append("filter").attr("id", "emboss")
@@ -83,7 +83,6 @@ const D3CategoryBarChart: React.FC<Props> = ({
     if (!svgRef.current || !barsGRef.current || !xAxisGRef.current || !yAxisGRef.current) return;
     if (!xField || !safeFields.includes(xField)) return;
 
-    // Layout — add safe top margin; bottom kept compact
     const margin = { top: 52, right: 20, bottom: 56, left: 64 };
     const innerW = width - margin.left - margin.right;
     const innerH = height - margin.top - margin.bottom;
@@ -118,7 +117,7 @@ const D3CategoryBarChart: React.FC<Props> = ({
 
       const maxY = d3.max(grouped, d => d.value) || 1;
       const y = d3.scaleLinear()
-        .domain([0, withHeadroom(maxY, 0.10)]) // headroom so bars don't clip
+        .domain([0, withHeadroom(maxY, 0.10)])
         .nice()
         .range([innerH, 0]);
 
@@ -141,10 +140,10 @@ const D3CategoryBarChart: React.FC<Props> = ({
         .attr("y", y(0))
         .attr("width", x.bandwidth())
         .attr("height", 0)
-        .attr("fill", d => color(d.key))
-        .attr("stroke", d => darker(color(d.key)))
+        .attr("fill", d => color(d.key))           // matte fill
+        .attr("stroke", d => darker(color(d.key))) // subtle edge
         .attr("stroke-width", 0.8)
-        .attr("filter", "url(#emboss)")
+        .attr("filter", "url(#emboss)")            // emboss ONLY on bars
         .on("mousemove", (event, d) => {
           const tip = document.getElementById("__d3_tip__");
           const svgEl = svgRef.current;
@@ -212,7 +211,7 @@ const D3CategoryBarChart: React.FC<Props> = ({
 
       const rawMax = d3.max(grouped, d => d3.max(d.series, s => s.value)) || 1;
       const y = d3.scaleLinear()
-        .domain([0, withHeadroom(rawMax, 0.10)]) // headroom
+        .domain([0, withHeadroom(rawMax, 0.10)])
         .nice()
         .range([innerH, 0]);
 
@@ -239,10 +238,10 @@ const D3CategoryBarChart: React.FC<Props> = ({
         .attr("y", y(0))
         .attr("width", x1.bandwidth())
         .attr("height", 0)
-        .attr("fill", s => color(s.sKey))
-        .attr("stroke", s => darker(color(s.sKey)))
+        .attr("fill", s => color(s.sKey))           // matte
+        .attr("stroke", s => darker(color(s.sKey))) // subtle edge
         .attr("stroke-width", 0.8)
-        .attr("filter", "url(#emboss)")
+        .attr("filter", "url(#emboss)")            // emboss ONLY on bars
         .on("mousemove", (event, s) => {
           const tip = document.getElementById("__d3_tip__");
           const svgEl = svgRef.current;
@@ -352,50 +351,59 @@ const D3CategoryBarChart: React.FC<Props> = ({
       <style>{`
         :root { --ink:#333; --ink-soft:#666; }
         .wrap { max-width: 980px; margin: 28px auto; padding: 0 16px; color: var(--ink); font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial; }
-        .page-title { margin: 0 0 10px; text-align:center; font-weight:800; font-size:22px; letter-spacing:.2px; color:#2f2f2f; }
+
+        /* Remove double-card look — transparent backgrounds, no drop-shadows */
         .panel {
-          background: linear-gradient(180deg,#fdfdfd 0%,#ececec 100%);
-          border-radius: 18px; padding: 16px 16px 10px;
-          box-shadow: 0 10px 24px rgba(0,0,0,.12), 0 3px 8px rgba(0,0,0,.08),
-                      inset 0 1px 0 rgba(255,255,255,.85), inset 0 -2px 6px rgba(0,0,0,.08);
-          border: 1px solid rgba(0,0,0,.06);
+          background: transparent;
+          border-radius: 0;
+          padding: 8px 0 0;
+          box-shadow: none;
+          border: none;
         }
-        .controls { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin: 8px 8px 12px; }
+
+        .controls { display:flex; gap:12px; align-items:center; flex-wrap:wrap; margin: 8px 0 12px; }
         .controls label { font-size: 14px; color: var(--ink-soft); }
         select {
-          padding:8px 12px; border-radius:12px; border:1px solid #d9d9d9; background:#fff;
-          box-shadow: inset 0 1px 0 rgba(255,255,255,.8);
+          padding:8px 12px; border-radius:10px; border:1px solid #d9d9d9; background:#fff;
         }
+
         .chart-card {
           position: relative;
           overflow: visible; /* allow tooltip to float */
-          background: linear-gradient(180deg,#fafafa 0%,#e6e6e6 100%);
-          border-radius: 20px; padding: 8px;
-          box-shadow: 0 12px 28px rgba(0,0,0,.12),
-                      inset 0 1px 0 rgba(255,255,255,.9),
-                      inset 0 -3px 10px rgba(0,0,0,.10);
-          border: 1px solid rgba(0,0,0,.06);
+          background: transparent;  /* no background card */
+          border-radius: 0;
+          padding: 0;               /* remove inner card padding */
+          box-shadow: none;         /* remove matte/shadow from container */
+          border: none;
         }
-        .title { text-align:center; font-weight:700; margin: 4px 0 36px; color:#444; letter-spacing:.2px; }
+
+        .title { text-align:center; font-weight:700; margin: 4px 0 24px; color:#444; letter-spacing:.2px; }
+
+        /* Keep axes minimal; no matte/shadow effects here */
         .axis text { fill:#444; font-size:11px; }
-        .axis path, .axis line { stroke:#bdbdbd; }
+        .axis path, .axis line { stroke:#cfcfcf; }
+
+        /* Bars keep the emboss + matte edge */
         .bar { shape-rendering: crispEdges; }
+
+        /* Tooltip stays clean; no emboss here */
         .tooltip {
           position: absolute; pointer-events: none; background: rgba(0,0,0,.84); color:#fff;
           padding:6px 8px; border-radius:10px; font-size:12px; line-height:1.2;
           white-space: nowrap; box-shadow: 0 6px 16px rgba(0,0,0,.25); opacity: 0; transition: opacity .15s ease-out;
           z-index: 20;
         }
+
         .y-label {
           position: absolute; left: 0; top: 0;
-          width: 0; height: 0;
-          color: #444; font-size: 12px; font-weight: 700;
-          transform-origin: left center;
-          pointer-events: none;
+          width: 0; height: 0; color: #444; font-size: 12px; font-weight: 700;
+          transform-origin: left center; pointer-events: none;
         }
+
+        /* Legend — flat, no emboss */
         .legend {
           display:flex; flex-wrap:wrap; gap:8px; align-items:center; justify-content:center;
-          margin-top:4px; padding: 6px 8px; border-top: 1px solid rgba(0,0,0,.06);
+          margin-top:4px;
         }
         .legend-item { display:flex; align-items:center; gap:6px; font-size:12px; color:#444; }
         .legend-swatch { width:14px; height:14px; border-radius:4px; border:1px solid rgba(0,0,0,.25); }

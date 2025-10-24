@@ -15,6 +15,7 @@ import ResetButton from '@/components/button/Reset/Reset';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import D3PieChart from '@/components/charts/pie/D3PieChart';
 import D3CategoryBarChart from '@/components/charts/bar/D3CategoryBarChart';
+import BulletMinMeanMax from '@/components/charts/line/D3LineChart';
 import ResizablePanel from '@/components/layout/resizablePanel/ResizablePanel';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
@@ -69,15 +70,15 @@ function ResponsiveCategoryBarChart(props: {
   );
 
   return (
-      <D3CategoryBarChart
-        data={data}
-        fields={fields}
-        title={title}
-        initialXField={initialXField}
-        initialGroupField={initialGroupField}
-        width={innerW}
-        height={innerH}
-      />
+    <D3CategoryBarChart
+      data={data}
+      fields={fields}
+      title={title}
+      initialXField={initialXField}
+      initialGroupField={initialGroupField}
+      width={innerW}
+      height={innerH}
+    />
   );
 }
 
@@ -189,9 +190,9 @@ export default function ReviewDashboard() {
     setDecisionPieChartData(
       hasDecision
         ? Object.entries(groupBy(report, 'decisionStatus')).map(([key, value]) => ({
-            name: key === 'undefined' ? 'Undecided' : key,
-            value: value.length
-          }))
+          name: key === 'undefined' ? 'Undecided' : key,
+          value: value.length
+        }))
         : []
     );
   };
@@ -416,7 +417,7 @@ export default function ReviewDashboard() {
         <Grid p={5} pt={3} container spacing={3}>
           <Grid item xs={12} md={4}>
             <ResizablePanel title="Review Status Breakdown">
-                <D3PieChart data={reviewPieChartData} showTotal={true} />
+              <D3PieChart data={reviewPieChartData} showTotal={true} />
             </ResizablePanel>
           </Grid>
 
@@ -440,19 +441,27 @@ export default function ReviewDashboard() {
         <Grid p={5} pt={3} container spacing={3}>
           <Grid item xs={12} md={6}>
             <ResizablePanel title="Decision Breakdown">
-                <D3PieChart data={decisionPieChartData} showTotal={true} />
+              <D3PieChart data={decisionPieChartData} showTotal={true} />
             </ResizablePanel>
           </Grid>
 
-          <Grid item xs={12} md={6}>
-            <ResizablePanel title="Notes">
-              <Box p={2}>
-                <Typography variant="body2" color="text.secondary">
-                  Add decision tables or timelines here.
-                </Typography>
-              </Box>
+          <Grid item xs={12}>
+            <ResizablePanel title="Distribution — Min / Mean / Max">
+              <BulletMinMeanMax
+                title="Score — Min / Mean / Max"
+                values={filteredReport.map(r => Number(r.score)).filter(n => Number.isFinite(n))}
+              />
             </ResizablePanel>
           </Grid>
+          <Grid item xs={12}>
+            <ResizablePanel title="Distribution — Min / Mean / Max">
+              <BulletMinMeanMax
+                title="Rank — Min / Mean / Max"
+                values={filteredReport.map(r => Number(r.rank)).filter(n => Number.isFinite(n))}
+              />
+            </ResizablePanel>
+          </Grid>
+        
         </Grid>
       )}
     </Box>
