@@ -609,11 +609,7 @@ const MockProposalBackendList: ProposalBackend[] = [
       data_product_sdps: [
         {
           data_product_id: 'SDP-1',
-<<<<<<< HEAD
           products: ['1', '2', '5'],
-=======
-          options: ['1', '2', '5'],
->>>>>>> main
           observation_set_refs: ['mid-001', 'low-001'],
           image_size: '50',
           image_cellsize: '50',
@@ -945,11 +941,7 @@ const MockProposalBackendList: ProposalBackend[] = [
       data_product_sdps: [
         {
           data_product_id: 'SDP-1',
-<<<<<<< HEAD
           products: ['1', '2', '5'],
-=======
-          options: ['1', '2', '5'],
->>>>>>> main
           observation_set_refs: ['mid-001', 'low-001'],
           image_size: '50',
           image_cellsize: '50',
