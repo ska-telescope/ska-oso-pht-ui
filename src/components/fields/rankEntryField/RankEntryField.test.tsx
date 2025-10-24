@@ -4,6 +4,7 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import userEvent from '@testing-library/user-event';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import RankEntryField from './RankEntryField';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 // Create test theme
 const lightTheme = createTheme({
@@ -26,10 +27,12 @@ const darkTheme = createTheme({
   }
 });
 
-const renderWithTheme = (component: React.ReactElement, theme = lightTheme) => {
+const wrapper = (component: React.ReactElement, theme = lightTheme) => {
   return render(
     <ThemeProvider theme={theme}>
-      <StoreProvider>{component}</StoreProvider>
+      <StoreProvider>
+        <AppFlowProvider>{component}</AppFlowProvider>
+      </StoreProvider>
     </ThemeProvider>
   );
 };
@@ -43,31 +46,29 @@ describe('RankEntryField', () => {
 
   describe('Initial Rendering', () => {
     it('renders with default props', () => {
-      renderWithTheme(<RankEntryField selectedRank={0} setSelectedRank={mockOnRankChange} />);
+      wrapper(<RankEntryField selectedRank={0} setSelectedRank={mockOnRankChange} />);
       expect(screen.getByText('rank.selected:')).toBeInTheDocument();
       expect(screen.getByText('1')).toBeInTheDocument();
     });
 
     it('renders with custom default rank', () => {
-      renderWithTheme(<RankEntryField selectedRank={0} setSelectedRank={mockOnRankChange} />);
+      wrapper(<RankEntryField selectedRank={0} setSelectedRank={mockOnRankChange} />);
       expect(screen.getByText('5')).toBeInTheDocument();
     });
 
     it('renders with progressive mode', () => {
-      renderWithTheme(
-        <RankEntryField selectedRank={0} setSelectedRank={mockOnRankChange} isProgressive />
-      );
+      wrapper(<RankEntryField selectedRank={0} setSelectedRank={mockOnRankChange} isProgressive />);
     });
 
     it('renders with onRankChange callback', () => {
-      renderWithTheme(<RankEntryField selectedRank={0} setSelectedRank={mockOnRankChange} />);
+      wrapper(<RankEntryField selectedRank={0} setSelectedRank={mockOnRankChange} />);
     });
   });
 
   describe('Rank Selection', () => {
     it('selects rank 0 (center circle)', async () => {
       const user = userEvent.setup();
-      renderWithTheme(<RankEntryField selectedRank={3} setSelectedRank={mockOnRankChange} />);
+      wrapper(<RankEntryField selectedRank={3} setSelectedRank={mockOnRankChange} />);
 
       const centerCircle = screen.getByTestId('section0TestId');
       await user.click(centerCircle);
@@ -77,7 +78,7 @@ describe('RankEntryField', () => {
 
     it('selects ranks 1-9 (segments)', async () => {
       const user = userEvent.setup();
-      renderWithTheme(
+      wrapper(
         <RankEntryField colorIndex={2} selectedRank={0} setSelectedRank={mockOnRankChange} />
       );
 
@@ -92,7 +93,7 @@ describe('RankEntryField', () => {
   describe('Progressive Mode Behavior', () => {
     it('shows only active segments in progressive mode', async () => {
       const user = userEvent.setup();
-      renderWithTheme(
+      wrapper(
         <RankEntryField
           colorIndex={1}
           colorBlindness={1}
@@ -114,20 +115,17 @@ describe('RankEntryField', () => {
 
   describe('Theme Integration', () => {
     it('works with dark theme', () => {
-      renderWithTheme(
-        <RankEntryField selectedRank={0} setSelectedRank={mockOnRankChange} />,
-        darkTheme
-      );
+      wrapper(<RankEntryField selectedRank={0} setSelectedRank={mockOnRankChange} />, darkTheme);
     });
 
     it('uses theme colors correctly', () => {
-      renderWithTheme(<RankEntryField selectedRank={0} setSelectedRank={mockOnRankChange} />);
+      wrapper(<RankEntryField selectedRank={0} setSelectedRank={mockOnRankChange} />);
     });
   });
 
   describe('SVG Path Creation', () => {
     it('creates valid SVG paths', () => {
-      renderWithTheme(<RankEntryField selectedRank={0} setSelectedRank={mockOnRankChange} />);
+      wrapper(<RankEntryField selectedRank={0} setSelectedRank={mockOnRankChange} />);
 
       // Check if SVG elements are rendered
       const svg = screen.getByRole('img');
@@ -141,7 +139,7 @@ describe('RankEntryField', () => {
 
   describe('Text Color Calculation', () => {
     it('calculates appropriate text colors', () => {
-      renderWithTheme(
+      wrapper(
         <RankEntryField
           colorIndex={1}
           colorBlindness={1}

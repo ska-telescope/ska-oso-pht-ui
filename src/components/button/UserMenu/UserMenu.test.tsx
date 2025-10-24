@@ -7,6 +7,7 @@ import { Logger } from '@azure/msal-browser';
 import { useUserGroups } from '@ska-telescope/ska-login-page';
 import { IPublicClientApplication } from '@azure/msal-browser';
 import ButtonUserMenu from './UserMenu';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 // Mocks
 vi.mock('@azure/msal-react', () => ({
@@ -35,6 +36,14 @@ vi.mock('@/utils/constants', async () => {
     isCypress: false
   };
 });
+
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
 
 describe('UserMenu', () => {
   const mockNavigate = vi.fn();
@@ -79,32 +88,20 @@ describe('UserMenu', () => {
       logger: new Logger({ loggerCallback: () => {} })
     });
 
-    render(
-      <StoreProvider>
-        <ButtonUserMenu />
-      </StoreProvider>
-    );
+    wrapper(<ButtonUserMenu />);
 
     expect(screen.getByTestId('login-button')).toBeInTheDocument();
   });
 
   it('renders user button when user is present', () => {
-    render(
-      <StoreProvider>
-        <ButtonUserMenu />
-      </StoreProvider>
-    );
+    wrapper(<ButtonUserMenu />);
 
     expect(screen.getByTestId('user-button')).toBeInTheDocument();
     expect(screen.getByText('TestUser')).toBeInTheDocument();
   });
 
   it('opens menu on user button click', () => {
-    render(
-      <StoreProvider>
-        <ButtonUserMenu />
-      </StoreProvider>
-    );
+    wrapper(<ButtonUserMenu />);
 
     fireEvent.click(screen.getByTestId('user-button'));
     expect(screen.getByRole('menu')).toBeVisible();
@@ -113,22 +110,14 @@ describe('UserMenu', () => {
   it('calls onClick override if provided', () => {
     const onClick = vi.fn();
 
-    render(
-      <StoreProvider>
-        <ButtonUserMenu onClick={onClick} />
-      </StoreProvider>
-    );
+    wrapper(<ButtonUserMenu onClick={onClick} />);
 
     fireEvent.click(screen.getByTestId('user-button'));
     expect(onClick).toHaveBeenCalled();
   });
 
   it('renders reviewer menu items based on roles', () => {
-    render(
-      <StoreProvider>
-        <ButtonUserMenu />
-      </StoreProvider>
-    );
+    wrapper(<ButtonUserMenu />);
 
     fireEvent.click(screen.getByTestId('user-button'));
 
@@ -141,11 +130,7 @@ describe('UserMenu', () => {
   });
 
   it('navigates when menu item is selected', () => {
-    render(
-      <StoreProvider>
-        <ButtonUserMenu />
-      </StoreProvider>
-    );
+    wrapper(<ButtonUserMenu />);
 
     fireEvent.click(screen.getByTestId('user-button'));
     fireEvent.click(screen.getByTestId('menuItemOverview'));

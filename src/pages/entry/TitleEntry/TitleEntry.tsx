@@ -3,11 +3,11 @@ import { Avatar, Card, CardActionArea, CardHeader, Grid, Tooltip, Typography } f
 import { useTheme } from '@mui/material/styles';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
+import { LAB_IS_BOLD, LAB_POSITION, PROJECTS } from '@utils/constants.ts';
+import { countWords, helpers } from '@utils/helpers.ts';
+import { Proposal } from '@utils/types/proposal.tsx';
+import { validateTitlePage } from '@utils/validation/validation.tsx';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
-import { LAB_IS_BOLD, LAB_POSITION, PROJECTS } from '../../../utils/constants';
-import { countWords, helpers } from '../../../utils/helpers';
-import { Proposal } from '../../../utils/types/proposal';
-import { validateTitlePage } from '../../../utils/validation/validation';
 import LatexPreviewModal from '../../../components/info/latexPreviewModal/latexPreviewModal';
 import ViewIcon from '../../../components/icon/viewIcon/viewIcon';
 import CardTitle from '@/components/cards/cardTitle/CardTitle';
@@ -225,13 +225,19 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     };
 
     const helperFunction = (title: string) => {
+      const color = theme.palette.error.dark;
+
       const baseHelperText = t('title.helper', {
         current: countWords(title),
         max: MAX_WORD
       });
-      return countWords(title) === MAX_WORD
-        ? `${baseHelperText} (MAX WORD COUNT REACHED)`
-        : baseHelperText;
+      return countWords(title) === MAX_WORD ? (
+        <>
+          {baseHelperText} <span style={{ color: color }}>(MAX WORD COUNT REACHED)</span>
+        </>
+      ) : (
+        baseHelperText
+      );
     };
 
     return (

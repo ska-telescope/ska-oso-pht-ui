@@ -4,14 +4,19 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { countWords } from '@utils/helpers.ts';
 import GeneralPage from './GeneralPage';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
 
 describe('<GeneralPage />', () => {
   test('renders correctly', () => {
-    render(
-      <StoreProvider>
-        <GeneralPage />
-      </StoreProvider>
-    );
+    wrapper(<GeneralPage />);
   });
 });
 
@@ -63,24 +68,32 @@ describe('Abstract helperFunction', () => {
   const countWords = vi.fn();
 
   const helperFunction = (abstract: string) => {
+    const color = 'red'; // Simplified for testing
     const baseHelperText = t('abstract.helper', {
       current: countWords(abstract),
       max: 10
     });
-    return countWords(abstract) === 10
-      ? `${baseHelperText} (MAX WORD COUNT REACHED)`
-      : baseHelperText;
+    return countWords(abstract) === 10 ? (
+      <>
+        {baseHelperText} <span style={{ color: color }}>(MAX WORD COUNT REACHED)</span>
+      </>
+    ) : (
+      baseHelperText
+    );
   };
 
   test('returns helper text with current and max word count, without max word count message when word count is below max', () => {
     countWords.mockReturnValue(8);
-    const result = helperFunction('This abstract has less than ten words');
+    const result = helperFunction('This abstract has less than ten words altogether');
     expect(result).toBe('Current: 8, Max: 10');
   });
 
   test('appends max word count reached message when word count equals max', () => {
     countWords.mockReturnValue(10);
-    const result = helperFunction('This abstract has exactly ten words now');
-    expect(result).toBe('Current: 10, Max: 10 (MAX WORD COUNT REACHED)');
+    const { container } = wrapper(
+      helperFunction('This abstract has a word count of exactly ten words')
+    );
+    expect(container.textContent).toContain('Current: 10, Max: 10');
+    expect(container.textContent).toContain('(MAX WORD COUNT REACHED)');
   });
 });

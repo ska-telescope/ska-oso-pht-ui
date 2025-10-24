@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TableTechnicalReviews from './TableTechnicalReviews';
 import { REVIEW_TYPE } from '@/utils/constants';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 const mockNavigate = vi.fn();
 
@@ -58,17 +59,21 @@ const mockData = {
   ]
 };
 
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
+
 describe('TableTechnicalReviews', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it('renders table headers and rows', () => {
-    render(
-      <StoreProvider>
-        <TableTechnicalReviews data={mockData} />
-      </StoreProvider>
-    );
+    wrapper(<TableTechnicalReviews data={mockData} />);
     expect(screen.getByText('status.label')).toBeInTheDocument();
   });
 });

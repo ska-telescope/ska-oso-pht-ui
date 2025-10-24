@@ -19,7 +19,7 @@ import PageFooterPMT from '@/components/layout/pageFooterPMT/PageFooterPMT';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import PutPanel from '@/services/axios/put/putPanel/putPanel';
 import AssignButton from '@/components/button/Assign/Assign';
-import PostPanelGenerate from '@/services/axios/post/postPanelGenerate/postPanelGenerate';
+import PostPanelAssignments from '@/services/axios/post/postPanelAssignments/postPanelAssignments';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
@@ -124,11 +124,11 @@ export default function PanelManagement() {
   const { osdCycleDescription, osdCycleId } = useOSDAccessors();
 
   React.useEffect(() => {
-    const autoGeneratePanels = async () => {
-      await PostPanelGenerate(authClient, osdCycleDescription);
+    const autoAssignments = async () => {
+      await PostPanelAssignments(authClient, osdCycleDescription);
     };
     if (makeAssignment) {
-      autoGeneratePanels();
+      autoAssignments();
       setMakeAssignment(false);
       setCurrentPanel(null);
     }
@@ -245,8 +245,7 @@ export default function PanelManagement() {
   return (
     <>
       <PageBannerPMT title={t('page.15.desc')} backBtn={backButton()} fwdBtn={fwdButton()} />
-      <Spacer size={BANNER_PMT_SPACER_MIN} axis={{ SPACER_VERTICAL }} />
-      <Spacer size={BANNER_PMT_SPACER_MIN} axis={{ SPACER_VERTICAL }} />
+      <Spacer size={BANNER_PMT_SPACER_MIN * 2} axis={{ SPACER_VERTICAL }} />
       <Grid
         container
         pr={2}

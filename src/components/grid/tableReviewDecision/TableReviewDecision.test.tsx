@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TableReviewDecision from './TableReviewDecision';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 vi.mock('./tableReviewDecisionHeader/TableReviewDecisionHeader', () => ({
   default: () => (
@@ -33,6 +34,14 @@ vi.mock('./tableReviewDecisionRow/TableReviewDecisionRow', () => ({
 const mockExclude = vi.fn();
 const mockUpdate = vi.fn();
 
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
+
 describe('TableReviewDecision', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -44,14 +53,12 @@ describe('TableReviewDecision', () => {
       { id: 2, title: 'Black Hole Thermodynamics', reviews: [], decisions: [] }
     ];
 
-    render(
-      <StoreProvider>
-        <TableReviewDecision
-          data={mockData}
-          excludeFunction={mockExclude}
-          updateFunction={mockUpdate}
-        />
-      </StoreProvider>
+    wrapper(
+      <TableReviewDecision
+        data={mockData}
+        excludeFunction={mockExclude}
+        updateFunction={mockUpdate}
+      />
     );
 
     expect(screen.getByText('Galaxy Formation')).toBeInTheDocument();
@@ -122,14 +129,12 @@ describe('TableReviewDecision', () => {
       }
     ];
 
-    render(
-      <StoreProvider>
-        <TableReviewDecision
-          data={mockData}
-          excludeFunction={mockExclude}
-          updateFunction={mockUpdate}
-        />
-      </StoreProvider>
+    wrapper(
+      <TableReviewDecision
+        data={mockData}
+        excludeFunction={mockExclude}
+        updateFunction={mockUpdate}
+      />
     );
 
     // High Score and Tied Score should both be rank 1

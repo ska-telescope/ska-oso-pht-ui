@@ -10,6 +10,7 @@ export default defineConfig({
   build: { rollupOptions: { external: ['/env.js'] } },
   plugins: [react(), viteTsconfigPaths()],
   server: {
+    historyApiFallback: true,
     host: true,
     port: 6101
   },

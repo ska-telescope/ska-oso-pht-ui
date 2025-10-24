@@ -1,11 +1,12 @@
 import Dialog from '@mui/material/Dialog';
-import { DialogContent, Grid, Stack, Typography } from '@mui/material';
+import { DialogContent, Grid, Stack, Typography, Box } from '@mui/material';
 import { AlertColorTypes, StatusIcon } from '@ska-telescope/ska-gui-components';
 import { useTheme } from '@mui/material/styles';
 import Proposal from '../../../utils/types/proposal';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import CancelButton from '../../button/Cancel/Cancel';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+
 interface ValidationResultsProps {
   open: boolean;
   onClose: Function;
@@ -13,12 +14,12 @@ interface ValidationResultsProps {
   results: string[];
 }
 
-const MODAL_WIDTH = '40%';
+const MODAL_WIDTH = '600px';
 const TITLE_STYLE = 'h5';
 const CONTENT_STYLE = 'subtitle2';
 const BOLD_LABEL = true;
 const BOLD_CONTENT = false;
-const SIZE = 40;
+const SIZE = 30;
 
 export default function ValidationResults({
   open,
@@ -52,44 +53,48 @@ export default function ValidationResults({
   );
 
   const headerContent = () => (
-    <Grid>
-      <Grid container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid>
-          <Typography id="title" variant={TITLE_STYLE} style={{ fontWeight: getFont(BOLD_LABEL) }}>
-            {t('validationResults.title')}
-          </Typography>
-        </Grid>
-        <Grid>{proposal?.id}</Grid>
-      </Grid>
+    <Grid pb={2}>
+      <Typography id="title" variant={TITLE_STYLE} style={{ fontWeight: getFont(BOLD_LABEL) }}>
+        {t('validationResults.title')}
+      </Typography>
     </Grid>
   );
 
   const resultsContent = (results: string[]) => (
     <Grid>
-      <Stack>
+      <Stack spacing={1}>
         {results?.map(el => (
-          <Grid p={1} key={el} container direction="row" justifyContent="left" alignItems="left">
-            <Grid>
-              <StatusIcon
-                ariaDescription=""
-                ariaTitle=""
-                text={'!'}
-                level={1}
-                size={SIZE}
-                testId="statusId"
-                toolTip=""
-              />
-            </Grid>
-            <Grid pt={1} pl={1}>
-              <Typography
-                id="title"
-                variant={CONTENT_STYLE}
-                style={{ fontWeight: getFont(BOLD_CONTENT) }}
-              >
-                {el}
-              </Typography>
-            </Grid>
-          </Grid>
+          <Box
+            key={el}
+            sx={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: 2,
+              padding: 1,
+              flexWrap: 'nowrap'
+            }}
+          >
+            <StatusIcon
+              ariaDescription=""
+              ariaTitle=""
+              text="!"
+              level={1}
+              size={SIZE}
+              testId="statusId"
+              toolTip=""
+            />
+            <Typography
+              variant={CONTENT_STYLE}
+              sx={{
+                fontWeight: getFont(BOLD_CONTENT),
+                wordBreak: 'break-word',
+                overflowWrap: 'anywhere',
+                flex: 1
+              }}
+            >
+              {el}
+            </Typography>
+          </Box>
         ))}
       </Stack>
     </Grid>
@@ -114,8 +119,7 @@ export default function ValidationResults({
       id="alert-dialog-proposal-change"
       PaperProps={{
         style: {
-          minWidth: MODAL_WIDTH,
-          maxWidth: MODAL_WIDTH
+          minWidth: MODAL_WIDTH
         }
       }}
     >
