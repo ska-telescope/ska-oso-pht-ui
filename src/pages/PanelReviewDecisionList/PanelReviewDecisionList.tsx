@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid, Paper } from '@mui/material';
+import { Grid } from '@mui/material';
 import { AlertColorTypes, SearchEntry } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import GetProposalReviewList from '@services/axios/get/getProposalReviewList/getProposalReviewList';
@@ -34,44 +34,29 @@ export default function ReviewDecisionListPage() {
   const { osdCycleId } = useOSDAccessors();
   const userId = getUserId();
 
-  /*--------------------------------------------------------------------------*/
-
-  const calculateRank = (details: Array<any>) => {
-    if (!details || details?.length === 0) return 0;
-    const average =
-      details.reduce((sum, detail) => sum + detail.reviewType.rank, 0) / details.length;
-    if (!average) return 0;
-    return Math.round(average);
-  };
-
   const getReviewDecision = (item: {
     id: any;
     recommendation: any;
     decisions: any;
     reviews: any[];
   }) => {
-    const filtered = item.reviews.filter(el => el.reviewType.excludedFromDecision === false);
     return {
-      id: item.decisions.id,
-      panelId: item.decisions.panelId,
+      id: item.decisions?.id ?? null,
+      panelId: item.decisions?.panelId ?? null,
       cycle: osdCycleId,
       proposalId: item.id,
       decidedOn: new Date().toISOString(),
       decidedBy: userId,
-      recommendation: item.decisions.recommendation,
-      rank: calculateRank(filtered),
-      status: item.decisions.status
+      recommendation: item.decisions?.recommendation ?? null,
+      rank: item.decisions?.rank ?? 0,
+      status: item.decisions?.status ?? null
     };
   };
 
   const updateReview = async (review: ProposalReview) => {
-    const response: string | { error: string } = await PostProposalReview(
-      authClient,
-      review,
-      osdCycleId
-    );
+    const response = await PostProposalReview(authClient, review, osdCycleId);
     if (typeof response === 'object' && response?.error) {
-      notifyError(response?.error, AlertColorTypes.Error);
+      notifyError(response.error, AlertColorTypes.Error);
     }
   };
 
@@ -81,11 +66,7 @@ export default function ReviewDecisionListPage() {
     decisions: any;
     reviews: any[];
   }) => {
-    const response: PanelDecision | { error: string } = await PutPanelDecision(
-      authClient,
-      getReviewDecision(item)
-    );
-
+    const response = await PutPanelDecision(authClient, getReviewDecision(item));
     if ('error' in response) {
       notifyError(response.error, AlertColorTypes.Error);
     } else {
@@ -93,8 +74,6 @@ export default function ReviewDecisionListPage() {
       notifySuccess(t('addReview.success'), AlertColorTypes.Success);
     }
   };
-
-  /*--------------------------------------------------------------------------*/
 
   const fetchReviewDecisionData = async () => {
     const response = await getPanelDecisionList(authClient, osdCycleId);
@@ -131,67 +110,78 @@ export default function ReviewDecisionListPage() {
     fetchReviewDecisionData();
   }, [reset]);
 
-  /*--------------------------------------------------------------------------*/
+  const mergedData = React.useMemo(() => {
+    if (
+      !Array.isArray(proposals) ||
+      proposals.length === 0 ||
+      !Array.isArray(proposalReviews) ||
+      proposalReviews.length === 0 ||
+      !Array.isArray(reviewDecisions) ||
+      reviewDecisions.length === 0
+    ) {
+      return [];
+    }
 
-  function computeGlobalRanks(data: any[]) {
-    const rankMap = [...data]
+    return proposals.map(proposal => {
+      const reviews = proposalReviews.filter(r => r.prslId === proposal.id);
+      const decisions = reviewDecisions.find(d => d.proposalId === proposal.id);
+      return {
+        ...proposal,
+        decisions,
+        reviews,
+        key: proposal.id
+      };
+    });
+  }, [proposals, proposalReviews, reviewDecisions]);
+
+  const rankMap = React.useMemo(() => {
+    const rankMap = [...mergedData]
       .map(item => {
         const filtered = item.reviews?.filter(
-          (r: any) =>
-            r.reviewType.kind === REVIEW_TYPE.SCIENCE && r.reviewType.excludedFromDecision !== true
+          r =>
+            r.reviewType.kind === REVIEW_TYPE.SCIENCE &&
+            (r.reviewType as ScienceReview).excludedFromDecision !== true
         );
         const avg = filtered?.length
-          ? filtered.reduce((sum: number, r: any) => sum + r.reviewType.rank, 0) / filtered.length
+          ? filtered.reduce(
+              (sum, r) =>
+                r.reviewType.kind === REVIEW_TYPE.SCIENCE && 'rank' in r.reviewType
+                  ? sum + (r.reviewType as ScienceReview).rank
+                  : sum,
+              0
+            ) / filtered.length
           : 0;
-        const abandon =
-          item.reviews?.filter(
-            (r: any) =>
-              r.reviewType.kind === REVIEW_TYPE.TECHNICAL && r.reviewType.isFeasible === FEASIBLE_NO
-          )?.length > 0;
+        const abandon = item.reviews?.some(
+          r =>
+            r.reviewType.kind === REVIEW_TYPE.TECHNICAL &&
+            'isFeasible' in r.reviewType &&
+            r.reviewType.isFeasible === FEASIBLE_NO
+        );
         return { id: item.id, avg: abandon ? 0 : avg };
       })
       .sort((a, b) => b.avg - a.avg)
       .map((item, index) => ({ ...item, rank: index + 1 }))
       .reduce((acc, item) => {
-        acc[item.id] = item.rank;
+        acc[Number(item.id)] = item.rank;
         return acc;
       }, {} as Record<number, number>);
     return rankMap;
-  }
+  }, [mergedData]);
 
-  function filterProposals() {
-    function unionProposalsAndReviews() {
-      return proposals.map(proposal => {
-        const reviews = proposalReviews.filter(r => r.prslId === proposal.id);
-        const decisions = reviewDecisions.filter(d => d.proposalId === proposal.id);
-        return {
-          ...proposal,
-          decisions: decisions[0],
-          reviews: reviews,
-          key: proposal.id
-        };
-      });
-    }
-
-    return unionProposalsAndReviews().filter(item => {
-      const fieldsToSearch = [item.id, item.title];
-      return fieldsToSearch.some(
-        field =>
-          typeof field === 'string' && field.toLowerCase().includes(searchTerm?.toLowerCase())
-      );
-    });
-  }
-
-  const filteredData = proposals
-    ? (() => {
-        const raw = filterProposals();
-        const rankMap = computeGlobalRanks(raw);
-        return raw.map(item => ({
-          ...item,
-          rank: rankMap[item.id as any]
-        }));
-      })()
-    : [];
+  const filteredData = React.useMemo(() => {
+    return mergedData
+      .filter(item => {
+        const fieldsToSearch = [item.id, item.title];
+        return fieldsToSearch.some(
+          field =>
+            typeof field === 'string' && field.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+      })
+      .map(item => ({
+        ...item,
+        rank: rankMap[Number(item.id)]
+      }));
+  }, [mergedData, rankMap, searchTerm]);
 
   const searchEntryField = (testId: string) => (
     <SearchEntry
@@ -203,11 +193,11 @@ export default function ReviewDecisionListPage() {
   );
 
   function handleExcludeAction(review: any): void {
-    const results = proposalReviews?.map(rec => {
+    const results = proposalReviews.map(rec => {
       const el: ProposalReview = rec;
       if (el.id === review.id) {
         const tmp: ScienceReview = el.reviewType as ScienceReview;
-        tmp.excludedFromDecision = tmp.excludedFromDecision ? false : true;
+        tmp.excludedFromDecision = !tmp.excludedFromDecision;
         updateReview(el);
       }
       return el;
@@ -237,11 +227,7 @@ export default function ReviewDecisionListPage() {
           </div>
         </Grid>
       </Grid>
-      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
-      <Paper
-        sx={{ bgcolor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}
-        elevation={0}
-      ></Paper>
+      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL * 2} />
     </>
   );
 }

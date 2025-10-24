@@ -6,22 +6,27 @@ import axios from 'axios';
 import { MockReviewersList } from '@services/axios/get/getReviewerList/mockReviewerList';
 import GridReviewers, { filterReviewers } from './GridReviewers';
 import { IdObject } from '@/utils/types/idObject';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 const mockedSelectedReviewers: IdObject[] = [
   { id: MockReviewersList[0].id },
   { id: MockReviewersList[1].id }
 ];
 
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
+
 describe('<GridReviewers /> data rendering', () => {
   test('renders correctly with mocking data', async () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
       data: MockReviewersList
     });
-    render(
-      <StoreProvider>
-        <GridReviewers />
-      </StoreProvider>
-    );
+    wrapper(<GridReviewers />);
     expect(await screen.findAllByTestId('dataGridReviewers')).toBeDefined();
   });
   vi.clearAllMocks();
@@ -29,11 +34,7 @@ describe('<GridReviewers /> data rendering', () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
       data: 'Error'
     });
-    render(
-      <StoreProvider>
-        <GridReviewers />
-      </StoreProvider>
-    );
+    wrapper(<GridReviewers />);
     expect(screen.queryByTestId('helpPanelId')).toBeDefined();
   });
   vi.clearAllMocks();
@@ -44,22 +45,14 @@ describe('<GridReviewers /> showSelection', () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
       data: MockReviewersList
     });
-    render(
-      <StoreProvider>
-        <GridReviewers showSelection />
-      </StoreProvider>
-    );
+    wrapper(<GridReviewers showSelection />);
   });
   vi.clearAllMocks();
   test('renders correctly, showSelection false', async () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
       data: MockReviewersList
     });
-    render(
-      <StoreProvider>
-        <GridReviewers />
-      </StoreProvider>
-    );
+    wrapper(<GridReviewers />);
     const emptyCheckboxes = screen.queryAllByTestId('triStateTestId');
     expect(emptyCheckboxes.length).toBe(0);
   });
@@ -71,11 +64,7 @@ describe('<GridReviewers /> with selected reviewers', () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
       data: MockReviewersList
     });
-    render(
-      <StoreProvider>
-        <GridReviewers showSelection selectedReviewers={mockedSelectedReviewers} />
-      </StoreProvider>
-    );
+    wrapper(<GridReviewers showSelection selectedReviewers={mockedSelectedReviewers} />);
     const checkboxes = await screen.findAllByRole('checkbox');
     checkboxes.forEach(checkbox => {
       const reviewerId = checkbox.getAttribute('data-id');
@@ -92,22 +81,14 @@ describe('<GridReviewers /> showSearch', () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
       data: MockReviewersList
     });
-    render(
-      <StoreProvider>
-        <GridReviewers showSearch />
-      </StoreProvider>
-    );
+    wrapper(<GridReviewers showSearch />);
     expect(screen.queryByTestId('searchId')).toBeDefined();
   });
   test('renders correctly, showSearch false', () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
       data: MockReviewersList
     });
-    render(
-      <StoreProvider>
-        <GridReviewers />
-      </StoreProvider>
-    );
+    wrapper(<GridReviewers />);
     expect(screen.queryByTestId('searchId')).toBeNull();
   });
 });
@@ -117,22 +98,14 @@ describe('<GridReviewers /> showTitle', () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
       data: MockReviewersList
     });
-    render(
-      <StoreProvider>
-        <GridReviewers showTitle />
-      </StoreProvider>
-    );
+    wrapper(<GridReviewers showTitle />);
     expect(screen.queryByTestId('pageTitle')).toBeDefined();
   });
   test('renders correctly, showTitle false', () => {
     vi.spyOn(axios, 'get').mockResolvedValue({
       data: MockReviewersList
     });
-    render(
-      <StoreProvider>
-        <GridReviewers />
-      </StoreProvider>
-    );
+    wrapper(<GridReviewers />);
     expect(screen.queryByTestId('pageTitle')).toBeNull();
   });
 });

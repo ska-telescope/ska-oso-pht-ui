@@ -4,14 +4,19 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { countWords } from '@utils/helpers.ts';
 import GeneralPage from './GeneralPage';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
 
 describe('<GeneralPage />', () => {
   test('renders correctly', () => {
-    render(
-      <StoreProvider>
-        <GeneralPage />
-      </StoreProvider>
-    );
+    wrapper(<GeneralPage />);
   });
 });
 
@@ -85,7 +90,7 @@ describe('Abstract helperFunction', () => {
 
   test('appends max word count reached message when word count equals max', () => {
     countWords.mockReturnValue(10);
-    const { container } = render(
+    const { container } = wrapper(
       helperFunction('This abstract has a word count of exactly ten words')
     );
     expect(container.textContent).toContain('Current: 10, Max: 10');
