@@ -14,10 +14,9 @@ import {
   ACCESSIBILITY_TRITANOMALY,
   ACCESSIBILITY_ACHROMATOMALY,
   ACCESSIBILITY_ACHROMATOPSIA
-
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { Typography, CssBaseline, ThemeProvider, Tooltip } from '@mui/material';
+import { Typography, CssBaseline, ThemeProvider, Tooltip, Paper } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { cypressToken, NAV, PATH, PMT, REVIEW_TYPE, USE_LOCAL_DATA } from '../../utils/constants';
@@ -187,7 +186,12 @@ export default function PHT() {
         iconFeedbackURL={''}
         loginComponent={signIn()}
         mainChildren={
-          <>
+          <Paper
+            sx={{
+              backgroundColor: theme => theme.palette.background.default,
+              borderRadius: '0px'
+            }}
+          >
             {REQUIRED_WIDTH ? (
               <Routes>
                 {ROUTES.map((ROUTE, index) => (
@@ -197,7 +201,7 @@ export default function PHT() {
             ) : (
               mediaSizeNotSupported()
             )}
-          </>
+          </Paper>
         }
         selectTelescope={false}
         storageHelp={help}
