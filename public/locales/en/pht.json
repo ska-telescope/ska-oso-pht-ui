@@ -1166,7 +1166,7 @@
   "validationBtn": {
     "label": "Validate",
     "success": "Proposal is Valid",
-    "tooltip": "Performs enhanced validation upon the proposal",
+    "tooltip": "Performs validation upon the proposal",
     "tooltipDisabled": "Disabled until all pages have a status of OK"
   },
   "validationResults": {

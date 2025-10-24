@@ -120,7 +120,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   };
 
   const updateProposal = async (proposal: Proposal) => {
-    if (!isDisableEndpoints() || pageNo === 0) {
+    if (!isDisableEndpoints() && pageNo !== 0) {
       const response = await PutProposal(authClient, proposal, PROPOSAL_STATUS.DRAFT);
       updateProposalResponse(response);
     }

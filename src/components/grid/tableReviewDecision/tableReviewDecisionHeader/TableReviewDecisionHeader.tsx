@@ -7,7 +7,7 @@ export default function TableReviewDecisionHeader() {
   return (
     <TableHead>
       <TableRow>
-        <TableCell sx={{ width: 150 }}>
+        <TableCell sx={{ whiteSpace: 'nowrap', width: '1%', paddingRight: 2 }}>
           <Typography variant="subtitle2" fontWeight="bold">
             {t('tableReviewDecision.sciReviews')}
           </Typography>
@@ -22,7 +22,7 @@ export default function TableReviewDecisionHeader() {
             {t('tableReviewDecision.title')}
           </Typography>
         </TableCell>
-        <TableCell sx={{ width: 150 }}>
+        <TableCell sx={{ whiteSpace: 'nowrap', width: '1%', paddingRight: 2 }}>
           <Typography variant="subtitle2" fontWeight="bold">
             {t('tableReviewDecision.decisionStatus')}
           </Typography>
@@ -32,27 +32,27 @@ export default function TableReviewDecisionHeader() {
             {t('tableReviewDecision.lastUpdated')}
           </Typography>
         </TableCell>
-        <TableCell sx={{ width: 60 }}>
+        <TableCell sx={{ whiteSpace: 'nowrap', width: '1%', paddingRight: 2 }}>
           <Typography variant="subtitle2" fontWeight="bold">
             {t('tableReviewDecision.feasible')}
           </Typography>
         </TableCell>
-        <TableCell sx={{ width: 120 }}>
+        <TableCell sx={{ whiteSpace: 'nowrap', width: '1%', paddingRight: 2 }}>
           <Typography variant="subtitle2" fontWeight="bold">
             {t('tableReviewDecision.decisionScore')}
           </Typography>
         </TableCell>
-        <TableCell sx={{ width: 120 }}>
+        <TableCell sx={{ whiteSpace: 'nowrap', width: '1%', paddingRight: 2 }}>
           <Typography variant="subtitle2" fontWeight="bold">
             {t('tableReviewDecision.rank')}
           </Typography>
         </TableCell>
-        <TableCell sx={{ width: 120 }}>
+        <TableCell sx={{ whiteSpace: 'nowrap', width: '2%', paddingRight: 2 }}>
           <Typography variant="subtitle2" fontWeight="bold">
             {t('recommendations.label')}
           </Typography>
         </TableCell>
-        <TableCell sx={{ width: 120 }}>
+        <TableCell sx={{ whiteSpace: 'nowrap', width: '1%', paddingRight: 2 }}>
           <Typography variant="subtitle2" fontWeight="bold">
             {t('tableReviewDecision.actions')}
           </Typography>

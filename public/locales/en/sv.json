@@ -105,7 +105,7 @@
   "pi": {
     "help": "Check to indicate that this individual is the Principal Investigator of this Science Verification Idea."
   },
-    "pht": {
+  "pht": {
     "short": "SVI",
     "title": "Science Verification Ideas"
   },
