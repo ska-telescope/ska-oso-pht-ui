@@ -4,6 +4,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 import GetPanelList from '@services/axios/get/getPanelList/getPanelList';
 import GridReviewPanels from './GridReviewPanels';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
   default: () => {
@@ -39,8 +40,12 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
 
 const theme = createTheme();
 
-const renderWithTheme = (ui: React.ReactElement) => {
-  return render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
+const wrapper = (ui: React.ReactElement) => {
+  return render(
+    <ThemeProvider theme={theme}>
+      <AppFlowProvider>{ui}</AppFlowProvider>
+    </ThemeProvider>
+  );
 };
 
 /*
@@ -80,7 +85,7 @@ describe('GridReviewPanels', () => {
       return Promise.resolve([]);
     });
 
-    renderWithTheme(<GridReviewPanels onRowClick={vi.fn()} />);
+    wrapper(<GridReviewPanels onRowClick={vi.fn()} />);
     await vi.runAllTicks();
 
     const alert = screen.getByTestId('helpPanelId');
@@ -93,7 +98,7 @@ describe('GridReviewPanels', () => {
       return Promise.resolve(mockPanels);
     });
 
-    renderWithTheme(<GridReviewPanels onRowClick={vi.fn()} />);
+    wrapper(<GridReviewPanels onRowClick={vi.fn()} />);
 
     let grid;
     for (let i = 0; i < 20; i++) {
@@ -107,7 +112,7 @@ describe('GridReviewPanels', () => {
   it('calls onRowClick when a row is clicked', async () => {
     (GetPanelList as any).mockResolvedValue(mockPanels);
     const onRowClick = vi.fn();
-    renderWithTheme(<GridReviewPanels onRowClick={onRowClick} />);
+    wrapper(<GridReviewPanels onRowClick={onRowClick} />);
     await vi.runAllTicks();
 
     const grid = screen.getByTestId('dataGridId');
@@ -118,7 +123,7 @@ describe('GridReviewPanels', () => {
 
   it('does not render proposals section when listOnly is true', async () => {
     (GetPanelList as any).mockResolvedValue(mockPanels);
-    renderWithTheme(<GridReviewPanels onRowClick={vi.fn()} listOnly />);
+    wrapper(<GridReviewPanels onRowClick={vi.fn()} listOnly />);
     await vi.runAllTicks();
     const label = screen.queryByText('proposals.label');
     expect(label).not.toBeInTheDocument();
@@ -126,7 +131,7 @@ describe('GridReviewPanels', () => {
 
   it('renders proposals section when listOnly is false', async () => {
     (GetPanelList as any).mockResolvedValue(mockPanels);
-    renderWithTheme(<GridReviewPanels onRowClick={vi.fn()} listOnly={false} />);
+    wrapper(<GridReviewPanels onRowClick={vi.fn()} listOnly={false} />);
     await vi.runAllTicks();
     const label = screen.getByText('proposals.label');
     expect(label).toBeInTheDocument();
@@ -141,7 +146,7 @@ describe('GridReviewPanels', () => {
       return Promise.resolve('success');
     });
 
-    renderWithTheme(<GridReviewPanels onRowClick={vi.fn()} />);
+    wrapper(<GridReviewPanels onRowClick={vi.fn()} />);
     await vi.runAllTicks();
     expect(PutPanel).toHaveBeenCalled();
   });
@@ -155,7 +160,7 @@ describe('GridReviewPanels', () => {
       return Promise.resolve({ error: 'Failed to create panel' });
     });
 
-    renderWithTheme(<GridReviewPanels onRowClick={vi.fn()} />);
+    wrapper(<GridReviewPanels onRowClick={vi.fn()} />);
     await vi.runAllTicks();
     expect(PutPanel).toHaveBeenCalled();
   });

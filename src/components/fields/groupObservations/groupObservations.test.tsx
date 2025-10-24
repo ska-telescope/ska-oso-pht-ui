@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import GroupObservationsField from './groupObservations';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 const mockUpdateAppContent2 = vi.fn();
 
@@ -21,6 +22,10 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
   }
 }));
 
+const wrapper = (component: React.ReactElement) => {
+  return render(<AppFlowProvider>{component}</AppFlowProvider>);
+};
+
 describe('GroupObservationsField', () => {
   const mockSetValue = vi.fn();
   const mockOnFocus = vi.fn();
@@ -30,7 +35,7 @@ describe('GroupObservationsField', () => {
   });
 
   it('renders DropDown when editing is false', () => {
-    render(
+    wrapper(
       <GroupObservationsField
         value={1}
         obsId="obs1"
@@ -42,7 +47,7 @@ describe('GroupObservationsField', () => {
   });
 
   it('enters editing mode when selecting "new" option', async () => {
-    render(
+    wrapper(
       <GroupObservationsField
         value={1}
         obsId="obs1"
@@ -63,7 +68,7 @@ describe('GroupObservationsField', () => {
   });
 
   it('removes group when selecting "none"', async () => {
-    render(
+    wrapper(
       <GroupObservationsField
         value={1}
         obsId="obs1"
@@ -85,7 +90,7 @@ describe('GroupObservationsField', () => {
   });
 
   it('reuses group when selecting existing groupId', async () => {
-    render(
+    wrapper(
       <GroupObservationsField
         value={1}
         obsId="obs1"
@@ -107,7 +112,7 @@ describe('GroupObservationsField', () => {
   });
 
   it('adds group on blur in editing mode', async () => {
-    render(
+    wrapper(
       <GroupObservationsField
         value={1}
         obsId="obs1"
@@ -133,7 +138,7 @@ describe('GroupObservationsField', () => {
   });
 
   it('respects disabled prop', () => {
-    render(
+    wrapper(
       <GroupObservationsField
         value={1}
         obsId="obs1"
@@ -148,7 +153,7 @@ describe('GroupObservationsField', () => {
   });
 
   it('uses default labelWidth when not provided', () => {
-    render(<GroupObservationsField value={1} obsId="obs1" setValue={mockSetValue} />);
+    wrapper(<GroupObservationsField value={1} obsId="obs1" setValue={mockSetValue} />);
     expect(screen.getByTestId('groupObservationsEntry')).toBeInTheDocument();
   });
 });

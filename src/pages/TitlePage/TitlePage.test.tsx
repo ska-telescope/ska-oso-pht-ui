@@ -4,14 +4,19 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { countWords } from '@utils/helpers.ts';
 import TitlePage from './TitlePage';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
 
 describe('<TitlePage />', () => {
   test('renders correctly', () => {
-    render(
-      <StoreProvider>
-        <TitlePage />
-      </StoreProvider>
-    );
+    wrapper(<TitlePage />);
   });
 });
 

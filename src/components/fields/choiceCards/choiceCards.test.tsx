@@ -6,6 +6,7 @@ import userEvent from '@testing-library/user-event';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { ChoiceCards } from './choiceCards';
 import { FEASIBLE_MAYBE, FEASIBLE_NO, FEASIBLE_YES } from '@/utils/constants';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 // Mock MUI theme for testing
 const theme = createTheme({
@@ -20,7 +21,9 @@ const theme = createTheme({
 const renderWithTheme = (component: React.ReactElement) => {
   return render(
     <ThemeProvider theme={theme}>
-      <StoreProvider>{component}</StoreProvider>
+      <StoreProvider>
+        <AppFlowProvider>{component}</AppFlowProvider>
+      </StoreProvider>
     </ThemeProvider>
   );
 };

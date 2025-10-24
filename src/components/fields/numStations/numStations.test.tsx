@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import NumStationsField from './NumStations';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -16,6 +17,14 @@ vi.mock('react-i18next', () => ({
   })
 }));
 
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
+
 describe('NumStationsField', () => {
   const mockSetValue = vi.fn();
 
@@ -24,11 +33,7 @@ describe('NumStationsField', () => {
   });
 
   it('renders NumberEntry with correct label and value', () => {
-    render(
-      <StoreProvider>
-        <NumStationsField value={2} setValue={mockSetValue} />
-      </StoreProvider>
-    );
+    wrapper(<NumStationsField value={2} setValue={mockSetValue} />);
     const inputWrapper = screen.getByTestId('numStations');
     expect(inputWrapper).toBeInTheDocument();
     const input = inputWrapper.querySelector('input');
@@ -36,11 +41,7 @@ describe('NumStationsField', () => {
   });
 
   it('does not call setValue with out-of-range value', async () => {
-    render(
-      <StoreProvider>
-        <NumStationsField value={1} setValue={mockSetValue} rangeLower={0} rangeUpper={2} />
-      </StoreProvider>
-    );
+    wrapper(<NumStationsField value={1} setValue={mockSetValue} rangeLower={0} rangeUpper={2} />);
     const inputWrapper = screen.getByTestId('numStations');
     const input = inputWrapper.querySelector('input');
     await userEvent.clear(input!);
@@ -49,22 +50,14 @@ describe('NumStationsField', () => {
   });
 
   it('respects disabled prop', () => {
-    render(
-      <StoreProvider>
-        <NumStationsField value={1} disabled />
-      </StoreProvider>
-    );
+    wrapper(<NumStationsField value={1} disabled />);
     const inputWrapper = screen.getByTestId('numStations');
     const input = inputWrapper.querySelector('input');
     expect(input).toBeDisabled();
   });
 
   it('uses default labelWidth when not provided', () => {
-    render(
-      <StoreProvider>
-        <NumStationsField value={1} />
-      </StoreProvider>
-    );
+    wrapper(<NumStationsField value={1} />);
     const inputWrapper = screen.getByTestId('numStations');
     expect(inputWrapper).toBeInTheDocument();
   });

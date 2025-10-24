@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import SciencePage from './SciencePage';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 // Mock login
 vi.mock('@ska-telescope/ska-login-page', () => ({
@@ -65,6 +66,10 @@ vi.mock('@services/axios/delete/deletePDF/deletePDF.tsx', () => ({
   default: vi.fn().mockResolvedValue({})
 }));
 
+const wrapper = (component: React.ReactElement) => {
+  return render(<AppFlowProvider>{component}</AppFlowProvider>);
+};
+
 describe('SciencePage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -74,7 +79,7 @@ describe('SciencePage', () => {
   });
 
   it('renders file upload and buttons when logged in', () => {
-    render(<SciencePage />);
+    wrapper(<SciencePage />);
     // expect(screen.getByTestId('fileUpload')).toBeInTheDocument();
     expect(screen.getByText('pdfUpload.science.label.preview')).toBeInTheDocument();
     expect(screen.getByText('pdfUpload.science.label.download')).toBeInTheDocument();
@@ -82,13 +87,13 @@ describe('SciencePage', () => {
   });
 
   // it('uploads PDF and updates proposal', async () => {
-  //   render(<SciencePage />);
+  //   wrapper(<SciencePage />);
   //   const uploadFn = screen.getByTestId('fileUpload').getAttribute('uploadFunction');
   //   expect(uploadFn).toBeDefined();
   // });
 
   it('previews PDF and opens viewer', async () => {
-    render(<SciencePage />);
+    wrapper(<SciencePage />);
     fireEvent.click(screen.getByText('pdfUpload.science.label.preview'));
     await waitFor(() => {
       expect(screen.getByTestId('pdf-wrapper')).toBeInTheDocument();
@@ -97,7 +102,7 @@ describe('SciencePage', () => {
 
   it('downloads PDF and opens new tab', async () => {
     const openSpy = vi.spyOn(window, 'open').mockImplementation(() => null);
-    render(<SciencePage />);
+    wrapper(<SciencePage />);
     fireEvent.click(screen.getByText('pdfUpload.science.label.download'));
     await waitFor(() => {
       expect(openSpy).toHaveBeenCalledWith('https://download-url', '_blank');
@@ -105,7 +110,7 @@ describe('SciencePage', () => {
   });
 
   it('deletes PDF and updates proposal', async () => {
-    render(<SciencePage />);
+    wrapper(<SciencePage />);
     fireEvent.click(screen.getByText('pdfUpload.science.label.delete'));
     await waitFor(() => {
       expect(notifySuccess).toHaveBeenCalledWith('pdfDelete.science.success');
@@ -115,13 +120,13 @@ describe('SciencePage', () => {
   // it('handles upload error gracefully', async () => {
   //   const PutUploadPDF = require('@services/axios/put/putUploadPDF/putUploadPDF').default;
   //   PutUploadPDF.mockResolvedValue({ error: true });
-  //   render(<SciencePage />);
+  //   wrapper(<SciencePage />);
   //   const uploadFn = screen.getByTestId('fileUpload').getAttribute('uploadFunction');
   //   expect(uploadFn).toBeDefined();
   // });
 
   it('triggers helpComponent and validation on mount', () => {
-    render(<SciencePage />);
+    wrapper(<SciencePage />);
     expect(mockStore.helpComponent).toHaveBeenCalledWith('page.3.help');
     expect(mockStore.updateAppContent1).toHaveBeenCalled();
   });
