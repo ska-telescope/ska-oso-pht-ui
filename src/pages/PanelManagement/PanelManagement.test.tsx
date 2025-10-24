@@ -17,6 +17,7 @@ import MockProposalFrontendList from '@/services/axios/get/getProposalList/mockP
 import Proposal from '@/utils/types/proposal';
 import { REVIEWER_STATUS } from '@/utils/constants';
 import { Reviewer } from '@/utils/types/reviewer';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 const mockedPanels: Panel[] = [
   {
@@ -45,13 +46,17 @@ const mockedPanels: Panel[] = [
   }
 ];
 
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
+
 describe('<PanelManagement />', () => {
   test('renders correctly', () => {
-    render(
-      <StoreProvider>
-        <PanelManagement />
-      </StoreProvider>
-    );
+    wrapper(<PanelManagement />);
   });
 });
 

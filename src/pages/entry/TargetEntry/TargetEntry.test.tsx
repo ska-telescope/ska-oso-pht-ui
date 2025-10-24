@@ -3,13 +3,18 @@ import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TargetEntry from './TargetEntry';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
 
 describe('<TargetEntry />', () => {
   test('renders correctly', () => {
-    render(
-      <StoreProvider>
-        <TargetEntry raType={0} />
-      </StoreProvider>
-    );
+    wrapper(<TargetEntry raType={0} />);
   });
 });

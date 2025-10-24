@@ -5,6 +5,7 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 import MemberEntry from './MemberEntry';
 import * as mockService from '@/services/axios/get/getUserByEmail/getUserByEmail';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 const isEnabled = (testId: string, enabled: boolean = true) => {
   if (enabled) {
@@ -35,14 +36,18 @@ const clickButton = async (testId: string) => {
   });
 };
 
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
+
 describe('<MemberEntry /> search for user', () => {
   test('search for user successfully', async () => {
     vi.spyOn(mockService, 'default').mockResolvedValue(MockUserFrontendList[0]);
-    render(
-      <StoreProvider>
-        <MemberEntry />
-      </StoreProvider>
-    );
+    wrapper(<MemberEntry />);
     isEnabled('email');
     await enterValue('email', MockUserFrontendList[0].email);
     hasValue('email', MockUserFrontendList[0].email);
@@ -62,11 +67,7 @@ describe('<MemberEntry /> search for user', () => {
     vi.spyOn(mockService, 'default').mockResolvedValue({
       error: 'User not found'
     } as any);
-    render(
-      <StoreProvider>
-        <MemberEntry />
-      </StoreProvider>
-    );
+    wrapper(<MemberEntry />);
     isEnabled('email');
     await enterValue('email', 'unknown@skao.int');
     hasValue('email', 'unknown@skao.int');
@@ -81,11 +82,7 @@ describe('<MemberEntry /> search for user', () => {
   });
 
   test('fill user details manually', async () => {
-    render(
-      <StoreProvider>
-        <MemberEntry />
-      </StoreProvider>
-    );
+    wrapper(<MemberEntry />);
     isEnabled('email');
     isEnabled('firstName');
     isEnabled('lastName');

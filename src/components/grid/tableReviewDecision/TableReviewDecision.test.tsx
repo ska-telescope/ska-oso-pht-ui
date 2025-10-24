@@ -2,6 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TableReviewDecision from './TableReviewDecision';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 vi.mock('./tableReviewDecisionHeader/TableReviewDecisionHeader', () => ({
   default: () => (
@@ -37,20 +38,26 @@ const mockData = [
 const mockExclude = vi.fn();
 const mockUpdate = vi.fn();
 
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
+
 describe('TableReviewDecision', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it('passes props correctly to row component', () => {
-    render(
-      <StoreProvider>
-        <TableReviewDecision
-          data={mockData}
-          excludeFunction={mockExclude}
-          updateFunction={mockUpdate}
-        />
-      </StoreProvider>
+    wrapper(
+      <TableReviewDecision
+        data={mockData}
+        excludeFunction={mockExclude}
+        updateFunction={mockUpdate}
+      />
     );
 
     expect(screen.getByText('Galaxy Formation')).toBeInTheDocument();
