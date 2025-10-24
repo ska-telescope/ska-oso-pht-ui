@@ -31,7 +31,7 @@ describe('<ReferenceFrame />', () => {
             imageCellSizeValue: 0,
             imageCellSizeUnits: '',
             weighting: 0,
-            polarisations: "I"
+            polarisations: 'I'
           }
         ]}
       />
@@ -54,7 +54,7 @@ describe('<ReferenceFrame />', () => {
             imageCellSizeValue: 0,
             imageCellSizeUnits: '',
             weighting: 0,
-            polarisations:"I"
+            polarisations:'I'
           }
         ]}
       />
