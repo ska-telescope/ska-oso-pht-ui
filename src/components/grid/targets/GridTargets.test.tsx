@@ -4,83 +4,82 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import '@testing-library/jest-dom';
 import GridTargets from './GridTargets';
 import { RA_TYPE_GALACTIC, RA_TYPE_ICRS } from '@/utils/constants';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
 
 describe('<GridTargets />', () => {
   test('renders correctly', () => {
-    render(
-      <StoreProvider>
-        <GridTargets raType={0} />
-      </StoreProvider>
-    );
+    wrapper(<GridTargets raType={0} />);
   });
   test('renders correctly with rows', () => {
-    render(
-      <StoreProvider>
-        <GridTargets
-          raType={0}
-          rows={[
-            {
-              kind: RA_TYPE_GALACTIC.value,
-              id: 1,
-              name: 'Galactic target',
-              b: 45.0,
-              l: 180.0,
-              redshift: '',
-              velType: 0,
-              vel: '',
-              velUnit: 0
-            }
-          ]}
-        />
-      </StoreProvider>
+    wrapper(
+      <GridTargets
+        raType={0}
+        rows={[
+          {
+            kind: RA_TYPE_GALACTIC.value,
+            id: 1,
+            name: 'Galactic target',
+            b: 45.0,
+            l: 180.0,
+            redshift: '',
+            velType: 0,
+            vel: '',
+            velUnit: 0
+          }
+        ]}
+      />
     );
   });
   test('renders correctly with rows, deleteClicked', () => {
-    render(
-      <StoreProvider>
-        <GridTargets
-          deleteClicked={vi.fn()}
-          raType={0}
-          rows={[
-            {
-              kind: RA_TYPE_ICRS.value,
-              id: 1,
-              decStr: '-45:00:00.0',
-              name: 'ICRS target',
-              raStr: '12:30:00.0',
-              redshift: '',
-              referenceFrame: RA_TYPE_ICRS.label,
-              velType: 0,
-              vel: '',
-              velUnit: 0
-            }
-          ]}
-        />
-      </StoreProvider>
+    wrapper(
+      <GridTargets
+        deleteClicked={vi.fn()}
+        raType={0}
+        rows={[
+          {
+            kind: RA_TYPE_ICRS.value,
+            id: 1,
+            decStr: '-45:00:00.0',
+            name: 'ICRS target',
+            raStr: '12:30:00.0',
+            redshift: '',
+            referenceFrame: RA_TYPE_ICRS.label,
+            velType: 0,
+            vel: '',
+            velUnit: 0
+          }
+        ]}
+      />
     );
   });
   test('renders correctly with rows, editClicked', () => {
-    render(
-      <StoreProvider>
-        <GridTargets
-          editClicked={vi.fn()}
-          raType={0}
-          rows={[
-            {
-              kind: RA_TYPE_ICRS.value,
-              id: 1,
-              decStr: '-45:00:00.0',
-              name: 'ICRS target',
-              raStr: '12:30:00.0',
-              redshift: '',
-              referenceFrame: RA_TYPE_ICRS.label,
-              velType: 0,
-              vel: '',
-              velUnit: 0
-            }
-          ]}
-        />
-      </StoreProvider>
+    wrapper(
+      <GridTargets
+        editClicked={vi.fn()}
+        raType={0}
+        rows={[
+          {
+            kind: RA_TYPE_ICRS.value,
+            id: 1,
+            decStr: '-45:00:00.0',
+            name: 'ICRS target',
+            raStr: '12:30:00.0',
+            redshift: '',
+            referenceFrame: RA_TYPE_ICRS.label,
+            velType: 0,
+            vel: '',
+            velUnit: 0
+          }
+        ]}
+      />
     );
   });
 });

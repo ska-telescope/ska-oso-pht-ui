@@ -4,6 +4,7 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import TimedAlert from './TimedAlert';
 import { useNotify } from '@/utils/notify/useNotify';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 vi.mock('@/utils/notify/useNotify', () => ({
   useNotify: vi.fn()
@@ -21,16 +22,20 @@ afterEach(() => {
   vi.resetAllMocks();
 });
 
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
+
 describe('TimedAlert', () => {
   const testId = 'alert-test';
   const text = 'This is a test alert';
 
   it('renders and auto-dismisses for Info alert', async () => {
-    render(
-      <StoreProvider>
-        <TimedAlert color={AlertColorTypes.Info} testId={testId} text={text} delay={1} />
-      </StoreProvider>
-    );
+    wrapper(<TimedAlert color={AlertColorTypes.Info} testId={testId} text={text} delay={1} />);
     expect(screen.getByTestId(testId)).toBeInTheDocument();
 
     act(() => {
@@ -42,11 +47,7 @@ describe('TimedAlert', () => {
   });
 
   it('renders and auto-dismisses for Success alert', async () => {
-    render(
-      <StoreProvider>
-        <TimedAlert color={AlertColorTypes.Success} testId={testId} text={text} delay={1} />
-      </StoreProvider>
-    );
+    wrapper(<TimedAlert color={AlertColorTypes.Success} testId={testId} text={text} delay={1} />);
     expect(screen.getByTestId(testId)).toBeInTheDocument();
 
     act(() => {
@@ -58,11 +59,7 @@ describe('TimedAlert', () => {
   });
 
   it('renders and does not auto-dismiss for Error alert', async () => {
-    render(
-      <StoreProvider>
-        <TimedAlert color={AlertColorTypes.Error} testId={testId} text={text} />
-      </StoreProvider>
-    );
+    wrapper(<TimedAlert color={AlertColorTypes.Error} testId={testId} text={text} />);
     expect(screen.getByTestId(testId)).toBeInTheDocument();
 
     act(() => {
@@ -74,11 +71,7 @@ describe('TimedAlert', () => {
   });
 
   it('renders and does not auto-dismiss for Warning alert', async () => {
-    render(
-      <StoreProvider>
-        <TimedAlert color={AlertColorTypes.Warning} testId={testId} text={text} />
-      </StoreProvider>
-    );
+    wrapper(<TimedAlert color={AlertColorTypes.Warning} testId={testId} text={text} />);
     expect(screen.getByTestId(testId)).toBeInTheDocument();
 
     act(() => {
