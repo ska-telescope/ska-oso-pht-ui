@@ -161,11 +161,11 @@ const getDataProductSDP = (dataproducts: DataProductSDP[]): DataProductSDPsBacke
   const getPixelSizeUnits = (inValue: string) => (inValue === 'arcsecs' ? 'arcsec' : inValue);
 
   return dataproducts?.map(dp => ({
-    data_products_sdp_id: dp.dataProductsSDPId,
+    data_product_id: dp.dataProductsSDPId,
     options: SDPOptions(dp.observatoryDataProduct),
     observation_set_refs: dp.observationId,
     image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
-    pixel_size: { value: dp.pixelSizeValue, unit: getPixelSizeUnits(dp.pixelSizeUnits) },
+    image_cellsize: { value: dp.pixelSizeValue, unit: getPixelSizeUnits(dp.pixelSizeUnits) },
     weighting: dp.weighting?.toString()
   }));
 };
