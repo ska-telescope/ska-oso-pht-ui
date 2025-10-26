@@ -294,7 +294,15 @@ export const MockProposalFrontend: Proposal = {
     }
   ],
   dataProductSRC: [],
-  calibrationStrategy: [],
+  calibrationStrategy: [
+    {
+      observatoryDefined: true,
+      id: 'cal-001',
+      observationIdRef: 'obs-obR1Ej',
+      calibrators: null,
+      notes: 'This is an observatory defined calibration strategy.'
+    }
+  ],
   pipeline: ''
 };
 
@@ -470,6 +478,14 @@ export const MockProposalFrontendZoom: Proposal = {
     }
   ],
   dataProductSRC: [],
-  calibrationStrategy: [],
+  calibrationStrategy: [
+    {
+      observatoryDefined: true,
+      id: 'cal-002',
+      observationIdRef: 'obs-arMIoY',
+      calibrators: null,
+      notes: 'This is an other observatory defined calibration strategy.'
+    }
+  ],
   pipeline: ''
 };

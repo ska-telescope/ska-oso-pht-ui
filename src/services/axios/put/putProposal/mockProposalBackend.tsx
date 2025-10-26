@@ -191,7 +191,15 @@ export const MockProposalBackend: ProposalBackend = {
         weighting: '1'
       }
     ],
-    // calibration_strategy: null, // TODO
+    calibration_strategy: [
+      {
+        observatory_defined: true,
+        calibration_id: 'cal-001',
+        observation_id_ref: 'obs-obR1Ej',
+        calibrators: null,
+        notes: 'This is an observatory defined calibration strategy.'
+      }
+    ],
     result_details: [
       {
         observation_set_ref: 'obs-obR1Ej',
@@ -357,7 +365,15 @@ export const MockProposalBackendZoom: ProposalBackend = {
         weighting: '2'
       }
     ],
-    // calibration_strategy: null, // TODO
+    calibration_strategy: [
+      {
+        observatory_defined: true,
+        calibration_id: 'cal-002',
+        observation_id_ref: 'obs-arMIoY',
+        calibrators: null,
+        notes: 'This is an other observatory defined calibration strategy.'
+      }
+    ],
     result_details: [
       {
         observation_set_ref: 'obs-arMIoY',
