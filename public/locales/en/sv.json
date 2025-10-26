@@ -1,52 +1,52 @@
 {
   "abstract": {
-    "help": "The Science Idea abstract should clearly communicate the Science Idea’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the Science Idea's essential points. The abstract should be succinct yet detailed enough to convey the essence of the Science Idea, highlighting its innovation and relevance to the field. The text should be a maximum of 250 words.",
-    "helper": "Please enter the abstract of your Science Idea. This field allows latex syntax. - Word count {{current}} / {{max}}"
+    "help": "The Science Verification Idea abstract should clearly communicate the Science Verification Idea’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the Science Verification Idea's essential points. The abstract should be succinct yet detailed enough to convey the essence of the Science Verification Idea, highlighting its innovation and relevance to the field. The text should be a maximum of 250 words.",
+    "helper": "Please enter the abstract of your Science Verification Idea. This field allows latex syntax. - Word count {{current}} / {{max}}"
   },
   "addProposal": {
-    "success": "Science Idea added with unique identifier ",
-    "toolTip": "Click to add a new Science Idea.",
-    "warning": "Please wait whilst we create a new Science Idea."
+    "success": "Science Verification Idea added with unique identifier ",
+    "toolTip": "Click to add a new Science Verification Idea.",
+    "warning": "Please wait whilst we create a new Science Verification Idea."
   },
   "addTarget": {
-    "toolTip": "Will add the target to the list associated with this Science Idea."
+    "toolTip": "Will add the target to the list associated with this Science Verification Idea."
   },
   "assignBtn": {
-    "toolTip": "Assign Science Ideas to a review panel"
+    "toolTip": "Assign Science Verification Ideas to a review panel"
   },
   "assignProposals": {
-    "label": "Assign Science Ideas",
-    "success": "Science Ideas assigned successfully.",
-    "toolTip": "Click to assign Science Ideas to the panel.",
-    "warning": "Please wait whilst we assign the Science Ideas."
+    "label": "Assign Science Verification Ideas",
+    "success": "Science Verification Ideas assigned successfully.",
+    "toolTip": "Click to assign Science Verification Ideas to the panel.",
+    "warning": "Please wait whilst we assign the Science Verification Ideas."
   },
   "changeProposal": {
-    "label": "Change Science Idea's type?",
-    "content1": "You are about to change the type of your Science Idea.",
-    "content2": "Some data specific to the Science Idea type may be lost."
+    "label": "Change Science Verification Idea's type?",
+    "content1": "You are about to change the type of your Science Verification Idea.",
+    "content2": "Some data specific to the Science Verification Idea type may be lost."
   },
   "cloneProposal": {
-    "toolTip": "Clone Science Idea",
-    "confirm": "Clone this Science Idea."
+    "toolTip": "Clone Science Verification Idea",
+    "confirm": "Clone this Science Verification Idea."
   },
   "conflict": {
-    "tooltip": "Indicate whether there is a conflict of interest with this Science Idea"
+    "tooltip": "Indicate whether there is a conflict of interest with this Science Verification Idea"
   },
   "decisionComments": {
-    "help": "Comments provided by the chairperson when making a decision on the Science Idea."
+    "help": "Comments provided by the chairperson when making a decision on the Science Verification Idea."
   },
   "deleteProposal": {
-    "toolTip": "Delete Science Idea",
-    "confirm": "Confirm Science Idea Deletion."
+    "toolTip": "Delete Science Verification Idea",
+    "confirm": "Confirm Science Verification Idea Deletion."
   },
   "displayProposal": {
-    "warning": "Please wait whilst we load the selected Science Idea."
+    "warning": "Please wait whilst we load the selected Science Verification Idea."
   },
   "downloadProposal": {
-    "label": "Download Science Idea"
+    "label": "Download Science Verification Idea"
   },
   "editProposal": {
-    "toolTip": "Edit Science Idea"
+    "toolTip": "Edit Science Verification Idea"
   },
   "email": {
     "label": "Email",
@@ -65,8 +65,8 @@
     "reset": "Reset user search"
   },
   "homeBtn": {
-    "title": "Science Ideas",
-    "tooltip": "Returns to the list of Science Ideas"
+    "title": "Science Verification Ideas",
+    "tooltip": "Returns to the list of Science Verification Ideas"
   },
   "manageTeamMember": {
     "label": "Manage Team Member Rights",
@@ -97,117 +97,121 @@
     }
   },
   "overview": {
-    "toolTip": "Overview of Science Ideas"
+    "toolTip": "Overview of Science Verification Ideas"
   },
   "phdThesis": {
-    "help": "Check to indicate that part of the data from this Science Idea will be used towards a PhD thesis."
+    "help": "Check to indicate that part of the data from this Science Verification Idea will be used towards a PhD thesis."
   },
   "pi": {
-    "help": "Check to indicate that this individual is the Principal Investigator of this Science Idea."
+    "help": "Check to indicate that this individual is the Principal Investigator of this Science Verification Idea."
+  },
+  "pht": {
+    "short": "SVI",
+    "title": "Science Verification Ideas"
   },
   "proposal": {
-    "error": "Unable to retrieve the Science Idea from the server"
+    "error": "Unable to retrieve the Science Verification Idea from the server"
   },
   "proposalId": {
-    "label": "Science Idea ID"
+    "label": "Science Verification Idea ID"
   },
   "proposalAttribute": {
     "desc": {
-      "4": "These projects require more than one Science Idea cycle to complete (e.g., long-term monitoring campaigns) but are too short in overall observing time, limited in observatory resources and/or scientific scope to qualify as a KSP."
+      "4": "These projects require more than one Science Verification Idea cycle to complete (e.g., long-term monitoring campaigns) but are too short in overall observing time, limited in observatory resources and/or scientific scope to qualify as a KSP."
     },
-    "help": "One or more of these optional attributes may be selected to further refine the Science Idea.",
+    "help": "One or more of these optional attributes may be selected to further refine the Science Verification Idea.",
     "title": {
-      "2": "Joint SKA Science Idea"
+      "2": "Joint SKA Science Verification Idea"
     }
   },
   "proposals": {
-    "empty": "THERE ARE NO SCIENCE IDEAS TO BE DISPLAYED",
-    "label": "Science Ideas"
+    "empty": "THERE ARE NO Science Verification IdeaS TO BE DISPLAYED",
+    "label": "Science Verification Ideas"
   },
   "proposalType": {
-    "help": "Select from the options below the most appropriate type classification for the Science Idea. This can be changed later if needed, but be aware that this may affect information previously entered.",
-    "all": "All Science Idea types"
+    "help": "Select from the options below the most appropriate type classification for the Science Verification Idea. This can be changed later if needed, but be aware that this may affect information previously entered.",
+    "all": "All Science Verification Idea types"
   },
   "members": {
-    "empty": "THERE ARE NO INVESTIGATORS ASSOCIATED WITH THIS SCIENCE IDEA"
+    "empty": "THERE ARE NO INVESTIGATORS ASSOCIATED WITH THIS Science Verification Idea"
   },
   "reviewOverview": {
     "panel1": {
-      "title": "Science Idea Assignment"
+      "title": "Science Verification Idea Assignment"
     }
   },
   "reviewProposal": {
-    "science": "Review Science Idea science",
-    "submit": "Submit the review of the Science Idea",
-    "technical": "Review Science Idea technical",
-    "title": "Review Science Idea",
-    "toolTip": "Review Science Idea"
+    "science": "Review Science Verification Idea science",
+    "submit": "Submit the review of the Science Verification Idea",
+    "technical": "Review Science Verification Idea technical",
+    "title": "Review Science Verification Idea",
+    "toolTip": "Review Science Verification Idea"
   },
   "reviewProposalList": {
-    "title": "Review Science Ideas",
-    "toolTip": "List of Science Ideas for review"
+    "title": "Review Science Verification Ideas",
+    "toolTip": "List of Science Verification Ideas for review"
   },
   "saveBtn": {
-    "tooltip": "Saves the Science Idea in the current state to the database"
+    "tooltip": "Saves the Science Verification Idea in the current state to the database"
   },
   "scienceCategory": {
-    "help": "Select a category that best describes the science of your Science Idea."
+    "help": "Select a category that best describes the science of your Science Verification Idea."
   },
   "scienceSubCategory": {
-    "help": "SUB-CATEGORY: Select a sub-category that best describes your Science Idea."
+    "help": "SUB-CATEGORY: Select a sub-category that best describes your Science Verification Idea."
   },
   "submitAllBtn": {
-    "tooltip": "Submit all reviewed Science Ideas"
+    "tooltip": "Submit all reviewed Science Verification Ideas"
   },
   "submitBtn": {
-    "tooltip": "Progress the Science Ideas to the submitted state"
+    "tooltip": "Progress the Science Verification Ideas to the submitted state"
   },
   "targets": {
-    "empty": "There are no targets associated with this Science Idea"
+    "empty": "There are no targets associated with this Science Verification Idea"
   },
   "uploadCsvBtn": {
-    "uploadSuccessMsg": "All targets in file have been uploaded into the Science Idea"
+    "uploadSuccessMsg": "All targets in file have been uploaded into the Science Verification Idea"
   },
   "validationBtn": {
-    "success": "Science Idea is Valid",
-    "tooltip": "Performs enhanced validation upon the Science Idea"
+    "success": "Science Verification Idea is Valid",
+    "tooltip": "Performs enhanced validation upon the Science Verification Idea"
   },
   "viewProposal": {
-    "toolTip": "View Science Idea"
+    "toolTip": "View Science Verification Idea"
   },
   "viewProposalIcon": {
-    "clicked": "View Science Idea Icon clicked"
+    "clicked": "View Science Verification Idea Icon clicked"
   },
   "page": {
     "0": {
-      "desc": "This page allows users to provide the title and Science Idea category"
+      "desc": "This page allows users to provide the title and Science Verification Idea type"
     },
     "1": {
-      "desc": "Principal Investigators should ensure that Co-Investigators are registered through the SKAO portal. Co-Investigators with pending status will be removed from the Science Idea during validation of a submitted Science Idea."
+      "desc": "Principal Investigators should ensure that Co-Investigators are registered through the SKAO portal. Co-Investigators with pending status will be removed from the Science Verification Idea during validation of a submitted Science Verification Idea."
     },
     "2": {
-      "desc": "This page allows the user to provide general information about the Science Idea."
+      "desc": "This page allows the user to provide general information about the Science Verification Idea."
     },
     "3": {
-      "desc": "Upload a Science justification for this Science Idea in a portable document format (pdf)."
+      "desc": "Upload a Science justification for this Science Verification Idea in a portable document format (pdf)."
     },
     "4": {
-      "desc": "Select a category to associate target(s) with this Science Idea."
+      "desc": "Select a category to associate target(s) with this Science Verification Idea."
     },
     "6": {
-      "desc": "Confirm a calibration strategy for this Science Idea."
+      "desc": "Confirm a calibration strategy for this Science Verification Idea."
     },
     "7": {
-      "desc": "Upload a Technical justification for this Science Idea in a portable document format (pdf)."
+      "desc": "Upload a Technical justification for this Science Verification Idea in a portable document format (pdf)."
     },
     "8": {
-      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS SCIENCE IDEA",
-      "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS SCIENCE IDEA"
+      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS Science Verification Idea",
+      "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS Science Verification Idea"
     },
     "11": {
-      "desc": "Science Ideas where the user is listed as either Principal Investigator or Co-Investigator.",
-      "empty": "NO Science IdeaS AVAILABLE"
+      "desc": "Science Verification Ideas where the user is listed as a participant.",
+      "empty": "NO Science Verification IdeaS AVAILABLE"
     },
-    "noObservations": "NO OBSERVATION SETUP IS ASSOCIATED WITH THIS SCIENCE IDEA"
+    "noObservations": "NO OBSERVATION SETUP IS ASSOCIATED WITH THIS Science Verification Idea"
   }
 }

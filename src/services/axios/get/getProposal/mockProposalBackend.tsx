@@ -216,14 +216,14 @@ export const MockProposalBackend: ProposalBackend = {
     ],
     data_product_sdps: [
       {
-        data_products_sdp_id: 'SDP-2',
+        data_product_id: 'SDP-2',
         options: ['Y', 'N', 'Y', 'N'],
         observation_set_refs: ['obs-obR1Ej'],
         image_size: {
           value: 15,
           unit: 'deg'
         },
-        pixel_size: {
+        image_cellsize: {
           value: 1.007,
           unit: 'arcsec'
         },
@@ -392,14 +392,14 @@ export const MockProposalBackendZoom: ProposalBackend = {
     ],
     data_product_sdps: [
       {
-        data_products_sdp_id: 'SDP-1',
+        data_product_id: 'SDP-1',
         options: ['Y', 'Y', 'Y', 'Y'],
         observation_set_refs: ['obs-arMIoY'],
         image_size: {
           value: 100,
           unit: 'deg'
         },
-        pixel_size: {
+        image_cellsize: {
           value: 3.7,
           unit: 'arcsec'
         },

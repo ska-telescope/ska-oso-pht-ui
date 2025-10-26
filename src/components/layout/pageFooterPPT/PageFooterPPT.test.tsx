@@ -7,6 +7,7 @@ import PostProposal from '@services/axios/post/postProposal/postProposal.tsx';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend';
 import PageFooterPPT from './PageFooterPPT';
 import { NEW_PROPOSAL_ACCESS } from '@/utils/types/proposalAccess';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 vi.mock('react-router-dom', () => ({
   useNavigate: vi.fn()
@@ -60,27 +61,31 @@ beforeEach(() => {
   });
 });
 
+const wrapper = (component: React.ReactElement) => {
+  return render(<AppFlowProvider>{component}</AppFlowProvider>);
+};
+
 describe('PageFooterPPT', () => {
   it('renders previous and next buttons when pageNo is valid', () => {
-    render(<PageFooterPPT pageNo={1} />);
+    wrapper(<PageFooterPPT pageNo={1} />);
     expect(screen.getByTestId('nextButtonTestId')).toBeInTheDocument();
   });
 
   it('does not render previous button on first page', () => {
-    render(<PageFooterPPT pageNo={0} />);
+    wrapper(<PageFooterPPT pageNo={0} />);
     expect(screen.queryByTestId('prevButtonTestId')).not.toBeInTheDocument();
   });
 
   /* Not currently needed
   it('renders TimedAlert when notification message exists', () => {
-    render(<PageFooterPPT pageNo={1} />);
+    wrapper(<PageFooterPPT pageNo={1} />);
     expect(screen.getByTestId('timeAlertFooter')).toBeInTheDocument();
     expect(screen.getByText('Test message')).toBeInTheDocument();
   });
   */
 
   it('calls createProposal when pageNo is -1 and user is logged in', async () => {
-    render(<PageFooterPPT pageNo={-1} />);
+    wrapper(<PageFooterPPT pageNo={-1} />);
     fireEvent.click(screen.getByTestId('nextButtonTestId'));
 
     await waitFor(() => {
@@ -90,7 +95,7 @@ describe('PageFooterPPT', () => {
   });
 
   it('disables next button when buttonDisabled is true', () => {
-    render(<PageFooterPPT pageNo={1} buttonDisabled />);
+    wrapper(<PageFooterPPT pageNo={1} buttonDisabled />);
     expect(screen.getByTestId('nextButtonTestId')).toBeDisabled();
   });
 });

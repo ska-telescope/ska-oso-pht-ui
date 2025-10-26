@@ -7,7 +7,12 @@ import { ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-com
 import { useNavigate } from 'react-router-dom';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { PMT, PATH, isCypress } from '@/utils/constants';
-import { isReviewerAdmin, isReviewerChair, isReviewer } from '@/utils/aaa/aaaUtils';
+import {
+  isReviewerAdmin,
+  isReviewerChair,
+  isReviewer,
+  useInitializeAccessStore // ✅ Import the initializer hook
+} from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 export interface ButtonUserMenuProps {
@@ -25,6 +30,8 @@ export default function ButtonUserMenu({
   onClick,
   toolTip = 'Additional user functionality including sign out'
 }: ButtonUserMenuProps): JSX.Element {
+  useInitializeAccessStore(); // ✅ Initialize access store at top level
+
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [cypressLogin, setCypressLogin] = React.useState('');
   const openMenu = Boolean(anchorEl);
@@ -93,11 +100,9 @@ export default function ButtonUserMenu({
             {t('overview.title')}
           </MenuItem>
         )}
-        {
-          <MenuItem data-testid="menuItemProposals" onClick={() => onMenuSelect(PATH[0])}>
-            {t('homeBtn.title')}
-          </MenuItem>
-        }
+        <MenuItem data-testid="menuItemProposals" onClick={() => onMenuSelect(PATH[0])}>
+          {t('homeBtn.title')}
+        </MenuItem>
         {isReviewerAdmin() && (
           <MenuItem data-testid="menuItemPanelSummary" onClick={() => onMenuSelect(PMT[0])}>
             {t('page.15.title')}

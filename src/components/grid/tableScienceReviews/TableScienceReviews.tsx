@@ -9,15 +9,15 @@ import {
   IconButton,
   Box,
   Typography,
-  useTheme,
   Grid
 } from '@mui/material';
 import { Key } from 'react';
 import { StatusIcon } from '@ska-telescope/ska-gui-components';
+import { useTheme } from '@mui/system';
 import { PANEL_DECISION_STATUS, REVIEW_TYPE } from '@/utils/constants';
 import { ScienceReview } from '@/utils/types/proposalReview';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { isReviewerAdminOnly } from '@/utils/aaa/aaaUtils';
+import { isReviewerAdminOnly, useInitializeAccessStore } from '@/utils/aaa/aaaUtils';
 
 const STATUS_SIZE = 30;
 
@@ -29,6 +29,7 @@ interface TableScienceReviewsProps {
 export default function TableScienceReviews({ data, excludeFunction }: TableScienceReviewsProps) {
   const { t } = useScopedTranslation();
   const theme = useTheme();
+  useInitializeAccessStore();
 
   const filteredData = (reviews: any[]) =>
     reviews.filter(el => el?.reviewType?.kind === REVIEW_TYPE.SCIENCE);
@@ -53,7 +54,7 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
               </TableCell>
               <TableCell sx={{ fontWeight: 'bold', width: '120px' }}>{t('rank.label')}</TableCell>
               <TableCell sx={{ fontWeight: 'bold', width: '60px' }}>
-                {t('tableReviewDecision.excluded')}
+                {t('tableReviewDecision.included')}
               </TableCell>
             </TableRow>
           </TableHead>
@@ -77,7 +78,7 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
                     }}
                   >
                     <Typography variant="body2" sx={{ color: 'text.primary' }}>
-                      {detail?.status}
+                      {detail?.status ?? ''}
                     </Typography>
                   </TableCell>
                   <TableCell
@@ -110,7 +111,7 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
                     }}
                   >
                     <Typography variant="body2" sx={{ color: 'text.primary' }}>
-                      {detail.reviewType.conflict.hasConflict ? t('yes') : ''}
+                      {detail.reviewType.conflict.hasConflict ? t('yes') : t('no')}
                     </Typography>
                   </TableCell>
                   <TableCell
@@ -121,7 +122,7 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
                     }}
                   >
                     <Typography variant="body2" sx={{ color: 'text.primary' }}>
-                      {detail.reviewType.rank}
+                      {detail?.reviewType?.rank ?? 0}
                     </Typography>
                   </TableCell>
                   <TableCell
@@ -134,7 +135,7 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
                       <Grid>
                         <IconButton
                           onClick={() =>
-                            detail.status === PANEL_DECISION_STATUS.TO_DO
+                            detail?.status === PANEL_DECISION_STATUS.TO_DO
                               ? null
                               : excludeFunction(detail)
                           }
@@ -146,7 +147,7 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
                             softColors={detail.reviewType.conflict.hasConflict}
                             icon
                             level={
-                              detail.status === PANEL_DECISION_STATUS.TO_DO ||
+                              detail?.status === PANEL_DECISION_STATUS.TO_DO ||
                               detail.reviewType.excludedFromDecision ||
                               detail.reviewType.conflict.hasConflict
                                 ? 1

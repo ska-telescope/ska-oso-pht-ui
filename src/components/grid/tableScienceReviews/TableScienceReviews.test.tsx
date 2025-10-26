@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TableScienceReviews from './TableScienceReviews';
 import { CONFLICT_REASONS, REVIEW_TYPE } from '@/utils/constants';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 const mockNavigate = vi.fn();
 
@@ -29,6 +30,14 @@ vi.mock('@/utils/validation/validation', () => {
     validateProposal: vi.fn()
   };
 });
+
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
 
 const mockData = {
   id: 'proposal-1',
@@ -71,21 +80,13 @@ describe('TableScienceReviews', () => {
   });
 
   it('renders table headers and rows', () => {
-    render(
-      <StoreProvider>
-        <TableScienceReviews data={mockData} excludeFunction={vi.fn()} />
-      </StoreProvider>
-    );
+    wrapper(<TableScienceReviews data={mockData} excludeFunction={vi.fn()} />);
     expect(screen.getByText('status.label')).toBeInTheDocument();
   });
 
   it('calls excludeFunction when status is not "To Do"', () => {
     const excludeFn = vi.fn();
-    render(
-      <StoreProvider>
-        <TableScienceReviews data={mockData} excludeFunction={excludeFn} />
-      </StoreProvider>
-    );
+    wrapper(<TableScienceReviews data={mockData} excludeFunction={excludeFn} />);
     // TODO
     // const icon = screen.getByTestId('includeIcon-proposal-1-0');
     // fireEvent.click(icon);
@@ -94,11 +95,7 @@ describe('TableScienceReviews', () => {
 
   it('does not call excludeFunction when status is "To Do"', () => {
     const excludeFn = vi.fn();
-    render(
-      <StoreProvider>
-        <TableScienceReviews data={mockData} excludeFunction={excludeFn} />
-      </StoreProvider>
-    );
+    wrapper(<TableScienceReviews data={mockData} excludeFunction={excludeFn} />);
     // TODO
     // const icon = screen.getByTestId('includeIcon-proposal-1-1');
     // fireEvent.click(icon);

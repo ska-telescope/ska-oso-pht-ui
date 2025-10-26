@@ -52,12 +52,50 @@ export default function TableReviewDecision({
     return Math.round((average + Number.EPSILON) * 100) / 100;
   };
 
+  const scoredItems = React.useMemo(() => {
+    if (!data) return [];
+
+    // Step 1: Calculate scores
+    const itemsWithScores = data.map((item: any) => ({
+      ...item,
+      score: calculateScore(item.reviews)
+    }));
+
+    // Step 2: Sort by score descending
+    const sorted = [...itemsWithScores].sort((a, b) => b.score - a.score);
+
+    // Step 3: Assign ranks with ties
+    let rank = 1;
+    let lastScore: number | null = null;
+    const rankMap = new Map<number, number>();
+
+    sorted.forEach((item, index) => {
+      if (item.score === 0) return; // skip zero scores for now
+      if (item.score !== lastScore) {
+        rank = index + 1;
+        lastScore = item.score;
+      }
+      rankMap.set(item.id, rank);
+    });
+
+    // Step 4: Apply ranks to all items
+    const zeroScoreRank = data.length;
+
+    const results = itemsWithScores.map((item: { score: number; id: number }) => ({
+      ...item,
+      displayRank: item.score === 0 ? zeroScoreRank : rankMap.get(item.id) ?? zeroScoreRank
+    }));
+
+    // checkForUpdatesForAPI(results);
+    return results;
+  }, [data]);
+
   return (
     <TableContainer>
-      <Table sx={{ minWidth: 650 }} aria-label="Employee information table">
+      <Table aria-label="Review Decision Table">
         <TableReviewDecisionHeader />
         <TableBody>
-          {(data ?? []).map((item: any, index: number) => (
+          {scoredItems.map((item: any, index: number) => (
             <TableReviewDecisionRow
               key={item.id}
               item={item}
@@ -70,6 +108,7 @@ export default function TableReviewDecision({
               getReviews={getReviews}
               getReviewsReviewed={getReviewsReviewed}
               calculateScore={calculateScore}
+              tableLength={data.length}
               trimText={trimText}
               t={t}
             />

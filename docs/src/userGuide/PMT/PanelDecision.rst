@@ -46,8 +46,8 @@ Exclude a Review
 ---------------
 Click the |ico1| icon on any review to **exclude** it from the proposal's overall score.
 When a review is excluded, the system will automatically:
--  Recalculate the **average score** based on remaining active reviews.
--  Update the **rank** accordingly.
+   -  Recalculate the **average score** based on remaining active reviews.
+   -  Update the **rank** accordingly.
 
 Understanding Scores and Ranks
 ------------------------------

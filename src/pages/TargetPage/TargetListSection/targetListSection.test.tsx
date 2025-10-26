@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TargetListSection from './targetListSection';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 // Mock proposal data
 const mockProposal = {
@@ -34,27 +35,27 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
   StoreProvider: ({ children }: any) => <>{children}</>
 }));
 
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
+
 describe('<TargetListSection />', () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
 
   it('renders correctly', () => {
-    render(
-      <StoreProvider>
-        <TargetListSection />
-      </StoreProvider>
-    );
+    wrapper(<TargetListSection />);
     expect(screen.getByTestId('referenceFrame')).toBeInTheDocument();
     expect(screen.getByTestId('addTargetButton')).toBeInTheDocument();
   });
 
   it('switches tabs correctly', () => {
-    render(
-      <StoreProvider>
-        <TargetListSection />
-      </StoreProvider>
-    );
+    wrapper(<TargetListSection />);
 
     // fireEvent.click(screen.getByText('importFromFile.label'));
     // expect(screen.getByTestId('csvUpload')).toBeInTheDocument();
@@ -65,10 +66,8 @@ describe('<TargetListSection />', () => {
 
   /* TODO 
   it('opens delete dialog and shows alert content', () => {
-    render(
-      <StoreProvider>
+    wrapper(
         <TargetListSection />
-      </StoreProvider>
     );
 
     fireEvent.click(screen.getByText('Delete'));
@@ -77,10 +76,10 @@ describe('<TargetListSection />', () => {
   });
 
   it('opens edit dialog and shows TargetEntry', () => {
-    render(
-      <StoreProvider>
+    wrapper(
+  
         <TargetListSection />
-      </StoreProvider>
+
     );
 
     fireEvent.click(screen.getByText('Edit'));
@@ -89,10 +88,10 @@ describe('<TargetListSection />', () => {
   });
 
   it('renders all FieldWrapper content', () => {
-    render(
-      <StoreProvider>
+    wrapper(
+
         <TargetListSection />
-      </StoreProvider>
+
     );
 
     expect(screen.getAllByTestId('fieldWrapperTestId')).toHaveLength(5);

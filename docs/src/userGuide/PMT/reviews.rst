@@ -15,12 +15,12 @@ they are science or technical reviewers then they can either review the technica
    Overview of the Panel review landing page.
 
 .. |sciencereviewicon| image:: /images/sciencereviewicon.png
-   :width: 15%
+   :width: 10%
    :alt: Page filter
 
 
 .. |technicalreviewicon| image:: /images/technicalreviewicon.png
-   :width: 15%
+   :width: 10%
    :alt: Page filter
 
 
@@ -53,7 +53,7 @@ The available options are:
 .. note::
    You must complete the **Conflict of Interest Declaration** before proceeding to the science review screen.  
    If a conflict is declared, the system will restrict access to the review form for that proposal. For
-   technical review, no conflict declaration is needed.
+   technical review via the |technicalreviewicon| icon, no conflict declaration is needed.
 
 
 .. _reviewConflict:

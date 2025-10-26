@@ -3,11 +3,11 @@ import { Avatar, Card, CardActionArea, CardHeader, Grid, Tooltip, Typography } f
 import { useTheme } from '@mui/material/styles';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
+import { LAB_IS_BOLD, LAB_POSITION, PROJECTS } from '@utils/constants.ts';
+import { countWords, helpers } from '@utils/helpers.ts';
+import { Proposal } from '@utils/types/proposal.tsx';
+import { validateTitlePage } from '@utils/validation/validation.tsx';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
-import { LAB_IS_BOLD, LAB_POSITION, PROJECTS } from '../../../utils/constants';
-import { countWords, helpers } from '../../../utils/helpers';
-import { Proposal } from '../../../utils/types/proposal';
-import { validateTitlePage } from '../../../utils/validation/validation';
 import LatexPreviewModal from '../../../components/info/latexPreviewModal/latexPreviewModal';
 import ViewIcon from '../../../components/icon/viewIcon/viewIcon';
 import CardTitle from '@/components/cards/cardTitle/CardTitle';
@@ -64,7 +64,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     setTheProposalState(validateTitlePage(getProposal()));
   }, [validateToggle]);
 
-  const getTitle = () => getProposal()?.title;
+  const getTitle = () => (getProposal() ? getProposal().title : '');
 
   const setTheErrorText = (str: string) => setErrorText(str ? t(str) : '');
 
@@ -213,15 +213,31 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     if (!title || title?.length === 0) {
       return `${t('title.empty')}`;
     } else if (countWords(title) > MAX_WORD) {
-      return `${t('title.error')} - ${t('specialCharacters.numWord')} ${countWords(
-        title
-      )} / ${MAX_WORD}`;
+      return `${t('specialCharacters.numWord')} ${countWords(title)} / ${MAX_WORD}`;
     }
   }
 
   const titleField = (ipad: boolean = false) => {
     const setTitle = (e: string) => {
-      setProposal({ ...getProposal(), title: e.substring(0, MAX_CHAR) });
+      if (countWords(e) < MAX_WORD || (countWords(e) === MAX_WORD && !/\s$/.test(e))) {
+        setProposal({ ...getProposal(), title: e.substring(0, MAX_CHAR) });
+      }
+    };
+
+    const helperFunction = (title: string) => {
+      const color = theme.palette.error.dark;
+
+      const baseHelperText = t('title.helper', {
+        current: countWords(title),
+        max: MAX_WORD
+      });
+      return countWords(title) === MAX_WORD ? (
+        <>
+          {baseHelperText} <span style={{ color: color }}>(MAX WORD COUNT REACHED)</span>
+        </>
+      ) : (
+        baseHelperText
+      );
     };
 
     return (
@@ -236,14 +252,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
           helpers.validate.validateTextEntry(title, setTitle, setTheErrorText, 'TITLE')
         }
         errorText={validateWordCount(getProposal().title)}
-        helperText={
-          getProposal()?.title?.length > 0
-            ? t('title.helper', {
-                current: countWords(getProposal().title),
-                max: MAX_WORD
-              })
-            : ''
-        }
+        helperText={helperFunction(getProposal().title as string)}
         suffix={<ViewIcon toolTip={t('latex.toolTip')} onClick={handleOpenTitleLatexModal} />}
       />
     );
@@ -295,30 +304,32 @@ export default function TitleEntry({ page }: TitleEntryProps) {
 
   const row1 = () => {
     return (
-      <Grid
-        pl={2}
-        pb={4}
-        container
-        direction="row"
-        justifyContent="center"
-        alignItems="center"
-        spacing={2}
-      >
-        <Grid size={{ xs: FIELD_WIDTH }} display={{ xs: 'block', lg: 'none' }}>
-          <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
-            <Grid size={{ xs: LABEL_WIDTH }}>{displayLabel(t('title.label') + ' *')}</Grid>
-            <Grid size={{ xs: 12 - LABEL_WIDTH }}>{titleField(true)}</Grid>
+      getProposal().title !== undefined && (
+        <Grid
+          pl={2}
+          pb={4}
+          container
+          direction="row"
+          justifyContent="center"
+          alignItems="center"
+          spacing={2}
+        >
+          <Grid size={{ xs: FIELD_WIDTH }} display={{ xs: 'block', lg: 'none' }}>
+            <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+              <Grid size={{ xs: LABEL_WIDTH }}>{displayLabel(t('title.label') + ' *')}</Grid>
+              <Grid size={{ xs: 12 - LABEL_WIDTH }}>{titleField(true)}</Grid>
+            </Grid>
           </Grid>
-        </Grid>
 
-        <Grid size={{ xs: FIELD_WIDTH }} display={{ xs: 'none', lg: 'block' }}>
-          <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
-            <Grid size={{ xs: LABEL_WIDTH }}>{displayLabel(t('title.label') + ' *')}</Grid>
-            <Grid size={{ xs: 8 - LABEL_WIDTH }}>{titleField()}</Grid>
-            <Grid size={{ md: 4 }}></Grid>
+          <Grid size={{ xs: FIELD_WIDTH }} display={{ xs: 'none', lg: 'block' }}>
+            <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
+              <Grid size={{ xs: LABEL_WIDTH }}>{displayLabel(t('title.label') + ' *')}</Grid>
+              <Grid size={{ xs: 8 - LABEL_WIDTH }}>{titleField()}</Grid>
+              <Grid size={{ md: 4 }}></Grid>
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
+      )
     );
   };
 

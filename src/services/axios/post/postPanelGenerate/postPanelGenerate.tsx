@@ -11,13 +11,7 @@ async function PostPanelGenerate(
 
   try {
     const result = await authAxiosClient.post(
-      `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PANEL_PATH}/auto-create`,
-      {
-        name: cycleDescription,
-        sci_reviewers: [],
-        tech_reviewers: [],
-        proposals: []
-      }
+      `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PANEL_PATH}/generate?param=${cycleDescription}`
     );
 
     if (!result) {

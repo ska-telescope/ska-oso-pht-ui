@@ -2,14 +2,19 @@ import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TableReviewDecisionHeader from './TableReviewDecisionHeader';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
 
 describe('ReviewDecisionTableHeader', () => {
   it('renders all expected table headers', () => {
-    render(
-      <StoreProvider>
-        <TableReviewDecisionHeader />
-      </StoreProvider>
-    );
+    wrapper(<TableReviewDecisionHeader />);
 
     expect(screen.getByText(/sciReviews/i)).toBeInTheDocument();
     expect(screen.getByText(/title/i)).toBeInTheDocument();

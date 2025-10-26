@@ -4,75 +4,80 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import SensCalcModalSingle from './SensCalcModalSingle';
 import { STATUS_ERROR, STATUS_INITIAL } from '@/utils/constants';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 vi.mock('i18next', () => ({
   t: (key: string) => key
 }));
 
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
+
 describe('<SensCalcModalSingle />', () => {
   test('renders correctly ( INITIAL )', () => {
-    render(
-      <StoreProvider>
-        <SensCalcModalSingle
-          open={false}
-          onClose={vi.fn()}
-          data={{
-            id: 0,
-            title: '',
-            statusGUI: STATUS_INITIAL,
-            error: undefined,
-            section1: undefined,
-            section2: undefined,
-            section3: undefined
-          }}
-          isCustom={false}
-          isNatural={false}
-        />
-      </StoreProvider>
+    wrapper(
+      <SensCalcModalSingle
+        open={false}
+        onClose={vi.fn()}
+        data={{
+          id: 0,
+          title: '',
+          statusGUI: STATUS_INITIAL,
+          error: undefined,
+          section1: undefined,
+          section2: undefined,
+          section3: undefined
+        }}
+        isCustom={false}
+        isNatural={false}
+      />
     );
   });
   test('renders correctly ( OK )', () => {
-    render(
-      <StoreProvider>
-        <SensCalcModalSingle
-          open={true}
-          onClose={vi.fn()}
-          data={{
-            id: 0,
-            title: 'm1',
-            statusGUI: 0,
-            error: undefined,
-            section1: [
-              {
-                field: 'testField1',
-                value: '1',
-                units: 'testUnits1'
-              }
-            ],
-            section2: [
-              {
-                field: 'sensitivity',
-                value: '200',
-                units: 'testUnits2'
-              },
-              {
-                field: 'testField2',
-                value: '50',
-                units: 'testUnits2'
-              }
-            ],
-            section3: [
-              {
-                field: 'testField3',
-                value: '2',
-                units: 'testUnits3'
-              }
-            ]
-          }}
-          isCustom={false}
-          isNatural={false}
-        />
-      </StoreProvider>
+    wrapper(
+      <SensCalcModalSingle
+        open={true}
+        onClose={vi.fn()}
+        data={{
+          id: 0,
+          title: 'm1',
+          statusGUI: 0,
+          error: undefined,
+          section1: [
+            {
+              field: 'testField1',
+              value: '1',
+              units: 'testUnits1'
+            }
+          ],
+          section2: [
+            {
+              field: 'sensitivity',
+              value: '200',
+              units: 'testUnits2'
+            },
+            {
+              field: 'testField2',
+              value: '50',
+              units: 'testUnits2'
+            }
+          ],
+          section3: [
+            {
+              field: 'testField3',
+              value: '2',
+              units: 'testUnits3'
+            }
+          ]
+        }}
+        isCustom={false}
+        isNatural={false}
+      />
     );
     const target = screen.getByTestId('field-targetName');
     expect(target).toBeInTheDocument();
@@ -96,42 +101,40 @@ describe('<SensCalcModalSingle />', () => {
     expect(element4).toHaveTextContent('2');
   });
   test('renders correctly ( OK, custom )', async () => {
-    render(
-      <StoreProvider>
-        <SensCalcModalSingle
-          open={true}
-          onClose={vi.fn()}
-          data={{
-            id: 0,
-            title: 'm2',
-            statusGUI: 0,
-            error: undefined,
-            section1: [
-              {
-                field: 'customField1',
-                value: 'customValue1',
-                units: 'testUnits'
-              }
-            ],
-            section2: [
-              {
-                field: 'sensitivity',
-                value: '1052.5',
-                units: 'Jy/beam'
-              }
-            ],
-            section3: [
-              {
-                field: 'customField2',
-                value: 'customValue2',
-                units: 'testUnits3'
-              }
-            ]
-          }}
-          isCustom={true}
-          isNatural={false}
-        />
-      </StoreProvider>
+    wrapper(
+      <SensCalcModalSingle
+        open={true}
+        onClose={vi.fn()}
+        data={{
+          id: 0,
+          title: 'm2',
+          statusGUI: 0,
+          error: undefined,
+          section1: [
+            {
+              field: 'customField1',
+              value: 'customValue1',
+              units: 'testUnits'
+            }
+          ],
+          section2: [
+            {
+              field: 'sensitivity',
+              value: '1052.5',
+              units: 'Jy/beam'
+            }
+          ],
+          section3: [
+            {
+              field: 'customField2',
+              value: 'customValue2',
+              units: 'testUnits3'
+            }
+          ]
+        }}
+        isCustom={true}
+        isNatural={false}
+      />
     );
     await waitFor(() => {
       const target = screen.getByTestId('field-targetName');
@@ -152,47 +155,45 @@ describe('<SensCalcModalSingle />', () => {
     });
   });
   test('renders correctly ( OK, natural )', async () => {
-    render(
-      <StoreProvider>
-        <SensCalcModalSingle
-          open={true}
-          onClose={vi.fn()}
-          data={{
-            id: 0,
-            title: 'm2',
-            statusGUI: 0,
-            error: undefined,
-            section1: [
-              {
-                field: 'naturalField1',
-                value: 'naturalValue1',
-                units: 'testUnits'
-              }
-            ],
-            section2: [
-              {
-                field: 'integrationTime',
-                value: '1',
-                units: 'h'
-              },
-              {
-                field: 'continuumSensitivityWeighted',
-                value: '7.18',
-                units: 'jy/beam'
-              }
-            ],
-            section3: [
-              {
-                field: 'naturalField2',
-                value: 'naturalValue2',
-                units: 'testUnits3'
-              }
-            ]
-          }}
-          isCustom={false}
-          isNatural={true}
-        />
-      </StoreProvider>
+    wrapper(
+      <SensCalcModalSingle
+        open={true}
+        onClose={vi.fn()}
+        data={{
+          id: 0,
+          title: 'm2',
+          statusGUI: 0,
+          error: undefined,
+          section1: [
+            {
+              field: 'naturalField1',
+              value: 'naturalValue1',
+              units: 'testUnits'
+            }
+          ],
+          section2: [
+            {
+              field: 'integrationTime',
+              value: '1',
+              units: 'h'
+            },
+            {
+              field: 'continuumSensitivityWeighted',
+              value: '7.18',
+              units: 'jy/beam'
+            }
+          ],
+          section3: [
+            {
+              field: 'naturalField2',
+              value: 'naturalValue2',
+              units: 'testUnits3'
+            }
+          ]
+        }}
+        isCustom={false}
+        isNatural={true}
+      />
     );
     await waitFor(() => {
       const target = screen.getByTestId('field-targetName');
@@ -217,25 +218,22 @@ describe('<SensCalcModalSingle />', () => {
     });
   });
   test('renders correctly (error)', () => {
-    render(
-      <StoreProvider>
-        <SensCalcModalSingle
-          open={false}
-          onClose={vi.fn()}
-          data={{
-            id: 0,
-            title: '',
-            statusGUI: STATUS_ERROR,
-            error: 'SOME ERROR',
-            section1: undefined,
-            section2: undefined,
-            section3: undefined
-          }}
-          isCustom={true}
-          isNatural={false}
-        />
-      </StoreProvider>
+    wrapper(
+      <SensCalcModalSingle
+        open={false}
+        onClose={vi.fn()}
+        data={{
+          id: 0,
+          title: '',
+          statusGUI: STATUS_ERROR,
+          error: 'SOME ERROR',
+          section1: undefined,
+          section2: undefined,
+          section3: undefined
+        }}
+        isCustom={true}
+        isNatural={false}
+      />
     );
-    // TODO
   });
 });

@@ -3,128 +3,91 @@ import { fireEvent, render, waitFor, screen, act } from '@testing-library/react'
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
-import userEvent from '@testing-library/user-event';
 import MemberEntry from './MemberEntry';
 import * as mockService from '@/services/axios/get/getUserByEmail/getUserByEmail';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
-// TODO rework this
-// const updateAppContent5Mock = vi.fn();
+const isEnabled = (testId: string, enabled: boolean = true) => {
+  if (enabled) {
+    expect(screen.getByTestId(testId)).not.toBeDisabled();
+  } else {
+    expect(screen.getByTestId(testId)).toBeDisabled();
+  }
+};
 
-// vi.mock('@ska-telescope/ska-gui-local-storage', async () => {
-//   const actual = await vi.importActual<typeof import('@ska-telescope/ska-gui-local-storage')>(
-//     '@ska-telescope/ska-gui-local-storage'
-//   );
+const hasValue = (testId: string, value: string) => {
+  const wrapper = screen.getByTestId(testId);
+  const input = wrapper.tagName === 'INPUT' ? wrapper : wrapper.querySelector('input');
+  if (!input) throw new Error(`No input found inside testId="${testId}"`);
+  expect(input).toHaveValue(value);
+};
 
-//   return {
-//     ...actual,
-//     storageObject: {
-//       ...actual.storageObject,
-//       useStore: () => ({
-//         ...actual.storageObject.useStore(),
-//         updateAppContent5: updateAppContent5Mock
-//       })
-//     }
-//   };
-// });
+const enterValue = async (testId: string, value: string) => {
+  const wrapper = screen.getByTestId(testId);
+  const input = wrapper.tagName === 'INPUT' ? wrapper : wrapper.querySelector('input');
+  if (!input) throw new Error(`No input found inside testId="${testId}"`);
+  fireEvent.change(input, { target: { value: value } });
+};
+
+const clickButton = async (testId: string) => {
+  const resolveButton = screen.getByTestId(testId);
+  act(() => {
+    fireEvent.click(resolveButton);
+  });
+};
+
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
 
 describe('<MemberEntry /> search for user', () => {
-  // beforeEach(() => {
-  //   updateAppContent5Mock.mockReset();
-  // });
-
   test('search for user successfully', async () => {
-    vi.spyOn(mockService, 'GetMockUserByEmail').mockResolvedValue(MockUserFrontendList[0]);
+    vi.spyOn(mockService, 'default').mockResolvedValue(MockUserFrontendList[0]);
+    wrapper(<MemberEntry />);
+    isEnabled('email');
+    await enterValue('email', MockUserFrontendList[0].email);
+    hasValue('email', MockUserFrontendList[0].email);
+    clickButton('userSearchButton');
 
-    const { container } = render(
-      <StoreProvider>
-        <MemberEntry />
-      </StoreProvider>
-    );
-
-    const emailField = container.querySelector('input[id="email"]');
-    act(() => {
-      userEvent.clear(emailField!);
-      userEvent.type(emailField!, MockUserFrontendList[0].email);
-    });
-
-    waitFor(() => {
-      expect(emailField).toHaveValue(MockUserFrontendList[0].email);
-    });
-
-    const resolveButton = screen.getByTestId('userSearchButton');
-    act(() => {
-      fireEvent.click(resolveButton);
-    });
-
-    waitFor(() => {
-      expect(emailField).toBeDisabled();
-      expect(emailField).toHaveValue(MockUserFrontendList[0].email);
-      const firstNameField = screen.findByDisplayValue(MockUserFrontendList[0].firstName);
-      expect(firstNameField).toBeDisabled();
-      expect(firstNameField).toHaveValue(MockUserFrontendList[0].firstName);
-      const lastNameField = screen.findByDisplayValue(MockUserFrontendList[0].lastName);
-      expect(lastNameField).toBeDisabled();
-      expect(lastNameField).toHaveValue(MockUserFrontendList[0].lastName);
+    await waitFor(() => {
+      isEnabled('email');
+      hasValue('email', MockUserFrontendList[0].email);
+      isEnabled('firstName');
+      hasValue('firstName', MockUserFrontendList[0].firstName);
+      isEnabled('lastName');
+      hasValue('lastName', MockUserFrontendList[0].lastName);
     });
   });
 
   test('user not found', async () => {
-    vi.spyOn(mockService, 'GetMockUserByEmail').mockResolvedValue({
+    vi.spyOn(mockService, 'default').mockResolvedValue({
       error: 'User not found'
     } as any);
+    wrapper(<MemberEntry />);
+    isEnabled('email');
+    await enterValue('email', 'unknown@skao.int');
+    hasValue('email', 'unknown@skao.int');
+    clickButton('userSearchButton');
 
-    const { container } = render(
-      <StoreProvider>
-        <MemberEntry />
-      </StoreProvider>
-    );
-
-    const emailField = container.querySelector('input[id="email"]');
-    act(() => {
-      userEvent.clear(emailField!);
-      userEvent.type(emailField!, 'unknown@skao.int');
-    });
-
-    waitFor(() => {
-      expect(emailField).toHaveValue('unknown@skao.int');
-    });
-
-    const resolveButton = screen.getByTestId('userSearchButton');
-    act(() => {
-      fireEvent.click(resolveButton);
-    });
-
-    waitFor(() => {
-      expect(emailField).not.toBeDisabled();
-      expect(emailField).toHaveValue('unknown@skao.int');
-      const firstNameField = screen.findByDisplayValue(MockUserFrontendList[0].firstName);
-      expect(firstNameField).not.toBeDisabled();
-      const lastNameField = screen.findByDisplayValue(MockUserFrontendList[0].lastName);
-      expect(lastNameField).not.toBeDisabled();
-      // // TODO double-check these 2 assertions, as they seem unstable
-      // expect(updateAppContent5Mock).toHaveBeenCalledWith({
-      //   level: 'error',
-      //   delay: 5,
-      //   message: 'email.error'
-      // });
-      // expect(updateAppContent5Mock).toHaveBeenCalled();
+    await waitFor(() => {
+      isEnabled('email');
+      hasValue('email', 'unknown@skao.int');
+      isEnabled('firstName');
+      isEnabled('lastName');
     });
   });
 
   test('fill user details manually', async () => {
-    const { container } = render(
-      <StoreProvider>
-        <MemberEntry />
-      </StoreProvider>
-    );
-    await waitFor(() => {
-      const firstNameField = container.querySelector('[id="firstName"]');
-      expect(firstNameField).not.toBeDisabled();
-      const lastNameField = container.querySelector('[id="lastName"]');
-      expect(lastNameField).not.toBeDisabled();
-      const emailField = container.querySelector('[id="email"]');
-      expect(emailField).not.toBeDisabled();
-      // TODO
-    });
+    wrapper(<MemberEntry />);
+    isEnabled('email');
+    isEnabled('firstName');
+    isEnabled('lastName');
+    isEnabled('piCheckbox');
+    isEnabled('PhDCheckbox');
+    // TODO - Needs to be extended to fill out the form and check values
   });
 });

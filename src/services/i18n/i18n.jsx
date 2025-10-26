@@ -22,7 +22,7 @@ i18n
     defaultNS: 'pht',
     initImmediate: false,
     useSuspense: true,
-    debug: true,
+    debug: false,
     interpolation: {
       escapeValue: false,
       format(value, format) {

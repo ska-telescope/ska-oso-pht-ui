@@ -4,27 +4,24 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import '@testing-library/jest-dom';
 import StatusWrapper from './StatusWrapper';
 import { STATUS_ERROR } from '@/utils/constants';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
 
 describe('<StatusWrapper />', () => {
   test('renders correctly ( default )', () => {
-    render(
-      <StoreProvider>
-        <StatusWrapper page={1} />
-      </StoreProvider>
-    );
+    wrapper(<StatusWrapper page={1} />);
   });
   test('renders correctly ( STATUS_ERROR  )', () => {
-    render(
-      <StoreProvider>
-        <StatusWrapper page={1} level={STATUS_ERROR} />
-      </StoreProvider>
-    );
+    wrapper(<StatusWrapper page={1} level={STATUS_ERROR} />);
   });
   test('renders correctly ( 7 )', () => {
-    render(
-      <StoreProvider>
-        <StatusWrapper page={1} level={7} />
-      </StoreProvider>
-    );
+    wrapper(<StatusWrapper page={1} level={7} />);
   });
 });

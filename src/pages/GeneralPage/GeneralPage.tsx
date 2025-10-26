@@ -2,12 +2,13 @@ import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
-import HelpPanel from '../../components/info/helpPanel/HelpPanel';
+import { GENERAL, LAB_POSITION } from '@utils/constants.ts';
+import { countWords } from '@utils/helpers.ts';
+import { Proposal } from '@utils/types/proposal.tsx';
+import { validateGeneralPage } from '@utils/validation/validation.tsx';
+import { useTheme } from '@mui/material/styles';
 import Shell from '../../components/layout/Shell/Shell';
-import { GENERAL, LAB_POSITION } from '../../utils/constants';
-import { countWords } from '../../utils/helpers';
-import { Proposal } from '../../utils/types/proposal';
-import { validateGeneralPage } from '../../utils/validation/validation';
+import HelpPanel from '../../components/info/helpPanel/HelpPanel';
 import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPreviewModal';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -20,6 +21,7 @@ const HELP_VIEWPORT = '40vh';
 
 export default function GeneralPage() {
   const { t } = useScopedTranslation();
+  const theme = useTheme();
 
   const {
     application,
@@ -111,14 +113,26 @@ export default function GeneralPage() {
     const numRows = Number(t('abstract.minDisplayRows'));
 
     const setValue = (e: string) => {
-      setProposal({ ...getProposal(), abstract: e.substring(0, MAX_CHAR) });
+      if (countWords(e) < MAX_WORD || (countWords(e) === MAX_WORD && !/\s$/.test(e))) {
+        setProposal({ ...getProposal(), abstract: e.substring(0, MAX_CHAR) });
+      }
     };
 
-    const helperFunction = (title: string) =>
-      t('abstract.helper', {
-        current: countWords(title),
+    const helperFunction = (abstract: string) => {
+      const color = theme.palette.error.dark;
+
+      const baseHelperText = t('abstract.helper', {
+        current: countWords(abstract),
         max: MAX_WORD
       });
+      return countWords(abstract) === MAX_WORD ? (
+        <>
+          {baseHelperText} <span style={{ color: color }}>(MAX WORD COUNT REACHED)</span>
+        </>
+      ) : (
+        baseHelperText
+      );
+    };
 
     function validateWordCount(title: string) {
       if (countWords(title) > MAX_WORD) {
@@ -159,7 +173,7 @@ export default function GeneralPage() {
       errorText={getProposal().scienceCategory ? '' : t('scienceCategory.error')}
       required
       testId="categoryId"
-      value={getProposal().scienceCategory}
+      value={getProposal().scienceCategory ?? ''}
       setValue={checkCategory}
       label={t('scienceCategory.label')}
       labelBold
