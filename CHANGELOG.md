@@ -9,6 +9,7 @@ UNRELEASED
 * Changed: Restrict user navigation until proposal has been created
 * Changed: Added variable to allow for Science Idea / Proposal determination
 * [BREAKING]: Changed: PDM changes implemented
+* Added: calibration to proposal types
 
 8.0.0
 ----------
