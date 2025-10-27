@@ -199,7 +199,7 @@ export const MockProposalBackend: ProposalBackend = {
           supplied_type: 'integration_time',
           weighted_continuum_sensitivity: {
             value: 107.53904853211655,
-            unit: 'uJy/beam'
+            unit: 'μJy/beam'
           },
           weighted_spectral_sensitivity: {
             value: 18.72201668513227,
@@ -207,7 +207,7 @@ export const MockProposalBackend: ProposalBackend = {
           },
           total_continuum_sensitivity: {
             value: 107.54387002826836,
-            unit: 'uJy/beam'
+            unit: 'μJy/beam'
           },
           total_spectral_sensitivity: {
             value: 18.72201701713336,
@@ -221,7 +221,7 @@ export const MockProposalBackend: ProposalBackend = {
         },
         continuum_confusion_noise: {
           value: 1.0183425082744668,
-          unit: 'uJy/beam'
+          unit: 'μJy/beam'
         },
         synthesized_beam_size: {
           continuum: '3.85 x 3.02',
@@ -230,7 +230,7 @@ export const MockProposalBackend: ProposalBackend = {
         },
         spectral_confusion_noise: {
           value: 3.52582756374021,
-          unit: 'uJy/beam'
+          unit: 'μJy/beam'
         }
       }
     ]
@@ -395,7 +395,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
         },
         spectral_confusion_noise: {
           value: 22.18293905542935,
-          unit: 'uJy/beam'
+          unit: 'μJy/beam'
         }
       }
     ],
