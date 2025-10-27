@@ -180,7 +180,7 @@ describe('<SensCalcModalSingle />', () => {
             {
               field: 'continuumSensitivityWeighted',
               value: '7.18',
-              units: 'jy/beam'
+              units: 'Jy/beam'
             }
           ],
           section3: [
