@@ -182,7 +182,7 @@ describe('Sensitivity Calculator helper functions', () => {
   });
 
   test('Map Sensitivities Units', () => {
-    expect(getSensitivitiesUnitsMapping(3)).toStrictEqual('uJy/beam');
+    expect(getSensitivitiesUnitsMapping(3)).toStrictEqual('μJy/beam');
   });
 
   test('Shift Sensitivity { value : 50000000000, unit : Jy}', () => {

@@ -50,8 +50,8 @@ describe('Present', () => {
   test('presentUnits : Jy / beam', () => {
     expect(presentUnits('Jy / beam')).toBe('Jy/beam');
   });
-  test('presentUnits : uJy / beam', () => {
-    expect(presentUnits('uJy / beam')).toBe('μJy/beam');
+  test('presentUnits : μJy / beam', () => {
+    expect(presentUnits('μJy / beam')).toBe('μJy/beam');
   });
   test('presentUnits : rad / m2', () => {
     expect(presentUnits('rad / m2')).toBe('rad/m\xb2');

@@ -25,7 +25,7 @@ export const presentUnits = (inUnits: string) => {
       return 'pc/cm\xb3';
     case 'Jy / beam':
       return 'Jy/beam';
-    case 'uJy / beam':
+    case 'μJy / beam':
       return 'μJy/beam';
     case 'rad / m2':
       return 'rad/m\xb2';
