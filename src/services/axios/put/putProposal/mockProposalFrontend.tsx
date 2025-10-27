@@ -218,17 +218,17 @@ export const MockProposalFrontend: Proposal = {
           {
             field: 'continuumSensitivityWeighted',
             value: '107.53904853211655',
-            units: 'uJy/beam'
+            units: 'μJy/beam'
           },
           {
             field: 'continuumConfusionNoise',
             value: '1.0183425082744668',
-            units: 'uJy/beam'
+            units: 'μJy/beam'
           },
           {
             field: 'continuumTotalSensitivity',
             value: '107.54387002826836',
-            units: 'uJy/beam'
+            units: 'μJy/beam'
           },
           {
             field: 'continuumSynthBeamSize',
@@ -250,7 +250,7 @@ export const MockProposalFrontend: Proposal = {
           {
             field: 'spectralConfusionNoise',
             value: '3.52582756374021',
-            units: 'uJy/beam'
+            units: 'μJy/beam'
           },
           {
             field: 'spectralTotalSensitivity',
@@ -434,7 +434,7 @@ export const MockProposalFrontendZoom: Proposal = {
           {
             field: 'spectralConfusionNoise',
             value: '22.18293905542935',
-            units: 'uJy/beam'
+            units: 'μJy/beam'
           },
           {
             field: 'spectralTotalSensitivity',
