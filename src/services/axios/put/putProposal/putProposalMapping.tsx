@@ -44,6 +44,7 @@ import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { helpers } from '@/utils/helpers';
+import { CalibrationStrategy, CalibrationStrategyBackend } from '@/utils/types/calibrationStrategy';
 
 const isContinuum = (type: number) => type === TYPE_CONTINUUM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
@@ -149,6 +150,25 @@ const getDocuments = (
     });
   }
   return documents;
+};
+
+const getCalibrationStrategy = (
+  calibrationStrategies: CalibrationStrategy[]
+): CalibrationStrategyBackend[] => {
+  return calibrationStrategies?.map(strategy => ({
+    observatory_defined: strategy.observatoryDefined,
+    calibration_id: strategy.id,
+    observation_id_ref: strategy.observationIdRef,
+    calibrators: strategy.calibrators
+      ? strategy?.calibrators?.map(calibrator => ({
+          kind: calibrator.kind,
+          name: calibrator.name,
+          model_config: calibrator.modelConfig,
+          notes: calibrator.notes
+        }))
+      : null,
+    notes: strategy.notes
+  }));
 };
 
 const SDPOptions = (inArray: Boolean[]) => {
@@ -502,6 +522,10 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
       targets: getTargets(proposal?.targets ? proposal.targets : []),
       documents: getDocuments(proposal.sciencePDF, proposal.technicalPDF),
       observation_sets: getObservationsSets(proposal.observations, proposal.groupObservations),
+      calibration_strategy:
+        proposal.calibrationStrategy && proposal.calibrationStrategy.length > 0
+          ? getCalibrationStrategy(proposal.calibrationStrategy)
+          : null,
       data_product_sdps:
         proposal?.dataProductSDP && proposal?.dataProductSDP?.length > 0
           ? getDataProductSDP(proposal.dataProductSDP as DataProductSDP[])

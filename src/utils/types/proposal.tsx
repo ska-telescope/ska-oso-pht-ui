@@ -9,18 +9,18 @@ import {
 import GroupObservation from './groupObservation';
 import Observation from './observation';
 import { SensCalcResultsBackend } from './sensCalcResults';
-// import { ScienceProgrammeBackend } from './scienceProgrammes';
 import Target, { TargetBackend } from './target';
 import TargetObservation from './targetObservation';
 import Investigator, { InvestigatorBackend } from './investigator';
 import { ObservationSetBackend } from './observationSet';
 import { Metadata } from './metadata';
+import { CalibrationStrategy, CalibrationStrategyBackend } from './calibrationStrategy';
 
 export type ProposalBackend = {
   prsl_id: string;
   status: string;
   submitted_by?: string;
-  submitted_on: string | null | null; // note: null since oso-services 1.1.0 does not support ''
+  submitted_on: string | null; // note: null since oso-services 1.1.0 does not support ''
   investigator_refs?: string[];
   metadata?: Metadata;
   cycle: string | null;
@@ -38,6 +38,7 @@ export type ProposalBackend = {
     targets: TargetBackend[];
     documents: DocumentBackend[] | null;
     observation_sets: ObservationSetBackend[] | null;
+    calibration_strategy: CalibrationStrategyBackend[] | null;
     data_product_sdps: DataProductSDPsBackend[] | null;
     data_product_src_nets: DataProductSRCNetBackend[] | null;
     result_details: SensCalcResultsBackend[] | null;
@@ -68,9 +69,9 @@ export type Proposal = {
   observations?: Observation[];
   groupObservations?: GroupObservation[];
   targetObservation?: TargetObservation[];
+  calibrationStrategy: CalibrationStrategy[];
   technicalPDF: DocumentPDF | null;
   technicalLoadStatus?: number;
-  // dataProducts?: DataProduct[];
   dataProductSDP?: DataProductSDP[];
   dataProductSRC?: DataProductSRC[];
   pipeline?: string;

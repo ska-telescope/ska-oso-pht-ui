@@ -9,6 +9,8 @@ UNRELEASED
 * Changed: Restrict user navigation until proposal has been created
 * Changed: Added variable to allow for Science Idea / Proposal determination
 * [BREAKING]: Changed: PDM changes implemented
+* [BREAKING]: Added calibration to proposal types and mappings
+* Changed: oso-services v9.0.0
 
 8.0.0
 ----------

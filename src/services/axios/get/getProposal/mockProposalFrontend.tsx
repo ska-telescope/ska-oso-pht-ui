@@ -227,17 +227,17 @@ export const MockProposalFrontend: Proposal = {
           {
             field: 'continuumSensitivityWeighted',
             value: '107.53904853211655',
-            units: 'uJy/beam'
+            units: 'μJy/beam'
           },
           {
             field: 'continuumConfusionNoise',
             value: '1.0183425082744668',
-            units: 'uJy/beam'
+            units: 'μJy/beam'
           },
           {
             field: 'continuumTotalSensitivity',
             value: '107.54387002826836',
-            units: 'uJy/beam'
+            units: 'μJy/beam'
           },
           {
             field: 'continuumSynthBeamSize',
@@ -259,7 +259,7 @@ export const MockProposalFrontend: Proposal = {
           {
             field: 'spectralConfusionNoise',
             value: '3.52582756374021',
-            units: 'uJy/beam'
+            units: 'μJy/beam'
           },
           {
             field: 'spectralTotalSensitivity',
@@ -288,6 +288,15 @@ export const MockProposalFrontend: Proposal = {
     }
   ],
   technicalPDF: null,
+  calibrationStrategy: [
+    {
+      observatoryDefined: true,
+      id: 'cal-001',
+      observationIdRef: 'obs-obR1Ej',
+      calibrators: null,
+      notes: 'This is an observatory defined calibration strategy.'
+    }
+  ],
   technicalLoadStatus: 9,
   dataProductSDP: [
     {
@@ -333,6 +342,15 @@ export const MockProposalFrontendZoom: Proposal = {
   scienceLoadStatus: 9,
   sciencePDF: null,
   technicalPDF: null,
+  calibrationStrategy: [
+    {
+      observatoryDefined: true,
+      id: 'cal-002',
+      observationIdRef: 'obs-arMIoY',
+      calibrators: null,
+      notes: 'This is an other observatory defined calibration strategy.'
+    }
+  ],
   targetOption: 1,
   targets: [
     {
@@ -437,7 +455,7 @@ export const MockProposalFrontendZoom: Proposal = {
           {
             field: 'spectralConfusionNoise',
             value: '22.18293905542935',
-            units: 'uJy/beam'
+            units: 'μJy/beam'
           },
           {
             field: 'spectralTotalSensitivity',
@@ -509,6 +527,7 @@ export const MockNullProposalFrontend: Proposal = {
   groupObservations: [],
   targetObservation: [],
   technicalPDF: null,
+  calibrationStrategy: [],
   technicalLoadStatus: 9,
   dataProductSDP: undefined,
   dataProductSRC: [],
