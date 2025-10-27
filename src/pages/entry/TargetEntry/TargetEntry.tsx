@@ -345,6 +345,7 @@ export default function TargetEntry({
         skyUnits={raType}
         value={dec}
         valueFocus={() => helpComponent(t('skyDirection.help.2.value'))}
+        isLow={getProposal()?.observations.some(obs => obs.observingBand === 0)}
       />
     );
 
