@@ -8,6 +8,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import Target, { Beam, ReferenceCoordinateICRS } from '@utils/types/target.tsx';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates.tsx';
 import ResolveButton from '@components/button/Resolve/Resolve.tsx';
+import Proposal from '@utils/types/proposal.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import SkyDirection1 from '@/components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
@@ -26,7 +27,7 @@ export default function PulsarTimingBeamField({
   showBeamData = false
 }: PulsarTimingBeamFieldProps) {
   const { t } = useScopedTranslation();
-  const { helpComponent } = storageObject.useStore();
+  const { application, helpComponent } = storageObject.useStore();
   const [selectedValue, setSelectedValue] = React.useState('noBeam');
   const [showGrid, setShowGrid] = React.useState(false);
   const [openPulsarTimingBeamDialog, setOpenPulsarTimingBeamDialog] = React.useState(false);
@@ -36,6 +37,7 @@ export default function PulsarTimingBeamField({
   const [beamDec, setBeamDec] = React.useState('');
   const [allBeams, setAllBeams] = React.useState<Beam[]>([]);
   const LAB_WIDTH = 5;
+  const getProposal = () => application.content2 as Proposal;
 
   React.useEffect(() => {
     if (selectedValue === 'noBeam') {
@@ -206,6 +208,7 @@ export default function PulsarTimingBeamField({
   const skyDirection2Field = () =>
     wrapper(
       <SkyDirection2
+        isLow={getProposal()?.observations?.some(obs => obs.observingBand === 0)}
         labelWidth={LAB_WIDTH}
         skyUnits={RA_TYPE_ICRS.value}
         setValue={setTheDec}

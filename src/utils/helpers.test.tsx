@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import { helpers } from '@/utils/helpers.ts';
+import { helpers, isVisible } from '@/utils/helpers.ts';
 
 describe('Helper functions, validateTextEntry', () => {
   test('Valid input passes TITLE validation', () => {
@@ -135,5 +135,41 @@ describe('Helper functions, validateTextEntry', () => {
     expect(() =>
       helpers.validate.validateTextEntry('Hello?', mockSetText, mockSetErrorText, 'UNKNOWN' as any)
     ).toThrow('Invalid text type: UNKNOWN');
+  });
+});
+describe('isVisible', () => {
+  it('returns true when declination is within visible range for SKA MID', () => {
+    const result = isVisible('-20:00:00', false);
+    expect(result).toBe(true);
+  });
+
+  it('returns false when declination is outside visible range for SKA MID', () => {
+    const result = isVisible('-90:00:00', false);
+    expect(result).toBe(false);
+  });
+
+  it('returns true when declination is within visible range for SKA LOW', () => {
+    const result = isVisible('-20:00:00', true);
+    expect(result).toBe(true);
+  });
+
+  it('returns false when declination is outside visible range for SKA LOW', () => {
+    const result = isVisible('-90:00:00', true);
+    expect(result).toBe(false);
+  });
+
+  it('handles edge case where declination is exactly at the visibility limit for SKA MID', () => {
+    const result = isVisible('-45:43:16.068', false);
+    expect(result).toBe(false);
+  });
+
+  it('handles edge case where declination is exactly at the visibility limit for SKA LOW', () => {
+    const result = isVisible('-41:41:49.3', true);
+    expect(result).toBe(false);
+  });
+
+  it('returns false for invalid declination input', () => {
+    const result = isVisible('invalid', false);
+    expect(result).toBe(false);
   });
 });
