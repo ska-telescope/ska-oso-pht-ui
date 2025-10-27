@@ -5,15 +5,15 @@ import {
   AppWrapper,
   THEME_DARK,
   THEME_LIGHT,
-  ACCESSIBILITY_DEFAULT,
-  ACCESSIBILITY_PROTANOPIA,
-  ACCESSIBILITY_PROTANOMALY,
-  ACCESSIBILITY_DEUTERANOPIA,
-  ACCESSIBILITY_DEUTERANOMALY,
-  ACCESSIBILITY_TRITANOPIA,
-  ACCESSIBILITY_TRITANOMALY,
-  ACCESSIBILITY_ACHROMATOMALY,
-  ACCESSIBILITY_ACHROMATOPSIA
+  ACCESSIBILITY_DEFAULT
+  // ACCESSIBILITY_PROTANOPIA,
+  // ACCESSIBILITY_PROTANOMALY,
+  // ACCESSIBILITY_DEUTERANOPIA,
+  // ACCESSIBILITY_DEUTERANOMALY,
+  // ACCESSIBILITY_TRITANOPIA,
+  // ACCESSIBILITY_TRITANOMALY,
+  // ACCESSIBILITY_ACHROMATOMALY,
+  // ACCESSIBILITY_ACHROMATOPSIA
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Typography, CssBaseline, ThemeProvider, Tooltip, Paper } from '@mui/material';
@@ -188,8 +188,9 @@ export default function PHT() {
         mainChildren={
           <Paper
             sx={{
-              backgroundColor: theme => theme.palette.background.default,
-              borderRadius: '0px'
+              backgroundColor: 'background.default',
+              borderRadius: '0px',
+              minHeight: '100vh'
             }}
           >
             {REQUIRED_WIDTH ? (
