@@ -190,7 +190,7 @@ export default function PHT() {
             sx={{
               backgroundColor: 'background.default',
               borderRadius: '0px',
-              minHeight: '100vh'
+              minHeight: '90vh'
             }}
           >
             {REQUIRED_WIDTH ? (

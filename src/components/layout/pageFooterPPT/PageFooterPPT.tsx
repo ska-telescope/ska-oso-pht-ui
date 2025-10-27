@@ -4,7 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { Grid, Paper } from '@mui/material';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { cypressToken, LAST_PAGE, NAV, PROPOSAL_STATUS } from '@utils/constants.ts';
+import {
+  cypressToken,
+  LAST_PAGE,
+  NAV,
+  PAGE_SRC_NET,
+  PROPOSAL_STATUS,
+  PAGE_TECHNICAL
+} from '@utils/constants.ts';
 import PostProposal from '@services/axios/post/postProposal/postProposal';
 import NextPageButton from '../../button/NextPage/NextPage';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
@@ -17,6 +24,7 @@ import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 interface PageFooterPPTProps {
   pageNo: number;
@@ -35,6 +43,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { osdCycleId } = useOSDAccessors();
+  const { isSV } = useAppFlow();
 
   React.useEffect(() => {
     const getProposal = () => application.content2 as Proposal;
@@ -51,6 +60,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
         ...getProposal(),
         cycle: osdCycleId
       },
+      isSV() ? true : false,
       PROPOSAL_STATUS.DRAFT
     );
 
@@ -87,7 +97,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const showNextNav = () => {
     if ((loggedIn && usedPageNo < LAST_PAGE - 1) || (cypressToken && usedPageNo < LAST_PAGE - 1)) {
       return true;
-    } else return !loggedIn && usedPageNo !== 5;
+    } else return !loggedIn && usedPageNo !== PAGE_SRC_NET;
   };
 
   const nextLabel = () => {
@@ -97,7 +107,8 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     if (usedPageNo === -1) {
       return `createBtn.label`;
     }
-    return `page.${usedPageNo + 1}.title`;
+    const thePage = usedPageNo + (isSV() && usedPageNo > PAGE_TECHNICAL - 2 ? 2 : 1);
+    return `page.${thePage}.title`;
   };
 
   const prevLabel = () =>

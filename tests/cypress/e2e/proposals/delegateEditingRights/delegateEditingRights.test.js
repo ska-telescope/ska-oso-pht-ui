@@ -9,7 +9,7 @@ import {
   initialize,
   verifyProposalCreatedAlertFooter,
   clickUserSearch,
-  clickPICheckbox,
+  // clickPICheckbox,
   clickSendInviteButton,
   verifyUserFoundAlertFooter,
   verifyUserInvitedAlertFooter,
@@ -41,7 +41,7 @@ describe('Delegate Editing Rights', () => {
     clickUserSearch();
     // cy.wait('@mockGetUserByEmailAPI'); // TODO see if this is needed
     verifyUserFoundAlertFooter();
-    clickPICheckbox();
+    // clickPICheckbox();
     clickSendInviteButton();
     cy.wait('@mockInviteUserByEmail');
     verifyUserInvitedAlertFooter();

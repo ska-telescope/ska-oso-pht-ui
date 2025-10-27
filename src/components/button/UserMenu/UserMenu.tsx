@@ -65,8 +65,6 @@ export default function ButtonUserMenu({
     setAnchorEl(null);
   };
 
-  console.log('TREVOR 1', theme.palette);
-
   return (
     <>
       <Box ref={buttonWrapperRef}>

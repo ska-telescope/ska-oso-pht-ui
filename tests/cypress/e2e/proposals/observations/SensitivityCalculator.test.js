@@ -8,8 +8,8 @@ import {
   clickAddObservationEntry,
   initializeUserNotLoggedIn,
   clearLocalStorage,
-  createMock,
-  clickListOfTargets
+  createMock
+  // clickListOfTargets
 } from '../../common/common';
 
 import sensitivityCalculatorResults from '../../../fixtures/sensitivityCalculatorResults.json';
@@ -19,7 +19,7 @@ beforeEach(() => {
   cy.fixture('sensitivityCalculatorResults.json').as('sensitivityCalculatorResults');
   createMock();
   //add target
-  clickListOfTargets();
+  // clickListOfTargets();
   addTargetUsingCoordinates();
   clickToAddTarget();
   clickToObservationPage();

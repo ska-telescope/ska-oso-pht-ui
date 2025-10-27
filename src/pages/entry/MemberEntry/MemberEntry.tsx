@@ -25,6 +25,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import UserSearchButton from '@/components/button/Search/Search';
 import GetUserByEmail from '@/services/axios/get/getUserByEmail/getUserByEmail';
 import ResetButton from '@/components/button/Reset/Reset';
+import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
@@ -41,6 +42,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const authClient = useAxiosAuthClient();
   const { notifyError, notifyWarning, notifySuccess } = useNotify();
+  const { isSV } = useAppFlow();
 
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
@@ -434,9 +436,9 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
           {emailField()}
           {firstNameField()}
           {lastNameField()}
-          {piField()}
-          {phdThesisField()}
-          <Grid size={{ xs: 12 }}>
+          {!isSV() && piField()}
+          {!isSV() && phdThesisField()}
+          <Grid pt={2} size={{ xs: 12 }}>
             <Box>
               <TeamInviteButton
                 action={clickFunction}

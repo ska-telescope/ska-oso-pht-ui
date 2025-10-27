@@ -1,7 +1,8 @@
 {
   "abstract": {
-    "help": "The Science Verification Idea abstract should clearly communicate the Science Verification Idea’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the Science Verification Idea's essential points. The abstract should be succinct yet detailed enough to convey the essence of the Science Verification Idea, highlighting its innovation and relevance to the field. The text should be a maximum of 250 words.",
-    "helper": "Please enter the abstract of your Science Verification Idea. This field allows latex syntax. - Word count {{current}} / {{max}}"
+    "label": "Idea Summary",
+    "help": "The Science Verification Idea summary should clearly communicate the Science Verification Idea’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the Science Verification Idea's essential points. The summary should be succinct yet detailed enough to convey the essence of the Science Verification Idea, highlighting its innovation and relevance to the field. The text should be a maximum of 250 words.",
+    "helper": "Please enter the summary of your Science Verification Idea. This field allows latex syntax. - Word count {{current}} / {{max}}"
   },
   "addProposal": {
     "success": "Science Verification Idea added with unique identifier ",
@@ -50,7 +51,7 @@
   },
   "email": {
     "label": "Email",
-    "help": "The email is a required field. The investigator will be invited to participate in this proposal using this email, so please ensure it is correct. If using the search functionality, the email should be of a registered user within SKAO systems. For example, @skao.int, @assoc.skao.int, or @community.skao.int.",
+    "help": "The email is a required field. The individual will be invited to participate in this proposal using this email, so please ensure it is correct. If using the search functionality, the email should be of a registered user within SKAO systems. For example, @skao.int, @assoc.skao.int, or @community.skao.int.",
     "invitation": {
       "subject": "Proposal invitation.",
       "body": "You have been invited to contribute to proposal {{id}}"
@@ -64,16 +65,22 @@
     "error": "User could not be found. Please check the email address and try again.",
     "reset": "Reset user search"
   },
+  "firstName": {
+    "help": "First name of the team member"
+  },
   "homeBtn": {
     "title": "Science Verification Ideas",
     "tooltip": "Returns to the list of Science Verification Ideas"
+  },
+  "lastName": {
+    "help": "Last name of the team member"
   },
   "manageTeamMember": {
     "label": "Manage Team Member Rights",
     "success": "Team member's access has been updated.",
     "toolTip": "Manage Team Member Rights",
     "error": "Failed to update team member's access.",
-    "help": "Select the rights for this team member. The Principal Investigator (PI) has all rights by default. The PI can assign rights to other team members as needed.",
+    "help": "Select the rights for this team member. The creating participant has all rights by default. They can assign rights to other team members as needed.",
     "rights": "Rights",
     "submit": {
       "label": "Submit rights",
@@ -99,15 +106,9 @@
   "overview": {
     "toolTip": "Overview of Science Verification Ideas"
   },
-  "phdThesis": {
-    "help": "Check to indicate that part of the data from this Science Verification Idea will be used towards a PhD thesis."
-  },
-  "pi": {
-    "help": "Check to indicate that this individual is the Principal Investigator of this Science Verification Idea."
-  },
   "pht": {
-    "short": "SVI",
-    "title": "Science Verification Ideas"
+    "short": "SVT",
+    "title": "Science Verification Tool"
   },
   "proposal": {
     "error": "Unable to retrieve the Science Verification Idea from the server"
@@ -125,7 +126,7 @@
     }
   },
   "proposals": {
-    "empty": "THERE ARE NO Science Verification IdeaS TO BE DISPLAYED",
+    "empty": "THERE ARE NO SCIENCE VERIFICATION IDEAS TO BE DISPLAYED",
     "label": "Science Verification Ideas"
   },
   "proposalType": {
@@ -133,7 +134,7 @@
     "all": "All Science Verification Idea types"
   },
   "members": {
-    "empty": "THERE ARE NO INVESTIGATORS ASSOCIATED WITH THIS Science Verification Idea"
+    "empty": "THERE ARE NO PARTICIPANTS ASSOCIATED WITH THIS Science Verification Idea"
   },
   "reviewOverview": {
     "panel1": {
@@ -155,7 +156,14 @@
     "tooltip": "Saves the Science Verification Idea in the current state to the database"
   },
   "scienceCategory": {
-    "help": "Select a category that best describes the science of your Science Verification Idea."
+    "101": "Zoom",
+    "202": "Continuum",
+    "303": "PST",
+    "label": "Observing Mode",
+    "help": "Select a mode that best describes the science of your Science Verification Idea.",
+    "notSpecified": "Not specified",
+    "error": "A value is required",
+    "all": "All Observing modes"
   },
   "scienceSubCategory": {
     "help": "SUB-CATEGORY: Select a sub-category that best describes your Science Verification Idea."
@@ -167,7 +175,8 @@
     "tooltip": "Progress the Science Verification Ideas to the submitted state"
   },
   "targets": {
-    "empty": "There are no targets associated with this Science Verification Idea"
+    "empty": "There are no targets associated with this Science Verification Idea",
+    "limitReached": "Only a single target/object is allowed for Science Verification Ideas."
   },
   "uploadCsvBtn": {
     "uploadSuccessMsg": "All targets in file have been uploaded into the Science Verification Idea"
@@ -184,16 +193,21 @@
   },
   "page": {
     "0": {
-      "desc": "This page allows users to provide the title and Science Verification Idea type"
+      "desc": "This page requires the entry of a Science Verification Idea title before creation of the record can be executed"
     },
     "1": {
-      "desc": "Principal Investigators should ensure that Co-Investigators are registered through the SKAO portal. Co-Investigators with pending status will be removed from the Science Verification Idea during validation of a submitted Science Verification Idea."
+      "desc": "Participants creating the Science Verification Idea should ensure that fellow participants are registered through the SKAO portal. Participants with pending status will be removed from the Science Verification Idea during validation of a submitted Science Verification Idea."
     },
     "2": {
       "desc": "This page allows the user to provide general information about the Science Verification Idea."
     },
     "3": {
-      "desc": "Upload a Science justification for this Science Verification Idea in a portable document format (pdf)."
+      "status": "Description",
+      "title": "Description",
+      "titleShort": "Description",
+      "desc": "Upload a document for this Science Verification Idea in a portable document format (pdf).",
+      "pageError": "The DESCRIPTION page is not complete",
+      "help": "This is help for the Description Page"
     },
     "4": {
       "desc": "Select a category to associate target(s) with this Science Verification Idea."

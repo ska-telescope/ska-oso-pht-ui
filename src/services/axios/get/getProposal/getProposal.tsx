@@ -84,12 +84,18 @@ const getScienceSubCategory = () => {
   return 1;
 };
 
-const getAttributes = (proposalType: { main_type: string; attributes?: string[] }): any => {
+const getAttributes = (proposalType: {
+  main_type: string;
+  attributes?: string[];
+}): number[] | null => {
   const project = PROJECTS?.find(({ mapping }) => mapping === proposalType.main_type);
-  const subProjects = proposalType.attributes?.map(attributes =>
-    project?.subProjects?.find(({ mapping }) => mapping === attributes)
-  ) as { id: number; label: string; mapping: string }[];
-  return subProjects?.filter(({ id }) => id)?.map(({ id }) => id);
+
+  const subProjects = proposalType.attributes
+    ?.map(attr => project?.subProjects?.find(({ mapping }) => mapping === attr))
+    ?.filter((sp): sp is { id: number; label: string; mapping: string } => sp !== undefined);
+
+  const result = subProjects?.map(({ id }) => id);
+  return result && result.length > 0 ? result : [];
 };
 
 const getScienceCategory = (scienceCat: string) => {
@@ -631,8 +637,8 @@ export function mapping(inRec: ProposalBackend): Proposal {
     metadata: inRec.metadata, // TODO should we keep this metadata or the fields below?
     id: inRec.prsl_id,
     title: inRec.proposal_info?.title,
-    proposalType: PROJECTS?.find(p => p.mapping === inRec.proposal_info?.proposal_type?.main_type)
-      ?.id,
+    proposalType:
+      PROJECTS?.find(p => p.mapping === inRec.proposal_info?.proposal_type?.main_type)?.id ?? 9,
     proposalSubType: inRec.proposal_info?.proposal_type?.attributes
       ? getAttributes(inRec.proposal_info?.proposal_type)
       : [],

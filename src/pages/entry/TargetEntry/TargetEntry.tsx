@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { TextEntry } from '@ska-telescope/ska-gui-components';
+import { TextEntry, InfoCard, InfoCardColorTypes } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
 import PulsarTimingBeamField from '@components/fields/pulsarTimingBeam/PulsarTimingBeam.tsx';
@@ -20,10 +20,12 @@ import {
   LAB_POSITION,
   VELOCITY_TYPE,
   LAB_IS_BOLD,
-  FIELD_PATTERN_POINTING_CENTRES
+  FIELD_PATTERN_POINTING_CENTRES,
+  HELP_FONT
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 interface TargetEntryProps {
   raType: number;
   setTarget?: Function;
@@ -35,8 +37,6 @@ interface TargetEntryProps {
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 const PANEL_HEIGHT = '54vh';
 
-const isSV = () => true;
-
 export default function TargetEntry({
   raType,
   setTarget = undefined,
@@ -44,6 +44,7 @@ export default function TargetEntry({
   showBeamData
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
+  const { isSV } = useAppFlow();
   const { notifySuccess } = useNotify();
 
   const LAB_WIDTH = 5;
@@ -222,7 +223,8 @@ export default function TargetEntry({
       setTiedArrayBeams(null);
     };
 
-    const disabled = () => !(name?.length && ra?.length && dec?.length);
+    const disabled = () =>
+      !(name?.length && ra?.length && dec?.length && (getProposal()?.targets?.length ?? 0) === 0);
 
     return (
       <Grid size={{ xs: 12 }} sx={{ position: 'relative', zIndex: 99 }} mb={2}>
@@ -388,6 +390,7 @@ export default function TargetEntry({
         >
           <Grid size={{ xs: 8 }} sx={{ position: 'relative' }}>
             <Box
+              pr={2}
               sx={{
                 width: '100%',
                 height: PANEL_HEIGHT,
@@ -418,7 +421,7 @@ export default function TargetEntry({
                   </Grid>
                 )}
                 {!isSV() && <Grid p={1}>{pulsarTimingBeamField()}</Grid>}
-                <Grid>
+                <Grid pt={5}>
                   <GroupLabel labelText={t('radialMotion.label').toUpperCase()} />
                 </Grid>
                 <Grid p={1}>{velocityField()}</Grid>
@@ -434,9 +437,17 @@ export default function TargetEntry({
           </Grid>
 
           <Grid size={{ xs: 4 }} sx={{ position: 'relative', height: PANEL_HEIGHT }}>
-            <Box sx={{ height: '100%' }}>
+            <Box pb={2}>
               <HelpPanel maxHeight={'HELP_MAX_HEIGHT'} />
             </Box>
+            {(getProposal()?.targets?.length ?? 0) > 0 && (
+              <InfoCard
+                color={InfoCardColorTypes.Warning}
+                fontSize={HELP_FONT}
+                message={t('targets.limitReached')}
+                testId="targetLimitPanelId"
+              />
+            )}
 
             {!id && (
               <Box

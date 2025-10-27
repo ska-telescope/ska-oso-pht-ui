@@ -204,6 +204,11 @@ export const GENERAL = {
     { label: 'Solar, Heliospheric and Ionospheric Physics', value: 12 },
     { label: 'Transients', subCategory: [{ label: 'Not specified', value: 1 }], value: 13 },
     { label: 'VLBI', subCategory: [{ label: 'Not specified', value: 1 }], value: 14 }
+  ],
+  ObservingMode: [
+    { label: 'Zoom', subCategory: [{ label: 'Not specified', value: 1 }], value: 101 },
+    { label: 'Continuum', subCategory: [{ label: 'Not specified', value: 1 }], value: 102 },
+    { label: 'PST', subCategory: [{ label: 'Not specified', value: 1 }], value: 103 }
   ]
 };
 
@@ -261,6 +266,7 @@ export const SBS_CONV_FACTOR_DEFAULT = 1;
 
 export const INFINITY = 'Infinity';
 
+export const PAGE_TECHNICAL = 7;
 export const PAGE_SRC_NET = 9;
 
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
