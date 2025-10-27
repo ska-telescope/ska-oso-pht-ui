@@ -177,7 +177,7 @@ export const shiftSensitivity = (inValues: ValueUnitPair) => {
     posUnits = 4;
   }
   const outValue = sensitivityConversion(baseValue, 4, posUnits);
-  if (SENSITIVITY_UNITS[posUnits - 1].value === 'uJy/beam') {
+  if (SENSITIVITY_UNITS[posUnits - 1].value === 'μJy/beam') {
     return { value: outValue, unit: firstPart('μJy/beam', addBeam) };
   } else {
     return { value: outValue, unit: firstPart(SENSITIVITY_UNITS[posUnits - 1].value, addBeam) };
