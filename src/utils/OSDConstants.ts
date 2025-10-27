@@ -217,7 +217,7 @@ export const OSD_CONSTANTS = {
       units: [
         { label: 'Jy/beam', value: 1 },
         { label: 'mJy/beam', value: 2 },
-        { label: 'uJy/beam', value: 3 },
+        { label: 'μJy/beam', value: 3 },
         { label: 'nJy/beam', value: 4 },
         { label: 'K', value: 5 },
         { label: 'mK', value: 6 },
