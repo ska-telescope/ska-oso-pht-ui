@@ -439,25 +439,25 @@ export default function ReviewDashboard() {
 
       {activeView === 'decision' && (
         <Grid p={5} pt={3} container spacing={3}>
-          <Grid item xs={12} md={6}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <ResizablePanel title="Decision Breakdown">
               <D3PieChart data={decisionPieChartData} showTotal={true} />
             </ResizablePanel>
           </Grid>
 
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <ResizablePanel title="Distribution — Min / Mean / Max">
               <BulletMinMeanMax
                 title="Score — Min / Mean / Max"
-                values={filteredReport.map(r => Number(r.score)).filter(n => Number.isFinite(n))}
+                values={filteredReport.map(r => Number(r.score))}
               />
             </ResizablePanel>
           </Grid>
-          <Grid item xs={12}>
+          <Grid size={{ xs: 12, md: 4 }}>
             <ResizablePanel title="Distribution — Min / Mean / Max">
               <BulletMinMeanMax
                 title="Rank — Min / Mean / Max"
-                values={filteredReport.map(r => Number(r.rank)).filter(n => Number.isFinite(n))}
+                values={filteredReport.map(r => Number(r.rank))}
               />
             </ResizablePanel>
           </Grid>
