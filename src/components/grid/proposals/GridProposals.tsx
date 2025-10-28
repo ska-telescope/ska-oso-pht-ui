@@ -37,6 +37,7 @@ import { arraysAreEqual } from '@/utils/helpers';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 export function getProposalType(value: number): string {
   const type = PROJECTS.find(item => item.id === value)?.mapping;
@@ -82,7 +83,7 @@ export default function GridProposals({
   tickBoxClicked = () => {}
 }: GridProposalsProps) {
   const { t } = useScopedTranslation();
-
+  const { isSV } = useAppFlow();
   const navigate = useNavigate();
 
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
@@ -150,7 +151,7 @@ export default function GridProposals({
 
   React.useEffect(() => {
     const fetchData = async (status: string) => {
-      const response = await GetProposalByStatusList(authClient, status);
+      const response = await GetProposalByStatusList(authClient);
       const prevProposals = status === PROPOSAL_STATUS.UNDER_REVIEW ? [] : proposals;
 
       if (typeof response === 'string') {
@@ -459,7 +460,12 @@ export default function GridProposals({
   };
 
   const deleteConfirmed = async () => {
-    const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.WITHDRAWN);
+    const response = await PutProposal(
+      authClient,
+      getProposal(),
+      isSV(),
+      PROPOSAL_STATUS.WITHDRAWN
+    );
     if (response && !('error' in response)) {
       setOpenDeleteDialog(false);
       setFetchList(!fetchList);

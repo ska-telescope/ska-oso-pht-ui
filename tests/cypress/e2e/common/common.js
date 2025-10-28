@@ -359,8 +359,8 @@ export const verifyProposalIsValid = () => {
 export const createStandardProposal = () => {
   clickAddProposal();
   enterProposalTitle();
-  clickProposalTypePrincipleInvestigator();
-  clickSubProposalTypeTargetOfOpportunity();
+  // clickProposalTypePrincipleInvestigator();
+  // clickSubProposalTypeTargetOfOpportunity();
   clickCreateProposal();
   verifyProposalCreatedAlertFooter();
   pageConfirmed('TEAM');
@@ -376,8 +376,8 @@ export const createStandardProposalLoggedIn = () => {
   clickAddProposal();
   clickCycleConfirm();
   enterProposalTitle();
-  clickProposalTypePrincipleInvestigator();
-  clickSubProposalTypeTargetOfOpportunity();
+  // clickProposalTypePrincipleInvestigator();
+  // clickSubProposalTypeTargetOfOpportunity();
   clickCreateProposal();
 };
 

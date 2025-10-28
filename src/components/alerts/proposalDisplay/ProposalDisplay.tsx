@@ -17,6 +17,7 @@ import GridObservationSummary from '../../../components/grid/observationSummary/
 import emptyCell from '../../../components/fields/emptyCell/emptyCell';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 interface ProposalDisplayProps {
   proposal: Proposal | null;
@@ -43,6 +44,7 @@ export default function ProposalDisplay({
   onConfirmLabel = ''
 }: ProposalDisplayProps) {
   const { t } = useScopedTranslation();
+  const { isSV } = useAppFlow();
   const theme = useTheme();
   const authClient = useAxiosAuthClient();
 
@@ -315,9 +317,11 @@ export default function ProposalDisplay({
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid size={{ xs: 6 }}>{entry(t('proposalType.label'), proposalType())}</Grid>
         <Grid size={{ xs: 6 }}>{entry(t('scienceCategory.label'), scienceCategory())}</Grid>
-        <Grid pt={2} size={{ xs: 6 }}>
-          {entry(t('proposalAttribute.plural'), proposalAttributes(), true)}
-        </Grid>
+        {!isSV() && (
+          <Grid pt={2} size={{ xs: 6 }}>
+            {entry(t('proposalAttribute.plural'), proposalAttributes(), true)}
+          </Grid>
+        )}
       </Grid>
     </Grid>
   );
@@ -344,7 +348,12 @@ export default function ProposalDisplay({
 
   const justificationContent = () => (
     <Grid>
-      <Grid container direction="row" justifyContent="space-between" alignItems="center">
+      <Grid
+        container
+        direction="row"
+        justifyContent={isSV() ? 'space-around' : 'space-between'}
+        alignItems="center"
+      >
         <Grid size={{ xs: 6 }}>
           {link(
             t('page.3.label'),
@@ -353,14 +362,16 @@ export default function ProposalDisplay({
             proposal?.sciencePDF
           )}
         </Grid>
-        <Grid size={{ xs: 6 }}>
-          {link(
-            t('page.7.label'),
-            t('pdfDownload.technical.toolTip'),
-            () => downloadPdf('technical'),
-            proposal?.technicalPDF
-          )}
-        </Grid>
+        {!isSV() && (
+          <Grid size={{ xs: 6 }}>
+            {link(
+              t('page.7.label'),
+              t('pdfDownload.technical.toolTip'),
+              () => downloadPdf('technical'),
+              proposal?.technicalPDF
+            )}
+          </Grid>
+        )}
       </Grid>
     </Grid>
   );

@@ -51,7 +51,7 @@ export default function SubArrayField({
       <Grid pl={suffix ? 1 : 0} size={{ xs: suffix ? 12 - widthButton : 12 }}>
         {getOptions() && (
           <DropDown
-            disabled={disabled}
+            disabled={disabled || getOptions()?.length < 2}
             options={getOptions()}
             testId={FIELD}
             value={value}

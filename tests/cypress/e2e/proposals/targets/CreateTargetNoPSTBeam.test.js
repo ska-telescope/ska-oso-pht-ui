@@ -1,7 +1,7 @@
 import {
   addM2TargetUsingResolve,
   clearLocalStorage,
-  clickListOfTargets,
+  //clickListOfTargets,
   clickToAddTarget,
   clickToLinkTargetObservation,
   clickToNextPage,
@@ -31,7 +31,7 @@ beforeEach(() => {
   mockResolveBeamAPI();
 
   //add target
-  clickListOfTargets();
+  // clickListOfTargets();
   addM2TargetUsingResolve();
   cy.wait('@mockResolveTarget');
   verifyNoBeamRadioButtonSelected(); //verify No beam is selected (default value)

@@ -2,8 +2,8 @@ import {
   clickAddProposal,
   clickCreateProposal,
   clickHome,
-  clickProposalTypePrincipleInvestigator,
-  clickSubProposalTypeTargetOfOpportunity,
+  // clickProposalTypePrincipleInvestigator,
+  // clickSubProposalTypeTargetOfOpportunity,
   enterProposalTitle,
   verifyOnLandingPage,
   verifyOnLandingPageFilterIsVisible,
@@ -30,8 +30,8 @@ describe('Creating Proposal', () => {
     clickAddProposal();
     clickCycleConfirm();
     enterProposalTitle();
-    clickProposalTypePrincipleInvestigator();
-    clickSubProposalTypeTargetOfOpportunity();
+    // clickProposalTypePrincipleInvestigator();
+    // clickSubProposalTypeTargetOfOpportunity();
     clickCreateProposal();
     cy.wait('@mockCreateProposal');
     verifyProposalCreatedAlertFooter();

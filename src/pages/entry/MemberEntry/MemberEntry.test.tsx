@@ -1,11 +1,13 @@
-import { describe, test, expect } from 'vitest';
+import { describe, test, expect, vi } from 'vitest';
 import { fireEvent, render, waitFor, screen, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 import MemberEntry from './MemberEntry';
 import * as mockService from '@/services/axios/get/getUserByEmail/getUserByEmail';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+import { AppFlowProvider, useAppFlow } from '@/utils/appFlow/AppFlowContext';
+
+let isSVFromContext: boolean;
 
 const isEnabled = (testId: string, enabled: boolean = true) => {
   if (enabled) {
@@ -36,10 +38,19 @@ const clickButton = async (testId: string) => {
   });
 };
 
+const AppFlowTestBridge = () => {
+  const { isSV } = useAppFlow();
+  isSVFromContext = isSV();
+  return null;
+};
+
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <AppFlowProvider>{component}</AppFlowProvider>
+      <AppFlowProvider>
+        <AppFlowTestBridge />
+        {component}
+      </AppFlowProvider>
     </StoreProvider>
   );
 };
@@ -83,11 +94,16 @@ describe('<MemberEntry /> search for user', () => {
 
   test('fill user details manually', async () => {
     wrapper(<MemberEntry />);
+    await waitFor(() => {
+      expect(typeof isSVFromContext).toBe('boolean');
+    });
     isEnabled('email');
     isEnabled('firstName');
     isEnabled('lastName');
-    isEnabled('piCheckbox');
-    isEnabled('PhDCheckbox');
-    // TODO - Needs to be extended to fill out the form and check values
+    if (!isSVFromContext) {
+      isEnabled('piCheckbox');
+      isEnabled('PhDCheckbox');
+    }
+    // TODO - Extend to fill out the form and check values
   });
 });
