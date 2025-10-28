@@ -42,7 +42,8 @@ export function mappingReviewDashboardBackendToFrontend(
       panelRank: reviewDashboardBackend.panel_rank || undefined,
       panelScore: reviewDashboardBackend.panel_score || undefined,
       reviewSubmittedOn: reviewDashboardBackend.review_submitted_on || undefined,
-      decisionOn: reviewDashboardBackend.decision_on || undefined
+      decisionOn: reviewDashboardBackend.decision_on || undefined,
+      location: reviewDashboardBackend.location || undefined
     };
     return reviewDashboard;
   };

@@ -24,6 +24,7 @@ export type ReviewDashboardBackend = {
   panel_score?: number;
   review_submitted_on?: string;
   decision_on?: string;
+  location?: string;
 };
 
 export type ReviewDashboard = {
@@ -52,4 +53,5 @@ export type ReviewDashboard = {
   panelScore?: number;
   reviewSubmittedOn?: string;
   decisionOn?: string;
+  location?: string;
 };

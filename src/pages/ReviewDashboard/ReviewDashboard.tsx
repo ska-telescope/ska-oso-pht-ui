@@ -23,6 +23,30 @@ const REFRESH_TIME = 5 * 60 * 1000;
 const TABLE_WIDTH = '95vw';
 const TABLE_CONTAINER_WIDTH = '97vw';
 
+// Safe path getter: get(r, "metrics.score") -> number|string|undefined
+const getPath = (obj: any, path: string) => {
+  if (!obj || !path) return undefined;
+  return path.split('.').reduce((acc, k) => (acc ? acc[k] : undefined), obj);
+};
+
+// Coerce many real-world formats into numbers, else NaN
+const coerceNumber = (v: any): number => {
+  if (v === null || v === undefined) return NaN;
+  if (typeof v === 'number') return Number.isFinite(v) ? v : NaN;
+  const s = String(v).trim();
+  if (!s) return NaN;
+  // Remove thousands separators, keep digits, dot, minus
+  const cleaned = s.replace(/[,\s]/g, '').replace(/[^\d.-]/g, '');
+  const n = Number(cleaned);
+  return Number.isFinite(n) ? n : NaN;
+};
+
+// Extract numeric column (supports nested fields via dot path)
+const toNumeric = (rows: any[], fieldPath: string): number[] =>
+  (rows || [])
+    .map(r => coerceNumber(getPath(r, fieldPath)))
+    .filter(Number.isFinite);
+
 type DashboardView = 'proposal' | 'review' | 'decision';
 
 /** ResizeObserver hook */
@@ -449,7 +473,7 @@ export default function ReviewDashboard() {
             <ResizablePanel title="Distribution — Min / Mean / Max">
               <BulletMinMeanMax
                 title="Score — Min / Mean / Max"
-                values={filteredReport.map(r => Number(r.score))}
+                values={toNumeric(filteredReport, 'score')}
               />
             </ResizablePanel>
           </Grid>
@@ -461,7 +485,7 @@ export default function ReviewDashboard() {
               />
             </ResizablePanel>
           </Grid>
-        
+
         </Grid>
       )}
     </Box>
