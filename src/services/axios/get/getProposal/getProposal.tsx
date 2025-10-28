@@ -263,7 +263,8 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
     imageSizeUnits: getImageSizeUnits(dp.image_size.unit),
     pixelSizeValue: dp.image_cellsize?.value,
     pixelSizeUnits: dp?.image_cellsize?.unit ? getPixelSizeUnits(dp?.image_cellsize?.unit) : null,
-    weighting: Number(dp.weighting)
+    weighting: Number(dp.weighting),
+    polarisations: dp.polarisations
   })) as DataProductSDP[];
 };
 
