@@ -24,7 +24,16 @@ export default function TargetListSection() {
   const [openEditDialog, setOpenEditDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [rowTarget, setRowTarget] = React.useState<Target | null>(null);
+  const [isButtonDisabled, setIsButtonDisabled] = React.useState(false);
 
+  React.useEffect(() => {
+    //TODO Add check and setIsButtonDisabled(true) if field errors are present
+    if (rowTarget && (rowTarget.name === '' || rowTarget.raStr === '' || rowTarget.decStr === '')) {
+      setIsButtonDisabled(true);
+    } else {
+      setIsButtonDisabled(false);
+    }
+  }, [rowTarget]);
   const deleteIconClicked = (e: Target) => {
     setRowTarget(e);
     setOpenDeleteDialog(true);
@@ -214,6 +223,7 @@ export default function TargetListSection() {
           onClose={closeDialog}
           onDialogResponse={editConfirmed}
           title="editTarget.label"
+          isButtonDisabled={isButtonDisabled}
         >
           <TargetEntry
             raType={RA_TYPE_ICRS.value}
