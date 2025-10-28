@@ -452,6 +452,20 @@ export const addM2TargetUsingResolve = () => {
   clickResolveButton();
 };
 
+export const enterTargetNameM2 = () => {
+  cy.get('[id="name"]').should('exist');
+  cy.get('[id="name"]').type('M2');
+};
+export const enterInvalidTargetCoordinate = testId => {
+  cy.get('[data-testid="' + testId + '"]').should('exist');
+  cy.get('[data-testid="' + testId + '"]').type('1:0:0');
+};
+
+export const enterValidTargetCoordinate = testId => {
+  cy.get('[data-testid="' + testId + '"]').should('exist');
+  cy.get('[data-testid="' + testId + '"]').type('1:00:00');
+};
+
 export const addBeamUsingResolve = beamName => {
   cy.get('[id="beamName"]').should('exist');
   cy.get('[id="beamName"]').type(beamName);
@@ -487,6 +501,11 @@ export const verifyObservationInTable = () => {
     .should('contain', 'obs-');
   //  .should('contain', 'AA2');
   //  .should('have.length', 2);
+};
+
+export const verifyFieldError = (testId, error) => {
+  cy.get('[data-testid="' + testId + '"]').should('exist');
+  cy.get('[data-testid="' + testId + '"]').should('contain', error);
 };
 
 export const clickObservationFromTable = () => {
