@@ -50,7 +50,8 @@ export function mappingPostProposal(
       observation_sets: [],
       data_product_sdps: [],
       data_product_src_nets: [],
-      result_details: []
+      result_details: [],
+      calibration_strategy: []
     }
   };
   // trim undefined properties
