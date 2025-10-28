@@ -6,6 +6,7 @@ import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
 import PulsarTimingBeamField from '@components/fields/pulsarTimingBeam/PulsarTimingBeam.tsx';
 import GroupLabel from '@components/info/groupLabel/groupLabel.tsx';
+import { leadZero } from '@utils/helpers.ts';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import ResolveButton from '@/components/button/Resolve/Resolve';
@@ -87,17 +88,6 @@ export default function TargetEntry({
     if (setTarget) {
       setTarget({ ...target, raStr: formattedRA });
     }
-  };
-
-  const leadZero = (coordinate: String): String => {
-    const arr = coordinate.split(':');
-    const num = Number(arr[0]);
-    if (arr?.length === 3 && num > -1 && num < 10 && arr[0]?.length < 2) {
-      return '0' + arr[0] + ':' + arr[1] + ':' + arr[2];
-    } else if (arr?.length === 3 && num > -10 && num < 0 && arr[0].length < 3) {
-      return '-0' + Math.abs(Number(arr[0])) + ':' + arr[1] + ':' + arr[2];
-    }
-    return coordinate;
   };
 
   const getTiedArrayBeams = (beams: Beam[]): TiedArrayBeams => {

@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import { helpers, isVisible } from '@/utils/helpers.ts';
+import { helpers, isVisible, leadZero } from '@/utils/helpers.ts';
 
 describe('Helper functions, validateTextEntry', () => {
   test('Valid input passes TITLE validation', () => {
@@ -154,4 +154,31 @@ describe('isVisible', () => {
   });
 
   //TODO: Add tests for when declination is outside of visible range
+});
+
+describe('leadZero', () => {
+  it('adds leading zero to positive single-digit numbers', () => {
+    const result = leadZero('5:30:15');
+    expect(result).toBe('05:30:15');
+  });
+
+  it('adds leading zero to negative single-digit numbers', () => {
+    const result = leadZero('-5:30:15');
+    expect(result).toBe('-05:30:15');
+  });
+
+  it('does not modify already formatted positive numbers', () => {
+    const result = leadZero('15:30:15');
+    expect(result).toBe('15:30:15');
+  });
+
+  it('does not modify already formatted negative numbers', () => {
+    const result = leadZero('-15:30:15');
+    expect(result).toBe('-15:30:15');
+  });
+
+  it('handles edge case of zero correctly', () => {
+    const result = leadZero('0:30:15');
+    expect(result).toBe('00:30:15');
+  });
 });
