@@ -23,7 +23,7 @@ export default function SkyDirection2Field({
   skyUnits,
   value,
   valueFocus,
-  isLow
+  isLow = true
 }: SkyDirection2FieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'skyDirection';

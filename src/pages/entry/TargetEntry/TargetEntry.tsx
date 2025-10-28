@@ -74,16 +74,18 @@ export default function TargetEntry({
   };
 
   const setTheDec = (inValue: string) => {
-    setDec(leadZero(inValue));
+    const formattedDec = leadZero(inValue);
+    setDec(formattedDec);
     if (setTarget) {
-      setTarget({ ...target, decStr: inValue });
+      setTarget({ ...target, decStr: formattedDec });
     }
   };
 
   const setTheRA = (inValue: string) => {
-    setRA(leadZero(inValue));
+    const formattedRA = leadZero(inValue);
+    setRA(formattedRA);
     if (setTarget) {
-      setTarget({ ...target, raStr: inValue });
+      setTarget({ ...target, raStr: formattedRA });
     }
   };
 
@@ -356,7 +358,7 @@ export default function TargetEntry({
         skyUnits={raType}
         value={dec}
         valueFocus={() => helpComponent(t('skyDirection.help.2.value'))}
-        isLow={getProposal()?.observations?.some(obs => obs.observingBand === 0)}
+        isLow={!!getProposal()?.observations?.some(obs => obs.observingBand === 0)}
       />
     );
 
