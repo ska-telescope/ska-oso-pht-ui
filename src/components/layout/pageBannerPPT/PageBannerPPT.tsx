@@ -267,13 +267,13 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     <Grid container direction="row" alignItems="center" justifyContent="space-between">
       {wrapStatusArray && (
         <Grid container justifyContent="center">
-          <Grid size={{ lg: 12 }}>{pageDesc()}</Grid>
+          <Grid size={{ sm: 11 }}>{pageDesc()}</Grid>
         </Grid>
       )}
 
-      {!wrapStatusArray && <Grid size={{ lg: 4 }}>{pageTitle()}</Grid>}
-
-      {!wrapStatusArray && <Grid size={{ lg: 8 }}>{pageDesc()}</Grid>}
+      {!wrapStatusArray && <Grid size={{ sm: 3 }}>{pageTitle()}</Grid>}
+      {!wrapStatusArray && <Grid size={{ sm: 6 }}>{pageDesc()}</Grid>}
+      {!wrapStatusArray && <Grid size={{ sm: 3 }}></Grid>}
     </Grid>
   );
 

@@ -196,7 +196,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   };
 
   const updateProposal = async (rec: Proposal) => {
-    const response = await PutProposal(authClient, rec, PROPOSAL_STATUS.DRAFT);
+    const response = await PutProposal(authClient, rec, isSV(), PROPOSAL_STATUS.DRAFT);
     updateProposalResponse(response);
   };
 
@@ -394,16 +394,18 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
 
   const piField = () => {
     return fieldWrapper(
-      <TickBox
-        label={t('pi.label')}
-        labelBold
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH}
-        testId="piCheckbox"
-        checked={pi}
-        onChange={handleCheckboxChangePI}
-        onFocus={() => helpComponent(t('pi.help'))}
-      />
+      <Box pt={2}>
+        <TickBox
+          label={t('pi.label')}
+          labelBold
+          labelPosition={LAB_POSITION}
+          labelWidth={LABEL_WIDTH}
+          testId="piCheckbox"
+          checked={pi}
+          onChange={handleCheckboxChangePI}
+          onFocus={() => helpComponent(t('pi.help'))}
+        />
+      </Box>
     );
   };
 

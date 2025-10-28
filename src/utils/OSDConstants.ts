@@ -3,6 +3,7 @@ import {
   MILLISECOND_LABEL,
   NANOSECOND_LABEL,
   OB_SUBARRAY_AA2,
+  OB_SUBARRAY_CUSTOM,
   SECOND_LABEL,
   SUPPLIED_TYPE_INTEGRATION,
   SUPPLIED_TYPE_SENSITIVITY
@@ -20,14 +21,14 @@ export const OSD_CONSTANTS = {
           map: 'AA2',
           label: 'AA2',
           numOf13mAntennas: 0
-          // },
-          // {
-          //   value: OB_SUBARRAY_CUSTOM,
-          //   map: 'Custom',
-          //   label: 'Custom',
-          //   numOf15mAntennas: 133,
-          //   numOf13mAntennas: 64,
-          //   numOfStations: 0
+        },
+        {
+          value: OB_SUBARRAY_CUSTOM,
+          map: 'Custom',
+          label: 'Custom',
+          numOf15mAntennas: 133,
+          numOf13mAntennas: 64,
+          numOfStations: 0
         }
       ],
       bandWidth: [
@@ -50,15 +51,15 @@ export const OSD_CONSTANTS = {
           label: 'AA2',
           numOf13mAntennas: 0,
           continuumSpectralAveragingMax: 13812
-          // },
-          // {
-          //   value: OB_SUBARRAY_CUSTOM,
-          //   map: 'Custom',
-          //   label: 'Custom',
-          //   numOf15mAntennas: 0,
-          //   numOf13mAntennas: 0,
-          //   numOfStations: 512,
-          //   continuumSpectralAveragingMax: 27624
+        },
+        {
+          value: OB_SUBARRAY_CUSTOM,
+          map: 'Custom',
+          label: 'Custom',
+          numOf15mAntennas: 0,
+          numOf13mAntennas: 0,
+          numOfStations: 512,
+          continuumSpectralAveragingMax: 27624
         }
       ],
       bandWidth: [

@@ -220,7 +220,6 @@ export const GRID_MEMBERS_ACTIONS = {
 export const HEADER_HEIGHT = 78;
 
 export const HELP_FONT = 16;
-export const HELP_VIEWPORT = '20vh';
 
 export const IW_BRIGGS = 2;
 export const IW_NATURAL = 0;

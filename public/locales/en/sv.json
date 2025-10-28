@@ -51,10 +51,10 @@
   },
   "email": {
     "label": "Email",
-    "help": "The email is a required field. The individual will be invited to participate in this proposal using this email, so please ensure it is correct. If using the search functionality, the email should be of a registered user within SKAO systems. For example, @skao.int, @assoc.skao.int, or @community.skao.int.",
+    "help": "The email is a required field. The individual will be invited to participate in this Science Verification Idea using this email, so please ensure it is correct. If using the search functionality, the email should be of a registered user within SKAO systems. For example, @skao.int, @assoc.skao.int, or @community.skao.int.",
     "invitation": {
-      "subject": "Proposal invitation.",
-      "body": "You have been invited to contribute to proposal {{id}}"
+      "subject": "Science Verification Idea invitation.",
+      "body": "You have been invited to contribute to Science Verification Idea {{id}}"
     },
     "success": "Email invite has been sent.",
     "warning": "Sending email request for processing",
@@ -85,22 +85,22 @@
     "submit": {
       "label": "Submit rights",
       "short": "Submit",
-      "help": "Check to indicate that this individual can submit, edit and view the proposal."
+      "help": "Check to indicate that this individual can submit, edit and view the Science Verification Idea."
     },
     "edit": {
       "label": "Edit rights",
       "short": "Edit",
-      "help": "Check to indicate that this individual can edit and view the proposal."
+      "help": "Check to indicate that this individual can edit and view the Science Verification Idea."
     },
     "update": {
       "label": "Update rights",
       "short": "Update",
-      "help": "Check to indicate that this individual can update and view the proposal."
+      "help": "Check to indicate that this individual can update and view the Science Verification Idea."
     },
     "view": {
       "label": "View rights",
       "short": "View",
-      "help": "Check to indicate that this individual can view the proposal."
+      "help": "Check to indicate that this individual can view the Science Verification Idea."
     }
   },
   "overview": {
@@ -131,7 +131,10 @@
   },
   "proposalType": {
     "help": "Select from the options below the most appropriate type classification for the Science Verification Idea. This can be changed later if needed, but be aware that this may affect information previously entered.",
-    "all": "All Science Verification Idea types"
+    "all": "All Science Verification Idea types",
+    "title": {
+      "9": "Science Verification Idea"
+    }
   },
   "members": {
     "empty": "THERE ARE NO PARTICIPANTS ASSOCIATED WITH THIS Science Verification Idea"
@@ -157,8 +160,8 @@
   },
   "scienceCategory": {
     "101": "Zoom",
-    "202": "Continuum",
-    "303": "PST",
+    "102": "Continuum",
+    "103": "PST",
     "label": "Observing Mode",
     "help": "Select a mode that best describes the science of your Science Verification Idea.",
     "notSpecified": "Not specified",
@@ -193,7 +196,7 @@
   },
   "page": {
     "0": {
-      "desc": "This page requires the entry of a Science Verification Idea title before creation of the record can be executed"
+      "desc": "This page allows users to provide the title for the Science Verification Idea."
     },
     "1": {
       "desc": "Participants creating the Science Verification Idea should ensure that fellow participants are registered through the SKAO portal. Participants with pending status will be removed from the Science Verification Idea during validation of a submitted Science Verification Idea."
@@ -202,6 +205,7 @@
       "desc": "This page allows the user to provide general information about the Science Verification Idea."
     },
     "3": {
+      "label": "Description",
       "status": "Description",
       "title": "Description",
       "titleShort": "Description",
@@ -210,7 +214,7 @@
       "help": "This is help for the Description Page"
     },
     "4": {
-      "desc": "Select a category to associate target(s) with this Science Verification Idea."
+      "desc": "Select a category to associate target with this Science Verification Idea."
     },
     "6": {
       "desc": "Confirm a calibration strategy for this Science Verification Idea."

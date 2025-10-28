@@ -107,18 +107,20 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     if (usedPageNo === -1) {
       return `createBtn.label`;
     }
-    const thePage = usedPageNo + (isSV() && usedPageNo > PAGE_TECHNICAL - 2 ? 2 : 1);
+    const thePage = usedPageNo + (isSV() && usedPageNo === PAGE_TECHNICAL - 1 ? 2 : 1);
     return `page.${thePage}.title`;
   };
 
   const prevLabel = () =>
-    !loggedIn && usedPageNo === 4 ? `page.0.title` : `page.${usedPageNo - 1}.title`;
+    !loggedIn && usedPageNo === 4
+      ? `page.0.title`
+      : `page.${usedPageNo - (isSV() && usedPageNo === PAGE_TECHNICAL + 1 ? 2 : 1)}.title`;
 
   const prevPageNav = () =>
     !loggedIn && usedPageNo === 4
       ? navigate(NAV[0])
       : usedPageNo > 0
-      ? navigate(NAV[usedPageNo - 1])
+      ? navigate(NAV[usedPageNo - (isSV() && usedPageNo === PAGE_TECHNICAL + 1 ? 2 : 1)])
       : '';
 
   const nextPageNav = () =>
@@ -127,7 +129,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       : !loggedIn && usedPageNo === 0
       ? navigate(NAV[4])
       : usedPageNo < NAV.length
-      ? navigate(NAV[usedPageNo + 1])
+      ? navigate(NAV[usedPageNo + (isSV() && usedPageNo === PAGE_TECHNICAL - 1 ? 2 : 1)])
       : '';
 
   const nextPageClicked = () => {
