@@ -176,7 +176,7 @@ const SDPOptions = (inArray: Boolean[]) => {
 };
 
 const getDataProductSDP = (dataproducts: DataProductSDP[]): DataProductSDPsBackend[] => {
-  const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
+  const IMAGE_SIZE_UNITS = ['deg2', 'arcmin', 'arcsec'];
 
   const getPixelSizeUnits = (inValue: string) => (inValue === 'arcsecs' ? 'arcsec' : inValue);
 
