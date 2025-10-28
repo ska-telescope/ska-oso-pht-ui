@@ -27,9 +27,12 @@ const MockProposalFrontendList: Proposal[] = [
         affiliation: '',
         phdThesis: false,
         status: 'unknown',
-        pi: true
+        pi: true,
+        officeLocation: null,
+        jobTitle: null
       }
-    ]
+    ],
+    calibrationStrategy: []
   },
   {
     id: 'prp-ska01-202204-01',
@@ -57,9 +60,12 @@ const MockProposalFrontendList: Proposal[] = [
         affiliation: '',
         phdThesis: false,
         status: 'unknown',
-        pi: true
+        pi: true,
+        officeLocation: null,
+        jobTitle: null
       }
-    ]
+    ],
+    calibrationStrategy: []
   },
   {
     id: 'prsl-t0001-20250814-00002',
@@ -87,9 +93,12 @@ const MockProposalFrontendList: Proposal[] = [
         affiliation: '',
         phdThesis: false,
         status: 'unknown',
-        pi: true
+        pi: true,
+        officeLocation: null,
+        jobTitle: null
       }
-    ]
+    ],
+    calibrationStrategy: []
   }
 ];
 
