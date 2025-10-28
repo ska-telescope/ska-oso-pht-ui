@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import { helpers, isVisible, leadZero } from '@/utils/helpers.ts';
+import { helpers, isVisible, leadZero, sexa2Dec } from '@/utils/helpers.ts';
 
 describe('Helper functions, validateTextEntry', () => {
   test('Valid input passes TITLE validation', () => {
@@ -153,7 +153,7 @@ describe('isVisible', () => {
     expect(result).toBe(false);
   });
 
-  //TODO: Add tests for when declination is outside of visible range
+  //TODO: Increase tests for when declination is outside of visible range
 });
 
 describe('leadZero', () => {
@@ -180,5 +180,32 @@ describe('leadZero', () => {
   it('handles edge case of zero correctly', () => {
     const result = leadZero('0:30:15');
     expect(result).toBe('00:30:15');
+  });
+});
+
+describe('sexa2Dec', () => {
+  it('converts a positive sexagesimal string to decimal', () => {
+    const result = sexa2Dec('12:34:56');
+    expect(result).toBeCloseTo(12.582222, 6);
+  });
+
+  it('converts a negative sexagesimal string to decimal', () => {
+    const result = sexa2Dec('-12:34:56');
+    expect(result).toBeCloseTo(-12.582222, 6);
+  });
+
+  it('returns the decimal value for a valid decimal string', () => {
+    const result = sexa2Dec('12.345');
+    expect(result).toBe(12.345);
+  });
+
+  it('handles edge case of zero correctly', () => {
+    const result = sexa2Dec('0:00:00');
+    expect(result).toBe(0);
+  });
+
+  it('handles edge case of negative zero correctly', () => {
+    const result = sexa2Dec('-0:00:00');
+    expect(result).toBe(0);
   });
 });
