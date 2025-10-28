@@ -115,26 +115,6 @@ export const helpers = {
   }
 };
 
-// function to convert Sexagesimal declination to decimal for source validation
-
-export const sexa2Dec = (dec: string): number => {
-  if (/^[-+]?[0-9]*\.?[0-9]+$/.test(dec)) {
-    return parseFloat(dec);
-  }
-  const decSplit = dec.split(':', 3);
-
-  if (Number(decSplit[0]) < 0) {
-    return Number(decSplit[0]) - Number(decSplit[1]) / 60 - Number(decSplit[2]) / 3600;
-  }
-  return Number(decSplit[0]) + Number(decSplit[1]) / 60 + Number(decSplit[2]) / 3600;
-};
-
-export function isVisible(dec: string, isLow: boolean): boolean {
-  const skaLatitude = !isLow ? sexa2Dec('-30:43:16.068') : sexa2Dec('-26:41:49.3');
-  const elevationLimit = 15.0;
-  return sexa2Dec(dec) < 90.0 + skaLatitude - elevationLimit;
-}
-
 /*********************************************************** filter *********************************************************/
 
 const sortByLastUpdated = (array: any[]): any[] => {

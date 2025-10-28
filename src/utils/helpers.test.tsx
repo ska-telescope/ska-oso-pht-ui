@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import { helpers, isVisible, leadZero, sexa2Dec } from '@/utils/helpers.ts';
+import { helpers, leadZero } from '@/utils/helpers.ts';
 
 describe('Helper functions, validateTextEntry', () => {
   test('Valid input passes TITLE validation', () => {
@@ -137,24 +137,6 @@ describe('Helper functions, validateTextEntry', () => {
     ).toThrow('Invalid text type: UNKNOWN');
   });
 });
-describe('isVisible', () => {
-  it('returns true when declination is within visible range for SKA MID', () => {
-    const result = isVisible('-20:00:00', false);
-    expect(result).toBe(true);
-  });
-
-  it('returns true when declination is within visible range for SKA LOW', () => {
-    const result = isVisible('-20:00:00', true);
-    expect(result).toBe(true);
-  });
-
-  it('returns false for invalid declination input', () => {
-    const result = isVisible('invalid', false);
-    expect(result).toBe(false);
-  });
-
-  //TODO: Increase tests for when declination is outside of visible range
-});
 
 describe('leadZero', () => {
   it('adds leading zero to positive single-digit numbers', () => {
@@ -180,32 +162,5 @@ describe('leadZero', () => {
   it('handles edge case of zero correctly', () => {
     const result = leadZero('0:30:15');
     expect(result).toBe('00:30:15');
-  });
-});
-
-describe('sexa2Dec', () => {
-  it('converts a positive sexagesimal string to decimal', () => {
-    const result = sexa2Dec('12:34:56');
-    expect(result).toBeCloseTo(12.582222, 6);
-  });
-
-  it('converts a negative sexagesimal string to decimal', () => {
-    const result = sexa2Dec('-12:34:56');
-    expect(result).toBeCloseTo(-12.582222, 6);
-  });
-
-  it('returns the decimal value for a valid decimal string', () => {
-    const result = sexa2Dec('12.345');
-    expect(result).toBe(12.345);
-  });
-
-  it('handles edge case of zero correctly', () => {
-    const result = sexa2Dec('0:00:00');
-    expect(result).toBe(0);
-  });
-
-  it('handles edge case of negative zero correctly', () => {
-    const result = sexa2Dec('-0:00:00');
-    expect(result).toBe(0);
   });
 });

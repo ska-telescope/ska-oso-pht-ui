@@ -14,7 +14,6 @@ interface SkyDirection2FieldProps {
   value: string;
   valueFocus?: Function;
   valueTypeFocus?: Function;
-  isLow?: boolean;
   setErrorText?: (error: string) => void;
 }
 
@@ -24,19 +23,18 @@ export default function SkyDirection2Field({
   skyUnits,
   value,
   valueFocus,
-  isLow = true,
   setErrorText
 }: SkyDirection2FieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'skyDirection';
 
-  const parseResultText = validateSkyDirection2Text(value, isLow);
+  const parseResultText = validateSkyDirection2Text(value);
   const errorText = !parseResultText ? '' : t(FIELD + `.error.2.${parseResultText}`);
   if (setErrorText) {
     setErrorText(errorText); // Pass the errorText back to TargetEntry
   }
 
-  const parseResultNumber = validateSkyDirection2Number(value, isLow);
+  const parseResultNumber = validateSkyDirection2Number(value);
   const errorNumber = !parseResultNumber ? '' : t(FIELD + `.error.2.${parseResultNumber}`);
   if (setErrorText) {
     setErrorText(errorText); // Pass the errorText back to TargetEntry
