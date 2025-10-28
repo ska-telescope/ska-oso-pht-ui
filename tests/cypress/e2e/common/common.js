@@ -452,18 +452,14 @@ export const addM2TargetUsingResolve = () => {
   clickResolveButton();
 };
 
-export const enterTargetNameM2 = () => {
-  cy.get('[id="name"]').should('exist');
-  cy.get('[id="name"]').type('M2');
-};
-export const enterInvalidTargetCoordinate = testId => {
+export const enterTargetName = (testId, value) => {
   cy.get('[data-testid="' + testId + '"]').should('exist');
-  cy.get('[data-testid="' + testId + '"]').type('1:0:0');
+  cy.get('[data-testid="' + testId + '"]').type(value);
 };
 
-export const enterValidTargetCoordinate = testId => {
+export const enterTargetCoordinate = (testId, value) => {
   cy.get('[data-testid="' + testId + '"]').should('exist');
-  cy.get('[data-testid="' + testId + '"]').type('1:00:00');
+  cy.get('[data-testid="' + testId + '"]').type(value);
 };
 
 export const addBeamUsingResolve = beamName => {

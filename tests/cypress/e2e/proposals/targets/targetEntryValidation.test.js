@@ -1,17 +1,11 @@
 import {
-  addM2TargetUsingResolve,
   checkFieldDisabled,
   clearLocalStorage,
-  clickToAddTarget,
-  clickToObservationPage,
   createMock,
-  createObservation,
-  enterInvalidTargetCoordinate,
-  enterTargetNameM2,
-  enterValidTargetCoordinate,
+  enterTargetCoordinate,
+  enterTargetName,
   initializeUserNotLoggedIn,
-  verifyFieldError,
-  verifyUnlinkedObservationInTable
+  verifyFieldError
 } from '../../common/common';
 beforeEach(() => {
   initializeUserNotLoggedIn();
@@ -25,21 +19,21 @@ afterEach(() => {
 });
 
 describe('Target entry validation', () => {
-  it.skip('Verify add target button is disabled when target coordinate fields are invalid', () => {
-    enterTargetNameM2(); // enter valid target name
+  it('Verify add target button is disabled when target coordinate fields are invalid', () => {
+    enterTargetName('name', 'M2'); // enter valid target name
 
-    enterInvalidTargetCoordinate('skyDirectionValue1'); // enter invalid coordinate
+    enterTargetCoordinate('skyDirectionValue1', '1:0:0'); // enter invalid coordinate
     verifyFieldError('skyDirectionValue1', 'Input formatted incorrectly'); //verify field error on coordinate field
 
-    enterInvalidTargetCoordinate('skyDirectionValue2'); // enter invalid coordinate
+    enterTargetCoordinate('skyDirectionValue2', '1:0:0'); // enter invalid coordinate
     verifyFieldError('skyDirectionValue2', 'Input formatted incorrectly'); //verify field error on coordinate field
 
     checkFieldDisabled('addTargetButton', true); // verify add target button is disabled when target coordinate fields are invalid
   });
 
   it('Verify add target button is disabled when target name field is invalid', () => {
-    enterValidTargetCoordinate('skyDirectionValue1'); // enter valid coordinate
-    enterValidTargetCoordinate('skyDirectionValue2'); // enter valid coordinate
+    enterTargetCoordinate('skyDirectionValue1', '1:00:00'); // enter valid coordinate
+    enterTargetCoordinate('skyDirectionValue2', '1:00:00'); // enter valid coordinate
 
     verifyFieldError('name', 'A value is required'); //verify field error on name field, as is empty
 
