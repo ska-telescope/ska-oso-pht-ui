@@ -288,6 +288,15 @@ export const MockProposalFrontend: Proposal = {
     }
   ],
   technicalPDF: null,
+  calibrationStrategy: [
+    {
+      observatoryDefined: true,
+      id: 'cal-001',
+      observationIdRef: 'obs-obR1Ej',
+      calibrators: null,
+      notes: 'This is an observatory defined calibration strategy.'
+    }
+  ],
   technicalLoadStatus: 9,
   dataProductSDP: [
     {
@@ -333,6 +342,15 @@ export const MockProposalFrontendZoom: Proposal = {
   scienceLoadStatus: 9,
   sciencePDF: null,
   technicalPDF: null,
+  calibrationStrategy: [
+    {
+      observatoryDefined: true,
+      id: 'cal-002',
+      observationIdRef: 'obs-arMIoY',
+      calibrators: null,
+      notes: 'This is an other observatory defined calibration strategy.'
+    }
+  ],
   targetOption: 1,
   targets: [
     {
@@ -509,6 +527,7 @@ export const MockNullProposalFrontend: Proposal = {
   groupObservations: [],
   targetObservation: [],
   technicalPDF: null,
+  calibrationStrategy: [],
   technicalLoadStatus: 9,
   dataProductSDP: undefined,
   dataProductSRC: [],

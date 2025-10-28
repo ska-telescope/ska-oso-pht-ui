@@ -56,6 +56,10 @@ import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
+import {
+  CalibrationStrategy,
+  CalibrationStrategyBackend
+} from '@/utils/types/calibrationStrategy.tsx';
 
 const getInvestigators = (inValue: InvestigatorBackend[] | null) => {
   let investigators = [] as Investigator[];
@@ -261,6 +265,27 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
     pixelSizeUnits: dp?.image_cellsize?.unit ? getPixelSizeUnits(dp?.image_cellsize?.unit) : null,
     weighting: Number(dp.weighting)
   })) as DataProductSDP[];
+};
+
+const getCalibrationStrategy = (
+  inValue: CalibrationStrategyBackend[] | null
+): CalibrationStrategy[] => {
+  return inValue
+    ? inValue.map(strategy => ({
+        observatoryDefined: strategy.observatory_defined,
+        id: strategy.calibration_id,
+        observationIdRef: strategy.observation_id_ref,
+        calibrators: strategy.calibrators
+          ? strategy.calibrators.map(calibrator => ({
+              kind: calibrator.kind,
+              name: calibrator.name,
+              modelConfig: calibrator.model_config,
+              notes: calibrator.notes
+            }))
+          : null,
+        notes: strategy.notes
+      }))
+    : [];
 };
 
 /*********************************************************** observation parameters mapping *********************************************************/
@@ -664,6 +689,7 @@ export function mapping(inRec: ProposalBackend): Proposal {
             targets
           )
         : [],
+    calibrationStrategy: getCalibrationStrategy(inRec.observation_info?.calibration_strategy),
     technicalPDF: technicalPDF, // TODO sort doc link on ProposalDisplay
     technicalLoadStatus: technicalPDF ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
     dataProductSDP: getDataProductSDP(inRec.observation_info?.data_product_sdps),
