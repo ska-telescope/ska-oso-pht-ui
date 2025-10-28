@@ -14,6 +14,7 @@ interface SkyDirection1FieldProps {
   value: string;
   valueFocus?: Function;
   valueTypeFocus?: Function;
+  setErrorText?: (error: string) => void;
 }
 
 export default function SkyDirection1Field({
@@ -21,14 +22,25 @@ export default function SkyDirection1Field({
   setValue,
   skyUnits,
   value,
-  valueFocus
+  valueFocus,
+  setErrorText
 }: SkyDirection1FieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'skyDirection';
 
+  const errorText = validateSkyDirection1Text(value) ? '' : t(FIELD + '.error.1.0');
+  if (setErrorText) {
+    setErrorText(errorText); // Pass the errorText back to TargetEntry
+  }
+
+  const errorNumber = validateSkyDirection1Number(value) ? '' : t(FIELD + '.error.1.0');
+  if (setErrorText) {
+    setErrorText(errorText); // Pass the errorText back to TargetEntry
+  }
+
   const SkyDirectionValueText = () => (
     <TextEntry
-      errorText={validateSkyDirection1Text(value) ? '' : t(FIELD + '.error.1.0')}
+      errorText={errorText}
       label={t(FIELD + '.label.1.' + skyUnits.toString())}
       labelBold
       labelPosition={LAB_POSITION}
@@ -44,7 +56,7 @@ export default function SkyDirection1Field({
 
   const SkyDirectionValueNumber = () => (
     <NumberEntry
-      errorText={validateSkyDirection1Number(value) ? '' : t(FIELD + '.error.1.0')}
+      errorText={errorNumber}
       label={t(FIELD + '.label.1.' + skyUnits.toString())}
       labelBold
       labelPosition={LAB_POSITION}

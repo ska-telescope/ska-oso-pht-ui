@@ -15,6 +15,7 @@ interface SkyDirection2FieldProps {
   valueFocus?: Function;
   valueTypeFocus?: Function;
   isLow?: boolean;
+  setErrorText?: (error: string) => void;
 }
 
 export default function SkyDirection2Field({
@@ -23,16 +24,28 @@ export default function SkyDirection2Field({
   skyUnits,
   value,
   valueFocus,
-  isLow = true
+  isLow = true,
+  setErrorText
 }: SkyDirection2FieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'skyDirection';
 
+  const parseResultText = validateSkyDirection2Text(value, isLow);
+  const errorText = !parseResultText ? '' : t(FIELD + `.error.2.${parseResultText}`);
+  if (setErrorText) {
+    setErrorText(errorText); // Pass the errorText back to TargetEntry
+  }
+
+  const parseResultNumber = validateSkyDirection2Number(value, isLow);
+  const errorNumber = !parseResultNumber ? '' : t(FIELD + `.error.2.${parseResultNumber}`);
+  if (setErrorText) {
+    setErrorText(errorText); // Pass the errorText back to TargetEntry
+  }
+
   const SkyDirectionValueText = () => {
-    const parseResult = validateSkyDirection2Text(value, isLow);
     return (
       <TextEntry
-        errorText={!parseResult ? '' : t(FIELD + `.error.2.${parseResult}`)}
+        errorText={errorText}
         label={t(FIELD + '.label.2.' + skyUnits.toString())}
         labelBold
         labelPosition={LAB_POSITION}
@@ -48,10 +61,9 @@ export default function SkyDirection2Field({
   };
 
   const SkyDirectionValueNumber = () => {
-    const parseResult = validateSkyDirection2Number(value, isLow);
     return (
       <NumberEntry
-        errorText={!parseResult ? '' : t(FIELD + `.error.2.${parseResult}`)}
+        errorText={errorNumber}
         label={t(FIELD + '.label.2.' + skyUnits.toString())}
         labelBold
         labelPosition={LAB_POSITION}

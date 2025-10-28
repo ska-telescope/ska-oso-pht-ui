@@ -50,6 +50,8 @@ export default function TargetEntry({
   const LAB_WIDTH = 5;
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [nameFieldError, setNameFieldError] = React.useState('');
+  const [skyDirection1Error, setSkyDirection1Error] = React.useState('');
+  const [skyDirection2Error, setSkyDirection2Error] = React.useState('');
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -225,7 +227,14 @@ export default function TargetEntry({
       setTiedArrayBeams(null);
     };
 
-    const disabled = () => !(name?.length && ra?.length && dec?.length);
+    const disabled = () => {
+      return (
+        nameFieldError !== '' ||
+        skyDirection1Error !== '' ||
+        skyDirection2Error !== '' ||
+        !(name?.length && ra?.length && dec?.length)
+      );
+    };
 
     return (
       <Grid size={{ xs: 12 }} sx={{ position: 'relative', zIndex: 99 }} mb={2}>
@@ -337,6 +346,7 @@ export default function TargetEntry({
         skyUnits={raType}
         value={ra}
         valueFocus={() => helpComponent(t('skyDirection.help.1.value'))}
+        setErrorText={setSkyDirection1Error} // Pass the callback
       />
     );
 
@@ -349,6 +359,7 @@ export default function TargetEntry({
         value={dec}
         valueFocus={() => helpComponent(t('skyDirection.help.2.value'))}
         isLow={!!getProposal()?.observations?.some(obs => obs.observingBand === 0)}
+        setErrorText={setSkyDirection2Error} // Pass the callback
       />
     );
 
