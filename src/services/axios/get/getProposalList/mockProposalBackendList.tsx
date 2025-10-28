@@ -33,7 +33,10 @@ const MockProposalBackendList: ProposalBackend[] = [
           email: 'somewhere.vague@example.com',
           organization: '',
           for_phd: false,
-          principal_investigator: true
+          principal_investigator: true,
+          status: 'pending',
+          officeLocation: null,
+          jobTitle: null
         }
       ]
     },
@@ -279,8 +282,8 @@ const MockProposalBackendList: ProposalBackend[] = [
           data_product_id: 'SDP-1',
           options: ['1', '2', '5'],
           observation_set_refs: ['mid-001', 'low-001'],
-          image_size: 'IMAGE SIZE',
-          image_cellsize: 'IMAGE CELLSIZE',
+          image_size: { value: 600, unit: 'pixels' },
+          image_cellsize: { value: 600, unit: 'pixels' },
           weighting: 'WEIGHTING'
         }
       ],
@@ -365,7 +368,10 @@ const MockProposalBackendList: ProposalBackend[] = [
           email: 'somewhere.vague@example.com',
           organization: '',
           for_phd: false,
-          principal_investigator: true
+          principal_investigator: true,
+          status: 'pending',
+          officeLocation: null,
+          jobTitle: null
         }
       ]
     },
@@ -611,8 +617,8 @@ const MockProposalBackendList: ProposalBackend[] = [
           data_product_id: 'SDP-1',
           options: ['1', '2', '5'],
           observation_set_refs: ['mid-001', 'low-001'],
-          image_size: '50',
-          image_cellsize: '50',
+          image_size: { value: 50, unit: 'pixels' },
+          image_cellsize: { value: 50, unit: 'pixels' },
           weighting: '50'
         }
       ],
@@ -697,7 +703,10 @@ const MockProposalBackendList: ProposalBackend[] = [
           email: 'somewhere.vague@example.com',
           organization: '',
           for_phd: false,
-          principal_investigator: true
+          principal_investigator: true,
+          status: 'pending',
+          officeLocation: null,
+          jobTitle: null
         }
       ]
     },
@@ -943,8 +952,8 @@ const MockProposalBackendList: ProposalBackend[] = [
           data_product_id: 'SDP-1',
           options: ['1', '2', '5'],
           observation_set_refs: ['mid-001', 'low-001'],
-          image_size: '50',
-          image_cellsize: '50',
+          image_size: { value: 50, unit: 'pixels' },
+          image_cellsize: { value: 50, unit: 'pixels' },
           weighting: '50'
         }
       ],

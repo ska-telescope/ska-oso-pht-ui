@@ -11,6 +11,9 @@ UNRELEASED
 * [BREAKING]: Changed: PDM changes implemented
 * [BREAKING]: Added calibration to proposal types and mappings
 * Changed: oso-services v9.0.0
+* Changed: oda v12.1.1
+* Added: polarisations to mapping
+* Fixed: use of REACT_APP_USE_LOCAL_DATA for local development
 * Changed: Added validation to target fields 
 
 8.0.0
