@@ -498,9 +498,11 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
           : []
       },
       abstract: proposal.abstract as string,
-      science_category: GENERAL.ScienceCategory?.find(
-        category => category.value === proposal?.scienceCategory
-      )?.label as string,
+      science_category: isSV
+        ? (GENERAL.ObservingMode?.find(category => category.value === proposal?.scienceCategory)
+            ?.label as string)
+        : (GENERAL.ScienceCategory?.find(category => category.value === proposal?.scienceCategory)
+            ?.label as string),
       investigators: proposal?.investigators
         ? proposal.investigators.map(investigator => {
             return {

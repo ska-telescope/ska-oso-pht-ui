@@ -506,7 +506,7 @@ export const MockNullProposalFrontend: Proposal = {
   metadata: undefined,
   id: undefined as any,
   title: undefined as any,
-  proposalType: 9,
+  proposalType: undefined as any,
   proposalSubType: [],
   status: undefined as any,
   lastUpdated: undefined as any,
