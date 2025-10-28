@@ -24,5 +24,6 @@ export const MockProposalFrontend: Proposal = {
   targetObservation: [],
   technicalPDF: null,
   dataProductSDP: [],
-  dataProductSRC: []
+  dataProductSRC: [],
+  calibrationStrategy: []
 };
