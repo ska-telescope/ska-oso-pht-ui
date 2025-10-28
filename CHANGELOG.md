@@ -11,6 +11,7 @@ UNRELEASED
 * [BREAKING]: Changed: PDM changes implemented
 * [BREAKING]: Added calibration to proposal types and mappings
 * Changed: oso-services v9.0.0
+* Changed: Implemented the isSV function so that specific SV flow thru the application can be realized.
 
 8.0.0
 ----------
