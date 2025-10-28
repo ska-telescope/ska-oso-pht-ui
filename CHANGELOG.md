@@ -11,6 +11,7 @@ UNRELEASED
 * [BREAKING]: Changed: PDM changes implemented
 * [BREAKING]: Added calibration to proposal types and mappings
 * Changed: oso-services v9.0.0
+* Changed: to show notification when there is an senscalc error after mapping target-observation
 
 8.0.0
 ----------

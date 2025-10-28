@@ -175,8 +175,6 @@ export default function ObservationPage() {
   const getSensCalcData = async (observation: Observation, target: Target) => {
     const response = await getSensCalc(observation, target);
 
-    console.log('getSensCalcData response', response);
-
     if (response) {
       if (response.error) {
         const errMsg = response.error + ': ' + response.results;
@@ -187,7 +185,6 @@ export default function ObservationPage() {
   };
 
   const setSensCalc = (results: any, target: Target, observationId: string) => {
-    console.log('setSensCalc results', results);
     updateTargetObservationStorage(target, observationId, results);
   };
 
@@ -231,7 +228,6 @@ export default function ObservationPage() {
         error: ''
       }
     };
-    console.log('addObservationTarget rec', rec);
     addTargetObservationStorage(rec);
   };
 
@@ -249,7 +245,6 @@ export default function ObservationPage() {
   };
 
   const checkPartials = () => {
-    console.log('checkPartials');
     const results = getProposal()?.targetObservation?.find(
       p => p.sensCalc.statusGUI === STATUS_PARTIAL
     );
@@ -508,7 +503,6 @@ export default function ObservationPage() {
 
   const filteredTargets = () => {
     const safeElementsT = elementsT ?? [];
-    console.log('safeElementsT', safeElementsT);
     if (checkState === 'indeterminate') return safeElementsT;
     else if (checkState === 'checked') return safeElementsT.filter(e => isTargetSelected(e.id));
     else if (checkState === 'unchecked') return safeElementsT.filter(e => !isTargetSelected(e.id));
