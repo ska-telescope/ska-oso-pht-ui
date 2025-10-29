@@ -15,6 +15,7 @@ UNRELEASED
 * Changed: oda v12.1.1
 * Added: polarisations to mapping
 * Fixed: use of REACT_APP_USE_LOCAL_DATA for local development
+* Changed: to show notification when there is an senscalc error after mapping target-observation
 
 8.0.0
 ----------
