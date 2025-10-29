@@ -182,7 +182,7 @@ export const MockProposalBackend: ProposalBackend = {
         observation_set_refs: ['obs-obR1Ej'],
         image_size: {
           value: 15,
-          unit: 'deg'
+          unit: 'deg2'
         },
         image_cellsize: {
           value: 1.007,
