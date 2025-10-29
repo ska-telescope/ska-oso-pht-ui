@@ -233,8 +233,12 @@ export default function TargetEntry({
         nameFieldError !== '' ||
         skyDirection1Error !== '' ||
         skyDirection2Error !== '' ||
-        !(name?.length && ra?.length && dec?.length && (getProposal()?.targets?.length ?? 0) === 0)
+        !(name?.length && ra?.length && dec?.length && targetLengthCheck())
       );
+    };
+
+    const targetLengthCheck = () => {
+      return isSV() ? getProposal()?.targets?.length === 0 : true;
     };
 
     return (
@@ -453,7 +457,7 @@ export default function TargetEntry({
             <Box pb={2}>
               <HelpPanel maxHeight={'HELP_MAX_HEIGHT'} />
             </Box>
-            {(getProposal()?.targets?.length ?? 0) > 0 && (
+            {isSV() && (getProposal()?.targets?.length ?? 0) > 0 && (
               <InfoCard
                 color={InfoCardColorTypes.Warning}
                 fontSize={HELP_FONT}
