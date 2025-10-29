@@ -11,6 +11,10 @@ import {
   verifyFieldError
 } from '../../common/common';
 beforeEach(() => {
+  cy.window().then(win => {
+    win.localStorage.setItem('cypress:proposalCreated', 'true');
+  });
+
   initializeUserNotLoggedIn();
   createMock();
 
