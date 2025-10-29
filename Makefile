@@ -28,11 +28,9 @@ js-pre-e2e-test:
 
 # The default PHT_BACKEND_URL points to the umbrella chart PHT back-end deployment
 BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/api/v9
-POSTGRES_HOST ?= $(RELEASE_NAME)-postgresql
 
 K8S_CHART_PARAMS += \
-  --set ska-oso-pht-ui.backendURL=$(BACKEND_URL) \
-  --set ska-db-oda-umbrella.pgadmin4.serverDefinitions.servers.firstServer.Host=$(POSTGRES_HOST)
+  --set ska-oso-pht-ui.backendURL=$(BACKEND_URL)
 
 # include core makefile targets for release management
 -include .make/base.mk
