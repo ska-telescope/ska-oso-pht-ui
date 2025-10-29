@@ -41,7 +41,9 @@ const getInvestigators = (inc: InvestigatorBackend[] | null): Investigator[] => 
       affiliation: item.organization as string,
       phdThesis: item.for_phd as boolean,
       status: 'unknown',
-      pi: item.principal_investigator as boolean
+      pi: item.principal_investigator as boolean,
+      officeLocation: item.officeLocation as string | null,
+      jobTitle: item.jobTitle as string | null
     };
     investigators.push(investigator);
   }
@@ -84,7 +86,8 @@ export function mappingList(inRec: ProposalBackend[]): Proposal[] {
         : [],
       abstract: tmp.proposal_info?.abstract ?? undefined,
       sciencePDF: null,
-      technicalPDF: null
+      technicalPDF: null,
+      calibrationStrategy: []
     };
     output.push(rec);
   }

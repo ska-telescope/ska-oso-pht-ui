@@ -1,16 +1,28 @@
+import React from 'react';
 import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import {
   AlertColorTypes,
   AppWrapper,
   THEME_DARK,
-  THEME_LIGHT
+  THEME_LIGHT,
+  ACCESSIBILITY_DEFAULT
+  // ACCESSIBILITY_PROTANOPIA,
+  // ACCESSIBILITY_PROTANOMALY,
+  // ACCESSIBILITY_DEUTERANOPIA,
+  // ACCESSIBILITY_DEUTERANOMALY,
+  // ACCESSIBILITY_TRITANOPIA,
+  // ACCESSIBILITY_TRITANOMALY,
+  // ACCESSIBILITY_ACHROMATOMALY,
+  // ACCESSIBILITY_ACHROMATOPSIA
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { Typography, useTheme, CssBaseline, ThemeProvider, Tooltip } from '@mui/material';
+import { Typography, CssBaseline, ThemeProvider, Tooltip, Paper } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { cypressToken, NAV, PATH, PMT, REVIEW_TYPE, USE_LOCAL_DATA } from '../../utils/constants';
+import packageJson from '../../../package.json';
+
+// Pages
 import AddDataProduct from '../add/AddDataProduct/AddDataProduct';
 import AddProposal from '../add/AddProposal/AddProposal';
 import SdpDataPage from '../SdpDataPage/SdpDataPage';
@@ -25,22 +37,19 @@ import TechnicalPage from '../TechnicalPage/TechnicalPage';
 import TitlePage from '../TitlePage/TitlePage';
 import LandingPage from '../LandingPage/LandingPage';
 import ReviewListPage from '../ReviewListPage/ReviewListPage';
-import packageJson from '../../../package.json';
 import PanelManagement from '../PanelManagement/PanelManagement';
 import ReviewDashboard from '../ReviewDashboard/ReviewDashboard';
 import PanelReviewDecisionList from '../PanelReviewDecisionList/PanelReviewDecisionList';
 import ReviewEntry from '../entry/ReviewEntry/ReviewEntry';
 import CalibrationPage from '../CalibrationPage/CalibrationPage';
-import Notification from '@/utils/types/notification';
-import Alert from '@/components/alerts/standardAlert/StandardAlert';
-import ButtonUserMenu from '@/components/button/UserMenu/UserMenu';
-
-// import getProposal from '@/services/axios/getProposal/getProposal';
 import Proposal from '@/utils/types/proposal';
-import theme from '@/services/theme/theme';
-import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import Notification from '@/utils/types/notification';
+import ButtonUserMenu from '@/components/button/UserMenu/UserMenu';
+import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import TimedAlert from '@/components/alerts/timedAlert/TimedAlert';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import theme from '@/services/theme/theme';
 
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
@@ -70,18 +79,24 @@ export default function PHT() {
   const { t } = useScopedTranslation();
   const { application, help, helpToggle } = storageObject.useStore();
   const { osdCloses, osdCountdown, osdCycleId, osdCycleDescription, osdOpens } = useOSDAccessors();
-  const theTheme = useTheme();
   const navigate = useNavigate();
-  const [theMode, setTheMode] = React.useState(
-    localStorage.getItem('skao_theme_mode') !== THEME_DARK ? THEME_LIGHT : THEME_DARK
-  );
-  const [apiVersion] = React.useState('2.2.0'); // TODO : Obtain real api version number
+  const location = useLocation();
 
-  const LG = () => useMediaQuery(theTheme.breakpoints.down('lg')); // Allows us to code depending upon screen size
+  const [themeMode, setThemeMode] = React.useState(
+    localStorage.getItem('skao_theme_mode') === THEME_DARK ? THEME_DARK : THEME_LIGHT
+  );
+  const [accessibilityMode] = React.useState(
+    localStorage.getItem('skao_accessibility_mode') || ACCESSIBILITY_DEFAULT
+  );
+  const [apiVersion] = React.useState('2.2.0');
+
+  const muiTheme = theme({ themeMode, accessibilityMode });
+
+  const LG = () => useMediaQuery(muiTheme.breakpoints.down('lg'));
   const REQUIRED_WIDTH = useMediaQuery('(min-width:600px)');
   const LOCAL_DATA = USE_LOCAL_DATA ? t('localData') : '';
   const loggedIn = isLoggedIn();
-  const location = useLocation();
+
   React.useEffect(() => {
     if (location.pathname !== '/') {
       navigate(PATH[0]);
@@ -90,20 +105,14 @@ export default function PHT() {
 
   const getProposal = () => application.content2 as Proposal;
 
-  const mediaSizeNotSupported = () => {
-    return (
-      <Alert
-        color={AlertColorTypes.Error}
-        text={t('mediaSize.notSupported')}
-        testId="helpPanelId"
-      />
-    );
-  };
+  const mediaSizeNotSupported = () => (
+    <Alert color={AlertColorTypes.Error} text={t('mediaSize.notSupported')} testId="helpPanelId" />
+  );
 
   const modeToggle = () => {
-    const newMode = theMode === THEME_DARK ? THEME_LIGHT : THEME_DARK;
+    const newMode = themeMode === THEME_DARK ? THEME_LIGHT : THEME_DARK;
     localStorage.setItem('skao_theme_mode', newMode);
-    setTheMode(newMode);
+    setThemeMode(newMode);
   };
 
   const signIn = () => <ButtonUserMenu />;
@@ -114,7 +123,7 @@ export default function PHT() {
   };
 
   const footerMainChildren = () => {
-    const opt1 = !showNotification() && (loggedIn || cypressToken) & getProposal()?.id?.length;
+    const opt1 = !showNotification() && (loggedIn || cypressToken) && getProposal()?.id?.length;
     const opt2 = showNotification();
     if (!opt1 && !opt2) return null;
     return (
@@ -159,7 +168,7 @@ export default function PHT() {
   };
 
   return (
-    <ThemeProvider theme={theme(theMode)}>
+    <ThemeProvider theme={muiTheme}>
       <CssBaseline enableColorScheme />
       <AppWrapper
         application={t(LG() ? 'pht.short' : 'pht.title')}
@@ -177,21 +186,28 @@ export default function PHT() {
         iconFeedbackURL={''}
         loginComponent={signIn()}
         mainChildren={
-          <>
-            {REQUIRED_WIDTH && (
+          <Paper
+            sx={{
+              backgroundColor: 'background.default',
+              borderRadius: '0px',
+              minHeight: '90vh'
+            }}
+          >
+            {REQUIRED_WIDTH ? (
               <Routes>
-                {ROUTES.map((ROUTE, index) => {
-                  return <Route key={index} path={ROUTE.path} element={ROUTE.element} />;
-                })}
+                {ROUTES.map((ROUTE, index) => (
+                  <Route key={index} path={ROUTE.path} element={ROUTE.element} />
+                ))}
               </Routes>
+            ) : (
+              mediaSizeNotSupported()
             )}
-            {!REQUIRED_WIDTH && mediaSizeNotSupported()}
-          </>
+          </Paper>
         }
         selectTelescope={false}
         storageHelp={help}
         storageHelpToggle={helpToggle}
-        storageThemeMode={theMode}
+        storageThemeMode={themeMode}
         storageToggleTheme={modeToggle}
         version={packageJson.version}
         versionTooltip={t('apiVersion.label') + ' : ' + apiVersion}

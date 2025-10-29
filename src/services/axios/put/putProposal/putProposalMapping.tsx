@@ -45,6 +45,7 @@ import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { helpers } from '@/utils/helpers';
 import { CalibrationStrategy, CalibrationStrategyBackend } from '@/utils/types/calibrationStrategy';
+import { SuppliedBackend } from '@/utils/types/supplied';
 
 const isContinuum = (type: number) => type === TYPE_CONTINUUM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
@@ -181,12 +182,13 @@ const getDataProductSDP = (dataproducts: DataProductSDP[]): DataProductSDPsBacke
   const getPixelSizeUnits = (inValue: string) => (inValue === 'arcsecs' ? 'arcsec' : inValue);
 
   return dataproducts?.map(dp => ({
-    data_product_id: dp.dataProductsSDPId,
+    data_product_id: dp.dataProductsSDPId as string,
     options: SDPOptions(dp.observatoryDataProduct),
     observation_set_refs: dp.observationId,
     image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
     image_cellsize: { value: dp.pixelSizeValue, unit: getPixelSizeUnits(dp.pixelSizeUnits) },
-    weighting: dp.weighting?.toString()
+    weighting: dp.weighting?.toString(),
+    polarisations: dp.polarisations
   }));
 };
 
@@ -288,20 +290,21 @@ const getObservationsSets = (
         observation_set_id: obs.id,
         group_id: getGroupObservation(obs.id, incObservationGroups),
         elevation: obs.elevation,
-        observing_band: getObservingBand(obs.observingBand),
+        observing_band: getObservingBand(obs.observingBand) as string,
         array_details: getArrayDetails(obs),
         observation_type_details: {
           observation_type: OBSERVATION_TYPE_BACKEND[obs.type]?.toLowerCase(),
           bandwidth: getBandwidth(obs),
           central_frequency: getCentralFrequency(obs),
-          supplied: getSupplied(obs),
+          supplied: getSupplied(obs) as SuppliedBackend,
           spectral_resolution: obs.spectralResolution,
           effective_resolution: obs.effectiveResolution,
-          image_weighting: IMAGE_WEIGHTING.find(item => item.value === obs.imageWeighting)?.label,
-          spectral_averaging: obs.spectralAveraging.toString(),
+          image_weighting: IMAGE_WEIGHTING.find(item => item.value === obs.imageWeighting)
+            ?.label as string,
+          spectral_averaging: obs.spectralAveraging?.toString(),
           robust:
             obs.imageWeighting === IW_BRIGGS
-              ? ROBUST.find(item => item.value === obs.robust)?.label
+              ? (ROBUST.find(item => item.value === obs.robust)?.label as string)
               : '0'
         }
       };
@@ -477,7 +480,7 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
 };
 /*************************************************************************************************************************/
 
-export default function MappingPutProposal(proposal: Proposal, status: string) {
+export default function MappingPutProposal(proposal: Proposal, isSV: boolean, status: string) {
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
     status: status,
@@ -490,15 +493,19 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     proposal_info: {
       title: proposal.title,
       proposal_type: {
-        main_type: PROJECTS.find(item => item.id === proposal.proposalType)?.mapping as string,
+        main_type: isSV
+          ? 'science_verification'
+          : (PROJECTS.find(item => item.id === proposal.proposalType)?.mapping as string),
         attributes: proposal.proposalSubType
           ? getSubType(proposal.proposalType, proposal.proposalSubType)
           : []
       },
       abstract: proposal.abstract as string,
-      science_category: GENERAL.ScienceCategory?.find(
-        category => category.value === proposal?.scienceCategory
-      )?.label as string,
+      science_category: isSV
+        ? (GENERAL.ObservingMode?.find(category => category.value === proposal?.scienceCategory)
+            ?.label as string)
+        : (GENERAL.ScienceCategory?.find(category => category.value === proposal?.scienceCategory)
+            ?.label as string),
       investigators: proposal?.investigators
         ? proposal.investigators.map(investigator => {
             return {

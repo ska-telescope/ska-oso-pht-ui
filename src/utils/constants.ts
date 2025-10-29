@@ -2,7 +2,7 @@ import { LABEL_POSITION, TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska
 import Target from './types/target';
 import Investigator from './types/investigator';
 import { env } from '@/env';
-export const USE_LOCAL_DATA = localStorage.getItem('USE_LOCAL_DATA') === 'true';
+export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const cypressToken = window.localStorage.getItem('cypress:token');
 export const cypressProposal = window.localStorage.getItem('cypress:proposalCreated') === 'true';
 
@@ -204,6 +204,11 @@ export const GENERAL = {
     { label: 'Solar, Heliospheric and Ionospheric Physics', value: 12 },
     { label: 'Transients', subCategory: [{ label: 'Not specified', value: 1 }], value: 13 },
     { label: 'VLBI', subCategory: [{ label: 'Not specified', value: 1 }], value: 14 }
+  ],
+  ObservingMode: [
+    { label: 'Zoom', subCategory: [{ label: 'Not specified', value: 1 }], value: 101 },
+    { label: 'Continuum', subCategory: [{ label: 'Not specified', value: 1 }], value: 102 },
+    { label: 'PST', subCategory: [{ label: 'Not specified', value: 1 }], value: 103 }
   ]
 };
 
@@ -215,7 +220,6 @@ export const GRID_MEMBERS_ACTIONS = {
 export const HEADER_HEIGHT = 78;
 
 export const HELP_FONT = 16;
-export const HELP_VIEWPORT = '20vh';
 
 export const IW_BRIGGS = 2;
 export const IW_NATURAL = 0;
@@ -261,6 +265,7 @@ export const SBS_CONV_FACTOR_DEFAULT = 1;
 
 export const INFINITY = 'Infinity';
 
+export const PAGE_TECHNICAL = 7;
 export const PAGE_SRC_NET = 9;
 
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];

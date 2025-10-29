@@ -12,7 +12,8 @@ import { MockProposalBackend } from './mockProposalBackend.tsx';
 
 export function mappingPostProposal(
   proposal: Proposal,
-  status: string | undefined
+  status: string | undefined,
+  isSV: boolean
 ): ProposalBackend {
   const getSubType = (proposalType: number, proposalSubType: number[]): any => {
     const project = PROJECTS.find(({ id }) => id === proposalType);
@@ -35,7 +36,9 @@ export function mappingPostProposal(
     proposal_info: {
       title: proposal.title,
       proposal_type: {
-        main_type: PROJECTS.find(item => item.id === proposal.proposalType)?.mapping as string,
+        main_type: isSV
+          ? 'science_verification'
+          : (PROJECTS.find(item => item.id === proposal.proposalType)?.mapping as string),
         attributes: proposal.proposalSubType
           ? getSubType(proposal.proposalType, proposal.proposalSubType)
           : []
@@ -50,7 +53,8 @@ export function mappingPostProposal(
       observation_sets: [],
       data_product_sdps: [],
       data_product_src_nets: [],
-      result_details: []
+      result_details: [],
+      calibration_strategy: []
     }
   };
   // trim undefined properties
@@ -65,6 +69,7 @@ export function mockPostProposal() {
 async function PostProposal(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
   proposal: Proposal,
+  isSV: boolean,
   status?: string
 ): Promise<Proposal | { error: string }> {
   if (USE_LOCAL_DATA) {
@@ -73,7 +78,7 @@ async function PostProposal(
 
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/create`;
-    const convertedProposal = mappingPostProposal(proposal, status);
+    const convertedProposal = mappingPostProposal(proposal, status, isSV);
 
     const result = await authAxiosClient.post(
       `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
