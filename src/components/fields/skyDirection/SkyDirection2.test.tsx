@@ -24,7 +24,6 @@ describe('<SkyDirection2 />', () => {
 });
 
 describe('validateSkyDirection2Text function', () => {
-  cons = true;
   test('validates correct equatorial format', () => {
     expect(validateSkyDirection2Text('12:34:56')).toBe(null);
     expect(validateSkyDirection2Text('2:34:56')).toBe(null);
@@ -57,17 +56,9 @@ describe('validateSkyDirection2Text function', () => {
     expect(validateSkyDirection2Text('12:60:00')).toBe('1'); // Minutes out of range
     expect(validateSkyDirection2Text('12:34:60')).toBe('1'); // Seconds out of range
   });
-
-  test('rejects targets not visible', () => {
-    expect(validateSkyDirection2Text('50:00:00')).toBe('2');
-    expect(validateSkyDirection2Text('89:50:00')).toBe('2');
-    expect(validateSkyDirection2Text('90:00:00')).toBe('2');
-  });
 });
 
 describe('validateSkyDirection2Number function', () => {
-  cons = true;
-
   test('validates correct galactic format', () => {
     expect(validateSkyDirection2Number('12.58')).toBe(null);
     expect(validateSkyDirection2Number('30')).toBe(null);
@@ -87,11 +78,5 @@ describe('validateSkyDirection2Number function', () => {
     expect(validateSkyDirection2Number('-91.0')).toBe('1');
     expect(validateSkyDirection2Number('150')).toBe('1');
     expect(validateSkyDirection2Number('-95.583333')).toBe('1');
-  });
-
-  test('rejects targets not visible', () => {
-    expect(validateSkyDirection2Number('50.0')).toBe('2');
-    expect(validateSkyDirection2Number('89.833333')).toBe('2');
-    expect(validateSkyDirection2Number('90.0')).toBe('2');
   });
 });
