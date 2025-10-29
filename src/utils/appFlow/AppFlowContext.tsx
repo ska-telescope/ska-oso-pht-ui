@@ -15,7 +15,7 @@ export const AppFlowProvider: React.FC<{ children: React.ReactNode }> = ({ child
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [appFlow, _setAppFlow] = useState<AppFlowType>('Science Verification');
 
-  const isSV = () => appFlow === 'chloe';
+  const isSV = () => appFlow === 'Science Verification';
 
   const setAppFlow = (_flow: AppFlowType) => {
     // Disabled for now
