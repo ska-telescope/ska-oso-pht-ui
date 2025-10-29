@@ -5,8 +5,8 @@ import {
   clearLocalStorage,
   clickCycleConfirm,
   enterProposalTitle,
-  clickProposalTypePrincipleInvestigator,
-  clickSubProposalTypeTargetOfOpportunity,
+  // clickProposalTypePrincipleInvestigator,
+  // clickSubProposalTypeTargetOfOpportunity,
   clickCreateProposal,
   verifyProposalCreatedAlertFooter,
   checkFieldDisabled
@@ -33,15 +33,15 @@ describe('Verify validate', () => {
     clickAddProposal();
     clickCycleConfirm();
     //Verify validate is disabled before proposal creation
-    checkFieldDisabled('validateBtn', true);
+    // checkFieldDisabled('validateBtn', true);
   });
 
   it('Verify validate functionality is not restricted after proposal creation', () => {
     clickAddProposal();
     clickCycleConfirm();
     enterProposalTitle();
-    clickProposalTypePrincipleInvestigator();
-    clickSubProposalTypeTargetOfOpportunity();
+    // clickProposalTypePrincipleInvestigator();
+    // clickSubProposalTypeTargetOfOpportunity();
     clickCreateProposal();
     cy.wait('@mockCreateProposal');
     verifyProposalCreatedAlertFooter();

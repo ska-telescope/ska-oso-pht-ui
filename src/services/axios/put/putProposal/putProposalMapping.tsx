@@ -480,7 +480,7 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
 };
 /*************************************************************************************************************************/
 
-export default function MappingPutProposal(proposal: Proposal, status: string) {
+export default function MappingPutProposal(proposal: Proposal, isSV: boolean, status: string) {
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
     status: status,
@@ -493,15 +493,19 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     proposal_info: {
       title: proposal.title,
       proposal_type: {
-        main_type: PROJECTS.find(item => item.id === proposal.proposalType)?.mapping as string,
+        main_type: isSV
+          ? 'science_verification'
+          : (PROJECTS.find(item => item.id === proposal.proposalType)?.mapping as string),
         attributes: proposal.proposalSubType
           ? getSubType(proposal.proposalType, proposal.proposalSubType)
           : []
       },
       abstract: proposal.abstract as string,
-      science_category: GENERAL.ScienceCategory?.find(
-        category => category.value === proposal?.scienceCategory
-      )?.label as string,
+      science_category: isSV
+        ? (GENERAL.ObservingMode?.find(category => category.value === proposal?.scienceCategory)
+            ?.label as string)
+        : (GENERAL.ScienceCategory?.find(category => category.value === proposal?.scienceCategory)
+            ?.label as string),
       investigators: proposal?.investigators
         ? proposal.investigators.map(investigator => {
             return {

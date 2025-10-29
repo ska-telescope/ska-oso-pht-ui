@@ -5,6 +5,7 @@ import { EMPTY_STATUS } from '@utils/constants.ts';
 import Shell from '../../../components/layout/Shell/Shell';
 import TitleEntry from '../../entry/TitleEntry/TitleEntry';
 import Proposal, { NEW_PROPOSAL } from '../../../utils/types/proposal';
+import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 const PAGE = 0;
 const PAGE_INNER = 0;
@@ -12,7 +13,7 @@ const PAGE_FOOTER = -1;
 
 export default function AddProposal() {
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
-
+  const { isSV } = useAppFlow();
   const getProposal = () => application.content2 as Proposal;
 
   React.useEffect(() => {
@@ -22,11 +23,13 @@ export default function AddProposal() {
     updateAppContent2(temp);
   }, []);
 
-  const contentValid = () => !(getProposal()?.title?.length > 0 && getProposal()?.proposalType > 0);
+  const titleValid = () => getProposal()?.title?.length > 0;
+  const typeValid = () => (isSV() ? true : getProposal()?.proposalType > 0);
+  const contentValid = () => titleValid() && typeValid();
 
   return (
     <Box pt={2}>
-      <Shell page={PAGE} footerPage={PAGE_FOOTER} buttonDisabled={contentValid()}>
+      <Shell page={PAGE} footerPage={PAGE_FOOTER} buttonDisabled={!contentValid()}>
         <TitleEntry page={PAGE_INNER} />
       </Shell>
     </Box>

@@ -10,6 +10,7 @@ import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';
 import TargetNoSpecificSection from './TargetNoSpecificSection/targetNoSpecificSection';
 import TargetListSection from './TargetListSection/targetListSection';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 const TITLE = ['', 'listOfTargets', 'targetMosaic', 'noSpecificTarget'];
 
@@ -17,6 +18,7 @@ const PAGE = 4;
 
 export default function TargetPage() {
   const { t } = useScopedTranslation();
+  const { isSV } = useAppFlow();
   const theme = useTheme();
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -77,13 +79,21 @@ export default function TargetPage() {
     );
   }
 
-  return (
-    <Shell page={PAGE}>
+  const cardOptions = () => {
+    return !isSV() ? (
       <Grid container direction="row" justifyContent="space-evenly" spacing={2}>
         {targetCard(TARGET_OPTION.LIST_OF_TARGETS)}
         {targetCard(TARGET_OPTION.TARGET_MOSAIC)}
         {targetCard(TARGET_OPTION.NO_SPECIFIC_TARGET)}
       </Grid>
+    ) : (
+      <></>
+    );
+  };
+
+  return (
+    <Shell page={PAGE}>
+      {cardOptions()}
       <Grid
         mt={1}
         pl={3}

@@ -83,21 +83,29 @@ const getInvestigators = (inValue: InvestigatorBackend[] | null) => {
   return investigators;
 };
 
-const getScienceSubCategory = () => {
-  // TODO change this if/when user can choose a science subcategory
-  return 1;
-};
-
-const getAttributes = (proposalType: { main_type: string; attributes?: string[] }): any => {
+const getAttributes = (proposalType: {
+  main_type: string;
+  attributes?: string[];
+}): number[] | null => {
   const project = PROJECTS?.find(({ mapping }) => mapping === proposalType.main_type);
-  const subProjects = proposalType.attributes?.map(attributes =>
-    project?.subProjects?.find(({ mapping }) => mapping === attributes)
-  ) as { id: number; label: string; mapping: string }[];
-  return subProjects?.filter(({ id }) => id)?.map(({ id }) => id);
+
+  const subProjects = proposalType.attributes
+    ?.map(attr => project?.subProjects?.find(({ mapping }) => mapping === attr))
+    ?.filter((sp): sp is { id: number; label: string; mapping: string } => sp !== undefined);
+
+  const result = subProjects?.map(({ id }) => id);
+  return result && result.length > 0 ? result : [];
 };
 
 const getScienceCategory = (scienceCat: string) => {
   const cat = GENERAL.ScienceCategory?.find(
+    cat => cat.label.toLowerCase() === scienceCat?.toLowerCase()
+  )?.value;
+  return cat ? cat : null;
+};
+
+const getObservingMode = (scienceCat: string) => {
+  const cat = GENERAL.ObservingMode?.find(
     cat => cat.label.toLowerCase() === scienceCat?.toLowerCase()
   )?.value;
   return cat ? cat : null;
@@ -257,7 +265,7 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
   return inValue?.map((dp, index) => ({
     id: index + 1,
     dataProductsSDPId: dp.data_product_id,
-    observatoryDataProduct: getSDPOptions(dp.options),
+    observatoryDataProduct: dp.options ? getSDPOptions(dp.options) : [],
     observationId: dp.observation_set_refs,
     imageSizeValue: dp.image_size.value,
     imageSizeUnits: getImageSizeUnits(dp.image_size.unit),
@@ -313,7 +321,7 @@ const getSupplied = (inSupplied: SuppliedBackend | null): Supplied => {
   const supplied = {
     type: suppliedType?.value,
     value: inSupplied?.quantity.value,
-    units: suppliedUnits ? suppliedUnits : 1 // fallback
+    units: suppliedUnits ? suppliedUnits : 1
   };
   return supplied as Supplied;
 };
@@ -338,7 +346,7 @@ const getBandwidth = (incBandwidth: number, telescope: number): number => {
   const bandwidth = array?.bandWidth?.find(bandwidth =>
     bandwidth?.label?.includes(String(incBandwidth?.toString()))
   )?.value;
-  return bandwidth ? bandwidth : 1; // fallback
+  return bandwidth ? bandwidth : 1;
 };
 
 const getLinked = (
@@ -561,7 +569,7 @@ const getResultsSection2 = (
 const getResultsSection3 = (
   inResultObservationRef: string | null,
   inObservationSets: ObservationSetBackend[],
-  inResult: SensCalcResultsBackend,
+  _inResult: SensCalcResultsBackend,
   isSensitivity: boolean
 ): SensCalcResults['section3'] => {
   const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
@@ -640,26 +648,33 @@ const getTargetObservation = (
 
 export function mapping(inRec: ProposalBackend): Proposal {
   let sciencePDF: DocumentPDF;
-  let technicalPDF: DocumentPDF;
+  let technicalPDF: DocumentPDF | undefined;
+
+  const isSV: boolean = inRec.proposal_info?.proposal_type?.main_type === 'science_verification';
 
   sciencePDF = (getPDF(
     inRec?.observation_info?.documents,
     PDF_NAME_PREFIXES.SCIENCE + inRec.prsl_id
   ) as unknown) as DocumentPDF;
-  technicalPDF = (getPDF(
-    inRec?.observation_info?.documents,
-    PDF_NAME_PREFIXES.TECHNICAL + inRec.prsl_id
-  ) as unknown) as DocumentPDF;
+  technicalPDF = isSV
+    ? undefined
+    : ((getPDF(
+        inRec?.observation_info?.documents,
+        PDF_NAME_PREFIXES.TECHNICAL + inRec.prsl_id
+      ) as unknown) as DocumentPDF);
 
   const targets = getTargets(inRec.observation_info?.targets);
 
   const convertedProposal = {
-    metadata: inRec.metadata, // TODO should we keep this metadata or the fields below?
+    metadata: inRec.metadata,
     id: inRec.prsl_id,
     title: inRec.proposal_info?.title,
-    proposalType: PROJECTS?.find(p => p.mapping === inRec.proposal_info?.proposal_type?.main_type)
-      ?.id,
-    proposalSubType: inRec.proposal_info?.proposal_type?.attributes
+    proposalType: isSV
+      ? 9
+      : PROJECTS?.find(p => p.mapping === inRec.proposal_info?.proposal_type?.main_type)?.id,
+    proposalSubType: isSV
+      ? []
+      : inRec.proposal_info?.proposal_type?.attributes
       ? getAttributes(inRec.proposal_info?.proposal_type)
       : [],
     status: inRec.status,
@@ -671,8 +686,10 @@ export function mapping(inRec: ProposalBackend): Proposal {
     cycle: inRec.cycle,
     investigators: getInvestigators(inRec.proposal_info?.investigators),
     abstract: inRec.proposal_info?.abstract,
-    scienceCategory: getScienceCategory((inRec.proposal_info?.science_category as string) || ''),
-    scienceSubCategory: [getScienceSubCategory()],
+    scienceCategory: isSV
+      ? getObservingMode((inRec.proposal_info?.science_category as string) || '')
+      : getScienceCategory((inRec.proposal_info?.science_category as string) || ''),
+    scienceSubCategory: [1], // Not used currently
     sciencePDF: sciencePDF,
     scienceLoadStatus: sciencePDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
     targetOption: 1, // TODO check what to map to
@@ -691,13 +708,16 @@ export function mapping(inRec: ProposalBackend): Proposal {
           )
         : [],
     calibrationStrategy: getCalibrationStrategy(inRec.observation_info?.calibration_strategy),
-    technicalPDF: technicalPDF, // TODO sort doc link on ProposalDisplay
-    technicalLoadStatus: technicalPDF ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
+    technicalPDF: isSV ? undefined : technicalPDF, // TODO sort doc link on ProposalDisplay
+    technicalLoadStatus: isSV
+      ? FileUploadStatus.INITIAL
+      : technicalPDF
+      ? FileUploadStatus.OK
+      : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
     dataProductSDP: getDataProductSDP(inRec.observation_info?.data_product_sdps),
     dataProductSRC: getDataProductSRC(inRec.observation_info?.data_product_src_nets),
-    pipeline: '' // TODO check if we can remove this or what should it be mapped to
+    pipeline: '' // TODO part of Data Products section not implemented yet
   };
-
   return convertedProposal as Proposal;
 }
 

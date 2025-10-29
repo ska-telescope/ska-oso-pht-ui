@@ -13,14 +13,15 @@ import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPrev
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 const PAGE = 2;
 const LINE_OFFSET = 30;
 const LABEL_WIDTH = 2;
-const HELP_VIEWPORT = '40vh';
 
 export default function GeneralPage() {
   const { t } = useScopedTranslation();
+  const { isSV } = useAppFlow();
   const theme = useTheme();
 
   const {
@@ -169,7 +170,7 @@ export default function GeneralPage() {
 
   const categoryField = () => (
     <DropDown
-      options={GENERAL.ScienceCategory}
+      options={isSV() ? GENERAL.ObservingMode : GENERAL.ScienceCategory}
       errorText={getProposal().scienceCategory ? '' : t('scienceCategory.error')}
       required
       testId="categoryId"
@@ -206,7 +207,7 @@ export default function GeneralPage() {
           <Grid size={{ md: 6 }}></Grid>
         </Grid>
         <Grid size={{ md: 12, lg: 3 }}>
-          <HelpPanel maxHeight={HELP_VIEWPORT} />
+          <HelpPanel />
         </Grid>
       </Grid>
     </Shell>

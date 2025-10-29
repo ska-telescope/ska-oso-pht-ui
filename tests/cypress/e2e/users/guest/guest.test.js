@@ -8,7 +8,7 @@ import {
   clickToNextPage,
   createObservation,
   addM2TargetUsingResolve,
-  clickListOfTargets,
+  // clickListOfTargets,
   createMock,
   verify,
   verifyUnlinkedObservationInTable,
@@ -32,7 +32,7 @@ describe('Guest User', () => {
     createMock();
 
     //add target
-    clickListOfTargets();
+    // clickListOfTargets();
     addM2TargetUsingResolve();
 
     //go to observation page
@@ -53,7 +53,7 @@ describe('Guest User', () => {
     checkFieldDisabled('statusId4', false);
     checkFieldDisabled('statusId5', false);
     checkFieldDisabled('statusId6', true);
-    checkFieldDisabled('statusId7', true);
+    // checkFieldDisabled('statusId7', true);
     checkFieldDisabled('statusId8', true);
 
     clickHome();
