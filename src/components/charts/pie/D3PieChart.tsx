@@ -106,7 +106,7 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
         .attr('dy', '0.35em')
 
         .attr('data-testid', 'pie-chart-center-text')
-        .style('font-size', theme.typography.h4.fontSize)
+        .style('font-size', theme.typography.h4.fontSize ?? '1.5rem')
         .style('fill', theme.palette.text.primary)
         .style('pointer-events', 'none')
         .text(centerLabel);
@@ -121,7 +121,9 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
         const pos = outerArc.centroid(d);
         const midAngle = (d.startAngle + d.endAngle) / 2;
         pos[0] = radius * 1.15 * (midAngle < Math.PI ? 1 : -1);
-        return [arc.centroid(d), outerArc.centroid(d), pos];
+
+        const points = [arc.centroid(d), outerArc.centroid(d), pos];
+        return points.map(p => p.join(',')).join(' ');
       })
       .attr('fill', 'none')
       .attr('stroke', theme.palette.text.primary)
@@ -144,7 +146,7 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
       })
       .attr('text-anchor', d => ((d.startAngle + d.endAngle) / 2 < Math.PI ? 'start' : 'end'))
       .attr('dy', '0.35em')
-      .style('font-size', theme.typography.h5.fontSize)
+      .style('font-size', theme.typography.h5.fontSize ?? '1.25rem')
       .style('fill', theme.palette.text.primary)
       .style('pointer-events', 'none')
       .text(d => d.data.name)

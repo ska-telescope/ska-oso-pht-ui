@@ -124,7 +124,14 @@ export default function GridDataProducts({
   };
 
   const getColumns = () => [
-    ...[colObservationId, colDataProduct, colImageSize, colImageCellSize, colImageWeighting, colActions]
+    ...[
+      colObservationId,
+      colDataProduct,
+      colImageSize,
+      colImageCellSize,
+      colImageWeighting,
+      colActions
+    ]
   ];
 
   return (

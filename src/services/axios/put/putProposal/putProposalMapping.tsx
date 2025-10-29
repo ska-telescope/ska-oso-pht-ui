@@ -165,7 +165,10 @@ const getDataProductSDP = (dataproducts: DataProductSDP[]): DataProductSDPsBacke
     products: SDPOptions(dp.observatoryDataProduct),
     observation_set_refs: dp.observationId,
     image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
-    image_cellsize: { value: dp.imageCellSizeValue, unit: getImageCellSizeUnits(dp.imageCellSizeUnits) },
+    image_cellsize: {
+      value: dp.imageCellSizeValue,
+      unit: getImageCellSizeUnits(dp.imageCellSizeUnits)
+    },
     weighting: dp.weighting?.toString()
   }));
 };

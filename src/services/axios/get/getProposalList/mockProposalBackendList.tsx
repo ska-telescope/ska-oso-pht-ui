@@ -279,8 +279,8 @@ const MockProposalBackendList: ProposalBackend[] = [
           data_product_id: 'SDP-1',
           products: ['1', '2', '5'],
           observation_set_refs: ['mid-001', 'low-001'],
-          image_size: { 'value': 3, 'unit': 'IMAGE SIZE'},
-          image_cellsize: { 'value': 3, 'unit': 'IMAGE SIZE'},
+          image_size: { value: 3, unit: 'IMAGE SIZE' },
+          image_cellsize: { value: 3, unit: 'IMAGE SIZE' },
           weighting: 'WEIGHTING'
         }
       ],
@@ -943,8 +943,8 @@ const MockProposalBackendList: ProposalBackend[] = [
           data_product_id: 'SDP-1',
           products: ['1', '2', '5'],
           observation_set_refs: ['mid-001', 'low-001'],
-          image_size: {'value':50, 'unit': 'arcsec'},
-          image_cellsize: {'value':50, 'unit': 'arcsec'},
+          image_size: { value: 50, unit: 'arcsec' },
+          image_cellsize: { value: 50, unit: 'arcsec' },
           weighting: '50'
         }
       ],

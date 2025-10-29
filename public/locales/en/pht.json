@@ -478,10 +478,6 @@
     "label": "Details",
     "minDisplayRows": "5"
   },
-  "overview": {
-    "title": "Overview",
-    "toolTip": "Overview of proposals"
-  },
   "pageStatus": {
     "toolTip": "Status of the {{pageName}} page : {{status}}"
   },
@@ -773,24 +769,47 @@
     "title": "Review Decisions",
     "toolTip": "Review Decisions"
   },
-  "reviewOverview": {
-    "panel1": {
-      "title": "Proposal Assignment"
+  "reviewDashboard": {
+    "noData": "No data available",
+    "unknown": "Unknown",
+    "undecided": "Undecided",
+    "title": "Overview",
+    "toolTip": "Overview of proposals",
+    "proposal": {
+      "title": "Proposals",
+      "subtitle": "Proposal Statistics"
     },
-    "panel2": {
-      "title": "Review Status"
+    "review": {
+      "title": "Reviews",
+      "subtitle": "Review Statistics"
     },
-    "panel3": {
-      "title": "Science Categories"
+    "decision": {
+      "title": "Decisions",
+      "subtitle": "Decision Statistics"
     },
-    "panel4": {
-      "title": "Panel Distribution"
+    "panel": {
+      "title1": "Proposal Assignment",
+      "title2": "Proposal Status",
+      "title3": "Science Categories",
+      "title4": "Panel Distribution",
+      "title5": "Reviewer Distribution",
+      "title6": "Category Distribution",
+      "title7": "Decision Breakdown",
+      "title8": "Review Distribution (Grouped / Single)",
+      "title9": "Location Breakdown",
+      "title10": "Score — Min / Mean / Max",
+      "title11": "Rank — Min / Mean / Max",
+      "title12": "Review Status"
     },
-    "panel5": {
-      "title": "Reviewer Distribution"
-    },
-    "panel6": {
-      "title": "Category Distribution"
+    "cell": {
+      "title1": "Panel Name",
+      "title2": "Number of Reviewers",
+      "title3": "Number of Proposals",
+      "title4": "Reviewed (%)",
+      "title5": "Pending Review (%)",
+      "title6": "In Progress (%)",
+      "title7": "Reviewer ID",
+      "title8": "Science Category"
     }
   },
   "reviewProposal": {

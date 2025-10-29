@@ -258,7 +258,9 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
     imageSizeValue: dp.image_size.value,
     imageSizeUnits: getImageSizeUnits(dp.image_size.unit),
     imageCellSizeValue: dp.image_cellsize?.value,
-    imageCellSizeUnits: dp?.image_cellsize?.unit ? getImageCellSizeUnits(dp?.image_cellsize?.unit) : null,
+    imageCellSizeUnits: dp?.image_cellsize?.unit
+      ? getImageCellSizeUnits(dp?.image_cellsize?.unit)
+      : null,
     weighting: Number(dp.weighting)
   })) as DataProductSDP[];
 };

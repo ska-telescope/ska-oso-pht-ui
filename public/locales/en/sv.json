@@ -96,9 +96,6 @@
       "help": "Check to indicate that this individual can view the proposal."
     }
   },
-  "overview": {
-    "toolTip": "Overview of Science Verification Ideas"
-  },
   "phdThesis": {
     "help": "Check to indicate that part of the data from this Science Verification Idea will be used towards a PhD thesis."
   },
@@ -134,11 +131,6 @@
   },
   "members": {
     "empty": "THERE ARE NO INVESTIGATORS ASSOCIATED WITH THIS Science Verification Idea"
-  },
-  "reviewOverview": {
-    "panel1": {
-      "title": "Science Verification Idea Assignment"
-    }
   },
   "reviewProposal": {
     "science": "Review Science Verification Idea science",

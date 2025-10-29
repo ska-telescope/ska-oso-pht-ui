@@ -97,7 +97,7 @@ export default function ButtonUserMenu({
       <Menu id="user-menu" anchorEl={anchorEl} open={openMenu} onClose={() => setAnchorEl(null)}>
         {isReviewerAdmin() && (
           <MenuItem data-testid="menuItemOverview" onClick={() => onMenuSelect(PMT[2])}>
-            {t('overview.title')}
+            {t('reviewDashboard.title')}
           </MenuItem>
         )}
         <MenuItem data-testid="menuItemProposals" onClick={() => onMenuSelect(PATH[0])}>

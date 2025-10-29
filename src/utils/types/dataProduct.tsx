@@ -2,11 +2,8 @@ import { ValueUnitPair } from './valueUnitPair';
 
 export type DataProductSDPsBackend = {
   data_product_id: string;
-<<<<<<< HEAD
   products: string[];
-=======
   options: string[];
->>>>>>> main
   observation_set_refs: string[];
   image_size: ValueUnitPair;
   image_cellsize?: ValueUnitPair;
