@@ -37,6 +37,7 @@ import StatusIconDisplay from '../../components/icon/status/statusIcon';
 import { FOOTER_SPACER } from '../../utils/constants';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useNotify } from '@/utils/notify/useNotify';
 
 const DATA_GRID_TARGET = '40vh';
 const DATA_GRID_OBSERVATION = '50vh';
@@ -62,6 +63,10 @@ export default function ObservationPage() {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+
+  const { notifyError } = useNotify();
+
+  const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
@@ -169,7 +174,12 @@ export default function ObservationPage() {
 
   const getSensCalcData = async (observation: Observation, target: Target) => {
     const response = await getSensCalc(observation, target);
+
     if (response) {
+      if (response.error) {
+        const errMsg = response.error + ': ' + response.results;
+        notifyError(errMsg, NOTIFICATION_DELAY_IN_SECONDS);
+      }
       setSensCalc(response, target, observation.id);
     }
   };

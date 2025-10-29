@@ -325,7 +325,7 @@
     "label": "Id"
   },
   "imageSize": {
-    "0": "degrees",
+    "0": "degrees2",
     "1": "arcmins",
     "2": "arcsecs",
     "label": "Image Size",
