@@ -499,9 +499,13 @@ export const verifyObservationInTable = () => {
   //  .should('have.length', 2);
 };
 
-export const verifyFieldError = (testId, error) => {
+export const verifyFieldError = (testId, error, exists) => {
   cy.get('[data-testid="' + testId + '"]').should('exist');
-  cy.get('[data-testid="' + testId + '"]').should('contain', error);
+  if (exists) {
+    cy.get('[data-testid="' + testId + '"]').should('contain', error);
+  } else {
+    cy.get('[data-testid="' + testId + '"]').should('not.contain', error);
+  }
 };
 
 export const clickObservationFromTable = () => {
