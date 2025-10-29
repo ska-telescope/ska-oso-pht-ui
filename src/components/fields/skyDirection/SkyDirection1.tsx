@@ -5,6 +5,7 @@ import {
   validateSkyDirection1Number,
   validateSkyDirection1Text
 } from '@utils/validation/validation.tsx';
+import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface SkyDirection1FieldProps {
@@ -29,14 +30,17 @@ export default function SkyDirection1Field({
   const FIELD = 'skyDirection';
 
   const errorText = validateSkyDirection1Text(value) ? '' : t(FIELD + '.error.1.0');
-  if (setErrorText) {
-    setErrorText(errorText); // Pass the errorText back to TargetEntry
-  }
-
   const errorNumber = validateSkyDirection1Number(value) ? '' : t(FIELD + '.error.1.0');
-  if (setErrorText) {
-    setErrorText(errorText); // Pass the errorText back to TargetEntry
-  }
+
+  React.useEffect(() => {
+    if (setErrorText) {
+      if (skyUnits.toString() === '0') {
+        setErrorText(errorText); // Pass the errorText back to TargetEntry
+      } else if (skyUnits.toString() === '1') {
+        setErrorText(errorNumber); // Pass the errorText back to TargetEntry
+      }
+    }
+  }, [errorText, errorNumber]);
 
   const SkyDirectionValueText = () => (
     <TextEntry
