@@ -6,6 +6,7 @@ import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
 import PulsarTimingBeamField from '@components/fields/pulsarTimingBeam/PulsarTimingBeam.tsx';
 import GroupLabel from '@components/info/groupLabel/groupLabel.tsx';
+import { leadZero } from '@utils/helpers.ts';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import ResolveButton from '@/components/button/Resolve/Resolve';
@@ -50,6 +51,8 @@ export default function TargetEntry({
   const LAB_WIDTH = 5;
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
   const [nameFieldError, setNameFieldError] = React.useState('');
+  const [skyDirection1Error, setSkyDirection1Error] = React.useState('');
+  const [skyDirection2Error, setSkyDirection2Error] = React.useState('');
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -75,16 +78,18 @@ export default function TargetEntry({
   };
 
   const setTheDec = (inValue: string) => {
-    setDec(inValue);
+    const formattedDec = leadZero(inValue);
+    setDec(formattedDec);
     if (setTarget) {
-      setTarget({ ...target, decStr: inValue });
+      setTarget({ ...target, decStr: formattedDec });
     }
   };
 
   const setTheRA = (inValue: string) => {
-    setRA(inValue);
+    const formattedRA = leadZero(inValue);
+    setRA(formattedRA);
     if (setTarget) {
-      setTarget({ ...target, raStr: inValue });
+      setTarget({ ...target, raStr: formattedRA });
     }
   };
 
@@ -223,8 +228,18 @@ export default function TargetEntry({
       setTiedArrayBeams(null);
     };
 
-    const disabled = () =>
-      !(name?.length && ra?.length && dec?.length && (getProposal()?.targets?.length ?? 0) === 0);
+    const disabled = () => {
+      return (
+        nameFieldError !== '' ||
+        skyDirection1Error !== '' ||
+        skyDirection2Error !== '' ||
+        !(name?.length && ra?.length && dec?.length && targetLengthCheck())
+      );
+    };
+
+    const targetLengthCheck = () => {
+      return isSV() ? getProposal()?.targets?.length === 0 : true;
+    };
 
     return (
       <Grid size={{ xs: 12 }} sx={{ position: 'relative', zIndex: 99 }} mb={2}>
@@ -336,6 +351,7 @@ export default function TargetEntry({
         skyUnits={raType}
         value={ra}
         valueFocus={() => helpComponent(t('skyDirection.help.1.value'))}
+        setErrorText={setSkyDirection1Error} // Pass the callback
       />
     );
 
@@ -347,6 +363,7 @@ export default function TargetEntry({
         skyUnits={raType}
         value={dec}
         valueFocus={() => helpComponent(t('skyDirection.help.2.value'))}
+        setErrorText={setSkyDirection2Error} // Pass the callback
       />
     );
 
@@ -440,7 +457,7 @@ export default function TargetEntry({
             <Box pb={2}>
               <HelpPanel maxHeight={'HELP_MAX_HEIGHT'} />
             </Box>
-            {(getProposal()?.targets?.length ?? 0) > 0 && (
+            {isSV() && (getProposal()?.targets?.length ?? 0) > 0 && (
               <InfoCard
                 color={InfoCardColorTypes.Warning}
                 fontSize={HELP_FONT}
