@@ -70,6 +70,14 @@ export default function TargetEntry({
   const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
   const [tiedArrayBeams, setTiedArrayBeams] = React.useState<TiedArrayBeams | null>(null);
   const [resetBeamArrayData, setResetBeamArrayData] = React.useState(false);
+
+  React.useEffect(() => {
+    if (nameFieldError === t('addTarget.error')) {
+      if (formValidation()) {
+        setNameFieldError('');
+      }
+    }
+  }, [name]);
   const setTheName = (inValue: string) => {
     setName(inValue);
     if (setTarget) {
