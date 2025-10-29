@@ -961,8 +961,7 @@
       },
       "2": {
         "0": "Input formatted incorrectly",
-        "1": "Valid range is -90 to 90 degrees",
-        "2": "Target does not reach minimum elevation of 15 degrees"
+        "1": "Valid range is -90 to 90 degrees"
       }
     }
   },
