@@ -280,7 +280,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   return (
     <Box p={2}>
       {row1()}
-      {row2()}
+      {getProposal().id !== null && row2()}
       {row3()}
 
       {/* TODO: revisit to implement override breakpoint and use grid */}

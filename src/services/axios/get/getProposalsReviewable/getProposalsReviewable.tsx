@@ -5,7 +5,7 @@ import {
   OSO_SERVICES_PROPOSAL_PATH
 } from '@utils/constants.ts';
 import { getUniqueMostRecentItems } from '@utils/helpers.ts';
-import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.ts';
 import MockProposalBackendList from '../getProposalList/mockProposalBackendList.tsx';
 import { mappingList } from '../getProposalList/getProposalList.tsx';
 
@@ -13,7 +13,7 @@ export function GetMockProposalList(): Proposal[] {
   return mappingList(MockProposalBackendList);
 }
 
-async function GetProposalByStatusList(
+async function GetProposalsReviewable(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>
 ): Promise<Proposal[] | string> {
   if (USE_LOCAL_DATA) {
@@ -39,4 +39,4 @@ async function GetProposalByStatusList(
   }
 }
 
-export default GetProposalByStatusList;
+export default GetProposalsReviewable;
