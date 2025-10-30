@@ -111,6 +111,20 @@
   "baseBtn": {
     "label": "Add"
   },
+  "calibrator": {
+    "detail": "This is a likely observing strategy with calibration (assuming observation near transit, etc.):",
+    "note": "The choice of calibrators assumes that the target scan will be centred at transit.",
+    "disclaimer": "The use of these calibrators is not guaranteed.",
+    "name": "Calibrator Name",
+    "checkbox": {
+      "label": "Provide comments on this strategy:",
+      "help": "Check to indicate that you wish to provide comments on the observatory defined calibration strategy."
+    },
+    "comment": {
+      "label": "Comment",
+      "help": "You can provide a comment on the observatory defined calibration strategy here."
+    }
+  },
   "cancelBtn": {
     "label": "Cancel"
   },
@@ -1264,8 +1278,9 @@
       "status": "Calibration",
       "title": "Calibration",
       "titleShort": "Calibration",
-      "desc": "This page allows you to request and define Calibration strategies.",
-      "pageError": "The Calibration page is not complete"
+      "desc": "Observatory defined calibrator observing strategy",
+      "pageError": "The CALIBRATION STRATEGY page is not complete",
+      "help": "This is help for the Calibration Page"
     },
     "7": {
       "status": "Technical",
