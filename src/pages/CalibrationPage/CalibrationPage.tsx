@@ -1,6 +1,7 @@
 import React from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { TextEntry, TickBox } from '@ska-telescope/ska-gui-components';
+import { TextEntry, TickBox, AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import { Box, Grid, Typography } from '@mui/material';
 import { validateCalibrationPage } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
@@ -8,6 +9,8 @@ import Shell from '../../components/layout/Shell/Shell';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { LAB_POSITION, WRAPPER_HEIGHT } from '@/utils/constants';
+import GetCalibratorList from '@/services/axios/get/getCalibratorList/getCalibratorList';
+import { Calibrator } from '@/utils/types/calibrationStrategy';
 
 const PAGE = 6;
 
@@ -20,9 +23,14 @@ export default function CalibrationPage() {
   const LABEL_WIDTH = 4.5;
   const LINE_OFFSET = 30;
 
-  // const [name, setName] = React.useState('');
+  const [name, setName] = React.useState('');
+  const [duration, setDuration] = React.useState('');
+  const [intent, setIntent] = React.useState('');
+  const [target, setTarget] = React.useState('');
+  const [integrationTime, setIntegrationTime] = React.useState('');
   const [addComment, setAddComment] = React.useState(false);
   const [comment, setComment] = React.useState('');
+  const [axiosViewError, setAxiosViewError] = React.useState('');
 
   const getProposal = () => application.content2 as Proposal;
 
@@ -38,6 +46,7 @@ export default function CalibrationPage() {
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
     helpComponent(t('page.' + PAGE + '.help'));
+    getCalibratorData();
   }, []);
 
   React.useEffect(() => {
@@ -47,6 +56,28 @@ export default function CalibrationPage() {
   React.useEffect(() => {
     setTheProposalState(validateCalibrationPage());
   }, [validateToggle]);
+
+  async function getCalibratorData() {
+    const response = await GetCalibratorList();
+    if (typeof response === 'string') {
+      // TODO handle error
+      setAxiosViewError(response);
+      return false;
+    } else {
+      setCalibratorData(response[0]); // it is assumed there is only 1 callibrator for now
+      return true;
+    }
+  }
+
+  function setCalibratorData(calibrator: Calibrator) {
+    // data from the calibrator
+    setName(calibrator.name);
+    setDuration(calibrator.durationMin.toString());
+    setIntent(calibrator.calibrationIntent);
+    // data from the proposal
+    setTarget(getProposal().targets?.[0]?.name || '');
+    setIntegrationTime(getProposal().observations?.[0]?.supplied?.value?.toString() || ''); // TODO convert to mins
+  }
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box
@@ -84,10 +115,47 @@ export default function CalibrationPage() {
     return fieldWrapper(
       <TextEntry
         testId="name"
-        // value={name}
-        value="test name"
-        onFocus={() => helpComponent(t('name.help'))}
-        required
+        value={name}
+        disabled={true}
+      />
+    );
+  };
+
+  const durationField = () => {
+    return fieldWrapper(
+      <TextEntry
+        testId="duration"
+        value={duration}
+        disabled={true}
+      />
+    );
+  };
+
+  const intentField = () => {
+    return fieldWrapper(
+      <TextEntry
+        testId="intent"
+        value={intent}
+        disabled={true}
+      />
+    );
+  };
+
+  const targetField = () => {
+    return fieldWrapper(
+      <TextEntry
+        testId="target"
+        value={target}
+        disabled={true}
+      />
+    );
+  };
+
+  const integrationTimeField = () => {
+    return fieldWrapper(
+      <TextEntry
+        testId="integrationTime"
+        value={integrationTime}
         disabled={true}
       />
     );
@@ -122,17 +190,17 @@ export default function CalibrationPage() {
         <Typography mb={3}>{t('calibrator.detail')}</Typography>
         <Grid pt={1} container direction="row" alignItems="baseline" justifyContent="flex-start">
           {nameField()}
-          {nameField()}
-          {nameField()}
+          {durationField()}
+          {intentField()}
+        </Grid>
+        <Grid pt={1} container direction="row" alignItems="baseline" justifyContent="flex-start">
+          {targetField()}
+          {integrationTimeField()}
         </Grid>
         <Grid pt={1} container direction="row" alignItems="baseline" justifyContent="flex-start">
           {nameField()}
-          {nameField()}
-        </Grid>
-        <Grid pt={1} container direction="row" alignItems="baseline" justifyContent="flex-start">
-          {nameField()}
-          {nameField()}
-          {nameField()}
+          {durationField()}
+          {intentField()}
         </Grid>
         <Typography mt={3}>{t('calibrator.note')}</Typography>
         <Typography mb={3}>{t('calibrator.disclaimer')}</Typography>
@@ -153,7 +221,10 @@ export default function CalibrationPage() {
             alignItems="space-evenly"
             justifyContent="center"
           >
-            <Grid>{calibrationDetails()}</Grid>
+            <Grid>
+              {!axiosViewError && calibrationDetails()}
+              {axiosViewError && (<Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosViewError} />)}
+            </Grid>
           </Grid>
         </Grid>
         <Grid pt={4} size={{ xs: 4 }}>
