@@ -85,3 +85,72 @@ export const validateProposal = (proposal: Proposal) => {
   ];
   return results;
 };
+
+export function validateSkyDirection1Text(value: string): boolean {
+  const formatValid = /^[-+]?\d{1,2}:\d{2}:\d{2}((\.?)|(\.\d+))$/.test(value);
+  if (!formatValid) {
+    return false;
+  }
+  const arr = value.split(':');
+  if (arr?.length !== 3) {
+    return false;
+  }
+  if (Math.abs(Number(arr[0])) > 24) {
+    return false;
+  }
+  if (Number(arr[1]) > 59) {
+    return false;
+  }
+  if (Number(arr[2]) >= 60) {
+    return false;
+  }
+  return !(Number(arr[0]) === 24 && (Number(arr[1]) > 0 || Number(arr[2]) > 0));
+}
+
+export function validateSkyDirection1Number(value: string): boolean {
+  // Validate its a valid number
+  if (!/^[0-9]*\.?[0-9]+$/.test(value)) {
+    return false;
+  }
+  const number = parseFloat(value);
+  // Validate decimal right ascension range.
+  return number >= 0 && number < 360;
+}
+
+export function validateSkyDirection2Text(value: string): string | null {
+  const formatValid = /^[-+]?\d{1,2}:\d{2}:\d{2}(\.\d+)?$/.test(value);
+  if (!formatValid) {
+    return '0';
+  }
+
+  const arr = value.split(':');
+  if (arr.length !== 3) {
+    return '0';
+  }
+
+  const hours = Number(arr[0]);
+  const minutes = Number(arr[1]);
+  const seconds = Number(arr[2].split('.')[0]); // Ignore fractional part for range check
+
+  if (Math.abs(hours) > 90 || (Math.abs(hours) === 90 && (minutes > 0 || seconds > 0))) {
+    return '1';
+  }
+  if (minutes > 59) {
+    return '1';
+  }
+  if (seconds >= 59) {
+    return '1';
+  }
+  return null;
+}
+
+export function validateSkyDirection2Number(value: string): string | null {
+  if (!/^[-+]?[0-9]*\.?[0-9]+$/.test(value)) {
+    return '0';
+  }
+
+  if (parseFloat(value) < -90 || parseFloat(value) > 90) {
+    return '1';
+  }
+  return null;
+}
