@@ -78,6 +78,13 @@ export default function TargetEntry({
       }
     }
   }, [name]);
+
+  React.useEffect(() => {
+    if (setTarget) {
+      setTarget({ ...target, decStr: dec, raStr: ra, vel: vel, redshift: redshift });
+    }
+  }, [ra, dec, vel, redshift]);
+
   const setTheName = (inValue: string) => {
     setName(inValue);
     if (setTarget) {
