@@ -69,7 +69,10 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const getProposal = () => application.content2 as Proposal;
 
   const isDisableEndpoints = () => {
-    if (cypressProposal || (loggedIn && getProposal().id == null)) {
+    if (
+      cypressProposal ||
+      (loggedIn && (getProposal().id == null || getProposal()?.title?.trim()?.length === 0))
+    ) {
       return true;
     } else if (!loggedIn) {
       return !cypressToken;
@@ -86,10 +89,12 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       let results = [];
 
       for (let key in application.content1) {
+        const obj: { [key: string]: any } = application.content1;
+
         if (
-          application.content1[key] === STATUS_ERROR ||
-          application.content1[key] === STATUS_PARTIAL ||
-          (application.content1[key] === STATUS_INITIAL && key !== PAGE_SRC_NET.toString())
+          obj[key] === STATUS_ERROR ||
+          obj[key] === STATUS_PARTIAL ||
+          (obj[key] === STATUS_INITIAL && key !== PAGE_SRC_NET.toString())
         ) {
           if (key !== PAGE_TECHNICAL.toString() || !isSV()) {
             results.push(t('page.' + key + '.pageError'));
@@ -125,7 +130,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   };
 
   const updateProposal = async (proposal: Proposal) => {
-    if (!isDisableEndpoints() && pageNo !== 0) {
+    if (!isDisableEndpoints()) {
       const response = await PutProposal(authClient, proposal, isSV(), PROPOSAL_STATUS.DRAFT);
       updateProposalResponse(response);
     }
@@ -282,21 +287,6 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       {row1()}
       {row2()}
       {row3()}
-
-      {/* TODO: revisit to implement override breakpoint and use grid */}
-      {/* <Grid container spacing={1} alignItems="center">
-        <Grid size={{ xs: 6, md: 6, lg: 2 }}>
-          {buttonsLeft()}
-        </Grid>
-        <Grid xs={12} md={12} lg={8} order={{ lg: 2, md: 3 }}>
-          <Grid justifyContent="space-evenly">
-            {pageNo < LAST_PAGE && <StatusArray />}
-          </Grid>
-        </Grid>
-        <Grid xs={6} md={6} lg={2} order={{ lg: 3, md: 2 }}>
-          {buttonsRight()}
-        </Grid>
-      </Grid> */}
 
       {openProposalDisplay && (
         <ProposalDisplay
