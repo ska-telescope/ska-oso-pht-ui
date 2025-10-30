@@ -61,13 +61,21 @@ export default function TableReviewDecisionRow({
   const getOptions = () => RECOMMENDATION.map(e => ({ label: e, value: e }));
 
   React.useEffect(() => {
-    const rec = item;
+    if (!item || typeof item.displayRank !== 'number' || !item.decisions) return;
+
     const newRank = item.displayRank === tableLength ? 0 : item.displayRank;
-    if (newRank !== rec.decisions.rank) {
-      rec.decisions.rank = item.displayRank === tableLength ? 0 : item.displayRank;
-      updateDecisionItem(rec);
+
+    if (newRank !== item.decisions.rank) {
+      const updatedItem = {
+        ...item,
+        decisions: {
+          ...item.decisions,
+          rank: newRank
+        }
+      };
+      updateDecisionItem(updatedItem);
     }
-  }, [item.displayRank]);
+  }, [item?.displayRank, tableLength]);
 
   return (
     <>

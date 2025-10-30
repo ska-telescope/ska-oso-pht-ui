@@ -4,9 +4,9 @@ import { AlertColorTypes, SearchEntry } from '@ska-telescope/ska-gui-components'
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import GetProposalReviewList from '@services/axios/get/getProposalReviewList/getProposalReviewList';
 import getPanelDecisionList from '@services/axios/get/getPanelDecisionList/getPanelDecisionList';
-import GetProposalByStatusList from '@services/axios/get/getProposalByStatusList/getProposalByStatusList';
+import getProposalsReviewable from '@/services/axios/get/getProposalsReviewable/getProposalsReviewable';
 import Proposal from '@/utils/types/proposal';
-import { FEASIBLE_NO, FOOTER_SPACER, REVIEW_TYPE } from '@/utils/constants';
+import { FEASIBLE_NO, FOOTER_SPACER, PROPOSAL_STATUS, REVIEW_TYPE } from '@/utils/constants';
 import { BANNER_PMT_SPACER } from '@/utils/constants';
 
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
@@ -90,11 +90,15 @@ export default function ReviewDecisionListPage() {
 
   React.useEffect(() => {
     const fetchProposalData = async () => {
-      const response = await GetProposalByStatusList(authClient);
+      const response = await getProposalsReviewable(authClient);
+
       if (typeof response === 'string') {
         notifyError(response);
       } else {
-        setProposals(response);
+        const filtered = response.filter(
+          (proposal: any) => proposal.status !== PROPOSAL_STATUS.SUBMITTED
+        );
+        setProposals(filtered);
       }
     };
     const fetchProposalReviewData = async () => {

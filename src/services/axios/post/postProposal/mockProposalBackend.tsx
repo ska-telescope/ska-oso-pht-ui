@@ -1,8 +1,9 @@
 import { ProposalBackend } from '@utils/types/proposal.tsx';
+import { PROPOSAL_STATUS } from '@/utils/constants';
 
 export const MockProposalBackend: ProposalBackend = {
   prsl_id: 'prsl-t0001-20250613-00002',
-  status: 'draft',
+  status: PROPOSAL_STATUS.DRAFT,
   submitted_by: '',
   submitted_on: null,
   cycle: 'SKAO_2027_1',

@@ -1,4 +1,4 @@
-import { DEFAULT_USER } from '@utils/constants.ts';
+import { DEFAULT_USER, PROPOSAL_STATUS } from '@utils/constants.ts';
 import { RA_TYPE_ICRS } from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
 
@@ -15,7 +15,7 @@ export const MockProposalFrontend: Proposal = {
   title: 'New Proposal test2',
   proposalType: 1,
   proposalSubType: [3],
-  status: 'draft',
+  status: PROPOSAL_STATUS.DRAFT,
   lastUpdated: '2025-06-24T16:48:47.127032Z',
   lastUpdatedBy: DEFAULT_USER,
   createdOn: '2025-06-13T13:48:34.963103Z',
@@ -319,7 +319,7 @@ export const MockProposalFrontendZoom: Proposal = {
   title: 'Proposal Zoom',
   proposalType: 2,
   proposalSubType: [],
-  status: 'draft',
+  status: PROPOSAL_STATUS.DRAFT,
   lastUpdated: '2025-06-24T22:35:19.489320Z',
   lastUpdatedBy: DEFAULT_USER,
   createdOn: '2025-06-24T22:33:30.487950Z',

@@ -1,4 +1,4 @@
-import { DEFAULT_USER } from '@utils/constants.ts';
+import { DEFAULT_USER, PROPOSAL_STATUS } from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
 
 export const MockProposalFrontend: Proposal = {
@@ -6,7 +6,7 @@ export const MockProposalFrontend: Proposal = {
   title: 'New Proposal',
   proposalType: 1,
   proposalSubType: [3],
-  status: 'draft',
+  status: PROPOSAL_STATUS.DRAFT,
   lastUpdated: '2025-06-24T16:48:47.127032Z',
   lastUpdatedBy: DEFAULT_USER,
   createdOn: '2025-06-13T13:48:34.963103Z',
