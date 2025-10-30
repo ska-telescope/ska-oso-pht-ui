@@ -33,6 +33,7 @@ interface TargetEntryProps {
   target?: Target;
   textAlign?: string;
   showBeamData?: boolean;
+  onRAFieldErrorChange?: (error: string) => void; // New prop
 }
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
@@ -42,7 +43,8 @@ export default function TargetEntry({
   raType,
   setTarget = undefined,
   target = undefined,
-  showBeamData
+  showBeamData,
+  onRAFieldErrorChange
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
   const { isSV } = useAppFlow();
@@ -78,6 +80,18 @@ export default function TargetEntry({
       }
     }
   }, [name]);
+  React.useEffect(() => {
+    if (setTarget) {
+      setTarget({ ...target, decStr: dec, raStr: ra, vel: vel, redshift: redshift });
+    }
+  }, [ra, dec, vel, redshift]);
+
+  React.useEffect(() => {
+    if (onRAFieldErrorChange) {
+      onRAFieldErrorChange(skyDirection1Error); // Notify parent
+    }
+  }, [skyDirection1Error]);
+
   const setTheName = (inValue: string) => {
     setName(inValue);
     if (setTarget) {

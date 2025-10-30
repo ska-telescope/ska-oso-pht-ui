@@ -26,6 +26,8 @@ export default function TargetListSection() {
   const [openEditDialog, setOpenEditDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [rowTarget, setRowTarget] = React.useState<Target | null>(null);
+  const [skyDirection1Error, setSkyDirection1Error] = React.useState('');
+  // const [skyDirection2Error, setSkyDirection2Error] = React.useState('');
 
   const deleteIconClicked = (e: Target) => {
     setRowTarget(e);
@@ -51,17 +53,19 @@ export default function TargetListSection() {
   };
 
   const editConfirmed = () => {
-    if (rowTarget && rowTarget.velType === VELOCITY_TYPE.VELOCITY) {
-      rowTarget.redshift = '';
-    } else if (rowTarget) {
-      rowTarget.vel = '';
+    if (!skyDirection1Error) {
+      if (rowTarget && rowTarget.velType === VELOCITY_TYPE.VELOCITY) {
+        rowTarget.redshift = '';
+      } else if (rowTarget) {
+        rowTarget.vel = '';
+      }
+      const obs1 = getProposal().targets?.map(rec => {
+        return rec.id === rowTarget?.id ? rowTarget : rec;
+      });
+      setProposal({ ...getProposal(), targets: obs1 });
+      setRowTarget(null);
+      closeDialog();
     }
-    const obs1 = getProposal().targets?.map(rec => {
-      return rec.id === rowTarget?.id ? rowTarget : rec;
-    });
-    setProposal({ ...getProposal(), targets: obs1 });
-    setRowTarget(null);
-    closeDialog();
   };
 
   const alertDeleteContent = () => {
@@ -210,6 +214,7 @@ export default function TargetListSection() {
           open={openEditDialog}
           onClose={closeDialog}
           onDialogResponse={editConfirmed}
+          disabled={!!skyDirection1Error}
           title="editTarget.label"
         >
           <TargetEntry
@@ -217,6 +222,7 @@ export default function TargetListSection() {
             setTarget={setRowTarget}
             target={rowTarget ? rowTarget : undefined}
             showBeamData={!!rowTarget?.tiedArrayBeams?.pstBeams}
+            onRAFieldErrorChange={setSkyDirection1Error} // Pass callback
           />
         </AlertDialog>
       )}
