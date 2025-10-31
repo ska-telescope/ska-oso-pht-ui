@@ -349,6 +349,14 @@ export const PROPOSAL_STATUS = {
   REJECTED: 'rejected',
   UNDER_REVIEW: 'under review'
 };
+export const PROPOSAL_STATUS_OPTIONS = [
+  { label: 'Draft', value: PROPOSAL_STATUS.DRAFT },
+  { label: 'Submitted', value: PROPOSAL_STATUS.SUBMITTED },
+  { label: 'Under Review', value: PROPOSAL_STATUS.UNDER_REVIEW },
+  { label: 'Accepted', value: PROPOSAL_STATUS.ACCEPTED },
+  { label: 'Withdrawn', value: PROPOSAL_STATUS.WITHDRAWN },
+  { label: 'Rejected', value: PROPOSAL_STATUS.REJECTED }
+];
 
 export const RECOMMENDATION_ACCEPT_REVISION = 'Accepted with Revision';
 export const RECOMMENDATION_REJECT = 'Rejected';
@@ -462,14 +470,6 @@ export const VEL_UNITS = [
   { label: 'm/s', value: 1 }
 ];
 
-export const SEARCH_TYPE_OPTIONS = [
-  { label: 'Draft', value: 'draft' },
-  { label: 'Submitted', value: 'submitted' },
-  { label: 'Under Review', value: 'under review' },
-  { label: 'Accepted', value: 'accepted' },
-  { label: 'Withdrawn', value: 'withdrawn' },
-  { label: 'Rejected', value: 'rejected' }
-];
 export const SEARCH_TYPE_OPTIONS_REVIEWERS = [
   { label: 'Pulsar Timing', value: 'Pulsar Timing' },
   { label: 'Galaxy Evolution', value: 'Galaxy Evolution' },

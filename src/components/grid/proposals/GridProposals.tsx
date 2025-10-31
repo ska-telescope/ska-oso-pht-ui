@@ -12,10 +12,10 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { validateProposal } from '@utils/validation/validation';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
 import GetProposal from '@services/axios/get/getProposal/getProposal';
-import GetProposalByStatusList from '@services/axios/get/getProposalByStatusList/getProposalByStatusList';
 import EditIcon from '../../icon/editIcon/editIcon';
 import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
+import GetProposalsReviewable from '@/services/axios/get/getProposalsReviewable/getProposalsReviewable';
 import Proposal from '@/utils/types/proposal';
 import {
   NOT_SPECIFIED,
@@ -151,7 +151,7 @@ export default function GridProposals({
 
   React.useEffect(() => {
     const fetchData = async (status: string) => {
-      const response = await GetProposalByStatusList(authClient);
+      const response = await GetProposalsReviewable(authClient);
       const prevProposals = status === PROPOSAL_STATUS.UNDER_REVIEW ? [] : proposals;
 
       if (typeof response === 'string') {
@@ -337,17 +337,28 @@ export default function GridProposals({
     )
   };
 
-  const proposalColumns = [
-    ...(showSelection ? [colSelect] : []),
-    colTitle,
-    colStatus,
-    colScienceCategory,
-    colType,
-    colPI,
-    ...(showActions ? [colActions] : [])
-  ];
+  const proposalColumns = isSV()
+    ? [
+        ...(showSelection ? [colSelect] : []),
+        colTitle,
+        colStatus,
+        colScienceCategory,
+        colPI,
+        ...(showActions ? [colActions] : [])
+      ]
+    : [
+        ...(showSelection ? [colSelect] : []),
+        colTitle,
+        colStatus,
+        colScienceCategory,
+        colType,
+        colPI,
+        ...(showActions ? [colActions] : [])
+      ];
 
-  const reviewColumns = [...[colType, colTitle, colAuthors, colScienceCategory]];
+  const reviewColumns = isSV()
+    ? [...[colTitle, colAuthors, colScienceCategory]]
+    : [...[colType, colTitle, colAuthors, colScienceCategory]];
 
   const selectedData = proposals
     ? proposals.filter(e =>

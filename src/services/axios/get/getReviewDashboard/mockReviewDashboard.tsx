@@ -1,11 +1,12 @@
 import { ReviewDashboard, ReviewDashboardBackend } from '@utils/types/reviewDashboard.tsx';
+import { PROPOSAL_STATUS } from '@/utils/constants';
 
 export const mockReviewDashboardBackend: ReviewDashboardBackend[] = [
   {
     prsl_id: 'prp-ska01-202204-02',
     title: 'The Milky Way View',
     science_category: 'Science Category',
-    proposal_status: 'submitted',
+    proposal_status: PROPOSAL_STATUS.SUBMITTED,
     proposal_type: 'standard_proposal',
     cycle: 'SKA_5000_2023',
     proposal_attributes: [],
@@ -32,7 +33,7 @@ export const mockReviewDashboardBackend: ReviewDashboardBackend[] = [
     prsl_id: 'prp-ska01-202204-02',
     title: 'The Milky Way View',
     science_category: 'Science Category',
-    proposal_status: 'submitted',
+    proposal_status: PROPOSAL_STATUS.SUBMITTED,
     proposal_type: 'standard_proposal',
     cycle: 'SKA_5000_2023',
     proposal_attributes: [],
@@ -59,7 +60,7 @@ export const mockReviewDashboardBackend: ReviewDashboardBackend[] = [
     prsl_id: 'prp-ska01-202204-03',
     title: 'The Milky Way View',
     science_category: 'Science Category',
-    proposal_status: 'submitted',
+    proposal_status: PROPOSAL_STATUS.SUBMITTED,
     proposal_type: 'standard_proposal',
     cycle: 'SKA_5000_2023',
     proposal_attributes: [],
@@ -89,7 +90,7 @@ export const mockReviewDashboardFrontend: ReviewDashboard[] = [
     prslId: 'prp-ska01-202204-02',
     title: 'The Milky Way View',
     scienceCategory: 'Science Category',
-    proposalStatus: 'submitted',
+    proposalStatus: PROPOSAL_STATUS.SUBMITTED,
     proposalType: 'standard_proposal',
     cycle: 'SKA_5000_2023',
     proposalAttributes: [],
@@ -116,7 +117,7 @@ export const mockReviewDashboardFrontend: ReviewDashboard[] = [
     prslId: 'prp-ska01-202204-02',
     title: 'The Milky Way View',
     scienceCategory: 'Science Category',
-    proposalStatus: 'submitted',
+    proposalStatus: PROPOSAL_STATUS.SUBMITTED,
     proposalType: 'standard_proposal',
     cycle: 'SKA_5000_2023',
     proposalAttributes: [],
@@ -143,7 +144,7 @@ export const mockReviewDashboardFrontend: ReviewDashboard[] = [
     prslId: 'prp-ska01-202204-03',
     title: 'The Milky Way View',
     scienceCategory: 'Science Category',
-    proposalStatus: 'submitted',
+    proposalStatus: PROPOSAL_STATUS.SUBMITTED,
     proposalType: 'standard_proposal',
     cycle: 'SKA_5000_2023',
     proposalAttributes: [],

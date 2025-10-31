@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction } from 'react';
-import { t } from 'i18next';
 import { Box, Tooltip } from '@mui/material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { NOT_SPECIFIED } from '@/utils/constants';
@@ -9,13 +8,13 @@ import Investigator from '@/utils/types/investigator';
 import emptyCell from '@/components/fields/emptyCell/emptyCell';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
-const getReviewerStatus = (status: any) => {
+const getReviewerStatus = (t: any, status: any) => {
   return status
     ? t('reviewers.statusCategory.' + status)
     : t('reviewers.statusCategory.' + NOT_SPECIFIED);
 };
 
-const getReviewerType = (rec: Reviewer) => {
+const getReviewerType = (t: any, rec: Reviewer) => {
   if (rec.isScience && rec.isTechnical) return t('reviewerType.both');
   else if (rec.isScience) return t('reviewerType.science');
   else if (rec.isTechnical) return t('reviewerType.technical');
@@ -46,7 +45,7 @@ const getPIs = (arr: Investigator[]) => {
 
 /*-----------------------------------------------------------------*/
 
-export const getColCycle = () => ({
+export const getColCycle = (t: any) => ({
   field: 'cycle',
   headerName: t('cycle.label'),
   width: 160
@@ -54,13 +53,13 @@ export const getColCycle = () => ({
 
 /*- Proposals -----------------------------------------------------*/
 
-export const getColProposalId = () => ({
+export const getColProposalId = (t: any) => ({
   field: 'id',
   headerName: t('proposalId.label'),
   width: 200
 });
 
-export const getColProposalType = () => ({
+export const getColProposalType = (t: any) => ({
   field: 'proposalType',
   headerName: t('proposalType.label'),
   width: 160,
@@ -74,7 +73,7 @@ export const getColProposalType = () => ({
   }
 });
 
-export const getColProposalTitle = () => ({
+export const getColProposalTitle = (t: any) => ({
   field: 'title',
   headerName: t('title.label'),
   flex: 3,
@@ -82,7 +81,7 @@ export const getColProposalTitle = () => ({
   renderCell: (e: any) => presentLatex(e.row.title)
 });
 
-export const getColProposalPI = () => ({
+export const getColProposalPI = (t: any) => ({
   field: 'pi',
   headerName: t('pi.short'),
   width: 160,
@@ -91,14 +90,14 @@ export const getColProposalPI = () => ({
   }
 });
 
-export const getColProposalStatus = () => ({
+export const getColProposalStatus = (t: any) => ({
   field: 'status',
   headerName: t('status.label'),
   width: 160,
   renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
 });
 
-export const getColProposalUpdated = () => ({
+export const getColProposalUpdated = (t: any) => ({
   field: 'lastUpdated',
   headerName: t('updated.label'),
   width: 240,
@@ -113,7 +112,7 @@ const CycleCloseCell = () => {
   return <>{value}</>;
 };
 
-export const getColCycleClose = () => ({
+export const getColCycleClose = (t: any) => ({
   field: 'cycleClose',
   headerName: t('cycleCloses.label'),
   width: 240,
@@ -122,35 +121,35 @@ export const getColCycleClose = () => ({
 
 /*- Reviewers -----------------------------------------------------*/
 
-export const getColJobTitle = () => ({
+export const getColJobTitle = (t: any) => ({
   field: 'title',
   headerName: t('reviewers.title'),
   flex: 2,
   renderCell: (e: any) => e.row.jobTitle
 });
 
-export const getColDisplayName = () => ({
+export const getColDisplayName = (t: any) => ({
   field: 'displayName',
   headerName: t('reviewers.displayName'),
   flex: 2,
   renderCell: (e: { row: any }) => e.row.displayName
 });
 
-export const getColGivenName = () => ({
+export const getColGivenName = (t: any) => ({
   field: 'givenName',
   headerName: t('reviewers.givenName'),
   flex: 2,
   renderCell: (e: { row: any }) => e.row.givenName
 });
 
-export const getColSurname = () => ({
+export const getColSurname = (t: any) => ({
   field: 'surname',
   headerName: t('reviewers.surname'),
   flex: 2,
   renderCell: (e: { row: any }) => e.row.surname
 });
 
-export const getColReviewerLocation = () => ({
+export const getColReviewerLocation = (t: any) => ({
   field: 'officeLocation',
   headerName: t('location.label'),
   flex: 2,
@@ -158,6 +157,7 @@ export const getColReviewerLocation = () => ({
 });
 
 export const getColReviewerType = (
+  t: any,
   typeState: 'all' | 'sci' | 'tec',
   setTypeState: Dispatch<SetStateAction<'all' | 'sci' | 'tec'>>
 ) => ({
@@ -183,19 +183,19 @@ export const getColReviewerType = (
       />
     </Box>
   ),
-  renderCell: (e: { row: any }) => getReviewerType(e.row)
+  renderCell: (e: { row: any }) => getReviewerType(t, e.row)
 });
 
-export const getColSubExpertise = () => ({
+export const getColSubExpertise = (t: any) => ({
   field: 'subExpertise',
   headerName: t('reviewers.subExpertise'),
   flex: 2,
   renderCell: (e: { row: any }) => t('reviewers.subExpertiseCategory.' + e.row.subExpertise)
 });
 
-export const getColStatus = () => ({
+export const getColStatus = (t: any) => ({
   field: 'status',
   headerName: t('reviewers.status'),
   flex: 2,
-  renderCell: (e: { row: any }) => getReviewerStatus(e.row.status)
+  renderCell: (e: { row: any }) => getReviewerStatus(t, e.row.status)
 });

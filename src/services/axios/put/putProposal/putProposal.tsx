@@ -1,5 +1,6 @@
 import {
   OSO_SERVICES_PROPOSAL_PATH,
+  PROPOSAL_STATUS,
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
 } from '@utils/constants.ts';
@@ -9,7 +10,7 @@ import MappingPutProposal from './putProposalMapping.tsx';
 import { MockProposalFrontend } from './mockProposalFrontend.tsx';
 
 export function mockPutProposal() {
-  return MappingPutProposal(MockProposalFrontend, false, 'draft');
+  return MappingPutProposal(MockProposalFrontend, false, PROPOSAL_STATUS.DRAFT);
 }
 
 async function PutProposal(

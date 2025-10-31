@@ -11,7 +11,7 @@ import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { presentDate, presentLatex, presentTime } from '@utils/present/present';
 import GetProposalReviewList from '@services/axios/get/getProposalReviewList/getProposalReviewList.tsx';
 import {
-  SEARCH_TYPE_OPTIONS,
+  PROPOSAL_STATUS_OPTIONS,
   BANNER_PMT_SPACER,
   PANEL_DECISION_STATUS,
   REVIEW_TYPE,
@@ -19,10 +19,10 @@ import {
   FEASIBLE_YES,
   CONFLICT_REASONS
 } from '@utils/constants.ts';
-import GetProposalByStatusList from '@services/axios/get/getProposalByStatusList/getProposalByStatusList';
 import ScienceIcon from '../../components/icon/scienceIcon/scienceIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Proposal from '../../utils/types/proposal';
+import getProposalsReviewable from '@/services/axios/get/getProposalsReviewable/getProposalsReviewable';
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import { PMT } from '@/utils/constants';
 import SubmitButton from '@/components/button/Submit/Submit';
@@ -98,7 +98,7 @@ export default function ReviewListPage() {
     };
 
     const fetchProposalData = async () => {
-      const response = await GetProposalByStatusList(authClient);
+      const response = await getProposalsReviewable(authClient);
       if (typeof response === 'string') {
         notifyError(response);
       } else {
@@ -526,7 +526,7 @@ export default function ReviewListPage() {
 
   const searchDropdown = () => (
     <DropDown
-      options={[{ label: t('status.0'), value: '' }, ...SEARCH_TYPE_OPTIONS]}
+      options={[{ label: t('status.0'), value: '' }, ...PROPOSAL_STATUS_OPTIONS]}
       testId="proposalType"
       value={searchType}
       setValue={setSearchType}

@@ -1,9 +1,9 @@
 import { ProposalBackend } from '@utils/types/proposal.tsx';
-import { RA_TYPE_ICRS } from '@utils/constants.ts';
+import { PROPOSAL_STATUS, RA_TYPE_ICRS } from '@utils/constants.ts';
 
 export const MockProposalBackend: ProposalBackend = {
   prsl_id: 'prsl-t0001-20250613-00002',
-  status: 'draft',
+  status: PROPOSAL_STATUS.DRAFT,
   submitted_by: '',
   submitted_on: null,
   investigator_refs: [],
@@ -248,7 +248,7 @@ export const MockProposalBackend: ProposalBackend = {
 
 export const MockProposalBackendZoom: ProposalBackend = {
   prsl_id: 'prsl-t0001-20250624-00049',
-  status: 'draft',
+  status: PROPOSAL_STATUS.DRAFT,
   submitted_by: '',
   submitted_on: null,
   investigator_refs: [],

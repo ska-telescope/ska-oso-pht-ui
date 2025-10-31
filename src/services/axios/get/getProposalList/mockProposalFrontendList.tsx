@@ -1,9 +1,10 @@
+import { PROPOSAL_STATUS } from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
 
 const MockProposalFrontendList: Proposal[] = [
   {
     id: 'prp-ska01-202204-02',
-    status: 'draft',
+    status: PROPOSAL_STATUS.DRAFT,
     lastUpdated: '2022-09-23T15:43:53.971548Z',
     lastUpdatedBy: 'TestUser',
     createdOn: '2022-09-23T15:43:53.971548Z',
@@ -36,7 +37,7 @@ const MockProposalFrontendList: Proposal[] = [
   },
   {
     id: 'prp-ska01-202204-01',
-    status: 'submitted',
+    status: PROPOSAL_STATUS.SUBMITTED,
     lastUpdated: '2022-09-23T15:43:53.971548Z',
     lastUpdatedBy: 'TestUser',
     createdOn: '2022-09-23T15:43:53.971548Z',
@@ -69,7 +70,7 @@ const MockProposalFrontendList: Proposal[] = [
   },
   {
     id: 'prsl-t0001-20250814-00002',
-    status: 'submitted',
+    status: PROPOSAL_STATUS.SUBMITTED,
     lastUpdated: '2022-09-23T15:43:53.971548Z',
     lastUpdatedBy: 'TestUser',
     createdOn: '2022-09-23T15:43:53.971548Z',
