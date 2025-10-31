@@ -1,16 +1,18 @@
 import React from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry, TickBox, AlertColorTypes } from '@ska-telescope/ska-gui-components';
-import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import { Box, Grid, Typography } from '@mui/material';
 import { validateCalibrationPage } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
+import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { LAB_POSITION, WRAPPER_HEIGHT } from '@/utils/constants';
 import GetCalibratorList from '@/services/axios/get/getCalibratorList/getCalibratorList';
 import { Calibrator } from '@/utils/types/calibrationStrategy';
+import { timeConversion } from '@/utils/helpersSensCalc';
+import { TIME_MINS } from '@/utils/constantsSensCalc';
 
 const PAGE = 6;
 
@@ -69,6 +71,14 @@ export default function CalibrationPage() {
     }
   }
 
+  const getSuppliedIntegrationTimeInMinutes = (): string => {
+    const integrationTime = getProposal().observations?.[0]?.supplied; // TODO handle supplied sensitivity case
+    let timeInMinutes = integrationTime?.value
+      ? timeConversion(integrationTime?.value, integrationTime?.units, TIME_MINS)?.toFixed(2)
+      : '';
+    return timeInMinutes;
+  };
+
   function setCalibratorData(calibrator: Calibrator) {
     // data from the calibrator
     setName(calibrator.name);
@@ -76,12 +86,13 @@ export default function CalibrationPage() {
     setIntent(calibrator.calibrationIntent);
     // data from the proposal
     setTarget(getProposal().targets?.[0]?.name || '');
-    setIntegrationTime(getProposal().observations?.[0]?.supplied?.value?.toString() || ''); // TODO convert to mins
+    setIntegrationTime(getSuppliedIntegrationTimeInMinutes());
   }
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box
       p={0}
+      mr={10}
       pt={1}
       sx={{
         height: WRAPPER_HEIGHT,
@@ -97,7 +108,7 @@ export default function CalibrationPage() {
   };
 
   const checkBox = () => {
-    return (
+    return fieldWrapper(
       <TickBox
         label={t('calibrator.checkbox.label')}
         labelBold
@@ -113,11 +124,7 @@ export default function CalibrationPage() {
 
   const nameField = () => {
     return fieldWrapper(
-      <TextEntry
-        testId="name"
-        value={name}
-        disabled={true}
-      />
+      <TextEntry testId="name" value={name} disabled={true} label={t('calibrator.name')} />
     );
   };
 
@@ -127,27 +134,21 @@ export default function CalibrationPage() {
         testId="duration"
         value={duration}
         disabled={true}
+        label={t('calibrator.duration')}
+        suffix={t('calibrator.minutes')}
       />
     );
   };
 
   const intentField = () => {
     return fieldWrapper(
-      <TextEntry
-        testId="intent"
-        value={intent}
-        disabled={true}
-      />
+      <TextEntry testId="intent" value={intent} disabled={true} label={t('calibrator.intent')} />
     );
   };
 
   const targetField = () => {
     return fieldWrapper(
-      <TextEntry
-        testId="target"
-        value={target}
-        disabled={true}
-      />
+      <TextEntry testId="target" value={target} disabled={true} label={t('calibrator.target')} />
     );
   };
 
@@ -157,6 +158,8 @@ export default function CalibrationPage() {
         testId="integrationTime"
         value={integrationTime}
         disabled={true}
+        label={t('calibrator.integrationTime')}
+        suffix={t('calibrator.minutes')}
       />
     );
   };
@@ -173,11 +176,9 @@ export default function CalibrationPage() {
           labelWidth={LABEL_WIDTH}
           testId="commenttId"
           rows={numRows}
-          // required
           value={comment}
           setValue={setComment}
           onFocus={() => helpComponent(t('calibrator.comment.help'))}
-          // helperText={helperFunction(getProposal().abstract as string)}
           // errorText={validateWordCount(getProposal().abstract as string)}
         />
       </Box>
@@ -223,7 +224,13 @@ export default function CalibrationPage() {
           >
             <Grid>
               {!axiosViewError && calibrationDetails()}
-              {axiosViewError && (<Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosViewError} />)}
+              {axiosViewError && (
+                <Alert
+                  color={AlertColorTypes.Error}
+                  testId="axiosErrorTestId"
+                  text={axiosViewError}
+                />
+              )}
             </Grid>
           </Grid>
         </Grid>
