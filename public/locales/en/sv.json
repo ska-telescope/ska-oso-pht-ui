@@ -28,7 +28,7 @@
   },
   "cloneProposal": {
     "toolTip": "Clone Science Verification Idea",
-    "confirm": "Clone this Science Verification Idea."
+    "confirm": "Clone this Science Verification Idea"
   },
   "conflict": {
     "tooltip": "Indicate whether there is a conflict of interest with this Science Verification Idea"
@@ -109,6 +109,9 @@
   "pht": {
     "short": "SVT",
     "title": "Science Verification Tool"
+  },
+  "pi": {
+    "short": "Participant"
   },
   "proposal": {
     "error": "Unable to retrieve the Science Verification Idea from the server"

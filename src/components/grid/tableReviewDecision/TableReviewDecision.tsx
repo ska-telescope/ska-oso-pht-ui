@@ -39,17 +39,17 @@ export default function TableReviewDecision({
   };
 
   const calculateScore = (details: Array<any>) => {
-    if (!details || details.length === 0) return 0;
+    if (!details || details.length === 0) return parseFloat('0').toFixed(1);
     const filtered = details.filter(
       el =>
         el?.reviewType.kind === 'Science Review' &&
         !el?.reviewType?.excludedFromDecision &&
         el?.status !== 'To Do'
     );
-    if (filtered.length === 0) return 0;
+    if (filtered.length === 0) return parseFloat('0').toFixed(1);
     const average =
       filtered.reduce((sum, detail) => sum + detail?.reviewType?.rank, 0) / filtered.length;
-    return Math.round((average + Number.EPSILON) * 100) / 100;
+    return (Math.round((average + Number.EPSILON) * 100) / 100).toFixed(1);
   };
 
   const scoredItems = React.useMemo(() => {

@@ -133,7 +133,8 @@
   },
   "cloneProposal": {
     "toolTip": "Clone proposal",
-    "confirm": "Clone this proposal."
+    "confirm": "Clone this proposal.",
+    "suffix": " - Copy"
   },
   "closeBtn": {
     "label": "Close"
@@ -1133,7 +1134,7 @@
   },
   "targetObservation": {
     "filters": "Filters",
-    "label": "Target / Observation relationship"
+    "label": "Targets to be linked"
   },
   "targetSelection": {
     "label": "Target selection"

@@ -1,9 +1,10 @@
-import { ProposalBackend } from '../../../../utils/types/proposal';
+import { PROPOSAL_STATUS } from '@/utils/constants';
+import { ProposalBackend } from '@/utils/types/proposal';
 
 const MockProposalBackendList: ProposalBackend[] = [
   {
     prsl_id: 'prp-ska01-202204-02',
-    status: 'draft',
+    status: PROPOSAL_STATUS.DRAFT,
     submitted_on: '2022-09-23T15:43:53.971548Z',
     submitted_by: 'TestUser',
     investigator_refs: ['prp-ska01-202204-01'],
@@ -338,7 +339,7 @@ const MockProposalBackendList: ProposalBackend[] = [
   },
   {
     prsl_id: 'prp-ska01-202204-01',
-    status: 'submitted',
+    status: PROPOSAL_STATUS.SUBMITTED,
     submitted_on: '2022-09-23T15:43:53.971548Z',
     submitted_by: 'TestUser',
     investigator_refs: ['prp-ska01-202204-01'],
@@ -673,7 +674,7 @@ const MockProposalBackendList: ProposalBackend[] = [
   },
   {
     prsl_id: 'prsl-t0001-20250814-00002',
-    status: 'submitted',
+    status: PROPOSAL_STATUS.SUBMITTED,
     submitted_on: '2022-09-23T15:43:53.971548Z',
     submitted_by: 'TestUser',
     investigator_refs: ['prp-ska01-202204-01'],

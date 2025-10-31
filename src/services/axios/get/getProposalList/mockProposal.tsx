@@ -1,9 +1,10 @@
 import { ProposalBackend } from '@utils/types/proposal.tsx';
+import { PROPOSAL_STATUS } from '@/utils/constants';
 
 const MockProposal: ProposalBackend[] = [
   {
     prsl_id: 'prsl-test-20250814-00003',
-    status: 'draft',
+    status: PROPOSAL_STATUS.DRAFT,
     submitted_by: '',
     metadata: {
       version: 2,
