@@ -44,7 +44,9 @@ export default function TargetEntry({
   setTarget = undefined,
   target = undefined,
   showBeamData,
-  onRAFieldErrorChange
+  onRAFieldErrorChange,
+  onDecFieldErrorChange,
+  onNameFieldErrorChange
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
   const { isSV } = useAppFlow();
@@ -92,8 +94,25 @@ export default function TargetEntry({
     }
   }, [skyDirection1Error]);
 
+  React.useEffect(() => {
+    if (onDecFieldErrorChange) {
+      onDecFieldErrorChange(skyDirection2Error); // Notify parent
+    }
+  }, [skyDirection2Error]);
+
+  React.useEffect(() => {
+    if (onNameFieldErrorChange) {
+      onNameFieldErrorChange(nameFieldError); // Notify parent
+    }
+  }, [nameFieldError]);
+
   const setTheName = (inValue: string) => {
     setName(inValue);
+    if (!inValue.trim()) {
+      setNameFieldError(t('addTarget.valueError'));
+    } else {
+      setNameFieldError('');
+    }
     if (setTarget) {
       setTarget({ ...target, name: inValue });
     }
