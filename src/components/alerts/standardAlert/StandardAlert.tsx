@@ -44,9 +44,9 @@ export default function StandardAlert({
   };
 
   const handleClose = () => {
-    setVisible(false); // triggers fade-out
+    setVisible(false);
     setTimeout(() => {
-      setShouldRender(false); // unmount after fade
+      setShouldRender(false);
       closeFunc?.();
     }, fadeDuration);
   };
@@ -54,23 +54,24 @@ export default function StandardAlert({
   if (!shouldRender) return null;
 
   return (
-    <Box>
+    <Box sx={{ m: 0, p: 0 }}>
       <Fade in={visible} timeout={fadeDuration}>
         <div>
-          <Alert color={color} testId={testId}>
+          <Alert color={color} testId={testId} sx={{ p: 0 }}>
             <Grid
               sx={{
                 display: 'grid',
                 gridTemplateColumns: 'auto 1fr auto',
                 alignItems: 'center',
-                gap: gap
+                padding: 0,
+                minHeight: 'auto'
               }}
             >
-              <Box p={gap}>
+              <Box sx={{ p: 0, display: 'flex', alignItems: 'center' }}>
                 <StatusIcon
                   ariaDescription=" "
                   ariaTitle=" "
-                  icon={AlertColorTypes.Error === color ? false : true}
+                  icon={AlertColorTypes.Error !== color}
                   level={getLevel(color)}
                   size={gap === 0 ? FONTSIZE_0 : FONTSIZE_1}
                   testId={`${testId}Icon`}
@@ -78,14 +79,24 @@ export default function StandardAlert({
                   toolTip=" "
                 />
               </Box>
-              <Box pl={2} pr={2}>
-                <Typography id="standardAlertId">{text}</Typography>
+              <Box sx={{ p: 0, pl: 2, display: 'flex', alignItems: 'center' }}>
+                <Typography
+                  id="standardAlertId"
+                  sx={{
+                    fontSize: '0.875rem',
+                    lineHeight: 1.2,
+                    margin: 0,
+                    padding: 0
+                  }}
+                >
+                  {text}
+                </Typography>
               </Box>
-              <Box>
-                {closeFunc && (
-                  <CloseIcon onClick={handleClose} padding={gap} toolTip={t('closeBtn.label')} />
-                )}
-              </Box>
+              {closeFunc && (
+                <Box sx={{ p: 0, pl: 2, display: 'flex', alignItems: 'center' }}>
+                  <CloseIcon onClick={handleClose} padding={0} toolTip={t('closeBtn.label')} />
+                </Box>
+              )}
             </Grid>
           </Alert>
         </div>

@@ -1,9 +1,14 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Grid, Tab, Tabs } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
-import { BANNER_PMT_SPACER_MIN, PMT, REVIEWER_STATUS } from '../../utils/constants';
+import {
+  BANNER_PMT_SPACER_MIN,
+  FOOTER_PMT_SPACER,
+  PMT,
+  REVIEWER_STATUS
+} from '../../utils/constants';
 import BackButton from '@/components/button/Back/Back';
 import GridProposals from '@/components/grid/proposals/GridProposals';
 import GridReviewers from '@/components/grid/reviewers/GridReviewers';
@@ -23,10 +28,8 @@ import PostPanelAssignments from '@/services/axios/post/postPanelAssignments/pos
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
-const PANELS_HEIGHT = '74vh';
-const TABS_HEIGHT = '76vh';
-const TABS_CONTAINER_HEIGHT = '70vh';
-const TAB_GRID_HEIGHT = '52vh';
+const TAB_HEADER_HEIGHT = 55;
+const GAP = 5;
 
 export const addReviewerPanel = (
   reviewer: Reviewer,
@@ -122,6 +125,25 @@ export default function PanelManagement() {
   const [makeAssignment, setMakeAssignment] = React.useState(false);
   const authClient = useAxiosAuthClient();
   const { osdCycleDescription, osdCycleId } = useOSDAccessors();
+
+  /*------------------------------------------------------------------*/
+
+  const boxRefPanel = React.useRef<HTMLDivElement>(null);
+  const [boxHeightPanel, setBoxHeightPanel] = React.useState<number | undefined>(undefined);
+  React.useLayoutEffect(() => {
+    const updateHeightPanel = () => {
+      if (boxRefPanel.current) {
+        setBoxHeightPanel(boxRefPanel.current.offsetHeight);
+      }
+    };
+    updateHeightPanel();
+    window.addEventListener('resize', updateHeightPanel);
+    return () => {
+      window.removeEventListener('resize', updateHeightPanel);
+    };
+  }, []);
+
+  /*------------------------------------------------------------------*/
 
   React.useEffect(() => {
     const autoAssignments = async () => {
@@ -225,12 +247,6 @@ export default function PanelManagement() {
     };
   }
 
-  const panelsSectionTitle = () => (
-    <Typography align="center" variant="h6" minHeight="4vh">
-      {t('panels.label')}
-    </Typography>
-  );
-
   const backButton = () => (
     <BackButton
       action={() => navigate(PMT[2])}
@@ -243,61 +259,58 @@ export default function PanelManagement() {
   const fwdButton = () => <AssignButton action={() => setMakeAssignment(true)} />;
 
   return (
-    <>
+    <Box sx={{ height: '91vh', display: 'flex', flexDirection: 'column' }}>
       <PageBannerPMT title={t('page.15.desc')} backBtn={backButton()} fwdBtn={fwdButton()} />
-      <Spacer size={BANNER_PMT_SPACER_MIN * 2} axis={{ SPACER_VERTICAL }} />
-      <Grid
-        container
-        pr={2}
-        spacing={3}
-        direction="row"
-        justifyContent="space-between"
-        alignItems="flex-start"
+      <Box
+        sx={{
+          flexGrow: 1,
+          width: '100%',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          borderRadius: 0
+        }}
       >
-        <Grid p={2} size={{ sm: 12, md: 4, lg: 2.75 }}>
-          <Box
-            sx={{
-              width: '100%',
-              border: '1px solid lightGrey',
-              borderRadius: '16px'
-            }}
-            minHeight="50vh"
-          >
-            <Grid
-              sx={{ borderBottom: '1px solid lightGrey' }}
-              pl={1}
-              pr={1}
-              container
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Grid pt={2}>{panelsSectionTitle()}</Grid>
-            </Grid>
-            <GridReviewPanels
-              height={PANELS_HEIGHT}
-              listOnly
-              onRowClick={row => handlePanelChange(row)}
-              // updatedData={currentPanel}
-            />
-          </Box>
-        </Grid>
-
+        <Spacer size={BANNER_PMT_SPACER_MIN} axis={{ SPACER_VERTICAL }} />
         <Grid
-          size={{ sm: 12, md: 8, lg: 9.25 }}
-          pt={1}
           container
           direction="row"
-          justifyContent="space-around"
+          justifyContent="space-between"
           alignItems="flex-start"
+          spacing={GAP}
+          m={GAP}
+          sx={{ flexGrow: 1 }}
         >
-          <Box
-            sx={{
-              height: TABS_HEIGHT,
-              width: '100%'
-            }}
+          <Grid size={{ sm: 12, md: 4, lg: 2.75 }} sx={{ height: '100%' }}>
+            <Box
+              sx={{
+                height: '100%',
+                width: '100%',
+                display: 'flex',
+                flexDirection: 'column',
+                border: '1px solid',
+                borderColor: '#ccc',
+                borderRadius: '8px'
+              }}
+              ref={boxRefPanel}
+            >
+              <GridReviewPanels
+                height={String(boxHeightPanel) ?? '100%'}
+                listOnly
+                onRowClick={row => handlePanelChange(row)}
+              />
+            </Box>
+          </Grid>
+
+          <Grid
+            size={{ sm: 12, md: 8, lg: 9.25 }}
+            sx={{ height: '100%' }}
+            container
+            direction="row"
+            justifyContent="space-around"
+            alignItems="flex-start"
           >
-            <Box pt={2}>
+            <Box sx={{ height: '100%', width: '100%' }}>
               <Tabs
                 variant="fullWidth"
                 textColor="secondary"
@@ -306,48 +319,49 @@ export default function PanelManagement() {
                 onChange={handleChange}
                 aria-label="basic tabs example"
                 sx={{
-                  '& button': { height: 75, backgroundColor: theme.palette.primary.main },
+                  '& button': {
+                    height: TAB_HEADER_HEIGHT,
+                    backgroundColor: theme.palette.primary.main
+                  },
                   '& button.Mui-selected': { backgroundColor: 'transparent' }
                 }}
               >
                 <Tab label={t('reviewers.label')} {...a11yProps(0)} />
                 <Tab label={t('proposals.label')} {...a11yProps(1)} />
               </Tabs>
+              <Box
+                sx={{
+                  width: '100%',
+                  height: `calc(100% - ${TAB_HEADER_HEIGHT}px)`
+                }}
+              >
+                {theValue === 0 && (
+                  <GridReviewers
+                    showSearch
+                    showSelection={!!currentPanel}
+                    selectedReviewers={panelReviewers}
+                    tickBoxClicked={(reviewer, isReviewerSelected) => {
+                      reviewerSelectedToggle(reviewer, isReviewerSelected);
+                    }}
+                  />
+                )}
+                {theValue === 1 && (
+                  <GridProposals
+                    showSearch
+                    showSelection={!!currentPanel}
+                    selectedProposals={panelProposals}
+                    tickBoxClicked={(proposal, isProposalSelected) => {
+                      proposalSelectedToggle(proposal, isProposalSelected);
+                    }}
+                  />
+                )}
+              </Box>
             </Box>
-            <Box
-              p={2}
-              sx={{
-                width: '100%',
-                height: TABS_CONTAINER_HEIGHT
-              }}
-            >
-              {theValue === 0 && (
-                <GridReviewers
-                  height={TAB_GRID_HEIGHT}
-                  showSearch
-                  showSelection={!!currentPanel}
-                  selectedReviewers={panelReviewers}
-                  tickBoxClicked={(reviewer, isReviewerSelected) => {
-                    reviewerSelectedToggle(reviewer, isReviewerSelected);
-                  }}
-                />
-              )}
-              {theValue === 1 && (
-                <GridProposals
-                  height={TAB_GRID_HEIGHT}
-                  showSearch
-                  showSelection={!!currentPanel}
-                  selectedProposals={panelProposals}
-                  tickBoxClicked={(proposal, isProposalSelected) => {
-                    proposalSelectedToggle(proposal, isProposalSelected);
-                  }}
-                />
-              )}
-            </Box>
-          </Box>
+          </Grid>
         </Grid>
-      </Grid>
+        <Spacer size={FOOTER_PMT_SPACER} axis={{ SPACER_VERTICAL }} />
+      </Box>
       <PageFooterPMT />
-    </>
+    </Box>
   );
 }

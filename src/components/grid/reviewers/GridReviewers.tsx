@@ -45,7 +45,6 @@ export function filterReviewers(
 }
 
 interface GridReviewersProps {
-  height?: string;
   selectedReviewers?: IdObject[];
   showTitle?: boolean;
   showSearch?: boolean;
@@ -54,7 +53,6 @@ interface GridReviewersProps {
 }
 
 export default function GridReviewers({
-  height = '50vh',
   selectedReviewers = [],
   showTitle = false,
   showSearch = false,
@@ -199,7 +197,7 @@ export default function GridReviewers({
   );
 
   const searchDropdownExpertise = () => (
-    <Box pt={2}>
+    <Box pt={1}>
       <DropDown
         options={[{ label: t('subjectExpertise.0'), value: '' }, ...SEARCH_TYPE_OPTIONS_REVIEWERS]}
         testId="subExpertise"
@@ -221,7 +219,7 @@ export default function GridReviewers({
   };
 
   const searchDropdownAffiliation = () => (
-    <Box pt={2}>
+    <Box pt={1}>
       <DropDown
         options={[{ label: t('affiliation.0'), value: '' }, ...getAffiliationOptions()]}
         testId="officeLocation"
@@ -233,20 +231,44 @@ export default function GridReviewers({
   );
 
   const searchEntryField = (testId: string) => (
-    <Box pt={1}>
-      <SearchEntry
-        label={t('search.label')}
-        testId={testId}
-        value={searchTerm}
-        setValue={setSearchTerm}
-      />
-    </Box>
+    <SearchEntry
+      label={t('search.label')}
+      testId={testId}
+      value={searchTerm}
+      setValue={setSearchTerm}
+    />
   );
 
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [containerHeight, setContainerHeight] = React.useState<number>(0);
+  React.useLayoutEffect(() => {
+    const updateHeight = () => {
+      if (containerRef.current) {
+        setContainerHeight(containerRef.current.offsetHeight);
+      }
+    };
+
+    updateHeight();
+    window.addEventListener('resize', updateHeight);
+    return () => window.removeEventListener('resize', updateHeight);
+  }, []);
+
+  const TITLE_HEIGHT = 120;
+  const SEARCH_HEIGHT = 120;
+  const interimHeight = showTitle ? containerHeight - TITLE_HEIGHT : containerHeight;
+  const finalHeight = showSearch ? `${interimHeight - SEARCH_HEIGHT}px` : `${interimHeight}px`;
+
   return (
-    <>
+    <Box
+      ref={containerRef}
+      sx={{
+        height: '100%',
+        width: '100%',
+        overflow: 'hidden'
+      }}
+    >
       {showTitle && (
-        <Grid container p={2} size={{ lg: 12 }}>
+        <Grid container size={{ lg: 12 }}>
           {ReviewersSectionTitle()}
         </Grid>
       )}
@@ -254,7 +276,6 @@ export default function GridReviewers({
       {showSearch && (
         <Grid
           pb={2}
-          pt={2}
           size={{ sm: 12 }}
           container
           direction="row"
@@ -262,30 +283,20 @@ export default function GridReviewers({
           justifyContent="space-between"
           alignItems="center"
         >
-          <Grid size={{ sm: 12 }}>
-            <Grid
-              container
-              direction="row"
-              spacing={2}
-              justifyContent="space-around"
-              alignItems="center"
-            >
-              <Grid size={{ sm: 3 }}>{searchDropdownExpertise()}</Grid>
-              <Grid size={{ sm: 3 }}>{searchDropdownAffiliation()}</Grid>
-              <Grid size={{ sm: 5 }}>{searchEntryField('searchId')}</Grid>
-            </Grid>
-          </Grid>
+          <Grid size={{ sm: 3 }}>{searchDropdownExpertise()}</Grid>
+          <Grid size={{ sm: 3 }}>{searchDropdownAffiliation()}</Grid>
+          <Grid size={{ sm: 5 }}>{searchEntryField('searchId')}</Grid>
         </Grid>
       )}
-      <Grid size={{ xs: 12 }} pt={1}>
+      <Grid size={{ xs: 12 }}>
         {!axiosError && (
           <div>
             <DataGrid
-              maxHeight={height}
+              maxHeight={finalHeight}
               testId="dataGridReviewers"
               rows={filteredData}
               columns={stdColumns}
-              height={height}
+              height={finalHeight}
             />
           </div>
         )}
@@ -293,6 +304,6 @@ export default function GridReviewers({
           <Alert color={AlertColorTypes.Error} testId="axiosErrorTestId" text={axiosError} />
         )}
       </Grid>
-    </>
+    </Box>
   );
 }
