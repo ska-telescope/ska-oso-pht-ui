@@ -154,7 +154,7 @@
     "not op_mini all"
   ],
   "engines": {
-    "node": "22.16.0"
+    "node": "22.19.0"
   },
   "resolutions": {
     "react-is": "^18.3.1"
