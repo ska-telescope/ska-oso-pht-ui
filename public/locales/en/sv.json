@@ -51,7 +51,7 @@
   },
   "email": {
     "label": "Email",
-    "help": "The email is a required field. The individual will be invited to participate in this Science Verification Idea using this email, so please ensure it is correct. If using the search functionality, the email should be of a registered user within SKAO systems. For example, @skao.int, @assoc.skao.int, or @community.skao.int.",
+    "help": "The email is a required field. The investigator will be invited to participate in this proposal using this email, so please ensure it is correct.",
     "invitation": {
       "subject": "Science Verification Idea invitation.",
       "body": "You have been invited to contribute to Science Verification Idea {{id}}"
