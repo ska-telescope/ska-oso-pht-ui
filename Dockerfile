@@ -1,5 +1,5 @@
 # pull the base image
-ARG BASE_IMAGE="artefact.skao.int/ska-build-node:0.1.4"
+ARG BASE_IMAGE="artefact.skao.int/ska-build-node:0.1.2"
 ARG FINAL_IMAGE="ska-web-server:0.1.4"
 FROM $BASE_IMAGE AS base
 
