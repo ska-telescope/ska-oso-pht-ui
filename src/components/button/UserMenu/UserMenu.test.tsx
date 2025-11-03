@@ -19,7 +19,11 @@ vi.mock('react-router-dom', () => ({
 }));
 
 vi.mock('@ska-telescope/ska-login-page', () => ({
-  ButtonLogin: () => <div data-testid="login-button">Login</div>,
+  ButtonLogin: () => (
+    <div data-testid="login-button">
+      <button data-testid="login-button-inner">Login</button>
+    </div>
+  ),
   ButtonUser: (props: any) => (
     <button data-testid="user-button" onClick={props.onClick}>
       {props.label}
@@ -53,7 +57,6 @@ describe('UserMenu', () => {
     (useNavigate as any).mockReturnValue(mockNavigate);
     localStorage.clear();
 
-    // Set up hook return values
     vi.mocked(useMsal).mockReturnValue({
       accounts: [
         {
@@ -89,38 +92,31 @@ describe('UserMenu', () => {
     });
 
     wrapper(<ButtonUserMenu />);
-
     expect(screen.getByTestId('login-button')).toBeInTheDocument();
   });
 
   it('renders user button when user is present', () => {
     wrapper(<ButtonUserMenu />);
-
     expect(screen.getByTestId('user-button')).toBeInTheDocument();
     expect(screen.getByText('TestUser')).toBeInTheDocument();
   });
 
   it('opens menu on user button click', () => {
     wrapper(<ButtonUserMenu />);
-
     fireEvent.click(screen.getByTestId('user-button'));
     expect(screen.getByRole('menu')).toBeVisible();
   });
 
   it('calls onClick override if provided', () => {
     const onClick = vi.fn();
-
     wrapper(<ButtonUserMenu onClick={onClick} />);
-
     fireEvent.click(screen.getByTestId('user-button'));
     expect(onClick).toHaveBeenCalled();
   });
 
   it('renders reviewer menu items based on roles', () => {
     wrapper(<ButtonUserMenu />);
-
     fireEvent.click(screen.getByTestId('user-button'));
-
     expect(screen.getByTestId('menuItemOverview')).toBeInTheDocument();
     expect(screen.getByTestId('menuItemProposals')).toBeInTheDocument();
     expect(screen.getByTestId('menuItemPanelSummary')).toBeInTheDocument();
@@ -131,9 +127,22 @@ describe('UserMenu', () => {
 
   it('navigates when menu item is selected', () => {
     wrapper(<ButtonUserMenu />);
-
     fireEvent.click(screen.getByTestId('user-button'));
     fireEvent.click(screen.getByTestId('menuItemOverview'));
     expect(mockNavigate).toHaveBeenCalledWith('/review/proposal');
+  });
+
+  it('navigates to home page when login button is clicked', () => {
+    vi.mocked(useMsal).mockReturnValue({
+      accounts: [],
+      instance: {} as IPublicClientApplication,
+      inProgress: 'none',
+      logger: new Logger({ loggerCallback: () => {} })
+    });
+
+    wrapper(<ButtonUserMenu />);
+    const loginButton = screen.getByTestId('login-button-inner');
+    fireEvent.click(loginButton);
+    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 });

@@ -12,10 +12,10 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { validateProposal } from '@utils/validation/validation';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
 import GetProposal from '@services/axios/get/getProposal/getProposal';
-import GetProposalByStatusList from '@services/axios/get/getProposalByStatusList/getProposalByStatusList';
 import EditIcon from '../../icon/editIcon/editIcon';
 import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
+import GetProposalsReviewable from '@/services/axios/get/getProposalsReviewable/getProposalsReviewable';
 import Proposal from '@/utils/types/proposal';
 import {
   NOT_SPECIFIED,
@@ -37,6 +37,7 @@ import { arraysAreEqual } from '@/utils/helpers';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 export function getProposalType(value: number): string {
   const type = PROJECTS.find(item => item.id === value)?.mapping;
@@ -82,7 +83,7 @@ export default function GridProposals({
   tickBoxClicked = () => {}
 }: GridProposalsProps) {
   const { t } = useScopedTranslation();
-
+  const { isSV } = useAppFlow();
   const navigate = useNavigate();
 
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
@@ -150,7 +151,7 @@ export default function GridProposals({
 
   React.useEffect(() => {
     const fetchData = async (status: string) => {
-      const response = await GetProposalByStatusList(authClient, status);
+      const response = await GetProposalsReviewable(authClient);
       const prevProposals = status === PROPOSAL_STATUS.UNDER_REVIEW ? [] : proposals;
 
       if (typeof response === 'string') {
@@ -336,17 +337,28 @@ export default function GridProposals({
     )
   };
 
-  const proposalColumns = [
-    ...(showSelection ? [colSelect] : []),
-    colTitle,
-    colStatus,
-    colScienceCategory,
-    colType,
-    colPI,
-    ...(showActions ? [colActions] : [])
-  ];
+  const proposalColumns = isSV()
+    ? [
+        ...(showSelection ? [colSelect] : []),
+        colTitle,
+        colStatus,
+        colScienceCategory,
+        colPI,
+        ...(showActions ? [colActions] : [])
+      ]
+    : [
+        ...(showSelection ? [colSelect] : []),
+        colTitle,
+        colStatus,
+        colScienceCategory,
+        colType,
+        colPI,
+        ...(showActions ? [colActions] : [])
+      ];
 
-  const reviewColumns = [...[colType, colTitle, colAuthors, colScienceCategory]];
+  const reviewColumns = isSV()
+    ? [...[colTitle, colAuthors, colScienceCategory]]
+    : [...[colType, colTitle, colAuthors, colScienceCategory]];
 
   const selectedData = proposals
     ? proposals.filter(e =>
@@ -459,7 +471,12 @@ export default function GridProposals({
   };
 
   const deleteConfirmed = async () => {
-    const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.WITHDRAWN);
+    const response = await PutProposal(
+      authClient,
+      getProposal(),
+      isSV(),
+      PROPOSAL_STATUS.WITHDRAWN
+    );
     if (response && !('error' in response)) {
       setOpenDeleteDialog(false);
       setFetchList(!fetchList);

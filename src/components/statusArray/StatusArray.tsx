@@ -3,16 +3,18 @@ import { Grid, Divider } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { NAV } from '@utils/constants.ts';
+import { NAV, PAGE_TECHNICAL } from '@utils/constants.ts';
 import StatusWrapper from '../wrappers/statusWrapper/StatusWrapper';
+import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 export default function StatusArrayOriginal() {
   const { application } = storageObject.useStore();
+  const { isSV } = useAppFlow();
 
   const SIZE_OK = () => useMediaQuery(useTheme().breakpoints.up('md'));
 
   const generateDivider = (index: number) => {
-    if (SIZE_OK() && index < NAV.length - 1) {
+    if (SIZE_OK() && index < getNAVItems().length - 1) {
       return (
         <Grid mt={-2} sx={{ width: '3%' }}>
           <Divider sx={{ width: '100%', borderBottomWidth: '3px' }} />
@@ -23,12 +25,17 @@ export default function StatusArrayOriginal() {
   };
 
   const generateStatus = (index: number) => {
-    const lvl = (application.content1 as number[])[index];
+    const idx = index > PAGE_TECHNICAL - 1 ? index + 1 : index;
+    const lvl = (application.content1 as number[])[idx];
     return (
       <Grid>
-        <StatusWrapper level={lvl} page={index} />
+        <StatusWrapper level={lvl} page={idx} />
       </Grid>
     );
+  };
+
+  const getNAVItems = () => {
+    return isSV() ? NAV.filter(rec => rec !== '/proposal/technical') : NAV;
   };
 
   return (
@@ -39,7 +46,7 @@ export default function StatusArrayOriginal() {
       alignItems="center"
       justifyContent="space-evenly"
     >
-      {NAV.map((_page, index) => (
+      {getNAVItems().map((_page, index) => (
         // eslint-disable-next-line react/no-array-index-key
         <React.Fragment key={index}>
           {generateStatus(index)}

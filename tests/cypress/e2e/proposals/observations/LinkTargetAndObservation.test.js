@@ -1,7 +1,7 @@
 import {
   addM2TargetUsingResolve,
   clearLocalStorage,
-  clickListOfTargets,
+  // clickListOfTargets,
   clickToAddTarget,
   clickToLinkTargetObservation,
   clickToNextPage,
@@ -18,7 +18,6 @@ beforeEach(() => {
   mockResolveTargetAPI();
 
   //add target
-  clickListOfTargets();
   addM2TargetUsingResolve();
   cy.wait('@mockResolveTarget');
   clickToAddTarget();

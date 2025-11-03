@@ -359,8 +359,8 @@ export const verifyProposalIsValid = () => {
 export const createStandardProposal = () => {
   clickAddProposal();
   enterProposalTitle();
-  clickProposalTypePrincipleInvestigator();
-  clickSubProposalTypeTargetOfOpportunity();
+  // clickProposalTypePrincipleInvestigator();
+  // clickSubProposalTypeTargetOfOpportunity();
   clickCreateProposal();
   verifyProposalCreatedAlertFooter();
   pageConfirmed('TEAM');
@@ -376,8 +376,8 @@ export const createStandardProposalLoggedIn = () => {
   clickAddProposal();
   clickCycleConfirm();
   enterProposalTitle();
-  clickProposalTypePrincipleInvestigator();
-  clickSubProposalTypeTargetOfOpportunity();
+  // clickProposalTypePrincipleInvestigator();
+  // clickSubProposalTypeTargetOfOpportunity();
   clickCreateProposal();
 };
 
@@ -452,6 +452,16 @@ export const addM2TargetUsingResolve = () => {
   clickResolveButton();
 };
 
+export const enterTargetName = (testId, value) => {
+  cy.get('[data-testid="' + testId + '"]').should('exist');
+  cy.get('[data-testid="' + testId + '"]').type(value);
+};
+
+export const enterTargetCoordinate = (testId, value) => {
+  cy.get('[data-testid="' + testId + '"]').should('exist');
+  cy.get('[data-testid="' + testId + '"]').type(value);
+};
+
 export const addBeamUsingResolve = beamName => {
   cy.get('[id="beamName"]').should('exist');
   cy.get('[id="beamName"]').type(beamName);
@@ -487,6 +497,15 @@ export const verifyObservationInTable = () => {
     .should('contain', 'obs-');
   //  .should('contain', 'AA2');
   //  .should('have.length', 2);
+};
+
+export const verifyFieldError = (testId, error, exists) => {
+  cy.get('[data-testid="' + testId + '"]').should('exist');
+  if (exists) {
+    cy.get('[data-testid="' + testId + '"]').should('contain', error);
+  } else {
+    cy.get('[data-testid="' + testId + '"]').should('not.contain', error);
+  }
 };
 
 export const clickObservationFromTable = () => {

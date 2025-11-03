@@ -36,10 +36,10 @@ import {
   NAV,
   PATH,
   PROPOSAL_STATUS,
-  SEARCH_TYPE_OPTIONS
+  PROPOSAL_STATUS_OPTIONS
 } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
-import { accessUpdate } from '@/utils/aaa/aaaUtils';
+import { accessUpdate, PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAPI } from '@/services/axios/use/useOSDAPI/useOSDAPI';
 import {
@@ -53,10 +53,17 @@ import {
   getColCycleClose
 } from '@/components/grid/gridColumns/GridColumns';
 import CycleSelection from '@/components/alerts/cycleSelection/CycleSelection';
+import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
+import PostProposal from '@/services/axios/post/postProposal/postProposal';
+import { useNotify } from '@/utils/notify/useNotify';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 export default function LandingPage() {
   const { t } = useScopedTranslation();
+  const { isSV } = useAppFlow();
   const navigate = useNavigate();
+  const { notifyError, notifySuccess, notifyWarning } = useNotify();
+  const { osdCycleId } = useOSDAccessors();
 
   const {
     application,
@@ -211,14 +218,47 @@ export default function LandingPage() {
     }
   };
 
+  const createProposal = async () => {
+    notifyWarning(t('addProposal.warning'));
+    const originalProposal = getProposal();
+    const response = await PostProposal(
+      authClient,
+      {
+        ...originalProposal,
+        id: '',
+        title: originalProposal.title + ' ' + t('cloneProposal.suffix'),
+        cycle: osdCycleId
+      },
+      isSV() ? true : false,
+      PROPOSAL_STATUS.DRAFT
+    );
+
+    if (response && !('error' in response)) {
+      notifySuccess(t('addProposal.success') + response.id);
+      setProposal({
+        ...(response as Proposal)
+      });
+      // Create a new access entry for the PI.  Saves doing the endpoint
+      const newAcc: Partial<ProposalAccess> = {
+        prslId: response.id,
+        role: PROPOSAL_ROLE_PI,
+        permissions: PROPOSAL_ACCESS_PERMISSIONS
+      };
+
+      const acc = Array.isArray(application.content4)
+        ? (application.content4 as ProposalAccess[])
+        : [];
+
+      updateAppContent4([...acc, newAcc]);
+      goToTitlePage();
+    } else {
+      notifyError((response as { error: string }).error);
+    }
+  };
+
   const cloneConfirmed = () => {
     setOpenCloneDialog(false);
-    setProposal({
-      ...getProposal(),
-      id: '',
-      title: getProposal().title + ' ' + t('cloneProposal.suffix')
-    });
-    goToTitlePage();
+    createProposal();
   };
 
   const deleteIconClicked = async (id: string) => {
@@ -231,7 +271,12 @@ export default function LandingPage() {
   };
 
   const deleteConfirmed = async () => {
-    const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.WITHDRAWN);
+    const response = await PutProposal(
+      authClient,
+      getProposal(),
+      isSV(),
+      PROPOSAL_STATUS.WITHDRAWN
+    );
     if (response && !('error' in response)) {
       setOpenDeleteDialog(false);
       setFetchList(!fetchList);
@@ -296,19 +341,32 @@ export default function LandingPage() {
     )
   };
 
-  const stdColumns = [
-    ...[
-      getColProposalId(),
-      getColProposalType(),
-      getColCycle(),
-      getColProposalTitle(),
-      getColProposalPI(),
-      getColProposalStatus(),
-      getColProposalUpdated(),
-      getColCycleClose(),
-      colActions
-    ]
-  ];
+  const stdColumns = isSV()
+    ? [
+        ...[
+          getColProposalId(t),
+          getColCycle(t),
+          getColProposalTitle(t),
+          getColProposalPI(t),
+          getColProposalStatus(t),
+          getColProposalUpdated(t),
+          getColCycleClose(t),
+          colActions
+        ]
+      ]
+    : [
+        ...[
+          getColProposalId(t),
+          getColProposalType(t),
+          getColCycle(t),
+          getColProposalTitle(t),
+          getColProposalPI(t),
+          getColProposalStatus(t),
+          getColProposalUpdated(t),
+          getColCycleClose(t),
+          colActions
+        ]
+      ];
 
   const searchableFields: (keyof Proposal)[] = ['id', 'title', 'cycle', 'investigators'];
 
@@ -373,7 +431,7 @@ export default function LandingPage() {
 
   const searchDropdown = () => (
     <DropDown
-      options={[{ label: t('status.0'), value: '' }, ...SEARCH_TYPE_OPTIONS]}
+      options={[{ label: t('status.0'), value: '' }, ...PROPOSAL_STATUS_OPTIONS]}
       testId="proposalType"
       value={searchType}
       setValue={setSearchType}

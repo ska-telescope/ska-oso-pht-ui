@@ -12,6 +12,7 @@ import {
   LAST_PAGE,
   NAV,
   PAGE_SRC_NET,
+  PAGE_TECHNICAL,
   PATH,
   PROPOSAL_STATUS,
   STATUS_ERROR,
@@ -34,6 +35,7 @@ import { useNotify } from '@/utils/notify/useNotify';
 import { accessSubmit } from '@/utils/aaa/aaaUtils';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 interface PageBannerPPTProps {
   pageNo: number;
@@ -44,6 +46,7 @@ const widthWrapStatusArray = '1500px';
 
 export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) {
   const theme = useTheme();
+  const { isSV } = useAppFlow();
   const LG = useMediaQuery(theme.breakpoints.down('lg'), {
     defaultMatches: false,
     noSsr: true
@@ -66,7 +69,10 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const getProposal = () => application.content2 as Proposal;
 
   const isDisableEndpoints = () => {
-    if (cypressProposal || (loggedIn && getProposal().id == null)) {
+    if (
+      cypressProposal ||
+      (loggedIn && (getProposal().id == null || getProposal()?.title?.trim()?.length === 0))
+    ) {
       return true;
     } else if (!loggedIn) {
       return !cypressToken;
@@ -83,12 +89,16 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       let results = [];
 
       for (let key in application.content1) {
+        const obj: { [key: string]: any } = application.content1;
+
         if (
-          application.content1[key] === STATUS_ERROR ||
-          application.content1[key] === STATUS_PARTIAL ||
-          (application.content1[key] === STATUS_INITIAL && key !== PAGE_SRC_NET.toString())
+          obj[key] === STATUS_ERROR ||
+          obj[key] === STATUS_PARTIAL ||
+          (obj[key] === STATUS_INITIAL && key !== PAGE_SRC_NET.toString())
         ) {
-          results.push(t('page.' + key + '.pageError'));
+          if (key !== PAGE_TECHNICAL.toString() || !isSV()) {
+            results.push(t('page.' + key + '.pageError'));
+          }
         }
       }
       const response = await PostProposalValidate(authClient, application.content2 as Proposal);
@@ -120,8 +130,8 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   };
 
   const updateProposal = async (proposal: Proposal) => {
-    if (!isDisableEndpoints() && pageNo !== 0) {
-      const response = await PutProposal(authClient, proposal, PROPOSAL_STATUS.DRAFT);
+    if (!isDisableEndpoints()) {
+      const response = await PutProposal(authClient, proposal, isSV(), PROPOSAL_STATUS.DRAFT);
       updateProposalResponse(response);
     }
   };
@@ -134,6 +144,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     const response = await PutProposal(
       authClient,
       application.content2 as Proposal,
+      isSV(),
       PROPOSAL_STATUS.SUBMITTED
     );
     if (response && !('error' in response)) {
@@ -180,7 +191,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         {!backPage && <HomeButton />}
       </Grid>
       <Grid>
-        {pageNo < LAST_PAGE && (
+        {getProposal().id !== null && pageNo < LAST_PAGE && (
           <SaveButton
             testId={'saveBtn'}
             disabled={isDisableEndpoints()}
@@ -203,7 +214,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       pr={2}
     >
       <Grid>
-        {pageNo < LAST_PAGE && (
+        {getProposal().id !== null && pageNo < LAST_PAGE && (
           <ValidateButton
             testId={'validateBtn'}
             disabled={isDisableEndpoints()}
@@ -213,7 +224,9 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         )}
       </Grid>
       <Grid>
-        {pageNo < LAST_PAGE && <SubmitButton action={submitClicked} disabled={!canSubmit} />}
+        {getProposal().id !== null && pageNo < LAST_PAGE && (
+          <SubmitButton action={submitClicked} disabled={!canSubmit} />
+        )}
       </Grid>
     </Grid>
   );
@@ -223,11 +236,11 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       <Grid>{buttonsLeft()}</Grid>
       {wrapStatusArray ? (
         <Grid size={{ xs: 7 }} display={'none'}>
-          {pageNo < LAST_PAGE && <StatusArray />}
+          {pageNo > -1 && pageNo < LAST_PAGE && <StatusArray />}
         </Grid>
       ) : (
         <Grid size={{ xs: 7 }} display={'block'}>
-          {pageNo < LAST_PAGE && <StatusArray />}
+          {getProposal().id !== null && pageNo < LAST_PAGE && <StatusArray />}
         </Grid>
       )}
 
@@ -259,36 +272,21 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     <Grid container direction="row" alignItems="center" justifyContent="space-between">
       {wrapStatusArray && (
         <Grid container justifyContent="center">
-          <Grid size={{ lg: 12 }}>{pageDesc()}</Grid>
+          <Grid size={{ sm: 11 }}>{pageDesc()}</Grid>
         </Grid>
       )}
 
-      {!wrapStatusArray && <Grid size={{ lg: 4 }}>{pageTitle()}</Grid>}
-
-      {!wrapStatusArray && <Grid size={{ lg: 8 }}>{pageDesc()}</Grid>}
+      {!wrapStatusArray && <Grid size={{ sm: 3 }}>{pageTitle()}</Grid>}
+      {!wrapStatusArray && <Grid size={{ sm: 6 }}>{pageDesc()}</Grid>}
+      {!wrapStatusArray && <Grid size={{ sm: 3 }}></Grid>}
     </Grid>
   );
 
   return (
     <Box p={2}>
       {row1()}
-      {row2()}
+      {getProposal().id !== null && row2()}
       {row3()}
-
-      {/* TODO: revisit to implement override breakpoint and use grid */}
-      {/* <Grid container spacing={1} alignItems="center">
-        <Grid size={{ xs: 6, md: 6, lg: 2 }}>
-          {buttonsLeft()}
-        </Grid>
-        <Grid xs={12} md={12} lg={8} order={{ lg: 2, md: 3 }}>
-          <Grid justifyContent="space-evenly">
-            {pageNo < LAST_PAGE && <StatusArray />}
-          </Grid>
-        </Grid>
-        <Grid xs={6} md={6} lg={2} order={{ lg: 3, md: 2 }}>
-          {buttonsRight()}
-        </Grid>
-      </Grid> */}
 
       {openProposalDisplay && (
         <ProposalDisplay

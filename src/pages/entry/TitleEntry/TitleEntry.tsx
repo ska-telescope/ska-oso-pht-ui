@@ -12,6 +12,7 @@ import LatexPreviewModal from '../../../components/info/latexPreviewModal/latexP
 import ViewIcon from '../../../components/icon/viewIcon/viewIcon';
 import CardTitle from '@/components/cards/cardTitle/CardTitle';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 const LABEL_WIDTH = 2;
 const FIELD_WIDTH = 10;
@@ -22,6 +23,7 @@ interface TitleEntryProps {
 export default function TitleEntry({ page }: TitleEntryProps) {
   const { t } = useScopedTranslation();
   const theme = useTheme();
+  const { isSV } = useAppFlow();
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
 
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -377,8 +379,8 @@ export default function TitleEntry({ page }: TitleEntryProps) {
       {getProposal() && (
         <>
           {row1()}
-          {row2()}
-          {getProposal().proposalType > 0 && row3()}
+          {!isSV() && row2()}
+          {!isSV() && getProposal().proposalType > 0 && row3()}
         </>
       )}
       <LatexPreviewModal

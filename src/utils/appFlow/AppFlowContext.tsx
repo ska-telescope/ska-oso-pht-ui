@@ -1,5 +1,6 @@
 // src/context/AppFlowContext.tsx
 import React, { createContext, useContext, useState } from 'react';
+import { cypressProposal } from '@utils/constants.ts';
 
 export type AppFlowType = 'Science Verification' | 'Proposal';
 
@@ -14,8 +15,13 @@ const AppFlowContext = createContext<AppFlowContextType | undefined>(undefined);
 export const AppFlowProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [appFlow, _setAppFlow] = useState<AppFlowType>('Science Verification');
+  let isSV: () => boolean;
 
-  const isSV = () => appFlow === 'Science Verification';
+  if (cypressProposal) {
+    isSV = () => appFlow === 'Testing';
+  } else {
+    isSV = () => appFlow === 'Science Verification';
+  }
 
   const setAppFlow = (_flow: AppFlowType) => {
     // Disabled for now

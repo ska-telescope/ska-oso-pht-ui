@@ -10,6 +10,7 @@ import { GRID_MEMBERS_ACTIONS } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 interface GridMembersProps {
   action?: boolean;
@@ -29,6 +30,7 @@ export default function GridMembers({
   permissions = []
 }: GridMembersProps) {
   const { t } = useScopedTranslation();
+  const { isSV } = useAppFlow();
 
   const isPI = ({ pi }: { pi: any }) => pi;
 
@@ -48,41 +50,50 @@ export default function GridMembers({
     <Typography variant="subtitle1">{t(inValue)}</Typography>
   );
 
-  const basicColumns = [
-    {
-      field: 'lastName',
-      renderHeader: () => headerDisplay('lastName.label'),
-      flex: 2,
-      minWidth: 150
-    },
-    {
-      field: 'firstName',
-      renderHeader: () => headerDisplay('firstName.label'),
-      flex: 2,
-      minWidth: 150
-    },
-    { field: 'status', renderHeader: () => headerDisplay('status.label'), flex: 1, minWidth: 120 },
-    {
-      field: 'phdThesis',
-      headerName: t('phdThesis.label'),
-      flex: 1,
-      minWidth: 120,
-      disableClickEventBubbling: true,
-      renderHeader: () => headerDisplay('phdThesis.grid'),
-      renderCell: (params: { row: { phdThesis: string; status: string } }) => (
-        <PHDThesis value={params.row.phdThesis} />
-      )
-    },
-    {
-      field: 'pi',
-      sortable: false,
-      flex: 1,
-      minWidth: 120,
-      disableClickEventBubbling: true,
-      renderHeader: () => headerDisplay('pi.short'),
-      renderCell: (params: { row: { pi: string; status: string } }) => <PIStar pi={params.row.pi} />
-    }
-  ];
+  const colLastName = {
+    field: 'lastName',
+    renderHeader: () => headerDisplay('lastName.label'),
+    flex: 2,
+    minWidth: 150
+  };
+
+  const colFirstName = {
+    field: 'firstName',
+    renderHeader: () => headerDisplay('firstName.label'),
+    flex: 2,
+    minWidth: 150
+  };
+
+  const colStatus = {
+    field: 'status',
+    renderHeader: () => headerDisplay('status.label'),
+    flex: 1,
+    minWidth: 120
+  };
+
+  const colPHD = {
+    field: 'phdThesis',
+    headerName: t('phdThesis.label'),
+    flex: 1,
+    minWidth: 120,
+    disableClickEventBubbling: true,
+    renderHeader: () => headerDisplay('phdThesis.grid'),
+    renderCell: (params: { row: { phdThesis: string; status: string } }) => (
+      <PHDThesis value={params.row.phdThesis} />
+    )
+  };
+
+  const colPI = {
+    field: 'pi',
+    sortable: false,
+    flex: 1,
+    minWidth: 120,
+    disableClickEventBubbling: true,
+    renderHeader: () => headerDisplay('pi.short'),
+    renderCell: (params: { row: { pi: string; status: string } }) => <PIStar pi={params.row.pi} />
+  };
+
+  const basicColumns = [colLastName, colFirstName, colStatus, colPHD, colPI];
 
   const trashClicked = () => {
     if (actionClicked) actionClicked(GRID_MEMBERS_ACTIONS.delete);
@@ -146,7 +157,8 @@ export default function GridMembers({
     }
   ];
 
-  const getColumns = () => (action ? [...basicColumns, ...actionColumns] : [...basicColumns]);
+  const baseColumns = () => (isSV() ? [colLastName, colFirstName, colStatus] : basicColumns);
+  const getColumns = () => (action ? [...baseColumns(), ...actionColumns] : [...baseColumns()]);
 
   return (
     <>

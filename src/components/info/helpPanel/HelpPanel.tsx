@@ -1,16 +1,13 @@
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { InfoCard, InfoCardColorTypes } from '@ska-telescope/ska-gui-components';
-import { HELP_FONT, HELP_VIEWPORT } from '../../../utils/constants';
+import { HELP_FONT } from '../../../utils/constants';
 
 interface HelpPanelProps {
   maxHeight?: string;
   minHeight?: string;
 }
 
-export default function HelpPanel({
-  maxHeight = HELP_VIEWPORT,
-  minHeight = HELP_VIEWPORT
-}: HelpPanelProps) {
+export default function HelpPanel({ maxHeight = '', minHeight = '0' }: HelpPanelProps) {
   const { help } = storageObject.useStore();
 
   const getHelp = () => (help.component as unknown) as string;

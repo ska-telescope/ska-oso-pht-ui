@@ -205,6 +205,11 @@ export const GENERAL = {
     { label: 'Solar, Heliospheric and Ionospheric Physics', value: 12 },
     { label: 'Transients', subCategory: [{ label: 'Not specified', value: 1 }], value: 13 },
     { label: 'VLBI', subCategory: [{ label: 'Not specified', value: 1 }], value: 14 }
+  ],
+  ObservingMode: [
+    { label: 'Zoom', subCategory: [{ label: 'Not specified', value: 1 }], value: 101 },
+    { label: 'Continuum', subCategory: [{ label: 'Not specified', value: 1 }], value: 102 },
+    { label: 'PST', subCategory: [{ label: 'Not specified', value: 1 }], value: 103 }
   ]
 };
 
@@ -216,7 +221,6 @@ export const GRID_MEMBERS_ACTIONS = {
 export const HEADER_HEIGHT = 78;
 
 export const HELP_FONT = 16;
-export const HELP_VIEWPORT = '20vh';
 
 export const IW_BRIGGS = 2;
 export const IW_NATURAL = 0;
@@ -262,6 +266,7 @@ export const SBS_CONV_FACTOR_DEFAULT = 1;
 
 export const INFINITY = 'Infinity';
 
+export const PAGE_TECHNICAL = 7;
 export const PAGE_SRC_NET = 9;
 
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
@@ -345,6 +350,14 @@ export const PROPOSAL_STATUS = {
   REJECTED: 'rejected',
   UNDER_REVIEW: 'under review'
 };
+export const PROPOSAL_STATUS_OPTIONS = [
+  { label: 'Draft', value: PROPOSAL_STATUS.DRAFT },
+  { label: 'Submitted', value: PROPOSAL_STATUS.SUBMITTED },
+  { label: 'Under Review', value: PROPOSAL_STATUS.UNDER_REVIEW },
+  { label: 'Accepted', value: PROPOSAL_STATUS.ACCEPTED },
+  { label: 'Withdrawn', value: PROPOSAL_STATUS.WITHDRAWN },
+  { label: 'Rejected', value: PROPOSAL_STATUS.REJECTED }
+];
 
 export const RECOMMENDATION_ACCEPT_REVISION = 'Accepted with Revision';
 export const RECOMMENDATION_REJECT = 'Rejected';
@@ -458,14 +471,6 @@ export const VEL_UNITS = [
   { label: 'm/s', value: 1 }
 ];
 
-export const SEARCH_TYPE_OPTIONS = [
-  { label: 'Draft', value: 'draft' },
-  { label: 'Submitted', value: 'submitted' },
-  { label: 'Under Review', value: 'under review' },
-  { label: 'Accepted', value: 'accepted' },
-  { label: 'Withdrawn', value: 'withdrawn' },
-  { label: 'Rejected', value: 'rejected' }
-];
 export const SEARCH_TYPE_OPTIONS_REVIEWERS = [
   { label: 'Pulsar Timing', value: 'Pulsar Timing' },
   { label: 'Galaxy Evolution', value: 'Galaxy Evolution' },

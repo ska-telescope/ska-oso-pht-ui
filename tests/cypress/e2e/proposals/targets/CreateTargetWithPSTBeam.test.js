@@ -1,7 +1,7 @@
 import {
   addM2TargetUsingResolve,
   clearLocalStorage,
-  clickListOfTargets,
+  // clickListOfTargets,
   clickToAddTarget,
   clickToLinkTargetObservation,
   clickToNextPage,
@@ -32,7 +32,7 @@ beforeEach(() => {
   mockResolveTargetAPI();
   mockResolveBeamAPI();
   //add target
-  clickListOfTargets();
+  // clickListOfTargets();
   addM2TargetUsingResolve();
   cy.wait('@mockResolveTarget');
   clickMultipleBeamsRadioButton(); //Select Multiple beams

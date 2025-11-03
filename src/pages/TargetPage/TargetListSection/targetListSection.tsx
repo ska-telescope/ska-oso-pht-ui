@@ -1,9 +1,9 @@
 import React from 'react';
-import { Box, Grid, Tab, Tabs, Typography } from '@mui/material';
+import { Box, Grid, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '@utils/types/proposal.tsx';
-import { RA_TYPE_ICRS, VELOCITY_TYPE, WRAPPER_HEIGHT } from '@utils/constants.ts';
+import { RA_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
 import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
@@ -13,13 +13,15 @@ import GridTargets from '../../../components/grid/targets/GridTargets';
 import SpatialImaging from './SpatialImaging/SpatialImaging';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
-const DATA_GRID_HEIGHT = '55vh';
+const DATA_GRID_HEIGHT = '60vh';
 const TARGET_ENTRY_HEIGHT = '60vh';
-const WRAPPER_WIDTH = '500px';
 
 export default function TargetListSection() {
   const { t } = useScopedTranslation();
+  const { isSV } = useAppFlow();
+  const theme = useTheme();
   const { application, updateAppContent2 } = storageObject.useStore();
   const [openEditDialog, setOpenEditDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
@@ -121,16 +123,6 @@ export default function TargetListSection() {
     setValue(newValue);
   };
 
-  const fieldWrapper = (children?: React.JSX.Element) => (
-    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT, width: WRAPPER_WIDTH }}>
-      {children}
-    </Box>
-  );
-
-  const emptyField = () => {
-    return <Grid>{fieldWrapper()}</Grid>;
-  };
-
   const displayRow1 = () => {
     return (
       <Grid
@@ -144,7 +136,6 @@ export default function TargetListSection() {
         sx={{ height: '60vh', width: '95vw' }}
       >
         <Grid size={{ md: 12, lg: 6 }} order={{ md: 2, lg: 1 }}>
-          {emptyField()}
           <GridTargets
             deleteClicked={deleteIconClicked}
             editClicked={editIconClicked}
@@ -158,7 +149,9 @@ export default function TargetListSection() {
             sx={{
               width: '100%',
               height: TARGET_ENTRY_HEIGHT,
-              border: '1px solid grey'
+              border: isSV() ? '1px solid red' : '1px solid grey',
+              borderColor: isSV() ? theme.palette.primary.light : 'grey',
+              borderRadius: isSV() ? '16px' : '0'
             }}
           >
             <Tabs
@@ -174,16 +167,20 @@ export default function TargetListSection() {
                 {...a11yProps(0)}
                 sx={{ border: '1px solid grey', width: '100%' }}
               />
-              <Tab
-                label={t('importFromFile.label')}
-                {...a11yProps(1)}
-                sx={{ border: '1px solid grey', width: '100%' }}
-              />
-              <Tab
-                label={t('spatialImaging.label')}
-                {...a11yProps(2)}
-                sx={{ border: '1px solid grey', width: '100%' }}
-              />
+              {!isSV() && (
+                <Tab
+                  label={t('importFromFile.label')}
+                  {...a11yProps(1)}
+                  sx={{ border: '1px solid grey', width: '100%' }}
+                />
+              )}
+              {!isSV() && (
+                <Tab
+                  label={t('spatialImaging.label')}
+                  {...a11yProps(2)}
+                  sx={{ border: '1px solid grey', width: '100%' }}
+                />
+              )}
             </Tabs>
             {value === 0 && <TargetEntry raType={RA_TYPE_ICRS.value} textAlign="left" />}
             {value === 1 && <TargetFileImport raType={RA_TYPE_ICRS.value} />}

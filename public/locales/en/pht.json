@@ -151,7 +151,8 @@
   },
   "cloneProposal": {
     "toolTip": "Clone proposal",
-    "confirm": "Clone this proposal."
+    "confirm": "Clone this proposal.",
+    "suffix": " - Copy"
   },
   "closeBtn": {
     "label": "Close"
@@ -344,7 +345,7 @@
     "label": "Id"
   },
   "imageSize": {
-    "0": "degrees",
+    "0": "degrees2",
     "1": "arcmins",
     "2": "arcsecs",
     "label": "Image Size",
@@ -973,6 +974,15 @@
         "0": "dd:mm:ss.s",
         "1": "deg"
       }
+    },
+    "error": {
+      "1": {
+        "0": "Input formatted incorrectly"
+      },
+      "2": {
+        "0": "Input formatted incorrectly",
+        "1": "Valid range is -90 to 90 degrees"
+      }
     }
   },
   "spatialImaging": {
@@ -1142,7 +1152,7 @@
   },
   "targetObservation": {
     "filters": "Filters",
-    "label": "Target / Observation relationship"
+    "label": "Targets to be linked"
   },
   "targetSelection": {
     "label": "Target selection"

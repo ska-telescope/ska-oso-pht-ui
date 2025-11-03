@@ -11,7 +11,7 @@ import {
   isReviewerAdmin,
   isReviewerChair,
   isReviewer,
-  useInitializeAccessStore // ✅ Import the initializer hook
+  useInitializeAccessStore
 } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
@@ -30,7 +30,7 @@ export default function ButtonUserMenu({
   onClick,
   toolTip = 'Additional user functionality including sign out'
 }: ButtonUserMenuProps): JSX.Element {
-  useInitializeAccessStore(); // ✅ Initialize access store at top level
+  useInitializeAccessStore();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [cypressLogin, setCypressLogin] = React.useState('');
@@ -39,6 +39,7 @@ export default function ButtonUserMenu({
   const navigate = useNavigate();
   const theme = useTheme();
   const buttonWrapperRef = React.useRef<HTMLDivElement>(null);
+  const loginButtonRef = React.useRef<HTMLDivElement>(null);
   const { updateAppContent2 } = storageObject.useStore();
   const { accounts } = useMsal();
   const username = accounts.length > 0 ? accounts[0].name + cypressLogin : cypressLogin;
@@ -48,6 +49,20 @@ export default function ButtonUserMenu({
     const account = accountStr ? JSON.parse(accountStr) : null;
     if (account && isCypress) {
       setCypressLogin(account.name);
+    }
+  }, []);
+
+  // Attach click listener to ButtonLogin
+  React.useEffect(() => {
+    const loginButton = loginButtonRef.current?.querySelector('button');
+    if (loginButton) {
+      const handleLoginClick = () => {
+        navigate(PATH[0]); // Navigate to home page
+      };
+      loginButton.addEventListener('click', handleLoginClick);
+      return () => {
+        loginButton.removeEventListener('click', handleLoginClick);
+      };
     }
   }, []);
 
@@ -69,10 +84,12 @@ export default function ButtonUserMenu({
     <>
       <Box ref={buttonWrapperRef}>
         {!username && (
-          <ButtonLogin
-            colorBG={theme.palette.secondary.main}
-            colorFG={theme.palette.secondary.contrastText}
-          />
+          <Box ref={loginButtonRef}>
+            <ButtonLogin
+              colorBG={theme.palette.secondary.main}
+              colorFG={theme.palette.secondary.contrastText}
+            />
+          </Box>
         )}
         {username && (
           <ButtonUser

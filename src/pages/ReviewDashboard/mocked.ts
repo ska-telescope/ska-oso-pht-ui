@@ -1,6 +1,8 @@
+import { PROPOSAL_STATUS } from '@/utils/constants';
+
 export const proposals = [
   {
-    status: 'Submitted',
+    status: PROPOSAL_STATUS.SUBMITTED,
     category: 'Cosmology',
     telescope: 'MID',
     country: 'South Africa',
@@ -8,7 +10,7 @@ export const proposals = [
     rank: 1
   },
   {
-    status: 'Draft',
+    status: PROPOSAL_STATUS.DRAFT,
     category: 'Pulsars',
     telescope: 'LOW',
     country: 'Namibia',
@@ -32,7 +34,7 @@ export const proposals = [
     rank: 3
   },
   {
-    status: 'Submitted',
+    status: PROPOSAL_STATUS.SUBMITTED,
     category: 'Solar Physics',
     telescope: 'LOW',
     country: 'Namibia',

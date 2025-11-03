@@ -173,12 +173,12 @@ export default function GridReviewers({
 
   const stdColumns = [
     ...(showSelection ? [colSelect] : []),
-    getColJobTitle(),
-    getColDisplayName(),
-    getColReviewerLocation(),
-    getColReviewerType(typeState, setTypeState),
-    getColSubExpertise(),
-    getColStatus()
+    getColJobTitle(t),
+    getColDisplayName(t),
+    getColReviewerLocation(t),
+    getColReviewerType(t, typeState, setTypeState),
+    getColSubExpertise(t),
+    getColStatus(t)
   ];
 
   const selectedData = reviewers
