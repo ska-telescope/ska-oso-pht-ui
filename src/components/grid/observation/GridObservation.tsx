@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Stack } from '@mui/system';
+import { Box, Stack, useTheme } from '@mui/system';
 import { DataGrid } from '@ska-telescope/ska-gui-components';
 import Typography from '@mui/material/Typography';
 import { GridColDef } from '@mui/x-data-grid';
@@ -16,6 +16,7 @@ interface GridObservationProps {
 
 export default function GridObservation({ data, rowClick }: GridObservationProps) {
   const { t } = useScopedTranslation();
+  const theme = useTheme();
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
   const hasSelectedRef = React.useRef(false);
 
@@ -35,14 +36,16 @@ export default function GridObservation({ data, rowClick }: GridObservationProps
 
   React.useEffect(() => {
     if (data.length > 0 && !hasSelectedRef.current) {
-      setSelectedId(data[0].id);
+      const firstId = String(data[0].id);
+      setSelectedId(firstId);
       rowClick?.({ row: data[0] });
       hasSelectedRef.current = true;
     }
   }, [data, rowClick]);
 
   const handleRowClick = (params: any) => {
-    setSelectedId(params.row.id);
+    const clickedId = String(params.row.id);
+    setSelectedId(clickedId);
     rowClick?.(params);
   };
 
@@ -100,16 +103,24 @@ export default function GridObservation({ data, rowClick }: GridObservationProps
     minWidth: 0,
     maxWidth: Number.MAX_SAFE_INTEGER,
     resizable: false,
-    renderCell: e => (
-      <Stack direction="column">
-        {displayName(e.row.id)}
-        {displayFrequency(e.row.centralFrequency)}
-        {!isZoom(e.row.type) && displayContinuumBandwidth(e.row.continuumBandwidth)}
-        {isZoom(e.row.type) && displayZoomBandwidth(e.row.bandwidth)}
-        {displayNumSubBands(e.row.numSubBands)}
-        {displaySubarray(e.row.subarray, e.row.type)}
-      </Stack>
-    )
+    renderCell: e => {
+      const isSelected = String(e.row.id) === selectedId;
+      return (
+        <Stack
+          direction="column"
+          sx={{
+            backgroundColor: isSelected ? theme.palette.primary.light : 'transparent'
+          }}
+        >
+          {displayName(e.row.id)}
+          {displayFrequency(e.row.centralFrequency)}
+          {!isZoom(e.row.type) && displayContinuumBandwidth(e.row.continuumBandwidth)}
+          {isZoom(e.row.type) && displayZoomBandwidth(e.row.bandwidth)}
+          {displayNumSubBands(e.row.numSubBands)}
+          {displaySubarray(e.row.subarray, e.row.type)}
+        </Stack>
+      );
+    }
   };
 
   const columns: GridColDef[] = [colObservation];
@@ -131,11 +142,9 @@ export default function GridObservation({ data, rowClick }: GridObservationProps
           rows={data}
           columns={columns}
           getRowHeight={() => ROW_HEIGHT}
-          disableVirtualization
           hideFooter
           onRowClick={handleRowClick}
           rowSelectionModel={selectedId ? [selectedId] : []}
-          testId="observationsGrid"
           autoHeight={false}
           sx={{
             width: '100%',
