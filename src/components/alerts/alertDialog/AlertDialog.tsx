@@ -18,6 +18,7 @@ interface AlertDialogProps {
   onDialogResponse: Function;
   title?: string;
   children?: JSX.Element | JSX.Element[];
+  disabled: boolean;
 }
 
 export default function AlertDialog({
@@ -26,7 +27,8 @@ export default function AlertDialog({
   onClose,
   onDialogResponse,
   title = '',
-  children
+  children,
+  disabled
 }: AlertDialogProps) {
   const { t } = useScopedTranslation();
 
@@ -70,7 +72,11 @@ export default function AlertDialog({
             <CancelButton testId="dialogCancelButton" action={handleCancel} />
           </Grid>
           <Grid>
-            <ConfirmButton testId="dialogConfirmationButton" action={handleContinue} />
+            <ConfirmButton
+              testId="dialogConfirmationButton"
+              action={handleContinue}
+              disabled={disabled}
+            />
           </Grid>
         </Grid>
       </DialogActions>

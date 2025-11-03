@@ -26,6 +26,9 @@ export default function TargetListSection() {
   const [openEditDialog, setOpenEditDialog] = React.useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [rowTarget, setRowTarget] = React.useState<Target | null>(null);
+  const [skyDirection1Error, setSkyDirection1Error] = React.useState('');
+  const [skyDirection2Error, setSkyDirection2Error] = React.useState('');
+  const [nameError, setNameError] = React.useState('');
 
   const deleteIconClicked = (e: Target) => {
     setRowTarget(e);
@@ -200,6 +203,7 @@ export default function TargetListSection() {
           onClose={closeDialog}
           onDialogResponse={deleteConfirmed}
           title="deleteTarget.label"
+          disabled={false} // required attribute
         >
           {alertDeleteContent()}
         </AlertDialog>
@@ -210,6 +214,7 @@ export default function TargetListSection() {
           open={openEditDialog}
           onClose={closeDialog}
           onDialogResponse={editConfirmed}
+          disabled={!!skyDirection1Error || !!skyDirection2Error || !!nameError}
           title="editTarget.label"
         >
           <TargetEntry
@@ -217,6 +222,9 @@ export default function TargetListSection() {
             setTarget={setRowTarget}
             target={rowTarget ? rowTarget : undefined}
             showBeamData={!!rowTarget?.tiedArrayBeams?.pstBeams}
+            onRAFieldErrorChange={setSkyDirection1Error} // Pass callback
+            onDecFieldErrorChange={setSkyDirection2Error} // Pass callback
+            onNameFieldErrorChange={setNameError} // Pass callback
           />
         </AlertDialog>
       )}
