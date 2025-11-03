@@ -17,7 +17,7 @@ import { TIME_MINS } from '@/utils/constantsSensCalc';
 const PAGE = 6;
 
 export default function CalibrationPage() {
-  const { application, updateAppContent1, helpComponent } = storageObject.useStore();
+  const { application, updateAppContent1, updateAppContent2, helpComponent } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   const { t } = useScopedTranslation();
@@ -35,6 +35,7 @@ export default function CalibrationPage() {
   const [axiosViewError, setAxiosViewError] = React.useState('');
 
   const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
@@ -59,7 +60,28 @@ export default function CalibrationPage() {
     setTheProposalState(validateCalibrationPage());
   }, [validateToggle]);
 
+  const updateProposalWithCalibrationStrategy = () => {
+    console.log('::: in updateProposalWithCalibrationStrategy');
+    // only define an observatory strategy if there's at least one observation
+    const obsStrategy = getProposal().observations?.[0] ? {
+      observatoryDefined: true,
+      id: 'generateID',
+      observationIdRef: getProposal().observations?.[0]?.id as string,
+      calibrators: null, // we are displaying the info to the user but not storing it as per current requirements
+      notes: comment
+    } : null;
+    const record = {
+      ...getProposal(),
+      calibrationStrategy: [...(obsStrategy ? [obsStrategy] : [])]
+    };
+    console.log(record);
+    setProposal(record);
+  };
+
+  // TODO retrieve saved calibrator strategy such as comment
+
   async function getCalibratorData() {
+    console.log('::: in getCalibratorData');
     const response = await GetCalibratorList();
     if (typeof response === 'string') {
       // TODO handle error
@@ -80,6 +102,7 @@ export default function CalibrationPage() {
   };
 
   function setCalibratorData(calibrator: Calibrator) {
+    console.log('::: in setCalibratorData');
     // data from the calibrator
     setName(calibrator.name);
     setDuration(calibrator.durationMin.toString());
@@ -87,6 +110,7 @@ export default function CalibrationPage() {
     // data from the proposal
     setTarget(getProposal().targets?.[0]?.name || '');
     setIntegrationTime(getSuppliedIntegrationTimeInMinutes());
+    updateProposalWithCalibrationStrategy();
   }
 
   const fieldWrapper = (children?: React.JSX.Element) => (
