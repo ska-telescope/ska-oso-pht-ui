@@ -286,16 +286,8 @@ const getCalibrationStrategy = (
         observatoryDefined: strategy.observatory_defined,
         id: strategy?.calibration_id,
         observationIdRef: strategy?.observation_set_ref,
-        calibrators: strategy?.calibrators // TODO use mapping in getCalibratorList
-          ? // ? strategy?.calibrators?.map(calibrator => ({
-            //     calibrationIntent: calibrator.calibration_intent,
-            //     name: calibrator?.name,
-            //     durationMin: calibrator?.duration_min,
-            //     choice: calibrator?.choice,
-            //     notes: calibrator?.notes
-            //   }))
-            // : null,
-            strategy?.calibrators?.map(calibrator => calibratorMapping(calibrator))
+        calibrators: strategy?.calibrators
+          ? strategy?.calibrators?.map(calibrator => calibratorMapping(calibrator))
           : null,
         notes: strategy.notes
       }))
