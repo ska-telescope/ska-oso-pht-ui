@@ -1295,7 +1295,8 @@
       "titleShort": "Calibration",
       "desc": "Observatory defined calibrator observing strategy",
       "pageError": "The CALIBRATION STRATEGY page is not complete",
-      "help": "The listed strategy is representative and not garanteed at the time of execution. User defined calibration strategies are not currently supported."
+      "help": "The listed strategy is representative and not garanteed at the time of execution. User defined calibration strategies are not currently supported.",
+      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE CALIBRATION STRATEGY AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL"
     },
     "7": {
       "status": "Technical",

@@ -8,11 +8,13 @@ import Shell from '../../components/layout/Shell/Shell';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { LAB_POSITION, WRAPPER_HEIGHT } from '@/utils/constants';
+import { LAB_POSITION, STATUS_OK, WRAPPER_HEIGHT } from '@/utils/constants';
 import GetCalibratorList from '@/services/axios/get/getCalibratorList/getCalibratorList';
 import { Calibrator } from '@/utils/types/calibrationStrategy';
 import { timeConversion } from '@/utils/helpersSensCalc';
 import { TIME_MINS } from '@/utils/constantsSensCalc';
+import { generateId } from '@/utils/helpers';
+import Observation from '@/utils/types/observation';
 
 const PAGE = 6;
 
@@ -30,6 +32,10 @@ export default function CalibrationPage() {
   const LABEL_WIDTH = 4.5;
   const LINE_OFFSET = 30;
 
+  const [baseObservations, setBaseObservations] = React.useState<
+    { label: string; value: string }[]
+  >([]);
+  const [id, setId] = React.useState('');
   const [name, setName] = React.useState('');
   const [duration, setDuration] = React.useState('');
   const [intent, setIntent] = React.useState('');
@@ -38,6 +44,9 @@ export default function CalibrationPage() {
   const [addComment, setAddComment] = React.useState(false);
   const [comment, setComment] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
+
+  const hasObservations = () => (baseObservations?.length > 0 ? true : false);
+  const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -54,7 +63,7 @@ export default function CalibrationPage() {
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
     helpComponent(t('page.' + PAGE + '.help'));
-    getCalibratorData();
+    getData();
   }, []);
 
   React.useEffect(() => {
@@ -65,15 +74,44 @@ export default function CalibrationPage() {
     setTheProposalState(validateCalibrationPage());
   }, [validateToggle]);
 
+  React.useEffect(() => {
+    updateProposalWithCalibrationStrategy();
+  }, [addComment, comment]);
+
+  React.useEffect(() => {
+    const results: Observation[] | undefined = getProposal()?.observations?.filter(
+      ob =>
+        typeof getProposal()?.targetObservation?.find(
+          e => e.observationId === ob.id && e.sensCalc.statusGUI === STATUS_OK
+        ) !== 'undefined'
+    );
+    const values = results?.map(e => ({ label: e.id, value: e.id }));
+    if (values) {
+      setBaseObservations([...values]);
+    }
+    setValidateToggle(!validateToggle);
+  }, []);
+
+  const getData = () => {
+    // data from the calibrator endpoint
+    getCalibratorData();
+    // data from the proposal calibration strategy
+    getCalibrationStrategyFromProposal();
+    // observation & target info from the proposal
+    getOtherProposalData();
+    // update proposal with calibration strategy
+    updateProposalWithCalibrationStrategy();
+  };
+
   const updateProposalWithCalibrationStrategy = () => {
-    // only define an observatory strategy if there's at least one observation
-    const obsStrategy = getProposal().observations?.[0]
+    // only define a calibration strategy if there's a linked observation
+    const obsStrategy = hasObservations()
       ? {
           observatoryDefined: true,
-          id: 'generateID',
+          id: id ? id : generateId('cal-'),
           observationIdRef: getProposal().observations?.[0]?.id as string,
           calibrators: null, // we are displaying the info to the user but not storing it as per current requirements
-          notes: comment
+          notes: addComment ? comment : null
         }
       : null;
     const record = {
@@ -83,12 +121,23 @@ export default function CalibrationPage() {
     setProposal(record);
   };
 
-  // TODO retrieve saved calibrator strategy such as comment
+  function getOtherProposalData() {
+    setTarget(getProposal().targets?.[0]?.name || '');
+    setIntegrationTime(getSuppliedIntegrationTimeInMinutes());
+  }
+
+  function getCalibrationStrategyFromProposal() {
+    const existingStrategy = getProposal().calibrationStrategy?.[0];
+    if (existingStrategy) {
+      setId(existingStrategy.id);
+      setComment(existingStrategy.notes || '');
+      setAddComment(existingStrategy.notes ? true : false);
+    }
+  }
 
   async function getCalibratorData() {
     const response = await GetCalibratorList();
     if (typeof response === 'string') {
-      // TODO handle error
       setAxiosViewError(response);
       return false;
     } else {
@@ -98,7 +147,7 @@ export default function CalibrationPage() {
   }
 
   const getSuppliedIntegrationTimeInMinutes = (): string => {
-    const integrationTime = getProposal().observations?.[0]?.supplied; // TODO handle supplied sensitivity case
+    const integrationTime = getProposal().observations?.[0]?.supplied; // TODO handle supplied sensitivity case in future
     let timeInMinutes = integrationTime?.value
       ? timeConversion(integrationTime?.value, integrationTime?.units, TIME_MINS)?.toFixed(2)
       : '';
@@ -106,14 +155,9 @@ export default function CalibrationPage() {
   };
 
   function setCalibratorData(calibrator: Calibrator) {
-    // data from the calibrator
     setName(calibrator.name);
     setDuration(calibrator.durationMin.toString());
     setIntent(calibrator.calibrationIntent);
-    // data from the proposal
-    setTarget(getProposal().targets?.[0]?.name || '');
-    setIntegrationTime(getSuppliedIntegrationTimeInMinutes());
-    updateProposalWithCalibrationStrategy();
   }
 
   const fieldWrapper = (children?: React.JSX.Element) => (
@@ -206,7 +250,6 @@ export default function CalibrationPage() {
           value={comment}
           setValue={setComment}
           onFocus={() => helpComponent(t('calibrator.comment.help'))}
-          // errorText={validateWordCount(getProposal().abstract as string)}
         />
       </Box>
     );
@@ -240,31 +283,42 @@ export default function CalibrationPage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="center">
-        <Grid size={{ xs: 6 }}>
-          <Grid
-            p={1}
-            container
-            direction="column"
-            alignItems="space-evenly"
-            justifyContent="center"
-          >
-            <Grid>
-              {!axiosViewError && calibrationDetails()}
-              {axiosViewError && (
-                <Alert
-                  color={AlertColorTypes.Error}
-                  testId="axiosErrorTestId"
-                  text={axiosViewError}
-                />
-              )}
+      <>
+        {hasObservations() && (
+          <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="center">
+            <Grid size={{ xs: 6 }}>
+              <Grid
+                p={1}
+                container
+                direction="column"
+                alignItems="space-evenly"
+                justifyContent="center"
+              >
+                <Grid>
+                  {!axiosViewError && calibrationDetails()}
+                  {axiosViewError && (
+                    <Alert
+                      color={AlertColorTypes.Error}
+                      testId="axiosErrorTestId"
+                      text={axiosViewError}
+                    />
+                  )}
+                </Grid>
+              </Grid>
+            </Grid>
+            <Grid pt={4} size={{ xs: 4 }}>
+              <HelpPanel />
             </Grid>
           </Grid>
-        </Grid>
-        <Grid pt={4} size={{ xs: 4 }}>
-          <HelpPanel />
-        </Grid>
-      </Grid>
+        )}
+        {!hasObservations() && (
+          <Alert
+            color={AlertColorTypes.Error}
+            text={t('page.' + PAGE + errorSuffix())}
+            testId="helpPanelId"
+          />
+        )}
+      </>
     </Shell>
   );
 }
