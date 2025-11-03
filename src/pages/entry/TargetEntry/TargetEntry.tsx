@@ -121,17 +121,17 @@ export default function TargetEntry({
 
   const setTheDec = (inValue: string) => {
     const formattedDec = leadZero(inValue);
-    setDec(formattedDec);
+    setDec(formattedDec.toString());
     if (setTarget) {
-      setTarget({ ...target, decStr: formattedDec });
+      setTarget({ ...target, decStr: formattedDec.toString() });
     }
   };
 
   const setTheRA = (inValue: string) => {
     const formattedRA = leadZero(inValue);
-    setRA(formattedRA);
+    setRA(formattedRA.toString());
     if (setTarget) {
-      setTarget({ ...target, raStr: formattedRA });
+      setTarget({ ...target, raStr: formattedRA.toString() });
     }
   };
 
