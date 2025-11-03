@@ -51,7 +51,7 @@
   },
   "email": {
     "label": "Email",
-    "help": "The email is a required field. The investigator will be invited to participate in this proposal using this email, so please ensure it is correct.",
+    "help": "The email is a required field. The participant will be invited to participate in this Science Verification Idea using this email, so please ensure it is correct. If using the search functionality, the email should be of a registered user within SKAO systems. For example, @skao.int, @assoc.skao.int, or @community.skao.int.",
     "invitation": {
       "subject": "Science Verification Idea invitation.",
       "body": "You have been invited to contribute to Science Verification Idea {{id}}"
@@ -85,22 +85,22 @@
     "submit": {
       "label": "Submit rights",
       "short": "Submit",
-      "help": "Check to indicate that this individual can submit, edit and view the Science Verification Idea."
+      "help": "Check to indicate that this participant can submit, edit and view the Science Verification Idea."
     },
     "edit": {
       "label": "Edit rights",
       "short": "Edit",
-      "help": "Check to indicate that this individual can edit and view the Science Verification Idea."
+      "help": "Check to indicate that this participant can edit and view the Science Verification Idea."
     },
     "update": {
       "label": "Update rights",
       "short": "Update",
-      "help": "Check to indicate that this individual can update and view the Science Verification Idea."
+      "help": "Check to indicate that this participant can update and view the Science Verification Idea."
     },
     "view": {
       "label": "View rights",
       "short": "View",
-      "help": "Check to indicate that this individual can view the Science Verification Idea."
+      "help": "Check to indicate that this participant can view the Science Verification Idea."
     }
   },
   "overview": {
