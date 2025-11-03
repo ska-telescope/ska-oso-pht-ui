@@ -31,7 +31,8 @@ import {
   ROBUST,
   IW_BRIGGS,
   RA_TYPE_GALACTIC,
-  RA_TYPE_ICRS
+  RA_TYPE_ICRS,
+  SCIENCE_VERIFICATION
 } from '@utils/constants.ts';
 import {
   DataProductSDP,
@@ -159,7 +160,7 @@ const getCalibrationStrategy = (
   return calibrationStrategies?.map(strategy => ({
     observatory_defined: strategy.observatoryDefined,
     calibration_id: strategy.id,
-    observation_id_ref: strategy.observationIdRef,
+    observation_set_ref: strategy.observationIdRef,
     calibrators: strategy.calibrators
       ? strategy?.calibrators?.map(calibrator => ({
           calibration_intent: calibrator.calibrationIntent,
@@ -495,7 +496,7 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
       title: proposal.title,
       proposal_type: {
         main_type: isSV
-          ? 'science_verification'
+          ? SCIENCE_VERIFICATION
           : (PROJECTS.find(item => item.id === proposal.proposalType)?.mapping as string),
         attributes: proposal.proposalSubType
           ? getSubType(proposal.proposalType, proposal.proposalSubType)

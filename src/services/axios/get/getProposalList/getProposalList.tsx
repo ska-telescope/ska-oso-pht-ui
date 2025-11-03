@@ -8,7 +8,8 @@ import {
   PROJECTS,
   GENERAL,
   OSO_SERVICES_PROPOSAL_PATH,
-  isCypress
+  isCypress,
+  SCIENCE_VERIFICATION
 } from '@/utils/constants';
 import Investigator, { InvestigatorBackend } from '@/utils/types/investigator';
 import { getUniqueMostRecentItems } from '@/utils/helpers';
@@ -71,9 +72,11 @@ export function mappingList(inRec: ProposalBackend[]): Proposal[] {
       version: tmp.metadata?.version as number,
       proposalType: PROJECTS.find(p => p.mapping === tmp.proposal_info?.proposal_type.main_type)
         ?.id as number,
-      proposalSubType: tmp.proposal_info?.proposal_type?.attributes
-        ? getSubType(tmp.proposal_info?.proposal_type)
-        : [],
+      proposalSubType:
+        tmp.proposal_info?.proposal_type.main_type !== SCIENCE_VERIFICATION &&
+        tmp.proposal_info?.proposal_type?.attributes
+          ? getSubType(tmp.proposal_info?.proposal_type)
+          : [],
       scienceCategory: tmp.proposal_info?.science_category
         ? (getScienceCategory(
             tmp?.proposal_info?.science_category !== null ? tmp.proposal_info.science_category : ''

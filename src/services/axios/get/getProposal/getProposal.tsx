@@ -42,7 +42,8 @@ import {
   PDF_NAME_PREFIXES,
   RA_TYPE_ICRS,
   RA_TYPE_GALACTIC,
-  isCypress
+  isCypress,
+  SCIENCE_VERIFICATION
 } from '@utils/constants.ts';
 import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import { ObservationSetBackend } from '@utils/types/observationSet.tsx';
@@ -282,15 +283,15 @@ const getCalibrationStrategy = (
   return inValue
     ? inValue.map(strategy => ({
         observatoryDefined: strategy.observatory_defined,
-        id: strategy.calibration_id,
-        observationIdRef: strategy.observation_id_ref,
-        calibrators: strategy.calibrators // TODO use mapping in getCalibratorList
-          ? strategy.calibrators.map(calibrator => ({
+        id: strategy?.calibration_id,
+        observationIdRef: strategy?.observation_set_ref,
+        calibrators: strategy?.calibrators // TODO use mapping in getCalibratorList
+          ? strategy?.calibrators?.map(calibrator => ({
               calibrationIntent: calibrator.calibration_intent,
-              name: calibrator.name,
-              durationMin: calibrator.duration_min,
-              choice: calibrator.choice,
-              notes: calibrator.notes
+              name: calibrator?.name,
+              durationMin: calibrator?.duration_min,
+              choice: calibrator?.choice,
+              notes: calibrator?.notes
             }))
           : null,
         notes: strategy.notes
@@ -651,7 +652,7 @@ export function mapping(inRec: ProposalBackend): Proposal {
   let sciencePDF: DocumentPDF;
   let technicalPDF: DocumentPDF | undefined;
 
-  const isSV: boolean = inRec.proposal_info?.proposal_type?.main_type === 'science_verification';
+  const isSV: boolean = inRec.proposal_info?.proposal_type?.main_type === SCIENCE_VERIFICATION;
 
   sciencePDF = (getPDF(
     inRec?.observation_info?.documents,

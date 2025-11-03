@@ -342,6 +342,8 @@ export const PROJECTS = [
   }
 ];
 
+export const SCIENCE_VERIFICATION = 'science_verification';
+
 export const PROPOSAL_STATUS = {
   DRAFT: 'draft',
   SUBMITTED: 'submitted',

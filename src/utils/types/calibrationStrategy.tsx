@@ -10,7 +10,7 @@ export type CalibratorBackend = {
 export type CalibrationStrategyBackend = {
   observatory_defined: boolean;
   calibration_id: string;
-  observation_id_ref: string;
+  observation_set_ref: string;
   calibrators: CalibratorBackend[] | null; // null for observatory defined
   notes: string | null;
 };
