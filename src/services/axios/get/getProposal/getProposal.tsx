@@ -56,6 +56,7 @@ import {
 import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import { calibratorMapping } from '../getCalibratorList/getCalibratorList.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
 import {
   CalibrationStrategy,
@@ -286,13 +287,15 @@ const getCalibrationStrategy = (
         id: strategy?.calibration_id,
         observationIdRef: strategy?.observation_set_ref,
         calibrators: strategy?.calibrators // TODO use mapping in getCalibratorList
-          ? strategy?.calibrators?.map(calibrator => ({
-              calibrationIntent: calibrator.calibration_intent,
-              name: calibrator?.name,
-              durationMin: calibrator?.duration_min,
-              choice: calibrator?.choice,
-              notes: calibrator?.notes
-            }))
+          ? // ? strategy?.calibrators?.map(calibrator => ({
+            //     calibrationIntent: calibrator.calibration_intent,
+            //     name: calibrator?.name,
+            //     durationMin: calibrator?.duration_min,
+            //     choice: calibrator?.choice,
+            //     notes: calibrator?.notes
+            //   }))
+            // : null,
+            strategy?.calibrators?.map(calibrator => calibratorMapping(calibrator))
           : null,
         notes: strategy.notes
       }))

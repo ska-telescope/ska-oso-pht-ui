@@ -68,7 +68,7 @@ describe('Sensitivity Calculator helper functions', () => {
       }
     };
     const expected = '583.47 K - 389.00 K';
-    expect(transformSurfaceBrightnessPerSubBandData(minMax)).equal(expected);
+    expect(transformSurfaceBrightnessPerSubBandData(minMax)).deep.equal(expected);
   });
 
   test('Transform Synthesized Beam Size Per Sub Band Data, MID continuum default 3 subbands values', () => {
@@ -136,7 +136,7 @@ describe('Sensitivity Calculator helper functions', () => {
       }
     };
     const expected = '88.27 μJy - 73.89 μJy';
-    expect(transformPerSubBandData(minMax)).equal(expected);
+    expect(transformPerSubBandData(minMax)).deep.equal(expected);
   });
   test('Transform Per Sub Band Data, LOW continuum default 2 subbands values', () => {
     const minMax = {
@@ -164,7 +164,7 @@ describe('Sensitivity Calculator helper functions', () => {
         unit: 'Jy / beam'
       }
     };
-    expect(transformPerSubBandTime(minMax)).equal('224.05 μs - 149.68 μs');
+    expect(transformPerSubBandTime(minMax)).deep.equal('224.05 μs - 149.68 μs');
   });
 
   test('Coordinate check, is Galactic, Returns false when supplied value is "RA_TYPE_ICRS"', () => {
@@ -186,37 +186,37 @@ describe('Sensitivity Calculator helper functions', () => {
   });
 
   test('Shift Sensitivity { value : 50000000000, unit : Jy}', () => {
-    expect(shiftSensitivity({ value: 5000000000, unit: 'Jy' })).equal({
+    expect(shiftSensitivity({ value: 5000000000, unit: 'Jy' })).deep.equal({
       value: 5000000000,
       unit: 'Jy'
     });
   });
   test('Shift Sensitivity { value : 40000000000, unit : 3}', () => {
-    expect(shiftSensitivity({ value: 4000000000, unit: '3' })).equal({
+    expect(shiftSensitivity({ value: 4000000000, unit: '3' })).deep.equal({
       value: 4,
       unit: 'Jy/beam'
     });
   });
   test('Shift Sensitivity { value : 300000000, unit : 3}', () => {
-    expect(shiftSensitivity({ value: 300000000, unit: '3' })).equal({
+    expect(shiftSensitivity({ value: 300000000, unit: '3' })).deep.equal({
       value: 300,
       unit: 'mJy/beam'
     });
   });
   test('Shift Sensitivity { value : 200000, unit : 3}', () => {
-    expect(shiftSensitivity({ value: 200000, unit: '3' })).equal({
+    expect(shiftSensitivity({ value: 200000, unit: '3' })).deep.equal({
       value: 200,
       unit: 'μJy/beam'
     });
   });
   test('Shift Sensitivity { value : 100, unit : 3}', () => {
-    expect(shiftSensitivity({ value: 100, unit: '3' })).equal({
+    expect(shiftSensitivity({ value: 100, unit: '3' })).deep.equal({
       value: 100,
       unit: 'nJy/beam'
     });
   });
   test('Shift Sensitivity { value : 0, unit : 3}', () => {
-    expect(shiftSensitivity({ value: 0, unit: 'nJy/beam' })).equal({
+    expect(shiftSensitivity({ value: 0, unit: 'nJy/beam' })).deep.equal({
       value: 0,
       unit: 'nJy/beam'
     });
@@ -232,7 +232,7 @@ describe('Sensitivity Calculator helper functions', () => {
   test('Shift Time, no value', () => {
     const time = undefined;
     const expected = { value: 0, unit: '' };
-    expect(shiftTime(time as any, false)).equal(expected);
+    expect(shiftTime(time as any, false)).deep.equal(expected);
   });
   test('Shift Time, value 0', () => {
     const time = {
@@ -240,7 +240,7 @@ describe('Sensitivity Calculator helper functions', () => {
       unit: 's'
     };
     const expected = { value: 0, unit: 's' };
-    expect(shiftTime(time as any, false)).equal(expected);
+    expect(shiftTime(time as any, false)).deep.equal(expected);
   });
   test('Shift Time, s to d', () => {
     const time = {
@@ -251,7 +251,7 @@ describe('Sensitivity Calculator helper functions', () => {
       value: 115740.74074074074,
       unit: 'd'
     };
-    expect(shiftTime(time, false)).equal(expected);
+    expect(shiftTime(time, false)).deep.equal(expected);
   });
   test('Shift Time, s to h', () => {
     const time = {
@@ -262,7 +262,7 @@ describe('Sensitivity Calculator helper functions', () => {
       value: 833.3333333333334,
       unit: 'h'
     };
-    expect(shiftTime(time, false)).equal(expected);
+    expect(shiftTime(time, false)).deep.equal(expected);
   });
   test('Shift Time, s to min', () => {
     const time = {
@@ -273,7 +273,7 @@ describe('Sensitivity Calculator helper functions', () => {
       value: 16650,
       unit: 'min'
     };
-    expect(shiftTime(time, false)).equal(expected);
+    expect(shiftTime(time, false)).deep.equal(expected);
   });
   const secondsOnly = true;
   test('Shift Time, s to s', () => {
@@ -285,7 +285,7 @@ describe('Sensitivity Calculator helper functions', () => {
       value: 161.87084064089981,
       unit: 's'
     };
-    expect(shiftTime(time, secondsOnly)).equal(expected);
+    expect(shiftTime(time, secondsOnly)).deep.equal(expected);
   });
   test('Shift Time, s to ms', () => {
     const time = {
@@ -296,7 +296,7 @@ describe('Sensitivity Calculator helper functions', () => {
       value: 18.506663149092244,
       unit: 'ms'
     };
-    expect(shiftTime(time, secondsOnly)).equal(expected);
+    expect(shiftTime(time, secondsOnly)).deep.equal(expected);
   });
   test('Shift Time, s to μs', () => {
     const time = {
@@ -307,7 +307,7 @@ describe('Sensitivity Calculator helper functions', () => {
       value: 1.8506663149092246,
       unit: 'μs'
     };
-    expect(shiftTime(time, secondsOnly)).equal(expected);
+    expect(shiftTime(time, secondsOnly)).deep.equal(expected);
   });
   test('Shift Time, s to ns', () => {
     const time = {
@@ -318,7 +318,7 @@ describe('Sensitivity Calculator helper functions', () => {
       value: 0.1850666314909224,
       unit: 'ns'
     };
-    expect(shiftTime(time, secondsOnly)).equal(expected);
+    expect(shiftTime(time, secondsOnly)).deep.equal(expected);
   });
 
   test('Image Weighting, value 0, return natural', () => {

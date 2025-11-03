@@ -90,7 +90,7 @@ export function mappingList(inRec: ProposalBackend[]): Proposal[] {
       abstract: tmp.proposal_info?.abstract ?? undefined,
       sciencePDF: null,
       technicalPDF: null,
-      calibrationStrategy: []
+      calibrationStrategy: [] // not needed for proposal list
     };
     output.push(rec);
   }
