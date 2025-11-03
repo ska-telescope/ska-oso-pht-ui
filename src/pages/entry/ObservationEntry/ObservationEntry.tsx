@@ -1080,7 +1080,7 @@ export default function ObservationEntry() {
         </Grid>
         <Grid size={{ md: 12, lg: 3 }}>
           <Box pl={4} sx={{ position: 'sticky', top: 100 }}>
-            <HelpPanel minHeight={HELP_PANEL_HEIGHT} maxHeight={HELP_PANEL_HEIGHT} />
+            <HelpPanel maxHeight={HELP_PANEL_HEIGHT} />
           </Box>
         </Grid>
       </Grid>

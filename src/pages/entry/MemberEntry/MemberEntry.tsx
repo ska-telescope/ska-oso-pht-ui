@@ -456,7 +456,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
         </Grid>
       </Grid>
       <Grid size={{ xs: 4 }}>
-        <HelpPanel minHeight="400px" />
+        <HelpPanel />
       </Grid>
     </Grid>
   );

@@ -62,7 +62,6 @@ export function filterProposals(
 }
 
 interface GridProposalsProps {
-  height?: string;
   selectedProposals?: IdObject[];
   forReview?: boolean;
   showSearch?: boolean;
@@ -73,7 +72,6 @@ interface GridProposalsProps {
 }
 
 export default function GridProposals({
-  height = '50vh',
   selectedProposals = [],
   showSearch = false,
   showTitle = false,
@@ -376,23 +374,27 @@ export default function GridProposals({
   );
 
   const scienceCategoryDropdown = () => (
-    <DropDown
-      options={[{ label: t('scienceCategory.all'), value: null }, ...GENERAL.ScienceCategory]}
-      testId="proposalScienceCategory"
-      value={searchScienceCategory}
-      setValue={setSearchScienceCategory}
-      label={t('scienceCategory.all')}
-    />
+    <Box pt={1}>
+      <DropDown
+        options={[{ label: t('scienceCategory.all'), value: null }, ...GENERAL.ScienceCategory]}
+        testId="proposalScienceCategory"
+        value={searchScienceCategory}
+        setValue={setSearchScienceCategory}
+        label={t('scienceCategory.all')}
+      />
+    </Box>
   );
 
   const proposalTypeDropdown = () => (
-    <DropDown
-      options={[{ label: t('proposalType.all'), value: '' }, ...SEARCH_PROPOSAL_TYPE_OPTIONS]}
-      testId="proposalType"
-      value={searchProposalType}
-      setValue={setSearchProposalType}
-      label={t('proposalType.all')}
-    />
+    <Box pt={1}>
+      <DropDown
+        options={[{ label: t('proposalType.all'), value: '' }, ...SEARCH_PROPOSAL_TYPE_OPTIONS]}
+        testId="proposalType"
+        value={searchProposalType}
+        setValue={setSearchProposalType}
+        label={t('proposalType.all')}
+      />
+    </Box>
   );
 
   const searchEntryField = (testId: string) => (
@@ -485,10 +487,36 @@ export default function GridProposals({
     }
   };
 
+  const containerRef = React.useRef<HTMLDivElement>(null);
+  const [containerHeight, setContainerHeight] = React.useState<number>(0);
+  React.useLayoutEffect(() => {
+    const updateHeight = () => {
+      if (containerRef.current) {
+        setContainerHeight(containerRef.current.offsetHeight);
+      }
+    };
+
+    updateHeight();
+    window.addEventListener('resize', updateHeight);
+    return () => window.removeEventListener('resize', updateHeight);
+  }, []);
+
+  const TITLE_HEIGHT = 120;
+  const SEARCH_HEIGHT = 120;
+  const interimHeight = showTitle ? containerHeight - TITLE_HEIGHT : containerHeight;
+  const finalHeight = showSearch ? `${interimHeight - SEARCH_HEIGHT}px` : `${interimHeight}px`;
+
   return (
-    <>
+    <Box
+      ref={containerRef}
+      sx={{
+        height: '100%',
+        width: '100%',
+        overflow: 'hidden'
+      }}
+    >
       {showTitle && (
-        <Grid p={2} size={{ lg: 12 }}>
+        <Grid container size={{ lg: 12 }}>
           {ProposalsSectionTitle()}
         </Grid>
       )}
@@ -496,7 +524,6 @@ export default function GridProposals({
       {showSearch && (
         <Grid
           pb={2}
-          pt={2}
           size={{ sm: 12 }}
           container
           direction="row"
@@ -504,30 +531,21 @@ export default function GridProposals({
           justifyContent="space-between"
           alignItems="center"
         >
-          <Grid size={{ sm: 12 }}>
-            <Grid
-              container
-              direction="row"
-              spacing={2}
-              justifyContent="space-around"
-              alignItems="center"
-            >
-              <Grid size={{ sm: 3 }}>{proposalTypeDropdown()}</Grid>
-              <Grid size={{ sm: 3 }}>{scienceCategoryDropdown()}</Grid>
-              <Grid size={{ sm: 5 }}>{searchEntryField('searchId')}</Grid>
-            </Grid>
-          </Grid>
+          <Grid size={{ sm: 3 }}>{proposalTypeDropdown()}</Grid>
+          <Grid size={{ sm: 3 }}>{scienceCategoryDropdown()}</Grid>
+          <Grid size={{ sm: 5 }}>{searchEntryField('searchId')}</Grid>
         </Grid>
       )}
-      <Grid size={{ xs: 12 }} pt={1}>
+
+      <Grid size={{ xs: 12 }}>
         {!axiosViewError && (
           <div>
             <DataGrid
-              maxHeight={height}
+              maxHeight={finalHeight}
               testId="dataGridProposals"
               rows={filteredData}
               columns={forReview ? reviewColumns : proposalColumns}
-              height={height}
+              height={finalHeight}
             />
           </div>
         )}
@@ -545,6 +563,6 @@ export default function GridProposals({
       {openDeleteDialog && deleteClicked()}
       {openCloneDialog && cloneClicked()}
       {openViewDialog && viewClicked()}
-    </>
+    </Box>
   );
 }
