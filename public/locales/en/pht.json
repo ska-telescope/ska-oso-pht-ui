@@ -1312,7 +1312,8 @@
       "title": "Linking",
       "desc": "Linking strategies",
       "empty": "NO LINKING STRATEGIES AVAILABLE",
-      "toolTip": "Linking tooltip"
+      "toolTip": "Linking tooltip",
+      "pageError": "The Linking page is not complete"
     },
     "11": {
       "title": "Observation Setup",
