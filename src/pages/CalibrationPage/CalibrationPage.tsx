@@ -39,7 +39,6 @@ export default function CalibrationPage() {
 
   const LABEL_WIDTH = 2;
   const LABEL_WIDTH_CHECKBOX = 11;
-  const LINE_OFFSET = 30;
 
   const [baseObservations, setBaseObservations] = React.useState<
     { label: string; value: string }[]
@@ -251,22 +250,28 @@ export default function CalibrationPage() {
   };
 
   const commentField = () => {
-    const numRows = 3;
+    const numRows = 4;
 
-    return fieldWrapper(
-      <Box sx={{ height: LINE_OFFSET * numRows }} /*ml={-1}*/ minWidth={600} mr={5} mb={5}>
-        <TextEntry
-          label={t('calibrator.comment.label')}
-          labelBold
-          labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH}
-          testId="commenttId"
-          rows={numRows}
-          value={comment}
-          setValue={setComment}
-          onFocus={() => helpComponent(t('calibrator.comment.help'))}
-        />
-      </Box>
+    function validateComment(inc: string) {
+      if (addComment && (!inc || inc?.length === 0)) {
+        return `${t('title.empty')}`;
+      }
+    }
+
+    return (
+      <TextEntry
+        label={t('calibrator.comment.label')}
+        labelBold
+        labelPosition={LAB_POSITION}
+        labelWidth={LABEL_WIDTH}
+        testId="commenttId"
+        rows={numRows}
+        errorText={validateComment(comment)}
+        value={comment}
+        setValue={setComment}
+        onFocus={() => helpComponent(t('calibrator.comment.help'))}
+        height={150}
+      />
     );
   };
 
