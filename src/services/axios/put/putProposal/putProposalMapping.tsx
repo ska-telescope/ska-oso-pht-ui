@@ -183,12 +183,16 @@ const getDataProductSDP = (dataproducts: DataProductSDP[]): DataProductSDPsBacke
 
   return dataproducts?.map(dp => ({
     data_product_id: dp.dataProductsSDPId as string,
-    options: SDPOptions(dp.observatoryDataProduct),
+    products: SDPOptions(dp.observatoryDataProduct),
     observation_set_refs: dp.observationId,
-    image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
-    image_cellsize: { value: dp.pixelSizeValue, unit: getPixelSizeUnits(dp.pixelSizeUnits) },
-    weighting: dp.weighting?.toString(),
-    polarisations: dp.polarisations
+    script_parameters: {
+      image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
+      image_cellsize: { value: dp.pixelSizeValue, unit: getPixelSizeUnits(dp.pixelSizeUnits) },
+      weight: 'natural', // TODO - CHLOE
+      polarisations: 'chloe', // TODO - CHLOE
+      channels_out: 0,
+      fit_spectral_pol: 0
+    }
   }));
 };
 
