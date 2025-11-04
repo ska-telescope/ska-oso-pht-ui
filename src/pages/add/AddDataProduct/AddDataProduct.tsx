@@ -14,11 +14,15 @@ import {
   TickBox
 } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
+import RobustField from '@components/fields/robust/Robust.tsx';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
 import {
   BANNER_PMT_SPACER,
   FOOTER_HEIGHT_PHT,
+  FREQUENCY_GHZ,
   HELP_FONT,
+  IW_BRIGGS,
+  LAB_IS_BOLD,
   NAV,
   STATUS_OK,
   WRAPPER_HEIGHT
@@ -58,6 +62,7 @@ export default function AddDataProduct() {
   const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
   const [pixelSizeUnits, setPixelSizeUnits] = React.useState('');
   const [weighting, setWeighting] = React.useState(0);
+  const [robust, setRobust] = React.useState(3);
 
   const { t } = useScopedTranslation();
 
@@ -233,6 +238,17 @@ export default function AddDataProduct() {
     );
   };
 
+  const robustField = () =>
+    fieldWrapper(
+      <RobustField
+        label={t('robust.label')}
+        onFocus={() => helpComponent(t('robust.help'))}
+        setValue={setRobust}
+        testId="robust"
+        value={robust}
+      />
+    );
+
   const pageFooter = () => {
     const enabled = () => {
       const dp = dp1;
@@ -360,6 +376,7 @@ export default function AddDataProduct() {
                   {fieldWrapper(imageSizeField())}
                   {fieldWrapper(pixelSizeField())}
                   {fieldWrapper(imageWeightingField())}
+                  {weighting === IW_BRIGGS && fieldWrapper(robustField())}
                 </Stack>
               </BorderedSection>
             </Stack>
