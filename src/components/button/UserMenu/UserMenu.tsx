@@ -1,6 +1,6 @@
 import React from 'react';
 import { useMsal } from '@azure/msal-react';
-import { Box, Divider, Menu, MenuItem } from '@mui/material';
+import { Box, Divider, Drawer, Menu, MenuItem, Stack, Grid, Button } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { ButtonLogin, ButtonUser, ButtonLogout } from '@ska-telescope/ska-login-page';
 import { ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
@@ -33,6 +33,7 @@ export default function ButtonUserMenu({
   useInitializeAccessStore();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [openHelpDrawer, setOpenHelpDrawer] = React.useState(false);
   const [cypressLogin, setCypressLogin] = React.useState('');
   const openMenu = Boolean(anchorEl);
   const { t } = useScopedTranslation();
@@ -40,9 +41,11 @@ export default function ButtonUserMenu({
   const theme = useTheme();
   const buttonWrapperRef = React.useRef<HTMLDivElement>(null);
   const loginButtonRef = React.useRef<HTMLDivElement>(null);
-  const { updateAppContent2 } = storageObject.useStore();
+  const { updateAppContent2, help } = storageObject.useStore();
   const { accounts } = useMsal();
   const username = accounts.length > 0 ? accounts[0].name + cypressLogin : cypressLogin;
+
+  const getHelp = () => (help.component as unknown) as string;
 
   React.useEffect(() => {
     const accountStr = localStorage.getItem('cypress:account');
@@ -77,6 +80,11 @@ export default function ButtonUserMenu({
   const onMenuSelect = (thePath: string) => {
     updateAppContent2([]);
     navigate(thePath);
+    setAnchorEl(null);
+  };
+
+  const toggleDrawer = (newOpen: boolean) => () => {
+    setOpenHelpDrawer(newOpen);
     setAnchorEl(null);
   };
 
@@ -135,6 +143,7 @@ export default function ButtonUserMenu({
             {t('reviewDecisionsList.title')}
           </MenuItem>
         )}
+        <MenuItem onClick={toggleDrawer(true)}>Open Help Text</MenuItem>
         {(isReviewerChair() || isReviewerAdmin() || isReviewer()) && <Divider component="li" />}
         <MenuItem data-testid="menuItemPanelLogout">
           <ButtonLogout
@@ -145,6 +154,20 @@ export default function ButtonUserMenu({
           />
         </MenuItem>
       </Menu>
+      <Drawer anchor={'right'} open={openHelpDrawer} onClose={toggleDrawer(false)}>
+        <Box m={1} sx={{ width: 250, minWidth: '25vw' }}>
+          <Stack sx={{ height: '95%' }} spacing={5}>
+            <Grid container direction="row" justifyContent="space-evenly">
+              <Grid item>
+                <Button variant="contained" onClick={toggleDrawer(false)}>
+                  Close
+                </Button>
+              </Grid>
+            </Grid>
+            <Grid item>{getHelp()}</Grid>
+          </Stack>
+        </Box>
+      </Drawer>
     </>
   );
 }
