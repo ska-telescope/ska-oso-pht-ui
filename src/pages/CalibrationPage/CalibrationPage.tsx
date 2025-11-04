@@ -279,33 +279,79 @@ export default function CalibrationPage() {
     return (
       <>
         <Grid sx={{ overflow: 'hidden', width: '100%' }}>
-          <Grid pt={1} container direction="row" alignItems="center" justifyContent="flex-start">
-            <Grid width={50} pt={4}>
+          <Grid
+            pt={1}
+            container
+            direction="row"
+            alignItems="center"
+            justifyContent="flex-start"
+            sx={{ flexWrap: 'nowrap' }}
+          >
+            <Grid width={50} pt={4} mr={5}>
               <ArrowIcon disabled onClick={() => {}} />
             </Grid>
-            <Grid width={210}>{nameField()}</Grid>
-            <Grid width={220}>{durationField()}</Grid>
-            <Grid width={150}>{intentField()}</Grid>
+            <Grid size="grow" minWidth={210}>
+              {nameField()}
+            </Grid>
+            <Grid size="grow" minWidth={220}>
+              {durationField()}
+            </Grid>
+            <Grid size="grow" minWidth={150}>
+              {intentField()}
+            </Grid>
           </Grid>
-          <Grid pt={1} container direction="row" alignItems="center" justifyContent="flex-start">
-            <Grid width={50} pt={5}>
+          <Grid
+            pt={1}
+            container
+            direction="row"
+            alignItems="center"
+            justifyContent="flex-start"
+            sx={{ flexWrap: 'nowrap' }}
+          >
+            <Grid width={50} pt={5} mr={5}>
               <ArrowIcon disabled onClick={() => {}} />
             </Grid>
-            <Grid width={210}>{targetField()}</Grid>
-            <Grid width={220}>{integrationTimeField()}</Grid>
+            <Grid size="grow" minWidth={210}>
+              {targetField()}
+            </Grid>
+            <Grid size="grow" minWidth={220}>
+              {integrationTimeField()}
+            </Grid>
+            <Grid size="grow" minWidth={150}></Grid>
           </Grid>
-          <Grid pt={1} container direction="row" alignItems="center" justifyContent="flex-start">
-            <Grid width={50} pt={4}>
+          <Grid
+            pt={1}
+            container
+            direction="row"
+            alignItems="center"
+            justifyContent="flex-start"
+            sx={{ flexWrap: 'nowrap' }}
+          >
+            <Grid width={50} pt={4} mr={5}>
               <ArrowIcon disabled onClick={() => {}} />
             </Grid>
-            <Grid width={210}>{nameField()}</Grid>
-            <Grid width={220}>{durationField()}</Grid>
-            <Grid width={150}>{intentField()}</Grid>
+            <Grid size="grow" minWidth={210}>
+              {nameField()}
+            </Grid>
+            <Grid size="grow" minWidth={220}>
+              {durationField()}
+            </Grid>
+            <Grid size="grow" minWidth={150}>
+              {intentField()}
+            </Grid>
           </Grid>
           <Typography mt={3}>{t('calibrator.note')}</Typography>
           <Typography mb={3}>{t('calibrator.disclaimer')}</Typography>
-          {checkBox()}
-          {addComment && commentField()}
+          <Grid container direction="row" alignItems="center" justifyContent="flex-start">
+            <Grid size="grow">
+              <Grid mr={3} mt={-2}>
+                {checkBox()}
+              </Grid>
+              <Grid ml={11} mr={9}>
+                {addComment && commentField()}
+              </Grid>
+            </Grid>
+          </Grid>
         </Grid>
       </>
     );
