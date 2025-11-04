@@ -22,6 +22,7 @@ import { timeConversion } from '@/utils/helpersSensCalc';
 import { TIME_MINS } from '@/utils/constantsSensCalc';
 import { generateId } from '@/utils/helpers';
 import Observation from '@/utils/types/observation';
+import ArrowIcon from '@/components/icon/arrowIcon/arrowIcon';
 
 const PAGE = 6;
 
@@ -208,7 +209,7 @@ export default function CalibrationPage() {
         value={name}
         disabled={true}
         label={t('calibrator.calibrator')}
-        sx={{ minWidth: '400px' }}
+        width="100%"
       />
     );
   };
@@ -273,19 +274,28 @@ export default function CalibrationPage() {
     return (
       <>
         <Grid sx={{ overflow: 'hidden', width: '100%' }}>
-          <Grid pt={1} container direction="row" alignItems="baseline" justifyContent="flex-start">
-            <Grid width={280}>{nameField()}</Grid>
-            <Grid width={240}>{durationField()}</Grid>
-            <Grid width={280}>{intentField()}</Grid>
+          <Grid pt={1} container direction="row" alignItems="center" justifyContent="flex-start">
+            <Grid width={50} pt={4}>
+              <ArrowIcon disabled onClick={() => {}} />
+            </Grid>
+            <Grid width={210}>{nameField()}</Grid>
+            <Grid width={220}>{durationField()}</Grid>
+            <Grid width={150}>{intentField()}</Grid>
           </Grid>
-          <Grid pt={1} container direction="row" alignItems="baseline" justifyContent="flex-start">
-            <Grid width={280}>{targetField()}</Grid>
-            <Grid width={240}>{integrationTimeField()}</Grid>
+          <Grid pt={1} container direction="row" alignItems="center" justifyContent="flex-start">
+            <Grid width={50} pt={5}>
+              <ArrowIcon disabled onClick={() => {}} />
+            </Grid>
+            <Grid width={210}>{targetField()}</Grid>
+            <Grid width={220}>{integrationTimeField()}</Grid>
           </Grid>
-          <Grid pt={1} container direction="row" alignItems="baseline" justifyContent="flex-start">
-            <Grid width={280}>{nameField()}</Grid>
-            <Grid width={240}>{durationField()}</Grid>
-            <Grid width={280}>{intentField()}</Grid>
+          <Grid pt={1} container direction="row" alignItems="center" justifyContent="flex-start">
+            <Grid width={50} pt={4}>
+              <ArrowIcon disabled onClick={() => {}} />
+            </Grid>
+            <Grid width={210}>{nameField()}</Grid>
+            <Grid width={220}>{durationField()}</Grid>
+            <Grid width={150}>{intentField()}</Grid>
           </Grid>
           <Typography mt={3}>{t('calibrator.note')}</Typography>
           <Typography mb={3}>{t('calibrator.disclaimer')}</Typography>
