@@ -236,6 +236,8 @@ export const IMAGE_WEIGHTING = [
   { label: 'briggs', lookup: 'robust', value: 2 }
 ];
 
+export const STOKES = [{ label: 'I', value: 'I' }];
+
 export const LAB_IS_BOLD = true;
 export const LAB_POSITION = LABEL_POSITION.START;
 export const LAST_PAGE = 10;

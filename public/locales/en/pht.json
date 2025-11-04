@@ -880,7 +880,8 @@
   },
   "stokes": {
     "help": "Stokes help text TBD",
-    "label": "Stokes"
+    "label": "Stokes",
+    "I": "I"
   },
   "saveBtn": {
     "label": "Save",

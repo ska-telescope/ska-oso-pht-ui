@@ -15,6 +15,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import RobustField from '@components/fields/robust/Robust.tsx';
+import StokesField from '@components/fields/stokes/stokes.tsx';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
 import {
   BANNER_PMT_SPACER,
@@ -267,20 +268,13 @@ export default function AddDataProduct() {
     );
 
   const stokesField = () => {
-    const getOptions = () => [{ label: 'I', value: 'I' }];
-
     return (
-      <Box pt={1}>
-        <DropDown
-          options={getOptions()}
-          testId="stokes"
-          value={stokes}
-          setValue={setStokes}
-          label={t('stokes.label')}
-          onFocus={() => helpComponent(t('stokes.help'))}
-          required
-        />
-      </Box>
+      <StokesField
+        labelWidth={LABEL_WIDTH}
+        onFocus={() => helpComponent(t('stokes.help'))}
+        value={stokes}
+        setValue={setStokes}
+      />
     );
   };
 
