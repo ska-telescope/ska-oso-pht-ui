@@ -876,7 +876,11 @@
   },
   "fitSpectralPol": {
     "help": "Fit Spectral Pol help text TBD",
-    "label": "Fit Spectral Pol "
+    "label": "Fit Spectral Pol"
+  },
+  "stokes": {
+    "help": "Stokes help text TBD",
+    "label": "Stokes"
   },
   "saveBtn": {
     "label": "Save",

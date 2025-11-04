@@ -64,6 +64,7 @@ export default function AddDataProduct() {
   const [robust, setRobust] = React.useState(3);
   const [channelsOut, setChannelsOut] = React.useState(1);
   const [fitSpectralPol, setFitSpectralPol] = React.useState(1);
+  const [stokes, setStokes] = React.useState('I');
 
   const { t } = useScopedTranslation();
 
@@ -220,7 +221,6 @@ export default function AddDataProduct() {
           value={pixelSizeValue}
           setValue={setPixelSizeValue}
           required
-          disabled
           disabledUnderline
           suffix={pixelSizeUnits}
         />
@@ -231,7 +231,6 @@ export default function AddDataProduct() {
   const imageWeightingField = () => {
     return (
       <ImageWeightingField
-        disabled
         labelWidth={LABEL_WIDTH}
         onFocus={() => helpComponent(t('imageWeighting.help'))}
         value={weighting}
@@ -266,6 +265,24 @@ export default function AddDataProduct() {
         />
       </Box>
     );
+
+  const stokesField = () => {
+    const getOptions = () => [{ label: 'I', value: 'I' }];
+
+    return (
+      <Box pt={1}>
+        <DropDown
+          options={getOptions()}
+          testId="stokes"
+          value={stokes}
+          setValue={setStokes}
+          label={t('stokes.label')}
+          onFocus={() => helpComponent(t('stokes.help'))}
+          required
+        />
+      </Box>
+    );
+  };
 
   const fitSpectralPolField = () =>
     fieldWrapper(
@@ -414,6 +431,7 @@ export default function AddDataProduct() {
                   {weighting === IW_BRIGGS && fieldWrapper(robustField())}
                   {fieldWrapper(channelsOutField())}
                   {fieldWrapper(fitSpectralPolField())}
+                  {fieldWrapper(stokesField())}
                 </Stack>
               </BorderedSection>
             </Stack>
