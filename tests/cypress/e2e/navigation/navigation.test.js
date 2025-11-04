@@ -66,5 +66,6 @@ describe('Verify navigation', () => {
     // checkStatusIndicatorDisabled('statusId7', false);
     checkStatusIndicatorDisabled('statusId8', false);
     checkStatusIndicatorDisabled('statusId9', false);
+    checkStatusIndicatorDisabled('statusId10', false);
   });
 });
