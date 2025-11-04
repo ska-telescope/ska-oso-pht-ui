@@ -2542,9 +2542,9 @@
   integrity sha512-YRCrJdhQLobGIQ8Cj1sta3nn6DrZDTSUnrIYhS2e5V590BmfVDleKoAquclAiKSBKWJwmuXTb+b4BL6rSHnahw==
 
 "@reduxjs/toolkit@^2.2.1":
-  version "2.10.0"
-  resolved "https://registry.yarnpkg.com/@reduxjs/toolkit/-/toolkit-2.10.0.tgz#de8f805a2e03a648eff5115206d2a19568ac2002"
-  integrity sha512-DCDKKB+DDy00kULFGoj5jtxRXksCGtEKEPbeSqRi20/vUrwrBD+zyJx+jQ7xkIU1pUHQ6OIYHyc9NiVSEjAlNA==
+  version "2.10.1"
+  resolved "https://registry.yarnpkg.com/@reduxjs/toolkit/-/toolkit-2.10.1.tgz#b3b9da21335eea409d3498544bcaf83b481a0195"
+  integrity sha512-/U17EXQ9Do9Yx4DlNGU6eVNfZvFJfYpUtRRdLf19PbPjdWBxNlxGZXywQZ1p1Nz8nMkWplTI7iD/23m07nolDA==
   dependencies:
     "@standard-schema/spec" "^1.0.0"
     "@standard-schema/utils" "^0.3.0"
@@ -2795,7 +2795,7 @@
     domhandler "^5.0.3"
     selderee "^0.11.0"
 
-"@ska-telescope/ska-gui-components@^2.3.43":
+"@ska-telescope/ska-gui-components@^2.4.2":
   version "2.4.2"
   resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-2.4.2.tgz#72679f728f2b07d5c2b546f86b5346031d465751"
   integrity sha512-guQnjzKDhY8vGZ/lMbxO5qjwQs5VhEbVilUDBXnC/h1U1dT74TvF9CBnUBJg2pSrmf9W4vvWgw6N2ljSKc1PoQ==
@@ -2855,7 +2855,7 @@
     svgo "^3.2.0"
     vite "7.1.11"
 
-"@ska-telescope/ska-login-page@^1.0.18":
+"@ska-telescope/ska-login-page@^1.1.0":
   version "1.1.0"
   resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-login-page/-/ska-login-page-1.1.0.tgz#aa35e8e7b74ed6ddbf4100872f0513a0e83694eb"
   integrity sha512-NSjNGp5q3HpuFN8Z04Lt/FstdfJoKuARbNgxSmHPQJIdWM7p2vz02xH5nviHcImsnDdUPWc4KIfauHWXLt9Y5w==
@@ -4433,9 +4433,9 @@ base64-js@^1.0.2, base64-js@^1.1.2, base64-js@^1.3.0, base64-js@^1.3.1, base64-j
   integrity sha512-AKpaYlHn8t4SVbOHCy+b5+KKgvR4vrsD8vbvrbiQJps7fKDTkjkDry6ji0rUJjC0kzbNePLwzxq8iypo41qeWA==
 
 baseline-browser-mapping@^2.8.19:
-  version "2.8.23"
-  resolved "https://registry.yarnpkg.com/baseline-browser-mapping/-/baseline-browser-mapping-2.8.23.tgz#cd43e17eff5cbfb67c92153e7fe856cf6d426421"
-  integrity sha512-616V5YX4bepJFzNyOfce5Fa8fDJMfoxzOIzDCZwaGL8MKVpFrXqfNUoIpRn9YMI5pXf/VKgzjB4htFMsFKKdiQ==
+  version "2.8.24"
+  resolved "https://registry.yarnpkg.com/baseline-browser-mapping/-/baseline-browser-mapping-2.8.24.tgz#f70388d8a136b701c819567f6798b797378be7b0"
+  integrity sha512-uUhTRDPXamakPyghwrUcjaGvvBqGrWvBHReoiULMIpOJVM9IYzQh83Xk2Onx5HlGI2o10NNCzcs9TG/S3TkwrQ==
 
 bcrypt-pbkdf@^1.0.0:
   version "1.0.2"
