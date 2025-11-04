@@ -1,6 +1,11 @@
 import React from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { TextEntry, TickBox, AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import {
+  TextEntry,
+  TickBox,
+  AlertColorTypes,
+  LABEL_POSITION
+} from '@ska-telescope/ska-gui-components';
 import { Box, Grid, Typography } from '@mui/material';
 import { validateCalibrationPage } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
@@ -29,7 +34,8 @@ export default function CalibrationPage() {
 
   const { t } = useScopedTranslation();
 
-  const LABEL_WIDTH = 4.5;
+  const LABEL_WIDTH = 2;
+  const LABEL_WIDTH_CHECKBOX = 11;
   const LINE_OFFSET = 30;
 
   const [baseObservations, setBaseObservations] = React.useState<
@@ -183,8 +189,8 @@ export default function CalibrationPage() {
       <TickBox
         label={t('calibrator.checkbox.label')}
         labelBold
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH}
+        labelWidth={LABEL_WIDTH_CHECKBOX}
+        labelPosition={LABEL_POSITION.END}
         testId="calibratorCheckbox"
         checked={addComment}
         onChange={handleCheckboxChange}
@@ -195,7 +201,13 @@ export default function CalibrationPage() {
 
   const nameField = () => {
     return fieldWrapper(
-      <TextEntry testId="name" value={name} disabled={true} label={t('calibrator.name')} />
+      <TextEntry
+        testId="name"
+        value={name}
+        disabled={true}
+        label={t('calibrator.name')}
+        sx={{ minWidth: '400px' }}
+      />
     );
   };
 
@@ -236,10 +248,10 @@ export default function CalibrationPage() {
   };
 
   const commentField = () => {
-    const numRows = 3;
+    const numRows = 4;
 
     return fieldWrapper(
-      <Box sx={{ height: LINE_OFFSET * numRows }} ml={-1}>
+      <Box sx={{ height: LINE_OFFSET * numRows }} ml={-1} minWidth={600} mr={5}>
         <TextEntry
           label={t('calibrator.comment.label')}
           labelBold
@@ -286,7 +298,7 @@ export default function CalibrationPage() {
       <>
         {hasObservations() && (
           <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="center">
-            <Grid size={{ xs: 6 }}>
+            <Grid size={{ xs: 6 }} sx={{ marginBottom: 10 }}>
               <Grid
                 p={1}
                 container
