@@ -447,7 +447,8 @@ export default function AddDataProduct() {
                   {fieldWrapper(channelsOutField())}
                   {fieldWrapper(fitSpectralPolField())}
                   {fieldWrapper(stokesField())}
-                  {fieldWrapper(gaussianTapperField())}
+                  {getProposal().observations?.map(ob => ob.observingBand !== 0) &&
+                    fieldWrapper(gaussianTapperField())}{' '}
                 </Stack>
               </BorderedSection>
             </Stack>
