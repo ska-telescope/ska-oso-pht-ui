@@ -2,12 +2,16 @@ import { ValueUnitPair } from './valueUnitPair';
 
 export type DataProductSDPsBackend = {
   data_product_id: string;
-  options: string[];
+  products: string[];
   observation_set_refs: string[];
-  image_size: ValueUnitPair;
-  image_cellsize?: ValueUnitPair;
-  weighting?: string;
-  polarisations?: string;
+  script_parameters: {
+    image_size: ValueUnitPair;
+    image_cellsize?: ValueUnitPair;
+    weight?: string;
+    polarisations?: string;
+    channels_out?: number;
+    fit_spectral_pol?: number;
+  };
 };
 
 export type DataProductSRCNetBackend = {
