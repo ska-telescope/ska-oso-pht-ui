@@ -146,6 +146,7 @@ export default function GridObservation({ data, rowClick }: GridObservationProps
           onRowClick={handleRowClick}
           rowSelectionModel={selectedId ? [selectedId] : []}
           autoHeight={false}
+          dataTestId="gridObservations"
           sx={{
             width: '100%',
             height: gridHeight,
