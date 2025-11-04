@@ -128,6 +128,7 @@ export default function GridObservation({ data, rowClick }: GridObservationProps
   return (
     <Box
       ref={containerRef}
+      data-testid="gridObservationContainer"
       sx={{
         flex: 1,
         display: 'flex',
@@ -137,24 +138,22 @@ export default function GridObservation({ data, rowClick }: GridObservationProps
         minHeight: 0
       }}
     >
-      {gridHeight && (
-        <DataGrid
-          rows={data}
-          columns={columns}
-          getRowHeight={() => ROW_HEIGHT}
-          hideFooter
-          onRowClick={handleRowClick}
-          rowSelectionModel={selectedId ? [selectedId] : []}
-          autoHeight={false}
-          dataTestId="gridObservations"
-          sx={{
-            width: '100%',
-            height: gridHeight,
-            minHeight: 0,
-            overflow: 'hidden'
-          }}
-        />
-      )}
+      <DataGrid
+        rows={data}
+        columns={columns}
+        getRowHeight={() => ROW_HEIGHT}
+        hideFooter
+        onRowClick={handleRowClick}
+        rowSelectionModel={selectedId ? [selectedId] : []}
+        autoHeight={false}
+        testId="gridObservation"
+        sx={{
+          width: '100%',
+          height: gridHeight,
+          minHeight: 0,
+          overflow: 'hidden'
+        }}
+      />
     </Box>
   );
 }

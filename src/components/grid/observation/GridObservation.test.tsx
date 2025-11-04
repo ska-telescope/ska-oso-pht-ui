@@ -1,9 +1,18 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import GridObservation from './GridObservation';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 import Observation from '@/utils/types/observation';
+
+// Mock ResizeObserver for test environment
+beforeAll(() => {
+  global.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  } as any;
+});
 
 const mockData: Observation[] = [
   {
@@ -58,7 +67,7 @@ const mockData: Observation[] = [
 
 const theme = createTheme();
 
-const wrapper = (ui: React.ReactElement) => {
+const renderWithProviders = (ui: React.ReactElement) => {
   return render(
     <ThemeProvider theme={theme}>
       <AppFlowProvider>{ui}</AppFlowProvider>
@@ -73,15 +82,22 @@ describe('GridObservation', () => {
     rowClickMock = vi.fn();
   });
 
-  it('renders the grid with data', () => {
-    wrapper(<GridObservation data={mockData} rowClick={rowClickMock} />);
-    expect(screen.getByTestId('gridObservations')).toBeInTheDocument();
+  it('renders without crashing and displays rows', () => {
+    renderWithProviders(<GridObservation data={mockData} rowClick={rowClickMock} />);
+    expect(screen.getByTestId('gridObservation')).toBeInTheDocument();
     expect(screen.getByText('OBS001')).toBeInTheDocument();
     expect(screen.getByText('OBS002')).toBeInTheDocument();
   });
 
-  it('calls rowClick with the first row on mount', () => {
-    wrapper(<GridObservation data={mockData} rowClick={rowClickMock} />);
+  it('selects the first row on initial render', () => {
+    renderWithProviders(<GridObservation data={mockData} rowClick={rowClickMock} />);
     expect(rowClickMock).toHaveBeenCalledWith({ row: mockData[0] });
+  });
+
+  it('calls rowClick when a row is clicked', () => {
+    renderWithProviders(<GridObservation data={mockData} rowClick={rowClickMock} />);
+    const secondRow = screen.getByText('OBS002');
+    fireEvent.click(secondRow);
+    expect(rowClickMock).toHaveBeenCalledWith(expect.objectContaining({ row: mockData[1] }));
   });
 });
