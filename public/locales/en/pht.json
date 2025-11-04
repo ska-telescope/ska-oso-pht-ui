@@ -1056,7 +1056,8 @@
   },
   "subBands": {
     "help": "Number of sub-bands to split the bandwidth up into, which can be set to 1 - 32 for MID and 1-4 for LOW. The default number of sub-bands is 1.",
-    "label": "Number of sub bands",
+    "label": "Number of sub-bands",
+    "short": "Sub-bands",
     "range": {
       "lower": 0,
       "upper": 32,
@@ -1295,7 +1296,9 @@
       "title": "Observatory Data Product",
       "titleShort": "Data Product",
       "desc": "This page allows you to request and define observatory data products for Observation(s).",
-      "pageError": "The DATA PRODUCTS page is not complete"
+      "pageError": "The DATA PRODUCTS page is not complete",
+      "group1": "Product",
+      "group2": "Image Settings"
     },
     "9": {
       "status": "SRCNet",
