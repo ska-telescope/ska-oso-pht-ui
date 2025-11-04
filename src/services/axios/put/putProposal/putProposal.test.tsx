@@ -1,14 +1,14 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import { ProposalBackend } from '@utils/types/proposal.tsx';
+// import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { PROPOSAL_STATUS } from '@utils/constants.ts';
 import * as CONSTANTS from '@utils/constants.ts';
 import { MockProposalFrontend } from './mockProposalFrontend.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
-import PutProposal, { mockPutProposal } from './putProposal.tsx';
-import MappingPutProposal from './putProposalMapping.tsx';
+import PutProposal from './putProposal.tsx';
+// import MappingPutProposal from './putProposalMapping.tsx';
 
-  /* CHLOE TO FIX
+/* CHLOE TO FIX
 describe('Helper Functions', () => {
   test('mockPutProposal returns mock proposal', () => {
     const result = mockPutProposal();
@@ -24,7 +24,7 @@ describe('Helper Functions', () => {
     expect(proposalBackEnd).to.deep.equal(MockProposalBackend);
   });
   */
-  /* TODO
+/* TODO
   test('mappingPutProposal returns mapped proposal with zoom observation from frontend to backend format', () => {
     const proposalBackEnd: ProposalBackend = MappingPutProposal(
       MockProposalFrontendZoom,
@@ -33,7 +33,7 @@ describe('Helper Functions', () => {
     expect(proposalBackEnd).to.deep.equal(MockProposalBackendZoom);
   });
   */
-  /* CHLOE TO FIX
+/* CHLOE TO FIX
   test('mappingPutProposal returns mapped proposal and returns empty array of sub-type when not specified', () => {
     const proposal = { ...MockProposalFrontend, proposalSubType: undefined };
     const proposalBackEnd: ProposalBackend = MappingPutProposal(
