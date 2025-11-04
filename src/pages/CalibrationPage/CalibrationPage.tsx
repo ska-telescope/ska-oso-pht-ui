@@ -248,10 +248,10 @@ export default function CalibrationPage() {
   };
 
   const commentField = () => {
-    const numRows = 4;
+    const numRows = 3;
 
     return fieldWrapper(
-      <Box sx={{ height: LINE_OFFSET * numRows }} ml={-1} minWidth={600} mr={5}>
+      <Box sx={{ height: LINE_OFFSET * numRows }} ml={-1} minWidth={600} mr={5} mb={5}>
         <TextEntry
           label={t('calibrator.comment.label')}
           labelBold

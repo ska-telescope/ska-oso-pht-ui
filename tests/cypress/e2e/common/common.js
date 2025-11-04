@@ -452,14 +452,17 @@ export const addM2TargetUsingResolve = () => {
   clickResolveButton();
 };
 
-export const enterTargetName = (testId, value) => {
+export const enterTargetField = (testId, value) => {
   cy.get('[data-testid="' + testId + '"]').should('exist');
   cy.get('[data-testid="' + testId + '"]').type(value);
 };
 
-export const enterTargetCoordinate = (testId, value) => {
+export const updateTargetField = (testId, value) => {
   cy.get('[data-testid="' + testId + '"]').should('exist');
-  cy.get('[data-testid="' + testId + '"]').type(value);
+  cy.get('[data-testid="' + testId + '"]')
+    .eq(1)
+    .clear()
+    .type(value);
 };
 
 export const addBeamUsingResolve = beamName => {
@@ -513,6 +516,17 @@ export const clickObservationFromTable = () => {
 };
 export const clickToLinkTargetAndObservation = () => {
   cy.get('[data-testid="linkedTickBox"]').click({ multiple: true });
+};
+export const verifyTargetInTargetTable = (targetName, ra, dec, velocity) => {
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .eq(0)
+    .within(() => {
+      cy.get('[data-field="name"]').should('contain', targetName);
+      cy.get('[data-field="raStr"]').should('contain', ra);
+      cy.get('[data-field="decStr"]').should('contain', dec);
+      cy.get('[data-field="vel"]').should('contain', velocity);
+    });
 };
 
 export const verifyBeamInTable = () => {

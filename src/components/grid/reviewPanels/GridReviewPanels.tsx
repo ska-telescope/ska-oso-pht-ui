@@ -17,7 +17,7 @@ interface GridReviewPanelsProps {
 }
 
 export default function GridReviewPanels({
-  height = '50vh',
+  height = '100%',
   listOnly = false,
   onRowClick
 }: GridReviewPanelsProps) {
@@ -69,9 +69,17 @@ export default function GridReviewPanels({
 
   const colTitle = {
     field: 'title',
-    headerName: t('panels.name'),
     flex: 2,
     minWidth: 250,
+    renderHeader: () => {
+      return listOnly ? (
+        <Typography sx={{ paddingTop: 1 }} variant="h6" minHeight="4vh">
+          {t('panels.label')}
+        </Typography>
+      ) : (
+        t('panels.name')
+      );
+    },
     renderCell: (e: any) => e.row.name
   };
 
@@ -91,18 +99,19 @@ export default function GridReviewPanels({
     <>
       {!listOnly && <Grid>{ProposalsSectionTitle()}</Grid>}
 
-      <Grid pt={1}>
+      <Grid>
         {(!data || data.length === 0) && (
           <Alert color={AlertColorTypes.Info} text={t('page.15.empty')} testId="helpPanelId" />
         )}
         {data.length > 0 && (
           <>
             <DataGrid
-              maxHeight={`calc(${height} - 50px)`}
+              maxHeight={height}
               testId="dataGridId"
               rows={filteredData(data)}
               columns={stdColumns}
-              height={`calc(${height} - 50px)`}
+              height={height}
+              hideFooter={data.length <= 5}
               onRowClick={(e: any) => onRowClick(e.row)}
             />
           </>

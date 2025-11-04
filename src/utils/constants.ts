@@ -124,8 +124,14 @@ export const FEASIBLE_NO = 'No';
 export const FEASIBLE_YES = 'Yes';
 export const FEASIBILITY = [FEASIBLE_YES, FEASIBLE_NO, FEASIBLE_MAYBE];
 
-export const BANNER_PMT_SPACER = 100;
-export const BANNER_PMT_SPACER_MIN = 65;
+export const SPACER_HEADER = 11;
+export const SPACER_FOOTER = 0; // Just here to show it has been considered
+
+export const BANNER_PMT_SPACER = SPACER_HEADER;
+export const BANNER_PMT_SPACER_MIN = SPACER_HEADER + 70;
+
+export const FOOTER_PMT = 65;
+export const FOOTER_PMT_SPACER = SPACER_FOOTER + FOOTER_PMT;
 
 export const CENTRAL_FREQUENCY_MAX = [350, 1.05, 1.76, 8.5, 15.4];
 export const CENTRAL_FREQUENCY_MIN = [50, 0.35, 0.95, 4.6, 8.3];

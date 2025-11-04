@@ -1,5 +1,7 @@
 # pull the base image
-FROM node:22.16 as base
+ARG BASE_IMAGE="artefact.skao.int/ska-build-node:0.1.2"
+ARG FINAL_IMAGE="artefact.skao.int/ska-webserver:0.1.4"
+FROM $BASE_IMAGE AS base
 
 # # set the working direction
 WORKDIR /app
@@ -10,7 +12,7 @@ RUN yarn install && yarn cache clean
 
 RUN yarn build
 
-FROM nginx:1.25.2 as final
+FROM $FINAL_IMAGE as final
 
 # Copy built files
 COPY --from=base /app/dist /usr/share/nginx/html/

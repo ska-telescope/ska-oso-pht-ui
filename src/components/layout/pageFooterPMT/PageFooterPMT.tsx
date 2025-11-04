@@ -3,6 +3,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import Notification from '../../../utils/types/notification';
 import TimedAlert from '../../alerts/timedAlert/TimedAlert';
+import { FOOTER_PMT } from '@/utils/constants';
 
 export default function PageFooterPMT() {
   const { application } = storageObject.useStore();
@@ -13,8 +14,18 @@ export default function PageFooterPMT() {
   };
 
   return (
-    <Paper sx={{ width: '100vw', position: 'fixed', bottom: 40, left: 0, right: 0 }} elevation={0}>
-      <Grid p={4} container direction="row" alignItems="center" justifyContent="space-around">
+    <Paper
+      sx={{
+        width: '100vw',
+        borderRadius: 0,
+        position: 'fixed',
+        bottom: FOOTER_PMT,
+        left: 0,
+        right: 0
+      }}
+      elevation={0}
+    >
+      <Grid pt={4} container direction="row" alignItems="center" justifyContent="space-around">
         <Grid>
           <Grid>
             {showNotification() && (

@@ -13,7 +13,7 @@
   "none": "None",
   "abstract": {
     "label": "Abstract",
-    "help": "The proposal abstract should clearly communicate the proposal’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the proposal's essential points. The abstract should be succinct yet detailed enough to convey the essence of the proposal, highlighting its innovation and relevance to the field. The text should be a maximum of 250 words.",
+    "help": "The proposal abstract should be a maximum of 250 words.",
     "helper": "Please enter the abstract of your proposal. This field allows latex syntax. - Word count {{current}} / {{max}}",
     "maxChar": "2300",
     "maxWord": "250",
@@ -55,6 +55,7 @@
   },
   "addTarget": {
     "error": "Failed to add target - check for duplicate",
+    "valueError": "Please provide a target name",
     "label": "Add Target",
     "toolTip": "Will add the target to the list associated with this proposal.",
     "success": "Target is successfully added",
