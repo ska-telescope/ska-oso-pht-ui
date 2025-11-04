@@ -45,11 +45,10 @@ export const validateTargetPage = (proposal: Proposal) =>
 
 export const validateObservationPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-  const hasObservations = () => proposal?.observations?.length > 0;
-  const hasTargetObservations = () => proposal?.targetObservation?.length > 0;
+  const hasObservations = () =>
+    Array.isArray(proposal?.observations) && proposal.observations.length > 0;
 
-  let count = hasObservations() ? 1 : 0;
-  count += hasTargetObservations() ? 1 : 0;
+  let count = hasObservations() ? 2 : 0;
   return result[count];
 };
 
@@ -70,6 +69,14 @@ export const validateSRCPage = () => STATUS_OK;
 
 export const validateCalibrationPage = () => STATUS_OK; // TODO : implement validation logic
 
+export const validateLinkingPage = (proposal: Proposal) => {
+  const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
+  const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
+
+  let count = hasTargetObservations() ? 2 : 0;
+  return result[count];
+};
+
 export const validateProposal = (proposal: Proposal) => {
   const results = [
     validateTitlePage(proposal),
@@ -81,7 +88,8 @@ export const validateProposal = (proposal: Proposal) => {
     validateCalibrationPage(),
     validateTechnicalPage(proposal),
     validateSDPPage(proposal),
-    validateSRCPage()
+    validateSRCPage(),
+    validateLinkingPage(proposal)
   ];
   return results;
 };

@@ -39,5 +39,6 @@ describe('Verify navigation', () => {
     // statusId7 unavailable for science verification
     checkStatusIndicatorDisabled('statusId8', false);
     checkStatusIndicatorDisabled('statusId9', false);
+    checkStatusIndicatorDisabled('statusId10', false);
   });
 });
