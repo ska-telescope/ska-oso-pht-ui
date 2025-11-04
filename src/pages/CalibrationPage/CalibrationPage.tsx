@@ -4,7 +4,9 @@ import {
   TextEntry,
   TickBox,
   AlertColorTypes,
-  LABEL_POSITION
+  LABEL_POSITION,
+  SPACER_VERTICAL,
+  Spacer
 } from '@ska-telescope/ska-gui-components';
 import { Box, Grid, Typography } from '@mui/material';
 import { validateCalibrationPage } from '../../utils/validation/validation';
@@ -13,7 +15,7 @@ import Shell from '../../components/layout/Shell/Shell';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { LAB_POSITION, STATUS_OK, WRAPPER_HEIGHT } from '@/utils/constants';
+import { FOOTER_SPACER, LAB_POSITION, STATUS_OK, WRAPPER_HEIGHT } from '@/utils/constants';
 import GetCalibratorList from '@/services/axios/get/getCalibratorList/getCalibratorList';
 import { Calibrator } from '@/utils/types/calibrationStrategy';
 import { timeConversion } from '@/utils/helpersSensCalc';
@@ -202,10 +204,10 @@ export default function CalibrationPage() {
   const nameField = () => {
     return fieldWrapper(
       <TextEntry
-        testId="name"
+        testId="calibratorName"
         value={name}
         disabled={true}
-        label={t('calibrator.name')}
+        label={t('calibrator.calibrator')}
         sx={{ minWidth: '400px' }}
       />
     );
@@ -251,7 +253,7 @@ export default function CalibrationPage() {
     const numRows = 3;
 
     return fieldWrapper(
-      <Box sx={{ height: LINE_OFFSET * numRows }} ml={-1} minWidth={600} mr={5} mb={5}>
+      <Box sx={{ height: LINE_OFFSET * numRows }} /*ml={-1}*/ minWidth={600} mr={5} mb={5}>
         <TextEntry
           label={t('calibrator.comment.label')}
           labelBold
@@ -270,25 +272,26 @@ export default function CalibrationPage() {
   const calibrationDetails = (): React.ReactNode => {
     return (
       <>
-        <Typography mb={3}>{t('calibrator.detail')}</Typography>
-        <Grid pt={1} container direction="row" alignItems="baseline" justifyContent="flex-start">
-          {nameField()}
-          {durationField()}
-          {intentField()}
+        <Grid sx={{ overflow: 'hidden', width: '100%' }}>
+          <Grid pt={1} container direction="row" alignItems="baseline" justifyContent="flex-start">
+            <Grid width={280}>{nameField()}</Grid>
+            <Grid width={240}>{durationField()}</Grid>
+            <Grid width={280}>{intentField()}</Grid>
+          </Grid>
+          <Grid pt={1} container direction="row" alignItems="baseline" justifyContent="flex-start">
+            <Grid width={280}>{targetField()}</Grid>
+            <Grid width={240}>{integrationTimeField()}</Grid>
+          </Grid>
+          <Grid pt={1} container direction="row" alignItems="baseline" justifyContent="flex-start">
+            <Grid width={280}>{nameField()}</Grid>
+            <Grid width={240}>{durationField()}</Grid>
+            <Grid width={280}>{intentField()}</Grid>
+          </Grid>
+          <Typography mt={3}>{t('calibrator.note')}</Typography>
+          <Typography mb={3}>{t('calibrator.disclaimer')}</Typography>
+          {checkBox()}
+          {addComment && commentField()}
         </Grid>
-        <Grid pt={1} container direction="row" alignItems="baseline" justifyContent="flex-start">
-          {targetField()}
-          {integrationTimeField()}
-        </Grid>
-        <Grid pt={1} container direction="row" alignItems="baseline" justifyContent="flex-start">
-          {nameField()}
-          {durationField()}
-          {intentField()}
-        </Grid>
-        <Typography mt={3}>{t('calibrator.note')}</Typography>
-        <Typography mb={3}>{t('calibrator.disclaimer')}</Typography>
-        {checkBox()}
-        {addComment && commentField()}
       </>
     );
   };
@@ -297,28 +300,25 @@ export default function CalibrationPage() {
     <Shell page={PAGE}>
       <>
         {hasObservations() && (
-          <Grid p={1} container direction="row" alignItems="space-evenly" justifyContent="center">
-            <Grid size={{ xs: 6 }} sx={{ marginBottom: 10 }}>
-              <Grid
-                p={1}
-                container
-                direction="column"
-                alignItems="space-evenly"
-                justifyContent="center"
-              >
-                <Grid>
-                  {!axiosViewError && calibrationDetails()}
-                  {axiosViewError && (
-                    <Alert
-                      color={AlertColorTypes.Error}
-                      testId="axiosErrorTestId"
-                      text={axiosViewError}
-                    />
-                  )}
-                </Grid>
-              </Grid>
+          <Grid
+            p={1}
+            container
+            direction="row"
+            alignItems="space-evenly"
+            justifyContent="center"
+            spacing={1}
+          >
+            <Grid size={{ md: 7, xs: 12 }}>
+              {!axiosViewError && calibrationDetails()}
+              {axiosViewError && (
+                <Alert
+                  color={AlertColorTypes.Error}
+                  testId="axiosErrorTestId"
+                  text={axiosViewError}
+                />
+              )}
             </Grid>
-            <Grid pt={4} size={{ xs: 4 }}>
+            <Grid pt={4} size={{ md: 4, xs: 12 }}>
               <HelpPanel />
             </Grid>
           </Grid>
@@ -331,6 +331,7 @@ export default function CalibrationPage() {
           />
         )}
       </>
+      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
     </Shell>
   );
 }
