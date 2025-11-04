@@ -3,16 +3,26 @@ import { useNavigate } from 'react-router-dom';
 import { Grid, Paper, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
+  BorderedSection,
   DropDown,
   InfoCard,
   InfoCardColorTypes,
   LABEL_POSITION,
   NumberEntry,
+  Spacer,
+  SPACER_VERTICAL,
   TickBox
 } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
-import { FOOTER_HEIGHT_PHT, HELP_FONT, NAV, STATUS_OK, WRAPPER_HEIGHT } from '@/utils/constants';
+import {
+  BANNER_PMT_SPACER,
+  FOOTER_HEIGHT_PHT,
+  HELP_FONT,
+  NAV,
+  STATUS_OK,
+  WRAPPER_HEIGHT
+} from '@/utils/constants';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 import Proposal from '@/utils/types/proposal';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
@@ -22,7 +32,10 @@ import AddButton from '@/components/button/Add/Add';
 import { LAB_POSITION } from '@/utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { presentUnits } from '@/utils/present/present';
+import Observation from '@/utils/types/observation';
+import GridObservation from '@/components/grid/observation/GridObservation';
 
+const GAP = 5;
 const BACK_PAGE = 8;
 const PAGE = 14;
 const PAGE_PREFIX = 'SDP';
@@ -37,9 +50,7 @@ export default function AddDataProduct() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const [baseObservations, setBaseObservations] = React.useState<
-    { label: string; value: string }[]
-  >([]);
+  const [baseObservations, setBaseObservations] = React.useState<Observation[]>([]);
   const [observationId, setObservationId] = React.useState('');
   const [dp1, setDP1] = React.useState(true);
   const [imageSizeValue, setImageSizeValue] = React.useState('0');
@@ -58,7 +69,7 @@ export default function AddDataProduct() {
           e => e.observationId === ob.id && e.sensCalc.statusGUI === STATUS_OK
         ) !== 'undefined'
     );
-    setBaseObservations(results ? results.map(e => ({ label: e.id, value: e.id })) : []);
+    setBaseObservations(results ?? []);
   }, []);
 
   React.useEffect(() => {
@@ -108,27 +119,6 @@ export default function AddDataProduct() {
     }
   }, [baseObservations, observationId]);
 
-  const observationsField = () => {
-    return (
-      <Box pt={1}>
-        {baseObservations && (
-          <DropDown
-            options={baseObservations}
-            testId="observations"
-            value={observationId}
-            setValue={setObservationId}
-            label={t('observations.single')}
-            labelBold
-            labelPosition={LAB_POSITION}
-            labelWidth={LABEL_WIDTH}
-            onFocus={() => helpComponent(t('observations.dp.help'))}
-            required
-          />
-        )}
-      </Box>
-    );
-  };
-
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
       {children}
@@ -154,7 +144,6 @@ export default function AddDataProduct() {
         pl={1}
         pt={3}
         container
-        minWidth={800}
         direction="row"
         alignItems="space-between"
         justifyContent="space-between"
@@ -270,7 +259,8 @@ export default function AddDataProduct() {
         imageSizeUnits,
         pixelSizeValue,
         pixelSizeUnits,
-        weighting
+        weighting,
+        polarisations: ''
       };
       if (hasRecord) {
         setProposal({
@@ -319,40 +309,75 @@ export default function AddDataProduct() {
   };
 
   return (
-    <Box pt={2}>
+    <Box pt={2} sx={{ height: '91vh', display: 'flex', flexDirection: 'column' }}>
       <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
-
-      <Grid
-        p={2}
-        container
-        direction="row"
-        alignItems="space-around"
-        justifyContent="space-around"
-        spacing={1}
+      <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
+      <Box
+        sx={{
+          flexGrow: 1,
+          width: '100%',
+          overflow: 'hidden',
+          display: 'flex',
+          flexDirection: 'column',
+          borderRadius: 0,
+          minHeight: 0
+        }}
       >
-        <Grid size={{ md: 11, lg: 4 }}>
-          <Stack>
-            {fieldWrapper(observationsField())}
-            {dataProductsField()}
-            {fieldWrapper(imageSizeField())}
-            {fieldWrapper(pixelSizeField())}
-            {fieldWrapper(imageWeightingField())}
-          </Stack>
+        <Grid
+          container
+          direction="row"
+          justifyContent="space-between"
+          alignItems="stretch"
+          spacing={GAP}
+          m={GAP}
+          sx={{ flexGrow: 1 }}
+        >
+          <Grid size={{ md: 4, lg: 2 }} sx={{ display: 'flex', flexDirection: 'column' }}>
+            <Box
+              sx={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                border: '1px solid',
+                borderColor: '#ccc',
+                borderRadius: '8px',
+                minHeight: 0
+              }}
+            >
+              {baseObservations && (
+                <GridObservation
+                  data={baseObservations}
+                  rowClick={(e: any) => setObservationId(e.row.id)}
+                />
+              )}
+            </Box>
+          </Grid>
+          <Grid size={{ md: 7, lg: 6 }}>
+            <Stack spacing={5}>
+              <BorderedSection title={t('page.8.group1')}>{dataProductsField()}</BorderedSection>
+              <BorderedSection title={t('page.8.group2')}>
+                <Stack>
+                  {fieldWrapper(imageSizeField())}
+                  {fieldWrapper(pixelSizeField())}
+                  {fieldWrapper(imageWeightingField())}
+                </Stack>
+              </BorderedSection>
+            </Stack>
+          </Grid>
+          <Grid size={{ md: 11, lg: 3 }}>
+            <Stack spacing={1}>
+              <HelpPanel />
+              <InfoCard
+                color={InfoCardColorTypes.Warning}
+                fontSize={HELP_FONT}
+                message="The associated input options of these observatory data products are under development and subject to change."
+                testId="developmentPanelId"
+              />
+            </Stack>
+          </Grid>
         </Grid>
-        {false && <Grid size={{ md: 11, lg: 3 }}>{dataProductsField()}</Grid>}
-        <Grid size={{ md: 11, lg: 3 }}>
-          <Stack spacing={1}>
-            <HelpPanel />
-            <InfoCard
-              color={InfoCardColorTypes.Warning}
-              fontSize={HELP_FONT}
-              message="The associated input options of these observatory data products are under development and subject to change."
-              testId="developmentPanelId"
-            />
-          </Stack>
-        </Grid>
-      </Grid>
-      {pageFooter()}
+        {pageFooter()}
+      </Box>
     </Box>
   );
 }
