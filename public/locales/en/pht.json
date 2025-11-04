@@ -1304,7 +1304,7 @@
       "desc": "This page allows you to request and define SRCNet data products.",
       "pageError": "The SRCNet page is not complete"
     },
-     "10": {
+    "10": {
       "status": "Linking",
       "title": "Linking",
       "desc": "Linking strategies",
