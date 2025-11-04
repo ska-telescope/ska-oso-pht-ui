@@ -24,7 +24,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { presentUnits } from '@/utils/present/present';
 
 const BACK_PAGE = 8;
-const PAGE = 13;
+const PAGE = 14;
 const PAGE_PREFIX = 'SDP';
 const FIELD_OBS = 'observatoryDataProduct.options';
 const LABEL_WIDTH = 5;

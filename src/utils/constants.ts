@@ -159,7 +159,7 @@ export const DATA_PRODUCT = {
 };
 export const DEFAULT_HELP = ['', ' ', ''];
 
-export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
+export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
 export const ENTRY_HEIGHT = 40;
 
 export const FOOTER_HEIGHT = 20;
@@ -238,7 +238,7 @@ export const IMAGE_WEIGHTING = [
 
 export const LAB_IS_BOLD = true;
 export const LAB_POSITION = LABEL_POSITION.START;
-export const LAST_PAGE = 10;
+export const LAST_PAGE = 11;
 
 export const MULTIPLIER_HZ_GHZ = [1, 1, 1000, 1000000, 1000000000];
 
@@ -252,7 +252,8 @@ export const NAV = [
   '/proposal/calibration',
   '/proposal/technical',
   '/proposal/data',
-  '/proposal/src'
+  '/proposal/src',
+  '/proposal/linking'
 ];
 export const NOT_SPECIFIED = 'notSpecified';
 export const NOT_APPLICABLE = 'N/A';

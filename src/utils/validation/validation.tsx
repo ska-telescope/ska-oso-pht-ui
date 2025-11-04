@@ -70,6 +70,8 @@ export const validateSRCPage = () => STATUS_OK;
 
 export const validateCalibrationPage = () => STATUS_OK; // TODO : implement validation logic
 
+export const validateLinkingPage = () => STATUS_OK;
+
 export const validateProposal = (proposal: Proposal) => {
   const results = [
     validateTitlePage(proposal),
