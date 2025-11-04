@@ -19,7 +19,6 @@ import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
 import {
   BANNER_PMT_SPACER,
   FOOTER_HEIGHT_PHT,
-  FREQUENCY_GHZ,
   HELP_FONT,
   IW_BRIGGS,
   LAB_IS_BOLD,
@@ -63,6 +62,8 @@ export default function AddDataProduct() {
   const [pixelSizeUnits, setPixelSizeUnits] = React.useState('');
   const [weighting, setWeighting] = React.useState(0);
   const [robust, setRobust] = React.useState(3);
+  const [channelsOut, setChannelsOut] = React.useState(1);
+  const [fitSpectralPol, setFitSpectralPol] = React.useState(1);
 
   const { t } = useScopedTranslation();
 
@@ -249,6 +250,40 @@ export default function AddDataProduct() {
       />
     );
 
+  const channelsOutField = () =>
+    fieldWrapper(
+      <Box pt={1}>
+        <NumberEntry
+          label={t('channelsOut.label')}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={LABEL_WIDTH}
+          testId="channelsOut"
+          value={channelsOut}
+          setValue={setChannelsOut}
+          onFocus={() => helpComponent(t('channelsOut.help'))}
+          required
+        />
+      </Box>
+    );
+
+  const fitSpectralPolField = () =>
+    fieldWrapper(
+      <Box pt={1}>
+        <NumberEntry
+          label={t('fitSpectralPol.label')}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={LABEL_WIDTH}
+          testId="fitSpectralPol"
+          value={fitSpectralPol}
+          setValue={setFitSpectralPol}
+          onFocus={() => helpComponent(t('fitSpectralPol.help'))}
+          required
+        />
+      </Box>
+    );
+
   const pageFooter = () => {
     const enabled = () => {
       const dp = dp1;
@@ -377,6 +412,8 @@ export default function AddDataProduct() {
                   {fieldWrapper(pixelSizeField())}
                   {fieldWrapper(imageWeightingField())}
                   {weighting === IW_BRIGGS && fieldWrapper(robustField())}
+                  {fieldWrapper(channelsOutField())}
+                  {fieldWrapper(fitSpectralPolField())}
                 </Stack>
               </BorderedSection>
             </Stack>
