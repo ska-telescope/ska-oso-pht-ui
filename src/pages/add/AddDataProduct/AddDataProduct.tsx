@@ -46,6 +46,7 @@ const PAGE_PREFIX = 'SDP';
 const FIELD_OBS = 'observatoryDataProduct.options';
 const LABEL_WIDTH = 5;
 const LABEL_WIDTH_TICK = 11;
+const GUASSIAN_TAPPER_UNITS = 'Wavelengths (λ)';
 
 export default function AddDataProduct() {
   const navigate = useNavigate();
@@ -66,6 +67,7 @@ export default function AddDataProduct() {
   const [channelsOut, setChannelsOut] = React.useState(1);
   const [fitSpectralPol, setFitSpectralPol] = React.useState(1);
   const [stokes, setStokes] = React.useState('I');
+  const [guassianTapperValue, setGuassianTapperValue] = React.useState('0');
 
   const { t } = useScopedTranslation();
 
@@ -295,6 +297,25 @@ export default function AddDataProduct() {
       </Box>
     );
 
+  const gaussianTapperField = () => {
+    return (
+      <Box pt={1}>
+        <NumberEntry
+          label={t('guassianTapper.label')}
+          labelBold
+          labelPosition={LAB_POSITION}
+          labelWidth={LABEL_WIDTH}
+          testId="guassianTapper"
+          value={guassianTapperValue}
+          setValue={setGuassianTapperValue}
+          required
+          disabledUnderline
+          suffix={GUASSIAN_TAPPER_UNITS}
+        />
+      </Box>
+    );
+  };
+
   const pageFooter = () => {
     const enabled = () => {
       const dp = dp1;
@@ -426,6 +447,7 @@ export default function AddDataProduct() {
                   {fieldWrapper(channelsOutField())}
                   {fieldWrapper(fitSpectralPolField())}
                   {fieldWrapper(stokesField())}
+                  {fieldWrapper(gaussianTapperField())}
                 </Stack>
               </BorderedSection>
             </Stack>

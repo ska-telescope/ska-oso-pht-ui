@@ -883,6 +883,10 @@
     "label": "Stokes",
     "I": "I"
   },
+  "guassianTapper": {
+    "help": "Guassian Tapper help text TBD",
+    "label": "Guassian Tapper"
+  },
   "saveBtn": {
     "label": "Save",
     "success": "Save was successful",
