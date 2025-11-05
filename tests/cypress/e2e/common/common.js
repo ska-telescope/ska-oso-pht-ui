@@ -182,6 +182,12 @@ export const clickToPreviousPage = () => clickButton('prevButtonTestId');
 
 export const clickToLinkTargetObservation = () => clickButton('linkedTickBox');
 
+export const clickStatusIconNav = testId => {
+  cy.get('[data-testid="' + testId + '"]')
+    .eq(0)
+    .click();
+};
+
 /*----------------------------------------------------------------------*/
 
 export const clickDropdown = (testId, value) => {
@@ -324,6 +330,11 @@ export const clickConfirmButtonWithinPopup = () => {
 export const enterProposalTitle = () => entry('titleId', 'Proposal Title');
 
 export const selectCosmology = () => clickDropdown('categoryId', '1');
+export const selectObservingMode = value => {
+  cy.get('[data-testid="categoryId"]').should('exist');
+  cy.get('[data-testid="categoryId"]').click();
+  cy.get('li[data-value="' + value + '"]').click();
+};
 
 export const clickProposalTypePrincipleInvestigator = () => selectId('ProposalType-1');
 export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalAttribute-1');
@@ -376,8 +387,15 @@ export const createStandardProposalLoggedIn = () => {
   clickAddProposal();
   clickCycleConfirm();
   enterProposalTitle();
-  // clickProposalTypePrincipleInvestigator();
-  // clickSubProposalTypeTargetOfOpportunity();
+  clickProposalTypePrincipleInvestigator();
+  clickSubProposalTypeTargetOfOpportunity();
+  clickCreateProposal();
+};
+
+export const createScienceIdeaLoggedIn = () => {
+  clickAddProposal();
+  clickCycleConfirm();
+  enterProposalTitle();
   clickCreateProposal();
 };
 
