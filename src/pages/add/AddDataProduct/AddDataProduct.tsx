@@ -14,8 +14,8 @@ import {
   TickBox
 } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import RobustField from '@components/fields/robust/Robust.tsx';
 import StokesField from '@components/fields/stokes/stokes.tsx';
+import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
 import {
   BANNER_PMT_SPACER,
@@ -30,7 +30,6 @@ import {
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 import Proposal from '@/utils/types/proposal';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
-import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import { DataProductSDP } from '@/utils/types/dataProduct';
 import AddButton from '@/components/button/Add/Add';
 import { LAB_POSITION } from '@/utils/constants';
@@ -62,7 +61,7 @@ export default function AddDataProduct() {
   const [imageSizeUnits, setImageSizeUnits] = React.useState(0);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
   const [pixelSizeUnits, setPixelSizeUnits] = React.useState('');
-  const [weighting, setWeighting] = React.useState(0);
+  const [weighting, setWeighting] = React.useState(1);
   const [robust, setRobust] = React.useState(3);
   const [channelsOut, setChannelsOut] = React.useState(1);
   const [fitSpectralPol, setFitSpectralPol] = React.useState(1);
@@ -81,53 +80,6 @@ export default function AddDataProduct() {
     );
     setBaseObservations(results ?? []);
   }, []);
-
-  React.useEffect(() => {
-    const getImageWeighting = (id: string) => {
-      const temp = getProposal()?.observations?.find(e => e.id === id);
-      return temp ? temp.imageWeighting : 0;
-    };
-
-    const getPixelSize = (sensCalc: SensCalcResults): number => {
-      const DIVIDER = 3;
-      const precisionStr = t('pixelSize.precision');
-      const precision = Number(precisionStr);
-      const arr =
-        sensCalc?.section1 && sensCalc.section1.length > 2
-          ? sensCalc.section1[3].value.split(' x ')
-          : [];
-      const result = arr.length > 1 ? (Number(arr[1]) / DIVIDER).toFixed(precision) : 0;
-      if (pixelSizeUnits === '' && sensCalc?.section1 && sensCalc.section1.length > 2) {
-        setPixelSizeUnits(t('imageSize.2'));
-      }
-      return Number(result);
-    };
-
-    const calcPixelSize = (count: number, total: number): number => {
-      if (count === 0 || total === 0) {
-        return 0;
-      }
-      const precision = Number(t('pixelSize.precision'));
-      const result = Number((total / count).toFixed(precision));
-      return result;
-    };
-
-    if (observationId) {
-      setWeighting(getImageWeighting(observationId));
-    }
-
-    if (observationId && baseObservations) {
-      let pixelTotal = 0;
-      let pixelCount = 0;
-      getProposal().targetObservation?.forEach(rec => {
-        if (rec.observationId === observationId) {
-          pixelCount++;
-          pixelTotal += rec?.sensCalc ? getPixelSize(rec.sensCalc) : 0;
-        }
-      });
-      setPixelSizeValue(calcPixelSize(pixelCount, pixelTotal));
-    }
-  }, [baseObservations, observationId]);
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
@@ -212,44 +164,46 @@ export default function AddDataProduct() {
     );
   };
 
-  const pixelSizeField = () => {
-    return (
-      <Box pt={1}>
-        <NumberEntry
-          label={t('pixelSize.label')}
-          labelBold
-          labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH}
-          testId="pixelSize"
-          value={pixelSizeValue}
-          setValue={setPixelSizeValue}
-          required
-          disabledUnderline
-          suffix={pixelSizeUnits}
-        />
-      </Box>
+  const pixelSizeField = () =>
+    fieldWrapper(
+      <PixelSizeField
+        label={t('pixelSize.label')}
+        widthLabel={LABEL_WIDTH}
+        onFocus={() => helpComponent(t('pixelSize.help'))}
+        setValue={(value, suffix) => {
+          setPixelSizeValue(value);
+          setPixelSizeUnits(suffix);
+        }}
+        testId="pixelSize"
+        value={pixelSizeValue}
+      />
     );
-  };
 
-  const imageWeightingField = () => {
-    return (
+  const imageWeightingField = () =>
+    fieldWrapper(
       <ImageWeightingField
         labelWidth={LABEL_WIDTH}
         onFocus={() => helpComponent(t('imageWeighting.help'))}
+        setValue={setWeighting}
         value={weighting}
       />
     );
-  };
 
   const robustField = () =>
     fieldWrapper(
-      <RobustField
-        label={t('robust.label')}
-        onFocus={() => helpComponent(t('robust.help'))}
-        setValue={setRobust}
-        testId="robust"
-        value={robust}
-      />
+      <Box pt={1}>
+        <NumberEntry
+          label={t('robust.label')}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={LABEL_WIDTH}
+          testId="robust"
+          value={robust}
+          setValue={setRobust}
+          onFocus={() => helpComponent(t('robust.help'))}
+          required
+        />
+      </Box>
     );
 
   const channelsOutField = () =>
