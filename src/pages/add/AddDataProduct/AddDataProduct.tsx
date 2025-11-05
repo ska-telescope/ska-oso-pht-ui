@@ -447,8 +447,15 @@ export default function AddDataProduct() {
                   {fieldWrapper(channelsOutField())}
                   {fieldWrapper(fitSpectralPolField())}
                   {fieldWrapper(stokesField())}
-                  {getProposal().observations?.map(ob => ob.observingBand !== 0) &&
-                    fieldWrapper(gaussianTapperField())}{' '}
+                  {getProposal()
+                    .observations?.filter(
+                      rec => rec.id === observationId && rec.observingBand !== 0
+                    )
+                    .map(rec => (
+                      <React.Fragment key={rec.id}>
+                        {fieldWrapper(gaussianTapperField())}
+                      </React.Fragment>
+                    ))}
                 </Stack>
               </BorderedSection>
             </Stack>
