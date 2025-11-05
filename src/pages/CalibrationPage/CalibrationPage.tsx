@@ -25,6 +25,7 @@ import Observation from '@/utils/types/observation';
 import ArrowIcon from '@/components/icon/arrowIcon/arrowIcon';
 
 const PAGE = 6;
+const LINE_OFFSET = 35; // TODO check why we need to set this for it to be visible
 
 export default function CalibrationPage() {
   const {
@@ -260,19 +261,21 @@ export default function CalibrationPage() {
     }
 
     return (
-      <TextEntry
-        label={t('calibrator.comment.label')}
-        labelBold
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH}
-        testId="commenttId"
-        rows={numRows}
-        errorText={validateComment(comment)}
-        value={comment}
-        setValue={setComment}
-        onFocus={() => helpComponent(t('calibrator.comment.help'))}
-        height={150}
-      />
+      <Box sx={{ height: LINE_OFFSET * numRows }}>
+        <TextEntry
+          label={t('calibrator.comment.label')}
+          labelBold
+          labelPosition={LAB_POSITION}
+          labelWidth={LABEL_WIDTH}
+          testId="commenttId"
+          rows={numRows}
+          required
+          errorText={validateComment(comment)}
+          value={comment}
+          setValue={setComment}
+          onFocus={() => helpComponent(t('calibrator.comment.help'))}
+        />
+      </Box>
     );
   };
 

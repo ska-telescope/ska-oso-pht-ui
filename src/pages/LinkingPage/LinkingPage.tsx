@@ -71,10 +71,11 @@ export default function LinkingPage() {
   const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
   const getProposalState = () => application.content1 as number[];
-  const setTheProposalState = (value: number) => {
+  const setTheProposalState = (value: number, value2: number, page2: number) => {
     const temp: number[] = [];
     for (let i = 0; i < getProposalState().length; i++) {
-      temp.push(PAGE === i ? value : getProposalState()[i]);
+      // validate linking page & calibration page
+      temp.push(PAGE === i ? value : page2 === i ? value2 : getProposalState()[i]);
     }
     updateAppContent1(temp);
   };
@@ -310,8 +311,11 @@ export default function LinkingPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    setTheProposalState(validateLinkingPage(getProposal()));
-    setTheProposalState(validateCalibrationPage(getProposal()));
+    setTheProposalState(
+      validateLinkingPage(getProposal()),
+      validateCalibrationPage(getProposal()),
+      6
+    );
   }, [validateToggle]);
 
   const observationGroupIds = (id: string) => {
