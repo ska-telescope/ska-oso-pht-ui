@@ -17,10 +17,12 @@ import { Box } from '@mui/system';
 import StokesField from '@components/fields/stokes/stokes.tsx';
 import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
 import RobustField from '@components/fields/robust/Robust.tsx';
+import { frequencyConversion } from '@utils/helpers.ts';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
 import {
   BANNER_PMT_SPACER,
   FOOTER_HEIGHT_PHT,
+  FREQUENCY_GHZ,
   HELP_FONT,
   IW_BRIGGS,
   LAB_IS_BOLD,
@@ -46,7 +48,10 @@ const PAGE_PREFIX = 'SDP';
 const FIELD_OBS = 'observatoryDataProduct.options';
 const LABEL_WIDTH = 5;
 const LABEL_WIDTH_TICK = 11;
-const GUASSIAN_TAPPER_UNITS = 'Wavelengths (λ)';
+const WRAPPER_WIDTH_BUTTON = 2;
+const BOTTOM_LABEL_WIDTH = 6;
+
+// const GUASSIAN_TAPPER_UNITS = 'Wavelengths (λ)'; TBC if needed
 
 export default function AddDataProduct() {
   const navigate = useNavigate();
@@ -67,7 +72,7 @@ export default function AddDataProduct() {
   const [channelsOut, setChannelsOut] = React.useState(1);
   const [fitSpectralPol, setFitSpectralPol] = React.useState(1);
   const [stokes, setStokes] = React.useState('I');
-  const [guassianTapperValue, setGuassianTapperValue] = React.useState('0');
+  const [tapering, setTapering] = React.useState(0);
 
   const { t } = useScopedTranslation();
 
@@ -246,24 +251,96 @@ export default function AddDataProduct() {
       </Box>
     );
 
-  const gaussianTapperField = () => {
-    return (
-      <Box pt={1}>
-        <NumberEntry
-          label={t('guassianTapper.label')}
-          labelBold
-          labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH}
-          testId="guassianTapper"
-          value={guassianTapperValue}
-          setValue={setGuassianTapperValue}
-          required
-          disabledUnderline
-          suffix={GUASSIAN_TAPPER_UNITS}
-        />
-      </Box>
+  const fieldDropdown = (
+    disabled: boolean,
+    field: string,
+    labelWidth: number,
+    options: { label: string; value: string | number }[],
+    required: boolean,
+    setValue: Function,
+    suffix: any,
+    value: string | number
+  ) => {
+    return fieldWrapper(
+      <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
+        <Grid pl={suffix ? 1 : 0} size={{ xs: suffix ? 12 - WRAPPER_WIDTH_BUTTON : 12 }}>
+          <DropDown
+            disabled={disabled}
+            options={options}
+            testId={field}
+            value={value}
+            setValue={setValue}
+            label={t(field + '.label')}
+            labelBold={LAB_IS_BOLD}
+            labelPosition={LAB_POSITION}
+            labelWidth={suffix ? labelWidth + 1 : labelWidth}
+            onFocus={() => helpComponent(t(field + '.help'))}
+            required={required}
+          />
+        </Grid>
+        <Grid size={{ xs: suffix ? WRAPPER_WIDTH_BUTTON : 0 }}>{suffix}</Grid>
+      </Grid>
     );
   };
+
+  const taperingField = () => {
+    const getCentralFrequency = () => {
+      const selectedObservation = baseObservations.find(rec => rec.id === observationId);
+      return selectedObservation?.centralFrequency ?? null;
+    };
+
+    const getCentralFrequencyUnits = () => {
+      const selectedObservation = baseObservations.find(rec => rec.id === observationId);
+      return selectedObservation?.centralFrequencyUnits ?? null;
+    };
+    const frequencyInGHz = () => {
+      return frequencyConversion(
+        getCentralFrequency(),
+        getCentralFrequencyUnits() as number,
+        FREQUENCY_GHZ
+      );
+    };
+
+    const getOptions = () => {
+      const results = [{ label: t('tapering.0'), value: 0 }];
+      [0.25, 1, 4, 16, 64, 256, 1024].forEach(inValue => {
+        const theLabel = (inValue * (1.4 / frequencyInGHz())).toFixed(3) + '"';
+        results.push({ label: theLabel, value: inValue });
+      });
+      return results;
+    };
+
+    return fieldDropdown(
+      false,
+      'tapering',
+      BOTTOM_LABEL_WIDTH,
+      getOptions(),
+      true,
+      setTapering,
+      null,
+      tapering
+    );
+  };
+
+  //TODO: Field as per wireframe, TBC if replacing existing tapering field
+  // const gaussianTapperField = () => {
+  //   return (
+  //     <Box pt={1}>
+  //       <NumberEntry
+  //         label={t('guassianTapper.label')}
+  //         labelBold
+  //         labelPosition={LAB_POSITION}
+  //         labelWidth={LABEL_WIDTH}
+  //         testId="guassianTapper"
+  //         value={guassianTapperValue}
+  //         setValue={setGuassianTapperValue}
+  //         required
+  //         disabledUnderline
+  //         suffix={GUASSIAN_TAPPER_UNITS}
+  //       />
+  //     </Box>
+  //   );
+  // };
 
   const pageFooter = () => {
     const enabled = () => {
@@ -396,15 +473,9 @@ export default function AddDataProduct() {
                   {fieldWrapper(channelsOutField())}
                   {fieldWrapper(fitSpectralPolField())}
                   {fieldWrapper(stokesField())}
-                  {getProposal()
-                    .observations?.filter(
-                      rec => rec.id === observationId && rec.observingBand !== 0
-                    )
-                    .map(rec => (
-                      <React.Fragment key={rec.id}>
-                        {fieldWrapper(gaussianTapperField())}
-                      </React.Fragment>
-                    ))}
+                  {baseObservations.find(
+                    rec => rec.id === observationId && rec.observingBand !== 0
+                  ) && fieldWrapper(taperingField())}
                 </Stack>
               </BorderedSection>
             </Stack>
