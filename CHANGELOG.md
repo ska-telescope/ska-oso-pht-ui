@@ -19,6 +19,7 @@ UNRELEASED
 * Changed: to show notification when there is an senscalc error after mapping target-observation
 * Changed: Added validation to target fields 
 * Changed: use ska base images `ska-build-node` and `ska-webserver`
+* Changed: Added a drawer to display helper text
 
 
 8.0.0
