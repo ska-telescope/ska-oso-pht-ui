@@ -289,7 +289,7 @@ export const MockProposalFrontend: Proposal = {
       imageSizeValue: 15,
       imageSizeUnits: 0,
       pixelSizeValue: 1.007,
-      pixelSizeUnits: 'arcsecs',
+      pixelSizeUnits: 2,
       weighting: 1
     }
   ],
@@ -473,7 +473,7 @@ export const MockProposalFrontendZoom: Proposal = {
       imageSizeValue: 100,
       imageSizeUnits: 0,
       pixelSizeValue: 3.7,
-      pixelSizeUnits: 'arcsecs',
+      pixelSizeUnits: 2,
       weighting: 2
     }
   ],
