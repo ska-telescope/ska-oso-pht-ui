@@ -10,6 +10,7 @@ UNRELEASED
 * Changed: Added variable to allow for Science Idea / Proposal determination
 * [BREAKING]: Changed: PDM changes implemented
 * [BREAKING]: Added calibration to proposal types and mappings
+* [BREAKING]: Added linking page to proposal and migrated linking of targets and observations to this page
 * Changed: oso-services v9.0.0
 * Changed: Implemented the isSV function so that specific SV flow thru the application can be realized.
 * Changed: oda v12.1.1
@@ -17,6 +18,7 @@ UNRELEASED
 * Fixed: use of REACT_APP_USE_LOCAL_DATA for local development
 * Changed: to show notification when there is an senscalc error after mapping target-observation
 * Changed: Added validation to target fields 
+* Changed: use ska base images `ska-build-node` and `ska-webserver`
 
 
 8.0.0

@@ -1059,7 +1059,8 @@
   },
   "subBands": {
     "help": "Number of sub-bands to split the bandwidth up into, which can be set to 1 - 32 for MID and 1-4 for LOW. The default number of sub-bands is 1.",
-    "label": "Number of sub bands",
+    "label": "Number of sub-bands",
+    "short": "Sub-bands",
     "range": {
       "lower": 0,
       "upper": 32,
@@ -1298,7 +1299,9 @@
       "title": "Observatory Data Product",
       "titleShort": "Data Product",
       "desc": "This page allows you to request and define observatory data products for Observation(s).",
-      "pageError": "The DATA PRODUCTS page is not complete"
+      "pageError": "The DATA PRODUCTS page is not complete",
+      "group1": "Product",
+      "group2": "Image Settings"
     },
     "9": {
       "status": "SRCNet",
@@ -1308,43 +1311,45 @@
       "pageError": "The SRCNet page is not complete"
     },
     "10": {
+      "status": "Linking",
+      "title": "Linking",
+      "desc": "Linking strategies",
+      "empty": "NO LINKING STRATEGIES AVAILABLE",
+      "toolTip": "Linking tooltip",
+      "pageError": "The Linking page is not complete"
+    },
+    "11": {
       "title": "Observation Setup",
       "titleShort": "Observation Setup",
       "label": "Observation Setup(s)",
       "desc": "Define the parameters of the observation setup."
     },
-    "11": {
+    "12": {
       "title": "Landing page",
       "desc": "Proposals where the user is listed as either Principal Investigator or Co-Investigator.",
       "empty": "NO PROPOSALS AVAILABLE"
     },
-    "12": {
+    "13": {
       "short": "Cycle",
       "title": "SKAO Cycle",
       "desc": ""
     },
-    "13": {
+    "14": {
       "title": "Data Product",
       "titleShort": "Data Product",
       "label": "Data Product(s)",
       "desc": "Add data product(s) to observation set(s). You can request more than one data products for an observation set."
     },
-    "14": {
+    "15": {
       "title": "Observation Update",
       "titleShort": "Observation Update",
       "desc": "Edit an existing observation. Note that this will effect any existing Sensitivity calculations to linked Targets."
     },
-    "15": {
+    "16": {
       "title": "Panel Management",
       "desc": "Panel Management",
       "empty": "NO PANELS AVAILABLE",
       "toolTip": "Panel Management tooltip"
-    },
-    "16": {
-      "title": "Calibration",
-      "desc": "Calibration strategies",
-      "empty": "NO CALIBRATION STRATEGIES AVAILABLE",
-      "toolTip": "Calibration tooltip"
     },
     "next": "Next",
     "pageOf": "Page {{current}} of {{max}}",

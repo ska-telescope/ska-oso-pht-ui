@@ -1,7 +1,6 @@
 import { reviewerAdmin } from '../../users/users.js';
 import {
   clearLocalStorage,
-  createStandardProposalLoggedIn,
   mockCreateProposalAPI,
   mockEmailAPI,
   mockGetUserByEmailAPI,
@@ -16,7 +15,8 @@ import {
   clickManageTeamMemberRights,
   clickSubmitRights,
   clickDialogConfirm,
-  verifyTeamMemberAccessUpdatedAlertFooter
+  verifyTeamMemberAccessUpdatedAlertFooter,
+  createScienceIdeaLoggedIn
 } from '../../common/common.js';
 import { entry } from '../../../fixtures/utils/cypress.js';
 
@@ -26,7 +26,7 @@ describe('Delegate Editing Rights', () => {
     mockCreateProposalAPI();
     mockGetUserByEmailAPI();
     mockEmailAPI();
-    createStandardProposalLoggedIn();
+    createScienceIdeaLoggedIn();
     cy.wait('@mockCreateProposal');
     verifyProposalCreatedAlertFooter();
     pageConfirmed('TEAM');

@@ -32,7 +32,7 @@ async function PostProposalValidate(
 
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/validate`;
-    const convertedProposal = MappingPutProposal(proposal, PROPOSAL_STATUS.DRAFT);
+    const convertedProposal = MappingPutProposal(proposal, false, PROPOSAL_STATUS.DRAFT);
     const result = await authAxiosClient.post(
       `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
       convertedProposal

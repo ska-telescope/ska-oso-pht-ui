@@ -181,12 +181,19 @@ const getDataProductSDP = (dataproducts: DataProductSDP[]): DataProductSDPsBacke
 
   return dataproducts?.map(dp => ({
     data_product_id: dp.dataProductsSDPId as string,
-    options: SDPOptions(dp.observatoryDataProduct),
+    products: SDPOptions(dp.observatoryDataProduct),
     observation_set_refs: dp.observationId,
-    image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
-    image_cellsize: { value: dp.pixelSizeValue, unit: IMAGE_SIZE_UNITS[dp.pixelSizeUnits] },
-    weighting: dp.weighting?.toString(),
-    polarisations: dp.polarisations
+    script_parameters: {
+      image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
+      image_cellsize: { value: dp.pixelSizeValue, unit: IMAGE_SIZE_UNITS[dp.pixelSizeUnits] },
+      weight: {
+        weighting: 'natural', // TODO - CHLOE
+        robust: '-2' // TODO - CHLOE
+      },
+      polarisations: 'chloe', // TODO - CHLOE
+      channels_out: 0,
+      fit_spectral_pol: 0
+    }
   }));
 };
 
@@ -249,11 +256,11 @@ const getBandwidthContinuum = (incObs: Observation): ValueUnitPair => {
 const getBandwidthZoom = (incObs: Observation): ValueUnitPair => {
   const obsTelescopeArray = OSD_CONSTANTS.array.find(o => o.value === incObs.telescope);
   const bandwidth = obsTelescopeArray?.bandWidth?.find(b => b.value === incObs.bandwidth);
-  const valueUnit = bandwidth?.label.split(' ');
-  const value = Number(valueUnit[0]);
+  const valueUnit = bandwidth?.label?.split(' ');
+  const value = valueUnit && valueUnit.length > 0 ? Number(valueUnit[0]) : 0;
   return {
     value: value,
-    unit: bandwidth.mapping ? bandwidth.mapping : ''
+    unit: bandwidth?.mapping ? bandwidth.mapping : ''
   };
 };
 const getBandwidth = (ob: Observation): ValueUnitPair =>
@@ -328,6 +335,17 @@ interface SuppliedRelatedFields {
   spectral?: ValueUnitPair;
 }
 
+// Add an index signature to SensCalcResults type to allow string indexing
+// (Place this in the appropriate type definition file, e.g., @utils/types/sensCalcResults.tsx)
+/*
+export interface SensCalcResults {
+  section1?: SensCalcSection[];
+  section2?: SensCalcSection[];
+  section3?: SensCalcSection[];
+  [key: string]: SensCalcSection[] | undefined; // <-- Add this line
+}
+*/
+
 const getSuppliedFieldsSensitivity = (
   suppliedType: string,
   obsType: number,
@@ -401,13 +419,13 @@ const getSuppliedFieldsIntegrationTime = (
     supplied_type: suppliedType
   };
   params.continuum = {
-    value: isContinuum(obsType) ? Number(tarObs.sensCalc.section3[0]?.value) : 0,
-    unit: isContinuum(obsType) ? tarObs.sensCalc.section3[0]?.units : ''
+    value: isContinuum(obsType) ? Number(tarObs.sensCalc.section3?.[0]?.value) : 0,
+    unit: isContinuum(obsType) ? tarObs.sensCalc.section3?.[0]?.units ?? '' : ''
   };
 
   params.spectral = {
-    value: Number(tarObs.sensCalc.section3[0]?.value),
-    unit: tarObs.sensCalc.section3[0]?.units
+    value: Number(tarObs.sensCalc.section3?.[0]?.value),
+    unit: tarObs.sensCalc.section3?.[0]?.units ?? ''
   };
   // TODO : check if it's ok to send the same value for continuum and zoom? Is this not implemented in the UI?
   return params;

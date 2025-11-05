@@ -5,6 +5,7 @@ import { env } from '@/env';
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const cypressToken = window.localStorage.getItem('cypress:token');
 export const cypressProposal = window.localStorage.getItem('cypress:proposalCreated') === 'true';
+export const cypressEditProposal = window.localStorage.getItem('cypress:proposalEdit') === 'true';
 
 export const USE_LOCAL_DATA_SENSITIVITY_CALC =
   env.REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC === 'true';
@@ -238,7 +239,7 @@ export const IMAGE_WEIGHTING = [
 
 export const LAB_IS_BOLD = true;
 export const LAB_POSITION = LABEL_POSITION.START;
-export const LAST_PAGE = 10;
+export const LAST_PAGE = 11;
 
 export const MULTIPLIER_HZ_GHZ = [1, 1, 1000, 1000000, 1000000000];
 
@@ -252,7 +253,8 @@ export const NAV = [
   '/proposal/calibration',
   '/proposal/technical',
   '/proposal/data',
-  '/proposal/src'
+  '/proposal/src',
+  '/proposal/linking'
 ];
 export const NOT_SPECIFIED = 'notSpecified';
 export const NOT_APPLICABLE = 'N/A';
