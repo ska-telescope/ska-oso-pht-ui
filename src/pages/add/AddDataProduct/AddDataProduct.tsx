@@ -45,7 +45,7 @@ export default function AddDataProduct() {
   const [imageSizeValue, setImageSizeValue] = React.useState('0');
   const [imageSizeUnits, setImageSizeUnits] = React.useState(0);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
-  const [pixelSizeUnits, setPixelSizeUnits] = React.useState('');
+  const [pixelSizeUnits, setPixelSizeUnits] = React.useState(null);
   const [weighting, setWeighting] = React.useState(0);
 
   const { t } = useScopedTranslation();
@@ -76,8 +76,8 @@ export default function AddDataProduct() {
           ? sensCalc.section1[3].value.split(' x ')
           : [];
       const result = arr.length > 1 ? (Number(arr[1]) / DIVIDER).toFixed(precision) : 0;
-      if (pixelSizeUnits === '' && sensCalc?.section1 && sensCalc.section1.length > 2) {
-        setPixelSizeUnits(t('imageSize.2'));
+      if (pixelSizeUnits === null && sensCalc?.section1 && sensCalc.section1.length > 2) {
+        setPixelSizeUnits(2);
       }
       return Number(result);
     };
@@ -213,6 +213,10 @@ export default function AddDataProduct() {
     );
   };
 
+  const pixelSizeUnitsField = () => {
+    return pixelSizeUnits === null ? '' : presentUnits(t('pixelSize.' + pixelSizeUnits));
+  };
+
   const pixelSizeField = () => {
     return (
       <Box pt={1}>
@@ -227,7 +231,7 @@ export default function AddDataProduct() {
           required
           disabled
           disabledUnderline
-          suffix={pixelSizeUnits}
+          suffix={pixelSizeUnitsField()}
         />
       </Box>
     );
