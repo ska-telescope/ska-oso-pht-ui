@@ -186,7 +186,7 @@ export const MockProposalBackend: ProposalBackend = {
         },
         image_cellsize: {
           value: 1.007,
-          unit: 'arcsec'
+          unit: 'arcsec2'
         },
         weighting: '1'
       }
@@ -360,7 +360,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
         },
         image_cellsize: {
           value: 3.7,
-          unit: 'arcsec'
+          unit: 'arcsec2'
         },
         weighting: '2'
       }
