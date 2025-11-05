@@ -11,7 +11,7 @@ import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import SensCalcDisplaySingle from '../../components/alerts/sensCalcDisplay/single/SensCalcDisplaySingle';
 import getSensCalc from '../../services/api/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import Observation from '../../utils/types/observation';
-import { validateLinkingPage } from '../../utils/validation/validation';
+import { validateCalibrationPage, validateLinkingPage } from '../../utils/validation/validation';
 import {
   BANDWIDTH_TELESCOPE,
   IW_NATURAL,
@@ -38,6 +38,8 @@ import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
 import { SensCalcResults } from '@/utils/types/sensCalcResults';
+import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
+import { generateId } from '@/utils/helpers';
 
 export default function LinkingPage() {
   const DATA_GRID_TARGET = '40vh';
@@ -111,12 +113,25 @@ export default function LinkingPage() {
     return result;
   };
 
-  const setTargetObservationStorage = (targetObservations: TargetObservation[]) => {
-    setProposal({ ...getProposal(), targetObservation: targetObservations });
+  const setTargetObservationAndCalibrationStorage = (
+    targetObservations: TargetObservation[],
+    calibration: CalibrationStrategy[] | []
+  ) => {
+    setProposal({
+      ...getProposal(),
+      targetObservation: targetObservations,
+      calibrationStrategy: [...calibration]
+    });
   };
 
-  const addTargetObservationStorage = (rec: TargetObservation) => {
-    setTargetObservationStorage([...(getProposal().targetObservation ?? []), rec]);
+  const addTargetObservationAndCalibrationStorage = (
+    targetObs: TargetObservation,
+    calibration: CalibrationStrategy
+  ) => {
+    setTargetObservationAndCalibrationStorage(
+      [...(getProposal().targetObservation ?? []), targetObs],
+      [calibration]
+    );
   };
 
   const updateTargetObservationStorage = (target: Target, observationId: string, results: any) => {
@@ -129,16 +144,30 @@ export default function LinkingPage() {
       e => !(e.targetId === target.id && e.observationId === observationId)
     );
     base?.push(temp);
-    setTargetObservationStorage(base ?? []);
+    const existingCalibration = getProposal().calibrationStrategy?.find(
+      cal => cal.observationIdRef === observationId
+    );
+    setTargetObservationAndCalibrationStorage(
+      base ?? [],
+      existingCalibration ? [existingCalibration] : []
+    );
   };
 
-  const deleteObservationTarget = (row: any) => {
+  const deleteObservationTargetAndCalibration = (row: any) => {
     function filterRecords(id: number) {
       return getProposal().targetObservation?.filter(
         item => !(item.observationId === currObs?.id && item.targetId === id)
       );
     }
-    setTargetObservationStorage(filterRecords(row.id) ?? []);
+    function filterRecordsCalibration(id: number) {
+      return getProposal().calibrationStrategy?.filter(
+        item => item.observationIdRef === id.toString()
+      );
+    }
+    setTargetObservationAndCalibrationStorage(
+      filterRecords(row.id) ?? [],
+      filterRecordsCalibration(row.id) ?? []
+    );
   };
 
   const popElementO = (rec: Observation) => {
@@ -219,9 +248,9 @@ export default function LinkingPage() {
     closeDeleteDialog();
   };
 
-  const addObservationTarget = (target: Target) => {
+  const addObservationTargetAndCalibration = (target: Target) => {
     if (!currObs) return;
-    const rec: TargetObservation = {
+    const targetObs: TargetObservation = {
       observationId: currObs.id,
       targetId: target.id,
       sensCalc: {
@@ -231,7 +260,16 @@ export default function LinkingPage() {
         error: ''
       }
     };
-    addTargetObservationStorage(rec);
+    // TODO check if already exists?
+    const calibration: CalibrationStrategy = {
+      observatoryDefined: true,
+      id: generateId('cal-'),
+      observationIdRef: currObs.id,
+      calibrators: null,
+      notes: null,
+      isAddNote: false
+    };
+    addTargetObservationAndCalibrationStorage(targetObs, calibration);
   };
 
   const isTargetSelected = (targetId: number) =>
@@ -241,9 +279,9 @@ export default function LinkingPage() {
 
   const targetSelectedToggle = (el: ElementT) => {
     if (isTargetSelected(el.id)) {
-      deleteObservationTarget(el.target);
+      deleteObservationTargetAndCalibration(el.target);
     } else {
-      addObservationTarget(el.target);
+      addObservationTargetAndCalibration(el.target);
     }
   };
 
@@ -273,6 +311,7 @@ export default function LinkingPage() {
 
   React.useEffect(() => {
     setTheProposalState(validateLinkingPage(getProposal()));
+    setTheProposalState(validateCalibrationPage(getProposal()));
   }, [validateToggle]);
 
   const observationGroupIds = (id: string) => {
