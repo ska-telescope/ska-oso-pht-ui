@@ -16,6 +16,8 @@ import {
   BANDWIDTH_TELESCOPE,
   IW_NATURAL,
   OB_SUBARRAY_CUSTOM,
+  PAGE_CALIBRATION,
+  PAGE_LINKING,
   PATH,
   RA_TYPE_ICRS,
   STATUS_ERROR,
@@ -44,7 +46,7 @@ import { generateId } from '@/utils/helpers';
 export default function LinkingPage() {
   const DATA_GRID_TARGET = '40vh';
   const DATA_GRID_OBSERVATION = '50vh';
-  const PAGE = 10;
+  const PAGE = PAGE_LINKING;
 
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
@@ -71,11 +73,13 @@ export default function LinkingPage() {
   const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
   const getProposalState = () => application.content1 as number[];
-  const setTheProposalState = (value: number, value2: number, page2: number) => {
+  const setTheProposalState = (value: number, valueCalibration: number) => {
     const temp: number[] = [];
     for (let i = 0; i < getProposalState().length; i++) {
       // validate linking page & calibration page
-      temp.push(PAGE === i ? value : page2 === i ? value2 : getProposalState()[i]);
+      temp.push(
+        PAGE === i ? value : PAGE_CALIBRATION === i ? valueCalibration : getProposalState()[i]
+      );
     }
     updateAppContent1(temp);
   };
@@ -311,11 +315,7 @@ export default function LinkingPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    setTheProposalState(
-      validateLinkingPage(getProposal()),
-      validateCalibrationPage(getProposal()),
-      6
-    );
+    setTheProposalState(validateLinkingPage(getProposal()), validateCalibrationPage(getProposal()));
   }, [validateToggle]);
 
   const observationGroupIds = (id: string) => {

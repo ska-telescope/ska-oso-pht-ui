@@ -15,7 +15,13 @@ import Shell from '../../components/layout/Shell/Shell';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { FOOTER_SPACER, LAB_POSITION, STATUS_OK, WRAPPER_HEIGHT } from '@/utils/constants';
+import {
+  FOOTER_SPACER,
+  LAB_POSITION,
+  PAGE_CALIBRATION,
+  STATUS_OK,
+  WRAPPER_HEIGHT
+} from '@/utils/constants';
 import GetCalibratorList from '@/services/axios/get/getCalibratorList/getCalibratorList';
 import { Calibrator } from '@/utils/types/calibrationStrategy';
 import { timeConversion } from '@/utils/helpersSensCalc';
@@ -24,7 +30,7 @@ import { generateId } from '@/utils/helpers';
 import Observation from '@/utils/types/observation';
 import ArrowIcon from '@/components/icon/arrowIcon/arrowIcon';
 
-const PAGE = 6;
+const PAGE = PAGE_CALIBRATION;
 const LINE_OFFSET = 35; // TODO check why we need to set this for it to be visible
 
 export default function CalibrationPage() {

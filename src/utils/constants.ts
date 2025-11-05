@@ -274,8 +274,10 @@ export const SBS_CONV_FACTOR_DEFAULT = 1;
 
 export const INFINITY = 'Infinity';
 
+export const PAGE_CALIBRATION = 6;
 export const PAGE_TECHNICAL = 7;
 export const PAGE_SRC_NET = 9;
+export const PAGE_LINKING = 10;
 
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
 
