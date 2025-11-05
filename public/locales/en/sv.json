@@ -220,7 +220,7 @@
       "desc": "Select a category to associate target with this Science Verification Idea."
     },
     "6": {
-      "desc": "Confirm a calibration strategy for this Science Verification Idea."
+      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE CALIBRATION STRATEGY AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS SCIENCE VERIFICATION IDEA"
     },
     "7": {
       "desc": "Upload a Technical justification for this Science Verification Idea in a portable document format (pdf)."
@@ -231,8 +231,8 @@
     },
     "11": {
       "desc": "Science Verification Ideas where the user is listed as a participant.",
-      "empty": "NO Science Verification IdeaS AVAILABLE"
+      "empty": "NO SCIENCE VERIFICATION IDEAS AVAILABLE"
     },
-    "noObservations": "NO OBSERVATION SETUP IS ASSOCIATED WITH THIS Science Verification Idea"
+    "noObservations": "NO OBSERVATION SETUP IS ASSOCIATED WITH THIS SCIENCE VERIFICATION IDEA"
   }
 }

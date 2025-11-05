@@ -235,7 +235,7 @@ export const MockProposalBackend: ProposalBackend = {
       {
         observatory_defined: true,
         calibration_id: 'cal-001',
-        observation_id_ref: 'obs-obR1Ej',
+        observation_set_ref: 'obs-obR1Ej',
         calibrators: null,
         notes: 'This is an observatory defined calibration strategy.'
       }
@@ -420,7 +420,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
       {
         observatory_defined: true,
         calibration_id: 'cal-002',
-        observation_id_ref: 'obs-arMIoY',
+        observation_set_ref: 'obs-arMIoY',
         calibrators: null,
         notes: 'This is an other observatory defined calibration strategy.'
       }

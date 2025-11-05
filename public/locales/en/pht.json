@@ -112,6 +112,24 @@
   "baseBtn": {
     "label": "Add"
   },
+  "calibrator": {
+    "note": "The choice of calibrators assumes that the target scan will be centred at transit.",
+    "disclaimer": "The use of these calibrators is not guaranteed.",
+    "calibrator": "Calibrator",
+    "duration": "Duration",
+    "minutes": "minute(s)",
+    "intent": "Intent",
+    "target": "Target",
+    "integrationTime": "Integration Time",
+    "checkbox": {
+      "label": "Provide comments on this strategy:",
+      "help": "Check to indicate that you wish to provide comments on the observatory defined calibration strategy."
+    },
+    "comment": {
+      "label": "Comment",
+      "help": "You can provide a comment on the observatory defined calibration strategy here."
+    }
+  },
   "cancelBtn": {
     "label": "Cancel"
   },
@@ -1279,8 +1297,10 @@
       "status": "Calibration",
       "title": "Calibration",
       "titleShort": "Calibration",
-      "desc": "This page allows you to request and define Calibration strategies.",
-      "pageError": "The Calibration page is not complete"
+      "desc": "This is a likely observing strategy with calibration (assuming observation near transit, etc.)",
+      "pageError": "The CALIBRATION STRATEGY page is not complete",
+      "help": "The listed strategy is representative and not garanteed at the time of execution. User defined calibration strategies are not currently supported.",
+      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE CALIBRATION STRATEGY AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL"
     },
     "7": {
       "status": "Technical",

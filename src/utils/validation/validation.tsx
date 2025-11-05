@@ -67,7 +67,14 @@ export const validateSDPPage = (proposal: Proposal) => {
 
 export const validateSRCPage = () => STATUS_OK;
 
-export const validateCalibrationPage = () => STATUS_OK; // TODO : implement validation logic
+export const validateCalibrationPage = (proposal: Proposal) => {
+  const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
+  let count = proposal?.calibrationStrategy?.length > 0 ? 1 : 0;
+  const isAddNote: boolean = proposal?.calibrationStrategy?.[0]?.isAddNote;
+  count +=
+    count && ((isAddNote && proposal?.calibrationStrategy?.[0]?.notes) || !isAddNote) ? 1 : 0;
+  return result[count];
+};
 
 export const validateLinkingPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
@@ -85,7 +92,7 @@ export const validateProposal = (proposal: Proposal) => {
     validateSciencePage(proposal),
     validateTargetPage(proposal),
     validateObservationPage(proposal),
-    validateCalibrationPage(),
+    validateCalibrationPage(proposal),
     validateTechnicalPage(proposal),
     validateSDPPage(proposal),
     validateSRCPage(),

@@ -42,7 +42,8 @@ import {
   PDF_NAME_PREFIXES,
   RA_TYPE_ICRS,
   RA_TYPE_GALACTIC,
-  isCypress
+  isCypress,
+  SCIENCE_VERIFICATION
 } from '@utils/constants.ts';
 import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import { ObservationSetBackend } from '@utils/types/observationSet.tsx';
@@ -55,6 +56,7 @@ import {
 import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import { calibratorMapping } from '../getCalibratorList/getCalibratorList.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
 import {
   CalibrationStrategy,
@@ -282,17 +284,13 @@ const getCalibrationStrategy = (
   return inValue
     ? inValue.map(strategy => ({
         observatoryDefined: strategy.observatory_defined,
-        id: strategy.calibration_id,
-        observationIdRef: strategy.observation_id_ref,
-        calibrators: strategy.calibrators
-          ? strategy.calibrators.map(calibrator => ({
-              kind: calibrator.kind,
-              name: calibrator.name,
-              modelConfig: calibrator.model_config,
-              notes: calibrator.notes
-            }))
+        id: strategy?.calibration_id,
+        observationIdRef: strategy?.observation_set_ref,
+        calibrators: strategy?.calibrators
+          ? strategy?.calibrators?.map(calibrator => calibratorMapping(calibrator))
           : null,
-        notes: strategy.notes
+        notes: strategy.notes,
+        isAddNote: strategy.notes ? true : false
       }))
     : [];
 };
@@ -650,7 +648,7 @@ export function mapping(inRec: ProposalBackend): Proposal {
   let sciencePDF: DocumentPDF;
   let technicalPDF: DocumentPDF | undefined;
 
-  const isSV: boolean = inRec.proposal_info?.proposal_type?.main_type === 'science_verification';
+  const isSV: boolean = inRec.proposal_info?.proposal_type?.main_type === SCIENCE_VERIFICATION;
 
   sciencePDF = (getPDF(
     inRec?.observation_info?.documents,
