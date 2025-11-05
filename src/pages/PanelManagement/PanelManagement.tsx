@@ -260,7 +260,7 @@ export default function PanelManagement() {
 
   return (
     <Box sx={{ height: '91vh', display: 'flex', flexDirection: 'column' }}>
-      <PageBannerPMT title={t('page.15.desc')} backBtn={backButton()} fwdBtn={fwdButton()} />
+      <PageBannerPMT title={t('page.16.desc')} backBtn={backButton()} fwdBtn={fwdButton()} />
       <Box
         sx={{
           flexGrow: 1,
