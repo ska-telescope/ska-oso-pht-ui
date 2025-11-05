@@ -82,7 +82,7 @@ export default function GridDataProducts({
     flex: 0.5,
     disableClickEventBubbling: true,
     renderCell: (e: { row: DataProductSDP }) =>
-      `${e.row.pixelSizeValue} ${presentUnits(e.row.pixelSizeUnits)}`
+      e.row.pixelSizeValue + ' ' + presentUnits(t('pixelSize.' + e.row.pixelSizeUnits))
   };
 
   const colImageWeighting = {
