@@ -300,7 +300,8 @@ export const MockProposalFrontend: Proposal = {
       id: 'cal-001',
       observationIdRef: 'obs-obR1Ej',
       calibrators: null,
-      notes: 'This is an observatory defined calibration strategy.'
+      notes: 'This is an observatory defined calibration strategy.',
+      isAddNote: true
     }
   ],
   pipeline: ''
@@ -484,7 +485,8 @@ export const MockProposalFrontendZoom: Proposal = {
       id: 'cal-002',
       observationIdRef: 'obs-arMIoY',
       calibrators: null,
-      notes: 'This is an other observatory defined calibration strategy.'
+      notes: 'This is an other observatory defined calibration strategy.',
+      isAddNote: true
     }
   ],
   pipeline: ''

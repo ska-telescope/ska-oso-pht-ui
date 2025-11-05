@@ -30,4 +30,5 @@ export type CalibrationStrategy = {
   observationIdRef: string;
   calibrators: Calibrator[] | null; // null for observatory defined
   notes: string | null;
+  isAddNote: boolean;
 };

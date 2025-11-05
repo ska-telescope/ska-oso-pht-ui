@@ -79,7 +79,7 @@ export default function CalibrationPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    setTheProposalState(validateCalibrationPage());
+    setTheProposalState(validateCalibrationPage(getProposal()));
   }, [validateToggle]);
 
   React.useEffect(() => {
@@ -119,7 +119,8 @@ export default function CalibrationPage() {
           id: id ? id : generateId('cal-'),
           observationIdRef: getProposal().observations?.[0]?.id as string,
           calibrators: null, // we are displaying the info to the user but not storing it as per current requirements
-          notes: addComment ? comment : null
+          notes: addComment ? comment : null,
+          isAddNote: addComment ? true : false
         }
       : null;
     const record = {

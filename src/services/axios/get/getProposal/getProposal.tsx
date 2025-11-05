@@ -289,7 +289,8 @@ const getCalibrationStrategy = (
         calibrators: strategy?.calibrators
           ? strategy?.calibrators?.map(calibrator => calibratorMapping(calibrator))
           : null,
-        notes: strategy.notes
+        notes: strategy.notes,
+        isAddNote: strategy.notes ? true : false
       }))
     : [];
 };
