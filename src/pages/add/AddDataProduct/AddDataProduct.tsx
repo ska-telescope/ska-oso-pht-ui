@@ -43,7 +43,7 @@ import GridObservation from '@/components/grid/observation/GridObservation';
 
 const GAP = 5;
 const BACK_PAGE = 8;
-const PAGE = 13;
+const PAGE = 14;
 const PAGE_PREFIX = 'SDP';
 const FIELD_OBS = 'observatoryDataProduct.options';
 const LABEL_WIDTH = 5;

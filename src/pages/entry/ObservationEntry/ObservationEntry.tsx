@@ -84,7 +84,7 @@ export default function ObservationEntry() {
 
   const isEdit = () => locationProperties.state !== null;
 
-  const PAGE = isEdit() ? 14 : 10;
+  const PAGE = isEdit() ? 15 : 11;
 
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
 

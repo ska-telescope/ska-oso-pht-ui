@@ -42,6 +42,7 @@ import ReviewDashboard from '../ReviewDashboard/ReviewDashboard';
 import PanelReviewDecisionList from '../PanelReviewDecisionList/PanelReviewDecisionList';
 import ReviewEntry from '../entry/ReviewEntry/ReviewEntry';
 import CalibrationPage from '../CalibrationPage/CalibrationPage';
+import LinkingPage from '../LinkingPage/LinkingPage';
 import Proposal from '@/utils/types/proposal';
 import Notification from '@/utils/types/notification';
 import ButtonUserMenu from '@/components/button/UserMenu/UserMenu';
@@ -63,6 +64,7 @@ const ROUTES = [
   { path: NAV[7], element: <TechnicalPage /> },
   { path: NAV[8], element: <SdpDataPage /> },
   { path: NAV[9], element: <SrcDataPage /> },
+  { path: NAV[10], element: <LinkingPage /> },
   { path: PATH[1], element: <AddProposal /> },
   { path: PATH[2], element: <ObservationEntry /> },
   { path: PATH[3], element: <AddDataProduct /> },

@@ -295,7 +295,7 @@ export default function ProposalDisplay({
         <Grid size={{ xs: 6 }}>{title(t('page.0.title') + '  ', proposal?.title ?? '')}</Grid>
         <Grid size={{ xs: 4 }}>
           <Grid container direction="column" justifyContent="space-between" alignItems="right">
-            <Grid>{details(t('page.12.short'), proposal?.cycle ?? '')}</Grid>
+            <Grid>{details(t('page.13.short'), proposal?.cycle ?? '')}</Grid>
             <Grid>{details(t('proposalId.label'), proposal?.id ?? '')}</Grid>
           </Grid>
         </Grid>
@@ -329,7 +329,7 @@ export default function ProposalDisplay({
   const observationsContentGrid = () => (
     <>
       <Grid>
-        <Grid>{label(t('page.10.label'))}</Grid>
+        <Grid>{label(t('page.11.label'))}</Grid>
       </Grid>
       <Grid>{proposal && <GridObservationSummary height={GRID_HEIGHT} proposal={proposal} />}</Grid>
     </>
