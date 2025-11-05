@@ -16,6 +16,7 @@ import {
 import { Box } from '@mui/system';
 import StokesField from '@components/fields/stokes/stokes.tsx';
 import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
+import RobustField from '@components/fields/robust/Robust.tsx';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
 import {
   BANNER_PMT_SPACER,
@@ -191,19 +192,13 @@ export default function AddDataProduct() {
 
   const robustField = () =>
     fieldWrapper(
-      <Box pt={1}>
-        <NumberEntry
-          label={t('robust.label')}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH}
-          testId="robust"
-          value={robust}
-          setValue={setRobust}
-          onFocus={() => helpComponent(t('robust.help'))}
-          required
-        />
-      </Box>
+      <RobustField
+        label={t('robust.label')}
+        onFocus={() => helpComponent(t('robust.help'))}
+        setValue={setRobust}
+        testId="robust"
+        value={robust}
+      />
     );
 
   const channelsOutField = () =>
