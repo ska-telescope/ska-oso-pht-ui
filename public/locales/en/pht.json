@@ -327,9 +327,9 @@
     "label": "Id"
   },
   "imageSize": {
-    "0": "degrees2",
-    "1": "arcmins",
-    "2": "arcsecs",
+    "0": "degree2",
+    "1": "arcmin2",
+    "2": "arcsec2",
     "label": "Image Size",
     "help": "Specify the image size based on the selected data product(s) in arcseconds, arcminutes or degrees.",
     "error": "A value greater than zero is required"
@@ -1273,13 +1273,6 @@
       "pageError": "The OBSERVATION page is not complete"
     },
     "6": {
-      "status": "Calibration",
-      "title": "Calibration",
-      "titleShort": "Calibration",
-      "desc": "This page allows you to request and define Calibration strategies.",
-      "pageError": "The Calibration page is not complete"
-    },
-    "7": {
       "status": "Technical",
       "title": "Technical",
       "titleShort": "Technical",
@@ -1288,8 +1281,8 @@
       "pageError": "The TECHNICAL JUSTIFICATION page is not complete",
       "help": "This is help for the Technical Page"
     },
-    "8": {
-      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL",
+    "7": {
+      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO OBSERVATIONS FOR THIS PROPOSAL",
       "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL",
       "status": "Data Product",
       "plural": "Data Products",
@@ -1300,20 +1293,27 @@
       "group1": "Product",
       "group2": "Image Settings"
     },
-    "9": {
-      "status": "SRCNet",
-      "title": "SRCNet Resources",
-      "titleShort": "SRCNet",
-      "desc": "This page allows you to request and define SRCNet data products.",
-      "pageError": "The SRCNet page is not complete"
-    },
-    "10": {
+    "8": {
       "status": "Linking",
       "title": "Linking",
       "desc": "Linking strategies",
       "empty": "NO LINKING STRATEGIES AVAILABLE",
       "toolTip": "Linking tooltip",
       "pageError": "The Linking page is not complete"
+    },
+    "9": {
+      "status": "Calibration",
+      "title": "Calibration",
+      "titleShort": "Calibration",
+      "desc": "This page allows you to request and define Calibration strategies.",
+      "pageError": "The Calibration page is not complete"
+    },
+    "10": {
+      "status": "SRCNet",
+      "title": "SRCNet Resources",
+      "titleShort": "SRCNet",
+      "desc": "This page allows you to request and define SRCNet data products.",
+      "pageError": "The SRCNet page is not complete"
     },
     "11": {
       "title": "Observation Setup",

@@ -52,8 +52,8 @@ describe('Guest User', () => {
     checkFieldDisabled('statusId3', true);
     checkFieldDisabled('statusId4', false);
     checkFieldDisabled('statusId5', false);
-    checkFieldDisabled('statusId6', true);
-    // checkFieldDisabled('statusId7', true);
+    // checkFieldDisabled('statusId6', true); - TODO Check when not SV
+    checkFieldDisabled('statusId7', true);
     checkFieldDisabled('statusId8', true);
 
     clickHome();

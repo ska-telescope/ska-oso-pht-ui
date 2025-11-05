@@ -19,7 +19,8 @@ UNRELEASED
 * Changed: to show notification when there is an senscalc error after mapping target-observation
 * Changed: Added validation to target fields 
 * Changed: use ska base images `ska-build-node` and `ska-webserver`
-
+* Changed: Updated ordering of pages
+* Changed: Data Products are no longer bound to a observation/target combination
 
 8.0.0
 ----------

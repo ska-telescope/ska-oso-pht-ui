@@ -85,11 +85,11 @@ export const validateProposal = (proposal: Proposal) => {
     validateSciencePage(proposal),
     validateTargetPage(proposal),
     validateObservationPage(proposal),
-    validateCalibrationPage(),
     validateTechnicalPage(proposal),
     validateSDPPage(proposal),
-    validateSRCPage(),
-    validateLinkingPage(proposal)
+    validateLinkingPage(proposal),
+    validateCalibrationPage(),
+    validateSRCPage()
   ];
   return results;
 };

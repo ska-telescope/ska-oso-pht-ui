@@ -20,6 +20,8 @@ import {
   FOOTER_HEIGHT_PHT,
   HELP_FONT,
   NAV,
+  PAGE_SDP,
+  PAGE_SDP_ADD,
   STATUS_OK,
   WRAPPER_HEIGHT
 } from '@/utils/constants';
@@ -36,8 +38,8 @@ import Observation from '@/utils/types/observation';
 import GridObservation from '@/components/grid/observation/GridObservation';
 
 const GAP = 5;
-const BACK_PAGE = 8;
-const PAGE = 14;
+const BACK_PAGE = PAGE_SDP;
+const PAGE = PAGE_SDP_ADD;
 const PAGE_PREFIX = 'SDP';
 const FIELD_OBS = 'observatoryDataProduct.options';
 const LABEL_WIDTH = 5;
@@ -354,8 +356,8 @@ export default function AddDataProduct() {
           </Grid>
           <Grid size={{ md: 7, lg: 6 }}>
             <Stack spacing={5}>
-              <BorderedSection title={t('page.8.group1')}>{dataProductsField()}</BorderedSection>
-              <BorderedSection title={t('page.8.group2')}>
+              <BorderedSection title={t('page.7.group1')}>{dataProductsField()}</BorderedSection>
+              <BorderedSection title={t('page.7.group2')}>
                 <Stack>
                   {fieldWrapper(imageSizeField())}
                   {fieldWrapper(pixelSizeField())}

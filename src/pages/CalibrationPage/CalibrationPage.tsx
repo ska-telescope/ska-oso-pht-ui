@@ -6,8 +6,9 @@ import { validateCalibrationPage } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
+import { PAGE_CALIBRATION } from '@/utils/constants';
 
-const PAGE = 6;
+const PAGE = PAGE_CALIBRATION;
 
 export default function CalibrationPage() {
   const { application, updateAppContent1 } = storageObject.useStore();

@@ -20,12 +20,12 @@ import HelpPanel from '../../components/info/helpPanel/HelpPanel';
 
 import { Proposal } from '../../utils/types/proposal';
 import { validateSciencePage } from '../../utils/validation/validation';
-import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
+import { PAGE_DESCRIPTION, UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
-const PAGE = 3;
+const PAGE = PAGE_DESCRIPTION;
 
 export default function SciencePage() {
   const { t } = useScopedTranslation();

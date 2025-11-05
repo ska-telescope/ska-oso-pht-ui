@@ -25,7 +25,7 @@ import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
-const PAGE = 7;
+const PAGE = 6;
 
 export default function TechnicalPage() {
   const { t } = useScopedTranslation();
