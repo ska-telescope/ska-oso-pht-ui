@@ -23,12 +23,12 @@ import {
   WRAPPER_HEIGHT
 } from '@/utils/constants';
 import GetCalibratorList from '@/services/axios/get/getCalibratorList/getCalibratorList';
-import { Calibrator } from '@/utils/types/calibrationStrategy';
+import { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy';
 import { timeConversion } from '@/utils/helpersSensCalc';
 import { TIME_MINS } from '@/utils/constantsSensCalc';
-import { generateId } from '@/utils/helpers';
 import Observation from '@/utils/types/observation';
 import ArrowIcon from '@/components/icon/arrowIcon/arrowIcon';
+import Supplied from '@/utils/types/supplied';
 
 const PAGE = PAGE_CALIBRATION;
 const LINE_OFFSET = 35; // TODO check why we need to set this for it to be visible
@@ -50,7 +50,9 @@ export default function CalibrationPage() {
   const [baseObservations, setBaseObservations] = React.useState<
     { label: string; value: string }[]
   >([]);
-  const [id, setId] = React.useState('');
+  const [calibrationStrategy, setCalibrationStrategy] = React.useState<CalibrationStrategy | null>(
+    null
+  );
   const [name, setName] = React.useState('');
   const [duration, setDuration] = React.useState('');
   const [intent, setIntent] = React.useState('');
@@ -94,6 +96,10 @@ export default function CalibrationPage() {
   }, [addComment, comment]);
 
   React.useEffect(() => {
+    getOtherProposalData();
+  }, [calibrationStrategy]);
+
+  React.useEffect(() => {
     const results: Observation[] | undefined = getProposal()?.observations?.filter(
       ob =>
         typeof getProposal()?.targetObservation?.find(
@@ -108,46 +114,62 @@ export default function CalibrationPage() {
   }, []);
 
   const getData = () => {
-    // data from the calibrator endpoint
-    getCalibratorData();
     // data from the proposal calibration strategy
     getCalibrationStrategyFromProposal();
+    // data from the calibrator endpoint
+    getCalibratorData();
     // observation & target info from the proposal
-    getOtherProposalData();
-    // update proposal with calibration strategy
-    updateProposalWithCalibrationStrategy();
+    // getOtherProposalData();
   };
 
-  const updateProposalWithCalibrationStrategy = () => {
-    // only define a calibration strategy if there's a linked observation
-    const obsStrategy = hasObservations()
-      ? {
-          observatoryDefined: true,
-          id: id ? id : generateId('cal-'),
-          observationIdRef: getProposal().observations?.[0]?.id as string,
-          calibrators: null, // we are displaying the info to the user but not storing it as per current requirements
-          notes: addComment ? comment : null,
-          isAddNote: addComment ? true : false
-        }
-      : null;
+  function updateProposalWithCalibrationStrategy() {
+    if (calibrationStrategy === null) {
+      return;
+    }
     const record = {
       ...getProposal(),
-      calibrationStrategy: [...(obsStrategy ? [obsStrategy] : [])]
+      calibrationStrategy: [
+        ...[
+          {
+            ...(calibrationStrategy as CalibrationStrategy),
+            observatoryDefined: calibrationStrategy?.observatoryDefined,
+            id: calibrationStrategy?.id,
+            observationIdRef: calibrationStrategy?.observationIdRef,
+            calibrators: calibrationStrategy?.calibrators,
+            isAddNote: addComment,
+            notes: addComment ? comment : null
+          }
+        ]
+      ]
     };
     setProposal(record);
-  };
+  }
 
   function getOtherProposalData() {
-    setTarget(getProposal().targets?.[0]?.name || '');
-    setIntegrationTime(getSuppliedIntegrationTimeInMinutes());
+    if (!calibrationStrategy) {
+      return;
+    }
+    // target name for display only
+    //************************************/
+    const targetId = (getProposal().targetObservation ?? []).find(
+      e => e.observationId === calibrationStrategy?.observationIdRef
+    )?.targetId;
+    const targetName = getProposal().targets?.find(e => e.id === targetId)?.name;
+    setTarget(targetName || '');
+    // integration time for display only
+    //************************************/
+    const supplied = (getProposal().observations ?? []).find(
+      e => e.id === calibrationStrategy?.observationIdRef
+    )?.supplied;
+    setIntegrationTime(supplied ? getSuppliedIntegrationTimeInMinutes(supplied) : '');
   }
 
   function getCalibrationStrategyFromProposal() {
-    const existingStrategy = getProposal().calibrationStrategy?.[0];
+    const existingStrategy: CalibrationStrategy = getProposal().calibrationStrategy?.[0]; // assumes only 1 calibration strategy for now
     if (existingStrategy) {
-      setId(existingStrategy.id);
       setComment(existingStrategy.notes || '');
-      setAddComment(existingStrategy.notes ? true : false);
+      setAddComment(existingStrategy.isAddNote);
+      setCalibrationStrategy(existingStrategy);
     }
   }
 
@@ -162,8 +184,8 @@ export default function CalibrationPage() {
     }
   }
 
-  const getSuppliedIntegrationTimeInMinutes = (): string => {
-    const integrationTime = getProposal().observations?.[0]?.supplied; // TODO handle supplied sensitivity case in future
+  const getSuppliedIntegrationTimeInMinutes = (supplied: Supplied): string => {
+    const integrationTime = supplied; // TODO this assumes integration time, handle supplied sensitivity case in future
     let timeInMinutes = integrationTime?.value
       ? timeConversion(integrationTime?.value, integrationTime?.units, TIME_MINS)?.toFixed(2)
       : '';
