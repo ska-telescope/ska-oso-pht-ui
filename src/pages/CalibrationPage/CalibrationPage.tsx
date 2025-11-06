@@ -6,7 +6,9 @@ import {
   AlertColorTypes,
   LABEL_POSITION,
   SPACER_VERTICAL,
-  Spacer
+  Spacer,
+  InfoCard,
+  InfoCardColorTypes
 } from '@ska-telescope/ska-gui-components';
 import { Box, Grid, Typography } from '@mui/material';
 import { validateCalibrationPage } from '../../utils/validation/validation';
@@ -17,6 +19,7 @@ import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import {
   FOOTER_SPACER,
+  HELP_FONT,
   LAB_POSITION,
   PAGE_CALIBRATION,
   STATUS_OK,
@@ -371,8 +374,10 @@ export default function CalibrationPage() {
               {intentField()}
             </Grid>
           </Grid>
-          <Typography mt={3}>{t('calibrator.note')}</Typography>
-          <Typography mb={3}>{t('calibrator.disclaimer')}</Typography>
+          <Grid pt={5}>
+            <Typography mt={3}>{t('calibrator.note')}</Typography>
+            <Typography mb={3}>{t('calibrator.disclaimer')}</Typography>
+          </Grid>
           <Grid container direction="row" alignItems="center" justifyContent="flex-start">
             <Grid size="grow">
               <Grid mr={3} mt={-2}>
@@ -412,15 +417,33 @@ export default function CalibrationPage() {
             </Grid>
             <Grid pt={4} size={{ md: 4, xs: 12 }}>
               <HelpPanel />
+              {(getProposal()?.targets?.length ?? 0) > 0 && (
+                <Box pt={2}>
+                  <InfoCard
+                    color={InfoCardColorTypes.Warning}
+                    fontSize={HELP_FONT}
+                    message={t('calibrator.limitReached')}
+                    testId="calibrationLimitPanelId"
+                  />
+                </Box>
+              )}
             </Grid>
           </Grid>
         )}
         {!hasObservations() && (
-          <Alert
-            color={AlertColorTypes.Error}
-            text={t('page.' + PAGE + errorSuffix())}
-            testId="helpPanelId"
-          />
+          <Grid
+            p={10}
+            container
+            direction="column"
+            alignItems="space-evenly"
+            justifyContent="space-around"
+          >
+            <Alert
+              color={AlertColorTypes.Error}
+              text={t('page.' + PAGE + errorSuffix())}
+              testId="helpPanelId"
+            />
+          </Grid>
         )}
       </>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
