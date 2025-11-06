@@ -85,13 +85,16 @@ export default function GridObservationSummary({
       return [];
     } else {
       const output: string[] = [];
-      array.forEach(el => output.push(proposal.targets.find(e => e.id === el.targetId).name));
+      array.forEach(el => {
+        const target = proposal.targets?.find(e => e.id === el.targetId);
+        output.push(target?.name ?? '');
+      });
       return output;
     }
   };
 
   const getDataProducts = (rec: { type?: number; id?: any }): string[] => {
-    const array = proposal.dataProductSDP?.filter(e => e.observationId.find(el => el === rec.id));
+    const array = proposal?.dataProductSDP?.filter(e => e.observationId.find(el => el === rec.id));
     if (!array || array?.length === 0) {
       return [];
     } else {
@@ -152,7 +155,7 @@ export default function GridObservationSummary({
 
   const colSensCalcBandwidth = {
     field: 'bandwidth',
-    renderHeader: () => headerDisplay('page.8.plural'),
+    renderHeader: () => headerDisplay('page.7.plural'),
     flex: 1.5,
     disableClickEventBubbling: true,
     renderCell: (e: { row: { type: number } }) => elementArray(getDataProducts(e.row))

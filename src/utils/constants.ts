@@ -161,7 +161,7 @@ export const DATA_PRODUCT = {
 };
 export const DEFAULT_HELP = ['', ' ', ''];
 
-export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
+export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
 export const ENTRY_HEIGHT = 40;
 
 export const FOOTER_HEIGHT = 20;
@@ -253,11 +253,11 @@ export const NAV = [
   '/proposal/science',
   '/proposal/target',
   '/proposal/observation',
-  '/proposal/calibration',
   '/proposal/technical',
   '/proposal/data',
-  '/proposal/src',
-  '/proposal/linking'
+  '/proposal/linking',
+  '/proposal/calibration',
+  '/proposal/src'
 ];
 export const NOT_SPECIFIED = 'notSpecified';
 export const NOT_APPLICABLE = 'N/A';
@@ -276,8 +276,20 @@ export const SBS_CONV_FACTOR_DEFAULT = 1;
 
 export const INFINITY = 'Infinity';
 
-export const PAGE_TECHNICAL = 7;
-export const PAGE_SRC_NET = 9;
+export const PAGE_TITLE_ADD = 0;
+export const PAGE_TEAM = 1;
+export const PAGE_GENERAL = 2;
+export const PAGE_DESCRIPTION = 3;
+export const PAGE_TARGET = 4;
+export const PAGE_OBSERVATION = 5;
+export const PAGE_TECHNICAL = 6;
+export const PAGE_SDP = 7;
+export const PAGE_LINKING = 8;
+export const PAGE_CALIBRATION = 9;
+export const PAGE_SRC_NET = 10;
+export const PAGE_OBSERVATION_ADD = 11;
+export const PAGE_SDP_ADD = 14;
+export const PAGE_OBSERVATION_UPDATE = 15;
 
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
 

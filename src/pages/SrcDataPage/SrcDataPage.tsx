@@ -6,8 +6,9 @@ import { validateSRCPage } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
+import { PAGE_SRC_NET } from '@/utils/constants';
 
-const PAGE = 9;
+const PAGE = PAGE_SRC_NET;
 
 export default function SrcDataPage() {
   const { application, updateAppContent1 } = storageObject.useStore();

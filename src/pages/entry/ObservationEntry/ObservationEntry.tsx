@@ -38,7 +38,10 @@ import {
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_NUM,
   OB_SUBARRAY_AA2,
-  FOOTER_HEIGHT_PHT
+  FOOTER_HEIGHT_PHT,
+  PAGE_OBSERVATION,
+  PAGE_OBSERVATION_UPDATE,
+  PAGE_OBSERVATION_ADD
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -71,7 +74,7 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 6;
 
-const BACK_PAGE = 5;
+const BACK_PAGE = PAGE_OBSERVATION;
 const WRAPPER_WIDTH_BUTTON = 2;
 
 const HELP_PANEL_HEIGHT = '50vh';
@@ -84,7 +87,7 @@ export default function ObservationEntry() {
 
   const isEdit = () => locationProperties.state !== null;
 
-  const PAGE = isEdit() ? 15 : 11;
+  const PAGE = isEdit() ? PAGE_OBSERVATION_UPDATE : PAGE_OBSERVATION_ADD;
 
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
 

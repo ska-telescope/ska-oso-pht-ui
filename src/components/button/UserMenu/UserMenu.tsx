@@ -122,7 +122,7 @@ export default function ButtonUserMenu({
         </MenuItem>
         {isReviewerAdmin() && (
           <MenuItem data-testid="menuItemPanelSummary" onClick={() => onMenuSelect(PMT[0])}>
-            {t('page.15.title')}
+            {t('page.16.title')}
           </MenuItem>
         )}
         {isReviewer() && (

@@ -127,7 +127,7 @@ describe('TechnicalPage', () => {
 
   it('triggers helpComponent and validation on mount', () => {
     wrapper(<TechnicalPage />);
-    expect(mockStore.helpComponent).toHaveBeenCalledWith('page.7.help');
+    expect(mockStore.helpComponent).toHaveBeenCalledWith('page.6.help');
     expect(mockStore.updateAppContent1).toHaveBeenCalled();
   });
 });
