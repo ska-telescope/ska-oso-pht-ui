@@ -178,10 +178,10 @@ const SDPOptions = (inArray: Boolean[]) => {
   return inArray.map(element => (element ? 'Y' : 'N'));
 };
 
-const getDataProductSDP = (dataproducts: DataProductSDP[]): DataProductSDPsBackend[] => {
+const getDataProductSDP = (dataProducts: DataProductSDP[]): DataProductSDPsBackend[] => {
   const IMAGE_SIZE_UNITS = ['deg2', 'arcmin2', 'arcsec2'];
 
-  return dataproducts?.map(dp => ({
+  return dataProducts?.map(dp => ({
     data_product_id: dp.dataProductsSDPId as string,
     products: SDPOptions(dp.observatoryDataProduct),
     observation_set_refs: dp.observationId,
@@ -199,8 +199,8 @@ const getDataProductSDP = (dataproducts: DataProductSDP[]): DataProductSDPsBacke
   }));
 };
 
-const getDataProductSRC = (dataproducts: DataProductSRC[]): DataProductSRCNetBackend[] => {
-  return dataproducts?.map(dp => ({ data_products_src_id: dp?.id }));
+const getDataProductSRC = (dataProducts: DataProductSRC[]): DataProductSRCNetBackend[] => {
+  return dataProducts?.map(dp => ({ data_products_src_id: dp?.id }));
 };
 
 const getGroupObservation = (obsId: string, observationGroups: GroupObservation[] | undefined) => {
