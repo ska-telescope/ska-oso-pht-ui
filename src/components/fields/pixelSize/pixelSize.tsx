@@ -14,8 +14,6 @@ interface PixelSizeFieldProps {
   widthButton?: number;
   widthLabel?: number;
 }
-export const PIXEL_SIZE_UNITS = 'arcsecs';
-
 export default function PixelSizeField({
   disabled = false,
   onFocus = undefined,
@@ -24,7 +22,8 @@ export default function PixelSizeField({
   setValue,
   testId,
   value,
-  widthLabel = 6
+  widthLabel = 6,
+  suffix
 }: PixelSizeFieldProps) {
   return (
     <Box pt={1}>
@@ -39,7 +38,7 @@ export default function PixelSizeField({
         value={value}
         setValue={setValue}
         onFocus={onFocus}
-        suffix={PIXEL_SIZE_UNITS}
+        suffix={suffix}
       />
     </Box>
   );

@@ -17,6 +17,7 @@ import { Box } from '@mui/system';
 import RobustField from '@components/fields/robust/Robust.tsx';
 import { frequencyConversion } from '@utils/helpers.ts';
 import StokesField from '@components/fields/stokes/stokes.tsx';
+import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
 import {
   BANNER_PMT_SPACER,
@@ -212,24 +213,19 @@ export default function AddDataProduct() {
     return pixelSizeUnits === null ? '' : presentUnits(t('pixelSize.' + pixelSizeUnits));
   };
 
-  const pixelSizeField = () => {
-    return (
-      <Box pt={1}>
-        <NumberEntry
-          label={t('pixelSize.label')}
-          labelBold
-          labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH}
-          testId="pixelSize"
-          value={pixelSizeValue}
-          setValue={setPixelSizeValue}
-          required
-          disabledUnderline
-          suffix={pixelSizeUnitsField()}
-        />
-      </Box>
+  const pixelSizeField = () =>
+    fieldWrapper(
+      <PixelSizeField
+        label={t('pixelSize.label')}
+        widthLabel={LABEL_WIDTH}
+        onFocus={() => helpComponent(t('pixelSize.help'))}
+        setValue={setPixelSizeValue}
+        testId="pixelSize"
+        required
+        value={pixelSizeValue}
+        suffix={pixelSizeUnitsField()}
+      />
     );
-  };
 
   const imageWeightingField = () =>
     fieldWrapper(
