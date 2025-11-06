@@ -514,9 +514,10 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
         main_type: isSV
           ? SCIENCE_VERIFICATION
           : (PROJECTS.find(item => item.id === proposal.proposalType)?.mapping as string),
-        attributes: proposal.proposalSubType
-          ? getSubType(proposal.proposalType, proposal.proposalSubType)
-          : []
+        attributes:
+          !isSV && proposal.proposalSubType
+            ? getSubType(proposal.proposalType, proposal.proposalSubType)
+            : []
       },
       abstract: proposal.abstract as string,
       science_category: isSV

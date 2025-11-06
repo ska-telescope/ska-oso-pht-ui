@@ -12,7 +12,7 @@ import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import GridMembers from '../../components/grid/members/GridMembers';
 import StarIcon from '../../components/icon/starIcon/starIcon';
-import { FOOTER_SPACER, GRID_MEMBERS_ACTIONS } from '../../utils/constants';
+import { FOOTER_SPACER, GRID_MEMBERS_ACTIONS, PAGE_TEAM } from '../../utils/constants';
 import TeamFileImport from './TeamFileImport/TeamFileImport';
 import MemberAccess from './MemberAccess/MemberAccess';
 import ProposalAccess from '@/utils/types/proposalAccess';
@@ -23,7 +23,7 @@ import GetProposalAccessForProposal from '@/services/axios/get/getProposalAccess
 import { accessPI } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
-const PAGE = 1;
+const PAGE = PAGE_TEAM;
 
 export function PIStar(pi: boolean) {
   if (pi) {

@@ -4,7 +4,6 @@ import { Grid } from '@mui/material';
 import { GridRowSelectionModel } from '@mui/x-data-grid'; // TODO : Need to move this into the ska-gui-components
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
-import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
@@ -18,14 +17,19 @@ import {
   validateLinkingPage,
   validateObservationPage
 } from '../../utils/validation/validation';
-import { BANDWIDTH_TELESCOPE, PAGE_CALIBRATION, PAGE_LINKING, PATH } from '../../utils/constants';
+import {
+  BANDWIDTH_TELESCOPE,
+  PAGE_CALIBRATION,
+  PAGE_LINKING,
+  PAGE_OBSERVATION,
+  PATH
+} from '../../utils/constants';
 import GroupObservation from '../../utils/types/groupObservation';
 import DeleteObservationConfirmation from '../../components/alerts/deleteObservationConfirmation/deleteObservationConfirmation';
-import { FOOTER_SPACER } from '../../utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const DATA_GRID_OBSERVATION = '62vh';
-const PAGE = 5;
+const PAGE = PAGE_OBSERVATION;
 
 export default function ObservationPage() {
   const { t } = useScopedTranslation();
@@ -262,7 +266,6 @@ export default function ObservationPage() {
           </Grid>
         </Grid>
       </Grid>
-      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {deleteDialog ?? <></>}
     </Shell>
   );

@@ -7,6 +7,7 @@ import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import { DataProductSDP } from '../../../utils/types/dataProduct';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { PAGE_SDP } from '@/utils/constants';
 
 interface GridDataProductsProps {
   baseObservations: any[];
@@ -27,7 +28,7 @@ export default function GridDataProducts({
 }: GridDataProductsProps) {
   const { t } = useScopedTranslation();
 
-  const PAGE = 8;
+  const PAGE = PAGE_SDP;
   const hasObservations = () => (baseObservations?.length > 0 ? true : false);
   const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
 

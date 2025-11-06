@@ -19,13 +19,13 @@ import PDFWrapper from '../../components/layout/PDFWrapper/PDFWrapper';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 import DeleteButton from '../../components/button/Delete/Delete';
 
-import { UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
+import { PAGE_TECHNICAL, UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
-const PAGE = 7;
+const PAGE = PAGE_TECHNICAL;
 
 export default function TechnicalPage() {
   const { t } = useScopedTranslation();

@@ -1,13 +1,13 @@
 import React from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Box } from '@mui/material';
-import { EMPTY_STATUS } from '@utils/constants.ts';
+import { EMPTY_STATUS, PAGE_TITLE_ADD } from '@utils/constants.ts';
 import Shell from '../../../components/layout/Shell/Shell';
 import TitleEntry from '../../entry/TitleEntry/TitleEntry';
 import Proposal, { NEW_PROPOSAL } from '../../../utils/types/proposal';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
-const PAGE = 0;
+const PAGE = PAGE_TITLE_ADD;
 const PAGE_INNER = 0;
 const PAGE_FOOTER = -1;
 

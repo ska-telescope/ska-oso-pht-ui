@@ -12,9 +12,14 @@ const ROW_HEIGHT = 200;
 interface GridObservationProps {
   data: Observation[];
   rowClick?: (params: any) => void;
+  displayOption?: number;
 }
 
-export default function GridObservation({ data, rowClick }: GridObservationProps) {
+export default function GridObservation({
+  data,
+  rowClick,
+  displayOption = 0
+}: GridObservationProps) {
   const { t } = useScopedTranslation();
   const theme = useTheme();
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
@@ -123,7 +128,13 @@ export default function GridObservation({ data, rowClick }: GridObservationProps
     }
   };
 
-  const columns: GridColDef[] = [colObservation];
+  // Get columns based on display option, will be extended in future
+  const getColumns = (option: number): GridColDef[] => {
+    switch (option) {
+      default:
+        return [colObservation];
+    }
+  };
 
   return (
     <Box
@@ -140,7 +151,7 @@ export default function GridObservation({ data, rowClick }: GridObservationProps
     >
       <DataGrid
         rows={data}
-        columns={columns}
+        columns={getColumns(displayOption)}
         getRowHeight={() => ROW_HEIGHT}
         hideFooter
         onRowClick={handleRowClick}

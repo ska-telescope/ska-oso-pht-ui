@@ -9,7 +9,7 @@ import {
   validateTargetPage
 } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
-import { PAGE_CALIBRATION, PAGE_LINKING, TARGET_OPTION } from '../../utils/constants';
+import { PAGE_CALIBRATION, PAGE_LINKING, PAGE_TARGET, TARGET_OPTION } from '../../utils/constants';
 import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';
 import TargetNoSpecificSection from './TargetNoSpecificSection/targetNoSpecificSection';
 import TargetListSection from './TargetListSection/targetListSection';
@@ -18,7 +18,7 @@ import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 const TITLE = ['', 'listOfTargets', 'targetMosaic', 'noSpecificTarget'];
 
-const PAGE = 4;
+const PAGE = PAGE_TARGET;
 
 export default function TargetPage() {
   const { t } = useScopedTranslation();
