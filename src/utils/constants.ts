@@ -129,7 +129,7 @@ export const SPACER_HEADER = 11;
 export const SPACER_FOOTER = 0; // Just here to show it has been considered
 
 export const BANNER_PMT_SPACER = SPACER_HEADER;
-export const BANNER_PMT_SPACER_MIN = SPACER_HEADER + 70;
+export const BANNER_PMT_SPACER_MIN = SPACER_HEADER + 100;
 
 export const FOOTER_PMT = 65;
 export const FOOTER_PMT_SPACER = SPACER_FOOTER + FOOTER_PMT;

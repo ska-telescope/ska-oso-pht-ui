@@ -14,7 +14,6 @@ import {
   REVIEW_TYPE
 } from '@/utils/constants';
 import { isReviewerAdminOnly, useInitializeAccessStore } from '@/utils/aaa/aaaUtils';
-import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 interface TableReviewDecisionRowProps {
   item: any;
@@ -49,7 +48,6 @@ export default function TableReviewDecisionRow({
 }: TableReviewDecisionRowProps) {
   const theme = useTheme();
   useInitializeAccessStore();
-  const { isSV } = useAppFlow();
 
   const getFeasibility = () => {
     const reviews = getReviews(item.reviews, REVIEW_TYPE.TECHNICAL);

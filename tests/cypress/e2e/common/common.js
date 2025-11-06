@@ -615,7 +615,7 @@ export const verifyTargetWithBeamB0329InTargetTable = () => {
 };
 
 export const clickFirstRowOfTargetTable = () => {
-  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')git branch
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
     .children('div[role="row"]')
     .eq(0)
     .within(() => {
