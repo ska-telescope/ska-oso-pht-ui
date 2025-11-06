@@ -6,7 +6,7 @@ import {
   AlertColorTypes,
   TickBox
 } from '@ska-telescope/ska-gui-components';
-import { Tooltip, Typography, Box, Grid } from '@mui/material';
+import { Typography, Box, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { validateProposal } from '@utils/validation/validation';
@@ -15,19 +15,23 @@ import GetProposal from '@services/axios/get/getProposal/getProposal';
 import EditIcon from '../../icon/editIcon/editIcon';
 import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
+import {
+  getColAuthors,
+  getColProposalPI,
+  getColProposalSC,
+  getColProposalStatus,
+  getColProposalTitle,
+  getColProposalType
+} from './columns/Columns';
 import GetProposalsReviewable from '@/services/axios/get/getProposalsReviewable/getProposalsReviewable';
 import Proposal from '@/utils/types/proposal';
 import {
-  NOT_SPECIFIED,
   PROPOSAL_STATUS,
   NAV,
   GENERAL,
   PROJECTS,
   SEARCH_PROPOSAL_TYPE_OPTIONS
 } from '@/utils/constants';
-import emptyCell from '@/components/fields/emptyCell/emptyCell';
-import Investigator from '@/utils/types/investigator';
-import { presentLatex } from '@/utils/present/present';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
 import ViewIcon from '@/components/icon/viewIcon/viewIcon';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
@@ -178,92 +182,6 @@ export default function GridProposals({
     return proposalsCollection?.filter(entry => entry.id === proposalId)?.length > 0;
   };
 
-  const displayProposalType = (proposalType: any) => {
-    return proposalType ? proposalType : NOT_SPECIFIED;
-  };
-
-  const element = (inValue: number | string) => (inValue === NOT_SPECIFIED ? emptyCell() : inValue);
-
-  const getAuthors = (arr: Investigator[]) => {
-    if (!arr || arr.length === 0) {
-      return element(NOT_SPECIFIED);
-    }
-    const results: any[] = [];
-    arr.forEach(e => {
-      results.push(e.lastName + ', ' + e.firstName);
-    });
-    return element(results.length > 1 ? results[0] + ' + ' + (results.length - 1) : results[0]);
-  };
-
-  const getPIs = (arr: Investigator[]) => {
-    if (!arr || arr.length === 0) {
-      return element(NOT_SPECIFIED);
-    }
-    const results: string[] = [];
-    arr.forEach(e => {
-      if (e.pi) {
-        results.push(e.lastName + ', ' + e.firstName);
-      }
-    });
-    if (results.length === 0) {
-      return element(NOT_SPECIFIED);
-    }
-    return element(results.length > 1 ? results[0] + ' + ' + (results.length - 1) : results[0]);
-  };
-
-  const colPI = {
-    field: 'pi',
-    headerName: t('pi.short'),
-    flex: 2,
-    renderCell: (e: any) => {
-      return getPIs(e.row.investigators);
-    }
-  };
-
-  const colStatus = {
-    field: 'status',
-    headerName: t('status.label'),
-    width: 160,
-    renderCell: (e: { row: any }) => t('proposalStatus.' + e.row.status)
-  };
-
-  const colType = {
-    field: 'proposalType',
-    headerName: t('proposalType.label'),
-    flex: 2,
-    renderCell: (e: { row: any }) => (
-      <Tooltip title={t('proposalType.title.' + displayProposalType(e.row.proposalType))}>
-        <>{t('proposalType.code.' + displayProposalType(e.row.proposalType))}</>
-      </Tooltip>
-    )
-  };
-
-  const colTitle = {
-    field: 'title',
-    headerName: t('title.label'),
-    flex: 3,
-    minWidth: 300,
-    renderCell: (e: any) => presentLatex(e.row.title)
-  };
-
-  const colAuthors = {
-    field: 'authors',
-    headerName: t('authors.label'),
-    flex: 2,
-    minWidth: 300,
-    renderCell: (e: any) => {
-      return getAuthors(e.row.investigators);
-    }
-  };
-
-  const colScienceCategory = {
-    field: 'scienceCategory',
-    headerName: t('scienceCategory.label'),
-    flex: 2,
-    minWidth: 250,
-    renderCell: (e: { row: any }) => t('scienceCategory.' + e.row.scienceCategory)
-  };
-
   const colSelect = {
     field: 'select',
     headerName: 'Select',
@@ -338,25 +256,25 @@ export default function GridProposals({
   const proposalColumns = isSV()
     ? [
         ...(showSelection ? [colSelect] : []),
-        colTitle,
-        colStatus,
-        colScienceCategory,
-        colPI,
-        ...(showActions ? [colActions] : [])
+        ...(showActions ? [colActions] : []),
+        getColProposalTitle(t),
+        getColProposalStatus(t),
+        getColProposalSC(t),
+        getColProposalPI(t)
       ]
     : [
         ...(showSelection ? [colSelect] : []),
-        colTitle,
-        colStatus,
-        colScienceCategory,
-        colType,
-        colPI,
-        ...(showActions ? [colActions] : [])
+        ...(showActions ? [colActions] : []),
+        getColProposalTitle(t),
+        getColProposalStatus(t),
+        getColProposalSC(t),
+        getColProposalType(t),
+        getColProposalPI(t)
       ];
 
   const reviewColumns = isSV()
-    ? [...[colTitle, colAuthors, colScienceCategory]]
-    : [...[colType, colTitle, colAuthors, colScienceCategory]];
+    ? [...[getColProposalTitle(t), getColAuthors(t), getColProposalSC(t)]]
+    : [...[getColProposalType(t), getColProposalTitle(t), getColAuthors(t), getColProposalSC(t)]];
 
   const selectedData = proposals
     ? proposals.filter(e =>

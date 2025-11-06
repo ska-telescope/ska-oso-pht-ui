@@ -620,7 +620,10 @@ export const clickFirstRowOfTargetTable = () => {
     .eq(0)
     .within(() => {
       cy.get('[data-field="actions"]').should('be.visible');
-    })
+    });
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .eq(0)
     .click();
 };
 

@@ -286,8 +286,10 @@ export const PAGE_LINKING = 8;
 export const PAGE_CALIBRATION = 9;
 export const PAGE_SRC_NET = 10;
 export const PAGE_OBSERVATION_ADD = 11;
+export const PAGE_CYCLE = 13;
 export const PAGE_SDP_ADD = 14;
 export const PAGE_OBSERVATION_UPDATE = 15;
+export const PAGE_PANEL_MANAGEMENT = 16;
 
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
 

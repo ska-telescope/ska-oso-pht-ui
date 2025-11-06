@@ -34,6 +34,7 @@ import {
   FOOTER_SPACER,
   isCypress,
   NAV,
+  PAGE_OBSERVATION_ADD,
   PATH,
   PROPOSAL_STATUS,
   PROPOSAL_STATUS_OPTIONS
@@ -42,21 +43,21 @@ import ProposalAccess from '@/utils/types/proposalAccess';
 import { accessUpdate, PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAPI } from '@/services/axios/use/useOSDAPI/useOSDAPI';
-import {
-  getColCycle,
-  getColProposalId,
-  getColProposalPI,
-  getColProposalStatus,
-  getColProposalTitle,
-  getColProposalType,
-  getColProposalUpdated,
-  getColCycleClose
-} from '@/components/grid/gridColumns/GridColumns';
 import CycleSelection from '@/components/alerts/cycleSelection/CycleSelection';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import PostProposal from '@/services/axios/post/postProposal/postProposal';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import {
+  getColProposalId,
+  getColCycle,
+  getColProposalTitle,
+  getColProposalPI,
+  getColProposalStatus,
+  getColProposalUpdated,
+  getColCycleClose,
+  getColProposalType
+} from '@/components/grid/proposals/columns/Columns';
 
 export default function LandingPage() {
   const { t } = useScopedTranslation();
@@ -344,18 +345,19 @@ export default function LandingPage() {
   const stdColumns = isSV()
     ? [
         ...[
+          colActions,
           getColProposalId(t),
           getColCycle(t),
           getColProposalTitle(t),
           getColProposalPI(t),
           getColProposalStatus(t),
           getColProposalUpdated(t),
-          getColCycleClose(t),
-          colActions
+          getColCycleClose(t)
         ]
       ]
     : [
         ...[
+          colActions,
           getColProposalId(t),
           getColProposalType(t),
           getColCycle(t),
@@ -363,8 +365,7 @@ export default function LandingPage() {
           getColProposalPI(t),
           getColProposalStatus(t),
           getColProposalUpdated(t),
-          getColCycleClose(t),
-          colActions
+          getColCycleClose(t)
         ]
       ];
 
@@ -425,7 +426,7 @@ export default function LandingPage() {
 
   const pageDescription = () => (
     <Typography align="center" variant="h6" minHeight="5vh">
-      {t('page.11.desc')}
+      {t('page.' + PAGE_OBSERVATION_ADD + '.desc')}
     </Typography>
   );
 

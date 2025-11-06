@@ -43,10 +43,12 @@ import {
 import ConflictConfirmation from '@/components/alerts/conflictConfirmation/ConflictConfirmation';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 export default function ReviewListPage() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
+  const { isSV } = useAppFlow();
   const { notifyError, notifySuccess } = useNotify();
   useInitializeAccessStore();
 
@@ -444,15 +446,17 @@ export default function ReviewListPage() {
     disableClickEventBubbling: true,
     renderCell: (e: { row: any }) => (
       <>
-        <TechnicalIcon
-          onClick={() => technicalIconClicked(e.row)}
-          disabled={!canEditTechnical(e.row.tecReview)}
-          toolTip={t(
-            canEditTechnical(e.row.tecReview)
-              ? 'reviewProposal.technical'
-              : 'reviewProposal.disabled'
-          )}
-        />
+        {!isSV() && (
+          <TechnicalIcon
+            onClick={() => technicalIconClicked(e.row)}
+            disabled={!canEditTechnical(e.row.tecReview)}
+            toolTip={t(
+              canEditTechnical(e.row.tecReview)
+                ? 'reviewProposal.technical'
+                : 'reviewProposal.disabled'
+            )}
+          />
+        )}
         <ScienceIcon
           onClick={() => scienceIconClicked(e.row)}
           disabled={!canEditScience(e.row)}
@@ -469,6 +473,7 @@ export default function ReviewListPage() {
 
   const stdColumns = [
     ...[
+      colActions,
       colTitle,
       colScienceCategory,
       colConflict,
@@ -478,9 +483,8 @@ export default function ReviewListPage() {
       colRank,
       colComments,
       colSrcNet,
-      colDateUpdated,
+      colDateUpdated
       // SEE BELOW colDateAssigned,
-      colActions
     ]
   ];
 

@@ -1,11 +1,15 @@
 import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { TextEntry, InfoCard, InfoCardColorTypes } from '@ska-telescope/ska-gui-components';
+import {
+  BorderedSection,
+  TextEntry,
+  InfoCard,
+  InfoCardColorTypes
+} from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
 import PulsarTimingBeamField from '@components/fields/pulsarTimingBeam/PulsarTimingBeam.tsx';
-import GroupLabel from '@components/info/groupLabel/groupLabel.tsx';
 import { leadZero } from '@utils/helpers.ts';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
@@ -22,7 +26,8 @@ import {
   VELOCITY_TYPE,
   LAB_IS_BOLD,
   FIELD_PATTERN_POINTING_CENTRES,
-  HELP_FONT
+  HELP_FONT,
+  WRAPPER_HEIGHT
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -33,7 +38,9 @@ interface TargetEntryProps {
   target?: Target;
   textAlign?: string;
   showBeamData?: boolean;
-  onRAFieldErrorChange?: (error: string) => void; // New prop
+  onRAFieldErrorChange?: (error: string) => void;
+  onDecFieldErrorChange?: (error: string) => void;
+  onNameFieldErrorChange?: (error: string) => void;
 }
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
@@ -328,7 +335,11 @@ export default function TargetEntry({
     );
   };
 
-  const wrapper = (children: any) => <Box sx={{ width: '100%' }}>{children}</Box>;
+  const wrapper = (children?: React.JSX.Element) => (
+    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
+      {children}
+    </Box>
+  );
 
   const referenceCoordinatesField = () =>
     wrapper(
@@ -462,35 +473,41 @@ export default function TargetEntry({
                 spacing={2}
                 alignItems="stretch"
                 justifyContent="flex-start"
+                pt={1}
                 pb={2}
               >
                 <Grid>
-                  <GroupLabel labelText={t('referenceCoordinates.label').toUpperCase()} />
+                  <BorderedSection title={t('referenceCoordinates.label')}>
+                    {referenceCoordinatesField()}
+                  </BorderedSection>
                 </Grid>
-                <Grid>{referenceCoordinatesField()}</Grid>
                 <Grid pt={1}>
-                  <GroupLabel labelText={t('coordinate.label').toUpperCase()} />
+                  <BorderedSection title={t('coordinate.label')}>
+                    {nameField()}
+                    {skyDirection1Field()}
+                    {skyDirection2Field()}
+                  </BorderedSection>
                 </Grid>
-                <Grid p={1}>{nameField()}</Grid>
-                <Grid p={1}>{skyDirection1Field()}</Grid>
-                <Grid p={1}>{skyDirection2Field()}</Grid>
-                {!isSV() && (
-                  <Grid pt={5}>
-                    <GroupLabel labelText={t('pulsarTimingBeam.groupLabel').toUpperCase()} />
-                  </Grid>
-                )}
-                {!isSV() && <Grid p={1}>{pulsarTimingBeamField()}</Grid>}
-                <Grid pt={5}>
-                  <GroupLabel labelText={t('radialMotion.label').toUpperCase()} />
-                </Grid>
-                <Grid p={1}>{velocityField()}</Grid>
-                <Grid p={1}>{velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}</Grid>
                 {!isSV() && (
                   <Grid pt={1}>
-                    <GroupLabel labelText={t('fieldPattern.groupLabel').toUpperCase()} />
+                    <BorderedSection title={t('pulsarTimingBeam.groupLabel')}>
+                      {pulsarTimingBeamField()}
+                    </BorderedSection>
                   </Grid>
                 )}
-                <Grid p={1}>{!isSV() && fieldPatternTypeField()}</Grid>
+                <Grid pt={1}>
+                  <BorderedSection title={t('radialMotion.label')}>
+                    {velocityField()}
+                    {velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}
+                  </BorderedSection>
+                </Grid>
+                {!isSV() && (
+                  <Grid pt={1}>
+                    <BorderedSection title={t('fieldPattern.groupLabel')}>
+                      {fieldPatternTypeField()}
+                    </BorderedSection>
+                  </Grid>
+                )}
               </Grid>
             </Box>
           </Grid>
