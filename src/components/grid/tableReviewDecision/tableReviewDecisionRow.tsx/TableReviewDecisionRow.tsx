@@ -273,23 +273,23 @@ export default function TableReviewDecisionRow({
         role="row"
         aria-rowindex={index + 2}
       >
-        {tableActionsCell()}
         {tableCollapseCell()}
         {tableCategoryCell()}
         {tableTitleCell()}
         {tableReviewStatusCell()}
         {tableLastUpdatedCell()}
-        {!isSV() && tableFeasibilityCell()}
+        {tableFeasibilityCell()}
         {tableScoreCell()}
         {tableRankCell()}
         {tableRecommendationCell()}
+        {tableActionsCell()}
       </TableRow>
 
       <TableRow key={`${item.id}-expanded`}>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9} role="gridcell">
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <Box sx={{ overflowX: 'hidden' }}>
-              {!isSV() && <TableTechnicalReviews data={item} />}
+              {<TableTechnicalReviews data={item} />}
               <TableScienceReviews data={item} excludeFunction={excludeFunction} />
             </Box>
           </Collapse>
