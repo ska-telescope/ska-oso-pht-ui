@@ -128,11 +128,9 @@ export default function GridObservation({
     }
   };
 
-  // Get columns based on display option
+  // Get columns based on display option, will be extended in future
   const getColumns = (option: number): GridColDef[] => {
     switch (option) {
-      case 0:
-        return [colObservation];
       default:
         return [colObservation];
     }
