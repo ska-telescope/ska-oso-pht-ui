@@ -121,8 +121,6 @@ export default function CalibrationPage() {
     getCalibrationStrategyFromProposal();
     // data from the calibrator endpoint
     getCalibratorData();
-    // observation & target info from the proposal
-    // getOtherProposalData();
   };
 
   function updateProposalWithCalibrationStrategy() {
@@ -148,23 +146,28 @@ export default function CalibrationPage() {
     setProposal(record);
   }
 
+  function getTargetName(): string {
+    const targetId = (getProposal().targetObservation ?? []).find(
+      e => e.observationId === calibrationStrategy?.observationIdRef
+    )?.targetId;
+    return getProposal().targets?.find(e => e.id === targetId)?.name ?? '';
+  }
+
+  function getIntegrationTime(): string {
+    const supplied = (getProposal().observations ?? []).find(
+      e => e.id === calibrationStrategy?.observationIdRef
+    )?.supplied;
+    return supplied ? getSuppliedIntegrationTimeInMinutes(supplied) : '';
+  }
+
   function getOtherProposalData() {
     if (!calibrationStrategy) {
       return;
     }
-    // target name for display only
-    //************************************/
-    const targetId = (getProposal().targetObservation ?? []).find(
-      e => e.observationId === calibrationStrategy?.observationIdRef
-    )?.targetId;
-    const targetName = getProposal().targets?.find(e => e.id === targetId)?.name;
-    setTarget(targetName || '');
-    // integration time for display only
-    //************************************/
-    const supplied = (getProposal().observations ?? []).find(
-      e => e.id === calibrationStrategy?.observationIdRef
-    )?.supplied;
-    setIntegrationTime(supplied ? getSuppliedIntegrationTimeInMinutes(supplied) : '');
+    const targetName = getTargetName();
+    setTarget(targetName);
+    const integrationTime = getIntegrationTime();
+    setIntegrationTime(integrationTime);
   }
 
   function getCalibrationStrategyFromProposal() {
