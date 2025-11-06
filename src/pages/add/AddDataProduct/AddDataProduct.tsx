@@ -26,6 +26,7 @@ import {
   HELP_FONT,
   IW_BRIGGS,
   LAB_IS_BOLD,
+  LAB_POSITION,
   NAV,
   PAGE_SDP,
   PAGE_SDP_ADD,
@@ -37,7 +38,6 @@ import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighti
 import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import { DataProductSDP } from '@/utils/types/dataProduct';
 import AddButton from '@/components/button/Add/Add';
-import { LAB_POSITION } from '@/utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { presentUnits } from '@/utils/present/present';
 import Observation from '@/utils/types/observation';
@@ -66,7 +66,7 @@ export default function AddDataProduct() {
   const [imageSizeValue, setImageSizeValue] = React.useState('0');
   const [imageSizeUnits, setImageSizeUnits] = React.useState(0);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
-  const [pixelSizeUnits, setPixelSizeUnits] = React.useState(null);
+  const [pixelSizeUnits, setPixelSizeUnits] = React.useState(0);
   const [weighting, setWeighting] = React.useState(0);
   const [robust, setRobust] = React.useState(3);
   const [channelsOut, setChannelsOut] = React.useState(1);
@@ -81,6 +81,7 @@ export default function AddDataProduct() {
 
     const observations = getProposal()?.observations;
     setBaseObservations(observations ?? []);
+    setPixelSizeUnits(2);
   }, []);
 
   React.useEffect(() => {
@@ -93,7 +94,7 @@ export default function AddDataProduct() {
           ? sensCalc.section1[3].value.split(' x ')
           : [];
       const result = arr.length > 1 ? (Number(arr[1]) / DIVIDER).toFixed(precision) : 0;
-      if (pixelSizeUnits === null && sensCalc?.section1 && sensCalc.section1.length > 2) {
+      if (pixelSizeUnits === 0 && sensCalc?.section1 && sensCalc.section1.length > 2) {
         setPixelSizeUnits(2);
       }
       return Number(result);
@@ -104,8 +105,7 @@ export default function AddDataProduct() {
         return 0;
       }
       const precision = Number(t('pixelSize.precision'));
-      const result = Number((total / count).toFixed(precision));
-      return result;
+      return Number((total / count).toFixed(precision));
     };
 
     if (observationId && baseObservations) {
@@ -205,7 +205,7 @@ export default function AddDataProduct() {
   };
 
   const pixelSizeUnitsField = () => {
-    return pixelSizeUnits === null ? '' : presentUnits(t('pixelSize.' + pixelSizeUnits));
+    return pixelSizeUnits === 0 ? '' : presentUnits(t('pixelSize.' + pixelSizeUnits));
   };
 
   const pixelSizeField = () =>
