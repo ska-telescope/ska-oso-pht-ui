@@ -891,6 +891,19 @@
     "help": "For Briggs weighting, the robustness parameter can be set to -2 (closest to uniform weighting), -1, 0, 1 or 2 (closest to natural weighting).",
     "label": "Robust"
   },
+  "channelsOut": {
+    "help": "Channels Out help text TBD",
+    "label": "Channels Out"
+  },
+  "fitSpectralPol": {
+    "help": "Fit Spectral Pol help text TBD",
+    "label": "Fit Spectral Pol "
+  },
+  "stokes": {
+    "help": "Stokes help text TBD",
+    "label": "Stokes",
+    "I": "I"
+  },
   "saveBtn": {
     "label": "Save",
     "success": "Save was successful",

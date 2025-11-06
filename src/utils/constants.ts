@@ -232,6 +232,8 @@ export const HELP_FONT = 16;
 export const IW_BRIGGS = 2;
 export const IW_NATURAL = 0;
 export const IW_UNIFORM = 1;
+
+export const STOKES = [{ label: 'I', value: 'I' }];
 export const IMAGE_WEIGHTING = [
   { label: 'natural', lookup: 'natural', value: 0 },
   { label: 'uniform', lookup: 'uniform', value: 1 },
