@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
-import { GENERAL, LAB_POSITION } from '@utils/constants.ts';
+import { GENERAL, LAB_POSITION, PAGE_GENERAL } from '@utils/constants.ts';
 import { countWords } from '@utils/helpers.ts';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { validateGeneralPage } from '@utils/validation/validation.tsx';
@@ -15,7 +15,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
-const PAGE = 2;
+const PAGE = PAGE_GENERAL;
 const LINE_OFFSET = 30;
 const LABEL_WIDTH = 2;
 

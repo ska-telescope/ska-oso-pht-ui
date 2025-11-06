@@ -23,8 +23,9 @@ import { TIME_MINS } from '@/utils/constantsSensCalc';
 import { generateId } from '@/utils/helpers';
 import Observation from '@/utils/types/observation';
 import ArrowIcon from '@/components/icon/arrowIcon/arrowIcon';
+import { PAGE_CALIBRATION } from '@/utils/constants';
 
-const PAGE = 6;
+const PAGE = PAGE_CALIBRATION;
 
 export default function CalibrationPage() {
   const {

@@ -16,6 +16,7 @@ import {
   BANDWIDTH_TELESCOPE,
   IW_NATURAL,
   OB_SUBARRAY_CUSTOM,
+  PAGE_LINKING,
   PATH,
   RA_TYPE_ICRS,
   STATUS_ERROR,
@@ -42,7 +43,7 @@ import { SensCalcResults } from '@/utils/types/sensCalcResults';
 export default function LinkingPage() {
   const DATA_GRID_TARGET = '40vh';
   const DATA_GRID_OBSERVATION = '50vh';
-  const PAGE = 10;
+  const PAGE = PAGE_LINKING;
 
   const { t } = useScopedTranslation();
   const navigate = useNavigate();

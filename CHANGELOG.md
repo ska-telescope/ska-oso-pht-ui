@@ -20,7 +20,8 @@ UNRELEASED
 * Changed: Added validation to target fields 
 * Added: Calibration page content
 * Changed: use ska base images `ska-build-node` and `ska-webserver`
-
+* Changed: Updated ordering of pages
+* Changed: Data Products are no longer bound to a observation/target combination
 
 8.0.0
 ----------
