@@ -2,23 +2,25 @@ import React from 'react';
 import { Table, TableBody } from '@mui/material';
 
 import TableContainer from '../tableContainer/TableContainer';
-import TableReviewDecisionHeader from './tableReviewDecisionHeader/TableReviewDecisionHeader';
-import TableReviewDecisionRow from './tableReviewDecisionRow.tsx/TableReviewDecisionRow';
+import TableObservationHeader from './tableObservationHeader/TableObservationHeader';
+import TableObservationRow from './tableObservationRow.tsx/TableObservationRow';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { PANEL_DECISION_STATUS, REVIEW_TYPE } from '@/utils/constants';
 import { trimText } from '@/utils/present/present';
 
-interface TableReviewDecisionProps {
+interface TableObservationProps {
   data: any;
   excludeFunction: (detail: any) => void;
   updateFunction: (item: any) => void;
+  obsData: any;
 }
 
-export default function TableReviewDecision({
+export default function TableObservation({
   data,
   excludeFunction,
-  updateFunction
-}: TableReviewDecisionProps) {
+  updateFunction,
+  obsData
+}: TableObservationProps) {
   const { t } = useScopedTranslation();
 
   const expandButtonRefs = React.useRef<{ [key: number]: HTMLButtonElement | null }>({});
@@ -53,9 +55,6 @@ export default function TableReviewDecision({
   };
 
   const scoredItems = React.useMemo(() => {
-
-    console.log('data', data)
-
     if (!data) return [];
 
     // Step 1: Calculate scores
@@ -90,16 +89,18 @@ export default function TableReviewDecision({
     }));
 
     // checkForUpdatesForAPI(results);
+    console.log('results', results)
     return results;
   }, [data]);
 
   return (
     <TableContainer>
       <Table aria-label="Review Decision Table">
-        <TableReviewDecisionHeader />
+        {/* <TableObservationHeader /> */}
         <TableBody>
-          {scoredItems.map((item: any, index: number) => (
-            <TableReviewDecisionRow
+          {obsData.map((item: any, index: number) => (
+            <>
+            <TableObservationRow
               key={item.id}
               item={item}
               index={index}
@@ -115,6 +116,7 @@ export default function TableReviewDecision({
               trimText={trimText}
               t={t}
             />
+            </>
           ))}
         </TableBody>
       </Table>

@@ -17,6 +17,7 @@ import { BANDWIDTH_TELESCOPE, PAGE_OBSERVATION, PATH } from '../../utils/constan
 import GroupObservation from '../../utils/types/groupObservation';
 import DeleteObservationConfirmation from '../../components/alerts/deleteObservationConfirmation/deleteObservationConfirmation';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import TableObservation from '@/components/grid/tableObservation/TableObservation';
 
 const DATA_GRID_OBSERVATION = '62vh';
 const PAGE = PAGE_OBSERVATION;
@@ -94,7 +95,13 @@ export default function ObservationPage() {
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
     setElementsO(getProposal().observations?.map(rec => popElementO(rec)) ?? []);
+
+    
   }, []);
+
+  React.useEffect(() => {
+    console.log('elementsO', elementsO)
+  }, [elementsO]);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -200,6 +207,81 @@ export default function ObservationPage() {
     );
   }
 
+  //for testing decision collapsible 
+
+  const decisionData = [
+  {
+    "id": "prsl-t0001-20251106-00002",
+    "status": "under review",
+    "lastUpdated": "2025-11-06T10:06:52.682420Z",
+    "lastUpdatedBy": "fd7719af-ee36-4e6b-90a0-ba2137995534",
+    "createdOn": "2025-11-06T10:04:08.300578Z",
+    "createdBy": "fd7719af-ee36-4e6b-90a0-ba2137995534",
+    "version": 7,
+    "proposalSubType": [],
+    "scienceCategory": null,
+    "title": "check decision",
+    "cycle": "SKAO_2027_1",
+    "investigators": [
+      {
+        "id": "fd7719af-ee36-4e6b-90a0-ba2137995534",
+        "firstName": "Jack",
+        "lastName": "Tam",
+        "email": "Jack.Tam@community.skao.int",
+        "phdThesis": false,
+        "status": "unknown",
+        "pi": true
+      },
+      {
+        "id": "temp-1",
+        "firstName": "tst",
+        "lastName": "tst",
+        "email": "test@test.com",
+        "phdThesis": false,
+        "status": "unknown",
+        "pi": false
+      }
+    ],
+    "abstract": "test",
+    "sciencePDF": null,
+    "technicalPDF": null,
+    "calibrationStrategy": [],
+    "decisions": {
+      "id": "pnld-skao-77adf2831",
+      "panelId": "panel-skao-96c7119b1",
+      "cycle": "SKAO_2027_1",
+      "proposalId": "prsl-t0001-20251106-00002",
+      "rank": 0,
+      "status": "To Do"
+    },
+    "reviews": [
+      {
+        "id": "rvw-tec-skao-3db27f9ca",
+        "panelId": "panel-skao-96c7119b1",
+        "cycle": "SKAO_2027_1",
+        "reviewerId": "c8f8f18a-3c70-4c39-8ed9-2d8d180d99a3",
+        "prslId": "prsl-t0001-20251106-00002",
+        "reviewType": {
+          "kind": "Technical Review",
+          "isFeasible": "Yes"
+        },
+        "comments": "technical review",
+        "status": "In Progress",
+        "metadata": {
+          "version": 2,
+          "created_by": "DefaultUser",
+          "created_on": "2025-11-06T10:07:11.293464Z",
+          "last_modified_by": "fd7719af-ee36-4e6b-90a0-ba2137995534",
+          "last_modified_on": "2025-11-06T10:07:31.583930Z",
+          "pdm_version": "25.0.0"
+        }
+      }
+    ],
+    "key": "prsl-t0001-20251106-00002",
+    "rank": 1
+  }
+]
+
   return (
     <Shell page={PAGE}>
       <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
@@ -240,6 +322,10 @@ export default function ObservationPage() {
             )}
           </Grid>
         </Grid>
+        <TableObservation
+        data={decisionData}
+        obsData={elementsO}
+        ></TableObservation>
       </Grid>
       {deleteDialog ?? <></>}
     </Shell>
