@@ -31,7 +31,8 @@ import {
   ROBUST,
   IW_BRIGGS,
   RA_TYPE_GALACTIC,
-  RA_TYPE_ICRS
+  RA_TYPE_ICRS,
+  SCIENCE_VERIFICATION
 } from '@utils/constants.ts';
 import {
   DataProductSDP,
@@ -159,12 +160,13 @@ const getCalibrationStrategy = (
   return calibrationStrategies?.map(strategy => ({
     observatory_defined: strategy.observatoryDefined,
     calibration_id: strategy.id,
-    observation_id_ref: strategy.observationIdRef,
+    observation_set_ref: strategy.observationIdRef,
     calibrators: strategy.calibrators
       ? strategy?.calibrators?.map(calibrator => ({
-          kind: calibrator.kind,
+          calibration_intent: calibrator.calibrationIntent,
           name: calibrator.name,
-          model_config: calibrator.modelConfig,
+          duration_min: calibrator.durationMin,
+          choice: calibrator.choice,
           notes: calibrator.notes
         }))
       : null,
@@ -177,9 +179,7 @@ const SDPOptions = (inArray: Boolean[]) => {
 };
 
 const getDataProductSDP = (dataproducts: DataProductSDP[]): DataProductSDPsBackend[] => {
-  const IMAGE_SIZE_UNITS = ['deg2', 'arcmin', 'arcsec'];
-
-  const getPixelSizeUnits = (inValue: string) => (inValue === 'arcsecs' ? 'arcsec' : inValue);
+  const IMAGE_SIZE_UNITS = ['deg2', 'arcmin2', 'arcsec2'];
 
   return dataproducts?.map(dp => ({
     data_product_id: dp.dataProductsSDPId as string,
@@ -187,7 +187,7 @@ const getDataProductSDP = (dataproducts: DataProductSDP[]): DataProductSDPsBacke
     observation_set_refs: dp.observationId,
     script_parameters: {
       image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
-      image_cellsize: { value: dp.pixelSizeValue, unit: getPixelSizeUnits(dp.pixelSizeUnits) },
+      image_cellsize: { value: dp.pixelSizeValue, unit: IMAGE_SIZE_UNITS[dp.pixelSizeUnits] },
       weight: {
         weighting: 'natural', // TODO - CHLOE
         robust: '-2' // TODO - CHLOE
@@ -512,7 +512,7 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
       title: proposal.title,
       proposal_type: {
         main_type: isSV
-          ? 'science_verification'
+          ? SCIENCE_VERIFICATION
           : (PROJECTS.find(item => item.id === proposal.proposalType)?.mapping as string),
         attributes:
           !isSV && proposal.proposalSubType

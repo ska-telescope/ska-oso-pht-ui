@@ -21,6 +21,8 @@ export const presentUnits = (inUnits: string) => {
       return 'arcsecs\xb2';
     case 'arcmin2':
       return 'arcmin\xb2';
+    case 'degrees2':
+      return 'degrees\xb2';
     case 'degree2':
       return 'degree\xb2';
     case 'pc/cm3':

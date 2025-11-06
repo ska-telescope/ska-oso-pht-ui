@@ -289,7 +289,7 @@ export const MockProposalFrontend: Proposal = {
       imageSizeValue: 15,
       imageSizeUnits: 0,
       pixelSizeValue: 1.007,
-      pixelSizeUnits: 'arcsecs',
+      pixelSizeUnits: 2,
       weighting: 1
     }
   ],
@@ -300,7 +300,8 @@ export const MockProposalFrontend: Proposal = {
       id: 'cal-001',
       observationIdRef: 'obs-obR1Ej',
       calibrators: null,
-      notes: 'This is an observatory defined calibration strategy.'
+      notes: 'This is an observatory defined calibration strategy.',
+      isAddNote: true
     }
   ],
   pipeline: ''
@@ -473,7 +474,7 @@ export const MockProposalFrontendZoom: Proposal = {
       imageSizeValue: 100,
       imageSizeUnits: 0,
       pixelSizeValue: 3.7,
-      pixelSizeUnits: 'arcsecs',
+      pixelSizeUnits: 2,
       weighting: 2
     }
   ],
@@ -484,7 +485,8 @@ export const MockProposalFrontendZoom: Proposal = {
       id: 'cal-002',
       observationIdRef: 'obs-arMIoY',
       calibrators: null,
-      notes: 'This is an other observatory defined calibration strategy.'
+      notes: 'This is an other observatory defined calibration strategy.',
+      isAddNote: true
     }
   ],
   pipeline: ''
