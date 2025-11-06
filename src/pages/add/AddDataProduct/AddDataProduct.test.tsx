@@ -5,6 +5,10 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { renderHook } from '@testing-library/react';
 import { vi } from 'vitest';
 import React, { useState } from 'react';
+
+import { screen } from '@testing-library/react';
+import { it } from 'vitest';
+import RobustField from '@components/fields/robust/Robust.tsx';
 import AddDataProduct from './AddDataProduct';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
@@ -27,6 +31,10 @@ vi.mock('@utils/helpers.ts', () => ({
     if (key === 'pixelSize.precision') return '2';
     return key;
   })
+}));
+
+vi.mock('@utils/helpers.ts', () => ({
+  t: vi.fn(key => key)
 }));
 
 describe('useEffect for pixel size calculation', () => {
@@ -126,5 +134,23 @@ describe('useEffect for pixel size calculation', () => {
     });
 
     expect(mockSetPixelSizeValue).toHaveBeenCalledWith(0);
+  });
+});
+
+describe('robustField', () => {
+  it('renders the robust field with the correct label', () => {
+    const mockSetRobust = vi.fn();
+
+    render(
+      <RobustField
+        label="robust.label"
+        onFocus={() => {}}
+        setValue={mockSetRobust}
+        testId="robust"
+        value={3}
+      />
+    );
+
+    expect(screen.getByText('robust.label')).toBeInTheDocument();
   });
 });
