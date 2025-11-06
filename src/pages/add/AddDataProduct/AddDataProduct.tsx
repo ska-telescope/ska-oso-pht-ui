@@ -359,21 +359,17 @@ export default function AddDataProduct() {
           ) ?? 0;
       }
       const observatoryDataProduct = [dp1];
-      //TODO: Update mapping
       const newDataProduct: DataProductSDP = {
         id: highestId + 1,
         dataProductsSDPId: `${PAGE_PREFIX}-${highestId + 1}`,
         observatoryDataProduct,
         observationId: [observationId],
         imageSizeValue: Number(imageSizeValue),
-        imageSizeUnits: imageSizeUnits,
-        pixelSizeValue: pixelSizeValue,
-        pixelSizeUnits: pixelSizeUnits,
-        weighting: weighting,
-        robust: robust,
-        polarisations: stokes,
-        channelsOut: channelsOut,
-        fitSpectralPol: fitSpectralPol
+        imageSizeUnits,
+        pixelSizeValue,
+        pixelSizeUnits,
+        weighting,
+        polarisations: ''
       };
       if (hasRecord) {
         setProposal({

@@ -189,12 +189,12 @@ const getDataProductSDP = (dataproducts: DataProductSDP[]): DataProductSDPsBacke
       image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
       image_cellsize: { value: dp.pixelSizeValue, unit: getPixelSizeUnits(dp.pixelSizeUnits) },
       weight: {
-        weighting: dp.weighting,
-        robust: dp.robust
+        weighting: 'natural', // TODO - CHLOE
+        robust: '-2' // TODO - CHLOE
       },
-      polarisations: dp.polarisations,
-      channels_out: dp.channelsOut,
-      fit_spectral_pol: dp.fitSpectralPol
+      polarisations: 'chloe', // TODO - CHLOE
+      channels_out: 0,
+      fit_spectral_pol: 0
     }
   }));
 };
