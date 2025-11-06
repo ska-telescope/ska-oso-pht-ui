@@ -29,7 +29,6 @@ import {
   NAV,
   PAGE_SDP,
   PAGE_SDP_ADD,
-  STATUS_OK,
   WRAPPER_HEIGHT
 } from '@/utils/constants';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
@@ -79,13 +78,9 @@ export default function AddDataProduct() {
 
   React.useEffect(() => {
     helpComponent(t('observations.dp.help'));
-    const results = getProposal()?.observations?.filter(
-      ob =>
-        typeof getProposal()?.targetObservation?.find(
-          e => e.observationId === ob.id && e.sensCalc.statusGUI === STATUS_OK
-        ) !== 'undefined'
-    );
-    setBaseObservations(results ?? []);
+
+    const observations = getProposal()?.observations;
+    setBaseObservations(observations ?? []);
   }, []);
 
   React.useEffect(() => {
