@@ -50,25 +50,39 @@ export default function GridMembers({
     <Typography variant="subtitle1">{t(inValue)}</Typography>
   );
 
+  const dataDisplay = (value: string, toolTip: string, testId: string) => (
+    <Box pt={2}>
+      <Tooltip data-testid={testId} title={toolTip ? toolTip : ''} arrow>
+        <Typography variant="subtitle2">{value}</Typography>
+      </Tooltip>
+    </Box>
+  );
+
   const colLastName = {
     field: 'lastName',
     renderHeader: () => headerDisplay('lastName.label'),
     flex: 2,
-    minWidth: 150
+    minWidth: 150,
+    renderCell: (e: { row: { lastName: string } }) =>
+      dataDisplay(e.row.lastName, e.row.lastName, 'lastName')
   };
 
   const colFirstName = {
     field: 'firstName',
     renderHeader: () => headerDisplay('firstName.label'),
     flex: 2,
-    minWidth: 150
+    minWidth: 150,
+    renderCell: (e: { row: { firstName: string } }) =>
+      dataDisplay(e.row.firstName, e.row.firstName, 'firstName')
   };
 
   const colStatus = {
     field: 'status',
     renderHeader: () => headerDisplay('status.label'),
     flex: 1,
-    minWidth: 120
+    minWidth: 120,
+    renderCell: (e: { row: { status: string } }) =>
+      dataDisplay(e.row.status, e.row.status, 'status')
   };
 
   const colPHD = {
@@ -102,10 +116,35 @@ export default function GridMembers({
   const lockClicked = () => {
     if (actionClicked) actionClicked(GRID_MEMBERS_ACTIONS.access);
   };
-  const actionColumns = [
+  const colActions = [
+    {
+      field: 'id',
+      headerName: headerDisplay('actions.label'),
+      sortable: false,
+      flex: 1,
+      minWidth: 120,
+      disableClickEventBubbling: true,
+      renderCell: (params: { row: { id: string; pi: string } }) => {
+        return (
+          <>
+            {/* Only show lock icon if the member is registered with entra id */}
+            {!params.row.id.includes('temp-') && (
+              <LockIcon onClick={lockClicked} toolTip={t('manageTeamMember.toolTip')} />
+            )}
+            <TrashIcon
+              disabled={isPI({ pi: params.row.pi })}
+              onClick={trashClicked}
+              toolTip={t('deleteTeamMember.toolTip')}
+            />
+          </>
+        );
+      }
+    }
+  ];
+  const colPermissions = [
     {
       field: 'permissions',
-      headerName: t('manageTeamMember.rights'),
+      headerName: headerDisplay('manageTeamMember.rights'),
       sortable: false,
       flex: 2,
       minWidth: 160,
@@ -121,44 +160,16 @@ export default function GridMembers({
           })
           .join(', ');
         const highestAccess = accessDisplay.split(',');
-        return (
-          <Box pt={2}>
-            <Tooltip data-testid="accessLevel" title={accessDisplay ? accessDisplay : ''} arrow>
-              <Typography>
-                {highestAccess ? highestAccess[highestAccess.length - 1] : ''}
-              </Typography>
-            </Tooltip>
-          </Box>
-        );
-      }
-    },
-    {
-      field: 'id',
-      headerName: t('actions.label'),
-      sortable: false,
-      flex: 1,
-      minWidth: 120,
-      disableClickEventBubbling: true,
-      renderCell: (params: { row: { id: string; pi: string } }) => {
-        return (
-          <>
-            <TrashIcon
-              disabled={isPI({ pi: params.row.pi })}
-              onClick={trashClicked}
-              toolTip={t('deleteTeamMember.toolTip')}
-            />
-            {/* Only show lock icon if the member is registered with entra id */}
-            {!params.row.id.includes('temp-') && (
-              <LockIcon onClick={lockClicked} toolTip={t('manageTeamMember.toolTip')} />
-            )}
-          </>
-        );
+        const inValue = highestAccess ? highestAccess[highestAccess.length - 1] : '';
+        const inTooltip = accessDisplay ? accessDisplay : '';
+        return dataDisplay(inValue, inTooltip, 'memberAccess');
       }
     }
   ];
 
   const baseColumns = () => (isSV() ? [colLastName, colFirstName, colStatus] : basicColumns);
-  const getColumns = () => (action ? [...baseColumns(), ...actionColumns] : [...baseColumns()]);
+  const getColumns = () =>
+    action ? [...colActions, ...baseColumns(), ...colPermissions] : [...baseColumns()];
 
   return (
     <>

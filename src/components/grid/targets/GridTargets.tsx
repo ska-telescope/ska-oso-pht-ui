@@ -51,7 +51,7 @@ export default function GridTargets({
     }
   ];
 
-  const actionColumns = [
+  const colActions = [
     {
       field: 'actions',
       type: 'actions',
@@ -83,7 +83,7 @@ export default function GridTargets({
 
   const getColumns = () =>
     deleteClicked !== null || editClicked !== null
-      ? [...basicColumns, ...actionColumns]
+      ? [...colActions, ...basicColumns]
       : [...basicColumns];
 
   return (

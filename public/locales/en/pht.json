@@ -1307,15 +1307,6 @@
       "pageError": "The OBSERVATION page is not complete"
     },
     "6": {
-      "status": "Calibration",
-      "title": "Calibration",
-      "titleShort": "Calibration",
-      "desc": "This is a likely observing strategy with calibration (assuming observation near transit, etc.)",
-      "pageError": "The CALIBRATION STRATEGY page is not complete",
-      "help": "The listed strategy is representative and not guaranteed at the time of execution. User defined calibration strategies are not currently supported.",
-      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE CALIBRATION STRATEGY AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL"
-    },
-    "7": {
       "status": "Technical",
       "title": "Technical",
       "titleShort": "Technical",
@@ -1348,8 +1339,10 @@
       "status": "Calibration",
       "title": "Calibration",
       "titleShort": "Calibration",
-      "desc": "This page allows you to request and define Calibration strategies.",
-      "pageError": "The Calibration page is not complete"
+      "desc": "This is a likely observing strategy with calibration (assuming observation near transit, etc.)",
+      "pageError": "The CALIBRATION STRATEGY page is not complete",
+      "help": "The listed strategy is representative and not guaranteed at the time of execution. User defined calibration strategies are not currently supported.",
+      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE CALIBRATION STRATEGY AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL"
     },
     "10": {
       "status": "SRCNet",

@@ -18,7 +18,7 @@ interface AlertDialogProps {
   onDialogResponse: Function;
   title?: string;
   children?: JSX.Element | JSX.Element[];
-  disabled: boolean;
+  disabled?: boolean;
 }
 
 export default function AlertDialog({
@@ -28,7 +28,7 @@ export default function AlertDialog({
   onDialogResponse,
   title = '',
   children,
-  disabled
+  disabled = false
 }: AlertDialogProps) {
   const { t } = useScopedTranslation();
 
