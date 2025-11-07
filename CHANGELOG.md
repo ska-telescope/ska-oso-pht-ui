@@ -23,6 +23,7 @@ UNRELEASED
 * Changed: Updated ordering of pages
 * Changed: Data Products are no longer bound to a observation/target combination
 * Changed: Actions moved to the 1st position for DataGrids and tables where applicable
+* Changed: Updated data product mapping
 
 8.0.0
 ----------
