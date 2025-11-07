@@ -16,7 +16,7 @@ import {
   getColReviewerType,
   getColSubExpertise,
   getColStatus
-} from '../gridColumns/GridColumns';
+} from './columns/columns';
 import { SEARCH_TYPE_OPTIONS_REVIEWERS } from '@/utils/constants';
 import { Reviewer } from '@/utils/types/reviewer';
 import { IdObject } from '@/utils/types/idObject';
