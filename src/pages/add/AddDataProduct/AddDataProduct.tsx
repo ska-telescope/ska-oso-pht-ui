@@ -339,7 +339,7 @@ export default function AddDataProduct() {
     };
 
     const getOptions = () => {
-      const results = [{ label: t('tapering.0'), value: 0 }];
+      const results = [{ label: t('gaussianTaper.0'), value: 0 }];
       [0.25, 1, 4, 16, 64, 256, 1024].forEach(inValue => {
         const theLabel = (inValue * (1.4 / frequencyInGHz())).toFixed(3) + '"';
         results.push({ label: theLabel, value: inValue });
@@ -349,7 +349,7 @@ export default function AddDataProduct() {
 
     return fieldDropdown(
       false,
-      'tapering',
+      'gaussianTaper',
       BOTTOM_LABEL_WIDTH,
       getOptions(),
       true,

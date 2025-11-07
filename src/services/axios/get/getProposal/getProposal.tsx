@@ -276,8 +276,8 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
       ? getPixelSizeUnits(dp?.script_parameters.image_cellsize?.unit)
       : null,
     weighting: Number(dp.script_parameters.weight.weighting),
-    polarisations: dp.script_parameters.polarisations,
     robust: dp.script_parameters.weight.robust,
+    polarisations: dp.script_parameters.polarisations,
     channelsOut: dp.script_parameters.channels_out,
     fitSpectralPol: dp.script_parameters.fit_spectral_pol
   })) as DataProductSDP[];
