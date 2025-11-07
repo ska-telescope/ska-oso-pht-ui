@@ -14,15 +14,22 @@ import {
   TickBox
 } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
+import RobustField from '@components/fields/robust/Robust.tsx';
+import { frequencyConversion } from '@utils/helpers.ts';
+import StokesField from '@components/fields/stokes/stokes.tsx';
+import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
 import {
   BANNER_PMT_SPACER,
   FOOTER_HEIGHT_PHT,
+  FREQUENCY_GHZ,
   HELP_FONT,
+  IW_BRIGGS,
+  LAB_IS_BOLD,
+  LAB_POSITION,
   NAV,
   PAGE_SDP,
   PAGE_SDP_ADD,
-  STATUS_OK,
   WRAPPER_HEIGHT
 } from '@/utils/constants';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
@@ -31,7 +38,6 @@ import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighti
 import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import { DataProductSDP } from '@/utils/types/dataProduct';
 import AddButton from '@/components/button/Add/Add';
-import { LAB_POSITION } from '@/utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { presentUnits } from '@/utils/present/present';
 import Observation from '@/utils/types/observation';
@@ -44,6 +50,8 @@ const PAGE_PREFIX = 'SDP';
 const FIELD_OBS = 'observatoryDataProduct.options';
 const LABEL_WIDTH = 5;
 const LABEL_WIDTH_TICK = 11;
+const WRAPPER_WIDTH_BUTTON = 2;
+const BOTTOM_LABEL_WIDTH = 6;
 
 export default function AddDataProduct() {
   const navigate = useNavigate();
@@ -58,28 +66,25 @@ export default function AddDataProduct() {
   const [imageSizeValue, setImageSizeValue] = React.useState('0');
   const [imageSizeUnits, setImageSizeUnits] = React.useState(0);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
-  const [pixelSizeUnits, setPixelSizeUnits] = React.useState(null);
+  const [pixelSizeUnits, setPixelSizeUnits] = React.useState(0);
   const [weighting, setWeighting] = React.useState(0);
+  const [robust, setRobust] = React.useState(3);
+  const [channelsOut, setChannelsOut] = React.useState(1);
+  const [fitSpectralPol, setFitSpectralPol] = React.useState(1);
+  const [stokes, setStokes] = React.useState('I');
+  const [tapering, setTapering] = React.useState(0);
 
   const { t } = useScopedTranslation();
 
   React.useEffect(() => {
     helpComponent(t('observations.dp.help'));
-    const results = getProposal()?.observations?.filter(
-      ob =>
-        typeof getProposal()?.targetObservation?.find(
-          e => e.observationId === ob.id && e.sensCalc.statusGUI === STATUS_OK
-        ) !== 'undefined'
-    );
-    setBaseObservations(results ?? []);
+
+    const observations = getProposal()?.observations;
+    setBaseObservations(observations ?? []);
+    setPixelSizeUnits(2);
   }, []);
 
   React.useEffect(() => {
-    const getImageWeighting = (id: string) => {
-      const temp = getProposal()?.observations?.find(e => e.id === id);
-      return temp ? temp.imageWeighting : 0;
-    };
-
     const getPixelSize = (sensCalc: SensCalcResults): number => {
       const DIVIDER = 3;
       const precisionStr = t('pixelSize.precision');
@@ -89,7 +94,7 @@ export default function AddDataProduct() {
           ? sensCalc.section1[3].value.split(' x ')
           : [];
       const result = arr.length > 1 ? (Number(arr[1]) / DIVIDER).toFixed(precision) : 0;
-      if (pixelSizeUnits === null && sensCalc?.section1 && sensCalc.section1.length > 2) {
+      if (pixelSizeUnits === 0 && sensCalc?.section1 && sensCalc.section1.length > 2) {
         setPixelSizeUnits(2);
       }
       return Number(result);
@@ -100,13 +105,8 @@ export default function AddDataProduct() {
         return 0;
       }
       const precision = Number(t('pixelSize.precision'));
-      const result = Number((total / count).toFixed(precision));
-      return result;
+      return Number((total / count).toFixed(precision));
     };
-
-    if (observationId) {
-      setWeighting(getImageWeighting(observationId));
-    }
 
     if (observationId && baseObservations) {
       let pixelTotal = 0;
@@ -205,37 +205,157 @@ export default function AddDataProduct() {
   };
 
   const pixelSizeUnitsField = () => {
-    return pixelSizeUnits === null ? '' : presentUnits(t('pixelSize.' + pixelSizeUnits));
+    return pixelSizeUnits === 0 ? '' : presentUnits(t('pixelSize.' + pixelSizeUnits));
   };
 
-  const pixelSizeField = () => {
-    return (
+  const pixelSizeField = () =>
+    fieldWrapper(
+      <PixelSizeField
+        label={t('pixelSize.label')}
+        widthLabel={LABEL_WIDTH}
+        onFocus={() => helpComponent(t('pixelSize.help'))}
+        setValue={setPixelSizeValue}
+        testId="pixelSize"
+        required
+        value={pixelSizeValue}
+        suffix={pixelSizeUnitsField()}
+      />
+    );
+
+  const imageWeightingField = () =>
+    fieldWrapper(
+      <ImageWeightingField
+        labelWidth={LABEL_WIDTH}
+        onFocus={() => helpComponent(t('imageWeighting.help'))}
+        setValue={setWeighting}
+        value={weighting}
+      />
+    );
+
+  const robustField = () =>
+    fieldWrapper(
+      <RobustField
+        label={t('robust.label')}
+        onFocus={() => helpComponent(t('robust.help'))}
+        setValue={setRobust}
+        testId="robust"
+        value={robust}
+      />
+    );
+
+  const channelsOutField = () =>
+    fieldWrapper(
       <Box pt={1}>
         <NumberEntry
-          label={t('pixelSize.label')}
-          labelBold
+          label={t('channelsOut.label')}
+          labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
           labelWidth={LABEL_WIDTH}
-          testId="pixelSize"
-          value={pixelSizeValue}
-          setValue={setPixelSizeValue}
+          testId="channelsOut"
+          value={channelsOut}
+          setValue={setChannelsOut}
+          onFocus={() => helpComponent(t('channelsOut.help'))}
           required
-          disabled
-          disabledUnderline
-          suffix={pixelSizeUnitsField()}
         />
       </Box>
     );
+
+  const fitSpectralPolField = () =>
+    fieldWrapper(
+      <Box pt={1}>
+        <NumberEntry
+          label={t('fitSpectralPol.label')}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={LABEL_WIDTH}
+          testId="fitSpectralPol"
+          value={fitSpectralPol}
+          setValue={setFitSpectralPol}
+          onFocus={() => helpComponent(t('fitSpectralPol.help'))}
+          required
+        />
+      </Box>
+    );
+
+  const stokesField = () => {
+    return (
+      <StokesField
+        labelWidth={LABEL_WIDTH}
+        onFocus={() => helpComponent(t('stokes.help'))}
+        value={stokes}
+        setValue={setStokes}
+      />
+    );
   };
 
-  const imageWeightingField = () => {
-    return (
-      <ImageWeightingField
-        disabled
-        labelWidth={LABEL_WIDTH}
-        onFocus={() => helpComponent(t('imageWeighting.help'))}
-        value={weighting}
-      />
+  const fieldDropdown = (
+    disabled: boolean,
+    field: string,
+    labelWidth: number,
+    options: { label: string; value: string | number }[],
+    required: boolean,
+    setValue: Function,
+    suffix: any,
+    value: string | number
+  ) => {
+    return fieldWrapper(
+      <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
+        <Grid pl={suffix ? 1 : 0} size={{ xs: suffix ? 12 - WRAPPER_WIDTH_BUTTON : 12 }}>
+          <DropDown
+            disabled={disabled}
+            options={options}
+            testId={field}
+            value={value}
+            setValue={setValue}
+            label={t(field + '.label')}
+            labelBold={LAB_IS_BOLD}
+            labelPosition={LAB_POSITION}
+            labelWidth={suffix ? labelWidth + 1 : labelWidth}
+            onFocus={() => helpComponent(t(field + '.help'))}
+            required={required}
+          />
+        </Grid>
+        <Grid size={{ xs: suffix ? WRAPPER_WIDTH_BUTTON : 0 }}>{suffix}</Grid>
+      </Grid>
+    );
+  };
+
+  const taperingField = () => {
+    const getCentralFrequency = () => {
+      const selectedObservation = baseObservations.find(rec => rec.id === observationId);
+      return selectedObservation?.centralFrequency ?? null;
+    };
+
+    const getCentralFrequencyUnits = () => {
+      const selectedObservation = baseObservations.find(rec => rec.id === observationId);
+      return selectedObservation?.centralFrequencyUnits ?? null;
+    };
+    const frequencyInGHz = () => {
+      return frequencyConversion(
+        getCentralFrequency(),
+        getCentralFrequencyUnits() as number,
+        FREQUENCY_GHZ
+      );
+    };
+
+    const getOptions = () => {
+      const results = [{ label: t('tapering.0'), value: 0 }];
+      [0.25, 1, 4, 16, 64, 256, 1024].forEach(inValue => {
+        const theLabel = (inValue * (1.4 / frequencyInGHz())).toFixed(3) + '"';
+        results.push({ label: theLabel, value: inValue });
+      });
+      return results;
+    };
+
+    return fieldDropdown(
+      false,
+      'tapering',
+      BOTTOM_LABEL_WIDTH,
+      getOptions(),
+      true,
+      setTapering,
+      null,
+      tapering
     );
   };
 
@@ -366,6 +486,13 @@ export default function AddDataProduct() {
                   {fieldWrapper(imageSizeField())}
                   {fieldWrapper(pixelSizeField())}
                   {fieldWrapper(imageWeightingField())}
+                  {weighting === IW_BRIGGS && fieldWrapper(robustField())}
+                  {fieldWrapper(channelsOutField())}
+                  {fieldWrapper(fitSpectralPolField())}
+                  {fieldWrapper(stokesField())}
+                  {baseObservations.find(
+                    rec => rec.id === observationId && rec.observingBand !== 0
+                  ) && fieldWrapper(taperingField())}
                 </Stack>
               </BorderedSection>
             </Stack>
