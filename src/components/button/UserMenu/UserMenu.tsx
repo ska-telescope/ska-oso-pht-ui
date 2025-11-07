@@ -9,7 +9,6 @@ import {
   Stack,
   Grid,
   Button,
-  Slide,
   Popper,
   Typography,
   Paper
@@ -27,6 +26,7 @@ import {
   useInitializeAccessStore
 } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import EdgeSlider from '@/components/layout/EdgeSlider/EdgeSlider';
 
 export interface ButtonUserMenuProps {
   ariaDescription?: string;
@@ -110,10 +110,6 @@ export default function ButtonUserMenu({
     setAnchorEl(null);
   };
 
-  React.useEffect(() => {
-    console.log('getHelp()', getHelp());
-  }, [getHelp()]);
-
   return (
     <>
       <Box ref={buttonWrapperRef}>
@@ -184,11 +180,12 @@ export default function ButtonUserMenu({
         anchor={'right'}
         open={openHelpDrawer}
         onClose={toggleDrawer(false)}
-        hideBackdrop={false}
+        // variant='permanent'
+        // hideBackdrop={true}
         //     ModalProps={{
         //   hideBackdrop: true,
         //   sx: {
-        //     pointerEvents: 'none',
+        //     // pointerEvents: 'none',
         //   },
         // }}
         // sx={{
@@ -200,13 +197,13 @@ export default function ButtonUserMenu({
         <Box m={1} sx={{ width: 250, minWidth: '25vw' }}>
           <Stack sx={{ height: '95%' }} spacing={5}>
             <Grid container direction="row" justifyContent="space-evenly">
-              <Grid item>
+              <Grid>
                 <Button variant="contained" onClick={toggleDrawer(false)}>
                   Close
                 </Button>
               </Grid>
             </Grid>
-            <Grid item>{getHelp()}</Grid>
+            <Grid>{getHelp()}</Grid>
           </Stack>
         </Box>
       </Drawer>
@@ -241,6 +238,8 @@ export default function ButtonUserMenu({
           </Typography>
         </Paper>
       </Popper>
+
+      <EdgeSlider />
     </>
   );
 }
