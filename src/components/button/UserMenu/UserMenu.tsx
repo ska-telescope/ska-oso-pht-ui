@@ -1,6 +1,19 @@
 import React from 'react';
 import { useMsal } from '@azure/msal-react';
-import { Box, Divider, Drawer, Menu, MenuItem, Stack, Grid, Button } from '@mui/material';
+import {
+  Box,
+  Divider,
+  Drawer,
+  Menu,
+  MenuItem,
+  Stack,
+  Grid,
+  Button,
+  Slide,
+  Popper,
+  Typography,
+  Paper
+} from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { ButtonLogin, ButtonUser, ButtonLogout } from '@ska-telescope/ska-login-page';
 import { ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
@@ -35,6 +48,15 @@ export default function ButtonUserMenu({
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [openHelpDrawer, setOpenHelpDrawer] = React.useState(false);
   const [cypressLogin, setCypressLogin] = React.useState('');
+
+  const [anchorElPopper, setAnchorElPopper] = React.useState<null | HTMLElement>(null);
+  const [openPopper, setOpenPopper] = React.useState(false);
+
+  const handleClickPopper = (event: any) => {
+    setAnchorElPopper(event.currentTarget);
+    setOpenPopper(prev => !prev);
+  };
+
   const openMenu = Boolean(anchorEl);
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
@@ -87,6 +109,10 @@ export default function ButtonUserMenu({
     setOpenHelpDrawer(newOpen);
     setAnchorEl(null);
   };
+
+  React.useEffect(() => {
+    console.log('getHelp()', getHelp());
+  }, [getHelp()]);
 
   return (
     <>
@@ -154,7 +180,23 @@ export default function ButtonUserMenu({
           />
         </MenuItem>
       </Menu>
-      <Drawer anchor={'right'} open={openHelpDrawer} onClose={toggleDrawer(false)}>
+      <Drawer
+        anchor={'right'}
+        open={openHelpDrawer}
+        onClose={toggleDrawer(false)}
+        hideBackdrop={false}
+        //     ModalProps={{
+        //   hideBackdrop: true,
+        //   sx: {
+        //     pointerEvents: 'none',
+        //   },
+        // }}
+        // sx={{
+        //   '& .MuiDrawer-paper': {
+        //     pointerEvents: 'auto',
+        //   },
+        // }}
+      >
         <Box m={1} sx={{ width: 250, minWidth: '25vw' }}>
           <Stack sx={{ height: '95%' }} spacing={5}>
             <Grid container direction="row" justifyContent="space-evenly">
@@ -168,6 +210,37 @@ export default function ButtonUserMenu({
           </Stack>
         </Box>
       </Drawer>
+
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={handleClickPopper}
+        sx={{
+          position: 'fixed',
+          top: '50%',
+          right: 10,
+          transform: 'translateY(-50%) rotate(-90deg)', // rotate text
+          transformOrigin: 'right center', // pivot point for rotation
+          borderRadius: '8px 8px 0 0', // optional rounded ends
+          zIndex: 1200,
+          py: 1.5,
+          px: 3
+        }}
+      >
+        HELP
+      </Button>
+      <Popper open={openPopper} anchorEl={anchorElPopper} placement="left">
+        <Paper sx={{ p: 2, boxShadow: 3, maxWidth: 250, minHeight: '80vh' }}>
+          <Typography>
+            I am helper text I am helper text I am helper text I am helper text I am helper text I
+            am helper text I am helper text I am helper text I am helper text I am helper text I am
+            helper text I am helper text I am helper text I am helper textI am helper textI am
+            helper textI am helper textI am helper textI am helper textI am helper textI am helper
+            textI am helper textI am helper textI am helper textI am helper textI am helper textI am
+            helper textI am helper text
+          </Typography>
+        </Paper>
+      </Popper>
     </>
   );
 }
