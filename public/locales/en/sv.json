@@ -116,9 +116,6 @@
   "proposal": {
     "error": "Unable to retrieve the Science Verification Idea from the server"
   },
-  "proposalId": {
-    "label": "Science Verification Idea ID"
-  },
   "proposalAttribute": {
     "desc": {
       "4": "These projects require more than one Science Verification Idea cycle to complete (e.g., long-term monitoring campaigns) but are too short in overall observing time, limited in observatory resources and/or scientific scope to qualify as a KSP."
@@ -140,7 +137,8 @@
     }
   },
   "members": {
-    "empty": "THERE ARE NO PARTICIPANTS ASSOCIATED WITH THIS SCIENCE VERIFICATION IDEA"
+    "empty": "THERE ARE NO PARTICIPANTS ASSOCIATED WITH THIS SCIENCE VERIFICATION IDEA",
+    "label": "Participants"
   },
   "reviewOverview": {
     "panel1": {

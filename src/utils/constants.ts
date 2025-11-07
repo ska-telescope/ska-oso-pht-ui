@@ -129,7 +129,7 @@ export const SPACER_HEADER = 11;
 export const SPACER_FOOTER = 0; // Just here to show it has been considered
 
 export const BANNER_PMT_SPACER = SPACER_HEADER;
-export const BANNER_PMT_SPACER_MIN = SPACER_HEADER + 70;
+export const BANNER_PMT_SPACER_MIN = SPACER_HEADER + 100;
 
 export const FOOTER_PMT = 65;
 export const FOOTER_PMT_SPACER = SPACER_FOOTER + FOOTER_PMT;
@@ -232,6 +232,8 @@ export const HELP_FONT = 16;
 export const IW_BRIGGS = 2;
 export const IW_NATURAL = 0;
 export const IW_UNIFORM = 1;
+
+export const STOKES = [{ label: 'I', value: 'I' }];
 export const IMAGE_WEIGHTING = [
   { label: 'natural', lookup: 'natural', value: 0 },
   { label: 'uniform', lookup: 'uniform', value: 1 },
@@ -286,8 +288,10 @@ export const PAGE_LINKING = 8;
 export const PAGE_CALIBRATION = 9;
 export const PAGE_SRC_NET = 10;
 export const PAGE_OBSERVATION_ADD = 11;
+export const PAGE_CYCLE = 13;
 export const PAGE_SDP_ADD = 14;
 export const PAGE_OBSERVATION_UPDATE = 15;
+export const PAGE_PANEL_MANAGEMENT = 16;
 
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
 

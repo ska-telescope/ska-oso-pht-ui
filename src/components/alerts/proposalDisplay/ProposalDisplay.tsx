@@ -7,7 +7,12 @@ import GetPresignedDownloadUrl from '@services/axios/get/getPresignedDownloadUrl
 import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
 import Proposal from '../../../utils/types/proposal';
-import { NOT_SPECIFIED } from '../../../utils/constants';
+import {
+  NOT_SPECIFIED,
+  PAGE_CYCLE,
+  PAGE_OBSERVATION,
+  PAGE_TITLE_ADD
+} from '../../../utils/constants';
 import DownloadButton from '../../button/Download/Download';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import DownloadIcon from '../../icon/downloadIcon/downloadIcon';
@@ -292,10 +297,12 @@ export default function ProposalDisplay({
     <Grid>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid size={{ xs: 2 }}>{skaoIcon({ useSymbol: false })}</Grid>
-        <Grid size={{ xs: 6 }}>{title(t('page.0.title') + '  ', proposal?.title ?? '')}</Grid>
+        <Grid size={{ xs: 6 }}>
+          {title(t('page.' + PAGE_TITLE_ADD + '.title') + '  ', proposal?.title ?? '')}
+        </Grid>
         <Grid size={{ xs: 4 }}>
           <Grid container direction="column" justifyContent="space-between" alignItems="right">
-            <Grid>{details(t('page.13.short'), proposal?.cycle ?? '')}</Grid>
+            <Grid>{details(t('page.' + PAGE_CYCLE + '.short'), proposal?.cycle ?? '')}</Grid>
             <Grid>{details(t('proposalId.label'), proposal?.id ?? '')}</Grid>
           </Grid>
         </Grid>
@@ -329,7 +336,7 @@ export default function ProposalDisplay({
   const observationsContentGrid = () => (
     <>
       <Grid>
-        <Grid>{label(t('page.11.label'))}</Grid>
+        <Grid>{label(t('page.' + PAGE_OBSERVATION + '.title'))}</Grid>
       </Grid>
       <Grid>{proposal && <GridObservationSummary height={GRID_HEIGHT} proposal={proposal} />}</Grid>
     </>

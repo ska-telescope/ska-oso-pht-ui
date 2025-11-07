@@ -101,7 +101,7 @@ export default function GridDataProducts({
     headerName: t('actions.label'),
     type: 'actions',
     sortable: false,
-    flex: 0.5,
+    width: 100,
     disableClickEventBubbling: true,
     renderCell: (e: any) => {
       const rec: DataProductSDP = e.row;
@@ -125,7 +125,7 @@ export default function GridDataProducts({
   };
 
   const getColumns = () => [
-    ...[colObservationId, colDataProduct, colImageSize, colPixelSize, colImageWeighting, colActions]
+    ...[colActions, colObservationId, colDataProduct, colImageSize, colPixelSize, colImageWeighting]
   ];
 
   return (

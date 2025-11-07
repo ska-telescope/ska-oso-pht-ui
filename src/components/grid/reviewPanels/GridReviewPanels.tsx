@@ -8,6 +8,7 @@ import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import PostPanelGenerate from '@/services/axios/post/postPanelGenerate/postPanelGenerate';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { PAGE_OBSERVATION_UPDATE } from '@/utils/constants';
 
 interface GridReviewPanelsProps {
   height?: string;
@@ -101,7 +102,11 @@ export default function GridReviewPanels({
 
       <Grid>
         {(!data || data.length === 0) && (
-          <Alert color={AlertColorTypes.Info} text={t('page.15.empty')} testId="helpPanelId" />
+          <Alert
+            color={AlertColorTypes.Info}
+            text={t('page.' + PAGE_OBSERVATION_UPDATE + '.empty')}
+            testId="helpPanelId"
+          />
         )}
         {data.length > 0 && (
           <>

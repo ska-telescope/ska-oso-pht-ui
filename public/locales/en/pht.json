@@ -892,6 +892,19 @@
     "help": "For Briggs weighting, the robustness parameter can be set to -2 (closest to uniform weighting), -1, 0, 1 or 2 (closest to natural weighting).",
     "label": "Robust"
   },
+  "channelsOut": {
+    "help": "Channels Out help text TBD",
+    "label": "Channels Out"
+  },
+  "fitSpectralPol": {
+    "help": "Fit Spectral Pol help text TBD",
+    "label": "Fit Spectral Pol "
+  },
+  "stokes": {
+    "help": "Stokes help text TBD",
+    "label": "Stokes",
+    "I": "I"
+  },
   "saveBtn": {
     "label": "Save",
     "success": "Save was successful",
@@ -1295,15 +1308,6 @@
       "pageError": "The OBSERVATION page is not complete"
     },
     "6": {
-      "status": "Calibration",
-      "title": "Calibration",
-      "titleShort": "Calibration",
-      "desc": "This is a likely observing strategy with calibration (assuming observation near transit, etc.)",
-      "pageError": "The CALIBRATION STRATEGY page is not complete",
-      "help": "The listed strategy is representative and not guaranteed at the time of execution. User defined calibration strategies are not currently supported.",
-      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE CALIBRATION STRATEGY AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL"
-    },
-    "7": {
       "status": "Technical",
       "title": "Technical",
       "titleShort": "Technical",

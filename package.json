@@ -55,7 +55,7 @@
     "@react-pdf/renderer": "^3.4.2",
     "@ska-telescope/ska-gui-components": "^2.4.2",
     "@ska-telescope/ska-gui-local-storage": "^2.1.2",
-    "@ska-telescope/ska-login-page": "^1.1.0",
+    "@ska-telescope/ska-login-page": "^1.1.1",
     "axios": "^1.6.3",
     "bundle-loader": "^0.5.6",
     "d3": "^7.9.0",

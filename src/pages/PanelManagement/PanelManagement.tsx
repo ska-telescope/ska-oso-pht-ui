@@ -6,6 +6,7 @@ import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import {
   BANNER_PMT_SPACER_MIN,
   FOOTER_PMT_SPACER,
+  PAGE_PANEL_MANAGEMENT,
   PMT,
   REVIEWER_STATUS
 } from '../../utils/constants';
@@ -260,7 +261,11 @@ export default function PanelManagement() {
 
   return (
     <Box sx={{ height: '91vh', display: 'flex', flexDirection: 'column' }}>
-      <PageBannerPMT title={t('page.16.desc')} backBtn={backButton()} fwdBtn={fwdButton()} />
+      <PageBannerPMT
+        title={t('page.' + PAGE_PANEL_MANAGEMENT + '.desc')}
+        backBtn={backButton()}
+        fwdBtn={fwdButton()}
+      />
       <Box
         sx={{
           flexGrow: 1,
