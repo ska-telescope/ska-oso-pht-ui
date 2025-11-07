@@ -165,6 +165,7 @@
     "103": "PST",
     "label": "Observing Mode",
     "help": "Select a mode that best describes the science of your Science Verification Idea.",
+    "validationNavigationError": "Observing mode is required.  It is located on the General Information page.",
     "notSpecified": "Not specified",
     "error": "A value is required",
     "all": "All Observing modes"

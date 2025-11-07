@@ -7,7 +7,7 @@ interface TableContainerProps {
 
 export default function TableContainer({ children }: TableContainerProps) {
   return (
-    <Box sx={{ width: '100%', p: 3 }}>
+    <Box sx={{ width: '100%', overflowX: 'auto' }}>
       <MuiTableContainer
         component={Paper}
         elevation={1}
