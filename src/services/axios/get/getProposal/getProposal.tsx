@@ -276,7 +276,10 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
       ? getPixelSizeUnits(dp?.script_parameters.image_cellsize?.unit)
       : null,
     weighting: Number(dp.script_parameters.weight.weighting),
-    polarisations: dp.script_parameters.polarisations
+    polarisations: dp.script_parameters.polarisations,
+    robust: dp.script_parameters.weight.robust,
+    channelsOut: dp.script_parameters.channels_out,
+    fitSpectralPol: dp.script_parameters.fit_spectral_pol
   })) as DataProductSDP[];
 };
 
@@ -714,7 +717,9 @@ export function mapping(inRec: ProposalBackend): Proposal {
       : technicalPDF
       ? FileUploadStatus.OK
       : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
-    dataProductSDP: getDataProductSDP(inRec.observation_info?.data_product_sdps),
+    dataProductSDP: inRec?.observation_info?.data_product_sdps
+      ? getDataProductSDP(inRec.observation_info?.data_product_sdps as DataProductSDPsBackend[])
+      : [],
     dataProductSRC: getDataProductSRC(inRec.observation_info?.data_product_src_nets),
     pipeline: '' // TODO part of Data Products section not implemented yet
   };

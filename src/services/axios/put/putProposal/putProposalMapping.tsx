@@ -192,7 +192,7 @@ const getDataProductSDP = (dataProducts: DataProductSDP[]): DataProductSDPsBacke
         weighting: dp.weighting, //CHLOE UPDATED
         robust: dp.robust //CHLOE UPDATED
       },
-      polarisations: dp.polarisations, //CHLOE UPDATED
+      polarisations: dp.stokes, //CHLOE UPDATED
       channels_out: dp.channelsOut, //CHLOE UPDATED
       fit_spectral_pol: dp.fitSpectralPol //CHLOE UPDATED
     }

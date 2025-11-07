@@ -1,6 +1,6 @@
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { IMAGE_WEIGHTING, LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
+import { IMAGE_WEIGHTING, LAB_IS_BOLD, LAB_POSITION } from '@utils/constants.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface ImageWeightingFieldProps {
@@ -8,7 +8,7 @@ interface ImageWeightingFieldProps {
   labelWidth?: number;
   onFocus?: Function;
   setValue?: Function;
-  value: number;
+  value: string;
 }
 
 export default function ImageWeightingField({
@@ -23,7 +23,7 @@ export default function ImageWeightingField({
 
   const options = () =>
     IMAGE_WEIGHTING.map(el => {
-      return { label: t('imageWeighting.' + el.value), lookup: el.lookup, value: el.value };
+      return { label: t('imageWeighting.' + el.label), lookup: el.lookup, value: el.value };
     });
 
   return (
