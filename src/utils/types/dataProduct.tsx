@@ -7,7 +7,10 @@ export type DataProductSDPsBackend = {
   script_parameters: {
     image_size: ValueUnitPair;
     image_cellsize?: ValueUnitPair;
-    weight?: string;
+    weight: {
+      weighting?: string;
+      robust?: number;
+    };
     polarisations?: string;
     channels_out?: number;
     fit_spectral_pol?: number;

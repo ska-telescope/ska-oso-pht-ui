@@ -77,6 +77,191 @@ export default function TableReviewDecisionRow({
     }
   }, [item?.displayRank, tableLength]);
 
+  const tableActionsCell = () => (
+    <TableCell role="gridcell">
+      <Box sx={{ display: 'flex', gap: 0.5, msOverflowX: 'hidden' }}>
+        <SubmitIcon
+          disabled={
+            isReviewerAdminOnly() ||
+            !hasRecommendation(item?.decisions?.recommendation) ||
+            item?.decisions?.status === RECOMMENDATION_STATUS_DECIDED
+          }
+          onClick={() => {
+            const rec = item;
+            rec.decisions.status = RECOMMENDATION_STATUS_DECIDED;
+            updateDecisionItem(rec);
+          }}
+          aria-label={`Submit data for ${item.title}`}
+          data-testid={`submit-button-${item.id}`}
+          toolTip={t('decisionSubmit.help')}
+        />
+      </Box>
+    </TableCell>
+  );
+
+  const tableCollapseCell = () => (
+    <TableCell role="gridcell">
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, overflowX: 'hidden' }}>
+        <IconButton
+          ref={expandButtonRef}
+          aria-label={`${expanded ? 'Collapse' : 'Expand'} details for ${item.title}. ${
+            getReviews(item?.reviews, REVIEW_TYPE.SCIENCE)?.length
+          } additional details available.`}
+          aria-expanded={expanded}
+          aria-controls={`employee-details-${item.id}`}
+          size="small"
+          onClick={() => toggleRow(item.id)}
+          data-testid={`expand-button-${item.id}`}
+          sx={{
+            transition: 'transform 0.2s',
+            transform: expanded ? 'rotate(0deg)' : 'rotate(0deg)'
+          }}
+        >
+          {expanded ? <ExpandMore /> : <ChevronRight />}
+        </IconButton>
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          sx={{
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap',
+            maxWidth: '100%'
+          }}
+        >
+          {getReviewsReviewed(item?.reviews)?.length} /{' '}
+          {getReviews(item?.reviews, REVIEW_TYPE.SCIENCE)?.length}
+        </Typography>
+      </Box>
+    </TableCell>
+  );
+
+  const tableCategoryCell = () => (
+    <TableCell role="gridcell">
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          maxWidth: '100%'
+        }}
+      >
+        {t('scienceCategory.' + item.scienceCategory)}
+      </Typography>
+    </TableCell>
+  );
+
+  const tableTitleCell = () => (
+    <TableCell role="gridcell">
+      <Typography
+        variant="body2"
+        fontWeight="medium"
+        sx={{
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          maxWidth: '100%'
+        }}
+      >
+        {presentLatex(trimText(item.title, 50))}
+      </Typography>
+    </TableCell>
+  );
+  const tableReviewStatusCell = () => (
+    <TableCell role="gridcell">
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          maxWidth: '100%'
+        }}
+      >
+        {item?.decisions?.status ?? t('reviewStatus.to do')}
+      </Typography>
+    </TableCell>
+  );
+
+  const tableLastUpdatedCell = () => (
+    <TableCell role="gridcell">
+      <Typography
+        variant="body2"
+        sx={{
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          maxWidth: '100%'
+        }}
+      >
+        {presentDate(item.lastUpdated)} {presentTime(item.lastUpdated)}
+      </Typography>
+    </TableCell>
+  );
+
+  const tableFeasibilityCell = () => (
+    <TableCell role="gridcell">
+      <Typography
+        variant="body2"
+        color="text.secondary"
+        sx={{
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          maxWidth: '100%'
+        }}
+      >
+        {getFeasibility()}
+      </Typography>
+    </TableCell>
+  );
+
+  const tableScoreCell = () => (
+    <TableCell
+      role="gridcell"
+      sx={{
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        maxWidth: '100%'
+      }}
+    >
+      <Typography variant="body2">{calculateScore(item.reviews)}</Typography>
+    </TableCell>
+  );
+
+  const tableRankCell = () => (
+    <TableCell role="gridcell" data-testid={`rank-${item.id}`}>
+      {item.displayRank}
+    </TableCell>
+  );
+
+  const tableRecommendationCell = () => (
+    <TableCell role="gridcell">
+      <Box sx={{ maxWidth: 200, overflowX: 'hidden' }}>
+        <DropDown
+          disabled={
+            isReviewerAdminOnly() || item?.decisions?.status === RECOMMENDATION_STATUS_DECIDED
+          }
+          label={''}
+          options={getOptions()}
+          required
+          setValue={(val: string) => {
+            const rec = item;
+            rec.decisions.recommendation = val;
+            rec.decisions.status = RECOMMENDATION_STATUS_IN_PROGRESS;
+            updateDecisionItem(rec);
+          }}
+          testId={'recommendationDropdown'}
+          value={item?.decisions?.recommendation ?? ''}
+        />
+      </Box>
+    </TableCell>
+  );
+
   return (
     <>
       <TableRow
@@ -86,178 +271,23 @@ export default function TableReviewDecisionRow({
         role="row"
         aria-rowindex={index + 2}
       >
-        <TableCell role="gridcell">
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, overflowX: 'hidden' }}>
-            <IconButton
-              ref={expandButtonRef}
-              aria-label={`${expanded ? 'Collapse' : 'Expand'} details for ${item.title}. ${
-                getReviews(item?.reviews, REVIEW_TYPE.SCIENCE)?.length
-              } additional details available.`}
-              aria-expanded={expanded}
-              aria-controls={`employee-details-${item.id}`}
-              size="small"
-              onClick={() => toggleRow(item.id)}
-              data-testid={`expand-button-${item.id}`}
-              sx={{
-                transition: 'transform 0.2s',
-                transform: expanded ? 'rotate(0deg)' : 'rotate(0deg)'
-              }}
-            >
-              {expanded ? <ExpandMore /> : <ChevronRight />}
-            </IconButton>
-            <Typography
-              variant="caption"
-              color="text.secondary"
-              sx={{
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                maxWidth: '100%'
-              }}
-            >
-              {getReviewsReviewed(item?.reviews)?.length} /{' '}
-              {getReviews(item?.reviews, REVIEW_TYPE.SCIENCE)?.length}
-            </Typography>
-          </Box>
-        </TableCell>
-
-        <TableCell role="gridcell">
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              maxWidth: '100%'
-            }}
-          >
-            {t('scienceCategory.' + item.scienceCategory)}
-          </Typography>
-        </TableCell>
-
-        <TableCell role="gridcell">
-          <Typography
-            variant="body2"
-            fontWeight="medium"
-            sx={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              maxWidth: '100%'
-            }}
-          >
-            {presentLatex(trimText(item.title, 50))}
-          </Typography>
-        </TableCell>
-
-        <TableCell role="gridcell">
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              maxWidth: '100%'
-            }}
-          >
-            {item?.decisions?.status ?? t('reviewStatus.to do')}
-          </Typography>
-        </TableCell>
-
-        <TableCell role="gridcell">
-          <Typography
-            variant="body2"
-            sx={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              maxWidth: '100%'
-            }}
-          >
-            {presentDate(item.lastUpdated)} {presentTime(item.lastUpdated)}
-          </Typography>
-        </TableCell>
-
-        <TableCell role="gridcell">
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              maxWidth: '100%'
-            }}
-          >
-            {getFeasibility()}
-          </Typography>
-        </TableCell>
-
-        <TableCell
-          role="gridcell"
-          sx={{
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            maxWidth: '100%'
-          }}
-        >
-          <Typography variant="body2">{calculateScore(item.reviews)}</Typography>
-        </TableCell>
-
-        <TableCell role="gridcell" data-testid={`rank-${item.id}`}>
-          {item.displayRank}
-        </TableCell>
-
-        <TableCell role="gridcell">
-          <Box sx={{ maxWidth: 200, overflowX: 'hidden' }}>
-            <DropDown
-              disabled={
-                isReviewerAdminOnly() || item?.decisions?.status === RECOMMENDATION_STATUS_DECIDED
-              }
-              label={''}
-              options={getOptions()}
-              required
-              setValue={(val: string) => {
-                const rec = item;
-                rec.decisions.recommendation = val;
-                rec.decisions.status = RECOMMENDATION_STATUS_IN_PROGRESS;
-                updateDecisionItem(rec);
-              }}
-              testId={'recommendationDropdown'}
-              value={item?.decisions?.recommendation ?? ''}
-            />
-          </Box>
-        </TableCell>
-
-        <TableCell role="gridcell">
-          <Box sx={{ display: 'flex', gap: 0.5, msOverflowX: 'hidden' }}>
-            <SubmitIcon
-              disabled={
-                isReviewerAdminOnly() ||
-                !hasRecommendation(item?.decisions?.recommendation) ||
-                item?.decisions?.status === RECOMMENDATION_STATUS_DECIDED
-              }
-              onClick={() => {
-                const rec = item;
-                rec.decisions.status = RECOMMENDATION_STATUS_DECIDED;
-                updateDecisionItem(rec);
-              }}
-              aria-label={`Submit data for ${item.title}`}
-              data-testid={`submit-button-${item.id}`}
-              toolTip={t('decisionSubmit.help')}
-            />
-          </Box>
-        </TableCell>
+        {tableCollapseCell()}
+        {tableCategoryCell()}
+        {tableTitleCell()}
+        {tableReviewStatusCell()}
+        {tableLastUpdatedCell()}
+        {tableFeasibilityCell()}
+        {tableScoreCell()}
+        {tableRankCell()}
+        {tableRecommendationCell()}
+        {tableActionsCell()}
       </TableRow>
 
       <TableRow key={`${item.id}-expanded`}>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9} role="gridcell">
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <Box sx={{ overflowX: 'hidden' }}>
-              <TableTechnicalReviews data={item} />
+              {<TableTechnicalReviews data={item} />}
               <TableScienceReviews data={item} excludeFunction={excludeFunction} />
             </Box>
           </Collapse>

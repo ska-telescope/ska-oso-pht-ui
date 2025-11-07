@@ -1,13 +1,10 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Box, Card, CardContent, Grid, Typography } from '@mui/material';
 import { GridRowSelectionModel } from '@mui/x-data-grid';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, DataGrid, TickBox } from '@ska-telescope/ska-gui-components';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
-import EditIcon from '../../components/icon/editIcon/editIcon';
-import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import SensCalcDisplaySingle from '../../components/alerts/sensCalcDisplay/single/SensCalcDisplaySingle';
 import getSensCalc from '../../services/api/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import Observation from '../../utils/types/observation';
@@ -17,7 +14,6 @@ import {
   IW_NATURAL,
   OB_SUBARRAY_CUSTOM,
   PAGE_LINKING,
-  PATH,
   RA_TYPE_ICRS,
   STATUS_ERROR,
   STATUS_INITIAL,
@@ -46,7 +42,6 @@ export default function LinkingPage() {
   const PAGE = PAGE_LINKING;
 
   const { t } = useScopedTranslation();
-  const navigate = useNavigate();
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -187,16 +182,6 @@ export default function LinkingPage() {
 
   const setSensCalc = (results: any, target: Target, observationId: string) => {
     updateTargetObservationStorage(target, observationId, results);
-  };
-
-  const editIconClicked = (row: any) => {
-    setCurrObs(row.rec);
-    navigate(PATH[2], { replace: true, state: row.rec });
-  };
-
-  const deleteIconClicked = (row: any) => {
-    setCurrObs(row.rec);
-    setOpenDeleteDialog(true);
   };
 
   const closeDeleteDialog = () => {
@@ -381,25 +366,6 @@ export default function LinkingPage() {
                   toolTip={t('sensCalc.' + getLevel(obs))}
                 />
               }
-            </>
-          );
-        }
-      },
-      {
-        field: 'actions',
-        headerName: 'Actions',
-        type: 'actions',
-        sortable: false,
-        width: 100,
-        disableClickEventBubbling: true,
-        renderCell: (e: { row: Observation }) => {
-          return (
-            <>
-              <EditIcon onClick={() => editIconClicked(e.row)} toolTip={t('observations.edit')} />
-              <TrashIcon
-                onClick={() => deleteIconClicked(e.row)}
-                toolTip={t('observations.delete')}
-              />
             </>
           );
         }

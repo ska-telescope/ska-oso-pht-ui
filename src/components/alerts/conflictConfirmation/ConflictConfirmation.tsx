@@ -10,7 +10,7 @@ import GridMembers from '../../grid/members/GridMembers';
 import skaoIcon from '../../icon/skaoIcon/skaoIcon';
 import ConfirmButton from '@/components/button/Confirm/Confirm';
 import CancelButton from '@/components/button/Cancel/Cancel';
-import { CONFLICT_REASONS } from '@/utils/constants';
+import { CONFLICT_REASONS, PAGE_CYCLE, PAGE_TITLE_ADD } from '@/utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface ConflictConfirmationProps {
@@ -159,10 +159,12 @@ export default function ConflictConfirmation({
     <Grid>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid size={{ xs: 2 }}>{skaoIcon({ useSymbol: false })}</Grid>
-        <Grid size={{ xs: 6 }}>{title(t('page.9.title') + '  ', proposal?.title ?? '')}</Grid>
+        <Grid size={{ xs: 6 }}>
+          {title(t('page.' + PAGE_TITLE_ADD + '.title') + '  ', proposal?.title ?? '')}
+        </Grid>
         <Grid size={{ xs: 4 }}>
           <Grid container direction="column" justifyContent="space-between" alignItems="right">
-            <Grid>{details(t('page.12.short'), proposal?.cycle ?? '')}</Grid>
+            <Grid>{details(t('page.' + PAGE_CYCLE + '.short'), proposal?.cycle ?? '')}</Grid>
             <Grid>{details(t('proposalId.label'), proposal?.id ?? '')}</Grid>
           </Grid>
         </Grid>

@@ -267,14 +267,16 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
   return inValue?.map((dp, index) => ({
     id: index + 1,
     dataProductsSDPId: dp.data_product_id,
-    observatoryDataProduct: dp.options ? getSDPOptions(dp.options) : [],
+    observatoryDataProduct: dp.products ? getSDPOptions(dp.products) : [],
     observationId: dp.observation_set_refs,
-    imageSizeValue: dp.image_size.value,
-    imageSizeUnits: getImageSizeUnits(dp.image_size.unit),
-    pixelSizeValue: dp.image_cellsize?.value,
-    pixelSizeUnits: dp?.image_cellsize?.unit ? getPixelSizeUnits(dp?.image_cellsize?.unit) : null,
-    weighting: Number(dp.weighting),
-    polarisations: dp.polarisations
+    imageSizeValue: dp.script_parameters.image_size.value,
+    imageSizeUnits: getImageSizeUnits(dp.script_parameters.image_size.unit),
+    pixelSizeValue: dp.script_parameters.image_cellsize?.value,
+    pixelSizeUnits: dp?.script_parameters.image_cellsize?.unit
+      ? getPixelSizeUnits(dp?.script_parameters.image_cellsize?.unit)
+      : null,
+    weighting: Number(dp.script_parameters.weight.weighting),
+    polarisations: dp.script_parameters.polarisations
   })) as DataProductSDP[];
 };
 

@@ -10,7 +10,8 @@ import {
   NAV,
   PAGE_SRC_NET,
   PROPOSAL_STATUS,
-  PAGE_TECHNICAL
+  PAGE_TECHNICAL,
+  PAGE_TITLE_ADD
 } from '@utils/constants.ts';
 import PostProposal from '@services/axios/post/postProposal/postProposal';
 import NextPageButton from '../../button/NextPage/NextPage';
@@ -113,7 +114,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
 
   const prevLabel = () =>
     !loggedIn && usedPageNo === 4
-      ? `page.0.title`
+      ? `page.${PAGE_TITLE_ADD}.title`
       : `page.${usedPageNo - (isSV() && usedPageNo === PAGE_TECHNICAL + 1 ? 2 : 1)}.title`;
 
   const prevPageNav = () =>
