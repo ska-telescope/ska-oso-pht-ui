@@ -290,7 +290,11 @@ export const MockProposalFrontend: Proposal = {
       imageSizeUnits: 0,
       pixelSizeValue: 1.007,
       pixelSizeUnits: 2,
-      weighting: 1
+      weighting: 1,
+      polarisations: '123',
+      robust: 0,
+      channelsOut: 1,
+      fitSpectralPol: 1
     }
   ],
   dataProductSRC: [],
@@ -475,7 +479,11 @@ export const MockProposalFrontendZoom: Proposal = {
       imageSizeUnits: 0,
       pixelSizeValue: 3.7,
       pixelSizeUnits: 2,
-      weighting: 2
+      weighting: 2,
+      polarisations: '123',
+      robust: 0,
+      channelsOut: 1,
+      fitSpectralPol: 1
     }
   ],
   dataProductSRC: [],
