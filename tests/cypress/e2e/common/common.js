@@ -171,6 +171,7 @@ export const clickReviewOverviewButton = () => clickButton('overviewButtonTestId
 export const clickSave = () => clickButton('saveBtn');
 export const clickSendInviteButton = () => clickButton('sendInviteButton');
 export const clickToAddTarget = () => clickButton('addTargetButton');
+export const clickToAddDataProduct = () => clickButton('addDataProductButton');
 export const clickToAddPSTBeam = () => clickButton('addPulsarTimingBeamButton');
 export const clickMultipleBeamsRadioButton = () => clickButton('MultipleBeamsTestId');
 export const clickMultipleBeamsRadioButtonOnTargetEdit = () =>
@@ -470,7 +471,7 @@ export const addM2TargetUsingResolve = () => {
   clickResolveButton();
 };
 
-export const enterTargetField = (testId, value) => {
+export const updateDataProductField = (testId, value) => {
   cy.get('[data-testid="' + testId + '"]').should('exist');
   cy.get('[data-testid="' + testId + '"]').type(value);
 };
