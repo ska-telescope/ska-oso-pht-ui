@@ -235,9 +235,9 @@ export const IW_UNIFORM = 1;
 
 export const STOKES = [{ label: 'I', value: 'I' }];
 export const IMAGE_WEIGHTING = [
-  { label: 'natural', lookup: 'natural', value: 'natural' },
-  { label: 'uniform', lookup: 'uniform', value: 'uniform' },
-  { label: 'briggs', lookup: 'robust', value: 'briggs' }
+  { label: 'natural', lookup: 'natural', value: 0 },
+  { label: 'uniform', lookup: 'uniform', value: 1 },
+  { label: 'briggs', lookup: 'robust', value: 2 }
 ];
 
 export const LAB_IS_BOLD = true;

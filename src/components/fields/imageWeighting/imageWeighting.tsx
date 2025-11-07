@@ -8,7 +8,7 @@ interface ImageWeightingFieldProps {
   labelWidth?: number;
   onFocus?: Function;
   setValue?: Function;
-  value: string;
+  value: number;
 }
 
 export default function ImageWeightingField({
@@ -23,7 +23,7 @@ export default function ImageWeightingField({
 
   const options = () =>
     IMAGE_WEIGHTING.map(el => {
-      return { label: t('imageWeighting.' + el.label), lookup: el.lookup, value: el.value };
+      return { label: t('imageWeighting.' + el.value), lookup: el.lookup, value: el.value };
     });
 
   return (

@@ -355,9 +355,9 @@
   "imageWeighting": {
     "help": "Select natural, uniform or Briggs weighting. For Briggs weighting, the robustness parameter can be set to -2 (closest to uniform weighting), -1, 0, 1 or 2 (closest to natural weighting).",
     "label": "Image Weighting",
-    "natural": "Natural",
-    "uniform": "Uniform",
-    "briggs": "Briggs"
+    "0": "Natural",
+    "1": "Uniform",
+    "2": "Briggs"
   },
   "importFromFile": {
     "label": "Import from file"

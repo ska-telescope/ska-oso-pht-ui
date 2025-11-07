@@ -189,12 +189,15 @@ const getDataProductSDP = (dataProducts: DataProductSDP[]): DataProductSDPsBacke
       image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
       image_cellsize: { value: dp.pixelSizeValue, unit: IMAGE_SIZE_UNITS[dp.pixelSizeUnits] },
       weight: {
-        weighting: dp.weighting, //CHLOE UPDATED
-        robust: dp.robust //CHLOE UPDATED
+        weighting: IMAGE_WEIGHTING.find(item => item.value === dp.weighting)?.label as string,
+        robust:
+          dp.weighting === IW_BRIGGS
+            ? (ROBUST.find(item => item.value === dp.robust)?.label as string)
+            : '0'
       },
-      polarisations: dp.stokes, //CHLOE UPDATED
-      channels_out: dp.channelsOut, //CHLOE UPDATED
-      fit_spectral_pol: dp.fitSpectralPol //CHLOE UPDATED
+      polarisations: dp.stokes,
+      channels_out: dp.channelsOut,
+      fit_spectral_pol: dp.fitSpectralPol
     }
   }));
 };

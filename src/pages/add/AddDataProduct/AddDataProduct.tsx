@@ -24,6 +24,7 @@ import {
   FOOTER_HEIGHT_PHT,
   FREQUENCY_GHZ,
   HELP_FONT,
+  IW_BRIGGS,
   LAB_IS_BOLD,
   LAB_POSITION,
   NAV,
@@ -66,7 +67,7 @@ export default function AddDataProduct() {
   const [imageSizeUnits, setImageSizeUnits] = React.useState(0);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
   const [pixelSizeUnits, setPixelSizeUnits] = React.useState(0);
-  const [weighting, setWeighting] = React.useState('natural');
+  const [weighting, setWeighting] = React.useState(0);
   const [robust, setRobust] = React.useState(3);
   const [channelsOut, setChannelsOut] = React.useState(1);
   const [fitSpectralPol, setFitSpectralPol] = React.useState(1);
@@ -488,7 +489,7 @@ export default function AddDataProduct() {
                   {fieldWrapper(imageSizeField())}
                   {fieldWrapper(pixelSizeField())}
                   {fieldWrapper(imageWeightingField())}
-                  {weighting === 'briggs' && fieldWrapper(robustField())}
+                  {weighting === IW_BRIGGS && fieldWrapper(robustField())}
                   {fieldWrapper(channelsOutField())}
                   {fieldWrapper(fitSpectralPolField())}
                   {fieldWrapper(stokesField())}
