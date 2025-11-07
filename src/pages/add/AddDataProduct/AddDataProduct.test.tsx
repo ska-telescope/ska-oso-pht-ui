@@ -1,17 +1,14 @@
-import { describe, test } from 'vitest';
-import { render } from '@testing-library/react';
+import { describe, test, vi, expect } from 'vitest';
+import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { renderHook } from '@testing-library/react';
-import { vi } from 'vitest';
 import React, { useState } from 'react';
 
-import { screen } from '@testing-library/react';
-import { it } from 'vitest';
 import RobustField from '@components/fields/robust/Robust.tsx';
+import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import AddDataProduct from './AddDataProduct';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
-
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
@@ -99,7 +96,7 @@ describe('useEffect for pixel size calculation', () => {
     expect(mockSetPixelSizeUnits).toHaveBeenCalledWith(2);
   });
 
-  it('returns 0 when no observations are provided', () => {
+  test('returns 0 when no observations are provided', () => {
     const mockSetPixelSizeValue = vi.fn();
     const mockGetProposal = vi.fn(() => ({
       targetObservation: []
@@ -138,7 +135,7 @@ describe('useEffect for pixel size calculation', () => {
 });
 
 describe('robustField', () => {
-  it('renders the robust field with the correct label', () => {
+  test('renders the robust field with the correct label', () => {
     const mockSetRobust = vi.fn();
 
     render(
@@ -152,5 +149,46 @@ describe('robustField', () => {
     );
 
     expect(screen.getByText('robust.label')).toBeInTheDocument();
+  });
+});
+
+describe('channelsOut Field', () => {
+  const mockSetChannelsOut = vi.fn();
+  const mockHelpComponent = vi.fn();
+  const t = vi.fn(key => {
+    if (key === 'channelsOut.error') return 'Invalid value';
+    return key;
+  });
+
+  const renderChannelsOutField = (channelsOut: number) => {
+    render(
+      <NumberEntry
+        label={t('channelsOut.label')}
+        labelBold={true}
+        labelPosition="end"
+        labelWidth={5}
+        testId="channelsOut"
+        value={channelsOut}
+        setValue={mockSetChannelsOut}
+        onFocus={() => mockHelpComponent(t('channelsOut.help'))}
+        required
+        errorText={channelsOut < 0 || channelsOut > 40 ? t('channelsOut.error') : ''}
+      />
+    );
+  };
+
+  test('displays error when channelsOut is less than 0', () => {
+    renderChannelsOutField(-1);
+    expect(screen.getByText('Invalid value')).toBeInTheDocument();
+  });
+
+  test('displays error when channelsOut is greater than 40', () => {
+    renderChannelsOutField(41);
+    expect(screen.getByText('Invalid value')).toBeInTheDocument();
+  });
+
+  test('does not display error when channelsOut is within valid range', () => {
+    renderChannelsOutField(20);
+    expect(screen.queryByText('Invalid value')).not.toBeInTheDocument();
   });
 });
