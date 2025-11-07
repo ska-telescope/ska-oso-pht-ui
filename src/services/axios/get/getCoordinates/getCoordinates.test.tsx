@@ -33,7 +33,7 @@ describe('GetCoordinates Service', () => {
   test('returns error for unknown target name in local mode', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
     const result = await GetCoordinates('UnknownTarget', 0);
-    expect(result).toEqual({ error: 'resolve.error.name' });
+    expect(result).toEqual({ error: 'name' });
   });
 
   test('defaults to unit 0 if skyUnits is out of bounds in local mode', async () => {
