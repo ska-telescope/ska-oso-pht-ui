@@ -31,7 +31,10 @@ export type DataProductSDP = {
   pixelSizeValue: number;
   pixelSizeUnits: number;
   weighting: number;
+  robust: number;
   polarisations: string;
+  channelsOut: number;
+  fitSpectralPol: number;
 };
 
 export type DataProductSRC = {
