@@ -90,22 +90,24 @@ async function GetObservatoryData(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
   cycleNumber: number
 ): Promise<string | ObservatoryData> {
-  if (USE_LOCAL_DATA) {
-    return GetMockData();
-  }
+  // if (USE_LOCAL_DATA) {
+  return GetMockData(); // force mock data until OSD endpoint is fixed
+  // }
 
-  try {
-    const URL_PATH = `/osd/`;
-    const result = await authAxiosClient.get(
-      `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PROPOSAL_PATH}${URL_PATH}${cycleNumber}`
-    );
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
-  } catch (e) {
-    if (e instanceof Error) {
-      return e.message;
-    }
-    return 'error.API_UNKNOWN_ERROR';
-  }
+  // TODO re-implement when OSD endpoint is fixed
+
+  // try {
+  //   const URL_PATH = `/osd/`;
+  //   const result = await authAxiosClient.get(
+  //     `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PROPOSAL_PATH}${URL_PATH}${cycleNumber}`
+  //   );
+  //   return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
+  // } catch (e) {
+  //   if (e instanceof Error) {
+  //     return e.message;
+  //   }
+  //   return 'error.API_UNKNOWN_ERROR';
+  // }
 }
 
 export default GetObservatoryData;
