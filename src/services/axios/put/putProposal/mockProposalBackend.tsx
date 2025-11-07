@@ -188,7 +188,11 @@ export const MockProposalBackend: ProposalBackend = {
           value: 1.007,
           unit: 'arcsec2'
         },
-        weighting: '1'
+        weighting: '1',
+        polarisations: '123',
+        robust: '0',
+        channelsOut: 1,
+        fitSpectralPol: 1
       }
     ],
     calibration_strategy: [
@@ -362,7 +366,11 @@ export const MockProposalBackendZoom: ProposalBackend = {
           value: 3.7,
           unit: 'arcsec2'
         },
-        weighting: '2'
+        weighting: '2',
+        polarisations: '123',
+        robust: '0',
+        channelsOut: 1,
+        fitSpectralPol: 1
       }
     ],
     calibration_strategy: [

@@ -178,10 +178,10 @@ const SDPOptions = (inArray: Boolean[]) => {
   return inArray.map(element => (element ? 'Y' : 'N'));
 };
 
-const getDataProductSDP = (dataproducts: DataProductSDP[]): DataProductSDPsBackend[] => {
+const getDataProductSDP = (dataProducts: DataProductSDP[]): DataProductSDPsBackend[] => {
   const IMAGE_SIZE_UNITS = ['deg2', 'arcmin2', 'arcsec2'];
 
-  return dataproducts?.map(dp => ({
+  return dataProducts?.map(dp => ({
     data_product_id: dp.dataProductsSDPId as string,
     products: SDPOptions(dp.observatoryDataProduct),
     observation_set_refs: dp.observationId,
@@ -189,18 +189,21 @@ const getDataProductSDP = (dataproducts: DataProductSDP[]): DataProductSDPsBacke
       image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
       image_cellsize: { value: dp.pixelSizeValue, unit: IMAGE_SIZE_UNITS[dp.pixelSizeUnits] },
       weight: {
-        weighting: 'natural', // TODO - CHLOE
-        robust: '-2' // TODO - CHLOE
+        weighting: IMAGE_WEIGHTING.find(item => item.value === dp.weighting)?.label as string,
+        robust:
+          dp.weighting === IW_BRIGGS
+            ? (ROBUST.find(item => item.value === dp.robust)?.label as string)
+            : '0'
       },
-      polarisations: 'chloe', // TODO - CHLOE
-      channels_out: 0,
-      fit_spectral_pol: 0
+      polarisations: dp.stokes,
+      channels_out: dp.channelsOut,
+      fit_spectral_pol: dp.fitSpectralPol
     }
   }));
 };
 
-const getDataProductSRC = (dataproducts: DataProductSRC[]): DataProductSRCNetBackend[] => {
-  return dataproducts?.map(dp => ({ data_products_src_id: dp?.id }));
+const getDataProductSRC = (dataProducts: DataProductSRC[]): DataProductSRCNetBackend[] => {
+  return dataProducts?.map(dp => ({ data_products_src_id: dp?.id }));
 };
 
 const getGroupObservation = (obsId: string, observationGroups: GroupObservation[] | undefined) => {
