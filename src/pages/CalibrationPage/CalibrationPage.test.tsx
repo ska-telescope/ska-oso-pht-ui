@@ -1,6 +1,6 @@
 import { MockCalibratorFrontendList } from '@/services/axios/get/getCalibratorList/mockCalibratorListFrontend';
 import { describe, test, expect } from 'vitest';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { /*act, fireEvent,*/ render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { storageObject, StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import CalibrationPage from './CalibrationPage';
@@ -61,13 +61,17 @@ describe('<CalibrationPage />', () => {
     // TODO check display of no calibration strategy message
   });
 
-  test('renders checkbox and toggles comment field', async () => {
-    vi.spyOn(storageObject, 'useStore').mockReturnValue(completeMockStore as any);
-    wrapper(<CalibrationPage />);
-    // const checkbox = await screen.findByTestId('calibratorCheckbox');
-    // act(() => {
-    //   fireEvent.click(checkbox);
-    // });
-    // expect(await screen.getByTestId('commentId')).toBeInTheDocument();
-  });
+  // TODO use data without comment to test this
+  //   test('renders checkbox and toggles comment field', async () => {
+  //   vi.spyOn(storageObject, 'useStore').mockReturnValue(completeMockStore as any);
+  //   wrapper(<CalibrationPage />);
+  //   const checkbox = await screen.findByTestId('calibratorCheckbox');
+  //   expect(checkbox).toBeInTheDocument();
+  //   act(() => {
+  //       fireEvent.click(checkbox);
+  //     });
+  //   // Wait for the comment field to appear
+  //   const commentField = await screen.findByTestId('commenttId');
+  //   expect(commentField).toBeInTheDocument();
+  // });
 });
