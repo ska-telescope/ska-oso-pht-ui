@@ -153,8 +153,6 @@ describe('robustField', () => {
 });
 
 describe('channelsOut Field', () => {
-  const mockSetChannelsOut = vi.fn();
-  const mockHelpComponent = vi.fn();
   const t = vi.fn(key => {
     if (key === 'channelsOut.error') return 'Invalid value';
     return key;
@@ -164,14 +162,8 @@ describe('channelsOut Field', () => {
     render(
       <NumberEntry
         label={t('channelsOut.label')}
-        labelBold={true}
-        labelPosition="end"
-        labelWidth={5}
         testId="channelsOut"
         value={channelsOut}
-        setValue={mockSetChannelsOut}
-        onFocus={() => mockHelpComponent(t('channelsOut.help'))}
-        required
         errorText={channelsOut < 0 || channelsOut > 40 ? t('channelsOut.error') : ''}
       />
     );
