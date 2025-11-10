@@ -476,6 +476,11 @@ export const updateDataProductField = (testId, value) => {
   cy.get('[data-testid="' + testId + '"]').type(value);
 };
 
+export const enterTargetField = (testId, value) => {
+  cy.get('[data-testid="' + testId + '"]').should('exist');
+  cy.get('[data-testid="' + testId + '"]').type(value);
+};
+
 export const updateTargetField = (testId, value) => {
   cy.get('[data-testid="' + testId + '"]').should('exist');
   cy.get('[data-testid="' + testId + '"]')
