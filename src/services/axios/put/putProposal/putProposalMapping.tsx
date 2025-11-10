@@ -194,7 +194,7 @@ const getDataProductSDP = (dataProducts: DataProductSDP[]): DataProductSDPsBacke
           robust: ROBUST.find(item => item.value === dp.robust)?.label as string
         })
       },
-      polarisations: dp.stokes,
+      polarisations: dp.polarisations,
       channels_out: dp.channelsOut,
       fit_spectral_pol: dp.fitSpectralPol
     }
