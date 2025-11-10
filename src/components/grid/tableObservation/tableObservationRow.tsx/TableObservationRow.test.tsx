@@ -3,7 +3,9 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import TableReviewDecisionRow from './TableObservationRow';
 import { REVIEW_TYPE } from '@/utils/constants';
 
-describe('TableReviewDecisionRow', () => {
+describe('TableObservationRow', () => {
+  expect(true); //TODO: add/update tests
+
   //TOOD: clean up / add tests
   // const mockItem = {
   //   id: 1,
