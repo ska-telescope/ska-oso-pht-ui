@@ -243,8 +243,8 @@ export default function AddDataProduct() {
       />
     );
 
-  const channelsOutField = () =>
-    fieldWrapper(
+  const channelsOutField = () => {
+    return fieldWrapper(
       <Box pt={1}>
         <NumberEntry
           label={t('channelsOut.label')}
@@ -256,9 +256,11 @@ export default function AddDataProduct() {
           setValue={setChannelsOut}
           onFocus={() => helpComponent(t('channelsOut.help'))}
           required
+          errorText={channelsOut < 0 || channelsOut > 40 ? t('channelsOut.error') : ''}
         />
       </Box>
     );
+  };
 
   const fitSpectralPolField = () =>
     fieldWrapper(

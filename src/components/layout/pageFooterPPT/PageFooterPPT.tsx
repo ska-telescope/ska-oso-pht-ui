@@ -8,7 +8,6 @@ import {
   cypressToken,
   LAST_PAGE,
   NAV,
-  PAGE_SRC_NET,
   PROPOSAL_STATUS,
   PAGE_TECHNICAL,
   PAGE_TITLE_ADD,
@@ -102,7 +101,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const showNextNav = () => {
     if ((loggedIn && usedPageNo < LAST_PAGE - 1) || (cypressToken && usedPageNo < LAST_PAGE - 1)) {
       return true;
-    } else return !loggedIn && usedPageNo !== PAGE_SRC_NET;
+    } else return !loggedIn && usedPageNo === PAGE_TARGET;
   };
 
   const nextLabel = () => {
