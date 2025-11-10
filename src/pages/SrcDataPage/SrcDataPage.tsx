@@ -10,6 +10,12 @@ import { PAGE_SRC_NET } from '@/utils/constants';
 
 const PAGE = PAGE_SRC_NET;
 
+/****************************************************************************************************************************************
+ *
+ * SRCNet INACTIVE - This page is currently not active.  All locations requiring updating has been marled with SRCNet INACTIVE
+ *
+ ****************************************************************************************************************************************/
+
 export default function SrcDataPage() {
   const { application, updateAppContent1 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);

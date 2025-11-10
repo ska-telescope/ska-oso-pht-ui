@@ -28,8 +28,8 @@ import {
   LAB_IS_BOLD,
   LAB_POSITION,
   NAV,
-  PAGE_SDP,
-  PAGE_SDP_ADD,
+  PAGE_DATA_PRODUCTS,
+  PAGE_DATA_PRODUCTS_ADD,
   WRAPPER_HEIGHT
 } from '@/utils/constants';
 import HelpPanel from '@/components/info/helpPanel/HelpPanel';
@@ -44,8 +44,8 @@ import Observation from '@/utils/types/observation';
 import GridObservation from '@/components/grid/observation/GridObservation';
 
 const GAP = 5;
-const BACK_PAGE = PAGE_SDP;
-const PAGE = PAGE_SDP_ADD;
+const BACK_PAGE = PAGE_DATA_PRODUCTS;
+const PAGE = PAGE_DATA_PRODUCTS_ADD;
 const PAGE_PREFIX = 'SDP';
 const FIELD_OBS = 'observatoryDataProduct.options';
 const LABEL_WIDTH = 5;

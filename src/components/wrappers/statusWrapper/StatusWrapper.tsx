@@ -6,6 +6,8 @@ import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import Proposal from '@utils/types/proposal.tsx';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { validateProposalNavigation } from '@/utils/validation/validation';
+import { useNotify } from '@/utils/notify/useNotify';
 
 interface StatusWrapperProps {
   level?: number;
@@ -18,10 +20,18 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
   const SIZE = 30;
   const loggedIn = isLoggedIn();
   const { application } = storageObject.useStore();
+  const { notifyClear, notifyError } = useNotify();
   const getProposal = () => application.content2 as Proposal;
 
   const ClickFunction = () => {
-    navigate(NAV[page]);
+    if (!validateProposalNavigation(getProposal(), page)) {
+      notifyError(t('scienceCategory.validationNavigationError'));
+      setTimeout(() => {
+        notifyClear();
+      }, 4000);
+    } else {
+      navigate(NAV[page]);
+    }
   };
 
   const disableIcons = () => {
