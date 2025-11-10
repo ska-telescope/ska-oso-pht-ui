@@ -190,10 +190,9 @@ const getDataProductSDP = (dataProducts: DataProductSDP[]): DataProductSDPsBacke
       image_cellsize: { value: dp.pixelSizeValue, unit: IMAGE_SIZE_UNITS[dp.pixelSizeUnits] },
       weight: {
         weighting: IMAGE_WEIGHTING.find(item => item.value === dp.weighting)?.label as string,
-        robust:
-          dp.weighting === IW_BRIGGS
-            ? (ROBUST.find(item => item.value === dp.robust)?.label as string)
-            : '0'
+        ...(dp.weighting === IW_BRIGGS && {
+          robust: ROBUST.find(item => item.value === dp.robust)?.label as string
+        })
       },
       polarisations: dp.stokes,
       channels_out: dp.channelsOut,
