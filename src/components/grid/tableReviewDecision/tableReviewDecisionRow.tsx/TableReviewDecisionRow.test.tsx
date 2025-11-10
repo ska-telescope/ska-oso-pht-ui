@@ -1,7 +1,17 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TableReviewDecisionRow from './TableReviewDecisionRow';
 import { REVIEW_TYPE } from '@/utils/constants';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
 
 describe('TableReviewDecisionRow', () => {
   const mockItem = {
@@ -45,24 +55,25 @@ describe('TableReviewDecisionRow', () => {
     getReviewsReviewed: (reviews: any[]) => reviews.filter(r => r.status === 'Reviewed'),
     calculateScore: (_details: any[]) => 3.5,
     trimText: (text: string, maxLength: number) => text.slice(0, maxLength),
+    tableLength: 1,
     t: (key: string) => key // simple mock translation
   };
 
   it('renders review title and category', () => {
-    render(<TableReviewDecisionRow {...defaultProps} />);
+    wrapper(<TableReviewDecisionRow {...defaultProps} />);
 
     expect(screen.getByText(/Sample Review Title/i)).toBeInTheDocument();
     expect(screen.getByText(/scienceCategory.biology/i)).toBeInTheDocument();
   });
 
   it('renders review count correctly', () => {
-    render(<TableReviewDecisionRow {...defaultProps} />);
+    wrapper(<TableReviewDecisionRow {...defaultProps} />);
 
     expect(screen.getByText('2 / 2')).toBeInTheDocument();
   });
 
   it('calls toggleRow when expand button is clicked', () => {
-    render(<TableReviewDecisionRow {...defaultProps} />);
+    wrapper(<TableReviewDecisionRow {...defaultProps} />);
 
     const button = screen.getByTestId('expand-button-1');
     fireEvent.click(button);

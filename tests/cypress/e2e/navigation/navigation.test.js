@@ -35,10 +35,10 @@ describe('Verify navigation', () => {
     checkStatusIndicatorDisabled('statusId3', false);
     checkStatusIndicatorDisabled('statusId4', false);
     checkStatusIndicatorDisabled('statusId5', false);
-    checkStatusIndicatorDisabled('statusId6', false);
-    // statusId7 unavailable for science verification
+    // statusId6 unavailable for science verification
+    checkStatusIndicatorDisabled('statusId7', false);
     checkStatusIndicatorDisabled('statusId8', false);
     checkStatusIndicatorDisabled('statusId9', false);
-    checkStatusIndicatorDisabled('statusId10', false);
+    // See SRCNet INACTIVE - checkStatusIndicatorDisabled('statusId10', false);
   });
 });

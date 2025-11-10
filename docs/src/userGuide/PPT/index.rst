@@ -16,6 +16,8 @@ Proposal Preparation Tool
    ObservationPage
    TechnicalPage
    SDPDataPage
+   LinkingPage
+   CalibrationPage
    SrcNetPage
    SubmitConfirmation
    UserQuestions

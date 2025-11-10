@@ -31,7 +31,8 @@ import {
   ROBUST,
   IW_BRIGGS,
   RA_TYPE_GALACTIC,
-  RA_TYPE_ICRS
+  RA_TYPE_ICRS,
+  SCIENCE_VERIFICATION
 } from '@utils/constants.ts';
 import {
   DataProductSDP,
@@ -159,12 +160,13 @@ const getCalibrationStrategy = (
   return calibrationStrategies?.map(strategy => ({
     observatory_defined: strategy.observatoryDefined,
     calibration_id: strategy.id,
-    observation_id_ref: strategy.observationIdRef,
+    observation_set_ref: strategy.observationIdRef,
     calibrators: strategy.calibrators
       ? strategy?.calibrators?.map(calibrator => ({
-          kind: calibrator.kind,
+          calibration_intent: calibrator.calibrationIntent,
           name: calibrator.name,
-          model_config: calibrator.modelConfig,
+          duration_min: calibrator.durationMin,
+          choice: calibrator.choice,
           notes: calibrator.notes
         }))
       : null,
@@ -176,31 +178,31 @@ const SDPOptions = (inArray: Boolean[]) => {
   return inArray.map(element => (element ? 'Y' : 'N'));
 };
 
-const getDataProductSDP = (dataproducts: DataProductSDP[]): DataProductSDPsBackend[] => {
-  const IMAGE_SIZE_UNITS = ['deg2', 'arcmin', 'arcsec'];
+const getDataProductSDP = (dataProducts: DataProductSDP[]): DataProductSDPsBackend[] => {
+  const IMAGE_SIZE_UNITS = ['deg2', 'arcmin2', 'arcsec2'];
 
-  const getPixelSizeUnits = (inValue: string) => (inValue === 'arcsecs' ? 'arcsec' : inValue);
-
-  return dataproducts?.map(dp => ({
+  return dataProducts?.map(dp => ({
     data_product_id: dp.dataProductsSDPId as string,
     products: SDPOptions(dp.observatoryDataProduct),
     observation_set_refs: dp.observationId,
     script_parameters: {
       image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
-      image_cellsize: { value: dp.pixelSizeValue, unit: getPixelSizeUnits(dp.pixelSizeUnits) },
+      image_cellsize: { value: dp.pixelSizeValue, unit: IMAGE_SIZE_UNITS[dp.pixelSizeUnits] },
       weight: {
-        weighting: 'natural', // TODO - CHLOE
-        robust: '-2' // TODO - CHLOE
+        weighting: IMAGE_WEIGHTING.find(item => item.value === dp.weighting)?.label as string,
+        ...(dp.weighting === IW_BRIGGS && {
+          robust: ROBUST.find(item => item.value === dp.robust)?.label as string
+        })
       },
-      polarisations: 'chloe', // TODO - CHLOE
-      channels_out: 0,
-      fit_spectral_pol: 0
+      polarisations: dp.polarisations,
+      channels_out: dp.channelsOut,
+      fit_spectral_pol: dp.fitSpectralPol
     }
   }));
 };
 
-const getDataProductSRC = (dataproducts: DataProductSRC[]): DataProductSRCNetBackend[] => {
-  return dataproducts?.map(dp => ({ data_products_src_id: dp?.id }));
+const getDataProductSRC = (dataProducts: DataProductSRC[]): DataProductSRCNetBackend[] => {
+  return dataProducts?.map(dp => ({ data_products_src_id: dp?.id }));
 };
 
 const getGroupObservation = (obsId: string, observationGroups: GroupObservation[] | undefined) => {
@@ -512,11 +514,12 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
       title: proposal.title,
       proposal_type: {
         main_type: isSV
-          ? 'science_verification'
+          ? SCIENCE_VERIFICATION
           : (PROJECTS.find(item => item.id === proposal.proposalType)?.mapping as string),
-        attributes: proposal.proposalSubType
-          ? getSubType(proposal.proposalType, proposal.proposalSubType)
-          : []
+        attributes:
+          !isSV && proposal.proposalSubType
+            ? getSubType(proposal.proposalType, proposal.proposalSubType)
+            : []
       },
       abstract: proposal.abstract as string,
       science_category: isSV

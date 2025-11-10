@@ -2,6 +2,7 @@ import { helpers } from '@utils/helpers.ts';
 import {
   OSO_SERVICES_PROPOSAL_PATH,
   PROJECTS,
+  SCIENCE_VERIFICATION,
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
 } from '@utils/constants.ts';
@@ -37,7 +38,7 @@ export function mappingPostProposal(
       title: proposal.title,
       proposal_type: {
         main_type: isSV
-          ? 'science_verification'
+          ? SCIENCE_VERIFICATION
           : (PROJECTS.find(item => item.id === proposal.proposalType)?.mapping as string),
         attributes: proposal.proposalSubType
           ? getSubType(proposal.proposalType, proposal.proposalSubType)

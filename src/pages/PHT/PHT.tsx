@@ -25,7 +25,7 @@ import packageJson from '../../../package.json';
 // Pages
 import AddDataProduct from '../add/AddDataProduct/AddDataProduct';
 import AddProposal from '../add/AddProposal/AddProposal';
-import SdpDataPage from '../SdpDataPage/SdpDataPage';
+import DataProductPage from '../DataProduct/DataProductPage';
 import SrcDataPage from '../SrcDataPage/SrcDataPage';
 import GeneralPage from '../GeneralPage/GeneralPage';
 import ObservationEntry from '../entry/ObservationEntry/ObservationEntry';
@@ -60,11 +60,11 @@ const ROUTES = [
   { path: NAV[3], element: <SciencePage /> },
   { path: NAV[4], element: <TargetPage /> },
   { path: NAV[5], element: <ObservationPage /> },
-  { path: NAV[6], element: <CalibrationPage /> },
-  { path: NAV[7], element: <TechnicalPage /> },
-  { path: NAV[8], element: <SdpDataPage /> },
-  { path: NAV[9], element: <SrcDataPage /> },
-  { path: NAV[10], element: <LinkingPage /> },
+  { path: NAV[6], element: <TechnicalPage /> },
+  { path: NAV[7], element: <DataProductPage /> },
+  { path: NAV[8], element: <LinkingPage /> },
+  { path: NAV[9], element: <CalibrationPage /> },
+  { path: NAV[10], element: <SrcDataPage /> },
   { path: PATH[1], element: <AddProposal /> },
   { path: PATH[2], element: <ObservationEntry /> },
   { path: PATH[3], element: <AddDataProduct /> },

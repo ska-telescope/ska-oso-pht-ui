@@ -289,8 +289,11 @@ export const MockProposalFrontend: Proposal = {
       imageSizeValue: 15,
       imageSizeUnits: 0,
       pixelSizeValue: 1.007,
-      pixelSizeUnits: 'arcsecs',
-      weighting: 1
+      pixelSizeUnits: 2,
+      weighting: 1,
+      polarisations: 'I',
+      channelsOut: 1,
+      fitSpectralPol: 1
     }
   ],
   dataProductSRC: [],
@@ -300,7 +303,8 @@ export const MockProposalFrontend: Proposal = {
       id: 'cal-001',
       observationIdRef: 'obs-obR1Ej',
       calibrators: null,
-      notes: 'This is an observatory defined calibration strategy.'
+      notes: 'This is an observatory defined calibration strategy.',
+      isAddNote: true
     }
   ],
   pipeline: ''
@@ -473,8 +477,12 @@ export const MockProposalFrontendZoom: Proposal = {
       imageSizeValue: 100,
       imageSizeUnits: 0,
       pixelSizeValue: 3.7,
-      pixelSizeUnits: 'arcsecs',
-      weighting: 2
+      pixelSizeUnits: 2,
+      weighting: 2,
+      polarisations: 'I',
+      robust: 4,
+      channelsOut: 1,
+      fitSpectralPol: 1
     }
   ],
   dataProductSRC: [],
@@ -484,7 +492,8 @@ export const MockProposalFrontendZoom: Proposal = {
       id: 'cal-002',
       observationIdRef: 'obs-arMIoY',
       calibrators: null,
-      notes: 'This is an other observatory defined calibration strategy.'
+      notes: 'This is an other observatory defined calibration strategy.',
+      isAddNote: true
     }
   ],
   pipeline: ''

@@ -8,9 +8,12 @@ import {
   cypressToken,
   LAST_PAGE,
   NAV,
-  PAGE_SRC_NET,
   PROPOSAL_STATUS,
-  PAGE_TECHNICAL
+  PAGE_TECHNICAL,
+  PAGE_TITLE_ADD,
+  PAGE_TARGET,
+  PAGE_OBSERVATION,
+  PAGE_LINKING
 } from '@utils/constants.ts';
 import PostProposal from '@services/axios/post/postProposal/postProposal';
 import NextPageButton from '../../button/NextPage/NextPage';
@@ -25,6 +28,7 @@ import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUt
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
+import { validateProposalNavigation } from '@/utils/validation/validation';
 
 interface PageFooterPPTProps {
   pageNo: number;
@@ -97,7 +101,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const showNextNav = () => {
     if ((loggedIn && usedPageNo < LAST_PAGE - 1) || (cypressToken && usedPageNo < LAST_PAGE - 1)) {
       return true;
-    } else return !loggedIn && usedPageNo !== PAGE_SRC_NET;
+    } else return !loggedIn && usedPageNo === PAGE_TARGET;
   };
 
   const nextLabel = () => {
@@ -107,30 +111,44 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     if (usedPageNo === -1) {
       return `createBtn.label`;
     }
-    const thePage = usedPageNo + (isSV() && usedPageNo === PAGE_TECHNICAL - 1 ? 2 : 1);
+    let thePage = usedPageNo + (isSV() && usedPageNo === PAGE_TECHNICAL - 1 ? 2 : 1);
+    if (!validateProposalNavigation(getProposal(), thePage)) {
+      thePage = PAGE_LINKING;
+    }
     return `page.${thePage}.title`;
   };
 
-  const prevLabel = () =>
-    !loggedIn && usedPageNo === 4
-      ? `page.0.title`
-      : `page.${usedPageNo - (isSV() && usedPageNo === PAGE_TECHNICAL + 1 ? 2 : 1)}.title`;
+  const prevLabel = () => {
+    if (!loggedIn && usedPageNo === 4) {
+      return `page.${PAGE_TITLE_ADD}.title`;
+    }
+    if (!validateProposalNavigation(getProposal(), usedPageNo - 1)) {
+      return `page.${PAGE_TARGET}.title`;
+    }
+    return `page.${usedPageNo - (isSV() && usedPageNo === PAGE_TECHNICAL + 1 ? 2 : 1)}.title`;
+  };
 
-  const prevPageNav = () =>
-    !loggedIn && usedPageNo === 4
-      ? navigate(NAV[0])
-      : usedPageNo > 0
-      ? navigate(NAV[usedPageNo - (isSV() && usedPageNo === PAGE_TECHNICAL + 1 ? 2 : 1)])
-      : '';
+  const prevPageNav = () => {
+    if (!loggedIn && usedPageNo === PAGE_TARGET) {
+      navigate(NAV[0]);
+    } else if (!validateProposalNavigation(getProposal(), usedPageNo - 1)) {
+      navigate(NAV[PAGE_TARGET]);
+    } else if (usedPageNo > 0) {
+      navigate(NAV[usedPageNo - (isSV() && usedPageNo === PAGE_TECHNICAL + 1 ? 2 : 1)]);
+    }
+  };
 
-  const nextPageNav = () =>
-    !loggedIn && usedPageNo === 5
-      ? ''
-      : !loggedIn && usedPageNo === 0
-      ? navigate(NAV[4])
-      : usedPageNo < NAV.length
-      ? navigate(NAV[usedPageNo + (isSV() && usedPageNo === PAGE_TECHNICAL - 1 ? 2 : 1)])
-      : '';
+  const nextPageNav = () => {
+    if (!loggedIn && usedPageNo === PAGE_OBSERVATION) {
+      return;
+    } else if (!loggedIn && usedPageNo === 0) {
+      navigate(NAV[PAGE_TARGET]);
+    } else if (!validateProposalNavigation(getProposal(), usedPageNo + 1)) {
+      navigate(NAV[PAGE_LINKING]);
+    } else if (usedPageNo < NAV.length) {
+      navigate(NAV[usedPageNo + (isSV() && usedPageNo === PAGE_TECHNICAL - 1 ? 2 : 1)]);
+    }
+  };
 
   const nextPageClicked = () => {
     if (usedPageNo === -1) {

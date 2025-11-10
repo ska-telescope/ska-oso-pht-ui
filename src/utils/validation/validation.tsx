@@ -1,4 +1,14 @@
-import { STATUS_ERROR, STATUS_OK, STATUS_PARTIAL } from './../constants';
+import {
+  MOCK_CALL,
+  MODE_CONTINUUM,
+  MODE_PST,
+  MODE_ZOOM,
+  PAGE_DATA_PRODUCTS,
+  PAGE_OBSERVATION,
+  STATUS_ERROR,
+  STATUS_OK,
+  STATUS_PARTIAL
+} from './../constants';
 import Proposal from './../types/proposal';
 
 export const validateTitlePage = (proposal: Proposal) => {
@@ -15,7 +25,7 @@ export const validateTitlePage = (proposal: Proposal) => {
 
 export const validateTeamPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_OK];
-  const count = proposal.investigators?.length > 0 ? 1 : 0;
+  const count = Array.isArray(proposal.investigators) && proposal.investigators.length > 0 ? 1 : 0;
   return result[count];
 };
 
@@ -23,10 +33,10 @@ export const validateGeneralPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
   let count = 0;
 
-  if (proposal?.abstract?.length > 0) {
+  if ((proposal?.abstract ?? '').length > 0) {
     count++;
   }
-  if (proposal?.scienceCategory > 0) {
+  if ((proposal?.scienceCategory ?? 0) > 0) {
     count++;
   }
   return result[count];
@@ -61,18 +71,25 @@ export const validateTechnicalPage = (proposal: Proposal) => {
 
 export const validateSDPPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_OK];
-  const count = proposal.dataProductSDP?.length > 0 ? 1 : 0;
+  const count =
+    Array.isArray(proposal?.dataProductSDP) && proposal.dataProductSDP.length > 0 ? 1 : 0;
   return result[count];
 };
 
 export const validateSRCPage = () => STATUS_OK;
 
-export const validateCalibrationPage = () => STATUS_OK; // TODO : implement validation logic
+export const validateCalibrationPage = (proposal: Proposal) => {
+  const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
+  let count = proposal?.calibrationStrategy?.length > 0 ? 1 : 0;
+  const isAddNote: boolean = proposal?.calibrationStrategy?.[0]?.isAddNote;
+  count +=
+    count && ((isAddNote && proposal?.calibrationStrategy?.[0]?.notes) || !isAddNote) ? 1 : 0;
+  return result[count];
+};
 
 export const validateLinkingPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
   const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
-
   let count = hasTargetObservations() ? 2 : 0;
   return result[count];
 };
@@ -85,13 +102,24 @@ export const validateProposal = (proposal: Proposal) => {
     validateSciencePage(proposal),
     validateTargetPage(proposal),
     validateObservationPage(proposal),
-    validateCalibrationPage(),
     validateTechnicalPage(proposal),
     validateSDPPage(proposal),
-    validateSRCPage(),
-    validateLinkingPage(proposal)
+    validateLinkingPage(proposal),
+    validateCalibrationPage(proposal)
+    // See SRCNet INACTIVE - validateSRCPage()
   ];
   return results;
+};
+
+export const validateProposalNavigation = (proposal: Proposal, page: number) => {
+  if (MOCK_CALL && (page === PAGE_OBSERVATION || page === PAGE_DATA_PRODUCTS)) {
+    return (
+      proposal.scienceCategory === MODE_CONTINUUM ||
+      proposal.scienceCategory === MODE_PST ||
+      proposal.scienceCategory === MODE_ZOOM
+    );
+  }
+  return true;
 };
 
 export function validateSkyDirection1Text(value: string): boolean {

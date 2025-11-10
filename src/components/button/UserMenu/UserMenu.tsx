@@ -18,7 +18,7 @@ import { ButtonLogin, ButtonUser, ButtonLogout } from '@ska-telescope/ska-login-
 import { ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import { useNavigate } from 'react-router-dom';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { PMT, PATH, isCypress } from '@/utils/constants';
+import { PMT, PATH, isCypress, PAGE_PANEL_MANAGEMENT } from '@/utils/constants';
 import {
   isReviewerAdmin,
   isReviewerChair,
@@ -154,7 +154,7 @@ export default function ButtonUserMenu({
         </MenuItem>
         {isReviewerAdmin() && (
           <MenuItem data-testid="menuItemPanelSummary" onClick={() => onMenuSelect(PMT[0])}>
-            {t('page.15.title')}
+            {t('page.' + PAGE_PANEL_MANAGEMENT + '.title')}
           </MenuItem>
         )}
         {isReviewer() && (

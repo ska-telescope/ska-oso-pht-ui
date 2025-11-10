@@ -112,6 +112,25 @@
   "baseBtn": {
     "label": "Add"
   },
+  "calibrator": {
+    "note": "The choice of calibrators assumes that the target scan will be centred at transit.",
+    "disclaimer": "The use of these calibrators is not guaranteed.",
+    "calibrator": "Calibrator",
+    "duration": "Duration",
+    "minutes": "minute(s)",
+    "intent": "Intent",
+    "target": "Target",
+    "integrationTime": "Integration Time",
+    "checkbox": {
+      "label": "Provide comments on this strategy:",
+      "help": "Check to indicate that you wish to provide comments on the observatory defined calibration strategy."
+    },
+    "comment": {
+      "label": "Comment",
+      "help": "You can provide a comment on the observatory defined calibration strategy here."
+    },
+    "limitReached": "Only 1 observation can currently be used for the calibration strategy."
+  },
   "cancelBtn": {
     "label": "Cancel"
   },
@@ -208,7 +227,7 @@
   },
   "deleteTarget": {
     "label": "Delete this target ? ",
-    "info": "Deleting this target will also remove any related links to observations",
+    "info": "Deleting this target will also remove any related links to observations and calibrations",
     "toolTip": "Delete the target"
   },
   "deleteTeamMember": {
@@ -330,9 +349,9 @@
     "label": "Id"
   },
   "imageSize": {
-    "0": "degrees2",
-    "1": "arcmins",
-    "2": "arcsecs",
+    "0": "degree2",
+    "1": "arcmin2",
+    "2": "arcsec2",
     "label": "Image Size",
     "help": "Specify the image size based on the selected data product(s) in arcseconds, arcminutes or degrees.",
     "error": "A value greater than zero is required"
@@ -599,6 +618,9 @@
     "short": "PI"
   },
   "pixelSize": {
+    "0": "degree2",
+    "1": "arcmin2",
+    "2": "arcsec2",
     "label": "Pixel Size",
     "help": "Pixel size of the image requested.",
     "notFound": "No value found",
@@ -873,6 +895,20 @@
     "help": "For Briggs weighting, the robustness parameter can be set to -2 (closest to uniform weighting), -1, 0, 1 or 2 (closest to natural weighting).",
     "label": "Robust"
   },
+  "channelsOut": {
+    "help": "Channels Out help text TBD",
+    "label": "Channels Out",
+    "error": "Valid range is 0 - 40"
+  },
+  "fitSpectralPol": {
+    "help": "Fit Spectral Pol help text TBD",
+    "label": "Fit Spectral Pol "
+  },
+  "stokes": {
+    "help": "Stokes help text TBD",
+    "label": "Stokes",
+    "I": "I"
+  },
   "saveBtn": {
     "label": "Save",
     "success": "Save was successful",
@@ -896,6 +932,7 @@
     "null": "Not specified",
     "label": "Science Category",
     "help": "Select a category that best describes the science of your proposal.",
+    "validationNavigationError": "Science Category is required.  It is located on the General Information page.",
     "notSpecified": "Not specified",
     "error": "A value is required",
     "all": "All Science Categories"
@@ -1133,6 +1170,11 @@
     "label": "Tapering",
     "0": "No tapering"
   },
+  "gaussianTaper": {
+    "help": " Select value from the list. A circular Gaussian taper may be applied to the uv data. It specifies the FWHM of an image-domain Gaussian, in arcsec; tapering the uv data is equivalent to convolving with this image-domain Gaussian.",
+    "label": "Gaussian Taper",
+    "0": "No gaussian taper"
+  },
   "targetImport": {
     "help": "Upload a list of targets in .csv format in the reference system selected. Currently only ICRS is available so define targets in ra: 'hh:mm:ss.s' and dec: 'dd:mm:ss.s' format. Example is .csv file with name, ra, dec. Fields with incomplete row entry and duplicate target names will be removed when uploaded."
   },
@@ -1276,13 +1318,6 @@
       "pageError": "The OBSERVATION page is not complete"
     },
     "6": {
-      "status": "Calibration",
-      "title": "Calibration",
-      "titleShort": "Calibration",
-      "desc": "This page allows you to request and define Calibration strategies.",
-      "pageError": "The Calibration page is not complete"
-    },
-    "7": {
       "status": "Technical",
       "title": "Technical",
       "titleShort": "Technical",
@@ -1291,8 +1326,8 @@
       "pageError": "The TECHNICAL JUSTIFICATION page is not complete",
       "help": "This is help for the Technical Page"
     },
-    "8": {
-      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL",
+    "7": {
+      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO OBSERVATIONS FOR THIS PROPOSAL",
       "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL",
       "status": "Data Product",
       "plural": "Data Products",
@@ -1303,20 +1338,29 @@
       "group1": "Product",
       "group2": "Image Settings"
     },
-    "9": {
-      "status": "SRCNet",
-      "title": "SRCNet Resources",
-      "titleShort": "SRCNet",
-      "desc": "This page allows you to request and define SRCNet data products.",
-      "pageError": "The SRCNet page is not complete"
-    },
-    "10": {
+    "8": {
       "status": "Linking",
       "title": "Linking",
       "desc": "Linking strategies",
       "empty": "NO LINKING STRATEGIES AVAILABLE",
       "toolTip": "Linking tooltip",
       "pageError": "The Linking page is not complete"
+    },
+    "9": {
+      "status": "Calibration",
+      "title": "Calibration",
+      "titleShort": "Calibration",
+      "desc": "This is a likely observing strategy with calibration (assuming observation near transit, etc.)",
+      "pageError": "The CALIBRATION STRATEGY page is not complete",
+      "help": "The listed strategy is representative and not guaranteed at the time of execution. User defined calibration strategies are not currently supported.",
+      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE CALIBRATION STRATEGY AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL"
+    },
+    "10": {
+      "status": "SRCNet",
+      "title": "SRCNet Resources",
+      "titleShort": "SRCNet",
+      "desc": "This page allows you to request and define SRCNet data products.",
+      "pageError": "The SRCNet page is not complete"
     },
     "11": {
       "title": "Observation Setup",

@@ -42,7 +42,8 @@ import {
   PDF_NAME_PREFIXES,
   RA_TYPE_ICRS,
   RA_TYPE_GALACTIC,
-  isCypress
+  isCypress,
+  SCIENCE_VERIFICATION
 } from '@utils/constants.ts';
 import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import { ObservationSetBackend } from '@utils/types/observationSet.tsx';
@@ -55,6 +56,7 @@ import {
 import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
+import { calibratorMapping } from '../getCalibratorList/getCalibratorList.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
 import {
   CalibrationStrategy,
@@ -265,14 +267,19 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
   return inValue?.map((dp, index) => ({
     id: index + 1,
     dataProductsSDPId: dp.data_product_id,
-    observatoryDataProduct: dp.options ? getSDPOptions(dp.options) : [],
+    observatoryDataProduct: dp.products ? getSDPOptions(dp.products) : [],
     observationId: dp.observation_set_refs,
-    imageSizeValue: dp.image_size.value,
-    imageSizeUnits: getImageSizeUnits(dp.image_size.unit),
-    pixelSizeValue: dp.image_cellsize?.value,
-    pixelSizeUnits: dp?.image_cellsize?.unit ? getPixelSizeUnits(dp?.image_cellsize?.unit) : null,
-    weighting: Number(dp.weighting),
-    polarisations: dp.polarisations
+    imageSizeValue: dp.script_parameters.image_size.value,
+    imageSizeUnits: getImageSizeUnits(dp.script_parameters.image_size.unit),
+    pixelSizeValue: dp.script_parameters.image_cellsize?.value,
+    pixelSizeUnits: dp?.script_parameters.image_cellsize?.unit
+      ? getPixelSizeUnits(dp?.script_parameters.image_cellsize?.unit)
+      : null,
+    weighting: Number(dp.script_parameters.weight.weighting),
+    robust: dp.script_parameters.weight.robust,
+    polarisations: dp.script_parameters.polarisations,
+    channelsOut: dp.script_parameters.channels_out,
+    fitSpectralPol: dp.script_parameters.fit_spectral_pol
   })) as DataProductSDP[];
 };
 
@@ -282,17 +289,13 @@ const getCalibrationStrategy = (
   return inValue
     ? inValue.map(strategy => ({
         observatoryDefined: strategy.observatory_defined,
-        id: strategy.calibration_id,
-        observationIdRef: strategy.observation_id_ref,
-        calibrators: strategy.calibrators
-          ? strategy.calibrators.map(calibrator => ({
-              kind: calibrator.kind,
-              name: calibrator.name,
-              modelConfig: calibrator.model_config,
-              notes: calibrator.notes
-            }))
+        id: strategy?.calibration_id,
+        observationIdRef: strategy?.observation_set_ref,
+        calibrators: strategy?.calibrators
+          ? strategy?.calibrators?.map(calibrator => calibratorMapping(calibrator))
           : null,
-        notes: strategy.notes
+        notes: strategy.notes,
+        isAddNote: strategy.notes ? true : false
       }))
     : [];
 };
@@ -650,7 +653,7 @@ export function mapping(inRec: ProposalBackend): Proposal {
   let sciencePDF: DocumentPDF;
   let technicalPDF: DocumentPDF | undefined;
 
-  const isSV: boolean = inRec.proposal_info?.proposal_type?.main_type === 'science_verification';
+  const isSV: boolean = inRec.proposal_info?.proposal_type?.main_type === SCIENCE_VERIFICATION;
 
   sciencePDF = (getPDF(
     inRec?.observation_info?.documents,
@@ -714,7 +717,9 @@ export function mapping(inRec: ProposalBackend): Proposal {
       : technicalPDF
       ? FileUploadStatus.OK
       : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
-    dataProductSDP: getDataProductSDP(inRec.observation_info?.data_product_sdps),
+    dataProductSDP: inRec?.observation_info?.data_product_sdps
+      ? getDataProductSDP(inRec.observation_info?.data_product_sdps as DataProductSDPsBackend[])
+      : [],
     dataProductSRC: getDataProductSRC(inRec.observation_info?.data_product_src_nets),
     pipeline: '' // TODO part of Data Products section not implemented yet
   };

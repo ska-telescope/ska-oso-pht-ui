@@ -1,10 +1,15 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Divider, Grid, Paper, Stack, Tab, Tabs } from '@mui/material';
-import { Spacer, SPACER_VERTICAL, TextEntry } from '@ska-telescope/ska-gui-components';
+import {
+  BorderedSection,
+  Spacer,
+  SPACER_VERTICAL,
+  TextEntry
+} from '@ska-telescope/ska-gui-components';
 import { useTheme } from '@mui/material/styles';
 import {
-  BANNER_PMT_SPACER,
+  BANNER_PMT_SPACER_MIN,
   FEASIBLE_MAYBE,
   FEASIBLE_NO,
   FEASIBLE_YES,
@@ -52,20 +57,24 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
   const [sciPDF, setSciPDF] = React.useState<string | undefined>(undefined);
   const [tecPDF, setTecPDF] = React.useState<string | undefined>(undefined);
 
-  const OFFSET_TOP = 150;
   const ROW_HEIGHT_PX = 28.5; /* approximate height of one row in pixels */
-  const CHOICE_HEIGHT = 32; /* This is in 'vh'; */
-  const AREA_HEIGHT_NUM = 80;
-  const AREA_HEIGHT = AREA_HEIGHT_NUM + 'vh';
 
   const authClient = useAxiosAuthClient();
   const userId = getUserId();
 
   const isTechnical = () => reviewType === REVIEW_TYPE.TECHNICAL;
-  const tecRows = () =>
-    Math.floor((((AREA_HEIGHT_NUM - CHOICE_HEIGHT) / 100) * window.innerHeight) / ROW_HEIGHT_PX);
-  const genRows = () => ((AREA_HEIGHT_NUM / 100) * window.innerHeight) / ROW_HEIGHT_PX;
-  const srcRows = () => ((AREA_HEIGHT_NUM / 100) * window.innerHeight) / ROW_HEIGHT_PX;
+
+  const tecRows = () => {
+    const totalOffset = 700;
+    const availableHeight = window.innerHeight - totalOffset;
+    return Math.floor(availableHeight / ROW_HEIGHT_PX);
+  };
+
+  const srcRows = () => {
+    const totalOffset = 450;
+    const availableHeight = window.innerHeight - totalOffset;
+    return Math.floor(availableHeight / ROW_HEIGHT_PX);
+  };
 
   function getTechnicalReview(): TechnicalReview {
     return {
@@ -204,15 +213,14 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   /**************************************************************/
 
-  const sciencePDF = () => <PDFViewer height="53vh" url={sciPDF} width="100%" />;
+  const sciencePDF = () => <PDFViewer url={sciPDF} width="100%" />;
 
-  const technicalPDF = () => <PDFViewer height="53vh" url={tecPDF} width="100%" />;
+  const technicalPDF = () => <PDFViewer url={tecPDF} width="100%" />;
 
   const showLabel = (id: string, label: string) => {
     return (
       <Box
         id={id}
-        p={1}
         sx={{
           width: '100%',
           maxWidth: '100%',
@@ -233,8 +241,8 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
       <Box
         id={id}
         sx={{
-          pl: 2,
-          pr: 2,
+          pl: 1,
+          pr: 1,
           width: '100%',
           maxWidth: '100%',
           overflowWrap: 'break-word',
@@ -288,20 +296,20 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const displayArea = () => {
     return (
-      <Stack
-        sx={{
-          width: '100%',
-          boxSizing: 'border-box'
-        }}
-      >
-        {showLabel('title-label', 'title.short')}
-        {showLatex('title', locationProperties?.state?.proposal?.title)}
-        <Divider />
-        {showLabel('abstract-label', 'abstract.label')}
-        {showLatex('abstract', locationProperties?.state?.proposal?.abstract)}
-        <Divider />
-        {pdfArea()}
-      </Stack>
+      <BorderedSection>
+        <Stack
+          sx={{
+            width: '100%',
+            boxSizing: 'border-box'
+          }}
+        >
+          {showLabel('title-label', 'title.short')}
+          {showLatex('title', locationProperties?.state?.proposal?.title)}
+          <Divider />
+          {showLabel('abstract-label', 'abstract.label')}
+          {showLatex('abstract', locationProperties?.state?.proposal?.abstract)}
+        </Stack>
+      </BorderedSection>
     );
   };
 
@@ -322,7 +330,7 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         <TextEntry
           label={''}
           testId="generalCommentsId"
-          rows={genRows()}
+          rows={srcRows()}
           setValue={setComments}
           value={comments}
         />
@@ -406,18 +414,10 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
     };
 
     return (
-      <Paper
-        sx={{
-          border: `2px solid ${theme.palette.primary.light}`,
-          borderRadius: '16px',
-          height: AREA_HEIGHT,
-          top: OFFSET_TOP
-        }}
-        elevation={0}
-      >
+      <BorderedSection>
         <Tabs
           variant="fullWidth"
-          sx={{ bgcolor: `${theme.palette.primary.main}`, margin: 1 }}
+          sx={{ bgcolor: `${theme.palette.primary.main}` }}
           textColor="secondary"
           indicatorColor="secondary"
           value={tabValueReview}
@@ -429,58 +429,20 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           <Tab label={t('srcNetComments.label')} {...a11yProps(2)} />
         </Tabs>
         {tabValueReview === 0 && <>{rankField()}</>}
-        {tabValueReview === 1 && (
-          <Box
-            sx={{
-              maxHeight: `calc('75vh' - 100px)`,
-              overflowY: 'auto',
-              width: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              backgroundColor: 'transparent'
-            }}
-          >
-            {generalCommentsField()}
-          </Box>
-        )}
-        {tabValueReview === 2 && (
-          <Box
-            sx={{
-              maxHeight: `calc('75vh' - 100px)`,
-              overflowY: 'auto',
-              width: '100%',
-              display: 'flex',
-              flexDirection: 'column',
-              backgroundColor: 'transparent'
-            }}
-          >
-            {srcNetCommentsField()}
-          </Box>
-        )}
-      </Paper>
+        {tabValueReview === 1 && <>{generalCommentsField()}</>}
+        {tabValueReview === 2 && <>{srcNetCommentsField()}</>}
+      </BorderedSection>
     );
   };
 
   const reviewAreaTec = () => {
     return (
-      <Box pr={2}>
-        <Paper
-          sx={{
-            border: `2px solid ${theme.palette.primary.light}`,
-            borderRadius: '16px',
-            height: AREA_HEIGHT,
-            top: OFFSET_TOP,
-            padding: 3,
-            backgroundColor: theme.palette.primary.main
-          }}
-          elevation={0}
-        >
-          <Stack sx={{ gap: 4 }}>
-            <ChoiceCards value={feasibility} onChange={setFeasibility} />
-            {technicalCommentsField()}
-          </Stack>
-        </Paper>
-      </Box>
+      <BorderedSection>
+        <Stack sx={{ gap: 4 }}>
+          <ChoiceCards value={feasibility} onChange={setFeasibility} />
+          {technicalCommentsField()}
+        </Stack>
+      </BorderedSection>
     );
   };
 
@@ -488,12 +450,18 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   return (
     <Box>
-      <PageBannerPMT
-        backBtn={backButton()}
-        fwdBtn={isView() ? <></> : actionButtons()}
-        title={t('reviewProposal.title')}
-      />
-      <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
+      {/* Sticky Banner */}
+      <Box sx={{ position: 'sticky', top: 0, zIndex: 1100 }}>
+        <PageBannerPMT
+          backBtn={backButton()}
+          fwdBtn={isView() ? <></> : actionButtons()}
+          title={t('reviewProposal.title')}
+        />
+      </Box>
+
+      <Spacer size={BANNER_PMT_SPACER_MIN} axis={SPACER_VERTICAL} />
+
+      {/* Main Grid */}
       <Grid
         container
         spacing={2}
@@ -501,28 +469,27 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
         justifyContent="space-between"
         pl={2}
         pr={6}
-        sx={{
-          height: AREA_HEIGHT,
-          backgroundColor: 'background.default'
-        }}
+        sx={{ backgroundColor: 'background.default' }}
       >
-        <Grid
-          size={{ sm: 9 }}
-          sx={{
-            padding: 2,
-            border: 2,
-            borderColor: 'primary.light',
-            borderRadius: 2,
-            height: AREA_HEIGHT
-          }}
-        >
+        {/* Left Column: scrollable content */}
+        <Grid size={{ sm: 9 }}>
           {displayArea()}
+          {/* pdfArea scrolls normally */}
+          {pdfArea()}
         </Grid>
 
-        <Grid size={{ sm: 3 }}>{isTechnical() ? reviewAreaTec() : reviewAreaSci()}</Grid>
+        {/* Right Column: sticky review area */}
+        <Grid size={{ sm: 3 }}>
+          <Box sx={{ position: 'sticky', top: 80 }}>
+            {isTechnical() ? reviewAreaTec() : reviewAreaSci()}
+          </Box>
+        </Grid>
       </Grid>
 
-      {false && <PageFooterPMT />}
+      {/* Sticky Footer */}
+      <Box sx={{ position: 'sticky', bottom: 0, zIndex: 1100 }}>
+        <PageFooterPMT />
+      </Box>
     </Box>
   );
 }

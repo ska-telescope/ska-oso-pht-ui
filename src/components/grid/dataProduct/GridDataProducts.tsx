@@ -7,6 +7,13 @@ import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import { DataProductSDP } from '../../../utils/types/dataProduct';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { PAGE_DATA_PRODUCTS } from '@/utils/constants';
+
+/*****************************************************************************************************************
+ *
+ * This component is currently NOT used in the application as so could be removed once the application is stable.
+ *
+ ****************************************************************************************************************/
 
 interface GridDataProductsProps {
   baseObservations: any[];
@@ -27,7 +34,7 @@ export default function GridDataProducts({
 }: GridDataProductsProps) {
   const { t } = useScopedTranslation();
 
-  const PAGE = 8;
+  const PAGE = PAGE_DATA_PRODUCTS;
   const hasObservations = () => (baseObservations?.length > 0 ? true : false);
   const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
 
@@ -82,7 +89,7 @@ export default function GridDataProducts({
     flex: 0.5,
     disableClickEventBubbling: true,
     renderCell: (e: { row: DataProductSDP }) =>
-      `${e.row.pixelSizeValue} ${presentUnits(e.row.pixelSizeUnits)}`
+      e.row.pixelSizeValue + ' ' + presentUnits(t('pixelSize.' + e.row.pixelSizeUnits))
   };
 
   const colImageWeighting = {
@@ -100,7 +107,7 @@ export default function GridDataProducts({
     headerName: t('actions.label'),
     type: 'actions',
     sortable: false,
-    flex: 0.5,
+    width: 100,
     disableClickEventBubbling: true,
     renderCell: (e: any) => {
       const rec: DataProductSDP = e.row;
@@ -124,7 +131,7 @@ export default function GridDataProducts({
   };
 
   const getColumns = () => [
-    ...[colObservationId, colDataProduct, colImageSize, colPixelSize, colImageWeighting, colActions]
+    ...[colActions, colObservationId, colDataProduct, colImageSize, colPixelSize, colImageWeighting]
   ];
 
   return (

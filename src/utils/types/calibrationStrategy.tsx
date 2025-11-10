@@ -1,24 +1,26 @@
 // not used yet as we only use observatory defined at the moment
 export type CalibratorBackend = {
-  kind: string; // 'flux' | 'amplitude' | 'phase'
+  calibration_intent: string; // 'flux' | 'amplitude' | 'phase'
   name: string;
-  model_config: string;
+  duration_min: number;
+  choice: string;
   notes: string | null;
 };
 
 export type CalibrationStrategyBackend = {
   observatory_defined: boolean;
   calibration_id: string;
-  observation_id_ref: string;
+  observation_set_ref: string;
   calibrators: CalibratorBackend[] | null; // null for observatory defined
   notes: string | null;
 };
 
 // not used yet as we only use observatory defined at the moment
 export type Calibrator = {
-  kind: string; // 'flux' | 'amplitude' | 'phase'
+  calibrationIntent: string; // 'flux' | 'amplitude' | 'phase'
   name: string;
-  modelConfig: string;
+  durationMin: number;
+  choice: string;
   notes: string | null;
 };
 
@@ -28,4 +30,5 @@ export type CalibrationStrategy = {
   observationIdRef: string;
   calibrators: Calibrator[] | null; // null for observatory defined
   notes: string | null;
+  isAddNote: boolean;
 };
