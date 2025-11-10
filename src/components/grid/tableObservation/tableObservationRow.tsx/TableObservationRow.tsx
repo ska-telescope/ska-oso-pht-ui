@@ -176,7 +176,6 @@ export default function TableObservationRow({
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9} role="gridcell">
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <Box sx={{ overflowX: 'hidden' }}>
-              <ObservationEntry></ObservationEntry>
               <CollapsibleObservation obs={item}></CollapsibleObservation>
             </Box>
           </Collapse>
