@@ -98,10 +98,6 @@ export default function ObservationPage() {
   }, []);
 
   React.useEffect(() => {
-    console.log('elementsO', elementsO);
-  }, [elementsO]);
-
-  React.useEffect(() => {
     setValidateToggle(!validateToggle);
   }, [getProposal()]);
 
@@ -205,122 +201,10 @@ export default function ObservationPage() {
     );
   }
 
-  //for testing decision collapsible
-
-  const decisionData = [
-    {
-      id: 'prsl-t0001-20251106-00002',
-      status: 'under review',
-      lastUpdated: '2025-11-06T10:06:52.682420Z',
-      lastUpdatedBy: 'fd7719af-ee36-4e6b-90a0-ba2137995534',
-      createdOn: '2025-11-06T10:04:08.300578Z',
-      createdBy: 'fd7719af-ee36-4e6b-90a0-ba2137995534',
-      version: 7,
-      proposalSubType: [],
-      scienceCategory: null,
-      title: 'check decision',
-      cycle: 'SKAO_2027_1',
-      investigators: [
-        {
-          id: 'fd7719af-ee36-4e6b-90a0-ba2137995534',
-          firstName: 'Jack',
-          lastName: 'Tam',
-          email: 'Jack.Tam@community.skao.int',
-          phdThesis: false,
-          status: 'unknown',
-          pi: true
-        },
-        {
-          id: 'temp-1',
-          firstName: 'tst',
-          lastName: 'tst',
-          email: 'test@test.com',
-          phdThesis: false,
-          status: 'unknown',
-          pi: false
-        }
-      ],
-      abstract: 'test',
-      sciencePDF: null,
-      technicalPDF: null,
-      calibrationStrategy: [],
-      decisions: {
-        id: 'pnld-skao-77adf2831',
-        panelId: 'panel-skao-96c7119b1',
-        cycle: 'SKAO_2027_1',
-        proposalId: 'prsl-t0001-20251106-00002',
-        rank: 0,
-        status: 'To Do'
-      },
-      reviews: [
-        {
-          id: 'rvw-tec-skao-3db27f9ca',
-          panelId: 'panel-skao-96c7119b1',
-          cycle: 'SKAO_2027_1',
-          reviewerId: 'c8f8f18a-3c70-4c39-8ed9-2d8d180d99a3',
-          prslId: 'prsl-t0001-20251106-00002',
-          reviewType: {
-            kind: 'Technical Review',
-            isFeasible: 'Yes'
-          },
-          comments: 'technical review',
-          status: 'In Progress',
-          metadata: {
-            version: 2,
-            created_by: 'DefaultUser',
-            created_on: '2025-11-06T10:07:11.293464Z',
-            last_modified_by: 'fd7719af-ee36-4e6b-90a0-ba2137995534',
-            last_modified_on: '2025-11-06T10:07:31.583930Z',
-            pdm_version: '25.0.0'
-          }
-        }
-      ],
-      key: 'prsl-t0001-20251106-00002',
-      rank: 1
-    }
-  ];
-
   return (
     <Shell page={PAGE}>
       <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid size={{ md: 11 }}>
-          <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
-            <Grid container direction="row" alignItems="flex-start" justifyContent="space-between">
-              <Grid pb={1}>
-                <AddButton
-                  action={PATH[2]}
-                  primary={!hasObservations()}
-                  testId="addObservationButton"
-                  title="addObservation.button"
-                />
-              </Grid>
-            </Grid>
-            {hasObservations() ? (
-              <DataGrid
-                rows={elementsO}
-                columns={extendedColumnsObservations}
-                height={DATA_GRID_OBSERVATION}
-                onRowClick={(e: { row: { rec: React.SetStateAction<Observation | null> } }) =>
-                  setCurrObs(e.row.rec)
-                }
-                onRowSelectionModelChange={(
-                  newRowSelectionModel: React.SetStateAction<GridRowSelectionModel>
-                ) => {
-                  setRowSelectionModel(newRowSelectionModel);
-                }}
-                rowSelectionModel={rowSelectionModel}
-                testId="observationDetails"
-              />
-            ) : (
-              <Alert
-                color={AlertColorTypes.Error}
-                text={loggedIn ? t('error.noObservations') : t('error.noObservationsLoggedOut')}
-                testId="noObservationsNotification"
-              />
-            )}
-          </Grid>
-        </Grid>
-        <TableObservation data={decisionData} obsData={elementsO}></TableObservation>
+        <TableObservation obsData={elementsO}></TableObservation>
       </Grid>
       {deleteDialog ?? <></>}
     </Shell>

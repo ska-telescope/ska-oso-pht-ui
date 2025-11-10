@@ -86,8 +86,6 @@ export default function ObservationEntry() {
   const { osdLOW, osdMID, observatoryConstants } = useOSDAccessors();
 
   const isEdit = () => {
-    console.log('locationProperties', locationProperties);
-
     return locationProperties.state !== null;
   };
 

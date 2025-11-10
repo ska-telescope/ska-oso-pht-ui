@@ -89,14 +89,12 @@ export default function TableObservation({
     }));
 
     // checkForUpdatesForAPI(results);
-    console.log('results', results);
     return results;
   }, [data]);
 
   return (
     <TableContainer>
       <Table aria-label="Review Decision Table">
-        {/* <TableObservationHeader /> */}
         <TableBody>
           {obsData.map((item: any, index: number) => (
             <>
@@ -107,13 +105,6 @@ export default function TableObservation({
                 expanded={expandedRows.has(item.id)}
                 toggleRow={toggleRow}
                 expandButtonRef={el => (expandButtonRefs.current[item.id] = el)}
-                excludeFunction={excludeFunction}
-                updateDecisionItem={updateFunction}
-                getReviews={getReviews}
-                getReviewsReviewed={getReviewsReviewed}
-                calculateScore={calculateScore}
-                tableLength={data.length}
-                trimText={trimText}
                 t={t}
               />
             </>

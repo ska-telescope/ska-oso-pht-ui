@@ -53,8 +53,6 @@ export default function TableReviewDecision({
   };
 
   const scoredItems = React.useMemo(() => {
-    console.log('data', data);
-
     if (!data) return [];
 
     // Step 1: Calculate scores

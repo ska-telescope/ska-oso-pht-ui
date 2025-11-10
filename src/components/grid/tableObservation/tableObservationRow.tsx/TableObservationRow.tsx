@@ -26,18 +26,10 @@ import EditIcon from '@/components/icon/editIcon/editIcon';
 
 interface TableObservationRowProps {
   item: any;
-  obsItem: any;
   index: number;
   expanded: boolean;
   toggleRow: (id: number) => void;
   expandButtonRef: (el: HTMLButtonElement | null) => void;
-  excludeFunction: (detail: any) => void;
-  updateDecisionItem: (item: any) => void;
-  getReviews: (reviews: any[], reviewType: string) => any[];
-  getReviewsReviewed: (reviews: any[]) => any[];
-  calculateScore: (details: any[]) => number;
-  tableLength: number;
-  trimText: (text: string, maxLength: number) => string;
   t: any;
 }
 
@@ -47,13 +39,6 @@ export default function TableObservationRow({
   expanded,
   toggleRow,
   expandButtonRef,
-  excludeFunction,
-  updateDecisionItem,
-  getReviews,
-  getReviewsReviewed,
-  calculateScore,
-  tableLength,
-  trimText,
   t
 }: TableObservationRowProps) {
   const theme = useTheme();
@@ -76,35 +61,8 @@ export default function TableObservationRow({
   };
 
   const editIconClicked = (row: any) => {
-    // setCurrObs(row.rec);
     navigate(PATH[2], { replace: true, state: row.rec });
   };
-
-  const deleteIconClicked = (row: any) => {
-    // setCurrObs(row.rec);
-    setOpenDeleteDialog(true);
-  };
-
-  const closeDeleteDialog = () => {
-    // setOpenDeleteDialog(false);
-  };
-
-  // React.useEffect(() => {
-  //   if (!item || typeof item.displayRank !== 'number' || !item.decisions) return;
-
-  //   const newRank = item.displayRank === tableLength ? 0 : item.displayRank;
-
-  //   if (newRank !== item.decisions.rank) {
-  //     const updatedItem = {
-  //       ...item,
-  //       decisions: {
-  //         ...item.decisions,
-  //         rank: newRank
-  //       }
-  //     };
-  //     updateDecisionItem(updatedItem);
-  //   }
-  // }, [item?.displayRank, tableLength]);
 
   return (
     <>
@@ -199,11 +157,7 @@ export default function TableObservationRow({
           <Box sx={{ display: 'flex', alignItems: 'end', gap: 1, overflowX: 'hidden' }}>
             <IconButton
               ref={expandButtonRef}
-              // aria-label={`${expanded ? 'Collapse' : 'Expand'} details for ${item.id}. ${
-              //   getReviews(item?.reviews, REVIEW_TYPE.SCIENCE)?.length
-              // } additional details available.`}
               aria-expanded={expanded}
-              // aria-controls={`employee-details-${item.id}`}
               size="small"
               onClick={() => toggleRow(item.id)}
               data-testid={`expand-button-${item.id}`}
@@ -214,19 +168,6 @@ export default function TableObservationRow({
             >
               {expanded ? <ExpandMore /> : <ChevronRight />}
             </IconButton>
-            {/* <Typography
-              variant="caption"
-              color="text.secondary"
-              sx={{
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                maxWidth: '100%'
-              }}
-            >
-              {getReviewsReviewed(item?.reviews)?.length} /{' '}
-              {getReviews(item?.reviews, REVIEW_TYPE.SCIENCE)?.length}
-            </Typography> */}
           </Box>
         </TableCell>
       </TableRow>
@@ -235,8 +176,6 @@ export default function TableObservationRow({
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9} role="gridcell">
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <Box sx={{ overflowX: 'hidden' }}>
-              {/* <TableTechnicalReviews data={item} />
-              <TableScienceReviews data={item} excludeFunction={excludeFunction} /> */}
               <ObservationEntry></ObservationEntry>
               <CollapsibleObservation obs={item}></CollapsibleObservation>
             </Box>
