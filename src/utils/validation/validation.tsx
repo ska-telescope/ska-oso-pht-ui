@@ -79,7 +79,6 @@ export const validateCalibrationPage = (proposal: Proposal) => {
 export const validateLinkingPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
   const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
-
   let count = hasTargetObservations() ? 2 : 0;
   return result[count];
 };

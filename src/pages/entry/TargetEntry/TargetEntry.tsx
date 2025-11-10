@@ -45,6 +45,7 @@ import {
   calculateContinuumBandwidth
 } from '@/utils/calculate/calculate';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
 interface TargetEntryProps {
   raType: number;
   setTarget?: Function;
@@ -71,7 +72,7 @@ export default function TargetEntry({
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
   const { isSV } = useAppFlow();
-  const { notifySuccess } = useNotify();
+  const { notifyError, notifySuccess } = useNotify();
   const { observatoryConstants } = useOSDAccessors();
 
   const LAB_WIDTH = 5;
@@ -283,12 +284,14 @@ export default function TargetEntry({
           bandwidth: null,
           imageWeighting: 0,
           numStations: 512,
+          numSubBands: 1,
           robust: 0,
           supplied: {
             type: SUPPLIED_TYPE_INTEGRATION,
             value: 1,
             units: SUPPLIED_INTEGRATION_TIME_UNITS_H
           },
+          spectralAveraging: 1,
           spectralResolution: '',
           effectiveResolution: ''
         };
@@ -311,22 +314,46 @@ export default function TargetEntry({
         tiedArrayBeams: tiedArrayBeams ? (tiedArrayBeams as TiedArrayBeams) : null
       };
 
-      const updatedProposal = {
-        ...getProposal(),
-        targets: [...(getProposal().targets ?? []), newTarget],
-        observations: MOCK_CALL ? [observationOut()] : getProposal().observations,
-        targetObservation: MOCK_CALL
-          ? [
-              {
-                targetId: newTarget.id,
-                observationId: observationOut().id,
-                sensCalc: undefined
-              }
-            ]
-          : getProposal().targetObservation
+      const getSensCalcData = async (observation: Observation, target: Target) => {
+        const response = await calculateSensCalcData(observation, target);
+        if (response) {
+          if (response.error) {
+            const errMsg = response.error;
+            notifyError(errMsg, NOTIFICATION_DELAY_IN_SECONDS);
+          }
+          return response;
+        }
       };
-      setProposal(updatedProposal);
-      notifySuccess(t('addTarget.success'), NOTIFICATION_DELAY_IN_SECONDS);
+
+      const addTargetAsync = async () => {
+        let newObservation = undefined;
+        let sensCalcResult = undefined;
+        if (MOCK_CALL) {
+          newObservation = observationOut();
+          sensCalcResult = await getSensCalcData(newObservation, newTarget);
+        }
+        const updatedProposal = {
+          ...getProposal(),
+          targets: [...(getProposal().targets ?? []), newTarget],
+          observations: MOCK_CALL
+            ? [newObservation].filter((obs): obs is Observation => obs !== undefined)
+            : getProposal().observations,
+          targetObservation: MOCK_CALL
+            ? sensCalcResult && newObservation && newObservation.id
+              ? [
+                  {
+                    targetId: newTarget.id,
+                    observationId: newObservation.id,
+                    sensCalc: sensCalcResult
+                  }
+                ]
+              : []
+            : getProposal().targetObservation
+        };
+        setProposal(updatedProposal);
+        notifySuccess(t('addTarget.success'), NOTIFICATION_DELAY_IN_SECONDS);
+      };
+      addTargetAsync();
     };
 
     const clearForm = () => {

@@ -6,13 +6,13 @@ import { AlertColorTypes, DataGrid, TickBox } from '@ska-telescope/ska-gui-compo
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import SensCalcDisplaySingle from '../../components/alerts/sensCalcDisplay/single/SensCalcDisplaySingle';
-import getSensCalc from '../../services/api/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import Observation from '../../utils/types/observation';
-import { validateLinkingPage } from '../../utils/validation/validation';
+import { validateCalibrationPage, validateLinkingPage } from '../../utils/validation/validation';
 import {
   BANDWIDTH_TELESCOPE,
   IW_NATURAL,
   OB_SUBARRAY_CUSTOM,
+  PAGE_CALIBRATION,
   PAGE_LINKING,
   RA_TYPE_ICRS,
   STATUS_ERROR,
@@ -35,6 +35,9 @@ import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
 import { SensCalcResults } from '@/utils/types/sensCalcResults';
+import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
+import { generateId } from '@/utils/helpers';
+import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
 
 export default function LinkingPage() {
   const DATA_GRID_TARGET = '40vh';
@@ -65,10 +68,13 @@ export default function LinkingPage() {
   const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
   const getProposalState = () => application.content1 as number[];
-  const setTheProposalState = (value: number) => {
+  const setTheProposalState = (value: number, valueCalibration: number) => {
     const temp: number[] = [];
     for (let i = 0; i < getProposalState().length; i++) {
-      temp.push(PAGE === i ? value : getProposalState()[i]);
+      // validate linking page & calibration page
+      temp.push(
+        PAGE === i ? value : PAGE_CALIBRATION === i ? valueCalibration : getProposalState()[i]
+      );
     }
     updateAppContent1(temp);
   };
@@ -107,12 +113,25 @@ export default function LinkingPage() {
     return result;
   };
 
-  const setTargetObservationStorage = (targetObservations: TargetObservation[]) => {
-    setProposal({ ...getProposal(), targetObservation: targetObservations });
+  const setTargetObservationAndCalibrationStorage = (
+    targetObservations: TargetObservation[],
+    calibration: CalibrationStrategy[] | []
+  ) => {
+    setProposal({
+      ...getProposal(),
+      targetObservation: targetObservations,
+      calibrationStrategy: [...calibration]
+    });
   };
 
-  const addTargetObservationStorage = (rec: TargetObservation) => {
-    setTargetObservationStorage([...(getProposal().targetObservation ?? []), rec]);
+  const addTargetObservationAndCalibrationStorage = (
+    targetObs: TargetObservation,
+    calibration: CalibrationStrategy
+  ) => {
+    setTargetObservationAndCalibrationStorage(
+      [...(getProposal().targetObservation ?? []), targetObs],
+      [calibration]
+    );
   };
 
   const updateTargetObservationStorage = (target: Target, observationId: string, results: any) => {
@@ -125,16 +144,30 @@ export default function LinkingPage() {
       e => !(e.targetId === target.id && e.observationId === observationId)
     );
     base?.push(temp);
-    setTargetObservationStorage(base ?? []);
+    const existingCalibration = getProposal().calibrationStrategy?.find(
+      cal => cal.observationIdRef === observationId
+    );
+    setTargetObservationAndCalibrationStorage(
+      base ?? [],
+      existingCalibration ? [existingCalibration] : []
+    );
   };
 
-  const deleteObservationTarget = (row: any) => {
+  const deleteObservationTargetAndCalibration = (row: any) => {
     function filterRecords(id: number) {
       return getProposal().targetObservation?.filter(
         item => !(item.observationId === currObs?.id && item.targetId === id)
       );
     }
-    setTargetObservationStorage(filterRecords(row.id) ?? []);
+    function filterRecordsCalibration(id: number) {
+      return getProposal().calibrationStrategy?.filter(
+        item => item.observationIdRef === id.toString()
+      );
+    }
+    setTargetObservationAndCalibrationStorage(
+      filterRecords(row.id) ?? [],
+      filterRecordsCalibration(row.id) ?? []
+    );
   };
 
   const popElementO = (rec: Observation) => {
@@ -169,8 +202,7 @@ export default function LinkingPage() {
   };
 
   const getSensCalcData = async (observation: Observation, target: Target) => {
-    const response = await getSensCalc(observation, target);
-
+    const response = await calculateSensCalcData(observation, target);
     if (response) {
       if (response.error) {
         const errMsg = response.error;
@@ -205,9 +237,9 @@ export default function LinkingPage() {
     closeDeleteDialog();
   };
 
-  const addObservationTarget = (target: Target) => {
+  const addObservationTargetAndCalibration = (target: Target) => {
     if (!currObs) return;
-    const rec: TargetObservation = {
+    const targetObs: TargetObservation = {
       observationId: currObs.id,
       targetId: target.id,
       sensCalc: {
@@ -217,7 +249,16 @@ export default function LinkingPage() {
         error: ''
       }
     };
-    addTargetObservationStorage(rec);
+    // TODO check if already exists?
+    const calibration: CalibrationStrategy = {
+      observatoryDefined: true,
+      id: generateId('cal-'),
+      observationIdRef: currObs.id,
+      calibrators: null,
+      notes: null,
+      isAddNote: false
+    };
+    addTargetObservationAndCalibrationStorage(targetObs, calibration);
   };
 
   const isTargetSelected = (targetId: number) =>
@@ -227,9 +268,9 @@ export default function LinkingPage() {
 
   const targetSelectedToggle = (el: ElementT) => {
     if (isTargetSelected(el.id)) {
-      deleteObservationTarget(el.target);
+      deleteObservationTargetAndCalibration(el.target);
     } else {
-      addObservationTarget(el.target);
+      addObservationTargetAndCalibration(el.target);
     }
   };
 
@@ -258,7 +299,7 @@ export default function LinkingPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    setTheProposalState(validateLinkingPage(getProposal()));
+    setTheProposalState(validateLinkingPage(getProposal()), validateCalibrationPage(getProposal()));
   }, [validateToggle]);
 
   const observationGroupIds = (id: string) => {

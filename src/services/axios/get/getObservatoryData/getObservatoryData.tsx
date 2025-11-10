@@ -1,4 +1,3 @@
-// import axios from 'axios';
 import {
   OSO_SERVICES_PROPOSAL_PATH,
   SKA_OSO_SERVICES_URL,
@@ -90,9 +89,10 @@ async function GetObservatoryData(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
   cycleNumber: number
 ): Promise<string | ObservatoryData> {
-  if (USE_LOCAL_DATA) {
+  if (true || USE_LOCAL_DATA) {
     return GetMockData();
   }
+  console.log('TREVOR');
 
   try {
     const URL_PATH = `/osd/`;

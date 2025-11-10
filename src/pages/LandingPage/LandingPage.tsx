@@ -318,7 +318,7 @@ export default function LandingPage() {
     type: 'actions',
     headerName: 'Actions',
     sortable: false,
-    width: 160,
+    width: 200,
     disableClickEventBubbling: true,
     renderCell: (e: { row: any }) => (
       <>
