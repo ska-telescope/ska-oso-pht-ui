@@ -1,3 +1,4 @@
+import { MockCalibratorFrontendList } from '@/services/axios/get/getCalibratorList/mockCalibratorListFrontend';
 import { describe, test, expect } from 'vitest';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
@@ -6,7 +7,6 @@ import completeMockStore from '../../utils/MockStore';
 import CalibrationPage from './CalibrationPage';
 import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
-import { MockCalibratorFrontendList } from '@/services/axios/get/getCalibratorList/mockCalibratorListFrontend';
 
 const wrapper = (component: React.ReactElement) => {
   return render(
