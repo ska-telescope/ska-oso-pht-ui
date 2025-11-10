@@ -107,7 +107,7 @@ export default function PHT() {
 
   React.useEffect(() => {
     helpComponent(t('helpText.notAvailable'));
-  }, [location]);
+  }, [navigate]);
 
   const getProposal = () => application.content2 as Proposal;
 
