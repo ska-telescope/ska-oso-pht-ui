@@ -1,4 +1,3 @@
-// import axios from 'axios';
 import {
   OSO_SERVICES_PROPOSAL_PATH,
   SKA_OSO_SERVICES_URL,

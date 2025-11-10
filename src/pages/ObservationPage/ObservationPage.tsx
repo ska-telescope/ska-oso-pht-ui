@@ -12,8 +12,18 @@ import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Observation from '../../utils/types/observation';
 import { Proposal } from '../../utils/types/proposal';
-import { validateObservationPage } from '../../utils/validation/validation';
-import { BANDWIDTH_TELESCOPE, PAGE_OBSERVATION, PATH } from '../../utils/constants';
+import {
+  validateCalibrationPage,
+  validateLinkingPage,
+  validateObservationPage
+} from '../../utils/validation/validation';
+import {
+  BANDWIDTH_TELESCOPE,
+  PAGE_CALIBRATION,
+  PAGE_LINKING,
+  PAGE_OBSERVATION,
+  PATH
+} from '../../utils/constants';
 import GroupObservation from '../../utils/types/groupObservation';
 import DeleteObservationConfirmation from '../../components/alerts/deleteObservationConfirmation/deleteObservationConfirmation';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -38,10 +48,19 @@ export default function ObservationPage() {
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const getProposalState = () => application.content1 as number[];
-  const setTheProposalState = (value: number) => {
+  const setTheProposalState = (value: number, valueLinking: number, valueCalibration: number) => {
     const temp: number[] = [];
     for (let i = 0; i < getProposalState().length; i++) {
-      temp.push(PAGE === i ? value : getProposalState()[i]);
+      // validate observation page, linking page & calibration page
+      temp.push(
+        PAGE === i
+          ? value
+          : PAGE_CALIBRATION === i
+          ? valueCalibration
+          : PAGE_LINKING === i
+          ? valueLinking
+          : getProposalState()[i]
+      );
     }
     updateAppContent1(temp);
   };
@@ -80,11 +99,13 @@ export default function ObservationPage() {
     const obs3 = (getProposal().groupObservations ?? []).filter(
       e => e.observationId !== currObs?.id
     );
+    const obs4 = getProposal().calibrationStrategy?.filter(e => e.observationIdRef !== currObs?.id);
     setProposal({
       ...getProposal(),
       observations: obs1,
       targetObservation: obs2,
-      groupObservations: obs3
+      groupObservations: obs3,
+      calibrationStrategy: obs4
     });
     setElementsO(elementsO.filter(e => e.id !== currObs?.id));
     setCurrObs(null);
@@ -101,7 +122,11 @@ export default function ObservationPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    setTheProposalState(validateObservationPage(getProposal()));
+    setTheProposalState(
+      validateObservationPage(getProposal()),
+      validateLinkingPage(getProposal()),
+      validateCalibrationPage(getProposal())
+    );
   }, [validateToggle]);
 
   const observationGroupIds = (id: string) => {

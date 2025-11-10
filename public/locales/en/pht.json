@@ -128,7 +128,8 @@
     "comment": {
       "label": "Comment",
       "help": "You can provide a comment on the observatory defined calibration strategy here."
-    }
+    },
+    "limitReached": "Only 1 observation can currently be used for the calibration strategy."
   },
   "cancelBtn": {
     "label": "Cancel"
@@ -226,7 +227,7 @@
   },
   "deleteTarget": {
     "label": "Delete this target ? ",
-    "info": "Deleting this target will also remove any related links to observations",
+    "info": "Deleting this target will also remove any related links to observations and calibrations",
     "toolTip": "Delete the target"
   },
   "deleteTeamMember": {
