@@ -34,7 +34,9 @@ const Panel = styled(Paper)<{ expanded: boolean }>(({ expanded }) => ({
   borderRadius: '4px 0 0 4px'
 }));
 
-export default function EdgeSlider() {
+export default function EdgeSlider({
+  helperText = 'Helper text will be shown here'
+}) {
   const [expanded, setExpanded] = useState(false);
 
   const togglePanel = () => {
@@ -46,10 +48,10 @@ export default function EdgeSlider() {
       <Panel expanded={expanded} onClick={togglePanel}>
         <Box sx={{ position: 'absolute', left: '0px' }}>
           <Typography sx={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
-            Help
+            HELP
           </Typography>
         </Box>
-        {expanded ? 'Click to collapse' : ''}
+        {expanded ? helperText : ''}
       </Panel>
     </Container>
   );
