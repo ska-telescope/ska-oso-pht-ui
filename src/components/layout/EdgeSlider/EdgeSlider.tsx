@@ -25,8 +25,6 @@ const Panel = styled(Paper)<{ expanded: boolean }>(({ expanded }) => ({
   overflow: 'hidden',
   zIndex: 2,
   display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
   cursor: 'pointer',
   backgroundColor: '#fff',
   color: '#000',
@@ -34,9 +32,13 @@ const Panel = styled(Paper)<{ expanded: boolean }>(({ expanded }) => ({
   borderRadius: '4px 0 0 4px'
 }));
 
+interface EdgeSliderProps {
+  helperText: string;
+}
+
 export default function EdgeSlider({
   helperText = 'Helper text will be shown here'
-}) {
+}: EdgeSliderProps) {
   const [expanded, setExpanded] = useState(false);
 
   const togglePanel = () => {
@@ -46,12 +48,33 @@ export default function EdgeSlider({
   return (
     <Container>
       <Panel expanded={expanded} onClick={togglePanel}>
-        <Box sx={{ position: 'absolute', left: '0px' }}>
+        <Box
+          sx={{
+            width: TAB_WIDTH,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            borderRight: `1px solid #ddd`
+          }}
+        >
           <Typography sx={{ writingMode: 'vertical-rl', textOrientation: 'mixed' }}>
             HELP
           </Typography>
         </Box>
-        {expanded ? helperText : ''}
+
+        {expanded && (
+          <Box
+            sx={{
+              flex: 1,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '16px'
+            }}
+          >
+            <Typography>{helperText}</Typography>
+          </Box>
+        )}
       </Panel>
     </Container>
   );

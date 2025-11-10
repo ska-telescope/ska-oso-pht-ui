@@ -68,8 +68,8 @@ export default function ButtonUserMenu({
   const username = accounts.length > 0 ? accounts[0].name + cypressLogin : cypressLogin;
 
   const getHelp = () => {
-    Object.keys(help.component).length === 0 ? '' : help.component
-  } 
+    return Object.keys(help.component).length === 0 ? '' : (help.component as string);
+  };
 
   React.useEffect(() => {
     const accountStr = localStorage.getItem('cypress:account');
@@ -92,11 +92,6 @@ export default function ButtonUserMenu({
       };
     }
   }, []);
-
-  React.useEffect(()=>{
-    console.log('getHelp()', getHelp())
-    console.log('help', help)
-  },[getHelp()])
 
   const handleMenuOpen = () => {
     if (onClick) {
@@ -246,9 +241,7 @@ export default function ButtonUserMenu({
         </Paper>
       </Popper>
 
-      <EdgeSlider 
-      helperText={getHelp()}
-      />
+      <EdgeSlider helperText={getHelp()} />
     </>
   );
 }
