@@ -22,7 +22,9 @@ import {
   verifyObservationInTable,
   clickObservationFromTable,
   clickToLinkTargetAndObservation,
-  verifySensitivityCalculatorStatusSuccess
+  verifySensitivityCalculatorStatusSuccess,
+  clickToLinkingPage,
+  clickToCalibrationPage
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -83,6 +85,8 @@ describe('Edit Proposal', () => {
     // clickToObservatoryDataProductPage();
     // clickAddDataProduct();
     // addObservatoryDataProduct();
+    // clickToLinkingPage();
+    // clickToCalibrationPage();
     // //validate proposal
     // validateProposal();
     // //TODO: The remainder of this scenario can be reinstated upon completion of STAR-954

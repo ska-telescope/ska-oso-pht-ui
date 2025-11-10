@@ -104,7 +104,7 @@ Running
 
 To run the analysis tools, execute
 
-    > yarn code-analysis
+    > yarn code-analysis or yarn checker
 
 This will display any errors in the command line. If there are any errors, YARN will exit with a non-zero code, the `-s` argument suppresses this and cleans up the output.
 

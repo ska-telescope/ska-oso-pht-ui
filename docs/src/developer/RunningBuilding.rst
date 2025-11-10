@@ -9,6 +9,10 @@ From the project directory, you can run any of the following:
 
   Runs the app in the development mode at [http://localhost:6101](http://localhost:6101). The app will recompile and restart if you make any edits to the source files. Any linting errors will also be shown in the console.
 
+- `> yarn local`
+
+Runs the app in the development mode without resetting the public/env.js file at [http://localhost:6101](http://localhost:6101). The app will recompile and restart if you make any edits to the source files. Any linting errors will also be shown in the console.
+
 - `> yarn skao:update`
 
   yarn will update the repository with the latest SKAO libraries
@@ -48,3 +52,12 @@ There are two ways that this can be done as below:
 - `> docker run -p 6101:6101 ska-oso-pht-ui`
 
 The project will then be accessible at the url http://localhost:6101/
+
+Building the documentation 
+============================================
+
+To build the documentation, you can use the following command:
+
+    > make docs-build html
+
+This will generate the documentation files in the `docs/build/html` directory.
