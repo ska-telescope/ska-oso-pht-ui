@@ -3,7 +3,10 @@ import { ChevronRight, ExpandMore } from '@mui/icons-material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { useTheme } from '@mui/material/styles';
 import React from 'react';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { useNavigate } from 'react-router-dom';
 import TableTechnicalReviews from '../../tableTechnicalReview/TableTechnicalReviews';
+import CollapsibleObservation from '../CollapsibleObservation';
 import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
 import TableScienceReviews from '@/components/grid/tableScienceReviews/TableScienceReviews';
 import { presentDate, presentLatex, presentTime } from '@/utils/present/present';
@@ -16,15 +19,12 @@ import {
   REVIEW_TYPE
 } from '@/utils/constants';
 import { isReviewerAdminOnly, useInitializeAccessStore } from '@/utils/aaa/aaaUtils';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import GroupObservation from '@/utils/types/groupObservation';
 import Proposal from '@/utils/types/proposal';
 import ObservationEntry from '@/pages/entry/ObservationEntry/ObservationEntry';
-import { useNavigate } from 'react-router-dom';
 import EditIcon from '@/components/icon/editIcon/editIcon';
 
-
-interface TableObservationRowProps{
+interface TableObservationRowProps {
   item: any;
   obsItem: any;
   index: number;
@@ -76,19 +76,18 @@ export default function TableObservationRow({
   };
 
   const editIconClicked = (row: any) => {
-      // setCurrObs(row.rec);
-      navigate(PATH[2], { replace: true, state: row.rec });
-    };
-  
-    const deleteIconClicked = (row: any) => {
-      // setCurrObs(row.rec);
-      setOpenDeleteDialog(true);
-    };
-
-    const closeDeleteDialog = () => {
-    // setOpenDeleteDialog(false);
+    // setCurrObs(row.rec);
+    navigate(PATH[2], { replace: true, state: row.rec });
   };
 
+  const deleteIconClicked = (row: any) => {
+    // setCurrObs(row.rec);
+    setOpenDeleteDialog(true);
+  };
+
+  const closeDeleteDialog = () => {
+    // setOpenDeleteDialog(false);
+  };
 
   // React.useEffect(() => {
   //   if (!item || typeof item.displayRank !== 'number' || !item.decisions) return;
@@ -119,9 +118,10 @@ export default function TableObservationRow({
         <TableCell role="gridcell">
           <Box sx={{ display: 'flex', gap: 0.5, msOverflowX: 'hidden' }}>
             <EditIcon onClick={() => editIconClicked(item)} toolTip={t('observations.edit')} />
+            <EditIcon onClick={() => editIconClicked(item)} toolTip={t('observations.edit')} />
           </Box>
+          
         </TableCell>
-        
 
         <TableCell role="gridcell">
           <Typography
@@ -149,7 +149,7 @@ export default function TableObservationRow({
               maxWidth: '100%'
             }}
           >
-           {item.id}
+            {item.id}
           </Typography>
         </TableCell>
 
@@ -193,24 +193,24 @@ export default function TableObservationRow({
               maxWidth: '100%'
             }}
           >
-           {BANDWIDTH_TELESCOPE[Number(item.rec.observingBand)]?.label}
+            {BANDWIDTH_TELESCOPE[Number(item.rec.observingBand)]?.label}
           </Typography>
         </TableCell>
         <TableCell role="gridcell">
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, overflowX: 'hidden' }}>
+          <Box sx={{ display: 'flex', alignItems: 'end', gap: 1, overflowX: 'hidden' }}>
             <IconButton
               ref={expandButtonRef}
-              aria-label={`${expanded ? 'Collapse' : 'Expand'} details for ${item.id}. ${
-                getReviews(item?.reviews, REVIEW_TYPE.SCIENCE)?.length
-              } additional details available.`}
+              // aria-label={`${expanded ? 'Collapse' : 'Expand'} details for ${item.id}. ${
+              //   getReviews(item?.reviews, REVIEW_TYPE.SCIENCE)?.length
+              // } additional details available.`}
               aria-expanded={expanded}
-              aria-controls={`employee-details-${item.id}`}
+              // aria-controls={`employee-details-${item.id}`}
               size="small"
               onClick={() => toggleRow(item.id)}
               data-testid={`expand-button-${item.id}`}
               sx={{
                 transition: 'transform 0.2s',
-                transform: expanded ? 'rotate(0deg)' : 'rotate(0deg)'
+                transform: expanded ? 'rotate(0deg)' : 'rotate(0deg)',
               }}
             >
               {expanded ? <ExpandMore /> : <ChevronRight />}
@@ -239,6 +239,7 @@ export default function TableObservationRow({
               {/* <TableTechnicalReviews data={item} />
               <TableScienceReviews data={item} excludeFunction={excludeFunction} /> */}
               <ObservationEntry></ObservationEntry>
+              <CollapsibleObservation obs={item}></CollapsibleObservation>
             </Box>
           </Collapse>
         </TableCell>

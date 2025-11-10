@@ -53,8 +53,7 @@ export default function TableReviewDecision({
   };
 
   const scoredItems = React.useMemo(() => {
-
-    console.log('data', data)
+    console.log('data', data);
 
     if (!data) return [];
 

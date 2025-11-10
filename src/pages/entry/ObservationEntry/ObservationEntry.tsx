@@ -86,11 +86,10 @@ export default function ObservationEntry() {
   const { osdLOW, osdMID, observatoryConstants } = useOSDAccessors();
 
   const isEdit = () => {
-console.log('locationProperties', locationProperties)
+    console.log('locationProperties', locationProperties);
 
-return locationProperties.state !== null;
-
-  }
+    return locationProperties.state !== null;
+  };
 
   const PAGE = isEdit() ? PAGE_OBSERVATION_UPDATE : PAGE_OBSERVATION_ADD;
 

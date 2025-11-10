@@ -19,7 +19,7 @@ export default function TableObservationHeader() {
         </TableCell>
         <TableCell>
           <Typography variant="subtitle2" fontWeight="bold">
-           name (id?)
+            name (id?)
           </Typography>
         </TableCell>
         <TableCell sx={{ whiteSpace: 'nowrap', width: '1%', paddingRight: 2 }}>
@@ -37,7 +37,7 @@ export default function TableObservationHeader() {
             band (e.g. Band2)
           </Typography>
         </TableCell>
-         <TableCell sx={{ whiteSpace: 'nowrap', width: '1%', paddingRight: 2 }}>
+        <TableCell sx={{ whiteSpace: 'nowrap', width: '1%', paddingRight: 2 }}>
           <Typography variant="subtitle2" fontWeight="bold">
             {t('tableReviewDecision.sciReviews')}
           </Typography>

@@ -89,7 +89,7 @@ export default function TableObservation({
     }));
 
     // checkForUpdatesForAPI(results);
-    console.log('results', results)
+    console.log('results', results);
     return results;
   }, [data]);
 
@@ -100,22 +100,22 @@ export default function TableObservation({
         <TableBody>
           {obsData.map((item: any, index: number) => (
             <>
-            <TableObservationRow
-              key={item.id}
-              item={item}
-              index={index}
-              expanded={expandedRows.has(item.id)}
-              toggleRow={toggleRow}
-              expandButtonRef={el => (expandButtonRefs.current[item.id] = el)}
-              excludeFunction={excludeFunction}
-              updateDecisionItem={updateFunction}
-              getReviews={getReviews}
-              getReviewsReviewed={getReviewsReviewed}
-              calculateScore={calculateScore}
-              tableLength={data.length}
-              trimText={trimText}
-              t={t}
-            />
+              <TableObservationRow
+                key={item.id}
+                item={item}
+                index={index}
+                expanded={expandedRows.has(item.id)}
+                toggleRow={toggleRow}
+                expandButtonRef={el => (expandButtonRefs.current[item.id] = el)}
+                excludeFunction={excludeFunction}
+                updateDecisionItem={updateFunction}
+                getReviews={getReviews}
+                getReviewsReviewed={getReviewsReviewed}
+                calculateScore={calculateScore}
+                tableLength={data.length}
+                trimText={trimText}
+                t={t}
+              />
             </>
           ))}
         </TableBody>
