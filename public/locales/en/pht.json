@@ -894,7 +894,8 @@
   },
   "channelsOut": {
     "help": "Channels Out help text TBD",
-    "label": "Channels Out"
+    "label": "Channels Out",
+    "error": "Valid range is 0 - 40"
   },
   "fitSpectralPol": {
     "help": "Fit Spectral Pol help text TBD",
@@ -1164,6 +1165,11 @@
     "help": " Select value from the list. A circular Gaussian taper may be applied to the uv data. It specifies the FWHM of an image-domain Gaussian, in arcsec; tapering the uv data is equivalent to convolving with this image-domain Gaussian.",
     "label": "Tapering",
     "0": "No tapering"
+  },
+  "gaussianTaper": {
+    "help": " Select value from the list. A circular Gaussian taper may be applied to the uv data. It specifies the FWHM of an image-domain Gaussian, in arcsec; tapering the uv data is equivalent to convolving with this image-domain Gaussian.",
+    "label": "Gaussian Taper",
+    "0": "No gaussian taper"
   },
   "targetImport": {
     "help": "Upload a list of targets in .csv format in the reference system selected. Currently only ICRS is available so define targets in ra: 'hh:mm:ss.s' and dec: 'dd:mm:ss.s' format. Example is .csv file with name, ra, dec. Fields with incomplete row entry and duplicate target names will be removed when uploaded."
