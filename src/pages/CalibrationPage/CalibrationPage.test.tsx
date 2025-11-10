@@ -1,10 +1,10 @@
 import { MockCalibratorFrontendList } from '@/services/axios/get/getCalibratorList/mockCalibratorListFrontend';
 import { describe, test, expect } from 'vitest';
-import { /*act, fireEvent,*/ render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { storageObject, StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import completeMockStore from '../../utils/MockStore';
 import CalibrationPage from './CalibrationPage';
-import completeMockStore from './MockStore';
 import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
@@ -61,17 +61,30 @@ describe('<CalibrationPage />', () => {
     // TODO check display of no calibration strategy message
   });
 
-  // TODO use data without comment to test this
-  //   test('renders checkbox and toggles comment field', async () => {
-  //   vi.spyOn(storageObject, 'useStore').mockReturnValue(completeMockStore as any);
-  //   wrapper(<CalibrationPage />);
-  //   const checkbox = await screen.findByTestId('calibratorCheckbox');
-  //   expect(checkbox).toBeInTheDocument();
-  //   act(() => {
-  //       fireEvent.click(checkbox);
-  //     });
-  //   // Wait for the comment field to appear
-  //   const commentField = await screen.findByTestId('commenttId');
-  //   expect(commentField).toBeInTheDocument();
-  // });
+  test('renders checkbox and comment field', async () => {
+    vi.spyOn(storageObject, 'useStore').mockReturnValue(completeMockStore as any);
+    wrapper(<CalibrationPage />);
+    const checkboxContainer = await screen.findByTestId('calibratorCheckbox');
+    expect(checkboxContainer).toBeInTheDocument();
+    const checkbox = screen.getByRole('checkbox'); // actual checkbox element
+    expect(checkbox).toBeChecked();
+    const commentField = await screen.findByTestId('commenttId');
+    expect(commentField).toBeInTheDocument(); // test data should already have comment
+    expect(
+      await screen.getByDisplayValue('This is an observatory defined calibration strategy.')
+    ).toBeInTheDocument();
+  });
+
+  test('updates checkbox and toggles comment field', async () => {
+    vi.spyOn(storageObject, 'useStore').mockReturnValue(completeMockStore as any);
+    wrapper(<CalibrationPage />);
+    const checkbox = await screen.findByTestId('calibratorCheckbox');
+    expect(checkbox).toBeInTheDocument();
+    act(() => {
+      fireEvent.click(checkbox);
+    });
+    expect(checkbox).not.toBeChecked();
+    const commentField = await screen.queryByTestId('commenttId');
+    expect(commentField).not.toBeInTheDocument();
+  });
 });
