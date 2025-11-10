@@ -29,7 +29,7 @@ export default function GridDataProducts({
   const { t } = useScopedTranslation();
 
   const PAGE = PAGE_SDP;
-  const hasObservations = () => (baseObservations?.length > 0 ? true : false);
+  const hasObservations = () => baseObservations?.length > 0;
   const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
 
   const getODPString = (inArr: boolean[]) => {
