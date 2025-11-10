@@ -21,7 +21,7 @@ The calibration page is divided into several sections, each providing different 
    - Duration: The duration (in minutes) for which the calibrator is used.
    - Intent: The purpose of the calibration (e.g., phase, amplitude).
 
-2. **Target name and integratiion time of the observation**: This section shows:
+2. **Target name and integration time of the observation**: This section shows:
    - Target Name: Automatically retrieved from the proposal based on the selected observation.
    - Integration Time: The total integration time (in minutes) for the selected observation, derived from the supplied sensitivity parameters.
 
