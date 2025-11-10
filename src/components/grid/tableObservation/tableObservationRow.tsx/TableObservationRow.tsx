@@ -120,7 +120,6 @@ export default function TableObservationRow({
             <EditIcon onClick={() => editIconClicked(item)} toolTip={t('observations.edit')} />
             <EditIcon onClick={() => editIconClicked(item)} toolTip={t('observations.edit')} />
           </Box>
-          
         </TableCell>
 
         <TableCell role="gridcell">
@@ -210,7 +209,7 @@ export default function TableObservationRow({
               data-testid={`expand-button-${item.id}`}
               sx={{
                 transition: 'transform 0.2s',
-                transform: expanded ? 'rotate(0deg)' : 'rotate(0deg)',
+                transform: expanded ? 'rotate(0deg)' : 'rotate(0deg)'
               }}
             >
               {expanded ? <ExpandMore /> : <ChevronRight />}
