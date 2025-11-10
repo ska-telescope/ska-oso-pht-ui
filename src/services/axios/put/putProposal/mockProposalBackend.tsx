@@ -178,17 +178,24 @@ export const MockProposalBackend: ProposalBackend = {
     data_product_sdps: [
       {
         data_product_id: 'SDP-2',
-        options: ['Y', 'N', 'Y', 'N'],
-        observation_set_refs: ['obs-obR1Ej'],
-        image_size: {
-          value: 15,
-          unit: 'deg2'
+        products: ['Y', 'N', 'Y', 'N'],
+        script_parameters: {
+          channels_out: 1,
+          fit_spectral_pol: 1,
+          polarisations: 'I',
+          image_size: {
+            value: 15,
+            unit: 'deg2'
+          },
+          image_cellsize: {
+            value: 1.007,
+            unit: 'arcsec2'
+          },
+          weight: {
+            weighting: 'uniform'
+          }
         },
-        image_cellsize: {
-          value: 1.007,
-          unit: 'arcsec2'
-        },
-        weighting: '1'
+        observation_set_refs: ['obs-obR1Ej']
       }
     ],
     calibration_strategy: [
@@ -256,6 +263,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
   proposal_info: {
     title: 'Proposal Zoom',
     proposal_type: {
+      attributes: [],
       main_type: 'key_science_proposal'
     },
     abstract: 'My zoom abstract.',
@@ -266,17 +274,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
     targets: [
       {
         target_id: 'm2',
-        name: 'target',
-        pointing_pattern: {
-          active: 'SinglePointParameters',
-          parameters: [
-            {
-              kind: 'SinglePointParameters',
-              offset_x_arcsec: 0.5,
-              offset_y_arcsec: 0.5
-            }
-          ]
-        },
+        name: 'm2',
         reference_coordinate: {
           kind: RA_TYPE_ICRS.label,
           ra_str: '21:33:27.0200',
@@ -305,7 +303,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
         },
         radial_velocity: {
           quantity: {
-            value: -3.6,
+            value: 0,
             unit: 'km/s'
           },
           definition: 'RADIO',
@@ -343,8 +341,8 @@ export const MockProposalBackendZoom: ProposalBackend = {
           },
           spectral_resolution: '14.13 Hz (21.2 m/s)',
           effective_resolution: '14.13 Hz (21.2 m/s)',
-          image_weighting: 'briggs',
-          robust: '1',
+          image_weighting: 'uniform',
+          robust: '0',
           spectral_averaging: '1'
         }
       }
@@ -352,17 +350,25 @@ export const MockProposalBackendZoom: ProposalBackend = {
     data_product_sdps: [
       {
         data_product_id: 'SDP-1',
-        options: ['Y', 'Y', 'Y', 'Y'],
+        products: ['Y', 'Y', 'Y', 'Y'],
         observation_set_refs: ['obs-arMIoY'],
-        image_size: {
-          value: 100,
-          unit: 'deg'
-        },
-        image_cellsize: {
-          value: 3.7,
-          unit: 'arcsec2'
-        },
-        weighting: '2'
+        script_parameters: {
+          channels_out: 1,
+          fit_spectral_pol: 1,
+          polarisations: 'I',
+          image_size: {
+            value: 100,
+            unit: 'deg2'
+          },
+          image_cellsize: {
+            value: 3.7,
+            unit: 'arcsec2'
+          },
+          weight: {
+            weighting: 'briggs',
+            robust: '1'
+          }
+        }
       }
     ],
     calibration_strategy: [
@@ -381,16 +387,14 @@ export const MockProposalBackendZoom: ProposalBackend = {
         result: {
           supplied_type: 'integration_time',
           weighted_continuum_sensitivity: {
-            value: 0,
-            unit: ''
+            value: 0
           },
           weighted_spectral_sensitivity: {
             value: 29.69626339640881,
             unit: 'mJy/beam'
           },
           total_continuum_sensitivity: {
-            value: 0,
-            unit: ''
+            value: 0
           },
           total_spectral_sensitivity: {
             value: 29.696271681672012,
@@ -403,8 +407,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
           }
         },
         continuum_confusion_noise: {
-          value: 0,
-          unit: ''
+          value: 0
         },
         synthesized_beam_size: {
           continuum: 'dummy',

@@ -129,7 +129,7 @@ export const SPACER_HEADER = 11;
 export const SPACER_FOOTER = 0; // Just here to show it has been considered
 
 export const BANNER_PMT_SPACER = SPACER_HEADER;
-export const BANNER_PMT_SPACER_MIN = SPACER_HEADER + 70;
+export const BANNER_PMT_SPACER_MIN = SPACER_HEADER + 100;
 
 export const FOOTER_PMT = 65;
 export const FOOTER_PMT_SPACER = SPACER_FOOTER + FOOTER_PMT;
@@ -161,7 +161,9 @@ export const DATA_PRODUCT = {
 };
 export const DEFAULT_HELP = ['', ' ', ''];
 
-export const EMPTY_STATUS = [5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5];
+export const MOCK_CALL = true; // Used so we can track down specific changes for the mock call
+
+export const EMPTY_STATUS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]; // See SRCNet INACTIVE
 export const ENTRY_HEIGHT = 40;
 
 export const FOOTER_HEIGHT = 20;
@@ -179,6 +181,10 @@ export const FREQUENCY_UNITS = [
   { label: 'kHz', value: FREQUENCY_KHZ, mapping: 'kHz', toHz: 10000000 },
   { label: 'Hz', value: FREQUENCY_HZ, mapping: 'Hz', toHz: 10000000000 }
 ];
+
+export const MODE_CONTINUUM = 102;
+export const MODE_PST = 103;
+export const MODE_ZOOM = 101;
 
 export const GENERAL = {
   ScienceCategory: [
@@ -214,9 +220,13 @@ export const GENERAL = {
     { label: 'VLBI', subCategory: [{ label: 'Not specified', value: 1 }], value: 14 }
   ],
   ObservingMode: [
-    { label: 'Zoom', subCategory: [{ label: 'Not specified', value: 1 }], value: 101 },
-    { label: 'Continuum', subCategory: [{ label: 'Not specified', value: 1 }], value: 102 },
-    { label: 'PST', subCategory: [{ label: 'Not specified', value: 1 }], value: 103 }
+    { label: 'Zoom', subCategory: [{ label: 'Not specified', value: 1 }], value: MODE_ZOOM },
+    {
+      label: 'Continuum',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: MODE_CONTINUUM
+    },
+    { label: 'PST', subCategory: [{ label: 'Not specified', value: 1 }], value: MODE_PST }
   ]
 };
 
@@ -232,6 +242,8 @@ export const HELP_FONT = 16;
 export const IW_BRIGGS = 2;
 export const IW_NATURAL = 0;
 export const IW_UNIFORM = 1;
+
+export const STOKES = [{ label: 'I', value: 'I' }];
 export const IMAGE_WEIGHTING = [
   { label: 'natural', lookup: 'natural', value: 0 },
   { label: 'uniform', lookup: 'uniform', value: 1 },
@@ -240,7 +252,6 @@ export const IMAGE_WEIGHTING = [
 
 export const LAB_IS_BOLD = true;
 export const LAB_POSITION = LABEL_POSITION.START;
-export const LAST_PAGE = 11;
 
 export const MULTIPLIER_HZ_GHZ = [1, 1, 1000, 1000000, 1000000000];
 
@@ -254,8 +265,8 @@ export const NAV = [
   '/proposal/technical',
   '/proposal/data',
   '/proposal/linking',
-  '/proposal/calibration',
-  '/proposal/src'
+  '/proposal/calibration'
+  // Not required until SRCNet becomes active -'/proposal/src'
 ];
 export const NOT_SPECIFIED = 'notSpecified';
 export const NOT_APPLICABLE = 'N/A';
@@ -281,13 +292,17 @@ export const PAGE_DESCRIPTION = 3;
 export const PAGE_TARGET = 4;
 export const PAGE_OBSERVATION = 5;
 export const PAGE_TECHNICAL = 6;
-export const PAGE_SDP = 7;
+export const PAGE_DATA_PRODUCTS = 7;
 export const PAGE_LINKING = 8;
 export const PAGE_CALIBRATION = 9;
 export const PAGE_SRC_NET = 10;
 export const PAGE_OBSERVATION_ADD = 11;
-export const PAGE_SDP_ADD = 14;
+export const PAGE_CYCLE = 13;
+export const PAGE_DATA_PRODUCTS_ADD = 14;
 export const PAGE_OBSERVATION_UPDATE = 15;
+export const PAGE_PANEL_MANAGEMENT = 16;
+
+export const LAST_PAGE = 10; // See SRCNet INACTIVE -
 
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
 
@@ -635,7 +650,8 @@ export const DEFAULT_TARGETS: Target = {
   referenceFrame: RA_TYPE_ICRS.label,
   vel: '123',
   velType: 0,
-  velUnit: 0
+  velUnit: 0,
+  tiedArrayBeams: null
 };
 
 export const DUMMY_PROPOSAL_ID = 'dummy-proposal-id';

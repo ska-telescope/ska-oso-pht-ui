@@ -267,14 +267,19 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
   return inValue?.map((dp, index) => ({
     id: index + 1,
     dataProductsSDPId: dp.data_product_id,
-    observatoryDataProduct: dp.options ? getSDPOptions(dp.options) : [],
+    observatoryDataProduct: dp.products ? getSDPOptions(dp.products) : [],
     observationId: dp.observation_set_refs,
-    imageSizeValue: dp.image_size.value,
-    imageSizeUnits: getImageSizeUnits(dp.image_size.unit),
-    pixelSizeValue: dp.image_cellsize?.value,
-    pixelSizeUnits: dp?.image_cellsize?.unit ? getPixelSizeUnits(dp?.image_cellsize?.unit) : null,
-    weighting: Number(dp.weighting),
-    polarisations: dp.polarisations
+    imageSizeValue: dp.script_parameters.image_size.value,
+    imageSizeUnits: getImageSizeUnits(dp.script_parameters.image_size.unit),
+    pixelSizeValue: dp.script_parameters.image_cellsize?.value,
+    pixelSizeUnits: dp?.script_parameters.image_cellsize?.unit
+      ? getPixelSizeUnits(dp?.script_parameters.image_cellsize?.unit)
+      : null,
+    weighting: Number(dp.script_parameters.weight.weighting),
+    robust: dp.script_parameters.weight.robust,
+    polarisations: dp.script_parameters.polarisations,
+    channelsOut: dp.script_parameters.channels_out,
+    fitSpectralPol: dp.script_parameters.fit_spectral_pol
   })) as DataProductSDP[];
 };
 
@@ -712,7 +717,9 @@ export function mapping(inRec: ProposalBackend): Proposal {
       : technicalPDF
       ? FileUploadStatus.OK
       : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
-    dataProductSDP: getDataProductSDP(inRec.observation_info?.data_product_sdps),
+    dataProductSDP: inRec?.observation_info?.data_product_sdps
+      ? getDataProductSDP(inRec.observation_info?.data_product_sdps as DataProductSDPsBackend[])
+      : [],
     dataProductSRC: getDataProductSRC(inRec.observation_info?.data_product_src_nets),
     pipeline: '' // TODO part of Data Products section not implemented yet
   };

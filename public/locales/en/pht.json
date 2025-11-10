@@ -128,7 +128,8 @@
     "comment": {
       "label": "Comment",
       "help": "You can provide a comment on the observatory defined calibration strategy here."
-    }
+    },
+    "limitReached": "Only 1 observation can currently be used for the calibration strategy."
   },
   "cancelBtn": {
     "label": "Cancel"
@@ -226,7 +227,7 @@
   },
   "deleteTarget": {
     "label": "Delete this target ? ",
-    "info": "Deleting this target will also remove any related links to observations",
+    "info": "Deleting this target will also remove any related links to observations and calibrations",
     "toolTip": "Delete the target"
   },
   "deleteTeamMember": {
@@ -891,6 +892,20 @@
     "help": "For Briggs weighting, the robustness parameter can be set to -2 (closest to uniform weighting), -1, 0, 1 or 2 (closest to natural weighting).",
     "label": "Robust"
   },
+  "channelsOut": {
+    "help": "Channels Out help text TBD",
+    "label": "Channels Out",
+    "error": "Valid range is 0 - 40"
+  },
+  "fitSpectralPol": {
+    "help": "Fit Spectral Pol help text TBD",
+    "label": "Fit Spectral Pol "
+  },
+  "stokes": {
+    "help": "Stokes help text TBD",
+    "label": "Stokes",
+    "I": "I"
+  },
   "saveBtn": {
     "label": "Save",
     "success": "Save was successful",
@@ -914,6 +929,7 @@
     "null": "Not specified",
     "label": "Science Category",
     "help": "Select a category that best describes the science of your proposal.",
+    "validationNavigationError": "Science Category is required.  It is located on the General Information page.",
     "notSpecified": "Not specified",
     "error": "A value is required",
     "all": "All Science Categories"
@@ -1151,6 +1167,11 @@
     "label": "Tapering",
     "0": "No tapering"
   },
+  "gaussianTaper": {
+    "help": " Select value from the list. A circular Gaussian taper may be applied to the uv data. It specifies the FWHM of an image-domain Gaussian, in arcsec; tapering the uv data is equivalent to convolving with this image-domain Gaussian.",
+    "label": "Gaussian Taper",
+    "0": "No gaussian taper"
+  },
   "targetImport": {
     "help": "Upload a list of targets in .csv format in the reference system selected. Currently only ICRS is available so define targets in ra: 'hh:mm:ss.s' and dec: 'dd:mm:ss.s' format. Example is .csv file with name, ra, dec. Fields with incomplete row entry and duplicate target names will be removed when uploaded."
   },
@@ -1294,15 +1315,6 @@
       "pageError": "The OBSERVATION page is not complete"
     },
     "6": {
-      "status": "Calibration",
-      "title": "Calibration",
-      "titleShort": "Calibration",
-      "desc": "This is a likely observing strategy with calibration (assuming observation near transit, etc.)",
-      "pageError": "The CALIBRATION STRATEGY page is not complete",
-      "help": "The listed strategy is representative and not guaranteed at the time of execution. User defined calibration strategies are not currently supported.",
-      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE CALIBRATION STRATEGY AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL"
-    },
-    "7": {
       "status": "Technical",
       "title": "Technical",
       "titleShort": "Technical",
@@ -1335,8 +1347,10 @@
       "status": "Calibration",
       "title": "Calibration",
       "titleShort": "Calibration",
-      "desc": "This page allows you to request and define Calibration strategies.",
-      "pageError": "The Calibration page is not complete"
+      "desc": "This is a likely observing strategy with calibration (assuming observation near transit, etc.)",
+      "pageError": "The CALIBRATION STRATEGY page is not complete",
+      "help": "The listed strategy is representative and not guaranteed at the time of execution. User defined calibration strategies are not currently supported.",
+      "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE CALIBRATION STRATEGY AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL"
     },
     "10": {
       "status": "SRCNet",

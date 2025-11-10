@@ -22,6 +22,11 @@ UNRELEASED
 * Changed: use ska base images `ska-build-node` and `ska-webserver`
 * Changed: Updated ordering of pages
 * Changed: Data Products are no longer bound to a observation/target combination
+* Changed: Actions moved to the 1st position for DataGrids and tables where applicable
+* Changed: Updated data product mapping
+* Changed: Observation and Data Products pages not accessible until there is an Observing Mode ( For MOCK CALL )
+* Changed: DataGrid for the Data Products replaced with a table so can be extended at a later date
+* Changed: Display of validation statuses no longer suppressed until you visit the page upon creation of a SV / Proposal
 
 8.0.0
 ----------

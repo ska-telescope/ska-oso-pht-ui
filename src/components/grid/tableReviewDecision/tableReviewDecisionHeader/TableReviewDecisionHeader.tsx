@@ -4,59 +4,27 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 export default function TableReviewDecisionHeader() {
   const { t } = useScopedTranslation();
 
+  const displayHeader = (inValue: string) => (
+    <TableCell sx={{ whiteSpace: 'nowrap', width: '1%', paddingRight: 2 }}>
+      <Typography variant="subtitle2" fontWeight="bold">
+        {t(inValue)}
+      </Typography>
+    </TableCell>
+  );
+
   return (
     <TableHead>
       <TableRow>
-        <TableCell sx={{ whiteSpace: 'nowrap', width: '1%', paddingRight: 2 }}>
-          <Typography variant="subtitle2" fontWeight="bold">
-            {t('tableReviewDecision.sciReviews')}
-          </Typography>
-        </TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap', width: '1%', paddingRight: 2 }}>
-          <Typography variant="subtitle2" fontWeight="bold" className="sr-only">
-            {t('scienceCategory.label')}
-          </Typography>
-        </TableCell>
-        <TableCell>
-          <Typography variant="subtitle2" fontWeight="bold">
-            {t('tableReviewDecision.title')}
-          </Typography>
-        </TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap', width: '1%', paddingRight: 2 }}>
-          <Typography variant="subtitle2" fontWeight="bold">
-            {t('tableReviewDecision.decisionStatus')}
-          </Typography>
-        </TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap', width: '1%', paddingRight: 2 }}>
-          <Typography variant="subtitle2" fontWeight="bold">
-            {t('tableReviewDecision.lastUpdated')}
-          </Typography>
-        </TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap', width: '1%', paddingRight: 2 }}>
-          <Typography variant="subtitle2" fontWeight="bold">
-            {t('tableReviewDecision.feasible')}
-          </Typography>
-        </TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap', width: '1%', paddingRight: 2 }}>
-          <Typography variant="subtitle2" fontWeight="bold">
-            {t('tableReviewDecision.decisionScore')}
-          </Typography>
-        </TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap', width: '1%', paddingRight: 2 }}>
-          <Typography variant="subtitle2" fontWeight="bold">
-            {t('tableReviewDecision.rank')}
-          </Typography>
-        </TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap', width: '2%', paddingRight: 2 }}>
-          <Typography variant="subtitle2" fontWeight="bold">
-            {t('recommendations.label')}
-          </Typography>
-        </TableCell>
-        <TableCell sx={{ whiteSpace: 'nowrap', width: '1%', paddingRight: 2 }}>
-          <Typography variant="subtitle2" fontWeight="bold">
-            {t('tableReviewDecision.actions')}
-          </Typography>
-        </TableCell>
+        {displayHeader('tableReviewDecision.sciReviews')}
+        {displayHeader('scienceCategory.label')}
+        {displayHeader('tableReviewDecision.title')}
+        {displayHeader('tableReviewDecision.decisionStatus')}
+        {displayHeader('tableReviewDecision.lastUpdated')}
+        {displayHeader('tableReviewDecision.feasible')}
+        {displayHeader('tableReviewDecision.decisionScore')}
+        {displayHeader('tableReviewDecision.rank')}
+        {displayHeader('recommendations.label')}
+        {displayHeader('tableReviewDecision.actions')}
       </TableRow>
     </TableHead>
   );

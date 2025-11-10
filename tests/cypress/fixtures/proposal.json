@@ -55,14 +55,14 @@
       }
     ],
     "proposal_type": "Standard Proposal",
-    "science_category": "gjhjkhklj",
+    "science_category": "continuum",
     "science_goals": [
       {
         "id": "obs-l0mkYl",
         "array": "MID",
         "linked": "4",
         "observation_type": "Continuum",
-        "observing_band": "ghjghghg",
+        "observing_band": "low",
         "science_goal_id": "goal1",
         "subarray": "subarray 1"
       },
@@ -81,7 +81,7 @@
       "document_name": "scienceJustification",
       "link": "http//:bhjbjgjrsdjbfjkjjnkjnjknknn"
     },
-    "science_subcategory": "gjhjkhklj",
+    "science_subcategory": null,
     "skao_proposal_id": "SKA2388",
     "sub_proposal_type": "Coordinated Proposal",
     "targets": [

@@ -469,6 +469,7 @@ export default function ReviewListPage() {
 
   const stdColumns = [
     ...[
+      colActions,
       colTitle,
       colScienceCategory,
       colConflict,
@@ -478,9 +479,8 @@ export default function ReviewListPage() {
       colRank,
       colComments,
       colSrcNet,
-      colDateUpdated,
+      colDateUpdated
       // SEE BELOW colDateAssigned,
-      colActions
     ]
   ];
 

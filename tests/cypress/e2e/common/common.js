@@ -171,6 +171,7 @@ export const clickReviewOverviewButton = () => clickButton('overviewButtonTestId
 export const clickSave = () => clickButton('saveBtn');
 export const clickSendInviteButton = () => clickButton('sendInviteButton');
 export const clickToAddTarget = () => clickButton('addTargetButton');
+export const clickToAddDataProduct = () => clickButton('addDataProductButton');
 export const clickToAddPSTBeam = () => clickButton('addPulsarTimingBeamButton');
 export const clickMultipleBeamsRadioButton = () => clickButton('MultipleBeamsTestId');
 export const clickMultipleBeamsRadioButtonOnTargetEdit = () =>
@@ -329,6 +330,8 @@ export const clickConfirmButtonWithinPopup = () => {
 
 export const enterProposalTitle = () => entry('titleId', 'Proposal Title');
 
+export const selectContinuum = () => clickDropdown('categoryId', '102');
+
 export const selectCosmology = () => clickDropdown('categoryId', '1');
 export const selectObservingMode = value => {
   cy.get('[data-testid="categoryId"]').should('exist');
@@ -468,6 +471,11 @@ export const addM2TargetUsingResolve = () => {
   cy.get('[id="name"]').should('exist');
   cy.get('[id="name"]').type('M2');
   clickResolveButton();
+};
+
+export const updateDataProductField = (testId, value) => {
+  cy.get('[data-testid="' + testId + '"]').should('exist');
+  cy.get('[data-testid="' + testId + '"]').type(value);
 };
 
 export const enterTargetField = (testId, value) => {
@@ -620,7 +628,10 @@ export const clickFirstRowOfTargetTable = () => {
     .eq(0)
     .within(() => {
       cy.get('[data-field="actions"]').should('be.visible');
-    })
+    });
+  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
+    .children('div[role="row"]')
+    .eq(0)
     .click();
 };
 

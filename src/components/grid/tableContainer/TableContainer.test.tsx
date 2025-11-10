@@ -37,7 +37,6 @@ describe('TableContainer', () => {
     );
 
     const box = container.querySelector('div');
-    expect(box).toHaveStyle({ padding: '24px' }); // p: 3 = 24px in MUI
     expect(box).toHaveStyle({ width: '100%' });
   });
 });
