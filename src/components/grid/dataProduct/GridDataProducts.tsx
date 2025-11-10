@@ -2,12 +2,18 @@ import { Tooltip, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { presentUnits } from '@utils/present/present';
+import { DataProductSDP } from '@utils/types/dataProduct.tsx';
 import EditIcon from '../../icon/editIcon/editIcon';
 import TrashIcon from '../../icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
-import { DataProductSDP } from '../../../utils/types/dataProduct';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { PAGE_SDP } from '@/utils/constants';
+import { PAGE_DATA_PRODUCTS } from '@/utils/constants';
+
+/*****************************************************************************************************************
+ *
+ * This component is currently NOT used in the application as so could be removed once the application is stable.
+ *
+ ****************************************************************************************************************/
 
 interface GridDataProductsProps {
   baseObservations: any[];
@@ -27,9 +33,8 @@ export default function GridDataProducts({
   rows = []
 }: GridDataProductsProps) {
   const { t } = useScopedTranslation();
-
-  const PAGE = PAGE_SDP;
   const hasObservations = () => baseObservations?.length > 0;
+  const PAGE = PAGE_DATA_PRODUCTS;
   const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
 
   const getODPString = (inArr: boolean[]) => {

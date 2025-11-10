@@ -330,6 +330,8 @@ export const clickConfirmButtonWithinPopup = () => {
 
 export const enterProposalTitle = () => entry('titleId', 'Proposal Title');
 
+export const selectContinuum = () => clickDropdown('categoryId', '102');
+
 export const selectCosmology = () => clickDropdown('categoryId', '1');
 export const selectObservingMode = value => {
   cy.get('[data-testid="categoryId"]').should('exist');

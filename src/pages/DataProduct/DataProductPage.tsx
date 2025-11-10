@@ -8,17 +8,16 @@ import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
-import GridDataProducts from '../../components/grid/dataProduct/GridDataProducts';
-import { PAGE_SDP, PATH } from '../../utils/constants';
+import { PAGE_DATA_PRODUCTS, PATH } from '../../utils/constants';
 import { DataProductSDP } from '../../utils/types/dataProduct';
-import Observation from '../../utils/types/observation';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import TableDataProducts from '@/components/grid/tableDataProducts/TableDataProducts';
 
-const PAGE = PAGE_SDP;
-const DATA_GRID_HEIGHT = 450;
+const PAGE = PAGE_DATA_PRODUCTS;
 const LABEL_WIDTH = 6;
+const GAP = 4;
 
-export default function SdpDataPage() {
+export default function DataProductsPage() {
   const { t } = useScopedTranslation();
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
@@ -122,31 +121,21 @@ export default function SdpDataPage() {
 
   const hasObservations = () => (getProposal()?.observations?.length ?? 0) > 0;
 
-  const clickRow = (e: { id: number }) => {
-    setCurrentRow(e.id);
-  };
-
   return (
     <Shell page={PAGE}>
-      <Grid container direction="row" alignItems="flex-start" justifyContent="space-around">
-        <Grid size={{ xs: 11 }}>
-          <Stack spacing={1}>
-            <AddButton
-              title="dataProduct.button"
-              action={PATH[3]}
-              disabled={!hasObservations()}
-              testId="addDataProductButton"
-            />
-            <GridDataProducts
-              baseObservations={getProposal()?.observations as Observation[]}
-              deleteClicked={deleteIconClicked}
-              height={DATA_GRID_HEIGHT}
-              rowClick={clickRow}
-              rows={getProposal().dataProductSDP}
-            />
-          </Stack>
-        </Grid>
-      </Grid>
+      <Stack pl={GAP} pr={GAP} spacing={GAP}>
+        <AddButton
+          title="dataProduct.button"
+          action={PATH[3]}
+          disabled={!hasObservations()}
+          testId="addDataProductButton"
+        />
+        <TableDataProducts
+          data={getProposal().dataProductSDP}
+          deleteFunction={deleteIconClicked}
+          updateFunction={() => {}}
+        />
+      </Stack>
 
       <AlertDialog
         maxWidth="md"

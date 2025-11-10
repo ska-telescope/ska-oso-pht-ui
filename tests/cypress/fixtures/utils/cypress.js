@@ -15,8 +15,14 @@ export const click = testId =>
     .click();
 export const entry = (testId, value) => get(testId).type(value);
 export const get = testId => cy.get('[data-testid="' + testId + '"]');
-export const selectId = id => cy.get('[id="' + id + '"]').click({ force: true });
-export const selectValue = value => cy.get('[data-value="' + value + '"]').click({ force: true });
+export const selectId = id => cy.get('[id="' + id + '"]').click();
+export const selectValue = value => {
+  cy.get(`li[role="option"][data-value="${value}"]`)
+    .scrollIntoView()
+    .should('be.visible')
+    .click({ force: true });
+};
+
 export const verifyContent = (testId, value) => get(testId).should('contain.text', value);
 export const verifyExists = testId => get(testId, { timeout: 10000 }).should('exist');
 export const verifyVisible = testId =>

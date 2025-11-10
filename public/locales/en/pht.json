@@ -929,6 +929,7 @@
     "null": "Not specified",
     "label": "Science Category",
     "help": "Select a category that best describes the science of your proposal.",
+    "validationNavigationError": "Science Category is required.  It is located on the General Information page.",
     "notSpecified": "Not specified",
     "error": "A value is required",
     "all": "All Science Categories"
