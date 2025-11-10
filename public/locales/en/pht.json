@@ -893,7 +893,8 @@
   },
   "channelsOut": {
     "help": "Channels Out help text TBD",
-    "label": "Channels Out"
+    "label": "Channels Out",
+    "error": "Valid range is 0 - 40"
   },
   "fitSpectralPol": {
     "help": "Fit Spectral Pol help text TBD",
