@@ -27,6 +27,7 @@ UNRELEASED
 * Changed: Observation and Data Products pages not accessible until there is an Observing Mode ( For MOCK CALL )
 * Changed: DataGrid for the Data Products replaced with a table so can be extended at a later date
 * Changed: Display of validation statuses no longer suppressed until you visit the page upon creation of a SV / Proposal
+* Changed: Display of Observation page data grid to be collapisble 
 
 8.0.0
 ----------
