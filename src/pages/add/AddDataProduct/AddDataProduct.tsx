@@ -71,7 +71,7 @@ export default function AddDataProduct() {
   const [robust, setRobust] = React.useState(3);
   const [channelsOut, setChannelsOut] = React.useState(1);
   const [fitSpectralPol, setFitSpectralPol] = React.useState(1);
-  const [stokes, setStokes] = React.useState('I');
+  const [polarisations, setPolarisations] = React.useState('I');
   const [tapering, setTapering] = React.useState(0);
 
   const { t } = useScopedTranslation();
@@ -284,8 +284,8 @@ export default function AddDataProduct() {
       <StokesField
         labelWidth={LABEL_WIDTH}
         onFocus={() => helpComponent(t('stokes.help'))}
-        value={stokes}
-        setValue={setStokes}
+        value={polarisations}
+        setValue={setPolarisations}
       />
     );
   };
@@ -389,7 +389,7 @@ export default function AddDataProduct() {
         pixelSizeUnits,
         weighting,
         robust,
-        stokes,
+        polarisations,
         channelsOut,
         fitSpectralPol
       };

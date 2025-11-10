@@ -291,8 +291,7 @@ export const MockProposalFrontend: Proposal = {
       pixelSizeValue: 1.007,
       pixelSizeUnits: 2,
       weighting: 1,
-      polarisations: '123',
-      robust: 0,
+      polarisations: 'I',
       channelsOut: 1,
       fitSpectralPol: 1
     }
@@ -480,8 +479,8 @@ export const MockProposalFrontendZoom: Proposal = {
       pixelSizeValue: 3.7,
       pixelSizeUnits: 2,
       weighting: 2,
-      polarisations: '123',
-      robust: 0,
+      polarisations: 'I',
+      robust: 4,
       channelsOut: 1,
       fitSpectralPol: 1
     }
