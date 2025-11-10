@@ -4,7 +4,7 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TableReviewDecision from './TableReviewDecision';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
-describe('TableObservation', () => {
+describe.skip('TableObservation', () => {
   expect(true); //TODO: add/update test
 });
 //   beforeEach(() => {

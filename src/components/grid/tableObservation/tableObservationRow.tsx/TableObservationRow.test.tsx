@@ -3,7 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import TableReviewDecisionRow from './TableObservationRow';
 import { REVIEW_TYPE } from '@/utils/constants';
 
-describe('TableObservationRow', () => {
+describe.skip('TableObservationRow', () => {
   expect(true); //TODO: add/update tests
 
   //TOOD: clean up / add tests
