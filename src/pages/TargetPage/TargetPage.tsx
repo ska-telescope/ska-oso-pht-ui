@@ -3,7 +3,7 @@ import { useTheme } from '@mui/material/styles';
 import { Grid, Typography, Card, CardContent, CardActionArea, Tooltip } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import Shell from '../../components/layout/Shell/Shell';
-import { validateTargetPage } from '../../utils/validation/validation';
+import { validateProposal } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
 import { PAGE_TARGET, TARGET_OPTION } from '../../utils/constants';
 import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';
@@ -26,13 +26,8 @@ export default function TargetPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const getProposalState = () => application.content1 as number[];
-  const setTheProposalState = (value: number) => {
-    const temp: number[] = [];
-    for (let i = 0; i < getProposalState()?.length; i++) {
-      temp.push(PAGE === i ? value : getProposalState()[i]);
-    }
-    updateAppContent1(temp);
+  const setTheProposalState = () => {
+    updateAppContent1(validateProposal(getProposal()));
   };
 
   React.useEffect(() => {
@@ -44,7 +39,7 @@ export default function TargetPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    setTheProposalState(validateTargetPage(getProposal()));
+    setTheProposalState();
   }, [validateToggle]);
 
   const handleClick = (index: number) => {
