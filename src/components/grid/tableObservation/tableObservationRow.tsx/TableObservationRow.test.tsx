@@ -5,8 +5,6 @@ import { REVIEW_TYPE } from '@/utils/constants';
 
 describe('TableReviewDecisionRow', () => {
   //TOOD: clean up / add tests
-
-
   // const mockItem = {
   //   id: 1,
   //   title: 'Sample Review Title',
@@ -35,7 +33,6 @@ describe('TableReviewDecisionRow', () => {
   //     }
   //   ]
   // };
-
   // const defaultProps = {
   //   item: mockItem,
   //   index: 0,
@@ -50,23 +47,17 @@ describe('TableReviewDecisionRow', () => {
   //   trimText: (text: string, maxLength: number) => text.slice(0, maxLength),
   //   t: (key: string) => key // simple mock translation
   // };
-
   // it('renders review title and category', () => {
   //   render(<TableReviewDecisionRow {...defaultProps} />);
-
   //   expect(screen.getByText(/Sample Review Title/i)).toBeInTheDocument();
   //   expect(screen.getByText(/scienceCategory.biology/i)).toBeInTheDocument();
   // });
-
   // it('renders review count correctly', () => {
   //   render(<TableReviewDecisionRow {...defaultProps} />);
-
   //   expect(screen.getByText('2 / 2')).toBeInTheDocument();
   // });
-
   // it('calls toggleRow when expand button is clicked', () => {
   //   render(<TableReviewDecisionRow {...defaultProps} />);
-
   //   const button = screen.getByTestId('expand-button-1');
   //   fireEvent.click(button);
   //   expect(defaultProps.toggleRow).toHaveBeenCalledWith(1);
