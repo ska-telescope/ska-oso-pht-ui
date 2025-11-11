@@ -20,7 +20,7 @@ export default function Shell({
   const { help } = storageObject.useStore();
 
   const getHelp = () => {
-    return Object.keys(help.component).length === 0 ? '' : (help.component as string);
+    return Object.keys(help?.component || {}).length === 0 ? '' : (help.component as string);
   };
 
   return (
