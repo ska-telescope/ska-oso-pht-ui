@@ -13,7 +13,8 @@ import {
   PAGE_TITLE_ADD,
   PAGE_TARGET,
   PAGE_OBSERVATION,
-  PAGE_LINKING
+  PAGE_LINKING,
+  PAGE_CALIBRATION
 } from '@utils/constants.ts';
 import PostProposal from '@services/axios/post/postProposal/postProposal';
 import NextPageButton from '../../button/NextPage/NextPage';
@@ -111,11 +112,15 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     if (usedPageNo === -1) {
       return `createBtn.label`;
     }
-    let thePage =
-      usedPageNo +
-      (isSV() && (usedPageNo === PAGE_TECHNICAL - 1 || usedPageNo === PAGE_LINKING - 1) ? 2 : 1);
+    let thePage = usedPageNo + 1;
+    if (isSV() && thePage === PAGE_TECHNICAL) {
+      thePage = thePage + 1;
+    }
+    if (isSV() && thePage === PAGE_LINKING) {
+      thePage = thePage + 1;
+    }
     if (!validateProposalNavigation(getProposal(), thePage)) {
-      thePage = PAGE_LINKING;
+      thePage = PAGE_CALIBRATION;
     }
     return `page.${thePage}.title`;
   };
@@ -124,29 +129,34 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     if (!loggedIn && usedPageNo === 4) {
       return `page.${PAGE_TITLE_ADD}.title`;
     }
-    if (!validateProposalNavigation(getProposal(), usedPageNo - 1)) {
-      return `page.${PAGE_TARGET}.title`;
+    let thePage = usedPageNo - 1;
+    if (isSV() && thePage === PAGE_LINKING) {
+      thePage = thePage - 1;
     }
-    return `page.${usedPageNo -
-      (isSV() && (usedPageNo === PAGE_TECHNICAL + 1 || usedPageNo === PAGE_LINKING + 1)
-        ? 2
-        : 1)}.title`;
+    if (isSV() && thePage === PAGE_TECHNICAL) {
+      thePage = thePage - 1;
+    }
+    if (!validateProposalNavigation(getProposal(), thePage)) {
+      thePage = PAGE_TARGET;
+    }
+    return `page.${thePage}.title`;
   };
 
   const prevPageNav = () => {
     if (!loggedIn && usedPageNo === PAGE_TARGET) {
       navigate(NAV[0]);
-    } else if (!validateProposalNavigation(getProposal(), usedPageNo - 1)) {
-      navigate(NAV[PAGE_TARGET]);
     } else if (usedPageNo > 0) {
-      navigate(
-        NAV[
-          usedPageNo -
-            (isSV() && (usedPageNo === PAGE_TECHNICAL + 1 || usedPageNo === PAGE_LINKING + 1)
-              ? 2
-              : 1)
-        ]
-      );
+      let thePage = usedPageNo - 1;
+      if (isSV() && thePage === PAGE_LINKING) {
+        thePage = thePage - 1;
+      }
+      if (isSV() && thePage === PAGE_TECHNICAL) {
+        thePage = thePage - 1;
+      }
+      if (!validateProposalNavigation(getProposal(), thePage)) {
+        thePage = PAGE_TARGET;
+      }
+      navigate(NAV[thePage]);
     }
   };
 
@@ -156,16 +166,16 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     } else if (!loggedIn && usedPageNo === 0) {
       navigate(NAV[PAGE_TARGET]);
     } else if (!validateProposalNavigation(getProposal(), usedPageNo + 1)) {
-      navigate(NAV[PAGE_LINKING]);
+      navigate(NAV[PAGE_CALIBRATION]);
     } else if (usedPageNo < NAV.length) {
-      navigate(
-        NAV[
-          usedPageNo +
-            (isSV() && (usedPageNo === PAGE_TECHNICAL - 1 || usedPageNo === PAGE_LINKING - 1)
-              ? 2
-              : 1)
-        ]
-      );
+      let thePage = usedPageNo + 1;
+      if (isSV() && thePage === PAGE_TECHNICAL) {
+        thePage = thePage + 1;
+      }
+      if (isSV() && thePage === PAGE_LINKING) {
+        thePage = thePage + 1;
+      }
+      navigate(NAV[thePage]);
     }
   };
 
