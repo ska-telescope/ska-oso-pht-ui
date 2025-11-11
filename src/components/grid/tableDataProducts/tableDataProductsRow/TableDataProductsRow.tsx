@@ -6,6 +6,7 @@ import EditIcon from '@/components/icon/editIcon/editIcon';
 import TrashIcon from '@/components/icon/trashIcon/trashIcon';
 import { presentUnits } from '@/utils/present/present';
 import { useInitializeAccessStore } from '@/utils/aaa/aaaUtils';
+import DataProduct from '@/components/info/dataProduct/DataProduct';
 
 interface TableDataProductsRowProps {
   item: any;
@@ -200,7 +201,9 @@ export default function TableDataProductsRow({
       <TableRow key={`${item.id}-expanded`}>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9} role="gridcell">
           <Collapse in={expanded} timeout="auto" unmountOnExit>
-            <Box sx={{ overflowX: 'hidden' }}></Box>
+            <Box sx={{ overflowX: 'hidden' }}>
+              <DataProduct t={t} data={item} />
+            </Box>
           </Collapse>
         </TableCell>
       </TableRow>

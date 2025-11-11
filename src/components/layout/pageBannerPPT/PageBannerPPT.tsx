@@ -11,6 +11,7 @@ import {
   cypressToken,
   LAST_PAGE,
   NAV,
+  PAGE_LINKING,
   PAGE_SRC_NET,
   PAGE_TECHNICAL,
   PATH,
@@ -96,7 +97,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
           obj[key] === STATUS_PARTIAL ||
           (obj[key] === STATUS_INITIAL && key !== PAGE_SRC_NET.toString())
         ) {
-          if (key !== PAGE_TECHNICAL.toString() || !isSV()) {
+          if ((key !== PAGE_TECHNICAL.toString() && key !== PAGE_LINKING.toString()) || !isSV()) {
             results.push(t('page.' + key + '.pageError'));
           }
         }
