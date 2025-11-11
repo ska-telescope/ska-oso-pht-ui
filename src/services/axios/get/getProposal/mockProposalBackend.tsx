@@ -218,24 +218,23 @@ export const MockProposalBackend: ProposalBackend = {
       {
         data_product_id: 'SDP-2',
         products: ['Y', 'N', 'Y', 'N'],
-        observation_set_refs: ['obs-obR1Ej'],
         script_parameters: {
+          channels_out: 1,
+          fit_spectral_pol: 1,
+          polarisations: 'I',
           image_size: {
             value: 15,
-            unit: 'deg'
+            unit: 'deg2'
           },
           image_cellsize: {
             value: 1.007,
-            unit: 'arcsec'
+            unit: 'arcsec2'
           },
           weight: {
-            weighting: '1',
-            robust: 0
-          },
-          polarisations: '123',
-          channels_out: 1,
-          fit_spectral_pol: 1
-        }
+            weighting: 'uniform'
+          }
+        },
+        observation_set_refs: ['obs-obR1Ej']
       }
     ],
     calibration_strategy: [
@@ -412,21 +411,21 @@ export const MockProposalBackendZoom: ProposalBackend = {
         products: ['Y', 'Y', 'Y', 'Y'],
         observation_set_refs: ['obs-arMIoY'],
         script_parameters: {
+          channels_out: 1,
+          fit_spectral_pol: 1,
+          polarisations: 'I',
           image_size: {
             value: 100,
-            unit: 'deg'
+            unit: 'deg2'
           },
           image_cellsize: {
             value: 3.7,
-            unit: 'arcsec'
+            unit: 'arcsec2'
           },
           weight: {
             weighting: '2',
             robust: 0
-          },
-          polarisations: '1234',
-          channels_out: 1,
-          fit_spectral_pol: 1
+          }
         }
       }
     ],
