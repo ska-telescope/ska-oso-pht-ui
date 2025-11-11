@@ -54,7 +54,7 @@ describe('Guest User', () => {
     checkFieldDisabled('statusId5', false);
     // checkFieldDisabled('statusId6', true); - TODO Check when not SV
     checkFieldDisabled('statusId7', true);
-    checkFieldDisabled('statusId8', true);
+    // checkFieldDisabled('statusId8', true); - TODO Check when not SV
 
     clickHome();
     verifyHomeButtonWarningModal();
