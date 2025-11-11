@@ -148,10 +148,10 @@ export default function AddDataProduct() {
         alignItems="center"
         justifyContent="space-between"
       >
-        <Grid size={{ xs: 2 }}>
+        <Grid size={{ xs: 3 }}>
           <Typography>{t('observatoryDataProduct.label') + ' *'}</Typography>
         </Grid>
-        <Grid size={{ xs: 10 }}>{tickElement(1, dp1, setDP1)}</Grid>
+        <Grid size={{ xs: 9 }}>{tickElement(1, dp1, setDP1)}</Grid>
       </Grid>
     );
   };

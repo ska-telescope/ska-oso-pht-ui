@@ -234,7 +234,7 @@ export const MockProposalBackend: ProposalBackend = {
           },
           polarisations: '123',
           channels_out: 1,
-          fit_spectral_pol: 1
+          fit_spectral_pol: 3
         }
       }
     ],
@@ -426,7 +426,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
           },
           polarisations: '1234',
           channels_out: 1,
-          fit_spectral_pol: 1
+          fit_spectral_pol: 3
         }
       }
     ],
