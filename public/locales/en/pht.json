@@ -113,6 +113,7 @@
     "label": "Add"
   },
   "calibrator": {
+    "desc": "This is a likely observing strategy with calibration (assuming observation near transit, etc.):",
     "note": "The choice of calibrators assumes that the target scan will be centred at transit.",
     "disclaimer": "The use of these calibrators is not guaranteed.",
     "calibrator": "Calibrator",
@@ -1361,7 +1362,7 @@
       "status": "Calibration",
       "title": "Calibration",
       "titleShort": "Calibration",
-      "desc": "This is a likely observing strategy with calibration (assuming observation near transit, etc.)",
+      "desc": "Observatory defined calibration strategy",
       "pageError": "The CALIBRATION STRATEGY page is not complete",
       "help": "The listed strategy is representative and not guaranteed at the time of execution. User defined calibration strategies are not currently supported.",
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE CALIBRATION STRATEGY AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL"

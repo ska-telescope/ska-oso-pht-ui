@@ -40,10 +40,24 @@ The coverage results are displayed in the console. They are also written to the 
 
     `./build/coverage/index.html` - open in a web browser to view
 
+To run the ui test runner for unit tests, execute
+
+    > yarn test:unit:ui
+
+The coverage results are also available when using this mode.
+
 **All the tests should pass before merging the code**
 
 End-2-End
 =========
+
+To run the ui test runner for e2e tests, execute
+
+    > yarn test:e2e:ui
+
+This will launch Cypress in interactive mode for end-to-end tests.
+
+
 Examples can be found in the PT UI repo, however below should be a guide in how to follow the standard for enw tests.
 Note: This is for BDD Cucumber style cypress testing.
 
@@ -107,4 +121,11 @@ To run the analysis tools, execute
     > yarn code-analysis
 
 This will display any errors in the command line. If there are any errors, YARN will exit with a non-zero code, the `-s` argument suppresses this and cleans up the output.
+
+
+Alternatively, you can also run
+
+    > yarn checker
+
+This will display any errors in the command line and fix linting issues by running yarn prettier:fix && yarn lint:fix.
 
