@@ -9,7 +9,7 @@ const PINK = '#e2007a'; // SKAO Redshift Magenta
 const Container = styled(Box)({
   position: 'fixed',
   top: '85px', // space for top nav
-  bottom: '60px', // space for footer
+  bottom: '120px', // space for footer
   right: 0,
   zIndex: 1300
 });
@@ -72,7 +72,7 @@ export default function EdgeSlider({
               padding: '16px'
             }}
           >
-            <Typography>{helperText}</Typography>
+            <Typography align={'left'}>{helperText}</Typography>
           </Box>
         )}
       </Panel>
