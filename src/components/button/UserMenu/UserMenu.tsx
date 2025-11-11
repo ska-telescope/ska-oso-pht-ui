@@ -45,16 +45,7 @@ export default function ButtonUserMenu({
   useInitializeAccessStore();
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const [openHelpDrawer, setOpenHelpDrawer] = React.useState(false);
   const [cypressLogin, setCypressLogin] = React.useState('');
-
-  const [anchorElPopper, setAnchorElPopper] = React.useState<null | HTMLElement>(null);
-  const [openPopper, setOpenPopper] = React.useState(false);
-
-  const handleClickPopper = (event: any) => {
-    setAnchorElPopper(event.currentTarget);
-    setOpenPopper(prev => !prev);
-  };
 
   const openMenu = Boolean(anchorEl);
   const { t } = useScopedTranslation();
@@ -62,13 +53,9 @@ export default function ButtonUserMenu({
   const theme = useTheme();
   const buttonWrapperRef = React.useRef<HTMLDivElement>(null);
   const loginButtonRef = React.useRef<HTMLDivElement>(null);
-  const { updateAppContent2, help } = storageObject.useStore();
+  const { updateAppContent2 } = storageObject.useStore();
   const { accounts } = useMsal();
   const username = accounts.length > 0 ? accounts[0].name + cypressLogin : cypressLogin;
-
-  const getHelp = () => {
-    return Object.keys(help.component).length === 0 ? '' : (help.component as string);
-  };
 
   React.useEffect(() => {
     const accountStr = localStorage.getItem('cypress:account');
@@ -103,11 +90,6 @@ export default function ButtonUserMenu({
   const onMenuSelect = (thePath: string) => {
     updateAppContent2([]);
     navigate(thePath);
-    setAnchorEl(null);
-  };
-
-  const toggleDrawer = (newOpen: boolean) => () => {
-    setOpenHelpDrawer(newOpen);
     setAnchorEl(null);
   };
 
@@ -166,7 +148,6 @@ export default function ButtonUserMenu({
             {t('reviewDecisionsList.title')}
           </MenuItem>
         )}
-        <MenuItem onClick={toggleDrawer(true)}>Open Help Text</MenuItem>
         {(isReviewerChair() || isReviewerAdmin() || isReviewer()) && <Divider component="li" />}
         <MenuItem data-testid="menuItemPanelLogout">
           <ButtonLogout
@@ -177,68 +158,6 @@ export default function ButtonUserMenu({
           />
         </MenuItem>
       </Menu>
-      <Drawer
-        anchor={'right'}
-        open={openHelpDrawer}
-        onClose={toggleDrawer(false)}
-        // variant='permanent'
-        // hideBackdrop={true}
-        //     ModalProps={{
-        //   hideBackdrop: true,
-        //   sx: {
-        //     // pointerEvents: 'none',
-        //   },
-        // }}
-        // sx={{
-        //   '& .MuiDrawer-paper': {
-        //     pointerEvents: 'auto',
-        //   },
-        // }}
-      >
-        <Box m={1} sx={{ width: 250, minWidth: '25vw' }}>
-          <Stack sx={{ height: '95%' }} spacing={5}>
-            <Grid container direction="row" justifyContent="space-evenly">
-              <Grid>
-                <Button variant="contained" onClick={toggleDrawer(false)}>
-                  Close
-                </Button>
-              </Grid>
-            </Grid>
-            <Grid>{getHelp()}</Grid>
-          </Stack>
-        </Box>
-      </Drawer>
-
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={handleClickPopper}
-        sx={{
-          position: 'fixed',
-          top: '50%',
-          right: 10,
-          transform: 'translateY(-50%) rotate(-90deg)', // rotate text
-          transformOrigin: 'right center', // pivot point for rotation
-          borderRadius: '8px 8px 0 0', // optional rounded ends
-          zIndex: 1200,
-          py: 1.5,
-          px: 3
-        }}
-      >
-        HELP
-      </Button>
-      <Popper open={openPopper} anchorEl={anchorElPopper} placement="left">
-        <Paper sx={{ p: 2, boxShadow: 3, maxWidth: 250, minHeight: '80vh' }}>
-          <Typography>
-            I am helper text I am helper text I am helper text I am helper text I am helper text I
-            am helper text I am helper text I am helper text I am helper text I am helper text I am
-            helper text I am helper text I am helper text I am helper textI am helper textI am
-            helper textI am helper textI am helper textI am helper textI am helper textI am helper
-            textI am helper textI am helper textI am helper textI am helper textI am helper textI am
-            helper textI am helper text
-          </Typography>
-        </Paper>
-      </Popper>
     </>
   );
 }
