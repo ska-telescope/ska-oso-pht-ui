@@ -27,7 +27,7 @@ export default function StokesField({
     });
 
   return (
-    <Box pt={1} sx={{ maxWidth: '800px' }}>
+    <Box pt={2} sx={{ maxWidth: '800px' }}>
       <DropDown
         disabled={disabled}
         disabledUnderline={disabled}
