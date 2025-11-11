@@ -18,6 +18,24 @@ interface EdgeSliderProps {
   helperText: string;
 }
 
+const Panel = styled(Paper)<{ expanded: boolean }>(({ expanded, color }) => ({
+  position: 'absolute',
+  right: 0,
+  top: 0,
+  bottom: 0,
+  width: PANEL_WIDTH,
+  transform: expanded ? 'translateX(0)' : `translateX(${PANEL_WIDTH - TAB_WIDTH}px)`,
+  transition: 'transform 300ms ease-in-out',
+  overflow: 'hidden',
+  zIndex: 2,
+  display: 'flex',
+  cursor: 'pointer',
+  backgroundColor: '#fff',
+  color: '#000',
+  borderLeft: `4px solid ${color}`,
+  borderRadius: '4px 0 0 4px'
+}));
+
 export default function EdgeSlider({
   helperText = 'Helper text will be shown here'
 }: EdgeSliderProps) {
@@ -29,27 +47,9 @@ export default function EdgeSlider({
 
   const theme = useTheme();
 
-  const Panel = styled(Paper)<{ expanded: boolean }>(({ expanded }) => ({
-    position: 'absolute',
-    right: 0,
-    top: 0,
-    bottom: 0,
-    width: PANEL_WIDTH,
-    transform: expanded ? 'translateX(0)' : `translateX(${PANEL_WIDTH - TAB_WIDTH}px)`,
-    transition: 'transform 300ms ease-in-out',
-    overflow: 'hidden',
-    zIndex: 2,
-    display: 'flex',
-    cursor: 'pointer',
-    backgroundColor: '#fff',
-    color: '#000',
-    borderLeft: `4px solid ${theme.palette.secondary.main}`,
-    borderRadius: '4px 0 0 4px'
-  }));
-
   return (
     <Container>
-      <Panel expanded={expanded} onClick={togglePanel}>
+      <Panel expanded={expanded} color={theme.palette.secondary.main} onClick={togglePanel}>
         <Box
           sx={{
             width: TAB_WIDTH,

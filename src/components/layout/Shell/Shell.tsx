@@ -19,9 +19,9 @@ export default function Shell({
 }: ShellProps) {
   const { help } = storageObject.useStore();
 
-  const getHelp = () => {
-    return Object.keys(help?.component || {}).length === 0 ? '' : (help.component as string);
-  };
+  function getHelp(): string {
+    return help && help?.component ? (help?.component as string) : '';
+  }
 
   return (
     <>
