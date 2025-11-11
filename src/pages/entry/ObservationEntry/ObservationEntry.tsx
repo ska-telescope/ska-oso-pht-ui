@@ -21,10 +21,6 @@ import {
   STATUS_PARTIAL,
   SUPPLIED_VALUE_DEFAULT_MID,
   TYPE_CONTINUUM,
-  BAND_5A,
-  BAND_5B,
-  BAND_2,
-  BAND_1,
   OB_SUBARRAY_CUSTOM,
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_INTEGRATION_TIME_UNITS_S,
@@ -70,6 +66,10 @@ import ContinuumBandwidthField from '../../../components/fields/bandwidthFields/
 import BandwidthField from '../../../components/fields/bandwidthFields/bandwidth/bandwidth';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import {
+  calculateCentralFrequency,
+  calculateContinuumBandwidth
+} from '@/utils/calculate/calculate';
 
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 6;
@@ -123,10 +123,7 @@ export default function ObservationEntry() {
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
   const [obOnce, setObOnce] = React.useState<Observation | null>(null);
-  const isAA2 = (subarrayConfig: number) => subarrayConfig === 3;
-
-  const lookupArrayValue = (arr: any[], inValue: string | number) =>
-    arr.find(e => e.lookup.toString() === inValue.toString())?.value;
+  const isAA2 = (subarrayConfig: number) => subarrayConfig === OB_SUBARRAY_AA2;
 
   const observationIn = (ob: Observation) => {
     setMyObsId(ob?.id);
@@ -190,10 +187,11 @@ export default function ObservationEntry() {
   // Change the central frequency & units only if they are currently the same as the existing defaults
   const setDefaultCentralFrequency = (inBand: number, inSubArray: number) => {
     if (
-      Number(centralFrequency) === calculateCentralFrequency(observingBand, subarrayConfig) &&
+      Number(centralFrequency) ===
+        calculateCentralFrequency(observingBand, subarrayConfig, observatoryConstants) &&
       centralFrequencyUnits === (isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ)
     ) {
-      setCentralFrequency(calculateCentralFrequency(inBand, inSubArray));
+      setCentralFrequency(calculateCentralFrequency(inBand, inSubArray, observatoryConstants));
       setCentralFrequencyUnits(inBand === BAND_LOW ? FREQUENCY_MHZ : FREQUENCY_GHZ);
     }
   };
@@ -202,10 +200,11 @@ export default function ObservationEntry() {
   const setDefaultContinuumBandwidth = (inBand: number, inSubArray: number) => {
     if (
       isContinuum() &&
-      Number(continuumBandwidth) === calculateContinuumBandwidth(observingBand, subarrayConfig) &&
+      Number(continuumBandwidth) ===
+        calculateContinuumBandwidth(observingBand, subarrayConfig, observatoryConstants) &&
       continuumBandwidthUnits === (isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ)
     ) {
-      setContinuumBandwidth(calculateContinuumBandwidth(inBand, inSubArray));
+      setContinuumBandwidth(calculateContinuumBandwidth(inBand, inSubArray, observatoryConstants));
       setContinuumBandwidthUnits(inBand === BAND_LOW ? FREQUENCY_MHZ : FREQUENCY_GHZ);
     }
   };
@@ -268,9 +267,13 @@ export default function ObservationEntry() {
       setObOnce(locationProperties.state);
     } else {
       setMyObsId(generateId(t('addObservation.idPrefix'), 6));
-      setCentralFrequency(calculateCentralFrequency(observingBand, subarrayConfig));
+      setCentralFrequency(
+        calculateCentralFrequency(observingBand, subarrayConfig, observatoryConstants)
+      );
       setCentralFrequencyUnits(isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
-      setContinuumBandwidth(calculateContinuumBandwidth(observingBand, subarrayConfig));
+      setContinuumBandwidth(
+        calculateContinuumBandwidth(observingBand, subarrayConfig, observatoryConstants)
+      );
       setContinuumBandwidthUnits(isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
     }
   }, []);
@@ -301,36 +304,6 @@ export default function ObservationEntry() {
     numOf13mAntennas,
     numOfStations
   ]);
-
-  const calculateCentralFrequency = (obsBand: number, subarrayConfig: number) => {
-    switch (obsBand) {
-      case BAND_1:
-        return lookupArrayValue(observatoryConstants.CentralFrequencyOB1, subarrayConfig);
-      case BAND_2:
-        return lookupArrayValue(observatoryConstants.CentralFrequencyOB2, subarrayConfig);
-      case BAND_5A:
-        return observatoryConstants.CentralFrequencyOB5a[0].value;
-      case BAND_5B:
-        return observatoryConstants.CentralFrequencyOB5b[0].value;
-      default:
-        return observatoryConstants.CentralFrequencyOBLow[0].value;
-    }
-  };
-
-  const calculateContinuumBandwidth = (ob: number, sc: number) => {
-    switch (ob) {
-      case BAND_1:
-        return lookupArrayValue(observatoryConstants.ContinuumBandwidthOB1, sc);
-      case BAND_2:
-        return lookupArrayValue(observatoryConstants.ContinuumBandwidthOB2, sc);
-      case BAND_5A:
-        return lookupArrayValue(observatoryConstants.ContinuumBandwidthOB5a, sc);
-      case BAND_5B:
-        return lookupArrayValue(observatoryConstants.ContinuumBandwidthOB5b, sc);
-      default:
-        return lookupArrayValue(observatoryConstants.ContinuumBandwidthOBLow, sc);
-    }
-  };
 
   React.useEffect(() => {
     const calculateSubarray = () => {

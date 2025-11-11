@@ -6,7 +6,6 @@ import { AlertColorTypes, DataGrid, TickBox } from '@ska-telescope/ska-gui-compo
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import SensCalcDisplaySingle from '../../components/alerts/sensCalcDisplay/single/SensCalcDisplaySingle';
-import getSensCalc from '../../services/api/sensitivityCalculator/getSensitivityCalculatorAPIData';
 import Observation from '../../utils/types/observation';
 import { validateCalibrationPage, validateLinkingPage } from '../../utils/validation/validation';
 import {
@@ -38,6 +37,7 @@ import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheck
 import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import { generateId } from '@/utils/helpers';
+import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
 
 export default function LinkingPage() {
   const DATA_GRID_TARGET = '40vh';
@@ -202,8 +202,7 @@ export default function LinkingPage() {
   };
 
   const getSensCalcData = async (observation: Observation, target: Target) => {
-    const response = await getSensCalc(observation, target);
-
+    const response = await calculateSensCalcData(observation, target);
     if (response) {
       if (response.error) {
         const errMsg = response.error;

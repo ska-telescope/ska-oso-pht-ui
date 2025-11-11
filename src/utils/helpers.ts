@@ -34,8 +34,8 @@ export const getScaledBandwidthOrFrequency = (
   incValue: number | undefined,
   inUnits: number | undefined
 ) => {
-  const unitsLabel = getBandwidthOrFrequencyUnitsLabel(inUnits);
-  return scaleBandwidthOrFrequency(incValue, unitsLabel);
+  const unitsLabel = getBandwidthOrFrequencyUnitsLabel(inUnits ?? FREQUENCY_HZ);
+  return scaleBandwidthOrFrequency(incValue ?? 0, unitsLabel);
 };
 
 export const countWords = (text: string) => {
@@ -61,9 +61,8 @@ export const calculateVelocity = (resolutionHz: number, frequencyHz: number, pre
 };
 
 // fundamental limit of the bandwidth provided by SKA MID or LOW
-export const getMinimumChannelWidth = (
-  telescope: keyof typeof BANDWIDTH_MIN_CHANNEL_WIDTH_HZ
-): number => BANDWIDTH_MIN_CHANNEL_WIDTH_HZ[telescope];
+export const getMinimumChannelWidth = (telescope: number): number =>
+  BANDWIDTH_MIN_CHANNEL_WIDTH_HZ[telescope as keyof typeof BANDWIDTH_MIN_CHANNEL_WIDTH_HZ];
 
 export const helpers = {
   validate: {
