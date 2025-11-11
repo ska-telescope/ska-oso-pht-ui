@@ -23,7 +23,6 @@ import {
   clickObservationFromTable,
   clickToLinkTargetAndObservation,
   verifySensitivityCalculatorStatusSuccess,
-  clickToLinkingPage,
   clickToCalibrationPage
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
@@ -85,7 +84,6 @@ describe('Edit Proposal', () => {
     // clickToObservatoryDataProductPage();
     // clickAddDataProduct();
     // addObservatoryDataProduct();
-    // clickToLinkingPage();
     // clickToCalibrationPage();
     // //validate proposal
     // validateProposal();

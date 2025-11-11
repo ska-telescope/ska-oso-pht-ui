@@ -449,11 +449,6 @@ export const clickToObservatoryDataProductPage = () => {
   pageConfirmed('OBSERVATORY DATA PRODUCT');
 };
 
-export const clickToLinkingPage = () => {
-  clickToNextPage();
-  pageConfirmed('LINKING');
-};
-
 export const clickToCalibrationPage = () => {
   clickToNextPage();
   pageConfirmed('CALIBRATION');
