@@ -185,12 +185,12 @@ export default function AddDataProduct() {
       setImageSizeValue(num.toString());
     };
     return (
-      <Box pt={1}>
+      <Box pt={1} sx={{ maxWidth: '800px' }}>
         <NumberEntry
           label={t('imageSize.label')}
           labelBold
           labelPosition={LAB_POSITION}
-          labelWidth={4}
+          labelWidth={5}
           testId="imageSize"
           value={imageSizeValue}
           setValue={(e: number) => setTheNumber(e)}

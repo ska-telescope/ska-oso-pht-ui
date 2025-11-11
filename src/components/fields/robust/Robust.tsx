@@ -26,7 +26,7 @@ export default function RobustField({
   testId,
   value,
   widthButton = 0,
-  widthLabel = 4
+  widthLabel = 5
 }: RobustFieldProps) {
   return (
     <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">

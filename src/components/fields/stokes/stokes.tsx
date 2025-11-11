@@ -13,7 +13,7 @@ interface StokesFieldProps {
 
 export default function StokesField({
   disabled = false,
-  labelWidth = 3,
+  labelWidth = 5,
   onFocus,
   setValue,
   value
@@ -27,7 +27,7 @@ export default function StokesField({
     });
 
   return (
-    <Box pt={1}>
+    <Box pt={1} sx={{ maxWidth: '800px' }}>
       <DropDown
         disabled={disabled}
         disabledUnderline={disabled}
