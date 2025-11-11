@@ -40,6 +40,18 @@ The coverage results are displayed in the console. They are also written to the 
 
     `./build/coverage/index.html` - open in a web browser to view
 
+To run the ui test runner for e2e tests, execute
+
+    > yarn test:e2e:ui
+
+This will launch Cypress in interactive mode for end-to-end tests.
+
+To run the ui test runner for unit tests, execute
+
+    > yarn test:unit:ui
+
+The coverage results are also available when using this mode.
+
 **All the tests should pass before merging the code**
 
 End-2-End
