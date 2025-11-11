@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
-import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface FrequencySpectrumProps {
   minFreq: number;
