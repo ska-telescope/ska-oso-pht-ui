@@ -17,10 +17,10 @@ describe('TableDataProductsHeader', () => {
     wrapper(<TableDataProductsHeader />);
 
     expect(screen.getByText(/actions.label/i)).toBeInTheDocument();
-    expect(screen.getByText(/observations.dp.label/i)).toBeInTheDocument();
-    expect(screen.getByText(/observatoryDataProduct.label/i)).toBeInTheDocument();
-    expect(screen.getByText(/imageSize.label/i)).toBeInTheDocument();
-    expect(screen.getByText(/pixelSize.label/i)).toBeInTheDocument();
-    expect(screen.getByText(/imageWeighting.label/i)).toBeInTheDocument();
+    expect(screen.getByText(/observationType.label/i)).toBeInTheDocument();
+    expect(screen.getByText(/observationId.label/i)).toBeInTheDocument();
+    expect(screen.getByText(/subArrayConfiguration.label/i)).toBeInTheDocument();
+    expect(screen.getByText(/observingBand.label/i)).toBeInTheDocument();
+    // expect(screen.getByText(/imageWeighting.label/i)).toBeInTheDocument();
   });
 });

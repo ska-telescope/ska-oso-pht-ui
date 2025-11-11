@@ -1,16 +1,22 @@
-import { TableRow, TableCell, IconButton, Box, Typography, Collapse, Tooltip } from '@mui/material';
+import { TableRow, TableCell, IconButton, Box, Typography, Collapse } from '@mui/material';
 import { ChevronRight, ExpandMore } from '@mui/icons-material';
-import { useTheme } from '@mui/material/styles';
+import { useTheme, alpha } from '@mui/material/styles';
 import React from 'react';
 import EditIcon from '@/components/icon/editIcon/editIcon';
 import TrashIcon from '@/components/icon/trashIcon/trashIcon';
-import { presentUnits } from '@/utils/present/present';
 import { useInitializeAccessStore } from '@/utils/aaa/aaaUtils';
+import Proposal from '@/utils/types/proposal';
+import { getColors } from '@/utils/colors/colors';
+import FrequencySpectrum from '@/components/fields/frequencySpectrum/frequencySpectrum';
+import { FREQUENCY_HZ, FREQUENCY_MHZ, TYPE_CONTINUUM } from '@/utils/constants';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import DataProduct from '@/components/info/dataProduct/DataProduct';
+import { frequencyConversion } from '@/utils/helpers';
 
 interface TableDataProductsRowProps {
   item: any;
   index: number;
+  proposal: Proposal;
   expanded: boolean;
   deleteClicked?: Function;
   editClicked?: Function;
@@ -24,6 +30,7 @@ interface TableDataProductsRowProps {
 export default function TableDataProductsRow({
   item,
   index,
+  proposal,
   expanded,
   deleteClicked,
   editClicked,
@@ -34,7 +41,13 @@ export default function TableDataProductsRow({
   t
 }: TableDataProductsRowProps) {
   const theme = useTheme();
+  const { osdLOW } = useOSDAccessors();
   useInitializeAccessStore();
+
+  const getObservation = () =>
+    proposal?.observations?.find(obs => obs.id === item.observationId[0]);
+
+  const isContinuum = () => getObservation()?.type === TYPE_CONTINUUM;
 
   React.useEffect(() => {
     if (!item || typeof item.displayRank !== 'number' || !item.decisions) return;
@@ -53,133 +66,174 @@ export default function TableDataProductsRow({
     }
   }, [item?.displayRank, tableLength]);
 
-  const getODPString = (inArr: boolean[]) => {
-    let str = '';
-    for (let i = 0; i < inArr?.length; i++) {
-      if (inArr[i]) {
-        if (str?.length > 0) {
-          str += ', ';
-        }
-        const res = i + 1;
-        const tmp = t('observatoryDataProduct.options.' + res);
-        str += tmp;
-      }
-    }
-    return str;
-  };
-
   const tableCollapseCell = () => (
-    <TableCell role="gridcell">
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, overflowX: 'hidden' }}>
+    <TableCell role="gridcell" style={{ maxWidth: '120px', padding: 0 }}>
+      <Box
+        sx={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 1,
+          maxWidth: '100%',
+          overflow: 'hidden'
+        }}
+      >
         <IconButton
           ref={expandButtonRef}
-          aria-label={`${expanded ? 'Collapse' : 'Expand'} details for ${
-            item.title
-          }. ${0} additional details available.`}
+          aria-label={`${expanded ? 'Collapse' : 'Expand'} details for ${item.title}.`}
           aria-expanded={expanded}
           aria-controls={`employee-details-${item.id}`}
           size="small"
           onClick={() => toggleRow(item.id)}
           data-testid={`expand-button-${item.id}`}
-          sx={{
-            transition: 'transform 0.2s',
-            transform: expanded ? 'rotate(0deg)' : 'rotate(0deg)'
-          }}
+          sx={{ transition: 'transform 0.2s' }}
         >
           {expanded ? <ExpandMore /> : <ChevronRight />}
         </IconButton>
-        {false && editClicked !== null && (
+
+        {false && editClicked && (
           <EditIcon
-            onClick={() => (editClicked ? editClicked(item) : null)}
+            onClick={() => {
+              if (editClicked) editClicked(item);
+            }}
             toolTip="This feature is currently disabled"
           />
         )}
-        {deleteClicked !== null && (
-          <TrashIcon
-            onClick={() => (deleteClicked ? deleteClicked(item) : null)}
-            toolTip={t('deleteDataProduct.label')}
-          />
+
+        {deleteClicked && (
+          <TrashIcon onClick={() => deleteClicked(item)} toolTip={t('deleteDataProduct.label')} />
         )}
       </Box>
     </TableCell>
   );
 
   const tableObservationIdCell = () => (
-    <TableCell role="gridcell">
-      <Typography
-        variant="body2"
-        color="text.secondary"
-        sx={{
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          maxWidth: '100%'
-        }}
-      >
+    <TableCell role="gridcell" sx={{ width: 0, whiteSpace: 'nowrap', minWidth: 0 }}>
+      <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
         {item.observationId}
       </Typography>
     </TableCell>
   );
 
-  const tableDataProductCell = () => (
-    <TableCell role="gridcell">
-      <Box pt={2}>
-        <Tooltip data-testid="odp-values" title={getODPString(item.observatoryDataProduct)} arrow>
-          <Typography>{getODPString(item.observatoryDataProduct)}</Typography>
-        </Tooltip>
-      </Box>
-    </TableCell>
-  );
-
-  const tableImageSizeCell = () => (
-    <TableCell role="gridcell">
-      <Typography
-        variant="body2"
-        color="text.secondary"
+  const tableObservationTypeCell = () => {
+    const colors = getColors({
+      type: 'observationType',
+      colors: getObservation()?.type?.toString() ?? '',
+      content: 'both'
+    });
+    return (
+      <TableCell
+        role="gridcell"
         sx={{
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
+          borderLeft: '10px solid',
+          borderColor: colors[0],
+          paddingLeft: '10px',
+          width: '1%',
           whiteSpace: 'nowrap',
-          maxWidth: '100%'
+          minWidth: 0
         }}
       >
-        {item.imageSizeValue + ' ' + presentUnits(t('imageSize.' + item.imageSizeUnits))}
-      </Typography>
-    </TableCell>
-  );
+        <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
+          {t('observationType.' + getObservation()?.type)}
+        </Typography>
+      </TableCell>
+    );
+  };
 
-  const tablePixelSizeCell = () => (
-    <TableCell role="gridcell">
-      <Typography
-        variant="body2"
-        sx={{
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          maxWidth: '100%'
-        }}
-      >
-        {item.pixelSizeValue + ' ' + presentUnits(t('pixelSize.' + item.pixelSizeUnits))}
-      </Typography>
-    </TableCell>
-  );
+  const tableObservationSubarrayCell = () => {
+    const colors = getColors({
+      type: 'telescope',
+      colors: getObservation()?.telescope.toString() ?? '',
+      content: 'both'
+    });
+    return (
+      <TableCell role="gridcell" sx={{ width: '1%', whiteSpace: 'nowrap', minWidth: 0 }}>
+        <Box
+          sx={{
+            backgroundColor: colors[0],
+            borderRadius: '8px',
+            padding: '4px 8px',
+            display: 'inline-flex'
+          }}
+        >
+          <Typography variant="body2" color={colors[1]} sx={{ whiteSpace: 'nowrap', padding: 1 }}>
+            {t('telescopes.' + getObservation()?.telescope)}{' '}
+            {t('subArrayConfiguration.' + getObservation()?.subarray)}
+          </Typography>
+        </Box>
+      </TableCell>
+    );
+  };
 
-  const tableWeightingCell = () => (
-    <TableCell role="gridcell">
-      <Typography
-        variant="body2"
-        color="text.secondary"
-        sx={{
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
-          whiteSpace: 'nowrap',
-          maxWidth: '100%'
-        }}
-      >
-        {t('imageWeighting.' + item.weighting)}
-      </Typography>
-    </TableCell>
-  );
+  const tableObservationBandCell = () => {
+    const colors = getColors({
+      type: 'telescope',
+      colors: getObservation()?.telescope.toString() ?? '',
+      content: 'both'
+    });
+    return (
+      <TableCell role="gridcell" sx={{ width: '1%', whiteSpace: 'nowrap', minWidth: 0 }}>
+        <Box
+          sx={{
+            backgroundColor: alpha(colors[0], 0.6),
+            borderRadius: '0px',
+            padding: '4px 8px',
+            display: 'inline-flex'
+          }}
+        >
+          <Typography variant="body2" color={colors[1]} sx={{ whiteSpace: 'nowrap', padding: 1 }}>
+            {t('observingBand.short.' + getObservation()?.observingBand)}
+          </Typography>
+        </Box>
+      </TableCell>
+    );
+  };
+
+  const tableObservationFrequencySpectrumCell = () => {
+    const colors = getColors({
+      type: 'telescope',
+      colors: getObservation()?.telescope.toString() ?? '',
+      content: 'both'
+    });
+    return (
+      <TableCell>
+        {true && (
+          <FrequencySpectrum
+            minFreq={frequencyConversion(
+              osdLOW?.basicCapabilities?.minFrequencyHz * 10,
+              FREQUENCY_HZ,
+              FREQUENCY_MHZ
+            )}
+            maxFreq={frequencyConversion(
+              osdLOW?.basicCapabilities?.maxFrequencyHz * 10,
+              FREQUENCY_HZ,
+              FREQUENCY_MHZ
+            )}
+            centerFreq={frequencyConversion(
+              getObservation()?.centralFrequency ?? 0,
+              getObservation()?.centralFrequencyUnits ?? FREQUENCY_HZ,
+              FREQUENCY_MHZ
+            )}
+            bandWidth={
+              isContinuum()
+                ? getObservation()?.continuumBandwidth ?? 0
+                : getObservation()?.bandwidth ?? 0
+            }
+            minEdge={frequencyConversion(
+              osdLOW?.basicCapabilities?.minFrequencyHz * 10,
+              FREQUENCY_HZ,
+              FREQUENCY_MHZ
+            )}
+            maxEdge={frequencyConversion(
+              osdLOW?.basicCapabilities?.maxFrequencyHz * 10,
+              FREQUENCY_HZ,
+              FREQUENCY_MHZ
+            )}
+            bandColor={alpha(colors[0], 0.6)}
+          />
+        )}
+      </TableCell>
+    );
+  };
 
   return (
     <>
@@ -191,11 +245,11 @@ export default function TableDataProductsRow({
         aria-rowindex={index + 2}
       >
         {tableCollapseCell()}
+        {tableObservationTypeCell()}
         {tableObservationIdCell()}
-        {tableDataProductCell()}
-        {tableImageSizeCell()}
-        {tablePixelSizeCell()}
-        {tableWeightingCell()}
+        {tableObservationSubarrayCell()}
+        {tableObservationBandCell()}
+        {tableObservationFrequencySpectrumCell()}
       </TableRow>
 
       <TableRow key={`${item.id}-expanded`}>
