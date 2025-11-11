@@ -79,7 +79,7 @@ const ROUTES = [
 
 export default function PHT() {
   const { t } = useScopedTranslation();
-  const { application, help, helpToggle } = storageObject.useStore();
+  const { application, help, helpToggle, helpComponent } = storageObject.useStore();
   const { osdCloses, osdCountdown, osdCycleId, osdCycleDescription, osdOpens } = useOSDAccessors();
   const navigate = useNavigate();
   const location = useLocation();
@@ -104,6 +104,10 @@ export default function PHT() {
       navigate(PATH[0]);
     }
   }, []);
+
+  React.useEffect(() => {
+    helpComponent(t('helpText.notAvailable'));
+  }, [navigate]);
 
   const getProposal = () => application.content2 as Proposal;
 
