@@ -73,11 +73,10 @@ import {
 
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 6;
-
 const BACK_PAGE = PAGE_OBSERVATION;
 const WRAPPER_WIDTH_BUTTON = 2;
-
 const HELP_PANEL_HEIGHT = '50vh';
+const MOCK_CALL = true;
 
 export default function ObservationEntry() {
   const { t } = useScopedTranslation();
@@ -1013,10 +1012,12 @@ export default function ObservationEntry() {
             spacing={1}
             justifyContent="space-around"
           >
-            <Grid size={{ md: 12, lg: 5 }}>{idField()}</Grid>
-            <Grid size={{ lg: 5 }}></Grid>
-            <Grid size={{ md: 12, lg: 5 }}>{groupObservationsField()}</Grid>
-            <Grid size={{ md: 12, lg: 5 }}>{isLow() ? emptyField() : weatherField()}</Grid>
+            {!MOCK_CALL && <>
+              <Grid size={{ md: 12, lg: 5 }}>{idField()}</Grid>
+              <Grid size={{ lg: 5 }}></Grid>
+              <Grid size={{ md: 12, lg: 5 }}>{groupObservationsField()}</Grid>
+              <Grid size={{ md: 12, lg: 5 }}>{isLow() ? emptyField() : weatherField()}</Grid>
+            </>}
             <Grid size={{ md: 12, lg: 5 }}>{observationsBandField()}</Grid>
             <Grid size={{ md: 12, lg: 5 }}>{elevationField()}</Grid>
             <Grid size={{ md: 12, lg: 5 }}>{subArrayField()}</Grid>
