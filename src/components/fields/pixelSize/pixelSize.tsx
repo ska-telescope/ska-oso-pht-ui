@@ -22,7 +22,7 @@ export default function PixelSizeField({
   setValue,
   testId,
   value,
-  widthLabel = 6,
+  widthLabel = 4,
   suffix
 }: PixelSizeFieldProps) {
   return (

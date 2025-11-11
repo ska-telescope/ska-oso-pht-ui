@@ -13,7 +13,7 @@ interface StokesFieldProps {
 
 export default function StokesField({
   disabled = false,
-  labelWidth = 5,
+  labelWidth = 3,
   onFocus,
   setValue,
   value
