@@ -34,7 +34,6 @@ export default function ButtonUserMenu({
 
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [cypressLogin, setCypressLogin] = React.useState('');
-
   const openMenu = Boolean(anchorEl);
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
