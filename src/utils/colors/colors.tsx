@@ -11,46 +11,46 @@ export const COLOR_BLINDNESS_OPTIONS = [
 
 /*------------------------------------------------------------------------------*/
 
-const COLOR_MID = ['#6a3f23', '#000000']; // Brown and Black
-const COLOR_LOW = ['#f9b34c', '#000000']; // Light Orange and Black
+const COLOR_MID: [string, string] = ['#6a3f23', '#FFFFFF'];
+const COLOR_LOW: [string, string] = ['#f9b34c', '#000000'];
 
-type ColorType = 'low' | 'mid';
+const COLOR_OBSERVATION: Record<string, [string, string]> = {
+  '0': ['#1E90FF', '#FFFFFF'],
+  '1': ['#FFD700', '#000000'],
+  '2': ['#32CD32', '#000000']
+};
+
 type ContentType = 'bg' | 'fg' | 'both';
 
 interface GetColorsInput {
-  type: 'telescope';
-  colors: ColorType | ColorType[];
+  type: 'observationType' | 'telescope';
+  colors: string | string[];
   content: ContentType;
 }
 
-interface ColorMatrix {
-  [key: string]: {
-    bg?: string;
-    fg?: string;
-  };
-}
-
-export function getColors({ type, colors, content }: GetColorsInput): ColorMatrix {
+export function getColors({ type, colors, content }: GetColorsInput) {
   const colorList = Array.isArray(colors) ? colors : [colors];
-
-  const matrix: ColorMatrix = {};
-
+  let results: string[] = [];
   colorList.forEach(level => {
-    const key = `${type}-${level}`;
-    matrix[key] = {};
+    let palette: [string, string];
 
-    const palette = level === 'low' ? COLOR_LOW : COLOR_MID;
-
-    if (content === 'bg' || content === 'both') {
-      matrix[key].bg = palette[0];
+    if (type === 'observationType') {
+      palette = COLOR_OBSERVATION[level];
+    } else {
+      palette = level === '2' ? COLOR_LOW : COLOR_MID;
     }
 
-    if (content === 'fg' || content === 'both') {
-      matrix[key].fg = palette[1];
+    if (palette !== undefined) {
+      if (content === 'bg' || content === 'both') {
+        results.push(palette[0]);
+      }
+
+      if (content === 'fg' || content === 'both') {
+        results.push(palette[1]);
+      }
     }
   });
-
-  return matrix;
+  return results;
 }
 
 /*------------------------------------------------------------------------------*/

@@ -3,6 +3,7 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TableDataProductsRow from './TableDataProductsRow';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
 
 const wrapper = (component: React.ReactElement) => {
   return render(
@@ -23,8 +24,11 @@ describe('TableDataProductsRow', () => {
     reviews: []
   };
 
+  const mockProposal = MockProposalFrontend;
+
   const defaultProps = {
     item: mockItem,
+    proposal: mockProposal,
     index: 0,
     expanded: false,
     deleteClicked: vi.fn(),
