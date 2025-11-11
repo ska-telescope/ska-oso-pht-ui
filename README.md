@@ -66,10 +66,16 @@ REACT_APP_SKA_LOGIN_APP_URL='http://localhost:4201'
 Generate env.js from .env and start application
 
 ```
-yarn dev or yarn local
+yarn dev
 ```
 
 This should allow the GUI application to run in http://localhost:6101/
+
+```
+yarn local
+```
+
+Run the application the same as ‘yarn dev’, however it doesn't reset the content of ‘/public/env.js’
 
 ## NOTES
 

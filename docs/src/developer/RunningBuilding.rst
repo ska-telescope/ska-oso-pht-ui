@@ -11,7 +11,7 @@ From the project directory, you can run any of the following:
 
 - `> yarn local`
 
-Runs the app in the development mode without resetting the public/env.js file at [http://localhost:6101](http://localhost:6101). The app will recompile and restart if you make any edits to the source files. Any linting errors will also be shown in the console.
+  Runs the app in the development mode without resetting the public/env.js file at [http://localhost:6101](http://localhost:6101). The app will recompile and restart if you make any edits to the source files. Any linting errors will also be shown in the console.
 
 - `> yarn skao:update`
 
