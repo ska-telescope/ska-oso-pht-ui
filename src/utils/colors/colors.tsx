@@ -9,6 +9,52 @@ export const COLOR_BLINDNESS_OPTIONS = [
   { value: 7, label: 'Achromatopsia (Complete Color Blindness)' }
 ];
 
+/*------------------------------------------------------------------------------*/
+
+const COLOR_MID = ['#6a3f23', '#000000']; // Brown and Black
+const COLOR_LOW = ['#f9b34c', '#000000']; // Light Orange and Black
+
+type ColorType = 'low' | 'mid';
+type ContentType = 'bg' | 'fg' | 'both';
+
+interface GetColorsInput {
+  type: 'telescope';
+  colors: ColorType | ColorType[];
+  content: ContentType;
+}
+
+interface ColorMatrix {
+  [key: string]: {
+    bg?: string;
+    fg?: string;
+  };
+}
+
+export function getColors({ type, colors, content }: GetColorsInput): ColorMatrix {
+  const colorList = Array.isArray(colors) ? colors : [colors];
+
+  const matrix: ColorMatrix = {};
+
+  colorList.forEach(level => {
+    const key = `${type}-${level}`;
+    matrix[key] = {};
+
+    const palette = level === 'low' ? COLOR_LOW : COLOR_MID;
+
+    if (content === 'bg' || content === 'both') {
+      matrix[key].bg = palette[0];
+    }
+
+    if (content === 'fg' || content === 'both') {
+      matrix[key].fg = palette[1];
+    }
+  });
+
+  return matrix;
+}
+
+/*------------------------------------------------------------------------------*/
+
 export const COLOR_PALETTES = [
   [
     '#D32F2F', // Red - High contrast red

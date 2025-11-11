@@ -3,18 +3,25 @@ import { Grid, Divider } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { NAV, PAGE_TECHNICAL } from '@utils/constants.ts';
+import {
+  PAGE_CALIBRATION,
+  PAGE_DATA_PRODUCTS,
+  PAGE_DESCRIPTION,
+  PAGE_GENERAL,
+  PAGE_OBSERVATION,
+  PAGE_TARGET,
+  PAGE_TEAM,
+  PAGE_TITLE_ADD
+} from '@utils/constants.ts';
 import StatusWrapper from '../wrappers/statusWrapper/StatusWrapper';
-import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 export default function StatusArrayOriginal() {
   const { application } = storageObject.useStore();
-  const { isSV } = useAppFlow();
 
   const SIZE_OK = () => useMediaQuery(useTheme().breakpoints.up('md'));
 
   const generateDivider = (index: number) => {
-    if (SIZE_OK() && index < getNAVItems().length - 1) {
+    if (SIZE_OK() && index < getPages().length) {
       return (
         <Grid mt={-2} sx={{ width: '3%' }}>
           <Divider sx={{ width: '100%', borderBottomWidth: '3px' }} />
@@ -25,18 +32,25 @@ export default function StatusArrayOriginal() {
   };
 
   const generateStatus = (index: number) => {
-    const idx = index > PAGE_TECHNICAL - 1 ? index + 1 : index;
-    const lvl = (application.content1 as number[])[idx];
+    const lvl = (application.content1 as number[])[index];
     return (
       <Grid>
-        <StatusWrapper level={lvl} page={idx} />
+        <StatusWrapper level={lvl} page={index} />
       </Grid>
     );
   };
 
-  const getNAVItems = () => {
-    return isSV() ? NAV.filter(rec => rec !== '/proposal/technical') : NAV;
-  };
+  // TODO : This will need to be extended once we move out of MOCK_CALL mode
+  const getPages = () => [
+    PAGE_TITLE_ADD,
+    PAGE_TEAM,
+    PAGE_GENERAL,
+    PAGE_DESCRIPTION,
+    PAGE_TARGET,
+    PAGE_OBSERVATION,
+    PAGE_DATA_PRODUCTS,
+    PAGE_CALIBRATION
+  ];
 
   return (
     <Grid
@@ -46,11 +60,10 @@ export default function StatusArrayOriginal() {
       alignItems="center"
       justifyContent="space-evenly"
     >
-      {getNAVItems().map((_page, index) => (
-        // eslint-disable-next-line react/no-array-index-key
-        <React.Fragment key={index}>
-          {generateStatus(index)}
-          {generateDivider(index)}
+      {getPages().map(e => (
+        <React.Fragment key={e}>
+          {generateStatus(e)}
+          {generateDivider(e)}
         </React.Fragment>
       ))}
     </Grid>

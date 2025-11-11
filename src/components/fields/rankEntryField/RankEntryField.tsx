@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Typography, Box, Paper } from '@mui/material';
-import { COLOR_PALETTES } from '@/utils/accessibility/accessibility';
+import { COLOR_PALETTES } from '@/utils/colors/colors';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface RankEntryFieldProps {
