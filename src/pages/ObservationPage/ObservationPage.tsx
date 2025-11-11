@@ -228,7 +228,15 @@ export default function ObservationPage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
+      <Grid container direction="column" alignItems="space-evenly" justifyContent="space-around">
+        <Grid pb={3} pl={3}>
+          <AddButton
+            action={PATH[2]}
+            primary={!hasObservations()}
+            testId="addObservationButton"
+            title="addObservation.button"
+          />
+        </Grid>
         <TableObservation obsData={elementsO}></TableObservation>
       </Grid>
       {deleteDialog ?? <></>}
