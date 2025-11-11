@@ -1,18 +1,6 @@
 import React from 'react';
 import { useMsal } from '@azure/msal-react';
-import {
-  Box,
-  Divider,
-  Drawer,
-  Menu,
-  MenuItem,
-  Stack,
-  Grid,
-  Button,
-  Popper,
-  Typography,
-  Paper
-} from '@mui/material';
+import { Box, Divider, Menu, MenuItem } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { ButtonLogin, ButtonUser, ButtonLogout } from '@ska-telescope/ska-login-page';
 import { ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';

@@ -5,7 +5,6 @@ import { useTheme } from '@mui/material/styles';
 
 const PANEL_WIDTH = 300;
 const TAB_WIDTH = 40;
-const PINK = '#e2007a'; // SKAO Redshift Magenta
 
 const Container = styled(Box)({
   position: 'fixed',
