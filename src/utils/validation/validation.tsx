@@ -1,3 +1,4 @@
+import { ConnectingAirportsOutlined } from '@mui/icons-material';
 import {
   MOCK_CALL,
   MODE_CONTINUUM,
@@ -80,10 +81,13 @@ export const validateSRCPage = () => STATUS_OK;
 
 export const validateCalibrationPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
+  console.log('proposal?.calibrationStrategy', proposal?.calibrationStrategy);
   let count = proposal?.calibrationStrategy?.length > 0 ? 1 : 0;
+  console.log(count);
   const isAddNote: boolean = proposal?.calibrationStrategy?.[0]?.isAddNote;
   count +=
     count && ((isAddNote && proposal?.calibrationStrategy?.[0]?.notes) || !isAddNote) ? 1 : 0;
+    console.log(count);
   return result[count];
 };
 
