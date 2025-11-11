@@ -449,6 +449,11 @@ export const clickToObservatoryDataProductPage = () => {
   pageConfirmed('OBSERVATORY DATA PRODUCT');
 };
 
+export const clickToCalibrationPage = () => {
+  clickToNextPage();
+  pageConfirmed('CALIBRATION');
+};
+
 export const verifySensitivityCalculatorStatusSuccess = () => {
   cy.get('[data-testid="statusId"]').should('exist');
   cy.get('[aria-label="Status : OK "]').should('exist');

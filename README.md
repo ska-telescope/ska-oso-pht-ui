@@ -71,6 +71,12 @@ yarn dev
 
 This should allow the GUI application to run in http://localhost:6101/
 
+```
+yarn local
+```
+
+Run the application the same as ‘yarn dev’, however it doesn't reset the content of ‘/public/env.js’
+
 ## NOTES
 
 Please refer to oso-services documentation for implementation of the minimum backend required
