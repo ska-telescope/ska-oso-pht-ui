@@ -193,14 +193,14 @@
     "error": "Unable to retrieve Cycle data"
   },
   "cycleCloses": {
-    "label": "Cycle closes",
+    "label": "Call closes",
     "countdown": "Cycle closes in {{days}}d {{hours}}h {{minutes}}m {{seconds}}s"
   },
   "cycleDescription": {
     "label": "Cycle description"
   },
   "cycleOpens": {
-    "label": "Cycle opens"
+    "label": "Call opens"
   },
   "dataProduct": {
     "button": "Add Data Product"
