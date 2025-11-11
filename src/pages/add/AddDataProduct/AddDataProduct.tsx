@@ -69,7 +69,6 @@ export default function AddDataProduct() {
   const [weighting, setWeighting] = React.useState(0);
   const [robust, setRobust] = React.useState(3);
   const [channelsOut, setChannelsOut] = React.useState(1);
-  const [fitSpectralPol, setFitSpectralPol] = React.useState(1);
   const [polarisations, setPolarisations] = React.useState('I');
   const [tapering, setTapering] = React.useState(0);
 
@@ -260,23 +259,6 @@ export default function AddDataProduct() {
     );
   };
 
-  const fitSpectralPolField = () =>
-    fieldWrapper(
-      <Box pt={1}>
-        <NumberEntry
-          label={t('fitSpectralPol.label')}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH}
-          testId="fitSpectralPol"
-          value={fitSpectralPol}
-          setValue={setFitSpectralPol}
-          onFocus={() => helpComponent(t('fitSpectralPol.help'))}
-          required
-        />
-      </Box>
-    );
-
   const stokesField = () => {
     return (
       <StokesField
@@ -388,7 +370,7 @@ export default function AddDataProduct() {
         robust,
         polarisations,
         channelsOut,
-        fitSpectralPol
+        fitSpectralPol: 3
       };
       if (hasRecord) {
         setProposal({
@@ -498,7 +480,6 @@ export default function AddDataProduct() {
                       rec => rec.id === observationId && rec.observingBand !== 0
                     ) && fieldWrapper(taperingField())}
                   </Grid>
-                  <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(fitSpectralPolField())}</Grid>
                 </Grid>
               </BorderedSection>
             </Stack>

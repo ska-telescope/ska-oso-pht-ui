@@ -18,7 +18,7 @@ const mockData = {
   weighting: IW_BRIGGS,
   robust: 0.5,
   channelsOut: 4,
-  fitSpectralPol: 1,
+  fitSpectralPol: 3,
   polarisations: 'I,Q,U,V'
 };
 
