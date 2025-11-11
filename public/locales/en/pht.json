@@ -96,7 +96,7 @@
   },
   "bandwidth": {
     "help": {
-      "0": " Zoom Bandwidth of the observation. LOW supports eight channelization schemes in zoom mode, each with a unique combination of frequency resolution and bandwidth. MID supports seven channelisation schemes in zoom mode, each with a unique combination of frequency resolution and bandwidth.",
+      "0": " Zoom Bandwidth of the observation. LOW supports eight channelization schemes in zoom mode, each with a unique combination of frequency resolution and bandwidth. MID supports seven channelization schemes in zoom mode, each with a unique combination of frequency resolution and bandwidth.",
       "1": "The continuum bandwidth of the observation. It must be fully contained within the selected band. Note: For LOW, the specified bandwidth must be equal to or larger than 5.43 kHz, which is the width of a LOW continuum channel. The specified bandwidth must be fully contained within the LOW band (50 - 350 MHz). It cannot exceed 75 MHz for the AA0.5 and AA1 configurations, 150 MHz for the AA2 configuration and 300 MHz for the AA* and AA4 configurations. For MID, note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz."
     },
     "label": {
@@ -113,6 +113,7 @@
     "label": "Add"
   },
   "calibrator": {
+    "desc": "This is a likely observing strategy with calibration (assuming observation near transit, etc.):",
     "note": "The choice of calibrators assumes that the target scan will be centred at transit.",
     "disclaimer": "The use of these calibrators is not guaranteed.",
     "calibrator": "Calibrator",
@@ -193,14 +194,14 @@
     "error": "Unable to retrieve Cycle data"
   },
   "cycleCloses": {
-    "label": "Cycle closes",
+    "label": "Call closes",
     "countdown": "Cycle closes in {{days}}d {{hours}}h {{minutes}}m {{seconds}}s"
   },
   "cycleDescription": {
     "label": "Cycle description"
   },
   "cycleOpens": {
-    "label": "Cycle opens"
+    "label": "Call opens"
   },
   "dataProduct": {
     "button": "Add Data Product"
@@ -333,6 +334,9 @@
     "idPrefix": "group-",
     "toolTip": "Add a group if observations need to be grouped."
   },
+  "helpText": {
+    "notAvailable": "Help text is not available in this field/page"
+  },
   "homeBtn": {
     "label": "Home",
     "title": "Proposals",
@@ -459,7 +463,14 @@
     "1": "Mid Band 1 (0.35 - 1.05 GHz)",
     "2": "Mid Band 2 (0.95 - 1.76 GHz)",
     "3": "Mid Band 5a (4.6 - 8.5 GHz)",
-    "4": "Mid Band 5b (8.3 - 15.4 GHz)"
+    "4": "Mid Band 5b (8.3 - 15.4 GHz)",
+    "short": {
+      "0": "Band Low",
+      "1": "Band 1",
+      "2": "Band 2",
+      "3": "Band 5a",
+      "4": "Band 5b"
+    }
   },
   "observationId": {
     "label": "Observation ID",
@@ -1191,6 +1202,10 @@
     "empty": "There are no targets associated with this proposal",
     "loggedOut": "There are no targets created"
   },
+  "telescopes": {
+    "2": "LOW",
+    "1": "MID"
+  },
   "title": {
     "label": "Title",
     "short": "Title",
@@ -1347,7 +1362,7 @@
       "status": "Calibration",
       "title": "Calibration",
       "titleShort": "Calibration",
-      "desc": "This is a likely observing strategy with calibration (assuming observation near transit, etc.)",
+      "desc": "Observatory defined calibration strategy",
       "pageError": "The CALIBRATION STRATEGY page is not complete",
       "help": "The listed strategy is representative and not guaranteed at the time of execution. User defined calibration strategies are not currently supported.",
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE CALIBRATION STRATEGY AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL"

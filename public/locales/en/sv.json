@@ -1,4 +1,8 @@
 {
+  "cycle": {
+    "label": "Science Verification milestone",
+    "error": "Unable to retrieve Cycle data"
+  },
   "abstract": {
     "label": "Idea Summary",
     "help": "The Science Verification Idea summary should clearly communicate the Science Verification Idea’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the Science Verification Idea's essential points. The summary should be succinct yet detailed enough to convey the essence of the Science Verification Idea, highlighting its innovation and relevance to the field. The text should be a maximum of 250 words.",
@@ -160,7 +164,7 @@
     "tooltip": "Saves the Science Verification Idea in the current state to the database"
   },
   "scienceCategory": {
-    "101": "Zoom",
+    "101": "Spectral",
     "102": "Continuum",
     "103": "PST",
     "label": "Observing Mode",
@@ -198,10 +202,10 @@
   },
   "page": {
     "0": {
-      "desc": "This page allows users to provide the title for the Science Verification Idea."
+      "desc": "Provide a title for the Science Verification idea."
     },
     "1": {
-      "desc": "Participants creating the Science Verification Idea should ensure that fellow participants are registered through the SKAO portal. Participants with pending status will be removed from the Science Verification Idea during validation of a submitted Science Verification Idea."
+      "desc": "Fellow participants can be optionally added to this Science Verification idea."
     },
     "2": {
       "desc": "This page allows the user to provide general information about the Science Verification Idea."
@@ -211,12 +215,15 @@
       "status": "Description",
       "title": "Description",
       "titleShort": "Description",
-      "desc": "Upload a document for this Science Verification Idea in a portable document format (pdf).",
+      "desc": "Upload a brief description of the Science Verification idea.",
       "pageError": "The DESCRIPTION page is not complete",
-      "help": "This is help for the Description Page"
+      "help": "This document should include a brief justification of the target, the suggested observations and its suitability for Science Verification."
     },
     "4": {
-      "desc": "Select a category to associate target with this Science Verification Idea."
+      "desc": "Please specify the target associated with this science verification idea."
+    },
+    "5": {
+      "desc": "Add observation set up."
     },
     "6": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE CALIBRATION STRATEGY AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS SCIENCE VERIFICATION IDEA"
@@ -232,7 +239,7 @@
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE CALIBRATION STRATEGY AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS SCIENCE VERIFICATION IDEA"
     },
     "11": {
-      "desc": "Science Verification Ideas where the user is listed as a participant.",
+      "desc": "Optionally add further suggested parameters of the observation setup.",
       "empty": "NO SCIENCE VERIFICATION IDEAS AVAILABLE"
     },
     "noObservations": "NO OBSERVATION SETUP IS ASSOCIATED WITH THIS SCIENCE VERIFICATION IDEA"
