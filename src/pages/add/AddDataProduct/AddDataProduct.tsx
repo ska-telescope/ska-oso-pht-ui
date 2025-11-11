@@ -49,7 +49,7 @@ const PAGE = PAGE_DATA_PRODUCTS_ADD;
 const PAGE_PREFIX = 'SDP';
 const FIELD_OBS = 'observatoryDataProduct.options';
 const LABEL_WIDTH = 5;
-const LABEL_WIDTH_TICK = 11;
+const LABEL_WIDTH_TICK = 11.5;
 const WRAPPER_WIDTH_BUTTON = 2;
 
 export default function AddDataProduct() {
@@ -142,16 +142,16 @@ export default function AddDataProduct() {
     return (
       <Grid
         pl={1}
-        pt={3}
+        pt={2}
         container
         direction="row"
-        alignItems="space-between"
+        alignItems="center"
         justifyContent="space-between"
       >
-        <Grid size={{ xs: LABEL_WIDTH }}>
+        <Grid size={{ xs: 2 }}>
           <Typography>{t('observatoryDataProduct.label') + ' *'}</Typography>
         </Grid>
-        <Grid size={{ xs: 12 - LABEL_WIDTH }}>{tickElement(1, dp1, setDP1)}</Grid>
+        <Grid size={{ xs: 10 }}>{tickElement(1, dp1, setDP1)}</Grid>
       </Grid>
     );
   };
