@@ -2,7 +2,6 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import EdgeSlider from '../EdgeSlider/EdgeSlider';
 import PageBannerPPT from '../pageBannerPPT/PageBannerPPT';
 import PageFooterPPT from '../pageFooterPPT/PageFooterPPT';
-import TitlePage from '@/pages/TitlePage/TitlePage';
 import { PAGE_TITLE_ADD } from '@/utils/constants';
 
 interface ShellProps {
