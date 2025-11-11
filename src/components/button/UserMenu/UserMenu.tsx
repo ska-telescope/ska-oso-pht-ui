@@ -26,7 +26,6 @@ import {
   useInitializeAccessStore
 } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import EdgeSlider from '@/components/layout/EdgeSlider/EdgeSlider';
 
 export interface ButtonUserMenuProps {
   ariaDescription?: string;
@@ -240,8 +239,6 @@ export default function ButtonUserMenu({
           </Typography>
         </Paper>
       </Popper>
-
-      <EdgeSlider helperText={getHelp()} />
     </>
   );
 }

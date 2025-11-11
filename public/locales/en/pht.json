@@ -333,8 +333,8 @@
     "idPrefix": "group-",
     "toolTip": "Add a group if observations need to be grouped."
   },
-  "helpText":{
-    "notAvailable": "Help text is not available in this field/page" 
+  "helpText": {
+    "notAvailable": "Help text is not available in this field/page"
   },
   "homeBtn": {
     "label": "Home",
