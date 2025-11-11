@@ -111,7 +111,9 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     if (usedPageNo === -1) {
       return `createBtn.label`;
     }
-    let thePage = usedPageNo + (isSV() && usedPageNo === PAGE_TECHNICAL - 1 ? 2 : 1);
+    let thePage =
+      usedPageNo +
+      (isSV() && (usedPageNo === PAGE_TECHNICAL - 1 || usedPageNo === PAGE_LINKING - 1) ? 2 : 1);
     if (!validateProposalNavigation(getProposal(), thePage)) {
       thePage = PAGE_LINKING;
     }
@@ -125,7 +127,10 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     if (!validateProposalNavigation(getProposal(), usedPageNo - 1)) {
       return `page.${PAGE_TARGET}.title`;
     }
-    return `page.${usedPageNo - (isSV() && usedPageNo === PAGE_TECHNICAL + 1 ? 2 : 1)}.title`;
+    return `page.${usedPageNo -
+      (isSV() && (usedPageNo === PAGE_TECHNICAL + 1 || usedPageNo === PAGE_LINKING + 1)
+        ? 2
+        : 1)}.title`;
   };
 
   const prevPageNav = () => {
@@ -134,7 +139,14 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     } else if (!validateProposalNavigation(getProposal(), usedPageNo - 1)) {
       navigate(NAV[PAGE_TARGET]);
     } else if (usedPageNo > 0) {
-      navigate(NAV[usedPageNo - (isSV() && usedPageNo === PAGE_TECHNICAL + 1 ? 2 : 1)]);
+      navigate(
+        NAV[
+          usedPageNo -
+            (isSV() && (usedPageNo === PAGE_TECHNICAL + 1 || usedPageNo === PAGE_LINKING + 1)
+              ? 2
+              : 1)
+        ]
+      );
     }
   };
 
@@ -146,7 +158,14 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     } else if (!validateProposalNavigation(getProposal(), usedPageNo + 1)) {
       navigate(NAV[PAGE_LINKING]);
     } else if (usedPageNo < NAV.length) {
-      navigate(NAV[usedPageNo + (isSV() && usedPageNo === PAGE_TECHNICAL - 1 ? 2 : 1)]);
+      navigate(
+        NAV[
+          usedPageNo +
+            (isSV() && (usedPageNo === PAGE_TECHNICAL - 1 || usedPageNo === PAGE_LINKING - 1)
+              ? 2
+              : 1)
+        ]
+      );
     }
   };
 

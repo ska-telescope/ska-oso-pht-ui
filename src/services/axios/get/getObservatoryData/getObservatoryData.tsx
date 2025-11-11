@@ -90,9 +90,10 @@ async function GetObservatoryData(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
   cycleNumber: number
 ): Promise<string | ObservatoryData> {
-  if (USE_LOCAL_DATA) {
+  if (true || USE_LOCAL_DATA) {
     return GetMockData();
   }
+  console.log('Fetching observatory data from backend...');
 
   try {
     const URL_PATH = `/osd/`;
