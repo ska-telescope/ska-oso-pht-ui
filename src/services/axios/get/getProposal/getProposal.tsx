@@ -261,8 +261,13 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
     return 0;
   };
 
-  const getPixelSizeUnits = (inValue: string | null): any =>
-    inValue === 'arcsec' ? 'arcsecs' : inValue || '';
+  const getPixelSizeUnits = (inValue: string) => {
+    if (inValue === 'arcsec2') {
+      return 2;
+    } else {
+      return inValue === 'arcsec' ? 'arcsecs' : inValue || '';
+    }
+  };
 
   return inValue?.map((dp, index) => ({
     id: index + 1,
