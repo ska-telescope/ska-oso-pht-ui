@@ -185,11 +185,11 @@ export const MockProposalBackend: ProposalBackend = {
           polarisations: 'I',
           image_size: {
             value: 15,
-            unit: 'deg2'
+            unit: 'deg'
           },
           image_cellsize: {
             value: 1.007,
-            unit: 'arcsec2'
+            unit: 'arcsec'
           },
           weight: {
             weighting: 'uniform'
@@ -358,11 +358,11 @@ export const MockProposalBackendZoom: ProposalBackend = {
           polarisations: 'I',
           image_size: {
             value: 100,
-            unit: 'deg2'
+            unit: 'deg'
           },
           image_cellsize: {
             value: 3.7,
-            unit: 'arcsec2'
+            unit: 'arcsec'
           },
           weight: {
             weighting: 'briggs',

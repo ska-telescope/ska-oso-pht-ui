@@ -66,7 +66,7 @@ export default function AddDataProduct() {
   const [imageSizeValue, setImageSizeValue] = React.useState('0');
   const [imageSizeUnits, setImageSizeUnits] = React.useState(0);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
-  const [pixelSizeUnits, setPixelSizeUnits] = React.useState(0);
+  const [pixelSizeUnits, setPixelSizeUnits] = React.useState('');
   const [weighting, setWeighting] = React.useState(0);
   const [robust, setRobust] = React.useState(3);
   const [channelsOut, setChannelsOut] = React.useState(1);
@@ -81,7 +81,7 @@ export default function AddDataProduct() {
 
     const observations = getProposal()?.observations;
     setBaseObservations(observations ?? []);
-    setPixelSizeUnits(2);
+    setPixelSizeUnits(t('imageSize.2'));
   }, []);
 
   React.useEffect(() => {
@@ -204,10 +204,6 @@ export default function AddDataProduct() {
     );
   };
 
-  const pixelSizeUnitsField = () => {
-    return pixelSizeUnits === 0 ? '' : presentUnits(t('pixelSize.' + pixelSizeUnits));
-  };
-
   const pixelSizeField = () =>
     fieldWrapper(
       <PixelSizeField
@@ -218,7 +214,7 @@ export default function AddDataProduct() {
         testId="pixelSize"
         required
         value={pixelSizeValue}
-        suffix={pixelSizeUnitsField()}
+        suffix={pixelSizeUnits}
       />
     );
 

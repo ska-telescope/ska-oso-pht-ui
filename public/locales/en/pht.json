@@ -346,9 +346,9 @@
     "label": "Id"
   },
   "imageSize": {
-    "0": "degree2",
-    "1": "arcmin2",
-    "2": "arcsec2",
+    "0": "deg",
+    "1": "arcmin",
+    "2": "arcsec",
     "label": "Image Size",
     "help": "Specify the image size based on the selected data product(s) in arcseconds, arcminutes or degrees.",
     "error": "A value greater than zero is required"
@@ -615,9 +615,6 @@
     "short": "PI"
   },
   "pixelSize": {
-    "0": "degree2",
-    "1": "arcmin2",
-    "2": "arcsec2",
     "label": "Pixel Size",
     "help": "Pixel size of the image requested.",
     "notFound": "No value found",
