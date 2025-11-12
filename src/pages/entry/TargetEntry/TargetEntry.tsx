@@ -46,6 +46,7 @@ import {
 } from '@/utils/calculate/calculate';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
+import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 interface TargetEntryProps {
   raType: number;
   setTarget?: Function;
@@ -260,6 +261,18 @@ export default function TargetEntry({
         : null;
       const highestId = highest ? highest.id : 0;
 
+      const calibrationOut = (observationId: string) => {
+        const newCalibration: CalibrationStrategy = {
+          observatoryDefined: true,
+          id: generateId('cal-'),
+          observationIdRef: observationId,
+          calibrators: null,
+          notes: null,
+          isAddNote: false
+        };
+        return newCalibration;
+      };
+
       const observationOut = () => {
         const newObservation: Observation = {
           id: generateId(t('addObservation.idPrefix'), 6),
@@ -327,9 +340,11 @@ export default function TargetEntry({
 
       const addTargetAsync = async () => {
         let newObservation = undefined;
+        let newCalibration = undefined;
         let sensCalcResult = undefined;
         if (MOCK_CALL) {
           newObservation = observationOut();
+          newCalibration = calibrationOut(newObservation?.id);
           sensCalcResult = await getSensCalcData(newObservation, newTarget);
         }
         const updatedProposal = {
@@ -338,6 +353,9 @@ export default function TargetEntry({
           observations: MOCK_CALL
             ? [newObservation].filter((obs): obs is Observation => obs !== undefined)
             : getProposal().observations,
+          calibrationStrategy: MOCK_CALL
+            ? [...(getProposal().calibrationStrategy ?? []), newCalibration as CalibrationStrategy]
+            : getProposal().calibrationStrategy,
           targetObservation: MOCK_CALL
             ? sensCalcResult && newObservation && newObservation.id
               ? [
