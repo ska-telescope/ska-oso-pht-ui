@@ -10,7 +10,7 @@ import {
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
 import PulsarTimingBeamField from '@components/fields/pulsarTimingBeam/PulsarTimingBeam.tsx';
-import { leadZero } from '@utils/helpers.ts';
+import { generateId, leadZero } from '@utils/helpers.ts';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import ResolveButton from '@/components/button/Resolve/Resolve';
@@ -27,11 +27,26 @@ import {
   LAB_IS_BOLD,
   FIELD_PATTERN_POINTING_CENTRES,
   HELP_FONT,
-  WRAPPER_HEIGHT
+  WRAPPER_HEIGHT,
+  FREQUENCY_MHZ,
+  TELESCOPE_LOW_NUM,
+  OB_SUBARRAY_AA2,
+  BAND_LOW,
+  TYPE_CONTINUUM,
+  SUPPLIED_INTEGRATION_TIME_UNITS_H,
+  SUPPLIED_TYPE_INTEGRATION
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
+import Observation from '@/utils/types/observation';
+import {
+  calculateCentralFrequency,
+  calculateContinuumBandwidth
+} from '@/utils/calculate/calculate';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
+import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 interface TargetEntryProps {
   raType: number;
   setTarget?: Function;
@@ -45,6 +60,7 @@ interface TargetEntryProps {
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 const PANEL_HEIGHT = '54vh';
+const MOCK_CALL = true;
 
 export default function TargetEntry({
   raType,
@@ -57,7 +73,8 @@ export default function TargetEntry({
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
   const { isSV } = useAppFlow();
-  const { notifySuccess } = useNotify();
+  const { notifyError, notifySuccess } = useNotify();
+  const { observatoryConstants } = useOSDAccessors();
 
   const LAB_WIDTH = 5;
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
@@ -244,6 +261,56 @@ export default function TargetEntry({
         : null;
       const highestId = highest ? highest.id : 0;
 
+      const calibrationOut = (observationId: string) => {
+        const newCalibration: CalibrationStrategy = {
+          observatoryDefined: true,
+          id: generateId('cal-'),
+          observationIdRef: observationId,
+          calibrators: null,
+          notes: null,
+          isAddNote: false
+        };
+        return newCalibration;
+      };
+
+      const observationOut = () => {
+        const newObservation: Observation = {
+          id: generateId(t('addObservation.idPrefix'), 6),
+          telescope: TELESCOPE_LOW_NUM,
+          subarray: OB_SUBARRAY_AA2,
+          linked: '0',
+          type: TYPE_CONTINUUM,
+          observingBand: BAND_LOW,
+          centralFrequency: calculateCentralFrequency(
+            BAND_LOW,
+            OB_SUBARRAY_AA2,
+            observatoryConstants
+          ),
+          centralFrequencyUnits: FREQUENCY_MHZ,
+          continuumBandwidth: calculateContinuumBandwidth(
+            BAND_LOW,
+            OB_SUBARRAY_AA2,
+            observatoryConstants
+          ),
+          continuumBandwidthUnits: FREQUENCY_MHZ,
+          elevation: 15,
+          bandwidth: null,
+          imageWeighting: 0,
+          numStations: 512,
+          numSubBands: 1,
+          robust: 0,
+          supplied: {
+            type: SUPPLIED_TYPE_INTEGRATION,
+            value: 1,
+            units: SUPPLIED_INTEGRATION_TIME_UNITS_H
+          },
+          spectralAveraging: 1,
+          spectralResolution: '',
+          effectiveResolution: ''
+        };
+        return newObservation;
+      };
+
       const newTarget: Target = {
         kind: RA_TYPE_ICRS.value,
         decStr: dec ?? '',
@@ -260,12 +327,51 @@ export default function TargetEntry({
         tiedArrayBeams: tiedArrayBeams ? (tiedArrayBeams as TiedArrayBeams) : null
       };
 
-      const updatedProposal = {
-        ...getProposal(),
-        targets: [...(getProposal().targets ?? []), newTarget]
+      const getSensCalcData = async (observation: Observation, target: Target) => {
+        const response = await calculateSensCalcData(observation, target);
+        if (response) {
+          if (response.error) {
+            const errMsg = response.error;
+            notifyError(errMsg, NOTIFICATION_DELAY_IN_SECONDS);
+          }
+          return response;
+        }
       };
-      setProposal(updatedProposal);
-      notifySuccess(t('addTarget.success'), NOTIFICATION_DELAY_IN_SECONDS);
+
+      const addTargetAsync = async () => {
+        let newObservation = undefined;
+        let newCalibration = undefined;
+        let sensCalcResult = undefined;
+        if (MOCK_CALL) {
+          newObservation = observationOut();
+          newCalibration = calibrationOut(newObservation?.id);
+          sensCalcResult = await getSensCalcData(newObservation, newTarget);
+        }
+        const updatedProposal = {
+          ...getProposal(),
+          targets: [...(getProposal().targets ?? []), newTarget],
+          observations: MOCK_CALL
+            ? [newObservation].filter((obs): obs is Observation => obs !== undefined)
+            : getProposal().observations,
+          calibrationStrategy: MOCK_CALL
+            ? [...(getProposal().calibrationStrategy ?? []), newCalibration as CalibrationStrategy]
+            : getProposal().calibrationStrategy,
+          targetObservation: MOCK_CALL
+            ? sensCalcResult && newObservation && newObservation.id
+              ? [
+                  {
+                    targetId: newTarget.id,
+                    observationId: newObservation.id,
+                    sensCalc: sensCalcResult
+                  }
+                ]
+              : []
+            : getProposal().targetObservation
+        };
+        setProposal(updatedProposal);
+        notifySuccess(t('addTarget.success'), NOTIFICATION_DELAY_IN_SECONDS);
+      };
+      addTargetAsync();
     };
 
     const clearForm = () => {

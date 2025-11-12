@@ -49,9 +49,8 @@ const PAGE = PAGE_DATA_PRODUCTS_ADD;
 const PAGE_PREFIX = 'SDP';
 const FIELD_OBS = 'observatoryDataProduct.options';
 const LABEL_WIDTH = 5;
-const LABEL_WIDTH_TICK = 11;
+const LABEL_WIDTH_TICK = 11.5;
 const WRAPPER_WIDTH_BUTTON = 2;
-const BOTTOM_LABEL_WIDTH = 6;
 
 export default function AddDataProduct() {
   const navigate = useNavigate();
@@ -70,7 +69,6 @@ export default function AddDataProduct() {
   const [weighting, setWeighting] = React.useState(0);
   const [robust, setRobust] = React.useState(3);
   const [channelsOut, setChannelsOut] = React.useState(1);
-  const [fitSpectralPol, setFitSpectralPol] = React.useState(1);
   const [polarisations, setPolarisations] = React.useState('I');
   const [tapering, setTapering] = React.useState(0);
 
@@ -144,16 +142,16 @@ export default function AddDataProduct() {
     return (
       <Grid
         pl={1}
-        pt={3}
+        pt={2}
         container
         direction="row"
-        alignItems="space-between"
+        alignItems="center"
         justifyContent="space-between"
       >
-        <Grid size={{ xs: LABEL_WIDTH }}>
+        <Grid size={{ xs: 3 }}>
           <Typography>{t('observatoryDataProduct.label') + ' *'}</Typography>
         </Grid>
-        <Grid size={{ xs: 12 - LABEL_WIDTH }}>{tickElement(1, dp1, setDP1)}</Grid>
+        <Grid size={{ xs: 9 }}>{tickElement(1, dp1, setDP1)}</Grid>
       </Grid>
     );
   };
@@ -186,12 +184,12 @@ export default function AddDataProduct() {
       setImageSizeValue(num.toString());
     };
     return (
-      <Box pt={1}>
+      <Box pt={1} sx={{ maxWidth: '800px' }}>
         <NumberEntry
           label={t('imageSize.label')}
           labelBold
           labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH}
+          labelWidth={5}
           testId="imageSize"
           value={imageSizeValue}
           setValue={(e: number) => setTheNumber(e)}
@@ -212,7 +210,6 @@ export default function AddDataProduct() {
     fieldWrapper(
       <PixelSizeField
         label={t('pixelSize.label')}
-        widthLabel={LABEL_WIDTH}
         onFocus={() => helpComponent(t('pixelSize.help'))}
         setValue={setPixelSizeValue}
         testId="pixelSize"
@@ -262,27 +259,9 @@ export default function AddDataProduct() {
     );
   };
 
-  const fitSpectralPolField = () =>
-    fieldWrapper(
-      <Box pt={1}>
-        <NumberEntry
-          label={t('fitSpectralPol.label')}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH}
-          testId="fitSpectralPol"
-          value={fitSpectralPol}
-          setValue={setFitSpectralPol}
-          onFocus={() => helpComponent(t('fitSpectralPol.help'))}
-          required
-        />
-      </Box>
-    );
-
   const stokesField = () => {
     return (
       <StokesField
-        labelWidth={LABEL_WIDTH}
         onFocus={() => helpComponent(t('stokes.help'))}
         value={polarisations}
         setValue={setPolarisations}
@@ -352,7 +331,7 @@ export default function AddDataProduct() {
     return fieldDropdown(
       false,
       'gaussianTaper',
-      BOTTOM_LABEL_WIDTH,
+      5,
       getOptions(),
       true,
       setTapering,
@@ -391,7 +370,7 @@ export default function AddDataProduct() {
         robust,
         polarisations,
         channelsOut,
-        fitSpectralPol
+        fitSpectralPol: 3
       };
       if (hasRecord) {
         setProposal({
@@ -487,18 +466,21 @@ export default function AddDataProduct() {
             <Stack spacing={5}>
               <BorderedSection title={t('page.7.group1')}>{dataProductsField()}</BorderedSection>
               <BorderedSection title={t('page.7.group2')}>
-                <Stack>
-                  {fieldWrapper(imageSizeField())}
-                  {fieldWrapper(pixelSizeField())}
-                  {fieldWrapper(imageWeightingField())}
-                  {weighting === IW_BRIGGS && fieldWrapper(robustField())}
-                  {fieldWrapper(channelsOutField())}
-                  {fieldWrapper(fitSpectralPolField())}
-                  {fieldWrapper(stokesField())}
-                  {baseObservations.find(
-                    rec => rec.id === observationId && rec.observingBand !== 0
-                  ) && fieldWrapper(taperingField())}
-                </Stack>
+                <Grid container rowSpacing={3} spacing={3}>
+                  <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(imageSizeField())}</Grid>
+                  <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(imageWeightingField())}</Grid>
+                  <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(stokesField())}</Grid>
+                  <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(pixelSizeField())}</Grid>
+                  {weighting === IW_BRIGGS && (
+                    <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(robustField())}</Grid>
+                  )}
+                  <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(channelsOutField())}</Grid>
+                  <Grid size={{ xs: 4, md: 4 }}>
+                    {baseObservations.find(
+                      rec => rec.id === observationId && rec.observingBand !== 0
+                    ) && fieldWrapper(taperingField())}
+                  </Grid>
+                </Grid>
               </BorderedSection>
             </Stack>
           </Grid>

@@ -1,8 +1,8 @@
-import { MockCalibratorFrontendList } from '@/services/axios/get/getCalibratorList/mockCalibratorListFrontend';
 import { describe, test, expect } from 'vitest';
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { storageObject, StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import { MockCalibratorFrontendList } from '@services/axios/get/getCalibratorList/mockCalibratorListFrontend.tsx';
 import completeMockStore from '../../utils/MockStore';
 import CalibrationPage from './CalibrationPage';
 import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
@@ -58,7 +58,7 @@ describe('<CalibrationPage />', () => {
       }
     } as any);
     wrapper(<CalibrationPage />);
-    // TODO check display of no calibration strategy message
+    expect(await screen.findByTestId('helpPanelId')).toBeInTheDocument();
   });
 
   test('renders checkbox and comment field', async () => {
@@ -66,8 +66,8 @@ describe('<CalibrationPage />', () => {
     wrapper(<CalibrationPage />);
     const checkboxContainer = await screen.findByTestId('calibratorCheckbox');
     expect(checkboxContainer).toBeInTheDocument();
-    const checkbox = screen.getByRole('checkbox'); // actual checkbox element
-    expect(checkbox).toBeChecked();
+    const checkbox = screen.getByRole('checkbox');
+    expect(checkbox).toBeChecked(); // test data should already be checked
     const commentField = await screen.findByTestId('commenttId');
     expect(commentField).toBeInTheDocument(); // test data should already have comment
     expect(

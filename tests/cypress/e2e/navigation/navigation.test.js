@@ -37,7 +37,7 @@ describe('Verify navigation', () => {
     checkStatusIndicatorDisabled('statusId5', false);
     // statusId6 unavailable for science verification
     checkStatusIndicatorDisabled('statusId7', false);
-    checkStatusIndicatorDisabled('statusId8', false);
+    // statusId8 unavailable for science verification
     checkStatusIndicatorDisabled('statusId9', false);
     // See SRCNet INACTIVE - checkStatusIndicatorDisabled('statusId10', false);
   });

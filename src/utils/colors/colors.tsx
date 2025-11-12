@@ -9,6 +9,52 @@ export const COLOR_BLINDNESS_OPTIONS = [
   { value: 7, label: 'Achromatopsia (Complete Color Blindness)' }
 ];
 
+/*------------------------------------------------------------------------------*/
+
+const COLOR_MID: [string, string] = ['#6a3f23', '#FFFFFF'];
+const COLOR_LOW: [string, string] = ['#f9b34c', '#000000'];
+
+const COLOR_OBSERVATION: Record<string, [string, string]> = {
+  '0': ['#1E90FF', '#FFFFFF'],
+  '1': ['#FFD700', '#000000'],
+  '2': ['#32CD32', '#000000']
+};
+
+type ContentType = 'bg' | 'fg' | 'both';
+
+interface GetColorsInput {
+  type: 'observationType' | 'telescope';
+  colors: string | string[];
+  content: ContentType;
+}
+
+export function getColors({ type, colors, content }: GetColorsInput) {
+  const colorList = Array.isArray(colors) ? colors : [colors];
+  let results: string[] = [];
+  colorList.forEach(level => {
+    let palette: [string, string];
+
+    if (type === 'observationType') {
+      palette = COLOR_OBSERVATION[level];
+    } else {
+      palette = level === '2' ? COLOR_LOW : COLOR_MID;
+    }
+
+    if (palette !== undefined) {
+      if (content === 'bg' || content === 'both') {
+        results.push(palette[0]);
+      }
+
+      if (content === 'fg' || content === 'both') {
+        results.push(palette[1]);
+      }
+    }
+  });
+  return results;
+}
+
+/*------------------------------------------------------------------------------*/
+
 export const COLOR_PALETTES = [
   [
     '#D32F2F', // Red - High contrast red
