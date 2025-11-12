@@ -46,7 +46,6 @@ import {
   getScaledBandwidthOrFrequency
 } from '@utils/helpers.ts';
 import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
-import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Proposal from '../../../utils/types/proposal';
 import AddButton from '../../../components/button/Add/Add';
 import ImageWeightingField from '../../../components/fields/imageWeighting/imageWeighting';
@@ -1053,11 +1052,6 @@ export default function ObservationEntry() {
               </Grid>
             </CardContent>
           </Card>
-        </Grid>
-        <Grid size={{ md: 12, lg: 3 }}>
-          <Box pl={4} sx={{ position: 'sticky', top: 100 }}>
-            <HelpPanel maxHeight={HELP_PANEL_HEIGHT} />
-          </Box>
         </Grid>
       </Grid>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />

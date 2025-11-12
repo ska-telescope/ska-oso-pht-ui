@@ -4,7 +4,6 @@ import { Box, Grid } from '@mui/material';
 import { TickBox } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LAB_POSITION, WRAPPER_HEIGHT } from '@/utils/constants';
-import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 import {
   PROPOSAL_ACCESS_SUBMIT,
   PROPOSAL_ACCESS_UPDATE,
@@ -129,11 +128,6 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
             {viewField()}
           </Grid>
         </Grid>
-        {
-          <Grid size={{ sm: 12, md: 6, lg: 6 }}>
-            <HelpPanel />
-          </Grid>
-        }
       </Grid>
     </>
   );

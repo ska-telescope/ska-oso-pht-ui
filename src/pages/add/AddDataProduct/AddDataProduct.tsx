@@ -32,7 +32,6 @@ import {
   PAGE_DATA_PRODUCTS_ADD,
   WRAPPER_HEIGHT
 } from '@/utils/constants';
-import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 import Proposal from '@/utils/types/proposal';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
 import { SensCalcResults } from '@/utils/types/sensCalcResults';
@@ -504,7 +503,6 @@ export default function AddDataProduct() {
           </Grid>
           <Grid size={{ md: 11, lg: 3 }}>
             <Stack spacing={1}>
-              <HelpPanel />
               <InfoCard
                 color={InfoCardColorTypes.Warning}
                 fontSize={HELP_FONT}
