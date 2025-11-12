@@ -18,7 +18,7 @@ const mockData = {
   weighting: IW_BRIGGS,
   robust: 0.5,
   channelsOut: 4,
-  fitSpectralPol: 1,
+  fitSpectralPol: 3,
   polarisations: 'I,Q,U,V'
 };
 
@@ -41,7 +41,7 @@ describe('<DataProduct />', () => {
     expect(screen.getByText('0.5 pixelSize.1')).toBeInTheDocument();
     expect(screen.getByText('imageWeighting.2')).toBeInTheDocument();
     expect(screen.getByText('4')).toBeInTheDocument();
-    expect(screen.getByText(1)).toBeInTheDocument();
+    expect(screen.getByText(3)).toBeInTheDocument();
     expect(screen.getByText('I,Q,U,V')).toBeInTheDocument();
   });
 });

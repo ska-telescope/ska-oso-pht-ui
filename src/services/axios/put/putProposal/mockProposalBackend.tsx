@@ -181,7 +181,7 @@ export const MockProposalBackend: ProposalBackend = {
         products: ['Y', 'N', 'Y', 'N'],
         script_parameters: {
           channels_out: 1,
-          fit_spectral_pol: 1,
+          fit_spectral_pol: 3,
           polarisations: 'I',
           image_size: {
             value: 15,
@@ -354,7 +354,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
         observation_set_refs: ['obs-arMIoY'],
         script_parameters: {
           channels_out: 1,
-          fit_spectral_pol: 1,
+          fit_spectral_pol: 3,
           polarisations: 'I',
           image_size: {
             value: 100,
