@@ -4,7 +4,7 @@ import { presentUnits } from '@/utils/present/present';
 import { IW_BRIGGS, WRAPPER_HEIGHT } from '@/utils/constantsSensCalc';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
 import ImageSizeField from '@/components/fields/imageSize/imageSize';
-import StokesField from '@/components/fields/stokes/stokes';
+import PolarisationsField from '@/components/fields/polarisations/polarisations';
 import ChannelsOutField from '@/components/fields/channelsOut/channelsOut';
 import PixelSizeField from '@/components/fields/pixelSize/pixelSize';
 import RobustField from '@/components/fields/robust/Robust';
@@ -60,8 +60,8 @@ const getODPString = (t: any, inArr: boolean[]) => {
 };
 
 export default function DataProduct({ t, data }: DataProductProps) {
-  const fieldWrapper = (children?: React.JSX.Element) => (
-    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
+  const fieldWrapper = (children?: React.JSX.Element, height = WRAPPER_HEIGHT) => (
+    <Box p={0} pt={1} sx={{ height: height }}>
       {children}
     </Box>
   );
@@ -103,15 +103,17 @@ export default function DataProduct({ t, data }: DataProductProps) {
   const channelsOutField = () =>
     fieldWrapper(<ChannelsOutField labelWidth={LABEL_WIDTH} value={data.channelsOut} disabled />);
 
-  const stokesField = () =>
-    fieldWrapper(<StokesField labelWidth={LABEL_WIDTH} value={data.polarisations} disabled />);
+  const polarisationField = () =>
+    fieldWrapper(
+      <PolarisationsField labelWidth={LABEL_WIDTH} value={data.polarisations} disabled />
+    );
 
   return (
     <Grid container direction="row" justifyContent="space-around" alignItems="center">
       <Grid size={{ md: 6 }}>
         {displayRadio(
           t,
-          'observatoryDataProduct.short',
+          'dataProductType.label',
           getODPString(t, data.observatoryDataProduct),
           ['1', '2'],
           'observatoryDataProduct.options.'
@@ -123,7 +125,7 @@ export default function DataProduct({ t, data }: DataProductProps) {
       <Grid size={{ md: 6 }}>{channelsOutField()}</Grid>
       <Grid size={{ md: 6 }}>{data.weighting === IW_BRIGGS && robustField()}</Grid>
       <Grid size={{ md: 6 }}></Grid>
-      <Grid size={{ md: 6 }}>{stokesField()}</Grid>
+      <Grid size={{ md: 6 }}>{polarisationField()}</Grid>
     </Grid>
   );
 }

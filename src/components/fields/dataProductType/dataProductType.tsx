@@ -26,12 +26,17 @@ export default function DataProductTypeField({
 }: DataProductTypeFieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'dataProductType';
+  const options = () =>
+    [1, 2].map(el => {
+      return { label: t(FIELD + '.options.' + el), lookup: el, value: el };
+    });
+
   return (
     <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
       <Grid pl={suffix ? 1 : 0} size={{ xs: suffix ? 12 - widthButton : 12 }}>
         <DropDown
           disabled={disabled}
-          options={[1, 2]}
+          options={options()}
           testId={FIELD}
           value={value}
           setValue={setValue}

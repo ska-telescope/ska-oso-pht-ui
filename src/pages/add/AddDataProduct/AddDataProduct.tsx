@@ -10,17 +10,14 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import RobustField from '@components/fields/robust/Robust.tsx';
-import { frequencyConversion } from '@utils/helpers.ts';
-import StokesField from '@components/fields/stokes/stokes.tsx';
 import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
+import { useTheme } from '@mui/material/styles';
+import PolarisationsField from '@/components/fields/polarisations/polarisations';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
 import {
   BANNER_PMT_SPACER,
   FOOTER_HEIGHT_PHT,
-  FREQUENCY_GHZ,
   IW_BRIGGS,
-  LAB_IS_BOLD,
-  LAB_POSITION,
   NAV,
   PAGE_DATA_PRODUCTS,
   PAGE_DATA_PRODUCTS_ADD,
@@ -39,17 +36,19 @@ import ImageSizeField from '@/components/fields/imageSize/imageSize';
 import ChannelsOutField from '@/components/fields/channelsOut/channelsOut';
 import DataProductTypeField from '@/components/fields/dataProductType/dataProductType';
 import TapperField from '@/components/fields/tapper/taper';
+import TimeAveragingField from '@/components/fields/timeAveraging/timeAveraging';
+import FrequencyAveragingField from '@/components/fields/frequencyAveraging/frequencyAveraging';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
 const PAGE = PAGE_DATA_PRODUCTS_ADD;
 const PAGE_PREFIX = 'SDP';
 const LABEL_WIDTH = 5;
-const WRAPPER_WIDTH_BUTTON = 2;
 const COL = 6;
 
 export default function AddDataProduct() {
   const navigate = useNavigate();
+  const theme = useTheme();
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
 
   const getProposal = () => application.content2 as Proposal;
@@ -57,20 +56,25 @@ export default function AddDataProduct() {
 
   const [baseObservations, setBaseObservations] = React.useState<Observation[]>([]);
   const [observationId, setObservationId] = React.useState('');
-  const [dataProductType, setDataProductType] = React.useState('');
+  const [dataProductType, setDataProductType] = React.useState(1);
   const [imageSizeValue, setImageSizeValue] = React.useState('0');
   const [imageSizeUnits, setImageSizeUnits] = React.useState(0);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
   const [pixelSizeUnits, setPixelSizeUnits] = React.useState(0);
+  const [timeAveraging, setTimeAveraging] = React.useState(0);
+  const [timeAveragingUnits, setTimeAveragingUnits] = React.useState(0);
+  const [frequencyAveraging, setFrequencyAveraging] = React.useState(0);
+  const [frequencyAveragingUnits, setFrequencyAveragingUnits] = React.useState(0);
   const [weighting, setWeighting] = React.useState(0);
   const [robust, setRobust] = React.useState(3);
   const [channelsOut, setChannelsOut] = React.useState(1);
   const [polarisations, setPolarisations] = React.useState(['I']);
-  const [tapering, setTapering] = React.useState(0);
 
   const { t } = useScopedTranslation();
 
   const maxObservationsReached = () => baseObservations.length > 0;
+
+  const isImages = () => dataProductType === 1;
 
   React.useEffect(() => {
     helpComponent(t('observations.dp.help'));
@@ -117,11 +121,23 @@ export default function AddDataProduct() {
     }
   }, [baseObservations, observationId]);
 
-  const fieldWrapper = (children?: React.JSX.Element) => (
-    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
+  const fieldWrapper = (children?: React.JSX.Element, height = WRAPPER_HEIGHT) => (
+    <Box p={0} pt={1} sx={{ height: height }}>
       {children}
     </Box>
   );
+
+  const taperField = () =>
+    fieldWrapper(
+      <TapperField
+        labelWidth={LABEL_WIDTH}
+        onFocus={() => helpComponent(t('tapper.help'))}
+        required
+        setValue={setImageSizeValue}
+        value={Number(imageSizeValue)}
+        suffix={t('taper.units')}
+      />
+    );
 
   const imageSizeUnitsField = () => {
     const getOptions = () => {
@@ -143,18 +159,6 @@ export default function AddDataProduct() {
     );
   };
 
-  const taperField = () =>
-    fieldWrapper(
-      <TapperField
-        labelWidth={LABEL_WIDTH}
-        onFocus={() => helpComponent(t('tapper.help'))}
-        required
-        setValue={setImageSizeValue}
-        value={Number(imageSizeValue)}
-        suffix={t('taper.units')}
-      />
-    );
-
   const imageSizeField = () =>
     fieldWrapper(
       <ImageSizeField
@@ -164,6 +168,72 @@ export default function AddDataProduct() {
         setValue={setImageSizeValue}
         value={Number(imageSizeValue)}
         suffix={imageSizeUnitsField()}
+      />
+    );
+
+  const timeAveragingUnitsField = () => {
+    const getOptions = () => {
+      return [0].map(e => ({
+        label: presentUnits(t('timeAveraging.' + e)),
+        value: e
+      }));
+    };
+
+    return (
+      <DropDown
+        disabled
+        options={getOptions()}
+        testId="timeAveragingUnits"
+        value={timeAveragingUnits}
+        setValue={setTimeAveragingUnits}
+        label=""
+        onFocus={() => helpComponent(t('timeAveragingUnits.help'))}
+      />
+    );
+  };
+
+  const frequencyAveragingUnitsField = () => {
+    const getOptions = () => {
+      return [0].map(e => ({
+        label: presentUnits(t('frequencyAveraging.' + e)),
+        value: e
+      }));
+    };
+
+    return (
+      <DropDown
+        disabled
+        options={getOptions()}
+        testId="frequencyAveragingUnits"
+        value={frequencyAveragingUnits}
+        setValue={setFrequencyAveragingUnits}
+        label=""
+        onFocus={() => helpComponent(t('frequencyAveragingUnits.help'))}
+      />
+    );
+  };
+
+  const timeAveragingField = () =>
+    fieldWrapper(
+      <TimeAveragingField
+        labelWidth={LABEL_WIDTH}
+        onFocus={() => helpComponent(t('timeAveraging.help'))}
+        required
+        setValue={setTimeAveraging}
+        value={Number(timeAveraging)}
+        suffix={timeAveragingUnitsField()}
+      />
+    );
+
+  const frequencyAveragingField = () =>
+    fieldWrapper(
+      <FrequencyAveragingField
+        labelWidth={LABEL_WIDTH}
+        onFocus={() => helpComponent(t('frequencyAveraging.help'))}
+        required
+        setValue={setFrequencyAveraging}
+        value={Number(frequencyAveraging)}
+        suffix={frequencyAveragingUnitsField()}
       />
     );
 
@@ -224,92 +294,20 @@ export default function AddDataProduct() {
       />
     );
 
-  const stokesField = () => {
+  const polarisationsField = () => {
     return (
-      <StokesField
-        onFocus={() => helpComponent(t('stokes.help'))}
+      <PolarisationsField
+        onFocus={() => helpComponent(t('polarisations.help'))}
         value={polarisations}
         setValue={setPolarisations}
-        labelWidth={2}
+        labelWidth={0}
       />
-    );
-  };
-
-  const fieldDropdown = (
-    disabled: boolean,
-    field: string,
-    labelWidth: number,
-    options: { label: string; value: string | number }[],
-    required: boolean,
-    setValue: Function,
-    suffix: any,
-    value: string | number
-  ) => {
-    return fieldWrapper(
-      <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
-        <Grid pl={suffix ? 1 : 0} size={{ xs: suffix ? 12 - WRAPPER_WIDTH_BUTTON : 12 }}>
-          <DropDown
-            disabled={disabled}
-            options={options}
-            testId={field}
-            value={value}
-            setValue={setValue}
-            label={t(field + '.label')}
-            labelBold={LAB_IS_BOLD}
-            labelPosition={LAB_POSITION}
-            labelWidth={suffix ? labelWidth + 1 : labelWidth}
-            onFocus={() => helpComponent(t(field + '.help'))}
-            required={required}
-          />
-        </Grid>
-        <Grid size={{ xs: suffix ? WRAPPER_WIDTH_BUTTON : 0 }}>{suffix}</Grid>
-      </Grid>
-    );
-  };
-
-  const taperingField = () => {
-    const getCentralFrequency = () => {
-      const selectedObservation = baseObservations.find(rec => rec.id === observationId);
-      return selectedObservation?.centralFrequency ?? null;
-    };
-
-    const getCentralFrequencyUnits = () => {
-      const selectedObservation = baseObservations.find(rec => rec.id === observationId);
-      return selectedObservation?.centralFrequencyUnits ?? null;
-    };
-    const frequencyInGHz = () => {
-      return frequencyConversion(
-        getCentralFrequency(),
-        getCentralFrequencyUnits() as number,
-        FREQUENCY_GHZ
-      );
-    };
-
-    const getOptions = () => {
-      const results = [{ label: t('gaussianTaper.0'), value: 0 }];
-      [0.25, 1, 4, 16, 64, 256, 1024].forEach(inValue => {
-        const theLabel = (inValue * (1.4 / frequencyInGHz())).toFixed(3) + '"';
-        results.push({ label: theLabel, value: inValue });
-      });
-      return results;
-    };
-
-    return fieldDropdown(
-      false,
-      'gaussianTaper',
-      5,
-      getOptions(),
-      true,
-      setTapering,
-      null,
-      tapering
     );
   };
 
   const pageFooter = () => {
     const enabled = () => {
-      const dp = dataProductType !== '';
-      return dp && pixelSizeValue > 0 && Number(imageSizeValue) > 0;
+      return pixelSizeValue > 0 && Number(imageSizeValue) > 0;
     };
 
     const addToProposal = () => {
@@ -333,7 +331,7 @@ export default function AddDataProduct() {
         pixelSizeUnits,
         weighting,
         robust,
-        polarisations: polarisations[0],
+        polarisations,
         channelsOut,
         fitSpectralPol: 3
       };
@@ -432,28 +430,37 @@ export default function AddDataProduct() {
           <Grid size={{ md: 7, lg: 7 }}>
             <Stack spacing={GAP}>
               {dataProductTypeField()}
-              <BorderedSection title={t('page.7.group2')}>
-                <Grid container>
-                  <Grid size={{ md: COL }}>{fieldWrapper(imageSizeField())}</Grid>
-                  <Grid size={{ md: COL }}>{fieldWrapper(pixelSizeField())}</Grid>
-                  <Grid size={{ md: COL }}>{fieldWrapper(imageWeightingField())}</Grid>
-                  <Grid size={{ md: COL }}>
-                    {weighting === IW_BRIGGS && fieldWrapper(robustField())}
+              {isImages() && (
+                <BorderedSection title={t('page.7.group.1')}>
+                  <Grid pb={1} container>
+                    <Grid size={{ md: COL }}>{fieldWrapper(imageSizeField())}</Grid>
+                    <Grid size={{ md: COL }}>{fieldWrapper(pixelSizeField())}</Grid>
+                    <Grid size={{ md: COL }}>{fieldWrapper(imageWeightingField())}</Grid>
+                    <Grid size={{ md: COL }}>
+                      {weighting === IW_BRIGGS && fieldWrapper(robustField())}
+                    </Grid>
+                    <Grid size={{ md: COL }}>{fieldWrapper(taperField())}</Grid>
+                    <Grid size={{ md: COL }}>{fieldWrapper(channelsOutField())}</Grid>
                   </Grid>
-                  <Grid size={{ md: COL }}>{fieldWrapper(taperField())}</Grid>
-                  <Grid size={{ md: COL }}>{fieldWrapper(channelsOutField())}</Grid>
-                  <Grid size={{ md: COL }}>
-                    {baseObservations.find(
-                      rec => rec.id === observationId && rec.observingBand !== 0
-                    ) && fieldWrapper(taperingField())}
+                </BorderedSection>
+              )}
+              {!isImages() && (
+                <BorderedSection title={t('page.7.group.2')}>
+                  <Grid pb={1} container>
+                    <Grid size={{ md: 8 }}>{fieldWrapper(timeAveragingField())}</Grid>
+                    <Grid size={{ md: 8 }}>{fieldWrapper(frequencyAveragingField())}</Grid>
                   </Grid>
-                  <Grid size={{ md: 12 }}>{fieldWrapper(stokesField())}</Grid>
-                </Grid>
-              </BorderedSection>
+                </BorderedSection>
+              )}
+              {isImages() && (
+                <BorderedSection title={t('polarisations.label')}>
+                  {fieldWrapper(polarisationsField(), '150px')}
+                </BorderedSection>
+              )}
             </Stack>
           </Grid>
           <Grid size={{ md: 11, lg: 3 }}>
-            <BorderedSection title={t('page.7.descTitle')}>
+            <BorderedSection borderColor={theme.palette.info.main} title={t('page.7.descTitle')}>
               <Typography variant="subtitle1" color="text.disabled">
                 {t('page.7.descContent')
                   .split('\n')

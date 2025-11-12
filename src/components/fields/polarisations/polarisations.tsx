@@ -4,7 +4,7 @@ import { Typography } from '@mui/material';
 import { LABEL_POSITION, TickBox } from '@ska-telescope/ska-gui-components';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
-interface StokesFieldProps {
+interface PolarisationsFieldProps {
   disabled?: boolean;
   required?: boolean;
   labelWidth?: number;
@@ -13,37 +13,39 @@ interface StokesFieldProps {
   value: string[];
 }
 
-export default function StokesField({
+export default function PolarisationsField({
   disabled = false,
   required = false,
   labelWidth = 5,
   onFocus,
   setValue,
   value
-}: StokesFieldProps) {
+}: PolarisationsFieldProps) {
   const { t } = useScopedTranslation();
-  const FIELD = 'stokes';
+  const FIELD = 'polarisations';
 
   const options = () =>
     STOKES.map(el => {
-      return { label: t('stokes.' + el.value), value: el.value };
+      return { label: t('polarisations.' + el.value), value: el.value };
     });
 
   return (
     <Box pl={1} pt={2}>
       <Grid container spacing={2} alignItems="flex-start">
         {/* Label Section */}
-        <Grid size={{ md: labelWidth }}>
-          <Typography
-            variant="subtitle1"
-            fontWeight={'normal'}
-            sx={{ mb: 1 }}
-            color={disabled ? 'text.disabled' : 'text.primary'}
-          >
-            {t(FIELD + '.label')}
-            {required && <span style={{ color: 'red' }}> *</span>}
-          </Typography>
-        </Grid>
+        {labelWidth > 0 && (
+          <Grid size={{ md: labelWidth }}>
+            <Typography
+              variant="subtitle1"
+              fontWeight={'normal'}
+              sx={{ mb: 1 }}
+              color={disabled ? 'text.disabled' : 'text.primary'}
+            >
+              {t(FIELD + '.label')}
+              {required && <span style={{ color: 'red' }}> *</span>}
+            </Typography>
+          </Grid>
+        )}
 
         {/* Checkbox Section */}
         <Grid size={{ md: 12 - labelWidth }}>

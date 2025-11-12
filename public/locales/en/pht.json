@@ -316,6 +316,13 @@
     "label": "First Name",
     "help": "First name of the Principal Investigator or Co-Investigator."
   },
+  "frequencyAveraging": {
+    "label": "Frequency Averaging",
+    "empty": "A value is required",
+    "help": "Frequency Averaging Help",
+    "error": "A value is required",
+    "0": "MHz"
+  },
   "frequencyUnits": {
     "help": "Select the appropriate unit."
   },
@@ -645,6 +652,18 @@
     "unableToDetermine": "Unable to determine",
     "error": "A value greater than zero is required"
   },
+  "polarisations": {
+    "help": "Polarisations help text TBD",
+    "label": "Polarisations",
+    "I": "I",
+    "Q": "Q",
+    "U": "U",
+    "V": "V",
+    "XX": "XX",
+    "XY": "XY",
+    "YX": "YX",
+    "YY": "YY"
+  },
   "proposal": {
     "error": "Unable to retrieve the proposal from the server"
   },
@@ -921,18 +940,6 @@
   "fitSpectralPol": {
     "help": "Fit Spectral Pol help text TBD",
     "label": "Fit Spectral Pol "
-  },
-  "stokes": {
-    "help": "Stokes help text TBD",
-    "label": "Stokes",
-    "I": "I",
-    "Q": "Q",
-    "U": "U",
-    "V": "V",
-    "XX": "XX",
-    "XY": "XY",
-    "YX": "YX",
-    "YY": "YY"
   },
   "saveBtn": {
     "label": "Save",
@@ -1225,6 +1232,13 @@
     "2": "LOW",
     "1": "MID"
   },
+  "timeAveraging": {
+    "label": "Time Averaging",
+    "empty": "A value is required",
+    "help": "Time Averaging Help",
+    "error": "A value is required",
+    "0": "seconds"
+  },
   "title": {
     "label": "Title",
     "short": "Title",
@@ -1368,8 +1382,10 @@
       "titleShort": "Data Product",
       "desc": "This page allows you to request and define observatory data products for Observation(s).",
       "pageError": "The DATA PRODUCTS page is not complete",
-      "group1": "Product",
-      "group2": "Image Settings"
+      "group": {
+        "2": "Visibility ODP",
+        "1": "Continuum Imaging ODPs"
+      }
     },
     "8": {
       "status": "Linking",
