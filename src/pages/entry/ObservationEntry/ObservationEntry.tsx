@@ -535,7 +535,7 @@ export default function ObservationEntry() {
   const observationTypeField = () =>
     fieldWrapper(
       <ObservationTypeField
-        disabled={isContinuumOnly()}
+        disabled={MOCK_CALL || isContinuumOnly()}
         isContinuumOnly={isContinuumOnly()}
         widthLabel={BOTTOM_LABEL_WIDTH}
         required
