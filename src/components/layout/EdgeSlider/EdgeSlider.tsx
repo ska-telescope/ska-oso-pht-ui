@@ -8,7 +8,7 @@ const TAB_WIDTH = 40;
 
 const Container = styled(Box)({
   position: 'fixed',
-  top: '85px', // space for top nav
+  top: '160px', // space for top nav
   bottom: '120px', // space for footer
   right: 0,
   zIndex: 1300

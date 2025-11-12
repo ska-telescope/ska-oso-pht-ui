@@ -70,7 +70,6 @@ import HelpShell from '@/components/layout/HelpShell/HelpShell';
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 6;
 const BACK_PAGE = PAGE_OBSERVATION;
-const HELP_PANEL_HEIGHT = '50vh';
 const MOCK_CALL = true;
 
 export default function ObservationEntry() {
@@ -906,99 +905,94 @@ export default function ObservationEntry() {
 
   return (
     <HelpShell page={PAGE}>
-    <Box pt={2}>
-      <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
-      <Grid
-        pl={4}
-        pr={4}
-        container
-        direction="row"
-        alignItems="space-evenly"
-        justifyContent="space-between"
-        spacing={1}
-      >
-        <Grid size={{ md: 12, lg: 9 }}>
-          <Grid
-            p={0}
-            pl={2}
-            container
-            direction="row"
-            alignItems="center"
-            spacing={1}
-            justifyContent="space-around"
-          >
-            {!MOCK_CALL && (
-              <>
-                <Grid size={{ md: 12, lg: 5 }}>{idField()}</Grid>
-                <Grid size={{ lg: 5 }}></Grid>
-                <Grid size={{ md: 12, lg: 5 }}>{groupObservationsField()}</Grid>
-                <Grid size={{ md: 12, lg: 5 }}>{isLow() ? emptyField() : weatherField()}</Grid>
-              </>
-            )}
-            {!MOCK_CALL && <Grid size={{ md: 12, lg: 5 }}>{elevationField()}</Grid>}
-          </Grid>
-          <Grid container direction="row" spacing={2} pb={2} alignItems="stretch">
-            <Grid size={{ md: 6, lg: 6 }}>
-              <Card variant="outlined">
-                <CardContent sx={{ display: 'block', minHeight: '190px' }}>
-                  <Grid size={{ md: 12, lg: 12 }}>{observationTypeField()}</Grid>
-                  <Grid size={{ md: 12, lg: 12 }}></Grid>
-                </CardContent>
-              </Card>
+      <Box pt={2}>
+        <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
+        <Grid
+          pl={4}
+          pr={4}
+          container
+          direction="row"
+          alignItems="space-evenly"
+          justifyContent="space-between"
+          spacing={1}
+        >
+          <Grid size={{ md: 12, lg: 9 }}>
+            <Grid
+              p={0}
+              pl={2}
+              container
+              direction="row"
+              alignItems="center"
+              spacing={1}
+              justifyContent="space-around"
+            >
+              {!MOCK_CALL && (
+                <>
+                  <Grid size={{ md: 12, lg: 5 }}>{idField()}</Grid>
+                  <Grid size={{ lg: 5 }}></Grid>
+                  <Grid size={{ md: 12, lg: 5 }}>{groupObservationsField()}</Grid>
+                  <Grid size={{ md: 12, lg: 5 }}>{isLow() ? emptyField() : weatherField()}</Grid>
+                </>
+              )}
+              {!MOCK_CALL && <Grid size={{ md: 12, lg: 5 }}>{elevationField()}</Grid>}
             </Grid>
-            <Grid size={{ md: 6, lg: 6 }}>
-              <Card variant="outlined">
-                <CardContent>
-                  <Grid size={{ md: 12, lg: 12 }}>{subArrayField()}</Grid>
-                  {!MOCK_CALL && (
-                    <Grid size={{ md: 12, lg: 12 }}>
-                      {isLow() ? numStationsField() : antennasFields()}
-                    </Grid>
-                  )}
-                  <Grid size={{ md: 12, lg: 12 }}>{suppliedField()}</Grid>
-                </CardContent>
-              </Card>
-            </Grid>
-          </Grid>
-          <Card variant="outlined">
-            <CardContent>
-              <Grid
-                p={0}
-                container
-                direction="row"
-                alignItems="center"
-                spacing={1}
-                justifyContent="space-around"
-              >
-                <Grid size={{ md: 12, lg: 5 }}>{observationsBandField()}</Grid>
-                <Grid size={{ md: 12, lg: 5 }}>
-                  {isContinuum() ? continuumBandwidthField() : bandwidthField()}
-                </Grid>
-                <Grid size={{ md: 12, lg: 5 }}>{centralFrequencyField()}</Grid>
-                <Grid size={{ md: 12, lg: 5 }}></Grid>
-                {!MOCK_CALL && (
-                  <>
-                    <Grid size={{ md: 12, lg: 5 }}>{spectralResolutionField()}</Grid>
-                    <Grid size={{ md: 12, lg: 5 }}>{spectralAveragingField()}</Grid>
-                    <Grid size={{ md: 12, lg: 5 }}>{effectiveResolutionField()}</Grid>
-                    <Grid size={{ md: 12, lg: 5 }}>
-                      {isContinuum() ? SubBandsField() : emptyField()}
-                    </Grid>
-                  </>
-                )}
+            <Grid container direction="row" spacing={2} pb={2} alignItems="stretch">
+              <Grid size={{ md: 6, lg: 6 }}>
+                <Card variant="outlined">
+                  <CardContent sx={{ display: 'block', minHeight: '190px' }}>
+                    <Grid size={{ md: 12, lg: 12 }}>{observationTypeField()}</Grid>
+                    <Grid size={{ md: 12, lg: 12 }}></Grid>
+                  </CardContent>
+                </Card>
               </Grid>
-            </CardContent>
-          </Card>
+              <Grid size={{ md: 6, lg: 6 }}>
+                <Card variant="outlined">
+                  <CardContent>
+                    <Grid size={{ md: 12, lg: 12 }}>{subArrayField()}</Grid>
+                    {!MOCK_CALL && (
+                      <Grid size={{ md: 12, lg: 12 }}>
+                        {isLow() ? numStationsField() : antennasFields()}
+                      </Grid>
+                    )}
+                    <Grid size={{ md: 12, lg: 12 }}>{suppliedField()}</Grid>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+            <Card variant="outlined">
+              <CardContent>
+                <Grid
+                  p={0}
+                  container
+                  direction="row"
+                  alignItems="center"
+                  spacing={1}
+                  justifyContent="space-around"
+                >
+                  <Grid size={{ md: 12, lg: 5 }}>{observationsBandField()}</Grid>
+                  <Grid size={{ md: 12, lg: 5 }}>
+                    {isContinuum() ? continuumBandwidthField() : bandwidthField()}
+                  </Grid>
+                  <Grid size={{ md: 12, lg: 5 }}>{centralFrequencyField()}</Grid>
+                  <Grid size={{ md: 12, lg: 5 }}></Grid>
+                  {!MOCK_CALL && (
+                    <>
+                      <Grid size={{ md: 12, lg: 5 }}>{spectralResolutionField()}</Grid>
+                      <Grid size={{ md: 12, lg: 5 }}>{spectralAveragingField()}</Grid>
+                      <Grid size={{ md: 12, lg: 5 }}>{effectiveResolutionField()}</Grid>
+                      <Grid size={{ md: 12, lg: 5 }}>
+                        {isContinuum() ? SubBandsField() : emptyField()}
+                      </Grid>
+                    </>
+                  )}
+                </Grid>
+              </CardContent>
+            </Card>
+          </Grid>
         </Grid>
-        <Grid size={{ md: 12, lg: 3 }}>
-          <Box pl={4} sx={{ position: 'sticky', top: 100 }}>
-            <HelpPanel maxHeight={HELP_PANEL_HEIGHT} />
-          </Box>
-        </Grid>
-      </Grid>
-      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
-      {pageFooter()}
-    </Box>
+        <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
+        {pageFooter()}
+      </Box>
     </HelpShell>
   );
 }

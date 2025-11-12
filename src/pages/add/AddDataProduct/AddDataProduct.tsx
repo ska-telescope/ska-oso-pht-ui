@@ -419,87 +419,86 @@ export default function AddDataProduct() {
   };
 
   return (
-  <HelpShell page={PAGE}>
-    <Box pt={2} sx={{ height: '91vh', display: 'flex', flexDirection: 'column' }}>
-      <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
-      <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
-      <Box
-        sx={{
-          flexGrow: 1,
-          width: '100%',
-          overflow: 'hidden',
-          display: 'flex',
-          flexDirection: 'column',
-          borderRadius: 0,
-          minHeight: 0
-        }}
-      >
-        <Grid
-          container
-          direction="row"
-          justifyContent="space-between"
-          alignItems="stretch"
-          spacing={GAP}
-          m={GAP}
-          sx={{ flexGrow: 1 }}
+    <HelpShell page={PAGE}>
+      <Box pt={2} sx={{ height: '91vh', display: 'flex', flexDirection: 'column' }}>
+        <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
+        <Spacer size={BANNER_PMT_SPACER} axis={SPACER_VERTICAL} />
+        <Box
+          sx={{
+            flexGrow: 1,
+            width: '100%',
+            overflow: 'hidden',
+            display: 'flex',
+            flexDirection: 'column',
+            borderRadius: 0,
+            minHeight: 0
+          }}
         >
-          <Grid size={{ md: 4, lg: 2 }} sx={{ display: 'flex', flexDirection: 'column' }}>
-            <Box
-              sx={{
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                border: '1px solid',
-                borderColor: '#ccc',
-                borderRadius: '8px',
-                minHeight: 0
-              }}
-            >
-              {baseObservations && (
-                <GridObservation
-                  data={baseObservations}
-                  rowClick={(e: any) => setObservationId(e.row.id)}
-                />
-              )}
-            </Box>
-          </Grid>
-          <Grid size={{ md: 7, lg: 6 }}>
-            <Stack spacing={5}>
-              <BorderedSection title={t('page.7.group1')}>{dataProductsField()}</BorderedSection>
-              <BorderedSection title={t('page.7.group2')}>
-                <Grid container rowSpacing={3} spacing={3}>
-                  <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(imageSizeField())}</Grid>
-                  <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(imageWeightingField())}</Grid>
-                  <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(stokesField())}</Grid>
-                  <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(pixelSizeField())}</Grid>
-                  {weighting === IW_BRIGGS && (
-                    <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(robustField())}</Grid>
-                  )}
-                  <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(channelsOutField())}</Grid>
-                  <Grid size={{ xs: 4, md: 4 }}>
-                    {baseObservations.find(
-                      rec => rec.id === observationId && rec.observingBand !== 0
-                    ) && fieldWrapper(taperingField())}
+          <Grid
+            container
+            direction="row"
+            justifyContent="space-between"
+            alignItems="stretch"
+            spacing={GAP}
+            m={GAP}
+            sx={{ flexGrow: 1 }}
+          >
+            <Grid size={{ md: 4, lg: 2 }} sx={{ display: 'flex', flexDirection: 'column' }}>
+              <Box
+                sx={{
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  border: '1px solid',
+                  borderColor: '#ccc',
+                  borderRadius: '8px',
+                  minHeight: 0
+                }}
+              >
+                {baseObservations && (
+                  <GridObservation
+                    data={baseObservations}
+                    rowClick={(e: any) => setObservationId(e.row.id)}
+                  />
+                )}
+              </Box>
+            </Grid>
+            <Grid size={{ md: 7, lg: 6 }}>
+              <Stack spacing={5}>
+                <BorderedSection title={t('page.7.group1')}>{dataProductsField()}</BorderedSection>
+                <BorderedSection title={t('page.7.group2')}>
+                  <Grid container rowSpacing={3} spacing={3}>
+                    <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(imageSizeField())}</Grid>
+                    <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(imageWeightingField())}</Grid>
+                    <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(stokesField())}</Grid>
+                    <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(pixelSizeField())}</Grid>
+                    {weighting === IW_BRIGGS && (
+                      <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(robustField())}</Grid>
+                    )}
+                    <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(channelsOutField())}</Grid>
+                    <Grid size={{ xs: 4, md: 4 }}>
+                      {baseObservations.find(
+                        rec => rec.id === observationId && rec.observingBand !== 0
+                      ) && fieldWrapper(taperingField())}
+                    </Grid>
                   </Grid>
-                </Grid>
-              </BorderedSection>
-            </Stack>
+                </BorderedSection>
+              </Stack>
+            </Grid>
+            <Grid size={{ md: 11, lg: 3 }}>
+              <Stack spacing={1}>
+                <InfoCard
+                  color={InfoCardColorTypes.Warning}
+                  fontSize={HELP_FONT}
+                  message="The associated input options of these observatory data products are under development and subject to change."
+                  testId="developmentPanelId"
+                />
+              </Stack>
+            </Grid>
           </Grid>
-          <Grid size={{ md: 11, lg: 3 }}>
-            <Stack spacing={1}>
-              <HelpPanel />
-              <InfoCard
-                color={InfoCardColorTypes.Warning}
-                fontSize={HELP_FONT}
-                message="The associated input options of these observatory data products are under development and subject to change."
-                testId="developmentPanelId"
-              />
-            </Stack>
-          </Grid>
-        </Grid>
-        {pageFooter()}
+          {pageFooter()}
+        </Box>
       </Box>
-    </Box>
     </HelpShell>
   );
 }
