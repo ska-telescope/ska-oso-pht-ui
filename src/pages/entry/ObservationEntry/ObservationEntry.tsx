@@ -36,7 +36,8 @@ import {
   FOOTER_HEIGHT_PHT,
   PAGE_OBSERVATION,
   PAGE_OBSERVATION_UPDATE,
-  PAGE_OBSERVATION_ADD
+  PAGE_OBSERVATION_ADD,
+  GENERAL
 } from '@utils/constants.ts';
 import {
   generateId,
@@ -122,7 +123,7 @@ export default function ObservationEntry() {
   const observationIn = (ob: Observation) => {
     setMyObsId(ob?.id);
     setSubarrayConfig(ob?.subarray);
-    setObservationType(ob?.type);
+    setObservationType(MOCK_CALL ? (getObservationType() as number) : ob.type);
     if (!obOnce) setObservingBand(ob?.observingBand);
     setWeather(ob?.weather ?? Number(t('weather.default')));
     setElevation(ob?.elevation);
@@ -176,6 +177,15 @@ export default function ObservationEntry() {
       numStations: numOfStations
     };
     return newObservation;
+  };
+
+  const getObservationType = () => {
+    if (getProposal() && getProposal()?.scienceCategory) {
+      const obsType = GENERAL.ObservingMode.find(
+        item => item.value === getProposal()?.scienceCategory
+      )?.observationType;
+      return obsType;
+    }
   };
 
   // Change the central frequency & units only if they are currently the same as the existing defaults
