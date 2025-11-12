@@ -13,7 +13,6 @@ import {
   BANDWIDTH_TELESCOPE,
   CENTRAL_FREQUENCY_MAX,
   CENTRAL_FREQUENCY_MIN,
-  IW_BRIGGS,
   LAB_IS_BOLD,
   LAB_POSITION,
   NAV,
@@ -40,7 +39,6 @@ import {
   PAGE_OBSERVATION_ADD
 } from '@utils/constants.ts';
 import {
-  frequencyConversion,
   generateId,
   getMinimumChannelWidth,
   getScaledBandwidthOrFrequency
@@ -48,7 +46,6 @@ import {
 import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
 import Proposal from '../../../utils/types/proposal';
 import AddButton from '../../../components/button/Add/Add';
-import ImageWeightingField from '../../../components/fields/imageWeighting/imageWeighting';
 import GroupObservationsField from '../../../components/fields/groupObservations/groupObservations';
 import Observation from '../../../utils/types/observation';
 import TargetObservation from '../../../utils/types/targetObservation';
@@ -57,7 +54,6 @@ import ObservingBandField from '../../../components/fields/observingBand/Observi
 import ObservationTypeField from '../../../components/fields/observationType/ObservationType';
 import EffectiveResolutionField from '../../../components/fields/effectiveResolution/EffectiveResolution';
 import ElevationField, { ELEVATION_DEFAULT } from '../../../components/fields/elevation/Elevation';
-import RobustField from '../../../components/fields/robust/Robust';
 import SpectralAveragingField from '../../../components/fields/spectralAveraging/SpectralAveraging';
 import SpectralResolutionField from '../../../components/fields/spectralResolution/SpectralResolution';
 import NumStations from '../../../components/fields/numStations/NumStations';
@@ -73,9 +69,9 @@ import HelpShell from '@/components/layout/HelpShell/HelpShell';
 
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 6;
-
 const BACK_PAGE = PAGE_OBSERVATION;
-const WRAPPER_WIDTH_BUTTON = 2;
+const HELP_PANEL_HEIGHT = '50vh';
+const MOCK_CALL = true;
 
 export default function ObservationEntry() {
   const { t } = useScopedTranslation();
@@ -353,32 +349,6 @@ export default function ObservationEntry() {
   const emptyField = () => <></>;
 
   /******************************************************/
-
-  const taperingField = () => {
-    const frequencyInGHz = () => {
-      return frequencyConversion(centralFrequency, centralFrequencyUnits, FREQUENCY_GHZ);
-    };
-
-    const getOptions = () => {
-      const results = [{ label: t('tapering.0'), value: 0 }];
-      [0.25, 1, 4, 16, 64, 256, 1024].forEach(inValue => {
-        const theLabel = (inValue * (1.4 / frequencyInGHz())).toFixed(3) + '"';
-        results.push({ label: theLabel, value: inValue });
-      });
-      return results;
-    };
-
-    return fieldDropdown(
-      false,
-      'tapering',
-      BOTTOM_LABEL_WIDTH,
-      getOptions(),
-      true,
-      setTapering,
-      null,
-      tapering
-    );
-  };
 
   const idField = () => {
     return fieldWrapper(
@@ -770,61 +740,6 @@ export default function ObservationEntry() {
       />
     );
 
-  const imageWeightingField = () =>
-    fieldWrapper(
-      <ImageWeightingField
-        labelWidth={BOTTOM_LABEL_WIDTH}
-        onFocus={() => helpComponent(t('imageWeighting.help'))}
-        setValue={setImageWeighting}
-        value={imageWeighting}
-      />
-    );
-
-  const robustField = () =>
-    fieldWrapper(
-      <RobustField
-        label={t('robust.label')}
-        onFocus={() => helpComponent(t('robust.help'))}
-        setValue={setRobust}
-        testId="robust"
-        value={robust}
-        widthButton={WRAPPER_WIDTH_BUTTON}
-        widthLabel={BOTTOM_LABEL_WIDTH}
-      />
-    );
-
-  const fieldDropdown = (
-    disabled: boolean,
-    field: string,
-    labelWidth: number,
-    options: { label: string; value: string | number }[],
-    required: boolean,
-    setValue: Function,
-    suffix: any,
-    value: string | number
-  ) => {
-    return fieldWrapper(
-      <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
-        <Grid pl={suffix ? 1 : 0} size={{ xs: suffix ? 12 - WRAPPER_WIDTH_BUTTON : 12 }}>
-          <DropDown
-            disabled={disabled}
-            options={options}
-            testId={field}
-            value={value}
-            setValue={setValue}
-            label={t(field + '.label')}
-            labelBold={LAB_IS_BOLD}
-            labelPosition={LAB_POSITION}
-            labelWidth={suffix ? labelWidth + 1 : labelWidth}
-            onFocus={() => helpComponent(t(field + '.help'))}
-            required={required}
-          />
-        </Grid>
-        <Grid size={{ xs: suffix ? WRAPPER_WIDTH_BUTTON : 0 }}>{suffix}</Grid>
-      </Grid>
-    );
-  };
-
   const centralFrequencyUnitsField = () => {
     // Only have MHz for Low
     const options = isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
@@ -991,74 +906,99 @@ export default function ObservationEntry() {
 
   return (
     <HelpShell page={PAGE}>
-      <Box pt={2}>
-        <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
-        <Grid
-          pl={4}
-          pr={4}
-          container
-          direction="row"
-          alignItems="space-evenly"
-          justifyContent="space-between"
-          spacing={1}
-        >
-          <Grid size={{ md: 12, lg: 9 }}>
-            <Grid
-              p={0}
-              pl={2}
-              container
-              direction="row"
-              alignItems="center"
-              spacing={1}
-              justifyContent="space-around"
-            >
-              <Grid size={{ md: 12, lg: 5 }}>{idField()}</Grid>
-              <Grid size={{ lg: 5 }}></Grid>
-              <Grid size={{ md: 12, lg: 5 }}>{groupObservationsField()}</Grid>
-              <Grid size={{ md: 12, lg: 5 }}>{isLow() ? emptyField() : weatherField()}</Grid>
-              <Grid size={{ md: 12, lg: 5 }}>{observationsBandField()}</Grid>
-              <Grid size={{ md: 12, lg: 5 }}>{elevationField()}</Grid>
-              <Grid size={{ md: 12, lg: 5 }}>{subArrayField()}</Grid>
-              <Grid size={{ md: 12, lg: 5 }}>
-                {isLow() ? numStationsField() : antennasFields()}
-              </Grid>
-            </Grid>
-            <Card variant="outlined">
-              <CardContent>
-                <Grid
-                  p={0}
-                  container
-                  direction="row"
-                  alignItems="center"
-                  spacing={1}
-                  justifyContent="space-around"
-                >
-                  <Grid size={{ md: 12, lg: 5 }}>{observationTypeField()}</Grid>
-                  <Grid size={{ md: 12, lg: 5 }}>{suppliedField()}</Grid>
-                  <Grid size={{ md: 12, lg: 5 }}> {centralFrequencyField()}</Grid>
-                  <Grid size={{ md: 12, lg: 5 }}>
-                    {isContinuum() ? continuumBandwidthField() : bandwidthField()}
-                  </Grid>
-                  <Grid size={{ md: 12, lg: 5 }}>{spectralResolutionField()}</Grid>
-                  <Grid size={{ md: 12, lg: 5 }}>{spectralAveragingField()}</Grid>
-                  <Grid size={{ md: 12, lg: 5 }}>{effectiveResolutionField()}</Grid>
-                  <Grid size={{ md: 12, lg: 5 }}>
-                    {isContinuum() ? SubBandsField() : emptyField()}
-                  </Grid>
-                  <Grid size={{ md: 12, lg: 5 }}>{imageWeightingField()}</Grid>
-                  <Grid size={{ md: 12, lg: 5 }}>
-                    {imageWeighting === IW_BRIGGS ? robustField() : emptyField()}
-                  </Grid>
-                  <Grid size={{ md: 12, lg: 5 }}>{isLow() ? emptyField() : taperingField()}</Grid>
-                  <Grid size={{ lg: 5 }}>{isLow() ? <></> : emptyField()}</Grid>
-                </Grid>
-              </CardContent>
-            </Card>
+    <Box pt={2}>
+      <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
+      <Grid
+        pl={4}
+        pr={4}
+        container
+        direction="row"
+        alignItems="space-evenly"
+        justifyContent="space-between"
+        spacing={1}
+      >
+        <Grid size={{ md: 12, lg: 9 }}>
+          <Grid
+            p={0}
+            pl={2}
+            container
+            direction="row"
+            alignItems="center"
+            spacing={1}
+            justifyContent="space-around"
+          >
+            {!MOCK_CALL && (
+              <>
+                <Grid size={{ md: 12, lg: 5 }}>{idField()}</Grid>
+                <Grid size={{ lg: 5 }}></Grid>
+                <Grid size={{ md: 12, lg: 5 }}>{groupObservationsField()}</Grid>
+                <Grid size={{ md: 12, lg: 5 }}>{isLow() ? emptyField() : weatherField()}</Grid>
+              </>
+            )}
+            {!MOCK_CALL && <Grid size={{ md: 12, lg: 5 }}>{elevationField()}</Grid>}
           </Grid>
+          <Grid container direction="row" spacing={2} pb={2} alignItems="stretch">
+            <Grid size={{ md: 6, lg: 6 }}>
+              <Card variant="outlined">
+                <CardContent sx={{ display: 'block', minHeight: '190px' }}>
+                  <Grid size={{ md: 12, lg: 12 }}>{observationTypeField()}</Grid>
+                  <Grid size={{ md: 12, lg: 12 }}></Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid size={{ md: 6, lg: 6 }}>
+              <Card variant="outlined">
+                <CardContent>
+                  <Grid size={{ md: 12, lg: 12 }}>{subArrayField()}</Grid>
+                  {!MOCK_CALL && (
+                    <Grid size={{ md: 12, lg: 12 }}>
+                      {isLow() ? numStationsField() : antennasFields()}
+                    </Grid>
+                  )}
+                  <Grid size={{ md: 12, lg: 12 }}>{suppliedField()}</Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+          </Grid>
+          <Card variant="outlined">
+            <CardContent>
+              <Grid
+                p={0}
+                container
+                direction="row"
+                alignItems="center"
+                spacing={1}
+                justifyContent="space-around"
+              >
+                <Grid size={{ md: 12, lg: 5 }}>{observationsBandField()}</Grid>
+                <Grid size={{ md: 12, lg: 5 }}>
+                  {isContinuum() ? continuumBandwidthField() : bandwidthField()}
+                </Grid>
+                <Grid size={{ md: 12, lg: 5 }}>{centralFrequencyField()}</Grid>
+                <Grid size={{ md: 12, lg: 5 }}></Grid>
+                {!MOCK_CALL && (
+                  <>
+                    <Grid size={{ md: 12, lg: 5 }}>{spectralResolutionField()}</Grid>
+                    <Grid size={{ md: 12, lg: 5 }}>{spectralAveragingField()}</Grid>
+                    <Grid size={{ md: 12, lg: 5 }}>{effectiveResolutionField()}</Grid>
+                    <Grid size={{ md: 12, lg: 5 }}>
+                      {isContinuum() ? SubBandsField() : emptyField()}
+                    </Grid>
+                  </>
+                )}
+              </Grid>
+            </CardContent>
+          </Card>
         </Grid>
-        <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
-        {pageFooter()}
-      </Box>
+        <Grid size={{ md: 12, lg: 3 }}>
+          <Box pl={4} sx={{ position: 'sticky', top: 100 }}>
+            <HelpPanel maxHeight={HELP_PANEL_HEIGHT} />
+          </Box>
+        </Grid>
+      </Grid>
+      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
+      {pageFooter()}
+    </Box>
     </HelpShell>
   );
 }

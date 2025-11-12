@@ -315,6 +315,9 @@ export default function CalibrationPage() {
     return (
       <>
         <Grid sx={{ overflow: 'hidden', width: '100%' }}>
+          <Grid pt={2} pb={4}>
+            <Typography>{t('calibrator.desc')}</Typography>
+          </Grid>
           <Grid
             pt={1}
             container

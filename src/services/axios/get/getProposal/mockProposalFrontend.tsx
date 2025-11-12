@@ -313,7 +313,7 @@ export const MockProposalFrontend: Proposal = {
       polarisations: '123',
       robust: 0,
       channelsOut: 1,
-      fitSpectralPol: 1
+      fitSpectralPol: 3
     }
   ],
   dataProductSRC: [],
@@ -505,7 +505,7 @@ export const MockProposalFrontendZoom: Proposal = {
       polarisations: '1234',
       robust: 0,
       channelsOut: 1,
-      fitSpectralPol: 1
+      fitSpectralPol: 3
     }
   ],
   dataProductSRC: [],

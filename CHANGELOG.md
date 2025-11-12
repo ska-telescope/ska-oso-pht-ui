@@ -29,7 +29,7 @@ UNRELEASED
 * Changed: Display of validation statuses no longer suppressed until you visit the page upon creation of a SV / Proposal
 * Changed: oso-services v9.2.1
 * Changed: Added a drawer to display helper text
-
+* Changed: oda to 13.1.1
 
 8.0.0
 ----------

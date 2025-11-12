@@ -22,11 +22,11 @@ export default function PixelSizeField({
   setValue,
   testId,
   value,
-  widthLabel = 6,
+  widthLabel = 5,
   suffix
 }: PixelSizeFieldProps) {
   return (
-    <Box pt={1}>
+    <Box pt={1} sx={{ maxWidth: '800px' }}>
       <NumberEntry
         disabled={disabled}
         label={label}
