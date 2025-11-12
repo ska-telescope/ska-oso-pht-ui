@@ -256,7 +256,7 @@ export const STOKES = [
 export const IMAGE_WEIGHTING = [
   { label: 'natural', lookup: 'natural', value: 0 },
   { label: 'uniform', lookup: 'uniform', value: 1 },
-  { label: 'briggs', lookup: 'robust', value: 2 }
+  { label: 'briggs', lookup: 'briggs', value: 2 }
 ];
 
 export const LAB_IS_BOLD = true;
