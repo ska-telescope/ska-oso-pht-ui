@@ -220,13 +220,13 @@ export const GENERAL = {
     { label: 'VLBI', subCategory: [{ label: 'Not specified', value: 1 }], value: 14 }
   ],
   ObservingMode: [
-    { label: 'Zoom', subCategory: [{ label: 'Not specified', value: 1 }], value: MODE_ZOOM },
     {
       label: 'Continuum',
       subCategory: [{ label: 'Not specified', value: 1 }],
       value: MODE_CONTINUUM
     },
-    { label: 'PST', subCategory: [{ label: 'Not specified', value: 1 }], value: MODE_PST }
+    { label: 'PST', subCategory: [{ label: 'Not specified', value: 1 }], value: MODE_PST },
+    { label: 'Spectral', subCategory: [{ label: 'Not specified', value: 1 }], value: MODE_ZOOM }
   ]
 };
 
@@ -243,7 +243,16 @@ export const IW_BRIGGS = 2;
 export const IW_NATURAL = 0;
 export const IW_UNIFORM = 1;
 
-export const STOKES = [{ label: 'I', value: 'I' }];
+export const STOKES = [
+  { value: 'I' },
+  { value: 'Q' },
+  { value: 'U' },
+  { value: 'V' },
+  { value: 'XX' },
+  { value: 'XY' },
+  { value: 'YX' },
+  { value: 'YY' }
+];
 export const IMAGE_WEIGHTING = [
   { label: 'natural', lookup: 'natural', value: 0 },
   { label: 'uniform', lookup: 'uniform', value: 1 },

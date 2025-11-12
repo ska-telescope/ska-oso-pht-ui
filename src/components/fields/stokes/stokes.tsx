@@ -1,18 +1,21 @@
-import { DropDown } from '@ska-telescope/ska-gui-components';
-import { Box } from '@mui/system';
-import { LAB_IS_BOLD, LAB_POSITION, STOKES } from '@utils/constants.ts';
+import { Box, Grid } from '@mui/system';
+import { STOKES } from '@utils/constants.ts';
+import { Typography } from '@mui/material';
+import { LABEL_POSITION, TickBox } from '@ska-telescope/ska-gui-components';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface StokesFieldProps {
   disabled?: boolean;
+  required?: boolean;
   labelWidth?: number;
-  onFocus?: Function;
-  setValue?: Function;
-  value: string;
+  onFocus?: React.FocusEventHandler<HTMLInputElement>;
+  setValue?: (value: string[]) => void;
+  value: string[];
 }
 
 export default function StokesField({
   disabled = false,
+  required = false,
   labelWidth = 5,
   onFocus,
   setValue,
@@ -27,21 +30,46 @@ export default function StokesField({
     });
 
   return (
-    <Box pt={2} sx={{ maxWidth: '800px' }}>
-      <DropDown
-        disabled={disabled}
-        disabledUnderline={disabled}
-        value={value}
-        label={t(FIELD + '.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={labelWidth}
-        onFocus={onFocus}
-        options={options()}
-        required
-        setValue={setValue}
-        testId={FIELD}
-      />
+    <Box pl={1} pt={2}>
+      <Grid container spacing={2} alignItems="flex-start">
+        {/* Label Section */}
+        <Grid size={{ md: labelWidth }}>
+          <Typography
+            variant="subtitle1"
+            fontWeight={'normal'}
+            sx={{ mb: 1 }}
+            color={disabled ? 'text.disabled' : 'text.primary'}
+          >
+            {t(FIELD + '.label')}
+            {required && <span style={{ color: 'red' }}> *</span>}
+          </Typography>
+        </Grid>
+
+        {/* Checkbox Section */}
+        <Grid size={{ md: 12 - labelWidth }}>
+          <Grid container spacing={2}>
+            {options().map(option => (
+              <Grid size={{ xs: 6, sm: 4, md: 3 }} key={option.value}>
+                <TickBox
+                  label={t(FIELD + '.' + option.value)}
+                  labelBold
+                  labelPosition={LABEL_POSITION.END}
+                  testId={FIELD + option.value}
+                  checked={value.includes(option.value)}
+                  onChange={(e: { target: { checked: any } }) => {
+                    const checked = e.target.checked;
+                    const newValue = checked
+                      ? [...value, option.value]
+                      : value.filter((v: string) => v !== option.value);
+                    setValue?.(newValue);
+                  }}
+                  onFocus={onFocus ? { onFocus } : undefined}
+                />
+              </Grid>
+            ))}
+          </Grid>
+        </Grid>
+      </Grid>
     </Box>
   );
 }

@@ -5,13 +5,8 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   BorderedSection,
   DropDown,
-  InfoCard,
-  InfoCardColorTypes,
-  LABEL_POSITION,
-  NumberEntry,
   Spacer,
-  SPACER_VERTICAL,
-  TickBox
+  SPACER_VERTICAL
 } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import RobustField from '@components/fields/robust/Robust.tsx';
@@ -23,7 +18,6 @@ import {
   BANNER_PMT_SPACER,
   FOOTER_HEIGHT_PHT,
   FREQUENCY_GHZ,
-  HELP_FONT,
   IW_BRIGGS,
   LAB_IS_BOLD,
   LAB_POSITION,
@@ -32,7 +26,6 @@ import {
   PAGE_DATA_PRODUCTS_ADD,
   WRAPPER_HEIGHT
 } from '@/utils/constants';
-import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 import Proposal from '@/utils/types/proposal';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
 import { SensCalcResults } from '@/utils/types/sensCalcResults';
@@ -42,15 +35,18 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { presentUnits } from '@/utils/present/present';
 import Observation from '@/utils/types/observation';
 import GridObservation from '@/components/grid/observation/GridObservation';
+import ImageSizeField from '@/components/fields/imageSize/imageSize';
+import ChannelsOutField from '@/components/fields/channelsOut/channelsOut';
+import DataProductTypeField from '@/components/fields/dataProductType/dataProductType';
+import TapperField from '@/components/fields/tapper/taper';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
 const PAGE = PAGE_DATA_PRODUCTS_ADD;
 const PAGE_PREFIX = 'SDP';
-const FIELD_OBS = 'observatoryDataProduct.options';
 const LABEL_WIDTH = 5;
-const LABEL_WIDTH_TICK = 11.5;
 const WRAPPER_WIDTH_BUTTON = 2;
+const COL = 6;
 
 export default function AddDataProduct() {
   const navigate = useNavigate();
@@ -61,7 +57,7 @@ export default function AddDataProduct() {
 
   const [baseObservations, setBaseObservations] = React.useState<Observation[]>([]);
   const [observationId, setObservationId] = React.useState('');
-  const [dp1, setDP1] = React.useState(true);
+  const [dataProductType, setDataProductType] = React.useState('');
   const [imageSizeValue, setImageSizeValue] = React.useState('0');
   const [imageSizeUnits, setImageSizeUnits] = React.useState(0);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
@@ -69,10 +65,12 @@ export default function AddDataProduct() {
   const [weighting, setWeighting] = React.useState(0);
   const [robust, setRobust] = React.useState(3);
   const [channelsOut, setChannelsOut] = React.useState(1);
-  const [polarisations, setPolarisations] = React.useState('I');
+  const [polarisations, setPolarisations] = React.useState(['I']);
   const [tapering, setTapering] = React.useState(0);
 
   const { t } = useScopedTranslation();
+
+  const maxObservationsReached = () => baseObservations.length > 0;
 
   React.useEffect(() => {
     helpComponent(t('observations.dp.help'));
@@ -125,37 +123,6 @@ export default function AddDataProduct() {
     </Box>
   );
 
-  const tickElement = (key: number, value: boolean, setter: Function) => (
-    <TickBox
-      key={key}
-      label={t(FIELD_OBS + '.' + key)}
-      labelPosition={LABEL_POSITION.END}
-      labelWidth={LABEL_WIDTH_TICK}
-      testId={'observatoryDataProduct' + key}
-      checked={value}
-      onFocus={() => helpComponent(t('observatoryDataProduct.help'))}
-      onChange={() => setter(!value)}
-    />
-  );
-
-  const dataProductsField = () => {
-    return (
-      <Grid
-        pl={1}
-        pt={2}
-        container
-        direction="row"
-        alignItems="center"
-        justifyContent="space-between"
-      >
-        <Grid size={{ xs: 3 }}>
-          <Typography>{t('observatoryDataProduct.label') + ' *'}</Typography>
-        </Grid>
-        <Grid size={{ xs: 9 }}>{tickElement(1, dp1, setDP1)}</Grid>
-      </Grid>
-    );
-  };
-
   const imageSizeUnitsField = () => {
     const getOptions = () => {
       return [0, 1, 2].map(e => ({
@@ -176,31 +143,29 @@ export default function AddDataProduct() {
     );
   };
 
-  const imageSizeField = () => {
-    const errorText = () => (Number(imageSizeValue) ? '' : t('imageSize.error'));
-    const setTheNumber = (inNum: number) => {
-      const str = Math.abs(inNum).toString();
-      const num = Number(str);
-      setImageSizeValue(num.toString());
-    };
-    return (
-      <Box pt={1} sx={{ maxWidth: '800px' }}>
-        <NumberEntry
-          label={t('imageSize.label')}
-          labelBold
-          labelPosition={LAB_POSITION}
-          labelWidth={5}
-          testId="imageSize"
-          value={imageSizeValue}
-          setValue={(e: number) => setTheNumber(e)}
-          onFocus={() => helpComponent(t('imageSize.help'))}
-          required
-          suffix={imageSizeUnitsField()}
-          errorText={errorText()}
-        />
-      </Box>
+  const taperField = () =>
+    fieldWrapper(
+      <TapperField
+        labelWidth={LABEL_WIDTH}
+        onFocus={() => helpComponent(t('tapper.help'))}
+        required
+        setValue={setImageSizeValue}
+        value={Number(imageSizeValue)}
+        suffix={t('taper.units')}
+      />
     );
-  };
+
+  const imageSizeField = () =>
+    fieldWrapper(
+      <ImageSizeField
+        labelWidth={LABEL_WIDTH}
+        onFocus={() => helpComponent(t('imageSize.help'))}
+        required
+        setValue={setImageSizeValue}
+        value={Number(imageSizeValue)}
+        suffix={imageSizeUnitsField()}
+      />
+    );
 
   const pixelSizeUnitsField = () => {
     return pixelSizeUnits === 0 ? '' : presentUnits(t('pixelSize.' + pixelSizeUnits));
@@ -209,10 +174,9 @@ export default function AddDataProduct() {
   const pixelSizeField = () =>
     fieldWrapper(
       <PixelSizeField
-        label={t('pixelSize.label')}
+        labelWidth={LABEL_WIDTH}
         onFocus={() => helpComponent(t('pixelSize.help'))}
         setValue={setPixelSizeValue}
-        testId="pixelSize"
         required
         value={pixelSizeValue}
         suffix={pixelSizeUnitsField()}
@@ -224,8 +188,18 @@ export default function AddDataProduct() {
       <ImageWeightingField
         labelWidth={LABEL_WIDTH}
         onFocus={() => helpComponent(t('imageWeighting.help'))}
+        required
         setValue={setWeighting}
         value={weighting}
+      />
+    );
+
+  const dataProductTypeField = () =>
+    fieldWrapper(
+      <DataProductTypeField
+        onFocus={() => helpComponent(t('dataProductType.help'))}
+        setValue={setDataProductType}
+        value={dataProductType}
       />
     );
 
@@ -235,29 +209,20 @@ export default function AddDataProduct() {
         label={t('robust.label')}
         onFocus={() => helpComponent(t('robust.help'))}
         setValue={setRobust}
-        testId="robust"
         value={robust}
       />
     );
 
-  const channelsOutField = () => {
-    return fieldWrapper(
-      <Box pt={1}>
-        <NumberEntry
-          label={t('channelsOut.label')}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH}
-          testId="channelsOut"
-          value={channelsOut}
-          setValue={setChannelsOut}
-          onFocus={() => helpComponent(t('channelsOut.help'))}
-          required
-          errorText={channelsOut < 0 || channelsOut > 40 ? t('channelsOut.error') : ''}
-        />
-      </Box>
+  const channelsOutField = () =>
+    fieldWrapper(
+      <ChannelsOutField
+        labelWidth={LABEL_WIDTH}
+        onFocus={() => helpComponent(t('channelsOut.help'))}
+        required
+        setValue={setChannelsOut}
+        value={channelsOut}
+      />
     );
-  };
 
   const stokesField = () => {
     return (
@@ -265,6 +230,7 @@ export default function AddDataProduct() {
         onFocus={() => helpComponent(t('stokes.help'))}
         value={polarisations}
         setValue={setPolarisations}
+        labelWidth={2}
       />
     );
   };
@@ -342,7 +308,7 @@ export default function AddDataProduct() {
 
   const pageFooter = () => {
     const enabled = () => {
-      const dp = dp1;
+      const dp = dataProductType !== '';
       return dp && pixelSizeValue > 0 && Number(imageSizeValue) > 0;
     };
 
@@ -356,11 +322,10 @@ export default function AddDataProduct() {
             0
           ) ?? 0;
       }
-      const observatoryDataProduct = [dp1];
       const newDataProduct: DataProductSDP = {
         id: highestId + 1,
         dataProductsSDPId: `${PAGE_PREFIX}-${highestId + 1}`,
-        observatoryDataProduct,
+        observatoryDataProduct: [true], // TODO dataProductType,
         observationId: [observationId],
         imageSizeValue: Number(imageSizeValue),
         imageSizeUnits,
@@ -368,7 +333,7 @@ export default function AddDataProduct() {
         pixelSizeUnits,
         weighting,
         robust,
-        polarisations,
+        polarisations: polarisations[0],
         channelsOut,
         fitSpectralPol: 3
       };
@@ -440,6 +405,7 @@ export default function AddDataProduct() {
           alignItems="stretch"
           spacing={GAP}
           m={GAP}
+          mt={1}
           sx={{ flexGrow: 1 }}
         >
           <Grid size={{ md: 4, lg: 2 }} sx={{ display: 'flex', flexDirection: 'column' }}>
@@ -458,42 +424,47 @@ export default function AddDataProduct() {
                 <GridObservation
                   data={baseObservations}
                   rowClick={(e: any) => setObservationId(e.row.id)}
+                  disabled={maxObservationsReached()}
                 />
               )}
             </Box>
           </Grid>
-          <Grid size={{ md: 7, lg: 6 }}>
-            <Stack spacing={5}>
-              <BorderedSection title={t('page.7.group1')}>{dataProductsField()}</BorderedSection>
+          <Grid size={{ md: 7, lg: 7 }}>
+            <Stack spacing={GAP}>
+              {dataProductTypeField()}
               <BorderedSection title={t('page.7.group2')}>
-                <Grid container rowSpacing={3} spacing={3}>
-                  <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(imageSizeField())}</Grid>
-                  <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(imageWeightingField())}</Grid>
-                  <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(stokesField())}</Grid>
-                  <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(pixelSizeField())}</Grid>
-                  {weighting === IW_BRIGGS && (
-                    <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(robustField())}</Grid>
-                  )}
-                  <Grid size={{ xs: 4, md: 4 }}>{fieldWrapper(channelsOutField())}</Grid>
-                  <Grid size={{ xs: 4, md: 4 }}>
+                <Grid container>
+                  <Grid size={{ md: COL }}>{fieldWrapper(imageSizeField())}</Grid>
+                  <Grid size={{ md: COL }}>{fieldWrapper(pixelSizeField())}</Grid>
+                  <Grid size={{ md: COL }}>{fieldWrapper(imageWeightingField())}</Grid>
+                  <Grid size={{ md: COL }}>
+                    {weighting === IW_BRIGGS && fieldWrapper(robustField())}
+                  </Grid>
+                  <Grid size={{ md: COL }}>{fieldWrapper(taperField())}</Grid>
+                  <Grid size={{ md: COL }}>{fieldWrapper(channelsOutField())}</Grid>
+                  <Grid size={{ md: COL }}>
                     {baseObservations.find(
                       rec => rec.id === observationId && rec.observingBand !== 0
                     ) && fieldWrapper(taperingField())}
                   </Grid>
+                  <Grid size={{ md: 12 }}>{fieldWrapper(stokesField())}</Grid>
                 </Grid>
               </BorderedSection>
             </Stack>
           </Grid>
           <Grid size={{ md: 11, lg: 3 }}>
-            <Stack spacing={1}>
-              <HelpPanel />
-              <InfoCard
-                color={InfoCardColorTypes.Warning}
-                fontSize={HELP_FONT}
-                message="The associated input options of these observatory data products are under development and subject to change."
-                testId="developmentPanelId"
-              />
-            </Stack>
+            <BorderedSection title={t('page.7.descTitle')}>
+              <Typography variant="subtitle1" color="text.disabled">
+                {t('page.7.descContent')
+                  .split('\n')
+                  .map((line, index) => (
+                    <React.Fragment key={index}>
+                      {line.trim()}
+                      <br />
+                    </React.Fragment>
+                  ))}
+              </Typography>
+            </BorderedSection>
           </Grid>
         </Grid>
         {pageFooter()}
