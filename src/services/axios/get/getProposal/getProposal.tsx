@@ -276,8 +276,10 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
       ? getPixelSizeUnits(dp?.script_parameters.image_cellsize?.unit)
       : null,
     weighting: getWeighting(dp?.script_parameters?.weight?.weighting as string),
-    robust: ROBUST.find(item => item.label === String(dp.script_parameters.weight.robust))
-      ?.value as number,
+    ...(dp?.script_parameters?.weight?.weighting === 'briggs' && {
+      robust: ROBUST.find(item => item.label === String(dp.script_parameters.weight.robust))
+        ?.value as number
+    }),
     polarisations: dp.script_parameters.polarisations,
     channelsOut: dp.script_parameters.channels_out,
     fitSpectralPol: dp.script_parameters.fit_spectral_pol
