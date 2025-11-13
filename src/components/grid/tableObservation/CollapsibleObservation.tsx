@@ -1,4 +1,4 @@
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import React from 'react';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -40,130 +40,181 @@ export default function CollapsibleObservation({ obs }: any) {
   const supplied = (inObs: any) =>
     OSD_CONSTANTS.Supplied.find(s => s.value === inObs?.rec.supplied?.type);
 
-  return (
-    <Grid container spacing={2} sx={{ width: '100%' }}>
-      <Grid xs={12} md={12}>
-        <Grid container spacing={2} direction="column">
-          <Grid>
-            <TextEntry
-              label={t('observationType.label')}
-              labelBold
-              labelPosition={LAB_POSITION}
-              labelWidth={10}
-              testId={'observationType'}
-              value={t('observationType.' + obs.type)}
-            />
-          </Grid>
-
-          <Grid>
-            <TextEntry
-              label="Group"
-              labelBold
-              labelPosition={LAB_POSITION}
-              labelWidth={10}
-              testId="group"
-              value={observationGroupIds(obs.id)}
-            />
-          </Grid>
-
-          <Grid>
-            <TextEntry
-              label={t('subArrayConfiguration.label')}
-              labelBold
-              labelPosition={LAB_POSITION}
-              labelWidth={10}
-              testId="subarray"
-              value={t('subArrayConfiguration.' + obs.subarray)}
-            />
-          </Grid>
-
-          <Grid>
-            <TextEntry
-              label={t('elevation.label')}
-              labelBold
-              labelPosition={LAB_POSITION}
-              labelWidth={10}
-              testId="elevation"
-              value={obs.rec.elevation}
-              suffix="deg"
-            />
-          </Grid>
-
-          <Grid>
-            <TextEntry
-              label={supplied(obs)?.label}
-              labelBold
-              labelPosition={LAB_POSITION}
-              labelWidth={10}
-              testId="supplied"
-              value={obs.rec.supplied.value}
-              suffix={
-                supplied(obs)?.units?.find(unit => unit.value === obs.rec.supplied.units)?.label ||
-                'error'
-              }
-            />
-          </Grid>
-        </Grid>
+  const displayElement = (t: any, label: string, content: string) => (
+    <Grid container direction="row" justifyContent="space-around" alignItems="center">
+      <Grid size={{ md: 6 }}>
+        <Typography variant="subtitle1">{t(label)}</Typography>
       </Grid>
-      <Grid item xs={12} md={12}>
-        <Grid container spacing={2} direction="column">
-          <Grid item>
-            <TextEntry
-              label={t('observingBand.label')}
-              labelBold
-              labelPosition={LAB_POSITION}
-              labelWidth={10}
-              testId="observingBand"
-              value={BANDWIDTH_TELESCOPE[Number(obs.rec.observingBand)]?.label}
-            />
-          </Grid>
-
-          <Grid item>
-            <TextEntry
-              label={t('centralFrequency.label')}
-              labelBold
-              labelPosition={LAB_POSITION}
-              labelWidth={10}
-              testId="centralFrequency"
-              value={obs.rec.centralFrequency}
-              suffix={
-                FREQUENCY_UNITS.find(unit => unit.value === obs.rec.centralFrequencyUnits)?.label
-              }
-            />
-          </Grid>
-
-          <Grid item>
-            <TextEntry
-              label={
-                isContinuum()
-                  ? t(`bandwidth.label.${TYPE_CONTINUUM}`)
-                  : t(`bandwidth.label.${TYPE_ZOOM}`)
-              }
-              labelBold
-              labelPosition={LAB_POSITION}
-              labelWidth={10}
-              testId="bandwidth"
-              value={isContinuum() ? obs.rec.bandwidth : obs.rec.continuumBandwidth}
-              suffix={
-                isContinuum()
-                  ? FREQUENCY_UNITS.find(unit => unit.value === obs.rec.continuumBandwidthUnits)
-                  : 'Mhz'
-              }
-            />
-          </Grid>
-
-          <Grid item>
-            <TextEntry
-              label={t('subBands.label')}
-              labelBold
-              labelPosition={LAB_POSITION}
-              labelWidth={10}
-              testId="subBands"
-              value={obs.rec.numSubBands}
-            />
-          </Grid>
-        </Grid>
+      <Grid size={{ md: 6 }}>
+        <Typography variant="subtitle2">{content}</Typography>
       </Grid>
     </Grid>
+  );
+
+  return (
+    <>
+      <Grid container spacing={2} sx={{ width: '100%' }}>
+        <Grid xs={12} md={12}>
+          <Grid container spacing={2} direction="column">
+            <Grid>
+              <TextEntry
+                label={t('observationType.label')}
+                labelBold
+                labelPosition={LAB_POSITION}
+                labelWidth={10}
+                testId={'observationType'}
+                value={t('observationType.' + obs.type)}
+              />
+            </Grid>
+
+            <Grid>
+              <TextEntry
+                label="Group"
+                labelBold
+                labelPosition={LAB_POSITION}
+                labelWidth={10}
+                testId="group"
+                value={observationGroupIds(obs.id)}
+              />
+            </Grid>
+
+            <Grid>
+              <TextEntry
+                label={t('subArrayConfiguration.label')}
+                labelBold
+                labelPosition={LAB_POSITION}
+                labelWidth={10}
+                testId="subarray"
+                value={t('subArrayConfiguration.' + obs.subarray)}
+              />
+            </Grid>
+
+            <Grid>
+              <TextEntry
+                label={t('elevation.label')}
+                labelBold
+                labelPosition={LAB_POSITION}
+                labelWidth={10}
+                testId="elevation"
+                value={obs.rec.elevation}
+                suffix="deg"
+              />
+            </Grid>
+
+            <Grid>
+              <TextEntry
+                label={supplied(obs)?.label}
+                labelBold
+                labelPosition={LAB_POSITION}
+                labelWidth={10}
+                testId="supplied"
+                value={obs.rec.supplied.value}
+                suffix={
+                  supplied(obs)?.units?.find(unit => unit.value === obs.rec.supplied.units)
+                    ?.label || 'error'
+                }
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+        <Grid item xs={12} md={12}>
+          <Grid container spacing={2} direction="column">
+            <Grid item>
+              <TextEntry
+                label={t('observingBand.label')}
+                labelBold
+                labelPosition={LAB_POSITION}
+                labelWidth={10}
+                testId="observingBand"
+                value={BANDWIDTH_TELESCOPE[Number(obs.rec.observingBand)]?.label}
+              />
+            </Grid>
+
+            <Grid item>
+              <TextEntry
+                label={t('centralFrequency.label')}
+                labelBold
+                labelPosition={LAB_POSITION}
+                labelWidth={10}
+                testId="centralFrequency"
+                value={obs.rec.centralFrequency}
+                suffix={
+                  FREQUENCY_UNITS.find(unit => unit.value === obs.rec.centralFrequencyUnits)?.label
+                }
+              />
+            </Grid>
+
+            <Grid item>
+              <TextEntry
+                label={
+                  isContinuum()
+                    ? t(`bandwidth.label.${TYPE_CONTINUUM}`)
+                    : t(`bandwidth.label.${TYPE_ZOOM}`)
+                }
+                labelBold
+                labelPosition={LAB_POSITION}
+                labelWidth={10}
+                testId="bandwidth"
+                value={isContinuum() ? obs.rec.bandwidth : obs.rec.continuumBandwidth}
+                suffix={
+                  isContinuum()
+                    ? FREQUENCY_UNITS.find(unit => unit.value === obs.rec.continuumBandwidthUnits)
+                    : 'Mhz'
+                }
+              />
+            </Grid>
+
+            <Grid item>
+              <TextEntry
+                label={t('subBands.label')}
+                labelBold
+                labelPosition={LAB_POSITION}
+                labelWidth={10}
+                testId="subBands"
+                value={obs.rec.numSubBands}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+      {/* <TODO> TO UNCOMMENT FOR DATA PRODUCT</TODO> */}
+      {/* <Grid container direction="row" justifyContent="space-around" alignItems="center">
+          <Grid size={{ md: 6 }}>
+            {displayElement(
+              t,
+              'observatoryDataProduct.label',
+              getODPString(t, data.observatoryDataProduct)
+            )}
+          </Grid>
+          <Grid size={{ md: 6 }}>
+            {displayElement(
+              t,
+              'imageSize.label',
+              data.imageSizeValue + ' ' + presentUnits(t('imageSize.' + data.imageSizeUnits))
+            )}
+          </Grid>
+          <Grid size={{ md: 6 }}>
+            {displayElement(
+              t,
+              'pixelSize.label',
+              data.pixelSizeValue + ' ' + presentUnits(t('pixelSize.' + data.pixelSizeUnits))
+            )}
+          </Grid>
+          <Grid size={{ md: 6 }}>
+            {displayElement(t, 'imageWeighting.label', t('imageWeighting.' + data.weighting))}
+          </Grid>
+          <Grid size={{ md: 6 }}>
+            {displayElement(t, 'channelsOut.label', data?.channelsOut.toString())}
+          </Grid>
+          <Grid size={{ md: 6 }}>
+            {data.weighting === IW_BRIGGS &&
+              displayElement(t, 'robust.label', String(getRobustMapping(data.robust)))}
+          </Grid>
+          <Grid size={{ md: 6 }}>
+            {displayElement(t, 'fitSpectralPol.label', data?.fitSpectralPol.toString())}
+          </Grid>
+          <Grid size={{ md: 6 }}>{displayElement(t, 'stokes.label', data?.polarisations)}</Grid>
+        </Grid> */}
+    </>
   );
 }

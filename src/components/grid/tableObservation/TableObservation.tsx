@@ -13,13 +13,15 @@ interface TableObservationProps {
   excludeFunction: (detail: any) => void;
   updateFunction: (item: any) => void;
   obsData: any;
+  deteleIconClicked: Function;
 }
 
 export default function TableObservation({
   data,
   excludeFunction,
   updateFunction,
-  obsData
+  obsData,
+  deteleIconClicked
 }: TableObservationProps) {
   const { t } = useScopedTranslation();
 
@@ -106,6 +108,7 @@ export default function TableObservation({
                 toggleRow={toggleRow}
                 expandButtonRef={el => (expandButtonRefs.current[item.id] = el)}
                 t={t}
+                deleteIconClicked={deteleIconClicked}
               />
             </>
           ))}

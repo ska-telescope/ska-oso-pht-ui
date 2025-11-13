@@ -237,7 +237,10 @@ export default function ObservationPage() {
             title="addObservation.button"
           />
         </Grid>
-        <TableObservation obsData={elementsO}></TableObservation>
+        <TableObservation
+          obsData={elementsO}
+          deteleIconClicked={deleteIconClicked}
+        ></TableObservation>
       </Grid>
       {deleteDialog ?? <></>}
     </Shell>

@@ -23,6 +23,7 @@ import GroupObservation from '@/utils/types/groupObservation';
 import Proposal from '@/utils/types/proposal';
 import ObservationEntry from '@/pages/entry/ObservationEntry/ObservationEntry';
 import EditIcon from '@/components/icon/editIcon/editIcon';
+import TrashIcon from '@/components/icon/trashIcon/trashIcon';
 
 interface TableObservationRowProps {
   item: any;
@@ -31,6 +32,7 @@ interface TableObservationRowProps {
   toggleRow: (id: number) => void;
   expandButtonRef: (el: HTMLButtonElement | null) => void;
   t: any;
+  deleteIconClicked: Function;
 }
 
 export default function TableObservationRow({
@@ -39,7 +41,8 @@ export default function TableObservationRow({
   expanded,
   toggleRow,
   expandButtonRef,
-  t
+  t,
+  deleteIconClicked
 }: TableObservationRowProps) {
   const theme = useTheme();
   useInitializeAccessStore();
@@ -73,10 +76,47 @@ export default function TableObservationRow({
         role="row"
         aria-rowindex={index + 2}
       >
+        <TableCell role="gridcell" style={{ maxWidth: '120px', padding: 0 }}>
+          <Box
+            sx={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 1,
+              maxWidth: '100%',
+              overflow: 'hidden'
+            }}
+          >
+            <IconButton
+              ref={expandButtonRef}
+              aria-label={`${expanded ? 'Collapse' : 'Expand'} details for ${item.title}.`}
+              aria-expanded={expanded}
+              aria-controls={`employee-details-${item.id}`}
+              size="small"
+              onClick={() => toggleRow(item.id)}
+              data-testid={`expand-button-${item.id}`}
+              sx={{ transition: 'transform 0.2s' }}
+            >
+              {expanded ? <ExpandMore /> : <ChevronRight />}
+            </IconButton>
+
+            {/* {false && editClicked && (
+                  <EditIcon
+                    onClick={() => {
+                      if (editClicked) editClicked(item);
+                    }}
+                    toolTip="This feature is currently disabled"
+                  />
+                )}
+        
+                {deleteClicked && (
+                  <TrashIcon onClick={() => deleteClicked(item)} toolTip={t('deleteDataProduct.label')} />
+                )} */}
+          </Box>
+        </TableCell>
         <TableCell role="gridcell">
           <Box sx={{ display: 'flex', gap: 0.5, msOverflowX: 'hidden' }}>
             <EditIcon onClick={() => editIconClicked(item)} toolTip={t('observations.edit')} />
-            <EditIcon onClick={() => editIconClicked(item)} toolTip={t('observations.edit')} />
+            <TrashIcon onClick={deleteIconClicked(item)} toolTip={t('observations.delete')} />
           </Box>
         </TableCell>
 
@@ -153,7 +193,7 @@ export default function TableObservationRow({
             {BANDWIDTH_TELESCOPE[Number(item.rec.observingBand)]?.label}
           </Typography>
         </TableCell>
-        <TableCell role="gridcell">
+        {/* <TableCell role="gridcell">
           <Box sx={{ display: 'flex', alignItems: 'end', gap: 1, overflowX: 'hidden' }}>
             <IconButton
               ref={expandButtonRef}
@@ -169,7 +209,7 @@ export default function TableObservationRow({
               {expanded ? <ExpandMore /> : <ChevronRight />}
             </IconButton>
           </Box>
-        </TableCell>
+        </TableCell> */}
       </TableRow>
 
       <TableRow key={`${item.id}-expanded`}>
