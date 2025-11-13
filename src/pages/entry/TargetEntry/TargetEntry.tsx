@@ -569,8 +569,7 @@ export default function TargetEntry({
               pr={2}
               sx={{
                 width: '100%',
-                height: PANEL_HEIGHT,
-                overflowY: 'auto'
+                height: PANEL_HEIGHT
               }}
             >
               <Grid
