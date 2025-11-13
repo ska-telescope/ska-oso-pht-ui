@@ -971,7 +971,7 @@ export default function ObservationEntry() {
             container
             direction="row"
             spacing={2}
-            pb={3}
+            pb={2}
             alignItems="stretch"
             justifyContent="space-between"
           >
