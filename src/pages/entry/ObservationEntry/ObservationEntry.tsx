@@ -352,7 +352,7 @@ export default function ObservationEntry() {
   );
 
   const suppliedWrapper = (children: React.JSX.Element) => (
-    <Box p={0} sx={{ height: WRAPPER_HEIGHT }}>
+    <Box p={0} pl={1} pr={1} sx={{ height: WRAPPER_HEIGHT }}>
       {children}
     </Box>
   );
@@ -370,7 +370,7 @@ export default function ObservationEntry() {
           label={t('observationId.label')}
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
-          labelWidth={TOP_LABEL_WIDTH}
+          labelWidth={LABEL_WIDTH_NEW}
           onFocus={() => helpComponent(t('observationId.help'))}
           required
           testId="observationId"
@@ -384,7 +384,7 @@ export default function ObservationEntry() {
   const groupObservationsField = () =>
     fieldWrapper(
       <GroupObservationsField
-        labelWidth={TOP_LABEL_WIDTH}
+        labelWidth={LABEL_WIDTH_NEW}
         onFocus={() => helpComponent(t('groupObservations.help'))}
         setValue={setGroupObservation}
         value={groupObservation}
@@ -418,7 +418,7 @@ export default function ObservationEntry() {
     fieldWrapper(
       <NumStations
         disabled={subarrayConfig !== OB_SUBARRAY_CUSTOM}
-        widthLabel={TOP_LABEL_WIDTH}
+        widthLabel={LABEL_WIDTH_NEW}
         setValue={setNumOfStations}
         value={numOfStations ?? 0}
         rangeLower={Number(t('numStations.range.lower'))}
@@ -505,7 +505,7 @@ export default function ObservationEntry() {
       <ElevationField
         isLow={isLow()}
         label={t('elevation.label')}
-        widthLabel={TOP_LABEL_WIDTH}
+        widthLabel={LABEL_WIDTH_NEW}
         onFocus={() => helpComponent(t('elevation.help'))}
         setValue={setElevation}
         testId="elevation"
@@ -720,7 +720,7 @@ export default function ObservationEntry() {
         frequency={centralFrequency}
         frequencyUnits={centralFrequencyUnits}
         label={t('spectralResolution.label')}
-        labelWidth={BOTTOM_LABEL_WIDTH}
+        labelWidth={LABEL_WIDTH_NEW}
         observingBand={observingBand}
         observationType={observationType}
         onFocus={() => helpComponent(t('spectralResolution.help'))}
@@ -732,7 +732,7 @@ export default function ObservationEntry() {
     fieldWrapper(
       <SpectralAveragingField
         isLow={isLow()}
-        widthLabel={BOTTOM_LABEL_WIDTH}
+        widthLabel={LABEL_WIDTH_NEW}
         value={spectralAveraging}
         setValue={setSpectralAveraging}
         subarray={subarrayConfig}
@@ -744,7 +744,7 @@ export default function ObservationEntry() {
     fieldWrapper(
       <EffectiveResolutionField
         label={t('effectiveResolution.label')}
-        labelWidth={BOTTOM_LABEL_WIDTH}
+        labelWidth={LABEL_WIDTH_NEW}
         frequency={centralFrequency}
         frequencyUnits={centralFrequencyUnits}
         spectralAveraging={spectralAveraging}
@@ -808,7 +808,7 @@ export default function ObservationEntry() {
           label={t('subBands.label')}
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
-          labelWidth={BOTTOM_LABEL_WIDTH}
+          labelWidth={LABEL_WIDTH_NEW}
           testId="subBands"
           value={subBands}
           setValue={validate}
@@ -939,13 +939,32 @@ export default function ObservationEntry() {
               container
               direction="row"
               alignItems="center"
-              spacing={1}
-              justifyContent="space-around"
+              spacing={2}
+              justifyContent="space-between"
+              pb={3}
             >
-              <Grid size={{ md: 12, lg: 5 }}>{idField()}</Grid>
-              <Grid size={{ md: 12, lg: 5 }}>{groupObservationsField()}</Grid>
-              <Grid size={{ md: 12, lg: 5 }}>{isLow() ? emptyField() : weatherField()}</Grid>
-              <Grid size={{ md: 12, lg: 5 }}>{elevationField()}</Grid>
+              <Grid size={{ md: 12, lg: 12 }}>
+                <Card variant="outlined" sx={{ height: '100%' }}>
+                  <CardContent>
+                    <Grid
+                      p={0}
+                      container
+                      direction="row"
+                      alignItems="center"
+                      columnSpacing={6}
+                      rowSpacing={1}
+                      justifyContent="space-between"
+                    >
+                      <Grid size={{ md: 12, lg: 6 }}>{idField()}</Grid>
+                      <Grid size={{ md: 12, lg: 6 }}>{elevationField()}</Grid>
+                      <Grid size={{ md: 12, lg: 6 }}>{groupObservationsField()}</Grid>
+                      <Grid size={{ md: 12, lg: 6 }}>
+                        {isLow() ? emptyField() : weatherField()}
+                      </Grid>
+                    </Grid>
+                  </CardContent>
+                </Card>
+              </Grid>
             </Grid>
           )}
           <Grid
@@ -1015,10 +1034,10 @@ export default function ObservationEntry() {
                 <Grid size={{ md: 12, lg: 6 }}></Grid>
                 {!MOCK_CALL && (
                   <>
-                    <Grid size={{ md: 12, lg: 5 }}>{spectralResolutionField()}</Grid>
-                    <Grid size={{ md: 12, lg: 5 }}>{spectralAveragingField()}</Grid>
-                    <Grid size={{ md: 12, lg: 5 }}>{effectiveResolutionField()}</Grid>
-                    <Grid size={{ md: 12, lg: 5 }}>
+                    <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>
+                    <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
+                    <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>
+                    <Grid size={{ md: 12, lg: 6 }}>
                       {isContinuum() ? SubBandsField() : emptyField()}
                     </Grid>
                   </>
