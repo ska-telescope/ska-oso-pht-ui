@@ -34,7 +34,8 @@ import {
   BAND_LOW,
   TYPE_CONTINUUM,
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
-  SUPPLIED_TYPE_INTEGRATION
+  SUPPLIED_TYPE_INTEGRATION,
+  MOCK_CALL
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -60,7 +61,6 @@ interface TargetEntryProps {
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 const PANEL_HEIGHT = '54vh';
-const MOCK_CALL = true;
 
 export default function TargetEntry({
   raType,

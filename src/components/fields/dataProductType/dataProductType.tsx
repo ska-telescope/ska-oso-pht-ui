@@ -30,7 +30,7 @@ export default function DataProductTypeField({
   const { t } = useScopedTranslation();
   const FIELD = 'dataProductType';
   const options = () =>
-    [1, 2].map(el => {
+    (observationType === TYPE_CONTINUUM ? [1, 2] : [1, 2, 3]).map(el => {
       return { label: t(FIELD + '.options.' + observationType + '.' + el), lookup: el, value: el };
     });
 

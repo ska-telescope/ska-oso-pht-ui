@@ -84,6 +84,7 @@ export default function AddDataProduct() {
   const maxObservationsReached = () => baseObservations.length > 0;
 
   const isDataTypeOne = () => dataProductType === 1;
+  const isDataTypeThree = () => dataProductType === 3;
   const isContinuum = () => getObservation()?.type === TYPE_CONTINUUM;
   const isSpectral = () => getObservation()?.type === TYPE_ZOOM;
   const isPST = () => getObservation()?.type === TYPE_PST;
@@ -350,7 +351,8 @@ export default function AddDataProduct() {
     return (
       <PolarisationsField
         onFocus={() => helpComponent(t('polarisations.help'))}
-        isPST={isPST()}
+        observationType={getObservation()?.type || TYPE_CONTINUUM}
+        dataProductType={dataProductType}
         value={polarisations}
         setValue={setPolarisations}
         labelWidth={0}
@@ -532,9 +534,16 @@ export default function AddDataProduct() {
                       <Grid size={{ md: COL }}>{fieldWrapper(bitDepthField())}</Grid>
                     </Grid>
                   )}
-                  {!isDataTypeOne() && (
+                  {!isDataTypeOne() && !isDataTypeThree() && (
                     <Grid pb={1} container>
                       <Grid size={{ md: COL }}>TO BE PROVIDED BY SCIENCE OPERATIONS</Grid>
+                    </Grid>
+                  )}
+                  {isDataTypeThree() && (
+                    <Grid pb={1} container>
+                      <Grid size={{ md: 8 }}>{fieldWrapper(timeAveragingField())}</Grid>
+                      <Grid size={{ md: 8 }}>{fieldWrapper(frequencyAveragingField())}</Grid>
+                      <Grid size={{ md: 8 }}>{fieldWrapper(bitDepthField())}</Grid>
                     </Grid>
                   )}
                 </BorderedSection>
@@ -550,7 +559,7 @@ export default function AddDataProduct() {
                   {fieldWrapper(polarisationsField(), '150px')}
                 </BorderedSection>
               )}
-              {isPST() && isDataTypeOne() && (
+              {isPST() && (isDataTypeOne() || isDataTypeThree()) && (
                 <BorderedSection title={t('polarisations.label')}>
                   {fieldWrapper(polarisationsField())}
                 </BorderedSection>

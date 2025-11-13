@@ -3,6 +3,7 @@ import Target from './types/target';
 import Investigator from './types/investigator';
 import { env } from '@/env';
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
+export const MOCK_CALL = env.REACT_APP_USE_MOCK_CALL === 'true';
 export const cypressToken = window.localStorage.getItem('cypress:token');
 export const cypressProposal = window.localStorage.getItem('cypress:proposalCreated') === 'true';
 export const cypressEditProposal = window.localStorage.getItem('cypress:proposalEdit') === 'true';
@@ -170,8 +171,6 @@ export const DATA_PRODUCT = {
 };
 export const DEFAULT_HELP = ['', ' ', ''];
 
-export const MOCK_CALL = true; // Used so we can track down specific changes for the mock call
-
 export const EMPTY_STATUS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]; // See SRCNet INACTIVE
 export const ENTRY_HEIGHT = 40;
 
@@ -274,7 +273,13 @@ export const POLARISATIONS = [
   { value: 'YX' },
   { value: 'YY' }
 ];
-export const POLARISATIONS_PST = [{ value: 'X' }, { value: 'Y' }];
+export const POLARISATIONS_PST_FLOW = [{ value: 'X' }, { value: 'Y' }];
+export const POLARISATIONS_PST_BANK = [
+  { value: 'I' },
+  { value: 'Q' },
+  { value: 'U' },
+  { value: 'V' }
+];
 
 export const IMAGE_WEIGHTING = [
   { label: 'natural', lookup: 'natural', value: 0 },

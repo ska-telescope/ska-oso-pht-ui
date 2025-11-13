@@ -230,7 +230,8 @@
       },
       "3": {
         "1": "Flow through",
-        "2": "Timing"
+        "2": "Timing",
+        "3": "Detected Filter bank"
       }
     }
   },
@@ -1407,7 +1408,8 @@
         },
         "3": {
           "1": "In Science Verification, PST Flow through data products include: \n\n* Single or dual-polarisation beam-formed voltages requantised to the specified bit depth\n* QA report",
-          "2": "In Science Verification, PST Pulsar Timing data products include: \n\n* Beam-formed voltages\n* time of arrival\n* residuals from the best-fit timing model for the pulsar, \n* updated ephemerids, and\n* QA report"
+          "2": "In Science Verification, PST Pulsar Timing data products include: \n\n* Beam-formed voltages\n* time of arrival\n* residuals from the best-fit timing model for the pulsar, \n* updated ephemerids, and\n* QA report",
+          "3": "In Science Verification, PST Detected Filter bank data product include: \n\n* Filter bank data, averaged and requantised as specified in the panel on the left.\n* QA report"
         }
       },
       "status": "Data Product",
@@ -1424,7 +1426,8 @@
         },
         "3": {
           "1": "PST Flow through Data Products",
-          "2": "PST Timing Data Products"
+          "2": "PST Timing Data Products",
+          "3": "PST Detected Filter bank Data Products"
         }
       }
     },
