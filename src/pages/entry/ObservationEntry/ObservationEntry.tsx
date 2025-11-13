@@ -75,10 +75,6 @@ const BACK_PAGE = PAGE_OBSERVATION;
 const HELP_PANEL_HEIGHT = '50vh';
 const MOCK_CALL = true;
 
-const boxStyle = {
-  border: '1px solid blue'
-};
-
 export default function ObservationEntry() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
@@ -350,13 +346,13 @@ export default function ObservationEntry() {
   const isContinuumOnly = () => observingBand !== 0 && subarrayConfig === OB_SUBARRAY_AA2;
 
   const fieldWrapper = (children?: React.JSX.Element) => (
-    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }} style={boxStyle}>
+    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
       {children}
     </Box>
   );
 
   const suppliedWrapper = (children: React.JSX.Element) => (
-    <Box p={0} sx={{ height: WRAPPER_HEIGHT }} style={boxStyle}>
+    <Box p={0} sx={{ height: WRAPPER_HEIGHT }}>
       {children}
     </Box>
   );
@@ -563,9 +559,8 @@ export default function ObservationEntry() {
     const suppliedTypeField = () => {
       const getOptions = () =>
         isLow() ? [observatoryConstants?.Supplied[0]] : observatoryConstants?.Supplied;
-      // SARAH
       return (
-        <Box pt={1} style={boxStyle} width="100%">
+        <Box pt={1}>
           <DropDown
             options={getOptions()}
             testId="suppliedType"
@@ -588,7 +583,7 @@ export default function ObservationEntry() {
       };
 
       return (
-        <Box pt={1} style={boxStyle} mr={1}>
+        <Box>
           <DropDown
             options={getOptions()}
             testId="suppliedUnits"
@@ -597,6 +592,7 @@ export default function ObservationEntry() {
             setValue={setSuppliedUnits}
             label=""
             onFocus={() => helpComponent(t('suppliedUnits.help'))}
+            InputProps={{ disableUnderline: true }}
           />
         </Box>
       );
@@ -643,7 +639,7 @@ export default function ObservationEntry() {
         : '';
 
     return fieldWrapper(
-      <Box pt={1} style={boxStyle}>
+      <Box pt={1}>
         <NumberEntry
           label={t('centralFrequency.label')}
           labelBold={LAB_IS_BOLD}
@@ -961,8 +957,8 @@ export default function ObservationEntry() {
             justifyContent="space-between"
           >
             <Grid size={{ md: 6, lg: 6 }}>
-              <Card variant="outlined">
-                <CardContent sx={{ display: 'block', minHeight: '190px' }}>
+              <Card variant="outlined" sx={{ height: '100%' }}>
+                <CardContent>
                   <Grid
                     container
                     direction="row"
@@ -977,7 +973,7 @@ export default function ObservationEntry() {
               </Card>
             </Grid>
             <Grid size={{ md: 6, lg: 6 }}>
-              <Card variant="outlined">
+              <Card variant="outlined" sx={{ height: '100%' }}>
                 <CardContent>
                   <Grid
                     p={0}
