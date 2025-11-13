@@ -5,6 +5,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface ImageWeightingFieldProps {
   disabled?: boolean;
+  required?: boolean;
   labelWidth?: number;
   onFocus?: Function;
   setValue?: Function;
@@ -13,6 +14,7 @@ interface ImageWeightingFieldProps {
 
 export default function ImageWeightingField({
   disabled = false,
+  required = false,
   labelWidth = 5,
   onFocus,
   setValue,
@@ -38,7 +40,7 @@ export default function ImageWeightingField({
         labelWidth={labelWidth}
         onFocus={onFocus}
         options={options()}
-        required
+        required={required}
         setValue={setValue}
         testId={FIELD}
       />
