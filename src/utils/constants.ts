@@ -190,14 +190,13 @@ export const FREQUENCY_UNITS = [
   { label: 'Hz', value: FREQUENCY_HZ, mapping: 'Hz', toHz: 10000000000 }
 ];
 
+export const TYPE_ZOOM = 0;
+export const TYPE_CONTINUUM = 1;
+export const TYPE_PST = 2;
+
 export const MODE_CONTINUUM = 102;
 export const MODE_PST = 103;
 export const MODE_ZOOM = 101;
-
-export const TYPE_ZOOM = 0;
-export const TYPE_CONTINUUM = 1;
-export const TYPE_PSS = 2;
-export const TYPE_PST = 3;
 
 export const GENERAL = {
   ScienceCategory: [
