@@ -229,9 +229,16 @@ export const GENERAL = {
   ],
   ObservingMode: [
     {
+      label: 'Zoom',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: MODE_ZOOM,
+      observationType: TYPE_ZOOM
+    },
+    {
       label: 'Continuum',
       subCategory: [{ label: 'Not specified', value: 1 }],
-      value: MODE_CONTINUUM
+      value: MODE_CONTINUUM,
+      observationType: TYPE_CONTINUUM
     },
     { label: 'PST', subCategory: [{ label: 'Not specified', value: 1 }], value: MODE_PST },
     { label: 'Spectral', subCategory: [{ label: 'Not specified', value: 1 }], value: MODE_ZOOM }
@@ -470,10 +477,6 @@ export const TECHNICAL_FEASIBILITY = {
   MAYBE: 'Maybe'
 };
 
-export const TYPE_ZOOM = 0;
-export const TYPE_CONTINUUM = 1;
-export const TYPE_PST = 2;
-
 export const PULSAR_MODE_FOLDED = 'folded_pulse';
 
 export const OSCILLATION_UNITS = [
@@ -497,6 +500,10 @@ export const SECONDS_UNITS = [
   { label: MICROSECOND_LABEL, toSeconds: 0.000001 },
   { label: NANOSECOND_LABEL, toSeconds: 0.000000001 }
 ];
+
+export const TYPE_ZOOM = 0;
+export const TYPE_CONTINUUM = 1;
+export const TYPE_PST = 2;
 
 export const OBS_TYPES = ['spectral', 'continuum'];
 export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];

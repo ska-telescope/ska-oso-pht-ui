@@ -47,7 +47,7 @@ export default function CalibrationPage() {
 
   const { t } = useScopedTranslation();
 
-  const LABEL_WIDTH = 2;
+  const LABEL_WIDTH = 5;
   const LABEL_WIDTH_CHECKBOX = 11;
 
   const [baseObservations, setBaseObservations] = React.useState<

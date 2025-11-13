@@ -36,7 +36,9 @@ import {
   FOOTER_HEIGHT_PHT,
   PAGE_OBSERVATION,
   PAGE_OBSERVATION_UPDATE,
-  PAGE_OBSERVATION_ADD
+  PAGE_OBSERVATION_ADD,
+  GENERAL,
+  MOCK_CALL
 } from '@utils/constants.ts';
 import {
   generateId,
@@ -68,10 +70,10 @@ import {
 } from '@/utils/calculate/calculate';
 
 const TOP_LABEL_WIDTH = 6;
-const BOTTOM_LABEL_WIDTH = 6;
+const BOTTOM_LABEL_WIDTH = 4;
+const LABEL_WIDTH_NEW = 5.5;
 const BACK_PAGE = PAGE_OBSERVATION;
 const HELP_PANEL_HEIGHT = '50vh';
-const MOCK_CALL = true;
 
 export default function ObservationEntry() {
   const { t } = useScopedTranslation();
@@ -122,7 +124,7 @@ export default function ObservationEntry() {
   const observationIn = (ob: Observation) => {
     setMyObsId(ob?.id);
     setSubarrayConfig(ob?.subarray);
-    setObservationType(ob?.type);
+    setObservationType(MOCK_CALL ? (getObservationType() as number) : ob.type);
     if (!obOnce) setObservingBand(ob?.observingBand);
     setWeather(ob?.weather ?? Number(t('weather.default')));
     setElevation(ob?.elevation);
@@ -176,6 +178,15 @@ export default function ObservationEntry() {
       numStations: numOfStations
     };
     return newObservation;
+  };
+
+  const getObservationType = () => {
+    if (getProposal() && getProposal()?.scienceCategory) {
+      const obsType = GENERAL.ObservingMode.find(
+        item => item.value === getProposal()?.scienceCategory
+      )?.observationType;
+      return obsType;
+    }
   };
 
   // Change the central frequency & units only if they are currently the same as the existing defaults
@@ -341,7 +352,7 @@ export default function ObservationEntry() {
   );
 
   const suppliedWrapper = (children: React.JSX.Element) => (
-    <Box p={0} sx={{ height: WRAPPER_HEIGHT }}>
+    <Box p={0} pl={1} pr={1} sx={{ height: WRAPPER_HEIGHT }}>
       {children}
     </Box>
   );
@@ -359,7 +370,7 @@ export default function ObservationEntry() {
           label={t('observationId.label')}
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
-          labelWidth={TOP_LABEL_WIDTH}
+          labelWidth={LABEL_WIDTH_NEW}
           onFocus={() => helpComponent(t('observationId.help'))}
           required
           testId="observationId"
@@ -373,7 +384,7 @@ export default function ObservationEntry() {
   const groupObservationsField = () =>
     fieldWrapper(
       <GroupObservationsField
-        labelWidth={TOP_LABEL_WIDTH}
+        labelWidth={LABEL_WIDTH_NEW}
         onFocus={() => helpComponent(t('groupObservations.help'))}
         setValue={setGroupObservation}
         value={groupObservation}
@@ -384,7 +395,7 @@ export default function ObservationEntry() {
   const observationsBandField = () =>
     fieldWrapper(
       <ObservingBandField
-        widthLabel={TOP_LABEL_WIDTH}
+        widthLabel={LABEL_WIDTH_NEW}
         required
         value={observingBand}
         setValue={setTheObservingBand}
@@ -396,7 +407,7 @@ export default function ObservationEntry() {
       <SubArrayField
         observingBand={observingBand}
         required
-        widthLabel={TOP_LABEL_WIDTH}
+        widthLabel={LABEL_WIDTH_NEW}
         telescope={telescope()}
         value={subarrayConfig}
         setValue={setTheSubarrayConfig}
@@ -407,7 +418,7 @@ export default function ObservationEntry() {
     fieldWrapper(
       <NumStations
         disabled={subarrayConfig !== OB_SUBARRAY_CUSTOM}
-        widthLabel={TOP_LABEL_WIDTH}
+        widthLabel={LABEL_WIDTH_NEW}
         setValue={setNumOfStations}
         value={numOfStations ?? 0}
         rangeLower={Number(t('numStations.range.lower'))}
@@ -494,7 +505,7 @@ export default function ObservationEntry() {
       <ElevationField
         isLow={isLow()}
         label={t('elevation.label')}
-        widthLabel={TOP_LABEL_WIDTH}
+        widthLabel={LABEL_WIDTH_NEW}
         onFocus={() => helpComponent(t('elevation.help'))}
         setValue={setElevation}
         testId="elevation"
@@ -535,9 +546,9 @@ export default function ObservationEntry() {
   const observationTypeField = () =>
     fieldWrapper(
       <ObservationTypeField
-        disabled={isContinuumOnly()}
+        disabled={MOCK_CALL || isContinuumOnly()}
         isContinuumOnly={isContinuumOnly()}
-        widthLabel={BOTTOM_LABEL_WIDTH}
+        widthLabel={LABEL_WIDTH_NEW}
         required
         value={observationType}
         setValue={setObservationType}
@@ -548,7 +559,6 @@ export default function ObservationEntry() {
     const suppliedTypeField = () => {
       const getOptions = () =>
         isLow() ? [observatoryConstants?.Supplied[0]] : observatoryConstants?.Supplied;
-
       return (
         <Box pt={1}>
           <DropDown
@@ -573,15 +583,18 @@ export default function ObservationEntry() {
       };
 
       return (
-        <DropDown
-          options={getOptions()}
-          testId="suppliedUnits"
-          value={suppliedUnits}
-          disabled={isLow()}
-          setValue={setSuppliedUnits}
-          label=""
-          onFocus={() => helpComponent(t('suppliedUnits.help'))}
-        />
+        <Box>
+          <DropDown
+            options={getOptions()}
+            testId="suppliedUnits"
+            value={suppliedUnits}
+            disabled={isLow()}
+            setValue={setSuppliedUnits}
+            label=""
+            onFocus={() => helpComponent(t('suppliedUnits.help'))}
+            InputProps={{ disableUnderline: true }}
+          />
+        </Box>
       );
     };
 
@@ -590,25 +603,28 @@ export default function ObservationEntry() {
         return suppliedValue <= 0 ? t('suppliedValue.range.error') : '';
       };
       return (
-        <NumberEntry
-          errorText={errorMessage()}
-          label=""
-          testId="suppliedValue"
-          value={suppliedValue}
-          setValue={setSuppliedValue}
-          onFocus={() => helpComponent(t('suppliedValue.help'))}
-          suffix={suppliedUnitsField()}
-          required
-        />
+        <Box p={0} ml={-2}>
+          <NumberEntry
+            errorText={errorMessage()}
+            label=""
+            testId="suppliedValue"
+            value={suppliedValue}
+            setValue={setSuppliedValue}
+            onFocus={() => helpComponent(t('suppliedValue.help'))}
+            suffix={suppliedUnitsField()}
+            required
+            sx={{ border: '1px red solid' }}
+          />
+        </Box>
       );
     };
 
     return suppliedWrapper(
-      <Grid pt={0} m={0} container>
-        <Grid pt={1} pr={1} size={{ md: BOTTOM_LABEL_WIDTH }}>
+      <Grid pt={0} m={0} container justifyContent="space-between" direction="row">
+        <Grid pt={1} pr={1} size={{ md: 5 }}>
           {suppliedTypeField()}
         </Grid>
-        <Grid pt={0} size={{ md: 12 - BOTTOM_LABEL_WIDTH }}>
+        <Grid pt={0} size={{ md: 10 - BOTTOM_LABEL_WIDTH }} justifySelf="flex-end">
           {suppliedValueField()}
         </Grid>
       </Grid>
@@ -628,7 +644,7 @@ export default function ObservationEntry() {
           label={t('centralFrequency.label')}
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
-          labelWidth={BOTTOM_LABEL_WIDTH}
+          labelWidth={LABEL_WIDTH_NEW}
           testId="centralFrequency"
           value={centralFrequency}
           setValue={setCentralFrequency}
@@ -659,7 +675,7 @@ export default function ObservationEntry() {
     };
     return fieldWrapper(
       <ContinuumBandwidthField
-        labelWidth={BOTTOM_LABEL_WIDTH}
+        labelWidth={LABEL_WIDTH_NEW}
         onFocus={() => helpComponent(t(`bandwidth.help.${TYPE_CONTINUUM}`))}
         setValue={setContinuumBandwidth}
         value={continuumBandwidth}
@@ -704,7 +720,7 @@ export default function ObservationEntry() {
         frequency={centralFrequency}
         frequencyUnits={centralFrequencyUnits}
         label={t('spectralResolution.label')}
-        labelWidth={BOTTOM_LABEL_WIDTH}
+        labelWidth={LABEL_WIDTH_NEW}
         observingBand={observingBand}
         observationType={observationType}
         onFocus={() => helpComponent(t('spectralResolution.help'))}
@@ -716,7 +732,7 @@ export default function ObservationEntry() {
     fieldWrapper(
       <SpectralAveragingField
         isLow={isLow()}
-        widthLabel={BOTTOM_LABEL_WIDTH}
+        widthLabel={LABEL_WIDTH_NEW}
         value={spectralAveraging}
         setValue={setSpectralAveraging}
         subarray={subarrayConfig}
@@ -728,7 +744,7 @@ export default function ObservationEntry() {
     fieldWrapper(
       <EffectiveResolutionField
         label={t('effectiveResolution.label')}
-        labelWidth={BOTTOM_LABEL_WIDTH}
+        labelWidth={LABEL_WIDTH_NEW}
         frequency={centralFrequency}
         frequencyUnits={centralFrequencyUnits}
         spectralAveraging={spectralAveraging}
@@ -792,7 +808,7 @@ export default function ObservationEntry() {
           label={t('subBands.label')}
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
-          labelWidth={BOTTOM_LABEL_WIDTH}
+          labelWidth={LABEL_WIDTH_NEW}
           testId="subBands"
           value={subBands}
           setValue={validate}
@@ -917,48 +933,88 @@ export default function ObservationEntry() {
         spacing={1}
       >
         <Grid size={{ md: 12, lg: 9 }}>
+          {!MOCK_CALL && (
+            <Grid
+              p={0}
+              container
+              direction="row"
+              alignItems="center"
+              spacing={2}
+              justifyContent="space-between"
+              pb={3}
+            >
+              <Grid size={{ md: 12, lg: 12 }}>
+                <Card variant="outlined" sx={{ height: '100%' }}>
+                  <CardContent>
+                    <Grid
+                      p={0}
+                      container
+                      direction="row"
+                      alignItems="center"
+                      columnSpacing={6}
+                      rowSpacing={1}
+                      justifyContent="space-between"
+                    >
+                      <Grid size={{ md: 12, lg: 6 }}>{idField()}</Grid>
+                      <Grid size={{ md: 12, lg: 6 }}>{elevationField()}</Grid>
+                      <Grid size={{ md: 12, lg: 6 }}>{groupObservationsField()}</Grid>
+                      <Grid size={{ md: 12, lg: 6 }}>
+                        {isLow() ? emptyField() : weatherField()}
+                      </Grid>
+                    </Grid>
+                  </CardContent>
+                </Card>
+              </Grid>
+            </Grid>
+          )}
           <Grid
-            p={0}
-            pl={2}
             container
             direction="row"
-            alignItems="center"
-            spacing={1}
-            justifyContent="space-around"
+            spacing={2}
+            pb={2}
+            alignItems="stretch"
+            justifyContent="space-between"
           >
-            {!MOCK_CALL && (
-              <>
-                <Grid size={{ md: 12, lg: 5 }}>{idField()}</Grid>
-                <Grid size={{ lg: 5 }}></Grid>
-                <Grid size={{ md: 12, lg: 5 }}>{groupObservationsField()}</Grid>
-                <Grid size={{ md: 12, lg: 5 }}>{isLow() ? emptyField() : weatherField()}</Grid>
-              </>
-            )}
-            {!MOCK_CALL && <Grid size={{ md: 12, lg: 5 }}>{elevationField()}</Grid>}
-          </Grid>
-          <Grid container direction="row" spacing={2} pb={2} alignItems="stretch">
             <Grid size={{ md: 6, lg: 6 }}>
-              <Card variant="outlined">
-                <CardContent sx={{ display: 'block', minHeight: '190px' }}>
-                  <Grid size={{ md: 12, lg: 12 }}>{observationTypeField()}</Grid>
-                  <Grid size={{ md: 12, lg: 12 }}></Grid>
-                </CardContent>
-              </Card>
-            </Grid>
-            <Grid size={{ md: 6, lg: 6 }}>
-              <Card variant="outlined">
+              <Card variant="outlined" sx={{ height: '100%' }}>
                 <CardContent>
-                  <Grid size={{ md: 12, lg: 12 }}>{subArrayField()}</Grid>
-                  {!MOCK_CALL && (
-                    <Grid size={{ md: 12, lg: 12 }}>
-                      {isLow() ? numStationsField() : antennasFields()}
-                    </Grid>
-                  )}
-                  <Grid size={{ md: 12, lg: 12 }}>{suppliedField()}</Grid>
+                  <Grid
+                    container
+                    direction="row"
+                    alignItems="center"
+                    spacing={2}
+                    justifyContent="space-between"
+                  >
+                    <Grid size={{ md: 12, lg: 12 }}>{observationTypeField()}</Grid>
+                    <Grid size={{ md: 12, lg: 12 }}></Grid>
+                  </Grid>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid size={{ md: 6, lg: 6 }}>
+              <Card variant="outlined" sx={{ height: '100%' }}>
+                <CardContent>
+                  <Grid
+                    p={0}
+                    container
+                    direction="row"
+                    alignItems="center"
+                    justifyContent="space-between"
+                    rowSpacing={1}
+                  >
+                    <Grid size={{ md: 12, lg: 12 }}>{subArrayField()}</Grid>
+                    {!MOCK_CALL && (
+                      <Grid size={{ md: 12, lg: 12 }}>
+                        {isLow() ? numStationsField() : antennasFields()}
+                      </Grid>
+                    )}
+                    <Grid size={{ md: 12, lg: 12 }}>{suppliedField()}</Grid>
+                  </Grid>
                 </CardContent>
               </Card>
             </Grid>
           </Grid>
+
           <Card variant="outlined">
             <CardContent>
               <Grid
@@ -966,21 +1022,22 @@ export default function ObservationEntry() {
                 container
                 direction="row"
                 alignItems="center"
-                spacing={1}
-                justifyContent="space-around"
+                columnSpacing={6}
+                rowSpacing={1}
+                justifyContent="space-between"
               >
-                <Grid size={{ md: 12, lg: 5 }}>{observationsBandField()}</Grid>
-                <Grid size={{ md: 12, lg: 5 }}>
+                <Grid size={{ md: 12, lg: 6 }}>{observationsBandField()}</Grid>
+                <Grid size={{ md: 12, lg: 6 }}>
                   {isContinuum() ? continuumBandwidthField() : bandwidthField()}
                 </Grid>
-                <Grid size={{ md: 12, lg: 5 }}>{centralFrequencyField()}</Grid>
-                <Grid size={{ md: 12, lg: 5 }}></Grid>
+                <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
+                <Grid size={{ md: 12, lg: 6 }}></Grid>
                 {!MOCK_CALL && (
                   <>
-                    <Grid size={{ md: 12, lg: 5 }}>{spectralResolutionField()}</Grid>
-                    <Grid size={{ md: 12, lg: 5 }}>{spectralAveragingField()}</Grid>
-                    <Grid size={{ md: 12, lg: 5 }}>{effectiveResolutionField()}</Grid>
-                    <Grid size={{ md: 12, lg: 5 }}>
+                    <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>
+                    <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
+                    <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>
+                    <Grid size={{ md: 12, lg: 6 }}>
                       {isContinuum() ? SubBandsField() : emptyField()}
                     </Grid>
                   </>
