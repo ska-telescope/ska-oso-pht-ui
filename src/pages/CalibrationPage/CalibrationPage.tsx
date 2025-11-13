@@ -11,8 +11,8 @@ import {
   InfoCardColorTypes
 } from '@ska-telescope/ska-gui-components';
 import { Box, Grid, Typography } from '@mui/material';
-import { validateCalibrationPage } from '../../utils/validation/validation';
-import { Proposal } from '../../utils/types/proposal';
+import { validateCalibrationPage } from '@utils/validation/validation.tsx';
+import { Proposal } from '@utils/types/proposal.tsx';
 import Shell from '../../components/layout/Shell/Shell';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -34,6 +34,7 @@ import Supplied from '@/utils/types/supplied';
 
 const PAGE = PAGE_CALIBRATION;
 const LINE_OFFSET = 35; // TODO check why we need to set this for it to be visible
+const PANEL_HEIGHT = '54vh';
 
 export default function CalibrationPage() {
   const {
@@ -294,7 +295,7 @@ export default function CalibrationPage() {
     }
 
     return (
-      <Box sx={{ height: LINE_OFFSET * numRows }}>
+      <Box sx={{ height: LINE_OFFSET * numRows, xs: 4, md: 8 }}>
         <TextEntry
           label={t('calibrator.comment.label')}
           labelBold
@@ -314,7 +315,7 @@ export default function CalibrationPage() {
   const calibrationDetails = (): React.ReactNode => {
     return (
       <>
-        <Grid sx={{ overflow: 'hidden', width: '100%' }}>
+        <Grid sx={{ overflow: 'hidden', width: '100%', xs: 4, md: 8 }}>
           <Grid pt={2} pb={4}>
             <Typography>{t('calibrator.desc')}</Typography>
           </Grid>
@@ -324,7 +325,7 @@ export default function CalibrationPage() {
             direction="row"
             alignItems="center"
             justifyContent="flex-start"
-            sx={{ flexWrap: 'nowrap' }}
+            sx={{ flexWrap: 'nowrap', xs: 4, md: 8 }}
           >
             <Grid width={50} pt={4} mr={5}>
               <ArrowIcon disabled onClick={() => {}} />
@@ -345,7 +346,7 @@ export default function CalibrationPage() {
             direction="row"
             alignItems="center"
             justifyContent="flex-start"
-            sx={{ flexWrap: 'nowrap' }}
+            sx={{ flexWrap: 'nowrap', xs: 4, md: 8 }}
           >
             <Grid width={50} pt={5} mr={5}>
               <ArrowIcon disabled onClick={() => {}} />
@@ -364,7 +365,7 @@ export default function CalibrationPage() {
             direction="row"
             alignItems="center"
             justifyContent="flex-start"
-            sx={{ flexWrap: 'nowrap' }}
+            sx={{ flexWrap: 'nowrap', xs: 4, md: 8 }}
           >
             <Grid width={50} pt={4} mr={5}>
               <ArrowIcon disabled onClick={() => {}} />
@@ -388,7 +389,7 @@ export default function CalibrationPage() {
               <Grid mr={3} mt={-2}>
                 {checkBox()}
               </Grid>
-              <Grid ml={11} mr={9}>
+              <Grid mr={3} mt={-2}>
                 {addComment && commentField()}
               </Grid>
             </Grid>
@@ -410,7 +411,7 @@ export default function CalibrationPage() {
             justifyContent="center"
             spacing={1}
           >
-            <Grid size={{ md: 7, xs: 12 }}>
+            <Grid size={{ xs: 4, md: 8 }} sx={{ position: 'relative', height: PANEL_HEIGHT }}>
               {!axiosViewError && calibrationDetails()}
               {axiosViewError && (
                 <Alert
@@ -419,10 +420,8 @@ export default function CalibrationPage() {
                   text={axiosViewError}
                 />
               )}
-            </Grid>
-            <Grid pt={4} size={{ md: 4, xs: 12 }}>
               {(getProposal()?.targets?.length ?? 0) > 0 && (
-                <Box pt={2}>
+                <Box pt={2} pr={3}>
                   <InfoCard
                     color={InfoCardColorTypes.Warning}
                     fontSize={HELP_FONT}
