@@ -2,12 +2,14 @@ import { Grid } from '@mui/material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { TYPE_CONTINUUM } from '@/utils/constantsSensCalc';
 
 interface DataProductTypeFieldProps {
   disabled?: boolean;
   onFocus?: Function;
   required?: boolean;
   setValue?: Function;
+  observationType?: number;
   suffix?: any;
   value: string | number;
   widthButton?: number;
@@ -19,6 +21,7 @@ export default function DataProductTypeField({
   onFocus = undefined,
   required = false,
   setValue = undefined,
+  observationType = TYPE_CONTINUUM,
   suffix = null,
   value,
   widthButton = 0,
@@ -28,7 +31,7 @@ export default function DataProductTypeField({
   const FIELD = 'dataProductType';
   const options = () =>
     [1, 2].map(el => {
-      return { label: t(FIELD + '.options.' + el), lookup: el, value: el };
+      return { label: t(FIELD + '.options.' + observationType + '.' + el), lookup: el, value: el };
     });
 
   return (

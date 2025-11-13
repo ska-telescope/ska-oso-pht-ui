@@ -6,7 +6,8 @@ import {
   BorderedSection,
   DropDown,
   Spacer,
-  SPACER_VERTICAL
+  SPACER_VERTICAL,
+  TickBox
 } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import RobustField from '@components/fields/robust/Robust.tsx';
@@ -18,9 +19,13 @@ import {
   BANNER_PMT_SPACER,
   FOOTER_HEIGHT_PHT,
   IW_BRIGGS,
+  LAB_POS_TICK,
   NAV,
   PAGE_DATA_PRODUCTS,
   PAGE_DATA_PRODUCTS_ADD,
+  TYPE_CONTINUUM,
+  TYPE_PST,
+  TYPE_ZOOM,
   WRAPPER_HEIGHT
 } from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
@@ -38,12 +43,14 @@ import DataProductTypeField from '@/components/fields/dataProductType/dataProduc
 import TapperField from '@/components/fields/tapper/taper';
 import TimeAveragingField from '@/components/fields/timeAveraging/timeAveraging';
 import FrequencyAveragingField from '@/components/fields/frequencyAveraging/frequencyAveraging';
+import BitDepthField from '@/components/fields/bitDepth/bitDepth';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
 const PAGE = PAGE_DATA_PRODUCTS_ADD;
 const PAGE_PREFIX = 'SDP';
 const LABEL_WIDTH = 5;
+const TICK_LABEL_WIDTH = 10;
 const COL = 6;
 
 export default function AddDataProduct() {
@@ -57,6 +64,7 @@ export default function AddDataProduct() {
   const [baseObservations, setBaseObservations] = React.useState<Observation[]>([]);
   const [observationId, setObservationId] = React.useState('');
   const [dataProductType, setDataProductType] = React.useState(1);
+  const [bitDepth, setBitDepth] = React.useState(0);
   const [imageSizeValue, setImageSizeValue] = React.useState('0');
   const [imageSizeUnits, setImageSizeUnits] = React.useState(0);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
@@ -68,13 +76,27 @@ export default function AddDataProduct() {
   const [weighting, setWeighting] = React.useState(0);
   const [robust, setRobust] = React.useState(3);
   const [channelsOut, setChannelsOut] = React.useState(1);
+  const [continuumSubtraction, setContinuumSubtraction] = React.useState(false);
   const [polarisations, setPolarisations] = React.useState(['I']);
 
   const { t } = useScopedTranslation();
 
   const maxObservationsReached = () => baseObservations.length > 0;
 
-  const isImages = () => dataProductType === 1;
+  const isDataTypeOne = () => dataProductType === 1;
+  const isContinuum = () => getObservation()?.type === TYPE_CONTINUUM;
+  const isSpectral = () => getObservation()?.type === TYPE_ZOOM;
+  const isPST = () => getObservation()?.type === TYPE_PST;
+
+  const getObservation = () => baseObservations?.find(obs => obs.id === observationId);
+  // const getObservationPST = () => ({ type: 3 }); // TODO : Remove once there are real observations
+
+  const getSuffix = () => {
+    if (isContinuum() || isPST()) {
+      return dataProductType.toString();
+    }
+    return '1';
+  };
 
   React.useEffect(() => {
     helpComponent(t('observations.dp.help'));
@@ -264,9 +286,21 @@ export default function AddDataProduct() {
       />
     );
 
+  const bitDepthField = () =>
+    fieldWrapper(
+      <BitDepthField
+        labelWidth={LABEL_WIDTH}
+        onFocus={() => helpComponent(t('bitDepth.help'))}
+        required
+        setValue={setBitDepth}
+        value={bitDepth}
+      />
+    );
+
   const dataProductTypeField = () =>
     fieldWrapper(
       <DataProductTypeField
+        observationType={getObservation()?.type || TYPE_CONTINUUM}
         onFocus={() => helpComponent(t('dataProductType.help'))}
         setValue={setDataProductType}
         value={dataProductType}
@@ -294,10 +328,29 @@ export default function AddDataProduct() {
       />
     );
 
+  const continuumSubtractionField = () =>
+    fieldWrapper(
+      <Box pt={2}>
+        <TickBox
+          label={t('continuumSubtraction.label')}
+          labelBold
+          labelPosition={LAB_POS_TICK}
+          labelWidth={TICK_LABEL_WIDTH}
+          testId="continuumSubtraction"
+          checked={continuumSubtraction}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+            setContinuumSubtraction(event.target.checked)
+          }
+          onFocus={() => helpComponent(t('continuumSubtraction.help'))}
+        />
+      </Box>
+    );
+
   const polarisationsField = () => {
     return (
       <PolarisationsField
         onFocus={() => helpComponent(t('polarisations.help'))}
+        isPST={isPST()}
         value={polarisations}
         setValue={setPolarisations}
         labelWidth={0}
@@ -329,7 +382,7 @@ export default function AddDataProduct() {
         imageSizeUnits,
         pixelSizeValue,
         pixelSizeUnits,
-        weighting,
+        weighting: weighting.toString(),
         robust,
         polarisations,
         channelsOut,
@@ -429,9 +482,35 @@ export default function AddDataProduct() {
           </Grid>
           <Grid size={{ md: 7, lg: 7 }}>
             <Stack spacing={GAP}>
-              {dataProductTypeField()}
-              {isImages() && (
-                <BorderedSection title={t('page.7.group.1')}>
+              {!isSpectral() && dataProductTypeField()}
+
+              {isContinuum() && (
+                <BorderedSection
+                  title={t('page.7.group.' + TYPE_CONTINUUM + '.' + dataProductType)}
+                >
+                  {isDataTypeOne() && (
+                    <Grid pb={1} container>
+                      <Grid size={{ md: COL }}>{fieldWrapper(imageSizeField())}</Grid>
+                      <Grid size={{ md: COL }}>{fieldWrapper(pixelSizeField())}</Grid>
+                      <Grid size={{ md: COL }}>{fieldWrapper(imageWeightingField())}</Grid>
+                      <Grid size={{ md: COL }}>
+                        {weighting === IW_BRIGGS && fieldWrapper(robustField())}
+                      </Grid>
+                      <Grid size={{ md: COL }}>{fieldWrapper(taperField())}</Grid>
+                      <Grid size={{ md: COL }}>{fieldWrapper(channelsOutField())}</Grid>
+                    </Grid>
+                  )}
+                  {!isDataTypeOne() && (
+                    <Grid pb={1} container>
+                      <Grid size={{ md: 8 }}>{fieldWrapper(timeAveragingField())}</Grid>
+                      <Grid size={{ md: 8 }}>{fieldWrapper(frequencyAveragingField())}</Grid>
+                    </Grid>
+                  )}
+                </BorderedSection>
+              )}
+
+              {isSpectral() && (
+                <BorderedSection title={t('page.7.group.' + TYPE_ZOOM)}>
                   <Grid pb={1} container>
                     <Grid size={{ md: COL }}>{fieldWrapper(imageSizeField())}</Grid>
                     <Grid size={{ md: COL }}>{fieldWrapper(pixelSizeField())}</Grid>
@@ -441,28 +520,48 @@ export default function AddDataProduct() {
                     </Grid>
                     <Grid size={{ md: COL }}>{fieldWrapper(taperField())}</Grid>
                     <Grid size={{ md: COL }}>{fieldWrapper(channelsOutField())}</Grid>
+                    <Grid size={{ md: COL }}>{fieldWrapper(continuumSubtractionField())}</Grid>
                   </Grid>
                 </BorderedSection>
               )}
-              {!isImages() && (
-                <BorderedSection title={t('page.7.group.2')}>
-                  <Grid pb={1} container>
-                    <Grid size={{ md: 8 }}>{fieldWrapper(timeAveragingField())}</Grid>
-                    <Grid size={{ md: 8 }}>{fieldWrapper(frequencyAveragingField())}</Grid>
-                  </Grid>
+
+              {isPST() && (
+                <BorderedSection title={t('page.7.group.' + TYPE_PST + '.' + dataProductType)}>
+                  {isDataTypeOne() && (
+                    <Grid pb={1} container>
+                      <Grid size={{ md: COL }}>{fieldWrapper(bitDepthField())}</Grid>
+                    </Grid>
+                  )}
+                  {!isDataTypeOne() && (
+                    <Grid pb={1} container>
+                      <Grid size={{ md: COL }}>TO BE PROVIDED BY SCIENCE OPERATIONS</Grid>
+                    </Grid>
+                  )}
                 </BorderedSection>
               )}
-              {isImages() && (
+
+              {isContinuum() && isDataTypeOne() && (
                 <BorderedSection title={t('polarisations.label')}>
                   {fieldWrapper(polarisationsField(), '150px')}
                 </BorderedSection>
               )}
+              {isSpectral() && (
+                <BorderedSection title={t('polarisations.label')}>
+                  {fieldWrapper(polarisationsField(), '150px')}
+                </BorderedSection>
+              )}
+              {isPST() && isDataTypeOne() && (
+                <BorderedSection title={t('polarisations.label')}>
+                  {fieldWrapper(polarisationsField())}
+                </BorderedSection>
+              )}
             </Stack>
           </Grid>
+
           <Grid size={{ md: 11, lg: 3 }}>
             <BorderedSection borderColor={theme.palette.info.main} title={t('page.7.descTitle')}>
               <Typography variant="subtitle1" color="text.disabled">
-                {t('page.7.descContent')
+                {t('page.7.descContent.' + getObservation()?.type + '.' + getSuffix())
                   .split('\n')
                   .map((line, index) => (
                     <React.Fragment key={index}>

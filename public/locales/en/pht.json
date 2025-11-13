@@ -112,6 +112,16 @@
   "baseBtn": {
     "label": "Add"
   },
+  "bitDepth": {
+    "help": "Select the desired bit depth for the data product.",
+    "label": "Bit Depth",
+    "0": "1",
+    "1": "2",
+    "2": "4",
+    "3": "8",
+    "4": "16",
+    "5": "32"
+  },
   "calibrator": {
     "desc": "This is a likely observing strategy with calibration (assuming observation near transit, etc.):",
     "note": "The choice of calibrators assumes that the target scan will be centred at transit.",
@@ -186,6 +196,10 @@
   "continuumUnits": {
     "help": "Enter the continuum desired bandwidth, which should be in the same units as the observing band selected."
   },
+  "continuumSubtraction": {
+    "label": "Apply continuum subtraction?",
+    "help": "Check to indicate that you wish to have continuum subtraction applied to the spectral line data product."
+  },
   "createBtn": {
     "label": "Create"
   },
@@ -210,8 +224,14 @@
     "label": "Product type",
     "help": "Select the desired data product(s) by checking the boxes as appropriate.",
     "options": {
-      "1": "Images",
-      "2": "Visibilities"
+      "1": {
+        "1": "Images",
+        "2": "Visibilities"
+      },
+      "3": {
+        "1": "Flow through",
+        "2": "Timing"
+      }
     }
   },
   "dateAssigned": {
@@ -659,6 +679,8 @@
     "Q": "Q",
     "U": "U",
     "V": "V",
+    "X": "X",
+    "Y": "Y",
     "XX": "XX",
     "XY": "XY",
     "YX": "YX",
@@ -1375,7 +1397,19 @@
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO OBSERVATIONS FOR THIS PROPOSAL",
       "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL",
       "descTitle": "Data Product Description",
-      "descContent": "In Science Verification, Continuum data products include: \n\n* Calibrated visibilities averaged to 3.4 s and 21.7 kHz (to enable full verification of the imaging ODPs) \n* MFS image \n* Channel images for spectral index estimation as specified in 'channels out'. \n* Model images per channel * PSF images per channel \n* Residual images per channel \n* Ancillary data product including Local Sky Model catalogue and QA report",
+      "descContent": {
+        "0": {
+          "1": "In Science Verification, Spectral line products include: \n\n* Spectral line cube without continuum subtraction.\n* If requested, spectral line cube after continuum subtraction.\n* Model images per channel\n* PSF images per channel\n* Residual images per channel\n* Calibrated visibilities averaged to 3.4 s and native channel width (to enable full verification of the imaging ODPs)\n* Ancillary data product including Local Sky Model catalogue and QA report"
+        },
+        "1": {
+          "1": "In Science Verification, Continuum data products include: \n\n* Calibrated visibilities averaged to 3.4 s and 21.7 kHz (to enable full verification of the imaging ODPs) \n* MFS image \n* Channel images for spectral index estimation as specified in 'channels out'. \n* Model images per channel * PSF images per channel \n* Residual images per channel \n* Ancillary data product including Local Sky Model catalogue and QA report",
+          "2": "In Science Verification, Continuum data products include: \n\n* Calibrated visibilities averaged to the specified values (to enable full verification of the imaging ODPs)\n* MFS image+\n* Model image\n* PSF image\n* Residual image\n* Ancillary data product including Local Sky Model catalogue and QA report* Residual image\n* Ancillary data product including Local Sky Model catalogue and QA report\n\n+ The MFS images are generated with ..."
+        },
+        "3": {
+          "1": "In Science Verification, PST Flow through data products include: \n\n* Single or dual-polarisation beam-formed voltages requantised to the specified bit depth\n* QA report",
+          "2": "In Science Verification, PST Pulsar Timing data products include: \n\n* Beam-formed voltages\n* time of arrival\n* residuals from the best-fit timing model for the pulsar, \n* updated ephemerids, and\n* QA report"
+        }
+      },
       "status": "Data Product",
       "plural": "Data Products",
       "title": "Observatory Data Product",
@@ -1383,8 +1417,15 @@
       "desc": "This page allows you to request and define observatory data products for Observation(s).",
       "pageError": "The DATA PRODUCTS page is not complete",
       "group": {
-        "2": "Visibility ODP",
-        "1": "Continuum Imaging ODPs"
+        "0": "Spectral ODPs",
+        "1": {
+          "1": "Continuum Imaging ODPs",
+          "2": "Visibility ODP"
+        },
+        "3": {
+          "1": "PST Flow through Data Products",
+          "2": "PST Timing Data Products"
+        }
       }
     },
     "8": {

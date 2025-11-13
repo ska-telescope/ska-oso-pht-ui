@@ -1,5 +1,5 @@
 import { Box, Grid } from '@mui/system';
-import { STOKES } from '@utils/constants.ts';
+import { POLARISATIONS, POLARISATIONS_PST } from '@utils/constants.ts';
 import { Typography } from '@mui/material';
 import { LABEL_POSITION, TickBox } from '@ska-telescope/ska-gui-components';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -7,6 +7,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 interface PolarisationsFieldProps {
   disabled?: boolean;
   required?: boolean;
+  isPST?: boolean;
   labelWidth?: number;
   onFocus?: React.FocusEventHandler<HTMLInputElement>;
   setValue?: (value: string[]) => void;
@@ -16,6 +17,7 @@ interface PolarisationsFieldProps {
 export default function PolarisationsField({
   disabled = false,
   required = false,
+  isPST = false,
   labelWidth = 5,
   onFocus,
   setValue,
@@ -25,7 +27,7 @@ export default function PolarisationsField({
   const FIELD = 'polarisations';
 
   const options = () =>
-    STOKES.map(el => {
+    (isPST ? POLARISATIONS_PST : POLARISATIONS).map(el => {
       return { label: t('polarisations.' + el.value), value: el.value };
     });
 
