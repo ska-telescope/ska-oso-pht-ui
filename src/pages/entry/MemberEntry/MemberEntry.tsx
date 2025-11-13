@@ -429,7 +429,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
 
   return (
     <Grid
-      pt={1}
+      pt={3}
       pl={5}
       container
       direction="column"
