@@ -37,7 +37,8 @@ import {
   PAGE_OBSERVATION,
   PAGE_OBSERVATION_UPDATE,
   PAGE_OBSERVATION_ADD,
-  GENERAL
+  GENERAL,
+  MOCK_CALL
 } from '@utils/constants.ts';
 import {
   generateId,
@@ -73,7 +74,6 @@ const BOTTOM_LABEL_WIDTH = 4;
 const LABEL_WIDTH_NEW = 5.5;
 const BACK_PAGE = PAGE_OBSERVATION;
 const HELP_PANEL_HEIGHT = '50vh';
-const MOCK_CALL = true;
 
 export default function ObservationEntry() {
   const { t } = useScopedTranslation();
