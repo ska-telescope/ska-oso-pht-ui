@@ -472,8 +472,7 @@ export const TECHNICAL_FEASIBILITY = {
 
 export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
-export const TYPE_PSS = 2;
-export const TYPE_PST = 3; // TODO to be confirmed if this is the same as PSS
+export const TYPE_PST = 2;
 
 export const PULSAR_MODE_FOLDED = 'folded_pulse';
 

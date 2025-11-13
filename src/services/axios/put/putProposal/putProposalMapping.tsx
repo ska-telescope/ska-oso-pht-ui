@@ -195,7 +195,7 @@ const getDataProductSDP = (dataProducts: DataProductSDP[]): DataProductSDPsBacke
           robust: ROBUST.find(item => item.value === dp.robust)?.value
         })
       },
-      polarisations: Array.isArray(dp.polarisations) ? dp.polarisations.join(',') : undefined,
+      polarisations: Array.isArray(dp.polarisations) ? dp.polarisations.join(',') : 'I', // TODO TREVOR
       channels_out: dp.channelsOut,
       fit_spectral_pol: dp.fitSpectralPol
     }
