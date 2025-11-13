@@ -195,6 +195,11 @@ export const MODE_CONTINUUM = 102;
 export const MODE_PST = 103;
 export const MODE_ZOOM = 101;
 
+export const TYPE_ZOOM = 0;
+export const TYPE_CONTINUUM = 1;
+export const TYPE_PSS = 2;
+export const TYPE_PST = 3;
+
 export const GENERAL = {
   ScienceCategory: [
     { label: 'Cosmology', subCategory: [{ label: 'Not specified', value: 1 }], value: 1 },
@@ -230,9 +235,16 @@ export const GENERAL = {
   ],
   ObservingMode: [
     {
+      label: 'Zoom',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: MODE_ZOOM,
+      observationType: TYPE_ZOOM
+    },
+    {
       label: 'Continuum',
       subCategory: [{ label: 'Not specified', value: 1 }],
-      value: MODE_CONTINUUM
+      value: MODE_CONTINUUM,
+      observationType: TYPE_CONTINUUM
     },
     { label: 'PST', subCategory: [{ label: 'Not specified', value: 1 }], value: MODE_PST },
     { label: 'Spectral', subCategory: [{ label: 'Not specified', value: 1 }], value: MODE_ZOOM }
@@ -464,11 +476,6 @@ export const TECHNICAL_FEASIBILITY = {
   NO: 'No',
   MAYBE: 'Maybe'
 };
-
-export const TYPE_ZOOM = 0;
-export const TYPE_CONTINUUM = 1;
-export const TYPE_PSS = 2;
-export const TYPE_PST = 3; // TODO to be confirmed if this is the same as PSS
 
 export const PULSAR_MODE_FOLDED = 'folded_pulse';
 
