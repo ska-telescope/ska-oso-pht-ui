@@ -546,6 +546,11 @@
     "label": "Details",
     "minDisplayRows": "5"
   },
+  "observationSections": {
+    "identifiers": "Identifiers",
+    "arraySetUp": "Array Setup",
+    "frequencySetUp": "Frequency Setup"
+  },
   "overview": {
     "title": "Overview",
     "toolTip": "Overview of proposals"
