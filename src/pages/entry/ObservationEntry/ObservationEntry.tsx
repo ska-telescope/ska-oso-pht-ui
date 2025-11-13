@@ -70,9 +70,14 @@ import {
 
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 4;
+const LABEL_WIDTH_NEW = 5.5;
 const BACK_PAGE = PAGE_OBSERVATION;
 const HELP_PANEL_HEIGHT = '50vh';
 const MOCK_CALL = true;
+
+const boxStyle = {
+  border: '1px solid blue'
+};
 
 export default function ObservationEntry() {
   const { t } = useScopedTranslation();
@@ -345,13 +350,13 @@ export default function ObservationEntry() {
   const isContinuumOnly = () => observingBand !== 0 && subarrayConfig === OB_SUBARRAY_AA2;
 
   const fieldWrapper = (children?: React.JSX.Element) => (
-    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
+    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }} style={boxStyle}>
       {children}
     </Box>
   );
 
   const suppliedWrapper = (children: React.JSX.Element) => (
-    <Box p={0} sx={{ height: WRAPPER_HEIGHT }}>
+    <Box p={0} sx={{ height: WRAPPER_HEIGHT }} style={boxStyle}>
       {children}
     </Box>
   );
@@ -394,7 +399,7 @@ export default function ObservationEntry() {
   const observationsBandField = () =>
     fieldWrapper(
       <ObservingBandField
-        widthLabel={TOP_LABEL_WIDTH}
+        widthLabel={LABEL_WIDTH_NEW}
         required
         value={observingBand}
         setValue={setTheObservingBand}
@@ -406,7 +411,7 @@ export default function ObservationEntry() {
       <SubArrayField
         observingBand={observingBand}
         required
-        widthLabel={TOP_LABEL_WIDTH}
+        widthLabel={LABEL_WIDTH_NEW}
         telescope={telescope()}
         value={subarrayConfig}
         setValue={setTheSubarrayConfig}
@@ -547,7 +552,7 @@ export default function ObservationEntry() {
       <ObservationTypeField
         disabled={MOCK_CALL || isContinuumOnly()}
         isContinuumOnly={isContinuumOnly()}
-        widthLabel={BOTTOM_LABEL_WIDTH}
+        widthLabel={LABEL_WIDTH_NEW}
         required
         value={observationType}
         setValue={setObservationType}
@@ -558,9 +563,9 @@ export default function ObservationEntry() {
     const suppliedTypeField = () => {
       const getOptions = () =>
         isLow() ? [observatoryConstants?.Supplied[0]] : observatoryConstants?.Supplied;
-
+      // SARAH
       return (
-        <Box pt={1}>
+        <Box pt={1} style={boxStyle} width="100%">
           <DropDown
             options={getOptions()}
             testId="suppliedType"
@@ -583,15 +588,17 @@ export default function ObservationEntry() {
       };
 
       return (
-        <DropDown
-          options={getOptions()}
-          testId="suppliedUnits"
-          value={suppliedUnits}
-          disabled={isLow()}
-          setValue={setSuppliedUnits}
-          label=""
-          onFocus={() => helpComponent(t('suppliedUnits.help'))}
-        />
+        <Box pt={1} style={boxStyle} mr={1}>
+          <DropDown
+            options={getOptions()}
+            testId="suppliedUnits"
+            value={suppliedUnits}
+            disabled={isLow()}
+            setValue={setSuppliedUnits}
+            label=""
+            onFocus={() => helpComponent(t('suppliedUnits.help'))}
+          />
+        </Box>
       );
     };
 
@@ -600,16 +607,19 @@ export default function ObservationEntry() {
         return suppliedValue <= 0 ? t('suppliedValue.range.error') : '';
       };
       return (
-        <NumberEntry
-          errorText={errorMessage()}
-          label=""
-          testId="suppliedValue"
-          value={suppliedValue}
-          setValue={setSuppliedValue}
-          onFocus={() => helpComponent(t('suppliedValue.help'))}
-          suffix={suppliedUnitsField()}
-          required
-        />
+        <Box p={0} ml={-2}>
+          <NumberEntry
+            errorText={errorMessage()}
+            label=""
+            testId="suppliedValue"
+            value={suppliedValue}
+            setValue={setSuppliedValue}
+            onFocus={() => helpComponent(t('suppliedValue.help'))}
+            suffix={suppliedUnitsField()}
+            required
+            sx={{ border: '1px red solid' }}
+          />
+        </Box>
       );
     };
 
@@ -633,12 +643,12 @@ export default function ObservationEntry() {
         : '';
 
     return fieldWrapper(
-      <Box pt={1}>
+      <Box pt={1} style={boxStyle}>
         <NumberEntry
           label={t('centralFrequency.label')}
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
-          labelWidth={BOTTOM_LABEL_WIDTH}
+          labelWidth={LABEL_WIDTH_NEW}
           testId="centralFrequency"
           value={centralFrequency}
           setValue={setCentralFrequency}
@@ -669,7 +679,7 @@ export default function ObservationEntry() {
     };
     return fieldWrapper(
       <ContinuumBandwidthField
-        labelWidth={BOTTOM_LABEL_WIDTH}
+        labelWidth={LABEL_WIDTH_NEW}
         onFocus={() => helpComponent(t(`bandwidth.help.${TYPE_CONTINUUM}`))}
         setValue={setContinuumBandwidth}
         value={continuumBandwidth}
@@ -930,7 +940,6 @@ export default function ObservationEntry() {
           {!MOCK_CALL && (
             <Grid
               p={0}
-              pl={2}
               container
               direction="row"
               alignItems="center"
@@ -955,7 +964,6 @@ export default function ObservationEntry() {
               <Card variant="outlined">
                 <CardContent sx={{ display: 'block', minHeight: '190px' }}>
                   <Grid
-                    pr={13}
                     container
                     direction="row"
                     alignItems="center"
@@ -977,6 +985,7 @@ export default function ObservationEntry() {
                     direction="row"
                     alignItems="center"
                     justifyContent="space-between"
+                    rowSpacing={1}
                   >
                     <Grid size={{ md: 12, lg: 12 }}>{subArrayField()}</Grid>
                     {!MOCK_CALL && (
@@ -998,18 +1007,15 @@ export default function ObservationEntry() {
                 container
                 direction="row"
                 alignItems="center"
-                spacing={1}
+                columnSpacing={6}
+                rowSpacing={1}
                 justifyContent="space-between"
               >
-                <Grid size={{ md: 12, lg: 6 }} pr={15}>
-                  {observationsBandField()}
-                </Grid>
-                <Grid size={{ md: 12, lg: 6 }} pl={4}>
+                <Grid size={{ md: 12, lg: 6 }}>{observationsBandField()}</Grid>
+                <Grid size={{ md: 12, lg: 6 }}>
                   {isContinuum() ? continuumBandwidthField() : bandwidthField()}
                 </Grid>
-                <Grid size={{ md: 12, lg: 6 }} pr={15}>
-                  {centralFrequencyField()}
-                </Grid>
+                <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
                 <Grid size={{ md: 12, lg: 6 }}></Grid>
                 {!MOCK_CALL && (
                   <>
