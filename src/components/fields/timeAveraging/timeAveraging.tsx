@@ -1,31 +1,31 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { LAB_IS_BOLD, LAB_POSITION } from '@utils/constants.ts';
+import { LAB_POSITION } from '@utils/constants.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
-interface PixelSizeFieldProps {
+interface TimeAveragingFieldProps {
   disabled?: boolean;
-  onFocus?: Function;
   required?: boolean;
+  labelWidth?: number;
+  onFocus?: Function;
   setValue?: Function;
   suffix?: any;
   value: number;
-  widthButton?: number;
-  labelWidth?: number;
 }
-export default function PixelSizeField({
-  disabled = false,
-  onFocus = undefined,
-  required = false,
-  setValue,
-  value,
-  labelWidth = 5,
-  suffix
-}: PixelSizeFieldProps) {
-  const { t } = useScopedTranslation();
-  const FIELD = 'pixelSize';
 
-  const errorText = () => (Number(value) ? '' : t(FIELD + '.error'));
+export default function TimeAveragingField({
+  disabled = false,
+  required = false,
+  labelWidth = 5,
+  onFocus,
+  setValue,
+  suffix,
+  value
+}: TimeAveragingFieldProps) {
+  const { t } = useScopedTranslation();
+  const FIELD = 'timeAveraging';
+
+  const errorText = () => (Number(value) ? '' : t('timeAveraging.error'));
   const setTheNumber = (inNum: number) => {
     const str = Math.abs(inNum).toString();
     const num = Number(str);
@@ -35,18 +35,18 @@ export default function PixelSizeField({
   };
 
   return (
-    <Box pt={1} sx={{ maxWidth: '800px' }}>
+    <Box pt={1}>
       <NumberEntry
-        disabled={disabled}
-        label={t(FIELD + '.label')}
-        labelBold={LAB_IS_BOLD}
+        label={t('timeAveraging.label')}
+        labelBold
         labelPosition={LAB_POSITION}
         labelWidth={labelWidth}
-        required={required}
         testId={FIELD}
         value={value}
         setValue={(e: number) => setTheNumber(e)}
         onFocus={onFocus}
+        disabled={disabled}
+        required={required}
         suffix={suffix}
         errorText={errorText()}
       />

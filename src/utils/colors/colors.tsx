@@ -1,3 +1,5 @@
+import { TELESCOPE_LOW_NUM } from '../constants';
+
 export const COLOR_BLINDNESS_OPTIONS = [
   { value: 0, label: 'No Color Blindness' },
   { value: 1, label: 'Protanopia (Red-Blind)' },
@@ -28,6 +30,7 @@ interface GetColorsInput {
   content: ContentType;
 }
 
+// TODO : This function will need to be moved to the library at some point soon
 export function getColors({ type, colors, content }: GetColorsInput) {
   const colorList = Array.isArray(colors) ? colors : [colors];
   let results: string[] = [];
@@ -37,7 +40,7 @@ export function getColors({ type, colors, content }: GetColorsInput) {
     if (type === 'observationType') {
       palette = COLOR_OBSERVATION[level];
     } else {
-      palette = level === '2' ? COLOR_LOW : COLOR_MID;
+      palette = level === TELESCOPE_LOW_NUM.toString() ? COLOR_LOW : COLOR_MID;
     }
 
     if (palette !== undefined) {
