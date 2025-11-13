@@ -396,7 +396,7 @@ export default function TargetEntry({
     };
 
     return (
-      <Grid size={{ xs: 12 }} sx={{ position: 'relative', zIndex: 99 }} mb={2}>
+      <Grid size={{ xs: 12 }} mb={1}>
         <AddButton
           action={addButtonAction}
           disabled={disabled()}
@@ -614,30 +614,19 @@ export default function TargetEntry({
                   </Grid>
                 )}
               </Grid>
+              <Grid size={{ xs: 4 }} sx={{ position: 'relative' }}>
+                {isSV() && (getProposal()?.targets?.length ?? 0) > 0 && (
+                  <InfoCard
+                    color={InfoCardColorTypes.Warning}
+                    fontSize={HELP_FONT}
+                    message={t('targets.limitReached')}
+                    testId="targetLimitPanelId"
+                  />
+                )}
+
+                {!id && <Box pt={2}>{addButton()}</Box>}
+              </Grid>
             </Box>
-          </Grid>
-
-          <Grid size={{ xs: 4 }} sx={{ position: 'relative', height: PANEL_HEIGHT }}>
-            {isSV() && (getProposal()?.targets?.length ?? 0) > 0 && (
-              <InfoCard
-                color={InfoCardColorTypes.Warning}
-                fontSize={HELP_FONT}
-                message={t('targets.limitReached')}
-                testId="targetLimitPanelId"
-              />
-            )}
-
-            {!id && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  bottom: 0,
-                  right: 0
-                }}
-              >
-                {addButton()}
-              </Box>
-            )}
           </Grid>
         </Grid>
       </Box>
