@@ -31,9 +31,14 @@ describe('Creating Observations, Verify spectral average limits, Continuum', () 
     clearLocalStorage();
   });
 
-  it('Verify Spectral average limits, Continuum Subarray AA2', { jiraKey: 'XTP-71407' }, () => {
-    verifyContinuumSpectralAverageRangeAA2();
-  });
+  //TODO: Skipped as spectral average field is currently suppressed
+  it.skip(
+    'Verify Spectral average limits, Continuum Subarray AA2',
+    { jiraKey: 'XTP-71407' },
+    () => {
+      verifyContinuumSpectralAverageRangeAA2();
+    }
+  );
 });
 
 describe('Creating Observations, Verify spectral average limits, Zoom ', () => {
@@ -43,7 +48,8 @@ describe('Creating Observations, Verify spectral average limits, Zoom ', () => {
     selectObservationTypeZoom();
   });
 
-  it('Verify Spectral average limits, Zoom Subarray AA2', { jiraKey: 'XTP-71407' }, () => {
+  //TODO: Skipped as spectral average field is currently suppressed
+  it.skip('Verify Spectral average limits, Zoom Subarray AA2', { jiraKey: 'XTP-71407' }, () => {
     verifyZoomSpectralAverageRangeAA2();
   });
 
