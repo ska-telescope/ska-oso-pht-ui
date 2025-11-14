@@ -1,3 +1,4 @@
+import { alpha } from '@mui/material/styles';
 import { TELESCOPE_LOW_NUM } from '../constants';
 
 export const COLOR_BLINDNESS_OPTIONS = [
@@ -28,10 +29,11 @@ interface GetColorsInput {
   type: 'observationType' | 'telescope';
   colors: string | string[];
   content: ContentType;
+  dim?: number;
 }
 
 // TODO : This function will need to be moved to the library at some point soon
-export function getColors({ type, colors, content }: GetColorsInput) {
+export function getColors({ type, colors, content, dim = 1 }: GetColorsInput) {
   const colorList = Array.isArray(colors) ? colors : [colors];
   let results: string[] = [];
   colorList.forEach(level => {
@@ -45,7 +47,7 @@ export function getColors({ type, colors, content }: GetColorsInput) {
 
     if (palette !== undefined) {
       if (content === 'bg' || content === 'both') {
-        results.push(palette[0]);
+        results.push(alpha(palette[0], dim));
       }
 
       if (content === 'fg' || content === 'both') {

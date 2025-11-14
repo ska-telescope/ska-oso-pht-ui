@@ -10,6 +10,7 @@ interface FrequencySpectrumProps {
   maxEdge: number;
   unit?: string;
   bandColor?: string;
+  boxWidth?: string;
 }
 
 const FrequencySpectrum: React.FC<FrequencySpectrumProps> = ({
@@ -20,7 +21,8 @@ const FrequencySpectrum: React.FC<FrequencySpectrumProps> = ({
   minEdge,
   maxEdge,
   unit = 'MHz',
-  bandColor = ''
+  bandColor = '',
+  boxWidth = '200%' // TODO clarify why it was set at 200%
 }) => {
   const theme = useTheme();
   const totalWidth = maxFreq - minFreq;
@@ -43,7 +45,7 @@ const FrequencySpectrum: React.FC<FrequencySpectrumProps> = ({
   }
 
   return (
-    <Box sx={{ width: '200%', textAlign: 'center' }}>
+    <Box sx={{ width: boxWidth, textAlign: 'center' }}>
       {/* Horizontal layout: minFreq | slider | maxFreq */}
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
         {/* Min Frequency */}
