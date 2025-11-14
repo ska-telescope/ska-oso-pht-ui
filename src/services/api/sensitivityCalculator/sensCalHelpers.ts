@@ -2,7 +2,7 @@ import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 
 const sensCalHelpers = {
   format: {
-    convertBandwidthToMHz(bandwidthValue, bandwidthUnits): number {
+    convertBandwidthToMHz(bandwidthValue: number, bandwidthUnits: string): number {
       const unitMap: { [key: string]: number } = {
         GHz: 1000,
         MHz: 1,
@@ -14,7 +14,7 @@ const sensCalHelpers = {
       }
       return bandwidthValue * unitMap[bandwidthUnits];
     },
-    convertBandwidthToKHz(bandwidthValue, bandwidthUnits): number {
+    convertBandwidthToKHz(bandwidthValue: number, bandwidthUnits: string): number {
       const unitMap: { [key: string]: number } = {
         GHz: 1000000,
         MHz: 1000,
@@ -26,7 +26,7 @@ const sensCalHelpers = {
       }
       return bandwidthValue * unitMap[bandwidthUnits];
     },
-    convertBandwidthToHz(bandwidthValue, bandwidthUnits): number {
+    convertBandwidthToHz(bandwidthValue: number, bandwidthUnits: string): number {
       if (typeof bandwidthUnits === 'number') {
         bandwidthUnits = OSD_CONSTANTS.Units.find(item => item.value === bandwidthUnits)?.label;
       }
