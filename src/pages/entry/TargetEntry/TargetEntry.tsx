@@ -579,7 +579,7 @@ export default function TargetEntry({
                 pt={1}
                 pb={2}
               >
-                <Grid>
+                <Grid pt={1}>
                   <BorderedSection title={t('referenceCoordinates.label')}>
                     {referenceCoordinatesField()}
                   </BorderedSection>
