@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { useOSD } from '../useOSD/useOSD';
 import { presentDate, presentTime } from '@/utils/present/present';
+import { MOCK_CALL } from '@/utils/constants';
 
 export function useOSDAccessors() {
   const osd = useOSD();
@@ -50,7 +51,7 @@ export function useOSDAccessors() {
 
   return {
     osdLOW: capabilities?.low,
-    osdMID: capabilities?.mid,
+    osdMID: MOCK_CALL ? null : capabilities?.mid,
     osdCapabilities: capabilities,
     osdCycleDescription: observatoryPolicy?.cycleDescription,
     osdCycleId: cycleInformation?.cycleId,

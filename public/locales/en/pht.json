@@ -228,9 +228,10 @@
         "1": "Images",
         "2": "Visibilities"
       },
-      "3": {
+      "2": {
         "1": "Flow through",
-        "2": "Timing"
+        "2": "Timing",
+        "3": "Detected Filter bank"
       }
     }
   },
@@ -1405,9 +1406,10 @@
           "1": "In Science Verification, Continuum data products include: \n\n* Calibrated visibilities averaged to 3.4 s and 21.7 kHz (to enable full verification of the imaging ODPs) \n* MFS image \n* Channel images for spectral index estimation as specified in 'channels out'. \n* Model images per channel * PSF images per channel \n* Residual images per channel \n* Ancillary data product including Local Sky Model catalogue and QA report",
           "2": "In Science Verification, Continuum data products include: \n\n* Calibrated visibilities averaged to the specified values (to enable full verification of the imaging ODPs)\n* MFS image+\n* Model image\n* PSF image\n* Residual image\n* Ancillary data product including Local Sky Model catalogue and QA report* Residual image\n* Ancillary data product including Local Sky Model catalogue and QA report\n\n+ The MFS images are generated with ..."
         },
-        "3": {
+        "2": {
           "1": "In Science Verification, PST Flow through data products include: \n\n* Single or dual-polarisation beam-formed voltages requantised to the specified bit depth\n* QA report",
-          "2": "In Science Verification, PST Pulsar Timing data products include: \n\n* Beam-formed voltages\n* time of arrival\n* residuals from the best-fit timing model for the pulsar, \n* updated ephemerids, and\n* QA report"
+          "2": "In Science Verification, PST Pulsar Timing data products include: \n\n* Beam-formed voltages\n* time of arrival\n* residuals from the best-fit timing model for the pulsar, \n* updated ephemerids, and\n* QA report",
+          "3": "In Science Verification, PST Detected Filter bank data product include: \n\n* Filter bank data, averaged and requantised as specified in the panel on the left.\n* QA report"
         }
       },
       "status": "Data Product",
@@ -1422,9 +1424,10 @@
           "1": "Continuum Imaging ODPs",
           "2": "Visibility ODP"
         },
-        "3": {
+        "2": {
           "1": "PST Flow through Data Products",
-          "2": "PST Timing Data Products"
+          "2": "PST Timing Data Products",
+          "3": "PST Detected Filter bank Data Products"
         }
       }
     },
