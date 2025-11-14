@@ -740,28 +740,26 @@ export default function ObservationEntry() {
     );
   };
 
-  const bandwidthField = () => {
-    return (
-      <Grid>
-        {fieldWrapper(
-          <BandwidthField
-            onFocus={() => helpComponent(t(`bandwidth.help.${TYPE_ZOOM}`))}
-            required
-            setValue={setBandwidth}
-            testId="bandwidth"
-            value={bandwidth}
-            telescope={telescope()}
-            widthLabel={BOTTOM_LABEL_WIDTH}
-            observingBand={observingBand}
-            centralFrequency={centralFrequency}
-            centralFrequencyUnits={centralFrequencyUnits}
-            subarrayConfig={subarrayConfig}
-            minimumChannelWidthHz={minimumChannelWidthHz}
-          />
-        )}
-      </Grid>
-    );
-  };
+  const bandwidthField = () => (
+    <Grid>
+      {fieldWrapper(
+        <BandwidthField
+          onFocus={() => helpComponent(t(`bandwidth.help.${TYPE_ZOOM}`))}
+          required
+          setValue={setBandwidth}
+          testId="bandwidth"
+          value={bandwidth}
+          telescope={telescope()}
+          widthLabel={BOTTOM_LABEL_WIDTH}
+          observingBand={observingBand}
+          centralFrequency={centralFrequency}
+          centralFrequencyUnits={centralFrequencyUnits}
+          subarrayConfig={subarrayConfig}
+          minimumChannelWidthHz={minimumChannelWidthHz}
+        />
+      )}
+    </Grid>
+  );
 
   const spectralResolutionField = () =>
     fieldWrapper(

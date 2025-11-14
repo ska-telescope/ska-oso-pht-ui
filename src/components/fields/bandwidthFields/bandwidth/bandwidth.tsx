@@ -63,12 +63,11 @@ export default function BandwidthField({
   };
   const roundBandwidthValue = (options: any[]) =>
     options.map((obj: { label: string; value: any; mapping: any }) => {
-      const result = {
+      return {
         label: `${parseFloat(obj.label).toFixed(1)} ${obj.label.split(' ')[1]}`,
         value: obj.value,
         mapping: obj.mapping
       };
-      return result;
     });
 
   const lookupBandwidth = (inValue: number): any => {
