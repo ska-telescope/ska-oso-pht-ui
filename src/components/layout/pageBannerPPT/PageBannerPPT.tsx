@@ -112,11 +112,9 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
       if (response.valid && !response.error && results.length === 0) {
         notifySuccess(t(`validationBtn.${response.valid}`));
-        //setCanSubmit(submit);
       } else {
         setValidationResults(response.error ? results.concat(response.error) : results);
         setOpenValidationResults(true);
-        //setCanSubmit(false);
       }
     };
     ValidateTheProposal();
