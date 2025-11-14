@@ -15,9 +15,6 @@ import TargetFileImport from './TargetFileImport/TargetFileImport';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
-const DATA_GRID_HEIGHT = '60vh';
-const TARGET_ENTRY_HEIGHT = '90vh';
-
 export default function TargetListSection() {
   const { t } = useScopedTranslation();
   const { isSV } = useAppFlow();
@@ -30,6 +27,8 @@ export default function TargetListSection() {
   const [skyDirection2Error, setSkyDirection2Error] = React.useState('');
   const [nameError, setNameError] = React.useState('');
 
+  const DATA_GRID_HEIGHT = isSV() ? '18vh' : '60vh';
+  const TARGET_ENTRY_HEIGHT = '90vh';
   const deleteIconClicked = (e: Target) => {
     setRowTarget(e);
     setOpenDeleteDialog(true);
