@@ -3,7 +3,7 @@ import { Box, Grid, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '@utils/types/proposal.tsx';
-import { RA_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
+import { MOCK_CALL, RA_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
 import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
@@ -27,7 +27,7 @@ export default function TargetListSection() {
   const [skyDirection2Error, setSkyDirection2Error] = React.useState('');
   const [nameError, setNameError] = React.useState('');
 
-  const DATA_GRID_HEIGHT = isSV() ? '18vh' : '60vh';
+  const DATA_GRID_HEIGHT = MOCK_CALL ? '18vh' : '60vh';
   const TARGET_ENTRY_HEIGHT = '90vh';
   const deleteIconClicked = (e: Target) => {
     setRowTarget(e);
