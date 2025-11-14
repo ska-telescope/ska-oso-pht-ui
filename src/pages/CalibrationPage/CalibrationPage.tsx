@@ -34,7 +34,7 @@ import Supplied from '@/utils/types/supplied';
 
 const PAGE = PAGE_CALIBRATION;
 const LINE_OFFSET = 35; // TODO check why we need to set this for it to be visible
-const PANEL_HEIGHT = '54vh';
+const PANEL_HEIGHT = '60vh';
 
 export default function CalibrationPage() {
   const {
@@ -421,7 +421,7 @@ export default function CalibrationPage() {
                 />
               )}
               {(getProposal()?.targets?.length ?? 0) > 0 && (
-                <Box pt={2} pr={3}>
+                <Box pt={2} pr={4} pl={3}>
                   <InfoCard
                     color={InfoCardColorTypes.Warning}
                     fontSize={HELP_FONT}
