@@ -109,7 +109,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         application.content2 as Proposal,
         isSV()
       );
-      const submit = accessSubmit(getAccess(), (application.content2 as Proposal).id);
+
       if (response.valid && !response.error && results.length === 0) {
         notifySuccess(t(`validationBtn.${response.valid}`));
         //setCanSubmit(submit);

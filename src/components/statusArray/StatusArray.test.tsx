@@ -18,9 +18,8 @@ describe('<StatusArray />', () => {
     const mockUpdateCanSubmit = vi.fn();
     const mockAccessCanSubmit = true;
 
-    wrapper(<StatusArray
-      updateCanSubmit={mockUpdateCanSubmit}
-      accessCanSubmit={mockAccessCanSubmit}
-    />);
+    wrapper(
+      <StatusArray updateCanSubmit={mockUpdateCanSubmit} accessCanSubmit={mockAccessCanSubmit} />
+    );
   });
 });
