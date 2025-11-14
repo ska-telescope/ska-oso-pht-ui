@@ -428,14 +428,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   };
 
   return (
-    <Grid
-      pt={3}
-      pl={5}
-      container
-      direction="column"
-      alignItems="center"
-      justifyContent="flex-start"
-    >
+    <Grid pt={3} pl={1} container direction="column" alignItems="left" justifyContent="flex-start">
       <Grid size={{ xs: 8 }}>{emailField()}</Grid>
       <Grid size={{ xs: 8 }}>{firstNameField()}</Grid>
       <Grid size={{ xs: 8 }}>{lastNameField()}</Grid>
