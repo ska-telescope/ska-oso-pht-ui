@@ -60,7 +60,6 @@ interface TargetEntryProps {
 }
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
-const PANEL_HEIGHT = '54vh';
 
 export default function TargetEntry({
   raType,
@@ -397,7 +396,7 @@ export default function TargetEntry({
     };
 
     return (
-      <Grid size={{ xs: 12 }} sx={{ position: 'relative', zIndex: 99 }} mb={2}>
+      <Grid size={{ xs: 12 }} sx={{ position: 'relative', zIndex: 99 }} mb={4}>
         <AddButton
           action={addButtonAction}
           disabled={disabled()}
@@ -568,9 +567,7 @@ export default function TargetEntry({
             <Box
               pr={2}
               sx={{
-                width: '100%',
-                height: PANEL_HEIGHT,
-                overflowY: 'auto'
+                width: '100%'
               }}
             >
               <Grid
@@ -582,7 +579,7 @@ export default function TargetEntry({
                 pt={1}
                 pb={2}
               >
-                <Grid>
+                <Grid pt={1}>
                   <BorderedSection title={t('referenceCoordinates.label')}>
                     {referenceCoordinatesField()}
                   </BorderedSection>
@@ -618,7 +615,7 @@ export default function TargetEntry({
             </Box>
           </Grid>
 
-          <Grid size={{ xs: 4 }} sx={{ position: 'relative', height: PANEL_HEIGHT }}>
+          <Grid size={{ xs: 4 }} sx={{ position: 'relative' }}>
             <Box pb={2}>
               <HelpPanel maxHeight={'HELP_MAX_HEIGHT'} />
             </Box>

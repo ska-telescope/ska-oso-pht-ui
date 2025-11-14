@@ -3,7 +3,7 @@ import { Box, Grid, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '@utils/types/proposal.tsx';
-import { RA_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
+import { MOCK_CALL, RA_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
 import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
@@ -14,9 +14,6 @@ import SpatialImaging from './SpatialImaging/SpatialImaging';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
-
-const DATA_GRID_HEIGHT = '60vh';
-const TARGET_ENTRY_HEIGHT = '60vh';
 
 export default function TargetListSection() {
   const { t } = useScopedTranslation();
@@ -30,6 +27,8 @@ export default function TargetListSection() {
   const [skyDirection2Error, setSkyDirection2Error] = React.useState('');
   const [nameError, setNameError] = React.useState('');
 
+  const DATA_GRID_HEIGHT = MOCK_CALL ? '18vh' : '60vh';
+  const TARGET_ENTRY_HEIGHT = '90vh';
   const deleteIconClicked = (e: Target) => {
     setRowTarget(e);
     setOpenDeleteDialog(true);
@@ -141,13 +140,13 @@ export default function TargetListSection() {
     return (
       <Grid
         p={1}
-        pt={5}
+        pt={2}
         container
         direction="row"
         justifyContent="space-between"
         alignItems="centre"
         spacing={4}
-        sx={{ height: '60vh', width: '95vw' }}
+        sx={{ height: '100vh', width: '95vw' }}
       >
         <Grid size={{ md: 12, lg: 6 }} order={{ md: 2, lg: 1 }}>
           <GridTargets
