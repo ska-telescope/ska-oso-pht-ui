@@ -69,6 +69,8 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const getAccess = () => application.content4 as ProposalAccess[];
   const getProposal = () => application.content2 as Proposal;
 
+  const accessCanSubmit = accessSubmit(getAccess(), (application.content2 as Proposal).id);
+
   const isDisableEndpoints = () => {
     if (
       cypressProposal ||
@@ -110,11 +112,11 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       const submit = accessSubmit(getAccess(), (application.content2 as Proposal).id);
       if (response.valid && !response.error && results.length === 0) {
         notifySuccess(t(`validationBtn.${response.valid}`));
-        setCanSubmit(submit);
+        //setCanSubmit(submit);
       } else {
         setValidationResults(response.error ? results.concat(response.error) : results);
         setOpenValidationResults(true);
-        setCanSubmit(false);
+        //setCanSubmit(false);
       }
     };
     ValidateTheProposal();
@@ -241,11 +243,15 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       <Grid>{buttonsLeft()}</Grid>
       {wrapStatusArray ? (
         <Grid size={{ xs: 7 }} display={'none'}>
-          {pageNo > -1 && pageNo < LAST_PAGE && <StatusArray />}
+          {pageNo > -1 && pageNo < LAST_PAGE && (
+            <StatusArray updateCanSubmit={setCanSubmit} accessCanSubmit={accessCanSubmit} />
+          )}
         </Grid>
       ) : (
         <Grid size={{ xs: 7 }} display={'block'}>
-          {getProposal().id !== null && pageNo < LAST_PAGE && <StatusArray />}
+          {getProposal().id !== null && pageNo < LAST_PAGE && (
+            <StatusArray updateCanSubmit={setCanSubmit} accessCanSubmit={accessCanSubmit} />
+          )}
         </Grid>
       )}
 
@@ -263,11 +269,15 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     <Grid container direction="row" alignItems="center" justifyContent="space-between">
       {wrapStatusArray ? (
         <Grid size={{ xs: 12 }} display={'block'}>
-          {pageNo < LAST_PAGE && <StatusArray />}
+          {pageNo < LAST_PAGE && (
+            <StatusArray updateCanSubmit={setCanSubmit} accessCanSubmit={accessCanSubmit} />
+          )}
         </Grid>
       ) : (
         <Grid size={{ xs: 12 }} display={'none'}>
-          {pageNo < LAST_PAGE && <StatusArray />}
+          {pageNo < LAST_PAGE && (
+            <StatusArray updateCanSubmit={setCanSubmit} accessCanSubmit={accessCanSubmit} />
+          )}
         </Grid>
       )}
     </Grid>

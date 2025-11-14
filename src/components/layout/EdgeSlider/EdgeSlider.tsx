@@ -18,7 +18,9 @@ interface EdgeSliderProps {
   helperText: string;
 }
 
-const Panel = styled(Paper)<{ expanded: boolean }>(({ expanded, color }) => ({
+const Panel = styled(Paper, {
+  shouldForwardProp: prop => prop !== 'expanded'
+})<{ expanded: boolean }>(({ expanded, color }) => ({
   position: 'absolute',
   right: 0,
   top: 0,

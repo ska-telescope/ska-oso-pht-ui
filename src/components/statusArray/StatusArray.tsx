@@ -15,7 +15,15 @@ import {
 } from '@utils/constants.ts';
 import StatusWrapper from '../wrappers/statusWrapper/StatusWrapper';
 
-export default function StatusArrayOriginal() {
+interface StatusArrayOriginalProps {
+  updateCanSubmit: Function;
+  accessCanSubmit: Boolean;
+}
+
+export default function StatusArrayOriginal({
+  updateCanSubmit,
+  accessCanSubmit
+}: StatusArrayOriginalProps) {
   const { application } = storageObject.useStore();
 
   const SIZE_OK = () => useMediaQuery(useTheme().breakpoints.up('md'));
@@ -51,6 +59,19 @@ export default function StatusArrayOriginal() {
     PAGE_DATA_PRODUCTS,
     PAGE_CALIBRATION
   ];
+
+  React.useEffect(() => {
+    const pagesIndexes = getPages();
+    const pagesNeedToCheck = (application.content1 as number[]).filter((value, idx) =>
+      pagesIndexes.includes(idx)
+    );
+
+    if (pagesNeedToCheck.every(lvl => lvl === 0) && accessCanSubmit) {
+      updateCanSubmit(true);
+    } else {
+      updateCanSubmit(false);
+    }
+  }, [application.content1]);
 
   return (
     <Grid
