@@ -49,7 +49,7 @@ export default function BandwidthField({
   widthLabel = 5,
   observingBand = 0,
   centralFrequency = 0,
-  centralFrequencyUnits,
+  centralFrequencyUnits = 1,
   subarrayConfig = 0,
   minimumChannelWidthHz = 0
 }: BandwidthFieldProps) {
@@ -63,21 +63,26 @@ export default function BandwidthField({
   };
   const roundBandwidthValue = (options: any[]) =>
     options.map((obj: { label: string; value: any; mapping: any }) => {
-      return {
+      const result = {
         label: `${parseFloat(obj.label).toFixed(1)} ${obj.label.split(' ')[1]}`,
         value: obj.value,
         mapping: obj.mapping
       };
+      return result;
     });
 
-  const lookupBandwidth = (inValue: number): any =>
-    observatoryConstants.array[telescope - 1]?.bandWidth.find(bw => bw.value === inValue);
+  const lookupBandwidth = (inValue: number): any => {
+    return observatoryConstants.array[telescope - 1]?.bandWidth.find(bw => bw.value === inValue);
+  };
 
   const getBandwidthUnitsLabel = (): string => {
-    return lookupBandwidth(value)?.mapping;
+    return lookupBandwidth(centralFrequencyUnits)?.mapping;
   };
 
   const getBandwidthValue = (): number => {
+    // TODO check defaults not showing
+    console.log('::: in getBandwidthValue, value :::', value);
+    console.log('::: //////////////// Number(lookupBandwidth(value)) :::', Number(lookupBandwidth(value)));
     return Number(lookupBandwidth(value)?.label.split(' ')[0]);
   };
 
