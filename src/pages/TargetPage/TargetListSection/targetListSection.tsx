@@ -16,7 +16,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 const DATA_GRID_HEIGHT = '60vh';
-const TARGET_ENTRY_HEIGHT = '60vh';
+const TARGET_ENTRY_HEIGHT = '90vh';
 
 export default function TargetListSection() {
   const { t } = useScopedTranslation();
@@ -141,13 +141,13 @@ export default function TargetListSection() {
     return (
       <Grid
         p={1}
-        pt={5}
+        pt={2}
         container
         direction="row"
         justifyContent="space-between"
         alignItems="centre"
         spacing={4}
-        sx={{ height: '60vh', width: '95vw' }}
+        sx={{ height: '100vh', width: '95vw' }}
       >
         <Grid size={{ md: 12, lg: 6 }} order={{ md: 2, lg: 1 }}>
           <GridTargets
