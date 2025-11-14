@@ -578,6 +578,9 @@ export const STATUS = {
 };
 export const SUPPLIED_VALUE_DEFAULT_MID = 600;
 export const SUPPLIED_VALUE_DEFAULT_LOW = 1;
+// export const ZOOM_BANDWIDTH_DEFAULT_MID = 1;
+// export const ZOOM_BANDWIDTH_DEFAULT_LOW = 5;
+export const ZOOM_BANDWIDTH_DEFAULT = 1;
 
 export const TARGET_OPTION = {
   LIST_OF_TARGETS: 1,

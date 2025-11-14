@@ -40,7 +40,8 @@ import {
   PAGE_OBSERVATION_ADD,
   GENERAL,
   MOCK_CALL,
-  FREQUENCY_HZ
+  FREQUENCY_HZ,
+  ZOOM_BANDWIDTH_DEFAULT
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -106,7 +107,7 @@ export default function ObservationEntry() {
   const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_MHZ);
   const [imageWeighting, setImageWeighting] = React.useState(1);
   const [tapering, setTapering] = React.useState(0);
-  const [bandwidth, setBandwidth] = React.useState(1);
+  const [bandwidth, setBandwidth] = React.useState(ZOOM_BANDWIDTH_DEFAULT);
   const [robust, setRobust] = React.useState(3);
   const [spectralAveraging, setSpectralAveraging] = React.useState(1);
   const [spectralResolution, setSpectralResolution] = React.useState('');
@@ -136,7 +137,7 @@ export default function ObservationEntry() {
     setElevation(ob?.elevation);
     setCentralFrequency(ob?.centralFrequency);
     setCentralFrequencyUnits(ob?.centralFrequencyUnits);
-    setBandwidth(ob?.bandwidth ?? 0);
+    setBandwidth(ob?.bandwidth ?? ZOOM_BANDWIDTH_DEFAULT);
     setContinuumBandwidth(ob?.continuumBandwidth ?? 0);
     setContinuumBandwidthUnits(ob?.continuumBandwidthUnits ?? 0);
     setRobust(ob?.robust);
@@ -739,26 +740,28 @@ export default function ObservationEntry() {
     );
   };
 
-  const bandwidthField = () => (
-    <Grid>
-      {fieldWrapper(
-        <BandwidthField
-          onFocus={() => helpComponent(t(`bandwidth.help.${TYPE_ZOOM}`))}
-          required
-          setValue={setBandwidth}
-          testId="bandwidth"
-          value={bandwidth}
-          telescope={telescope()}
-          widthLabel={BOTTOM_LABEL_WIDTH}
-          observingBand={observingBand}
-          centralFrequency={centralFrequency}
-          centralFrequencyUnits={centralFrequencyUnits}
-          subarrayConfig={subarrayConfig}
-          minimumChannelWidthHz={minimumChannelWidthHz}
-        />
-      )}
-    </Grid>
-  );
+  const bandwidthField = () => {
+    return (
+      <Grid>
+        {fieldWrapper(
+          <BandwidthField
+            onFocus={() => helpComponent(t(`bandwidth.help.${TYPE_ZOOM}`))}
+            required
+            setValue={setBandwidth}
+            testId="bandwidth"
+            value={bandwidth}
+            telescope={telescope()}
+            widthLabel={BOTTOM_LABEL_WIDTH}
+            observingBand={observingBand}
+            centralFrequency={centralFrequency}
+            centralFrequencyUnits={centralFrequencyUnits}
+            subarrayConfig={subarrayConfig}
+            minimumChannelWidthHz={minimumChannelWidthHz}
+          />
+        )}
+      </Grid>
+    );
+  };
 
   const spectralResolutionField = () =>
     fieldWrapper(

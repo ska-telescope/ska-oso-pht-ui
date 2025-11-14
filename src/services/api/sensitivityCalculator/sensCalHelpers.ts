@@ -30,8 +30,6 @@ const sensCalHelpers = {
       if (typeof bandwidthUnits === 'number') {
         bandwidthUnits = OSD_CONSTANTS.Units.find(item => item.value === bandwidthUnits)?.label;
       }
-      console.log('or here');
-      console.log('bandwidthValue:', bandwidthValue, 'bandwidthUnits:', bandwidthUnits);
       const unitMap: { [key: string]: number } = {
         GHz: 1000000000,
         MHz: 1000000,

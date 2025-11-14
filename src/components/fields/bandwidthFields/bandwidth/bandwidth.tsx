@@ -80,9 +80,6 @@ export default function BandwidthField({
   };
 
   const getBandwidthValue = (): number => {
-    // TODO check defaults not showing
-    console.log('::: in getBandwidthValue, value :::', value);
-    console.log('::: //////////////// Number(lookupBandwidth(value)) :::', Number(lookupBandwidth(value)));
     return Number(lookupBandwidth(value)?.label.split(' ')[0]);
   };
 
