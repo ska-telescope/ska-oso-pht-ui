@@ -247,8 +247,18 @@ export const GENERAL = {
       value: MODE_CONTINUUM,
       observationType: TYPE_CONTINUUM
     },
-    { label: 'PST', subCategory: [{ label: 'Not specified', value: 1 }], value: MODE_PST },
-    { label: 'Spectral', subCategory: [{ label: 'Not specified', value: 1 }], value: MODE_ZOOM }
+    {
+      label: 'PST',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: MODE_PST,
+      observationType: TYPE_PST
+    },
+    {
+      label: 'Spectral',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: MODE_ZOOM,
+      observationType: TYPE_ZOOM
+    }
   ]
 };
 
@@ -414,6 +424,22 @@ export const PROJECTS = [
         mapping: 'coordinated_proposal'
       }
     ]
+  }
+];
+
+export const FLOW_THROUGH_VALUE = 0;
+export const DETECTED_FILTER_BANK_VALUE = 1;
+export const PULSAR_TIMING_VALUE = 2;
+
+export const PST_MODES = [
+  {
+    value: FLOW_THROUGH_VALUE
+  },
+  {
+    value: DETECTED_FILTER_BANK_VALUE
+  },
+  {
+    value: PULSAR_TIMING_VALUE
   }
 ];
 

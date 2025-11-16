@@ -43,7 +43,9 @@ import {
   FREQUENCY_HZ,
   ZOOM_BANDWIDTH_DEFAULT,
   ZOOM_CHANNELS_MIN,
-  ZOOM_CHANNELS_MAX
+  ZOOM_CHANNELS_MAX,
+  TYPE_PST,
+  FLOW_THROUGH_VALUE
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -77,6 +79,7 @@ import {
 } from '@/utils/calculate/calculate';
 import FrequencySpectrum from '@/components/fields/frequencySpectrum/frequencySpectrum';
 import { getColors } from '@/utils/colors/colors';
+import PstModeField from '@/components/fields/pstMode/PstMode';
 
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 4;
@@ -124,7 +127,8 @@ export default function ObservationEntry() {
   const [numOfStations, setNumOfStations] = React.useState<number | undefined>(512);
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [minimumChannelWidthHz, setMinimumChannelWidthHz] = React.useState<number>(0);
-  const [zoomChannels, setZoomChannels] = React.useState<number>(ZOOM_CHANNELS_MAX);
+  const [zoomChannels, setZoomChannels] = React.useState<number>(ZOOM_CHANNELS_MAX); // TODO add zoomChannels to observation types and mappings
+  const [pstMode, setPstMode] = React.useState(FLOW_THROUGH_VALUE); // TODO add pstMode to observation types and mappings
 
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
@@ -350,6 +354,8 @@ export default function ObservationEntry() {
   }, [observingBand]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
+  const isZoom = () => observationType === TYPE_ZOOM;
+  const isPST = () => observationType === TYPE_PST;
   const isLow = () => observingBand === BAND_LOW;
   const telescope = (band = observingBand) => BANDWIDTH_TELESCOPE[band]?.telescope;
 
@@ -466,6 +472,9 @@ export default function ObservationEntry() {
         setValue={setTheSubarrayConfig}
       />
     );
+
+  const pstModeField = () =>
+    fieldWrapper(<PstModeField required widthLabel={4} value={pstMode} setValue={setPstMode} />);
 
   const numStationsField = () =>
     fieldWrapper(
@@ -697,7 +706,7 @@ export default function ObservationEntry() {
           labelPosition={LAB_POSITION}
           labelWidth={LABEL_WIDTH_NEW}
           testId="zoomChannels"
-          value={zoomChannels} // TODO add zoomChannels to observation types and mappings
+          value={zoomChannels}
           setValue={setZoomChannels}
           onFocus={() => helpComponent(t('zoomChannels.help'))}
           required
@@ -949,6 +958,20 @@ export default function ObservationEntry() {
     );
   };
 
+  const frequencySetUpPSTMockCall = () => {
+    return (
+      <>
+        <Grid size={{ md: 12, lg: 12 }} p={2}>
+          {frequencySpectrumField()}
+        </Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{observationsBandField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}> {bandwidthField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{pstModeField()}</Grid>
+      </>
+    );
+  };
+
   const addButtonDisabled = () => {
     // TODO : We need to make this a bit cleverer, but this will do for a short time
     return isEdit() ? false : validateId() ? true : false;
@@ -1151,10 +1174,9 @@ export default function ObservationEntry() {
             >
               {!MOCK_CALL && frequencySetUp()}{' '}
               {/* shows to user some fields that are hidden in mock call */}
-              {MOCK_CALL &&
-                (!isContinuum()
-                  ? frequencySetUpSpectralMockCall()
-                  : frequencySetUpContinuumMockCall())}
+              {MOCK_CALL && isContinuum() && frequencySetUpContinuumMockCall()}
+              {MOCK_CALL && isZoom() && frequencySetUpSpectralMockCall()}
+              {MOCK_CALL && isPST() && frequencySetUpPSTMockCall()}
             </Grid>
           </BorderedSection>
         </Grid>
