@@ -138,6 +138,9 @@ export const FOOTER_PMT_SPACER = SPACER_FOOTER + FOOTER_PMT;
 export const CENTRAL_FREQUENCY_MAX = [350, 1.05, 1.76, 8.5, 15.4];
 export const CENTRAL_FREQUENCY_MIN = [50, 0.35, 0.95, 4.6, 8.3];
 
+export const ZOOM_CHANNELS_MAX = 4000; // max for Low AA2 // TODO this should come from osd data
+export const ZOOM_CHANNELS_MIN = 1; // TODO check this is correct
+
 export const BIT_DEPTH = [
   { value: '1' },
   { value: '2' },
