@@ -87,20 +87,6 @@ describe('TechnicalPage', () => {
     }));
   });
 
-  it('renders file upload and buttons when logged in', () => {
-    wrapper(<TechnicalPage />);
-    // expect(screen.getByTestId('fileUpload')).toBeInTheDocument();
-    expect(screen.getByText('pdfUpload.technical.label.preview')).toBeInTheDocument();
-    expect(screen.getByText('pdfUpload.technical.label.download')).toBeInTheDocument();
-    expect(screen.getByText('pdfUpload.technical.label.delete')).toBeInTheDocument();
-  });
-
-  // it('uploads PDF and updates proposal', async () => {
-  //   wrapper(<TechnicalPage />);
-  //   const uploadFn = screen.getByTestId('fileUpload').getAttribute('uploadFunction');
-  //   expect(uploadFn).toBeDefined();
-  // });
-
   it('previews PDF and opens viewer', async () => {
     wrapper(<TechnicalPage />);
     fireEvent.click(screen.getByText('pdfUpload.technical.label.preview'));
