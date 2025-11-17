@@ -1254,7 +1254,9 @@
   "targets": {
     "label": "Targets",
     "empty": "There are no targets associated with this proposal",
-    "loggedOut": "There are no targets created"
+    "loggedOut": "There are no targets created",
+    "limitReached": "Only {{value}} target/object is allowed for Proposals.",
+    "limitReached_plural": "Only {{value}} target/object are allowed for Proposals."
   },
   "telescopes": {
     "2": "LOW",

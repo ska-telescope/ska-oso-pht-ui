@@ -233,12 +233,6 @@ export const GENERAL = {
   ],
   ObservingMode: [
     {
-      label: 'Zoom',
-      subCategory: [{ label: 'Not specified', value: 1 }],
-      value: MODE_ZOOM,
-      observationType: TYPE_ZOOM
-    },
-    {
       label: 'Continuum',
       subCategory: [{ label: 'Not specified', value: 1 }],
       value: MODE_CONTINUUM,

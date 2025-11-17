@@ -12,7 +12,6 @@ import {
   FOOTER_HEIGHT_PHT,
   IW_BRIGGS,
   LAB_POS_TICK,
-  MOCK_CALL,
   NAV,
   PAGE_DATA_PRODUCTS,
   TYPE_CONTINUUM,
@@ -22,7 +21,6 @@ import {
 } from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
-import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import { DataProductSDP } from '@/utils/types/dataProduct';
 import AddButton from '@/components/button/Add/Add';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -36,6 +34,7 @@ import TapperField from '@/components/fields/tapper/taper';
 import TimeAveragingField from '@/components/fields/timeAveraging/timeAveraging';
 import FrequencyAveragingField from '@/components/fields/frequencyAveraging/frequencyAveraging';
 import BitDepthField from '@/components/fields/bitDepth/bitDepth';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
@@ -44,10 +43,13 @@ const LABEL_WIDTH = 5;
 const TICK_LABEL_WIDTH = 10;
 const COL = 6;
 
+const CHANNELS_OUT_MAX = 40;
+
 export default function DataProduct() {
   const navigate = useNavigate();
   const theme = useTheme();
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
+  const { osdMaxDataProducts } = useOSDAccessors();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -59,7 +61,8 @@ export default function DataProduct() {
   const [imageSizeValue, setImageSizeValue] = React.useState('0');
   const [imageSizeUnits, setImageSizeUnits] = React.useState(0);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
-  const [pixelSizeUnits, setPixelSizeUnits] = React.useState(0);
+  const [pixelSizeUnits, setPixelSizeUnits] = React.useState(2);
+  const [taperValue, setTaperValue] = React.useState('0');
   const [timeAveraging, setTimeAveraging] = React.useState(0);
   const [timeAveragingUnits, setTimeAveragingUnits] = React.useState(0);
   const [frequencyAveraging, setFrequencyAveraging] = React.useState(0);
@@ -93,11 +96,34 @@ export default function DataProduct() {
   React.useEffect(() => {
     helpComponent(t('observations.dp.help'));
 
-    const observations = getProposal()?.observations;
-    setBaseObservations(observations ?? []);
-    setPixelSizeUnits(2);
+    const proposal = getProposal();
+    const observations = proposal?.observations ?? [];
+
+    setBaseObservations(observations);
+
+    if (
+      osdMaxDataProducts === 1 &&
+      Array.isArray(proposal?.dataProductSDP) &&
+      proposal.dataProductSDP.length > 0 &&
+      observations.length > 0
+    ) {
+      const dp = proposal.dataProductSDP[0];
+
+      setObservationId(dp.observationId[0]);
+      setDataProductType(Number(dp.observatoryDataProduct[0] ? 1 : 2));
+      setImageSizeValue(dp.imageSizeValue.toString());
+      setImageSizeUnits(dp.imageSizeUnits);
+      setPixelSizeValue(dp.pixelSizeValue);
+      setPixelSizeUnits(dp.pixelSizeUnits);
+      setTaperValue(dp.imageSizeValue.toString()); // TODO : Check this is correct
+      setWeighting(Number(dp.weighting));
+      setRobust(dp.robust ?? 3);
+      setPolarisations(dp.polarisations ?? ['I']);
+      setChannelsOut(dp.channelsOut ?? 1);
+    }
   }, []);
 
+  /* TREVOR : Not sure this is needed any more - keep for now
   React.useEffect(() => {
     const getPixelSize = (sensCalc: SensCalcResults): number => {
       const DIVIDER = 3;
@@ -134,6 +160,7 @@ export default function DataProduct() {
       setPixelSizeValue(calcPixelSize(pixelCount, pixelTotal));
     }
   }, [baseObservations, observationId]);
+  */
 
   const fieldWrapper = (children?: React.JSX.Element, height = WRAPPER_HEIGHT) => (
     <Box p={0} pt={1} sx={{ height: height }}>
@@ -147,8 +174,8 @@ export default function DataProduct() {
         labelWidth={LABEL_WIDTH}
         onFocus={() => helpComponent(t('tapper.help'))}
         required
-        setValue={setImageSizeValue}
-        value={Number(imageSizeValue)}
+        setValue={setTaperValue}
+        value={Number(taperValue)}
         suffix={t('taper.units')}
       />
     );
@@ -313,6 +340,7 @@ export default function DataProduct() {
     fieldWrapper(
       <ChannelsOutField
         labelWidth={LABEL_WIDTH}
+        maxValue={CHANNELS_OUT_MAX}
         onFocus={() => helpComponent(t('channelsOut.help'))}
         required
         setValue={setChannelsOut}
@@ -351,9 +379,46 @@ export default function DataProduct() {
     );
   };
 
+  const imageSizeValid = () => Number(imageSizeValue) > 0;
+  const pixelSizeValid = () => pixelSizeValue > 0;
+  const taperSizeValid = () => Number(taperValue) > 0;
+  const channelsOutValid = () => channelsOut > 0 && channelsOut <= CHANNELS_OUT_MAX;
+  const polarisationsValid = () => polarisations.length > 0;
+  const timeAveragingValid = () => timeAveraging > 0;
+  const frequencyAveragingValid = () => frequencyAveraging > 0;
+
   const pageFooter = () => {
     const enabled = () => {
-      return pixelSizeValue > 0 && Number(imageSizeValue) > 0;
+      switch (getObservation()?.type) {
+        case TYPE_ZOOM:
+          return (
+            pixelSizeValid() &&
+            imageSizeValid() &&
+            taperSizeValid() &&
+            channelsOutValid() &&
+            polarisationsValid()
+          );
+        case TYPE_PST:
+          if (isDataTypeOne()) {
+            return polarisationsValid();
+          } else if (isDataTypeThree()) {
+            return timeAveragingValid() && frequencyAveragingValid() && polarisationsValid();
+          }
+          break;
+        case TYPE_CONTINUUM:
+        default:
+          if (isDataTypeOne()) {
+            return (
+              pixelSizeValid() &&
+              imageSizeValid() &&
+              taperSizeValid() &&
+              channelsOutValid() &&
+              polarisationsValid()
+            );
+          } else {
+            return timeAveragingValid() && frequencyAveragingValid();
+          }
+      }
     };
 
     const addToProposal = () => {
@@ -367,7 +432,7 @@ export default function DataProduct() {
           ) ?? 0;
       }
       const newDataProduct: DataProductSDP = {
-        id: highestId + 1,
+        id: osdMaxDataProducts === 1 ? highestId : highestId + 1,
         dataProductsSDPId: `${PAGE_PREFIX}-${highestId + 1}`,
         observatoryDataProduct: [true], // TODO dataProductType,
         observationId: [observationId],
@@ -381,7 +446,7 @@ export default function DataProduct() {
         channelsOut,
         fitSpectralPol: 3
       };
-      if (hasRecord) {
+      if (hasRecord && osdMaxDataProducts !== 1) {
         setProposal({
           ...getProposal(),
           dataProductSDP: [...(getProposal()?.dataProductSDP ?? []), newDataProduct]
@@ -394,9 +459,20 @@ export default function DataProduct() {
       }
     };
 
+    const buttonLabel = () => {
+      if (osdMaxDataProducts === 1) {
+        return (getProposal()?.dataProductSDP?.length ?? 0) >= osdMaxDataProducts
+          ? 'updateBtn.label'
+          : 'addBtn.label';
+      }
+      return 'addDataProduct.button';
+    };
+
     const buttonClicked = () => {
       addToProposal();
-      navigate(NAV[BACK_PAGE]);
+      if (osdMaxDataProducts !== 1) {
+        navigate(NAV[BACK_PAGE]);
+      }
     };
 
     return (
@@ -404,9 +480,9 @@ export default function DataProduct() {
         sx={{
           bgcolor: 'transparent',
           position: 'fixed',
-          bottom: FOOTER_HEIGHT_PHT + (MOCK_CALL ? 60 : 0),
+          bottom: FOOTER_HEIGHT_PHT + (osdMaxDataProducts === 1 ? 60 : 0),
           left: 0,
-          right: MOCK_CALL ? 30 : 0
+          right: osdMaxDataProducts === 1 ? 30 : 0
         }}
         elevation={0}
       >
@@ -420,7 +496,13 @@ export default function DataProduct() {
           <Grid />
           <Grid />
           <Grid>
-            <AddButton disabled={!enabled()} primary testId="addButton" action={buttonClicked} />
+            <AddButton
+              disabled={!enabled()}
+              primary
+              testId="addButton"
+              title={buttonLabel()}
+              action={buttonClicked}
+            />
           </Grid>
         </Grid>
       </Paper>

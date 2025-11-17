@@ -13,6 +13,9 @@ export type ObservatoryPolicy = {
   cycleDescription: string;
   cycleInformation: CycleInformationFrontend;
   cyclePolicies: {
+    maxDataProducts: number;
+    maxObservations: number;
+    maxTargets: number;
     normalMaxHours: number;
   };
   telescopeCapabilities: TelescopeInformationFrontend;
@@ -160,11 +163,11 @@ export type ObservatoryData = {
     mid: {
       basicCapabilities: BasicCapabilitiesMid;
       AA2: subarrayConfigurationMid;
-    };
+    } | null;
     low: {
       basicCapabilities: BasicCapabilitiesLow;
       AA2: subarrayConfigurationLow;
-    };
+    } | null;
   };
 };
 
