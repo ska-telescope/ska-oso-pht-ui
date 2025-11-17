@@ -535,8 +535,8 @@ export const SECONDS_UNITS = [
 ];
 
 export const OBS_TYPES = ['spectral', 'continuum'];
-export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
-export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum']; // TODO change it to lowercase
+export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM, TYPE_PST];
+export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum', 'PST']; // TODO change it to lowercase
 export const SUPPLIED_TYPE_INTEGRATION = 1;
 export const SUPPLIED_TYPE_SENSITIVITY = 2;
 export const SUPPLIED_INTEGRATION_TIME_UNITS_H = 2;

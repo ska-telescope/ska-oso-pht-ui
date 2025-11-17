@@ -533,7 +533,8 @@
     "help": "Specify if the observation type is continuum or spectral. Note that not all sub-arrays have spectral mode so this option is available based on the sub-array selected.",
     "short": "Type",
     "0": "Spectral",
-    "1": "Continuum"
+    "1": "Continuum",
+    "2": "PST"
   },
   "observatoryDataProduct": {
     "label": "Observatory Data Product",
