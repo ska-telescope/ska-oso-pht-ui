@@ -38,8 +38,6 @@ spec:
               value: {{ include "ska-oso-pht-ui.urls-skaSensitivityCalcUrl" . | quote }}
             - name: REACT_APP_USE_LOCAL_DATA
               value: {{ .Values.runtimeEnv.useLocalData | quote }}
-            - name: REACT_APP_USE_MOCK_CALL
-              value: { { .Values.runtimeEnv.mockCall | quote } }
             - name: REACT_APP_DOMAIN
               value: {{ .Values.runtimeEnv.domain | quote }}
             - name: REACT_APP_SKA_LOGIN_APP_URL

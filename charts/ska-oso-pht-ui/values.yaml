@@ -13,7 +13,6 @@ runtimeEnv:
   domain: "https://sdhp.stfc.skao.int"
   skaLoginAppUrl: ""
   msentraRedirectUri: ""
-  mockCall: "true" #remove when no longer applies
 
 component: pht-ui
 function: ui
