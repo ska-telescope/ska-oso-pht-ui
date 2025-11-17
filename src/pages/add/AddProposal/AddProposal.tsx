@@ -29,7 +29,7 @@ export default function AddProposal() {
 
   return (
     <Box pt={2}>
-      <Shell page={PAGE} footerPage={PAGE_FOOTER} buttonDisabled={!contentValid()}>
+      <Shell page={PAGE} footerPage={PAGE_FOOTER} buttonDisabled={!contentValid()} helpDisabled>
         <TitleEntry page={PAGE_INNER} />
       </Shell>
     </Box>
