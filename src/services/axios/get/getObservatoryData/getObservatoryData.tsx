@@ -28,6 +28,7 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
         maxDataProducts: 1, // MOCK_CALL
         maxObservations: 1, // MOCK_CALL
         maxTargets: 1, // MOCK_CALL
+        isCustomAllowed: false, // MOCK_CALL
         normalMaxHours: inData.observatory_policy.cycle_policies.normal_max_hours
       },
       telescopeCapabilities: {
