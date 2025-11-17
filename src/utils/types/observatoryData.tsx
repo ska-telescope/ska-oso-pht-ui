@@ -39,8 +39,8 @@ export type TelescopeInformationBackend = {
 };
 
 export type TelescopeInformationFrontend = {
-  mid: string;
-  low: string;
+  mid: string | null;
+  low: string | null;
 };
 
 export type CycleInformationBackend = {

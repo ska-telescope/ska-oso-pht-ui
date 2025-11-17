@@ -25,6 +25,12 @@
     "toolTip": "Click to assign Science Verification Ideas to the panel.",
     "warning": "Please wait whilst we assign the Science Verification Ideas."
   },
+  "bandwidth": {
+    "help": {
+      "0": "The overall bandwidth is limited by the number of channels. To increase/decrease the bandwidth, increase/decrease the spectral averaging parameter.",
+      "1": "Maximum bandwidth available for Low AA2 is 150 MHz."
+    }
+  },
   "changeProposal": {
     "label": "Change Science Verification Idea's type?",
     "content1": "You are about to change the type of your Science Verification Idea.",

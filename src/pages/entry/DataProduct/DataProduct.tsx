@@ -113,7 +113,7 @@ export default function DataProduct() {
       setDataProductType(Number(dp.observatoryDataProduct[0] ? 1 : 2));
       setImageSizeValue(dp.imageSizeValue.toString());
       setImageSizeUnits(dp.imageSizeUnits);
-      setPixelSizeValue(dp.pixelSizeValue);
+      // setPixelSizeValue(dp.pixelSizeValue);   TODO : Check if this can be saved and changed
       setPixelSizeUnits(dp.pixelSizeUnits);
       setTaperValue(dp.imageSizeValue.toString()); // TODO : Check this is correct
       setWeighting(Number(dp.weighting));
@@ -279,7 +279,9 @@ export default function DataProduct() {
     );
 
   const pixelSizeUnitsField = () => {
-    return pixelSizeUnits === 0 ? '' : presentUnits(t('pixelSize.' + pixelSizeUnits));
+    return pixelSizeUnits === 0 || pixelSizeUnits === null
+      ? ''
+      : presentUnits('pixelSize.' + pixelSizeUnits);
   };
 
   const pixelSizeField = () =>

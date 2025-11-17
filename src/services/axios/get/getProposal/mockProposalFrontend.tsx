@@ -198,7 +198,7 @@ export const MockProposalFrontend: Proposal = {
         value: 1,
         units: 2
       },
-      robust: 3,
+      robust: 0,
       spectralResolution: '5.43 kHz (8.1 km/s)',
       effectiveResolution: '5.43 kHz (8.1 km/s)',
       spectralAveraging: 1,
@@ -429,7 +429,7 @@ export const MockProposalFrontendZoom: Proposal = {
         value: 1,
         units: 2
       },
-      robust: 4,
+      robust: 1,
       tapering: undefined,
       weather: undefined,
       spectralResolution: '14.13 Hz (21.2 m/s)',

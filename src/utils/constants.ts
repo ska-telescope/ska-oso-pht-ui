@@ -138,6 +138,9 @@ export const FOOTER_PMT_SPACER = SPACER_FOOTER + FOOTER_PMT;
 export const CENTRAL_FREQUENCY_MAX = [350, 1.05, 1.76, 8.5, 15.4];
 export const CENTRAL_FREQUENCY_MIN = [50, 0.35, 0.95, 4.6, 8.3];
 
+export const ZOOM_CHANNELS_MAX = 4000; // max for Low AA2 // TODO this should come from osd data
+export const ZOOM_CHANNELS_MIN = 1; // TODO check this is correct
+
 export const BIT_DEPTH = [
   { value: '1' },
   { value: '2' },
@@ -238,8 +241,18 @@ export const GENERAL = {
       value: MODE_CONTINUUM,
       observationType: TYPE_CONTINUUM
     },
-    { label: 'PST', subCategory: [{ label: 'Not specified', value: 1 }], value: MODE_PST },
-    { label: 'Spectral', subCategory: [{ label: 'Not specified', value: 1 }], value: MODE_ZOOM }
+    {
+      label: 'PST',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: MODE_PST,
+      observationType: TYPE_PST
+    },
+    {
+      label: 'Spectral',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: MODE_ZOOM,
+      observationType: TYPE_ZOOM
+    }
   ]
 };
 
@@ -408,6 +421,22 @@ export const PROJECTS = [
   }
 ];
 
+export const FLOW_THROUGH_VALUE = 0;
+export const DETECTED_FILTER_BANK_VALUE = 1;
+export const PULSAR_TIMING_VALUE = 2;
+
+export const PST_MODES = [
+  {
+    value: FLOW_THROUGH_VALUE
+  },
+  {
+    value: DETECTED_FILTER_BANK_VALUE
+  },
+  {
+    value: PULSAR_TIMING_VALUE
+  }
+];
+
 export const SCIENCE_VERIFICATION = 'science_verification';
 
 export const PROPOSAL_STATUS = {
@@ -515,11 +544,11 @@ export const FIELD_PATTERN_POINTING_CENTRES = 'Pointing centres';
 export const DEFAULT_GALACTIC = '00:00:00.0';
 export const DEFAULT_EQUATORIAL = 0;
 export const ROBUST = [
-  { label: '-2', value: 1 },
-  { label: '-1', value: 2 },
-  { label: '0', value: 3 },
-  { label: '1', value: 4 },
-  { label: '2', value: 5 }
+  { label: '-2', value: -2 },
+  { label: '-1', value: -1 },
+  { label: '0', value: 0 },
+  { label: '1', value: 1 },
+  { label: '2', value: 2 }
 ];
 
 export const UPLOAD_MAX_WIDTH_CSV = 25;

@@ -41,7 +41,11 @@ import {
   GENERAL,
   MOCK_CALL,
   FREQUENCY_HZ,
-  ZOOM_BANDWIDTH_DEFAULT
+  ZOOM_BANDWIDTH_DEFAULT,
+  ZOOM_CHANNELS_MIN,
+  ZOOM_CHANNELS_MAX,
+  TYPE_PST,
+  FLOW_THROUGH_VALUE
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -75,6 +79,7 @@ import {
 } from '@/utils/calculate/calculate';
 import FrequencySpectrum from '@/components/fields/frequencySpectrum/frequencySpectrum';
 import { getColors } from '@/utils/colors/colors';
+import PstModeField from '@/components/fields/pstMode/PstMode';
 
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 4;
@@ -122,6 +127,8 @@ export default function ObservationEntry() {
   const [numOfStations, setNumOfStations] = React.useState<number | undefined>(512);
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [minimumChannelWidthHz, setMinimumChannelWidthHz] = React.useState<number>(0);
+  const [zoomChannels, setZoomChannels] = React.useState<number>(ZOOM_CHANNELS_MAX); // TODO add zoomChannels to observation types and mappings
+  const [pstMode, setPstMode] = React.useState(FLOW_THROUGH_VALUE); // TODO add pstMode to observation types and mappings
 
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
@@ -347,6 +354,8 @@ export default function ObservationEntry() {
   }, [observingBand]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
+  const isZoom = () => observationType === TYPE_ZOOM;
+  const isPST = () => observationType === TYPE_PST;
   const isLow = () => observingBand === BAND_LOW;
   const telescope = (band = observingBand) => BANDWIDTH_TELESCOPE[band]?.telescope;
 
@@ -424,7 +433,7 @@ export default function ObservationEntry() {
             centralFrequencyUnits ?? FREQUENCY_HZ,
             FREQUENCY_MHZ
           )}
-          bandWidth={isContinuum() ? continuumBandwidth ?? 0 : bandwidth ?? 0}
+          bandWidth={isContinuum() ? continuumBandwidth ?? 0 : bandwidth ?? 0} // TODO get value from dropdown + convert to mghz
           minEdge={frequencyConversion(
             osdLOW?.basicCapabilities?.minFrequencyHz * 10,
             FREQUENCY_HZ,
@@ -463,6 +472,9 @@ export default function ObservationEntry() {
         setValue={setTheSubarrayConfig}
       />
     );
+
+  const pstModeField = () =>
+    fieldWrapper(<PstModeField required widthLabel={4} value={pstMode} setValue={setPstMode} />);
 
   const numStationsField = () =>
     fieldWrapper(
@@ -680,6 +692,30 @@ export default function ObservationEntry() {
     );
   };
 
+  const zoomChannelsField = () => {
+    const errorMessage = () =>
+      Number(zoomChannels) < ZOOM_CHANNELS_MIN || Number(zoomChannels) > ZOOM_CHANNELS_MAX
+        ? t('zoomChannels.range.error')
+        : '';
+
+    return fieldWrapper(
+      <Box pt={1}>
+        <NumberEntry
+          label={t('zoomChannels.label')}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={LABEL_WIDTH_NEW}
+          testId="zoomChannels"
+          value={zoomChannels}
+          setValue={setZoomChannels}
+          onFocus={() => helpComponent(t('zoomChannels.help'))}
+          required
+          errorText={errorMessage()}
+        />
+      </Box>
+    );
+  };
+
   const centralFrequencyField = () => {
     const errorMessage = () =>
       Number(centralFrequency) < CENTRAL_FREQUENCY_MIN[observingBand] ||
@@ -865,6 +901,74 @@ export default function ObservationEntry() {
           required
         />
       </Box>
+    );
+  };
+
+  const frequencySetUp = () => {
+    return (
+      <>
+        <Grid size={{ md: 12, lg: 12 }} p={2}>
+          {frequencySpectrumField()}
+        </Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{observationsBandField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>
+          {isContinuum() ? continuumBandwidthField() : bandwidthField()}
+        </Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}></Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{isContinuum() ? SubBandsField() : emptyField()}</Grid>
+      </>
+    );
+  };
+
+  const frequencySetUpContinuumMockCall = () => {
+    return (
+      <>
+        <Grid size={{ md: 12, lg: 12 }} p={2}>
+          {frequencySpectrumField()}
+        </Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{observationsBandField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{continuumBandwidthField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}></Grid>
+      </>
+    );
+  };
+
+  const frequencySetUpSpectralMockCall = () => {
+    return (
+      <>
+        <Grid size={{ md: 12, lg: 12 }} p={2}>
+          {frequencySpectrumField()}
+        </Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{observationsBandField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{zoomChannelsField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>{' '}
+        {/* TODO check this is "spectral mode" */}
+        <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>{' '}
+        {/* TODO check this is "average channel width" */}
+        <Grid size={{ md: 12, lg: 6 }}>{emptyField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{bandwidthField()}</Grid>
+      </>
+    );
+  };
+
+  const frequencySetUpPSTMockCall = () => {
+    return (
+      <>
+        <Grid size={{ md: 12, lg: 12 }} p={2}>
+          {frequencySpectrumField()}
+        </Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{observationsBandField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}> {bandwidthField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{pstModeField()}</Grid>
+      </>
     );
   };
 
@@ -1068,28 +1172,15 @@ export default function ObservationEntry() {
               rowSpacing={1}
               justifyContent="space-between"
             >
-              <Grid size={{ md: 12, lg: 12 }} p={2}>
-                {frequencySpectrumField()}
-              </Grid>
-              <Grid size={{ md: 12, lg: 6 }}>{observationsBandField()}</Grid>
-              <Grid size={{ md: 12, lg: 6 }}>
-                {isContinuum() ? continuumBandwidthField() : bandwidthField()}
-              </Grid>
-              <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
-              <Grid size={{ md: 12, lg: 6 }}></Grid>
-              {!MOCK_CALL && (
-                <>
-                  <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>
-                  <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
-                  <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>
-                  <Grid size={{ md: 12, lg: 6 }}>
-                    {isContinuum() ? SubBandsField() : emptyField()}
-                  </Grid>
-                </>
-              )}
+              {!MOCK_CALL && frequencySetUp()}{' '}
+              {/* shows to user some fields that are hidden in mock call */}
+              {MOCK_CALL && isContinuum() && frequencySetUpContinuumMockCall()}
+              {MOCK_CALL && isZoom() && frequencySetUpSpectralMockCall()}
+              {MOCK_CALL && isPST() && frequencySetUpPSTMockCall()}
             </Grid>
           </BorderedSection>
         </Grid>
+
         <Grid size={{ md: 12, lg: 3 }}>
           <Box pl={4} sx={{ position: 'sticky', top: 100 }}>
             <HelpPanel maxHeight={HELP_PANEL_HEIGHT} />

@@ -32,7 +32,7 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
       },
       telescopeCapabilities: {
         low: inData.observatory_policy.telescope_capabilities.Low,
-        mid: inData.observatory_policy.telescope_capabilities.Mid
+        mid: null // MOCK CALL inData.observatory_policy.telescope_capabilities.Mid
       }
     },
     capabilities: {
