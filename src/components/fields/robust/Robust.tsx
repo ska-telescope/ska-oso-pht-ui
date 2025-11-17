@@ -1,4 +1,3 @@
-import React from 'react';
 import { Grid } from '@mui/material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { LAB_IS_BOLD, LAB_POSITION, ROBUST } from '../../../utils/constants';
@@ -10,37 +9,36 @@ interface RobustFieldProps {
   required?: boolean;
   setValue?: Function;
   suffix?: any;
-  testId: string;
   value: string | number;
   widthButton?: number;
-  widthLabel?: number;
+  labelWidth?: number;
 }
 
 export default function RobustField({
   disabled = false,
-  onFocus = null,
+  onFocus = undefined,
   label,
   required = false,
-  setValue = null,
+  setValue = undefined,
   suffix = null,
-  testId,
   value,
   widthButton = 0,
-  widthLabel = 5
+  labelWidth = 5
 }: RobustFieldProps) {
+  const FIELD = 'robust';
   return (
     <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
       <Grid pl={suffix ? 1 : 0} size={{ xs: suffix ? 12 - widthButton : 12 }}>
         <DropDown
           disabled={disabled}
           options={ROBUST}
-          testId={testId}
+          testId={FIELD}
           value={value}
           setValue={setValue}
           label={label}
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
-          labelWidth={suffix ? widthLabel + 1 : widthLabel}
+          labelWidth={suffix ? labelWidth + 1 : labelWidth}
           onFocus={onFocus}
           required={required}
         />

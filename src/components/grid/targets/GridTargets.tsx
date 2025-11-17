@@ -94,7 +94,9 @@ export default function GridTargets({
           columns={getColumns()}
           height={height}
           onRowClick={rowClick}
-          testId="targetListColumns"
+          pagination={rows.length > 1} // Enable pagination only if more than 1 row // non SV
+          rowsPerPageOptions={rows.length > 1 ? [100] : []}
+          hideFooter={rows.length === 1}
         />
       )}
       {!rows ||

@@ -49,7 +49,7 @@ export default function BandwidthField({
   widthLabel = 5,
   observingBand = 0,
   centralFrequency = 0,
-  centralFrequencyUnits,
+  centralFrequencyUnits = 1,
   subarrayConfig = 0,
   minimumChannelWidthHz = 0
 }: BandwidthFieldProps) {
@@ -70,11 +70,12 @@ export default function BandwidthField({
       };
     });
 
-  const lookupBandwidth = (inValue: number): any =>
-    observatoryConstants.array[telescope - 1]?.bandWidth.find(bw => bw.value === inValue);
+  const lookupBandwidth = (inValue: number): any => {
+    return observatoryConstants.array[telescope - 1]?.bandWidth.find(bw => bw.value === inValue);
+  };
 
   const getBandwidthUnitsLabel = (): string => {
-    return lookupBandwidth(value)?.mapping;
+    return lookupBandwidth(centralFrequencyUnits)?.mapping;
   };
 
   const getBandwidthValue = (): number => {

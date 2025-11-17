@@ -1,6 +1,7 @@
 import React from 'react';
-import { Grid, Stack, Typography } from '@mui/material';
+import { Alert, Grid, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { presentUnits } from '@utils/present/present';
 import { validateSDPPage } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
@@ -8,8 +9,9 @@ import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
-import { PAGE_DATA_PRODUCTS, PATH } from '../../utils/constants';
+import { MOCK_CALL, PAGE_DATA_PRODUCTS, PATH } from '../../utils/constants';
 import { DataProductSDP } from '../../utils/types/dataProduct';
+import DataProduct from '../entry/DataProduct/DataProduct';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TableDataProducts from '@/components/grid/tableDataProducts/TableDataProducts';
 
@@ -121,32 +123,51 @@ export default function DataProductsPage() {
 
   const hasObservations = () => (getProposal()?.observations?.length ?? 0) > 0;
 
+  const noObservations = () => {
+    return (
+      <Alert severity={AlertColorTypes.Error} data-testid="noObservationsNotification">
+        {t('error.noObservations')}
+      </Alert>
+    );
+  };
+
+  const dataProductList = () => {
+    return (
+      <>
+        <Stack pl={GAP} pr={GAP} spacing={GAP}>
+          <AddButton
+            title="dataProduct.button"
+            action={PATH[3]}
+            disabled={!hasObservations()}
+            testId="addDataProductButton"
+          />
+          <TableDataProducts
+            data={getProposal().dataProductSDP}
+            deleteFunction={deleteIconClicked}
+            updateFunction={() => {}}
+          />
+        </Stack>
+        <AlertDialog
+          maxWidth="md"
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          onDialogResponse={deleteConfirmed}
+          title="deleteDataProduct.confirmTitle"
+          disabled={false}
+        >
+          {alertContent()}
+        </AlertDialog>
+      </>
+    );
+  };
+
   return (
     <Shell page={PAGE}>
-      <Stack pl={GAP} pr={GAP} spacing={GAP}>
-        <AddButton
-          title="dataProduct.button"
-          action={PATH[3]}
-          disabled={!hasObservations()}
-          testId="addDataProductButton"
-        />
-        <TableDataProducts
-          data={getProposal().dataProductSDP}
-          deleteFunction={deleteIconClicked}
-          updateFunction={() => {}}
-        />
-      </Stack>
-
-      <AlertDialog
-        maxWidth="md"
-        open={openDialog}
-        onClose={() => setOpenDialog(false)}
-        onDialogResponse={deleteConfirmed}
-        title="deleteDataProduct.confirmTitle"
-        disabled={false}
-      >
-        {alertContent()}
-      </AlertDialog>
+      <>
+        {hasObservations() && dataProductList()}
+        {false && hasObservations() && MOCK_CALL && <DataProduct />}
+        {!hasObservations() && noObservations()}
+      </>
     </Shell>
   );
 }
