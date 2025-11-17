@@ -1,6 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
 import { act, renderHook } from '@testing-library/react';
-import { MOCK_CALL } from '@utils/constants.ts';
 import { useOSDAccessors } from './useOSDAccessors';
 
 vi.mock('react-i18next', () => ({
@@ -103,9 +102,7 @@ describe('useOSDAccessors hook', () => {
   it('returns expected low and mid capabilities', () => {
     const { result } = renderHook(() => useOSDAccessors());
     expect(result.current.osdLOW?.basicCapabilities.minFrequencyHz).toBe(50);
-    if (!MOCK_CALL) {
-      expect(result.current.osdMID?.basicCapabilities.dishElevationLimitDeg).toBe(15);
-    }
+    expect(result.current.osdMID?.basicCapabilities.dishElevationLimitDeg).toBe(15);
   });
 
   it('returns cycle ID and description', () => {
