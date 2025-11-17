@@ -51,7 +51,7 @@ export default function ContinuumBandwidthField({
     minimumChannelWidthHz: number | undefined
   ): string => {
     const minimumChannelWidthKHz = sensCalHelpers.format
-      .convertBandwidthToKHz(minimumChannelWidthHz, 'Hz')
+      .convertBandwidthToKHz(minimumChannelWidthHz as number, 'Hz')
       .toFixed(2);
     return t('bandwidth.range.minimumChannelWidthError', {
       value: minimumChannelWidthKHz
@@ -60,7 +60,7 @@ export default function ContinuumBandwidthField({
 
   const displayMaxContBandwidthErrorMessage = (maxContBandwidthHz: number | undefined): string => {
     const maxContBandwidthMHz = sensCalHelpers.format
-      .convertBandwidthToMHz(maxContBandwidthHz, 'Hz')
+      .convertBandwidthToMHz(maxContBandwidthHz as number, 'Hz')
       .toFixed(2);
     return t('bandwidth.range.contMaximumExceededError', { value: maxContBandwidthMHz });
   };
@@ -69,20 +69,20 @@ export default function ContinuumBandwidthField({
     const scaledBandwidth = getScaledBandwidthOrFrequency(value, continuumBandwidthUnits ?? 0);
     const scaledFrequency = getScaledBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
     const maxContBandwidthHz: number | undefined = getMaxContBandwidthHz(
-      telescope,
-      subarrayConfig,
+      telescope as number,
+      subarrayConfig as number,
       osdMID,
       osdLOW,
       observatoryConstants
     );
-    const result1 = !checkMinimumChannelWidth(minimumChannelWidthHz, scaledBandwidth);
+    const result1 = !checkMinimumChannelWidth(minimumChannelWidthHz as number, scaledBandwidth);
     const result2 = !checkMaxContBandwidthHz(maxContBandwidthHz, scaledBandwidth);
     const result3 = !checkBandLimits(
       scaledBandwidth,
       scaledFrequency,
-      telescope,
-      subarrayConfig,
-      observingBand,
+      telescope as number,
+      subarrayConfig as number,
+      observingBand as number,
       osdMID,
       osdLOW,
       observatoryConstants

@@ -488,7 +488,9 @@ export default function ObservationEntry() {
     );
 
   const pstModeField = () =>
-    fieldWrapper(<PstModeField required widthLabel={4} value={pstMode} setValue={setPstMode} />);
+    fieldWrapper(
+      <PstModeField required widthLabel={LABEL_WIDTH_NEW} value={pstMode} setValue={setPstMode} />
+    );
 
   const numStationsField = () =>
     fieldWrapper(
@@ -962,10 +964,8 @@ export default function ObservationEntry() {
         <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{zoomChannelsField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>{' '}
-        {/* TODO check this is "spectral mode" */}
-        <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>{' '}
-        {/* TODO check this is "average channel width" */}
+        <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{emptyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{bandwidthField()}</Grid>
       </>
@@ -979,7 +979,7 @@ export default function ObservationEntry() {
           {frequencySpectrumField()}
         </Grid>
         <Grid size={{ md: 12, lg: 6 }}>{observationsBandField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}> {bandwidthField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}> {continuumBandwidthField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{pstModeField()}</Grid>
       </>

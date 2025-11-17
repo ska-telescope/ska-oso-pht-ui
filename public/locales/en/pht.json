@@ -297,7 +297,7 @@
   },
   "effectiveResolution": {
     "help": "This field displays the channel width after applying the spectral averaging",
-    "label": "Effective Resolution",
+    "label": "Averaged channel width",
     "error": "Unable to calculate value"
   },
   "elevation": {
@@ -1128,7 +1128,7 @@
   },
   "spectralResolution": {
     "help": "",
-    "label": "Spectral Resolution"
+    "label": "Spectral Mode"
   },
   "srcNet": {
     "label": "SRCNet"
