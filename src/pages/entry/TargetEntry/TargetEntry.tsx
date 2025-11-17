@@ -18,7 +18,6 @@ import ReferenceFrameField from '@/components/fields/referenceFrame/ReferenceFra
 import SkyDirection1 from '@/components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
 import VelocityField from '@/components/fields/velocity/Velocity';
-import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 import Target, { Beam, TiedArrayBeams } from '@/utils/types/target';
 import {
   RA_TYPE_ICRS,
@@ -616,9 +615,6 @@ export default function TargetEntry({
           </Grid>
 
           <Grid size={{ xs: 4 }} sx={{ position: 'relative' }}>
-            <Box pb={2}>
-              <HelpPanel maxHeight={'HELP_MAX_HEIGHT'} />
-            </Box>
             {osdMaxTargets && (getProposal()?.targets?.length ?? 0) > 0 && (
               <InfoCard
                 color={InfoCardColorTypes.Warning}

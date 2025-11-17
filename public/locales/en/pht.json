@@ -372,6 +372,7 @@
     "toolTip": "Add a group if observations need to be grouped."
   },
   "helpText": {
+    "label": "Help",
     "notAvailable": "Help text is not available in this field/page"
   },
   "homeBtn": {

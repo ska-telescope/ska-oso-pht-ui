@@ -16,7 +16,6 @@ import DownloadButton from '../../components/button/Download/Download';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 import PDFWrapper from '../../components/layout/PDFWrapper/PDFWrapper';
 import Shell from '../../components/layout/Shell/Shell';
-import HelpPanel from '../../components/info/helpPanel/HelpPanel';
 
 import { Proposal } from '../../utils/types/proposal';
 import { validateSciencePage } from '../../utils/validation/validation';
@@ -257,9 +256,6 @@ export default function SciencePage() {
               suffix={uploadSuffix()}
             />
           )}
-        </Grid>
-        <Grid pt={4} size={{ xs: 4 }}>
-          <HelpPanel />
         </Grid>
       </Grid>
       {PDFView()}

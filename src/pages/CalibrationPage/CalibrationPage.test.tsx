@@ -58,7 +58,6 @@ describe('<CalibrationPage />', () => {
       }
     } as any);
     wrapper(<CalibrationPage />);
-    expect(await screen.findByTestId('helpPanelId')).toBeInTheDocument();
   });
 
   test('renders checkbox and comment field', async () => {

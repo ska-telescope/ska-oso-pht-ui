@@ -10,7 +10,6 @@ import GetPresignedDeleteUrl from '@services/axios/get/getPresignedDeleteUrl/get
 import GetPresignedDownloadUrl from '@services/axios/get/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import GetPresignedUploadUrl from '@services/axios/get/getPresignedUploadUrl/getPresignedUploadUrl';
 import { Proposal } from '../../utils/types/proposal';
-import HelpPanel from '../../components/info/helpPanel/HelpPanel';
 import Shell from '../../components/layout/Shell/Shell';
 
 import { validateTechnicalPage } from '../../utils/validation/validation';
@@ -257,9 +256,6 @@ export default function TechnicalPage() {
               suffix={getProposal()?.technicalPDF?.documentId ? uploadSuffix() : <></>}
             />
           )}
-        </Grid>
-        <Grid pt={4} size={{ xs: 4 }}>
-          <HelpPanel />
         </Grid>
       </Grid>
       {PDFView()}
