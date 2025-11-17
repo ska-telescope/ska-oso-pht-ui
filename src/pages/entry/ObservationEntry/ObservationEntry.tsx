@@ -57,7 +57,6 @@ import {
 } from '@utils/helpers.ts';
 import { alpha } from '@mui/material/styles';
 import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
-import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Proposal from '../../../utils/types/proposal';
 import AddButton from '../../../components/button/Add/Add';
 import GroupObservationsField from '../../../components/fields/groupObservations/groupObservations';
@@ -79,6 +78,7 @@ import {
   calculateCentralFrequency,
   calculateContinuumBandwidth
 } from '@/utils/calculate/calculate';
+import HelpShell from '@/components/layout/HelpShell/HelpShell';
 import FrequencySpectrum from '@/components/fields/frequencySpectrum/frequencySpectrum';
 import { getColors } from '@/utils/colors/colors';
 import PstModeField from '@/components/fields/pstMode/PstMode';
@@ -87,7 +87,6 @@ const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 4;
 const LABEL_WIDTH_NEW = 5.5;
 const BACK_PAGE = PAGE_OBSERVATION;
-const HELP_PANEL_HEIGHT = '50vh';
 
 export default function ObservationEntry() {
   const { t } = useScopedTranslation();
@@ -1088,121 +1087,120 @@ export default function ObservationEntry() {
   };
 
   return (
-    <Box pt={2}>
-      <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
-      <Grid
-        pl={4}
-        pr={4}
-        container
-        direction="row"
-        alignItems="space-evenly"
-        justifyContent="space-between"
-        spacing={1}
-      >
-        <Grid size={{ md: 12, lg: 9 }}>
-          <Grid
-            container
-            direction="row"
-            spacing={2}
-            pb={2}
-            alignItems="stretch"
-            justifyContent="flex-start"
-          >
-            {!MOCK_CALL && (
-              <Grid size={{ md: 12, lg: 6 }}>
-                <BorderedSection
-                  title={t('observationSections.identifiers')}
-                  sx={{ height: '100%' }}
-                >
-                  <CardContent>
+    <HelpShell page={PAGE}>
+      <Box pt={2}>
+        <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
+        <Grid
+          pl={4}
+          pr={4}
+          container
+          direction="row"
+          alignItems="space-evenly"
+          justifyContent="space-between"
+          spacing={1}
+        >
+          <Grid size={{ md: 12, lg: 9 }}>
+            <Grid
+              container
+              direction="row"
+              spacing={2}
+              pb={2}
+              alignItems="stretch"
+              justifyContent="flex-start"
+            >
+              {!MOCK_CALL && (
+                <Grid size={{ md: 12, lg: 6 }}>
+                  <BorderedSection
+                    title={t('observationSections.identifiers')}
+                    sx={{ height: '100%' }}
+                  >
+                    <CardContent>
+                      <Grid
+                        p={0}
+                        container
+                        direction="row"
+                        alignItems="flex-start"
+                        rowSpacing={1}
+                        justifyContent="space-between"
+                      >
+                        <Grid size={{ md: 12, lg: 12 }}>{idField()}</Grid>
+                        <Grid size={{ md: 12, lg: 12 }}>{observationTypeField()}</Grid>
+                        <Grid size={{ md: 12, lg: 12 }}>{groupObservationsField()}</Grid>
+                        <Grid size={{ md: 12, lg: 12 }}>{elevationField()}</Grid>
+                        <Grid size={{ md: 12, lg: 12 }}>
+                          {isLow() ? emptyField() : weatherField()}
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </BorderedSection>
+                </Grid>
+              )}
+
+              {MOCK_CALL && (
+                <Grid size={{ md: 6, lg: 6 }}>
+                  <BorderedSection
+                    title={t('observationSections.identifiers')}
+                    sx={{ height: '100%' }}
+                  >
                     <Grid
-                      p={0}
                       container
                       direction="row"
                       alignItems="flex-start"
-                      rowSpacing={1}
+                      spacing={2}
                       justifyContent="space-between"
                     >
-                      <Grid size={{ md: 12, lg: 12 }}>{idField()}</Grid>
                       <Grid size={{ md: 12, lg: 12 }}>{observationTypeField()}</Grid>
-                      <Grid size={{ md: 12, lg: 12 }}>{groupObservationsField()}</Grid>
-                      <Grid size={{ md: 12, lg: 12 }}>{elevationField()}</Grid>
-                      <Grid size={{ md: 12, lg: 12 }}>
-                        {isLow() ? emptyField() : weatherField()}
-                      </Grid>
+                      <Grid size={{ md: 12, lg: 12 }}></Grid>
                     </Grid>
-                  </CardContent>
-                </BorderedSection>
-              </Grid>
-            )}
+                  </BorderedSection>
+                </Grid>
+              )}
 
-            {MOCK_CALL && (
               <Grid size={{ md: 6, lg: 6 }}>
                 <BorderedSection
-                  title={t('observationSections.identifiers')}
+                  title={t('observationSections.arraySetUp')}
                   sx={{ height: '100%' }}
                 >
                   <Grid
+                    p={0}
                     container
                     direction="row"
-                    alignItems="flex-start"
-                    spacing={2}
-                    justifyContent="space-between"
+                    alignItems="flext-start"
+                    rowSpacing={MOCK_CALL ? 0 : 2}
                   >
-                    <Grid size={{ md: 12, lg: 12 }}>{observationTypeField()}</Grid>
                     <Grid size={{ md: 12, lg: 12 }}></Grid>
+                    <Grid size={{ md: 12, lg: 12 }}>{subArrayField()}</Grid>
+                    <Grid size={{ md: 12, lg: 12 }}>
+                      {!MOCK_CALL && (isLow() ? numStationsField() : antennasFields())}
+                    </Grid>
+                    <Grid size={{ md: 12, lg: 12 }}>{suppliedField()}</Grid>
                   </Grid>
                 </BorderedSection>
               </Grid>
-            )}
-
-            <Grid size={{ md: 6, lg: 6 }}>
-              <BorderedSection title={t('observationSections.arraySetUp')} sx={{ height: '100%' }}>
-                <Grid
-                  p={0}
-                  container
-                  direction="row"
-                  alignItems="flext-start"
-                  rowSpacing={MOCK_CALL ? 0 : 2}
-                >
-                  <Grid size={{ md: 12, lg: 12 }}></Grid>
-                  <Grid size={{ md: 12, lg: 12 }}>{subArrayField()}</Grid>
-                  <Grid size={{ md: 12, lg: 12 }}>
-                    {!MOCK_CALL && (isLow() ? numStationsField() : antennasFields())}
-                  </Grid>
-                  <Grid size={{ md: 12, lg: 12 }}>{suppliedField()}</Grid>
-                </Grid>
-              </BorderedSection>
             </Grid>
+
+            <BorderedSection title={t('observationSections.frequencySetUp')}>
+              <Grid
+                p={0}
+                container
+                direction="row"
+                alignItems="center"
+                columnSpacing={6}
+                rowSpacing={1}
+                justifyContent="space-between"
+              >
+                {!MOCK_CALL && frequencySetUp()}{' '}
+                {/* shows to user some fields that are hidden in mock call */}
+                {MOCK_CALL && isContinuum() && frequencySetUpContinuumMockCall()}
+                {MOCK_CALL && isZoom() && frequencySetUpSpectralMockCall()}
+                {MOCK_CALL && isPST() && frequencySetUpPSTMockCall()}
+              </Grid>
+            </BorderedSection>
           </Grid>
-
-          <BorderedSection title={t('observationSections.frequencySetUp')}>
-            <Grid
-              p={0}
-              container
-              direction="row"
-              alignItems="center"
-              columnSpacing={6}
-              rowSpacing={1}
-              justifyContent="space-between"
-            >
-              {!MOCK_CALL && frequencySetUp()}{' '}
-              {/* shows to user some fields that are hidden in mock call */}
-              {MOCK_CALL && isContinuum() && frequencySetUpContinuumMockCall()}
-              {MOCK_CALL && isZoom() && frequencySetUpSpectralMockCall()}
-              {MOCK_CALL && isPST() && frequencySetUpPSTMockCall()}
-            </Grid>
-          </BorderedSection>
         </Grid>
-
-        <Grid size={{ md: 12, lg: 3 }}>
-          <Box pl={4} sx={{ position: 'sticky', top: 100 }}>
-            <HelpPanel maxHeight={HELP_PANEL_HEIGHT} />
-          </Box>
-        </Grid>
-      </Grid>
-      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
-      {pageFooter()}
-    </Box>
+        <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
+        {pageFooter()}
+      </Box>
+    </HelpShell>
   );
 }

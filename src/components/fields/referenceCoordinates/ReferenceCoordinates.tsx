@@ -50,7 +50,7 @@ export default function ReferenceCoordinatesField({
   };
 
   return (
-    <Box p={1} pb={0} pt={0} sx={{ width: '100%' }}>
+    <Box pb={0} pt={0} sx={{ width: '100%' }}>
       {ReferenceCoordinatesValueField()}
     </Box>
   );

@@ -18,7 +18,6 @@ import ReferenceFrameField from '@/components/fields/referenceFrame/ReferenceFra
 import SkyDirection1 from '@/components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
 import VelocityField from '@/components/fields/velocity/Velocity';
-import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 import Target, { Beam, TiedArrayBeams } from '@/utils/types/target';
 import {
   RA_TYPE_ICRS,
@@ -60,7 +59,6 @@ interface TargetEntryProps {
 }
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
-const PANEL_HEIGHT = '54vh';
 
 export default function TargetEntry({
   raType,
@@ -74,7 +72,7 @@ export default function TargetEntry({
   const { t } = useScopedTranslation();
   const { isSV } = useAppFlow();
   const { notifyError, notifySuccess } = useNotify();
-  const { observatoryConstants } = useOSDAccessors();
+  const { observatoryConstants, osdMaxTargets } = useOSDAccessors();
 
   const LAB_WIDTH = 5;
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
@@ -397,7 +395,7 @@ export default function TargetEntry({
     };
 
     return (
-      <Grid size={{ xs: 12 }} sx={{ position: 'relative', zIndex: 99 }} mb={2}>
+      <Grid size={{ xs: 12 }} sx={{ position: 'relative', zIndex: 99 }} mb={4}>
         <AddButton
           action={addButtonAction}
           disabled={disabled()}
@@ -568,9 +566,7 @@ export default function TargetEntry({
             <Box
               pr={2}
               sx={{
-                width: '100%',
-                height: PANEL_HEIGHT,
-                overflowY: 'auto'
+                width: '100%'
               }}
             >
               <Grid
@@ -582,7 +578,7 @@ export default function TargetEntry({
                 pt={1}
                 pb={2}
               >
-                <Grid>
+                <Grid pt={1}>
                   <BorderedSection title={t('referenceCoordinates.label')}>
                     {referenceCoordinatesField()}
                   </BorderedSection>
@@ -618,15 +614,15 @@ export default function TargetEntry({
             </Box>
           </Grid>
 
-          <Grid size={{ xs: 4 }} sx={{ position: 'relative', height: PANEL_HEIGHT }}>
-            <Box pb={2}>
-              <HelpPanel maxHeight={'HELP_MAX_HEIGHT'} />
-            </Box>
-            {isSV() && (getProposal()?.targets?.length ?? 0) > 0 && (
+          <Grid size={{ xs: 4 }} sx={{ position: 'relative' }}>
+            {osdMaxTargets && (getProposal()?.targets?.length ?? 0) > 0 && (
               <InfoCard
                 color={InfoCardColorTypes.Warning}
                 fontSize={HELP_FONT}
-                message={t('targets.limitReached')}
+                message={t(
+                  osdMaxTargets > 1 ? 'targets.limitReached_plural' : 'targets.limitReached',
+                  { value: osdMaxTargets }
+                )}
                 testId="targetLimitPanelId"
               />
             )}

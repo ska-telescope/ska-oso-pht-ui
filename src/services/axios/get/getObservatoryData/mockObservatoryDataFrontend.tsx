@@ -10,15 +10,20 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
       proposalClose: '20260512T15:00:00.000z'
     },
     cyclePolicies: {
+      maxDataProducts: 1,
+      maxObservations: 1,
+      maxTargets: 1,
       normalMaxHours: 100.0
     },
     telescopeCapabilities: {
-      mid: 'AA2',
+      mid: null,
       low: 'AA2'
     }
   },
   capabilities: {
-    mid: {
+    mid: null,
+    /* MOCK_CALL
+    {
       basicCapabilities: {
         dishElevationLimitDeg: 15.0,
         receiverInformation: [
@@ -71,6 +76,7 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
         numberFsps: 4
       }
     },
+    */
     low: {
       basicCapabilities: {
         minFrequencyHz: 50000000.0,

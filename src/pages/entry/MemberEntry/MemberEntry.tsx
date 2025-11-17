@@ -14,7 +14,6 @@ import {
   TEAM_STATUS_TYPE_OPTIONS,
   WRAPPER_HEIGHT
 } from '../../../utils/constants';
-import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Investigator from '../../../utils/types/investigator';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
@@ -454,9 +453,6 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
             </Box>
           </Grid>
         </Grid>
-      </Grid>
-      <Grid size={{ xs: 4 }}>
-        <HelpPanel />
       </Grid>
     </Grid>
   );
