@@ -191,7 +191,8 @@
   },
   "targets": {
     "empty": "There are no targets associated with this Science Verification Idea",
-    "limitReached": "Only a single target/object is allowed for Science Verification Ideas."
+    "limitReached": "Only {{value}} target/object is allowed for Science Verification Ideas.",
+    "limitReached_plural": "Only {{value}} target/object are allowed for Science Verification Ideas."
   },
   "uploadCsvBtn": {
     "uploadSuccessMsg": "All targets in file have been uploaded into the Science Verification Idea"
