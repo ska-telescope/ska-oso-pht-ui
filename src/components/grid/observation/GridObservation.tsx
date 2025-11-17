@@ -70,26 +70,35 @@ export default function GridObservation({
 
   const displayFrequency = (inValue: string) => (
     <Typography variant="subtitle1">
-      {t('centralFrequency.label')} : {inValue}
+      {t('centralFrequency.label')}:{' '}
+      <Typography component="span" fontWeight="bold">
+        {inValue}
+      </Typography>
     </Typography>
   );
 
   const displayContinuumBandwidth = (inValue: string) => (
     <Typography variant="subtitle1">
-      {t('bandwidth.label.1')} : {inValue}
+      {t('bandwidth.label.1')}:{' '}
+      <Typography component="span" fontWeight="bold">
+        {inValue}
+      </Typography>
     </Typography>
   );
 
   const displayZoomBandwidth = (inValue: string) => (
     <Typography variant="subtitle1">
-      {t('bandwidth.label.0')} :{' '}
+      {t('bandwidth.label.0')}:{' '}
       {OSD_CONSTANTS.array[1].bandWidth.find(ar => ar.value === Number(inValue))?.label}
     </Typography>
   );
 
   const displayNumSubBands = (inValue: string) => (
     <Typography variant="subtitle1">
-      {t('subBands.short')} : {inValue}
+      {t('subBands.short')}:{' '}
+      <Typography component="span" fontWeight="bold">
+        {inValue}
+      </Typography>
     </Typography>
   );
 
@@ -116,7 +125,8 @@ export default function GridObservation({
         <Stack
           direction="column"
           sx={{
-            backgroundColor: isSelected ? theme.palette.primary.light : 'transparent'
+            backgroundColor: isSelected ? theme.palette.primary.light : 'transparent',
+            padding: 2
           }}
         >
           {displayName(e.row.id)}

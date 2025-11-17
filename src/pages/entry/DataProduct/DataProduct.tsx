@@ -42,6 +42,7 @@ const PAGE_PREFIX = 'SDP';
 const LABEL_WIDTH = 5;
 const TICK_LABEL_WIDTH = 10;
 const COL = 6;
+const COL_MID = 8;
 
 const CHANNELS_OUT_MAX = 40;
 
@@ -561,21 +562,23 @@ export default function DataProduct() {
             {isContinuum() && (
               <BorderedSection title={t('page.7.group.' + TYPE_CONTINUUM + '.' + dataProductType)}>
                 {isDataTypeOne() && (
-                  <Grid pb={1} container>
-                    <Grid size={{ md: COL }}>{fieldWrapper(imageSizeField())}</Grid>
-                    <Grid size={{ md: COL }}>{fieldWrapper(pixelSizeField())}</Grid>
-                    <Grid size={{ md: COL }}>{fieldWrapper(imageWeightingField())}</Grid>
-                    <Grid size={{ md: COL }}>
+                  <Grid pb={1} container spacing={GAP}>
+                    <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(imageSizeField())}</Grid>
+                    <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(pixelSizeField())}</Grid>
+                    <Grid size={{ md: COL_MID, lg: COL }}>
+                      {fieldWrapper(imageWeightingField())}
+                    </Grid>
+                    <Grid size={{ md: COL_MID, lg: COL }}>
                       {weighting === IW_BRIGGS && fieldWrapper(robustField())}
                     </Grid>
-                    <Grid size={{ md: COL }}>{fieldWrapper(taperField())}</Grid>
-                    <Grid size={{ md: COL }}>{fieldWrapper(channelsOutField())}</Grid>
+                    <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(taperField())}</Grid>
+                    <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(channelsOutField())}</Grid>
                   </Grid>
                 )}
                 {!isDataTypeOne() && (
                   <Grid pb={1} container>
-                    <Grid size={{ md: 8 }}>{fieldWrapper(timeAveragingField())}</Grid>
-                    <Grid size={{ md: 8 }}>{fieldWrapper(frequencyAveragingField())}</Grid>
+                    <Grid size={{ md: COL_MID }}>{fieldWrapper(timeAveragingField())}</Grid>
+                    <Grid size={{ md: COL_MID }}>{fieldWrapper(frequencyAveragingField())}</Grid>
                   </Grid>
                 )}
               </BorderedSection>
@@ -584,15 +587,17 @@ export default function DataProduct() {
             {isSpectral() && (
               <BorderedSection title={t('page.7.group.' + TYPE_ZOOM)}>
                 <Grid pb={1} container>
-                  <Grid size={{ md: COL }}>{fieldWrapper(imageSizeField())}</Grid>
-                  <Grid size={{ md: COL }}>{fieldWrapper(pixelSizeField())}</Grid>
-                  <Grid size={{ md: COL }}>{fieldWrapper(imageWeightingField())}</Grid>
-                  <Grid size={{ md: COL }}>
+                  <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(imageSizeField())}</Grid>
+                  <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(pixelSizeField())}</Grid>
+                  <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(imageWeightingField())}</Grid>
+                  <Grid size={{ md: COL_MID, lg: COL }}>
                     {weighting === IW_BRIGGS && fieldWrapper(robustField())}
                   </Grid>
-                  <Grid size={{ md: COL }}>{fieldWrapper(taperField())}</Grid>
-                  <Grid size={{ md: COL }}>{fieldWrapper(channelsOutField())}</Grid>
-                  <Grid size={{ md: COL }}>{fieldWrapper(continuumSubtractionField())}</Grid>
+                  <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(taperField())}</Grid>
+                  <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(channelsOutField())}</Grid>
+                  <Grid size={{ md: COL_MID, lg: COL }}>
+                    {fieldWrapper(continuumSubtractionField())}
+                  </Grid>
                 </Grid>
               </BorderedSection>
             )}
@@ -601,19 +606,21 @@ export default function DataProduct() {
               <BorderedSection title={t('page.7.group.' + TYPE_PST + '.' + dataProductType)}>
                 {isDataTypeOne() && (
                   <Grid pb={1} container>
-                    <Grid size={{ md: COL }}>{fieldWrapper(bitDepthField())}</Grid>
+                    <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(bitDepthField())}</Grid>
                   </Grid>
                 )}
                 {!isDataTypeOne() && !isDataTypeThree() && (
                   <Grid pb={1} container>
-                    <Grid size={{ md: COL }}>TO BE PROVIDED BY SCIENCE OPERATIONS</Grid>
+                    <Grid size={{ md: COL_MID, lg: COL }}>
+                      TO BE PROVIDED BY SCIENCE OPERATIONS
+                    </Grid>
                   </Grid>
                 )}
                 {isDataTypeThree() && (
                   <Grid pb={1} container>
-                    <Grid size={{ md: 8 }}>{fieldWrapper(timeAveragingField())}</Grid>
-                    <Grid size={{ md: 8 }}>{fieldWrapper(frequencyAveragingField())}</Grid>
-                    <Grid size={{ md: 8 }}>{fieldWrapper(bitDepthField())}</Grid>
+                    <Grid size={{ md: COL_MID }}>{fieldWrapper(timeAveragingField())}</Grid>
+                    <Grid size={{ md: COL_MID }}>{fieldWrapper(frequencyAveragingField())}</Grid>
+                    <Grid size={{ md: COL_MID }}>{fieldWrapper(bitDepthField())}</Grid>
                   </Grid>
                 )}
               </BorderedSection>
