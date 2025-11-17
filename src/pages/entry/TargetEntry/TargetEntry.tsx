@@ -578,15 +578,7 @@ export default function TargetEntry({
                 pt={1}
                 pb={2}
               >
-                {isSV() && (getProposal()?.targets?.length ?? 0) > 0 && (
-                  <InfoCard
-                    color={InfoCardColorTypes.Warning}
-                    fontSize={HELP_FONT}
-                    message={t('targets.limitReached')}
-                    testId="targetLimitPanelId"
-                  />
-                )}
-                <Grid pt={2}>
+                <Grid pt={1}>
                   <BorderedSection title={t('referenceCoordinates.label')}>
                     {referenceCoordinatesField()}
                   </BorderedSection>
@@ -623,6 +615,14 @@ export default function TargetEntry({
           </Grid>
 
           <Grid size={{ xs: 4 }} sx={{ position: 'relative' }}>
+            {isSV() && (getProposal()?.targets?.length ?? 0) > 0 && (
+              <InfoCard
+                color={InfoCardColorTypes.Warning}
+                fontSize={HELP_FONT}
+                message={t('targets.limitReached')}
+                testId="targetLimitPanelId"
+              />
+            )}
             {!id && (
               <Box
                 sx={{

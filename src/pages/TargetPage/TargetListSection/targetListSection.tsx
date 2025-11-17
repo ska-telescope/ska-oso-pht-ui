@@ -1,9 +1,9 @@
 import React from 'react';
 import { Box, Grid, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '@utils/types/proposal.tsx';
-import { MOCK_CALL, RA_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
+import { FOOTER_SPACER, MOCK_CALL, RA_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
 import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
@@ -28,7 +28,6 @@ export default function TargetListSection() {
   const [nameError, setNameError] = React.useState('');
 
   const DATA_GRID_HEIGHT = MOCK_CALL ? '18vh' : '60vh';
-  const TARGET_ENTRY_HEIGHT = '90vh';
   const deleteIconClicked = (e: Target) => {
     setRowTarget(e);
     setOpenDeleteDialog(true);
@@ -161,7 +160,6 @@ export default function TargetListSection() {
           <Box
             sx={{
               width: '100%',
-              height: TARGET_ENTRY_HEIGHT,
               border: isSV() ? '1px solid red' : '1px solid grey',
               borderColor: isSV() ? theme.palette.primary.light : 'grey',
               borderRadius: isSV() ? '16px' : '0'
@@ -199,6 +197,7 @@ export default function TargetListSection() {
             {value === 1 && <TargetFileImport raType={RA_TYPE_ICRS.value} />}
             {value === 2 && <SpatialImaging />}
           </Box>
+          <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
         </Grid>
       </Grid>
     );
