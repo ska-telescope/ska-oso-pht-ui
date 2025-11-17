@@ -619,7 +619,7 @@ export default function TargetEntry({
             <Box pb={2}>
               <HelpPanel maxHeight={'HELP_MAX_HEIGHT'} />
             </Box>
-            {isSV() && (getProposal()?.targets?.length ?? 0) > 0 && (
+            {MOCK_CALL && (getProposal()?.targets?.length ?? 0) > 0 && (
               <InfoCard
                 color={InfoCardColorTypes.Warning}
                 fontSize={HELP_FONT}
