@@ -39,6 +39,16 @@ const mockStore = {
   updateAppContent1: vi.fn(),
   updateAppContent2: vi.fn()
 };
+
+vi.mock("@/utils/aaa/aaaUtils", async (importOriginal) => {
+  const actual = await importOriginal() as any;
+  return {
+    ...actual,
+    accessSubmit: vi.fn(() => true), 
+  };
+});
+
+
 vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
   storageObject: {
     useStore: () => mockStore
