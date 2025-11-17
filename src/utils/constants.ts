@@ -3,6 +3,7 @@ import Target from './types/target';
 import Investigator from './types/investigator';
 import { env } from '@/env';
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
+export const MOCK_CALL = env.REACT_APP_USE_MOCK_CALL === 'true';
 export const cypressToken = window.localStorage.getItem('cypress:token');
 export const cypressProposal = window.localStorage.getItem('cypress:proposalCreated') === 'true';
 export const cypressEditProposal = window.localStorage.getItem('cypress:proposalEdit') === 'true';
@@ -137,6 +138,15 @@ export const FOOTER_PMT_SPACER = SPACER_FOOTER + FOOTER_PMT;
 export const CENTRAL_FREQUENCY_MAX = [350, 1.05, 1.76, 8.5, 15.4];
 export const CENTRAL_FREQUENCY_MIN = [50, 0.35, 0.95, 4.6, 8.3];
 
+export const BIT_DEPTH = [
+  { value: '1' },
+  { value: '2' },
+  { value: '4' },
+  { value: '8' },
+  { value: '16' },
+  { value: '32' }
+];
+
 export const CONFLICT_REASONS = [
   'conflict-none',
   'conflict-investigator',
@@ -161,8 +171,6 @@ export const DATA_PRODUCT = {
 };
 export const DEFAULT_HELP = ['', ' ', ''];
 
-export const MOCK_CALL = true; // Used so we can track down specific changes for the mock call
-
 export const EMPTY_STATUS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]; // See SRCNet INACTIVE
 export const ENTRY_HEIGHT = 40;
 
@@ -181,6 +189,10 @@ export const FREQUENCY_UNITS = [
   { label: 'kHz', value: FREQUENCY_KHZ, mapping: 'kHz', toHz: 10000000 },
   { label: 'Hz', value: FREQUENCY_HZ, mapping: 'Hz', toHz: 10000000000 }
 ];
+
+export const TYPE_ZOOM = 0;
+export const TYPE_CONTINUUM = 1;
+export const TYPE_PST = 2;
 
 export const MODE_CONTINUUM = 102;
 export const MODE_PST = 103;
@@ -220,13 +232,20 @@ export const GENERAL = {
     { label: 'VLBI', subCategory: [{ label: 'Not specified', value: 1 }], value: 14 }
   ],
   ObservingMode: [
-    { label: 'Zoom', subCategory: [{ label: 'Not specified', value: 1 }], value: MODE_ZOOM },
+    {
+      label: 'Zoom',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: MODE_ZOOM,
+      observationType: TYPE_ZOOM
+    },
     {
       label: 'Continuum',
       subCategory: [{ label: 'Not specified', value: 1 }],
-      value: MODE_CONTINUUM
+      value: MODE_CONTINUUM,
+      observationType: TYPE_CONTINUUM
     },
-    { label: 'PST', subCategory: [{ label: 'Not specified', value: 1 }], value: MODE_PST }
+    { label: 'PST', subCategory: [{ label: 'Not specified', value: 1 }], value: MODE_PST },
+    { label: 'Spectral', subCategory: [{ label: 'Not specified', value: 1 }], value: MODE_ZOOM }
   ]
 };
 
@@ -243,15 +262,33 @@ export const IW_BRIGGS = 2;
 export const IW_NATURAL = 0;
 export const IW_UNIFORM = 1;
 
-export const STOKES = [{ label: 'I', value: 'I' }];
+export const POLARISATIONS = [
+  { value: 'I' },
+  { value: 'Q' },
+  { value: 'U' },
+  { value: 'V' },
+  { value: 'XX' },
+  { value: 'XY' },
+  { value: 'YX' },
+  { value: 'YY' }
+];
+export const POLARISATIONS_PST_FLOW = [{ value: 'X' }, { value: 'Y' }];
+export const POLARISATIONS_PST_BANK = [
+  { value: 'I' },
+  { value: 'Q' },
+  { value: 'U' },
+  { value: 'V' }
+];
+
 export const IMAGE_WEIGHTING = [
   { label: 'natural', lookup: 'natural', value: 0 },
   { label: 'uniform', lookup: 'uniform', value: 1 },
-  { label: 'briggs', lookup: 'robust', value: 2 }
+  { label: 'briggs', lookup: 'briggs', value: 2 }
 ];
 
 export const LAB_IS_BOLD = true;
 export const LAB_POSITION = LABEL_POSITION.START;
+export const LAB_POS_TICK = LABEL_POSITION.END;
 
 export const MULTIPLIER_HZ_GHZ = [1, 1, 1000, 1000000, 1000000000];
 
@@ -444,10 +481,6 @@ export const TECHNICAL_FEASIBILITY = {
   MAYBE: 'Maybe'
 };
 
-export const TYPE_ZOOM = 0;
-export const TYPE_CONTINUUM = 1;
-
-export const TYPE_PSS = 2;
 export const PULSAR_MODE_FOLDED = 'folded_pulse';
 
 export const OSCILLATION_UNITS = [
@@ -545,6 +578,10 @@ export const STATUS = {
 };
 export const SUPPLIED_VALUE_DEFAULT_MID = 600;
 export const SUPPLIED_VALUE_DEFAULT_LOW = 1;
+// TODO check if we should use different default values for mid and low bandwidth
+// export const ZOOM_BANDWIDTH_DEFAULT_MID = 1;
+// export const ZOOM_BANDWIDTH_DEFAULT_LOW = 5;
+export const ZOOM_BANDWIDTH_DEFAULT = 1;
 
 export const TARGET_OPTION = {
   LIST_OF_TARGETS: 1,

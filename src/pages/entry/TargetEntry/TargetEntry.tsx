@@ -33,7 +33,8 @@ import {
   BAND_LOW,
   TYPE_CONTINUUM,
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
-  SUPPLIED_TYPE_INTEGRATION
+  SUPPLIED_TYPE_INTEGRATION,
+  MOCK_CALL
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -58,8 +59,6 @@ interface TargetEntryProps {
 }
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
-const PANEL_HEIGHT = '54vh';
-const MOCK_CALL = true;
 
 export default function TargetEntry({
   raType,
@@ -396,7 +395,7 @@ export default function TargetEntry({
     };
 
     return (
-      <Grid size={{ xs: 12 }} sx={{ position: 'relative', zIndex: 99 }} mb={2}>
+      <Grid size={{ xs: 12 }} sx={{ position: 'relative', zIndex: 99 }} mb={4}>
         <AddButton
           action={addButtonAction}
           disabled={disabled()}
@@ -567,9 +566,7 @@ export default function TargetEntry({
             <Box
               pr={2}
               sx={{
-                width: '100%',
-                height: PANEL_HEIGHT,
-                overflowY: 'auto'
+                width: '100%'
               }}
             >
               <Grid
@@ -581,7 +578,7 @@ export default function TargetEntry({
                 pt={1}
                 pb={2}
               >
-                <Grid>
+                <Grid pt={1}>
                   <BorderedSection title={t('referenceCoordinates.label')}>
                     {referenceCoordinatesField()}
                   </BorderedSection>
@@ -617,7 +614,7 @@ export default function TargetEntry({
             </Box>
           </Grid>
 
-          <Grid size={{ xs: 4 }} sx={{ position: 'relative', height: PANEL_HEIGHT }}>
+          <Grid size={{ xs: 4 }} sx={{ position: 'relative' }}>
             {isSV() && (getProposal()?.targets?.length ?? 0) > 0 && (
               <InfoCard
                 color={InfoCardColorTypes.Warning}
