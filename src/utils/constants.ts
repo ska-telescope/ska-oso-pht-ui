@@ -236,12 +236,6 @@ export const GENERAL = {
   ],
   ObservingMode: [
     {
-      label: 'Zoom',
-      subCategory: [{ label: 'Not specified', value: 1 }],
-      value: MODE_ZOOM,
-      observationType: TYPE_ZOOM
-    },
-    {
       label: 'Continuum',
       subCategory: [{ label: 'Not specified', value: 1 }],
       value: MODE_CONTINUUM,
@@ -550,11 +544,11 @@ export const FIELD_PATTERN_POINTING_CENTRES = 'Pointing centres';
 export const DEFAULT_GALACTIC = '00:00:00.0';
 export const DEFAULT_EQUATORIAL = 0;
 export const ROBUST = [
-  { label: '-2', value: 1 },
-  { label: '-1', value: 2 },
-  { label: '0', value: 3 },
-  { label: '1', value: 4 },
-  { label: '2', value: 5 }
+  { label: '-2', value: -2 },
+  { label: '-1', value: -1 },
+  { label: '0', value: 0 },
+  { label: '1', value: 1 },
+  { label: '2', value: 2 }
 ];
 
 export const UPLOAD_MAX_WIDTH_CSV = 25;
