@@ -1,6 +1,6 @@
 import { TableRow, TableCell, IconButton, Box, Typography, Collapse } from '@mui/material';
 import { ChevronRight, ExpandMore } from '@mui/icons-material';
-import { useTheme, alpha } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 import React from 'react';
 import EditIcon from '@/components/icon/editIcon/editIcon';
 import TrashIcon from '@/components/icon/trashIcon/trashIcon';
@@ -168,13 +168,14 @@ export default function TableDataProductsRow({
     const colors = getColors({
       type: 'telescope',
       colors: getObservation()?.telescope.toString() ?? '',
-      content: 'both'
+      content: 'both',
+      dim: 0.6
     });
     return (
       <TableCell role="gridcell" sx={{ width: '1%', whiteSpace: 'nowrap', minWidth: 0 }}>
         <Box
           sx={{
-            backgroundColor: alpha(colors[0], 0.6),
+            backgroundColor: colors[0],
             borderRadius: '0px',
             padding: '4px 8px',
             display: 'inline-flex'
@@ -192,7 +193,8 @@ export default function TableDataProductsRow({
     const colors = getColors({
       type: 'telescope',
       colors: getObservation()?.telescope.toString() ?? '',
-      content: 'both'
+      content: 'both',
+      dim: 0.6
     });
     return (
       <TableCell>
@@ -228,7 +230,7 @@ export default function TableDataProductsRow({
               FREQUENCY_HZ,
               FREQUENCY_MHZ
             )}
-            bandColor={alpha(colors[0], 0.6)}
+            bandColor={colors[0]}
           />
         )}
       </TableCell>

@@ -311,7 +311,6 @@ export const MockProposalFrontend: Proposal = {
       pixelSizeUnits: 'arcsecs',
       weighting: 1,
       polarisations: '123',
-      robust: 0,
       channelsOut: 1,
       fitSpectralPol: 3
     }
@@ -416,7 +415,7 @@ export const MockProposalFrontendZoom: Proposal = {
       telescope: 2,
       subarray: 3,
       type: 0,
-      imageWeighting: 1,
+      imageWeighting: 2,
       observingBand: 0,
       centralFrequency: 200,
       centralFrequencyUnits: 2,
@@ -501,9 +500,8 @@ export const MockProposalFrontendZoom: Proposal = {
       imageSizeUnits: 0,
       pixelSizeValue: 3.7,
       pixelSizeUnits: 'arcsecs',
-      weighting: 2,
+      weighting: 1,
       polarisations: '1234',
-      robust: 0,
       channelsOut: 1,
       fitSpectralPol: 3
     }

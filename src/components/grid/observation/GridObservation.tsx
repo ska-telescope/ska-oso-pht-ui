@@ -11,12 +11,14 @@ const ROW_HEIGHT = 200;
 
 interface GridObservationProps {
   data: Observation[];
+  disabled?: boolean;
   rowClick?: (params: any) => void;
   displayOption?: number;
 }
 
 export default function GridObservation({
   data,
+  disabled = false,
   rowClick,
   displayOption = 0
 }: GridObservationProps) {
@@ -154,15 +156,17 @@ export default function GridObservation({
         columns={getColumns(displayOption)}
         getRowHeight={() => ROW_HEIGHT}
         hideFooter
-        onRowClick={handleRowClick}
-        rowSelectionModel={selectedId ? [selectedId] : []}
+        onRowClick={disabled ? undefined : handleRowClick}
+        rowSelectionModel={disabled ? [] : selectedId ? [selectedId] : []}
         autoHeight={false}
         testId="gridObservation"
         sx={{
           width: '100%',
           height: gridHeight,
           minHeight: 0,
-          overflow: 'hidden'
+          overflow: 'hidden',
+          pointerEvents: disabled ? 'none' : 'auto',
+          opacity: disabled ? 0.5 : 1
         }}
       />
     </Box>

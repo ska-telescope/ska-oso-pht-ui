@@ -14,17 +14,17 @@ const wrapper = (component: React.ReactElement) => {
 
 describe('PixelSizeField', () => {
   it('renders the component with the correct label', () => {
-    wrapper(<PixelSizeField label="Pixel Size" testId="pixel-size-field" value={10} />);
-    expect(screen.getByText('Pixel Size')).toBeInTheDocument();
+    wrapper(<PixelSizeField value={10} />);
+    expect(screen.getByText('pixelSize.label')).toBeInTheDocument();
   });
 
   it('renders the suffix if provided', () => {
-    wrapper(<PixelSizeField testId="pixel-size-field" value={10} suffix="px" />);
+    wrapper(<PixelSizeField value={10} suffix="px" />);
     expect(screen.getByText('px')).toBeInTheDocument();
   });
 
   it('renders the required indicator if required is true', () => {
-    wrapper(<PixelSizeField testId="pixel-size-field" value={10} required />);
-    expect(screen.getByText('*')).toBeInTheDocument();
+    wrapper(<PixelSizeField value={10} required />);
+    expect(screen.getByText('pixelSize.label *')).toBeInTheDocument();
   });
 });
