@@ -46,8 +46,8 @@ export default function CalibrationPage() {
 
   const { t } = useScopedTranslation();
 
-  const LABEL_WIDTH = 5;
-  const LABEL_WIDTH_CHECKBOX = 11;
+  const LABEL_WIDTH = 1;
+  const LABEL_WIDTH_CHECKBOX = 11.5;
 
   const [baseObservations, setBaseObservations] = React.useState<
     { label: string; value: string }[]
@@ -420,7 +420,7 @@ export default function CalibrationPage() {
                 />
               )}
               {(getProposal()?.targets?.length ?? 0) > 0 && (
-                <Box pt={2} pr={5} pl={3}>
+                <Box pt={2} pr={5}>
                   <InfoCard
                     color={InfoCardColorTypes.Warning}
                     fontSize={HELP_FONT}
