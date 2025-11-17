@@ -433,7 +433,7 @@ export default function ObservationEntry() {
             centralFrequencyUnits ?? FREQUENCY_HZ,
             FREQUENCY_MHZ
           )}
-          bandWidth={isContinuum() ? continuumBandwidth ?? 0 : bandwidth ?? 0}
+          bandWidth={isContinuum() ? continuumBandwidth ?? 0 : bandwidth ?? 0} // TODO get value from dropdown + convert to mghz
           minEdge={frequencyConversion(
             osdLOW?.basicCapabilities?.minFrequencyHz * 10,
             FREQUENCY_HZ,
