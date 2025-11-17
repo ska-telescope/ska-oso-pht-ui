@@ -13,6 +13,7 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
       maxDataProducts: 1,
       maxObservations: 1,
       maxTargets: 1,
+      isCustomAllowed: false,
       normalMaxHours: 100.0
     },
     telescopeCapabilities: {
