@@ -45,11 +45,13 @@ import {
   ZOOM_CHANNELS_MIN,
   ZOOM_CHANNELS_MAX,
   TYPE_PST,
-  FLOW_THROUGH_VALUE
+  FLOW_THROUGH_VALUE,
+  FREQUENCY_KHZ
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
   generateId,
+  getBandwidthZoom,
   getMinimumChannelWidth,
   getScaledBandwidthOrFrequency
 } from '@utils/helpers.ts';
@@ -433,17 +435,29 @@ export default function ObservationEntry() {
             centralFrequencyUnits ?? FREQUENCY_HZ,
             FREQUENCY_MHZ
           )}
-          bandWidth={isContinuum() ? continuumBandwidth ?? 0 : bandwidth ?? 0} // TODO get value from dropdown + convert to mghz
-          minEdge={frequencyConversion(
-            osdLOW?.basicCapabilities?.minFrequencyHz * 10,
-            FREQUENCY_HZ,
-            FREQUENCY_MHZ
-          )}
-          maxEdge={frequencyConversion(
-            osdLOW?.basicCapabilities?.maxFrequencyHz * 10,
-            FREQUENCY_HZ,
-            FREQUENCY_MHZ
-          )}
+          bandWidth={
+            isContinuum()
+              ? continuumBandwidth ?? 0
+              : frequencyConversion(
+                  getBandwidthZoom(observationOut()),
+                  FREQUENCY_KHZ,
+                  FREQUENCY_MHZ
+                ) ?? 0
+          }
+          minEdge={
+            frequencyConversion(
+              osdLOW?.basicCapabilities?.minFrequencyHz * 10,
+              FREQUENCY_HZ,
+              FREQUENCY_MHZ
+            ) + 10
+          }
+          maxEdge={
+            frequencyConversion(
+              osdLOW?.basicCapabilities?.maxFrequencyHz * 10,
+              FREQUENCY_HZ,
+              FREQUENCY_MHZ
+            ) - 10
+          }
           bandColor={alpha(colors[0], 0.6)}
           boxWidth="100%"
         />

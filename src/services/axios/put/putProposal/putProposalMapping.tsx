@@ -44,7 +44,7 @@ import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
-import { helpers } from '@/utils/helpers';
+import { getBandwidthZoom, helpers } from '@/utils/helpers';
 import { CalibrationStrategy, CalibrationStrategyBackend } from '@/utils/types/calibrationStrategy';
 import { SuppliedBackend } from '@/utils/types/supplied';
 
@@ -258,16 +258,7 @@ const getBandwidthContinuum = (incObs: Observation): ValueUnitPair => {
     unit: getFrequencyAndBandwidthUnits(incObs.continuumBandwidthUnits as number)
   };
 };
-const getBandwidthZoom = (incObs: Observation): ValueUnitPair => {
-  const obsTelescopeArray = OSD_CONSTANTS.array.find(o => o.value === incObs.telescope);
-  const bandwidth = obsTelescopeArray?.bandWidth?.find(b => b.value === incObs.bandwidth);
-  const valueUnit = bandwidth?.label?.split(' ');
-  const value = valueUnit && valueUnit.length > 0 ? Number(valueUnit[0]) : 0;
-  return {
-    value: value,
-    unit: bandwidth?.mapping ? bandwidth.mapping : ''
-  };
-};
+
 const getBandwidth = (ob: Observation): ValueUnitPair =>
   isContinuum(ob.type) ? getBandwidthContinuum(ob) : getBandwidthZoom(ob);
 
