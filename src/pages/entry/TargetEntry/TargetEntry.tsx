@@ -277,7 +277,7 @@ export default function TargetEntry({
           telescope: TELESCOPE_LOW_NUM,
           subarray: OB_SUBARRAY_AA2,
           linked: '0',
-          type: TYPE_CONTINUUM,
+          type: getProposal().scienceCategory ?? TYPE_CONTINUUM,
           observingBand: BAND_LOW,
           centralFrequency: calculateCentralFrequency(
             BAND_LOW,

@@ -1,4 +1,3 @@
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import EdgeSlider from '../EdgeSlider/EdgeSlider';
 import PageBannerPPT from '../pageBannerPPT/PageBannerPPT';
 import PageFooterPPT from '../pageFooterPPT/PageFooterPPT';
@@ -18,16 +17,10 @@ export default function Shell({
   buttonDisabled = false,
   helpDisabled = false
 }: ShellProps) {
-  const { help } = storageObject.useStore();
-
-  function getHelp(): string {
-    return help && help?.component ? (help?.component as string) : '';
-  }
-
   return (
     <>
       <PageBannerPPT pageNo={page} />
-      {!helpDisabled && <EdgeSlider helperText={getHelp()} />}
+      {!helpDisabled && <EdgeSlider />}
       {children}
       <PageFooterPPT pageNo={footerPage} buttonDisabled={buttonDisabled} />
     </>

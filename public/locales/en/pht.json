@@ -373,7 +373,8 @@
   },
   "helpText": {
     "label": "Help",
-    "notAvailable": "Help text is not available in this field/page"
+    "notAvailable": "Help text is not available in this field/page",
+    "urlLabel": "Click for link"
   },
   "homeBtn": {
     "label": "Home",
@@ -1277,7 +1278,6 @@
     "empty": "A value is required",
     "maxChar": "939",
     "maxWord": "50",
-    "help": "",
     "helper": "Please enter your title information. This field supports latex syntax. - Word count {{current}} / {{max}}"
   },
   "updateBtn": {
