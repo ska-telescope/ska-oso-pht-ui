@@ -5,6 +5,7 @@ import {
   LAB_IS_BOLD,
   LAB_POSITION,
   TELESCOPE_LOW_NUM,
+  TYPE_PST,
   TYPE_ZOOM
 } from '@utils/constants.ts';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
@@ -34,6 +35,7 @@ interface BandwidthFieldProps {
   centralFrequencyUnits?: number;
   subarrayConfig?: number;
   minimumChannelWidthHz?: number;
+  observationType?: number;
 }
 
 export default function BandwidthField({
@@ -49,9 +51,10 @@ export default function BandwidthField({
   widthLabel = 5,
   observingBand = 0,
   centralFrequency = 0,
-  centralFrequencyUnits,
+  centralFrequencyUnits = 1,
   subarrayConfig = 0,
-  minimumChannelWidthHz = 0
+  minimumChannelWidthHz = 0,
+  observationType = TYPE_ZOOM
 }: BandwidthFieldProps) {
   const { t } = useScopedTranslation();
   const { osdMID, osdLOW, observatoryConstants } = useOSDAccessors();
@@ -70,11 +73,12 @@ export default function BandwidthField({
       };
     });
 
-  const lookupBandwidth = (inValue: number): any =>
-    observatoryConstants.array[telescope - 1]?.bandWidth.find(bw => bw.value === inValue);
+  const lookupBandwidth = (inValue: number): any => {
+    return observatoryConstants.array[telescope - 1]?.bandWidth.find(bw => bw.value === inValue);
+  };
 
   const getBandwidthUnitsLabel = (): string => {
-    return lookupBandwidth(value)?.mapping;
+    return lookupBandwidth(centralFrequencyUnits)?.mapping;
   };
 
   const getBandwidthValue = (): number => {
@@ -149,7 +153,11 @@ export default function BandwidthField({
           testId={testId}
           value={value}
           setValue={setValue}
-          label={t(`bandwidth.label.${TYPE_ZOOM}`)}
+          label={
+            observationType === TYPE_PST
+              ? t(`bandwidth.label.${TYPE_PST}`)
+              : t(`bandwidth.label.${TYPE_ZOOM}`)
+          }
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
           labelWidth={suffix ? widthLabel + 1 : widthLabel}

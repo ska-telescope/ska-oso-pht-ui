@@ -5,16 +5,15 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry, TickBox, ButtonSizeTypes } from '@ska-telescope/ska-gui-components';
 import PostSendEmailInvite from '@services/axios/post/postSendEmailInvite/postSendEmailInvite';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
-import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
-import { Proposal, ProposalBackend } from '../../../utils/types/proposal';
-import { generateId, helpers } from '../../../utils/helpers';
+import { Proposal, ProposalBackend } from '@utils/types/proposal.tsx';
+import { generateId, helpers } from '@utils/helpers.ts';
 import {
   LAB_POSITION,
   PROPOSAL_STATUS,
   TEAM_STATUS_TYPE_OPTIONS,
   WRAPPER_HEIGHT
-} from '../../../utils/constants';
-import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
+} from '@utils/constants.ts';
+import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
 import Investigator from '../../../utils/types/investigator';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
@@ -28,6 +27,7 @@ import ResetButton from '@/components/button/Reset/Reset';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
+export const LAB_WIDTH = 5;
 
 interface MemberEntryProps {
   invitationBtnClicked?: () => void;
@@ -35,7 +35,7 @@ interface MemberEntryProps {
 
 export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberEntryProps) {
   const { t } = useScopedTranslation();
-  const LABEL_WIDTH = 6;
+  const LABEL_WIDTH = 3;
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
 
   const getProposal = () => application.content2 as Proposal;
@@ -346,6 +346,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
         label={t('firstName.label')}
         labelBold
         labelPosition={LAB_POSITION}
+        labelWidth={LABEL_WIDTH}
         testId="firstName"
         value={firstName}
         setValue={setFirstName}
@@ -363,6 +364,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
         label={t('lastName.label')}
         labelBold
         labelPosition={LAB_POSITION}
+        labelWidth={LABEL_WIDTH}
         testId="lastName"
         value={lastName}
         setValue={setLastName}
@@ -380,6 +382,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
         label={t('email.label')}
         labelBold
         labelPosition={LAB_POSITION}
+        labelWidth={LABEL_WIDTH}
         testId="email"
         value={email}
         setValue={setEmail}
@@ -425,38 +428,24 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   };
 
   return (
-    <Grid
-      p={2}
-      pb={5}
-      container
-      direction="row"
-      alignItems="space-evenly"
-      justifyContent="space-between"
-    >
-      <Grid size={{ xs: 8 }}>
-        <Grid pt={1} container direction="column" alignItems="stretch" justifyContent="flex-start">
-          {emailField()}
-          {firstNameField()}
-          {lastNameField()}
-          {!isSV() && piField()}
-          {!isSV() && phdThesisField()}
-          <Grid pt={2} size={{ xs: 12 }}>
-            <Box>
-              <TeamInviteButton
-                action={clickFunction}
-                disabled={formInvalid}
-                primary
-                testId="sendInviteButton"
-              />
-            </Box>
-            <Box mt={6} p={0}>
-              {forSearch && resetSearchButton()}
-            </Box>
-          </Grid>
-        </Grid>
-      </Grid>
-      <Grid size={{ xs: 4 }}>
-        <HelpPanel />
+    <Grid pt={3} pl={1} container direction="column" alignItems="left" justifyContent="flex-start">
+      <Grid size={{ xs: 8 }}>{emailField()}</Grid>
+      <Grid size={{ xs: 8 }}>{firstNameField()}</Grid>
+      <Grid size={{ xs: 8 }}>{lastNameField()}</Grid>
+      {!isSV() && piField()}
+      {!isSV() && phdThesisField()}
+      <Grid pt={2} size={{ xs: 12 }}>
+        <Box>
+          <TeamInviteButton
+            action={clickFunction}
+            disabled={formInvalid}
+            primary
+            testId="sendInviteButton"
+          />
+        </Box>
+        <Box mt={6} p={0}>
+          {forSearch && resetSearchButton()}
+        </Box>
       </Grid>
     </Grid>
   );

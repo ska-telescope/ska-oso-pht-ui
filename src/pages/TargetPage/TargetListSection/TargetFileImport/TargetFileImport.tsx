@@ -5,7 +5,6 @@ import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components'
 import Papa from 'papaparse';
 import { Proposal } from '../../../../utils/types/proposal';
 import { RA_TYPE_ICRS, RA_TYPE_GALACTIC, UPLOAD_MAX_WIDTH_CSV } from '../../../../utils/constants';
-import HelpPanel from '../../../../components/info/helpPanel/HelpPanel';
 import Target from '@/utils/types/target';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -179,9 +178,6 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
           uploadToolTip={t('pdfUpload.science.tooltip.upload')}
           status={uploadButtonStatus}
         />
-      </Grid>
-      <Grid size={{ xs: 4 }} pb={12}>
-        <HelpPanel />
       </Grid>
     </Grid>
   );

@@ -15,7 +15,6 @@ import { validateCalibrationPage } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
-import HelpPanel from '@/components/info/helpPanel/HelpPanel';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import {
   FOOTER_SPACER,
@@ -422,7 +421,6 @@ export default function CalibrationPage() {
               )}
             </Grid>
             <Grid pt={4} size={{ md: 4, xs: 12 }}>
-              <HelpPanel />
               {(getProposal()?.targets?.length ?? 0) > 0 && (
                 <Box pt={2}>
                   <InfoCard

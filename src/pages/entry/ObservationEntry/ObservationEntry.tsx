@@ -40,7 +40,12 @@ import {
   PAGE_OBSERVATION_ADD,
   GENERAL,
   MOCK_CALL,
-  FREQUENCY_HZ
+  FREQUENCY_HZ,
+  ZOOM_BANDWIDTH_DEFAULT,
+  ZOOM_CHANNELS_MIN,
+  ZOOM_CHANNELS_MAX,
+  TYPE_PST,
+  FLOW_THROUGH_VALUE
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -50,7 +55,6 @@ import {
 } from '@utils/helpers.ts';
 import { alpha } from '@mui/material/styles';
 import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
-import HelpPanel from '../../../components/info/helpPanel/HelpPanel';
 import Proposal from '../../../utils/types/proposal';
 import AddButton from '../../../components/button/Add/Add';
 import GroupObservationsField from '../../../components/fields/groupObservations/groupObservations';
@@ -72,14 +76,15 @@ import {
   calculateCentralFrequency,
   calculateContinuumBandwidth
 } from '@/utils/calculate/calculate';
+import HelpShell from '@/components/layout/HelpShell/HelpShell';
 import FrequencySpectrum from '@/components/fields/frequencySpectrum/frequencySpectrum';
 import { getColors } from '@/utils/colors/colors';
+import PstModeField from '@/components/fields/pstMode/PstMode';
 
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 4;
 const LABEL_WIDTH_NEW = 5.5;
 const BACK_PAGE = PAGE_OBSERVATION;
-const HELP_PANEL_HEIGHT = '50vh';
 
 export default function ObservationEntry() {
   const { t } = useScopedTranslation();
@@ -106,7 +111,7 @@ export default function ObservationEntry() {
   const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_MHZ);
   const [imageWeighting, setImageWeighting] = React.useState(1);
   const [tapering, setTapering] = React.useState(0);
-  const [bandwidth, setBandwidth] = React.useState(1);
+  const [bandwidth, setBandwidth] = React.useState(ZOOM_BANDWIDTH_DEFAULT);
   const [robust, setRobust] = React.useState(3);
   const [spectralAveraging, setSpectralAveraging] = React.useState(1);
   const [spectralResolution, setSpectralResolution] = React.useState('');
@@ -121,6 +126,8 @@ export default function ObservationEntry() {
   const [numOfStations, setNumOfStations] = React.useState<number | undefined>(512);
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [minimumChannelWidthHz, setMinimumChannelWidthHz] = React.useState<number>(0);
+  const [zoomChannels, setZoomChannels] = React.useState<number>(ZOOM_CHANNELS_MAX); // TODO add zoomChannels to observation types and mappings
+  const [pstMode, setPstMode] = React.useState(FLOW_THROUGH_VALUE); // TODO add pstMode to observation types and mappings
 
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
@@ -136,7 +143,7 @@ export default function ObservationEntry() {
     setElevation(ob?.elevation);
     setCentralFrequency(ob?.centralFrequency);
     setCentralFrequencyUnits(ob?.centralFrequencyUnits);
-    setBandwidth(ob?.bandwidth ?? 0);
+    setBandwidth(ob?.bandwidth ?? ZOOM_BANDWIDTH_DEFAULT);
     setContinuumBandwidth(ob?.continuumBandwidth ?? 0);
     setContinuumBandwidthUnits(ob?.continuumBandwidthUnits ?? 0);
     setRobust(ob?.robust);
@@ -346,6 +353,8 @@ export default function ObservationEntry() {
   }, [observingBand]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
+  const isZoom = () => observationType === TYPE_ZOOM;
+  const isPST = () => observationType === TYPE_PST;
   const isLow = () => observingBand === BAND_LOW;
   const telescope = (band = observingBand) => BANDWIDTH_TELESCOPE[band]?.telescope;
 
@@ -423,7 +432,7 @@ export default function ObservationEntry() {
             centralFrequencyUnits ?? FREQUENCY_HZ,
             FREQUENCY_MHZ
           )}
-          bandWidth={isContinuum() ? continuumBandwidth ?? 0 : bandwidth ?? 0}
+          bandWidth={isContinuum() ? continuumBandwidth ?? 0 : bandwidth ?? 0} // TODO get value from dropdown + convert to mghz
           minEdge={frequencyConversion(
             osdLOW?.basicCapabilities?.minFrequencyHz * 10,
             FREQUENCY_HZ,
@@ -462,6 +471,9 @@ export default function ObservationEntry() {
         setValue={setTheSubarrayConfig}
       />
     );
+
+  const pstModeField = () =>
+    fieldWrapper(<PstModeField required widthLabel={4} value={pstMode} setValue={setPstMode} />);
 
   const numStationsField = () =>
     fieldWrapper(
@@ -679,6 +691,30 @@ export default function ObservationEntry() {
     );
   };
 
+  const zoomChannelsField = () => {
+    const errorMessage = () =>
+      Number(zoomChannels) < ZOOM_CHANNELS_MIN || Number(zoomChannels) > ZOOM_CHANNELS_MAX
+        ? t('zoomChannels.range.error')
+        : '';
+
+    return fieldWrapper(
+      <Box pt={1}>
+        <NumberEntry
+          label={t('zoomChannels.label')}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={LABEL_WIDTH_NEW}
+          testId="zoomChannels"
+          value={zoomChannels}
+          setValue={setZoomChannels}
+          onFocus={() => helpComponent(t('zoomChannels.help'))}
+          required
+          errorText={errorMessage()}
+        />
+      </Box>
+    );
+  };
+
   const centralFrequencyField = () => {
     const errorMessage = () =>
       Number(centralFrequency) < CENTRAL_FREQUENCY_MIN[observingBand] ||
@@ -867,6 +903,74 @@ export default function ObservationEntry() {
     );
   };
 
+  const frequencySetUp = () => {
+    return (
+      <>
+        <Grid size={{ md: 12, lg: 12 }} p={2}>
+          {frequencySpectrumField()}
+        </Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{observationsBandField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>
+          {isContinuum() ? continuumBandwidthField() : bandwidthField()}
+        </Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}></Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{isContinuum() ? SubBandsField() : emptyField()}</Grid>
+      </>
+    );
+  };
+
+  const frequencySetUpContinuumMockCall = () => {
+    return (
+      <>
+        <Grid size={{ md: 12, lg: 12 }} p={2}>
+          {frequencySpectrumField()}
+        </Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{observationsBandField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{continuumBandwidthField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}></Grid>
+      </>
+    );
+  };
+
+  const frequencySetUpSpectralMockCall = () => {
+    return (
+      <>
+        <Grid size={{ md: 12, lg: 12 }} p={2}>
+          {frequencySpectrumField()}
+        </Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{observationsBandField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{zoomChannelsField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>{' '}
+        {/* TODO check this is "spectral mode" */}
+        <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>{' '}
+        {/* TODO check this is "average channel width" */}
+        <Grid size={{ md: 12, lg: 6 }}>{emptyField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{bandwidthField()}</Grid>
+      </>
+    );
+  };
+
+  const frequencySetUpPSTMockCall = () => {
+    return (
+      <>
+        <Grid size={{ md: 12, lg: 12 }} p={2}>
+          {frequencySpectrumField()}
+        </Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{observationsBandField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}> {bandwidthField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{pstModeField()}</Grid>
+      </>
+    );
+  };
+
   const addButtonDisabled = () => {
     // TODO : We need to make this a bit cleverer, but this will do for a short time
     return isEdit() ? false : validateId() ? true : false;
@@ -969,134 +1073,120 @@ export default function ObservationEntry() {
   };
 
   return (
-    <Box pt={2}>
-      <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
-      <Grid
-        pl={4}
-        pr={4}
-        container
-        direction="row"
-        alignItems="space-evenly"
-        justifyContent="space-between"
-        spacing={1}
-      >
-        <Grid size={{ md: 12, lg: 9 }}>
-          <Grid
-            container
-            direction="row"
-            spacing={2}
-            pb={2}
-            alignItems="stretch"
-            justifyContent="flex-start"
-          >
-            {!MOCK_CALL && (
-              <Grid size={{ md: 12, lg: 6 }}>
-                <BorderedSection
-                  title={t('observationSections.identifiers')}
-                  sx={{ height: '100%' }}
-                >
-                  <CardContent>
+    <HelpShell page={PAGE}>
+      <Box pt={2}>
+        <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
+        <Grid
+          pl={4}
+          pr={4}
+          container
+          direction="row"
+          alignItems="space-evenly"
+          justifyContent="space-between"
+          spacing={1}
+        >
+          <Grid size={{ md: 12, lg: 9 }}>
+            <Grid
+              container
+              direction="row"
+              spacing={2}
+              pb={2}
+              alignItems="stretch"
+              justifyContent="flex-start"
+            >
+              {!MOCK_CALL && (
+                <Grid size={{ md: 12, lg: 6 }}>
+                  <BorderedSection
+                    title={t('observationSections.identifiers')}
+                    sx={{ height: '100%' }}
+                  >
+                    <CardContent>
+                      <Grid
+                        p={0}
+                        container
+                        direction="row"
+                        alignItems="flex-start"
+                        rowSpacing={1}
+                        justifyContent="space-between"
+                      >
+                        <Grid size={{ md: 12, lg: 12 }}>{idField()}</Grid>
+                        <Grid size={{ md: 12, lg: 12 }}>{observationTypeField()}</Grid>
+                        <Grid size={{ md: 12, lg: 12 }}>{groupObservationsField()}</Grid>
+                        <Grid size={{ md: 12, lg: 12 }}>{elevationField()}</Grid>
+                        <Grid size={{ md: 12, lg: 12 }}>
+                          {isLow() ? emptyField() : weatherField()}
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </BorderedSection>
+                </Grid>
+              )}
+
+              {MOCK_CALL && (
+                <Grid size={{ md: 6, lg: 6 }}>
+                  <BorderedSection
+                    title={t('observationSections.identifiers')}
+                    sx={{ height: '100%' }}
+                  >
                     <Grid
-                      p={0}
                       container
                       direction="row"
                       alignItems="flex-start"
-                      rowSpacing={1}
+                      spacing={2}
                       justifyContent="space-between"
                     >
-                      <Grid size={{ md: 12, lg: 12 }}>{idField()}</Grid>
                       <Grid size={{ md: 12, lg: 12 }}>{observationTypeField()}</Grid>
-                      <Grid size={{ md: 12, lg: 12 }}>{groupObservationsField()}</Grid>
-                      <Grid size={{ md: 12, lg: 12 }}>{elevationField()}</Grid>
-                      <Grid size={{ md: 12, lg: 12 }}>
-                        {isLow() ? emptyField() : weatherField()}
-                      </Grid>
+                      <Grid size={{ md: 12, lg: 12 }}></Grid>
                     </Grid>
-                  </CardContent>
-                </BorderedSection>
-              </Grid>
-            )}
+                  </BorderedSection>
+                </Grid>
+              )}
 
-            {MOCK_CALL && (
               <Grid size={{ md: 6, lg: 6 }}>
                 <BorderedSection
-                  title={t('observationSections.identifiers')}
+                  title={t('observationSections.arraySetUp')}
                   sx={{ height: '100%' }}
                 >
                   <Grid
+                    p={0}
                     container
                     direction="row"
-                    alignItems="flex-start"
-                    spacing={2}
-                    justifyContent="space-between"
+                    alignItems="flext-start"
+                    rowSpacing={MOCK_CALL ? 0 : 2}
                   >
-                    <Grid size={{ md: 12, lg: 12 }}>{observationTypeField()}</Grid>
                     <Grid size={{ md: 12, lg: 12 }}></Grid>
+                    <Grid size={{ md: 12, lg: 12 }}>{subArrayField()}</Grid>
+                    <Grid size={{ md: 12, lg: 12 }}>
+                      {!MOCK_CALL && (isLow() ? numStationsField() : antennasFields())}
+                    </Grid>
+                    <Grid size={{ md: 12, lg: 12 }}>{suppliedField()}</Grid>
                   </Grid>
                 </BorderedSection>
               </Grid>
-            )}
-
-            <Grid size={{ md: 6, lg: 6 }}>
-              <BorderedSection title={t('observationSections.arraySetUp')} sx={{ height: '100%' }}>
-                <Grid
-                  p={0}
-                  container
-                  direction="row"
-                  alignItems="flext-start"
-                  rowSpacing={MOCK_CALL ? 0 : 2}
-                >
-                  <Grid size={{ md: 12, lg: 12 }}></Grid>
-                  <Grid size={{ md: 12, lg: 12 }}>{subArrayField()}</Grid>
-                  <Grid size={{ md: 12, lg: 12 }}>
-                    {!MOCK_CALL && (isLow() ? numStationsField() : antennasFields())}
-                  </Grid>
-                  <Grid size={{ md: 12, lg: 12 }}>{suppliedField()}</Grid>
-                </Grid>
-              </BorderedSection>
             </Grid>
+
+            <BorderedSection title={t('observationSections.frequencySetUp')}>
+              <Grid
+                p={0}
+                container
+                direction="row"
+                alignItems="center"
+                columnSpacing={6}
+                rowSpacing={1}
+                justifyContent="space-between"
+              >
+                {!MOCK_CALL && frequencySetUp()}{' '}
+                {/* shows to user some fields that are hidden in mock call */}
+                {MOCK_CALL && isContinuum() && frequencySetUpContinuumMockCall()}
+                {MOCK_CALL && isZoom() && frequencySetUpSpectralMockCall()}
+                {MOCK_CALL && isPST() && frequencySetUpPSTMockCall()}
+              </Grid>
+            </BorderedSection>
           </Grid>
-
-          <BorderedSection title={t('observationSections.frequencySetUp')}>
-            <Grid
-              p={0}
-              container
-              direction="row"
-              alignItems="center"
-              columnSpacing={6}
-              rowSpacing={1}
-              justifyContent="space-between"
-            >
-              <Grid size={{ md: 12, lg: 12 }} p={2}>
-                {frequencySpectrumField()}
-              </Grid>
-              <Grid size={{ md: 12, lg: 6 }}>{observationsBandField()}</Grid>
-              <Grid size={{ md: 12, lg: 6 }}>
-                {isContinuum() ? continuumBandwidthField() : bandwidthField()}
-              </Grid>
-              <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
-              <Grid size={{ md: 12, lg: 6 }}></Grid>
-              {!MOCK_CALL && (
-                <>
-                  <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>
-                  <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
-                  <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>
-                  <Grid size={{ md: 12, lg: 6 }}>
-                    {isContinuum() ? SubBandsField() : emptyField()}
-                  </Grid>
-                </>
-              )}
-            </Grid>
-          </BorderedSection>
         </Grid>
-        <Grid size={{ md: 12, lg: 3 }}>
-          <Box pl={4} sx={{ position: 'sticky', top: 100 }}>
-            <HelpPanel maxHeight={HELP_PANEL_HEIGHT} />
-          </Box>
-        </Grid>
-      </Grid>
-      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
-      {pageFooter()}
-    </Box>
+        <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
+        {pageFooter()}
+      </Box>
+    </HelpShell>
   );
 }

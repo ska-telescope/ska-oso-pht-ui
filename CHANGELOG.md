@@ -30,6 +30,7 @@ UNRELEASED
 * Changed: oso-services v9.2.1
 * Changed: Added a drawer to display helper text
 * Changed: oda to 13.1.1
+* Changed: Adjusted screen layout following removal of help panel 
 
 8.0.0
 ----------

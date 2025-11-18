@@ -8,7 +8,6 @@ import { Proposal } from '@utils/types/proposal.tsx';
 import { validateGeneralPage } from '@utils/validation/validation.tsx';
 import { useTheme } from '@mui/material/styles';
 import Shell from '../../components/layout/Shell/Shell';
-import HelpPanel from '../../components/info/helpPanel/HelpPanel';
 import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPreviewModal';
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -205,9 +204,6 @@ export default function GeneralPage() {
             <Grid size={{ md: 12 }}>{abstractField()}</Grid>
           </Grid>
           <Grid size={{ md: 6 }}></Grid>
-        </Grid>
-        <Grid size={{ md: 12, lg: 3 }}>
-          <HelpPanel />
         </Grid>
       </Grid>
     </Shell>
