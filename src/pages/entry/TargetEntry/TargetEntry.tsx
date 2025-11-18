@@ -548,81 +548,49 @@ export default function TargetEntry({
 
   return (
     <>
-      <Box sx={{ width: '100%', height: '85%' }}>
-        <Grid
-          p={2}
-          container
-          direction="row"
-          alignItems="space-evenly"
-          justifyContent="space-between"
-        >
-          <Grid size={{ xs: 8 }} sx={{ position: 'relative' }}>
-            <Box
-              pr={2}
-              sx={{
-                width: '100%'
-              }}
-            >
-              <Grid
-                container
-                direction="column"
-                spacing={2}
-                alignItems="stretch"
-                justifyContent="flex-start"
-                pt={1}
-                pb={2}
-              >
-                <Grid pt={1}>
-                  <BorderedSection title={t('referenceCoordinates.label')}>
-                    {referenceCoordinatesField()}
-                  </BorderedSection>
-                </Grid>
-                <Grid pt={1}>
-                  <BorderedSection title={t('coordinate.label')}>
-                    {nameField()}
-                    {skyDirection1Field()}
-                    {skyDirection2Field()}
-                  </BorderedSection>
-                </Grid>
-                {!isSV() && (
-                  <Grid pt={1}>
-                    <BorderedSection title={t('pulsarTimingBeam.groupLabel')}>
-                      {pulsarTimingBeamField()}
-                    </BorderedSection>
-                  </Grid>
-                )}
-                <Grid pt={1}>
-                  <BorderedSection title={t('radialMotion.label')}>
-                    {velocityField()}
-                    {velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}
-                  </BorderedSection>
-                </Grid>
-                {!isSV() && (
-                  <Grid pt={1}>
-                    <BorderedSection title={t('fieldPattern.groupLabel')}>
-                      {fieldPatternTypeField()}
-                    </BorderedSection>
-                  </Grid>
-                )}
-              </Grid>
-            </Box>
-          </Grid>
-
-          <Grid size={{ xs: 4 }} sx={{ position: 'relative' }}>
-            {!id && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  bottom: 0,
-                  right: 0
-                }}
-              >
-                {addButton()}
-              </Box>
-            )}
-          </Grid>
+      <Grid pt={4}>
+        <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
+          <BorderedSection title={t('referenceCoordinates.label')}>
+            {referenceCoordinatesField()}
+          </BorderedSection>
+        </Box>
+      </Grid>
+      <Grid pt={1}>
+        <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
+          <BorderedSection title={t('coordinate.label')}>
+            {nameField()}
+            {skyDirection1Field()}
+            {skyDirection2Field()}
+          </BorderedSection>
+        </Box>
+      </Grid>
+      {!isSV() && (
+        <Grid pt={1}>
+          <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
+            <BorderedSection title={t('pulsarTimingBeam.groupLabel')}>
+              {pulsarTimingBeamField()}
+            </BorderedSection>
+          </Box>
         </Grid>
-      </Box>
+      )}
+      <Grid pt={1}>
+        <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
+          <BorderedSection title={t('radialMotion.label')}>
+            {velocityField()}
+            {velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}
+          </BorderedSection>
+        </Box>
+      </Grid>
+      {!isSV() && (
+        <Grid pt={1}>
+          <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
+            <BorderedSection title={t('fieldPattern.groupLabel')}>
+              {fieldPatternTypeField()}
+            </BorderedSection>
+          </Box>
+        </Grid>
+      )}
+      {!id && <Grid pl={10}>{addButton()}</Grid>}
     </>
   );
 }
