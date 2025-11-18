@@ -805,7 +805,7 @@ export default function ObservationEntry() {
           testId="bandwidth"
           value={bandwidth}
           telescope={telescope()}
-          widthLabel={BOTTOM_LABEL_WIDTH}
+          widthLabel={LABEL_WIDTH_NEW}
           observingBand={observingBand}
           centralFrequency={centralFrequency}
           centralFrequencyUnits={centralFrequencyUnits}
