@@ -146,14 +146,13 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     }
   };
 
-  const submitClicked = () => {
+  const submitClicked = async () => {
+    const isValid = await validateTheProposal();
+    if (!isValid) return;
     if (loggedIn) setOpenProposalDisplay(true);
   };
 
   const submitConfirmed = async () => {
-    const isValid = await validateTheProposal();
-    if (!isValid) return;
-
     const response = await PutProposal(
       authClient,
       application.content2 as Proposal,
