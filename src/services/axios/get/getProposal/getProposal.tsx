@@ -368,9 +368,9 @@ const getLinked = (
 
 const getObservationType = (inObs: ObservationSetBackend): number => {
   switch (inObs?.observation_type_details?.observation_type?.toLocaleLowerCase()) {
-    case OBSERVATION_TYPE_BACKEND[0]?.toLowerCase():
+    case OBSERVATION_TYPE_BACKEND[TYPE_ZOOM]?.toLowerCase(): // TODO sort out lower case
       return TYPE_ZOOM;
-    case OBSERVATION_TYPE_BACKEND[2]?.toLowerCase():
+    case OBSERVATION_TYPE_BACKEND[TYPE_PST]?.toLowerCase():
       return TYPE_PST;
     default:
       return TYPE_CONTINUUM;

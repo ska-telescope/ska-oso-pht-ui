@@ -33,8 +33,7 @@ export default function ObservingBandField({
   const { t } = useScopedTranslation();
   const { helpComponent } = storageObject.useStore();
   const FIELD = 'observingBand';
-  const { osdLOW } = useOSDAccessors();
-  const { osdMID } = useOSDAccessors();
+  const { osdLOW, osdMID } = useOSDAccessors();
 
   const getOptions = () => {
     let filteredOptions = BANDWIDTH_TELESCOPE; // TODO we should use observatoryConstants here
