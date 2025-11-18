@@ -37,8 +37,7 @@ export default function SubArrayField({
   const { t } = useScopedTranslation();
   const { helpComponent } = storageObject.useStore();
   const FIELD = 'subArrayConfiguration';
-  const { observatoryConstants } = useOSDAccessors();
-  const { osdIsCustomAllowed } = useOSDAccessors();
+  const { observatoryConstants, osdIsCustomAllowed } = useOSDAccessors();
 
   const getOptions = () => {
     if (telescope > 0) {

@@ -1,6 +1,6 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { LAB_IS_BOLD, LAB_POSITION, TYPE_CONTINUUM } from '@utils/constants.ts';
+import { FREQUENCY_STR_HZ, LAB_IS_BOLD, LAB_POSITION, TYPE_CONTINUUM } from '@utils/constants.ts';
 import { getScaledBandwidthOrFrequency } from '@utils/helpers.ts';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import sensCalHelpers from '../../../../services/api/sensitivityCalculator/sensCalHelpers';
@@ -51,7 +51,7 @@ export default function ContinuumBandwidthField({
     minimumChannelWidthHz: number | undefined
   ): string => {
     const minimumChannelWidthKHz = sensCalHelpers.format
-      .convertBandwidthToKHz(Number(minimumChannelWidthHz), 'Hz')
+      .convertBandwidthToKHz(Number(minimumChannelWidthHz), FREQUENCY_STR_HZ)
       .toFixed(2);
     return t('bandwidth.range.minimumChannelWidthError', {
       value: minimumChannelWidthKHz
@@ -60,7 +60,7 @@ export default function ContinuumBandwidthField({
 
   const displayMaxContBandwidthErrorMessage = (maxContBandwidthHz: number | undefined): string => {
     const maxContBandwidthMHz = sensCalHelpers.format
-      .convertBandwidthToMHz(Number(maxContBandwidthHz), 'Hz')
+      .convertBandwidthToMHz(Number(maxContBandwidthHz), FREQUENCY_STR_HZ)
       .toFixed(2);
     return t('bandwidth.range.contMaximumExceededError', { value: maxContBandwidthMHz });
   };

@@ -515,10 +515,10 @@ export const TECHNICAL_FEASIBILITY = {
 export const PULSAR_MODE_FOLDED = 'folded_pulse';
 
 export const OSCILLATION_UNITS = [
-  { label: 'Hz', toHz: 1 },
-  { label: 'kHz', toHz: 1000 },
-  { label: 'MHz', toHz: 10000000 },
-  { label: 'GHz', toHz: 10000000000 }
+  { label: FREQUENCY_STR_HZ, toHz: 1 },
+  { label: FREQUENCY_STR_KHZ, toHz: 1000 },
+  { label: FREQUENCY_STR_MHZ, toHz: 10000000 },
+  { label: FREQUENCY_STR_GHZ, toHz: 10000000000 }
 ];
 //TODO: Refactor such that these identifiers are no longer needed and references can be per array label
 export const OB_SUBARRAY_AA2 = 3;
