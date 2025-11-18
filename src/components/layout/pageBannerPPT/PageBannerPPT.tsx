@@ -86,38 +86,43 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     return 'validationBtn.tooltip';
   };
 
-  const validateClicked = () => {
-    const ValidateTheProposal = async () => {
-      setValidationResults([]);
-      let results = [];
+  const validateTheProposal = async (): Promise<boolean> => {
+    let result = false;
+    setValidationResults([]);
+    let results = [];
 
-      for (let key in application.content1) {
-        const obj: { [key: string]: any } = application.content1;
+    for (let key in application.content1) {
+      const obj: { [key: string]: any } = application.content1;
 
-        if (
-          obj[key] === STATUS_ERROR ||
-          obj[key] === STATUS_PARTIAL ||
-          (obj[key] === STATUS_INITIAL && key !== PAGE_SRC_NET.toString())
-        ) {
-          if ((key !== PAGE_TECHNICAL.toString() && key !== PAGE_LINKING.toString()) || !isSV()) {
-            results.push(t('page.' + key + '.pageError'));
-          }
+      if (
+        obj[key] === STATUS_ERROR ||
+        obj[key] === STATUS_PARTIAL ||
+        (obj[key] === STATUS_INITIAL && key !== PAGE_SRC_NET.toString())
+      ) {
+        if ((key !== PAGE_TECHNICAL.toString() && key !== PAGE_LINKING.toString()) || !isSV()) {
+          results.push(t('page.' + key + '.pageError'));
         }
       }
-      const response = await PostProposalValidate(
-        authClient,
-        application.content2 as Proposal,
-        isSV()
-      );
+    }
+    const response = await PostProposalValidate(
+      authClient,
+      application.content2 as Proposal,
+      isSV()
+    );
 
-      if (response.valid && !response.error && results.length === 0) {
-        notifySuccess(t(`validationBtn.${response.valid}`));
-      } else {
-        setValidationResults(response.error ? results.concat(response.error) : results);
-        setOpenValidationResults(true);
-      }
-    };
-    ValidateTheProposal();
+    if (response.valid && !response.error && results.length === 0) {
+      notifySuccess(t(`validationBtn.${response.valid}`));
+      result = true;
+    } else {
+      setValidationResults(response.error ? results.concat(response.error) : results);
+      setOpenValidationResults(true);
+    }
+
+    return result;
+  };
+
+  const validateClicked = async (): Promise<boolean> => {
+    return validateTheProposal();
   };
 
   const prevPageNav = () => {
@@ -146,6 +151,9 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   };
 
   const submitConfirmed = async () => {
+    const isValid = await validateTheProposal();
+    if (!isValid) return;
+
     const response = await PutProposal(
       authClient,
       application.content2 as Proposal,
