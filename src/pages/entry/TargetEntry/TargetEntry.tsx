@@ -1,12 +1,7 @@
 import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import {
-  BorderedSection,
-  TextEntry,
-  InfoCard,
-  InfoCardColorTypes
-} from '@ska-telescope/ska-gui-components';
+import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
 import PulsarTimingBeamField from '@components/fields/pulsarTimingBeam/PulsarTimingBeam.tsx';
@@ -25,7 +20,6 @@ import {
   VELOCITY_TYPE,
   LAB_IS_BOLD,
   FIELD_PATTERN_POINTING_CENTRES,
-  HELP_FONT,
   WRAPPER_HEIGHT,
   FREQUENCY_MHZ,
   TELESCOPE_LOW_NUM,
@@ -72,7 +66,7 @@ export default function TargetEntry({
   const { t } = useScopedTranslation();
   const { isSV } = useAppFlow();
   const { notifyError, notifySuccess } = useNotify();
-  const { observatoryConstants, osdMaxTargets } = useOSDAccessors();
+  const { observatoryConstants } = useOSDAccessors();
 
   const LAB_WIDTH = 5;
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
@@ -615,17 +609,6 @@ export default function TargetEntry({
           </Grid>
 
           <Grid size={{ xs: 4 }} sx={{ position: 'relative' }}>
-            {osdMaxTargets && (getProposal()?.targets?.length ?? 0) > 0 && (
-              <InfoCard
-                color={InfoCardColorTypes.Warning}
-                fontSize={HELP_FONT}
-                message={t(
-                  osdMaxTargets > 1 ? 'targets.limitReached_plural' : 'targets.limitReached',
-                  { value: osdMaxTargets }
-                )}
-                testId="targetLimitPanelId"
-              />
-            )}
             {!id && (
               <Box
                 sx={{
