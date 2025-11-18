@@ -67,7 +67,7 @@ describe('<CalibrationPage />', () => {
     expect(checkboxContainer).toBeInTheDocument();
     const checkbox = screen.getByRole('checkbox');
     expect(checkbox).toBeChecked(); // test data should already be checked
-    const commentField = await screen.findByTestId('commenttId');
+    const commentField = await screen.findByTestId('commentId');
     expect(commentField).toBeInTheDocument(); // test data should already have comment
     expect(
       await screen.getByDisplayValue('This is an observatory defined calibration strategy.')
@@ -83,7 +83,7 @@ describe('<CalibrationPage />', () => {
       fireEvent.click(checkbox);
     });
     expect(checkbox).not.toBeChecked();
-    const commentField = await screen.queryByTestId('commenttId');
+    const commentField = await screen.queryByTestId('commentId');
     expect(commentField).not.toBeInTheDocument();
   });
 });
