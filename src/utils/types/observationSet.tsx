@@ -23,4 +23,6 @@ export type ObservationTypeDetailsBackend = {
   image_weighting: string;
   spectral_averaging?: string; //TODO: patch release pdm using int
   robust?: string; //TODO: patch release pdm using int
+  number_of_channels?: number;
+  pst_mode?: string; // "flow through" | "detected filterbank" | "pulsar timing"
 };

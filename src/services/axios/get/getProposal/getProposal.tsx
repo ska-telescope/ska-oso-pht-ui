@@ -43,7 +43,9 @@ import {
   RA_TYPE_ICRS,
   RA_TYPE_GALACTIC,
   isCypress,
-  SCIENCE_VERIFICATION
+  SCIENCE_VERIFICATION,
+  TYPE_PST,
+  PST_MODES
 } from '@utils/constants.ts';
 import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import { ObservationSetBackend } from '@utils/types/observationSet.tsx';
@@ -364,6 +366,19 @@ const getLinked = (
   return linkedTargetRef ? linkedTargetRef : '';
 };
 
+const getObservationType = (inObs: ObservationSetBackend): number => {
+  switch (inObs?.observation_type_details?.observation_type?.toLocaleLowerCase()) {
+    case OBSERVATION_TYPE_BACKEND[0]?.toLowerCase():
+      return TYPE_ZOOM;
+    case OBSERVATION_TYPE_BACKEND[1]?.toLowerCase():
+      return TYPE_CONTINUUM;
+    case OBSERVATION_TYPE_BACKEND[2]?.toLowerCase():
+      return TYPE_PST;
+    default:
+      return TYPE_CONTINUUM;
+  }
+};
+
 const getObservations = (
   inValue: ObservationSetBackend[] | null,
   inResults: SensCalcResultsBackend[] | null
@@ -378,11 +393,9 @@ const getObservations = (
     const sub = OSD_CONSTANTS.array[arr - 1].subarray?.find(
       p => p.label.toLowerCase() === inValue[i]?.array_details?.subarray?.toLocaleLowerCase()
     )?.value;
-    const type =
-      inValue[i]?.observation_type_details?.observation_type?.toLocaleLowerCase() ===
-      OBSERVATION_TYPE_BACKEND[0]?.toLowerCase()
-        ? 0
-        : 1;
+
+    const type: number = getObservationType(inValue[i]);
+
     const observingBand = getObservingBand(
       inValue[i]?.observing_band,
       inValue[i]?.array_details?.array
@@ -447,7 +460,16 @@ const getObservations = (
               observingBand
             )
           : null,
-      numStations: numStations
+      numStations: numStations,
+      zoomChannels:
+        type === TYPE_ZOOM
+          ? (inValue[i].observation_type_details?.number_of_channels as number)
+          : null,
+      pstMode:
+        type === TYPE_PST
+          ? PST_MODES?.find(mode => mode?.label === inValue[i]?.observation_type_details?.pst_mode)
+              ?.value ?? null
+          : null
     };
     results.push(obs);
   }

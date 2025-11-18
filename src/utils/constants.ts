@@ -427,13 +427,16 @@ export const PULSAR_TIMING_VALUE = 2;
 
 export const PST_MODES = [
   {
-    value: FLOW_THROUGH_VALUE
+    value: FLOW_THROUGH_VALUE,
+    label: 'flow through'
   },
   {
-    value: DETECTED_FILTER_BANK_VALUE
+    value: DETECTED_FILTER_BANK_VALUE,
+    label: 'detected filter bank'
   },
   {
-    value: PULSAR_TIMING_VALUE
+    value: PULSAR_TIMING_VALUE,
+    label: 'pulsar timing'
   }
 ];
 

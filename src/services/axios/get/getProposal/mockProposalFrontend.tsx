@@ -210,7 +210,9 @@ export const MockProposalFrontend: Proposal = {
       continuumBandwidthUnits: 2,
       numStations: 68,
       num13mAntennas: undefined,
-      num15mAntennas: undefined
+      num15mAntennas: undefined,
+      zoomChannels: null,
+      pstMode: null
     }
   ],
   groupObservations: [],
@@ -438,7 +440,9 @@ export const MockProposalFrontendZoom: Proposal = {
       linked: 'm2',
       numStations: 68,
       num13mAntennas: undefined,
-      num15mAntennas: undefined
+      num15mAntennas: undefined,
+      zoomChannels: 1024,
+      pstMode: null
     }
   ],
   groupObservations: [],

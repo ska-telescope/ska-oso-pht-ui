@@ -32,7 +32,8 @@ import {
   IW_BRIGGS,
   RA_TYPE_GALACTIC,
   RA_TYPE_ICRS,
-  SCIENCE_VERIFICATION
+  SCIENCE_VERIFICATION,
+  PST_MODES
 } from '@utils/constants.ts';
 import {
   DataProductSDP,
@@ -306,7 +307,9 @@ const getObservationsSets = (
           robust:
             obs.imageWeighting === IW_BRIGGS
               ? (ROBUST.find(item => item.value === obs.robust)?.label as string)
-              : '0'
+              : '0',
+          number_of_channels: obs.zoomChannels,
+          pst_mode: PST_MODES[obs.pstMode as number]?.label ?? null
         }
       };
       outObservationsSets.push(observation);

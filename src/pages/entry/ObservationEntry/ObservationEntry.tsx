@@ -159,6 +159,8 @@ export default function ObservationEntry() {
     setNumOf15mAntennas(ob?.num15mAntennas ?? 0);
     setNumOf13mAntennas(ob?.num13mAntennas ?? 0);
     setNumOfStations(ob?.numStations ?? 0);
+    setZoomChannels(ob?.zoomChannels ?? 0);
+    setPstMode(ob?.pstMode ?? 0);
   };
 
   const observationOut = () => {
@@ -190,7 +192,9 @@ export default function ObservationEntry() {
       numSubBands: subBands,
       num15mAntennas: numOf15mAntennas,
       num13mAntennas: numOf13mAntennas,
-      numStations: numOfStations
+      numStations: numOfStations,
+      zoomChannels: zoomChannels,
+      pstMode: pstMode
     };
     return newObservation;
   };
@@ -420,12 +424,12 @@ export default function ObservationEntry() {
       <Box>
         <FrequencySpectrum
           minFreq={frequencyConversion(
-            osdLOW?.basicCapabilities?.minFrequencyHz * 10,
+            (osdLOW?.basicCapabilities?.minFrequencyHz ?? 0) * 10,
             FREQUENCY_HZ,
             FREQUENCY_MHZ
           )}
           maxFreq={frequencyConversion(
-            osdLOW?.basicCapabilities?.maxFrequencyHz * 10,
+            (osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0) * 10,
             FREQUENCY_HZ,
             FREQUENCY_MHZ
           )}
@@ -445,14 +449,14 @@ export default function ObservationEntry() {
           }
           minEdge={
             frequencyConversion(
-              osdLOW?.basicCapabilities?.minFrequencyHz * 10,
+              (osdLOW?.basicCapabilities?.minFrequencyHz ?? 0) * 10,
               FREQUENCY_HZ,
               FREQUENCY_MHZ
             ) + 10
           }
           maxEdge={
             frequencyConversion(
-              osdLOW?.basicCapabilities?.maxFrequencyHz * 10,
+              (osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0) * 10,
               FREQUENCY_HZ,
               FREQUENCY_MHZ
             ) - 10
