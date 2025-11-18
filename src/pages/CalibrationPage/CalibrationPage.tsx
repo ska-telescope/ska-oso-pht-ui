@@ -19,7 +19,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import {
   FOOTER_SPACER,
   HELP_FONT,
-  LAB_POSITION,
+  LAB_POSITION_ABOVE,
   PAGE_CALIBRATION,
   STATUS_OK,
   WRAPPER_HEIGHT
@@ -298,7 +298,7 @@ export default function CalibrationPage() {
         <TextEntry
           label={t('calibrator.comment.label')}
           labelBold
-          labelPosition={LAB_POSITION}
+          labelPosition={LAB_POSITION_ABOVE}
           labelWidth={LABEL_WIDTH}
           testId="commentId"
           rows={numRows}
@@ -315,6 +315,16 @@ export default function CalibrationPage() {
     return (
       <>
         <Grid sx={{ overflow: 'hidden', width: '100%', xs: 4, md: 8 }}>
+          {(getProposal()?.targets?.length ?? 0) > 0 && (
+            <Box pt={1} pr={10}>
+              <InfoCard
+                color={InfoCardColorTypes.Warning}
+                fontSize={HELP_FONT}
+                message={t('calibrator.limitReached')}
+                testId="calibrationLimitPanelId"
+              />
+            </Box>
+          )}
           <Grid pt={2} pb={4}>
             <Typography>{t('calibrator.desc')}</Typography>
           </Grid>
@@ -418,16 +428,6 @@ export default function CalibrationPage() {
                   testId="axiosErrorTestId"
                   text={axiosViewError}
                 />
-              )}
-              {(getProposal()?.targets?.length ?? 0) > 0 && (
-                <Box pt={2} pr={5}>
-                  <InfoCard
-                    color={InfoCardColorTypes.Warning}
-                    fontSize={HELP_FONT}
-                    message={t('calibrator.limitReached')}
-                    testId="calibrationLimitPanelId"
-                  />
-                </Box>
               )}
             </Grid>
           </Grid>
