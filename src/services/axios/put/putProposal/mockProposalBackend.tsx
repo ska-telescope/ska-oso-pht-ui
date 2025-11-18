@@ -366,7 +366,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
           },
           weight: {
             weighting: 'briggs',
-            robust: 4
+            robust: 2
           }
         }
       }

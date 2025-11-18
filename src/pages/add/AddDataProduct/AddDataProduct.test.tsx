@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import AddDataProduct from './AddDataProduct';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 vi.mock('@/components/layout/pageBannerPPT/PageBannerPPT', () => ({
   default: () => <div data-testid="page-banner">PageBannerPPT</div>
@@ -26,9 +28,17 @@ vi.mock('@/pages/entry/DataProduct/DataProduct', () => ({
   default: () => <div data-testid="data-product">DataProduct</div>
 }));
 
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
+
 describe('AddDataProduct', () => {
   it('renders all expected components', () => {
-    render(<AddDataProduct />);
+    wrapper(<AddDataProduct />);
 
     expect(screen.getByTestId('page-banner')).toBeInTheDocument();
     expect(screen.getByTestId('spacer')).toBeInTheDocument();
