@@ -295,7 +295,7 @@ const getObservationsSets = (
         observing_band: getObservingBand(obs.observingBand) as string,
         array_details: getArrayDetails(obs),
         observation_type_details: {
-          observation_type: OBSERVATION_TYPE_BACKEND[obs.type]?.toLowerCase(),
+          observation_type: OBSERVATION_TYPE_BACKEND[obs.type],
           bandwidth: getBandwidth(obs),
           central_frequency: getCentralFrequency(obs),
           supplied: getSupplied(obs) as SuppliedBackend,

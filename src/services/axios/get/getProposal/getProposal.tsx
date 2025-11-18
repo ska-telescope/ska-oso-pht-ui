@@ -368,9 +368,9 @@ const getLinked = (
 
 const getObservationType = (inObs: ObservationSetBackend): number => {
   switch (inObs?.observation_type_details?.observation_type?.toLocaleLowerCase()) {
-    case OBSERVATION_TYPE_BACKEND[TYPE_ZOOM]?.toLowerCase(): // TODO sort out lower case
+    case OBSERVATION_TYPE_BACKEND[TYPE_ZOOM]:
       return TYPE_ZOOM;
-    case OBSERVATION_TYPE_BACKEND[TYPE_PST]?.toLowerCase():
+    case OBSERVATION_TYPE_BACKEND[TYPE_PST]:
       return TYPE_PST;
     default:
       return TYPE_CONTINUUM;
@@ -636,7 +636,7 @@ const getTargetObservation = (
   }
   for (let result of inResults) {
     const resultObsType = getResultObsType(result, inObservationSets);
-    const isContinuum = resultObsType === OBSERVATION_TYPE_BACKEND[1].toLowerCase();
+    const isContinuum = resultObsType === OBSERVATION_TYPE_BACKEND[1];
     const isSensitivity = result.result?.supplied_type === 'sensitivity';
 
     const targetObs: TargetObservation = {
