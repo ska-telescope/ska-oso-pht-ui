@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert, Grid, Stack, Typography } from '@mui/material';
+import { Grid, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { presentUnits } from '@utils/present/present';
@@ -9,11 +9,13 @@ import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
-import { MOCK_CALL, PAGE_DATA_PRODUCTS, PATH } from '../../utils/constants';
+import Alert from '../../components/alerts/standardAlert/StandardAlert';
+import { PAGE_DATA_PRODUCTS, PATH } from '../../utils/constants';
 import { DataProductSDP } from '../../utils/types/dataProduct';
 import DataProduct from '../entry/DataProduct/DataProduct';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TableDataProducts from '@/components/grid/tableDataProducts/TableDataProducts';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 const PAGE = PAGE_DATA_PRODUCTS;
 const LABEL_WIDTH = 6;
@@ -26,6 +28,7 @@ export default function DataProductsPage() {
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentRow, setCurrentRow] = React.useState(0);
   const [openDialog, setOpenDialog] = React.useState(false);
+  const { osdMaxDataProducts } = useOSDAccessors();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -125,9 +128,15 @@ export default function DataProductsPage() {
 
   const noObservations = () => {
     return (
-      <Alert severity={AlertColorTypes.Error} data-testid="noObservationsNotification">
-        {t('error.noObservations')}
-      </Alert>
+      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
+        <Grid size={{ md: 10 }}>
+          <Alert
+            color={AlertColorTypes.Error}
+            text={t('error.noObservationsLoggedOut')}
+            testId="noObservationsNotification"
+          />
+        </Grid>
+      </Grid>
     );
   };
 
@@ -164,9 +173,9 @@ export default function DataProductsPage() {
   return (
     <Shell page={PAGE}>
       <>
-        {hasObservations() && dataProductList()}
-        {false && hasObservations() && MOCK_CALL && <DataProduct />}
         {!hasObservations() && noObservations()}
+        {osdMaxDataProducts !== 1 && hasObservations() && dataProductList()}
+        {osdMaxDataProducts === 1 && hasObservations() && <DataProduct />}
       </>
     </Shell>
   );

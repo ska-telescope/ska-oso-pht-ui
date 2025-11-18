@@ -408,7 +408,7 @@ export const MockProposalFrontendZoom: Proposal = {
         value: 1,
         units: 2
       },
-      robust: 4,
+      robust: 1,
       tapering: undefined,
       weather: undefined,
       spectralResolution: '14.13 Hz (21.2 m/s)',
@@ -481,7 +481,7 @@ export const MockProposalFrontendZoom: Proposal = {
       pixelSizeUnits: 2,
       weighting: '2',
       polarisations: ['I'],
-      robust: 4,
+      robust: 2,
       channelsOut: 1,
       fitSpectralPol: 3
     }

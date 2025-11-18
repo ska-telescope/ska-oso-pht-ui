@@ -72,7 +72,7 @@ export default function TargetEntry({
   const { t } = useScopedTranslation();
   const { isSV } = useAppFlow();
   const { notifyError, notifySuccess } = useNotify();
-  const { observatoryConstants } = useOSDAccessors();
+  const { observatoryConstants, osdMaxTargets } = useOSDAccessors();
 
   const LAB_WIDTH = 5;
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
@@ -615,11 +615,14 @@ export default function TargetEntry({
           </Grid>
 
           <Grid size={{ xs: 4 }} sx={{ position: 'relative' }}>
-            {isSV() && (getProposal()?.targets?.length ?? 0) > 0 && (
+            {osdMaxTargets && (getProposal()?.targets?.length ?? 0) > 0 && (
               <InfoCard
                 color={InfoCardColorTypes.Warning}
                 fontSize={HELP_FONT}
-                message={t('targets.limitReached')}
+                message={t(
+                  osdMaxTargets > 1 ? 'targets.limitReached_plural' : 'targets.limitReached',
+                  { value: osdMaxTargets }
+                )}
                 testId="targetLimitPanelId"
               />
             )}
