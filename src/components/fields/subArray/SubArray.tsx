@@ -37,7 +37,7 @@ export default function SubArrayField({
   const getOptions = () => {
     if (telescope > 0) {
       const options = subArrayOptions(BANDWIDTH_TELESCOPE[observingBand], observatoryConstants);
-      return options?.map(e => {
+      return options?.map((e: any) => {
         return {
           label: t('subArrayConfiguration.' + e.value),
           value: e.value
