@@ -300,7 +300,7 @@ export default function CalibrationPage() {
           labelBold
           labelPosition={LAB_POSITION}
           labelWidth={LABEL_WIDTH}
-          testId="commenttId"
+          testId="commentId"
           rows={numRows}
           errorText={validateComment(comment)}
           value={comment}
