@@ -4,6 +4,7 @@ import { Box, Grid, Tab, Tabs, SvgIcon, Typography } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import { useAppFlow } from '@utils/appFlow/AppFlowContext.tsx';
 import { validateTeamPage } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
@@ -49,6 +50,7 @@ export default function TeamPage() {
   const authClient = useAxiosAuthClient();
   const [selectedOptions, setSelectedOptions] = React.useState<string[]>([]);
   const [permissions, setPermissions] = React.useState<ProposalAccess[]>([]);
+  const { isSV } = useAppFlow();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -256,7 +258,13 @@ export default function TeamPage() {
             />
           </Grid>
           <Grid size={{ md: 11, lg: 6 }} order={{ md: 1, lg: 2 }}>
-            <Box sx={{ width: '100%', border: '1px solid grey', minHeight: '558px' }}>
+            <Box
+              sx={{
+                width: '100%',
+                border: '1px solid grey',
+                minHeight: isSV() ? '300px' : '558px'
+              }}
+            >
               <Box>
                 <Tabs
                   variant="fullWidth"
