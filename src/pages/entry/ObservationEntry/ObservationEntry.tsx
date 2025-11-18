@@ -363,7 +363,7 @@ export default function ObservationEntry() {
   const isPST = () => observationType === TYPE_PST;
   const isLow = () => observingBand === BAND_LOW;
   const telescope = (band = observingBand) => BANDWIDTH_TELESCOPE[band]?.telescope;
-
+  const isLowAA2 = () => isLow() && subarrayConfig === OB_SUBARRAY_AA2;
   const isContinuumOnly = () => observingBand !== 0 && subarrayConfig === OB_SUBARRAY_AA2;
 
   const fieldWrapper = (children?: React.JSX.Element) => (
@@ -1201,6 +1201,13 @@ export default function ObservationEntry() {
               </Grid>
             </BorderedSection>
           </Grid>
+          {isLowAA2() && (
+            <Grid sx={{ p: { md: 5, lg: 0 } }} size={{ md: 12, lg: 3 }}>
+              <Box px={3}>
+                <img src={'/assets/low_aa2.png'} alt="Low AA2" width="100%" />
+              </Box>
+            </Grid>
+          )}
         </Grid>
         <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
         {pageFooter()}
