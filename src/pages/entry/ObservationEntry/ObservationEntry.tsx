@@ -452,14 +452,14 @@ export default function ObservationEntry() {
               (osdLOW?.basicCapabilities?.minFrequencyHz ?? 0) * 10,
               FREQUENCY_HZ,
               FREQUENCY_MHZ
-            ) + 10
+            ) + 10 // TODO establish what the edge buffer should be, ideally from OSD
           }
           maxEdge={
             frequencyConversion(
               (osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0) * 10,
               FREQUENCY_HZ,
               FREQUENCY_MHZ
-            ) - 10
+            ) - 10 // TODO establish what the edge buffer should be, ideally from OSD
           }
           bandColor={alpha(colors[0], 0.6)}
           boxWidth="100%"

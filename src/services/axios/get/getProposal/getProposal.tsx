@@ -370,8 +370,6 @@ const getObservationType = (inObs: ObservationSetBackend): number => {
   switch (inObs?.observation_type_details?.observation_type?.toLocaleLowerCase()) {
     case OBSERVATION_TYPE_BACKEND[0]?.toLowerCase():
       return TYPE_ZOOM;
-    case OBSERVATION_TYPE_BACKEND[1]?.toLowerCase():
-      return TYPE_CONTINUUM;
     case OBSERVATION_TYPE_BACKEND[2]?.toLowerCase():
       return TYPE_PST;
     default:
