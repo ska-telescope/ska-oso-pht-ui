@@ -308,8 +308,8 @@ const getObservationsSets = (
             obs.imageWeighting === IW_BRIGGS
               ? (ROBUST.find(item => item.value === obs.robust)?.label as string)
               : '0',
-          number_of_channels: obs.zoomChannels,
-          pst_mode: PST_MODES[obs.pstMode as number]?.label ?? null
+          number_of_channels: Number(obs.zoomChannels),
+          pst_mode: PST_MODES[Number(obs.pstMode)]?.mapping ?? null
         }
       };
       outObservationsSets.push(observation);

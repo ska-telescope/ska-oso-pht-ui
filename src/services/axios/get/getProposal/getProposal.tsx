@@ -465,8 +465,9 @@ const getObservations = (
           : null,
       pstMode:
         type === TYPE_PST
-          ? PST_MODES?.find(mode => mode?.label === inValue[i]?.observation_type_details?.pst_mode)
-              ?.value ?? null
+          ? PST_MODES?.find(
+              mode => mode?.mapping === inValue[i]?.observation_type_details?.pst_mode
+            )?.value ?? null
           : null
     };
     results.push(obs);
