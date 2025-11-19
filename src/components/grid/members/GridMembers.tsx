@@ -87,7 +87,6 @@ export default function GridMembers({
 
   const colPHD = {
     field: 'phdThesis',
-    headerName: t('phdThesis.label'),
     flex: 1,
     minWidth: 120,
     disableClickEventBubbling: true,
@@ -119,7 +118,7 @@ export default function GridMembers({
   const colActions = [
     {
       field: 'id',
-      headerName: headerDisplay('actions.label'),
+      renderHeader: () => headerDisplay('actions.label'),
       sortable: false,
       flex: 1,
       minWidth: 120,
@@ -144,7 +143,7 @@ export default function GridMembers({
   const colPermissions = [
     {
       field: 'permissions',
-      headerName: headerDisplay('manageTeamMember.rights'),
+      renderHeader: () => headerDisplay('manageTeamMember.rights'),
       sortable: false,
       flex: 2,
       minWidth: 160,

@@ -33,13 +33,11 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
       },
       telescopeCapabilities: {
         low: inData.observatory_policy.telescope_capabilities.Low,
-        mid: null // MOCK CALL inData.observatory_policy.telescope_capabilities.Mid
+        mid: inData.observatory_policy.telescope_capabilities.Mid
       }
     },
     capabilities: {
-      mid: null, // MOCK_CALL
-      /*
-      {
+      mid: {
         basicCapabilities: {
           dishElevationLimitDeg:
             inData.capabilities.mid.basic_capabilities.dish_elevation_limit_deg,
@@ -68,7 +66,6 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
           numberFsps: inData.capabilities.mid.AA2.number_fsps
         }
       },
-      */
       low: {
         basicCapabilities: {
           minFrequencyHz: inData.capabilities.low.basic_capabilities.min_frequency_hz,

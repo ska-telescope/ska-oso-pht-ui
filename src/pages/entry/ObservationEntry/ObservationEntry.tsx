@@ -461,7 +461,7 @@ export default function ObservationEntry() {
               FREQUENCY_MHZ
             ) - 10 // TODO establish what the edge buffer should be, ideally from OSD
           }
-          bandColor={alpha(colors[0], 0.6)}
+          bandColor={colors[0]}
           boxWidth="100%"
         />
       </Box>

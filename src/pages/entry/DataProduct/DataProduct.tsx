@@ -104,13 +104,13 @@ export default function DataProduct() {
 
     if (
       osdMaxDataProducts === 1 &&
-      Array.isArray(proposal?.dataProductSDP) &&
+      proposal?.dataProductSDP &&
       proposal.dataProductSDP.length > 0 &&
       observations.length > 0
     ) {
       const dp = proposal.dataProductSDP[0];
 
-      setObservationId(dp.observationId[0]);
+      setObservationId(dp.observationId);
       setDataProductType(Number(dp.observatoryDataProduct[0] ? 1 : 2));
       setImageSizeValue(dp.imageSizeValue.toString());
       setImageSizeUnits(dp.imageSizeUnits);
@@ -438,7 +438,7 @@ export default function DataProduct() {
         id: osdMaxDataProducts === 1 ? highestId : highestId + 1,
         dataProductsSDPId: `${PAGE_PREFIX}-${highestId + 1}`,
         observatoryDataProduct: [true], // TODO dataProductType,
-        observationId: [observationId],
+        observationId: observationId,
         imageSizeValue: Number(imageSizeValue),
         imageSizeUnits,
         pixelSizeValue,
@@ -557,7 +557,7 @@ export default function DataProduct() {
         </Grid>
         <Grid size={{ md: 7, lg: 7 }}>
           <Stack spacing={GAP}>
-            {!isSpectral() && dataProductTypeField()}
+            {!isSpectral() && <Box sx={{ width: '500px' }}>{dataProductTypeField()}</Box>}
 
             {isContinuum() && (
               <BorderedSection title={t('page.7.group.' + TYPE_CONTINUUM + '.' + dataProductType)}>

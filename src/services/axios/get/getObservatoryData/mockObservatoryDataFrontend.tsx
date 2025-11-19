@@ -17,15 +17,12 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
       normalMaxHours: 100.0
     },
     telescopeCapabilities: {
-      mid: null,
+      mid: 'AA2',
       low: 'AA2'
     }
   },
   capabilities: {
-    // TODO check with science ops if we should suppress Mid for Mock call
-    mid: null,
-    /* MOCK_CALL
-    {
+    mid: {
       basicCapabilities: {
         dishElevationLimitDeg: 15.0,
         receiverInformation: [
@@ -78,7 +75,6 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
         numberFsps: 4
       }
     },
-    */
     low: {
       basicCapabilities: {
         minFrequencyHz: 50000000.0,

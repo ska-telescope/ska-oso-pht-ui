@@ -1,8 +1,7 @@
 import { Grid } from '@mui/material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
-import { LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
+import { LAB_IS_BOLD, LAB_POSITION, TYPE_CONTINUUM } from '../../../utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { TYPE_CONTINUUM } from '@/utils/constantsSensCalc';
 
 interface DataProductTypeFieldProps {
   disabled?: boolean;

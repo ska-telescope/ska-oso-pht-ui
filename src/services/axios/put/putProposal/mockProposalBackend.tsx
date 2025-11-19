@@ -1,5 +1,5 @@
 import { ProposalBackend } from '@utils/types/proposal.tsx';
-import { PROPOSAL_STATUS, RA_TYPE_ICRS } from '@utils/constants.ts';
+import { PROPOSAL_STATUS, RA_TYPE_ICRS, TYPE_STR_ZOOM } from '@utils/constants.ts';
 
 export const MockProposalBackend: ProposalBackend = {
   prsl_id: 'prsl-t0001-20250613-00002',
@@ -166,23 +166,22 @@ export const MockProposalBackend: ProposalBackend = {
               value: 1,
               unit: 'h'
             }
-          },
-          spectral_resolution: '5.43 kHz (8.1 km/s)',
-          effective_resolution: '5.43 kHz (8.1 km/s)',
-          image_weighting: 'uniform',
-          robust: '0',
-          spectral_averaging: '1'
+          }
+          // spectral_resolution: '5.43 kHz (8.1 km/s)',
+          // effective_resolution: '5.43 kHz (8.1 km/s)',
+          // spectral_averaging: '1'
         }
       }
     ],
     data_product_sdps: [
       {
         data_product_id: 'SDP-2',
-        products: ['Y', 'N', 'Y', 'N'],
         script_parameters: {
+          variant: 'continuum image',
           channels_out: 1,
           fit_spectral_pol: 3,
-          polarisations: 'I',
+          gaussian_taper: '1',
+          polarisations: ['I'],
           image_size: {
             value: 15,
             unit: 'deg2'
@@ -195,7 +194,7 @@ export const MockProposalBackend: ProposalBackend = {
             weighting: 'uniform'
           }
         },
-        observation_set_refs: ['obs-obR1Ej']
+        observation_set_ref: 'obs-obR1Ej'
       }
     ],
     calibration_strategy: [
@@ -323,7 +322,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
           number_of_stations: 68
         },
         observation_type_details: {
-          observation_type: 'zoom',
+          observation_type: TYPE_STR_ZOOM,
           bandwidth: {
             value: 24.4140625,
             unit: 'kHz'
@@ -341,22 +340,21 @@ export const MockProposalBackendZoom: ProposalBackend = {
           },
           spectral_resolution: '14.13 Hz (21.2 m/s)',
           effective_resolution: '14.13 Hz (21.2 m/s)',
-          image_weighting: 'uniform',
-          robust: '0',
           spectral_averaging: '1',
-          number_of_channels: 1024
+          number_of_channels: '1024'
         }
       }
     ],
     data_product_sdps: [
       {
         data_product_id: 'SDP-1',
-        products: ['Y', 'Y', 'Y', 'Y'],
-        observation_set_refs: ['obs-arMIoY'],
+        observation_set_ref: 'obs-arMIoY',
         script_parameters: {
+          variant: 'continuum image',
           channels_out: 1,
           fit_spectral_pol: 3,
-          polarisations: 'I',
+          gaussian_taper: '1',
+          polarisations: ['I'],
           image_size: {
             value: 100,
             unit: 'deg2'
@@ -388,6 +386,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
         result: {
           supplied_type: 'integration_time',
           weighted_continuum_sensitivity: {
+            unit: '',
             value: 0
           },
           weighted_spectral_sensitivity: {
@@ -395,6 +394,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
             unit: 'mJy/beam'
           },
           total_continuum_sensitivity: {
+            unit: '',
             value: 0
           },
           total_spectral_sensitivity: {
@@ -408,7 +408,8 @@ export const MockProposalBackendZoom: ProposalBackend = {
           }
         },
         continuum_confusion_noise: {
-          value: 0
+          value: 0,
+          unit: ''
         },
         synthesized_beam_size: {
           continuum: 'dummy',

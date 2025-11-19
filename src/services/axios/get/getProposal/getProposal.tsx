@@ -270,7 +270,7 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
     id: index + 1,
     dataProductsSDPId: dp.data_product_id,
     observatoryDataProduct: dp.products ? getSDPOptions(dp.products) : [],
-    observationId: dp.observation_set_refs,
+    observationId: dp.observation_set_ref,
     imageSizeValue: dp.script_parameters.image_size.value,
     imageSizeUnits: getImageSizeUnits(dp.script_parameters.image_size.unit),
     pixelSizeValue: dp.script_parameters.image_cellsize?.value,

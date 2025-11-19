@@ -1,20 +1,80 @@
 import { ValueUnitPair } from './valueUnitPair';
 
+export type DataProductSDPContinuumImageBackend = {
+  image_size: ValueUnitPair;
+  image_cellsize?: ValueUnitPair;
+  weight: {
+    weighting?: string;
+    robust?: number;
+  };
+  polarisations: string[];
+  channels_out?: number;
+  fit_spectral_pol?: number;
+  gaussian_taper?: string;
+  variant: string;
+};
+
+export type DataProductSDPContinuumVisibilitiesBackend = {
+  image_size: ValueUnitPair;
+  image_cellsize?: ValueUnitPair;
+  weight: {
+    weighting?: string;
+    robust?: number;
+  };
+  polarisations: string[];
+  channels_out?: number;
+  fit_spectral_pol?: number;
+  gaussian_taper?: string;
+  time_averaging: ValueUnitPair;
+  frequency_averaging: ValueUnitPair;
+  variant: string;
+};
+
+export type DataProductSDPSpectralImageBackend = {
+  image_size: ValueUnitPair;
+  image_cellsize?: ValueUnitPair;
+  weight: {
+    weighting?: string;
+    robust?: number;
+  };
+  polarisations: string[];
+  channels_out?: number;
+  fit_spectral_pol?: number;
+  gaussian_taper?: string;
+  continuum_subtraction?: boolean;
+  variant: string;
+};
+
+export type DataProductSDPPSTDetectedFilterBankBackend = {
+  polarisations: string[];
+  bit_depth: number;
+  time_averaging_factor: number;
+  frequency_averaging_factor: number;
+  variant: string;
+};
+
+export type DataProductSDPPSTTimingBackend = {
+  polarisations: string[];
+  bit_depth: number;
+  variant: string;
+};
+
+export type DataProductSDPPSTFlowthroughBackend = {
+  polarisations: string[];
+  bit_depth: number;
+  variant: string;
+};
+
 export type DataProductSDPsBackend = {
   data_product_id: string;
-  products: string[];
-  observation_set_refs: string[];
-  script_parameters: {
-    image_size: ValueUnitPair;
-    image_cellsize?: ValueUnitPair;
-    weight: {
-      weighting?: string;
-      robust?: number;
-    };
-    polarisations?: string;
-    channels_out?: number;
-    fit_spectral_pol?: number;
-  };
+  observation_set_ref: string;
+  script_parameters:
+    | DataProductSDPContinuumImageBackend
+    | DataProductSDPContinuumVisibilitiesBackend
+    | DataProductSDPSpectralImageBackend
+    | DataProductSDPPSTDetectedFilterBankBackend
+    | DataProductSDPPSTTimingBackend
+    | DataProductSDPPSTFlowthroughBackend;
 };
 
 export type DataProductSRCNetBackend = {
@@ -25,7 +85,7 @@ export type DataProductSDP = {
   id: number;
   dataProductsSDPId?: string;
   observatoryDataProduct: boolean[];
-  observationId: string[];
+  observationId: string;
   imageSizeValue: number;
   imageSizeUnits: number;
   pixelSizeValue: number;

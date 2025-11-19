@@ -27,6 +27,7 @@ import {
 import GroupObservation from '../../utils/types/groupObservation';
 import DeleteObservationConfirmation from '../../components/alerts/deleteObservationConfirmation/deleteObservationConfirmation';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 const DATA_GRID_OBSERVATION = '62vh';
 const PAGE = PAGE_OBSERVATION;
@@ -41,6 +42,7 @@ export default function ObservationPage() {
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [elementsO, setElementsO] = React.useState<any[]>([]);
   const loggedIn = isLoggedIn();
+  const { isSV } = useAppFlow();
 
   const [rowSelectionModel, setRowSelectionModel] = React.useState<GridRowSelectionModel>([]);
 
@@ -189,7 +191,8 @@ export default function ObservationPage() {
         headerName: t('observationType.short'),
         width: 140,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: { type: number } }) => t(`observationType.${e.row.type}`)
+        renderCell: (e: { row: { type: number } }) =>
+          t((isSV() ? 'scienceCategory.' : 'observationType.') + `${e.row.type}`)
       },
       {
         field: 'actions',

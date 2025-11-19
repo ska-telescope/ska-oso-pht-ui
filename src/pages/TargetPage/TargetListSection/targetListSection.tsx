@@ -214,7 +214,7 @@ export default function TargetListSection() {
   return (
     <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
       {osdMaxTargets && (getProposal()?.targets?.length ?? 0) > 0 && (
-        <Grid width={'100%'}>
+        <Grid>
           <InfoCard
             color={InfoCardColorTypes.Warning}
             fontSize={HELP_FONT}

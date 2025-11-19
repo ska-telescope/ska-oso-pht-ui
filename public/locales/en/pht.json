@@ -229,7 +229,7 @@
         "1": "Images",
         "2": "Visibilities"
       },
-      "2": {
+      "3": {
         "1": "Flow through",
         "2": "Timing",
         "3": "Detected Filter bank"
@@ -1409,14 +1409,14 @@
       "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL",
       "descTitle": "Data Product Description",
       "descContent": {
-        "0": {
+        "2": {
           "1": "In Science Verification, Spectral line products include: \n\n* Spectral line cube without continuum subtraction.\n* If requested, spectral line cube after continuum subtraction.\n* Model images per channel\n* PSF images per channel\n* Residual images per channel\n* Calibrated visibilities averaged to 3.4 s and native channel width (to enable full verification of the imaging ODPs)\n* Ancillary data product including Local Sky Model catalogue and QA report"
         },
         "1": {
           "1": "In Science Verification, Continuum data products include: \n\n* Calibrated visibilities averaged to 3.4 s and 21.7 kHz (to enable full verification of the imaging ODPs) \n* MFS image \n* Channel images for spectral index estimation as specified in 'channels out'. \n* Model images per channel * PSF images per channel \n* Residual images per channel \n* Ancillary data product including Local Sky Model catalogue and QA report",
           "2": "In Science Verification, Continuum data products include: \n\n* Calibrated visibilities averaged to the specified values (to enable full verification of the imaging ODPs)\n* MFS image+\n* Model image\n* PSF image\n* Residual image\n* Ancillary data product including Local Sky Model catalogue and QA report* Residual image\n* Ancillary data product including Local Sky Model catalogue and QA report\n\n+ The MFS images are generated with ..."
         },
-        "2": {
+        "3": {
           "1": "In Science Verification, PST Flow through data products include: \n\n* Single or dual-polarisation beam-formed voltages requantised to the specified bit depth\n* QA report",
           "2": "In Science Verification, PST Pulsar Timing data products include: \n\n* Beam-formed voltages\n* time of arrival\n* residuals from the best-fit timing model for the pulsar, \n* updated ephemerids, and\n* QA report",
           "3": "In Science Verification, PST Detected Filter bank data product include: \n\n* Filter bank data, averaged and requantised as specified in the panel on the left.\n* QA report"
@@ -1429,12 +1429,12 @@
       "desc": "This page allows you to request and define observatory data products for Observation(s).",
       "pageError": "The DATA PRODUCTS page is not complete",
       "group": {
-        "0": "Spectral ODPs",
+        "2": "Spectral ODPs",
         "1": {
           "1": "Continuum Imaging ODPs",
           "2": "Visibility ODP"
         },
-        "2": {
+        "3": {
           "1": "PST Flow through Data Products",
           "2": "PST Timing Data Products",
           "3": "PST Detected Filter bank Data Products"

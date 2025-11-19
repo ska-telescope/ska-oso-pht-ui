@@ -202,10 +202,6 @@ export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
 export const TYPE_PST = 2;
 
-export const MODE_CONTINUUM = 102;
-export const MODE_PST = 103;
-export const MODE_ZOOM = 101;
-
 export const GENERAL = {
   ScienceCategory: [
     { label: 'Cosmology', subCategory: [{ label: 'Not specified', value: 1 }], value: 1 },
@@ -243,19 +239,19 @@ export const GENERAL = {
     {
       label: 'Continuum',
       subCategory: [{ label: 'Not specified', value: 1 }],
-      value: MODE_CONTINUUM,
+      value: TYPE_CONTINUUM,
       observationType: TYPE_CONTINUUM
     },
     {
       label: 'PST',
       subCategory: [{ label: 'Not specified', value: 1 }],
-      value: MODE_PST,
+      value: TYPE_PST,
       observationType: TYPE_PST
     },
     {
       label: 'Spectral',
       subCategory: [{ label: 'Not specified', value: 1 }],
-      value: MODE_ZOOM,
+      value: TYPE_ZOOM,
       observationType: TYPE_ZOOM
     }
   ]
@@ -539,9 +535,13 @@ export const SECONDS_UNITS = [
   { label: NANOSECOND_LABEL, toSeconds: 0.000000001 }
 ];
 
+export const TYPE_STR_ZOOM = 'spectral line';
+export const TYPE_STR_CONTINUUM = 'continuum';
+export const TYPE_STR_PST = 'pst';
+
 export const OBS_TYPES = ['spectral', 'continuum'];
 export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM, TYPE_PST];
-export const OBSERVATION_TYPE_BACKEND = ['zoom', 'continuum', 'pst'];
+export const OBSERVATION_TYPE_BACKEND = [TYPE_STR_ZOOM, TYPE_STR_CONTINUUM, TYPE_STR_PST];
 export const SUPPLIED_TYPE_INTEGRATION = 1;
 export const SUPPLIED_TYPE_SENSITIVITY = 2;
 export const SUPPLIED_INTEGRATION_TIME_UNITS_H = 2;

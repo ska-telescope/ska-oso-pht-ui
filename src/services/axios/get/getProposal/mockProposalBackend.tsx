@@ -206,19 +206,18 @@ export const MockProposalBackend: ProposalBackend = {
               unit: 'h'
             }
           },
-          spectral_resolution: '5.43 kHz (8.1 km/s)',
-          effective_resolution: '5.43 kHz (8.1 km/s)',
+          // spectral_resolution: '5.43 kHz (8.1 km/s)',
+          // effective_resolution: '5.43 kHz (8.1 km/s)',
           image_weighting: 'uniform',
-          robust: '0',
-          spectral_averaging: '1'
+          robust: '0'
+          // spectral_averaging: '1'
         }
       }
     ],
     data_product_sdps: [
       {
         data_product_id: 'SDP-2',
-        products: ['Y', 'N', 'Y', 'N'],
-        observation_set_refs: ['obs-obR1Ej'],
+        observation_set_ref: 'obs-obR1Ej',
         script_parameters: {
           image_size: {
             value: 15,
@@ -232,7 +231,7 @@ export const MockProposalBackend: ProposalBackend = {
             weighting: '1',
             robust: 0
           },
-          polarisations: '123',
+          polarisations: ['123'],
           channels_out: 1,
           fit_spectral_pol: 3
         }
@@ -411,7 +410,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
       {
         data_product_id: 'SDP-1',
         products: ['Y', 'Y', 'Y', 'Y'],
-        observation_set_refs: ['obs-arMIoY'],
+        observation_set_ref: 'obs-arMIoY',
         script_parameters: {
           image_size: {
             value: 100,
@@ -425,7 +424,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
             weighting: '2',
             robust: 0
           },
-          polarisations: '1234',
+          polarisations: ['1234'],
           channels_out: 1,
           fit_spectral_pol: 3
         }

@@ -10,19 +10,35 @@ export type ObservationSetBackend = {
   // elevation?: ElevationBackend; // TODO: use this once latest PDM changes merged
   elevation?: number;
   array_details: ArrayDetailsLowBackend | ArrayDetailsMidBackend;
-  observation_type_details: ObservationTypeDetailsBackend;
+  observation_type_details:
+    | ObservationTypeDetailsSpectralBackend
+    | ObservationTypeDetailsContinuumBackend
+    | ObservationTypeDetailsPSTBackend
+    | null;
 };
 
-export type ObservationTypeDetailsBackend = {
-  observation_type?: string;
+export type ObservationTypeDetailsSpectralBackend = {
   bandwidth: ValueUnitPair;
   central_frequency: ValueUnitPair;
   supplied: SuppliedBackend | null;
+  observation_type?: string;
   spectral_resolution?: string;
   effective_resolution?: string;
-  image_weighting: string;
-  spectral_averaging?: string; //TODO: patch release pdm using int
-  robust?: string; //TODO: patch release pdm using int
-  number_of_channels?: number;
-  pst_mode?: string; // "flow through" | "detected filterbank" | "pulsar timing"
+  spectral_averaging?: string;
+  number_of_channels?: string;
+};
+
+export type ObservationTypeDetailsContinuumBackend = {
+  bandwidth: ValueUnitPair;
+  central_frequency: ValueUnitPair;
+  supplied: SuppliedBackend | null;
+  observation_type?: string;
+};
+
+export type ObservationTypeDetailsPSTBackend = {
+  bandwidth: ValueUnitPair;
+  central_frequency: ValueUnitPair;
+  supplied: SuppliedBackend | null;
+  observation_type?: string;
+  pst_mode?: string;
 };
