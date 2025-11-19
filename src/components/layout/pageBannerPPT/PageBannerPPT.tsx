@@ -69,7 +69,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const getAccess = () => application.content4 as ProposalAccess[];
   const getProposal = () => application.content2 as Proposal;
 
-  const accessCanSubmit = accessSubmit(getAccess(), (application.content2 as Proposal).id);
+  const accessCanSubmit = accessSubmit(getAccess(), getProposal().id);
 
   const isDisableEndpoints = () => {
     if (
@@ -104,11 +104,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         }
       }
     }
-    const response = await PostProposalValidate(
-      authClient,
-      application.content2 as Proposal,
-      isSV()
-    );
+    const response = await PostProposalValidate(authClient, getProposal(), isSV());
 
     if (response.valid && !response.error && results.length === 0) {
       notifySuccess(t(`validationBtn.${response.valid}`));
