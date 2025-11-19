@@ -33,20 +33,20 @@ export default function ObservingBandField({
   const { t } = useScopedTranslation();
   const { helpComponent } = storageObject.useStore();
   const FIELD = 'observingBand';
-  const { osdLOW, osdMID } = useOSDAccessors();
+  // const { osdLOW, osdMID } = useOSDAccessors();
 
   const getOptions = () => {
-    let filteredOptions = BANDWIDTH_TELESCOPE; // TODO we should use observatoryConstants here
-
-    if (osdMID === null) {
-      filteredOptions = filteredOptions?.filter((e: any) => e.telescope === TELESCOPE_LOW_NUM);
-    }
-
-    if (osdLOW === null) {
-      filteredOptions = filteredOptions?.filter((e: any) => e.telescope === TELESCOPE_MID_NUM);
-    }
-
-    return filteredOptions;
+    // TODO clarify with science Ops if we want to supress Mid selection for science verification
+    // -------------------------------------------------------------------------------------------
+    // let filteredOptions = BANDWIDTH_TELESCOPE; // TODO we should use observatoryConstants here
+    // if (osdMID === null) {
+    //   filteredOptions = filteredOptions?.filter((e: any) => e.telescope === TELESCOPE_LOW_NUM);
+    // }
+    // if (osdLOW === null) {
+    //   filteredOptions = filteredOptions?.filter((e: any) => e.telescope === TELESCOPE_MID_NUM);
+    // }
+    // return filteredOptions;
+    return BANDWIDTH_TELESCOPE;
   };
 
   return (

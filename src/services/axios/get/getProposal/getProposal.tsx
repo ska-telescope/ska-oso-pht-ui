@@ -459,16 +459,14 @@ const getObservations = (
             )
           : null,
       numStations: numStations,
-      zoomChannels:
-        type === TYPE_ZOOM
-          ? (inValue[i].observation_type_details?.number_of_channels as number)
-          : null,
-      pstMode:
-        type === TYPE_PST
-          ? PST_MODES?.find(
-              mode => mode?.mapping === inValue[i]?.observation_type_details?.pst_mode
-            )?.value ?? null
-          : null
+      ...(type === TYPE_ZOOM && {
+        zoomChannels: inValue[i].observation_type_details?.number_of_channels
+      }),
+      ...(type === TYPE_PST && {
+        pstMode: PST_MODES?.find(
+          mode => mode?.mapping === inValue[i]?.observation_type_details?.pst_mode
+        )?.value
+      })
     };
     results.push(obs);
   }

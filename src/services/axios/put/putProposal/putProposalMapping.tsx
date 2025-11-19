@@ -33,7 +33,9 @@ import {
   RA_TYPE_GALACTIC,
   RA_TYPE_ICRS,
   SCIENCE_VERIFICATION,
-  PST_MODES
+  PST_MODES,
+  TYPE_PST,
+  TYPE_ZOOM
 } from '@utils/constants.ts';
 import {
   DataProductSDP,
@@ -50,6 +52,8 @@ import { CalibrationStrategy, CalibrationStrategyBackend } from '@/utils/types/c
 import { SuppliedBackend } from '@/utils/types/supplied';
 
 const isContinuum = (type: number) => type === TYPE_CONTINUUM;
+const isPST = (type: number) => type === TYPE_PST;
+const isZoom = (type: number) => type === TYPE_ZOOM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
 const isRedshift = (type: number) => type === VELOCITY_TYPE.REDSHIFT;
 const userId = getUserId();
@@ -308,8 +312,8 @@ const getObservationsSets = (
             obs.imageWeighting === IW_BRIGGS
               ? (ROBUST.find(item => item.value === obs.robust)?.label as string)
               : '0',
-          number_of_channels: Number(obs.zoomChannels),
-          pst_mode: PST_MODES[Number(obs.pstMode)]?.mapping ?? null
+          ...(isZoom(obs.type) && { number_of_channels: obs.zoomChannels }),
+          ...(isPST(obs.type) && { pst_mode: PST_MODES[Number(obs.pstMode)]?.mapping })
         }
       };
       outObservationsSets.push(observation);

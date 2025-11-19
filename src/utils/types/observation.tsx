@@ -28,8 +28,8 @@ type Observation = {
   num15mAntennas?: number; // only for MID
   num13mAntennas?: number; // only for MID
   numStations?: number;
-  zoomChannels: number | null; // only for zoom
-  pstMode: number | null; // only for pst
+  zoomChannels?: number; // only for zoom
+  pstMode?: number; // only for pst
 };
 
 export default Observation;
