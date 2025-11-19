@@ -402,7 +402,8 @@ export const MockProposalBackendZoom: ProposalBackend = {
           effective_resolution: '14.13 Hz (21.2 m/s)',
           image_weighting: 'briggs',
           robust: '1',
-          spectral_averaging: '1'
+          spectral_averaging: '1',
+          number_of_channels: 1024
         }
       }
     ],

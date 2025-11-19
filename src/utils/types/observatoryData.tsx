@@ -16,6 +16,7 @@ export type ObservatoryPolicy = {
     maxDataProducts: number;
     maxObservations: number;
     maxTargets: number;
+    isCustomAllowed: boolean;
     normalMaxHours: number;
   };
   telescopeCapabilities: TelescopeInformationFrontend;

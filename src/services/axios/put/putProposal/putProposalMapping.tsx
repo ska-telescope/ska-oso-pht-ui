@@ -32,7 +32,10 @@ import {
   IW_BRIGGS,
   RA_TYPE_GALACTIC,
   RA_TYPE_ICRS,
-  SCIENCE_VERIFICATION
+  SCIENCE_VERIFICATION,
+  PST_MODES,
+  TYPE_PST,
+  TYPE_ZOOM
 } from '@utils/constants.ts';
 import {
   DataProductSDP,
@@ -44,11 +47,13 @@ import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
-import { helpers } from '@/utils/helpers';
+import { getBandwidthZoom, helpers } from '@/utils/helpers';
 import { CalibrationStrategy, CalibrationStrategyBackend } from '@/utils/types/calibrationStrategy';
 import { SuppliedBackend } from '@/utils/types/supplied';
 
 const isContinuum = (type: number) => type === TYPE_CONTINUUM;
+const isPST = (type: number) => type === TYPE_PST;
+const isZoom = (type: number) => type === TYPE_ZOOM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
 const isRedshift = (type: number) => type === VELOCITY_TYPE.REDSHIFT;
 const userId = getUserId();
@@ -258,16 +263,7 @@ const getBandwidthContinuum = (incObs: Observation): ValueUnitPair => {
     unit: getFrequencyAndBandwidthUnits(incObs.continuumBandwidthUnits as number)
   };
 };
-const getBandwidthZoom = (incObs: Observation): ValueUnitPair => {
-  const obsTelescopeArray = OSD_CONSTANTS.array.find(o => o.value === incObs.telescope);
-  const bandwidth = obsTelescopeArray?.bandWidth?.find(b => b.value === incObs.bandwidth);
-  const valueUnit = bandwidth?.label?.split(' ');
-  const value = valueUnit && valueUnit.length > 0 ? Number(valueUnit[0]) : 0;
-  return {
-    value: value,
-    unit: bandwidth?.mapping ? bandwidth.mapping : ''
-  };
-};
+
 const getBandwidth = (ob: Observation): ValueUnitPair =>
   isContinuum(ob.type) ? getBandwidthContinuum(ob) : getBandwidthZoom(ob);
 
@@ -303,7 +299,7 @@ const getObservationsSets = (
         observing_band: getObservingBand(obs.observingBand) as string,
         array_details: getArrayDetails(obs),
         observation_type_details: {
-          observation_type: OBSERVATION_TYPE_BACKEND[obs.type]?.toLowerCase(),
+          observation_type: OBSERVATION_TYPE_BACKEND[obs.type],
           bandwidth: getBandwidth(obs),
           central_frequency: getCentralFrequency(obs),
           supplied: getSupplied(obs) as SuppliedBackend,
@@ -315,7 +311,9 @@ const getObservationsSets = (
           robust:
             obs.imageWeighting === IW_BRIGGS
               ? (ROBUST.find(item => item.value === obs.robust)?.label as string)
-              : '0'
+              : '0',
+          ...(isZoom(obs.type) && { number_of_channels: obs.zoomChannels }),
+          ...(isPST(obs.type) && { pst_mode: PST_MODES[Number(obs.pstMode)]?.mapping })
         }
       };
       outObservationsSets.push(observation);
