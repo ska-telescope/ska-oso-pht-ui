@@ -28,7 +28,8 @@ type Observation = {
   num15mAntennas?: number; // only for MID
   num13mAntennas?: number; // only for MID
   numStations?: number;
-  // TODO: get right ascension + declination from target => store in target and send it as pointing_centre: '00:00:00.0 00:00:00.0',
+  zoomChannels?: number; // only for zoom
+  pstMode?: number; // only for pst
 };
 
 export default Observation;

@@ -45,11 +45,13 @@ import {
   ZOOM_CHANNELS_MIN,
   ZOOM_CHANNELS_MAX,
   TYPE_PST,
-  FLOW_THROUGH_VALUE
+  FLOW_THROUGH_VALUE,
+  FREQUENCY_KHZ
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
   generateId,
+  getBandwidthZoom,
   getMinimumChannelWidth,
   getScaledBandwidthOrFrequency
 } from '@utils/helpers.ts';
@@ -156,6 +158,8 @@ export default function ObservationEntry() {
     setNumOf15mAntennas(ob?.num15mAntennas ?? 0);
     setNumOf13mAntennas(ob?.num13mAntennas ?? 0);
     setNumOfStations(ob?.numStations ?? 0);
+    setZoomChannels(ob?.zoomChannels ?? 0);
+    setPstMode(ob?.pstMode ?? 0);
   };
 
   const observationOut = () => {
@@ -187,7 +191,9 @@ export default function ObservationEntry() {
       numSubBands: subBands,
       num15mAntennas: numOf15mAntennas,
       num13mAntennas: numOf13mAntennas,
-      numStations: numOfStations
+      numStations: numOfStations,
+      zoomChannels: zoomChannels,
+      pstMode: pstMode
     };
     return newObservation;
   };
@@ -356,7 +362,7 @@ export default function ObservationEntry() {
   const isPST = () => observationType === TYPE_PST;
   const isLow = () => observingBand === BAND_LOW;
   const telescope = (band = observingBand) => BANDWIDTH_TELESCOPE[band]?.telescope;
-
+  const isLowAA2 = () => isLow() && subarrayConfig === OB_SUBARRAY_AA2;
   const isContinuumOnly = () => observingBand !== 0 && subarrayConfig === OB_SUBARRAY_AA2;
 
   const fieldWrapper = (children?: React.JSX.Element) => (
@@ -418,12 +424,12 @@ export default function ObservationEntry() {
       <Box>
         <FrequencySpectrum
           minFreq={frequencyConversion(
-            osdLOW?.basicCapabilities?.minFrequencyHz * 10,
+            (osdLOW?.basicCapabilities?.minFrequencyHz ?? 0) * 10,
             FREQUENCY_HZ,
             FREQUENCY_MHZ
           )}
           maxFreq={frequencyConversion(
-            osdLOW?.basicCapabilities?.maxFrequencyHz * 10,
+            (osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0) * 10,
             FREQUENCY_HZ,
             FREQUENCY_MHZ
           )}
@@ -432,19 +438,30 @@ export default function ObservationEntry() {
             centralFrequencyUnits ?? FREQUENCY_HZ,
             FREQUENCY_MHZ
           )}
-          bandWidth={isContinuum() ? continuumBandwidth ?? 0 : bandwidth ?? 0} // TODO get value from dropdown + convert to mghz
-          minEdge={frequencyConversion(
-            osdLOW?.basicCapabilities?.minFrequencyHz * 10,
-            FREQUENCY_HZ,
-            FREQUENCY_MHZ
-          )}
-          maxEdge={frequencyConversion(
-            osdLOW?.basicCapabilities?.maxFrequencyHz * 10,
-            FREQUENCY_HZ,
-            FREQUENCY_MHZ
-          )}
+          bandWidth={
+            isContinuum()
+              ? continuumBandwidth ?? 0
+              : frequencyConversion(
+                  getBandwidthZoom(observationOut()),
+                  FREQUENCY_KHZ,
+                  FREQUENCY_MHZ
+                ) ?? 0
+          }
+          minEdge={
+            frequencyConversion(
+              (osdLOW?.basicCapabilities?.minFrequencyHz ?? 0) * 10,
+              FREQUENCY_HZ,
+              FREQUENCY_MHZ
+            ) + 10 // TODO establish what the edge buffer should be, ideally from OSD
+          }
+          maxEdge={
+            frequencyConversion(
+              (osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0) * 10,
+              FREQUENCY_HZ,
+              FREQUENCY_MHZ
+            ) - 10 // TODO establish what the edge buffer should be, ideally from OSD
+          }
           bandColor={colors[0]}
-          bandColorContrast={colors[1]}
           boxWidth="100%"
         />
       </Box>
@@ -474,7 +491,9 @@ export default function ObservationEntry() {
     );
 
   const pstModeField = () =>
-    fieldWrapper(<PstModeField required widthLabel={4} value={pstMode} setValue={setPstMode} />);
+    fieldWrapper(
+      <PstModeField required widthLabel={LABEL_WIDTH_NEW} value={pstMode} setValue={setPstMode} />
+    );
 
   const numStationsField = () =>
     fieldWrapper(
@@ -786,7 +805,7 @@ export default function ObservationEntry() {
           testId="bandwidth"
           value={bandwidth}
           telescope={telescope()}
-          widthLabel={BOTTOM_LABEL_WIDTH}
+          widthLabel={LABEL_WIDTH_NEW}
           observingBand={observingBand}
           centralFrequency={centralFrequency}
           centralFrequencyUnits={centralFrequencyUnits}
@@ -948,10 +967,8 @@ export default function ObservationEntry() {
         <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{zoomChannelsField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>{' '}
-        {/* TODO check this is "spectral mode" */}
-        <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>{' '}
-        {/* TODO check this is "average channel width" */}
+        <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{emptyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{bandwidthField()}</Grid>
       </>
@@ -965,7 +982,7 @@ export default function ObservationEntry() {
           {frequencySpectrumField()}
         </Grid>
         <Grid size={{ md: 12, lg: 6 }}>{observationsBandField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}> {bandwidthField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}> {continuumBandwidthField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{pstModeField()}</Grid>
       </>
@@ -1184,6 +1201,13 @@ export default function ObservationEntry() {
               </Grid>
             </BorderedSection>
           </Grid>
+          {isLowAA2() && (
+            <Grid sx={{ p: { md: 5, lg: 0 } }} size={{ md: 12, lg: 3 }}>
+              <Box px={3}>
+                <img src={'/assets/low_aa2.png'} alt="Low AA2" width="100%" />
+              </Box>
+            </Grid>
+          )}
         </Grid>
         <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
         {pageFooter()}

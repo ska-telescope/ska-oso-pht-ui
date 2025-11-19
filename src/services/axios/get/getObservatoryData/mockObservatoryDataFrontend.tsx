@@ -13,17 +13,16 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
       maxDataProducts: 1,
       maxObservations: 1,
       maxTargets: 1,
+      isCustomAllowed: false,
       normalMaxHours: 100.0
     },
     telescopeCapabilities: {
-      mid: null,
+      mid: 'AA2',
       low: 'AA2'
     }
   },
   capabilities: {
-    mid: null,
-    /* MOCK_CALL
-    {
+    mid: {
       basicCapabilities: {
         dishElevationLimitDeg: 15.0,
         receiverInformation: [
@@ -76,7 +75,6 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
         numberFsps: 4
       }
     },
-    */
     low: {
       basicCapabilities: {
         minFrequencyHz: 50000000.0,

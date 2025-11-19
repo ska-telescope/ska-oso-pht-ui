@@ -303,14 +303,14 @@ export const MockProposalFrontend: Proposal = {
     {
       id: 1,
       dataProductsSDPId: 'SDP-2',
-      observatoryDataProduct: [true, false, true, false],
-      observationId: ['obs-obR1Ej'],
+      observatoryDataProduct: [],
+      observationId: 'obs-obR1Ej',
       imageSizeValue: 15,
       imageSizeUnits: 0,
       pixelSizeValue: 1.007,
       pixelSizeUnits: 'arcsecs',
       weighting: 1,
-      polarisations: '123',
+      polarisations: ['123'],
       channelsOut: 1,
       fitSpectralPol: 3
     }
@@ -438,7 +438,8 @@ export const MockProposalFrontendZoom: Proposal = {
       linked: 'm2',
       numStations: 68,
       num13mAntennas: undefined,
-      num15mAntennas: undefined
+      num15mAntennas: undefined,
+      zoomChannels: 1024
     }
   ],
   groupObservations: [],
@@ -495,7 +496,7 @@ export const MockProposalFrontendZoom: Proposal = {
       id: 1,
       dataProductsSDPId: 'SDP-1',
       observatoryDataProduct: [true, true, true, true],
-      observationId: ['obs-arMIoY'],
+      observationId: 'obs-arMIoY',
       imageSizeValue: 100,
       imageSizeUnits: 0,
       pixelSizeValue: 3.7,

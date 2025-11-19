@@ -251,7 +251,7 @@
         {
           "data_product_id": "SDP-1",
           "options": ["1", "2", "5"],
-          "observation_set_refs": ["mid-001", "low-001"],
+          "observation_set_ref": "low-001",
           "image_size": "IMAGE SIZE",
           "image_cellsize": "IMAGE CELLSIZE",
           "weighting": "WEIGHTING"
@@ -558,7 +558,7 @@
         {
           "data_products_id": "SDP-1",
           "options": ["1", "2", "5"],
-          "observation_set_refs": ["mid-001", "low-001"],
+          "observation_set_ref": "low-001",
           "image_size": "50",
           "image_cellsize": "50",
           "weighting": "50"
@@ -864,7 +864,7 @@
         {
           "data_products_id": "SDP-1",
           "options": ["1", "2", "5"],
-          "observation_set_refs": ["mid-001", "low-001"],
+          "observation_set_ref": "low-001",
           "image_size": "50",
           "image_cellsize": "50",
           "weighting": "50"

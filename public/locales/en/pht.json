@@ -297,7 +297,7 @@
   },
   "effectiveResolution": {
     "help": "This field displays the channel width after applying the spectral averaging",
-    "label": "Effective Resolution",
+    "label": "Averaged channel width",
     "error": "Unable to calculate value"
   },
   "elevation": {
@@ -457,7 +457,7 @@
   },
   "name": {
     "label": "Name",
-    "help": "Name of the target/object. If you want to automatically populate the coordinates, then provide a name of a known object and use the resolve button to query SIMBAD first and NED if not found. However, you can provide an arbitrary target/object name which can contain any character and enter the coordinate values."
+    "help": "Name of the target/object. If you want to automatically populate the coordinates, then provide a name of a known object and use the resolve button to query SIMBAD first and NED if not found. However, you can provide an arbitrary target/object name which can contain any character and enter the coordinate values. "
   },
   "pstBeam": {
     "label": "PST Beam",
@@ -535,7 +535,8 @@
     "help": "Specify if the observation type is continuum or spectral. Note that not all sub-arrays have spectral mode so this option is available based on the sub-array selected.",
     "short": "Type",
     "0": "Spectral",
-    "1": "Continuum"
+    "1": "Continuum",
+    "2": "PST"
   },
   "observatoryDataProduct": {
     "label": "Observatory Data Product",
@@ -1130,7 +1131,7 @@
   },
   "spectralResolution": {
     "help": "",
-    "label": "Spectral Resolution"
+    "label": "Spectral Mode"
   },
   "srcNet": {
     "label": "SRCNet"

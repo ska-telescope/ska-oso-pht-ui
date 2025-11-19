@@ -7,6 +7,9 @@ import {
   VELOCITY_UNITS,
   BANDWIDTH_MIN_CHANNEL_WIDTH_HZ
 } from './constants';
+import Observation from './types/observation';
+import { ValueUnitPair } from './types/valueUnitPair';
+import { OSD_CONSTANTS } from './OSDConstants';
 
 // TODO : Ensure that we remove all hard-coded values
 
@@ -160,4 +163,17 @@ export const leadZero = (coordinate: String): String => {
     return '-0' + Math.abs(Number(arr[0])) + ':' + arr[1] + ':' + arr[2];
   }
   return coordinate;
+};
+
+/*********************************************************** map values *********************************************************/
+
+export const getBandwidthZoom = (incObs: Observation): ValueUnitPair => {
+  const obsTelescopeArray = OSD_CONSTANTS.array.find(o => o.value === incObs.telescope);
+  const bandwidth = obsTelescopeArray?.bandWidth?.find(b => b.value === incObs.bandwidth);
+  const valueUnit = bandwidth?.label?.split(' ');
+  const value = valueUnit && valueUnit.length > 0 ? Number(valueUnit[0]) : 0;
+  return {
+    value: value,
+    unit: bandwidth?.mapping ? bandwidth.mapping : ''
+  };
 };

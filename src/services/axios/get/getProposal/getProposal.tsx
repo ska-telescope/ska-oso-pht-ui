@@ -43,7 +43,9 @@ import {
   RA_TYPE_ICRS,
   RA_TYPE_GALACTIC,
   isCypress,
-  SCIENCE_VERIFICATION
+  SCIENCE_VERIFICATION,
+  TYPE_PST,
+  PST_MODES
 } from '@utils/constants.ts';
 import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import { ObservationSetBackend } from '@utils/types/observationSet.tsx';
@@ -268,7 +270,7 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
     id: index + 1,
     dataProductsSDPId: dp.data_product_id,
     observatoryDataProduct: dp.products ? getSDPOptions(dp.products) : [],
-    observationId: dp.observation_set_refs,
+    observationId: dp.observation_set_ref,
     imageSizeValue: dp.script_parameters.image_size.value,
     imageSizeUnits: getImageSizeUnits(dp.script_parameters.image_size.unit),
     pixelSizeValue: dp.script_parameters.image_cellsize?.value,
@@ -364,6 +366,17 @@ const getLinked = (
   return linkedTargetRef ? linkedTargetRef : '';
 };
 
+const getObservationType = (inObs: ObservationSetBackend): number => {
+  switch (inObs?.observation_type_details?.observation_type?.toLocaleLowerCase()) {
+    case OBSERVATION_TYPE_BACKEND[TYPE_ZOOM]:
+      return TYPE_ZOOM;
+    case OBSERVATION_TYPE_BACKEND[TYPE_PST]:
+      return TYPE_PST;
+    default:
+      return TYPE_CONTINUUM;
+  }
+};
+
 const getObservations = (
   inValue: ObservationSetBackend[] | null,
   inResults: SensCalcResultsBackend[] | null
@@ -378,11 +391,9 @@ const getObservations = (
     const sub = OSD_CONSTANTS.array[arr - 1].subarray?.find(
       p => p.label.toLowerCase() === inValue[i]?.array_details?.subarray?.toLocaleLowerCase()
     )?.value;
-    const type =
-      inValue[i]?.observation_type_details?.observation_type?.toLocaleLowerCase() ===
-      OBSERVATION_TYPE_BACKEND[0]?.toLowerCase()
-        ? 0
-        : 1;
+
+    const type: number = getObservationType(inValue[i]);
+
     const observingBand = getObservingBand(
       inValue[i]?.observing_band,
       inValue[i]?.array_details?.array
@@ -447,7 +458,15 @@ const getObservations = (
               observingBand
             )
           : null,
-      numStations: numStations
+      numStations: numStations,
+      ...(type === TYPE_ZOOM && {
+        zoomChannels: inValue[i].observation_type_details?.number_of_channels
+      }),
+      ...(type === TYPE_PST && {
+        pstMode: PST_MODES?.find(
+          mode => mode?.mapping === inValue[i]?.observation_type_details?.pst_mode
+        )?.value
+      })
     };
     results.push(obs);
   }
@@ -615,7 +634,7 @@ const getTargetObservation = (
   }
   for (let result of inResults) {
     const resultObsType = getResultObsType(result, inObservationSets);
-    const isContinuum = resultObsType === OBSERVATION_TYPE_BACKEND[1].toLowerCase();
+    const isContinuum = resultObsType === OBSERVATION_TYPE_BACKEND[1];
     const isSensitivity = result.result?.supplied_type === 'sensitivity';
 
     const targetObs: TargetObservation = {
