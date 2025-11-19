@@ -1,18 +1,18 @@
-import { useState } from 'react';
+import React from 'react';
 import { Paper, Box, Stack, Typography } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import React from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const PANEL_WIDTH = 300;
 const TAB_WIDTH = 40;
-const CONTAINER_SPACER = 250;
+const CONTAINER_SPACER_TOP = 240;
+const CONTAINER_SPACER_BOTTOM = 200;
 const GAP = 2;
 
 export default function EdgeSlider() {
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = React.useState(false);
   const { t } = useScopedTranslation();
   const theme = useTheme();
   const { help } = storageObject.useStore();
@@ -39,8 +39,8 @@ export default function EdgeSlider() {
 
   const Container = styled(Box)({
     position: 'fixed',
-    top: CONTAINER_SPACER,
-    bottom: CONTAINER_SPACER,
+    top: CONTAINER_SPACER_TOP,
+    bottom: CONTAINER_SPACER_BOTTOM,
     right: 0,
     zIndex: 1300
   });
@@ -90,8 +90,7 @@ export default function EdgeSlider() {
           <Typography
             sx={{
               writingMode: 'vertical-rl',
-              textOrientation: 'mixed',
-              fontWeight: 'bold'
+              textOrientation: 'mixed'
             }}
           >
             {t('helpText.label')

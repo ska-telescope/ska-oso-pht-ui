@@ -1,12 +1,7 @@
 import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import {
-  BorderedSection,
-  TextEntry,
-  InfoCard,
-  InfoCardColorTypes
-} from '@ska-telescope/ska-gui-components';
+import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
 import PulsarTimingBeamField from '@components/fields/pulsarTimingBeam/PulsarTimingBeam.tsx';
@@ -25,7 +20,6 @@ import {
   VELOCITY_TYPE,
   LAB_IS_BOLD,
   FIELD_PATTERN_POINTING_CENTRES,
-  HELP_FONT,
   WRAPPER_HEIGHT,
   FREQUENCY_MHZ,
   TELESCOPE_LOW_NUM,
@@ -72,7 +66,7 @@ export default function TargetEntry({
   const { t } = useScopedTranslation();
   const { isSV } = useAppFlow();
   const { notifyError, notifySuccess } = useNotify();
-  const { observatoryConstants, osdMaxTargets } = useOSDAccessors();
+  const { observatoryConstants } = useOSDAccessors();
 
   const LAB_WIDTH = 5;
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
@@ -554,93 +548,49 @@ export default function TargetEntry({
 
   return (
     <>
-      <Box sx={{ width: '100%', height: '85%' }}>
-        <Grid
-          p={2}
-          container
-          direction="row"
-          alignItems="space-evenly"
-          justifyContent="space-between"
-        >
-          <Grid size={{ xs: 8 }} sx={{ position: 'relative' }}>
-            <Box
-              pr={2}
-              sx={{
-                width: '100%'
-              }}
-            >
-              <Grid
-                container
-                direction="column"
-                spacing={2}
-                alignItems="stretch"
-                justifyContent="flex-start"
-                pt={1}
-                pb={2}
-              >
-                <Grid pt={1}>
-                  <BorderedSection title={t('referenceCoordinates.label')}>
-                    {referenceCoordinatesField()}
-                  </BorderedSection>
-                </Grid>
-                <Grid pt={1}>
-                  <BorderedSection title={t('coordinate.label')}>
-                    {nameField()}
-                    {skyDirection1Field()}
-                    {skyDirection2Field()}
-                  </BorderedSection>
-                </Grid>
-                {!isSV() && (
-                  <Grid pt={1}>
-                    <BorderedSection title={t('pulsarTimingBeam.groupLabel')}>
-                      {pulsarTimingBeamField()}
-                    </BorderedSection>
-                  </Grid>
-                )}
-                <Grid pt={1}>
-                  <BorderedSection title={t('radialMotion.label')}>
-                    {velocityField()}
-                    {velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}
-                  </BorderedSection>
-                </Grid>
-                {!isSV() && (
-                  <Grid pt={1}>
-                    <BorderedSection title={t('fieldPattern.groupLabel')}>
-                      {fieldPatternTypeField()}
-                    </BorderedSection>
-                  </Grid>
-                )}
-              </Grid>
-            </Box>
-          </Grid>
-
-          <Grid size={{ xs: 4 }} sx={{ position: 'relative' }}>
-            {osdMaxTargets && (getProposal()?.targets?.length ?? 0) > 0 && (
-              <InfoCard
-                color={InfoCardColorTypes.Warning}
-                fontSize={HELP_FONT}
-                message={t(
-                  osdMaxTargets > 1 ? 'targets.limitReached_plural' : 'targets.limitReached',
-                  { value: osdMaxTargets }
-                )}
-                testId="targetLimitPanelId"
-              />
-            )}
-
-            {!id && (
-              <Box
-                sx={{
-                  position: 'absolute',
-                  bottom: 0,
-                  right: 0
-                }}
-              >
-                {addButton()}
-              </Box>
-            )}
-          </Grid>
+      <Grid pt={4}>
+        <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
+          <BorderedSection title={t('referenceCoordinates.label')}>
+            {referenceCoordinatesField()}
+          </BorderedSection>
+        </Box>
+      </Grid>
+      <Grid pt={1}>
+        <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
+          <BorderedSection title={t('coordinate.label')}>
+            {nameField()}
+            {skyDirection1Field()}
+            {skyDirection2Field()}
+          </BorderedSection>
+        </Box>
+      </Grid>
+      {!isSV() && (
+        <Grid pt={1}>
+          <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
+            <BorderedSection title={t('pulsarTimingBeam.groupLabel')}>
+              {pulsarTimingBeamField()}
+            </BorderedSection>
+          </Box>
         </Grid>
-      </Box>
+      )}
+      <Grid pt={1}>
+        <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
+          <BorderedSection title={t('radialMotion.label')}>
+            {velocityField()}
+            {velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}
+          </BorderedSection>
+        </Box>
+      </Grid>
+      {!isSV() && (
+        <Grid pt={1}>
+          <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
+            <BorderedSection title={t('fieldPattern.groupLabel')}>
+              {fieldPatternTypeField()}
+            </BorderedSection>
+          </Box>
+        </Grid>
+      )}
+      {!id && <Grid pl={10}>{addButton()}</Grid>}
     </>
   );
 }
