@@ -57,6 +57,7 @@ export function useOSDAccessors() {
     osdMaxDataProducts: observatoryPolicy?.cyclePolicies?.maxDataProducts,
     osdMaxObservations: observatoryPolicy?.cyclePolicies?.maxObservations,
     osdMaxTargets: observatoryPolicy?.cyclePolicies?.maxTargets,
+    osdIsCustomAllowed: observatoryPolicy?.cyclePolicies?.isCustomAllowed,
     osdNormalMaxHours: observatoryPolicy?.cyclePolicies?.normalMaxHours,
     observatoryConstants: observatoryConstants,
     osdCloses: (shouldPresent = false) =>

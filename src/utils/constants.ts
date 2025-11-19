@@ -186,11 +186,16 @@ export const FREQUENCY_MHZ = 2;
 export const FREQUENCY_KHZ = 3;
 export const FREQUENCY_HZ = 4;
 
+export const FREQUENCY_STR_HZ = 'Hz';
+export const FREQUENCY_STR_MHZ = 'MHz';
+export const FREQUENCY_STR_KHZ = 'kHz';
+export const FREQUENCY_STR_GHZ = 'GHz';
+
 export const FREQUENCY_UNITS = [
-  { label: 'GHz', value: FREQUENCY_GHZ, mapping: 'GHz', toHz: 1 },
-  { label: 'MHz', value: FREQUENCY_MHZ, mapping: 'MHz', toHz: 1000 },
-  { label: 'kHz', value: FREQUENCY_KHZ, mapping: 'kHz', toHz: 10000000 },
-  { label: 'Hz', value: FREQUENCY_HZ, mapping: 'Hz', toHz: 10000000000 }
+  { label: FREQUENCY_STR_GHZ, value: FREQUENCY_GHZ, mapping: FREQUENCY_STR_GHZ, toHz: 1 }, // TODO check if label can be removed
+  { label: FREQUENCY_STR_MHZ, value: FREQUENCY_MHZ, mapping: FREQUENCY_STR_MHZ, toHz: 1000 },
+  { label: FREQUENCY_STR_KHZ, value: FREQUENCY_KHZ, mapping: FREQUENCY_STR_KHZ, toHz: 10000000 },
+  { label: FREQUENCY_STR_HZ, value: FREQUENCY_HZ, mapping: FREQUENCY_STR_HZ, toHz: 10000000000 }
 ];
 
 export const TYPE_ZOOM = 0;
@@ -430,13 +435,16 @@ export const PULSAR_TIMING_VALUE = 2;
 
 export const PST_MODES = [
   {
-    value: FLOW_THROUGH_VALUE
+    value: FLOW_THROUGH_VALUE,
+    mapping: 'flow through'
   },
   {
-    value: DETECTED_FILTER_BANK_VALUE
+    value: DETECTED_FILTER_BANK_VALUE,
+    mapping: 'detected filter bank'
   },
   {
-    value: PULSAR_TIMING_VALUE
+    value: PULSAR_TIMING_VALUE,
+    mapping: 'pulsar timing'
   }
 ];
 
@@ -510,10 +518,10 @@ export const TECHNICAL_FEASIBILITY = {
 export const PULSAR_MODE_FOLDED = 'folded_pulse';
 
 export const OSCILLATION_UNITS = [
-  { label: 'Hz', toHz: 1 },
-  { label: 'kHz', toHz: 1000 },
-  { label: 'MHz', toHz: 10000000 },
-  { label: 'GHz', toHz: 10000000000 }
+  { label: FREQUENCY_STR_HZ, toHz: 1 },
+  { label: FREQUENCY_STR_KHZ, toHz: 1000 },
+  { label: FREQUENCY_STR_MHZ, toHz: 10000000 },
+  { label: FREQUENCY_STR_GHZ, toHz: 10000000000 }
 ];
 //TODO: Refactor such that these identifiers are no longer needed and references can be per array label
 export const OB_SUBARRAY_AA2 = 3;
@@ -532,8 +540,8 @@ export const SECONDS_UNITS = [
 ];
 
 export const OBS_TYPES = ['spectral', 'continuum'];
-export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM];
-export const OBSERVATION_TYPE_BACKEND = ['Zoom', 'Continuum']; // TODO change it to lowercase
+export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM, TYPE_PST];
+export const OBSERVATION_TYPE_BACKEND = ['zoom', 'continuum', 'pst'];
 export const SUPPLIED_TYPE_INTEGRATION = 1;
 export const SUPPLIED_TYPE_SENSITIVITY = 2;
 export const SUPPLIED_INTEGRATION_TIME_UNITS_H = 2;

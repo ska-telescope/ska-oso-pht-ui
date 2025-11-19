@@ -438,7 +438,8 @@ export const MockProposalFrontendZoom: Proposal = {
       linked: 'm2',
       numStations: 68,
       num13mAntennas: undefined,
-      num15mAntennas: undefined
+      num15mAntennas: undefined,
+      zoomChannels: 1024
     }
   ],
   groupObservations: [],

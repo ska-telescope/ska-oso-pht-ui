@@ -11,6 +11,7 @@ import {
 
 //NOTE:: not to be referenced directly, outside useOSDAccessors
 export const OSD_CONSTANTS = {
+  // TODO create a type for this
   array: [
     {
       value: 1,

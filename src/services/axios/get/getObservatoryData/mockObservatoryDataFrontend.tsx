@@ -13,6 +13,7 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
       maxDataProducts: 1,
       maxObservations: 1,
       maxTargets: 1,
+      isCustomAllowed: false,
       normalMaxHours: 100.0
     },
     telescopeCapabilities: {
@@ -21,6 +22,7 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
     }
   },
   capabilities: {
+    // TODO check with science ops if we should suppress Mid for Mock call
     mid: null,
     /* MOCK_CALL
     {
