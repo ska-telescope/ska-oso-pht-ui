@@ -10,6 +10,7 @@ interface FrequencySpectrumProps {
   maxEdge: number;
   unit?: string;
   bandColor?: string;
+  bandColorContrast?: string;
   boxWidth?: string;
 }
 
@@ -22,6 +23,7 @@ const FrequencySpectrum: React.FC<FrequencySpectrumProps> = ({
   maxEdge,
   unit = 'MHz',
   bandColor = '',
+  bandColorContrast = '',
   boxWidth = '200%' // TODO clarify why it was set at 200%
 }) => {
   const theme = useTheme();
@@ -38,10 +40,13 @@ const FrequencySpectrum: React.FC<FrequencySpectrumProps> = ({
 
   // Determine band color
   let usedColor = bandColor === '' ? theme.palette.primary.light : bandColor;
+  let usedColorContrast = bandColorContrast === '' ? theme.palette.divider : bandColorContrast;
   if (bandStartFreq < minFreq || bandEndFreq > maxFreq) {
     usedColor = theme.palette.error.main;
+    usedColorContrast = theme.palette.error.contrastText;
   } else if (bandStartFreq < minEdge || bandEndFreq > maxEdge) {
     usedColor = theme.palette.warning.main;
+    usedColorContrast = theme.palette.error.contrastText;
   }
 
   return (
@@ -58,14 +63,15 @@ const FrequencySpectrum: React.FC<FrequencySpectrumProps> = ({
           sx={{
             position: 'relative',
             flexGrow: 1,
-            height: 48, // Doubled height
-            backgroundColor: theme.palette.grey[200],
+            height: 48,
+            backgroundColor: theme.palette.divider,
             borderRadius: 12,
             overflow: 'hidden'
           }}
         >
           {/* Highlighted Band */}
           <Box
+            data-testid="frequencySpectrum-highlighted-band"
             sx={{
               position: 'absolute',
               left: `${bandOffsetPercent}%`,
@@ -83,7 +89,7 @@ const FrequencySpectrum: React.FC<FrequencySpectrumProps> = ({
               top: 0,
               bottom: 0,
               width: 2,
-              backgroundColor: theme.palette.secondary.main,
+              backgroundColor: usedColorContrast,
               transform: 'translateX(-1px)'
             }}
           />
@@ -97,7 +103,7 @@ const FrequencySpectrum: React.FC<FrequencySpectrumProps> = ({
               top: '50%',
               transform: 'translateY(-50%)',
               whiteSpace: 'nowrap',
-              color: theme.palette.text.secondary
+              color: usedColorContrast
             }}
           >
             {centerFreq} {unit}

@@ -53,7 +53,6 @@ import {
   getMinimumChannelWidth,
   getScaledBandwidthOrFrequency
 } from '@utils/helpers.ts';
-import { alpha } from '@mui/material/styles';
 import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
 import Proposal from '../../../utils/types/proposal';
 import AddButton from '../../../components/button/Add/Add';
@@ -411,7 +410,8 @@ export default function ObservationEntry() {
     const colors = getColors({
       type: 'observationType',
       colors: observationType?.toString() ?? '',
-      content: 'both'
+      content: 'both',
+      dim: 0.6
     });
 
     return fieldWrapper(
@@ -443,7 +443,8 @@ export default function ObservationEntry() {
             FREQUENCY_HZ,
             FREQUENCY_MHZ
           )}
-          bandColor={alpha(colors[0], 0.6)}
+          bandColor={colors[0]}
+          bandColorContrast={colors[1]}
           boxWidth="100%"
         />
       </Box>

@@ -231,6 +231,7 @@ export default function TableDataProductsRow({
               FREQUENCY_MHZ
             )}
             bandColor={colors[0]}
+            bandColorContrast={colors[1]}
           />
         )}
       </TableCell>

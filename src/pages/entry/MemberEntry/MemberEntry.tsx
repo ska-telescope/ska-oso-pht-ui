@@ -25,6 +25,7 @@ import UserSearchButton from '@/components/button/Search/Search';
 import GetUserByEmail from '@/services/axios/get/getUserByEmail/getUserByEmail';
 import ResetButton from '@/components/button/Reset/Reset';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
+import { useHelp } from '@/utils/help/useHelp';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 export const LAB_WIDTH = 5;
@@ -36,7 +37,8 @@ interface MemberEntryProps {
 export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberEntryProps) {
   const { t } = useScopedTranslation();
   const LABEL_WIDTH = 3;
-  const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
+  const { application, updateAppContent2 } = storageObject.useStore();
+  const { setHelp } = useHelp();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -144,7 +146,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    helpComponent(t('email.help'));
+    setHelp('email.help');
   }, []);
 
   React.useEffect(() => {
@@ -350,7 +352,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
         testId="firstName"
         value={firstName}
         setValue={setFirstName}
-        onFocus={() => helpComponent(t('firstName.help'))}
+        onFocus={() => setHelp('firstName.help')}
         errorText={errorTextFirstName}
         required
         disabled={forSearch}
@@ -368,7 +370,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
         testId="lastName"
         value={lastName}
         setValue={setLastName}
-        onFocus={() => helpComponent(t('lastName.help'))}
+        onFocus={() => setHelp('lastName.help')}
         errorText={errorTextLastName}
         required
         disabled={forSearch}
@@ -387,7 +389,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
         value={email}
         setValue={setEmail}
         errorText={errorTextEmail ? t(errorTextEmail) : ''}
-        onFocus={() => helpComponent(t('email.help'))}
+        onFocus={() => setHelp('email.help')}
         required
         disabled={forSearch}
         suffix={resolveButton()}
@@ -406,7 +408,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
           testId="piCheckbox"
           checked={pi}
           onChange={handleCheckboxChangePI}
-          onFocus={() => helpComponent(t('pi.help'))}
+          onFocus={() => setHelp('pi.help')}
         />
       </Box>
     );
@@ -422,19 +424,19 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
         testId="PhDCheckbox"
         checked={phdThesis}
         onChange={handleCheckboxChangePhD}
-        onFocus={() => helpComponent(t('phdThesis.help'))}
+        onFocus={() => setHelp('phdThesis.help')}
       />
     );
   };
 
   return (
-    <Grid pt={3} pl={1} container direction="column" alignItems="left" justifyContent="flex-start">
+    <Grid pt={3} container direction="column" alignItems="center" justifyContent="flex-start">
       <Grid size={{ xs: 8 }}>{emailField()}</Grid>
       <Grid size={{ xs: 8 }}>{firstNameField()}</Grid>
       <Grid size={{ xs: 8 }}>{lastNameField()}</Grid>
       {!isSV() && piField()}
       {!isSV() && phdThesisField()}
-      <Grid pt={2} size={{ xs: 12 }}>
+      <Grid pt={2} size={{ xs: 8 }}>
         <Box>
           <TeamInviteButton
             action={clickFunction}
