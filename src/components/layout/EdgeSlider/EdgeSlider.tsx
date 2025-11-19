@@ -45,14 +45,18 @@ export default function EdgeSlider() {
     zIndex: 1300
   });
 
-  const Panel = styled(Paper)<{ expanded: boolean }>(({ expanded, theme }) => ({
+  // ✅ Prevent `expanded` from leaking to DOM
+  const Panel = styled(Paper, {
+    shouldForwardProp: prop => prop !== 'expanded'
+  })<{ expanded: boolean }>(({ expanded, theme }) => ({
     position: 'absolute',
     right: 0,
     top: 0,
     bottom: 0,
     width: PANEL_WIDTH,
     transform: expanded ? 'translateX(0)' : `translateX(${PANEL_WIDTH - TAB_WIDTH}px)`,
-    transition: 'transform 300ms ease-in-out',
+    transition: 'transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1)', // smoother easing
+    willChange: 'transform', // GPU acceleration hint
     overflow: 'hidden',
     zIndex: 2,
     display: 'flex',

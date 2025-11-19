@@ -8,6 +8,7 @@ import Alert from '../../alerts/standardAlert/StandardAlert';
 import Proposal from '../../../utils/types/proposal';
 import emptyCell from '../../../components/fields/emptyCell/emptyCell';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 const FIELD_OBS = 'observatoryDataProduct.options';
 
@@ -25,6 +26,7 @@ export default function GridObservationSummary({
   const loggedIn = isLoggedIn();
   const { t } = useScopedTranslation();
   const { observatoryConstants } = useOSDAccessors();
+  const { isSV } = useAppFlow();
 
   const headerDisplay = (inValue: string, inValue2?: string) => (
     <Typography variant="subtitle1" style={{ fontWeight: 600 }}>
@@ -138,7 +140,8 @@ export default function GridObservationSummary({
     field: 'type',
     renderHeader: () => headerDisplay('observationType.short'),
     disableClickEventBubbling: true,
-    renderCell: (e: { row: { type: number } }) => element(t(`observationType.${e.row.type}`))
+    renderCell: (e: { row: { type: number } }) =>
+      element(t((isSV() ? 'scienceCategory.' : 'observationType.') + `${e.row.type}`))
   };
 
   const colSensCalcStatus = {

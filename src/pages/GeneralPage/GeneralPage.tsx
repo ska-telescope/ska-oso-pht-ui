@@ -16,7 +16,7 @@ import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 const PAGE = PAGE_GENERAL;
 const LINE_OFFSET = 30;
-const LABEL_WIDTH = 2;
+const LABEL_WIDTH = 3;
 
 export default function GeneralPage() {
   const { t } = useScopedTranslation();

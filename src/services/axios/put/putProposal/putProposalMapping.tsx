@@ -19,7 +19,6 @@ import {
   FREQUENCY_UNITS,
   GENERAL,
   IMAGE_WEIGHTING,
-  OBSERVATION_TYPE_BACKEND,
   PROJECTS,
   PROPOSAL_STATUS,
   TELESCOPE_LOW_BACKEND_MAPPING,
@@ -32,7 +31,12 @@ import {
   IW_BRIGGS,
   RA_TYPE_GALACTIC,
   RA_TYPE_ICRS,
-  SCIENCE_VERIFICATION
+  SCIENCE_VERIFICATION,
+  TYPE_ZOOM,
+  TYPE_PST,
+  TYPE_STR_CONTINUUM,
+  TYPE_STR_ZOOM,
+  TYPE_STR_PST
 } from '@utils/constants.ts';
 import {
   DataProductSDP,
@@ -174,31 +178,30 @@ const getCalibrationStrategy = (
   }));
 };
 
-const SDPOptions = (inArray: Boolean[]) => {
-  return inArray.map(element => (element ? 'Y' : 'N'));
+const getDataProductScriptParameters = (dp: DataProductSDP) => {
+  const IMAGE_SIZE_UNITS = ['deg2', 'arcmin2', 'arcsec2'];
+  return {
+    image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
+    image_cellsize: { value: dp.pixelSizeValue, unit: IMAGE_SIZE_UNITS[dp.pixelSizeUnits] },
+    weight: {
+      weighting: IMAGE_WEIGHTING.find(item => item.value === Number(dp.weighting))?.label as string,
+      ...(Number(dp.weighting) === IW_BRIGGS && {
+        robust: ROBUST.find(item => item.value === dp.robust)?.value
+      })
+    },
+    polarisations: dp.polarisations,
+    channels_out: dp.channelsOut,
+    fit_spectral_pol: dp.fitSpectralPol,
+    gaussian_taper: '1', // TODO: Need to get right value from PDM/UI
+    variant: 'continuum image'
+  };
 };
 
 const getDataProductSDP = (dataProducts: DataProductSDP[]): DataProductSDPsBackend[] => {
-  const IMAGE_SIZE_UNITS = ['deg2', 'arcmin2', 'arcsec2'];
-
   return dataProducts?.map(dp => ({
     data_product_id: dp.dataProductsSDPId as string,
-    products: SDPOptions(dp.observatoryDataProduct),
-    observation_set_refs: dp.observationId,
-    script_parameters: {
-      image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
-      image_cellsize: { value: dp.pixelSizeValue, unit: IMAGE_SIZE_UNITS[dp.pixelSizeUnits] },
-      weight: {
-        weighting: IMAGE_WEIGHTING.find(item => item.value === Number(dp.weighting))
-          ?.label as string,
-        ...(Number(dp.weighting) === IW_BRIGGS && {
-          robust: ROBUST.find(item => item.value === dp.robust)?.value
-        })
-      },
-      polarisations: Array.isArray(dp.polarisations) ? dp.polarisations.join(',') : 'I',
-      channels_out: dp.channelsOut,
-      fit_spectral_pol: dp.fitSpectralPol
-    }
+    observation_set_ref: dp.observationId,
+    script_parameters: getDataProductScriptParameters(dp)
   }));
 };
 
@@ -289,6 +292,38 @@ const getSupplied = (inObs: Observation) => {
   };
 };
 
+const getObservationTypeDetails = (obs: Observation) => {
+  switch (obs.type) {
+    case TYPE_CONTINUUM:
+      return {
+        bandwidth: getBandwidth(obs),
+        central_frequency: getCentralFrequency(obs),
+        supplied: getSupplied(obs) as SuppliedBackend,
+        observation_type: TYPE_STR_CONTINUUM
+      };
+    case TYPE_ZOOM:
+      return {
+        bandwidth: getBandwidth(obs),
+        central_frequency: getCentralFrequency(obs),
+        supplied: getSupplied(obs) as SuppliedBackend,
+        observation_type: TYPE_STR_ZOOM,
+        spectral_resolution: obs.spectralResolution,
+        effective_resolution: obs.effectiveResolution,
+        spectral_averaging: obs.spectralAveraging?.toString(),
+        number_of_channels: 1 // TODO : Need to get right value from PDM/UI
+      };
+    case TYPE_PST:
+    default:
+      return {
+        bandwidth: getBandwidth(obs),
+        central_frequency: getCentralFrequency(obs),
+        supplied: getSupplied(obs) as SuppliedBackend,
+        observation_type: TYPE_STR_PST,
+        pst_mode: '1' // TODO : Need to get right value from PDM/UI'
+      };
+  }
+};
+
 const getObservationsSets = (
   incObservationsSets: Observation[] | undefined,
   incObservationGroups: GroupObservation[] | undefined
@@ -302,21 +337,7 @@ const getObservationsSets = (
         elevation: obs.elevation,
         observing_band: getObservingBand(obs.observingBand) as string,
         array_details: getArrayDetails(obs),
-        observation_type_details: {
-          observation_type: OBSERVATION_TYPE_BACKEND[obs.type]?.toLowerCase(),
-          bandwidth: getBandwidth(obs),
-          central_frequency: getCentralFrequency(obs),
-          supplied: getSupplied(obs) as SuppliedBackend,
-          spectral_resolution: obs.spectralResolution,
-          effective_resolution: obs.effectiveResolution,
-          image_weighting: IMAGE_WEIGHTING.find(item => item.value === obs.imageWeighting)
-            ?.label as string,
-          spectral_averaging: obs.spectralAveraging?.toString(),
-          robust:
-            obs.imageWeighting === IW_BRIGGS
-              ? (ROBUST.find(item => item.value === obs.robust)?.label as string)
-              : '0'
-        }
+        observation_type_details: getObservationTypeDetails(obs)
       };
       outObservationsSets.push(observation);
     }

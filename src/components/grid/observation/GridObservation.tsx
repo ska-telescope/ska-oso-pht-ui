@@ -6,6 +6,7 @@ import { GridColDef } from '@mui/x-data-grid';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import Observation from '@/utils/types/observation';
+import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 const ROW_HEIGHT = 200;
 
@@ -26,6 +27,7 @@ export default function GridObservation({
   const theme = useTheme();
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
   const hasSelectedRef = React.useRef(false);
+  const { isSV } = useAppFlow();
 
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [gridHeight, setGridHeight] = React.useState<number | undefined>(undefined);
@@ -105,7 +107,8 @@ export default function GridObservation({
   const displaySubarray = (inArray: string, inType: string) => (
     <Box pl={2}>
       <Typography variant="subtitle1" fontWeight="bold">
-        {t('subArrayConfiguration.' + inArray)} | {t('observationType.' + inType)}
+        {t('subArrayConfiguration.' + inArray)} |{' '}
+        {t((isSV() ? 'scienceCategory.' : 'observationType.') + inType)}
       </Typography>
     </Box>
   );

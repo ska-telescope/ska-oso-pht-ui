@@ -1,8 +1,8 @@
 import {
   MOCK_CALL,
-  MODE_CONTINUUM,
-  MODE_PST,
-  MODE_ZOOM,
+  TYPE_CONTINUUM,
+  TYPE_PST,
+  TYPE_ZOOM,
   PAGE_DATA_PRODUCTS,
   PAGE_OBSERVATION,
   STATUS_ERROR,
@@ -114,9 +114,9 @@ export const validateProposal = (proposal: Proposal) => {
 export const validateProposalNavigation = (proposal: Proposal, page: number) => {
   if (MOCK_CALL && (page === PAGE_OBSERVATION || page === PAGE_DATA_PRODUCTS)) {
     return (
-      proposal.scienceCategory === MODE_CONTINUUM ||
-      proposal.scienceCategory === MODE_PST ||
-      proposal.scienceCategory === MODE_ZOOM
+      proposal.scienceCategory === TYPE_CONTINUUM ||
+      proposal.scienceCategory === TYPE_PST ||
+      proposal.scienceCategory === TYPE_ZOOM
     );
   }
   return true;

@@ -7,6 +7,7 @@ interface ChannelsOutFieldProps {
   disabled?: boolean;
   required?: boolean;
   labelWidth?: number;
+  maxValue?: number;
   onFocus?: Function;
   setValue?: Function;
   suffix?: any;
@@ -17,6 +18,7 @@ export default function ChannelsOutField({
   disabled = false,
   required = false,
   labelWidth = 5,
+  maxValue,
   onFocus,
   setValue,
   suffix,
@@ -41,6 +43,7 @@ export default function ChannelsOutField({
         labelBold
         labelPosition={LAB_POSITION}
         labelWidth={labelWidth}
+        maxValue={maxValue}
         testId={FIELD}
         value={value}
         setValue={(e: number) => setTheNumber(e)}
