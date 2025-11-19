@@ -1,28 +1,41 @@
 import React from 'react';
-import { Paper, Box, Typography } from '@mui/material';
+import { Paper, Box, Stack, Typography } from '@mui/material';
 import { styled, useTheme } from '@mui/material/styles';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 const PANEL_WIDTH = 300;
 const TAB_WIDTH = 40;
 const CONTAINER_SPACER_TOP = 240;
 const CONTAINER_SPACER_BOTTOM = 200;
+const GAP = 2;
 
-interface EdgeSliderProps {
-  helperText: string;
-}
-
-export default function EdgeSlider({
-  helperText = 'Helper text will be shown here'
-}: EdgeSliderProps) {
+export default function EdgeSlider() {
   const [expanded, setExpanded] = React.useState(false);
   const { t } = useScopedTranslation();
   const theme = useTheme();
+  const { help } = storageObject.useStore();
+  const theHelp = getHelp();
+  const theLink = getLink();
 
   const togglePanel = () => {
     setExpanded(prev => !prev);
   };
+
+  function getHelp(): string {
+    return help && help?.component ? (help?.component as string) : '';
+  }
+
+  function getLink(): string {
+    const url = help && help?.contentURL ? (help?.contentURL as string) : '';
+    try {
+      new URL(url); // Validate URL
+      return url;
+    } catch {
+      return '#'; // Fallback if invalid
+    }
+  }
 
   const Container = styled(Box)({
     position: 'fixed',
@@ -101,7 +114,30 @@ export default function EdgeSlider({
               padding: '16px'
             }}
           >
-            <Typography align="left">{helperText}</Typography>
+            <Stack spacing={GAP}>
+              <Typography align="left">{theHelp}</Typography>
+              <Typography align="left">
+                <a
+                  href={theLink}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  title={theLink}
+                  style={{
+                    color: theme.palette.secondary.main,
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                    fontWeight: 'bold',
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
+                    display: 'inline-block',
+                    maxWidth: '100%'
+                  }}
+                >
+                  {t('helpText.urlLabel')}
+                </a>
+              </Typography>
+            </Stack>
           </Box>
         )}
       </Panel>
