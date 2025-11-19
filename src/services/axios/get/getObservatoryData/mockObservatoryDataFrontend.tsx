@@ -22,6 +22,7 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
     }
   },
   capabilities: {
+    // TODO check with science ops if we should suppress Mid for Mock call
     mid: null,
     /* MOCK_CALL
     {
