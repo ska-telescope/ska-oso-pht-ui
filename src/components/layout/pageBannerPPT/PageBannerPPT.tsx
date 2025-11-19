@@ -16,6 +16,7 @@ import {
   PAGE_TECHNICAL,
   PATH,
   PROPOSAL_STATUS,
+  STATUS_ARRAY_PAGES,
   STATUS_ERROR,
   STATUS_INITIAL,
   STATUS_PARTIAL
@@ -182,6 +183,19 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     updateProposal(application.content2 as Proposal);
   }, [application.content2]);
 
+  React.useEffect(() => {
+    const pagesIndexes = STATUS_ARRAY_PAGES;
+    const pagesNeedToCheck = (application.content1 as number[]).filter((value, idx) =>
+      pagesIndexes.includes(idx)
+    );
+
+    if (pagesNeedToCheck.every(lvl => lvl === 0) && accessCanSubmit) {
+      setCanSubmit(true);
+    } else {
+      setCanSubmit(false);
+    }
+  }, [application.content1]);
+
   const buttonsLeft = () => (
     <Grid
       container
@@ -243,15 +257,11 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       <Grid>{buttonsLeft()}</Grid>
       {wrapStatusArray ? (
         <Grid size={{ xs: 7 }} display={'none'}>
-          {pageNo > -1 && pageNo < LAST_PAGE && (
-            <StatusArray updateCanSubmit={setCanSubmit} accessCanSubmit={accessCanSubmit} />
-          )}
+          {pageNo > -1 && pageNo < LAST_PAGE && <StatusArray />}
         </Grid>
       ) : (
         <Grid size={{ xs: 7 }} display={'block'}>
-          {getProposal().id !== null && pageNo < LAST_PAGE && (
-            <StatusArray updateCanSubmit={setCanSubmit} accessCanSubmit={accessCanSubmit} />
-          )}
+          {getProposal().id !== null && pageNo < LAST_PAGE && <StatusArray />}
         </Grid>
       )}
 
@@ -269,15 +279,11 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     <Grid container direction="row" alignItems="center" justifyContent="space-between">
       {wrapStatusArray ? (
         <Grid size={{ xs: 12 }} display={'block'}>
-          {pageNo < LAST_PAGE && (
-            <StatusArray updateCanSubmit={setCanSubmit} accessCanSubmit={accessCanSubmit} />
-          )}
+          {pageNo < LAST_PAGE && <StatusArray />}
         </Grid>
       ) : (
         <Grid size={{ xs: 12 }} display={'none'}>
-          {pageNo < LAST_PAGE && (
-            <StatusArray updateCanSubmit={setCanSubmit} accessCanSubmit={accessCanSubmit} />
-          )}
+          {pageNo < LAST_PAGE && <StatusArray />}
         </Grid>
       )}
     </Grid>

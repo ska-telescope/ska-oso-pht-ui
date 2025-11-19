@@ -6,15 +6,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { STATUS_ARRAY_PAGES } from '@utils/constants.ts';
 import StatusWrapper from '../wrappers/statusWrapper/StatusWrapper';
 
-interface StatusArrayOriginalProps {
-  updateCanSubmit: Function;
-  accessCanSubmit: Boolean;
-}
-
-export default function StatusArrayOriginal({
-  updateCanSubmit,
-  accessCanSubmit
-}: StatusArrayOriginalProps) {
+export default function StatusArrayOriginal() {
   const { application } = storageObject.useStore();
 
   const SIZE_OK = () => useMediaQuery(useTheme().breakpoints.up('md'));
@@ -38,19 +30,6 @@ export default function StatusArrayOriginal({
       </Grid>
     );
   };
-
-  React.useEffect(() => {
-    const pagesIndexes = STATUS_ARRAY_PAGES;
-    const pagesNeedToCheck = (application.content1 as number[]).filter((value, idx) =>
-      pagesIndexes.includes(idx)
-    );
-
-    if (pagesNeedToCheck.every(lvl => lvl === 0) && accessCanSubmit) {
-      updateCanSubmit(true);
-    } else {
-      updateCanSubmit(false);
-    }
-  }, [application.content1]);
 
   return (
     <Grid
