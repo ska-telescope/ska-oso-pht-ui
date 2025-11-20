@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Grid, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
@@ -29,6 +30,7 @@ export default function DataProductsPage() {
   const [currentRow, setCurrentRow] = React.useState(0);
   const [openDialog, setOpenDialog] = React.useState(false);
   const { osdMaxDataProducts } = useOSDAccessors();
+  const navigate = useNavigate();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -57,6 +59,11 @@ export default function DataProductsPage() {
   const deleteIconClicked = (e: DataProductSDP) => {
     setCurrentRow(e.id);
     setOpenDialog(true);
+  };
+
+  const editIconClicked = (e: DataProductSDP) => {
+    setCurrentRow(e.id);
+    navigate(PATH[3], { replace: true, state: e });
   };
 
   const closeDeleteDialog = () => {
@@ -153,7 +160,7 @@ export default function DataProductsPage() {
           <TableDataProducts
             data={getProposal().dataProductSDP}
             deleteFunction={deleteIconClicked}
-            updateFunction={() => {}}
+            updateFunction={editIconClicked}
           />
         </Stack>
         <AlertDialog

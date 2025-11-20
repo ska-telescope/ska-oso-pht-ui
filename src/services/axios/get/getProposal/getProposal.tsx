@@ -45,18 +45,31 @@ import {
   isCypress,
   SCIENCE_VERIFICATION,
   TYPE_PST,
-  PST_MODES
+  PST_MODES,
+  DP_TYPE_FILTER_BANK,
+  DP_TYPE_IMAGES,
+  DP_TYPE_TIMING,
+  DP_TYPE_VISIBLE,
+  DP_TYPE_FLOWTHROUGH
 } from '@utils/constants.ts';
 import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import { ObservationSetBackend } from '@utils/types/observationSet.tsx';
 import {
   DataProductSDP,
+  DataProductSDPContinuumImageBackend,
+  DataProductSDPContinuumVisibilitiesBackend,
+  DataProductSDPPSTDetectedFilterBankBackend,
+  DataProductSDPPSTFlowthroughBackend,
+  DataProductSDPPSTTimingBackend,
   DataProductSDPsBackend,
+  DataProductSDPSpectralImageBackend,
   DataProductSRC,
   DataProductSRCNetBackend
 } from '@utils/types/dataProduct.tsx';
 import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
+import { image } from 'd3';
+import { get } from 'lodash';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
 import { calibratorMapping } from '../getCalibratorList/getCalibratorList.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
@@ -250,42 +263,69 @@ const getDataProductSRC = (inValue: DataProductSRCNetBackend[] | null): DataProd
   return inValue ? inValue.map(dp => ({ id: dp?.data_products_src_id })) : [];
 };
 
-const getSDPOptions = (options: string[]): boolean[] => options.map(element => element === 'Y');
+const getDataProductType = (el: any) => {
+  switch (el.variant.toLowerCase()) {
+    case 'continuum image':
+      return DP_TYPE_IMAGES;
+    case 'continuum visibilities':
+      return DP_TYPE_VISIBLE;
+    case 'filter bank':
+      return DP_TYPE_FILTER_BANK;
+    case 'pulsar timing':
+      return DP_TYPE_TIMING;
+    case 'flow through':
+      return DP_TYPE_FLOWTHROUGH;
+    default:
+      return 0;
+  }
+};
 
 const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProductSDP[] => {
-  const getImageSizeUnits = (inValue: string) => {
-    const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
-    for (let i = 0; i < IMAGE_SIZE_UNITS.length; i++) {
-      if (IMAGE_SIZE_UNITS[i] === inValue) {
-        return i;
-      }
-    }
-    return 0;
-  };
+  const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
+  const PIXEL_SIZE_UNITS = ['deg', 'arcmin', 'arcsec', 'arcsecs'];
 
-  const getPixelSizeUnits = (inValue: string | null): any =>
-    inValue === 'arcsec' ? 'arcsecs' : inValue || '';
+  const getImageSizeUnits = (unit: string | null): number =>
+    unit ? IMAGE_SIZE_UNITS.indexOf(unit) : -1;
 
-  return inValue?.map((dp, index) => ({
-    id: index + 1,
-    dataProductsSDPId: dp.data_product_id,
-    observatoryDataProduct: dp.products ? getSDPOptions(dp.products) : [],
-    observationId: dp.observation_set_ref,
-    imageSizeValue: dp.script_parameters.image_size.value,
-    imageSizeUnits: getImageSizeUnits(dp.script_parameters.image_size.unit),
-    pixelSizeValue: dp.script_parameters.image_cellsize?.value,
-    pixelSizeUnits: dp?.script_parameters.image_cellsize?.unit
-      ? getPixelSizeUnits(dp?.script_parameters.image_cellsize?.unit)
-      : null,
-    weighting: getWeighting(dp?.script_parameters?.weight?.weighting as string),
-    ...(dp?.script_parameters?.weight?.weighting === 'briggs' && {
-      robust: ROBUST.find(item => item.label === String(dp.script_parameters.weight.robust))
-        ?.value as number
-    }),
-    polarisations: dp.script_parameters.polarisations,
-    channelsOut: dp.script_parameters.channels_out,
-    fitSpectralPol: dp.script_parameters.fit_spectral_pol
-  })) as DataProductSDP[];
+  const getPixelSizeUnits = (unit: string | null): number =>
+    unit ? PIXEL_SIZE_UNITS.indexOf(unit) : -1;
+
+  return (
+    inValue?.map(dp => {
+      const script = dp?.script_parameters ?? {};
+
+      return {
+        id: dp?.data_product_id ?? '',
+        observationId: dp?.observation_set_ref ?? '',
+        dataProductType: getDataProductType(script) ?? -1,
+        imageSizeValue: 'image_size' in script ? script.image_size?.value ?? -1 : -1,
+        imageSizeUnits:
+          'image_size' in script ? getImageSizeUnits(script.image_size?.unit ?? null) : -1,
+
+        pixelSizeValue: 'image_cellsize' in script ? script.image_cellsize?.value ?? -1 : -1,
+        pixelSizeUnits:
+          'image_cellsize' in script ? getPixelSizeUnits(script.image_cellsize?.unit ?? null) : -1,
+        weighting:
+          'weight' in script && script.weight?.weighting
+            ? getWeighting(script.weight.weighting as string) ?? -1
+            : -1,
+        robust:
+          'weight' in script && script.weight?.weighting === 'briggs'
+            ? ROBUST.find(item => item.label === String(script.weight?.robust ?? ''))?.value ?? -1
+            : -1,
+        polarisations: getPolarisations(script) ?? [],
+        channelsOut: 'channels_out' in script ? Number(script.channels_out) ?? -1 : -1,
+        fitSpectralPol: 'fit_spectral_pol' in script ? Number(script.fit_spectral_pol) ?? -1 : -1,
+        taperValue: 'gaussian_taper' in script ? Number(script.gaussian_taper) ?? -1 : -1,
+        timeAveraging: 'time_averaging' in script ? Number(script.time_averaging) ?? -1 : -1,
+        frequencyAveraging:
+          'frequency_averaging' in script ? Number(script.frequency_averaging) ?? -1 : -1,
+        bitDepth: 'bit_depth' in script ? Number(script.bit_depth) ?? -1 : -1,
+        continuumSubtraction:
+          'continuum_subtraction' in script ? Boolean(script.continuum_subtraction) : false
+      };
+    }) ?? []
+  );
 };
 
 const getCalibrationStrategy = (
@@ -780,3 +820,14 @@ async function GetProposal(
 }
 
 export default GetProposal;
+function getPolarisations(
+  script:
+    | DataProductSDPContinuumImageBackend
+    | DataProductSDPContinuumVisibilitiesBackend
+    | DataProductSDPSpectralImageBackend
+    | DataProductSDPPSTDetectedFilterBankBackend
+    | DataProductSDPPSTTimingBackend
+    | DataProductSDPPSTFlowthroughBackend
+): any {
+  throw new Error('Function not implemented.');
+}

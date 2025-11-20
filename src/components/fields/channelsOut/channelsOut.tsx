@@ -1,6 +1,6 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { LAB_POSITION } from '@utils/constants.ts';
+import { CHANNELS_OUT_MAX, LAB_POSITION } from '@utils/constants.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface ChannelsOutFieldProps {
@@ -18,7 +18,6 @@ export default function ChannelsOutField({
   disabled = false,
   required = false,
   labelWidth = 5,
-  maxValue,
   onFocus,
   setValue,
   suffix,
@@ -27,7 +26,8 @@ export default function ChannelsOutField({
   const { t } = useScopedTranslation();
   const FIELD = 'channelsOut';
 
-  const errorText = () => (Number(value) ? '' : t('channelsOut.error'));
+  const errorText = () =>
+    Number(value) && value > 0 && value <= CHANNELS_OUT_MAX ? '' : t('channelsOut.error');
   const setTheNumber = (inNum: number) => {
     const str = Math.abs(inNum).toString();
     const num = Number(str);
@@ -43,7 +43,6 @@ export default function ChannelsOutField({
         labelBold
         labelPosition={LAB_POSITION}
         labelWidth={labelWidth}
-        maxValue={maxValue}
         testId={FIELD}
         value={value}
         setValue={(e: number) => setTheNumber(e)}

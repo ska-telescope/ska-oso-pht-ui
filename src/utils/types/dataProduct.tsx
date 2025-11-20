@@ -82,19 +82,23 @@ export type DataProductSRCNetBackend = {
 };
 
 export type DataProductSDP = {
-  id: number;
-  dataProductsSDPId?: string;
-  observatoryDataProduct: boolean[];
+  id: string;
+  dataProductType: number;
   observationId: string;
   imageSizeValue: number;
   imageSizeUnits: number;
   pixelSizeValue: number;
   pixelSizeUnits: number;
-  weighting: string;
+  weighting: number;
   robust: number;
   polarisations: string[];
   channelsOut: number;
+  taperValue: number;
   fitSpectralPol: number;
+  timeAveraging: number;
+  frequencyAveraging: number;
+  bitDepth: number;
+  continuumSubtraction: boolean;
 };
 
 export type DataProductSRC = {

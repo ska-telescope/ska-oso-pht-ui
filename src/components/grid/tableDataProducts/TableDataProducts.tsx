@@ -56,8 +56,7 @@ export default function TableDataProducts({
               toggleRow={toggleRow}
               expandButtonRef={el => (expandButtonRefs.current[item.id] = el)}
               deleteClicked={deleteFunction}
-              updateItem={updateFunction}
-              tableLength={data.length}
+              editClicked={updateFunction}
               t={t}
             />
           ))}

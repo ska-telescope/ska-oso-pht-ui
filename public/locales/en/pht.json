@@ -219,7 +219,7 @@
     "label": "Call opens"
   },
   "dataProduct": {
-    "button": "Add Data Product"
+    "button": "Data Product"
   },
   "dataProductType": {
     "label": "Product type",
@@ -253,7 +253,7 @@
     "label": "Delete"
   },
   "deleteDataProduct": {
-    "label": "Delete data product",
+    "toolTip": "Delete data product",
     "confirmTitle": "Delete this data product ? "
   },
   "deleteTarget": {
@@ -286,6 +286,9 @@
   },
   "dropzone": {
     "prompt": "Drag and drop your files here, or click to select"
+  },
+  "editDataProduct": {
+    "toolTip": "Edit data product"
   },
   "editProposal": {
     "toolTip": "Edit proposal",
@@ -691,9 +694,9 @@
     "V": "V",
     "X": "X",
     "Y": "Y",
+    "LL": "LL",
+    "RR": "RR",
     "XX": "XX",
-    "XY": "XY",
-    "YX": "YX",
     "YY": "YY"
   },
   "proposal": {

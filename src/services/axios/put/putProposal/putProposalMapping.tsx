@@ -36,7 +36,10 @@ import {
   TYPE_ZOOM,
   TYPE_STR_CONTINUUM,
   TYPE_STR_ZOOM,
-  TYPE_STR_PST
+  TYPE_STR_PST,
+  DP_TYPE_IMAGES,
+  DP_TYPE_FILTER_BANK,
+  DP_TYPE_TIMING
 } from '@utils/constants.ts';
 import {
   DataProductSDP,
@@ -180,30 +183,101 @@ const getCalibrationStrategy = (
   }));
 };
 
-const getDataProductScriptParameters = (dp: DataProductSDP) => {
-  const IMAGE_SIZE_UNITS = ['deg2', 'arcmin2', 'arcsec2'];
-  return {
-    image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
-    image_cellsize: { value: dp.pixelSizeValue, unit: IMAGE_SIZE_UNITS[dp.pixelSizeUnits] },
-    weight: {
-      weighting: IMAGE_WEIGHTING.find(item => item.value === Number(dp.weighting))?.label as string,
-      ...(Number(dp.weighting) === IW_BRIGGS && {
-        robust: ROBUST.find(item => item.value === dp.robust)?.value
-      })
-    },
-    polarisations: dp.polarisations,
-    channels_out: dp.channelsOut,
-    fit_spectral_pol: dp.fitSpectralPol,
-    gaussian_taper: '1', // TODO: Need to get right value from PDM/UI
-    variant: 'continuum image'
-  };
+const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProductSDP) => {
+  const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
+  const obType = obs?.find(o => o.id === dp.observationId)?.type;
+  switch (obType) {
+    case TYPE_CONTINUUM: {
+      if (dp.dataProductType === DP_TYPE_IMAGES) {
+        return {
+          image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
+          image_cellsize: { value: dp.pixelSizeValue, unit: IMAGE_SIZE_UNITS[dp.pixelSizeUnits] },
+          weight: {
+            weighting: IMAGE_WEIGHTING.find(item => item.value === Number(dp.weighting))
+              ?.label as string,
+            ...(Number(dp.weighting) === IW_BRIGGS && {
+              robust: ROBUST.find(item => item.value === dp.robust)?.value
+            })
+          },
+          polarisations: dp.polarisations,
+          channels_out: dp.channelsOut,
+          fit_spectral_pol: dp.fitSpectralPol,
+          gaussian_taper: dp.taperValue.toString(),
+          variant: 'continuum image'
+        };
+      } else {
+        return {
+          image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
+          image_cellsize: { value: dp.pixelSizeValue, unit: IMAGE_SIZE_UNITS[dp.pixelSizeUnits] },
+          weight: {
+            weighting: IMAGE_WEIGHTING.find(item => item.value === Number(dp.weighting))
+              ?.label as string,
+            ...(Number(dp.weighting) === IW_BRIGGS && {
+              robust: ROBUST.find(item => item.value === dp.robust)?.value
+            })
+          },
+          polarisations: dp.polarisations,
+          channels_out: dp.channelsOut,
+          fit_spectral_pol: dp.fitSpectralPol,
+          gaussian_taper: dp.taperValue.toString(),
+          time_averaging: dp.timeAveraging,
+          frequency_averaging: dp.frequencyAveraging,
+          variant: 'visibilities'
+        };
+      }
+    }
+    case TYPE_ZOOM:
+      return {
+        image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
+        image_cellsize: { value: dp.pixelSizeValue, unit: IMAGE_SIZE_UNITS[dp.pixelSizeUnits] },
+        weight: {
+          weighting: IMAGE_WEIGHTING.find(item => item.value === Number(dp.weighting))
+            ?.label as string,
+          ...(Number(dp.weighting) === IW_BRIGGS && {
+            robust: ROBUST.find(item => item.value === dp.robust)?.value
+          })
+        },
+        polarisations: dp.polarisations,
+        channels_out: dp.channelsOut,
+        fit_spectral_pol: dp.fitSpectralPol,
+        gaussian_taper: dp.taperValue.toString(),
+        variant: 'spectral image',
+        continuum_subtraction: dp.continuumSubtraction
+      };
+    case TYPE_PST:
+    default:
+      if (dp.dataProductType === DP_TYPE_FILTER_BANK) {
+        return {
+          polarisations: dp.polarisations,
+          bit_depth: dp.bitDepth,
+          time_averaging_factor: dp.timeAveraging,
+          frequency_averaging_factor: dp.frequencyAveraging,
+          variant: 'detected ilterbank'
+        };
+      } else if (dp.dataProductType === DP_TYPE_TIMING) {
+        return {
+          polarisations: dp.polarisations,
+          bit_depth: dp.bitDepth,
+          variant: 'pulsar timing'
+        };
+      } else {
+        return {
+          polarisations: dp.polarisations,
+          bit_depth: dp.bitDepth,
+          variant: 'flow through'
+        };
+      }
+  }
 };
 
-const getDataProductSDP = (dataProducts: DataProductSDP[]): DataProductSDPsBackend[] => {
+const getDataProductSDP = (
+  obs: Observation[] | null,
+  dataProducts: DataProductSDP[]
+): DataProductSDPsBackend[] => {
   return dataProducts?.map(dp => ({
-    data_product_id: dp.dataProductsSDPId as string,
+    data_product_id: dp.id.toString(),
     observation_set_ref: dp.observationId,
-    script_parameters: getDataProductScriptParameters(dp)
+    script_parameters: getDataProductScriptParameters(obs, dp)
   }));
 };
 
@@ -569,7 +643,7 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
           : null,
       data_product_sdps:
         proposal?.dataProductSDP && proposal?.dataProductSDP?.length > 0
-          ? getDataProductSDP(proposal.dataProductSDP as DataProductSDP[])
+          ? getDataProductSDP(proposal.observations, proposal.dataProductSDP as DataProductSDP[])
           : [],
       data_product_src_nets:
         proposal?.dataProductSRC && proposal?.dataProductSRC?.length > 0
