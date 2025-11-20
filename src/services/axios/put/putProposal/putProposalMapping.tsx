@@ -203,6 +203,7 @@ const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProdu
           channels_out: dp.channelsOut,
           fit_spectral_pol: dp.fitSpectralPol,
           gaussian_taper: dp.taperValue?.toString(),
+          kind: 'continuum',
           variant: 'continuum image'
         };
       } else {
@@ -222,6 +223,7 @@ const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProdu
           gaussian_taper: dp.taperValue?.toString(),
           time_averaging: { value: dp.timeAveraging, unit: '' },
           frequency_averaging: { value: dp.frequencyAveraging, unit: '' },
+          kind: 'continuum',
           variant: 'visibilities'
         };
       }
@@ -241,6 +243,7 @@ const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProdu
         channels_out: dp.channelsOut,
         fit_spectral_pol: dp.fitSpectralPol,
         gaussian_taper: dp.taperValue?.toString(),
+        kind: 'spectral',
         variant: 'spectral image',
         continuum_subtraction: dp.continuumSubtraction
       };
@@ -249,21 +252,24 @@ const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProdu
       if (dp.dataProductType === DP_TYPE_FILTER_BANK) {
         return {
           polarisations: dp.polarisations,
-          bit_depth: dp.bitDepth,
+          bit_depth: Number(dp.bitDepth),
           time_averaging_factor: dp.timeAveraging,
           frequency_averaging_factor: dp.frequencyAveraging,
-          variant: 'detected filterbank'
+          kind: 'pst',
+          variant: 'detected ilterbank'
         };
       } else if (dp.dataProductType === DP_TYPE_TIMING) {
         return {
           polarisations: dp.polarisations,
           bit_depth: dp.bitDepth,
+          kind: 'pst',
           variant: 'pulsar timing'
         };
       } else {
         return {
           polarisations: dp.polarisations,
           bit_depth: dp.bitDepth,
+          kind: 'pst',
           variant: 'flow through'
         };
       }
