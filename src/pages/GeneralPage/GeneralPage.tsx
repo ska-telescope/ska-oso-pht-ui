@@ -170,7 +170,9 @@ export default function GeneralPage() {
   const categoryField = () => (
     <DropDown
       options={isSV() ? GENERAL.ObservingMode : GENERAL.ScienceCategory}
-      errorText={getProposal().scienceCategory ? '' : t('scienceCategory.error')}
+      errorText={
+        typeof getProposal().scienceCategory === 'number' ? '' : t('scienceCategory.error')
+      }
       required
       testId="categoryId"
       value={getProposal().scienceCategory ?? ''}
