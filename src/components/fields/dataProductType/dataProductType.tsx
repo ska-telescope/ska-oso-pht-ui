@@ -1,6 +1,15 @@
 import { Grid } from '@mui/material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
-import { LAB_IS_BOLD, LAB_POSITION, TYPE_CONTINUUM } from '../../../utils/constants';
+import {
+  DP_TYPE_FILTER_BANK,
+  DP_TYPE_FLOWTHROUGH,
+  DP_TYPE_IMAGES,
+  DP_TYPE_TIMING,
+  DP_TYPE_VISIBLE,
+  LAB_IS_BOLD,
+  LAB_POSITION,
+  TYPE_CONTINUUM
+} from '../../../utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface DataProductTypeFieldProps {
@@ -29,7 +38,10 @@ export default function DataProductTypeField({
   const { t } = useScopedTranslation();
   const FIELD = 'dataProductType';
   const options = () =>
-    (observationType === TYPE_CONTINUUM ? [1, 2] : [1, 2, 3]).map(el => {
+    (observationType === TYPE_CONTINUUM
+      ? [DP_TYPE_IMAGES, DP_TYPE_VISIBLE]
+      : [DP_TYPE_FILTER_BANK, DP_TYPE_TIMING, DP_TYPE_FLOWTHROUGH]
+    ).map(el => {
       return { label: t(FIELD + '.options.' + observationType + '.' + el), lookup: el, value: el };
     });
 

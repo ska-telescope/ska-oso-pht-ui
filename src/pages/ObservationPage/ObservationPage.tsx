@@ -148,6 +148,25 @@ export default function ObservationPage() {
   const extendedColumnsObservations = [
     ...[
       {
+        field: 'actions',
+        headerName: 'Actions',
+        type: 'actions',
+        sortable: false,
+        width: 100,
+        disableClickEventBubbling: true,
+        renderCell: (e: { row: Observation }) => {
+          return (
+            <>
+              <EditIcon onClick={() => editIconClicked(e.row)} toolTip={t('observations.edit')} />
+              <TrashIcon
+                onClick={() => deleteIconClicked(e.row)}
+                toolTip={t('observations.delete')}
+              />
+            </>
+          );
+        }
+      },
+      {
         field: 'id',
         headerName: t('observations.id'),
         flex: 0.75,
@@ -193,25 +212,6 @@ export default function ObservationPage() {
         disableClickEventBubbling: true,
         renderCell: (e: { row: { type: number } }) =>
           t((isSV() ? 'scienceCategory.' : 'observationType.') + `${e.row.type}`)
-      },
-      {
-        field: 'actions',
-        headerName: 'Actions',
-        type: 'actions',
-        sortable: false,
-        width: 100,
-        disableClickEventBubbling: true,
-        renderCell: (e: { row: Observation }) => {
-          return (
-            <>
-              <EditIcon onClick={() => editIconClicked(e.row)} toolTip={t('observations.edit')} />
-              <TrashIcon
-                onClick={() => deleteIconClicked(e.row)}
-                toolTip={t('observations.delete')}
-              />
-            </>
-          );
-        }
       }
     ]
   ];

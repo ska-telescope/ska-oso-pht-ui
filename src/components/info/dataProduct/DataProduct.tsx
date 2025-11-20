@@ -44,7 +44,7 @@ const displayRadio = (
   </Grid>
 );
 
-const getODPString = (t: any, inArr: boolean[]) => {
+const getODPString = (inArr: boolean[]) => {
   let str = '';
   for (let i = 0; i < inArr?.length; i++) {
     if (inArr[i]) {
@@ -114,7 +114,7 @@ export default function DataProduct({ t, data }: DataProductProps) {
         {displayRadio(
           t,
           'dataProductType.label',
-          getODPString(t, data.observatoryDataProduct),
+          getODPString(data.observatoryDataProduct),
           ['1', '2'],
           'observatoryDataProduct.options.'
         )}
@@ -125,7 +125,7 @@ export default function DataProduct({ t, data }: DataProductProps) {
       <Grid size={{ md: 6 }}>{channelsOutField()}</Grid>
       <Grid size={{ md: 6 }}>{data.weighting === IW_BRIGGS && robustField()}</Grid>
       <Grid size={{ md: 6 }}></Grid>
-      <Grid size={{ md: 6 }}>{polarisationField()}</Grid>
+      <Grid size={{ md: 12 }}>{polarisationField()}</Grid>
     </Grid>
   );
 }

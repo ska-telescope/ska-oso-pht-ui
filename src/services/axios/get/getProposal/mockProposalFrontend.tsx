@@ -302,18 +302,23 @@ export const MockProposalFrontend: Proposal = {
   technicalLoadStatus: 9,
   dataProductSDP: [
     {
-      id: 1,
-      dataProductsSDPId: 'SDP-2',
-      observatoryDataProduct: [],
+      id: 'SDP-2',
+      dataProductType: 1,
       observationId: 'obs-obR1Ej',
       imageSizeValue: 15,
       imageSizeUnits: 0,
       pixelSizeValue: 1.007,
-      pixelSizeUnits: 'arcsecs',
+      pixelSizeUnits: 1,
       weighting: 1,
       polarisations: ['123'],
       channelsOut: 1,
-      fitSpectralPol: 3
+      fitSpectralPol: 3,
+      robust: 0,
+      taperValue: 1,
+      timeAveraging: 0,
+      frequencyAveraging: 0,
+      bitDepth: 0,
+      continuumSubtraction: false
     }
   ],
   dataProductSRC: [],
@@ -495,18 +500,23 @@ export const MockProposalFrontendZoom: Proposal = {
   technicalLoadStatus: 9,
   dataProductSDP: [
     {
-      id: 1,
-      dataProductsSDPId: 'SDP-1',
-      observatoryDataProduct: [true, true, true, true],
+      id: 'SDP-1',
+      dataProductType: 1,
       observationId: 'obs-arMIoY',
       imageSizeValue: 100,
       imageSizeUnits: 0,
       pixelSizeValue: 3.7,
-      pixelSizeUnits: 'arcsecs',
+      pixelSizeUnits: 1,
       weighting: 1,
-      polarisations: '1234',
+      polarisations: ['I'],
       channelsOut: 1,
-      fitSpectralPol: 3
+      fitSpectralPol: 3,
+      robust: 0,
+      taperValue: 1,
+      timeAveraging: 0,
+      frequencyAveraging: 0,
+      bitDepth: 0,
+      continuumSubtraction: false
     }
   ],
   dataProductSRC: [],

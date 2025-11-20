@@ -59,6 +59,7 @@ import {
   getColCycleClose,
   getColProposalType
 } from '@/components/grid/proposals/columns/Columns';
+import { useHelp } from '@/utils/help/useHelp';
 
 export default function LandingPage() {
   const { t } = useScopedTranslation();
@@ -69,7 +70,6 @@ export default function LandingPage() {
 
   const {
     application,
-    helpComponent,
     updateAppContent1,
     updateAppContent2,
     updateAppContent4,
@@ -91,6 +91,7 @@ export default function LandingPage() {
   const setAccess = (access: ProposalAccess[]) => updateAppContent4(access);
   const getProposal = () => application.content2 as Proposal;
   const { osdData } = useOSDAPI(setAxiosError);
+  const { setHelp } = useHelp();
 
   const mock = ({
     abstract: '',
@@ -170,7 +171,7 @@ export default function LandingPage() {
   }, []);
 
   const getTheProposal = async (id: string) => {
-    helpComponent({});
+    setHelp({});
     updateAppContent5({});
 
     const response = await GetProposal(authClient, id);

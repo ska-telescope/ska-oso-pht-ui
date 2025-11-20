@@ -231,9 +231,12 @@ export const MockProposalBackend: ProposalBackend = {
             weighting: '1',
             robust: 0
           },
-          polarisations: ['123'],
+          polarisations: ['X'],
+          gaussian_taper: '1',
           channels_out: 1,
-          fit_spectral_pol: 3
+          fit_spectral_pol: 3,
+          kind: 'continuum',
+          variant: 'continuum image'
         }
       }
     ],

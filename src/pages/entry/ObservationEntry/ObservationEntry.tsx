@@ -132,14 +132,14 @@ export default function ObservationEntry() {
 
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
-  const [obOnce, setObOnce] = React.useState<Observation | null>(null);
+  const [once, setOnce] = React.useState<Observation | null>(null);
   const isAA2 = (subarrayConfig: number) => subarrayConfig === OB_SUBARRAY_AA2;
 
   const observationIn = (ob: Observation) => {
     setMyObsId(ob?.id);
     setSubarrayConfig(ob?.subarray);
     setObservationType(MOCK_CALL ? (getObservationType() as number) : ob.type);
-    if (!obOnce) setObservingBand(ob?.observingBand);
+    if (!once) setObservingBand(ob?.observingBand);
     setWeather(ob?.weather ?? Number(t('weather.default')));
     setElevation(ob?.elevation);
     setCentralFrequency(ob?.centralFrequency);
@@ -287,7 +287,7 @@ export default function ObservationEntry() {
     helpComponent(t('observationId.help'));
     if (isEdit()) {
       observationIn(locationProperties.state);
-      setObOnce(locationProperties.state);
+      setOnce(locationProperties.state);
     } else {
       setMyObsId(generateId(t('addObservation.idPrefix'), 6));
       setCentralFrequency(
@@ -342,10 +342,10 @@ export default function ObservationEntry() {
       }
     };
 
-    if (obOnce) {
+    if (once) {
       // We just need to do this one more time as some fields could not be updated until observingBand has changed.
-      observationIn(obOnce);
-      setObOnce(null);
+      observationIn(once);
+      setOnce(null);
       setDefaultCentralFrequency(observingBand, subarrayConfig);
       setDefaultContinuumBandwidth(observingBand, subarrayConfig);
     }

@@ -1,7 +1,6 @@
 import { TableRow, TableCell, IconButton, Box, Typography, Collapse } from '@mui/material';
 import { ChevronRight, ExpandMore } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
-import React from 'react';
 import EditIcon from '@/components/icon/editIcon/editIcon';
 import TrashIcon from '@/components/icon/trashIcon/trashIcon';
 import { useInitializeAccessStore } from '@/utils/aaa/aaaUtils';
@@ -22,8 +21,6 @@ interface TableDataProductsRowProps {
   editClicked?: Function;
   toggleRow: (id: number) => void;
   expandButtonRef: (el: HTMLButtonElement | null) => void;
-  updateItem: (item: any) => void;
-  tableLength: number;
   t: any;
 }
 
@@ -36,35 +33,15 @@ export default function TableDataProductsRow({
   editClicked,
   toggleRow,
   expandButtonRef,
-  updateItem,
-  tableLength,
   t
 }: TableDataProductsRowProps) {
   const theme = useTheme();
   const { osdLOW } = useOSDAccessors();
   useInitializeAccessStore();
 
-  const getObservation = () =>
-    proposal?.observations?.find(obs => obs.id === item.observationId[0]);
+  const getObservation = () => proposal?.observations?.find(obs => obs.id === item.observationId);
 
   const isContinuum = () => getObservation()?.type === TYPE_CONTINUUM;
-
-  React.useEffect(() => {
-    if (!item || typeof item.displayRank !== 'number' || !item.decisions) return;
-
-    const newRank = item.displayRank === tableLength ? 0 : item.displayRank;
-
-    if (newRank !== item.decisions.rank) {
-      const updatedItem = {
-        ...item,
-        decisions: {
-          ...item.decisions,
-          rank: newRank
-        }
-      };
-      updateItem(updatedItem);
-    }
-  }, [item?.displayRank, tableLength]);
 
   const tableCollapseCell = () => (
     <TableCell role="gridcell" style={{ maxWidth: '120px', padding: 0 }}>
@@ -90,17 +67,17 @@ export default function TableDataProductsRow({
           {expanded ? <ExpandMore /> : <ChevronRight />}
         </IconButton>
 
-        {false && editClicked && (
+        {editClicked && (
           <EditIcon
             onClick={() => {
               if (editClicked) editClicked(item);
             }}
-            toolTip="This feature is currently disabled"
+            toolTip={t('editDataProduct.toolTip')}
           />
         )}
 
         {deleteClicked && (
-          <TrashIcon onClick={() => deleteClicked(item)} toolTip={t('deleteDataProduct.label')} />
+          <TrashIcon onClick={() => deleteClicked(item)} toolTip={t('deleteDataProduct.toolTip')} />
         )}
       </Box>
     </TableCell>
@@ -201,12 +178,12 @@ export default function TableDataProductsRow({
         {true && (
           <FrequencySpectrum
             minFreq={frequencyConversion(
-              osdLOW?.basicCapabilities?.minFrequencyHz * 10,
+              (osdLOW?.basicCapabilities?.minFrequencyHz ?? 0) * 10,
               FREQUENCY_HZ,
               FREQUENCY_MHZ
             )}
             maxFreq={frequencyConversion(
-              osdLOW?.basicCapabilities?.maxFrequencyHz * 10,
+              (osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0) * 10,
               FREQUENCY_HZ,
               FREQUENCY_MHZ
             )}
@@ -221,12 +198,12 @@ export default function TableDataProductsRow({
                 : getObservation()?.bandwidth ?? 0
             }
             minEdge={frequencyConversion(
-              osdLOW?.basicCapabilities?.minFrequencyHz * 10,
+              (osdLOW?.basicCapabilities?.minFrequencyHz ?? 0) * 10,
               FREQUENCY_HZ,
               FREQUENCY_MHZ
             )}
             maxEdge={frequencyConversion(
-              osdLOW?.basicCapabilities?.maxFrequencyHz * 10,
+              (osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0) * 10,
               FREQUENCY_HZ,
               FREQUENCY_MHZ
             )}
