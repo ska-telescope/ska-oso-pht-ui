@@ -91,29 +91,6 @@ export default function DataProductsPage() {
         <FieldWrapper label={t('observations.dp.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec?.observationId}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('observatoryDataProduct.label')} labelWidth={LABEL_WIDTH}>
-          {rec?.observatoryDataProduct[0] ||
-          rec?.observatoryDataProduct[1] ||
-          rec?.observatoryDataProduct[2] ||
-          rec?.observatoryDataProduct[3] ? (
-            <>
-              {rec?.observatoryDataProduct[0] && (
-                <Typography variant="body1">{t('observatoryDataProduct.options.1')}</Typography>
-              )}
-              {rec?.observatoryDataProduct[1] && (
-                <Typography variant="body1">{t('observatoryDataProduct.options.2')}</Typography>
-              )}
-              {rec?.observatoryDataProduct[2] && (
-                <Typography variant="body1">{t('observatoryDataProduct.options.3')}</Typography>
-              )}
-              {rec?.observatoryDataProduct[3] && (
-                <Typography variant="body1">{t('observatoryDataProduct.options.4')}</Typography>
-              )}
-            </>
-          ) : (
-            <></>
-          )}
-        </FieldWrapper>
         <FieldWrapper label={t('imageSize.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">
             {rec?.imageSizeValue} {presentUnits(String(rec?.imageSizeUnits ?? ''))}
@@ -182,7 +159,9 @@ export default function DataProductsPage() {
       <>
         {!hasObservations() && noObservations()}
         {osdMaxDataProducts !== 1 && hasObservations() && dataProductList()}
-        {osdMaxDataProducts === 1 && hasObservations() && <DataProduct />}
+        {osdMaxDataProducts === 1 && hasObservations() && (
+          <DataProduct data={getProposal()?.dataProductSDP?.[0]} />
+        )}
       </>
     </Shell>
   );

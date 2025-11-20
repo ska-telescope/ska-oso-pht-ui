@@ -231,9 +231,11 @@ export const MockProposalBackend: ProposalBackend = {
             weighting: '1',
             robust: 0
           },
-          polarisations: ['123'],
+          polarisations: ['X'],
+          gaussian_taper: '1',
           channels_out: 1,
-          fit_spectral_pol: 3
+          fit_spectral_pol: 3,
+          variant: 'continuum image'
         }
       }
     ],
@@ -250,6 +252,7 @@ export const MockProposalBackend: ProposalBackend = {
       {
         observation_set_ref: 'obs-obR1Ej',
         target_ref: 'M2',
+        data_product_ref: 'SDP-2',
         result: {
           supplied_type: 'integration_time',
           weighted_continuum_sensitivity: {
@@ -443,6 +446,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
       {
         observation_set_ref: 'obs-arMIoY',
         target_ref: 'm2',
+        data_product_ref: 'SDP-1',
         result: {
           supplied_type: 'integration_time',
           weighted_continuum_sensitivity: {

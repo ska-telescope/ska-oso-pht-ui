@@ -2,6 +2,7 @@ import { ValueUnitPair } from './valueUnitPair';
 
 export type SensCalcResultsBackend = {
   observation_set_ref: string;
+  data_product_ref: string;
   target_ref?: string;
   result?: {
     supplied_type: string;

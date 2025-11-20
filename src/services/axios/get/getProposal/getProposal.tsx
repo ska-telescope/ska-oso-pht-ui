@@ -56,20 +56,12 @@ import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import { ObservationSetBackend } from '@utils/types/observationSet.tsx';
 import {
   DataProductSDP,
-  DataProductSDPContinuumImageBackend,
-  DataProductSDPContinuumVisibilitiesBackend,
-  DataProductSDPPSTDetectedFilterBankBackend,
-  DataProductSDPPSTFlowthroughBackend,
-  DataProductSDPPSTTimingBackend,
   DataProductSDPsBackend,
-  DataProductSDPSpectralImageBackend,
   DataProductSRC,
   DataProductSRCNetBackend
 } from '@utils/types/dataProduct.tsx';
 import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
-import { image } from 'd3';
-import { get } from 'lodash';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
 import { calibratorMapping } from '../getCalibratorList/getCalibratorList.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
@@ -267,7 +259,7 @@ const getDataProductType = (el: any) => {
   switch (el.variant.toLowerCase()) {
     case 'continuum image':
       return DP_TYPE_IMAGES;
-    case 'continuum visibilities':
+    case 'visibilities':
       return DP_TYPE_VISIBLE;
     case 'filter bank':
       return DP_TYPE_FILTER_BANK;
@@ -285,15 +277,14 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
   const PIXEL_SIZE_UNITS = ['deg', 'arcmin', 'arcsec', 'arcsecs'];
 
   const getImageSizeUnits = (unit: string | null): number =>
-    unit ? IMAGE_SIZE_UNITS.indexOf(unit) : -1;
+    unit ? IMAGE_SIZE_UNITS.indexOf(unit) : 0;
 
   const getPixelSizeUnits = (unit: string | null): number =>
-    unit ? PIXEL_SIZE_UNITS.indexOf(unit) : -1;
+    unit ? PIXEL_SIZE_UNITS.indexOf(unit) : 0;
 
   return (
     inValue?.map(dp => {
       const script = dp?.script_parameters ?? {};
-
       return {
         id: dp?.data_product_id ?? '',
         observationId: dp?.observation_set_ref ?? '',
@@ -313,14 +304,14 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
           'weight' in script && script.weight?.weighting === 'briggs'
             ? ROBUST.find(item => item.label === String(script.weight?.robust ?? ''))?.value ?? -1
             : -1,
-        polarisations: getPolarisations(script) ?? [],
+        polarisations: script.polarisations,
         channelsOut: 'channels_out' in script ? Number(script.channels_out) ?? -1 : -1,
         fitSpectralPol: 'fit_spectral_pol' in script ? Number(script.fit_spectral_pol) ?? -1 : -1,
         taperValue: 'gaussian_taper' in script ? Number(script.gaussian_taper) ?? -1 : -1,
-        timeAveraging: 'time_averaging' in script ? Number(script.time_averaging) ?? -1 : -1,
+        timeAveraging: 'time_averaging' in script ? Number(script.time_averaging.value) ?? -1 : -1,
         frequencyAveraging:
-          'frequency_averaging' in script ? Number(script.frequency_averaging) ?? -1 : -1,
-        bitDepth: 'bit_depth' in script ? Number(script.bit_depth) ?? -1 : -1,
+          'frequency_averaging' in script ? Number(script.frequency_averaging.value) ?? -1 : -1,
+        bitDepth: 'bit_depth' in script ? Number(script.bit_depth) ?? 1 : 1,
         continuumSubtraction:
           'continuum_subtraction' in script ? Boolean(script.continuum_subtraction) : false
       };
@@ -681,6 +672,7 @@ const getTargetObservation = (
       // TODO for targetId, use result.target_ref once it is a number => needs to be changed in ODA & PDM
       targetId: outTargets.find(tar => tar.name === result.target_ref)?.id as number,
       observationId: result.observation_set_ref as string,
+      dataProductsSDPId: result?.data_product_ref,
       sensCalc: {
         id: inResults?.indexOf(result) + 1, // only for UI
         title: result.target_ref as string,
@@ -820,14 +812,3 @@ async function GetProposal(
 }
 
 export default GetProposal;
-function getPolarisations(
-  script:
-    | DataProductSDPContinuumImageBackend
-    | DataProductSDPContinuumVisibilitiesBackend
-    | DataProductSDPSpectralImageBackend
-    | DataProductSDPPSTDetectedFilterBankBackend
-    | DataProductSDPPSTTimingBackend
-    | DataProductSDPPSTFlowthroughBackend
-): any {
-  throw new Error('Function not implemented.');
-}

@@ -25,7 +25,7 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
         proposalClose: inData.observatory_policy.cycle_information.proposal_close
       },
       cyclePolicies: {
-        maxDataProducts: 2, // MOCK_CALL
+        maxDataProducts: 1, // MOCK_CALL
         maxObservations: 1, // MOCK_CALL
         maxTargets: 1, // MOCK_CALL
         isCustomAllowed: false, // MOCK_CALL

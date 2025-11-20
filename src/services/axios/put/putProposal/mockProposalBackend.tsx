@@ -184,11 +184,11 @@ export const MockProposalBackend: ProposalBackend = {
           polarisations: ['I'],
           image_size: {
             value: 15,
-            unit: 'deg2'
+            unit: 'deg'
           },
           image_cellsize: {
             value: 1.007,
-            unit: 'arcsec2'
+            unit: 'arcsec'
           },
           weight: {
             weighting: 'uniform'
@@ -209,6 +209,7 @@ export const MockProposalBackend: ProposalBackend = {
     result_details: [
       {
         observation_set_ref: 'obs-obR1Ej',
+        data_product_ref: 'SDP-2',
         target_ref: 'M2',
         result: {
           supplied_type: 'integration_time',
@@ -382,6 +383,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
     result_details: [
       {
         observation_set_ref: 'obs-arMIoY',
+        data_product_ref: 'SDP-2',
         target_ref: 'm2',
         result: {
           supplied_type: 'integration_time',

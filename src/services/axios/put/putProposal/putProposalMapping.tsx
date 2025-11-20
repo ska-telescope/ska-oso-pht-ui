@@ -202,7 +202,7 @@ const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProdu
           polarisations: dp.polarisations,
           channels_out: dp.channelsOut,
           fit_spectral_pol: dp.fitSpectralPol,
-          gaussian_taper: dp.taperValue.toString(),
+          gaussian_taper: dp.taperValue?.toString(),
           variant: 'continuum image'
         };
       } else {
@@ -219,9 +219,9 @@ const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProdu
           polarisations: dp.polarisations,
           channels_out: dp.channelsOut,
           fit_spectral_pol: dp.fitSpectralPol,
-          gaussian_taper: dp.taperValue.toString(),
-          time_averaging: dp.timeAveraging,
-          frequency_averaging: dp.frequencyAveraging,
+          gaussian_taper: dp.taperValue?.toString(),
+          time_averaging: { value: dp.timeAveraging, unit: '' },
+          frequency_averaging: { value: dp.frequencyAveraging, unit: '' },
           variant: 'visibilities'
         };
       }
@@ -240,7 +240,7 @@ const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProdu
         polarisations: dp.polarisations,
         channels_out: dp.channelsOut,
         fit_spectral_pol: dp.fitSpectralPol,
-        gaussian_taper: dp.taperValue.toString(),
+        gaussian_taper: dp.taperValue?.toString(),
         variant: 'spectral image',
         continuum_subtraction: dp.continuumSubtraction
       };
@@ -252,7 +252,7 @@ const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProdu
           bit_depth: dp.bitDepth,
           time_averaging_factor: dp.timeAveraging,
           frequency_averaging_factor: dp.frequencyAveraging,
-          variant: 'detected ilterbank'
+          variant: 'detected filterbank'
         };
       } else if (dp.dataProductType === DP_TYPE_TIMING) {
         return {
@@ -275,7 +275,7 @@ const getDataProductSDP = (
   dataProducts: DataProductSDP[]
 ): DataProductSDPsBackend[] => {
   return dataProducts?.map(dp => ({
-    data_product_id: dp.id.toString(),
+    data_product_id: dp.id?.toString(),
     observation_set_ref: dp.observationId,
     script_parameters: getDataProductScriptParameters(obs, dp)
   }));
@@ -527,12 +527,24 @@ const getSuppliedFieldsIntegrationTime = (
 
 const getObsType = (incTarObs: TargetObservation, incObs: Observation[]): number => {
   let obs = incObs.find(item => item.id === incTarObs.observationId);
-  return obs.type;
+  return obs?.type ?? 0;
 };
 
 const getSpectralSection = (obsType: number) => (isContinuum(obsType) ? 'section2' : 'section1');
 
-const getResults = (incTargetObservations: TargetObservation[], incObs: Observation[]) => {
+const getDataProductRef = (incTarObs: TargetObservation, incDataProductSDP: DataProductSDP[]) => {
+  const dataProductRef = String(
+    incDataProductSDP.find(dp => dp.observationId === incTarObs.observationId)?.id
+  );
+  // TODO make data product mandatory when sens calc is requested so it's never undefined
+  return dataProductRef;
+};
+
+const getResults = (
+  incTargetObservations: TargetObservation[],
+  incObs: Observation[],
+  incDataProductSDP: DataProductSDP[]
+) => {
   const resultsArr = [];
   if (incTargetObservations) {
     for (let tarObs of incTargetObservations) {
@@ -550,6 +562,7 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
           : getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection);
       let result: SensCalcResultsBackend = {
         observation_set_ref: tarObs.observationId,
+        data_product_ref: getDataProductRef(tarObs, incDataProductSDP),
         target_ref: tarObs.sensCalc?.title,
         result: {
           supplied_type: suppliedType,
@@ -651,7 +664,8 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
           : [],
       result_details: getResults(
         proposal.targetObservation as TargetObservation[],
-        proposal.observations as Observation[]
+        proposal.observations as Observation[],
+        proposal.dataProductSDP as DataProductSDP[]
       )
     }
   };

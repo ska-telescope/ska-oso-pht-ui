@@ -46,14 +46,18 @@ const TICK_LABEL_WIDTH = 10;
 const COL = 6;
 const COL_MID = 8;
 
-export default function DataProduct() {
+interface DataProductProps {
+  data?: DataProductSDP;
+}
+
+export default function DataProduct({ data }: DataProductProps) {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const locationProperties = useLocation();
   const theme = useTheme();
   const { osdMaxDataProducts, osdMaxObservations } = useOSDAccessors();
 
-  const isEdit = () => locationProperties.state !== null;
+  const isEdit = () => locationProperties.state !== null || data !== undefined;
 
   const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
 
@@ -65,7 +69,7 @@ export default function DataProduct() {
   const [observationId, setObservationId] = React.useState('');
   const [dataProductType, setDataProductType] = React.useState(1);
   const [bitDepth, setBitDepth] = React.useState(0);
-  const [imageSizeValue, setImageSizeValue] = React.useState('0');
+  const [imageSizeValue, setImageSizeValue] = React.useState(0);
   const [imageSizeUnits, setImageSizeUnits] = React.useState(0);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
   const [pixelSizeUnits, setPixelSizeUnits] = React.useState(2);
@@ -100,24 +104,28 @@ export default function DataProduct() {
   const dataProductIn = (dp: DataProductSDP) => {
     setId(dp.id);
     setObservationId(dp.observationId);
-    setDataProductType(dp.dataProductType);
-    setImageSizeValue(dp.imageSizeValue.toString());
+    setDataProductType(dp.dataProductType ?? 0);
+    setImageSizeValue(dp.imageSizeValue);
     setImageSizeUnits(dp.imageSizeUnits);
     setPixelSizeValue(dp.pixelSizeValue);
     setPixelSizeUnits(dp.pixelSizeUnits);
     setTaperValue(dp.taperValue);
-    setWeighting(Number(dp.weighting));
+    setWeighting(dp.weighting);
     setRobust(dp.robust ?? 0);
     setPolarisations(dp.polarisations ?? ['I']);
     setChannelsOut(dp.channelsOut ?? 1);
+    setTimeAveraging(dp.timeAveraging ?? 0);
+    setFrequencyAveraging(dp.frequencyAveraging ?? 0);
+    setContinuumSubtraction(dp.continuumSubtraction ?? false);
+    setBitDepth(dp.bitDepth ?? 1);
   };
 
   const dataProductOut = () => {
     const newDataProduct: DataProductSDP = {
       id: id,
       dataProductType,
-      observationId: observationId,
-      imageSizeValue: Number(imageSizeValue),
+      observationId,
+      imageSizeValue,
       imageSizeUnits,
       pixelSizeValue,
       pixelSizeUnits,
@@ -126,7 +134,11 @@ export default function DataProduct() {
       polarisations,
       channelsOut,
       taperValue,
-      fitSpectralPol: 3
+      fitSpectralPol: 3,
+      timeAveraging,
+      frequencyAveraging,
+      bitDepth,
+      continuumSubtraction
     };
     return newDataProduct;
   };
@@ -138,7 +150,7 @@ export default function DataProduct() {
 
     setBaseObservations(observations);
     if (isEdit()) {
-      dataProductIn(locationProperties.state);
+      dataProductIn(data ? data : locationProperties.state);
     } else {
       // Nothing to do for now
     }
@@ -446,18 +458,22 @@ export default function DataProduct() {
     const addToProposal = () => {
       const newDataProduct: DataProductSDP = {
         id: generateId(PAGE_PREFIX, 6),
-        observatoryDataProduct: [true],
-        observationId: observationId,
-        imageSizeValue: Number(imageSizeValue),
+        dataProductType,
+        observationId,
+        imageSizeValue,
         imageSizeUnits,
         pixelSizeValue,
         pixelSizeUnits,
-        weighting: weighting.toString(),
+        weighting,
         robust,
         polarisations,
         channelsOut,
         taperValue,
-        fitSpectralPol: 3
+        fitSpectralPol: 3,
+        timeAveraging,
+        frequencyAveraging,
+        bitDepth,
+        continuumSubtraction
       };
       setProposal({
         ...getProposal(),
