@@ -250,6 +250,7 @@ export const MockProposalBackend: ProposalBackend = {
       {
         observation_set_ref: 'obs-obR1Ej',
         target_ref: 'M2',
+        data_product_ref: 'SDP-2',
         result: {
           supplied_type: 'integration_time',
           weighted_continuum_sensitivity: {
@@ -443,6 +444,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
       {
         observation_set_ref: 'obs-arMIoY',
         target_ref: 'm2',
+        data_product_ref: 'SDP-1',
         result: {
           supplied_type: 'integration_time',
           weighted_continuum_sensitivity: {

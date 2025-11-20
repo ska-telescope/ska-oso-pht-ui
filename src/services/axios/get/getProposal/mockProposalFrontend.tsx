@@ -218,6 +218,7 @@ export const MockProposalFrontend: Proposal = {
     {
       targetId: 3,
       observationId: 'obs-obR1Ej',
+      dataProductsSDPId: 'SDP-2',
       sensCalc: {
         id: 1,
         title: 'M2',
@@ -447,6 +448,7 @@ export const MockProposalFrontendZoom: Proposal = {
     {
       targetId: 1,
       observationId: 'obs-arMIoY',
+      dataProductsSDPId: 'SDP-1',
       sensCalc: {
         id: 1,
         title: 'm2',

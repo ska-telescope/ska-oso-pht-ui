@@ -641,6 +641,7 @@ const getTargetObservation = (
       // TODO for targetId, use result.target_ref once it is a number => needs to be changed in ODA & PDM
       targetId: outTargets.find(tar => tar.name === result.target_ref)?.id as number,
       observationId: result.observation_set_ref as string,
+      dataProductsSDPId: result?.data_product_ref,
       sensCalc: {
         id: inResults?.indexOf(result) + 1, // only for UI
         title: result.target_ref as string,
