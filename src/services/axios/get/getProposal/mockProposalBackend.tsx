@@ -235,6 +235,7 @@ export const MockProposalBackend: ProposalBackend = {
           gaussian_taper: '1',
           channels_out: 1,
           fit_spectral_pol: 3,
+          kind: 'continuum',
           variant: 'continuum image'
         }
       }

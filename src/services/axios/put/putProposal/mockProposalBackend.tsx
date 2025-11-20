@@ -178,6 +178,7 @@ export const MockProposalBackend: ProposalBackend = {
         data_product_id: 'SDP-2',
         script_parameters: {
           variant: 'continuum image',
+          kind: 'continuum',
           channels_out: 1,
           fit_spectral_pol: 3,
           gaussian_taper: '1',
@@ -352,6 +353,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
         observation_set_ref: 'obs-arMIoY',
         script_parameters: {
           variant: 'continuum image',
+          kind: 'continuum',
           channels_out: 1,
           fit_spectral_pol: 3,
           gaussian_taper: '1',
