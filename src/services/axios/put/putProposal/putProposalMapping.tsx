@@ -201,7 +201,7 @@ const getDataProductScriptParameters = (dp: DataProductSDP) => {
 
 const getDataProductSDP = (dataProducts: DataProductSDP[]): DataProductSDPsBackend[] => {
   return dataProducts?.map(dp => ({
-    data_product_id: dp.dataProductsSDPId as string,
+    data_product_id: String(dp.dataProductsSDPId),
     observation_set_ref: dp.observationId,
     script_parameters: getDataProductScriptParameters(dp)
   }));
@@ -458,7 +458,19 @@ const getObsType = (incTarObs: TargetObservation, incObs: Observation[]): number
 
 const getSpectralSection = (obsType: number) => (isContinuum(obsType) ? 'section2' : 'section1');
 
-const getResults = (incTargetObservations: TargetObservation[], incObs: Observation[]) => {
+const getDataProductRef = (incTarObs: TargetObservation, incDataProductSDP: DataProductSDP[]) => {
+  const dataProductRef = String(
+    incDataProductSDP.find(dp => dp.observationId === incTarObs.observationId)?.dataProductsSDPId
+  );
+  // TODO make data product mandatory when sens calc is requested so it's never undefined
+  return dataProductRef;
+};
+
+const getResults = (
+  incTargetObservations: TargetObservation[],
+  incObs: Observation[],
+  incDataProductSDP: DataProductSDP[]
+) => {
   const resultsArr = [];
   if (incTargetObservations) {
     for (let tarObs of incTargetObservations) {
@@ -476,6 +488,7 @@ const getResults = (incTargetObservations: TargetObservation[], incObs: Observat
           : getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection);
       let result: SensCalcResultsBackend = {
         observation_set_ref: tarObs.observationId,
+        data_product_ref: getDataProductRef(tarObs, incDataProductSDP),
         target_ref: tarObs.sensCalc?.title,
         result: {
           supplied_type: suppliedType,
@@ -577,7 +590,8 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
           : [],
       result_details: getResults(
         proposal.targetObservation as TargetObservation[],
-        proposal.observations as Observation[]
+        proposal.observations as Observation[],
+        proposal.dataProductSDP as DataProductSDP[]
       )
     }
   };
