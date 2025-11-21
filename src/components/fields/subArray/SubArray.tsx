@@ -1,5 +1,4 @@
 import { DropDown } from '@ska-telescope/ska-gui-components';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Grid } from '@mui/material';
 import {
   BANDWIDTH_TELESCOPE,
@@ -10,6 +9,7 @@ import {
 import { subArrayOptions } from '@utils/observationOptions.tsx';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useHelp } from '@/utils/help/useHelp';
 
 interface SubArrayFieldProps {
   observingBand: number;
@@ -35,7 +35,7 @@ export default function SubArrayField({
   widthLabel = 6
 }: SubArrayFieldProps) {
   const { t } = useScopedTranslation();
-  const { helpComponent } = storageObject.useStore();
+  const { setHelp } = useHelp();
   const FIELD = 'subArrayConfiguration';
   const { observatoryConstants, osdIsCustomAllowed } = useOSDAccessors();
 
@@ -68,7 +68,7 @@ export default function SubArrayField({
             labelBold={LAB_IS_BOLD}
             labelPosition={LAB_POSITION}
             labelWidth={suffix ? widthLabel + 1 : widthLabel}
-            onFocus={() => helpComponent(t(FIELD + '.help'))}
+            onFocus={() => setHelp(t(FIELD + '.help'))}
             required={required}
           />
         )}

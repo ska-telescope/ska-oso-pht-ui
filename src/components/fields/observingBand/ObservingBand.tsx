@@ -1,5 +1,4 @@
 import { DropDown } from '@ska-telescope/ska-gui-components';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Grid } from '@mui/material';
 import {
   BANDWIDTH_TELESCOPE,
@@ -10,6 +9,7 @@ import {
 } from '../../../utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { useHelp } from '@/utils/help/useHelp';
 
 interface ObservingBandFieldProps {
   disabled?: boolean;
@@ -31,7 +31,7 @@ export default function ObservingBandField({
   widthLabel = 6
 }: ObservingBandFieldProps) {
   const { t } = useScopedTranslation();
-  const { helpComponent } = storageObject.useStore();
+  const { setHelp } = useHelp();
   const FIELD = 'observingBand';
   const { osdLOW, osdMID } = useOSDAccessors();
 
@@ -59,7 +59,7 @@ export default function ObservingBandField({
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
           labelWidth={suffix ? widthLabel + 1 : widthLabel}
-          onFocus={() => helpComponent(t(FIELD + '.help'))}
+          onFocus={() => setHelp(t(FIELD + '.help'))}
           required={required}
         />
       </Grid>

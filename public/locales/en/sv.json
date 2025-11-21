@@ -170,9 +170,6 @@
     "tooltip": "Saves the Science Verification Idea in the current state to the database"
   },
   "scienceCategory": {
-    "101": "Spectral",
-    "102": "Continuum",
-    "103": "PST",
     "label": "Observing Mode",
     "help": "Select a mode that best describes the science of your Science Verification Idea.",
     "validationNavigationError": "Observing mode is required.  It is located on the General Information page.",
