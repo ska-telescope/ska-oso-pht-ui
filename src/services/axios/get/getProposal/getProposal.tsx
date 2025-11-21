@@ -307,7 +307,7 @@ const getCalibrationStrategy = (
 ): CalibrationStrategy[] => {
   return inValue
     ? inValue.map(strategy => ({
-        observatoryDefined: strategy.observatory_defined,
+        observatoryDefined: strategy?.observatory_defined,
         id: strategy?.calibration_id,
         observationIdRef: strategy?.observation_set_ref,
         calibrators: strategy?.calibrators

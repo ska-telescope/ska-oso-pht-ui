@@ -21,14 +21,12 @@ import {
   HELP_FONT,
   LAB_POSITION_ABOVE,
   PAGE_CALIBRATION,
-  STATUS_OK,
   WRAPPER_HEIGHT
 } from '@/utils/constants';
 import GetCalibratorList from '@/services/axios/get/getCalibratorList/getCalibratorList';
 import { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy';
 import { timeConversion } from '@/utils/helpersSensCalc';
 import { TIME_MINS } from '@/utils/constantsSensCalc';
-import Observation from '@/utils/types/observation';
 import ArrowIcon from '@/components/icon/arrowIcon/arrowIcon';
 import Supplied from '@/utils/types/supplied';
 import { useHelp } from '@/utils/help/useHelp';
@@ -45,9 +43,6 @@ export default function CalibrationPage() {
   const LABEL_WIDTH = 1;
   const LABEL_WIDTH_CHECKBOX = 11.5;
 
-  const [baseObservations, setBaseObservations] = React.useState<
-    { label: string; value: string }[]
-  >([]);
   const [calibrationStrategy, setCalibrationStrategy] = React.useState<CalibrationStrategy | null>(
     null
   );
@@ -60,7 +55,7 @@ export default function CalibrationPage() {
   const [comment, setComment] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
 
-  const hasObservations = () => (baseObservations?.length > 0 ? true : false);
+  const hasObservations = () => (getProposal()?.targetObservation?.length ?? 0) > 0;
   const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
 
   const getProposal = () => application.content2 as Proposal;
@@ -98,16 +93,6 @@ export default function CalibrationPage() {
   }, [calibrationStrategy]);
 
   React.useEffect(() => {
-    const results: Observation[] | undefined = getProposal()?.observations?.filter(
-      ob =>
-        typeof getProposal()?.targetObservation?.find(
-          e => e.observationId === ob.id && e.sensCalc.statusGUI === STATUS_OK
-        ) !== 'undefined'
-    );
-    const values = results?.map(e => ({ label: e.id, value: e.id }));
-    if (values) {
-      setBaseObservations([...values]);
-    }
     setValidateToggle(!validateToggle);
   }, []);
 
