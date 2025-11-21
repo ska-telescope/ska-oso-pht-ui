@@ -267,19 +267,25 @@ export default function TargetEntry({
       };
 
       const dataProductSDPOut = (observationId: string) => {
+        // default continuum data product
         const newDataProductSDP: DataProductSDP = {
-          id: 1,
-          dataProductsSDPId: generateId('SDP-'),
-          observatoryDataProduct: [],
+          id: generateId('SDP-'),
+          dataProductType: 1,
           observationId: observationId,
-          imageSizeValue: 15,
+          imageSizeValue: 1,
           imageSizeUnits: 0,
-          pixelSizeValue: 1.007,
-          pixelSizeUnits: 'arcsecs', // TODO fix type
-          weighting: 'uniform',
+          pixelSizeValue: 1,
+          pixelSizeUnits: 2,
+          weighting: 1,
           polarisations: ['I'],
           channelsOut: 1,
-          fitSpectralPol: 3
+          fitSpectralPol: 3,
+          robust: -1,
+          taperValue: 1,
+          timeAveraging: -1,
+          frequencyAveraging: -1,
+          bitDepth: 0,
+          continuumSubtraction: false
         };
         return newDataProductSDP;
       };
@@ -378,7 +384,7 @@ export default function TargetEntry({
                   {
                     targetId: newTarget?.id,
                     observationId: newObservation?.id,
-                    dataProductsSDPId: String(newDataProductSDP?.dataProductsSDPId),
+                    dataProductsSDPId: newDataProductSDP?.id,
                     sensCalc: sensCalcResult
                   }
                 ]

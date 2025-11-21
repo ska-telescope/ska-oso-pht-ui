@@ -568,7 +568,7 @@ const getResults = (
           : getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection);
       let result: SensCalcResultsBackend = {
         observation_set_ref: tarObs.observationId,
-        data_product_ref: getDataProductRef(tarObs, incDataProductSDP),
+        data_product_ref: tarObs.dataProductsSDPId ?? getDataProductRef(tarObs, incDataProductSDP),
         target_ref: tarObs.sensCalc?.title,
         result: {
           supplied_type: suppliedType,
@@ -662,7 +662,10 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
           : null,
       data_product_sdps:
         proposal?.dataProductSDP && proposal?.dataProductSDP?.length > 0
-          ? getDataProductSDP(proposal.observations, proposal.dataProductSDP as DataProductSDP[])
+          ? getDataProductSDP(
+              proposal.observations as Observation[],
+              proposal.dataProductSDP as DataProductSDP[]
+            )
           : [],
       data_product_src_nets:
         proposal?.dataProductSRC && proposal?.dataProductSRC?.length > 0

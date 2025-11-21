@@ -57,12 +57,12 @@ export default function DataProductsPage() {
   }, [validateToggle]);
 
   const deleteIconClicked = (e: DataProductSDP) => {
-    setCurrentRow(e.id);
+    setCurrentRow(Number(e.id));
     setOpenDialog(true);
   };
 
   const editIconClicked = (e: DataProductSDP) => {
-    setCurrentRow(e.id);
+    setCurrentRow(Number(e.id));
     navigate(PATH[3], { replace: true, state: e });
   };
 
@@ -71,15 +71,15 @@ export default function DataProductsPage() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = getProposal().dataProductSDP?.filter(e => e.id !== currentRow);
+    const obs1 = getProposal().dataProductSDP?.filter(e => e.id !== String(currentRow));
 
-    setProposal({ ...getProposal(), dataProductSDP: obs1 });
+    setProposal({ ...getProposal(), dataProductSDP: obs1 }); // TODO if we create a SDP here, we should add the dataProductsSDPId to TargetObservation
     setCurrentRow(0);
     closeDeleteDialog();
   };
 
   const alertContent = () => {
-    const rec = getProposal().dataProductSDP?.find(p => p.id === currentRow);
+    const rec = getProposal().dataProductSDP?.find(p => String(p.id) === String(currentRow));
     return (
       <Grid
         p={2}
