@@ -11,6 +11,7 @@ export type DataProductSDPContinuumImageBackend = {
   channels_out?: number;
   fit_spectral_pol?: number;
   gaussian_taper?: string;
+  kind: string;
   variant: string;
 };
 
@@ -27,6 +28,7 @@ export type DataProductSDPContinuumVisibilitiesBackend = {
   gaussian_taper?: string;
   time_averaging: ValueUnitPair;
   frequency_averaging: ValueUnitPair;
+  kind: string;
   variant: string;
 };
 
@@ -42,6 +44,7 @@ export type DataProductSDPSpectralImageBackend = {
   fit_spectral_pol?: number;
   gaussian_taper?: string;
   continuum_subtraction?: boolean;
+  kind: string;
   variant: string;
 };
 
@@ -50,18 +53,21 @@ export type DataProductSDPPSTDetectedFilterBankBackend = {
   bit_depth: number;
   time_averaging_factor: number;
   frequency_averaging_factor: number;
+  kind: string;
   variant: string;
 };
 
 export type DataProductSDPPSTTimingBackend = {
   polarisations: string[];
   bit_depth: number;
+  kind: string;
   variant: string;
 };
 
 export type DataProductSDPPSTFlowthroughBackend = {
   polarisations: string[];
   bit_depth: number;
+  kind: string;
   variant: string;
 };
 
@@ -82,19 +88,23 @@ export type DataProductSRCNetBackend = {
 };
 
 export type DataProductSDP = {
-  id: number;
-  dataProductsSDPId?: string;
-  observatoryDataProduct: boolean[];
+  id: string;
+  dataProductType: number;
   observationId: string;
   imageSizeValue: number;
   imageSizeUnits: number;
   pixelSizeValue: number;
   pixelSizeUnits: number;
-  weighting: string;
+  weighting: number;
   robust: number;
   polarisations: string[];
   channelsOut: number;
+  taperValue: number;
   fitSpectralPol: number;
+  timeAveraging: number;
+  frequencyAveraging: number;
+  bitDepth: number;
+  continuumSubtraction: boolean;
 };
 
 export type DataProductSRC = {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Grid, Paper, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { BorderedSection, DropDown, TickBox } from '@ska-telescope/ska-gui-components';
@@ -9,6 +9,7 @@ import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
 import { useTheme } from '@mui/material/styles';
 import PolarisationsField from '@/components/fields/polarisations/polarisations';
 import {
+  CHANNELS_OUT_MAX,
   FOOTER_HEIGHT_PHT,
   IW_BRIGGS,
   LAB_POS_TICK,
@@ -35,6 +36,8 @@ import TimeAveragingField from '@/components/fields/timeAveraging/timeAveraging'
 import FrequencyAveragingField from '@/components/fields/frequencyAveraging/frequencyAveraging';
 import BitDepthField from '@/components/fields/bitDepth/bitDepth';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { generateId } from '@/utils/helpers';
+import { useHelp } from '@/utils/help/useHelp';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
@@ -44,39 +47,46 @@ const TICK_LABEL_WIDTH = 10;
 const COL = 6;
 const COL_MID = 8;
 
-const CHANNELS_OUT_MAX = 40;
+interface DataProductProps {
+  data?: DataProductSDP;
+}
 
-export default function DataProduct() {
+export default function DataProduct({ data }: DataProductProps) {
+  const { t } = useScopedTranslation();
   const navigate = useNavigate();
+  const locationProperties = useLocation();
   const theme = useTheme();
-  const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
-  const { osdMaxDataProducts } = useOSDAccessors();
+  const { osdMaxDataProducts, osdMaxObservations } = useOSDAccessors();
+  const { setHelp } = useHelp();
+
+  const isEdit = () => locationProperties.state !== null || data !== undefined;
+
+  const { application, updateAppContent2 } = storageObject.useStore();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const [baseObservations, setBaseObservations] = React.useState<Observation[]>([]);
+  const [id, setId] = React.useState('');
   const [observationId, setObservationId] = React.useState('');
   const [dataProductType, setDataProductType] = React.useState(1);
   const [bitDepth, setBitDepth] = React.useState(0);
-  const [imageSizeValue, setImageSizeValue] = React.useState('0');
+  const [imageSizeValue, setImageSizeValue] = React.useState(0);
   const [imageSizeUnits, setImageSizeUnits] = React.useState(0);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
   const [pixelSizeUnits, setPixelSizeUnits] = React.useState(2);
-  const [taperValue, setTaperValue] = React.useState('0');
+  const [taperValue, setTaperValue] = React.useState(0);
   const [timeAveraging, setTimeAveraging] = React.useState(0);
   const [timeAveragingUnits, setTimeAveragingUnits] = React.useState(0);
   const [frequencyAveraging, setFrequencyAveraging] = React.useState(0);
   const [frequencyAveragingUnits, setFrequencyAveragingUnits] = React.useState(0);
   const [weighting, setWeighting] = React.useState(0);
-  const [robust, setRobust] = React.useState(3);
+  const [robust, setRobust] = React.useState(0);
   const [channelsOut, setChannelsOut] = React.useState(1);
   const [continuumSubtraction, setContinuumSubtraction] = React.useState(false);
   const [polarisations, setPolarisations] = React.useState(['I']);
 
-  const { t } = useScopedTranslation();
-
-  const maxObservationsReached = () => baseObservations.length > 0;
+  const maxObservationsReached = () => baseObservations.length >= osdMaxObservations;
 
   const isDataTypeOne = () => dataProductType === 1;
   const isDataTypeThree = () => dataProductType === 3;
@@ -85,7 +95,6 @@ export default function DataProduct() {
   const isPST = () => getObservation()?.type === TYPE_PST;
 
   const getObservation = () => baseObservations?.find(obs => obs.id === observationId);
-  // const getObservation = () => ({ type: TYPE_PST }); // TODO : Remove once there are real observations
 
   const getSuffix = () => {
     if (isContinuum() || isPST()) {
@@ -94,33 +103,58 @@ export default function DataProduct() {
     return '1';
   };
 
-  React.useEffect(() => {
-    helpComponent(t('observations.dp.help'));
+  const dataProductIn = (dp: DataProductSDP) => {
+    setId(dp.id);
+    setObservationId(dp.observationId);
+    setDataProductType(dp.dataProductType ?? 0);
+    setImageSizeValue(dp.imageSizeValue);
+    setImageSizeUnits(dp.imageSizeUnits);
+    setPixelSizeValue(dp.pixelSizeValue);
+    setPixelSizeUnits(dp.pixelSizeUnits);
+    setTaperValue(dp.taperValue);
+    setWeighting(dp.weighting);
+    setRobust(dp.robust ?? 0);
+    setPolarisations(dp.polarisations ?? ['I']);
+    setChannelsOut(dp.channelsOut ?? 1);
+    setTimeAveraging(dp.timeAveraging ?? 0);
+    setFrequencyAveraging(dp.frequencyAveraging ?? 0);
+    setContinuumSubtraction(dp.continuumSubtraction ?? false);
+    setBitDepth(dp.bitDepth ?? 1);
+  };
 
+  const dataProductOut = () => {
+    const newDataProduct: DataProductSDP = {
+      id: id,
+      dataProductType,
+      observationId,
+      imageSizeValue,
+      imageSizeUnits,
+      pixelSizeValue,
+      pixelSizeUnits,
+      weighting,
+      robust,
+      polarisations,
+      channelsOut,
+      taperValue,
+      fitSpectralPol: 3,
+      timeAveraging,
+      frequencyAveraging,
+      bitDepth,
+      continuumSubtraction
+    };
+    return newDataProduct;
+  };
+
+  React.useEffect(() => {
+    setHelp(t('observations.dp.help'));
     const proposal = getProposal();
     const observations = proposal?.observations ?? [];
 
     setBaseObservations(observations);
-
-    if (
-      osdMaxDataProducts === 1 &&
-      proposal?.dataProductSDP &&
-      proposal.dataProductSDP.length > 0 &&
-      observations.length > 0
-    ) {
-      const dp = proposal.dataProductSDP[0];
-
-      setObservationId(dp.observationId);
-      setDataProductType(Number(dp.observatoryDataProduct[0] ? 1 : 2));
-      setImageSizeValue(dp.imageSizeValue.toString());
-      setImageSizeUnits(dp.imageSizeUnits);
-      // setPixelSizeValue(dp.pixelSizeValue);   TODO : Check if this can be saved and changed
-      setPixelSizeUnits(dp.pixelSizeUnits);
-      setTaperValue(dp.imageSizeValue.toString()); // TODO : Check this is correct
-      setWeighting(Number(dp.weighting));
-      setRobust(dp.robust ?? 3);
-      setPolarisations(dp.polarisations ?? ['I']);
-      setChannelsOut(dp.channelsOut ?? 1);
+    if (isEdit()) {
+      dataProductIn(data ? data : locationProperties.state);
+    } else {
+      // Nothing to do for now
     }
   }, []);
 
@@ -173,10 +207,10 @@ export default function DataProduct() {
     fieldWrapper(
       <TapperField
         labelWidth={LABEL_WIDTH}
-        onFocus={() => helpComponent(t('tapper.help'))}
+        onFocus={() => setHelp(t('tapper.help'))}
         required
         setValue={setTaperValue}
-        value={Number(taperValue)}
+        value={taperValue}
         suffix={t('taper.units')}
       />
     );
@@ -196,7 +230,7 @@ export default function DataProduct() {
         value={imageSizeUnits}
         setValue={setImageSizeUnits}
         label=""
-        onFocus={() => helpComponent(t('frequencyUnits.help'))}
+        onFocus={() => setHelp(t('frequencyUnits.help'))}
       />
     );
   };
@@ -205,7 +239,7 @@ export default function DataProduct() {
     fieldWrapper(
       <ImageSizeField
         labelWidth={LABEL_WIDTH}
-        onFocus={() => helpComponent(t('imageSize.help'))}
+        onFocus={() => setHelp(t('imageSize.help'))}
         required
         setValue={setImageSizeValue}
         value={Number(imageSizeValue)}
@@ -229,7 +263,7 @@ export default function DataProduct() {
         value={timeAveragingUnits}
         setValue={setTimeAveragingUnits}
         label=""
-        onFocus={() => helpComponent(t('timeAveragingUnits.help'))}
+        onFocus={() => setHelp(t('timeAveragingUnits.help'))}
       />
     );
   };
@@ -250,7 +284,7 @@ export default function DataProduct() {
         value={frequencyAveragingUnits}
         setValue={setFrequencyAveragingUnits}
         label=""
-        onFocus={() => helpComponent(t('frequencyAveragingUnits.help'))}
+        onFocus={() => setHelp(t('frequencyAveragingUnits.help'))}
       />
     );
   };
@@ -259,7 +293,7 @@ export default function DataProduct() {
     fieldWrapper(
       <TimeAveragingField
         labelWidth={LABEL_WIDTH}
-        onFocus={() => helpComponent(t('timeAveraging.help'))}
+        onFocus={() => setHelp(t('timeAveraging.help'))}
         required
         setValue={setTimeAveraging}
         value={Number(timeAveraging)}
@@ -271,7 +305,7 @@ export default function DataProduct() {
     fieldWrapper(
       <FrequencyAveragingField
         labelWidth={LABEL_WIDTH}
-        onFocus={() => helpComponent(t('frequencyAveraging.help'))}
+        onFocus={() => setHelp(t('frequencyAveraging.help'))}
         required
         setValue={setFrequencyAveraging}
         value={Number(frequencyAveraging)}
@@ -282,14 +316,14 @@ export default function DataProduct() {
   const pixelSizeUnitsField = () => {
     return pixelSizeUnits === 0 || pixelSizeUnits === null
       ? ''
-      : presentUnits('pixelSize.' + pixelSizeUnits);
+      : presentUnits(t('pixelSize.' + pixelSizeUnits));
   };
 
   const pixelSizeField = () =>
     fieldWrapper(
       <PixelSizeField
         labelWidth={LABEL_WIDTH}
-        onFocus={() => helpComponent(t('pixelSize.help'))}
+        onFocus={() => setHelp(t('pixelSize.help'))}
         setValue={setPixelSizeValue}
         required
         value={pixelSizeValue}
@@ -301,7 +335,7 @@ export default function DataProduct() {
     fieldWrapper(
       <ImageWeightingField
         labelWidth={LABEL_WIDTH}
-        onFocus={() => helpComponent(t('imageWeighting.help'))}
+        onFocus={() => setHelp(t('imageWeighting.help'))}
         required
         setValue={setWeighting}
         value={weighting}
@@ -312,7 +346,7 @@ export default function DataProduct() {
     fieldWrapper(
       <BitDepthField
         labelWidth={LABEL_WIDTH}
-        onFocus={() => helpComponent(t('bitDepth.help'))}
+        onFocus={() => setHelp(t('bitDepth.help'))}
         required
         setValue={setBitDepth}
         value={bitDepth}
@@ -323,7 +357,7 @@ export default function DataProduct() {
     fieldWrapper(
       <DataProductTypeField
         observationType={getObservation()?.type || TYPE_CONTINUUM}
-        onFocus={() => helpComponent(t('dataProductType.help'))}
+        onFocus={() => setHelp(t('dataProductType.help'))}
         setValue={setDataProductType}
         value={dataProductType}
       />
@@ -333,7 +367,7 @@ export default function DataProduct() {
     fieldWrapper(
       <RobustField
         label={t('robust.label')}
-        onFocus={() => helpComponent(t('robust.help'))}
+        onFocus={() => setHelp(t('robust.help'))}
         setValue={setRobust}
         value={robust}
       />
@@ -343,8 +377,7 @@ export default function DataProduct() {
     fieldWrapper(
       <ChannelsOutField
         labelWidth={LABEL_WIDTH}
-        maxValue={CHANNELS_OUT_MAX}
-        onFocus={() => helpComponent(t('channelsOut.help'))}
+        onFocus={() => setHelp(t('channelsOut.help'))}
         required
         setValue={setChannelsOut}
         value={channelsOut}
@@ -364,7 +397,7 @@ export default function DataProduct() {
           onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
             setContinuumSubtraction(event.target.checked)
           }
-          onFocus={() => helpComponent(t('continuumSubtraction.help'))}
+          onFocus={() => setHelp(t('continuumSubtraction.help'))}
         />
       </Box>
     );
@@ -372,7 +405,7 @@ export default function DataProduct() {
   const polarisationsField = () => {
     return (
       <PolarisationsField
-        onFocus={() => helpComponent(t('polarisations.help'))}
+        onFocus={() => setHelp(t('polarisations.help'))}
         observationType={getObservation()?.type || TYPE_CONTINUUM}
         dataProductType={dataProductType}
         value={polarisations}
@@ -384,7 +417,7 @@ export default function DataProduct() {
 
   const imageSizeValid = () => Number(imageSizeValue) > 0;
   const pixelSizeValid = () => pixelSizeValue > 0;
-  const taperSizeValid = () => Number(taperValue) > 0;
+  const taperSizeValid = () => taperValue > 0;
   const channelsOutValid = () => channelsOut > 0 && channelsOut <= CHANNELS_OUT_MAX;
   const polarisationsValid = () => polarisations.length > 0;
   const timeAveragingValid = () => timeAveraging > 0;
@@ -425,54 +458,52 @@ export default function DataProduct() {
     };
 
     const addToProposal = () => {
-      const hasRecord = getProposal().dataProductSDP;
-      let highestId = 1;
-      if (hasRecord) {
-        highestId =
-          getProposal().dataProductSDP?.reduce(
-            (acc, dataProducts) => (dataProducts.id > acc ? dataProducts.id : acc),
-            0
-          ) ?? 0;
-      }
       const newDataProduct: DataProductSDP = {
-        id: osdMaxDataProducts === 1 ? highestId : highestId + 1,
-        dataProductsSDPId: `${PAGE_PREFIX}-${highestId + 1}`,
-        observatoryDataProduct: [true], // TODO dataProductType,
-        observationId: observationId,
-        imageSizeValue: Number(imageSizeValue),
+        id: generateId(PAGE_PREFIX, 6),
+        dataProductType,
+        observationId,
+        imageSizeValue,
         imageSizeUnits,
         pixelSizeValue,
         pixelSizeUnits,
-        weighting: weighting.toString(),
+        weighting,
         robust,
         polarisations,
         channelsOut,
-        fitSpectralPol: 3
+        taperValue,
+        fitSpectralPol: 3,
+        timeAveraging,
+        frequencyAveraging,
+        bitDepth,
+        continuumSubtraction
       };
-      if (hasRecord && osdMaxDataProducts !== 1) {
-        setProposal({
-          ...getProposal(),
-          dataProductSDP: [...(getProposal()?.dataProductSDP ?? []), newDataProduct]
-        });
-      } else {
-        setProposal({
-          ...getProposal(),
-          dataProductSDP: [newDataProduct]
-        });
-      }
+      setProposal({
+        ...getProposal(),
+        dataProductSDP: [...(getProposal()?.dataProductSDP ?? []), newDataProduct]
+      });
     };
 
-    const buttonLabel = () => {
-      if (osdMaxDataProducts === 1) {
-        return (getProposal()?.dataProductSDP?.length ?? 0) >= osdMaxDataProducts
-          ? 'updateBtn.label'
-          : 'addBtn.label';
+    const updateTnProposal = () => {
+      const newDataProduct: DataProductSDP = dataProductOut();
+
+      const oldDP = getProposal().dataProductSDP;
+      const newDP: DataProductSDP[] = [];
+      if (oldDP && oldDP?.length > 0) {
+        oldDP.forEach(inValue => {
+          newDP.push(inValue.id === newDataProduct.id ? newDataProduct : inValue);
+        });
+      } else {
+        newDP.push(newDataProduct);
       }
-      return 'addDataProduct.button';
+
+      setProposal({
+        ...getProposal(),
+        dataProductSDP: newDP
+      });
     };
 
     const buttonClicked = () => {
-      addToProposal();
+      isEdit() ? updateTnProposal() : addToProposal();
       if (osdMaxDataProducts !== 1) {
         navigate(NAV[BACK_PAGE]);
       }
@@ -502,9 +533,9 @@ export default function DataProduct() {
             <AddButton
               disabled={!enabled()}
               primary
-              testId="addButton"
-              title={buttonLabel()}
               action={buttonClicked}
+              testId={isEdit() ? 'updateDataProductButtonEntry' : 'addDataProductButtonEntry'}
+              title={isEdit() ? 'updateBtn.label' : 'addBtn.label'}
             />
           </Grid>
         </Grid>
@@ -611,9 +642,7 @@ export default function DataProduct() {
                 )}
                 {!isDataTypeOne() && !isDataTypeThree() && (
                   <Grid pb={1} container>
-                    <Grid size={{ md: COL_MID, lg: COL }}>
-                      TO BE PROVIDED BY SCIENCE OPERATIONS
-                    </Grid>
+                    <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(bitDepthField())}</Grid>
                   </Grid>
                 )}
                 {isDataTypeThree() && (
@@ -636,7 +665,7 @@ export default function DataProduct() {
                 {fieldWrapper(polarisationsField(), '150px')}
               </BorderedSection>
             )}
-            {isPST() && (isDataTypeOne() || isDataTypeThree()) && (
+            {isPST() && (
               <BorderedSection title={t('polarisations.label')}>
                 {fieldWrapper(polarisationsField())}
               </BorderedSection>

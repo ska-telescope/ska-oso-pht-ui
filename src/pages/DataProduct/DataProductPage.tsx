@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Grid, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
@@ -29,6 +30,7 @@ export default function DataProductsPage() {
   const [currentRow, setCurrentRow] = React.useState(0);
   const [openDialog, setOpenDialog] = React.useState(false);
   const { osdMaxDataProducts } = useOSDAccessors();
+  const navigate = useNavigate();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -59,6 +61,11 @@ export default function DataProductsPage() {
     setOpenDialog(true);
   };
 
+  const editIconClicked = (e: DataProductSDP) => {
+    setCurrentRow(e.id);
+    navigate(PATH[3], { replace: true, state: e });
+  };
+
   const closeDeleteDialog = () => {
     setOpenDialog(false);
   };
@@ -83,29 +90,6 @@ export default function DataProductsPage() {
       >
         <FieldWrapper label={t('observations.dp.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec?.observationId}</Typography>
-        </FieldWrapper>
-        <FieldWrapper label={t('observatoryDataProduct.label')} labelWidth={LABEL_WIDTH}>
-          {rec?.observatoryDataProduct[0] ||
-          rec?.observatoryDataProduct[1] ||
-          rec?.observatoryDataProduct[2] ||
-          rec?.observatoryDataProduct[3] ? (
-            <>
-              {rec?.observatoryDataProduct[0] && (
-                <Typography variant="body1">{t('observatoryDataProduct.options.1')}</Typography>
-              )}
-              {rec?.observatoryDataProduct[1] && (
-                <Typography variant="body1">{t('observatoryDataProduct.options.2')}</Typography>
-              )}
-              {rec?.observatoryDataProduct[2] && (
-                <Typography variant="body1">{t('observatoryDataProduct.options.3')}</Typography>
-              )}
-              {rec?.observatoryDataProduct[3] && (
-                <Typography variant="body1">{t('observatoryDataProduct.options.4')}</Typography>
-              )}
-            </>
-          ) : (
-            <></>
-          )}
         </FieldWrapper>
         <FieldWrapper label={t('imageSize.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">
@@ -153,7 +137,7 @@ export default function DataProductsPage() {
           <TableDataProducts
             data={getProposal().dataProductSDP}
             deleteFunction={deleteIconClicked}
-            updateFunction={() => {}}
+            updateFunction={editIconClicked}
           />
         </Stack>
         <AlertDialog
@@ -175,7 +159,9 @@ export default function DataProductsPage() {
       <>
         {!hasObservations() && noObservations()}
         {osdMaxDataProducts !== 1 && hasObservations() && dataProductList()}
-        {osdMaxDataProducts === 1 && hasObservations() && <DataProduct />}
+        {osdMaxDataProducts === 1 && hasObservations() && (
+          <DataProduct data={getProposal()?.dataProductSDP?.[0]} />
+        )}
       </>
     </Shell>
   );

@@ -15,6 +15,11 @@ const wrapper = (component: React.ReactElement) => {
 
 describe('<StatusArray />', () => {
   test('renders correctly', () => {
-    wrapper(<StatusArray />);
+    const mockUpdateCanSubmit = vi.fn();
+    const mockAccessCanSubmit = true;
+
+    wrapper(
+      <StatusArray updateCanSubmit={mockUpdateCanSubmit} accessCanSubmit={mockAccessCanSubmit} />
+    );
   });
 });

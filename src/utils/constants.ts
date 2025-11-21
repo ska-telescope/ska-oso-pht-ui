@@ -150,6 +150,8 @@ export const BIT_DEPTH = [
   { value: '32' }
 ];
 
+export const CHANNELS_OUT_MAX = 40;
+
 export const CONFLICT_REASONS = [
   'conflict-none',
   'conflict-investigator',
@@ -172,6 +174,13 @@ export const DATA_PRODUCT = {
     { label: 'Distributed Gridding/Imaging', value: 7 }
   ]
 };
+
+export const DP_TYPE_IMAGES = 1;
+export const DP_TYPE_VISIBLE = 2;
+export const DP_TYPE_FILTER_BANK = 1;
+export const DP_TYPE_TIMING = 2;
+export const DP_TYPE_FLOWTHROUGH = 3;
+
 export const DEFAULT_HELP = ['', ' ', ''];
 
 export const EMPTY_STATUS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]; // See SRCNet INACTIVE
@@ -275,9 +284,9 @@ export const POLARISATIONS = [
   { value: 'Q' },
   { value: 'U' },
   { value: 'V' },
+  { value: 'LL' },
+  { value: 'RR' },
   { value: 'XX' },
-  { value: 'XY' },
-  { value: 'YX' },
   { value: 'YY' }
 ];
 export const POLARISATIONS_PST_FLOW = [{ value: 'X' }, { value: 'Y' }];
@@ -726,3 +735,15 @@ export const DEFAULT_TARGETS: Target = {
 };
 
 export const DUMMY_PROPOSAL_ID = 'dummy-proposal-id';
+
+export const STATUS_ARRAY_PAGES = [
+  // TODO : This will need to be extended once we move out of MOCK_CALL mode
+  PAGE_TITLE_ADD,
+  PAGE_TEAM,
+  PAGE_GENERAL,
+  PAGE_DESCRIPTION,
+  PAGE_TARGET,
+  PAGE_OBSERVATION,
+  PAGE_DATA_PRODUCTS,
+  PAGE_CALIBRATION
+];

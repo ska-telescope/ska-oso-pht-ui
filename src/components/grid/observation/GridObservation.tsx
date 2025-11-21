@@ -108,7 +108,7 @@ export default function GridObservation({
     <Box pl={2}>
       <Typography variant="subtitle1" fontWeight="bold">
         {t('subArrayConfiguration.' + inArray)} |{' '}
-        {t((isSV() ? 'scienceCategory.' : 'observationType.') + inType)}
+        {t((isSV() ? 'observationType.' : 'scienceCategory.') + inType)}
       </Typography>
     </Box>
   );

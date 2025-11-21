@@ -45,6 +45,14 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
   }
 }));
 
+vi.mock('@/utils/aaa/aaaUtils', async importOriginal => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    accessSubmit: vi.fn(() => true)
+  };
+});
+
 vi.mock('../../components/info/helpPanel/HelpPanel', () => ({
   default: () => <div data-testid="mock-help-panel" />
 }));

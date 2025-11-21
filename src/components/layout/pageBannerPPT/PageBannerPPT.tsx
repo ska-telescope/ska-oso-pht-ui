@@ -16,6 +16,7 @@ import {
   PAGE_TECHNICAL,
   PATH,
   PROPOSAL_STATUS,
+  STATUS_ARRAY_PAGES,
   STATUS_ERROR,
   STATUS_INITIAL,
   STATUS_PARTIAL
@@ -69,6 +70,8 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const getAccess = () => application.content4 as ProposalAccess[];
   const getProposal = () => application.content2 as Proposal;
 
+  const accessCanSubmit = accessSubmit(getAccess(), getProposal().id);
+
   const isDisableEndpoints = () => {
     if (
       cypressProposal ||
@@ -84,40 +87,39 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     return 'validationBtn.tooltip';
   };
 
-  const validateClicked = () => {
-    const ValidateTheProposal = async () => {
-      setValidationResults([]);
-      let results = [];
+  const validateTheProposal = async (): Promise<boolean> => {
+    let result = false;
+    setValidationResults([]);
+    let results = [];
 
-      for (let key in application.content1) {
-        const obj: { [key: string]: any } = application.content1;
+    for (let key in application.content1) {
+      const obj: { [key: string]: any } = application.content1;
 
-        if (
-          obj[key] === STATUS_ERROR ||
-          obj[key] === STATUS_PARTIAL ||
-          (obj[key] === STATUS_INITIAL && key !== PAGE_SRC_NET.toString())
-        ) {
-          if ((key !== PAGE_TECHNICAL.toString() && key !== PAGE_LINKING.toString()) || !isSV()) {
-            results.push(t('page.' + key + '.pageError'));
-          }
+      if (
+        obj[key] === STATUS_ERROR ||
+        obj[key] === STATUS_PARTIAL ||
+        (obj[key] === STATUS_INITIAL && key !== PAGE_SRC_NET.toString())
+      ) {
+        if ((key !== PAGE_TECHNICAL.toString() && key !== PAGE_LINKING.toString()) || !isSV()) {
+          results.push(t('page.' + key + '.pageError'));
         }
       }
-      const response = await PostProposalValidate(
-        authClient,
-        application.content2 as Proposal,
-        isSV()
-      );
-      const submit = accessSubmit(getAccess(), (application.content2 as Proposal).id);
-      if (response.valid && !response.error && results.length === 0) {
-        notifySuccess(t(`validationBtn.${response.valid}`));
-        setCanSubmit(submit);
-      } else {
-        setValidationResults(response.error ? results.concat(response.error) : results);
-        setOpenValidationResults(true);
-        setCanSubmit(false);
-      }
-    };
-    ValidateTheProposal();
+    }
+    const response = await PostProposalValidate(authClient, getProposal(), isSV());
+
+    if (response.valid && !response.error && results.length === 0) {
+      notifySuccess(t(`validationBtn.${response.valid}`));
+      result = true;
+    } else {
+      setValidationResults(response.error ? results.concat(response.error) : results);
+      setOpenValidationResults(true);
+    }
+
+    return result;
+  };
+
+  const validateClicked = async (): Promise<boolean> => {
+    return validateTheProposal();
   };
 
   const prevPageNav = () => {
@@ -141,8 +143,9 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     }
   };
 
-  const submitClicked = () => {
-    if (loggedIn) setOpenProposalDisplay(true);
+  const submitClicked = async () => {
+    const isValid = await validateTheProposal();
+    if (isValid && loggedIn) setOpenProposalDisplay(true);
   };
 
   const submitConfirmed = async () => {
@@ -179,6 +182,19 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const handleSave = React.useCallback(() => {
     updateProposal(application.content2 as Proposal);
   }, [application.content2]);
+
+  React.useEffect(() => {
+    const pagesIndexes = STATUS_ARRAY_PAGES;
+    const pagesNeedToCheck = (application.content1 as number[]).filter((value, idx) =>
+      pagesIndexes.includes(idx)
+    );
+
+    if (pagesNeedToCheck.every(lvl => lvl === 0) && accessCanSubmit) {
+      setCanSubmit(true);
+    } else {
+      setCanSubmit(false);
+    }
+  }, [application.content1]);
 
   const buttonsLeft = () => (
     <Grid

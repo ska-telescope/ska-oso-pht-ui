@@ -21,6 +21,11 @@ const mockData = {
   robust: 0.5,
   channelsOut: 4,
   fitSpectralPol: 3,
+  taperValue: 1,
+  timeAveraging: 0,
+  frequencyAveraging: 0,
+  bitDepth: 0,
+  continuumSubtraction: false,
   polarisations: ['I', 'Q', 'U', 'V']
 };
 

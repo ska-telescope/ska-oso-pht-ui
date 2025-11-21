@@ -277,26 +277,31 @@ export const MockProposalFrontend: Proposal = {
             units: 'h'
           }
         ]
-      }
+      },
+      dataProductsSDPId: ''
     }
   ],
   technicalPDF: null,
   technicalLoadStatus: 9,
   dataProductSDP: [
     {
-      id: 1,
-      dataProductsSDPId: 'SDP-2',
-      observatoryDataProduct: [true, false, true, false],
+      id: 'SDP-2',
+      dataProductType: 1,
       observationId: 'obs-obR1Ej',
       imageSizeValue: 15,
       imageSizeUnits: 0,
       pixelSizeValue: 1.007,
       pixelSizeUnits: 2,
-      weighting: '1',
+      weighting: 1,
       polarisations: ['I'],
       channelsOut: 1,
       fitSpectralPol: 3,
-      robust: 0
+      robust: 0,
+      taperValue: 1,
+      timeAveraging: 0,
+      frequencyAveraging: 0,
+      bitDepth: 0,
+      continuumSubtraction: false
     }
   ],
   dataProductSRC: [],
