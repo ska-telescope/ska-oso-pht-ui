@@ -182,21 +182,26 @@ const getCalibrationStrategy = (
 
 const getDataProductScriptParameters = (dp: DataProductSDP) => {
   const IMAGE_SIZE_UNITS = ['deg2', 'arcmin2', 'arcsec2'];
-  return {
+  const scriptParams = {
+    kind: 'continuum', // TODO get correct value from data product
     image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
     image_cellsize: { value: dp.pixelSizeValue, unit: IMAGE_SIZE_UNITS[dp.pixelSizeUnits] },
-    weight: {
-      weighting: IMAGE_WEIGHTING.find(item => item.value === Number(dp.weighting))?.label as string,
-      ...(Number(dp.weighting) === IW_BRIGGS && {
-        robust: ROBUST.find(item => item.value === dp.robust)?.value
-      })
-    },
+    weight: { weighting: 'natural' }, // TODO check why not retrieved bellow
+    // weight: {
+    //   weighting: IMAGE_WEIGHTING.find(item => item.value === Number(dp.weighting))?.label as string,
+    //   ...(Number(dp.weighting) === IW_BRIGGS && {
+    //     robust: ROBUST.find(item => item.value === dp.robust)?.value
+    //   })
+    // },
     polarisations: dp.polarisations,
     channels_out: dp.channelsOut,
     fit_spectral_pol: dp.fitSpectralPol,
     gaussian_taper: '1', // TODO: Need to get right value from PDM/UI
     variant: 'continuum image'
   };
+  // const weight =
+  // console.log('scriptParams', scriptParams);
+  return scriptParams;
 };
 
 const getDataProductSDP = (dataProducts: DataProductSDP[]): DataProductSDPsBackend[] => {

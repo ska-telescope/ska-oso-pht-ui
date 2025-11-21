@@ -41,6 +41,7 @@ import {
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
+import { DataProductSDP } from '@/utils/types/dataProduct';
 interface TargetEntryProps {
   raType: number;
   setTarget?: Function;
@@ -265,6 +266,24 @@ export default function TargetEntry({
         return newCalibration;
       };
 
+      const dataProductSDPOut = (observationId: string) => {
+        const newDataProductSDP: DataProductSDP = {
+          id: 1,
+          dataProductsSDPId: generateId('SDP-'),
+          observatoryDataProduct: [],
+          observationId: observationId,
+          imageSizeValue: 15,
+          imageSizeUnits: 0,
+          pixelSizeValue: 1.007,
+          pixelSizeUnits: 'arcsecs', // TODO fix type
+          weighting: 'uniform',
+          polarisations: ['I'],
+          channelsOut: 1,
+          fitSpectralPol: 3
+        };
+        return newDataProductSDP;
+      };
+
       const observationOut = () => {
         const newObservation: Observation = {
           id: generateId(t('addObservation.idPrefix'), 6),
@@ -333,10 +352,12 @@ export default function TargetEntry({
       const addTargetAsync = async () => {
         let newObservation = undefined;
         let newCalibration = undefined;
+        let newDataProductSDP = undefined;
         let sensCalcResult = undefined;
         if (MOCK_CALL) {
           newObservation = observationOut();
           newCalibration = calibrationOut(newObservation?.id);
+          newDataProductSDP = dataProductSDPOut(newObservation?.id);
           sensCalcResult = await getSensCalcData(newObservation, newTarget);
         }
         const updatedProposal = {
@@ -348,12 +369,16 @@ export default function TargetEntry({
           calibrationStrategy: MOCK_CALL
             ? [...(getProposal().calibrationStrategy ?? []), newCalibration as CalibrationStrategy]
             : getProposal().calibrationStrategy,
+          dataProductSDP: MOCK_CALL
+            ? [...(getProposal().dataProductSDP ?? []), newDataProductSDP as DataProductSDP]
+            : getProposal().dataProductSDP,
           targetObservation: MOCK_CALL
             ? sensCalcResult && newObservation && newObservation.id
               ? [
                   {
-                    targetId: newTarget.id,
-                    observationId: newObservation.id,
+                    targetId: newTarget?.id,
+                    observationId: newObservation?.id,
+                    dataProductsSDPId: String(newDataProductSDP?.dataProductsSDPId),
                     sensCalc: sensCalcResult
                   }
                 ]
