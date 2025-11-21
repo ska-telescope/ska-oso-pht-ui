@@ -127,8 +127,8 @@ export default function ObservationEntry() {
   const [numOfStations, setNumOfStations] = React.useState<number | undefined>(512);
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [minimumChannelWidthHz, setMinimumChannelWidthHz] = React.useState<number>(0);
-  const [zoomChannels, setZoomChannels] = React.useState<number>(ZOOM_CHANNELS_MAX); // TODO add zoomChannels to observation types and mappings
-  const [pstMode, setPstMode] = React.useState(FLOW_THROUGH_VALUE); // TODO add pstMode to observation types and mappings
+  const [zoomChannels, setZoomChannels] = React.useState<number>(ZOOM_CHANNELS_MAX);
+  const [pstMode, setPstMode] = React.useState(FLOW_THROUGH_VALUE);
 
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
@@ -199,7 +199,7 @@ export default function ObservationEntry() {
   };
 
   const getObservationType = () => {
-    if (getProposal() && getProposal()?.scienceCategory) {
+    if (getProposal() && typeof getProposal()?.scienceCategory === 'number') {
       const obsType = GENERAL.ObservingMode.find(
         item => item.value === getProposal()?.scienceCategory
       )?.observationType;

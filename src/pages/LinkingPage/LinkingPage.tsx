@@ -253,7 +253,7 @@ export default function LinkingPage() {
     const calibration: CalibrationStrategy = {
       observatoryDefined: true,
       id: generateId('cal-'),
-      observationIdRef: currObs.id,
+      observationIdRef: currObs?.id,
       calibrators: null,
       notes: null,
       isAddNote: false

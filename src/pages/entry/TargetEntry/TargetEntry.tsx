@@ -296,7 +296,10 @@ export default function TargetEntry({
           telescope: TELESCOPE_LOW_NUM,
           subarray: OB_SUBARRAY_AA2,
           linked: '0',
-          type: getProposal().scienceCategory ?? TYPE_CONTINUUM,
+          type:
+            typeof getProposal().scienceCategory === 'number'
+              ? Number(getProposal().scienceCategory)
+              : TYPE_CONTINUUM,
           observingBand: BAND_LOW,
           centralFrequency: calculateCentralFrequency(
             BAND_LOW,
@@ -360,7 +363,7 @@ export default function TargetEntry({
         let newCalibration = undefined;
         let newDataProductSDP = undefined;
         let sensCalcResult = undefined;
-        if (MOCK_CALL) {
+        if (MOCK_CALL && typeof getProposal().scienceCategory === 'number') {
           newObservation = observationOut();
           newCalibration = calibrationOut(newObservation?.id);
           newDataProductSDP = dataProductSDPOut(newObservation?.id);
