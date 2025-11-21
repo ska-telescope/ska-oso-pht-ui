@@ -3,6 +3,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Box } from '@mui/material';
 import { LAB_IS_BOLD, LAB_POSITION, PST_MODES } from '@utils/constants.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useHelp } from '@/utils/help/useHelp';
 
 interface PstModeFieldProps {
   disabled?: boolean;
@@ -20,7 +21,7 @@ export default function PstModeField({
   widthLabel = 6
 }: PstModeFieldProps) {
   const { t } = useScopedTranslation();
-  const { helpComponent } = storageObject.useStore();
+  const { setHelp } = useHelp();
   const FIELD = 'pstMode';
 
   const getOptions = () => {
@@ -46,7 +47,7 @@ export default function PstModeField({
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
           labelWidth={widthLabel}
-          onFocus={() => helpComponent(t(FIELD + '.help'))}
+          onFocus={() => setHelp(t(FIELD + '.help'))}
           required={required}
         />
       )}

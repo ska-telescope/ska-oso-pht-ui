@@ -3,13 +3,12 @@ import { Box, Grid, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   AlertColorTypes,
-  InfoCard,
-  InfoCardColorTypes,
+  BorderedSection,
   Spacer,
   SPACER_VERTICAL
 } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '@utils/types/proposal.tsx';
-import { FOOTER_SPACER, HELP_FONT, RA_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
+import { FOOTER_SPACER, RA_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
 import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
@@ -213,16 +212,17 @@ export default function TargetListSection() {
 
   return (
     <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
-      {osdMaxTargets && (getProposal()?.targets?.length ?? 0) > 0 && (
-        <Grid>
-          <InfoCard
-            color={InfoCardColorTypes.Warning}
-            fontSize={HELP_FONT}
-            message={t(osdMaxTargets > 1 ? 'targets.limitReached_plural' : 'targets.limitReached', {
-              value: osdMaxTargets
-            })}
-            testId="targetLimitPanelId"
-          />
+      {osdMaxTargets && (getProposal()?.targets?.length ?? 0) > osdMaxTargets - 1 && (
+        <Grid size={{ md: 10 }} mb={2}>
+          <BorderedSection borderColor={theme.palette.warning.main}>
+            <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
+              <Grid>
+                {t(osdMaxTargets > 1 ? 'targets.limitReached_plural' : 'targets.limitReached', {
+                  value: osdMaxTargets
+                })}
+              </Grid>
+            </Grid>
+          </BorderedSection>
         </Grid>
       )}
       {displayRow1()}

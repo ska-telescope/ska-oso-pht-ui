@@ -1,8 +1,8 @@
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import { LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useHelp } from '@/utils/help/useHelp';
 
 interface NumStationsFieldProps {
   disabled?: boolean;
@@ -25,7 +25,7 @@ export default function NumStationsField({
   rangeUpper = 1
 }: NumStationsFieldProps) {
   const { t } = useScopedTranslation();
-  const { helpComponent } = storageObject.useStore();
+  const { setHelp } = useHelp();
   const FIELD = 'numStations';
 
   const validate = (e: number) => {
@@ -50,7 +50,7 @@ export default function NumStationsField({
         testId={FIELD}
         value={value}
         setValue={validate}
-        onFocus={() => helpComponent(t(FIELD + '.help'))}
+        onFocus={() => setHelp(t(FIELD + '.help'))}
       />
     </Box>
   );

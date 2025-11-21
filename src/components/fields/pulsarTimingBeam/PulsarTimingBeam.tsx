@@ -4,13 +4,13 @@ import { DataGrid, TextEntry } from '@ska-telescope/ska-gui-components';
 import { LAB_POSITION, RA_TYPE_ICRS } from '@utils/constants.ts';
 import AddButton from '@components/button/Add/Add.tsx';
 import AlertDialog from '@components/alerts/alertDialog/AlertDialog.tsx';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import Target, { Beam, ReferenceCoordinateICRS } from '@utils/types/target.tsx';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates.tsx';
 import ResolveButton from '@components/button/Resolve/Resolve.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import SkyDirection1 from '@/components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
+import { useHelp } from '@/utils/help/useHelp';
 
 interface PulsarTimingBeamFieldProps {
   target?: Target;
@@ -26,7 +26,7 @@ export default function PulsarTimingBeamField({
   showBeamData = false
 }: PulsarTimingBeamFieldProps) {
   const { t } = useScopedTranslation();
-  const { helpComponent } = storageObject.useStore();
+  const { setHelp } = useHelp();
   const [selectedValue, setSelectedValue] = React.useState('noBeam');
   const [showGrid, setShowGrid] = React.useState(false);
   const [openPulsarTimingBeamDialog, setOpenPulsarTimingBeamDialog] = React.useState(false);
@@ -187,7 +187,7 @@ export default function PulsarTimingBeamField({
         setValue={setTheName}
         value={beamName}
         suffix={resolveBeamNameButton()}
-        onFocus={() => helpComponent(t('name.help'))}
+        onFocus={() => setHelp(t('name.help'))}
         errorText={nameFieldError}
       />
     );
@@ -199,7 +199,7 @@ export default function PulsarTimingBeamField({
         skyUnits={RA_TYPE_ICRS.value}
         setValue={setTheRA}
         value={beamRA}
-        valueFocus={() => helpComponent(t('skyDirection.help.1.value'))}
+        valueFocus={() => setHelp(t('skyDirection.help.1.value'))}
       />
     );
 
@@ -210,7 +210,7 @@ export default function PulsarTimingBeamField({
         skyUnits={RA_TYPE_ICRS.value}
         setValue={setTheDec}
         value={beamDec}
-        valueFocus={() => helpComponent(t('skyDirection.help.2.value'))}
+        valueFocus={() => setHelp(t('skyDirection.help.2.value'))}
       />
     );
 
@@ -232,13 +232,13 @@ export default function PulsarTimingBeamField({
         control={<Radio {...controlProps('noBeam')} color="default" />}
         label={t('pulsarTimingBeam.noBeam.label')}
         data-testid="NoBeamTestId"
-        onFocus={() => helpComponent(t('pulsarTimingBeam.noBeam.help'))}
+        onFocus={() => setHelp(t('pulsarTimingBeam.noBeam.help'))}
       />
       <FormControlLabel
         control={<Radio {...controlProps('multipleBeams')} color="default" />}
         label={t('pulsarTimingBeam.multipleBeams.label')}
         data-testid={showBeamData ? 'MultipleBeamsTestIdEdit' : 'MultipleBeamsTestId'} // Differentiate test IDs for add/edit of target
-        onFocus={() => helpComponent(t('pulsarTimingBeam.multipleBeams.help'))}
+        onFocus={() => setHelp(t('pulsarTimingBeam.multipleBeams.help'))}
       />
       {selectedValue !== 'noBeam' && showGrid && (
         <div style={{ height: '100%', width: '100%' }}>

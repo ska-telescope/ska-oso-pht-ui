@@ -1,5 +1,4 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Box } from '@mui/system';
 import {
   LAB_IS_BOLD,
@@ -9,6 +8,7 @@ import {
 } from '@utils/constants.ts';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useHelp } from '@/utils/help/useHelp';
 
 interface SpectralAveragingLOWFieldProps {
   disabled?: boolean;
@@ -31,7 +31,7 @@ export default function SpectralAveragingLOWField({
   type
 }: SpectralAveragingLOWFieldProps) {
   const { t } = useScopedTranslation();
-  const { helpComponent } = storageObject.useStore();
+  const { setHelp } = useHelp();
   const FIELD = 'spectralAveraging';
   const { observatoryConstants } = useOSDAccessors();
 
@@ -57,7 +57,7 @@ export default function SpectralAveragingLOWField({
         labelBold={LAB_IS_BOLD}
         labelPosition={LAB_POSITION}
         labelWidth={widthLabel}
-        onFocus={() => helpComponent(t(FIELD + '.help'))}
+        onFocus={() => setHelp(t(FIELD + '.help'))}
         required={required}
         errorText={errorMessage()}
       />

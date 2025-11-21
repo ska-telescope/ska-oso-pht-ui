@@ -1,5 +1,4 @@
 import { DropDown } from '@ska-telescope/ska-gui-components';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Grid } from '@mui/material';
 import {
   LAB_IS_BOLD,
@@ -8,6 +7,7 @@ import {
   TYPE_CONTINUUM
 } from '../../../utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useHelp } from '@/utils/help/useHelp';
 
 interface ObservationTypeFieldProps {
   isContinuumOnly?: boolean;
@@ -31,7 +31,7 @@ export default function ObservationTypeField({
   widthLabel = 6
 }: ObservationTypeFieldProps) {
   const { t } = useScopedTranslation();
-  const { helpComponent } = storageObject.useStore();
+  const { setHelp } = useHelp();
   const FIELD = 'observationType';
 
   const options = (prefix: string, arr: number[]) => {
@@ -61,7 +61,7 @@ export default function ObservationTypeField({
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
           labelWidth={suffix ? widthLabel + 1 : widthLabel}
-          onFocus={() => helpComponent(t(FIELD + '.help'))}
+          onFocus={() => setHelp(t(FIELD + '.help'))}
           required={required}
         />
       </Grid>

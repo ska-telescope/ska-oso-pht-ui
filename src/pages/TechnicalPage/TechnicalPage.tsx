@@ -22,6 +22,7 @@ import { PAGE_TECHNICAL, UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useHelp } from '@/utils/help/useHelp';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 const PAGE = PAGE_TECHNICAL;
@@ -29,18 +30,14 @@ const PAGE = PAGE_TECHNICAL;
 export default function TechnicalPage() {
   const { t } = useScopedTranslation();
   const { notifyError, notifyWarning, notifySuccess } = useNotify();
-  const {
-    application,
-    helpComponent,
-    updateAppContent1,
-    updateAppContent2
-  } = storageObject.useStore();
+  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentFile, setCurrentFile] = React.useState<string | null | undefined>(null);
   const [originalFile, setOriginalFile] = React.useState<string | null>(null);
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
   const loggedIn = isLoggedIn();
+  const { setHelp } = useHelp();
 
   const isDisableEndpoints = () => !loggedIn;
 
@@ -176,7 +173,7 @@ export default function TechnicalPage() {
       setCurrentFile(getProposal()?.technicalPDF?.documentId);
       setOriginalFile(getProposal()?.technicalPDF?.documentId + t('fileType.pdf'));
     }
-    helpComponent(t('page.' + PAGE + '.help'));
+    setHelp(t('page.' + PAGE + '.help'));
   }, []);
 
   React.useEffect(() => {
