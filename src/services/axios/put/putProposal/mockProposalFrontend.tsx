@@ -201,9 +201,7 @@ export const MockProposalFrontend: Proposal = {
       continuumBandwidthUnits: 2,
       numStations: 68,
       num13mAntennas: undefined,
-      num15mAntennas: undefined,
-      zoomChannels: null,
-      pstMode: null
+      num15mAntennas: undefined
     }
   ],
   groupObservations: [],
@@ -211,6 +209,7 @@ export const MockProposalFrontend: Proposal = {
     {
       targetId: 3,
       observationId: 'obs-obR1Ej',
+      dataProductsSDPId: 'SDP-2',
       sensCalc: {
         id: 1,
         title: 'M2',
@@ -277,8 +276,7 @@ export const MockProposalFrontend: Proposal = {
             units: 'h'
           }
         ]
-      },
-      dataProductsSDPId: ''
+      }
     }
   ],
   technicalPDF: null,
@@ -425,8 +423,7 @@ export const MockProposalFrontendZoom: Proposal = {
       numStations: 68,
       num13mAntennas: undefined,
       num15mAntennas: undefined,
-      zoomChannels: 1024,
-      pstMode: null
+      zoomChannels: 1024
     }
   ],
   groupObservations: [],
@@ -434,6 +431,7 @@ export const MockProposalFrontendZoom: Proposal = {
     {
       targetId: 1,
       observationId: 'obs-arMIoY',
+      dataProductsSDPId: 'SDP-1',
       sensCalc: {
         id: 1,
         title: 'm2',
@@ -480,19 +478,23 @@ export const MockProposalFrontendZoom: Proposal = {
   technicalLoadStatus: 9,
   dataProductSDP: [
     {
-      id: 1,
-      dataProductsSDPId: 'SDP-1',
-      observatoryDataProduct: [true, true, true, true],
+      id: 'SDP-1',
+      dataProductType: 1,
       observationId: 'obs-arMIoY',
       imageSizeValue: 100,
       imageSizeUnits: 0,
       pixelSizeValue: 3.7,
       pixelSizeUnits: 2,
-      weighting: '2',
+      weighting: 2,
       polarisations: ['I'],
-      robust: 2,
       channelsOut: 1,
-      fitSpectralPol: 3
+      fitSpectralPol: 3,
+      robust: 2,
+      taperValue: 1,
+      timeAveraging: 0,
+      frequencyAveraging: 0,
+      bitDepth: 0,
+      continuumSubtraction: false
     }
   ],
   dataProductSRC: [],
