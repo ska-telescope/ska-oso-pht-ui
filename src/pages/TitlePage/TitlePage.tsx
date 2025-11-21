@@ -6,7 +6,7 @@ const PAGE = PAGE_TITLE_ADD;
 
 export default function TitlePage() {
   return (
-    <Shell page={PAGE}>
+    <Shell helpDisabled page={PAGE}>
       <TitleEntry page={PAGE} />
     </Shell>
   );

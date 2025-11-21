@@ -13,6 +13,7 @@ import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
+import { useHelp } from '@/utils/help/useHelp';
 
 const PAGE = PAGE_GENERAL;
 const LINE_OFFSET = 30;
@@ -23,13 +24,9 @@ export default function GeneralPage() {
   const { isSV } = useAppFlow();
   const theme = useTheme();
 
-  const {
-    application,
-    helpComponent,
-    updateAppContent1,
-    updateAppContent2
-  } = storageObject.useStore();
+  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
+  const { setHelp } = useHelp();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -50,7 +47,7 @@ export default function GeneralPage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    helpComponent(t('scienceCategory.help'));
+    setHelp('scienceCategory.help');
   }, []);
 
   React.useEffect(() => {
@@ -74,7 +71,7 @@ export default function GeneralPage() {
       labelWidth={LABEL_WIDTH}
       testId="cycleId"
       value={getProposal().cycle}
-      onFocus={() => helpComponent(t('abstract.help'))}
+      onFocus={() => setHelp('abstract.help')}
       disabled
     />
   );
@@ -88,7 +85,7 @@ export default function GeneralPage() {
       labelWidth={LABEL_WIDTH}
       testId="cycleCloses"
       value={osdCloses(true)}
-      onFocus={() => helpComponent(t('abstract.help'))}
+      onFocus={() => setHelp('abstract.help')}
       disabled
     />
   );
@@ -102,7 +99,7 @@ export default function GeneralPage() {
       labelWidth={LABEL_WIDTH}
       testId="cycleOpens"
       value={osdOpens(true)}
-      onFocus={() => helpComponent(t('abstract.help'))}
+      onFocus={() => setHelp('abstract.help')}
       disabled
     />
   );
@@ -152,7 +149,7 @@ export default function GeneralPage() {
           required
           value={getProposal().abstract}
           setValue={(e: string) => setValue(e)}
-          onFocus={() => helpComponent(t('abstract.help'))}
+          onFocus={() => setHelp('abstract.help')}
           helperText={helperFunction(getProposal().abstract as string)}
           errorText={validateWordCount(getProposal().abstract as string)}
           suffix={<ViewIcon onClick={handleOpenAbstractLatexModal} toolTip="preview latex" />}
@@ -181,7 +178,7 @@ export default function GeneralPage() {
       labelBold
       labelPosition={LAB_POSITION}
       labelWidth={LABEL_WIDTH * 2}
-      onFocus={() => helpComponent(t('scienceCategory.help'))}
+      onFocus={() => setHelp('scienceCategory.help')}
     />
   );
 

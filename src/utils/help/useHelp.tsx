@@ -11,7 +11,7 @@ export function useHelp() {
    */
   function setHelp(key: string) {
     // Always set help text
-    helpComponent(t(`${key}.help`));
+    helpComponent(t(`${key}`));
 
     // Only set URL if translation exists - Implement once all the pages are migrated.
     /*

@@ -81,6 +81,7 @@ import HelpShell from '@/components/layout/HelpShell/HelpShell';
 import FrequencySpectrum from '@/components/fields/frequencySpectrum/frequencySpectrum';
 import { getColors } from '@/utils/colors/colors';
 import PstModeField from '@/components/fields/pstMode/PstMode';
+import { useHelp } from '@/utils/help/useHelp';
 
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 4;
@@ -97,7 +98,8 @@ export default function ObservationEntry() {
 
   const PAGE = isEdit() ? PAGE_OBSERVATION_UPDATE : PAGE_OBSERVATION_ADD;
 
-  const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
+  const { application, updateAppContent2 } = storageObject.useStore();
+  const { setHelp } = useHelp();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -284,7 +286,7 @@ export default function ObservationEntry() {
   };
 
   React.useEffect(() => {
-    helpComponent(t('observationId.help'));
+    setHelp('observationId.help');
     if (isEdit()) {
       observationIn(locationProperties.state);
       setOnce(locationProperties.state);
@@ -391,7 +393,7 @@ export default function ObservationEntry() {
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
           labelWidth={LABEL_WIDTH_NEW}
-          onFocus={() => helpComponent(t('observationId.help'))}
+          onFocus={() => setHelp('observationId.help')}
           required
           testId="observationId"
           value={myObsId}
@@ -405,7 +407,7 @@ export default function ObservationEntry() {
     fieldWrapper(
       <GroupObservationsField
         labelWidth={LABEL_WIDTH_NEW}
-        onFocus={() => helpComponent(t('groupObservations.help'))}
+        onFocus={() => setHelp('groupObservations.help')}
         setValue={setGroupObservation}
         value={groupObservation}
         obsId={myObsId}
@@ -531,7 +533,7 @@ export default function ObservationEntry() {
           testId="numOf15mAntennas"
           value={numOf15mAntennas}
           setValue={validate}
-          onFocus={() => helpComponent(t('numOf15mAntennas.help'))}
+          onFocus={() => setHelp('numOf15mAntennas.help')}
         />
       );
     };
@@ -559,7 +561,7 @@ export default function ObservationEntry() {
           testId="numOf13mAntennas"
           value={numOf13mAntennas}
           setValue={validate}
-          onFocus={() => helpComponent(t('numOf13mAntennas.help'))}
+          onFocus={() => setHelp('numOf13mAntennas.help')}
         />
       );
     };
@@ -587,7 +589,7 @@ export default function ObservationEntry() {
         isLow={isLow()}
         label={t('elevation.label')}
         widthLabel={LABEL_WIDTH_NEW}
-        onFocus={() => helpComponent(t('elevation.help'))}
+        onFocus={() => setHelp('elevation.help')}
         setValue={setElevation}
         testId="elevation"
         value={elevation}
@@ -615,7 +617,7 @@ export default function ObservationEntry() {
           testId="weather"
           value={weather}
           setValue={setWeather}
-          onFocus={() => helpComponent(t('weather.help'))}
+          onFocus={() => setHelp('weather.help')}
           suffix={weatherUnitsField()}
         />
       </Box>
@@ -649,7 +651,7 @@ export default function ObservationEntry() {
             setValue={setSuppliedType}
             disabled={getOptions()?.length < 2}
             label=""
-            onFocus={() => helpComponent(t('suppliedType.help'))}
+            onFocus={() => setHelp('suppliedType.help')}
             required
           />
         </Box>
@@ -672,7 +674,7 @@ export default function ObservationEntry() {
             disabled={isLow()}
             setValue={setSuppliedUnits}
             label=""
-            onFocus={() => helpComponent(t('suppliedUnits.help'))}
+            onFocus={() => setHelp('suppliedUnits.help')}
             InputProps={{ disableUnderline: true }}
           />
         </Box>
@@ -691,7 +693,7 @@ export default function ObservationEntry() {
             testId="suppliedValue"
             value={suppliedValue}
             setValue={setSuppliedValue}
-            onFocus={() => helpComponent(t('suppliedValue.help'))}
+            onFocus={() => setHelp('suppliedValue.help')}
             suffix={suppliedUnitsField()}
             required
           />
@@ -727,7 +729,7 @@ export default function ObservationEntry() {
           testId="zoomChannels"
           value={zoomChannels}
           setValue={setZoomChannels}
-          onFocus={() => helpComponent(t('zoomChannels.help'))}
+          onFocus={() => setHelp('zoomChannels.help')}
           required
           errorText={errorMessage()}
         />
@@ -752,7 +754,7 @@ export default function ObservationEntry() {
           testId="centralFrequency"
           value={centralFrequency}
           setValue={setCentralFrequency}
-          onFocus={() => helpComponent(t('centralFrequency.help'))}
+          onFocus={() => setHelp('centralFrequency.help')}
           required
           suffix={centralFrequencyUnitsField()}
           errorText={errorMessage()}
@@ -773,14 +775,14 @@ export default function ObservationEntry() {
           setValue={setContinuumBandwidthUnits}
           label=""
           disabled={options?.length === 1}
-          onFocus={() => helpComponent(t('frequencyUnits.help'))}
+          onFocus={() => setHelp('frequencyUnits.help')}
         />
       );
     };
     return fieldWrapper(
       <ContinuumBandwidthField
         labelWidth={LABEL_WIDTH_NEW}
-        onFocus={() => helpComponent(t(`bandwidth.help.${TYPE_CONTINUUM}`))}
+        onFocus={() => setHelp(`bandwidth.help.${TYPE_CONTINUUM}`)}
         setValue={setContinuumBandwidth}
         value={continuumBandwidth}
         suffix={continuumBandwidthUnitsField()}
@@ -799,7 +801,7 @@ export default function ObservationEntry() {
     <Grid>
       {fieldWrapper(
         <BandwidthField
-          onFocus={() => helpComponent(t(`bandwidth.help.${TYPE_ZOOM}`))}
+          onFocus={() => setHelp(`bandwidth.help.${TYPE_ZOOM}`)}
           required
           setValue={setBandwidth}
           testId="bandwidth"
@@ -827,7 +829,7 @@ export default function ObservationEntry() {
         labelWidth={LABEL_WIDTH_NEW}
         observingBand={observingBand}
         observationType={observationType}
-        onFocus={() => helpComponent(t('spectralResolution.help'))}
+        onFocus={() => setHelp('spectralResolution.help')}
         setValue={setSpectralResolution}
       />
     );
@@ -855,7 +857,7 @@ export default function ObservationEntry() {
         spectralResolution={spectralResolution}
         observingBand={observingBand}
         observationType={observationType}
-        onFocus={() => helpComponent(t('effectiveResolution.help'))}
+        onFocus={() => setHelp('effectiveResolution.help')}
         setValue={setEffectiveResolution}
       />
     );
@@ -871,7 +873,7 @@ export default function ObservationEntry() {
         setValue={setCentralFrequencyUnits}
         label=""
         disabled={options?.length === 1}
-        onFocus={() => helpComponent(t('frequencyUnits.help'))}
+        onFocus={() => setHelp('frequencyUnits.help')}
       />
     );
   };
@@ -916,7 +918,7 @@ export default function ObservationEntry() {
           testId="subBands"
           value={subBands}
           setValue={validate}
-          onFocus={() => helpComponent(t('subBands.help'))}
+          onFocus={() => setHelp('subBands.help')}
           required
         />
       </Box>

@@ -31,21 +31,17 @@ import { TIME_MINS } from '@/utils/constantsSensCalc';
 import Observation from '@/utils/types/observation';
 import ArrowIcon from '@/components/icon/arrowIcon/arrowIcon';
 import Supplied from '@/utils/types/supplied';
+import { useHelp } from '@/utils/help/useHelp';
 
 const PAGE = PAGE_CALIBRATION;
 const LINE_OFFSET = 35; // TODO check why we need to set this for it to be visible
 
 export default function CalibrationPage() {
-  const {
-    application,
-    updateAppContent1,
-    updateAppContent2,
-    helpComponent
-  } = storageObject.useStore();
+  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   const { t } = useScopedTranslation();
-
+  const { setHelp } = useHelp();
   const LABEL_WIDTH = 1;
   const LABEL_WIDTH_CHECKBOX = 11.5;
 
@@ -81,7 +77,7 @@ export default function CalibrationPage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    helpComponent(t('page.' + PAGE + '.help'));
+    setHelp('page.' + PAGE + '.help');
     getData();
   }, []);
 
@@ -231,7 +227,7 @@ export default function CalibrationPage() {
         testId="calibratorCheckbox"
         checked={addComment}
         onChange={handleCheckboxChange}
-        onFocus={() => helpComponent(t('calibrator.checkbox.help'))}
+        onFocus={() => setHelp('calibrator.checkbox.help')}
       />
     );
   };
@@ -305,7 +301,7 @@ export default function CalibrationPage() {
           errorText={validateComment(comment)}
           value={comment}
           setValue={setComment}
-          onFocus={() => helpComponent(t('calibrator.comment.help'))}
+          onFocus={() => setHelp('calibrator.comment.help')}
         />
       </Box>
     );

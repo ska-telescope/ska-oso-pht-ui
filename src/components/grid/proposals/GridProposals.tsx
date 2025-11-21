@@ -42,6 +42,7 @@ import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
+import { useHelp } from '@/utils/help/useHelp';
 
 export function getProposalType(value: number): string {
   const type = PROJECTS.find(item => item.id === value)?.mapping;
@@ -87,6 +88,7 @@ export default function GridProposals({
   const { t } = useScopedTranslation();
   const { isSV } = useAppFlow();
   const navigate = useNavigate();
+  const { setHelp } = useHelp();
 
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
   const [searchTerm, setSearchTerm] = React.useState('');
@@ -95,7 +97,6 @@ export default function GridProposals({
 
   const {
     application,
-    helpComponent,
     updateAppContent1,
     updateAppContent2,
     updateAppContent5
@@ -325,7 +326,7 @@ export default function GridProposals({
   );
 
   const getTheProposal = async (id: string) => {
-    helpComponent({});
+    setHelp('');
     updateAppContent5({});
 
     const response = await GetProposal(authClient, id);

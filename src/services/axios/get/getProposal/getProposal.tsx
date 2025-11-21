@@ -46,11 +46,8 @@ import {
   SCIENCE_VERIFICATION,
   TYPE_PST,
   PST_MODES,
-  DP_TYPE_FILTER_BANK,
   DP_TYPE_IMAGES,
-  DP_TYPE_TIMING,
-  DP_TYPE_VISIBLE,
-  DP_TYPE_FLOWTHROUGH
+  DP_TYPE_VISIBLE
 } from '@utils/constants.ts';
 import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import { ObservationSetBackend } from '@utils/types/observationSet.tsx';
@@ -255,22 +252,8 @@ const getDataProductSRC = (inValue: DataProductSRCNetBackend[] | null): DataProd
   return inValue ? inValue.map(dp => ({ id: dp?.data_products_src_id })) : [];
 };
 
-const getDataProductType = (el: any) => {
-  switch (el.variant.toLowerCase()) {
-    case 'continuum image':
-      return DP_TYPE_IMAGES;
-    case 'visibilities':
-      return DP_TYPE_VISIBLE;
-    case 'filter bank':
-      return DP_TYPE_FILTER_BANK;
-    case 'pulsar timing':
-      return DP_TYPE_TIMING;
-    case 'flow through':
-      return DP_TYPE_FLOWTHROUGH;
-    default:
-      return 0;
-  }
-};
+const getDataProductType = (el: any) =>
+  el.variant.toLowerCase() === 'continuum image' ? DP_TYPE_IMAGES : DP_TYPE_VISIBLE;
 
 const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProductSDP[] => {
   const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];

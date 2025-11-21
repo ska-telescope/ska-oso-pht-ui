@@ -68,7 +68,7 @@ export default function SubArrayField({
             labelBold={LAB_IS_BOLD}
             labelPosition={LAB_POSITION}
             labelWidth={suffix ? widthLabel + 1 : widthLabel}
-            onFocus={() => setHelp(t(FIELD + '.help'))}
+            onFocus={() => setHelp(FIELD + '.help')}
             required={required}
           />
         )}

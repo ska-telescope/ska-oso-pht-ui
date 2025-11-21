@@ -10,8 +10,6 @@ import emptyCell from '../../../components/fields/emptyCell/emptyCell';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
-const FIELD_OBS = 'observatoryDataProduct.options';
-
 interface GridObservationSummaryProps {
   height?: number;
   proposal: Proposal | null;
