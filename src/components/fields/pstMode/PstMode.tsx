@@ -1,5 +1,4 @@
 import { DropDown } from '@ska-telescope/ska-gui-components';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Box } from '@mui/material';
 import { LAB_IS_BOLD, LAB_POSITION, PST_MODES } from '@utils/constants.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
