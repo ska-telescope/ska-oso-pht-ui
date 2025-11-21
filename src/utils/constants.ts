@@ -735,3 +735,15 @@ export const DEFAULT_TARGETS: Target = {
 };
 
 export const DUMMY_PROPOSAL_ID = 'dummy-proposal-id';
+
+export const STATUS_ARRAY_PAGES = [
+  // TODO : This will need to be extended once we move out of MOCK_CALL mode
+  PAGE_TITLE_ADD,
+  PAGE_TEAM,
+  PAGE_GENERAL,
+  PAGE_DESCRIPTION,
+  PAGE_TARGET,
+  PAGE_OBSERVATION,
+  PAGE_DATA_PRODUCTS,
+  PAGE_CALIBRATION
+];
