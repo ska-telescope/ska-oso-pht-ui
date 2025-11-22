@@ -11,6 +11,8 @@ const CONTAINER_SPACER_TOP = 240;
 const CONTAINER_SPACER_BOTTOM = 200;
 const GAP = 2;
 
+/************** TODO : link is disabled whilst I get all other code in place for it ***************************/
+
 export default function EdgeSlider() {
   const [expanded, setExpanded] = React.useState(false);
   const { t } = useScopedTranslation();
@@ -97,14 +99,7 @@ export default function EdgeSlider() {
               textOrientation: 'mixed'
             }}
           >
-            {t('helpText.label')
-              .split('\n')
-              .map((line, index) => (
-                <React.Fragment key={index}>
-                  {line.trim()}
-                  <br />
-                </React.Fragment>
-              ))}
+            {t('helpText.label')}
           </Typography>
         </Box>
 
@@ -119,28 +114,37 @@ export default function EdgeSlider() {
             }}
           >
             <Stack spacing={GAP}>
-              <Typography align="left">{theHelp}</Typography>
-              <Typography align="left">
-                <a
-                  href={theLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  title={theLink}
-                  style={{
-                    color: theme.palette.secondary.main,
-                    textDecoration: 'underline',
-                    cursor: 'pointer',
-                    fontWeight: 'bold',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    display: 'inline-block',
-                    maxWidth: '100%'
-                  }}
-                >
-                  {t('helpText.urlLabel')}
-                </a>
+              <Typography variant="subtitle1">
+                {theHelp.split('\n').map((line, index) => (
+                  <React.Fragment key={index}>
+                    {line.trim()}
+                    <br />
+                  </React.Fragment>
+                ))}
               </Typography>
+              {false && (
+                <Typography align="left">
+                  <a
+                    href={theLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    title={theLink}
+                    style={{
+                      color: theme.palette.secondary.main,
+                      textDecoration: 'underline',
+                      cursor: 'pointer',
+                      fontWeight: 'bold',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                      display: 'inline-block',
+                      maxWidth: '100%'
+                    }}
+                  >
+                    {t('helpText.urlLabel')}
+                  </a>
+                </Typography>
+              )}
             </Stack>
           </Box>
         )}

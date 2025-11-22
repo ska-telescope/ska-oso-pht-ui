@@ -51,6 +51,7 @@ import TimedAlert from '@/components/alerts/timedAlert/TimedAlert';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import theme from '@/services/theme/theme';
+import { useHelp } from '@/utils/help/useHelp';
 
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
@@ -79,10 +80,11 @@ const ROUTES = [
 
 export default function PHT() {
   const { t } = useScopedTranslation();
-  const { application, help, helpToggle, helpComponent } = storageObject.useStore();
+  const { application, help, helpToggle } = storageObject.useStore();
   const { osdCloses, osdCountdown, osdCycleId, osdCycleDescription, osdOpens } = useOSDAccessors();
   const navigate = useNavigate();
   const location = useLocation();
+  const { setHelp } = useHelp();
 
   const [themeMode, setThemeMode] = React.useState(
     localStorage.getItem('skao_theme_mode') === THEME_DARK ? THEME_DARK : THEME_LIGHT
@@ -106,7 +108,7 @@ export default function PHT() {
   }, []);
 
   React.useEffect(() => {
-    helpComponent(t('helpText.notAvailable'));
+    setHelp('helpText.notAvailable');
   }, [navigate]);
 
   const getProposal = () => application.content2 as Proposal;

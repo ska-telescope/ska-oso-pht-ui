@@ -50,7 +50,7 @@ export default function NumStationsField({
         testId={FIELD}
         value={value}
         setValue={validate}
-        onFocus={() => setHelp(t(FIELD + '.help'))}
+        onFocus={() => setHelp(FIELD + '.help')}
       />
     </Box>
   );
