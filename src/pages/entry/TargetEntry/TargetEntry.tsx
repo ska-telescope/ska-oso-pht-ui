@@ -291,6 +291,7 @@ export default function TargetEntry({
       };
 
       const observationOut = () => {
+        // TODO create default observation for each mode
         const newObservation: Observation = {
           id: generateId(t('addObservation.idPrefix'), 6),
           telescope: TELESCOPE_LOW_NUM,
