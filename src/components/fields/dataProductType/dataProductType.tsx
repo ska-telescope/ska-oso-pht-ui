@@ -1,10 +1,7 @@
 import { Grid } from '@mui/material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import {
-  DP_TYPE_FILTER_BANK,
-  DP_TYPE_FLOWTHROUGH,
   DP_TYPE_IMAGES,
-  DP_TYPE_TIMING,
   DP_TYPE_VISIBLE,
   LAB_IS_BOLD,
   LAB_POSITION,
@@ -38,10 +35,7 @@ export default function DataProductTypeField({
   const { t } = useScopedTranslation();
   const FIELD = 'dataProductType';
   const options = () =>
-    (observationType === TYPE_CONTINUUM
-      ? [DP_TYPE_IMAGES, DP_TYPE_VISIBLE]
-      : [DP_TYPE_FILTER_BANK, DP_TYPE_TIMING, DP_TYPE_FLOWTHROUGH]
-    ).map(el => {
+    [DP_TYPE_IMAGES, DP_TYPE_VISIBLE].map(el => {
       return { label: t(FIELD + '.options.' + observationType + '.' + el), lookup: el, value: el };
     });
 

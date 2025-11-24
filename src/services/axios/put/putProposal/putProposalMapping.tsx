@@ -38,8 +38,9 @@ import {
   TYPE_STR_ZOOM,
   TYPE_STR_PST,
   DP_TYPE_IMAGES,
-  DP_TYPE_FILTER_BANK,
-  DP_TYPE_TIMING
+  PST_MODES,
+  DETECTED_FILTER_BANK_VALUE,
+  PULSAR_TIMING_VALUE
 } from '@utils/constants.ts';
 import {
   DataProductSDP,
@@ -249,16 +250,17 @@ const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProdu
       };
     case TYPE_PST:
     default:
-      if (dp.dataProductType === DP_TYPE_FILTER_BANK) {
+      const pstMode = obs?.find(o => o.id === dp.observationId)?.pstMode;
+      if (pstMode === DETECTED_FILTER_BANK_VALUE) {
         return {
           polarisations: dp.polarisations,
           bit_depth: Number(dp.bitDepth),
           time_averaging_factor: dp.timeAveraging,
           frequency_averaging_factor: dp.frequencyAveraging,
           kind: 'pst',
-          variant: 'detected ilterbank'
+          variant: 'detected filterbank'
         };
-      } else if (dp.dataProductType === DP_TYPE_TIMING) {
+      } else if (pstMode === PULSAR_TIMING_VALUE) {
         return {
           polarisations: dp.polarisations,
           bit_depth: dp.bitDepth,
@@ -392,7 +394,7 @@ const getObservationTypeDetails = (obs: Observation) => {
         central_frequency: getCentralFrequency(obs),
         supplied: getSupplied(obs) as SuppliedBackend,
         observation_type: TYPE_STR_PST,
-        pst_mode: '1' // TODO : Need to get right value from PDM/UI'
+        pst_mode: typeof obs.pstMode !== 'undefined' ? PST_MODES[obs.pstMode].mapping : undefined
       };
   }
 };

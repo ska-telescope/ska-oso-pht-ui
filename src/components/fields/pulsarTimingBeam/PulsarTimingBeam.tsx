@@ -187,7 +187,7 @@ export default function PulsarTimingBeamField({
         setValue={setTheName}
         value={beamName}
         suffix={resolveBeamNameButton()}
-        onFocus={() => setHelp(t('name.help'))}
+        onFocus={() => setHelp('name.help')}
         errorText={nameFieldError}
       />
     );
@@ -199,7 +199,7 @@ export default function PulsarTimingBeamField({
         skyUnits={RA_TYPE_ICRS.value}
         setValue={setTheRA}
         value={beamRA}
-        valueFocus={() => setHelp(t('skyDirection.help.1.value'))}
+        valueFocus={() => setHelp('skyDirection.help.1.value')}
       />
     );
 
@@ -210,7 +210,7 @@ export default function PulsarTimingBeamField({
         skyUnits={RA_TYPE_ICRS.value}
         setValue={setTheDec}
         value={beamDec}
-        valueFocus={() => setHelp(t('skyDirection.help.2.value'))}
+        valueFocus={() => setHelp('skyDirection.help.2.value')}
       />
     );
 
@@ -232,13 +232,13 @@ export default function PulsarTimingBeamField({
         control={<Radio {...controlProps('noBeam')} color="default" />}
         label={t('pulsarTimingBeam.noBeam.label')}
         data-testid="NoBeamTestId"
-        onFocus={() => setHelp(t('pulsarTimingBeam.noBeam.help'))}
+        onFocus={() => setHelp('pulsarTimingBeam.noBeam.help')}
       />
       <FormControlLabel
         control={<Radio {...controlProps('multipleBeams')} color="default" />}
         label={t('pulsarTimingBeam.multipleBeams.label')}
         data-testid={showBeamData ? 'MultipleBeamsTestIdEdit' : 'MultipleBeamsTestId'} // Differentiate test IDs for add/edit of target
-        onFocus={() => setHelp(t('pulsarTimingBeam.multipleBeams.help'))}
+        onFocus={() => setHelp('pulsarTimingBeam.multipleBeams.help')}
       />
       {selectedValue !== 'noBeam' && showGrid && (
         <div style={{ height: '100%', width: '100%' }}>

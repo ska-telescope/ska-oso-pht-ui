@@ -1,8 +1,6 @@
-/* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { TickBox } from '@ska-telescope/ska-gui-components';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { LAB_POSITION, WRAPPER_HEIGHT } from '@/utils/constants';
 import {
   PROPOSAL_ACCESS_SUBMIT,
@@ -10,6 +8,7 @@ import {
   PROPOSAL_ACCESS_VIEW
 } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useHelp } from '@/utils/help/useHelp';
 
 interface MemberAccessProps {
   selectedOptions: string[];
@@ -18,10 +17,9 @@ interface MemberAccessProps {
 
 export default function MemberAccess({ selectedOptions, setSelectedOptions }: MemberAccessProps) {
   const { t } = useScopedTranslation();
-  const { helpComponent } = storageObject.useStore();
-
+  const { setHelp } = useHelp();
   React.useEffect(() => {
-    helpComponent(t('manageTeamMember.help'));
+    setHelp('manageTeamMember.help');
   }, []);
 
   React.useEffect(() => {
@@ -66,7 +64,7 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
         testId="submitCheckbox"
         checked={selectedOptions.includes(PROPOSAL_ACCESS_SUBMIT)}
         onChange={() => handleCheckboxChange(PROPOSAL_ACCESS_SUBMIT)}
-        onFocus={() => helpComponent(t('manageTeamMember.submit.help'))}
+        onFocus={() => setHelp('manageTeamMember.submit.help')}
       />
     );
   };
@@ -80,7 +78,7 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
         testId="editCheckbox"
         checked={selectedOptions.includes(PROPOSAL_ACCESS_UPDATE)}
         onChange={() => handleCheckboxChange(PROPOSAL_ACCESS_UPDATE)}
-        onFocus={() => helpComponent(t('manageTeamMember.edit.help'))}
+        onFocus={() => setHelp('manageTeamMember.edit.help')}
         disabled={selectedOptions.includes(PROPOSAL_ACCESS_SUBMIT)}
       />
     );
@@ -95,7 +93,7 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
         testId="viewCheckbox"
         checked={selectedOptions.includes(PROPOSAL_ACCESS_VIEW)}
         onChange={() => handleCheckboxChange(PROPOSAL_ACCESS_VIEW)}
-        onFocus={() => helpComponent(t('manageTeamMember.view.help'))}
+        onFocus={() => setHelp('manageTeamMember.view.help')}
         disabled={
           selectedOptions.includes(PROPOSAL_ACCESS_UPDATE) ||
           selectedOptions.includes(PROPOSAL_ACCESS_SUBMIT)

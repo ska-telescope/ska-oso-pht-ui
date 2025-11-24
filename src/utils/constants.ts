@@ -178,9 +178,6 @@ export const DATA_PRODUCT = {
 
 export const DP_TYPE_IMAGES = 1;
 export const DP_TYPE_VISIBLE = 2;
-export const DP_TYPE_FILTER_BANK = 1;
-export const DP_TYPE_TIMING = 2;
-export const DP_TYPE_FLOWTHROUGH = 3;
 
 export const DEFAULT_HELP = ['', ' ', ''];
 

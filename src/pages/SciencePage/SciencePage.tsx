@@ -23,18 +23,15 @@ import { PAGE_DESCRIPTION, UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useHelp } from '@/utils/help/useHelp';
 
 const PAGE = PAGE_DESCRIPTION;
 
 export default function SciencePage() {
   const { t } = useScopedTranslation();
+  const { setHelp } = useHelp();
   const { notifyError, notifyWarning, notifySuccess } = useNotify();
-  const {
-    application,
-    helpComponent,
-    updateAppContent1,
-    updateAppContent2
-  } = storageObject.useStore();
+  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentFile, setCurrentFile] = React.useState<string | null | undefined>(null);
   const [originalFile, setOriginalFile] = React.useState<string | null>(null);
@@ -176,7 +173,7 @@ export default function SciencePage() {
       setCurrentFile(getProposal()?.sciencePDF?.documentId);
       setOriginalFile(getProposal()?.sciencePDF?.documentId + t('fileType.pdf'));
     }
-    helpComponent(t('page.' + PAGE + '.help'));
+    setHelp('page.' + PAGE + '.help');
   }, []);
 
   React.useEffect(() => {
