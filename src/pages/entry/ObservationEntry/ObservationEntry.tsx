@@ -41,13 +41,12 @@ import {
   GENERAL,
   MOCK_CALL,
   FREQUENCY_HZ,
-  ZOOM_BANDWIDTH_DEFAULT_LOW,
+  ZOOM_BANDWIDTH_DEFAULT,
   ZOOM_CHANNELS_MIN,
   ZOOM_CHANNELS_MAX,
   TYPE_PST,
   FLOW_THROUGH_VALUE,
-  FREQUENCY_KHZ,
-  ZOOM_BANDWIDTH_DEFAULT_MID
+  FREQUENCY_KHZ
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -115,7 +114,7 @@ export default function ObservationEntry() {
   const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_MHZ);
   const [imageWeighting, setImageWeighting] = React.useState(1);
   const [tapering, setTapering] = React.useState(0);
-  const [bandwidth, setBandwidth] = React.useState(ZOOM_BANDWIDTH_DEFAULT_LOW);
+  const [bandwidth, setBandwidth] = React.useState(ZOOM_BANDWIDTH_DEFAULT);
   const [robust, setRobust] = React.useState(3);
   const [spectralAveraging, setSpectralAveraging] = React.useState(1);
   const [spectralResolution, setSpectralResolution] = React.useState('');
@@ -147,9 +146,7 @@ export default function ObservationEntry() {
     setElevation(ob?.elevation);
     setCentralFrequency(ob?.centralFrequency);
     setCentralFrequencyUnits(ob?.centralFrequencyUnits);
-    setBandwidth(
-      ob?.bandwidth ?? (isLow() ? ZOOM_BANDWIDTH_DEFAULT_LOW : ZOOM_BANDWIDTH_DEFAULT_MID)
-    );
+    setBandwidth(ob?.bandwidth ?? ZOOM_BANDWIDTH_DEFAULT);
     setContinuumBandwidth(ob?.continuumBandwidth ?? 0);
     setContinuumBandwidthUnits(ob?.continuumBandwidthUnits ?? 0);
     setRobust(ob?.robust);
