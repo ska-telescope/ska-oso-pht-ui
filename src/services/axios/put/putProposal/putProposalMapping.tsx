@@ -39,7 +39,8 @@ import {
   TYPE_STR_PST,
   DP_TYPE_IMAGES,
   DP_TYPE_FILTER_BANK,
-  DP_TYPE_TIMING
+  DP_TYPE_TIMING,
+  PST_MODES
 } from '@utils/constants.ts';
 import {
   DataProductSDP,
@@ -251,23 +252,23 @@ const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProdu
     default:
       if (dp.dataProductType === DP_TYPE_FILTER_BANK) {
         return {
-          polarisations: dp.polarisations,
+          polarisation: dp.polarisations,
           bit_depth: Number(dp.bitDepth),
           time_averaging_factor: dp.timeAveraging,
           frequency_averaging_factor: dp.frequencyAveraging,
           kind: 'pst',
-          variant: 'detected ilterbank'
+          variant: 'detected filterbank'
         };
       } else if (dp.dataProductType === DP_TYPE_TIMING) {
         return {
-          polarisations: dp.polarisations,
+          polarisation: dp.polarisations,
           bit_depth: dp.bitDepth,
           kind: 'pst',
           variant: 'pulsar timing'
         };
       } else {
         return {
-          polarisations: dp.polarisations,
+          polarisation: dp.polarisations,
           bit_depth: dp.bitDepth,
           kind: 'pst',
           variant: 'flow through'
@@ -392,7 +393,7 @@ const getObservationTypeDetails = (obs: Observation) => {
         central_frequency: getCentralFrequency(obs),
         supplied: getSupplied(obs) as SuppliedBackend,
         observation_type: TYPE_STR_PST,
-        pst_mode: '1' // TODO : Need to get right value from PDM/UI'
+        pst_mode: PST_MODES[obs?.pstMode ?? 0].mapping
       };
   }
 };
@@ -678,6 +679,7 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
       )
     }
   };
+
   helpers.transform.trimObject(transformedProposal);
   return transformedProposal;
 }

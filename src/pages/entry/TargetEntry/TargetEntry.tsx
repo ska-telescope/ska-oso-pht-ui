@@ -25,7 +25,6 @@ import {
   TELESCOPE_LOW_NUM,
   OB_SUBARRAY_AA2,
   BAND_LOW,
-  TYPE_CONTINUUM,
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_TYPE_INTEGRATION,
   MOCK_CALL
@@ -277,7 +276,7 @@ export default function TargetEntry({
           pixelSizeValue: 1,
           pixelSizeUnits: 2,
           weighting: 1,
-          polarisations: ['I'],
+          polarisations: [''],
           channelsOut: 1,
           fitSpectralPol: 3,
           robust: -1,
@@ -296,10 +295,7 @@ export default function TargetEntry({
           telescope: TELESCOPE_LOW_NUM,
           subarray: OB_SUBARRAY_AA2,
           linked: '0',
-          type:
-            typeof getProposal().scienceCategory === 'number'
-              ? Number(getProposal().scienceCategory)
-              : TYPE_CONTINUUM,
+          type: getProposal()?.scienceCategory,
           observingBand: BAND_LOW,
           centralFrequency: calculateCentralFrequency(
             BAND_LOW,

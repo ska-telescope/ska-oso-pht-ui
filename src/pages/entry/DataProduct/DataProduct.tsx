@@ -84,7 +84,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const [robust, setRobust] = React.useState(0);
   const [channelsOut, setChannelsOut] = React.useState(1);
   const [continuumSubtraction, setContinuumSubtraction] = React.useState(false);
-  const [polarisations, setPolarisations] = React.useState(['I']);
+  const [polarisations, setPolarisations] = React.useState(['']);
 
   const maxObservationsReached = () => baseObservations.length >= osdMaxObservations;
 
@@ -146,7 +146,7 @@ export default function DataProduct({ data }: DataProductProps) {
   };
 
   React.useEffect(() => {
-    setHelp(t('observations.dp.help'));
+    setHelp('observations.dp.help');
     const proposal = getProposal();
     const observations = proposal?.observations ?? [];
 
@@ -207,7 +207,7 @@ export default function DataProduct({ data }: DataProductProps) {
     fieldWrapper(
       <TapperField
         labelWidth={LABEL_WIDTH}
-        onFocus={() => setHelp(t('tapper.help'))}
+        onFocus={() => setHelp('tapper')}
         required
         setValue={setTaperValue}
         value={taperValue}
@@ -230,7 +230,7 @@ export default function DataProduct({ data }: DataProductProps) {
         value={imageSizeUnits}
         setValue={setImageSizeUnits}
         label=""
-        onFocus={() => setHelp(t('frequencyUnits.help'))}
+        onFocus={() => setHelp('frequencyUnits')}
       />
     );
   };
@@ -239,7 +239,7 @@ export default function DataProduct({ data }: DataProductProps) {
     fieldWrapper(
       <ImageSizeField
         labelWidth={LABEL_WIDTH}
-        onFocus={() => setHelp(t('imageSize.help'))}
+        onFocus={() => setHelp('imageSize')}
         required
         setValue={setImageSizeValue}
         value={Number(imageSizeValue)}
@@ -263,7 +263,7 @@ export default function DataProduct({ data }: DataProductProps) {
         value={timeAveragingUnits}
         setValue={setTimeAveragingUnits}
         label=""
-        onFocus={() => setHelp(t('timeAveragingUnits.help'))}
+        onFocus={() => setHelp('timeAveragingUnits')}
       />
     );
   };
@@ -284,7 +284,7 @@ export default function DataProduct({ data }: DataProductProps) {
         value={frequencyAveragingUnits}
         setValue={setFrequencyAveragingUnits}
         label=""
-        onFocus={() => setHelp(t('frequencyAveragingUnits.help'))}
+        onFocus={() => setHelp('frequencyAveragingUnits')}
       />
     );
   };
@@ -293,7 +293,7 @@ export default function DataProduct({ data }: DataProductProps) {
     fieldWrapper(
       <TimeAveragingField
         labelWidth={LABEL_WIDTH}
-        onFocus={() => setHelp(t('timeAveraging.help'))}
+        onFocus={() => setHelp('timeAveraging')}
         required
         setValue={setTimeAveraging}
         value={Number(timeAveraging)}
@@ -305,7 +305,7 @@ export default function DataProduct({ data }: DataProductProps) {
     fieldWrapper(
       <FrequencyAveragingField
         labelWidth={LABEL_WIDTH}
-        onFocus={() => setHelp(t('frequencyAveraging.help'))}
+        onFocus={() => setHelp('frequencyAveraging')}
         required
         setValue={setFrequencyAveraging}
         value={Number(frequencyAveraging)}
@@ -323,7 +323,7 @@ export default function DataProduct({ data }: DataProductProps) {
     fieldWrapper(
       <PixelSizeField
         labelWidth={LABEL_WIDTH}
-        onFocus={() => setHelp(t('pixelSize.help'))}
+        onFocus={() => setHelp('pixelSize')}
         setValue={setPixelSizeValue}
         required
         value={pixelSizeValue}
@@ -335,7 +335,7 @@ export default function DataProduct({ data }: DataProductProps) {
     fieldWrapper(
       <ImageWeightingField
         labelWidth={LABEL_WIDTH}
-        onFocus={() => setHelp(t('imageWeighting.help'))}
+        onFocus={() => setHelp('imageWeighting')}
         required
         setValue={setWeighting}
         value={weighting}
@@ -346,7 +346,7 @@ export default function DataProduct({ data }: DataProductProps) {
     fieldWrapper(
       <BitDepthField
         labelWidth={LABEL_WIDTH}
-        onFocus={() => setHelp(t('bitDepth.help'))}
+        onFocus={() => setHelp('bitDepth')}
         required
         setValue={setBitDepth}
         value={bitDepth}
@@ -357,7 +357,7 @@ export default function DataProduct({ data }: DataProductProps) {
     fieldWrapper(
       <DataProductTypeField
         observationType={getObservation()?.type || TYPE_CONTINUUM}
-        onFocus={() => setHelp(t('dataProductType.help'))}
+        onFocus={() => setHelp('dataProductType')}
         setValue={setDataProductType}
         value={dataProductType}
       />
@@ -367,7 +367,7 @@ export default function DataProduct({ data }: DataProductProps) {
     fieldWrapper(
       <RobustField
         label={t('robust.label')}
-        onFocus={() => setHelp(t('robust.help'))}
+        onFocus={() => setHelp('robust')}
         setValue={setRobust}
         value={robust}
       />
@@ -377,7 +377,7 @@ export default function DataProduct({ data }: DataProductProps) {
     fieldWrapper(
       <ChannelsOutField
         labelWidth={LABEL_WIDTH}
-        onFocus={() => setHelp(t('channelsOut.help'))}
+        onFocus={() => setHelp('channelsOut')}
         required
         setValue={setChannelsOut}
         value={channelsOut}
@@ -397,7 +397,7 @@ export default function DataProduct({ data }: DataProductProps) {
           onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
             setContinuumSubtraction(event.target.checked)
           }
-          onFocus={() => setHelp(t('continuumSubtraction.help'))}
+          onFocus={() => setHelp('continuumSubtraction')}
         />
       </Box>
     );
@@ -405,7 +405,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const polarisationsField = () => {
     return (
       <PolarisationsField
-        onFocus={() => setHelp(t('polarisations.help'))}
+        onFocus={() => setHelp('polarisations')}
         observationType={getObservation()?.type || TYPE_CONTINUUM}
         dataProductType={dataProductType}
         value={polarisations}

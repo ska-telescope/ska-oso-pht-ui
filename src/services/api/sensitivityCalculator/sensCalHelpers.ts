@@ -14,7 +14,7 @@ const sensCalHelpers = {
       }
       return bandwidthValue * unitMap[bandwidthUnits];
     },
-    convertBandwidthToKHz(bandwidthValue: number, bandwidthUnits: string): number {
+    convertBandwidthToKHz(bandwidthValue: number, bandwidthUnits: string = 'kHz'): number {
       const unitMap: { [key: string]: number } = {
         GHz: 1000000,
         MHz: 1000,

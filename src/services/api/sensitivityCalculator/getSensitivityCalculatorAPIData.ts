@@ -14,6 +14,7 @@ import {
 import GetZoomData from '../getZoomData/getZoomData';
 import GetContinuumData from '../getContinuumData/getContinuumData';
 import { SENSCALC_CONTINUUM_MOCKED } from './SensCalcResultsMOCK';
+import { TYPE_ZOOM } from '@/utils/constantsSensCalc';
 
 const makeResponse = (target: Target, statusGUI: number, error: string) => {
   return {
@@ -61,7 +62,7 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
     const results = Object.assign(
       {},
       makeResponse(target, STATUS_PARTIAL, ''),
-      makeResponse(target, STATUS_ERROR, e)
+      makeResponse(target, STATUS_ERROR, e as string)
     );
     return results as SensCalcResults;
   }
@@ -77,9 +78,17 @@ async function getSensitivityCalculatorAPIData(
 ) {
   const telescope: Telescope = getTelescope(observation.telescope);
 
+  const setMockObservation = (obs: Observation) => {
+    const data = obs;
+    data.type = TYPE_CONTINUUM;
+    return data;
+  };
+
   return observation.type === TYPE_CONTINUUM
     ? GetContinuumData(telescope, observation, target)
-    : GetZoomData(telescope, observation, target);
+    : observation.type === TYPE_ZOOM
+    ? GetZoomData(telescope, observation, target)
+    : GetContinuumData(telescope, setMockObservation(observation), target); // TODO : Change to appropriate function when available
 }
 
 export default getSensCalc;
