@@ -187,7 +187,6 @@ const getCalibrationStrategy = (
 const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProductSDP) => {
   const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
   const obType = obs?.find(o => o.id === dp.observationId)?.type;
-  console.log('TREVOR', dp.polarisations);
   switch (obType) {
     case TYPE_CONTINUUM: {
       if (dp.dataProductType === DP_TYPE_IMAGES) {

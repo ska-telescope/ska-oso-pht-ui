@@ -21,14 +21,15 @@ import {
   LAB_IS_BOLD,
   FIELD_PATTERN_POINTING_CENTRES,
   WRAPPER_HEIGHT,
-  FREQUENCY_MHZ,
-  TELESCOPE_LOW_NUM,
   OB_SUBARRAY_AA2,
   BAND_LOW,
-  SUPPLIED_INTEGRATION_TIME_UNITS_H,
-  SUPPLIED_TYPE_INTEGRATION,
   MOCK_CALL,
-  FLOW_THROUGH_VALUE
+  TYPE_ZOOM,
+  TYPE_PST,
+  DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
+  DEFAULT_ZOOM_OBSERVATION_LOW_AA2,
+  DEFAULT_PST_OBSERVATION_LOW_AA2,
+  TELESCOPE_LOW_NUM
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -292,8 +293,9 @@ export default function TargetEntry({
         return newDataProductSDP;
       };
 
-      const observationOut = () => {
-        const newObservation: Observation = {
+      const generateLowAA2Observation = (obs: Observation): Observation => {
+        return {
+          ...obs,
           id: generateId(t('addObservation.idPrefix'), 6),
           telescope: TELESCOPE_LOW_NUM,
           subarray: OB_SUBARRAY_AA2,
@@ -305,30 +307,28 @@ export default function TargetEntry({
             OB_SUBARRAY_AA2,
             observatoryConstants
           ),
-          centralFrequencyUnits: FREQUENCY_MHZ,
           continuumBandwidth: calculateContinuumBandwidth(
             BAND_LOW,
             OB_SUBARRAY_AA2,
             observatoryConstants
-          ),
-          continuumBandwidthUnits: FREQUENCY_MHZ,
-          elevation: 15,
-          bandwidth: null,
-          imageWeighting: 0,
-          numStations: 512,
-          numSubBands: 1,
-          robust: 0,
-          supplied: {
-            type: SUPPLIED_TYPE_INTEGRATION,
-            value: 1,
-            units: SUPPLIED_INTEGRATION_TIME_UNITS_H
-          },
-          spectralAveraging: 1,
-          spectralResolution: '',
-          effectiveResolution: '',
-          pstMode: FLOW_THROUGH_VALUE
+          )
         };
-        return newObservation;
+      };
+
+      const defaultObservation = () => {
+        switch (getProposal()?.scienceCategory) {
+          case TYPE_ZOOM:
+            return DEFAULT_ZOOM_OBSERVATION_LOW_AA2;
+          case TYPE_PST:
+            return DEFAULT_PST_OBSERVATION_LOW_AA2;
+          default:
+            return DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2;
+        }
+      };
+
+      const observationOut = () => {
+        const defaultObs = defaultObservation();
+        return generateLowAA2Observation(defaultObs);
       };
 
       const newTarget: Target = {

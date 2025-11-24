@@ -1,6 +1,7 @@
 import { LABEL_POSITION, TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import Target from './types/target';
 import Investigator from './types/investigator';
+import Observation from './types/observation';
 import { env } from '@/env';
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const MOCK_CALL = env.REACT_APP_USE_MOCK_CALL !== 'false';
@@ -619,9 +620,8 @@ export const STATUS = {
 export const SUPPLIED_VALUE_DEFAULT_MID = 600;
 export const SUPPLIED_VALUE_DEFAULT_LOW = 1;
 // TODO check if we should use different default values for mid and low bandwidth
-// export const ZOOM_BANDWIDTH_DEFAULT_MID = 1;
-// export const ZOOM_BANDWIDTH_DEFAULT_LOW = 5;
-export const ZOOM_BANDWIDTH_DEFAULT = 1;
+export const ZOOM_BANDWIDTH_DEFAULT_MID = 1;
+export const ZOOM_BANDWIDTH_DEFAULT_LOW = 5;
 
 export const TARGET_OPTION = {
   LIST_OF_TARGETS: 1,
@@ -729,6 +729,89 @@ export const DEFAULT_TARGETS: Target = {
   velType: 0,
   velUnit: 0,
   tiedArrayBeams: null
+};
+
+export const DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2: Observation = {
+  id: '',
+  telescope: TELESCOPE_LOW_NUM,
+  subarray: OB_SUBARRAY_AA2,
+  linked: '0',
+  type: TYPE_CONTINUUM,
+  observingBand: BAND_LOW,
+  centralFrequency: 200,
+  centralFrequencyUnits: FREQUENCY_MHZ,
+  continuumBandwidth: 150,
+  continuumBandwidthUnits: FREQUENCY_MHZ,
+  elevation: 15,
+  bandwidth: null,
+  imageWeighting: 0,
+  numStations: 512,
+  numSubBands: 1,
+  robust: 0,
+  supplied: {
+    type: SUPPLIED_TYPE_INTEGRATION,
+    value: SUPPLIED_VALUE_DEFAULT_LOW,
+    units: SUPPLIED_INTEGRATION_TIME_UNITS_H
+  },
+  spectralAveraging: 1,
+  spectralResolution: '',
+  effectiveResolution: ''
+};
+
+export const DEFAULT_ZOOM_OBSERVATION_LOW_AA2: Observation = {
+  id: '',
+  telescope: TELESCOPE_LOW_NUM,
+  subarray: OB_SUBARRAY_AA2,
+  linked: '0',
+  type: TYPE_ZOOM,
+  observingBand: BAND_LOW,
+  centralFrequency: 200,
+  centralFrequencyUnits: FREQUENCY_MHZ,
+  continuumBandwidth: null,
+  continuumBandwidthUnits: null,
+  elevation: 15,
+  bandwidth: ZOOM_BANDWIDTH_DEFAULT_LOW,
+  imageWeighting: 0,
+  numStations: 512,
+  numSubBands: 1,
+  robust: 0,
+  supplied: {
+    type: SUPPLIED_TYPE_INTEGRATION,
+    value: SUPPLIED_VALUE_DEFAULT_LOW,
+    units: SUPPLIED_INTEGRATION_TIME_UNITS_H
+  },
+  spectralAveraging: 1,
+  spectralResolution: '14.13 Hz (21.2 m/s)',
+  effectiveResolution: '14.13 Hz (21.2 m/s)',
+  zoomChannels: 4000
+};
+
+export const DEFAULT_PST_OBSERVATION_LOW_AA2: Observation = {
+  id: '',
+  telescope: TELESCOPE_LOW_NUM,
+  subarray: OB_SUBARRAY_AA2,
+  linked: '0',
+  type: TYPE_PST,
+  observingBand: BAND_LOW,
+  centralFrequency: 200,
+  centralFrequencyUnits: FREQUENCY_MHZ,
+  continuumBandwidth: 150,
+  continuumBandwidthUnits: FREQUENCY_MHZ,
+  elevation: 15,
+  bandwidth: null,
+  imageWeighting: 0,
+  numStations: 512,
+  numSubBands: 1,
+  robust: 0,
+  supplied: {
+    type: SUPPLIED_TYPE_INTEGRATION,
+    value: SUPPLIED_VALUE_DEFAULT_LOW,
+    units: SUPPLIED_INTEGRATION_TIME_UNITS_H
+  },
+  spectralAveraging: 1,
+  spectralResolution: '',
+  effectiveResolution: '',
+  pstMode: FLOW_THROUGH_VALUE
 };
 
 export const DUMMY_PROPOSAL_ID = 'dummy-proposal-id';
