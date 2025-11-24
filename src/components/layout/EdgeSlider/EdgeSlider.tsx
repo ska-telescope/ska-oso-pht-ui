@@ -11,6 +11,8 @@ const CONTAINER_SPACER_TOP = 240;
 const CONTAINER_SPACER_BOTTOM = 200;
 const GAP = 2;
 
+/************** TODO : link is disabled whilst I get all other code in place for it ***************************/
+
 export default function EdgeSlider() {
   const [expanded, setExpanded] = React.useState(false);
   const { t } = useScopedTranslation();

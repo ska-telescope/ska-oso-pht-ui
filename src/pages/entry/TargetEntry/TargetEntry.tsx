@@ -27,7 +27,8 @@ import {
   BAND_LOW,
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_TYPE_INTEGRATION,
-  MOCK_CALL
+  MOCK_CALL,
+  FLOW_THROUGH_VALUE
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -41,6 +42,7 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import { DataProductSDP } from '@/utils/types/dataProduct';
+import { useHelp } from '@/utils/help/useHelp';
 interface TargetEntryProps {
   raType: number;
   setTarget?: Function;
@@ -69,10 +71,11 @@ export default function TargetEntry({
   const { observatoryConstants } = useOSDAccessors();
 
   const LAB_WIDTH = 5;
-  const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
+  const { application, updateAppContent2 } = storageObject.useStore();
   const [nameFieldError, setNameFieldError] = React.useState('');
   const [skyDirection1Error, setSkyDirection1Error] = React.useState('');
   const [skyDirection2Error, setSkyDirection2Error] = React.useState('');
+  const { setHelp } = useHelp();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -216,7 +219,7 @@ export default function TargetEntry({
   };
 
   React.useEffect(() => {
-    helpComponent(t('name.help'));
+    setHelp('name.help');
     if (target) {
       targetIn(target);
     }
@@ -276,7 +279,7 @@ export default function TargetEntry({
           pixelSizeValue: 1,
           pixelSizeUnits: 2,
           weighting: 1,
-          polarisations: [''],
+          polarisations: [],
           channelsOut: 1,
           fitSpectralPol: 3,
           robust: -1,
@@ -322,7 +325,8 @@ export default function TargetEntry({
           },
           spectralAveraging: 1,
           spectralResolution: '',
-          effectiveResolution: ''
+          effectiveResolution: '',
+          pstMode: FLOW_THROUGH_VALUE
         };
         return newObservation;
       };
@@ -378,12 +382,12 @@ export default function TargetEntry({
             ? [...(getProposal().dataProductSDP ?? []), newDataProductSDP as DataProductSDP]
             : getProposal().dataProductSDP,
           targetObservation: MOCK_CALL
-            ? sensCalcResult && newObservation && newObservation.id
+            ? sensCalcResult && newObservation && newObservation.id && newDataProductSDP?.id
               ? [
                   {
                     targetId: newTarget?.id,
                     observationId: newObservation?.id,
-                    dataProductsSDPId: newDataProductSDP?.id,
+                    dataProductsSDPId: newDataProductSDP.id,
                     sensCalc: sensCalcResult
                   }
                 ]
@@ -487,7 +491,7 @@ export default function TargetEntry({
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
           labelWidth={LAB_WIDTH}
-          onFocus={() => helpComponent(t('fieldPattern.help'))}
+          onFocus={() => setHelp('fieldPattern.help')}
           testId="fieldPatternId"
           value={fieldPattern}
           setValue={setFieldPattern}
@@ -519,7 +523,7 @@ export default function TargetEntry({
         value={name}
         setValue={setTheName}
         suffix={resolveButton()}
-        onFocus={() => helpComponent(t('name.help'))}
+        onFocus={() => setHelp('name.help')}
         errorText={nameFieldError}
       />
     );
@@ -531,7 +535,7 @@ export default function TargetEntry({
         setValue={setTheRA}
         skyUnits={raType}
         value={ra}
-        valueFocus={() => helpComponent(t('skyDirection.help.1.value'))}
+        valueFocus={() => setHelp('skyDirection.help.1.value')}
         setErrorText={setSkyDirection1Error} // Pass the callback
       />
     );
@@ -543,7 +547,7 @@ export default function TargetEntry({
         setValue={setTheDec}
         skyUnits={raType}
         value={dec}
-        valueFocus={() => helpComponent(t('skyDirection.help.2.value'))}
+        valueFocus={() => setHelp('skyDirection.help.2.value')}
         setErrorText={setSkyDirection2Error} // Pass the callback
       />
     );
@@ -560,9 +564,9 @@ export default function TargetEntry({
         vel={vel}
         velType={velType}
         velUnit={velUnit}
-        velFocus={() => helpComponent(t('velocity.help' + velType))}
-        // velTypeFocus={() => helpComponent('')}   TODO : Need to find out why this is not working great
-        velUnitFocus={() => helpComponent(t('velocity.help' + velType))}
+        velFocus={() => setHelp('velocity.help' + velType)}
+        // velTypeFocus={() => setHelp('')}   TODO : Need to find out why this is not working great
+        velUnitFocus={() => setHelp('velocity.help' + velType)}
       />
     );
 
@@ -570,7 +574,7 @@ export default function TargetEntry({
     wrapper(
       <ReferenceFrameField
         labelWidth={LAB_WIDTH}
-        onFocus={() => helpComponent(t('referenceFrame.help'))}
+        onFocus={() => setHelp('referenceFrame.help')}
         setValue={setTheReferenceFrame}
         value={referenceFrame}
       />

@@ -57,7 +57,7 @@ export default function SpectralAveragingLOWField({
         labelBold={LAB_IS_BOLD}
         labelPosition={LAB_POSITION}
         labelWidth={widthLabel}
-        onFocus={() => setHelp(t(FIELD + '.help'))}
+        onFocus={() => setHelp(FIELD + '.help')}
         required={required}
         errorText={errorMessage()}
       />

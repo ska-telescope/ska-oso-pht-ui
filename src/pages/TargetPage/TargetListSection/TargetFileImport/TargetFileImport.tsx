@@ -8,6 +8,7 @@ import { RA_TYPE_ICRS, RA_TYPE_GALACTIC, UPLOAD_MAX_WIDTH_CSV } from '../../../.
 import Target from '@/utils/types/target';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useHelp } from '@/utils/help/useHelp';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 10;
 
@@ -19,13 +20,14 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
   const { t } = useScopedTranslation();
   const { notifyError, notifySuccess } = useNotify();
 
-  const { application, helpComponent, updateAppContent2 } = storageObject.useStore();
+  const { application, updateAppContent2 } = storageObject.useStore();
+  const { setHelp } = useHelp();
   const [uploadButtonStatus, setUploadButtonStatus] = React.useState(null);
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   React.useEffect(() => {
-    helpComponent(t('targetImport.help'));
+    setHelp('targetImport.help');
   }, []);
 
   const AddTheTargetGalactic = (id: string, name: string, latitude: string, longitude: string) => {
@@ -56,7 +58,12 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
       referenceFrame: RA_TYPE_ICRS.label,
       velType: 0,
       vel: '',
-      velUnit: 0
+      velUnit: 0,
+      tiedArrayBeams: {
+        pstBeams: [],
+        pssBeams: [],
+        vlbiBeams: []
+      }
     };
 
     return newTarget;
@@ -131,7 +138,10 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
                 return result;
               }, []);
             }
-            setProposal({ ...getProposal(), targets: [...getProposal()?.targets, ...targets] });
+            setProposal({
+              ...getProposal(),
+              targets: [...(getProposal()?.targets ?? []), ...targets]
+            });
             if (errorInRows) throw t('uploadCsvBtn.uploadErrorPartialMsg');
             setUploadButtonStatus(FileUploadStatus.OK);
             notifySuccess(t('uploadCsvBtn.uploadSuccessMsg'), NOTIFICATION_DELAY_IN_SECONDS);

@@ -120,9 +120,9 @@ describe('TechnicalPage', () => {
   //   expect(uploadFn).toBeDefined();
   // });
 
-  // it('triggers helpComponent and validation on mount', () => {
+  // it('triggers setHelp and validation on mount', () => {
   //   wrapper(<TechnicalPage />);
-  //   expect(mockStore.helpComponent).toHaveBeenCalledWith('page.6.help');
+  //   expect(mockStore.setHelp).toHaveBeenCalledWith('page.6.help');
   //   expect(mockStore.updateAppContent1).toHaveBeenCalled();
   // });
 });

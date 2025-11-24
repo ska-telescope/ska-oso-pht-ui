@@ -38,9 +38,9 @@ import {
   TYPE_STR_ZOOM,
   TYPE_STR_PST,
   DP_TYPE_IMAGES,
-  DP_TYPE_FILTER_BANK,
-  DP_TYPE_TIMING,
-  PST_MODES
+  PST_MODES,
+  DETECTED_FILTER_BANK_VALUE,
+  PULSAR_TIMING_VALUE
 } from '@utils/constants.ts';
 import {
   DataProductSDP,
@@ -187,6 +187,7 @@ const getCalibrationStrategy = (
 const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProductSDP) => {
   const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
   const obType = obs?.find(o => o.id === dp.observationId)?.type;
+  console.log('TREVOR', dp.polarisations);
   switch (obType) {
     case TYPE_CONTINUUM: {
       if (dp.dataProductType === DP_TYPE_IMAGES) {
@@ -250,7 +251,8 @@ const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProdu
       };
     case TYPE_PST:
     default:
-      if (dp.dataProductType === DP_TYPE_FILTER_BANK) {
+      const pstMode = obs?.find(o => o.id === dp.observationId)?.pstMode;
+      if (pstMode === DETECTED_FILTER_BANK_VALUE) {
         return {
           polarisation: dp.polarisations,
           bit_depth: Number(dp.bitDepth),
@@ -259,7 +261,7 @@ const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProdu
           kind: 'pst',
           variant: 'detected filterbank'
         };
-      } else if (dp.dataProductType === DP_TYPE_TIMING) {
+      } else if (pstMode === PULSAR_TIMING_VALUE) {
         return {
           polarisation: dp.polarisations,
           bit_depth: dp.bitDepth,
@@ -393,7 +395,7 @@ const getObservationTypeDetails = (obs: Observation) => {
         central_frequency: getCentralFrequency(obs),
         supplied: getSupplied(obs) as SuppliedBackend,
         observation_type: TYPE_STR_PST,
-        pst_mode: PST_MODES[obs?.pstMode ?? 0].mapping
+        pst_mode: typeof obs.pstMode !== 'undefined' ? PST_MODES[obs.pstMode].mapping : undefined
       };
   }
 };

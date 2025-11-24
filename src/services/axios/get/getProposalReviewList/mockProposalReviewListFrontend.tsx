@@ -3,14 +3,6 @@ import { ProposalReview } from '@utils/types/proposalReview.tsx';
 
 export const MockProposalReviewListFrontend: ProposalReview[] = [
   {
-    metadata: {
-      version: 2,
-      created_by: 'user2',
-      created_on: '2025-06-16T08:35:24.245Z',
-      last_modified_by: 'user2',
-      last_modified_on: '2025-09-16T08:35:24.245Z',
-      pdm_version: '18.3.0'
-    },
     panelId: 'panel-12345',
     id: 'review-12347',
     cycle: 'cycle1',
@@ -32,14 +24,6 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
     status: PANEL_DECISION_STATUS.REVIEWED
   },
   {
-    metadata: {
-      version: 1,
-      created_by: 'user3',
-      created_on: '2025-07-16T08:35:24.245Z',
-      last_modified_by: 'user3',
-      last_modified_on: '2025-07-16T08:35:24.245Z',
-      pdm_version: '18.3.0'
-    },
     panelId: 'panel-12345',
     id: 'review-12345',
     cycle: 'cycle1',
@@ -61,14 +45,6 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
     status: PANEL_DECISION_STATUS.REVIEWED
   },
   {
-    metadata: {
-      version: 1,
-      created_by: 'user1',
-      created_on: '2025-07-16T08:35:24.245Z',
-      last_modified_by: 'user1',
-      last_modified_on: '2025-07-16T08:35:24.245Z',
-      pdm_version: '18.3.0'
-    },
     panelId: 'panel-12345',
     id: 'review-12346',
     cycle: 'cycle1',
@@ -90,14 +66,6 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
     status: PANEL_DECISION_STATUS.REVIEWED
   },
   {
-    metadata: {
-      version: 1,
-      created_by: 'user1',
-      created_on: '2025-06-16T08:35:24.245Z',
-      last_modified_by: 'user1',
-      last_modified_on: '2024-09-16T08:35:24.245Z',
-      pdm_version: '18.3.0'
-    },
     panelId: 'panel-12345',
     id: 'review-12348',
     cycle: 'cycle1',
