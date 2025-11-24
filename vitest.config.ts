@@ -21,7 +21,7 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['cobertura', 'text', 'json', 'html'],
       reportsDirectory: 'build/coverage',
-      include: ['src/{components,pages,utils,services}/**/*.tsx'],
+      include: ['src/{components,pages,utils,services}/**/**/*.tsx'],
       exclude: [
         '**/node_modules/**',
         'src/components/app/App.tsx',
