@@ -14,15 +14,16 @@ import {
 } from '@utils/constants.ts';
 import * as CONSTANTS from '@utils/constants.ts';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
+import { DataProductSRC, DataProductSRCNetBackend } from '@utils/types/dataProduct.tsx';
 import { MockProposalFrontend, MockProposalFrontendZoom } from './mockProposalFrontend.tsx';
 import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend.tsx';
 import PutProposal, { mockPutProposal } from './putProposal.tsx';
 import MappingPutProposal, {
   getCalibrationStrategy,
-  getDataProductScriptParameters, getDataProductSRC,
+  getDataProductScriptParameters,
+  getDataProductSRC,
   getReferenceCoordinate
 } from './putProposalMapping.tsx';
-import type { DataProductSRC, DataProductSRCNetBackend } from '@/utils/types/dataProduct';
 
 describe('Helper Functions', () => {
   test('mockPutProposal returns mock proposal', () => {
@@ -433,12 +434,12 @@ describe('getDataProductSRC', () => {
     const input: DataProductSRC[] = [
       { id: 1 } as DataProductSRC,
       { id: 2 } as DataProductSRC,
-      { id: 3 } as DataProductSRC,
+      { id: 3 } as DataProductSRC
     ];
     const expected: DataProductSRCNetBackend[] = [
       { data_products_src_id: 1 },
       { data_products_src_id: 2 },
-      { data_products_src_id: 3 },
+      { data_products_src_id: 3 }
     ];
     expect(getDataProductSRC(input)).toEqual(expected);
   });
@@ -450,11 +451,11 @@ describe('getDataProductSRC', () => {
   test('should handle undefined or null id values', () => {
     const input: DataProductSRC[] = [
       { id: undefined } as DataProductSRC,
-      { id: null } as DataProductSRC,
+      { id: null } as DataProductSRC
     ];
     const expected: DataProductSRCNetBackend[] = [
       { data_products_src_id: undefined },
-      { data_products_src_id: null },
+      { data_products_src_id: null }
     ];
     expect(getDataProductSRC(input)).toEqual(expected);
   });
