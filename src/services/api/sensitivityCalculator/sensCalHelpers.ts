@@ -1,8 +1,12 @@
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
+import { FREQUENCY_STR_HZ, FREQUENCY_STR_KHZ, FREQUENCY_STR_MHZ } from '@/utils/constants';
 
 const sensCalHelpers = {
   format: {
-    convertBandwidthToMHz(bandwidthValue: number, bandwidthUnits: string): number {
+    convertBandwidthToMHz(
+      bandwidthValue: number,
+      bandwidthUnits: string = FREQUENCY_STR_MHZ
+    ): number {
       const unitMap: { [key: string]: number } = {
         GHz: 1000,
         MHz: 1,
@@ -14,7 +18,10 @@ const sensCalHelpers = {
       }
       return bandwidthValue * unitMap[bandwidthUnits];
     },
-    convertBandwidthToKHz(bandwidthValue: number, bandwidthUnits: string = 'kHz'): number {
+    convertBandwidthToKHz(
+      bandwidthValue: number,
+      bandwidthUnits: string = FREQUENCY_STR_KHZ
+    ): number {
       const unitMap: { [key: string]: number } = {
         GHz: 1000000,
         MHz: 1000,
@@ -26,9 +33,14 @@ const sensCalHelpers = {
       }
       return bandwidthValue * unitMap[bandwidthUnits];
     },
-    convertBandwidthToHz(bandwidthValue: number, bandwidthUnits: string): number {
+    convertBandwidthToHz(
+      bandwidthValue: number,
+      bandwidthUnits: string | number = FREQUENCY_STR_HZ
+    ): number {
       if (typeof bandwidthUnits === 'number') {
-        bandwidthUnits = OSD_CONSTANTS.Units.find(item => item.value === bandwidthUnits)?.label;
+        const numericValue = bandwidthUnits;
+        bandwidthUnits =
+          OSD_CONSTANTS.Units.find(item => item.value === numericValue)?.label ?? FREQUENCY_STR_HZ;
       }
       const unitMap: { [key: string]: number } = {
         GHz: 1000000000,

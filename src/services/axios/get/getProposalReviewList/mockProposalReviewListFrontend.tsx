@@ -4,27 +4,6 @@ import { ProposalReview } from '@utils/types/proposalReview.tsx';
 export const MockProposalReviewListFrontend: ProposalReview[] = [
   {
     panelId: 'panel-12345',
-    id: 'review-12347',
-    cycle: 'cycle1',
-    reviewerId: 'reviewer-12345',
-    prslId: 'prsl-t0001-20250716-00001',
-    reviewType: {
-      kind: REVIEW_TYPE.SCIENCE,
-      rank: 8,
-      conflict: {
-        hasConflict: false,
-        reason: ''
-      },
-      excludedFromDecision: false
-    },
-    comments: 'recommended even more',
-    srcNet: 'great proposal',
-    submittedOn: '2025-06-16T08:35:24.245Z',
-    submittedBy: 'user1',
-    status: PANEL_DECISION_STATUS.REVIEWED
-  },
-  {
-    panelId: 'panel-12345',
     id: 'review-12345',
     cycle: 'cycle1',
     reviewerId: 'reviewer-12347',
@@ -38,6 +17,7 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
       },
       excludedFromDecision: false
     },
+    metadata: undefined,
     comments: 'ok',
     srcNet: '',
     submittedOn: '2025-07-16T08:35:24.245Z',
@@ -59,9 +39,32 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
       },
       excludedFromDecision: true
     },
+    metadata: undefined,
     comments: 'recommend for approval',
     srcNet: 'recommend as well',
     submittedOn: '2025-07-16T08:35:24.245Z',
+    submittedBy: 'user1',
+    status: PANEL_DECISION_STATUS.REVIEWED
+  },
+  {
+    panelId: 'panel-12345',
+    id: 'review-12347',
+    cycle: 'cycle1',
+    reviewerId: 'reviewer-12345',
+    prslId: 'prsl-t0001-20250716-00001',
+    reviewType: {
+      kind: REVIEW_TYPE.SCIENCE,
+      rank: 8,
+      conflict: {
+        hasConflict: false,
+        reason: ''
+      },
+      excludedFromDecision: false
+    },
+    metadata: undefined,
+    comments: 'recommended',
+    srcNet: 'great proposal',
+    submittedOn: '2025-06-16T08:35:24.245Z',
     submittedBy: 'user1',
     status: PANEL_DECISION_STATUS.REVIEWED
   },
@@ -75,6 +78,7 @@ export const MockProposalReviewListFrontend: ProposalReview[] = [
       kind: REVIEW_TYPE.TECHNICAL,
       isFeasible: 'No'
     },
+    metadata: undefined,
     comments: 'recommend for approval',
     srcNet: 'recommend as well',
     submittedOn: '2025-06-16T08:35:24.245Z',

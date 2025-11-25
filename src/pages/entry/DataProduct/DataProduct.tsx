@@ -103,8 +103,6 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const getObservation = () => baseObservations?.find(obs => obs.id === observationId);
 
-  console.log('DataProduct render', getProposal());
-
   const getSuffix = () => {
     if (isContinuum() || isPST()) {
       return dataProductType.toString();
