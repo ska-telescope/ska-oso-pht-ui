@@ -49,7 +49,7 @@ export type DataProductSDPSpectralImageBackend = {
 };
 
 export type DataProductSDPPSTDetectedFilterBankBackend = {
-  polarisations: string[];
+  polarisation: string[];
   bit_depth: number;
   time_averaging_factor: number;
   frequency_averaging_factor: number;
@@ -58,14 +58,14 @@ export type DataProductSDPPSTDetectedFilterBankBackend = {
 };
 
 export type DataProductSDPPSTTimingBackend = {
-  polarisations: string[];
+  polarisation: string[];
   bit_depth: number;
   kind: string;
   variant: string;
 };
 
 export type DataProductSDPPSTFlowthroughBackend = {
-  polarisations: string[];
+  polarisation: string[];
   bit_depth: number;
   kind: string;
   variant: string;

@@ -36,6 +36,7 @@ const mockStore = {
     content2: mockProposal
   },
   helpComponent: vi.fn(),
+  helpComponentURL: vi.fn(),
   updateAppContent1: vi.fn(),
   updateAppContent2: vi.fn()
 };

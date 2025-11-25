@@ -4,6 +4,7 @@ import { PanelDecision } from '@utils/types/panelDecision.tsx';
 export const MockPanelDecisionFrontend: PanelDecision = {
   id: 'PANEL-DECISION-ID-001',
   cycle: 'CYCLE-001',
+  metaData: undefined,
   panelId: 'PANEL-ID-001',
   proposalId: 'PROPOSAL-ID-001',
   rank: 1,

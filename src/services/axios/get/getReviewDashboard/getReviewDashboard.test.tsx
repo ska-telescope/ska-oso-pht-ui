@@ -10,7 +10,7 @@ describe('Helper Functions', () => {
   });
 });
 
-describe('GetProposalReviewList Service', () => {
+describe('GetReviewDashboard Service', () => {
   let mockedAuthClient: any;
   beforeEach(() => {
     vi.resetAllMocks();
