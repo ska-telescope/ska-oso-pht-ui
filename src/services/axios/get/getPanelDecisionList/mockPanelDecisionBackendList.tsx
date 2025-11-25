@@ -3,14 +3,6 @@ import { PanelDecisionBackend } from '@utils/types/panelDecision.tsx';
 
 export const MockPanelDecisionBackendList: PanelDecisionBackend[] = [
   {
-    metaData: {
-      version: 1,
-      created_by: 'user1',
-      created_on: '2023-01-01T00:00:00Z',
-      last_modified_by: 'user1',
-      last_modified_on: '2023-01-02T00:00:00Z',
-      pdm_version: '18.2.0'
-    },
     decision_id: 'PANEL-DECISION-ID-001',
     cycle: 'CYCLE-001',
     panel_id: 'PANEL-ID-001',
@@ -22,14 +14,6 @@ export const MockPanelDecisionBackendList: PanelDecisionBackend[] = [
     status: PANEL_DECISION_STATUS.TO_DO
   },
   {
-    metaData: {
-      version: 1,
-      created_by: 'user1',
-      created_on: '2023-01-01T00:00:00Z',
-      last_modified_by: 'user1',
-      last_modified_on: '2023-01-02T00:00:00Z',
-      pdm_version: '18.2.0'
-    },
     decision_id: 'PANEL-DECISION-ID-002',
     cycle: 'CYCLE-001',
     panel_id: 'PANEL-ID-001',
@@ -41,14 +25,6 @@ export const MockPanelDecisionBackendList: PanelDecisionBackend[] = [
     status: PANEL_DECISION_STATUS.REVIEWED
   },
   {
-    metaData: {
-      version: 1,
-      created_by: 'user1',
-      created_on: '2023-01-01T00:00:00Z',
-      last_modified_by: 'user1',
-      last_modified_on: '2023-01-02T00:00:00Z',
-      pdm_version: '18.2.0'
-    },
     decision_id: 'PANEL-DECISION-ID-003',
     cycle: 'CYCLE-001',
     panel_id: 'PANEL-ID-001',

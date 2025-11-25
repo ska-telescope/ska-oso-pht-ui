@@ -4,6 +4,7 @@ import { ProposalReview, TechnicalReview } from '@/utils/types/proposalReview';
 export const MockProposalScienceReviewFrontend: ProposalReview = {
   panelId: 'panel-12345',
   id: 'review-12345',
+  metadata: undefined,
   cycle: 'cycle1',
   reviewerId: 'reviewer-12345',
   prslId: 'prsl-t0001-20250716-00001',
@@ -49,6 +50,7 @@ export const MockProposalTechnicalReviewFrontend: ProposalReview = {
   panelId: 'panel-12345',
   id: 'review-12345',
   cycle: 'cycle1',
+  metadata: undefined,
   reviewerId: 'reviewer-12345',
   prslId: 'prsl-t0001-20250716-00001',
   comments: 'recommend for approval',

@@ -20,6 +20,7 @@ export default function EdgeSlider() {
   const { help } = storageObject.useStore();
   const theHelp = getHelp();
   const theLink = getLink();
+  const hasLink = help?.contentURL?.length > 1 ? true : false;
 
   const togglePanel = () => {
     setExpanded(prev => !prev);
@@ -114,7 +115,7 @@ export default function EdgeSlider() {
             }}
           >
             <Stack spacing={GAP}>
-              <Typography variant="subtitle1">
+              <Typography align="left">
                 {theHelp.split('\n').map((line, index) => (
                   <React.Fragment key={index}>
                     {line.trim()}
@@ -122,7 +123,7 @@ export default function EdgeSlider() {
                   </React.Fragment>
                 ))}
               </Typography>
-              {false && (
+              {hasLink && (
                 <Typography align="left">
                   <a
                     href={theLink}

@@ -281,8 +281,8 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
           'image_cellsize' in script ? getPixelSizeUnits(script.image_cellsize?.unit ?? null) : 0,
         weighting:
           'weight' in script && script.weight?.weighting
-            ? getWeighting(script.weight.weighting as string) ?? -1
-            : -1,
+            ? getWeighting(script.weight.weighting as string) ?? 0
+            : 0,
         robust:
           'weight' in script && script.weight?.weighting === 'briggs'
             ? ROBUST.find(item => item.label === String(script.weight?.robust ?? ''))?.value ?? 0

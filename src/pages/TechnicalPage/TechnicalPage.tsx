@@ -173,7 +173,7 @@ export default function TechnicalPage() {
       setCurrentFile(getProposal()?.technicalPDF?.documentId);
       setOriginalFile(getProposal()?.technicalPDF?.documentId + t('fileType.pdf'));
     }
-    setHelp('page.' + PAGE + '.help');
+    setHelp(t('page.' + PAGE + '.help'));
   }, []);
 
   React.useEffect(() => {

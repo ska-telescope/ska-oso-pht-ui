@@ -54,7 +54,7 @@
     "@mui/x-data-grid": "^7.22.2",
     "@react-pdf/renderer": "^3.4.2",
     "@ska-telescope/ska-gui-components": "^2.4.3",
-    "@ska-telescope/ska-gui-local-storage": "^2.1.2",
+    "@ska-telescope/ska-gui-local-storage": "^2.1.3",
     "@ska-telescope/ska-login-page": "^1.1.1",
     "@types/papaparse": "^5.5.0",
     "axios": "^1.6.3",

@@ -29,6 +29,7 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
         component: 'This is help text'
       },
       helpComponent: vi.fn(),
+      helpComponentURL: vi.fn(),
       updateAppContent2: vi.fn()
     })
   },

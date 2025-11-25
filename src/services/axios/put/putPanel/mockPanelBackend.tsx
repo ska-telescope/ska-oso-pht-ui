@@ -4,6 +4,7 @@ export const MockPanelBackend: PanelBackend = {
   panel_id: 'panel-12345',
   name: 'string',
   cycle: 'string',
+  expires_on: undefined,
   proposals: [],
   sci_reviewers: [],
   tech_reviewers: []
@@ -13,6 +14,7 @@ export const MockPanelBackendWithProposals: PanelBackend = {
   panel_id: 'panel-12345',
   name: 'string',
   cycle: 'string',
+  expires_on: undefined,
   proposals: [
     {
       prsl_id: 'prsl-t0001-20250704-00002',
@@ -27,6 +29,7 @@ export const MockPanelBackendWithReviewers: PanelBackend = {
   panel_id: 'panel-12345',
   name: 'string',
   cycle: 'string',
+  expires_on: undefined,
   proposals: [],
   sci_reviewers: [
     {

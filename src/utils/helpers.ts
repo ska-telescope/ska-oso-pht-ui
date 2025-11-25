@@ -94,25 +94,39 @@ export const helpers = {
   },
   transform: {
     // trim undefined and empty properties of an object
-    trimObject(obj: any) {
-      Object.keys(obj).forEach(key => {
-        const value = obj[key];
-        if (value === undefined || value === '' || value === null) {
-          if (
-            key === 'submitted_by' ||
-            key === 'submitted_on' ||
-            key === 'abstract' ||
-            key === 'reason' ||
-            key === 'srcNet' ||
-            key === 'tied_array_beams' ||
-            key === 'calibrators'
-          )
-            return; //TODO: review null values in data model
-          delete obj[key];
-        } else if (typeof value === 'object') {
-          this.trimObject(value);
-        }
-      });
+    trimObject(obj: any): any {
+      if (Array.isArray(obj)) {
+        // Recursively trim each element, then filter out null/undefined/empty string
+        return obj
+          .map(item => this.trimObject(item))
+          .filter(item => item !== undefined && item !== null && item !== '');
+      } else if (obj && typeof obj === 'object') {
+        const newObj: any = {};
+        Object.keys(obj).forEach(key => {
+          const value = obj[key];
+          if (value === undefined || value === '' || value === null) {
+            if (
+              key === 'submitted_by' ||
+              key === 'submitted_on' ||
+              key === 'abstract' ||
+              key === 'reason' ||
+              key === 'srcNet' ||
+              key === 'tied_array_beams' ||
+              key === 'calibrators'
+            ) {
+              // keep these keys even if null/empty
+              newObj[key] = value;
+            }
+            // else skip the key entirely
+          } else if (typeof value === 'object') {
+            newObj[key] = this.trimObject(value);
+          } else {
+            newObj[key] = value;
+          }
+        });
+        return newObj;
+      }
+      return obj;
     }
   }
 };
