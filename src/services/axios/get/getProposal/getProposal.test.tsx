@@ -1,7 +1,13 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import * as CONSTANTS from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
-import GetProposal, { GetMockProposal, mapping } from './getProposal.tsx';
+import { BeamBackend } from '@utils/types/target.tsx';
+import GetProposal, {
+  GetMockProposal,
+  mapping,
+  getBeam,
+  getInvestigators
+} from './getProposal.tsx';
 import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend.tsx';
 import {
   MockNullProposalFrontend,
@@ -115,5 +121,148 @@ describe('getObservingMode', () => {
   test('is case insensitive', () => {
     expect(getObservingMode('mode a')).toBe(1);
     expect(getObservingMode('MODE B')).toBe(2);
+  });
+});
+
+describe('getBeam', () => {
+  test('should correctly map BeamBackend to Beam', () => {
+    const input: BeamBackend = {
+      beam_id: 1,
+      beam_name: 'Test Beam',
+      beam_coordinate: {
+        kind: 'ICRS',
+        ra_str: '12:34:56.78',
+        dec_str: '-12:34:56.78',
+        pm_ra: 1.23,
+        pm_dec: -1.23,
+        epoch: 2000,
+        parallax: 0.1
+      },
+      stn_weights: [0.5, 0.8]
+    };
+
+    const expectedOutput = {
+      id: 1,
+      beamName: 'Test Beam',
+      beamCoordinate: {
+        kind: 'icrs',
+        raStr: '12:34:56.78',
+        decStr: '-12:34:56.78',
+        pmRa: 1.23,
+        pmDec: -1.23,
+        epoch: 2000,
+        parallax: 0.1
+      },
+      stnWeights: [0.5, 0.8]
+    };
+
+    const result = getBeam(input);
+    expect(result).toEqual(expectedOutput);
+  });
+
+  test('should handle missing stn_weights by defaulting to an empty array', () => {
+    const input: BeamBackend = {
+      beam_id: 2,
+      beam_name: 'Beam Without Weights',
+      beam_coordinate: {
+        kind: 'ICRS',
+        ra_str: '01:23:45.67',
+        dec_str: '+01:23:45.67',
+        pm_ra: 0.0,
+        pm_dec: 0.0,
+        epoch: 2020,
+        parallax: 0.0
+      },
+      stn_weights: undefined
+    };
+
+    const expectedOutput = {
+      id: 2,
+      beamName: 'Beam Without Weights',
+      beamCoordinate: {
+        kind: 'icrs',
+        raStr: '01:23:45.67',
+        decStr: '+01:23:45.67',
+        pmRa: 0.0,
+        pmDec: 0.0,
+        epoch: 2020,
+        parallax: 0.0
+      },
+      stnWeights: []
+    };
+
+    const result = getBeam(input);
+    expect(result).toEqual(expectedOutput);
+  });
+});
+
+describe('getInvestigators', () => {
+  test('returns an empty array when input is null', () => {
+    const result = getInvestigators(null);
+    expect(result).toEqual([]);
+  });
+
+  test('returns an empty array when input is an empty array', () => {
+    const result = getInvestigators([]);
+    expect(result).toEqual([]);
+  });
+
+  test('maps InvestigatorBackend objects to Investigator objects correctly', () => {
+    const input = [
+      {
+        user_id: 1,
+        status: 'active',
+        given_name: 'John',
+        family_name: 'Doe',
+        email: 'john.doe@example.com',
+        organization: 'Example Org',
+        for_phd: true,
+        principal_investigator: false,
+        officeLocation: 'Building A',
+        jobTitle: 'Researcher'
+      },
+      {
+        user_id: 2,
+        status: 'inactive',
+        given_name: 'Jane',
+        family_name: 'Smith',
+        email: 'jane.smith@example.com',
+        organization: 'Another Org',
+        for_phd: false,
+        principal_investigator: true,
+        officeLocation: 'Building B',
+        jobTitle: 'Scientist'
+      }
+    ];
+
+    const expected = [
+      {
+        id: 1,
+        status: 'active',
+        firstName: 'John',
+        lastName: 'Doe',
+        email: 'john.doe@example.com',
+        affiliation: 'Example Org',
+        phdThesis: true,
+        pi: false,
+        officeLocation: 'Building A',
+        jobTitle: 'Researcher'
+      },
+      {
+        id: 2,
+        status: 'inactive',
+        firstName: 'Jane',
+        lastName: 'Smith',
+        email: 'jane.smith@example.com',
+        affiliation: 'Another Org',
+        phdThesis: false,
+        pi: true,
+        officeLocation: 'Building B',
+        jobTitle: 'Scientist'
+      }
+    ];
+
+    const result = getInvestigators(input);
+    expect(result).toEqual(expected);
   });
 });

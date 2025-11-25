@@ -67,7 +67,7 @@ import {
   CalibrationStrategyBackend
 } from '@/utils/types/calibrationStrategy.tsx';
 
-const getInvestigators = (inValue: InvestigatorBackend[] | null) => {
+export const getInvestigators = (inValue: InvestigatorBackend[] | null) => {
   let investigators = [] as Investigator[];
   if (!inValue || inValue.length === 0) {
     return investigators;
@@ -130,7 +130,7 @@ const getPDF = (documents: DocumentBackend[] | null, documentId: string): Docume
   };
 };
 
-const getVelType = (InDefinition: string) => {
+export const getVelType = (InDefinition: string) => {
   const velType = VEL_TYPES.find(item => item.label.toLowerCase() === InDefinition?.toLowerCase())
     ?.value;
   return velType ? velType : 1; // fallback
@@ -161,7 +161,7 @@ const getReferenceCoordinate = (
   };
 };
 
-const getBeam = (beam: BeamBackend): Beam => {
+export const getBeam = (beam: BeamBackend): Beam => {
   return {
     id: beam.beam_id,
     beamName: beam.beam_name,
