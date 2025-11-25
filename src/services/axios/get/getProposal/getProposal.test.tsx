@@ -1,4 +1,4 @@
-import { describe, expect, vi, beforeEach } from 'vitest';
+import { describe, test, expect, vi, beforeEach } from 'vitest';
 import * as CONSTANTS from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
 import GetProposal, { GetMockProposal, mapping } from './getProposal.tsx';
@@ -81,5 +81,39 @@ describe('GetProposal Service', () => {
     mockedAuthClient.get.mockResolvedValue(undefined);
     const result = await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id);
     expect(result).toBe('error.API_UNKNOWN_ERROR');
+  });
+});
+
+const OBSERVATION = {
+  ObservingMode: [
+    { label: 'Mode A', value: 1 },
+    { label: 'Mode B', value: 2 },
+    { label: 'Mode C', value: 3 }
+  ]
+};
+
+const getObservingMode = (scienceCat: string) => {
+  const cat = OBSERVATION.ObservingMode?.find(
+    cat => cat.label.toLowerCase() === scienceCat?.toLowerCase()
+  )?.value;
+  return cat ? cat : null;
+};
+
+describe('getObservingMode', () => {
+  test('returns correct value for a valid observing mode', () => {
+    expect(getObservingMode('Mode A')).toBe(1);
+    expect(getObservingMode('mode b')).toBe(2);
+    expect(getObservingMode('MODE C')).toBe(3);
+  });
+
+  test('returns null for an invalid observing mode', () => {
+    expect(getObservingMode('Invalid Mode')).toBeNull();
+    expect(getObservingMode('')).toBeNull();
+    expect(getObservingMode((null as unknown) as string)).toBeNull();
+  });
+
+  test('is case insensitive', () => {
+    expect(getObservingMode('mode a')).toBe(1);
+    expect(getObservingMode('MODE B')).toBe(2);
   });
 });
