@@ -1,6 +1,17 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import { PROPOSAL_STATUS, RA_TYPE_GALACTIC, RA_TYPE_ICRS } from '@utils/constants.ts';
+import {
+  PROPOSAL_STATUS,
+  RA_TYPE_GALACTIC,
+  RA_TYPE_ICRS,
+  TYPE_CONTINUUM,
+  TYPE_ZOOM,
+  TYPE_PST,
+  DP_TYPE_IMAGES,
+  DETECTED_FILTER_BANK_VALUE,
+  PULSAR_TIMING_VALUE,
+  IW_BRIGGS
+} from '@utils/constants.ts';
 import * as CONSTANTS from '@utils/constants.ts';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { MockProposalFrontend, MockProposalFrontendZoom } from './mockProposalFrontend.tsx';
@@ -8,6 +19,7 @@ import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBack
 import PutProposal, { mockPutProposal } from './putProposal.tsx';
 import MappingPutProposal, {
   getCalibrationStrategy,
+  getDataProductScriptParameters,
   getReferenceCoordinate
 } from './putProposalMapping.tsx';
 
@@ -211,7 +223,7 @@ describe('getCalibrationStrategy', () => {
 });
 
 describe('getReferenceCoordinate', () => {
-  it('should map galactic coordinates correctly', () => {
+  test('should map galactic coordinates correctly', () => {
     const galactic = {
       kind: RA_TYPE_GALACTIC.value,
       l: 123.4,
@@ -233,7 +245,7 @@ describe('getReferenceCoordinate', () => {
     });
   });
 
-  it('should map ICRS coordinates correctly', () => {
+  test('should map ICRS coordinates correctly', () => {
     const icrs = {
       kind: RA_TYPE_ICRS.value,
       raStr: '12:34:56.7',
@@ -253,5 +265,164 @@ describe('getReferenceCoordinate', () => {
       epoch: 'J2000',
       parallax: 0.3
     });
+  });
+});
+
+describe('getDataProductScriptParameters', () => {
+  const obs = [
+    { id: '1', type: TYPE_CONTINUUM, pstMode: undefined },
+    { id: '2', type: TYPE_ZOOM, pstMode: undefined },
+    { id: '3', type: TYPE_PST, pstMode: DETECTED_FILTER_BANK_VALUE },
+    { id: '4', type: TYPE_PST, pstMode: PULSAR_TIMING_VALUE },
+    { id: '5', type: TYPE_PST, pstMode: 999 }
+  ] as any[];
+
+  test('should return correct parameters for continuum image', () => {
+    const dp = {
+      observationId: '1',
+      dataProductType: DP_TYPE_IMAGES,
+      imageSizeValue: 10,
+      imageSizeUnits: 1,
+      pixelSizeValue: 2,
+      pixelSizeUnits: 2,
+      weighting: 1,
+      polarisations: ['XX'],
+      channelsOut: 4,
+      fitSpectralPol: true,
+      taperValue: 0.5
+    } as any;
+    const result = getDataProductScriptParameters(obs, dp);
+    expect(result).toMatchObject({
+      image_size: { value: 10, unit: 'arcmin' },
+      image_cellsize: { value: 2, unit: 'arcsec' },
+      kind: 'continuum',
+      variant: 'continuum image'
+    });
+  });
+
+  test('should return correct parameters for continuum visibilities', () => {
+    const dp = {
+      observationId: '1',
+      dataProductType: 'not_images',
+      imageSizeValue: 10,
+      imageSizeUnits: 0,
+      pixelSizeValue: 2,
+      pixelSizeUnits: 1,
+      weighting: 1,
+      polarisations: ['YY'],
+      channelsOut: 2,
+      fitSpectralPol: false,
+      taperValue: 1.5,
+      timeAveraging: 5,
+      frequencyAveraging: 10
+    } as any;
+    const result = getDataProductScriptParameters(obs, dp);
+    expect(result).toMatchObject({
+      image_size: { value: 10, unit: 'deg' },
+      image_cellsize: { value: 2, unit: 'arcmin' },
+      kind: 'continuum',
+      variant: 'visibilities',
+      time_averaging: { value: 5, unit: '' },
+      frequency_averaging: { value: 10, unit: '' }
+    });
+  });
+
+  test('should return correct parameters for zoom', () => {
+    const dp = {
+      observationId: '2',
+      imageSizeValue: 20,
+      imageSizeUnits: 2,
+      pixelSizeValue: 1,
+      pixelSizeUnits: 0,
+      weighting: 2,
+      polarisations: ['XY'],
+      channelsOut: 8,
+      fitSpectralPol: true,
+      taperValue: 0.1,
+      continuumSubtraction: true
+    } as any;
+    const result = getDataProductScriptParameters(obs, dp);
+    expect(result).toMatchObject({
+      image_size: { value: 20, unit: 'arcsec' },
+      image_cellsize: { value: 1, unit: 'deg' },
+      kind: 'spectral',
+      variant: 'spectral image',
+      continuum_subtraction: true
+    });
+  });
+
+  test('should return detected filterbank for PST', () => {
+    const dp = {
+      observationId: '3',
+      polarisations: ['YX'],
+      bitDepth: 8,
+      timeAveraging: 2,
+      frequencyAveraging: 3
+    } as any;
+    const result = getDataProductScriptParameters(obs, dp);
+    expect(result).toMatchObject({
+      polarisation: ['YX'],
+      bit_depth: 8,
+      time_averaging_factor: 2,
+      frequency_averaging_factor: 3,
+      kind: 'pst',
+      variant: 'detected filterbank'
+    });
+  });
+
+  test('should return pulsar timing for PST', () => {
+    const dp = {
+      observationId: '4',
+      polarisations: ['YX'],
+      bitDepth: 16
+    } as any;
+    const result = getDataProductScriptParameters(obs, dp);
+    expect(result).toMatchObject({
+      polarisation: ['YX'],
+      bit_depth: 16,
+      kind: 'pst',
+      variant: 'pulsar timing'
+    });
+  });
+
+  test('should return flow through for PST', () => {
+    const dp = {
+      observationId: '5',
+      polarisations: ['YX'],
+      bitDepth: 32
+    } as any;
+    const result = getDataProductScriptParameters(obs, dp);
+    expect(result).toMatchObject({
+      polarisation: ['YX'],
+      bit_depth: 32,
+      kind: 'pst',
+      variant: 'flow through'
+    });
+  });
+
+  test('should handle missing obs gracefully', () => {
+    const dp = { observationId: 'notfound' } as any;
+    const result = getDataProductScriptParameters(obs, dp);
+    expect(result).toBeDefined();
+  });
+
+  test('should include robust if weighting is IW_BRIGGS', () => {
+    const dp = {
+      observationId: '1',
+      dataProductType: DP_TYPE_IMAGES,
+      imageSizeValue: 1,
+      imageSizeUnits: 0,
+      pixelSizeValue: 1,
+      pixelSizeUnits: 0,
+      weighting: IW_BRIGGS,
+      robust: 2,
+      polarisations: [],
+      channelsOut: 1,
+      fitSpectralPol: false,
+      taperValue: 0
+    } as any;
+    const result = getDataProductScriptParameters(obs, dp);
+    expect(result.weight.weighting).toBeDefined();
+    expect(result.weight.robust).toBe(2);
   });
 });

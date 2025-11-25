@@ -184,7 +184,7 @@ export const getCalibrationStrategy = (
   }));
 };
 
-const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProductSDP) => {
+export const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProductSDP) => {
   const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
   const obType = obs?.find(o => o.id === dp.observationId)?.type;
   switch (obType) {
