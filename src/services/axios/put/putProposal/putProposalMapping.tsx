@@ -57,13 +57,14 @@ import { CalibrationStrategy, CalibrationStrategyBackend } from '@/utils/types/c
 import { SuppliedBackend } from '@/utils/types/supplied';
 
 const isContinuum = (type: number) => type === TYPE_CONTINUUM;
-// const isPST = (type: number) => type === TYPE_PST;
-// const isZoom = (type: number) => type === TYPE_ZOOM;
+const isPST = (type: number) => type === TYPE_PST;
+const isZoom = (type: number) => type === TYPE_ZOOM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
 const isRedshift = (type: number) => type === VELOCITY_TYPE.REDSHIFT;
 const userId = getUserId();
 
 const getSubType = (proposalType: number, proposalSubType: number[]): any => {
+  console.log('Getting subtypes for proposalType:', proposalType, 'and proposalSubType:', proposalSubType);
   const project = PROJECTS.find(({ id }) => id === proposalType);
   const subTypes: string[] = [];
   for (let subtype of proposalSubType) {
@@ -346,8 +347,11 @@ const getBandwidthContinuum = (incObs: Observation): ValueUnitPair => {
   };
 };
 
-const getBandwidth = (ob: Observation): ValueUnitPair =>
-  isContinuum(ob.type) ? getBandwidthContinuum(ob) : getBandwidthZoom(ob);
+const getBandwidth = (ob: Observation): ValueUnitPair => {
+  console.log('Getting bandwidth for observation type:', ob.type);
+  return isContinuum(ob.type) || isPST(ob.type) ? getBandwidthContinuum(ob) : getBandwidthZoom(ob);
+}
+  
 
 const getCentralFrequency = (incObs: Observation): ValueUnitPair => {
   return {
@@ -611,6 +615,8 @@ const getResults = (
 /*************************************************************************************************************************/
 
 export default function MappingPutProposal(proposal: Proposal, isSV: boolean, status: string) {
+  console.log('/////// Mapping proposal:', proposal);
+  console.log('isSV:', isSV, 'status:', status);
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
     status: status,
@@ -681,5 +687,6 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
     }
   };
   helpers.transform.trimObject(transformedProposal);
+  console.log('Transformed proposal:', transformedProposal);
   return transformedProposal;
 }

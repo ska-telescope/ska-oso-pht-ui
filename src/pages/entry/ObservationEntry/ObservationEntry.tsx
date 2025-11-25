@@ -141,7 +141,7 @@ export default function ObservationEntry() {
   const observationIn = (ob: Observation) => {
     setMyObsId(ob?.id);
     setSubarrayConfig(ob?.subarray);
-    setObservationType(MOCK_CALL ? (getObservationType() as number) : ob.type);
+    setObservationType(MOCK_CALL ? (getObservationType() as number) : ob.type); // TODO this should not be needed
     if (!once) setObservingBand(ob?.observingBand);
     setWeather(ob?.weather ?? Number(t('weather.default')));
     setElevation(ob?.elevation);

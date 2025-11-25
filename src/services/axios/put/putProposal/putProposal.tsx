@@ -23,6 +23,8 @@ async function PutProposal(
     return mockPutProposal();
   }
 
+  console.log('Putting proposal:', proposal);
+
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/${proposal.id}`;
     const convertedProposal = MappingPutProposal(proposal, isSV, status as string);
