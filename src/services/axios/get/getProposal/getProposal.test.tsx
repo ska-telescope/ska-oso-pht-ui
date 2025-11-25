@@ -2,14 +2,24 @@ import { describe, test, expect, vi, beforeEach } from 'vitest';
 import * as CONSTANTS from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
 import { BeamBackend } from '@utils/types/target.tsx';
-import { RA_TYPE_GALACTIC, RA_TYPE_ICRS } from '@utils/constants.ts';
+import {
+  RA_TYPE_GALACTIC,
+  RA_TYPE_ICRS,
+  OBSERVATION_TYPE_BACKEND,
+  TYPE_ZOOM,
+  TYPE_PST,
+  TYPE_CONTINUUM
+} from '@utils/constants.ts';
 import GetProposal, {
   GetMockProposal,
   mapping,
   getBeam,
   getInvestigators,
   getScienceCategory,
-  getObservingMode
+  getObservingMode,
+  getReferenceCoordinate,
+  getBandwidth,
+  getObservationType
 } from './getProposal.tsx';
 import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend.tsx';
 import {
@@ -17,8 +27,6 @@ import {
   MockProposalFrontend,
   MockProposalFrontendZoom
 } from './mockProposalFrontend.tsx';
-import { getReferenceCoordinate } from './getProposal';
-
 describe('Helper Functions', () => {
   test('GetMockProposal returns mock proposal', () => {
     const result = GetMockProposal();
@@ -335,5 +343,87 @@ describe('getReferenceCoordinate', () => {
 
     const result = getReferenceCoordinate(input);
     expect(result).toEqual(expectedOutput);
+  });
+});
+
+describe('getBandwidth', () => {
+  test('returns the correct bandwidth value when a match is found', () => {
+    const result = getBandwidth(100, 1);
+    expect(result).toBe(6);
+  });
+
+  test('returns the fallback value of 1 when no match is found', () => {
+    const result = getBandwidth(300, 1);
+    expect(result).toBe(1);
+  });
+
+  test('returns the fallback value of 1 when telescope is not found', () => {
+    const result = getBandwidth(100, 2);
+    expect(result).toBe(1);
+  });
+
+  test('handles edge cases with undefined or null inputs', () => {
+    expect(getBandwidth((undefined as unknown) as number, 1)).toBe(1);
+    expect(getBandwidth(100, (undefined as unknown) as number)).toBe(1);
+    expect(getBandwidth((null as unknown) as number, 1)).toBe(1);
+    expect(getBandwidth(100, (null as unknown) as number)).toBe(1);
+  });
+});
+
+describe('getObservationType', () => {
+  test('returns TYPE_ZOOM for observation type "zoom"', () => {
+    const input = {
+      observation_type_details: {
+        observation_type: OBSERVATION_TYPE_BACKEND[TYPE_ZOOM]
+      }
+    };
+    const result = getObservationType(input);
+    expect(result).toBe(TYPE_ZOOM);
+  });
+
+  test('returns TYPE_PST for observation type "pst"', () => {
+    const input = {
+      observation_type_details: {
+        observation_type: OBSERVATION_TYPE_BACKEND[TYPE_PST]
+      }
+    };
+    const result = getObservationType(input);
+    expect(result).toBe(TYPE_PST);
+  });
+
+  test('returns TYPE_CONTINUUM for observation type "continuum"', () => {
+    const input = {
+      observation_type_details: {
+        observation_type: OBSERVATION_TYPE_BACKEND[TYPE_CONTINUUM]
+      }
+    };
+    const result = getObservationType(input);
+    expect(result).toBe(TYPE_CONTINUUM);
+  });
+
+  test('returns TYPE_CONTINUUM for unknown observation type', () => {
+    const input = {
+      observation_type_details: {
+        observation_type: 'unknown'
+      }
+    };
+    const result = getObservationType(input);
+    expect(result).toBe(TYPE_CONTINUUM);
+  });
+
+  test('returns TYPE_CONTINUUM when observation_type_details is undefined', () => {
+    const input = {};
+    const result = getObservationType(input);
+    expect(result).toBe(TYPE_CONTINUUM);
+  });
+
+  test('returns TYPE_CONTINUUM when observation_type is null', () => {
+    const input = {
+      observation_type_details: {
+        observation_type: null
+      }
+    };
+    const result = getObservationType(input);
+    expect(result).toBe(TYPE_CONTINUUM);
   });
 });

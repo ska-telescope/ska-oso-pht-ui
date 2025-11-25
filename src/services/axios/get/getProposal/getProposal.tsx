@@ -363,7 +363,7 @@ const getFrequencyAndBandwidthUnits = (
       )?.value as number);
 };
 
-const getBandwidth = (incBandwidth: number, telescope: number): number => {
+export const getBandwidth = (incBandwidth: number, telescope: number): number => {
   const array = OSD_CONSTANTS.array?.find(item => item?.value === telescope);
   const bandwidth = array?.bandWidth?.find(bandwidth =>
     bandwidth?.label?.includes(String(incBandwidth?.toString()))
@@ -380,7 +380,7 @@ const getLinked = (
   return linkedTargetRef ? linkedTargetRef : '';
 };
 
-const getObservationType = (inObs: ObservationSetBackend): number => {
+export const getObservationType = (inObs: ObservationSetBackend): number => {
   switch (inObs?.observation_type_details?.observation_type?.toLocaleLowerCase()) {
     case OBSERVATION_TYPE_BACKEND[TYPE_ZOOM]:
       return TYPE_ZOOM;
