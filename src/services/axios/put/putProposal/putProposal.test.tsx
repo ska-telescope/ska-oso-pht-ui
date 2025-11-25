@@ -6,7 +6,7 @@ import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { MockProposalFrontend, MockProposalFrontendZoom } from './mockProposalFrontend.tsx';
 import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend.tsx';
 import PutProposal, { mockPutProposal } from './putProposal.tsx';
-import MappingPutProposal from './putProposalMapping.tsx';
+import MappingPutProposal, { getCalibrationStrategy } from './putProposalMapping.tsx';
 
 describe('Helper Functions', () => {
   test('mockPutProposal returns mock proposal', () => {
@@ -134,5 +134,75 @@ describe('PutProposal Service', () => {
       PROPOSAL_STATUS.DRAFT
     );
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
+  });
+});
+
+describe('getCalibrationStrategy', () => {
+  test('should map calibration strategies with calibrators', () => {
+    const input = [
+      {
+        observatoryDefined: true,
+        id: 1,
+        observationIdRef: 'obs-1',
+        calibrators: [
+          {
+            calibrationIntent: 'intent1',
+            name: 'cal1',
+            durationMin: 10,
+            choice: 'auto',
+            notes: 'note1'
+          }
+        ],
+        notes: 'strategy notes'
+      }
+    ];
+    const result = getCalibrationStrategy(input as any);
+    expect(result).toEqual([
+      {
+        observatory_defined: true,
+        calibration_id: 1,
+        observation_set_ref: 'obs-1',
+        calibrators: [
+          {
+            calibration_intent: 'intent1',
+            name: 'cal1',
+            duration_min: 10,
+            choice: 'auto',
+            notes: 'note1'
+          }
+        ],
+        notes: 'strategy notes'
+      }
+    ]);
+  });
+
+  test('should map calibration strategies with null calibrators', () => {
+    const input = [
+      {
+        observatoryDefined: false,
+        id: 2,
+        observationIdRef: 'obs-2',
+        calibrators: null,
+        notes: 'no calibrators'
+      }
+    ];
+    const result = getCalibrationStrategy(input as any);
+    expect(result).toEqual([
+      {
+        observatory_defined: false,
+        calibration_id: 2,
+        observation_set_ref: 'obs-2',
+        calibrators: null,
+        notes: 'no calibrators'
+      }
+    ]);
+  });
+
+  test('should return empty array for empty input', () => {
+    expect(getCalibrationStrategy([])).toEqual([]);
+  });
+
+  test('should handle undefined input', () => {
+    expect(getCalibrationStrategy(undefined as any)).toBeUndefined();
   });
 });

@@ -164,7 +164,7 @@ const getDocuments = (
   return documents;
 };
 
-const getCalibrationStrategy = (
+export const getCalibrationStrategy = (
   calibrationStrategies: CalibrationStrategy[]
 ): CalibrationStrategyBackend[] => {
   return calibrationStrategies?.map(strategy => ({
