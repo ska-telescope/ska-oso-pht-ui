@@ -10,7 +10,11 @@ import {
   DP_TYPE_IMAGES,
   DETECTED_FILTER_BANK_VALUE,
   PULSAR_TIMING_VALUE,
-  IW_BRIGGS
+  IW_BRIGGS,
+  TYPE_STR_CONTINUUM,
+  TYPE_STR_ZOOM,
+  TYPE_STR_PST,
+  PST_MODES
 } from '@utils/constants.ts';
 import * as CONSTANTS from '@utils/constants.ts';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
@@ -22,6 +26,7 @@ import MappingPutProposal, {
   getCalibrationStrategy,
   getDataProductScriptParameters,
   getDataProductSRC,
+  getObservationTypeDetails,
   getReferenceCoordinate
 } from './putProposalMapping.tsx';
 
@@ -458,5 +463,61 @@ describe('getDataProductSRC', () => {
       { data_products_src_id: null }
     ];
     expect(getDataProductSRC(input)).toEqual(expected);
+  });
+});
+
+describe('getObservationTypeDetails', () => {
+  const mockObsBase = {
+    getBandwidth: () => ({ value: 100, unit: 'MHz' }),
+    getCentralFrequency: () => ({ value: 1400, unit: 'MHz' }),
+    getSupplied: () => ({ supplied_type: 'test' })
+  };
+
+  test('should return correct details for TYPE_CONTINUUM', () => {
+    const obs = {
+      ...mockObsBase,
+      type: TYPE_CONTINUUM
+    } as any;
+    const result = getObservationTypeDetails(obs);
+    expect(result.observation_type).toBe(TYPE_STR_CONTINUUM);
+    expect(result.bandwidth).toBeDefined();
+    expect(result.central_frequency).toBeDefined();
+    expect(result.supplied).toBeDefined();
+  });
+
+  test('should return correct details for TYPE_ZOOM', () => {
+    const obs = {
+      ...mockObsBase,
+      type: TYPE_ZOOM,
+      spectralResolution: 1.2,
+      effectiveResolution: 2.3,
+      spectralAveraging: 4
+    } as any;
+    const result = getObservationTypeDetails(obs);
+    expect(result.observation_type).toBe(TYPE_STR_ZOOM);
+    expect(result.spectral_resolution).toBe(1.2);
+    expect(result.effective_resolution).toBe(2.3);
+    expect(result.spectral_averaging).toBe('4');
+    expect(result.number_of_channels).toBe('1024');
+  });
+
+  test('should return correct details for TYPE_PST', () => {
+    const obs = {
+      ...mockObsBase,
+      type: TYPE_PST,
+      pstMode: 1
+    } as any;
+    const result = getObservationTypeDetails(obs);
+    expect(result.observation_type).toBe(TYPE_STR_PST);
+    expect(result.pst_mode).toBe(PST_MODES[1].mapping);
+  });
+
+  test('should return correct details for unknown type (default)', () => {
+    const obs = {
+      ...mockObsBase,
+      type: 999
+    } as any;
+    const result = getObservationTypeDetails(obs);
+    expect(result.observation_type).toBe(TYPE_STR_PST);
   });
 });

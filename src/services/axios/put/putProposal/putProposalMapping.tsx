@@ -367,7 +367,7 @@ const getSupplied = (inObs: Observation) => {
   };
 };
 
-const getObservationTypeDetails = (obs: Observation) => {
+export const getObservationTypeDetails = (obs: Observation) => {
   switch (obs.type) {
     case TYPE_CONTINUUM:
       return {
