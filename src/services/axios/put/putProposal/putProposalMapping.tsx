@@ -511,7 +511,7 @@ const getSuppliedFieldsSensitivity = (
   return params;
 };
 
-const getSuppliedFieldsIntegrationTime = (
+export const getSuppliedFieldsIntegrationTime = (
   suppliedType: string,
   obsType: number,
   tarObs: TargetObservation
