@@ -506,7 +506,7 @@ export const MockProposalFrontendZoom: Proposal = {
       imageSizeValue: 100,
       imageSizeUnits: 0,
       pixelSizeValue: 3.7,
-      pixelSizeUnits: 2,
+      pixelSizeUnits: 1,
       weighting: 1,
       polarisations: ['I'],
       channelsOut: 1,
@@ -515,7 +515,7 @@ export const MockProposalFrontendZoom: Proposal = {
       taperValue: 1,
       timeAveraging: 0,
       frequencyAveraging: 0,
-      bitDepth: 1,
+      bitDepth: 0,
       continuumSubtraction: false
     }
   ],
