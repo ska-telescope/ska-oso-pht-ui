@@ -136,7 +136,7 @@ export const getVelType = (InDefinition: string) => {
   return velType ? velType : 1; // fallback
 };
 
-const getReferenceCoordinate = (
+export const getReferenceCoordinate = (
   tar: ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend
 ): ReferenceCoordinateICRS | ReferenceCoordinateGalactic => {
   if ('kind' in tar && tar.kind === RA_TYPE_GALACTIC.label) {
