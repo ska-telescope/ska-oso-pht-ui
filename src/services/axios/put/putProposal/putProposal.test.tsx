@@ -422,7 +422,7 @@ describe('getDataProductScriptParameters', () => {
       taperValue: 0
     } as any;
     const result = getDataProductScriptParameters(obs, dp);
-    expect(result.weight.weighting).toBeDefined();
+    expect(result.weight.weighting).toBe('briggs');
     expect(result.weight.robust).toBe(2);
   });
 });
