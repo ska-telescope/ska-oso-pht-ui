@@ -9,7 +9,8 @@ import {
   STATUS_ERROR,
   TYPE_CONTINUUM,
   OB_SUBARRAY_CUSTOM,
-  TELESCOPE_LOW_NUM
+  TELESCOPE_LOW_NUM,
+  TYPE_ZOOM
 } from '../../../utils/constants';
 import GetZoomData from '../getZoomData/getZoomData';
 import GetContinuumData from '../getContinuumData/getContinuumData';
@@ -77,9 +78,17 @@ async function getSensitivityCalculatorAPIData(
 ) {
   const telescope: Telescope = getTelescope(observation.telescope);
 
+  const setMockObservation = (obs: Observation) => {
+    const data = obs;
+    data.type = TYPE_CONTINUUM;
+    return data;
+  };
+
   return observation.type === TYPE_CONTINUUM
     ? GetContinuumData(telescope, observation, target)
-    : GetZoomData(telescope, observation, target);
+    : observation.type === TYPE_ZOOM
+    ? GetZoomData(telescope, observation, target)
+    : GetContinuumData(telescope, setMockObservation(observation), target); // TODO : Change to appropriate function when PST available
 }
 
 export default getSensCalc;
