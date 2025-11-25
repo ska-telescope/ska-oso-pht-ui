@@ -348,7 +348,7 @@ const getSupplied = (inSupplied: SuppliedBackend | null): Supplied => {
   return supplied as Supplied;
 };
 
-const getFrequencyAndBandwidthUnits = (
+export const getFrequencyAndBandwidthUnits = (
   inUnits: string | null,
   telescope: number,
   observingBand: number

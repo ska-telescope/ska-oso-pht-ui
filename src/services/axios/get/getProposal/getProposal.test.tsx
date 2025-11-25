@@ -8,7 +8,9 @@ import {
   OBSERVATION_TYPE_BACKEND,
   TYPE_ZOOM,
   TYPE_PST,
-  TYPE_CONTINUUM
+  TYPE_CONTINUUM,
+  FREQUENCY_UNITS,
+  BANDWIDTH_TELESCOPE
 } from '@utils/constants.ts';
 import GetProposal, {
   GetMockProposal,
@@ -19,7 +21,8 @@ import GetProposal, {
   getObservingMode,
   getReferenceCoordinate,
   getBandwidth,
-  getObservationType
+  getObservationType,
+  getFrequencyAndBandwidthUnits
 } from './getProposal.tsx';
 import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend.tsx';
 import {
@@ -425,5 +428,41 @@ describe('getObservationType', () => {
     };
     const result = getObservationType(input);
     expect(result).toBe(TYPE_CONTINUUM);
+  });
+});
+
+describe('getFrequencyAndBandwidthUnits', () => {
+  test('returns the correct unit value when a match is found in FREQUENCY_UNITS', () => {
+    const inUnits = FREQUENCY_UNITS[0].mapping; // Use a valid mapping from FREQUENCY_UNITS
+    const telescope = 1;
+    const observingBand = 0;
+    const result = getFrequencyAndBandwidthUnits(inUnits, telescope, observingBand);
+    expect(result).toBe(FREQUENCY_UNITS[0].value);
+  });
+
+  test('returns the fallback unit value when no match is found in FREQUENCY_UNITS', () => {
+    const inUnits = 'nonexistent-unit';
+    const telescope = 1;
+    const observingBand = 0;
+    const result = getFrequencyAndBandwidthUnits(inUnits, telescope, observingBand);
+    expect(result).toBe(
+      FREQUENCY_UNITS.find(
+        item =>
+          item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand]?.units?.toLowerCase()
+      )?.value
+    );
+  });
+
+  test('handles null input for inUnits and returns the fallback value', () => {
+    const inUnits = null;
+    const telescope = 1;
+    const observingBand = 0;
+    const result = getFrequencyAndBandwidthUnits(inUnits, telescope, observingBand);
+    expect(result).toBe(
+      FREQUENCY_UNITS.find(
+        item =>
+          item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand]?.units?.toLowerCase()
+      )?.value
+    );
   });
 });
