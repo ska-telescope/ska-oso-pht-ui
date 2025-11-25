@@ -74,7 +74,7 @@ const getSubType = (proposalType: number, proposalSubType: number[]): any => {
   return subTypes;
 };
 
-const getReferenceCoordinate = (
+export const getReferenceCoordinate = (
   tar: Target | ReferenceCoordinateICRS | ReferenceCoordinateGalactic
 ): ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend => {
   if ('kind' in tar && tar.kind === RA_TYPE_GALACTIC.value) {

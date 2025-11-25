@@ -1,12 +1,15 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import { PROPOSAL_STATUS } from '@utils/constants.ts';
+import { PROPOSAL_STATUS, RA_TYPE_GALACTIC, RA_TYPE_ICRS } from '@utils/constants.ts';
 import * as CONSTANTS from '@utils/constants.ts';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { MockProposalFrontend, MockProposalFrontendZoom } from './mockProposalFrontend.tsx';
 import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend.tsx';
 import PutProposal, { mockPutProposal } from './putProposal.tsx';
-import MappingPutProposal, { getCalibrationStrategy } from './putProposalMapping.tsx';
+import MappingPutProposal, {
+  getCalibrationStrategy,
+  getReferenceCoordinate
+} from './putProposalMapping.tsx';
 
 describe('Helper Functions', () => {
   test('mockPutProposal returns mock proposal', () => {
@@ -204,5 +207,51 @@ describe('getCalibrationStrategy', () => {
 
   test('should handle undefined input', () => {
     expect(getCalibrationStrategy(undefined as any)).toBeUndefined();
+  });
+});
+
+describe('getReferenceCoordinate', () => {
+  it('should map galactic coordinates correctly', () => {
+    const galactic = {
+      kind: RA_TYPE_GALACTIC.value,
+      l: 123.4,
+      b: 56.7,
+      pmL: 1.1,
+      pmB: 2.2,
+      epoch: 'J2000',
+      parallax: 0.5
+    };
+    const result = getReferenceCoordinate(galactic);
+    expect(result).toEqual({
+      kind: RA_TYPE_GALACTIC.label,
+      l: 123.4,
+      b: 56.7,
+      pm_l: 1.1,
+      pm_b: 2.2,
+      epoch: 'J2000',
+      parallax: 0.5
+    });
+  });
+
+  it('should map ICRS coordinates correctly', () => {
+    const icrs = {
+      kind: RA_TYPE_ICRS.value,
+      raStr: '12:34:56.7',
+      decStr: '-12:34:56.7',
+      pmRa: 0.1,
+      pmDec: 0.2,
+      epoch: 'J2000',
+      parallax: 0.3
+    };
+    const result = getReferenceCoordinate(icrs);
+    expect(result).toEqual({
+      kind: RA_TYPE_ICRS.label,
+      ra_str: '12:34:56.7',
+      dec_str: '-12:34:56.7',
+      pm_ra: 0.1,
+      pm_dec: 0.2,
+      epoch: 'J2000',
+      parallax: 0.3
+    });
   });
 });
