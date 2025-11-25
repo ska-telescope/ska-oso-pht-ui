@@ -10,7 +10,7 @@ import {
 } from './mockProposalFrontend.tsx';
 
 describe('Helper Functions', () => {
-  test.skip('GetMockProposal returns mock proposal', () => {
+  test('GetMockProposal returns mock proposal', () => {
     const result = GetMockProposal();
     expect(result).to.deep.equal(MockProposalFrontend);
   });

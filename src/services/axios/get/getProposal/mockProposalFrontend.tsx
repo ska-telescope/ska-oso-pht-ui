@@ -308,16 +308,16 @@ export const MockProposalFrontend: Proposal = {
       imageSizeValue: 15,
       imageSizeUnits: 0,
       pixelSizeValue: 1.007,
-      pixelSizeUnits: 1,
+      pixelSizeUnits: 2,
       weighting: 1,
-      polarisations: ['123'],
+      polarisations: ['X'],
       channelsOut: 1,
       fitSpectralPol: 3,
       robust: 0,
       taperValue: 1,
       timeAveraging: 0,
       frequencyAveraging: 0,
-      bitDepth: 0,
+      bitDepth: 1,
       continuumSubtraction: false
     }
   ],
@@ -506,7 +506,7 @@ export const MockProposalFrontendZoom: Proposal = {
       imageSizeValue: 100,
       imageSizeUnits: 0,
       pixelSizeValue: 3.7,
-      pixelSizeUnits: 1,
+      pixelSizeUnits: 2,
       weighting: 1,
       polarisations: ['I'],
       channelsOut: 1,
@@ -515,7 +515,7 @@ export const MockProposalFrontendZoom: Proposal = {
       taperValue: 1,
       timeAveraging: 0,
       frequencyAveraging: 0,
-      bitDepth: 0,
+      bitDepth: 1,
       continuumSubtraction: false
     }
   ],

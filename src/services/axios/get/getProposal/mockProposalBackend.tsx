@@ -206,11 +206,11 @@ export const MockProposalBackend: ProposalBackend = {
               unit: 'h'
             }
           },
-          // spectral_resolution: '5.43 kHz (8.1 km/s)',
-          // effective_resolution: '5.43 kHz (8.1 km/s)',
+          spectral_resolution: '5.43 kHz (8.1 km/s)',
+          effective_resolution: '5.43 kHz (8.1 km/s)',
           image_weighting: 'uniform',
-          robust: '0'
-          // spectral_averaging: '1'
+          robust: '0',
+          spectral_averaging: '1'
         }
       }
     ],
