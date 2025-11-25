@@ -31,6 +31,7 @@ UNRELEASED
 * Changed: Added a drawer to display helper text
 * Changed: oda to 14.0.2
 * Changed: Adjusted screen layout following removal of help panel 
+* Changed: Update the observation pages so that the addition can be inline if there is a maximum of 1 observation allowed
 
 8.0.0
 ----------
