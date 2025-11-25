@@ -17,15 +17,15 @@ describe('Helper Functions', () => {
     expect(result).to.deep.equal([MockProposalReviewListFrontend[0]]);
   });
 
-  // test('sorts by latest updated and removes duplicates', () => {
-  //   const result: ProposalReviewBackend[] = getUniqueMostRecentItems(
-  //     MockProposalReviewListBackend,
-  //     'review_id'
-  //   );
-  //   expect(result).to.have.lengthOf(MockProposalReviewListBackend.length - 1);
-  //   expect(result[0].metadata?.last_modified_on).to.equal('2025-09-16T08:35:24.245Z');
-  //   expect(result[1].metadata?.last_modified_on).to.equal('2025-07-16T08:35:24.245Z');
-  // });
+  test.skip('sorts by latest updated and removes duplicates', () => {
+    const result: ProposalReviewBackend[] = getUniqueMostRecentItems(
+      MockProposalReviewListBackend,
+      'review_id'
+    );
+    expect(result).to.have.lengthOf(MockProposalReviewListBackend.length - 1);
+    expect(result[0].metadata?.last_modified_on).to.equal('2025-09-16T08:35:24.245Z');
+    expect(result[1].metadata?.last_modified_on).to.equal('2025-07-16T08:35:24.245Z');
+  });
 });
 
 describe('GetProposalReviewList Service', () => {
