@@ -19,9 +19,10 @@ import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBack
 import PutProposal, { mockPutProposal } from './putProposal.tsx';
 import MappingPutProposal, {
   getCalibrationStrategy,
-  getDataProductScriptParameters,
+  getDataProductScriptParameters, getDataProductSRC,
   getReferenceCoordinate
 } from './putProposalMapping.tsx';
+import type { DataProductSRC, DataProductSRCNetBackend } from '@/utils/types/dataProduct';
 
 describe('Helper Functions', () => {
   test('mockPutProposal returns mock proposal', () => {
@@ -424,5 +425,37 @@ describe('getDataProductScriptParameters', () => {
     const result = getDataProductScriptParameters(obs, dp);
     expect(result.weight.weighting).toBe('briggs');
     expect(result.weight.robust).toBe(2);
+  });
+});
+
+describe('getDataProductSRC', () => {
+  test('should map DataProductSRC array to DataProductSRCNetBackend array', () => {
+    const input: DataProductSRC[] = [
+      { id: 1 } as DataProductSRC,
+      { id: 2 } as DataProductSRC,
+      { id: 3 } as DataProductSRC,
+    ];
+    const expected: DataProductSRCNetBackend[] = [
+      { data_products_src_id: 1 },
+      { data_products_src_id: 2 },
+      { data_products_src_id: 3 },
+    ];
+    expect(getDataProductSRC(input)).toEqual(expected);
+  });
+
+  test('should return an empty array if input is empty', () => {
+    expect(getDataProductSRC([])).toEqual([]);
+  });
+
+  test('should handle undefined or null id values', () => {
+    const input: DataProductSRC[] = [
+      { id: undefined } as DataProductSRC,
+      { id: null } as DataProductSRC,
+    ];
+    const expected: DataProductSRCNetBackend[] = [
+      { data_products_src_id: undefined },
+      { data_products_src_id: null },
+    ];
+    expect(getDataProductSRC(input)).toEqual(expected);
   });
 });

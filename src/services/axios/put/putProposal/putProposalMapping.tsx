@@ -289,7 +289,7 @@ const getDataProductSDP = (
   }));
 };
 
-const getDataProductSRC = (dataProducts: DataProductSRC[]): DataProductSRCNetBackend[] => {
+export const getDataProductSRC = (dataProducts: DataProductSRC[]): DataProductSRCNetBackend[] => {
   return dataProducts?.map(dp => ({ data_products_src_id: dp?.id }));
 };
 
