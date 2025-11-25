@@ -103,18 +103,18 @@ const getAttributes = (proposalType: {
   return result && result.length > 0 ? result : [];
 };
 
-const getScienceCategory = (scienceCat: string) => {
+export const getScienceCategory = (scienceCat: string) => {
   const cat = GENERAL.ScienceCategory?.find(
     cat => cat.label.toLowerCase() === scienceCat?.toLowerCase()
   )?.value;
   return cat ? cat : null;
 };
 
-const getObservingMode = (scienceCat: string) => {
-  const cat = GENERAL.ObservingMode?.find(
-    cat => cat.label.toLowerCase() === scienceCat?.toLowerCase()
+export const getObservingMode = (observingMode: string) => {
+  const obsMode = GENERAL.ObservingMode?.find(
+    obsMode => obsMode.label.toLowerCase() === observingMode?.toLowerCase()
   )?.value;
-  return cat ? cat : null;
+  return obsMode ? obsMode : null;
 };
 
 const getPDF = (documents: DocumentBackend[] | null, documentId: string): DocumentPDF | null => {

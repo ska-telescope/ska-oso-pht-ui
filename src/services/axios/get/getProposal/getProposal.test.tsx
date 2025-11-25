@@ -6,7 +6,9 @@ import GetProposal, {
   GetMockProposal,
   mapping,
   getBeam,
-  getInvestigators
+  getInvestigators,
+  getScienceCategory,
+  getObservingMode
 } from './getProposal.tsx';
 import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend.tsx';
 import {
@@ -87,40 +89,6 @@ describe('GetProposal Service', () => {
     mockedAuthClient.get.mockResolvedValue(undefined);
     const result = await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id);
     expect(result).toBe('error.API_UNKNOWN_ERROR');
-  });
-});
-
-const OBSERVATION = {
-  ObservingMode: [
-    { label: 'Mode A', value: 1 },
-    { label: 'Mode B', value: 2 },
-    { label: 'Mode C', value: 3 }
-  ]
-};
-
-const getObservingMode = (scienceCat: string) => {
-  const cat = OBSERVATION.ObservingMode?.find(
-    cat => cat.label.toLowerCase() === scienceCat?.toLowerCase()
-  )?.value;
-  return cat ? cat : null;
-};
-
-describe('getObservingMode', () => {
-  test('returns correct value for a valid observing mode', () => {
-    expect(getObservingMode('Mode A')).toBe(1);
-    expect(getObservingMode('mode b')).toBe(2);
-    expect(getObservingMode('MODE C')).toBe(3);
-  });
-
-  test('returns null for an invalid observing mode', () => {
-    expect(getObservingMode('Invalid Mode')).toBeNull();
-    expect(getObservingMode('')).toBeNull();
-    expect(getObservingMode((null as unknown) as string)).toBeNull();
-  });
-
-  test('is case insensitive', () => {
-    expect(getObservingMode('mode a')).toBe(1);
-    expect(getObservingMode('MODE B')).toBe(2);
   });
 });
 
@@ -264,5 +232,33 @@ describe('getInvestigators', () => {
 
     const result = getInvestigators(input);
     expect(result).toEqual(expected);
+  });
+});
+
+describe('getObservingMode', () => {
+  test('returns the correct value for a valid observing mode', () => {
+    expect(getObservingMode('Continuum')).toBe(1);
+    expect(getObservingMode('PST')).toBe(2);
+  });
+
+  test('returns null for an invalid observing mode', () => {
+    expect(getObservingMode('Zoom')).toBeNull();
+    expect(getObservingMode('')).toBeNull();
+    expect(getObservingMode((null as unknown) as string)).toBeNull();
+    expect(getObservingMode('undefined')).toBeNull();
+  });
+});
+
+describe('getScienceCategory', () => {
+  test('returns the correct value for a valid science category', () => {
+    expect(getScienceCategory('Cosmology')).toBe(1);
+    expect(getScienceCategory('Magnetism')).toBe(9);
+  });
+
+  test('returns null for an invalid science category', () => {
+    expect(getScienceCategory('Biology')).toBeNull();
+    expect(getScienceCategory('')).toBeNull();
+    expect(getScienceCategory((null as unknown) as string)).toBeNull();
+    expect(getScienceCategory('undefined')).toBeNull();
   });
 });
