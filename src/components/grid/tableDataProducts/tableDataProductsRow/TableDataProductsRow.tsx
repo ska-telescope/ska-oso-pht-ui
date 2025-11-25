@@ -119,7 +119,7 @@ export default function TableDataProductsRow({
   const tableObservationSubarrayCell = () => {
     const colors = getColors({
       type: 'telescope',
-      colors: getObservation()?.telescope.toString() ?? '',
+      colors: getObservation()?.telescope?.toString() ?? '',
       content: 'both'
     });
     return (
@@ -144,7 +144,7 @@ export default function TableDataProductsRow({
   const tableObservationBandCell = () => {
     const colors = getColors({
       type: 'telescope',
-      colors: getObservation()?.telescope.toString() ?? '',
+      colors: getObservation()?.telescope?.toString() ?? '',
       content: 'both',
       dim: 0.6
     });
@@ -169,7 +169,7 @@ export default function TableDataProductsRow({
   const tableObservationFrequencySpectrumCell = () => {
     const colors = getColors({
       type: 'telescope',
-      colors: getObservation()?.telescope.toString() ?? '',
+      colors: getObservation()?.telescope?.toString() ?? '',
       content: 'both',
       dim: 0.6
     });
