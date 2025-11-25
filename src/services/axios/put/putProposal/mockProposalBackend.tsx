@@ -27,7 +27,10 @@ export const MockProposalBackend: ProposalBackend = {
           kind: RA_TYPE_ICRS.label,
           ra_str: '00:00:00.0',
           dec_str: '00:00:00.0',
-          epoch: 2000
+          epoch: 2000,
+          parallax: undefined,
+          pm_ra: undefined,
+          pm_dec: undefined
         },
         tied_array_beams: {
           pst_beams: [
@@ -66,7 +69,10 @@ export const MockProposalBackend: ProposalBackend = {
           kind: RA_TYPE_ICRS.label,
           ra_str: '05:34:30.900',
           dec_str: '+22:00:53.000',
-          epoch: 2000
+          epoch: 2000,
+          parallax: undefined,
+          pm_ra: undefined,
+          pm_dec: undefined
         },
         tied_array_beams: {
           pst_beams: [
@@ -105,7 +111,10 @@ export const MockProposalBackend: ProposalBackend = {
           kind: RA_TYPE_ICRS.label,
           ra_str: '21:33:27.0200',
           dec_str: '-00:49:23.700',
-          epoch: 2000
+          epoch: 2000,
+          parallax: undefined,
+          pm_ra: undefined,
+          pm_dec: undefined
         },
         tied_array_beams: {
           pst_beams: [
@@ -145,6 +154,7 @@ export const MockProposalBackend: ProposalBackend = {
         observation_set_id: 'obs-obR1Ej',
         observing_band: 'low_band',
         elevation: 20,
+        group_id: '',
         array_details: {
           array: 'ska_low',
           subarray: 'aa2',

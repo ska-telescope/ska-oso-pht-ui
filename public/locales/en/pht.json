@@ -400,7 +400,7 @@
     "error": "A value greater than zero is required"
   },
   "imageWeighting": {
-    "help": "Select natural, uniform or Briggs weighting. For Briggs weighting, the robustness parameter can be set to -2 (closest to uniform weighting), -1, 0, 1 or 2 (closest to natural weighting).",
+    "help": "Select natural, uniform or Briggs weighting.\n\nFor Briggs weighting, the robustness parameter can be set to a value listed below:\n\n-2 (closest to Uniform weighting),\n-1,\n 0,\n 1\n2 (closest to natural weighting).",
     "label": "Image Weighting",
     "0": "Natural",
     "1": "Uniform",
@@ -680,6 +680,7 @@
     "2": "arcsec",
     "label": "Pixel Size",
     "help": "Pixel size of the image requested.",
+    "helpURL": "https://sensitivity-calculator.skao.int/",
     "notFound": "No value found",
     "precision": 3,
     "unableToDetermine": "Unable to determine",

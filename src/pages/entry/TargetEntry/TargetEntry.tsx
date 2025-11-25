@@ -28,7 +28,8 @@ import {
   TYPE_PST,
   DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
   DEFAULT_ZOOM_OBSERVATION_LOW_AA2,
-  DEFAULT_PST_OBSERVATION_LOW_AA2
+  DEFAULT_PST_OBSERVATION_LOW_AA2,
+  TELESCOPE_LOW_NUM
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -279,7 +280,7 @@ export default function TargetEntry({
           pixelSizeValue: 1,
           pixelSizeUnits: 2,
           weighting: 1,
-          polarisations: ['I'],
+          polarisations: [],
           channelsOut: 1,
           fitSpectralPol: 3,
           robust: -1,
@@ -296,6 +297,11 @@ export default function TargetEntry({
         return {
           ...obs,
           id: generateId(t('addObservation.idPrefix'), 6),
+          telescope: TELESCOPE_LOW_NUM,
+          subarray: OB_SUBARRAY_AA2,
+          linked: '0',
+          type: getProposal()?.scienceCategory,
+          observingBand: BAND_LOW,
           centralFrequency: calculateCentralFrequency(
             BAND_LOW,
             OB_SUBARRAY_AA2,

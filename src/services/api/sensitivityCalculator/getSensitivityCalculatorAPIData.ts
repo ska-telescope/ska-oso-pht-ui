@@ -62,7 +62,7 @@ async function getSensCalc(observation: Observation, target: Target): Promise<Se
     const results = Object.assign(
       {},
       makeResponse(target, STATUS_PARTIAL, ''),
-      makeResponse(target, STATUS_ERROR, e)
+      makeResponse(target, STATUS_ERROR, e as string)
     );
     return results as SensCalcResults;
   }

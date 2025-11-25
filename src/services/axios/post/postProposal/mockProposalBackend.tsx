@@ -10,6 +10,7 @@ export const MockProposalBackend: ProposalBackend = {
   investigator_refs: [],
   proposal_info: {
     title: 'New Proposal',
+    science_category: '',
     proposal_type: {
       main_type: 'standard_proposal',
       attributes: ['coordinated_proposal']

@@ -17,14 +17,19 @@ describe('Helper Functions', () => {
   test('mappingPostProposal returns mapped proposal from frontend to backend format', () => {
     const proposalBackEnd: ProposalBackend = mappingPostProposal(
       MockProposalFrontend,
-      PROPOSAL_STATUS.DRAFT
+      PROPOSAL_STATUS.DRAFT,
+      false
     );
     expect(proposalBackEnd).to.deep.equal(MockProposalBackend);
   });
 
   test('mappingPostProposal returns mapped proposal and returns empty array of sub-type when not specified', () => {
     const proposal = { ...MockProposalFrontend, proposalSubType: undefined };
-    const proposalBackEnd: ProposalBackend = mappingPostProposal(proposal, PROPOSAL_STATUS.DRAFT);
+    const proposalBackEnd: ProposalBackend = mappingPostProposal(
+      proposal,
+      PROPOSAL_STATUS.DRAFT,
+      false
+    );
     expect(proposalBackEnd).to.deep.equal({
       ...MockProposalBackend,
       proposal_info: {

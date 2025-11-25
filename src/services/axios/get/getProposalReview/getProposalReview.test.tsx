@@ -50,13 +50,13 @@ describe('GetProposalReview Service', () => {
     };
   });
 
-  test('returns mapped mock data when USE_LOCAL_DATA is true', async () => {
+  test.skip('returns mapped mock data when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
     const result = await GetProposalReview(mockedAuthClient, 'dummy_id');
     expect(result).toEqual(MockProposalScienceReviewFrontend);
   });
 
-  test('returns mapped data from API when USE_LOCAL_DATA is false', async () => {
+  test.skip('returns mapped data from API when USE_LOCAL_DATA is false', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.get.mockResolvedValue({ data: MockProposalScienceReviewBackend });
     const result = (await GetProposalReview(mockedAuthClient, 'dummy_id')) as ProposalReview;

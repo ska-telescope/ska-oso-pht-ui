@@ -253,7 +253,7 @@ const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProdu
       const pstMode = obs?.find(o => o.id === dp.observationId)?.pstMode;
       if (pstMode === DETECTED_FILTER_BANK_VALUE) {
         return {
-          polarisations: dp.polarisations,
+          polarisation: dp.polarisations,
           bit_depth: Number(dp.bitDepth),
           time_averaging_factor: dp.timeAveraging,
           frequency_averaging_factor: dp.frequencyAveraging,
@@ -262,14 +262,14 @@ const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProdu
         };
       } else if (pstMode === PULSAR_TIMING_VALUE) {
         return {
-          polarisations: dp.polarisations,
+          polarisation: dp.polarisations,
           bit_depth: dp.bitDepth,
           kind: 'pst',
           variant: 'pulsar timing'
         };
       } else {
         return {
-          polarisations: dp.polarisations,
+          polarisation: dp.polarisations,
           bit_depth: dp.bitDepth,
           kind: 'pst',
           variant: 'flow through'
@@ -680,6 +680,7 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
       )
     }
   };
+
   helpers.transform.trimObject(transformedProposal);
   return transformedProposal;
 }
