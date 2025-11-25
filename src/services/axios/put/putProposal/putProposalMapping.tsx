@@ -16,31 +16,31 @@ import TargetObservation from '@utils/types/targetObservation.tsx';
 import { SensCalcResultsBackend } from '@utils/types/sensCalcResults.tsx';
 import {
   BANDWIDTH_TELESCOPE,
+  DETECTED_FILTER_BANK_VALUE,
+  DP_TYPE_IMAGES,
   FREQUENCY_UNITS,
   GENERAL,
   IMAGE_WEIGHTING,
+  IW_BRIGGS,
   PROJECTS,
   PROPOSAL_STATUS,
+  PST_MODES,
+  PULSAR_TIMING_VALUE,
+  RA_TYPE_GALACTIC,
+  RA_TYPE_ICRS,
+  ROBUST,
+  SCIENCE_VERIFICATION,
   TELESCOPE_LOW_BACKEND_MAPPING,
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_BACKEND_MAPPING,
   TYPE_CONTINUUM,
-  VEL_UNITS,
-  VELOCITY_TYPE,
-  ROBUST,
-  IW_BRIGGS,
-  RA_TYPE_GALACTIC,
-  RA_TYPE_ICRS,
-  SCIENCE_VERIFICATION,
   TYPE_PST,
-  TYPE_ZOOM,
   TYPE_STR_CONTINUUM,
-  TYPE_STR_ZOOM,
   TYPE_STR_PST,
-  DP_TYPE_IMAGES,
-  PST_MODES,
-  DETECTED_FILTER_BANK_VALUE,
-  PULSAR_TIMING_VALUE
+  TYPE_STR_ZOOM,
+  TYPE_ZOOM,
+  VEL_UNITS,
+  VELOCITY_TYPE
 } from '@utils/constants.ts';
 import {
   DataProductSDP,
@@ -540,12 +540,12 @@ const getObsType = (incTarObs: TargetObservation, incObs: Observation[]): number
 
 const getSpectralSection = (obsType: number) => (isContinuum(obsType) ? 'section2' : 'section1');
 
-const getDataProductRef = (incTarObs: TargetObservation, incDataProductSDP: DataProductSDP[]) => {
-  const dataProductRef = String(
-    incDataProductSDP.find(dp => dp.observationId === incTarObs.observationId)?.id
-  );
+export const getDataProductRef = (
+  incTarObs: TargetObservation,
+  incDataProductSDP: DataProductSDP[]
+) => {
   // TODO make data product mandatory when sens calc is requested so it's never undefined
-  return dataProductRef;
+  return String(incDataProductSDP.find(dp => dp.observationId === incTarObs.observationId)?.id);
 };
 
 const getResults = (

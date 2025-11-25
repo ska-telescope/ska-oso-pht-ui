@@ -18,12 +18,18 @@ import {
 } from '@utils/constants.ts';
 import * as CONSTANTS from '@utils/constants.ts';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
-import { DataProductSRC, DataProductSRCNetBackend } from '@utils/types/dataProduct.tsx';
+import {
+  DataProductSDP,
+  DataProductSRC,
+  DataProductSRCNetBackend
+} from '@utils/types/dataProduct.tsx';
+import TargetObservation from '@utils/types/targetObservation.tsx';
 import { MockProposalFrontend, MockProposalFrontendZoom } from './mockProposalFrontend.tsx';
 import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend.tsx';
 import PutProposal, { mockPutProposal } from './putProposal.tsx';
 import MappingPutProposal, {
   getCalibrationStrategy,
+  getDataProductRef,
   getDataProductScriptParameters,
   getDataProductSRC,
   getObservationTypeDetails,
@@ -556,5 +562,31 @@ describe('getSuppliedFieldsIntegrationTime', () => {
       continuum: { value: NaN, unit: '' },
       spectral: { value: NaN, unit: '' }
     });
+  });
+});
+
+describe('getDataProductRef', () => {
+  test('returns the id as string when observationId matches', () => {
+    const incTarObs = { observationId: 'obs-1' } as TargetObservation;
+    const incDataProductSDP = [
+      { observationId: 'obs-1', id: 123 } as DataProductSDP,
+      { observationId: 'obs-2', id: 456 } as DataProductSDP
+    ];
+    expect(getDataProductRef(incTarObs, incDataProductSDP)).toBe('123');
+  });
+
+  test('returns "undefined" string if no match is found', () => {
+    const incTarObs = { observationId: 'obs-3' } as TargetObservation;
+    const incDataProductSDP = [
+      { observationId: 'obs-1', id: 123 } as DataProductSDP,
+      { observationId: 'obs-2', id: 456 } as DataProductSDP
+    ];
+    expect(getDataProductRef(incTarObs, incDataProductSDP)).toBe('undefined');
+  });
+
+  test('returns "undefined" string if id is undefined', () => {
+    const incTarObs = { observationId: 'obs-1' } as TargetObservation;
+    const incDataProductSDP = [{ observationId: 'obs-1', id: undefined } as DataProductSDP];
+    expect(getDataProductRef(incTarObs, incDataProductSDP)).toBe('undefined');
   });
 });
