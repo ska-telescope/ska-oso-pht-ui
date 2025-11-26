@@ -661,7 +661,7 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
       calibration_strategy:
         proposal.calibrationStrategy && proposal.calibrationStrategy.length > 0
           ? getCalibrationStrategy(proposal.calibrationStrategy)
-          : null,
+          : [],
       data_product_sdps:
         proposal?.dataProductSDP && proposal?.dataProductSDP?.length > 0
           ? getDataProductSDP(
