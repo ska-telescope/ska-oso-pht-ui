@@ -90,7 +90,7 @@ const toFixed = (value: number) => {
   return Number(value).toFixed(DECIMAL_PLACES);
 };
 
-function getFinalIndividualResultsForZoom(
+export function getFinalIndividualResultsForZoom(
   results: any,
   theObservation: any
 ): FinalIndividualResults {
