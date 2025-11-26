@@ -57,7 +57,11 @@ interface FinalIndividualResults {
   results11: ResultsSection;
 }
 
-function getFinalResults(target: Target, results: any, theObservation: any): SensCalcResults {
+export function getFinalResults(
+  target: Target,
+  results: any,
+  theObservation: any
+): SensCalcResults {
   const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 
   const individualResults = getFinalIndividualResultsForZoom(results, theObservation);
