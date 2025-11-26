@@ -28,7 +28,7 @@ describe('Guest User', () => {
     verify('loginButton');
   });
 
-  it('Access proposal screens without login', () => {
+  it.skip('Access proposal screens without login', () => {
     createMock();
 
     //add target

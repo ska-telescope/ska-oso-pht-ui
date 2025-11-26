@@ -470,6 +470,12 @@ export default function ReviewDashboard() {
   };
 
   const colChart = (label: string, data: any[], type: string = '') => {
+    /*** TODO : I have created this as the original is a bit of a mess and needs to be cleaned up
+     * The intent is to keep the filtering outside of the chart so it remains reusable
+     * and only focused on rendering the chart itself.
+     * Once this is confirmed working, we can deprecate the old D3ColumnChart component.
+     * This chart is abl to scale based on the container size.
+     */
     return (
       <ResizablePanel title={t(label)} errorColor={!data || data.length === 0}>
         {(!data || data.length === 0) && (

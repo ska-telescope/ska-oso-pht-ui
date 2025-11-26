@@ -10,6 +10,7 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
       proposalClose: '20260512T15:00:00.000z'
     },
     cyclePolicies: {
+      linkObservationToObservingMode: true,
       maxDataProducts: 1,
       maxObservations: 1,
       maxTargets: 1,

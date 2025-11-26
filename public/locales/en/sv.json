@@ -206,7 +206,7 @@
   },
   "targets": {
     "empty": "There are no targets associated with this Science Verification Idea",
-    "limitReached": "Only {{value}} target/object is allowed for Science Verification Ideas.",
+    "limitReached": "Only {{value}} target/object is allowed for this Science Verification Idea cycle.",
     "limitReached_plural": "Only {{value}} target/object are allowed for Science Verification Ideas."
   },
   "uploadCsvBtn": {

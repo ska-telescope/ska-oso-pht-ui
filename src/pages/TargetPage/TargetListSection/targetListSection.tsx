@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box, Grid, Tab, Tabs, Typography, useTheme } from '@mui/material';
+import { Box, Grid, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   AlertColorTypes,
@@ -32,9 +32,9 @@ export default function TargetListSection() {
   const [skyDirection1Error, setSkyDirection1Error] = React.useState('');
   const [skyDirection2Error, setSkyDirection2Error] = React.useState('');
   const [nameError, setNameError] = React.useState('');
-  const { osdMaxTargets } = useOSDAccessors();
+  const { osdCyclePolicy } = useOSDAccessors();
 
-  const DATA_GRID_HEIGHT = osdMaxTargets ? '18vh' : '60vh';
+  const DATA_GRID_HEIGHT = osdCyclePolicy?.maxTargets ? '18vh' : '60vh';
   const deleteIconClicked = (e: Target) => {
     setRowTarget(e);
     setOpenDeleteDialog(true);
@@ -155,13 +155,20 @@ export default function TargetListSection() {
         sx={{ height: '100vh', width: '95vw' }}
       >
         <Grid size={{ md: 12, lg: 6 }} order={{ md: 2, lg: 1 }}>
-          <GridTargets
-            deleteClicked={deleteIconClicked}
-            editClicked={editIconClicked}
-            height={DATA_GRID_HEIGHT}
-            raType={RA_TYPE_ICRS.value}
-            rows={getProposal().targets}
-          />
+          <Stack>
+            <GridTargets
+              deleteClicked={deleteIconClicked}
+              editClicked={editIconClicked}
+              height={DATA_GRID_HEIGHT}
+              raType={RA_TYPE_ICRS.value}
+              rows={getProposal().targets}
+            />
+            {false && ( // TODO : set to false to hide AA2 image, will replace with a visibility graph in the future
+              <Box px={3}>
+                <img src={'/assets/low_aa2.png'} alt="Low AA2" width="100%" />
+              </Box>
+            )}
+          </Stack>
         </Grid>
         <Grid size={{ md: 12, lg: 6 }} order={{ md: 1, lg: 2 }}>
           <Box
@@ -212,19 +219,30 @@ export default function TargetListSection() {
 
   return (
     <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
-      {osdMaxTargets && (getProposal()?.targets?.length ?? 0) > osdMaxTargets - 1 && (
-        <Grid size={{ md: 10 }} mb={2}>
-          <BorderedSection borderColor={theme.palette.warning.main}>
-            <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
-              <Grid>
-                {t(osdMaxTargets > 1 ? 'targets.limitReached_plural' : 'targets.limitReached', {
-                  value: osdMaxTargets
-                })}
+      {osdCyclePolicy?.maxTargets &&
+        (getProposal()?.targets?.length ?? 0) > osdCyclePolicy?.maxTargets - 1 && (
+          <Grid size={{ md: 10 }} mb={2}>
+            <BorderedSection borderColor={theme.palette.warning.main}>
+              <Grid
+                container
+                direction="row"
+                alignItems="space-evenly"
+                justifyContent="space-evenly"
+              >
+                <Grid>
+                  {t(
+                    osdCyclePolicy?.maxTargets > 1
+                      ? 'targets.limitReached_plural'
+                      : 'targets.limitReached',
+                    {
+                      value: osdCyclePolicy?.maxTargets
+                    }
+                  )}
+                </Grid>
               </Grid>
-            </Grid>
-          </BorderedSection>
-        </Grid>
-      )}
+            </BorderedSection>
+          </Grid>
+        )}
       {displayRow1()}
       {openDeleteDialog && (
         <AlertDialog

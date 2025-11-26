@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { GridRowSelectionModel } from '@mui/x-data-grid'; // TODO : Need to move this into the ska-gui-components
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
@@ -26,15 +26,19 @@ import {
 } from '../../utils/constants';
 import GroupObservation from '../../utils/types/groupObservation';
 import DeleteObservationConfirmation from '../../components/alerts/deleteObservationConfirmation/deleteObservationConfirmation';
+import ObservationEntry from '../entry/ObservationEntry/ObservationEntry';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 const DATA_GRID_OBSERVATION = '62vh';
 const PAGE = PAGE_OBSERVATION;
+const GAP = 4;
 
 export default function ObservationPage() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
+  const { osdCyclePolicy } = useOSDAccessors();
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -216,60 +220,73 @@ export default function ObservationPage() {
     ]
   ];
 
-  let deleteDialog: React.ReactElement | null = null;
-  if (openDeleteDialog && currObs) {
-    deleteDialog = (
-      <DeleteObservationConfirmation
-        action={deleteConfirmed}
-        observation={currObs}
-        open={openDeleteDialog}
-        setOpen={setOpenDeleteDialog}
-      />
-    );
-  }
-
-  return (
-    <Shell page={PAGE}>
+  const noObservations = () => {
+    return (
       <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid size={{ md: 11 }}>
-          <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
-            <Grid container direction="row" alignItems="flex-start" justifyContent="space-between">
-              <Grid pb={1}>
-                <AddButton
-                  action={PATH[2]}
-                  primary={!hasObservations()}
-                  testId="addObservationButton"
-                  title="addObservation.button"
-                />
-              </Grid>
-            </Grid>
-            {hasObservations() ? (
-              <DataGrid
-                rows={elementsO}
-                columns={extendedColumnsObservations}
-                height={DATA_GRID_OBSERVATION}
-                onRowClick={(e: { row: { rec: React.SetStateAction<Observation | null> } }) =>
-                  setCurrObs(e.row.rec)
-                }
-                onRowSelectionModelChange={(
-                  newRowSelectionModel: React.SetStateAction<GridRowSelectionModel>
-                ) => {
-                  setRowSelectionModel(newRowSelectionModel);
-                }}
-                rowSelectionModel={rowSelectionModel}
-                testId="observationDetails"
-              />
-            ) : (
-              <Alert
-                color={AlertColorTypes.Error}
-                text={loggedIn ? t('error.noObservations') : t('error.noObservationsLoggedOut')}
-                testId="noObservationsNotification"
-              />
-            )}
-          </Grid>
+        <Grid size={{ md: 10 }}>
+          <Alert
+            color={AlertColorTypes.Error}
+            text={loggedIn ? t('error.noObservations') : t('error.noObservationsLoggedOut')}
+            testId="noObservationsNotification"
+          />
         </Grid>
       </Grid>
-      {deleteDialog ?? <></>}
+    );
+  };
+
+  const AddTheButton = () => (
+    <Box p={GAP} pt={0}>
+      <AddButton
+        action={PATH[2]}
+        primary={!hasObservations()}
+        testId="addObservationButton"
+        title="addObservation.button"
+      />
+    </Box>
+  );
+
+  const observationList = () => {
+    return (
+      <Box pl={GAP} pr={GAP}>
+        <DataGrid
+          rows={elementsO}
+          columns={extendedColumnsObservations}
+          height={DATA_GRID_OBSERVATION}
+          onRowClick={(e: { row: { rec: React.SetStateAction<Observation | null> } }) =>
+            setCurrObs(e.row.rec)
+          }
+          onRowSelectionModelChange={(
+            newRowSelectionModel: React.SetStateAction<GridRowSelectionModel>
+          ) => {
+            setRowSelectionModel(newRowSelectionModel);
+          }}
+          rowSelectionModel={rowSelectionModel}
+          testId="observationDetails"
+        />
+        {currObs && (
+          <DeleteObservationConfirmation
+            action={deleteConfirmed}
+            observation={currObs}
+            open={openDeleteDialog}
+            setOpen={setOpenDeleteDialog}
+          />
+        )}
+      </Box>
+    );
+  };
+
+  return (
+    <Shell page={PAGE} helpDisabled>
+      <>
+        {(osdCyclePolicy?.maxObservations !== 1 || !isLoggedIn()) && AddTheButton()}
+        {!hasObservations() && noObservations()}
+        {(!isLoggedIn() || osdCyclePolicy?.maxObservations !== 1) &&
+          hasObservations() &&
+          observationList()}
+        {isLoggedIn() && osdCyclePolicy?.maxObservations === 1 && hasObservations() && (
+          <ObservationEntry data={getProposal()?.observations?.[0]} />
+        )}
+      </>
     </Shell>
   );
 }

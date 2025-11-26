@@ -42,24 +42,23 @@ export function useOSDAccessors() {
       setCountdown(t('cycleCloses.countdown', { days, hours, minutes, seconds }));
     };
 
-    updateCountdown(); // initial call
-    const interval = setInterval(updateCountdown, 1000); // update every second
+    updateCountdown();
+    const interval = setInterval(updateCountdown, 1000);
 
-    return () => clearInterval(interval); // cleanup
+    return () => clearInterval(interval);
   }, [cycleInformation?.proposalClose, t]);
 
   return {
     osdLOW: capabilities?.low,
     osdMID: capabilities?.mid,
     osdCapabilities: capabilities,
+    //
     osdCycleDescription: observatoryPolicy?.cycleDescription,
     osdCycleId: cycleInformation?.cycleId,
-    osdMaxDataProducts: observatoryPolicy?.cyclePolicies?.maxDataProducts,
-    osdMaxObservations: observatoryPolicy?.cyclePolicies?.maxObservations,
-    osdMaxTargets: observatoryPolicy?.cyclePolicies?.maxTargets,
-    osdIsCustomAllowed: observatoryPolicy?.cyclePolicies?.isCustomAllowed,
-    osdNormalMaxHours: observatoryPolicy?.cyclePolicies?.normalMaxHours,
+    osdCyclePolicy: observatoryPolicy?.cyclePolicies,
+    //
     observatoryConstants: observatoryConstants,
+    //
     osdCloses: (shouldPresent = false) =>
       present(format(cycleInformation?.proposalClose), shouldPresent),
     osdOpens: (shouldPresent = false) =>

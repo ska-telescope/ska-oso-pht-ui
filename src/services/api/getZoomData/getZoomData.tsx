@@ -57,7 +57,11 @@ interface FinalIndividualResults {
   results11: ResultsSection;
 }
 
-function getFinalResults(target: Target, results: any, theObservation: any): SensCalcResults {
+export function getFinalResults(
+  target: Target,
+  results: any,
+  theObservation: any
+): SensCalcResults {
   const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 
   const individualResults = getFinalIndividualResultsForZoom(results, theObservation);
@@ -90,7 +94,7 @@ const toFixed = (value: number) => {
   return Number(value).toFixed(DECIMAL_PLACES);
 };
 
-function getFinalIndividualResultsForZoom(
+export function getFinalIndividualResultsForZoom(
   results: any,
   theObservation: any
 ): FinalIndividualResults {

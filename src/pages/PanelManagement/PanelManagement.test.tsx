@@ -6,11 +6,14 @@ import {
   MockReviewerInternal,
   MockReviewersList
 } from '@services/axios/get/getReviewerList/mockReviewerList';
+import { PanelProposal } from '@utils/types/panelProposal.tsx';
 import PanelManagement, {
   addProposalPanel,
   addReviewerPanel,
   deleteProposalPanel,
-  deleteReviewerPanel
+  deleteReviewerPanel,
+  convertPanelReviewerToReviewerIdList,
+  convertPanelProposalToProposalIdList
 } from './PanelManagement';
 import { Panel } from '@/utils/types/panel';
 import MockProposalFrontendList from '@/services/axios/get/getProposalList/mockProposalFrontendList';
@@ -18,6 +21,7 @@ import Proposal from '@/utils/types/proposal';
 import { REVIEWER_STATUS } from '@/utils/constants';
 import { Reviewer } from '@/utils/types/reviewer';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+import { PanelReviewer } from '@/utils/types/panelReviewer';
 
 const mockedPanels: Panel[] = [
   {
@@ -199,5 +203,35 @@ describe('Deletes Reviewer', () => {
       [myPanel.sciReviewers[0], myPanel.sciReviewers[1], myPanel.sciReviewers[2]],
       []
     );
+  });
+});
+
+describe('convertPanelReviewerToReviewerIdList', () => {
+  test('converts a list of PanelReviewer to IdObject list', () => {
+    const reviewers: PanelReviewer[] = [
+      { reviewerId: 'reviewer1', panelId: 'panel1', status: 'PENDING' },
+      { reviewerId: 'reviewer2', panelId: 'panel2', status: 'PENDING' }
+    ];
+    const result = convertPanelReviewerToReviewerIdList(reviewers);
+    expect(result).toEqual([{ id: 'reviewer1' }, { id: 'reviewer2' }]);
+  });
+
+  test('returns an empty array when input is empty', () => {
+    expect(convertPanelReviewerToReviewerIdList([])).toEqual([]);
+  });
+});
+
+describe('convertPanelProposalToProposalIdList ', () => {
+  test('converts a list of PanelProposal to IdObject list', () => {
+    const reviewers: PanelProposal[] = [
+      { proposalId: 'proposal1', panelId: 'panel1', assignedOn: '12-12-12' },
+      { proposalId: 'proposal2', panelId: 'panel2', assignedOn: '12-12-12' }
+    ];
+    const result = convertPanelProposalToProposalIdList(reviewers);
+    expect(result).toEqual([{ id: 'proposal1' }, { id: 'proposal2' }]);
+  });
+
+  test('returns an empty array when input is empty', () => {
+    expect(convertPanelProposalToProposalIdList([])).toEqual([]);
   });
 });

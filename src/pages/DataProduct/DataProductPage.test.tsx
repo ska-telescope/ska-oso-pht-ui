@@ -2,7 +2,7 @@ import { describe, test } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import SdpDataPage from './DataProductPage';
+import DataProductPage from './DataProductPage';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 const wrapper = (component: React.ReactElement) => {
@@ -13,8 +13,12 @@ const wrapper = (component: React.ReactElement) => {
   );
 };
 
-describe('<SdpDataPage />', () => {
+describe('<DataProductPage />', () => {
   test('renders correctly', () => {
-    wrapper(<SdpDataPage />);
+    wrapper(<DataProductPage />);
   });
 });
+
+// TODO : Test for no observations message
+// TODO : Test for DataProduct table rendering
+// TODO : Test for single DataProduct rendering
