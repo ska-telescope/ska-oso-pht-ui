@@ -27,9 +27,9 @@ UNRELEASED
 * Changed: Observation and Data Products pages not accessible until there is an Observing Mode ( For MOCK CALL )
 * Changed: DataGrid for the Data Products replaced with a table so can be extended at a later date
 * Changed: Display of validation statuses no longer suppressed until you visit the page upon creation of a SV / Proposal
-* Changed: oso-services v10.0.1
+* Changed: oso-services v10.0.2
 * Changed: Added a drawer to display helper text
-* Changed: oda to 14.0.2
+* Changed: oda to 14.0.4
 * Changed: Adjusted screen layout following removal of help panel 
 
 8.0.0
