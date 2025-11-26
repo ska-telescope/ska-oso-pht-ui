@@ -7,9 +7,17 @@ type Props = {
   data: PieData[];
   showTotal?: boolean;
   centerText?: string;
+  chartColors?: Record<string, { bg?: string; fg?: string }> | null;
+  colorType?: string;
 };
 
-const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' }) => {
+const D3PieChart: React.FC<Props> = ({
+  data,
+  showTotal = false,
+  centerText = '',
+  chartColors,
+  colorType
+}) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const theme = useTheme();
@@ -22,8 +30,6 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
     const radius = logicalSize / 1.5;
     const total = d3.sum(data, d => (isFinite(Number(d.value)) ? Number(d.value) : 0));
     const centerLabel = centerText || total.toString();
-
-    const chartColors = d3.schemeTableau10;
 
     const pie = d3
       .pie<PieData>()
@@ -56,12 +62,23 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
 
     const sliceData = pie(data);
 
+    // 🎨 Use chartColors mapping if provided, else fallback
+    const fallbackColors = d3.schemeTableau10;
+
     const paths = chartGroup
       .selectAll('path')
       .data(sliceData)
       .enter()
       .append('path')
-      .attr('fill', (_, i) => chartColors[i % chartColors.length])
+      .attr('fill', (d, i) => {
+        const key = d.data.name.toLowerCase();
+        // use chartColors mapping if available
+        if (chartColors && chartColors[key]?.bg) {
+          return chartColors[key]!.bg!;
+        }
+        // safe fallback
+        return fallbackColors[i % fallbackColors.length];
+      })
       .attr('stroke', theme.palette.background.paper)
       .attr('stroke-width', 1)
       .on('mouseover', (event, d) => {
@@ -104,9 +121,8 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
         .append('text')
         .attr('text-anchor', 'middle')
         .attr('dy', '0.35em')
-
         .attr('data-testid', 'pie-chart-center-text')
-        .style('font-size', theme.typography.h4.fontSize)
+        .style('font-size', theme.typography.h4.fontSize ?? '1.5rem')
         .style('fill', theme.palette.text.primary)
         .style('pointer-events', 'none')
         .text(centerLabel);
@@ -121,7 +137,9 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
         const pos = outerArc.centroid(d);
         const midAngle = (d.startAngle + d.endAngle) / 2;
         pos[0] = radius * 1.15 * (midAngle < Math.PI ? 1 : -1);
-        return [arc.centroid(d), outerArc.centroid(d), pos];
+
+        const points = [arc.centroid(d), outerArc.centroid(d), pos];
+        return points.map(p => p.join(',')).join(' ');
       })
       .attr('fill', 'none')
       .attr('stroke', theme.palette.text.primary)
@@ -135,7 +153,6 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
       .append('text')
       .attr('class', 'label')
       .attr('data-testid', d => `pie-chart-label-${d.data.name}`)
-
       .attr('transform', d => {
         const pos = outerArc.centroid(d);
         const midAngle = (d.startAngle + d.endAngle) / 2;
@@ -144,7 +161,7 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
       })
       .attr('text-anchor', d => ((d.startAngle + d.endAngle) / 2 < Math.PI ? 'start' : 'end'))
       .attr('dy', '0.35em')
-      .style('font-size', theme.typography.h5.fontSize)
+      .style('font-size', theme.typography.h5.fontSize ?? '1.25rem')
       .style('fill', theme.palette.text.primary)
       .style('pointer-events', 'none')
       .text(d => d.data.name)
@@ -186,7 +203,7 @@ const D3PieChart: React.FC<Props> = ({ data, showTotal = false, centerText = '' 
         }
       });
     }
-  }, [data, showTotal, centerText, isDark]);
+  }, [data, showTotal, centerText, isDark, chartColors, colorType]);
 
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>

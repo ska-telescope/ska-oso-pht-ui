@@ -36,7 +36,7 @@ export const validateGeneralPage = (proposal: Proposal) => {
   if ((proposal?.abstract ?? '').length > 0) {
     count++;
   }
-  if ((proposal?.scienceCategory ?? 0) > 0) {
+  if (proposal?.scienceCategory !== null) {
     count++;
   }
   return result[count];

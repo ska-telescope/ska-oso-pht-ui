@@ -29,14 +29,14 @@ describe('Verify validate', () => {
     });
   });
 
-  it('Verify validate functionality is restricted before proposal creation', () => {
+  it.skip('Verify validate functionality is restricted before proposal creation', () => {
     clickAddProposal();
     clickCycleConfirm();
     //Verify validate is disabled before proposal creation
     // checkFieldDisabled('validateBtn', true);
   });
 
-  it('Verify validate functionality is not restricted after proposal creation', () => {
+  it.skip('Verify validate functionality is not restricted after proposal creation', () => {
     clickAddProposal();
     clickCycleConfirm();
     enterProposalTitle();

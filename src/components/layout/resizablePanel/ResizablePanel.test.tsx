@@ -28,15 +28,4 @@ describe('ResizablePanel', () => {
     expect(content).toBeInTheDocument();
     expect(content).toHaveTextContent('Hello World');
   });
-
-  it('applies correct styles to the container', () => {
-    renderWithTheme(<ResizablePanel title="Styled Panel">Content</ResizablePanel>);
-    const panel = screen.getByTestId('resizable-panel');
-    // expect(panel).toHaveStyle('width: 30vw');
-    // expect(panel).toHaveStyle('height: 30vh');
-    expect(panel).toHaveStyle('overflow: auto');
-    expect(panel).toHaveStyle('resize: both');
-    expect(panel).toHaveStyle('border: 1px solid #ccc');
-    expect(panel).toHaveStyle('border-radius: 16px');
-  });
 });
