@@ -83,9 +83,9 @@ export const hasProposalAccess = (
   prslId: string
 ): ProposalAccess | null => {
   if (isCypress && cypressEditProposal) {
-    return accessList.find(access => access.role === 'Principal Investigator') ?? null;
+    return accessList?.find(access => access.role === 'Principal Investigator') ?? null;
   } else {
-    return accessList.find(access => access.prslId === prslId) ?? null;
+    return accessList?.find(access => access.prslId === prslId) ?? null;
   }
 };
 
