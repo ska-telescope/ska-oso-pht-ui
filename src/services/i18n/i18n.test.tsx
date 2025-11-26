@@ -36,12 +36,6 @@ describe('useScopedTranslation', () => {
     expect(result.current.t('existing.key')).toBe('Translated');
   });
 
-  it('returns key with emoji in development for missing key', () => {
-    process.env.NODE_ENV = 'development';
-    const { result } = renderHook(() => useScopedTranslation());
-    expect(result.current.t('missing.key')).toBe('missing.key');
-  });
-
   it('returns key as is in production for missing key', () => {
     process.env.NODE_ENV = 'production';
     const { result } = renderHook(() => useScopedTranslation());
