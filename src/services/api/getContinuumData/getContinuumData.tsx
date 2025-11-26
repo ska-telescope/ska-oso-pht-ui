@@ -57,7 +57,7 @@ interface FinalIndividualResults {
   results11: ResultsSection;
 }
 
-function getFinalResults(
+export function getFinalResults(
   target: {
     decStr?: string;
     id: any;
