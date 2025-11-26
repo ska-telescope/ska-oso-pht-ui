@@ -92,7 +92,7 @@ export default function PHT() {
   const [accessibilityMode] = React.useState(
     localStorage.getItem('skao_accessibility_mode') || ACCESSIBILITY_DEFAULT
   );
-  const [apiVersion] = React.useState('2.2.0');
+  const [apiVersion] = React.useState('10.0.2');
 
   const muiTheme = theme({ themeMode, accessibilityMode });
 

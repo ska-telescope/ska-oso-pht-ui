@@ -47,7 +47,8 @@ import {
   TYPE_PST,
   FLOW_THROUGH_VALUE,
   FREQUENCY_KHZ,
-  ZOOM_BANDWIDTH_DEFAULT_MID
+  ZOOM_BANDWIDTH_DEFAULT_MID,
+  TELESCOPES
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -418,12 +419,14 @@ export default function ObservationEntry() {
     );
 
   const frequencySpectrumField = () => {
-    const colors = getColors({
-      type: 'observationType',
-      colors: observationType?.toString() ?? '',
-      content: 'both',
-      dim: 0.6
-    });
+    const colors =
+      getColors({
+        type: 'telescope',
+        colors: TELESCOPES[telescope() - 1].label.toLowerCase(),
+        content: 'bg',
+        dim: 0.6
+      }) ?? {};
+    const colorsArray = Object.values(colors).map(c => c.bg);
 
     return fieldWrapper(
       <Box>
@@ -466,7 +469,7 @@ export default function ObservationEntry() {
               FREQUENCY_MHZ
             ) - 10 // TODO establish what the edge buffer should be, ideally from OSD
           }
-          bandColor={colors[0]}
+          bandColor={colorsArray[0]}
           boxWidth="100%"
         />
       </Box>

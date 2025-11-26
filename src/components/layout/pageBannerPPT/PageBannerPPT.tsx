@@ -185,7 +185,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   React.useEffect(() => {
     const pagesIndexes = STATUS_ARRAY_PAGES;
-    const pagesNeedToCheck = (application.content1 as number[]).filter((value, idx) =>
+    const pagesNeedToCheck = (application.content1 as number[]).filter((_value, idx) =>
       pagesIndexes.includes(idx)
     );
 
@@ -212,7 +212,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         {!backPage && <HomeButton />}
       </Grid>
       <Grid>
-        {getProposal().id !== null && pageNo < LAST_PAGE && (
+        {loggedIn && getProposal().id !== null && pageNo < LAST_PAGE && (
           <SaveButton
             testId={'saveBtn'}
             disabled={isDisableEndpoints()}
@@ -275,6 +275,12 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     </Grid>
   );
 
+  const row1buttonsLeft = () => (
+    <Grid container direction="row" alignItems="center" justifyContent="space-between">
+      <Grid>{buttonsLeft()}</Grid>
+    </Grid>
+  );
+
   const row2 = () => (
     <Grid container direction="row" alignItems="center" justifyContent="space-between">
       {wrapStatusArray ? (
@@ -305,8 +311,8 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   return (
     <Box p={2}>
-      {row1()}
-      {getProposal().id !== null && row2()}
+      {loggedIn ? row1() : row1buttonsLeft()}
+      {loggedIn && getProposal().id !== null && row2()}
       {row3()}
 
       {openProposalDisplay && (

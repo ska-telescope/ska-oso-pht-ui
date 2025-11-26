@@ -225,6 +225,9 @@
     "label": "Product type",
     "help": "Select the desired data product(s) by checking the boxes as appropriate.",
     "options": {
+      "0": {
+        "2": "Spectral ODPs"
+      },
       "1": {
         "1": "Images",
         "2": "Visibilities"
@@ -381,8 +384,8 @@
   },
   "homeBtn": {
     "label": "Home",
-    "title": "Proposals",
-    "tooltip": "Returns to the list of proposals",
+    "title": "Submissions",
+    "tooltip": "Returns to the list of submissions",
     "warningNotLoggedIn": {
       "title": "Warning",
       "message": "You are not logged in. The save function is currently disabled, and any unsaved progress will be lost if you return to the landing page. Are you sure you want to continue?"
@@ -863,6 +866,49 @@
       "name": "Unable to resolve provided name",
       "Request failed with status code 500": "Unable to resolve provided name",
       "Request failed with status code 404": "Object not found in SIMBAD or NED"
+    }
+  },
+  "reviewDashboard": {
+    "noData": "No data available",
+    "unknown": "Unknown",
+    "undecided": "Undecided",
+    "title": "Overview",
+    "toolTip": "Overview of proposals",
+    "proposal": {
+      "title": "Proposals",
+      "subtitle": "Proposal Statistics"
+    },
+    "review": {
+      "title": "Reviews",
+      "subtitle": "Review Statistics"
+    },
+    "decision": {
+      "title": "Decisions",
+      "subtitle": "Decision Statistics"
+    },
+    "panel": {
+      "title1": "Assignment",
+      "title2": "Status",
+      "title3": "Science Categories",
+      "title4": "Panel Distribution",
+      "title5": "Reviewer Distribution",
+      "title6": "Category Distribution",
+      "title7": "Decision Breakdown",
+      "title8": "Review Distribution (Grouped / Single)",
+      "title9": "Location Breakdown",
+      "title10": "Score — Min / Mean / Max",
+      "title11": "Rank — Min / Mean / Max",
+      "title12": "Review Status"
+    },
+    "cell": {
+      "title1": "Panel Name",
+      "title2": "Number of Reviewers",
+      "title3": "Number of Proposals",
+      "title4": "Reviewed (%)",
+      "title5": "Pending Review (%)",
+      "title6": "In Progress (%)",
+      "title7": "Reviewer ID",
+      "title8": "Science Category"
     }
   },
   "reviewDecision": {
@@ -1494,12 +1540,12 @@
     "15": {
       "title": "Observation Update",
       "titleShort": "Observation Update",
+      "empty": "NO PANELS AVAILABLE",
       "desc": "Edit an existing observation. Note that this will effect any existing Sensitivity calculations to linked Targets."
     },
     "16": {
       "title": "Panel Management",
       "desc": "Panel Management",
-      "empty": "NO PANELS AVAILABLE",
       "toolTip": "Panel Management tooltip"
     },
     "next": "Next",
