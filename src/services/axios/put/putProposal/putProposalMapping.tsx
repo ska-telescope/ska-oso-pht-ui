@@ -16,31 +16,31 @@ import TargetObservation from '@utils/types/targetObservation.tsx';
 import { SensCalcResultsBackend } from '@utils/types/sensCalcResults.tsx';
 import {
   BANDWIDTH_TELESCOPE,
+  DETECTED_FILTER_BANK_VALUE,
+  DP_TYPE_IMAGES,
   FREQUENCY_UNITS,
   GENERAL,
   IMAGE_WEIGHTING,
+  IW_BRIGGS,
   PROJECTS,
   PROPOSAL_STATUS,
+  PST_MODES,
+  PULSAR_TIMING_VALUE,
+  RA_TYPE_GALACTIC,
+  RA_TYPE_ICRS,
+  ROBUST,
+  SCIENCE_VERIFICATION,
   TELESCOPE_LOW_BACKEND_MAPPING,
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_BACKEND_MAPPING,
   TYPE_CONTINUUM,
-  VEL_UNITS,
-  VELOCITY_TYPE,
-  ROBUST,
-  IW_BRIGGS,
-  RA_TYPE_GALACTIC,
-  RA_TYPE_ICRS,
-  SCIENCE_VERIFICATION,
   TYPE_PST,
-  TYPE_ZOOM,
   TYPE_STR_CONTINUUM,
-  TYPE_STR_ZOOM,
   TYPE_STR_PST,
-  DP_TYPE_IMAGES,
-  PST_MODES,
-  DETECTED_FILTER_BANK_VALUE,
-  PULSAR_TIMING_VALUE
+  TYPE_STR_ZOOM,
+  TYPE_ZOOM,
+  VEL_UNITS,
+  VELOCITY_TYPE
 } from '@utils/constants.ts';
 import {
   DataProductSDP,
@@ -74,7 +74,7 @@ const getSubType = (proposalType: number, proposalSubType: number[]): any => {
   return subTypes;
 };
 
-const getReferenceCoordinate = (
+export const getReferenceCoordinate = (
   tar: Target | ReferenceCoordinateICRS | ReferenceCoordinateGalactic
 ): ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend => {
   if ('kind' in tar && tar.kind === RA_TYPE_GALACTIC.value) {
@@ -164,7 +164,7 @@ const getDocuments = (
   return documents;
 };
 
-const getCalibrationStrategy = (
+export const getCalibrationStrategy = (
   calibrationStrategies: CalibrationStrategy[]
 ): CalibrationStrategyBackend[] => {
   return calibrationStrategies?.map(strategy => ({
@@ -184,7 +184,7 @@ const getCalibrationStrategy = (
   }));
 };
 
-const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProductSDP) => {
+export const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProductSDP) => {
   const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
   const obType = obs?.find(o => o.id === dp.observationId)?.type;
   switch (obType) {
@@ -289,7 +289,7 @@ const getDataProductSDP = (
   }));
 };
 
-const getDataProductSRC = (dataProducts: DataProductSRC[]): DataProductSRCNetBackend[] => {
+export const getDataProductSRC = (dataProducts: DataProductSRC[]): DataProductSRCNetBackend[] => {
   return dataProducts?.map(dp => ({ data_products_src_id: dp?.id }));
 };
 
@@ -367,7 +367,7 @@ const getSupplied = (inObs: Observation) => {
   };
 };
 
-const getObservationTypeDetails = (obs: Observation) => {
+export const getObservationTypeDetails = (obs: Observation) => {
   switch (obs.type) {
     case TYPE_CONTINUUM:
       return {
@@ -511,7 +511,7 @@ const getSuppliedFieldsSensitivity = (
   return params;
 };
 
-const getSuppliedFieldsIntegrationTime = (
+export const getSuppliedFieldsIntegrationTime = (
   suppliedType: string,
   obsType: number,
   tarObs: TargetObservation
@@ -540,12 +540,12 @@ const getObsType = (incTarObs: TargetObservation, incObs: Observation[]): number
 
 const getSpectralSection = (obsType: number) => (isContinuum(obsType) ? 'section2' : 'section1');
 
-const getDataProductRef = (incTarObs: TargetObservation, incDataProductSDP: DataProductSDP[]) => {
-  const dataProductRef = String(
-    incDataProductSDP.find(dp => dp.observationId === incTarObs.observationId)?.id
-  );
+export const getDataProductRef = (
+  incTarObs: TargetObservation,
+  incDataProductSDP: DataProductSDP[]
+) => {
   // TODO make data product mandatory when sens calc is requested so it's never undefined
-  return dataProductRef;
+  return String(incDataProductSDP.find(dp => dp.observationId === incTarObs.observationId)?.id);
 };
 
 const getResults = (

@@ -67,7 +67,7 @@ import {
   CalibrationStrategyBackend
 } from '@/utils/types/calibrationStrategy.tsx';
 
-const getInvestigators = (inValue: InvestigatorBackend[] | null) => {
+export const getInvestigators = (inValue: InvestigatorBackend[] | null) => {
   let investigators = [] as Investigator[];
   if (!inValue || inValue.length === 0) {
     return investigators;
@@ -103,18 +103,18 @@ const getAttributes = (proposalType: {
   return result && result.length > 0 ? result : [];
 };
 
-const getScienceCategory = (scienceCat: string) => {
+export const getScienceCategory = (scienceCat: string) => {
   const cat = GENERAL.ScienceCategory?.find(
     cat => cat.label.toLowerCase() === scienceCat?.toLowerCase()
   )?.value;
   return cat ? cat : null;
 };
 
-const getObservingMode = (scienceCat: string) => {
-  const cat = GENERAL.ObservingMode?.find(
-    cat => cat.label.toLowerCase() === scienceCat?.toLowerCase()
+export const getObservingMode = (observingMode: string) => {
+  const obsMode = GENERAL.ObservingMode?.find(
+    obsMode => obsMode.label.toLowerCase() === observingMode?.toLowerCase()
   )?.value;
-  return cat ? cat : null;
+  return obsMode ? obsMode : null;
 };
 
 const getPDF = (documents: DocumentBackend[] | null, documentId: string): DocumentPDF | null => {
@@ -130,13 +130,13 @@ const getPDF = (documents: DocumentBackend[] | null, documentId: string): Docume
   };
 };
 
-const getVelType = (InDefinition: string) => {
+export const getVelType = (InDefinition: string) => {
   const velType = VEL_TYPES.find(item => item.label.toLowerCase() === InDefinition?.toLowerCase())
     ?.value;
   return velType ? velType : 1; // fallback
 };
 
-const getReferenceCoordinate = (
+export const getReferenceCoordinate = (
   tar: ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend
 ): ReferenceCoordinateICRS | ReferenceCoordinateGalactic => {
   if ('kind' in tar && tar.kind === RA_TYPE_GALACTIC.label) {
@@ -161,7 +161,7 @@ const getReferenceCoordinate = (
   };
 };
 
-const getBeam = (beam: BeamBackend): Beam => {
+export const getBeam = (beam: BeamBackend): Beam => {
   return {
     id: beam.beam_id,
     beamName: beam.beam_name,
@@ -348,7 +348,7 @@ const getSupplied = (inSupplied: SuppliedBackend | null): Supplied => {
   return supplied as Supplied;
 };
 
-const getFrequencyAndBandwidthUnits = (
+export const getFrequencyAndBandwidthUnits = (
   inUnits: string | null,
   telescope: number,
   observingBand: number
@@ -363,7 +363,7 @@ const getFrequencyAndBandwidthUnits = (
       )?.value as number);
 };
 
-const getBandwidth = (incBandwidth: number, telescope: number): number => {
+export const getBandwidth = (incBandwidth: number, telescope: number): number => {
   const array = OSD_CONSTANTS.array?.find(item => item?.value === telescope);
   const bandwidth = array?.bandWidth?.find(bandwidth =>
     bandwidth?.label?.includes(String(incBandwidth?.toString()))
@@ -380,7 +380,7 @@ const getLinked = (
   return linkedTargetRef ? linkedTargetRef : '';
 };
 
-const getObservationType = (inObs: ObservationSetBackend): number => {
+export const getObservationType = (inObs: ObservationSetBackend): number => {
   switch (inObs?.observation_type_details?.observation_type?.toLocaleLowerCase()) {
     case OBSERVATION_TYPE_BACKEND[TYPE_ZOOM]:
       return TYPE_ZOOM;
