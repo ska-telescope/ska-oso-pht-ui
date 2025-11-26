@@ -29,7 +29,7 @@ export default function DataProductsPage() {
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentRow, setCurrentRow] = React.useState(0);
   const [openDialog, setOpenDialog] = React.useState(false);
-  const { osdMaxDataProducts } = useOSDAccessors();
+  const { osdCyclePolicy } = useOSDAccessors();
   const navigate = useNavigate();
 
   const getProposal = () => application.content2 as Proposal;
@@ -108,7 +108,10 @@ export default function DataProductsPage() {
     );
   };
 
-  const hasObservations = () => (getProposal()?.observations?.length ?? 0) > 0;
+  const hasObservations = (): boolean => {
+    const proposal = getProposal();
+    return !!proposal && Array.isArray(proposal.observations) && proposal.observations.length > 0;
+  };
 
   const noObservations = () => {
     return (
@@ -125,6 +128,10 @@ export default function DataProductsPage() {
   };
 
   const dataProductList = () => {
+    if (!hasObservations()) {
+      return null;
+    }
+
     return (
       <>
         <Stack pl={GAP} pr={GAP} spacing={GAP}>
@@ -135,7 +142,7 @@ export default function DataProductsPage() {
             testId="addDataProductButton"
           />
           <TableDataProducts
-            data={getProposal().dataProductSDP}
+            data={getProposal().dataProductSDP ?? []}
             deleteFunction={deleteIconClicked}
             updateFunction={editIconClicked}
           />
@@ -158,9 +165,14 @@ export default function DataProductsPage() {
     <Shell page={PAGE}>
       <>
         {!hasObservations() && noObservations()}
-        {osdMaxDataProducts !== 1 && hasObservations() && dataProductList()}
-        {osdMaxDataProducts === 1 && hasObservations() && (
-          <DataProduct data={getProposal()?.dataProductSDP?.[0]} />
+
+        {hasObservations() && (
+          <>
+            {osdCyclePolicy?.maxDataProducts !== 1 && dataProductList()}
+            {osdCyclePolicy?.maxDataProducts === 1 && (
+              <DataProduct data={getProposal()?.dataProductSDP?.[0]} />
+            )}
+          </>
         )}
       </>
     </Shell>

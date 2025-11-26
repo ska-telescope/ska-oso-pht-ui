@@ -59,7 +59,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const navigate = useNavigate();
   const locationProperties = useLocation();
   const theme = useTheme();
-  const { osdMaxDataProducts, osdMaxObservations } = useOSDAccessors();
+  const { osdCyclePolicy } = useOSDAccessors();
   const { setHelp } = useHelp();
 
   const isEdit = () => locationProperties.state !== null || data !== undefined;
@@ -89,7 +89,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const [continuumSubtraction, setContinuumSubtraction] = React.useState(false);
   const [polarisations, setPolarisations] = React.useState<string[]>([]);
 
-  const maxObservationsReached = () => baseObservations.length >= osdMaxObservations;
+  const maxObservationsReached = () => baseObservations.length >= osdCyclePolicy.maxObservations;
 
   const isDataTypeOne = () => dataProductType === 1;
 
@@ -472,7 +472,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
     const buttonClicked = () => {
       isEdit() ? updateTnProposal() : addToProposal();
-      if (osdMaxDataProducts !== 1) {
+      if (osdCyclePolicy.maxDataProducts !== 1) {
         navigate(NAV[BACK_PAGE]);
       }
     };
@@ -482,9 +482,9 @@ export default function DataProduct({ data }: DataProductProps) {
         sx={{
           bgcolor: 'transparent',
           position: 'fixed',
-          bottom: FOOTER_HEIGHT_PHT + (osdMaxDataProducts === 1 ? 60 : 0),
+          bottom: FOOTER_HEIGHT_PHT + (osdCyclePolicy.maxDataProducts === 1 ? 60 : 0),
           left: 0,
-          right: osdMaxDataProducts === 1 ? 30 : 0
+          right: osdCyclePolicy.maxDataProducts === 1 ? 30 : 0
         }}
         elevation={0}
       >

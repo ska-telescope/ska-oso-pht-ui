@@ -1263,7 +1263,7 @@
     "label": "Targets",
     "empty": "There are no targets associated with this proposal",
     "loggedOut": "There are no targets created",
-    "limitReached": "Only {{value}} target/object is allowed for Proposals.",
+    "limitReached": "Only {{value}} target/object is allowed for this Proposal cycle.",
     "limitReached_plural": "Only {{value}} target/object are allowed for Proposals."
   },
   "telescopes": {
