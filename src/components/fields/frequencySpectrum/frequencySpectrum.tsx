@@ -40,7 +40,8 @@ const FrequencySpectrum: React.FC<FrequencySpectrumProps> = ({
 
   // Determine band color
   let usedColor = bandColor === '' ? theme.palette.primary.light : bandColor;
-  let usedColorContrast = bandColorContrast === '' ? theme.palette.divider : bandColorContrast;
+  let usedColorContrast =
+    bandColorContrast === '' ? theme.palette.primary.contrastText : bandColorContrast;
   if (bandStartFreq < minFreq || bandEndFreq > maxFreq) {
     usedColor = theme.palette.error.main;
     usedColorContrast = theme.palette.error.contrastText;
