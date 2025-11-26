@@ -9,7 +9,7 @@ import {
   PAGE_PANEL_MANAGEMENT,
   PMT,
   REVIEWER_STATUS
-} from '../../utils/constants';
+} from '@utils/constants.ts';
 import BackButton from '@/components/button/Back/Back';
 import GridProposals from '@/components/grid/proposals/GridProposals';
 import GridReviewers from '@/components/grid/reviewers/GridReviewers';

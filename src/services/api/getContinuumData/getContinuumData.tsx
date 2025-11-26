@@ -57,7 +57,7 @@ interface FinalIndividualResults {
   results11: ResultsSection;
 }
 
-function getFinalResults(
+export function getFinalResults(
   target: {
     decStr?: string;
     id: any;
@@ -149,7 +149,7 @@ const toFixed = (value: number) => {
   return Number(value).toFixed(DECIMAL_PLACES);
 };
 
-function getFinalIndividualResultsForContinuum(
+export function getFinalIndividualResultsForContinuum(
   results: any,
   theObservation: {
     supplied: { type: number; value: { toString: () => any }; units: number };
