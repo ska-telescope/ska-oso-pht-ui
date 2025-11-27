@@ -5,7 +5,7 @@ import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
 import PulsarTimingBeamField from '@components/fields/pulsarTimingBeam/PulsarTimingBeam.tsx';
-import { generateId, leadZero } from '@utils/helpers.ts';
+import { leadZero } from '@utils/helpers.ts';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import ResolveButton from '@/components/button/Resolve/Resolve';
@@ -21,31 +21,21 @@ import {
   LAB_IS_BOLD,
   FIELD_PATTERN_POINTING_CENTRES,
   WRAPPER_HEIGHT,
-  OB_SUBARRAY_AA2,
-  BAND_LOW,
-  MOCK_CALL,
-  TYPE_ZOOM,
-  TYPE_PST,
-  DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
-  DEFAULT_ZOOM_OBSERVATION_LOW_AA2,
-  DEFAULT_PST_OBSERVATION_LOW_AA2,
-  TELESCOPE_LOW_NUM,
-  DEFAULT_OBSERVATIONS_LOW_AA2
+  MOCK_CALL
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import Observation from '@/utils/types/observation';
-import {
-  calculateCentralFrequency,
-  calculateContinuumBandwidth
-} from '@/utils/calculate/calculate';
-import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import { DataProductSDP } from '@/utils/types/dataProduct';
 import { useHelp } from '@/utils/help/useHelp';
-import { observationOut } from '@/utils/generateLinkedObservation/GenerateLinkedObservation';
+import {
+  calibrationOut,
+  dataProductSDPOut,
+  observationOut
+} from '@/utils/generateDefaultObservation/GenerateDefaultObservation';
 interface TargetEntryProps {
   raType: number;
   setTarget?: Function;
@@ -71,7 +61,6 @@ export default function TargetEntry({
   const { t } = useScopedTranslation();
   const { isSV } = useAppFlow();
   const { notifyError, notifySuccess } = useNotify();
-  const { observatoryConstants } = useOSDAccessors();
 
   const LAB_WIDTH = 5;
   const { application, updateAppContent2 } = storageObject.useStore();
@@ -258,48 +247,6 @@ export default function TargetEntry({
           )
         : null;
       const highestId = highest ? highest.id : 0;
-
-      const calibrationOut = (observationId: string) => {
-        const newCalibration: CalibrationStrategy = {
-          observatoryDefined: true,
-          id: generateId('cal-'),
-          observationIdRef: observationId,
-          calibrators: null,
-          notes: null,
-          isAddNote: false
-        };
-        return newCalibration;
-      };
-
-      const dataProductSDPOut = (observationId: string) => {
-        // default continuum data product
-        const newDataProductSDP: DataProductSDP = {
-          id: generateId('SDP-'),
-          dataProductType: 1,
-          observationId: observationId,
-          imageSizeValue: 1,
-          imageSizeUnits: 0,
-          pixelSizeValue: 1,
-          pixelSizeUnits: 2,
-          weighting: 1,
-          polarisations: [],
-          channelsOut: 1,
-          fitSpectralPol: 3,
-          robust: -1,
-          taperValue: 1,
-          timeAveraging: -1,
-          frequencyAveraging: -1,
-          bitDepth: 0,
-          continuumSubtraction: false
-        };
-        return newDataProductSDP;
-      };
-
-      // const observationOut = () => {
-      //   const defaultObs = DEFAULT_OBSERVATIONS_LOW_AA2[getProposal().scienceCategory as number];
-      //   console.log('defaultObs', defaultObs);
-      //   return defaultObs;
-      // };
 
       const newTarget: Target = {
         kind: RA_TYPE_ICRS.value,
