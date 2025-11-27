@@ -82,7 +82,13 @@ export default function BandwidthField({
   };
 
   const getBandwidthValue = (): number => {
-    return Number(lookupBandwidth(value)?.label.split(' ')[0]);
+    const bw = lookupBandwidth(value);
+    if (!bw?.label) return 0; // fallback if lookup fails
+
+    const parts = bw.label.split(' ');
+    const num = Number(parts[0]);
+
+    return isNaN(num) ? 0 : num; // fallback if conversion fails
   };
 
   const getFrequencyUnitsLabelFunc = () =>

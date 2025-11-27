@@ -20,7 +20,7 @@ export default function EdgeSlider() {
   const { help } = storageObject.useStore();
   const theHelp = getHelp();
   const theLink = getLink();
-  const hasLink = help?.contentURL?.length > 1 ? true : false;
+  const hasLink = help?.componentURL?.length > 1 ? true : false;
 
   const togglePanel = () => {
     setExpanded(prev => !prev);
@@ -31,7 +31,7 @@ export default function EdgeSlider() {
   }
 
   function getLink(): string {
-    const url = help && help?.contentURL ? (help?.contentURL as string) : '';
+    const url = help && help?.componentURL ? (help?.componentURL as string) : '';
     try {
       new URL(url); // Validate URL
       return url;

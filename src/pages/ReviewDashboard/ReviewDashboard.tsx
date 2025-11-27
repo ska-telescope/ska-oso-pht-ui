@@ -19,7 +19,7 @@ import D3PieChart from '@/components/charts/pie/D3PieChart';
 // import D3Slider from '@/components/charts/slider/D3Slider';
 import ResizablePanel from '@/components/layout/resizablePanel/ResizablePanel';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-// import { getColors } from '@/utils/colors/colors';
+import { getColors } from '@/utils/colors/colors';
 
 const REFRESH_TIME = 5 * 60 * 1000;
 const TABLE_WIDTH = '95vw';
@@ -91,11 +91,12 @@ function ResponsiveColumnChart(props: {
       initialGroupField={initialGroupField}
       width={innerW}
       height={innerH}
-      // chartColors={getColors({
-      //   type: 'observationType',
-      //   colors: '',
-      //   content: 'bg'
-      // })}
+      chartColors={getColors({
+        type: 'observationType',
+        colors: '',
+        content: 'bg',
+        asArray: true
+      })}
     />
   );
 }
@@ -457,12 +458,12 @@ export default function ReviewDashboard() {
           <D3PieChart
             data={data}
             showTotal={true}
-            // chartColors={getColors({
-            //   type: type,
-            //   colors: '*',
-            //   content: 'bg'
-            // })}
-            // colorType={type}
+            chartColors={getColors({
+              type: type,
+              colors: '*',
+              content: 'bg'
+            })}
+            colorType={type}
           />
         )}
       </ResizablePanel>
@@ -497,12 +498,12 @@ export default function ReviewDashboard() {
         {data && (
           <D3ColChart
             data={data}
-            // chartColors={getColors({
-            //   type: type,
-            //   colors: '*',
-            //   content: 'bg'
-            // })}
-            // colorType={type}
+            chartColors={getColors({
+              type: type,
+              colors: '*',
+              content: 'bg'
+            })}
+            colorType={type}
           />
         )}
       </ResizablePanel>
@@ -679,7 +680,7 @@ export default function ReviewDashboard() {
           {pieChart('reviewDashboard.panel.title12', reviewStatusData, 'reviewStatus')}
           {pieChart('reviewDashboard.panel.title1', reviewAssignmentData, 'boolean')}
           {pieChart('reviewDashboard.panel.title3', reviewCategoryData, 'observationType')}
-          {colChart('reviewDashboard.panel.title8', reviewCategoryData, 'observationType')}
+          {false && colChart('reviewDashboard.panel.title8', reviewCategoryData, 'observationType')}
           {columnChart(
             'reviewDashboard.panel.title8',
             filteredReport.filter(record => !['draft'].includes(record.proposalStatus)),
