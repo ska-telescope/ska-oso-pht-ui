@@ -14,7 +14,7 @@ import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import ResetButton from '@/components/button/Reset/Reset';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import D3ColumnChart from '@/components/charts/column/D3ColumnChart';
-import D3ColChart from '@/components/charts/column/D3ColumnChartNew';
+// import D3ColChart from '@/components/charts/column/D3ColumnChartNew';
 import D3PieChart from '@/components/charts/pie/D3PieChart';
 import D3ColumnWrapper from '@/components/charts/column/D3Wrapper';
 // import D3Slider from '@/components/charts/slider/D3Slider';
@@ -92,11 +92,12 @@ function ResponsiveColumnChart(props: {
       initialGroupField={initialGroupField}
       width={innerW}
       height={innerH}
-      // chartColors={getColors({
-      //   type: 'observationType',
-      //   colors: '',
-      //   content: 'bg'
-      // })}
+      chartColors={getColors({
+        type: 'observationType',
+        colors: '',
+        content: 'bg',
+        asArray: true
+      })}
     />
   );
 }
@@ -121,8 +122,6 @@ export default function ReviewDashboard() {
     []
   );
   const authClient = useAxiosAuthClient();
-
-  // KEEP ONLY ONE activeView
   const [activeView, setActiveView] = useState<DashboardView>(VIEW_PROPOSAL);
 
   const calculateProposalData = (
@@ -458,61 +457,61 @@ export default function ReviewDashboard() {
           <D3PieChart
             data={data}
             showTotal={true}
-            // chartColors={getColors({
-            //   type: type,
-            //   colors: '*',
-            //   content: 'bg'
-            // })}
-            // colorType={type}
+            chartColors={getColors({
+              type: type,
+              colors: '*',
+              content: 'bg'
+            })}
+            colorType={type}
           />
         )}
       </ResizablePanel>
     );
   };
 
-  const colChart = (label: string, data: any[], type: string = '') => {
-    /*** TODO : I have created this as the original is a bit of a mess and needs to be cleaned up
-     * The intent is to keep the filtering outside of the chart so it remains reusable
-     * and only focused on rendering the chart itself.
-     * Once this is confirmed working, we can deprecate the old D3ColumnChart component.
-     * This chart is abl to scale based on the container size.
-     */
-    return (
-      <ResizablePanel title={t(label)} errorColor={!data || data.length === 0}>
-        {(!data || data.length === 0) && (
-          <Box
-            sx={{
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center'
-            }}
-          >
-            <Typography variant="h6">{t('reviewDashboard.noData')}</Typography>
-          </Box>
-        )}
-        {data && (
-          <D3ColChart
-            data={data}
-            // chartColors={getColors({
-            //   type: type,
-            //   colors: '*',
-            //   content: 'bg'
-            // })}
-            // colorType={type}
-          />
-        )}
-      </ResizablePanel>
-    );
-  };
+  // const colChart = (label: string, data: any[], type: string = '') => {
+  //   /*** TODO : I have created this as the original is a bit of a mess and needs to be cleaned up
+  //    * The intent is to keep the filtering outside of the chart so it remains reusable
+  //    * and only focused on rendering the chart itself.
+  //    * Once this is confirmed working, we can deprecate the old D3ColumnChart component.
+  //    * This chart is abl to scale based on the container size.
+  //    */
+  //   return (
+  //     <ResizablePanel title={t(label)} errorColor={!data || data.length === 0}>
+  //       {(!data || data.length === 0) && (
+  //         <Box
+  //           sx={{
+  //             position: 'absolute',
+  //             top: 0,
+  //             left: 0,
+  //             right: 0,
+  //             bottom: 0,
+  //             display: 'flex',
+  //             alignItems: 'center',
+  //             justifyContent: 'center'
+  //           }}
+  //         >
+  //           <Typography variant="h6">{t('reviewDashboard.noData')}</Typography>
+  //         </Box>
+  //       )}
+  //       {data && (
+  //         <D3ColChart
+  //           data={data}
+  //           chartColors={getColors({
+  //             type: type,
+  //             colors: '*',
+  //             content: 'bg'
+  //           })}
+  //           colorType={type}
+  //         />
+  //       )}
+  //     </ResizablePanel>
+  //   );
+  // };
 
-  const col2Chart = (label: string, data: any[], type: string = '') => {
+  const colWrapper = (label: string, data: any[]) => {
     return (
-      <ResizablePanel title={t(label)} errorColor={!data || data.length === 0}>
+      <ResizablePanel title={t(label)} errorColor={!data || data.length === 0} width="100%">
         {(!data || data.length === 0) && (
           <Box
             sx={{
@@ -533,11 +532,6 @@ export default function ReviewDashboard() {
           <D3ColumnWrapper
             data={data}
             fields={['scienceCategory', 'reviewStatus', 'assignedProposal', 'array']}
-            // chartColors={getColors({
-            //   type: 'observationType',
-            //   colors: '',
-            //   content: 'bg'
-            // })}
           />
         )}
       </ResizablePanel>
@@ -545,7 +539,7 @@ export default function ReviewDashboard() {
   };
 
   const columnChart = (label: string, data: any[], xFields: string[], xInit: string) => (
-    <ResizablePanel title={label ? t(label) : ''}>
+    <ResizablePanel title={label ? t(label) : ''} width="100%">
       <ResponsiveColumnChart
         data={data}
         fields={xFields}
@@ -714,11 +708,9 @@ export default function ReviewDashboard() {
           {pieChart('reviewDashboard.panel.title12', reviewStatusData, 'reviewStatus')}
           {pieChart('reviewDashboard.panel.title1', reviewAssignmentData, 'boolean')}
           {pieChart('reviewDashboard.panel.title3', reviewCategoryData, 'observationType')}
-          {colChart('reviewDashboard.panel.title8', reviewCategoryData, 'observationType')}
-          {col2Chart(
+          {colWrapper(
             'reviewDashboard.panel.title8',
-            filteredReport.filter(record => !['draft'].includes(record.proposalStatus)),
-            'observationType'
+            filteredReport.filter(record => !['draft'].includes(record.proposalStatus))
           )}
           {columnChart(
             'reviewDashboard.panel.title8',

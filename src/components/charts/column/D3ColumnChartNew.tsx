@@ -8,19 +8,27 @@ type Props = {
   data: ColumnData[];
   chartColors?: Record<string, { bg?: string; fg?: string }> | null;
   colorType?: string;
+  width: number;
+  height: number;
 };
 
-const D3ColumnChart: React.FC<Props> = ({ data, chartColors, colorType = 'observationType' }) => {
+const FONT_SIZE = 18;
+
+const D3ColumnChart: React.FC<Props> = ({
+  data,
+  chartColors,
+  colorType = 'observationType',
+  width,
+  height
+}) => {
   const svgRef = useRef<SVGSVGElement | null>(null);
   const tooltipRef = useRef<HTMLDivElement | null>(null);
   const theme = useTheme();
 
   useEffect(() => {
-    if (!svgRef.current || data.length === 0) return;
+    if (!svgRef.current || data.length === 0 || width <= 0 || height <= 0) return;
 
-    const width = 500;
-    const height = 320;
-    const margin = { top: 40, right: 20, bottom: 40, left: 50 };
+    const margin = { top: 40, right: 20, bottom: 0, left: 50 };
 
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
@@ -70,7 +78,10 @@ const D3ColumnChart: React.FC<Props> = ({ data, chartColors, colorType = 'observ
     chartGroup
       .append('g')
       .attr('transform', `translate(0,${innerH})`)
-      .call(d3.axisBottom(x0));
+      .call(d3.axisBottom(x0))
+      .selectAll('text')
+      .style('font-size', `${FONT_SIZE}px`)
+      .style('fill', theme.palette.text.primary);
 
     chartGroup.append('g').call(d3.axisLeft(y));
 
@@ -126,9 +137,9 @@ const D3ColumnChart: React.FC<Props> = ({ data, chartColors, colorType = 'observ
         .attr('x', d => x1(d.group!)! + x1.bandwidth() / 2)
         .attr('y', d => y(d.value) - 5)
         .attr('text-anchor', 'middle')
-        .style('font-size', '12px')
+        .style('font-size', FONT_SIZE)
         .style('fill', theme.palette.text.primary)
-        .text(d => d.value);
+        .text(d => `${d.value} (${d.group})`);
 
       // Legend
       const legend = svg
@@ -141,20 +152,20 @@ const D3ColumnChart: React.FC<Props> = ({ data, chartColors, colorType = 'observ
 
         legendItem
           .append('rect')
-          .attr('width', 12)
-          .attr('height', 12)
+          .attr('width', FONT_SIZE)
+          .attr('height', FONT_SIZE)
           .attr('fill', chartColors?.[g.toLowerCase()]?.bg ?? color(g));
 
         legendItem
           .append('text')
-          .attr('x', 18)
-          .attr('y', 10)
-          .style('font-size', '12px')
+          .attr('x', 25)
+          .attr('y', FONT_SIZE * 0.85)
+          .style('font-size', FONT_SIZE)
           .style('fill', theme.palette.text.primary)
           .text(g);
       });
     } else {
-      // Single series (original behaviour)
+      // Single series
       const bars = chartGroup
         .selectAll('.bar')
         .data(data)
@@ -200,11 +211,11 @@ const D3ColumnChart: React.FC<Props> = ({ data, chartColors, colorType = 'observ
         .attr('x', d => x0(d.name)! + x0.bandwidth() / 2)
         .attr('y', d => y(d.value) - 5)
         .attr('text-anchor', 'middle')
-        .style('font-size', '12px')
+        .style('font-size', FONT_SIZE)
         .style('fill', theme.palette.text.primary)
         .text(d => d.value);
     }
-  }, [data, chartColors, colorType]);
+  }, [data, chartColors, colorType, width, height]);
 
   return (
     <div style={{ width: '100%', height: '100%', position: 'relative' }}>
@@ -227,7 +238,7 @@ const D3ColumnChart: React.FC<Props> = ({ data, chartColors, colorType = 'observ
           pointerEvents: 'none',
           opacity: 0,
           transition: 'opacity 0.2s ease',
-          fontSize: theme.typography.body2.fontSize,
+          fontSize: FONT_SIZE,
           zIndex: 10
         }}
       />

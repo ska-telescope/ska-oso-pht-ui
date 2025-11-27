@@ -13,10 +13,24 @@ export const COLOR_BLINDNESS_OPTIONS = [
 
 /*------------------------------------------------------------------------------*/
 
+// TODO : Need to check that all the fg colors have sufficient contrast with bg colors
+const TABLEAU_10: [string, string][] = [
+  ['#4e79a7', '#FFFFFF'], // dark blue → white text
+  ['#f2ca00', '#000000'], // bright yellow → black text
+  ['#a07c5e', '#FFFFFF'], // medium brown → white text
+  ['#00af91', '#FFFFFF'], // teal/green → white text
+  ['#d37295', '#000000'], // pink → black text
+  ['#edc949', '#000000'], // light gold → black text
+  ['#76b8d6', '#000000'], // light blue → black text
+  ['#8c61d7', '#FFFFFF'], // purple → white text
+  ['#8595a1', '#FFFFFF'], // grey/blue → white text
+  ['#e15759', '#FFFFFF'] // red → white text
+];
+
 const COLOR_OBSERVATION: Record<string, [string, string]> = {
-  continuum: ['#1E90FF', '#FFFFFF'],
-  spectral: ['#FFD700', '#000000'],
-  pst: ['#32CD32', '#000000']
+  continuum: TABLEAU_10[0],
+  spectral: TABLEAU_10[9],
+  pst: TABLEAU_10[2]
 };
 
 const COLOR_TELESCOPES: Record<string, [string, string]> = {
@@ -25,30 +39,77 @@ const COLOR_TELESCOPES: Record<string, [string, string]> = {
 };
 
 const COLOR_BOOLEAN: Record<string, [string, string]> = {
-  no: ['#AD1F1F', '#FFFFFF'],
-  yes: ['#015B00', '#FFFFFF']
+  no: TABLEAU_10[9],
+  yes: TABLEAU_10[3],
+  false: TABLEAU_10[9],
+  true: TABLEAU_10[3]
 };
+
+const COLOR_SB_STATUS: Record<string, [string, string]> = {
+  created: TABLEAU_10[9],
+  draft: TABLEAU_10[1],
+  submitted: TABLEAU_10[0],
+  underReview: TABLEAU_10[6],
+  approved: TABLEAU_10[3],
+  rejected: TABLEAU_10[2],
+  scheduled: TABLEAU_10[5],
+  ready: TABLEAU_10[5],
+  'in progress': TABLEAU_10[6],
+  executing: TABLEAU_10[1],
+  observed: TABLEAU_10[4],
+  'fully observed': TABLEAU_10[4],
+  complete: TABLEAU_10[3],
+  cancelled: TABLEAU_10[2],
+  'out of time': TABLEAU_10[2],
+  suspended: TABLEAU_10[7],
+  failed: TABLEAU_10[2],
+  'failed processing': TABLEAU_10[2]
+};
+
+const COLOR_PROPOSAL_STATUS: Record<string, [string, string]> = {
+  draft: TABLEAU_10[0],
+  submitted: TABLEAU_10[1],
+  accepted: TABLEAU_10[2],
+  withdrawn: TABLEAU_10[3],
+  rejected: TABLEAU_10[4],
+  underreview: TABLEAU_10[5]
+};
+
+const FALLBACK: [string, string] = ['#cccccc', '#000000'];
 
 type ContentType = 'bg' | 'fg' | 'both';
 
 interface GetColorsInput {
   type: string;
   colors: string | string[];
-  content: ContentType;
+  content?: ContentType;
   dim?: number;
+  asArray?: boolean;
 }
 
-// Updated: return an object keyed by level instead of a flat array
-export function getColors({ type, colors, content, dim = 1 }: GetColorsInput) {
+// Overloads: one for object, one for array
+export function getColors(
+  args: GetColorsInput & { asArray?: false }
+): Record<string, { bg?: string; fg?: string }> | undefined;
+export function getColors(args: GetColorsInput & { asArray: true }): string[] | undefined;
+
+export function getColors({
+  type,
+  colors,
+  content = 'both',
+  dim = 1,
+  asArray = false
+}: GetColorsInput): any {
   const paletteMap: Record<string, Record<string, [string, string]>> = {
     observationType: COLOR_OBSERVATION,
     telescope: COLOR_TELESCOPES,
-    boolean: COLOR_BOOLEAN
+    boolean: COLOR_BOOLEAN,
+    sbStatus: COLOR_SB_STATUS,
+    proposalStatus: COLOR_PROPOSAL_STATUS
   };
 
   if (!(type in paletteMap)) return undefined;
 
-  // Normalize color list
   const colorList =
     colors === '' || colors === '*'
       ? Object.keys(paletteMap[type])
@@ -56,17 +117,21 @@ export function getColors({ type, colors, content, dim = 1 }: GetColorsInput) {
       ? colors
       : [colors];
 
-  // Build results as a keyed object
   const result: Record<string, { bg?: string; fg?: string }> = {};
 
   colorList.forEach(level => {
-    const palette = paletteMap[type][level];
-    if (!palette) return;
+    const palette = paletteMap[type][level] ?? FALLBACK;
 
     result[level] = {};
     if (content === 'bg' || content === 'both') result[level].bg = alpha(palette[0], dim);
     if (content === 'fg' || content === 'both') result[level].fg = palette[1];
   });
+
+  if (asArray) {
+    return Object.values(result)
+      .map(c => c.bg)
+      .filter(Boolean) as string[];
+  }
 
   return result;
 }

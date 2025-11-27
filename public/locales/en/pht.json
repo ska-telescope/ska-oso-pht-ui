@@ -95,10 +95,14 @@
     "label": "Authors"
   },
   "bandwidth": {
-    "help": {
-      "0": "Spectral Bandwidth of the observation. LOW supports eight channelization schemes in Spectral mode, each with a unique combination of frequency resolution and bandwidth. MID supports seven channelization schemes in Spectral mode, each with a unique combination of frequency resolution and bandwidth.",
-      "1": "The continuum bandwidth of the observation. It must be fully contained within the selected band. Note: For LOW, the specified bandwidth must be equal to or larger than 5.43 kHz, which is the width of a LOW continuum channel. The specified bandwidth must be fully contained within the LOW band (50 - 350 MHz). It cannot exceed 75 MHz for the AA0.5 and AA1 configurations, 150 MHz for the AA2 configuration and 300 MHz for the AA* and AA4 configurations. For MID, note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz.",
-      "2": "Maximum bandwidth available for Low AA2 is 150 MHz ."
+    "0": {
+      "help": "Spectral Bandwidth of the observation. LOW supports eight channelization schemes in Spectral mode, each with a unique combination of frequency resolution and bandwidth. MID supports seven channelization schemes in Spectral mode, each with a unique combination of frequency resolution and bandwidth."
+    },
+    "1": {
+      "help": "The continuum bandwidth of the observation. It must be fully contained within the selected band. Note: For LOW, the specified bandwidth must be equal to or larger than 5.43 kHz, which is the width of a LOW continuum channel. The specified bandwidth must be fully contained within the LOW band (50 - 350 MHz). It cannot exceed 75 MHz for the AA0.5 and AA1 configurations, 150 MHz for the AA2 configuration and 300 MHz for the AA* and AA4 configurations. For MID, note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz."
+    },
+    "2": {
+      "help": "Maximum bandwidth available for Low AA2 is 150 MHz ."
     },
     "label": {
       "0": "Bandwidth",
@@ -404,6 +408,7 @@
   },
   "imageWeighting": {
     "help": "Select natural, uniform or Briggs weighting.\n\nFor Briggs weighting, the robustness parameter can be set to a value listed below:\n\n-2 (closest to Uniform weighting),\n-1,\n 0,\n 1\n2 (closest to natural weighting).",
+    "helpURL": "https://sensitivity-calculator.skao.int/",
     "label": "Image Weighting",
     "0": "Natural",
     "1": "Uniform",
