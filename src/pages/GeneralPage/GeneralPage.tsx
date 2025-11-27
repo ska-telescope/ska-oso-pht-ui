@@ -184,14 +184,7 @@ export default function GeneralPage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid
-        container
-        direction="row"
-        p={3}
-        spacing={2}
-        alignItems="space-evenly"
-        justifyContent="space-around"
-      >
+      <Grid container direction="row" p={5} spacing={2} alignItems="left">
         <Grid pb={3} size={{ md: 12, lg: 8 }}>
           <Grid container direction="row">
             <Grid size={{ md: 12 }}>{cycleIdField()}</Grid>
