@@ -78,10 +78,6 @@
   "firstName": {
     "help": "First name of the team member"
   },
-  "homeBtn": {
-    "title": "Science Verification Ideas",
-    "tooltip": "Returns to the list of Science Verification Ideas"
-  },
   "lastName": {
     "help": "Last name of the team member"
   },
@@ -150,9 +146,27 @@
     "empty": "THERE ARE NO PARTICIPANTS ASSOCIATED WITH THIS SCIENCE VERIFICATION IDEA",
     "label": "Participants"
   },
+  "reviewDashboard": {
+    "toolTip": "Overview of Science Verification Ideas",
+    "proposal": {
+      "title": "Science Ideas",
+      "subtitle": "Science Idea Statistics"
+    },
+    "panel": {
+      "title3": "Observing Modes",
+      "title6": "Observing Mode Distribution"
+    },
+    "cell": {
+      "title3": "Number of Science Ideas",
+      "title8": "Observing Mode"
+    }
+  },
   "reviewOverview": {
     "panel1": {
       "title": "Science Verification Idea Assignment"
+    },
+    "panel3": {
+      "title": "Observing Modes"
     }
   },
   "reviewProposal": {
@@ -170,6 +184,9 @@
     "tooltip": "Saves the Science Verification Idea in the current state to the database"
   },
   "scienceCategory": {
+    "0": "Spectral",
+    "1": "Continuum",
+    "2": "PST",
     "label": "Observing Mode",
     "help": "Select a mode that best describes the science of your Science Verification Idea.",
     "validationNavigationError": "Observing mode is required.  It is located on the General Information page.",

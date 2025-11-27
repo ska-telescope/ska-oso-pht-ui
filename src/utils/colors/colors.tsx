@@ -1,5 +1,4 @@
 import { alpha } from '@mui/material/styles';
-import { TELESCOPE_LOW_NUM } from '../constants';
 
 export const COLOR_BLINDNESS_OPTIONS = [
   { value: 0, label: 'No Color Blindness' },
@@ -14,48 +13,62 @@ export const COLOR_BLINDNESS_OPTIONS = [
 
 /*------------------------------------------------------------------------------*/
 
-const COLOR_MID: [string, string] = ['#6a3f23', '#FFFFFF'];
-const COLOR_LOW: [string, string] = ['#f9b34c', '#000000'];
-
 const COLOR_OBSERVATION: Record<string, [string, string]> = {
-  '0': ['#1E90FF', '#FFFFFF'],
-  '1': ['#FFD700', '#000000'],
-  '2': ['#32CD32', '#000000']
+  continuum: ['#1E90FF', '#FFFFFF'],
+  spectral: ['#FFD700', '#000000'],
+  pst: ['#32CD32', '#000000']
+};
+
+const COLOR_TELESCOPES: Record<string, [string, string]> = {
+  low: ['#f9b34c', '#000000'],
+  mid: ['#6a3f23', '#FFFFFF']
+};
+
+const COLOR_BOOLEAN: Record<string, [string, string]> = {
+  no: ['#AD1F1F', '#FFFFFF'],
+  yes: ['#015B00', '#FFFFFF']
 };
 
 type ContentType = 'bg' | 'fg' | 'both';
 
 interface GetColorsInput {
-  type: 'observationType' | 'telescope';
+  type: string;
   colors: string | string[];
   content: ContentType;
   dim?: number;
 }
 
-// TODO : This function will need to be moved to the library at some point soon
+// Updated: return an object keyed by level instead of a flat array
 export function getColors({ type, colors, content, dim = 1 }: GetColorsInput) {
-  const colorList = Array.isArray(colors) ? colors : [colors];
-  let results: string[] = [];
+  const paletteMap: Record<string, Record<string, [string, string]>> = {
+    observationType: COLOR_OBSERVATION,
+    telescope: COLOR_TELESCOPES,
+    boolean: COLOR_BOOLEAN
+  };
+
+  if (!(type in paletteMap)) return undefined;
+
+  // Normalize color list
+  const colorList =
+    colors === '' || colors === '*'
+      ? Object.keys(paletteMap[type])
+      : Array.isArray(colors)
+      ? colors
+      : [colors];
+
+  // Build results as a keyed object
+  const result: Record<string, { bg?: string; fg?: string }> = {};
+
   colorList.forEach(level => {
-    let palette: [string, string];
+    const palette = paletteMap[type][level];
+    if (!palette) return;
 
-    if (type === 'observationType') {
-      palette = COLOR_OBSERVATION[level];
-    } else {
-      palette = level === TELESCOPE_LOW_NUM.toString() ? COLOR_LOW : COLOR_MID;
-    }
-
-    if (palette !== undefined) {
-      if (content === 'bg' || content === 'both') {
-        results.push(alpha(palette[0], dim));
-      }
-
-      if (content === 'fg' || content === 'both') {
-        results.push(palette[1]);
-      }
-    }
+    result[level] = {};
+    if (content === 'bg' || content === 'both') result[level].bg = alpha(palette[0], dim);
+    if (content === 'fg' || content === 'both') result[level].fg = palette[1];
   });
-  return results;
+
+  return result;
 }
 
 /*------------------------------------------------------------------------------*/

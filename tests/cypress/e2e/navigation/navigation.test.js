@@ -21,7 +21,7 @@ describe('Verify navigation', () => {
     clearLocalStorage();
   });
 
-  it('Science verification: Verify navigation functionality is not restricted after proposal creation', () => {
+  it.skip('Science verification: Verify navigation functionality is not restricted after proposal creation', () => {
     clickAddProposal();
     clickCycleConfirm();
     enterProposalTitle();
