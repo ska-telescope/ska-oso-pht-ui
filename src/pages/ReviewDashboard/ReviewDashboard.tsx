@@ -16,10 +16,11 @@ import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient
 import D3ColumnChart from '@/components/charts/column/D3ColumnChart';
 import D3ColChart from '@/components/charts/column/D3ColumnChartNew';
 import D3PieChart from '@/components/charts/pie/D3PieChart';
+import D3ColumnWrapper from '@/components/charts/column/D3Wrapper';
 // import D3Slider from '@/components/charts/slider/D3Slider';
 import ResizablePanel from '@/components/layout/resizablePanel/ResizablePanel';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-// import { getColors } from '@/utils/colors/colors';
+import { getColors } from '@/utils/colors/colors';
 
 const REFRESH_TIME = 5 * 60 * 1000;
 const TABLE_WIDTH = '95vw';
@@ -509,6 +510,40 @@ export default function ReviewDashboard() {
     );
   };
 
+  const col2Chart = (label: string, data: any[], type: string = '') => {
+    return (
+      <ResizablePanel title={t(label)} errorColor={!data || data.length === 0}>
+        {(!data || data.length === 0) && (
+          <Box
+            sx={{
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center'
+            }}
+          >
+            <Typography variant="h6">{t('reviewDashboard.noData')}</Typography>
+          </Box>
+        )}
+        {data && (
+          <D3ColumnWrapper
+            data={data}
+            fields={['scienceCategory', 'reviewStatus', 'assignedProposal', 'array']}
+            // chartColors={getColors({
+            //   type: 'observationType',
+            //   colors: '',
+            //   content: 'bg'
+            // })}
+          />
+        )}
+      </ResizablePanel>
+    );
+  };
+
   const columnChart = (label: string, data: any[], xFields: string[], xInit: string) => (
     <ResizablePanel title={label ? t(label) : ''}>
       <ResponsiveColumnChart
@@ -680,6 +715,11 @@ export default function ReviewDashboard() {
           {pieChart('reviewDashboard.panel.title1', reviewAssignmentData, 'boolean')}
           {pieChart('reviewDashboard.panel.title3', reviewCategoryData, 'observationType')}
           {colChart('reviewDashboard.panel.title8', reviewCategoryData, 'observationType')}
+          {col2Chart(
+            'reviewDashboard.panel.title8',
+            filteredReport.filter(record => !['draft'].includes(record.proposalStatus)),
+            'observationType'
+          )}
           {columnChart(
             'reviewDashboard.panel.title8',
             filteredReport.filter(record => !['draft'].includes(record.proposalStatus)),
