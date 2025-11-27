@@ -13,7 +13,7 @@ import { BANNER_PMT_SPACER_MIN, PANEL_DECISION_STATUS } from '@/utils/constants'
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import ResetButton from '@/components/button/Reset/Reset';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
-import D3ColumnChart from '@/components/charts/column/D3ColumnChart';
+import D3ColumnChart from '@/components/charts/column/D3ColumnChartOld';
 // import D3ColChart from '@/components/charts/column/D3ColumnChartNew';
 import D3PieChart from '@/components/charts/pie/D3PieChart';
 import D3ColumnWrapper from '@/components/charts/column/D3Wrapper';
@@ -339,7 +339,10 @@ export default function ReviewDashboard() {
     calculateDecisionData(filteredReport, 'decisionStatus', setProposalDecisionData, ['draft']);
     //
     calculateProposalData(filteredReport, 'assignedProposal', setReviewAssignmentData, ['draft']);
-    calculateProposalData(filteredReport, 'reviewStatus', setReviewStatusData, ['draft']);
+    calculateProposalData(filteredReport, 'reviewStatus', setReviewStatusData, [
+      'draft',
+      'submitted'
+    ]);
     calculateProposalData(filteredReport, 'scienceCategory', setReviewCategoryData, ['draft']);
   };
 
@@ -511,7 +514,12 @@ export default function ReviewDashboard() {
 
   const colWrapper = (label: string, data: any[]) => {
     return (
-      <ResizablePanel title={t(label)} errorColor={!data || data.length === 0} width="100%">
+      <ResizablePanel
+        title={t(label)}
+        errorColor={!data || data.length === 0}
+        width="100%"
+        height="60vh"
+      >
         {(!data || data.length === 0) && (
           <Box
             sx={{
@@ -532,6 +540,7 @@ export default function ReviewDashboard() {
           <D3ColumnWrapper
             data={data}
             fields={['scienceCategory', 'reviewStatus', 'assignedProposal', 'array']}
+            t={t}
           />
         )}
       </ResizablePanel>
@@ -712,12 +721,13 @@ export default function ReviewDashboard() {
             'reviewDashboard.panel.title8',
             filteredReport.filter(record => !['draft'].includes(record.proposalStatus))
           )}
-          {columnChart(
-            'reviewDashboard.panel.title8',
-            filteredReport.filter(record => !['draft'].includes(record.proposalStatus)),
-            ['scienceCategory', 'reviewStatus', 'assignedProposal', 'array'],
-            'scienceCategory'
-          )}
+          {false &&
+            columnChart(
+              'reviewDashboard.panel.title8',
+              filteredReport.filter(record => !['draft'].includes(record.proposalStatus)),
+              ['scienceCategory', 'reviewStatus', 'assignedProposal', 'array'],
+              'scienceCategory'
+            )}
         </Grid>
         <Grid
           p={5}

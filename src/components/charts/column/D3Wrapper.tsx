@@ -1,5 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
-import D3ColumnChart from './D3ColumnChartNew';
+import { Box, Stack } from '@mui/material';
+import { DropDown } from '@ska-telescope/ska-gui-components';
+import D3ColumnChart from './D3ColumnChart';
 import { getColors } from '@/utils/colors/colors';
 
 type Datum = Record<string, string | number | null | undefined>;
@@ -7,11 +9,12 @@ type Datum = Record<string, string | number | null | undefined>;
 type WrapperProps = {
   data: Datum[];
   fields: string[];
+  t: (key: string) => string;
 };
 
 const PADDING = 60;
 
-const ColumnChartWrapper: React.FC<WrapperProps> = ({ data, fields }) => {
+const ColumnChartWrapper: React.FC<WrapperProps> = ({ data, fields, t }) => {
   const safeFields = useMemo(() => fields.filter(Boolean), [fields]);
   const [xField, setXField] = useState(safeFields[0] ?? '');
   const [groupField, setGroupField] = useState('');
@@ -72,6 +75,19 @@ const ColumnChartWrapper: React.FC<WrapperProps> = ({ data, fields }) => {
     }
   };
 
+  const getOptionsDropdown1 = () => {
+    return safeFields.map(e => ({ label: t(e + '.label'), value: e }));
+  };
+
+  const getOptionsDropdown2 = () => {
+    return [
+      { label: t('none'), value: '' },
+      ...safeFields
+        .filter(e => e !== xField) // exclude the current xField
+        .map(e => ({ label: t(e + '.label'), value: e }))
+    ];
+  };
+
   return (
     <div
       style={{
@@ -90,37 +106,30 @@ const ColumnChartWrapper: React.FC<WrapperProps> = ({ data, fields }) => {
           paddingLeft: '1rem'
         }}
       >
-        <label>
-          X-axis:
-          <select
-            value={xField}
-            onChange={e => {
-              const next = e.target.value;
-              setXField(next);
-              if (groupField === next) setGroupField('');
-            }}
-          >
-            {safeFields.map(f => (
-              <option key={f} value={f}>
-                {f}
-              </option>
-            ))}
-          </select>
-        </label>
-
-        <label>
-          Group by:
-          <select value={groupField} onChange={e => setGroupField(e.target.value)}>
-            <option value="">(none)</option>
-            {safeFields
-              .filter(f => f !== xField)
-              .map(f => (
-                <option key={f} value={f}>
-                  {f}
-                </option>
-              ))}
-          </select>
-        </label>
+        <Stack direction="row" spacing={4} sx={{ mb: 1, pl: 1 }}>
+          <Box sx={{ width: '30ch' }}>
+            <DropDown
+              value={xField}
+              label={t('reviewDashboard.chart.label1')}
+              options={getOptionsDropdown1()}
+              required
+              setValue={setXField}
+              testId="wrapperDropdown1"
+              fullWidth
+            />
+          </Box>
+          <Box sx={{ width: '30ch' }}>
+            <DropDown
+              value={groupField}
+              label={t('reviewDashboard.chart.label2')}
+              options={getOptionsDropdown2()}
+              required
+              setValue={setGroupField}
+              testId="wrapperDropdown2"
+              fullWidth
+            />
+          </Box>
+        </Stack>
       </div>
 
       <div ref={chartAreaRef} style={{ padding: PADDING, flex: 1, minHeight: 0 }}>
