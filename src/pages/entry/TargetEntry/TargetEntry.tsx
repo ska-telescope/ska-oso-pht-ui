@@ -253,8 +253,6 @@ export default function TargetEntry({
 
     const getVisibility = async () => {
       const response = await GetVisibility(ra, dec, 'LOW'); // only LOW for now
-      console.log('params: ', ra, dec);
-      console.log('visibility response: ', response);
     };
 
     const AddTheTarget = () => {

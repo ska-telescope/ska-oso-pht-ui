@@ -1,9 +1,9 @@
-import { OSO_SERVICES_VISIBILITY_PATH, SKA_OSO_SERVICES_URL } from '@utils/constants.ts';
+import { OSO_SERVICES_VISIBILITY_PATH } from '@utils/constants.ts';
 import axiosClient from '@services/axios/axiosClient/axiosClient.tsx';
 
 async function GetVisibility(ra: string, dec: string, array: string) {
   try {
-    const result = await axiosClient.get(`${SKA_OSO_SERVICES_URL}${OSO_SERVICES_VISIBILITY_PATH}`, {
+    const result = await axiosClient.get(`${OSO_SERVICES_VISIBILITY_PATH}`, {
       params: { ra, dec, array }
     });
 
