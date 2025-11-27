@@ -6,6 +6,7 @@ import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
 import PulsarTimingBeamField from '@components/fields/pulsarTimingBeam/PulsarTimingBeam.tsx';
 import { generateId, leadZero } from '@utils/helpers.ts';
+import GetVisibility from '@services/axios/get/getVisibilitySVG/getVisibilitySVG.tsx';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import ResolveButton from '@/components/button/Resolve/Resolve';
@@ -244,9 +245,16 @@ export default function TargetEntry({
         return;
       } else {
         AddTheTarget();
+        getVisibility();
         clearForm();
         setResetBeamArrayData(true);
       }
+    };
+
+    const getVisibility = async () => {
+      const response = await GetVisibility(ra, dec, 'LOW'); // only LOW for now
+      console.log('params: ', ra, dec);
+      console.log('visibility response: ', response);
     };
 
     const AddTheTarget = () => {
