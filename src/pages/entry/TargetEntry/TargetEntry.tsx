@@ -29,7 +29,8 @@ import {
   DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
   DEFAULT_ZOOM_OBSERVATION_LOW_AA2,
   DEFAULT_PST_OBSERVATION_LOW_AA2,
-  TELESCOPE_LOW_NUM
+  TELESCOPE_LOW_NUM,
+  DEFAULT_OBSERVATIONS_LOW_AA2
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -44,6 +45,7 @@ import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import { DataProductSDP } from '@/utils/types/dataProduct';
 import { useHelp } from '@/utils/help/useHelp';
+import { observationOut } from '@/utils/generateLinkedObservation/GenerateLinkedObservation';
 interface TargetEntryProps {
   raType: number;
   setTarget?: Function;
@@ -293,43 +295,11 @@ export default function TargetEntry({
         return newDataProductSDP;
       };
 
-      const generateLowAA2Observation = (obs: Observation): Observation => {
-        return {
-          ...obs,
-          id: generateId(t('addObservation.idPrefix'), 6),
-          telescope: TELESCOPE_LOW_NUM,
-          subarray: OB_SUBARRAY_AA2,
-          linked: '0',
-          type: getProposal()?.scienceCategory,
-          observingBand: BAND_LOW,
-          centralFrequency: calculateCentralFrequency(
-            BAND_LOW,
-            OB_SUBARRAY_AA2,
-            observatoryConstants
-          ),
-          continuumBandwidth: calculateContinuumBandwidth(
-            BAND_LOW,
-            OB_SUBARRAY_AA2,
-            observatoryConstants
-          )
-        };
-      };
-
-      const defaultObservation = () => {
-        switch (getProposal()?.scienceCategory) {
-          case TYPE_ZOOM:
-            return DEFAULT_ZOOM_OBSERVATION_LOW_AA2;
-          case TYPE_PST:
-            return DEFAULT_PST_OBSERVATION_LOW_AA2;
-          default:
-            return DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2;
-        }
-      };
-
-      const observationOut = () => {
-        const defaultObs = defaultObservation();
-        return generateLowAA2Observation(defaultObs);
-      };
+      // const observationOut = () => {
+      //   const defaultObs = DEFAULT_OBSERVATIONS_LOW_AA2[getProposal().scienceCategory as number];
+      //   console.log('defaultObs', defaultObs);
+      //   return defaultObs;
+      // };
 
       const newTarget: Target = {
         kind: RA_TYPE_ICRS.value,
@@ -364,7 +334,7 @@ export default function TargetEntry({
         let newDataProductSDP = undefined;
         let sensCalcResult = undefined;
         if (MOCK_CALL && typeof getProposal().scienceCategory === 'number') {
-          newObservation = observationOut();
+          newObservation = observationOut(getProposal().scienceCategory as number);
           newCalibration = calibrationOut(newObservation?.id);
           newDataProductSDP = dataProductSDPOut(newObservation?.id);
           sensCalcResult = await getSensCalcData(newObservation, newTarget);

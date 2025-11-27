@@ -2,7 +2,14 @@ import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
-import { GENERAL, LAB_POSITION, PAGE_GENERAL } from '@utils/constants.ts';
+import {
+  DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
+  DEFAULT_OBSERVATIONS_LOW_AA2,
+  DEFAULT_PST_OBSERVATION_LOW_AA2,
+  GENERAL,
+  LAB_POSITION,
+  PAGE_GENERAL
+} from '@utils/constants.ts';
 import { countWords } from '@utils/helpers.ts';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { validateGeneralPage } from '@utils/validation/validation.tsx';
@@ -31,6 +38,7 @@ export default function GeneralPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { osdCloses, osdOpens } = useOSDAccessors();
+  const [isObsModeChanged, setIsObsModeChanged] = React.useState(false); // For Mock Call
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
@@ -59,7 +67,64 @@ export default function GeneralPage() {
   }, [validateToggle]);
 
   const checkCategory = (id: number) => {
+    if (isSV() && id !== getProposal().scienceCategory) {
+      setIsObsModeChanged(true);
+    }
     setProposal({ ...getProposal(), scienceCategory: id, scienceSubCategory: [1] });
+  };
+
+  React.useEffect(() => {
+    console.log('isObsModeChanged:', isObsModeChanged);
+    checkTargetObservation();
+  }, [isObsModeChanged]);
+
+  const checkTargetObservation = () => {
+    console.log('checkTargetObservation called');
+    if (!isSV() || typeof getProposal().scienceCategory !== 'number') return;
+    // check obs mode defined
+    // check if there is a target defined
+    // check if ther is an observation defined
+    // if not, create a default observation based on the category
+    // if yes, check observation type matches observation mode
+    // regenretae observation if type has changed
+
+    // check if there is a target defined
+    if ((getProposal().targets?.length ?? 0) > 0) {
+      console.log('Targets defined:', getProposal().targets);
+      // check if ther is an observation defined
+      if ((getProposal().observations?.length ?? 0) > 0) {
+        console.log('Observations defined:', getProposal().observations);
+        console.log('getProposal().observations![0].type', getProposal().observations![0].type);
+        console.log('getProposal().scienceCategory', getProposal().scienceCategory);
+        if (
+          getProposal().observations![0].type !== getProposal().scienceCategory ||
+          isObsModeChanged
+        ) {
+          console.log('Observation mode has changed. Regenerating observation.');
+          generateObservation();
+        }
+      } else {
+        console.log('No observations defined. Generating default observation.');
+        generateObservation();
+      }
+    } else {
+      console.log('No targets defined.');
+    }
+
+    setIsObsModeChanged(false);
+  };
+
+  const generateObservation = () => {
+    // create a default observation based on the category
+    const defaultObservation =
+      DEFAULT_OBSERVATIONS_LOW_AA2[getProposal().scienceCategory as number];
+
+    setProposal({
+      ...getProposal(),
+      observations: [defaultObservation]
+    });
+
+    console.log('Default observation created based on category:', defaultObservation);
   };
 
   const cycleIdField = () => (
