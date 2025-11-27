@@ -39,7 +39,7 @@ export type ProposalBackend = {
     targets: TargetBackend[];
     documents: DocumentBackend[] | null;
     observation_sets: ObservationSetBackend[] | null;
-    calibration_strategy: CalibrationStrategyBackend[] | null;
+    calibration_strategy: CalibrationStrategyBackend[];
     data_product_sdps: DataProductSDPsBackend[] | null;
     data_product_src_nets: DataProductSRCNetBackend[] | null;
     result_details: SensCalcResultsBackend[] | null;
