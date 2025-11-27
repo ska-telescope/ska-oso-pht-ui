@@ -95,7 +95,8 @@ export default function TableDataProductsRow({
     const colors = getColors({
       type: 'observationType',
       colors: getObservation()?.type?.toString() ?? '',
-      content: 'both'
+      content: 'both',
+      asArray: true
     });
     return (
       <TableCell
@@ -120,7 +121,8 @@ export default function TableDataProductsRow({
     const colors = getColors({
       type: 'telescope',
       colors: getObservation()?.telescope?.toString() ?? '',
-      content: 'both'
+      content: 'both',
+      asArray: true
     });
     return (
       <TableCell role="gridcell" sx={{ width: '1%', whiteSpace: 'nowrap', minWidth: 0 }}>
@@ -146,7 +148,8 @@ export default function TableDataProductsRow({
       type: 'telescope',
       colors: getObservation()?.telescope?.toString() ?? '',
       content: 'both',
-      dim: 0.6
+      dim: 0.6,
+      asArray: true
     });
     return (
       <TableCell role="gridcell" sx={{ width: '1%', whiteSpace: 'nowrap', minWidth: 0 }}>
@@ -171,7 +174,8 @@ export default function TableDataProductsRow({
       type: 'telescope',
       colors: getObservation()?.telescope?.toString() ?? '',
       content: 'both',
-      dim: 0.6
+      dim: 0.6,
+      asArray: true
     });
     return (
       <TableCell>
