@@ -41,7 +41,6 @@ import {
   PAGE_OBSERVATION_UPDATE,
   PAGE_OBSERVATION_ADD,
   GENERAL,
-  MOCK_CALL,
   FREQUENCY_HZ,
   ZOOM_BANDWIDTH_DEFAULT_LOW,
   ZOOM_CHANNELS_MIN,
@@ -49,7 +48,8 @@ import {
   TYPE_PST,
   FLOW_THROUGH_VALUE,
   FREQUENCY_KHZ,
-  ZOOM_BANDWIDTH_DEFAULT_MID
+  ZOOM_BANDWIDTH_DEFAULT_MID,
+  TELESCOPES
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -85,6 +85,7 @@ import FrequencySpectrum from '@/components/fields/frequencySpectrum/frequencySp
 import { getColors } from '@/utils/colors/colors';
 import PstModeField from '@/components/fields/pstMode/PstMode';
 import { useHelp } from '@/utils/help/useHelp';
+import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 4;
@@ -93,7 +94,11 @@ const BACK_PAGE = PAGE_OBSERVATION;
 const IMAGE_PATH =
   window.location.hostname === 'localhost' ? '/assets/low_aa2.png' : './assets/low_aa2.png';
 
-export default function ObservationEntry() {
+interface ObservationEntryProps {
+  data?: Observation;
+}
+
+export default function ObservationEntry({ data }: ObservationEntryProps) {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const theme = useTheme();
@@ -102,7 +107,7 @@ export default function ObservationEntry() {
   const { isSV } = useAppFlow();
   const { osdLOW, osdMID, observatoryConstants, osdCyclePolicy } = useOSDAccessors();
 
-  const isEdit = () => locationProperties.state !== null;
+  const isEdit = () => locationProperties.state !== null || data !== undefined;
 
   const PAGE = isEdit() ? PAGE_OBSERVATION_UPDATE : PAGE_OBSERVATION_ADD;
 
@@ -148,7 +153,7 @@ export default function ObservationEntry() {
   const observationIn = (ob: Observation) => {
     setMyObsId(ob?.id);
     setSubarrayConfig(ob?.subarray);
-    setObservationType(MOCK_CALL ? (getObservationType() as number) : ob.type); // TODO this should not be needed
+    setObservationType(isSV() ? (getObservationType() as number) : ob.type); // TODO this should not be needed
     if (!once) setObservingBand(ob?.observingBand);
     setWeather(ob?.weather ?? Number(t('weather.default')));
     setElevation(ob?.elevation);
@@ -363,10 +368,10 @@ export default function ObservationEntry() {
   };
 
   React.useEffect(() => {
-    setHelp('observationId.help');
+    setHelp('observationId');
     if (isEdit()) {
-      observationIn(locationProperties.state);
-      setOnce(locationProperties.state);
+      observationIn(data ? data : locationProperties.state);
+      setOnce(data ? data : locationProperties.state);
     } else {
       setMyObsId(generateId(t('addObservation.idPrefix'), 6));
       setCentralFrequency(
@@ -473,7 +478,7 @@ export default function ObservationEntry() {
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
           labelWidth={LABEL_WIDTH_NEW}
-          onFocus={() => setHelp('observationId.help')}
+          onFocus={() => setHelp('observationId')}
           required
           testId="observationId"
           value={myObsId}
@@ -487,7 +492,7 @@ export default function ObservationEntry() {
     fieldWrapper(
       <GroupObservationsField
         labelWidth={LABEL_WIDTH_NEW}
-        onFocus={() => setHelp('groupObservations.help')}
+        onFocus={() => setHelp('groupObservations')}
         setValue={setGroupObservation}
         value={groupObservation}
         obsId={myObsId}
@@ -522,7 +527,7 @@ export default function ObservationEntry() {
             FREQUENCY_MHZ
           )}
           bandWidth={
-            isContinuum()
+            isContinuum() || isPST()
               ? continuumBandwidth ?? 0
               : frequencyConversion(
                   getBandwidthZoom(observationOut()),
@@ -615,7 +620,7 @@ export default function ObservationEntry() {
           testId="numOf15mAntennas"
           value={numOf15mAntennas}
           setValue={validate}
-          onFocus={() => setHelp('numOf15mAntennas.help')}
+          onFocus={() => setHelp('numOf15mAntennas')}
         />
       );
     };
@@ -643,7 +648,7 @@ export default function ObservationEntry() {
           testId="numOf13mAntennas"
           value={numOf13mAntennas}
           setValue={validate}
-          onFocus={() => setHelp('numOf13mAntennas.help')}
+          onFocus={() => setHelp('numOf13mAntennas')}
         />
       );
     };
@@ -671,7 +676,7 @@ export default function ObservationEntry() {
         isLow={isLow()}
         label={t('elevation.label')}
         widthLabel={LABEL_WIDTH_NEW}
-        onFocus={() => setHelp('elevation.help')}
+        onFocus={() => setHelp('elevation')}
         setValue={setElevation}
         testId="elevation"
         value={elevation}
@@ -699,7 +704,7 @@ export default function ObservationEntry() {
           testId="weather"
           value={weather}
           setValue={setWeather}
-          onFocus={() => setHelp('weather.help')}
+          onFocus={() => setHelp('weather')}
           suffix={weatherUnitsField()}
         />
       </Box>
@@ -733,7 +738,7 @@ export default function ObservationEntry() {
             setValue={setSuppliedType}
             disabled={getOptions()?.length < 2}
             label=""
-            onFocus={() => setHelp('suppliedType.help')}
+            onFocus={() => setHelp('suppliedType')}
             required
           />
         </Box>
@@ -756,7 +761,7 @@ export default function ObservationEntry() {
             disabled={isLow()}
             setValue={setSuppliedUnits}
             label=""
-            onFocus={() => setHelp('suppliedUnits.help')}
+            onFocus={() => setHelp('suppliedUnits')}
             InputProps={{ disableUnderline: true }}
           />
         </Box>
@@ -775,7 +780,7 @@ export default function ObservationEntry() {
             testId="suppliedValue"
             value={suppliedValue}
             setValue={setSuppliedValue}
-            onFocus={() => setHelp('suppliedValue.help')}
+            onFocus={() => setHelp('suppliedValue')}
             suffix={suppliedUnitsField()}
             required
           />
@@ -811,7 +816,7 @@ export default function ObservationEntry() {
           testId="zoomChannels"
           value={zoomChannels}
           setValue={setZoomChannels}
-          onFocus={() => setHelp('zoomChannels.help')}
+          onFocus={() => setHelp('zoomChannels')}
           required
           errorText={errorMessage()}
         />
@@ -836,7 +841,7 @@ export default function ObservationEntry() {
           testId="centralFrequency"
           value={centralFrequency}
           setValue={setCentralFrequency}
-          onFocus={() => setHelp('centralFrequency.help')}
+          onFocus={() => setHelp('centralFrequency')}
           required
           suffix={centralFrequencyUnitsField()}
           errorText={errorMessage()}
@@ -857,7 +862,7 @@ export default function ObservationEntry() {
           setValue={setContinuumBandwidthUnits}
           label=""
           disabled={options?.length === 1}
-          onFocus={() => setHelp('frequencyUnits.help')}
+          onFocus={() => setHelp('frequencyUnits')}
         />
       );
     };
@@ -911,7 +916,7 @@ export default function ObservationEntry() {
         labelWidth={LABEL_WIDTH_NEW}
         observingBand={observingBand}
         observationType={observationType}
-        onFocus={() => setHelp('spectralResolution.help')}
+        onFocus={() => setHelp('spectralResolution')}
         setValue={setSpectralResolution}
       />
     );
@@ -939,7 +944,7 @@ export default function ObservationEntry() {
         spectralResolution={spectralResolution}
         observingBand={observingBand}
         observationType={observationType}
-        onFocus={() => setHelp('effectiveResolution.help')}
+        onFocus={() => setHelp('effectiveResolution')}
         setValue={setEffectiveResolution}
       />
     );
@@ -955,7 +960,7 @@ export default function ObservationEntry() {
         setValue={setCentralFrequencyUnits}
         label=""
         disabled={options?.length === 1}
-        onFocus={() => setHelp('frequencyUnits.help')}
+        onFocus={() => setHelp('frequencyUnits')}
       />
     );
   };
@@ -1000,7 +1005,7 @@ export default function ObservationEntry() {
           testId="subBands"
           value={subBands}
           setValue={validate}
-          onFocus={() => setHelp('subBands.help')}
+          onFocus={() => setHelp('subBands')}
           required
         />
       </Box>
@@ -1146,7 +1151,7 @@ export default function ObservationEntry() {
               alignItems="stretch"
               justifyContent="flex-start"
             >
-              {!MOCK_CALL && (
+              {!isSV() && (
                 <Grid size={{ md: 12, lg: 6 }}>
                   <BorderedSection
                     title={t('observationSections.identifiers')}
@@ -1174,7 +1179,7 @@ export default function ObservationEntry() {
                 </Grid>
               )}
 
-              {MOCK_CALL && (
+              {isSV() && (
                 <Grid size={{ md: 6, lg: 6 }}>
                   <BorderedSection
                     title={t('observationSections.identifiers')}
@@ -1204,12 +1209,12 @@ export default function ObservationEntry() {
                     container
                     direction="row"
                     alignItems="flext-start"
-                    rowSpacing={MOCK_CALL ? 0 : 2}
+                    rowSpacing={isSV() ? 0 : 2}
                   >
                     <Grid size={{ md: 12, lg: 12 }}></Grid>
                     <Grid size={{ md: 12, lg: 12 }}>{subArrayField()}</Grid>
                     <Grid size={{ md: 12, lg: 12 }}>
-                      {!MOCK_CALL && (isLow() ? numStationsField() : antennasFields())}
+                      {!isSV() && (isLow() ? numStationsField() : antennasFields())}
                     </Grid>
                     <Grid size={{ md: 12, lg: 12 }}>{suppliedField()}</Grid>
                   </Grid>
@@ -1227,11 +1232,11 @@ export default function ObservationEntry() {
                 rowSpacing={1}
                 justifyContent="space-between"
               >
-                {!MOCK_CALL && frequencySetUp()}{' '}
+                {!isSV() && frequencySetUp()}{' '}
                 {/* shows to user some fields that are hidden in mock call */}
-                {MOCK_CALL && isContinuum() && frequencySetUpContinuumMockCall()}
-                {MOCK_CALL && isZoom() && frequencySetUpSpectralMockCall()}
-                {MOCK_CALL && isPST() && frequencySetUpPSTMockCall()}
+                {isSV() && isContinuum() && frequencySetUpContinuumMockCall()}
+                {isSV() && isZoom() && frequencySetUpSpectralMockCall()}
+                {isSV() && isPST() && frequencySetUpPSTMockCall()}
               </Grid>
             </BorderedSection>
           </Grid>
