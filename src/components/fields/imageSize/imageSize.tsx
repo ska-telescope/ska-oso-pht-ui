@@ -25,7 +25,7 @@ export default function ImageSizeField({
   const { t } = useScopedTranslation();
   const FIELD = 'imageSize';
 
-  const errorText = () => (Number(value) ? '' : t('imageSize.error'));
+  const errorText = () => (Number(value) ? '' : t(FIELD + '.error'));
   const setTheNumber = (inNum: number) => {
     const str = Math.abs(inNum).toString();
     const num = Number(str);
@@ -37,7 +37,7 @@ export default function ImageSizeField({
   return (
     <Box pt={1}>
       <NumberEntry
-        label={t('imageSize.label')}
+        label={t(FIELD + '.label')}
         labelBold
         labelPosition={LAB_POSITION}
         labelWidth={labelWidth}

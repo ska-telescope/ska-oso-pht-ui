@@ -1,6 +1,7 @@
 import { TableRow, TableCell, IconButton, Box, Typography, Collapse } from '@mui/material';
 import { ChevronRight, ExpandMore } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
+import { useMemo } from 'react';
 import EditIcon from '@/components/icon/editIcon/editIcon';
 import TrashIcon from '@/components/icon/trashIcon/trashIcon';
 import { useInitializeAccessStore } from '@/utils/aaa/aaaUtils';
@@ -39,147 +40,137 @@ export default function TableDataProductsRow({
   const { osdLOW } = useOSDAccessors();
   useInitializeAccessStore();
 
-  const getObservation = () => proposal?.observations?.find(obs => obs.id === item.observationId);
+  const observation = useMemo(
+    () => proposal?.observations?.find(obs => obs.id === item.observationId),
+    [proposal, item.observationId]
+  );
 
-  const isContinuum = () => getObservation()?.type === TYPE_CONTINUUM;
+  const isContinuum = observation?.type === TYPE_CONTINUUM;
 
-  const tableCollapseCell = () => (
-    <TableCell role="gridcell" style={{ maxWidth: '120px', padding: 0 }}>
-      <Box
-        sx={{
-          display: 'inline-flex',
-          alignItems: 'center',
-          gap: 1,
-          maxWidth: '100%',
-          overflow: 'hidden'
-        }}
+  const getObservationColors = (type: string, value?: unknown, dim?: number) =>
+    getColors({
+      type,
+      colors: String(value ?? ''),
+      content: 'both',
+      asArray: true,
+      ...(dim ? { dim } : {})
+    }) ?? [];
+
+  const colorsObType = useMemo(() => getObservationColors('observationType', observation?.type), [
+    observation?.type
+  ]);
+  const colorsTelescope = useMemo(() => getObservationColors('telescope', observation?.telescope), [
+    observation?.telescope
+  ]);
+  const colorsTelescopeDim = useMemo(
+    () => getObservationColors('telescope', observation?.telescope, 0.6),
+    [observation?.telescope]
+  );
+
+  return (
+    <>
+      <TableRow
+        key={item.id}
+        data-testid={`row-${item.id}`}
+        sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}
+        role="row"
+        aria-rowindex={index + 2}
       >
-        <IconButton
-          ref={expandButtonRef}
-          aria-label={`${expanded ? 'Collapse' : 'Expand'} details for ${item.title}.`}
-          aria-expanded={expanded}
-          aria-controls={`employee-details-${item.id}`}
-          size="small"
-          onClick={() => toggleRow(item.id)}
-          data-testid={`expand-button-${item.id}`}
-          sx={{ transition: 'transform 0.2s' }}
-        >
-          {expanded ? <ExpandMore /> : <ChevronRight />}
-        </IconButton>
+        {/* Collapse / Edit / Delete */}
+        <TableCell role="gridcell" sx={{ maxWidth: 120, p: 0 }}>
+          <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
+            <IconButton
+              ref={expandButtonRef}
+              aria-label={`${expanded ? 'Collapse' : 'Expand'} details for ${item.title}.`}
+              aria-expanded={expanded}
+              aria-controls={`observation-details-${item.id}`}
+              size="small"
+              onClick={() => toggleRow(item.id)}
+              data-testid={`expand-button-${item.id}`}
+              sx={{ transition: 'transform 0.2s' }}
+            >
+              {expanded ? <ExpandMore /> : <ChevronRight />}
+            </IconButton>
 
-        {editClicked && (
-          <EditIcon
-            onClick={() => {
-              if (editClicked) editClicked(item);
+            {editClicked && (
+              <EditIcon onClick={() => editClicked(item)} toolTip={t('editDataProduct.toolTip')} />
+            )}
+
+            {deleteClicked && (
+              <TrashIcon
+                onClick={() => deleteClicked(item)}
+                toolTip={t('deleteDataProduct.toolTip')}
+              />
+            )}
+          </Box>
+        </TableCell>
+
+        {/* Observation Type */}
+        <TableCell
+          role="gridcell"
+          sx={{
+            borderLeft: '10px solid',
+            borderColor: colorsObType[0],
+            pl: 1,
+            width: '1%',
+            whiteSpace: 'nowrap'
+          }}
+        >
+          <Typography variant="body2" color="text.secondary">
+            {t('observationType.' + observation?.type)}
+          </Typography>
+        </TableCell>
+
+        {/* Observation ID */}
+        <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
+          <Typography variant="body2" color="text.secondary">
+            {item.observationId}
+          </Typography>
+        </TableCell>
+
+        {/* Telescope + Subarray */}
+        <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
+          <Box
+            sx={{
+              backgroundColor: colorsTelescope[0],
+              borderRadius: 1,
+              px: 1,
+              display: 'inline-flex'
             }}
-            toolTip={t('editDataProduct.toolTip')}
-          />
-        )}
+          >
+            <Typography
+              variant="body2"
+              color={colorsTelescope[1]}
+              sx={{ whiteSpace: 'nowrap', p: 1 }}
+            >
+              {t('telescopes.' + observation?.telescope)}{' '}
+              {t('subArrayConfiguration.' + observation?.subarray)}
+            </Typography>
+          </Box>
+        </TableCell>
 
-        {deleteClicked && (
-          <TrashIcon onClick={() => deleteClicked(item)} toolTip={t('deleteDataProduct.toolTip')} />
-        )}
-      </Box>
-    </TableCell>
-  );
+        {/* Observing Band */}
+        <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
+          <Box
+            sx={{
+              backgroundColor: colorsTelescopeDim[0],
+              borderRadius: 0,
+              px: 1,
+              display: 'inline-flex'
+            }}
+          >
+            <Typography
+              variant="body2"
+              color={colorsTelescopeDim[1]}
+              sx={{ whiteSpace: 'nowrap', p: 1 }}
+            >
+              {t('observingBand.short.' + observation?.observingBand)}
+            </Typography>
+          </Box>
+        </TableCell>
 
-  const tableObservationIdCell = () => (
-    <TableCell role="gridcell" sx={{ width: 0, whiteSpace: 'nowrap', minWidth: 0 }}>
-      <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
-        {item.observationId}
-      </Typography>
-    </TableCell>
-  );
-
-  const tableObservationTypeCell = () => {
-    const colors = getColors({
-      type: 'observationType',
-      colors: getObservation()?.type?.toString() ?? '',
-      content: 'both',
-      asArray: true
-    });
-    return (
-      <TableCell
-        role="gridcell"
-        sx={{
-          borderLeft: '10px solid',
-          borderColor: colors[0],
-          paddingLeft: '10px',
-          width: '1%',
-          whiteSpace: 'nowrap',
-          minWidth: 0
-        }}
-      >
-        <Typography variant="body2" color="text.secondary" sx={{ whiteSpace: 'nowrap' }}>
-          {t('observationType.' + getObservation()?.type)}
-        </Typography>
-      </TableCell>
-    );
-  };
-
-  const tableObservationSubarrayCell = () => {
-    const colors = getColors({
-      type: 'telescope',
-      colors: getObservation()?.telescope?.toString() ?? '',
-      content: 'both',
-      asArray: true
-    });
-    return (
-      <TableCell role="gridcell" sx={{ width: '1%', whiteSpace: 'nowrap', minWidth: 0 }}>
-        <Box
-          sx={{
-            backgroundColor: colors[0],
-            borderRadius: '8px',
-            padding: '4px 8px',
-            display: 'inline-flex'
-          }}
-        >
-          <Typography variant="body2" color={colors[1]} sx={{ whiteSpace: 'nowrap', padding: 1 }}>
-            {t('telescopes.' + getObservation()?.telescope)}{' '}
-            {t('subArrayConfiguration.' + getObservation()?.subarray)}
-          </Typography>
-        </Box>
-      </TableCell>
-    );
-  };
-
-  const tableObservationBandCell = () => {
-    const colors = getColors({
-      type: 'telescope',
-      colors: getObservation()?.telescope?.toString() ?? '',
-      content: 'both',
-      dim: 0.6,
-      asArray: true
-    });
-    return (
-      <TableCell role="gridcell" sx={{ width: '1%', whiteSpace: 'nowrap', minWidth: 0 }}>
-        <Box
-          sx={{
-            backgroundColor: colors[0],
-            borderRadius: '0px',
-            padding: '4px 8px',
-            display: 'inline-flex'
-          }}
-        >
-          <Typography variant="body2" color={colors[1]} sx={{ whiteSpace: 'nowrap', padding: 1 }}>
-            {t('observingBand.short.' + getObservation()?.observingBand)}
-          </Typography>
-        </Box>
-      </TableCell>
-    );
-  };
-
-  const tableObservationFrequencySpectrumCell = () => {
-    const colors = getColors({
-      type: 'telescope',
-      colors: getObservation()?.telescope?.toString() ?? '',
-      content: 'both',
-      dim: 0.6,
-      asArray: true
-    });
-    return (
-      <TableCell>
-        {true && (
+        {/* Frequency Spectrum */}
+        <TableCell>
           <FrequencySpectrum
             minFreq={frequencyConversion(
               (osdLOW?.basicCapabilities?.minFrequencyHz ?? 0) * 10,
@@ -192,14 +183,12 @@ export default function TableDataProductsRow({
               FREQUENCY_MHZ
             )}
             centerFreq={frequencyConversion(
-              getObservation()?.centralFrequency ?? 0,
-              getObservation()?.centralFrequencyUnits ?? FREQUENCY_HZ,
+              observation?.centralFrequency ?? 0,
+              observation?.centralFrequencyUnits ?? FREQUENCY_HZ,
               FREQUENCY_MHZ
             )}
             bandWidth={
-              isContinuum()
-                ? getObservation()?.continuumBandwidth ?? 0
-                : getObservation()?.bandwidth ?? 0
+              isContinuum ? observation?.continuumBandwidth ?? 0 : observation?.bandwidth ?? 0
             }
             minEdge={frequencyConversion(
               (osdLOW?.basicCapabilities?.minFrequencyHz ?? 0) * 10,
@@ -211,36 +200,18 @@ export default function TableDataProductsRow({
               FREQUENCY_HZ,
               FREQUENCY_MHZ
             )}
-            bandColor={colors[0]}
-            bandColorContrast={colors[1]}
+            bandColor={colorsTelescopeDim[0]}
+            bandColorContrast={colorsTelescopeDim[1]}
           />
-        )}
-      </TableCell>
-    );
-  };
-
-  return (
-    <>
-      <TableRow
-        key={item.id}
-        data-testid={`row-${item.id}`}
-        sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}
-        role="row"
-        aria-rowindex={index + 2}
-      >
-        {tableCollapseCell()}
-        {tableObservationTypeCell()}
-        {tableObservationIdCell()}
-        {tableObservationSubarrayCell()}
-        {tableObservationBandCell()}
-        {tableObservationFrequencySpectrumCell()}
+        </TableCell>
       </TableRow>
 
+      {/* Expanded Row */}
       <TableRow key={`${item.id}-expanded`}>
-        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={9} role="gridcell">
+        <TableCell sx={{ p: 0 }} colSpan={9} role="gridcell">
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <Box sx={{ overflowX: 'hidden' }}>
-              <DataProduct t={t} data={item} />
+              {observation && <DataProduct t={t} data={item} observation={observation} />}
             </Box>
           </Collapse>
         </TableCell>
