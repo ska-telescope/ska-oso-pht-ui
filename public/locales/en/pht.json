@@ -72,6 +72,9 @@
   "apiVersion": {
     "label": "API Version"
   },
+  "array": {
+    "label": "Telescope"
+  },
   "arrayConfiguration": {
     "label": "Array Configuration",
     "short": "Array",
@@ -90,6 +93,9 @@
     "success": "Proposals assigned successfully.",
     "toolTip": "Click to assign proposals to the panel.",
     "warning": "Please wait whilst we assign the proposals."
+  },
+  "assignedProposal": {
+    "label": "Assigned Proposal"
   },
   "authors": {
     "label": "Authors"
@@ -697,6 +703,7 @@
   "polarisations": {
     "help": "Polarisations help text TBD",
     "label": "Polarisations",
+    "noneSelected": "None selected",
     "I": "I",
     "Q": "Q",
     "U": "U",
@@ -914,6 +921,10 @@
       "title6": "In Progress (%)",
       "title7": "Reviewer ID",
       "title8": "Science Category"
+    },
+    "chart": {
+      "label1": "X-axis",
+      "label2": "Group by"
     }
   },
   "reviewDecision": {
@@ -1001,6 +1012,7 @@
     "technical": "Technical"
   },
   "reviewStatus": {
+    "label": "Review Status",
     "to do": "To Do",
     "in progress": "In Progress",
     "decided": "Decided",
@@ -1068,13 +1080,11 @@
     "label": "Send invitation"
   },
   "skyDirection": {
-    "help": {
-      "1": {
-        "value": "Right ascension of a target in Sexagesimal format '+/-HH:MM:SS.S'."
-      },
-      "2": {
-        "value": "Declination of a target in Sexagesimal format '+/-DD:MM:SS.S'."
-      }
+    "1": {
+      "help": "Right ascension of a target in Sexagesimal format '+/-HH:MM:SS.S'."
+    },
+    "2": {
+      "help": "Declination of a target in Sexagesimal format '+/-DD:MM:SS.S'."
     },
     "label": {
       "1": {

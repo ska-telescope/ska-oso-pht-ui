@@ -13,6 +13,7 @@ import {
   TEAM_STATUS_TYPE_OPTIONS,
   WRAPPER_HEIGHT
 } from '@utils/constants.ts';
+import { Stack } from '@mui/system';
 import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
 import Investigator from '../../../utils/types/investigator';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
@@ -319,12 +320,6 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
     );
   };
 
-  const resetSearchButton = () => (
-    <Box mt={-12} p={2} ml={25}>
-      <ResetButton action={clearForm} size={ButtonSizeTypes.Small} />
-    </Box>
-  );
-
   function clearForm() {
     formValues.firstName.setValue('');
     formValues.lastName.setValue('');
@@ -437,17 +432,19 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
       {!isSV() && piField()}
       {!isSV() && phdThesisField()}
       <Grid pt={2} size={{ xs: 8 }}>
-        <Box>
-          <TeamInviteButton
-            action={clickFunction}
-            disabled={formInvalid}
-            primary
-            testId="sendInviteButton"
-          />
-        </Box>
-        <Box mt={6} p={0}>
-          {forSearch && resetSearchButton()}
-        </Box>
+        <Stack spacing={2} direction="row">
+          <Box>
+            <TeamInviteButton
+              action={clickFunction}
+              disabled={formInvalid}
+              primary
+              testId="sendInviteButton"
+            />
+          </Box>
+          <Box mt={6} p={0}>
+            {forSearch && <ResetButton action={clearForm} />}
+          </Box>
+        </Stack>
       </Grid>
     </Grid>
   );

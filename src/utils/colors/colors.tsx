@@ -30,12 +30,17 @@ const TABLEAU_10: [string, string][] = [
 const COLOR_OBSERVATION: Record<string, [string, string]> = {
   continuum: TABLEAU_10[0],
   spectral: TABLEAU_10[9],
-  pst: TABLEAU_10[2]
+  pst: TABLEAU_10[2],
+  1: TABLEAU_10[0],
+  0: TABLEAU_10[9],
+  2: TABLEAU_10[2]
 };
 
 const COLOR_TELESCOPES: Record<string, [string, string]> = {
   low: ['#f9b34c', '#000000'],
-  mid: ['#6a3f23', '#FFFFFF']
+  mid: ['#6a3f23', '#FFFFFF'],
+  2: ['#f9b34c', '#000000'],
+  1: ['#6a3f23', '#FFFFFF']
 };
 
 const COLOR_BOOLEAN: Record<string, [string, string]> = {

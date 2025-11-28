@@ -5,7 +5,7 @@ import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import { GENERAL, LAB_POSITION, PAGE_GENERAL } from '@utils/constants.ts';
 import { countWords } from '@utils/helpers.ts';
 import { Proposal } from '@utils/types/proposal.tsx';
-import { validateGeneralPage } from '@utils/validation/validation.tsx';
+import { validateProposal } from '@utils/validation/validation.tsx';
 import { useTheme } from '@mui/material/styles';
 import Shell from '../../components/layout/Shell/Shell';
 import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPreviewModal';
@@ -14,15 +14,26 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import { useHelp } from '@/utils/help/useHelp';
+import {
+  calibrationOut,
+  dataProductSDPOut,
+  observationOut
+} from '@/utils/generateDefaultObservation/GenerateDefaultObservation';
+import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
+import Observation from '@/utils/types/observation';
+import { useNotify } from '@/utils/notify/useNotify';
+import Target from '@/utils/types/target';
 
 const PAGE = PAGE_GENERAL;
 const LINE_OFFSET = 30;
 const LABEL_WIDTH = 3;
+const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
 export default function GeneralPage() {
   const { t } = useScopedTranslation();
   const { isSV } = useAppFlow();
   const theme = useTheme();
+  const { notifyError } = useNotify();
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -31,14 +42,10 @@ export default function GeneralPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { osdCloses, osdOpens } = useOSDAccessors();
+  const [isObsModeChanged, setIsObsModeChanged] = React.useState(false); // For Mock Call
 
-  const getProposalState = () => application.content1 as number[];
-  const setTheProposalState = (value: number) => {
-    const temp: number[] = [];
-    for (let i = 0; i < getProposalState().length; i++) {
-      temp.push(PAGE === i ? value : getProposalState()[i]);
-    }
-    updateAppContent1(temp);
+  const setTheProposalState = () => {
+    updateAppContent1(validateProposal(getProposal()));
   };
 
   const [openAbstractLatexModal, setOpenAbstractLatexModal] = React.useState(false);
@@ -55,11 +62,83 @@ export default function GeneralPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    setTheProposalState(validateGeneralPage(getProposal()));
+    setTheProposalState();
   }, [validateToggle]);
 
   const checkCategory = (id: number) => {
+    if (isSV() && id !== getProposal().scienceCategory) {
+      setIsObsModeChanged(true);
+    }
     setProposal({ ...getProposal(), scienceCategory: id, scienceSubCategory: [1] });
+  };
+
+  React.useEffect(() => {
+    checkTargetObservation();
+  }, [isObsModeChanged]);
+
+  const checkTargetObservation = () => {
+    if (!isSV() || typeof getProposal().scienceCategory !== 'number') return;
+
+    // check obs mode defined
+    // check if there is a target defined
+    // check if there is an observation defined
+    // if not, create a default observation based on the category
+    // if yes, check observation type matches observation mode
+    // regenerate observation if type has changed
+    // ********************************************************** //
+
+    // check if there is a target defined
+    if ((getProposal().targets?.length ?? 0) > 0) {
+      // check if there is an observation defined
+      if ((getProposal().observations?.length ?? 0) > 0) {
+        if (
+          getProposal().observations![0].type !== getProposal().scienceCategory ||
+          isObsModeChanged
+        ) {
+          generateObservation();
+        }
+      } else {
+        generateObservation();
+      }
+    }
+    setIsObsModeChanged(false);
+  };
+
+  const getSensCalcData = async (observation: Observation, target: Target) => {
+    const response = await calculateSensCalcData(observation, target);
+    if (response) {
+      if (response.error) {
+        const errMsg = response.error;
+        notifyError(errMsg, NOTIFICATION_DELAY_IN_SECONDS);
+      }
+      return response;
+    }
+  };
+
+  const generateObservation = async () => {
+    const target = getProposal().targets![0]; // there should be only 1 target for auto-generation
+    const newObservation = observationOut(getProposal().scienceCategory as number);
+    const newCalibration = calibrationOut(newObservation?.id);
+    const newDataProductSDP = dataProductSDPOut(newObservation?.id);
+    const sensCalcResult = await getSensCalcData(newObservation, target);
+
+    setProposal({
+      ...getProposal(),
+      observations: [newObservation],
+      calibrationStrategy: [newCalibration],
+      dataProductSDP: [newDataProductSDP],
+      targetObservation:
+        sensCalcResult && newObservation && newObservation.id && newDataProductSDP?.id
+          ? [
+              {
+                targetId: target?.id,
+                observationId: newObservation?.id,
+                dataProductsSDPId: newDataProductSDP.id,
+                sensCalc: sensCalcResult
+              }
+            ]
+          : []
+    });
   };
 
   const cycleIdField = () => (
@@ -184,19 +263,18 @@ export default function GeneralPage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid
-        container
-        direction="row"
-        p={3}
-        spacing={2}
-        alignItems="space-evenly"
-        justifyContent="space-around"
-      >
+      <Grid container direction="row" p={5} spacing={2} alignItems="left">
         <Grid pb={3} size={{ md: 12, lg: 8 }}>
           <Grid container direction="row">
-            <Grid size={{ md: 12 }}>{cycleIdField()}</Grid>
-            <Grid size={{ md: 12 }}>{cycleOpensField()}</Grid>
-            <Grid size={{ md: 12 }}>{cycleClosesField()}</Grid>
+            <Grid pr={4} size={{ md: 12 }}>
+              {cycleIdField()}
+            </Grid>
+            <Grid pr={4} size={{ md: 12 }}>
+              {cycleOpensField()}
+            </Grid>
+            <Grid pr={4} size={{ md: 12 }}>
+              {cycleClosesField()}
+            </Grid>
             <Grid pt={2} pb={2} size={{ md: 12, lg: 12 }}>
               <Grid size={{ md: 12, lg: 6 }}>{categoryField()}</Grid>
             </Grid>

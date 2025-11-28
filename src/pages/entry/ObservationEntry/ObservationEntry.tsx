@@ -91,6 +91,8 @@ const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 4;
 const LABEL_WIDTH_NEW = 5.5;
 const BACK_PAGE = PAGE_OBSERVATION;
+const IMAGE_PATH =
+  window.location.hostname === 'localhost' ? '/assets/low_aa2.png' : './assets/low_aa2.png';
 
 interface ObservationEntryProps {
   data?: Observation;
@@ -151,7 +153,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const observationIn = (ob: Observation) => {
     setMyObsId(ob?.id);
     setSubarrayConfig(ob?.subarray);
-    setObservationType(isSV() ? (getObservationType() as number) : ob.type);
+    setObservationType(isSV() ? (getObservationType() as number) : ob.type); // TODO this should not be needed
     if (!once) setObservingBand(ob?.observingBand);
     setWeather(ob?.weather ?? Number(t('weather.default')));
     setElevation(ob?.elevation);
@@ -1206,7 +1208,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                     p={0}
                     container
                     direction="row"
-                    alignItems="flex-start"
+                    alignItems="flext-start"
                     rowSpacing={isSV() ? 0 : 2}
                   >
                     <Grid size={{ md: 12, lg: 12 }}></Grid>
@@ -1241,7 +1243,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           {isLowAA2() && (
             <Grid sx={{ p: { md: 5, lg: 0 } }} size={{ md: 12, lg: 3 }}>
               <Box px={3}>
-                <img src={'/assets/low_aa2.png'} alt="Low AA2" width="100%" />
+                <img src={IMAGE_PATH} alt="Low AA2" width="100%" />
               </Box>
             </Grid>
           )}

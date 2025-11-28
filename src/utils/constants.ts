@@ -733,7 +733,7 @@ export const DEFAULT_TARGETS: Target = {
 };
 
 export const DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2: Observation = {
-  id: '',
+  id: 'obs-default-continuum-123456',
   telescope: TELESCOPE_LOW_NUM,
   subarray: OB_SUBARRAY_AA2,
   linked: '0',
@@ -760,7 +760,7 @@ export const DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2: Observation = {
 };
 
 export const DEFAULT_ZOOM_OBSERVATION_LOW_AA2: Observation = {
-  id: '',
+  id: 'obs-default-zoom-123456',
   telescope: TELESCOPE_LOW_NUM,
   subarray: OB_SUBARRAY_AA2,
   linked: '0',
@@ -788,7 +788,7 @@ export const DEFAULT_ZOOM_OBSERVATION_LOW_AA2: Observation = {
 };
 
 export const DEFAULT_PST_OBSERVATION_LOW_AA2: Observation = {
-  id: '',
+  id: 'obs-default-pst-123456',
   telescope: TELESCOPE_LOW_NUM,
   subarray: OB_SUBARRAY_AA2,
   linked: '0',
@@ -814,6 +814,12 @@ export const DEFAULT_PST_OBSERVATION_LOW_AA2: Observation = {
   effectiveResolution: '',
   pstMode: FLOW_THROUGH_VALUE
 };
+
+export const DEFAULT_OBSERVATIONS_LOW_AA2: Observation[] = [
+  DEFAULT_ZOOM_OBSERVATION_LOW_AA2,
+  DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
+  DEFAULT_PST_OBSERVATION_LOW_AA2
+];
 
 export const DUMMY_PROPOSAL_ID = 'dummy-proposal-id';
 
