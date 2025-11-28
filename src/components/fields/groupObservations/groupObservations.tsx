@@ -32,34 +32,29 @@ export default function GroupObservationsField({
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const inputRef = React.useRef(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
-  const observationGroupId = (id: string) => {
-    if (
-      getProposal()?.groupObservations &&
-      getProposal()?.groupObservations.some(e => e.observationId === id)
-    ) {
-      const group = getProposal().groupObservations.filter(e => e.observationId === id);
-      return group[0]?.groupId;
-    }
-    return '';
+  const observationGroupId = (id: string): string => {
+    const proposal = getProposal();
+    const group = proposal?.groupObservations?.find(e => e.observationId === id);
+    return group?.groupId ?? '';
   };
 
   React.useEffect(() => {
     const groupId = observationGroupId(obsId);
-    if (groupId.length) {
+    if (groupId.length && setValue) {
       setValue(groupId);
     }
   }, [obsId, getProposal().groupObservations]);
 
   React.useEffect(() => {
-    if (editing) {
+    if (editing && inputRef.current) {
       inputRef.current.focus();
     }
   }, [editing]);
 
   const options = () => {
-    const uniqueGroups = [];
+    const uniqueGroups: GroupObservation[] = [];
     getProposal()?.groupObservations?.forEach(rec => {
       const existingGroup = uniqueGroups.find(g => g.groupId === rec.groupId);
       if (!existingGroup) {
@@ -79,10 +74,13 @@ export default function GroupObservationsField({
   };
 
   const removeGroup = () => {
-    const filtered = getProposal().groupObservations.filter(item => item.observationId !== obsId);
+    const proposal = getProposal();
+    const filtered =
+      proposal?.groupObservations?.filter(item => item.observationId !== obsId) ?? [];
+
     setProposal({
-      ...getProposal(),
-      groupObservations: [...filtered]
+      ...proposal,
+      groupObservations: filtered
     });
   };
 
@@ -91,7 +89,8 @@ export default function GroupObservationsField({
       groupId: groupId,
       observationId: obsId
     };
-    const filtered = getProposal()?.groupObservations?.filter(item => item.observationId !== obsId);
+    const filtered =
+      getProposal()?.groupObservations?.filter(item => item.observationId !== obsId) ?? [];
     setProposal({
       ...getProposal(),
       groupObservations: [...filtered, newGroupObs]
@@ -100,17 +99,23 @@ export default function GroupObservationsField({
     return groupId;
   };
 
-  const reuseGroup = (e: any) => {
+  const reuseGroup = (groupId: string): string => {
+    const proposal = getProposal();
+
     const newGroupObs: GroupObservation = {
-      groupId: e,
+      groupId,
       observationId: obsId
     };
-    const filtered = getProposal().groupObservations.filter(item => item.observationId !== obsId);
+
+    const filtered =
+      proposal?.groupObservations?.filter(item => item.observationId !== obsId) ?? [];
+
     setProposal({
-      ...getProposal(),
+      ...proposal,
       groupObservations: [...filtered, newGroupObs]
     });
-    return e;
+
+    return groupId;
   };
 
   const processEntry = (e: number) => {
@@ -118,9 +123,9 @@ export default function GroupObservationsField({
       setEditing(true);
     } else if (e === 0) {
       removeGroup();
-      setValue(e);
+      setValue?.(e);
     } else {
-      setValue(reuseGroup(e));
+      setValue?.(reuseGroup(String(e)));
     }
   };
 
