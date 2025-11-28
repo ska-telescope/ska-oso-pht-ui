@@ -36,7 +36,7 @@
     },
 
     /* Types */
-    "types": ["cypress", "vitest/globals", "node", "cypress-real-events"],
+    "types": ["cypress", "vitest/globals", "vite/client", "node", "cypress-real-events"],
 
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
