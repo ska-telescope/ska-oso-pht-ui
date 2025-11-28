@@ -5,7 +5,7 @@ import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import { GENERAL, LAB_POSITION, PAGE_GENERAL } from '@utils/constants.ts';
 import { countWords } from '@utils/helpers.ts';
 import { Proposal } from '@utils/types/proposal.tsx';
-import { validateGeneralPage } from '@utils/validation/validation.tsx';
+import { validateProposal } from '@utils/validation/validation.tsx';
 import { useTheme } from '@mui/material/styles';
 import Shell from '../../components/layout/Shell/Shell';
 import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPreviewModal';
@@ -44,13 +44,8 @@ export default function GeneralPage() {
   const { osdCloses, osdOpens } = useOSDAccessors();
   const [isObsModeChanged, setIsObsModeChanged] = React.useState(false); // For Mock Call
 
-  const getProposalState = () => application.content1 as number[];
-  const setTheProposalState = (value: number) => {
-    const temp: number[] = [];
-    for (let i = 0; i < getProposalState().length; i++) {
-      temp.push(PAGE === i ? value : getProposalState()[i]);
-    }
-    updateAppContent1(temp);
+  const setTheProposalState = () => {
+    updateAppContent1(validateProposal(getProposal()));
   };
 
   const [openAbstractLatexModal, setOpenAbstractLatexModal] = React.useState(false);
@@ -67,7 +62,7 @@ export default function GeneralPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    setTheProposalState(validateGeneralPage(getProposal()));
+    setTheProposalState();
   }, [validateToggle]);
 
   const checkCategory = (id: number) => {
@@ -86,7 +81,7 @@ export default function GeneralPage() {
 
     // check obs mode defined
     // check if there is a target defined
-    // check if ther is an observation defined
+    // check if there is an observation defined
     // if not, create a default observation based on the category
     // if yes, check observation type matches observation mode
     // regenerate observation if type has changed
@@ -94,7 +89,7 @@ export default function GeneralPage() {
 
     // check if there is a target defined
     if ((getProposal().targets?.length ?? 0) > 0) {
-      // check if ther is an observation defined
+      // check if there is an observation defined
       if ((getProposal().observations?.length ?? 0) > 0) {
         if (
           getProposal().observations![0].type !== getProposal().scienceCategory ||
