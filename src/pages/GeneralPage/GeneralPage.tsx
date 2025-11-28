@@ -14,15 +14,26 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import { useHelp } from '@/utils/help/useHelp';
+import {
+  calibrationOut,
+  dataProductSDPOut,
+  observationOut
+} from '@/utils/generateDefaultObservation/GenerateDefaultObservation';
+import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
+import Observation from '@/utils/types/observation';
+import { useNotify } from '@/utils/notify/useNotify';
+import Target from '@/utils/types/target';
 
 const PAGE = PAGE_GENERAL;
 const LINE_OFFSET = 30;
 const LABEL_WIDTH = 3;
+const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
 export default function GeneralPage() {
   const { t } = useScopedTranslation();
   const { isSV } = useAppFlow();
   const theme = useTheme();
+  const { notifyError } = useNotify();
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -31,6 +42,7 @@ export default function GeneralPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { osdCloses, osdOpens } = useOSDAccessors();
+  const [isObsModeChanged, setIsObsModeChanged] = React.useState(false); // For Mock Call
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
@@ -59,7 +71,79 @@ export default function GeneralPage() {
   }, [validateToggle]);
 
   const checkCategory = (id: number) => {
+    if (isSV() && id !== getProposal().scienceCategory) {
+      setIsObsModeChanged(true);
+    }
     setProposal({ ...getProposal(), scienceCategory: id, scienceSubCategory: [1] });
+  };
+
+  React.useEffect(() => {
+    checkTargetObservation();
+  }, [isObsModeChanged]);
+
+  const checkTargetObservation = () => {
+    if (!isSV() || typeof getProposal().scienceCategory !== 'number') return;
+
+    // check obs mode defined
+    // check if there is a target defined
+    // check if ther is an observation defined
+    // if not, create a default observation based on the category
+    // if yes, check observation type matches observation mode
+    // regenerate observation if type has changed
+    // ********************************************************** //
+
+    // check if there is a target defined
+    if ((getProposal().targets?.length ?? 0) > 0) {
+      // check if ther is an observation defined
+      if ((getProposal().observations?.length ?? 0) > 0) {
+        if (
+          getProposal().observations![0].type !== getProposal().scienceCategory ||
+          isObsModeChanged
+        ) {
+          generateObservation();
+        }
+      } else {
+        generateObservation();
+      }
+    }
+    setIsObsModeChanged(false);
+  };
+
+  const getSensCalcData = async (observation: Observation, target: Target) => {
+    const response = await calculateSensCalcData(observation, target);
+    if (response) {
+      if (response.error) {
+        const errMsg = response.error;
+        notifyError(errMsg, NOTIFICATION_DELAY_IN_SECONDS);
+      }
+      return response;
+    }
+  };
+
+  const generateObservation = async () => {
+    const target = getProposal().targets![0]; // there should be only 1 target for auto-generation
+    const newObservation = observationOut(getProposal().scienceCategory as number);
+    const newCalibration = calibrationOut(newObservation?.id);
+    const newDataProductSDP = dataProductSDPOut(newObservation?.id);
+    const sensCalcResult = await getSensCalcData(newObservation, target);
+
+    setProposal({
+      ...getProposal(),
+      observations: [newObservation],
+      calibrationStrategy: [newCalibration],
+      dataProductSDP: [newDataProductSDP],
+      targetObservation:
+        sensCalcResult && newObservation && newObservation.id && newDataProductSDP?.id
+          ? [
+              {
+                targetId: target?.id,
+                observationId: newObservation?.id,
+                dataProductsSDPId: newDataProductSDP.id,
+                sensCalc: sensCalcResult
+              }
+            ]
+          : []
+    });
   };
 
   const cycleIdField = () => (
