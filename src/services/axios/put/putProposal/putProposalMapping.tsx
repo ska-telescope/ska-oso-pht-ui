@@ -191,8 +191,8 @@ export const getDataProductScriptParameters = (obs: Observation[] | null, dp: Da
     case TYPE_CONTINUUM: {
       if (dp.dataProductType === DP_TYPE_IMAGES) {
         return {
-          image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
-          image_cellsize: { value: dp.pixelSizeValue, unit: IMAGE_SIZE_UNITS[dp.pixelSizeUnits] },
+          image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp?.imageSizeUnits] },
+          image_cellsize: { value: dp.pixelSizeValue, unit: IMAGE_SIZE_UNITS[dp?.pixelSizeUnits] },
           weight: {
             weighting: IMAGE_WEIGHTING.find(item => item.value === Number(dp.weighting))
               ?.label as string,
@@ -282,11 +282,12 @@ const getDataProductSDP = (
   obs: Observation[] | null,
   dataProducts: DataProductSDP[]
 ): DataProductSDPsBackend[] => {
-  return dataProducts?.map(dp => ({
+  const sdp = dataProducts?.map(dp => ({
     data_product_id: dp.id?.toString(),
     observation_set_ref: dp.observationId,
     script_parameters: getDataProductScriptParameters(obs, dp)
   }));
+  return sdp;
 };
 
 export const getDataProductSRC = (dataProducts: DataProductSRC[]): DataProductSRCNetBackend[] => {
@@ -672,12 +673,13 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
       data_product_src_nets:
         proposal?.dataProductSRC && proposal?.dataProductSRC?.length > 0
           ? getDataProductSRC(proposal.dataProductSRC as DataProductSRC[])
-          : [],
-      result_details: getResults(
+          : []
+      // TODO put sensitivity calculator back and fix issue in mapping
+      /*result_details: getResults(
         proposal.targetObservation as TargetObservation[],
         proposal.observations as Observation[],
         proposal.dataProductSDP as DataProductSDP[]
-      )
+      )*/
     }
   };
 
