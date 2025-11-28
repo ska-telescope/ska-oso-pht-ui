@@ -13,9 +13,10 @@ import { BANNER_PMT_SPACER_MIN, PANEL_DECISION_STATUS } from '@/utils/constants'
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import ResetButton from '@/components/button/Reset/Reset';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
-import D3ColumnChart from '@/components/charts/column/D3ColumnChart';
-import D3ColChart from '@/components/charts/column/D3ColumnChartNew';
+import D3ColumnChart from '@/components/charts/column/D3ColumnChartOld';
+// import D3ColChart from '@/components/charts/column/D3ColumnChartNew';
 import D3PieChart from '@/components/charts/pie/D3PieChart';
+import D3ColumnWrapper from '@/components/charts/column/D3Wrapper';
 // import D3Slider from '@/components/charts/slider/D3Slider';
 import ResizablePanel from '@/components/layout/resizablePanel/ResizablePanel';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -121,8 +122,6 @@ export default function ReviewDashboard() {
     []
   );
   const authClient = useAxiosAuthClient();
-
-  // KEEP ONLY ONE activeView
   const [activeView, setActiveView] = useState<DashboardView>(VIEW_PROPOSAL);
 
   const calculateProposalData = (
@@ -340,7 +339,10 @@ export default function ReviewDashboard() {
     calculateDecisionData(filteredReport, 'decisionStatus', setProposalDecisionData, ['draft']);
     //
     calculateProposalData(filteredReport, 'assignedProposal', setReviewAssignmentData, ['draft']);
-    calculateProposalData(filteredReport, 'reviewStatus', setReviewStatusData, ['draft']);
+    calculateProposalData(filteredReport, 'reviewStatus', setReviewStatusData, [
+      'draft',
+      'submitted'
+    ]);
     calculateProposalData(filteredReport, 'scienceCategory', setReviewCategoryData, ['draft']);
   };
 
@@ -470,15 +472,54 @@ export default function ReviewDashboard() {
     );
   };
 
-  const colChart = (label: string, data: any[], type: string = '') => {
-    /*** TODO : I have created this as the original is a bit of a mess and needs to be cleaned up
-     * The intent is to keep the filtering outside of the chart so it remains reusable
-     * and only focused on rendering the chart itself.
-     * Once this is confirmed working, we can deprecate the old D3ColumnChart component.
-     * This chart is abl to scale based on the container size.
-     */
+  // const colChart = (label: string, data: any[], type: string = '') => {
+  //   /*** TODO : I have created this as the original is a bit of a mess and needs to be cleaned up
+  //    * The intent is to keep the filtering outside of the chart so it remains reusable
+  //    * and only focused on rendering the chart itself.
+  //    * Once this is confirmed working, we can deprecate the old D3ColumnChart component.
+  //    * This chart is abl to scale based on the container size.
+  //    */
+  //   return (
+  //     <ResizablePanel title={t(label)} errorColor={!data || data.length === 0}>
+  //       {(!data || data.length === 0) && (
+  //         <Box
+  //           sx={{
+  //             position: 'absolute',
+  //             top: 0,
+  //             left: 0,
+  //             right: 0,
+  //             bottom: 0,
+  //             display: 'flex',
+  //             alignItems: 'center',
+  //             justifyContent: 'center'
+  //           }}
+  //         >
+  //           <Typography variant="h6">{t('reviewDashboard.noData')}</Typography>
+  //         </Box>
+  //       )}
+  //       {data && (
+  //         <D3ColChart
+  //           data={data}
+  //           chartColors={getColors({
+  //             type: type,
+  //             colors: '*',
+  //             content: 'bg'
+  //           })}
+  //           colorType={type}
+  //         />
+  //       )}
+  //     </ResizablePanel>
+  //   );
+  // };
+
+  const colWrapper = (label: string, data: any[]) => {
     return (
-      <ResizablePanel title={t(label)} errorColor={!data || data.length === 0}>
+      <ResizablePanel
+        title={t(label)}
+        errorColor={!data || data.length === 0}
+        width="100%"
+        height="60vh"
+      >
         {(!data || data.length === 0) && (
           <Box
             sx={{
@@ -496,14 +537,10 @@ export default function ReviewDashboard() {
           </Box>
         )}
         {data && (
-          <D3ColChart
+          <D3ColumnWrapper
             data={data}
-            chartColors={getColors({
-              type: type,
-              colors: '*',
-              content: 'bg'
-            })}
-            colorType={type}
+            fields={['scienceCategory', 'reviewStatus', 'assignedProposal', 'array']}
+            t={t}
           />
         )}
       </ResizablePanel>
@@ -511,7 +548,7 @@ export default function ReviewDashboard() {
   };
 
   const columnChart = (label: string, data: any[], xFields: string[], xInit: string) => (
-    <ResizablePanel title={label ? t(label) : ''}>
+    <ResizablePanel title={label ? t(label) : ''} width="100%">
       <ResponsiveColumnChart
         data={data}
         fields={xFields}
@@ -680,13 +717,17 @@ export default function ReviewDashboard() {
           {pieChart('reviewDashboard.panel.title12', reviewStatusData, 'reviewStatus')}
           {pieChart('reviewDashboard.panel.title1', reviewAssignmentData, 'boolean')}
           {pieChart('reviewDashboard.panel.title3', reviewCategoryData, 'observationType')}
-          {false && colChart('reviewDashboard.panel.title8', reviewCategoryData, 'observationType')}
-          {columnChart(
+          {colWrapper(
             'reviewDashboard.panel.title8',
-            filteredReport.filter(record => !['draft'].includes(record.proposalStatus)),
-            ['scienceCategory', 'reviewStatus', 'assignedProposal', 'array'],
-            'scienceCategory'
+            filteredReport.filter(record => !['draft'].includes(record.proposalStatus))
           )}
+          {false &&
+            columnChart(
+              'reviewDashboard.panel.title8',
+              filteredReport.filter(record => !['draft'].includes(record.proposalStatus)),
+              ['scienceCategory', 'reviewStatus', 'assignedProposal', 'array'],
+              'scienceCategory'
+            )}
         </Grid>
         <Grid
           p={5}
