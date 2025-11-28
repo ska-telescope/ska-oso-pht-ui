@@ -218,6 +218,7 @@ export default function DataProduct({ data }: DataProductProps) {
     } else {
       // Nothing to do for now
     }
+    // TODO : Need to set the appropriate setHelp value upon entry
   }, []);
 
   React.useEffect(() => {

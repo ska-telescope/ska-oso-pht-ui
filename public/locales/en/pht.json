@@ -1079,13 +1079,11 @@
     "label": "Send invitation"
   },
   "skyDirection": {
-    "help": {
-      "1": {
-        "value": "Right ascension of a target in Sexagesimal format '+/-HH:MM:SS.S'."
-      },
-      "2": {
-        "value": "Declination of a target in Sexagesimal format '+/-DD:MM:SS.S'."
-      }
+    "1":{
+      "help": "Right ascension of a target in Sexagesimal format '+/-HH:MM:SS.S'."
+    },
+    "2":{
+      "help": "Declination of a target in Sexagesimal format '+/-DD:MM:SS.S'."
     },
     "label": {
       "1": {
