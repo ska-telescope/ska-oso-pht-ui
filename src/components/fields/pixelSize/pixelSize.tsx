@@ -1,6 +1,6 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { LAB_IS_BOLD, LAB_POSITION } from '@utils/constants.ts';
+import { LAB_POSITION } from '@utils/constants.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface PixelSizeFieldProps {
@@ -15,12 +15,12 @@ interface PixelSizeFieldProps {
 }
 export default function PixelSizeField({
   disabled = false,
-  onFocus = undefined,
   required = false,
-  setValue,
-  value,
   labelWidth = 5,
-  suffix
+  onFocus,
+  setValue,
+  suffix,
+  value
 }: PixelSizeFieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'pixelSize';
@@ -35,18 +35,18 @@ export default function PixelSizeField({
   };
 
   return (
-    <Box pt={1} sx={{ maxWidth: '800px' }}>
+    <Box pt={1}>
       <NumberEntry
-        disabled={disabled}
         label={t(FIELD + '.label')}
-        labelBold={LAB_IS_BOLD}
+        labelBold
         labelPosition={LAB_POSITION}
         labelWidth={labelWidth}
-        required={required}
         testId={FIELD}
         value={value}
         setValue={(e: number) => setTheNumber(e)}
         onFocus={onFocus}
+        disabled={disabled}
+        required={required}
         suffix={suffix}
         errorText={errorText()}
       />

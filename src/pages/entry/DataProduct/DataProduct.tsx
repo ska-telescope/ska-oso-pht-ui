@@ -2,7 +2,7 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Grid, Paper, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { BorderedSection, DropDown, TickBox } from '@ska-telescope/ska-gui-components';
+import { BorderedSection, DropDown } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import RobustField from '@components/fields/robust/Robust.tsx';
 import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
@@ -14,7 +14,6 @@ import {
   FLOW_THROUGH_VALUE,
   FOOTER_HEIGHT_PHT,
   IW_BRIGGS,
-  LAB_POS_TICK,
   NAV,
   PAGE_DATA_PRODUCTS,
   PULSAR_TIMING_VALUE,
@@ -41,12 +40,12 @@ import BitDepthField from '@/components/fields/bitDepth/bitDepth';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { generateId } from '@/utils/helpers';
 import { useHelp } from '@/utils/help/useHelp';
+import ContinuumSubtractionField from '@/components/fields/continuumSubtraction/continuumSubtraction';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
 const PAGE_PREFIX = 'SDP';
 const LABEL_WIDTH = 5;
-const TICK_LABEL_WIDTH = 10;
 const COL = 6;
 const COL_MID = 8;
 
@@ -432,20 +431,11 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const continuumSubtractionField = () =>
     fieldWrapper(
-      <Box pt={2}>
-        <TickBox
-          label={t('continuumSubtraction.label')}
-          labelBold
-          labelPosition={LAB_POS_TICK}
-          labelWidth={TICK_LABEL_WIDTH}
-          testId="continuumSubtraction"
-          checked={continuumSubtraction}
-          onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-            setContinuumSubtraction(event.target.checked)
-          }
-          onFocus={() => setHelp('continuumSubtraction')}
-        />
-      </Box>
+      <ContinuumSubtractionField
+        onFocus={() => setHelp('continuumSubtraction')}
+        setValue={setContinuumSubtraction}
+        value={continuumSubtraction}
+      />
     );
 
   const polarisationsField = () => {

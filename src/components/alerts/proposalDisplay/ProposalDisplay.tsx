@@ -101,7 +101,8 @@ export default function ProposalDisplay({
 
   const scienceCategory = (): string => {
     const cat = proposal?.scienceCategory;
-    if (!cat) return NOT_SPECIFIED;
+    if (cat === null || cat === undefined) return NOT_SPECIFIED;
+
     const prefix = isSV() ? 'observationType' : 'scienceCategory';
     return t(`${prefix}.${cat}`);
   };

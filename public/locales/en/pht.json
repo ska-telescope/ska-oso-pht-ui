@@ -697,6 +697,7 @@
   "polarisations": {
     "help": "Polarisations help text TBD",
     "label": "Polarisations",
+    "noneSelected": "None selected",
     "I": "I",
     "Q": "Q",
     "U": "U",
