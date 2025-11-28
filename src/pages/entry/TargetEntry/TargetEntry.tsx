@@ -452,7 +452,7 @@ export default function TargetEntry({
         setValue={setTheRA}
         skyUnits={raType}
         value={ra}
-        valueFocus={() => setHelp('skyDirection.help.1.value')}
+        valueFocus={() => setHelp('skyDirection.1')}
         setErrorText={setSkyDirection1Error} // Pass the callback
       />
     );
@@ -464,7 +464,7 @@ export default function TargetEntry({
         setValue={setTheDec}
         skyUnits={raType}
         value={dec}
-        valueFocus={() => setHelp('skyDirection.help.2.value')}
+        valueFocus={() => setHelp('skyDirection.2')}
         setErrorText={setSkyDirection2Error} // Pass the callback
       />
     );
