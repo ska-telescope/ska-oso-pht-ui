@@ -1080,10 +1080,10 @@
     "label": "Send invitation"
   },
   "skyDirection": {
-    "1":{
+    "1": {
       "help": "Right ascension of a target in Sexagesimal format '+/-HH:MM:SS.S'."
     },
-    "2":{
+    "2": {
       "help": "Declination of a target in Sexagesimal format '+/-DD:MM:SS.S'."
     },
     "label": {
