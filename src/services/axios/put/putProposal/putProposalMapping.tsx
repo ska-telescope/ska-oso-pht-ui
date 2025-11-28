@@ -168,16 +168,16 @@ export const getCalibrationStrategy = (
   calibrationStrategies: CalibrationStrategy[]
 ): CalibrationStrategyBackend[] => {
   return calibrationStrategies?.map(strategy => ({
-    observatory_defined: strategy.observatoryDefined,
-    calibration_id: strategy.id,
-    observation_set_ref: strategy.observationIdRef,
-    calibrators: strategy.calibrators
+    observatory_defined: strategy?.observatoryDefined,
+    calibration_id: strategy?.id,
+    observation_set_ref: strategy?.observationIdRef,
+    calibrators: strategy?.calibrators
       ? strategy?.calibrators?.map(calibrator => ({
-          calibration_intent: calibrator.calibrationIntent,
-          name: calibrator.name,
-          duration_min: calibrator.durationMin,
-          choice: calibrator.choice,
-          notes: calibrator.notes
+          calibration_intent: calibrator?.calibrationIntent,
+          name: calibrator?.name,
+          duration_min: calibrator?.durationMin,
+          choice: calibrator?.choice,
+          notes: calibrator?.notes
         }))
       : null,
     notes: strategy.notes

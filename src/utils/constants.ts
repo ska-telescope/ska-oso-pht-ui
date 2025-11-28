@@ -2,6 +2,7 @@ import { LABEL_POSITION, TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska
 import Target from './types/target';
 import Investigator from './types/investigator';
 import Observation from './types/observation';
+import { DataProductSDP } from './types/dataProduct';
 import { env } from '@/env';
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const MOCK_CALL = env.REACT_APP_USE_MOCK_CALL !== 'false';
@@ -296,9 +297,9 @@ export const POLARISATIONS_PST_BANK = [
 ];
 
 export const IMAGE_WEIGHTING = [
-  { label: 'natural', lookup: 'natural', value: 0 },
-  { label: 'uniform', lookup: 'uniform', value: 1 },
-  { label: 'briggs', lookup: 'briggs', value: 2 }
+  { label: 'natural', lookup: 'natural', value: IW_NATURAL },
+  { label: 'uniform', lookup: 'uniform', value: IW_UNIFORM },
+  { label: 'briggs', lookup: 'briggs', value: IW_BRIGGS }
 ];
 
 export const LAB_IS_BOLD = true;
@@ -819,6 +820,66 @@ export const DEFAULT_OBSERVATIONS_LOW_AA2: Observation[] = [
   DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
   DEFAULT_PST_OBSERVATION_LOW_AA2
 ];
+
+export const DEFAULT_DATA_PRODUCT_CONTINUUM: DataProductSDP = {
+  id: 'SDP-000000',
+  dataProductType: 1, // TODO check default dataProductType for continuum
+  observationId: '',
+  imageSizeValue: 1,
+  imageSizeUnits: 0,
+  pixelSizeValue: 1,
+  pixelSizeUnits: 2,
+  weighting: 1,
+  polarisations: [],
+  channelsOut: 1,
+  fitSpectralPol: 3,
+  robust: -1,
+  taperValue: 1,
+  timeAveraging: -1,
+  frequencyAveraging: -1,
+  bitDepth: 0,
+  continuumSubtraction: false
+};
+
+export const DEFAULT_DATA_PRODUCT_SPECTRAL: DataProductSDP = {
+  id: 'SDP-000000',
+  dataProductType: 0, // TODO check default dataProductType for spectral
+  observationId: '',
+  imageSizeValue: 2.5,
+  imageSizeUnits: 0,
+  pixelSizeValue: 1,
+  pixelSizeUnits: 2,
+  weighting: IW_UNIFORM,
+  polarisations: ['I', 'XX'],
+  channelsOut: 40, // TODO check if this should be 4000
+  fitSpectralPol: 3, // TODO check this value for spectral
+  robust: 1,
+  taperValue: 1, // TODO check this value for spectral
+  timeAveraging: -1, // TODO check this value for spectral
+  frequencyAveraging: -1, // TODO check this value for spectral
+  bitDepth: 0, // TODO check this value for spectral
+  continuumSubtraction: false
+};
+
+export const DEFAULT_DATA_PRODUCT_PST: DataProductSDP = {
+  id: 'SDP-000000',
+  dataProductType: 2, // TODO check default dataProductType for PST
+  observationId: '',
+  imageSizeValue: 2.5, // TODO check this value for PST
+  imageSizeUnits: 0, // TODO check this value for PST
+  pixelSizeValue: 1, // TODO check this value for PST
+  pixelSizeUnits: 2, // TODO check this value for PST
+  weighting: IW_UNIFORM, // TODO check this value for PST
+  polarisations: ['I'],
+  channelsOut: 4000, // TODO check this value for PST
+  fitSpectralPol: 3, // TODO check this value for PST
+  robust: 1, // TODO check this value for PST
+  taperValue: 1, // TODO check this value for PST
+  timeAveraging: 1,
+  frequencyAveraging: 1,
+  bitDepth: 1,
+  continuumSubtraction: false
+};
 
 export const DUMMY_PROPOSAL_ID = 'dummy-proposal-id';
 

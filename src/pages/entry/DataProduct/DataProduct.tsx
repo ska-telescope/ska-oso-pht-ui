@@ -97,9 +97,9 @@ export default function DataProduct({ data }: DataProductProps) {
   const isDetectedFilterbank = () => getObservation()?.pstMode === DETECTED_FILTER_BANK_VALUE;
   const isPulsarTiming = () => getObservation()?.pstMode === PULSAR_TIMING_VALUE;
 
-  const isContinuum = () => getObservation()?.type === TYPE_CONTINUUM;
-  const isSpectral = () => getObservation()?.type === TYPE_ZOOM;
-  const isPST = () => getObservation()?.type === TYPE_PST;
+  const isContinuum = () => getObservation()?.type === TYPE_CONTINUUM || getProposal()?.scienceCategory === TYPE_CONTINUUM;
+  const isSpectral = () => getObservation()?.type === TYPE_ZOOM || getProposal()?.scienceCategory === TYPE_ZOOM;
+  const isPST = () => getObservation()?.type === TYPE_PST || getProposal()?.scienceCategory === TYPE_PST;
 
   const getObservation = () => baseObservations?.find(obs => obs.id === observationId);
 

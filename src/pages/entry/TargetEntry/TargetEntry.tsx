@@ -281,9 +281,9 @@ export default function TargetEntry({
         let newDataProductSDP = undefined;
         let sensCalcResult = undefined;
         if (MOCK_CALL && typeof getProposal().scienceCategory === 'number') {
-          newObservation = observationOut(getProposal().scienceCategory as number);
+          newObservation = observationOut(getProposal().scienceCategory);
           newCalibration = calibrationOut(newObservation?.id);
-          newDataProductSDP = dataProductSDPOut(newObservation?.id);
+          newDataProductSDP = dataProductSDPOut(newObservation?.id, getProposal().scienceCategory);
           sensCalcResult = await getSensCalcData(newObservation, newTarget);
         }
         const updatedProposal = {
