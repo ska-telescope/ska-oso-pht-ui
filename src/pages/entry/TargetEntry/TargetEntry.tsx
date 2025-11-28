@@ -6,8 +6,6 @@ import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
 import PulsarTimingBeamField from '@components/fields/pulsarTimingBeam/PulsarTimingBeam.tsx';
 import { generateId, leadZero } from '@utils/helpers.ts';
-import GetVisibility from '@services/axios/get/getVisibilitySVG/getVisibilitySVG.tsx';
-import SvgRenderer from '@components/svgRenderer.tsx';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import ResolveButton from '@/components/button/Resolve/Resolve';
@@ -96,7 +94,6 @@ export default function TargetEntry({
   const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
   const [tiedArrayBeams, setTiedArrayBeams] = React.useState<TiedArrayBeams | null>(null);
   const [resetBeamArrayData, setResetBeamArrayData] = React.useState(false);
-  const [visibilityData, setVisibilityData] = React.useState<any>(null);
 
   React.useEffect(() => {
     if (nameFieldError === t('addTarget.error')) {
@@ -247,16 +244,9 @@ export default function TargetEntry({
         return;
       } else {
         AddTheTarget();
-        getVisibility();
         clearForm();
         setResetBeamArrayData(true);
       }
-    };
-
-    const getVisibility = async () => {
-      const response = await GetVisibility(ra, dec, 'LOW'); // only LOW for now
-      console.log('visibility response: ', response.data);
-      setVisibilityData(response.data); // Store data in state to display in a <div>
     };
 
     const AddTheTarget = () => {
@@ -635,7 +625,6 @@ export default function TargetEntry({
         </Grid>
       )}
       {!id && <Grid pl={10}>{addButton()}</Grid>}
-      {visibilityData && <div>{<SvgRenderer svgXml={visibilityData} />}</div>}
     </>
   );
 }

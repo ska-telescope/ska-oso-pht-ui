@@ -20,6 +20,8 @@ import TargetFileImport from './TargetFileImport/TargetFileImport';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import SvgAsImg from '@components/svgAsImg.tsx';
+import GetVisibility from '@services/axios/get/getVisibilitySVG/getVisibilitySVG.tsx';
 
 export default function TargetListSection() {
   const { t } = useScopedTranslation();
@@ -35,6 +37,38 @@ export default function TargetListSection() {
   const { osdCyclePolicy } = useOSDAccessors();
 
   const DATA_GRID_HEIGHT = osdCyclePolicy?.maxTargets ? '18vh' : '60vh';
+
+  const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+
+  // const getVisibility = () => {
+  //   console.log('targets: ', getProposal().targets);
+  //   // const response = await GetVisibility(ra, dec, 'LOW'); // only LOW for now
+  //   // console.log('visibility response: ', response.data);
+  //   // return response.data
+  //   return 'Chloe'
+  // };
+
+  const getVisibility = async (targets: Target[]) => {
+    // console.log('targets: ', targets);
+    //loop through targets and get ra and dec of each
+    const ra = targets?.map(target => {
+      return { ra: target.raStr };
+    });
+    const dec = targets?.map(target => {
+      return { dec: target.decStr };
+    });
+    console.log('ra', ra[0].ra);
+    console.log('dec', dec[0].dec);
+
+    const raValue = ra[0].ra;
+    const decValue = dec[0].dec;
+
+    const response = await GetVisibility(raValue, decValue, 'LOW'); // only LOW for now
+    console.log('visibility response: ', response.data);
+    return response.data
+  };
+
   const deleteIconClicked = (e: Target) => {
     setRowTarget(e);
     setOpenDeleteDialog(true);
@@ -126,9 +160,6 @@ export default function TargetListSection() {
     );
   };
 
-  const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-
   function a11yProps(index: number) {
     return {
       id: `simple-tab-${index}`,
@@ -163,9 +194,9 @@ export default function TargetListSection() {
               raType={RA_TYPE_ICRS.value}
               rows={getProposal().targets}
             />
-            {false && ( // TODO : set to false to hide AA2 image, will replace with a visibility graph in the future
+            {(getProposal()?.targets?.length ?? 0) > osdCyclePolicy?.maxTargets - 1 && (
               <Box px={3}>
-                <img src={'/assets/low_aa2.png'} alt="Low AA2" width="100%" />
+                <SvgAsImg svgXml={getVisibility(getProposal()?.targets)} />
               </Box>
             )}
           </Stack>
