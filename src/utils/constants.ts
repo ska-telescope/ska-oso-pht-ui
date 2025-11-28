@@ -546,7 +546,7 @@ export const TYPE_STR_ZOOM = 'spectral line';
 export const TYPE_STR_CONTINUUM = 'continuum';
 export const TYPE_STR_PST = 'pst';
 
-export const OBS_TYPES = ['spectral', 'continuum'];
+export const OBS_TYPES = ['spectral', TYPE_STR_CONTINUUM];
 export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM, TYPE_PST];
 export const OBSERVATION_TYPE_BACKEND = [TYPE_STR_ZOOM, TYPE_STR_CONTINUUM, TYPE_STR_PST];
 export const SUPPLIED_TYPE_INTEGRATION = 1;

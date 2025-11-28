@@ -2,6 +2,8 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { isLoggedIn } from '@ska-telescope/ska-login-page';
+import { useTheme } from '@mui/material/styles';
 import {
   DropDown,
   NumberEntry,
@@ -94,8 +96,11 @@ const IMAGE_PATH =
 export default function ObservationEntry() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
+  const theme = useTheme();
   const locationProperties = useLocation();
-  const { osdLOW, osdMID, observatoryConstants } = useOSDAccessors();
+  const loggedIn = isLoggedIn();
+  const { isSV } = useAppFlow();
+  const { osdLOW, osdMID, observatoryConstants, osdCyclePolicy } = useOSDAccessors();
 
   const isEdit = () => locationProperties.state !== null;
 
@@ -205,6 +210,71 @@ export default function ObservationEntry() {
     return newObservation;
   };
 
+  /*--------------------------------------------------*/
+
+  const updateObservationOnProposal = () => {
+    const newObservation: Observation = observationOut();
+
+    const oldObservations = getProposal().observations;
+    const newObservations: Observation[] = [];
+    if (oldObservations && oldObservations?.length > 0) {
+      oldObservations.forEach(inValue => {
+        newObservations.push(inValue.id === newObservation.id ? newObservation : inValue);
+      });
+    } else {
+      newObservations.push(newObservation);
+    }
+
+    const updateSensCalcPartial = (ob: Observation) => {
+      const result = getProposal()?.targetObservation?.map(rec => {
+        if (rec.observationId === ob.id) {
+          const to: TargetObservation = {
+            observationId: rec.observationId,
+            targetId: rec.targetId,
+            sensCalc: {
+              id: rec.targetId,
+              title: '',
+              statusGUI: STATUS_PARTIAL,
+              error: ''
+            },
+            dataProductsSDPId: ''
+          };
+          return to;
+        } else {
+          return rec;
+        }
+      });
+      return result;
+    };
+
+    setProposal({
+      ...getProposal(),
+      observations: newObservations,
+      targetObservation: updateSensCalcPartial(newObservation)
+    });
+
+    /*
+      getAffected(newObservation.id).map(rec => {
+        const target = getProposal().targets.find(t => t.id === rec.targetId);
+        getSensCalcData(newObservation, target);
+      });
+      */
+  };
+
+  const addObservationToProposal = () => {
+    const newObservation: Observation = observationOut();
+    setProposal({
+      ...getProposal(),
+      observations: [...(getProposal().observations ?? []), newObservation]
+    });
+  };
+
+  const updateStorageProposal = () => {
+    if (loggedIn && osdCyclePolicy.maxObservations === 1) {
+      isEdit() ? updateObservationOnProposal() : addObservationToProposal();
+    }
+  };
+
   const getObservationType = () => {
     if (getProposal() && typeof getProposal()?.scienceCategory === 'number') {
       const obsType = GENERAL.ObservingMode.find(
@@ -254,7 +324,7 @@ export default function ObservationEntry() {
       setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_S);
       setSuppliedValue(SUPPLIED_VALUE_DEFAULT_MID);
     }
-    if (!isLow() && e === 0) {
+    if (isMid() && e === 0) {
       setDefaultElevation(e);
       setSuppliedType(1); // TODO : Replace with constant
       setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_H);
@@ -264,6 +334,7 @@ export default function ObservationEntry() {
     setDefaultCentralFrequency(e as number, subarrayConfig);
     setDefaultContinuumBandwidth(e as number, subarrayConfig);
     setObservingBand(e);
+    updateStorageProposal();
   };
 
   const setTheSubarrayConfig = (e: React.SetStateAction<number>) => {
@@ -278,7 +349,7 @@ export default function ObservationEntry() {
         setNumOfStations(record.numOfStations);
       }
       //Set value using OSD Data if Mid AA2
-      if (!isLow() && isAA2(record.value)) {
+      if (isMid() && isAA2(record.value)) {
         setNumOf15mAntennas(osdMID?.AA2?.numberSkaDishes ?? undefined);
       } else {
         setNumOf15mAntennas(record.numOf15mAntennas);
@@ -288,6 +359,7 @@ export default function ObservationEntry() {
     setDefaultCentralFrequency(observingBand, e as number);
     setDefaultContinuumBandwidth(observingBand, e as number);
     setSubarrayConfig(e);
+    updateStorageProposal();
   };
 
   React.useEffect(() => {
@@ -317,6 +389,7 @@ export default function ObservationEntry() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
+    updateStorageProposal();
   }, [
     groupObservation,
     elevation,
@@ -327,6 +400,7 @@ export default function ObservationEntry() {
     suppliedType,
     suppliedValue,
     suppliedUnits,
+    centralFrequency,
     centralFrequencyUnits,
     continuumBandwidth,
     subBands,
@@ -368,6 +442,7 @@ export default function ObservationEntry() {
   const isZoom = () => observationType === TYPE_ZOOM;
   const isPST = () => observationType === TYPE_PST;
   const isLow = () => observingBand === BAND_LOW;
+  const isMid = () => observingBand !== BAND_LOW;
   const telescope = (band = observingBand) => BANDWIDTH_TELESCOPE[band]?.telescope;
   const isLowAA2 = () => isLow() && subarrayConfig === OB_SUBARRAY_AA2;
   const isContinuumOnly = () => observingBand !== 0 && subarrayConfig === OB_SUBARRAY_AA2;
@@ -421,11 +496,12 @@ export default function ObservationEntry() {
 
   const frequencySpectrumField = () => {
     const colors = getColors({
-      type: 'observationType',
-      colors: observationType?.toString() ?? '',
-      content: 'both',
-      dim: 0.6
-    });
+      type: 'telescope',
+      colors: TELESCOPES[telescope() - 1].label.toLowerCase(),
+      content: 'bg',
+      dim: 0.6,
+      asArray: true
+    }) ?? [theme.palette.primary.main, theme.palette.primary.contrastText];
 
     return fieldWrapper(
       <Box>
@@ -478,6 +554,7 @@ export default function ObservationEntry() {
   const observationsBandField = () =>
     fieldWrapper(
       <ObservingBandField
+        disabled={false} // TODO : Add condition to disable based on OSD data
         widthLabel={LABEL_WIDTH_NEW}
         required
         value={observingBand}
@@ -634,7 +711,7 @@ export default function ObservationEntry() {
   const observationTypeField = () =>
     fieldWrapper(
       <ObservationTypeField
-        disabled={MOCK_CALL || isContinuumOnly()}
+        disabled={loggedIn && (osdCyclePolicy?.linkObservationToObservingMode || isContinuumOnly())}
         isContinuumOnly={isContinuumOnly()}
         widthLabel={LABEL_WIDTH_NEW}
         required
@@ -787,7 +864,7 @@ export default function ObservationEntry() {
     return fieldWrapper(
       <ContinuumBandwidthField
         labelWidth={LABEL_WIDTH_NEW}
-        onFocus={() => setHelp(`bandwidth.help.${TYPE_CONTINUUM}`)}
+        onFocus={() => setHelp(`bandwidth.${TYPE_CONTINUUM}`)}
         setValue={setContinuumBandwidth}
         value={continuumBandwidth}
         suffix={continuumBandwidthUnitsField()}
@@ -806,7 +883,7 @@ export default function ObservationEntry() {
     <Grid>
       {fieldWrapper(
         <BandwidthField
-          onFocus={() => setHelp(`bandwidth.help.${TYPE_ZOOM}`)}
+          onFocus={() => setHelp(`bandwidth.${TYPE_ZOOM}`)}
           required
           setValue={setBandwidth}
           testId="bandwidth"
@@ -892,7 +969,7 @@ export default function ObservationEntry() {
       }
       // The sub-band bandwidth defined by the bandwidth of the observation divided by the number of
       // sub-bands should be greater than the minimum allowed bandwidth
-      if (!isLow() && isContinuum()) {
+      if (isMid() && isContinuum()) {
         const scaledBandwidth = getScaledBandwidthOrFrequency(
           continuumBandwidth,
           continuumBandwidthUnits
@@ -1002,65 +1079,11 @@ export default function ObservationEntry() {
   };
 
   const pageFooter = () => {
-    const addObservationToProposal = () => {
-      const newObservation: Observation = observationOut();
-      setProposal({
-        ...getProposal(),
-        observations: [...(getProposal().observations ?? []), newObservation]
-      });
-    };
-
-    const updateObservationOnProposal = () => {
-      const newObservation: Observation = observationOut();
-
-      const oldObservations = getProposal().observations;
-      const newObservations: Observation[] = [];
-      if (oldObservations && oldObservations?.length > 0) {
-        oldObservations.forEach(inValue => {
-          newObservations.push(inValue.id === newObservation.id ? newObservation : inValue);
-        });
-      } else {
-        newObservations.push(newObservation);
-      }
-
-      const updateSensCalcPartial = (ob: Observation) => {
-        const result = getProposal()?.targetObservation?.map(rec => {
-          if (rec.observationId === ob.id) {
-            const to: TargetObservation = {
-              observationId: rec.observationId,
-              targetId: rec.targetId,
-              sensCalc: {
-                id: rec.targetId,
-                title: '',
-                statusGUI: STATUS_PARTIAL,
-                error: ''
-              }
-            };
-            return to;
-          } else {
-            return rec;
-          }
-        });
-        return result;
-      };
-
-      setProposal({
-        ...getProposal(),
-        observations: newObservations,
-        targetObservation: updateSensCalcPartial(newObservation)
-      });
-
-      /*
-      getAffected(newObservation.id).map(rec => {
-        const target = getProposal().targets.find(t => t.id === rec.targetId);
-        getSensCalcData(newObservation, target);
-      });
-      */
-    };
-
     const buttonClicked = () => {
       isEdit() ? updateObservationOnProposal() : addObservationToProposal();
-      navigate(NAV[5]);
+      if (!loggedIn || osdCyclePolicy.maxObservations !== 1) {
+        navigate(NAV[BACK_PAGE]);
+      }
     };
 
     return (
@@ -1068,9 +1091,9 @@ export default function ObservationEntry() {
         sx={{
           bgcolor: 'transparent',
           position: 'fixed',
-          bottom: FOOTER_HEIGHT_PHT,
+          bottom: FOOTER_HEIGHT_PHT + (loggedIn && osdCyclePolicy.maxObservations === 1 ? 60 : 0),
           left: 0,
-          right: 0
+          right: loggedIn && osdCyclePolicy.maxObservations === 1 ? 30 : 0
         }}
         elevation={0}
       >
@@ -1084,13 +1107,15 @@ export default function ObservationEntry() {
           <Grid />
           <Grid />
           <Grid>
-            <AddButton
-              action={buttonClicked}
-              disabled={addButtonDisabled()}
-              primary
-              testId={isEdit() ? 'updateObservationButtonEntry' : 'addObservationButtonEntry'}
-              title={isEdit() ? 'updateBtn.label' : 'addBtn.label'}
-            />
+            {(!loggedIn || osdCyclePolicy.maxObservations !== 1) && (
+              <AddButton
+                action={buttonClicked}
+                disabled={addButtonDisabled()}
+                primary
+                testId={isEdit() ? 'updateObservationButtonEntry' : 'addObservationButtonEntry'}
+                title={isEdit() ? 'updateBtn.label' : 'addBtn.label'}
+              />
+            )}
           </Grid>
         </Grid>
       </Paper>
@@ -1100,7 +1125,9 @@ export default function ObservationEntry() {
   return (
     <HelpShell page={PAGE}>
       <Box pt={2}>
-        <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
+        {(!loggedIn || osdCyclePolicy.maxObservations > 1) && (
+          <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
+        )}
         <Grid
           pl={4}
           pr={4}

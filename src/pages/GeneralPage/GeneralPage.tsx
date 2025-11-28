@@ -263,19 +263,18 @@ export default function GeneralPage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid
-        container
-        direction="row"
-        p={3}
-        spacing={2}
-        alignItems="space-evenly"
-        justifyContent="space-around"
-      >
+      <Grid container direction="row" p={5} spacing={2} alignItems="left">
         <Grid pb={3} size={{ md: 12, lg: 8 }}>
           <Grid container direction="row">
-            <Grid size={{ md: 12 }}>{cycleIdField()}</Grid>
-            <Grid size={{ md: 12 }}>{cycleOpensField()}</Grid>
-            <Grid size={{ md: 12 }}>{cycleClosesField()}</Grid>
+            <Grid pr={4} size={{ md: 12 }}>
+              {cycleIdField()}
+            </Grid>
+            <Grid pr={4} size={{ md: 12 }}>
+              {cycleOpensField()}
+            </Grid>
+            <Grid pr={4} size={{ md: 12 }}>
+              {cycleClosesField()}
+            </Grid>
             <Grid pt={2} pb={2} size={{ md: 12, lg: 12 }}>
               <Grid size={{ md: 12, lg: 6 }}>{categoryField()}</Grid>
             </Grid>
