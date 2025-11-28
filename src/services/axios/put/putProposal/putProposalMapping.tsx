@@ -52,6 +52,7 @@ import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
+import { MockProposalBackend } from './mockProposalBackend';
 import { getBandwidthZoom, helpers } from '@/utils/helpers';
 import { CalibrationStrategy, CalibrationStrategyBackend } from '@/utils/types/calibrationStrategy';
 import { SuppliedBackend } from '@/utils/types/supplied';
@@ -552,8 +553,22 @@ export const getDataProductRef = (
 const getResults = (
   incTargetObservations: TargetObservation[],
   incObs: Observation[],
-  incDataProductSDP: DataProductSDP[]
+  incDataProductSDP: DataProductSDP[],
+  incTargets: Target[]
 ) => {
+  // TODO remove mock results and fix sens calc mapping
+  if (MockProposalBackend.observation_info?.result_details) {
+    const mockResults: SensCalcResultsBackend[] = [
+      MockProposalBackend.observation_info?.result_details[0]
+    ];
+    mockResults[0].data_product_ref = incDataProductSDP[0].id;
+    mockResults[0].observation_set_ref = incObs[0].id;
+    mockResults[0].target_ref = incTargets[0].name;
+    return mockResults;
+  } else {
+    return [];
+  }
+  // TODO use below instead of mock
   const resultsArr = [];
   if (incTargetObservations) {
     for (let tarObs of incTargetObservations) {
@@ -673,13 +688,13 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
       data_product_src_nets:
         proposal?.dataProductSRC && proposal?.dataProductSRC?.length > 0
           ? getDataProductSRC(proposal.dataProductSRC as DataProductSRC[])
-          : []
-      // TODO put sensitivity calculator back and fix issue in mapping
-      /*result_details: getResults(
+          : [],
+      result_details: getResults(
         proposal.targetObservation as TargetObservation[],
         proposal.observations as Observation[],
-        proposal.dataProductSDP as DataProductSDP[]
-      )*/
+        proposal.dataProductSDP as DataProductSDP[],
+        proposal.targets as Target[]
+      )
     }
   };
 
