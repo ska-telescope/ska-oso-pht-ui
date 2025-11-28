@@ -1226,11 +1226,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           {isLowAA2() && (
             <Grid sx={{ p: { md: 5, lg: 0 } }} size={{ md: 12, lg: 3 }}>
               <Box px={3}>
-                <img
-                  src={`${import.meta.env.BASE_URL}assets/low_aa2.png`}
-                  alt="Low AA2"
-                  width="100%"
-                />
+                <img src={'proposal/assets/low_aa2.png'} alt="Low AA2" width="100%" />
               </Box>
             </Grid>
           )}
