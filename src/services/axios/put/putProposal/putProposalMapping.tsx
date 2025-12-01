@@ -16,6 +16,7 @@ import TargetObservation from '@utils/types/targetObservation.tsx';
 import { SensCalcResultsBackend } from '@utils/types/sensCalcResults.tsx';
 import {
   BANDWIDTH_TELESCOPE,
+  BEAM_SIZE_UNITS,
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
   FREQUENCY_UNITS,
@@ -52,13 +53,12 @@ import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import { getUserId } from '@utils/aaa/aaaUtils.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
-import { MockProposalBackend } from './mockProposalBackend';
 import { getBandwidthZoom, helpers } from '@/utils/helpers';
 import { CalibrationStrategy, CalibrationStrategyBackend } from '@/utils/types/calibrationStrategy';
 import { SuppliedBackend } from '@/utils/types/supplied';
 
 const isContinuum = (type: number) => type === TYPE_CONTINUUM;
-// const isPST = (type: number) => type === TYPE_PST;
+const isPST = (type: number) => type === TYPE_PST;
 // const isZoom = (type: number) => type === TYPE_ZOOM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
 const isRedshift = (type: number) => type === VELOCITY_TYPE.REDSHIFT;
@@ -69,7 +69,7 @@ const getSubType = (proposalType: number, proposalSubType: number[]): any => {
   const subTypes: string[] = [];
   for (let subtype of proposalSubType) {
     if (subtype && project) {
-      subTypes.push(project.subProjects.find(item => item.id === subtype)?.mapping as string);
+      subTypes.push(project.subProjects.find(item => item?.id === subtype)?.mapping as string);
     }
   }
   return subTypes;
@@ -102,7 +102,7 @@ export const getReferenceCoordinate = (
 
 const getBeam = (beam: Beam): BeamBackend => {
   return {
-    beam_id: beam.id,
+    beam_id: beam?.id,
     beam_name: beam.beamName,
     beam_coordinate: getReferenceCoordinate(beam.beamCoordinate),
     stn_weights: beam.stnWeights ?? [] // not used yet
@@ -168,11 +168,11 @@ const getDocuments = (
 export const getCalibrationStrategy = (
   calibrationStrategies: CalibrationStrategy[]
 ): CalibrationStrategyBackend[] => {
-  return calibrationStrategies?.map(strategy => ({
-    observatory_defined: strategy.observatoryDefined,
-    calibration_id: strategy.id,
-    observation_set_ref: strategy.observationIdRef,
-    calibrators: strategy.calibrators
+  const calibrationOut = calibrationStrategies?.map(strategy => ({
+    observatory_defined: strategy?.observatoryDefined,
+    calibration_id: strategy?.id,
+    observation_set_ref: strategy?.observationIdRef,
+    calibrators: strategy?.calibrators
       ? strategy?.calibrators?.map(calibrator => ({
           calibration_intent: calibrator.calibrationIntent,
           name: calibrator.name,
@@ -181,13 +181,14 @@ export const getCalibrationStrategy = (
           notes: calibrator.notes
         }))
       : null,
-    notes: strategy.notes
+    notes: strategy?.notes
   }));
+  return calibrationOut;
 };
 
 export const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProductSDP) => {
   const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
-  const obType = obs?.find(o => o.id === dp.observationId)?.type;
+  const obType = obs?.find(o => o?.id === dp.observationId)?.type;
   switch (obType) {
     case TYPE_CONTINUUM: {
       if (dp.dataProductType === DP_TYPE_IMAGES) {
@@ -251,7 +252,7 @@ export const getDataProductScriptParameters = (obs: Observation[] | null, dp: Da
       };
     case TYPE_PST:
     default:
-      const pstMode = obs?.find(o => o.id === dp.observationId)?.pstMode;
+      const pstMode = obs?.find(o => o?.id === dp.observationId)?.pstMode;
       if (pstMode === DETECTED_FILTER_BANK_VALUE) {
         return {
           polarisation: dp.polarisations,
@@ -349,7 +350,7 @@ const getBandwidthContinuum = (incObs: Observation): ValueUnitPair => {
 };
 
 const getBandwidth = (ob: Observation): ValueUnitPair =>
-  isContinuum(ob.type) ? getBandwidthContinuum(ob) : getBandwidthZoom(ob);
+  isContinuum(ob.type) || isPST(ob.type) ? getBandwidthContinuum(ob) : getBandwidthZoom(ob);
 
 const getCentralFrequency = (incObs: Observation): ValueUnitPair => {
   return {
@@ -409,8 +410,8 @@ const getObservationsSets = (
   if (incObservationsSets) {
     for (let obs of incObservationsSets) {
       const observation: ObservationSetBackend = {
-        observation_set_id: obs.id,
-        group_id: getGroupObservation(obs.id, incObservationGroups),
+        observation_set_id: obs?.id,
+        group_id: getGroupObservation(obs?.id, incObservationGroups),
         elevation: obs.elevation,
         observing_band: getObservingBand(obs.observingBand) as string,
         array_details: getArrayDetails(obs),
@@ -459,26 +460,30 @@ const getSuppliedFieldsSensitivity = (
     supplied_type: suppliedType
   };
   params.weighted_continuum_sensitivity = {
-    value: isContinuum(obsType)
-      ? Number(
-          tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumSensitivityWeighted')?.value
-        )
-      : 0,
-    unit: isContinuum(obsType)
-      ? (tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumSensitivityWeighted')
-          ?.units as string)
-      : ''
+    value:
+      isContinuum(obsType) || isPST(obsType)
+        ? Number(
+            tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumSensitivityWeighted')?.value
+          )
+        : 0,
+    unit:
+      isContinuum(obsType) || isPST(obsType)
+        ? (tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumSensitivityWeighted')
+            ?.units as string)
+        : ''
   };
   params.total_continuum_sensitivity = {
-    value: isContinuum(obsType)
-      ? Number(
-          tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumTotalSensitivity')?.value
-        )
-      : 0,
-    unit: isContinuum(obsType)
-      ? (tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumTotalSensitivity')
-          ?.units as string)
-      : ''
+    value:
+      isContinuum(obsType) || isPST(obsType)
+        ? Number(
+            tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumTotalSensitivity')?.value
+          )
+        : 0,
+    unit:
+      isContinuum(obsType) || isPST(obsType)
+        ? (tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumTotalSensitivity')
+            ?.units as string)
+        : ''
   };
 
   params.weighted_spectral_sensitivity = {
@@ -495,12 +500,13 @@ const getSuppliedFieldsSensitivity = (
     unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralTotalSensitivity')?.units
   };
   params.surface_brightness_sensitivity = {
-    continuum: isContinuum(obsType)
-      ? Number(
-          tarObs.sensCalc.section1?.find(o => o.field === 'continuumSurfaceBrightnessSensitivity')
-            ?.value
-        )
-      : 0,
+    continuum:
+      isContinuum(obsType) || isPST(obsType)
+        ? Number(
+            tarObs.sensCalc.section1?.find(o => o.field === 'continuumSurfaceBrightnessSensitivity')
+              ?.value
+          )
+        : 0,
     spectral: Number(
       tarObs.sensCalc[spectralSection]?.find(
         o => o.field === 'spectralSurfaceBrightnessSensitivity'
@@ -522,8 +528,9 @@ export const getSuppliedFieldsIntegrationTime = (
     supplied_type: suppliedType
   };
   params.continuum = {
-    value: isContinuum(obsType) ? Number(tarObs.sensCalc.section3?.[0]?.value) : 0,
-    unit: isContinuum(obsType) ? tarObs.sensCalc.section3?.[0]?.units ?? '' : ''
+    value:
+      isContinuum(obsType) || isPST(obsType) ? Number(tarObs.sensCalc.section3?.[0]?.value) : 0,
+    unit: isContinuum(obsType) || isPST(obsType) ? tarObs.sensCalc.section3?.[0]?.units ?? '' : ''
   };
 
   params.spectral = {
@@ -536,11 +543,12 @@ export const getSuppliedFieldsIntegrationTime = (
 /***********************************************************/
 
 const getObsType = (incTarObs: TargetObservation, incObs: Observation[]): number => {
-  let obs = incObs.find(item => item.id === incTarObs.observationId);
+  let obs = incObs.find(item => item?.id === incTarObs.observationId);
   return obs?.type ?? 0;
 };
 
-const getSpectralSection = (obsType: number) => (isContinuum(obsType) ? 'section2' : 'section1');
+const getSpectralSection = (obsType: number) =>
+  isContinuum(obsType) || isPST(obsType) ? 'section2' : 'section1';
 
 export const getDataProductRef = (
   incTarObs: TargetObservation,
@@ -556,18 +564,19 @@ const getResults = (
   incDataProductSDP: DataProductSDP[],
   incTargets: Target[]
 ) => {
-  // TODO remove mock results and fix sens calc mapping
-  if (MockProposalBackend.observation_info?.result_details) {
-    const mockResults: SensCalcResultsBackend[] = [
-      MockProposalBackend.observation_info?.result_details[0]
-    ];
-    mockResults[0].data_product_ref = incDataProductSDP[0].id;
-    mockResults[0].observation_set_ref = incObs[0].id;
-    mockResults[0].target_ref = incTargets[0].name;
-    return mockResults;
-  } else {
-    return [];
-  }
+  // // TODO remove mock results and fix sens calc mapping
+  // if (MockProposalBackend.observation_info?.result_details && incDataProductSDP.length > 0 && incObs.length > 0 && incTargets.length > 0) {
+  //   const mockResults: SensCalcResultsBackend[] = [
+  //     MockProposalBackend.observation_info?.result_details[0]
+  //   ];
+  //   mockResults[0].data_product_ref = incDataProductSDP[0]?.id;
+  //   mockResults[0].observation_set_ref = incObs[0]?.id;
+  //   mockResults[0].target_ref = incTargets[0]?.name;
+  //   console.log('getResults - returning mock results', mockResults);
+  //   return mockResults;
+  // } else {
+  //   return [];
+  // }
   // TODO use below instead of mock
   const resultsArr = [];
   if (incTargetObservations) {
@@ -593,27 +602,33 @@ const getResults = (
           ...suppliedRelatedFields
         },
         continuum_confusion_noise: {
-          value: isContinuum(obsType)
-            ? Number(
-                tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.value
-              )
-            : 0,
-          unit: isContinuum(obsType)
-            ? tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.units
-            : ''
+          value:
+            isContinuum(obsType) || isPST(obsType)
+              ? Number(
+                  tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.value
+                )
+              : 0,
+          unit:
+            isContinuum(obsType) || isPST(obsType)
+              ? tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.units
+              : ''
         },
         synthesized_beam_size: {
-          spectral: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
-            ?.value,
-          continuum: isContinuum(obsType)
-            ? tarObs.sensCalc.section1?.find(o => o.field === 'continuumSynthBeamSize')?.value
-            : 'dummy', // TODO: investigate typescript not taking empty string
-          unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
-            ?.units
+          spectral:
+            tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
+              ?.value ?? 'dummy', // TODO check why missing when saving from obs page
+          continuum:
+            isContinuum(obsType) || isPST(obsType)
+              ? tarObs.sensCalc.section1?.find(o => o.field === 'continuumSynthBeamSize')?.value
+              : 'dummy', // TODO: investigate typescript not taking empty string
+          unit:
+            tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
+              ?.units ?? BEAM_SIZE_UNITS // TODO check why missing when saving from obs page
         },
         spectral_confusion_noise: {
           value: Number(
-            tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise')?.value
+            tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise')
+              ?.value ?? 0 // TODO check why null when saving from obs page
           ),
           unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise')
             ?.units
@@ -641,7 +656,7 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
       proposal_type: {
         main_type: isSV
           ? SCIENCE_VERIFICATION
-          : (PROJECTS.find(item => item.id === proposal.proposalType)?.mapping as string),
+          : (PROJECTS.find(item => item?.id === proposal.proposalType)?.mapping as string),
         attributes:
           !isSV && proposal.proposalSubType
             ? getSubType(proposal.proposalType, proposal.proposalSubType)
@@ -656,7 +671,7 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
       investigators: proposal?.investigators
         ? proposal.investigators.map(investigator => {
             return {
-              user_id: investigator.id?.toString(),
+              user_id: investigator?.id?.toString(),
               status: investigator.status,
               given_name: investigator.firstName,
               family_name: investigator.lastName,
