@@ -255,7 +255,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setProposal({
       ...getProposal(),
       observations: newObservations,
-      targetObservation: updateSensCalcPartial(newObservation)
+      ...(isSV() ? {} : { targetObservation: updateSensCalcPartial(newObservation) }) // don't update to partial results for SV() // TODO gnerate full results on obs change
     });
 
     /*
