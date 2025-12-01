@@ -710,9 +710,9 @@
     "V": "V",
     "X": "X",
     "Y": "Y",
-    "LL": "LL",
-    "RR": "RR",
     "XX": "XX",
+    "XY": "XY",
+    "YX": "YX",
     "YY": "YY"
   },
   "proposal": {
