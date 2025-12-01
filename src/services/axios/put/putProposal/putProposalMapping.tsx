@@ -16,7 +16,6 @@ import TargetObservation from '@utils/types/targetObservation.tsx';
 import { SensCalcResultsBackend } from '@utils/types/sensCalcResults.tsx';
 import {
   BANDWIDTH_TELESCOPE,
-  BEAM_SIZE_UNITS,
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
   FREQUENCY_UNITS,
@@ -614,21 +613,18 @@ const getResults = (
               : ''
         },
         synthesized_beam_size: {
-          spectral:
-            tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
-              ?.value ?? 'dummy', // TODO check why missing when saving from obs page
+          spectral: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
+            ?.value,
           continuum:
             isContinuum(obsType) || isPST(obsType)
               ? tarObs.sensCalc.section1?.find(o => o.field === 'continuumSynthBeamSize')?.value
               : 'dummy', // TODO: investigate typescript not taking empty string
-          unit:
-            tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
-              ?.units ?? BEAM_SIZE_UNITS // TODO check why missing when saving from obs page
+          unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
+            ?.units
         },
         spectral_confusion_noise: {
           value: Number(
-            tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise')
-              ?.value ?? 0 // TODO check why null when saving from obs page
+            tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise')?.value
           ),
           unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise')
             ?.units
