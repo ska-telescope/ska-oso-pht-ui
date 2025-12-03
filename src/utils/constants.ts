@@ -283,9 +283,9 @@ export const POLARISATIONS = [
   { value: 'Q' },
   { value: 'U' },
   { value: 'V' },
-  { value: 'LL' },
-  { value: 'RR' },
   { value: 'XX' },
+  { value: 'XY' },
+  { value: 'YX' },
   { value: 'YY' }
 ];
 export const POLARISATIONS_PST_FLOW = [{ value: 'X' }, { value: 'Y' }];
