@@ -33,7 +33,7 @@ import GridObservation from '@/components/grid/observation/GridObservation';
 import ImageSizeField from '@/components/fields/imageSize/imageSize';
 import ChannelsOutField from '@/components/fields/channelsOut/channelsOut';
 import DataProductTypeField from '@/components/fields/dataProductType/dataProductType';
-import TapperField from '@/components/fields/tapper/taper';
+import TaperField from '@/components/fields/taper/taper';
 import TimeAveragingField from '@/components/fields/timeAveraging/timeAveraging';
 import FrequencyAveragingField from '@/components/fields/frequencyAveraging/frequencyAveraging';
 import BitDepthField from '@/components/fields/bitDepth/bitDepth';
@@ -251,7 +251,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const taperField = () =>
     fieldWrapper(
-      <TapperField
+      <TaperField
         labelWidth={LABEL_WIDTH}
         onFocus={() => setHelp('taper')}
         required
@@ -526,7 +526,7 @@ export default function DataProduct({ data }: DataProductProps) {
               disabled={!enabled()}
               primary
               action={buttonClicked}
-              testId={isEdit() ? 'updateDataProductButtonEntry' : 'addDataProductButtonEntry'}
+              testId={'addDataProductButtonEntry'}
               title={isEdit() ? 'updateBtn.label' : 'addBtn.label'}
             />
           </Grid>

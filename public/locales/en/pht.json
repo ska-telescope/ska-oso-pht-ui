@@ -70,7 +70,8 @@
     "label": "Affiliation"
   },
   "apiVersion": {
-    "label": "API Version"
+    "label": "API",
+    "sensCalc": "Sensitivity Calculator"
   },
   "array": {
     "label": "Telescope"
