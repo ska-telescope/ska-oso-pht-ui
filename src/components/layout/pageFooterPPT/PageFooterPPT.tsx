@@ -47,7 +47,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const { osdCycleId } = useOSDAccessors();
+  const { osdCycleId, osdCyclePolicy } = useOSDAccessors();
   const { isSV } = useAppFlow();
 
   React.useEffect(() => {
@@ -119,7 +119,13 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     if (isSV() && thePage === PAGE_LINKING) {
       thePage = thePage + 1;
     }
-    if (!validateProposalNavigation(getProposal(), thePage)) {
+    if (
+      !validateProposalNavigation(
+        getProposal(),
+        thePage,
+        osdCyclePolicy.linkObservationToObservingMode
+      )
+    ) {
       thePage = PAGE_CALIBRATION;
     }
     return `page.${thePage}.title`;
@@ -136,7 +142,13 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     if (isSV() && thePage === PAGE_TECHNICAL) {
       thePage = thePage - 1;
     }
-    if (!validateProposalNavigation(getProposal(), thePage)) {
+    if (
+      !validateProposalNavigation(
+        getProposal(),
+        thePage,
+        osdCyclePolicy.linkObservationToObservingMode
+      )
+    ) {
       thePage = PAGE_TARGET;
     }
     return `page.${thePage}.title`;
@@ -153,7 +165,13 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       if (isSV() && thePage === PAGE_TECHNICAL) {
         thePage = thePage - 1;
       }
-      if (!validateProposalNavigation(getProposal(), thePage)) {
+      if (
+        !validateProposalNavigation(
+          getProposal(),
+          thePage,
+          osdCyclePolicy.linkObservationToObservingMode
+        )
+      ) {
         thePage = PAGE_TARGET;
       }
       navigate(NAV[thePage]);
@@ -165,7 +183,13 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       return;
     } else if (!loggedIn && usedPageNo === 0) {
       navigate(NAV[PAGE_TARGET]);
-    } else if (!validateProposalNavigation(getProposal(), usedPageNo + 1)) {
+    } else if (
+      !validateProposalNavigation(
+        getProposal(),
+        usedPageNo + 1,
+        osdCyclePolicy.linkObservationToObservingMode
+      )
+    ) {
       navigate(NAV[PAGE_CALIBRATION]);
     } else if (usedPageNo < NAV.length) {
       let thePage = usedPageNo + 1;

@@ -13,6 +13,15 @@ const wrapper = (component: React.ReactElement) => {
   );
 };
 
+vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
+  useOSDAccessors: () => ({
+    osdCycleId: 'CYCLE-1',
+    osdCyclePolicy: {
+      linkObservationToObservingMode: true
+    }
+  })
+}));
+
 describe('<TargetEntry />', () => {
   test('renders correctly', () => {
     wrapper(<TargetEntry raType={0} />);
