@@ -239,7 +239,7 @@
       "status": "Description",
       "title": "Description",
       "titleShort": "Description",
-      "desc": "Upload a brief description of the Science Verification idea.",
+      "desc": "Upload a brief description of the Science Verification idea in a portable document format (PDF).",
       "pageError": "The DESCRIPTION page is not complete",
       "help": "This document should include a brief justification of the target, the suggested observations and its suitability for Science Verification."
     },

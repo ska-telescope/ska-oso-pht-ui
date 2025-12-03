@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import { DropDown, SearchEntry, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { Box, Card, Grid, Typography } from '@mui/material';
 import { groupBy } from 'lodash';
@@ -13,11 +13,8 @@ import { BANNER_PMT_SPACER_MIN, PANEL_DECISION_STATUS } from '@/utils/constants'
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import ResetButton from '@/components/button/Reset/Reset';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
-import D3ColumnChart from '@/components/charts/column/D3ColumnChartOld';
-// import D3ColChart from '@/components/charts/column/D3ColumnChartNew';
 import D3PieChart from '@/components/charts/pie/D3PieChart';
-import D3ColumnWrapper from '@/components/charts/column/D3Wrapper';
-// import D3Slider from '@/components/charts/slider/D3Slider';
+import D3ColumnWrapper from '@/components/charts/column/wrapper/D3Wrapper';
 import ResizablePanel from '@/components/layout/resizablePanel/ResizablePanel';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { getColors } from '@/utils/colors/colors';
@@ -30,77 +27,6 @@ const VIEW_PROPOSAL = 'proposal';
 const VIEW_REVIEW = 'review';
 const VIEW_DECISION = 'decision';
 type DashboardView = string;
-
-/** ResizeObserver hook */
-function useContainerSize<T extends HTMLElement>() {
-  const ref = useRef<T | null>(null);
-  const [size, setSize] = useState<{ width: number; height: number }>({ width: 0, height: 0 });
-
-  useEffect(() => {
-    if (!ref.current) return;
-    const el = ref.current;
-    const ro = new ResizeObserver(entries => {
-      const cr = entries[0].contentRect;
-      setSize({ width: cr.width, height: cr.height });
-    });
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  return { ref, size };
-}
-function ResponsiveColumnChart(props: {
-  data: any[];
-  fields: string[];
-  title: string;
-  yAxisLabel?: string;
-  initialXField?: string;
-  initialGroupField?: string;
-  innerPad?: number;
-  minWidth?: number;
-  minHeight?: number;
-  targetAspect?: number;
-}) {
-  const {
-    data,
-    fields,
-    title,
-    yAxisLabel,
-    initialXField,
-    initialGroupField,
-    innerPad = 20,
-    minWidth = 560,
-    minHeight = 420,
-    targetAspect = 0.52
-  } = props;
-
-  const { size } = useContainerSize<HTMLDivElement>();
-  const innerW = Math.max(minWidth, Math.max(0, size.width - innerPad * 2));
-  const derivedH = Math.round(innerW * targetAspect);
-  const innerH = Math.max(
-    minHeight,
-    size.height > 0 ? Math.max(0, size.height - innerPad * 2) : derivedH
-  );
-
-  return (
-    <D3ColumnChart
-      data={data}
-      fields={fields}
-      title={title}
-      yAxisLabel={yAxisLabel}
-      initialXField={initialXField}
-      initialGroupField={initialGroupField}
-      width={innerW}
-      height={innerH}
-      chartColors={getColors({
-        type: 'observationType',
-        colors: '',
-        content: 'bg',
-        asArray: true
-      })}
-    />
-  );
-}
 
 export default function ReviewDashboard() {
   const { t } = useScopedTranslation();
@@ -133,13 +59,9 @@ export default function ReviewDashboard() {
     const fallback = t(
       field === 'decisionStatus' ? 'reviewDashboard.undecided' : 'reviewDashboard.unknown'
     );
-
-    // Step 1: Filter out excluded proposalStatus values
     const filteredReport = report.filter(
       record => !excludeStatuses.includes(record.proposalStatus)
     );
-
-    // Step 2: Deduplicate by prslId
     const uniqueRecords = Object.values(
       filteredReport.reduce((acc, record) => {
         if (record.prslId) {
@@ -148,8 +70,6 @@ export default function ReviewDashboard() {
         return acc;
       }, {} as Record<string, any>)
     );
-
-    // Step 3: Group by field
     const counts = Object.entries(
       uniqueRecords.reduce((acc: Record<string, number>, record: any) => {
         const key = record[field] || fallback;
@@ -170,14 +90,10 @@ export default function ReviewDashboard() {
     const fallback = t(
       field === 'decisionStatus' ? 'reviewDashboard.undecided' : 'reviewDashboard.unknown'
     );
-
-    // Step 1: Filter out excluded values
     const filteredReport = report.filter(
       record =>
         !excludeStatuses.includes(record.proposalStatus) && record.decisionStatus !== undefined
     );
-
-    // Step 2: Deduplicate by prslId
     const uniqueRecords = Object.values(
       filteredReport.reduce((acc, record) => {
         if (record.prslId) {
@@ -186,8 +102,6 @@ export default function ReviewDashboard() {
         return acc;
       }, {} as Record<string, any>)
     );
-
-    // Step 3: Group by field
     const counts = Object.entries(
       uniqueRecords.reduce((acc: Record<string, number>, record: any) => {
         const key = record[field] || fallback;
@@ -199,37 +113,7 @@ export default function ReviewDashboard() {
     setter(counts);
   };
 
-  // const calculateReviewData = (
-  //   report: any[],
-  //   field: string,
-  //   setter: (data: { name: string; value: number }[]) => void
-  // ) => {
-  //   const fallback = t(
-  //     field === 'decisionStatus' ? 'reviewDashboard.undecided' : 'reviewDashboard.unknown'
-  //   );
-  //   const filteredReport = report.filter(
-  //     record =>
-  //       record['proposalStatus'] === 'submitted' || record['proposalStatus'] === 'under review'
-  //   );
-  //   const counts = Object.entries(
-  //     filteredReport.reduce((acc, record) => {
-  //       const key = record[field] || fallback;
-  //       acc[key] = (acc[key] || 0) + 1;
-  //       return acc;
-  //     }, {} as Record<string, number>)
-  //   ).map(([name, value]) => ({ name, value: value as number }));
-
-  //   setter(counts);
-  // };
-
-  // const getReviewFieldValues = (report: any[], field: string): string[] => {
-  //   return report
-  //     .filter(record => record.proposalStatus !== 'draft')
-  //     .map(record => record[field] ?? 'Unknown');
-  // };
-
   const calculateAllStats = (report: any[]) => {
-    // Panel stats
     const reportGroupByPanel = groupBy(
       report.filter(r => r.panelId != null && r.panelId !== ''),
       'panelId'
@@ -270,7 +154,6 @@ export default function ReviewDashboard() {
     }));
     setPanelTableData(resultPanelTable);
 
-    // Reviewer stats
     const reportGroupByReviewer = groupBy(
       report.filter(r => r.panelId != null && r.panelId !== ''),
       'reviewerId'
@@ -299,7 +182,6 @@ export default function ReviewDashboard() {
     }));
     setPanelReviewerTableData(resultPanelReviewerTable);
 
-    // Science category stats
     const reportGroupByScienceCategory = groupBy(
       report.filter(r => r.panelId != null && r.panelId !== ''),
       'scienceCategory'
@@ -337,7 +219,6 @@ export default function ReviewDashboard() {
     calculateProposalData(filteredReport, 'proposalStatus', setProposalStatusData);
     calculateProposalData(filteredReport, 'location', setProposalLocationData);
     calculateDecisionData(filteredReport, 'decisionStatus', setProposalDecisionData, ['draft']);
-    //
     calculateProposalData(filteredReport, 'assignedProposal', setReviewAssignmentData, ['draft']);
     calculateProposalData(filteredReport, 'reviewStatus', setReviewStatusData, [
       'draft',
@@ -397,7 +278,6 @@ export default function ReviewDashboard() {
     setFilteredReport(fr);
   }, [filter, currentReport, search]);
 
-  // UI bits
   const filters = () => (
     <Box pt={5} pl={5} pr={5}>
       <Card>
@@ -472,46 +352,6 @@ export default function ReviewDashboard() {
     );
   };
 
-  // const colChart = (label: string, data: any[], type: string = '') => {
-  //   /*** TODO : I have created this as the original is a bit of a mess and needs to be cleaned up
-  //    * The intent is to keep the filtering outside of the chart so it remains reusable
-  //    * and only focused on rendering the chart itself.
-  //    * Once this is confirmed working, we can deprecate the old D3ColumnChart component.
-  //    * This chart is abl to scale based on the container size.
-  //    */
-  //   return (
-  //     <ResizablePanel title={t(label)} errorColor={!data || data.length === 0}>
-  //       {(!data || data.length === 0) && (
-  //         <Box
-  //           sx={{
-  //             position: 'absolute',
-  //             top: 0,
-  //             left: 0,
-  //             right: 0,
-  //             bottom: 0,
-  //             display: 'flex',
-  //             alignItems: 'center',
-  //             justifyContent: 'center'
-  //           }}
-  //         >
-  //           <Typography variant="h6">{t('reviewDashboard.noData')}</Typography>
-  //         </Box>
-  //       )}
-  //       {data && (
-  //         <D3ColChart
-  //           data={data}
-  //           chartColors={getColors({
-  //             type: type,
-  //             colors: '*',
-  //             content: 'bg'
-  //           })}
-  //           colorType={type}
-  //         />
-  //       )}
-  //     </ResizablePanel>
-  //   );
-  // };
-
   const colWrapper = (label: string, data: any[]) => {
     return (
       <ResizablePanel
@@ -546,25 +386,6 @@ export default function ReviewDashboard() {
       </ResizablePanel>
     );
   };
-
-  const columnChart = (label: string, data: any[], xFields: string[], xInit: string) => (
-    <ResizablePanel title={label ? t(label) : ''} width="100%">
-      <ResponsiveColumnChart
-        data={data}
-        fields={xFields}
-        title=""
-        yAxisLabel="Count"
-        initialXField={xInit}
-        initialGroupField="" // or "reviewStatus"
-      />
-    </ResizablePanel>
-  );
-
-  // const sliderChart = (label: string, data: any[]) => (
-  //   <ResizablePanel title={t(label)}>
-  //     <D3Slider values={data} />
-  //   </ResizablePanel>
-  // );
 
   const panel4 = () => (
     <ResizablePanel title={t('reviewDashboard.panel.title4')} width={TABLE_CONTAINER_WIDTH}>
@@ -721,13 +542,6 @@ export default function ReviewDashboard() {
             'reviewDashboard.panel.title8',
             filteredReport.filter(record => !['draft'].includes(record.proposalStatus))
           )}
-          {false &&
-            columnChart(
-              'reviewDashboard.panel.title8',
-              filteredReport.filter(record => !['draft'].includes(record.proposalStatus)),
-              ['scienceCategory', 'reviewStatus', 'assignedProposal', 'array'],
-              'scienceCategory'
-            )}
         </Grid>
         <Grid
           p={5}

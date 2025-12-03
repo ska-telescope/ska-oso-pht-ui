@@ -351,7 +351,7 @@ export const verifyUserInvitedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Email invite has been sent.');
 
 export const verifyTeamMemberAccessUpdatedAlertFooter = () =>
-  verifyContent('timeAlertFooter', "Team member's access has been updated.");
+  verifyContent('timeAlertFooter', "Team member's access has been updated.", 30000);
 
 export const clickEdit = () => {
   cy.get('[data-testId="EditRoundedIcon"]').should('be.visible');

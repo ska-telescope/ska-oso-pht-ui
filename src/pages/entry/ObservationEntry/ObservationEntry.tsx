@@ -559,7 +559,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const observationsBandField = () =>
     fieldWrapper(
       <ObservingBandField
-        disabled={false} // TODO : Add condition to disable based on OSD data
+        disabled={osdCyclePolicy.bands.length < 2}
         widthLabel={LABEL_WIDTH_NEW}
         required
         value={observingBand}
@@ -1166,13 +1166,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                         rowSpacing={1}
                         justifyContent="space-between"
                       >
-                        <Grid size={{ md: 12, lg: 12 }}>{idField()}</Grid>
-                        <Grid size={{ md: 12, lg: 12 }}>{observationTypeField()}</Grid>
-                        <Grid size={{ md: 12, lg: 12 }}>{groupObservationsField()}</Grid>
-                        <Grid size={{ md: 12, lg: 12 }}>{elevationField()}</Grid>
-                        <Grid size={{ md: 12, lg: 12 }}>
-                          {isLow() ? emptyField() : weatherField()}
-                        </Grid>
+                        <Grid size={{ md: 12 }}>{idField()}</Grid>
+                        <Grid size={{ md: 12 }}>{observationTypeField()}</Grid>
+                        <Grid size={{ md: 12 }}>{groupObservationsField()}</Grid>
+                        <Grid size={{ md: 12 }}>{elevationField()}</Grid>
+                        <Grid size={{ md: 12 }}>{isLow() ? emptyField() : weatherField()}</Grid>
                       </Grid>
                     </CardContent>
                   </BorderedSection>
@@ -1180,7 +1178,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
               )}
 
               {isSV() && (
-                <Grid size={{ md: 6, lg: 6 }}>
+                <Grid size={{ md: 6 }}>
                   <BorderedSection
                     title={t('observationSections.identifiers')}
                     sx={{ height: '100%' }}
@@ -1192,14 +1190,14 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                       spacing={2}
                       justifyContent="space-between"
                     >
-                      <Grid size={{ md: 12, lg: 12 }}>{observationTypeField()}</Grid>
-                      <Grid size={{ md: 12, lg: 12 }}></Grid>
+                      <Grid size={{ md: 12 }}>{observationTypeField()}</Grid>
+                      <Grid size={{ md: 12 }}></Grid>
                     </Grid>
                   </BorderedSection>
                 </Grid>
               )}
 
-              <Grid size={{ md: 6, lg: 6 }}>
+              <Grid size={{ md: 6 }}>
                 <BorderedSection
                   title={t('observationSections.arraySetUp')}
                   sx={{ height: '100%' }}
@@ -1208,15 +1206,15 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                     p={0}
                     container
                     direction="row"
-                    alignItems="flext-start"
+                    alignItems="flex-start"
                     rowSpacing={isSV() ? 0 : 2}
                   >
-                    <Grid size={{ md: 12, lg: 12 }}></Grid>
-                    <Grid size={{ md: 12, lg: 12 }}>{subArrayField()}</Grid>
-                    <Grid size={{ md: 12, lg: 12 }}>
+                    <Grid size={{ md: 12 }}></Grid>
+                    <Grid size={{ md: 12 }}>{subArrayField()}</Grid>
+                    <Grid size={{ md: 12 }}>
                       {!isSV() && (isLow() ? numStationsField() : antennasFields())}
                     </Grid>
-                    <Grid size={{ md: 12, lg: 12 }}>{suppliedField()}</Grid>
+                    <Grid size={{ md: 12 }}>{suppliedField()}</Grid>
                   </Grid>
                 </BorderedSection>
               </Grid>
@@ -1240,7 +1238,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
               </Grid>
             </BorderedSection>
           </Grid>
-          {isLowAA2() && (
+          {isLowAA2() && ( // TODO : Ned to make this generic from OSD Data
             <Grid sx={{ p: { md: 5, lg: 0 } }} size={{ md: 12, lg: 3 }}>
               <Box px={3}>
                 <img src={IMAGE_PATH} alt="Low AA2" width="100%" />

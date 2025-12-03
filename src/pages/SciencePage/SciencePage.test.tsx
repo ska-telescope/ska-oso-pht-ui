@@ -79,6 +79,15 @@ const wrapper = (component: React.ReactElement) => {
   return render(<AppFlowProvider>{component}</AppFlowProvider>);
 };
 
+vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
+  useOSDAccessors: () => ({
+    osdCycleId: 'CYCLE-1',
+    osdCyclePolicy: {
+      linkObservationToObservingMode: true
+    }
+  })
+}));
+
 describe('SciencePage', () => {
   beforeEach(() => {
     vi.clearAllMocks();

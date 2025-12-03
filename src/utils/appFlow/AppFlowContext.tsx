@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState } from 'react';
 import { cypressProposal } from '@utils/constants.ts';
 
-export type AppFlowType = 'Science Verification' | 'Proposal';
+export type AppFlowType = 'Science Verification' | 'Proposal' | 'Testing';
 
 interface AppFlowContextType {
   appFlow: AppFlowType;

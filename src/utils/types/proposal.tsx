@@ -1,5 +1,5 @@
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
-import { MOCK_CALL, TYPE_CONTINUUM } from '../constants';
+import { TYPE_CONTINUUM } from '../constants';
 import { DocumentBackend, DocumentPDF } from './document';
 import {
   DataProductSDP,
@@ -90,7 +90,7 @@ export const NEW_PROPOSAL = {
   cycle: '',
   proposalType: 0,
   proposalSubType: [0],
-  scienceCategory: MOCK_CALL ? TYPE_CONTINUUM : 1,
+  scienceCategory: TYPE_CONTINUUM,
   scienceSubCategory: [1],
   investigators: [],
   pi: '',

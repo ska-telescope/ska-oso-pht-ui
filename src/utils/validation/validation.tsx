@@ -1,5 +1,4 @@
 import {
-  MOCK_CALL,
   TYPE_CONTINUUM,
   TYPE_PST,
   TYPE_ZOOM,
@@ -111,8 +110,8 @@ export const validateProposal = (proposal: Proposal) => {
   return results;
 };
 
-export const validateProposalNavigation = (proposal: Proposal, page: number) => {
-  if (MOCK_CALL && (page === PAGE_OBSERVATION || page === PAGE_DATA_PRODUCTS)) {
+export const validateProposalNavigation = (proposal: Proposal, page: number, checkLink = false) => {
+  if (checkLink && (page === PAGE_OBSERVATION || page === PAGE_DATA_PRODUCTS)) {
     return (
       proposal.scienceCategory === TYPE_CONTINUUM ||
       proposal.scienceCategory === TYPE_PST ||
