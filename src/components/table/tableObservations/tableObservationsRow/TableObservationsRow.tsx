@@ -12,6 +12,12 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import ObservationInfo from '@/components/info/observation/Observation';
 import { frequencyConversion } from '@/utils/helpers';
 
+// NOTE
+//
+// The icon to expand the row is currently hidden (false && ...) because there is no
+// content to show in the expanded section yet. Once content is added, this can be
+// re-enabled.
+
 interface TableObservationsRowProps {
   item: any;
   index: number;
@@ -72,18 +78,20 @@ export default function TableObservationsRow({
         {/* Collapse / Edit / Delete */}
         <TableCell role="gridcell" sx={{ maxWidth: 120, p: 0 }}>
           <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
-            <IconButton
-              ref={expandButtonRef}
-              aria-label={`${expanded ? 'Collapse' : 'Expand'} details for ${item.title}.`}
-              aria-expanded={expanded}
-              aria-controls={`observation-details-${item.id}`}
-              size="small"
-              onClick={() => toggleRow(item.id)}
-              data-testid={`expand-button-${item.id}`}
-              sx={{ transition: 'transform 0.2s' }}
-            >
-              {expanded ? <ExpandMore /> : <ChevronRight />}
-            </IconButton>
+            {false && (
+              <IconButton
+                ref={expandButtonRef}
+                aria-label={`${expanded ? 'Collapse' : 'Expand'} details for ${item.title}.`}
+                aria-expanded={expanded}
+                aria-controls={`observation-details-${item.id}`}
+                size="small"
+                onClick={() => toggleRow(item.id)}
+                data-testid={`expand-button-${item.id}`}
+                sx={{ transition: 'transform 0.2s' }}
+              >
+                {expanded ? <ExpandMore /> : <ChevronRight />}
+              </IconButton>
+            )}
 
             {editClicked && (
               <EditIcon onClick={() => editClicked(item)} toolTip={t('observations.edit')} />
@@ -182,16 +190,6 @@ export default function TableObservationsRow({
                 ? observation?.rec?.continuumBandwidth ?? 0
                 : observation?.rec?.bandwidth ?? 0
             }
-            minEdge={frequencyConversion(
-              (osdLOW?.basicCapabilities?.minFrequencyHz ?? 0) * 10,
-              FREQUENCY_HZ,
-              FREQUENCY_MHZ
-            )}
-            maxEdge={frequencyConversion(
-              (osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0) * 10,
-              FREQUENCY_HZ,
-              FREQUENCY_MHZ
-            )}
             bandColor={colorsTelescopeDim[0]}
             bandColorContrast={colorsTelescopeDim[1]}
           />
