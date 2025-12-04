@@ -44,6 +44,15 @@ const wrapper = (component: React.ReactElement) => {
   );
 };
 
+vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
+  useOSDAccessors: () => ({
+    osdCycleId: 'CYCLE-1',
+    osdCyclePolicy: {
+      linkObservationToObservingMode: true
+    }
+  })
+}));
+
 describe('<TargetListSection />', () => {
   beforeEach(() => {
     vi.clearAllMocks();

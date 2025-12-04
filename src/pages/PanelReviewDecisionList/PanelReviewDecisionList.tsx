@@ -10,7 +10,7 @@ import { FEASIBLE_NO, FOOTER_SPACER, PROPOSAL_STATUS, REVIEW_TYPE } from '@/util
 import { BANNER_PMT_SPACER } from '@/utils/constants';
 
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
-import TableReviewDecision from '@/components/grid/tableReviewDecision/TableReviewDecision';
+import TableReviewDecision from '@/components/table/tableReviewDecision/TableReviewDecision';
 import { ProposalReview, ScienceReview } from '@/utils/types/proposalReview';
 import { PanelDecision } from '@/utils/types/panelDecision';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';

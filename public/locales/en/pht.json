@@ -70,7 +70,8 @@
     "label": "Affiliation"
   },
   "apiVersion": {
-    "label": "API Version"
+    "label": "API",
+    "sensCalc": "Sensitivity Calculator"
   },
   "array": {
     "label": "Telescope"
@@ -1441,7 +1442,7 @@
       "title": "Science",
       "titleShort": "Science",
       "label": "Science justification",
-      "desc": "Upload a Science justification for this proposal in a portable document format (pdf).",
+      "desc": "Upload a Science justification in a portable document format (PDF).",
       "pageError": "The SCIENCE JUSTIFICATION page is not complete",
       "help": "This is help for the Science Page"
     },

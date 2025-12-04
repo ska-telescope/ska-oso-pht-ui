@@ -19,7 +19,16 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Typography, CssBaseline, ThemeProvider, Tooltip, Paper } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
-import { cypressToken, NAV, PATH, PMT, REVIEW_TYPE, USE_LOCAL_DATA } from '../../utils/constants';
+import {
+  cypressToken,
+  NAV,
+  PATH,
+  PMT,
+  REVIEW_TYPE,
+  USE_LOCAL_DATA,
+  SKA_OSO_SERVICES_URL,
+  SKA_SENSITIVITY_CALCULATOR_API_URL
+} from '../../utils/constants';
 import packageJson from '../../../package.json';
 
 // Pages
@@ -92,7 +101,6 @@ export default function PHT() {
   const [accessibilityMode] = React.useState(
     localStorage.getItem('skao_accessibility_mode') || ACCESSIBILITY_DEFAULT
   );
-  const [apiVersion] = React.useState('10.0.2');
 
   const muiTheme = theme({ themeMode, accessibilityMode });
 
@@ -175,6 +183,24 @@ export default function PHT() {
     );
   };
 
+  const versionToolTip = () => {
+    const tmp1 = SKA_OSO_SERVICES_URL?.split('/') ?? [];
+    const tmp2 = SKA_SENSITIVITY_CALCULATOR_API_URL?.split('/') ?? [];
+
+    const apiVersion = tmp1.length > 0 ? tmp1[tmp1.length - 1] : 'N/A';
+    const sensCalcVersion = tmp2.length > 1 ? tmp2[tmp2.length - 2] : 'N/A';
+
+    return (
+      t('apiVersion.label') +
+      ' : ' +
+      apiVersion +
+      ' | ' +
+      t('apiVersion.sensCalc') +
+      ' : ' +
+      sensCalcVersion
+    );
+  };
+
   return (
     <ThemeProvider theme={muiTheme}>
       <CssBaseline enableColorScheme />
@@ -218,7 +244,7 @@ export default function PHT() {
         storageThemeMode={themeMode}
         storageToggleTheme={modeToggle}
         version={packageJson.version}
-        versionTooltip={t('apiVersion.label') + ' : ' + apiVersion}
+        versionTooltip={versionToolTip()}
       />
     </ThemeProvider>
   );

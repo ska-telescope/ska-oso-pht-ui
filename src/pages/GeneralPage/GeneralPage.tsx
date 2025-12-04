@@ -2,7 +2,12 @@ import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
-import { GENERAL, LAB_POSITION, PAGE_GENERAL } from '@utils/constants.ts';
+import {
+  GENERAL,
+  LAB_POSITION,
+  OBSERVATION_TYPE_SHORT_BACKEND,
+  PAGE_GENERAL
+} from '@utils/constants.ts';
 import { countWords } from '@utils/helpers.ts';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { validateProposal } from '@utils/validation/validation.tsx';
@@ -38,6 +43,7 @@ export default function GeneralPage() {
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const { setHelp } = useHelp();
+  const { osdCyclePolicy } = useOSDAccessors();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -243,9 +249,33 @@ export default function GeneralPage() {
     );
   };
 
+  const getObservingModeOptions = () => {
+    const inData = osdCyclePolicy?.observationType ?? [];
+    return inData.map(type => {
+      const index = OBSERVATION_TYPE_SHORT_BACKEND.findIndex(obsType => obsType === type);
+      const label = t('scienceCategory.' + index);
+      return {
+        label,
+        subCategory: [{ label: 'Not specified', value: 1 }],
+        value: index,
+        observationType: index
+      };
+    });
+  };
+
+  // Separate function for ScienceCategory (optional, for symmetry)
+  const getScienceCategoryOptions = () => {
+    return GENERAL.ScienceCategory;
+  };
+
+  // Main function using the helpers
+  const getCategoryOptions = () => {
+    return isSV() ? getObservingModeOptions() : getScienceCategoryOptions();
+  };
+
   const categoryField = () => (
     <DropDown
-      options={isSV() ? GENERAL.ObservingMode : GENERAL.ScienceCategory}
+      options={getCategoryOptions()}
       errorText={
         typeof getProposal().scienceCategory === 'number' ? '' : t('scienceCategory.error')
       }
@@ -275,7 +305,7 @@ export default function GeneralPage() {
             <Grid pr={4} size={{ md: 12 }}>
               {cycleClosesField()}
             </Grid>
-            <Grid pt={2} pb={2} size={{ md: 12, lg: 12 }}>
+            <Grid pt={2} pb={2} size={{ md: 12 }}>
               <Grid size={{ md: 12, lg: 6 }}>{categoryField()}</Grid>
             </Grid>
             <Grid size={{ md: 12 }}>{abstractField()}</Grid>

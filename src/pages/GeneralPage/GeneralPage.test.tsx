@@ -14,6 +14,18 @@ const wrapper = (component: React.ReactElement) => {
   );
 };
 
+vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
+  useOSDAccessors: () => ({
+    osdCycleId: 'SKAO_2027_1',
+    osdCycleDescription: 'Science Verification',
+    osdOpens: () => '27-03-2026 12:00:00',
+    osdCloses: () => '12-05-2026 04:00:00',
+    osdCyclePolicy: {
+      linkObservationToObservingMode: true
+    }
+  })
+}));
+
 describe('<GeneralPage />', () => {
   test('renders correctly', () => {
     wrapper(<GeneralPage />);

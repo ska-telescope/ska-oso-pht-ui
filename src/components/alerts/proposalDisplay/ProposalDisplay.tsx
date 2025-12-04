@@ -286,7 +286,9 @@ export default function ProposalDisplay({
         </Grid>
       </Grid>
       <Grid>
-        <DownloadButton action={handleDownload} disabled testId="downloadButtonTestId" />
+        {false && (
+          <DownloadButton action={handleDownload} disabled testId="downloadButtonTestId" />
+        ) /* See STAR-246 */}
       </Grid>
       <Grid size={{ xs: 3 }}>
         <Grid container direction="row" alignItems="center" justifyContent="flex-end">

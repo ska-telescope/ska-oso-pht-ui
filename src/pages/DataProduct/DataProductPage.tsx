@@ -15,7 +15,7 @@ import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import DataProduct from '../entry/DataProduct/DataProduct';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import TableDataProducts from '@/components/grid/tableDataProducts/TableDataProducts';
+import TableDataProducts from '@/components/table/tableDataProducts/TableDataProducts';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 const PAGE = PAGE_DATA_PRODUCTS;

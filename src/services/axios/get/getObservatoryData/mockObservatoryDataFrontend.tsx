@@ -14,8 +14,13 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
       maxDataProducts: 1,
       maxObservations: 1,
       maxTargets: 1,
-      isCustomAllowed: false,
-      normalMaxHours: 100.0
+      isCustomAllowed(_telescopeNumber: number) {
+        return true;
+      },
+      bands: ['low'],
+      low: ['AA2'],
+      mid: [],
+      observationType: ['spectral', 'continuum', 'pst']
     },
     telescopeCapabilities: {
       mid: 'AA2',

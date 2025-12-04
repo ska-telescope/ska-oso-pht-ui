@@ -1,20 +1,37 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
+import { storageObject, StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { useNavigate } from 'react-router-dom';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import PostProposal from '@services/axios/post/postProposal/postProposal.tsx';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend';
 import PageFooterPPT from './PageFooterPPT';
 import { NEW_PROPOSAL_ACCESS } from '@/utils/types/proposalAccess';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
+// --- Mocks ---
 vi.mock('react-router-dom', () => ({
   useNavigate: vi.fn()
 }));
 
 vi.mock('@ska-telescope/ska-login-page', () => ({
   isLoggedIn: vi.fn(() => true)
+}));
+
+// IMPORTANT: path matches exactly what PageFooterPPT.tsx imports
+vi.mock('@/utils/appFlow/AppFlowContext', () => ({
+  useAppFlow: () => ({
+    isSV: () => false
+  }),
+  AppFlowProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>
+}));
+
+vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
+  useOSDAccessors: () => ({
+    osdCycleId: 'CYCLE-1',
+    osdCyclePolicy: {
+      linkObservationToObservingMode: true
+    }
+  })
 }));
 
 vi.mock('@services/axios/post/postProposal/postProposal.tsx', () => ({
@@ -25,8 +42,9 @@ vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
   default: () => ({})
 }));
 
+// --- Setup ---
 const mockNavigate = vi.fn();
-((useNavigate as unknown) as vi.Mock).mockReturnValue(mockNavigate);
+((useNavigate as unknown) as Mock).mockReturnValue(mockNavigate);
 
 const mockProposal = { id: null, title: 'Test Proposal' };
 const mockObservatoryData = {
@@ -45,26 +63,41 @@ const mockNotification = {
   okRequired: false
 };
 
-(PostProposal as ReturnType<typeof vi.fn>).mockResolvedValue(MockProposalBackend);
+((PostProposal as unknown) as Mock).mockResolvedValue(MockProposalBackend);
 
 beforeEach(() => {
-  storageObject.useStore = () => ({
-    application: {
-      content2: mockProposal,
-      content3: mockObservatoryData,
-      content4: mockAccess,
-      content5: mockNotification
-    },
-    updateAppContent2: vi.fn(),
-    updateAppContent4: vi.fn(),
-    updateAppContent5: vi.fn()
-  });
+  vi.clearAllMocks();
+  storageObject.useStore = () =>
+    ({
+      application: {
+        content2: mockProposal,
+        content3: mockObservatoryData,
+        content4: mockAccess,
+        content5: mockNotification,
+        content1: {},
+        content6: {},
+        content7: {},
+        content8: {},
+        content9: {}
+      },
+      updateAppContent2: vi.fn(),
+      updateAppContent4: vi.fn(),
+      updateAppContent5: vi.fn(),
+      user: null,
+      telescopeAccess: vi.fn(),
+      isDeveloper: false,
+      clearUser: vi.fn(),
+      updateUser: vi.fn(),
+      setAccessibility: vi.fn()
+    } as any);
 });
 
+// --- Helper ---
 const wrapper = (component: React.ReactElement) => {
-  return render(<AppFlowProvider>{component}</AppFlowProvider>);
+  return render(<StoreProvider>{component}</StoreProvider>);
 };
 
+// --- Tests ---
 describe('PageFooterPPT', () => {
   it('renders previous and next buttons when pageNo is valid', () => {
     wrapper(<PageFooterPPT pageNo={1} />);
@@ -75,14 +108,6 @@ describe('PageFooterPPT', () => {
     wrapper(<PageFooterPPT pageNo={0} />);
     expect(screen.queryByTestId('prevButtonTestId')).not.toBeInTheDocument();
   });
-
-  /* Not currently needed
-  it('renders TimedAlert when notification message exists', () => {
-    wrapper(<PageFooterPPT pageNo={1} />);
-    expect(screen.getByTestId('timeAlertFooter')).toBeInTheDocument();
-    expect(screen.getByText('Test message')).toBeInTheDocument();
-  });
-  */
 
   it('calls createProposal when pageNo is -1 and user is logged in', async () => {
     wrapper(<PageFooterPPT pageNo={-1} />);
