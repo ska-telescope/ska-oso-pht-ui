@@ -1,4 +1,11 @@
 import { alpha } from '@mui/material/styles';
+import {
+  TELESCOPE_LOW_NUM,
+  TELESCOPE_MID_NUM,
+  TYPE_CONTINUUM,
+  TYPE_PST,
+  TYPE_ZOOM
+} from '../constants';
 
 export interface PaletteSet {
   label: string;
@@ -404,11 +411,16 @@ export function getColors({
     observationType: {
       continuum: [paletteSet.colors[0], paletteSet.textColors[0]],
       spectral: [paletteSet.colors[3], paletteSet.textColors[3]],
-      pst: [paletteSet.colors[2], paletteSet.textColors[2]]
+      pst: [paletteSet.colors[2], paletteSet.textColors[2]],
+      [TYPE_CONTINUUM]: [paletteSet.colors[0], paletteSet.textColors[0]],
+      [TYPE_ZOOM]: [paletteSet.colors[3], paletteSet.textColors[3]],
+      [TYPE_PST]: [paletteSet.colors[2], paletteSet.textColors[2]]
     },
     telescope: {
       low: [paletteSet.colors[1], paletteSet.textColors[1]],
-      mid: [paletteSet.colors[4], paletteSet.textColors[4]]
+      mid: [paletteSet.colors[4], paletteSet.textColors[4]],
+      [TELESCOPE_LOW_NUM]: [paletteSet.colors[1], paletteSet.textColors[1]],
+      [TELESCOPE_MID_NUM]: [paletteSet.colors[4], paletteSet.textColors[4]]
     },
     boolean: {
       no: [paletteSet.colors[9], paletteSet.textColors[9]],

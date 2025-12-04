@@ -5,7 +5,7 @@ import { useTheme } from '@mui/material/styles';
 import React from 'react';
 import TableTechnicalReviews from '../../tableTechnicalReview/TableTechnicalReviews';
 import SubmitIcon from '@/components/icon/submitIcon/submitIcon';
-import TableScienceReviews from '@/components/grid/tableScienceReviews/TableScienceReviews';
+import TableScienceReviews from '@/components/table/tableScienceReviews/TableScienceReviews';
 import { presentDate, presentLatex, presentTime } from '@/utils/present/present';
 import {
   RECOMMENDATION,

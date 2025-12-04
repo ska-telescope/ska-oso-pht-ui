@@ -1,14 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Box, Grid } from '@mui/material';
-import { GridRowSelectionModel } from '@mui/x-data-grid'; // TODO : Need to move this into the ska-gui-components
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
-import EditIcon from '../../components/icon/editIcon/editIcon';
-import TrashIcon from '../../components/icon/trashIcon/trashIcon';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
 import Observation from '../../utils/types/observation';
 import { Proposal } from '../../utils/types/proposal';
@@ -17,21 +14,13 @@ import {
   validateLinkingPage,
   validateObservationPage
 } from '../../utils/validation/validation';
-import {
-  BANDWIDTH_TELESCOPE,
-  PAGE_CALIBRATION,
-  PAGE_LINKING,
-  PAGE_OBSERVATION,
-  PATH
-} from '../../utils/constants';
-import GroupObservation from '../../utils/types/groupObservation';
+import { PAGE_CALIBRATION, PAGE_LINKING, PAGE_OBSERVATION, PATH } from '../../utils/constants';
 import DeleteObservationConfirmation from '../../components/alerts/deleteObservationConfirmation/deleteObservationConfirmation';
 import ObservationEntry from '../entry/ObservationEntry/ObservationEntry';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import TableObservations from '@/components/table/tableObservations/TableObservations';
 
-const DATA_GRID_OBSERVATION = '62vh';
 const PAGE = PAGE_OBSERVATION;
 const GAP = 4;
 
@@ -46,9 +35,6 @@ export default function ObservationPage() {
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [elementsO, setElementsO] = React.useState<any[]>([]);
   const loggedIn = isLoggedIn();
-  const { isSV } = useAppFlow();
-
-  const [rowSelectionModel, setRowSelectionModel] = React.useState<GridRowSelectionModel>([]);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -135,90 +121,7 @@ export default function ObservationPage() {
     );
   }, [validateToggle]);
 
-  const observationGroupIds = (id: string) => {
-    if (
-      getProposal()?.groupObservations &&
-      getProposal()?.groupObservations?.some(e => e.observationId === id)
-    ) {
-      const group: GroupObservation[] =
-        getProposal().groupObservations?.filter(e => e.observationId === id) ?? [];
-      return group[0]?.groupId;
-    }
-    return '';
-  };
-
   const hasObservations = () => elementsO?.length > 0;
-
-  const extendedColumnsObservations = [
-    ...[
-      {
-        field: 'actions',
-        headerName: 'Actions',
-        type: 'actions',
-        sortable: false,
-        width: 100,
-        disableClickEventBubbling: true,
-        renderCell: (e: { row: Observation }) => {
-          return (
-            <>
-              <EditIcon onClick={() => editIconClicked(e.row)} toolTip={t('observations.edit')} />
-              <TrashIcon
-                onClick={() => deleteIconClicked(e.row)}
-                toolTip={t('observations.delete')}
-              />
-            </>
-          );
-        }
-      },
-      {
-        field: 'id',
-        headerName: t('observations.id'),
-        flex: 0.75,
-        minWidth: 150,
-        disableClickEventBubbling: true
-      },
-      {
-        field: 'id2',
-        headerName: t('observations.group'),
-        flex: 0.75,
-        minWidth: 150,
-        disableClickEventBubbling: true,
-        renderCell: (e: { row: { id: number } }) => {
-          return observationGroupIds((e.row.id as unknown) as string);
-        }
-      },
-      {
-        field: 'telescope',
-        headerName: t('observingBand.label'),
-        flex: 1.5,
-        minWidth: 250,
-        disableClickEventBubbling: true,
-        renderCell: (e: { row: { rec: { observingBand: string | number } } }) =>
-          BANDWIDTH_TELESCOPE[Number(e.row.rec.observingBand)]?.label
-      },
-      {
-        field: 'subarray',
-        headerName: t('subArrayConfiguration.short'),
-        flex: 1,
-        minWidth: 150,
-        disableClickEventBubbling: true,
-        renderCell: (e: { row: { telescope: number; subarray: number } }) => {
-          if (e.row.telescope) {
-            return t(`subArrayConfiguration.${e.row.subarray}`);
-          }
-          return t('arrayConfiguration.0');
-        }
-      },
-      {
-        field: 'type',
-        headerName: t('observationType.short'),
-        width: 140,
-        disableClickEventBubbling: true,
-        renderCell: (e: { row: { type: number } }) =>
-          t((isSV() ? 'scienceCategory.' : 'observationType.') + `${e.row.type}`)
-      }
-    ]
-  ];
 
   const noObservations = () => {
     return (
@@ -248,20 +151,10 @@ export default function ObservationPage() {
   const observationList = () => {
     return (
       <Box pl={GAP} pr={GAP}>
-        <DataGrid
-          rows={elementsO}
-          columns={extendedColumnsObservations}
-          height={DATA_GRID_OBSERVATION}
-          onRowClick={(e: { row: { rec: React.SetStateAction<Observation | null> } }) =>
-            setCurrObs(e.row.rec)
-          }
-          onRowSelectionModelChange={(
-            newRowSelectionModel: React.SetStateAction<GridRowSelectionModel>
-          ) => {
-            setRowSelectionModel(newRowSelectionModel);
-          }}
-          rowSelectionModel={rowSelectionModel}
-          testId="observationDetails"
+        <TableObservations
+          data={elementsO ?? []}
+          deleteFunction={deleteIconClicked}
+          updateFunction={editIconClicked}
         />
         {currObs && (
           <DeleteObservationConfirmation

@@ -8,7 +8,7 @@ import ChannelsOutField from '@/components/fields/channelsOut/channelsOut';
 import PixelSizeField from '@/components/fields/pixelSize/pixelSize';
 import RobustField from '@/components/fields/robust/Robust';
 import DataProductTypeField from '@/components/fields/dataProductType/dataProductType';
-import TaperField from '@/components/fields/tapper/taper';
+import TaperField from '@/components/fields/taper/taper';
 import { DETECTED_FILTER_BANK_VALUE, TYPE_PST } from '@/utils/constants';
 import Observation from '@/utils/types/observation';
 import TimeAveragingField from '@/components/fields/timeAveraging/timeAveraging';
