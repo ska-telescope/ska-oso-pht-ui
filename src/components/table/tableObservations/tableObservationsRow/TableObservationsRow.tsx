@@ -190,16 +190,6 @@ export default function TableObservationsRow({
                 ? observation?.rec?.continuumBandwidth ?? 0
                 : observation?.rec?.bandwidth ?? 0
             }
-            minEdge={frequencyConversion(
-              (osdLOW?.basicCapabilities?.minFrequencyHz ?? 0) * 10,
-              FREQUENCY_HZ,
-              FREQUENCY_MHZ
-            )}
-            maxEdge={frequencyConversion(
-              (osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0) * 10,
-              FREQUENCY_HZ,
-              FREQUENCY_MHZ
-            )}
             bandColor={colorsTelescopeDim[0]}
             bandColorContrast={colorsTelescopeDim[1]}
           />
