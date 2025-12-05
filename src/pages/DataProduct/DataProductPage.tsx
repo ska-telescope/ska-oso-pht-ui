@@ -2,20 +2,20 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
 import { presentUnits } from '@utils/present/present';
-import { validateSDPPage } from '../../utils/validation/validation';
-import { Proposal } from '../../utils/types/proposal';
+import { validateSDPPage } from '@utils/validation/validation.tsx';
+import { Proposal } from '@utils/types/proposal.tsx';
+import { FOOTER_SPACER, PAGE_DATA_PRODUCTS, PATH } from '@utils/constants.ts';
+import { DataProductSDP } from '@utils/types/dataProduct.tsx';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
-import { PAGE_DATA_PRODUCTS, PATH } from '../../utils/constants';
-import { DataProductSDP } from '../../utils/types/dataProduct';
 import DataProduct from '../entry/DataProduct/DataProduct';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import TableDataProducts from '@/components/grid/tableDataProducts/TableDataProducts';
+import TableDataProducts from '@/components/table/tableDataProducts/TableDataProducts';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 const PAGE = PAGE_DATA_PRODUCTS;
@@ -174,6 +174,7 @@ export default function DataProductsPage() {
             )}
           </>
         )}
+        <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       </>
     </Shell>
   );

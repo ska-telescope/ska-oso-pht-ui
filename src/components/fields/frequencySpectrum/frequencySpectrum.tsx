@@ -6,8 +6,8 @@ interface FrequencySpectrumProps {
   maxFreq: number;
   centerFreq: number;
   bandWidth: number;
-  minEdge: number;
-  maxEdge: number;
+  minEdge?: number;
+  maxEdge?: number;
   unit?: string;
   bandColor?: string;
   bandColorContrast?: string;
@@ -19,8 +19,8 @@ const FrequencySpectrum: React.FC<FrequencySpectrumProps> = ({
   maxFreq,
   centerFreq,
   bandWidth,
-  minEdge,
-  maxEdge,
+  minEdge = minFreq,
+  maxEdge = maxFreq,
   unit = 'MHz',
   bandColor = '',
   bandColorContrast = '',
@@ -66,8 +66,11 @@ const FrequencySpectrum: React.FC<FrequencySpectrumProps> = ({
             flexGrow: 1,
             height: 48,
             backgroundColor: theme.palette.divider,
-            borderRadius: 12,
-            overflow: 'hidden'
+            overflow: 'hidden',
+            borderTopLeftRadius: minEdge !== minFreq ? 24 : 0,
+            borderBottomLeftRadius: minEdge !== minFreq ? 24 : 0,
+            borderTopRightRadius: maxEdge !== maxFreq ? 24 : 0,
+            borderBottomRightRadius: maxEdge !== maxFreq ? 24 : 0
           }}
         >
           {/* Highlighted Band */}
@@ -111,30 +114,34 @@ const FrequencySpectrum: React.FC<FrequencySpectrumProps> = ({
           </Typography>
 
           {/* Min Edge Marker */}
-          <Box
-            sx={{
-              position: 'absolute',
-              left: `${minEdgePercent}%`,
-              top: 0,
-              bottom: 0,
-              width: 2,
-              backgroundColor: theme.palette.warning.light,
-              transform: 'translateX(-1px)'
-            }}
-          />
+          {minEdge !== minFreq && (
+            <Box
+              sx={{
+                position: 'absolute',
+                left: `${minEdgePercent}%`,
+                top: 0,
+                bottom: 0,
+                width: 2,
+                backgroundColor: theme.palette.warning.light,
+                transform: 'translateX(-1px)'
+              }}
+            />
+          )}
 
           {/* Max Edge Marker */}
-          <Box
-            sx={{
-              position: 'absolute',
-              left: `${maxEdgePercent}%`,
-              top: 0,
-              bottom: 0,
-              width: 2,
-              backgroundColor: theme.palette.warning.light,
-              transform: 'translateX(-1px)'
-            }}
-          />
+          {maxEdge !== maxFreq && (
+            <Box
+              sx={{
+                position: 'absolute',
+                left: `${maxEdgePercent}%`,
+                top: 0,
+                bottom: 0,
+                width: 2,
+                backgroundColor: theme.palette.warning.light,
+                transform: 'translateX(-1px)'
+              }}
+            />
+          )}
         </Box>
 
         {/* Max Frequency */}

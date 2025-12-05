@@ -2,6 +2,7 @@
 import {
   OSO_SERVICES_PROPOSAL_PATH,
   SKA_OSO_SERVICES_URL,
+  TELESCOPE_LOW_NUM,
   USE_LOCAL_DATA
 } from '@utils/constants.ts';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.tsx';
@@ -25,12 +26,27 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
         proposalClose: inData.observatory_policy.cycle_information.proposal_close
       },
       cyclePolicies: {
-        linkObservationToObservingMode: true, // MOCK_CALL
-        maxDataProducts: 1, // MOCK_CALL
-        maxObservations: 1, // MOCK_CALL
-        maxTargets: 1, // MOCK_CALL
-        isCustomAllowed: false, // MOCK_CALL
-        normalMaxHours: inData.observatory_policy.cycle_policies.normal_max_hours
+        //
+        // MOCK CALL
+        //
+        // The items below have been hard coded at this time so that the front-end can be developed
+        // in the absence of finalized backend data.
+        //
+        // This should be extended so that multiple cycles can be represented with different policies.
+        // and a means of identifying the current cycle implemented.
+        //
+        linkObservationToObservingMode: true,
+        maxDataProducts: 1,
+        maxObservations: 1,
+        maxTargets: 1,
+        bands: ['low'],
+        low: ['AA2'],
+        mid: [],
+        observationType: ['spectral', 'continuum', 'pst'],
+        isCustomAllowed(telescopeNumber: number) {
+          const bandArray = telescopeNumber === TELESCOPE_LOW_NUM ? this.low : this.mid;
+          return bandArray.includes('custom');
+        }
       },
       telescopeCapabilities: {
         low: inData.observatory_policy.telescope_capabilities.Low,

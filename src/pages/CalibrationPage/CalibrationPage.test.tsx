@@ -28,6 +28,15 @@ vi.mock('@/utils/aaa/aaaUtils', async importOriginal => {
   };
 });
 
+vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
+  useOSDAccessors: () => ({
+    osdCycleId: 'CYCLE-1',
+    osdCyclePolicy: {
+      linkObservationToObservingMode: true
+    }
+  })
+}));
+
 describe('<CalibrationPage />', () => {
   test('renders correctly', async () => {
     wrapper(<CalibrationPage />);

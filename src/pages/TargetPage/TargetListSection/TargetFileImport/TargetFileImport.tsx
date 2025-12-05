@@ -81,7 +81,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
       Papa.parse(theFile, {
         header: true,
         skipEmptyLines: true,
-        complete: (result: { meta: { fields: any }; data: any[] }) => {
+        complete: (result: { meta: { fields?: any }; data: any[] }) => {
           setUploadButtonStatus(FileUploadStatus.PENDING);
           try {
             const highestId: number =

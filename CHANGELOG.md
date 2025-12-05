@@ -6,15 +6,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+
+9.0.0
+----------
 * Changed: Restrict user navigation until proposal has been created
 * Changed: Added variable to allow for Science Idea / Proposal determination
-* [BREAKING]: Changed: PDM changes implemented
-* [BREAKING]: Added calibration to proposal types and mappings
+* [BREAKING]: Changed: PDM changes implemented and added to types and mappings
 * [BREAKING]: Added linking page to proposal and migrated linking of targets and observations to this page
-* Changed: oso-services v9.0.0
 * Changed: Implemented the isSV function so that specific SV flow thru the application can be realized.
-* Changed: oda v12.1.1
-* Added: polarisations to mapping
 * Fixed: use of REACT_APP_USE_LOCAL_DATA for local development
 * Changed: to show notification when there is an senscalc error after mapping target-observation
 * Changed: Added validation to target fields 
@@ -22,17 +21,17 @@ UNRELEASED
 * Changed: use ska base images `ska-build-node` and `ska-webserver`
 * Changed: Updated ordering of pages
 * Changed: Data Products are no longer bound to a observation/target combination
-* Changed: Actions moved to the 1st position for DataGrids and tables where applicable
-* Changed: Updated data product mapping
+* Changed: Actions moved to the left for DataGrids and tables where applicable
 * Changed: Observation and Data Products pages not accessible until there is an Observing Mode ( For MOCK CALL )
 * Changed: DataGrid for the Data Products replaced with a table so can be extended at a later date
 * Changed: Display of validation statuses no longer suppressed until you visit the page upon creation of a SV / Proposal
 * Changed: oso-services v10.0.2
-* Changed: Added a drawer to display helper text
+* Changed: Help text display moved to a slider
 * Changed: oda to 14.0.4
-* Changed: Adjusted screen layout following removal of help panel 
+* [BREAKING]: Changed: observation and data product pages fields, display and update mappings
+* Added: PST mode to observation
 * Changed: Update the observation pages so that the addition can be inline if there is a maximum of 1 observation allowed
-* Added: Generate default observation, SDP product, calibration and sensitivity calculator results according to observation mode ( FOR Mock Call )
+* Added: Generate default observation, data product, calibration strategy and sensitivity calculations on target creation
 
 8.0.0
 ----------

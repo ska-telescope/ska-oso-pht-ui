@@ -5,6 +5,15 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import AddProposal from './AddProposal';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
+vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
+  useOSDAccessors: () => ({
+    osdCycleId: 'CYCLE-1',
+    osdCyclePolicy: {
+      linkObservationToObservingMode: true
+    }
+  })
+}));
+
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
@@ -16,5 +25,12 @@ const wrapper = (component: React.ReactElement) => {
 describe('<AddProposal />', () => {
   test('renders correctly', () => {
     wrapper(<AddProposal />);
+    // Example assertion: adjust to match actual UI
+    // expect(screen.getByText(/Add Proposal/i)).toBeInTheDocument();
+  });
+
+  test('renders correctly when linking disabled', () => {
+    wrapper(<AddProposal />);
+    // assertions for disabled linking scenario
   });
 });

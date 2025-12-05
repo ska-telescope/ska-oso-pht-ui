@@ -1,191 +1,355 @@
 import { alpha } from '@mui/material/styles';
+import {
+  TELESCOPE_LOW_NUM,
+  TELESCOPE_MID_NUM,
+  TYPE_CONTINUUM,
+  TYPE_PST,
+  TYPE_ZOOM
+} from '../constants';
 
-export const COLOR_BLINDNESS_OPTIONS = [
-  { value: 0, label: 'No Color Blindness' },
-  { value: 1, label: 'Protanopia (Red-Blind)' },
-  { value: 2, label: 'Deuteranopia (Green-Blind)' },
-  { value: 3, label: 'Tritanopia (Blue-Blind)' },
-  { value: 4, label: 'Protanomaly (Red-Weak)' },
-  { value: 5, label: 'Deuteranomaly (Green-Weak)' },
-  { value: 6, label: 'Tritanomaly (Blue-Weak)' },
-  { value: 7, label: 'Achromatopsia (Complete Color Blindness)' }
-];
-
-/*------------------------------------------------------------------------------*/
-
-const COLOR_OBSERVATION: Record<string, [string, string]> = {
-  continuum: ['#1E90FF', '#FFFFFF'],
-  spectral: ['#FFD700', '#000000'],
-  pst: ['#32CD32', '#000000']
-};
-
-const COLOR_TELESCOPES: Record<string, [string, string]> = {
-  low: ['#f9b34c', '#000000'],
-  mid: ['#6a3f23', '#FFFFFF']
-};
-
-const COLOR_BOOLEAN: Record<string, [string, string]> = {
-  no: ['#AD1F1F', '#FFFFFF'],
-  yes: ['#015B00', '#FFFFFF']
-};
-
-type ContentType = 'bg' | 'fg' | 'both';
-
-interface GetColorsInput {
-  type: string;
-  colors: string | string[];
-  content: ContentType;
-  dim?: number;
+export interface PaletteSet {
+  label: string;
+  colors: string[];
+  textColors: string[];
+  names: string[];
 }
 
-// Updated: return an object keyed by level instead of a flat array
-export function getColors({ type, colors, content, dim = 1 }: GetColorsInput) {
-  const paletteMap: Record<string, Record<string, [string, string]>> = {
-    observationType: COLOR_OBSERVATION,
-    telescope: COLOR_TELESCOPES,
-    boolean: COLOR_BOOLEAN
-  };
-
-  if (!(type in paletteMap)) return undefined;
-
-  // Normalize color list
-  const colorList =
-    colors === '' || colors === '*'
-      ? Object.keys(paletteMap[type])
-      : Array.isArray(colors)
-      ? colors
-      : [colors];
-
-  // Build results as a keyed object
-  const result: Record<string, { bg?: string; fg?: string }> = {};
-
-  colorList.forEach(level => {
-    const palette = paletteMap[type][level];
-    if (!palette) return;
-
-    result[level] = {};
-    if (content === 'bg' || content === 'both') result[level].bg = alpha(palette[0], dim);
-    if (content === 'fg' || content === 'both') result[level].fg = palette[1];
-  });
-
-  return result;
-}
-
-/*------------------------------------------------------------------------------*/
-
-export const COLOR_PALETTES = [
-  [
-    '#D32F2F', // Red - High contrast red
-    '#F57C00', // Orange - High contrast orange
-    '#FBC02D', // Yellow - High contrast yellow
-    '#388E3C', // Green - High contrast green
-    '#0288D1', // Blue - High contrast blue
-    '#7B1FA2', // Purple - High contrast purple
-    '#C2185B', // Pink - High contrast pink
-    '#5D4037', // Brown - High contrast brown
-    '#455A64' // Blue Grey - High contrast blue grey
+const TABLEAU_10_SET: PaletteSet = {
+  label: 'Tableau-10 (Default)',
+  colors: [
+    '#4e79a7',
+    '#f2ca00',
+    '#a07c5e',
+    '#00af91',
+    '#d37295',
+    '#edc949',
+    '#76b8d6',
+    '#8c61d7',
+    '#8595a1',
+    '#e15759'
   ],
-  [
-    '#424242', // Dark grey (replaces red)
-    '#F57C00', // Orange (safe)
-    '#FBC02D', // Yellow (safe)
-    '#388E3C', // Green (enhanced)
-    '#0288D1', // Blue (safe)
-    '#7B1FA2', // Purple (safe)
-    '#795548', // Brown (safe)
-    '#37474F', // Dark blue grey
-    '#263238' // Very dark blue grey
+  textColors: [
+    '#FFFFFF',
+    '#000000',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#000000',
+    '#000000',
+    '#000000',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF'
   ],
-  [
-    '#D32F2F', // Red (safe)
-    '#F57C00', // Orange (safe)
-    '#FBC02D', // Yellow (safe)
-    '#424242', // Dark grey (replaces green)
-    '#0288D1', // Blue (safe)
-    '#7B1FA2', // Purple (safe)
-    '#C2185B', // Pink (safe)
-    '#5D4037', // Brown (safe)
-    '#37474F' // Dark blue grey
+  names: ['Blue', 'Yellow', 'Brown', 'Teal', 'Pink', 'Gold', 'Light Blue', 'Purple', 'Grey', 'Red']
+};
+
+const DEFAULT_SET: PaletteSet = {
+  label: 'Original Default Colors',
+  colors: [
+    '#D32F2F',
+    '#F57C00',
+    '#FBC02D',
+    '#388E3C',
+    '#0288D1',
+    '#7B1FA2',
+    '#C2185B',
+    '#5D4037',
+    '#455A64',
+    '#9E9E9E'
   ],
-  [
-    '#D32F2F', // Red (safe)
-    '#F57C00', // Orange (safe)
-    '#FBC02D', // Yellow (safe)
-    '#388E3C', // Green (safe)
-    '#424242', // Dark grey (replaces blue)
-    '#616161', // Medium grey
-    '#795548', // Brown (enhanced)
-    '#5D4037', // Dark brown
-    '#3E2723' // Very dark brown
+  textColors: [
+    '#FFFFFF',
+    '#FFFFFF',
+    '#000000',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#000000'
   ],
-  [
-    '#B71C1C', // Dark red (enhanced)
-    '#F57C00', // Orange (safe)
-    '#FBC02D', // Yellow (safe)
-    '#388E3C', // Green (safe)
-    '#0288D1', // Blue (safe)
-    '#7B1FA2', // Purple (safe)
-    '#C2185B', // Pink (safe)
-    '#5D4037', // Brown (safe)
-    '#37474F' // Dark blue grey
-  ],
-  [
-    '#D32F2F', // Red (safe)
-    '#F57C00', // Orange (safe)
-    '#FBC02D', // Yellow (safe)
-    '#2E7D32', // Dark green (enhanced)
-    '#0288D1', // Blue (safe)
-    '#7B1FA2', // Purple (safe)
-    '#C2185B', // Pink (safe)
-    '#5D4037', // Brown (safe)
-    '#37474F' // Dark blue grey
-  ],
-  [
-    '#D32F2F', // Red (safe)
-    '#F57C00', // Orange (safe)
-    '#FBC02D', // Yellow (safe)
-    '#388E3C', // Green (safe)
-    '#1565C0', // Dark blue (enhanced)
-    '#4A148C', // Dark purple (enhanced)
-    '#880E4F', // Dark pink (enhanced)
-    '#3E2723', // Dark brown
-    '#263238' // Very dark blue grey
-  ],
-  [
-    '#212121', // Very dark grey
-    '#424242', // Dark grey
-    '#616161', // Medium dark grey
-    '#757575', // Medium grey
-    '#9E9E9E', // Light medium grey
-    '#BDBDBD', // Light grey
-    '#E0E0E0', // Very light grey
-    '#EEEEEE', // Almost white grey
-    '#F5F5F5' // Off white
+  names: [
+    'Red',
+    'Orange',
+    'Yellow',
+    'Green',
+    'Blue',
+    'Purple',
+    'Pink',
+    'Brown',
+    'Blue Grey',
+    'Grey'
   ]
-];
+};
 
-export // Text colors optimized for each palette
-const TEXT_COLOR_PALETTES = [
-  ['#FFFFFF', '#FFFFFF', '#000000', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'],
-  ['#FFFFFF', '#FFFFFF', '#000000', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'],
-  ['#FFFFFF', '#FFFFFF', '#000000', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'],
-  ['#FFFFFF', '#FFFFFF', '#000000', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'],
-  ['#FFFFFF', '#FFFFFF', '#000000', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'],
-  ['#FFFFFF', '#FFFFFF', '#000000', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'],
-  ['#FFFFFF', '#FFFFFF', '#000000', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'],
-  ['#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#000000', '#000000', '#000000', '#000000']
-];
+const PROTANOPIA_SET: PaletteSet = {
+  label: 'Protanopia (Red-Blind)',
+  colors: [
+    '#424242',
+    '#F57C00',
+    '#FBC02D',
+    '#388E3C',
+    '#0288D1',
+    '#7B1FA2',
+    '#795548',
+    '#37474F',
+    '#263238',
+    '#9E9E9E'
+  ],
+  textColors: [
+    '#FFFFFF',
+    '#FFFFFF',
+    '#000000',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#000000'
+  ],
+  names: [
+    'Dark Gray',
+    'Orange',
+    'Yellow',
+    'Green',
+    'Blue',
+    'Purple',
+    'Brown',
+    'Dark Blue Grey',
+    'Very Dark Blue Grey',
+    'Grey'
+  ]
+};
 
-export // Color names for better UX
-const COLOR_NAMES = [
-  ['Red', 'Orange', 'Yellow', 'Green', 'Cyan', 'Blue', 'Violet', 'Pink'],
-  ['Dark Gray', 'Amber', 'Yellow', 'Emerald', 'Cyan', 'Blue', 'Violet', 'Pink'],
-  ['Red', 'Orange', 'Yellow', 'Dark Gray', 'Cyan', 'Blue', 'Violet', 'Pink'],
-  ['Red', 'Orange', 'Yellow', 'Green', 'Dark Gray', 'Gray', 'Purple', 'Pink'],
-  ['Dark Red', 'Orange', 'Yellow', 'Green', 'Cyan', 'Blue', 'Violet', 'Pink'],
-  ['Red', 'Orange', 'Yellow', 'Dark Green', 'Cyan', 'Blue', 'Violet', 'Pink'],
-  ['Red', 'Orange', 'Yellow', 'Green', 'Dark Cyan', 'Dark Blue', 'Purple', 'Pink'],
-  [
+const DEUTERANOPIA_SET: PaletteSet = {
+  label: 'Deuteranopia (Green-Blind)',
+  colors: [
+    '#D32F2F',
+    '#F57C00',
+    '#FBC02D',
+    '#424242',
+    '#0288D1',
+    '#7B1FA2',
+    '#C2185B',
+    '#5D4037',
+    '#37474F',
+    '#9E9E9E'
+  ],
+  textColors: [
+    '#FFFFFF',
+    '#FFFFFF',
+    '#000000',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#000000'
+  ],
+  names: [
+    'Red',
+    'Orange',
+    'Yellow',
+    'Dark Gray',
+    'Blue',
+    'Purple',
+    'Pink',
+    'Brown',
+    'Dark Blue Grey',
+    'Grey'
+  ]
+};
+
+const TRITANOPIA_SET: PaletteSet = {
+  label: 'Tritanopia (Blue-Blind)',
+  colors: [
+    '#D32F2F',
+    '#F57C00',
+    '#FBC02D',
+    '#388E3C',
+    '#424242',
+    '#616161',
+    '#795548',
+    '#5D4037',
+    '#3E2723',
+    '#9E9E9E'
+  ],
+  textColors: [
+    '#FFFFFF',
+    '#FFFFFF',
+    '#000000',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#000000'
+  ],
+  names: [
+    'Red',
+    'Orange',
+    'Yellow',
+    'Green',
+    'Dark Gray',
+    'Gray',
+    'Brown',
+    'Dark Brown',
+    'Very Dark Brown',
+    'Grey'
+  ]
+};
+
+const PROTANOMALY_SET: PaletteSet = {
+  label: 'Protanomaly (Red-Weak)',
+  colors: [
+    '#B71C1C',
+    '#F57C00',
+    '#FBC02D',
+    '#388E3C',
+    '#0288D1',
+    '#7B1FA2',
+    '#C2185B',
+    '#5D4037',
+    '#37474F',
+    '#9E9E9E'
+  ],
+  textColors: [
+    '#FFFFFF',
+    '#FFFFFF',
+    '#000000',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#000000'
+  ],
+  names: [
+    'Dark Red',
+    'Orange',
+    'Yellow',
+    'Green',
+    'Blue',
+    'Purple',
+    'Pink',
+    'Brown',
+    'Dark Blue Grey',
+    'Grey'
+  ]
+};
+
+const DEUTERANOMALY_SET: PaletteSet = {
+  label: 'Deuteranomaly (Green-Weak)',
+  colors: [
+    '#D32F2F',
+    '#F57C00',
+    '#FBC02D',
+    '#2E7D32',
+    '#0288D1',
+    '#7B1FA2',
+    '#C2185B',
+    '#5D4037',
+    '#37474F',
+    '#9E9E9E'
+  ],
+  textColors: [
+    '#FFFFFF',
+    '#FFFFFF',
+    '#000000',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#000000'
+  ],
+  names: [
+    'Red',
+    'Orange',
+    'Yellow',
+    'Dark Green',
+    'Blue',
+    'Purple',
+    'Pink',
+    'Brown',
+    'Dark Blue Grey',
+    'Grey'
+  ]
+};
+
+const TRITANOMALY_SET: PaletteSet = {
+  label: 'Tritanomaly (Blue-Weak)',
+  colors: [
+    '#D32F2F',
+    '#F57C00',
+    '#FBC02D',
+    '#388E3C',
+    '#1565C0',
+    '#4A148C',
+    '#880E4F',
+    '#3E2723',
+    '#263238',
+    '#9E9E9E'
+  ],
+  textColors: [
+    '#FFFFFF',
+    '#FFFFFF',
+    '#000000',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#000000'
+  ],
+  names: [
+    'Red',
+    'Orange',
+    'Yellow',
+    'Green',
+    'Dark Blue',
+    'Dark Purple',
+    'Dark Pink',
+    'Dark Brown',
+    'Very Dark Blue Grey',
+    'Grey'
+  ]
+};
+
+const ACHROMATOPSIA_SET: PaletteSet = {
+  label: 'Achromatopsia (Complete Color Blindness)',
+  colors: [
+    '#212121',
+    '#424242',
+    '#616161',
+    '#757575',
+    '#9E9E9E',
+    '#BDBDBD',
+    '#E0E0E0',
+    '#EEEEEE',
+    '#F5F5F5',
+    '#FFFFFF'
+  ],
+  textColors: [
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#FFFFFF',
+    '#000000',
+    '#000000',
+    '#000000',
+    '#000000',
+    '#000000',
+    '#000000'
+  ],
+  names: [
     'Very Dark',
     'Dark',
     'Medium-Dark',
@@ -193,6 +357,108 @@ const COLOR_NAMES = [
     'Light-Medium',
     'Light',
     'Very Light',
-    'Almost White'
+    'Almost White',
+    'Off White',
+    'White'
   ]
+};
+
+export const COLOR_PALETTE_SETS: PaletteSet[] = [
+  TABLEAU_10_SET,
+  DEFAULT_SET,
+  PROTANOPIA_SET,
+  DEUTERANOPIA_SET,
+  TRITANOPIA_SET,
+  PROTANOMALY_SET,
+  DEUTERANOMALY_SET,
+  TRITANOMALY_SET,
+  ACHROMATOPSIA_SET
 ];
+
+export const COLOR_BLINDNESS_OPTIONS = COLOR_PALETTE_SETS.map((set, idx) => ({
+  value: idx,
+  label: set.label
+}));
+
+type ContentType = 'bg' | 'fg' | 'both';
+
+interface GetColorsInput {
+  type: string /* semantic type (observationType, telescope, boolean, etc.) */;
+  colors: string | string[] /* keys to look up */;
+  content?: ContentType;
+  dim?: number;
+  asArray?: boolean;
+  paletteIndex?: number /* which blindness palette set to use */;
+}
+
+export function getColors(
+  args: GetColorsInput & { asArray?: false }
+): Record<string, { bg?: string; fg?: string }> | undefined;
+export function getColors(args: GetColorsInput & { asArray: true }): string[] | undefined;
+
+export function getColors({
+  type,
+  colors,
+  content = 'both',
+  dim = 1,
+  asArray = false,
+  paletteIndex = 0
+}: GetColorsInput): any {
+  const paletteSet = COLOR_PALETTE_SETS[paletteIndex];
+  if (!paletteSet) return undefined;
+
+  const paletteMap: Record<string, Record<string, [string, string]>> = {
+    observationType: {
+      continuum: [paletteSet.colors[0], paletteSet.textColors[0]],
+      spectral: [paletteSet.colors[3], paletteSet.textColors[3]],
+      pst: [paletteSet.colors[2], paletteSet.textColors[2]],
+      [TYPE_CONTINUUM]: [paletteSet.colors[0], paletteSet.textColors[0]],
+      [TYPE_ZOOM]: [paletteSet.colors[3], paletteSet.textColors[3]],
+      [TYPE_PST]: [paletteSet.colors[2], paletteSet.textColors[2]]
+    },
+    telescope: {
+      low: [paletteSet.colors[1], paletteSet.textColors[1]],
+      mid: [paletteSet.colors[4], paletteSet.textColors[4]],
+      [TELESCOPE_LOW_NUM]: [paletteSet.colors[1], paletteSet.textColors[1]],
+      [TELESCOPE_MID_NUM]: [paletteSet.colors[4], paletteSet.textColors[4]]
+    },
+    boolean: {
+      no: [paletteSet.colors[9], paletteSet.textColors[9]],
+      yes: [paletteSet.colors[3], paletteSet.textColors[3]],
+      false: [paletteSet.colors[9], paletteSet.textColors[9]],
+      true: [paletteSet.colors[3], paletteSet.textColors[3]]
+    }
+  };
+
+  // 👇 if type is invalid, fall back to default mapping of all colors
+  const mapping =
+    type && paletteMap[type]
+      ? paletteMap[type]
+      : Object.fromEntries(
+          paletteSet.colors.map((c, i) => [String(i), [c, paletteSet.textColors[i]]])
+        );
+
+  const colorList =
+    colors === '' || colors === '*'
+      ? Object.keys(mapping)
+      : Array.isArray(colors)
+      ? colors
+      : [colors];
+
+  const result: Record<string, { bg?: string; fg?: string }> = {};
+
+  colorList.forEach(level => {
+    const palette = mapping[level] ?? ['#cccccc', '#000000'];
+    result[level] = {};
+    if (content === 'bg' || content === 'both') result[level].bg = alpha(palette[0], dim);
+    if (content === 'fg' || content === 'both') result[level].fg = palette[1];
+  });
+
+  if (asArray) {
+    return Object.values(result)
+      .map(c => c.bg)
+      .filter(Boolean) as string[];
+  }
+
+  return result;
+}

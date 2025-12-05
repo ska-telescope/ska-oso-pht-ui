@@ -5,7 +5,6 @@ import Observation from './types/observation';
 import { DataProductSDP } from './types/dataProduct';
 import { env } from '@/env';
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
-export const MOCK_CALL = env.REACT_APP_USE_MOCK_CALL !== 'false';
 export const cypressToken = window.localStorage.getItem('cypress:token');
 export const cypressProposal = window.localStorage.getItem('cypress:proposalCreated') === 'true';
 export const cypressEditProposal = window.localStorage.getItem('cypress:proposalEdit') === 'true';
@@ -54,7 +53,7 @@ export const BAND_2_STR = 'Band_2';
 export const BAND_5A_STR = 'Band_5a';
 export const BAND_5B_STR = 'Band_5b';
 
-export const ANTENNA_LOW = 'low'; // TODO can we find a better name for the Low Antenna?
+export const ANTENNA_LOW = 'low'; // can we find a better name for the Low Antenna?
 export const ANTENNA_13M = '13m';
 export const ANTENNA_15M = '15m';
 export const ANTENNA_MIXED = 'mixed';
@@ -283,9 +282,9 @@ export const POLARISATIONS = [
   { value: 'Q' },
   { value: 'U' },
   { value: 'V' },
-  { value: 'LL' },
-  { value: 'RR' },
   { value: 'XX' },
+  { value: 'XY' },
+  { value: 'YX' },
   { value: 'YY' }
 ];
 export const POLARISATIONS_PST_FLOW = [{ value: 'X' }, { value: 'Y' }];
@@ -543,13 +542,19 @@ export const SECONDS_UNITS = [
   { label: NANOSECOND_LABEL, toSeconds: 0.000000001 }
 ];
 
+export const TYPE_STR_ZOOM_SHORT = 'spectral';
 export const TYPE_STR_ZOOM = 'spectral line';
 export const TYPE_STR_CONTINUUM = 'continuum';
 export const TYPE_STR_PST = 'pst';
 
-export const OBS_TYPES = ['spectral', 'continuum'];
+export const OBS_TYPES = [TYPE_STR_ZOOM_SHORT, TYPE_STR_CONTINUUM];
 export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM, TYPE_PST];
 export const OBSERVATION_TYPE_BACKEND = [TYPE_STR_ZOOM, TYPE_STR_CONTINUUM, TYPE_STR_PST];
+export const OBSERVATION_TYPE_SHORT_BACKEND = [
+  TYPE_STR_ZOOM_SHORT,
+  TYPE_STR_CONTINUUM,
+  TYPE_STR_PST
+];
 export const SUPPLIED_TYPE_INTEGRATION = 1;
 export const SUPPLIED_TYPE_SENSITIVITY = 2;
 export const SUPPLIED_INTEGRATION_TIME_UNITS_H = 2;
@@ -884,7 +889,7 @@ export const DEFAULT_DATA_PRODUCT_PST: DataProductSDP = {
 export const DUMMY_PROPOSAL_ID = 'dummy-proposal-id';
 
 export const STATUS_ARRAY_PAGES = [
-  // TODO : This will need to be extended once we move out of MOCK_CALL mode
+  // TODO : This will need to be extended
   PAGE_TITLE_ADD,
   PAGE_TEAM,
   PAGE_GENERAL,

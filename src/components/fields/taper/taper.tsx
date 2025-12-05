@@ -25,7 +25,7 @@ export default function TaperField({
   const { t } = useScopedTranslation();
   const FIELD = 'taper';
 
-  const errorText = () => (Number(value) ? '' : t('taper.error'));
+  const errorText = () => (Number(value) ? '' : t(FIELD + '.error'));
   const setTheNumber = (inNum: number) => {
     const str = Math.abs(inNum).toString();
     const num = Number(str);
@@ -37,7 +37,7 @@ export default function TaperField({
   return (
     <Box pt={1}>
       <NumberEntry
-        label={t('taper.label')}
+        label={t(FIELD + '.label')}
         labelBold
         labelPosition={LAB_POSITION}
         labelWidth={labelWidth}

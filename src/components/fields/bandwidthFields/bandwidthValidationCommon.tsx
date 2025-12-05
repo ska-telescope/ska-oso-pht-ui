@@ -27,9 +27,9 @@ export const checkMinimumChannelWidth = (
 export const getMaxContBandwidthHz = (
   telescope: number,
   subarrayConfig: number,
-  osdMID,
-  osdLOW,
-  observatoryConstants
+  osdMID: any,
+  osdLOW: any,
+  observatoryConstants: any
 ): any => {
   //TODO: AA2 will be extended as OSD Data is extended
   if (isAA2(subarrayConfig)) {
@@ -41,8 +41,8 @@ export const getMaxContBandwidthHz = (
   } else {
     //TODO: Refactor as custom does not have this field
     return observatoryConstants.array
-      .find(item => item.value === telescope)
-      ?.subarray?.find(ar => ar.value === subarrayConfig)?.maxContBandwidthHz;
+      .find((item: any) => item.value === telescope)
+      ?.subarray?.find((ar: any) => ar.value === subarrayConfig)?.maxContBandwidthHz;
   }
 };
 
@@ -54,14 +54,14 @@ export const checkMaxContBandwidthHz = (
 ): boolean => (maxContBandwidthHz && scaledBandwidth > maxContBandwidthHz ? false : true);
 
 const getSubArrayAntennasCounts = (
-  osdMID,
-  osdLOW,
-  observatoryConstants,
+  osdMID: any,
+  _osdLOW: any,
+  observatoryConstants: any,
   telescope: number,
   subarrayConfig: number
 ) => {
-  const observationArray = observatoryConstants.array.find(arr => arr.value === telescope);
-  const subArray = observationArray?.subarray?.find(sub => sub.value === subarrayConfig);
+  const observationArray = observatoryConstants.array.find((arr: any) => arr.value === telescope);
+  const subArray = observationArray?.subarray?.find((sub: any) => sub.value === subarrayConfig);
   //TODO: AA2 will be extended as OSD Data is extended
   if (!isLow(telescope) && isAA2(subarrayConfig)) {
     return {
@@ -103,9 +103,9 @@ const getBandLimits = (
   telescope: number,
   subarrayConfig: number,
   observingBand: number,
-  osdMID,
-  osdLOW,
-  observatoryConstants
+  osdMID: any,
+  osdLOW: any,
+  observatoryConstants: any
 ) => {
   const bandLimits = BANDWIDTH_TELESCOPE.find(band => band.value === observingBand)?.bandLimits;
   if (!bandLimits) {
@@ -118,7 +118,7 @@ const getBandLimits = (
 
   function getMidFrequencyLimits(observingBand: string) {
     const band = osdMID?.basicCapabilities?.receiverInformation.find(
-      item => item?.rxId === observingBand
+      (item: any) => item?.rxId === observingBand
     );
     const minFrequencyHz = band?.minFrequencyHz;
     const maxFrequencyHz = band?.maxFrequencyHz;
@@ -159,9 +159,9 @@ export const checkBandLimits = (
   telescope: number,
   subarrayConfig: number,
   observingBand: number,
-  osdMID,
-  osdLOW,
-  observatoryConstants
+  osdMID: any,
+  osdLOW: any,
+  observatoryConstants: any
 ) => {
   const halfBandwidth: number = scaledBandwidth / 2.0;
   const lowerBound: number = scaledFrequency - halfBandwidth;
@@ -174,8 +174,5 @@ export const checkBandLimits = (
     osdLOW,
     observatoryConstants
   );
-  return !(
-    (bandLimits && lowerBound < bandLimits[0]) ||
-    (bandLimits && upperBound > bandLimits[1])
-  );
+  return !(lowerBound < bandLimits?.[0] || upperBound > bandLimits?.[1]);
 };

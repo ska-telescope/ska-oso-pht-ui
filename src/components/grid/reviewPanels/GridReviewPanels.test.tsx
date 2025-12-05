@@ -92,7 +92,7 @@ describe('GridReviewPanels', () => {
     expect(alert).toBeInTheDocument();
   });
 
-  /* TODO
+  /* 
   it('renders DataGrid when data is returned', async () => {
     (GetPanelList as any).mockImplementation(() => {
       return Promise.resolve(mockPanels);

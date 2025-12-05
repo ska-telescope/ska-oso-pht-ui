@@ -1,65 +1,36 @@
-import { Box, FormControlLabel, Grid, Radio, RadioGroup, Typography } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { DataProductSDP } from '@/utils/types/dataProduct';
-import { presentUnits } from '@/utils/present/present';
-import { IW_BRIGGS, WRAPPER_HEIGHT } from '@/utils/constantsSensCalc';
+import { IW_BRIGGS, TYPE_CONTINUUM, TYPE_ZOOM, WRAPPER_HEIGHT } from '@/utils/constantsSensCalc';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
 import ImageSizeField from '@/components/fields/imageSize/imageSize';
 import PolarisationsField from '@/components/fields/polarisations/polarisations';
 import ChannelsOutField from '@/components/fields/channelsOut/channelsOut';
 import PixelSizeField from '@/components/fields/pixelSize/pixelSize';
 import RobustField from '@/components/fields/robust/Robust';
+import DataProductTypeField from '@/components/fields/dataProductType/dataProductType';
+import TaperField from '@/components/fields/taper/taper';
+import { DETECTED_FILTER_BANK_VALUE, TYPE_PST } from '@/utils/constants';
+import Observation from '@/utils/types/observation';
+import TimeAveragingField from '@/components/fields/timeAveraging/timeAveraging';
+import FrequencyAveragingField from '@/components/fields/frequencyAveraging/frequencyAveraging';
+import ContinuumSubtractionField from '@/components/fields/continuumSubtraction/continuumSubtraction';
+import BitDepthField from '@/components/fields/bitDepth/bitDepth';
 
-const LABEL_WIDTH = 6;
+const LABEL_WIDTH = 3;
 
 interface DataProductProps {
   t: any;
   data: DataProductSDP;
+  observation: Observation;
 }
 
-const displayRadio = (
-  t: any,
-  label: string,
-  content: string,
-  options: string[],
-  prefix: string
-) => (
-  <Grid container direction="row" justifyContent="space-around" alignItems="center">
-    <Grid size={{ md: 6 }}>
-      <Typography variant="subtitle1" color="text.disabled">
-        {t(label)}
-      </Typography>
-    </Grid>
-    <Grid size={{ md: 6 }}>
-      <RadioGroup row value={content}>
-        {options.map(option => (
-          <FormControlLabel
-            key={option}
-            value={option}
-            control={<Radio disabled />}
-            label={t(prefix + option)}
-          />
-        ))}
-      </RadioGroup>
-    </Grid>
-  </Grid>
-);
+export default function DataProduct({ t, data, observation }: DataProductProps) {
+  const isDetectedFilterbank = () => observation.pstMode === DETECTED_FILTER_BANK_VALUE;
+  const isContinuum = () => observation?.type === TYPE_CONTINUUM;
+  const isSpectral = () => observation?.type === TYPE_ZOOM;
+  const isPST = () => observation?.type === TYPE_PST;
+  const isDataTypeOne = () => data.dataProductType === 1;
 
-const getODPString = (inArr: boolean[]) => {
-  let str = '';
-  for (let i = 0; i < inArr?.length; i++) {
-    if (inArr[i]) {
-      if (str?.length > 0) {
-        str += ', ';
-      }
-      const res = i + 1;
-      // const tmp = t('observatoryDataProduct.options.' + res);
-      str += res;
-    }
-  }
-  return str;
-};
-
-export default function DataProduct({ t, data }: DataProductProps) {
   const fieldWrapper = (children?: React.JSX.Element, height = WRAPPER_HEIGHT) => (
     <Box p={0} pt={1} sx={{ height: height }}>
       {children}
@@ -68,14 +39,6 @@ export default function DataProduct({ t, data }: DataProductProps) {
 
   const imageSizeField = () =>
     fieldWrapper(<ImageSizeField labelWidth={LABEL_WIDTH} value={data.imageSizeValue} disabled />);
-
-  const pixelSizeUnitsField = () => {
-    return (
-      <Typography variant="subtitle1" color="text.disabled">
-        {data.pixelSizeUnits === 0 ? '' : presentUnits(t('pixelSize.' + data.pixelSizeUnits))}
-      </Typography>
-    );
-  };
 
   const robustField = () =>
     fieldWrapper(
@@ -88,13 +51,11 @@ export default function DataProduct({ t, data }: DataProductProps) {
     );
 
   const pixelSizeField = () =>
+    fieldWrapper(<PixelSizeField labelWidth={LABEL_WIDTH} value={data.pixelSizeValue} disabled />);
+
+  const dataProductTypeField = () =>
     fieldWrapper(
-      <PixelSizeField
-        disabled
-        labelWidth={LABEL_WIDTH}
-        value={data.pixelSizeValue}
-        suffix={pixelSizeUnitsField()}
-      />
+      <DataProductTypeField labelWidth={LABEL_WIDTH} value={data.dataProductType} disabled />
     );
 
   const imageWeightingField = () =>
@@ -103,29 +64,97 @@ export default function DataProduct({ t, data }: DataProductProps) {
   const channelsOutField = () =>
     fieldWrapper(<ChannelsOutField labelWidth={LABEL_WIDTH} value={data.channelsOut} disabled />);
 
+  const taperField = () =>
+    fieldWrapper(<TaperField labelWidth={LABEL_WIDTH} value={data.taperValue} disabled />);
+
   const polarisationField = () =>
     fieldWrapper(
-      <PolarisationsField labelWidth={LABEL_WIDTH} value={data.polarisations} disabled />
+      <PolarisationsField
+        labelWidth={LABEL_WIDTH}
+        value={data.polarisations}
+        disabled
+        displayOnly
+      />
+    );
+
+  const applySubtractionField = () =>
+    fieldWrapper(
+      <ContinuumSubtractionField value={data.continuumSubtraction} disabled displayOnly />
+    );
+
+  const bitDepthField = () => fieldWrapper(<BitDepthField value={data.bitDepth} disabled />);
+
+  const timeAveragingField = () =>
+    fieldWrapper(
+      <TimeAveragingField labelWidth={LABEL_WIDTH} value={data.timeAveraging} disabled />
+    );
+
+  const frequencyAveragingField = () =>
+    fieldWrapper(
+      <FrequencyAveragingField labelWidth={LABEL_WIDTH} value={data.frequencyAveraging} disabled />
     );
 
   return (
-    <Grid container direction="row" justifyContent="space-around" alignItems="center">
-      <Grid size={{ md: 6 }}>
-        {displayRadio(
-          t,
-          'dataProductType.label',
-          getODPString(data.observatoryDataProduct),
-          ['1', '2'],
-          'observatoryDataProduct.options.'
-        )}
-      </Grid>
-      <Grid size={{ md: 6 }}>{imageSizeField()}</Grid>
-      <Grid size={{ md: 6 }}>{pixelSizeField()}</Grid>
-      <Grid size={{ md: 6 }}>{imageWeightingField()}</Grid>
-      <Grid size={{ md: 6 }}>{channelsOutField()}</Grid>
-      <Grid size={{ md: 6 }}>{data.weighting === IW_BRIGGS && robustField()}</Grid>
-      <Grid size={{ md: 6 }}></Grid>
-      <Grid size={{ md: 12 }}>{polarisationField()}</Grid>
-    </Grid>
+    <>
+      {isContinuum() && (
+        <Grid
+          container
+          direction="row"
+          justifyContent="space-around"
+          alignItems="center"
+          minHeight={100}
+        >
+          {isDataTypeOne() && <Grid size={{ md: 5 }}>{dataProductTypeField()}</Grid>}
+          {isDataTypeOne() && <Grid size={{ md: 5 }}></Grid>}
+          {isDataTypeOne() && <Grid size={{ md: 5 }}>{imageSizeField()}</Grid>}
+          {isDataTypeOne() && <Grid size={{ md: 5 }}>{pixelSizeField()}</Grid>}
+          {isDataTypeOne() && <Grid size={{ md: 5 }}>{imageWeightingField()}</Grid>}
+          {isDataTypeOne() && (
+            <Grid size={{ md: 5 }}>{data.weighting === IW_BRIGGS && robustField()}</Grid>
+          )}
+          {isDataTypeOne() && <Grid size={{ md: 5 }}>{taperField()}</Grid>}
+          {isDataTypeOne() && <Grid size={{ md: 5 }}>{channelsOutField()}</Grid>}
+          {isDataTypeOne() && <Grid size={{ md: 5 }}>{polarisationField()}</Grid>}
+          {isDataTypeOne() && <Grid size={{ md: 5 }}></Grid>}
+
+          {!isDataTypeOne() && <Grid size={{ md: 5 }}>{timeAveragingField()}</Grid>}
+          {!isDataTypeOne() && <Grid size={{ md: 5 }}>{frequencyAveragingField()}</Grid>}
+        </Grid>
+      )}
+      {isSpectral() && (
+        <Grid
+          container
+          direction="row"
+          justifyContent="space-around"
+          alignItems="center"
+          minHeight={100}
+        >
+          <Grid size={{ md: 5 }}>{imageSizeField()}</Grid>
+          <Grid size={{ md: 5 }}>{pixelSizeField()}</Grid>
+          <Grid size={{ md: 5 }}>{imageWeightingField()}</Grid>
+          <Grid size={{ md: 5 }}>{data.weighting === IW_BRIGGS && robustField()}</Grid>
+          <Grid size={{ md: 5 }}>{taperField()}</Grid>
+          <Grid size={{ md: 5 }}>{channelsOutField()}</Grid>
+          <Grid size={{ md: 5 }}>{polarisationField()}</Grid>
+          <Grid size={{ md: 5 }}>{applySubtractionField()}</Grid>
+        </Grid>
+      )}
+      {isPST() && (
+        <Grid
+          container
+          direction="row"
+          justifyContent="space-around"
+          alignItems="center"
+          minHeight={100}
+        >
+          {isDetectedFilterbank() && <Grid size={{ md: 5 }}>{timeAveragingField()}</Grid>}
+          {isDetectedFilterbank() && <Grid size={{ md: 5 }}>{frequencyAveragingField()}</Grid>}
+          {!isDetectedFilterbank() && <Grid size={{ md: 5 }}>{bitDepthField()}</Grid>}
+          {!isDetectedFilterbank() && <Grid size={{ md: 5 }}></Grid>}
+          {<Grid size={{ md: 5 }}>{polarisationField()}</Grid>}
+          {<Grid size={{ md: 5 }}></Grid>}
+        </Grid>
+      )}
+    </>
   );
 }

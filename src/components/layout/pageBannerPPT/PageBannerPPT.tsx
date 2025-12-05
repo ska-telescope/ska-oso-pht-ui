@@ -235,7 +235,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       pr={2}
     >
       <Grid>
-        {getProposal().id !== null && pageNo < LAST_PAGE && (
+        {!isSV() && getProposal().id !== null && pageNo < LAST_PAGE && (
           <ValidateButton
             testId={'validateBtn'}
             disabled={isDisableEndpoints()}

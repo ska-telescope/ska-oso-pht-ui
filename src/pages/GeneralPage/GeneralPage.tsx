@@ -2,11 +2,15 @@ import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
-import { GENERAL, LAB_POSITION, PAGE_GENERAL } from '@utils/constants.ts';
+import {
+  GENERAL,
+  LAB_POSITION,
+  OBSERVATION_TYPE_SHORT_BACKEND,
+  PAGE_GENERAL
+} from '@utils/constants.ts';
 import { countWords } from '@utils/helpers.ts';
 import { Proposal } from '@utils/types/proposal.tsx';
-import { validateGeneralPage } from '@utils/validation/validation.tsx';
-import { validateProposal } from '../../utils/validation/validation';
+import { validateProposal } from '@utils/validation/validation.tsx';
 import { useTheme } from '@mui/material/styles';
 import Shell from '../../components/layout/Shell/Shell';
 import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPreviewModal';
@@ -39,20 +43,12 @@ export default function GeneralPage() {
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const { setHelp } = useHelp();
+  const { osdCyclePolicy } = useOSDAccessors();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { osdCloses, osdOpens } = useOSDAccessors();
   const [isObsModeChanged, setIsObsModeChanged] = React.useState(false); // For Mock Call
-
-  const getProposalState = () => application.content1 as number[];
-  // const setTheProposalState = (value: number) => {
-  //   const temp: number[] = [];
-  //   for (let i = 0; i < getProposalState().length; i++) {
-  //     temp.push(PAGE === i ? value : getProposalState()[i]);
-  //   }
-  //   updateAppContent1(temp);
-  // };
 
   const setTheProposalState = () => {
     updateAppContent1(validateProposal(getProposal()));
@@ -72,8 +68,8 @@ export default function GeneralPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-      setTheProposalState();
-    }, [validateToggle]);
+    setTheProposalState();
+  }, [validateToggle]);
 
   const checkCategory = (id: number) => {
     if (isSV() && id !== getProposal().scienceCategory) {
@@ -100,7 +96,7 @@ export default function GeneralPage() {
 
     // check if there is a target
     if ((getProposal().targets?.length ?? 0) > 0) {
-      // check if there is an observation
+      // check if there is an observation defined
       if ((getProposal().observations?.length ?? 0) > 0) {
         if (
           // observation type doesn't match observation mode
@@ -256,9 +252,33 @@ export default function GeneralPage() {
     );
   };
 
+  const getObservingModeOptions = () => {
+    const inData = osdCyclePolicy?.observationType ?? [];
+    return inData.map(type => {
+      const index = OBSERVATION_TYPE_SHORT_BACKEND.findIndex(obsType => obsType === type);
+      const label = t('scienceCategory.' + index);
+      return {
+        label,
+        subCategory: [{ label: 'Not specified', value: 1 }],
+        value: index,
+        observationType: index
+      };
+    });
+  };
+
+  // Separate function for ScienceCategory (optional, for symmetry)
+  const getScienceCategoryOptions = () => {
+    return GENERAL.ScienceCategory;
+  };
+
+  // Main function using the helpers
+  const getCategoryOptions = () => {
+    return isSV() ? getObservingModeOptions() : getScienceCategoryOptions();
+  };
+
   const categoryField = () => (
     <DropDown
-      options={isSV() ? GENERAL.ObservingMode : GENERAL.ScienceCategory}
+      options={getCategoryOptions()}
       errorText={
         typeof getProposal().scienceCategory === 'number' ? '' : t('scienceCategory.error')
       }
@@ -276,20 +296,19 @@ export default function GeneralPage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid
-        container
-        direction="row"
-        p={3}
-        spacing={2}
-        alignItems="space-evenly"
-        justifyContent="space-around"
-      >
+      <Grid container direction="row" p={5} spacing={2} alignItems="left">
         <Grid pb={3} size={{ md: 12, lg: 8 }}>
           <Grid container direction="row">
-            <Grid size={{ md: 12 }}>{cycleIdField()}</Grid>
-            <Grid size={{ md: 12 }}>{cycleOpensField()}</Grid>
-            <Grid size={{ md: 12 }}>{cycleClosesField()}</Grid>
-            <Grid pt={2} pb={2} size={{ md: 12, lg: 12 }}>
+            <Grid pr={4} size={{ md: 12 }}>
+              {cycleIdField()}
+            </Grid>
+            <Grid pr={4} size={{ md: 12 }}>
+              {cycleOpensField()}
+            </Grid>
+            <Grid pr={4} size={{ md: 12 }}>
+              {cycleClosesField()}
+            </Grid>
+            <Grid pt={2} pb={2} size={{ md: 12 }}>
               <Grid size={{ md: 12, lg: 6 }}>{categoryField()}</Grid>
             </Grid>
             <Grid size={{ md: 12 }}>{abstractField()}</Grid>

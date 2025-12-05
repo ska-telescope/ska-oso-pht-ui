@@ -23,7 +23,8 @@ export const selectValue = value => {
     .click({ force: true });
 };
 
-export const verifyContent = (testId, value) => get(testId).should('contain.text', value);
+export const verifyContent = (testId, value, timeout = 10000) =>
+  get(testId, { timeout }).should('contain.text', value);
 export const verifyExists = testId => get(testId, { timeout: 10000 }).should('exist');
 export const verifyVisible = testId =>
   get(testId)

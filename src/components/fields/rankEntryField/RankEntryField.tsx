@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Typography, Box, Paper } from '@mui/material';
-import { COLOR_PALETTES } from '@/utils/colors/colors';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { getColors } from '@/utils/colors/colors';
 
 interface RankEntryFieldProps {
   setSelectedRank: Function;
@@ -25,7 +25,12 @@ export default function RankEntryField({
   const theme = useTheme();
   const [hoveredRank, setHoveredRank] = React.useState<number | null>(null);
   const validMaxRank = 9;
-  const currentColors = COLOR_PALETTES[colorBlindness];
+  const currentColors = getColors({
+    type: '',
+    colors: Array.from({ length: validMaxRank }, (_, i) => String(i)),
+    paletteIndex: colorBlindness,
+    content: 'both'
+  }) as Record<string, { bg?: string; fg?: string }>;
 
   // Use dropdown value instead of prop
   const numSegments = validMaxRank;
@@ -64,9 +69,9 @@ export default function RankEntryField({
     return `M ${x1} ${y1} A ${outerRadius} ${outerRadius} 0 0 1 ${x2} ${y2} L ${x3} ${y3} A ${innerRadius} ${innerRadius} 0 0 0 ${x4} ${y4} Z`;
   };
 
-  const getTextColor = (colorIndex: number) => {
-    const color = currentColors[colorIndex];
-    return theme.palette.getContrastText(color);
+  const getTextColor = (index: number) => {
+    const entry = currentColors[index];
+    return entry?.fg ?? theme.palette.text.primary;
   };
 
   return (
@@ -111,15 +116,15 @@ export default function RankEntryField({
                     fill={
                       isActive
                         ? colorIndex === 0
-                          ? currentColors[index]
-                          : currentColors[colorIndex]
+                          ? currentColors[index]?.bg
+                          : currentColors[colorIndex]?.bg
                         : theme.palette.background.default
                     }
                     stroke={
                       isProgressive
                         ? colorIndex === 0
-                          ? currentColors[index]
-                          : currentColors[colorIndex]
+                          ? currentColors[index]?.bg
+                          : currentColors[colorIndex]?.bg
                         : theme.palette.divider
                     }
                     strokeWidth={isProgressive ? '3' : '2'}

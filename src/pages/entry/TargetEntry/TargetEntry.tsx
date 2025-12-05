@@ -20,8 +20,7 @@ import {
   VELOCITY_TYPE,
   LAB_IS_BOLD,
   FIELD_PATTERN_POINTING_CENTRES,
-  WRAPPER_HEIGHT,
-  MOCK_CALL
+  WRAPPER_HEIGHT
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -36,6 +35,7 @@ import {
   dataProductSDPOut,
   observationOut
 } from '@/utils/generateDefaultObservation/GenerateDefaultObservation';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 interface TargetEntryProps {
   raType: number;
   setTarget?: Function;
@@ -60,6 +60,7 @@ export default function TargetEntry({
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
   const { isSV } = useAppFlow();
+  const { osdCyclePolicy } = useOSDAccessors();
   const { notifyError, notifySuccess } = useNotify();
 
   const LAB_WIDTH = 5;
@@ -71,6 +72,7 @@ export default function TargetEntry({
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+  const autoLink = isSV() && osdCyclePolicy.linkObservationToObservingMode;
 
   const [id, setId] = React.useState(0);
   const [name, setName] = React.useState('');
@@ -280,8 +282,8 @@ export default function TargetEntry({
         let newCalibration = undefined;
         let newDataProductSDP = undefined;
         let sensCalcResult = undefined;
-        if (MOCK_CALL && typeof getProposal().scienceCategory === 'number') {
-          newObservation = observationOut(getProposal().scienceCategory);
+        if (autoLink && typeof getProposal().scienceCategory === 'number') {
+          newObservation = observationOut(getProposal().scienceCategory as number);
           newCalibration = calibrationOut(newObservation?.id);
           newDataProductSDP = dataProductSDPOut(newObservation?.id, getProposal().scienceCategory);
           sensCalcResult = await getSensCalcData(newObservation, newTarget);
@@ -289,16 +291,16 @@ export default function TargetEntry({
         const updatedProposal = {
           ...getProposal(),
           targets: [...(getProposal().targets ?? []), newTarget],
-          observations: MOCK_CALL
+          observations: autoLink
             ? [newObservation].filter((obs): obs is Observation => obs !== undefined)
             : getProposal().observations,
-          calibrationStrategy: MOCK_CALL
+          calibrationStrategy: autoLink
             ? [...(getProposal().calibrationStrategy ?? []), newCalibration as CalibrationStrategy]
             : getProposal().calibrationStrategy,
-          dataProductSDP: MOCK_CALL
+          dataProductSDP: autoLink
             ? [...(getProposal().dataProductSDP ?? []), newDataProductSDP as DataProductSDP]
             : getProposal().dataProductSDP,
-          targetObservation: MOCK_CALL
+          targetObservation: autoLink
             ? sensCalcResult && newObservation && newObservation.id && newDataProductSDP?.id
               ? [
                   {
@@ -452,7 +454,7 @@ export default function TargetEntry({
         setValue={setTheRA}
         skyUnits={raType}
         value={ra}
-        valueFocus={() => setHelp('skyDirection.help.1.value')}
+        valueFocus={() => setHelp('skyDirection.1')}
         setErrorText={setSkyDirection1Error} // Pass the callback
       />
     );
@@ -464,7 +466,7 @@ export default function TargetEntry({
         setValue={setTheDec}
         skyUnits={raType}
         value={dec}
-        valueFocus={() => setHelp('skyDirection.help.2.value')}
+        valueFocus={() => setHelp('skyDirection.2')}
         setErrorText={setSkyDirection2Error} // Pass the callback
       />
     );
