@@ -828,20 +828,20 @@ export const DEFAULT_OBSERVATIONS_LOW_AA2: Observation[] = [
 
 export const DEFAULT_DATA_PRODUCT_CONTINUUM: DataProductSDP = {
   id: 'SDP-000000',
-  dataProductType: 1, // TODO check default dataProductType for continuum
+  dataProductType: 1,
   observationId: '',
-  imageSizeValue: 1,
+  imageSizeValue: 2.5,
   imageSizeUnits: 0,
-  pixelSizeValue: 1,
+  pixelSizeValue: 1.6,
   pixelSizeUnits: 2,
   weighting: 1,
-  polarisations: [],
-  channelsOut: 1,
+  polarisations: ['I', 'XX'],
+  channelsOut: 10,
   fitSpectralPol: 3,
-  robust: -1,
-  taperValue: 1,
-  timeAveraging: -1,
-  frequencyAveraging: -1,
+  robust: 1,
+  taperValue: 0,
+  timeAveraging: 3.4,
+  frequencyAveraging: 21.7,
   bitDepth: 0,
   continuumSubtraction: false
 };
