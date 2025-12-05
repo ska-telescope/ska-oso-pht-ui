@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
 import { useOSD } from '../useOSD/useOSD';
 import { presentDate, presentTime } from '@/utils/present/present';
+import { TELESCOPE_LOW_NUM } from '@/utils/constants';
 
 export function useOSDAccessors() {
   const osd = useOSD();
@@ -11,6 +12,7 @@ export function useOSDAccessors() {
   const capabilities = osd?.capabilities;
   const observatoryPolicy = osd?.observatoryPolicy;
   const cycleInformation = observatoryPolicy?.cycleInformation;
+  const cyclePolicies = observatoryPolicy?.cyclePolicies;
   const observatoryConstants = OSD_CONSTANTS;
 
   const format = (val: string) => val?.replace(/^(\d{4})(\d{2})(\d{2})T/, '$1-$2-$3T');
@@ -18,6 +20,12 @@ export function useOSDAccessors() {
     shouldPresent ? `${presentDate(val)} ${presentTime(val)}` : val;
 
   const [countdown, setCountdown] = useState<string | null>(null);
+
+  const isCustomAllowed = (telescopeNumber: number) => {
+    const bandArray =
+      telescopeNumber === TELESCOPE_LOW_NUM ? cyclePolicies?.low : cyclePolicies?.mid;
+    return Array.isArray(bandArray) && bandArray.includes('custom');
+  };
 
   useEffect(() => {
     if (!cycleInformation?.proposalClose) return;
@@ -63,6 +71,7 @@ export function useOSDAccessors() {
       present(format(cycleInformation?.proposalClose), shouldPresent),
     osdOpens: (shouldPresent = false) =>
       present(format(cycleInformation?.proposalOpen), shouldPresent),
-    osdCountdown: countdown
+    osdCountdown: countdown,
+    isCustomAllowed: isCustomAllowed
   };
 }

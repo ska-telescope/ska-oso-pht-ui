@@ -37,7 +37,7 @@ interface MemberEntryProps {
 
 export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberEntryProps) {
   const { t } = useScopedTranslation();
-  const LABEL_WIDTH = 3;
+  const LABEL_WIDTH = 4;
   const { application, updateAppContent2 } = storageObject.useStore();
   const { setHelp } = useHelp();
 
@@ -75,8 +75,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
       p={0}
       pt={1}
       sx={{
-        height: WRAPPER_HEIGHT,
-        width: '97%'
+        height: WRAPPER_HEIGHT
       }}
     >
       {children}
@@ -159,29 +158,6 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
     setFormInvalid(invalidForm);
   }, [validateToggle]);
 
-  const formValues = {
-    firstName: {
-      value: firstName,
-      setValue: setFirstName
-    },
-    lastName: {
-      value: lastName,
-      setValue: setLastName
-    },
-    email: {
-      value: email,
-      setValue: setEmail
-    },
-    phdThesis: {
-      phdThesis,
-      setValue: setPhdThesis
-    },
-    pi: {
-      pi,
-      setValue: setPi
-    }
-  };
-
   const handleCheckboxChangePhD = (event: React.ChangeEvent<HTMLInputElement>) => {
     setPhdThesis(event.target.checked);
   };
@@ -244,15 +220,15 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
 
     return {
       id: forSearch && investigator ? investigator?.id : `temp-${(highestId + 1).toString()}`,
-      firstName: formValues.firstName.value,
-      lastName: formValues.lastName.value,
-      email: formValues.email.value,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
       affiliation: '',
-      phdThesis: formValues.phdThesis.phdThesis,
+      phdThesis: phdThesis,
       status: TEAM_STATUS_TYPE_OPTIONS.pending,
-      pi: formValues.pi.pi,
-      officeLocation: null, // TODO implement once data is available
-      jobTitle: null // TODO implement once data is available
+      pi: pi,
+      officeLocation: null,
+      jobTitle: null
     };
   };
 
@@ -302,7 +278,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
     }
 
     const userSearchClickFunction = async () => {
-      if (await searchEmail(formValues.email.value)) {
+      if (await searchEmail(email)) {
         setForSearch(true);
       }
     };
@@ -321,16 +297,16 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   };
 
   function clearForm() {
-    formValues.firstName.setValue('');
-    formValues.lastName.setValue('');
-    formValues.email.setValue('');
-    formValues.pi.setValue(false);
-    formValues.phdThesis.setValue(false);
+    setFirstName('');
+    setLastName('');
+    setEmail('');
+    setPi(false);
+    setPhdThesis(false);
     setForSearch(false);
   }
 
   const clickFunction = async () => {
-    if (await sendEmailInvite(formValues.email.value, getProposal().id)) {
+    if (await sendEmailInvite(email, getProposal().id)) {
       await AddInvestigator();
       clearForm();
       invitationBtnClicked();
@@ -425,13 +401,13 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   };
 
   return (
-    <Grid pt={3} container direction="column" alignItems="center" justifyContent="flex-start">
-      <Grid size={{ xs: 8 }}>{emailField()}</Grid>
-      <Grid size={{ xs: 8 }}>{firstNameField()}</Grid>
-      <Grid size={{ xs: 8 }}>{lastNameField()}</Grid>
+    <Grid p={3} container direction="column" alignItems="center" justifyContent="flex-start">
+      <Grid size={{ xs: 12 }}>{emailField()}</Grid>
+      <Grid size={{ xs: 12 }}>{firstNameField()}</Grid>
+      <Grid size={{ xs: 12 }}>{lastNameField()}</Grid>
       {!isSV() && piField()}
       {!isSV() && phdThesisField()}
-      <Grid pt={2} size={{ xs: 8 }}>
+      <Grid pt={5} size={{ xs: 12 }}>
         <Stack spacing={2} direction="row">
           <Box>
             <TeamInviteButton

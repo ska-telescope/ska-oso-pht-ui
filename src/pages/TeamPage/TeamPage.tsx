@@ -247,7 +247,7 @@ export default function TeamPage() {
           justifyContent="space-around"
           spacing={1}
         >
-          <Grid size={{ md: 11, lg: 5 }} order={{ md: 2, lg: 1 }}>
+          <Grid size={{ md: 11, lg: 6 }} order={{ md: 2, lg: 1 }}>
             <GridMembers
               action={actionsAvailable()}
               actionClicked={actionClicked}
@@ -257,7 +257,7 @@ export default function TeamPage() {
               permissions={permissions}
             />
           </Grid>
-          <Grid size={{ md: 11, lg: 6 }} order={{ md: 1, lg: 2 }}>
+          <Grid size={{ md: 11, lg: 5 }} order={{ md: 1, lg: 2 }}>
             <Box
               sx={{
                 width: '100%',
