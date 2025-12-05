@@ -23,6 +23,7 @@ export default function ObservationInfo({ observation }: ObservationProps) {
       {isContinuum() && (
         <Grid
           container
+          data-testid="continuum-grid"
           direction="row"
           justifyContent="space-around"
           alignItems="center"
@@ -32,6 +33,7 @@ export default function ObservationInfo({ observation }: ObservationProps) {
       {isSpectral() && (
         <Grid
           container
+          data-testid="spectral-grid"
           direction="row"
           justifyContent="space-around"
           alignItems="center"
@@ -41,6 +43,7 @@ export default function ObservationInfo({ observation }: ObservationProps) {
       {isPST() && (
         <Grid
           container
+          data-testid="pst-grid"
           direction="row"
           justifyContent="space-around"
           alignItems="center"

@@ -204,6 +204,7 @@
     "tooltip": "Submit all reviewed Science Verification Ideas"
   },
   "submitBtn": {
+    "label": "Validate / Submit",
     "tooltip": "Progress the Science Verification Ideas to the submitted state"
   },
   "targets": {
