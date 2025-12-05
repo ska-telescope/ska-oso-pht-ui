@@ -834,57 +834,60 @@ export const DEFAULT_DATA_PRODUCT_CONTINUUM: DataProductSDP = {
   imageSizeUnits: 0,
   pixelSizeValue: 1.6,
   pixelSizeUnits: 2,
-  weighting: 1,
+  weighting: IW_UNIFORM,
   polarisations: ['I', 'XX'],
-  channelsOut: 10,
-  fitSpectralPol: 3,
+  channelsOut: 0, // not used for continuum
+  fitSpectralPol: 3, // not used for continuum?
   robust: 1,
   taperValue: 0,
   timeAveraging: 3.4,
   frequencyAveraging: 21.7,
-  bitDepth: 0,
-  continuumSubtraction: false
+  bitDepth: 0, // not used for continuum
+  continuumSubtraction: false // not used for continuum
 };
 
 export const DEFAULT_DATA_PRODUCT_SPECTRAL: DataProductSDP = {
   id: 'SDP-000000',
-  dataProductType: 0, // TODO check default dataProductType for spectral
+  dataProductType: 0, // not used for spectral
   observationId: '',
   imageSizeValue: 2.5,
   imageSizeUnits: 0,
-  pixelSizeValue: 1,
+  pixelSizeValue: 1.6,
   pixelSizeUnits: 2,
   weighting: IW_UNIFORM,
   polarisations: ['I', 'XX'],
   channelsOut: 40, // TODO check if this should be 4000
-  fitSpectralPol: 3, // TODO check this value for spectral
+  fitSpectralPol: 3, // not used for spectral
   robust: 1,
-  taperValue: 1, // TODO check this value for spectral
-  timeAveraging: -1, // TODO check this value for spectral
-  frequencyAveraging: -1, // TODO check this value for spectral
-  bitDepth: 0, // TODO check this value for spectral
+  taperValue: 0,
+  timeAveraging: -1, // not used for spectral
+  frequencyAveraging: -1, // not used for spectral
+  bitDepth: 0, // not used for spectral?
   continuumSubtraction: false
 };
 
 export const DEFAULT_DATA_PRODUCT_PST: DataProductSDP = {
   id: 'SDP-000000',
-  dataProductType: 2, // TODO check default dataProductType for PST
+  dataProductType: 1, // Flowthrough
   observationId: '',
-  imageSizeValue: 2.5, // TODO check this value for PST
-  imageSizeUnits: 0, // TODO check this value for PST
-  pixelSizeValue: 1, // TODO check this value for PST
-  pixelSizeUnits: 2, // TODO check this value for PST
-  weighting: IW_UNIFORM, // TODO check this value for PST
-  polarisations: ['I'],
-  channelsOut: 4000, // TODO check this value for PST
-  fitSpectralPol: 3, // TODO check this value for PST
-  robust: 1, // TODO check this value for PST
-  taperValue: 1, // TODO check this value for PST
+  imageSizeValue: 2.5, // not used for PST
+  imageSizeUnits: 0, // not used for PST
+  pixelSizeValue: 1, // not used for PST
+  pixelSizeUnits: 2, // not used for PST
+  weighting: IW_UNIFORM, // not used for PST
+  polarisations: ['X'],
+  channelsOut: 40, // not used for PST
+  fitSpectralPol: 3, // not used for PST?
+  robust: 1, // not used for PST
+  taperValue: 1, // not used for PST
   timeAveraging: 1,
   frequencyAveraging: 1,
   bitDepth: 1,
-  continuumSubtraction: false
+  continuumSubtraction: false // not used for PST
 };
+
+// TODO create a second PST default data product for detected filter bank mode ? -> should just use default pst mode of default pst obs
+// TODO check why default pst obs create continuuum obs
 
 export const DUMMY_PROPOSAL_ID = 'dummy-proposal-id';
 
