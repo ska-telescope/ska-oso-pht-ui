@@ -34,14 +34,13 @@ export default function TargetListSection() {
   const [skyDirection1Error, setSkyDirection1Error] = React.useState('');
   const [skyDirection2Error, setSkyDirection2Error] = React.useState('');
   const [nameError, setNameError] = React.useState('');
+  const [visibilitySVG, setVisibilitySVG] = React.useState('');
   const { osdCyclePolicy } = useOSDAccessors();
-
-  const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const DATA_GRID_HEIGHT = osdCyclePolicy?.maxTargets ? '18vh' : '60vh';
 
-  const [visibilitySVG, setVisibilitySVG] = React.useState<string | null>(null);
+  const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   React.useEffect(() => {
     if (
@@ -54,6 +53,7 @@ export default function TargetListSection() {
       const dec = getProposal()?.targets?.map(target => {
         return { dec: target.decStr };
       });
+      // only LOW for now
       GetVisibility(ra[0].ra, dec[0].dec, 'LOW').then(response => {
         setVisibilitySVG(response.data);
       });
