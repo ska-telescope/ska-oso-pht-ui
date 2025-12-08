@@ -14,10 +14,10 @@ import {
   ACCESSIBILITY_ACHROMATOPSIA
 } from '@ska-telescope/ska-gui-components';
 
-// Define valid theme modes
+// Valid theme modes
 export type ThemeMode = typeof THEME_LIGHT | typeof THEME_DARK;
 
-// Define valid accessibility modes
+// Valid accessibility modes
 export type AccessibilityMode =
   | typeof ACCESSIBILITY_DEFAULT
   | typeof ACCESSIBILITY_PROTANOPIA
@@ -29,12 +29,14 @@ export type AccessibilityMode =
   | typeof ACCESSIBILITY_ACHROMATOMALY
   | typeof ACCESSIBILITY_ACHROMATOPSIA;
 
-// Define accepted input shape
+// Accepted input shape
 export type ThemeInput =
   | ThemeMode
   | {
       themeMode: ThemeMode;
       accessibilityMode?: AccessibilityMode;
+      reducedMotion?: boolean;
+      focusVisibleAlways?: boolean;
     };
 
 // Create and export the theme

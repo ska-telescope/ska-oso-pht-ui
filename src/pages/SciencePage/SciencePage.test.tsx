@@ -3,6 +3,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import SciencePage from './SciencePage';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 // Mock login
 vi.mock('@ska-telescope/ska-login-page', () => ({
@@ -76,7 +77,11 @@ vi.mock('@services/axios/delete/deletePDF/deletePDF.tsx', () => ({
 }));
 
 const wrapper = (component: React.ReactElement) => {
-  return render(<AppFlowProvider>{component}</AppFlowProvider>);
+  return render(
+    <AppFlowProvider>
+      <ThemeA11yProvider>{component}</ThemeA11yProvider>
+    </AppFlowProvider>
+  );
 };
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({

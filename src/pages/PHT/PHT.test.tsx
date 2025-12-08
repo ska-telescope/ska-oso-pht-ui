@@ -5,12 +5,15 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { MemoryRouter } from 'react-router-dom';
 import PHT from './PHT';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 const wrapper = (component: React.ReactElement) => {
   return render(
     <MemoryRouter>
       <StoreProvider>
-        <AppFlowProvider>{component}</AppFlowProvider>
+        <AppFlowProvider>
+          <ThemeA11yProvider>{component}</ThemeA11yProvider>
+        </AppFlowProvider>
       </StoreProvider>
     </MemoryRouter>
   );

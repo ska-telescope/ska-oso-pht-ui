@@ -4,6 +4,17 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import LinkingPage from './LinkingPage';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
+
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>
+        <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      </AppFlowProvider>
+    </StoreProvider>
+  );
+};
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({
@@ -16,14 +27,6 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
     }
   })
 }));
-
-const wrapper = (component: React.ReactElement) => {
-  return render(
-    <StoreProvider>
-      <AppFlowProvider>{component}</AppFlowProvider>
-    </StoreProvider>
-  );
-};
 
 describe('<LinkingPage />', () => {
   test('renders correctly with default values', () => {

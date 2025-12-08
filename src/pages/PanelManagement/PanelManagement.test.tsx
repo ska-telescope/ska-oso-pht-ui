@@ -22,6 +22,7 @@ import { REVIEWER_STATUS } from '@/utils/constants';
 import { Reviewer } from '@/utils/types/reviewer';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 import { PanelReviewer } from '@/utils/types/panelReviewer';
+import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 const mockedPanels: Panel[] = [
   {
@@ -53,7 +54,9 @@ const mockedPanels: Panel[] = [
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <AppFlowProvider>{component}</AppFlowProvider>
+      <AppFlowProvider>
+        <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      </AppFlowProvider>
     </StoreProvider>
   );
 };

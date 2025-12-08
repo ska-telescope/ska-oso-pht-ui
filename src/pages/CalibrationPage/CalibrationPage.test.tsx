@@ -7,11 +7,14 @@ import completeMockStore from '../../utils/MockStore';
 import CalibrationPage from './CalibrationPage';
 import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <AppFlowProvider>{component}</AppFlowProvider>
+      <AppFlowProvider>
+        <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      </AppFlowProvider>
     </StoreProvider>
   );
 };
