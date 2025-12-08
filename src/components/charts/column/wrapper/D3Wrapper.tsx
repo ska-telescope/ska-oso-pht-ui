@@ -58,31 +58,30 @@ const ColumnChartWrapper: React.FC<WrapperProps> = ({ data, fields, t }) => {
     }
   }, [data, xField, groupField]);
 
+  const colorMap: Record<string, string> = {
+    reviewStatus: 'reviewstatus',
+    assignedProposal: 'boolean',
+    array: 'telescope',
+    scienceCategory: 'observationType'
+  };
+
   const getGroupColorType = () => {
-    switch (groupField) {
-      case 'reviewStatus':
-        return 'reviewstatus';
-      case 'assignedProposal':
-        return 'boolean';
-      case 'array':
-        return 'telescope';
-      case 'scienceCategory':
-        return 'observationType';
-      default:
-        return 'observationType';
-    }
+    const normalized = groupField?.toLowerCase() ?? '';
+    return colorMap[normalized] ?? 'observationType';
   };
 
-  const getOptionsDropdown1 = () => {
-    return safeFields.map(e => ({ label: t(e + '.label'), value: e }));
-  };
+  const optionsDropdown1 = useMemo(
+    () => safeFields.map(e => ({ label: t(e + '.label'), value: e })),
+    [safeFields, t]
+  );
 
-  const getOptionsDropdown2 = () => {
-    return [
+  const optionsDropdown2 = useMemo(
+    () => [
       { label: t('none'), value: '' },
       ...safeFields.filter(e => e !== xField).map(e => ({ label: t(e + '.label'), value: e }))
-    ];
-  };
+    ],
+    [safeFields, xField, t]
+  );
 
   return (
     <div
@@ -107,7 +106,7 @@ const ColumnChartWrapper: React.FC<WrapperProps> = ({ data, fields, t }) => {
             <DropDown
               value={xField}
               label={t('reviewDashboard.chart.label1')}
-              options={getOptionsDropdown1()}
+              options={optionsDropdown1}
               required
               setValue={setXField}
               testId="wrapperDropdown1"
@@ -118,7 +117,7 @@ const ColumnChartWrapper: React.FC<WrapperProps> = ({ data, fields, t }) => {
             <DropDown
               value={groupField}
               label={t('reviewDashboard.chart.label2')}
-              options={getOptionsDropdown2()}
+              options={optionsDropdown2}
               required
               setValue={setGroupField}
               testId="wrapperDropdown2"
@@ -129,7 +128,7 @@ const ColumnChartWrapper: React.FC<WrapperProps> = ({ data, fields, t }) => {
       </div>
 
       <div ref={chartAreaRef} style={{ padding: PADDING, flex: 1, minHeight: 0 }}>
-        {size.width > 0 && size.height > 0 && (
+        {(process.env.NODE_ENV === 'development' || (size.width > 0 && size.height > 0)) && (
           <D3ColumnChart
             data={chartData}
             chartColors={getColors({
@@ -137,7 +136,7 @@ const ColumnChartWrapper: React.FC<WrapperProps> = ({ data, fields, t }) => {
               colors: '',
               content: 'bg'
             })}
-            width={size.width}
+            width={size.width - PADDING}
             height={size.height - PADDING}
           />
         )}

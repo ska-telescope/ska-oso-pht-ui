@@ -1,48 +1,62 @@
-import { describe, test } from 'vitest';
-import { render } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import { AppFlowProvider } from '@utils/appFlow/AppFlowContext.tsx';
+// ObservationInfo.test.tsx
+import { render, screen } from '@testing-library/react';
+import { describe, it, expect } from 'vitest';
 import ObservationInfo from './Observation';
+import { TYPE_CONTINUUM, TYPE_ZOOM } from '@/utils/constantsSensCalc';
+import { TYPE_PST } from '@/utils/constants';
 import Observation from '@/utils/types/observation';
 
-// Mock translation function
-const t = (key: string) => key;
+const TYPE_UNKNOWN = 9;
 
-const mockObservation: Observation = {
-  id: 'mock-observation-1',
-  type: 0,
-  pstMode: 0,
-  telescope: 0,
-  subarray: 0,
-  linked: '',
-  observingBand: 0,
-  elevation: 0,
-  weather: 0,
-  centralFrequency: 0,
-  centralFrequencyUnits: 0,
-  bandwidth: 0,
-  continuumBandwidth: 0,
-  continuumBandwidthUnits: 0,
-  spectralAveraging: 0,
-  effectiveResolution: '0',
-  tapering: 0,
-  imageWeighting: 0,
-  robust: 0,
-  supplied: { type: 0, value: 0, units: 0 },
-  spectralResolution: '0'
-};
+describe('ObservationInfo', () => {
+  const baseObservation: Observation = {
+    id: 'obs1',
+    type: 0,
+    telescope: 0,
+    subarray: 0,
+    linked: '',
+    observingBand: 0,
+    weather: 0,
+    elevation: 0,
+    centralFrequency: 0,
+    centralFrequencyUnits: 0,
+    bandwidth: 0,
+    continuumBandwidth: 0,
+    continuumBandwidthUnits: 0,
+    imageWeighting: 0,
+    robust: 0,
+    spectralResolution: '0',
+    supplied: {
+      type: 0,
+      value: 0,
+      units: 0
+    },
+    effectiveResolution: '0'
+  };
 
-const wrapper = (component: React.ReactElement) => {
-  return render(
-    <StoreProvider>
-      <AppFlowProvider>{component}</AppFlowProvider>
-    </StoreProvider>
-  );
-};
+  it('renders Continuum Grid', () => {
+    render(
+      <ObservationInfo observation={{ ...baseObservation, type: TYPE_CONTINUUM }} t={() => {}} />
+    );
+    expect(screen.getByTestId('continuum-grid')).toBeInTheDocument();
+  });
 
-describe('<Observation />', () => {
-  test('renders correctly with provided data', () => {
-    wrapper(<ObservationInfo t={t} observation={mockObservation} />);
+  it('renders Spectral Grid', () => {
+    render(<ObservationInfo observation={{ ...baseObservation, type: TYPE_ZOOM }} t={() => {}} />);
+    expect(screen.getByTestId('spectral-grid')).toBeInTheDocument();
+  });
+
+  it('renders PST Grid', () => {
+    render(<ObservationInfo observation={{ ...baseObservation, type: TYPE_PST }} t={() => {}} />);
+    expect(screen.getByTestId('pst-grid')).toBeInTheDocument();
+  });
+
+  it('renders nothing for unknown type', () => {
+    render(
+      <ObservationInfo observation={{ ...baseObservation, type: TYPE_UNKNOWN }} t={() => {}} />
+    );
+    expect(screen.queryByTestId('continuum-grid')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('spectral-grid')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('pst-grid')).not.toBeInTheDocument();
   });
 });

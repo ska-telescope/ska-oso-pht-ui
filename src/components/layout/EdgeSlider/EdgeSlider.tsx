@@ -11,8 +11,6 @@ const CONTAINER_SPACER_TOP = 240;
 const CONTAINER_SPACER_BOTTOM = 200;
 const GAP = 2;
 
-/************** TODO : link is disabled whilst I get all other code in place for it ***************************/
-
 export default function EdgeSlider() {
   const [expanded, setExpanded] = React.useState(false);
   const { t } = useScopedTranslation();
@@ -20,23 +18,23 @@ export default function EdgeSlider() {
   const { help } = storageObject.useStore();
   const theHelp = getHelp();
   const theLink = getLink();
-  const hasLink = help?.componentURL?.length > 1 ? true : false;
+  const hasLink = help?.componentURL?.length > 1;
 
   const togglePanel = () => {
     setExpanded(prev => !prev);
   };
 
   function getHelp(): string {
-    return help && help?.component ? (help?.component as string) : '';
+    return help?.component ? (help.component as string) : '';
   }
 
   function getLink(): string {
-    const url = help && help?.componentURL ? (help?.componentURL as string) : '';
+    const url = help?.componentURL ? (help.componentURL as string) : '';
     try {
-      new URL(url); // Validate URL
+      new URL(url);
       return url;
     } catch {
-      return '#'; // Fallback if invalid
+      return '#';
     }
   }
 
@@ -48,7 +46,6 @@ export default function EdgeSlider() {
     zIndex: 1300
   });
 
-  // ✅ Prevent `expanded` from leaking to DOM
   const Panel = styled(Paper, {
     shouldForwardProp: prop => prop !== 'expanded'
   })<{ expanded: boolean }>(({ expanded, theme }) => ({
@@ -58,12 +55,11 @@ export default function EdgeSlider() {
     bottom: 0,
     width: PANEL_WIDTH,
     transform: expanded ? 'translateX(0)' : `translateX(${PANEL_WIDTH - TAB_WIDTH}px)`,
-    transition: 'transform 400ms cubic-bezier(0.25, 0.8, 0.25, 1)', // smoother easing
-    willChange: 'transform', // GPU acceleration hint
+    transition: 'transform 5000ms cubic-bezier(0.1, 0.7, 0.1, 1)', // visibly slow & smooth
+    willChange: 'transform',
     overflow: 'hidden',
     zIndex: 2,
     display: 'flex',
-    cursor: 'pointer',
     backgroundColor: theme.palette.background.paper,
     color: theme.palette.primary.contrastText,
     border: `1px solid ${theme.palette.divider}`,
@@ -71,27 +67,34 @@ export default function EdgeSlider() {
     borderRadius: '40px 0 0 40px'
   }));
 
+  const TabButton = styled('button')(({ theme }) => ({
+    width: TAB_WIDTH,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+    backgroundColor: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText,
+    borderRight: `1px solid ${theme.palette.divider}`,
+    borderRadius: '4px 0 0 4px',
+    boxShadow: 'none',
+    cursor: 'pointer',
+    border: 'none',
+    '&:hover': {
+      backgroundColor: theme.palette.secondary.main,
+      color: theme.palette.secondary.contrastText
+    }
+  }));
+
   return (
     <Container>
-      <Panel expanded={expanded} onClick={togglePanel}>
-        <Box
-          sx={{
-            width: TAB_WIDTH,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 1,
-            backgroundColor: theme.palette.primary.main,
-            color: theme.palette.primary.contrastText,
-            borderRight: `1px solid ${theme.palette.divider}`,
-            borderRadius: '4px 0 0 4px',
-            boxShadow: 'none',
-            '&:hover': {
-              backgroundColor: theme.palette.secondary.main,
-              color: theme.palette.secondary.contrastText
-            }
-          }}
+      <Panel expanded={expanded}>
+        <TabButton
+          onClick={togglePanel}
+          aria-expanded={expanded}
+          aria-controls="edge-slider-content"
+          data-testid="edge-slider-tab"
         >
           <HelpOutlineIcon fontSize="small" />
           <Typography
@@ -102,16 +105,21 @@ export default function EdgeSlider() {
           >
             {t('helpText.label')}
           </Typography>
-        </Box>
+        </TabButton>
 
         {expanded && (
           <Box
+            id="edge-slider-content"
+            role="region"
+            aria-label={t('helpText.label')}
             sx={{
               flex: 1,
               display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              padding: '16px'
+              flexDirection: 'column',
+              alignItems: 'stretch',
+              justifyContent: 'flex-start',
+              padding: '16px',
+              overflowY: 'auto' // ✅ scroll if content too tall
             }}
           >
             <Stack spacing={GAP}>

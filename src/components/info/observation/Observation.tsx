@@ -8,7 +8,10 @@ interface ObservationProps {
   observation: Observation;
 }
 
-// TODO : Fill in the observation details
+// This is a placeholder component for Observation Info.
+// Currently it is empty pending instruction from SciOps as to content that they wish to see here.
+// It is already split by type of observation (Continuum, Spectral, PST) for future expansion.
+// Recommend to look at the DataProduct component for an implementation as a guide
 
 export default function ObservationInfo({ observation }: ObservationProps) {
   const isContinuum = () => observation?.type === TYPE_CONTINUUM;
@@ -20,6 +23,7 @@ export default function ObservationInfo({ observation }: ObservationProps) {
       {isContinuum() && (
         <Grid
           container
+          data-testid="continuum-grid"
           direction="row"
           justifyContent="space-around"
           alignItems="center"
@@ -29,6 +33,7 @@ export default function ObservationInfo({ observation }: ObservationProps) {
       {isSpectral() && (
         <Grid
           container
+          data-testid="spectral-grid"
           direction="row"
           justifyContent="space-around"
           alignItems="center"
@@ -38,6 +43,7 @@ export default function ObservationInfo({ observation }: ObservationProps) {
       {isPST() && (
         <Grid
           container
+          data-testid="pst-grid"
           direction="row"
           justifyContent="space-around"
           alignItems="center"

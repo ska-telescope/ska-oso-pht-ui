@@ -64,6 +64,7 @@ REACT_APP_SKA_LOGIN_APP_URL='http://localhost:4201'
 ```
 
 Generate env.js from .env and start application
+( note that for local usage, the env.js should be located in the 'public' folder)
 
 ```
 yarn dev

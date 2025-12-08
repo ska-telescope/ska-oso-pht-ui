@@ -2,12 +2,12 @@ import { TableRow, TableCell, IconButton, Box, Typography, Collapse } from '@mui
 import { ChevronRight, ExpandMore } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import { useMemo } from 'react';
+import { FrequencySpectrum } from '@ska-telescope/ska-gui-components';
 import EditIcon from '@/components/icon/editIcon/editIcon';
 import TrashIcon from '@/components/icon/trashIcon/trashIcon';
 import { useInitializeAccessStore } from '@/utils/aaa/aaaUtils';
 import Proposal from '@/utils/types/proposal';
 import { getColors } from '@/utils/colors/colors';
-import FrequencySpectrum from '@/components/fields/frequencySpectrum/frequencySpectrum';
 import { FREQUENCY_HZ, FREQUENCY_MHZ, TYPE_CONTINUUM } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import DataProduct from '@/components/info/dataProduct/DataProduct';
@@ -190,16 +190,6 @@ export default function TableDataProductsRow({
             bandWidth={
               isContinuum ? observation?.continuumBandwidth ?? 0 : observation?.bandwidth ?? 0
             }
-            minEdge={frequencyConversion(
-              (osdLOW?.basicCapabilities?.minFrequencyHz ?? 0) * 10,
-              FREQUENCY_HZ,
-              FREQUENCY_MHZ
-            )}
-            maxEdge={frequencyConversion(
-              (osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0) * 10,
-              FREQUENCY_HZ,
-              FREQUENCY_MHZ
-            )}
             bandColor={colorsTelescopeDim[0]}
             bandColorContrast={colorsTelescopeDim[1]}
           />

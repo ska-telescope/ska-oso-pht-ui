@@ -2,7 +2,6 @@
 import {
   OSO_SERVICES_PROPOSAL_PATH,
   SKA_OSO_SERVICES_URL,
-  TELESCOPE_LOW_NUM,
   USE_LOCAL_DATA
 } from '@utils/constants.ts';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.tsx';
@@ -42,11 +41,7 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
         bands: ['low'],
         low: ['AA2'],
         mid: [],
-        observationType: ['spectral', 'continuum', 'pst'],
-        isCustomAllowed(telescopeNumber: number) {
-          const bandArray = telescopeNumber === TELESCOPE_LOW_NUM ? this.low : this.mid;
-          return bandArray.includes('custom');
-        }
+        observationType: ['spectral', 'continuum', 'pst']
       },
       telescopeCapabilities: {
         low: inData.observatory_policy.telescope_capabilities.Low,
