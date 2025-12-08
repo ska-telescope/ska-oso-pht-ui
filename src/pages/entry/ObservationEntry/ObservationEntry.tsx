@@ -6,6 +6,7 @@ import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTheme } from '@mui/material/styles';
 import {
   DropDown,
+  FrequencySpectrum,
   NumberEntry,
   Spacer,
   SPACER_VERTICAL,
@@ -81,7 +82,6 @@ import {
   calculateContinuumBandwidth
 } from '@/utils/calculate/calculate';
 import HelpShell from '@/components/layout/HelpShell/HelpShell';
-import FrequencySpectrum from '@/components/fields/frequencySpectrum/frequencySpectrum';
 import { getColors } from '@/utils/colors/colors';
 import PstModeField from '@/components/fields/pstMode/PstMode';
 import { useHelp } from '@/utils/help/useHelp';
@@ -759,7 +759,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         return suppliedValue <= 0 ? t('suppliedValue.range.error') : '';
       };
       return (
-        <Box p={0} ml={-3}>
+        <Box p={0} pt={2} ml={-3}>
           <NumberEntry
             errorText={errorMessage()}
             label=""

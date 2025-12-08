@@ -64,20 +64,14 @@ export default function ProposalDisplay({
   };
 
   const handleDownload = () => {
-    //TODO
+    /* See STAR-246 */
   };
 
   const downloadPdf = async (fileType: string) => {
     try {
       const selectedFile = `${proposal?.id}-` + fileType + t('fileType.pdf');
       const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
-
       window.open(signedUrl, '_blank');
-
-      //TODO: clarify conditions to open new window
-      // if (signedUrl === t('pdfDownload.sampleData') || signedUrl === selectedFile) {
-      //   window.open(signedUrl, '_blank');
-      // }
     } catch (e) {
       new Error(t('pdfDownload.error'));
     }
