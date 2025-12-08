@@ -1,6 +1,19 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import CycleSelection from './CycleSelection';
+import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>
+        <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      </AppFlowProvider>
+    </StoreProvider>
+  );
+};
 
 // Mock translation hook
 vi.mock('@/services/i18n/useScopedTranslation', () => ({
@@ -31,7 +44,7 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
 
 describe('CycleSelection component', () => {
   it('renders cycle details correctly when open', () => {
-    render(<CycleSelection open={true} onClose={vi.fn()} onConfirm={vi.fn()} />);
+    wrapper(<CycleSelection open={true} onClose={vi.fn()} onConfirm={vi.fn()} />);
 
     // expect(screen.getByText('Cycle')).toBeInTheDocument();
     // expect(screen.getByText('Cycle ID')).toBeInTheDocument();

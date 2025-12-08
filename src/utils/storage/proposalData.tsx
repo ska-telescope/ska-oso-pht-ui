@@ -1,4 +1,4 @@
-import Proposal from 'utils/types/proposal';
+import Proposal from '@utils/types/proposal';
 
 /*************************************************************************************
  * SESSION STORAGE
@@ -16,5 +16,6 @@ export const storeProposalCopy = (response: Proposal) => {
 };
 
 export const fetchProposalCopy = () => {
-  return JSON.parse(sessionStorage.getItem('skao_proposal_copy'));
+  const data = sessionStorage.getItem('skao_proposal_copy');
+  return data ? JSON.parse(data) : null;
 };

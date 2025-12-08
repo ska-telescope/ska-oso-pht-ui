@@ -6,6 +6,7 @@ import {
   ButtonVariantTypes
 } from '@ska-telescope/ska-gui-components';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useThemeA11y } from '@/utils/colors/ThemeAllyContext';
 
 interface BaseButtonProps {
   title?: string;
@@ -34,6 +35,7 @@ export default function BaseButton({
 }: BaseButtonProps) {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
+  const { settings } = useThemeA11y();
 
   const ClickFunction = () => {
     if (typeof action === 'string') {
@@ -45,6 +47,18 @@ export default function BaseButton({
 
   const theTitle = t(title);
   const theToolTip = toolTip.length ? t(toolTip) : '';
+  const accessibilitySx = {
+    ...(settings.reducedMotion && {
+      transition: 'none !important',
+      animation: 'none !important'
+    }),
+    ...(settings.focusVisibleAlways && {
+      '&:focus-visible': {
+        outline: '2px solid #1976d2',
+        outlineOffset: '2px'
+      }
+    })
+  };
 
   return (
     <Button
@@ -55,7 +69,7 @@ export default function BaseButton({
       icon={icon}
       label={theTitle}
       onClick={ClickFunction}
-      sx={sx}
+      sx={{ ...sx, ...accessibilitySx }}
       testId={testId}
       toolTip={theToolTip}
       variant={variant}

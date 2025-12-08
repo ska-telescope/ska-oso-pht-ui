@@ -6,6 +6,7 @@ import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUse
 import MemberEntry from './MemberEntry';
 import * as mockService from '@/services/axios/get/getUserByEmail/getUserByEmail';
 import { AppFlowProvider, useAppFlow } from '@/utils/appFlow/AppFlowContext';
+import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 let isSVFromContext: boolean;
 
@@ -48,8 +49,10 @@ const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
       <AppFlowProvider>
-        <AppFlowTestBridge />
-        {component}
+        <ThemeA11yProvider>
+          <AppFlowTestBridge />
+          {component}
+        </ThemeA11yProvider>
       </AppFlowProvider>
     </StoreProvider>
   );

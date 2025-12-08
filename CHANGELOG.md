@@ -32,6 +32,7 @@ UNRELEASED
 * Added: PST mode to observation
 * Changed: Update the observation pages so that the addition can be inline if there is a maximum of 1 observation allowed
 * Added: Generate default observation, data product, calibration strategy and sensitivity calculations on target creation
+* Added: ThemeProvider for extending Accessibility options
 
 8.0.0
 ----------

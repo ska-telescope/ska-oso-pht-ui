@@ -5,6 +5,17 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import LandingPage from './LandingPage';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
+
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>
+        <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      </AppFlowProvider>
+    </StoreProvider>
+  );
+};
 
 // Mock useNavigate and isLoggedIn
 const mockNavigate = vi.fn();
@@ -15,14 +26,6 @@ vi.mock('react-router-dom', () => ({
 vi.mock('@ska-telescope/ska-login-page', () => ({
   isLoggedIn: vi.fn(() => false)
 }));
-
-const wrapper = (component: React.ReactElement) => {
-  return render(
-    <StoreProvider>
-      <AppFlowProvider>{component}</AppFlowProvider>
-    </StoreProvider>
-  );
-};
 
 describe('<LandingPage />', () => {
   test('renders correctly', () => {
