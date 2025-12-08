@@ -9,7 +9,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { FOOTER_SPACER, RA_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
-import SvgAsImg from '@components/svgAsImg.tsx';
+import SvgAsImg from '@components/svg/svgAsImg.tsx';
 import GetVisibility from '@services/axios/get/getVisibilitySVG/getVisibilitySVG.tsx';
 import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
