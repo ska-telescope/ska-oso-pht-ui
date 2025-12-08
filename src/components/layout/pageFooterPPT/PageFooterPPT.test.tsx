@@ -7,6 +7,8 @@ import PostProposal from '@services/axios/post/postProposal/postProposal.tsx';
 import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposalBackend';
 import PageFooterPPT from './PageFooterPPT';
 import { NEW_PROPOSAL_ACCESS } from '@/utils/types/proposalAccess';
+import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 // --- Mocks ---
 vi.mock('react-router-dom', () => ({
@@ -92,9 +94,14 @@ beforeEach(() => {
     } as any);
 });
 
-// --- Helper ---
 const wrapper = (component: React.ReactElement) => {
-  return render(<StoreProvider>{component}</StoreProvider>);
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>
+        <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      </AppFlowProvider>
+    </StoreProvider>
+  );
 };
 
 // --- Tests ---

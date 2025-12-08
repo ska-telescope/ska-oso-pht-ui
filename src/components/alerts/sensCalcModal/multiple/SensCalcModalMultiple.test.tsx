@@ -6,6 +6,7 @@ import '@testing-library/jest-dom';
 import SensCalcModalMultiple from './SensCalcModalMultiple';
 import { STATUS_ERROR, TYPE_CONTINUUM, TYPE_ZOOM } from '@/utils/constants';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 const data = [
   {
@@ -78,7 +79,9 @@ const data = [
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <AppFlowProvider>{component}</AppFlowProvider>
+      <AppFlowProvider>
+        <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      </AppFlowProvider>
     </StoreProvider>
   );
 };

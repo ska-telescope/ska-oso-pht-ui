@@ -6,14 +6,6 @@ import {
   THEME_DARK,
   THEME_LIGHT,
   ACCESSIBILITY_DEFAULT
-  // ACCESSIBILITY_PROTANOPIA,
-  // ACCESSIBILITY_PROTANOMALY,
-  // ACCESSIBILITY_DEUTERANOPIA,
-  // ACCESSIBILITY_DEUTERANOMALY,
-  // ACCESSIBILITY_TRITANOPIA,
-  // ACCESSIBILITY_TRITANOMALY,
-  // ACCESSIBILITY_ACHROMATOMALY,
-  // ACCESSIBILITY_ACHROMATOPSIA
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Typography, CssBaseline, ThemeProvider, Tooltip, Paper } from '@mui/material';
@@ -31,7 +23,7 @@ import {
 } from '../../utils/constants';
 import packageJson from '../../../package.json';
 
-// Pages
+// Pages...
 import AddDataProduct from '../add/AddDataProduct/AddDataProduct';
 import AddProposal from '../add/AddProposal/AddProposal';
 import DataProductPage from '../DataProduct/DataProductPage';
@@ -95,6 +87,7 @@ export default function PHT() {
   const location = useLocation();
   const { setHelp } = useHelp();
 
+  // Existing theme logic
   const [themeMode, setThemeMode] = React.useState(
     localStorage.getItem('skao_theme_mode') === THEME_DARK ? THEME_DARK : THEME_LIGHT
   );
@@ -186,10 +179,8 @@ export default function PHT() {
   const versionToolTip = () => {
     const tmp1 = SKA_OSO_SERVICES_URL?.split('/') ?? [];
     const tmp2 = SKA_SENSITIVITY_CALCULATOR_API_URL?.split('/') ?? [];
-
     const apiVersion = tmp1.length > 0 ? tmp1[tmp1.length - 1] : 'N/A';
     const sensCalcVersion = tmp2.length > 1 ? tmp2[tmp2.length - 2] : 'N/A';
-
     return (
       t('apiVersion.label') +
       ' : ' +

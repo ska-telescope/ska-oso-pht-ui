@@ -5,6 +5,7 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import SensCalcModalSingle from './SensCalcModalSingle';
 import { STATUS_ERROR, STATUS_INITIAL } from '@/utils/constants';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 vi.mock('i18next', () => ({
   t: (key: string) => key
@@ -13,7 +14,9 @@ vi.mock('i18next', () => ({
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <AppFlowProvider>{component}</AppFlowProvider>
+      <AppFlowProvider>
+        <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      </AppFlowProvider>
     </StoreProvider>
   );
 };
