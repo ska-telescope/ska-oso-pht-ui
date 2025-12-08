@@ -738,7 +738,7 @@ export const DEFAULT_TARGETS: Target = {
 };
 
 export const DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2: Observation = {
-  id: 'obs-default-continuum-123456',
+  id: 'obs-0000000',
   telescope: TELESCOPE_LOW_NUM,
   subarray: OB_SUBARRAY_AA2,
   linked: '0',
@@ -765,7 +765,7 @@ export const DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2: Observation = {
 };
 
 export const DEFAULT_ZOOM_OBSERVATION_LOW_AA2: Observation = {
-  id: 'obs-default-zoom-123456',
+  id: 'obs-0000000',
   telescope: TELESCOPE_LOW_NUM,
   subarray: OB_SUBARRAY_AA2,
   linked: '0',
@@ -793,7 +793,7 @@ export const DEFAULT_ZOOM_OBSERVATION_LOW_AA2: Observation = {
 };
 
 export const DEFAULT_PST_OBSERVATION_LOW_AA2: Observation = {
-  id: 'obs-default-pst-123456',
+  id: 'obs-0000000',
   telescope: TELESCOPE_LOW_NUM,
   subarray: OB_SUBARRAY_AA2,
   linked: '0',
@@ -826,68 +826,25 @@ export const DEFAULT_OBSERVATIONS_LOW_AA2: Observation[] = [
   DEFAULT_PST_OBSERVATION_LOW_AA2
 ];
 
-export const DEFAULT_DATA_PRODUCT_CONTINUUM: DataProductSDP = {
-  id: 'SDP-000000',
-  dataProductType: 1,
-  observationId: '',
-  imageSizeValue: 2.5,
-  imageSizeUnits: 0,
-  pixelSizeValue: 1.6,
-  pixelSizeUnits: 2,
-  weighting: IW_UNIFORM,
-  polarisations: ['I', 'XX'],
-  channelsOut: 0, // not used for continuum
-  fitSpectralPol: 3, // not used for continuum?
-  robust: 1,
-  taperValue: 0,
-  timeAveraging: 3.4,
-  frequencyAveraging: 21.7,
-  bitDepth: 0, // not used for continuum
-  continuumSubtraction: false // not used for continuum
+export const DEFAULT_DATA_PRODUCT: DataProductSDP = {
+  id: 'SDP-0000000',
+  dataProductType: 1, // used for continuum and pst
+  observationId: 'obs-123',
+  imageSizeValue: 2.5, // used for continuum and spectral
+  imageSizeUnits: 0, // used for continuum and spectral
+  pixelSizeValue: 1.6, // used for continuum and spectral
+  pixelSizeUnits: 2, // used for continuum and spectral
+  weighting: IW_UNIFORM, // used for continuum and spectral
+  polarisations: ['I', 'XX'], // used for all modes
+  channelsOut: 40, // used for spectral
+  fitSpectralPol: 3, // TODO used for pst timing data product?
+  robust: 1, // used for continuum and spectral
+  taperValue: 0, // used for continuum and spectral
+  timeAveraging: 3.4, // used for continuum and pst
+  frequencyAveraging: 21.7, // used for continuum // TODO check frequency averaging factor for pst
+  bitDepth: 1, // used for pst
+  continuumSubtraction: false // used for spectral
 };
-
-export const DEFAULT_DATA_PRODUCT_SPECTRAL: DataProductSDP = {
-  id: 'SDP-000000',
-  dataProductType: 0, // not used for spectral
-  observationId: '',
-  imageSizeValue: 2.5,
-  imageSizeUnits: 0,
-  pixelSizeValue: 1.6,
-  pixelSizeUnits: 2,
-  weighting: IW_UNIFORM,
-  polarisations: ['I', 'XX'],
-  channelsOut: 40, // TODO check if this should be 4000
-  fitSpectralPol: 3, // not used for spectral
-  robust: 1,
-  taperValue: 0,
-  timeAveraging: -1, // not used for spectral
-  frequencyAveraging: -1, // not used for spectral
-  bitDepth: 0, // not used for spectral?
-  continuumSubtraction: false
-};
-
-export const DEFAULT_DATA_PRODUCT_PST: DataProductSDP = {
-  id: 'SDP-000000',
-  dataProductType: 1, // Flowthrough
-  observationId: '',
-  imageSizeValue: 2.5, // not used for PST
-  imageSizeUnits: 0, // not used for PST
-  pixelSizeValue: 1, // not used for PST
-  pixelSizeUnits: 2, // not used for PST
-  weighting: IW_UNIFORM, // not used for PST
-  polarisations: ['X'],
-  channelsOut: 40, // not used for PST
-  fitSpectralPol: 3, // not used for PST?
-  robust: 1, // not used for PST
-  taperValue: 1, // not used for PST
-  timeAveraging: 1,
-  frequencyAveraging: 1,
-  bitDepth: 1,
-  continuumSubtraction: false // not used for PST
-};
-
-// TODO create a second PST default data product for detected filter bank mode ? -> should just use default pst mode of default pst obs
-// TODO check why default pst obs create continuuum obs
 
 export const DUMMY_PROPOSAL_ID = 'dummy-proposal-id';
 

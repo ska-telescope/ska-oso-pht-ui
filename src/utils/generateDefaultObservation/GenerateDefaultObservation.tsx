@@ -1,25 +1,22 @@
-import {
-  DEFAULT_DATA_PRODUCT_CONTINUUM,
-  DEFAULT_DATA_PRODUCT_PST,
-  DEFAULT_DATA_PRODUCT_SPECTRAL,
-  DEFAULT_OBSERVATIONS_LOW_AA2,
-  TYPE_CONTINUUM,
-  TYPE_ZOOM
-} from '../constants';
+import { DEFAULT_DATA_PRODUCT, DEFAULT_OBSERVATIONS_LOW_AA2, TYPE_PST } from '../constants';
 import { generateId } from '../helpers';
 import { CalibrationStrategy } from '../types/calibrationStrategy';
 import { DataProductSDP } from '../types/dataProduct';
+import Observation from '../types/observation';
 
 export const observationOut = (obsMode: number) => {
-  const defaultObs = DEFAULT_OBSERVATIONS_LOW_AA2[obsMode];
-  defaultObs.id = generateId('obs-', 6);
+  const defaultObs: Observation = {
+    ...DEFAULT_OBSERVATIONS_LOW_AA2[obsMode],
+    id: generateId('obs-', 6)
+  };
+
   return defaultObs;
 };
 
 export const calibrationOut = (observationId: string) => {
   const newCalibration: CalibrationStrategy = {
     observatoryDefined: true,
-    id: generateId('cal-'),
+    id: generateId('cal-', 6),
     observationIdRef: observationId,
     calibrators: null,
     notes: null,
@@ -29,15 +26,12 @@ export const calibrationOut = (observationId: string) => {
 };
 
 export const dataProductSDPOut = (observationId: string, observationType: number) => {
-  const newDSP: DataProductSDP =
-    observationType === TYPE_CONTINUUM
-      ? DEFAULT_DATA_PRODUCT_CONTINUUM
-      : observationType === TYPE_ZOOM
-      ? DEFAULT_DATA_PRODUCT_SPECTRAL
-      : DEFAULT_DATA_PRODUCT_PST;
-
-  newDSP.id = generateId('SDP-', 6);
-  newDSP.observationId = observationId;
+  const newDSP: DataProductSDP = {
+    ...DEFAULT_DATA_PRODUCT,
+    id: generateId('SDP-', 6),
+    observationId,
+    polarisations: observationType === TYPE_PST ? ['XX'] : ['I', 'XX'] // TODO change PST polarisations to 'X' when pdm updated
+  };
 
   return newDSP;
 };
