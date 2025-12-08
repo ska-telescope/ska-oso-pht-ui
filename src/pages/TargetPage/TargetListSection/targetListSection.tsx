@@ -9,6 +9,8 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { FOOTER_SPACER, RA_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
+import SvgAsImg from '@components/svg/svgAsImg.tsx';
+import GetVisibility from '@services/axios/get/getVisibilitySVG/getVisibilitySVG.tsx';
 import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
@@ -32,9 +34,33 @@ export default function TargetListSection() {
   const [skyDirection1Error, setSkyDirection1Error] = React.useState('');
   const [skyDirection2Error, setSkyDirection2Error] = React.useState('');
   const [nameError, setNameError] = React.useState('');
+  const [visibilitySVG, setVisibilitySVG] = React.useState('');
   const { osdCyclePolicy } = useOSDAccessors();
 
   const DATA_GRID_HEIGHT = osdCyclePolicy?.maxTargets ? '18vh' : '60vh';
+
+  const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+
+  React.useEffect(() => {
+    if (
+      (getProposal()?.targets?.length ?? 0) > (osdCyclePolicy?.maxTargets ?? 0) - 1 &&
+      !visibilitySVG
+    ) {
+      const ra = getProposal()?.targets?.map(target => {
+        return { ra: target.raStr };
+      });
+      const dec = getProposal()?.targets?.map(target => {
+        return { dec: target.decStr };
+      });
+      // only LOW for now
+      GetVisibility(ra[0].ra, dec[0].dec, 'LOW').then(response => {
+        setVisibilitySVG(response.data);
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getProposal()?.targets, osdCyclePolicy?.maxTargets]);
+
   const deleteIconClicked = (e: Target) => {
     setRowTarget(e);
     setOpenDeleteDialog(true);
@@ -126,9 +152,6 @@ export default function TargetListSection() {
     );
   };
 
-  const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-
   function a11yProps(index: number) {
     return {
       id: `simple-tab-${index}`,
@@ -163,9 +186,9 @@ export default function TargetListSection() {
               raType={RA_TYPE_ICRS.value}
               rows={getProposal().targets}
             />
-            {false && ( // TODO : set to false to hide AA2 image, will replace with a visibility graph in the future
-              <Box px={3}>
-                <img src={'/assets/low_aa2.png'} alt="Low AA2" width="100%" />
+            {visibilitySVG && (
+              <Box pt={6} px={3}>
+                <SvgAsImg svgXml={visibilitySVG} />
               </Box>
             )}
           </Stack>

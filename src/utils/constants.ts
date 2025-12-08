@@ -25,6 +25,7 @@ export const OSO_SERVICES_REVIEWERS_PATH = `${OSO_SERVICES_PHT}reviewers`;
 export const OSO_SERVICES__PATH = `${OSO_SERVICES_PHT}reviewers`;
 export const OSO_SERVICES_MEMBER_PATH = `${OSO_SERVICES_PHT}prsls/member`;
 export const OSO_SERVICES_CALIBRATORS_PATH = `${OSO_SERVICES_PHT}calibrators`;
+export const OSO_SERVICES_VISIBILITY_PATH = `${SKA_OSO_SERVICES_URL}/visibility/visibility`;
 //
 export const MSENTRA_CLIENT_ID = env.MSENTRA_CLIENT_ID;
 export const MSENTRA_TENANT_ID = env.MSENTRA_TENANT_ID;
