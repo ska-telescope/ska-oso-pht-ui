@@ -17,7 +17,6 @@ export type ObservatoryPolicy = {
     maxDataProducts: number;
     maxObservations: number;
     maxTargets: number;
-    isCustomAllowed: (telescopeNumber: number) => boolean;
     bands: string[];
     low: string[];
     mid: string[];

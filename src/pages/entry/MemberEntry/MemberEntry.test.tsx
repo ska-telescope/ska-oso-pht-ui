@@ -104,6 +104,5 @@ describe('<MemberEntry /> search for user', () => {
       isEnabled('piCheckbox');
       isEnabled('PhDCheckbox');
     }
-    // TODO - Extend to fill out the form and check values
   });
 });

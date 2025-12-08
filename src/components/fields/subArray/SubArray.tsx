@@ -37,13 +37,13 @@ export default function SubArrayField({
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const FIELD = 'subArrayConfiguration';
-  const { observatoryConstants, osdCyclePolicy } = useOSDAccessors();
+  const { isCustomAllowed, observatoryConstants } = useOSDAccessors();
 
   const getOptions = () => {
     if (telescope > 0) {
       const options = subArrayOptions(BANDWIDTH_TELESCOPE[observingBand], observatoryConstants);
 
-      const filteredOptions = !osdCyclePolicy?.isCustomAllowed(telescope)
+      const filteredOptions = !isCustomAllowed(telescope)
         ? options?.filter((e: any) => e.value !== OB_SUBARRAY_CUSTOM)
         : options;
 

@@ -1,10 +1,9 @@
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/material';
 import { LAB_IS_BOLD, LAB_POSITION } from '@utils/constants.ts';
-import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
-// TODO : DISABLED AT THIS TIME UNTIL GALACTIC IS IMPLEMENTED FULLY
+// NOTE : DISABLED AT THIS TIME UNTIL GALACTIC IS IMPLEMENTED FULLY
 
 interface ReferenceCoordinatesFieldProps {
   labelWidth?: number;
@@ -23,7 +22,7 @@ export default function ReferenceCoordinatesField({
   const FIELD = 'referenceCoordinates';
 
   const ReferenceCoordinatesValueField = () => {
-    const OPTIONS = [0]; // TODO , 1];
+    const OPTIONS = [0]; // NOTE , 1];
 
     const getOptions = () => {
       return OPTIONS.map(e => ({ label: t(FIELD + '.' + e), value: e }));

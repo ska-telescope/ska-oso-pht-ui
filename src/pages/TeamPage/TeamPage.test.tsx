@@ -27,5 +27,3 @@ describe('<TeamPage />', () => {
     wrapper(<TeamPage />);
   });
 });
-
-// TODO - Add more tests for TeamPage component

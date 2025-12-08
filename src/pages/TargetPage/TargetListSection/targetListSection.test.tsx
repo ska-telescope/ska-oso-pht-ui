@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TargetListSection from './targetListSection';
@@ -74,35 +74,24 @@ describe('<TargetListSection />', () => {
     // expect(screen.getByTestId('spatial-imaging')).toBeInTheDocument();
   });
 
-  /* TODO 
-  it('opens delete dialog and shows alert content', () => {
-    wrapper(
-        <TargetListSection />
-    );
+  it.skip('opens delete dialog and shows alert content', () => {
+    wrapper(<TargetListSection />);
 
     fireEvent.click(screen.getByText('Delete'));
     expect(screen.getByTestId('dialog')).toBeInTheDocument();
     expect(screen.getByTestId('alert')).toHaveTextContent('deleteTarget.info');
   });
 
-  it('opens edit dialog and shows TargetEntry', () => {
-    wrapper(
-  
-        <TargetListSection />
-
-    );
+  it.skip('opens edit dialog and shows TargetEntry', () => {
+    wrapper(<TargetListSection />);
 
     fireEvent.click(screen.getByText('Edit'));
     expect(screen.getByTestId('dialog')).toBeInTheDocument();
     // expect(screen.getByTestId('target-entry')).toBeInTheDocument();
   });
 
-  it('renders all FieldWrapper content', () => {
-    wrapper(
-
-        <TargetListSection />
-
-    );
+  it.skip('renders all FieldWrapper content', () => {
+    wrapper(<TargetListSection />);
 
     expect(screen.getAllByTestId('fieldWrapperTestId')).toHaveLength(5);
     expect(screen.getByText('Target1')).toBeInTheDocument();
@@ -111,5 +100,4 @@ describe('<TargetListSection />', () => {
     expect(screen.getByText('1000')).toBeInTheDocument();
     expect(screen.getByText('0.01')).toBeInTheDocument();
   });
-  */
 });
