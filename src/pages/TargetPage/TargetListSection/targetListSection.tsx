@@ -72,9 +72,23 @@ export default function TargetListSection() {
   };
 
   const deleteConfirmed = () => {
+    // filter out target
     const obs1 = getProposal().targets?.filter(e => e.id !== rowTarget?.id);
+    // filter out targetObservation entries linked to deleted target
     const obs2 = getProposal().targetObservation?.filter(e => e.targetId !== rowTarget?.id);
-    setProposal({ ...getProposal(), targets: obs1, targetObservation: obs2 });
+    // filter out calibrationStrategy entries from associated targetObservation
+    const obsId = getProposal().targetObservation?.find(e => e.targetId === rowTarget?.id)
+      ?.observationId;
+    const obs3 =
+      getProposal().calibrationStrategy?.[0] !== undefined
+        ? getProposal().calibrationStrategy.filter(e => e.observationIdRef !== obsId)
+        : undefined;
+    setProposal({
+      ...getProposal(),
+      targets: obs1,
+      targetObservation: obs2,
+      calibrationStrategy: obs3
+    });
     setVisibilitySVG(null); // remove visibility plot display as target is deleted
     setRowTarget(null);
     closeDialog();
