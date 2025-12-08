@@ -9,6 +9,8 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { FOOTER_SPACER, RA_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
+import SvgAsImg from '@components/svgAsImg.tsx';
+import GetVisibility from '@services/axios/get/getVisibilitySVG/getVisibilitySVG.tsx';
 import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
@@ -20,8 +22,6 @@ import TargetFileImport from './TargetFileImport/TargetFileImport';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import SvgAsImg from '@components/svgAsImg.tsx';
-import GetVisibility from '@services/axios/get/getVisibilitySVG/getVisibilitySVG.tsx';
 
 export default function TargetListSection() {
   const { t } = useScopedTranslation();
@@ -36,38 +36,24 @@ export default function TargetListSection() {
   const [nameError, setNameError] = React.useState('');
   const { osdCyclePolicy } = useOSDAccessors();
 
-  const DATA_GRID_HEIGHT = osdCyclePolicy?.maxTargets ? '18vh' : '60vh';
-
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  // const getVisibility = () => {
-  //   console.log('targets: ', getProposal().targets);
-  //   // const response = await GetVisibility(ra, dec, 'LOW'); // only LOW for now
-  //   // console.log('visibility response: ', response.data);
-  //   // return response.data
-  //   return 'Chloe'
-  // };
+  const DATA_GRID_HEIGHT = osdCyclePolicy?.maxTargets ? '18vh' : '60vh';
 
-  const getVisibility = async (targets: Target[]) => {
-    // console.log('targets: ', targets);
-    //loop through targets and get ra and dec of each
-    const ra = targets?.map(target => {
-      return { ra: target.raStr };
-    });
-    const dec = targets?.map(target => {
-      return { dec: target.decStr };
-    });
-    console.log('ra', ra[0].ra);
-    console.log('dec', dec[0].dec);
+  const [visibilitySVG, setVisibilitySVG] = React.useState<string | null>(null);
 
-    const raValue = ra[0].ra;
-    const decValue = dec[0].dec;
-
-    const response = await GetVisibility(raValue, decValue, 'LOW'); // only LOW for now
-    console.log('visibility response: ', response.data);
-    return response.data
-  };
+  React.useEffect(() => {
+    if (
+      (getProposal()?.targets?.length ?? 0) > (osdCyclePolicy?.maxTargets ?? 0) - 1 &&
+      !visibilitySVG
+    ) {
+      GetVisibility('05:34:31.7760', '22:01:02.640', 'LOW').then(response => {
+        setVisibilitySVG(response.data);
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [getProposal()?.targets, osdCyclePolicy?.maxTargets]);
 
   const deleteIconClicked = (e: Target) => {
     setRowTarget(e);
@@ -194,9 +180,9 @@ export default function TargetListSection() {
               raType={RA_TYPE_ICRS.value}
               rows={getProposal().targets}
             />
-            {(getProposal()?.targets?.length ?? 0) > osdCyclePolicy?.maxTargets - 1 && (
-              <Box px={3}>
-                <SvgAsImg svgXml={getVisibility(getProposal()?.targets)} />
+            {visibilitySVG && (
+              <Box pt={6} px={3}>
+                <SvgAsImg svgXml={visibilitySVG} />
               </Box>
             )}
           </Stack>
