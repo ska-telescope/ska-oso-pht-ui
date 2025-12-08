@@ -34,7 +34,7 @@ export default function TargetListSection() {
   const [skyDirection1Error, setSkyDirection1Error] = React.useState('');
   const [skyDirection2Error, setSkyDirection2Error] = React.useState('');
   const [nameError, setNameError] = React.useState('');
-  const [visibilitySVG, setVisibilitySVG] = React.useState('');
+  const [visibilitySVG, setVisibilitySVG] = React.useState(null);
   const { osdCyclePolicy } = useOSDAccessors();
 
   const DATA_GRID_HEIGHT = osdCyclePolicy?.maxTargets ? '18vh' : '60vh';
@@ -72,20 +72,10 @@ export default function TargetListSection() {
   };
 
   const deleteConfirmed = () => {
-    // filter out target
     const obs1 = getProposal().targets?.filter(e => e.id !== rowTarget?.id);
-    // filter out targetObservation entries linked to deleted target
     const obs2 = getProposal().targetObservation?.filter(e => e.targetId !== rowTarget?.id);
-    // filter out calibrationStrategy entries from associated targetObservation
-    const obsId = getProposal().targetObservation?.find(e => e.targetId === rowTarget?.id)
-      ?.observationId;
-    const obs3 = getProposal().calibrationStrategy?.filter(e => e.observationIdRef !== obsId);
-    setProposal({
-      ...getProposal(),
-      targets: obs1,
-      targetObservation: obs2,
-      calibrationStrategy: obs3
-    });
+    setProposal({ ...getProposal(), targets: obs1, targetObservation: obs2 });
+    setVisibilitySVG(null); // remove visibility plot display as target is deleted
     setRowTarget(null);
     closeDialog();
   };
@@ -186,7 +176,7 @@ export default function TargetListSection() {
               raType={RA_TYPE_ICRS.value}
               rows={getProposal().targets}
             />
-            {visibilitySVG && (
+            {visibilitySVG !== null && (
               <Box pt={6} px={3}>
                 <SvgAsImg svgXml={visibilitySVG} />
               </Box>
