@@ -48,7 +48,13 @@ export default function TargetListSection() {
       (getProposal()?.targets?.length ?? 0) > (osdCyclePolicy?.maxTargets ?? 0) - 1 &&
       !visibilitySVG
     ) {
-      GetVisibility('05:34:31.7760', '22:01:02.640', 'LOW').then(response => {
+      const ra = getProposal()?.targets?.map(target => {
+        return { ra: target.raStr };
+      });
+      const dec = getProposal()?.targets?.map(target => {
+        return { dec: target.decStr };
+      });
+      GetVisibility(ra[0].ra, dec[0].dec, 'LOW').then(response => {
         setVisibilitySVG(response.data);
       });
     }
