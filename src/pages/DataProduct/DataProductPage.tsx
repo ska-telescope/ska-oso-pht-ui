@@ -8,6 +8,7 @@ import { validateSDPPage } from '@utils/validation/validation.tsx';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { FOOTER_SPACER, PAGE_DATA_PRODUCTS, PATH } from '@utils/constants.ts';
 import { DataProductSDP } from '@utils/types/dataProduct.tsx';
+import { useAppFlow } from '@utils/appFlow/AppFlowContext.tsx';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
@@ -34,6 +35,7 @@ export default function DataProductsPage() {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+  const { isSV } = useAppFlow();
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
@@ -113,6 +115,10 @@ export default function DataProductsPage() {
     return !!proposal && Array.isArray(proposal.observations) && proposal.observations.length > 0;
   };
 
+  const hasTargetObservations = () => {
+    return (getProposal()?.targetObservation?.length ?? 0) > 0;
+  };
+
   const noObservations = () => {
     return (
       <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
@@ -128,7 +134,7 @@ export default function DataProductsPage() {
   };
 
   const dataProductList = () => {
-    if (!hasObservations()) {
+    if (isSV() ? !hasTargetObservations() : !hasObservations()) {
       return null;
     }
 
@@ -164,9 +170,9 @@ export default function DataProductsPage() {
   return (
     <Shell page={PAGE}>
       <>
-        {!hasObservations() && noObservations()}
+        {(isSV() ? !hasTargetObservations() : !hasObservations()) && noObservations()}
 
-        {hasObservations() && (
+        {(isSV() ? hasTargetObservations() : hasObservations()) && (
           <>
             {osdCyclePolicy?.maxDataProducts !== 1 && dataProductList()}
             {osdCyclePolicy?.maxDataProducts === 1 && (

@@ -126,8 +126,6 @@ export default function ObservationPage() {
   const hasObservations = () => elementsO?.length > 0;
 
   const hasTargetObservations = () => {
-    console.log('linked observations: ', getProposal()?.targetObservation);
-
     return (getProposal()?.targetObservation?.length ?? 0) > 0;
   };
 
