@@ -76,9 +76,17 @@ export const validateTechnicalPage = (proposal: Proposal) => {
 
 export const validateSDPPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_OK];
-  const count =
-    Array.isArray(proposal?.dataProductSDP) && proposal.dataProductSDP.length > 0 ? 1 : 0;
-  return result[count];
+
+  const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
+
+  if (hasTargetObservations) {
+    let count = hasTargetObservations() ? 1 : 0;
+    return result[count];
+  } else {
+    let count =
+      Array.isArray(proposal?.dataProductSDP) && proposal.dataProductSDP.length > 0 ? 1 : 0;
+    return result[count];
+  }
 };
 
 export const validateSRCPage = () => STATUS_OK;
