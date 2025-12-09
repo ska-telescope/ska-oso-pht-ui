@@ -83,27 +83,30 @@ export default function GeneralPage() {
   }, [isObsModeChanged]);
 
   const checkTargetObservation = () => {
+    // check that it's SV and science category (used for obs mode in SV) is defined
     if (!isSV() || typeof getProposal().scienceCategory !== 'number') return;
 
-    // check obs mode defined
-    // check if there is a target defined
-    // check if there is an observation defined
-    // if not, create a default observation based on the category
+    // check if obs mode is defined
+    // check if there is a target
+    // check if there is an observation
+    // if not, create a default observation based on the observation mode
     // if yes, check observation type matches observation mode
-    // regenerate observation if type has changed
+    // regenerate observation if type doesn't match / has changed
     // ********************************************************** //
 
-    // check if there is a target defined
+    // check if there is a target
     if ((getProposal().targets?.length ?? 0) > 0) {
       // check if there is an observation defined
       if ((getProposal().observations?.length ?? 0) > 0) {
         if (
+          // observation type doesn't match observation mode
           getProposal().observations![0].type !== getProposal().scienceCategory ||
           isObsModeChanged
         ) {
           generateObservation();
         }
       } else {
+        // no observation, generate one
         generateObservation();
       }
     }
@@ -123,9 +126,9 @@ export default function GeneralPage() {
 
   const generateObservation = async () => {
     const target = getProposal().targets![0]; // there should be only 1 target for auto-generation
-    const newObservation = observationOut(getProposal().scienceCategory as number);
+    const newObservation = observationOut(getProposal().scienceCategory);
     const newCalibration = calibrationOut(newObservation?.id);
-    const newDataProductSDP = dataProductSDPOut(newObservation?.id);
+    const newDataProductSDP = dataProductSDPOut(newObservation?.id, getProposal().scienceCategory);
     const sensCalcResult = await getSensCalcData(newObservation, target);
 
     setProposal({
