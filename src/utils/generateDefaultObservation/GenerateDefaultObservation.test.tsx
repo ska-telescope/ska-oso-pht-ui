@@ -1,5 +1,6 @@
 import {
   DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
+  DEFAULT_DATA_PRODUCT,
   DEFAULT_PST_OBSERVATION_LOW_AA2,
   DEFAULT_ZOOM_OBSERVATION_LOW_AA2,
   TYPE_CONTINUUM,
@@ -9,27 +10,39 @@ import {
 import * as helpers from '../helpers';
 import { calibrationOut, dataProductSDPOut, observationOut } from './GenerateDefaultObservation';
 import { mockCalibration } from './mockCalibration';
-import { mockSDP } from './mockSDP';
+import { PST_DATA_PRODUCT } from './mockSDP';
 
 describe('GenerateDefaultObservation, observationOut', () => {
   test('observationOut continuum', () => {
-    expect(observationOut(TYPE_CONTINUUM)).equal(DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2);
+    vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
+    expect(observationOut(TYPE_CONTINUUM)).deep.equal(DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2);
   });
   test('observationOut zoom', () => {
-    expect(observationOut(TYPE_ZOOM)).equal(DEFAULT_ZOOM_OBSERVATION_LOW_AA2);
+    vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
+    expect(observationOut(TYPE_ZOOM)).deep.equal(DEFAULT_ZOOM_OBSERVATION_LOW_AA2);
   });
   test('observationOut pst', () => {
-    expect(observationOut(TYPE_PST)).equal(DEFAULT_PST_OBSERVATION_LOW_AA2);
+    vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
+    expect(observationOut(TYPE_PST)).deep.equal(DEFAULT_PST_OBSERVATION_LOW_AA2);
   });
 });
 
 describe('GenerateDefaultObservation, dataProductSDPOut', () => {
   test('SDP default continuum', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('SDP-0000000');
-    const sdp = dataProductSDPOut('obs-123');
-    expect(sdp).to.deep.equal(mockSDP);
+    const sdp = dataProductSDPOut('obs-123', TYPE_CONTINUUM);
+    expect(sdp).to.deep.equal(DEFAULT_DATA_PRODUCT);
   });
-  // TODO add tests for other modes once implemented
+  test('SDP default spectral', () => {
+    vi.spyOn(helpers, 'generateId').mockReturnValue('SDP-0000000');
+    const sdp = dataProductSDPOut('obs-123', TYPE_ZOOM);
+    expect(sdp).to.deep.equal(DEFAULT_DATA_PRODUCT);
+  });
+  test('SDP default PST', () => {
+    vi.spyOn(helpers, 'generateId').mockReturnValue('SDP-0000000');
+    const sdp = dataProductSDPOut('obs-123', TYPE_PST);
+    expect(sdp).to.deep.equal(PST_DATA_PRODUCT);
+  });
 });
 
 describe('GenerateDefaultObservation, calibrationOut', () => {

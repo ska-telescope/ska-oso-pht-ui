@@ -25,7 +25,7 @@ export default function TaperField({
   const { t } = useScopedTranslation();
   const FIELD = 'taper';
 
-  const errorText = () => (Number(value) ? '' : t(FIELD + '.error'));
+  const errorText = () => (Number(value) >= 0 ? '' : t(FIELD + '.error'));
   const setTheNumber = (inNum: number) => {
     const str = Math.abs(inNum).toString();
     const num = Number(str);

@@ -2,6 +2,7 @@ import { LABEL_POSITION, TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska
 import Target from './types/target';
 import Investigator from './types/investigator';
 import Observation from './types/observation';
+import { DataProductSDP } from './types/dataProduct';
 import { env } from '@/env';
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const cypressToken = window.localStorage.getItem('cypress:token');
@@ -296,9 +297,9 @@ export const POLARISATIONS_PST_BANK = [
 ];
 
 export const IMAGE_WEIGHTING = [
-  { label: 'natural', lookup: 'natural', value: 0 },
-  { label: 'uniform', lookup: 'uniform', value: 1 },
-  { label: 'briggs', lookup: 'briggs', value: 2 }
+  { label: 'natural', lookup: 'natural', value: IW_NATURAL },
+  { label: 'uniform', lookup: 'uniform', value: IW_UNIFORM },
+  { label: 'briggs', lookup: 'briggs', value: IW_BRIGGS }
 ];
 
 export const LAB_IS_BOLD = true;
@@ -738,7 +739,7 @@ export const DEFAULT_TARGETS: Target = {
 };
 
 export const DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2: Observation = {
-  id: 'obs-default-continuum-123456',
+  id: 'obs-0000000',
   telescope: TELESCOPE_LOW_NUM,
   subarray: OB_SUBARRAY_AA2,
   linked: '0',
@@ -765,7 +766,7 @@ export const DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2: Observation = {
 };
 
 export const DEFAULT_ZOOM_OBSERVATION_LOW_AA2: Observation = {
-  id: 'obs-default-zoom-123456',
+  id: 'obs-0000000',
   telescope: TELESCOPE_LOW_NUM,
   subarray: OB_SUBARRAY_AA2,
   linked: '0',
@@ -793,7 +794,7 @@ export const DEFAULT_ZOOM_OBSERVATION_LOW_AA2: Observation = {
 };
 
 export const DEFAULT_PST_OBSERVATION_LOW_AA2: Observation = {
-  id: 'obs-default-pst-123456',
+  id: 'obs-0000000',
   telescope: TELESCOPE_LOW_NUM,
   subarray: OB_SUBARRAY_AA2,
   linked: '0',
@@ -825,6 +826,26 @@ export const DEFAULT_OBSERVATIONS_LOW_AA2: Observation[] = [
   DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
   DEFAULT_PST_OBSERVATION_LOW_AA2
 ];
+
+export const DEFAULT_DATA_PRODUCT: DataProductSDP = {
+  id: 'SDP-0000000',
+  dataProductType: 1, // used for continuum and pst
+  observationId: 'obs-123',
+  imageSizeValue: 2.5, // used for continuum and spectral
+  imageSizeUnits: 0, // used for continuum and spectral
+  pixelSizeValue: 1.6, // used for continuum and spectral
+  pixelSizeUnits: 2, // used for continuum and spectral
+  weighting: IW_UNIFORM, // used for continuum and spectral
+  polarisations: ['I', 'XX'], // used for all modes
+  channelsOut: 40, // used for spectral
+  fitSpectralPol: 3, // TODO used for pst timing data product?
+  robust: 1, // used for continuum and spectral
+  taperValue: 0, // used for continuum and spectral
+  timeAveraging: 3.4, // used for continuum and pst
+  frequencyAveraging: 21.7, // used for continuum // TODO check frequency averaging factor for pst
+  bitDepth: 1, // used for pst
+  continuumSubtraction: false // used for spectral
+};
 
 export const DUMMY_PROPOSAL_ID = 'dummy-proposal-id';
 

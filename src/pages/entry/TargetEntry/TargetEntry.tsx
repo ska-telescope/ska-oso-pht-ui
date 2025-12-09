@@ -285,7 +285,7 @@ export default function TargetEntry({
         if (autoLink && typeof getProposal().scienceCategory === 'number') {
           newObservation = observationOut(getProposal().scienceCategory as number);
           newCalibration = calibrationOut(newObservation?.id);
-          newDataProductSDP = dataProductSDPOut(newObservation?.id);
+          newDataProductSDP = dataProductSDPOut(newObservation?.id, getProposal().scienceCategory);
           sensCalcResult = await getSensCalcData(newObservation, newTarget);
         }
         const updatedProposal = {
