@@ -56,8 +56,15 @@ export const validateObservationPage = (proposal: Proposal) => {
   const hasObservations = () =>
     Array.isArray(proposal?.observations) && proposal.observations.length > 0;
 
-  let count = hasObservations() ? 2 : 0;
-  return result[count];
+  const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
+
+  if (hasTargetObservations) {
+    let count = hasTargetObservations() ? 2 : 0;
+    return result[count];
+  } else {
+    let count = hasObservations() ? 2 : 0;
+    return result[count];
+  }
 };
 
 export const validateTechnicalPage = (proposal: Proposal) => {
