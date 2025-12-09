@@ -26,7 +26,7 @@ import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import { useHelp } from '@/utils/help/useHelp';
-import { generateDefaults } from '@/utils/generateDefaultObservation/GenerateDefaultObservation';
+import autoLinking from '@/utils/autoLinking/AutoLinking.';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 interface TargetEntryProps {
   raType: number;
@@ -259,7 +259,7 @@ export default function TargetEntry({
       };
 
       const generateAuto = async () => {
-        const defaults = await generateDefaults(newTarget, getProposal, setProposal, true);
+        const defaults = await autoLinking(newTarget, getProposal, setProposal, true);
         if (defaults) {
           if (defaults.success) {
             notifySuccess(t('autoLink.targetSuccess'), NOTIFICATION_DELAY_IN_SECONDS);

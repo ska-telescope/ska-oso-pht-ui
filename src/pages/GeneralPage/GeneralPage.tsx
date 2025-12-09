@@ -19,7 +19,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import { useHelp } from '@/utils/help/useHelp';
-import { generateDefaults } from '@/utils/generateDefaultObservation/GenerateDefaultObservation';
+import autoLinking from '@/utils/autoLinking/AutoLinking.';
 import { useNotify } from '@/utils/notify/useNotify';
 
 const PAGE = PAGE_GENERAL;
@@ -111,7 +111,7 @@ export default function GeneralPage() {
 
   const generateAuto = async () => {
     const target = getProposal().targets![0]; // there should be only 1 target for auto-generation
-    const defaults = await generateDefaults(target, getProposal, setProposal, false);
+    const defaults = await autoLinking(target, getProposal, setProposal, false);
     if (defaults) {
       if (defaults.success) {
         notifySuccess(t('autoLink.success'), NOTIFICATION_DELAY_IN_SECONDS);
