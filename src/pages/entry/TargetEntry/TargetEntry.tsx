@@ -259,16 +259,20 @@ export default function TargetEntry({
       };
 
       const generateAuto = async () => {
-        const defaults = await generateDefaults(newTarget, getProposal, setProposal, autoLink);
-        if (defaults.success) {
-          notifySuccess(t('addTarget.success'), NOTIFICATION_DELAY_IN_SECONDS);
-        } else {
-          notifyError(defaults.error, NOTIFICATION_DELAY_IN_SECONDS);
+        const defaults = await generateDefaults(newTarget, getProposal, setProposal, true);
+        if (defaults) {
+          if (defaults.success) {
+            notifySuccess(t('autoLink.targetSuccess'), NOTIFICATION_DELAY_IN_SECONDS);
+          } else {
+            notifyError(defaults?.error ?? t('autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
+          }
         }
       };
 
       const addTargetAsync = async () => {
-        if (autoLink) {
+        // only generate observation, dataprodutsdp, senscalc, calibration when autoLink is true & obs mode is selected
+        // (science category used for obs mode in SV)
+        if (autoLink && typeof getProposal().scienceCategory === 'number') {
           generateAuto();
           return;
         }
