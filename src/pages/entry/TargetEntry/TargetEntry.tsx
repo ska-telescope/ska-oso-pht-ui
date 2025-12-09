@@ -25,16 +25,8 @@ import {
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
-import Observation from '@/utils/types/observation';
-import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
-import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
-import { DataProductSDP } from '@/utils/types/dataProduct';
 import { useHelp } from '@/utils/help/useHelp';
-import {
-  calibrationOut,
-  dataProductSDPOut,
-  observationOut
-} from '@/utils/generateDefaultObservation/GenerateDefaultObservation';
+import { generateDefaults } from '@/utils/generateDefaultObservation/GenerateDefaultObservation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 interface TargetEntryProps {
   raType: number;
@@ -266,52 +258,23 @@ export default function TargetEntry({
         tiedArrayBeams: tiedArrayBeams ? (tiedArrayBeams as TiedArrayBeams) : null
       };
 
-      const getSensCalcData = async (observation: Observation, target: Target) => {
-        const response = await calculateSensCalcData(observation, target);
-        if (response) {
-          if (response.error) {
-            const errMsg = response.error;
-            notifyError(errMsg, NOTIFICATION_DELAY_IN_SECONDS);
-          }
-          return response;
+      const generateAuto = async () => {
+        const defaults = await generateDefaults(newTarget, getProposal, setProposal, autoLink);
+        if (defaults.success) {
+          notifySuccess(t('addTarget.success'), NOTIFICATION_DELAY_IN_SECONDS);
+        } else {
+          notifyError(defaults.error, NOTIFICATION_DELAY_IN_SECONDS);
         }
       };
 
       const addTargetAsync = async () => {
-        let newObservation = undefined;
-        let newCalibration = undefined;
-        let newDataProductSDP = undefined;
-        let sensCalcResult = undefined;
-        if (autoLink && typeof getProposal().scienceCategory === 'number') {
-          newObservation = observationOut(getProposal().scienceCategory as number);
-          newCalibration = calibrationOut(newObservation?.id);
-          newDataProductSDP = dataProductSDPOut(newObservation?.id, getProposal().scienceCategory);
-          sensCalcResult = await getSensCalcData(newObservation, newTarget);
+        if (autoLink) {
+          generateAuto();
+          return;
         }
         const updatedProposal = {
           ...getProposal(),
-          targets: [...(getProposal().targets ?? []), newTarget],
-          observations: autoLink
-            ? [newObservation].filter((obs): obs is Observation => obs !== undefined)
-            : getProposal().observations,
-          calibrationStrategy: autoLink
-            ? [...(getProposal().calibrationStrategy ?? []), newCalibration as CalibrationStrategy]
-            : getProposal().calibrationStrategy,
-          dataProductSDP: autoLink
-            ? [...(getProposal().dataProductSDP ?? []), newDataProductSDP as DataProductSDP]
-            : getProposal().dataProductSDP,
-          targetObservation: autoLink
-            ? sensCalcResult && newObservation && newObservation.id && newDataProductSDP?.id
-              ? [
-                  {
-                    targetId: newTarget?.id,
-                    observationId: newObservation?.id,
-                    dataProductsSDPId: newDataProductSDP.id,
-                    sensCalc: sensCalcResult
-                  }
-                ]
-              : []
-            : getProposal().targetObservation
+          targets: [...(getProposal().targets ?? []), newTarget]
         };
         setProposal(updatedProposal);
         notifySuccess(t('addTarget.success'), NOTIFICATION_DELAY_IN_SECONDS);
