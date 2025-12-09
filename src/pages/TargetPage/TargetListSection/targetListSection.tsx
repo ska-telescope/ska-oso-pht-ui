@@ -83,7 +83,6 @@ export default function TargetListSection() {
       getProposal().calibrationStrategy?.[0] !== undefined
         ? getProposal().calibrationStrategy.filter(e => e.observationIdRef !== obsId)
         : undefined;
-    console.log('params: ', obs1, obs2, obs3);
     setProposal({
       ...getProposal(),
       targets: obs1,
