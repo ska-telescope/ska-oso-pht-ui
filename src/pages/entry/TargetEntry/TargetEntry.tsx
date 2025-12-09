@@ -26,7 +26,7 @@ import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import { useHelp } from '@/utils/help/useHelp';
-import autoLinking from '@/utils/autoLinking/AutoLinking.';
+import autoLinking from '@/utils/autoLinking/AutoLinking';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 interface TargetEntryProps {
   raType: number;

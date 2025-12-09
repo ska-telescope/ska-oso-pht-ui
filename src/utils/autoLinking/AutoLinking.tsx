@@ -49,8 +49,8 @@ const getSensCalcData = async (
   target: Target
 ): Promise<SensCalcResults | string> => {
   const response = await calculateSensCalcData(observation, target);
-  if (response.error) {
-    const errMsg = response.error;
+  if (response?.error) {
+    const errMsg = response?.error;
     return errMsg;
   }
   return response;

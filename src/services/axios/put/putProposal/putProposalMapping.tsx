@@ -563,20 +563,6 @@ const getResults = (
   incDataProductSDP: DataProductSDP[],
   incTargets: Target[]
 ) => {
-  // // TODO remove mock results and fix sens calc mapping
-  // if (MockProposalBackend.observation_info?.result_details && incDataProductSDP.length > 0 && incObs.length > 0 && incTargets.length > 0) {
-  //   const mockResults: SensCalcResultsBackend[] = [
-  //     MockProposalBackend.observation_info?.result_details[0]
-  //   ];
-  //   mockResults[0].data_product_ref = incDataProductSDP[0]?.id;
-  //   mockResults[0].observation_set_ref = incObs[0]?.id;
-  //   mockResults[0].target_ref = incTargets[0]?.name;
-  //   console.log('getResults - returning mock results', mockResults);
-  //   return mockResults;
-  // } else {
-  //   return [];
-  // }
-  // TODO use below instead of mock
   const resultsArr = [];
   if (incTargetObservations) {
     for (let tarObs of incTargetObservations) {

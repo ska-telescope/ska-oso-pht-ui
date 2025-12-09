@@ -19,7 +19,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import { useHelp } from '@/utils/help/useHelp';
-import autoLinking from '@/utils/autoLinking/AutoLinking.';
+import autoLinking from '@/utils/autoLinking/AutoLinking';
 import { useNotify } from '@/utils/notify/useNotify';
 
 const PAGE = PAGE_GENERAL;
