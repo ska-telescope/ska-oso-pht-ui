@@ -7,6 +7,11 @@ import Observation from '../types/observation';
 import { SensCalcResults } from '../types/sensCalcResults';
 import Target from '../types/target';
 
+interface DefaultsResults {
+  success: boolean;
+  error?: string;
+}
+
 export const observationOut = (obsMode: number) => {
   const defaultObs: Observation = {
     ...DEFAULT_OBSERVATIONS_LOW_AA2[obsMode],
@@ -42,7 +47,7 @@ export const dataProductSDPOut = (observationId: string, observationType: number
 const getSensCalcData = async (
   observation: Observation,
   target: Target
-): Promise<SensCalcResults | any> => {
+): Promise<SensCalcResults | string> => {
   const response = await calculateSensCalcData(observation, target);
   if (response.error) {
     const errMsg = response.error;
@@ -94,7 +99,7 @@ export const generateDefaults = async (
   getProposal: Function,
   setProposal: Function,
   autoLink: boolean
-): Promise<any | void> => {
+): Promise<DefaultsResults | void> => {
   let newObservation = undefined;
   let newDataProductSDP = undefined;
   let sensCalcResult = undefined;
