@@ -2,11 +2,10 @@ import { TableRow, TableCell, IconButton, Box, Typography, Collapse } from '@mui
 import { ChevronRight, ExpandMore } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import { useMemo } from 'react';
-import { FrequencySpectrum } from '@ska-telescope/ska-gui-components';
+import { FrequencySpectrum, getColors } from '@ska-telescope/ska-gui-components';
 import EditIcon from '@/components/icon/editIcon/editIcon';
 import TrashIcon from '@/components/icon/trashIcon/trashIcon';
 import { useInitializeAccessStore } from '@/utils/aaa/aaaUtils';
-import { getColors } from '@/utils/colors/colors';
 import { FREQUENCY_HZ, FREQUENCY_MHZ, TYPE_CONTINUUM } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import ObservationInfo from '@/components/info/observation/Observation';

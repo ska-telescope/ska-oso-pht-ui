@@ -1,5 +1,11 @@
 import React, { useState } from 'react';
-import { DropDown, SearchEntry, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
+import {
+  DropDown,
+  getColors,
+  SearchEntry,
+  SPACER_VERTICAL,
+  Spacer
+} from '@ska-telescope/ska-gui-components';
 import { Box, Card, Grid, Typography } from '@mui/material';
 import { groupBy } from 'lodash';
 import Table from '@mui/material/Table';
@@ -17,7 +23,6 @@ import D3PieChart from '@/components/charts/pie/D3PieChart';
 import D3ColumnWrapper from '@/components/charts/column/wrapper/D3Wrapper';
 import ResizablePanel from '@/components/layout/resizablePanel/ResizablePanel';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { getColors } from '@/utils/colors/colors';
 
 const REFRESH_TIME = 5 * 60 * 1000;
 const TABLE_WIDTH = '95vw';

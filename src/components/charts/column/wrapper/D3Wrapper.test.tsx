@@ -22,11 +22,7 @@ vi.mock('@ska-telescope/ska-gui-components', () => ({
         </option>
       ))}
     </select>
-  )
-}));
-
-// Mock getColors
-vi.mock('@/utils/colors/colors', () => ({
+  ),
   getColors: vi.fn(() => ['#000', '#111'])
 }));
 
@@ -123,7 +119,7 @@ describe('ColumnChartWrapper', () => {
   it('calls getColors with correct type', async () => {
     render(<D3Wrapper data={sampleData} fields={fields} t={t} />);
     triggerResize();
-    const { getColors } = await import('@/utils/colors/colors');
+    const { getColors } = await import('@ska-telescope/ska-gui-components');
     const mockedGetColors = vi.mocked(getColors);
 
     // Initial call

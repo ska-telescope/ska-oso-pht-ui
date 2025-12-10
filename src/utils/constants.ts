@@ -353,6 +353,7 @@ export const PAGE_LINKING = 8;
 export const PAGE_CALIBRATION = 9;
 export const PAGE_SRC_NET = 10;
 export const PAGE_OBSERVATION_ADD = 11;
+export const PAGE_LANDING = 12;
 export const PAGE_CYCLE = 13;
 export const PAGE_DATA_PRODUCTS_ADD = 14;
 export const PAGE_OBSERVATION_UPDATE = 15;

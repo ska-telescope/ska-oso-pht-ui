@@ -19,15 +19,8 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import { useHelp } from '@/utils/help/useHelp';
-import {
-  calibrationOut,
-  dataProductSDPOut,
-  observationOut
-} from '@/utils/generateDefaultObservation/GenerateDefaultObservation';
-import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
-import Observation from '@/utils/types/observation';
 import { useNotify } from '@/utils/notify/useNotify';
-import Target from '@/utils/types/target';
+import autoLinking from '@/utils/autoLinking/AutoLinking';
 
 const PAGE = PAGE_GENERAL;
 const LINE_OFFSET = 30;
@@ -38,7 +31,7 @@ export default function GeneralPage() {
   const { t } = useScopedTranslation();
   const { isSV } = useAppFlow();
   const theme = useTheme();
-  const { notifyError } = useNotify();
+  const { notifyError, notifySuccess } = useNotify();
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -48,7 +41,12 @@ export default function GeneralPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { osdCloses, osdOpens } = useOSDAccessors();
-  const [isObsModeChanged, setIsObsModeChanged] = React.useState(false); // For Mock Call
+
+  const [isObsModeChanged, setIsObsModeChanged] = React.useState(false); // For auto-link
+
+  // only generate observation, dataprodutsdp, senscalc, calibration when autoLink is true & obs mode is selected & target exists
+  // (science category used for obs mode in SV)
+  const autoLink = osdCyclePolicy.linkObservationToObservingMode;
 
   const setTheProposalState = () => {
     updateAppContent1(validateProposal(getProposal()));
@@ -83,9 +81,9 @@ export default function GeneralPage() {
   }, [isObsModeChanged]);
 
   const checkTargetObservation = () => {
-    // check that it's SV and science category (used for obs mode in SV) is defined
-    if (!isSV() || typeof getProposal().scienceCategory !== 'number') return;
+    if (!autoLink || typeof getProposal().scienceCategory !== 'number') return;
 
+    // ********************************************************** //
     // check if obs mode is defined
     // check if there is a target
     // check if there is an observation
@@ -103,51 +101,25 @@ export default function GeneralPage() {
           getProposal().observations![0].type !== getProposal().scienceCategory ||
           isObsModeChanged
         ) {
-          generateObservation();
+          generateAutoLinkData();
         }
       } else {
         // no observation, generate one
-        generateObservation();
+        generateAutoLinkData();
       }
     }
     setIsObsModeChanged(false);
   };
 
-  const getSensCalcData = async (observation: Observation, target: Target) => {
-    const response = await calculateSensCalcData(observation, target);
-    if (response) {
-      if (response.error) {
-        const errMsg = response.error;
-        notifyError(errMsg, NOTIFICATION_DELAY_IN_SECONDS);
-      }
-      return response;
-    }
-  };
-
-  const generateObservation = async () => {
+  const generateAutoLinkData = async () => {
+    // TODO rename function
     const target = getProposal().targets![0]; // there should be only 1 target for auto-generation
-    const newObservation = observationOut(getProposal().scienceCategory);
-    const newCalibration = calibrationOut(newObservation?.id);
-    const newDataProductSDP = dataProductSDPOut(newObservation?.id, getProposal().scienceCategory);
-    const sensCalcResult = await getSensCalcData(newObservation, target);
-
-    setProposal({
-      ...getProposal(),
-      observations: [newObservation],
-      calibrationStrategy: [newCalibration],
-      dataProductSDP: [newDataProductSDP],
-      targetObservation:
-        sensCalcResult && newObservation && newObservation.id && newDataProductSDP?.id
-          ? [
-              {
-                targetId: target?.id,
-                observationId: newObservation?.id,
-                dataProductsSDPId: newDataProductSDP.id,
-                sensCalc: sensCalcResult
-              }
-            ]
-          : []
-    });
+    const defaults = await autoLinking(target, getProposal, setProposal, false);
+    if (defaults && defaults.success) {
+      notifySuccess(t('autoLink.success'), NOTIFICATION_DELAY_IN_SECONDS);
+    } else {
+      notifyError(defaults?.error ?? t('autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
+    }
   };
 
   const cycleIdField = () => (
