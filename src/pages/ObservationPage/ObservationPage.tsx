@@ -35,7 +35,7 @@ export default function ObservationPage() {
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [elementsO, setElementsO] = React.useState<any[]>([]);
   const loggedIn = isLoggedIn();
-  const autoLink = osdCyclePolicy?.linkObservationToObservingMode;
+  const autoLink = osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1;
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -116,7 +116,7 @@ export default function ObservationPage() {
 
   React.useEffect(() => {
     setTheProposalState(
-      validateObservationPage(getProposal()),
+      validateObservationPage(getProposal(), autoLink),
       validateLinkingPage(getProposal()),
       validateCalibrationPage(getProposal())
     );
