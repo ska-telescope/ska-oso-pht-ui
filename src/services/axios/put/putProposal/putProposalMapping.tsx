@@ -173,11 +173,11 @@ export const getCalibrationStrategy = (
     observation_set_ref: strategy?.observationIdRef,
     calibrators: strategy?.calibrators
       ? strategy?.calibrators?.map(calibrator => ({
-          calibration_intent: calibrator.calibrationIntent,
-          name: calibrator.name,
-          duration_min: calibrator.durationMin,
-          choice: calibrator.choice,
-          notes: calibrator.notes
+          calibration_intent: calibrator?.calibrationIntent,
+          name: calibrator?.name,
+          duration_min: calibrator?.durationMin,
+          choice: calibrator?.choice,
+          notes: calibrator?.notes
         }))
       : null,
     notes: strategy?.notes

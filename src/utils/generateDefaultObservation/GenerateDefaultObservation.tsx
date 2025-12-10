@@ -1,17 +1,22 @@
-import { DEFAULT_OBSERVATIONS_LOW_AA2 } from '../constants';
+import { DEFAULT_DATA_PRODUCT, DEFAULT_OBSERVATIONS_LOW_AA2, TYPE_PST } from '../constants';
 import { generateId } from '../helpers';
 import { CalibrationStrategy } from '../types/calibrationStrategy';
 import { DataProductSDP } from '../types/dataProduct';
+import Observation from '../types/observation';
 
 export const observationOut = (obsMode: number) => {
-  const defaultObs = DEFAULT_OBSERVATIONS_LOW_AA2[obsMode];
+  const defaultObs: Observation = {
+    ...DEFAULT_OBSERVATIONS_LOW_AA2[obsMode],
+    id: generateId('obs-', 6)
+  };
+
   return defaultObs;
 };
 
 export const calibrationOut = (observationId: string) => {
   const newCalibration: CalibrationStrategy = {
     observatoryDefined: true,
-    id: generateId('cal-'),
+    id: generateId('cal-', 6),
     observationIdRef: observationId,
     calibrators: null,
     notes: null,
@@ -20,27 +25,13 @@ export const calibrationOut = (observationId: string) => {
   return newCalibration;
 };
 
-export const dataProductSDPOut = (observationId: string) => {
-  // default continuum data product
-  // TODO modify based on observation type
-  const newDataProductSDP: DataProductSDP = {
-    id: generateId('SDP-'),
-    dataProductType: 1,
-    observationId: observationId,
-    imageSizeValue: 1,
-    imageSizeUnits: 0,
-    pixelSizeValue: 1,
-    pixelSizeUnits: 2,
-    weighting: 1,
-    polarisations: [],
-    channelsOut: 1,
-    fitSpectralPol: 3,
-    robust: -1,
-    taperValue: 1,
-    timeAveraging: -1,
-    frequencyAveraging: -1,
-    bitDepth: 0,
-    continuumSubtraction: false
+export const dataProductSDPOut = (observationId: string, observationType: number) => {
+  const newDSP: DataProductSDP = {
+    ...DEFAULT_DATA_PRODUCT,
+    id: generateId('SDP-', 6),
+    observationId,
+    polarisations: observationType === TYPE_PST ? ['XX'] : ['I', 'XX'] // TODO change PST polarisations to 'X' when pdm updated
   };
-  return newDataProductSDP;
+
+  return newDSP;
 };
