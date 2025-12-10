@@ -74,12 +74,12 @@ export const validateTechnicalPage = (proposal: Proposal) => {
   return result[count];
 };
 
-export const validateSDPPage = (proposal: Proposal) => {
+export const validateSDPPage = (proposal: Proposal, autoLink: boolean) => {
   const result = [STATUS_ERROR, STATUS_OK];
 
   const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
 
-  if (hasTargetObservations) {
+  if (autoLink) {
     let count = hasTargetObservations() ? 1 : 0;
     return result[count];
   } else {
@@ -107,7 +107,7 @@ export const validateLinkingPage = (proposal: Proposal) => {
   return result[count];
 };
 
-export const validateProposal = (proposal: Proposal) => {
+export const validateProposal = (proposal: Proposal, autoLink: boolean) => {
   const results = [
     validateTitlePage(proposal),
     validateTeamPage(proposal),
@@ -116,7 +116,7 @@ export const validateProposal = (proposal: Proposal) => {
     validateTargetPage(proposal),
     validateObservationPage(proposal),
     validateTechnicalPage(proposal),
-    validateSDPPage(proposal),
+    validateSDPPage(proposal, autoLink),
     validateLinkingPage(proposal),
     validateCalibrationPage(proposal)
     // See SRCNet INACTIVE - validateSRCPage()

@@ -8,7 +8,6 @@ import { validateSDPPage } from '@utils/validation/validation.tsx';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { FOOTER_SPACER, PAGE_DATA_PRODUCTS, PATH } from '@utils/constants.ts';
 import { DataProductSDP } from '@utils/types/dataProduct.tsx';
-import { useAppFlow } from '@utils/appFlow/AppFlowContext.tsx';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
@@ -32,10 +31,10 @@ export default function DataProductsPage() {
   const [openDialog, setOpenDialog] = React.useState(false);
   const { osdCyclePolicy } = useOSDAccessors();
   const navigate = useNavigate();
+  const autoLink = osdCyclePolicy?.linkObservationToObservingMode;
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const { isSV } = useAppFlow();
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
@@ -55,7 +54,7 @@ export default function DataProductsPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    setTheProposalState(validateSDPPage(getProposal()));
+    setTheProposalState(validateSDPPage(getProposal(), autoLink));
   }, [validateToggle]);
 
   const deleteIconClicked = (e: DataProductSDP) => {
@@ -134,7 +133,7 @@ export default function DataProductsPage() {
   };
 
   const dataProductList = () => {
-    if (isSV() ? !hasTargetObservations() : !hasObservations()) {
+    if (autoLink ? !hasTargetObservations() : !hasObservations()) {
       return null;
     }
 
@@ -170,9 +169,9 @@ export default function DataProductsPage() {
   return (
     <Shell page={PAGE}>
       <>
-        {(isSV() ? !hasTargetObservations() : !hasObservations()) && noObservations()}
+        {(autoLink ? !hasTargetObservations() : !hasObservations()) && noObservations()}
 
-        {(isSV() ? hasTargetObservations() : hasObservations()) && (
+        {(autoLink ? hasTargetObservations() : hasObservations()) && (
           <>
             {osdCyclePolicy?.maxDataProducts !== 1 && dataProductList()}
             {osdCyclePolicy?.maxDataProducts === 1 && (

@@ -11,7 +11,6 @@ import {
   validateObservationPage
 } from '@utils/validation/validation.tsx';
 import { PAGE_CALIBRATION, PAGE_LINKING, PAGE_OBSERVATION, PATH } from '@utils/constants.ts';
-import { useAppFlow } from '@utils/appFlow/AppFlowContext.tsx';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
@@ -36,7 +35,7 @@ export default function ObservationPage() {
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [elementsO, setElementsO] = React.useState<any[]>([]);
   const loggedIn = isLoggedIn();
-  const { isSV } = useAppFlow();
+  const autoLink = osdCyclePolicy?.linkObservationToObservingMode;
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -178,13 +177,13 @@ export default function ObservationPage() {
     <Shell page={PAGE} helpDisabled>
       <>
         {(osdCyclePolicy?.maxObservations !== 1 || !isLoggedIn()) && AddTheButton()}
-        {(isSV() ? !hasTargetObservations() : !hasObservations()) && noObservations()}
+        {(autoLink ? !hasTargetObservations() : !hasObservations()) && noObservations()}
         {(!isLoggedIn() || osdCyclePolicy?.maxObservations !== 1) &&
-          (isSV() ? hasTargetObservations() : hasObservations()) &&
+          (autoLink ? hasTargetObservations() : hasObservations()) &&
           observationList()}
         {isLoggedIn() &&
           osdCyclePolicy?.maxObservations === 1 &&
-          (isSV() ? hasTargetObservations() : hasObservations()) && (
+          (autoLink ? hasTargetObservations() : hasObservations()) && (
             <ObservationEntry data={getProposal()?.observations?.[0]} />
           )}
       </>

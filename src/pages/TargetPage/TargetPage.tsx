@@ -2,6 +2,7 @@ import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Grid, Typography, Card, CardContent, CardActionArea, Tooltip } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import Shell from '../../components/layout/Shell/Shell';
 import { validateProposal } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
@@ -25,9 +26,11 @@ export default function TargetPage() {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+  const { osdCyclePolicy } = useOSDAccessors();
+  const autoLink = osdCyclePolicy?.linkObservationToObservingMode;
 
   const setTheProposalState = () => {
-    updateAppContent1(validateProposal(getProposal()));
+    updateAppContent1(validateProposal(getProposal(), autoLink));
   };
 
   React.useEffect(() => {
