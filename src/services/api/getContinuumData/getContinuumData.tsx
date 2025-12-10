@@ -39,6 +39,7 @@ import Fetch from '../fetch/Fetch';
 import Target, { PointingPatternParams } from '../../../utils/types/target';
 import Observation from '../../../utils/types/observation';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
+import { DataProductSDP } from '@/utils/types/dataProduct';
 
 const mapping = (data: any, target: Target, observation: Observation): SensCalcResults =>
   getFinalResults(target, data, observation);
@@ -329,7 +330,12 @@ const addPropertiesMID = (standardData: StandardData, continuumData: ContinuumDa
   return properties;
 };
 
-function GetContinuumData(telescope: Telescope, observation: Observation, target: Target) {
+function GetContinuumData(
+  telescope: Telescope,
+  observation: Observation,
+  target: Target,
+  dataProductSDP: DataProductSDP
+) {
   const URL_PATH = `/continuum/calculate`;
 
   const continuumData: ContinuumData = {
@@ -354,9 +360,9 @@ function GetContinuumData(telescope: Telescope, observation: Observation, target
     },
     numberOfSubBands: observation?.numSubBands ?? 0,
     spectralAveraging: observation?.spectralAveraging ?? 0,
-    imageWeighting: observation?.imageWeighting,
-    robust: observation?.robust,
-    tapering: observation?.tapering ?? 0
+    imageWeighting: dataProductSDP?.weighting,
+    robust: dataProductSDP?.robust,
+    tapering: dataProductSDP?.taperValue ?? 0
   };
 
   const observingBand = (observation: Observation) => {

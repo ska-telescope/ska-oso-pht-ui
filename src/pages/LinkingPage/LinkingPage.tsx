@@ -38,6 +38,7 @@ import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import { generateId } from '@/utils/helpers';
 import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
+import { DataProductSDP } from '@/utils/types/dataProduct';
 
 export default function LinkingPage() {
   const DATA_GRID_TARGET = '40vh';
@@ -201,8 +202,12 @@ export default function LinkingPage() {
     };
   };
 
-  const getSensCalcData = async (observation: Observation, target: Target) => {
-    const response = await calculateSensCalcData(observation, target);
+  const getSensCalcData = async (
+    observation: Observation,
+    target: Target,
+    dataProductSDP: DataProductSDP
+  ) => {
+    const response = await calculateSensCalcData(observation, target, dataProductSDP);
     if (response) {
       if (response.error) {
         const errMsg = response.error;
@@ -281,8 +286,11 @@ export default function LinkingPage() {
     if (results) {
       const target = getProposal().targets?.find(e => e.id === results.targetId);
       const observation = getProposal().observations?.find(e => e.id === results.observationId);
-      if (observation && target) {
-        getSensCalcData(observation, target);
+      const dataProductSDP = getProposal().dataProductSDP?.find(
+        d => d.id === results.dataProductsSDPId
+      ); // TODO check if this is correct when implementing linking page for proposal flow
+      if (observation && target && dataProductSDP) {
+        getSensCalcData(observation, target, dataProductSDP);
       }
     }
   };

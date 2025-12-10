@@ -40,6 +40,7 @@ import {
 import sensCalHelpers from '../sensitivityCalculator/sensCalHelpers';
 import Fetch from '../fetch/Fetch';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
+import { DataProductSDP } from '@/utils/types/dataProduct';
 
 const mapping = (data: any, target: Target, observation: Observation): SensCalcResults =>
   getFinalResults(target, data, observation);
@@ -317,7 +318,12 @@ const addPropertiesMID = (
   return properties;
 };
 
-async function GetZoomData(telescope: Telescope, observation: Observation, target: Target) {
+async function GetZoomData(
+  telescope: Telescope,
+  observation: Observation,
+  target: Target,
+  dataProductSDP: DataProductSDP
+) {
   const zoomData: ZoomData = {
     dataType: observation.type,
     bandwidth: {
@@ -339,9 +345,9 @@ async function GetZoomData(telescope: Telescope, observation: Observation, targe
     },
     spectralAveraging: observation?.spectralAveraging ?? 0,
     spectralResolution: '',
-    imageWeighting: observation?.imageWeighting,
-    robust: observation?.robust,
-    tapering: observation?.tapering ?? 0
+    imageWeighting: dataProductSDP?.weighting,
+    robust: dataProductSDP?.robust,
+    tapering: dataProductSDP?.taperValue ?? 0
   };
 
   const observingBand = (observation: Observation) => {
