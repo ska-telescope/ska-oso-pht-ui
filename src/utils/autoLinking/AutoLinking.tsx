@@ -14,7 +14,7 @@ interface DefaultsResults {
 
 export const observationOut = (obsMode: number) => {
   const defaultObs: Observation = {
-    ...DEFAULT_OBSERVATIONS_LOW_AA2[obsMode],
+    ...DEFAULT_OBSERVATIONS_LOW_AA2[obsMode], // TODO make this smarter / more generic for when not only low aa2 will be used
     id: generateId('obs-', 6)
   };
 

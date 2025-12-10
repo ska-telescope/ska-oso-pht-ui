@@ -64,7 +64,7 @@ export default function TargetEntry({
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const autoLink = isSV() && osdCyclePolicy.linkObservationToObservingMode;
+  const autoLink = osdCyclePolicy.linkObservationToObservingMode;
 
   const [id, setId] = React.useState(0);
   const [name, setName] = React.useState('');
@@ -258,22 +258,18 @@ export default function TargetEntry({
         tiedArrayBeams: tiedArrayBeams ? (tiedArrayBeams as TiedArrayBeams) : null
       };
 
-      const generateAuto = async () => {
+      const generateAutoLinkData = async () => {
         const defaults = await autoLinking(newTarget, getProposal, setProposal, true);
-        if (defaults) {
-          if (defaults.success) {
-            notifySuccess(t('autoLink.targetSuccess'), NOTIFICATION_DELAY_IN_SECONDS);
-          } else {
-            notifyError(defaults?.error ?? t('autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
-          }
+        if (defaults && defaults.success) {
+          notifySuccess(t('autoLink.targetSuccess'), NOTIFICATION_DELAY_IN_SECONDS);
+        } else {
+          notifyError(defaults?.error ?? t('autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
         }
       };
 
       const addTargetAsync = async () => {
-        // only generate observation, dataprodutsdp, senscalc, calibration when autoLink is true & obs mode is selected
-        // (science category used for obs mode in SV)
         if (autoLink && typeof getProposal().scienceCategory === 'number') {
-          generateAuto();
+          generateAutoLinkData();
           return;
         }
         const updatedProposal = {
