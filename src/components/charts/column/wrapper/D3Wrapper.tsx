@@ -1,8 +1,7 @@
 import React, { useState, useMemo, useRef, useEffect } from 'react';
 import { Box, Stack } from '@mui/material';
-import { DropDown } from '@ska-telescope/ska-gui-components';
+import { DropDown, getColors } from '@ska-telescope/ska-gui-components';
 import D3ColumnChart from '../D3ColumnChart';
-import { getColors } from '@/utils/colors/colors';
 
 type Datum = Record<string, string | number | null | undefined>;
 

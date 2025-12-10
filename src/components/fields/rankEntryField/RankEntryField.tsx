@@ -1,8 +1,8 @@
 import React from 'react';
 import { useTheme } from '@mui/material/styles';
 import { Typography, Box, Paper } from '@mui/material';
+import { getColors } from '@ska-telescope/ska-gui-components';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { getColors } from '@/utils/colors/colors';
 
 interface RankEntryFieldProps {
   setSelectedRank: Function;
