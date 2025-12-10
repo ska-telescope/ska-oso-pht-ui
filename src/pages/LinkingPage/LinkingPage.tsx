@@ -247,6 +247,7 @@ export default function LinkingPage() {
     const targetObs: TargetObservation = {
       observationId: currObs.id,
       targetId: target.id,
+      // TODO add dataProductsSDPId here when implmenting linking page for proposal flow
       sensCalc: {
         id: target.id,
         title: target.name,
