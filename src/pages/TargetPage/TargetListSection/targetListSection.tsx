@@ -190,7 +190,7 @@ export default function TargetListSection() {
               raType={RA_TYPE_ICRS.value}
               rows={getProposal().targets}
             />
-            {visibilitySVG !== null && (
+            {visibilitySVG !== null && getProposal()?.targets?.length > 0 && (
               <Box pt={6} px={3}>
                 <SvgAsImg svgXml={visibilitySVG} />
               </Box>
