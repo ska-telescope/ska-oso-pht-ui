@@ -35,7 +35,7 @@ import {
   isCypress,
   TYPE_CONTINUUM,
   NAV,
-  PAGE_OBSERVATION_ADD,
+  PAGE_LANDING,
   PATH,
   PROPOSAL_STATUS,
   PROPOSAL_STATUS_OPTIONS
@@ -178,7 +178,7 @@ export default function LandingPage() {
     if (typeof response === 'string') {
       updateAppContent1({});
       updateAppContent2({});
-      storeProposalCopy(null);
+      storeProposalCopy({} as Proposal);
       setAxiosViewError(response);
       return false;
     } else {
@@ -428,7 +428,7 @@ export default function LandingPage() {
 
   const pageDescription = () => (
     <Typography align="center" variant="h6" minHeight="5vh">
-      {t('page.' + PAGE_OBSERVATION_ADD + '.desc')}
+      {t('page.' + PAGE_LANDING + '.desc')}
     </Typography>
   );
 

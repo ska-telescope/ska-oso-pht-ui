@@ -7,6 +7,7 @@ import { useTheme } from '@mui/material/styles';
 import {
   DropDown,
   FrequencySpectrum,
+  getColors,
   NumberEntry,
   Spacer,
   SPACER_VERTICAL,
@@ -82,7 +83,6 @@ import {
   calculateContinuumBandwidth
 } from '@/utils/calculate/calculate';
 import HelpShell from '@/components/layout/HelpShell/HelpShell';
-import { getColors } from '@/utils/colors/colors';
 import PstModeField from '@/components/fields/pstMode/PstMode';
 import { useHelp } from '@/utils/help/useHelp';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
