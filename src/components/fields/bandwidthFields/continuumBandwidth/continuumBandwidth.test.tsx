@@ -5,6 +5,7 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import * as bandwidthValidationCommon from '../bandwidthValidationCommon';
 import ContinuumBandwidth from './continuumBandwidth';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+import { ERROR_SECS } from '@/utils/constants';
 
 // --- Mocks declared at top level so Vitest hoisting works ---
 vi.mock('@/services/i18n/useScopedTranslation', () => ({
@@ -32,6 +33,7 @@ vi.mock('@/utils/constants.ts', () => ({
   LAB_IS_BOLD: true,
   LAB_POSITION: 'left',
   TYPE_CONTINUUM: 'continuum',
+  ERROR_SECS: 2000,
   BANDWIDTH_TELESCOPE: [
     { value: 1, bandLimits: [0, 1000] },
     { value: 2, bandLimits: [0, 500] }
