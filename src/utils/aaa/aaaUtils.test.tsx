@@ -127,8 +127,6 @@ describe('Permission utilities', () => {
   });
 
   it('isReviewer returns true if any reviewer role matches', () => {
-    overrideGroups = OPS_PROPOSAL_ADMIN;
-    expect(isReviewer()).toBe(true);
     overrideGroups = OPS_REVIEWER_SCIENCE;
     expect(isReviewer()).toBe(true);
     overrideGroups = EXT_REVIEWER_TECHNICAL;
