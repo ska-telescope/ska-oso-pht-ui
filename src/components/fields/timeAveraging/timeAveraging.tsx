@@ -25,7 +25,6 @@ export default function TimeAveragingField({
 }: TimeAveragingFieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'timeAveraging';
-
   const [fieldValid, setFieldValid] = React.useState(true);
 
   const checkValue = (e: number) => {
