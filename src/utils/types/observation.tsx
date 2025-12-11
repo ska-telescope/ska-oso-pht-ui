@@ -18,9 +18,6 @@ type Observation = {
   continuumBandwidth: number | null; // only for continuum
   continuumBandwidthUnits: number | null; // only for continuum
   spectralAveraging?: number; // only for LOW
-  tapering?: number; // only for MID
-  imageWeighting: number;
-  robust: number;
   supplied: Supplied;
   spectralResolution: string;
   effectiveResolution: string;

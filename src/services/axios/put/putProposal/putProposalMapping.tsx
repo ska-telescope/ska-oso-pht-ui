@@ -330,8 +330,7 @@ const getArrayDetails = (incObs: Observation): ArrayDetailsLowBackend | ArrayDet
       weather: incObs.weather,
       number_15_antennas: incObs.num15mAntennas,
       number_13_antennas: incObs.num13mAntennas,
-      number_sub_bands: incObs.numSubBands,
-      tapering: incObs.tapering?.toString()
+      number_sub_bands: incObs.numSubBands
     };
     return midArrayDetails;
   }

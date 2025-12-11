@@ -57,9 +57,6 @@ describe('<DeleteObservationConfirmation />', () => {
           continuumBandwidth: 0,
           continuumBandwidthUnits: 0,
           spectralAveraging: undefined,
-          tapering: undefined,
-          imageWeighting: 0,
-          robust: 0,
           supplied: {
             type: 0,
             value: 0,

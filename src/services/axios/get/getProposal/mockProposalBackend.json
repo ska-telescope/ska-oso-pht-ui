@@ -64,8 +64,7 @@
           "weather": 3,
           "number_15_antennas": 0,
           "number_13_antennas": 0,
-          "number_sub_bands": 0,
-          "tapering": "DUMMY"
+          "number_sub_bands": 0
         },
         "observation_type_details": {
           "observation_type": "continuum",

@@ -38,6 +38,7 @@ import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import { generateId } from '@/utils/helpers';
 import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
+import { DataProductSDP } from '@/utils/types/dataProduct';
 
 export default function LinkingPage() {
   const DATA_GRID_TARGET = '40vh';
@@ -49,6 +50,7 @@ export default function LinkingPage() {
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currObs, setCurrObs] = React.useState<Observation | null>(null);
+  const [currDataProductSDP] = React.useState<DataProductSDP | null>(null);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openMultipleDialog, setOpenMultipleDialog] = React.useState(false);
   const [elementsO, setElementsO] = React.useState<ReturnType<typeof popElementO>[]>([]);
@@ -134,9 +136,15 @@ export default function LinkingPage() {
     );
   };
 
-  const updateTargetObservationStorage = (target: Target, observationId: string, results: any) => {
+  const updateTargetObservationStorage = (
+    target: Target,
+    observationId: string,
+    dataProductsSDPId: string,
+    results: any
+  ) => {
     const temp = {
       observationId: observationId,
+      dataProductsSDPId: dataProductsSDPId,
       targetId: target.id,
       sensCalc: results
     };
@@ -201,19 +209,28 @@ export default function LinkingPage() {
     };
   };
 
-  const getSensCalcData = async (observation: Observation, target: Target) => {
-    const response = await calculateSensCalcData(observation, target);
+  const getSensCalcData = async (
+    observation: Observation,
+    target: Target,
+    dataProductSDP: DataProductSDP
+  ) => {
+    const response = await calculateSensCalcData(observation, target, dataProductSDP);
     if (response) {
       if (response.error) {
         const errMsg = response.error;
         notifyError(errMsg, NOTIFICATION_DELAY_IN_SECONDS);
       }
-      setSensCalc(response, target, observation.id);
+      setSensCalc(response, target, observation.id, dataProductSDP.id);
     }
   };
 
-  const setSensCalc = (results: any, target: Target, observationId: string) => {
-    updateTargetObservationStorage(target, observationId, results);
+  const setSensCalc = (
+    results: any,
+    target: Target,
+    observationId: string,
+    dataProductsSDPId: string
+  ) => {
+    updateTargetObservationStorage(target, observationId, dataProductsSDPId, results);
   };
 
   const closeDeleteDialog = () => {
@@ -238,10 +255,11 @@ export default function LinkingPage() {
   };
 
   const addObservationTargetAndCalibration = (target: Target) => {
-    if (!currObs) return;
+    if (!currObs || !currDataProductSDP) return;
     const targetObs: TargetObservation = {
       observationId: currObs.id,
       targetId: target.id,
+      dataProductsSDPId: currDataProductSDP?.id,
       sensCalc: {
         id: target.id,
         title: target.name,
@@ -281,8 +299,11 @@ export default function LinkingPage() {
     if (results) {
       const target = getProposal().targets?.find(e => e.id === results.targetId);
       const observation = getProposal().observations?.find(e => e.id === results.observationId);
-      if (observation && target) {
-        getSensCalcData(observation, target);
+      const dataProductSDP = getProposal().dataProductSDP?.find(
+        d => d.id === results.dataProductsSDPId
+      ); // TODO double check this is correct when implementing linking page for proposal flow
+      if (observation && target && dataProductSDP) {
+        getSensCalcData(observation, target, dataProductSDP);
       }
     }
   };
@@ -325,7 +346,7 @@ export default function LinkingPage() {
 
   const isCustom = () => currObs?.subarray === OB_SUBARRAY_CUSTOM;
   const isNatural = () =>
-    currObs?.subarray !== OB_SUBARRAY_CUSTOM && currObs?.imageWeighting === IW_NATURAL;
+    currObs?.subarray !== OB_SUBARRAY_CUSTOM && currDataProductSDP?.weighting === IW_NATURAL;
 
   const getSensCalcSingle = (id: number, field: string) => (
     <SensCalcDisplaySingle

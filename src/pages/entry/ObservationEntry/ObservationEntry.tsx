@@ -126,13 +126,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [weather, setWeather] = React.useState(Number(t('weather.default')));
   const [centralFrequency, setCentralFrequency] = React.useState(0);
   const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_MHZ);
-  const [imageWeighting, setImageWeighting] = React.useState(1);
-  const [tapering, setTapering] = React.useState(0);
   const [bandwidth, setBandwidth] = React.useState(ZOOM_BANDWIDTH_DEFAULT_LOW);
   const [bandwidthLookup, setBandwidthLookup] = React.useState<
     { label: string; value: number; mapping: string } | undefined
   >(undefined);
-  const [robust, setRobust] = React.useState(3);
   const [spectralAveraging, setSpectralAveraging] = React.useState(1);
   const [spectralResolution, setSpectralResolution] = React.useState('');
   const [suppliedType, setSuppliedType] = React.useState(1);
@@ -168,10 +165,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
     setContinuumBandwidth(ob?.continuumBandwidth ?? 0);
     setContinuumBandwidthUnits(ob?.continuumBandwidthUnits ?? 0);
-    setRobust(ob?.robust);
     setSpectralAveraging(ob?.spectralAveraging ?? 1);
-    setTapering(ob?.tapering ?? 0);
-    setImageWeighting(ob?.imageWeighting);
     setSuppliedType(ob?.supplied.type);
     setSuppliedValue(ob?.supplied.value);
     setSuppliedUnits(ob?.supplied.units);
@@ -198,10 +192,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       bandwidth: bandwidth,
       continuumBandwidth: continuumBandwidth,
       continuumBandwidthUnits: continuumBandwidthUnits,
-      robust,
       spectralAveraging: spectralAveraging,
-      tapering: tapering,
-      imageWeighting: imageWeighting,
       supplied: {
         type: suppliedType,
         value: suppliedValue,
@@ -407,9 +398,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     groupObservation,
     elevation,
     weather,
-    imageWeighting,
-    tapering,
-    robust,
     suppliedType,
     suppliedValue,
     suppliedUnits,

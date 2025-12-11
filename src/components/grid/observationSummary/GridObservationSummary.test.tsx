@@ -51,8 +51,6 @@ describe('<GridObservationSummary />', () => {
               bandwidth: 0,
               continuumBandwidth: 0,
               continuumBandwidthUnits: 0,
-              imageWeighting: 0,
-              robust: 0,
               supplied: {
                 type: 0,
                 value: 0,

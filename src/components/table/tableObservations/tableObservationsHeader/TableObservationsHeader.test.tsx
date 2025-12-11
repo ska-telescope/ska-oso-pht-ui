@@ -21,6 +21,5 @@ describe('TableObservationsHeader', () => {
     expect(screen.getByText(/observationId.label/i)).toBeInTheDocument();
     expect(screen.getByText(/subArrayConfiguration.label/i)).toBeInTheDocument();
     expect(screen.getByText(/observingBand.label/i)).toBeInTheDocument();
-    // expect(screen.getByText(/imageWeighting.label/i)).toBeInTheDocument();
   });
 });
