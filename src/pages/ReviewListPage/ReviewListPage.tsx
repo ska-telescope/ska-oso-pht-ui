@@ -35,7 +35,6 @@ import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient
 import { useNotify } from '@/utils/notify/useNotify';
 import {
   getUserId,
-  isReviewerAdminOnly,
   isReviewerScience,
   isReviewerTechnical,
   useInitializeAccessStore
@@ -287,7 +286,6 @@ export default function ReviewListPage() {
     sciReview: { status: string; reviewType: { conflict: { hasConflict: boolean } } };
   }) => {
     return (
-      !isReviewerAdminOnly() &&
       isReviewerScience() &&
       row?.sciReview &&
       isFeasible(row) &&
@@ -297,24 +295,19 @@ export default function ReviewListPage() {
   };
 
   const canEditTechnical = (tecReview: { status: string }) =>
-    !isReviewerAdminOnly() &&
-    isReviewerTechnical() &&
-    tecReview &&
-    tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED;
+    isReviewerTechnical() && tecReview && tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED;
 
   const hasTechnicalComments = (review: any) =>
     feasibleYes(review) ? true : review?.comments?.length > 0;
 
   const canSubmit = (row: any) => {
     const sciRec =
-      !isReviewerAdminOnly() &&
       isReviewerScience() &&
       row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED &&
       row?.sciReview?.comments?.length > 0 &&
       row?.sciReview?.reviewType?.rank > 0;
 
     const tecRec =
-      !isReviewerAdminOnly() &&
       isReviewerTechnical() &&
       row?.tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED &&
       row?.tecReview?.reviewType?.isFeasible?.length > 0 &&
