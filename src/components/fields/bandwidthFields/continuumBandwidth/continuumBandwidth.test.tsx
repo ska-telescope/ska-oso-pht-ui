@@ -5,7 +5,6 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import * as bandwidthValidationCommon from '../bandwidthValidationCommon';
 import ContinuumBandwidth from './continuumBandwidth';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
-import { ERROR_SECS } from '@/utils/constants';
 
 // --- Mocks declared at top level so Vitest hoisting works ---
 vi.mock('@/services/i18n/useScopedTranslation', () => ({

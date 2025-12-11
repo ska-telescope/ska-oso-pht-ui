@@ -28,7 +28,7 @@ export const validateTeamPage = (proposal: Proposal) => {
   return result[count];
 };
 
-export const validateGeneralPage = (proposal: Proposal) => {
+export const validateDetailsPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
   let count = 0;
 
@@ -51,7 +51,7 @@ export const validateSciencePage = (proposal: Proposal) => {
 export const validateTargetPage = (proposal: Proposal) =>
   proposal?.targets?.length ? STATUS_OK : STATUS_ERROR;
 
-export const validateObservationPage = (proposal: Proposal, autoLink) => {
+export const validateObservationPage = (proposal: Proposal, autoLink: boolean) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
   const hasObservations = () =>
     Array.isArray(proposal?.observations) && proposal.observations.length > 0;
@@ -74,7 +74,7 @@ export const validateTechnicalPage = (proposal: Proposal) => {
   return result[count];
 };
 
-export const validateSDPPage = (proposal: Proposal, autoLink) => {
+export const validateSDPPage = (proposal: Proposal, autoLink: boolean) => {
   const result = [STATUS_ERROR, STATUS_OK];
 
   const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
@@ -107,11 +107,11 @@ export const validateLinkingPage = (proposal: Proposal) => {
   return result[count];
 };
 
-export const validateProposal = (proposal: Proposal, autoLink) => {
+export const validateProposal = (proposal: Proposal, autoLink: boolean) => {
   const results = [
     validateTitlePage(proposal),
     validateTeamPage(proposal),
-    validateGeneralPage(proposal),
+    validateDetailsPage(proposal),
     validateSciencePage(proposal),
     validateTargetPage(proposal),
     validateObservationPage(proposal, autoLink),

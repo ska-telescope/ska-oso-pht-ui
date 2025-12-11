@@ -123,7 +123,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       !validateProposalNavigation(
         getProposal(),
         thePage,
-        osdCyclePolicy.linkObservationToObservingMode
+        osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1
       )
     ) {
       thePage = PAGE_CALIBRATION;
@@ -146,7 +146,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       !validateProposalNavigation(
         getProposal(),
         thePage,
-        osdCyclePolicy.linkObservationToObservingMode
+        osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1
       )
     ) {
       thePage = PAGE_TARGET;
@@ -169,7 +169,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
         !validateProposalNavigation(
           getProposal(),
           thePage,
-          osdCyclePolicy.linkObservationToObservingMode
+          osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1
         )
       ) {
         thePage = PAGE_TARGET;
@@ -187,7 +187,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       !validateProposalNavigation(
         getProposal(),
         usedPageNo + 1,
-        osdCyclePolicy.linkObservationToObservingMode
+        osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1
       )
     ) {
       navigate(NAV[PAGE_CALIBRATION]);

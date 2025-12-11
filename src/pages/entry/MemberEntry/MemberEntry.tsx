@@ -1,19 +1,13 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, Typography, Stack } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry, TickBox, ButtonSizeTypes } from '@ska-telescope/ska-gui-components';
 import PostSendEmailInvite from '@services/axios/post/postSendEmailInvite/postSendEmailInvite';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
 import { Proposal, ProposalBackend } from '@utils/types/proposal.tsx';
 import { generateId, helpers } from '@utils/helpers.ts';
-import {
-  LAB_POSITION,
-  PROPOSAL_STATUS,
-  TEAM_STATUS_TYPE_OPTIONS,
-  WRAPPER_HEIGHT
-} from '@utils/constants.ts';
-import { Stack } from '@mui/system';
+import { LAB_POS_TICK, PROPOSAL_STATUS, TEAM_STATUS_TYPE_OPTIONS } from '@utils/constants.ts';
 import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
 import Investigator from '../../../utils/types/investigator';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
@@ -30,6 +24,7 @@ import { useHelp } from '@/utils/help/useHelp';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 export const LAB_WIDTH = 5;
+const GAP = 5;
 
 interface MemberEntryProps {
   invitationBtnClicked?: () => void;
@@ -37,7 +32,6 @@ interface MemberEntryProps {
 
 export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberEntryProps) {
   const { t } = useScopedTranslation();
-  const LABEL_WIDTH = 4;
   const { application, updateAppContent2 } = storageObject.useStore();
   const { setHelp } = useHelp();
 
@@ -69,18 +63,6 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
     const invalidEmail = Boolean(emailValidation());
     setEmailInvalid(invalidEmail);
   }, [validateToggle]);
-
-  const fieldWrapper = (children?: React.JSX.Element) => (
-    <Box
-      p={0}
-      pt={1}
-      sx={{
-        height: WRAPPER_HEIGHT
-      }}
-    >
-      {children}
-    </Box>
-  );
 
   function emailValidation() {
     let count = 0;
@@ -170,7 +152,10 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
     if (response && !('error' in response)) {
       notifySuccess(t('saveBtn.success'));
     } else {
-      notifyError('error' in response ? response.error : 'An unknown error occurred');
+      notifyError(
+        'error' in response ? response.error : 'An unknown error occurred',
+        NOTIFICATION_DELAY_IN_SECONDS
+      );
     }
   };
 
@@ -313,115 +298,108 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
     }
   };
 
-  const firstNameField = () => {
-    return fieldWrapper(
-      <TextEntry
-        label={t('firstName.label')}
-        labelBold
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH}
-        testId="firstName"
-        value={firstName}
-        setValue={setFirstName}
-        onFocus={() => setHelp('firstName.help')}
-        errorText={errorTextFirstName}
-        required
-        disabled={forSearch}
-      />
-    );
-  };
+  const firstNameField = () => (
+    <TextEntry
+      label=""
+      testId="firstName"
+      value={firstName}
+      setValue={setFirstName}
+      onFocus={() => setHelp('firstName.help')}
+      errorText={errorTextFirstName}
+      required
+      disabled={forSearch}
+    />
+  );
 
-  const lastNameField = () => {
-    return fieldWrapper(
-      <TextEntry
-        label={t('lastName.label')}
-        labelBold
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH}
-        testId="lastName"
-        value={lastName}
-        setValue={setLastName}
-        onFocus={() => setHelp('lastName.help')}
-        errorText={errorTextLastName}
-        required
-        disabled={forSearch}
-      />
-    );
-  };
+  const lastNameField = () => (
+    <TextEntry
+      label=""
+      testId="lastName"
+      value={lastName}
+      setValue={setLastName}
+      onFocus={() => setHelp('lastName.help')}
+      errorText={errorTextLastName}
+      required
+      disabled={forSearch}
+    />
+  );
 
-  const emailField = () => {
-    return fieldWrapper(
-      <TextEntry
-        label={t('email.label')}
-        labelBold
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH}
-        testId="email"
-        value={email}
-        setValue={setEmail}
-        errorText={errorTextEmail ? t(errorTextEmail) : ''}
-        onFocus={() => setHelp('email.help')}
-        required
-        disabled={forSearch}
-        suffix={resolveButton()}
-      />
-    );
-  };
+  const emailField = () => (
+    <TextEntry
+      label=""
+      testId="email"
+      value={email}
+      setValue={setEmail}
+      errorText={errorTextEmail ? t(errorTextEmail) : ''}
+      onFocus={() => setHelp('email.help')}
+      required
+      disabled={forSearch}
+      suffix={resolveButton()}
+    />
+  );
 
-  const piField = () => {
-    return fieldWrapper(
-      <Box pt={2}>
-        <TickBox
-          label={t('pi.label')}
-          labelBold
-          labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH}
-          testId="piCheckbox"
-          checked={pi}
-          onChange={handleCheckboxChangePI}
-          onFocus={() => setHelp('pi.help')}
-        />
-      </Box>
-    );
-  };
-
-  const phdThesisField = () => {
-    return fieldWrapper(
+  const piField = () => (
+    <Box p={0} m={0}>
       <TickBox
-        label={t('phdThesis.label')}
-        labelBold
-        labelPosition={LAB_POSITION}
-        labelWidth={LABEL_WIDTH}
+        label=""
+        labelPosition={LAB_POS_TICK}
+        labelWidth={0}
+        testId="piCheckbox"
+        checked={pi}
+        onChange={handleCheckboxChangePI}
+        onFocus={() => setHelp('pi.help')}
+      />
+    </Box>
+  );
+
+  const phdThesisField = () => (
+    <Box p={0} m={0}>
+      <TickBox
+        label=""
+        labelPosition={LAB_POS_TICK}
+        labelWidth={0}
         testId="PhDCheckbox"
         checked={phdThesis}
         onChange={handleCheckboxChangePhD}
         onFocus={() => setHelp('phdThesis.help')}
       />
-    );
-  };
+    </Box>
+  );
 
-  return (
-    <Grid p={3} container direction="column" alignItems="center" justifyContent="flex-start">
-      <Grid size={{ xs: 12 }}>{emailField()}</Grid>
-      <Grid size={{ xs: 12 }}>{firstNameField()}</Grid>
-      <Grid size={{ xs: 12 }}>{lastNameField()}</Grid>
-      {!isSV() && piField()}
-      {!isSV() && phdThesisField()}
-      <Grid pt={5} size={{ xs: 12 }}>
-        <Stack spacing={2} direction="row">
-          <Box>
-            <TeamInviteButton
-              action={clickFunction}
-              disabled={formInvalid}
-              primary
-              testId="sendInviteButton"
-            />
-          </Box>
-          <Box mt={6} p={0}>
-            {forSearch && <ResetButton action={clearForm} />}
-          </Box>
-        </Stack>
+  const displayLabel = (inValue: string, isBold: boolean = false) => (
+    <Typography variant="subtitle1" style={{ fontWeight: isBold ? 600 : 300 }}>
+      {inValue}
+      {isBold ? ' *' : ''}
+    </Typography>
+  );
+
+  const row = (label: string, component: React.ReactNode, isBold: boolean = false) => (
+    <Grid container alignItems="center" justifyContent="center" spacing={GAP}>
+      <Grid size={{ xs: 3 }} style={{ alignSelf: 'flex-start', textAlign: 'left' }}>
+        {displayLabel(t(label), isBold)}
+      </Grid>
+      <Grid size={{ xs: 7 }} style={{ textAlign: 'left' }}>
+        {component}
       </Grid>
     </Grid>
+  );
+
+  return (
+    <Stack pt={GAP} spacing={GAP}>
+      {row('email.label', emailField(), true)}
+      {row('firstName.label', firstNameField(), true)}
+      {row('lastName.label', lastNameField(), true)}
+      {!isSV() && row('pi.label', piField())}
+      {!isSV() && row('phdThesis.label', phdThesisField())}
+      <Stack p={GAP} spacing={GAP} direction="row">
+        <TeamInviteButton
+          action={clickFunction}
+          disabled={formInvalid}
+          primary
+          testId="sendInviteButton"
+        />
+        {forSearch && <ResetButton action={clearForm} />}
+      </Stack>
+    </Stack>
   );
 }

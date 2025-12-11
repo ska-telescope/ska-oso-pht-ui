@@ -1,5 +1,5 @@
 import React from 'react';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Papa from 'papaparse';
@@ -170,6 +170,9 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
       alignItems="flex-start"
       justifyContent="space-around"
     >
+      <Grid pt={2} size={{ xs: 11 }}>
+        <Typography>{t('importFromFile.descriptionTarget')}</Typography>
+      </Grid>
       <Grid size={{ xs: 7 }}>
         <FileUpload
           chooseToolTip={t('pdfUpload.science.tooltip.choose')}

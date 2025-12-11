@@ -34,7 +34,6 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
         // This should be extended so that multiple cycles can be represented with different policies.
         // and a means of identifying the current cycle implemented.
         //
-        linkObservationToObservingMode: true,
         maxDataProducts: 1,
         maxObservations: 1,
         maxTargets: 1,

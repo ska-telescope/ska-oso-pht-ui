@@ -25,11 +25,6 @@
     "toolTip": "Click to assign Science Verification Ideas to the panel.",
     "warning": "Please wait whilst we assign the Science Verification Ideas."
   },
-  "autoLink": {
-    "targetSuccess": "Target added and auto-linked successfully.",
-    "success": "Observation setup auto-linked successfully.",
-    "error": "Error while auto-linking observation setup "
-  },
   "bandwidth": {
     "0": {
       "help": "The overall bandwidth is limited by the number of channels. To increase/decrease the bandwidth, increase/decrease the spectral averaging parameter."

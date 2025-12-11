@@ -19,7 +19,7 @@ import {
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
   FREQUENCY_UNITS,
-  GENERAL,
+  DETAILS,
   IMAGE_WEIGHTING,
   IW_BRIGGS,
   PROJECTS,
@@ -646,9 +646,9 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
       },
       abstract: proposal.abstract as string,
       science_category: isSV
-        ? (GENERAL.ObservingMode?.find(category => category.value === proposal?.scienceCategory)
+        ? (DETAILS.ObservingMode?.find(category => category.value === proposal?.scienceCategory)
             ?.label as string)
-        : (GENERAL.ScienceCategory?.find(category => category.value === proposal?.scienceCategory)
+        : (DETAILS.ScienceCategory?.find(category => category.value === proposal?.scienceCategory)
             ?.label as string),
       investigators: proposal?.investigators
         ? proposal.investigators.map(investigator => {

@@ -24,7 +24,7 @@ import {
   PROJECTS,
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
-  GENERAL,
+  DETAILS,
   OBSERVATION_TYPE_BACKEND,
   BANDWIDTH_TELESCOPE,
   TYPE_CONTINUUM,
@@ -104,14 +104,14 @@ const getAttributes = (proposalType: {
 };
 
 export const getScienceCategory = (scienceCat: string) => {
-  const cat = GENERAL.ScienceCategory?.find(
+  const cat = DETAILS.ScienceCategory?.find(
     c => c.label.toLowerCase() === scienceCat?.toLowerCase()
   )?.value;
   return cat === null || cat === undefined ? null : cat;
 };
 
 export const getObservingMode = (observingMode: string) => {
-  const obsMode = GENERAL.ObservingMode?.find(
+  const obsMode = DETAILS.ObservingMode?.find(
     obsMode => obsMode.label.toLowerCase() === observingMode?.toLowerCase()
   )?.value;
   return obsMode === null || obsMode === undefined ? null : obsMode;

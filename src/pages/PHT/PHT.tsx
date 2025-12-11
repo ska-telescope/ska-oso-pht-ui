@@ -28,7 +28,7 @@ import AddDataProduct from '../add/AddDataProduct/AddDataProduct';
 import AddProposal from '../add/AddProposal/AddProposal';
 import DataProductPage from '../DataProduct/DataProductPage';
 import SrcDataPage from '../SrcDataPage/SrcDataPage';
-import GeneralPage from '../GeneralPage/GeneralPage';
+import DetailsPage from '../DetailsPage/DetailsPage';
 import ObservationEntry from '../entry/ObservationEntry/ObservationEntry';
 import ObservationPage from '../ObservationPage/ObservationPage';
 import SciencePage from '../SciencePage/SciencePage';
@@ -58,7 +58,7 @@ const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
   { path: NAV[0], element: <TitlePage /> },
   { path: NAV[1], element: <TeamPage /> },
-  { path: NAV[2], element: <GeneralPage /> },
+  { path: NAV[2], element: <DetailsPage /> },
   { path: NAV[3], element: <SciencePage /> },
   { path: NAV[4], element: <TargetPage /> },
   { path: NAV[5], element: <ObservationPage /> },

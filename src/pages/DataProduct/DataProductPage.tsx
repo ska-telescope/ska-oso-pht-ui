@@ -31,7 +31,7 @@ export default function DataProductsPage() {
   const [openDialog, setOpenDialog] = React.useState(false);
   const { osdCyclePolicy } = useOSDAccessors();
   const navigate = useNavigate();
-  const autoLink = osdCyclePolicy?.linkObservationToObservingMode;
+  const autoLink = osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1;
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);

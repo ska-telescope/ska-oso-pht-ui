@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, CardContent, Grid, InputLabel, Paper, Typography, Zoom } from '@mui/material';
+import { Box, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTheme } from '@mui/material/styles';
@@ -40,10 +40,9 @@ import {
   PAGE_OBSERVATION,
   PAGE_OBSERVATION_UPDATE,
   PAGE_OBSERVATION_ADD,
-  GENERAL,
+  DETAILS,
   FREQUENCY_HZ,
   ZOOM_BANDWIDTH_DEFAULT_LOW,
-  ZOOM_CHANNELS_MIN,
   ZOOM_CHANNELS_MAX,
   TYPE_PST,
   FLOW_THROUGH_VALUE,
@@ -56,10 +55,8 @@ import {
   generateId,
   getBandwidthLowZoom,
   getBandwidthZoom,
-  getMinimumChannelWidth,
-  getScaledBandwidthOrFrequency
+  getMinimumChannelWidth
 } from '@utils/helpers.ts';
-import { set } from 'lodash';
 import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
 import Proposal from '../../../utils/types/proposal';
 import AddButton from '../../../components/button/Add/Add';
@@ -89,6 +86,7 @@ import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import SuppliedValue from '@/components/fields/suppliedValue/suppliedValue';
 import CentralFrequency from '@/components/fields/centralFrequency/centralFrequency';
 import ZoomChannels from '@/components/fields/zoomChannels/zoomChannels';
+import SubBands from '@/components/fields/subBands/subBands';
 
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 4;
@@ -288,7 +286,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const getObservationType = () => {
     if (getProposal() && typeof getProposal()?.scienceCategory === 'number') {
-      const obsType = GENERAL.ObservingMode.find(
+      const obsType = DETAILS.ObservingMode.find(
         item => item.value === getProposal()?.scienceCategory
       )?.observationType;
       return obsType;
@@ -712,7 +710,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const observationTypeField = () =>
     fieldWrapper(
       <ObservationTypeField
-        disabled={loggedIn && (osdCyclePolicy?.linkObservationToObservingMode || isContinuumOnly())}
+        disabled={
+          (loggedIn && osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1) ||
+          isContinuumOnly()
+        }
         isContinuumOnly={isContinuumOnly()}
         widthLabel={LABEL_WIDTH_NEW}
         required
@@ -884,7 +885,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     fieldWrapper(
       <SpectralAveragingField
         isLow={isLow()}
-        widthLabel={LABEL_WIDTH_NEW}
+        labelWidth={LABEL_WIDTH_NEW}
         value={spectralAveraging}
         setValue={setSpectralAveraging}
         subarray={subarrayConfig}
@@ -924,52 +925,19 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
   };
 
-  const SubBandsField = () => {
-    const errorMessage = () => {
-      const min = Number(t('subBands.range.lower'));
-      const max = Number(t('subBands.range.upper'));
-      if (subBands < min || subBands > max) {
-        return t('subBands.range.error');
-      }
-      // The sub-band bandwidth defined by the bandwidth of the observation divided by the number of
-      // sub-bands should be greater than the minimum allowed bandwidth
-      if (isMid() && isContinuum()) {
-        const scaledBandwidth = getScaledBandwidthOrFrequency(
-          continuumBandwidth,
-          continuumBandwidthUnits
-        );
-        if (
-          scaledBandwidth !== 0 &&
-          subBands &&
-          scaledBandwidth / subBands < minimumChannelWidthHz
-        ) {
-          return t('subBands.range.bandwidthSubBand');
-        }
-      }
-      return '';
-    };
-
-    const validate = (e: number) => {
-      setSubBands(Number(Math.abs(e).toFixed(0)));
-    };
-
-    return fieldWrapper(
-      <Box pt={1}>
-        <NumberEntry
-          errorText={errorMessage()}
-          label={t('subBands.label')}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH_NEW}
-          testId="subBands"
-          value={subBands}
-          setValue={validate}
-          onFocus={() => setHelp('subBands')}
-          required
-        />
-      </Box>
+  const SubBandsField = () =>
+    fieldWrapper(
+      <SubBands
+        value={subBands}
+        labelWidth={LABEL_WIDTH_NEW}
+        setValue={setSubBands}
+        isMid={isMid()}
+        isContinuum={isContinuum()}
+        continuumBandwidth={continuumBandwidth}
+        continuumBandwidthUnits={continuumBandwidthUnits}
+        minimumChannelWidthHz={minimumChannelWidthHz}
+      />
     );
-  };
 
   const frequencySetUp = () => {
     return (
@@ -991,7 +959,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
   };
 
-  const frequencySetUpContinuumMockCall = () => {
+  const frequencySetUpContinuumSV = () => {
     return (
       <>
         <Grid size={{ md: 12, lg: 12 }} p={2}>
@@ -1005,7 +973,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
   };
 
-  const frequencySetUpSpectralMockCall = () => {
+  const frequencySetUpSpectralSV = () => {
     return (
       <>
         <Grid size={{ md: 12, lg: 12 }} p={2}>
@@ -1023,7 +991,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
   };
 
-  const frequencySetUpPSTMockCall = () => {
+  const frequencySetUpPSTSV = () => {
     return (
       <>
         <Grid size={{ md: 12, lg: 12 }} p={2}>
@@ -1191,9 +1159,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
               >
                 {!isSV() && frequencySetUp()}{' '}
                 {/* shows to user some fields that are hidden in mock call */}
-                {isSV() && isContinuum() && frequencySetUpContinuumMockCall()}
-                {isSV() && isZoom() && frequencySetUpSpectralMockCall()}
-                {isSV() && isPST() && frequencySetUpPSTMockCall()}
+                {isSV() && isContinuum() && frequencySetUpContinuumSV()}
+                {isSV() && isZoom() && frequencySetUpSpectralSV()}
+                {isSV() && isPST() && frequencySetUpPSTSV()}
               </Grid>
             </BorderedSection>
           </Grid>

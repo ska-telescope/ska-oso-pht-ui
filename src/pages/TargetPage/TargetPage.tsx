@@ -27,7 +27,7 @@ export default function TargetPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { osdCyclePolicy } = useOSDAccessors();
-  const autoLink = osdCyclePolicy?.linkObservationToObservingMode;
+  const autoLink = osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1;
 
   const setTheProposalState = () => {
     updateAppContent1(validateProposal(getProposal(), autoLink));

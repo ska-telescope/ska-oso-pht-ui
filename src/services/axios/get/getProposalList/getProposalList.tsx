@@ -6,7 +6,7 @@ import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
   PROJECTS,
-  GENERAL,
+  DETAILS,
   OSO_SERVICES_PROPOSAL_PATH,
   isCypress,
   SCIENCE_VERIFICATION
@@ -52,7 +52,7 @@ const getInvestigators = (inc: InvestigatorBackend[] | null): Investigator[] => 
 };
 
 const getScienceCategory = (scienceCat: string) => {
-  const cat = GENERAL.ScienceCategory.find(
+  const cat = DETAILS.ScienceCategory.find(
     cat => cat.label?.toLowerCase() === scienceCat?.toLowerCase()
   )?.value;
   return cat ? cat : null;

@@ -1,16 +1,8 @@
-// CentralFrequency.test.tsx
+// SubBands.test.tsx
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
-import CentralFrequency from './centralFrequency';
-
-vi.mock(import('@/utils/constants.ts'), async importOriginal => {
-  const actual = await importOriginal();
-  return {
-    ...actual
-    // your mocked methods
-  };
-});
+import SubBands from './subBands';
 
 // Mock the translation hook
 vi.mock('@/services/i18n/useScopedTranslation', () => ({
@@ -19,15 +11,7 @@ vi.mock('@/services/i18n/useScopedTranslation', () => ({
   })
 }));
 
-// Mock the help hook
-const setHelpMock = vi.fn();
-vi.mock('@/utils/help/useHelp', () => ({
-  useHelp: () => ({
-    setHelp: setHelpMock
-  })
-}));
-
-// Mock NumberEntry component from ska-gui-components
+// Mock ska-gui-components once, with all needed exports
 vi.mock('@ska-telescope/ska-gui-components', () => ({
   LABEL_POSITION: {
     CONTAINED: 'contained',
@@ -38,8 +22,6 @@ vi.mock('@ska-telescope/ska-gui-components', () => ({
   },
   TELESCOPE_MID: 'MID',
   TELESCOPE_LOW: 'LOW',
-  CENTRAL_FREQUENCY_MIN: 50,
-  CENTRAL_FREQUENCY_MAX: 350,
   NumberEntry: ({ errorText, value, setValue, onFocus, testId }: any) => (
     <div>
       <input
@@ -53,8 +35,26 @@ vi.mock('@ska-telescope/ska-gui-components', () => ({
   )
 }));
 
-describe('CentralFrequency component', () => {
+// Mock the help hook
+const setHelpMock = vi.fn();
+vi.mock('@/utils/help/useHelp', () => ({
+  useHelp: () => ({
+    setHelp: setHelpMock
+  })
+}));
+
+describe('SubBands component', () => {
   it('renders with initial value', () => {
-    render(<CentralFrequency bandWidth={150} observingBand={0} value={150} setValue={vi.fn()} />);
+    render(
+      <SubBands
+        value={5}
+        setValue={vi.fn()}
+        isMid={false}
+        isContinuum={false}
+        continuumBandwidth={0}
+        continuumBandwidthUnits={0}
+        minimumChannelWidthHz={0}
+      />
+    );
   });
 });

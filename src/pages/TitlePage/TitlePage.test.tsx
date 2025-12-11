@@ -21,7 +21,8 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({
     osdCycleId: 'CYCLE-1',
     osdCyclePolicy: {
-      linkObservationToObservingMode: true
+      maxTargets: 1,
+      maxObservations: 1
     }
   })
 }));
