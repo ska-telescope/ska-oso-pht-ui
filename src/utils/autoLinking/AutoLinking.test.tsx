@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { DEFAULT_DATA_PRODUCT } from '@utils/defaults/dataProduct.tsx';
 import {
   DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
-  DEFAULT_DATA_PRODUCT,
   DEFAULT_PST_OBSERVATION_LOW_AA2,
   DEFAULT_ZOOM_OBSERVATION_LOW_AA2,
   TYPE_CONTINUUM,

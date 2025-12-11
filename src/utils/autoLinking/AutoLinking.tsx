@@ -1,4 +1,5 @@
-import { DEFAULT_DATA_PRODUCT, DEFAULT_OBSERVATIONS_LOW_AA2, TYPE_PST } from '../constants';
+import { DEFAULT_DATA_PRODUCT } from '@utils/defaults/dataProduct.tsx';
+import { DEFAULT_OBSERVATIONS_LOW_AA2, TYPE_PST } from '../constants';
 import { generateId } from '../helpers';
 import { calculateSensCalcData } from '../sensCalc/sensCalc';
 import { CalibrationStrategy } from '../types/calibrationStrategy';
