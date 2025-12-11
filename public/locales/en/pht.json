@@ -1345,7 +1345,7 @@
     "label": "Time Averaging",
     "empty": "A value is required",
     "help": "Time Averaging Help",
-    "error": "A value is required",
+    "error": "A value greater than zero is required",
     "0": "seconds"
   },
   "title": {
