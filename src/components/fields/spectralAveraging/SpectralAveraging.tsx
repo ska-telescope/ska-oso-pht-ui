@@ -1,4 +1,3 @@
-import React from 'react';
 import SpectralAveragingLOWField from './low/SpectralAveragingLOW';
 import SpectralAveragingMIDField from './mid/SpectralAveragingMID';
 
@@ -7,8 +6,8 @@ interface SpectralAveragingFieldProps {
   widthLabel: number;
   setValue?: Function;
   value: number;
-  subarray?: number;
-  type?: number;
+  subarray: number;
+  type: number;
 }
 
 export default function SpectralAveragingField({

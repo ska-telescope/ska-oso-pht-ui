@@ -1,6 +1,8 @@
+import React from 'react';
 import { Grid } from '@mui/material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import {
+  ERROR_SECS,
   FREQUENCY_UNITS,
   LAB_IS_BOLD,
   LAB_POSITION,
@@ -18,6 +20,7 @@ import {
   checkBandLimits
 } from '../bandwidthValidationCommon';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useHelp } from '@/utils/help/useHelp';
 
 interface BandwidthFieldProps {
   disabled?: boolean;
@@ -25,7 +28,6 @@ interface BandwidthFieldProps {
   required?: boolean;
   setValue?: Function;
   suffix?: any;
-  testId: string;
   telescope: number;
   value: number;
   widthButton?: number;
@@ -40,13 +42,11 @@ interface BandwidthFieldProps {
 
 export default function BandwidthField({
   disabled = false,
-  onFocus,
   required = false,
   setValue,
   suffix = null,
   value,
   telescope,
-  testId,
   widthButton = 50,
   widthLabel = 5,
   observingBand = 0,
@@ -57,7 +57,11 @@ export default function BandwidthField({
   observationType = TYPE_ZOOM
 }: BandwidthFieldProps) {
   const { t } = useScopedTranslation();
+  const { setHelp } = useHelp();
   const { osdMID, osdLOW, observatoryConstants } = useOSDAccessors();
+  const FIELD = 'bandwidth';
+
+  const [errorText, setErrorText] = React.useState('');
 
   const isLow = () => telescope === TELESCOPE_LOW_NUM;
 
@@ -110,7 +114,7 @@ export default function BandwidthField({
     return t('bandwidth.range.contMaximumExceededError', { value: maxContBandwidthMHz });
   };
 
-  const errorMessage = () => {
+  const validateValue = () => {
     const bandwidthUnitsLabel = getBandwidthUnitsLabel();
     const bandwidthValue = getBandwidthValue();
     const frequencyUnitsLabel = getFrequencyUnitsLabelFunc();
@@ -150,26 +154,39 @@ export default function BandwidthField({
     return '';
   };
 
+  // Whenever value changes, validate and possibly show error
+  React.useEffect(() => {
+    const msg = validateValue();
+    setErrorText(msg);
+
+    if (msg) {
+      const timer = setTimeout(() => {
+        setErrorText('');
+      }, ERROR_SECS);
+      return () => clearTimeout(timer);
+    }
+  }, [value, telescope, subarrayConfig, observingBand, centralFrequency, centralFrequencyUnits]);
+
   return (
     <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
       <Grid pl={suffix ? 1 : 0} size={{ xs: suffix ? 12 - widthButton : 12 }}>
         <DropDown
           disabled={disabled}
           options={isLow() ? roundBandwidthValue(getOptions()) : getOptions()}
-          testId={testId}
+          testId={FIELD}
           value={value}
           setValue={setValue}
           label={
             observationType === TYPE_PST
-              ? t(`bandwidth.label.${TYPE_PST}`)
-              : t(`bandwidth.label.${TYPE_ZOOM}`)
+              ? t(FIELD + '.label.' + TYPE_PST)
+              : t(FIELD + '.label.' + TYPE_ZOOM)
           }
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
           labelWidth={suffix ? widthLabel + 1 : widthLabel}
-          onFocus={onFocus}
+          onFocus={() => setHelp(FIELD)}
           required={required}
-          errorText={errorMessage()}
+          errorText={errorText}
         />
       </Grid>
       <Grid size={{ xs: suffix ? widthButton : 0 }}>{suffix}</Grid>

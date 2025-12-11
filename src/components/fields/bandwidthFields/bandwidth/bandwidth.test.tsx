@@ -7,6 +7,14 @@ import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 const value = 1;
 
+vi.mock(import('@/utils/constants.ts'), async importOriginal => {
+  const actual = await importOriginal();
+  return {
+    ...actual
+    // your mocked methods
+  };
+});
+
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
@@ -20,7 +28,6 @@ describe('<Bandwidth />', () => {
     wrapper(
       <Bandwidth
         telescope={1}
-        testId="bandwidth"
         value={value}
         observingBand={0}
         centralFrequency={200}
@@ -34,7 +41,6 @@ describe('<Bandwidth />', () => {
       <Bandwidth
         observingBand={0}
         telescope={2}
-        testId="bandwidth"
         value={value}
         centralFrequencyUnits={1}
         suffix={'#'}

@@ -3,8 +3,7 @@ import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import StandardAlert from '../standardAlert/StandardAlert';
 import StandardChip from '../standardChip/standardChip';
 import { useNotify } from '@/utils/notify/useNotify';
-
-const SECS = 2000;
+import { ERROR_SECS } from '@/utils/constants';
 
 interface TimedAlertProps {
   color: typeof AlertColorTypes;
@@ -27,7 +26,7 @@ export default function TimedAlert({ color, gap = 1, delay = 2, testId, text }: 
     const timer = () => {
       setTimeout(() => {
         closeFunction();
-      }, delay * SECS);
+      }, delay * ERROR_SECS);
     };
     setShow(true);
     if (color === AlertColorTypes.Info || color === AlertColorTypes.Success) {
