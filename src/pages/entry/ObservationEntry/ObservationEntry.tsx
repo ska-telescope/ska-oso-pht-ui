@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, CardContent, Grid, InputLabel, Paper, Typography, Zoom } from '@mui/material';
+import { Box, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTheme } from '@mui/material/styles';
@@ -43,7 +43,6 @@ import {
   GENERAL,
   FREQUENCY_HZ,
   ZOOM_BANDWIDTH_DEFAULT_LOW,
-  ZOOM_CHANNELS_MIN,
   ZOOM_CHANNELS_MAX,
   TYPE_PST,
   FLOW_THROUGH_VALUE,
@@ -59,7 +58,6 @@ import {
   getMinimumChannelWidth,
   getScaledBandwidthOrFrequency
 } from '@utils/helpers.ts';
-import { set } from 'lodash';
 import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
 import Proposal from '../../../utils/types/proposal';
 import AddButton from '../../../components/button/Add/Add';
