@@ -1,26 +1,6 @@
 import { DataProductSDP } from '@utils/types/dataProduct.tsx';
 import { IW_UNIFORM } from '@utils/constants.ts';
 
-export const DEFAULT_DATA_PRODUCT: DataProductSDP = {
-  id: 'SDP-0000000',
-  dataProductType: 1, // used for continuum and pst
-  observationId: 'obs-123',
-  imageSizeValue: 2.5, // used for continuum and spectral
-  imageSizeUnits: 0, // used for continuum and spectral
-  pixelSizeValue: 1.6, // used for continuum and spectral
-  pixelSizeUnits: 2, // used for continuum and spectral
-  weighting: IW_UNIFORM, // used for continuum and spectral
-  polarisations: ['I', 'XX'], // used for all modes
-  channelsOut: 40, // used for spectral
-  fitSpectralPol: 3, // TODO used for pst timing data product?
-  robust: 1, // used for continuum and spectral
-  taperValue: 0, // used for continuum and spectral
-  timeAveraging: 3.4, // used for continuum and pst
-  frequencyAveraging: 21.7, // used for continuum // TODO check frequency averaging factor for pst
-  bitDepth: 1, // used for pst
-  continuumSubtraction: false // used for spectral
-};
-
 export const DEFAULT_SPECTRAL_DATA_PRODUCT: DataProductSDP = {
   id: 'SDP-0000000',
   observationId: 'obs-123',
@@ -51,10 +31,10 @@ export const DEFAULT_CONTINUUM_IMAGES_DATA_PRODUCT: DataProductSDP = {
 
 export const DEFAULT_CONTINUUM_VISIBILITIES_DATA_PRODUCT: DataProductSDP = {
   id: 'SDP-0000000',
-  dataProductType: 1, ///TODO: Check if needed
+  dataProductType: 2,
   observationId: 'obs-123',
   timeAveraging: 3.4,
-  frequencyAveraging: 21.7
+  frequencyAveraging: 21.7 // TODO check frequency averaging factor for pst
 };
 
 export const DEFAULT_PST_IMAGES_DATA_PRODUCT: DataProductSDP = {
@@ -66,7 +46,7 @@ export const DEFAULT_PST_IMAGES_DATA_PRODUCT: DataProductSDP = {
   pixelSizeValue: 1.6,
   pixelSizeUnits: 2,
   weighting: IW_UNIFORM,
-  polarisations: ['I', 'XX'],
+  polarisations: ['XX'], // TODO change polarisations to 'X' when pdm updated
   channelsOut: 40,
   taperValue: 0,
   bitDepth: 1
@@ -74,10 +54,10 @@ export const DEFAULT_PST_IMAGES_DATA_PRODUCT: DataProductSDP = {
 
 export const DEFAULT_PST_VISIBILITIES_DATA_PRODUCT: DataProductSDP = {
   id: 'SDP-0000000',
-  dataProductType: 1,
+  dataProductType: 2,
   observationId: 'obs-123',
-  polarisations: ['I', 'XX'],
+  polarisations: ['XX'], // TODO change polarisations to 'X' when pdm updated
   timeAveraging: 3.4,
-  frequencyAveraging: 21.7,
+  frequencyAveraging: 21.7, // TODO check frequency averaging factor for pst
   bitDepth: 1
 };

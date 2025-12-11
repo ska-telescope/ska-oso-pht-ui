@@ -1,5 +1,9 @@
-import { DEFAULT_DATA_PRODUCT } from '@utils/defaults/dataProduct.tsx';
-import { DEFAULT_OBSERVATIONS_LOW_AA2, TYPE_PST } from '../constants';
+import {
+  DEFAULT_CONTINUUM_IMAGES_DATA_PRODUCT,
+  DEFAULT_PST_IMAGES_DATA_PRODUCT,
+  DEFAULT_SPECTRAL_DATA_PRODUCT
+} from '@utils/defaults/dataProduct.tsx';
+import { DEFAULT_OBSERVATIONS_LOW_AA2, TYPE_CONTINUUM, TYPE_PST } from '../constants';
 import { generateId } from '../helpers';
 import { calculateSensCalcData } from '../sensCalc/sensCalc';
 import { CalibrationStrategy } from '../types/calibrationStrategy';
@@ -35,11 +39,22 @@ export const calibrationOut = (observationId: string) => {
 };
 
 export const dataProductSDPOut = (observationId: string, observationType: number) => {
+  let defaultDP: DataProductSDP;
+  switch (observationType) {
+    case TYPE_PST:
+      defaultDP = DEFAULT_PST_IMAGES_DATA_PRODUCT;
+      break;
+    case TYPE_CONTINUUM:
+      defaultDP = DEFAULT_CONTINUUM_IMAGES_DATA_PRODUCT;
+      break;
+    default:
+      defaultDP = DEFAULT_SPECTRAL_DATA_PRODUCT;
+      break;
+  }
   const newDSP: DataProductSDP = {
-    ...DEFAULT_DATA_PRODUCT,
+    ...defaultDP,
     id: generateId('SDP-', 6),
-    observationId,
-    polarisations: observationType === TYPE_PST ? ['XX'] : ['I', 'XX'] // TODO change PST polarisations to 'X' when pdm updated
+    observationId
   };
 
   return newDSP;

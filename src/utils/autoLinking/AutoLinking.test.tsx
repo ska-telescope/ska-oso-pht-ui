@@ -1,5 +1,9 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { DEFAULT_DATA_PRODUCT } from '@utils/defaults/dataProduct.tsx';
+import {
+  DEFAULT_CONTINUUM_IMAGES_DATA_PRODUCT,
+  DEFAULT_PST_IMAGES_DATA_PRODUCT,
+  DEFAULT_SPECTRAL_DATA_PRODUCT
+} from '@utils/defaults/dataProduct.tsx';
 import {
   DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
   DEFAULT_PST_OBSERVATION_LOW_AA2,
@@ -13,7 +17,6 @@ import { calculateSensCalcData } from '../sensCalc/sensCalc';
 import Proposal from '../types/proposal';
 import autoLinking, { calibrationOut, dataProductSDPOut, observationOut } from './AutoLinking';
 import { mockCalibration } from './mockCalibration';
-import { PST_DATA_PRODUCT } from './mockSDP';
 import { mockTarget, mockTarget2 } from './mockTarget';
 
 describe('autoLinking, observationOut', () => {
@@ -35,17 +38,17 @@ describe('autoLinking, dataProductSDPOut', () => {
   test('SDP default continuum', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('SDP-0000000');
     const sdp = dataProductSDPOut('obs-123', TYPE_CONTINUUM);
-    expect(sdp).to.deep.equal(DEFAULT_DATA_PRODUCT);
+    expect(sdp).to.deep.equal(DEFAULT_CONTINUUM_IMAGES_DATA_PRODUCT);
   });
   test('SDP default spectral', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('SDP-0000000');
     const sdp = dataProductSDPOut('obs-123', TYPE_ZOOM);
-    expect(sdp).to.deep.equal(DEFAULT_DATA_PRODUCT);
+    expect(sdp).to.deep.equal(DEFAULT_SPECTRAL_DATA_PRODUCT);
   });
   test('SDP default PST', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('SDP-0000000');
     const sdp = dataProductSDPOut('obs-123', TYPE_PST);
-    expect(sdp).to.deep.equal(PST_DATA_PRODUCT);
+    expect(sdp).to.deep.equal(DEFAULT_PST_IMAGES_DATA_PRODUCT);
   });
 });
 
