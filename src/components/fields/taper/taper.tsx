@@ -1,6 +1,7 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { LAB_POSITION } from '@utils/constants.ts';
+import { ERROR_SECS, LAB_POSITION } from '@utils/constants.ts';
+import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface TaperFieldProps {
@@ -8,7 +9,7 @@ interface TaperFieldProps {
   required?: boolean;
   labelWidth?: number;
   onFocus?: Function;
-  setValue?: Function;
+  setValue: Function;
   suffix?: any;
   value: number;
 }
@@ -25,15 +26,28 @@ export default function TaperField({
   const { t } = useScopedTranslation();
   const FIELD = 'taper';
 
-  const errorText = () => (Number(value) >= 0 ? '' : t(FIELD + '.error'));
-  const setTheNumber = (inNum: number) => {
-    const str = Math.abs(inNum).toString();
-    const num = Number(str);
-    if (setValue) {
+  const [fieldValid, setFieldValid] = React.useState(true);
+
+  const checkValue = (e: number) => {
+    const num = Number(e);
+    if (num >= 0) {
+      setFieldValid(true);
       setValue(num);
+    } else {
+      setFieldValid(false);
     }
   };
 
+  const errorMessage = fieldValid ? '' : t(FIELD + '.error');
+
+  React.useEffect(() => {
+    const timer = () => {
+      setTimeout(() => {
+        setFieldValid(true);
+      }, ERROR_SECS);
+    };
+    timer();
+  }, [fieldValid]);
   return (
     <Box pt={1}>
       <NumberEntry
@@ -43,12 +57,12 @@ export default function TaperField({
         labelWidth={labelWidth}
         testId={FIELD}
         value={value}
-        setValue={(e: number) => setTheNumber(e)}
+        setValue={checkValue}
         onFocus={onFocus}
         disabled={disabled}
         required={required}
         suffix={suffix}
-        errorText={errorText()}
+        errorText={errorMessage}
       />
     </Box>
   );

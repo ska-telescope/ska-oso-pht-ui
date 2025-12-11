@@ -3,7 +3,6 @@ import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 import CentralFrequency from './centralFrequency';
-import { TEL } from '@/utils/constants.ts';
 
 vi.mock(import('@/utils/constants.ts'), async importOriginal => {
   const actual = await importOriginal();
