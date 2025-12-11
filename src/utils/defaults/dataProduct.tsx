@@ -56,3 +56,28 @@ export const DEFAULT_CONTINUUM_VISIBILITIES_DATA_PRODUCT: DataProductSDP = {
   timeAveraging: 3.4,
   frequencyAveraging: 21.7
 };
+
+export const DEFAULT_PST_IMAGES_DATA_PRODUCT: DataProductSDP = {
+  id: 'SDP-0000000',
+  dataProductType: 1,
+  observationId: 'obs-123',
+  imageSizeValue: 2.5,
+  imageSizeUnits: 0,
+  pixelSizeValue: 1.6,
+  pixelSizeUnits: 2,
+  weighting: IW_UNIFORM,
+  polarisations: ['I', 'XX'],
+  channelsOut: 40,
+  taperValue: 0,
+  bitDepth: 1
+};
+
+export const DEFAULT_PST_VISIBILITIES_DATA_PRODUCT: DataProductSDP = {
+  id: 'SDP-0000000',
+  dataProductType: 1,
+  observationId: 'obs-123',
+  polarisations: ['I', 'XX'],
+  timeAveraging: 3.4,
+  frequencyAveraging: 21.7,
+  bitDepth: 1
+};
