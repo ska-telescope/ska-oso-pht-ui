@@ -1,6 +1,7 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { CHANNELS_OUT_MAX, LAB_POSITION } from '@utils/constants.ts';
+import { CHANNELS_OUT_MAX, ERROR_SECS, LAB_POSITION } from '@utils/constants.ts';
+import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface ChannelsOutFieldProps {
@@ -9,7 +10,7 @@ interface ChannelsOutFieldProps {
   labelWidth?: number;
   maxValue?: number;
   onFocus?: Function;
-  setValue?: Function;
+  setValue: Function;
   suffix?: any;
   value: number;
 }
@@ -25,16 +26,28 @@ export default function ChannelsOutField({
 }: ChannelsOutFieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'channelsOut';
+  const [fieldValid, setFieldValid] = React.useState(true);
 
-  const errorText = () =>
-    Number(value) && value > 0 && value <= CHANNELS_OUT_MAX ? '' : t('channelsOut.error');
-  const setTheNumber = (inNum: number) => {
-    const str = Math.abs(inNum).toString();
-    const num = Number(str);
-    if (setValue) {
+  const checkValue = (e: number) => {
+    const num = Number(e);
+    if (num > 0 && num <= CHANNELS_OUT_MAX) {
+      setFieldValid(true);
       setValue(num);
+    } else {
+      setFieldValid(false);
     }
   };
+
+  const errorMessage = fieldValid ? '' : t(FIELD + '.error');
+
+  React.useEffect(() => {
+    const timer = () => {
+      setTimeout(() => {
+        setFieldValid(true);
+      }, ERROR_SECS);
+    };
+    timer();
+  }, [fieldValid]);
 
   return (
     <Box pt={1}>
@@ -45,12 +58,12 @@ export default function ChannelsOutField({
         labelWidth={labelWidth}
         testId={FIELD}
         value={value}
-        setValue={(e: number) => setTheNumber(e)}
+        setValue={checkValue}
         onFocus={onFocus}
         disabled={disabled}
         required={required}
         suffix={suffix}
-        errorText={errorText()}
+        errorText={errorMessage}
       />
     </Box>
   );
