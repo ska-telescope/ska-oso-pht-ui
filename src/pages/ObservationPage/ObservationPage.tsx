@@ -4,17 +4,17 @@ import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
-import Shell from '../../components/layout/Shell/Shell';
-import AddButton from '../../components/button/Add/Add';
-import Alert from '../../components/alerts/standardAlert/StandardAlert';
-import Observation from '../../utils/types/observation';
-import { Proposal } from '../../utils/types/proposal';
+import { Proposal } from '@utils/types/proposal.tsx';
 import {
   validateCalibrationPage,
   validateLinkingPage,
   validateObservationPage
-} from '../../utils/validation/validation';
-import { PAGE_CALIBRATION, PAGE_LINKING, PAGE_OBSERVATION, PATH } from '../../utils/constants';
+} from '@utils/validation/validation.tsx';
+import { PAGE_CALIBRATION, PAGE_LINKING, PAGE_OBSERVATION, PATH } from '@utils/constants.ts';
+import Shell from '../../components/layout/Shell/Shell';
+import AddButton from '../../components/button/Add/Add';
+import Alert from '../../components/alerts/standardAlert/StandardAlert';
+import Observation from '../../utils/types/observation';
 import DeleteObservationConfirmation from '../../components/alerts/deleteObservationConfirmation/deleteObservationConfirmation';
 import ObservationEntry from '../entry/ObservationEntry/ObservationEntry';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -35,6 +35,7 @@ export default function ObservationPage() {
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [elementsO, setElementsO] = React.useState<any[]>([]);
   const loggedIn = isLoggedIn();
+  const autoLink = osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1;
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -115,13 +116,17 @@ export default function ObservationPage() {
 
   React.useEffect(() => {
     setTheProposalState(
-      validateObservationPage(getProposal()),
+      validateObservationPage(getProposal(), autoLink),
       validateLinkingPage(getProposal()),
       validateCalibrationPage(getProposal())
     );
   }, [validateToggle]);
 
   const hasObservations = () => elementsO?.length > 0;
+
+  const hasTargetObservations = () => {
+    return (getProposal()?.targetObservation?.length ?? 0) > 0;
+  };
 
   const noObservations = () => {
     return (
@@ -172,13 +177,15 @@ export default function ObservationPage() {
     <Shell page={PAGE} helpDisabled>
       <>
         {(osdCyclePolicy?.maxObservations !== 1 || !isLoggedIn()) && AddTheButton()}
-        {!hasObservations() && noObservations()}
+        {(autoLink ? !hasTargetObservations() : !hasObservations()) && noObservations()}
         {(!isLoggedIn() || osdCyclePolicy?.maxObservations !== 1) &&
-          hasObservations() &&
+          (autoLink ? hasTargetObservations() : hasObservations()) &&
           observationList()}
-        {isLoggedIn() && osdCyclePolicy?.maxObservations === 1 && hasObservations() && (
-          <ObservationEntry data={getProposal()?.observations?.[0]} />
-        )}
+        {isLoggedIn() &&
+          osdCyclePolicy?.maxObservations === 1 &&
+          (autoLink ? hasTargetObservations() : hasObservations()) && (
+            <ObservationEntry data={getProposal()?.observations?.[0]} />
+          )}
       </>
     </Shell>
   );

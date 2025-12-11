@@ -32,6 +32,7 @@ vi.mock('@/utils/constants.ts', () => ({
   LAB_IS_BOLD: true,
   LAB_POSITION: 'left',
   TYPE_CONTINUUM: 'continuum',
+  ERROR_SECS: 2000,
   BANDWIDTH_TELESCOPE: [
     { value: 1, bandLimits: [0, 1000] },
     { value: 2, bandLimits: [0, 500] }

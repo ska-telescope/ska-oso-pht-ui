@@ -51,13 +51,20 @@ export const validateSciencePage = (proposal: Proposal) => {
 export const validateTargetPage = (proposal: Proposal) =>
   proposal?.targets?.length ? STATUS_OK : STATUS_ERROR;
 
-export const validateObservationPage = (proposal: Proposal) => {
+export const validateObservationPage = (proposal: Proposal, autoLink) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
   const hasObservations = () =>
     Array.isArray(proposal?.observations) && proposal.observations.length > 0;
 
-  let count = hasObservations() ? 2 : 0;
-  return result[count];
+  const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
+
+  if (autoLink) {
+    let count = hasTargetObservations() ? 2 : 0;
+    return result[count];
+  } else {
+    let count = hasObservations() ? 2 : 0;
+    return result[count];
+  }
 };
 
 export const validateTechnicalPage = (proposal: Proposal) => {
@@ -67,11 +74,19 @@ export const validateTechnicalPage = (proposal: Proposal) => {
   return result[count];
 };
 
-export const validateSDPPage = (proposal: Proposal) => {
+export const validateSDPPage = (proposal: Proposal, autoLink) => {
   const result = [STATUS_ERROR, STATUS_OK];
-  const count =
-    Array.isArray(proposal?.dataProductSDP) && proposal.dataProductSDP.length > 0 ? 1 : 0;
-  return result[count];
+
+  const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
+
+  if (autoLink) {
+    let count = hasTargetObservations() ? 1 : 0;
+    return result[count];
+  } else {
+    let count =
+      Array.isArray(proposal?.dataProductSDP) && proposal.dataProductSDP.length > 0 ? 1 : 0;
+    return result[count];
+  }
 };
 
 export const validateSRCPage = () => STATUS_OK;
@@ -92,16 +107,16 @@ export const validateLinkingPage = (proposal: Proposal) => {
   return result[count];
 };
 
-export const validateProposal = (proposal: Proposal) => {
+export const validateProposal = (proposal: Proposal, autoLink) => {
   const results = [
     validateTitlePage(proposal),
     validateTeamPage(proposal),
     validateGeneralPage(proposal),
     validateSciencePage(proposal),
     validateTargetPage(proposal),
-    validateObservationPage(proposal),
+    validateObservationPage(proposal, autoLink),
     validateTechnicalPage(proposal),
-    validateSDPPage(proposal),
+    validateSDPPage(proposal, autoLink),
     validateLinkingPage(proposal),
     validateCalibrationPage(proposal)
     // See SRCNet INACTIVE - validateSRCPage()

@@ -182,6 +182,8 @@ export const DP_TYPE_VISIBLE = 2;
 
 export const DEFAULT_HELP = ['', ' ', ''];
 
+export const ERROR_SECS = 2000;
+
 export const EMPTY_STATUS = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]; // See SRCNet INACTIVE
 export const ENTRY_HEIGHT = 40;
 
@@ -650,8 +652,8 @@ export const TEL = ['', 'Mid', 'Low'];
 export const TELESCOPE_MID_NUM = 1;
 export const TELESCOPE_LOW_NUM = 2;
 export const TELESCOPES = [
-  { label: TELESCOPE_MID.code.toUpperCase(), value: 1 },
-  { label: TELESCOPE_LOW.code.toUpperCase(), value: 2 }
+  { label: TELESCOPE_MID.code?.toUpperCase(), value: 1 },
+  { label: TELESCOPE_LOW.code?.toUpperCase(), value: 2 }
 ];
 
 // This is the fundamental limits of the bandwidth provided by SKA LOW and MID

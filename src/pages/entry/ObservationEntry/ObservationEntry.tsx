@@ -16,8 +16,6 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import {
   BANDWIDTH_TELESCOPE,
-  CENTRAL_FREQUENCY_MAX,
-  CENTRAL_FREQUENCY_MIN,
   LAB_IS_BOLD,
   LAB_POSITION,
   NAV,
@@ -45,7 +43,6 @@ import {
   GENERAL,
   FREQUENCY_HZ,
   ZOOM_BANDWIDTH_DEFAULT_LOW,
-  ZOOM_CHANNELS_MIN,
   ZOOM_CHANNELS_MAX,
   TYPE_PST,
   FLOW_THROUGH_VALUE,
@@ -56,6 +53,7 @@ import {
 import {
   frequencyConversion,
   generateId,
+  getBandwidthLowZoom,
   getBandwidthZoom,
   getMinimumChannelWidth,
   getScaledBandwidthOrFrequency
@@ -86,6 +84,9 @@ import HelpShell from '@/components/layout/HelpShell/HelpShell';
 import PstModeField from '@/components/fields/pstMode/PstMode';
 import { useHelp } from '@/utils/help/useHelp';
 import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
+import SuppliedValue from '@/components/fields/suppliedValue/suppliedValue';
+import CentralFrequency from '@/components/fields/centralFrequency/centralFrequency';
+import ZoomChannels from '@/components/fields/zoomChannels/zoomChannels';
 
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 4;
@@ -126,6 +127,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [centralFrequency, setCentralFrequency] = React.useState(0);
   const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_MHZ);
   const [bandwidth, setBandwidth] = React.useState(ZOOM_BANDWIDTH_DEFAULT_LOW);
+  const [bandwidthLookup, setBandwidthLookup] = React.useState<
+    { label: string; value: number; mapping: string } | undefined
+  >(undefined);
   const [spectralAveraging, setSpectralAveraging] = React.useState(1);
   const [spectralResolution, setSpectralResolution] = React.useState('');
   const [suppliedType, setSuppliedType] = React.useState(1);
@@ -384,6 +388,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   }, [subarrayConfig]);
 
   React.useEffect(() => {
+    setBandwidthLookup(getBandwidthLowZoom(bandwidth));
+  }, [bandwidth]);
+
+  React.useEffect(() => {
     setValidateToggle(!validateToggle);
     updateStorageProposal();
   }, [
@@ -518,8 +526,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
             isContinuum() || isPST()
               ? continuumBandwidth ?? 0
               : frequencyConversion(
-                  getBandwidthZoom(observationOut()),
-                  FREQUENCY_KHZ,
+                  isLow() ? bandwidthLookup?.value ?? 0 : getBandwidthZoom(observationOut()),
+                  isLow() ? FREQUENCY_MHZ : FREQUENCY_KHZ,
                   FREQUENCY_MHZ
                 ) ?? 0
           }
@@ -742,83 +750,49 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       );
     };
 
-    const suppliedValueField = () => {
-      const errorMessage = () => {
-        return suppliedValue <= 0 ? t('suppliedValue.range.error') : '';
-      };
-      return (
-        <Box p={0} pt={2} ml={-3}>
-          <NumberEntry
-            errorText={errorMessage()}
-            label=""
-            testId="suppliedValue"
-            value={suppliedValue}
-            setValue={setSuppliedValue}
-            onFocus={() => setHelp('suppliedValue')}
-            suffix={suppliedUnitsField()}
-            required
-          />
-        </Box>
-      );
-    };
-
     return suppliedWrapper(
       <Grid pt={0} m={0} container justifyContent="space-between" direction="row">
         <Grid pt={1} pr={1} size={{ md: 5 }}>
           {suppliedTypeField()}
         </Grid>
-        <Grid pt={0} size={{ md: 10 - BOTTOM_LABEL_WIDTH }} justifySelf="flex-end">
-          {suppliedValueField()}
+        <Grid p={0} pt={2} size={{ md: 10 - BOTTOM_LABEL_WIDTH }} justifySelf="flex-end">
+          <Box ml={-3}>
+            <SuppliedValue
+              value={suppliedValue}
+              setValue={setSuppliedValue}
+              suffix={suppliedUnitsField()}
+              required
+            />
+          </Box>
         </Grid>
       </Grid>
     );
   };
 
   const zoomChannelsField = () => {
-    const errorMessage = () =>
-      Number(zoomChannels) < ZOOM_CHANNELS_MIN || Number(zoomChannels) > ZOOM_CHANNELS_MAX
-        ? t('zoomChannels.range.error')
-        : '';
-
     return fieldWrapper(
       <Box pt={1}>
-        <NumberEntry
-          label={t('zoomChannels.label')}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
+        <ZoomChannels
           labelWidth={LABEL_WIDTH_NEW}
-          testId="zoomChannels"
+          required
           value={zoomChannels}
           setValue={setZoomChannels}
-          onFocus={() => setHelp('zoomChannels')}
-          required
-          errorText={errorMessage()}
         />
       </Box>
     );
   };
 
   const centralFrequencyField = () => {
-    const errorMessage = () =>
-      Number(centralFrequency) < CENTRAL_FREQUENCY_MIN[observingBand] ||
-      Number(centralFrequency) > CENTRAL_FREQUENCY_MAX[observingBand]
-        ? t('centralFrequency.range.error')
-        : '';
-
     return fieldWrapper(
       <Box pt={1}>
-        <NumberEntry
-          label={t('centralFrequency.label')}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
+        <CentralFrequency
+          bandWidth={isContinuum() ? continuumBandwidth : bandwidth}
           labelWidth={LABEL_WIDTH_NEW}
-          testId="centralFrequency"
+          observingBand={observingBand}
           value={centralFrequency}
           setValue={setCentralFrequency}
-          onFocus={() => setHelp('centralFrequency')}
-          required
           suffix={centralFrequencyUnitsField()}
-          errorText={errorMessage()}
+          required
         />
       </Box>
     );
@@ -843,7 +817,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     return fieldWrapper(
       <ContinuumBandwidthField
         labelWidth={LABEL_WIDTH_NEW}
-        onFocus={() => setHelp(`bandwidth.${TYPE_CONTINUUM}`)}
         setValue={setContinuumBandwidth}
         value={continuumBandwidth}
         suffix={continuumBandwidthUnitsField()}
@@ -862,10 +835,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     <Grid>
       {fieldWrapper(
         <BandwidthField
-          onFocus={() => setHelp(`bandwidth.${TYPE_ZOOM}`)}
           required
           setValue={setBandwidth}
-          testId="bandwidth"
           value={bandwidth}
           telescope={telescope()}
           widthLabel={LABEL_WIDTH_NEW}

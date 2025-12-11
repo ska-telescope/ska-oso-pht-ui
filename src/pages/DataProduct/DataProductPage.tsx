@@ -31,6 +31,7 @@ export default function DataProductsPage() {
   const [openDialog, setOpenDialog] = React.useState(false);
   const { osdCyclePolicy } = useOSDAccessors();
   const navigate = useNavigate();
+  const autoLink = osdCyclePolicy?.linkObservationToObservingMode;
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -53,7 +54,7 @@ export default function DataProductsPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    setTheProposalState(validateSDPPage(getProposal()));
+    setTheProposalState(validateSDPPage(getProposal(), autoLink));
   }, [validateToggle]);
 
   const deleteIconClicked = (e: DataProductSDP) => {
@@ -113,6 +114,10 @@ export default function DataProductsPage() {
     return !!proposal && Array.isArray(proposal.observations) && proposal.observations.length > 0;
   };
 
+  const hasTargetObservations = () => {
+    return (getProposal()?.targetObservation?.length ?? 0) > 0;
+  };
+
   const noObservations = () => {
     return (
       <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
@@ -128,7 +133,7 @@ export default function DataProductsPage() {
   };
 
   const dataProductList = () => {
-    if (!hasObservations()) {
+    if (autoLink ? !hasTargetObservations() : !hasObservations()) {
       return null;
     }
 
@@ -164,9 +169,9 @@ export default function DataProductsPage() {
   return (
     <Shell page={PAGE}>
       <>
-        {!hasObservations() && noObservations()}
+        {(autoLink ? !hasTargetObservations() : !hasObservations()) && noObservations()}
 
-        {hasObservations() && (
+        {(autoLink ? hasTargetObservations() : hasObservations()) && (
           <>
             {osdCyclePolicy?.maxDataProducts !== 1 && dataProductList()}
             {osdCyclePolicy?.maxDataProducts === 1 && (

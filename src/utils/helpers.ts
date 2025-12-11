@@ -191,3 +191,8 @@ export const getBandwidthZoom = (incObs: Observation): ValueUnitPair => {
     unit: bandwidth?.mapping ? bandwidth.mapping : ''
   };
 };
+
+export const getBandwidthLowZoom = (inValue: Number) => {
+  const obsTelescopeArray = OSD_CONSTANTS.array[1];
+  return obsTelescopeArray?.bandWidth?.find(b => b.value === inValue);
+};
