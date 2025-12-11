@@ -125,7 +125,7 @@ export default function ButtonUserMenu({
             {t('page.' + PAGE_PANEL_MANAGEMENT + '.title')}
           </MenuItem>
         )}
-        {isReviewer() && (
+        {(isReviewer() || isReviewerAdmin()) && (
           <MenuItem data-testid="menuItemReviews" onClick={() => onMenuSelect(PMT[1])}>
             {t('reviewProposalList.short')}
           </MenuItem>
