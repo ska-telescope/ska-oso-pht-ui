@@ -118,8 +118,8 @@ include:
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/release.gitlab-ci.yml'
   # deploy steps
-  # - project: 'ska-telescope/templates-repository'
-  #   file: 'gitlab-ci/includes/deploy.gitlab-ci.yml'
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/deploy.gitlab-ci.yml'
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/deploy.dev.gitlab-ci.yml'
   - project: 'ska-telescope/templates-repository'
