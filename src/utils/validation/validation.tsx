@@ -77,7 +77,6 @@ export const validateTechnicalPage = (proposal: Proposal) => {
 export const validateSDPPage = (proposal: Proposal, autoLink) => {
   const result = [STATUS_ERROR, STATUS_OK];
 
-  // console.log('Data Product: ', proposal.dataProductSDP);
   const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
 
   if (autoLink) {
