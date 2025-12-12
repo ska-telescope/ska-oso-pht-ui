@@ -98,6 +98,11 @@
   "assignedProposal": {
     "label": "Assigned Proposal"
   },
+  "autoLink": {
+    "targetSuccess": "Target added and auto-linked successfully.",
+    "success": "Observation setup auto-linked successfully.",
+    "error": "Error while auto-linking observation setup "
+  },
   "authors": {
     "label": "Authors"
   },
@@ -430,7 +435,8 @@
     "2": "Briggs"
   },
   "importFromFile": {
-    "label": "Import from file"
+    "label": "Import from file",
+    "descriptionTarget": "Import targets from a CSV file. The file should contain a header row with the following columns: Name, Right Ascension, Declination, Epoch (optional). Each subsequent row should contain the target details. Ensure that the Right Ascension and Declination are in the correct format (e.g., HH:MM:SS for RA and DD:MM:SS for Dec)."
   },
   "inviteTeamMember": {
     "label": "Invite Team Member"
@@ -1438,18 +1444,18 @@
       "pageError": "The TEAM page is not complete"
     },
     "2": {
-      "status": "General",
-      "title": "General",
-      "titleShort": "General",
-      "desc": "This page allows the user to provide general information about the proposal.",
-      "pageError": "The GENERAL page is not complete"
+      "status": "Details",
+      "title": "Details",
+      "titleShort": "Details",
+      "desc": "This page allows the user to provide details about the proposal.",
+      "pageError": "The DETAILS page is not complete"
     },
     "3": {
       "status": "Science",
       "title": "Science",
       "titleShort": "Science",
       "label": "Science justification",
-      "desc": "Upload a Science justification in a portable document format (PDF).",
+      "desc": "Upload your Science justification as a PDF.",
       "pageError": "The SCIENCE JUSTIFICATION page is not complete",
       "help": "This is help for the Science Page"
     },

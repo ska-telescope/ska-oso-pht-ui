@@ -23,7 +23,8 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
     osdOpens: () => '27-03-2026 12:00:00',
     osdCloses: () => '12-05-2026 04:00:00',
     osdCyclePolicy: {
-      linkObservationToObservingMode: true
+      maxTargets: 1,
+      maxObservations: 1
     }
   })
 }));

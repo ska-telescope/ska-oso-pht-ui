@@ -117,8 +117,7 @@
             "weather": 3,
             "number_15_antennas": 0,
             "number_13_antennas": 0,
-            "number_sub_bands": 0,
-            "tapering": "50"
+            "number_sub_bands": 0
           },
           "observation_type_details": {
             "observation_type": "continuum",
@@ -138,8 +137,7 @@
               }
             },
             "spectral_resolution": "50",
-            "effective_resolution": "50",
-            "image_weighting": "Uniform"
+            "effective_resolution": "50"
           },
           "details": "MID + Continuum"
         },
@@ -154,8 +152,7 @@
             "weather": 3,
             "number_15_antennas": 0,
             "number_13_antennas": 0,
-            "number_sub_bands": 0,
-            "tapering": "50"
+            "number_sub_bands": 0
           },
           "observation_type_details": {
             "observation_type": "zoom",
@@ -175,8 +172,7 @@
               }
             },
             "spectral_resolution": "50",
-            "effective_resolution": "50",
-            "image_weighting": "Uniform"
+            "effective_resolution": "50"
           },
           "details": "MID + Zoom"
         },
@@ -208,8 +204,7 @@
               }
             },
             "spectral_resolution": "50",
-            "effective_resolution": "50",
-            "image_weighting": "Uniform"
+            "effective_resolution": "50"
           },
           "details": "LOW + Continuum"
         },
@@ -241,8 +236,7 @@
               }
             },
             "spectral_resolution": "50",
-            "effective_resolution": "50",
-            "image_weighting": "Uniform"
+            "effective_resolution": "50"
           },
           "details": "LOW + Zoom"
         }
@@ -254,7 +248,7 @@
           "observation_set_ref": "low-001",
           "image_size": "IMAGE SIZE",
           "image_cellsize": "IMAGE CELLSIZE",
-          "weighting": "WEIGHTING"
+          "weighting": "Uniform"
         }
       ],
       "data_product_src_nets": [
@@ -424,8 +418,7 @@
             "weather": 3,
             "number_15_antennas": 0,
             "number_13_antennas": 0,
-            "number_sub_bands": 0,
-            "tapering": "50"
+            "number_sub_bands": 0
           },
           "observation_type_details": {
             "observation_type": "continuum",
@@ -445,8 +438,7 @@
               }
             },
             "spectral_resolution": "50",
-            "effective_resolution": "50",
-            "image_weighting": "Uniform"
+            "effective_resolution": "50"
           },
           "details": "MID + Continuum"
         },
@@ -461,8 +453,7 @@
             "weather": 3,
             "number_15_antennas": 0,
             "number_13_antennas": 0,
-            "number_sub_bands": 0,
-            "tapering": "50"
+            "number_sub_bands": 0
           },
           "observation_type_details": {
             "observation_type": "zoom",
@@ -482,8 +473,7 @@
               }
             },
             "spectral_resolution": "50",
-            "effective_resolution": "50",
-            "image_weighting": "Uniform"
+            "effective_resolution": "50"
           },
           "details": "MID + Zoom"
         },
@@ -515,8 +505,7 @@
               }
             },
             "spectral_resolution": "50",
-            "effective_resolution": "50",
-            "image_weighting": "Uniform"
+            "effective_resolution": "50"
           },
           "details": "LOW + Continuum"
         },
@@ -548,8 +537,7 @@
               }
             },
             "spectral_resolution": "50",
-            "effective_resolution": "50",
-            "image_weighting": "Uniform"
+            "effective_resolution": "50"
           },
           "details": "LOW + Zoom"
         }
@@ -561,7 +549,7 @@
           "observation_set_ref": "low-001",
           "image_size": "50",
           "image_cellsize": "50",
-          "weighting": "50"
+          "weighting": "Uniform"
         }
       ],
       "data_product_src_nets": [
@@ -730,8 +718,7 @@
             "weather": 3,
             "number_15_antennas": 0,
             "number_13_antennas": 0,
-            "number_sub_bands": 0,
-            "tapering": "50"
+            "number_sub_bands": 0
           },
           "observation_type_details": {
             "observation_type": "continuum",
@@ -751,8 +738,7 @@
               }
             },
             "spectral_resolution": "50",
-            "effective_resolution": "50",
-            "image_weighting": "Uniform"
+            "effective_resolution": "50"
           },
           "details": "MID + Continuum"
         },
@@ -767,8 +753,7 @@
             "weather": 3,
             "number_15_antennas": 0,
             "number_13_antennas": 0,
-            "number_sub_bands": 0,
-            "tapering": "50"
+            "number_sub_bands": 0
           },
           "observation_type_details": {
             "observation_type": "zoom",
@@ -788,8 +773,7 @@
               }
             },
             "spectral_resolution": "50",
-            "effective_resolution": "50",
-            "image_weighting": "Uniform"
+            "effective_resolution": "50"
           },
           "details": "MID + Zoom"
         },
@@ -821,8 +805,7 @@
               }
             },
             "spectral_resolution": "50",
-            "effective_resolution": "50",
-            "image_weighting": "Uniform"
+            "effective_resolution": "50"
           },
           "details": "LOW + Continuum"
         },
@@ -854,8 +837,7 @@
               }
             },
             "spectral_resolution": "50",
-            "effective_resolution": "50",
-            "image_weighting": "Uniform"
+            "effective_resolution": "50"
           },
           "details": "LOW + Zoom"
         }
@@ -867,7 +849,7 @@
           "observation_set_ref": "low-001",
           "image_size": "50",
           "image_cellsize": "50",
-          "weighting": "50"
+          "weighting": "Uniform"
         }
       ],
       "data_product_src_nets": [

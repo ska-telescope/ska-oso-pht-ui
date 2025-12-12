@@ -62,9 +62,10 @@ export const dataProductSDPOut = (observationId: string, observationType: number
 
 const getSensCalcData = async (
   observation: Observation,
-  target: Target
+  target: Target,
+  dataProductSDP: DataProductSDP
 ): Promise<SensCalcResults | string> => {
-  const response = await calculateSensCalcData(observation, target);
+  const response = await calculateSensCalcData(observation, target, dataProductSDP);
   if (response?.error) {
     const errMsg = response?.error;
     return errMsg;
@@ -114,7 +115,7 @@ export default async function autoLinking(
 ): Promise<DefaultsResults> {
   const newObservation = observationOut(getProposal().scienceCategory as number);
   const newDataProductSDP = dataProductSDPOut(newObservation?.id, getProposal().scienceCategory);
-  const sensCalcResult = await getSensCalcData(newObservation, target);
+  const sensCalcResult = await getSensCalcData(newObservation, target, newDataProductSDP);
   if (typeof sensCalcResult === 'string') {
     return { success: false, error: sensCalcResult };
   }

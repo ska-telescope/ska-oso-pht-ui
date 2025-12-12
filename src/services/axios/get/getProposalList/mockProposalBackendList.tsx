@@ -137,8 +137,7 @@ const MockProposalBackendList: ProposalBackend[] = [
             weather: 3,
             number_15_antennas: 0,
             number_13_antennas: 0,
-            number_sub_bands: 0,
-            tapering: '50'
+            number_sub_bands: 0
           },
           observation_type_details: {
             observation_type: 'continuum',
@@ -185,8 +184,7 @@ const MockProposalBackendList: ProposalBackend[] = [
             weather: 3,
             number_15_antennas: 0,
             number_13_antennas: 0,
-            number_sub_bands: 0,
-            tapering: '50'
+            number_sub_bands: 0
           },
           observation_type_details: {
             observation_type: 'zoom',
@@ -472,8 +470,7 @@ const MockProposalBackendList: ProposalBackend[] = [
             weather: 3,
             number_15_antennas: 0,
             number_13_antennas: 0,
-            number_sub_bands: 0,
-            tapering: '50'
+            number_sub_bands: 0
           },
           observation_type_details: {
             observation_type: 'continuum',
@@ -520,8 +517,7 @@ const MockProposalBackendList: ProposalBackend[] = [
             weather: 3,
             number_15_antennas: 0,
             number_13_antennas: 0,
-            number_sub_bands: 0,
-            tapering: '50'
+            number_sub_bands: 0
           },
           observation_type_details: {
             observation_type: 'zoom',
@@ -807,8 +803,7 @@ const MockProposalBackendList: ProposalBackend[] = [
             weather: 3,
             number_15_antennas: 0,
             number_13_antennas: 0,
-            number_sub_bands: 0,
-            tapering: '50'
+            number_sub_bands: 0
           },
           observation_type_details: {
             observation_type: 'continuum',
@@ -855,8 +850,7 @@ const MockProposalBackendList: ProposalBackend[] = [
             weather: 3,
             number_15_antennas: 0,
             number_13_antennas: 0,
-            number_sub_bands: 0,
-            tapering: '50'
+            number_sub_bands: 0
           },
           observation_type_details: {
             observation_type: 'zoom',

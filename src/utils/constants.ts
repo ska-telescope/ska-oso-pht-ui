@@ -211,7 +211,7 @@ export const TYPE_ZOOM = 0;
 export const TYPE_CONTINUUM = 1;
 export const TYPE_PST = 2;
 
-export const GENERAL = {
+export const DETAILS = {
   ScienceCategory: [
     { label: 'Cosmology', subCategory: [{ label: 'Not specified', value: 1 }], value: 1 },
     { label: 'Cradle of Life', subCategory: [{ label: 'Not specified', value: 1 }], value: 2 },
@@ -344,7 +344,7 @@ export const INFINITY = 'Infinity';
 
 export const PAGE_TITLE_ADD = 0;
 export const PAGE_TEAM = 1;
-export const PAGE_GENERAL = 2;
+export const PAGE_DETAILS = 2;
 export const PAGE_DESCRIPTION = 3;
 export const PAGE_TARGET = 4;
 export const PAGE_OBSERVATION = 5;
@@ -835,7 +835,7 @@ export const STATUS_ARRAY_PAGES = [
   // TODO : This will need to be extended
   PAGE_TITLE_ADD,
   PAGE_TEAM,
-  PAGE_GENERAL,
+  PAGE_DETAILS,
   PAGE_DESCRIPTION,
   PAGE_TARGET,
   PAGE_OBSERVATION,

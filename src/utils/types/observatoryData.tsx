@@ -13,7 +13,6 @@ export type ObservatoryPolicy = {
   cycleDescription: string;
   cycleInformation: CycleInformationFrontend;
   cyclePolicies: {
-    linkObservationToObservingMode: boolean;
     maxDataProducts: number;
     maxObservations: number;
     maxTargets: number;

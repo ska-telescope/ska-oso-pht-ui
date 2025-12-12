@@ -15,6 +15,7 @@ import {
 import GetZoomData from '../getZoomData/getZoomData';
 import GetContinuumData from '../getContinuumData/getContinuumData';
 import { SENSCALC_CONTINUUM_MOCKED } from './SensCalcResultsMOCK';
+import { DataProductSDP } from '@/utils/types/dataProduct';
 
 const makeResponse = (target: Target, statusGUI: number, error: string) => {
   return {
@@ -25,23 +26,31 @@ const makeResponse = (target: Target, statusGUI: number, error: string) => {
   };
 };
 
-async function getSensCalc(observation: Observation, target: Target): Promise<SensCalcResults> {
+async function getSensCalc(
+  observation: Observation,
+  target: Target,
+  dataProductSDP: DataProductSDP
+): Promise<SensCalcResults> {
   const isCustom = () => observation.subarray === OB_SUBARRAY_CUSTOM;
 
   if (USE_LOCAL_DATA_SENSITIVITY_CALC) {
     return Promise.resolve(SENSCALC_CONTINUUM_MOCKED);
   }
-  const fetchSensCalc = async (observation: Observation, target: Target) => {
+  const fetchSensCalc = async (
+    observation: Observation,
+    target: Target,
+    dataProductSDP: DataProductSDP
+  ) => {
     try {
       // TODO catch error description
-      return await getSensitivityCalculatorAPIData(observation, target, isCustom());
+      return await getSensitivityCalculatorAPIData(observation, target, dataProductSDP, isCustom());
     } catch (e) {
       return { error: e };
     }
   };
 
   try {
-    const output: any = await fetchSensCalc(observation, target);
+    const output: any = await fetchSensCalc(observation, target, dataProductSDP);
 
     // TODO: revisit error handling - maybe moving to mapping?
     // if ('error' in output) {
@@ -75,6 +84,7 @@ const getTelescope = (telNum: number): Telescope =>
 async function getSensitivityCalculatorAPIData(
   observation: Observation,
   target: Target,
+  dataProductSDP: DataProductSDP,
   _isCustom: boolean
 ) {
   const telescope: Telescope = getTelescope(observation.telescope);
@@ -86,10 +96,10 @@ async function getSensitivityCalculatorAPIData(
   };
 
   return observation.type === TYPE_CONTINUUM
-    ? GetContinuumData(telescope, observation, target)
+    ? GetContinuumData(telescope, observation, target, dataProductSDP)
     : observation.type === TYPE_ZOOM
-    ? GetZoomData(telescope, observation, target)
-    : GetContinuumData(telescope, setMockObservation(observation), target); // TODO : Change to appropriate function when PST available
+    ? GetZoomData(telescope, observation, target, dataProductSDP)
+    : GetContinuumData(telescope, setMockObservation(observation), target, dataProductSDP); // TODO : Change to appropriate function when PST available
 }
 
 export default getSensCalc;

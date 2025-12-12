@@ -28,7 +28,7 @@ import Proposal from '@/utils/types/proposal';
 import {
   PROPOSAL_STATUS,
   NAV,
-  GENERAL,
+  DETAILS,
   PROJECTS,
   SEARCH_PROPOSAL_TYPE_OPTIONS
 } from '@/utils/constants';
@@ -295,7 +295,7 @@ export default function GridProposals({
   const scienceCategoryDropdown = () => (
     <Box pt={1}>
       <DropDown
-        options={[{ label: t('scienceCategory.all'), value: null }, ...GENERAL.ScienceCategory]}
+        options={[{ label: t('scienceCategory.all'), value: null }, ...DETAILS.ScienceCategory]}
         testId="proposalScienceCategory"
         value={searchScienceCategory}
         setValue={setSearchScienceCategory}

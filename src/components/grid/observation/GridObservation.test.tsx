@@ -29,8 +29,6 @@ const mockData: Observation[] = [
     elevation: 0,
     centralFrequencyUnits: 0,
     continuumBandwidthUnits: null,
-    imageWeighting: 0,
-    robust: 0,
     supplied: {
       type: 0,
       value: 0,
@@ -53,8 +51,6 @@ const mockData: Observation[] = [
     elevation: 0,
     centralFrequencyUnits: 0,
     continuumBandwidthUnits: null,
-    imageWeighting: 0,
-    robust: 0,
     supplied: {
       type: 0,
       value: 0,

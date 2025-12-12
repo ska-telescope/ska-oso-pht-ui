@@ -24,7 +24,7 @@ import {
   PROJECTS,
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
-  GENERAL,
+  DETAILS,
   OBSERVATION_TYPE_BACKEND,
   BANDWIDTH_TELESCOPE,
   TYPE_CONTINUUM,
@@ -33,7 +33,6 @@ import {
   VEL_UNITS,
   TELESCOPE_MID_BACKEND_MAPPING,
   TELESCOPE_LOW_BACKEND_MAPPING,
-  IMAGE_WEIGHTING,
   BAND_LOW,
   BAND_1,
   FREQUENCY_UNITS,
@@ -47,10 +46,15 @@ import {
   TYPE_PST,
   PST_MODES,
   DP_TYPE_IMAGES,
-  DP_TYPE_VISIBLE
+  DP_TYPE_VISIBLE,
+  IMAGE_WEIGHTING
 } from '@utils/constants.ts';
 import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
-import { ObservationSetBackend } from '@utils/types/observationSet.tsx';
+import {
+  ObservationSetBackend,
+  ObservationTypeDetailsPSTBackend,
+  ObservationTypeDetailsSpectralBackend
+} from '@utils/types/observationSet.tsx';
 import {
   DataProductSDP,
   DataProductSDPsBackend,
@@ -104,14 +108,14 @@ const getAttributes = (proposalType: {
 };
 
 export const getScienceCategory = (scienceCat: string) => {
-  const cat = GENERAL.ScienceCategory?.find(
+  const cat = DETAILS.ScienceCategory?.find(
     c => c.label.toLowerCase() === scienceCat?.toLowerCase()
   )?.value;
   return cat === null || cat === undefined ? null : cat;
 };
 
 export const getObservingMode = (observingMode: string) => {
-  const obsMode = GENERAL.ObservingMode?.find(
+  const obsMode = DETAILS.ObservingMode?.find(
     obsMode => obsMode.label.toLowerCase() === observingMode?.toLowerCase()
   )?.value;
   return obsMode === null || obsMode === undefined ? null : obsMode;
@@ -320,7 +324,6 @@ const getCalibrationStrategy = (
 };
 
 /*********************************************************** observation parameters mapping *********************************************************/
-
 const getWeighting = (inImageWeighting: string): number => {
   const weighting = IMAGE_WEIGHTING?.find(
     item => item.lookup.toLowerCase() === inImageWeighting?.toLowerCase()
@@ -414,14 +417,13 @@ const getObservations = (
     );
 
     // MID array details
-    let weather, num15mAntennas, num13mAntennas, numSubBands, tapering;
+    let weather, num15mAntennas, num13mAntennas, numSubBands;
     if (inValue[i]?.array_details?.array === TELESCOPE_MID_BACKEND_MAPPING) {
       const midDetails = inValue[i].array_details as ArrayDetailsMidBackend;
       weather = midDetails.weather;
       num15mAntennas = midDetails.number_15_antennas;
       num13mAntennas = midDetails.number_13_antennas;
       numSubBands = midDetails.number_sub_bands;
-      tapering = midDetails.tapering;
     }
 
     // LOW array details
@@ -436,7 +438,6 @@ const getObservations = (
       telescope: arr,
       subarray: sub ? sub : 0,
       type: type,
-      imageWeighting: getWeighting(inValue[i].observation_type_details?.image_weighting),
       observingBand: observingBand,
       weather: weather,
       centralFrequency: inValue[i]?.observation_type_details?.central_frequency?.value as number,
@@ -449,15 +450,11 @@ const getObservations = (
       num15mAntennas: num13mAntennas,
       num13mAntennas: num15mAntennas,
       numSubBands: numSubBands ? numSubBands : 1, // TODO PDM needs to be updated to allow subbands for LOW
-      // so that we don't need to hardcode it
-      tapering: (tapering as unknown) as number,
       bandwidth:
         type === TYPE_ZOOM
           ? getBandwidth(inValue[i].observation_type_details?.bandwidth?.value, arr)
           : null,
       supplied: getSupplied(inValue[i].observation_type_details?.supplied),
-      robust: (ROBUST.find(item => item.label === inValue[i].observation_type_details?.robust)
-        ?.value as unknown) as number,
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution as string,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution as string,
       spectralAveraging: Number(inValue[i].observation_type_details?.spectral_averaging),
@@ -474,11 +471,14 @@ const getObservations = (
           : null,
       numStations: numStations,
       ...(type === TYPE_ZOOM && {
-        zoomChannels: inValue[i].observation_type_details?.number_of_channels
+        zoomChannels: (inValue[i].observation_type_details as ObservationTypeDetailsSpectralBackend)
+          ?.number_of_channels
       }),
       ...(type === TYPE_PST && {
         pstMode: PST_MODES?.find(
-          mode => mode?.mapping === inValue[i]?.observation_type_details?.pst_mode
+          mode =>
+            mode?.mapping ===
+            (inValue[i].observation_type_details as ObservationTypeDetailsPSTBackend)?.pst_mode
         )?.value
       })
     };
