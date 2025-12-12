@@ -38,7 +38,7 @@ export const dataProductSDPOut = (observationId: string, observationType: number
     ...DEFAULT_DATA_PRODUCT,
     id: generateId('SDP-', 6),
     observationId,
-    polarisations: observationType === TYPE_PST ? ['XX'] : ['I', 'XX'] // TODO change PST polarisations to 'X' when pdm updated
+    polarisations: observationType === TYPE_PST ? ['X'] : ['I', 'XX'] // TODO change PST polarisations to 'X' when pdm updated
   };
 
   return newDSP;

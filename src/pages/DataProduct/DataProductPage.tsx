@@ -45,9 +45,9 @@ export default function DataProductsPage() {
     updateAppContent1(temp);
   };
 
-  // React.useEffect(() => {
-  //   setValidateToggle(!validateToggle);
-  // }, []);
+  React.useEffect(() => {
+    setValidateToggle(!validateToggle);
+  }, []);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);

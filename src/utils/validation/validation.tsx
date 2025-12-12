@@ -79,19 +79,15 @@ export const validateSDPPage = (proposal: Proposal, autoLink: boolean) => {
 
   const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
 
-  //based on observing type verify data products fields
   if (proposal.scienceCategory) {
+    //based on observing type verify data products fields
     switch (proposal.scienceCategory) {
+      case 0: //Spectral
+        return validateSpectralDataProduct(proposal) ? 0 : 1;
       case 1: //Continuum
-        console.log('Continuum result: ', result[validateContinuumDataProduct(proposal)]);
-        return result[validateContinuumDataProduct(proposal)];
+        return validateContinuumDataProduct(proposal) ? 0 : 1;
       case 2: //PST
-        console.log('pst result: ', result[validatePSTDataProduct(proposal)]);
-        return result[validatePSTDataProduct(proposal)];
-      default:
-        // 0 : Spectral
-        console.log('spectral result: ', result[validateSpectralDataProduct(proposal)]);
-        return result[validateSpectralDataProduct(proposal)];
+        return validatePSTDataProduct(proposal) ? 0 : 1;
     }
   }
 
@@ -222,100 +218,41 @@ export function validateSkyDirection2Number(value: string): string | null {
 
 export const validateSpectralDataProduct = (proposal: Proposal) => {
   const dataProducts = proposal.dataProductSDP?.[0];
-  console.log('validate spectral: ', proposal.dataProductSDP?.[0]);
-
-  if (
-    !(
-      dataProducts?.imageSizeValue ||
-      dataProducts?.imageSizeUnits ||
-      dataProducts?.pixelSizeValue ||
-      dataProducts?.pixelSizeUnits ||
-      dataProducts?.weighting ||
-      dataProducts?.taperValue ||
-      dataProducts?.channelsOut ||
-      dataProducts?.continuumSubtraction ||
-      dataProducts?.polarisations
-    )
-  ) {
-    return 1;
-  } else {
-    return 0;
-  }
+  return (
+    dataProducts?.imageSizeValue != null &&
+    dataProducts?.imageSizeUnits != null &&
+    dataProducts?.pixelSizeValue != null &&
+    dataProducts?.pixelSizeUnits != null &&
+    dataProducts?.weighting != null &&
+    dataProducts?.taperValue != null &&
+    dataProducts?.channelsOut != null &&
+    dataProducts?.continuumSubtraction !== undefined &&
+    (dataProducts?.polarisations?.length ?? 0) > 0
+  );
 };
 
 export const validateContinuumDataProduct = (proposal: Proposal) => {
   const dataProducts = proposal.dataProductSDP?.[0];
 
   if (dataProducts?.dataProductType === 1) {
-    console.log('validate continuum images: ', proposal.dataProductSDP?.[0]);
     // Images
-    if (
-      dataProducts?.imageSizeValue &&
-      dataProducts?.imageSizeUnits &&
-      dataProducts?.pixelSizeValue &&
-      dataProducts?.pixelSizeUnits &&
-      dataProducts?.weighting &&
-      dataProducts?.taperValue &&
-      dataProducts?.channelsOut &&
-      dataProducts?.polarisations
-    ) {
-      return 0;
-    } else {
-      return 1;
-    }
+    return (
+      dataProducts?.imageSizeValue != null &&
+      dataProducts?.imageSizeUnits != null &&
+      dataProducts?.pixelSizeValue != null &&
+      dataProducts?.pixelSizeUnits != null &&
+      dataProducts?.weighting != null &&
+      dataProducts?.taperValue != null &&
+      dataProducts?.channelsOut != null &&
+      dataProducts?.polarisations?.length > 0
+    );
   } else {
-    console.log('validate continuum visibilities: ', proposal.dataProductSDP?.[0]);
-
     //Visibilities
-    if (dataProducts?.timeAveraging && dataProducts?.frequencyAveraging) {
-      return 0;
-    } else {
-      return 1;
-    }
+    return dataProducts?.timeAveraging != null && dataProducts?.frequencyAveraging != null;
   }
 };
 
 export const validatePSTDataProduct = (proposal: Proposal) => {
   const dataProducts = proposal.dataProductSDP?.[0];
-
-  if (dataProducts?.dataProductType === 1) {
-    console.log('validate pst images: ', proposal.dataProductSDP?.[0]);
-    // Images
-    if (
-      dataProducts?.imageSizeValue &&
-      dataProducts?.imageSizeUnits &&
-      dataProducts?.pixelSizeValue &&
-      dataProducts?.pixelSizeUnits &&
-      dataProducts?.weighting &&
-      dataProducts?.taperValue &&
-      dataProducts?.channelsOut &&
-      dataProducts?.bitDepth &&
-      dataProducts?.polarisations
-    ) {
-      return 0;
-    } else {
-      return 1;
-    }
-  } else {
-    console.log('validate pst visibilities: ', proposal.dataProductSDP?.[0]);
-    //Visibilities
-
-    console.log(
-      'validate values: ',
-      dataProducts?.timeAveraging,
-      dataProducts?.frequencyAveraging,
-      dataProducts?.bitDepth,
-      dataProducts?.polarisations
-    );
-    if (
-      dataProducts?.timeAveraging != null &&
-      dataProducts?.frequencyAveraging != null &&
-      dataProducts?.bitDepth != null &&
-      dataProducts?.polarisations != []
-    ) {
-      return 0;
-    } else {
-      return 1;
-    }
-  }
+  return dataProducts?.bitDepth != null && dataProducts?.polarisations?.length > 0;
 };
