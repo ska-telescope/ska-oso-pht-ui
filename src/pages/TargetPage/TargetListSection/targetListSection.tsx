@@ -72,6 +72,7 @@ export default function TargetListSection() {
   };
 
   const deleteConfirmed = () => {
+    console.log('getProposal: ', getProposal());
     // filter out target
     const obs1 = getProposal().targets?.filter(e => e.id !== rowTarget?.id);
     // filter out targetObservation entries linked to deleted target
@@ -83,11 +84,13 @@ export default function TargetListSection() {
       getProposal().calibrationStrategy?.[0] !== undefined
         ? getProposal().calibrationStrategy.filter(e => e.observationIdRef !== obsId)
         : undefined;
+    const obs4 = getProposal().dataProductSDP.filter(e => e.observationId !== obsId);
     setProposal({
       ...getProposal(),
       targets: obs1,
       targetObservation: obs2,
-      calibrationStrategy: obs3
+      calibrationStrategy: obs3,
+      dataProductSDP: obs4
     });
     setVisibilitySVG(null); // remove visibility plot display as target is deleted
     setRowTarget(null);
