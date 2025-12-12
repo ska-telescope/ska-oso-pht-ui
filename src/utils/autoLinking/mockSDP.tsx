@@ -10,7 +10,7 @@ export const PST_DATA_PRODUCT: DataProductSDP = {
   pixelSizeValue: 1.6,
   pixelSizeUnits: 2,
   weighting: IW_UNIFORM,
-  polarisations: ['XX'],
+  polarisations: ['X'],
   channelsOut: 40,
   fitSpectralPol: 3,
   robust: 1,
