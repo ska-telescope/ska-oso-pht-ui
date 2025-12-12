@@ -122,8 +122,10 @@ include:
   #   file: 'gitlab-ci/includes/deploy.gitlab-ci.yml'
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/deploy.dev.gitlab-ci.yml'
-  # - project: 'ska-telescope/templates-repository'
-  #   file: 'gitlab-ci/includes/deploy.integration.gitlab-ci.yml'
+    ref: c3f40213f3b0e9d8990e0526c83b810f642f0c93
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/deploy.integration.gitlab-ci.yml'
+    ref: c3f40213f3b0e9d8990e0526c83b810f642f0c93
   # Finalize badges
   - project: "ska-telescope/templates-repository"
     file: "gitlab-ci/includes/finaliser.gitlab-ci.yml"
