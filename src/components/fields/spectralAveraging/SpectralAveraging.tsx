@@ -3,7 +3,7 @@ import SpectralAveragingMIDField from './mid/SpectralAveragingMID';
 
 interface SpectralAveragingFieldProps {
   isLow?: boolean;
-  widthLabel: number;
+  labelWidth: number;
   setValue?: Function;
   value: number;
   subarray: number;
@@ -12,7 +12,7 @@ interface SpectralAveragingFieldProps {
 
 export default function SpectralAveragingField({
   isLow = false,
-  widthLabel,
+  labelWidth,
   setValue,
   value,
   subarray,
@@ -23,7 +23,7 @@ export default function SpectralAveragingField({
       {isLow && (
         <SpectralAveragingLOWField
           required
-          widthLabel={widthLabel}
+          widthLabel={labelWidth}
           value={value}
           setValue={setValue}
           subarray={subarray}
@@ -32,7 +32,7 @@ export default function SpectralAveragingField({
       )}
       {!isLow && (
         <SpectralAveragingMIDField
-          widthLabel={widthLabel}
+          widthLabel={labelWidth}
           required
           value={value}
           setValue={setValue}

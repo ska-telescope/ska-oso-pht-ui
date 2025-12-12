@@ -64,7 +64,7 @@ export default function TargetEntry({
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const autoLink = osdCyclePolicy.linkObservationToObservingMode;
+  const autoLink = osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1;
 
   const [id, setId] = React.useState(0);
   const [name, setName] = React.useState('');

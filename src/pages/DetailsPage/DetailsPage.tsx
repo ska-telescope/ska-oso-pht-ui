@@ -1,13 +1,8 @@
 import React from 'react';
-import { Box, Grid } from '@mui/material';
+import { Box, Grid, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
-import {
-  GENERAL,
-  LAB_POSITION,
-  OBSERVATION_TYPE_SHORT_BACKEND,
-  PAGE_GENERAL
-} from '@utils/constants.ts';
+import { DETAILS, OBSERVATION_TYPE_SHORT_BACKEND, PAGE_DETAILS } from '@utils/constants.ts';
 import { countWords } from '@utils/helpers.ts';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { validateProposal } from '@utils/validation/validation.tsx';
@@ -22,12 +17,12 @@ import { useHelp } from '@/utils/help/useHelp';
 import { useNotify } from '@/utils/notify/useNotify';
 import autoLinking from '@/utils/autoLinking/AutoLinking';
 
-const PAGE = PAGE_GENERAL;
+const PAGE = PAGE_DETAILS;
 const LINE_OFFSET = 30;
-const LABEL_WIDTH = 3;
+const GAP = 4;
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
-export default function GeneralPage() {
+export default function DetailsPage() {
   const { t } = useScopedTranslation();
   const { isSV } = useAppFlow();
   const theme = useTheme();
@@ -44,12 +39,12 @@ export default function GeneralPage() {
 
   const [isObsModeChanged, setIsObsModeChanged] = React.useState(false); // For auto-link
 
-  // only generate observation, dataprodutsdp, senscalc, calibration when autoLink is true & obs mode is selected & target exists
+  // only generate observation, data products, senscalc, calibration when autoLink is true & obs mode is selected & target exists
   // (science category used for obs mode in SV)
-  const autoLink = osdCyclePolicy.linkObservationToObservingMode;
+  const autoLink = osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1;
 
   const setTheProposalState = () => {
-    updateAppContent1(validateProposal(getProposal()));
+    updateAppContent1(validateProposal(getProposal(), autoLink));
   };
 
   const [openAbstractLatexModal, setOpenAbstractLatexModal] = React.useState(false);
@@ -122,13 +117,17 @@ export default function GeneralPage() {
     }
   };
 
+  const displayLabel = (inValue: string, isBold: boolean = false) => (
+    <Typography variant="subtitle1" style={{ fontWeight: isBold ? 600 : 300 }}>
+      {inValue}
+      {isBold ? ' *' : ''}
+    </Typography>
+  );
+
   const cycleIdField = () => (
     <TextEntry
       disabledUnderline
-      label={t('cycle.label')}
-      labelBold
-      labelPosition={LAB_POSITION}
-      labelWidth={LABEL_WIDTH}
+      label=""
       testId="cycleId"
       value={getProposal().cycle}
       onFocus={() => setHelp('abstract.help')}
@@ -139,10 +138,7 @@ export default function GeneralPage() {
   const cycleClosesField = () => (
     <TextEntry
       disabledUnderline
-      label={t('cycleCloses.label')}
-      labelBold
-      labelPosition={LAB_POSITION}
-      labelWidth={LABEL_WIDTH}
+      label=""
       testId="cycleCloses"
       value={osdCloses(true)}
       onFocus={() => setHelp('abstract.help')}
@@ -153,10 +149,7 @@ export default function GeneralPage() {
   const cycleOpensField = () => (
     <TextEntry
       disabledUnderline
-      label={t('cycleOpens.label')}
-      labelBold
-      labelPosition={LAB_POSITION}
-      labelWidth={LABEL_WIDTH}
+      label=""
       testId="cycleOpens"
       value={osdOpens(true)}
       onFocus={() => setHelp('abstract.help')}
@@ -200,10 +193,7 @@ export default function GeneralPage() {
     return (
       <Box sx={{ height: LINE_OFFSET * numRows }}>
         <TextEntry
-          label={t('abstract.label')}
-          labelBold
-          labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH}
+          label=""
           testId="abstractId"
           rows={numRows}
           required
@@ -238,56 +228,48 @@ export default function GeneralPage() {
     });
   };
 
-  // Separate function for ScienceCategory (optional, for symmetry)
-  const getScienceCategoryOptions = () => {
-    return GENERAL.ScienceCategory;
-  };
-
-  // Main function using the helpers
   const getCategoryOptions = () => {
-    return isSV() ? getObservingModeOptions() : getScienceCategoryOptions();
+    return isSV() ? getObservingModeOptions() : DETAILS.ScienceCategory;
   };
 
   const categoryField = () => (
-    <DropDown
-      options={getCategoryOptions()}
-      errorText={
-        typeof getProposal().scienceCategory === 'number' ? '' : t('scienceCategory.error')
-      }
-      required
-      testId="categoryId"
-      value={getProposal().scienceCategory ?? ''}
-      setValue={checkCategory}
-      label={t('scienceCategory.label')}
-      labelBold
-      labelPosition={LAB_POSITION}
-      labelWidth={LABEL_WIDTH * 2}
-      onFocus={() => setHelp('scienceCategory.help')}
-    />
+    <Box pt={0} sx={{ maxWidth: 500 }}>
+      {' '}
+      <DropDown
+        options={getCategoryOptions()}
+        errorText={
+          typeof getProposal().scienceCategory === 'number' ? '' : t('scienceCategory.error')
+        }
+        required
+        testId="categoryId"
+        value={getProposal().scienceCategory ?? ''}
+        setValue={checkCategory}
+        label=""
+        onFocus={() => setHelp('scienceCategory.help')}
+      />
+    </Box>
+  );
+
+  const row = (label: string, component: React.ReactNode, isBold: boolean = false) => (
+    <Grid container alignItems="center" justifyContent="center" spacing={GAP}>
+      <Grid size={{ xs: 2 }} style={{ alignSelf: 'flex-start', textAlign: 'left' }}>
+        {displayLabel(t(label), isBold)}
+      </Grid>
+      <Grid size={{ xs: 7 }} style={{ textAlign: 'left' }}>
+        {component}
+      </Grid>
+    </Grid>
   );
 
   return (
     <Shell page={PAGE}>
-      <Grid container direction="row" p={5} spacing={2} alignItems="left">
-        <Grid pb={3} size={{ md: 12, lg: 8 }}>
-          <Grid container direction="row">
-            <Grid pr={4} size={{ md: 12 }}>
-              {cycleIdField()}
-            </Grid>
-            <Grid pr={4} size={{ md: 12 }}>
-              {cycleOpensField()}
-            </Grid>
-            <Grid pr={4} size={{ md: 12 }}>
-              {cycleClosesField()}
-            </Grid>
-            <Grid pt={2} pb={2} size={{ md: 12 }}>
-              <Grid size={{ md: 12, lg: 6 }}>{categoryField()}</Grid>
-            </Grid>
-            <Grid size={{ md: 12 }}>{abstractField()}</Grid>
-          </Grid>
-          <Grid size={{ md: 6 }}></Grid>
-        </Grid>
-      </Grid>
+      <Stack pt={GAP} spacing={GAP}>
+        {row('cycle.label', cycleIdField())}
+        {row('cycleOpens.label', cycleOpensField())}
+        {row('cycleCloses.label', cycleClosesField())}
+        {row('scienceCategory.label', categoryField(), true)}
+        {row('abstract.label', abstractField(), true)}
+      </Stack>
     </Shell>
   );
 }

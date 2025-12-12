@@ -320,7 +320,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const frequencyAveragingUnitsField = () => {
     const getOptions = () => {
       return [0].map(e => ({
-        label: presentUnits('frequencyAveraging.' + e),
+        label: presentUnits(t('frequencyAveraging.' + e)),
         value: e
       }));
     };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Stack, useTheme } from '@mui/system';
 import { DataGrid } from '@ska-telescope/ska-gui-components';
-import Typography from '@mui/material/Typography';
+import { Typography } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -65,7 +65,16 @@ export default function GridObservation({
   );
 
   const displayName = (inValue: string) => (
-    <Typography variant="subtitle1" fontWeight="bold">
+    <Typography
+      variant="subtitle1"
+      fontWeight="bold"
+      style={{
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        display: 'inline-block',
+        maxWidth: '100%'
+      }}
+    >
       {inValue}
     </Typography>
   );

@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { countWords } from '@utils/helpers.ts';
-import GeneralPage from './GeneralPage';
+import DetailsPage from './DetailsPage';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
@@ -24,14 +24,15 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
     osdOpens: () => '27-03-2026 12:00:00',
     osdCloses: () => '12-05-2026 04:00:00',
     osdCyclePolicy: {
-      linkObservationToObservingMode: true
+      maxTargets: 1,
+      maxObservations: 1
     }
   })
 }));
 
-describe('<GeneralPage />', () => {
+describe('<DetailsPage />', () => {
   test('renders correctly', () => {
-    wrapper(<GeneralPage />);
+    wrapper(<DetailsPage />);
   });
 });
 
