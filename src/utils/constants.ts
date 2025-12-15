@@ -754,10 +754,8 @@ export const DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2: Observation = {
   continuumBandwidthUnits: FREQUENCY_MHZ,
   elevation: 15,
   bandwidth: null,
-  imageWeighting: 0,
   numStations: 512,
   numSubBands: 1,
-  robust: 0,
   supplied: {
     type: SUPPLIED_TYPE_INTEGRATION,
     value: SUPPLIED_VALUE_DEFAULT_LOW,
@@ -781,10 +779,8 @@ export const DEFAULT_ZOOM_OBSERVATION_LOW_AA2: Observation = {
   continuumBandwidthUnits: null,
   elevation: 15,
   bandwidth: ZOOM_BANDWIDTH_DEFAULT_LOW,
-  imageWeighting: 0,
   numStations: 512,
   numSubBands: 1,
-  robust: 0,
   supplied: {
     type: SUPPLIED_TYPE_INTEGRATION,
     value: SUPPLIED_VALUE_DEFAULT_LOW,
@@ -809,10 +805,8 @@ export const DEFAULT_PST_OBSERVATION_LOW_AA2: Observation = {
   continuumBandwidthUnits: FREQUENCY_MHZ,
   elevation: 15,
   bandwidth: null,
-  imageWeighting: 0,
   numStations: 512,
   numSubBands: 1,
-  robust: 0,
   supplied: {
     type: SUPPLIED_TYPE_INTEGRATION,
     value: SUPPLIED_VALUE_DEFAULT_LOW,
