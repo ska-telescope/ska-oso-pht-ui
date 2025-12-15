@@ -75,12 +75,12 @@ export default function TargetListSection() {
   const deleteConfirmed = () => {
     // filter out target
     const targets = getProposal().targets?.filter(e => e.id !== rowTarget?.id);
+    // filter out targetObservation entries linked to deleted target
+    const targetObservations = getProposal().targetObservation?.filter(
+      e => e.targetId !== rowTarget?.id
+    );
     //below we need to remove all associated entries with the deleted target (these would be automatically created / linked when a target is added)
     if (autoLink) {
-      // filter out targetObservation entries linked to deleted target
-      const targetObservations = getProposal().targetObservation?.filter(
-        e => e.targetId !== rowTarget?.id
-      );
       // filter out calibrationStrategy entries from associated targetObservation
       const obsId = getProposal().targetObservation?.find(e => e.targetId === rowTarget?.id)
         ?.observationId;
@@ -99,7 +99,7 @@ export default function TargetListSection() {
         observations: observations
       });
     } else {
-      setProposal({ ...getProposal(), targets: targets });
+      setProposal({ ...getProposal(), targets: targets, targetObservation: targetObservations });
     }
     setVisibilitySVG(null); // remove visibility plot display as target is deleted
     setRowTarget(null);
