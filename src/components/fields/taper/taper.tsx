@@ -9,7 +9,7 @@ interface TaperFieldProps {
   required?: boolean;
   labelWidth?: number;
   onFocus?: Function;
-  setValue: Function;
+  setValue?: Function;
   suffix?: any;
   value: number;
 }
@@ -32,7 +32,9 @@ export default function TaperField({
     const num = Number(e);
     if (num >= 0) {
       setFieldValid(true);
-      setValue(num);
+      if (setValue) {
+        setValue(num);
+      }
     } else {
       setFieldValid(false);
     }

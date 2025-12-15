@@ -447,7 +447,7 @@ export const PST_MODES = [
   },
   {
     value: DETECTED_FILTER_BANK_VALUE,
-    mapping: 'detected filter bank'
+    mapping: 'detected filterbank'
   },
   {
     value: PULSAR_TIMING_VALUE,
