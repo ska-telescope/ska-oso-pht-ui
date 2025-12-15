@@ -253,7 +253,6 @@ export const validateContinuumDataProduct = (proposal: Proposal) => {
 };
 
 export const validatePSTDataProduct = (proposal: Proposal) => {
-  console.log('observation: ', proposal.observations?.[0]);
   const dataProduct = proposal.dataProductSDP?.[0];
   const observation = proposal.observations?.[0];
 
@@ -262,7 +261,14 @@ export const validatePSTDataProduct = (proposal: Proposal) => {
     return dataProduct?.bitDepth != null && dataProduct?.polarisations?.length > 0;
   } else if (observation?.pstMode === 1) {
     //Detected filterbank
+    return (
+      dataProduct?.timeAveraging != null &&
+      dataProduct?.frequencyAveraging != null &&
+      dataProduct?.bitDepth != null &&
+      dataProduct?.polarisations?.length > 0
+    );
   } else {
     // pstMode === 2 (pulsar timing) TODO: Fields are to be updated soon
+    return dataProduct?.bitDepth != null && dataProduct?.polarisations?.length > 0;
   }
 };
