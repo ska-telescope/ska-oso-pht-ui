@@ -1,11 +1,15 @@
+import TargetObservation from '@utils/types/targetObservation.tsx';
+import { CalibrationStrategy } from '@utils/types/calibrationStrategy.tsx';
+import { DataProductSDP } from '@utils/types/dataProduct.tsx';
+import Observation from '@utils/types/observation.tsx';
 import Target from '../types/target';
 
 const updateProposal = (
-  targets: any,
-  targetObservations: any,
-  calibrationStrategy: any,
-  dataProductsSDP: any,
-  observations: any,
+  targets: Target[],
+  targetObservations: TargetObservation[],
+  calibrationStrategy: CalibrationStrategy[],
+  dataProductsSDP: DataProductSDP[],
+  observations: Observation[],
   getProposal: Function,
   setProposal: Function
 ) => {
@@ -30,14 +34,16 @@ export default async function deleteAutoLinking(
   const targetObservations = getProposal().targetObservation?.filter(
     e => e.targetId !== target?.id
   );
-  // filter out calibrationStrategy entries from associated targetObservation
+  // filter out calibrationStrategy entry from associated targetObservation
   const obsId = getProposal().targetObservation?.find(e => e.targetId === target?.id)
     ?.observationId;
   const calibrationStrategy =
     getProposal().calibrationStrategy?.[0] !== undefined
       ? getProposal().calibrationStrategy.filter(e => e.observationIdRef !== obsId)
       : undefined;
+  // filter out data product entry from associated targetObservation
   const dataProductsSDP = getProposal().dataProductSDP.filter(e => e.observationId !== obsId);
+  // filter out observation entry from associated targetObservation
   const observations = getProposal().observations.filter(e => e.id !== obsId);
 
   updateProposal(
