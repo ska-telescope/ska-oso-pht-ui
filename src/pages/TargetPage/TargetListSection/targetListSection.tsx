@@ -11,6 +11,7 @@ import { Proposal } from '@utils/types/proposal.tsx';
 import { FOOTER_SPACER, RA_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
 import SvgAsImg from '@components/svg/svgAsImg.tsx';
 import GetVisibility from '@services/axios/get/getVisibilitySVG/getVisibilitySVG.tsx';
+import deleteAutoLinking from '@utils/autoLinking/DeleteAutoLinking.tsx';
 import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
@@ -36,6 +37,7 @@ export default function TargetListSection() {
   const [nameError, setNameError] = React.useState('');
   const [visibilitySVG, setVisibilitySVG] = React.useState(null);
   const { osdCyclePolicy } = useOSDAccessors();
+  const autoLink = osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1;
 
   const DATA_GRID_HEIGHT = osdCyclePolicy?.maxTargets ? '18vh' : '60vh';
 
@@ -73,22 +75,30 @@ export default function TargetListSection() {
 
   const deleteConfirmed = () => {
     // filter out target
-    const obs1 = getProposal().targets?.filter(e => e.id !== rowTarget?.id);
+    const targets = getProposal().targets?.filter(e => e.id !== rowTarget?.id);
     // filter out targetObservation entries linked to deleted target
-    const obs2 = getProposal().targetObservation?.filter(e => e.targetId !== rowTarget?.id);
+    const targetObservations = getProposal().targetObservation?.filter(
+      e => e.targetId !== rowTarget?.id
+    );
     // filter out calibrationStrategy entries from associated targetObservation
     const obsId = getProposal().targetObservation?.find(e => e.targetId === rowTarget?.id)
       ?.observationId;
-    const obs3 =
+    const calibrationStrategies =
       getProposal().calibrationStrategy?.[0] !== undefined
         ? getProposal().calibrationStrategy.filter(e => e.observationIdRef !== obsId)
         : undefined;
-    setProposal({
-      ...getProposal(),
-      targets: obs1,
-      targetObservation: obs2,
-      calibrationStrategy: obs3
-    });
+
+    //below we need to remove all associated entries with the deleted target (these would be automatically created / linked when a target is added)
+    if (autoLink) {
+      deleteAutoLinking(rowTarget as Target, getProposal, setProposal);
+    } else {
+      setProposal({
+        ...getProposal(),
+        targets: targets,
+        targetObservation: targetObservations,
+        calibrationStrategy: calibrationStrategies
+      });
+    }
     setVisibilitySVG(null); // remove visibility plot display as target is deleted
     setRowTarget(null);
     closeDialog();
