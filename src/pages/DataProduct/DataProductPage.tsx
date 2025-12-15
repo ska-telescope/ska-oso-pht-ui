@@ -45,12 +45,12 @@ export default function DataProductsPage() {
     updateAppContent1(temp);
   };
 
-  //TODO: Review useEffects
-
+  // on page load
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
   }, []);
 
+  //re-validate when data changes
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
   }, [getProposal()]);
