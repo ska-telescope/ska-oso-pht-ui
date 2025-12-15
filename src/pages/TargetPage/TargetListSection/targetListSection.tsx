@@ -36,6 +36,7 @@ export default function TargetListSection() {
   const [nameError, setNameError] = React.useState('');
   const [visibilitySVG, setVisibilitySVG] = React.useState(null);
   const { osdCyclePolicy } = useOSDAccessors();
+  const autoLink = osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1;
 
   const DATA_GRID_HEIGHT = osdCyclePolicy?.maxTargets ? '18vh' : '60vh';
 
@@ -75,27 +76,31 @@ export default function TargetListSection() {
     // filter out target
     const targets = getProposal().targets?.filter(e => e.id !== rowTarget?.id);
     //below we need to remove all associated entries with the deleted target (these would be automatically created / linked when a target is added)
-    // filter out targetObservation entries linked to deleted target
-    const targetObservations = getProposal().targetObservation?.filter(
-      e => e.targetId !== rowTarget?.id
-    );
-    // filter out calibrationStrategy entries from associated targetObservation
-    const obsId = getProposal().targetObservation?.find(e => e.targetId === rowTarget?.id)
-      ?.observationId;
-    const calibrationStrategy =
-      getProposal().calibrationStrategy?.[0] !== undefined
-        ? getProposal().calibrationStrategy.filter(e => e.observationIdRef !== obsId)
-        : undefined;
-    const dataProductsSDP = getProposal().dataProductSDP.filter(e => e.observationId !== obsId);
-    const observations = getProposal().observations.filter(e => e.id !== obsId);
-    setProposal({
-      ...getProposal(),
-      targets: targets,
-      targetObservation: targetObservations,
-      calibrationStrategy: calibrationStrategy,
-      dataProductSDP: dataProductsSDP,
-      observations: observations
-    });
+    if (autoLink) {
+      // filter out targetObservation entries linked to deleted target
+      const targetObservations = getProposal().targetObservation?.filter(
+        e => e.targetId !== rowTarget?.id
+      );
+      // filter out calibrationStrategy entries from associated targetObservation
+      const obsId = getProposal().targetObservation?.find(e => e.targetId === rowTarget?.id)
+        ?.observationId;
+      const calibrationStrategy =
+        getProposal().calibrationStrategy?.[0] !== undefined
+          ? getProposal().calibrationStrategy.filter(e => e.observationIdRef !== obsId)
+          : undefined;
+      const dataProductsSDP = getProposal().dataProductSDP.filter(e => e.observationId !== obsId);
+      const observations = getProposal().observations.filter(e => e.id !== obsId);
+      setProposal({
+        ...getProposal(),
+        targets: targets,
+        targetObservation: targetObservations,
+        calibrationStrategy: calibrationStrategy,
+        dataProductSDP: dataProductsSDP,
+        observations: observations
+      });
+    } else {
+      setProposal({ ...getProposal(), targets: targets });
+    }
     setVisibilitySVG(null); // remove visibility plot display as target is deleted
     setRowTarget(null);
     closeDialog();
