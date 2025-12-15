@@ -4,9 +4,7 @@ import Observation from '../../../utils/types/observation';
 import Target from '../../../utils/types/target';
 import { SensCalcResults } from '../../../utils/types/sensCalcResults';
 import {
-  STATUS_PARTIAL,
   USE_LOCAL_DATA_SENSITIVITY_CALC,
-  STATUS_ERROR,
   TYPE_CONTINUUM,
   OB_SUBARRAY_CUSTOM,
   TELESCOPE_LOW_NUM,
@@ -17,20 +15,11 @@ import GetContinuumData from '../getContinuumData/getContinuumData';
 import { SENSCALC_CONTINUUM_MOCKED } from './SensCalcResultsMOCK';
 import { DataProductSDP } from '@/utils/types/dataProduct';
 
-const makeResponse = (target: Target, statusGUI: number, error: string) => {
-  return {
-    id: target.id,
-    title: target.name,
-    statusGUI,
-    error
-  };
-};
-
 async function getSensCalc(
   observation: Observation,
   target: Target,
   dataProductSDP: DataProductSDP
-): Promise<SensCalcResults> {
+): Promise<SensCalcResults | string> {
   const isCustom = () => observation.subarray === OB_SUBARRAY_CUSTOM;
 
   if (USE_LOCAL_DATA_SENSITIVITY_CALC) {
@@ -42,39 +31,24 @@ async function getSensCalc(
     dataProductSDP: DataProductSDP
   ) => {
     try {
-      // TODO catch error description
       return await getSensitivityCalculatorAPIData(observation, target, dataProductSDP, isCustom());
     } catch (e) {
-      return { error: e };
+      return `error.API_UNKNOWN_ERROR ${e}`;
     }
   };
 
   try {
     const output: any = await fetchSensCalc(observation, target, dataProductSDP);
 
-    // TODO: revisit error handling - maybe moving to mapping?
-    // if ('error' in output) {
-    //   return makeResponse(target, STATUS_ERROR, output.error.detail.split('\n')[0]);
-    // }
-    // if (output['calculate']['error'] && output['calculate']['error']['detail']) {
-    //   return makeResponse(target, STATUS_ERROR, output['calculate']['error']['detail']);
-    // }
-    // if (!isCustom() && output['weighting']['error'] && output['weighting']['error']['detail']) {
-    //   return makeResponse(target, STATUS_ERROR, output['weighting']['error']['detail']);
-    // }
-
-    // already done is new mapping
-    //const results = calculateSensitivityCalculatorResults(output, observation, target);
-    // return results
-
+    if (!output) {
+      return 'error.API_UNKNOWN_ERROR';
+    }
+    if (output.error && output.results && output.results instanceof Array) {
+      return output.results.length > 0 ? `${output.results.join(' ')}` : `${output.results[0]}`;
+    }
     return output;
   } catch (e) {
-    const results = Object.assign(
-      {},
-      makeResponse(target, STATUS_PARTIAL, ''),
-      makeResponse(target, STATUS_ERROR, e as string)
-    );
-    return results as SensCalcResults;
+    return `error.API_UNKNOWN_ERROR ${e}`;
   }
 }
 

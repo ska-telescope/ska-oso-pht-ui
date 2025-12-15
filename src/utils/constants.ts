@@ -447,7 +447,7 @@ export const PST_MODES = [
   },
   {
     value: DETECTED_FILTER_BANK_VALUE,
-    mapping: 'detected filter bank'
+    mapping: 'detected filterbank'
   },
   {
     value: PULSAR_TIMING_VALUE,
@@ -863,3 +863,6 @@ export const STATUS_ARRAY_PAGES = [
   PAGE_DATA_PRODUCTS,
   PAGE_CALIBRATION
 ];
+
+export const SV_LOW_AA2_CYCLE_NUMBER = 10000;
+export const SV_LOW_MID_AA2_CYCLE_NUMBER = 1;

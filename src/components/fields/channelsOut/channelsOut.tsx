@@ -10,7 +10,7 @@ interface ChannelsOutFieldProps {
   labelWidth?: number;
   maxValue?: number;
   onFocus?: Function;
-  setValue: Function;
+  setValue?: Function;
   suffix?: any;
   value: number;
 }
@@ -32,7 +32,9 @@ export default function ChannelsOutField({
     const num = Number(e);
     if (num > 0 && num <= CHANNELS_OUT_MAX) {
       setFieldValid(true);
-      setValue(num);
+      if (setValue) {
+        setValue(num);
+      }
     } else {
       setFieldValid(false);
     }

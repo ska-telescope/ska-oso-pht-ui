@@ -8,7 +8,7 @@ interface PixelSizeFieldProps {
   disabled?: boolean;
   onFocus?: Function;
   required?: boolean;
-  setValue: Function;
+  setValue?: Function;
   suffix?: any;
   value: number;
   widthButton?: number;
@@ -31,7 +31,9 @@ export default function PixelSizeField({
     const num = Number(e);
     if (num > 0) {
       setFieldValid(true);
-      setValue(num);
+      if (setValue) {
+        setValue(num);
+      }
     } else {
       setFieldValid(false);
     }
