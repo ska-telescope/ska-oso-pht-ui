@@ -80,11 +80,24 @@ export default function TargetListSection() {
     const targetObservations = getProposal().targetObservation?.filter(
       e => e.targetId !== rowTarget?.id
     );
+    // filter out calibrationStrategy entries from associated targetObservation
+    const obsId = getProposal().targetObservation?.find(e => e.targetId === rowTarget?.id)
+      ?.observationId;
+    const calibrationStrategies =
+      getProposal().calibrationStrategy?.[0] !== undefined
+        ? getProposal().calibrationStrategy.filter(e => e.observationIdRef !== obsId)
+        : undefined;
+
     //below we need to remove all associated entries with the deleted target (these would be automatically created / linked when a target is added)
     if (autoLink) {
       deleteAutoLinking(rowTarget as Target, getProposal, setProposal);
     } else {
-      setProposal({ ...getProposal(), targets: targets, targetObservation: targetObservations });
+      setProposal({
+        ...getProposal(),
+        targets: targets,
+        targetObservation: targetObservations,
+        calibrationStrategy: calibrationStrategies
+      });
     }
     setVisibilitySVG(null); // remove visibility plot display as target is deleted
     setRowTarget(null);
