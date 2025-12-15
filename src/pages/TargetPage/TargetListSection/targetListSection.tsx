@@ -11,6 +11,7 @@ import { Proposal } from '@utils/types/proposal.tsx';
 import { FOOTER_SPACER, RA_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
 import SvgAsImg from '@components/svg/svgAsImg.tsx';
 import GetVisibility from '@services/axios/get/getVisibilitySVG/getVisibilitySVG.tsx';
+import deleteAutoLinking from '@utils/autoLinking/DeleteAutoLinking.tsx';
 import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 import AlertDialog from '../../../components/alerts/alertDialog/AlertDialog';
@@ -81,23 +82,7 @@ export default function TargetListSection() {
     );
     //below we need to remove all associated entries with the deleted target (these would be automatically created / linked when a target is added)
     if (autoLink) {
-      // filter out calibrationStrategy entries from associated targetObservation
-      const obsId = getProposal().targetObservation?.find(e => e.targetId === rowTarget?.id)
-        ?.observationId;
-      const calibrationStrategy =
-        getProposal().calibrationStrategy?.[0] !== undefined
-          ? getProposal().calibrationStrategy.filter(e => e.observationIdRef !== obsId)
-          : undefined;
-      const dataProductsSDP = getProposal().dataProductSDP.filter(e => e.observationId !== obsId);
-      const observations = getProposal().observations.filter(e => e.id !== obsId);
-      setProposal({
-        ...getProposal(),
-        targets: targets,
-        targetObservation: targetObservations,
-        calibrationStrategy: calibrationStrategy,
-        dataProductSDP: dataProductsSDP,
-        observations: observations
-      });
+      deleteAutoLinking(rowTarget as Target, getProposal, setProposal);
     } else {
       setProposal({ ...getProposal(), targets: targets, targetObservation: targetObservations });
     }
