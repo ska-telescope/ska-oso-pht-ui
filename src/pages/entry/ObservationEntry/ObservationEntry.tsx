@@ -407,7 +407,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     subBands,
     numOf15mAntennas,
     numOf13mAntennas,
-    numOfStations
+    numOfStations,
+    pstMode
   ]);
 
   React.useEffect(() => {
