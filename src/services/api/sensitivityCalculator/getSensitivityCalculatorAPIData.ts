@@ -33,7 +33,7 @@ async function getSensCalc(
     try {
       return await getSensitivityCalculatorAPIData(observation, target, dataProductSDP, isCustom());
     } catch (e) {
-      return { error: e };
+      return `error.API_UNKNOWN_ERROR ${e}`;
     }
   };
 
