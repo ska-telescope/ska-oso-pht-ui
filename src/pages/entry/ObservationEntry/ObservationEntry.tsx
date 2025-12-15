@@ -16,6 +16,7 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import {
   BANDWIDTH_TELESCOPE,
+  DEFAULT_DATA_PRODUCT,
   LAB_IS_BOLD,
   LAB_POSITION,
   NAV,
@@ -87,6 +88,7 @@ import SuppliedValue from '@/components/fields/suppliedValue/suppliedValue';
 import CentralFrequency from '@/components/fields/centralFrequency/centralFrequency';
 import ZoomChannels from '@/components/fields/zoomChannels/zoomChannels';
 import SubBands from '@/components/fields/subBands/subBands';
+import { DataProductSDP } from '@/utils/types/dataProduct';
 
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 4;
@@ -214,7 +216,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const updateObservationOnProposal = () => {
     const newObservation: Observation = observationOut();
-
     const oldObservations = getProposal().observations;
     const newObservations: Observation[] = [];
     if (oldObservations && oldObservations?.length > 0) {
@@ -223,6 +224,28 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       });
     } else {
       newObservations.push(newObservation);
+    }
+
+    const newDataProducts: DataProductSDP[] = [];
+    if (newObservation.type === TYPE_PST) {
+      const tmpRec: DataProductSDP = {
+        ...DEFAULT_DATA_PRODUCT,
+        observationId: newObservation.id,
+        dataProductType: newObservation.pstMode ?? 0
+      };
+      const oldDataProducts = getProposal().dataProductSDP;
+      if (oldDataProducts && oldDataProducts?.length > 0) {
+        oldDataProducts.forEach(inValue => {
+          newDataProducts.push(
+            inValue.observationId === newObservation.id &&
+              newObservation?.pstMode !== inValue.dataProductType
+              ? tmpRec
+              : inValue
+          );
+        });
+      }
+    } else {
+      newDataProducts.push(...(getProposal().dataProductSDP ?? []));
     }
 
     const updateSensCalcPartial = (ob: Observation) => {
@@ -250,7 +273,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setProposal({
       ...getProposal(),
       observations: newObservations,
-      ...(isSV() ? {} : { targetObservation: updateSensCalcPartial(newObservation) }) // don't update to partial results for SV() // TODO gnerate full results on obs change
+      dataProductSDP: newDataProducts,
+      ...(isSV() ? {} : { targetObservation: updateSensCalcPartial(newObservation) }) // don't update to partial results for SV() // TODO generate full results on obs change
     });
 
     /*
@@ -407,7 +431,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     subBands,
     numOf15mAntennas,
     numOf13mAntennas,
-    numOfStations
+    numOfStations,
+    pstMode
   ]);
 
   React.useEffect(() => {
