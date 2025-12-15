@@ -217,42 +217,52 @@ export function validateSkyDirection2Number(value: string): string | null {
 }
 
 export const validateSpectralDataProduct = (proposal: Proposal) => {
-  const dataProducts = proposal.dataProductSDP?.[0];
+  const dataProduct = proposal.dataProductSDP?.[0];
   return (
-    dataProducts?.imageSizeValue != null &&
-    dataProducts?.imageSizeUnits != null &&
-    dataProducts?.pixelSizeValue != null &&
-    dataProducts?.pixelSizeUnits != null &&
-    dataProducts?.weighting != null &&
-    dataProducts?.taperValue != null &&
-    dataProducts?.channelsOut != null &&
-    dataProducts?.continuumSubtraction !== undefined &&
-    (dataProducts?.polarisations?.length ?? 0) > 0
+    dataProduct?.imageSizeValue != null &&
+    dataProduct?.imageSizeUnits != null &&
+    dataProduct?.pixelSizeValue != null &&
+    dataProduct?.pixelSizeUnits != null &&
+    dataProduct?.weighting != null &&
+    dataProduct?.taperValue != null &&
+    dataProduct?.channelsOut != null &&
+    dataProduct?.continuumSubtraction !== undefined &&
+    (dataProduct?.polarisations?.length ?? 0) > 0
   );
 };
 
 export const validateContinuumDataProduct = (proposal: Proposal) => {
-  const dataProducts = proposal.dataProductSDP?.[0];
+  const dataProduct = proposal.dataProductSDP?.[0];
 
-  if (dataProducts?.dataProductType === 1) {
+  if (dataProduct?.dataProductType === 1) {
     // Images
     return (
-      dataProducts?.imageSizeValue != null &&
-      dataProducts?.imageSizeUnits != null &&
-      dataProducts?.pixelSizeValue != null &&
-      dataProducts?.pixelSizeUnits != null &&
-      dataProducts?.weighting != null &&
-      dataProducts?.taperValue != null &&
-      dataProducts?.channelsOut != null &&
-      dataProducts?.polarisations?.length > 0
+      dataProduct?.imageSizeValue != null &&
+      dataProduct?.imageSizeUnits != null &&
+      dataProduct?.pixelSizeValue != null &&
+      dataProduct?.pixelSizeUnits != null &&
+      dataProduct?.weighting != null &&
+      dataProduct?.taperValue != null &&
+      dataProduct?.channelsOut != null &&
+      dataProduct?.polarisations?.length > 0
     );
   } else {
     //Visibilities
-    return dataProducts?.timeAveraging != null && dataProducts?.frequencyAveraging != null;
+    return dataProduct?.timeAveraging != null && dataProduct?.frequencyAveraging != null;
   }
 };
 
 export const validatePSTDataProduct = (proposal: Proposal) => {
-  const dataProducts = proposal.dataProductSDP?.[0];
-  return dataProducts?.bitDepth != null && dataProducts?.polarisations?.length > 0;
+  console.log('observation: ', proposal.observations?.[0]);
+  const dataProduct = proposal.dataProductSDP?.[0];
+  const observation = proposal.observations?.[0];
+
+  if (observation?.pstMode === 0) {
+    // Flowthrough
+    return dataProduct?.bitDepth != null && dataProduct?.polarisations?.length > 0;
+  } else if (observation?.pstMode === 1) {
+    //Detected filterbank
+  } else {
+    // pstMode === 2 (pulsar timing) TODO: Fields are to be updated soon
+  }
 };
