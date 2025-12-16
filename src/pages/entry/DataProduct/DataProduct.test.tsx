@@ -3,6 +3,11 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import DataProduct from './DataProduct';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+
+const wrapper = (component: React.ReactElement) => {
+  return render(<AppFlowProvider>{component}</AppFlowProvider>);
+};
 
 // --- Mocks ---
 vi.mock('@/services/i18n/useScopedTranslation', () => ({
@@ -69,7 +74,7 @@ describe('DataProduct component', () => {
   const theme = createTheme();
 
   it('renders key input fields', () => {
-    render(
+    wrapper(
       <ThemeProvider theme={theme}>
         <DataProduct />
       </ThemeProvider>
@@ -81,7 +86,7 @@ describe('DataProduct component', () => {
   });
 
   it('updates taper value when user types', () => {
-    render(
+    wrapper(
       <ThemeProvider theme={theme}>
         <DataProduct />
       </ThemeProvider>
@@ -92,7 +97,7 @@ describe('DataProduct component', () => {
   });
 
   it('updates image size units via DropDown', () => {
-    render(
+    wrapper(
       <ThemeProvider theme={theme}>
         <DataProduct />
       </ThemeProvider>
@@ -107,7 +112,7 @@ describe('DataProduct component', () => {
       application: { content2: { observations: [{ id: 'OBS1' }], dataProductSDP: [] } },
       updateAppContent2: vi.fn()
     };
-    render(
+    wrapper(
       <ThemeProvider theme={theme}>
         <DataProduct />
       </ThemeProvider>
@@ -117,7 +122,7 @@ describe('DataProduct component', () => {
   });
 
   it('renders AddButton in footer and is disabled initially', () => {
-    render(
+    wrapper(
       <ThemeProvider theme={theme}>
         <DataProduct />
       </ThemeProvider>

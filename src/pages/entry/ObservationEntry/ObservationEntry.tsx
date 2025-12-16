@@ -88,6 +88,7 @@ import updateObservations from '@/utils/update/observations/updateObservations';
 import updateDataProductsPST from '@/utils/update/dataProductsPST/updateDataProductsPST';
 import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalcPartial';
 import updateSensCalc from '@/utils/update/sensCalc/updateSensCalc';
+import { DataProductSDP } from '@/utils/types/dataProduct';
 
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 4;
@@ -218,10 +219,14 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const newObservation: Observation = observationOut();
     const oldObservations = proposal.observations ?? [];
     const oldDataProducts = proposal.dataProductSDP ?? [];
+    const dataProductSDP: DataProductSDP | undefined = proposal.dataProductSDP?.find(
+      dp => dp.observationId === newObservation.id
+    );
     const oldTO = proposal?.targetObservation ?? [];
-    const to = isSV()
-      ? await updateSensCalc(proposal, newObservation)
-      : updateSensCalcPartial(oldTO, newObservation);
+    const to =
+      isSV() && dataProductSDP
+        ? await updateSensCalc(proposal, newObservation, dataProductSDP)
+        : updateSensCalcPartial(oldTO, newObservation);
 
     const tmp = {
       ...proposal,

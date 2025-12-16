@@ -46,13 +46,15 @@ describe('updateSensCalc', () => {
     technicalPDF: null
   };
 
+  const dp = { id: 'dp1' } as any; // ✅ pass this into updateSensCalc
+
   beforeEach(() => {
     vi.resetAllMocks();
   });
 
   it('returns empty array if proposal.targetObservation is missing', async () => {
     const proposal = { ...proposalBase, targetObservation: undefined } as Proposal;
-    const result = await updateSensCalc(proposal, observation);
+    const result = await updateSensCalc(proposal, observation, dp);
     expect(result).toEqual([]);
   });
 
@@ -64,7 +66,7 @@ describe('updateSensCalc', () => {
       error: ''
     });
 
-    const result = await updateSensCalc(proposalBase, observation);
+    const result = await updateSensCalc(proposalBase, observation, dp);
 
     expect(result[0].sensCalc).toMatchObject({
       id: 't1',
@@ -77,7 +79,7 @@ describe('updateSensCalc', () => {
   it('falls back to default sensCalc when calculateSensCalcData returns null', async () => {
     (calculateSensCalcData as any).mockResolvedValue(null);
 
-    const result = await updateSensCalc(proposalBase, observation);
+    const result = await updateSensCalc(proposalBase, observation, dp);
 
     expect(result[0].sensCalc).toMatchObject({
       id: 't1',
@@ -98,7 +100,7 @@ describe('updateSensCalc', () => {
         } as unknown) as TargetObservation
       ]
     };
-    const result = await updateSensCalc(proposal, observation);
+    const result = await updateSensCalc(proposal, observation, dp);
     expect(result[0].sensCalc).toBeUndefined();
   });
 });

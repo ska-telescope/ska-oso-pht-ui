@@ -19,7 +19,9 @@ import {
   FLOW_THROUGH_VALUE,
   FOOTER_HEIGHT_PHT,
   IW_BRIGGS,
+  IW_NATURAL,
   NAV,
+  OB_SUBARRAY_CUSTOM,
   PAGE_DATA_PRODUCTS,
   PULSAR_TIMING_VALUE,
   STATUS_INITIAL,
@@ -33,7 +35,7 @@ import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighti
 import { DataProductSDP } from '@/utils/types/dataProduct';
 import AddButton from '@/components/button/Add/Add';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { presentUnits, presentValue } from '@/utils/present/present';
+import { presentUnits } from '@/utils/present/present';
 import Observation from '@/utils/types/observation';
 import GridObservation from '@/components/grid/observation/GridObservation';
 import ImageSizeField from '@/components/fields/imageSize/imageSize';
@@ -47,6 +49,9 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { generateId } from '@/utils/helpers';
 import { useHelp } from '@/utils/help/useHelp';
 import ContinuumSubtractionField from '@/components/fields/continuumSubtraction/continuumSubtraction';
+import SensCalcContent from '@/components/alerts/sensCalcModal/content/SensCalcContent';
+import { updateDataProducts } from '@/utils/update/dataProducts/updateDataProducts';
+import { updateSensCalc } from '@/utils/update/sensCalc/updateSensCalc';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
@@ -66,7 +71,6 @@ export default function DataProduct({ data }: DataProductProps) {
   const theme = useTheme();
   const { osdCyclePolicy } = useOSDAccessors();
   const { setHelp } = useHelp();
-  const showSC = osdCyclePolicy.maxObservations === 1 && osdCyclePolicy.maxDataProducts === 1;
 
   const isEdit = () => locationProperties.state !== null || data !== undefined;
 
@@ -99,6 +103,8 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const isDataTypeOne = () => dataProductType === 1;
 
+  const getObservation = () => baseObservations?.find(obs => obs.id === observationId);
+
   const isFlowThrough = () => getObservation()?.pstMode === FLOW_THROUGH_VALUE;
   const isDetectedFilterbank = () => getObservation()?.pstMode === DETECTED_FILTER_BANK_VALUE;
   const isPulsarTiming = () => getObservation()?.pstMode === PULSAR_TIMING_VALUE;
@@ -110,7 +116,8 @@ export default function DataProduct({ data }: DataProductProps) {
   const isPST = () =>
     getObservation()?.type === TYPE_PST || getProposal()?.scienceCategory === TYPE_PST;
 
-  const getObservation = () => baseObservations?.find(obs => obs.id === observationId);
+  const showSC =
+    osdCyclePolicy.maxObservations === 1 && osdCyclePolicy.maxDataProducts === 1 && !isPST();
 
   const getSuffix = () => {
     if (isContinuum() || isPST()) {
@@ -189,28 +196,22 @@ export default function DataProduct({ data }: DataProductProps) {
     });
   };
 
-  const updateTnProposal = () => {
+  const updateToProposal = async () => {
+    const proposal = getProposal();
+    const observation = getObservation();
     const newDataProduct: DataProductSDP = dataProductOut();
-
-    const oldDP = getProposal().dataProductSDP;
-    const newDP: DataProductSDP[] = [];
-    if (oldDP && oldDP?.length > 0) {
-      oldDP.forEach(inValue => {
-        newDP.push(inValue.id === newDataProduct.id ? newDataProduct : inValue);
-      });
-    } else {
-      newDP.push(newDataProduct);
-    }
-
+    const oldDataProducts = proposal.dataProductSDP ?? [];
+    const to = await updateSensCalc(proposal, observation!, newDataProduct);
     setProposal({
-      ...getProposal(),
-      dataProductSDP: newDP
+      ...proposal,
+      dataProductSDP: updateDataProducts(oldDataProducts, newDataProduct),
+      targetObservation: to
     });
   };
 
   const updateStorageProposal = () => {
     if (osdCyclePolicy.maxDataProducts === 1) {
-      isEdit() ? updateTnProposal() : addToProposal();
+      isEdit() ? updateToProposal() : addToProposal();
     }
   };
 
@@ -505,7 +506,7 @@ export default function DataProduct({ data }: DataProductProps) {
     };
 
     const buttonClicked = () => {
-      isEdit() ? updateTnProposal() : addToProposal();
+      isEdit() ? updateToProposal() : addToProposal();
       if (osdCyclePolicy.maxDataProducts !== 1) {
         navigate(NAV[BACK_PAGE]);
       }
@@ -547,32 +548,9 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const scData = (): any => getProposal()?.targetObservation?.[0]?.sensCalc;
 
-  const PresentCustomResultValue = () => {
-    return t('sensitivityCalculatorResults.customArray');
-  };
-
-  const displayElement = (eLabel: string, eValue: any, eUnits: string, eId: string) => {
-    return (
-      <Grid key={eId} container direction="row" justifyContent="center" alignItems="center">
-        <Grid size={{ xs: 6 }}>
-          <Typography id={eId} sx={{ align: 'right', fontWeight: 'normal' }} variant="body1">
-            {eLabel}
-          </Typography>
-        </Grid>
-        <Grid size={{ xs: 6 }}>
-          <Typography
-            id={eId + 'Label'}
-            data-testid={`field-${eId}`}
-            sx={{ align: 'left', fontWeight: 'bold' }}
-            variant="body1"
-          >
-            {eId === 'targetName' ? PresentCustomResultValue() : presentValue(eValue)}{' '}
-            {eId === 'targetName' ? '' : presentUnits(eUnits)}
-          </Typography>
-        </Grid>
-      </Grid>
-    );
-  };
+  const isCustom = () => getObservation()?.subarray === OB_SUBARRAY_CUSTOM;
+  const isNatural = () =>
+    isSpectral() || (isContinuum() && isDataTypeOne()) ? weighting === IW_NATURAL : false;
 
   return (
     <Box
@@ -716,48 +694,14 @@ export default function DataProduct({ data }: DataProductProps) {
           {showSC && <Spacer size={GAP * 2} axis={SPACER_VERTICAL} />}
           {showSC && (
             <BorderedSection
-              borderColor={theme.palette.success.main}
+              borderColor={
+                scData()?.statusGUI !== STATUS_INITIAL
+                  ? theme.palette.success.main
+                  : theme.palette.error.main
+              }
               title={t('sensitivityCalculatorResults.title')}
             >
-              {scData()?.statusGUI !== STATUS_INITIAL ? (
-                <>
-                  {displayElement(
-                    t('sensitivityCalculatorResults.targetName'),
-                    scData().title,
-                    '',
-                    'targetName'
-                  )}
-                  {scData()?.section1 && <Spacer size={30} axis={SPACER_VERTICAL} />}
-                  {scData()?.section1?.map((rec: any) =>
-                    displayElement(
-                      t('sensitivityCalculatorResults.' + rec.field),
-                      rec.value,
-                      rec.units ?? '',
-                      rec.field
-                    )
-                  )}
-                  {scData()?.section2 && <Spacer size={30} axis={SPACER_VERTICAL} />}
-                  {scData()?.section2?.map((rec: any) =>
-                    displayElement(
-                      t('sensitivityCalculatorResults.' + rec.field),
-                      rec.value,
-                      rec.units ?? '',
-                      rec.field
-                    )
-                  )}
-                  {scData()?.section3 && <Spacer size={30} axis={SPACER_VERTICAL} />}
-                  {scData()?.section3?.map((rec: any) =>
-                    displayElement(
-                      t('sensitivityCalculatorResults.' + rec.field),
-                      rec.value,
-                      rec.units ?? '',
-                      rec.field
-                    )
-                  )}
-                </>
-              ) : (
-                <Typography>{t('sensitivityCalculatorResults.noData')}</Typography>
-              )}
+              <SensCalcContent data={scData()} isCustom={isCustom()} isNatural={isNatural()} />
             </BorderedSection>
           )}
         </Grid>
