@@ -1,7 +1,6 @@
 import {
   degDecToSexagesimal,
   degRaToSexagesimal,
-  frequencyConversion,
   getRobustMapping,
   isGalactic,
   timeConversion
@@ -13,6 +12,7 @@ import {
   ValueUnitPair,
   ZoomData
 } from '@utils/types/typesSensCalc.tsx';
+import { frequencyConversion } from '@/utils/helpers';
 
 /***************/
 

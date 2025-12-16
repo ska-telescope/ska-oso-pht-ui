@@ -69,7 +69,7 @@ export default function SpectralResolutionField({
 
   const calculateMID = () => {
     const freq = frequencyConversion(frequency, frequencyUnits);
-    return calculateVelocity(getBaseValue() * 10000, freq);
+    return calculateVelocity(getBaseValue() * 1000, freq);
   };
 
   const calculate = () => {

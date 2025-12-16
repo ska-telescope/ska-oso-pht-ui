@@ -1134,23 +1134,23 @@
   dependencies:
     debug "4.4.3"
 
-"@base-ui-components/react@^1.0.0-alpha.6":
-  version "1.0.0-rc.0"
-  resolved "https://registry.yarnpkg.com/@base-ui-components/react/-/react-1.0.0-rc.0.tgz#16e35e356c5149fd76822ee82ada7450ac8419ce"
-  integrity sha512-9lhUFbJcbXvc9KulLev1WTFxS/alJRBWDH/ibKSQaNvmDwMFS2gKp1sTeeldYSfKuS/KC1w2MZutc0wHu2hRHQ==
+"@base-ui/react@^1.0.0-alpha.6":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@base-ui/react/-/react-1.0.0.tgz#be658a2821a129efde1b332b1e7e5cc603f02ee6"
+  integrity sha512-4USBWz++DUSLTuIYpbYkSgy1F9ZmNG9S/lXvlUN6qMK0P0RlW+6eQmDUB4DgZ7HVvtXl4pvi4z5J2fv6Z3+9hg==
   dependencies:
     "@babel/runtime" "^7.28.4"
-    "@base-ui-components/utils" "0.2.2"
+    "@base-ui/utils" "0.2.3"
     "@floating-ui/react-dom" "^2.1.6"
     "@floating-ui/utils" "^0.2.10"
     reselect "^5.1.1"
     tabbable "^6.3.0"
     use-sync-external-store "^1.6.0"
 
-"@base-ui-components/utils@0.2.2":
-  version "0.2.2"
-  resolved "https://registry.yarnpkg.com/@base-ui-components/utils/-/utils-0.2.2.tgz#2634a37e22bd98e5a70c9025068f35d3bb064172"
-  integrity sha512-rNJCD6TFy3OSRDKVHJDzLpxO3esTV1/drRtWNUpe7rCpPN9HZVHUCuP+6rdDYDGWfXnQHbqi05xOyRP2iZAlkw==
+"@base-ui/utils@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@base-ui/utils/-/utils-0.2.3.tgz#21692e111a8ed112d4c2b6fe987b2a419f33474b"
+  integrity sha512-/CguQ2PDaOzeVOkllQR8nocJ0FFIDqsWIcURsVmm53QGo8NhFNpePjNlyPIB41luxfOqnG7PU0xicMEw3ls7XQ==
   dependencies:
     "@babel/runtime" "^7.28.4"
     "@floating-ui/utils" "^0.2.10"
@@ -2925,19 +2925,19 @@
     domhandler "^5.0.3"
     selderee "^0.11.0"
 
-"@ska-telescope/ska-gui-components@^2.5.0":
-  version "2.5.0"
-  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-2.5.0.tgz#246d2ce2f530460ade5486f9906658d2141c2f5a"
-  integrity sha512-1p/0kHc4hDdhNZgClKAHSTiuy5u5CXci8/e1dopx0c4D6z27/VwSdHmkbDM7m567S+DT570Rptygcf+ovcgvcw==
+"@ska-telescope/ska-gui-components@^2.5.2":
+  version "2.5.2"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-2.5.2.tgz#110de1accf28b50e852d08b2532db9ea2274e872"
+  integrity sha512-jJVJWX2izAQ+LnIVn7pz19R0mpNamPIXy4vWyag5ggEqGr8ZVc5GRx7NF+2igzTa+n3S8FVWwq5B4s7Rnhytpg==
   dependencies:
-    "@base-ui-components/react" "^1.0.0-alpha.6"
+    "@base-ui/react" "^1.0.0-alpha.6"
     "@fontsource/material-icons" "^5.2.5"
     "@fontsource/roboto" "^5.2.5"
     "@mui/material" "7.3.0"
     "@mui/system" "7.3.0"
     "@mui/x-data-grid" "^7.28.0"
     "@react-spring/web" "^9.7.3"
-    "@ska-telescope/ska-javascript-components" "^2.3.14"
+    "@ska-telescope/ska-javascript-components" "^2.3.15"
     "@types/uuid" "^9.0.4"
     "@typescript-eslint/parser" "^8.26.1"
     junit-report-merger "^7.0.1"
@@ -2967,10 +2967,28 @@
     redux-saga "^1.2.3"
     typescript "^5.5.3"
 
-"@ska-telescope/ska-javascript-components@^2.3.12", "@ska-telescope/ska-javascript-components@^2.3.14":
+"@ska-telescope/ska-javascript-components@^2.3.12":
   version "2.3.14"
   resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-javascript-components/-/ska-javascript-components-2.3.14.tgz#1043b774b5b2f73f1488ddcee854faa9e73c071a"
   integrity sha512-kc+A6JO7Ks5J5IWeVqjb4AvoIY5QHKlkrgOnniky2G+HAyOCVNyoy18y4xG+bFTowQb4NtqXkAskM9UsURRFHg==
+  dependencies:
+    "@microsoft/api-extractor" "^7.48.1"
+    "@typescript-eslint/parser" "^8.17.0"
+    eslint-plugin-react-refresh "^0.4.16"
+    istanbul-lib-coverage "^3.2.0"
+    minimatch "9.0.3"
+    nth-check "^2.1.1"
+    postcss "^8.4.35"
+    react "^18.2.0"
+    react-dom "^18.2.0"
+    react-refresh "^0.14.0"
+    svgo "^3.2.0"
+    vite "7.1.11"
+
+"@ska-telescope/ska-javascript-components@^2.3.15":
+  version "2.3.15"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-javascript-components/-/ska-javascript-components-2.3.15.tgz#e6ff530de9eaa29e7e9a576f81b5d06b66aeaa6f"
+  integrity sha512-PcOIHFiJD7E8tj/9lNglg736lLSpckiyfLReEBWij2vAkle/uVOaYdCh5beuU9f0Ejga8eNWcDx6WkyHzuLcLg==
   dependencies:
     "@microsoft/api-extractor" "^7.48.1"
     "@typescript-eslint/parser" "^8.17.0"

@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { IW_BRIGGS, RA_TYPE_GALACTIC, SEPARATOR1 } from '@utils/constantsSensCalc.ts';
+import { IW_BRIGGS, RA_TYPE_GALACTIC, SEPARATOR1, TYPE_ZOOM } from '@utils/constantsSensCalc.ts';
 import {
   addRobustProperty,
   addFrequency,
@@ -8,16 +8,65 @@ import {
   pointingCentre,
   rxBand
 } from './submissionEntries';
+import { StandardData, ZoomData } from '@/utils/types/typesSensCalc';
 
 describe('addRobustProperty', () => {
   it('adds robustness when imageWeighting is IW_BRIGGS', () => {
-    const mockData = { imageWeighting: IW_BRIGGS, robust: 0.5 };
+    const mockData: ZoomData = {
+      dataType: TYPE_ZOOM,
+      imageWeighting: IW_BRIGGS,
+      robust: 0.5,
+      bandwidth: {
+        value: 0,
+        unit: ''
+      },
+      suppliedType: 0,
+      supplied_0: {
+        value: 0,
+        unit: ''
+      },
+      supplied_1: {
+        value: 0,
+        unit: ''
+      },
+      centralFrequency: {
+        value: 0,
+        unit: ''
+      },
+      spectralAveraging: 0,
+      spectralResolution: '',
+      tapering: 0
+    };
     const result = addRobustProperty(mockData, 'initial');
     expect(result).toContain('robustness');
   });
 
   it('returns unchanged properties when imageWeighting is not IW_BRIGGS', () => {
-    const mockData = { imageWeighting: 'natural', robust: 0.5 };
+    const mockData: ZoomData = {
+      robust: 0.5,
+      dataType: 0,
+      bandwidth: {
+        value: 0,
+        unit: ''
+      },
+      suppliedType: 0,
+      supplied_0: {
+        value: 0,
+        unit: ''
+      },
+      supplied_1: {
+        value: 0,
+        unit: ''
+      },
+      centralFrequency: {
+        value: 0,
+        unit: ''
+      },
+      spectralAveraging: 0,
+      spectralResolution: '',
+      imageWeighting: 0,
+      tapering: 0
+    };
     const result = addRobustProperty(mockData, 'initial');
     expect(result).toBe('initial');
   });
@@ -46,20 +95,72 @@ describe('addValue', () => {
 
 describe('pointingCentre', () => {
   it('returns galactic coordinates when isGalactic is true', () => {
-    const data = {
+    const data: StandardData = {
       skyDirectionType: RA_TYPE_GALACTIC,
-      raGalactic: { value: '123.4' },
-      decGalactic: { value: '-56.7' }
+      raGalactic: {
+        value: '123.4',
+        unit: ''
+      },
+      decGalactic: {
+        value: '-56.7',
+        unit: ''
+      },
+      observingBand: '',
+      weather: {
+        value: 0,
+        unit: ''
+      },
+      subarray: '',
+      num15mAntennas: 0,
+      num13mAntennas: 0,
+      numStations: 0,
+      raEquatorial: {
+        value: 0,
+        unit: ''
+      },
+      decEquatorial: {
+        value: 0,
+        unit: ''
+      },
+      elevation: {
+        value: 0,
+        unit: ''
+      },
+      advancedData: null,
+      modules: []
     };
     const result = pointingCentre(data, '');
     expect(result).toContain('pointing_centre=123.4 -56.7');
   });
 
   it('returns equatorial coordinates when isGalactic is false', () => {
-    const data = {
+    const data: StandardData = {
       skyDirectionType: 'equatorial',
-      raEquatorial: { value: 123.456 },
-      decEquatorial: { value: -45.678 }
+      raEquatorial: { value: 123.456, unit: '' },
+      decEquatorial: { value: -45.678, unit: '' },
+      observingBand: '',
+      weather: {
+        value: 0,
+        unit: ''
+      },
+      subarray: '',
+      num15mAntennas: 0,
+      num13mAntennas: 0,
+      numStations: 0,
+      raGalactic: {
+        value: '',
+        unit: ''
+      },
+      decGalactic: {
+        value: '',
+        unit: ''
+      },
+      elevation: {
+        value: 0,
+        unit: ''
+      },
+      advancedData: null,
+      modules: []
     };
     const result = pointingCentre(data);
     expect(result).toContain('pointing_centre=');
