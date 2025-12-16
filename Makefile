@@ -27,7 +27,7 @@ js-pre-e2e-test:
 	mkdir -p build/.nyc_output
 
 # The default PHT_BACKEND_URL points to the umbrella chart PHT back-end deployment
-BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/api/v10
+BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/api/v11
 
 K8S_CHART_PARAMS += \
   --set ska-oso-pht-ui.backendURL=$(BACKEND_URL)
@@ -79,7 +79,7 @@ endif
 ENV_CHECK_DEV := $(shell echo $(CI_ENVIRONMENT_SLUG) | grep 'dev')
 ifneq ($(ENV_CHECK_DEV),)
 K8S_CHART_PARAMS += \
-  --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl="/integration-ska-oso-services/oso/api/v10"
+  --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl="/integration-ska-oso-services/oso/api/v11"
 endif
 
 set-dev-env-vars:
