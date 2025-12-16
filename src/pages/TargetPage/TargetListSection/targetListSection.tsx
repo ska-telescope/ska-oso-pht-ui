@@ -45,10 +45,7 @@ export default function TargetListSection() {
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   React.useEffect(() => {
-    if (
-      (getProposal()?.targets?.length ?? 0) > (osdCyclePolicy?.maxTargets ?? 0) - 1 &&
-      !visibilitySVG
-    ) {
+    if ((getProposal()?.targets?.length ?? 0) > (osdCyclePolicy?.maxTargets ?? 0) - 1) {
       const ra = getProposal()?.targets?.map(target => {
         return { ra: target.raStr };
       });
