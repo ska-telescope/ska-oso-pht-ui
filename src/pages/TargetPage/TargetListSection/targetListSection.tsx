@@ -56,9 +56,22 @@ export default function TargetListSection() {
         return { dec: target.decStr };
       });
       // only LOW for now
-      GetVisibility(ra[0].ra, dec[0].dec, 'LOW').then(response => {
-        setVisibilitySVG(response.data);
-      });
+      if (
+        ra &&
+        dec &&
+        ra.length > 0 &&
+        dec.length > 0 &&
+        typeof ra[0]?.ra === 'string' &&
+        typeof dec[0]?.dec === 'string'
+      ) {
+        GetVisibility(ra[0].ra, dec[0].dec, 'LOW').then(response => {
+          if (response && typeof response === 'object' && 'data' in response) {
+            setVisibilitySVG(response.data);
+          } else {
+            setVisibilitySVG(null);
+          }
+        });
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getProposal()?.targets, osdCyclePolicy?.maxTargets]);
@@ -200,7 +213,7 @@ export default function TargetListSection() {
               raType={RA_TYPE_ICRS.value}
               rows={getProposal().targets}
             />
-            {visibilitySVG !== null && getProposal()?.targets?.length > 0 && (
+            {visibilitySVG !== null && (getProposal()?.targets?.length ?? 0) > 0 && (
               <Box pt={6} px={3}>
                 <SvgAsImg svgXml={visibilitySVG} />
               </Box>

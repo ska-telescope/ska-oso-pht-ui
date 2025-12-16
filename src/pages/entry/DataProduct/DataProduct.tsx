@@ -2,7 +2,12 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Grid, Paper, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { BorderedSection, DropDown } from '@ska-telescope/ska-gui-components';
+import {
+  BorderedSection,
+  DropDown,
+  Spacer,
+  SPACER_VERTICAL
+} from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import RobustField from '@components/fields/robust/Robust.tsx';
 import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
@@ -17,6 +22,7 @@ import {
   NAV,
   PAGE_DATA_PRODUCTS,
   PULSAR_TIMING_VALUE,
+  STATUS_INITIAL,
   TYPE_CONTINUUM,
   TYPE_PST,
   TYPE_ZOOM,
@@ -27,7 +33,7 @@ import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighti
 import { DataProductSDP } from '@/utils/types/dataProduct';
 import AddButton from '@/components/button/Add/Add';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { presentUnits } from '@/utils/present/present';
+import { presentUnits, presentValue } from '@/utils/present/present';
 import Observation from '@/utils/types/observation';
 import GridObservation from '@/components/grid/observation/GridObservation';
 import ImageSizeField from '@/components/fields/imageSize/imageSize';
@@ -60,6 +66,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const theme = useTheme();
   const { osdCyclePolicy } = useOSDAccessors();
   const { setHelp } = useHelp();
+  const showSC = osdCyclePolicy.maxObservations === 1 && osdCyclePolicy.maxDataProducts === 1;
 
   const isEdit = () => locationProperties.state !== null || data !== undefined;
 
@@ -538,6 +545,35 @@ export default function DataProduct({ data }: DataProductProps) {
     );
   };
 
+  const scData = (): any => getProposal()?.targetObservation?.[0]?.sensCalc;
+
+  const PresentCustomResultValue = () => {
+    return t('sensitivityCalculatorResults.customArray');
+  };
+
+  const displayElement = (eLabel: string, eValue: any, eUnits: string, eId: string) => {
+    return (
+      <Grid key={eId} container direction="row" justifyContent="center" alignItems="center">
+        <Grid size={{ xs: 6 }}>
+          <Typography id={eId} sx={{ align: 'right', fontWeight: 'normal' }} variant="body1">
+            {eLabel}
+          </Typography>
+        </Grid>
+        <Grid size={{ xs: 6 }}>
+          <Typography
+            id={eId + 'Label'}
+            data-testid={`field-${eId}`}
+            sx={{ align: 'left', fontWeight: 'bold' }}
+            variant="body1"
+          >
+            {eId === 'targetName' ? PresentCustomResultValue() : presentValue(eValue)}{' '}
+            {eId === 'targetName' ? '' : presentUnits(eUnits)}
+          </Typography>
+        </Grid>
+      </Grid>
+    );
+  };
+
   return (
     <Box
       sx={{
@@ -677,6 +713,53 @@ export default function DataProduct({ data }: DataProductProps) {
                 ))}
             </Typography>
           </BorderedSection>
+          {showSC && <Spacer size={GAP * 2} axis={SPACER_VERTICAL} />}
+          {showSC && (
+            <BorderedSection
+              borderColor={theme.palette.success.main}
+              title={t('sensitivityCalculatorResults.title')}
+            >
+              {scData()?.statusGUI !== STATUS_INITIAL ? (
+                <>
+                  {displayElement(
+                    t('sensitivityCalculatorResults.targetName'),
+                    scData().title,
+                    '',
+                    'targetName'
+                  )}
+                  {scData()?.section1 && <Spacer size={30} axis={SPACER_VERTICAL} />}
+                  {scData()?.section1?.map((rec: any) =>
+                    displayElement(
+                      t('sensitivityCalculatorResults.' + rec.field),
+                      rec.value,
+                      rec.units ?? '',
+                      rec.field
+                    )
+                  )}
+                  {scData()?.section2 && <Spacer size={30} axis={SPACER_VERTICAL} />}
+                  {scData()?.section2?.map((rec: any) =>
+                    displayElement(
+                      t('sensitivityCalculatorResults.' + rec.field),
+                      rec.value,
+                      rec.units ?? '',
+                      rec.field
+                    )
+                  )}
+                  {scData()?.section3 && <Spacer size={30} axis={SPACER_VERTICAL} />}
+                  {scData()?.section3?.map((rec: any) =>
+                    displayElement(
+                      t('sensitivityCalculatorResults.' + rec.field),
+                      rec.value,
+                      rec.units ?? '',
+                      rec.field
+                    )
+                  )}
+                </>
+              ) : (
+                <Typography>{t('sensitivityCalculatorResults.noData')}</Typography>
+              )}
+            </BorderedSection>
+          )}
         </Grid>
       </Grid>
       {osdCyclePolicy.maxDataProducts !== 1 && pageFooter()}
