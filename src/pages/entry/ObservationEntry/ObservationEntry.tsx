@@ -15,12 +15,10 @@ import {
   BorderedSection
 } from '@ska-telescope/ska-gui-components';
 import {
-  DEFAULT_DATA_PRODUCT,
   LAB_IS_BOLD,
   LAB_POSITION,
   NAV,
   BAND_LOW,
-  STATUS_PARTIAL,
   SUPPLIED_VALUE_DEFAULT_MID,
   TYPE_CONTINUUM,
   OB_SUBARRAY_CUSTOM,
@@ -62,7 +60,6 @@ import Proposal from '../../../utils/types/proposal';
 import AddButton from '../../../components/button/Add/Add';
 import GroupObservationsField from '../../../components/fields/groupObservations/groupObservations';
 import Observation from '../../../utils/types/observation';
-import TargetObservation from '../../../utils/types/targetObservation';
 import SubArrayField from '../../../components/fields/subArray/SubArray';
 import ObservingBandField from '../../../components/fields/observingBand/ObservingBand';
 import ObservationTypeField from '../../../components/fields/observationType/ObservationType';
@@ -87,7 +84,10 @@ import SuppliedValue from '@/components/fields/suppliedValue/suppliedValue';
 import CentralFrequency from '@/components/fields/centralFrequency/centralFrequency';
 import ZoomChannels from '@/components/fields/zoomChannels/zoomChannels';
 import SubBands from '@/components/fields/subBands/subBands';
-import { DataProductSDP } from '@/utils/types/dataProduct';
+import updateObservations from '@/utils/update/observations/updateObservations';
+import updateDataProductsPST from '@/utils/update/dataProductsPST/updateDataProductsPST';
+import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalcPartial';
+import updateSensCalc from '@/utils/update/sensCalc/updateSensCalc';
 
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 4;
@@ -193,7 +193,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       bandwidth: bandwidth,
       continuumBandwidth: continuumBandwidth,
       continuumBandwidthUnits: continuumBandwidthUnits,
-      spectralAveraging: spectralAveraging,
+      spectralAveraging: (Number.isNaN(spectralAveraging) ? 1 : spectralAveraging) ?? 1,
       supplied: {
         type: suppliedType,
         value: suppliedValue,
@@ -213,75 +213,23 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   /*--------------------------------------------------*/
 
-  const updateObservationOnProposal = () => {
+  const updateObservationOnProposal = async () => {
+    const proposal = getProposal();
     const newObservation: Observation = observationOut();
-    const oldObservations = getProposal().observations;
-    const newObservations: Observation[] = [];
-    if (oldObservations && oldObservations?.length > 0) {
-      oldObservations.forEach(inValue => {
-        newObservations.push(inValue.id === newObservation.id ? newObservation : inValue);
-      });
-    } else {
-      newObservations.push(newObservation);
-    }
+    const oldObservations = proposal.observations ?? [];
+    const oldDataProducts = proposal.dataProductSDP ?? [];
+    const oldTO = proposal?.targetObservation ?? [];
+    const to = isSV()
+      ? await updateSensCalc(proposal, newObservation)
+      : updateSensCalcPartial(oldTO, newObservation);
 
-    const newDataProducts: DataProductSDP[] = [];
-    if (newObservation.type === TYPE_PST) {
-      const tmpRec: DataProductSDP = {
-        ...DEFAULT_DATA_PRODUCT,
-        observationId: newObservation.id,
-        dataProductType: newObservation.pstMode ?? 0
-      };
-      const oldDataProducts = getProposal().dataProductSDP;
-      if (oldDataProducts && oldDataProducts?.length > 0) {
-        oldDataProducts.forEach(inValue => {
-          newDataProducts.push(
-            inValue.observationId === newObservation.id &&
-              newObservation?.pstMode !== inValue.dataProductType
-              ? tmpRec
-              : inValue
-          );
-        });
-      }
-    } else {
-      newDataProducts.push(...(getProposal().dataProductSDP ?? []));
-    }
-
-    const updateSensCalcPartial = (ob: Observation) => {
-      const result = getProposal()?.targetObservation?.map(rec => {
-        if (rec.observationId === ob.id) {
-          const to: TargetObservation = {
-            observationId: rec.observationId,
-            targetId: rec.targetId,
-            sensCalc: {
-              id: rec.targetId,
-              title: '',
-              statusGUI: STATUS_PARTIAL,
-              error: ''
-            },
-            dataProductsSDPId: ''
-          };
-          return to;
-        } else {
-          return rec;
-        }
-      });
-      return result;
+    const tmp = {
+      ...proposal,
+      observations: updateObservations(oldObservations ?? [], newObservation),
+      dataProductSDP: updateDataProductsPST(oldDataProducts, newObservation),
+      targetObservation: to
     };
-
-    setProposal({
-      ...getProposal(),
-      observations: newObservations,
-      dataProductSDP: newDataProducts,
-      ...(isSV() ? {} : { targetObservation: updateSensCalcPartial(newObservation) }) // don't update to partial results for SV() // TODO generate full results on obs change
-    });
-
-    /*
-      getAffected(newObservation.id).map(rec => {
-        const target = getProposal().targets.find(t => t.id === rec.targetId);
-        getSensCalcData(newObservation, target);
-      });
-      */
+    setProposal(tmp);
   };
 
   const addObservationToProposal = () => {
