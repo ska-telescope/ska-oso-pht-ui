@@ -35,7 +35,6 @@ async function getSensCalc(
     try {
       return await getSensitivityCalculatorAPIData(observation, target, dataProductSDP, isCustom());
     } catch (e) {
-      console.log('error fetching SensCalc data:', e);
       return { error: `error.API_UNKNOWN_ERROR ${e}` };
     }
   };

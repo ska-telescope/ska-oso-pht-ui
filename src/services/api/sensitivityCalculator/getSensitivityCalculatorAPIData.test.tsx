@@ -1,11 +1,11 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import * as CONSTANTS from '@/utils/constants';
 import getSensCalc from './getSensitivityCalculatorAPIData';
 import { SENSCALC_CONTINUUM_MOCKED } from './SensCalcResultsMOCK';
 import { sensCalcResultsAPIResponseMock } from './SensCalcResultsAPIResponseMOCK';
-import axiosClient from '@/services/axios/axiosClient/axiosClient';
 import { SENSCALC_CONTINUUM_MOCKED_NEW } from './SensCalcResultsMockNew';
+import axiosClient from '@/services/axios/axiosClient/axiosClient';
+import * as CONSTANTS from '@/utils/constants';
 
 describe('getSensitivityCalculatorAPIData Service', () => {
   beforeEach(() => {
