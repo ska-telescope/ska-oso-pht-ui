@@ -36,7 +36,7 @@ import {
   rxBand
 } from '../submissionEntries/submissionEntries';
 import Fetch from '../fetch/Fetch';
-import Target, { PointingPatternParams } from '../../../utils/types/target';
+import Target from '../../../utils/types/target';
 import Observation from '../../../utils/types/observation';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 import { DataProductSDP } from '@/utils/types/dataProduct';
@@ -59,49 +59,9 @@ interface FinalIndividualResults {
 }
 
 export function getFinalResults(
-  target: {
-    decStr?: string;
-    id: any;
-    name: any;
-    b?: string;
-    l?: string;
-    raStr?: string;
-    redshift?: string;
-    referenceFrame?: string;
-    raReferenceFrame?: string | undefined;
-    raDefinition?: string | undefined;
-    velType?: number;
-    vel?: string;
-    velUnit?: number;
-    pointingPattern?: { active: string; parameters: PointingPatternParams[] } | undefined;
-  },
+  target: Target,
   results: any,
-  theObservation: {
-    id?: string;
-    telescope?: number;
-    subarray?: number;
-    linked?: string;
-    type: any;
-    observingBand?: number;
-    weather?: number | undefined;
-    elevation?: number;
-    centralFrequency?: number;
-    centralFrequencyUnits?: number;
-    bandwidth: number | null;
-    continuumBandwidth: number | null;
-    continuumBandwidthUnits: number | null;
-    spectralAveraging?: number | undefined;
-    tapering?: number | undefined;
-    imageWeighting?: number;
-    robust?: number;
-    supplied: any;
-    spectralResolution?: string;
-    effectiveResolution?: string;
-    numSubBands?: number | undefined;
-    num15mAntennas?: number | undefined;
-    num13mAntennas?: number | undefined;
-    numStations?: number | undefined;
-  }
+  theObservation: Observation
 ): SensCalcResults {
   const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
   const isContinuum = () => theObservation.type === TYPE_CONTINUUM;
