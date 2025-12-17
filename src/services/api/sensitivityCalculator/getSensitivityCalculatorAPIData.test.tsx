@@ -2,8 +2,14 @@ import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import getSensCalc from './getSensitivityCalculatorAPIData';
 import { SENSCALC_CONTINUUM_MOCKED } from './SensCalcResultsMOCK';
-import { sensCalcResultsAPIResponseMock } from './SensCalcResultsAPIResponseMOCK';
-import { SENSCALC_CONTINUUM_MOCKED_NEW } from './SensCalcResultsMockNew';
+import {
+  sensCalcResultsAPIResponseMockContinuum,
+  sensCalcResultsAPIResponseMockSpectral
+} from './SensCalcResultsAPIResponseMOCK';
+import {
+  SENSCALC_CONTINUUM_MOCKED_NEW,
+  SENSCALC_SPECTRAL_MOCKED_NEW
+} from './SensCalcResultsMockNew';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 import * as CONSTANTS from '@/utils/constants';
 
@@ -25,15 +31,30 @@ describe('getSensitivityCalculatorAPIData Service', () => {
     expect(result).toEqual(SENSCALC_CONTINUUM_MOCKED);
   });
 
-  test('returns mapped data from API when USE_LOCAL_DATA is false', async () => {
+  test('returns continuum mapped data from API', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA_SENSITIVITY_CALC', 'get').mockReturnValue(false);
-    vi.spyOn(axiosClient, 'get').mockResolvedValue({ data: sensCalcResultsAPIResponseMock });
+    vi.spyOn(axiosClient, 'get').mockResolvedValue({
+      data: sensCalcResultsAPIResponseMockContinuum
+    });
     const result = await getSensCalc(
       CONSTANTS.DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
       CONSTANTS.DEFAULT_TARGETS,
       CONSTANTS.DEFAULT_DATA_PRODUCT
     );
     expect(result).to.deep.equal(SENSCALC_CONTINUUM_MOCKED_NEW);
+  });
+
+  test('returns spectral mapped data from API', async () => {
+    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA_SENSITIVITY_CALC', 'get').mockReturnValue(false);
+    vi.spyOn(axiosClient, 'get').mockResolvedValue({
+      data: sensCalcResultsAPIResponseMockSpectral
+    });
+    const result = await getSensCalc(
+      CONSTANTS.DEFAULT_ZOOM_OBSERVATION_LOW_AA2,
+      CONSTANTS.DEFAULT_TARGETS,
+      CONSTANTS.DEFAULT_DATA_PRODUCT
+    );
+    expect(result).to.deep.equal(SENSCALC_SPECTRAL_MOCKED_NEW);
   });
 
   test('returns error message on API failure', async () => {
@@ -44,33 +65,27 @@ describe('getSensitivityCalculatorAPIData Service', () => {
       CONSTANTS.DEFAULT_TARGETS,
       CONSTANTS.DEFAULT_DATA_PRODUCT
     );
-    expect(result).to.deep.equal({ error: 'Network Error' });
+    expect(result).to.deep.equal({ error: 'Error: Network Error' });
   });
 
-  //   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
-  //     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-  //     const errorOut = { unexpected: 'error' };
-  //     vi.spyOn(axiosClient, 'get').mockRejectedValue(errorOut);
-  //     const result = await getSensCalc(CONSTANTS.DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2, CONSTANTS.DEFAULT_TARGETS, CONSTANTS.DEFAULT_DATA_PRODUCT);
-  //     expect(result).to.deep.equal( { error: [errorOut] });
-  //   });
-
-  //   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
-  //     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-  //     const errorOut =   {
-  //         "title": "Validation Error",
-  //         "detail": "Specified pointing centre is always below the horizon from the SKA LOW site"
-  //     };
-  //     vi.spyOn(axiosClient, 'get').mockRejectedValue({ data: errorOut });
-  //     const result = await getSensCalc(CONSTANTS.DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2, CONSTANTS.DEFAULT_TARGETS, CONSTANTS.DEFAULT_DATA_PRODUCT);
-  //     console.dir(result, { depth: null });
-  //     expect(result).to.deep.equal( { error: "Specified pointing centre is always below the horizon from the SKA LOW site" });
-  //   });
-
-  //   test('returns error.API_UNKNOWN_ERROR when API does not return data property', async () => {
-  //     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
-  //     mockedAuthClient.get.mockResolvedValue({});
-  //     const result = await GetPanel(mockedAuthClient, 'dummy_id');
-  //     expect(result).toBe('error.API_UNKNOWN_ERROR');
-  //   });
+  test('returns error message on Sensitivity Calculator Error', async () => {
+    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+    const errorOut = {
+      title: 'Validation Error',
+      detail: 'Specified pointing centre is always below the horizon from the SKA LOW site'
+    };
+    vi.spyOn(axiosClient, 'get').mockRejectedValueOnce({
+      isAxiosError: true,
+      response: { data: errorOut, status: 400, statusText: 'Bad Request' },
+      message: errorOut.detail
+    });
+    const result = await getSensCalc(
+      CONSTANTS.DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
+      CONSTANTS.DEFAULT_TARGETS,
+      CONSTANTS.DEFAULT_DATA_PRODUCT
+    );
+    expect(result).to.deep.equal({
+      error: 'Error: Specified pointing centre is always below the horizon from the SKA LOW site'
+    });
+  });
 });

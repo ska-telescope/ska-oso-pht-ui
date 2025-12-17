@@ -1,4 +1,4 @@
-export const sensCalcResultsAPIResponseMock = {
+export const sensCalcResultsAPIResponseMockContinuum = {
   calculate: {
     continuum_sensitivity: {
       value: 62.30814817980956,
@@ -111,4 +111,84 @@ export const sensCalcResultsAPIResponseMock = {
     warnings: [],
     subbands: {}
   }
+};
+
+export const sensCalcResultsAPIResponseMockSpectral = {
+  calculate: [
+    {
+      freq_centre: {
+        value: 200,
+        unit: 'MHz'
+      },
+      spectral_sensitivity: {
+        value: 218249.9948630294,
+        unit: 'uJy / beam'
+      },
+      spectropolarimetry_results: {
+        fwhm_of_the_rmsf: {
+          value: 394.69720903949127,
+          unit: 'rad / m2'
+        },
+        max_faraday_depth_extent: {
+          value: 1.4009293854868758,
+          unit: 'rad / m2'
+        },
+        max_faraday_depth: {
+          value: 5439564.468335882,
+          unit: 'rad / m2'
+        }
+      },
+      warnings: []
+    }
+  ],
+  weighting: [
+    {
+      weighting_factor: 3.7961316440978283,
+      sbs_conv_factor: 1303068.7388739265,
+      confusion_noise: {
+        value: 0.0000026504800547538226,
+        limit_type: 'value'
+      },
+      beam_size: {
+        beam_maj_scaled: 0.0016440625961672488,
+        beam_min_scaled: 0.0011004322402656584,
+        beam_pa: 107.38709285360864
+      },
+      freq_centre: {
+        value: 200000000,
+        unit: 'Hz'
+      }
+    }
+  ],
+  transformed_result: [
+    {
+      weighted_spectral_sensitivity: {
+        value: 0.8285057118237343,
+        unit: 'Jy / beam'
+      },
+      spectral_confusion_noise: {
+        value: 0.0000026504800547538226,
+        unit: 'Jy / beam'
+      },
+      total_spectral_sensitivity: {
+        value: 0.828505711827974,
+        unit: 'Jy / beam'
+      },
+      spectral_synthesized_beam_size: {
+        beam_maj: {
+          value: 5.918625346202096,
+          unit: 'arcsec'
+        },
+        beam_min: {
+          value: 3.9615560649563704,
+          unit: 'arcsec'
+        }
+      },
+      spectral_surface_brightness_sensitivity: {
+        value: 1079599.8930615226,
+        unit: 'K'
+      },
+      warnings: []
+    }
+  ]
 };

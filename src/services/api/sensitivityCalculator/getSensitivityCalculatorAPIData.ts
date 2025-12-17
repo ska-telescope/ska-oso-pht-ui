@@ -32,27 +32,21 @@ async function getSensCalc(
     target: Target,
     dataProductSDP: DataProductSDP
   ) => {
-    try {
-      return await getSensitivityCalculatorAPIData(observation, target, dataProductSDP, isCustom());
-    } catch (e) {
-      return { error: `error.API_UNKNOWN_ERROR ${e}` };
-    }
+    return await getSensitivityCalculatorAPIData(observation, target, dataProductSDP, isCustom());
   };
 
   try {
     const output: any = await fetchSensCalc(observation, target, dataProductSDP);
 
     if (!output) {
-      return { error: 'error.API_UNKNOWN_ERROR' };
+      throw new Error('error.API_UNKNOWN_ERROR');
     }
-    if (output.error && output.results && output.results instanceof Array) {
-      return output.results.length > 0
-        ? { error: `${output.results.join(' ')}` }
-        : { error: `${output.results[0]}` };
+    if (output.error && output.results) {
+      throw new Error(`${output.results}`);
     }
     return output;
   } catch (e) {
-    return { error: `error.API_UNKNOWN_ERROR ${e}` };
+    return e ? { error: String(e) } : { error: 'error.API_UNKNOWN_ERROR' };
   }
 }
 
