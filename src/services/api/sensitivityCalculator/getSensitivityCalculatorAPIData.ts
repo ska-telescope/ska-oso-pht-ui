@@ -12,14 +12,16 @@ import {
 } from '../../../utils/constants';
 import GetZoomData from '../getZoomData/getZoomData';
 import GetContinuumData from '../getContinuumData/getContinuumData';
-import { SENSCALC_CONTINUUM_MOCKED } from './SensCalcResultsMOCK';
+import { SENSCALC_CONTINUUM_MOCKED } from './SensCalcResultsMock';
 import { DataProductSDP } from '@/utils/types/dataProduct';
+
+type SensCalcAPIError = { error: string };
 
 async function getSensCalc(
   observation: Observation,
   target: Target,
   dataProductSDP: DataProductSDP
-): Promise<SensCalcResults | string> {
+): Promise<SensCalcResults | SensCalcAPIError> {
   const isCustom = () => observation.subarray === OB_SUBARRAY_CUSTOM;
 
   if (USE_LOCAL_DATA_SENSITIVITY_CALC) {
@@ -30,25 +32,21 @@ async function getSensCalc(
     target: Target,
     dataProductSDP: DataProductSDP
   ) => {
-    try {
-      return await getSensitivityCalculatorAPIData(observation, target, dataProductSDP, isCustom());
-    } catch (e) {
-      return `error.API_UNKNOWN_ERROR ${e}`;
-    }
+    return await getSensitivityCalculatorAPIData(observation, target, dataProductSDP, isCustom());
   };
 
   try {
     const output: any = await fetchSensCalc(observation, target, dataProductSDP);
 
     if (!output) {
-      return 'error.API_UNKNOWN_ERROR';
+      throw new Error('error.API_UNKNOWN_ERROR');
     }
-    if (output.error && output.results && output.results instanceof Array) {
-      return output.results.length > 0 ? `${output.results.join(' ')}` : `${output.results[0]}`;
+    if (output.error && output.results) {
+      throw new Error(`${output.results}`);
     }
     return output;
   } catch (e) {
-    return `error.API_UNKNOWN_ERROR ${e}`;
+    return e ? { error: String(e) } : { error: 'error.API_UNKNOWN_ERROR' };
   }
 }
 
