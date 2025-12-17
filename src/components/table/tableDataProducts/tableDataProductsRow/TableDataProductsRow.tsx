@@ -7,7 +7,14 @@ import EditIcon from '@/components/icon/editIcon/editIcon';
 import TrashIcon from '@/components/icon/trashIcon/trashIcon';
 import { useInitializeAccessStore } from '@/utils/aaa/aaaUtils';
 import Proposal from '@/utils/types/proposal';
-import { FREQUENCY_HZ, FREQUENCY_MHZ, TYPE_CONTINUUM } from '@/utils/constants';
+import {
+  FREQUENCY_GHZ,
+  FREQUENCY_HZ,
+  FREQUENCY_MHZ,
+  TELESCOPE_LOW_NUM,
+  TELESCOPE_MID_NUM,
+  TYPE_CONTINUUM
+} from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import DataProduct from '@/components/info/dataProduct/DataProduct';
 import { frequencyConversion } from '@/utils/helpers';
@@ -36,7 +43,7 @@ export default function TableDataProductsRow({
   t
 }: TableDataProductsRowProps) {
   const theme = useTheme();
-  const { osdLOW } = useOSDAccessors();
+  const { osdLOW, osdMID } = useOSDAccessors();
   useInitializeAccessStore();
 
   const observation = useMemo(
@@ -45,6 +52,28 @@ export default function TableDataProductsRow({
   );
 
   const isContinuum = observation?.type === TYPE_CONTINUUM;
+  const isLow = observation?.telescope === TELESCOPE_LOW_NUM;
+  const isMid = observation?.telescope === TELESCOPE_MID_NUM;
+
+  let min = 0;
+  let max = 0;
+  if (isMid) {
+    const receiver = osdMID?.basicCapabilities?.receiverInformation.find(
+      e => e.rxId === String(observation?.observingBand)
+    );
+    min = receiver?.minFrequencyHz ?? 0;
+    max = receiver?.maxFrequencyHz ?? 0;
+  } else {
+    min = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
+    max = osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0;
+  }
+  const minFreq = frequencyConversion(min, FREQUENCY_HZ, isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+  const maxFreq = frequencyConversion(max, FREQUENCY_HZ, isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+  const centerFreq = frequencyConversion(
+    observation?.centralFrequency ?? 0,
+    observation?.centralFrequencyUnits ?? FREQUENCY_HZ,
+    isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ
+  );
 
   const getObservationColors = (type: string, value?: unknown, dim?: number) =>
     getColors({
@@ -171,26 +200,15 @@ export default function TableDataProductsRow({
         {/* Frequency Spectrum */}
         <TableCell>
           <FrequencySpectrum
-            minFreq={frequencyConversion(
-              (osdLOW?.basicCapabilities?.minFrequencyHz ?? 0) * 10,
-              FREQUENCY_HZ,
-              FREQUENCY_MHZ
-            )}
-            maxFreq={frequencyConversion(
-              (osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0) * 10,
-              FREQUENCY_HZ,
-              FREQUENCY_MHZ
-            )}
-            centerFreq={frequencyConversion(
-              observation?.centralFrequency ?? 0,
-              observation?.centralFrequencyUnits ?? FREQUENCY_HZ,
-              FREQUENCY_MHZ
-            )}
+            minFreq={minFreq}
+            maxFreq={maxFreq}
+            centerFreq={centerFreq}
             bandWidth={
               isContinuum ? observation?.continuumBandwidth ?? 0 : observation?.bandwidth ?? 0
             }
             bandColor={colorsTelescopeDim[0]}
             bandColorContrast={colorsTelescopeDim[1]}
+            units={isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ}
           />
         </TableCell>
       </TableRow>

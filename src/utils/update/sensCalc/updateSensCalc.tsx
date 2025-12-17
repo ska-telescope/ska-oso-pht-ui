@@ -31,23 +31,20 @@ const getSensCalcData = async (
  */
 const updateSensCalcAsync = async (
   proposal: Proposal,
-  ob: Observation
+  ob: Observation,
+  dp: DataProductSDP
 ): Promise<TargetObservation[]> => {
   if (!proposal.targetObservation) return [];
 
   const result = await Promise.all(
     proposal.targetObservation.map(async (rec: TargetObservation) => {
-      if (rec.observationId === ob.id) {
+      if (rec?.observationId === ob?.id) {
         const target: Target | undefined = proposal.targets?.find(t => t.id === rec.targetId);
-        const dataProductSDP: DataProductSDP | undefined = proposal.dataProductSDP?.find(
-          dp => dp.id === rec.dataProductsSDPId
-        );
-
-        if (!target || !dataProductSDP) {
+        if (!target || !dp) {
           return rec;
         }
 
-        const sensCalc = await getSensCalcData(ob, target, dataProductSDP);
+        const sensCalc = await getSensCalcData(ob, target, dp);
         return {
           ...rec,
           sensCalc: sensCalc ?? {
@@ -66,14 +63,12 @@ const updateSensCalcAsync = async (
   return result;
 };
 
-/**
- * Public API: wraps updateSensCalcAsync and forces STATUS_PARTIAL
- */
 export const updateSensCalc = async (
   proposal: Proposal,
-  ob: Observation
+  ob: Observation,
+  dp: DataProductSDP
 ): Promise<TargetObservation[]> => {
-  const updated = await updateSensCalcAsync(proposal, ob);
+  const updated = await updateSensCalcAsync(proposal, ob, dp);
 
   return updated.map(rec => {
     if (rec.observationId === ob.id) {

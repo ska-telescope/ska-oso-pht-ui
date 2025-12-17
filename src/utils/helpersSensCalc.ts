@@ -1,8 +1,6 @@
 import { SUPPLIED_TYPE_INTEGRATION } from './constants';
 import {
   DECIMAL_PLACES,
-  FREQUENCY_HZ,
-  FREQUENCY_UNITS,
   IMAGE_WEIGHTING,
   RA_TYPE_GALACTIC,
   ROBUST,
@@ -147,12 +145,6 @@ export const isSuppliedTime = (suppliedType: number) => suppliedType === SUPPLIE
 export const getSensitivitiesUnitsMapping = (value: number) => {
   return SENSITIVITY_UNITS[value - 1].value;
 };
-
-export const frequencyConversion = (
-  inValue: any,
-  from: number,
-  to: number = FREQUENCY_HZ
-): number => (inValue * FREQUENCY_UNITS[to - 1]?.toHz) / FREQUENCY_UNITS[from - 1]?.toHz;
 
 export const shiftSensitivity = (inValues: ValueUnitPair) => {
   if (!inValues) {

@@ -2,8 +2,8 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import CycleSelection from './CycleSelection';
-import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 const wrapper = (component: React.ReactElement) => {
   return render(

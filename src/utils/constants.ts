@@ -48,6 +48,7 @@ export const BAND_2 = 2;
 export const BAND_5A = 3;
 export const BAND_5B = 4;
 
+export const BAND_LOW_STR = 'Band_Low';
 export const BAND_1_STR = 'Band_1';
 export const BAND_2_STR = 'Band_2';
 
@@ -202,10 +203,10 @@ export const FREQUENCY_STR_KHZ = 'kHz';
 export const FREQUENCY_STR_GHZ = 'GHz';
 
 export const FREQUENCY_UNITS = [
-  { label: FREQUENCY_STR_GHZ, value: FREQUENCY_GHZ, mapping: FREQUENCY_STR_GHZ, toHz: 1 }, // TODO check if label can be removed
+  { label: FREQUENCY_STR_GHZ, value: FREQUENCY_GHZ, mapping: FREQUENCY_STR_GHZ, toHz: 1 },
   { label: FREQUENCY_STR_MHZ, value: FREQUENCY_MHZ, mapping: FREQUENCY_STR_MHZ, toHz: 1000 },
-  { label: FREQUENCY_STR_KHZ, value: FREQUENCY_KHZ, mapping: FREQUENCY_STR_KHZ, toHz: 10000000 },
-  { label: FREQUENCY_STR_HZ, value: FREQUENCY_HZ, mapping: FREQUENCY_STR_HZ, toHz: 10000000000 }
+  { label: FREQUENCY_STR_KHZ, value: FREQUENCY_KHZ, mapping: FREQUENCY_STR_KHZ, toHz: 1000000 },
+  { label: FREQUENCY_STR_HZ, value: FREQUENCY_HZ, mapping: FREQUENCY_STR_HZ, toHz: 1000000000 }
 ];
 
 export const TYPE_ZOOM = 0;
@@ -648,6 +649,7 @@ export const TEAM_STATUS_TYPE_OPTIONS = {
   rejected: 'Rejected'
 };
 export const TEL = ['', 'Mid', 'Low'];
+export const TEL_UNITS = ['', 'GHz', 'MHz'];
 
 export const TELESCOPE_MID_NUM = 1;
 export const TELESCOPE_LOW_NUM = 2;

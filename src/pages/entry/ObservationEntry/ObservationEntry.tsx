@@ -15,7 +15,6 @@ import {
   BorderedSection
 } from '@ska-telescope/ska-gui-components';
 import {
-  BANDWIDTH_TELESCOPE,
   LAB_IS_BOLD,
   LAB_POSITION,
   NAV,
@@ -45,9 +44,9 @@ import {
   ZOOM_CHANNELS_MAX,
   TYPE_PST,
   FLOW_THROUGH_VALUE,
-  FREQUENCY_KHZ,
   ZOOM_BANDWIDTH_DEFAULT_MID,
-  TELESCOPES
+  TELESCOPES,
+  TEL_UNITS
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -89,6 +88,7 @@ import updateObservations from '@/utils/update/observations/updateObservations';
 import updateDataProductsPST from '@/utils/update/dataProductsPST/updateDataProductsPST';
 import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalcPartial';
 import updateSensCalc from '@/utils/update/sensCalc/updateSensCalc';
+import { DataProductSDP } from '@/utils/types/dataProduct';
 
 const TOP_LABEL_WIDTH = 6;
 const BOTTOM_LABEL_WIDTH = 4;
@@ -219,10 +219,14 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const newObservation: Observation = observationOut();
     const oldObservations = proposal.observations ?? [];
     const oldDataProducts = proposal.dataProductSDP ?? [];
+    const dataProductSDP: DataProductSDP | undefined = proposal.dataProductSDP?.find(
+      dp => dp.observationId === newObservation.id
+    );
     const oldTO = proposal?.targetObservation ?? [];
-    const to = isSV()
-      ? await updateSensCalc(proposal, newObservation)
-      : updateSensCalcPartial(oldTO, newObservation);
+    const to =
+      isSV() && dataProductSDP
+        ? await updateSensCalc(proposal, newObservation, dataProductSDP)
+        : updateSensCalcPartial(oldTO, newObservation);
 
     const tmp = {
       ...proposal,
@@ -281,9 +285,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     }
   };
 
-  const setDefaultElevation = (inBand: number) => {
+  const setDefaultElevation = () => {
     if (elevation === ELEVATION_DEFAULT[(isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM) - 1]) {
-      setElevation(ELEVATION_DEFAULT[telescope(inBand) - 1]);
+      setElevation(ELEVATION_DEFAULT[telescope() - 1]);
     }
   };
 
@@ -292,12 +296,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const setTheObservingBand = (e: React.SetStateAction<number>) => {
     if (isLow() && e !== 0) {
-      setDefaultElevation(e as number);
+      setDefaultElevation();
       setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_S);
       setSuppliedValue(SUPPLIED_VALUE_DEFAULT_MID);
     }
     if (isMid() && e === 0) {
-      setDefaultElevation(e);
+      setDefaultElevation();
       setSuppliedType(1); // TODO : Replace with constant
       setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_H);
       setSuppliedValue(SUPPLIED_VALUE_DEFAULT_LOW);
@@ -417,7 +421,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const isPST = () => observationType === TYPE_PST;
   const isLow = () => observingBand === BAND_LOW;
   const isMid = () => observingBand !== BAND_LOW;
-  const telescope = (band = observingBand) => BANDWIDTH_TELESCOPE[band]?.telescope;
+  const telescope = () => (isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM);
   const isLowAA2 = () => isLow() && subarrayConfig === OB_SUBARRAY_AA2;
   const isContinuumOnly = () => observingBand !== 0 && subarrayConfig === OB_SUBARRAY_AA2;
 
@@ -477,35 +481,44 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       asArray: true
     }) ?? [theme.palette.primary.main, theme.palette.primary.contrastText];
 
+    let min = 0;
+    let max = 0;
+    if (isMid()) {
+      const receiver = osdMID?.basicCapabilities?.receiverInformation.find(
+        e => e.rxId === String(observingBand)
+      );
+      min = receiver?.minFrequencyHz ?? 0;
+      max = receiver?.maxFrequencyHz ?? 0;
+    } else {
+      min = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
+      max = osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0;
+    }
+    const minFreq = frequencyConversion(min, FREQUENCY_HZ, isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+    const maxFreq = frequencyConversion(max, FREQUENCY_HZ, isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+    const cenFreq = frequencyConversion(
+      centralFrequency ?? 0,
+      centralFrequencyUnits ?? FREQUENCY_HZ,
+      isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ
+    );
+
     return fieldWrapper(
       <Box>
         <FrequencySpectrum
-          minFreq={frequencyConversion(
-            (osdLOW?.basicCapabilities?.minFrequencyHz ?? 0) * 10,
-            FREQUENCY_HZ,
-            FREQUENCY_MHZ
-          )}
-          maxFreq={frequencyConversion(
-            (osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0) * 10,
-            FREQUENCY_HZ,
-            FREQUENCY_MHZ
-          )}
-          centerFreq={frequencyConversion(
-            centralFrequency ?? 0,
-            centralFrequencyUnits ?? FREQUENCY_HZ,
-            FREQUENCY_MHZ
-          )}
+          minFreq={minFreq}
+          maxFreq={maxFreq}
+          centerFreq={cenFreq}
           bandWidth={
             isContinuum() || isPST()
               ? continuumBandwidth ?? 0
               : frequencyConversion(
                   isLow() ? bandwidthLookup?.value ?? 0 : getBandwidthZoom(observationOut()),
-                  isLow() ? FREQUENCY_MHZ : FREQUENCY_KHZ,
+                  isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ,
                   FREQUENCY_MHZ
                 ) ?? 0
           }
-          bandColor={colors[0]}
+          bandColor={colors[isLow() ? 0 : 1]}
           boxWidth="100%"
+          unit={TEL_UNITS[isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM]}
         />
       </Box>
     );
@@ -1126,7 +1139,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
               </Grid>
             </BorderedSection>
           </Grid>
-          {isLowAA2() && ( // TODO : Ned to make this generic from OSD Data
+          {isLowAA2() && ( // TODO : Need to make this generic from OSD Data
             <Grid sx={{ p: { md: 5, lg: 0 } }} size={{ md: 12, lg: 3 }}>
               <Box px={3}>
                 <img src={IMAGE_PATH} alt="Low AA2" width="100%" />

@@ -530,17 +530,16 @@
   "observingBand": {
     "help": "Select the observing band to use for the observation. The available bands are 50 MHz - 350 MHz for LOW; and Band 1 (0.35-1.05 GHz), Band 2 (0.95-1.76 GHz), Band 5a (4.6-8.5 GHz) and Band 5b (8.3-15.4 GHz) for MID.",
     "label": "Band",
-    "0": "Low (50 - 350 MHz)",
-    "1": "Mid Band 1 (0.35 - 1.05 GHz)",
-    "2": "Mid Band 2 (0.95 - 1.76 GHz)",
-    "3": "Mid Band 5a (4.6 - 8.5 GHz)",
-    "4": "Mid Band 5b (8.3 - 15.4 GHz)",
     "short": {
       "0": "Band Low",
       "1": "Band 1",
       "2": "Band 2",
       "3": "Band 5a",
-      "4": "Band 5b"
+      "4": "Band 5b",
+      "Band_1": "Band 1",
+      "Band_2": "Band 2",
+      "Band_3": "Band 5a",
+      "Band_4": "Band 5b"
     }
   },
   "observationId": {
