@@ -2,6 +2,7 @@ import React from 'react';
 import { Grid } from '@mui/material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import {
+  BAND_LOW_STR,
   ERROR_SECS,
   FREQUENCY_UNITS,
   LAB_IS_BOLD,
@@ -32,7 +33,7 @@ interface BandwidthFieldProps {
   value: number;
   widthButton?: number;
   widthLabel?: number;
-  observingBand?: number;
+  observingBand?: string;
   centralFrequency?: number;
   centralFrequencyUnits?: number;
   subarrayConfig?: number;
@@ -49,7 +50,7 @@ export default function BandwidthField({
   telescope,
   widthButton = 50,
   widthLabel = 5,
-  observingBand = 0,
+  observingBand = BAND_LOW_STR,
   centralFrequency = 0,
   centralFrequencyUnits = 1,
   subarrayConfig = 0,
@@ -58,7 +59,7 @@ export default function BandwidthField({
 }: BandwidthFieldProps) {
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
-  const { osdMID, osdLOW, observatoryConstants } = useOSDAccessors();
+  const { findBand, osdMID, osdLOW, observatoryConstants } = useOSDAccessors();
   const FIELD = 'bandwidth';
 
   const [errorText, setErrorText] = React.useState('');
@@ -145,7 +146,8 @@ export default function BandwidthField({
         observingBand,
         osdMID,
         osdLOW,
-        observatoryConstants
+        observatoryConstants,
+        findBand
       )
     ) {
       return t('bandwidth.range.rangeError');

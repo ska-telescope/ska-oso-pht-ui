@@ -11,7 +11,7 @@ import {
   TIME_SECS,
   RA_TYPE_GALACTIC,
   RA_TYPE_ICRS
-} from '@utils/constantsSensCalc.ts';
+} from '@utils/constants';
 import {
   getImageWeightingMapping,
   getSensitivitiesUnitsMapping,
@@ -19,12 +19,7 @@ import {
   isSuppliedTime,
   shiftSensitivity
 } from '@utils/helpersSensCalc.ts';
-import {
-  BANDWIDTH_TELESCOPE,
-  OBS_TYPES,
-  SUPPLIED_TYPE_SENSITIVITY,
-  TYPE_CONTINUUM
-} from '@utils/constants.ts';
+import { OBS_TYPES, SUPPLIED_TYPE_SENSITIVITY, TYPE_CONTINUUM } from '@utils/constants.ts';
 import { SensCalcResults, ResultsSection } from '@utils/types/sensCalcResults.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import {
@@ -82,7 +77,7 @@ export function getFinalResults(
     subarray?: number;
     linked?: string;
     type: any;
-    observingBand?: number;
+    observingBand?: string;
     weather?: number | undefined;
     elevation?: number;
     centralFrequency?: number;
@@ -365,10 +360,7 @@ function GetContinuumData(
     tapering: dataProductSDP?.taperValue ?? 0
   };
 
-  const observingBand = (observation: Observation) => {
-    const result = BANDWIDTH_TELESCOPE?.find(band => band.value === observation.observingBand);
-    return result ? result.mapping : '';
-  };
+  const observingBand = (observation: Observation) => observation.observingBand;
 
   // TODO handle custom subarray
   const subArray = (observation: Observation) => {

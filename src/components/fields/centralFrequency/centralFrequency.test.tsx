@@ -38,8 +38,6 @@ vi.mock('@ska-telescope/ska-gui-components', () => ({
   },
   TELESCOPE_MID: 'MID',
   TELESCOPE_LOW: 'LOW',
-  CENTRAL_FREQUENCY_MIN: 50,
-  CENTRAL_FREQUENCY_MAX: 350,
   NumberEntry: ({ errorText, value, setValue, onFocus, testId }: any) => (
     <div>
       <input

@@ -8,7 +8,7 @@ type Observation = {
   subarray: number;
   linked: string;
   type: number;
-  observingBand: number;
+  observingBand: string;
   weather?: number; // only for MID
   elevation: number; // TODO should be only for Mid => what property for LOW?
   centralFrequency: number;

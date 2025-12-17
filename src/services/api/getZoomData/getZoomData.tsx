@@ -12,7 +12,7 @@ import {
   RA_TYPE_GALACTIC,
   RA_TYPE_ICRS,
   TIME_SECS
-} from '@utils/constantsSensCalc.ts';
+} from '@utils/constants';
 import {
   isLow,
   getImageWeightingMapping,
@@ -21,12 +21,7 @@ import {
   getSensitivitiesUnitsMapping
 } from '@utils/helpersSensCalc.ts';
 
-import {
-  BANDWIDTH_TELESCOPE,
-  FREQUENCY_HZ,
-  FREQUENCY_UNITS,
-  SUPPLIED_TYPE_SENSITIVITY
-} from '@utils/constants.ts';
+import { FREQUENCY_HZ, FREQUENCY_UNITS, SUPPLIED_TYPE_SENSITIVITY } from '@utils/constants.ts';
 import { ResultsSection, SensCalcResults } from '@utils/types/sensCalcResults.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import {
@@ -350,10 +345,7 @@ async function GetZoomData(
     tapering: dataProductSDP?.taperValue ?? 0
   };
 
-  const observingBand = (observation: Observation) => {
-    const result = BANDWIDTH_TELESCOPE?.find(band => band.value === observation.observingBand);
-    return result ? result.mapping : '';
-  };
+  const observingBand = (observation: Observation) => observation.observingBand;
 
   // TODO handle custom subarray
   const subArray = (observation: Observation) => {

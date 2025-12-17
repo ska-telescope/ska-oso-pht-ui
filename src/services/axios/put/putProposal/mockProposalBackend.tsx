@@ -1,5 +1,5 @@
 import { ProposalBackend } from '@utils/types/proposal.tsx';
-import { PROPOSAL_STATUS, RA_TYPE_ICRS, TYPE_STR_ZOOM } from '@utils/constants.ts';
+import { BAND_LOW_STR, PROPOSAL_STATUS, RA_TYPE_ICRS, TYPE_STR_ZOOM } from '@utils/constants.ts';
 
 export const MockProposalBackend: ProposalBackend = {
   prsl_id: 'prsl-t0001-20250613-00002',
@@ -152,7 +152,7 @@ export const MockProposalBackend: ProposalBackend = {
     observation_sets: [
       {
         observation_set_id: 'obs-obR1Ej',
-        observing_band: 'low_band',
+        observing_band: BAND_LOW_STR,
         elevation: 20,
         group_id: '',
         array_details: {
@@ -326,7 +326,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
     observation_sets: [
       {
         observation_set_id: 'obs-arMIoY',
-        observing_band: 'low_band',
+        observing_band: BAND_LOW_STR,
         elevation: 20,
         array_details: {
           array: 'ska_low',

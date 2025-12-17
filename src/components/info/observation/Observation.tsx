@@ -1,5 +1,5 @@
 import { Grid } from '@mui/material';
-import { TYPE_CONTINUUM, TYPE_ZOOM } from '@/utils/constantsSensCalc';
+import { TYPE_CONTINUUM, TYPE_ZOOM } from '@/utils/constants';
 import { TYPE_PST } from '@/utils/constants';
 import Observation from '@/utils/types/observation';
 

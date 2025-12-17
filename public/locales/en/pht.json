@@ -315,6 +315,9 @@
   "dropzone": {
     "prompt": "Drag and drop your files here, or click to select"
   },
+  "edit": {
+    "label": "Edit"
+  },
   "editDataProduct": {
     "toolTip": "Edit data product"
   },
@@ -356,6 +359,10 @@
   },
   "empty": {
     "cell": "There are no contents for this cell"
+  },
+  "expand": {
+    "collapse": "Collapse",
+    "expand": "Expand"
   },
   "fileName": {
     "label": "File name"
@@ -531,11 +538,7 @@
     "help": "Select the observing band to use for the observation. The available bands are 50 MHz - 350 MHz for LOW; and Band 1 (0.35-1.05 GHz), Band 2 (0.95-1.76 GHz), Band 5a (4.6-8.5 GHz) and Band 5b (8.3-15.4 GHz) for MID.",
     "label": "Band",
     "short": {
-      "0": "Band Low",
-      "1": "Band 1",
-      "2": "Band 2",
-      "3": "Band 5a",
-      "4": "Band 5b",
+      "low_band": "Band Low",
       "Band_1": "Band 1",
       "Band_2": "Band 2",
       "Band_3": "Band 5a",

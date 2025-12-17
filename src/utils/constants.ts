@@ -42,85 +42,87 @@ export const isCypress = typeof window !== 'undefined' && window.Cypress;
 /*****************************************/
 
 export const AUTO_SAVE_INTERVAL = 30; // seconds
-export const BAND_LOW = 0;
-export const BAND_1 = 1;
-export const BAND_2 = 2;
-export const BAND_5A = 3;
-export const BAND_5B = 4;
 
-export const BAND_LOW_STR = 'Band_Low';
+// TODO : DELETE ONCE STAR-1826 IS COMPLETED
+// export const BAND_LOW = 0;
+// export const BAND_1 = 1;
+// export const BAND_2 = 2;
+// export const BAND_5A = 3;
+// export const BAND_5B = 4;
+
+export const BAND_LOW_STR = 'low_band';
 export const BAND_1_STR = 'Band_1';
 export const BAND_2_STR = 'Band_2';
-
 export const BAND_5A_STR = 'Band_5a';
 export const BAND_5B_STR = 'Band_5b';
 
-export const ANTENNA_LOW = 'low'; // can we find a better name for the Low Antenna?
+export const ANTENNA_LOW = 'low';
 export const ANTENNA_13M = '13m';
 export const ANTENNA_15M = '15m';
 export const ANTENNA_MIXED = 'mixed';
 
-export const BANDWIDTH_TELESCOPE = [
-  {
-    label: 'Low (50 - 350 MHz)',
-    telescope: 2,
-    value: BAND_LOW,
-    isBand5: false,
-    units: 'MHz',
-    mapping: 'low_band',
-    bandLimits: {
-      [ANTENNA_LOW]: [50.0, 350.0]
-    }
-  },
-  {
-    label: 'Mid Band 1 (0.35 - 1.05 GHz)',
-    telescope: 1,
-    value: BAND_1,
-    isBand5: false,
-    units: 'GHz',
-    mapping: 'mid_band_1',
-    bandLimits: {
-      [ANTENNA_15M]: [0.35e9, 1.05e9],
-      [ANTENNA_13M]: [0.58e9, 1.015e9],
-      [ANTENNA_MIXED]: [0.58e9, 1.015e9]
-    }
-  },
-  {
-    label: 'Mid Band 2 (0.95 - 1.76 GHz)',
-    telescope: 1,
-    value: BAND_2,
-    isBand5: false,
-    units: 'GHz',
-    mapping: 'mid_band_2',
-    bandLimits: {
-      [ANTENNA_15M]: [0.95e9, 1.76e9],
-      [ANTENNA_13M]: [0.95e9, 1.67e9],
-      [ANTENNA_MIXED]: [0.95e9, 1.67e9]
-    }
-  },
-  {
-    label: 'Mid Band 5a (4.6 - 8.5 GHz)',
-    telescope: 1,
-    value: BAND_5A,
-    isBand5: true,
-    units: 'GHz',
-    mapping: 'mid_band_5a',
-    bandLimits: {
-      [ANTENNA_15M]: [4.6e9, 8.5e9]
-    }
-  },
-  {
-    label: 'Mid Band 5b (8.3 - 15.4 GHz)',
-    telescope: 1,
-    value: BAND_5B,
-    isBand5: true,
-    units: 'GHz',
-    mapping: 'mid_band_5b',
-    bandLimits: {
-      [ANTENNA_15M]: [8.3e9, 15.4e9]
-    }
-  }
-];
+// TODO : DELETE ONCE STAR-1826 IS COMPLETED
+// export const BANDWIDTH_TELESCOPE = [
+//   {
+//     label: 'Low (50 - 350 MHz)',
+//     telescope: 2,
+//     value: BAND_LOW,
+//     isBand5: false,
+//     units: 'MHz',
+//     mapping: 'low_band',
+//     bandLimits: {
+//       [ANTENNA_LOW]: [50.0, 350.0]
+//     }
+//   },
+//   {
+//     label: 'Mid Band 1 (0.35 - 1.05 GHz)',
+//     telescope: 1,
+//     value: BAND_1,
+//     isBand5: false,
+//     units: 'GHz',
+//     mapping: 'mid_band_1',
+//     bandLimits: {
+//       [ANTENNA_15M]: [0.35e9, 1.05e9],
+//       [ANTENNA_13M]: [0.58e9, 1.015e9],
+//       [ANTENNA_MIXED]: [0.58e9, 1.015e9]
+//     }
+//   },
+//   {
+//     label: 'Mid Band 2 (0.95 - 1.76 GHz)',
+//     telescope: 1,
+//     value: BAND_2,
+//     isBand5: false,
+//     units: 'GHz',
+//     mapping: 'mid_band_2',
+//     bandLimits: {
+//       [ANTENNA_15M]: [0.95e9, 1.76e9],
+//       [ANTENNA_13M]: [0.95e9, 1.67e9],
+//       [ANTENNA_MIXED]: [0.95e9, 1.67e9]
+//     }
+//   },
+//   {
+//     label: 'Mid Band 5a (4.6 - 8.5 GHz)',
+//     telescope: 1,
+//     value: BAND_5A,
+//     isBand5: true,
+//     units: 'GHz',
+//     mapping: 'mid_band_5a',
+//     bandLimits: {
+//       [ANTENNA_15M]: [4.6e9, 8.5e9]
+//     }
+//   },
+//   {
+//     label: 'Mid Band 5b (8.3 - 15.4 GHz)',
+//     telescope: 1,
+//     value: BAND_5B,
+//     isBand5: true,
+//     units: 'GHz',
+//     mapping: 'mid_band_5b',
+//     bandLimits: {
+//       [ANTENNA_15M]: [8.3e9, 15.4e9]
+//     }
+//   }
+// ];
 export const DEFAULT_USER = 'DefaultUser';
 export const TMP_REVIEWER_ID = 'c8f8f18a-3c70-4c39-8ed9-2d8d180d99a3';
 
@@ -137,9 +139,6 @@ export const BANNER_PMT_SPACER_MIN = SPACER_HEADER + 100;
 
 export const FOOTER_PMT = 65;
 export const FOOTER_PMT_SPACER = SPACER_FOOTER + FOOTER_PMT;
-
-export const CENTRAL_FREQUENCY_MAX = [350, 1.05, 1.76, 8.5, 15.4];
-export const CENTRAL_FREQUENCY_MIN = [50, 0.35, 0.95, 4.6, 8.3];
 
 export const ZOOM_CHANNELS_MAX = 4000; // max for Low AA2 // TODO this should come from osd data
 export const ZOOM_CHANNELS_MIN = 1; // TODO check this is correct
@@ -201,6 +200,9 @@ export const FREQUENCY_STR_HZ = 'Hz';
 export const FREQUENCY_STR_MHZ = 'MHz';
 export const FREQUENCY_STR_KHZ = 'kHz';
 export const FREQUENCY_STR_GHZ = 'GHz';
+
+export const TEL = ['', 'Mid', 'Low'];
+export const TEL_UNITS = ['', FREQUENCY_STR_GHZ, FREQUENCY_STR_MHZ];
 
 export const FREQUENCY_UNITS = [
   { label: FREQUENCY_STR_GHZ, value: FREQUENCY_GHZ, mapping: FREQUENCY_STR_GHZ, toHz: 1 },
@@ -342,7 +344,29 @@ export const WEIGHTING_FACTOR_DEFAULT = 1;
 
 export const SBS_CONV_FACTOR_DEFAULT = 1;
 
+export const TIME_DAYS = 1;
+export const TIME_HOURS = 2;
+export const TIME_MINS = 3;
+export const TIME_SECS = 4;
+export const TIME_MS = 5;
+export const TIME_US = 6;
+export const TIME_NS = 7;
+export const TIME_UNITS = [
+  { id: TIME_DAYS, value: 'd', toDay: 1 },
+  { id: TIME_HOURS, value: 'h', toDay: 24 },
+  { id: TIME_MINS, value: 'min', toDay: 1440 },
+  { id: TIME_SECS, value: 's', toDay: 86400 },
+  { id: TIME_MS, value: 'ms', toDay: 86400 * 1000 },
+  { id: TIME_US, value: 'μs', toDay: 86400 * 1000000 },
+  { id: TIME_NS, value: 'ns', toDay: 86400 * 1000000000 }
+];
+
 export const INFINITY = 'Infinity';
+
+export const DECIMAL_PLACES = 2;
+
+export const DEFAULT_LOW_SUPPLIED_INTEGRATION_TIME = { value: 1, unit: '2' };
+export const DEFAULT_LOW_SUPPLIED_SENSITIVITY = { value: 1, unit: '1' };
 
 export const PAGE_TITLE_ADD = 0;
 export const PAGE_TEAM = 1;
@@ -441,6 +465,19 @@ export const FLOW_THROUGH_VALUE = 0;
 export const DETECTED_FILTER_BANK_VALUE = 1;
 export const PULSAR_TIMING_VALUE = 2;
 
+export const TELESCOPE_LOW_CODE = 'low';
+
+export const SENSITIVITY_K = 5;
+export const SENSITIVITY_UNITS = [
+  { id: 1, value: 'Jy/beam', mapping: 'Jy / beam', toBase: 1 },
+  { id: 2, value: 'mJy/beam', mapping: 'mJy/beam', toBase: 1000 },
+  { id: 3, value: 'μJy/beam', mapping: 'μJy/beam', toBase: 1000000 },
+  { id: 4, value: 'nJy/beam', mapping: 'nJy / beam', toBase: 1000000000 },
+  { id: SENSITIVITY_K, value: 'K', mapping: 'K', toBase: 1000 },
+  { id: 6, value: 'mK', mapping: 'mK', toBase: 1000000 },
+  { id: 7, value: 'uK', mapping: 'uK', toBase: 1000000000 }
+];
+
 export const PST_MODES = [
   {
     value: FLOW_THROUGH_VALUE,
@@ -533,7 +570,7 @@ export const OSCILLATION_UNITS = [
 ];
 //TODO: Refactor such that these identifiers are no longer needed and references can be per array label
 export const OB_SUBARRAY_AA2 = 3;
-export const OB_SUBARRAY_CUSTOM = 20;
+export const OB_SUBARRAY_CUSTOM = 'custom';
 
 export const SECOND_LABEL = 's';
 export const MILLISECOND_LABEL = 'ms';
@@ -567,6 +604,9 @@ export const SUPPLIED_INTEGRATION_TIME_UNITS_S = 4;
 
 export const RA_TYPE_ICRS = { value: 0, label: 'icrs' };
 export const RA_TYPE_GALACTIC = { value: 1, label: 'galactic' };
+
+export const SEPARATOR0 = '?';
+export const SEPARATOR1 = '&';
 
 export const FIELD_PATTERN_POINTING_CENTRES = 'Pointing centres';
 
@@ -648,8 +688,6 @@ export const TEAM_STATUS_TYPE_OPTIONS = {
   accepted: 'Accepted',
   rejected: 'Rejected'
 };
-export const TEL = ['', 'Mid', 'Low'];
-export const TEL_UNITS = ['', 'GHz', 'MHz'];
 
 export const TELESCOPE_MID_NUM = 1;
 export const TELESCOPE_LOW_NUM = 2;
@@ -749,17 +787,15 @@ export const DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2: Observation = {
   subarray: OB_SUBARRAY_AA2,
   linked: '0',
   type: TYPE_CONTINUUM,
-  observingBand: BAND_LOW,
+  observingBand: BAND_LOW_STR,
   centralFrequency: 200,
   centralFrequencyUnits: FREQUENCY_MHZ,
   continuumBandwidth: 150,
   continuumBandwidthUnits: FREQUENCY_MHZ,
   elevation: 15,
   bandwidth: null,
-  imageWeighting: 0,
   numStations: 512,
   numSubBands: 1,
-  robust: 0,
   supplied: {
     type: SUPPLIED_TYPE_INTEGRATION,
     value: SUPPLIED_VALUE_DEFAULT_LOW,
@@ -776,17 +812,15 @@ export const DEFAULT_ZOOM_OBSERVATION_LOW_AA2: Observation = {
   subarray: OB_SUBARRAY_AA2,
   linked: '0',
   type: TYPE_ZOOM,
-  observingBand: BAND_LOW,
+  observingBand: BAND_LOW_STR,
   centralFrequency: 200,
   centralFrequencyUnits: FREQUENCY_MHZ,
   continuumBandwidth: null,
   continuumBandwidthUnits: null,
   elevation: 15,
   bandwidth: ZOOM_BANDWIDTH_DEFAULT_LOW,
-  imageWeighting: 0,
   numStations: 512,
   numSubBands: 1,
-  robust: 0,
   supplied: {
     type: SUPPLIED_TYPE_INTEGRATION,
     value: SUPPLIED_VALUE_DEFAULT_LOW,
@@ -804,17 +838,15 @@ export const DEFAULT_PST_OBSERVATION_LOW_AA2: Observation = {
   subarray: OB_SUBARRAY_AA2,
   linked: '0',
   type: TYPE_PST,
-  observingBand: BAND_LOW,
+  observingBand: BAND_LOW_STR,
   centralFrequency: 200,
   centralFrequencyUnits: FREQUENCY_MHZ,
   continuumBandwidth: 150,
   continuumBandwidthUnits: FREQUENCY_MHZ,
   elevation: 15,
   bandwidth: null,
-  imageWeighting: 0,
   numStations: 512,
   numSubBands: 1,
-  robust: 0,
   supplied: {
     type: SUPPLIED_TYPE_INTEGRATION,
     value: SUPPLIED_VALUE_DEFAULT_LOW,
