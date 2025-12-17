@@ -359,7 +359,7 @@ function GetContinuumData(
       unit: observation?.centralFrequencyUnits?.toString()
     },
     numberOfSubBands: observation?.numSubBands ?? 0,
-    spectralAveraging: observation?.spectralAveraging ?? 0,
+    spectralAveraging: observation?.spectralAveraging ?? 1,
     imageWeighting: dataProductSDP?.weighting,
     robust: dataProductSDP?.robust,
     tapering: dataProductSDP?.taperValue ?? 0
