@@ -1,15 +1,11 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import getSensCalc from './getSensitivityCalculatorAPIData';
-import { SENSCALC_CONTINUUM_MOCKED } from './SensCalcResultsMOCK';
 import {
   sensCalcResultsAPIResponseMockContinuum,
   sensCalcResultsAPIResponseMockSpectral
 } from './SensCalcResultsAPIResponseMOCK';
-import {
-  SENSCALC_CONTINUUM_MOCKED_NEW,
-  SENSCALC_SPECTRAL_MOCKED_NEW
-} from './SensCalcResultsMockNew';
+import { SENSCALC_CONTINUUM_MOCKED, SENSCALC_SPECTRAL_MOCKED } from './SensCalcResultsMock';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 import * as CONSTANTS from '@/utils/constants';
 
@@ -41,7 +37,7 @@ describe('getSensitivityCalculatorAPIData Service', () => {
       CONSTANTS.DEFAULT_TARGETS,
       CONSTANTS.DEFAULT_DATA_PRODUCT
     );
-    expect(result).to.deep.equal(SENSCALC_CONTINUUM_MOCKED_NEW);
+    expect(result).to.deep.equal(SENSCALC_CONTINUUM_MOCKED);
   });
 
   test('returns spectral mapped data from API', async () => {
@@ -54,7 +50,7 @@ describe('getSensitivityCalculatorAPIData Service', () => {
       CONSTANTS.DEFAULT_TARGETS,
       CONSTANTS.DEFAULT_DATA_PRODUCT
     );
-    expect(result).to.deep.equal(SENSCALC_SPECTRAL_MOCKED_NEW);
+    expect(result).to.deep.equal(SENSCALC_SPECTRAL_MOCKED);
   });
 
   // TODO add tests for mid continuum and spectral

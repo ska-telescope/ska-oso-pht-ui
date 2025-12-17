@@ -12,7 +12,7 @@ import {
 } from '../../../utils/constants';
 import GetZoomData from '../getZoomData/getZoomData';
 import GetContinuumData from '../getContinuumData/getContinuumData';
-import { SENSCALC_CONTINUUM_MOCKED } from './SensCalcResultsMOCK';
+import { SENSCALC_CONTINUUM_MOCKED } from './SensCalcResultsMock';
 import { DataProductSDP } from '@/utils/types/dataProduct';
 
 type SensCalcAPIError = { error: string };

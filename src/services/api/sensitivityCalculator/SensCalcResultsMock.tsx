@@ -1,4 +1,4 @@
-export const SENSCALC_CONTINUUM_MOCKED_NEW = {
+export const SENSCALC_CONTINUUM_MOCKED = {
   id: 1,
   title: 'DUMMY',
   section1: [
@@ -65,7 +65,7 @@ export const SENSCALC_CONTINUUM_MOCKED_NEW = {
   statusGUI: 0
 };
 
-export const SENSCALC_SPECTRAL_MOCKED_NEW = {
+export const SENSCALC_SPECTRAL_MOCKED = {
   id: 1,
   title: 'DUMMY',
   section1: [
