@@ -2,7 +2,12 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Grid, Paper, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { BorderedSection, DropDown } from '@ska-telescope/ska-gui-components';
+import {
+  BorderedSection,
+  DropDown,
+  Spacer,
+  SPACER_VERTICAL
+} from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import RobustField from '@components/fields/robust/Robust.tsx';
 import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
@@ -14,9 +19,12 @@ import {
   FLOW_THROUGH_VALUE,
   FOOTER_HEIGHT_PHT,
   IW_BRIGGS,
+  IW_NATURAL,
   NAV,
+  OB_SUBARRAY_CUSTOM,
   PAGE_DATA_PRODUCTS,
   PULSAR_TIMING_VALUE,
+  STATUS_INITIAL,
   TYPE_CONTINUUM,
   TYPE_PST,
   TYPE_ZOOM,
@@ -41,6 +49,9 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { generateId } from '@/utils/helpers';
 import { useHelp } from '@/utils/help/useHelp';
 import ContinuumSubtractionField from '@/components/fields/continuumSubtraction/continuumSubtraction';
+import SensCalcContent from '@/components/alerts/sensCalcModal/content/SensCalcContent';
+import { updateDataProducts } from '@/utils/update/dataProducts/updateDataProducts';
+import { updateSensCalc } from '@/utils/update/sensCalc/updateSensCalc';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
@@ -92,6 +103,8 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const isDataTypeOne = () => dataProductType === 1;
 
+  const getObservation = () => baseObservations?.find(obs => obs.id === observationId);
+
   const isFlowThrough = () => getObservation()?.pstMode === FLOW_THROUGH_VALUE;
   const isDetectedFilterbank = () => getObservation()?.pstMode === DETECTED_FILTER_BANK_VALUE;
   const isPulsarTiming = () => getObservation()?.pstMode === PULSAR_TIMING_VALUE;
@@ -103,7 +116,8 @@ export default function DataProduct({ data }: DataProductProps) {
   const isPST = () =>
     getObservation()?.type === TYPE_PST || getProposal()?.scienceCategory === TYPE_PST;
 
-  const getObservation = () => baseObservations?.find(obs => obs.id === observationId);
+  const showSC =
+    osdCyclePolicy.maxObservations === 1 && osdCyclePolicy.maxDataProducts === 1 && !isPST();
 
   const getSuffix = () => {
     if (isContinuum() || isPST()) {
@@ -182,28 +196,22 @@ export default function DataProduct({ data }: DataProductProps) {
     });
   };
 
-  const updateTnProposal = () => {
+  const updateToProposal = async () => {
+    const proposal = getProposal();
+    const observation = getObservation();
     const newDataProduct: DataProductSDP = dataProductOut();
-
-    const oldDP = getProposal().dataProductSDP;
-    const newDP: DataProductSDP[] = [];
-    if (oldDP && oldDP?.length > 0) {
-      oldDP.forEach(inValue => {
-        newDP.push(inValue.id === newDataProduct.id ? newDataProduct : inValue);
-      });
-    } else {
-      newDP.push(newDataProduct);
-    }
-
+    const oldDataProducts = proposal.dataProductSDP ?? [];
+    const to = await updateSensCalc(proposal, observation!, newDataProduct);
     setProposal({
-      ...getProposal(),
-      dataProductSDP: newDP
+      ...proposal,
+      dataProductSDP: updateDataProducts(oldDataProducts, newDataProduct),
+      targetObservation: to
     });
   };
 
   const updateStorageProposal = () => {
     if (osdCyclePolicy.maxDataProducts === 1) {
-      isEdit() ? updateTnProposal() : addToProposal();
+      isEdit() ? updateToProposal() : addToProposal();
     }
   };
 
@@ -498,7 +506,7 @@ export default function DataProduct({ data }: DataProductProps) {
     };
 
     const buttonClicked = () => {
-      isEdit() ? updateTnProposal() : addToProposal();
+      isEdit() ? updateToProposal() : addToProposal();
       if (osdCyclePolicy.maxDataProducts !== 1) {
         navigate(NAV[BACK_PAGE]);
       }
@@ -537,6 +545,12 @@ export default function DataProduct({ data }: DataProductProps) {
       </Paper>
     );
   };
+
+  const scData = (): any => getProposal()?.targetObservation?.[0]?.sensCalc;
+
+  const isCustom = () => getObservation()?.subarray === OB_SUBARRAY_CUSTOM;
+  const isNatural = () =>
+    isSpectral() || (isContinuum() && isDataTypeOne()) ? weighting === IW_NATURAL : false;
 
   return (
     <Box
@@ -677,6 +691,19 @@ export default function DataProduct({ data }: DataProductProps) {
                 ))}
             </Typography>
           </BorderedSection>
+          {showSC && <Spacer size={GAP * 2} axis={SPACER_VERTICAL} />}
+          {showSC && (
+            <BorderedSection
+              borderColor={
+                scData()?.statusGUI !== STATUS_INITIAL
+                  ? theme.palette.success.main
+                  : theme.palette.error.main
+              }
+              title={t('sensitivityCalculatorResults.title')}
+            >
+              <SensCalcContent data={scData()} isCustom={isCustom()} isNatural={isNatural()} />
+            </BorderedSection>
+          )}
         </Grid>
       </Grid>
       {osdCyclePolicy.maxDataProducts !== 1 && pageFooter()}

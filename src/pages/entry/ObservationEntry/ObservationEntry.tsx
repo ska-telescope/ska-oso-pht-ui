@@ -15,13 +15,10 @@ import {
   BorderedSection
 } from '@ska-telescope/ska-gui-components';
 import {
-  BANDWIDTH_TELESCOPE,
-  DEFAULT_DATA_PRODUCT,
   LAB_IS_BOLD,
   LAB_POSITION,
   NAV,
   BAND_LOW,
-  STATUS_PARTIAL,
   SUPPLIED_VALUE_DEFAULT_MID,
   TYPE_CONTINUUM,
   OB_SUBARRAY_CUSTOM,
@@ -47,9 +44,9 @@ import {
   ZOOM_CHANNELS_MAX,
   TYPE_PST,
   FLOW_THROUGH_VALUE,
-  FREQUENCY_KHZ,
   ZOOM_BANDWIDTH_DEFAULT_MID,
-  TELESCOPES
+  TELESCOPES,
+  TEL_UNITS
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -63,7 +60,6 @@ import Proposal from '../../../utils/types/proposal';
 import AddButton from '../../../components/button/Add/Add';
 import GroupObservationsField from '../../../components/fields/groupObservations/groupObservations';
 import Observation from '../../../utils/types/observation';
-import TargetObservation from '../../../utils/types/targetObservation';
 import SubArrayField from '../../../components/fields/subArray/SubArray';
 import ObservingBandField from '../../../components/fields/observingBand/ObservingBand';
 import ObservationTypeField from '../../../components/fields/observationType/ObservationType';
@@ -88,6 +84,10 @@ import SuppliedValue from '@/components/fields/suppliedValue/suppliedValue';
 import CentralFrequency from '@/components/fields/centralFrequency/centralFrequency';
 import ZoomChannels from '@/components/fields/zoomChannels/zoomChannels';
 import SubBands from '@/components/fields/subBands/subBands';
+import updateObservations from '@/utils/update/observations/updateObservations';
+import updateDataProductsPST from '@/utils/update/dataProductsPST/updateDataProductsPST';
+import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalcPartial';
+import updateSensCalc from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDP } from '@/utils/types/dataProduct';
 
 const TOP_LABEL_WIDTH = 6;
@@ -194,7 +194,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       bandwidth: bandwidth,
       continuumBandwidth: continuumBandwidth,
       continuumBandwidthUnits: continuumBandwidthUnits,
-      spectralAveraging: spectralAveraging,
+      spectralAveraging: (Number.isNaN(spectralAveraging) ? 1 : spectralAveraging) ?? 1,
       supplied: {
         type: suppliedType,
         value: suppliedValue,
@@ -214,75 +214,27 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   /*--------------------------------------------------*/
 
-  const updateObservationOnProposal = () => {
+  const updateObservationOnProposal = async () => {
+    const proposal = getProposal();
     const newObservation: Observation = observationOut();
-    const oldObservations = getProposal().observations;
-    const newObservations: Observation[] = [];
-    if (oldObservations && oldObservations?.length > 0) {
-      oldObservations.forEach(inValue => {
-        newObservations.push(inValue.id === newObservation.id ? newObservation : inValue);
-      });
-    } else {
-      newObservations.push(newObservation);
-    }
+    const oldObservations = proposal.observations ?? [];
+    const oldDataProducts = proposal.dataProductSDP ?? [];
+    const dataProductSDP: DataProductSDP | undefined = proposal.dataProductSDP?.find(
+      dp => dp.observationId === newObservation.id
+    );
+    const oldTO = proposal?.targetObservation ?? [];
+    const to =
+      isSV() && dataProductSDP
+        ? await updateSensCalc(proposal, newObservation, dataProductSDP)
+        : updateSensCalcPartial(oldTO, newObservation);
 
-    const newDataProducts: DataProductSDP[] = [];
-    if (newObservation.type === TYPE_PST) {
-      const tmpRec: DataProductSDP = {
-        ...DEFAULT_DATA_PRODUCT,
-        observationId: newObservation.id,
-        dataProductType: newObservation.pstMode ?? 0
-      };
-      const oldDataProducts = getProposal().dataProductSDP;
-      if (oldDataProducts && oldDataProducts?.length > 0) {
-        oldDataProducts.forEach(inValue => {
-          newDataProducts.push(
-            inValue.observationId === newObservation.id &&
-              newObservation?.pstMode !== inValue.dataProductType
-              ? tmpRec
-              : inValue
-          );
-        });
-      }
-    } else {
-      newDataProducts.push(...(getProposal().dataProductSDP ?? []));
-    }
-
-    const updateSensCalcPartial = (ob: Observation) => {
-      const result = getProposal()?.targetObservation?.map(rec => {
-        if (rec.observationId === ob.id) {
-          const to: TargetObservation = {
-            observationId: rec.observationId,
-            targetId: rec.targetId,
-            sensCalc: {
-              id: rec.targetId,
-              title: '',
-              statusGUI: STATUS_PARTIAL,
-              error: ''
-            },
-            dataProductsSDPId: ''
-          };
-          return to;
-        } else {
-          return rec;
-        }
-      });
-      return result;
+    const tmp = {
+      ...proposal,
+      observations: updateObservations(oldObservations ?? [], newObservation),
+      dataProductSDP: updateDataProductsPST(oldDataProducts, newObservation),
+      targetObservation: to
     };
-
-    setProposal({
-      ...getProposal(),
-      observations: newObservations,
-      dataProductSDP: newDataProducts,
-      ...(isSV() ? {} : { targetObservation: updateSensCalcPartial(newObservation) }) // don't update to partial results for SV() // TODO generate full results on obs change
-    });
-
-    /*
-      getAffected(newObservation.id).map(rec => {
-        const target = getProposal().targets.find(t => t.id === rec.targetId);
-        getSensCalcData(newObservation, target);
-      });
-      */
+    setProposal(tmp);
   };
 
   const addObservationToProposal = () => {
@@ -333,9 +285,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     }
   };
 
-  const setDefaultElevation = (inBand: number) => {
+  const setDefaultElevation = () => {
     if (elevation === ELEVATION_DEFAULT[(isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM) - 1]) {
-      setElevation(ELEVATION_DEFAULT[telescope(inBand) - 1]);
+      setElevation(ELEVATION_DEFAULT[telescope() - 1]);
     }
   };
 
@@ -344,12 +296,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const setTheObservingBand = (e: React.SetStateAction<number>) => {
     if (isLow() && e !== 0) {
-      setDefaultElevation(e as number);
+      setDefaultElevation();
       setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_S);
       setSuppliedValue(SUPPLIED_VALUE_DEFAULT_MID);
     }
     if (isMid() && e === 0) {
-      setDefaultElevation(e);
+      setDefaultElevation();
       setSuppliedType(1); // TODO : Replace with constant
       setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_H);
       setSuppliedValue(SUPPLIED_VALUE_DEFAULT_LOW);
@@ -469,7 +421,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const isPST = () => observationType === TYPE_PST;
   const isLow = () => observingBand === BAND_LOW;
   const isMid = () => observingBand !== BAND_LOW;
-  const telescope = (band = observingBand) => BANDWIDTH_TELESCOPE[band]?.telescope;
+  const telescope = () => (isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM);
   const isLowAA2 = () => isLow() && subarrayConfig === OB_SUBARRAY_AA2;
   const isContinuumOnly = () => observingBand !== 0 && subarrayConfig === OB_SUBARRAY_AA2;
 
@@ -529,35 +481,44 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       asArray: true
     }) ?? [theme.palette.primary.main, theme.palette.primary.contrastText];
 
+    let min = 0;
+    let max = 0;
+    if (isMid()) {
+      const receiver = osdMID?.basicCapabilities?.receiverInformation.find(
+        e => e.rxId === String(observingBand)
+      );
+      min = receiver?.minFrequencyHz ?? 0;
+      max = receiver?.maxFrequencyHz ?? 0;
+    } else {
+      min = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
+      max = osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0;
+    }
+    const minFreq = frequencyConversion(min, FREQUENCY_HZ, isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+    const maxFreq = frequencyConversion(max, FREQUENCY_HZ, isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+    const cenFreq = frequencyConversion(
+      centralFrequency ?? 0,
+      centralFrequencyUnits ?? FREQUENCY_HZ,
+      isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ
+    );
+
     return fieldWrapper(
       <Box>
         <FrequencySpectrum
-          minFreq={frequencyConversion(
-            (osdLOW?.basicCapabilities?.minFrequencyHz ?? 0) * 10,
-            FREQUENCY_HZ,
-            FREQUENCY_MHZ
-          )}
-          maxFreq={frequencyConversion(
-            (osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0) * 10,
-            FREQUENCY_HZ,
-            FREQUENCY_MHZ
-          )}
-          centerFreq={frequencyConversion(
-            centralFrequency ?? 0,
-            centralFrequencyUnits ?? FREQUENCY_HZ,
-            FREQUENCY_MHZ
-          )}
+          minFreq={minFreq}
+          maxFreq={maxFreq}
+          centerFreq={cenFreq}
           bandWidth={
             isContinuum() || isPST()
               ? continuumBandwidth ?? 0
               : frequencyConversion(
                   isLow() ? bandwidthLookup?.value ?? 0 : getBandwidthZoom(observationOut()),
-                  isLow() ? FREQUENCY_MHZ : FREQUENCY_KHZ,
+                  isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ,
                   FREQUENCY_MHZ
                 ) ?? 0
           }
-          bandColor={colors[0]}
+          bandColor={colors[isLow() ? 0 : 1]}
           boxWidth="100%"
+          unit={TEL_UNITS[isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM]}
         />
       </Box>
     );
@@ -1178,7 +1139,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
               </Grid>
             </BorderedSection>
           </Grid>
-          {isLowAA2() && ( // TODO : Ned to make this generic from OSD Data
+          {isLowAA2() && ( // TODO : Need to make this generic from OSD Data
             <Grid sx={{ p: { md: 5, lg: 0 } }} size={{ md: 12, lg: 3 }}>
               <Box px={3}>
                 <img src={IMAGE_PATH} alt="Low AA2" width="100%" />

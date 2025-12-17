@@ -38,7 +38,7 @@ export default function EffectiveResolutionField({
       const resolutionUnits = FREQUENCY_UNITS?.find(e => e.label === arr[1])?.value ?? 0;
       const freq = frequencyConversion(frequency, frequencyUnits);
       const ave = resolution * spectralAveraging;
-      const velocity = calculateVelocity(frequencyConversion(ave, resolutionUnits) * 10, freq);
+      const velocity = calculateVelocity(frequencyConversion(ave, resolutionUnits), freq);
       return `${ave.toFixed(2)} ${arr[1]} (${velocity})`;
     } else {
       return '';

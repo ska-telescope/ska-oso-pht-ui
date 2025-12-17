@@ -61,7 +61,7 @@ interface FinalIndividualResults {
 export function getFinalResults(
   target: Target,
   results: any,
-  theObservation: any
+  theObservation: Observation
 ): SensCalcResults {
   const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 

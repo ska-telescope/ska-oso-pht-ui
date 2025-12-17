@@ -49,12 +49,8 @@ const getSensCalcData = async (
   target: Target,
   dataProductSDP: DataProductSDP
 ): Promise<SensCalcResults | string> => {
-  const response = (await calculateSensCalcData(observation, target, dataProductSDP)) as any; // TODO improve typing for error handling
-  if (response?.error) {
-    const errMsg = response?.error;
-    return errMsg;
-  }
-  return response;
+  const response = await calculateSensCalcData(observation, target, dataProductSDP);
+  return response?.error ? response?.error : (response as SensCalcResults);
 };
 
 const updateProposal = (

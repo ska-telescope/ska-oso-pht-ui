@@ -6,7 +6,15 @@ import { FrequencySpectrum, getColors } from '@ska-telescope/ska-gui-components'
 import EditIcon from '@/components/icon/editIcon/editIcon';
 import TrashIcon from '@/components/icon/trashIcon/trashIcon';
 import { useInitializeAccessStore } from '@/utils/aaa/aaaUtils';
-import { FREQUENCY_HZ, FREQUENCY_MHZ, TYPE_CONTINUUM } from '@/utils/constants';
+import {
+  FREQUENCY_GHZ,
+  FREQUENCY_HZ,
+  FREQUENCY_MHZ,
+  TEL_UNITS,
+  TELESCOPE_LOW_NUM,
+  TELESCOPE_MID_NUM,
+  TYPE_CONTINUUM
+} from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import ObservationInfo from '@/components/info/observation/Observation';
 import { frequencyConversion } from '@/utils/helpers';
@@ -39,11 +47,33 @@ export default function TableObservationsRow({
   t
 }: TableObservationsRowProps) {
   const theme = useTheme();
-  const { osdLOW } = useOSDAccessors();
+  const { osdLOW, osdMID } = useOSDAccessors();
   useInitializeAccessStore();
 
   const observation = item;
   const isContinuum = observation?.type === TYPE_CONTINUUM;
+  const isLow = observation?.telescope === TELESCOPE_LOW_NUM;
+  const isMid = observation?.telescope === TELESCOPE_MID_NUM;
+
+  let min = 0;
+  let max = 0;
+  if (isMid) {
+    const receiver = osdMID?.basicCapabilities?.receiverInformation.find(
+      e => e.rxId === String(observation?.rec?.observingBand)
+    );
+    min = receiver?.minFrequencyHz ?? 0;
+    max = receiver?.maxFrequencyHz ?? 0;
+  } else {
+    min = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
+    max = osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0;
+  }
+  const minFreq = frequencyConversion(min, FREQUENCY_HZ, isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+  const maxFreq = frequencyConversion(max, FREQUENCY_HZ, isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+  const centerFreq = frequencyConversion(
+    observation?.rec?.centralFrequency ?? 0,
+    observation?.rec?.centralFrequencyUnits ?? FREQUENCY_HZ,
+    isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ
+  );
 
   const getObservationColors = (type: string, value?: unknown, dim?: number) =>
     getColors({
@@ -74,10 +104,9 @@ export default function TableObservationsRow({
         role="row"
         aria-rowindex={index + 2}
       >
-        {/* Collapse / Edit / Delete */}
         <TableCell role="gridcell" sx={{ maxWidth: 120, p: 0 }}>
           <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
-            {false && (
+            {false && ( // Currently no expanded content to show
               <IconButton
                 ref={expandButtonRef}
                 aria-label={`${expanded ? 'Collapse' : 'Expand'} details for ${item.title}.`}
@@ -169,21 +198,9 @@ export default function TableObservationsRow({
         {/* Frequency Spectrum */}
         <TableCell>
           <FrequencySpectrum
-            minFreq={frequencyConversion(
-              (osdLOW?.basicCapabilities?.minFrequencyHz ?? 0) * 10,
-              FREQUENCY_HZ,
-              FREQUENCY_MHZ
-            )}
-            maxFreq={frequencyConversion(
-              (osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0) * 10,
-              FREQUENCY_HZ,
-              FREQUENCY_MHZ
-            )}
-            centerFreq={frequencyConversion(
-              observation?.rec?.centralFrequency ?? 0,
-              observation?.rec?.centralFrequencyUnits ?? FREQUENCY_HZ,
-              FREQUENCY_MHZ
-            )}
+            minFreq={minFreq}
+            maxFreq={maxFreq}
+            centerFreq={centerFreq}
             bandWidth={
               isContinuum
                 ? observation?.rec?.continuumBandwidth ?? 0
@@ -191,6 +208,7 @@ export default function TableObservationsRow({
             }
             bandColor={colorsTelescopeDim[0]}
             bandColorContrast={colorsTelescopeDim[1]}
+            unit={TEL_UNITS[observation?.telescope]}
           />
         </TableCell>
       </TableRow>
