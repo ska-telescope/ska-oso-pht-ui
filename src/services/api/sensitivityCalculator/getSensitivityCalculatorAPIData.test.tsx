@@ -57,6 +57,10 @@ describe('getSensitivityCalculatorAPIData Service', () => {
     expect(result).to.deep.equal(SENSCALC_SPECTRAL_MOCKED_NEW);
   });
 
+  // TODO add tests for mid continuum and spectral
+  // TODO add tests for mid supplied sensitivity
+  // TODO add tests for custom and natural
+
   test('returns error message on API failure', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     vi.spyOn(axiosClient, 'get').mockRejectedValue(new Error('Network Error'));
