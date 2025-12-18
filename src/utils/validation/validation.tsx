@@ -216,6 +216,7 @@ export function validateSkyDirection2Number(value: string): string | null {
 }
 
 export const validateSpectralDataProduct = (proposal: Proposal) => {
+  //TODO: STAR-1854 - extend validation to account for multiple data products
   const dataProduct = proposal.dataProductSDP?.[0];
   return (
     dataProduct?.imageSizeValue != null &&
@@ -231,6 +232,7 @@ export const validateSpectralDataProduct = (proposal: Proposal) => {
 };
 
 export const validateContinuumDataProduct = (proposal: Proposal) => {
+  //TODO: STAR-1854 - extend validation to account for multiple data products
   const dataProduct = proposal.dataProductSDP?.[0];
 
   if (dataProduct?.dataProductType === 1) {
@@ -252,6 +254,7 @@ export const validateContinuumDataProduct = (proposal: Proposal) => {
 };
 
 export const validatePSTDataProduct = (proposal: Proposal) => {
+  //TODO: STAR-1854 - extend validation to account for multiple data products
   const dataProduct = proposal.dataProductSDP?.[0];
   //TODO: extend validation when PST functionality is updated
   return dataProduct?.dataProductType === TYPE_PST;
