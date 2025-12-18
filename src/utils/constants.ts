@@ -806,7 +806,7 @@ export const DEFAULT_ZOOM_OBSERVATION_LOW_AA2: Observation = {
   telescope: TELESCOPE_LOW_NUM,
   subarray: OB_SUBARRAY_AA2,
   linked: '0',
-  type: TYPE_ZOOM,
+  type: 10, // not coming through?
   observingBand: BAND_LOW_STR,
   centralFrequency: 200,
   centralFrequencyUnits: FREQUENCY_MHZ,
@@ -832,7 +832,7 @@ export const DEFAULT_PST_OBSERVATION_LOW_AA2: Observation = {
   telescope: TELESCOPE_LOW_NUM,
   subarray: OB_SUBARRAY_AA2,
   linked: '0',
-  type: TYPE_PST,
+  type: 9, // not coming through?
   observingBand: BAND_LOW_STR,
   centralFrequency: 200,
   centralFrequencyUnits: FREQUENCY_MHZ,
