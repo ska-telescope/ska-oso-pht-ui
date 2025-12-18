@@ -23,6 +23,7 @@ export const OSO_SERVICES_PROPOSAL_ACCESS_PATH = `${SKA_OSO_SERVICES_URL}${OSO_S
 export const OSO_SERVICES_REPORT_PATH = `${OSO_SERVICES_PHT}report/`;
 export const OSO_SERVICES_REVIEWS_PATH = `${OSO_SERVICES_PHT}reviews`;
 export const OSO_SERVICES_REVIEWERS_PATH = `${OSO_SERVICES_PHT}reviewers`;
+export const OSO_SERVICES__PATH = `${OSO_SERVICES_PHT}reviewers`;
 export const OSO_SERVICES_MEMBER_PATH = `${OSO_SERVICES_PHT}prsls/member`;
 export const OSO_SERVICES_CALIBRATORS_PATH = `${OSO_SERVICES_PHT}calibrators`;
 export const OSO_SERVICES_VISIBILITY_PATH = `${SKA_OSO_SERVICES_URL}/visibility/visibility`;
@@ -249,6 +250,12 @@ export const DETAILS = {
   ],
   ObservingMode: [
     {
+      label: 'Spectral',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: TYPE_ZOOM,
+      observationType: TYPE_ZOOM
+    },
+    {
       label: 'Continuum',
       subCategory: [{ label: 'Not specified', value: 1 }],
       value: TYPE_CONTINUUM,
@@ -259,12 +266,6 @@ export const DETAILS = {
       subCategory: [{ label: 'Not specified', value: 1 }],
       value: TYPE_PST,
       observationType: TYPE_PST
-    },
-    {
-      label: 'Spectral',
-      subCategory: [{ label: 'Not specified', value: 1 }],
-      value: TYPE_ZOOM,
-      observationType: TYPE_ZOOM
     }
   ]
 };
@@ -591,11 +592,6 @@ export const TYPE_STR_PST = 'pst';
 export const OBS_TYPES = [TYPE_STR_ZOOM_SHORT, TYPE_STR_CONTINUUM];
 export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM, TYPE_PST];
 export const OBSERVATION_TYPE_BACKEND = [TYPE_STR_ZOOM, TYPE_STR_CONTINUUM, TYPE_STR_PST];
-export const OBSERVATION_TYPE_SHORT_BACKEND = [
-  TYPE_STR_ZOOM_SHORT,
-  TYPE_STR_CONTINUUM,
-  TYPE_STR_PST
-];
 export const SUPPLIED_TYPE_INTEGRATION = 1;
 export const SUPPLIED_TYPE_SENSITIVITY = 2;
 export const SUPPLIED_INTEGRATION_TIME_UNITS_H = 2;
@@ -785,7 +781,7 @@ export const DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2: Observation = {
   telescope: TELESCOPE_LOW_NUM,
   subarray: OB_SUBARRAY_AA2,
   linked: '0',
-  type: TYPE_CONTINUUM,
+  type: 7, // not coming through
   observingBand: BAND_LOW_STR,
   centralFrequency: 200,
   centralFrequencyUnits: FREQUENCY_MHZ,

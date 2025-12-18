@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Grid, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
-import { DETAILS, OBSERVATION_TYPE_SHORT_BACKEND, PAGE_DETAILS } from '@utils/constants.ts';
+import { DETAILS, PAGE_DETAILS } from '@utils/constants.ts';
 import { countWords } from '@utils/helpers.ts';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { validateProposal } from '@utils/validation/validation.tsx';
@@ -214,22 +214,8 @@ export default function DetailsPage() {
     );
   };
 
-  const getObservingModeOptions = () => {
-    const inData = osdCyclePolicy?.observationType ?? [];
-    return inData.map(type => {
-      const index = OBSERVATION_TYPE_SHORT_BACKEND.findIndex(obsType => obsType === type);
-      const label = t('scienceCategory.' + index);
-      return {
-        label,
-        subCategory: [{ label: 'Not specified', value: 1 }],
-        value: index,
-        observationType: index
-      };
-    });
-  };
-
   const getCategoryOptions = () => {
-    return isSV() ? getObservingModeOptions() : DETAILS.ScienceCategory;
+    return isSV() ? DETAILS.ObservingMode : DETAILS.ScienceCategory;
   };
 
   const categoryField = () => (
