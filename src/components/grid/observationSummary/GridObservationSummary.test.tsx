@@ -4,6 +4,7 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import '@testing-library/jest-dom';
 import GridObservationSummary from './GridObservationSummary';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+import { BAND_LOW_STR } from '@/utils/constants';
 
 const wrapper = (component: React.ReactElement) => {
   return render(
@@ -44,7 +45,7 @@ describe('<GridObservationSummary />', () => {
               subarray: 0,
               linked: '',
               type: 0,
-              observingBand: 0,
+              observingBand: BAND_LOW_STR,
               elevation: 0,
               centralFrequency: 0,
               centralFrequencyUnits: 0,

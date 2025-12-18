@@ -9,7 +9,7 @@ interface EffectiveResolutionFieldProps {
   frequencyUnits: number;
   label?: string;
   labelWidth?: number;
-  observingBand: number;
+  observingBand: string;
   observationType: number;
   onFocus?: Function;
   setValue?: Function;

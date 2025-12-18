@@ -1,6 +1,6 @@
-export const subArrayOptions = (inObj: { telescope: number }, observatoryConstants) => {
-  if (!inObj) {
+export const subArrayOptions = (telescope: number, observatoryConstants: any) => {
+  if (!telescope) {
     return [];
   }
-  return observatoryConstants.array[inObj.telescope - 1]?.subarray;
+  return observatoryConstants.array[telescope - 1]?.subarray;
 };

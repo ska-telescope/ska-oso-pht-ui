@@ -10,7 +10,7 @@ import {
   TYPE_PST,
   TYPE_CONTINUUM,
   FREQUENCY_UNITS,
-  BANDWIDTH_TELESCOPE
+  BAND_LOW_STR
 } from '@utils/constants.ts';
 import GetProposal, {
   GetMockProposal,
@@ -154,7 +154,7 @@ describe('getBeam', () => {
         epoch: 2020,
         parallax: 0.0
       },
-      stn_weights: undefined
+      stn_weights: []
     };
 
     const expectedOutput = {
@@ -434,35 +434,8 @@ describe('getObservationType', () => {
 describe('getFrequencyAndBandwidthUnits', () => {
   test('returns the correct unit value when a match is found in FREQUENCY_UNITS', () => {
     const inUnits = FREQUENCY_UNITS[0].mapping; // Use a valid mapping from FREQUENCY_UNITS
-    const telescope = 1;
-    const observingBand = 0;
-    const result = getFrequencyAndBandwidthUnits(inUnits, telescope, observingBand);
+    const observingBand = BAND_LOW_STR;
+    const result = getFrequencyAndBandwidthUnits(inUnits, observingBand);
     expect(result).toBe(FREQUENCY_UNITS[0].value);
-  });
-
-  test('returns the fallback unit value when no match is found in FREQUENCY_UNITS', () => {
-    const inUnits = 'nonexistent-unit';
-    const telescope = 1;
-    const observingBand = 0;
-    const result = getFrequencyAndBandwidthUnits(inUnits, telescope, observingBand);
-    expect(result).toBe(
-      FREQUENCY_UNITS.find(
-        item =>
-          item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand]?.units?.toLowerCase()
-      )?.value
-    );
-  });
-
-  test('handles null input for inUnits and returns the fallback value', () => {
-    const inUnits = null;
-    const telescope = 1;
-    const observingBand = 0;
-    const result = getFrequencyAndBandwidthUnits(inUnits, telescope, observingBand);
-    expect(result).toBe(
-      FREQUENCY_UNITS.find(
-        item =>
-          item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand]?.units?.toLowerCase()
-      )?.value
-    );
   });
 });

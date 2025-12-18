@@ -5,6 +5,7 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import * as bandwidthValidationCommon from '../bandwidthValidationCommon';
 import ContinuumBandwidth from './continuumBandwidth';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+import { BAND_LOW_STR } from '@/utils/constants';
 
 // --- Mocks declared at top level so Vitest hoisting works ---
 vi.mock('@/services/i18n/useScopedTranslation', () => ({
@@ -33,10 +34,8 @@ vi.mock('@/utils/constants.ts', () => ({
   LAB_POSITION: 'left',
   TYPE_CONTINUUM: 'continuum',
   ERROR_SECS: 2000,
-  BANDWIDTH_TELESCOPE: [
-    { value: 1, bandLimits: [0, 1000] },
-    { value: 2, bandLimits: [0, 500] }
-  ]
+  BAND_LOW_STR: 'low_band',
+  ANTENNA_MIXED: 'mixed'
 }));
 
 vi.mock('@ska-telescope/ska-gui-components', () => ({
@@ -60,7 +59,12 @@ vi.mock('@utils/osd/useOSDAccessors/useOSDAccessors.tsx', () => ({
           subarray: [{ value: 8, maxContBandwidthHz: 1000 }]
         }
       ]
-    }
+    },
+    findBand: vi.fn((observingBand: string) => {
+      // return a fake band object for tests
+      if (observingBand === BAND_LOW_STR) return { minFrequencyHz: 0, maxFrequencyHz: 1000 };
+      return { minFrequencyHz: 0, maxFrequencyHz: 500 };
+    })
   })
 }));
 

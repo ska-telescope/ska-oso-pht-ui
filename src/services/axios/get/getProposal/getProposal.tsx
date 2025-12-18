@@ -26,15 +26,12 @@ import {
   USE_LOCAL_DATA,
   DETAILS,
   OBSERVATION_TYPE_BACKEND,
-  BANDWIDTH_TELESCOPE,
   TYPE_CONTINUUM,
   TYPE_ZOOM,
   VEL_TYPES,
   VEL_UNITS,
   TELESCOPE_MID_BACKEND_MAPPING,
   TELESCOPE_LOW_BACKEND_MAPPING,
-  BAND_LOW,
-  BAND_1,
   FREQUENCY_UNITS,
   ROBUST,
   OSO_SERVICES_PROPOSAL_PATH,
@@ -47,7 +44,10 @@ import {
   PST_MODES,
   DP_TYPE_IMAGES,
   DP_TYPE_VISIBLE,
-  IMAGE_WEIGHTING
+  IMAGE_WEIGHTING,
+  FREQUENCY_STR_MHZ,
+  BAND_LOW_STR,
+  FREQUENCY_STR_GHZ
 } from '@utils/constants.ts';
 import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import {
@@ -291,7 +291,7 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
           'weight' in script && script.weight?.weighting === 'briggs'
             ? ROBUST.find(item => item.label === String(script.weight?.robust ?? ''))?.value ?? 0
             : 0,
-        polarisations: script.polarisations,
+        polarisations: 'polarisations' in script ? script.polarisations : undefined,
         channelsOut: 'channels_out' in script ? Number(script.channels_out) ?? 0 : 0,
         fitSpectralPol: 'fit_spectral_pol' in script ? Number(script.fit_spectral_pol) ?? 0 : 0,
         taperValue: 'gaussian_taper' in script ? Number(script.gaussian_taper) ?? 0 : 0,
@@ -331,12 +331,6 @@ const getWeighting = (inImageWeighting: string): number => {
   return weighting ? weighting : 1; // fallback
 };
 
-const getObservingBand = (inObsBand: string | null, inObsArray: string | null): number => {
-  const band = BANDWIDTH_TELESCOPE?.find(item => item.mapping === inObsBand)?.value;
-  const fallback = inObsArray?.includes('low') ? BAND_LOW : BAND_1;
-  return band ? band : fallback;
-};
-
 const getSupplied = (inSupplied: SuppliedBackend | null): Supplied => {
   const typeLabel =
     inSupplied?.supplied_type === 'sensitivity' ? 'Sensitivity' : 'Integration Time';
@@ -353,8 +347,7 @@ const getSupplied = (inSupplied: SuppliedBackend | null): Supplied => {
 
 export const getFrequencyAndBandwidthUnits = (
   inUnits: string | null,
-  telescope: number,
-  observingBand: number
+  observingBand: string
 ): number => {
   let units = FREQUENCY_UNITS.find(item => item.mapping.toLowerCase() === inUnits?.toLowerCase())
     ?.value;
@@ -362,7 +355,8 @@ export const getFrequencyAndBandwidthUnits = (
     ? units
     : (FREQUENCY_UNITS.find(
         item =>
-          item.label.toLowerCase() === BANDWIDTH_TELESCOPE[observingBand]?.units?.toLowerCase()
+          item.label.toLowerCase() ===
+          (observingBand === BAND_LOW_STR ? FREQUENCY_STR_GHZ : FREQUENCY_STR_MHZ).toLowerCase()
       )?.value as number);
 };
 
@@ -411,10 +405,7 @@ const getObservations = (
 
     const type: number = getObservationType(inValue[i]);
 
-    const observingBand = getObservingBand(
-      inValue[i]?.observing_band,
-      inValue[i]?.array_details?.array
-    );
+    const observingBand = inValue[i]?.observing_band;
 
     // MID array details
     let weather, num15mAntennas, num13mAntennas, numSubBands;
@@ -442,8 +433,7 @@ const getObservations = (
       weather: weather,
       centralFrequency: inValue[i]?.observation_type_details?.central_frequency?.value as number,
       centralFrequencyUnits: getFrequencyAndBandwidthUnits(
-        inValue[i]?.observation_type_details?.central_frequency?.unit,
-        arr,
+        inValue[i]?.observation_type_details?.central_frequency?.unit ?? null,
         observingBand
       ),
       elevation: inValue[i]?.elevation as number,
@@ -452,9 +442,9 @@ const getObservations = (
       numSubBands: numSubBands ? numSubBands : 1, // TODO PDM needs to be updated to allow subbands for LOW
       bandwidth:
         type === TYPE_ZOOM
-          ? getBandwidth(inValue[i].observation_type_details?.bandwidth?.value, arr)
+          ? getBandwidth(inValue[i].observation_type_details?.bandwidth?.value ?? 0, arr)
           : null,
-      supplied: getSupplied(inValue[i].observation_type_details?.supplied),
+      supplied: getSupplied(inValue[i].observation_type_details?.supplied ?? null),
       spectralResolution: inValue[i].observation_type_details?.spectral_resolution as string,
       effectiveResolution: inValue[i].observation_type_details?.effective_resolution as string,
       spectralAveraging: Number(inValue[i].observation_type_details?.spectral_averaging),
@@ -464,8 +454,7 @@ const getObservations = (
       continuumBandwidthUnits:
         type === TYPE_CONTINUUM
           ? getFrequencyAndBandwidthUnits(
-              inValue[i]?.observation_type_details?.bandwidth?.unit,
-              arr,
+              inValue[i]?.observation_type_details?.bandwidth?.unit ?? null,
               observingBand
             )
           : null,

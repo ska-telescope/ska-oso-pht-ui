@@ -1,4 +1,4 @@
-import { PROPOSAL_STATUS } from '@/utils/constants';
+import { BAND_LOW_STR, PROPOSAL_STATUS } from '@/utils/constants';
 import { ProposalBackend } from '@/utils/types/proposal';
 
 const MockProposalBackendList: ProposalBackend[] = [
@@ -212,7 +212,7 @@ const MockProposalBackendList: ProposalBackend[] = [
         {
           observation_set_id: 'low-001',
           group_id: '2',
-          observing_band: 'low_band',
+          observing_band: BAND_LOW_STR,
           array_details: {
             array: 'ska_low',
             subarray: 'aa0.5',
@@ -245,7 +245,7 @@ const MockProposalBackendList: ProposalBackend[] = [
         {
           observation_set_id: 'low-002',
           group_id: '2',
-          observing_band: 'low_band',
+          observing_band: BAND_LOW_STR,
           array_details: {
             array: 'ska_low',
             subarray: 'aa0.5',
@@ -545,7 +545,7 @@ const MockProposalBackendList: ProposalBackend[] = [
         {
           observation_set_id: 'low-001',
           group_id: '2',
-          observing_band: 'low_band',
+          observing_band: BAND_LOW_STR,
           array_details: {
             array: 'ska_low',
             subarray: 'aa0.5',
@@ -578,7 +578,7 @@ const MockProposalBackendList: ProposalBackend[] = [
         {
           observation_set_id: 'low-002',
           group_id: '2',
-          observing_band: 'low_band',
+          observing_band: BAND_LOW_STR,
           array_details: {
             array: 'ska_low',
             subarray: 'aa0.5',
@@ -878,7 +878,7 @@ const MockProposalBackendList: ProposalBackend[] = [
         {
           observation_set_id: 'low-001',
           group_id: '2',
-          observing_band: 'low_band',
+          observing_band: BAND_LOW_STR,
           array_details: {
             array: 'ska_low',
             subarray: 'aa0.5',
@@ -911,7 +911,7 @@ const MockProposalBackendList: ProposalBackend[] = [
         {
           observation_set_id: 'low-002',
           group_id: '2',
-          observing_band: 'low_band',
+          observing_band: BAND_LOW_STR,
           array_details: {
             array: 'ska_low',
             subarray: 'aa0.5',
