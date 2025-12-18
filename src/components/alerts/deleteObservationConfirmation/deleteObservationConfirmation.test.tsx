@@ -5,6 +5,7 @@ import '@testing-library/jest-dom';
 import userEvent from '@testing-library/user-event';
 import DeleteObservationConfirmation from './deleteObservationConfirmation';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+import { BAND_LOW_STR } from '@/utils/constants';
 
 // Mock AlertDialog to expose the onClose handler
 vi.mock('../alertDialog/AlertDialog', () => ({
@@ -48,7 +49,7 @@ describe('<DeleteObservationConfirmation />', () => {
           subarray: 0,
           linked: '',
           type: 0,
-          observingBand: 0,
+          observingBand: BAND_LOW_STR,
           weather: undefined,
           elevation: 0,
           centralFrequency: 0,

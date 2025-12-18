@@ -22,7 +22,7 @@ interface ContinuumBandwidthFieldProps {
   value: number;
   suffix?: any;
   telescope?: number;
-  observingBand?: number;
+  observingBand?: string;
   continuumBandwidthUnits?: number;
   centralFrequency?: number;
   centralFrequencyUnits?: number;
@@ -47,7 +47,7 @@ export default function ContinuumBandwidthField({
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const FIELD = 'continuumBandwidth';
-  const { osdMID, osdLOW, observatoryConstants } = useOSDAccessors();
+  const { findBand, osdMID, osdLOW, observatoryConstants } = useOSDAccessors();
 
   const [errorText, setErrorText] = React.useState('');
 
@@ -99,10 +99,11 @@ export default function ContinuumBandwidthField({
       scaledFrequency,
       Number(telescope),
       Number(subarrayConfig),
-      Number(observingBand),
+      observingBand ?? '',
       osdMID,
       osdLOW,
-      observatoryConstants
+      observatoryConstants,
+      findBand
     );
 
     if (invalidMinChannel) {

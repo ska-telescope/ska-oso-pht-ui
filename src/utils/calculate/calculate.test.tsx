@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { calculateCentralFrequency, calculateContinuumBandwidth } from '../calculate/calculate';
-import { BAND_1, BAND_2, BAND_5A, BAND_5B } from '../constants';
+import { BAND_1_STR, BAND_2_STR, BAND_5A_STR, BAND_5B_STR, BAND_LOW_STR } from '../constants';
 
 describe('Calculate Central Frequency', () => {
   const mockOSD = {
@@ -12,27 +12,27 @@ describe('Calculate Central Frequency', () => {
   };
 
   it('should return the correct value for BAND_1', () => {
-    const result = calculateCentralFrequency(BAND_1, 1, mockOSD);
+    const result = calculateCentralFrequency(BAND_1_STR, 1, mockOSD);
     expect(result).toBe(100);
   });
 
   it('should return the correct value for BAND_2', () => {
-    const result = calculateCentralFrequency(BAND_2, 2, mockOSD);
+    const result = calculateCentralFrequency(BAND_2_STR, 2, mockOSD);
     expect(result).toBe(200);
   });
 
   it('should return the correct value for BAND_5A', () => {
-    const result = calculateCentralFrequency(BAND_5A, 0, mockOSD);
+    const result = calculateCentralFrequency(BAND_5A_STR, 0, mockOSD);
     expect(result).toBe(300);
   });
 
   it('should return the correct value for BAND_5B', () => {
-    const result = calculateCentralFrequency(BAND_5B, 0, mockOSD);
+    const result = calculateCentralFrequency(BAND_5B_STR, 0, mockOSD);
     expect(result).toBe(400);
   });
 
   it('should return the correct value for default case (LOW)', () => {
-    const result = calculateCentralFrequency(999, 0, mockOSD);
+    const result = calculateCentralFrequency(BAND_LOW_STR, 0, mockOSD);
     expect(result).toBe(500);
   });
 });
@@ -47,27 +47,27 @@ describe('Calculate Continuum Bandwidth', () => {
   };
 
   it('should return the correct value for BAND_1', () => {
-    const result = calculateContinuumBandwidth(BAND_1, 1, mockOSD);
+    const result = calculateContinuumBandwidth(BAND_1_STR, 1, mockOSD);
     expect(result).toBe(100);
   });
 
   it('should return the correct value for BAND_2', () => {
-    const result = calculateContinuumBandwidth(BAND_2, 2, mockOSD);
+    const result = calculateContinuumBandwidth(BAND_2_STR, 2, mockOSD);
     expect(result).toBe(200);
   });
 
   it('should return the correct value for BAND_5A', () => {
-    const result = calculateContinuumBandwidth(BAND_5A, 3, mockOSD);
+    const result = calculateContinuumBandwidth(BAND_5A_STR, 3, mockOSD);
     expect(result).toBe(300);
   });
 
   it('should return the correct value for BAND_5B', () => {
-    const result = calculateContinuumBandwidth(BAND_5B, 4, mockOSD);
+    const result = calculateContinuumBandwidth(BAND_5B_STR, 4, mockOSD);
     expect(result).toBe(400);
   });
 
   it('should return the correct value for default case (LOW)', () => {
-    const result = calculateContinuumBandwidth(999, 5, mockOSD);
+    const result = calculateContinuumBandwidth(BAND_LOW_STR, 5, mockOSD);
     expect(result).toBe(500);
   });
 });

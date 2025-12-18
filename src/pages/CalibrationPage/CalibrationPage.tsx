@@ -26,7 +26,7 @@ import {
 import GetCalibratorList from '@/services/axios/get/getCalibratorList/getCalibratorList';
 import { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy';
 import { timeConversion } from '@/utils/helpersSensCalc';
-import { TIME_MINS } from '@/utils/constantsSensCalc';
+import { TIME_MINS } from '@/utils/constants';
 import ArrowIcon from '@/components/icon/arrowIcon/arrowIcon';
 import Supplied from '@/utils/types/supplied';
 import { useHelp } from '@/utils/help/useHelp';

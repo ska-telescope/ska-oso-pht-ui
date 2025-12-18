@@ -1,9 +1,10 @@
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect } from 'react';
+import { find } from 'lodash';
 import { useOSD } from '../useOSD/useOSD';
 import { presentDate, presentTime } from '@/utils/present/present';
-import { TELESCOPE_LOW_NUM } from '@/utils/constants';
+import { BAND_LOW_STR, TELESCOPE_LOW_NUM, TELESCOPE_MID_NUM } from '@/utils/constants';
 
 export function useOSDAccessors() {
   const osd = useOSD();
@@ -72,6 +73,18 @@ export function useOSDAccessors() {
     osdOpens: (shouldPresent = false) =>
       present(format(cycleInformation?.proposalOpen), shouldPresent),
     osdCountdown: countdown,
-    isCustomAllowed: isCustomAllowed
+    isCustomAllowed: isCustomAllowed,
+    //
+    telescopeBand: (observingBand: string) =>
+      observingBand === BAND_LOW_STR ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM,
+    findBand: (observingBand: string) => {
+      if (observingBand === BAND_LOW_STR) {
+        return capabilities?.low?.basicCapabilities || null;
+      }
+      return (
+        find(capabilities?.mid?.basicCapabilities?.receiverInformation, { rxId: observingBand }) ||
+        null
+      );
+    }
   };
 }

@@ -1,14 +1,4 @@
-import {
-  ANTENNA_13M,
-  ANTENNA_15M,
-  ANTENNA_MIXED,
-  BAND_1_STR,
-  BAND_2_STR,
-  BAND_5A_STR,
-  BAND_5B_STR,
-  BANDWIDTH_TELESCOPE,
-  TELESCOPE_LOW_NUM
-} from '@utils/constants.ts';
+import { ANTENNA_13M, ANTENNA_15M, ANTENNA_MIXED, TELESCOPE_LOW_NUM } from '@utils/constants.ts';
 import sensCalHelpers from '../../../services/api/sensitivityCalculator/sensCalHelpers';
 const isLow = (telescope: number) => telescope === TELESCOPE_LOW_NUM;
 const isAA2 = (subarrayConfig: number) => subarrayConfig === 3;
@@ -102,42 +92,16 @@ const getBandLimitsForAntennaCounts = (
 const getBandLimits = (
   telescope: number,
   subarrayConfig: number,
-  observingBand: number,
+  observingBand: string,
   osdMID: any,
   osdLOW: any,
-  observatoryConstants: any
+  observatoryConstants: any,
+  findBand: Function
 ) => {
-  const bandLimits = BANDWIDTH_TELESCOPE.find(band => band.value === observingBand)?.bandLimits;
-  if (!bandLimits) {
-    return [];
+  const band = findBand(observingBand);
+  if (!band) {
+    return [band?.minFrequencyHz, band?.maxFrequencyHz];
   }
-
-  if (isLow(telescope)) {
-    return [osdLOW?.basicCapabilities?.minFrequencyHz, osdLOW?.basicCapabilities?.maxFrequencyHz];
-  }
-
-  function getMidFrequencyLimits(observingBand: string) {
-    const band = osdMID?.basicCapabilities?.receiverInformation.find(
-      (item: any) => item?.rxId === observingBand
-    );
-    const minFrequencyHz = band?.minFrequencyHz;
-    const maxFrequencyHz = band?.maxFrequencyHz;
-    return [minFrequencyHz, maxFrequencyHz];
-  }
-
-  if (!isLow(telescope)) {
-    switch (observingBand) {
-      case 1:
-        return getMidFrequencyLimits(BAND_1_STR);
-      case 2:
-        return getMidFrequencyLimits(BAND_2_STR);
-      case 3:
-        return getMidFrequencyLimits(BAND_5A_STR);
-      case 4:
-        return getMidFrequencyLimits(BAND_5B_STR);
-    }
-  }
-
   const { n15mAntennas, n13mAntennas } = getSubArrayAntennasCounts(
     osdMID,
     osdLOW,
@@ -145,7 +109,7 @@ const getBandLimits = (
     telescope,
     subarrayConfig
   );
-  const limits = getBandLimitsForAntennaCounts(bandLimits, n15mAntennas, n13mAntennas);
+  const limits = getBandLimitsForAntennaCounts(band, n15mAntennas, n13mAntennas);
   return limits || [];
 };
 
@@ -158,10 +122,11 @@ export const checkBandLimits = (
   scaledFrequency: number,
   telescope: number,
   subarrayConfig: number,
-  observingBand: number,
+  observingBand: string,
   osdMID: any,
   osdLOW: any,
-  observatoryConstants: any
+  observatoryConstants: any,
+  findBand: Function
 ) => {
   const halfBandwidth: number = scaledBandwidth / 2.0;
   const lowerBound: number = scaledFrequency - halfBandwidth;
@@ -172,7 +137,8 @@ export const checkBandLimits = (
     observingBand,
     osdMID,
     osdLOW,
-    observatoryConstants
+    observatoryConstants,
+    findBand
   );
   return !(lowerBound < bandLimits?.[0] || upperBound > bandLimits?.[1]);
 };

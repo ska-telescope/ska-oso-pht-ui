@@ -4,6 +4,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import GridObservation from './GridObservation';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 import Observation from '@/utils/types/observation';
+import { BAND_LOW_STR } from '@/utils/constants';
 
 // Mock ResizeObserver for test environment
 beforeAll(() => {
@@ -25,7 +26,7 @@ const mockData: Observation[] = [
     type: 1,
     telescope: 0,
     linked: '',
-    observingBand: 0,
+    observingBand: BAND_LOW_STR,
     elevation: 0,
     centralFrequencyUnits: 0,
     continuumBandwidthUnits: null,
@@ -47,7 +48,7 @@ const mockData: Observation[] = [
     type: 0,
     telescope: 0,
     linked: '',
-    observingBand: 0,
+    observingBand: BAND_LOW_STR,
     elevation: 0,
     centralFrequencyUnits: 0,
     continuumBandwidthUnits: null,

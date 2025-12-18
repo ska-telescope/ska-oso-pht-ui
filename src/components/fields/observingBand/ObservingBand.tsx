@@ -12,7 +12,7 @@ import {
   TELESCOPE_MID_NUM,
   FREQUENCY_MHZ,
   TEL
-} from '../../../utils/constants';
+} from '@/utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useHelp } from '@/utils/help/useHelp';
@@ -45,7 +45,6 @@ export default function ObservingBandField({
 
   const options = useMemo(() => {
     const filteredOptions: { label: string; value: string }[] = [];
-
     if (
       osdLOW?.basicCapabilities &&
       Array.isArray(osdCyclePolicy?.bands) &&

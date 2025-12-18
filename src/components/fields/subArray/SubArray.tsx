@@ -1,18 +1,13 @@
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { Grid } from '@mui/material';
-import {
-  BANDWIDTH_TELESCOPE,
-  LAB_IS_BOLD,
-  LAB_POSITION,
-  OB_SUBARRAY_CUSTOM
-} from '@utils/constants.ts';
+import { LAB_IS_BOLD, LAB_POSITION, OB_SUBARRAY_CUSTOM } from '@utils/constants.ts';
 import { subArrayOptions } from '@utils/observationOptions.tsx';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 
 interface SubArrayFieldProps {
-  observingBand: number;
+  observingBand: string;
   telescope: number;
   disabled?: boolean;
   required?: boolean;
@@ -37,11 +32,11 @@ export default function SubArrayField({
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const FIELD = 'subArrayConfiguration';
-  const { isCustomAllowed, observatoryConstants } = useOSDAccessors();
+  const { isCustomAllowed, observatoryConstants, telescopeBand } = useOSDAccessors();
 
   const getOptions = () => {
     if (telescope > 0) {
-      const options = subArrayOptions(BANDWIDTH_TELESCOPE[observingBand], observatoryConstants);
+      const options = subArrayOptions(telescopeBand(observingBand), observatoryConstants);
 
       const filteredOptions = !isCustomAllowed(telescope)
         ? options?.filter((e: any) => e.value !== OB_SUBARRAY_CUSTOM)

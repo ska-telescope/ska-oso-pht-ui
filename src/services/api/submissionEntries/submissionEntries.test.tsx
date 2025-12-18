@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { IW_BRIGGS, RA_TYPE_GALACTIC, SEPARATOR1, TYPE_ZOOM } from '@utils/constantsSensCalc.ts';
+import { IW_BRIGGS, RA_TYPE_GALACTIC, SEPARATOR1, TYPE_ZOOM } from '@utils/constants.ts';
 import {
   addRobustProperty,
   addFrequency,

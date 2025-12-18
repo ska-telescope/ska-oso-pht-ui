@@ -6,12 +6,10 @@ import {
   RA_TYPE_GALACTIC,
   RA_TYPE_ICRS,
   TYPE_CONTINUUM,
-  TYPE_ZOOM
-} from '@utils/constants.ts';
-import {
+  TYPE_ZOOM,
   DEFAULT_LOW_SUPPLIED_INTEGRATION_TIME,
   DEFAULT_LOW_SUPPLIED_SENSITIVITY
-} from '@utils/constantsSensCalc.ts';
+} from '@utils/constants';
 
 const TYPE_PSS = 2; // Moved from constants as ir's only used here
 
