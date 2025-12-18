@@ -14,7 +14,7 @@ export const useOSDAPI = (setAxiosError: (error: string) => void) => {
 
   const isObservatoryData = (data: any): data is ObservatoryData => {
     return (
-      data && typeof data === 'object' && 'observatoryPolicy' in data && 'capabilities' in data
+      data && typeof data === 'object' && Array.isArray(data.policies) && 'capabilities' in data
     );
   };
 

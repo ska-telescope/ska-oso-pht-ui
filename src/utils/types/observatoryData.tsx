@@ -161,7 +161,7 @@ export type ObservatoryDataBackend = {
 };
 
 export type ObservatoryData = {
-  observatoryPolicy: ObservatoryPolicy;
+  policies: ObservatoryPolicy[];
   capabilities: {
     mid: {
       basicCapabilities: BasicCapabilitiesMid;

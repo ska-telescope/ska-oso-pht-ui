@@ -15,38 +15,102 @@ export function GetMockData(mock = MockObservatoryDataBackend): ObservatoryData 
 }
 
 const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
+  //
+  //  If/when the API provides multiple cycles, this section will need to be updated to map all cycles
+  //
   return {
-    observatoryPolicy: {
-      cycleNumber: inData.observatory_policy.cycle_number,
-      cycleDescription: inData.observatory_policy.cycle_description,
-      cycleInformation: {
-        cycleId: inData.observatory_policy.cycle_information.cycle_id,
-        proposalOpen: inData.observatory_policy.cycle_information.proposal_open,
-        proposalClose: inData.observatory_policy.cycle_information.proposal_close
+    policies: [
+      {
+        cycleNumber: inData.observatory_policy.cycle_number,
+        cycleDescription: inData.observatory_policy.cycle_description,
+        cycleInformation: {
+          cycleId: inData.observatory_policy.cycle_information.cycle_id,
+          proposalOpen: inData.observatory_policy.cycle_information.proposal_open,
+          proposalClose: inData.observatory_policy.cycle_information.proposal_close
+        },
+        cyclePolicies: {
+          maxDataProducts: 1,
+          maxObservations: 1,
+          maxTargets: 1,
+          bands: ['low'],
+          low: ['AA2'],
+          mid: [],
+          observationType: ['spectral', 'continuum', 'pst']
+        },
+        telescopeCapabilities: {
+          low: inData?.observatory_policy?.telescope_capabilities?.Low,
+          mid: inData?.observatory_policy?.telescope_capabilities?.Mid
+        }
       },
-      cyclePolicies: {
-        //
-        // MOCK CALL
-        //
-        // The items below have been hard coded at this time so that the front-end can be developed
-        // in the absence of finalized backend data.
-        //
-        // This should be extended so that multiple cycles can be represented with different policies.
-        // and a means of identifying the current cycle implemented.
-        //
-        maxDataProducts: 1,
-        maxObservations: 1,
-        maxTargets: 1,
-        bands: ['low'],
-        low: ['AA2'],
-        mid: [],
-        observationType: ['spectral', 'continuum', 'pst']
+      {
+        cycleNumber: 2,
+        cycleDescription: 'Expanded mock cycle',
+        cycleInformation: {
+          cycleId: 'CYCLE-002',
+          proposalOpen: '2025-04-01',
+          proposalClose: '2025-06-01'
+        },
+        cyclePolicies: {
+          maxDataProducts: 2,
+          maxObservations: 3,
+          maxTargets: 5,
+          bands: ['mid'],
+          low: [],
+          mid: ['AA2'],
+          observationType: ['spectral', 'continuum']
+        },
+        telescopeCapabilities: {
+          low: null,
+          mid: null
+        }
       },
-      telescopeCapabilities: {
-        low: inData?.observatory_policy?.telescope_capabilities?.Low,
-        mid: inData?.observatory_policy?.telescope_capabilities?.Mid
+      {
+        cycleNumber: 3,
+        cycleDescription: 'Third mock cycle',
+        cycleInformation: {
+          cycleId: 'CYCLE-003',
+          proposalOpen: '2025-07-01',
+          proposalClose: '2025-09-01'
+        },
+        cyclePolicies: {
+          maxDataProducts: 3,
+          maxObservations: 4,
+          maxTargets: 6,
+          bands: ['low', 'mid'],
+          low: ['AA2'],
+          mid: ['AA2'],
+          observationType: ['continuum', 'pst']
+        },
+        telescopeCapabilities: {
+          low: null,
+          mid: null
+        }
+      },
+      {
+        cycleNumber: 4,
+        cycleDescription: 'Fourth mock cycle',
+        cycleInformation: {
+          cycleId: 'CYCLE-004',
+          proposalOpen: '2025-10-01',
+          proposalClose: '2025-12-01'
+        },
+        cyclePolicies: {
+          maxDataProducts: 4,
+          maxObservations: 6,
+          maxTargets: 10,
+          bands: ['low'],
+          low: ['AA2'],
+          mid: [],
+          observationType: ['spectral']
+        },
+        telescopeCapabilities: {
+          low: null,
+          mid: null
+        }
       }
-    },
+    ],
+
+    // 🔧 Capabilities section (unchanged from your original)
     capabilities: {
       mid: inData?.capabilities?.mid?.basic_capabilities
         ? {

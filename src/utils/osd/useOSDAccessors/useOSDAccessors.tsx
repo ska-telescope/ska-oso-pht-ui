@@ -1,6 +1,6 @@
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { useTranslation } from 'react-i18next';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useOSD } from '../useOSD/useOSD';
 import { presentDate, presentTime } from '@/utils/present/present';
 import { TELESCOPE_LOW_NUM } from '@/utils/constants';
@@ -10,12 +10,25 @@ export function useOSDAccessors() {
   const { t } = useTranslation();
 
   const capabilities = osd?.capabilities;
-  const observatoryPolicy = osd?.observatoryPolicy;
-  const cycleInformation = observatoryPolicy?.cycleInformation;
-  const cyclePolicies = observatoryPolicy?.cyclePolicies;
+  const policies = osd?.policies ?? []; // ✅ all policies
   const observatoryConstants = OSD_CONSTANTS;
 
-  const format = (val: string) => val?.replace(/^(\d{4})(\d{2})(\d{2})T/, '$1-$2-$3T');
+  // ✅ selected cycleNumber state
+  const [selectedCycleNumber, setSelectedCycleNumber] = useState<number | null>(
+    policies.length > 0 ? policies[0].cycleNumber : null
+  );
+
+  // ✅ find the selected policy
+  const selectedPolicy = useMemo(
+    () => policies.find(p => p.cycleNumber === selectedCycleNumber) ?? null,
+    [policies, selectedCycleNumber]
+  );
+
+  const cycleInformation = selectedPolicy?.cycleInformation;
+  const cyclePolicies = selectedPolicy?.cyclePolicies;
+
+  const format = (val: string | undefined) =>
+    val?.replace(/^(\d{4})(\d{2})(\d{2})T/, '$1-$2-$3T') ?? '';
   const present = (val: string, shouldPresent: boolean) =>
     shouldPresent ? `${presentDate(val)} ${presentTime(val)}` : val;
 
@@ -57,21 +70,28 @@ export function useOSDAccessors() {
   }, [cycleInformation?.proposalClose, t]);
 
   return {
+    // ✅ expose all policies
+    osdPolicies: policies,
+    selectedCycleNumber,
+    setSelectedCycleNumber, // ✅ allow changing selection
+
+    // ✅ capabilities
     osdLOW: capabilities?.low,
     osdMID: capabilities?.mid,
     osdCapabilities: capabilities,
-    //
-    osdCycleDescription: observatoryPolicy?.cycleDescription,
+
+    // ✅ relative to selected policy
+    osdCycleDescription: selectedPolicy?.cycleDescription,
     osdCycleId: cycleInformation?.cycleId,
-    osdCyclePolicy: observatoryPolicy?.cyclePolicies,
-    //
-    observatoryConstants: observatoryConstants,
-    //
+    osdCyclePolicy: cyclePolicies,
+
+    observatoryConstants,
+
     osdCloses: (shouldPresent = false) =>
       present(format(cycleInformation?.proposalClose), shouldPresent),
     osdOpens: (shouldPresent = false) =>
       present(format(cycleInformation?.proposalOpen), shouldPresent),
     osdCountdown: countdown,
-    isCustomAllowed: isCustomAllowed
+    isCustomAllowed
   };
 }
