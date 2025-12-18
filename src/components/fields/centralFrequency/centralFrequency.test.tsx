@@ -2,7 +2,11 @@
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import CentralFrequency from './centralFrequency';
+import { BAND_LOW_STR } from '@/utils/constants.ts';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 vi.mock(import('@/utils/constants.ts'), async importOriginal => {
   const actual = await importOriginal();
@@ -51,8 +55,25 @@ vi.mock('@ska-telescope/ska-gui-components', () => ({
   )
 }));
 
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>
+        <ThemeA11yProvider>{component}</ThemeA11yProvider>
+      </AppFlowProvider>
+    </StoreProvider>
+  );
+};
+
 describe('CentralFrequency component', () => {
   it('renders with initial value', () => {
-    render(<CentralFrequency bandWidth={150} observingBand={0} value={150} setValue={vi.fn()} />);
+    wrapper(
+      <CentralFrequency
+        bandWidth={150}
+        observingBand={BAND_LOW_STR}
+        value={150}
+        setValue={vi.fn()}
+      />
+    );
   });
 });
