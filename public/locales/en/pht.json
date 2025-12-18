@@ -230,7 +230,7 @@
     "label": "Create"
   },
   "cycle": {
-    "label": "Cycle",
+    "label": "Cycle selection",
     "error": "Unable to retrieve Cycle data"
   },
   "cycleCloses": {
@@ -1551,7 +1551,7 @@
     },
     "12": {
       "title": "Landing page",
-      "desc": "Proposals where the user is listed as either Principal Investigator or Co-Investigator.",
+      "desc": "A central workspace displaying submissions and related information accessible to the current user.",
       "empty": "NO PROPOSALS AVAILABLE"
     },
     "13": {

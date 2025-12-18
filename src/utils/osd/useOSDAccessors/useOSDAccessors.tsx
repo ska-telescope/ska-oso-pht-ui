@@ -1,6 +1,7 @@
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useMemo } from 'react';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { useOSD } from '../useOSD/useOSD';
 import { presentDate, presentTime } from '@/utils/present/present';
 import { TELESCOPE_LOW_NUM } from '@/utils/constants';
@@ -9,20 +10,32 @@ export function useOSDAccessors() {
   const osd = useOSD();
   const { t } = useTranslation();
 
+  const { application, updateAppContent8 } = storageObject.useStore();
+
   const capabilities = osd?.capabilities;
-  const policies = osd?.policies ?? []; // ✅ all policies
+  const policies = osd?.policies ?? [];
   const observatoryConstants = OSD_CONSTANTS;
 
-  // ✅ selected cycleNumber state
-  const [selectedCycleNumber, setSelectedCycleNumber] = useState<number | null>(
-    policies.length > 0 ? policies[0].cycleNumber : null
-  );
+  const selectedPolicy = application.content8 as typeof policies[number] | null;
 
-  // ✅ find the selected policy
-  const selectedPolicy = useMemo(
-    () => policies.find(p => p.cycleNumber === selectedCycleNumber) ?? null,
-    [policies, selectedCycleNumber]
-  );
+  // initialise if not set
+  useEffect(() => {
+    if (!selectedPolicy && policies.length > 0) {
+      updateAppContent8(policies[0]);
+    }
+  }, [selectedPolicy, policies, updateAppContent8]);
+
+  // ✅ setter by cycleId string
+  const setSelectedPolicyByCycleId = (cycleId: string) => {
+    const match = policies.find(p => p.cycleInformation?.cycleId === cycleId);
+    if (match) {
+      updateAppContent8(match);
+    }
+  };
+
+  const getCycle = (cycleId: string) => {
+    return policies.find(p => p.cycleInformation?.cycleId === cycleId) ?? null;
+  };
 
   const cycleInformation = selectedPolicy?.cycleInformation;
   const cyclePolicies = selectedPolicy?.cyclePolicies;
@@ -39,6 +52,13 @@ export function useOSDAccessors() {
       telescopeNumber === TELESCOPE_LOW_NUM ? cyclePolicies?.low : cyclePolicies?.mid;
     return Array.isArray(bandArray) && bandArray.includes('custom');
   };
+
+  const autoLink = cyclePolicies?.maxTargets === 1 && cyclePolicies?.maxObservations === 1;
+
+  const isSV = useMemo(() => {
+    const desc = selectedPolicy?.cycleDescription?.toLowerCase() ?? '';
+    return desc.includes('science verification');
+  }, [selectedPolicy]);
 
   useEffect(() => {
     if (!cycleInformation?.proposalClose) return;
@@ -70,17 +90,16 @@ export function useOSDAccessors() {
   }, [cycleInformation?.proposalClose, t]);
 
   return {
-    // ✅ expose all policies
     osdPolicies: policies,
-    selectedCycleNumber,
-    setSelectedCycleNumber, // ✅ allow changing selection
+    selectedPolicy,
+    setSelectedPolicyByCycleId,
+    setSelectedPolicy: updateAppContent8,
+    getCycle,
 
-    // ✅ capabilities
     osdLOW: capabilities?.low,
     osdMID: capabilities?.mid,
     osdCapabilities: capabilities,
 
-    // ✅ relative to selected policy
     osdCycleDescription: selectedPolicy?.cycleDescription,
     osdCycleId: cycleInformation?.cycleId,
     osdCyclePolicy: cyclePolicies,
@@ -92,6 +111,8 @@ export function useOSDAccessors() {
     osdOpens: (shouldPresent = false) =>
       present(format(cycleInformation?.proposalOpen), shouldPresent),
     osdCountdown: countdown,
-    isCustomAllowed
+    isCustomAllowed,
+    autoLink,
+    isSV
   };
 }

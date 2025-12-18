@@ -29,9 +29,8 @@ export default function DataProductsPage() {
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentRow, setCurrentRow] = React.useState(0);
   const [openDialog, setOpenDialog] = React.useState(false);
-  const { osdCyclePolicy } = useOSDAccessors();
+  const { autoLink, osdCyclePolicy } = useOSDAccessors();
   const navigate = useNavigate();
-  const autoLink = osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1;
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);

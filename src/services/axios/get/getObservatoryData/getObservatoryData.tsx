@@ -29,53 +29,58 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
           proposalClose: inData.observatory_policy.cycle_information.proposal_close
         },
         cyclePolicies: {
-          maxDataProducts: 1,
-          maxObservations: 1,
-          maxTargets: 1,
-          bands: ['low'],
-          low: ['AA2'],
-          mid: [],
+          maxDataProducts: inData.observatory_policy.cycle_policies.max_data_products,
+          maxObservations: inData.observatory_policy.cycle_policies.max_observation_setups,
+          maxTargets: inData.observatory_policy.cycle_policies.max_targets,
+          bands: [
+            inData?.observatory_policy?.telescope_capabilities?.Low !== null ? 'low' : '',
+            inData?.observatory_policy?.telescope_capabilities?.Mid !== null ? 'mid' : ''
+          ].filter(band => band !== ''),
+          low: [inData?.observatory_policy?.telescope_capabilities?.Low],
+          mid: [inData?.observatory_policy?.telescope_capabilities?.Mid],
           observationType: ['spectral', 'continuum', 'pst']
         },
         telescopeCapabilities: {
           low: inData?.observatory_policy?.telescope_capabilities?.Low,
           mid: inData?.observatory_policy?.telescope_capabilities?.Mid
-        }
+        },
+        type: inData.observatory_policy.type
       },
       {
         cycleNumber: 2,
-        cycleDescription: 'Expanded mock cycle',
+        cycleDescription: 'Mid AA2 Science Verification',
         cycleInformation: {
           cycleId: 'CYCLE-002',
           proposalOpen: '2025-04-01',
-          proposalClose: '2025-06-01'
+          proposalClose: '2026-06-01'
         },
         cyclePolicies: {
-          maxDataProducts: 2,
-          maxObservations: 3,
-          maxTargets: 5,
+          maxDataProducts: 1,
+          maxObservations: 1,
+          maxTargets: 1,
           bands: ['mid'],
           low: [],
           mid: ['AA2'],
-          observationType: ['spectral', 'continuum']
+          observationType: ['spectral', 'continuum', 'pst']
         },
         telescopeCapabilities: {
           low: null,
           mid: null
-        }
+        },
+        type: 'Science Verification'
       },
       {
         cycleNumber: 3,
-        cycleDescription: 'Third mock cycle',
+        cycleDescription: 'Mock Proposal Cycle',
         cycleInformation: {
           cycleId: 'CYCLE-003',
           proposalOpen: '2025-07-01',
-          proposalClose: '2025-09-01'
+          proposalClose: '2026-09-01'
         },
         cyclePolicies: {
-          maxDataProducts: 3,
-          maxObservations: 4,
-          maxTargets: 6,
+          maxDataProducts: 100,
+          maxObservations: 100,
+          maxTargets: 100,
           bands: ['low', 'mid'],
           low: ['AA2'],
           mid: ['AA2'],
@@ -84,7 +89,8 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
         telescopeCapabilities: {
           low: null,
           mid: null
-        }
+        },
+        type: 'Proposal'
       },
       {
         cycleNumber: 4,
@@ -95,22 +101,21 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
           proposalClose: '2025-12-01'
         },
         cyclePolicies: {
-          maxDataProducts: 4,
-          maxObservations: 6,
-          maxTargets: 10,
-          bands: ['low'],
+          maxDataProducts: 100,
+          maxObservations: 100,
+          maxTargets: 100,
+          bands: ['low', 'mid'],
           low: ['AA2'],
-          mid: [],
+          mid: ['AA2'],
           observationType: ['spectral']
         },
         telescopeCapabilities: {
           low: null,
           mid: null
-        }
+        },
+        type: 'Proposal'
       }
     ],
-
-    // 🔧 Capabilities section (unchanged from your original)
     capabilities: {
       mid: inData?.capabilities?.mid?.basic_capabilities
         ? {

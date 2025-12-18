@@ -17,7 +17,7 @@ import GetProposal from '@services/axios/get/getProposal/getProposal';
 import AddButton from '@/components/button/Add/Add';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
 import EditIcon from '@/components/icon/editIcon/editIcon';
-import TrashIcon from '@/components/icon/trashIcon/trashIcon';
+// import TrashIcon from '@/components/icon/trashIcon/trashIcon';
 import ViewIcon from '@/components/icon/viewIcon/viewIcon';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
@@ -43,9 +43,7 @@ import {
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { accessUpdate, PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { useOSDAPI } from '@/services/axios/use/useOSDAPI/useOSDAPI';
 import CycleSelection from '@/components/alerts/cycleSelection/CycleSelection';
-import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import PostProposal from '@/services/axios/post/postProposal/postProposal';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
@@ -60,13 +58,14 @@ import {
   getColProposalType
 } from '@/components/grid/proposals/columns/Columns';
 import { useHelp } from '@/utils/help/useHelp';
+import { useOSDAPI } from '@/services/axios/use/useOSDAPI/useOSDAPI';
+import TableSubmissions from '@/components/table/tabelSubmissions/TableSubmissions';
 
 export default function LandingPage() {
   const { t } = useScopedTranslation();
-  const { isSV } = useAppFlow();
   const navigate = useNavigate();
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
-  const { osdCycleId } = useOSDAccessors();
+  const { autoLink, isSV, osdCycleId, osdCloses, setSelectedPolicyByCycleId } = useOSDAccessors();
 
   const {
     application,
@@ -90,8 +89,8 @@ export default function LandingPage() {
   const getAccess = () => application.content4 as ProposalAccess[];
   const setAccess = (access: ProposalAccess[]) => updateAppContent4(access);
   const getProposal = () => application.content2 as Proposal;
-  const { osdData } = useOSDAPI(setAxiosError);
   const { setHelp } = useHelp();
+  useOSDAPI(setAxiosError);
 
   const mock = ({
     abstract: '',
@@ -110,7 +109,7 @@ export default function LandingPage() {
     pipeline: '',
     proposalSubType: [],
     proposalType: 0,
-    scienceCategory: isSV() ? TYPE_CONTINUUM : undefined,
+    scienceCategory: isSV ? TYPE_CONTINUUM : undefined,
     scienceLoadStatus: 0,
     sciencePDF: undefined,
     scienceSubCategory: [],
@@ -126,8 +125,6 @@ export default function LandingPage() {
 
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const authClient = useAxiosAuthClient();
-
-  const DATA_GRID_HEIGHT = '60vh';
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -182,10 +179,11 @@ export default function LandingPage() {
       setAxiosViewError(response);
       return false;
     } else {
-      updateAppContent1(validateProposal(response));
+      setSelectedPolicyByCycleId((response as Proposal).cycle ?? '');
+      updateAppContent1(validateProposal(response, autoLink));
       updateAppContent2(response);
       storeProposalCopy(response);
-      validateProposal(response);
+      validateProposal(response, autoLink);
       return true;
     }
   };
@@ -230,9 +228,9 @@ export default function LandingPage() {
         ...originalProposal,
         id: '',
         title: originalProposal.title + ' ' + t('cloneProposal.suffix'),
-        cycle: osdCycleId
+        cycle: osdCycleId ?? ''
       },
-      isSV() ? true : false,
+      isSV ? true : false,
       PROPOSAL_STATUS.DRAFT
     );
 
@@ -264,22 +262,17 @@ export default function LandingPage() {
     createProposal();
   };
 
-  const deleteIconClicked = async (id: string) => {
-    const isValid = await getTheProposal(id);
-    if (isValid) {
-      setTimeout(() => {
-        setOpenDeleteDialog(true);
-      }, 1000);
-    }
-  };
+  // const deleteIconClicked = async (id: string) => {
+  //   const isValid = await getTheProposal(id);
+  //   if (isValid) {
+  //     setTimeout(() => {
+  //       setOpenDeleteDialog(true);
+  //     }, 1000);
+  //   }
+  // };
 
   const deleteConfirmed = async () => {
-    const response = await PutProposal(
-      authClient,
-      getProposal(),
-      isSV(),
-      PROPOSAL_STATUS.WITHDRAWN
-    );
+    const response = await PutProposal(authClient, getProposal(), isSV, PROPOSAL_STATUS.WITHDRAWN);
     if (response && !('error' in response)) {
       setOpenDeleteDialog(false);
       setFetchList(!fetchList);
@@ -290,8 +283,8 @@ export default function LandingPage() {
 
   const osdOpen = () => {
     // TODO : We need to extend to also check the open date of the OSD record
-    if (osdData) {
-      const closes = osdData?.observatoryPolicy?.cycleInformation?.proposalClose;
+    if (osdCloses) {
+      const closes = osdCloses();
       const formattedTimestamp = closes.replace(/^(\d{4})(\d{2})(\d{2})T/, '$1-$2-$3T');
       // Use strict ISO parsing
       const closeMoment = moment.utc(formattedTimestamp, moment.ISO_8601, true);
@@ -335,16 +328,16 @@ export default function LandingPage() {
           disabled={!canClone(e)}
           toolTip={t('cloneProposal.toolTip')}
         />
-        <TrashIcon
+        {/* <TrashIcon
           onClick={() => deleteIconClicked(e.row.id)}
           disabled // TO BE re-introduced once API is completed  ={!canDelete(e)}
           toolTip={t('deleteProposal.disabled')} // canDelete(e) ? 'deleteProposal.toolTip' : 'deleteProposal.disabled')}
-        />
+        /> */}
       </>
     )
   };
 
-  const stdColumns = isSV()
+  const stdColumns = isSV
     ? [
         ...[
           colActions,
@@ -508,7 +501,13 @@ export default function LandingPage() {
                 testId="dataGridId"
                 rows={filteredData}
                 columns={stdColumns}
-                height={DATA_GRID_HEIGHT}
+                height={'25vh'}
+              />
+              <TableSubmissions
+                data={filteredData}
+                editFunction={editIconClicked}
+                viewFunction={viewIconClicked}
+                cloneFunction={cloneIconClicked}
               />
             </div>
           )}

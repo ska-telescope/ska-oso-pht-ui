@@ -3,9 +3,13 @@ export type ObservatoryPolicyBackend = {
   cycle_description: string;
   cycle_information: CycleInformationBackend;
   cycle_policies: {
+    max_data_products: number;
+    max_observation_setups: number;
+    max_targets: number;
     normal_max_hours: number;
   };
   telescope_capabilities: TelescopeInformationBackend;
+  type: string;
 };
 
 export type ObservatoryPolicy = {
@@ -22,6 +26,7 @@ export type ObservatoryPolicy = {
     observationType: string[];
   };
   telescopeCapabilities: TelescopeInformationFrontend;
+  type: string;
 };
 
 export type ReceiverInformationBackend = {
