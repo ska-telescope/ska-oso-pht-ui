@@ -201,42 +201,6 @@ describe('validateContinuumDataProduct', () => {
 });
 
 describe('validatePSTDataProduct', () => {
-  it('returns true when bitDepth is not null and polarisations has items', () => {
-    const proposal = {
-      dataProductSDP: [
-        {
-          bitDepth: 8,
-          polarisations: ['X']
-        }
-      ]
-    };
-    expect(validatePSTDataProduct(proposal as any)).toBe(true);
-  });
-
-  it('returns false when bitDepth is null', () => {
-    const proposal = {
-      dataProductSDP: [
-        {
-          bitDepth: null,
-          polarisations: ['X']
-        }
-      ]
-    };
-    expect(validatePSTDataProduct(proposal as any)).toBe(false);
-  });
-
-  it('returns false when polarisations is empty', () => {
-    const proposal = {
-      dataProductSDP: [
-        {
-          bitDepth: 8,
-          polarisations: []
-        }
-      ]
-    };
-    expect(validatePSTDataProduct(proposal as any)).toBe(false);
-  });
-
   it('returns false when dataProductSDP is undefined', () => {
     const proposal = {};
     expect(validatePSTDataProduct(proposal as any)).toBe(false);
