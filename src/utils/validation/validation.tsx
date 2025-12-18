@@ -1,12 +1,12 @@
 import {
-  TYPE_CONTINUUM,
-  TYPE_PST,
-  TYPE_ZOOM,
   PAGE_DATA_PRODUCTS,
   PAGE_OBSERVATION,
   STATUS_ERROR,
   STATUS_OK,
-  STATUS_PARTIAL
+  STATUS_PARTIAL,
+  TYPE_CONTINUUM,
+  TYPE_PST,
+  TYPE_ZOOM
 } from './../constants';
 import Proposal from './../types/proposal';
 
@@ -82,11 +82,11 @@ export const validateSDPPage = (proposal: Proposal, autoLink: boolean) => {
   if (proposal.scienceCategory) {
     //based on observing type verify data products fields
     switch (proposal.scienceCategory) {
-      case 0: //Spectral
+      case TYPE_ZOOM: //Spectral
         return validateSpectralDataProduct(proposal) ? 0 : 1;
-      case 1: //Continuum
+      case TYPE_CONTINUUM: //Continuum
         return validateContinuumDataProduct(proposal) ? 0 : 1;
-      case 2: //PST
+      case TYPE_PST: //PST
         return validatePSTDataProduct(proposal) ? 0 : 1;
     }
   }
@@ -120,7 +120,7 @@ export const validateLinkingPage = (proposal: Proposal) => {
 };
 
 export const validateProposal = (proposal: Proposal, autoLink: boolean) => {
-  const results = [
+  return [
     validateTitlePage(proposal),
     validateTeamPage(proposal),
     validateDetailsPage(proposal),
@@ -133,7 +133,6 @@ export const validateProposal = (proposal: Proposal, autoLink: boolean) => {
     validateCalibrationPage(proposal)
     // See SRCNet INACTIVE - validateSRCPage()
   ];
-  return results;
 };
 
 export const validateProposalNavigation = (proposal: Proposal, page: number, checkLink = false) => {
@@ -255,5 +254,5 @@ export const validateContinuumDataProduct = (proposal: Proposal) => {
 export const validatePSTDataProduct = (proposal: Proposal) => {
   const dataProduct = proposal.dataProductSDP?.[0];
   //TODO: extend validation when PST functionality is updated
-  return dataProduct?.dataProductType === 2;
+  return dataProduct?.dataProductType === TYPE_PST;
 };
