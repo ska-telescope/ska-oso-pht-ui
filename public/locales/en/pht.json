@@ -186,6 +186,9 @@
   "closeBtn": {
     "label": "Close"
   },
+  "collapse": {
+    "label": "Collapse"
+  },
   "comments": {
     "label": "Comments"
   },
@@ -361,8 +364,7 @@
     "cell": "There are no contents for this cell"
   },
   "expand": {
-    "collapse": "Collapse",
-    "expand": "Expand"
+    "label": "Expand"
   },
   "fileName": {
     "label": "File name"

@@ -114,7 +114,7 @@ export default function TableDataProductsRow({
                 expanded={expanded}
               />
               <Typography variant="caption">
-                {t(expanded ? 'expand.collapse' : 'expand.expand')}
+                {t(expanded ? 'collapse.label' : 'expand.label')}
               </Typography>
             </Box>
 
