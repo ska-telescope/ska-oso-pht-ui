@@ -2,7 +2,7 @@ import React from 'react';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import {
-  BAND_LOW,
+  BAND_LOW_STR,
   FREQUENCY_UNITS,
   LAB_IS_BOLD,
   LAB_POSITION,
@@ -17,7 +17,7 @@ interface SpectralResolutionFieldProps {
   frequencyUnits: number;
   label?: string;
   labelWidth?: number;
-  observingBand: number;
+  observingBand: string;
   observationType: number;
   onFocus?: Function;
   setValue?: Function;
@@ -38,7 +38,7 @@ export default function SpectralResolutionField({
   const [spectralResolution, setSpectralResolution] = React.useState('');
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
-  const isLow = () => observingBand === BAND_LOW;
+  const isLow = () => observingBand === BAND_LOW_STR;
 
   const LOWContinuumBase = () => 5.43;
   const LOWZoomBase = () => {

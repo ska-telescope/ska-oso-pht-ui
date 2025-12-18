@@ -122,11 +122,17 @@ export default function TableObservationsRow({
             )}
 
             {editClicked && (
-              <EditIcon onClick={() => editClicked(item)} toolTip={t('observations.edit')} />
+              <Box display="flex" flexDirection="column" alignItems="center">
+                <EditIcon onClick={() => editClicked(item)} toolTip={t('observations.edit')} />
+                <Typography variant="caption">{t('edit.label')}</Typography>
+              </Box>
             )}
 
             {deleteClicked && (
-              <TrashIcon onClick={() => deleteClicked(item)} toolTip={t('observations.delete')} />
+              <Box display="flex" flexDirection="column" alignItems="center">
+                <TrashIcon onClick={() => deleteClicked(item)} toolTip={t('observations.delete')} />
+                <Typography variant="caption">{t('deleteBtn.label')}</Typography>
+              </Box>
             )}
           </Box>
         </TableCell>

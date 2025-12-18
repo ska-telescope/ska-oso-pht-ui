@@ -2,8 +2,13 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import DataProduct from './DataProduct';
-import { TYPE_CONTINUUM, TYPE_ZOOM, IW_BRIGGS } from '@/utils/constantsSensCalc';
-import { TYPE_PST, DETECTED_FILTER_BANK_VALUE, PULSAR_TIMING_VALUE } from '@/utils/constants';
+import { TYPE_CONTINUUM, TYPE_ZOOM, IW_BRIGGS } from '@/utils/constants';
+import {
+  TYPE_PST,
+  DETECTED_FILTER_BANK_VALUE,
+  PULSAR_TIMING_VALUE,
+  BAND_LOW_STR
+} from '@/utils/constants';
 import { DataProductSDP } from '@/utils/types/dataProduct';
 import Observation from '@/utils/types/observation';
 
@@ -73,15 +78,13 @@ const baseObservation: Observation = {
   telescope: 0,
   subarray: 0,
   linked: '',
-  observingBand: 0,
+  observingBand: BAND_LOW_STR,
   elevation: 0,
   centralFrequency: 0,
   centralFrequencyUnits: 0,
   bandwidth: null,
   continuumBandwidth: null,
   continuumBandwidthUnits: null,
-  imageWeighting: 0,
-  robust: 0,
   supplied: {
     type: 0,
     value: 0,

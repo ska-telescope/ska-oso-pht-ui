@@ -29,7 +29,7 @@ export default function TableSubmissions({
   return (
     <TableContainer>
       <Table aria-label="Data Products Table" sx={{ tableLayout: 'auto', width: '100%' }}>
-        {false && <TableSubmissionsHeader />}
+        {<TableSubmissionsHeader />}
         <colgroup>
           <col style={{ width: '5%' }} />
           <col style={{ width: '5%' }} />

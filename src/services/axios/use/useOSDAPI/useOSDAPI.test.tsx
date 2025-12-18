@@ -56,22 +56,31 @@ const mockObservatoryData: ObservatoryData = {
       }
     }
   },
-  observatoryPolicy: {
-    cycleNumber: 42,
-    cycleDescription: 'Cycle 42',
-    cycleInformation: {
-      cycleId: 'CYCLE-ID-2025',
-      proposalOpen: '20250901T08:00:00',
-      proposalClose: '20250930T12:00:00'
-    },
-    cyclePolicies: {
-      normalMaxHours: 100
-    },
-    telescopeCapabilities: {
-      mid: 'MID Telescope Description',
-      low: 'LOW Telescope Description'
+  policies: [
+    {
+      cycleNumber: 42,
+      cycleDescription: 'Cycle 42',
+      cycleInformation: {
+        cycleId: 'CYCLE-ID-2025',
+        proposalOpen: '20250901T08:00:00',
+        proposalClose: '20250930T12:00:00'
+      },
+      cyclePolicies: {
+        maxDataProducts: 0,
+        maxObservations: 0,
+        maxTargets: 0,
+        bands: [],
+        low: [],
+        mid: [],
+        observationType: []
+      },
+      telescopeCapabilities: {
+        mid: 'MID Telescope Description',
+        low: 'LOW Telescope Description'
+      },
+      type: ''
     }
-  }
+  ]
 };
 
 vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
@@ -102,8 +111,8 @@ describe('useOSDAPI hook', () => {
       expect(result.current.loading).toBe(false);
     });
 
-    expect(result.current.osdData?.observatoryPolicy.cycleNumber).toBe(42);
-    expect(result.current.osdData?.capabilities.low.basicCapabilities.minFrequencyHz).toBe(50);
+    expect(result.current.osdData?.policies[0].cycleNumber).toBe(42);
+    expect(result.current.osdData?.capabilities?.low?.basicCapabilities?.minFrequencyHz).toBe(50);
     expect(mockErrorSetter).not.toHaveBeenCalled();
   });
 

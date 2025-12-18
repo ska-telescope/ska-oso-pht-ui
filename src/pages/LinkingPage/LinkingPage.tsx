@@ -9,7 +9,6 @@ import SensCalcDisplaySingle from '../../components/alerts/sensCalcDisplay/singl
 import Observation from '../../utils/types/observation';
 import { validateCalibrationPage, validateLinkingPage } from '../../utils/validation/validation';
 import {
-  BANDWIDTH_TELESCOPE,
   IW_NATURAL,
   OB_SUBARRAY_CUSTOM,
   PAGE_CALIBRATION,
@@ -384,7 +383,7 @@ export default function LinkingPage() {
         minWidth: 250,
         disableClickEventBubbling: true,
         renderCell: (e: { row: { rec: { observingBand: string | number } } }) =>
-          BANDWIDTH_TELESCOPE[Number(e.row.rec.observingBand)]?.label
+          t('observingBand.short.' + e.row.rec.observingBand)
       },
       {
         field: 'subarray',

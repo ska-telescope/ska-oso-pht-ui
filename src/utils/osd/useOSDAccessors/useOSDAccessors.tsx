@@ -2,30 +2,26 @@ import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { useTranslation } from 'react-i18next';
 import { useState, useEffect, useMemo } from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { find } from 'lodash';
 import { useOSD } from '../useOSD/useOSD';
 import { presentDate, presentTime } from '@/utils/present/present';
-import { TELESCOPE_LOW_NUM } from '@/utils/constants';
+import { BAND_LOW_STR, TELESCOPE_LOW_NUM, TELESCOPE_MID_NUM } from '@/utils/constants';
 
 export function useOSDAccessors() {
   const osd = useOSD();
   const { t } = useTranslation();
-
   const { application, updateAppContent8 } = storageObject.useStore();
-
   const capabilities = osd?.capabilities;
   const policies = osd?.policies ?? [];
   const observatoryConstants = OSD_CONSTANTS;
-
   const selectedPolicy = application.content8 as typeof policies[number] | null;
 
-  // initialise if not set
   useEffect(() => {
     if (!selectedPolicy && policies.length > 0) {
       updateAppContent8(policies[0]);
     }
   }, [selectedPolicy, policies, updateAppContent8]);
 
-  // ✅ setter by cycleId string
   const setSelectedPolicyByCycleId = (cycleId: string) => {
     const match = policies.find(p => p.cycleInformation?.cycleId === cycleId);
     if (match) {
@@ -111,7 +107,20 @@ export function useOSDAccessors() {
     osdOpens: (shouldPresent = false) =>
       present(format(cycleInformation?.proposalOpen), shouldPresent),
     osdCountdown: countdown,
-    isCustomAllowed,
+    isCustomAllowed: isCustomAllowed,
+    //
+    telescopeBand: (observingBand: string) =>
+      observingBand === BAND_LOW_STR ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM,
+    findBand: (observingBand: string) => {
+      if (observingBand === BAND_LOW_STR) {
+        return capabilities?.low?.basicCapabilities || null;
+      }
+      return (
+        find(capabilities?.mid?.basicCapabilities?.receiverInformation, { rxId: observingBand }) ||
+        null
+      );
+    },
+
     autoLink,
     isSV
   };

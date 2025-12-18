@@ -18,7 +18,6 @@ import {
   LAB_IS_BOLD,
   LAB_POSITION,
   NAV,
-  BAND_LOW,
   SUPPLIED_VALUE_DEFAULT_MID,
   TYPE_CONTINUUM,
   OB_SUBARRAY_CUSTOM,
@@ -46,7 +45,8 @@ import {
   FLOW_THROUGH_VALUE,
   ZOOM_BANDWIDTH_DEFAULT_MID,
   TELESCOPES,
-  TEL_UNITS
+  TEL_UNITS,
+  BAND_LOW_STR
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -55,21 +55,21 @@ import {
   getBandwidthZoom,
   getMinimumChannelWidth
 } from '@utils/helpers.ts';
-import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
-import Proposal from '../../../utils/types/proposal';
-import AddButton from '../../../components/button/Add/Add';
-import GroupObservationsField from '../../../components/fields/groupObservations/groupObservations';
-import Observation from '../../../utils/types/observation';
-import SubArrayField from '../../../components/fields/subArray/SubArray';
-import ObservingBandField from '../../../components/fields/observingBand/ObservingBand';
-import ObservationTypeField from '../../../components/fields/observationType/ObservationType';
-import EffectiveResolutionField from '../../../components/fields/effectiveResolution/EffectiveResolution';
-import ElevationField, { ELEVATION_DEFAULT } from '../../../components/fields/elevation/Elevation';
-import SpectralAveragingField from '../../../components/fields/spectralAveraging/SpectralAveraging';
-import SpectralResolutionField from '../../../components/fields/spectralResolution/SpectralResolution';
-import NumStations from '../../../components/fields/numStations/NumStations';
-import ContinuumBandwidthField from '../../../components/fields/bandwidthFields/continuumBandwidth/continuumBandwidth';
-import BandwidthField from '../../../components/fields/bandwidthFields/bandwidth/bandwidth';
+import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
+import Proposal from '@/utils/types/proposal';
+import AddButton from '@/components/button/Add/Add';
+import GroupObservationsField from '@/components/fields/groupObservations/groupObservations';
+import Observation from '@/utils/types/observation';
+import SubArrayField from '@/components/fields/subArray/SubArray';
+import ObservingBandField from '@/components/fields/observingBand/ObservingBand';
+import ObservationTypeField from '@/components/fields/observationType/ObservationType';
+import EffectiveResolutionField from '@/components/fields/effectiveResolution/EffectiveResolution';
+import ElevationField, { ELEVATION_DEFAULT } from '@/components/fields/elevation/Elevation';
+import SpectralAveragingField from '@/components/fields/spectralAveraging/SpectralAveraging';
+import SpectralResolutionField from '@/components/fields/spectralResolution/SpectralResolution';
+import NumStations from '@/components/fields/numStations/NumStations';
+import ContinuumBandwidthField from '@/components/fields/bandwidthFields/continuumBandwidth/continuumBandwidth';
+import BandwidthField from '@/components/fields/bandwidthFields/bandwidth/bandwidth';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import {
@@ -119,7 +119,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const [subarrayConfig, setSubarrayConfig] = React.useState(3);
-  const [observingBand, setObservingBand] = React.useState(0);
+  const [observingBand, setObservingBand] = React.useState(BAND_LOW_STR);
   const [observationType, setObservationType] = React.useState(1);
   const [effectiveResolution, setEffectiveResolution] = React.useState('');
   const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT[TELESCOPE_LOW_NUM - 1]);
@@ -259,19 +259,19 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   };
 
   // Change the central frequency & units only if they are currently the same as the existing defaults
-  const setDefaultCentralFrequency = (inBand: number, inSubArray: number) => {
+  const setDefaultCentralFrequency = (inBand: string, inSubArray: number) => {
     if (
       Number(centralFrequency) ===
         calculateCentralFrequency(observingBand, subarrayConfig, observatoryConstants) &&
       centralFrequencyUnits === (isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ)
     ) {
       setCentralFrequency(calculateCentralFrequency(inBand, inSubArray, observatoryConstants));
-      setCentralFrequencyUnits(inBand === BAND_LOW ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+      setCentralFrequencyUnits(inBand === BAND_LOW_STR ? FREQUENCY_MHZ : FREQUENCY_GHZ);
     }
   };
 
   // Change the continuum bandwidth & units only if they are currently the same as the existing defaults
-  const setDefaultContinuumBandwidth = (inBand: number, inSubArray: number) => {
+  const setDefaultContinuumBandwidth = (inBand: string, inSubArray: number) => {
     if (
       isContinuum() &&
       Number(continuumBandwidth) ===
@@ -279,7 +279,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       continuumBandwidthUnits === (isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ)
     ) {
       setContinuumBandwidth(calculateContinuumBandwidth(inBand, inSubArray, observatoryConstants));
-      setContinuumBandwidthUnits(inBand === BAND_LOW ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+      setContinuumBandwidthUnits(inBand === BAND_LOW_STR ? FREQUENCY_MHZ : FREQUENCY_GHZ);
     }
   };
 
@@ -305,9 +305,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       setSuppliedValue(SUPPLIED_VALUE_DEFAULT_LOW);
     }
 
-    setDefaultCentralFrequency(e as number, subarrayConfig);
-    setDefaultContinuumBandwidth(e as number, subarrayConfig);
-    setObservingBand(e);
+    setDefaultCentralFrequency(String(e), subarrayConfig);
+    setDefaultContinuumBandwidth(String(e), subarrayConfig);
+    setObservingBand(String(e));
     updateStorageProposal();
   };
 
@@ -417,11 +417,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isZoom = () => observationType === TYPE_ZOOM;
   const isPST = () => observationType === TYPE_PST;
-  const isLow = () => observingBand === BAND_LOW;
-  const isMid = () => observingBand !== BAND_LOW;
+  const isLow = () => observingBand === BAND_LOW_STR;
+  const isMid = () => observingBand !== BAND_LOW_STR;
   const telescope = () => (isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM);
   const isLowAA2 = () => isLow() && subarrayConfig === OB_SUBARRAY_AA2;
-  const isContinuumOnly = () => observingBand !== 0 && subarrayConfig === OB_SUBARRAY_AA2;
+  const isContinuumOnly = () =>
+    observingBand !== BAND_LOW_STR && subarrayConfig === OB_SUBARRAY_AA2;
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>

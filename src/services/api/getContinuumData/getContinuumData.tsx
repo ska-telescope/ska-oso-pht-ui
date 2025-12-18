@@ -11,7 +11,7 @@ import {
   TIME_SECS,
   RA_TYPE_GALACTIC,
   RA_TYPE_ICRS
-} from '@utils/constantsSensCalc.ts';
+} from '@utils/constants';
 import {
   getImageWeightingMapping,
   getSensitivitiesUnitsMapping,
@@ -19,12 +19,7 @@ import {
   isSuppliedTime,
   shiftSensitivity
 } from '@utils/helpersSensCalc.ts';
-import {
-  BANDWIDTH_TELESCOPE,
-  OBS_TYPES,
-  SUPPLIED_TYPE_SENSITIVITY,
-  TYPE_CONTINUUM
-} from '@utils/constants.ts';
+import { OBS_TYPES, SUPPLIED_TYPE_SENSITIVITY, TYPE_CONTINUUM } from '@utils/constants.ts';
 import { SensCalcResults, ResultsSection } from '@utils/types/sensCalcResults.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import {
@@ -36,8 +31,8 @@ import {
   rxBand
 } from '../submissionEntries/submissionEntries';
 import Fetch from '../fetch/Fetch';
-import Target from '../../../utils/types/target';
-import Observation from '../../../utils/types/observation';
+import Target from '@/utils/types/target';
+import Observation from '@/utils/types/observation';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 import { DataProductSDP } from '@/utils/types/dataProduct';
 
@@ -325,10 +320,7 @@ function GetContinuumData(
     tapering: dataProductSDP?.taperValue ?? 0
   };
 
-  const observingBand = (observation: Observation) => {
-    const result = BANDWIDTH_TELESCOPE?.find(band => band.value === observation.observingBand);
-    return result ? result.mapping : '';
-  };
+  const observingBand = (observation: Observation) => observation.observingBand;
 
   // TODO handle custom subarray
   const subArray = (observation: Observation) => {
@@ -345,11 +337,11 @@ function GetContinuumData(
     num15mAntennas: observation.num15mAntennas ?? 0,
     num13mAntennas: observation.num13mAntennas ?? 0,
     numStations: observation.numStations ?? 0,
-    skyDirectionType: RA_TYPE_GALACTIC,
-    raGalactic: { value: target.raStr as string, unit: RA_TYPE_GALACTIC }, // TODO can unit be removed?
-    decGalactic: { value: target.decStr as string, unit: RA_TYPE_GALACTIC }, // TODO can unit be removed?
-    raEquatorial: { value: 0, unit: RA_TYPE_ICRS },
-    decEquatorial: { value: 0, unit: RA_TYPE_ICRS },
+    skyDirectionType: String(RA_TYPE_GALACTIC.value),
+    raGalactic: { value: target.raStr as string, unit: String(RA_TYPE_GALACTIC.value) },
+    decGalactic: { value: target.decStr as string, unit: String(RA_TYPE_GALACTIC.value) },
+    raEquatorial: { value: 0, unit: String(RA_TYPE_ICRS.value) },
+    decEquatorial: { value: 0, unit: String(RA_TYPE_ICRS.value) },
     elevation: { value: observation.elevation, unit: 'deg' },
     advancedData: null,
     modules: []

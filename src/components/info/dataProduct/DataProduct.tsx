@@ -1,6 +1,6 @@
 import { Box, Grid } from '@mui/material';
 import { DataProductSDP } from '@/utils/types/dataProduct';
-import { IW_BRIGGS, TYPE_CONTINUUM, TYPE_ZOOM, WRAPPER_HEIGHT } from '@/utils/constantsSensCalc';
+import { IW_BRIGGS, TYPE_CONTINUUM, TYPE_ZOOM, WRAPPER_HEIGHT } from '@/utils/constants';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
 import ImageSizeField from '@/components/fields/imageSize/imageSize';
 import PolarisationsField from '@/components/fields/polarisations/polarisations';

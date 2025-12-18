@@ -16,11 +16,14 @@ export default function TableSubmissionsHeader() {
     <TableHead>
       <TableRow>
         {displayHeader('actions.label')}
-        {displayHeader('observationType.label')}
-        {displayHeader('observationId.label')}
-        {displayHeader('subArrayConfiguration.label')}
-        {displayHeader('observingBand.label')}
+        {displayHeader('proposalId.label')}
+        {displayHeader('cycle.label')}
         {displayHeader('')}
+        {displayHeader('title.label')}
+        {displayHeader('proposalType.label')}
+        {displayHeader('status.label')}
+        {displayHeader('updated.label')}
+        {displayHeader('cycleCloses.label')}
       </TableRow>
     </TableHead>
   );

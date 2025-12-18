@@ -42,8 +42,7 @@ describe('TableSubmissionsRow', () => {
 
   it('renders review title and category', () => {
     wrapper(<TableSubmissionsRow {...defaultProps} />);
-
-    expect(screen.getByText(/obs-dummy-id/i)).toBeInTheDocument();
+    expect(screen.getByText(/Sample Review Title/i)).toBeInTheDocument();
   });
 
   it.skip('calls toggleRow when expand button is clicked', () => {

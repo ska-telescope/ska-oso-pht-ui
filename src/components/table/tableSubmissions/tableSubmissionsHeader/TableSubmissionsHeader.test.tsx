@@ -17,10 +17,12 @@ describe('TableSubmissionsHeader', () => {
     wrapper(<TableSubmissionsHeader />);
 
     expect(screen.getByText(/actions.label/i)).toBeInTheDocument();
-    expect(screen.getByText(/observationType.label/i)).toBeInTheDocument();
-    expect(screen.getByText(/observationId.label/i)).toBeInTheDocument();
-    expect(screen.getByText(/subArrayConfiguration.label/i)).toBeInTheDocument();
-    expect(screen.getByText(/observingBand.label/i)).toBeInTheDocument();
-    // expect(screen.getByText(/imageWeighting.label/i)).toBeInTheDocument();
+    expect(screen.getByText(/proposalId.label/i)).toBeInTheDocument();
+    expect(screen.getByText(/cycle.label/i)).toBeInTheDocument();
+    expect(screen.getByText(/title.label/i)).toBeInTheDocument();
+    expect(screen.getByText(/proposalType.label/i)).toBeInTheDocument();
+    expect(screen.getByText(/status.label/i)).toBeInTheDocument();
+    expect(screen.getByText(/updated.label/i)).toBeInTheDocument();
+    expect(screen.getByText(/cycleCloses.label/i)).toBeInTheDocument();
   });
 });

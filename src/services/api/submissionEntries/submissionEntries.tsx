@@ -1,11 +1,10 @@
 import {
   degDecToSexagesimal,
   degRaToSexagesimal,
-  getRobustMapping,
   isGalactic,
   timeConversion
 } from '@utils/helpersSensCalc.ts';
-import { IW_BRIGGS, SEPARATOR1 } from '@utils/constantsSensCalc.ts';
+import { IW_BRIGGS, SEPARATOR1 } from '@utils/constants';
 import {
   ContinuumData,
   StandardData,
@@ -18,7 +17,7 @@ import { frequencyConversion } from '@/utils/helpers';
 
 export function addRobustProperty(data: ContinuumData | ZoomData, properties: string) {
   if (data.imageWeighting === IW_BRIGGS) {
-    properties += addValue('robustness', getRobustMapping(data.robust));
+    properties += addValue('robustness', data.robust);
   }
   return properties;
 }

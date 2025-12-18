@@ -1,4 +1,4 @@
-import { DEFAULT_USER, PROPOSAL_STATUS } from '@utils/constants.ts';
+import { BAND_LOW_STR, DEFAULT_USER, PROPOSAL_STATUS } from '@utils/constants.ts';
 import { RA_TYPE_ICRS } from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
 
@@ -187,7 +187,7 @@ export const MockProposalFrontend: Proposal = {
       telescope: 2,
       subarray: 3,
       type: 1,
-      observingBand: 0,
+      observingBand: BAND_LOW_STR,
       centralFrequency: 200,
       centralFrequencyUnits: 2,
       elevation: 20,
@@ -418,7 +418,7 @@ export const MockProposalFrontendZoom: Proposal = {
       telescope: 2,
       subarray: 3,
       type: 0,
-      observingBand: 0,
+      observingBand: BAND_LOW_STR,
       centralFrequency: 200,
       centralFrequencyUnits: 2,
       elevation: 20,

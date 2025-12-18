@@ -15,7 +15,7 @@ import { MockObservatoryDataFrontend } from '@/services/axios/get/getObservatory
 import { PanelBackend } from '@/utils/types/panel';
 import * as CONSTANTS from '@/utils/constants';
 
-const cycleId = MockObservatoryDataFrontend.observatoryPolicy.cycleInformation.cycleId;
+const cycleId = MockObservatoryDataFrontend.policies[0].cycleInformation.cycleId;
 
 describe('Helper Functions', () => {
   beforeEach(() => {

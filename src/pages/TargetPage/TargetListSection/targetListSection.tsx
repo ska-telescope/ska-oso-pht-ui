@@ -4,6 +4,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   AlertColorTypes,
   BorderedSection,
+  // getColors,
   Spacer,
   SPACER_VERTICAL
 } from '@ska-telescope/ska-gui-components';
@@ -22,6 +23,7 @@ import SpatialImaging from './SpatialImaging/SpatialImaging';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+// import D3LineChart from '@/components/charts/line/D3LineChart';
 
 export default function TargetListSection() {
   const { t } = useScopedTranslation();
@@ -69,6 +71,57 @@ export default function TargetListSection() {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [getProposal()?.targets, osdCyclePolicy?.maxTargets]);
+
+  // React.useEffect(() => {
+  //   function getDataFromSVG(svg: string): { name: number; value: number }[] {
+  //     const parser = new DOMParser();
+  //     const svgDoc = parser.parseFromString(svg, 'image/svg+xml');
+
+  //     // Find the curve path
+  //     let pathEl: SVGPathElement | null = null;
+  //     const useEl = svgDoc.querySelector('use');
+  //     if (useEl) {
+  //       const href = useEl.getAttribute('xlink:href') || useEl.getAttribute('href');
+  //       if (href && href.startsWith('#')) {
+  //         pathEl = svgDoc.querySelector(href) as SVGPathElement;
+  //       }
+  //     }
+  //     if (!pathEl) {
+  //       pathEl = svgDoc.querySelector("path[id^='m']") as SVGPathElement;
+  //     }
+  //     if (!pathEl) return [];
+
+  //     const pathLength = pathEl.getTotalLength();
+  //     const rawPoints: { x: number; y: number }[] = [];
+
+  //     for (let i = 0; i <= pathLength; i++) {
+  //       const pt = pathEl.getPointAtLength(i);
+  //       rawPoints.push({ x: pt.x, y: pt.y });
+  //     }
+
+  //     // Pixel bounds of the curve itself
+  //     const xMinPx = Math.min(...rawPoints.map(p => p.x));
+  //     const xMaxPx = Math.max(...rawPoints.map(p => p.x));
+  //     const yMinPx = Math.min(...rawPoints.map(p => p.y));
+  //     const yMaxPx = Math.max(...rawPoints.map(p => p.y));
+
+  //     // Actual data domains (from your description)
+  //     const xDomain: [number, number] = [11, 21]; // hours
+  //     const yDomain: [number, number] = [0, 40]; // degrees elevation
+
+  //     const points: { name: number; value: number }[] = rawPoints.map(p => {
+  //       const hours = xDomain[0] + ((p.x - xMinPx) / (xMaxPx - xMinPx)) * (xDomain[1] - xDomain[0]);
+
+  //       const elevation =
+  //         yDomain[0] + ((yMaxPx - p.y) / (yMaxPx - yMinPx)) * (yDomain[1] - yDomain[0]);
+
+  //       return { name: hours, value: elevation };
+  //     });
+  //     return points;
+  //   }
+
+  //   setVisData(visibilitySVG ? getDataFromSVG(visibilitySVG) : []);
+  // }, [visibilitySVG]);
 
   const deleteIconClicked = (e: Target) => {
     setRowTarget(e);
@@ -208,9 +261,25 @@ export default function TargetListSection() {
               rows={getProposal().targets}
             />
             {visibilitySVG !== null && (getProposal()?.targets?.length ?? 0) > 0 && (
-              <Box pt={6} px={3}>
-                <SvgAsImg svgXml={visibilitySVG} />
-              </Box>
+              <>
+                <Box pt={6} px={3}>
+                  <SvgAsImg svgXml={visibilitySVG} />
+                </Box>
+                {/* <Box pt={6} px={3}>
+                  <D3LineChart
+                    data={visData}
+                    chartColors={getColors({
+                      type: 'telescope',
+                      colors: '',
+                      content: 'bg'
+                    })}
+                    width={400}
+                    height={400}
+                    xDomain={[0, 24]}
+                    yDomain={[0, 90]}
+                  />
+                </Box> */}
+              </>
             )}
           </Stack>
         </Grid>

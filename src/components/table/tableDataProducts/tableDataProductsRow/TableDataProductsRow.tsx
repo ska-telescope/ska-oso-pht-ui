@@ -1,5 +1,4 @@
-import { TableRow, TableCell, IconButton, Box, Typography, Collapse } from '@mui/material';
-import { ChevronRight, ExpandMore } from '@mui/icons-material';
+import { TableRow, TableCell, Box, Typography, Collapse } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useMemo } from 'react';
 import { FrequencySpectrum, getColors } from '@ska-telescope/ska-gui-components';
@@ -18,6 +17,7 @@ import {
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import DataProduct from '@/components/info/dataProduct/DataProduct';
 import { frequencyConversion } from '@/utils/helpers';
+import ExpandIcon from '@/components/icon/expandIcon/expandIcon';
 
 interface TableDataProductsRowProps {
   item: any;
@@ -107,28 +107,35 @@ export default function TableDataProductsRow({
         {/* Collapse / Edit / Delete */}
         <TableCell role="gridcell" sx={{ maxWidth: 120, p: 0 }}>
           <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
-            <IconButton
-              ref={expandButtonRef}
-              aria-label={`${expanded ? 'Collapse' : 'Expand'} details for ${item.title}.`}
-              aria-expanded={expanded}
-              aria-controls={`observation-details-${item.id}`}
-              size="small"
-              onClick={() => toggleRow(item.id)}
-              data-testid={`expand-button-${item.id}`}
-              sx={{ transition: 'transform 0.2s' }}
-            >
-              {expanded ? <ExpandMore /> : <ChevronRight />}
-            </IconButton>
+            <Box display="flex" flexDirection="column" alignItems="center">
+              <ExpandIcon
+                onClick={() => toggleRow(item.id)}
+                toolTip={t('editDataProduct.toolTip')}
+                expanded={expanded}
+              />
+              <Typography variant="caption">
+                {t(expanded ? 'collapse.label' : 'expand.label')}
+              </Typography>
+            </Box>
 
             {editClicked && (
-              <EditIcon onClick={() => editClicked(item)} toolTip={t('editDataProduct.toolTip')} />
+              <Box display="flex" flexDirection="column" alignItems="center">
+                <EditIcon
+                  onClick={() => editClicked(item)}
+                  toolTip={t('editDataProduct.toolTip')}
+                />
+                <Typography variant="caption">{t('edit.label')}</Typography>
+              </Box>
             )}
 
             {deleteClicked && (
-              <TrashIcon
-                onClick={() => deleteClicked(item)}
-                toolTip={t('deleteDataProduct.toolTip')}
-              />
+              <Box display="flex" flexDirection="column" alignItems="center">
+                <TrashIcon
+                  onClick={() => deleteClicked(item)}
+                  toolTip={t('deleteDataProduct.toolTip')}
+                />
+                <Typography variant="caption">{t('deleteBtn.label')}</Typography>
+              </Box>
             )}
           </Box>
         </TableCell>

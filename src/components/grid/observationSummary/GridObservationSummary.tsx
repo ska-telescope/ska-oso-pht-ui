@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Grid, Typography } from '@mui/material';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
-import { BANDWIDTH_TELESCOPE, NOT_SPECIFIED } from '@utils/constants.ts';
+import { NOT_SPECIFIED } from '@utils/constants.ts';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import Proposal from '../../../utils/types/proposal';
@@ -118,8 +118,8 @@ export default function GridObservationSummary({
     renderHeader: () => headerDisplay('observingBand.label'),
     flex: 1,
     disableClickEventBubbling: true,
-    renderCell: (e: { row: { observingBand: number } }) =>
-      element(BANDWIDTH_TELESCOPE[e.row.observingBand]?.label)
+    renderCell: (e: { row: { observingBand: string } }) =>
+      element(t('observingBand.short.' + e.row.observingBand))
   };
 
   const colObservingType = {

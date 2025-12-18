@@ -159,6 +159,7 @@
   },
   "resolutions": {
     "react-is": "^18.3.1",
-    "js-yaml": "4.1.1"
+    "js-yaml": "4.1.1",
+    "systeminformation": "^5.27.14"
   }
 }

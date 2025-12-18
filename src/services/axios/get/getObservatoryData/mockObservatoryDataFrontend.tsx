@@ -1,28 +1,31 @@
 import ObservatoryData from '@/utils/types/observatoryData';
 
 export const MockObservatoryDataFrontend: ObservatoryData = {
-  observatoryPolicy: {
-    cycleNumber: 1,
-    cycleDescription: 'Science Verification',
-    cycleInformation: {
-      cycleId: 'SKAO_2027_1',
-      proposalOpen: '20260327T12:00:00.000Z',
-      proposalClose: '20260512T15:00:00.000z'
-    },
-    cyclePolicies: {
-      maxDataProducts: 1,
-      maxObservations: 1,
-      maxTargets: 1,
-      bands: ['low'],
-      low: ['AA2'],
-      mid: [],
-      observationType: ['spectral', 'continuum', 'pst']
-    },
-    telescopeCapabilities: {
-      mid: 'AA2',
-      low: 'AA2'
+  policies: [
+    {
+      cycleNumber: 1,
+      cycleDescription: 'Science Verification',
+      cycleInformation: {
+        cycleId: 'SKAO_2027_1',
+        proposalOpen: '20260327T12:00:00.000Z',
+        proposalClose: '20260512T15:00:00.000z'
+      },
+      cyclePolicies: {
+        maxDataProducts: 1,
+        maxObservations: 1,
+        maxTargets: 1,
+        bands: ['low', 'mid'],
+        low: ['AA2'],
+        mid: [],
+        observationType: ['spectral', 'continuum', 'pst']
+      },
+      telescopeCapabilities: {
+        mid: 'AA2',
+        low: 'AA2'
+      },
+      type: 'Science Verification'
     }
-  },
+  ],
   capabilities: {
     mid: {
       basicCapabilities: {

@@ -1,7 +1,7 @@
 // updateObservations.test.ts
 import { describe, it, expect } from 'vitest';
 import Observation from '../../types/observation';
-import { OB_SUBARRAY_AA2, TELESCOPE_LOW_NUM, TYPE_CONTINUUM } from '../../constants';
+import { BAND_LOW_STR, OB_SUBARRAY_AA2, TELESCOPE_LOW_NUM, TYPE_CONTINUUM } from '../../constants';
 import updateObservations from './updateObservations';
 
 describe('updateObservations', () => {
@@ -11,7 +11,7 @@ describe('updateObservations', () => {
     subarray: OB_SUBARRAY_AA2,
     linked: 'false',
     type: TYPE_CONTINUUM,
-    observingBand: 0,
+    observingBand: BAND_LOW_STR,
     elevation: 0,
     centralFrequency: 0,
     centralFrequencyUnits: 0,
@@ -33,7 +33,7 @@ describe('updateObservations', () => {
     subarray: OB_SUBARRAY_AA2,
     linked: 'false',
     type: TYPE_CONTINUUM,
-    observingBand: 0,
+    observingBand: BAND_LOW_STR,
     elevation: 0,
     centralFrequency: 0,
     centralFrequencyUnits: 0,
@@ -65,7 +65,7 @@ describe('updateObservations', () => {
       subarray: OB_SUBARRAY_AA2,
       linked: 'false',
       type: TYPE_CONTINUUM,
-      observingBand: 0,
+      observingBand: BAND_LOW_STR,
       elevation: 0,
       centralFrequency: 0,
       centralFrequencyUnits: 0,
@@ -89,7 +89,7 @@ describe('updateObservations', () => {
       subarray: OB_SUBARRAY_AA2,
       linked: 'false',
       type: TYPE_CONTINUUM,
-      observingBand: 0,
+      observingBand: BAND_LOW_STR,
       elevation: 0,
       centralFrequency: 0,
       centralFrequencyUnits: 0,
@@ -114,7 +114,7 @@ describe('updateObservations', () => {
       subarray: OB_SUBARRAY_AA2,
       linked: 'false',
       type: TYPE_CONTINUUM,
-      observingBand: 0,
+      observingBand: BAND_LOW_STR,
       elevation: 0,
       centralFrequency: 0,
       centralFrequencyUnits: 0,

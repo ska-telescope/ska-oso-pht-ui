@@ -1,24 +1,18 @@
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
-import { Grid, Paper, Typography } from '@mui/material';
+import { Box, Grid, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   AlertColorTypes,
-  DataGrid,
   DropDown,
   SearchEntry,
   Spacer,
   SPACER_VERTICAL
 } from '@ska-telescope/ska-gui-components';
-import moment from 'moment';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
 import GetProposal from '@services/axios/get/getProposal/getProposal';
 import AddButton from '@/components/button/Add/Add';
-import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
-import EditIcon from '@/components/icon/editIcon/editIcon';
-// import TrashIcon from '@/components/icon/trashIcon/trashIcon';
-import ViewIcon from '@/components/icon/viewIcon/viewIcon';
 import ProposalDisplay from '@/components/alerts/proposalDisplay/ProposalDisplay';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
@@ -41,31 +35,21 @@ import {
   PROPOSAL_STATUS_OPTIONS
 } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
-import { accessUpdate, PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
+import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import CycleSelection from '@/components/alerts/cycleSelection/CycleSelection';
 import PostProposal from '@/services/axios/post/postProposal/postProposal';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import {
-  getColProposalId,
-  getColCycle,
-  getColProposalTitle,
-  getColProposalPI,
-  getColProposalStatus,
-  getColProposalUpdated,
-  getColCycleClose,
-  getColProposalType
-} from '@/components/grid/proposals/columns/Columns';
 import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAPI } from '@/services/axios/use/useOSDAPI/useOSDAPI';
-import TableSubmissions from '@/components/table/tabelSubmissions/TableSubmissions';
+import TableSubmissions from '@/components/table/tableSubmissions/TableSubmissions';
 
 export default function LandingPage() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
-  const { autoLink, isSV, osdCycleId, osdCloses, setSelectedPolicyByCycleId } = useOSDAccessors();
+  const { autoLink, isSV, osdCycleId, setSelectedPolicyByCycleId } = useOSDAccessors();
 
   const {
     application,
@@ -86,7 +70,7 @@ export default function LandingPage() {
   const [openCycleDialog, setOpenCycleDialog] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
   const loggedIn = isLoggedIn();
-  const getAccess = () => application.content4 as ProposalAccess[];
+  // const getAccess = () => application.content4 as ProposalAccess[];
   const setAccess = (access: ProposalAccess[]) => updateAppContent4(access);
   const getProposal = () => application.content2 as Proposal;
   const { setHelp } = useHelp();
@@ -281,88 +265,90 @@ export default function LandingPage() {
     }
   };
 
-  const osdOpen = () => {
-    // TODO : We need to extend to also check the open date of the OSD record
-    if (osdCloses) {
-      const closes = osdCloses();
-      const formattedTimestamp = closes.replace(/^(\d{4})(\d{2})(\d{2})T/, '$1-$2-$3T');
-      // Use strict ISO parsing
-      const closeMoment = moment.utc(formattedTimestamp, moment.ISO_8601, true);
-      return closeMoment.isValid() ? closeMoment.isAfter(moment.utc()) : true;
-    } else {
-      return true;
-    }
-  };
+  // const osdOpen = () => {
+  //   // TODO : We need to extend to also check the open date of the OSD record
+  //   if (osdCloses) {
+  //     const closes = osdCloses();
+  //     const formattedTimestamp = closes.replace(/^(\d{4})(\d{2})(\d{2})T/, '$1-$2-$3T');
+  //     // Use strict ISO parsing
+  //     const closeMoment = moment.utc(formattedTimestamp, moment.ISO_8601, true);
+  //     return closeMoment.isValid() ? closeMoment.isAfter(moment.utc()) : true;
+  //   } else {
+  //     return true;
+  //   }
+  // };
 
-  const canEdit = (e: { row: { id: string; status: string } }) => {
-    return (
-      e.row.status === PROPOSAL_STATUS.DRAFT && osdOpen() && accessUpdate(getAccess(), e.row.id)
-    );
-  };
+  //   const canEdit = (e: { row: { id: string; status: string } }) => {
+  //     return (
+  //       e.row.status === PROPOSAL_STATUS.DRAFT && osdOpen() && accessUpdate(getAccess(), e.row.id)
+  //     );
+  //   };
 
-  const canClone = (e: { row: any }) => {
-    const update = accessUpdate(getAccess(), e.row.id);
-    return update;
-  };
+  //   const canClone = (e: { row: any }) => {
+  //     const update = accessUpdate(getAccess(), e.row.id);
+  //     return update;
+  //   };
 
-  // TODO const canDelete = (e: { row: { status: string } }) =>
-  // TODO  e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
+  //  const canDelete = (e: { row: { status: string } }) =>
+  // e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 
-  const colActions = {
-    field: 'actions',
-    type: 'actions',
-    headerName: 'Actions',
-    sortable: false,
-    width: 200,
-    disableClickEventBubbling: true,
-    renderCell: (e: { row: any }) => (
-      <>
-        <EditIcon
-          onClick={() => editIconClicked(e.row.id)}
-          disabled={!canEdit(e)}
-          toolTip={t(canEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
-        />
-        <ViewIcon onClick={() => viewIconClicked(e.row.id)} toolTip={t('viewProposal.toolTip')} />
-        <CloneIcon
-          onClick={() => cloneIconClicked(e.row.id)}
-          disabled={!canClone(e)}
-          toolTip={t('cloneProposal.toolTip')}
-        />
-        {/* <TrashIcon
-          onClick={() => deleteIconClicked(e.row.id)}
-          disabled // TO BE re-introduced once API is completed  ={!canDelete(e)}
-          toolTip={t('deleteProposal.disabled')} // canDelete(e) ? 'deleteProposal.toolTip' : 'deleteProposal.disabled')}
-        /> */}
-      </>
-    )
-  };
+  // STAR-1826 : Keep until we are happy with all the functionality in table
+  // const colActions = {
+  //   field: 'actions',
+  //   type: 'actions',
+  //   headerName: 'Actions',
+  //   sortable: false,
+  //   width: 200,
+  //   disableClickEventBubbling: true,
+  //   renderCell: (e: { row: any }) => (
+  //     <>
+  //       <EditIcon
+  //         onClick={() => editIconClicked(e.row.id)}
+  //         disabled={!canEdit(e)}
+  //         toolTip={t(canEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
+  //       />
+  //       <ViewIcon onClick={() => viewIconClicked(e.row.id)} toolTip={t('viewProposal.toolTip')} />
+  //       <CloneIcon
+  //         onClick={() => cloneIconClicked(e.row.id)}
+  //         disabled={!canClone(e)}
+  //         toolTip={t('cloneProposal.toolTip')}
+  //       />
+  //       {/* <TrashIcon
+  //         onClick={() => deleteIconClicked(e.row.id)}
+  //         disabled // TO BE re-introduced once API is completed  ={!canDelete(e)}
+  //         toolTip={t('deleteProposal.disabled')} // canDelete(e) ? 'deleteProposal.toolTip' : 'deleteProposal.disabled')}
+  //       /> */}
+  //     </>
+  //   )
+  // };
 
-  const stdColumns = isSV
-    ? [
-        ...[
-          colActions,
-          getColProposalId(t),
-          getColCycle(t),
-          getColProposalTitle(t),
-          getColProposalPI(t),
-          getColProposalStatus(t),
-          getColProposalUpdated(t),
-          getColCycleClose(t)
-        ]
-      ]
-    : [
-        ...[
-          colActions,
-          getColProposalId(t),
-          getColProposalType(t),
-          getColCycle(t),
-          getColProposalTitle(t),
-          getColProposalPI(t),
-          getColProposalStatus(t),
-          getColProposalUpdated(t),
-          getColCycleClose(t)
-        ]
-      ];
+  // STAR-1826 : Keep until we are happy with all the functionality in table
+  // const stdColumns = isSV
+  //   ? [
+  //       ...[
+  //         colActions,
+  //         getColProposalId(t),
+  //         getColCycle(t),
+  //         getColProposalTitle(t),
+  //         getColProposalPI(t),
+  //         getColProposalStatus(t),
+  //         getColProposalUpdated(t),
+  //         getColCycleClose(t)
+  //       ]
+  //     ]
+  //   : [
+  //       ...[
+  //         colActions,
+  //         getColProposalId(t),
+  //         getColProposalType(t),
+  //         getColCycle(t),
+  //         getColProposalTitle(t),
+  //         getColProposalPI(t),
+  //         getColProposalStatus(t),
+  //         getColProposalUpdated(t),
+  //         getColCycleClose(t)
+  //       ]
+  //     ];
 
   const searchableFields: (keyof Proposal)[] = ['id', 'title', 'cycle', 'investigators'];
 
@@ -496,20 +482,14 @@ export default function LandingPage() {
             />
           )}
           {!axiosViewError && filteredData.length > 0 && (
-            <div>
-              <DataGrid
-                testId="dataGridId"
-                rows={filteredData}
-                columns={stdColumns}
-                height={'25vh'}
-              />
+            <Box pt={5}>
               <TableSubmissions
                 data={filteredData}
                 editFunction={editIconClicked}
                 viewFunction={viewIconClicked}
                 cloneFunction={cloneIconClicked}
               />
-            </div>
+            </Box>
           )}
         </Grid>
       </Grid>

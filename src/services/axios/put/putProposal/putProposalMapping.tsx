@@ -15,7 +15,6 @@ import { ValueUnitPair } from '@utils/types/valueUnitPair.tsx';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import { SensCalcResultsBackend } from '@utils/types/sensCalcResults.tsx';
 import {
-  BANDWIDTH_TELESCOPE,
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
   FREQUENCY_UNITS,
@@ -302,10 +301,7 @@ const getGroupObservation = (obsId: string, observationGroups: GroupObservation[
   return groupId ? groupId : '';
 };
 
-const getObservingBand = (observingBand: number) => {
-  const obsBand = BANDWIDTH_TELESCOPE.find(band => band.value === observingBand)?.mapping;
-  return obsBand;
-};
+const getObservingBand = (observingBand: string) => observingBand;
 
 const getSubArray = (incSubArray: number, incTelescope: number): string => {
   const array = OSD_CONSTANTS.array.find(a => a.value === incTelescope);
