@@ -35,6 +35,7 @@ export default function SpectralResolutionField({
   onFocus,
   setValue
 }: SpectralResolutionFieldProps) {
+  // const [spectralResolution, setSpectralResolution] = React.useState('14.13 Hz (21.2 m/s)');
   const [spectralResolution, setSpectralResolution] = React.useState('');
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
@@ -43,7 +44,7 @@ export default function SpectralResolutionField({
   const LOWContinuumBase = () => 5.43;
   const LOWZoomBase = () => {
     const powersTwo = [1, 2, 4, 8, 16, 32, 64, 128];
-    const baseSpectralResolutionHz = (781250 * 32) / 27 / 4096 / 16;
+    const baseSpectralResolutionHz = (781250 * 32) / 27 / 4096 / 16; // TODO verify what these numbers are
     const results = powersTwo.map(obj => obj * baseSpectralResolutionHz);
     return (results[bandWidth - 1]?.toFixed(2) as unknown) as number;
   };
@@ -64,8 +65,21 @@ export default function SpectralResolutionField({
         : FREQUENCY_UNITS[3].label
       : FREQUENCY_UNITS[2].label;
 
-  const calculateLOW = () =>
-    calculateVelocity(getBaseValue(), frequency * (isContinuum() ? 1000 : 1e6));
+  const calculateLOW = () => {
+    console.log('Calculating LOW spectral resolution');
+    console.log('getBaseValue()', getBaseValue());
+    console.log('frequency', frequency);
+    console.log('isContinuum()', isContinuum());
+    console.log('frequency * (isContinuum() ? 1000 : 1e6)', frequency * (isContinuum() ? 1000 : 1e6));
+
+    console.log('------------------------------');
+    console.log('getBaseValue()', getBaseValue());
+    console.log('frequency', frequency);
+    console.log('frequency * 1e6', frequency * 1e6);
+    const res = calculateVelocity(getBaseValue(), frequency * (isContinuum() ? 1000 : 1e6));
+    console.log('Calculated LOW spectral resolution:', res);
+    return calculateVelocity(getBaseValue(), frequency * (isContinuum() ? 1000 : 1e6));
+  };
 
   const calculateMID = () => {
     const freq = frequencyConversion(frequency, frequencyUnits);
@@ -79,9 +93,15 @@ export default function SpectralResolutionField({
   const getDisplay = () => {
     setSpectralResolution(`${getBaseValue()} ${getUnits1()} (${calculate()})`);
     if (setValue) {
+      const result = `${getBaseValue()} ${getUnits1()} (${calculate()})`;
+      console.log('Setting spectral resolution value to:', result);
       setValue(`${getBaseValue()} ${getUnits1()} (${calculate()})`);
     }
   };
+
+  React.useEffect(() => {
+    console.log(' SpectralResolutionField mounted - spectralResolution:  -', spectralResolution, '-');
+  }, [setSpectralResolution]);
 
   React.useEffect(() => {
     getDisplay();

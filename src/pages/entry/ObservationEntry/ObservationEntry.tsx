@@ -178,6 +178,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setNumOfStations(ob?.numStations ?? 0);
     setZoomChannels(ob?.zoomChannels ?? 0);
     setPstMode(ob?.pstMode ?? 0);
+    // TODO make sure effective resolution calculation is triggered
   };
 
   const observationOut = () => {
