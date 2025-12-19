@@ -12,7 +12,6 @@ import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPrev
 import ViewIcon from '../../components/icon/viewIcon/viewIcon';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import { useHelp } from '@/utils/help/useHelp';
 import { useNotify } from '@/utils/notify/useNotify';
 import autoLinking from '@/utils/autoLinking/AutoLinking';
@@ -24,26 +23,23 @@ const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
 export default function DetailsPage() {
   const { t } = useScopedTranslation();
-  const { isSV } = useAppFlow();
   const theme = useTheme();
   const { notifyError, notifySuccess } = useNotify();
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const { setHelp } = useHelp();
-  const { osdCyclePolicy } = useOSDAccessors();
+  const { autoLink } = useOSDAccessors();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const { osdCloses, osdOpens } = useOSDAccessors();
+  const { isSV, osdCloses, osdOpens } = useOSDAccessors();
 
   const [isObsModeChanged, setIsObsModeChanged] = React.useState(false); // For auto-link
 
-  // only generate observation, data products, senscalc, calibration when autoLink is true & obs mode is selected & target exists
-  // (science category used for obs mode in SV)
-  const autoLink = osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1;
-
   const setTheProposalState = () => {
+    // only generate observation, data products, senscalc, calibration when autoLink is true & obs mode is selected & target exists
+    // (science category used for obs mode in SV)
     updateAppContent1(validateProposal(getProposal(), autoLink));
   };
 
@@ -65,7 +61,7 @@ export default function DetailsPage() {
   }, [validateToggle]);
 
   const checkCategory = (id: number) => {
-    if (isSV() && id !== getProposal().scienceCategory) {
+    if (isSV && id !== getProposal().scienceCategory) {
       setIsObsModeChanged(true);
     }
     setProposal({ ...getProposal(), scienceCategory: id, scienceSubCategory: [1] });
@@ -215,7 +211,7 @@ export default function DetailsPage() {
   };
 
   const getCategoryOptions = () => {
-    return isSV() ? DETAILS.ObservingMode : DETAILS.ScienceCategory;
+    return isSV ? DETAILS.ObservingMode : DETAILS.ScienceCategory;
   };
 
   const categoryField = () => (

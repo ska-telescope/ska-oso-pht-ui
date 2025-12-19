@@ -11,7 +11,6 @@ import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';
 import TargetNoSpecificSection from './TargetNoSpecificSection/targetNoSpecificSection';
 import TargetListSection from './TargetListSection/targetListSection';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 const TITLE = ['', 'listOfTargets', 'targetMosaic', 'noSpecificTarget'];
 
@@ -19,15 +18,13 @@ const PAGE = PAGE_TARGET;
 
 export default function TargetPage() {
   const { t } = useScopedTranslation();
-  const { isSV } = useAppFlow();
   const theme = useTheme();
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const { osdCyclePolicy } = useOSDAccessors();
-  const autoLink = osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1;
+  const { autoLink, isSV } = useOSDAccessors();
 
   const setTheProposalState = () => {
     updateAppContent1(validateProposal(getProposal(), autoLink));
@@ -78,7 +75,7 @@ export default function TargetPage() {
   }
 
   const cardOptions = () => {
-    return !isSV() ? (
+    return !isSV ? (
       <Grid container direction="row" justifyContent="space-evenly" spacing={2}>
         {targetCard(TARGET_OPTION.LIST_OF_TARGETS)}
         {targetCard(TARGET_OPTION.TARGET_MOSAIC)}

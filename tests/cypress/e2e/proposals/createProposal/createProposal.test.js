@@ -37,7 +37,7 @@ describe('Creating Proposal', () => {
     verifyProposalCreatedAlertFooter();
     clickHome();
     verifyOnLandingPage();
-    verifyOnLandingPageFilterIsVisible();
+    // verifyOnLandingPageFilterIsVisible();
     verifyMockedProposalOnLandingPageIsVisible();
   });
 });

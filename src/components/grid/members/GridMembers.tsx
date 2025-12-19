@@ -10,7 +10,7 @@ import { GRID_MEMBERS_ACTIONS } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 interface GridMembersProps {
   action?: boolean;
@@ -30,7 +30,7 @@ export default function GridMembers({
   permissions = []
 }: GridMembersProps) {
   const { t } = useScopedTranslation();
-  const { isSV } = useAppFlow();
+  const { isSV } = useOSDAccessors();
 
   const isPI = ({ pi }: { pi: any }) => pi;
 
@@ -166,7 +166,7 @@ export default function GridMembers({
     }
   ];
 
-  const baseColumns = () => (isSV() ? [colLastName, colFirstName, colStatus] : basicColumns);
+  const baseColumns = () => (isSV ? [colLastName, colFirstName, colStatus] : basicColumns);
   const getColumns = () =>
     action ? [...colActions, ...baseColumns(), ...colPermissions] : [...baseColumns()];
 

@@ -5,7 +5,7 @@ import { EMPTY_STATUS, PAGE_TITLE_ADD } from '@utils/constants.ts';
 import Shell from '../../../components/layout/Shell/Shell';
 import TitleEntry from '../../entry/TitleEntry/TitleEntry';
 import Proposal, { NEW_PROPOSAL } from '../../../utils/types/proposal';
-import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 const PAGE = PAGE_TITLE_ADD;
 const PAGE_INNER = 0;
@@ -13,7 +13,7 @@ const PAGE_FOOTER = -1;
 
 export default function AddProposal() {
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
-  const { isSV } = useAppFlow();
+  const { isSV } = useOSDAccessors();
   const getProposal = () => application.content2 as Proposal;
 
   React.useEffect(() => {
@@ -24,7 +24,7 @@ export default function AddProposal() {
   }, []);
 
   const titleValid = () => getProposal()?.title?.length > 0;
-  const typeValid = () => (isSV() ? true : getProposal()?.proposalType > 0);
+  const typeValid = () => (isSV ? true : getProposal()?.proposalType > 0);
   const contentValid = () => titleValid() && typeValid();
 
   return (

@@ -78,7 +78,6 @@ import {
 import HelpShell from '@/components/layout/HelpShell/HelpShell';
 import PstModeField from '@/components/fields/pstMode/PstMode';
 import { useHelp } from '@/utils/help/useHelp';
-import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import SuppliedValue from '@/components/fields/suppliedValue/suppliedValue';
 import CentralFrequency from '@/components/fields/centralFrequency/centralFrequency';
 import ZoomChannels from '@/components/fields/zoomChannels/zoomChannels';
@@ -106,8 +105,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const theme = useTheme();
   const locationProperties = useLocation();
   const loggedIn = isLoggedIn();
-  const { isSV } = useAppFlow();
-  const { osdLOW, osdMID, observatoryConstants, osdCyclePolicy } = useOSDAccessors();
+  const { isSV, osdLOW, osdMID, observatoryConstants, osdCyclePolicy } = useOSDAccessors();
 
   const isEdit = () => locationProperties.state !== null || data !== undefined;
 
@@ -223,7 +221,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
     const oldTO = proposal?.targetObservation ?? [];
     const to =
-      isSV() && dataProductSDP
+      isSV && dataProductSDP
         ? await updateSensCalc(proposal, newObservation, dataProductSDP)
         : updateSensCalcPartial(oldTO, newObservation);
 
@@ -245,7 +243,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   };
 
   const updateStorageProposal = () => {
-    if (loggedIn && osdCyclePolicy.maxObservations === 1) {
+    if (loggedIn && (osdCyclePolicy?.maxObservations ?? 1) === 1) {
       isEdit() ? updateObservationOnProposal() : addObservationToProposal();
     }
   };
@@ -518,7 +516,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const observationsBandField = () =>
     fieldWrapper(
       <ObservingBandField
-        disabled={osdCyclePolicy.bands.length < 2}
+        disabled={(osdCyclePolicy?.bands?.length ?? 0) < 2}
         widthLabel={LABEL_WIDTH_NEW}
         required
         value={observingBand}
@@ -978,7 +976,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const pageFooter = () => {
     const buttonClicked = () => {
       isEdit() ? updateObservationOnProposal() : addObservationToProposal();
-      if (!loggedIn || osdCyclePolicy.maxObservations !== 1) {
+      if (!loggedIn || (osdCyclePolicy?.maxObservations ?? 1) !== 1) {
         navigate(NAV[BACK_PAGE]);
       }
     };
@@ -988,9 +986,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         sx={{
           bgcolor: 'transparent',
           position: 'fixed',
-          bottom: FOOTER_HEIGHT_PHT + (loggedIn && osdCyclePolicy.maxObservations === 1 ? 60 : 0),
+          bottom:
+            FOOTER_HEIGHT_PHT + (loggedIn && (osdCyclePolicy?.maxObservations ?? 1) === 1 ? 60 : 0),
           left: 0,
-          right: loggedIn && osdCyclePolicy.maxObservations === 1 ? 30 : 0
+          right: loggedIn && (osdCyclePolicy?.maxObservations ?? 1) === 1 ? 30 : 0
         }}
         elevation={0}
       >
@@ -1004,7 +1003,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           <Grid />
           <Grid />
           <Grid>
-            {(!loggedIn || osdCyclePolicy.maxObservations !== 1) && (
+            {(!loggedIn || (osdCyclePolicy?.maxObservations ?? 1) !== 1) && (
               <AddButton
                 action={buttonClicked}
                 disabled={addButtonDisabled()}
@@ -1022,7 +1021,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   return (
     <HelpShell page={PAGE}>
       <Box pt={2}>
-        {(!loggedIn || osdCyclePolicy.maxObservations > 1) && (
+        {(!loggedIn || (osdCyclePolicy?.maxObservations ?? 1) > 1) && (
           <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
         )}
         <Grid
@@ -1043,7 +1042,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
               alignItems="stretch"
               justifyContent="flex-start"
             >
-              {!isSV() && (
+              {!isSV && (
                 <Grid size={{ md: 12, lg: 6 }}>
                   <BorderedSection
                     title={t('observationSections.identifiers')}
@@ -1069,7 +1068,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                 </Grid>
               )}
 
-              {isSV() && (
+              {isSV && (
                 <Grid size={{ md: 6 }}>
                   <BorderedSection
                     title={t('observationSections.identifiers')}
@@ -1099,12 +1098,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                     container
                     direction="row"
                     alignItems="flex-start"
-                    rowSpacing={isSV() ? 0 : 2}
+                    rowSpacing={isSV ? 0 : 2}
                   >
                     <Grid size={{ md: 12 }}></Grid>
                     <Grid size={{ md: 12 }}>{subArrayField()}</Grid>
                     <Grid size={{ md: 12 }}>
-                      {!isSV() && (isLow() ? numStationsField() : antennasFields())}
+                      {!isSV && (isLow() ? numStationsField() : antennasFields())}
                     </Grid>
                     <Grid size={{ md: 12 }}>{suppliedField()}</Grid>
                   </Grid>
@@ -1122,11 +1121,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                 rowSpacing={1}
                 justifyContent="space-between"
               >
-                {!isSV() && frequencySetUp()}{' '}
+                {!isSV && frequencySetUp()}{' '}
                 {/* shows to user some fields that are hidden in mock call */}
-                {isSV() && isContinuum() && frequencySetUpContinuumSV()}
-                {isSV() && isZoom() && frequencySetUpSpectralSV()}
-                {isSV() && isPST() && frequencySetUpPSTSV()}
+                {isSV && isContinuum() && frequencySetUpContinuumSV()}
+                {isSV && isZoom() && frequencySetUpSpectralSV()}
+                {isSV && isPST() && frequencySetUpPSTSV()}
               </Grid>
             </BorderedSection>
           </Grid>

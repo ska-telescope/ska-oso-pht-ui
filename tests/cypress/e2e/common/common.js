@@ -507,6 +507,8 @@ export const addBeamUsingResolveOnTargetEdit = () => {
   cy.get('[id="beamNameEdit"]').type('PSR B0329+54');
   clickResolveBeamButton();
 };
+
+// TODO : Why is this not working consistently?   ( CHLOE )
 export const verifyOnLandingPageFilterIsVisible = () => {
   cy.get('[data-testid="proposalType"]').should('exist');
   cy.get('[data-testid="proposalType"]').realClick();
@@ -514,7 +516,7 @@ export const verifyOnLandingPageFilterIsVisible = () => {
 };
 
 export const verifyMockedProposalOnLandingPageIsVisible = () => {
-  cy.get('[data-field="id"]').should('contain', 'prsl-test');
+  cy.get('[data-testid="table-submissions"]').should('contain', 'prsl-test');
 };
 
 export const verifyOnLandingPageNoProposalMsgIsVisible = () => {

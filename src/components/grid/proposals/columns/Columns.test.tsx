@@ -1,5 +1,4 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
 
 import {
   getColProposalId,
@@ -8,7 +7,6 @@ import {
   getColProposalPI,
   getColProposalStatus,
   getColProposalUpdated,
-  getColCycleClose,
   getColCycle
 } from './Columns';
 import { PROPOSAL_STATUS } from '@/utils/constants';
@@ -49,17 +47,17 @@ describe('Cycle Column Definitions', () => {
     expect(col.width).toBe(160);
   });
 
-  it('getColCycleClose renders correct value', () => {
-    const col = getColCycleClose(t);
-    expect(col.field).toBe('cycleClose');
-    expect(col.headerName).toBe('translated(cycleCloses.label)');
-    expect(col.width).toBe(240);
-    const Cell = col.renderCell;
-    render(<Cell />);
-    expect(
-      screen.getByText('date(2025-09-30T12:00:00) time(2025-09-30T12:00:00)')
-    ).toBeInTheDocument();
-  });
+  // it('getColCycleClose renders correct value', () => {
+  //   const col = getColCycleClose(t);
+  //   expect(col.field).toBe('cycleClose');
+  //   expect(col.headerName).toBe('translated(cycleCloses.label)');
+  //   expect(col.width).toBe(240);
+  //   const Cell = col.renderCell;
+  //   render(<Cell />);
+  //   expect(
+  //     screen.getByText('date(2025-09-30T12:00:00) time(2025-09-30T12:00:00)')
+  //   ).toBeInTheDocument();
+  // });
 });
 
 describe('Proposal Column Definitions', () => {

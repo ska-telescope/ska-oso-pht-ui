@@ -1,8 +1,4 @@
 {
-  "cycle": {
-    "label": "Science Verification milestone",
-    "error": "Unable to retrieve Cycle data"
-  },
   "abstract": {
     "label": "Idea Summary",
     "help": "The Science Verification Idea summary should clearly communicate the Science Verification Idea’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the Science Verification Idea's essential points. The summary should be succinct yet detailed enough to convey the essence of the Science Verification Idea, highlighting its innovation and relevance to the field. The text should be a maximum of 250 words.",

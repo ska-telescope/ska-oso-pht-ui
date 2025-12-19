@@ -10,7 +10,7 @@ import getPanelDecisionList, {
 import { MockPanelDecisionFrontendList } from './mockPanelDecisionFrontendList.tsx';
 import { MockPanelDecisionBackendList } from './mockPanelDecisionBackendList.tsx';
 
-const cycleId = MockObservatoryDataFrontend.observatoryPolicy.cycleInformation.cycleId;
+const cycleId = MockObservatoryDataFrontend.policies[0].cycleInformation.cycleId;
 
 describe('Helper Functions', () => {
   beforeEach(() => {
