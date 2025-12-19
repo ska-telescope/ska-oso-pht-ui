@@ -2,8 +2,8 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
 import ObservationInfo from './Observation';
-import { TYPE_CONTINUUM, TYPE_ZOOM } from '@/utils/constantsSensCalc';
-import { TYPE_PST } from '@/utils/constants';
+import { TYPE_CONTINUUM, TYPE_ZOOM } from '@/utils/constants';
+import { BAND_LOW_STR, TYPE_PST } from '@/utils/constants';
 import Observation from '@/utils/types/observation';
 
 const TYPE_UNKNOWN = 9;
@@ -15,7 +15,7 @@ describe('ObservationInfo', () => {
     telescope: 0,
     subarray: 0,
     linked: '',
-    observingBand: 0,
+    observingBand: BAND_LOW_STR,
     weather: 0,
     elevation: 0,
     centralFrequency: 0,

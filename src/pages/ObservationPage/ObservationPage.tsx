@@ -27,7 +27,7 @@ const GAP = 4;
 export default function ObservationPage() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
-  const { osdCyclePolicy } = useOSDAccessors();
+  const { autoLink, osdCyclePolicy } = useOSDAccessors();
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -35,7 +35,6 @@ export default function ObservationPage() {
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [elementsO, setElementsO] = React.useState<any[]>([]);
   const loggedIn = isLoggedIn();
-  const autoLink = osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1;
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);

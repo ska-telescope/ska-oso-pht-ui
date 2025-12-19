@@ -19,8 +19,8 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import UserSearchButton from '@/components/button/Search/Search';
 import GetUserByEmail from '@/services/axios/get/getUserByEmail/getUserByEmail';
 import ResetButton from '@/components/button/Reset/Reset';
-import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import { useHelp } from '@/utils/help/useHelp';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 export const LAB_WIDTH = 5;
@@ -39,7 +39,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const authClient = useAxiosAuthClient();
   const { notifyError, notifyWarning, notifySuccess } = useNotify();
-  const { isSV } = useAppFlow();
+  const { isSV } = useOSDAccessors();
 
   const [firstName, setFirstName] = React.useState('');
   const [lastName, setLastName] = React.useState('');
@@ -160,7 +160,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   };
 
   const updateProposal = async (rec: Proposal) => {
-    const response = await PutProposal(authClient, rec, isSV(), PROPOSAL_STATUS.DRAFT);
+    const response = await PutProposal(authClient, rec, isSV, PROPOSAL_STATUS.DRAFT);
     updateProposalResponse(response);
   };
 
@@ -389,8 +389,8 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
       {row('email.label', emailField(), true)}
       {row('firstName.label', firstNameField(), true)}
       {row('lastName.label', lastNameField(), true)}
-      {!isSV() && row('pi.label', piField())}
-      {!isSV() && row('phdThesis.label', phdThesisField())}
+      {!isSV && row('pi.label', piField())}
+      {!isSV && row('phdThesis.label', phdThesisField())}
       <Stack p={GAP} spacing={GAP} direction="row">
         <TeamInviteButton
           action={clickFunction}

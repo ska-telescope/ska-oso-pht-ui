@@ -4,7 +4,6 @@ import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components'
 import {
   getBeamSize,
   getImageWeightingMapping,
-  getRobustMapping,
   getSensitivitiesUnitsMapping,
   isGalactic,
   isLow,
@@ -18,8 +17,12 @@ import {
   transformSurfaceBrightnessPerSubBandData,
   transformSynthesizedBeamSizePerSubBandData
 } from '@/utils/helpersSensCalc.ts';
-import { RA_TYPE_ICRS, RA_TYPE_GALACTIC } from '@/utils/constantsSensCalc.ts';
-import { SUPPLIED_TYPE_INTEGRATION, SUPPLIED_TYPE_SENSITIVITY } from '@/utils/constants.ts';
+import {
+  RA_TYPE_ICRS,
+  RA_TYPE_GALACTIC,
+  SUPPLIED_TYPE_INTEGRATION,
+  SUPPLIED_TYPE_SENSITIVITY
+} from '@/utils/constants.ts';
 
 describe('Sensitivity Calculator helper functions', () => {
   test('Telescope type, TELESCOPE_LOW', () => {
@@ -330,26 +333,6 @@ describe('Sensitivity Calculator helper functions', () => {
   });
 
   test('Image Weighting, value 2, return robust', () => {
-    expect(getImageWeightingMapping(2)).equal('robust');
-  });
-
-  test('Robust mapping, value 1, return -2', () => {
-    expect(getRobustMapping(1)).equal(-2);
-  });
-
-  test('Robust mapping, value 2, return -1', () => {
-    expect(getRobustMapping(2)).equal(-1);
-  });
-
-  test('Robust mapping, value 3, return 0', () => {
-    expect(getRobustMapping(3)).equal(0);
-  });
-
-  test('Robust mapping, value 4, return 1', () => {
-    expect(getRobustMapping(4)).equal(1);
-  });
-
-  test('Robust mapping, value 5, return 2', () => {
-    expect(getRobustMapping(5)).equal(2);
+    expect(getImageWeightingMapping(2)).equal('briggs');
   });
 });

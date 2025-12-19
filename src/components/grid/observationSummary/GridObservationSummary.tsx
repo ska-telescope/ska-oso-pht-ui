@@ -2,13 +2,12 @@ import React from 'react';
 import { Box, Grid, Typography } from '@mui/material';
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
-import { BANDWIDTH_TELESCOPE, NOT_SPECIFIED } from '@utils/constants.ts';
+import { NOT_SPECIFIED } from '@utils/constants.ts';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import Proposal from '../../../utils/types/proposal';
 import emptyCell from '../../../components/fields/emptyCell/emptyCell';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 
 interface GridObservationSummaryProps {
   height?: number;
@@ -23,8 +22,7 @@ export default function GridObservationSummary({
 }: GridObservationSummaryProps) {
   const loggedIn = isLoggedIn();
   const { t } = useScopedTranslation();
-  const { observatoryConstants } = useOSDAccessors();
-  const { isSV } = useAppFlow();
+  const { isSV, observatoryConstants } = useOSDAccessors();
 
   const headerDisplay = (inValue: string, inValue2?: string) => (
     <Typography variant="subtitle1" style={{ fontWeight: 600 }}>
@@ -120,8 +118,8 @@ export default function GridObservationSummary({
     renderHeader: () => headerDisplay('observingBand.label'),
     flex: 1,
     disableClickEventBubbling: true,
-    renderCell: (e: { row: { observingBand: number } }) =>
-      element(BANDWIDTH_TELESCOPE[e.row.observingBand]?.label)
+    renderCell: (e: { row: { observingBand: string } }) =>
+      element(t('observingBand.short.' + e.row.observingBand))
   };
 
   const colObservingType = {
@@ -129,7 +127,7 @@ export default function GridObservationSummary({
     renderHeader: () => headerDisplay('observationType.short'),
     disableClickEventBubbling: true,
     renderCell: (e: { row: { type: number } }) =>
-      element(t((isSV() ? 'scienceCategory.' : 'observationType.') + `${e.row.type}`))
+      element(t((isSV ? 'scienceCategory.' : 'observationType.') + `${e.row.type}`))
   };
 
   const colSensCalcStatus = {

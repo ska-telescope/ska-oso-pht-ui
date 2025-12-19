@@ -10,7 +10,7 @@ import PostPanelDecision, {
 import { MockPanelDecisionFrontend } from './mockPanelDecisionFrontend.tsx';
 import { MockPanelDecisionBackend } from './mockPanelDecisionBackend.tsx';
 
-const cycleId = MockObservatoryDataFrontend.observatoryPolicy.cycleInformation.cycleId;
+const cycleId = MockObservatoryDataFrontend.policies[0].cycleInformation.cycleId;
 
 describe('Helper Functions', () => {
   beforeEach(() => {
@@ -37,7 +37,7 @@ describe('Helper Functions', () => {
     );
     const expectedPanelBackend = {
       ...MockPanelDecisionBackend,
-      cycle: MockObservatoryDataFrontend.observatoryPolicy.cycleInformation.cycleId
+      cycle: MockObservatoryDataFrontend.policies[0].cycleInformation.cycleId
     };
     expect(panelBackEnd).to.deep.equal(expectedPanelBackend);
   });

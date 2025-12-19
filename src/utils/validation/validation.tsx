@@ -1,12 +1,12 @@
 import {
-  TYPE_CONTINUUM,
-  TYPE_PST,
-  TYPE_ZOOM,
   PAGE_DATA_PRODUCTS,
   PAGE_OBSERVATION,
   STATUS_ERROR,
   STATUS_OK,
-  STATUS_PARTIAL
+  STATUS_PARTIAL,
+  TYPE_CONTINUUM,
+  TYPE_PST,
+  TYPE_ZOOM
 } from './../constants';
 import Proposal from './../types/proposal';
 
@@ -79,6 +79,18 @@ export const validateSDPPage = (proposal: Proposal, autoLink: boolean) => {
 
   const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
 
+  if (proposal.scienceCategory) {
+    //based on observing type verify data products fields
+    switch (proposal.scienceCategory) {
+      case TYPE_ZOOM: //Spectral
+        return validateSpectralDataProduct(proposal) ? 0 : 1;
+      case TYPE_CONTINUUM: //Continuum
+        return validateContinuumDataProduct(proposal) ? 0 : 1;
+      case TYPE_PST: //PST
+        return validatePSTDataProduct(proposal) ? 0 : 1;
+    }
+  }
+
   if (autoLink) {
     let count = hasTargetObservations() ? 1 : 0;
     return result[count];
@@ -108,7 +120,7 @@ export const validateLinkingPage = (proposal: Proposal) => {
 };
 
 export const validateProposal = (proposal: Proposal, autoLink: boolean) => {
-  const results = [
+  return [
     validateTitlePage(proposal),
     validateTeamPage(proposal),
     validateDetailsPage(proposal),
@@ -121,7 +133,6 @@ export const validateProposal = (proposal: Proposal, autoLink: boolean) => {
     validateCalibrationPage(proposal)
     // See SRCNet INACTIVE - validateSRCPage()
   ];
-  return results;
 };
 
 export const validateProposalNavigation = (proposal: Proposal, page: number, checkLink = false) => {
@@ -203,3 +214,48 @@ export function validateSkyDirection2Number(value: string): string | null {
   }
   return null;
 }
+
+export const validateSpectralDataProduct = (proposal: Proposal) => {
+  //TODO: STAR-1854 - extend validation to account for multiple data products
+  const dataProduct = proposal.dataProductSDP?.[0];
+  return (
+    dataProduct?.imageSizeValue != null &&
+    dataProduct?.imageSizeUnits != null &&
+    dataProduct?.pixelSizeValue != null &&
+    dataProduct?.pixelSizeUnits != null &&
+    dataProduct?.weighting != null &&
+    dataProduct?.taperValue != null &&
+    dataProduct?.channelsOut != null &&
+    dataProduct?.continuumSubtraction !== undefined &&
+    (dataProduct?.polarisations?.length ?? 0) > 0
+  );
+};
+
+export const validateContinuumDataProduct = (proposal: Proposal) => {
+  //TODO: STAR-1854 - extend validation to account for multiple data products
+  const dataProduct = proposal.dataProductSDP?.[0];
+
+  if (dataProduct?.dataProductType === 1) {
+    // Images
+    return (
+      dataProduct?.imageSizeValue != null &&
+      dataProduct?.imageSizeUnits != null &&
+      dataProduct?.pixelSizeValue != null &&
+      dataProduct?.pixelSizeUnits != null &&
+      dataProduct?.weighting != null &&
+      dataProduct?.taperValue != null &&
+      dataProduct?.channelsOut != null &&
+      dataProduct?.polarisations?.length > 0
+    );
+  } else {
+    //Visibilities
+    return dataProduct?.timeAveraging != null && dataProduct?.frequencyAveraging != null;
+  }
+};
+
+export const validatePSTDataProduct = (proposal: Proposal) => {
+  //TODO: STAR-1854 - extend validation to account for multiple data products
+  const dataProduct = proposal.dataProductSDP?.[0];
+  //TODO: extend validation when PST functionality is updated
+  return dataProduct?.dataProductType === TYPE_PST;
+};

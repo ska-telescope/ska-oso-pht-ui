@@ -18,7 +18,6 @@ import {
   LAB_IS_BOLD,
   LAB_POSITION,
   NAV,
-  BAND_LOW,
   SUPPLIED_VALUE_DEFAULT_MID,
   TYPE_CONTINUUM,
   OB_SUBARRAY_CUSTOM,
@@ -46,7 +45,8 @@ import {
   FLOW_THROUGH_VALUE,
   ZOOM_BANDWIDTH_DEFAULT_MID,
   TELESCOPES,
-  TEL_UNITS
+  TEL_UNITS,
+  BAND_LOW_STR
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -55,21 +55,21 @@ import {
   getBandwidthZoom,
   getMinimumChannelWidth
 } from '@utils/helpers.ts';
-import PageBannerPPT from '../../../components/layout/pageBannerPPT/PageBannerPPT';
-import Proposal from '../../../utils/types/proposal';
-import AddButton from '../../../components/button/Add/Add';
-import GroupObservationsField from '../../../components/fields/groupObservations/groupObservations';
-import Observation from '../../../utils/types/observation';
-import SubArrayField from '../../../components/fields/subArray/SubArray';
-import ObservingBandField from '../../../components/fields/observingBand/ObservingBand';
-import ObservationTypeField from '../../../components/fields/observationType/ObservationType';
-import EffectiveResolutionField from '../../../components/fields/effectiveResolution/EffectiveResolution';
-import ElevationField, { ELEVATION_DEFAULT } from '../../../components/fields/elevation/Elevation';
-import SpectralAveragingField from '../../../components/fields/spectralAveraging/SpectralAveraging';
-import SpectralResolutionField from '../../../components/fields/spectralResolution/SpectralResolution';
-import NumStations from '../../../components/fields/numStations/NumStations';
-import ContinuumBandwidthField from '../../../components/fields/bandwidthFields/continuumBandwidth/continuumBandwidth';
-import BandwidthField from '../../../components/fields/bandwidthFields/bandwidth/bandwidth';
+import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
+import Proposal from '@/utils/types/proposal';
+import AddButton from '@/components/button/Add/Add';
+import GroupObservationsField from '@/components/fields/groupObservations/groupObservations';
+import Observation from '@/utils/types/observation';
+import SubArrayField from '@/components/fields/subArray/SubArray';
+import ObservingBandField from '@/components/fields/observingBand/ObservingBand';
+import ObservationTypeField from '@/components/fields/observationType/ObservationType';
+import EffectiveResolutionField from '@/components/fields/effectiveResolution/EffectiveResolution';
+import ElevationField, { ELEVATION_DEFAULT } from '@/components/fields/elevation/Elevation';
+import SpectralAveragingField from '@/components/fields/spectralAveraging/SpectralAveraging';
+import SpectralResolutionField from '@/components/fields/spectralResolution/SpectralResolution';
+import NumStations from '@/components/fields/numStations/NumStations';
+import ContinuumBandwidthField from '@/components/fields/bandwidthFields/continuumBandwidth/continuumBandwidth';
+import BandwidthField from '@/components/fields/bandwidthFields/bandwidth/bandwidth';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import {
@@ -79,7 +79,6 @@ import {
 import HelpShell from '@/components/layout/HelpShell/HelpShell';
 import PstModeField from '@/components/fields/pstMode/PstMode';
 import { useHelp } from '@/utils/help/useHelp';
-import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import SuppliedValue from '@/components/fields/suppliedValue/suppliedValue';
 import CentralFrequency from '@/components/fields/centralFrequency/centralFrequency';
 import ZoomChannels from '@/components/fields/zoomChannels/zoomChannels';
@@ -107,8 +106,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const theme = useTheme();
   const locationProperties = useLocation();
   const loggedIn = isLoggedIn();
-  const { isSV } = useAppFlow();
-  const { osdLOW, osdMID, observatoryConstants, osdCyclePolicy } = useOSDAccessors();
+  const { isSV, osdLOW, osdMID, observatoryConstants, osdCyclePolicy } = useOSDAccessors();
 
   const isEdit = () => locationProperties.state !== null || data !== undefined;
 
@@ -121,7 +119,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const [subarrayConfig, setSubarrayConfig] = React.useState(3);
-  const [observingBand, setObservingBand] = React.useState(0);
+  const [observingBand, setObservingBand] = React.useState(BAND_LOW_STR);
   const [observationType, setObservationType] = React.useState(1);
   const [effectiveResolution, setEffectiveResolution] = React.useState('');
   const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT[TELESCOPE_LOW_NUM - 1]);
@@ -156,7 +154,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const observationIn = (ob: Observation) => {
     setMyObsId(ob?.id);
     setSubarrayConfig(ob?.subarray);
-    setObservationType(isSV() ? (getObservationType() as number) : ob.type); // TODO this should not be needed
+    setObservationType(isSV ? (getObservationType() as number) : ob.type); // TODO this should not be needed
     if (!once) setObservingBand(ob?.observingBand);
     setWeather(ob?.weather ?? Number(t('weather.default')));
     setElevation(ob?.elevation);
@@ -226,7 +224,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
     const oldTO = proposal?.targetObservation ?? [];
     const to =
-      isSV() && dataProductSDP
+      isSV && dataProductSDP
         ? await updateSensCalc(proposal, newObservation, dataProductSDP)
         : updateSensCalcPartial(oldTO, newObservation);
 
@@ -248,7 +246,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   };
 
   const updateStorageProposal = () => {
-    if (loggedIn && osdCyclePolicy.maxObservations === 1) {
+    if (loggedIn && (osdCyclePolicy?.maxObservations ?? 1) === 1) {
       isEdit() ? updateObservationOnProposal() : addObservationToProposal();
     }
   };
@@ -263,19 +261,19 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   };
 
   // Change the central frequency & units only if they are currently the same as the existing defaults
-  const setDefaultCentralFrequency = (inBand: number, inSubArray: number) => {
+  const setDefaultCentralFrequency = (inBand: string, inSubArray: number) => {
     if (
       Number(centralFrequency) ===
         calculateCentralFrequency(observingBand, subarrayConfig, observatoryConstants) &&
       centralFrequencyUnits === (isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ)
     ) {
       setCentralFrequency(calculateCentralFrequency(inBand, inSubArray, observatoryConstants));
-      setCentralFrequencyUnits(inBand === BAND_LOW ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+      setCentralFrequencyUnits(inBand === BAND_LOW_STR ? FREQUENCY_MHZ : FREQUENCY_GHZ);
     }
   };
 
   // Change the continuum bandwidth & units only if they are currently the same as the existing defaults
-  const setDefaultContinuumBandwidth = (inBand: number, inSubArray: number) => {
+  const setDefaultContinuumBandwidth = (inBand: string, inSubArray: number) => {
     if (
       isContinuum() &&
       Number(continuumBandwidth) ===
@@ -283,7 +281,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       continuumBandwidthUnits === (isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ)
     ) {
       setContinuumBandwidth(calculateContinuumBandwidth(inBand, inSubArray, observatoryConstants));
-      setContinuumBandwidthUnits(inBand === BAND_LOW ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+      setContinuumBandwidthUnits(inBand === BAND_LOW_STR ? FREQUENCY_MHZ : FREQUENCY_GHZ);
     }
   };
 
@@ -309,9 +307,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       setSuppliedValue(SUPPLIED_VALUE_DEFAULT_LOW);
     }
 
-    setDefaultCentralFrequency(e as number, subarrayConfig);
-    setDefaultContinuumBandwidth(e as number, subarrayConfig);
-    setObservingBand(e);
+    setDefaultCentralFrequency(String(e), subarrayConfig);
+    setDefaultContinuumBandwidth(String(e), subarrayConfig);
+    setObservingBand(String(e));
     updateStorageProposal();
   };
 
@@ -421,11 +419,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isZoom = () => observationType === TYPE_ZOOM;
   const isPST = () => observationType === TYPE_PST;
-  const isLow = () => observingBand === BAND_LOW;
-  const isMid = () => observingBand !== BAND_LOW;
+  const isLow = () => observingBand === BAND_LOW_STR;
+  const isMid = () => observingBand !== BAND_LOW_STR;
   const telescope = () => (isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM);
   const isLowAA2 = () => isLow() && subarrayConfig === OB_SUBARRAY_AA2;
-  const isContinuumOnly = () => observingBand !== 0 && subarrayConfig === OB_SUBARRAY_AA2;
+  const isContinuumOnly = () =>
+    observingBand !== BAND_LOW_STR && subarrayConfig === OB_SUBARRAY_AA2;
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
@@ -529,7 +528,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const observationsBandField = () =>
     fieldWrapper(
       <ObservingBandField
-        disabled={osdCyclePolicy.bands.length < 2}
+        disabled={(osdCyclePolicy?.bands?.length ?? 0) < 2}
         widthLabel={LABEL_WIDTH_NEW}
         required
         value={observingBand}
@@ -989,7 +988,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const pageFooter = () => {
     const buttonClicked = () => {
       isEdit() ? updateObservationOnProposal() : addObservationToProposal();
-      if (!loggedIn || osdCyclePolicy.maxObservations !== 1) {
+      if (!loggedIn || (osdCyclePolicy?.maxObservations ?? 1) !== 1) {
         navigate(NAV[BACK_PAGE]);
       }
     };
@@ -999,9 +998,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         sx={{
           bgcolor: 'transparent',
           position: 'fixed',
-          bottom: FOOTER_HEIGHT_PHT + (loggedIn && osdCyclePolicy.maxObservations === 1 ? 60 : 0),
+          bottom:
+            FOOTER_HEIGHT_PHT + (loggedIn && (osdCyclePolicy?.maxObservations ?? 1) === 1 ? 60 : 0),
           left: 0,
-          right: loggedIn && osdCyclePolicy.maxObservations === 1 ? 30 : 0
+          right: loggedIn && (osdCyclePolicy?.maxObservations ?? 1) === 1 ? 30 : 0
         }}
         elevation={0}
       >
@@ -1015,7 +1015,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           <Grid />
           <Grid />
           <Grid>
-            {(!loggedIn || osdCyclePolicy.maxObservations !== 1) && (
+            {(!loggedIn || (osdCyclePolicy?.maxObservations ?? 1) !== 1) && (
               <AddButton
                 action={buttonClicked}
                 disabled={addButtonDisabled()}
@@ -1033,7 +1033,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   return (
     <HelpShell page={PAGE}>
       <Box pt={2}>
-        {(!loggedIn || osdCyclePolicy.maxObservations > 1) && (
+        {(!loggedIn || (osdCyclePolicy?.maxObservations ?? 1) > 1) && (
           <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
         )}
         <Grid
@@ -1054,7 +1054,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
               alignItems="stretch"
               justifyContent="flex-start"
             >
-              {!isSV() && (
+              {!isSV && (
                 <Grid size={{ md: 12, lg: 6 }}>
                   <BorderedSection
                     title={t('observationSections.identifiers')}
@@ -1080,7 +1080,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                 </Grid>
               )}
 
-              {isSV() && (
+              {isSV && (
                 <Grid size={{ md: 6 }}>
                   <BorderedSection
                     title={t('observationSections.identifiers')}
@@ -1110,12 +1110,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                     container
                     direction="row"
                     alignItems="flex-start"
-                    rowSpacing={isSV() ? 0 : 2}
+                    rowSpacing={isSV ? 0 : 2}
                   >
                     <Grid size={{ md: 12 }}></Grid>
                     <Grid size={{ md: 12 }}>{subArrayField()}</Grid>
                     <Grid size={{ md: 12 }}>
-                      {!isSV() && (isLow() ? numStationsField() : antennasFields())}
+                      {!isSV && (isLow() ? numStationsField() : antennasFields())}
                     </Grid>
                     <Grid size={{ md: 12 }}>{suppliedField()}</Grid>
                   </Grid>
@@ -1133,11 +1133,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                 rowSpacing={1}
                 justifyContent="space-between"
               >
-                {!isSV() && frequencySetUp()}{' '}
+                {!isSV && frequencySetUp()}{' '}
                 {/* shows to user some fields that are hidden in mock call */}
-                {isSV() && isContinuum() && frequencySetUpContinuumSV()}
-                {isSV() && isZoom() && frequencySetUpSpectralSV()}
-                {isSV() && isPST() && frequencySetUpPSTSV()}
+                {isSV && isContinuum() && frequencySetUpContinuumSV()}
+                {isSV && isZoom() && frequencySetUpSpectralSV()}
+                {isSV && isPST() && frequencySetUpPSTSV()}
               </Grid>
             </BorderedSection>
           </Grid>

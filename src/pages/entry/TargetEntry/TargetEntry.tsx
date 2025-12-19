@@ -24,7 +24,6 @@ import {
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import { useHelp } from '@/utils/help/useHelp';
 import autoLinking from '@/utils/autoLinking/AutoLinking';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
@@ -51,8 +50,7 @@ export default function TargetEntry({
   onNameFieldErrorChange
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
-  const { isSV } = useAppFlow();
-  const { osdCyclePolicy } = useOSDAccessors();
+  const { autoLink, isSV } = useOSDAccessors();
   const { notifyError, notifySuccess } = useNotify();
 
   const LAB_WIDTH = 5;
@@ -64,7 +62,6 @@ export default function TargetEntry({
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const autoLink = osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1;
 
   const [id, setId] = React.useState(0);
   const [name, setName] = React.useState('');
@@ -301,7 +298,7 @@ export default function TargetEntry({
     };
 
     const targetLengthCheck = () => {
-      return isSV() ? getProposal()?.targets?.length === 0 : true;
+      return isSV ? getProposal()?.targets?.length === 0 : true;
     };
 
     return (
@@ -480,7 +477,7 @@ export default function TargetEntry({
           </BorderedSection>
         </Box>
       </Grid>
-      {!isSV() && (
+      {!isSV && (
         <Grid pt={1}>
           <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
             <BorderedSection title={t('pulsarTimingBeam.groupLabel')}>
@@ -497,7 +494,7 @@ export default function TargetEntry({
           </BorderedSection>
         </Box>
       </Grid>
-      {!isSV() && (
+      {!isSV && (
         <Grid pt={1}>
           <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
             <BorderedSection title={t('fieldPattern.groupLabel')}>

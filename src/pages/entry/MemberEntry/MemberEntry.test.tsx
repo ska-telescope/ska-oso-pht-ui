@@ -5,8 +5,9 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 import MemberEntry from './MemberEntry';
 import * as mockService from '@/services/axios/get/getUserByEmail/getUserByEmail';
-import { AppFlowProvider, useAppFlow } from '@/utils/appFlow/AppFlowContext';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 let isSVFromContext: boolean;
 
@@ -40,8 +41,8 @@ const clickButton = async (testId: string) => {
 };
 
 const AppFlowTestBridge = () => {
-  const { isSV } = useAppFlow();
-  isSVFromContext = isSV();
+  const { isSV } = useOSDAccessors();
+  isSVFromContext = isSV;
   return null;
 };
 

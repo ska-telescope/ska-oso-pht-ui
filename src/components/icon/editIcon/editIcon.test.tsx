@@ -1,10 +1,10 @@
 import { describe, test } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import EditIcon from './editIcon';
+import ExpandIcon from '../expandIcon/expandIcon';
 
-describe('<EditIcon />', () => {
+describe('<ExpandIcon />', () => {
   test('renders correctly', () => {
-    render(<EditIcon onClick={vi.fn()} />);
+    render(<ExpandIcon onClick={vi.fn()} />);
   });
 });

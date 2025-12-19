@@ -3,18 +3,17 @@ import {
   DECIMAL_PLACES,
   IMAGE_WEIGHTING,
   RA_TYPE_GALACTIC,
-  ROBUST,
   SENSITIVITY_UNITS,
   TELESCOPE_LOW_CODE,
   TIME_SECS,
   TIME_UNITS
-} from './constantsSensCalc';
+} from './constants';
 import { Telescope, ValueUnitPair } from './types/typesSensCalc';
 
 export const isLow = (telescope: Telescope) => telescope?.code === TELESCOPE_LOW_CODE;
 
 export const getImageWeightingMapping = (value: number) => {
-  return IMAGE_WEIGHTING.find(e => e.value === value)?.mapping;
+  return IMAGE_WEIGHTING.find(e => e.value === value)?.lookup;
 };
 
 //TODO: Verify if this can be removed
@@ -92,11 +91,7 @@ export const transformPerSubBandTime = (inValues: {
   } - ${minRange.value.toFixed(DECIMAL_PLACES).toString()} ${minRange.unit}`;
 };
 
-export const isGalactic = (skyDirectionType: string) => skyDirectionType === RA_TYPE_GALACTIC;
-
-export const getRobustMapping = (value: number) => {
-  return ROBUST.find(e => e.value === value)?.mapping;
-};
+export const isGalactic = (skyDirectionType: any) => skyDirectionType === RA_TYPE_GALACTIC;
 
 // Converts a Declination string value in degrees to its sexagesimal equivalent.
 // It returns a Declination sexagesimal value.

@@ -1,6 +1,5 @@
 import { describe, test, expect } from 'vitest';
 import { SUPPLIED_TYPE_SENSITIVITY, STATUS_OK, TYPE_CONTINUUM } from '@utils/constants.ts';
-import {} from '@utils/constantsSensCalc.ts';
 import { getFinalResults, getFinalIndividualResultsForContinuum } from './getContinuumData';
 
 describe('getFinalIndividualResultsForContinuum', () => {

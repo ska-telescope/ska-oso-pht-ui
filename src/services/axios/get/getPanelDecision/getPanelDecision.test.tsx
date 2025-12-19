@@ -8,7 +8,7 @@ import { PanelDecision } from '@utils/types/panelDecision.tsx';
 import * as CONSTANTS from '@utils/constants.ts';
 import getPanelDecision, { getMockPanelDecision } from './getPanelDecision.tsx';
 
-const cycleId = MockObservatoryDataFrontend.observatoryPolicy.cycleInformation.cycleId;
+const cycleId = MockObservatoryDataFrontend.policies[0].cycleInformation.cycleId;
 
 describe('Helper Functions', () => {
   beforeEach(() => {

@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import '@testing-library/jest-dom';
 import SensCalcModalMultiple from './SensCalcModalMultiple';
-import { STATUS_ERROR, TYPE_CONTINUUM, TYPE_ZOOM } from '@/utils/constants';
+import { BAND_LOW_STR, STATUS_ERROR, TYPE_CONTINUUM, TYPE_ZOOM } from '@/utils/constants';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
@@ -99,7 +99,7 @@ describe('<SensCalcModalMultiple />', () => {
           subarray: 0,
           linked: '',
           type: TYPE_ZOOM,
-          observingBand: 0,
+          observingBand: BAND_LOW_STR,
           weather: undefined,
           elevation: 0,
           centralFrequency: 0,
@@ -108,9 +108,6 @@ describe('<SensCalcModalMultiple />', () => {
           continuumBandwidth: 0,
           continuumBandwidthUnits: 0,
           spectralAveraging: undefined,
-          tapering: undefined,
-          imageWeighting: 0,
-          robust: 0,
           supplied: {
             type: 0,
             value: 0,
@@ -142,7 +139,7 @@ describe('<SensCalcModalMultiple />', () => {
           subarray: 0,
           linked: '',
           type: TYPE_CONTINUUM,
-          observingBand: 0,
+          observingBand: BAND_LOW_STR,
           weather: undefined,
           elevation: 0,
           centralFrequency: 0,
@@ -151,9 +148,6 @@ describe('<SensCalcModalMultiple />', () => {
           continuumBandwidth: 0,
           continuumBandwidthUnits: 0,
           spectralAveraging: undefined,
-          tapering: undefined,
-          imageWeighting: 0,
-          robust: 0,
           supplied: {
             type: 0,
             value: 0,
@@ -230,7 +224,7 @@ describe('<SensCalcModalMultiple />', () => {
           subarray: 0,
           linked: '',
           type: TYPE_CONTINUUM,
-          observingBand: 0,
+          observingBand: BAND_LOW_STR,
           weather: undefined,
           elevation: 0,
           centralFrequency: 0,
@@ -239,9 +233,6 @@ describe('<SensCalcModalMultiple />', () => {
           continuumBandwidth: 0,
           continuumBandwidthUnits: 0,
           spectralAveraging: undefined,
-          tapering: undefined,
-          imageWeighting: 0,
-          robust: 0,
           supplied: {
             type: 0,
             value: 0,
@@ -318,7 +309,7 @@ describe('<SensCalcModalMultiple />', () => {
           subarray: 0,
           linked: '',
           type: TYPE_CONTINUUM,
-          observingBand: 0,
+          observingBand: BAND_LOW_STR,
           weather: undefined,
           elevation: 0,
           centralFrequency: 0,
@@ -327,9 +318,6 @@ describe('<SensCalcModalMultiple />', () => {
           continuumBandwidth: 0,
           continuumBandwidthUnits: 0,
           spectralAveraging: undefined,
-          tapering: undefined,
-          imageWeighting: 0,
-          robust: 0,
           supplied: {
             type: 0,
             value: 0,
@@ -419,7 +407,7 @@ describe('<SensCalcModalMultiple />', () => {
           subarray: 0,
           linked: '',
           type: TYPE_CONTINUUM,
-          observingBand: 0,
+          observingBand: BAND_LOW_STR,
           weather: undefined,
           elevation: 0,
           centralFrequency: 0,
@@ -428,9 +416,6 @@ describe('<SensCalcModalMultiple />', () => {
           continuumBandwidth: 0,
           continuumBandwidthUnits: 0,
           spectralAveraging: undefined,
-          tapering: undefined,
-          imageWeighting: 0,
-          robust: 0,
           supplied: {
             type: 0,
             value: 0,
