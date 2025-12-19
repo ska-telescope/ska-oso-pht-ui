@@ -35,6 +35,9 @@ export default function DetailsPage() {
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { isSV, osdCloses, osdOpens } = useOSDAccessors();
 
+  //TODO: @Sarah
+  // Currently setProposal is happening twice for science category & autoLinking, the setProposal should happen once and account for all changes
+
   const [isObsModeChanged, setIsObsModeChanged] = React.useState(false); // For auto-link
 
   const setTheProposalState = () => {
