@@ -1,0 +1,55 @@
+import { describe, it, expect, vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import TableSubmissionsRow from './TableSubmissionsRow';
+import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
+
+const wrapper = (component: React.ReactElement) => {
+  return render(
+    <StoreProvider>
+      <AppFlowProvider>{component}</AppFlowProvider>
+    </StoreProvider>
+  );
+};
+
+describe('TableSubmissionsRow', () => {
+  const mockItem = {
+    observationId: 'obs-dummy-id',
+    title: 'Sample Review Title',
+    scienceCategory: 'biology',
+    decisions: [],
+    lastUpdated: '2025-09-17T10:00:00Z',
+    rank: 5,
+    reviews: []
+  };
+
+  const mockProposal = MockProposalFrontend;
+
+  const defaultProps = {
+    item: mockItem,
+    proposal: mockProposal,
+    index: 0,
+    expanded: false,
+    deleteClicked: vi.fn(),
+    editClicked: vi.fn(),
+    toggleRow: vi.fn(),
+    expandButtonRef: () => null,
+    updateItem: vi.fn(),
+    tableLength: 1,
+    t: (key: string) => key // simple mock translation
+  };
+
+  it('renders review title and category', () => {
+    wrapper(<TableSubmissionsRow {...defaultProps} />);
+    expect(screen.getByText(/Sample Review Title/i)).toBeInTheDocument();
+  });
+
+  it.skip('calls toggleRow when expand button is clicked', () => {
+    wrapper(<TableSubmissionsRow {...defaultProps} />);
+
+    const button = screen.getByTestId('expand-button-1');
+    fireEvent.click(button);
+    expect(defaultProps.toggleRow).toHaveBeenCalledWith(1);
+  });
+});

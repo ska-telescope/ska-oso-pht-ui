@@ -58,12 +58,33 @@ export const presentValue = (inValue: string | number, fractionLength = 2) => {
   return result < 0.01 || result > 999 ? result.toExponential(1) : result.toFixed(fractionLength);
 };
 
-export const presentDate = (inString: string, reverse: boolean = false) => {
-  return t(reverse ? 'date_format_one' : 'date_format_two', { date: new Date(inString) });
+const normalizeDateString = (inString: string): string => {
+  if (!inString) return '';
+  const match = /^(\d{4})(\d{2})(\d{2})T/.exec(inString);
+  if (match) {
+    return `${match[1]}-${match[2]}-${match[3]}T${inString.slice(match[0].length)}`;
+  }
+  return inString;
 };
-export const presentTime = (inString: string) => t('time_format', { date: new Date(inString) });
-export const presentDateTime = (inString: string, reverse: boolean = false) =>
-  presentDate(inString, reverse) + ' ' + presentTime(inString);
+
+export const presentDate = (inString: string, reverse: boolean = false) => {
+  const normalized = normalizeDateString(inString);
+  const dateObj = new Date(normalized);
+  if (isNaN(dateObj.getTime())) return '';
+  return t(reverse ? 'date_format_one' : 'date_format_two', { date: dateObj });
+};
+
+export const presentTime = (inString: string) => {
+  const normalized = normalizeDateString(inString);
+  const dateObj = new Date(normalized);
+  if (isNaN(dateObj.getTime())) return '';
+  return t('time_format', { date: dateObj });
+};
+
+export const presentDateTime = (inString: string, reverse: boolean = false) => {
+  const normalized = normalizeDateString(inString);
+  return presentDate(normalized, reverse) + ' ' + presentTime(normalized);
+};
 
 export const trimText = (text: string, maxLength: number): string => {
   if (!text || maxLength <= 0) return '';

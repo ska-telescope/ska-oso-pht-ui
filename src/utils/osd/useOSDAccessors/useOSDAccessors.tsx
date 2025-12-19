@@ -1,6 +1,7 @@
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { useTranslation } from 'react-i18next';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { find } from 'lodash';
 import { useOSD } from '../useOSD/useOSD';
 import { presentDate, presentTime } from '@/utils/present/present';
@@ -9,14 +10,50 @@ import { BAND_LOW_STR, TELESCOPE_LOW_NUM, TELESCOPE_MID_NUM } from '@/utils/cons
 export function useOSDAccessors() {
   const osd = useOSD();
   const { t } = useTranslation();
+  const { application, updateAppContent8 } = storageObject.useStore();
 
   const capabilities = osd?.capabilities;
-  const observatoryPolicy = osd?.observatoryPolicy;
-  const cycleInformation = observatoryPolicy?.cycleInformation;
-  const cyclePolicies = observatoryPolicy?.cyclePolicies;
+  const policies = osd?.policies ?? [];
   const observatoryConstants = OSD_CONSTANTS;
 
-  const format = (val: string) => val?.replace(/^(\d{4})(\d{2})(\d{2})T/, '$1-$2-$3T');
+  let selectedPolicy: typeof policies[number] | null = null;
+  if (Array.isArray(application.content8)) {
+    selectedPolicy = application.content8[0] ?? null;
+  } else {
+    selectedPolicy = application.content8 as typeof policies[number] | null;
+  }
+
+  if (!selectedPolicy && policies.length > 0) {
+    const now = new Date();
+    const active = policies.find(p => {
+      const openStr = p.cycleInformation?.proposalOpen;
+      const closeStr = p.cycleInformation?.proposalClose;
+      if (!openStr || !closeStr) return false;
+      const open = new Date(openStr);
+      const close = new Date(closeStr);
+      return open <= now && now <= close;
+    });
+    const fallback = active ?? policies[0];
+    updateAppContent8(fallback);
+    selectedPolicy = fallback;
+  }
+
+  const setSelectedPolicyByCycleId = (cycleId: string) => {
+    const match = policies.find(p => p.cycleInformation?.cycleId === cycleId);
+    if (match) {
+      updateAppContent8(match);
+    }
+  };
+
+  const getCycle = (cycleId: string) => {
+    return policies.find(p => p.cycleInformation?.cycleId === cycleId) ?? null;
+  };
+
+  const cycleInformation = selectedPolicy?.cycleInformation;
+  const cyclePolicies = selectedPolicy?.cyclePolicies;
+
+  const format = (val: string | undefined) =>
+    val?.replace(/^(\d{4})(\d{2})(\d{2})T/, '$1-$2-$3T') ?? '';
   const present = (val: string, shouldPresent: boolean) =>
     shouldPresent ? `${presentDate(val)} ${presentTime(val)}` : val;
 
@@ -27,6 +64,12 @@ export function useOSDAccessors() {
       telescopeNumber === TELESCOPE_LOW_NUM ? cyclePolicies?.low : cyclePolicies?.mid;
     return Array.isArray(bandArray) && bandArray.includes('custom');
   };
+
+  const autoLink = cyclePolicies?.maxTargets === 1 && cyclePolicies?.maxObservations === 1;
+
+  const isSV = useMemo(() => {
+    return (selectedPolicy?.type?.toLowerCase() ?? '').includes('science verification') ?? false;
+  }, [selectedPolicy]);
 
   useEffect(() => {
     if (!cycleInformation?.proposalClose) return;
@@ -57,24 +100,33 @@ export function useOSDAccessors() {
     return () => clearInterval(interval);
   }, [cycleInformation?.proposalClose, t]);
 
+  // Helpful: expose the selected cycleId for robust comparisons
+  const selectedCycleId = selectedPolicy?.cycleInformation?.cycleId ?? null;
+
   return {
+    osdPolicies: policies,
+    selectedPolicy,
+    selectedCycleId,
+    setSelectedPolicyByCycleId,
+    setSelectedPolicy: updateAppContent8,
+    getCycle,
+
     osdLOW: capabilities?.low,
     osdMID: capabilities?.mid,
     osdCapabilities: capabilities,
-    //
-    osdCycleDescription: observatoryPolicy?.cycleDescription,
+
+    osdCycleDescription: selectedPolicy?.cycleDescription,
     osdCycleId: cycleInformation?.cycleId,
-    osdCyclePolicy: observatoryPolicy?.cyclePolicies,
-    //
-    observatoryConstants: observatoryConstants,
-    //
+    osdCyclePolicy: cyclePolicies,
+
+    observatoryConstants,
+
     osdCloses: (shouldPresent = false) =>
       present(format(cycleInformation?.proposalClose), shouldPresent),
     osdOpens: (shouldPresent = false) =>
       present(format(cycleInformation?.proposalOpen), shouldPresent),
     osdCountdown: countdown,
-    isCustomAllowed: isCustomAllowed,
-    //
+    isCustomAllowed,
     telescopeBand: (observingBand: string) =>
       observingBand === BAND_LOW_STR ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM,
     findBand: (observingBand: string) => {
@@ -85,6 +137,9 @@ export function useOSDAccessors() {
         find(capabilities?.mid?.basicCapabilities?.receiverInformation, { rxId: observingBand }) ||
         null
       );
-    }
+    },
+
+    autoLink,
+    isSV
   };
 }

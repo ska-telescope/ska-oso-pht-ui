@@ -11,7 +11,7 @@ import PutPanelDecision, {
   putMockPanelDecision
 } from './putPanelDecision.tsx';
 
-const cycleId = MockObservatoryDataFrontend.observatoryPolicy.cycleInformation.cycleId;
+const cycleId = MockObservatoryDataFrontend.policies[0].cycleInformation.cycleId;
 
 describe('Helper Functions', () => {
   beforeEach(() => {
@@ -51,7 +51,7 @@ describe('Helper Functions', () => {
     );
     const expectedPanelFrontend = {
       ...MockPanelDecisionFrontend,
-      cycle: MockObservatoryDataFrontend.observatoryPolicy.cycleInformation.cycleId
+      cycle: MockObservatoryDataFrontend.policies[0].cycleInformation.cycleId
     };
     expect(panelFrontEnd).to.deep.equal(expectedPanelFrontend);
   });
@@ -75,12 +75,7 @@ describe('PutPanelDecision Service', () => {
 
   test('returns mock data when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await PutPanelDecision(
-      mockedAuthClient,
-      MockPanelDecisionFrontend.id,
-      MockPanelDecisionFrontend,
-      cycleId
-    );
+    const result = await PutPanelDecision(mockedAuthClient, MockPanelDecisionFrontend);
     expect(result).toEqual(MockPanelDecisionFrontend);
   });
 
@@ -89,9 +84,7 @@ describe('PutPanelDecision Service', () => {
     mockedAuthClient.put.mockResolvedValue({ data: MockPanelDecisionBackend });
     const result = (await PutPanelDecision(
       mockedAuthClient,
-      MockPanelDecisionFrontend.id,
-      MockPanelDecisionFrontend,
-      cycleId
+      MockPanelDecisionFrontend
     )) as PanelDecision;
     expect(result).to.deep.equal(MockPanelDecisionFrontend);
   });
@@ -99,48 +92,28 @@ describe('PutPanelDecision Service', () => {
   test('returns error message on API failure', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.put.mockRejectedValue(new Error('Network Error'));
-    const result = await PutPanelDecision(
-      mockedAuthClient,
-      MockPanelDecisionFrontend.id,
-      MockPanelDecisionFrontend,
-      cycleId
-    );
+    const result = await PutPanelDecision(mockedAuthClient, MockPanelDecisionFrontend);
     expect(result).toStrictEqual({ error: 'Network Error' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.put.mockRejectedValue({ unexpected: 'object' });
-    const result = await PutPanelDecision(
-      mockedAuthClient,
-      MockPanelDecisionFrontend.id,
-      MockPanelDecisionFrontend,
-      cycleId
-    );
+    const result = await PutPanelDecision(mockedAuthClient, MockPanelDecisionFrontend);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result undefined', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.put.mockResolvedValue(undefined);
-    const result = await PutPanelDecision(
-      mockedAuthClient,
-      MockPanelDecisionFrontend.id,
-      MockPanelDecisionFrontend,
-      cycleId
-    );
+    const result = await PutPanelDecision(mockedAuthClient, MockPanelDecisionFrontend);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result null', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.put.mockResolvedValue(null);
-    const result = await PutPanelDecision(
-      mockedAuthClient,
-      MockPanelDecisionFrontend.id,
-      MockPanelDecisionFrontend,
-      cycleId
-    );
+    const result = await PutPanelDecision(mockedAuthClient, MockPanelDecisionFrontend);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 });

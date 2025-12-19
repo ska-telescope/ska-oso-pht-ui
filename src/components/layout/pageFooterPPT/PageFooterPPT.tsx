@@ -28,7 +28,6 @@ import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import { validateProposalNavigation } from '@/utils/validation/validation';
 
 interface PageFooterPPTProps {
@@ -47,8 +46,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const { osdCycleId, osdCyclePolicy } = useOSDAccessors();
-  const { isSV } = useAppFlow();
+  const { isSV, osdCycleId, osdCyclePolicy } = useOSDAccessors();
 
   React.useEffect(() => {
     const getProposal = () => application.content2 as Proposal;
@@ -63,9 +61,9 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       authClient,
       {
         ...getProposal(),
-        cycle: osdCycleId
+        cycle: osdCycleId ?? null
       },
-      isSV() ? true : false,
+      isSV ? true : false,
       PROPOSAL_STATUS.DRAFT
     );
 
@@ -113,10 +111,10 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       return `createBtn.label`;
     }
     let thePage = usedPageNo + 1;
-    if (isSV() && thePage === PAGE_TECHNICAL) {
+    if (isSV && thePage === PAGE_TECHNICAL) {
       thePage = thePage + 1;
     }
-    if (isSV() && thePage === PAGE_LINKING) {
+    if (isSV && thePage === PAGE_LINKING) {
       thePage = thePage + 1;
     }
     if (
@@ -136,10 +134,10 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       return `page.${PAGE_TITLE_ADD}.title`;
     }
     let thePage = usedPageNo - 1;
-    if (isSV() && thePage === PAGE_LINKING) {
+    if (isSV && thePage === PAGE_LINKING) {
       thePage = thePage - 1;
     }
-    if (isSV() && thePage === PAGE_TECHNICAL) {
+    if (isSV && thePage === PAGE_TECHNICAL) {
       thePage = thePage - 1;
     }
     if (
@@ -159,10 +157,10 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       navigate(NAV[0]);
     } else if (usedPageNo > 0) {
       let thePage = usedPageNo - 1;
-      if (isSV() && thePage === PAGE_LINKING) {
+      if (isSV && thePage === PAGE_LINKING) {
         thePage = thePage - 1;
       }
-      if (isSV() && thePage === PAGE_TECHNICAL) {
+      if (isSV && thePage === PAGE_TECHNICAL) {
         thePage = thePage - 1;
       }
       if (
@@ -193,10 +191,10 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       navigate(NAV[PAGE_CALIBRATION]);
     } else if (usedPageNo < NAV.length) {
       let thePage = usedPageNo + 1;
-      if (isSV() && thePage === PAGE_TECHNICAL) {
+      if (isSV && thePage === PAGE_TECHNICAL) {
         thePage = thePage + 1;
       }
-      if (isSV() && thePage === PAGE_LINKING) {
+      if (isSV && thePage === PAGE_LINKING) {
         thePage = thePage + 1;
       }
       navigate(NAV[thePage]);

@@ -1,70 +1,95 @@
 import Dialog from '@mui/material/Dialog';
-import { Box, DialogActions, DialogContent, Grid, Typography } from '@mui/material';
+import {
+  Box,
+  DialogActions,
+  DialogContent,
+  Grid,
+  Typography,
+  Card,
+  CardActionArea,
+  CardContent
+} from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useEffect, useMemo, useState } from 'react';
 import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { presentDate } from '@/utils/present/present';
 
 interface CycleSelectionProps {
   open: boolean;
-  onClose: Function;
-  onConfirm: Function;
+  onClose: () => void;
+  onConfirm: (policy: any) => void;
 }
 
 const MODAL_WIDTH = '40%';
-const TITLE_STYLE = 'h5';
-const LABEL_WIDTH = 6;
-const LABEL_STYLE = 'subtitle1';
-const CONTENT_STYLE = 'subtitle2';
-const BOLD_LABEL = true;
-const BOLD_CONTENT = false;
 
 export default function CycleSelection({ open, onClose, onConfirm }: CycleSelectionProps) {
   const { t } = useScopedTranslation();
   const theme = useTheme();
-  const { osdCloses, osdCycleDescription, osdCycleId, osdOpens } = useOSDAccessors();
+  const { osdPolicies, selectedPolicy, setSelectedPolicy } = useOSDAccessors();
 
-  const getFont = (bold: boolean) => (bold ? 600 : 300);
+  // Local selection state to guarantee immediate highlight independent of store timing
+  const initialSelectedId =
+    selectedPolicy?.cycleInformation?.cycleId ?? osdPolicies[0]?.cycleInformation?.cycleId ?? null;
 
-  const title = () => {
-    return (
-      <Box
-        id={'title-box'}
-        sx={{
-          width: '100%',
-          maxWidth: '100%',
-          overflowWrap: 'break-word',
-          wordBreak: 'break-word',
-          boxSizing: 'border-box'
-        }}
-      >
-        <Typography id="title" variant={TITLE_STYLE} style={{ fontWeight: getFont(BOLD_LABEL) }}>
-          {t('cycle.label')}
+  const [localSelectedCycleId, setLocalSelectedCycleId] = useState<string | null>(
+    initialSelectedId
+  );
+
+  // Keep local selection in sync if store selection changes later or policies load
+  useEffect(() => {
+    const nextId =
+      selectedPolicy?.cycleInformation?.cycleId ??
+      osdPolicies[0]?.cycleInformation?.cycleId ??
+      null;
+    setLocalSelectedCycleId(prev => prev ?? nextId);
+  }, [selectedPolicy, osdPolicies]);
+
+  // Derive the currently selected policy for confirm action
+  const currentPolicy = useMemo(() => {
+    if (!localSelectedCycleId) return null;
+    return osdPolicies.find(p => p.cycleInformation?.cycleId === localSelectedCycleId) ?? null;
+  }, [osdPolicies, localSelectedCycleId]);
+
+  const handleCardClick = (policy: any) => {
+    const id = policy.cycleInformation?.cycleId ?? null;
+    setLocalSelectedCycleId(id);
+    setSelectedPolicy(policy);
+  };
+
+  const title = () => (
+    <Box
+      id={'title-box'}
+      sx={{
+        width: '100%',
+        maxWidth: '100%',
+        overflowWrap: 'break-word',
+        wordBreak: 'break-word',
+        boxSizing: 'border-box'
+      }}
+    >
+      <Typography id="title" variant="h5" fontWeight={600} color="text.primary">
+        {t('cycle.label')}
+      </Typography>
+    </Box>
+  );
+
+  const details = (inLabel: string, inValue: string | number) => (
+    <Grid container direction="row" justifyContent="space-between" alignItems="center">
+      <Grid size={{ xs: 6 }}>
+        <Typography variant="subtitle1" fontWeight={600} color="text.primary">
+          {inLabel}
         </Typography>
-      </Box>
-    );
-  };
-
-  const label = (inValue: string) => (
-    <Typography variant={LABEL_STYLE} style={{ fontWeight: getFont(BOLD_LABEL) }}>
-      {inValue}
-    </Typography>
-  );
-  const content = (inValue: string | number) => (
-    <Typography variant={CONTENT_STYLE} style={{ fontWeight: getFont(BOLD_CONTENT) }}>
-      {inValue}
-    </Typography>
-  );
-
-  const details = (inLabel: string, inValue: string | number) => {
-    return (
-      <Grid container direction="row" justifyContent="space-between" alignItems="center">
-        <Grid size={{ xs: LABEL_WIDTH }}>{label(inLabel)}</Grid>
-        <Grid size={{ xs: 12 - LABEL_WIDTH }}>{content(inValue)}</Grid>
       </Grid>
-    );
-  };
+      <Grid size={{ xs: 6 }}>
+        <Typography variant="body1" color="text.secondary">
+          {inValue}
+        </Typography>
+      </Grid>
+    </Grid>
+  );
 
   const sectionTitle = () => (
     <Grid>
@@ -92,7 +117,7 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
       pr={2}
     >
       <Grid>
-        <CancelButton action={() => onClose()} title="closeBtn.label" testId="cancelButtonTestId" />
+        <CancelButton action={onClose} title="closeBtn.label" testId="cancelButtonTestId" />
       </Grid>
     </Grid>
   );
@@ -101,7 +126,7 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
     <Grid container spacing={1} direction="row" alignItems="center" justifyContent="flex-start">
       <Grid>
         <ConfirmButton
-          action={() => onConfirm()}
+          action={() => currentPolicy && onConfirm(currentPolicy)}
           testId="cycleConfirmationButton"
           title="confirmBtn.label"
         />
@@ -126,17 +151,81 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
 
   const descriptionContent = () => (
     <Grid container spacing={2} justifyContent="center" sx={{ width: '100%' }}>
-      <Grid size={8}>{details(t('id.label'), osdCycleId)}</Grid>
-      <Grid size={8}>{details(t('cycleDescription.label'), osdCycleDescription)}</Grid>
-      <Grid size={8}>{details(t('cycleOpens.label'), osdOpens(true))}</Grid>
-      <Grid size={8}>{details(t('cycleCloses.label'), osdCloses(true))}</Grid>
+      <Grid size={{ xs: 12 }}>
+        {details(t('id.label'), currentPolicy?.cycleInformation?.cycleId ?? '')}
+      </Grid>
+      <Grid size={{ xs: 12 }}>
+        {details(t('cycleDescription.label'), currentPolicy?.cycleDescription ?? '')}
+      </Grid>
+      <Grid size={{ xs: 12 }}>
+        {details(
+          t('cycleOpens.label'),
+          presentDate(currentPolicy?.cycleInformation?.proposalOpen ?? '')
+        )}
+      </Grid>
+      <Grid size={{ xs: 12 }}>
+        {details(
+          t('cycleCloses.label'),
+          presentDate(currentPolicy?.cycleInformation?.proposalClose ?? '')
+        )}
+      </Grid>
     </Grid>
   );
+
+  const listContent = () => (
+    <Grid container spacing={2}>
+      {osdPolicies.map(policy => {
+        const policyId = policy.cycleInformation?.cycleId;
+        const isSelected = policyId && localSelectedCycleId === policyId;
+
+        return (
+          <Grid size={{ xs: 12 }} key={policy.cycleNumber ?? policyId}>
+            <Card
+              variant="outlined"
+              sx={{
+                border: isSelected
+                  ? `2px solid ${theme.palette.primary.main}`
+                  : `1px solid ${theme.palette.divider}`,
+                backgroundColor: isSelected
+                  ? theme.palette.action.selected
+                  : theme.palette.background.paper,
+                transition: '0.2s',
+                '&:hover': {
+                  boxShadow: 4,
+                  cursor: 'pointer'
+                }
+              }}
+            >
+              <CardActionArea onClick={() => handleCardClick(policy)}>
+                <CardContent>
+                  <Typography variant="h6" color="text.primary">
+                    {t('id.label')}: {policy.cycleInformation.cycleId}
+                  </Typography>
+                  <Typography variant="body1" color="text.secondary">
+                    {t('cycleDescription.label')}: {policy.cycleDescription}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {t('cycleOpens.label')}: {presentDate(policy.cycleInformation.proposalOpen)}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {t('cycleCloses.label')}: {presentDate(policy.cycleInformation.proposalClose)}
+                  </Typography>
+                </CardContent>
+              </CardActionArea>
+            </Card>
+          </Grid>
+        );
+      })}
+    </Grid>
+  );
+
+  // Guard against empty data to avoid rendering a non-selected list
+  const content = osdPolicies.length <= 1 ? descriptionContent() : listContent();
 
   return (
     <Dialog
       open={open}
-      onClose={() => onClose()}
+      onClose={onClose}
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
       id="alert-dialog-proposal-change"
@@ -158,7 +247,7 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
         >
           {headerContent()}
           {sectionTitle()}
-          {descriptionContent()}
+          {content}
           {sectionTitle()}
         </Grid>
       </DialogContent>

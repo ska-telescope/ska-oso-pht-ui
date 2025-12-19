@@ -41,8 +41,8 @@ import { arraysAreEqual } from '@/utils/helpers';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import { useHelp } from '@/utils/help/useHelp';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 export function getProposalType(value: number): string {
   const type = PROJECTS.find(item => item.id === value)?.mapping;
@@ -86,7 +86,7 @@ export default function GridProposals({
   tickBoxClicked = () => {}
 }: GridProposalsProps) {
   const { t } = useScopedTranslation();
-  const { isSV } = useAppFlow();
+  const { isSV } = useOSDAccessors();
   const navigate = useNavigate();
   const { setHelp } = useHelp();
 
@@ -116,6 +116,7 @@ export default function GridProposals({
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const authClient = useAxiosAuthClient();
+  const { autoLink } = useOSDAccessors();
 
   const deleteClicked = () => (
     <ProposalDisplay
@@ -254,7 +255,7 @@ export default function GridProposals({
     )
   };
 
-  const proposalColumns = isSV()
+  const proposalColumns = isSV
     ? [
         ...(showSelection ? [colSelect] : []),
         ...(showActions ? [colActions] : []),
@@ -273,7 +274,7 @@ export default function GridProposals({
         getColProposalPI(t)
       ];
 
-  const reviewColumns = isSV()
+  const reviewColumns = isSV
     ? [...[getColProposalTitle(t), getColAuthors(t), getColProposalSC(t)]]
     : [...[getColProposalType(t), getColProposalTitle(t), getColAuthors(t), getColProposalSC(t)]];
 
@@ -337,10 +338,10 @@ export default function GridProposals({
       setAxiosViewError(response);
       return false;
     } else {
-      updateAppContent1(validateProposal(response));
+      updateAppContent1(validateProposal(response, autoLink));
       updateAppContent2(response);
       storeProposalCopy(response);
-      validateProposal(response);
+      validateProposal(response, autoLink);
       return true;
     }
   };
@@ -392,12 +393,7 @@ export default function GridProposals({
   };
 
   const deleteConfirmed = async () => {
-    const response = await PutProposal(
-      authClient,
-      getProposal(),
-      isSV(),
-      PROPOSAL_STATUS.WITHDRAWN
-    );
+    const response = await PutProposal(authClient, getProposal(), isSV, PROPOSAL_STATUS.WITHDRAWN);
     if (response && !('error' in response)) {
       setOpenDeleteDialog(false);
       setFetchList(!fetchList);

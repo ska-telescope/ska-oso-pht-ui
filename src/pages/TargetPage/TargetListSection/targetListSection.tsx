@@ -22,13 +22,11 @@ import GridTargets from '../../../components/grid/targets/GridTargets';
 import SpatialImaging from './SpatialImaging/SpatialImaging';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 // import D3LineChart from '@/components/charts/line/D3LineChart';
 
 export default function TargetListSection() {
   const { t } = useScopedTranslation();
-  const { isSV } = useAppFlow();
   const theme = useTheme();
   const { application, updateAppContent2 } = storageObject.useStore();
   const [openEditDialog, setOpenEditDialog] = React.useState(false);
@@ -38,9 +36,7 @@ export default function TargetListSection() {
   const [skyDirection2Error, setSkyDirection2Error] = React.useState('');
   const [nameError, setNameError] = React.useState('');
   const [visibilitySVG, setVisibilitySVG] = React.useState(null);
-  // const [visData, setVisData] = React.useState<{ name: number; value: number }[]>([]);
-  const { osdCyclePolicy } = useOSDAccessors();
-  const autoLink = osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1;
+  const { autoLink, isSV, osdCyclePolicy } = useOSDAccessors();
 
   const DATA_GRID_HEIGHT = osdCyclePolicy?.maxTargets ? '18vh' : '60vh';
 
@@ -291,9 +287,9 @@ export default function TargetListSection() {
           <Box
             sx={{
               width: '100%',
-              border: isSV() ? '1px solid red' : '1px solid grey',
-              borderColor: isSV() ? theme.palette.primary.light : 'grey',
-              borderRadius: isSV() ? '16px' : '0'
+              border: isSV ? '1px solid red' : '1px solid grey',
+              borderColor: isSV ? theme.palette.primary.light : 'grey',
+              borderRadius: isSV ? '16px' : '0'
             }}
           >
             <Tabs
@@ -309,14 +305,14 @@ export default function TargetListSection() {
                 {...a11yProps(0)}
                 sx={{ border: '1px solid grey', width: '100%' }}
               />
-              {!isSV() && (
+              {!isSV && (
                 <Tab
                   label={t('importFromFile.label')}
                   {...a11yProps(1)}
                   sx={{ border: '1px solid grey', width: '100%' }}
                 />
               )}
-              {!isSV() && (
+              {!isSV && (
                 <Tab
                   label={t('spatialImaging.label')}
                   {...a11yProps(2)}

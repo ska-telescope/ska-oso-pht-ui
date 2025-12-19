@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeEach, beforeAll } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import GridObservation from './GridObservation';
 import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 import Observation from '@/utils/types/observation';
@@ -64,11 +65,13 @@ const mockData: Observation[] = [
 
 const theme = createTheme();
 
-const renderWithProviders = (ui: React.ReactElement) => {
+const wrapper = (component: React.ReactElement) => {
   return render(
-    <ThemeProvider theme={theme}>
-      <AppFlowProvider>{ui}</AppFlowProvider>
-    </ThemeProvider>
+    <StoreProvider>
+      <ThemeProvider theme={theme}>
+        <AppFlowProvider>{component}</AppFlowProvider>
+      </ThemeProvider>
+    </StoreProvider>
   );
 };
 
@@ -80,19 +83,19 @@ describe('GridObservation', () => {
   });
 
   it('renders without crashing and displays rows', () => {
-    renderWithProviders(<GridObservation data={mockData} rowClick={rowClickMock} />);
+    wrapper(<GridObservation data={mockData} rowClick={rowClickMock} />);
     expect(screen.getByTestId('gridObservation')).toBeInTheDocument();
     expect(screen.getByText('OBS001')).toBeInTheDocument();
     expect(screen.getByText('OBS002')).toBeInTheDocument();
   });
 
   it('selects the first row on initial render', () => {
-    renderWithProviders(<GridObservation data={mockData} rowClick={rowClickMock} />);
+    wrapper(<GridObservation data={mockData} rowClick={rowClickMock} />);
     expect(rowClickMock).toHaveBeenCalledWith({ row: mockData[0] });
   });
 
   it('calls rowClick when a row is clicked', () => {
-    renderWithProviders(<GridObservation data={mockData} rowClick={rowClickMock} />);
+    wrapper(<GridObservation data={mockData} rowClick={rowClickMock} />);
     const secondRow = screen.getByText('OBS002');
     fireEvent.click(secondRow);
     expect(rowClickMock).toHaveBeenCalledWith(expect.objectContaining({ row: mockData[1] }));

@@ -4,7 +4,6 @@ import { Box, Grid, Tab, Tabs, SvgIcon, Typography } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
-import { useAppFlow } from '@utils/appFlow/AppFlowContext.tsx';
 import { validateTeamPage } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
@@ -23,6 +22,7 @@ import PutProposalAccess from '@/services/axios/put/putProposalAccess/putProposa
 import GetProposalAccessForProposal from '@/services/axios/get/getProposalAccess/proposal/getProposalAccessForProposal';
 import { accessPI } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 const PAGE = PAGE_TEAM;
 
@@ -50,7 +50,7 @@ export default function TeamPage() {
   const authClient = useAxiosAuthClient();
   const [selectedOptions, setSelectedOptions] = React.useState<string[]>([]);
   const [permissions, setPermissions] = React.useState<ProposalAccess[]>([]);
-  const { isSV } = useAppFlow();
+  const { isSV } = useOSDAccessors();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -262,7 +262,7 @@ export default function TeamPage() {
               sx={{
                 width: '100%',
                 border: '1px solid grey',
-                minHeight: isSV() ? '300px' : '558px'
+                minHeight: isSV ? '300px' : '558px'
               }}
             >
               <Box>

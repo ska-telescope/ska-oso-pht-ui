@@ -37,7 +37,7 @@ import { useNotify } from '@/utils/notify/useNotify';
 import { accessSubmit } from '@/utils/aaa/aaaUtils';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { useAppFlow } from '@/utils/appFlow/AppFlowContext';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 interface PageBannerPPTProps {
   pageNo: number;
@@ -48,7 +48,7 @@ const widthWrapStatusArray = '1500px';
 
 export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) {
   const theme = useTheme();
-  const { isSV } = useAppFlow();
+  const { isSV } = useOSDAccessors();
   const LG = useMediaQuery(theme.breakpoints.down('lg'), {
     defaultMatches: false,
     noSsr: true
@@ -100,12 +100,12 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         obj[key] === STATUS_PARTIAL ||
         (obj[key] === STATUS_INITIAL && key !== PAGE_SRC_NET.toString())
       ) {
-        if ((key !== PAGE_TECHNICAL.toString() && key !== PAGE_LINKING.toString()) || !isSV()) {
+        if ((key !== PAGE_TECHNICAL.toString() && key !== PAGE_LINKING.toString()) || !isSV) {
           results.push(t('page.' + key + '.pageError'));
         }
       }
     }
-    const response = await PostProposalValidate(authClient, getProposal(), isSV());
+    const response = await PostProposalValidate(authClient, getProposal(), isSV);
 
     if (response.valid && !response.error && results.length === 0) {
       notifySuccess(t(`validationBtn.${response.valid}`));
@@ -138,7 +138,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   const updateProposal = async (proposal: Proposal) => {
     if (!isDisableEndpoints()) {
-      const response = await PutProposal(authClient, proposal, isSV(), PROPOSAL_STATUS.DRAFT);
+      const response = await PutProposal(authClient, proposal, isSV, PROPOSAL_STATUS.DRAFT);
       updateProposalResponse(response);
     }
   };
@@ -152,7 +152,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     const response = await PutProposal(
       authClient,
       application.content2 as Proposal,
-      isSV(),
+      isSV,
       PROPOSAL_STATUS.SUBMITTED
     );
     if (response && !('error' in response)) {
@@ -235,7 +235,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       pr={2}
     >
       <Grid>
-        {!isSV() && getProposal().id !== null && pageNo < LAST_PAGE && (
+        {!isSV && getProposal().id !== null && pageNo < LAST_PAGE && (
           <ValidateButton
             testId={'validateBtn'}
             disabled={isDisableEndpoints()}
