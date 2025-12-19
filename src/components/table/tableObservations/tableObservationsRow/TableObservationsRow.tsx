@@ -87,11 +87,12 @@ export default function TableObservationsRow({
   const colorsObType = useMemo(() => getObservationColors('observationType', observation?.type), [
     observation?.type
   ]);
-  const colorsTelescope = useMemo(() => getObservationColors('telescope', observation?.telescope), [
-    observation?.telescope
-  ]);
+  const colorsTelescope = useMemo(
+    () => getObservationColors('telescope', observation?.telescope - 1),
+    [observation?.telescope]
+  );
   const colorsTelescopeDim = useMemo(
-    () => getObservationColors('telescope', observation?.telescope, 0.6),
+    () => getObservationColors('telescope', observation?.telescope - 1, 0.6),
     [observation?.telescope]
   );
 

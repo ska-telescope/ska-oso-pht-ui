@@ -3,7 +3,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TableScienceReviews from './TableScienceReviews';
 import { CONFLICT_REASONS, REVIEW_TYPE } from '@/utils/constants';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 const mockNavigate = vi.fn();
 
@@ -32,11 +31,7 @@ vi.mock('@/utils/validation/validation', () => {
 });
 
 const wrapper = (component: React.ReactElement) => {
-  return render(
-    <StoreProvider>
-      <AppFlowProvider>{component}</AppFlowProvider>
-    </StoreProvider>
-  );
+  return render(<StoreProvider>{component}</StoreProvider>);
 };
 
 const mockData = {

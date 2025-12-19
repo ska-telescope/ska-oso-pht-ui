@@ -4,7 +4,6 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import * as bandwidthValidationCommon from '../bandwidthValidationCommon';
 import ContinuumBandwidth from './continuumBandwidth';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 import { BAND_LOW_STR } from '@/utils/constants';
 
 // --- Mocks declared at top level so Vitest hoisting works ---
@@ -88,9 +87,7 @@ describe('<ContinuumBandwidth />', () => {
   const renderField = (extraProps: Partial<typeof baseProps> = {}) =>
     render(
       <StoreProvider>
-        <AppFlowProvider>
-          <ContinuumBandwidth {...baseProps} {...extraProps} />
-        </AppFlowProvider>
+        <ContinuumBandwidth {...baseProps} {...extraProps} />
       </StoreProvider>
     );
 

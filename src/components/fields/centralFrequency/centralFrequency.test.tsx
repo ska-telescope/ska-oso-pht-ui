@@ -5,7 +5,6 @@ import { vi } from 'vitest';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import CentralFrequency from './centralFrequency';
 import { BAND_LOW_STR } from '@/utils/constants.ts';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 vi.mock(import('@/utils/constants.ts'), async importOriginal => {
@@ -58,9 +57,7 @@ vi.mock('@ska-telescope/ska-gui-components', () => ({
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <AppFlowProvider>
-        <ThemeA11yProvider>{component}</ThemeA11yProvider>
-      </AppFlowProvider>
+      <ThemeA11yProvider>{component}</ThemeA11yProvider>
     </StoreProvider>
   );
 };

@@ -5,7 +5,6 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import React from 'react';
 import MemberAccess from './MemberAccess';
 import { PROPOSAL_ACCESS_SUBMIT, PROPOSAL_ACCESS_UPDATE } from '@/utils/aaa/aaaUtils';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 const TestWrapper = () => {
   const [selectedOptions, setSelectedOptions] = React.useState<string[]>([
@@ -15,9 +14,7 @@ const TestWrapper = () => {
 
   return (
     <StoreProvider>
-      <AppFlowProvider>
-        <MemberAccess selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions} />
-      </AppFlowProvider>
+      <MemberAccess selectedOptions={selectedOptions} setSelectedOptions={setSelectedOptions} />
     </StoreProvider>
   );
 };

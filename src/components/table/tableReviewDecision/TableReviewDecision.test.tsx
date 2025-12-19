@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TableReviewDecision from './TableReviewDecision';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 vi.mock('./tableReviewDecisionHeader/TableReviewDecisionHeader', () => ({
   default: () => (
@@ -35,11 +34,7 @@ const mockExclude = vi.fn();
 const mockUpdate = vi.fn();
 
 const wrapper = (component: React.ReactElement) => {
-  return render(
-    <StoreProvider>
-      <AppFlowProvider>{component}</AppFlowProvider>
-    </StoreProvider>
-  );
+  return render(<StoreProvider>{component}</StoreProvider>);
 };
 
 describe('TableReviewDecision', () => {

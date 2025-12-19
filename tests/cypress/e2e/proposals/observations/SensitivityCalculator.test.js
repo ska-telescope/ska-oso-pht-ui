@@ -11,7 +11,6 @@ import {
   createMock
   // clickListOfTargets
 } from '../../common/common';
-
 import sensitivityCalculatorResults from '../../../fixtures/sensitivityCalculatorResults.json';
 
 beforeEach(() => {

@@ -11,6 +11,7 @@ import { useThemeA11y } from '@/utils/colors/ThemeAllyContext';
 interface BaseButtonProps {
   title?: string;
   action: string | Function;
+  ariaLabel?: string;
   disabled?: boolean;
   icon: string | JSX.Element;
   primary?: boolean;
@@ -24,6 +25,7 @@ interface BaseButtonProps {
 export default function BaseButton({
   disabled = false,
   action,
+  ariaLabel = 'baseBtn.label',
   title = 'baseBtn.label',
   icon,
   primary = false,
@@ -62,6 +64,7 @@ export default function BaseButton({
 
   return (
     <Button
+      arialLabel={ariaLabel}
       ariaDescription={`${theTitle} Button`}
       color={primary ? ButtonColorTypes.Secondary : ButtonColorTypes.Inherit}
       disabled={disabled}

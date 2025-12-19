@@ -6,15 +6,12 @@ import { MockCalibratorFrontendList } from '@services/axios/get/getCalibratorLis
 import completeMockStore from '../../utils/MockStore';
 import CalibrationPage from './CalibrationPage';
 import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <AppFlowProvider>
-        <ThemeA11yProvider>{component}</ThemeA11yProvider>
-      </AppFlowProvider>
+      <ThemeA11yProvider>{component}</ThemeA11yProvider>
     </StoreProvider>
   );
 };

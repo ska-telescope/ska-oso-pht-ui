@@ -7,7 +7,6 @@ import GridProposals, { filterProposals, getProposalType } from './GridProposals
 import MockProposalFrontendList from '@/services/axios/get/getProposalList/mockProposalFrontendList';
 import MockProposalBackendList from '@/services/axios/get/getProposalList/mockProposalBackendList';
 import { IdObject } from '@/utils/types/idObject';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 const mockedSelectedProposals: IdObject[] = [
   { id: MockProposalBackendList[0].prsl_id },
@@ -15,11 +14,7 @@ const mockedSelectedProposals: IdObject[] = [
 ];
 
 const wrapper = (component: React.ReactElement) => {
-  return render(
-    <StoreProvider>
-      <AppFlowProvider>{component}</AppFlowProvider>
-    </StoreProvider>
-  );
+  return render(<StoreProvider>{component}</StoreProvider>);
 };
 
 describe('<GridProposals /> data rendering', () => {

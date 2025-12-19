@@ -3,13 +3,10 @@ import { renderHook } from '@testing-library/react';
 import { describe, it, vi } from 'vitest';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { useHelp } from './useHelp';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 // Your wrapper from the app
 const wrapper = ({ children }: { children: React.ReactNode }) => (
-  <StoreProvider>
-    <AppFlowProvider>{children}</AppFlowProvider>
-  </StoreProvider>
+  <StoreProvider>{children}</StoreProvider>
 );
 
 // Mock translation hook

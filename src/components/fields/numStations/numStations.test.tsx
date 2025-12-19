@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import NumStationsField from './NumStations';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -18,11 +17,7 @@ vi.mock('react-i18next', () => ({
 }));
 
 const wrapper = (component: React.ReactElement) => {
-  return render(
-    <StoreProvider>
-      <AppFlowProvider>{component}</AppFlowProvider>
-    </StoreProvider>
-  );
+  return render(<StoreProvider>{component}</StoreProvider>);
 };
 
 describe('NumStationsField', () => {

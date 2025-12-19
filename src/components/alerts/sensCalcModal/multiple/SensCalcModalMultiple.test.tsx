@@ -5,7 +5,6 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import '@testing-library/jest-dom';
 import SensCalcModalMultiple from './SensCalcModalMultiple';
 import { BAND_LOW_STR, STATUS_ERROR, TYPE_CONTINUUM, TYPE_ZOOM } from '@/utils/constants';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 const data = [
@@ -79,9 +78,7 @@ const data = [
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <AppFlowProvider>
-        <ThemeA11yProvider>{component}</ThemeA11yProvider>
-      </AppFlowProvider>
+      <ThemeA11yProvider>{component}</ThemeA11yProvider>
     </StoreProvider>
   );
 };

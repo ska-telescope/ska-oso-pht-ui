@@ -2,7 +2,6 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import TechnicalPage from './TechnicalPage';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 // Mock login
@@ -78,11 +77,7 @@ vi.mock('@services/axios/delete/deletePDF/deletePDF.tsx', () => ({
 }));
 
 const wrapper = (component: React.ReactElement) => {
-  return render(
-    <AppFlowProvider>
-      <ThemeA11yProvider>{component}</ThemeA11yProvider>
-    </AppFlowProvider>
-  );
+  return render(<ThemeA11yProvider>{component}</ThemeA11yProvider>);
 };
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({

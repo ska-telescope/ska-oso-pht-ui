@@ -8,7 +8,6 @@ import { MockProposalBackend } from '@services/axios/get/getProposal/mockProposa
 import PageFooterPPT from './PageFooterPPT';
 import { NEW_PROPOSAL_ACCESS } from '@/utils/types/proposalAccess';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 // --- Mocks ---
 vi.mock('react-router-dom', () => ({
@@ -98,9 +97,7 @@ beforeEach(() => {
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <AppFlowProvider>
-        <ThemeA11yProvider>{component}</ThemeA11yProvider>
-      </AppFlowProvider>
+      <ThemeA11yProvider>{component}</ThemeA11yProvider>
     </StoreProvider>
   );
 };

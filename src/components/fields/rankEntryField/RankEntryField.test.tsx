@@ -4,7 +4,6 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import userEvent from '@testing-library/user-event';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import RankEntryField from './RankEntryField';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 // Create test theme
 const lightTheme = createTheme({
@@ -30,9 +29,7 @@ const darkTheme = createTheme({
 const wrapper = (component: React.ReactElement, theme = lightTheme) => {
   return render(
     <ThemeProvider theme={theme}>
-      <StoreProvider>
-        <AppFlowProvider>{component}</AppFlowProvider>
-      </StoreProvider>
+      <StoreProvider>{component}</StoreProvider>
     </ThemeProvider>
   );
 };

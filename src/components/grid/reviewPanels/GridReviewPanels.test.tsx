@@ -1,10 +1,8 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-
 import GetPanelList from '@services/axios/get/getPanelList/getPanelList';
 import GridReviewPanels from './GridReviewPanels';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
   default: () => {
@@ -41,11 +39,7 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
 const theme = createTheme();
 
 const wrapper = (ui: React.ReactElement) => {
-  return render(
-    <ThemeProvider theme={theme}>
-      <AppFlowProvider>{ui}</AppFlowProvider>
-    </ThemeProvider>
-  );
+  return render(<ThemeProvider theme={theme}>{ui}</ThemeProvider>);
 };
 
 /*
