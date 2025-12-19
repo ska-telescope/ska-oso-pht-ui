@@ -68,7 +68,6 @@ export const updateSensCalc = async (
   ob: Observation,
   dp: DataProductSDP
 ): Promise<TargetObservation[]> => {
-  console.log('updateSensCalc called with observation:', ob);
   const updated = await updateSensCalcAsync(proposal, ob, dp);
 
   return updated.map(rec => {

@@ -56,16 +56,8 @@ export const frequencyConversion = (inValue: any, from: number, to: number = FRE
 };
 
 export const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
-  console.log('calculateVelocity called with resolutionHz:', resolutionHz, ' frequencyHz:', frequencyHz, ' precision:', precision);
   const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * SPEED_OF_LIGHT : 0;
-  console.log('velocity', velocity);
   const occ = velocity < 1000 ? 0 : 1;
-  console.log('occ', occ);
-  const result =  (
-    (velocity / VELOCITY_UNITS[occ].convert).toFixed(precision) + ' ' + VELOCITY_UNITS[occ].label
-  );
-  console.log('VELOCITY_UNITS[occ].convert', VELOCITY_UNITS[occ].convert);
-  console.log('result', result);
   return (
     (velocity / VELOCITY_UNITS[occ].convert).toFixed(precision) + ' ' + VELOCITY_UNITS[occ].label
   );
