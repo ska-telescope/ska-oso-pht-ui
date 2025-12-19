@@ -782,7 +782,8 @@
     "code": {
       "1": "PI",
       "2": "KSP",
-      "3": "DDT"
+      "3": "DDT",
+      "notSpecified": ""
     },
     "desc": {
       "1": "Observing projects that require less time than a KSP, typically over a single time allocation cycle.",

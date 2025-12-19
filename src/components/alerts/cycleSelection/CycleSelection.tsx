@@ -10,15 +10,17 @@ import {
   CardContent
 } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
+import { useEffect, useMemo, useState } from 'react';
 import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { presentDate } from '@/utils/present/present';
 
 interface CycleSelectionProps {
   open: boolean;
   onClose: () => void;
-  onConfirm: (policy: any) => void; // now returns the whole policy object
+  onConfirm: (policy: any) => void;
 }
 
 const MODAL_WIDTH = '40%';
@@ -26,15 +28,36 @@ const MODAL_WIDTH = '40%';
 export default function CycleSelection({ open, onClose, onConfirm }: CycleSelectionProps) {
   const { t } = useScopedTranslation();
   const theme = useTheme();
-  const {
-    osdPolicies,
-    selectedPolicy,
-    setSelectedPolicy,
-    osdCloses,
-    osdCycleDescription,
-    osdCycleId,
-    osdOpens
-  } = useOSDAccessors();
+  const { osdPolicies, selectedPolicy, setSelectedPolicy } = useOSDAccessors();
+
+  // Local selection state to guarantee immediate highlight independent of store timing
+  const initialSelectedId =
+    selectedPolicy?.cycleInformation?.cycleId ?? osdPolicies[0]?.cycleInformation?.cycleId ?? null;
+
+  const [localSelectedCycleId, setLocalSelectedCycleId] = useState<string | null>(
+    initialSelectedId
+  );
+
+  // Keep local selection in sync if store selection changes later or policies load
+  useEffect(() => {
+    const nextId =
+      selectedPolicy?.cycleInformation?.cycleId ??
+      osdPolicies[0]?.cycleInformation?.cycleId ??
+      null;
+    setLocalSelectedCycleId(prev => prev ?? nextId);
+  }, [selectedPolicy, osdPolicies]);
+
+  // Derive the currently selected policy for confirm action
+  const currentPolicy = useMemo(() => {
+    if (!localSelectedCycleId) return null;
+    return osdPolicies.find(p => p.cycleInformation?.cycleId === localSelectedCycleId) ?? null;
+  }, [osdPolicies, localSelectedCycleId]);
+
+  const handleCardClick = (policy: any) => {
+    const id = policy.cycleInformation?.cycleId ?? null;
+    setLocalSelectedCycleId(id);
+    setSelectedPolicy(policy);
+  };
 
   const title = () => (
     <Box
@@ -103,7 +126,7 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
     <Grid container spacing={1} direction="row" alignItems="center" justifyContent="flex-start">
       <Grid>
         <ConfirmButton
-          action={() => onConfirm(selectedPolicy!)}
+          action={() => currentPolicy && onConfirm(currentPolicy)}
           testId="cycleConfirmationButton"
           title="confirmBtn.label"
         />
@@ -128,21 +151,35 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
 
   const descriptionContent = () => (
     <Grid container spacing={2} justifyContent="center" sx={{ width: '100%' }}>
-      <Grid size={{ xs: 12 }}>{details(t('id.label'), osdCycleId ?? '')}</Grid>
       <Grid size={{ xs: 12 }}>
-        {details(t('cycleDescription.label'), osdCycleDescription ?? '')}
+        {details(t('id.label'), currentPolicy?.cycleInformation?.cycleId ?? '')}
       </Grid>
-      <Grid size={{ xs: 12 }}>{details(t('cycleOpens.label'), osdOpens(true) ?? '')}</Grid>
-      <Grid size={{ xs: 12 }}>{details(t('cycleCloses.label'), osdCloses(true) ?? '')}</Grid>
+      <Grid size={{ xs: 12 }}>
+        {details(t('cycleDescription.label'), currentPolicy?.cycleDescription ?? '')}
+      </Grid>
+      <Grid size={{ xs: 12 }}>
+        {details(
+          t('cycleOpens.label'),
+          presentDate(currentPolicy?.cycleInformation?.proposalOpen ?? '')
+        )}
+      </Grid>
+      <Grid size={{ xs: 12 }}>
+        {details(
+          t('cycleCloses.label'),
+          presentDate(currentPolicy?.cycleInformation?.proposalClose ?? '')
+        )}
+      </Grid>
     </Grid>
   );
 
   const listContent = () => (
     <Grid container spacing={2}>
       {osdPolicies.map(policy => {
-        const isSelected = selectedPolicy?.cycleNumber === policy.cycleNumber;
+        const policyId = policy.cycleInformation?.cycleId;
+        const isSelected = policyId && localSelectedCycleId === policyId;
+
         return (
-          <Grid size={{ xs: 12 }} key={policy.cycleNumber}>
+          <Grid size={{ xs: 12 }} key={policy.cycleNumber ?? policyId}>
             <Card
               variant="outlined"
               sx={{
@@ -159,7 +196,7 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
                 }
               }}
             >
-              <CardActionArea onClick={() => setSelectedPolicy(policy)}>
+              <CardActionArea onClick={() => handleCardClick(policy)}>
                 <CardContent>
                   <Typography variant="h6" color="text.primary">
                     {t('id.label')}: {policy.cycleInformation.cycleId}
@@ -168,10 +205,10 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
                     {t('cycleDescription.label')}: {policy.cycleDescription}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {t('cycleOpens.label')}: {policy.cycleInformation.proposalOpen}
+                    {t('cycleOpens.label')}: {presentDate(policy.cycleInformation.proposalOpen)}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {t('cycleCloses.label')}: {policy.cycleInformation.proposalClose}
+                    {t('cycleCloses.label')}: {presentDate(policy.cycleInformation.proposalClose)}
                   </Typography>
                 </CardContent>
               </CardActionArea>
@@ -181,6 +218,9 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
       })}
     </Grid>
   );
+
+  // Guard against empty data to avoid rendering a non-selected list
+  const content = osdPolicies.length <= 1 ? descriptionContent() : listContent();
 
   return (
     <Dialog
@@ -207,7 +247,7 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
         >
           {headerContent()}
           {sectionTitle()}
-          {osdPolicies.length <= 1 ? descriptionContent() : listContent()}
+          {content}
           {sectionTitle()}
         </Grid>
       </DialogContent>

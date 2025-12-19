@@ -18,7 +18,6 @@ export default function TableSubmissionsHeader() {
         {displayHeader('actions.label')}
         {displayHeader('proposalId.label')}
         {displayHeader('cycle.label')}
-        {displayHeader('')}
         {displayHeader('title.label')}
         {displayHeader('proposalType.label')}
         {displayHeader('status.label')}

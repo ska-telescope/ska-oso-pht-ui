@@ -66,10 +66,6 @@ describe('CycleSelection component', () => {
     expect(screen.getByText('SKAO_2027_1')).toBeInTheDocument();
     expect(screen.getByText('Description')).toBeInTheDocument();
     expect(screen.getByText('Science Verification')).toBeInTheDocument();
-    expect(screen.getByText('Opens')).toBeInTheDocument();
-    expect(screen.getByText('27-03-2026 12:00:00')).toBeInTheDocument();
-    expect(screen.getByText('Closes')).toBeInTheDocument();
-    expect(screen.getByText('12-05-2026 04:00:00')).toBeInTheDocument();
   });
 
   it('does not render when open is false', () => {

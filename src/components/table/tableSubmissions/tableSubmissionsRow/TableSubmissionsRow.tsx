@@ -1,4 +1,4 @@
-import { TableRow, TableCell, Box, Typography, Tooltip } from '@mui/material';
+import { TableRow, TableCell, Box, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import ViewIcon from '@/components/icon/viewIcon/viewIcon';
@@ -12,7 +12,7 @@ import Proposal from '@/utils/types/proposal';
 import { NOT_SPECIFIED, PROPOSAL_STATUS } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { ProposalAccess } from '@/utils/types/proposalAccess';
-import { presentDate, presentTime } from '@/utils/present/present';
+import { presentDate, presentDateTime } from '@/utils/present/present';
 
 interface TableSubmissionsRowProps {
   item: any;
@@ -41,8 +41,6 @@ export default function TableSubmissionsRow({
   const cycleInfo = getCycle(item.cycle || '');
   useInitializeAccessStore();
 
-  const isSV = cycleInfo?.type?.toLowerCase() === 'science verification';
-
   const canEdit = (_item: { id: string }) => {
     return true; // Placeholder until access rules are defined
   };
@@ -54,10 +52,6 @@ export default function TableSubmissionsRow({
 
   const canDelete = (item: { status: string }) =>
     item.status === PROPOSAL_STATUS.DRAFT || item.status === PROPOSAL_STATUS.WITHDRAWN;
-
-  const displayProposalType = (proposalType: any) => {
-    return proposalType ? proposalType : NOT_SPECIFIED;
-  };
 
   return (
     <>
@@ -103,16 +97,10 @@ export default function TableSubmissionsRow({
           </Typography>
         </TableCell>
 
-        <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
+        <TableCell role="gridcell" sx={{ maxWidth: 200, whiteSpace: 'nowrap' }}>
           <Typography variant="body2" color="text.secondary">
             {item.cycle}
           </Typography>
-        </TableCell>
-
-        <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
-          <Tooltip title={t('proposalType.title.' + displayProposalType(item.proposalType))}>
-            <>{isSV ? '' : t('proposalType.code.' + displayProposalType(item.proposalType))}</>
-          </Tooltip>
         </TableCell>
 
         <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
@@ -121,25 +109,25 @@ export default function TableSubmissionsRow({
           </Typography>
         </TableCell>
 
-        <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
+        <TableCell role="gridcell" sx={{ width: 200, whiteSpace: 'nowrap' }}>
           <Typography variant="body2" color="text.secondary">
             {cycleInfo?.type ?? NOT_SPECIFIED}
           </Typography>
         </TableCell>
 
-        <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
+        <TableCell role="gridcell" sx={{ width: 200, whiteSpace: 'nowrap' }}>
           <Typography variant="body2" color="text.secondary">
             {item.status}
           </Typography>
         </TableCell>
 
-        <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
+        <TableCell role="gridcell" sx={{ width: 200, whiteSpace: 'nowrap' }}>
           <Typography variant="body2" color="text.secondary">
-            {presentDate(item.lastUpdated) + ' ' + presentTime(item.lastUpdated)}
+            {presentDateTime(item.lastUpdated)}
           </Typography>
         </TableCell>
 
-        <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
+        <TableCell role="gridcell" sx={{ width: 200, whiteSpace: 'nowrap' }}>
           <>{presentDate(cycleInfo?.cycleInformation?.proposalClose || NOT_SPECIFIED)}</>
         </TableCell>
       </TableRow>

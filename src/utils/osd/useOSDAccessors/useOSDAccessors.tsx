@@ -11,16 +11,32 @@ export function useOSDAccessors() {
   const osd = useOSD();
   const { t } = useTranslation();
   const { application, updateAppContent8 } = storageObject.useStore();
+
   const capabilities = osd?.capabilities;
   const policies = osd?.policies ?? [];
   const observatoryConstants = OSD_CONSTANTS;
-  const selectedPolicy = application.content8 as typeof policies[number] | null;
 
-  useEffect(() => {
-    if (!selectedPolicy && policies.length > 0) {
-      updateAppContent8(policies[0]);
-    }
-  }, [selectedPolicy, policies, updateAppContent8]);
+  let selectedPolicy: typeof policies[number] | null = null;
+  if (Array.isArray(application.content8)) {
+    selectedPolicy = application.content8[0] ?? null;
+  } else {
+    selectedPolicy = application.content8 as typeof policies[number] | null;
+  }
+
+  if (!selectedPolicy && policies.length > 0) {
+    const now = new Date();
+    const active = policies.find(p => {
+      const openStr = p.cycleInformation?.proposalOpen;
+      const closeStr = p.cycleInformation?.proposalClose;
+      if (!openStr || !closeStr) return false;
+      const open = new Date(openStr);
+      const close = new Date(closeStr);
+      return open <= now && now <= close;
+    });
+    const fallback = active ?? policies[0];
+    updateAppContent8(fallback);
+    selectedPolicy = fallback;
+  }
 
   const setSelectedPolicyByCycleId = (cycleId: string) => {
     const match = policies.find(p => p.cycleInformation?.cycleId === cycleId);
@@ -52,8 +68,7 @@ export function useOSDAccessors() {
   const autoLink = cyclePolicies?.maxTargets === 1 && cyclePolicies?.maxObservations === 1;
 
   const isSV = useMemo(() => {
-    const desc = selectedPolicy?.cycleDescription?.toLowerCase() ?? '';
-    return desc.includes('science verification');
+    return (selectedPolicy?.type?.toLowerCase() ?? '').includes('science verification') ?? false;
   }, [selectedPolicy]);
 
   useEffect(() => {
@@ -85,9 +100,13 @@ export function useOSDAccessors() {
     return () => clearInterval(interval);
   }, [cycleInformation?.proposalClose, t]);
 
+  // Helpful: expose the selected cycleId for robust comparisons
+  const selectedCycleId = selectedPolicy?.cycleInformation?.cycleId ?? null;
+
   return {
     osdPolicies: policies,
     selectedPolicy,
+    selectedCycleId,
     setSelectedPolicyByCycleId,
     setSelectedPolicy: updateAppContent8,
     getCycle,
@@ -107,8 +126,7 @@ export function useOSDAccessors() {
     osdOpens: (shouldPresent = false) =>
       present(format(cycleInformation?.proposalOpen), shouldPresent),
     osdCountdown: countdown,
-    isCustomAllowed: isCustomAllowed,
-    //
+    isCustomAllowed,
     telescopeBand: (observingBand: string) =>
       observingBand === BAND_LOW_STR ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM,
     findBand: (observingBand: string) => {
