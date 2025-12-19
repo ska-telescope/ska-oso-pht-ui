@@ -13,16 +13,16 @@ interface DefaultsResults {
 }
 
 export const observationOut = (obsMode: number) => {
-  console.log(obsMode);
-  const defaultObs: Observation = {
-    ...DEFAULT_OBSERVATIONS_LOW_AA2[obsMode], // TODO make this smarter / more generic for when not only low aa2 will be used
-    id: generateId('obs-', 6)
+  console.log('obsMode: ', obsMode);
+
+  const defaultObsBase = { ...DEFAULT_OBSERVATIONS_LOW_AA2[obsMode] };
+  const defaultObservation: Observation = {
+    ...defaultObsBase,
+    id: generateId('obs-', 6),
+    type: 2 // should not hardcode this value
   };
 
-  let defaultObservation = DEFAULT_OBSERVATIONS_LOW_AA2[obsMode];
-  console.log('type: ', defaultObservation);
-  // defaultObservation.id = generateId('obs-', 6);
-  console.log('id: ', defaultObservation);
+  console.log('check? ', defaultObservation);
   return defaultObservation;
 };
 
@@ -99,6 +99,7 @@ export default async function autoLinking(
   addNewTarget: boolean = false
 ): Promise<DefaultsResults> {
   const newObservation = observationOut(getProposal().scienceCategory);
+  console.log('observation created: ', newObservation);
   const newDataProductSDP = dataProductSDPOut(newObservation?.id, getProposal().scienceCategory);
   const sensCalcResult = await getSensCalcData(newObservation, target, newDataProductSDP);
   if (typeof sensCalcResult === 'string') {
