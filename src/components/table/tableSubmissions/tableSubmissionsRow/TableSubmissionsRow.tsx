@@ -8,7 +8,6 @@ import TrashIcon from '@/components/icon/trashIcon/trashIcon';
 import { useInitializeAccessStore } from '@/utils/aaa/aaaUtils';
 import { accessUpdate } from '@/utils/aaa/aaaUtils';
 import Proposal from '@/utils/types/proposal';
-
 import { NOT_SPECIFIED, PROPOSAL_STATUS } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { ProposalAccess } from '@/utils/types/proposalAccess';

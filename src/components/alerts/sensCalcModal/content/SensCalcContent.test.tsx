@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import SensCalcContent from './SensCalcContent';
 import { STATUS_ERROR, STATUS_INITIAL } from '@/utils/constants';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
+
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
 vi.mock('i18next', () => ({
@@ -14,9 +14,7 @@ vi.mock('i18next', () => ({
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <AppFlowProvider>
-        <ThemeA11yProvider>{component}</ThemeA11yProvider>
-      </AppFlowProvider>
+      <ThemeA11yProvider>{component}</ThemeA11yProvider>
     </StoreProvider>
   );
 };

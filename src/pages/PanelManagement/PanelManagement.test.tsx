@@ -20,7 +20,6 @@ import MockProposalFrontendList from '@/services/axios/get/getProposalList/mockP
 import Proposal from '@/utils/types/proposal';
 import { REVIEWER_STATUS } from '@/utils/constants';
 import { Reviewer } from '@/utils/types/reviewer';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 import { PanelReviewer } from '@/utils/types/panelReviewer';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
@@ -54,9 +53,7 @@ const mockedPanels: Panel[] = [
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <AppFlowProvider>
-        <ThemeA11yProvider>{component}</ThemeA11yProvider>
-      </AppFlowProvider>
+      <ThemeA11yProvider>{component}</ThemeA11yProvider>
     </StoreProvider>
   );
 };

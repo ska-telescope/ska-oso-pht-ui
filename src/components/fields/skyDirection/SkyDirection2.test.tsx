@@ -7,14 +7,9 @@ import {
   validateSkyDirection2Text
 } from '@utils/validation/validation.tsx';
 import SkyDirection2 from './SkyDirection2';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 const wrapper = (component: React.ReactElement) => {
-  return render(
-    <StoreProvider>
-      <AppFlowProvider>{component}</AppFlowProvider>
-    </StoreProvider>
-  );
+  return render(<StoreProvider>{component}</StoreProvider>);
 };
 
 describe('<SkyDirection2 />', () => {

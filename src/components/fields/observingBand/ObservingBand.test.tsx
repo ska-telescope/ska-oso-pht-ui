@@ -5,14 +5,9 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { BAND_LOW_STR } from '../../../utils/constants';
 import ObservingBandField from './ObservingBand';
 import { FREQUENCY_HZ, FREQUENCY_MHZ, FREQUENCY_GHZ } from '@/utils/constants';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 const wrapper = (component: React.ReactElement) => {
-  return render(
-    <StoreProvider>
-      <AppFlowProvider>{component}</AppFlowProvider>
-    </StoreProvider>
-  );
+  return render(<StoreProvider>{component}</StoreProvider>);
 };
 
 // Mock dependencies

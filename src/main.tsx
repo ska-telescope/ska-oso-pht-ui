@@ -3,10 +3,8 @@ import { createRoot } from 'react-dom/client';
 import './services/i18n/i18n';
 import { AuthProvider } from '@ska-telescope/ska-login-page';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-
 import App from './App/App';
 import { MSENTRA_CLIENT_ID, MSENTRA_REDIRECT_URI, MSENTRA_TENANT_ID } from './utils/constants';
-import { AppFlowProvider } from './utils/appFlow/AppFlowContext';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -16,9 +14,7 @@ createRoot(document.getElementById('root')!).render(
         MSENTRA_TENANT_ID={MSENTRA_TENANT_ID}
         MSENTRA_REDIRECT_URI={MSENTRA_REDIRECT_URI}
       >
-        <AppFlowProvider>
-          <App />
-        </AppFlowProvider>
+        <App />
       </AuthProvider>
     </StoreProvider>
   </StrictMode>

@@ -20,7 +20,6 @@ import {
   isSuppliedTime,
   getSensitivitiesUnitsMapping
 } from '@utils/helpersSensCalc.ts';
-
 import { FREQUENCY_HZ, FREQUENCY_UNITS, SUPPLIED_TYPE_SENSITIVITY } from '@utils/constants.ts';
 import { ResultsSection, SensCalcResults } from '@utils/types/sensCalcResults.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';

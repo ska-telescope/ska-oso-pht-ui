@@ -3,7 +3,6 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import GridObservation from './GridObservation';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 import Observation from '@/utils/types/observation';
 import { BAND_LOW_STR } from '@/utils/constants';
 
@@ -68,9 +67,7 @@ const theme = createTheme();
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <ThemeProvider theme={theme}>
-        <AppFlowProvider>{component}</AppFlowProvider>
-      </ThemeProvider>
+      <ThemeProvider theme={theme}>{component}</ThemeProvider>
     </StoreProvider>
   );
 };

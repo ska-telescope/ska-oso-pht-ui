@@ -61,7 +61,7 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
 
   const title = () => (
     <Box
-      id={'title-box'}
+      id="title-box"
       sx={{
         width: '100%',
         maxWidth: '100%',
@@ -70,13 +70,18 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
         boxSizing: 'border-box'
       }}
     >
-      <Typography id="title" variant="h5" fontWeight={600} color="text.primary">
+      <Typography
+        id="alert-dialog-title" // accessibility link
+        variant="h5"
+        fontWeight={600}
+        color="text.primary"
+      >
         {t('cycle.label')}
       </Typography>
     </Box>
   );
 
-  const details = (inLabel: string, inValue: string | number) => (
+  const details = (inLabel: string, inValue: string | number | null | undefined) => (
     <Grid container direction="row" justifyContent="space-between" alignItems="center">
       <Grid size={{ xs: 6 }}>
         <Typography variant="subtitle1" fontWeight={600} color="text.primary">
@@ -85,7 +90,7 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
       </Grid>
       <Grid size={{ xs: 6 }}>
         <Typography variant="body1" color="text.secondary">
-          {inValue}
+          {inValue ?? ''} {/* null safety */}
         </Typography>
       </Grid>
     </Grid>
@@ -117,7 +122,12 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
       pr={2}
     >
       <Grid>
-        <CancelButton action={onClose} title="closeBtn.label" testId="cancelButtonTestId" />
+        <CancelButton
+          action={onClose}
+          title="closeBtn.label"
+          testId="cancelButtonTestId"
+          ariaLabel="Cancel cycle selection"
+        />
       </Grid>
     </Grid>
   );
@@ -129,6 +139,7 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
           action={() => currentPolicy && onConfirm(currentPolicy)}
           testId="cycleConfirmationButton"
           title="confirmBtn.label"
+          ariaLabel="Confirm cycle selection"
         />
       </Grid>
     </Grid>
@@ -150,7 +161,13 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
   const headerContent = () => <Grid>{title()}</Grid>;
 
   const descriptionContent = () => (
-    <Grid container spacing={2} justifyContent="center" sx={{ width: '100%' }}>
+    <Grid
+      container
+      spacing={2}
+      justifyContent="center"
+      sx={{ width: '100%' }}
+      id="alert-dialog-description" // accessibility link
+    >
       <Grid size={{ xs: 12 }}>
         {details(t('id.label'), currentPolicy?.cycleInformation?.cycleId ?? '')}
       </Grid>

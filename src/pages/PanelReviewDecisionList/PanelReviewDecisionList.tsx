@@ -8,7 +8,6 @@ import getProposalsReviewable from '@/services/axios/get/getProposalsReviewable/
 import Proposal from '@/utils/types/proposal';
 import { FEASIBLE_NO, FOOTER_SPACER, PROPOSAL_STATUS, REVIEW_TYPE } from '@/utils/constants';
 import { BANNER_PMT_SPACER } from '@/utils/constants';
-
 import PageBannerPMT from '@/components/layout/pageBannerPMT/PageBannerPMT';
 import TableReviewDecision from '@/components/table/tableReviewDecision/TableReviewDecision';
 import { ProposalReview, ScienceReview } from '@/utils/types/proposalReview';

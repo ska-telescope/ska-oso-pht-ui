@@ -1,22 +1,18 @@
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
-
 import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
-
 import DeletePDF from '@services/axios/delete/deletePDF/deletePDF.tsx';
 import GetPresignedDeleteUrl from '@services/axios/get/getPresignedDeleteUrl/getPresignedDeleteUrl';
 import GetPresignedDownloadUrl from '@services/axios/get/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import GetPresignedUploadUrl from '@services/axios/get/getPresignedUploadUrl/getPresignedUploadUrl';
 import PutUploadPDF from '@services/axios/put/putUploadPDF/putUploadPDF';
-
 import DeleteButton from '../../components/button/Delete/Delete';
 import DownloadButton from '../../components/button/Download/Download';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 import PDFWrapper from '../../components/layout/PDFWrapper/PDFWrapper';
 import Shell from '../../components/layout/Shell/Shell';
-
 import { Proposal } from '../../utils/types/proposal';
 import { validateSciencePage } from '../../utils/validation/validation';
 import { PAGE_DESCRIPTION, UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';

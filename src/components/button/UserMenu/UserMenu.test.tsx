@@ -7,7 +7,6 @@ import { Logger } from '@azure/msal-browser';
 import { useUserGroups } from '@ska-telescope/ska-login-page';
 import { IPublicClientApplication } from '@azure/msal-browser';
 import ButtonUserMenu from './UserMenu';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 // Mocks
 vi.mock('@azure/msal-react', () => ({
@@ -42,11 +41,7 @@ vi.mock('@/utils/constants', async () => {
 });
 
 const wrapper = (component: React.ReactElement) => {
-  return render(
-    <StoreProvider>
-      <AppFlowProvider>{component}</AppFlowProvider>
-    </StoreProvider>
-  );
+  return render(<StoreProvider>{component}</StoreProvider>);
 };
 
 describe('UserMenu', () => {

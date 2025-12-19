@@ -5,7 +5,6 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { MockUserFrontendList } from '@services/axios/get/getUserByEmail/mockUserFrontend';
 import MemberEntry from './MemberEntry';
 import * as mockService from '@/services/axios/get/getUserByEmail/getUserByEmail';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
@@ -49,12 +48,10 @@ const AppFlowTestBridge = () => {
 const wrapper = (component: React.ReactElement) => {
   return render(
     <StoreProvider>
-      <AppFlowProvider>
-        <ThemeA11yProvider>
-          <AppFlowTestBridge />
-          {component}
-        </ThemeA11yProvider>
-      </AppFlowProvider>
+      <ThemeA11yProvider>
+        <AppFlowTestBridge />
+        {component}
+      </ThemeA11yProvider>
     </StoreProvider>
   );
 };

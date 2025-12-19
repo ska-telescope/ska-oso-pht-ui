@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import AddDataProduct from './AddDataProduct';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 vi.mock('@/components/layout/pageBannerPPT/PageBannerPPT', () => ({
   default: () => <div data-testid="page-banner">PageBannerPPT</div>
@@ -29,11 +28,7 @@ vi.mock('@/pages/entry/DataProduct/DataProduct', () => ({
 }));
 
 const wrapper = (component: React.ReactElement) => {
-  return render(
-    <StoreProvider>
-      <AppFlowProvider>{component}</AppFlowProvider>
-    </StoreProvider>
-  );
+  return render(<StoreProvider>{component}</StoreProvider>);
 };
 
 describe('AddDataProduct', () => {

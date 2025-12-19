@@ -2,6 +2,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import BaseButton from '../Base/Button';
 
 interface ConfirmButtonProps {
+  ariaLabel?: string;
   title?: string;
   action: string | Function;
   disabled?: boolean;
@@ -12,6 +13,7 @@ interface ConfirmButtonProps {
 
 export default function ConfirmButton({
   disabled = false,
+  ariaLabel = 'confirmBtn.label',
   action,
   title = 'confirmBtn.label',
   primary = false,
@@ -21,6 +23,7 @@ export default function ConfirmButton({
   return (
     <BaseButton
       action={action}
+      ariaLabel={ariaLabel}
       disabled={disabled}
       icon={<CheckIcon />}
       primary={primary}

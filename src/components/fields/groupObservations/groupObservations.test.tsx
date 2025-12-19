@@ -2,7 +2,6 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import GroupObservationsField from './groupObservations';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 const mockUpdateAppContent2 = vi.fn();
 
@@ -23,7 +22,7 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
 }));
 
 const wrapper = (component: React.ReactElement) => {
-  return render(<AppFlowProvider>{component}</AppFlowProvider>);
+  return render(component);
 };
 
 describe('GroupObservationsField', () => {

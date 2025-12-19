@@ -6,7 +6,6 @@ import axios from 'axios';
 import { MockReviewersList } from '@services/axios/get/getReviewerList/mockReviewerList';
 import GridReviewers, { filterReviewers } from './GridReviewers';
 import { IdObject } from '@/utils/types/idObject';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 const mockedSelectedReviewers: IdObject[] = [
   { id: MockReviewersList[0].id },
@@ -14,11 +13,7 @@ const mockedSelectedReviewers: IdObject[] = [
 ];
 
 const wrapper = (component: React.ReactElement) => {
-  return render(
-    <StoreProvider>
-      <AppFlowProvider>{component}</AppFlowProvider>
-    </StoreProvider>
-  );
+  return render(<StoreProvider>{component}</StoreProvider>);
 };
 
 describe('<GridReviewers /> data rendering', () => {

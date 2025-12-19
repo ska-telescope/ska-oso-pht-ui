@@ -3,10 +3,9 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import DataProduct from './DataProduct';
-import { AppFlowProvider } from '@/utils/appFlow/AppFlowContext';
 
 const wrapper = (component: React.ReactElement) => {
-  return render(<AppFlowProvider>{component}</AppFlowProvider>);
+  return render(component);
 };
 
 // --- Mocks ---

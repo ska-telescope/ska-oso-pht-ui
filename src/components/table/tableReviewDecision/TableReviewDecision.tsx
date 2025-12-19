@@ -1,6 +1,5 @@
 import React from 'react';
 import { Table, TableBody } from '@mui/material';
-
 import TableContainer from '../tableContainer/TableContainer';
 import TableReviewDecisionHeader from './tableReviewDecisionHeader/TableReviewDecisionHeader';
 import TableReviewDecisionRow from './tableReviewDecisionRow.tsx/TableReviewDecisionRow';

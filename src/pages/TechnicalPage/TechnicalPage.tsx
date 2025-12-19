@@ -3,7 +3,6 @@ import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
-
 import DeletePDF from '@services/axios/delete/deletePDF/deletePDF.tsx';
 import PutUploadPDF from '@services/axios/put/putUploadPDF/putUploadPDF';
 import GetPresignedDeleteUrl from '@services/axios/get/getPresignedDeleteUrl/getPresignedDeleteUrl';
@@ -11,13 +10,11 @@ import GetPresignedDownloadUrl from '@services/axios/get/getPresignedDownloadUrl
 import GetPresignedUploadUrl from '@services/axios/get/getPresignedUploadUrl/getPresignedUploadUrl';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
-
 import { validateTechnicalPage } from '../../utils/validation/validation';
 import DownloadButton from '../../components/button/Download/Download';
 import PDFWrapper from '../../components/layout/PDFWrapper/PDFWrapper';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 import DeleteButton from '../../components/button/Delete/Delete';
-
 import { PAGE_TECHNICAL, UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
