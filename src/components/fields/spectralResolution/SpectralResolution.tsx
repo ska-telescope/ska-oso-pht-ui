@@ -43,7 +43,7 @@ export default function SpectralResolutionField({
   const LOWContinuumBase = () => 5.43;
   const LOWZoomBase = () => {
     const powersTwo = [1, 2, 4, 8, 16, 32, 64, 128];
-    const baseSpectralResolutionHz = (781250 * 32) / 27 / 4096 / 16;
+    const baseSpectralResolutionHz = (781250 * 32) / 27 / 4096 / 16; // TODO verify what these numbers are
     const results = powersTwo.map(obj => obj * baseSpectralResolutionHz);
     return (results[bandWidth - 1]?.toFixed(2) as unknown) as number;
   };
@@ -64,8 +64,9 @@ export default function SpectralResolutionField({
         : FREQUENCY_UNITS[3].label
       : FREQUENCY_UNITS[2].label;
 
-  const calculateLOW = () =>
-    calculateVelocity(getBaseValue(), frequency * (isContinuum() ? 1000 : 1e6));
+  const calculateLOW = () => {
+    return calculateVelocity(getBaseValue(), frequency * (isContinuum() ? 1000 : 1e6));
+  };
 
   const calculateMID = () => {
     const freq = frequencyConversion(frequency, frequencyUnits);

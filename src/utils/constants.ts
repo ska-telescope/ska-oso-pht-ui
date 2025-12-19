@@ -827,8 +827,8 @@ export const DEFAULT_ZOOM_OBSERVATION_LOW_AA2: Observation = {
     units: SUPPLIED_INTEGRATION_TIME_UNITS_H
   },
   spectralAveraging: 1,
-  spectralResolution: '14.13 Hz (21.2 m/s)',
-  effectiveResolution: '14.13 Hz (21.2 m/s)',
+  spectralResolution: '226.06 Hz (338.9 m/s)',
+  effectiveResolution: '226.06 Hz (338.9 m/s)',
   zoomChannels: 4000
 };
 

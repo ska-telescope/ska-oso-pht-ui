@@ -165,6 +165,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
     setContinuumBandwidth(ob?.continuumBandwidth ?? 0);
     setContinuumBandwidthUnits(ob?.continuumBandwidthUnits ?? 0);
+    setSpectralResolution(ob?.spectralResolution ?? '');
     setSpectralAveraging(ob?.spectralAveraging ?? 1);
     setSuppliedType(ob?.supplied.type);
     setSuppliedValue(ob?.supplied.value);
