@@ -34,15 +34,15 @@ export default function DetailsPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { isSV, osdCloses, osdOpens } = useOSDAccessors();
+  const [ScienceCategoryId, setScienceCategoryId] = React.useState(
+    getProposal().scienceCategory ?? ''
+  );
+  const [Abstract, setAbstract] = React.useState(getProposal().abstract ?? '');
 
   //TODO: @Sarah
   // Currently setProposal is happening twice for science category & autoLinking, the setProposal should happen once and account for all changes
 
-  const [isObsModeChanged, setIsObsModeChanged] = React.useState(false); // For auto-link
-
   const setTheProposalState = () => {
-    // only generate observation, data products, senscalc, calibration when autoLink is true & obs mode is selected & target exists
-    // (science category used for obs mode in SV)
     updateAppContent1(validateProposal(getProposal(), autoLink));
   };
 
@@ -61,54 +61,36 @@ export default function DetailsPage() {
 
   React.useEffect(() => {
     setTheProposalState();
-  }, [validateToggle]);
-
-  const checkCategory = (id: number) => {
-    if (isSV && id !== getProposal().scienceCategory) {
-      setIsObsModeChanged(true);
-    }
-    setProposal({ ...getProposal(), scienceCategory: id, scienceSubCategory: [1] });
-  };
+  }, [validateToggle]); // [validateToggle, ScienceCategoryId] ???
 
   React.useEffect(() => {
-    checkTargetObservation();
-  }, [isObsModeChanged]);
+    handleChanges();
+  }, [ScienceCategoryId, Abstract]);
 
-  const checkTargetObservation = () => {
-    if (!autoLink || typeof getProposal().scienceCategory !== 'number') return;
-
-    // ********************************************************** //
-    // check if obs mode is defined
-    // check if there is a target
-    // check if there is an observation
-    // if not, create a default observation based on the observation mode
-    // if yes, check observation type matches observation mode
-    // regenerate observation if type doesn't match / has changed
-    // ********************************************************** //
-
-    // check if there is a target
-    if ((getProposal().targets?.length ?? 0) > 0) {
-      // check if there is an observation defined
-      if ((getProposal().observations?.length ?? 0) > 0) {
-        if (
-          // observation type doesn't match observation mode
-          getProposal().observations![0].type !== getProposal().scienceCategory ||
-          isObsModeChanged
-        ) {
-          generateAutoLinkData();
-        }
-      } else {
-        // no observation, generate one
-        generateAutoLinkData();
-      }
+  const handleChanges = () => {
+    if (!autoLink || (getProposal().targets?.length ?? 0) <= 0) {
+      // set proposal category and abstract here when no autolink needed
+      setProposal({
+        ...getProposal(),
+        scienceCategory: ScienceCategoryId,
+        scienceSubCategory: [1],
+        abstract: Abstract
+      });
+    } else {
+      // set category and abstract along with autolink data
+      generateAutoLinkData();
     }
-    setIsObsModeChanged(false);
   };
 
   const generateAutoLinkData = async () => {
-    // TODO rename function
     const target = getProposal().targets![0]; // there should be only 1 target for auto-generation
-    const defaults = await autoLinking(target, getProposal, setProposal, false);
+    const defaults = await autoLinking(
+      target,
+      getProposal,
+      setProposal,
+      ScienceCategoryId,
+      Abstract ?? getProposal().abstract
+    );
     if (defaults && defaults.success) {
       notifySuccess(t('autoLink.success'), NOTIFICATION_DELAY_IN_SECONDS);
     } else {
@@ -163,7 +145,8 @@ export default function DetailsPage() {
 
     const setValue = (e: string) => {
       if (countWords(e) < MAX_WORD || (countWords(e) === MAX_WORD && !/\s$/.test(e))) {
-        setProposal({ ...getProposal(), abstract: e.substring(0, MAX_CHAR) });
+        // setProposal({ ...getProposal(), abstract: e.substring(0, MAX_CHAR) }); // HERE 3
+        setAbstract(e.substring(0, MAX_CHAR));
       }
     };
 
@@ -196,11 +179,11 @@ export default function DetailsPage() {
           testId="abstractId"
           rows={numRows}
           required
-          value={getProposal().abstract}
+          value={Abstract}
           setValue={(e: string) => setValue(e)}
           onFocus={() => setHelp('abstract.help')}
-          helperText={helperFunction(getProposal().abstract as string)}
-          errorText={validateWordCount(getProposal().abstract as string)}
+          helperText={helperFunction(Abstract)}
+          errorText={validateWordCount(Abstract)}
           suffix={<ViewIcon onClick={handleOpenAbstractLatexModal} toolTip="preview latex" />}
         />
         <LatexPreviewModal
@@ -241,8 +224,8 @@ export default function DetailsPage() {
         }
         required
         testId="categoryId"
-        value={getProposal().scienceCategory ?? ''}
-        setValue={checkCategory}
+        value={ScienceCategoryId}
+        setValue={setScienceCategoryId}
         label=""
         onFocus={() => setHelp('scienceCategory.help')}
       />

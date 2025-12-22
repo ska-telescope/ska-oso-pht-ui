@@ -1,4 +1,9 @@
-import { DEFAULT_DATA_PRODUCT, DEFAULT_OBSERVATIONS_LOW_AA2, TYPE_PST } from '../constants';
+import {
+  DEFAULT_DATA_PRODUCT,
+  DEFAULT_OBSERVATIONS_LOW_AA2,
+  DEFAULT_PST_OBSERVATION_LOW_AA2,
+  TYPE_PST
+} from '../constants';
 import { generateId } from '../helpers';
 import { calculateSensCalcData } from '../sensCalc/sensCalc';
 import { CalibrationStrategy } from '../types/calibrationStrategy';
@@ -17,6 +22,11 @@ export const observationOut = (obsMode: number) => {
     ...DEFAULT_OBSERVATIONS_LOW_AA2[obsMode], // TODO make this smarter / more generic for when not only low aa2 will be used
     id: generateId('obs-', 6)
   };
+
+  // if (obsMode === TYPE_PST) {
+  //   const pstObs = DEFAULT_PST_OBSERVATION_LOW_AA2;
+  //   return pstObs;
+  // }
 
   return defaultObs;
 };
@@ -54,20 +64,24 @@ const getSensCalcData = async (
 };
 
 const updateProposal = (
+  newObsMode: number,
+  newAbstract: string | undefined,
   newTarget: Target,
   newObservation: Observation,
   newCalibration: CalibrationStrategy,
   newDataProductSDP: DataProductSDP,
   sensCalcResult: any,
-  addNewTarget: boolean, // new target is added when called from target entry page, but not from general page
   getProposal: Function,
   setProposal: Function
 ) => {
   const updatedProposal = {
     ...getProposal(),
-    targets: addNewTarget ? [...(getProposal().targets ?? []), newTarget] : getProposal().targets,
+    scienceCategory: newObsMode,
+    scienceSubCategory: [1],
+    abstract: newAbstract,
+    targets: [...[], newTarget],
     observations: [newObservation].filter((obs): obs is Observation => obs !== undefined),
-    dataProductSDP: [...(getProposal().dataProductSDP ?? []), newDataProductSDP as DataProductSDP],
+    dataProductSDP: [...[], newDataProductSDP as DataProductSDP],
     targetObservation:
       sensCalcResult && newObservation && newObservation.id && newDataProductSDP?.id
         ? [
@@ -79,10 +93,7 @@ const updateProposal = (
             }
           ]
         : [],
-    calibrationStrategy: [
-      ...(getProposal().calibrationStrategy ?? []),
-      newCalibration as CalibrationStrategy
-    ]
+    calibrationStrategy: [...[], newCalibration as CalibrationStrategy]
   };
   setProposal(updatedProposal);
 };
@@ -91,10 +102,13 @@ export default async function autoLinking(
   target: Target,
   getProposal: Function,
   setProposal: Function,
-  addNewTarget: boolean = false
+  obsMode: number, // science category is used for observation mode on SV
+  abstract: string | undefined
 ): Promise<DefaultsResults> {
-  const newObservation = observationOut(getProposal().scienceCategory as number);
-  const newDataProductSDP = dataProductSDPOut(newObservation?.id, getProposal().scienceCategory);
+  const newObsmode = obsMode;
+  const newAbstract = abstract;
+  const newObservation = observationOut(newObsmode);
+  const newDataProductSDP = dataProductSDPOut(newObservation?.id, obsMode);
   const sensCalcResult = await getSensCalcData(newObservation, target, newDataProductSDP);
   if (typeof sensCalcResult === 'string') {
     return { success: false, error: sensCalcResult };
@@ -102,12 +116,13 @@ export default async function autoLinking(
   const newCalibration = calibrationOut(newObservation?.id);
 
   updateProposal(
+    newObsmode,
+    newAbstract,
     target,
     newObservation,
     newCalibration,
     newDataProductSDP,
     sensCalcResult,
-    addNewTarget,
     getProposal,
     setProposal
   );
