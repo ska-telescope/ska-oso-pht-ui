@@ -250,6 +250,12 @@ export const DETAILS = {
   ],
   ObservingMode: [
     {
+      label: 'Spectral',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: TYPE_ZOOM,
+      observationType: TYPE_ZOOM
+    },
+    {
       label: 'Continuum',
       subCategory: [{ label: 'Not specified', value: 1 }],
       value: TYPE_CONTINUUM,
@@ -260,12 +266,6 @@ export const DETAILS = {
       subCategory: [{ label: 'Not specified', value: 1 }],
       value: TYPE_PST,
       observationType: TYPE_PST
-    },
-    {
-      label: 'Spectral',
-      subCategory: [{ label: 'Not specified', value: 1 }],
-      value: TYPE_ZOOM,
-      observationType: TYPE_ZOOM
     }
   ]
 };

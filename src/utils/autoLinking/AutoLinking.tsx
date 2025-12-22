@@ -1,9 +1,4 @@
-import {
-  DEFAULT_DATA_PRODUCT,
-  DEFAULT_OBSERVATIONS_LOW_AA2,
-  DEFAULT_PST_OBSERVATION_LOW_AA2,
-  TYPE_PST
-} from '../constants';
+import { DEFAULT_DATA_PRODUCT, DEFAULT_OBSERVATIONS_LOW_AA2, TYPE_PST } from '../constants';
 import { generateId } from '../helpers';
 import { calculateSensCalcData } from '../sensCalc/sensCalc';
 import { CalibrationStrategy } from '../types/calibrationStrategy';
@@ -17,17 +12,29 @@ interface DefaultsResults {
   error?: string;
 }
 
+// useful to track down unwanted mutations of observation.type
+// function guardTypeMutation<T extends object>(obj: T): T {
+//   return new Proxy(obj, {
+//     set(target, prop, value, receiver) {
+//       if (prop === 'type' && value !== (target as any)[prop]) {
+//         console.error('Detected mutation of observation.type', {
+//           from: (target as any)[prop],
+//           to: value
+//         });
+//         // Print a stack to see where it came from
+//         console.error(new Error('type mutation stack').stack);
+//       }
+//       return Reflect.set(target, prop, value, receiver);
+//     }
+//   });
+// }
+
 export const observationOut = (obsMode: number) => {
   const defaultObs: Observation = {
     ...DEFAULT_OBSERVATIONS_LOW_AA2[obsMode], // TODO make this smarter / more generic for when not only low aa2 will be used
     id: generateId('obs-', 6)
   };
-
-  // if (obsMode === TYPE_PST) {
-  //   const pstObs = DEFAULT_PST_OBSERVATION_LOW_AA2;
-  //   return pstObs;
-  // }
-
+  // return guardTypeMutation(defaultObs);
   return defaultObs;
 };
 
