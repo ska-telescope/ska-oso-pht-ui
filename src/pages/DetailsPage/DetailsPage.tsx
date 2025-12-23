@@ -38,9 +38,7 @@ export default function DetailsPage() {
     getProposal().scienceCategory ?? ''
   );
   const [Abstract, setAbstract] = React.useState(getProposal().abstract ?? '');
-
-  //TODO: @Sarah
-  // Currently setProposal is happening twice for science category & autoLinking, the setProposal should happen once and account for all changes
+  const [Initial, setInitial] = React.useState(true);
 
   const setTheProposalState = () => {
     updateAppContent1(validateProposal(getProposal(), autoLink));
@@ -64,11 +62,19 @@ export default function DetailsPage() {
   }, [validateToggle]); // [validateToggle, ScienceCategoryId] ???
 
   React.useEffect(() => {
-    handleChanges();
+    if (!Initial) {
+      console.log('DetailsPage - ScienceCategoryId or Abstract changed - not initial');
+      handleChanges();
+    }
+    setInitial(false);
   }, [ScienceCategoryId, Abstract]);
 
   const handleChanges = () => {
-    if (!autoLink || (getProposal().targets?.length ?? 0) <= 0) {
+    if (
+      !autoLink ||
+      (getProposal().targets?.length ?? 0) <= 0 ||
+      typeof ScienceCategoryId !== 'number'
+    ) {
       // set proposal category and abstract here when no autolink needed
       setProposal({
         ...getProposal(),
