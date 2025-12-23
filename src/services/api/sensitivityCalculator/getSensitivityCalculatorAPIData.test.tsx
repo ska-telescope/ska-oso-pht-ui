@@ -1,16 +1,16 @@
 import { describe, test, expect, vi, it, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
+import { TYPE_CONTINUUM, TYPE_PST } from '../../../utils/constants';
+import Observation from '../../../utils/types/observation';
 import getSensCalc from './getSensitivityCalculatorAPIData';
 import {
   sensCalcResultsAPIResponseMockContinuum,
   sensCalcResultsAPIResponseMockSpectral
 } from './SensCalcResultsAPIResponseMOCK';
 import { SENSCALC_CONTINUUM_MOCKED, SENSCALC_SPECTRAL_MOCKED } from './SensCalcResultsMock';
+import { setMockObservation } from './getSensitivityCalculatorAPIData';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 import * as CONSTANTS from '@/utils/constants';
-import { TYPE_CONTINUUM, TYPE_PST } from '../../../utils/constants';
-import type Observation from '../../../utils/types/observation';
-import { setMockObservation } from './getSensitivityCalculatorAPIData';
 
 describe('getSensitivityCalculatorAPIData Service', () => {
   beforeEach(() => {
@@ -106,4 +106,3 @@ describe('setMockObservation', () => {
     expect(copy.id).toBe(original.id);
   });
 });
-

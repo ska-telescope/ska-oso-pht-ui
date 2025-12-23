@@ -63,7 +63,6 @@ export default function DetailsPage() {
 
   React.useEffect(() => {
     if (!Initial) {
-      console.log('DetailsPage - ScienceCategoryId or Abstract changed - not initial');
       handleChanges();
     }
     setInitial(false);
