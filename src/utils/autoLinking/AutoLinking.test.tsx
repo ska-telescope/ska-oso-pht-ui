@@ -67,10 +67,7 @@ describe('autoLinking()', () => {
   let setProposal: ReturnType<typeof vi.fn>;
 
   beforeEach(() => {
-    // Reset mocks at the start of each test
     vi.clearAllMocks();
-
-    // Stable ID for generated objects inside autoLinking()
     vi.spyOn(helpers, 'generateId').mockReturnValue('mock-0000000');
 
     // Start with an existing set of entities so we can assert replacement
@@ -94,7 +91,6 @@ describe('autoLinking()', () => {
       ]
     };
 
-    // Stateful get/set
     getProposal = vi.fn(() => proposal);
     setProposal = vi.fn((p: Proposal) => {
       proposal = p; // update the proposal "store"
@@ -122,7 +118,6 @@ describe('autoLinking()', () => {
 
     expect(proposal.calibrationStrategy).toHaveLength(1);
 
-    // sensCalc present ⇒ targetObservation should be linked
     expect(proposal.targetObservation).toHaveLength(1);
     expect(proposal.targetObservation?.[0].observationId).toBe('mock-0000000');
     expect(proposal.targetObservation?.[0].dataProductsSDPId).toBe(proposal.dataProductSDP?.[0].id);
@@ -138,13 +133,11 @@ describe('autoLinking()', () => {
     expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
 
-    // Assert single, replaced entities
     expect(proposal.targets).toHaveLength(1);
     expect(proposal.observations).toHaveLength(1);
     expect(proposal.dataProductSDP).toHaveLength(1);
     expect(proposal.calibrationStrategy).toHaveLength(1);
 
-    // Ensure we really replaced the pre-existing ones
     expect(proposal.observations?.[0].id).not.toBe('existing-obs');
     expect(proposal.dataProductSDP?.[0].id).not.toBe('existing-sdp');
     expect(proposal.calibrationStrategy?.[0].id).not.toBe('existing-cal');
@@ -161,28 +154,23 @@ describe('autoLinking()', () => {
     expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
 
-    // Single replacements
     expect(proposal.targets).toHaveLength(1);
     expect(proposal.observations).toHaveLength(1);
     expect(proposal.dataProductSDP).toHaveLength(1);
     expect(proposal.calibrationStrategy).toHaveLength(1);
     expect(proposal.targetObservation).toHaveLength(1);
 
-    // Ensure we really replaced the pre-existing ones
     expect(proposal.observations?.[0].id).not.toBe('existing-obs');
     expect(proposal.dataProductSDP?.[0].id).not.toBe('existing-sdp');
     expect(proposal.calibrationStrategy?.[0].id).not.toBe('existing-cal');
 
-    // PST-specific expectations
     const obs = proposal.observations?.[0];
     expect(obs?.type).toBe(TYPE_PST);
 
     const sdp = proposal.dataProductSDP?.[0];
     expect(sdp?.observationId).toBe(obs?.id);
-    // PST polarisations (until PDM update) should be ['XX']
     expect(sdp?.polarisations).toEqual(['XX']);
 
-    // targetObservation link must reference the new obs & sdp and include sensCalc
     const link = proposal.targetObservation?.[0];
     expect(link?.observationId).toBe(obs?.id);
     expect(link?.dataProductsSDPId).toBe(sdp?.id);
@@ -203,19 +191,16 @@ describe('autoLinking()', () => {
     expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
 
-    // Single replacements
     expect(proposal.targets).toHaveLength(1);
     expect(proposal.observations).toHaveLength(1);
     expect(proposal.dataProductSDP).toHaveLength(1);
     expect(proposal.calibrationStrategy).toHaveLength(1);
     expect(proposal.targetObservation).toHaveLength(1);
 
-    // Ensure we really replaced the pre-existing ones
     expect(proposal.observations?.[0].id).not.toBe('existing-obs');
     expect(proposal.dataProductSDP?.[0].id).not.toBe('existing-sdp');
     expect(proposal.calibrationStrategy?.[0].id).not.toBe('existing-cal');
 
-    // Spectral-specific expectations
     const obs = proposal.observations?.[0];
     expect(obs?.type).toBe(TYPE_ZOOM);
 
@@ -224,7 +209,6 @@ describe('autoLinking()', () => {
 
     expect(sdp?.polarisations).toEqual(DEFAULT_DATA_PRODUCT.polarisations);
 
-    // targetObservation must reference the new obs & sdp and include sensCalc
     const link = proposal.targetObservation?.[0];
     expect(link?.observationId).toBe(obs?.id);
     expect(link?.dataProductsSDPId).toBe(sdp?.id);
@@ -243,7 +227,6 @@ describe('autoLinking()', () => {
       dataProductSDP: [
         {
           ...DEFAULT_DATA_PRODUCT,
-          // TODO adjust here if we implement have a specific PST default SDP
           id: 'existing-pst-sdp',
           observationId: 'existing-pst-obs',
           polarisations: ['XX'] // PST-specific for now
@@ -272,28 +255,23 @@ describe('autoLinking()', () => {
     expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
 
-    // Single replacements (always only 1 of each)
     expect(proposal.targets).toHaveLength(1);
     expect(proposal.observations).toHaveLength(1);
     expect(proposal.dataProductSDP).toHaveLength(1);
     expect(proposal.calibrationStrategy).toHaveLength(1);
     expect(proposal.targetObservation).toHaveLength(1);
 
-    // Ensure PST entities were replaced
     expect(proposal.observations?.[0].id).not.toBe('existing-pst-obs');
     expect(proposal.dataProductSDP?.[0].id).not.toBe('existing-pst-sdp');
     expect(proposal.calibrationStrategy?.[0].id).not.toBe('existing-pst-cal');
 
-    // Continuum-specific expectations
     const obs = proposal.observations?.[0];
     expect(obs?.type).toBe(TYPE_CONTINUUM);
 
     const sdp = proposal.dataProductSDP?.[0];
     expect(sdp?.observationId).toBe(obs?.id);
-    // Continuum should use the default polarisations (e.g., ['I', 'XX'])
     expect(sdp?.polarisations).toEqual(DEFAULT_DATA_PRODUCT.polarisations);
 
-    // targetObservation link must reference the new obs & sdp and include sensCalc
     const link = proposal.targetObservation?.[0];
     expect(link?.observationId).toBe(obs?.id);
     expect(link?.dataProductsSDPId).toBe(sdp?.id);

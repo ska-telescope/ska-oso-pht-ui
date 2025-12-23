@@ -12,29 +12,11 @@ interface DefaultsResults {
   error?: string;
 }
 
-// useful to track down unwanted mutations of observation.type
-// function guardTypeMutation<T extends object>(obj: T): T {
-//   return new Proxy(obj, {
-//     set(target, prop, value, receiver) {
-//       if (prop === 'type' && value !== (target as any)[prop]) {
-//         console.error('Detected mutation of observation.type', {
-//           from: (target as any)[prop],
-//           to: value
-//         });
-//         // Print a stack to see where it came from
-//         console.error(new Error('type mutation stack').stack);
-//       }
-//       return Reflect.set(target, prop, value, receiver);
-//     }
-//   });
-// }
-
 export const observationOut = (obsMode: number) => {
   const defaultObs: Observation = {
     ...DEFAULT_OBSERVATIONS_LOW_AA2[obsMode], // TODO make this smarter / more generic for when not only low aa2 will be used
     id: generateId('obs-', 6)
   };
-  // return guardTypeMutation(defaultObs);
   return defaultObs;
 };
 

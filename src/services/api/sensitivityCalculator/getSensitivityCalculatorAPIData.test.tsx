@@ -97,11 +97,8 @@ describe('setMockObservation', () => {
   it('returns a new object and does not mutate the input', () => {
     const original: Observation = CONSTANTS.DEFAULT_PST_OBSERVATION_LOW_AA2;
     const copy = setMockObservation(original);
-    // Input preserved
     expect(original.type).toBe(TYPE_PST);
-    // Output coerced
     expect(copy.type).toBe(TYPE_CONTINUUM);
-    // Distinct object, shallow copy of fields
     expect(copy).not.toBe(original);
     expect(copy.id).toBe(original.id);
   });
