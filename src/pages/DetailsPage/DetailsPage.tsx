@@ -59,7 +59,7 @@ export default function DetailsPage() {
 
   React.useEffect(() => {
     setTheProposalState();
-  }, [validateToggle]); // [validateToggle, ScienceCategoryId] ???
+  }, [validateToggle]);
 
   React.useEffect(() => {
     if (!Initial) {
