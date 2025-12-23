@@ -151,7 +151,6 @@ export default function DetailsPage() {
 
     const setValue = (e: string) => {
       if (countWords(e) < MAX_WORD || (countWords(e) === MAX_WORD && !/\s$/.test(e))) {
-        // setProposal({ ...getProposal(), abstract: e.substring(0, MAX_CHAR) }); // HERE 3
         setAbstract(e.substring(0, MAX_CHAR));
       }
     };
