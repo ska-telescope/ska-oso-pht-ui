@@ -15,19 +15,3 @@ export const mockTarget: Target = {
   velUnit: 0,
   tiedArrayBeams: null
 };
-
-export const mockTarget2: Target = {
-  kind: 0,
-  decStr: '22:01:02.640',
-  id: 2,
-  name: 'm1',
-  b: 0,
-  l: 0,
-  raStr: '05:34:31.7760',
-  redshift: '',
-  referenceFrame: 'icrs',
-  vel: '0',
-  velType: 0,
-  velUnit: 0,
-  tiedArrayBeams: null
-};

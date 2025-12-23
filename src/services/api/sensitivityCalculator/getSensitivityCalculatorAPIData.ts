@@ -62,7 +62,7 @@ async function getSensitivityCalculatorAPIData(
   const telescope: Telescope = getTelescope(observation.telescope);
 
   const setMockObservation = (obs: Observation) => {
-    return { ...obs, type: TYPE_CONTINUUM };
+    return { ...obs, type: TYPE_CONTINUUM }; // important: don't use "obst.type = TYPE_PST" instead as this mutates the original object
   };
 
   return observation.type === TYPE_CONTINUUM
