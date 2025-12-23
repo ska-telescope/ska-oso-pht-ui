@@ -17,6 +17,10 @@ import { DataProductSDP } from '@/utils/types/dataProduct';
 
 type SensCalcAPIError = { error: string };
 
+export const setMockObservation = (obs: Observation) => {
+  return { ...obs, type: TYPE_CONTINUUM }; // important: don't use "obst.type = TYPE_PST" instead as this mutates the original object
+};
+
 async function getSensCalc(
   observation: Observation,
   target: Target,
@@ -60,10 +64,6 @@ async function getSensitivityCalculatorAPIData(
   _isCustom: boolean
 ) {
   const telescope: Telescope = getTelescope(observation.telescope);
-
-  const setMockObservation = (obs: Observation) => {
-    return { ...obs, type: TYPE_CONTINUUM }; // important: don't use "obst.type = TYPE_PST" instead as this mutates the original object
-  };
 
   return observation.type === TYPE_CONTINUUM
     ? GetContinuumData(telescope, observation, target, dataProductSDP)
