@@ -133,7 +133,8 @@ const ColumnChartWrapper: React.FC<WrapperProps> = ({ data, fields, t }) => {
             chartColors={getColors({
               type: getGroupColorType(),
               colors: '',
-              content: 'bg'
+              content: 'bg',
+              paletteIndex: Number(localStorage.getItem('skao_accessibility_mode'))
             })}
             width={size.width - PADDING}
             height={size.height - PADDING}

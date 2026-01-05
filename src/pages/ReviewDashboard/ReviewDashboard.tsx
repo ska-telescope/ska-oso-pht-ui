@@ -55,6 +55,73 @@ export default function ReviewDashboard() {
   const authClient = useAxiosAuthClient();
   const [activeView, setActiveView] = useState<DashboardView>(VIEW_PROPOSAL);
 
+  const paletteIndex = Number(localStorage.getItem('skao_accessibility_mode'));
+  const booleanColors = React.useMemo(
+    () =>
+      getColors({
+        type: 'boolean',
+        colors: '*',
+        content: 'bg',
+        paletteIndex
+      }),
+    [paletteIndex]
+  );
+  const chartColors = React.useMemo(
+    () =>
+      getColors({
+        type: 'chart',
+        colors: '*',
+        content: 'bg',
+        paletteIndex
+      }),
+    [paletteIndex]
+  );
+  const observationTypeColors = React.useMemo(
+    () =>
+      getColors({
+        type: 'observationType',
+        colors: '*',
+        content: 'bg',
+        paletteIndex
+      }),
+    [paletteIndex]
+  );
+  const proposalStatusColors = React.useMemo(
+    () =>
+      getColors({
+        type: 'proposalStatus',
+        colors: '*',
+        content: 'bg',
+        paletteIndex
+      }),
+    [paletteIndex]
+  );
+  const reviewStatusColors = React.useMemo(
+    () =>
+      getColors({
+        type: 'reviewStatus',
+        colors: '*',
+        content: 'bg',
+        paletteIndex
+      }),
+    [paletteIndex]
+  );
+
+  const getTheColors = (type: string) => {
+    switch (type) {
+      case 'boolean':
+        return booleanColors;
+      case 'observationType':
+        return observationTypeColors;
+      case 'proposalStatus':
+        return proposalStatusColors;
+      case 'reviewStatus':
+        return reviewStatusColors;
+      default:
+        return chartColors;
+    }
+  };
+
   const calculateProposalData = (
     report: any[],
     field: string,
@@ -345,11 +412,7 @@ export default function ReviewDashboard() {
           <D3PieChart
             data={data}
             showTotal={true}
-            chartColors={getColors({
-              type: type,
-              colors: '*',
-              content: 'bg'
-            })}
+            chartColors={getTheColors(type)}
             colorType={type}
           />
         )}
