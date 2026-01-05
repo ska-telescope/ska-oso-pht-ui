@@ -250,7 +250,7 @@
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE CALIBRATION STRATEGY AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS SCIENCE VERIFICATION IDEA"
     },
     "7": {
-      "desc": "Upload a Technical justification for this Science Verification Idea in a portable document format (pdf)."
+      "desc": "This page allows you to request and define observatory data products for Observation(s)."
     },
     "8": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO OBSERVATIONS FOR THIS SCIENCE VERIFICATION IDEA",
