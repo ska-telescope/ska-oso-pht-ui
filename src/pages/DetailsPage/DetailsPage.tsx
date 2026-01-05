@@ -94,7 +94,7 @@ export default function DetailsPage() {
       getProposal,
       setProposal,
       scienceCategoryId,
-      abstract ?? getProposal().abstract
+      abstract
     );
     if (defaults && defaults.success) {
       notifySuccess(t('autoLink.success'), NOTIFICATION_DELAY_IN_SECONDS);
