@@ -259,9 +259,9 @@ export default function TargetEntry({
         const defaults = await autoLinking(
           newTarget,
           getProposal,
-          setProposal,
-          getProposal().scienceCategory,
-          getProposal().abstract
+          setProposal
+          // getProposal().scienceCategory,
+          // getProposal().abstract
         );
         if (defaults && defaults.success) {
           notifySuccess(t('autoLink.targetSuccess'), NOTIFICATION_DELAY_IN_SECONDS);

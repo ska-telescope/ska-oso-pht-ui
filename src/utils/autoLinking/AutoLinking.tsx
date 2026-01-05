@@ -91,13 +91,13 @@ export default async function autoLinking(
   target: Target,
   getProposal: Function,
   setProposal: Function,
-  obsMode: number, // science category is used for observation mode on SV
-  abstract: string | undefined
+  obsMode?: number, // science category is used for observation mode on SV
+  abstract?: string | undefined
 ): Promise<DefaultsResults> {
-  const newObsmode = obsMode;
-  const newAbstract = abstract;
-  const newObservation = observationOut(newObsmode);
-  const newDataProductSDP = dataProductSDPOut(newObservation?.id, obsMode);
+  const newObsMode = obsMode ?? getProposal().scienceCategory;
+  const newAbstract = abstract ?? getProposal().abstract;
+  const newObservation = observationOut(newObsMode);
+  const newDataProductSDP = dataProductSDPOut(newObservation?.id, newObsMode);
   const sensCalcResult = await getSensCalcData(newObservation, target, newDataProductSDP);
   if (typeof sensCalcResult === 'string') {
     return { success: false, error: sensCalcResult };
@@ -105,7 +105,7 @@ export default async function autoLinking(
   const newCalibration = calibrationOut(newObservation?.id);
 
   updateProposal(
-    newObsmode,
+    newObsMode,
     newAbstract,
     target,
     newObservation,

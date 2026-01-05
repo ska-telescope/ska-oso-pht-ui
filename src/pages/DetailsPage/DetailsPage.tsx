@@ -34,11 +34,11 @@ export default function DetailsPage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { isSV, osdCloses, osdOpens } = useOSDAccessors();
-  const [ScienceCategoryId, setScienceCategoryId] = React.useState(
+  const [scienceCategoryId, setScienceCategoryId] = React.useState(
     getProposal().scienceCategory ?? ''
   );
-  const [Abstract, setAbstract] = React.useState(getProposal().abstract ?? '');
-  const [Initial, setInitial] = React.useState(true);
+  const [abstract, setAbstract] = React.useState(getProposal().abstract ?? '');
+  const [initial, setInitial] = React.useState(true);
 
   const setTheProposalState = () => {
     updateAppContent1(validateProposal(getProposal(), autoLink));
@@ -62,24 +62,24 @@ export default function DetailsPage() {
   }, [validateToggle]);
 
   React.useEffect(() => {
-    if (!Initial) {
+    if (!initial) {
       handleChanges();
     }
     setInitial(false);
-  }, [ScienceCategoryId, Abstract]);
+  }, [scienceCategoryId, abstract]);
 
   const handleChanges = () => {
     if (
       !autoLink ||
       (getProposal().targets?.length ?? 0) <= 0 ||
-      typeof ScienceCategoryId !== 'number'
+      typeof scienceCategoryId !== 'number'
     ) {
       // set proposal category and abstract here when no autolink needed
       setProposal({
         ...getProposal(),
-        scienceCategory: ScienceCategoryId,
+        scienceCategory: scienceCategoryId,
         scienceSubCategory: [1],
-        abstract: Abstract
+        abstract: abstract
       });
     } else {
       // set category and abstract along with autolink data
@@ -93,8 +93,8 @@ export default function DetailsPage() {
       target,
       getProposal,
       setProposal,
-      ScienceCategoryId,
-      Abstract ?? getProposal().abstract
+      scienceCategoryId,
+      abstract ?? getProposal().abstract
     );
     if (defaults && defaults.success) {
       notifySuccess(t('autoLink.success'), NOTIFICATION_DELAY_IN_SECONDS);
@@ -183,11 +183,11 @@ export default function DetailsPage() {
           testId="abstractId"
           rows={numRows}
           required
-          value={Abstract}
+          value={abstract}
           setValue={(e: string) => setValue(e)}
           onFocus={() => setHelp('abstract.help')}
-          helperText={helperFunction(Abstract)}
-          errorText={validateWordCount(Abstract)}
+          helperText={helperFunction(abstract)}
+          errorText={validateWordCount(abstract)}
           suffix={<ViewIcon onClick={handleOpenAbstractLatexModal} toolTip="preview latex" />}
         />
         <LatexPreviewModal
@@ -228,7 +228,7 @@ export default function DetailsPage() {
         }
         required
         testId="categoryId"
-        value={ScienceCategoryId}
+        value={scienceCategoryId}
         setValue={setScienceCategoryId}
         label=""
         onFocus={() => setHelp('scienceCategory.help')}
