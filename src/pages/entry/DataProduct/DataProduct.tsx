@@ -12,6 +12,7 @@ import { Box } from '@mui/system';
 import RobustField from '@components/fields/robust/Robust.tsx';
 import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
 import { useTheme } from '@mui/material/styles';
+import TickIcon from '@components/icon/tickIcon/tickIcon.tsx';
 import PolarisationsField from '@/components/fields/polarisations/polarisations';
 import {
   CHANNELS_OUT_MAX,
@@ -651,7 +652,9 @@ export default function DataProduct({ data }: DataProductProps) {
                 )}
                 {isPulsarTiming() && (
                   <Grid pb={1} container>
-                    <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(bitDepthField())}</Grid>
+                    <Grid size={{ md: COL_MID, lg: COL }}>
+                      {<TickIcon onClick={() => {}} />}All set!
+                    </Grid>
                   </Grid>
                 )}
                 {isDetectedFilterbank() && (
@@ -664,7 +667,9 @@ export default function DataProduct({ data }: DataProductProps) {
               </BorderedSection>
             )}
 
-            {((isContinuum() && isDataTypeOne()) || isSpectral() || isPST()) && (
+            {((isContinuum() && isDataTypeOne()) ||
+              isSpectral() ||
+              (isPST() && !isPulsarTiming())) && (
               <BorderedSection
                 borderColor={polarisationsValid() ? 'text.disabled' : theme.palette.error.main}
                 title={t('polarisations.label')}
