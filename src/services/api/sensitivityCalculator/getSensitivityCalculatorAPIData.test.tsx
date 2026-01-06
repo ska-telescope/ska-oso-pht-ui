@@ -1,11 +1,14 @@
-import { describe, test, expect, vi, beforeEach } from 'vitest';
+import { describe, test, expect, vi, it, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
+import { TYPE_CONTINUUM, TYPE_PST } from '../../../utils/constants';
+import Observation from '../../../utils/types/observation';
 import getSensCalc from './getSensitivityCalculatorAPIData';
 import {
   sensCalcResultsAPIResponseMockContinuum,
   sensCalcResultsAPIResponseMockSpectral
 } from './SensCalcResultsAPIResponseMOCK';
 import { SENSCALC_CONTINUUM_MOCKED, SENSCALC_SPECTRAL_MOCKED } from './SensCalcResultsMock';
+import { setMockObservation } from './getSensitivityCalculatorAPIData';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 import * as CONSTANTS from '@/utils/constants';
 
@@ -87,5 +90,16 @@ describe('getSensitivityCalculatorAPIData Service', () => {
     expect(result).to.deep.equal({
       error: 'Error: Specified pointing centre is always below the horizon from the SKA LOW site'
     });
+  });
+});
+
+describe('setMockObservation', () => {
+  it('returns a new object and does not mutate the input', () => {
+    const original: Observation = CONSTANTS.DEFAULT_PST_OBSERVATION_LOW_AA2;
+    const copy = setMockObservation(original);
+    expect(original.type).toBe(TYPE_PST);
+    expect(copy.type).toBe(TYPE_CONTINUUM);
+    expect(copy).not.toBe(original);
+    expect(copy.id).toBe(original.id);
   });
 });

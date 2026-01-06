@@ -37,7 +37,6 @@ import {
   PAGE_OBSERVATION,
   PAGE_OBSERVATION_UPDATE,
   PAGE_OBSERVATION_ADD,
-  DETAILS,
   FREQUENCY_HZ,
   ZOOM_BANDWIDTH_DEFAULT_LOW,
   ZOOM_CHANNELS_MAX,
@@ -154,7 +153,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const observationIn = (ob: Observation) => {
     setMyObsId(ob?.id);
     setSubarrayConfig(ob?.subarray);
-    setObservationType(isSV ? (getObservationType() as number) : ob.type); // TODO this should not be needed
+    setObservationType(ob.type);
     if (!once) setObservingBand(ob?.observingBand);
     setWeather(ob?.weather ?? Number(t('weather.default')));
     setElevation(ob?.elevation);
@@ -247,15 +246,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const updateStorageProposal = () => {
     if (loggedIn && (osdCyclePolicy?.maxObservations ?? 1) === 1) {
       isEdit() ? updateObservationOnProposal() : addObservationToProposal();
-    }
-  };
-
-  const getObservationType = () => {
-    if (getProposal() && typeof getProposal()?.scienceCategory === 'number') {
-      const obsType = DETAILS.ObservingMode.find(
-        item => item.value === getProposal()?.scienceCategory
-      )?.observationType;
-      return obsType;
     }
   };
 

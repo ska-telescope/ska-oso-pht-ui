@@ -262,8 +262,9 @@ export const getDataProductScriptParameters = (obs: Observation[] | null, dp: Da
         };
       } else if (pstMode === PULSAR_TIMING_VALUE) {
         return {
-          polarisation: dp.polarisations,
+          polarisations: dp.polarisations,
           bit_depth: dp.bitDepth,
+          // time_averaging_factor: 5,
           kind: 'pst',
           variant: 'pulsar timing'
         };

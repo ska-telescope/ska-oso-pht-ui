@@ -250,6 +250,12 @@ export const DETAILS = {
   ],
   ObservingMode: [
     {
+      label: 'Spectral',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: TYPE_ZOOM,
+      observationType: TYPE_ZOOM
+    },
+    {
       label: 'Continuum',
       subCategory: [{ label: 'Not specified', value: 1 }],
       value: TYPE_CONTINUUM,
@@ -260,12 +266,6 @@ export const DETAILS = {
       subCategory: [{ label: 'Not specified', value: 1 }],
       value: TYPE_PST,
       observationType: TYPE_PST
-    },
-    {
-      label: 'Spectral',
-      subCategory: [{ label: 'Not specified', value: 1 }],
-      value: TYPE_ZOOM,
-      observationType: TYPE_ZOOM
     }
   ]
 };
@@ -794,7 +794,7 @@ export const DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2: Observation = {
   continuumBandwidthUnits: FREQUENCY_MHZ,
   elevation: 15,
   bandwidth: null,
-  numStations: 512,
+  numStations: 68,
   numSubBands: 1,
   supplied: {
     type: SUPPLIED_TYPE_INTEGRATION,
@@ -819,7 +819,7 @@ export const DEFAULT_ZOOM_OBSERVATION_LOW_AA2: Observation = {
   continuumBandwidthUnits: null,
   elevation: 15,
   bandwidth: ZOOM_BANDWIDTH_DEFAULT_LOW,
-  numStations: 512,
+  numStations: 68,
   numSubBands: 1,
   supplied: {
     type: SUPPLIED_TYPE_INTEGRATION,
@@ -845,7 +845,7 @@ export const DEFAULT_PST_OBSERVATION_LOW_AA2: Observation = {
   continuumBandwidthUnits: FREQUENCY_MHZ,
   elevation: 15,
   bandwidth: null,
-  numStations: 512,
+  numStations: 68,
   numSubBands: 1,
   supplied: {
     type: SUPPLIED_TYPE_INTEGRATION,
