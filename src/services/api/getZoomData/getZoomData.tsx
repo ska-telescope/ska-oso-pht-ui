@@ -253,7 +253,10 @@ const addPropertiesLOW = (
 
   properties += addValue(
     'total_bandwidths_khz',
-    sensCalHelpers.format.convertBandwidthToKHz(bandwidthValueUnit[0], bandwidthValueUnit[1])
+    sensCalHelpers.format.convertBandwidthToKHz(
+      Number(bandwidthValueUnit[0]),
+      bandwidthValueUnit[1]
+    )
   );
   properties += addValue('weighting_mode', getImageWeightingMapping(zoomData.imageWeighting));
   properties = addRobustProperty(zoomData, properties);
@@ -304,7 +307,7 @@ const addPropertiesMID = (
   properties += addValue('el', Number(standardData.elevation.value));
   properties += addValue(
     'total_bandwidths_hz',
-    sensCalHelpers.format.convertBandwidthToHz(bandwidthValueUnit[0], bandwidthValueUnit[1])
+    sensCalHelpers.format.convertBandwidthToHz(Number(bandwidthValueUnit[0]), bandwidthValueUnit[1])
   );
   properties += addValue('weighting_mode', getImageWeightingMapping(zoomData.imageWeighting));
   properties += addValue('taper', zoomData.tapering);
@@ -362,10 +365,10 @@ async function GetZoomData(
     num13mAntennas: observation.num13mAntennas ?? 0,
     numStations: observation.numStations ?? 0,
     skyDirectionType: RA_TYPE_GALACTIC,
-    raGalactic: { value: target.raStr as string, unit: RA_TYPE_GALACTIC }, // TODO can unit be removed?
-    decGalactic: { value: target.decStr as string, unit: RA_TYPE_GALACTIC }, // TODO can unit be removed?
-    raEquatorial: { value: 0, unit: RA_TYPE_ICRS },
-    decEquatorial: { value: 0, unit: RA_TYPE_ICRS },
+    raGalactic: { value: target.raStr as string, unit: RA_TYPE_GALACTIC.label },
+    decGalactic: { value: target.decStr as string, unit: RA_TYPE_GALACTIC.label },
+    raEquatorial: { value: 0, unit: RA_TYPE_ICRS.label },
+    decEquatorial: { value: 0, unit: RA_TYPE_ICRS.label },
     elevation: { value: observation.elevation, unit: 'deg' },
     advancedData: null,
     modules: []
