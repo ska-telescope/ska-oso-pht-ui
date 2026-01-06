@@ -39,13 +39,13 @@ import {
   PAGE_OBSERVATION_ADD,
   FREQUENCY_HZ,
   ZOOM_BANDWIDTH_DEFAULT_LOW,
-  ZOOM_CHANNELS_MAX,
   TYPE_PST,
   FLOW_THROUGH_VALUE,
   ZOOM_BANDWIDTH_DEFAULT_MID,
   TELESCOPES,
   TEL_UNITS,
-  BAND_LOW_STR
+  BAND_LOW_STR,
+  AA2_STR
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -139,11 +139,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [subBands, setSubBands] = React.useState(1);
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState<number | undefined>(4);
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState<number | undefined>(0);
-  const [numOfStations, setNumOfStations] = React.useState<number | undefined>(512);
+  const [numOfStations, setNumOfStations] = React.useState<number | undefined>(0);
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [minimumChannelWidthHz, setMinimumChannelWidthHz] = React.useState<number>(0);
-  const [zoomChannels, setZoomChannels] = React.useState<number>(ZOOM_CHANNELS_MAX);
+  const [zoomChannels, setZoomChannels] = React.useState<number>(0);
   const [pstMode, setPstMode] = React.useState(FLOW_THROUGH_VALUE);
+  const [maxZoomChannels, setMaxZoomChannels] = React.useState<number>(0);
 
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
@@ -308,14 +309,16 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
     if (record) {
       //Set value using OSD Data if Low AA2
-      if (isLow() && isAA2(record.value)) {
-        setNumOfStations(osdLOW?.AA2?.numberStations ?? undefined);
+      if (isLow() && isAA2(Number(record.value))) {
+        const sArray = osdLOW?.subArrays.find((sub: any) => sub.subArray === AA2_STR);
+        setNumOfStations(sArray?.numberStations ?? undefined);
       } else {
         setNumOfStations(record.numOfStations);
       }
       //Set value using OSD Data if Mid AA2
-      if (isMid() && isAA2(record.value)) {
-        setNumOf15mAntennas(osdMID?.AA2?.numberSkaDishes ?? undefined);
+      if (isMid() && isAA2(Number(record.value))) {
+        const sArray = osdMID?.subArrays.find((sub: any) => sub.subArray === AA2_STR);
+        setNumOf15mAntennas(sArray?.numberSkaDishes ?? undefined);
       } else {
         setNumOf15mAntennas(record.numOf15mAntennas);
       }
@@ -327,13 +330,26 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     updateStorageProposal();
   };
 
+  // TODO : This will need to be a lookup if/when the OSD correctly provides subarrays in an array
+  const setMaxChannelsZoom = (_subarrayConfig: number) => {
+    const record = isLow() ? osdLOW : osdMID;
+    setMaxZoomChannels(0);
+    if (record) {
+      const sArray = record.subArrays.find((sub: any) => sub.subArray === AA2_STR);
+      setMaxZoomChannels(sArray?.numberZoomChannels ?? 0);
+    }
+  };
+
   React.useEffect(() => {
     setHelp('observationId');
     if (isEdit()) {
       observationIn(data ? data : locationProperties.state);
+      setMaxChannelsZoom(subarrayConfig);
       setOnce(data ? data : locationProperties.state);
     } else {
       setMyObsId(generateId(t('addObservation.idPrefix'), 6));
+      setTheSubarrayConfig(subarrayConfig);
+      setMaxChannelsZoom(subarrayConfig);
       setCentralFrequency(
         calculateCentralFrequency(observingBand, subarrayConfig, observatoryConstants)
       );
@@ -350,6 +366,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       setObservationType(TYPE_CONTINUUM);
     }
     setValidateToggle(!validateToggle);
+    setMaxChannelsZoom(subarrayConfig);
   }, [subarrayConfig]);
 
   React.useEffect(() => {
@@ -546,7 +563,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const numStationsField = () =>
     fieldWrapper(
       <NumStations
-        disabled={subarrayConfig !== OB_SUBARRAY_CUSTOM}
+        disabled={subarrayConfig !== Number(OB_SUBARRAY_CUSTOM)}
         widthLabel={LABEL_WIDTH_NEW}
         setValue={setNumOfStations}
         value={numOfStations ?? 0}
@@ -617,7 +634,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <Grid pt={2} size={{ xs: TOP_LABEL_WIDTH }}>
           <InputLabel disabled={subarrayConfig !== 20} shrink={false} htmlFor="numOf15mAntennas">
             <Typography
-              sx={{ fontWeight: subarrayConfig === OB_SUBARRAY_CUSTOM ? 'bold' : 'normal' }}
+              sx={{ fontWeight: subarrayConfig === Number(OB_SUBARRAY_CUSTOM) ? 'bold' : 'normal' }}
             >
               {t('numOfAntennas.label')}
             </Typography>
@@ -754,6 +771,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       <Box pt={1}>
         <ZoomChannels
           labelWidth={LABEL_WIDTH_NEW}
+          maxValue={maxZoomChannels}
           required
           value={zoomChannels}
           setValue={setZoomChannels}
@@ -1044,6 +1062,28 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
               alignItems="stretch"
               justifyContent="flex-start"
             >
+              <Grid size={{ md: 6 }}>
+                <BorderedSection
+                  title={t('observationSections.arraySetUp')}
+                  sx={{ height: '100%' }}
+                >
+                  <Grid
+                    p={0}
+                    container
+                    direction="row"
+                    alignItems="flex-start"
+                    rowSpacing={isSV ? 0 : 2}
+                  >
+                    <Grid size={{ md: 12 }}></Grid>
+                    <Grid size={{ md: 12 }}>{subArrayField()}</Grid>
+                    <Grid size={{ md: 12 }}>
+                      {!isSV && (isLow() ? numStationsField() : antennasFields())}
+                    </Grid>
+                    <Grid size={{ md: 12 }}>{suppliedField()}</Grid>
+                  </Grid>
+                </BorderedSection>
+              </Grid>
+
               {!isSV && (
                 <Grid size={{ md: 12, lg: 6 }}>
                   <BorderedSection
@@ -1089,28 +1129,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                   </BorderedSection>
                 </Grid>
               )}
-
-              <Grid size={{ md: 6 }}>
-                <BorderedSection
-                  title={t('observationSections.arraySetUp')}
-                  sx={{ height: '100%' }}
-                >
-                  <Grid
-                    p={0}
-                    container
-                    direction="row"
-                    alignItems="flex-start"
-                    rowSpacing={isSV ? 0 : 2}
-                  >
-                    <Grid size={{ md: 12 }}></Grid>
-                    <Grid size={{ md: 12 }}>{subArrayField()}</Grid>
-                    <Grid size={{ md: 12 }}>
-                      {!isSV && (isLow() ? numStationsField() : antennasFields())}
-                    </Grid>
-                    <Grid size={{ md: 12 }}>{suppliedField()}</Grid>
-                  </Grid>
-                </BorderedSection>
-              </Grid>
             </Grid>
 
             <BorderedSection title={t('observationSections.frequencySetUp')}>

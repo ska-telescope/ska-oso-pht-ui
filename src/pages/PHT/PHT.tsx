@@ -72,7 +72,7 @@ const ROUTES = [
   { path: PMT[0], element: <PanelManagement /> },
   { path: PMT[1], element: <ReviewListPage /> },
   { path: PMT[2], element: <ReviewDashboard /> },
-  { path: PMT[3], element: null },
+  { path: PMT[3], element: <div /> },
   { path: PMT[4], element: <PanelReviewDecisionList /> },
   { path: PMT[5], element: <ReviewEntry reviewType={REVIEW_TYPE.SCIENCE} /> },
   { path: PMT[6], element: <ReviewEntry reviewType={REVIEW_TYPE.TECHNICAL} /> }
@@ -140,11 +140,11 @@ export default function PHT() {
     const opt2 = showNotification();
     if (!opt1 && !opt2) return null;
     return (
-      <>
+      <div>
         {opt1 && (
           <Tooltip
             title={
-              <>
+              <div>
                 <div>
                   <strong>Cycle:</strong> {osdCycleId}
                 </div>
@@ -157,7 +157,7 @@ export default function PHT() {
                 <div>
                   <strong>Closes:</strong> {osdCloses(true)}
                 </div>
-              </>
+              </div>
             }
             arrow
             placement="top"
@@ -176,7 +176,7 @@ export default function PHT() {
             text={(application.content5 as Notification)?.message}
           />
         )}
-      </>
+      </div>
     );
   };
 
@@ -196,9 +196,10 @@ export default function PHT() {
     );
   };
 
+  // NOTE: It is likely that we will limit the options that the user gets to see, and this is the place to do it.
+  //       For now, we return all options, but annotated below is how to limit the options.
   const getAccessibilityColors = () => {
-    return []; // All options
-    // return ['telescope', 'chart', 'observationType'];
+    return []; // All options, otherwise do something like this ['telescope', 'chart', 'observationType'];
   };
 
   return (

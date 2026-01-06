@@ -23,7 +23,6 @@ export const OSO_SERVICES_PROPOSAL_ACCESS_PATH = `${SKA_OSO_SERVICES_URL}${OSO_S
 export const OSO_SERVICES_REPORT_PATH = `${OSO_SERVICES_PHT}report/`;
 export const OSO_SERVICES_REVIEWS_PATH = `${OSO_SERVICES_PHT}reviews`;
 export const OSO_SERVICES_REVIEWERS_PATH = `${OSO_SERVICES_PHT}reviewers`;
-export const OSO_SERVICES__PATH = `${OSO_SERVICES_PHT}reviewers`;
 export const OSO_SERVICES_MEMBER_PATH = `${OSO_SERVICES_PHT}prsls/member`;
 export const OSO_SERVICES_CALIBRATORS_PATH = `${OSO_SERVICES_PHT}calibrators`;
 export const OSO_SERVICES_VISIBILITY_PATH = `${SKA_OSO_SERVICES_URL}/visibility/visibility`;
@@ -43,13 +42,6 @@ export const isCypress = typeof window !== 'undefined' && window.Cypress;
 
 export const AUTO_SAVE_INTERVAL = 30; // seconds
 
-// TODO : DELETE ONCE STAR-1826 IS COMPLETED
-// export const BAND_LOW = 0;
-// export const BAND_1 = 1;
-// export const BAND_2 = 2;
-// export const BAND_5A = 3;
-// export const BAND_5B = 4;
-
 export const BAND_LOW_STR = 'low_band';
 export const BAND_1_STR = 'Band_1';
 export const BAND_2_STR = 'Band_2';
@@ -61,68 +53,6 @@ export const ANTENNA_13M = '13m';
 export const ANTENNA_15M = '15m';
 export const ANTENNA_MIXED = 'mixed';
 
-// TODO : DELETE ONCE STAR-1826 IS COMPLETED
-// export const BANDWIDTH_TELESCOPE = [
-//   {
-//     label: 'Low (50 - 350 MHz)',
-//     telescope: 2,
-//     value: BAND_LOW,
-//     isBand5: false,
-//     units: 'MHz',
-//     mapping: 'low_band',
-//     bandLimits: {
-//       [ANTENNA_LOW]: [50.0, 350.0]
-//     }
-//   },
-//   {
-//     label: 'Mid Band 1 (0.35 - 1.05 GHz)',
-//     telescope: 1,
-//     value: BAND_1,
-//     isBand5: false,
-//     units: 'GHz',
-//     mapping: 'mid_band_1',
-//     bandLimits: {
-//       [ANTENNA_15M]: [0.35e9, 1.05e9],
-//       [ANTENNA_13M]: [0.58e9, 1.015e9],
-//       [ANTENNA_MIXED]: [0.58e9, 1.015e9]
-//     }
-//   },
-//   {
-//     label: 'Mid Band 2 (0.95 - 1.76 GHz)',
-//     telescope: 1,
-//     value: BAND_2,
-//     isBand5: false,
-//     units: 'GHz',
-//     mapping: 'mid_band_2',
-//     bandLimits: {
-//       [ANTENNA_15M]: [0.95e9, 1.76e9],
-//       [ANTENNA_13M]: [0.95e9, 1.67e9],
-//       [ANTENNA_MIXED]: [0.95e9, 1.67e9]
-//     }
-//   },
-//   {
-//     label: 'Mid Band 5a (4.6 - 8.5 GHz)',
-//     telescope: 1,
-//     value: BAND_5A,
-//     isBand5: true,
-//     units: 'GHz',
-//     mapping: 'mid_band_5a',
-//     bandLimits: {
-//       [ANTENNA_15M]: [4.6e9, 8.5e9]
-//     }
-//   },
-//   {
-//     label: 'Mid Band 5b (8.3 - 15.4 GHz)',
-//     telescope: 1,
-//     value: BAND_5B,
-//     isBand5: true,
-//     units: 'GHz',
-//     mapping: 'mid_band_5b',
-//     bandLimits: {
-//       [ANTENNA_15M]: [8.3e9, 15.4e9]
-//     }
-//   }
-// ];
 export const DEFAULT_USER = 'DefaultUser';
 export const TMP_REVIEWER_ID = 'c8f8f18a-3c70-4c39-8ed9-2d8d180d99a3';
 
@@ -139,9 +69,6 @@ export const BANNER_PMT_SPACER_MIN = SPACER_HEADER + 100;
 
 export const FOOTER_PMT = 65;
 export const FOOTER_PMT_SPACER = SPACER_FOOTER + FOOTER_PMT;
-
-export const ZOOM_CHANNELS_MAX = 4000; // max for Low AA2 // TODO this should come from osd data
-export const ZOOM_CHANNELS_MIN = 1; // TODO check this is correct
 
 export const BIT_DEPTH = [
   { value: '1' },
@@ -569,6 +496,7 @@ export const OSCILLATION_UNITS = [
   { label: FREQUENCY_STR_GHZ, toHz: 10000000000 }
 ];
 //TODO: Refactor such that these identifiers are no longer needed and references can be per array label
+export const AA2_STR = 'aa2';
 export const OB_SUBARRAY_AA2 = 3;
 export const OB_SUBARRAY_CUSTOM = 'custom';
 

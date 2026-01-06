@@ -8,7 +8,7 @@ import sensCalHelpers from '../../../../services/api/sensitivityCalculator/sensC
 import {
   getMaxContBandwidthHz,
   checkMinimumChannelWidth,
-  checkMaxContBandwidthHz,
+  checkMaxBandwidthHz,
   checkBandLimits
 } from '../bandwidthValidationCommon';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -93,7 +93,7 @@ export default function ContinuumBandwidthField({
       Number(minimumChannelWidthHz),
       scaledBandwidth
     );
-    const invalidMaxBandwidth = !checkMaxContBandwidthHz(maxContBandwidthHz, scaledBandwidth);
+    const invalidMaxBandwidth = !checkMaxBandwidthHz(maxContBandwidthHz, scaledBandwidth);
     const invalidBandLimits = !checkBandLimits(
       scaledBandwidth,
       scaledFrequency,
