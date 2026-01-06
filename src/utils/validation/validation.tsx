@@ -77,26 +77,32 @@ export const validateTechnicalPage = (proposal: Proposal) => {
   return result[count];
 };
 
-export const validateSDPPage = (proposal: Proposal, autoLink: boolean) => {
-  const result = [STATUS_ERROR, STATUS_OK];
-
+export const checkDP = (proposal: Proposal) => {
   const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
 
-  if (proposal.scienceCategory) {
+  if (hasTargetObservations) {
     //based on observing type verify data products fields
     switch (proposal.scienceCategory) {
       case TYPE_ZOOM: //Spectral
+        const check = validateSpectralDataProduct(proposal);
+        console.log('check: ', check);
         return validateSpectralDataProduct(proposal) ? 0 : 1;
       case TYPE_CONTINUUM: //Continuum
         return validateContinuumDataProduct(proposal) ? 0 : 1;
       case TYPE_PST: //PST
-        return validatePSTDataProduct(proposal) ? 0 : 1;
+        return validatePSTDataProduct(proposal) ? 1 : 0;
     }
   }
+  else {
+    return 1;
+  }
+};
+
+export const validateSDPPage = (proposal: Proposal, autoLink: boolean) => {
+  const result = [STATUS_ERROR, STATUS_OK];
 
   if (autoLink) {
-    let count = hasTargetObservations() ? 1 : 0;
-    console.log('CHLOE, COUNT: ', count)
+    let count = checkDP(proposal) ? 1 : 0;
     console.log('Proposal: ', proposal)
     return result[count];
   } else {
@@ -223,21 +229,23 @@ export function validateSkyDirection2Number(value: string): string | null {
 export const validateSpectralDataProduct = (proposal: Proposal) => {
   //TODO: STAR-1854 - extend validation to account for multiple data products
   const dataProduct = proposal.dataProductSDP?.[0];
-  console.log('CHLOE 1 ')
   if (dataProduct) {
-    return (
-      dataProduct?.imageSizeValue != null &&
-      dataProduct?.imageSizeUnits != null &&
-      dataProduct?.pixelSizeValue != null &&
-      dataProduct?.pixelSizeUnits != null &&
-      dataProduct?.weighting != null &&
-      dataProduct?.taperValue != null &&
-      dataProduct?.channelsOut != null &&
-      dataProduct?.continuumSubtraction !== undefined &&
-      (dataProduct?.polarisations?.length ?? 0) > 0
-    );
+    console.log('inside validate spectral ', dataProduct)
+    console.log('condition check: ', dataProduct?.polarisations?.length >= 1);
+    const result = dataProduct?.imageSizeValue &&
+      dataProduct?.imageSizeUnits &&
+      dataProduct?.pixelSizeValue &&
+      dataProduct?.pixelSizeUnits &&
+      dataProduct?.weighting &&
+      dataProduct?.taperValue &&
+      dataProduct?.channelsOut &&
+      dataProduct?.continuumSubtraction &&
+      dataProduct?.polarisations?.length >= 1;
+    console.log('inside validate spectral returning ', result)
+    return result;
   } else {
-    return false;
+    console.log('inside validate spectral returning false ')
+    return 1;
   }
 };
 
