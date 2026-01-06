@@ -1,3 +1,4 @@
+import { AA2_STR } from '@/utils/constants';
 import ObservatoryData from '@/utils/types/observatoryData';
 
 export const MockObservatoryDataFrontend: ObservatoryData = {
@@ -62,44 +63,50 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
           }
         ]
       },
-      AA2: {
-        availableReceivers: ['Band_1', 'Band_2', 'Band_5a', 'Band_5b'],
-        numberSkaDishes: 64,
-        numberMeerkatDishes: 4,
-        numberMeerkatPlusDishes: 0,
-        maxBaselineKm: 110.0,
-        availableBandwidthHz: 800000000.0,
-        numberChannels: 14880,
-        cbfModes: ['CORR', 'PST_BF', 'PSS_BF'],
-        numberZoomWindows: 16,
-        numberZoomChannels: 14880,
-        numberPssBeams: 384,
-        numberPstBeams: 6,
-        psBeamBandwidthHz: 800000000.0,
-        numberFsps: 4
-      }
+      subArrays: [
+        {
+          subArray: AA2_STR,
+          availableReceivers: ['Band_1', 'Band_2', 'Band_5a', 'Band_5b'],
+          numberSkaDishes: 64,
+          numberMeerkatDishes: 4,
+          numberMeerkatPlusDishes: 0,
+          maxBaselineKm: 110.0,
+          availableBandwidthHz: 800000000.0,
+          numberChannels: 14880,
+          cbfModes: ['CORR', 'PST_BF', 'PSS_BF'],
+          numberZoomWindows: 16,
+          numberZoomChannels: 14880,
+          numberPssBeams: 384,
+          numberPstBeams: 6,
+          psBeamBandwidthHz: 800000000.0,
+          numberFsps: 4
+        }
+      ]
     },
     low: {
       basicCapabilities: {
         minFrequencyHz: 50000000.0,
         maxFrequencyHz: 350000000.0
       },
-      AA2: {
-        numberStations: 64,
-        numberSubstations: 720,
-        numberBeams: 8,
-        maxBaselineKm: 40.0,
-        availableBandwidthHz: 150000000.0,
-        channelWidthHz: 5400,
-        cbfModes: ['vis', 'pst', 'pss'],
-        numberZoomWindows: 16,
-        numberZoomChannels: 1800,
-        numberPssBeams: 30,
-        numberPstBeams: 4,
-        numberVlbiBeams: 0,
-        psBeamBandwidthHz: 118000000.0,
-        numberFsps: 10
-      }
+      subArrays: [
+        {
+          subArray: AA2_STR,
+          numberStations: 64,
+          numberSubstations: 720,
+          numberBeams: 8,
+          maxBaselineKm: 40.0,
+          availableBandwidthHz: 150000000.0,
+          channelWidthHz: 5400,
+          cbfModes: ['vis', 'pst', 'pss'],
+          numberZoomWindows: 16,
+          numberZoomChannels: 1800,
+          numberPssBeams: 30,
+          numberPstBeams: 4,
+          numberVlbiBeams: 0,
+          psBeamBandwidthHz: 118000000.0,
+          numberFsps: 10
+        }
+      ]
     }
   }
 };

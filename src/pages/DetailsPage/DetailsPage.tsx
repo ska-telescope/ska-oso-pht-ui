@@ -2,7 +2,12 @@ import React from 'react';
 import { Box, Grid, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
-import { DETAILS, OBSERVATION_TYPE_SHORT_BACKEND, PAGE_DETAILS } from '@utils/constants.ts';
+import {
+  AA2_STR,
+  DETAILS,
+  OBSERVATION_TYPE_SHORT_BACKEND,
+  PAGE_DETAILS
+} from '@utils/constants.ts';
 import { countWords } from '@utils/helpers.ts';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { validateProposal } from '@utils/validation/validation.tsx';
@@ -228,9 +233,8 @@ export default function DetailsPage() {
   const getObservingModeOptions = () => {
     // For now, we assume that there is a single target and observation in SV proposals and the subArray is AA2
     const record = osdLOW ? osdLOW : osdMID;
-    const sArray = record?.subArrays.find((sub: any) => sub.subArray === 'AA2');
+    const sArray = record?.subArrays.find((sub: any) => sub.subArray === AA2_STR);
     const inData = transform(sArray?.cbfModes ?? []);
-
     return inData.map(type => {
       const index = OBSERVATION_TYPE_SHORT_BACKEND.findIndex(obsType => obsType === type);
       const label = t('scienceCategory.' + index);

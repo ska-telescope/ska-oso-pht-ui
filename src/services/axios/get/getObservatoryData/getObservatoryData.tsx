@@ -1,5 +1,6 @@
 // import axios from 'axios';
 import {
+  AA2_STR,
   OSO_SERVICES_PROPOSAL_PATH,
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA
@@ -103,8 +104,7 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
           maxTargets: 100,
           bands: ['low', 'mid'],
           low: ['AA2'],
-          mid: ['AA2'],
-          observationType: ['spectral']
+          mid: ['AA2']
         },
         telescopeCapabilities: {
           low: null,
@@ -129,7 +129,7 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
             },
             subArrays: [
               {
-                subArray: 'aa2',
+                subArray: AA2_STR,
                 availableReceivers: inData.capabilities.mid.AA2.available_receivers,
                 numberSkaDishes: inData.capabilities.mid.AA2.number_ska_dishes,
                 numberMeerkatDishes: inData.capabilities.mid.AA2.number_meerkat_dishes,
@@ -156,7 +156,7 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
             },
             subArrays: [
               {
-                subArray: 'aa2',
+                subArray: AA2_STR,
                 numberStations: inData.capabilities.low.AA2.number_stations,
                 numberSubstations: inData.capabilities.low.AA2.number_substations,
                 maxBaselineKm: inData.capabilities.low.AA2.max_baseline_km,

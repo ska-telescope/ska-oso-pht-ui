@@ -45,7 +45,8 @@ import {
   ZOOM_BANDWIDTH_DEFAULT_MID,
   TELESCOPES,
   TEL_UNITS,
-  BAND_LOW_STR
+  BAND_LOW_STR,
+  AA2_STR
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -319,14 +320,14 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     if (record) {
       //Set value using OSD Data if Low AA2
       if (isLow() && isAA2(Number(record.value))) {
-        const sArray = osdLOW?.subArrays.find((sub: any) => sub.subArray === 'AA2');
+        const sArray = osdLOW?.subArrays.find((sub: any) => sub.subArray === AA2_STR);
         setNumOfStations(sArray?.numberStations ?? undefined);
       } else {
         setNumOfStations(record.numOfStations);
       }
       //Set value using OSD Data if Mid AA2
       if (isMid() && isAA2(Number(record.value))) {
-        const sArray = osdMID?.subArrays.find((sub: any) => sub.subArray === 'AA2');
+        const sArray = osdMID?.subArrays.find((sub: any) => sub.subArray === AA2_STR);
         setNumOf15mAntennas(sArray?.numberSkaDishes ?? undefined);
       } else {
         setNumOf15mAntennas(record.numOf15mAntennas);
@@ -344,7 +345,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const record = isLow() ? osdLOW : osdMID;
     setMaxZoomChannels(0);
     if (record) {
-      const sArray = record.subArrays.find((sub: any) => sub.subArray === 'AA2');
+      const sArray = record.subArrays.find((sub: any) => sub.subArray === AA2_STR);
       setMaxZoomChannels(sArray?.numberZoomChannels ?? 0);
     }
   };
