@@ -29,7 +29,7 @@ export default function DetailsPage() {
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const { setHelp } = useHelp();
-  const { autoLink, osdCyclePolicy } = useOSDAccessors();
+  const { autoLink, osdCyclePolicy, osdLOW, osdMID } = useOSDAccessors();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
@@ -210,8 +210,31 @@ export default function DetailsPage() {
     );
   };
 
+  const transform = (inData: string[]) => {
+    const out: string[] = [];
+
+    inData.forEach(item => {
+      if (item === 'vis') {
+        out.push('continuum', 'spectral');
+      } else if (item === 'pst') {
+        out.push('pst');
+      }
+      // everything else is ignored
+    });
+
+    return out;
+  };
+
   const getObservingModeOptions = () => {
-    const inData = osdCyclePolicy?.observationType ?? [];
+    let inData = osdCyclePolicy?.observationType ?? [];
+
+    // NOTE : This is a temporary fix for SV when only one OSD is present with AA2 CBF modes
+    if (osdLOW?.AA2 && !osdMID) {
+      inData = transform(osdLOW.AA2.cbfModes);
+    } else if (osdMID?.AA2 && !osdLOW) {
+      inData = transform(osdMID.AA2.cbfModes);
+    }
+
     return inData.map(type => {
       const index = OBSERVATION_TYPE_SHORT_BACKEND.findIndex(obsType => obsType === type);
       const label = t('scienceCategory.' + index);
@@ -223,9 +246,14 @@ export default function DetailsPage() {
       };
     });
   };
+  const svObservingModes = React.useMemo(() => getObservingModeOptions(), [
+    osdCyclePolicy,
+    osdLOW,
+    osdMID
+  ]);
 
   const getCategoryOptions = () => {
-    return isSV ? getObservingModeOptions() : DETAILS.ScienceCategory;
+    return isSV ? svObservingModes : DETAILS.ScienceCategory;
   };
 
   const categoryField = () => (

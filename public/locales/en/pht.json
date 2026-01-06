@@ -179,6 +179,7 @@
     "toolTip": "This will clear the file upload selection"
   },
   "cloneProposal": {
+    "label": "Clone",
     "toolTip": "Clone proposal",
     "confirm": "Clone this proposal.",
     "suffix": " - Copy"
@@ -1413,6 +1414,7 @@
     "label": "Vel/Redshift"
   },
   "viewProposal": {
+    "label": "View",
     "toolTip": "View proposal"
   },
   "viewProposalIcon": {

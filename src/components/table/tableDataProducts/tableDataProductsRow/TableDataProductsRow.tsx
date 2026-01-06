@@ -81,7 +81,8 @@ export default function TableDataProductsRow({
       colors: String(value ?? ''),
       content: 'both',
       asArray: true,
-      ...(dim ? { dim } : {})
+      ...(dim ? { dim } : {}),
+      paletteIndex: Number(localStorage.getItem('skao_accessibility_mode'))
     }) ?? [];
 
   const colorsObType = useMemo(() => getObservationColors('observationType', observation?.type), [
