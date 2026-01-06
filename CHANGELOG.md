@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
-* Changed: oso-services v11.0.0
+* Changed: oso-services v11.1.0
 * Changed: improve error handling of sensitivity calculator requests
 * Added: Generate default linked observation on observation mode change for SV
 * Added: Updated the library code and implemented accessibility for colors

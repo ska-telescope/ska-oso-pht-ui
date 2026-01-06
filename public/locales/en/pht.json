@@ -255,6 +255,7 @@
     "help": "Select the desired data product(s) by checking the boxes as appropriate.",
     "options": {
       "0": {
+        "1": "Spectral ODPs",
         "2": "Spectral ODPs"
       },
       "1": {
