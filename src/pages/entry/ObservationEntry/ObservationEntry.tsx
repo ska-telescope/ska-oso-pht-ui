@@ -140,7 +140,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [subBands, setSubBands] = React.useState(1);
   const [numOf15mAntennas, setNumOf15mAntennas] = React.useState<number | undefined>(4);
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState<number | undefined>(0);
-  const [numOfStations, setNumOfStations] = React.useState<number | undefined>(512);
+  const [numOfStations, setNumOfStations] = React.useState<number | undefined>(0);
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [minimumChannelWidthHz, setMinimumChannelWidthHz] = React.useState<number>(0);
   const [zoomChannels, setZoomChannels] = React.useState<number>(ZOOM_CHANNELS_MAX);
@@ -318,13 +318,13 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
     if (record) {
       //Set value using OSD Data if Low AA2
-      if (isLow() && isAA2(record.value)) {
+      if (isLow() && isAA2(Number(record.value))) {
         setNumOfStations(osdLOW?.AA2?.numberStations ?? undefined);
       } else {
         setNumOfStations(record.numOfStations);
       }
       //Set value using OSD Data if Mid AA2
-      if (isMid() && isAA2(record.value)) {
+      if (isMid() && isAA2(Number(record.value))) {
         setNumOf15mAntennas(osdMID?.AA2?.numberSkaDishes ?? undefined);
       } else {
         setNumOf15mAntennas(record.numOf15mAntennas);
@@ -344,6 +344,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       setOnce(data ? data : locationProperties.state);
     } else {
       setMyObsId(generateId(t('addObservation.idPrefix'), 6));
+      setTheSubarrayConfig(subarrayConfig);
       setCentralFrequency(
         calculateCentralFrequency(observingBand, subarrayConfig, observatoryConstants)
       );
@@ -556,7 +557,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const numStationsField = () =>
     fieldWrapper(
       <NumStations
-        disabled={subarrayConfig !== OB_SUBARRAY_CUSTOM}
+        disabled={subarrayConfig !== Number(OB_SUBARRAY_CUSTOM)}
         widthLabel={LABEL_WIDTH_NEW}
         setValue={setNumOfStations}
         value={numOfStations ?? 0}
@@ -627,7 +628,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <Grid pt={2} size={{ xs: TOP_LABEL_WIDTH }}>
           <InputLabel disabled={subarrayConfig !== 20} shrink={false} htmlFor="numOf15mAntennas">
             <Typography
-              sx={{ fontWeight: subarrayConfig === OB_SUBARRAY_CUSTOM ? 'bold' : 'normal' }}
+              sx={{ fontWeight: subarrayConfig === Number(OB_SUBARRAY_CUSTOM) ? 'bold' : 'normal' }}
             >
               {t('numOfAntennas.label')}
             </Typography>

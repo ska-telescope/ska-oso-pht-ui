@@ -10,6 +10,7 @@ UNRELEASED
 * Changed: improve error handling of sensitivity calculator requests
 * Added: Generate default linked observation on observation mode change for SV
 * Added: Updated the library code and implemented accessibility for colors
+* Changed: Updated code so that number of stations is obtained from the OSD Data
 
 9.0.0
 ----------
