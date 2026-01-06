@@ -1,6 +1,7 @@
 import { describe, it, expect, vi, beforeAll, beforeEach } from 'vitest';
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import D3Wrapper from './D3Wrapper';
+import { palette } from '@mui/system';
 
 // Mock D3ColumnChart to inspect chart output
 vi.mock('../D3ColumnChart', () => ({
@@ -126,7 +127,8 @@ describe('ColumnChartWrapper', () => {
     expect(mockedGetColors).toHaveBeenCalledWith({
       type: 'observationType',
       colors: '',
-      content: 'bg'
+      content: 'bg',
+      paletteIndex: 0
     });
 
     // Change groupField to "array"
@@ -136,7 +138,8 @@ describe('ColumnChartWrapper', () => {
     expect(mockedGetColors).toHaveBeenCalledWith({
       type: 'observationType',
       colors: '',
-      content: 'bg'
+      content: 'bg',
+      paletteIndex: 0
     });
   });
 });

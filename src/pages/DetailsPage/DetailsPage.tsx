@@ -29,16 +29,16 @@ export default function DetailsPage() {
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const { setHelp } = useHelp();
-  const { autoLink, osdCyclePolicy } = useOSDAccessors();
+  const { autoLink, osdCyclePolicy, osdLOW, osdMID } = useOSDAccessors();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { isSV, osdCloses, osdOpens } = useOSDAccessors();
-  const [ScienceCategoryId, setScienceCategoryId] = React.useState(
+  const [scienceCategoryId, setScienceCategoryId] = React.useState(
     getProposal().scienceCategory ?? ''
   );
-  const [Abstract, setAbstract] = React.useState(getProposal().abstract ?? '');
-  const [Initial, setInitial] = React.useState(true);
+  const [abstract, setAbstract] = React.useState(getProposal().abstract ?? '');
+  const [initial, setInitial] = React.useState(true);
 
   const setTheProposalState = () => {
     updateAppContent1(validateProposal(getProposal(), autoLink));
@@ -62,24 +62,24 @@ export default function DetailsPage() {
   }, [validateToggle]);
 
   React.useEffect(() => {
-    if (!Initial) {
+    if (!initial) {
       handleChanges();
     }
     setInitial(false);
-  }, [ScienceCategoryId, Abstract]);
+  }, [scienceCategoryId, abstract]);
 
   const handleChanges = () => {
     if (
       !autoLink ||
       (getProposal().targets?.length ?? 0) <= 0 ||
-      typeof ScienceCategoryId !== 'number'
+      typeof scienceCategoryId !== 'number'
     ) {
       // set proposal category and abstract here when no autolink needed
       setProposal({
         ...getProposal(),
-        scienceCategory: ScienceCategoryId,
+        scienceCategory: scienceCategoryId,
         scienceSubCategory: [1],
-        abstract: Abstract
+        abstract: abstract
       });
     } else {
       // set category and abstract along with autolink data
@@ -93,8 +93,8 @@ export default function DetailsPage() {
       target,
       getProposal,
       setProposal,
-      ScienceCategoryId,
-      Abstract ?? getProposal().abstract
+      scienceCategoryId,
+      abstract
     );
     if (defaults && defaults.success) {
       notifySuccess(t('autoLink.success'), NOTIFICATION_DELAY_IN_SECONDS);
@@ -183,11 +183,11 @@ export default function DetailsPage() {
           testId="abstractId"
           rows={numRows}
           required
-          value={Abstract}
+          value={abstract}
           setValue={(e: string) => setValue(e)}
           onFocus={() => setHelp('abstract.help')}
-          helperText={helperFunction(Abstract)}
-          errorText={validateWordCount(Abstract)}
+          helperText={helperFunction(abstract)}
+          errorText={validateWordCount(abstract)}
           suffix={<ViewIcon onClick={handleOpenAbstractLatexModal} toolTip="preview latex" />}
         />
         <LatexPreviewModal
@@ -200,8 +200,31 @@ export default function DetailsPage() {
     );
   };
 
+  const transform = (inData: string[]) => {
+    const out: string[] = [];
+
+    inData.forEach(item => {
+      if (item === 'vis') {
+        out.push('continuum', 'spectral');
+      } else if (item === 'pst') {
+        out.push('pst');
+      }
+      // everything else is ignored
+    });
+
+    return out;
+  };
+
   const getObservingModeOptions = () => {
-    const inData = osdCyclePolicy?.observationType ?? [];
+    let inData = osdCyclePolicy?.observationType ?? [];
+
+    // NOTE : This is a temporary fix for SV when only one OSD is present with AA2 CBF modes
+    if (osdLOW?.AA2 && !osdMID) {
+      inData = transform(osdLOW.AA2.cbfModes);
+    } else if (osdMID?.AA2 && !osdLOW) {
+      inData = transform(osdMID.AA2.cbfModes);
+    }
+
     return inData.map(type => {
       const index = OBSERVATION_TYPE_SHORT_BACKEND.findIndex(obsType => obsType === type);
       const label = t('scienceCategory.' + index);
@@ -213,9 +236,14 @@ export default function DetailsPage() {
       };
     });
   };
+  const svObservingModes = React.useMemo(() => getObservingModeOptions(), [
+    osdCyclePolicy,
+    osdLOW,
+    osdMID
+  ]);
 
   const getCategoryOptions = () => {
-    return isSV ? getObservingModeOptions() : DETAILS.ScienceCategory;
+    return isSV ? svObservingModes : DETAILS.ScienceCategory;
   };
 
   const categoryField = () => (
@@ -228,7 +256,7 @@ export default function DetailsPage() {
         }
         required
         testId="categoryId"
-        value={ScienceCategoryId}
+        value={scienceCategoryId}
         setValue={setScienceCategoryId}
         label=""
         onFocus={() => setHelp('scienceCategory.help')}

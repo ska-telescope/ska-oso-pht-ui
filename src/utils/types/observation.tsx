@@ -7,7 +7,7 @@ type Observation = {
   telescope: number;
   subarray: number;
   linked: string;
-  readonly type: number;
+  type: number;
   observingBand: string;
   weather?: number; // only for MID
   elevation: number; // TODO should be only for Mid => what property for LOW?

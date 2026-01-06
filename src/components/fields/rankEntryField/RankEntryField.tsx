@@ -28,8 +28,8 @@ export default function RankEntryField({
   const currentColors = getColors({
     type: '',
     colors: Array.from({ length: validMaxRank }, (_, i) => String(i)),
-    paletteIndex: colorBlindness,
-    content: 'both'
+    content: 'both',
+    paletteIndex: Number(localStorage.getItem('skao_accessibility_mode'))
   }) as Record<string, { bg?: string; fg?: string }>;
 
   // Use dropdown value instead of prop

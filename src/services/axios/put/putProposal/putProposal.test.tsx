@@ -392,7 +392,7 @@ describe('getDataProductScriptParameters', () => {
     } as any;
     const result = getDataProductScriptParameters(obs, dp);
     expect(result).toMatchObject({
-      polarisation: ['YX'],
+      polarisations: ['YX'],
       bit_depth: 16,
       kind: 'pst',
       variant: 'pulsar timing'

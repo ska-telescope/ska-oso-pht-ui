@@ -64,28 +64,45 @@ export default function TableSubmissionsRow({
         <TableCell role="gridcell" sx={{ maxWidth: 200, p: 0 }}>
           <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
             {editClicked && (
-              <EditIcon
-                onClick={() => editClicked(item.id)}
-                disabled={!canEdit(item.id)}
-                toolTip={t(canEdit(item.id) ? 'editProposal.toolTip' : 'editProposal.disabled')}
-              />
+              <Box display="flex" flexDirection="column" alignItems="center">
+                <EditIcon
+                  onClick={() => editClicked(item.id)}
+                  disabled={!canEdit(item.id)}
+                  toolTip={t(canEdit(item.id) ? 'editProposal.toolTip' : 'editProposal.disabled')}
+                />
+                <Typography variant="caption">{t('edit.label')}</Typography>
+              </Box>
             )}
             {viewClicked && (
-              <ViewIcon onClick={() => viewClicked(item.id)} toolTip={t('viewProposal.toolTip')} />
+              <Box display="flex" flexDirection="column" alignItems="center">
+                <ViewIcon
+                  onClick={() => viewClicked(item.id)}
+                  toolTip={t('viewProposal.toolTip')}
+                />
+                <Typography variant="caption">{t('viewProposal.label')}</Typography>
+              </Box>
             )}
             {cloneClicked && (
-              <CloneIcon
-                onClick={() => cloneClicked(item.id)}
-                disabled={!canClone(item)}
-                toolTip={t('cloneProposal.toolTip')}
-              />
+              <Box display="flex" flexDirection="column" alignItems="center">
+                <CloneIcon
+                  onClick={() => cloneClicked(item.id)}
+                  disabled={!canClone(item)}
+                  toolTip={t('cloneProposal.toolTip')}
+                />
+                <Typography variant="caption">{t('cloneProposal.label')}</Typography>
+              </Box>
             )}
             {deleteClicked && (
-              <TrashIcon
-                onClick={() => deleteClicked(item.id)}
-                disabled={!canDelete(item)}
-                toolTip={t(canDelete(item) ? 'deleteProposal.toolTip' : 'deleteProposal.disabled')}
-              />
+              <Box display="flex" flexDirection="column" alignItems="center">
+                <TrashIcon
+                  onClick={() => deleteClicked(item.id)}
+                  disabled={!canDelete(item)}
+                  toolTip={t(
+                    canDelete(item) ? 'deleteProposal.toolTip' : 'deleteProposal.disabled'
+                  )}
+                />
+                <Typography variant="caption">{t('delete.label')}</Typography>
+              </Box>
             )}
           </Box>
         </TableCell>

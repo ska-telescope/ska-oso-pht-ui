@@ -271,7 +271,8 @@ export default function TargetListSection() {
                     chartColors={getColors({
                       type: 'telescope',
                       colors: '',
-                      content: 'bg'
+                      content: 'bg',
+                      paletteIndex: Number(localStorage.getItem('skao_accessibility_mode'))
                     })}
                     width={400}
                     height={400}

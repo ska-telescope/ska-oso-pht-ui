@@ -4,8 +4,7 @@ import {
   AlertColorTypes,
   AppWrapper,
   THEME_DARK,
-  THEME_LIGHT,
-  ACCESSIBILITY_DEFAULT
+  THEME_LIGHT
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Typography, CssBaseline, ThemeProvider, Tooltip, Paper } from '@mui/material';
@@ -91,8 +90,8 @@ export default function PHT() {
   const [themeMode, setThemeMode] = React.useState(
     localStorage.getItem('skao_theme_mode') === THEME_DARK ? THEME_DARK : THEME_LIGHT
   );
-  const [accessibilityMode] = React.useState(
-    localStorage.getItem('skao_accessibility_mode') || ACCESSIBILITY_DEFAULT
+  const [accessibilityMode, setAccessibilityMode] = React.useState(
+    Number(localStorage.getItem('skao_accessibility_mode')) || 0
   );
 
   const muiTheme = theme({ themeMode, accessibilityMode });
@@ -118,10 +117,15 @@ export default function PHT() {
     <Alert color={AlertColorTypes.Error} text={t('mediaSize.notSupported')} testId="helpPanelId" />
   );
 
-  const modeToggle = () => {
+  const themeToggle = () => {
     const newMode = themeMode === THEME_DARK ? THEME_LIGHT : THEME_DARK;
     localStorage.setItem('skao_theme_mode', newMode);
     setThemeMode(newMode);
+  };
+
+  const accessibilityUpdate = (inValue: number) => {
+    localStorage.setItem('skao_accessibility_mode', String(inValue));
+    setAccessibilityMode(inValue);
   };
 
   const signIn = () => <ButtonUserMenu />;
@@ -192,10 +196,17 @@ export default function PHT() {
     );
   };
 
+  const getAccessibilityColors = () => {
+    return []; // All options
+    // return ['telescope', 'chart', 'observationType'];
+  };
+
   return (
     <ThemeProvider theme={muiTheme}>
       <CssBaseline enableColorScheme />
       <AppWrapper
+        accessibility
+        accessibilityColor={getAccessibilityColors()}
         application={t(LG() ? 'pht.short' : 'pht.title')}
         footerChildren={
           <Typography pt={1} variant="body1">
@@ -230,10 +241,12 @@ export default function PHT() {
           </Paper>
         }
         selectTelescope={false}
+        storageAccessibility={accessibilityMode}
+        storageAccessibilityUpdate={accessibilityUpdate}
         storageHelp={help}
         storageHelpToggle={helpToggle}
         storageThemeMode={themeMode}
-        storageToggleTheme={modeToggle}
+        storageToggleTheme={themeToggle}
         version={packageJson.version}
         versionTooltip={versionToolTip()}
       />

@@ -468,7 +468,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       colors: TELESCOPES[telescope() - 1].label.toLowerCase(),
       content: 'bg',
       dim: 0.6,
-      asArray: true
+      asArray: true,
+      paletteIndex: Number(localStorage.getItem('skao_accessibility_mode'))
     }) ?? [theme.palette.primary.main, theme.palette.primary.contrastText];
 
     let min = 0;
