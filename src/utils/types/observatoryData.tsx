@@ -23,7 +23,6 @@ export type ObservatoryPolicy = {
     bands: string[];
     low: string[];
     mid: string[];
-    observationType: string[];
   };
   telescopeCapabilities: TelescopeInformationFrontend;
   type: string;

@@ -16,8 +16,7 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
         maxTargets: 1,
         bands: ['low', 'mid'],
         low: ['AA2'],
-        mid: [],
-        observationType: ['spectral', 'continuum', 'pst']
+        mid: []
       },
       telescopeCapabilities: {
         mid: 'AA2',

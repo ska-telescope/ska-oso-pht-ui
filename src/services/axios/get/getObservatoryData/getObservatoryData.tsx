@@ -37,8 +37,7 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
             inData?.observatory_policy?.telescope_capabilities?.Mid !== null ? 'mid' : ''
           ].filter(band => band !== ''),
           low: [inData?.observatory_policy?.telescope_capabilities?.Low],
-          mid: [inData?.observatory_policy?.telescope_capabilities?.Mid],
-          observationType: ['spectral', 'continuum', 'pst']
+          mid: [inData?.observatory_policy?.telescope_capabilities?.Mid]
         },
         telescopeCapabilities: {
           low: inData?.observatory_policy?.telescope_capabilities?.Low,
@@ -60,8 +59,7 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
           maxTargets: 1,
           bands: ['mid'],
           low: [],
-          mid: ['AA2'],
-          observationType: ['spectral', 'continuum', 'pst']
+          mid: ['AA2']
         },
         telescopeCapabilities: {
           low: null,
@@ -83,8 +81,7 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
           maxTargets: 100,
           bands: ['low', 'mid'],
           low: ['AA2'],
-          mid: ['AA2'],
-          observationType: ['continuum', 'pst']
+          mid: ['AA2']
         },
         telescopeCapabilities: {
           low: null,
