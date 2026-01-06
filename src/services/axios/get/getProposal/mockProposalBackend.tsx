@@ -1,5 +1,5 @@
 import { ProposalBackend } from '@utils/types/proposal.tsx';
-import { BAND_LOW_STR, DEFAULT_USER, PROPOSAL_STATUS } from '@utils/constants.ts';
+import { AA2_STR, BAND_LOW_STR, DEFAULT_USER, PROPOSAL_STATUS } from '@utils/constants.ts';
 import { RA_TYPE_ICRS } from '@utils/constants.ts';
 
 export const MockProposalBackend: ProposalBackend = {
@@ -186,7 +186,7 @@ export const MockProposalBackend: ProposalBackend = {
         elevation: 20,
         array_details: {
           array: 'ska_low',
-          subarray: 'aa2',
+          subarray: AA2_STR,
           number_of_stations: 68
         },
         observation_type_details: {
@@ -379,7 +379,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
         elevation: 20,
         array_details: {
           array: 'ska_low',
-          subarray: 'aa2',
+          subarray: AA2_STR,
           number_of_stations: 68
         },
         observation_type_details: {
@@ -404,7 +404,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
           image_weighting: 'briggs',
           robust: '1',
           spectral_averaging: '1',
-          number_of_channels: 1024
+          number_of_channels: '1024'
         }
       }
     ],

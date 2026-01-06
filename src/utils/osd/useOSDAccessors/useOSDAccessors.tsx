@@ -23,21 +23,6 @@ export function useOSDAccessors() {
     selectedPolicy = application.content8 as typeof policies[number] | null;
   }
 
-  if (!selectedPolicy && policies.length > 0) {
-    const now = new Date();
-    const active = policies.find(p => {
-      const openStr = p.cycleInformation?.proposalOpen;
-      const closeStr = p.cycleInformation?.proposalClose;
-      if (!openStr || !closeStr) return false;
-      const open = new Date(openStr);
-      const close = new Date(closeStr);
-      return open <= now && now <= close;
-    });
-    const fallback = active ?? policies[0];
-    updateAppContent8(fallback);
-    selectedPolicy = fallback;
-  }
-
   const setSelectedPolicyByCycleId = (cycleId: string) => {
     const match = policies.find(p => p.cycleInformation?.cycleId === cycleId);
     if (match) {
@@ -99,6 +84,23 @@ export function useOSDAccessors() {
 
     return () => clearInterval(interval);
   }, [cycleInformation?.proposalClose, t]);
+
+  useEffect(() => {
+    if (!selectedPolicy && policies.length > 0) {
+      const now = new Date();
+      const active = policies.find(p => {
+        const openStr = p.cycleInformation?.proposalOpen;
+        const closeStr = p.cycleInformation?.proposalClose;
+        if (!openStr || !closeStr) return false;
+        const open = new Date(openStr);
+        const close = new Date(closeStr);
+        return open <= now && now <= close;
+      });
+
+      const fallback = active ?? policies[0];
+      updateAppContent8(fallback);
+    }
+  }, [selectedPolicy, policies, updateAppContent8]);
 
   // Helpful: expose the selected cycleId for robust comparisons
   const selectedCycleId = selectedPolicy?.cycleInformation?.cycleId ?? null;

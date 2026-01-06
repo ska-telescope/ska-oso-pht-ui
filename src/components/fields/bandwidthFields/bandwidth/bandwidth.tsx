@@ -15,9 +15,9 @@ import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx'
 import sensCalHelpers from '../../../../services/api/sensitivityCalculator/sensCalHelpers';
 import {
   scaleBandwidthOrFrequency,
-  getMaxContBandwidthHz,
+  getMaxSpecBandwidthHz,
   checkMinimumChannelWidth,
-  checkMaxContBandwidthHz,
+  checkMaxBandwidthHz,
   checkBandLimits
 } from '../bandwidthValidationCommon';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -126,15 +126,15 @@ export default function BandwidthField({
       return displayMinimumChannelWidthErrorMessage(minimumChannelWidthHz);
     }
 
-    const maxContBandwidthHz: number = getMaxContBandwidthHz(
+    const maxSpecBandwidthHz: number = getMaxSpecBandwidthHz(
       telescope,
       subarrayConfig,
       osdMID,
       osdLOW,
       observatoryConstants
     );
-    if (!checkMaxContBandwidthHz(maxContBandwidthHz, scaledBandwidth)) {
-      return displayMaxContBandwidthErrorMessage(maxContBandwidthHz);
+    if (!checkMaxBandwidthHz(maxSpecBandwidthHz, scaledBandwidth)) {
+      return displayMaxContBandwidthErrorMessage(maxSpecBandwidthHz);
     }
 
     if (

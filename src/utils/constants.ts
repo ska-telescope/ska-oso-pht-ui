@@ -140,9 +140,6 @@ export const BANNER_PMT_SPACER_MIN = SPACER_HEADER + 100;
 export const FOOTER_PMT = 65;
 export const FOOTER_PMT_SPACER = SPACER_FOOTER + FOOTER_PMT;
 
-export const ZOOM_CHANNELS_MAX = 4000; // max for Low AA2 // TODO this should come from osd data
-export const ZOOM_CHANNELS_MIN = 1; // TODO check this is correct
-
 export const BIT_DEPTH = [
   { value: '1' },
   { value: '2' },
@@ -569,6 +566,7 @@ export const OSCILLATION_UNITS = [
   { label: FREQUENCY_STR_GHZ, toHz: 10000000000 }
 ];
 //TODO: Refactor such that these identifiers are no longer needed and references can be per array label
+export const AA2_STR = 'aa2';
 export const OB_SUBARRAY_AA2 = 3;
 export const OB_SUBARRAY_CUSTOM = 'custom';
 
