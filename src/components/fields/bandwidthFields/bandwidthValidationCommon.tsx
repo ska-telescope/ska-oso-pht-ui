@@ -13,7 +13,7 @@ export const checkMinimumChannelWidth = (
   scaledBandwidth: number
 ): boolean => (scaledBandwidth < minimumChannelWidthHz ? false : true);
 
-// get maximum bandwidth defined for the subarray
+// get maximum bandwidth defined for the subarray ( Continuum )
 export const getMaxContBandwidthHz = (
   telescope: number,
   subarrayConfig: number,
@@ -23,11 +23,32 @@ export const getMaxContBandwidthHz = (
 ): any => {
   //TODO: AA2 will be extended as OSD Data is extended
   if (isAA2(subarrayConfig)) {
-    if (isLow(telescope)) {
-      return osdLOW?.AA2?.availableBandwidthHz;
-    } else {
-      return osdMID?.AA2?.availableBandwidthHz;
-    }
+    const sArray = (isLow(telescope) ? osdLOW : osdMID).subArrays.find(
+      (sub: any) => sub.subArray === 'AA2'
+    );
+    return sArray?.availableBandwidthHz;
+  } else {
+    //TODO: Refactor as custom does not have this field
+    return observatoryConstants.array
+      .find((item: any) => item.value === telescope)
+      ?.subarray?.find((ar: any) => ar.value === subarrayConfig)?.maxContBandwidthHz;
+  }
+};
+
+// get maximum bandwidth defined for the subarray ( Spectral )
+export const getMaxSpecBandwidthHz = (
+  telescope: number,
+  subarrayConfig: number,
+  osdMID: any,
+  osdLOW: any,
+  observatoryConstants: any
+): any => {
+  //TODO: AA2 will be extended as OSD Data is extended
+  if (isAA2(subarrayConfig)) {
+    const sArray = (isLow(telescope) ? osdLOW : osdMID).subArrays.find(
+      (sub: any) => sub.subArray === 'AA2'
+    );
+    return sArray?.channelWidthHz;
   } else {
     //TODO: Refactor as custom does not have this field
     return observatoryConstants.array
@@ -38,10 +59,10 @@ export const getMaxContBandwidthHz = (
 
 // The bandwidth should be smaller than the maximum bandwidth defined for the subarray
 // For the subarrays that don't have one set, the full bandwidth is allowed
-export const checkMaxContBandwidthHz = (
-  maxContBandwidthHz: number | undefined,
+export const checkMaxBandwidthHz = (
+  maxBandwidthHz: number | undefined,
   scaledBandwidth: number
-): boolean => (maxContBandwidthHz && scaledBandwidth > maxContBandwidthHz ? false : true);
+): boolean => (maxBandwidthHz && scaledBandwidth > maxBandwidthHz ? false : true);
 
 const getSubArrayAntennasCounts = (
   osdMID: any,
@@ -54,8 +75,9 @@ const getSubArrayAntennasCounts = (
   const subArray = observationArray?.subarray?.find((sub: any) => sub.value === subarrayConfig);
   //TODO: AA2 will be extended as OSD Data is extended
   if (!isLow(telescope) && isAA2(subarrayConfig)) {
+    const sArray = osdMID.subArrays.find((sub: any) => sub.subArray === 'AA2');
     return {
-      n15mAntennas: osdMID?.AA2?.numberSkaDishes || 0,
+      n15mAntennas: sArray?.numberSkaDishes || 0,
       n13mAntennas: subArray?.numOf13mAntennas || 0
     };
   } else {

@@ -101,6 +101,7 @@ export type subarrayConfigurationMidBackend = {
 };
 
 export type subarrayConfigurationMid = {
+  subArray: string;
   availableReceivers: string[];
   numberSkaDishes: number | null;
   numberMeerkatDishes: number | null;
@@ -135,6 +136,7 @@ export type subarrayConfigurationLowBackend = {
 };
 
 export type subarrayConfigurationLow = {
+  subArray: string;
   numberStations: number | null;
   numberSubstations: number | null;
   maxBaselineKm: number;
@@ -170,11 +172,11 @@ export type ObservatoryData = {
   capabilities: {
     mid: {
       basicCapabilities: BasicCapabilitiesMid;
-      AA2: subarrayConfigurationMid;
+      subArrays: subarrayConfigurationMid[];
     } | null;
     low: {
       basicCapabilities: BasicCapabilitiesLow;
-      AA2: subarrayConfigurationLow;
+      subArrays: subarrayConfigurationLow[];
     } | null;
   };
 };

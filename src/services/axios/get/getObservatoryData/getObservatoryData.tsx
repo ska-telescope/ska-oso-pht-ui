@@ -130,22 +130,25 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
                 })
               )
             },
-            AA2: {
-              availableReceivers: inData.capabilities.mid.AA2.available_receivers,
-              numberSkaDishes: inData.capabilities.mid.AA2.number_ska_dishes,
-              numberMeerkatDishes: inData.capabilities.mid.AA2.number_meerkat_dishes,
-              numberMeerkatPlusDishes: inData.capabilities.mid.AA2.number_meerkatplus_dishes,
-              maxBaselineKm: inData.capabilities.mid.AA2.max_baseline_km,
-              availableBandwidthHz: inData.capabilities.mid.AA2.available_bandwidth_hz,
-              numberChannels: inData.capabilities.mid.AA2.number_channels,
-              cbfModes: inData.capabilities.mid.AA2.cbf_modes,
-              numberZoomWindows: inData.capabilities.mid.AA2.number_zoom_windows,
-              numberZoomChannels: inData.capabilities.mid.AA2.number_zoom_channels,
-              numberPssBeams: inData.capabilities.mid.AA2.number_pss_beams,
-              numberPstBeams: inData.capabilities.mid.AA2.number_pst_beams,
-              psBeamBandwidthHz: inData.capabilities.mid.AA2.ps_beam_bandwidth_hz,
-              numberFsps: inData.capabilities.mid.AA2.number_fsps
-            }
+            subArrays: [
+              {
+                subArray: 'aa2',
+                availableReceivers: inData.capabilities.mid.AA2.available_receivers,
+                numberSkaDishes: inData.capabilities.mid.AA2.number_ska_dishes,
+                numberMeerkatDishes: inData.capabilities.mid.AA2.number_meerkat_dishes,
+                numberMeerkatPlusDishes: inData.capabilities.mid.AA2.number_meerkatplus_dishes,
+                maxBaselineKm: inData.capabilities.mid.AA2.max_baseline_km,
+                availableBandwidthHz: inData.capabilities.mid.AA2.available_bandwidth_hz,
+                numberChannels: inData.capabilities.mid.AA2.number_channels,
+                cbfModes: inData.capabilities.mid.AA2.cbf_modes,
+                numberZoomWindows: inData.capabilities.mid.AA2.number_zoom_windows,
+                numberZoomChannels: inData.capabilities.mid.AA2.number_zoom_channels,
+                numberPssBeams: inData.capabilities.mid.AA2.number_pss_beams,
+                numberPstBeams: inData.capabilities.mid.AA2.number_pst_beams,
+                psBeamBandwidthHz: inData.capabilities.mid.AA2.ps_beam_bandwidth_hz,
+                numberFsps: inData.capabilities.mid.AA2.number_fsps
+              }
+            ]
           }
         : null,
       low: inData?.capabilities?.low?.basic_capabilities
@@ -154,22 +157,25 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
               minFrequencyHz: inData.capabilities.low.basic_capabilities.min_frequency_hz,
               maxFrequencyHz: inData.capabilities.low.basic_capabilities.max_frequency_hz
             },
-            AA2: {
-              numberStations: inData.capabilities.low.AA2.number_stations,
-              numberSubstations: inData.capabilities.low.AA2.number_substations,
-              maxBaselineKm: inData.capabilities.low.AA2.max_baseline_km,
-              availableBandwidthHz: inData.capabilities.low.AA2.available_bandwidth_hz,
-              cbfModes: inData.capabilities.low.AA2.cbf_modes,
-              numberZoomWindows: inData.capabilities.low.AA2.number_zoom_windows,
-              numberZoomChannels: inData.capabilities.low.AA2.number_zoom_channels,
-              numberPssBeams: inData.capabilities.low.AA2.number_pss_beams,
-              numberPstBeams: inData.capabilities.low.AA2.number_pst_beams,
-              psBeamBandwidthHz: inData.capabilities.low.AA2.ps_beam_bandwidth_hz,
-              numberFsps: inData.capabilities.low.AA2.number_fsps,
-              channelWidthHz: inData.capabilities.low.AA2.channel_width_hz,
-              numberBeams: inData.capabilities.low.AA2.number_beams,
-              numberVlbiBeams: inData.capabilities.low.AA2.number_vlbi_beams
-            }
+            subArrays: [
+              {
+                subArray: 'aa2',
+                numberStations: inData.capabilities.low.AA2.number_stations,
+                numberSubstations: inData.capabilities.low.AA2.number_substations,
+                maxBaselineKm: inData.capabilities.low.AA2.max_baseline_km,
+                availableBandwidthHz: inData.capabilities.low.AA2.available_bandwidth_hz,
+                cbfModes: inData.capabilities.low.AA2.cbf_modes,
+                numberZoomWindows: inData.capabilities.low.AA2.number_zoom_windows,
+                numberZoomChannels: inData.capabilities.low.AA2.number_zoom_channels,
+                numberPssBeams: inData.capabilities.low.AA2.number_pss_beams,
+                numberPstBeams: inData.capabilities.low.AA2.number_pst_beams,
+                psBeamBandwidthHz: inData.capabilities.low.AA2.ps_beam_bandwidth_hz,
+                numberFsps: inData.capabilities.low.AA2.number_fsps,
+                channelWidthHz: inData.capabilities.low.AA2.channel_width_hz,
+                numberBeams: inData.capabilities.low.AA2.number_beams,
+                numberVlbiBeams: inData.capabilities.low.AA2.number_vlbi_beams
+              }
+            ]
           }
         : null
     }

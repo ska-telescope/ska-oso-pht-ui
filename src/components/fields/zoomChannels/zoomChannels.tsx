@@ -2,18 +2,15 @@ import React from 'react';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
-import {
-  ERROR_SECS,
-  LAB_IS_BOLD,
-  LAB_POSITION,
-  ZOOM_CHANNELS_MAX,
-  ZOOM_CHANNELS_MIN
-} from '@/utils/constants';
+import { ERROR_SECS, LAB_IS_BOLD, LAB_POSITION } from '@/utils/constants';
+
+const ZOOM_CHANNELS_MIN = 1;
 
 interface ZoomChannelsProps {
   disabled?: boolean;
   required?: boolean;
   labelWidth?: number;
+  maxValue: number;
   setValue: Function;
   suffix?: any;
   value: number;
@@ -22,6 +19,7 @@ interface ZoomChannelsProps {
 export default function ZoomChannels({
   disabled = false,
   labelWidth = 5,
+  maxValue,
   required = false,
   setValue,
   suffix,
@@ -34,14 +32,16 @@ export default function ZoomChannels({
 
   const checkValue = (e: number) => {
     const num = Number(e);
-    if (num >= ZOOM_CHANNELS_MIN && num <= ZOOM_CHANNELS_MAX) {
+    if (num >= ZOOM_CHANNELS_MIN && num <= maxValue) {
       setFieldValid(true);
       setValue(num);
     } else {
       setFieldValid(false);
     }
   };
-  const errorMessage = fieldValid ? '' : t(FIELD + '.range.error');
+  const errorMessage = fieldValid
+    ? ''
+    : t(FIELD + '.range.error', { min: ZOOM_CHANNELS_MIN, max: maxValue });
 
   React.useEffect(() => {
     const timer = () => {

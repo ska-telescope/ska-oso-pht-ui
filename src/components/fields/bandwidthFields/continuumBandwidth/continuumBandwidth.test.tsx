@@ -77,7 +77,6 @@ describe('<ContinuumBandwidth />', () => {
     value: 20,
     centralFrequency: 1,
     centralFrequencyUnits: 1,
-    observingBand: 1,
     continuumBandwidthUnits: 2,
     setScaledBandwidth: vi.fn(),
     subarrayConfig: 8,
@@ -102,7 +101,7 @@ describe('<ContinuumBandwidth />', () => {
 
   test('shows no error when all checks pass', () => {
     vi.spyOn(bandwidthValidationCommon, 'checkMinimumChannelWidth').mockReturnValue(true);
-    vi.spyOn(bandwidthValidationCommon, 'checkMaxContBandwidthHz').mockReturnValue(true);
+    vi.spyOn(bandwidthValidationCommon, 'checkMaxBandwidthHz').mockReturnValue(true);
     vi.spyOn(bandwidthValidationCommon, 'checkBandLimits').mockReturnValue(true);
 
     renderField();
@@ -120,7 +119,7 @@ describe('<ContinuumBandwidth />', () => {
 
   test('shows max bandwidth error when check fails', () => {
     vi.spyOn(bandwidthValidationCommon, 'checkMinimumChannelWidth').mockReturnValue(true);
-    vi.spyOn(bandwidthValidationCommon, 'checkMaxContBandwidthHz').mockReturnValue(false);
+    vi.spyOn(bandwidthValidationCommon, 'checkMaxBandwidthHz').mockReturnValue(false);
     renderField();
     const errorText = screen.getByTestId('continuumBandwidth').getAttribute('data-errortext');
     expect(errorText).not.toBeNull();
@@ -129,7 +128,7 @@ describe('<ContinuumBandwidth />', () => {
 
   test('shows band limits error when check fails', () => {
     vi.spyOn(bandwidthValidationCommon, 'checkMinimumChannelWidth').mockReturnValue(true);
-    vi.spyOn(bandwidthValidationCommon, 'checkMaxContBandwidthHz').mockReturnValue(true);
+    vi.spyOn(bandwidthValidationCommon, 'checkMaxBandwidthHz').mockReturnValue(true);
     vi.spyOn(bandwidthValidationCommon, 'checkBandLimits').mockReturnValue(false);
     renderField();
     const errorText = screen.getByTestId('continuumBandwidth').getAttribute('data-errortext');

@@ -1644,10 +1644,10 @@
     "help": "Default value is Pointing Centres. Field Pattern selection currently unavailable."
   },
   "zoomChannels": {
-    "help": "Maximum number of channels for Low AA2 is 4000. To increase bandwidth, increase the spectral averaging parameter",
+    "help": "Maximum number of channels for Low AA2 is {{max}}. To increase bandwidth, increase the spectral averaging parameter",
     "label": "Number of channels",
     "range": {
-      "error": "Valid range is 1 - 4000 for Low AA2"
+      "error": "Valid range is {{min}} - {{max}}"
     }
   }
 }
