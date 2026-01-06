@@ -9,6 +9,7 @@ UNRELEASED
 * Changed: oso-services v11.0.0
 * Changed: improve error handling of sensitivity calculator requests
 * Added: Generate default linked observation on observation mode change for SV
+* Added: Updated the library code and implemented accessibility for colors
 
 9.0.0
 ----------

@@ -196,9 +196,10 @@ export default function PHT() {
     );
   };
 
+  // NOTE: It is likely that we will limit the options that the user gets to see, and this is the place to do it.
+  //       For now, we return all options, but annotated below is how to limit the options.
   const getAccessibilityColors = () => {
-    return []; // All options
-    // return ['telescope', 'chart', 'observationType'];
+    return []; // All options, otherwise do something like this ['telescope', 'chart', 'observationType'];
   };
 
   return (
