@@ -1,6 +1,9 @@
 import {
+  DETECTED_FILTER_BANK_VALUE,
+  FLOW_THROUGH_VALUE,
   PAGE_DATA_PRODUCTS,
   PAGE_OBSERVATION,
+  PULSAR_TIMING_VALUE,
   STATUS_ERROR,
   STATUS_OK,
   STATUS_PARTIAL,
@@ -234,7 +237,6 @@ export const validateSpectralDataProduct = (proposal: Proposal) => {
 export const validateContinuumDataProduct = (proposal: Proposal) => {
   //TODO: STAR-1854 - extend validation to account for multiple data products
   const dataProduct = proposal.dataProductSDP?.[0];
-
   if (dataProduct?.dataProductType === 1) {
     // Images
     return (
@@ -256,6 +258,19 @@ export const validateContinuumDataProduct = (proposal: Proposal) => {
 export const validatePSTDataProduct = (proposal: Proposal) => {
   //TODO: STAR-1854 - extend validation to account for multiple data products
   const dataProduct = proposal.dataProductSDP?.[0];
-  //TODO: extend validation when PST functionality is updated
-  return dataProduct?.dataProductType === TYPE_PST;
+  if (dataProduct) {
+    switch (proposal.observations?.[0].pstMode) {
+      case FLOW_THROUGH_VALUE:
+        return dataProduct?.bitDepth != null && dataProduct?.polarisations?.length > 0;
+      case DETECTED_FILTER_BANK_VALUE:
+        return (
+          dataProduct?.timeAveraging != null &&
+          dataProduct?.frequencyAveraging != null &&
+          dataProduct?.bitDepth != null &&
+          dataProduct?.polarisations?.length > 0
+        );
+      case PULSAR_TIMING_VALUE:
+        return true; // confirm conditions as no fields to verify
+    }
+  }
 };
