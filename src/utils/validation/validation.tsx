@@ -221,24 +221,7 @@ export function validateSkyDirection2Number(value: string): string | null {
 export const validateSpectralDataProduct = (proposal: Proposal) => {
   //TODO: STAR-1854 - extend validation to account for multiple data products
   const dataProduct = proposal.dataProductSDP?.[0];
-  return (
-    dataProduct?.imageSizeValue != null &&
-    dataProduct?.imageSizeUnits != null &&
-    dataProduct?.pixelSizeValue != null &&
-    dataProduct?.pixelSizeUnits != null &&
-    dataProduct?.weighting != null &&
-    dataProduct?.taperValue != null &&
-    dataProduct?.channelsOut != null &&
-    dataProduct?.continuumSubtraction !== undefined &&
-    (dataProduct?.polarisations?.length ?? 0) > 0
-  );
-};
-
-export const validateContinuumDataProduct = (proposal: Proposal) => {
-  //TODO: STAR-1854 - extend validation to account for multiple data products
-  const dataProduct = proposal.dataProductSDP?.[0];
-  if (dataProduct?.dataProductType === 1) {
-    // Images
+  if (dataProduct) {
     return (
       dataProduct?.imageSizeValue != null &&
       dataProduct?.imageSizeUnits != null &&
@@ -247,11 +230,36 @@ export const validateContinuumDataProduct = (proposal: Proposal) => {
       dataProduct?.weighting != null &&
       dataProduct?.taperValue != null &&
       dataProduct?.channelsOut != null &&
-      dataProduct?.polarisations?.length > 0
+      dataProduct?.continuumSubtraction !== undefined &&
+      (dataProduct?.polarisations?.length ?? 0) > 0
     );
   } else {
-    //Visibilities
-    return dataProduct?.timeAveraging != null && dataProduct?.frequencyAveraging != null;
+    return false;
+  }
+};
+
+export const validateContinuumDataProduct = (proposal: Proposal) => {
+  //TODO: STAR-1854 - extend validation to account for multiple data products
+  const dataProduct = proposal.dataProductSDP?.[0];
+  if (dataProduct) {
+    if (dataProduct?.dataProductType === 1) {
+      // Images
+      return (
+        dataProduct?.imageSizeValue != null &&
+        dataProduct?.imageSizeUnits != null &&
+        dataProduct?.pixelSizeValue != null &&
+        dataProduct?.pixelSizeUnits != null &&
+        dataProduct?.weighting != null &&
+        dataProduct?.taperValue != null &&
+        dataProduct?.channelsOut != null &&
+        dataProduct?.polarisations?.length > 0
+      );
+    } else {
+      //Visibilities
+      return dataProduct?.timeAveraging != null && dataProduct?.frequencyAveraging != null;
+    }
+  } else {
+    return false;
   }
 };
 
@@ -270,7 +278,9 @@ export const validatePSTDataProduct = (proposal: Proposal) => {
           dataProduct?.polarisations?.length > 0
         );
       case PULSAR_TIMING_VALUE:
-        return true; // confirm conditions as no fields to verify
+        return true; // no visible fields to verify
     }
+  } else {
+    return false;
   }
 };
