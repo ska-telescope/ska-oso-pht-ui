@@ -10,6 +10,7 @@ import {
   DEFAULT_LOW_SUPPLIED_INTEGRATION_TIME,
   DEFAULT_LOW_SUPPLIED_SENSITIVITY
 } from '@utils/constants';
+import { ValueLabelPair } from './ValueLabelPair';
 
 const TYPE_PSS = 2; // Moved from constants as ir's only used here
 
@@ -212,7 +213,7 @@ export type StandardData = {
   num15mAntennas: number;
   num13mAntennas: number;
   numStations: number;
-  skyDirectionType: string;
+  skyDirectionType: ValueLabelPair;
   raGalactic: StringUnitPair;
   decGalactic: StringUnitPair;
   raEquatorial: ValueUnitPair;
