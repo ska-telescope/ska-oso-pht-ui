@@ -96,6 +96,8 @@ export const validateSDPPage = (proposal: Proposal, autoLink: boolean) => {
 
   if (autoLink) {
     let count = hasTargetObservations() ? 1 : 0;
+    console.log('CHLOE, COUNT: ', count)
+    console.log('Proposal: ', proposal)
     return result[count];
   } else {
     let count =
@@ -221,6 +223,7 @@ export function validateSkyDirection2Number(value: string): string | null {
 export const validateSpectralDataProduct = (proposal: Proposal) => {
   //TODO: STAR-1854 - extend validation to account for multiple data products
   const dataProduct = proposal.dataProductSDP?.[0];
+  console.log('CHLOE 1 ')
   if (dataProduct) {
     return (
       dataProduct?.imageSizeValue != null &&
