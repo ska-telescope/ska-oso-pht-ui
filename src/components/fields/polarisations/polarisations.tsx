@@ -3,7 +3,8 @@ import {
   POLARISATIONS,
   POLARISATIONS_PST_BANK,
   POLARISATIONS_PST_FLOW,
-  TYPE_CONTINUUM
+  TYPE_CONTINUUM,
+  TYPE_PST
 } from '@utils/constants.ts';
 import { Typography } from '@mui/material';
 import { LABEL_POSITION, TickBox } from '@ska-telescope/ska-gui-components';
@@ -40,9 +41,9 @@ export default function PolarisationsField({
     const base =
       observationType === TYPE_CONTINUUM
         ? POLARISATIONS
-        : dataProductType === 1
-        ? POLARISATIONS_PST_FLOW
-        : POLARISATIONS_PST_BANK;
+        : observationType === TYPE_PST && dataProductType === 1
+        ? POLARISATIONS_PST_BANK
+        : POLARISATIONS_PST_FLOW;
 
     return base.map(el => ({
       label: t(`${FIELD}.${el.value}`),

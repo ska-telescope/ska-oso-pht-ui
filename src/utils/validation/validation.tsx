@@ -77,25 +77,29 @@ export const validateTechnicalPage = (proposal: Proposal) => {
   return result[count];
 };
 
-export const validateSDPPage = (proposal: Proposal, autoLink: boolean) => {
-  const result = [STATUS_ERROR, STATUS_OK];
-
+export const checkDP = (proposal: Proposal) => {
   const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
 
-  if (proposal.scienceCategory) {
+  if (hasTargetObservations) {
     //based on observing type verify data products fields
     switch (proposal.scienceCategory) {
       case TYPE_ZOOM: //Spectral
-        return validateSpectralDataProduct(proposal) ? 0 : 1;
+        return validateSpectralDataProduct(proposal) ? 1 : 0;
       case TYPE_CONTINUUM: //Continuum
-        return validateContinuumDataProduct(proposal) ? 0 : 1;
+        return validateContinuumDataProduct(proposal) ? 1 : 0;
       case TYPE_PST: //PST
-        return validatePSTDataProduct(proposal) ? 0 : 1;
+        return validatePSTDataProduct(proposal) ? 1 : 0;
     }
+  } else {
+    return 1;
   }
+};
+
+export const validateSDPPage = (proposal: Proposal, autoLink: boolean) => {
+  const result = [STATUS_ERROR, STATUS_OK];
 
   if (autoLink) {
-    let count = hasTargetObservations() ? 1 : 0;
+    let count = checkDP(proposal) ? 1 : 0;
     return result[count];
   } else {
     let count =
@@ -231,7 +235,7 @@ export const validateSpectralDataProduct = (proposal: Proposal) => {
       dataProduct?.taperValue != null &&
       dataProduct?.channelsOut != null &&
       dataProduct?.continuumSubtraction !== undefined &&
-      (dataProduct?.polarisations?.length ?? 0) > 0
+      dataProduct?.polarisations?.length > 0
     );
   } else {
     return false;
