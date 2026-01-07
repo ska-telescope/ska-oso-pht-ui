@@ -237,6 +237,8 @@ export const validateSpectralDataProduct = (proposal: Proposal) => {
       dataProduct?.continuumSubtraction !== undefined &&
       dataProduct?.polarisations?.length > 0
     );
+  } else {
+    return false;
   }
 };
 
