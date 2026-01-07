@@ -3,9 +3,7 @@ import {
   pageConfirmed,
   verifyOnLandingPage,
   verifyOnLandingPageFilterIsVisible,
-  mockCreateProposalAPI,
   verifyMockedProposalOnLandingPageIsVisible,
-  verifyProposalCreatedAlertFooter,
   mockEmailAPI,
   initialize,
   clearLocalStorage,
@@ -23,13 +21,15 @@ import {
   clickObservationFromTable,
   clickToLinkTargetAndObservation,
   verifySensitivityCalculatorStatusSuccess,
-  clickToCalibrationPage
+  clickToCalibrationPage,
+  mockCreateSubmissionAPI,
+  verifySubmissionCreatedAlertFooter
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
 beforeEach(() => {
   initialize(standardUser);
-  mockCreateProposalAPI();
+  mockCreateSubmissionAPI();
   mockEmailAPI();
   createScienceIdeaLoggedIn();
 });
@@ -46,8 +46,8 @@ describe('Edit Proposal', () => {
   });
 
   it('Edit a basic proposal', { jiraKey: 'XTP-71405' }, () => {
-    cy.wait('@mockCreateProposal');
-    verifyProposalCreatedAlertFooter();
+    cy.wait('@mockCreateSubmission');
+    verifySubmissionCreatedAlertFooter();
     pageConfirmed('TEAM');
 
     //edit existing proposal

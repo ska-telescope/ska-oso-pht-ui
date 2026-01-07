@@ -6,17 +6,17 @@ import {
   createObservation,
   createScienceIdeaLoggedIn,
   initialize,
-  mockCreateProposalAPI,
   mockEmailAPI,
   pageConfirmed,
   updateDataProductField,
   verifyFieldError,
-  verifyProposalCreatedAlertFooter
+  mockCreateSubmissionAPI,
+  verifySubmissionCreatedAlertFooter
 } from '../../common/common';
 import { standardUser } from '../../users/users.js';
 beforeEach(() => {
   initialize(standardUser);
-  mockCreateProposalAPI();
+  mockCreateSubmissionAPI();
   mockEmailAPI();
 });
 
@@ -27,8 +27,8 @@ afterEach(() => {
 describe('Data product validation', () => {
   it.skip('Verify channels out range', () => {
     createScienceIdeaLoggedIn();
-    cy.wait('@mockCreateProposal');
-    verifyProposalCreatedAlertFooter();
+    cy.wait('@mockCreateSubmission');
+    verifySubmissionCreatedAlertFooter();
     pageConfirmed('TEAM');
 
     // clickStatusIconNav('statusId2');

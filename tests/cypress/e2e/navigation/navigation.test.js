@@ -1,20 +1,20 @@
 import {
-  clickAddProposal,
-  mockCreateProposalAPI,
   initialize,
   clearLocalStorage,
   clickCycleConfirm,
-  enterProposalTitle,
-  clickCreateProposal,
-  verifyProposalCreatedAlertFooter,
-  clickCycleSelection
+  clickCycleSelection,
+  enterScienceVerificationIdeaTitle,
+  clickAddSubmission,
+  clickCreateSubmission,
+  mockCreateSubmissionAPI,
+  verifySubmissionCreatedAlertFooter
 } from '../common/common.js';
 import { standardUser } from '../users/users.js';
 
 describe('Verify navigation', () => {
   beforeEach(() => {
     initialize(standardUser);
-    mockCreateProposalAPI();
+    mockCreateSubmissionAPI();
   });
 
   afterEach(() => {
@@ -22,13 +22,13 @@ describe('Verify navigation', () => {
   });
 
   it('Science verification: Verify navigation functionality is not restricted after science idea creation', () => {
-    clickAddProposal();
+    clickAddSubmission();
     clickCycleSelection();
     clickCycleConfirm();
-    enterProposalTitle();
-    clickCreateProposal();
-    cy.wait('@mockCreateProposal');
-    verifyProposalCreatedAlertFooter();
+    enterScienceVerificationIdeaTitle();
+    clickCreateSubmission();
+    cy.wait('@mockCreateSubmission');
+    verifySubmissionCreatedAlertFooter();
     //Verify navigation links are all enabled in page banner after proposal creation
     //TODO: Reinstate once page banner is resolved for cypress
     // checkStatusIndicatorDisabled('statusId0', false);
