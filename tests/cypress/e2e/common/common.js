@@ -76,7 +76,7 @@ export const verifyMockedAPICall = stubAlias => {
   });
 };
 
-export const mockCreateProposalAPI = () => {
+export const mockCreateSubmissionAPI = () => {
   cy.window().then(win => {
     const token = win.localStorage.getItem('cypress:token');
     cy.fixture('proposal.json').then(proposal => {
@@ -86,7 +86,7 @@ export const mockCreateProposalAPI = () => {
           statusCode: 200,
           body: proposal
         });
-      }).as('mockCreateProposal');
+      }).as('mockCreateSubmission');
     });
   });
 };
@@ -155,8 +155,8 @@ export const clickUserSearch = () => clickButton('userSearchButton');
 export const clickManageTeamMemberRights = () => clickButton('lockIcon');
 export const clickSubmitRights = () => clickButton('submitCheckbox');
 export const clickPICheckbox = () => clickButton('piCheckbox');
-export const clickAddProposal = () => clickButton('addSubmissionButton');
-export const clickCreateProposal = () => clickButton('nextButtonTestId');
+export const clickAddSubmission = () => clickButton('addSubmissionButton');
+export const clickCreateSubmission = () => clickButton('nextButtonTestId');
 export const clickHome = () => clickButton('homeButtonTestId');
 export const clickDialogConfirm = () => clickButton('dialogConfirmationButton');
 export const clickLoginUser = () => clickButton('loginButton');
@@ -171,6 +171,7 @@ export const clickReviewOverviewButton = () => clickButton('overviewButtonTestId
 export const clickSave = () => clickButton('saveBtn');
 export const clickSendInviteButton = () => clickButton('sendInviteButton');
 export const clickToAddTarget = () => clickButton('addTargetButton');
+export const clickCycleSelection = () => clickButton('SKAO_2027_1_ID');
 export const clickToAddDataProduct = () => clickButton('addDataProductButton');
 export const clickToAddPSTBeam = () => clickButton('addPulsarTimingBeamButton');
 export const clickMultipleBeamsRadioButton = () => clickButton('MultipleBeamsTestId');
@@ -329,6 +330,8 @@ export const clickConfirmButtonWithinPopup = () => {
 /*----------------------------------------------------------------------*/
 
 export const enterProposalTitle = () => entry('titleId', 'Proposal Title');
+export const enterScienceVerificationIdeaTitle = () =>
+  entry('titleId', 'Science Verification Idea Title');
 
 export const selectContinuum = () => clickDropdown('categoryId', '102');
 
@@ -342,7 +345,7 @@ export const selectObservingMode = value => {
 export const clickProposalTypePrincipleInvestigator = () => selectId('ProposalType-1');
 export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalAttribute-1');
 
-export const verifyProposalCreatedAlertFooter = () => true; //  Chip responds too fast for this : verifyContent('timeAlertFooter', 'Proposal added with unique identifier');
+export const verifySubmissionCreatedAlertFooter = () => true; //  Chip responds too fast for this : verifyContent('timeAlertFooter', 'Proposal added with unique identifier');
 
 export const verifyUserFoundAlertFooter = () =>
   verifyContent('timeAlertFooter', 'User was successfully found.');
@@ -371,35 +374,35 @@ export const verifyProposalIsValid = () => {
 };
 
 export const createStandardProposal = () => {
-  clickAddProposal();
+  clickAddSubmission();
   enterProposalTitle();
   // clickProposalTypePrincipleInvestigator();
   // clickSubProposalTypeTargetOfOpportunity();
-  clickCreateProposal();
-  verifyProposalCreatedAlertFooter();
+  clickCreateSubmission();
+  verifySubmissionCreatedAlertFooter();
   pageConfirmed('TEAM');
 };
 
 export const createMock = () => {
-  clickAddProposal();
+  clickAddSubmission();
   clickCycleConfirm();
   pageConfirmed('TARGET');
 };
 
 export const createStandardProposalLoggedIn = () => {
-  clickAddProposal();
+  clickAddSubmission();
   clickCycleConfirm();
   enterProposalTitle();
   clickProposalTypePrincipleInvestigator();
   clickSubProposalTypeTargetOfOpportunity();
-  clickCreateProposal();
+  clickCreateSubmission();
 };
 
 export const createScienceIdeaLoggedIn = () => {
-  clickAddProposal();
+  clickAddSubmission();
   clickCycleConfirm();
   enterProposalTitle();
-  clickCreateProposal();
+  clickCreateSubmission();
 };
 
 export const clickToTeamPage = () => {

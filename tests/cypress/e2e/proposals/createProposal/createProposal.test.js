@@ -1,25 +1,25 @@
 import {
-  clickAddProposal,
-  clickCreateProposal,
   clickHome,
   // clickProposalTypePrincipleInvestigator,
   // clickSubProposalTypeTargetOfOpportunity,
   enterProposalTitle,
   verifyOnLandingPage,
   verifyOnLandingPageFilterIsVisible,
-  verifyProposalCreatedAlertFooter,
   verifyMockedProposalOnLandingPageIsVisible,
-  mockCreateProposalAPI,
   initialize,
   clearLocalStorage,
-  clickCycleConfirm
+  clickCycleConfirm,
+  clickAddSubmission,
+  clickCreateSubmission,
+  mockCreateSubmissionAPI,
+  verifySubmissionCreatedAlertFooter
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
 describe('Creating Proposal', () => {
   beforeEach(() => {
     initialize(standardUser);
-    mockCreateProposalAPI();
+    mockCreateSubmissionAPI();
   });
 
   afterEach(() => {
@@ -27,14 +27,14 @@ describe('Creating Proposal', () => {
   });
 
   it('Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
-    clickAddProposal();
+    clickAddSubmission();
     clickCycleConfirm();
     enterProposalTitle();
     // clickProposalTypePrincipleInvestigator();
     // clickSubProposalTypeTargetOfOpportunity();
-    clickCreateProposal();
-    cy.wait('@mockCreateProposal');
-    verifyProposalCreatedAlertFooter();
+    clickCreateSubmission();
+    cy.wait('@mockCreateSubmission');
+    verifySubmissionCreatedAlertFooter();
     clickHome();
     verifyOnLandingPage();
     // verifyOnLandingPageFilterIsVisible();

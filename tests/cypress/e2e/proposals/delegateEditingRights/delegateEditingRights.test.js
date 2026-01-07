@@ -1,12 +1,10 @@
 import { reviewerAdmin } from '../../users/users.js';
 import {
   clearLocalStorage,
-  mockCreateProposalAPI,
   mockEmailAPI,
   mockGetUserByEmailAPI,
   pageConfirmed,
   initialize,
-  verifyProposalCreatedAlertFooter,
   clickUserSearch,
   // clickPICheckbox,
   clickSendInviteButton,
@@ -16,19 +14,21 @@ import {
   clickSubmitRights,
   clickDialogConfirm,
   verifyTeamMemberAccessUpdatedAlertFooter,
-  createScienceIdeaLoggedIn
+  createScienceIdeaLoggedIn,
+  mockCreateSubmissionAPI,
+  verifySubmissionCreatedAlertFooter
 } from '../../common/common.js';
 import { entry } from '../../../fixtures/utils/cypress.js';
 
 describe('Delegate Editing Rights', () => {
   beforeEach(() => {
     initialize(reviewerAdmin);
-    mockCreateProposalAPI();
+    mockCreateSubmissionAPI();
     mockGetUserByEmailAPI();
     mockEmailAPI();
     createScienceIdeaLoggedIn();
-    cy.wait('@mockCreateProposal');
-    verifyProposalCreatedAlertFooter();
+    cy.wait('@mockCreateSubmission');
+    verifySubmissionCreatedAlertFooter();
     pageConfirmed('TEAM');
   });
 
