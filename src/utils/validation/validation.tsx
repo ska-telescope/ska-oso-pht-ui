@@ -226,8 +226,8 @@ export const validateSpectralDataProduct = (proposal: Proposal) => {
   //TODO: STAR-1854 - extend validation to account for multiple data products
   const dataProduct = proposal.dataProductSDP?.[0];
   if (dataProduct) {
-    const result =
-      dataProduct?.imageSizeValue &&
+    return (
+      dataProduct?.imageSizeValue != null &&
       dataProduct?.imageSizeUnits != null &&
       dataProduct?.pixelSizeValue != null &&
       dataProduct?.pixelSizeUnits != null &&
@@ -235,8 +235,8 @@ export const validateSpectralDataProduct = (proposal: Proposal) => {
       dataProduct?.taperValue != null &&
       dataProduct?.channelsOut != null &&
       dataProduct?.continuumSubtraction !== undefined &&
-      dataProduct?.polarisations?.length > 0;
-    return !!result;
+      dataProduct?.polarisations?.length > 0
+    );
   }
 };
 
