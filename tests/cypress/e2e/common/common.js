@@ -171,6 +171,7 @@ export const clickReviewOverviewButton = () => clickButton('overviewButtonTestId
 export const clickSave = () => clickButton('saveBtn');
 export const clickSendInviteButton = () => clickButton('sendInviteButton');
 export const clickToAddTarget = () => clickButton('addTargetButton');
+export const clickCycleSelection = () => clickButton('SKAO_2027_1_ID');
 export const clickToAddDataProduct = () => clickButton('addDataProductButton');
 export const clickToAddPSTBeam = () => clickButton('addPulsarTimingBeamButton');
 export const clickMultipleBeamsRadioButton = () => clickButton('MultipleBeamsTestId');

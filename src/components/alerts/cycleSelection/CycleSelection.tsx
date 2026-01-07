@@ -216,7 +216,7 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
               <CardActionArea onClick={() => handleCardClick(policy)}>
                 <CardContent>
                   <Typography
-                    data-testid={policy.cycleInformation.cycleId}
+                    data-testid={policy.cycleInformation.cycleId + '_ID'}
                     variant="h6"
                     color="text.primary"
                   >
