@@ -84,16 +84,13 @@ export const checkDP = (proposal: Proposal) => {
     //based on observing type verify data products fields
     switch (proposal.scienceCategory) {
       case TYPE_ZOOM: //Spectral
-        const check = validateSpectralDataProduct(proposal);
-        console.log('check: ', check);
-        return validateSpectralDataProduct(proposal) ? 0 : 1;
+        return validateSpectralDataProduct(proposal) ? 1 : 0;
       case TYPE_CONTINUUM: //Continuum
-        return validateContinuumDataProduct(proposal) ? 0 : 1;
+        return validateContinuumDataProduct(proposal) ? 1 : 0;
       case TYPE_PST: //PST
         return validatePSTDataProduct(proposal) ? 1 : 0;
     }
-  }
-  else {
+  } else {
     return 1;
   }
 };
@@ -103,7 +100,6 @@ export const validateSDPPage = (proposal: Proposal, autoLink: boolean) => {
 
   if (autoLink) {
     let count = checkDP(proposal) ? 1 : 0;
-    console.log('Proposal: ', proposal)
     return result[count];
   } else {
     let count =
@@ -230,22 +226,17 @@ export const validateSpectralDataProduct = (proposal: Proposal) => {
   //TODO: STAR-1854 - extend validation to account for multiple data products
   const dataProduct = proposal.dataProductSDP?.[0];
   if (dataProduct) {
-    console.log('inside validate spectral ', dataProduct)
-    console.log('condition check: ', dataProduct?.polarisations?.length >= 1);
-    const result = dataProduct?.imageSizeValue &&
-      dataProduct?.imageSizeUnits &&
-      dataProduct?.pixelSizeValue &&
-      dataProduct?.pixelSizeUnits &&
-      dataProduct?.weighting &&
-      dataProduct?.taperValue &&
-      dataProduct?.channelsOut &&
-      dataProduct?.continuumSubtraction &&
-      dataProduct?.polarisations?.length >= 1;
-    console.log('inside validate spectral returning ', result)
-    return result;
-  } else {
-    console.log('inside validate spectral returning false ')
-    return 1;
+    const result =
+      dataProduct?.imageSizeValue &&
+      dataProduct?.imageSizeUnits != null &&
+      dataProduct?.pixelSizeValue != null &&
+      dataProduct?.pixelSizeUnits != null &&
+      dataProduct?.weighting != null &&
+      dataProduct?.taperValue != null &&
+      dataProduct?.channelsOut != null &&
+      dataProduct?.continuumSubtraction !== undefined &&
+      dataProduct?.polarisations?.length > 0;
+    return !!result;
   }
 };
 

@@ -3,7 +3,8 @@ import {
   POLARISATIONS,
   POLARISATIONS_PST_BANK,
   POLARISATIONS_PST_FLOW,
-  TYPE_CONTINUUM, TYPE_PST
+  TYPE_CONTINUUM,
+  TYPE_PST
 } from '@utils/constants.ts';
 import { Typography } from '@mui/material';
 import { LABEL_POSITION, TickBox } from '@ska-telescope/ska-gui-components';
