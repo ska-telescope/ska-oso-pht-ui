@@ -168,7 +168,7 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
                 numberPstBeams: inData.capabilities.low.AA2.number_pst_beams,
                 psBeamBandwidthHz: inData.capabilities.low.AA2.ps_beam_bandwidth_hz,
                 numberFsps: inData.capabilities.low.AA2.number_fsps,
-                // channelWidthHz: inData.capabilities.low.AA2.channel_width_hz,
+                channelWidthHz: inData.capabilities.low.AA2.channel_width_hz,
                 numberBeams: inData.capabilities.low.AA2.number_beams,
                 numberVlbiBeams: inData.capabilities.low.AA2.number_vlbi_beams
               }
