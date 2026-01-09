@@ -705,8 +705,7 @@ export const DEFAULT_TARGETS: Target = {
   referenceFrame: RA_TYPE_ICRS.label,
   vel: '123',
   velType: 0,
-  velUnit: 0,
-  tiedArrayBeams: null
+  velUnit: 0
 };
 
 export const DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2: Observation = {

@@ -42,26 +42,6 @@ export const MockProposalBackend: ProposalBackend = {
             }
           ]
         },
-        tied_array_beams: {
-          pst_beams: [
-            {
-              beam_name: 'beam1',
-              beam_id: 1,
-              beam_coordinate: {
-                ra_str: '21:33:27.0200',
-                dec_str: '-00:49:23.700',
-                kind: RA_TYPE_ICRS.label,
-                pm_ra: 4.8,
-                pm_dec: -3.3,
-                parallax: 0.0,
-                epoch: 2000.0
-              },
-              stn_weights: []
-            }
-          ],
-          pss_beams: [],
-          vlbi_beams: []
-        },
         reference_coordinate: {
           kind: RA_TYPE_ICRS.label,
           ra_str: '00:00:00.0',
@@ -91,26 +71,6 @@ export const MockProposalBackend: ProposalBackend = {
             }
           ]
         },
-        tied_array_beams: {
-          pst_beams: [
-            {
-              beam_name: 'beam1',
-              beam_id: 1,
-              beam_coordinate: {
-                ra_str: '21:33:27.0200',
-                dec_str: '-00:49:23.700',
-                kind: RA_TYPE_ICRS.label,
-                pm_ra: 4.8,
-                pm_dec: -3.3,
-                parallax: 0.0,
-                epoch: 2000.0
-              },
-              stn_weights: []
-            }
-          ],
-          pss_beams: [],
-          vlbi_beams: []
-        },
         reference_coordinate: {
           kind: RA_TYPE_ICRS.label,
           ra_str: '05:34:30.900',
@@ -139,26 +99,6 @@ export const MockProposalBackend: ProposalBackend = {
               offset_y_arcsec: 0.5
             }
           ]
-        },
-        tied_array_beams: {
-          pst_beams: [
-            {
-              beam_name: 'beam1',
-              beam_id: 1,
-              beam_coordinate: {
-                ra_str: '21:33:27.0200',
-                dec_str: '-00:49:23.700',
-                kind: RA_TYPE_ICRS.label,
-                pm_ra: 4.8,
-                pm_dec: -3.3,
-                parallax: 0.0,
-                epoch: 2000.0
-              },
-              stn_weights: []
-            }
-          ],
-          pss_beams: [],
-          vlbi_beams: []
         },
         reference_coordinate: {
           kind: RA_TYPE_ICRS.label,
@@ -334,26 +274,6 @@ export const MockProposalBackendZoom: ProposalBackend = {
               offset_y_arcsec: 0.5
             }
           ]
-        },
-        tied_array_beams: {
-          pst_beams: [
-            {
-              beam_name: 'beam1',
-              beam_id: 1,
-              beam_coordinate: {
-                ra_str: '21:33:27.0200',
-                dec_str: '-00:49:23.700',
-                kind: RA_TYPE_ICRS.label,
-                pm_ra: 4.8,
-                pm_dec: -3.3,
-                parallax: 0.0,
-                epoch: 2000.0
-              },
-              stn_weights: []
-            }
-          ],
-          pss_beams: [],
-          vlbi_beams: []
         },
         reference_coordinate: {
           kind: RA_TYPE_ICRS.label,

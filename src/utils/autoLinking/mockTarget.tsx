@@ -12,6 +12,5 @@ export const mockTarget: Target = {
   referenceFrame: 'icrs',
   vel: '-3.6',
   velType: 0,
-  velUnit: 0,
-  tiedArrayBeams: null
+  velUnit: 0
 };

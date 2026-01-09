@@ -1618,21 +1618,6 @@
       "2": "Pulsar Timing"
     }
   },
-  "pulsarTimingBeam": {
-    "groupLabel": "Pulsar Timing Beam",
-    "label": "Beam(s)",
-    "title": "Add Pulsar Timing Beam",
-    "toolTip": "Click to add Pulsar Timing Beam",
-    "add": "Add Beam",
-    "noBeam": {
-      "label": "No Beam",
-      "help": "Default is No Beam, to add a pulsar timing beam(s), click the 'Multiple Beams' radio button"
-    },
-    "multipleBeams": {
-      "label": "Multiple Beams",
-      "help": "To add a pulsar timing beam, click the 'Add' button, then enter required fields and confirm. Once all beams are added, complete the remainder of the target fields and click 'ADD TARGET' button"
-    }
-  },
   "fieldPattern": {
     "groupLabel": "Field Pattern",
     "label": "Type",
