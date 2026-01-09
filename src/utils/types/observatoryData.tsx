@@ -147,7 +147,7 @@ export type subarrayConfigurationLow = {
   numberPstBeams: number;
   psBeamBandwidthHz: number;
   numberFsps: number;
-  channelWidthHz: number | null;
+  // channelWidthHz: number | null;
   numberBeams: number | null;
   numberVlbiBeams: number | null;
 };
