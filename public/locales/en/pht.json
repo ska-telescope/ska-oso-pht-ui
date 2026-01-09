@@ -502,10 +502,6 @@
     "label": "Name",
     "help": "Name of the target/object. If you want to automatically populate the coordinates, then provide a name of a known object and use the resolve button to query SIMBAD first and NED if not found. However, you can provide an arbitrary target/object name which can contain any character and enter the coordinate values. "
   },
-  "pstBeam": {
-    "label": "PST Beam",
-    "help": "Name of the PST Beam. If you want to automatically populate the coordinates, then provide a name of a known object and use the resolve button to query SIMBAD first and NED if not found. However, you can provide an arbitrary beam/object name which can contain any character and enter the coordinate values."
-  },
   "notSelected": {
     "label": "Not Selected"
   },

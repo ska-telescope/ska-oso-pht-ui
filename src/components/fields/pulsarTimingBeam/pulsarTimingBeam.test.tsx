@@ -107,19 +107,7 @@ describe('PulsarTimingBeamField', () => {
       velType: 0,
       vel: '0',
       velUnit: 1,
-      kind: 1,
-      tiedArrayBeams: {
-        pstBeams: [
-          {
-            id: 1,
-            beamName: 'Beam1',
-            beamCoordinate: { kind: 'ICRS', raStr: '10', decStr: '20' },
-            stnWeights: []
-          }
-        ],
-        pssBeams: [],
-        vlbiBeams: []
-      }
+      kind: 1
       // Add other required properties with dummy values if needed
       // For example, if Target has more required fields, add them here
     };

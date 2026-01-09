@@ -8,8 +8,6 @@ import {
 } from '@utils/types/sensCalcResults.tsx';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import Target, {
-  Beam,
-  BeamBackend,
   PointingPatternParams,
   ReferenceCoordinateGalactic,
   ReferenceCoordinateGalacticBackend,
@@ -165,15 +163,6 @@ export const getReferenceCoordinate = (
   };
 };
 
-export const getBeam = (beam: BeamBackend): Beam => {
-  return {
-    id: beam.beam_id,
-    beamName: beam.beam_name,
-    beamCoordinate: getReferenceCoordinate(beam.beam_coordinate),
-    stnWeights: beam.stn_weights ?? [] // not used yet
-  };
-};
-
 const isTargetGalactic = (kind: string): boolean => kind === RA_TYPE_GALACTIC.label;
 
 const getTargetType = (kind: string): number =>
@@ -207,11 +196,6 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
           offsetXArcsec: p.offset_x_arcsec,
           offsetYArcsec: p.offset_y_arcsec
         })) as PointingPatternParams[]
-      },
-      tiedArrayBeams: {
-        pstBeams: e.tied_array_beams?.pst_beams?.map(beam => getBeam(beam)),
-        pssBeams: e.tied_array_beams?.pss_beams?.map(beam => getBeam(beam)),
-        vlbiBeams: e.tied_array_beams?.vlbi_beams?.map(beam => getBeam(beam))
       }
     };
     /*------- reference coordinate properties --------------------- */
