@@ -1,7 +1,6 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import * as CONSTANTS from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
-import { BeamBackend } from '@utils/types/target.tsx';
 import {
   RA_TYPE_GALACTIC,
   RA_TYPE_ICRS,
@@ -15,7 +14,6 @@ import {
 import GetProposal, {
   GetMockProposal,
   mapping,
-  getBeam,
   getInvestigators,
   getScienceCategory,
   getObservingMode,
@@ -102,78 +100,6 @@ describe('GetProposal Service', () => {
     mockedAuthClient.get.mockResolvedValue(undefined);
     const result = await GetProposal(mockedAuthClient, MockProposalBackend.prsl_id);
     expect(result).toBe('error.API_UNKNOWN_ERROR');
-  });
-});
-
-describe('getBeam', () => {
-  test('should correctly map BeamBackend to Beam', () => {
-    const input: BeamBackend = {
-      beam_id: 1,
-      beam_name: 'Test Beam',
-      beam_coordinate: {
-        kind: 'ICRS',
-        ra_str: '12:34:56.78',
-        dec_str: '-12:34:56.78',
-        pm_ra: 1.23,
-        pm_dec: -1.23,
-        epoch: 2000,
-        parallax: 0.1
-      },
-      stn_weights: [0.5, 0.8]
-    };
-
-    const expectedOutput = {
-      id: 1,
-      beamName: 'Test Beam',
-      beamCoordinate: {
-        kind: 'icrs',
-        raStr: '12:34:56.78',
-        decStr: '-12:34:56.78',
-        pmRa: 1.23,
-        pmDec: -1.23,
-        epoch: 2000,
-        parallax: 0.1
-      },
-      stnWeights: [0.5, 0.8]
-    };
-
-    const result = getBeam(input);
-    expect(result).toEqual(expectedOutput);
-  });
-
-  test('should handle missing stn_weights by defaulting to an empty array', () => {
-    const input: BeamBackend = {
-      beam_id: 2,
-      beam_name: 'Beam Without Weights',
-      beam_coordinate: {
-        kind: 'ICRS',
-        ra_str: '01:23:45.67',
-        dec_str: '+01:23:45.67',
-        pm_ra: 0.0,
-        pm_dec: 0.0,
-        epoch: 2020,
-        parallax: 0.0
-      },
-      stn_weights: []
-    };
-
-    const expectedOutput = {
-      id: 2,
-      beamName: 'Beam Without Weights',
-      beamCoordinate: {
-        kind: 'icrs',
-        raStr: '01:23:45.67',
-        decStr: '+01:23:45.67',
-        pmRa: 0.0,
-        pmDec: 0.0,
-        epoch: 2020,
-        parallax: 0.0
-      },
-      stnWeights: []
-    };
-
-    const result = getBeam(input);
-    expect(result).toEqual(expectedOutput);
   });
 });
 
