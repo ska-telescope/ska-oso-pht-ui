@@ -1,6 +1,6 @@
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import {
-  AA2_STR,
+  SA_AA2,
   BAND_LOW_STR,
   PROPOSAL_STATUS,
   RA_TYPE_ICRS,
@@ -163,7 +163,7 @@ export const MockProposalBackend: ProposalBackend = {
         group_id: '',
         array_details: {
           array: 'ska_low',
-          subarray: AA2_STR,
+          subarray: SA_AA2,
           number_of_stations: 68
         },
         observation_type_details: {
@@ -336,7 +336,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
         elevation: 20,
         array_details: {
           array: 'ska_low',
-          subarray: AA2_STR,
+          subarray: SA_AA2,
           number_of_stations: 68
         },
         observation_type_details: {

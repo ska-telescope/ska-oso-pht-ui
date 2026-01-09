@@ -40,58 +40,52 @@ export default function ObservingBandField({
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const FIELD = 'observingBand';
-  const { osdLOW, osdMID, osdCyclePolicy } = useOSDAccessors();
-  const LOW = 'low';
+  const { osdLOW, osdMID, osdCyclePolicy, selectedPolicy } = useOSDAccessors();
 
   const options = useMemo(() => {
     const filteredOptions: { label: string; value: string }[] = [];
-    if (
-      osdLOW?.basicCapabilities &&
-      Array.isArray(osdCyclePolicy?.bands) &&
-      osdCyclePolicy.bands.includes(LOW)
-    ) {
-      filteredOptions.push({
-        label:
-          TEL[TELESCOPE_LOW_NUM] +
-          ' (' +
-          frequencyConversion(
-            osdLOW.basicCapabilities.minFrequencyHz,
-            FREQUENCY_HZ,
-            FREQUENCY_MHZ
-          ) +
-          ' - ' +
-          frequencyConversion(
-            osdLOW.basicCapabilities.maxFrequencyHz,
-            FREQUENCY_HZ,
-            FREQUENCY_MHZ
-          ) +
-          ' ' +
-          TEL_UNITS[TELESCOPE_LOW_NUM] +
-          ')',
-        value: BAND_LOW_STR
-      });
-    }
-
-    if (
-      osdMID?.basicCapabilities?.receiverInformation &&
-      Array.isArray(osdMID.basicCapabilities.receiverInformation) &&
-      osdMID.basicCapabilities.receiverInformation.length > 0 &&
-      Array.isArray(osdCyclePolicy?.bands) &&
-      !osdCyclePolicy.bands.includes(LOW)
-    ) {
-      osdMID.basicCapabilities.receiverInformation.forEach(receiver => {
+    const bands = selectedPolicy?.cyclePolicies?.bands || [];
+    for (const band of bands) {
+      if (band === BAND_LOW_STR && osdLOW?.basicCapabilities) {
         filteredOptions.push({
           label:
-            TEL[TELESCOPE_MID_NUM] +
+            TEL[TELESCOPE_LOW_NUM] +
+            ' (' +
+            frequencyConversion(
+              osdLOW.basicCapabilities.minFrequencyHz,
+              FREQUENCY_HZ,
+              FREQUENCY_MHZ
+            ) +
+            ' - ' +
+            frequencyConversion(
+              osdLOW.basicCapabilities.maxFrequencyHz,
+              FREQUENCY_HZ,
+              FREQUENCY_MHZ
+            ) +
             ' ' +
-            receiver.rxId +
-            ` (${frequencyConversion(receiver.minFrequencyHz, FREQUENCY_HZ, FREQUENCY_GHZ)} - ` +
-            `${frequencyConversion(receiver.maxFrequencyHz, FREQUENCY_HZ, FREQUENCY_GHZ)} ${
-              TEL_UNITS[TELESCOPE_MID_NUM]
-            })`,
-          value: receiver.rxId
+            TEL_UNITS[TELESCOPE_LOW_NUM] +
+            ')',
+          value: BAND_LOW_STR
         });
-      });
+      } else {
+        const rec = osdMID?.basicCapabilities.receiverInformation.find((r: any) => r.rxId === band);
+        if (rec) {
+          filteredOptions.push({
+            label:
+              TEL[TELESCOPE_MID_NUM] +
+              ' ' +
+              rec.rxId +
+              ' (' +
+              frequencyConversion(rec.minFrequencyHz, FREQUENCY_HZ, FREQUENCY_GHZ) +
+              ' - ' +
+              frequencyConversion(rec.maxFrequencyHz, FREQUENCY_HZ, FREQUENCY_GHZ) +
+              ' ' +
+              TEL_UNITS[TELESCOPE_MID_NUM] +
+              ')',
+            value: rec.rxId
+          });
+        }
+      }
     }
     return filteredOptions;
   }, [osdLOW, osdMID, osdCyclePolicy]);

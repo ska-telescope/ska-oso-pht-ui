@@ -11,6 +11,9 @@ UNRELEASED
 * Added: Generate default linked observation on observation mode change for SV
 * Added: Updated the library code and implemented accessibility for colors
 * Changed: Updated code so that number of stations is obtained from the OSD Data
+* Changed: SubArrays are now mapped to the values from the OSD and not numerically
+* Changed: Updated to latest dependencies and libraries
+* Changed: Updated more components to make use of the accessible coloring
 
 9.0.0
 ----------

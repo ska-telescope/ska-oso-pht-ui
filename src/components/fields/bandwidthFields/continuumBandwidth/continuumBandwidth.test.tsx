@@ -4,9 +4,10 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import * as bandwidthValidationCommon from '../bandwidthValidationCommon';
 import ContinuumBandwidth from './continuumBandwidth';
-import { BAND_LOW_STR } from '@/utils/constants';
 
-// --- Mocks declared at top level so Vitest hoisting works ---
+// ----------------------
+// Top‑level mocks (Vitest hoists these)
+// ----------------------
 vi.mock('@/services/i18n/useScopedTranslation', () => ({
   useScopedTranslation: () => ({
     t: (key: string, opts?: any) => `${key}${opts ? JSON.stringify(opts) : ''}`
@@ -19,9 +20,7 @@ vi.mock('@/utils/appFlow/AppFlowContext', () => ({
 }));
 
 vi.mock('@/utils/OSDConstants.ts', () => ({
-  OB_SUBARRAY_AA2: 1,
-  OB_SUBARRAY_AA3: 2,
-  OB_SUBARRAY_AA4: 3
+  SA_CUSTOM: 'custom'
 }));
 
 vi.mock('@/utils/constants.ts', () => ({
@@ -33,8 +32,9 @@ vi.mock('@/utils/constants.ts', () => ({
   LAB_POSITION: 'left',
   TYPE_CONTINUUM: 'continuum',
   ERROR_SECS: 2000,
-  BAND_LOW_STR: 'low_band',
-  ANTENNA_MIXED: 'mixed'
+  BAND_LOW_STR: 'LOW',
+  ANTENNA_MIXED: 'mixed',
+  SA_AA2: 'aa2'
 }));
 
 vi.mock('@ska-telescope/ska-gui-components', () => ({
@@ -50,7 +50,32 @@ vi.mock('@ska-telescope/ska-gui-components', () => ({
 vi.mock('@utils/osd/useOSDAccessors/useOSDAccessors.tsx', () => ({
   useOSDAccessors: () => ({
     osdMID: {},
-    osdLOW: {},
+    osdLOW: {
+      subArrays: [
+        {
+          subArray: 'aa2',
+          numberStations: 68,
+          numberSubstations: 720,
+          maxBaselineKm: 40,
+          availableBandwidthHz: 150000000,
+          channelWidthHz: 1000,
+          numOf13mAntennas: 256,
+          numOf15mAntennas: 0,
+          numberSkaDishes: 0
+        },
+        {
+          subArray: 'aa*',
+          numberStations: 68,
+          numberSubstations: 720,
+          maxBaselineKm: 40,
+          availableBandwidthHz: 100000000,
+          channelWidthHz: 2000,
+          numOf13mAntennas: 128,
+          numOf15mAntennas: 0,
+          numberSkaDishes: 0
+        }
+      ]
+    },
     observatoryConstants: {
       array: [
         {
@@ -60,8 +85,7 @@ vi.mock('@utils/osd/useOSDAccessors/useOSDAccessors.tsx', () => ({
       ]
     },
     findBand: vi.fn((observingBand: string) => {
-      // return a fake band object for tests
-      if (observingBand === BAND_LOW_STR) return { minFrequencyHz: 0, maxFrequencyHz: 1000 };
+      if (observingBand === 'LOW') return { minFrequencyHz: 0, maxFrequencyHz: 1000 };
       return { minFrequencyHz: 0, maxFrequencyHz: 500 };
     })
   })
@@ -71,6 +95,9 @@ vi.mock('@/utils/helpers.ts', () => ({
   getScaledBandwidthOrFrequency: vi.fn(() => 42)
 }));
 
+// ----------------------
+// Test suite
+// ----------------------
 describe('<ContinuumBandwidth />', () => {
   const baseProps = {
     telescope: 1,
@@ -78,8 +105,9 @@ describe('<ContinuumBandwidth />', () => {
     centralFrequency: 1,
     centralFrequencyUnits: 1,
     continuumBandwidthUnits: 2,
+    observingBand: 'LOW',
     setScaledBandwidth: vi.fn(),
-    subarrayConfig: 8,
+    subarrayConfig: 'aa2',
     minimumChannelWidthHz: 5
   };
 
@@ -91,7 +119,7 @@ describe('<ContinuumBandwidth />', () => {
     );
 
   beforeEach(() => {
-    vi.restoreAllMocks();
+    vi.clearAllMocks(); // <-- important fix
   });
 
   test('renders correctly', () => {
@@ -103,6 +131,7 @@ describe('<ContinuumBandwidth />', () => {
     vi.spyOn(bandwidthValidationCommon, 'checkMinimumChannelWidth').mockReturnValue(true);
     vi.spyOn(bandwidthValidationCommon, 'checkMaxBandwidthHz').mockReturnValue(true);
     vi.spyOn(bandwidthValidationCommon, 'checkBandLimits').mockReturnValue(true);
+    vi.spyOn(bandwidthValidationCommon, 'getMaxContBandwidthHz').mockReturnValue(1000);
 
     renderField();
     const errorText = screen.getByTestId('continuumBandwidth').getAttribute('data-errortext');
@@ -111,28 +140,31 @@ describe('<ContinuumBandwidth />', () => {
 
   test('shows minimum channel width error when check fails', () => {
     vi.spyOn(bandwidthValidationCommon, 'checkMinimumChannelWidth').mockReturnValue(false);
+
     renderField({ minimumChannelWidthHz: 5 });
     const errorText = screen.getByTestId('continuumBandwidth').getAttribute('data-errortext');
-    expect(errorText).not.toBeNull();
-    expect(errorText as string).toContain('bandwidth.range.minimumChannelWidthError');
+
+    expect(errorText).toContain('bandwidth.range.minimumChannelWidthError');
   });
 
   test('shows max bandwidth error when check fails', () => {
     vi.spyOn(bandwidthValidationCommon, 'checkMinimumChannelWidth').mockReturnValue(true);
     vi.spyOn(bandwidthValidationCommon, 'checkMaxBandwidthHz').mockReturnValue(false);
+
     renderField();
     const errorText = screen.getByTestId('continuumBandwidth').getAttribute('data-errortext');
-    expect(errorText).not.toBeNull();
-    expect(errorText as string).toContain('bandwidth.range.contMaximumExceededError');
+
+    expect(errorText).toContain('bandwidth.range.contMaximumExceededError');
   });
 
   test('shows band limits error when check fails', () => {
     vi.spyOn(bandwidthValidationCommon, 'checkMinimumChannelWidth').mockReturnValue(true);
     vi.spyOn(bandwidthValidationCommon, 'checkMaxBandwidthHz').mockReturnValue(true);
     vi.spyOn(bandwidthValidationCommon, 'checkBandLimits').mockReturnValue(false);
+
     renderField();
     const errorText = screen.getByTestId('continuumBandwidth').getAttribute('data-errortext');
-    expect(errorText).not.toBeNull();
-    expect(errorText as string).toContain('bandwidth.range.rangeError');
+
+    expect(errorText).toContain('bandwidth.range.rangeError');
   });
 });

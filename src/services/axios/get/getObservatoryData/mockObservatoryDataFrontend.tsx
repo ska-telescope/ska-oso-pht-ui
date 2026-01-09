@@ -1,4 +1,4 @@
-import { AA2_STR } from '@/utils/constants';
+import { SA_AA2 } from '@/utils/constants';
 import ObservatoryData from '@/utils/types/observatoryData';
 
 export const MockObservatoryDataFrontend: ObservatoryData = {
@@ -65,7 +65,7 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
       },
       subArrays: [
         {
-          subArray: AA2_STR,
+          subArray: SA_AA2,
           availableReceivers: ['Band_1', 'Band_2', 'Band_5a', 'Band_5b'],
           numberSkaDishes: 64,
           numberMeerkatDishes: 4,
@@ -90,7 +90,7 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
       },
       subArrays: [
         {
-          subArray: AA2_STR,
+          subArray: SA_AA2,
           numberStations: 64,
           numberSubstations: 720,
           numberBeams: 8,

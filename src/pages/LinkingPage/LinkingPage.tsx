@@ -10,7 +10,7 @@ import Observation from '../../utils/types/observation';
 import { validateCalibrationPage, validateLinkingPage } from '../../utils/validation/validation';
 import {
   IW_NATURAL,
-  OB_SUBARRAY_CUSTOM,
+  SA_CUSTOM,
   PAGE_CALIBRATION,
   PAGE_LINKING,
   RA_TYPE_ICRS,
@@ -343,9 +343,9 @@ export default function LinkingPage() {
       p => p.observationId === currObs?.id && p.targetId === targetId
     )?.sensCalc;
 
-  const isCustom = () => currObs?.subarray === OB_SUBARRAY_CUSTOM;
+  const isCustom = () => currObs?.subarray === SA_CUSTOM;
   const isNatural = () =>
-    currObs?.subarray !== OB_SUBARRAY_CUSTOM && currDataProductSDP?.weighting === IW_NATURAL;
+    currObs?.subarray !== SA_CUSTOM && currDataProductSDP?.weighting === IW_NATURAL;
 
   const getSensCalcSingle = (id: number, field: string) => (
     <SensCalcDisplaySingle
@@ -391,7 +391,7 @@ export default function LinkingPage() {
         flex: 1,
         minWidth: 150,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: { telescope: number; subarray: number } }) => {
+        renderCell: (e: { row: { telescope: number; subarray: string } }) => {
           if (e.row.telescope) {
             return t(`subArrayConfiguration.${e.row.subarray}`);
           }

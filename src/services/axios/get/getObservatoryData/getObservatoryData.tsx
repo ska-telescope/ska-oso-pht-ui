@@ -1,9 +1,17 @@
 // import axios from 'axios';
 import {
-  AA2_STR,
+  SA_AA2,
+  SA_AA_STAR,
   OSO_SERVICES_PROPOSAL_PATH,
   SKA_OSO_SERVICES_URL,
-  USE_LOCAL_DATA
+  USE_LOCAL_DATA,
+  BAND_LOW_STR,
+  BAND_5B_STR,
+  BAND_1_STR,
+  BAND_2_STR,
+  BAND_3_STR,
+  BAND_4_STR,
+  BAND_5A_STR
 } from '@utils/constants.ts';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.tsx';
 import { MockObservatoryDataBackend } from './mockObservatoryDataBackend';
@@ -34,8 +42,8 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
           maxObservations: inData.observatory_policy.cycle_policies.max_observation_setups,
           maxTargets: inData.observatory_policy.cycle_policies.max_targets,
           bands: [
-            inData?.observatory_policy?.telescope_capabilities?.Low !== null ? 'low' : '',
-            inData?.observatory_policy?.telescope_capabilities?.Mid !== null ? 'mid' : ''
+            inData?.observatory_policy?.telescope_capabilities?.Low !== null ? BAND_LOW_STR : '',
+            inData?.observatory_policy?.telescope_capabilities?.Mid !== null ? BAND_5B_STR : '' // TODO: Update when more bands are available
           ].filter(band => band !== ''),
           low: [inData?.observatory_policy?.telescope_capabilities?.Low],
           mid: [inData?.observatory_policy?.telescope_capabilities?.Mid]
@@ -58,9 +66,9 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
           maxDataProducts: 1,
           maxObservations: 1,
           maxTargets: 1,
-          bands: ['mid'],
+          bands: [BAND_5B_STR],
           low: [],
-          mid: ['AA2']
+          mid: [SA_AA2]
         },
         telescopeCapabilities: {
           low: null,
@@ -80,9 +88,9 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
           maxDataProducts: 100,
           maxObservations: 100,
           maxTargets: 100,
-          bands: ['low', 'mid'],
-          low: ['AA2'],
-          mid: ['AA2']
+          bands: [BAND_LOW_STR, BAND_1_STR],
+          low: [SA_AA2, SA_AA_STAR],
+          mid: [SA_AA2, SA_AA_STAR]
         },
         telescopeCapabilities: {
           low: null,
@@ -102,9 +110,9 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
           maxDataProducts: 100,
           maxObservations: 100,
           maxTargets: 100,
-          bands: ['low', 'mid'],
-          low: ['AA2'],
-          mid: ['AA2']
+          bands: [BAND_LOW_STR, 'mid'],
+          low: [SA_AA2],
+          mid: [SA_AA2]
         },
         telescopeCapabilities: {
           low: null,
@@ -114,40 +122,154 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
       }
     ],
     capabilities: {
-      mid: inData?.capabilities?.mid?.basic_capabilities
-        ? {
-            basicCapabilities: {
-              dishElevationLimitDeg:
-                inData.capabilities.mid.basic_capabilities.dish_elevation_limit_deg,
-              receiverInformation: inData.capabilities.mid.basic_capabilities.receiver_information.map(
-                rx => ({
-                  rxId: rx.rx_id,
-                  minFrequencyHz: rx.min_frequency_hz,
-                  maxFrequencyHz: rx.max_frequency_hz
-                })
-              )
+      mid: {
+        basicCapabilities: {
+          dishElevationLimitDeg: 15, //            inData.capabilities.mid.basic_capabilities.dish_elevation_limit_deg,
+          // receiverInformation: inData.capabilities.mid.basic_capabilities.receiver_information.map(
+          //   rx => ({
+          //     rxId: rx.rx_id,
+          //     minFrequencyHz: rx.min_frequency_hz,
+          //     maxFrequencyHz: rx.max_frequency_hz,
+          //     subBands: rx.sub_bands
+          //   })
+          // )
+          receiverInformation: [
+            {
+              rxId: BAND_1_STR,
+              minFrequencyHz: 350000000,
+              maxFrequencyHz: 1050000000
             },
-            subArrays: [
-              {
-                subArray: AA2_STR,
-                availableReceivers: inData.capabilities.mid.AA2.available_receivers,
-                numberSkaDishes: inData.capabilities.mid.AA2.number_ska_dishes,
-                numberMeerkatDishes: inData.capabilities.mid.AA2.number_meerkat_dishes,
-                numberMeerkatPlusDishes: inData.capabilities.mid.AA2.number_meerkatplus_dishes,
-                maxBaselineKm: inData.capabilities.mid.AA2.max_baseline_km,
-                availableBandwidthHz: inData.capabilities.mid.AA2.available_bandwidth_hz,
-                numberChannels: inData.capabilities.mid.AA2.number_channels,
-                cbfModes: inData.capabilities.mid.AA2.cbf_modes,
-                numberZoomWindows: inData.capabilities.mid.AA2.number_zoom_windows,
-                numberZoomChannels: inData.capabilities.mid.AA2.number_zoom_channels,
-                numberPssBeams: inData.capabilities.mid.AA2.number_pss_beams,
-                numberPstBeams: inData.capabilities.mid.AA2.number_pst_beams,
-                psBeamBandwidthHz: inData.capabilities.mid.AA2.ps_beam_bandwidth_hz,
-                numberFsps: inData.capabilities.mid.AA2.number_fsps
-              }
-            ]
+            {
+              rxId: BAND_2_STR,
+              minFrequencyHz: 950000000,
+              maxFrequencyHz: 1760000000
+            },
+            {
+              rxId: BAND_3_STR,
+              minFrequencyHz: 1650000000,
+              maxFrequencyHz: 3050000000
+            },
+            {
+              rxId: BAND_4_STR,
+              minFrequencyHz: 2800000000,
+              maxFrequencyHz: 5180000000
+            },
+            {
+              rxId: BAND_5A_STR,
+              minFrequencyHz: 4600000000,
+              maxFrequencyHz: 8500000000
+            },
+            {
+              rxId: BAND_5B_STR,
+              minFrequencyHz: 11450000000,
+              maxFrequencyHz: 13510000000,
+              subBands: [
+                {
+                  subBand: 1,
+                  maxFrequencyHz: 12150000000,
+                  minFrequencyHz: 11450000000,
+                  loFrequencyHz: 11100000000,
+                  sideband: 'high'
+                },
+                {
+                  subBand: 2,
+                  maxFrequencyHz: 13510000000,
+                  minFrequencyHz: 12810000000,
+                  loFrequencyHz: 13860000000,
+                  sideband: 'low'
+                },
+                {
+                  subBand: 3,
+                  maxFrequencyHz: 12850000000,
+                  minFrequencyHz: 12150000000,
+                  loFrequencyHz: 11100000000,
+                  sideband: 'high'
+                }
+              ]
+            }
+          ]
+        },
+        subArrays: [
+          {
+            subArray: SA_AA2,
+            allowedChannelCountRangeMax: [214748647],
+            allowedChannelCountRangeMin: [1],
+            allowedChannelWidthValues: [
+              210,
+              420,
+              840,
+              1680,
+              3360,
+              6720,
+              13440,
+              26880,
+              40320,
+              53760,
+              80640,
+              107520,
+              161280,
+              215040,
+              322560,
+              416640,
+              430080,
+              645120
+            ],
+            availableReceivers: [BAND_1_STR],
+            numberSkaDishes: 64,
+            numberMeerkatDishes: 20,
+            numberMeerkatPlusDishes: 0,
+            maxBaselineKm: 110,
+            availableBandwidthHz: 80000000,
+            numberChannels: null,
+            cbfModes: ['correlation', 'pst', 'pss'],
+            numberZoomWindows: 17,
+            numberZoomChannels: 14880,
+            numberPssBeams: 385,
+            numberPstBeams: 6,
+            psBeamBandwidthHz: 800000000,
+            numberFsps: 35
+          },
+          {
+            subArray: SA_AA_STAR,
+            allowedChannelCountRangeMax: [214748647],
+            allowedChannelCountRangeMin: [1],
+            allowedChannelWidthValues: [
+              210,
+              420,
+              840,
+              1680,
+              3360,
+              6720,
+              13440,
+              26880,
+              40320,
+              53760,
+              80640,
+              107520,
+              161280,
+              215040,
+              322560,
+              416640,
+              430080,
+              645120
+            ],
+            availableReceivers: [BAND_1_STR],
+            numberSkaDishes: 64,
+            numberMeerkatDishes: 20,
+            numberMeerkatPlusDishes: 0,
+            maxBaselineKm: 110,
+            availableBandwidthHz: 80000000,
+            numberChannels: null,
+            cbfModes: ['correlation', 'pst', 'pss'],
+            numberZoomWindows: 17,
+            numberZoomChannels: 14880,
+            numberPssBeams: 385,
+            numberPstBeams: 6,
+            psBeamBandwidthHz: 800000000,
+            numberFsps: 35
           }
-        : null,
+        ]
+      },
       low: inData?.capabilities?.low?.basic_capabilities
         ? {
             basicCapabilities: {
@@ -156,7 +278,24 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
             },
             subArrays: [
               {
-                subArray: AA2_STR,
+                subArray: SA_AA2,
+                numberStations: inData.capabilities.low.AA2.number_stations,
+                numberSubstations: inData.capabilities.low.AA2.number_substations,
+                maxBaselineKm: inData.capabilities.low.AA2.max_baseline_km,
+                availableBandwidthHz: inData.capabilities.low.AA2.available_bandwidth_hz,
+                cbfModes: inData.capabilities.low.AA2.cbf_modes,
+                numberZoomWindows: inData.capabilities.low.AA2.number_zoom_windows,
+                numberZoomChannels: inData.capabilities.low.AA2.number_zoom_channels,
+                numberPssBeams: inData.capabilities.low.AA2.number_pss_beams,
+                numberPstBeams: inData.capabilities.low.AA2.number_pst_beams,
+                psBeamBandwidthHz: inData.capabilities.low.AA2.ps_beam_bandwidth_hz,
+                numberFsps: inData.capabilities.low.AA2.number_fsps,
+                channelWidthHz: inData.capabilities.low.AA2.channel_width_hz,
+                numberBeams: inData.capabilities.low.AA2.number_beams,
+                numberVlbiBeams: inData.capabilities.low.AA2.number_vlbi_beams
+              },
+              {
+                subArray: SA_AA_STAR,
                 numberStations: inData.capabilities.low.AA2.number_stations,
                 numberSubstations: inData.capabilities.low.AA2.number_substations,
                 maxBaselineKm: inData.capabilities.low.AA2.max_baseline_km,

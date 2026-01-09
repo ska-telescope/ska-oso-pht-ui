@@ -93,7 +93,7 @@ describe('<SensCalcModalMultiple />', () => {
         observation={{
           id: '1',
           telescope: 0,
-          subarray: 0,
+          subarray: '',
           linked: '',
           type: TYPE_ZOOM,
           observingBand: BAND_LOW_STR,
@@ -133,7 +133,7 @@ describe('<SensCalcModalMultiple />', () => {
         observation={{
           id: '2',
           telescope: 0,
-          subarray: 0,
+          subarray: '',
           linked: '',
           type: TYPE_CONTINUUM,
           observingBand: BAND_LOW_STR,
@@ -218,7 +218,7 @@ describe('<SensCalcModalMultiple />', () => {
         observation={{
           id: '3',
           telescope: 0,
-          subarray: 0,
+          subarray: '',
           linked: '',
           type: TYPE_CONTINUUM,
           observingBand: BAND_LOW_STR,
@@ -303,7 +303,7 @@ describe('<SensCalcModalMultiple />', () => {
         observation={{
           id: '3',
           telescope: 0,
-          subarray: 0,
+          subarray: '',
           linked: '',
           type: TYPE_CONTINUUM,
           observingBand: BAND_LOW_STR,
@@ -401,7 +401,7 @@ describe('<SensCalcModalMultiple />', () => {
         observation={{
           id: '',
           telescope: 0,
-          subarray: 0,
+          subarray: '',
           linked: '',
           type: TYPE_CONTINUUM,
           observingBand: BAND_LOW_STR,
