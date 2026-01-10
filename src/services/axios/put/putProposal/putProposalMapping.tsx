@@ -253,7 +253,7 @@ export const getDataProductScriptParameters = (obs: Observation[] | null, dp: Da
       const pstMode = obs?.find(o => o?.id === dp.observationId)?.pstMode;
       if (pstMode === DETECTED_FILTER_BANK_VALUE) {
         return {
-          polarisation: dp.polarisations,
+          polarisations: dp.polarisations,
           bit_depth: Number(dp.bitDepth),
           time_averaging_factor: dp.timeAveraging,
           frequency_averaging_factor: dp.frequencyAveraging,
@@ -270,7 +270,7 @@ export const getDataProductScriptParameters = (obs: Observation[] | null, dp: Da
         };
       } else {
         return {
-          polarisation: dp.polarisations,
+          polarisations: dp.polarisations,
           bit_depth: dp.bitDepth,
           kind: 'pst',
           variant: 'flow through'

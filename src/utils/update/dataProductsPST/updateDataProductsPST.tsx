@@ -22,6 +22,9 @@ export const updateDataProductsPST = (oldRecs: DataProductSDP[], newRec: Observa
   } else {
     newDataProducts.push(...(oldRecs ?? []));
   }
+  console.log('updated data products pst', newDataProducts);
+  console.log('obs', newRec);
+  console.log('oldRecs', oldRecs);
   return newDataProducts;
 };
 export default updateDataProductsPST;

@@ -71,7 +71,7 @@ export const updateSensCalc = async (
   const updated = await updateSensCalcAsync(proposal, ob, dp);
 
   return updated.map(rec => {
-    if (rec.observationId === ob.id) {
+    if (rec?.observationId === ob?.id) {
       return {
         ...rec,
         sensCalc: {

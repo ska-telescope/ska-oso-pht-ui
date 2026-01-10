@@ -9,6 +9,7 @@ export const updateDataProducts = (oldRecs: DataProductSDP[], newRec: DataProduc
   } else {
     newDataProducts.push(newRec);
   }
+  console.log('updated data products', newDataProducts);
   return newDataProducts;
 };
 export default updateDataProducts;

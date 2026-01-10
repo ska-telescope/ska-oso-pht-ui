@@ -49,7 +49,7 @@ export type DataProductSDPSpectralImageBackend = {
 };
 
 export type DataProductSDPPSTDetectedFilterBankBackend = {
-  polarisation: string[];
+  polarisations: string[];
   bit_depth: number;
   time_averaging_factor: number;
   frequency_averaging_factor: number;
@@ -58,14 +58,14 @@ export type DataProductSDPPSTDetectedFilterBankBackend = {
 };
 
 export type DataProductSDPPSTTimingBackend = {
-  polarisation: string[];
+  polarisations: string[];
   bit_depth: number;
   kind: string;
   variant: string;
 };
 
 export type DataProductSDPPSTFlowthroughBackend = {
-  polarisation: string[];
+  polarisations: string[];
   bit_depth: number;
   kind: string;
   variant: string;
@@ -107,6 +107,73 @@ export type DataProductSDP = {
   continuumSubtraction: boolean;
 };
 
-export type DataProductSRC = {
+export type DataProductSDPNew = {
   id: string;
+  observationId: string;
+  data:
+    | SDPImageContinuumData
+    | SDPVisibilitiesContinuumData
+    | SDPSpectralData
+    | SDPFilterbankPSTData
+    | SDPTimingPSTData
+    | SDPFlowthroughPSTData;
+};
+
+// 6 modes
+export type SDPImageContinuumData = {
+  dataProductType: number;
+  imageSizeValue: number;
+  imageSizeUnits: number;
+  pixelSizeValue: number;
+  pixelSizeUnits: number;
+  weighting: number;
+  robust: number;
+  taperValue: number;
+  channelsOut: number;
+  polarisations: string[];
+};
+
+export type SDPVisibilitiesContinuumData = {
+  dataProductType: number;
+  timeAveraging: number;
+  frequencyAveraging: number;
+};
+
+export type SDPSpectralData = {
+  imageSizeValue: number;
+  imageSizeUnits: number;
+  pixelSizeValue: number;
+  pixelSizeUnits: number;
+  weighting: number;
+  robust: number;
+  taperValue: number;
+  channelsOut: number;
+  polarisations: string[];
+  continuumSubtraction: boolean;
+};
+
+export type SDPFlowthroughPSTData = {
+  dataProductType: number;
+  polarisations: string[];
+  bitDepth: number;
+};
+
+export type SDPTimingPSTData = {
+  dataProductType: number;
+};
+
+export type SDPFilterbankPSTData = {
+  dataProductType: number;
+  bitDepth: number;
+  polarisations: string[];
+  outputFrequencyResolution: number; // TODO add to form & mapping once PDM updated (new)
+  outputSamplingInterval: number; // TODO add to form & mapping once PDM updated (new)
+  dispersionMeasure: number; // TODO add to form & mapping once PDM updated (new)
+  rotationMeasure: number; // TODO add to form & mapping once PDM updated (new)
+};
+
+export type DataProductSRCD = {
+  id: string; // base
+  dataProductType: number; // base
+  observationId: string; // base
 };
