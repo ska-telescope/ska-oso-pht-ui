@@ -39,13 +39,19 @@ import {
   TYPE_STR_ZOOM,
   TYPE_ZOOM,
   VEL_UNITS,
-  VELOCITY_TYPE
+  VELOCITY_TYPE,
+  IW_UNIFORM
 } from '@utils/constants.ts';
 import {
   DataProductSDP,
+  DataProductSDPNew,
   DataProductSDPsBackend,
   DataProductSRC,
-  DataProductSRCNetBackend
+  DataProductSRCNetBackend,
+  SDPFlowthroughPSTData,
+  SDPImageContinuumData,
+  SDPSpectralData,
+  SDPVisibilitiesContinuumData
 } from '@utils/types/dataProduct.tsx';
 import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
@@ -184,94 +190,122 @@ export const getCalibrationStrategy = (
   return calibrationOut;
 };
 
-export const getDataProductScriptParameters = (obs: Observation[] | null, dp: DataProductSDP) => {
+export const getDataProductScriptParameters = (
+  obs: Observation[] | null,
+  dp: DataProductSDPNew
+) => {
   const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
   const obType = obs?.find(o => o?.id === dp.observationId)?.type;
   switch (obType) {
     case TYPE_CONTINUUM: {
-      if (dp.dataProductType === DP_TYPE_IMAGES) {
+      if (
+        (dp?.data as SDPImageContinuumData | SDPVisibilitiesContinuumData)?.dataProductType ===
+        DP_TYPE_IMAGES
+      ) {
+        const data = dp?.data as SDPImageContinuumData;
         return {
-          image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp?.imageSizeUnits] },
-          image_cellsize: { value: dp.pixelSizeValue, unit: IMAGE_SIZE_UNITS[dp?.pixelSizeUnits] },
+          image_size: { value: data?.imageSizeValue, unit: IMAGE_SIZE_UNITS[data?.imageSizeUnits] },
+          image_cellsize: {
+            value: data?.pixelSizeValue,
+            unit: IMAGE_SIZE_UNITS[data?.pixelSizeUnits]
+          },
           weight: {
-            weighting: IMAGE_WEIGHTING.find(item => item.value === Number(dp.weighting))
+            weighting: IMAGE_WEIGHTING.find(item => item.value === Number(data?.weighting))
               ?.label as string,
-            ...(Number(dp.weighting) === IW_BRIGGS && {
-              robust: ROBUST.find(item => item.value === dp.robust)?.value
+            ...(Number(data?.weighting) === IW_BRIGGS && {
+              robust: ROBUST.find(item => item.value === data?.robust)?.value
             })
           },
-          polarisations: dp.polarisations,
-          channels_out: dp.channelsOut,
-          fit_spectral_pol: dp.fitSpectralPol,
-          gaussian_taper: dp.taperValue?.toString(),
+          polarisations: data?.polarisations,
+          channels_out: data?.channelsOut,
+          fit_spectral_pol: data?.fitSpectralPol ?? 0, // TODO check if this can be removed and update PDM
+          gaussian_taper: data?.taperValue?.toString(),
           kind: 'continuum',
           variant: 'continuum image'
         };
       } else {
+        const data = dp?.data as any; // TODO change type to SDPVisibilitiesContinuumData once PDM is updated
         return {
-          image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
-          image_cellsize: { value: dp.pixelSizeValue, unit: IMAGE_SIZE_UNITS[dp.pixelSizeUnits] },
+          image_size: {
+            value: data?.imageSizeValue ?? 0,
+            unit: IMAGE_SIZE_UNITS[data?.imageSizeUnits ?? 0]
+          },
+          image_cellsize: {
+            value: data?.pixelSizeValue,
+            unit: IMAGE_SIZE_UNITS[data?.pixelSizeUnits ?? 2]
+          },
           weight: {
-            weighting: IMAGE_WEIGHTING.find(item => item.value === Number(dp.weighting))
-              ?.label as string,
-            ...(Number(dp.weighting) === IW_BRIGGS && {
-              robust: ROBUST.find(item => item.value === dp.robust)?.value
+            weighting: IMAGE_WEIGHTING.find(
+              item => item.value === Number(data?.weighting ?? IW_UNIFORM)
+            )?.label as string,
+            ...(Number(data?.weighting ?? IW_UNIFORM) === IW_BRIGGS && {
+              robust: ROBUST.find(item => item.value === (data?.robust ?? 0))?.value
             })
           },
-          polarisations: dp.polarisations,
-          channels_out: dp.channelsOut,
-          fit_spectral_pol: dp.fitSpectralPol,
-          gaussian_taper: dp.taperValue?.toString(),
-          time_averaging: { value: dp.timeAveraging, unit: '' },
-          frequency_averaging: { value: dp.frequencyAveraging, unit: '' },
+          polarisations: data?.polarisations ?? [],
+          channels_out: data?.channelsOut ?? 0,
+          fit_spectral_pol: data?.fitSpectralPol ?? 0, // TODO check if this can be removed and update PDM
+          gaussian_taper: data?.taperValue?.toString() ?? '0',
+          time_averaging: { value: data?.timeAveraging ?? 0, unit: 'second' },
+          frequency_averaging: { value: data?.frequencyAveraging ?? 0, unit: 'MHz' },
           kind: 'continuum',
           variant: 'visibilities'
+          // todo update PDM to remove unneeded fields for Visibilities
         };
       }
     }
     case TYPE_ZOOM:
+      const data = dp?.data as SDPSpectralData;
       return {
-        image_size: { value: dp.imageSizeValue, unit: IMAGE_SIZE_UNITS[dp.imageSizeUnits] },
-        image_cellsize: { value: dp.pixelSizeValue, unit: IMAGE_SIZE_UNITS[dp.pixelSizeUnits] },
+        image_size: { value: data?.imageSizeValue, unit: IMAGE_SIZE_UNITS[data?.imageSizeUnits] },
+        image_cellsize: {
+          value: data?.pixelSizeValue,
+          unit: IMAGE_SIZE_UNITS[data?.pixelSizeUnits]
+        },
         weight: {
-          weighting: IMAGE_WEIGHTING.find(item => item.value === Number(dp.weighting))
+          weighting: IMAGE_WEIGHTING.find(item => item.value === Number(data?.weighting))
             ?.label as string,
-          ...(Number(dp.weighting) === IW_BRIGGS && {
-            robust: ROBUST.find(item => item.value === dp.robust)?.value
+          ...(Number(data?.weighting) === IW_BRIGGS && {
+            robust: ROBUST.find(item => item.value === data?.robust)?.value
           })
         },
-        polarisations: dp.polarisations,
-        channels_out: dp.channelsOut,
-        fit_spectral_pol: dp.fitSpectralPol,
-        gaussian_taper: dp.taperValue?.toString(),
+        polarisations: data?.polarisations ?? [],
+        channels_out: data?.channelsOut ?? 0,
+        fit_spectral_pol: data?.fitSpectralPol ?? 0, // TODO check if this can be removed and update PDM
+        gaussian_taper: data?.taperValue?.toString() ?? '0',
         kind: 'spectral',
         variant: 'spectral image',
-        continuum_subtraction: dp.continuumSubtraction
+        continuum_subtraction: data?.continuumSubtraction
       };
     case TYPE_PST:
     default:
       const pstMode = obs?.find(o => o?.id === dp.observationId)?.pstMode;
       if (pstMode === DETECTED_FILTER_BANK_VALUE) {
+        const data = dp?.data as any; // TODO change type to SDPFilterbankPSTData once PDM updated
         return {
-          polarisations: dp.polarisations,
-          bit_depth: Number(dp.bitDepth),
-          time_averaging_factor: dp.timeAveraging,
-          frequency_averaging_factor: dp.frequencyAveraging,
+          polarisations: data?.polarisations,
+          bit_depth: Number(data?.bitDepth),
+          time_averaging_factor: Math.round(Number(data?.timeAveraging)), // TODO update PDM to allow floats
+          frequency_averaging_factor: Math.round(Number(data?.frequencyAveraging)), // TODO update PDM to allow floats
           kind: 'pst',
           variant: 'detected filterbank'
+          // todo update PDM to update fields for SDPFilterbankPSTData
         };
       } else if (pstMode === PULSAR_TIMING_VALUE) {
+        const data = dp?.data as any; // TODO change type to SDPTimingPSTData once PDM updated
         return {
-          polarisations: dp.polarisations,
-          bit_depth: dp.bitDepth,
+          polarisations: data?.polarisations,
+          bit_depth: data?.bitDepth,
           // time_averaging_factor: 5,
           kind: 'pst',
           variant: 'pulsar timing'
+          // todo update PDM to remove unneeded fields for Pulsar Timing
         };
       } else {
+        const data = dp?.data as SDPFlowthroughPSTData;
         return {
-          polarisations: dp.polarisations,
-          bit_depth: dp.bitDepth,
+          polarisations: data?.polarisations,
+          bit_depth: data?.bitDepth,
           kind: 'pst',
           variant: 'flow through'
         };
@@ -281,7 +315,7 @@ export const getDataProductScriptParameters = (obs: Observation[] | null, dp: Da
 
 const getDataProductSDP = (
   obs: Observation[] | null,
-  dataProducts: DataProductSDP[]
+  dataProducts: DataProductSDPNew[]
 ): DataProductSDPsBackend[] => {
   const sdp = dataProducts?.map(dp => ({
     data_product_id: dp.id?.toString(),
@@ -547,7 +581,7 @@ const getSpectralSection = (obsType: number) =>
 
 export const getDataProductRef = (
   incTarObs: TargetObservation,
-  incDataProductSDP: DataProductSDP[]
+  incDataProductSDP: DataProductSDPNew[]
 ) => {
   // TODO make data product mandatory when sens calc is requested so it's never undefined
   return String(incDataProductSDP.find(dp => dp.observationId === incTarObs.observationId)?.id);
@@ -556,7 +590,7 @@ export const getDataProductRef = (
 const getResults = (
   incTargetObservations: TargetObservation[],
   incObs: Observation[],
-  incDataProductSDP: DataProductSDP[],
+  incDataProductSDP: DataProductSDPNew[],
   incTargets: Target[]
 ) => {
   const resultsArr = [];
