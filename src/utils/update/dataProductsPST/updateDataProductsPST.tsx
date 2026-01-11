@@ -1,19 +1,59 @@
-import { DataProductSDP } from '../../types/dataProduct';
-import { DEFAULT_DATA_PRODUCT, TYPE_PST } from '@/utils/constants';
+import {
+  DataProductSDPNew,
+  SDPFilterbankPSTData,
+  SDPFlowthroughPSTData,
+  SDPTimingPSTData
+} from '../../types/dataProduct';
+import {
+  DETECTED_FILTER_BANK_VALUE,
+  FLOW_THROUGH_VALUE,
+  PULSAR_TIMING_VALUE,
+  TYPE_PST
+} from '@/utils/constants';
 import Observation from '@/utils/types/observation';
 
-export const updateDataProductsPST = (oldRecs: DataProductSDP[], newRec: Observation) => {
-  const newDataProducts: DataProductSDP[] = [];
+export const PSTData = (
+  observation: Observation
+): SDPFilterbankPSTData | SDPTimingPSTData | SDPFlowthroughPSTData => {
+  switch (observation.pstMode) {
+    case PULSAR_TIMING_VALUE:
+      return {
+        dataProductType: PULSAR_TIMING_VALUE
+      } as SDPTimingPSTData;
+    case DETECTED_FILTER_BANK_VALUE:
+      return {
+        dataProductType: DETECTED_FILTER_BANK_VALUE,
+        polarisations: ['I'],
+        outputFrequencyResolution: 1,
+        outputSamplingInterval: 1,
+        bitDepth: 1,
+        dispersionMeasure: 1,
+        rotationMeasure: 1
+      } as SDPFilterbankPSTData;
+    default:
+      return {
+        dataProductType: FLOW_THROUGH_VALUE,
+        polarisations: ['XX'], // TODO change to 'X' when pdm updated
+        bitDepth: 1
+      } as SDPFlowthroughPSTData;
+  }
+};
+
+export const updateDataProductsPST = (oldRecs: DataProductSDPNew[], newRec: Observation) => {
+  const newDataProducts: DataProductSDPNew[] = [];
   if (newRec.type === TYPE_PST) {
-    const tmpRec: DataProductSDP = {
-      ...DEFAULT_DATA_PRODUCT,
+    const tmpRec: DataProductSDPNew = {
+      id: 'SDP-0000000',
       observationId: newRec.id,
-      dataProductType: newRec.pstMode ?? 0
+      data: PSTData(newRec)
     };
     if (oldRecs && oldRecs?.length > 0) {
       oldRecs.forEach(inValue => {
         newDataProducts.push(
-          inValue.observationId === newRec.id && newRec?.pstMode !== inValue.dataProductType
+          inValue.observationId === newRec.id &&
+            newRec?.pstMode !==
+              (inValue?.data as SDPFilterbankPSTData | SDPTimingPSTData | SDPFlowthroughPSTData)
+                ?.dataProductType
             ? tmpRec
             : inValue
         );
@@ -22,9 +62,6 @@ export const updateDataProductsPST = (oldRecs: DataProductSDP[], newRec: Observa
   } else {
     newDataProducts.push(...(oldRecs ?? []));
   }
-  console.log('updated data products pst', newDataProducts);
-  console.log('obs', newRec);
-  console.log('oldRecs', oldRecs);
   return newDataProducts;
 };
 export default updateDataProductsPST;

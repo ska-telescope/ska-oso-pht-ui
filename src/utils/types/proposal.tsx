@@ -2,10 +2,10 @@ import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import { TYPE_CONTINUUM } from '../constants';
 import { DocumentBackend, DocumentPDF } from './document';
 import {
-  DataProductSDP,
+  DataProductSDPNew,
   DataProductSDPsBackend,
-  DataProductSRCNetBackend,
-  DataProductSRC
+  DataProductSRC,
+  DataProductSRCNetBackend
 } from './dataProduct';
 import GroupObservation from './groupObservation';
 import Observation from './observation';
@@ -73,7 +73,7 @@ export type Proposal = {
   calibrationStrategy: CalibrationStrategy[];
   technicalPDF: DocumentPDF | null;
   technicalLoadStatus?: number;
-  dataProductSDP?: DataProductSDP[];
+  dataProductSDP?: DataProductSDPNew[];
   dataProductSRC?: DataProductSRC[];
   pipeline?: string;
 };

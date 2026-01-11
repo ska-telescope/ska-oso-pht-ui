@@ -10,7 +10,10 @@ import {
   TIME_HOURS,
   TIME_SECS,
   RA_TYPE_GALACTIC,
-  RA_TYPE_ICRS
+  RA_TYPE_ICRS,
+  IW_UNIFORM,
+  ROBUST_DEFAULT,
+  TAPER_DEFAULT
 } from '@utils/constants';
 import {
   getImageWeightingMapping,
@@ -34,7 +37,7 @@ import Fetch from '../fetch/Fetch';
 import Target from '@/utils/types/target';
 import Observation from '@/utils/types/observation';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
-import { DataProductSDP } from '@/utils/types/dataProduct';
+import { DataProductSDPNew, SDPImageContinuumData } from '@/utils/types/dataProduct';
 
 const mapping = (data: any, target: Target, observation: Observation): SensCalcResults =>
   getFinalResults(target, data, observation);
@@ -289,7 +292,7 @@ function GetContinuumData(
   telescope: Telescope,
   observation: Observation,
   target: Target,
-  dataProductSDP: DataProductSDP
+  dataProductSDP: DataProductSDPNew
 ) {
   const URL_PATH = `/continuum/calculate`;
 
@@ -315,9 +318,9 @@ function GetContinuumData(
     },
     numberOfSubBands: observation?.numSubBands ?? 0,
     spectralAveraging: observation?.spectralAveraging ?? 1,
-    imageWeighting: dataProductSDP?.weighting,
-    robust: dataProductSDP?.robust,
-    tapering: dataProductSDP?.taperValue ?? 0
+    imageWeighting: (dataProductSDP?.data as SDPImageContinuumData)?.weighting ?? IW_UNIFORM,
+    robust: (dataProductSDP?.data as SDPImageContinuumData)?.robust ?? ROBUST_DEFAULT,
+    tapering: (dataProductSDP?.data as SDPImageContinuumData)?.taperValue ?? TAPER_DEFAULT
   };
 
   const observingBand = (observation: Observation) => observation.observingBand;

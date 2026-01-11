@@ -11,7 +11,10 @@ import {
   DECIMAL_PLACES,
   RA_TYPE_GALACTIC,
   RA_TYPE_ICRS,
-  TIME_SECS
+  TIME_SECS,
+  TAPER_DEFAULT,
+  ROBUST_DEFAULT,
+  IW_UNIFORM
 } from '@utils/constants';
 import {
   isLow,
@@ -34,7 +37,7 @@ import {
 import sensCalHelpers from '../sensitivityCalculator/sensCalHelpers';
 import Fetch from '../fetch/Fetch';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
-import { DataProductSDP } from '@/utils/types/dataProduct';
+import { DataProductSDPNew, SDPSpectralData } from '@/utils/types/dataProduct';
 
 const mapping = (data: any, target: Target, observation: Observation): SensCalcResults =>
   getFinalResults(target, data, observation);
@@ -319,7 +322,7 @@ async function GetZoomData(
   telescope: Telescope,
   observation: Observation,
   target: Target,
-  dataProductSDP: DataProductSDP
+  dataProductSDP: DataProductSDPNew
 ) {
   const zoomData: ZoomData = {
     dataType: observation.type,
@@ -342,9 +345,9 @@ async function GetZoomData(
     },
     spectralAveraging: observation?.spectralAveraging ?? 0,
     spectralResolution: '',
-    imageWeighting: dataProductSDP?.weighting,
-    robust: dataProductSDP?.robust,
-    tapering: dataProductSDP?.taperValue ?? 0
+    imageWeighting: (dataProductSDP?.data as SDPSpectralData)?.weighting ?? IW_UNIFORM,
+    robust: (dataProductSDP?.data as SDPSpectralData)?.robust ?? ROBUST_DEFAULT,
+    tapering: (dataProductSDP?.data as SDPSpectralData)?.taperValue ?? TAPER_DEFAULT
   };
 
   const observingBand = (observation: Observation) => observation.observingBand;

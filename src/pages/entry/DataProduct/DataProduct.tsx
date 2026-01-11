@@ -17,15 +17,19 @@ import PolarisationsField from '@/components/fields/polarisations/polarisations'
 import {
   CHANNELS_OUT_MAX,
   DETECTED_FILTER_BANK_VALUE,
+  DP_TYPE_IMAGES,
   FLOW_THROUGH_VALUE,
   FOOTER_HEIGHT_PHT,
   IW_BRIGGS,
   IW_NATURAL,
+  IW_UNIFORM,
   NAV,
   OB_SUBARRAY_CUSTOM,
   PAGE_DATA_PRODUCTS,
   PULSAR_TIMING_VALUE,
+  ROBUST_DEFAULT,
   STATUS_INITIAL,
+  TAPER_DEFAULT,
   TYPE_CONTINUUM,
   TYPE_PST,
   TYPE_ZOOM,
@@ -33,7 +37,7 @@ import {
 } from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
-import { DataProductSDP } from '@/utils/types/dataProduct';
+import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import AddButton from '@/components/button/Add/Add';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { presentUnits } from '@/utils/present/present';
@@ -62,7 +66,7 @@ const COL = 6;
 const COL_MID = 8;
 
 interface DataProductProps {
-  data?: DataProductSDP;
+  data?: DataProductSDPNew;
 }
 
 export default function DataProduct({ data }: DataProductProps) {
@@ -90,19 +94,21 @@ export default function DataProduct({ data }: DataProductProps) {
   const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
   const [pixelSizeUnits, setPixelSizeUnits] = React.useState(2);
   const [taperValue, setTaperValue] = React.useState(0);
-  const [timeAveraging, setTimeAveraging] = React.useState(0);
+  const [timeAveraging, setTimeAveraging] = React.useState(3.4);
   const [timeAveragingUnits, setTimeAveragingUnits] = React.useState(0);
-  const [frequencyAveraging, setFrequencyAveraging] = React.useState(0);
+  const [frequencyAveraging, setFrequencyAveraging] = React.useState(21.7);
   const [frequencyAveragingUnits, setFrequencyAveragingUnits] = React.useState(0);
   const [weighting, setWeighting] = React.useState(0);
   const [robust, setRobust] = React.useState(0);
   const [channelsOut, setChannelsOut] = React.useState(1);
   const [continuumSubtraction, setContinuumSubtraction] = React.useState(false);
   const [polarisations, setPolarisations] = React.useState<string[]>([]);
+  // TODO add missing new fields for PST Filter Bank
 
-  const maxObservationsReached = () => baseObservations.length >= osdCyclePolicy.maxObservations;
+  const maxObservationsReached = () =>
+    osdCyclePolicy && baseObservations.length >= osdCyclePolicy.maxObservations;
 
-  const isDataTypeOne = () => dataProductType === 1;
+  const isDataTypeOne = () => dataProductType === DP_TYPE_IMAGES;
 
   const getObservation = () => baseObservations?.find(obs => obs.id === observationId);
 
@@ -118,7 +124,10 @@ export default function DataProduct({ data }: DataProductProps) {
     getObservation()?.type === TYPE_PST || getProposal()?.scienceCategory === TYPE_PST;
 
   const showSC =
-    osdCyclePolicy.maxObservations === 1 && osdCyclePolicy.maxDataProducts === 1 && !isPST();
+    osdCyclePolicy &&
+    osdCyclePolicy.maxObservations === 1 &&
+    osdCyclePolicy.maxDataProducts === 1 &&
+    !isPST();
 
   const getSuffix = () => {
     if (isContinuum() || isPST()) {
@@ -127,44 +136,46 @@ export default function DataProduct({ data }: DataProductProps) {
     return '1';
   };
 
-  const dataProductIn = (dp: DataProductSDP) => {
+  const dataProductIn = (dp: DataProductSDPNew) => {
     setId(dp.id);
     setObservationId(dp.observationId);
-    setDataProductType(dp.dataProductType ?? 0);
-    setImageSizeValue(dp.imageSizeValue);
-    setImageSizeUnits(dp.imageSizeUnits);
-    setPixelSizeValue(dp.pixelSizeValue);
-    setPixelSizeUnits(dp.pixelSizeUnits);
-    setTaperValue(dp.taperValue);
-    setWeighting(dp.weighting);
-    setRobust(dp.robust ?? 0);
-    setPolarisations(dp.polarisations ?? []);
-    setChannelsOut(dp.channelsOut ?? 1);
-    setTimeAveraging(dp.timeAveraging ?? 0);
-    setFrequencyAveraging(dp.frequencyAveraging ?? 0);
-    setContinuumSubtraction(dp.continuumSubtraction ?? false);
-    setBitDepth(dp.bitDepth ?? 1);
+    setDataProductType((dp?.data as any)?.dataProductType ?? DP_TYPE_IMAGES);
+    setImageSizeValue((dp?.data as any)?.imageSizeValue ?? 2.5);
+    setImageSizeUnits((dp?.data as any)?.imageSizeUnits ?? 0);
+    setPixelSizeValue((dp?.data as any)?.pixelSizeValue ?? 1.6);
+    setPixelSizeUnits((dp?.data as any)?.pixelSizeUnits ?? 2);
+    setTaperValue((dp?.data as any)?.taperValue ?? TAPER_DEFAULT);
+    setWeighting((dp?.data as any)?.weighting ?? IW_UNIFORM);
+    setRobust((dp?.data as any)?.robust ?? ROBUST_DEFAULT);
+    setPolarisations((dp?.data as any)?.polarisations ?? []);
+    setChannelsOut((dp?.data as any)?.channelsOut ?? 1);
+    setTimeAveraging((dp?.data as any)?.timeAveraging ?? 3.4);
+    setFrequencyAveraging((dp?.data as any)?.frequencyAveraging ?? 21.7);
+    setContinuumSubtraction((dp?.data as any)?.continuumSubtraction ?? false);
+    setBitDepth((dp?.data as any)?.bitDepth ?? 1);
   };
 
   const dataProductOut = () => {
-    const newDataProduct: DataProductSDP = {
+    const newDataProduct: DataProductSDPNew = {
       id: id,
-      dataProductType,
       observationId,
-      imageSizeValue,
-      imageSizeUnits,
-      pixelSizeValue,
-      pixelSizeUnits,
-      weighting,
-      robust,
-      polarisations,
-      channelsOut,
-      taperValue,
-      fitSpectralPol: 3,
-      timeAveraging,
-      frequencyAveraging,
-      bitDepth,
-      continuumSubtraction
+      data: {
+        dataProductType,
+        imageSizeValue,
+        imageSizeUnits,
+        pixelSizeValue,
+        pixelSizeUnits,
+        weighting,
+        robust,
+        polarisations,
+        channelsOut,
+        taperValue,
+        fitSpectralPol: 3, // TODO check this can be removed
+        timeAveraging,
+        frequencyAveraging,
+        bitDepth,
+        continuumSubtraction
+      }
     };
     return newDataProduct;
   };
@@ -172,24 +183,26 @@ export default function DataProduct({ data }: DataProductProps) {
   /* ------------------------------------------- */
 
   const addToProposal = () => {
-    const newDataProduct: DataProductSDP = {
+    const newDataProduct: DataProductSDPNew = {
       id: generateId(PAGE_PREFIX, 6),
-      dataProductType,
       observationId,
-      imageSizeValue,
-      imageSizeUnits,
-      pixelSizeValue,
-      pixelSizeUnits,
-      weighting,
-      robust,
-      polarisations,
-      channelsOut,
-      taperValue,
-      fitSpectralPol: 3,
-      timeAveraging,
-      frequencyAveraging,
-      bitDepth,
-      continuumSubtraction
+      data: {
+        dataProductType,
+        imageSizeValue,
+        imageSizeUnits,
+        pixelSizeValue,
+        pixelSizeUnits,
+        weighting,
+        robust,
+        polarisations,
+        channelsOut,
+        taperValue,
+        fitSpectralPol: 3, // TODO chheck this can be removed
+        timeAveraging,
+        frequencyAveraging,
+        bitDepth,
+        continuumSubtraction
+      }
     };
     setProposal({
       ...getProposal(),
@@ -200,7 +213,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const updateToProposal = async () => {
     const proposal = getProposal();
     const observation = getObservation();
-    const newDataProduct: DataProductSDP = dataProductOut();
+    const newDataProduct: DataProductSDPNew = dataProductOut();
     const oldDataProducts = proposal.dataProductSDP ?? [];
     const to = await updateSensCalc(proposal, observation!, newDataProduct);
     setProposal({
@@ -211,7 +224,7 @@ export default function DataProduct({ data }: DataProductProps) {
   };
 
   const updateStorageProposal = () => {
-    if (osdCyclePolicy.maxDataProducts === 1) {
+    if (osdCyclePolicy && osdCyclePolicy.maxDataProducts === 1) {
       isEdit() ? updateToProposal() : addToProposal();
     }
   };
@@ -508,7 +521,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
     const buttonClicked = () => {
       isEdit() ? updateToProposal() : addToProposal();
-      if (osdCyclePolicy.maxDataProducts !== 1) {
+      if (osdCyclePolicy && osdCyclePolicy.maxDataProducts !== 1) {
         navigate(NAV[BACK_PAGE]);
       }
     };
@@ -549,7 +562,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const scData = (): any => getProposal()?.targetObservation?.[0]?.sensCalc;
 
-  const isCustom = () => getObservation()?.subarray === OB_SUBARRAY_CUSTOM;
+  const isCustom = () => getObservation()?.subarray === OB_SUBARRAY_CUSTOM; // TODO check this
   const isNatural = () =>
     isSpectral() || (isContinuum() && isDataTypeOne()) ? weighting === IW_NATURAL : false;
 
@@ -711,7 +724,7 @@ export default function DataProduct({ data }: DataProductProps) {
           )}
         </Grid>
       </Grid>
-      {osdCyclePolicy.maxDataProducts !== 1 && pageFooter()}
+      {osdCyclePolicy && osdCyclePolicy.maxDataProducts !== 1 && pageFooter()}
     </Box>
   );
 }

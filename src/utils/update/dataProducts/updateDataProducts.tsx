@@ -1,7 +1,7 @@
-import { DataProductSDP } from '../../types/dataProduct';
+import { DataProductSDPNew } from '../../types/dataProduct';
 
-export const updateDataProducts = (oldRecs: DataProductSDP[], newRec: DataProductSDP) => {
-  const newDataProducts: DataProductSDP[] = [];
+export const updateDataProducts = (oldRecs: DataProductSDPNew[], newRec: DataProductSDPNew) => {
+  const newDataProducts: DataProductSDPNew[] = [];
   if (oldRecs && oldRecs?.length > 0) {
     oldRecs.forEach(inValue => {
       newDataProducts.push(inValue.id === newRec.id ? newRec : inValue);
@@ -9,7 +9,6 @@ export const updateDataProducts = (oldRecs: DataProductSDP[], newRec: DataProduc
   } else {
     newDataProducts.push(newRec);
   }
-  console.log('updated data products', newDataProducts);
   return newDataProducts;
 };
 export default updateDataProducts;

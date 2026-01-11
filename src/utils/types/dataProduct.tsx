@@ -172,7 +172,7 @@ export type SDPFilterbankPSTData = {
   rotationMeasure: number; // TODO add to form & mapping once PDM updated (new)
 };
 
-export type DataProductSRCD = {
+export type DataProductSRC = {
   id: string; // base
   dataProductType: number; // base
   observationId: string; // base

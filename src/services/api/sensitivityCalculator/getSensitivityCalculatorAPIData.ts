@@ -13,7 +13,7 @@ import {
 import GetZoomData from '../getZoomData/getZoomData';
 import GetContinuumData from '../getContinuumData/getContinuumData';
 import { SENSCALC_CONTINUUM_MOCKED } from './SensCalcResultsMock';
-import { DataProductSDP } from '@/utils/types/dataProduct';
+import { DataProductSDPNew } from '@/utils/types/dataProduct';
 
 type SensCalcAPIError = { error: string };
 
@@ -24,9 +24,9 @@ export const setMockObservation = (obs: Observation, obsType: number = TYPE_CONT
 async function getSensCalc(
   observation: Observation,
   target: Target,
-  dataProductSDP: DataProductSDP
+  dataProductSDP: DataProductSDPNew
 ): Promise<SensCalcResults | SensCalcAPIError> {
-  const isCustom = () => observation.subarray === OB_SUBARRAY_CUSTOM;
+  const isCustom = () => observation.subarray === OB_SUBARRAY_CUSTOM; // TODO check correct comparison needed
 
   if (USE_LOCAL_DATA_SENSITIVITY_CALC) {
     return Promise.resolve(SENSCALC_CONTINUUM_MOCKED);
@@ -34,7 +34,7 @@ async function getSensCalc(
   const fetchSensCalc = async (
     observation: Observation,
     target: Target,
-    dataProductSDP: DataProductSDP
+    dataProductSDP: DataProductSDPNew
   ) => {
     return await getSensitivityCalculatorAPIData(observation, target, dataProductSDP, isCustom());
   };
@@ -60,7 +60,7 @@ const getTelescope = (telNum: number): Telescope =>
 async function getSensitivityCalculatorAPIData(
   observation: Observation,
   target: Target,
-  dataProductSDP: DataProductSDP,
+  dataProductSDP: DataProductSDPNew,
   _isCustom: boolean
 ) {
   const telescope: Telescope = getTelescope(observation.telescope);
