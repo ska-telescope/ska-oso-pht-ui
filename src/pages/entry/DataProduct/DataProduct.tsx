@@ -37,7 +37,6 @@ import {
 } from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
-import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import AddButton from '@/components/button/Add/Add';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { presentUnits } from '@/utils/present/present';
@@ -57,6 +56,7 @@ import ContinuumSubtractionField from '@/components/fields/continuumSubtraction/
 import SensCalcContent from '@/components/alerts/sensCalcModal/content/SensCalcContent';
 import { updateDataProducts } from '@/utils/update/dataProducts/updateDataProducts';
 import { updateSensCalc } from '@/utils/update/sensCalc/updateSensCalc';
+import { DataProductSDPNew } from '@/utils/types/dataProduct';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
@@ -134,22 +134,23 @@ export default function DataProduct({ data }: DataProductProps) {
   };
 
   const dataProductIn = (dp: DataProductSDPNew) => {
+    const data = dp.data as any;
     setId(dp.id);
     setObservationId(dp.observationId);
-    setDataProductType((dp?.data as any)?.dataProductType ?? DP_TYPE_IMAGES);
-    setImageSizeValue((dp?.data as any)?.imageSizeValue ?? 2.5);
-    setImageSizeUnits((dp?.data as any)?.imageSizeUnits ?? 0);
-    setPixelSizeValue((dp?.data as any)?.pixelSizeValue ?? 1.6);
-    setPixelSizeUnits((dp?.data as any)?.pixelSizeUnits ?? 2);
-    setTaperValue((dp?.data as any)?.taperValue ?? TAPER_DEFAULT);
-    setWeighting((dp?.data as any)?.weighting ?? IW_UNIFORM);
-    setRobust((dp?.data as any)?.robust ?? ROBUST_DEFAULT);
-    setPolarisations((dp?.data as any)?.polarisations ?? []);
-    setChannelsOut((dp?.data as any)?.channelsOut ?? 1);
-    setTimeAveraging((dp?.data as any)?.timeAveraging ?? 3.4);
-    setFrequencyAveraging((dp?.data as any)?.frequencyAveraging ?? 21.7);
-    setContinuumSubtraction((dp?.data as any)?.continuumSubtraction ?? false);
-    setBitDepth((dp?.data as any)?.bitDepth ?? 1);
+    setDataProductType(data?.dataProductType ?? DP_TYPE_IMAGES);
+    setImageSizeValue(data?.imageSizeValue ?? 2.5);
+    setImageSizeUnits(data?.imageSizeUnits ?? 0);
+    setPixelSizeValue(data?.pixelSizeValue ?? 1.6);
+    setPixelSizeUnits(data?.pixelSizeUnits ?? 2);
+    setTaperValue(data?.taperValue ?? TAPER_DEFAULT);
+    setWeighting(data?.weighting ?? IW_UNIFORM);
+    setRobust(data?.robust ?? ROBUST_DEFAULT);
+    setPolarisations(data?.polarisations ?? []);
+    setChannelsOut(data?.channelsOut ?? 1);
+    setTimeAveraging(data?.timeAveraging ?? 3.4);
+    setFrequencyAveraging(data?.frequencyAveraging ?? 21.7);
+    setContinuumSubtraction(data?.continuumSubtraction ?? false);
+    setBitDepth(data?.bitDepth ?? 1);
   };
 
   const dataProductOut = () => {
