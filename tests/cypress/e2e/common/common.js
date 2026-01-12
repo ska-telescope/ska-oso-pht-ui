@@ -171,7 +171,8 @@ export const clickReviewOverviewButton = () => clickButton('overviewButtonTestId
 export const clickSave = () => clickButton('saveBtn');
 export const clickSendInviteButton = () => clickButton('sendInviteButton');
 export const clickToAddTarget = () => clickButton('addTargetButton');
-export const clickCycleSelection = () => clickButton('SKAO_2027_1_ID');
+export const clickCycleSelectionMockProposal = () => clickButton('CYCLE-003_ID');
+export const clickCycleSelectionSV = () => clickButton('SKAO_2027_1_ID');
 export const clickToAddDataProduct = () => clickButton('addDataProductButton');
 export const clickToAddPSTBeam = () => clickButton('addPulsarTimingBeamButton');
 export const clickMultipleBeamsRadioButton = () => clickButton('MultipleBeamsTestId');
@@ -345,7 +346,19 @@ export const selectObservingMode = value => {
 export const clickProposalTypePrincipleInvestigator = () => selectId('ProposalType-1');
 export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalAttribute-1');
 
-export const verifySubmissionCreatedAlertFooter = () => true; //  Chip responds too fast for this : verifyContent('timeAlertFooter', 'Proposal added with unique identifier');
+export const verifyCycleID = () => verifyContent('SKAO_2027_1_ID', 'SKAO_2027_1');
+export const verifyCycleDescription = () =>
+  verifyContent('SKAO_2027_1_description', 'Low AA2 Science Verification');
+
+export const verifyProposalOpen = () => verifyContent('SKAO_2027_1_opens', '27-03-2026');
+
+export const verifyProposalClose = () => verifyContent('SKAO_2027_1_closes', '12-05-2026');
+export const verifySubmissionCreatedAlertFooter = () =>
+  verifyContent('timeAlertFooter', 'Submission added with unique identifier');
+
+export const verifyInformationBannerText = text => {
+  cy.get('[data-testId="borderedSection"]').contains(text);
+};
 
 export const verifyUserFoundAlertFooter = () =>
   verifyContent('timeAlertFooter', 'User was successfully found.');
@@ -385,6 +398,7 @@ export const createStandardProposal = () => {
 
 export const createMock = () => {
   clickAddSubmission();
+  clickCycleSelectionSV();
   clickCycleConfirm();
   pageConfirmed('TARGET');
 };
@@ -400,8 +414,9 @@ export const createStandardProposalLoggedIn = () => {
 
 export const createScienceIdeaLoggedIn = () => {
   clickAddSubmission();
+  clickCycleSelectionSV();
   clickCycleConfirm();
-  enterProposalTitle();
+  enterScienceVerificationIdeaTitle();
   clickCreateSubmission();
 };
 
@@ -476,8 +491,8 @@ export const addAbstract = () => {
 };
 
 export const addM2TargetUsingResolve = () => {
-  cy.get('[id="name"]').should('exist');
-  cy.get('[id="name"]').type('M2');
+  cy.get('[data-testid="name"]').should('exist');
+  cy.get('[data-testid="name"]').type('M2');
   clickResolveButton();
 };
 
@@ -511,7 +526,6 @@ export const addBeamUsingResolveOnTargetEdit = () => {
   clickResolveBeamButton();
 };
 
-// TODO : Why is this not working consistently?   ( CHLOE )
 export const verifyOnLandingPageFilterIsVisible = () => {
   cy.get('[data-testid="proposalType"]').should('exist');
   cy.get('[data-testid="proposalType"]').realClick();
