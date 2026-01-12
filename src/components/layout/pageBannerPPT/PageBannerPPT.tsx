@@ -9,14 +9,14 @@ import {
   AUTO_SAVE_INTERVAL,
   cypressProposal,
   cypressToken,
-  LAST_PAGE,
   NAV,
   PAGE_LINKING,
   PAGE_SRC_NET,
   PAGE_TECHNICAL,
   PATH,
   PROPOSAL_STATUS,
-  STATUS_ARRAY_PAGES,
+  STATUS_ARRAY_PAGES_PROPOSAL,
+  STATUS_ARRAY_PAGES_SV,
   STATUS_ERROR,
   STATUS_INITIAL,
   STATUS_PARTIAL
@@ -61,6 +61,11 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const [openProposalDisplay, setOpenProposalDisplay] = React.useState(false);
   const [openValidationResults, setOpenValidationResults] = React.useState(false);
   const [validationResults, setValidationResults] = React.useState<string[]>([]);
+
+  const pages = React.useMemo(() => (isSV ? STATUS_ARRAY_PAGES_SV : STATUS_ARRAY_PAGES_PROPOSAL), [
+    isSV
+  ]);
+  const LAST_PAGE = pages[pages.length - 1];
 
   const authClient = useAxiosAuthClient();
   const { notifyError, notifySuccess } = useNotify();
@@ -184,7 +189,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   }, [application.content2]);
 
   React.useEffect(() => {
-    const pagesIndexes = STATUS_ARRAY_PAGES;
+    const pagesIndexes = isSV ? STATUS_ARRAY_PAGES_SV : STATUS_ARRAY_PAGES_PROPOSAL;
     const pagesNeedToCheck = (application.content1 as number[]).filter((_value, idx) =>
       pagesIndexes.includes(idx)
     );
