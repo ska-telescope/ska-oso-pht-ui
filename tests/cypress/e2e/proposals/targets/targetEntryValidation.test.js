@@ -10,20 +10,14 @@ import {
   clickEdit,
   clickFirstRowOfTargetTable,
   clickToAddTarget,
-  clickToDetailsPage,
-  createMock,
-  createScienceIdeaLoggedIn,
   enterTargetField,
-  initialize,
   initializeUserNotLoggedIn,
-  mockCreateSubmissionAPI,
   mockResolveTargetAPI,
-  tabToEditTarget,
   updateTargetField,
   verifyFieldError,
+  verifyInformationBannerText,
   verifyTargetInTargetTable
 } from '../../common/common';
-import { standardUser } from '../../users/users.js';
 beforeEach(() => {
   initializeUserNotLoggedIn();
   clickAddSubmission();
@@ -145,6 +139,9 @@ describe('Science Verification: Target entry validation', () => {
 
     //verify updated target in target table
     verifyTargetInTargetTable('M1', '02:00:00', '02:00:00', '0');
+
+    //verify only one target is available for SV, as per OSD
+    verifyInformationBannerText('Only 1 target/object is allowed');
   });
 });
 

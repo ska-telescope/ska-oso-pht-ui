@@ -356,6 +356,10 @@ export const verifyProposalClose = () => verifyContent('SKAO_2027_1_closes', '12
 export const verifySubmissionCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Submission added with unique identifier');
 
+export const verifyInformationBannerText = text => {
+  cy.get('[data-testId="borderedSection"]').contains(text);
+};
+
 export const verifyUserFoundAlertFooter = () =>
   verifyContent('timeAlertFooter', 'User was successfully found.');
 
