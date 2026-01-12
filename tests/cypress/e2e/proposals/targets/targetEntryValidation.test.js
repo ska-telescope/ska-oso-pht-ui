@@ -2,22 +2,33 @@ import {
   addM2TargetUsingResolve,
   checkFieldDisabled,
   clearLocalStorage,
+  clickAddSubmission,
+  clickCycleConfirm,
+  clickCycleSelectionMockProposal,
+  clickCycleSelectionSV,
   clickDialogConfirm,
+  clickEdit,
   clickFirstRowOfTargetTable,
   clickToAddTarget,
+  clickToDetailsPage,
   createMock,
+  createScienceIdeaLoggedIn,
   enterTargetField,
+  initialize,
   initializeUserNotLoggedIn,
+  mockCreateSubmissionAPI,
   mockResolveTargetAPI,
   tabToEditTarget,
   updateTargetField,
   verifyFieldError,
   verifyTargetInTargetTable
 } from '../../common/common';
+import { standardUser } from '../../users/users.js';
 beforeEach(() => {
   initializeUserNotLoggedIn();
-  createMock();
-
+  clickAddSubmission();
+  clickCycleSelectionSV();
+  clickCycleConfirm();
   checkFieldDisabled('addTargetButton', true); //verify add target button is disabled when all target fields are incomplete
 });
 
@@ -25,8 +36,8 @@ afterEach(() => {
   clearLocalStorage();
 });
 
-describe('Target entry validation', () => {
-  it('Verify add target button is disabled when target coordinate fields are invalid', () => {
+describe('Science Verification: Target entry validation', () => {
+  it('SV: Verify add target button is disabled when target coordinate fields are invalid', () => {
     enterTargetField('name', 'M2'); // enter valid target name
 
     enterTargetField('skyDirectionValue1', '1:0:0'); // enter invalid coordinate
@@ -38,7 +49,7 @@ describe('Target entry validation', () => {
     checkFieldDisabled('addTargetButton', true); // verify add target button is disabled when target coordinate fields are invalid
   });
 
-  it('Verify add target button is disabled when target name field is invalid', () => {
+  it('SV: Verify add target button is disabled when target name field is invalid', () => {
     enterTargetField('skyDirectionValue1', '1:00:00'); // enter valid coordinate
     enterTargetField('skyDirectionValue2', '1:00:00'); // enter valid coordinate
 
@@ -47,8 +58,7 @@ describe('Target entry validation', () => {
     checkFieldDisabled('addTargetButton', true); // verify add target button is disabled when target name field is invalid
   });
 
-  // TODO - now that we have moved the actions to the first column, the click in the test to select the row is fails. Skipped for now.
-  it.skip('Verify submitting an edited target is disabled when name is invalid', () => {
+  it('SV: Verify submitting an edited target is disabled when name is invalid', () => {
     mockResolveTargetAPI();
 
     //add target
@@ -61,7 +71,7 @@ describe('Target entry validation', () => {
 
     // edit target
     clickFirstRowOfTargetTable();
-    tabToEditTarget();
+    clickEdit();
 
     // update target name to invalid value
     updateTargetField('name', '  '); // enter invalid target name
@@ -69,8 +79,7 @@ describe('Target entry validation', () => {
     checkFieldDisabled('dialogConfirmationButton', true); // verify confirm button is disabled when target name field is invalid
   });
 
-  // TODO - now that we have moved the actions to the first column, the click in the test to select the row is fails. Skipped for now.
-  it.skip('Verify submitting an edited target is disabled when ra is invalid', () => {
+  it('SV: Verify submitting an edited target is disabled when ra is invalid', () => {
     mockResolveTargetAPI();
 
     //add target
@@ -83,7 +92,7 @@ describe('Target entry validation', () => {
 
     // edit target
     clickFirstRowOfTargetTable();
-    tabToEditTarget();
+    clickEdit();
 
     // update target ra to invalid value
     updateTargetField('skyDirectionValue1', '1'); // enter invalid coordinate
@@ -91,8 +100,7 @@ describe('Target entry validation', () => {
     checkFieldDisabled('dialogConfirmationButton', true); // verify confirm button is disabled
   });
 
-  // TODO - now that we have moved the actions to the first column, the click in the test to select the row is fails. Skipped for now.
-  it.skip('Verify submitting an edited target is disabled when dec is invalid', () => {
+  it('SV: Verify submitting an edited target is disabled when dec is invalid', () => {
     mockResolveTargetAPI();
 
     //add target
@@ -105,7 +113,7 @@ describe('Target entry validation', () => {
 
     // edit target
     clickFirstRowOfTargetTable();
-    tabToEditTarget();
+    clickEdit();
 
     // update target dec to invalid value
     updateTargetField('skyDirectionValue2', '1'); // enter invalid coordinate
@@ -113,8 +121,7 @@ describe('Target entry validation', () => {
     checkFieldDisabled('dialogConfirmationButton', true); // verify confirm button is disabled
   });
 
-  // TODO - now that we have moved the actions to the first column, the click in the test to select the row is fails. Skipped for now.
-  it.skip('Verify target table reflects updated target', () => {
+  it('SV: Verify target table reflects updated target', () => {
     mockResolveTargetAPI();
 
     //add target
@@ -127,7 +134,7 @@ describe('Target entry validation', () => {
 
     // edit target
     clickFirstRowOfTargetTable();
-    tabToEditTarget();
+    clickEdit();
 
     // update target fields
     updateTargetField('name', 'M1'); // enter new target name
@@ -141,14 +148,18 @@ describe('Target entry validation', () => {
   });
 });
 
-describe('Target entry validation - non science idea ', () => {
-  before(() => {
+describe('Proposal Flow: Target entry validation', () => {
+  beforeEach(() => {
     cy.window().then(win => {
       win.localStorage.setItem('cypress:proposalCreated', 'true');
     });
+    initializeUserNotLoggedIn();
+    clickAddSubmission();
+    clickCycleSelectionMockProposal();
+    clickCycleConfirm();
   });
 
-  it.skip('Verify name field error when target is duplicated', () => {
+  it('Proposal: Verify name field error when target is duplicated', () => {
     mockResolveTargetAPI();
 
     //add target

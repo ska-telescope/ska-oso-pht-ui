@@ -394,6 +394,7 @@ export const createStandardProposal = () => {
 
 export const createMock = () => {
   clickAddSubmission();
+  clickCycleSelectionSV();
   clickCycleConfirm();
   pageConfirmed('TARGET');
 };
@@ -409,14 +410,19 @@ export const createStandardProposalLoggedIn = () => {
 
 export const createScienceIdeaLoggedIn = () => {
   clickAddSubmission();
+  clickCycleSelectionSV();
   clickCycleConfirm();
-  enterProposalTitle();
+  enterScienceVerificationIdeaTitle();
   clickCreateSubmission();
 };
 
 export const clickToTeamPage = () => {
   clickToNextPage();
   pageConfirmed('TEAM');
+};
+export const clickToDetailsPage = () => {
+  clickToNextPage();
+  pageConfirmed('DETAILS');
 };
 
 export const addInvestigator = () => {
@@ -485,8 +491,8 @@ export const addAbstract = () => {
 };
 
 export const addM2TargetUsingResolve = () => {
-  cy.get('[id="name"]').should('exist');
-  cy.get('[id="name"]').type('M2');
+  cy.get('[data-testid="name"]').should('exist');
+  cy.get('[data-testid="name"]').type('M2');
   clickResolveButton();
 };
 
