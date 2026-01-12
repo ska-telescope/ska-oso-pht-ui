@@ -240,22 +240,24 @@ export const MockProposalFrontend: Proposal = {
   dataProductSDP: [
     {
       id: 'SDP-2',
-      dataProductType: 1,
       observationId: 'obs-obR1Ej',
-      imageSizeValue: 15,
-      imageSizeUnits: 0,
-      pixelSizeValue: 1.007,
-      pixelSizeUnits: 2,
-      weighting: 1,
-      polarisations: ['X'],
-      channelsOut: 1,
-      fitSpectralPol: 3,
-      robust: 0,
-      taperValue: 1,
-      timeAveraging: 0,
-      frequencyAveraging: 0,
-      bitDepth: 1,
-      continuumSubtraction: false
+      data: {
+        dataProductType: 1,
+        imageSizeValue: 15,
+        imageSizeUnits: 0,
+        pixelSizeValue: 1.007,
+        pixelSizeUnits: 2,
+        weighting: 1,
+        polarisations: ['X'],
+        channelsOut: 1,
+        fitSpectralPol: 3,
+        robust: 0,
+        taperValue: 1,
+        timeAveraging: 0,
+        frequencyAveraging: 0,
+        bitDepth: 1,
+        continuumSubtraction: false
+      }
     }
   ],
   dataProductSRC: [],
@@ -415,22 +417,24 @@ export const MockProposalFrontendZoom: Proposal = {
   dataProductSDP: [
     {
       id: 'SDP-1',
-      dataProductType: 1,
       observationId: 'obs-arMIoY',
-      imageSizeValue: 100,
-      imageSizeUnits: 0,
-      pixelSizeValue: 3.7,
-      pixelSizeUnits: 1,
-      weighting: 1,
-      polarisations: ['I'],
-      channelsOut: 1,
-      fitSpectralPol: 3,
-      robust: 0,
-      taperValue: 1,
-      timeAveraging: 0,
-      frequencyAveraging: 0,
-      bitDepth: 0,
-      continuumSubtraction: false
+      data: {
+        dataProductType: 1,
+        imageSizeValue: 100,
+        imageSizeUnits: 0,
+        pixelSizeValue: 3.7,
+        pixelSizeUnits: 1,
+        weighting: 1,
+        polarisations: ['I'],
+        channelsOut: 1,
+        fitSpectralPol: 3,
+        robust: 0,
+        taperValue: 1,
+        timeAveraging: 0,
+        frequencyAveraging: 0,
+        bitDepth: 0,
+        continuumSubtraction: false
+      }
     }
   ],
   dataProductSRC: [],

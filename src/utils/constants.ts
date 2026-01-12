@@ -2,7 +2,6 @@ import { LABEL_POSITION, TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska
 import Target from './types/target';
 import Investigator from './types/investigator';
 import Observation from './types/observation';
-import { DataProductSDP } from './types/dataProduct';
 import { env } from '@/env';
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const cypressToken = window.localStorage.getItem('cypress:token');
@@ -211,6 +210,8 @@ export const HELP_FONT = 16;
 export const IW_BRIGGS = 2;
 export const IW_NATURAL = 0;
 export const IW_UNIFORM = 1;
+export const ROBUST_DEFAULT = 1;
+export const TAPER_DEFAULT = 0;
 
 export const POLARISATIONS = [
   { value: 'I' },
@@ -314,8 +315,6 @@ export const PAGE_CYCLE = 13;
 export const PAGE_DATA_PRODUCTS_ADD = 14;
 export const PAGE_OBSERVATION_UPDATE = 15;
 export const PAGE_PANEL_MANAGEMENT = 16;
-
-export const LAST_PAGE = 10; // See SRCNet INACTIVE -
 
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
 
@@ -793,30 +792,9 @@ export const DEFAULT_OBSERVATIONS_LOW_AA2: Observation[] = [
   DEFAULT_PST_OBSERVATION_LOW_AA2
 ];
 
-export const DEFAULT_DATA_PRODUCT: DataProductSDP = {
-  id: 'SDP-0000000',
-  dataProductType: 1, // used for continuum and pst
-  observationId: 'obs-123',
-  imageSizeValue: 2.5, // used for continuum and spectral
-  imageSizeUnits: 0, // used for continuum and spectral
-  pixelSizeValue: 1.6, // used for continuum and spectral
-  pixelSizeUnits: 2, // used for continuum and spectral
-  weighting: IW_UNIFORM, // used for continuum and spectral
-  polarisations: ['I', 'XX'], // used for all modes
-  channelsOut: 40, // used for spectral
-  fitSpectralPol: 3, // TODO used for pst timing data product?
-  robust: 1, // used for continuum and spectral
-  taperValue: 0, // used for continuum and spectral
-  timeAveraging: 3.4, // used for continuum and pst
-  frequencyAveraging: 21.7, // used for continuum // TODO check frequency averaging factor for pst
-  bitDepth: 1, // used for pst
-  continuumSubtraction: false // used for spectral
-};
-
 export const DUMMY_PROPOSAL_ID = 'dummy-proposal-id';
 
-export const STATUS_ARRAY_PAGES = [
-  // TODO : This will need to be extended
+export const STATUS_ARRAY_PAGES_SV = [
   PAGE_TITLE_ADD,
   PAGE_TEAM,
   PAGE_DETAILS,
@@ -825,6 +803,19 @@ export const STATUS_ARRAY_PAGES = [
   PAGE_OBSERVATION,
   PAGE_DATA_PRODUCTS,
   PAGE_CALIBRATION
+];
+
+export const STATUS_ARRAY_PAGES_PROPOSAL = [
+  PAGE_TITLE_ADD,
+  PAGE_TEAM,
+  PAGE_DETAILS,
+  PAGE_DESCRIPTION,
+  PAGE_TECHNICAL,
+  PAGE_TARGET,
+  PAGE_OBSERVATION,
+  PAGE_DATA_PRODUCTS,
+  PAGE_CALIBRATION,
+  PAGE_LINKING
 ];
 
 export const SV_LOW_AA2_CYCLE_NUMBER = 10000;

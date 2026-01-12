@@ -1,6 +1,7 @@
 import { BAND_LOW_STR, DEFAULT_USER, PROPOSAL_STATUS } from '@utils/constants.ts';
 import { RA_TYPE_ICRS } from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
+import { SDPImageContinuumData } from '@/utils/types/dataProduct';
 
 export const MockProposalFrontend: Proposal = {
   metadata: {
@@ -221,22 +222,20 @@ export const MockProposalFrontend: Proposal = {
   dataProductSDP: [
     {
       id: 'SDP-2',
-      dataProductType: 1,
       observationId: 'obs-obR1Ej',
-      imageSizeValue: 15,
-      imageSizeUnits: 0,
-      pixelSizeValue: 1.007,
-      pixelSizeUnits: 2,
-      weighting: 1,
-      polarisations: ['I'],
-      channelsOut: 1,
-      fitSpectralPol: 3,
-      robust: 0,
-      taperValue: 1,
-      timeAveraging: 0,
-      frequencyAveraging: 0,
-      bitDepth: 0,
-      continuumSubtraction: false
+      data: {
+        dataProductType: 1,
+        imageSizeValue: 15,
+        imageSizeUnits: 0,
+        pixelSizeValue: 1.007,
+        pixelSizeUnits: 2,
+        weighting: 1,
+        polarisations: ['I'],
+        channelsOut: 1,
+        fitSpectralPol: 3,
+        robust: 0,
+        taperValue: 1
+      } as SDPImageContinuumData
     }
   ],
   dataProductSRC: [],
@@ -393,22 +392,20 @@ export const MockProposalFrontendZoom: Proposal = {
   dataProductSDP: [
     {
       id: 'SDP-1',
-      dataProductType: 1,
       observationId: 'obs-arMIoY',
-      imageSizeValue: 100,
-      imageSizeUnits: 0,
-      pixelSizeValue: 3.7,
-      pixelSizeUnits: 2,
-      weighting: 2,
-      polarisations: ['I'],
-      channelsOut: 1,
-      fitSpectralPol: 3,
-      robust: 2,
-      taperValue: 1,
-      timeAveraging: 0,
-      frequencyAveraging: 0,
-      bitDepth: 0,
-      continuumSubtraction: false
+      data: {
+        dataProductType: 1,
+        imageSizeValue: 100,
+        imageSizeUnits: 0,
+        pixelSizeValue: 3.7,
+        pixelSizeUnits: 2,
+        weighting: 2,
+        polarisations: ['I'],
+        channelsOut: 1,
+        fitSpectralPol: 3,
+        robust: 2,
+        taperValue: 1
+      } as SDPImageContinuumData
     }
   ],
   dataProductSRC: [],

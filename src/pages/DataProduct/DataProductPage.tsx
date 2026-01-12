@@ -7,7 +7,7 @@ import { presentUnits } from '@utils/present/present';
 import { validateSDPPage } from '@utils/validation/validation.tsx';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { FOOTER_SPACER, PAGE_DATA_PRODUCTS, PATH } from '@utils/constants.ts';
-import { DataProductSDP } from '@utils/types/dataProduct.tsx';
+import { DataProductSDP, SDPImageContinuumData } from '@utils/types/dataProduct.tsx';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
@@ -82,6 +82,7 @@ export default function DataProductsPage() {
 
   const alertContent = () => {
     const rec = getProposal().dataProductSDP?.find(p => String(p.id) === String(currentRow));
+    const data = rec?.data as SDPImageContinuumData;
     return (
       <Grid
         p={2}
@@ -95,16 +96,16 @@ export default function DataProductsPage() {
         </FieldWrapper>
         <FieldWrapper label={t('imageSize.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">
-            {rec?.imageSizeValue} {presentUnits(String(rec?.imageSizeUnits ?? ''))}
+            {data?.imageSizeValue} {presentUnits(String(data?.imageSizeUnits ?? ''))}
           </Typography>
         </FieldWrapper>
         <FieldWrapper label={t('pixelSize.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">
-            {rec?.pixelSizeValue} {'arcsec'}
+            {data?.pixelSizeValue} {'arcsec'}
           </Typography>
         </FieldWrapper>
         <FieldWrapper label={t('weighting.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{t('imageWeighting.' + rec?.weighting)}</Typography>
+          <Typography variant="body1">{t('imageWeighting.' + data?.weighting)}</Typography>
         </FieldWrapper>
       </Grid>
     );

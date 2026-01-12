@@ -1,8 +1,25 @@
-import { DEFAULT_DATA_PRODUCT, DEFAULT_OBSERVATIONS_LOW_AA2, TYPE_PST } from '../constants';
+import {
+  DEFAULT_OBSERVATIONS_LOW_AA2,
+  DP_TYPE_IMAGES,
+  FLOW_THROUGH_VALUE,
+  IW_UNIFORM,
+  ROBUST_DEFAULT,
+  TAPER_DEFAULT,
+  TYPE_PST,
+  TYPE_ZOOM
+} from '../constants';
 import { generateId } from '../helpers';
 import { calculateSensCalcData } from '../sensCalc/sensCalc';
 import { CalibrationStrategy } from '../types/calibrationStrategy';
-import { DataProductSDP } from '../types/dataProduct';
+import {
+  DataProductSDPNew,
+  SDPFilterbankPSTData,
+  SDPFlowthroughPSTData,
+  SDPImageContinuumData,
+  SDPSpectralData,
+  SDPTimingPSTData,
+  SDPVisibilitiesContinuumData
+} from '../types/dataProduct';
 import Observation from '../types/observation';
 import { SensCalcResults } from '../types/sensCalcResults';
 import Target from '../types/target';
@@ -32,12 +49,57 @@ export const calibrationOut = (observationId: string) => {
   return newCalibration;
 };
 
-export const dataProductSDPOut = (observationId: string, observationType: number) => {
-  const newDSP: DataProductSDP = {
-    ...DEFAULT_DATA_PRODUCT,
+export const SDPData = (
+  observation: Observation
+):
+  | SDPImageContinuumData
+  | SDPVisibilitiesContinuumData
+  | SDPSpectralData
+  | SDPFilterbankPSTData
+  | SDPTimingPSTData
+  | SDPFlowthroughPSTData => {
+  switch (observation.type) {
+    case TYPE_PST:
+      return {
+        dataProductType: FLOW_THROUGH_VALUE,
+        polarisations: ['X'],
+        bitDepth: 1
+      } as SDPFlowthroughPSTData;
+    case TYPE_ZOOM:
+      return {
+        imageSizeValue: 2.5,
+        imageSizeUnits: 0,
+        pixelSizeValue: 1.6,
+        pixelSizeUnits: 2,
+        weighting: IW_UNIFORM,
+        polarisations: ['I', 'XX'],
+        channelsOut: 40,
+        robust: ROBUST_DEFAULT,
+        taperValue: TAPER_DEFAULT,
+        continuumSubtraction: true
+      } as SDPSpectralData;
+    default:
+      return {
+        dataProductType: DP_TYPE_IMAGES,
+        imageSizeValue: 2.5,
+        imageSizeUnits: 0,
+        pixelSizeValue: 1.6,
+        pixelSizeUnits: 2,
+        weighting: IW_UNIFORM,
+        polarisations: ['I', 'XX'],
+        channelsOut: 10,
+        robust: ROBUST_DEFAULT,
+        taperValue: TAPER_DEFAULT
+      } as SDPImageContinuumData;
+  }
+};
+
+export const dataProductSDPOut = (observation: Observation) => {
+  const data = SDPData(observation);
+  const newDSP: DataProductSDPNew = {
     id: generateId('SDP-', 6),
-    observationId,
-    polarisations: observationType === TYPE_PST ? ['XX'] : ['I', 'XX'] // TODO change PST polarisations to 'X' when pdm updated
+    observationId: observation.id,
+    data
   };
 
   return newDSP;
@@ -46,7 +108,7 @@ export const dataProductSDPOut = (observationId: string, observationType: number
 const getSensCalcData = async (
   observation: Observation,
   target: Target,
-  dataProductSDP: DataProductSDP
+  dataProductSDP: DataProductSDPNew
 ): Promise<SensCalcResults | string> => {
   const response = await calculateSensCalcData(observation, target, dataProductSDP);
   return response?.error ? response?.error : (response as SensCalcResults);
@@ -58,7 +120,7 @@ const updateProposal = (
   newTarget: Target,
   newObservation: Observation,
   newCalibration: CalibrationStrategy,
-  newDataProductSDP: DataProductSDP,
+  newDataProductSDP: DataProductSDPNew,
   sensCalcResult: any,
   getProposal: Function,
   setProposal: Function
@@ -70,7 +132,7 @@ const updateProposal = (
     abstract: newAbstract,
     targets: [...[], newTarget],
     observations: [newObservation].filter((obs): obs is Observation => obs !== undefined),
-    dataProductSDP: [...[], newDataProductSDP as DataProductSDP],
+    dataProductSDP: [...[], newDataProductSDP as DataProductSDPNew],
     targetObservation:
       sensCalcResult && newObservation && newObservation.id && newDataProductSDP?.id
         ? [
@@ -97,7 +159,7 @@ export default async function autoLinking(
   const newObsMode = obsMode ?? getProposal().scienceCategory;
   const newAbstract = abstract ?? getProposal().abstract;
   const newObservation = observationOut(newObsMode);
-  const newDataProductSDP = dataProductSDPOut(newObservation?.id, newObsMode);
+  const newDataProductSDP = dataProductSDPOut(newObservation);
   const sensCalcResult = await getSensCalcData(newObservation, target, newDataProductSDP);
   if (typeof sensCalcResult === 'string') {
     return { success: false, error: sensCalcResult };
