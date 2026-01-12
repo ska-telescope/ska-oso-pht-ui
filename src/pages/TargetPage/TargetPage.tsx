@@ -93,6 +93,7 @@ export default function TargetPage() {
         mt={1}
         pl={3}
         pr={3}
+        pb={18}
         container
         direction="column"
         justifyContent="space-between"
