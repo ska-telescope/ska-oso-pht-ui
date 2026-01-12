@@ -18,7 +18,8 @@ import {
   clickCycleSelectionSV,
   clickCycleSelectionMockProposal,
   clickProposalTypePrincipleInvestigator,
-  clickSubProposalTypeTargetOfOpportunity
+  clickSubProposalTypeTargetOfOpportunity,
+  verifyCycleDescription
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -35,6 +36,7 @@ describe('Creating Proposal', () => {
   it('SV Flow: Create a basic science verification idea', () => {
     clickAddSubmission();
     verifyCycleID(); //verify OSD data
+    verifyCycleDescription(); //verify OSD data
     verifyProposalOpen(); //verify OSD data
     verifyProposalClose(); //verify OSD data
     clickCycleSelectionSV();

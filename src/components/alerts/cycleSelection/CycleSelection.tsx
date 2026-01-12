@@ -222,7 +222,11 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
                   >
                     {t('id.label')}: {policy.cycleInformation.cycleId}
                   </Typography>
-                  <Typography variant="body1" color="text.secondary">
+                  <Typography
+                    data-testid={policy.cycleInformation.cycleId + '_description'}
+                    variant="body1"
+                    color="text.secondary"
+                  >
                     {t('cycleDescription.label')}: {policy.cycleDescription}
                   </Typography>
                   <Typography

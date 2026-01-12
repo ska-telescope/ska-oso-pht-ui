@@ -347,6 +347,8 @@ export const clickProposalTypePrincipleInvestigator = () => selectId('ProposalTy
 export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalAttribute-1');
 
 export const verifyCycleID = () => verifyContent('SKAO_2027_1_ID', 'SKAO_2027_1');
+export const verifyCycleDescription = () =>
+  verifyContent('SKAO_2027_1_description', 'Low AA2 Science Verification');
 
 export const verifyProposalOpen = () => verifyContent('SKAO_2027_1_opens', '27-03-2026');
 
