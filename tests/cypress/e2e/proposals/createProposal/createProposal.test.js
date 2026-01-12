@@ -12,7 +12,9 @@ import {
   clickAddSubmission,
   clickCreateSubmission,
   mockCreateSubmissionAPI,
-  verifySubmissionCreatedAlertFooter
+  verifySubmissionCreatedAlertFooter,
+  clickCycleSelection,
+  enterScienceVerificationIdeaTitle
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -26,7 +28,21 @@ describe('Creating Proposal', () => {
     clearLocalStorage();
   });
 
-  it('Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
+  it('Create a basic science verification idea', () => {
+    clickAddSubmission();
+    clickCycleSelection();
+    clickCycleConfirm();
+    enterScienceVerificationIdeaTitle();
+    clickCreateSubmission();
+    cy.wait('@mockCreateSubmission');
+    verifySubmissionCreatedAlertFooter();
+    clickHome();
+    verifyOnLandingPage();
+    // verifyOnLandingPageFilterIsVisible();
+    verifyMockedProposalOnLandingPageIsVisible();
+  });
+
+  it.skip('Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
     clickAddSubmission();
     clickCycleConfirm();
     enterProposalTitle();

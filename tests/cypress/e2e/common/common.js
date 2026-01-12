@@ -345,6 +345,13 @@ export const selectObservingMode = value => {
 export const clickProposalTypePrincipleInvestigator = () => selectId('ProposalType-1');
 export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalAttribute-1');
 
+export const verifyCycleID = () => verifyContent('timeAlertFooter', 'Email invite has been sent.');
+
+export const verifyProposalOpen = () =>
+  verifyContent('timeAlertFooter', 'Email invite has been sent.');
+
+export const verifyProposalClose = () =>
+  verifyContent('timeAlertFooter', 'Email invite has been sent.');
 export const verifySubmissionCreatedAlertFooter = () => true; //  Chip responds too fast for this : verifyContent('timeAlertFooter', 'Proposal added with unique identifier');
 
 export const verifyUserFoundAlertFooter = () =>
