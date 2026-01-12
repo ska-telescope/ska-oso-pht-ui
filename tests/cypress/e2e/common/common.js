@@ -171,7 +171,8 @@ export const clickReviewOverviewButton = () => clickButton('overviewButtonTestId
 export const clickSave = () => clickButton('saveBtn');
 export const clickSendInviteButton = () => clickButton('sendInviteButton');
 export const clickToAddTarget = () => clickButton('addTargetButton');
-export const clickCycleSelection = () => clickButton('SKAO_2027_1_ID');
+export const clickCycleSelectionMockProposal = () => clickButton('CYCLE-003_ID');
+export const clickCycleSelectionSV = () => clickButton('SKAO_2027_1_ID');
 export const clickToAddDataProduct = () => clickButton('addDataProductButton');
 export const clickToAddPSTBeam = () => clickButton('addPulsarTimingBeamButton');
 export const clickMultipleBeamsRadioButton = () => clickButton('MultipleBeamsTestId');
@@ -345,14 +346,13 @@ export const selectObservingMode = value => {
 export const clickProposalTypePrincipleInvestigator = () => selectId('ProposalType-1');
 export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalAttribute-1');
 
-export const verifyCycleID = () => verifyContent('timeAlertFooter', 'Email invite has been sent.');
+export const verifyCycleID = () => verifyContent('SKAO_2027_1_ID', 'SKAO_2027_1');
 
-export const verifyProposalOpen = () =>
-  verifyContent('timeAlertFooter', 'Email invite has been sent.');
+export const verifyProposalOpen = () => verifyContent('SKAO_2027_1_opens', '27-03-2026');
 
-export const verifyProposalClose = () =>
-  verifyContent('timeAlertFooter', 'Email invite has been sent.');
-export const verifySubmissionCreatedAlertFooter = () => true; //  Chip responds too fast for this : verifyContent('timeAlertFooter', 'Proposal added with unique identifier');
+export const verifyProposalClose = () => verifyContent('SKAO_2027_1_closes', '12-05-2026');
+export const verifySubmissionCreatedAlertFooter = () =>
+  verifyContent('timeAlertFooter', 'Submission added with unique identifier');
 
 export const verifyUserFoundAlertFooter = () =>
   verifyContent('timeAlertFooter', 'User was successfully found.');

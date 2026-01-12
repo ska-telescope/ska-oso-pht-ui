@@ -2,12 +2,12 @@ import {
   initialize,
   clearLocalStorage,
   clickCycleConfirm,
-  clickCycleSelection,
   enterScienceVerificationIdeaTitle,
   clickAddSubmission,
   clickCreateSubmission,
   mockCreateSubmissionAPI,
-  verifySubmissionCreatedAlertFooter
+  verifySubmissionCreatedAlertFooter,
+  clickCycleSelectionSV
 } from '../common/common.js';
 import { standardUser } from '../users/users.js';
 
@@ -23,7 +23,7 @@ describe('Verify navigation', () => {
 
   it('Science verification: Verify navigation functionality is not restricted after science idea creation', () => {
     clickAddSubmission();
-    clickCycleSelection();
+    clickCycleSelectionSV();
     clickCycleConfirm();
     enterScienceVerificationIdeaTitle();
     clickCreateSubmission();

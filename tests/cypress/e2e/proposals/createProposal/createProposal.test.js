@@ -13,8 +13,14 @@ import {
   clickCreateSubmission,
   mockCreateSubmissionAPI,
   verifySubmissionCreatedAlertFooter,
-  clickCycleSelection,
-  enterScienceVerificationIdeaTitle
+  enterScienceVerificationIdeaTitle,
+  verifyProposalOpen,
+  verifyCycleID,
+  verifyProposalClose,
+  clickCycleSelectionSV,
+  clickCycleSelectionMockProposal,
+  clickProposalTypePrincipleInvestigator,
+  clickSubProposalTypeTargetOfOpportunity
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -28,9 +34,12 @@ describe('Creating Proposal', () => {
     clearLocalStorage();
   });
 
-  it('Create a basic science verification idea', () => {
+  it('SV Flow: Create a basic science verification idea', () => {
     clickAddSubmission();
-    clickCycleSelection();
+    verifyCycleID(); //verify OSD data
+    verifyProposalOpen(); //verify OSD data
+    verifyProposalClose(); //verify OSD data
+    clickCycleSelectionSV();
     clickCycleConfirm();
     enterScienceVerificationIdeaTitle();
     clickCreateSubmission();
@@ -38,22 +47,23 @@ describe('Creating Proposal', () => {
     verifySubmissionCreatedAlertFooter();
     clickHome();
     verifyOnLandingPage();
-    // verifyOnLandingPageFilterIsVisible();
+    verifyOnLandingPageFilterIsVisible();
     verifyMockedProposalOnLandingPageIsVisible();
   });
 
-  it.skip('Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
+  it('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
     clickAddSubmission();
+    clickCycleSelectionMockProposal();
     clickCycleConfirm();
     enterProposalTitle();
-    // clickProposalTypePrincipleInvestigator();
-    // clickSubProposalTypeTargetOfOpportunity();
+    clickProposalTypePrincipleInvestigator();
+    clickSubProposalTypeTargetOfOpportunity();
     clickCreateSubmission();
     cy.wait('@mockCreateSubmission');
     verifySubmissionCreatedAlertFooter();
     clickHome();
     verifyOnLandingPage();
-    // verifyOnLandingPageFilterIsVisible();
+    verifyOnLandingPageFilterIsVisible();
     verifyMockedProposalOnLandingPageIsVisible();
   });
 });
