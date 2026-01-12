@@ -4,7 +4,7 @@ import {
   DECIMAL_PLACES,
   FREQUENCY_HZ,
   FREQUENCY_MHZ,
-  OB_SUBARRAY_CUSTOM,
+  SA_CUSTOM,
   SEPARATOR0,
   STATUS_OK,
   TIME_HOURS,
@@ -235,7 +235,7 @@ export function getFinalIndividualResultsForContinuum(
 
 const addPropertiesLOW = (standardData: StandardData, continuumData: ContinuumData) => {
   let properties = '';
-  if (standardData.subarray !== OB_SUBARRAY_CUSTOM) {
+  if (standardData.subarray !== SA_CUSTOM) {
     properties += addValue('subarray_configuration', standardData.subarray, SEPARATOR0);
   } else {
     properties += addValue('num_stations', standardData.numStations, SEPARATOR0);
@@ -269,7 +269,7 @@ const addPropertiesMID = (standardData: StandardData, continuumData: ContinuumDa
   }
   properties += rxBand(standardData.observingBand);
 
-  if (standardData.subarray !== OB_SUBARRAY_CUSTOM) {
+  if (standardData.subarray !== SA_CUSTOM) {
     properties += addValue('subarray_configuration', standardData.subarray);
   } else {
     properties += addValue('n_ska', standardData.num15mAntennas);

@@ -44,6 +44,8 @@ export const AUTO_SAVE_INTERVAL = 30; // seconds
 export const BAND_LOW_STR = 'low_band';
 export const BAND_1_STR = 'Band_1';
 export const BAND_2_STR = 'Band_2';
+export const BAND_3_STR = 'Band_3';
+export const BAND_4_STR = 'Band_4';
 export const BAND_5A_STR = 'Band_5a';
 export const BAND_5B_STR = 'Band_5b';
 
@@ -254,8 +256,8 @@ export const NAV = [
   '/proposal/technical',
   '/proposal/data',
   '/proposal/linking',
-  '/proposal/calibration'
-  // Not required until SRCNet becomes active -'/proposal/src'
+  '/proposal/calibration',
+  '/proposal/src'
 ];
 export const NOT_SPECIFIED = 'notSpecified';
 export const NOT_APPLICABLE = 'N/A';
@@ -322,7 +324,7 @@ export const PMT = [
   '/review/panel',
   '/review/list',
   '/review/proposal',
-  '',
+  '/review/NOT_USED',
   '/review/panel/decisions',
   '/review/science',
   '/review/technical'
@@ -497,9 +499,9 @@ export const OSCILLATION_UNITS = [
   { label: FREQUENCY_STR_GHZ, toHz: 10000000000 }
 ];
 //TODO: Refactor such that these identifiers are no longer needed and references can be per array label
-export const AA2_STR = 'aa2';
-export const OB_SUBARRAY_AA2 = 3;
-export const OB_SUBARRAY_CUSTOM = 'custom';
+export const SA_AA2 = 'aa2';
+export const SA_AA_STAR = 'aa*';
+export const SA_CUSTOM = 'custom';
 
 export const SECOND_LABEL = 's';
 export const MILLISECOND_LABEL = 'ms';
@@ -713,7 +715,7 @@ export const DEFAULT_TARGETS: Target = {
 export const DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2: Observation = {
   id: 'obs-0000000',
   telescope: TELESCOPE_LOW_NUM,
-  subarray: OB_SUBARRAY_AA2,
+  subarray: SA_AA2,
   linked: '0',
   type: TYPE_CONTINUUM,
   observingBand: BAND_LOW_STR,
@@ -738,7 +740,7 @@ export const DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2: Observation = {
 export const DEFAULT_ZOOM_OBSERVATION_LOW_AA2: Observation = {
   id: 'obs-0000000',
   telescope: TELESCOPE_LOW_NUM,
-  subarray: OB_SUBARRAY_AA2,
+  subarray: SA_AA2,
   linked: '0',
   type: TYPE_ZOOM,
   observingBand: BAND_LOW_STR,
@@ -758,13 +760,13 @@ export const DEFAULT_ZOOM_OBSERVATION_LOW_AA2: Observation = {
   spectralAveraging: 1,
   spectralResolution: '226.06 Hz (338.9 m/s)',
   effectiveResolution: '226.06 Hz (338.9 m/s)',
-  zoomChannels: 4000
+  zoomChannels: 1000
 };
 
 export const DEFAULT_PST_OBSERVATION_LOW_AA2: Observation = {
   id: 'obs-0000000',
   telescope: TELESCOPE_LOW_NUM,
-  subarray: OB_SUBARRAY_AA2,
+  subarray: SA_AA2,
   linked: '0',
   type: TYPE_PST,
   observingBand: BAND_LOW_STR,

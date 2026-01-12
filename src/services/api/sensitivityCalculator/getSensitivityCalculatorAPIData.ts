@@ -6,7 +6,7 @@ import { SensCalcResults } from '../../../utils/types/sensCalcResults';
 import {
   USE_LOCAL_DATA_SENSITIVITY_CALC,
   TYPE_CONTINUUM,
-  OB_SUBARRAY_CUSTOM,
+  SA_CUSTOM,
   TELESCOPE_LOW_NUM,
   TYPE_ZOOM
 } from '../../../utils/constants';
@@ -26,7 +26,7 @@ async function getSensCalc(
   target: Target,
   dataProductSDP: DataProductSDPNew
 ): Promise<SensCalcResults | SensCalcAPIError> {
-  const isCustom = () => observation.subarray === OB_SUBARRAY_CUSTOM; // TODO check correct comparison needed
+  const isCustom = () => observation.subarray === SA_CUSTOM;
 
   if (USE_LOCAL_DATA_SENSITIVITY_CALC) {
     return Promise.resolve(SENSCALC_CONTINUUM_MOCKED);

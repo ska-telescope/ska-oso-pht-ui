@@ -24,7 +24,7 @@ import {
   IW_NATURAL,
   IW_UNIFORM,
   NAV,
-  OB_SUBARRAY_CUSTOM,
+  SA_CUSTOM,
   PAGE_DATA_PRODUCTS,
   PULSAR_TIMING_VALUE,
   ROBUST_DEFAULT,
@@ -106,7 +106,7 @@ export default function DataProduct({ data }: DataProductProps) {
   // TODO add missing new fields for PST Filter Bank
 
   const maxObservationsReached = () =>
-    osdCyclePolicy && baseObservations.length >= osdCyclePolicy.maxObservations;
+    baseObservations.length >= (osdCyclePolicy?.maxObservations ?? 0);
 
   const isDataTypeOne = () => dataProductType === DP_TYPE_IMAGES;
 
@@ -124,10 +124,7 @@ export default function DataProduct({ data }: DataProductProps) {
     getObservation()?.type === TYPE_PST || getProposal()?.scienceCategory === TYPE_PST;
 
   const showSC =
-    osdCyclePolicy &&
-    osdCyclePolicy.maxObservations === 1 &&
-    osdCyclePolicy.maxDataProducts === 1 &&
-    !isPST();
+    osdCyclePolicy?.maxObservations === 1 && osdCyclePolicy?.maxDataProducts === 1 && !isPST();
 
   const getSuffix = () => {
     if (isContinuum() || isPST()) {
@@ -224,7 +221,7 @@ export default function DataProduct({ data }: DataProductProps) {
   };
 
   const updateStorageProposal = () => {
-    if (osdCyclePolicy && osdCyclePolicy.maxDataProducts === 1) {
+    if (osdCyclePolicy?.maxDataProducts === 1) {
       isEdit() ? updateToProposal() : addToProposal();
     }
   };
@@ -521,7 +518,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
     const buttonClicked = () => {
       isEdit() ? updateToProposal() : addToProposal();
-      if (osdCyclePolicy && osdCyclePolicy.maxDataProducts !== 1) {
+      if (osdCyclePolicy?.maxDataProducts !== 1) {
         navigate(NAV[BACK_PAGE]);
       }
     };
@@ -562,7 +559,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const scData = (): any => getProposal()?.targetObservation?.[0]?.sensCalc;
 
-  const isCustom = () => getObservation()?.subarray === OB_SUBARRAY_CUSTOM; // TODO check this
+  const isCustom = () => getObservation()?.subarray === SA_CUSTOM;
   const isNatural = () =>
     isSpectral() || (isContinuum() && isDataTypeOne()) ? weighting === IW_NATURAL : false;
 
@@ -724,7 +721,7 @@ export default function DataProduct({ data }: DataProductProps) {
           )}
         </Grid>
       </Grid>
-      {osdCyclePolicy && osdCyclePolicy.maxDataProducts !== 1 && pageFooter()}
+      {osdCyclePolicy?.maxDataProducts !== 1 && pageFooter()}
     </Box>
   );
 }

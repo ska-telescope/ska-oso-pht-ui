@@ -6,7 +6,7 @@ interface SpectralAveragingFieldProps {
   labelWidth: number;
   setValue?: Function;
   value: number;
-  subarray: number;
+  subarray: string;
   type: number;
 }
 

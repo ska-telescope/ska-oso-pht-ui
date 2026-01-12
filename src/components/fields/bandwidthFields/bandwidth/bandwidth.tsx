@@ -1,10 +1,11 @@
-import React from 'react';
+// import React from 'react';
 import { Grid } from '@mui/material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import {
-  BAND_LOW_STR,
-  ERROR_SECS,
-  FREQUENCY_UNITS,
+  // SA_AA2,
+  // BAND_LOW_STR,
+  // ERROR_SECS,
+  // FREQUENCY_UNITS,
   LAB_IS_BOLD,
   LAB_POSITION,
   TELESCOPE_LOW_NUM,
@@ -12,16 +13,18 @@ import {
   TYPE_ZOOM
 } from '@utils/constants.ts';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
-import sensCalHelpers from '../../../../services/api/sensitivityCalculator/sensCalHelpers';
-import {
-  scaleBandwidthOrFrequency,
-  getMaxSpecBandwidthHz,
-  checkMinimumChannelWidth,
-  checkMaxBandwidthHz,
-  checkBandLimits
-} from '../bandwidthValidationCommon';
+// import sensCalHelpers from '../../../../services/api/sensitivityCalculator/sensCalHelpers';
+// import {
+//   scaleBandwidthOrFrequency,
+//   getMaxSpecBandwidthHz,
+//   checkMinimumChannelWidth,
+//   checkMaxBandwidthHz,
+//   checkBandLimits
+// } from '../bandwidthValidationCommon';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
+
+// NOTE : KEEP ALL OF THIS COMMENTED CODE FOR FUTURE REFERENCE AS WE MAY NEED IT LATER
 
 interface BandwidthFieldProps {
   disabled?: boolean;
@@ -36,7 +39,7 @@ interface BandwidthFieldProps {
   observingBand?: string;
   centralFrequency?: number;
   centralFrequencyUnits?: number;
-  subarrayConfig?: number;
+  subarrayConfig?: string;
   minimumChannelWidthHz?: number;
   observationType?: number;
 }
@@ -50,19 +53,19 @@ export default function BandwidthField({
   telescope,
   widthButton = 50,
   widthLabel = 5,
-  observingBand = BAND_LOW_STR,
-  centralFrequency = 0,
-  centralFrequencyUnits = 1,
-  subarrayConfig = 0,
-  minimumChannelWidthHz = 0,
+  // observingBand = BAND_LOW_STR,
+  // centralFrequency = 0,
+  // centralFrequencyUnits = 1,
+  // subarrayConfig = SA_AA2,
+  // minimumChannelWidthHz = 0,
   observationType = TYPE_ZOOM
 }: BandwidthFieldProps) {
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
-  const { findBand, osdMID, osdLOW, observatoryConstants } = useOSDAccessors();
+  const { observatoryConstants } = useOSDAccessors();
   const FIELD = 'bandwidth';
 
-  const [errorText, setErrorText] = React.useState('');
+  // const [errorText, setErrorText] = React.useState('');
 
   const isLow = () => telescope === TELESCOPE_LOW_NUM;
 
@@ -78,96 +81,95 @@ export default function BandwidthField({
       };
     });
 
-  const lookupBandwidth = (inValue: number): any => {
-    return observatoryConstants.array[telescope - 1]?.bandWidth.find(bw => bw.value === inValue);
-  };
+  // const lookupBandwidth = (inValue: number): any => {
+  //   return observatoryConstants.array[telescope - 1]?.bandWidth.find(bw => bw.value === inValue);
+  // };
 
-  const getBandwidthUnitsLabel = (): string => {
-    return lookupBandwidth(centralFrequencyUnits)?.mapping;
-  };
+  // const getBandwidthUnitsLabel = (): string => {
+  //   return lookupBandwidth(centralFrequencyUnits)?.mapping;
+  // };
 
-  const getBandwidthValue = (): number => {
-    const bw = lookupBandwidth(value);
-    if (!bw?.label) return 0; // fallback if lookup fails
+  // const getBandwidthValue = (): number => {
+  //   const bw = lookupBandwidth(value);
+  //   if (!bw?.label) return 0; // fallback if lookup fails
 
-    const parts = bw.label.split(' ');
-    const num = Number(parts[0]);
+  //   const parts = bw.label.split(' ');
+  //   const num = Number(parts[0]);
 
-    return isNaN(num) ? 0 : num; // fallback if conversion fails
-  };
+  //   return isNaN(num) ? 0 : num; // fallback if conversion fails
+  // };
 
-  const getFrequencyUnitsLabelFunc = () =>
-    FREQUENCY_UNITS.find(item => item.value === centralFrequencyUnits)?.label;
+  // const getFrequencyUnitsLabelFunc = () =>
+  //   FREQUENCY_UNITS.find(item => item.value === centralFrequencyUnits)?.label;
 
-  const displayMinimumChannelWidthErrorMessage = (minimumChannelWidthHz: number): string => {
-    const minimumChannelWidthKHz = sensCalHelpers.format
-      .convertBandwidthToKHz(minimumChannelWidthHz, 'Hz')
-      .toFixed(2);
-    return t('bandwidth.range.minimumChannelWidthError', {
-      value: minimumChannelWidthKHz
-    });
-  };
+  // const displayMinimumChannelWidthErrorMessage = (minimumChannelWidthHz: number): string => {
+  //   const minimumChannelWidthKHz = sensCalHelpers.format
+  //     .convertBandwidthToKHz(minimumChannelWidthHz, 'Hz')
+  //     .toFixed(2);
+  //   return t('bandwidth.range.minimumChannelWidthError', {
+  //     value: minimumChannelWidthKHz
+  //   });
+  // };
 
-  const displayMaxContBandwidthErrorMessage = (maxContBandwidthHz: number): string => {
-    const maxContBandwidthMHz = sensCalHelpers.format
-      .convertBandwidthToMHz(maxContBandwidthHz, 'Hz')
-      .toFixed(2);
-    return t('bandwidth.range.contMaximumExceededError', { value: maxContBandwidthMHz });
-  };
+  // const displayMaxContBandwidthErrorMessage = (maxContBandwidthHz: number): string => {
+  //   const maxContBandwidthMHz = sensCalHelpers.format
+  //     .convertBandwidthToMHz(maxContBandwidthHz, 'Hz')
+  //     .toFixed(2);
+  //   return t('bandwidth.range.contMaximumExceededError', { value: maxContBandwidthMHz });
+  // };
 
-  const validateValue = () => {
-    const bandwidthUnitsLabel = getBandwidthUnitsLabel();
-    const bandwidthValue = getBandwidthValue();
-    const frequencyUnitsLabel = getFrequencyUnitsLabelFunc();
-    const scaledBandwidth = scaleBandwidthOrFrequency(bandwidthValue, bandwidthUnitsLabel);
-    const scaledFrequency = scaleBandwidthOrFrequency(centralFrequency, frequencyUnitsLabel ?? '');
+  // const validateValue = () => {
+  //   const bandwidthUnitsLabel = getBandwidthUnitsLabel();
+  //   const bandwidthValue = getBandwidthValue();
+  //   const frequencyUnitsLabel = getFrequencyUnitsLabelFunc();
+  //   const scaledBandwidth = scaleBandwidthOrFrequency(bandwidthValue, bandwidthUnitsLabel);
+  //   const scaledFrequency = scaleBandwidthOrFrequency(centralFrequency, frequencyUnitsLabel ?? '');
 
-    if (!checkMinimumChannelWidth(minimumChannelWidthHz, scaledBandwidth)) {
-      return displayMinimumChannelWidthErrorMessage(minimumChannelWidthHz);
-    }
+  //   if (!checkMinimumChannelWidth(minimumChannelWidthHz, scaledBandwidth)) {
+  //     return displayMinimumChannelWidthErrorMessage(minimumChannelWidthHz);
+  //   }
 
-    const maxSpecBandwidthHz: number = getMaxSpecBandwidthHz(
-      telescope,
-      subarrayConfig,
-      osdMID,
-      osdLOW,
-      observatoryConstants
-    );
-    if (!checkMaxBandwidthHz(maxSpecBandwidthHz, scaledBandwidth)) {
-      return displayMaxContBandwidthErrorMessage(maxSpecBandwidthHz);
-    }
+  //   const maxSpecBandwidthHz: number = getMaxSpecBandwidthHz(
+  //     telescope,
+  //     subarrayConfig,
+  //     osdMID,
+  //     osdLOW,
+  //     observatoryConstants
+  //   );
+  //   if (!checkMaxBandwidthHz(maxSpecBandwidthHz, scaledBandwidth)) {
+  //     return displayMaxContBandwidthErrorMessage(maxSpecBandwidthHz);
+  //   }
 
-    if (
-      !checkBandLimits(
-        scaledBandwidth,
-        scaledFrequency,
-        telescope,
-        subarrayConfig,
-        observingBand,
-        osdMID,
-        osdLOW,
-        observatoryConstants,
-        findBand
-      )
-    ) {
-      return t('bandwidth.range.rangeError');
-    }
-
-    return '';
-  };
+  //   if (
+  //     !checkBandLimits(
+  //       scaledBandwidth,
+  //       scaledFrequency,
+  //       telescope,
+  //       subarrayConfig,
+  //       observingBand,
+  //       osdMID,
+  //       osdLOW,
+  //       observatoryConstants,
+  //       findBand
+  //     )
+  //   ) {
+  //     return t('bandwidth.range.rangeError');
+  //   }
+  //   return '';
+  // };
 
   // Whenever value changes, validate and possibly show error
-  React.useEffect(() => {
-    const msg = validateValue();
-    setErrorText(msg);
+  // React.useEffect(() => {
+  //   const msg = validateValue();
+  //   setErrorText(msg);
 
-    if (msg) {
-      const timer = setTimeout(() => {
-        setErrorText('');
-      }, ERROR_SECS);
-      return () => clearTimeout(timer);
-    }
-  }, [value, telescope, subarrayConfig, observingBand, centralFrequency, centralFrequencyUnits]);
+  //   if (msg) {
+  //     const timer = setTimeout(() => {
+  //       setErrorText('');
+  //     }, ERROR_SECS);
+  //     return () => clearTimeout(timer);
+  //   }
+  // }, [value, telescope, subarrayConfig, observingBand, centralFrequency, centralFrequencyUnits]);
 
   return (
     <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
@@ -188,7 +190,7 @@ export default function BandwidthField({
           labelWidth={suffix ? widthLabel + 1 : widthLabel}
           onFocus={() => setHelp(FIELD)}
           required={required}
-          errorText={errorText}
+          // errorText={errorText}
         />
       </Grid>
       <Grid size={{ xs: suffix ? widthButton : 0 }}>{suffix}</Grid>

@@ -88,12 +88,11 @@ export default function TableObservationsRow({
   const colorsObType = useMemo(() => getObservationColors('observationType', observation?.type), [
     observation?.type
   ]);
-  const colorsTelescope = useMemo(
-    () => getObservationColors('telescope', observation?.telescope - 1),
-    [observation?.telescope]
-  );
+  const colorsTelescope = useMemo(() => getObservationColors('telescope', observation?.telescope), [
+    observation?.telescope
+  ]);
   const colorsTelescopeDim = useMemo(
-    () => getObservationColors('telescope', observation?.telescope - 1, 0.6),
+    () => getObservationColors('telescope', observation?.telescope, 0.6),
     [observation?.telescope]
   );
 
@@ -144,7 +143,7 @@ export default function TableObservationsRow({
           role="gridcell"
           sx={{
             borderLeft: '10px solid',
-            borderColor: colorsObType[0],
+            borderColor: colorsObType.bg[0],
             pl: 1,
             width: '1%',
             whiteSpace: 'nowrap'
@@ -166,7 +165,7 @@ export default function TableObservationsRow({
         <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
           <Box
             sx={{
-              backgroundColor: colorsTelescope[0],
+              backgroundColor: colorsTelescope.bg[0],
               borderRadius: 1,
               px: 1,
               display: 'inline-flex'
@@ -174,7 +173,7 @@ export default function TableObservationsRow({
           >
             <Typography
               variant="body2"
-              color={colorsTelescope[1]}
+              color={colorsTelescope.fg[0]}
               sx={{ whiteSpace: 'nowrap', p: 1 }}
             >
               {t('telescopes.' + observation?.telescope)}{' '}
@@ -187,7 +186,7 @@ export default function TableObservationsRow({
         <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
           <Box
             sx={{
-              backgroundColor: colorsTelescopeDim[0],
+              backgroundColor: colorsTelescopeDim.bg[0],
               borderRadius: 0,
               px: 1,
               display: 'inline-flex'
@@ -195,7 +194,7 @@ export default function TableObservationsRow({
           >
             <Typography
               variant="body2"
-              color={colorsTelescopeDim[1]}
+              color={colorsTelescopeDim.fg[0]}
               sx={{ whiteSpace: 'nowrap', p: 1 }}
             >
               {t('observingBand.short.' + observation?.rec?.observingBand)}
@@ -214,8 +213,8 @@ export default function TableObservationsRow({
                 ? observation?.rec?.continuumBandwidth ?? 0
                 : observation?.rec?.bandwidth ?? 0
             }
-            bandColor={colorsTelescopeDim[0]}
-            bandColorContrast={colorsTelescopeDim[1]}
+            bandColor={colorsTelescopeDim.bg[0]}
+            bandColorContrast={colorsTelescopeDim.fg[0]}
             unit={TEL_UNITS[observation?.telescope]}
           />
         </TableCell>

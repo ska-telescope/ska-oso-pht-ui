@@ -2,8 +2,8 @@ import {
   MICROSECOND_LABEL,
   MILLISECOND_LABEL,
   NANOSECOND_LABEL,
-  OB_SUBARRAY_AA2,
-  OB_SUBARRAY_CUSTOM,
+  SA_AA2,
+  SA_CUSTOM,
   SECOND_LABEL,
   SUPPLIED_TYPE_INTEGRATION,
   SUPPLIED_TYPE_SENSITIVITY
@@ -18,13 +18,13 @@ export const OSD_CONSTANTS = {
       subarray: [
         // MID
         {
-          value: OB_SUBARRAY_AA2,
+          value: SA_AA2,
           map: 'AA2',
           label: 'AA2',
           numOf13mAntennas: 0
         },
         {
-          value: OB_SUBARRAY_CUSTOM,
+          value: SA_CUSTOM,
           map: 'Custom',
           label: 'Custom',
           numOf15mAntennas: 133,
@@ -47,14 +47,14 @@ export const OSD_CONSTANTS = {
       subarray: [
         // LOW
         {
-          value: OB_SUBARRAY_AA2,
+          value: SA_AA2,
           map: 'LOW_AA2_all',
           label: 'AA2',
           numOf13mAntennas: 0,
           continuumSpectralAveragingMax: 13812
         },
         {
-          value: OB_SUBARRAY_CUSTOM,
+          value: SA_CUSTOM,
           map: 'Custom',
           label: 'Custom',
           numOf15mAntennas: 0,

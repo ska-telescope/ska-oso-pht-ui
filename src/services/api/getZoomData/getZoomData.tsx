@@ -3,7 +3,7 @@ import Target from '@utils/types/target';
 import { presentUnits } from '@utils/present/present';
 import { StandardData, ZoomData, Telescope } from '@utils/types/typesSensCalc.tsx';
 import {
-  OB_SUBARRAY_CUSTOM,
+  SA_CUSTOM,
   SEPARATOR0,
   STATUS_OK,
   TIME_HOURS,
@@ -237,7 +237,7 @@ const addPropertiesLOW = (
 
   const bandwidthValueUnit: string[] = getZoomBandwidthValueUnit() ?? [];
   let properties = '';
-  if (standardData.subarray !== OB_SUBARRAY_CUSTOM) {
+  if (standardData.subarray !== SA_CUSTOM) {
     properties += addValue('subarray_configuration', standardData.subarray, SEPARATOR0);
   } else {
     properties += addValue('num_stations', standardData.numStations, SEPARATOR0);
@@ -295,7 +295,7 @@ const addPropertiesMID = (
   }
   properties += rxBand(standardData.observingBand);
 
-  if (standardData.subarray !== OB_SUBARRAY_CUSTOM) {
+  if (standardData.subarray !== SA_CUSTOM) {
     properties += addValue('subarray_configuration', standardData.subarray);
   } else {
     properties += addValue('n_ska', standardData.num15mAntennas);

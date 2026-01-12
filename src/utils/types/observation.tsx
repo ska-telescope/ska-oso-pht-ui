@@ -5,7 +5,7 @@ import Supplied from './supplied';
 type Observation = {
   id: string;
   telescope: number;
-  subarray: number;
+  subarray: string;
   linked: string;
   type: number;
   observingBand: string;

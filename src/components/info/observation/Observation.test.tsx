@@ -13,7 +13,7 @@ describe('ObservationInfo', () => {
     id: 'obs1',
     type: 0,
     telescope: 0,
-    subarray: 0,
+    subarray: '',
     linked: '',
     observingBand: BAND_LOW_STR,
     weather: 0,
