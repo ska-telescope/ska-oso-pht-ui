@@ -2,6 +2,7 @@ import { describe, test } from 'vitest';
 import '@testing-library/jest-dom';
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import {
+  getBeamSize,
   getImageWeightingMapping,
   getSensitivitiesUnitsMapping,
   isGalactic,
@@ -36,6 +37,12 @@ describe('Sensitivity Calculator helper functions', () => {
   });
   test('Numeric check, Returns true when supplied value is "14"', () => {
     expect(isNumeric('14')).equal(true);
+  });
+
+  test('Beam Size', () => {
+    expect(
+      getBeamSize({ beam_maj: { value: 1000, unit: 'max' }, beam_min: { value: 0, unit: 'min' } })
+    ).equal('1000.0" x 0.0"');
   });
 
   test('Transform Surface Brightness Per Sub Band Data, MID continuum default 4 subbands values', () => {

@@ -27,6 +27,12 @@ export const getImageWeightingMapping = (value: number) => {
 //   return `${value?.toFixed(DECIMAL_PLACES)} ${unit} (${factor?.toFixed(DECIMAL_PLACES)})${symbol}`;
 // };
 
+export const getBeamSize = (obj: any, fraction: number = 1) => {
+  return `${obj?.beam_maj.value.toFixed(fraction).toString()}" x ${obj?.beam_min.value
+    .toFixed(fraction)
+    .toString()}"`;
+};
+
 export const isNumeric = (n: string) =>
   !isNaN(parseFloat(n)) && isFinite(parseFloat(n)) && parseFloat(n) % 1 === 0;
 
