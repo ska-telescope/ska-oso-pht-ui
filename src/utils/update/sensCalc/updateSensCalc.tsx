@@ -1,6 +1,6 @@
 import { STATUS_PARTIAL } from '@/utils/constants';
 import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
-import { DataProductSDP } from '@/utils/types/dataProduct';
+import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import Observation from '@/utils/types/observation';
 import Proposal from '@/utils/types/proposal';
 import { SensCalcResults } from '@/utils/types/sensCalcResults';
@@ -10,7 +10,7 @@ import TargetObservation from '@/utils/types/targetObservation';
 const getSensCalcData = async (
   observation: Observation,
   target: Target,
-  dataProductSDP: DataProductSDP
+  dataProductSDP: DataProductSDPNew
 ): Promise<SensCalcResults | null> => {
   try {
     const response = await calculateSensCalcData(observation, target, dataProductSDP);
@@ -32,7 +32,7 @@ const getSensCalcData = async (
 const updateSensCalcAsync = async (
   proposal: Proposal,
   ob: Observation,
-  dp: DataProductSDP
+  dp: DataProductSDPNew
 ): Promise<TargetObservation[]> => {
   if (!proposal.targetObservation) return [];
 
@@ -66,12 +66,12 @@ const updateSensCalcAsync = async (
 export const updateSensCalc = async (
   proposal: Proposal,
   ob: Observation,
-  dp: DataProductSDP
+  dp: DataProductSDPNew
 ): Promise<TargetObservation[]> => {
   const updated = await updateSensCalcAsync(proposal, ob, dp);
 
   return updated.map(rec => {
-    if (rec.observationId === ob.id) {
+    if (rec?.observationId === ob?.id) {
       return {
         ...rec,
         sensCalc: {

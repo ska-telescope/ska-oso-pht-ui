@@ -4,23 +4,35 @@ import {
   validatePSTDataProduct,
   validateSpectralDataProduct
 } from '@utils/validation/validation.tsx';
+import {
+  DataProductSDPNew,
+  SDPImageContinuumData,
+  SDPSpectralData,
+  SDPVisibilitiesContinuumData
+} from '../types/dataProduct';
+import { IW_UNIFORM, ROBUST_DEFAULT, TAPER_DEFAULT } from '../constants';
 
 describe('validateSpectralDataProduct', () => {
   it('returns true for valid spectral data product', () => {
     const proposal = {
       dataProductSDP: [
         {
-          imageSizeValue: 100,
-          imageSizeUnits: 'arcsec',
-          pixelSizeValue: 0.5,
-          pixelSizeUnits: 'arcsec',
-          weighting: 'natural',
-          taperValue: 1,
-          channelsOut: 32,
-          continuumSubtraction: true,
-          polarisations: ['XX', 'YY']
+          id: 'SDP-0000000',
+          observationId: 'obs-123',
+          data: {
+            imageSizeValue: 2.5,
+            imageSizeUnits: 0,
+            pixelSizeValue: 1.6,
+            pixelSizeUnits: 2,
+            weighting: IW_UNIFORM,
+            polarisations: ['I', 'XX'],
+            channelsOut: 40,
+            robust: ROBUST_DEFAULT,
+            taperValue: TAPER_DEFAULT,
+            continuumSubtraction: true
+          } as SDPSpectralData
         }
-      ]
+      ] as DataProductSDPNew[]
     };
     expect(validateSpectralDataProduct(proposal as any)).toBe(true);
   });
@@ -29,17 +41,21 @@ describe('validateSpectralDataProduct', () => {
     const proposal = {
       dataProductSDP: [
         {
-          imageSizeValue: null,
-          imageSizeUnits: 'arcsec',
-          pixelSizeValue: 0.5,
-          pixelSizeUnits: 'arcsec',
-          weighting: 'natural',
-          taperValue: 1,
-          channelsOut: 32,
-          continuumSubtraction: true,
-          polarisations: ['XX', 'YY']
+          id: 'SDP-0000000',
+          observationId: 'obs-123',
+          data: {
+            imageSizeValue: 2.5,
+            imageSizeUnits: 0,
+            pixelSizeValue: 1.6,
+            pixelSizeUnits: 2,
+            polarisations: ['I', 'XX'],
+            channelsOut: 40,
+            robust: ROBUST_DEFAULT,
+            taperValue: TAPER_DEFAULT,
+            continuumSubtraction: true
+          } as SDPSpectralData
         }
-      ]
+      ] as DataProductSDPNew[]
     };
     expect(validateSpectralDataProduct(proposal as any)).toBe(false);
   });
@@ -48,16 +64,21 @@ describe('validateSpectralDataProduct', () => {
     const proposal = {
       dataProductSDP: [
         {
-          imageSizeValue: 100,
-          imageSizeUnits: 'arcsec',
-          pixelSizeValue: 0.5,
-          pixelSizeUnits: 'arcsec',
-          weighting: 'natural',
-          taperValue: 1,
-          channelsOut: 32,
-          polarisations: ['XX', 'YY']
+          id: 'SDP-0000000',
+          observationId: 'obs-123',
+          data: {
+            imageSizeValue: 2.5,
+            imageSizeUnits: 0,
+            pixelSizeValue: 1.6,
+            pixelSizeUnits: 2,
+            polarisations: ['I', 'XX'],
+            channelsOut: 40,
+            robust: ROBUST_DEFAULT,
+            taperValue: TAPER_DEFAULT,
+            continuumSubtraction: undefined
+          } as Partial<SDPSpectralData>
         }
-      ]
+      ] as DataProductSDPNew[]
     };
     expect(validateSpectralDataProduct(proposal as any)).toBe(false);
   });
@@ -66,17 +87,22 @@ describe('validateSpectralDataProduct', () => {
     const proposal = {
       dataProductSDP: [
         {
-          imageSizeValue: 100,
-          imageSizeUnits: 'arcsec',
-          pixelSizeValue: 0.5,
-          pixelSizeUnits: 'arcsec',
-          weighting: 'natural',
-          taperValue: 1,
-          channelsOut: 32,
-          continuumSubtraction: true,
-          polarisations: []
+          id: 'SDP-0000000',
+          observationId: 'obs-123',
+          data: {
+            imageSizeValue: 2.5,
+            imageSizeUnits: 0,
+            pixelSizeValue: 1.6,
+            pixelSizeUnits: 2,
+            weighting: IW_UNIFORM,
+            polarisations: [],
+            channelsOut: 40,
+            robust: ROBUST_DEFAULT,
+            taperValue: TAPER_DEFAULT,
+            continuumSubtraction: true
+          } as SDPSpectralData
         }
-      ]
+      ] as DataProductSDPNew[]
     };
     expect(validateSpectralDataProduct(proposal as any)).toBe(false);
   });
@@ -97,16 +123,21 @@ describe('validateContinuumDataProduct', () => {
     const proposal = {
       dataProductSDP: [
         {
-          dataProductType: 1,
-          imageSizeValue: 100,
-          imageSizeUnits: 'arcsec',
-          pixelSizeValue: 0.5,
-          pixelSizeUnits: 'arcsec',
-          weighting: 'natural',
-          taperValue: 1,
-          channelsOut: 32,
-          polarisations: ['XX', 'YY']
-        }
+          id: 'SDP-0000000',
+          observationId: 'obs-123',
+          data: {
+            dataProductType: 1,
+            imageSizeValue: 100,
+            imageSizeUnits: 1,
+            pixelSizeValue: 0.5,
+            pixelSizeUnits: 1,
+            weighting: IW_UNIFORM,
+            taperValue: 1,
+            channelsOut: 32,
+            polarisations: ['XX', 'YY'],
+            robust: 1
+          } as SDPImageContinuumData
+        } as DataProductSDPNew
       ]
     };
     expect(validateContinuumDataProduct(proposal as any)).toBe(true);
@@ -116,16 +147,19 @@ describe('validateContinuumDataProduct', () => {
     const proposal = {
       dataProductSDP: [
         {
-          dataProductType: 1,
-          imageSizeValue: null,
-          imageSizeUnits: 'arcsec',
-          pixelSizeValue: 0.5,
-          pixelSizeUnits: 'arcsec',
-          weighting: 'natural',
-          taperValue: 1,
-          channelsOut: 32,
-          polarisations: ['XX', 'YY']
-        }
+          id: 'SDP-0000000',
+          observationId: 'obs-123',
+          data: {
+            dataProductType: 1,
+            imageSizeValue: 100,
+            imageSizeUnits: 1,
+            pixelSizeValue: 0.5,
+            pixelSizeUnits: 1,
+            weighting: IW_UNIFORM,
+            taperValue: 1,
+            polarisations: ['XX', 'YY']
+          } as Partial<SDPImageContinuumData>
+        } as DataProductSDPNew
       ]
     };
     expect(validateContinuumDataProduct(proposal as any)).toBe(false);
@@ -135,16 +169,21 @@ describe('validateContinuumDataProduct', () => {
     const proposal = {
       dataProductSDP: [
         {
-          dataProductType: 1,
-          imageSizeValue: 100,
-          imageSizeUnits: 'arcsec',
-          pixelSizeValue: 0.5,
-          pixelSizeUnits: 'arcsec',
-          weighting: 'natural',
-          taperValue: 1,
-          channelsOut: 32,
-          polarisations: []
-        }
+          id: 'SDP-0000000',
+          observationId: 'obs-123',
+          data: {
+            dataProductType: 1,
+            imageSizeValue: 100,
+            imageSizeUnits: 1,
+            pixelSizeValue: 0.5,
+            pixelSizeUnits: 1,
+            weighting: IW_UNIFORM,
+            taperValue: 1,
+            channelsOut: 32,
+            polarisations: [],
+            robust: 1
+          } as SDPImageContinuumData
+        } as DataProductSDPNew
       ]
     };
     expect(validateContinuumDataProduct(proposal as any)).toBe(false);
@@ -154,11 +193,15 @@ describe('validateContinuumDataProduct', () => {
     const proposal = {
       dataProductSDP: [
         {
-          dataProductType: 2,
-          timeAveraging: 10,
-          frequencyAveraging: 20
+          id: 'SDP-0000000',
+          observationId: 'obs-123',
+          data: {
+            dataProductType: 2,
+            timeAveraging: 10,
+            frequencyAveraging: 20
+          } as SDPVisibilitiesContinuumData
         }
-      ]
+      ] as DataProductSDPNew[]
     };
     expect(validateContinuumDataProduct(proposal as any)).toBe(true);
   });
@@ -167,11 +210,16 @@ describe('validateContinuumDataProduct', () => {
     const proposal = {
       dataProductSDP: [
         {
-          dataProductType: 2,
-          timeAveraging: null,
-          frequencyAveraging: 20
+          id: 'SDP-0000000',
+          observationId: 'obs-123',
+
+          data: {
+            dataProductType: 2,
+            timeAveraging: null as any,
+            frequencyAveraging: 20
+          } as SDPVisibilitiesContinuumData
         }
-      ]
+      ] as DataProductSDPNew[]
     };
     expect(validateContinuumDataProduct(proposal as any)).toBe(false);
   });
@@ -180,11 +228,16 @@ describe('validateContinuumDataProduct', () => {
     const proposal = {
       dataProductSDP: [
         {
-          dataProductType: 2,
-          timeAveraging: 10,
-          frequencyAveraging: null
+          id: 'SDP-0000000',
+          observationId: 'obs-123',
+
+          data: {
+            dataProductType: 2,
+            timeAveraging: 10,
+            frequencyAveraging: null as any
+          } as SDPVisibilitiesContinuumData
         }
-      ]
+      ] as DataProductSDPNew[]
     };
     expect(validateContinuumDataProduct(proposal as any)).toBe(false);
   });
