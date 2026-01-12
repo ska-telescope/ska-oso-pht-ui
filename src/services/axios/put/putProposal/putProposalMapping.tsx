@@ -285,8 +285,8 @@ export const getDataProductScriptParameters = (
         return {
           polarisations: data?.polarisations,
           bit_depth: Number(data?.bitDepth),
-          time_averaging_factor: Math.round(Number(data?.timeAveraging)), // TODO update PDM to allow floats
-          frequency_averaging_factor: Math.round(Number(data?.frequencyAveraging)), // TODO update PDM to allow floats
+          time_averaging_factor: Math.round(Number(data?.timeAveraging ?? 0)), // TODO update PDM to allow floats
+          frequency_averaging_factor: Math.round(Number(data?.frequencyAveraging ?? 0)), // TODO update PDM to allow floats
           kind: 'pst',
           variant: 'detected filterbank'
           // todo update PDM to update fields for SDPFilterbankPSTData

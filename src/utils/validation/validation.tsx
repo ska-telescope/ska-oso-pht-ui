@@ -1,4 +1,11 @@
 import {
+  SDPFilterbankPSTData,
+  SDPFlowthroughPSTData,
+  SDPImageContinuumData,
+  SDPSpectralData,
+  SDPVisibilitiesContinuumData
+} from '../types/dataProduct';
+import {
   DETECTED_FILTER_BANK_VALUE,
   FLOW_THROUGH_VALUE,
   PAGE_DATA_PRODUCTS,
@@ -80,9 +87,11 @@ export const validateTechnicalPage = (proposal: Proposal) => {
 export const checkDP = (proposal: Proposal) => {
   const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
 
-  if (hasTargetObservations) {
+  if (hasTargetObservations()) {
     //based on observing type verify data products fields
-    switch (proposal.scienceCategory) {
+    switch (
+      proposal.scienceCategory // TODO: update validation to handle observation types instead?
+    ) {
       case TYPE_ZOOM: //Spectral
         return validateSpectralDataProduct(proposal) ? 1 : 0;
       case TYPE_CONTINUUM: //Continuum
@@ -226,16 +235,17 @@ export const validateSpectralDataProduct = (proposal: Proposal) => {
   //TODO: STAR-1854 - extend validation to account for multiple data products
   const dataProduct = proposal.dataProductSDP?.[0];
   if (dataProduct) {
+    const data = dataProduct?.data as SDPSpectralData;
     return (
-      dataProduct?.imageSizeValue != null &&
-      dataProduct?.imageSizeUnits != null &&
-      dataProduct?.pixelSizeValue != null &&
-      dataProduct?.pixelSizeUnits != null &&
-      dataProduct?.weighting != null &&
-      dataProduct?.taperValue != null &&
-      dataProduct?.channelsOut != null &&
-      dataProduct?.continuumSubtraction !== undefined &&
-      dataProduct?.polarisations?.length > 0
+      data?.imageSizeValue != null &&
+      data?.imageSizeUnits != null &&
+      data?.pixelSizeValue != null &&
+      data?.pixelSizeUnits != null &&
+      data?.weighting != null &&
+      data?.taperValue != null &&
+      data?.channelsOut != null &&
+      data?.continuumSubtraction !== undefined &&
+      data?.polarisations?.length > 0
     );
   } else {
     return false;
@@ -246,21 +256,24 @@ export const validateContinuumDataProduct = (proposal: Proposal) => {
   //TODO: STAR-1854 - extend validation to account for multiple data products
   const dataProduct = proposal.dataProductSDP?.[0];
   if (dataProduct) {
-    if (dataProduct?.dataProductType === 1) {
-      // Images
+    if (
+      (dataProduct?.data as SDPImageContinuumData | SDPVisibilitiesContinuumData)
+        ?.dataProductType === 1
+    ) {
+      const data = dataProduct?.data as SDPImageContinuumData;
       return (
-        dataProduct?.imageSizeValue != null &&
-        dataProduct?.imageSizeUnits != null &&
-        dataProduct?.pixelSizeValue != null &&
-        dataProduct?.pixelSizeUnits != null &&
-        dataProduct?.weighting != null &&
-        dataProduct?.taperValue != null &&
-        dataProduct?.channelsOut != null &&
-        dataProduct?.polarisations?.length > 0
+        data?.imageSizeValue != null &&
+        data?.imageSizeUnits != null &&
+        data?.pixelSizeValue != null &&
+        data?.pixelSizeUnits != null &&
+        data?.weighting != null &&
+        data?.taperValue != null &&
+        data?.channelsOut != null &&
+        data?.polarisations?.length > 0
       );
     } else {
-      //Visibilities
-      return dataProduct?.timeAveraging != null && dataProduct?.frequencyAveraging != null;
+      const data = dataProduct?.data as SDPVisibilitiesContinuumData;
+      return data?.timeAveraging != null && data?.frequencyAveraging != null;
     }
   } else {
     return false;
@@ -273,13 +286,15 @@ export const validatePSTDataProduct = (proposal: Proposal) => {
   if (dataProduct) {
     switch (proposal.observations?.[0].pstMode) {
       case FLOW_THROUGH_VALUE:
-        return dataProduct?.bitDepth != null && dataProduct?.polarisations?.length > 0;
+        const dataFT = dataProduct?.data as SDPFlowthroughPSTData;
+        return dataFT?.bitDepth != null && dataFT?.polarisations?.length > 0;
       case DETECTED_FILTER_BANK_VALUE:
+        const dataFB = dataProduct?.data as SDPFilterbankPSTData;
         return (
-          dataProduct?.timeAveraging != null &&
-          dataProduct?.frequencyAveraging != null &&
-          dataProduct?.bitDepth != null &&
-          dataProduct?.polarisations?.length > 0
+          // dataFB?.timeAveraging != null &&
+          // dataFB?.frequencyAveraging != null &&
+          // TODO use new fields instead when SDP fields are updated on SDP page (outputFrequencyResolution, outputSamplingInterval, dispersionMeasure, rotationMeasure)
+          dataFB?.bitDepth != null && dataFB?.polarisations?.length > 0
         );
       case PULSAR_TIMING_VALUE:
         return true; // no visible fields to verify
