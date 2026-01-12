@@ -22,7 +22,7 @@ import {
   IW_BRIGGS,
   IW_NATURAL,
   NAV,
-  OB_SUBARRAY_CUSTOM,
+  SA_CUSTOM,
   PAGE_DATA_PRODUCTS,
   PULSAR_TIMING_VALUE,
   STATUS_INITIAL,
@@ -100,7 +100,8 @@ export default function DataProduct({ data }: DataProductProps) {
   const [continuumSubtraction, setContinuumSubtraction] = React.useState(false);
   const [polarisations, setPolarisations] = React.useState<string[]>([]);
 
-  const maxObservationsReached = () => baseObservations.length >= osdCyclePolicy.maxObservations;
+  const maxObservationsReached = () =>
+    baseObservations.length >= (osdCyclePolicy?.maxObservations ?? 0);
 
   const isDataTypeOne = () => dataProductType === 1;
 
@@ -118,7 +119,7 @@ export default function DataProduct({ data }: DataProductProps) {
     getObservation()?.type === TYPE_PST || getProposal()?.scienceCategory === TYPE_PST;
 
   const showSC =
-    osdCyclePolicy.maxObservations === 1 && osdCyclePolicy.maxDataProducts === 1 && !isPST();
+    osdCyclePolicy?.maxObservations === 1 && osdCyclePolicy?.maxDataProducts === 1 && !isPST();
 
   const getSuffix = () => {
     if (isContinuum() || isPST()) {
@@ -211,7 +212,7 @@ export default function DataProduct({ data }: DataProductProps) {
   };
 
   const updateStorageProposal = () => {
-    if (osdCyclePolicy.maxDataProducts === 1) {
+    if (osdCyclePolicy?.maxDataProducts === 1) {
       isEdit() ? updateToProposal() : addToProposal();
     }
   };
@@ -508,7 +509,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
     const buttonClicked = () => {
       isEdit() ? updateToProposal() : addToProposal();
-      if (osdCyclePolicy.maxDataProducts !== 1) {
+      if (osdCyclePolicy?.maxDataProducts !== 1) {
         navigate(NAV[BACK_PAGE]);
       }
     };
@@ -549,7 +550,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const scData = (): any => getProposal()?.targetObservation?.[0]?.sensCalc;
 
-  const isCustom = () => getObservation()?.subarray === OB_SUBARRAY_CUSTOM;
+  const isCustom = () => getObservation()?.subarray === SA_CUSTOM;
   const isNatural = () =>
     isSpectral() || (isContinuum() && isDataTypeOne()) ? weighting === IW_NATURAL : false;
 
@@ -711,7 +712,7 @@ export default function DataProduct({ data }: DataProductProps) {
           )}
         </Grid>
       </Grid>
-      {osdCyclePolicy.maxDataProducts !== 1 && pageFooter()}
+      {osdCyclePolicy?.maxDataProducts !== 1 && pageFooter()}
     </Box>
   );
 }

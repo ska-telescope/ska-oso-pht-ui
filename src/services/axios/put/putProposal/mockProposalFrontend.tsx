@@ -116,7 +116,7 @@ export const MockProposalFrontend: Proposal = {
     {
       id: 'obs-obR1Ej',
       telescope: 2,
-      subarray: 3,
+      subarray: 'aa2',
       type: 1,
       observingBand: BAND_LOW_STR,
       centralFrequency: 200,
@@ -314,7 +314,7 @@ export const MockProposalFrontendZoom: Proposal = {
     {
       id: 'obs-arMIoY',
       telescope: 2,
-      subarray: 3,
+      subarray: 'aa2',
       type: 0,
       observingBand: BAND_LOW_STR,
       centralFrequency: 200,

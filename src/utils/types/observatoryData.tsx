@@ -38,6 +38,7 @@ export type ReceiverInformationFrontend = {
   rxId: string;
   minFrequencyHz: number;
   maxFrequencyHz: number;
+  subBands?: any[];
 };
 
 export type TelescopeInformationBackend = {
@@ -83,13 +84,16 @@ export type BasicCapabilitiesLow = {
 };
 
 export type subarrayConfigurationMidBackend = {
+  allowed_channel_count_range_max: number[];
+  allowed_c_channel_count_range_min: number[];
+  allowed_channel_width_values: number[];
   available_receivers: string[];
-  number_ska_dishes: number | null;
-  number_meerkat_dishes: number | null;
-  number_meerkatplus_dishes: number | null;
-  number_channels: number | null;
+  number_ska_dishes: number;
+  number_meerkat_dishes: number;
+  number_meerkatplus_dishes: number;
   max_baseline_km: number;
   available_bandwidth_hz: number;
+  number_channels: number | null;
   cbf_modes: string[];
   number_zoom_windows: number;
   number_zoom_channels: number;
@@ -101,13 +105,16 @@ export type subarrayConfigurationMidBackend = {
 
 export type subarrayConfigurationMid = {
   subArray: string;
+  allowedChannelCountRangeMax: number[];
+  allowedChannelCountRangeMin: number[];
+  allowedChannelWidthValues: number[];
   availableReceivers: string[];
-  numberSkaDishes: number | null;
-  numberMeerkatDishes: number | null;
-  numberMeerkatPlusDishes: number | null;
-  numberChannels: number | null;
+  numberSkaDishes: number;
+  numberMeerkatDishes: number;
+  numberMeerkatPlusDishes: number;
   maxBaselineKm: number;
   availableBandwidthHz: number;
+  numberChannels: number | null;
   cbfModes: string[];
   numberZoomWindows: number;
   numberZoomChannels: number;
