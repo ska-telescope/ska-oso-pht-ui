@@ -146,7 +146,7 @@ export default function TableDataProductsRow({
           role="gridcell"
           sx={{
             borderLeft: '10px solid',
-            borderColor: colorsObType[0],
+            borderColor: colorsObType.bg[0],
             pl: 1,
             width: '1%',
             whiteSpace: 'nowrap'
@@ -168,7 +168,7 @@ export default function TableDataProductsRow({
         <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
           <Box
             sx={{
-              backgroundColor: colorsTelescope[0],
+              backgroundColor: colorsTelescope.bg[0],
               borderRadius: 1,
               px: 1,
               display: 'inline-flex'
@@ -176,7 +176,7 @@ export default function TableDataProductsRow({
           >
             <Typography
               variant="body2"
-              color={colorsTelescope[1]}
+              color={colorsTelescope.fg[0]}
               sx={{ whiteSpace: 'nowrap', p: 1 }}
             >
               {t('telescopes.' + observation?.telescope)}{' '}
@@ -189,7 +189,7 @@ export default function TableDataProductsRow({
         <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
           <Box
             sx={{
-              backgroundColor: colorsTelescopeDim[0],
+              backgroundColor: colorsTelescopeDim.bg[0],
               borderRadius: 0,
               px: 1,
               display: 'inline-flex'
@@ -197,7 +197,7 @@ export default function TableDataProductsRow({
           >
             <Typography
               variant="body2"
-              color={colorsTelescopeDim[1]}
+              color={colorsTelescopeDim.fg[0]}
               sx={{ whiteSpace: 'nowrap', p: 1 }}
             >
               {t('observingBand.short.' + observation?.observingBand)}
@@ -214,8 +214,8 @@ export default function TableDataProductsRow({
             bandWidth={
               isContinuum ? observation?.continuumBandwidth ?? 0 : observation?.bandwidth ?? 0
             }
-            bandColor={colorsTelescopeDim[0]}
-            bandColorContrast={colorsTelescopeDim[1]}
+            bandColor={colorsTelescopeDim.bg[0]}
+            bandColorContrast={colorsTelescopeDim.fg[1]}
             units={isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ}
           />
         </TableCell>

@@ -20,7 +20,7 @@ interface SpectralAveragingLOWFieldProps {
   value: number;
   widthButton?: number;
   widthLabel?: number;
-  subarray: number;
+  subarray: string;
   type: number;
 }
 

@@ -76,7 +76,7 @@ const baseObservation: Observation = {
   pstMode: 1,
   id: '',
   telescope: 0,
-  subarray: 0,
+  subarray: '',
   linked: '',
   observingBand: BAND_LOW_STR,
   elevation: 0,

@@ -18,7 +18,7 @@ interface ContinuumBandwidthFieldProps {
   disabled?: boolean;
   labelWidth?: number;
   onFocus?: Function;
-  setValue?: Function;
+  setValue?: (v: number) => void;
   value: number;
   suffix?: any;
   telescope?: number;
@@ -26,7 +26,7 @@ interface ContinuumBandwidthFieldProps {
   continuumBandwidthUnits?: number;
   centralFrequency?: number;
   centralFrequencyUnits?: number;
-  subarrayConfig?: number;
+  subarrayConfig?: string;
   minimumChannelWidthHz?: number;
 }
 
@@ -51,13 +51,11 @@ export default function ContinuumBandwidthField({
 
   const [errorText, setErrorText] = React.useState('');
 
+  // Auto-clear error text after ERROR_SECS
   React.useEffect(() => {
-    const timer = () => {
-      setTimeout(() => {
-        setErrorText('');
-      }, ERROR_SECS);
-    };
-    timer();
+    if (!errorText) return;
+    const timer = setTimeout(() => setErrorText(''), ERROR_SECS);
+    return () => clearTimeout(timer);
   }, [errorText]);
 
   const displayMinimumChannelWidthErrorMessage = (
@@ -79,14 +77,17 @@ export default function ContinuumBandwidthField({
   };
 
   const validateValue = (num: number) => {
+    if (!Number.isFinite(num)) return '';
+
     const scaledBandwidth = getScaledBandwidthOrFrequency(num, continuumBandwidthUnits ?? 0);
     const scaledFrequency = getScaledBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
+
     const maxContBandwidthHz: number | undefined = getMaxContBandwidthHz(
       Number(telescope),
-      Number(subarrayConfig),
+      observingBand ?? '',
+      subarrayConfig ?? '',
       osdMID,
-      osdLOW,
-      observatoryConstants
+      osdLOW
     );
 
     const invalidMinChannel = !checkMinimumChannelWidth(
@@ -98,7 +99,7 @@ export default function ContinuumBandwidthField({
       scaledBandwidth,
       scaledFrequency,
       Number(telescope),
-      Number(subarrayConfig),
+      subarrayConfig ?? '',
       observingBand ?? '',
       osdMID,
       osdLOW,
@@ -121,7 +122,6 @@ export default function ContinuumBandwidthField({
   const handleSetValue = (num: number) => {
     const error = validateValue(num);
     if (error) {
-      // show error immediately when attempt is invalid
       setErrorText(error);
     } else {
       setErrorText('');
@@ -129,9 +129,13 @@ export default function ContinuumBandwidthField({
     }
   };
 
-  // also validate current prop value on mount/update
+  // Validate current value when dependencies change
   React.useEffect(() => {
-    setErrorText(validateValue(value));
+    if (Number.isFinite(value)) {
+      setErrorText(validateValue(value));
+    } else {
+      setErrorText('');
+    }
   }, [
     value,
     continuumBandwidthUnits,
@@ -141,6 +145,9 @@ export default function ContinuumBandwidthField({
     subarrayConfig,
     observingBand
   ]);
+
+  // Prevent controlled → uncontrolled warnings
+  const safeValue = Number.isFinite(value) ? value : '';
 
   return (
     <Box pt={1}>
@@ -152,7 +159,7 @@ export default function ContinuumBandwidthField({
         labelWidth={labelWidth}
         suffix={suffix}
         testId={FIELD}
-        value={value}
+        value={safeValue}
         setValue={handleSetValue}
         onFocus={() => setHelp(FIELD)}
         required

@@ -20,7 +20,6 @@ import {
   NAV,
   SUPPLIED_VALUE_DEFAULT_MID,
   TYPE_CONTINUUM,
-  OB_SUBARRAY_CUSTOM,
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_INTEGRATION_TIME_UNITS_S,
   SUPPLIED_VALUE_DEFAULT_LOW,
@@ -32,7 +31,6 @@ import {
   TYPE_ZOOM,
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_NUM,
-  OB_SUBARRAY_AA2,
   FOOTER_HEIGHT_PHT,
   PAGE_OBSERVATION,
   PAGE_OBSERVATION_UPDATE,
@@ -42,10 +40,10 @@ import {
   TYPE_PST,
   FLOW_THROUGH_VALUE,
   ZOOM_BANDWIDTH_DEFAULT_MID,
-  TELESCOPES,
   TEL_UNITS,
   BAND_LOW_STR,
-  AA2_STR
+  SA_AA2,
+  SA_CUSTOM
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -105,7 +103,15 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const theme = useTheme();
   const locationProperties = useLocation();
   const loggedIn = isLoggedIn();
-  const { isSV, osdLOW, osdMID, observatoryConstants, osdCyclePolicy } = useOSDAccessors();
+  const {
+    isSV,
+    osdLOW,
+    osdMID,
+    observatoryConstants,
+    osdCyclePolicy,
+    selectedPolicy,
+    telescopeBand
+  } = useOSDAccessors();
 
   const isEdit = () => locationProperties.state !== null || data !== undefined;
 
@@ -117,7 +123,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
-  const [subarrayConfig, setSubarrayConfig] = React.useState(3);
+  const [subarrayConfig, setSubarrayConfig] = React.useState(SA_AA2);
   const [observingBand, setObservingBand] = React.useState(BAND_LOW_STR);
   const [observationType, setObservationType] = React.useState(1);
   const [effectiveResolution, setEffectiveResolution] = React.useState('');
@@ -149,7 +155,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
   const [once, setOnce] = React.useState<Observation | null>(null);
-  const isAA2 = (subarrayConfig: number) => subarrayConfig === OB_SUBARRAY_AA2;
+  const isAA2 = (subarrayConfig: string) => subarrayConfig === SA_AA2;
 
   const observationIn = (ob: Observation) => {
     setMyObsId(ob?.id);
@@ -250,29 +256,28 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     }
   };
 
-  // Change the central frequency & units only if they are currently the same as the existing defaults
-  const setDefaultCentralFrequency = (inBand: string, inSubArray: number) => {
-    if (
-      Number(centralFrequency) ===
-        calculateCentralFrequency(observingBand, subarrayConfig, observatoryConstants) &&
-      centralFrequencyUnits === (isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ)
-    ) {
-      setCentralFrequency(calculateCentralFrequency(inBand, inSubArray, observatoryConstants));
-      setCentralFrequencyUnits(inBand === BAND_LOW_STR ? FREQUENCY_MHZ : FREQUENCY_GHZ);
-    }
+  const setDefaultCentralFrequency = (inBand: string) => {
+    const obsBand = telescopeBand(inBand) === TELESCOPE_LOW_NUM ? osdLOW : osdMID;
+    const newUnits = inBand === BAND_LOW_STR ? FREQUENCY_MHZ : FREQUENCY_GHZ;
+    const newValueHz = calculateCentralFrequency(obsBand, inBand);
+    const newValue = frequencyConversion(newValueHz, FREQUENCY_HZ, newUnits);
+    setCentralFrequency(newValue);
+    setCentralFrequencyUnits(newUnits);
   };
 
-  // Change the continuum bandwidth & units only if they are currently the same as the existing defaults
-  const setDefaultContinuumBandwidth = (inBand: string, inSubArray: number) => {
-    if (
-      isContinuum() &&
-      Number(continuumBandwidth) ===
-        calculateContinuumBandwidth(observingBand, subarrayConfig, observatoryConstants) &&
-      continuumBandwidthUnits === (isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ)
-    ) {
-      setContinuumBandwidth(calculateContinuumBandwidth(inBand, inSubArray, observatoryConstants));
-      setContinuumBandwidthUnits(inBand === BAND_LOW_STR ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+  const setDefaultContinuumBandwidth = (inBand: string) => {
+    if (!isContinuum()) {
+      return;
     }
+    const newUnits = inBand === BAND_LOW_STR ? FREQUENCY_MHZ : FREQUENCY_GHZ;
+    const newArray = telescopeBand(inBand) === TELESCOPE_LOW_NUM ? osdLOW : osdMID;
+    const newValue = frequencyConversion(
+      calculateContinuumBandwidth(newArray, subarrayConfig),
+      FREQUENCY_HZ,
+      newUnits
+    );
+    setContinuumBandwidth(newValue);
+    setContinuumBandwidthUnits(newUnits);
   };
 
   const setDefaultElevation = () => {
@@ -297,45 +302,45 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       setSuppliedValue(SUPPLIED_VALUE_DEFAULT_LOW);
     }
 
-    setDefaultCentralFrequency(String(e), subarrayConfig);
-    setDefaultContinuumBandwidth(String(e), subarrayConfig);
+    setDefaultCentralFrequency(String(e));
+    setDefaultContinuumBandwidth(String(e));
     setObservingBand(String(e));
     updateStorageProposal();
   };
 
-  const setTheSubarrayConfig = (e: React.SetStateAction<number>) => {
+  const setTheSubarrayConfig = (e: React.SetStateAction<string>) => {
     const record = observatoryConstants.array[telescope() - 1].subarray.find(
       element => element.value === e
     );
     if (record) {
       //Set value using OSD Data if Low AA2
-      if (isLow() && isAA2(Number(record.value))) {
-        const sArray = osdLOW?.subArrays.find((sub: any) => sub.subArray === AA2_STR);
+      if (isLow() && isAA2(record.value)) {
+        const sArray = osdLOW?.subArrays.find((sub: any) => sub.subArray === SA_AA2);
         setNumOfStations(sArray?.numberStations ?? undefined);
       } else {
         setNumOfStations(record.numOfStations);
       }
       //Set value using OSD Data if Mid AA2
-      if (isMid() && isAA2(Number(record.value))) {
-        const sArray = osdMID?.subArrays.find((sub: any) => sub.subArray === AA2_STR);
+      if (isMid() && isAA2(record.value)) {
+        const sArray = osdMID?.subArrays.find((sub: any) => sub.subArray === SA_AA2);
         setNumOf15mAntennas(sArray?.numberSkaDishes ?? undefined);
       } else {
         setNumOf15mAntennas(record.numOf15mAntennas);
       }
     }
     setNumOf13mAntennas(record?.numOf13mAntennas);
-    setDefaultCentralFrequency(observingBand, e as number);
-    setDefaultContinuumBandwidth(observingBand, e as number);
+    // setDefaultCentralFrequency(observingBand);
+    // setDefaultContinuumBandwidth(observingBand, e as string);
     setSubarrayConfig(e);
     updateStorageProposal();
   };
 
   // TODO : This will need to be a lookup if/when the OSD correctly provides subarrays in an array
-  const setMaxChannelsZoom = (_subarrayConfig: number) => {
+  const setMaxChannelsZoom = (_subarrayConfig: string) => {
     const record = isLow() ? osdLOW : osdMID;
     setMaxZoomChannels(0);
     if (record) {
-      const sArray = record.subArrays.find((sub: any) => sub.subArray === AA2_STR);
+      const sArray = record.subArrays.find((sub: any) => sub.subArray === SA_AA2);
       setMaxZoomChannels(sArray?.numberZoomChannels ?? 0);
     }
   };
@@ -347,15 +352,24 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       setMaxChannelsZoom(subarrayConfig);
       setOnce(data ? data : locationProperties.state);
     } else {
+      const obsBand = telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? osdLOW : osdMID;
       setMyObsId(generateId(t('addObservation.idPrefix'), 6));
       setTheSubarrayConfig(subarrayConfig);
       setMaxChannelsZoom(subarrayConfig);
       setCentralFrequency(
-        calculateCentralFrequency(observingBand, subarrayConfig, observatoryConstants)
+        frequencyConversion(
+          calculateCentralFrequency(obsBand, observingBand),
+          FREQUENCY_HZ,
+          isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ
+        )
       );
       setCentralFrequencyUnits(isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
       setContinuumBandwidth(
-        calculateContinuumBandwidth(observingBand, subarrayConfig, observatoryConstants)
+        frequencyConversion(
+          calculateContinuumBandwidth(obsBand, subarrayConfig),
+          FREQUENCY_HZ,
+          isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ
+        )
       );
       setContinuumBandwidthUnits(isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
     }
@@ -411,8 +425,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       // We just need to do this one more time as some fields could not be updated until observingBand has changed.
       observationIn(once);
       setOnce(null);
-      setDefaultCentralFrequency(observingBand, subarrayConfig);
-      setDefaultContinuumBandwidth(observingBand, subarrayConfig);
+      setDefaultCentralFrequency(observingBand);
+      setDefaultContinuumBandwidth(observingBand);
     }
     const calculateMinimumChannelWidthHz = () =>
       setMinimumChannelWidthHz(getMinimumChannelWidth(telescope()));
@@ -428,9 +442,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const isLow = () => observingBand === BAND_LOW_STR;
   const isMid = () => observingBand !== BAND_LOW_STR;
   const telescope = () => (isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM);
-  const isLowAA2 = () => isLow() && subarrayConfig === OB_SUBARRAY_AA2;
-  const isContinuumOnly = () =>
-    observingBand !== BAND_LOW_STR && subarrayConfig === OB_SUBARRAY_AA2;
+  const isLowAA2 = () => isLow() && subarrayConfig === SA_AA2;
+  const isContinuumOnly = () => observingBand !== BAND_LOW_STR && subarrayConfig === SA_AA2;
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
@@ -482,7 +495,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const frequencySpectrumField = () => {
     const colors = getColors({
       type: 'telescope',
-      colors: TELESCOPES[telescope() - 1].label.toLowerCase(),
+      colors: isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM,
       content: 'bg',
       dim: 0.6,
       asArray: true,
@@ -524,7 +537,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                   FREQUENCY_MHZ
                 ) ?? 0
           }
-          bandColor={colors[isLow() ? 0 : 1]}
+          bandColor={colors[0]}
           boxWidth="100%"
           unit={TEL_UNITS[isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM]}
         />
@@ -535,7 +548,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const observationsBandField = () =>
     fieldWrapper(
       <ObservingBandField
-        disabled={(osdCyclePolicy?.bands?.length ?? 0) < 2}
+        disabled={(selectedPolicy?.cyclePolicies?.bands?.length ?? 0) < 2}
         widthLabel={LABEL_WIDTH_NEW}
         required
         value={observingBand}
@@ -563,7 +576,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const numStationsField = () =>
     fieldWrapper(
       <NumStations
-        disabled={subarrayConfig !== Number(OB_SUBARRAY_CUSTOM)}
+        disabled={subarrayConfig !== SA_CUSTOM}
         widthLabel={LABEL_WIDTH_NEW}
         setValue={setNumOfStations}
         value={numOfStations ?? 0}
@@ -587,8 +600,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
       return (
         <NumberEntry
-          disabled={subarrayConfig !== 20}
-          disabledUnderline={subarrayConfig !== 20}
+          disabled={subarrayConfig !== SA_CUSTOM}
+          disabledUnderline={subarrayConfig !== SA_CUSTOM}
           label={t('numOf15mAntennas.short')}
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
@@ -615,8 +628,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
       return (
         <NumberEntry
-          disabled={subarrayConfig !== 20}
-          disabledUnderline={subarrayConfig !== 20}
+          disabled={subarrayConfig !== SA_CUSTOM}
+          disabledUnderline={subarrayConfig !== SA_CUSTOM}
           label={t('numOf13mAntennas.short')}
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
@@ -632,10 +645,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     return fieldWrapper(
       <Grid container direction="row">
         <Grid pt={2} size={{ xs: TOP_LABEL_WIDTH }}>
-          <InputLabel disabled={subarrayConfig !== 20} shrink={false} htmlFor="numOf15mAntennas">
-            <Typography
-              sx={{ fontWeight: subarrayConfig === Number(OB_SUBARRAY_CUSTOM) ? 'bold' : 'normal' }}
-            >
+          <InputLabel
+            disabled={subarrayConfig !== SA_CUSTOM}
+            shrink={false}
+            htmlFor="numOf15mAntennas"
+          >
+            <Typography sx={{ fontWeight: subarrayConfig === SA_CUSTOM ? 'bold' : 'normal' }}>
               {t('numOfAntennas.label')}
             </Typography>
           </InputLabel>
@@ -676,7 +691,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           label={t('weather.label')}
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
-          labelWidth={TOP_LABEL_WIDTH}
+          labelWidth={LABEL_WIDTH_NEW}
           testId="weather"
           value={weather}
           setValue={setWeather}
@@ -798,7 +813,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const continuumBandwidthField = () => {
     const continuumBandwidthUnitsField = () => {
-      // Only have MHz for Low
       const options = isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
       return (
         <DropDown

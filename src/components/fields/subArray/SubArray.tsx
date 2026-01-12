@@ -1,8 +1,8 @@
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { Grid } from '@mui/material';
-import { LAB_IS_BOLD, LAB_POSITION, OB_SUBARRAY_CUSTOM } from '@utils/constants.ts';
-import { subArrayOptions } from '@utils/observationOptions.tsx';
+import { LAB_IS_BOLD, LAB_POSITION, SA_CUSTOM, TELESCOPE_LOW_NUM } from '@utils/constants.ts';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
+import { useMemo } from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 
@@ -11,9 +11,9 @@ interface SubArrayFieldProps {
   telescope: number;
   disabled?: boolean;
   required?: boolean;
-  setValue?: Function;
-  suffix?: any;
-  value: number;
+  setValue?: (v: string) => void;
+  suffix?: React.ReactNode;
+  value: string;
   widthButton?: number;
   widthLabel?: number;
 }
@@ -32,42 +32,46 @@ export default function SubArrayField({
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const FIELD = 'subArrayConfiguration';
-  const { isCustomAllowed, observatoryConstants, telescopeBand } = useOSDAccessors();
 
-  const getOptions = () => {
-    if (telescope > 0) {
-      const options = subArrayOptions(telescopeBand(observingBand), observatoryConstants);
+  const { osdCapabilities, isCustomAllowed, selectedPolicy, telescopeBand } = useOSDAccessors();
 
-      const filteredOptions = !isCustomAllowed(telescope)
-        ? options?.filter((e: any) => e.value !== OB_SUBARRAY_CUSTOM)
-        : options;
+  const options = useMemo(() => {
+    if (telescope <= 0) return [];
 
-      return filteredOptions?.map((e: any) => ({
-        label: t(`subArrayConfiguration.${e.value}`),
-        value: e.value
-      }));
-    }
-  };
+    const telBand = telescopeBand(observingBand);
+    const policy = selectedPolicy?.cyclePolicies;
+
+    const arr = telBand === TELESCOPE_LOW_NUM ? policy?.low : policy?.mid;
+    if (!arr) return [];
+
+    const merged = arr.map(key => ({
+      value: key,
+      label: key.toUpperCase()
+    }));
+
+    return isCustomAllowed(telescope) ? merged : merged.filter(o => o.value !== SA_CUSTOM);
+  }, [telescope, observingBand, selectedPolicy, osdCapabilities, isCustomAllowed]);
 
   return (
     <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
       <Grid pl={suffix ? 1 : 0} size={{ xs: suffix ? 12 - widthButton : 12 }}>
-        {getOptions() && (
+        {options.length > 0 && (
           <DropDown
-            disabled={disabled || getOptions()?.length < 2}
-            options={getOptions()}
+            disabled={disabled || options.length < 2}
+            options={options}
             testId={FIELD}
-            value={value}
+            value={value ?? ''} // prevents controlled/uncontrolled warnings
             setValue={setValue}
-            label={t(FIELD + '.label')}
+            label={t(`${FIELD}.label`)}
             labelBold={LAB_IS_BOLD}
             labelPosition={LAB_POSITION}
             labelWidth={suffix ? widthLabel + 1 : widthLabel}
-            onFocus={() => setHelp(FIELD + '.help')}
+            onFocus={() => setHelp(`${FIELD}.help`)}
             required={required}
           />
         )}
       </Grid>
+
       <Grid size={{ xs: suffix ? widthButton : 0 }}>{suffix}</Grid>
     </Grid>
   );

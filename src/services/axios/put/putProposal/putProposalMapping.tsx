@@ -304,7 +304,7 @@ const getGroupObservation = (obsId: string, observationGroups: GroupObservation[
 
 const getObservingBand = (observingBand: string) => observingBand;
 
-const getSubArray = (incSubArray: number, incTelescope: number): string => {
+const getSubArray = (incSubArray: string, incTelescope: number): string => {
   const array = OSD_CONSTANTS.array.find(a => a.value === incTelescope);
   const subArray = array?.subarray
     ?.find(sub => sub.value === incSubArray)
