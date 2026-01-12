@@ -47,7 +47,10 @@ import {
   IMAGE_WEIGHTING,
   FREQUENCY_STR_MHZ,
   BAND_LOW_STR,
-  FREQUENCY_STR_GHZ
+  FREQUENCY_STR_GHZ,
+  PULSAR_TIMING_VALUE,
+  DETECTED_FILTER_BANK_VALUE,
+  FLOW_THROUGH_VALUE
 } from '@utils/constants.ts';
 import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import {
@@ -56,7 +59,7 @@ import {
   ObservationTypeDetailsSpectralBackend
 } from '@utils/types/observationSet.tsx';
 import {
-  DataProductSDP,
+  DataProductSDPNew,
   DataProductSDPsBackend,
   DataProductSRC,
   DataProductSRCNetBackend
@@ -256,10 +259,24 @@ const getDataProductSRC = (inValue: DataProductSRCNetBackend[] | null): DataProd
   return inValue ? inValue.map(dp => ({ id: dp?.data_products_src_id })) : [];
 };
 
-const getDataProductType = (el: any) =>
-  el.variant.toLowerCase() === 'continuum image' ? DP_TYPE_IMAGES : DP_TYPE_VISIBLE;
+const getDataProductType = (el: any) => {
+  switch (el.kind.toLowerCase()) {
+    case 'continuum image':
+      return DP_TYPE_IMAGES;
+    case 'visibilities':
+      return DP_TYPE_VISIBLE;
+    case 'detected filterbank':
+      return DETECTED_FILTER_BANK_VALUE;
+    case 'pulsar timing':
+      return PULSAR_TIMING_VALUE;
+    case 'flow through':
+      return FLOW_THROUGH_VALUE;
+    default:
+      return DP_TYPE_IMAGES;
+  }
+};
 
-const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProductSDP[] => {
+const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProductSDPNew[] => {
   const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
   const PIXEL_SIZE_UNITS = ['deg', 'arcmin', 'arcsec', 'arcsecs'];
 
@@ -275,32 +292,34 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
       return {
         id: dp?.data_product_id ?? '',
         observationId: dp?.observation_set_ref ?? '',
-        dataProductType: getDataProductType(script) ?? 0,
-        imageSizeValue: 'image_size' in script ? script.image_size?.value ?? 0 : 0,
-        imageSizeUnits:
-          'image_size' in script ? getImageSizeUnits(script.image_size?.unit ?? null) : 0,
+        data: {
+          dataProductType: getDataProductType(script) ?? 0,
+          imageSizeValue: 'image_size' in script ? script.image_size?.value ?? 0 : 0,
+          imageSizeUnits:
+            'image_size' in script ? getImageSizeUnits(script.image_size?.unit ?? null) : 0,
 
-        pixelSizeValue: 'image_cellsize' in script ? script.image_cellsize?.value ?? 0 : 0,
-        pixelSizeUnits:
-          'image_cellsize' in script ? getPixelSizeUnits(script.image_cellsize?.unit ?? null) : 0,
-        weighting:
-          'weight' in script && script.weight?.weighting
-            ? getWeighting(script.weight.weighting as string) ?? 0
-            : 0,
-        robust:
-          'weight' in script && script.weight?.weighting === 'briggs'
-            ? ROBUST.find(item => item.label === String(script.weight?.robust ?? ''))?.value ?? 0
-            : 0,
-        polarisations: 'polarisations' in script ? script.polarisations : undefined,
-        channelsOut: 'channels_out' in script ? Number(script.channels_out) ?? 0 : 0,
-        fitSpectralPol: 'fit_spectral_pol' in script ? Number(script.fit_spectral_pol) ?? 0 : 0,
-        taperValue: 'gaussian_taper' in script ? Number(script.gaussian_taper) ?? 0 : 0,
-        timeAveraging: 'time_averaging' in script ? Number(script.time_averaging.value) ?? 0 : 0,
-        frequencyAveraging:
-          'frequency_averaging' in script ? Number(script.frequency_averaging.value) ?? 0 : 0,
-        bitDepth: 'bit_depth' in script ? Number(script.bit_depth) ?? 1 : 1,
-        continuumSubtraction:
-          'continuum_subtraction' in script ? Boolean(script.continuum_subtraction) : false
+          pixelSizeValue: 'image_cellsize' in script ? script.image_cellsize?.value ?? 0 : 0,
+          pixelSizeUnits:
+            'image_cellsize' in script ? getPixelSizeUnits(script.image_cellsize?.unit ?? null) : 0,
+          weighting:
+            'weight' in script && script.weight?.weighting
+              ? getWeighting(script.weight.weighting as string) ?? 0
+              : 0,
+          robust:
+            'weight' in script && script.weight?.weighting === 'briggs'
+              ? ROBUST.find(item => item.label === String(script.weight?.robust ?? ''))?.value ?? 0
+              : 0,
+          polarisations: 'polarisations' in script ? script.polarisations : undefined,
+          channelsOut: 'channels_out' in script ? Number(script.channels_out) ?? 0 : 0,
+          fitSpectralPol: 'fit_spectral_pol' in script ? Number(script.fit_spectral_pol) ?? 0 : 0,
+          taperValue: 'gaussian_taper' in script ? Number(script.gaussian_taper) ?? 0 : 0,
+          timeAveraging: 'time_averaging' in script ? Number(script.time_averaging.value) ?? 0 : 0,
+          frequencyAveraging:
+            'frequency_averaging' in script ? Number(script.frequency_averaging.value) ?? 0 : 0,
+          bitDepth: 'bit_depth' in script ? Number(script.bit_depth) ?? 1 : 1,
+          continuumSubtraction:
+            'continuum_subtraction' in script ? Boolean(script.continuum_subtraction) : false
+        }
       };
     }) ?? []
   );
