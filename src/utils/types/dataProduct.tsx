@@ -87,6 +87,8 @@ export type DataProductSRCNetBackend = {
   data_products_src_id: string;
 };
 
+// TODO remove this type when once SDP types for Proposal flow updated as DataProductSDPNew should be used instead
+// (update GridDataProducts.tsx, DataProduct.tsx, LinkingPage.tsx)
 export type DataProductSDP = {
   id: string;
   dataProductType: number;
