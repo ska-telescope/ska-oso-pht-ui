@@ -6,15 +6,14 @@ import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   cypressToken,
-  LAST_PAGE,
   NAV,
   PROPOSAL_STATUS,
-  PAGE_TECHNICAL,
   PAGE_TITLE_ADD,
   PAGE_TARGET,
   PAGE_OBSERVATION,
-  PAGE_LINKING,
-  PAGE_CALIBRATION
+  PAGE_CALIBRATION,
+  STATUS_ARRAY_PAGES_PROPOSAL,
+  STATUS_ARRAY_PAGES_SV
 } from '@utils/constants.ts';
 import PostProposal from '@services/axios/post/postProposal/postProposal';
 import NextPageButton from '../../button/NextPage/NextPage';
@@ -39,40 +38,42 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const { application, updateAppContent2, updateAppContent4 } = storageObject.useStore();
-  const [usedPageNo, setUsedPageNo] = React.useState(pageNo);
   const authClient = useAxiosAuthClient();
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const loggedIn = isLoggedIn();
-
-  const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { isSV, osdCycleId, osdCyclePolicy } = useOSDAccessors();
 
-  React.useEffect(() => {
-    const getProposal = () => application.content2 as Proposal;
-    if (!getProposal() || getProposal().id === null) {
-      setUsedPageNo(-1);
-    }
-  }, []);
+  const proposal = application.content2 as Proposal;
+  const notification = application.content5 as Notification;
 
-  const createProposal = async () => {
+  const pages = React.useMemo(() => (isSV ? STATUS_ARRAY_PAGES_SV : STATUS_ARRAY_PAGES_PROPOSAL), [
+    isSV
+  ]);
+
+  const currPageNo = proposal?.id == null ? -1 : pageNo;
+
+  const { prevPageNo, nextPageNo } = React.useMemo(() => {
+    const idx = pages.findIndex(p => p === currPageNo);
+    return {
+      prevPageNo: idx > 0 ? pages[idx - 1] : -2,
+      nextPageNo: idx >= 0 && idx < pages.length - 1 ? pages[idx + 1] : -2
+    };
+  }, [currPageNo, pages]);
+
+  const createProposal = React.useCallback(async () => {
     notifyWarning(t('addProposal.warning'));
+
     const response = await PostProposal(
       authClient,
-      {
-        ...getProposal(),
-        cycle: osdCycleId ?? null
-      },
-      isSV ? true : false,
+      { ...proposal, cycle: osdCycleId ?? null },
+      isSV,
       PROPOSAL_STATUS.DRAFT
     );
 
     if (response && !('error' in response)) {
       notifySuccess(t('addProposal.success') + response.id);
-      setProposal({
-        ...(response as Proposal)
-      });
-      // Create a new access entry for the PI.  Saves doing the endpoint
+      updateAppContent2(response as Proposal);
+
       const newAcc: Partial<ProposalAccess> = {
         prslId: response.id,
         role: PROPOSAL_ROLE_PI,
@@ -84,135 +85,90 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
         : [];
 
       updateAppContent4([...acc, newAcc]);
-
       navigate(NAV[1]);
     } else {
       notifyError((response as { error: string }).error);
     }
-  };
+  }, [
+    proposal,
+    osdCycleId,
+    isSV,
+    authClient,
+    notifyWarning,
+    notifySuccess,
+    notifyError,
+    updateAppContent2,
+    updateAppContent4,
+    application.content4,
+    navigate,
+    t
+  ]);
 
   const showPrevNav = () => {
-    if ((loggedIn && usedPageNo > 0) || (cypressToken && usedPageNo > 0)) {
+    if ((loggedIn && currPageNo > 0) || (cypressToken && currPageNo > 0)) {
       return true;
-    } else return !loggedIn && usedPageNo !== 4;
+    } else return !loggedIn && currPageNo !== 4;
   };
 
-  const showNextNav = () => {
-    if ((loggedIn && usedPageNo < LAST_PAGE - 1) || (cypressToken && usedPageNo < LAST_PAGE - 1)) {
-      return true;
-    } else return !loggedIn && usedPageNo === PAGE_TARGET;
-  };
+  const showNextNav =
+    currPageNo === -1 || nextPageNo !== -2 || (!loggedIn && currPageNo === PAGE_TARGET);
 
-  const nextLabel = () => {
-    if (usedPageNo === -2) {
-      return `addBtn.label`;
-    }
-    if (usedPageNo === -1) {
-      return `createBtn.label`;
-    }
-    let thePage = usedPageNo + 1;
-    if (isSV && thePage === PAGE_TECHNICAL) {
-      thePage = thePage + 1;
-    }
-    if (isSV && thePage === PAGE_LINKING) {
-      thePage = thePage + 1;
-    }
-    if (
-      !validateProposalNavigation(
-        getProposal(),
-        thePage,
-        osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1
-      )
-    ) {
-      thePage = PAGE_CALIBRATION;
-    }
-    return `page.${thePage}.title`;
-  };
+  const nextLabel = React.useCallback(() => {
+    if (currPageNo === -2) return 'addBtn.label';
+    if (currPageNo === -1) return 'createBtn.label';
+    return `page.${nextPageNo}.title`;
+  }, [currPageNo, nextPageNo]);
 
-  const prevLabel = () => {
-    if (!loggedIn && usedPageNo === 4) {
+  const prevLabel = React.useCallback(() => {
+    if (!loggedIn && currPageNo === 4) {
       return `page.${PAGE_TITLE_ADD}.title`;
     }
-    let thePage = usedPageNo - 1;
-    if (isSV && thePage === PAGE_LINKING) {
-      thePage = thePage - 1;
-    }
-    if (isSV && thePage === PAGE_TECHNICAL) {
-      thePage = thePage - 1;
-    }
-    if (
-      !validateProposalNavigation(
-        getProposal(),
-        thePage,
-        osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1
-      )
-    ) {
-      thePage = PAGE_TARGET;
-    }
-    return `page.${thePage}.title`;
-  };
+    return `page.${prevPageNo}.title`;
+  }, [currPageNo, prevPageNo, loggedIn]);
 
-  const prevPageNav = () => {
-    if (!loggedIn && usedPageNo === PAGE_TARGET) {
+  const prevPageNav = React.useCallback(() => {
+    if (!loggedIn && currPageNo === PAGE_TARGET) {
       navigate(NAV[0]);
-    } else if (usedPageNo > 0) {
-      let thePage = usedPageNo - 1;
-      if (isSV && thePage === PAGE_LINKING) {
-        thePage = thePage - 1;
-      }
-      if (isSV && thePage === PAGE_TECHNICAL) {
-        thePage = thePage - 1;
-      }
-      if (
-        !validateProposalNavigation(
-          getProposal(),
-          thePage,
-          osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1
-        )
-      ) {
-        thePage = PAGE_TARGET;
-      }
-      navigate(NAV[thePage]);
+    } else if (prevPageNo > -1) {
+      navigate(NAV[prevPageNo]);
     }
-  };
+  }, [currPageNo, prevPageNo, loggedIn, navigate]);
 
-  const nextPageNav = () => {
-    if (!loggedIn && usedPageNo === PAGE_OBSERVATION) {
-      return;
-    } else if (!loggedIn && usedPageNo === 0) {
+  const nextPageNav = React.useCallback(() => {
+    if (!loggedIn && currPageNo === PAGE_OBSERVATION) return;
+    if (!loggedIn && currPageNo === 0) {
       navigate(NAV[PAGE_TARGET]);
-    } else if (
-      !validateProposalNavigation(
-        getProposal(),
-        usedPageNo + 1,
-        osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1
-      )
-    ) {
-      navigate(NAV[PAGE_CALIBRATION]);
-    } else if (usedPageNo < NAV.length) {
-      let thePage = usedPageNo + 1;
-      if (isSV && thePage === PAGE_TECHNICAL) {
-        thePage = thePage + 1;
-      }
-      if (isSV && thePage === PAGE_LINKING) {
-        thePage = thePage + 1;
-      }
-      navigate(NAV[thePage]);
+      return;
     }
-  };
+
+    const invalid = !validateProposalNavigation(
+      proposal,
+      nextPageNo,
+      osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1
+    );
+
+    if (invalid) {
+      navigate(NAV[PAGE_CALIBRATION]);
+    } else if (nextPageNo < NAV.length) {
+      navigate(NAV[nextPageNo]);
+    }
+  }, [
+    currPageNo,
+    nextPageNo,
+    loggedIn,
+    navigate,
+    proposal,
+    osdCyclePolicy?.maxTargets,
+    osdCyclePolicy?.maxObservations
+  ]);
 
   const nextPageClicked = () => {
-    if (usedPageNo === -1) {
-      createProposal();
-    } else {
-      nextPageNav();
-    }
+    if (currPageNo === -1) createProposal();
+    else nextPageNav();
   };
 
-  const showNotification = () => {
-    const note = application.content5 as Notification;
-    return note?.message?.length > 0 && note?.level === AlertColorTypes.Error;
-  };
+  const showNotification =
+    notification?.message?.length > 0 && notification?.level === AlertColorTypes.Error;
 
   return (
     <Paper
@@ -236,23 +192,25 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
             />
           )}
         </Grid>
+
         <Grid>
-          {showNotification() && (
+          {showNotification && (
             <TimedAlert
-              color={(application.content5 as Notification)?.level}
-              delay={(application.content5 as Notification)?.delay}
+              color={notification.level}
+              delay={notification.delay}
               testId="timeAlertFooter"
-              text={(application.content5 as Notification)?.message}
+              text={notification.message}
             />
           )}
         </Grid>
+
         <Grid>
-          {showNextNav() && (
+          {showNextNav && (
             <NextPageButton
               disabled={buttonDisabled}
               testId="nextButtonTestId"
               title={nextLabel()}
-              page={usedPageNo}
+              page={currPageNo}
               primary
               action={nextPageClicked}
             />

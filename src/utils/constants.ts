@@ -315,8 +315,6 @@ export const PAGE_DATA_PRODUCTS_ADD = 14;
 export const PAGE_OBSERVATION_UPDATE = 15;
 export const PAGE_PANEL_MANAGEMENT = 16;
 
-export const LAST_PAGE = 10; // See SRCNet INACTIVE -
-
 export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
 
 export const PMT = [
@@ -816,8 +814,7 @@ export const DEFAULT_DATA_PRODUCT: DataProductSDP = {
 
 export const DUMMY_PROPOSAL_ID = 'dummy-proposal-id';
 
-export const STATUS_ARRAY_PAGES = [
-  // TODO : This will need to be extended
+export const STATUS_ARRAY_PAGES_SV = [
   PAGE_TITLE_ADD,
   PAGE_TEAM,
   PAGE_DETAILS,
@@ -826,6 +823,19 @@ export const STATUS_ARRAY_PAGES = [
   PAGE_OBSERVATION,
   PAGE_DATA_PRODUCTS,
   PAGE_CALIBRATION
+];
+
+export const STATUS_ARRAY_PAGES_PROPOSAL = [
+  PAGE_TITLE_ADD,
+  PAGE_TEAM,
+  PAGE_DETAILS,
+  PAGE_DESCRIPTION,
+  PAGE_TECHNICAL,
+  PAGE_TARGET,
+  PAGE_OBSERVATION,
+  PAGE_DATA_PRODUCTS,
+  PAGE_CALIBRATION,
+  PAGE_LINKING
 ];
 
 export const SV_LOW_AA2_CYCLE_NUMBER = 10000;

@@ -1,9 +1,18 @@
 import React from 'react';
-import { Avatar, Card, CardActionArea, CardHeader, Grid, Tooltip, Typography } from '@mui/material';
+import {
+  Avatar,
+  Card,
+  CardActionArea,
+  CardHeader,
+  Grid,
+  Stack,
+  Tooltip,
+  Typography
+} from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { TextEntry } from '@ska-telescope/ska-gui-components';
-import { LAB_IS_BOLD, LAB_POSITION, PROJECTS } from '@utils/constants.ts';
+import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
+import { PROJECTS } from '@utils/constants.ts';
 import { countWords, helpers } from '@utils/helpers.ts';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { validateTitlePage } from '@utils/validation/validation.tsx';
@@ -14,8 +23,6 @@ import CardTitle from '@/components/cards/cardTitle/CardTitle';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
-const LABEL_WIDTH = 2;
-const FIELD_WIDTH = 10;
 interface TitleEntryProps {
   page: number;
 }
@@ -123,12 +130,6 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     const num = in1.findIndex(obj => obj === in2);
     return num !== -1 ? 'active' : 'inactive';
   };
-
-  const displayLabel = (inValue: string) => (
-    <Typography variant="subtitle1" style={{ fontWeight: 600 }}>
-      {inValue}
-    </Typography>
-  );
 
   function ProposalType(TYPE: any) {
     const { id } = TYPE;
@@ -244,12 +245,10 @@ export default function TitleEntry({ page }: TitleEntryProps) {
 
     return (
       <TextEntry
-        label=""
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={0}
+        label={t('title.label')}
         testId={ipad ? 'titleIdIpad' : 'titleId'}
         value={getTitle()}
+        required
         setValue={(title: string) =>
           helpers.validate.validateTextEntry(title, setTitle, setTheErrorText, 'TITLE')
         }
@@ -257,17 +256,6 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         helperText={helperFunction(getProposal().title as string)}
         suffix={<ViewIcon toolTip={t('latex.toolTip')} onClick={handleOpenTitleLatexModal} />}
       />
-    );
-  };
-
-  const titleHelpDisplay = (title: string, description: string, labelWidth = LABEL_WIDTH) => {
-    return (
-      <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
-        <Grid size={{ xs: labelWidth }}>{displayLabel(title)}</Grid>
-        <Grid size={{ xs: 12 - labelWidth }}>
-          <Typography variant="body2">{description}</Typography>
-        </Grid>
-      </Grid>
     );
   };
 
@@ -316,19 +304,12 @@ export default function TitleEntry({ page }: TitleEntryProps) {
           alignItems="center"
           spacing={2}
         >
-          <Grid size={{ xs: FIELD_WIDTH }} display={{ xs: 'block', lg: 'none' }}>
-            <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
-              <Grid size={{ xs: LABEL_WIDTH }}>{displayLabel(t('title.label') + ' *')}</Grid>
-              <Grid size={{ xs: 12 - LABEL_WIDTH }}>{titleField(true)}</Grid>
-            </Grid>
+          <Grid size={{ md: 12, lg: 6 }} display={{ xs: 'block', lg: 'none' }}>
+            {titleField(true)}
           </Grid>
 
-          <Grid size={{ xs: FIELD_WIDTH }} display={{ xs: 'none', lg: 'block' }}>
-            <Grid container direction="row" justifyContent="center" alignItems="center" spacing={2}>
-              <Grid size={{ xs: LABEL_WIDTH }}>{displayLabel(t('title.label') + ' *')}</Grid>
-              <Grid size={{ xs: 8 - LABEL_WIDTH }}>{titleField()}</Grid>
-              <Grid size={{ md: 4 }}></Grid>
-            </Grid>
+          <Grid size={{ md: 12, lg: 6 }} display={{ xs: 'none', lg: 'block' }}>
+            {titleField()}
           </Grid>
         </Grid>
       )
@@ -346,11 +327,14 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         alignItems="center"
         spacing={2}
       >
-        <Grid size={{ xs: FIELD_WIDTH }}>
-          {titleHelpDisplay(t('proposalType.plural') + ' *', t('proposalType.help'))}
+        <Grid>
+          <BorderedSection title={t('proposalType.plural')}>
+            <Stack>
+              <Typography variant="body2">{t('proposalType.help')}</Typography>
+              {proposalTypes()}
+            </Stack>
+          </BorderedSection>
         </Grid>
-
-        <Grid size={{ xs: FIELD_WIDTH }}>{proposalTypes()}</Grid>
       </Grid>
     );
   };
@@ -365,11 +349,14 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         alignItems="center"
         spacing={2}
       >
-        <Grid size={{ xs: FIELD_WIDTH }}>
-          {titleHelpDisplay(t('proposalAttribute.plural'), t('proposalAttribute.help'))}
+        <Grid>
+          <BorderedSection title={t('proposalAttribute.plural')}>
+            <Stack>
+              <Typography variant="body2">{t('proposalAttribute.help')}</Typography>
+              {proposalAttributes()}
+            </Stack>
+          </BorderedSection>
         </Grid>
-
-        <Grid size={{ xs: FIELD_WIDTH }}>{proposalAttributes()}</Grid>
       </Grid>
     );
   };
