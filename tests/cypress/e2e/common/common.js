@@ -424,10 +424,6 @@ export const clickToTeamPage = () => {
   clickToNextPage();
   pageConfirmed('TEAM');
 };
-export const clickToDetailsPage = () => {
-  clickToNextPage();
-  pageConfirmed('DETAILS');
-};
 
 export const addInvestigator = () => {
   entry('firstName', 'Test');
