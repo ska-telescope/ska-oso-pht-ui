@@ -1,7 +1,5 @@
 import {
   clickHome,
-  // clickProposalTypePrincipleInvestigator,
-  // clickSubProposalTypeTargetOfOpportunity,
   enterProposalTitle,
   verifyOnLandingPage,
   verifyOnLandingPageFilterIsVisible,

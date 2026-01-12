@@ -518,7 +518,6 @@ export const addBeamUsingResolveOnTargetEdit = () => {
   clickResolveBeamButton();
 };
 
-// TODO : Why is this not working consistently?   ( CHLOE )
 export const verifyOnLandingPageFilterIsVisible = () => {
   cy.get('[data-testid="proposalType"]').should('exist');
   cy.get('[data-testid="proposalType"]').realClick();
