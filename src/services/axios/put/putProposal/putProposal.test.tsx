@@ -20,8 +20,10 @@ import * as CONSTANTS from '@utils/constants.ts';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import {
   DataProductSDP,
+  DataProductSDPNew,
   DataProductSRC,
-  DataProductSRCNetBackend
+  DataProductSRCNetBackend,
+  SDPFilterbankPSTData
 } from '@utils/types/dataProduct.tsx';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import { MockProposalFrontend, MockProposalFrontendZoom } from './mockProposalFrontend.tsx';
@@ -293,18 +295,21 @@ describe('getDataProductScriptParameters', () => {
 
   test('should return correct parameters for continuum image', () => {
     const dp = {
+      id: 'dp-1',
       observationId: '1',
-      dataProductType: DP_TYPE_IMAGES,
-      imageSizeValue: 10,
-      imageSizeUnits: 1,
-      pixelSizeValue: 2,
-      pixelSizeUnits: 2,
-      weighting: 1,
-      polarisations: ['XX'],
-      channelsOut: 4,
-      fitSpectralPol: true,
-      taperValue: 0.5
-    } as any;
+      data: {
+        dataProductType: DP_TYPE_IMAGES,
+        imageSizeValue: 10,
+        imageSizeUnits: 1,
+        pixelSizeValue: 2,
+        pixelSizeUnits: 2,
+        weighting: 1,
+        polarisations: ['XX'],
+        channelsOut: 4,
+        fitSpectralPol: true,
+        taperValue: 0.5
+      }
+    } as DataProductSDPNew;
     const result = getDataProductScriptParameters(obs, dp);
     expect(result).toMatchObject({
       image_size: { value: 10, unit: 'arcmin' },
@@ -316,45 +321,52 @@ describe('getDataProductScriptParameters', () => {
 
   test('should return correct parameters for continuum visibilities', () => {
     const dp = {
+      id: 'dp-2',
       observationId: '1',
-      dataProductType: 'not_images',
-      imageSizeValue: 10,
-      imageSizeUnits: 0,
-      pixelSizeValue: 2,
-      pixelSizeUnits: 1,
-      weighting: 1,
-      polarisations: ['YY'],
-      channelsOut: 2,
-      fitSpectralPol: false,
-      taperValue: 1.5,
-      timeAveraging: 5,
-      frequencyAveraging: 10
-    } as any;
+      data: {
+        dataProductType: 2,
+        imageSizeValue: 10,
+        imageSizeUnits: 0,
+        pixelSizeValue: 2,
+        pixelSizeUnits: 1,
+        weighting: 1,
+        polarisations: ['YY'],
+        channelsOut: 2,
+        fitSpectralPol: false,
+        taperValue: 1.5,
+        timeAveraging: 5,
+        frequencyAveraging: 10
+      }
+    } as DataProductSDPNew;
     const result = getDataProductScriptParameters(obs, dp);
     expect(result).toMatchObject({
       image_size: { value: 10, unit: 'deg' },
       image_cellsize: { value: 2, unit: 'arcmin' },
       kind: 'continuum',
       variant: 'visibilities',
-      time_averaging: { value: 5, unit: '' },
-      frequency_averaging: { value: 10, unit: '' }
+      time_averaging: { value: 5, unit: 'second' },
+      frequency_averaging: { value: 10, unit: 'MHz' }
     });
   });
 
   test('should return correct parameters for zoom', () => {
     const dp = {
+      id: 'dp-3',
       observationId: '2',
-      imageSizeValue: 20,
-      imageSizeUnits: 2,
-      pixelSizeValue: 1,
-      pixelSizeUnits: 0,
-      weighting: 2,
-      polarisations: ['XY'],
-      channelsOut: 8,
-      fitSpectralPol: true,
-      taperValue: 0.1,
-      continuumSubtraction: true
-    } as any;
+      data: {
+        imageSizeValue: 20,
+        imageSizeUnits: 2,
+        pixelSizeValue: 1,
+        pixelSizeUnits: 0,
+        weighting: 2,
+        polarisations: ['XY'],
+        channelsOut: 8,
+        fitSpectralPol: true,
+        taperValue: 0.1,
+        continuumSubtraction: true,
+        robust: 1
+      }
+    } as DataProductSDPNew;
     const result = getDataProductScriptParameters(obs, dp);
     expect(result).toMatchObject({
       image_size: { value: 20, unit: 'arcsec' },
@@ -367,15 +379,23 @@ describe('getDataProductScriptParameters', () => {
 
   test('should return detected filterbank for PST', () => {
     const dp = {
+      id: 'dp-4',
       observationId: '3',
-      polarisations: ['YX'],
-      bitDepth: 8,
-      timeAveraging: 2,
-      frequencyAveraging: 3
-    } as any;
+      data: {
+        dataProductType: DETECTED_FILTER_BANK_VALUE,
+        polarisations: ['YX'],
+        bitDepth: 8,
+        timeAveraging: 2,
+        frequencyAveraging: 3,
+        outputFrequencyResolution: 1,
+        outputSamplingInterval: 1,
+        dispersionMeasure: 10,
+        rotationMeasure: 5
+      } as SDPFilterbankPSTData
+    } as DataProductSDPNew;
     const result = getDataProductScriptParameters(obs, dp);
     expect(result).toMatchObject({
-      polarisation: ['YX'],
+      polarisations: ['YX'],
       bit_depth: 8,
       time_averaging_factor: 2,
       frequency_averaging_factor: 3,
@@ -387,8 +407,10 @@ describe('getDataProductScriptParameters', () => {
   test('should return pulsar timing for PST', () => {
     const dp = {
       observationId: '4',
-      polarisations: ['YX'],
-      bitDepth: 16
+      data: {
+        polarisations: ['YX'],
+        bitDepth: 16
+      }
     } as any;
     const result = getDataProductScriptParameters(obs, dp);
     expect(result).toMatchObject({
@@ -401,13 +423,16 @@ describe('getDataProductScriptParameters', () => {
 
   test('should return flow through for PST', () => {
     const dp = {
+      id: 'dp-5',
       observationId: '5',
-      polarisations: ['YX'],
-      bitDepth: 32
-    } as any;
+      data: {
+        polarisations: ['YX'],
+        bitDepth: 32
+      }
+    } as DataProductSDPNew;
     const result = getDataProductScriptParameters(obs, dp);
     expect(result).toMatchObject({
-      polarisation: ['YX'],
+      polarisations: ['YX'],
       bit_depth: 32,
       kind: 'pst',
       variant: 'flow through'
@@ -422,19 +447,22 @@ describe('getDataProductScriptParameters', () => {
 
   test('should include robust if weighting is IW_BRIGGS', () => {
     const dp = {
+      id: 'dp-1',
       observationId: '1',
-      dataProductType: DP_TYPE_IMAGES,
-      imageSizeValue: 1,
-      imageSizeUnits: 0,
-      pixelSizeValue: 1,
-      pixelSizeUnits: 0,
-      weighting: IW_BRIGGS,
-      robust: 2,
-      polarisations: [],
-      channelsOut: 1,
-      fitSpectralPol: false,
-      taperValue: 0
-    } as any;
+      data: {
+        dataProductType: DP_TYPE_IMAGES,
+        imageSizeValue: 1,
+        imageSizeUnits: 0,
+        pixelSizeValue: 1,
+        pixelSizeUnits: 0,
+        weighting: IW_BRIGGS,
+        robust: 2,
+        polarisations: [],
+        channelsOut: 1,
+        fitSpectralPol: false,
+        taperValue: 0
+      }
+    } as DataProductSDPNew;
     const result = getDataProductScriptParameters(obs, dp);
     expect(result.weight.weighting).toBe('briggs');
     expect(result.weight.robust).toBe(2);

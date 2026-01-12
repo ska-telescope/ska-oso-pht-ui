@@ -272,7 +272,7 @@ const getDataProductType = (el: any) => {
     case 'flow through':
       return FLOW_THROUGH_VALUE;
     default:
-      return DP_TYPE_VISIBLE;
+      return DP_TYPE_IMAGES;
   }
 };
 

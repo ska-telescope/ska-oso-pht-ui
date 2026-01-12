@@ -1,29 +1,28 @@
 // updateDataProductsPST.test.ts
 import { describe, it, expect } from 'vitest';
 import updateDataProductsPST from './updateDataProductsPST';
-import { TYPE_CONTINUUM, TYPE_PST } from '@/utils/constants';
-import { DataProductSDP } from '@/utils/types/dataProduct';
+import {
+  DETECTED_FILTER_BANK_VALUE,
+  FLOW_THROUGH_VALUE,
+  TYPE_CONTINUUM,
+  TYPE_PST
+} from '@/utils/constants';
+import {
+  DataProductSDPNew,
+  SDPFilterbankPSTData,
+  SDPFlowthroughPSTData
+} from '@/utils/types/dataProduct';
 import Observation from '@/utils/types/observation';
 
 describe('updateDataProductsPST', () => {
-  const baseDataProduct: DataProductSDP = {
+  const baseDataProduct: DataProductSDPNew = {
     id: 'SDP-0000000',
-    dataProductType: 1,
     observationId: 'obs1',
-    imageSizeValue: 0,
-    imageSizeUnits: 0,
-    pixelSizeValue: 0,
-    pixelSizeUnits: 0,
-    weighting: 0,
-    robust: 0,
-    polarisations: [],
-    channelsOut: 40,
-    taperValue: 0,
-    fitSpectralPol: 0,
-    timeAveraging: 0,
-    frequencyAveraging: 0,
-    bitDepth: 1,
-    continuumSubtraction: false
+    data: {
+      dataProductType: FLOW_THROUGH_VALUE,
+      polarisations: ['X'],
+      bitDepth: 1
+    } as SDPFlowthroughPSTData
   };
 
   const obsPST: Observation = {
@@ -38,16 +37,32 @@ describe('updateDataProductsPST', () => {
   } as Observation;
 
   it('replaces existing record when TYPE_PST and pstMode differs', () => {
-    const oldRecs: DataProductSDP[] = [{ ...baseDataProduct, dataProductType: 1 }];
+    const oldRecs: DataProductSDPNew[] = [
+      {
+        ...baseDataProduct,
+        data: {
+          ...baseDataProduct.data,
+          dataProductType: DETECTED_FILTER_BANK_VALUE
+        } as SDPFilterbankPSTData
+      }
+    ];
     const result = updateDataProductsPST(oldRecs, obsPST);
 
     expect(result).toHaveLength(1);
     expect(result[0].observationId).toBe(obsPST.id);
-    expect(result[0].dataProductType).toBe(obsPST.pstMode);
+    expect((result[0]?.data as SDPFilterbankPSTData).dataProductType).toBe(obsPST.pstMode);
   });
 
   it('keeps existing record when TYPE_PST and pstMode is the same', () => {
-    const oldRecs: DataProductSDP[] = [{ ...baseDataProduct, dataProductType: 0 }];
+    const oldRecs: DataProductSDPNew[] = [
+      {
+        ...baseDataProduct,
+        data: {
+          ...baseDataProduct.data,
+          dataProductType: FLOW_THROUGH_VALUE
+        } as SDPFlowthroughPSTData
+      }
+    ];
     const result = updateDataProductsPST(oldRecs, obsPST);
 
     expect(result).toHaveLength(1);
@@ -60,7 +75,7 @@ describe('updateDataProductsPST', () => {
   });
 
   it('returns old records unchanged when type is not TYPE_PST', () => {
-    const oldRecs: DataProductSDP[] = [baseDataProduct];
+    const oldRecs: DataProductSDPNew[] = [baseDataProduct];
     const result = updateDataProductsPST(oldRecs, obsNonPST);
 
     expect(result).toEqual(oldRecs);

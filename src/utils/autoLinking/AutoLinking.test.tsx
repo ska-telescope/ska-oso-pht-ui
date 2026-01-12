@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
   DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
-  DEFAULT_DATA_PRODUCT,
+  DEFAULT_OBSERVATIONS_LOW_AA2,
   DEFAULT_PST_OBSERVATION_LOW_AA2,
   DEFAULT_ZOOM_OBSERVATION_LOW_AA2,
   TYPE_CONTINUUM,
@@ -11,9 +11,18 @@ import {
 import * as helpers from '../helpers';
 import { calculateSensCalcData } from '../sensCalc/sensCalc';
 import Proposal from '../types/proposal';
+import {
+  SDPFlowthroughPSTData,
+  SDPImageContinuumData,
+  SDPSpectralData
+} from '../types/dataProduct';
 import autoLinking, { calibrationOut, dataProductSDPOut, observationOut } from './AutoLinking';
 import { mockCalibration } from './mockCalibration';
-import { PST_DATA_PRODUCT } from './mockSDP';
+import {
+  CONTINUUM_IMAGE_DATA_PRODUCT,
+  PST_FLOW_THROUGH_DATA_PRODUCT,
+  SPECTRAL_DATA_PRODUCT
+} from './mockSDP';
 import { mockTarget } from './mockTarget';
 
 describe('autoLinking, observationOut', () => {
@@ -34,18 +43,30 @@ describe('autoLinking, observationOut', () => {
 describe('autoLinking, dataProductSDPOut', () => {
   test('SDP default continuum', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('SDP-0000000');
-    const sdp = dataProductSDPOut('obs-123', TYPE_CONTINUUM);
-    expect(sdp).to.deep.equal(DEFAULT_DATA_PRODUCT);
+    const obs = {
+      ...DEFAULT_OBSERVATIONS_LOW_AA2[TYPE_CONTINUUM],
+      id: 'obs-123'
+    };
+    const sdp = dataProductSDPOut(obs);
+    expect(sdp).to.deep.equal(CONTINUUM_IMAGE_DATA_PRODUCT);
   });
   test('SDP default spectral', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('SDP-0000000');
-    const sdp = dataProductSDPOut('obs-123', TYPE_ZOOM);
-    expect(sdp).to.deep.equal(DEFAULT_DATA_PRODUCT);
+    const obs = {
+      ...DEFAULT_OBSERVATIONS_LOW_AA2[TYPE_ZOOM],
+      id: 'obs-123'
+    };
+    const sdp = dataProductSDPOut(obs);
+    expect(sdp).to.deep.equal(SPECTRAL_DATA_PRODUCT);
   });
   test('SDP default PST', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('SDP-0000000');
-    const sdp = dataProductSDPOut('obs-123', TYPE_PST);
-    expect(sdp).to.deep.equal(PST_DATA_PRODUCT);
+    const obs = {
+      ...DEFAULT_OBSERVATIONS_LOW_AA2[TYPE_PST],
+      id: 'obs-123'
+    };
+    const sdp = dataProductSDPOut(obs);
+    expect(sdp).to.deep.equal(PST_FLOW_THROUGH_DATA_PRODUCT);
   });
 });
 
@@ -76,7 +97,7 @@ describe('autoLinking()', () => {
       targets: [mockTarget],
       observations: [{ ...DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2, id: 'existing-obs' }],
       dataProductSDP: [
-        { ...DEFAULT_DATA_PRODUCT, id: 'existing-sdp', observationId: 'existing-obs' }
+        { ...CONTINUUM_IMAGE_DATA_PRODUCT, id: 'existing-sdp', observationId: 'existing-obs' }
       ],
       targetObservation: [
         {
@@ -169,7 +190,7 @@ describe('autoLinking()', () => {
 
     const sdp = proposal.dataProductSDP?.[0];
     expect(sdp?.observationId).toBe(obs?.id);
-    expect(sdp?.polarisations).toEqual(['XX']);
+    expect((sdp?.data as SDPFlowthroughPSTData)?.polarisations).toEqual(['X']);
 
     const link = proposal.targetObservation?.[0];
     expect(link?.observationId).toBe(obs?.id);
@@ -207,7 +228,9 @@ describe('autoLinking()', () => {
     const sdp = proposal.dataProductSDP?.[0];
     expect(sdp?.observationId).toBe(obs?.id);
 
-    expect(sdp?.polarisations).toEqual(DEFAULT_DATA_PRODUCT.polarisations);
+    expect((sdp?.data as SDPSpectralData)?.polarisations).toEqual(
+      SPECTRAL_DATA_PRODUCT.data.polarisations
+    );
 
     const link = proposal.targetObservation?.[0];
     expect(link?.observationId).toBe(obs?.id);
@@ -226,10 +249,13 @@ describe('autoLinking()', () => {
       observations: [{ ...DEFAULT_PST_OBSERVATION_LOW_AA2, id: 'existing-pst-obs' }],
       dataProductSDP: [
         {
-          ...DEFAULT_DATA_PRODUCT,
+          ...PST_FLOW_THROUGH_DATA_PRODUCT,
           id: 'existing-pst-sdp',
           observationId: 'existing-pst-obs',
-          polarisations: ['XX'] // PST-specific for now
+          data: {
+            ...PST_FLOW_THROUGH_DATA_PRODUCT.data,
+            polarisations: ['XX']
+          } as SDPImageContinuumData
         }
       ],
       targetObservation: [
@@ -270,7 +296,9 @@ describe('autoLinking()', () => {
 
     const sdp = proposal.dataProductSDP?.[0];
     expect(sdp?.observationId).toBe(obs?.id);
-    expect(sdp?.polarisations).toEqual(DEFAULT_DATA_PRODUCT.polarisations);
+    expect((sdp?.data as SDPImageContinuumData)?.polarisations).toEqual(
+      (CONTINUUM_IMAGE_DATA_PRODUCT?.data as SDPImageContinuumData)?.polarisations
+    );
 
     const link = proposal.targetObservation?.[0];
     expect(link?.observationId).toBe(obs?.id);
