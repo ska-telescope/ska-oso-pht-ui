@@ -23,6 +23,12 @@ export function GetMockData(mock = MockObservatoryDataBackend): ObservatoryData 
   return mapping(mock);
 }
 
+export const toLowerCaseArray = (value: unknown): string[] => {
+  if (!Array.isArray(value)) return [];
+
+  return value.filter(item => typeof item === 'string').map(item => item.toLowerCase());
+};
+
 const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
   //
   //  If/when the API provides multiple cycles, this section will need to be updated to map all cycles
@@ -45,8 +51,8 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
             inData?.observatory_policy?.telescope_capabilities?.Low !== null ? BAND_LOW_STR : '',
             inData?.observatory_policy?.telescope_capabilities?.Mid !== null ? BAND_5B_STR : '' // TODO: Update when more bands are available
           ].filter(band => band !== ''),
-          low: [inData?.observatory_policy?.telescope_capabilities?.Low],
-          mid: [inData?.observatory_policy?.telescope_capabilities?.Mid]
+          low: toLowerCaseArray(inData?.observatory_policy?.telescope_capabilities?.Low),
+          mid: toLowerCaseArray(inData?.observatory_policy?.telescope_capabilities?.Mid)
         },
         telescopeCapabilities: {
           low: inData?.observatory_policy?.telescope_capabilities?.Low,

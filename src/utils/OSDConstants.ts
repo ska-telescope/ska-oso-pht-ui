@@ -19,7 +19,7 @@ export const OSD_CONSTANTS = {
         // MID
         {
           value: SA_AA2,
-          map: 'AA2',
+          map: SA_AA2,
           label: 'AA2',
           numOf13mAntennas: 0
         },

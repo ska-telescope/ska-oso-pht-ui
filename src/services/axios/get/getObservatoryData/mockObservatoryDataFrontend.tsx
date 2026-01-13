@@ -16,12 +16,12 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
         maxObservations: 1,
         maxTargets: 1,
         bands: ['low', 'mid'],
-        low: ['AA2'],
+        low: [SA_AA2],
         mid: []
       },
       telescopeCapabilities: {
-        mid: 'AA2',
-        low: 'AA2'
+        mid: SA_AA2,
+        low: SA_AA2
       },
       type: 'Science Verification'
     }
