@@ -38,26 +38,6 @@ export const MockProposalBackend: ProposalBackend = {
           pm_ra: undefined,
           pm_dec: undefined
         },
-        tied_array_beams: {
-          pst_beams: [
-            {
-              beam_name: 'beam1',
-              beam_id: 1,
-              beam_coordinate: {
-                ra_str: '21:33:27.0200',
-                dec_str: '-00:49:23.700',
-                kind: RA_TYPE_ICRS.label,
-                pm_ra: 4.8,
-                pm_dec: -3.3,
-                parallax: 0.0,
-                epoch: 2000.0
-              },
-              stn_weights: []
-            }
-          ],
-          pss_beams: [],
-          vlbi_beams: []
-        },
         radial_velocity: {
           quantity: {
             value: 0,
@@ -80,26 +60,6 @@ export const MockProposalBackend: ProposalBackend = {
           pm_ra: undefined,
           pm_dec: undefined
         },
-        tied_array_beams: {
-          pst_beams: [
-            {
-              beam_name: 'beam1',
-              beam_id: 1,
-              beam_coordinate: {
-                ra_str: '21:33:27.0200',
-                dec_str: '-00:49:23.700',
-                kind: RA_TYPE_ICRS.label,
-                pm_ra: 4.8,
-                pm_dec: -3.3,
-                parallax: 0.0,
-                epoch: 2000.0
-              },
-              stn_weights: []
-            }
-          ],
-          pss_beams: [],
-          vlbi_beams: []
-        },
         radial_velocity: {
           quantity: {
             value: 0,
@@ -121,26 +81,6 @@ export const MockProposalBackend: ProposalBackend = {
           parallax: undefined,
           pm_ra: undefined,
           pm_dec: undefined
-        },
-        tied_array_beams: {
-          pst_beams: [
-            {
-              beam_name: 'beam1',
-              beam_id: 1,
-              beam_coordinate: {
-                ra_str: '21:33:27.0200',
-                dec_str: '-00:49:23.700',
-                kind: RA_TYPE_ICRS.label,
-                pm_ra: 4.8,
-                pm_dec: -3.3,
-                parallax: 0.0,
-                epoch: 2000.0
-              },
-              stn_weights: []
-            }
-          ],
-          pss_beams: [],
-          vlbi_beams: []
         },
         radial_velocity: {
           quantity: {
@@ -297,26 +237,6 @@ export const MockProposalBackendZoom: ProposalBackend = {
           ra_str: '21:33:27.0200',
           dec_str: '-00:49:23.700',
           epoch: 2000
-        },
-        tied_array_beams: {
-          pst_beams: [
-            {
-              beam_name: 'beam1',
-              beam_id: 1,
-              beam_coordinate: {
-                ra_str: '21:33:27.0200',
-                dec_str: '-00:49:23.700',
-                kind: RA_TYPE_ICRS.label,
-                pm_ra: 4.8,
-                pm_dec: -3.3,
-                parallax: 0.0,
-                epoch: 2000.0
-              },
-              stn_weights: []
-            }
-          ],
-          pss_beams: [],
-          vlbi_beams: []
         },
         radial_velocity: {
           quantity: {

@@ -111,7 +111,6 @@ export const helpers = {
               key === 'abstract' ||
               key === 'reason' ||
               key === 'srcNet' ||
-              key === 'tied_array_beams' ||
               key === 'calibrators'
             ) {
               // keep these keys even if null/empty

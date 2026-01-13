@@ -4,7 +4,6 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
-import PulsarTimingBeamField from '@components/fields/pulsarTimingBeam/PulsarTimingBeam.tsx';
 import { leadZero } from '@utils/helpers.ts';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
@@ -13,7 +12,7 @@ import ReferenceFrameField from '@/components/fields/referenceFrame/ReferenceFra
 import SkyDirection1 from '@/components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
 import VelocityField from '@/components/fields/velocity/Velocity';
-import Target, { Beam, TiedArrayBeams } from '@/utils/types/target';
+import Target from '@/utils/types/target';
 import {
   RA_TYPE_ICRS,
   LAB_POSITION,
@@ -32,7 +31,6 @@ interface TargetEntryProps {
   setTarget?: Function;
   target?: Target;
   textAlign?: string;
-  showBeamData?: boolean;
   onRAFieldErrorChange?: (error: string) => void;
   onDecFieldErrorChange?: (error: string) => void;
   onNameFieldErrorChange?: (error: string) => void;
@@ -44,7 +42,6 @@ export default function TargetEntry({
   raType,
   setTarget = undefined,
   target = undefined,
-  showBeamData,
   onRAFieldErrorChange,
   onDecFieldErrorChange,
   onNameFieldErrorChange
@@ -74,8 +71,6 @@ export default function TargetEntry({
   const [referenceFrame, setReferenceFrame] = React.useState(RA_TYPE_ICRS.value);
   const [referenceCoordinates, setReferenceCoordinates] = React.useState(RA_TYPE_ICRS.label);
   const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
-  const [tiedArrayBeams, setTiedArrayBeams] = React.useState<TiedArrayBeams | null>(null);
-  const [resetBeamArrayData, setResetBeamArrayData] = React.useState(false);
 
   React.useEffect(() => {
     if (nameFieldError === t('addTarget.error')) {
@@ -137,22 +132,6 @@ export default function TargetEntry({
     }
   };
 
-  const getTiedArrayBeams = (beams: Beam[]): TiedArrayBeams => {
-    return {
-      pstBeams: beams,
-      pssBeams: [],
-      vlbiBeams: []
-    };
-  };
-
-  const handleBeamData = (beams: Beam[]) => {
-    const tiedArrayBeams: TiedArrayBeams = getTiedArrayBeams(beams);
-    if (setTarget !== undefined) {
-      setTarget({ ...target, tiedArrayBeams: tiedArrayBeams });
-    }
-    setTiedArrayBeams(tiedArrayBeams);
-  };
-
   const setTheRedshift = (inValue: string) => {
     setRedshift(inValue);
     if (setTarget) {
@@ -198,7 +177,6 @@ export default function TargetEntry({
     setVelUnit(target?.velUnit ?? 0);
     setRedshift(target?.redshift ?? '');
     setReferenceFrame(target?.kind ?? RA_TYPE_ICRS.value);
-    setTiedArrayBeams(target?.tiedArrayBeams as TiedArrayBeams);
   };
 
   React.useEffect(() => {
@@ -227,7 +205,6 @@ export default function TargetEntry({
       } else {
         AddTheTarget();
         clearForm();
-        setResetBeamArrayData(true);
       }
     };
 
@@ -251,8 +228,7 @@ export default function TargetEntry({
         referenceFrame: RA_TYPE_ICRS.label,
         vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : '',
         velType: velType ?? 0,
-        velUnit: velUnit ?? 0,
-        tiedArrayBeams: tiedArrayBeams ? (tiedArrayBeams as TiedArrayBeams) : null
+        velUnit: velUnit ?? 0
       };
 
       const generateAutoLinkData = async () => {
@@ -285,7 +261,6 @@ export default function TargetEntry({
       setDec('');
       setVel('');
       setRedshift('');
-      setTiedArrayBeams(null);
     };
 
     const disabled = () => {
@@ -379,17 +354,6 @@ export default function TargetEntry({
       </Box>
     );
   };
-
-  const pulsarTimingBeamField = () => {
-    return wrapper(
-      <PulsarTimingBeamField
-        target={target}
-        onDialogResponse={handleBeamData}
-        resetBeamData={resetBeamArrayData}
-        showBeamData={showBeamData}
-      />
-    );
-  };
   const nameField = () =>
     wrapper(
       <TextEntry
@@ -477,15 +441,6 @@ export default function TargetEntry({
           </BorderedSection>
         </Box>
       </Grid>
-      {!isSV && (
-        <Grid pt={1}>
-          <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
-            <BorderedSection title={t('pulsarTimingBeam.groupLabel')}>
-              {pulsarTimingBeamField()}
-            </BorderedSection>
-          </Box>
-        </Grid>
-      )}
       <Grid pt={1}>
         <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
           <BorderedSection title={t('radialMotion.label')}>
