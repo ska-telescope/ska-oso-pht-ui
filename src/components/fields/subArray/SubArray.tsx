@@ -40,7 +40,6 @@ export default function SubArrayField({
 
     const telBand = telescopeBand(observingBand);
     const policy = selectedPolicy?.cyclePolicies;
-
     const arr = telBand === TELESCOPE_LOW_NUM ? policy?.low : policy?.mid;
     if (!arr) return [];
 
@@ -55,21 +54,19 @@ export default function SubArrayField({
   return (
     <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
       <Grid pl={suffix ? 1 : 0} size={{ xs: suffix ? 12 - widthButton : 12 }}>
-        {options.length > 0 && (
-          <DropDown
-            disabled={disabled || options.length < 2}
-            options={options}
-            testId={FIELD}
-            value={value ?? ''} // prevents controlled/uncontrolled warnings
-            setValue={setValue}
-            label={t(`${FIELD}.label`)}
-            labelBold={LAB_IS_BOLD}
-            labelPosition={LAB_POSITION}
-            labelWidth={suffix ? widthLabel + 1 : widthLabel}
-            onFocus={() => setHelp(`${FIELD}.help`)}
-            required={required}
-          />
-        )}
+        <DropDown
+          disabled={disabled || options.length < 2}
+          options={options}
+          testId={FIELD}
+          value={value ?? ''}
+          setValue={setValue}
+          label={t(`${FIELD}.label`)}
+          labelBold={LAB_IS_BOLD}
+          labelPosition={LAB_POSITION}
+          labelWidth={suffix ? widthLabel + 1 : widthLabel}
+          onFocus={() => setHelp(`${FIELD}.help`)}
+          required={required}
+        />
       </Grid>
 
       <Grid size={{ xs: suffix ? widthButton : 0 }}>{suffix}</Grid>

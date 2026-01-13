@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
+import { Box, CardContent, Grid, InputLabel, Paper, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTheme } from '@mui/material/styles';
@@ -446,16 +446,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const isContinuumOnly = () => observingBand !== BAND_LOW_STR && subarrayConfig === SA_AA2;
 
   const fieldWrapper = (children?: React.JSX.Element) => (
-    <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
+    <Box p={0} pt={1}>
       {children}
     </Box>
   );
 
-  const suppliedWrapper = (children: React.JSX.Element) => (
-    <Box p={0} pl={1} pr={1} sx={{ height: WRAPPER_HEIGHT }}>
-      {children}
-    </Box>
-  );
+  const suppliedWrapper = (children: React.JSX.Element) => <Box p={1}>{children}</Box>;
 
   const emptyField = () => <></>;
 
@@ -1078,20 +1074,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                   title={t('observationSections.arraySetUp')}
                   sx={{ height: '100%' }}
                 >
-                  <Grid
-                    p={0}
-                    container
-                    direction="row"
-                    alignItems="flex-start"
-                    rowSpacing={isSV ? 0 : 2}
-                  >
-                    <Grid size={{ md: 12 }}>{observationsBandField()}</Grid>
-                    <Grid size={{ md: 12 }}>{subArrayField()}</Grid>
-                    <Grid size={{ md: 12 }}>
-                      {!isSV && (isLow() ? numStationsField() : antennasFields())}
-                    </Grid>
-                    <Grid size={{ md: 12 }}>{suppliedField()}</Grid>
-                  </Grid>
+                  <Stack spacing={2}>
+                    {observationsBandField()}
+                    {subArrayField()}
+                    {!isSV && (isLow() ? numStationsField() : antennasFields())}
+                    {suppliedField()}
+                  </Stack>
                 </BorderedSection>
               </Grid>
 

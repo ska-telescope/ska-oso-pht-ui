@@ -18,7 +18,7 @@ interface ContinuumBandwidthFieldProps {
   disabled?: boolean;
   labelWidth?: number;
   onFocus?: Function;
-  setValue?: (v: number) => void;
+  setValue: (v: number) => void;
   value: number;
   suffix?: any;
   telescope?: number;
@@ -125,29 +125,9 @@ export default function ContinuumBandwidthField({
       setErrorText(error);
     } else {
       setErrorText('');
-      setValue?.(num);
+      setValue(num);
     }
   };
-
-  // Validate current value when dependencies change
-  React.useEffect(() => {
-    if (Number.isFinite(value)) {
-      setErrorText(validateValue(value));
-    } else {
-      setErrorText('');
-    }
-  }, [
-    value,
-    continuumBandwidthUnits,
-    centralFrequency,
-    centralFrequencyUnits,
-    telescope,
-    subarrayConfig,
-    observingBand
-  ]);
-
-  // Prevent controlled → uncontrolled warnings
-  const safeValue = Number.isFinite(value) ? value : '';
 
   return (
     <Box pt={1}>
@@ -159,7 +139,7 @@ export default function ContinuumBandwidthField({
         labelWidth={labelWidth}
         suffix={suffix}
         testId={FIELD}
-        value={safeValue}
+        value={value}
         setValue={handleSetValue}
         onFocus={() => setHelp(FIELD)}
         required
