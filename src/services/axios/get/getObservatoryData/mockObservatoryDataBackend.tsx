@@ -74,23 +74,23 @@ export const MockObservatoryDataBackend: ObservatoryDataBackend = {
     },
     low: {
       basic_capabilities: {
-        min_frequency_hz: 50000000.0,
-        max_frequency_hz: 350000000.0
+        min_frequency_hz: 50000000,
+        max_frequency_hz: 350000000
       },
       AA2: {
-        number_stations: 64,
+        number_stations: 68,
         number_substations: 720,
         number_beams: 8,
-        max_baseline_km: 40.0,
-        available_bandwidth_hz: 150000000.0,
-        channel_width_hz: 5400,
+        max_baseline_km: 40,
+        available_bandwidth_hz: 150000000,
+        channel_width_hz: null,
         cbf_modes: ['vis', 'pst', 'pss'],
         number_zoom_windows: 16,
         number_zoom_channels: 1800,
         number_pss_beams: 30,
         number_pst_beams: 4,
         number_vlbi_beams: 0,
-        ps_beam_bandwidth_hz: 118000000.0,
+        ps_beam_bandwidth_hz: 118000000,
         number_fsps: 10
       }
     }
