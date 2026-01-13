@@ -1,6 +1,4 @@
 import Target, {
-  Beam,
-  BeamBackend,
   ReferenceCoordinateGalactic,
   ReferenceCoordinateGalacticBackend,
   ReferenceCoordinateICRS,
@@ -104,15 +102,6 @@ export const getReferenceCoordinate = (
   } as ReferenceCoordinateICRSBackend;
 };
 
-const getBeam = (beam: Beam): BeamBackend => {
-  return {
-    beam_id: beam?.id,
-    beam_name: beam.beamName,
-    beam_coordinate: getReferenceCoordinate(beam.beamCoordinate),
-    stn_weights: beam.stnWeights ?? [] // not used yet
-  };
-};
-
 const getTargets = (targets: Target[]): TargetBackend[] => {
   const mappedTargets = targets.map(tar => ({
     name: tar.name,
@@ -126,24 +115,6 @@ const getTargets = (targets: Target[]): TargetBackend[] => {
       definition: 'RADIO',
       reference_frame: tar.raReferenceFrame ?? 'LSRK',
       redshift: isRedshift(tar.velType) ? Number(tar.redshift) : 0
-    },
-    tied_array_beams: {
-      pst_beams:
-        tar.tiedArrayBeams && Array.isArray(tar.tiedArrayBeams.pstBeams)
-          ? tar.tiedArrayBeams.pstBeams.map((beam: Beam) => getBeam(beam))
-          : [],
-      pss_beams:
-        tar.tiedArrayBeams &&
-        Array.isArray(tar.tiedArrayBeams.pssBeams) &&
-        tar.tiedArrayBeams.pssBeams
-          ? tar.tiedArrayBeams.pssBeams.map((beam: Beam) => getBeam(beam))
-          : [],
-      vlbi_beams:
-        tar.tiedArrayBeams &&
-        Array.isArray(tar.tiedArrayBeams.vlbiBeams) &&
-        tar.tiedArrayBeams.vlbiBeams
-          ? tar.tiedArrayBeams.vlbiBeams.map((beam: Beam) => getBeam(beam))
-          : []
     }
   }));
   return mappedTargets;

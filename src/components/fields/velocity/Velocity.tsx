@@ -118,7 +118,7 @@ export default function VelocityField({
         justifyContent="space-between"
       >
         <Grid size={{ xs: labelWidth }}>{velType !== null && VelocityTypeField()}</Grid>
-        <Grid size={{ xs: 12 - labelWidth }}>
+        <Grid pt={1} size={{ xs: 12 - labelWidth }}>
           {velType === VELOCITY_TYPE.VELOCITY && VelocityValueField()}
           {velType === VELOCITY_TYPE.REDSHIFT && RedShiftValueField()}
         </Grid>

@@ -6,7 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
-* Changed: oso-services v11.2.0
+* Changed: oso-services v11.3.0
 * Changed: oda-umbrella v14.3.0
 * Changed: improve error handling of sensitivity calculator requests
 * Added: Generate default linked observation on observation mode change for SV

@@ -58,12 +58,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
       referenceFrame: RA_TYPE_ICRS.label,
       velType: 0,
       vel: '',
-      velUnit: 0,
-      tiedArrayBeams: {
-        pstBeams: [],
-        pssBeams: [],
-        vlbiBeams: []
-      }
+      velUnit: 0
     };
 
     return newTarget;

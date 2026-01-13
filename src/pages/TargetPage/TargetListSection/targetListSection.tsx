@@ -382,7 +382,6 @@ export default function TargetListSection() {
             raType={RA_TYPE_ICRS.value}
             setTarget={setRowTarget}
             target={rowTarget ? rowTarget : undefined}
-            showBeamData={!!rowTarget?.tiedArrayBeams?.pstBeams}
             onRAFieldErrorChange={setSkyDirection1Error} // Pass callback
             onDecFieldErrorChange={setSkyDirection2Error} // Pass callback
             onNameFieldErrorChange={setNameError} // Pass callback
