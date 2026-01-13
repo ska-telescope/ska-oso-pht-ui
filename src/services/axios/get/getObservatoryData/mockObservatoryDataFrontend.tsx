@@ -14,6 +14,24 @@ import ObservatoryData from '@/utils/types/observatoryData';
 export const MockObservatoryDataFrontend: ObservatoryData = {
   policies: [
     {
+      cycleNumber: 1,
+      cycleDescription: 'Science Verification',
+      cycleInformation: {
+        cycleId: 'SKAO_2027_1',
+        proposalOpen: '20260327T12:00:00.000Z',
+        proposalClose: '20260512T15:00:00.000z'
+      },
+      cyclePolicies: {
+        bands: [BAND_LOW_STR, BAND_5B_STR],
+        low: [],
+        mid: []
+      },
+      telescopeCapabilities: {
+        low: SA_AA2,
+        mid: SA_AA2
+      }
+    },
+    {
       cycleNumber: 2,
       cycleDescription: 'Mid AA2 Science Verification',
       cycleInformation: {
@@ -251,6 +269,23 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
           psBeamBandwidthHz: 118000000,
           numberFsps: 10,
           subArray: SA_AA2
+        },
+        {
+          numberStations: 68,
+          numberSubstations: 720,
+          numberBeams: 8,
+          maxBaselineKm: 40,
+          availableBandwidthHz: 150000000,
+          channelWidthHz: null,
+          cbfModes: ['vis', 'pst', 'pss'],
+          numberZoomWindows: 16,
+          numberZoomChannels: 1800,
+          numberPssBeams: 30,
+          numberPstBeams: 4,
+          numberVlbiBeams: 0,
+          psBeamBandwidthHz: 118000000,
+          numberFsps: 10,
+          subArray: SA_AA_STAR
         }
       ]
     }
