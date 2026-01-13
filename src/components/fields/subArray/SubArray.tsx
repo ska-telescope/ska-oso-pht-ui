@@ -45,7 +45,7 @@ export default function SubArrayField({
     if (!arr) return [];
 
     const merged = arr.map(key => ({
-      value: key,
+      value: key.toLowerCase(),
       label: key.toUpperCase()
     }));
 

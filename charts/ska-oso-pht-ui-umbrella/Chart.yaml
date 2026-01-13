@@ -13,7 +13,7 @@ dependencies:
 # OSO services provides services required by the PHT UI and acts as the proxy
 # for all ODA operations (load proposal, save proposal, etc.)
 - name: ska-oso-services
-  version: 11.1.0
+  version: 11.2.0
   repository: https://artefact.skao.int/repository/helm-internal
 
 # Sensitivity calculator services required by the PHT for the observation page
@@ -24,7 +24,7 @@ dependencies:
 # ODA is a dependency of PHT Services. Include it for data persistence
 # The ODA umbrella chart includes ODA API, PostgreSQL database and SKU ID
 - name: ska-db-oda-umbrella
-  version: 14.2.1
+  version: 14.3.0
   repository: https://artefact.skao.int/repository/helm-internal
   condition: ska-db-oda.enabled
 
