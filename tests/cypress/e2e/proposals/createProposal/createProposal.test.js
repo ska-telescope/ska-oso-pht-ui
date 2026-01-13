@@ -1,7 +1,5 @@
 import {
   clickHome,
-  // clickProposalTypePrincipleInvestigator,
-  // clickSubProposalTypeTargetOfOpportunity,
   enterProposalTitle,
   verifyOnLandingPage,
   verifyOnLandingPageFilterIsVisible,
@@ -12,7 +10,16 @@ import {
   clickAddSubmission,
   clickCreateSubmission,
   mockCreateSubmissionAPI,
-  verifySubmissionCreatedAlertFooter
+  verifySubmissionCreatedAlertFooter,
+  enterScienceVerificationIdeaTitle,
+  verifyProposalOpen,
+  verifyCycleID,
+  verifyProposalClose,
+  clickCycleSelectionSV,
+  clickCycleSelectionMockProposal,
+  clickProposalTypePrincipleInvestigator,
+  clickSubProposalTypeTargetOfOpportunity,
+  verifyCycleDescription
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -26,18 +33,37 @@ describe('Creating Proposal', () => {
     clearLocalStorage();
   });
 
-  it('Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
+  it('SV Flow: Create a basic science verification idea', () => {
     clickAddSubmission();
+    verifyCycleID(); //verify OSD data
+    verifyCycleDescription(); //verify OSD data
+    verifyProposalOpen(); //verify OSD data
+    verifyProposalClose(); //verify OSD data
+    clickCycleSelectionSV();
     clickCycleConfirm();
-    enterProposalTitle();
-    // clickProposalTypePrincipleInvestigator();
-    // clickSubProposalTypeTargetOfOpportunity();
+    enterScienceVerificationIdeaTitle();
     clickCreateSubmission();
     cy.wait('@mockCreateSubmission');
     verifySubmissionCreatedAlertFooter();
     clickHome();
     verifyOnLandingPage();
-    // verifyOnLandingPageFilterIsVisible();
+    verifyOnLandingPageFilterIsVisible();
+    verifyMockedProposalOnLandingPageIsVisible();
+  });
+
+  it('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
+    clickAddSubmission();
+    clickCycleSelectionMockProposal();
+    clickCycleConfirm();
+    enterProposalTitle();
+    clickProposalTypePrincipleInvestigator();
+    clickSubProposalTypeTargetOfOpportunity();
+    clickCreateSubmission();
+    cy.wait('@mockCreateSubmission');
+    verifySubmissionCreatedAlertFooter();
+    clickHome();
+    verifyOnLandingPage();
+    verifyOnLandingPageFilterIsVisible();
     verifyMockedProposalOnLandingPageIsVisible();
   });
 });
