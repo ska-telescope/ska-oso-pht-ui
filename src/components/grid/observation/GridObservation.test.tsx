@@ -4,7 +4,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import GridObservation from './GridObservation';
 import Observation from '@/utils/types/observation';
-import { BAND_LOW_STR } from '@/utils/constants';
+import { BAND_LOW_STR, SA_AA2 } from '@/utils/constants';
 
 // Mock ResizeObserver for test environment
 beforeAll(() => {
@@ -22,7 +22,7 @@ const mockData: Observation[] = [
     continuumBandwidth: 150,
     bandwidth: 5,
     numSubBands: 1,
-    subarray: 'aa2',
+    subarray: SA_AA2,
     type: 1,
     telescope: 0,
     linked: '',
@@ -44,7 +44,7 @@ const mockData: Observation[] = [
     continuumBandwidth: 150,
     bandwidth: 5,
     numSubBands: 1,
-    subarray: 'aa2',
+    subarray: SA_AA2,
     type: 0,
     telescope: 0,
     linked: '',

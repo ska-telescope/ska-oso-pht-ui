@@ -4,6 +4,7 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import * as bandwidthValidationCommon from '../bandwidthValidationCommon';
 import ContinuumBandwidth from './continuumBandwidth';
+import { SA_AA2 } from '@/utils/constants';
 
 // ----------------------
 // Top‑level mocks (Vitest hoists these)
@@ -53,7 +54,7 @@ vi.mock('@utils/osd/useOSDAccessors/useOSDAccessors.tsx', () => ({
     osdLOW: {
       subArrays: [
         {
-          subArray: 'aa2',
+          subArray: SA_AA2,
           numberStations: 68,
           numberSubstations: 720,
           maxBaselineKm: 40,
@@ -107,7 +108,7 @@ describe('<ContinuumBandwidth />', () => {
     continuumBandwidthUnits: 2,
     observingBand: 'LOW',
     setScaledBandwidth: vi.fn(),
-    subarrayConfig: 'aa2',
+    subarrayConfig: SA_AA2,
     minimumChannelWidthHz: 5
   };
 

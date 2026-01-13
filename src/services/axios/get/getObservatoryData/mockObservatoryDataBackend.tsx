@@ -1,3 +1,4 @@
+import { SA_AA2 } from '@/utils/constants';
 import { ObservatoryDataBackend } from '@/utils/types/observatoryData';
 
 export const MockObservatoryDataBackend: ObservatoryDataBackend = {
@@ -13,8 +14,8 @@ export const MockObservatoryDataBackend: ObservatoryDataBackend = {
       normal_max_hours: 100.0
     },
     telescope_capabilities: {
-      Mid: 'AA2',
-      Low: 'AA2'
+      Mid: SA_AA2,
+      Low: SA_AA2
     }
   },
   capabilities: {

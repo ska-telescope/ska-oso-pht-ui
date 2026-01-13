@@ -962,7 +962,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <Grid size={{ md: 12, lg: 12 }} p={2}>
           {frequencySpectrumField()}
         </Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{observationsBandField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{continuumBandwidthField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}></Grid>
@@ -976,7 +975,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <Grid size={{ md: 12, lg: 12 }} p={2}>
           {frequencySpectrumField()}
         </Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{observationsBandField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{zoomChannelsField()}</Grid>
@@ -994,7 +992,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <Grid size={{ md: 12, lg: 12 }} p={2}>
           {frequencySpectrumField()}
         </Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{observationsBandField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}> {continuumBandwidthField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{pstModeField()}</Grid>
@@ -1088,7 +1085,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                     alignItems="flex-start"
                     rowSpacing={isSV ? 0 : 2}
                   >
-                    <Grid size={{ md: 12 }}></Grid>
+                    <Grid size={{ md: 12 }}>{observationsBandField()}</Grid>
                     <Grid size={{ md: 12 }}>{subArrayField()}</Grid>
                     <Grid size={{ md: 12 }}>
                       {!isSV && (isLow() ? numStationsField() : antennasFields())}
