@@ -85,9 +85,10 @@ export default function TableDataProductsRow({
       paletteIndex: Number(localStorage.getItem('skao_accessibility_mode'))
     }) ?? [];
 
-  const colorsObType = useMemo(() => getObservationColors('observationType', observation?.type), [
-    observation?.type
-  ]);
+  const colorsObType = useMemo(
+    () => getObservationColors('observationType', observation?.type, 0.6),
+    [observation?.type]
+  );
   const colorsTelescope = useMemo(() => getObservationColors('telescope', observation?.telescope), [
     observation?.telescope
   ]);

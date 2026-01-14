@@ -65,7 +65,6 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const pages = React.useMemo(() => (isSV ? STATUS_ARRAY_PAGES_SV : STATUS_ARRAY_PAGES_PROPOSAL), [
     isSV
   ]);
-  const LAST_PAGE = pages[pages.length - 1];
 
   const authClient = useAxiosAuthClient();
   const { notifyError, notifySuccess } = useNotify();
@@ -217,7 +216,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         {!backPage && <HomeButton />}
       </Grid>
       <Grid>
-        {loggedIn && getProposal().id !== null && pageNo < LAST_PAGE && (
+        {loggedIn && getProposal().id !== null && pages.includes(pageNo) && (
           <SaveButton
             testId={'saveBtn'}
             disabled={isDisableEndpoints()}
@@ -240,7 +239,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       pr={2}
     >
       <Grid>
-        {!isSV && getProposal().id !== null && pageNo < LAST_PAGE && (
+        {!isSV && getProposal().id !== null && pages.includes(pageNo) && (
           <ValidateButton
             testId={'validateBtn'}
             disabled={isDisableEndpoints()}
@@ -250,7 +249,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         )}
       </Grid>
       <Grid>
-        {getProposal().id !== null && pageNo < LAST_PAGE && (
+        {getProposal().id !== null && pages.includes(pageNo) && (
           <SubmitButton action={submitClicked} disabled={!canSubmit} />
         )}
       </Grid>
@@ -262,11 +261,11 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       <Grid>{buttonsLeft()}</Grid>
       {wrapStatusArray ? (
         <Grid size={{ xs: 7 }} display={'none'}>
-          {pageNo > -1 && pageNo < LAST_PAGE && <StatusArray />}
+          {pageNo > -1 && pages.includes(pageNo) && <StatusArray />}
         </Grid>
       ) : (
         <Grid size={{ xs: 7 }} display={'block'}>
-          {getProposal().id !== null && pageNo < LAST_PAGE && <StatusArray />}
+          {getProposal().id !== null && pages.includes(pageNo) && <StatusArray />}
         </Grid>
       )}
 
@@ -290,11 +289,11 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     <Grid container direction="row" alignItems="center" justifyContent="space-between">
       {wrapStatusArray ? (
         <Grid size={{ xs: 12 }} display={'block'}>
-          {pageNo < LAST_PAGE && <StatusArray />}
+          {pages.includes(pageNo) && <StatusArray />}
         </Grid>
       ) : (
         <Grid size={{ xs: 12 }} display={'none'}>
-          {pageNo < LAST_PAGE && <StatusArray />}
+          {pages.includes(pageNo) && <StatusArray />}
         </Grid>
       )}
     </Grid>
