@@ -157,7 +157,7 @@ export default function TableObservationsRow({
         {/* Observation ID */}
         <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
           <Typography variant="body2" color="text.secondary">
-            {item.observationId}
+            {item.id}
           </Typography>
         </TableCell>
 

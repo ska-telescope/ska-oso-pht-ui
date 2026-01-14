@@ -155,7 +155,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
   const [once, setOnce] = React.useState<Observation | null>(null);
-  const isAA2 = (subarrayConfig: string) => subarrayConfig === SA_AA2;
 
   const observationIn = (ob: Observation) => {
     setMyObsId(ob?.id);
@@ -313,22 +312,17 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       element => element.value === e
     );
     if (record) {
-      //Set value using OSD Data if Low AA2
-      if (isLow() && isAA2(record.value)) {
-        const sArray = osdLOW?.subArrays.find((sub: any) => sub.subArray === SA_AA2);
+      if (isLow()) {
+        const sArray = osdLOW?.subArrays.find((sub: any) => sub.subArray === subarrayConfig);
         setNumOfStations(sArray?.numberStations ?? undefined);
-      } else {
-        setNumOfStations(record.numOfStations);
       }
-      //Set value using OSD Data if Mid AA2
-      if (isMid() && isAA2(record.value)) {
-        const sArray = osdMID?.subArrays.find((sub: any) => sub.subArray === SA_AA2);
+      if (isMid()) {
+        const sArray = osdMID?.subArrays.find((sub: any) => sub.subArray === subarrayConfig);
         setNumOf15mAntennas(sArray?.numberSkaDishes ?? undefined);
-      } else {
-        setNumOf15mAntennas(record.numOf15mAntennas);
+        // TODO : Check to ensure this is correct field to show.
+        setNumOf13mAntennas(sArray?.numberMeerkatDishes ?? undefined);
       }
     }
-    setNumOf13mAntennas(record?.numOf13mAntennas);
     // setDefaultCentralFrequency(observingBand);
     // setDefaultContinuumBandwidth(observingBand, e as string);
     setSubarrayConfig(e);
