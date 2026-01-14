@@ -221,6 +221,11 @@ const getSpectralResolution = (observation: Observation) => {
   return spectralResValue?.toString();
 };
 
+const defaultToOne = (value: unknown): number => {
+  const n = Number(value);
+  return Number.isInteger(n) && n > 0 ? n : 1;
+};
+
 const addPropertiesLOW = (
   standardData: StandardData,
   zoomData: ZoomData,
@@ -250,7 +255,7 @@ const addPropertiesLOW = (
   properties += pointingCentre(standardData);
   properties += addValue('elevation_limit', standardData.elevation.value);
   properties += addFrequency('freq_centres_mhz', zoomData.centralFrequency, FREQUENCY_MHZ);
-  properties += addValue('spectral_averaging_factor', zoomData.spectralAveraging);
+  properties += addValue('spectral_averaging_factor', defaultToOne(zoomData.spectralAveraging));
 
   properties += addValue('spectral_resolutions_hz', getSpectralResolution(observation));
 
@@ -303,7 +308,7 @@ const addPropertiesMID = (
   }
   properties += addFrequency('freq_centres_hz', zoomData.centralFrequency, FREQUENCY_HZ);
   // properties += addFrequency('bandwidth_hz', zoomData.bandwidth, FREQUENCY_HZ);
-  properties += addValue('spectral_averaging_factor', zoomData.spectralAveraging);
+  properties += addValue('spectral_averaging_factor', defaultToOne(zoomData.spectralAveraging));
   properties += addValue('spectral_resolutions_hz', getSpectralResolution(observation));
   properties += pointingCentre(standardData);
   properties += addValue('pmv', Number(standardData.weather.value));

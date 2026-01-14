@@ -233,6 +233,11 @@ export function getFinalIndividualResultsForContinuum(
   return updated_results as FinalIndividualResults;
 }
 
+const defaultToOne = (value: unknown): number => {
+  const n = Number(value);
+  return Number.isInteger(n) && n > 0 ? n : 1;
+};
+
 const addPropertiesLOW = (standardData: StandardData, continuumData: ContinuumData) => {
   let properties = '';
   if (standardData.subarray !== SA_CUSTOM) {
@@ -248,7 +253,10 @@ const addPropertiesLOW = (standardData: StandardData, continuumData: ContinuumDa
   properties += pointingCentre(standardData);
   properties += addValue('elevation_limit', Number(standardData.elevation.value));
   properties += addFrequency('freq_centre_mhz', continuumData.centralFrequency, FREQUENCY_MHZ);
-  properties += addValue('spectral_averaging_factor', continuumData.spectralAveraging);
+  properties += addValue(
+    'spectral_averaging_factor',
+    defaultToOne(continuumData.spectralAveraging)
+  );
   properties += addFrequency('bandwidth_mhz', continuumData.bandwidth, FREQUENCY_MHZ);
   properties += addValue('n_subbands', continuumData.numberOfSubBands);
   properties += addValue('weighting_mode', getImageWeightingMapping(continuumData.imageWeighting));
@@ -277,7 +285,10 @@ const addPropertiesMID = (standardData: StandardData, continuumData: ContinuumDa
   }
   properties += addFrequency('freq_centre_hz', continuumData.centralFrequency, FREQUENCY_HZ);
   properties += addFrequency('bandwidth_hz', continuumData.bandwidth, FREQUENCY_HZ);
-  properties += addValue('spectral_averaging_factor', continuumData.spectralAveraging);
+  properties += addValue(
+    'spectral_averaging_factor',
+    defaultToOne(continuumData.spectralAveraging)
+  );
   properties += pointingCentre(standardData);
   properties += addValue('pmv', Number(standardData.weather.value));
   properties += addValue('el', Number(standardData.elevation.value));

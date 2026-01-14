@@ -369,12 +369,16 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     }
   }, []);
 
-  React.useEffect(() => {
+  const setAfterChange = () => {
     if (isContinuumOnly()) {
       setObservationType(TYPE_CONTINUUM);
     }
     setValidateToggle(!validateToggle);
     setMaxChannelsZoom(subarrayConfig);
+  };
+
+  React.useEffect(() => {
+    setAfterChange();
   }, [subarrayConfig]);
 
   React.useEffect(() => {
@@ -426,6 +430,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       setMinimumChannelWidthHz(getMinimumChannelWidth(telescope()));
 
     calculateSubarray();
+    setAfterChange();
     setFrequencyUnits();
     calculateMinimumChannelWidthHz();
   }, [observingBand]);
@@ -436,7 +441,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const isLow = () => observingBand === BAND_LOW_STR;
   const isMid = () => observingBand !== BAND_LOW_STR;
   const telescope = () => (isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM);
-  const isLowAA2 = () => isLow() && subarrayConfig === SA_AA2;
   const isContinuumOnly = () => observingBand !== BAND_LOW_STR && subarrayConfig === SA_AA2;
 
   const fieldWrapper = (children?: React.JSX.Element) => (
@@ -1154,13 +1158,14 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
               </Grid>
             </BorderedSection>
           </Grid>
-          {isLowAA2() && ( // TODO : Need to make this generic from OSD Data
-            <Grid sx={{ p: { md: 5, lg: 0 } }} size={{ md: 12, lg: 3 }}>
-              <Box px={3}>
-                <img src={IMAGE_PATH} alt="Low AA2" width="100%" />
-              </Box>
-            </Grid>
-          )}
+          {isLow() &&
+          subarrayConfig === SA_AA2 && ( // TODO : Need to make this generic from OSD Data
+              <Grid sx={{ p: { md: 5, lg: 0 } }} size={{ md: 12, lg: 3 }}>
+                <Box px={3}>
+                  <img src={IMAGE_PATH} alt="Low AA2" width="100%" />
+                </Box>
+              </Grid>
+            )}
         </Grid>
         <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
         {pageFooter()}
