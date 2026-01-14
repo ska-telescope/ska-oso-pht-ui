@@ -8,6 +8,7 @@ import Alert from '../../alerts/standardAlert/StandardAlert';
 import Proposal from '../../../utils/types/proposal';
 import emptyCell from '../../../components/fields/emptyCell/emptyCell';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { SDPVisibilitiesContinuumData } from '@/utils/types/dataProduct';
 
 interface GridObservationSummaryProps {
   height?: number;
@@ -94,7 +95,12 @@ export default function GridObservationSummary({
   const getDataProducts = (rec: { type?: number; id?: string | number }): string[] => {
     const array = proposal?.dataProductSDP?.filter(e => e.observationId === rec.id) ?? [];
     return array.flatMap(item =>
-      t('dataProductType.options.' + rec.type + '.' + item.dataProductType)
+      t(
+        'dataProductType.options.' +
+          rec.type +
+          '.' +
+          (item?.data as SDPVisibilitiesContinuumData)?.dataProductType
+      )
     );
   };
 
