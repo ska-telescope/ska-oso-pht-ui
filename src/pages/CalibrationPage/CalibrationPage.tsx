@@ -12,6 +12,7 @@ import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import AddButton from '@/components/button/Add/Add';
 import AlertDialog from '@/components/alerts/alertDialog/AlertDialog';
+import TableCalibrations from '@/components/table/tableCalibrations/TableCalibrations';
 
 const PAGE = PAGE_CALIBRATION;
 const GAP = 4;
@@ -35,6 +36,16 @@ export default function CalibrationPage() {
     // setProposal({ ...getProposal(), dataProductSDP: obs1 }); // TODO if we create a SDP here, we should add the dataProductsSDPId to TargetObservation
     // setCurrentRow(0);
     // closeDeleteDialog();
+  };
+
+  const editIconClicked = (row: any) => {
+    // setCurrObs(row.rec);
+    // navigate(PATH[2], { replace: true, state: row.rec });
+  };
+
+  const deleteIconClicked = (row: any) => {
+    // setCurrObs(row.rec);
+    // setOpenDeleteDialog(true);
   };
 
   const hasData = (): boolean => {
@@ -68,11 +79,11 @@ export default function CalibrationPage() {
     return (
       <>
         <Stack pl={GAP} pr={GAP} spacing={GAP}>
-          {/* <TableDataProducts
-            data={getProposal().dataProductSDP ?? []}
+          <TableCalibrations
+            data={getProposal().calibrationStrategy ?? []}
             deleteFunction={deleteIconClicked}
             updateFunction={editIconClicked}
-          /> */}
+          />
         </Stack>
         <AlertDialog
           maxWidth="md"

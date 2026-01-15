@@ -149,12 +149,8 @@
     "intent": "Intent",
     "target": "Target",
     "integrationTime": "Integration Time",
-    "checkbox": {
-      "label": "Provide comments on this strategy:",
-      "help": "Check to indicate that you wish to provide comments on the observatory defined calibration strategy."
-    },
     "comment": {
-      "label": "Comment",
+      "label": "Comments on this strategy",
       "help": "You can provide a comment on the observatory defined calibration strategy here."
     },
     "limitReached": "Only 1 observation can currently be used for the calibration strategy."
@@ -1582,6 +1578,11 @@
       "title": "Panel Management",
       "desc": "Panel Management",
       "toolTip": "Panel Management tooltip"
+    },
+    "17": {
+      "title": "Calibration Addition",
+      "desc": "Calibration Addition",
+      "toolTip": "Calibration Addition tooltip"
     },
     "next": "Next",
     "pageOf": "Page {{current}} of {{max}}",
