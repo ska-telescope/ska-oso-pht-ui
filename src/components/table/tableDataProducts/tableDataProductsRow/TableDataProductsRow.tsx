@@ -18,6 +18,7 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import DataProduct from '@/components/info/dataProduct/DataProduct';
 import { frequencyConversion } from '@/utils/helpers';
 import ExpandIcon from '@/components/icon/expandIcon/expandIcon';
+import { DataProductSDPNew } from '@/utils/types/dataProduct';
 
 interface TableDataProductsRowProps {
   item: any;
@@ -26,9 +27,9 @@ interface TableDataProductsRowProps {
   expanded: boolean;
   deleteClicked?: Function;
   editClicked?: Function;
-  toggleRow: (id: number) => void;
+  toggleRow: (id: string) => void;
   expandButtonRef: (el: HTMLButtonElement | null) => void;
-  t: any;
+  t: any; // useScopedTranslation
 }
 
 export default function TableDataProductsRow({
@@ -99,7 +100,7 @@ export default function TableDataProductsRow({
   return (
     <>
       <TableRow
-        key={item.id}
+        key={Number(item.id)}
         data-testid={`row-${item.id}`}
         sx={{ '&:hover': { backgroundColor: theme.palette.action.hover } }}
         role="row"
@@ -226,7 +227,9 @@ export default function TableDataProductsRow({
         <TableCell sx={{ p: 0 }} colSpan={9} role="gridcell">
           <Collapse in={expanded} timeout="auto" unmountOnExit>
             <Box sx={{ overflowX: 'hidden' }}>
-              {observation && <DataProduct t={t} data={item} observation={observation} />}
+              {observation && (
+                <DataProduct t={t} sdp={item as DataProductSDPNew} observation={observation} />
+              )}
             </Box>
           </Collapse>
         </TableCell>

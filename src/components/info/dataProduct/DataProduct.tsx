@@ -25,7 +25,7 @@ import {
 const LABEL_WIDTH = 3;
 
 interface DataProductProps {
-  t: any;
+  t: any; // useScopedTranslation
   sdp: DataProductSDPNew;
   observation: Observation;
 }
@@ -49,7 +49,7 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
     fieldWrapper(
       <ImageSizeField
         labelWidth={LABEL_WIDTH}
-        value={(sdpData as SDPImageContinuumData | SDPSpectralData).imageSizeValue}
+        value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.imageSizeValue}
         disabled
       />
     );
@@ -58,7 +58,7 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
       <RobustField
         label={t('robust.label')}
         labelWidth={LABEL_WIDTH}
-        value={(sdpData as SDPImageContinuumData | SDPSpectralData).robust}
+        value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.robust}
         disabled
       />
     );
@@ -67,7 +67,7 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
     fieldWrapper(
       <PixelSizeField
         labelWidth={LABEL_WIDTH}
-        value={(sdpData as SDPImageContinuumData | SDPSpectralData).pixelSizeValue}
+        value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.pixelSizeValue}
         disabled
       />
     );
@@ -76,7 +76,7 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
     fieldWrapper(
       <DataProductTypeField
         labelWidth={LABEL_WIDTH}
-        value={(sdpData as SDPImageContinuumData | SDPFlowthroughPSTData).dataProductType}
+        value={(sdpData as SDPImageContinuumData | SDPFlowthroughPSTData)?.dataProductType}
         disabled
       />
     );
@@ -85,7 +85,7 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
     fieldWrapper(
       <ImageWeightingField
         labelWidth={LABEL_WIDTH}
-        value={(sdpData as SDPImageContinuumData | SDPSpectralData).weighting}
+        value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.weighting}
         disabled
       />
     );
@@ -93,7 +93,7 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
     fieldWrapper(
       <ChannelsOutField
         labelWidth={LABEL_WIDTH}
-        value={(sdpData as SDPImageContinuumData | SDPSpectralData).channelsOut}
+        value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.channelsOut}
         disabled
       />
     );
@@ -102,7 +102,7 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
     fieldWrapper(
       <TaperField
         labelWidth={LABEL_WIDTH}
-        value={(sdpData as SDPImageContinuumData | SDPSpectralData).taperValue}
+        value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.taperValue}
         disabled
       />
     );
@@ -110,7 +110,7 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
     fieldWrapper(
       <PolarisationsField
         labelWidth={LABEL_WIDTH}
-        value={(sdpData as SDPImageContinuumData).polarisations}
+        value={(sdpData as SDPImageContinuumData)?.polarisations}
         disabled
         displayOnly
       />
@@ -119,29 +119,32 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
   const applySubtractionField = () =>
     fieldWrapper(
       <ContinuumSubtractionField
-        value={(sdpData as SDPSpectralData).continuumSubtraction}
+        value={(sdpData as SDPSpectralData)?.continuumSubtraction}
         disabled
         displayOnly
       />
     );
 
   const bitDepthField = () =>
-    fieldWrapper(<BitDepthField value={(sdpData as SDPFlowthroughPSTData).bitDepth} disabled />);
+    fieldWrapper(<BitDepthField value={(sdpData as SDPFlowthroughPSTData)?.bitDepth} disabled />);
 
   const timeAveragingField = () =>
     fieldWrapper(
-      <TimeAveragingField
-        labelWidth={LABEL_WIDTH}
-        value={(sdpData as SDPVisibilitiesContinuumData).timeAveraging}
-        disabled
-      />
+      <>
+        SARAH
+        <TimeAveragingField
+          labelWidth={LABEL_WIDTH}
+          value={(sdpData as SDPVisibilitiesContinuumData)?.timeAveraging}
+          disabled
+        />
+      </>
     );
 
   const frequencyAveragingField = () =>
     fieldWrapper(
       <FrequencyAveragingField
         labelWidth={LABEL_WIDTH}
-        value={(sdpData as SDPVisibilitiesContinuumData).frequencyAveraging}
+        value={(sdpData as SDPVisibilitiesContinuumData)?.frequencyAveraging}
         disabled
       />
     );

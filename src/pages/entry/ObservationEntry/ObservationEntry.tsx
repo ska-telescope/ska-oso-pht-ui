@@ -947,7 +947,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           {isContinuum() ? continuumBandwidthField() : bandwidthField()}
         </Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}></Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{pstModeField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>

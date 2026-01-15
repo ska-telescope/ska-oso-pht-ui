@@ -57,9 +57,9 @@ export default function PolarisationsField({
   };
 
   const displayString = options
-    .filter(opt => value.includes(opt.value))
-    .map(opt => opt.label)
-    .join(', ');
+    ?.filter(opt => value?.includes(opt?.value))
+    ?.map(opt => opt?.label)
+    ?.join(', ');
 
   return (
     <Box pl={1} pt={2}>
