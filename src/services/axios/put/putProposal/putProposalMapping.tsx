@@ -300,9 +300,7 @@ export const getDataProductSRC = (dataProducts: DataProductSRC[]): DataProductSR
 };
 
 const getGroupObservation = (obsId: string, observationGroups: GroupObservation[] | undefined) => {
-  const groupId = observationGroups
-    ? observationGroups.find(group => group.observationId === obsId)?.observationId
-    : '';
+  const groupId = observationGroups?.find(group => group.observationId === obsId)?.groupId ?? '';
   return groupId ? groupId : '';
 };
 

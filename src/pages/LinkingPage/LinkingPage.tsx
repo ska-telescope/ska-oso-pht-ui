@@ -1,9 +1,14 @@
 import React from 'react';
-import { Box, Card, CardContent, Grid, Typography } from '@mui/material';
+import { Box, Grid, Typography } from '@mui/material';
 import { GridRowSelectionModel } from '@mui/x-data-grid';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { AlertColorTypes, DataGrid, TickBox } from '@ska-telescope/ska-gui-components';
-import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import {
+  AlertColorTypes,
+  BorderedSection,
+  DataGrid,
+  TickBox
+} from '@ska-telescope/ska-gui-components';
+import { getColors, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import SensCalcDisplaySingle from '../../components/alerts/sensCalcDisplay/single/SensCalcDisplaySingle';
 import Observation from '../../utils/types/observation';
@@ -20,7 +25,6 @@ import {
   STATUS_PARTIAL,
   SUPPLIED_TYPE_INTEGRATION
 } from '../../utils/constants';
-import GroupObservation from '../../utils/types/groupObservation';
 import Target from '../../utils/types/target';
 import TargetObservation from '../../utils/types/targetObservation';
 import DeleteObservationConfirmation from '../../components/alerts/deleteObservationConfirmation/deleteObservationConfirmation';
@@ -40,16 +44,16 @@ import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
 import { DataProductSDPNew, SDPImageContinuumData } from '@/utils/types/dataProduct';
 
 export default function LinkingPage() {
-  const DATA_GRID_TARGET = '40vh';
-  const DATA_GRID_OBSERVATION = '50vh';
+  const DATA_GRID_TARGET = '60vh';
+  const DATA_GRID_OBSERVATION = '60vh';
   const PAGE = PAGE_LINKING;
+  const GAP = 5;
 
   const { t } = useScopedTranslation();
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currObs, setCurrObs] = React.useState<Observation | null>(null);
-  const [currDataProductSDP] = React.useState<DataProductSDPNew | null>(null);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openMultipleDialog, setOpenMultipleDialog] = React.useState(false);
   const [elementsO, setElementsO] = React.useState<ReturnType<typeof popElementO>[]>([]);
@@ -177,14 +181,15 @@ export default function LinkingPage() {
     );
   };
 
-  const popElementO = (rec: Observation) => {
+  const popElementO = (dp: DataProductSDPNew, obs: Observation) => {
     return {
-      id: rec.id,
-      id2: rec.id /* Only here to satisfy syntax of DataGrid headers */,
-      rec: rec,
-      telescope: rec.telescope,
-      subarray: rec.subarray,
-      type: rec.type,
+      id: obs.id,
+      id2: obs.id /* Only here to satisfy syntax of DataGrid headers */,
+      rec: obs,
+      telescope: obs.telescope,
+      subarray: obs.subarray,
+      type: obs.type,
+      dp: dp,
       status: 0
     };
   };
@@ -254,11 +259,12 @@ export default function LinkingPage() {
   };
 
   const addObservationTargetAndCalibration = (target: Target) => {
-    if (!currObs || !currDataProductSDP) return;
+    if (!currObs) return;
+    const dp = elementsO.find(e => e.id === currObs.id)?.dp;
     const targetObs: TargetObservation = {
       observationId: currObs.id,
       targetId: target.id,
-      dataProductsSDPId: currDataProductSDP?.id,
+      dataProductsSDPId: dp?.id ?? '',
       sensCalc: {
         id: target.id,
         title: target.name,
@@ -292,15 +298,12 @@ export default function LinkingPage() {
   };
 
   const checkPartials = () => {
-    const results = getProposal()?.targetObservation?.find(
-      p => p.sensCalc.statusGUI === STATUS_PARTIAL
-    );
+    const proposal = getProposal();
+    const results = proposal?.targetObservation?.find(p => p.sensCalc.statusGUI === STATUS_PARTIAL);
     if (results) {
-      const target = getProposal().targets?.find(e => e.id === results.targetId);
-      const observation = getProposal().observations?.find(e => e.id === results.observationId);
-      const dataProductSDP = getProposal().dataProductSDP?.find(
-        d => d.id === results.dataProductsSDPId
-      ); // TODO double check this is correct when implementing linking page for proposal flow
+      const target = proposal.targets?.find(e => e.id === results.targetId);
+      const observation = proposal.observations?.find(e => e.id === results.observationId);
+      const dataProductSDP = proposal.dataProductSDP?.find(d => d.id === results.dataProductsSDPId);
       if (observation && target && dataProductSDP) {
         getSensCalcData(observation, target, dataProductSDP);
       }
@@ -308,9 +311,17 @@ export default function LinkingPage() {
   };
 
   React.useEffect(() => {
+    const proposal = getProposal();
     setValidateToggle(!validateToggle);
-    setElementsO(getProposal().observations?.map(rec => popElementO(rec)) ?? []);
-    setElementsT(getProposal().targets?.map(rec => popElementT(rec)) ?? []);
+    setElementsO(
+      (
+        proposal.dataProductSDP?.map(rec => {
+          const obs = proposal.observations?.find(o => o.id === rec.observationId);
+          return obs ? popElementO(rec, obs) : null;
+        }) ?? []
+      ).filter((item): item is ReturnType<typeof popElementO> => item !== null)
+    );
+    setElementsT(proposal.targets?.map(rec => popElementT(rec)) ?? []);
   }, []);
 
   React.useEffect(() => {
@@ -322,17 +333,18 @@ export default function LinkingPage() {
     setTheProposalState(validateLinkingPage(getProposal()), validateCalibrationPage(getProposal()));
   }, [validateToggle]);
 
-  const observationGroupIds = (id: string) => {
-    if (
-      getProposal()?.groupObservations &&
-      getProposal()?.groupObservations?.some(e => e.observationId === id)
-    ) {
-      const group: GroupObservation[] =
-        getProposal().groupObservations?.filter(e => e.observationId === id) ?? [];
-      return group[0]?.groupId;
-    }
-    return '';
-  };
+  // NOTE : We used to have Groups in the list, so keep this until we are sure we don't need it.
+  // const observationGroupIds = (id: string) => {
+  //   if (
+  //     getProposal()?.groupObservations &&
+  //     getProposal()?.groupObservations?.some(e => e.observationId === id)
+  //   ) {
+  //     const group: GroupObservation[] =
+  //       getProposal().groupObservations?.filter(e => e.observationId === id) ?? [];
+  //     return group[0]?.groupId;
+  //   }
+  //   return '';
+  // };
 
   const hasTargets = () => (elementsT?.length ?? 0) > 0;
 
@@ -344,9 +356,12 @@ export default function LinkingPage() {
     )?.sensCalc;
 
   const isCustom = () => currObs?.subarray === SA_CUSTOM;
-  const isNatural = () =>
-    currObs?.subarray !== SA_CUSTOM &&
-    (currDataProductSDP?.data as SDPImageContinuumData)?.weighting === IW_NATURAL;
+  const isNatural = () => {
+    const dp = elementsO.find(e => e.id === currObs?.id)?.dp;
+    const weighting =
+      typeof (dp?.data as any)?.weighting === 'string' ? (dp?.data as any).weighting : undefined;
+    return currObs?.subarray !== SA_CUSTOM && weighting === IW_NATURAL;
+  };
 
   const getSensCalcSingle = (id: number, field: string) => (
     <SensCalcDisplaySingle
@@ -365,46 +380,142 @@ export default function LinkingPage() {
         headerName: t('observations.id'),
         flex: 0.75,
         minWidth: 150,
-        disableClickEventBubbling: true
-      },
-      {
-        field: 'id2',
-        headerName: t('observations.group'),
-        flex: 0.75,
-        minWidth: 150,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: { id: number } }) => {
-          return observationGroupIds((e.row.id as unknown) as string);
+        renderCell: (e: { row: { id: string } }) => {
+          return (
+            <Typography variant="body2" sx={{ whiteSpace: 'nowrap', pt: 1 }}>
+              {e.row.id}
+            </Typography>
+          );
         }
       },
       {
+        field: 'id2',
+        headerName: t('observatoryDataProduct.id'),
+        flex: 0.75,
+        minWidth: 150,
+        disableClickEventBubbling: true,
+        renderCell: (e: { row: { id: string; dp: { id: string } } }) => {
+          return (
+            <Typography variant="body2" sx={{ whiteSpace: 'nowrap', pt: 1 }}>
+              {e.row.dp.id}
+            </Typography>
+          );
+        }
+      },
+      // NOTE : We used to have Groups in the list, so keep this until we are sure we don't need it.
+      // {
+      //   field: 'id2',
+      //   headerName: t('observations.group'),
+      //   flex: 0.75,
+      //   minWidth: 150,
+      //   disableClickEventBubbling: true,
+      //   renderCell: (e: { row: { id: number } }) => {
+      //     return observationGroupIds((e.row.id as unknown) as string);
+      //   }
+      // },
+      {
         field: 'telescope',
         headerName: t('observingBand.label'),
-        flex: 1.5,
-        minWidth: 250,
+        flex: 1,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: { rec: { observingBand: string | number } } }) =>
-          t('observingBand.short.' + e.row.rec.observingBand)
+        renderCell: (e: {
+          row: { telescope: number; rec: { observingBand: string | number } };
+        }) => {
+          const colorsTelescope = getColors({
+            type: 'telescope',
+            colors: String(e.row.telescope),
+            content: 'both',
+            asArray: true,
+            dim: 0.6,
+            paletteIndex: Number(localStorage.getItem('skao_accessibility_mode'))
+          });
+          return (
+            <Box
+              sx={{
+                backgroundColor: colorsTelescope.bg[0],
+                borderRadius: 1,
+                px: 1,
+                display: 'inline-flex'
+              }}
+            >
+              <Typography
+                variant="body2"
+                color={colorsTelescope.fg[0]}
+                sx={{ whiteSpace: 'nowrap', p: 1 }}
+              >
+                {t('observingBand.short.' + e.row.rec.observingBand)}
+              </Typography>
+            </Box>
+          );
+        }
       },
       {
         field: 'subarray',
         headerName: t('subArrayConfiguration.short'),
         flex: 1,
-        minWidth: 150,
         disableClickEventBubbling: true,
         renderCell: (e: { row: { telescope: number; subarray: string } }) => {
-          if (e.row.telescope) {
-            return t(`subArrayConfiguration.${e.row.subarray}`);
-          }
-          return t('arrayConfiguration.0');
+          const colorsTelescope = getColors({
+            type: 'telescope',
+            colors: String(e.row.telescope),
+            content: 'both',
+            asArray: true,
+            paletteIndex: Number(localStorage.getItem('skao_accessibility_mode'))
+          });
+          return (
+            <Box
+              sx={{
+                backgroundColor: colorsTelescope.bg[0],
+                borderRadius: 1,
+                px: 1,
+                display: 'inline-flex'
+              }}
+            >
+              <Typography
+                variant="body2"
+                color={colorsTelescope.fg[0]}
+                sx={{ whiteSpace: 'nowrap', p: 1 }}
+              >
+                {t('telescopes.' + e.row.telescope)} {t('subArrayConfiguration.' + e.row.subarray)}
+              </Typography>
+            </Box>
+          );
         }
       },
       {
         field: 'type',
         headerName: t('observationType.short'),
-        width: 140,
+        flex: 1,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: { type: number } }) => t(`observationType.${e.row.type}`)
+        renderCell: (e: { row: { type: number } }) => {
+          const colorsType = getColors({
+            type: 'observationType',
+            colors: String(e.row.type),
+            content: 'both',
+            asArray: true,
+            dim: 0.6,
+            paletteIndex: Number(localStorage.getItem('skao_accessibility_mode'))
+          });
+          return (
+            <Box
+              sx={{
+                backgroundColor: colorsType.bg[0],
+                borderRadius: 1,
+                px: 1,
+                display: 'inline-flex'
+              }}
+            >
+              <Typography
+                variant="body2"
+                color={'#000000'} //</Box>colorsType.fg[0]}
+                sx={{ whiteSpace: 'nowrap', p: 1 }}
+              >
+                {t(`observationType.${e.row.type}`)}
+              </Typography>
+            </Box>
+          );
+        }
       },
       {
         field: 'weather',
@@ -554,9 +665,17 @@ export default function LinkingPage() {
 
   return (
     <Shell page={PAGE}>
-      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid size={{ md: 11, lg: 5 }}>
-          <Grid container direction="column" alignItems="flex-start" justifyContent="space-around">
+      <Grid
+        pl={GAP}
+        pr={GAP}
+        container
+        spacing={GAP}
+        direction="row"
+        alignItems="space-evenly"
+        justifyContent="space-around"
+      >
+        <Grid size={{ md: 12, lg: 6 }}>
+          <BorderedSection title={t('observatoryDataProduct.linkedObservation')}>
             {hasObservations() && (
               <DataGrid
                 rows={elementsO}
@@ -581,37 +700,26 @@ export default function LinkingPage() {
                 testId="noObservationsNotification"
               />
             )}
-          </Grid>
+          </BorderedSection>
         </Grid>
-        <Grid size={{ md: 11, lg: 6 }}>
-          <Card variant="outlined">
-            <CardContent>
-              <Grid container alignItems="baseline" justifyContent="space-between">
-                <Grid>
-                  <Typography id="targetObservationLabel" variant="h6">
-                    {t('targetObservation.label')}
-                  </Typography>
-                </Grid>
-              </Grid>
-            </CardContent>
-            <CardContent>
-              {hasTargets() && (
-                <DataGrid
-                  rows={filteredTargets()}
-                  columns={extendedColumnsTargets}
-                  height={DATA_GRID_TARGET}
-                  testId="linkedTargetDetails"
-                />
-              )}
-              {!hasTargets() && (
-                <Alert
-                  color={AlertColorTypes.Error}
-                  text={loggedIn ? t('targets.empty') : t('targets.loggedOut')}
-                  testId="noTargetsNotification"
-                />
-              )}
-            </CardContent>
-          </Card>
+        <Grid size={{ md: 12, lg: 6 }}>
+          <BorderedSection title={t('targetObservation.label')}>
+            {hasTargets() && (
+              <DataGrid
+                rows={filteredTargets()}
+                columns={extendedColumnsTargets}
+                height={DATA_GRID_TARGET}
+                testId="linkedTargetDetails"
+              />
+            )}
+            {!hasTargets() && (
+              <Alert
+                color={AlertColorTypes.Error}
+                text={loggedIn ? t('targets.empty') : t('targets.loggedOut')}
+                testId="noTargetsNotification"
+              />
+            )}
+          </BorderedSection>
         </Grid>
       </Grid>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />

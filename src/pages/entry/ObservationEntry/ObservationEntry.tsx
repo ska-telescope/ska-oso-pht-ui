@@ -155,7 +155,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
   const [once, setOnce] = React.useState<Observation | null>(null);
-  const isAA2 = (subarrayConfig: string) => subarrayConfig === SA_AA2;
 
   const observationIn = (ob: Observation) => {
     setMyObsId(ob?.id);
@@ -313,22 +312,17 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       element => element.value === e
     );
     if (record) {
-      //Set value using OSD Data if Low AA2
-      if (isLow() && isAA2(record.value)) {
-        const sArray = osdLOW?.subArrays.find((sub: any) => sub.subArray === SA_AA2);
+      if (isLow()) {
+        const sArray = osdLOW?.subArrays.find((sub: any) => sub.subArray === subarrayConfig);
         setNumOfStations(sArray?.numberStations ?? undefined);
-      } else {
-        setNumOfStations(record.numOfStations);
       }
-      //Set value using OSD Data if Mid AA2
-      if (isMid() && isAA2(record.value)) {
-        const sArray = osdMID?.subArrays.find((sub: any) => sub.subArray === SA_AA2);
+      if (isMid()) {
+        const sArray = osdMID?.subArrays.find((sub: any) => sub.subArray === subarrayConfig);
         setNumOf15mAntennas(sArray?.numberSkaDishes ?? undefined);
-      } else {
-        setNumOf15mAntennas(record.numOf15mAntennas);
+        // TODO : Check to ensure this is correct field to show.
+        setNumOf13mAntennas(sArray?.numberMeerkatDishes ?? undefined);
       }
     }
-    setNumOf13mAntennas(record?.numOf13mAntennas);
     // setDefaultCentralFrequency(observingBand);
     // setDefaultContinuumBandwidth(observingBand, e as string);
     setSubarrayConfig(e);
@@ -375,12 +369,16 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     }
   }, []);
 
-  React.useEffect(() => {
+  const setAfterChange = () => {
     if (isContinuumOnly()) {
       setObservationType(TYPE_CONTINUUM);
     }
     setValidateToggle(!validateToggle);
     setMaxChannelsZoom(subarrayConfig);
+  };
+
+  React.useEffect(() => {
+    setAfterChange();
   }, [subarrayConfig]);
 
   React.useEffect(() => {
@@ -432,6 +430,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       setMinimumChannelWidthHz(getMinimumChannelWidth(telescope()));
 
     calculateSubarray();
+    setAfterChange();
     setFrequencyUnits();
     calculateMinimumChannelWidthHz();
   }, [observingBand]);
@@ -442,7 +441,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const isLow = () => observingBand === BAND_LOW_STR;
   const isMid = () => observingBand !== BAND_LOW_STR;
   const telescope = () => (isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM);
-  const isLowAA2 = () => isLow() && subarrayConfig === SA_AA2;
   const isContinuumOnly = () => observingBand !== BAND_LOW_STR && subarrayConfig === SA_AA2;
 
   const fieldWrapper = (children?: React.JSX.Element) => (
@@ -947,10 +945,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           {isContinuum() ? continuumBandwidthField() : bandwidthField()}
         </Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{pstModeField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{isPST() ? pstModeField() : emptyField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{isZoom() ? spectralResolutionField() : emptyField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{isZoom() ? spectralAveragingField() : emptyField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{isZoom() ? effectiveResolutionField() : emptyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{isContinuum() ? SubBandsField() : emptyField()}</Grid>
       </>
     );
@@ -964,7 +962,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         </Grid>
         <Grid size={{ md: 12, lg: 6 }}>{continuumBandwidthField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}></Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{emptyField()}</Grid>
       </>
     );
   };
@@ -1160,13 +1158,14 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
               </Grid>
             </BorderedSection>
           </Grid>
-          {isLowAA2() && ( // TODO : Need to make this generic from OSD Data
-            <Grid sx={{ p: { md: 5, lg: 0 } }} size={{ md: 12, lg: 3 }}>
-              <Box px={3}>
-                <img src={IMAGE_PATH} alt="Low AA2" width="100%" />
-              </Box>
-            </Grid>
-          )}
+          {isLow() &&
+          subarrayConfig === SA_AA2 && ( // TODO : Need to make this generic from OSD Data
+              <Grid sx={{ p: { md: 5, lg: 0 } }} size={{ md: 12, lg: 3 }}>
+                <Box px={3}>
+                  <img src={IMAGE_PATH} alt="Low AA2" width="100%" />
+                </Box>
+              </Grid>
+            )}
         </Grid>
         <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
         {pageFooter()}

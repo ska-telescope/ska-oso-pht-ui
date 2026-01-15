@@ -130,7 +130,9 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
     capabilities: {
       mid: {
         basicCapabilities: {
-          dishElevationLimitDeg: 15, //            inData.capabilities.mid.basic_capabilities.dish_elevation_limit_deg,
+          dishElevationLimitDeg: 15,
+          // NOTE: Should allow looping of data when API supports it
+          //            inData.capabilities.mid.basic_capabilities.dish_elevation_limit_deg,
           // receiverInformation: inData.capabilities.mid.basic_capabilities.receiver_information.map(
           //   rx => ({
           //     rxId: rx.rx_id,

@@ -557,7 +557,7 @@
     "all": "All observations",
     "delete": "Delete observation",
     "edit": "Edit observation",
-    "id": "Id",
+    "id": "Obs Id",
     "dp": {
       "label": "Observation",
       "help": "Select the observation set for which you want to request a data product(s)."
@@ -573,7 +573,9 @@
     "2": "PST"
   },
   "observatoryDataProduct": {
+    "id": "SDP Id",
     "label": "Observatory Data Product",
+    "linkedObservation": "Observation / Data Product",
     "help": "Select the desired data product(s) by checking the boxes as appropriate.",
     "options": {
       "1": "Images",
