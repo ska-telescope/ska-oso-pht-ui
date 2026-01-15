@@ -552,7 +552,7 @@
     "notUnique": "Another observation with this unique identifier exists"
   },
   "groupId": {
-    "label": "Observation Group ID",
+    "label": "Group ID",
     "short": "ID"
   },
   "observations": {
