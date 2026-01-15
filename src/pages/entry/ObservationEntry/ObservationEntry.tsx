@@ -946,9 +946,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         </Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}></Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{isZoom() ? spectralResolutionField() : emptyField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{isZoom() ? spectralAveragingField() : emptyField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{isZoom() ? effectiveResolutionField() : emptyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{isContinuum() ? SubBandsField() : emptyField()}</Grid>
       </>
     );
