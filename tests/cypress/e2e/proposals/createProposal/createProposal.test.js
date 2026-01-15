@@ -12,14 +12,15 @@ import {
   mockCreateSubmissionAPI,
   verifySubmissionCreatedAlertFooter,
   enterScienceVerificationIdeaTitle,
-  verifyProposalOpen,
-  verifyCycleID,
-  verifyProposalClose,
   clickCycleSelectionSV,
   clickCycleSelectionMockProposal,
   clickProposalTypePrincipleInvestigator,
   clickSubProposalTypeTargetOfOpportunity,
-  verifyCycleDescription
+  mockOSDAPI,
+  verifyOsdDataCycleID,
+  verifyOsdDataCycleDescription,
+  verifyOsdDataProposalOpen,
+  verifyOsdDataProposalClose
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -27,6 +28,7 @@ describe('Creating Proposal', () => {
   beforeEach(() => {
     initialize(standardUser);
     mockCreateSubmissionAPI();
+    mockOSDAPI();
   });
 
   afterEach(() => {
@@ -35,10 +37,11 @@ describe('Creating Proposal', () => {
 
   it('SV Flow: Create a basic science verification idea', () => {
     clickAddSubmission();
-    verifyCycleID(); //verify OSD data
-    verifyCycleDescription(); //verify OSD data
-    verifyProposalOpen(); //verify OSD data
-    verifyProposalClose(); //verify OSD data
+    cy.wait('@mockOSDData');
+    verifyOsdDataCycleID('SKAO_2027_1');
+    verifyOsdDataCycleDescription('Low AA2 Science Verification'); //verify OSD data
+    verifyOsdDataProposalOpen('20260327T12:00:00.000Z'); //verify OSD data
+    verifyOsdDataProposalClose('20260512T15:00:00.000Z'); //verify OSD data
     clickCycleSelectionSV();
     clickCycleConfirm();
     enterScienceVerificationIdeaTitle();

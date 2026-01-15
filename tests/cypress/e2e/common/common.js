@@ -128,6 +128,15 @@ export const mockResolveTargetAPI = () => {
   });
 };
 
+export const mockOSDAPI = () => {
+  cy.fixture('osd.json').then(osdData => {
+    cy.intercept('GET', '**/osd/10000', {
+      statusCode: 200,
+      body: osdData
+    }).as('mockOSDData');
+  });
+};
+
 /*----------------------------------------------------------------------*/
 
 export const verify = testId => {
@@ -318,13 +327,37 @@ export const selectObservingMode = value => {
 export const clickProposalTypePrincipleInvestigator = () => selectId('ProposalType-1');
 export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalAttribute-1');
 
-export const verifyCycleID = () => verifyContent('SKAO_2027_1_ID', 'SKAO_2027_1');
-export const verifyCycleDescription = () =>
-  verifyContent('SKAO_2027_1_description', 'Low AA2 Science Verification');
+export const verifyOsdDataCycleID = data => {
+  cy.fixture('osd.json').then(osdData => {
+    expect(osdData.observatory_policy.cycle_information.cycle_id).to.equal(data);
+  });
+};
 
-export const verifyProposalOpen = () => verifyContent('SKAO_2027_1_opens', '27-03-2026');
+export const verifyOsdDataCycleDescription = data => {
+  cy.fixture('osd.json').then(osdData => {
+    expect(osdData.observatory_policy.cycle_description).to.equal(data);
+  });
+};
 
-export const verifyProposalClose = () => verifyContent('SKAO_2027_1_closes', '12-05-2026');
+export const verifyOsdDataProposalOpen = data => {
+  cy.fixture('osd.json').then(osdData => {
+    expect(osdData.observatory_policy.cycle_information.proposal_open).to.equal(data);
+    verifyContent('SKAO_2027_1_opens', '27-03-2026');
+  });
+};
+
+export const verifyOsdDataProposalClose = data => {
+  cy.fixture('osd.json').then(osdData => {
+    expect(osdData.observatory_policy.cycle_information.proposal_close).to.equal(data);
+    verifyContent('SKAO_2027_1_closes', '12-05-2026');
+  });
+};
+
+export const verifyOsdDataMaxTargets = data => {
+  cy.fixture('osd.json').then(osdData => {
+    expect(osdData.observatory_policy.cycle_policies.max_targets).to.equal(data);
+  });
+};
 export const verifySubmissionCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Submission added with unique identifier');
 
