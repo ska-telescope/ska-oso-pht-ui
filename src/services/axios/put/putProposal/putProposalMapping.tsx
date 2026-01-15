@@ -41,7 +41,6 @@ import {
   IW_UNIFORM
 } from '@utils/constants.ts';
 import {
-  DataProductSDP,
   DataProductSDPNew,
   DataProductSDPsBackend,
   DataProductSRC,
@@ -678,7 +677,7 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
         proposal?.dataProductSDP && proposal?.dataProductSDP?.length > 0
           ? getDataProductSDP(
               proposal.observations as Observation[],
-              proposal.dataProductSDP as DataProductSDP[]
+              proposal.dataProductSDP as DataProductSDPNew[]
             )
           : [],
       data_product_src_nets:
@@ -688,7 +687,7 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
       result_details: getResults(
         proposal.targetObservation as TargetObservation[],
         proposal.observations as Observation[],
-        proposal.dataProductSDP as DataProductSDP[],
+        proposal.dataProductSDP as DataProductSDPNew[],
         proposal.targets as Target[]
       )
     }

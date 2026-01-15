@@ -1,5 +1,4 @@
 import { Box, Grid } from '@mui/material';
-import { DataProductSDP } from '@/utils/types/dataProduct';
 import { IW_BRIGGS, TYPE_CONTINUUM, TYPE_ZOOM, WRAPPER_HEIGHT } from '@/utils/constants';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
 import ImageSizeField from '@/components/fields/imageSize/imageSize';
@@ -15,21 +14,30 @@ import TimeAveragingField from '@/components/fields/timeAveraging/timeAveraging'
 import FrequencyAveragingField from '@/components/fields/frequencyAveraging/frequencyAveraging';
 import ContinuumSubtractionField from '@/components/fields/continuumSubtraction/continuumSubtraction';
 import BitDepthField from '@/components/fields/bitDepth/bitDepth';
+import {
+  DataProductSDPNew,
+  SDPFlowthroughPSTData,
+  SDPImageContinuumData,
+  SDPSpectralData,
+  SDPVisibilitiesContinuumData
+} from '@/utils/types/dataProduct';
 
 const LABEL_WIDTH = 3;
 
 interface DataProductProps {
-  t: any;
-  data: DataProductSDP;
+  t: any; // useScopedTranslation
+  sdp: DataProductSDPNew;
   observation: Observation;
 }
 
-export default function DataProduct({ t, data, observation }: DataProductProps) {
+export default function DataProduct({ t, sdp, observation }: DataProductProps) {
   const isDetectedFilterbank = () => observation.pstMode === DETECTED_FILTER_BANK_VALUE;
   const isContinuum = () => observation?.type === TYPE_CONTINUUM;
   const isSpectral = () => observation?.type === TYPE_ZOOM;
   const isPST = () => observation?.type === TYPE_PST;
-  const isDataTypeOne = () => data.dataProductType === 1;
+  const isDataTypeOne = () => (sdp?.data as any)?.dataProductType === 1;
+
+  const sdpData = sdp?.data;
 
   const fieldWrapper = (children?: React.JSX.Element, height = WRAPPER_HEIGHT) => (
     <Box p={0} pt={1} sx={{ height: height }}>
@@ -38,40 +46,71 @@ export default function DataProduct({ t, data, observation }: DataProductProps) 
   );
 
   const imageSizeField = () =>
-    fieldWrapper(<ImageSizeField labelWidth={LABEL_WIDTH} value={data.imageSizeValue} disabled />);
-
+    fieldWrapper(
+      <ImageSizeField
+        labelWidth={LABEL_WIDTH}
+        value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.imageSizeValue}
+        disabled
+      />
+    );
   const robustField = () =>
     fieldWrapper(
       <RobustField
         label={t('robust.label')}
         labelWidth={LABEL_WIDTH}
-        value={data.robust}
+        value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.robust}
         disabled
       />
     );
 
   const pixelSizeField = () =>
-    fieldWrapper(<PixelSizeField labelWidth={LABEL_WIDTH} value={data.pixelSizeValue} disabled />);
+    fieldWrapper(
+      <PixelSizeField
+        labelWidth={LABEL_WIDTH}
+        value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.pixelSizeValue}
+        disabled
+      />
+    );
 
   const dataProductTypeField = () =>
     fieldWrapper(
-      <DataProductTypeField labelWidth={LABEL_WIDTH} value={data.dataProductType} disabled />
+      <DataProductTypeField
+        labelWidth={LABEL_WIDTH}
+        value={(sdpData as SDPImageContinuumData | SDPFlowthroughPSTData)?.dataProductType}
+        disabled
+      />
     );
 
   const imageWeightingField = () =>
-    fieldWrapper(<ImageWeightingField labelWidth={LABEL_WIDTH} value={data.weighting} disabled />);
-
+    fieldWrapper(
+      <ImageWeightingField
+        labelWidth={LABEL_WIDTH}
+        value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.weighting}
+        disabled
+      />
+    );
   const channelsOutField = () =>
-    fieldWrapper(<ChannelsOutField labelWidth={LABEL_WIDTH} value={data.channelsOut} disabled />);
+    fieldWrapper(
+      <ChannelsOutField
+        labelWidth={LABEL_WIDTH}
+        value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.channelsOut}
+        disabled
+      />
+    );
 
   const taperField = () =>
-    fieldWrapper(<TaperField labelWidth={LABEL_WIDTH} value={data.taperValue} disabled />);
-
+    fieldWrapper(
+      <TaperField
+        labelWidth={LABEL_WIDTH}
+        value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.taperValue}
+        disabled
+      />
+    );
   const polarisationField = () =>
     fieldWrapper(
       <PolarisationsField
         labelWidth={LABEL_WIDTH}
-        value={data.polarisations}
+        value={(sdpData as SDPImageContinuumData)?.polarisations}
         disabled
         displayOnly
       />
@@ -79,19 +118,35 @@ export default function DataProduct({ t, data, observation }: DataProductProps) 
 
   const applySubtractionField = () =>
     fieldWrapper(
-      <ContinuumSubtractionField value={data.continuumSubtraction} disabled displayOnly />
+      <ContinuumSubtractionField
+        value={(sdpData as SDPSpectralData)?.continuumSubtraction}
+        disabled
+        displayOnly
+      />
     );
 
-  const bitDepthField = () => fieldWrapper(<BitDepthField value={data.bitDepth} disabled />);
+  const bitDepthField = () =>
+    fieldWrapper(<BitDepthField value={(sdpData as SDPFlowthroughPSTData)?.bitDepth} disabled />);
 
   const timeAveragingField = () =>
     fieldWrapper(
-      <TimeAveragingField labelWidth={LABEL_WIDTH} value={data.timeAveraging} disabled />
+      <>
+        SARAH
+        <TimeAveragingField
+          labelWidth={LABEL_WIDTH}
+          value={(sdpData as SDPVisibilitiesContinuumData)?.timeAveraging}
+          disabled
+        />
+      </>
     );
 
   const frequencyAveragingField = () =>
     fieldWrapper(
-      <FrequencyAveragingField labelWidth={LABEL_WIDTH} value={data.frequencyAveraging} disabled />
+      <FrequencyAveragingField
+        labelWidth={LABEL_WIDTH}
+        value={(sdpData as SDPVisibilitiesContinuumData)?.frequencyAveraging}
+        disabled
+      />
     );
 
   return (
@@ -110,7 +165,9 @@ export default function DataProduct({ t, data, observation }: DataProductProps) 
           {isDataTypeOne() && <Grid size={{ md: 5 }}>{pixelSizeField()}</Grid>}
           {isDataTypeOne() && <Grid size={{ md: 5 }}>{imageWeightingField()}</Grid>}
           {isDataTypeOne() && (
-            <Grid size={{ md: 5 }}>{data.weighting === IW_BRIGGS && robustField()}</Grid>
+            <Grid size={{ md: 5 }}>
+              {(sdpData as SDPImageContinuumData).weighting === IW_BRIGGS && robustField()}
+            </Grid>
           )}
           {isDataTypeOne() && <Grid size={{ md: 5 }}>{taperField()}</Grid>}
           {isDataTypeOne() && <Grid size={{ md: 5 }}>{channelsOutField()}</Grid>}
@@ -132,7 +189,9 @@ export default function DataProduct({ t, data, observation }: DataProductProps) 
           <Grid size={{ md: 5 }}>{imageSizeField()}</Grid>
           <Grid size={{ md: 5 }}>{pixelSizeField()}</Grid>
           <Grid size={{ md: 5 }}>{imageWeightingField()}</Grid>
-          <Grid size={{ md: 5 }}>{data.weighting === IW_BRIGGS && robustField()}</Grid>
+          <Grid size={{ md: 5 }}>
+            {(sdpData as SDPImageContinuumData).weighting === IW_BRIGGS && robustField()}
+          </Grid>
           <Grid size={{ md: 5 }}>{taperField()}</Grid>
           <Grid size={{ md: 5 }}>{channelsOutField()}</Grid>
           <Grid size={{ md: 5 }}>{polarisationField()}</Grid>

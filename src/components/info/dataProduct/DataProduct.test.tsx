@@ -9,7 +9,7 @@ import {
   PULSAR_TIMING_VALUE,
   BAND_LOW_STR
 } from '@/utils/constants';
-import { DataProductSDP } from '@/utils/types/dataProduct';
+import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import Observation from '@/utils/types/observation';
 
 // --- Mock all field components with simple test ids ---
@@ -51,24 +51,25 @@ vi.mock('@/components/fields/bitDepth/bitDepth', () => ({
 }));
 
 // --- Helper data ---
-const baseData: DataProductSDP = {
-  dataProductType: 1,
-  imageSizeValue: 256,
-  pixelSizeValue: 0.5,
-  weighting: 2,
-  robust: 0,
-  taperValue: 1,
-  channelsOut: 4,
-  polarisations: ['XX'],
-  continuumSubtraction: true,
-  bitDepth: 8,
-  timeAveraging: 10,
-  frequencyAveraging: 20,
+const baseData: DataProductSDPNew = {
   id: '',
   observationId: '',
-  imageSizeUnits: 0,
-  pixelSizeUnits: 0,
-  fitSpectralPol: 0
+  data: {
+    dataProductType: 1,
+    imageSizeValue: 256,
+    pixelSizeValue: 0.5,
+    weighting: 2,
+    robust: 0,
+    taperValue: 1,
+    channelsOut: 4,
+    polarisations: ['XX'],
+    continuumSubtraction: true,
+    bitDepth: 8,
+    timeAveraging: 10,
+    frequencyAveraging: 20,
+    imageSizeUnits: 0,
+    pixelSizeUnits: 0
+  }
 };
 
 const baseObservation: Observation = {
@@ -99,7 +100,11 @@ const t = (key: string) => key; // simple translation mock
 describe('DataProduct', () => {
   it('renders continuum fields when dataProductType=1', () => {
     render(
-      <DataProduct t={t} data={{ ...baseData, dataProductType: 1 }} observation={baseObservation} />
+      <DataProduct
+        t={t}
+        sdp={{ ...baseData, data: { ...baseData.data, dataProductType: 1 } }}
+        observation={baseObservation}
+      />
     );
     expect(screen.getByTestId('DataProductTypeField')).toBeInTheDocument();
     expect(screen.getByTestId('ImageSizeField')).toBeInTheDocument();
@@ -112,7 +117,11 @@ describe('DataProduct', () => {
 
   it('renders continuum fields when dataProductType!=1', () => {
     render(
-      <DataProduct t={t} data={{ ...baseData, dataProductType: 2 }} observation={baseObservation} />
+      <DataProduct
+        t={t}
+        sdp={{ ...baseData, data: { ...baseData.data, dataProductType: 2 } }}
+        observation={baseObservation}
+      />
     );
     expect(screen.getByTestId('TimeAveragingField')).toBeInTheDocument();
     expect(screen.getByTestId('FrequencyAveragingField')).toBeInTheDocument();
@@ -122,7 +131,7 @@ describe('DataProduct', () => {
     render(
       <DataProduct
         t={t}
-        data={{ ...baseData, weighting: IW_BRIGGS }}
+        sdp={{ ...baseData, data: { ...baseData.data, weighting: IW_BRIGGS } }}
         observation={{ ...baseObservation, type: TYPE_ZOOM }}
       />
     );
@@ -137,7 +146,7 @@ describe('DataProduct', () => {
     render(
       <DataProduct
         t={t}
-        data={baseData}
+        sdp={baseData}
         observation={{
           ...baseObservation,
           type: TYPE_PST,
@@ -154,7 +163,7 @@ describe('DataProduct', () => {
     render(
       <DataProduct
         t={t}
-        data={baseData}
+        sdp={baseData}
         observation={{
           ...baseObservation,
           type: TYPE_PST,

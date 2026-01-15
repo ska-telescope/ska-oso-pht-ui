@@ -168,7 +168,7 @@ export default function DataProduct({ data }: DataProductProps) {
         polarisations,
         channelsOut,
         taperValue,
-        fitSpectralPol: 3, // TODO check this can be removed
+        // fitSpectralPol: 3, // TODO check this can be removed
         timeAveraging,
         frequencyAveraging,
         bitDepth,
@@ -195,7 +195,7 @@ export default function DataProduct({ data }: DataProductProps) {
         polarisations,
         channelsOut,
         taperValue,
-        fitSpectralPol: 3, // TODO chheck this can be removed
+        // fitSpectralPol: 3, // TODO chheck this can be removed
         timeAveraging,
         frequencyAveraging,
         bitDepth,

@@ -19,7 +19,6 @@ import {
 import * as CONSTANTS from '@utils/constants.ts';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import {
-  DataProductSDP,
   DataProductSDPNew,
   DataProductSRC,
   DataProductSRCNetBackend,
@@ -464,22 +463,18 @@ describe('getDataProductScriptParameters', () => {
       }
     } as DataProductSDPNew;
     const result = getDataProductScriptParameters(obs, dp);
-    expect(result.weight.weighting).toBe('briggs');
-    expect(result.weight.robust).toBe(2);
+    expect(result?.weight?.weighting).toBe('briggs');
+    expect(result?.weight?.robust).toBe(2);
   });
 });
 
 describe('getDataProductSRC', () => {
   test('should map DataProductSRC array to DataProductSRCNetBackend array', () => {
-    const input: DataProductSRC[] = [
-      { id: 1 } as DataProductSRC,
-      { id: 2 } as DataProductSRC,
-      { id: 3 } as DataProductSRC
-    ];
+    const input: Partial<DataProductSRC>[] = [{ id: '1' }, { id: '2' }, { id: '3' }];
     const expected: DataProductSRCNetBackend[] = [
-      { data_products_src_id: 1 },
-      { data_products_src_id: 2 },
-      { data_products_src_id: 3 }
+      { data_products_src_id: '1' },
+      { data_products_src_id: '2' },
+      { data_products_src_id: '3' }
     ];
     expect(getDataProductSRC(input)).toEqual(expected);
   });
@@ -489,15 +484,9 @@ describe('getDataProductSRC', () => {
   });
 
   test('should handle undefined or null id values', () => {
-    const input: DataProductSRC[] = [
-      { id: undefined } as DataProductSRC,
-      { id: null } as DataProductSRC
-    ];
-    const expected: DataProductSRCNetBackend[] = [
-      { data_products_src_id: undefined },
-      { data_products_src_id: null }
-    ];
-    expect(getDataProductSRC(input)).toEqual(expected);
+    const input = [{ id: undefined }, { id: null }];
+    const expected = [{ data_products_src_id: undefined }, { data_products_src_id: null }];
+    expect(getDataProductSRC(input as any)).toEqual(expected);
   });
 });
 
@@ -597,24 +586,30 @@ describe('getDataProductRef', () => {
   test('returns the id as string when observationId matches', () => {
     const incTarObs = { observationId: 'obs-1' } as TargetObservation;
     const incDataProductSDP = [
-      { observationId: 'obs-1', id: 123 } as DataProductSDP,
-      { observationId: 'obs-2', id: 456 } as DataProductSDP
+      { observationId: 'obs-1', id: '123' } as Partial<DataProductSDPNew>,
+      { observationId: 'obs-2', id: '456' } as Partial<DataProductSDPNew>
     ];
-    expect(getDataProductRef(incTarObs, incDataProductSDP)).toBe('123');
+    expect(getDataProductRef(incTarObs, incDataProductSDP as DataProductSDPNew[])).toBe('123');
   });
 
   test('returns "undefined" string if no match is found', () => {
     const incTarObs = { observationId: 'obs-3' } as TargetObservation;
     const incDataProductSDP = [
-      { observationId: 'obs-1', id: 123 } as DataProductSDP,
-      { observationId: 'obs-2', id: 456 } as DataProductSDP
+      { observationId: 'obs-1', id: '123' } as Partial<DataProductSDPNew>,
+      { observationId: 'obs-2', id: '456' } as Partial<DataProductSDPNew>
     ];
-    expect(getDataProductRef(incTarObs, incDataProductSDP)).toBe('undefined');
+    expect(getDataProductRef(incTarObs, incDataProductSDP as DataProductSDPNew[])).toBe(
+      'undefined'
+    );
   });
 
   test('returns "undefined" string if id is undefined', () => {
     const incTarObs = { observationId: 'obs-1' } as TargetObservation;
-    const incDataProductSDP = [{ observationId: 'obs-1', id: undefined } as DataProductSDP];
-    expect(getDataProductRef(incTarObs, incDataProductSDP)).toBe('undefined');
+    const incDataProductSDP = [
+      { observationId: 'obs-1', id: undefined } as Partial<DataProductSDPNew>
+    ];
+    expect(getDataProductRef(incTarObs, incDataProductSDP as DataProductSDPNew[])).toBe(
+      'undefined'
+    );
   });
 });

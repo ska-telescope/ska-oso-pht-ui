@@ -58,7 +58,7 @@ export default function TableDataProducts({
               expandButtonRef={el => (expandButtonRefs.current[item.id] = el)}
               deleteClicked={deleteFunction}
               editClicked={updateFunction}
-              t={t}
+              t={t} // useScopedTranslation
             />
           ))}
         </TableBody>
