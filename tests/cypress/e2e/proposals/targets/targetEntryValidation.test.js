@@ -12,14 +12,17 @@ import {
   clickToAddTarget,
   enterTargetField,
   initializeUserNotLoggedIn,
+  mockOSDAPI,
   mockResolveTargetAPI,
   updateTargetField,
   verifyFieldError,
   verifyInformationBannerText,
+  verifyOsdDataMaxTargets,
   verifyTargetInTargetTable
 } from '../../common/common';
 beforeEach(() => {
   initializeUserNotLoggedIn();
+  mockOSDAPI();
   clickAddSubmission();
   clickCycleSelectionSV();
   clickCycleConfirm();
@@ -117,6 +120,7 @@ describe('Science Verification: Target entry validation', () => {
 
   it('SV: Verify target table reflects updated target', () => {
     mockResolveTargetAPI();
+    cy.wait('@mockOSDData');
 
     //add target
     addM2TargetUsingResolve();
@@ -141,6 +145,7 @@ describe('Science Verification: Target entry validation', () => {
     verifyTargetInTargetTable('M1', '02:00:00', '02:00:00', '0');
 
     //verify only one target is available for SV, as per OSD
+    verifyOsdDataMaxTargets(1);
     verifyInformationBannerText('Only 1 target/object is allowed');
   });
 });
