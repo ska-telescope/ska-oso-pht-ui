@@ -38,12 +38,12 @@ export default function TableObservations({
           <col style={{ width: '5%' }} />
           <col style={{ width: '5%' }} />
           <col style={{ width: '5%' }} />
+          <col style={{ width: '5%' }} />
         </colgroup>
 
         <TableBody>
           {data?.map((item: any, index: number) => (
             <TableObservationsRow
-              key={item.id}
               item={item}
               index={index}
               expanded={expandedRows.has(item.id)}

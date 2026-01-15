@@ -17,6 +17,7 @@ import {
   PAGE_OBSERVATION_ENTRY,
   PATH
 } from '@utils/constants.ts';
+import GroupObservation from '@utils/types/groupObservation.tsx';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
@@ -64,9 +65,12 @@ export default function ObservationPage() {
   };
 
   const popElementO = (rec: Observation) => {
+    const groupId = getProposal().groupObservations?.find(
+      (e: GroupObservation) => e.observationId === rec.id
+    )?.groupId;
     return {
       id: rec.id,
-      id2: rec.id /* Only here to satisfy syntax of DataGrid headers */,
+      id2: groupId /* Only here to satisfy syntax of DataGrid headers */,
       rec: rec,
       telescope: rec.telescope,
       subarray: rec.subarray,
