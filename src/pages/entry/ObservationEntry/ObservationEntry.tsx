@@ -945,11 +945,17 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           {isContinuum() ? continuumBandwidthField() : bandwidthField()}
         </Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{isPST() ? pstModeField() : emptyField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>
+          {isPST()
+            ? pstModeField()
+            : isZoom()
+            ? spectralAveragingField()
+            : isContinuum()
+            ? SubBandsField()
+            : emptyField()}
+        </Grid>
         <Grid size={{ md: 12, lg: 6 }}>{isZoom() ? spectralResolutionField() : emptyField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{isZoom() ? spectralAveragingField() : emptyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{isZoom() ? effectiveResolutionField() : emptyField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{isContinuum() ? SubBandsField() : emptyField()}</Grid>
       </>
     );
   };
@@ -1083,6 +1089,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                     alignItems="flex-start"
                     rowSpacing={isSV ? 0 : 2}
                   >
+                    {/* TODO check if observationsBandField below is a duplicate */}
                     <Grid size={{ md: 12 }}>{observationsBandField()}</Grid>
                     <Grid size={{ md: 12 }}>{subArrayField()}</Grid>
                     <Grid size={{ md: 12 }}>

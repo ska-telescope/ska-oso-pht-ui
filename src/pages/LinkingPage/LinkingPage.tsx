@@ -41,7 +41,7 @@ import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import { generateId } from '@/utils/helpers';
 import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
-import { DataProductSDPNew, SDPImageContinuumData } from '@/utils/types/dataProduct';
+import { DataProductSDPNew } from '@/utils/types/dataProduct';
 
 export default function LinkingPage() {
   const DATA_GRID_TARGET = '60vh';
