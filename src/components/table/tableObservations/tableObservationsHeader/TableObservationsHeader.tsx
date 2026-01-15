@@ -18,7 +18,7 @@ export default function TableObservationsHeader() {
         {displayHeader('actions.label')}
         {displayHeader('observationType.label')}
         {displayHeader('observationId.label')}
-        {displayHeader('groupId.label')}
+        {displayHeader('groupId.short')}
         {displayHeader('subArrayConfiguration.label')}
         {displayHeader('observingBand.label')}
         {displayHeader('')}

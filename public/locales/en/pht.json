@@ -552,8 +552,8 @@
     "notUnique": "Another observation with this unique identifier exists"
   },
   "groupId": {
-    "label": "Group ID",
-    "short": "ID"
+    "label": "Observation Group ID",
+    "short": "Group ID"
   },
   "observations": {
     "label": "Observations",
