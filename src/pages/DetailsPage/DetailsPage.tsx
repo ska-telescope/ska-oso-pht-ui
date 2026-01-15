@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Grid, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
+import { BorderedSection, DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import { SA_AA2, DETAILS, OBSERVATION_TYPE_SHORT_BACKEND, PAGE_DETAILS } from '@utils/constants.ts';
 import { countWords } from '@utils/helpers.ts';
 import { Proposal } from '@utils/types/proposal.tsx';
@@ -18,7 +18,7 @@ import autoLinking from '@/utils/autoLinking/AutoLinking';
 
 const PAGE = PAGE_DETAILS;
 const LINE_OFFSET = 30;
-const GAP = 4;
+const GAP = 0;
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
 export default function DetailsPage() {
@@ -110,17 +110,6 @@ export default function DetailsPage() {
     </Typography>
   );
 
-  const cycleIdField = () => (
-    <TextEntry
-      disabledUnderline
-      label=""
-      testId="cycleId"
-      value={getProposal().cycle}
-      onFocus={() => setHelp('abstract.help')}
-      disabled
-    />
-  );
-
   const cycleClosesField = () => (
     <TextEntry
       disabledUnderline
@@ -179,7 +168,7 @@ export default function DetailsPage() {
     return (
       <Box sx={{ height: LINE_OFFSET * numRows }}>
         <TextEntry
-          label=""
+          label={t('abstract.label')}
           testId="abstractId"
           rows={numRows}
           required
@@ -253,7 +242,7 @@ export default function DetailsPage() {
         testId="categoryId"
         value={scienceCategoryId}
         setValue={setScienceCategoryId}
-        label=""
+        label={t('scienceCategory.label')}
         onFocus={() => setHelp('scienceCategory.help')}
       />
     </Box>
@@ -270,14 +259,27 @@ export default function DetailsPage() {
     </Grid>
   );
 
+  const row2 = (component: React.ReactNode) => (
+    <Grid container alignItems="center" justifyContent="center" spacing={GAP}>
+      <Grid size={{ xs: 7 }} style={{ textAlign: 'left' }}>
+        {component}
+      </Grid>
+    </Grid>
+  );
+
   return (
     <Shell page={PAGE}>
       <Stack pt={GAP} spacing={GAP}>
-        {row('cycle.label', cycleIdField())}
-        {row('cycleOpens.label', cycleOpensField())}
-        {row('cycleCloses.label', cycleClosesField())}
-        {row('scienceCategory.label', categoryField(), true)}
-        {row('abstract.label', abstractField(), true)}
+        {row2(
+          <BorderedSection title={t('cycle.label') + ': ' + getProposal().cycle}>
+            <Stack>
+              {row('cycleOpens.label', cycleOpensField())}
+              {row('cycleCloses.label', cycleClosesField())}
+            </Stack>
+          </BorderedSection>
+        )}
+        {row2(categoryField())}
+        {row2(abstractField())}
       </Stack>
     </Shell>
   );

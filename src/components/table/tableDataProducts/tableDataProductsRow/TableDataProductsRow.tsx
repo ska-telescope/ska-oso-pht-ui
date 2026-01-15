@@ -161,6 +161,13 @@ export default function TableDataProductsRow({
         {/* Observation ID */}
         <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
           <Typography variant="body2" color="text.secondary">
+            {item.id}
+          </Typography>
+        </TableCell>
+
+        {/* Observation ID */}
+        <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
+          <Typography variant="body2" color="text.secondary">
             {item.observationId}
           </Typography>
         </TableCell>

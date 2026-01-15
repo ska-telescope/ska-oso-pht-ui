@@ -1,435 +1,192 @@
 import React from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import {
-  TextEntry,
-  TickBox,
-  AlertColorTypes,
-  LABEL_POSITION,
-  SPACER_VERTICAL,
-  Spacer,
-  InfoCard,
-  InfoCardColorTypes
-} from '@ska-telescope/ska-gui-components';
-import { Box, Grid, Typography } from '@mui/material';
-import { validateCalibrationPage } from '@utils/validation/validation.tsx';
+import { AlertColorTypes, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import { Box, Grid, Stack } from '@mui/material';
 import { Proposal } from '@utils/types/proposal.tsx';
 import Shell from '../../components/layout/Shell/Shell';
+import CalibrationEntry from '../entry/Calibration/CalibrationEntry';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import {
-  FOOTER_SPACER,
-  HELP_FONT,
-  LAB_POSITION_ABOVE,
-  PAGE_CALIBRATION,
-  WRAPPER_HEIGHT
-} from '@/utils/constants';
-import GetCalibratorList from '@/services/axios/get/getCalibratorList/getCalibratorList';
-import { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy';
-import { timeConversion } from '@/utils/helpersSensCalc';
-import { TIME_MINS } from '@/utils/constants';
-import ArrowIcon from '@/components/icon/arrowIcon/arrowIcon';
-import Supplied from '@/utils/types/supplied';
+import { FOOTER_SPACER, PATH, PAGE_CALIBRATION, PAGE_CALIBRATION_ENTRY } from '@/utils/constants';
 import { useHelp } from '@/utils/help/useHelp';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import AddButton from '@/components/button/Add/Add';
+import AlertDialog from '@/components/alerts/alertDialog/AlertDialog';
 
 const PAGE = PAGE_CALIBRATION;
-const LINE_OFFSET = 35; // TODO check why we need to set this for it to be visible
+const GAP = 4;
 
 export default function CalibrationPage() {
-  const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
-  const [validateToggle, setValidateToggle] = React.useState(false);
+  const { application } = storageObject.useStore();
 
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
-  const LABEL_WIDTH = 1;
-  const LABEL_WIDTH_CHECKBOX = 11.5;
-
-  const [calibrationStrategy, setCalibrationStrategy] = React.useState<CalibrationStrategy | null>(
-    null
-  );
-  const [name, setName] = React.useState('');
-  const [duration, setDuration] = React.useState('');
-  const [intent, setIntent] = React.useState('');
-  const [target, setTarget] = React.useState('');
-  const [integrationTime, setIntegrationTime] = React.useState('');
-  const [addComment, setAddComment] = React.useState(false);
-  const [comment, setComment] = React.useState('');
-  const [axiosViewError, setAxiosViewError] = React.useState('');
-
-  const hasObservations = () => (getProposal()?.targetObservation?.length ?? 0) > 0;
-  const errorSuffix = () => (hasObservations() ? '.noProducts' : '.noObservations');
+  const { autoLink, osdCyclePolicy } = useOSDAccessors();
+  const [openDialog, setOpenDialog] = React.useState(false);
 
   const getProposal = () => application.content2 as Proposal;
-  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-
-  const getProposalState = () => application.content1 as number[];
-  const setTheProposalState = (value: number) => {
-    const temp: number[] = [];
-    for (let i = 0; i < getProposalState().length; i++) {
-      temp.push(PAGE === i ? value : getProposalState()[i]);
-    }
-    updateAppContent1(temp);
-  };
 
   React.useEffect(() => {
-    setValidateToggle(!validateToggle);
     setHelp('page.' + PAGE + '.help');
-    getData();
   }, []);
 
-  React.useEffect(() => {
-    setValidateToggle(!validateToggle);
-  }, [getProposal()]);
-
-  React.useEffect(() => {
-    setTheProposalState(validateCalibrationPage(getProposal()));
-  }, [validateToggle]);
-
-  React.useEffect(() => {
-    updateProposalWithCalibrationStrategy();
-  }, [addComment, comment]);
-
-  React.useEffect(() => {
-    getOtherProposalData();
-  }, [calibrationStrategy]);
-
-  React.useEffect(() => {
-    setValidateToggle(!validateToggle);
-  }, []);
-
-  const getData = () => {
-    // data from the proposal calibration strategy
-    getCalibrationStrategyFromProposal();
-    // data from the calibrator endpoint
-    getCalibratorData();
+  const deleteConfirmed = () => {
+    // const obs1 = getProposal().dataProductSDP?.filter(e => e.id !== String(currentRow));
+    // setProposal({ ...getProposal(), dataProductSDP: obs1 }); // TODO if we create a SDP here, we should add the dataProductsSDPId to TargetObservation
+    // setCurrentRow(0);
+    // closeDeleteDialog();
   };
 
-  function updateProposalWithCalibrationStrategy() {
-    if (calibrationStrategy === null) {
-      return;
-    }
-    const record = {
-      ...getProposal(),
-      calibrationStrategy: [
-        ...[
-          {
-            ...(calibrationStrategy as CalibrationStrategy),
-            observatoryDefined: calibrationStrategy?.observatoryDefined,
-            id: calibrationStrategy?.id,
-            observationIdRef: calibrationStrategy?.observationIdRef,
-            calibrators: calibrationStrategy?.calibrators,
-            isAddNote: addComment,
-            notes: addComment ? comment : null
-          }
-        ]
-      ]
-    };
-    setProposal(record);
-  }
-
-  function getTargetName(): string {
-    const targetId = (getProposal().targetObservation ?? []).find(
-      e => e.observationId === calibrationStrategy?.observationIdRef
-    )?.targetId;
-    return getProposal().targets?.find(e => e.id === targetId)?.name ?? '';
-  }
-
-  function getIntegrationTime(): string {
-    const supplied = (getProposal().observations ?? []).find(
-      e => e.id === calibrationStrategy?.observationIdRef
-    )?.supplied;
-    return supplied ? getSuppliedIntegrationTimeInMinutes(supplied) : '';
-  }
-
-  function getOtherProposalData() {
-    if (!calibrationStrategy) {
-      return;
-    }
-    const targetName = getTargetName();
-    setTarget(targetName);
-    const integrationTime = getIntegrationTime();
-    setIntegrationTime(integrationTime);
-  }
-
-  function getCalibrationStrategyFromProposal() {
-    const existingStrategy: CalibrationStrategy = getProposal().calibrationStrategy?.[0]; // assumes only 1 calibration strategy for now
-    if (existingStrategy) {
-      setComment(existingStrategy.notes || '');
-      setAddComment(existingStrategy.isAddNote);
-      setCalibrationStrategy(existingStrategy);
-    }
-  }
-
-  async function getCalibratorData() {
-    const response = await GetCalibratorList();
-    if (typeof response === 'string') {
-      setAxiosViewError(response);
-      return false;
-    } else {
-      setCalibratorData(response[0]); // it is assumed there is only 1 callibrator for now
-      return true;
-    }
-  }
-
-  const getSuppliedIntegrationTimeInMinutes = (supplied: Supplied): string => {
-    const integrationTime = supplied; // TODO this assumes integration time, handle supplied sensitivity case in future
-    let timeInMinutes = integrationTime?.value
-      ? timeConversion(integrationTime?.value, integrationTime?.units, TIME_MINS)?.toFixed(2)
-      : '';
-    return timeInMinutes;
-  };
-
-  function setCalibratorData(calibrator: Calibrator) {
-    setName(calibrator.name);
-    setDuration(calibrator.durationMin.toString());
-    setIntent(calibrator.calibrationIntent);
-  }
-
-  const fieldWrapper = (children?: React.JSX.Element) => (
-    <Box
-      p={0}
-      mr={10}
-      pt={1}
-      sx={{
-        height: WRAPPER_HEIGHT,
-        width: 'auto'
-      }}
-    >
-      {children}
-    </Box>
-  );
-
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setAddComment(event.target.checked);
-  };
-
-  const checkBox = () => {
-    return fieldWrapper(
-      <TickBox
-        label={t('calibrator.checkbox.label')}
-        labelBold
-        labelWidth={LABEL_WIDTH_CHECKBOX}
-        labelPosition={LABEL_POSITION.END}
-        testId="calibratorCheckbox"
-        checked={addComment}
-        onChange={handleCheckboxChange}
-        onFocus={() => setHelp('calibrator.checkbox.help')}
-      />
-    );
-  };
-
-  const nameField = () => {
-    return fieldWrapper(
-      <TextEntry
-        testId="calibratorName"
-        value={name}
-        disabled={true}
-        label={t('calibrator.calibrator')}
-        width="100%"
-      />
-    );
-  };
-
-  const durationField = () => {
-    return fieldWrapper(
-      <TextEntry
-        testId="duration"
-        value={duration}
-        disabled={true}
-        label={t('calibrator.duration')}
-        suffix={t('calibrator.minutes')}
-      />
-    );
-  };
-
-  const intentField = () => {
-    return fieldWrapper(
-      <TextEntry testId="intent" value={intent} disabled={true} label={t('calibrator.intent')} />
-    );
-  };
-
-  const targetField = () => {
-    return fieldWrapper(
-      <TextEntry testId="target" value={target} disabled={true} label={t('calibrator.target')} />
-    );
-  };
-
-  const integrationTimeField = () => {
-    return fieldWrapper(
-      <TextEntry
-        testId="integrationTime"
-        value={integrationTime}
-        disabled={true}
-        label={t('calibrator.integrationTime')}
-        suffix={t('calibrator.minutes')}
-      />
-    );
-  };
-
-  const commentField = () => {
-    const numRows = 4;
-
-    function validateComment(inc: string) {
-      if (addComment && (!inc || inc?.length === 0)) {
-        return `${t('title.empty')}`;
-      }
-    }
-
+  const hasData = (): boolean => {
+    const proposal = getProposal();
     return (
-      <Box pr={1} sx={{ height: LINE_OFFSET * numRows, xs: 4, md: 8 }}>
-        <TextEntry
-          label={t('calibrator.comment.label')}
-          labelBold
-          labelPosition={LAB_POSITION_ABOVE}
-          labelWidth={LABEL_WIDTH}
-          testId="commentId"
-          rows={numRows}
-          errorText={validateComment(comment)}
-          value={comment}
-          setValue={setComment}
-          onFocus={() => setHelp('calibrator.comment.help')}
-        />
-      </Box>
+      !!proposal &&
+      Array.isArray(proposal.calibrationStrategy) &&
+      proposal.calibrationStrategy.length > 0
     );
   };
 
-  const calibrationDetails = (): React.ReactNode => {
+  const hasTargetObservations = () => {
+    return (getProposal()?.targetObservation?.length ?? 0) > 0;
+  };
+
+  const noData = () => {
+    return (
+      <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
+        <Grid size={{ md: 10 }}>
+          <Alert
+            color={AlertColorTypes.Error}
+            text={t('error.noCalibrationsLoggedOut')}
+            testId="noDataNotification"
+          />
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const dataList = () => {
     return (
       <>
-        <Grid sx={{ overflow: 'hidden', width: '100%', xs: 4, md: 8 }}>
-          {(getProposal()?.targets?.length ?? 0) > 0 && (
-            <Box pt={1} pr={10}>
-              <InfoCard
-                color={InfoCardColorTypes.Warning}
-                fontSize={HELP_FONT}
-                message={t('calibrator.limitReached')}
-                testId="calibrationLimitPanelId"
-              />
-            </Box>
-          )}
-          <Grid pt={2} pb={4}>
-            <Typography>{t('calibrator.desc')}</Typography>
-          </Grid>
-          <Grid
-            pt={1}
-            container
-            direction="row"
-            alignItems="center"
-            justifyContent="flex-start"
-            sx={{ flexWrap: 'nowrap', xs: 4, md: 8 }}
-          >
-            <Grid width={50} pt={4} mr={5}>
-              <ArrowIcon disabled onClick={() => {}} />
-            </Grid>
-            <Grid size="grow" minWidth={210}>
-              {nameField()}
-            </Grid>
-            <Grid size="grow" minWidth={220}>
-              {durationField()}
-            </Grid>
-            <Grid size="grow" minWidth={150}>
-              {intentField()}
-            </Grid>
-          </Grid>
-          <Grid
-            pt={1}
-            container
-            direction="row"
-            alignItems="center"
-            justifyContent="flex-start"
-            sx={{ flexWrap: 'nowrap', xs: 4, md: 8 }}
-          >
-            <Grid width={50} pt={5} mr={5}>
-              <ArrowIcon disabled onClick={() => {}} />
-            </Grid>
-            <Grid size="grow" minWidth={210}>
-              {targetField()}
-            </Grid>
-            <Grid size="grow" minWidth={220}>
-              {integrationTimeField()}
-            </Grid>
-            <Grid size="grow" minWidth={150}></Grid>
-          </Grid>
-          <Grid
-            pt={1}
-            container
-            direction="row"
-            alignItems="center"
-            justifyContent="flex-start"
-            sx={{ flexWrap: 'nowrap', xs: 4, md: 8 }}
-          >
-            <Grid width={50} pt={4} mr={5}>
-              <ArrowIcon disabled onClick={() => {}} />
-            </Grid>
-            <Grid size="grow" minWidth={210}>
-              {nameField()}
-            </Grid>
-            <Grid size="grow" minWidth={220}>
-              {durationField()}
-            </Grid>
-            <Grid size="grow" minWidth={150}>
-              {intentField()}
-            </Grid>
-          </Grid>
-          <Grid pt={5}>
-            <Typography mt={3}>{t('calibrator.note')}</Typography>
-            <Typography mb={3}>{t('calibrator.disclaimer')}</Typography>
-          </Grid>
-          <Grid container direction="row" alignItems="center" justifyContent="flex-start">
-            <Grid size="grow">
-              <Grid mr={3} mt={-2}>
-                {checkBox()}
-              </Grid>
-              <Grid mr={3} mt={-2}>
-                {addComment && commentField()}
-              </Grid>
-            </Grid>
-          </Grid>
-        </Grid>
+        <Stack pl={GAP} pr={GAP} spacing={GAP}>
+          {/* <TableDataProducts
+            data={getProposal().dataProductSDP ?? []}
+            deleteFunction={deleteIconClicked}
+            updateFunction={editIconClicked}
+          /> */}
+        </Stack>
+        <AlertDialog
+          maxWidth="md"
+          open={openDialog}
+          onClose={() => setOpenDialog(false)}
+          onDialogResponse={deleteConfirmed}
+          title="deleteDataProduct.confirmTitle"
+          disabled={false}
+        >
+          {alertContent()}
+        </AlertDialog>
       </>
+    );
+  };
+
+  const alertContent = () => {
+    // const rec = getProposal().dataProductSDP?.find(p => String(p.id) === String(currentRow));
+    // const data = rec?.data as SDPImageContinuumData;
+    return (
+      <Grid
+        p={2}
+        container
+        direction="column"
+        alignItems="space-evenly"
+        justifyContent="space-around"
+      >
+        {/* <FieldWrapper label={t('observations.dp.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{rec?.observationId}</Typography>
+        </FieldWrapper>
+        <FieldWrapper label={t('imageSize.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">
+            {data?.imageSizeValue} {presentUnits(String(data?.imageSizeUnits ?? ''))}
+          </Typography>
+        </FieldWrapper>
+        <FieldWrapper label={t('pixelSize.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">
+            {data?.pixelSizeValue} {'arcsec'}
+          </Typography>
+        </FieldWrapper>
+        <FieldWrapper label={t('weighting.label')} labelWidth={LABEL_WIDTH}>
+          <Typography variant="body1">{t('imageWeighting.' + data?.weighting)}</Typography>
+        </FieldWrapper> */}
+      </Grid>
     );
   };
 
   return (
     <Shell page={PAGE}>
-      <>
-        {hasObservations() && (
-          <Grid
-            p={1}
-            container
-            direction="row"
-            alignItems="space-evenly"
-            justifyContent="center"
-            spacing={1}
-          >
-            <Grid size={{ xs: 4, md: 8 }} sx={{ position: 'relative' }}>
-              {!axiosViewError && calibrationDetails()}
-              {axiosViewError && (
-                <Alert
-                  color={AlertColorTypes.Error}
-                  testId="axiosErrorTestId"
-                  text={axiosViewError}
-                />
-              )}
-            </Grid>
-          </Grid>
-        )}
-        {!hasObservations() && (
-          <Grid
-            p={10}
-            container
-            direction="column"
-            alignItems="space-evenly"
-            justifyContent="space-around"
-          >
-            <Alert
-              color={AlertColorTypes.Error}
-              text={t('page.' + PAGE + errorSuffix())}
-              testId="helpPanelId"
+      <Box pl={GAP}>
+        {!autoLink && (
+          <Box pb={GAP}>
+            <AddButton
+              title={'page.' + PAGE + '.title'}
+              action={PATH[PAGE_CALIBRATION_ENTRY]}
+              primary={!hasData()}
+              testId="addDataProductButton"
             />
-          </Grid>
+          </Box>
         )}
-      </>
-      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
+        {(autoLink ? !hasTargetObservations() : !hasData()) && noData()}
+
+        {(autoLink ? hasTargetObservations() : hasData()) && (
+          <>
+            {osdCyclePolicy?.maxDataProducts !== 1 && dataList()}
+            {osdCyclePolicy?.maxDataProducts === 1 && (
+              <Box p={GAP}>
+                <CalibrationEntry data={getProposal()?.calibrationStrategy?.[0]} />
+              </Box>
+            )}
+          </>
+        )}
+        <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
+      </Box>
     </Shell>
+
+    // <Shell page={PAGE}>
+    //   <>
+    //     {hasData() && (
+    //       <Grid
+    //         p={1}
+    //         container
+    //         direction="row"
+    //         alignItems="space-evenly"
+    //         justifyContent="center"
+    //         spacing={1}
+    //       >
+    //         <Grid size={{ xs: 4, md: 8 }} sx={{ position: 'relative' }}>
+    //           {!axiosViewError && <CalibrationEntry data={strategy} />}
+    //           {axiosViewError && (
+    //             <Alert
+    //               color={AlertColorTypes.Error}
+    //               testId="axiosErrorTestId"
+    //               text={axiosViewError}
+    //             />
+    //           )}
+    //         </Grid>
+    //       </Grid>
+    //     )}
+    //     {!hasData() && (
+    //       <Grid
+    //         p={10}
+    //         container
+    //         direction="column"
+    //         alignItems="space-evenly"
+    //         justifyContent="space-around"
+    //       >
+    //         <Alert
+    //           color={AlertColorTypes.Error}
+    //           text={t('page.' + PAGE + errorSuffix())}
+    //           testId="helpPanelId"
+    //         />
+    //       </Grid>
+    //     )}
+    //   </>
+    // </Shell>
   );
 }

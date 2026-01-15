@@ -17,6 +17,7 @@ export default function TableDataProductsHeader() {
       <TableRow>
         {displayHeader('actions.label')}
         {displayHeader('observationType.label')}
+        {displayHeader('observatoryDataProduct.id')}
         {displayHeader('observationId.label')}
         {displayHeader('subArrayConfiguration.label')}
         {displayHeader('observingBand.label')}

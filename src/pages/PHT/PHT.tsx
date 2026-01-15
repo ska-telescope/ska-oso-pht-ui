@@ -18,7 +18,9 @@ import {
   REVIEW_TYPE,
   USE_LOCAL_DATA,
   SKA_OSO_SERVICES_URL,
-  SKA_SENSITIVITY_CALCULATOR_API_URL
+  SKA_SENSITIVITY_CALCULATOR_API_URL,
+  PAGE_CALIBRATION_ENTRY,
+  PAGE_OBSERVATION_ENTRY
 } from '../../utils/constants';
 import packageJson from '../../../package.json';
 
@@ -43,6 +45,7 @@ import PanelReviewDecisionList from '../PanelReviewDecisionList/PanelReviewDecis
 import ReviewEntry from '../entry/ReviewEntry/ReviewEntry';
 import CalibrationPage from '../CalibrationPage/CalibrationPage';
 import LinkingPage from '../LinkingPage/LinkingPage';
+import CalibrationEntry from '../entry/Calibration/CalibrationEntry';
 import Proposal from '@/utils/types/proposal';
 import Notification from '@/utils/types/notification';
 import ButtonUserMenu from '@/components/button/UserMenu/UserMenu';
@@ -67,7 +70,7 @@ const ROUTES = [
   { path: NAV[9], element: <CalibrationPage /> },
   { path: NAV[10], element: <SrcDataPage /> },
   { path: PATH[1], element: <AddProposal /> },
-  { path: PATH[2], element: <ObservationEntry /> },
+  { path: PATH[PAGE_OBSERVATION_ENTRY], element: <ObservationEntry /> },
   { path: PATH[3], element: <AddDataProduct /> },
   { path: PMT[0], element: <PanelManagement /> },
   { path: PMT[1], element: <ReviewListPage /> },
@@ -75,7 +78,8 @@ const ROUTES = [
   { path: PMT[3], element: <div /> },
   { path: PMT[4], element: <PanelReviewDecisionList /> },
   { path: PMT[5], element: <ReviewEntry reviewType={REVIEW_TYPE.SCIENCE} /> },
-  { path: PMT[6], element: <ReviewEntry reviewType={REVIEW_TYPE.TECHNICAL} /> }
+  { path: PMT[6], element: <ReviewEntry reviewType={REVIEW_TYPE.TECHNICAL} /> },
+  { path: PATH[PAGE_CALIBRATION_ENTRY], element: <CalibrationEntry /> }
 ];
 
 export default function PHT() {

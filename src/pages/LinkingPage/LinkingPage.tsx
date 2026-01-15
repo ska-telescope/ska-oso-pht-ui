@@ -183,8 +183,8 @@ export default function LinkingPage() {
 
   const popElementO = (dp: DataProductSDPNew, obs: Observation) => {
     return {
-      id: obs.id,
-      id2: obs.id /* Only here to satisfy syntax of DataGrid headers */,
+      id: dp.id,
+      id2: obs.id,
       rec: obs,
       telescope: obs.telescope,
       subarray: obs.subarray,
@@ -376,8 +376,22 @@ export default function LinkingPage() {
   const extendedColumnsObservations = [
     ...[
       {
-        field: 'id',
+        field: 'id2',
         headerName: t('observations.id'),
+        flex: 0.75,
+        minWidth: 150,
+        disableClickEventBubbling: true,
+        renderCell: (e: { row: { id2: string } }) => {
+          return (
+            <Typography variant="body2" sx={{ whiteSpace: 'nowrap', pt: 1 }}>
+              {e.row.id2}
+            </Typography>
+          );
+        }
+      },
+      {
+        field: 'id',
+        headerName: t('observatoryDataProduct.id'),
         flex: 0.75,
         minWidth: 150,
         disableClickEventBubbling: true,
@@ -385,20 +399,6 @@ export default function LinkingPage() {
           return (
             <Typography variant="body2" sx={{ whiteSpace: 'nowrap', pt: 1 }}>
               {e.row.id}
-            </Typography>
-          );
-        }
-      },
-      {
-        field: 'id2',
-        headerName: t('observatoryDataProduct.id'),
-        flex: 0.75,
-        minWidth: 150,
-        disableClickEventBubbling: true,
-        renderCell: (e: { row: { id: string; dp: { id: string } } }) => {
-          return (
-            <Typography variant="body2" sx={{ whiteSpace: 'nowrap', pt: 1 }}>
-              {e.row.dp.id}
             </Typography>
           );
         }

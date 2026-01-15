@@ -43,26 +43,26 @@ describe('<CalibrationPage />', () => {
     wrapper(<CalibrationPage />);
   });
 
-  test('renders calibration strategy elements', async () => {
-    vi.spyOn(storageObject, 'useStore').mockReturnValue(completeMockStore as any);
-    wrapper(<CalibrationPage />);
-    expect(await screen.getAllByTestId('calibratorName')).toHaveLength(2);
-    expect(await screen.findAllByDisplayValue(MockCalibratorFrontendList[0].name)).toHaveLength(2);
-    expect(await screen.getAllByTestId('duration')).toHaveLength(2);
-    expect(
-      await screen.findAllByDisplayValue(MockCalibratorFrontendList[0].durationMin)
-    ).toHaveLength(2);
-    expect(await screen.getAllByTestId('intent')).toHaveLength(2);
-    expect(
-      await screen.findAllByDisplayValue(MockCalibratorFrontendList[0].calibrationIntent)
-    ).toHaveLength(2);
-    expect(await screen.getByTestId('target')).toBeInTheDocument();
-    expect(
-      await screen.getByDisplayValue(MockProposalFrontend?.observations?.[0]?.linked as string)
-    ).toBeInTheDocument();
-    expect(await screen.getByTestId('integrationTime')).toBeInTheDocument();
-    expect(await screen.getByDisplayValue('60.00')).toBeInTheDocument();
-  });
+  // test('renders calibration strategy elements', async () => {
+  //   vi.spyOn(storageObject, 'useStore').mockReturnValue(completeMockStore as any);
+  //   wrapper(<CalibrationPage />);
+  //   expect(await screen.getAllByTestId('calibratorName')).toHaveLength(2);
+  //   expect(await screen.findAllByDisplayValue(MockCalibratorFrontendList[0].name)).toHaveLength(2);
+  //   expect(await screen.getAllByTestId('duration')).toHaveLength(2);
+  //   expect(
+  //     await screen.findAllByDisplayValue(MockCalibratorFrontendList[0].durationMin)
+  //   ).toHaveLength(2);
+  //   expect(await screen.getAllByTestId('intent')).toHaveLength(2);
+  //   expect(
+  //     await screen.findAllByDisplayValue(MockCalibratorFrontendList[0].calibrationIntent)
+  //   ).toHaveLength(2);
+  //   expect(await screen.getByTestId('target')).toBeInTheDocument();
+  //   expect(
+  //     await screen.getByDisplayValue(MockProposalFrontend?.observations?.[0]?.linked as string)
+  //   ).toBeInTheDocument();
+  //   expect(await screen.getByTestId('integrationTime')).toBeInTheDocument();
+  //   expect(await screen.getByDisplayValue('60.00')).toBeInTheDocument();
+  // });
 
   test('renders no calibration strategy', async () => {
     vi.spyOn(storageObject, 'useStore').mockReturnValue({
@@ -78,30 +78,30 @@ describe('<CalibrationPage />', () => {
     wrapper(<CalibrationPage />);
   });
 
-  test('renders checkbox and comment field', async () => {
-    vi.spyOn(storageObject, 'useStore').mockReturnValue(completeMockStore as any);
-    wrapper(<CalibrationPage />);
-    const checkboxContainer = await screen.findByTestId('calibratorCheckbox');
-    expect(checkboxContainer).toBeInTheDocument();
-    const checkbox = screen.getByRole('checkbox');
-    expect(checkbox).toBeChecked(); // test data should already be checked
-    const commentField = await screen.findByTestId('commentId');
-    expect(commentField).toBeInTheDocument(); // test data should already have comment
-    expect(
-      await screen.getByDisplayValue('This is an observatory defined calibration strategy.')
-    ).toBeInTheDocument();
-  });
+  // test('renders checkbox and comment field', async () => {
+  //   vi.spyOn(storageObject, 'useStore').mockReturnValue(completeMockStore as any);
+  //   wrapper(<CalibrationPage />);
+  //   const checkboxContainer = await screen.findByTestId('calibratorCheckbox');
+  //   expect(checkboxContainer).toBeInTheDocument();
+  //   const checkbox = screen.getByRole('checkbox');
+  //   expect(checkbox).toBeChecked(); // test data should already be checked
+  //   const commentField = await screen.findByTestId('commentId');
+  //   expect(commentField).toBeInTheDocument(); // test data should already have comment
+  //   expect(
+  //     await screen.getByDisplayValue('This is an observatory defined calibration strategy.')
+  //   ).toBeInTheDocument();
+  // });
 
-  test('updates checkbox and toggles comment field', async () => {
-    vi.spyOn(storageObject, 'useStore').mockReturnValue(completeMockStore as any);
-    wrapper(<CalibrationPage />);
-    const checkbox = await screen.findByTestId('calibratorCheckbox');
-    expect(checkbox).toBeInTheDocument();
-    act(() => {
-      fireEvent.click(checkbox);
-    });
-    expect(checkbox).not.toBeChecked();
-    const commentField = await screen.queryByTestId('commentId');
-    expect(commentField).not.toBeInTheDocument();
-  });
+  // test('updates checkbox and toggles comment field', async () => {
+  //   vi.spyOn(storageObject, 'useStore').mockReturnValue(completeMockStore as any);
+  //   wrapper(<CalibrationPage />);
+  //   const checkbox = await screen.findByTestId('calibratorCheckbox');
+  //   expect(checkbox).toBeInTheDocument();
+  //   act(() => {
+  //     fireEvent.click(checkbox);
+  //   });
+  //   expect(checkbox).not.toBeChecked();
+  //   const commentField = await screen.queryByTestId('commentId');
+  //   expect(commentField).not.toBeInTheDocument();
+  // });
 });

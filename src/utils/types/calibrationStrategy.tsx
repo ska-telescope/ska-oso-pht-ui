@@ -18,7 +18,7 @@ export type CalibrationStrategyBackend = {
 // not used yet as we only use observatory defined at the moment
 export type Calibrator = {
   calibrationIntent: string; // 'flux' | 'amplitude' | 'phase'
-  name: string;
+  name: string; // We believe this the unique identifier for a calibrator
   durationMin: number;
   choice: string;
   notes: string | null;
@@ -30,5 +30,4 @@ export type CalibrationStrategy = {
   observationIdRef: string;
   calibrators: Calibrator[] | null; // null for observatory defined
   notes: string | null;
-  isAddNote: boolean;
 };
