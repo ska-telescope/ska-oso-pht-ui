@@ -37,7 +37,7 @@ import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import { generateId } from '@/utils/helpers';
 import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
-import { DataProductSDP } from '@/utils/types/dataProduct';
+import { DataProductSDPNew, SDPImageContinuumData } from '@/utils/types/dataProduct';
 
 export default function LinkingPage() {
   const DATA_GRID_TARGET = '40vh';
@@ -49,7 +49,7 @@ export default function LinkingPage() {
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currObs, setCurrObs] = React.useState<Observation | null>(null);
-  const [currDataProductSDP] = React.useState<DataProductSDP | null>(null);
+  const [currDataProductSDP] = React.useState<DataProductSDPNew | null>(null);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openMultipleDialog, setOpenMultipleDialog] = React.useState(false);
   const [elementsO, setElementsO] = React.useState<ReturnType<typeof popElementO>[]>([]);
@@ -211,7 +211,7 @@ export default function LinkingPage() {
   const getSensCalcData = async (
     observation: Observation,
     target: Target,
-    dataProductSDP: DataProductSDP
+    dataProductSDP: DataProductSDPNew
   ) => {
     const response = await calculateSensCalcData(observation, target, dataProductSDP);
     if (response) {
@@ -345,7 +345,8 @@ export default function LinkingPage() {
 
   const isCustom = () => currObs?.subarray === SA_CUSTOM;
   const isNatural = () =>
-    currObs?.subarray !== SA_CUSTOM && currDataProductSDP?.weighting === IW_NATURAL;
+    currObs?.subarray !== SA_CUSTOM &&
+    (currDataProductSDP?.data as SDPImageContinuumData)?.weighting === IW_NATURAL;
 
   const getSensCalcSingle = (id: number, field: string) => (
     <SensCalcDisplaySingle

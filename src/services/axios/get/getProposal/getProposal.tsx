@@ -448,9 +448,18 @@ const getObservations = (
           ? getBandwidth(inValue[i].observation_type_details?.bandwidth?.value ?? 0, arr)
           : null,
       supplied: getSupplied(inValue[i].observation_type_details?.supplied ?? null),
-      spectralResolution: inValue[i].observation_type_details?.spectral_resolution as string,
-      effectiveResolution: inValue[i].observation_type_details?.effective_resolution as string,
-      spectralAveraging: Number(inValue[i].observation_type_details?.spectral_averaging),
+      spectralResolution: String(
+        (inValue[i].observation_type_details as ObservationTypeDetailsSpectralBackend)
+          ?.spectral_resolution
+      ),
+      effectiveResolution: String(
+        (inValue[i].observation_type_details as ObservationTypeDetailsSpectralBackend)
+          ?.effective_resolution
+      ),
+      spectralAveraging: Number(
+        (inValue[i].observation_type_details as ObservationTypeDetailsSpectralBackend)
+          ?.spectral_averaging
+      ),
       linked: getLinked(inValue[i], inResults),
       continuumBandwidth:
         type === TYPE_CONTINUUM ? inValue[i].observation_type_details?.bandwidth?.value : null,

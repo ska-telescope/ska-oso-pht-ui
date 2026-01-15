@@ -7,7 +7,7 @@ import { presentUnits } from '@utils/present/present';
 import { validateSDPPage } from '@utils/validation/validation.tsx';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { FOOTER_SPACER, PAGE_DATA_PRODUCTS, PATH } from '@utils/constants.ts';
-import { DataProductSDP, SDPImageContinuumData } from '@utils/types/dataProduct.tsx';
+import { DataProductSDPNew, SDPImageContinuumData } from '@utils/types/dataProduct.tsx';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
@@ -58,12 +58,12 @@ export default function DataProductsPage() {
     setTheProposalState(validateSDPPage(getProposal(), autoLink));
   }, [validateToggle]);
 
-  const deleteIconClicked = (e: DataProductSDP) => {
+  const deleteIconClicked = (e: DataProductSDPNew) => {
     setCurrentRow(Number(e.id));
     setOpenDialog(true);
   };
 
-  const editIconClicked = (e: DataProductSDP) => {
+  const editIconClicked = (e: DataProductSDPNew) => {
     setCurrentRow(Number(e.id));
     navigate(PATH[3], { replace: true, state: e });
   };
