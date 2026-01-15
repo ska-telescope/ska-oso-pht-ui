@@ -315,8 +315,20 @@ export const PAGE_CYCLE = 13;
 export const PAGE_DATA_PRODUCTS_ADD = 14;
 export const PAGE_OBSERVATION_UPDATE = 15;
 export const PAGE_PANEL_MANAGEMENT = 16;
+export const PAGE_CALIBRATION_ADD = 17;
+export const PAGE_CALIBRATION_UPDATE = 18;
 
-export const PATH = ['/', '/addProposal', '/addObservation', '/addDataProduct', '/editObservation'];
+export const PAGE_OBSERVATION_ENTRY = 2;
+export const PAGE_CALIBRATION_ENTRY = 5;
+
+export const PATH = [
+  '/',
+  '/addProposal',
+  '/addObservation',
+  '/addDataProduct',
+  '/editObservation',
+  '/editCalibration'
+];
 
 export const PMT = [
   '/review/panel',

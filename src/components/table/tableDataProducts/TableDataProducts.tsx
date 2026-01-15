@@ -35,8 +35,9 @@ export default function TableDataProducts({
   return (
     <TableContainer>
       <Table aria-label="Data Products Table" sx={{ tableLayout: 'auto', width: '100%' }}>
-        {false && <TableDataProductsHeader />}
+        {<TableDataProductsHeader />}
         <colgroup>
+          <col style={{ width: '5%' }} />
           <col style={{ width: '5%' }} />
           <col style={{ width: '5%' }} />
           <col style={{ width: '5%' }} />

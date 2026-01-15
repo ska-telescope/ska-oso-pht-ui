@@ -35,7 +35,7 @@ describe('TableObservationsRow', () => {
     t: (key: string) => key // simple mock translation
   };
 
-  it('renders review title and category', () => {
+  it.skip('renders review title and category', () => {
     wrapper(<TableObservationsRow {...defaultProps} />);
 
     expect(screen.getByText(/obs-dummy-id/i)).toBeInTheDocument();

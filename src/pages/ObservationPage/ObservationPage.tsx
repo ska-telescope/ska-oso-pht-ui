@@ -10,7 +10,13 @@ import {
   validateLinkingPage,
   validateObservationPage
 } from '@utils/validation/validation.tsx';
-import { PAGE_CALIBRATION, PAGE_LINKING, PAGE_OBSERVATION, PATH } from '@utils/constants.ts';
+import {
+  PAGE_CALIBRATION,
+  PAGE_LINKING,
+  PAGE_OBSERVATION,
+  PAGE_OBSERVATION_ENTRY,
+  PATH
+} from '@utils/constants.ts';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
@@ -144,7 +150,7 @@ export default function ObservationPage() {
   const AddTheButton = () => (
     <Box p={GAP} pt={0}>
       <AddButton
-        action={PATH[2]}
+        action={PATH[PAGE_OBSERVATION_ENTRY]}
         primary={!hasObservations()}
         testId="addObservationButton"
         title="addObservation.button"
@@ -175,12 +181,12 @@ export default function ObservationPage() {
   return (
     <Shell page={PAGE} helpDisabled>
       <>
-        {(osdCyclePolicy?.maxObservations !== 1 || !isLoggedIn()) && AddTheButton()}
+        {(osdCyclePolicy?.maxObservations !== 1 || !loggedIn) && AddTheButton()}
         {(autoLink ? !hasTargetObservations() : !hasObservations()) && noObservations()}
-        {(!isLoggedIn() || osdCyclePolicy?.maxObservations !== 1) &&
+        {(!loggedIn || osdCyclePolicy?.maxObservations !== 1) &&
           (autoLink ? hasTargetObservations() : hasObservations()) &&
           observationList()}
-        {isLoggedIn() &&
+        {loggedIn &&
           osdCyclePolicy?.maxObservations === 1 &&
           (autoLink ? hasTargetObservations() : hasObservations()) && (
             <ObservationEntry data={getProposal()?.observations?.[0]} />
