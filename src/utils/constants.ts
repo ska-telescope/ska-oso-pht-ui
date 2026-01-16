@@ -795,7 +795,7 @@ export const DEFAULT_PST_OBSERVATION_LOW_AA2: Observation = {
   spectralAveraging: 1,
   spectralResolution: '',
   effectiveResolution: '',
-  pstMode: FLOW_THROUGH_VALUE
+  pstMode: PULSAR_TIMING_VALUE
 };
 
 export const DEFAULT_OBSERVATIONS_LOW_AA2: Observation[] = [
