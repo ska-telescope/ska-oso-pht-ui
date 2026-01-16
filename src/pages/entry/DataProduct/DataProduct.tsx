@@ -20,7 +20,6 @@ import {
   DP_TYPE_IMAGES,
   FLOW_THROUGH_VALUE,
   FOOTER_HEIGHT_PHT,
-  IW_BRIGGS,
   IW_NATURAL,
   IW_UNIFORM,
   NAV,
@@ -515,7 +514,7 @@ export default function DataProduct({ data }: DataProductProps) {
           } else if (isDetectedFilterbank()) {
             return timeAveragingValid() && frequencyAveragingValid() && polarisationsValid();
           }
-          break;
+          return true;
         case TYPE_CONTINUUM:
         default:
           if (isDataTypeOne()) {
@@ -635,9 +634,7 @@ export default function DataProduct({ data }: DataProductProps) {
                     <Grid size={{ md: COL_MID, lg: COL }}>
                       {fieldWrapper(imageWeightingField())}
                     </Grid>
-                    <Grid size={{ md: COL_MID, lg: COL }}>
-                      {weighting === IW_BRIGGS && fieldWrapper(robustField())}
-                    </Grid>
+                    <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(robustField())}</Grid>
                     <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(taperField())}</Grid>
                     <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(channelsOutField())}</Grid>
                   </Grid>
@@ -657,9 +654,7 @@ export default function DataProduct({ data }: DataProductProps) {
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(imageSizeField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(pixelSizeField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(imageWeightingField())}</Grid>
-                  <Grid size={{ md: COL_MID, lg: COL }}>
-                    {weighting === IW_BRIGGS && fieldWrapper(robustField())}
-                  </Grid>
+                  <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(robustField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(taperField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(channelsOutField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>
