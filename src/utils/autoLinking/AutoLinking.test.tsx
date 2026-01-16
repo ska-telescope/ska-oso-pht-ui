@@ -11,15 +11,12 @@ import {
 import * as helpers from '../helpers';
 import { calculateSensCalcData } from '../sensCalc/sensCalc';
 import Proposal from '../types/proposal';
-import {
-  SDPImageContinuumData,
-  SDPSpectralData
-} from '../types/dataProduct';
+import { SDPImageContinuumData, SDPSpectralData } from '../types/dataProduct';
 import autoLinking, { calibrationOut, dataProductSDPOut, observationOut } from './AutoLinking';
 import { mockCalibration } from './mockCalibration';
 import {
   CONTINUUM_IMAGE_DATA_PRODUCT,
-  PST_FLOW_THROUGH_DATA_PRODUCT,
+  PST_TIMING_DATA_PRODUCT,
   SPECTRAL_DATA_PRODUCT
 } from './mockSDP';
 import { mockTarget } from './mockTarget';
@@ -65,7 +62,7 @@ describe('autoLinking, dataProductSDPOut', () => {
       id: 'obs-123'
     };
     const sdp = dataProductSDPOut(obs);
-    expect(sdp).to.deep.equal(PST_FLOW_THROUGH_DATA_PRODUCT);
+    expect(sdp).to.deep.equal(PST_TIMING_DATA_PRODUCT);
   });
 });
 
@@ -227,7 +224,7 @@ describe('autoLinking()', () => {
     expect(sdp?.observationId).toBe(obs?.id);
 
     expect((sdp?.data as SDPSpectralData)?.polarisations).toEqual(
-      SPECTRAL_DATA_PRODUCT.data.polarisations
+      (SPECTRAL_DATA_PRODUCT.data as SDPSpectralData).polarisations
     );
 
     const link = proposal.targetObservation?.[0];
@@ -247,11 +244,11 @@ describe('autoLinking()', () => {
       observations: [{ ...DEFAULT_PST_OBSERVATION_LOW_AA2, id: 'existing-pst-obs' }],
       dataProductSDP: [
         {
-          ...PST_FLOW_THROUGH_DATA_PRODUCT,
+          ...PST_TIMING_DATA_PRODUCT,
           id: 'existing-pst-sdp',
           observationId: 'existing-pst-obs',
           data: {
-            ...PST_FLOW_THROUGH_DATA_PRODUCT.data,
+            ...PST_TIMING_DATA_PRODUCT.data,
             polarisations: ['XX']
           } as SDPImageContinuumData
         }

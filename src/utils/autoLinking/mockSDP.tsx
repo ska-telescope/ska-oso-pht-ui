@@ -1,6 +1,5 @@
 import {
   DP_TYPE_IMAGES,
-  FLOW_THROUGH_VALUE,
   IW_UNIFORM,
   PULSAR_TIMING_VALUE,
   ROBUST_DEFAULT,
@@ -13,11 +12,11 @@ import {
   SDPTimingPSTData
 } from '../types/dataProduct';
 
-export const PST_FLOW_THROUGH_DATA_PRODUCT: DataProductSDPNew = {
+export const PST_TIMING_DATA_PRODUCT: DataProductSDPNew = {
   id: 'SDP-0000000',
   observationId: 'obs-123',
   data: {
-    dataProductType: PULSAR_TIMING_VALUE,
+    dataProductType: PULSAR_TIMING_VALUE
   } as SDPTimingPSTData
 };
 
