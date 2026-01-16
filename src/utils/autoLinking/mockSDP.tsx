@@ -2,24 +2,23 @@ import {
   DP_TYPE_IMAGES,
   FLOW_THROUGH_VALUE,
   IW_UNIFORM,
+  PULSAR_TIMING_VALUE,
   ROBUST_DEFAULT,
   TAPER_DEFAULT
 } from '../constants';
 import {
   DataProductSDPNew,
-  SDPFlowthroughPSTData,
   SDPImageContinuumData,
-  SDPSpectralData
+  SDPSpectralData,
+  SDPTimingPSTData
 } from '../types/dataProduct';
 
 export const PST_FLOW_THROUGH_DATA_PRODUCT: DataProductSDPNew = {
   id: 'SDP-0000000',
   observationId: 'obs-123',
   data: {
-    dataProductType: FLOW_THROUGH_VALUE,
-    polarisations: ['X'],
-    bitDepth: 1
-  } as SDPFlowthroughPSTData
+    dataProductType: PULSAR_TIMING_VALUE,
+  } as SDPTimingPSTData
 };
 
 export const CONTINUUM_IMAGE_DATA_PRODUCT: DataProductSDPNew = {

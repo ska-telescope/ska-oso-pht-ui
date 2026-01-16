@@ -12,7 +12,6 @@ import * as helpers from '../helpers';
 import { calculateSensCalcData } from '../sensCalc/sensCalc';
 import Proposal from '../types/proposal';
 import {
-  SDPFlowthroughPSTData,
   SDPImageContinuumData,
   SDPSpectralData
 } from '../types/dataProduct';
@@ -190,7 +189,6 @@ describe('autoLinking()', () => {
 
     const sdp = proposal.dataProductSDP?.[0];
     expect(sdp?.observationId).toBe(obs?.id);
-    expect((sdp?.data as SDPFlowthroughPSTData)?.polarisations).toEqual(['X']);
 
     const link = proposal.targetObservation?.[0];
     expect(link?.observationId).toBe(obs?.id);
