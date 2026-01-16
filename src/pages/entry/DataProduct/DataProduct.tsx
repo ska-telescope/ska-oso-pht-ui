@@ -242,32 +242,13 @@ export default function DataProduct({ data }: DataProductProps) {
     }
   };
 
-  const setDefaultPolarisations = () => {
-    switch (getObservation()?.type) {
-      case TYPE_CONTINUUM:
-        switch (dataProductType) {
-          case DP_TYPE_VISIBLE:
-            setPolarisations([]);
-            break;
-          default:
-            setPolarisations(['I', 'XX']);
-        }
-        break;
-      case TYPE_PST:
-        switch (dataProductType) {
-          case FLOW_THROUGH_VALUE:
-            setPolarisations(['X']);
-            break;
-          case DETECTED_FILTER_BANK_VALUE:
-            setPolarisations(['I']);
-            break;
-          default:
-            setPolarisations([]);
-        }
-        break;
-      default:
-        setPolarisations(['I', 'XX']);
+  const getDefaultPolarisations = (obsType: number, dataProductType: number): string[] => {
+    if (obsType === TYPE_PST) {
+      if (dataProductType === FLOW_THROUGH_VALUE) return ['X'];
+      if (dataProductType === DETECTED_FILTER_BANK_VALUE) return ['I'];
+      return [];
     }
+    return ['I', 'XX'];
   };
 
   /* ------------------------------------------- */
@@ -287,7 +268,10 @@ export default function DataProduct({ data }: DataProductProps) {
   }, []);
 
   React.useEffect(() => {
-    setDefaultPolarisations();
+    if (!isEdit()) {
+      const pol = getDefaultPolarisations(Number(getObservation()?.type), dataProductType);
+      setPolarisations(pol);
+    }
   }, [observationId, dataProductType]);
 
   React.useEffect(() => {
