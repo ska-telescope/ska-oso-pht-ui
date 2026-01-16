@@ -43,7 +43,8 @@ import {
   TIME_AVERAGING_DEFAULT,
   FREQUENCY_AVERAGING_DEFAULT,
   _TIME_AVERAGING_UNITS_DEFAULT,
-  FREQUENCY_AVERAGING_UNIT_DEFAULT
+  FREQUENCY_AVERAGING_UNIT_DEFAULT,
+  DP_TYPE_VISIBLE
 } from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
@@ -116,7 +117,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const [continuumSubtraction, setContinuumSubtraction] = React.useState(
     SET_CONTINUUM_SUBSTRACTION_DEFAULT
   );
-  const [polarisations, setPolarisations] = React.useState<string[]>(['I', 'XX']);
+  const [polarisations, setPolarisations] = React.useState<string[]>([]);
   // TODO add missing new fields for PST Filter Bank
 
   const maxObservationsReached = () =>
@@ -241,6 +242,34 @@ export default function DataProduct({ data }: DataProductProps) {
     }
   };
 
+  const setDefaultPolarisations = () => {
+    switch (getObservation()?.type) {
+      case TYPE_CONTINUUM:
+        switch (dataProductType) {
+          case DP_TYPE_VISIBLE:
+            setPolarisations([]);
+            break;
+          default:
+            setPolarisations(['I', 'XX']);
+        }
+        break;
+      case TYPE_PST:
+        switch (dataProductType) {
+          case FLOW_THROUGH_VALUE:
+            setPolarisations(['X']);
+            break;
+          case DETECTED_FILTER_BANK_VALUE:
+            setPolarisations(['I']);
+            break;
+          default:
+            setPolarisations([]);
+        }
+        break;
+      default:
+        setPolarisations(['I', 'XX']);
+    }
+  };
+
   /* ------------------------------------------- */
 
   React.useEffect(() => {
@@ -256,6 +285,10 @@ export default function DataProduct({ data }: DataProductProps) {
     }
     // TODO : Need to set the appropriate setHelp value upon entry
   }, []);
+
+  React.useEffect(() => {
+    setDefaultPolarisations();
+  }, [observationId, dataProductType]);
 
   React.useEffect(() => {
     updateStorageProposal();
