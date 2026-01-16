@@ -162,6 +162,13 @@ export default function TableObservationsRow({
           </Typography>
         </TableCell>
 
+        {/* Observation Group ID */}
+        <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
+          <Typography variant="body2" color="text.secondary">
+            {item.id2}
+          </Typography>
+        </TableCell>
+
         {/* Telescope + Subarray */}
         <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
           <Box
