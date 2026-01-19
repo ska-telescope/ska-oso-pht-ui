@@ -33,7 +33,7 @@ export const PSTData = (
     default:
       return {
         dataProductType: FLOW_THROUGH_VALUE,
-        polarisations: ['XX'], // TODO change to 'X' when pdm updated
+        polarisations: ['X'],
         bitDepth: 1
       } as SDPFlowthroughPSTData;
   }

@@ -278,8 +278,8 @@ export default function DetailsPage() {
             </Stack>
           </BorderedSection>
         )}
-        {row2(categoryField())}
-        {row2(abstractField())}
+        <Grid mt={4}>{row2(categoryField())}</Grid>
+        <Grid mt={7}>{row2(abstractField())}</Grid>
       </Stack>
     </Shell>
   );
