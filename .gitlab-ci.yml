@@ -21,6 +21,9 @@ stages:
 install-dependencies:
   image: ${JS_BUILD_IMAGE}
   stage: dependencies
+  artifacts:
+    paths:
+      - public/
   tags:
     - ${SKA_K8S_RUNNER}
   before_script:
