@@ -1,12 +1,6 @@
-Proposal Preparation Tool
-=========================
+Proposal Flow
+=============
 
-   .. toctree::
-   :maxdepth: 2
-   :caption: Proposal Flow 
-
-   UserIntroduction
-   LandingPage
    TitlePage
    TeamPage
    DetailsPage

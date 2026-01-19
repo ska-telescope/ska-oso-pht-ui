@@ -70,6 +70,20 @@ export const pointingCentre = (standardData: StandardData, prefix: string = SEPA
 
 export const rxBand = (inValue: string, prefix: string = SEPARATOR1) => {
   switch (inValue) {
+    // From the OSD
+    case 'Band_1':
+      return prefix + 'rx_band=Band 1';
+    case 'Band_2':
+      return prefix + 'rx_band=Band 2';
+    case 'Band_3':
+      return prefix + 'rx_band=Band 3';
+    case 'Band_4':
+      return prefix + 'rx_band=Band 4';
+    case 'Band_5a':
+      return prefix + 'rx_band=Band 5a';
+    case 'Band_5b':
+      return prefix + 'rx_band=Band 5b';
+    // Existing way
     case 'mid_band_1':
       return prefix + 'rx_band=Band 1';
     case 'mid_band_2':
