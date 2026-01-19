@@ -43,8 +43,7 @@ import {
   TIME_AVERAGING_DEFAULT,
   FREQUENCY_AVERAGING_DEFAULT,
   _TIME_AVERAGING_UNITS_DEFAULT,
-  FREQUENCY_AVERAGING_UNIT_DEFAULT,
-  DP_TYPE_VISIBLE
+  FREQUENCY_AVERAGING_UNIT_DEFAULT
 } from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
@@ -98,7 +97,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const [baseObservations, setBaseObservations] = React.useState<Observation[]>([]);
   const [id, setId] = React.useState('');
   const [observationId, setObservationId] = React.useState('');
-  const [dataProductType, setDataProductType] = React.useState(1);
+  const [dataProductType, setDataProductType] = React.useState(DP_TYPE_IMAGES);
   const [bitDepth, setBitDepth] = React.useState(BIT_DEPTH_DEFAULT);
   const [imageSizeValue, setImageSizeValue] = React.useState(IMAGE_SIZE_DEFAULT);
   const [imageSizeUnits, setImageSizeUnits] = React.useState(IMAGE_SIZE_UNIT_DEFAULT);
@@ -242,6 +241,7 @@ export default function DataProduct({ data }: DataProductProps) {
     }
   };
 
+  // set correct default polarisations depending on data product type & pst mode from obs type
   const getDefaultPolarisations = (obsType: number, dataProductType: number): string[] => {
     if (obsType === TYPE_PST) {
       if (dataProductType === FLOW_THROUGH_VALUE) return ['X'];
@@ -249,6 +249,14 @@ export default function DataProduct({ data }: DataProductProps) {
       return [];
     }
     return ['I', 'XX'];
+  };
+
+  // set correct data product type depending on pst mode from obs type
+  const getDataProductType = (obsType: number, pstMode: number): number => {
+    if (obsType === TYPE_PST) {
+      return pstMode;
+    }
+    return DP_TYPE_IMAGES; // default for non-pst
   };
 
   /* ------------------------------------------- */
@@ -269,10 +277,20 @@ export default function DataProduct({ data }: DataProductProps) {
 
   React.useEffect(() => {
     if (!isEdit()) {
+      const sdpType = getDataProductType(
+        Number(getObservation()?.type),
+        Number(getObservation()?.pstMode)
+      );
+      setDataProductType(sdpType);
+    }
+  }, [observationId]);
+
+  React.useEffect(() => {
+    if (!isEdit()) {
       const pol = getDefaultPolarisations(Number(getObservation()?.type), dataProductType);
       setPolarisations(pol);
     }
-  }, [observationId, dataProductType]);
+  }, [dataProductType]);
 
   React.useEffect(() => {
     updateStorageProposal();
