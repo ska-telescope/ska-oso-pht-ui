@@ -91,7 +91,7 @@ const BOTTOM_LABEL_WIDTH = 4;
 const LABEL_WIDTH_NEW = 5.5;
 const BACK_PAGE = PAGE_OBSERVATION;
 const IMAGE_PATH =
-  window.location.hostname === 'localhost' ? '/assets/low_aa2.png' : './assets/low_aa2.png';
+  window.location.hostname === 'localhost' ? '/assets/low_aa2.png' : '/assets/low_aa2.png';
 
 interface ObservationEntryProps {
   data?: Observation;
