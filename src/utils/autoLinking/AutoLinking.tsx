@@ -1,8 +1,8 @@
 import {
   DEFAULT_OBSERVATIONS_LOW_AA2,
   DP_TYPE_IMAGES,
-  FLOW_THROUGH_VALUE,
   IW_UNIFORM,
+  PULSAR_TIMING_VALUE,
   ROBUST_DEFAULT,
   TAPER_DEFAULT,
   TYPE_PST,
@@ -43,8 +43,7 @@ export const calibrationOut = (observationId: string) => {
     id: generateId('cal-', 6),
     observationIdRef: observationId,
     calibrators: null,
-    notes: null,
-    isAddNote: false
+    notes: null
   };
   return newCalibration;
 };
@@ -61,9 +60,7 @@ export const SDPData = (
   switch (observation.type) {
     case TYPE_PST:
       return {
-        dataProductType: FLOW_THROUGH_VALUE,
-        polarisations: ['X'],
-        bitDepth: 1
+        dataProductType: PULSAR_TIMING_VALUE
       } as SDPFlowthroughPSTData;
     case TYPE_ZOOM:
       return {

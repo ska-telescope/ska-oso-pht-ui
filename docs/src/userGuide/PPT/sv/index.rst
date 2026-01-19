@@ -1,13 +1,6 @@
-Proposal Preparation Tool
+Science Verification Flow 
 =========================
 
-
-   .. toctree::
-   :maxdepth: 2
-   :caption: Science Verification Flow 
-
-   UserIntroduction
-   LandingPage
    TitlePage
    TeamPage
    DetailsPage

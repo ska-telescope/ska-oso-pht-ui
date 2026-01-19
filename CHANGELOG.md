@@ -15,6 +15,7 @@ UNRELEASED
 * Changed: SubArrays are now mapped to the values from the OSD and not numerically
 * Changed: Updated to latest dependencies and libraries
 * Changed: Updated more components to make use of the accessible coloring
+* Changed: Use appropriate defaults values for each new SDP type for SV & proposal flow
 
 9.0.0
 ----------

@@ -38,12 +38,12 @@ import {
   FREQUENCY_HZ,
   ZOOM_BANDWIDTH_DEFAULT_LOW,
   TYPE_PST,
-  FLOW_THROUGH_VALUE,
   ZOOM_BANDWIDTH_DEFAULT_MID,
   TEL_UNITS,
   BAND_LOW_STR,
   SA_AA2,
-  SA_CUSTOM
+  SA_CUSTOM,
+  PULSAR_TIMING_VALUE
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -149,7 +149,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [minimumChannelWidthHz, setMinimumChannelWidthHz] = React.useState<number>(0);
   const [zoomChannels, setZoomChannels] = React.useState<number>(0);
-  const [pstMode, setPstMode] = React.useState(FLOW_THROUGH_VALUE);
+  const [pstMode, setPstMode] = React.useState(PULSAR_TIMING_VALUE);
   const [maxZoomChannels, setMaxZoomChannels] = React.useState<number>(0);
 
   const [groupObservation, setGroupObservation] = React.useState(0);
@@ -180,7 +180,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setNumOf13mAntennas(ob?.num13mAntennas ?? 0);
     setNumOfStations(ob?.numStations ?? 0);
     setZoomChannels(ob?.zoomChannels ?? 0);
-    setPstMode(ob?.pstMode ?? 0);
+    setPstMode(ob?.pstMode ?? PULSAR_TIMING_VALUE);
   };
 
   const observationOut = () => {
