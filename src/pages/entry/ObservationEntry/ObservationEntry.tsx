@@ -463,8 +463,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     return fieldWrapper(
       <Box pt={1}>
         <TextEntry
-          disabled={isEdit()}
-          errorText={isEdit() ? '' : validateId()}
+          disabled={true}
           label={t('observationId.label')}
           labelBold={LAB_IS_BOLD}
           labelPosition={LAB_POSITION}
@@ -923,6 +922,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const SubBandsField = () =>
     fieldWrapper(
       <SubBands
+        disabled={true}
         value={subBands}
         labelWidth={LABEL_WIDTH_NEW}
         setValue={setSubBands}
