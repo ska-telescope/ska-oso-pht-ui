@@ -20,7 +20,6 @@ import {
   DP_TYPE_IMAGES,
   FLOW_THROUGH_VALUE,
   FOOTER_HEIGHT_PHT,
-  IW_BRIGGS,
   IW_NATURAL,
   IW_UNIFORM,
   NAV,
@@ -33,7 +32,18 @@ import {
   TYPE_CONTINUUM,
   TYPE_PST,
   TYPE_ZOOM,
-  WRAPPER_HEIGHT
+  WRAPPER_HEIGHT,
+  CHANNELS_OUT_DEFAULT,
+  IMAGE_SIZE_DEFAULT,
+  PIXEL_SIZE_DEFAULT,
+  SET_CONTINUUM_SUBSTRACTION_DEFAULT,
+  PIXEL_SIZE_UNIT_DEFAULT,
+  IMAGE_SIZE_UNIT_DEFAULT,
+  BIT_DEPTH_DEFAULT,
+  TIME_AVERAGING_DEFAULT,
+  FREQUENCY_AVERAGING_DEFAULT,
+  _TIME_AVERAGING_UNITS_DEFAULT,
+  FREQUENCY_AVERAGING_UNIT_DEFAULT
 } from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
@@ -87,21 +97,25 @@ export default function DataProduct({ data }: DataProductProps) {
   const [baseObservations, setBaseObservations] = React.useState<Observation[]>([]);
   const [id, setId] = React.useState('');
   const [observationId, setObservationId] = React.useState('');
-  const [dataProductType, setDataProductType] = React.useState(1);
-  const [bitDepth, setBitDepth] = React.useState(0);
-  const [imageSizeValue, setImageSizeValue] = React.useState(0);
-  const [imageSizeUnits, setImageSizeUnits] = React.useState(0);
-  const [pixelSizeValue, setPixelSizeValue] = React.useState(0);
-  const [pixelSizeUnits, setPixelSizeUnits] = React.useState(2);
-  const [taperValue, setTaperValue] = React.useState(0);
-  const [timeAveraging, setTimeAveraging] = React.useState(3.4);
-  const [timeAveragingUnits, setTimeAveragingUnits] = React.useState(0);
-  const [frequencyAveraging, setFrequencyAveraging] = React.useState(21.7);
-  const [frequencyAveragingUnits, setFrequencyAveragingUnits] = React.useState(0);
-  const [weighting, setWeighting] = React.useState(0);
-  const [robust, setRobust] = React.useState(0);
-  const [channelsOut, setChannelsOut] = React.useState(1);
-  const [continuumSubtraction, setContinuumSubtraction] = React.useState(false);
+  const [dataProductType, setDataProductType] = React.useState(DP_TYPE_IMAGES);
+  const [bitDepth, setBitDepth] = React.useState(BIT_DEPTH_DEFAULT);
+  const [imageSizeValue, setImageSizeValue] = React.useState(IMAGE_SIZE_DEFAULT);
+  const [imageSizeUnits, setImageSizeUnits] = React.useState(IMAGE_SIZE_UNIT_DEFAULT);
+  const [pixelSizeValue, setPixelSizeValue] = React.useState(PIXEL_SIZE_DEFAULT);
+  const [pixelSizeUnits, setPixelSizeUnits] = React.useState(PIXEL_SIZE_UNIT_DEFAULT);
+  const [taperValue, setTaperValue] = React.useState(TAPER_DEFAULT);
+  const [timeAveraging, setTimeAveraging] = React.useState(TIME_AVERAGING_DEFAULT);
+  const [timeAveragingUnits, setTimeAveragingUnits] = React.useState(_TIME_AVERAGING_UNITS_DEFAULT);
+  const [frequencyAveraging, setFrequencyAveraging] = React.useState(FREQUENCY_AVERAGING_DEFAULT);
+  const [frequencyAveragingUnits, setFrequencyAveragingUnits] = React.useState(
+    FREQUENCY_AVERAGING_UNIT_DEFAULT
+  );
+  const [weighting, setWeighting] = React.useState(IW_UNIFORM);
+  const [robust, setRobust] = React.useState(ROBUST_DEFAULT);
+  const [channelsOut, setChannelsOut] = React.useState(CHANNELS_OUT_DEFAULT);
+  const [continuumSubtraction, setContinuumSubtraction] = React.useState(
+    SET_CONTINUUM_SUBSTRACTION_DEFAULT
+  );
   const [polarisations, setPolarisations] = React.useState<string[]>([]);
   // TODO add missing new fields for PST Filter Bank
 
@@ -138,19 +152,21 @@ export default function DataProduct({ data }: DataProductProps) {
     setId(dp.id);
     setObservationId(dp.observationId);
     setDataProductType(data?.dataProductType ?? DP_TYPE_IMAGES);
-    setImageSizeValue(data?.imageSizeValue ?? 2.5);
-    setImageSizeUnits(data?.imageSizeUnits ?? 0);
-    setPixelSizeValue(data?.pixelSizeValue ?? 1.6);
-    setPixelSizeUnits(data?.pixelSizeUnits ?? 2);
+    setImageSizeValue(data?.imageSizeValue ?? IMAGE_SIZE_DEFAULT);
+    setImageSizeUnits(data?.imageSizeUnits ?? IMAGE_SIZE_UNIT_DEFAULT);
+    setPixelSizeValue(data?.pixelSizeValue ?? PIXEL_SIZE_DEFAULT);
+    setPixelSizeUnits(data?.pixelSizeUnits ?? PIXEL_SIZE_UNIT_DEFAULT);
     setTaperValue(data?.taperValue ?? TAPER_DEFAULT);
     setWeighting(data?.weighting ?? IW_UNIFORM);
     setRobust(data?.robust ?? ROBUST_DEFAULT);
     setPolarisations(data?.polarisations ?? []);
-    setChannelsOut(data?.channelsOut ?? 1);
-    setTimeAveraging(data?.timeAveraging ?? 3.4);
-    setFrequencyAveraging(data?.frequencyAveraging ?? 21.7);
-    setContinuumSubtraction(data?.continuumSubtraction ?? false);
-    setBitDepth(data?.bitDepth ?? 1);
+    setChannelsOut(data?.channelsOut ?? CHANNELS_OUT_DEFAULT);
+    setTimeAveraging(data?.timeAveraging ?? TIME_AVERAGING_DEFAULT);
+    setTimeAveragingUnits(data?.timeAveragingUnits ?? _TIME_AVERAGING_UNITS_DEFAULT);
+    setFrequencyAveraging(data?.frequencyAveraging ?? FREQUENCY_AVERAGING_DEFAULT);
+    setFrequencyAveragingUnits(data?.frequencyAveragingUnits ?? FREQUENCY_AVERAGING_UNIT_DEFAULT);
+    setContinuumSubtraction(data?.continuumSubtraction ?? SET_CONTINUUM_SUBSTRACTION_DEFAULT);
+    setBitDepth(data?.bitDepth ?? BIT_DEPTH_DEFAULT);
   };
 
   const dataProductOut = () => {
@@ -168,7 +184,6 @@ export default function DataProduct({ data }: DataProductProps) {
         polarisations,
         channelsOut,
         taperValue,
-        // fitSpectralPol: 3, // TODO check this can be removed
         timeAveraging,
         frequencyAveraging,
         bitDepth,
@@ -195,7 +210,6 @@ export default function DataProduct({ data }: DataProductProps) {
         polarisations,
         channelsOut,
         taperValue,
-        // fitSpectralPol: 3, // TODO chheck this can be removed
         timeAveraging,
         frequencyAveraging,
         bitDepth,
@@ -227,6 +241,24 @@ export default function DataProduct({ data }: DataProductProps) {
     }
   };
 
+  // set correct default polarisations depending on data product type & pst mode from obs type
+  const getDefaultPolarisations = (obsType: number, dataProductType: number): string[] => {
+    if (obsType === TYPE_PST) {
+      if (dataProductType === FLOW_THROUGH_VALUE) return ['X'];
+      if (dataProductType === DETECTED_FILTER_BANK_VALUE) return ['I'];
+      return [];
+    }
+    return ['I', 'XX'];
+  };
+
+  // set correct data product type depending on pst mode from obs type
+  const getDataProductType = (obsType: number, pstMode: number): number => {
+    if (obsType === TYPE_PST) {
+      return pstMode;
+    }
+    return DP_TYPE_IMAGES; // default for non-pst
+  };
+
   /* ------------------------------------------- */
 
   React.useEffect(() => {
@@ -242,6 +274,23 @@ export default function DataProduct({ data }: DataProductProps) {
     }
     // TODO : Need to set the appropriate setHelp value upon entry
   }, []);
+
+  React.useEffect(() => {
+    if (!isEdit()) {
+      const sdpType = getDataProductType(
+        Number(getObservation()?.type),
+        Number(getObservation()?.pstMode)
+      );
+      setDataProductType(sdpType);
+    }
+  }, [observationId]);
+
+  React.useEffect(() => {
+    if (!isEdit()) {
+      const pol = getDefaultPolarisations(Number(getObservation()?.type), dataProductType);
+      setPolarisations(pol);
+    }
+  }, [dataProductType]);
 
   React.useEffect(() => {
     updateStorageProposal();
@@ -477,7 +526,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const imageSizeValid = () => Number(imageSizeValue) > 0;
   const pixelSizeValid = () => pixelSizeValue > 0;
-  const taperSizeValid = () => taperValue > 0;
+  const taperSizeValid = () => taperValue >= 0;
   const channelsOutValid = () => channelsOut > 0 && channelsOut <= CHANNELS_OUT_MAX;
   const polarisationsValid = () => polarisations.length > 0;
   const timeAveragingValid = () => timeAveraging > 0;
@@ -500,7 +549,7 @@ export default function DataProduct({ data }: DataProductProps) {
           } else if (isDetectedFilterbank()) {
             return timeAveragingValid() && frequencyAveragingValid() && polarisationsValid();
           }
-          break;
+          return true;
         case TYPE_CONTINUUM:
         default:
           if (isDataTypeOne()) {
@@ -620,9 +669,7 @@ export default function DataProduct({ data }: DataProductProps) {
                     <Grid size={{ md: COL_MID, lg: COL }}>
                       {fieldWrapper(imageWeightingField())}
                     </Grid>
-                    <Grid size={{ md: COL_MID, lg: COL }}>
-                      {weighting === IW_BRIGGS && fieldWrapper(robustField())}
-                    </Grid>
+                    <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(robustField())}</Grid>
                     <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(taperField())}</Grid>
                     <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(channelsOutField())}</Grid>
                   </Grid>
@@ -642,9 +689,7 @@ export default function DataProduct({ data }: DataProductProps) {
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(imageSizeField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(pixelSizeField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(imageWeightingField())}</Grid>
-                  <Grid size={{ md: COL_MID, lg: COL }}>
-                    {weighting === IW_BRIGGS && fieldWrapper(robustField())}
-                  </Grid>
+                  <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(robustField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(taperField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(channelsOutField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>

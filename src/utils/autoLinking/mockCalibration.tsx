@@ -3,6 +3,5 @@ export const mockCalibration = {
   id: 'cal-0000000',
   observationIdRef: 'obs-123',
   calibrators: null,
-  notes: null,
-  isAddNote: false
+  notes: null
 };

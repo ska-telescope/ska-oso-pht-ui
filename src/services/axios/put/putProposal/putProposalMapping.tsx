@@ -264,8 +264,8 @@ export const getDataProductScriptParameters = (
       } else if (pstMode === PULSAR_TIMING_VALUE) {
         const data = dp?.data as any; // TODO change type to SDPTimingPSTData once PDM updated
         return {
-          polarisations: data?.polarisations,
-          bit_depth: data?.bitDepth,
+          polarisations: data?.polarisations ?? ['I'],
+          bit_depth: data?.bitDepth ?? 1,
           // time_averaging_factor: 5,
           kind: 'pst',
           variant: 'pulsar timing'
@@ -275,7 +275,7 @@ export const getDataProductScriptParameters = (
         const data = dp?.data as SDPFlowthroughPSTData;
         return {
           polarisations: data?.polarisations,
-          bit_depth: data?.bitDepth,
+          bit_depth: data?.bitDepth ?? 1,
           kind: 'pst',
           variant: 'flow through'
         };

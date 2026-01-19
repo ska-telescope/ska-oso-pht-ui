@@ -462,9 +462,11 @@ const getObservations = (
       ),
       linked: getLinked(inValue[i], inResults),
       continuumBandwidth:
-        type === TYPE_CONTINUUM ? inValue[i].observation_type_details?.bandwidth?.value : null,
+        type === TYPE_CONTINUUM || type === TYPE_PST
+          ? inValue[i].observation_type_details?.bandwidth?.value
+          : null,
       continuumBandwidthUnits:
-        type === TYPE_CONTINUUM
+        type === TYPE_CONTINUUM || type === TYPE_PST
           ? getFrequencyAndBandwidthUnits(
               inValue[i]?.observation_type_details?.bandwidth?.unit ?? null,
               observingBand

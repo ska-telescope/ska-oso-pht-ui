@@ -207,11 +207,23 @@ export const HEADER_HEIGHT = 78;
 
 export const HELP_FONT = 16;
 
+// SDP default values
 export const IW_BRIGGS = 2;
 export const IW_NATURAL = 0;
 export const IW_UNIFORM = 1;
 export const ROBUST_DEFAULT = 1;
 export const TAPER_DEFAULT = 0;
+export const CHANNELS_OUT_DEFAULT = 10;
+export const IMAGE_SIZE_DEFAULT = 2.5;
+export const IMAGE_SIZE_UNIT_DEFAULT = 0;
+export const PIXEL_SIZE_DEFAULT = 1.6;
+export const PIXEL_SIZE_UNIT_DEFAULT = 2;
+export const SET_CONTINUUM_SUBSTRACTION_DEFAULT = true;
+export const BIT_DEPTH_DEFAULT = 1;
+export const TIME_AVERAGING_DEFAULT = 3.4;
+export const _TIME_AVERAGING_UNITS_DEFAULT = 0;
+export const FREQUENCY_AVERAGING_DEFAULT = 21.7;
+export const FREQUENCY_AVERAGING_UNIT_DEFAULT = 0;
 
 export const POLARISATIONS = [
   { value: 'I' },
@@ -795,7 +807,7 @@ export const DEFAULT_PST_OBSERVATION_LOW_AA2: Observation = {
   spectralAveraging: 1,
   spectralResolution: '',
   effectiveResolution: '',
-  pstMode: FLOW_THROUGH_VALUE
+  pstMode: PULSAR_TIMING_VALUE
 };
 
 export const DEFAULT_OBSERVATIONS_LOW_AA2: Observation[] = [

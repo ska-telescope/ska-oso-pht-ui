@@ -278,8 +278,7 @@ export default function LinkingPage() {
       id: generateId('cal-'),
       observationIdRef: currObs?.id,
       calibrators: null,
-      notes: null,
-      isAddNote: false
+      notes: null
     };
     addTargetObservationAndCalibrationStorage(targetObs, calibration);
   };
