@@ -294,7 +294,7 @@ const addPropertiesMID = (standardData: StandardData, continuumData: ContinuumDa
   properties += addValue('el', Number(standardData.elevation.value));
   properties += addValue('n_subbands', continuumData.numberOfSubBands);
   properties += addValue('weighting_mode', getImageWeightingMapping(continuumData.imageWeighting));
-  properties += addValue('taper', TREVOR[continuumData.tapering]);
+  properties += addValue('taper', continuumData.tapering);
   properties = addRobustProperty(continuumData, properties);
   return properties;
 };
