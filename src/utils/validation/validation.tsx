@@ -100,7 +100,7 @@ export const checkDP = (proposal: Proposal) => {
         return validatePSTDataProduct(proposal) ? 1 : 0;
     }
   } else {
-    return 1;
+    return 0;
   }
 };
 
