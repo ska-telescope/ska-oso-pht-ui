@@ -278,7 +278,7 @@ const addPropertiesMID = (standardData: StandardData, continuumData: ContinuumDa
   properties += rxBand(standardData.observingBand);
 
   if (standardData.subarray !== SA_CUSTOM) {
-    properties += addValue('subarray_configuration', standardData.subarray);
+    properties += addValue('subarray_configuration', standardData.subarray.toUpperCase());
   } else {
     properties += addValue('n_ska', standardData.num15mAntennas);
     properties += addValue('n_meer', standardData.num13mAntennas);
@@ -294,7 +294,7 @@ const addPropertiesMID = (standardData: StandardData, continuumData: ContinuumDa
   properties += addValue('el', Number(standardData.elevation.value));
   properties += addValue('n_subbands', continuumData.numberOfSubBands);
   properties += addValue('weighting_mode', getImageWeightingMapping(continuumData.imageWeighting));
-  properties += addValue('taper', continuumData.tapering);
+  properties += addValue('taper', TREVOR[continuumData.tapering]);
   properties = addRobustProperty(continuumData, properties);
   return properties;
 };
