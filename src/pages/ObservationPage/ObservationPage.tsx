@@ -143,7 +143,11 @@ export default function ObservationPage() {
         <Grid size={{ md: 10 }}>
           <Alert
             color={AlertColorTypes.Error}
-            text={loggedIn ? t('error.noObservations') : t('error.noObservationsLoggedOut')}
+            text={
+              loggedIn && osdCyclePolicy?.maxObservations === 1 && hasTargetObservations
+                ? t('page.5.noTarget')
+                : t('error.noObservationsLoggedOut')
+            }
             testId="noObservationsNotification"
           />
         </Grid>
