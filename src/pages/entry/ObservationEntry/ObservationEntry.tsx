@@ -469,7 +469,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           labelPosition={LAB_POSITION}
           labelWidth={LABEL_WIDTH_NEW}
           onFocus={() => setHelp('observationId')}
-          required
           testId="observationId"
           value={myObsId}
           setValue={setMyObsId}

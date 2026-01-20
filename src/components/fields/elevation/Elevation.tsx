@@ -44,7 +44,7 @@ export default function ElevationField({
   const checkValue = (e: number) => {
     const num = Number(e);
 
-    if (num > minElevation && num <= ELEVATION_MAX) {
+    if (num >= minElevation && num <= ELEVATION_MAX) {
       setFieldValid(true);
       if (setValue) {
         setValue(num);
