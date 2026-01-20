@@ -126,7 +126,11 @@ export default function DataProductsPage() {
         <Grid size={{ md: 10 }}>
           <Alert
             color={AlertColorTypes.Error}
-            text={t('error.noObservationsLoggedOut')}
+            text={
+              osdCyclePolicy?.maxObservations === 1 && hasTargetObservations
+                ? t('page.8.noObservations')
+                : t('error.noObservationsLoggedOut')
+            }
             testId="noObservationsNotification"
           />
         </Grid>
