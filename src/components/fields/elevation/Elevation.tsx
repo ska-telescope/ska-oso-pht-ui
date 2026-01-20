@@ -1,6 +1,7 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { LAB_IS_BOLD, LAB_POSITION } from '@utils/constants.ts';
+import { ERROR_SECS, LAB_IS_BOLD, LAB_POSITION } from '@utils/constants.ts';
+import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
@@ -36,24 +37,46 @@ export default function ElevationField({
 }: ElevationFieldProps) {
   const { t } = useScopedTranslation();
   const { osdMID } = useOSDAccessors();
+  const FIELD = 'elevation';
+  const [fieldValid, setFieldValid] = React.useState(true);
+  const MIN_ELEVATION = isLow
+    ? ELEVATION_MIN_LOW
+    : osdMID?.basicCapabilities?.dishElevationLimitDeg;
 
-  const errorMessage = () => {
-    const minElevation = isLow
-      ? ELEVATION_MIN_LOW
-      : osdMID?.basicCapabilities?.dishElevationLimitDeg;
-    return value < minElevation || value > ELEVATION_MAX
-      ? t('elevation.range.error', {
-          min: minElevation,
-          max: ELEVATION_MAX
-        })
-      : '';
+  const checkValue = (e: number) => {
+    const num = Number(e);
+
+    if (num >= MIN_ELEVATION && num <= ELEVATION_MAX) {
+      setFieldValid(true);
+      if (setValue) {
+        setValue(num);
+      }
+    } else {
+      setFieldValid(false);
+    }
   };
+
+  const errorMessage = fieldValid
+    ? ''
+    : t(FIELD + '.range.error', {
+        min: MIN_ELEVATION,
+        max: ELEVATION_MAX
+      });
+
+  React.useEffect(() => {
+    const timer = () => {
+      setTimeout(() => {
+        setFieldValid(true);
+      }, ERROR_SECS);
+    };
+    timer();
+  }, [fieldValid]);
 
   return (
     <Box pt={1}>
       <NumberEntry
         disabled={disabled}
-        errorText={errorMessage()}
+        errorText={errorMessage}
         label={label}
         labelBold={LAB_IS_BOLD}
         labelPosition={LAB_POSITION}
@@ -61,7 +84,7 @@ export default function ElevationField({
         required={required}
         testId={testId}
         value={value}
-        setValue={setValue}
+        setValue={checkValue}
         onFocus={onFocus}
         suffix={ELEVATION_UNITS}
       />

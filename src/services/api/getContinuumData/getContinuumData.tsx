@@ -278,7 +278,7 @@ const addPropertiesMID = (standardData: StandardData, continuumData: ContinuumDa
   properties += rxBand(standardData.observingBand);
 
   if (standardData.subarray !== SA_CUSTOM) {
-    properties += addValue('subarray_configuration', standardData.subarray);
+    properties += addValue('subarray_configuration', standardData.subarray.toUpperCase());
   } else {
     properties += addValue('n_ska', standardData.num15mAntennas);
     properties += addValue('n_meer', standardData.num13mAntennas);

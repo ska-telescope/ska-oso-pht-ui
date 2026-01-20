@@ -53,7 +53,7 @@ export default function LinkingPage() {
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [currObs, setCurrObs] = React.useState<Observation | null>(null);
+  const [currRec, setCurrRec] = React.useState<any | null>(null);
   const [openDeleteDialog, setOpenDeleteDialog] = React.useState(false);
   const [openMultipleDialog, setOpenMultipleDialog] = React.useState(false);
   const [elementsO, setElementsO] = React.useState<ReturnType<typeof popElementO>[]>([]);
@@ -167,7 +167,7 @@ export default function LinkingPage() {
   const deleteObservationTargetAndCalibration = (row: any) => {
     function filterRecords(id: number) {
       return getProposal().targetObservation?.filter(
-        item => !(item.observationId === currObs?.id && item.targetId === id)
+        item => !(item.observationId === currRec?.id2 && item.targetId === id)
       );
     }
     function filterRecordsCalibration(id: number) {
@@ -242,29 +242,29 @@ export default function LinkingPage() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = getProposal().observations?.filter(e => e.id !== currObs?.id) ?? [];
+    const obs1 = getProposal().observations?.filter(e => e.id !== currRec?.id2) ?? [];
     const obs2 =
-      getProposal().targetObservation?.filter(e => e.observationId !== currObs?.id) ?? [];
+      getProposal().targetObservation?.filter(e => e.observationId !== currRec?.id2) ?? [];
     const obs3 =
-      getProposal().groupObservations?.filter(e => e.observationId !== currObs?.id) ?? [];
+      getProposal().groupObservations?.filter(e => e.observationId !== currRec?.id2) ?? [];
     setProposal({
       ...getProposal(),
       observations: obs1,
       targetObservation: obs2,
       groupObservations: obs3
     });
-    setElementsO(elementsO.filter(e => e.id !== currObs?.id));
-    setCurrObs(null);
+    // TODO : Need to check this is correct
+    setElementsO(elementsO.filter(e => e.id !== currRec?.id));
+    setCurrRec(null);
     closeDeleteDialog();
   };
 
   const addObservationTargetAndCalibration = (target: Target) => {
-    if (!currObs) return;
-    const dp = elementsO.find(e => e.id === currObs.id)?.dp;
+    if (!currRec) return;
     const targetObs: TargetObservation = {
-      observationId: currObs.id,
+      observationId: currRec.id2,
       targetId: target.id,
-      dataProductsSDPId: dp?.id ?? '',
+      dataProductsSDPId: currRec.id ?? '',
       sensCalc: {
         id: target.id,
         title: target.name,
@@ -272,11 +272,10 @@ export default function LinkingPage() {
         error: ''
       }
     };
-    // TODO check if already exists?
     const calibration: CalibrationStrategy = {
       observatoryDefined: true,
       id: generateId('cal-'),
-      observationIdRef: currObs?.id,
+      observationIdRef: currRec.id2,
       calibrators: null,
       notes: null
     };
@@ -285,7 +284,7 @@ export default function LinkingPage() {
 
   const isTargetSelected = (targetId: number) =>
     (getProposal().targetObservation ?? []).filter(
-      entry => entry.observationId === currObs?.id && entry.targetId === targetId
+      entry => entry.observationId === currRec?.id2 && entry.targetId === targetId
     ).length > 0;
 
   const targetSelectedToggle = (el: ElementT) => {
@@ -351,15 +350,15 @@ export default function LinkingPage() {
 
   const getSensCalcForTargetGrid = (targetId: number) =>
     getProposal()?.targetObservation?.find(
-      p => p.observationId === currObs?.id && p.targetId === targetId
+      p => p.observationId === currRec?.id2 && p.targetId === targetId
     )?.sensCalc;
 
-  const isCustom = () => currObs?.subarray === SA_CUSTOM;
+  const isCustom = () => currRec?.Obs?.subarray === SA_CUSTOM;
   const isNatural = () => {
-    const dp = elementsO.find(e => e.id === currObs?.id)?.dp;
+    const dp = elementsO.find(e => e.id === currRec?.id2)?.dp;
     const weighting =
       typeof (dp?.data as any)?.weighting === 'string' ? (dp?.data as any).weighting : undefined;
-    return currObs?.subarray !== SA_CUSTOM && weighting === IW_NATURAL;
+    return currRec?.Obs?.subarray !== SA_CUSTOM && weighting === IW_NATURAL;
   };
 
   const getSensCalcSingle = (id: number, field: string) => (
@@ -560,7 +559,7 @@ export default function LinkingPage() {
               margin: 0
             }}
           >
-            {currObs ? <TriStateCheckbox state={checkState} setState={setCheckState} /> : <></>}
+            {currRec ? <TriStateCheckbox state={checkState} setState={setCheckState} /> : <></>}
           </Box>
         ),
         disableClickEventBubbling: true,
@@ -568,7 +567,7 @@ export default function LinkingPage() {
         sortable: false,
         disableColumnMenu: true,
         renderCell: (e: { row: ElementT }) => {
-          return currObs ? (
+          return currRec ? (
             <Box
               sx={{
                 display: 'flex',
@@ -608,10 +607,10 @@ export default function LinkingPage() {
       {
         field: 'vel',
         renderHeader: () =>
-          currObs ? (
+          currRec?.Obs ? (
             <>
               {t(
-                isIntegrationTime(currObs)
+                isIntegrationTime(currRec?.Obs)
                   ? 'sensitivityCalculatorResults.weightedSensitivity'
                   : 'sensitivityCalculatorResults.integrationTime'
               )}
@@ -626,13 +625,16 @@ export default function LinkingPage() {
         renderCell: (e: { row: any }) => {
           return getSensCalcSingle(
             e.row.id,
-            isIntegrationTime(currObs as Observation) ? 'SensitivityWeighted' : 'IntegrationTime'
+            isIntegrationTime(currRec?.Obs as Observation)
+              ? 'SensitivityWeighted'
+              : 'IntegrationTime'
           );
         }
       },
       {
         field: 'vel2',
-        renderHeader: () => (currObs ? <>{t('sensitivityCalculatorResults.beamSize')}</> : <></>),
+        renderHeader: () =>
+          currRec?.Obs ? <>{t('sensitivityCalculatorResults.beamSize')}</> : <></>,
         sortable: false,
         flex: 2.5,
         minWidth: 150,
@@ -681,7 +683,7 @@ export default function LinkingPage() {
                 columns={extendedColumnsObservations}
                 height={DATA_GRID_OBSERVATION}
                 onRowClick={(e: { row: { rec: React.SetStateAction<Observation | null> } }) =>
-                  setCurrObs(e.row.rec)
+                  setCurrRec(e.row)
                 }
                 onRowSelectionModelChange={(
                   newRowSelectionModel: React.SetStateAction<GridRowSelectionModel>
@@ -723,22 +725,22 @@ export default function LinkingPage() {
       </Grid>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       <>
-        {openDeleteDialog && currObs && (
+        {openDeleteDialog && currRec?.Obs && (
           <DeleteObservationConfirmation
             action={deleteConfirmed}
-            observation={currObs}
+            observation={currRec?.Obs}
             open={openDeleteDialog}
             setOpen={setOpenDeleteDialog}
           />
         )}
-        {openMultipleDialog && currObs && (
+        {openMultipleDialog && currRec?.Obs && (
           <SensCalcModalMultiple
             open={openMultipleDialog}
             onClose={() => setOpenMultipleDialog(false)}
-            data={filteredByObservation(currObs?.id)}
-            observation={currObs}
-            level={getLevel(currObs)}
-            levelError={getError(currObs)}
+            data={filteredByObservation(currRec?.Obs.id)}
+            observation={currRec?.Obs}
+            level={getLevel(currRec?.Obs)}
+            levelError={getError(currRec?.Obs)}
             isCustom={isCustom()}
             isNatural={isNatural()}
           />
