@@ -876,6 +876,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const SubBandsField = () =>
     fieldWrapper(
       <SubBands
+        disabled={true}
         value={subBands}
         setValue={setSubBands}
         isMid={isMid()}
