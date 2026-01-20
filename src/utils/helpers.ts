@@ -195,3 +195,17 @@ export const getBandwidthLowZoom = (inValue: Number) => {
   const obsTelescopeArray = OSD_CONSTANTS.array[1];
   return obsTelescopeArray?.bandWidth?.find(b => b.value === inValue);
 };
+
+export const obTypeTransform = (inData: string[]) => {
+  const out: string[] = [];
+  inData.forEach(item => {
+    if (item === 'vis' || item === 'correlation') {
+      out.push('continuum', 'spectral');
+    } else if (item === 'pst') {
+      out.push('pst');
+    }
+    // everything else is ignored
+  });
+
+  return out;
+};

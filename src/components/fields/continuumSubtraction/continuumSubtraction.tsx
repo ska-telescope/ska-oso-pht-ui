@@ -6,7 +6,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface ContinuumSubtractionFieldProps {
   disabled?: boolean;
-  observationType?: number;
+  observationType?: string;
   dataProductType?: number;
   onFocus?: React.FocusEventHandler<HTMLInputElement>;
   setValue?: (value: boolean) => void;

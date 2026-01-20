@@ -7,7 +7,7 @@ import { ERROR_SECS } from '@/utils/constants';
 interface SuppliedValueProps {
   disabled?: boolean;
   required?: boolean;
-  labelWidth?: number;
+  label?: string;
   setValue: Function;
   suffix?: any;
   value: number;
@@ -16,6 +16,7 @@ interface SuppliedValueProps {
 export default function SuppliedValue({
   disabled = false,
   required = false,
+  label = '',
   setValue,
   suffix,
   value
@@ -49,7 +50,7 @@ export default function SuppliedValue({
     <NumberEntry
       disabled={disabled}
       errorText={errorMessage}
-      label=""
+      label={label}
       required={required}
       testId={FIELD}
       value={value}

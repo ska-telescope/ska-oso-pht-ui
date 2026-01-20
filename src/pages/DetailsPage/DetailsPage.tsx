@@ -3,7 +3,7 @@ import { Box, Grid, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { BorderedSection, DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import { SA_AA2, DETAILS, OBSERVATION_TYPE_SHORT_BACKEND, PAGE_DETAILS } from '@utils/constants.ts';
-import { countWords } from '@utils/helpers.ts';
+import { countWords, obTypeTransform } from '@utils/helpers.ts';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { validateProposal } from '@utils/validation/validation.tsx';
 import { useTheme } from '@mui/material/styles';
@@ -189,26 +189,11 @@ export default function DetailsPage() {
     );
   };
 
-  const transform = (inData: string[]) => {
-    const out: string[] = [];
-
-    inData.forEach(item => {
-      if (item === 'vis' || item === 'correlation') {
-        out.push('continuum', 'spectral');
-      } else if (item === 'pst') {
-        out.push('pst');
-      }
-      // everything else is ignored
-    });
-
-    return out;
-  };
-
   const getObservingModeOptions = () => {
     // For now, we assume that there is a single target and observation in SV proposals and the subArray is AA2
     const record = osdLOW ? osdLOW : osdMID;
     const sArray = record?.subArrays.find((sub: any) => sub.subArray === SA_AA2);
-    const inData = transform(sArray?.cbfModes ?? []);
+    const inData = obTypeTransform(sArray?.cbfModes ?? []);
     return inData.map(type => {
       const index = OBSERVATION_TYPE_SHORT_BACKEND.findIndex(obsType => obsType === type);
       const label = t('scienceCategory.' + index);

@@ -1,6 +1,5 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 
@@ -11,7 +10,6 @@ interface NumStationsFieldProps {
   suffix?: any;
   value: number;
   widthButton?: number;
-  widthLabel?: number;
   rangeLower?: number;
   rangeUpper?: number;
 }
@@ -20,7 +18,6 @@ export default function NumStationsField({
   disabled = false,
   setValue,
   value,
-  widthLabel = 6,
   rangeLower = 0,
   rangeUpper = 1
 }: NumStationsFieldProps) {
@@ -39,14 +36,10 @@ export default function NumStationsField({
   };
 
   return (
-    <Box>
+    <Box pt={1}>
       <NumberEntry
         disabled={disabled}
-        disabledUnderline={disabled}
         label={t(FIELD + '.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={widthLabel}
         testId={FIELD}
         value={value}
         setValue={validate}

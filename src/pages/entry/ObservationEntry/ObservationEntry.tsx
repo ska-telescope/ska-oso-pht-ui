@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, CardContent, Grid, InputLabel, Paper, Typography } from '@mui/material';
+import { Box, Grid, Paper } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTheme } from '@mui/material/styles';
@@ -15,8 +15,6 @@ import {
   BorderedSection
 } from '@ska-telescope/ska-gui-components';
 import {
-  LAB_IS_BOLD,
-  LAB_POSITION,
   NAV,
   SUPPLIED_VALUE_DEFAULT_MID,
   TYPE_CONTINUUM,
@@ -50,7 +48,8 @@ import {
   generateId,
   getBandwidthLowZoom,
   getBandwidthZoom,
-  getMinimumChannelWidth
+  getMinimumChannelWidth,
+  obTypeTransform
 } from '@utils/helpers.ts';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
 import Proposal from '@/utils/types/proposal';
@@ -86,11 +85,9 @@ import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalc
 import updateSensCalc from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 
-const TOP_LABEL_WIDTH = 6;
-const BOTTOM_LABEL_WIDTH = 4;
-const LABEL_WIDTH_NEW = 5.5;
+const GAP = 5;
 const BACK_PAGE = PAGE_OBSERVATION;
-const IMAGE_PATH =
+const IMAGE_PATH_LOW_AA2 =
   window.location.hostname === 'localhost' ? '/assets/low_aa2.png' : './assets/low_aa2.png';
 
 interface ObservationEntryProps {
@@ -125,7 +122,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const [subarrayConfig, setSubarrayConfig] = React.useState(SA_AA2);
   const [observingBand, setObservingBand] = React.useState(BAND_LOW_STR);
-  const [observationType, setObservationType] = React.useState(1);
+  const [observationType, setObservationType] = React.useState(TYPE_CONTINUUM);
   const [effectiveResolution, setEffectiveResolution] = React.useState('');
   const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT[TELESCOPE_LOW_NUM - 1]);
   const [weather, setWeather] = React.useState(Number(t('weather.default')));
@@ -449,12 +446,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     </Box>
   );
 
-  const suppliedWrapper = (children: React.JSX.Element) => (
-    <Box p={0} pl={1} pr={1} sx={{ height: WRAPPER_HEIGHT }}>
-      {children}
-    </Box>
-  );
-
   const emptyField = () => <></>;
 
   /******************************************************/
@@ -463,12 +454,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     return fieldWrapper(
       <Box pt={1}>
         <TextEntry
-          disabled={isEdit()}
+          disabled
           errorText={isEdit() ? '' : validateId()}
           label={t('observationId.label')}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH_NEW}
           onFocus={() => setHelp('observationId')}
           required
           testId="observationId"
@@ -482,7 +470,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const groupObservationsField = () =>
     fieldWrapper(
       <GroupObservationsField
-        labelWidth={LABEL_WIDTH_NEW}
         onFocus={() => setHelp('groupObservations')}
         setValue={setGroupObservation}
         value={groupObservation}
@@ -547,7 +534,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     fieldWrapper(
       <ObservingBandField
         disabled={(selectedPolicy?.cyclePolicies?.bands?.length ?? 0) < 2}
-        widthLabel={LABEL_WIDTH_NEW}
         required
         value={observingBand}
         setValue={setTheObservingBand}
@@ -559,7 +545,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       <SubArrayField
         observingBand={observingBand}
         required
-        widthLabel={LABEL_WIDTH_NEW}
         telescope={telescope()}
         value={subarrayConfig}
         setValue={setTheSubarrayConfig}
@@ -567,15 +552,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
 
   const pstModeField = () =>
-    fieldWrapper(
-      <PstModeField required widthLabel={LABEL_WIDTH_NEW} value={pstMode} setValue={setPstMode} />
-    );
+    fieldWrapper(<PstModeField required value={pstMode} setValue={setPstMode} />);
 
   const numStationsField = () =>
     fieldWrapper(
       <NumStations
         disabled={subarrayConfig !== SA_CUSTOM}
-        widthLabel={LABEL_WIDTH_NEW}
         setValue={setNumOfStations}
         value={numOfStations ?? 0}
         rangeLower={Number(t('numStations.range.lower'))}
@@ -599,11 +581,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       return (
         <NumberEntry
           disabled={subarrayConfig !== SA_CUSTOM}
-          disabledUnderline={subarrayConfig !== SA_CUSTOM}
-          label={t('numOf15mAntennas.short')}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
-          labelWidth={BOTTOM_LABEL_WIDTH}
+          label={t('numOf15mAntennas.label')}
           testId="numOf15mAntennas"
           value={numOf15mAntennas}
           setValue={validate}
@@ -627,11 +605,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       return (
         <NumberEntry
           disabled={subarrayConfig !== SA_CUSTOM}
-          disabledUnderline={subarrayConfig !== SA_CUSTOM}
-          label={t('numOf13mAntennas.short')}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
-          labelWidth={BOTTOM_LABEL_WIDTH}
+          label={t('numOf13mAntennas.label')}
           testId="numOf13mAntennas"
           value={numOf13mAntennas}
           setValue={validate}
@@ -641,20 +615,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     };
 
     return fieldWrapper(
-      <Grid container direction="row">
-        <Grid pt={2} size={{ xs: TOP_LABEL_WIDTH }}>
-          <InputLabel
-            disabled={subarrayConfig !== SA_CUSTOM}
-            shrink={false}
-            htmlFor="numOf15mAntennas"
-          >
-            <Typography sx={{ fontWeight: subarrayConfig === SA_CUSTOM ? 'bold' : 'normal' }}>
-              {t('numOfAntennas.label')}
-            </Typography>
-          </InputLabel>
-        </Grid>
-        <Grid size={{ xs: 3 }}>{NumOf15mAntennasField()}</Grid>
-        <Grid size={{ xs: 3 }}>{numOf13mAntennasField()}</Grid>
+      <Grid pt={1} container direction="row" spacing={GAP}>
+        <Grid size={{ xs: 6 }}>{NumOf15mAntennasField()}</Grid>
+        <Grid size={{ xs: 6 }}>{numOf13mAntennasField()}</Grid>
       </Grid>
     );
   };
@@ -664,7 +627,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       <ElevationField
         isLow={isLow()}
         label={t('elevation.label')}
-        widthLabel={LABEL_WIDTH_NEW}
         onFocus={() => setHelp('elevation')}
         setValue={setElevation}
         testId="elevation"
@@ -687,9 +649,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           disabled={isLow()}
           errorText={errorMessage()}
           label={t('weather.label')}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
-          labelWidth={LABEL_WIDTH_NEW}
           testId="weather"
           value={weather}
           setValue={setWeather}
@@ -702,41 +661,50 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   /**************************************************************/
 
+  const low = isLow();
+
+  const obsTypeOptions = React.useMemo(() => {
+    const obj = low ? osdLOW : osdMID;
+    const rec = obj?.subArrays.find(r => r.subArray === subarrayConfig);
+    const modes = obTypeTransform(rec?.cbfModes ?? []);
+
+    return modes.map(mode => ({
+      label: t(`observationType.${mode}`),
+      value: mode
+    }));
+  }, [subarrayConfig, low, osdLOW, osdMID, t]);
+
   const observationTypeField = () =>
     fieldWrapper(
       <ObservationTypeField
-        disabled={
-          (loggedIn && osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1) ||
-          isContinuumOnly()
-        }
         isContinuumOnly={isContinuumOnly()}
-        widthLabel={LABEL_WIDTH_NEW}
+        options={obsTypeOptions}
         required
         value={observationType}
         setValue={setObservationType}
       />
     );
 
-  const suppliedField = () => {
-    const suppliedTypeField = () => {
-      const getOptions = () =>
-        isLow() ? [observatoryConstants?.Supplied[0]] : observatoryConstants?.Supplied;
-      return (
-        <Box pt={1}>
-          <DropDown
-            options={getOptions()}
-            testId="suppliedType"
-            value={suppliedType}
-            setValue={setSuppliedType}
-            disabled={getOptions()?.length < 2}
-            label=""
-            onFocus={() => setHelp('suppliedType')}
-            required
-          />
-        </Box>
-      );
-    };
+  const suppliedTypeField = () => {
+    const getOptions = () =>
+      isLow() ? [observatoryConstants?.Supplied[0]] : observatoryConstants?.Supplied;
+    return (
+      <Box pt={2}>
+        <DropDown
+          options={getOptions()}
+          testId="suppliedType"
+          value={suppliedType}
+          setValue={setSuppliedType}
+          disabled={getOptions()?.length < 2}
+          label={t('suppliedType.label')}
+          onFocus={() => setHelp('suppliedType')}
+          required
+        />
+      </Box>
+    );
+  };
 
+  const suppliedField = () => {
     const suppliedUnitsField = () => {
       const getOptions = () => {
         return suppliedType && suppliedType > 0
@@ -760,22 +728,16 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       );
     };
 
-    return suppliedWrapper(
-      <Grid pt={0} m={0} container justifyContent="space-between" direction="row">
-        <Grid pt={1} pr={1} size={{ md: 5 }}>
-          {suppliedTypeField()}
-        </Grid>
-        <Grid p={0} pt={2} size={{ md: 10 - BOTTOM_LABEL_WIDTH }} justifySelf="flex-end">
-          <Box ml={-3}>
-            <SuppliedValue
-              value={suppliedValue}
-              setValue={setSuppliedValue}
-              suffix={suppliedUnitsField()}
-              required
-            />
-          </Box>
-        </Grid>
-      </Grid>
+    return (
+      <Box pt={2}>
+        <SuppliedValue
+          value={suppliedValue}
+          setValue={setSuppliedValue}
+          suffix={suppliedUnitsField()}
+          label={suppliedType ? observatoryConstants?.Supplied[suppliedType - 1].label : ''}
+          required
+        />
+      </Box>
     );
   };
 
@@ -783,7 +745,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     return fieldWrapper(
       <Box pt={1}>
         <ZoomChannels
-          labelWidth={LABEL_WIDTH_NEW}
           maxValue={maxZoomChannels}
           required
           value={zoomChannels}
@@ -798,7 +759,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       <Box pt={1}>
         <CentralFrequency
           bandWidth={isContinuum() ? continuumBandwidth : bandwidth}
-          labelWidth={LABEL_WIDTH_NEW}
           observingBand={observingBand}
           value={centralFrequency}
           setValue={setCentralFrequency}
@@ -826,7 +786,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     };
     return fieldWrapper(
       <ContinuumBandwidthField
-        labelWidth={LABEL_WIDTH_NEW}
         setValue={setContinuumBandwidth}
         value={continuumBandwidth}
         suffix={continuumBandwidthUnitsField()}
@@ -842,22 +801,19 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   };
 
   const bandwidthField = () => (
-    <Grid>
-      {fieldWrapper(
-        <BandwidthField
-          required
-          setValue={setBandwidth}
-          value={bandwidth}
-          telescope={telescope()}
-          widthLabel={LABEL_WIDTH_NEW}
-          observingBand={observingBand}
-          centralFrequency={centralFrequency}
-          centralFrequencyUnits={centralFrequencyUnits}
-          subarrayConfig={subarrayConfig}
-          minimumChannelWidthHz={minimumChannelWidthHz}
-        />
-      )}
-    </Grid>
+    <Box pt={1}>
+      <BandwidthField
+        required
+        setValue={setBandwidth}
+        value={bandwidth}
+        telescope={telescope()}
+        observingBand={observingBand}
+        centralFrequency={centralFrequency}
+        centralFrequencyUnits={centralFrequencyUnits}
+        subarrayConfig={subarrayConfig}
+        minimumChannelWidthHz={minimumChannelWidthHz}
+      />
+    </Box>
   );
 
   const spectralResolutionField = () =>
@@ -868,7 +824,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         frequency={centralFrequency}
         frequencyUnits={centralFrequencyUnits}
         label={t('spectralResolution.label')}
-        labelWidth={LABEL_WIDTH_NEW}
         observingBand={observingBand}
         observationType={observationType}
         onFocus={() => setHelp('spectralResolution')}
@@ -880,11 +835,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     fieldWrapper(
       <SpectralAveragingField
         isLow={isLow()}
-        labelWidth={LABEL_WIDTH_NEW}
         value={spectralAveraging}
         setValue={setSpectralAveraging}
         subarray={subarrayConfig}
-        type={observationType}
+        observationType={observationType}
       />
     );
 
@@ -892,7 +846,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     fieldWrapper(
       <EffectiveResolutionField
         label={t('effectiveResolution.label')}
-        labelWidth={LABEL_WIDTH_NEW}
         frequency={centralFrequency}
         frequencyUnits={centralFrequencyUnits}
         spectralAveraging={spectralAveraging}
@@ -924,7 +877,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     fieldWrapper(
       <SubBands
         value={subBands}
-        labelWidth={LABEL_WIDTH_NEW}
         setValue={setSubBands}
         isMid={isMid()}
         isContinuum={isContinuum()}
@@ -940,7 +892,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <Grid size={{ md: 12, lg: 12 }} p={2}>
           {frequencySpectrumField()}
         </Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{observationsBandField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>
           {isContinuum() ? continuumBandwidthField() : bandwidthField()}
         </Grid>
@@ -1089,12 +1040,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                     alignItems="flex-start"
                     rowSpacing={isSV ? 0 : 2}
                   >
-                    {/* TODO check if observationsBandField below is a duplicate */}
                     <Grid size={{ md: 12 }}>{observationsBandField()}</Grid>
                     <Grid size={{ md: 12 }}>{subArrayField()}</Grid>
                     <Grid size={{ md: 12 }}>
                       {!isSV && (isLow() ? numStationsField() : antennasFields())}
                     </Grid>
+                    <Grid size={{ md: 12 }}>{suppliedTypeField()}</Grid>
                     <Grid size={{ md: 12 }}>{suppliedField()}</Grid>
                   </Grid>
                 </BorderedSection>
@@ -1106,22 +1057,20 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                     title={t('observationSections.identifiers')}
                     sx={{ height: '100%' }}
                   >
-                    <CardContent>
-                      <Grid
-                        p={0}
-                        container
-                        direction="row"
-                        alignItems="flex-start"
-                        rowSpacing={1}
-                        justifyContent="space-between"
-                      >
-                        <Grid size={{ md: 12 }}>{idField()}</Grid>
-                        <Grid size={{ md: 12 }}>{observationTypeField()}</Grid>
-                        <Grid size={{ md: 12 }}>{groupObservationsField()}</Grid>
-                        <Grid size={{ md: 12 }}>{elevationField()}</Grid>
-                        <Grid size={{ md: 12 }}>{isLow() ? emptyField() : weatherField()}</Grid>
-                      </Grid>
-                    </CardContent>
+                    <Grid
+                      p={0}
+                      container
+                      direction="row"
+                      alignItems="flex-start"
+                      rowSpacing={isSV ? 0 : 2}
+                      justifyContent="space-between"
+                    >
+                      <Grid size={{ md: 12 }}>{idField()}</Grid>
+                      <Grid size={{ md: 12 }}>{observationTypeField()}</Grid>
+                      <Grid size={{ md: 12 }}>{groupObservationsField()}</Grid>
+                      <Grid size={{ md: 12 }}>{elevationField()}</Grid>
+                      <Grid size={{ md: 12 }}>{isLow() ? emptyField() : weatherField()}</Grid>
+                    </Grid>
                   </BorderedSection>
                 </Grid>
               )}
@@ -1136,7 +1085,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                       container
                       direction="row"
                       alignItems="flex-start"
-                      spacing={2}
+                      spacing={isSV ? 0 : 2}
                       justifyContent="space-between"
                     >
                       <Grid size={{ md: 12 }}>{observationTypeField()}</Grid>
@@ -1157,8 +1106,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                 rowSpacing={1}
                 justifyContent="space-between"
               >
-                {!isSV && frequencySetUp()}{' '}
-                {/* shows to user some fields that are hidden in mock call */}
+                {!isSV && frequencySetUp()}
                 {isSV && isContinuum() && frequencySetUpContinuumSV()}
                 {isSV && isZoom() && frequencySetUpSpectralSV()}
                 {isSV && isPST() && frequencySetUpPSTSV()}
@@ -1166,10 +1114,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
             </BorderedSection>
           </Grid>
           {isLow() &&
-          subarrayConfig === SA_AA2 && ( // TODO : Need to make this generic from OSD Data
+          subarrayConfig === SA_AA2 && ( // TODO : Need to make this generic from OSD Data or endpoint
               <Grid sx={{ p: { md: 5, lg: 0 } }} size={{ md: 12, lg: 3 }}>
                 <Box px={3}>
-                  <img src={IMAGE_PATH} alt="Low AA2" width="100%" />
+                  <img src={IMAGE_PATH_LOW_AA2} alt="Low AA2" width="100%" />
                 </Box>
               </Grid>
             )}

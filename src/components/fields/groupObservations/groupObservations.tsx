@@ -2,14 +2,12 @@ import React from 'react';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { Box } from '@mui/system';
-import { LAB_IS_BOLD, LAB_POSITION } from '../../../utils/constants';
 import Proposal from '../../../utils/types/proposal';
 import GroupObservation from '../../../utils/types/groupObservation';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface GroupObservationsFieldProps {
   disabled?: boolean;
-  labelWidth?: number;
   onFocus?: Function;
   setValue?: Function;
   value: number;
@@ -18,7 +16,6 @@ interface GroupObservationsFieldProps {
 
 export default function GroupObservationsField({
   disabled = false,
-  labelWidth = 5,
   onFocus,
   setValue,
   value,
@@ -139,9 +136,6 @@ export default function GroupObservationsField({
         <TextEntry
           inputRef={inputRef}
           label={t('groupObservations.label')}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
-          labelWidth={labelWidth}
           testId={FIELD + 'Value1'}
           value={groupId}
           setValue={setGroupValue}
@@ -155,9 +149,6 @@ export default function GroupObservationsField({
           disabled={disabled}
           value={value}
           label={t('groupObservations.label')}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
-          labelWidth={labelWidth}
           onFocus={onFocus}
           options={options()}
           required

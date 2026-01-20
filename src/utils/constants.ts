@@ -139,9 +139,9 @@ export const FREQUENCY_UNITS = [
   { label: FREQUENCY_STR_HZ, value: FREQUENCY_HZ, mapping: FREQUENCY_STR_HZ, toHz: 1000000000 }
 ];
 
-export const TYPE_ZOOM = 0;
-export const TYPE_CONTINUUM = 1;
-export const TYPE_PST = 2;
+export const TYPE_ZOOM = 'spectral';
+export const TYPE_CONTINUUM = 'continuum';
+export const TYPE_PST = 'pst';
 
 export const DETAILS = {
   ScienceCategory: [

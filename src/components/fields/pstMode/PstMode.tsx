@@ -1,6 +1,6 @@
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/material';
-import { LAB_IS_BOLD, LAB_POSITION, PST_MODES } from '@utils/constants.ts';
+import { PST_MODES } from '@utils/constants.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 
@@ -9,15 +9,13 @@ interface PstModeFieldProps {
   required?: boolean;
   setValue?: Function;
   value: number;
-  widthLabel?: number;
 }
 
 export default function PstModeField({
   disabled = false,
   required = false,
   setValue,
-  value,
-  widthLabel = 6
+  value
 }: PstModeFieldProps) {
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
@@ -43,9 +41,6 @@ export default function PstModeField({
           value={value}
           setValue={setValue}
           label={t(FIELD + '.label')}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
-          labelWidth={widthLabel}
           onFocus={() => setHelp(FIELD + '.help')}
           required={required}
         />
