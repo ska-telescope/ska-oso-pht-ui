@@ -608,6 +608,20 @@ export const SPECTRAL_AVERAGING_MIN = 1;
 
 export const ZOOM_SPECTRAL_AVERAGING_MAX = 864;
 
+// TODO get correct min max values for output frequency resolution
+export const OUTPUT_FREQUENCY_RESOLUTION_MIN = 1;
+export const OUTPUT_FREQUENCY_RESOLUTION_MAX = 1000;
+
+// TODO get correct min max values for output sampling interval
+export const OUTPUT_SAMPLING_INTERVAL_MIN = 1;
+export const OUTPUT_SAMPLING_INTERVAL_MAX = 1000;
+
+export const ROTATION_MEASURE_MIN = -2e9;
+export const ROTATION_MEASURE_MAX = 2e9;
+
+export const DISPERSION_MEASURE_MIN = 0;
+export const DISPERSION_MEASURE_MAX = 100000;
+
 export const SPEED_OF_LIGHT = 299792458; // m/s
 
 export const STATUS_OK = 0;
