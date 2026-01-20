@@ -39,12 +39,14 @@ export default function ElevationField({
   const { osdMID } = useOSDAccessors();
   const FIELD = 'elevation';
   const [fieldValid, setFieldValid] = React.useState(true);
-  const minElevation = isLow ? ELEVATION_MIN_LOW : osdMID?.basicCapabilities?.dishElevationLimitDeg;
+  const MIN_ELEVATION = isLow
+    ? ELEVATION_MIN_LOW
+    : osdMID?.basicCapabilities?.dishElevationLimitDeg;
 
   const checkValue = (e: number) => {
     const num = Number(e);
 
-    if (num >= minElevation && num <= ELEVATION_MAX) {
+    if (num >= MIN_ELEVATION && num <= ELEVATION_MAX) {
       setFieldValid(true);
       if (setValue) {
         setValue(num);
@@ -57,7 +59,7 @@ export default function ElevationField({
   const errorMessage = fieldValid
     ? ''
     : t(FIELD + '.range.error', {
-        min: minElevation,
+        min: MIN_ELEVATION,
         max: ELEVATION_MAX
       });
 
