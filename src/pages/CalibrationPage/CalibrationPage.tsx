@@ -67,7 +67,11 @@ export default function CalibrationPage() {
         <Grid size={{ md: 10 }}>
           <Alert
             color={AlertColorTypes.Error}
-            text={t('error.noCalibrationsLoggedOut')}
+            text={
+              osdCyclePolicy?.maxObservations === 1 && hasTargetObservations
+                ? t('page.6.noObservations')
+                : t('error.noCalibrationsLoggedOut')
+            }
             testId="noDataNotification"
           />
         </Grid>
