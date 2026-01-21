@@ -51,6 +51,7 @@ import {
   getMinimumChannelWidth,
   obTypeTransform
 } from '@utils/helpers.ts';
+import WeatherField from '@components/weather/weather.tsx';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
 import Proposal from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
@@ -629,30 +630,17 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       />
     );
 
-  const weatherField = () => {
-    const errorMessage = () => {
-      const min = Number(t('weather.range.lower'));
-      const max = Number(t('weather.range.upper'));
-      return weather < min || weather > max ? t('weather.range.error') : '';
-    };
-
-    const weatherUnitsField = () => t('weather.units');
-
-    return fieldWrapper(
-      <Box pt={1}>
-        <NumberEntry
-          disabled={isLow()}
-          errorText={errorMessage()}
-          label={t('weather.label')}
-          testId="weather"
-          value={weather}
-          setValue={setWeather}
-          onFocus={() => setHelp('weather')}
-          suffix={weatherUnitsField()}
-        />
-      </Box>
+  const weatherField = () =>
+    fieldWrapper(
+      <WeatherField
+        disabled={isLow()}
+        label={t('weather.label')}
+        onFocus={() => setHelp('weather')}
+        setValue={setWeather}
+        testId="weather"
+        value={weather}
+      />
     );
-  };
 
   /**************************************************************/
 
