@@ -454,7 +454,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           errorText={isEdit() ? '' : validateId()}
           label={t('observationId.label')}
           onFocus={() => setHelp('observationId')}
-          required
           testId="observationId"
           value={myObsId}
           setValue={setMyObsId}
