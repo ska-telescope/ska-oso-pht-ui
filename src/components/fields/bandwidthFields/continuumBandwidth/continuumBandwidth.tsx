@@ -1,6 +1,6 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { ERROR_SECS, FREQUENCY_STR_HZ, LAB_IS_BOLD, LAB_POSITION } from '@utils/constants.ts';
+import { ERROR_SECS, FREQUENCY_STR_HZ } from '@utils/constants.ts';
 import { getScaledBandwidthOrFrequency } from '@utils/helpers.ts';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import React from 'react';
@@ -16,7 +16,6 @@ import { useHelp } from '@/utils/help/useHelp';
 
 interface ContinuumBandwidthFieldProps {
   disabled?: boolean;
-  labelWidth?: number;
   onFocus?: Function;
   setValue?: (v: number) => void;
   value: number;
@@ -32,7 +31,6 @@ interface ContinuumBandwidthFieldProps {
 
 export default function ContinuumBandwidthField({
   disabled = false,
-  labelWidth = 5,
   setValue,
   value,
   suffix,
@@ -154,9 +152,6 @@ export default function ContinuumBandwidthField({
       <NumberEntry
         disabled={disabled}
         label={t(FIELD + '.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={labelWidth}
         suffix={suffix}
         testId={FIELD}
         value={safeValue}

@@ -1,6 +1,6 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { ERROR_SECS, LAB_IS_BOLD, LAB_POSITION } from '@utils/constants.ts';
+import { ERROR_SECS } from '@utils/constants.ts';
 import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
@@ -32,8 +32,7 @@ export default function ElevationField({
   required = false,
   setValue,
   testId,
-  value,
-  widthLabel = 6
+  value
 }: ElevationFieldProps) {
   const { t } = useScopedTranslation();
   const { osdMID } = useOSDAccessors();
@@ -41,7 +40,7 @@ export default function ElevationField({
   const [fieldValid, setFieldValid] = React.useState(true);
   const MIN_ELEVATION = isLow
     ? ELEVATION_MIN_LOW
-    : osdMID?.basicCapabilities?.dishElevationLimitDeg;
+    : osdMID?.basicCapabilities?.dishElevationLimitDeg ?? ELEVATION_MIN_LOW;
 
   const checkValue = (e: number) => {
     const num = Number(e);
@@ -78,9 +77,6 @@ export default function ElevationField({
         disabled={disabled}
         errorText={errorMessage}
         label={label}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={widthLabel}
         required={required}
         testId={testId}
         value={value}

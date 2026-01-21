@@ -29,9 +29,8 @@ The Proposal Handling Tool (PHT) allows you to prepare and submit a proposal to 
    :titlesonly:
 
    userGuide/UserIntroduction
-   userGuide/LandingPage
-   userGuide/PPT/sv/index
-   userGuide/PPT/proposal/index
+   userGuide/sv/index
+   userGuide/proposal/index
    userGuide/PMT/index
    userGuide/UserQuestions
    userGuide/UserTroubleShooting

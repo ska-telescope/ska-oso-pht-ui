@@ -9,7 +9,7 @@ export type DataProductSDPContinuumImageBackend = {
   };
   polarisations: string[];
   channels_out?: number;
-  fit_spectral_pol?: number;
+  // fit_spectral_pol?: number;
   gaussian_taper?: string;
   kind: string;
   variant: string;
@@ -24,7 +24,7 @@ export type DataProductSDPContinuumVisibilitiesBackend = {
   };
   polarisations: string[];
   channels_out?: number;
-  fit_spectral_pol?: number;
+  // fit_spectral_pol?: number;
   gaussian_taper?: string;
   time_averaging: ValueUnitPair;
   frequency_averaging: ValueUnitPair;
@@ -41,7 +41,7 @@ export type DataProductSDPSpectralImageBackend = {
   };
   polarisations: string[];
   channels_out?: number;
-  fit_spectral_pol?: number;
+  // fit_spectral_pol?: number;
   gaussian_taper?: string;
   continuum_subtraction?: boolean;
   kind: string;

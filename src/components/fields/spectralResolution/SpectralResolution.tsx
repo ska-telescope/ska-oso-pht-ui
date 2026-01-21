@@ -1,13 +1,7 @@
 import React from 'react';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import {
-  BAND_LOW_STR,
-  FREQUENCY_UNITS,
-  LAB_IS_BOLD,
-  LAB_POSITION,
-  TYPE_CONTINUUM
-} from '../../../utils/constants';
+import { BAND_LOW_STR, FREQUENCY_UNITS, TYPE_CONTINUUM } from '../../../utils/constants';
 import { calculateVelocity, frequencyConversion } from '../../../utils/helpers';
 
 interface SpectralResolutionFieldProps {
@@ -18,7 +12,7 @@ interface SpectralResolutionFieldProps {
   label?: string;
   labelWidth?: number;
   observingBand: string;
-  observationType: number;
+  observationType: string;
   onFocus?: Function;
   setValue?: Function;
 }
@@ -29,7 +23,6 @@ export default function SpectralResolutionField({
   frequency,
   frequencyUnits,
   label = '',
-  labelWidth = 6,
   observingBand,
   observationType,
   onFocus,
@@ -98,9 +91,6 @@ export default function SpectralResolutionField({
         disabled
         disabledUnderline
         label={label}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={labelWidth}
         onFocus={onFocus}
         testId="spectralResolution"
         value={spectralResolution}

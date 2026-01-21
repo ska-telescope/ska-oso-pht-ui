@@ -240,7 +240,13 @@ const getGroupObservations = (inValue: ObservationSetBackend[] | null) => {
 };
 
 const getDataProductSRC = (inValue: DataProductSRCNetBackend[] | null): DataProductSRC[] => {
-  return inValue ? inValue.map(dp => ({ id: dp?.data_products_src_id })) : [];
+  return inValue
+    ? inValue.map(dp => ({
+        id: dp?.data_products_src_id,
+        dataProductType: 0,
+        observationId: ''
+      }))
+    : [];
 };
 
 const getDataProductType = (el: any) => {
@@ -295,7 +301,6 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
               : 0,
           polarisations: 'polarisations' in script ? script.polarisations : undefined,
           channelsOut: 'channels_out' in script ? Number(script.channels_out) ?? 0 : 0,
-          fitSpectralPol: 'fit_spectral_pol' in script ? Number(script.fit_spectral_pol) ?? 0 : 0,
           taperValue: 'gaussian_taper' in script ? Number(script.gaussian_taper) ?? 0 : 0,
           timeAveraging: 'time_averaging' in script ? Number(script.time_averaging.value) ?? 0 : 0,
           frequencyAveraging:
@@ -320,8 +325,7 @@ const getCalibrationStrategy = (
         calibrators: strategy?.calibrators
           ? strategy?.calibrators?.map(calibrator => calibratorMapping(calibrator))
           : null,
-        notes: strategy.notes,
-        isAddNote: strategy.notes ? true : false
+        notes: strategy.notes
       }))
     : [];
 };
@@ -380,17 +384,6 @@ const getLinked = (
   return linkedTargetRef ? linkedTargetRef : '';
 };
 
-export const getObservationType = (inObs: ObservationSetBackend): number => {
-  switch (inObs?.observation_type_details?.observation_type?.toLocaleLowerCase()) {
-    case OBSERVATION_TYPE_BACKEND[TYPE_ZOOM]:
-      return TYPE_ZOOM;
-    case OBSERVATION_TYPE_BACKEND[TYPE_PST]:
-      return TYPE_PST;
-    default:
-      return TYPE_CONTINUUM;
-  }
-};
-
 const getObservations = (
   inValue: ObservationSetBackend[] | null,
   inResults: SensCalcResultsBackend[] | null
@@ -406,7 +399,7 @@ const getObservations = (
       p => p.label.toLowerCase() === inValue[i]?.array_details?.subarray?.toLocaleLowerCase()
     )?.value;
 
-    const type: number = getObservationType(inValue[i]);
+    const type = inValue[i]?.observation_type_details?.observation_type;
 
     const observingBand = inValue[i]?.observing_band;
 
@@ -430,8 +423,8 @@ const getObservations = (
     const obs: Observation = {
       id: inValue[i].observation_set_id,
       telescope: arr,
-      subarray: sub ? sub : 0,
-      type: type,
+      subarray: sub ? sub : '',
+      type: String(type),
       observingBand: observingBand,
       weather: weather,
       centralFrequency: inValue[i]?.observation_type_details?.central_frequency?.value as number,
@@ -463,7 +456,7 @@ const getObservations = (
       linked: getLinked(inValue[i], inResults),
       continuumBandwidth:
         type === TYPE_CONTINUUM || type === TYPE_PST
-          ? inValue[i].observation_type_details?.bandwidth?.value
+          ? inValue[i].observation_type_details?.bandwidth?.value ?? null
           : null,
       continuumBandwidthUnits:
         type === TYPE_CONTINUUM || type === TYPE_PST
@@ -474,8 +467,10 @@ const getObservations = (
           : null,
       numStations: numStations,
       ...(type === TYPE_ZOOM && {
-        zoomChannels: (inValue[i].observation_type_details as ObservationTypeDetailsSpectralBackend)
-          ?.number_of_channels
+        zoomChannels: Number(
+          (inValue[i].observation_type_details as ObservationTypeDetailsSpectralBackend)
+            ?.number_of_channels
+        )
       }),
       ...(type === TYPE_PST && {
         pstMode: PST_MODES?.find(

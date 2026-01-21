@@ -146,7 +146,6 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
             id: newStrategy?.id,
             observationIdRef: newStrategy?.observationIdRef,
             calibrators: newStrategy?.calibrators,
-            isAddNote: addNotes,
             notes: addNotes ? notes : null
           }
         ]
