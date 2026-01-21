@@ -1,11 +1,8 @@
 import React from 'react';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import {
-  ERROR_SECS,
-  OUTPUT_FREQUENCY_RESOLUTION_MAX,
-  OUTPUT_FREQUENCY_RESOLUTION_MIN
-} from '@utils/constants.ts';
+import { ERROR_SECS } from '@utils/constants.ts';
+import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 
@@ -27,6 +24,7 @@ export default function OutputFrequencyResolutionField({
   const { setHelp } = useHelp();
   const FIELD = 'outputFrequencyResolution';
   const [errorText, setErrorText] = React.useState('');
+  const { observatoryConstants } = useOSDAccessors();
 
   React.useEffect(() => {
     const timer = () => {
@@ -38,7 +36,10 @@ export default function OutputFrequencyResolutionField({
   }, [errorText]);
 
   const validateValue = (num: number) => {
-    if (num < OUTPUT_FREQUENCY_RESOLUTION_MIN || num > OUTPUT_FREQUENCY_RESOLUTION_MAX) {
+    if (
+      num < observatoryConstants.OutputFrequencyResolution.min ||
+      num > observatoryConstants.OutputFrequencyResolution.max
+    ) {
       return t('outputFrequencyResolution.range.error');
     }
     return '';

@@ -1,9 +1,10 @@
 import React from 'react';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { DISPERSION_MEASURE_MAX, DISPERSION_MEASURE_MIN, ERROR_SECS } from '@utils/constants.ts';
+import { ERROR_SECS } from '@utils/constants.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 interface DispersionMeasureFieldProps {
   disabled?: boolean;
@@ -23,7 +24,7 @@ export default function DispersionMeasureField({
   const { setHelp } = useHelp();
   const FIELD = 'dispersionMeasure';
   const [errorText, setErrorText] = React.useState('');
-
+  const { observatoryConstants } = useOSDAccessors();
   React.useEffect(() => {
     const timer = () => {
       setTimeout(() => {
@@ -34,7 +35,10 @@ export default function DispersionMeasureField({
   }, [errorText]);
 
   const validateValue = (num: number) => {
-    if (num < DISPERSION_MEASURE_MIN || num > DISPERSION_MEASURE_MAX) {
+    if (
+      num < observatoryConstants.DispersionMeasure.min ||
+      num > observatoryConstants.DispersionMeasure.max
+    ) {
       return t('dispersionMeasure.range.error');
     }
     return '';

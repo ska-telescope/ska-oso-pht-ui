@@ -1,15 +1,10 @@
 import React from 'react';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import {
-  ERROR_SECS,
-  LAB_IS_BOLD,
-  LAB_POSITION,
-  ROTATION_MEASURE_MAX,
-  ROTATION_MEASURE_MIN
-} from '@utils/constants.ts';
+import { ERROR_SECS, LAB_IS_BOLD, LAB_POSITION } from '@utils/constants.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 interface RotationMeasureFieldProps {
   disabled?: boolean;
@@ -31,7 +26,7 @@ export default function RotationMeasureField({
   const { setHelp } = useHelp();
   const FIELD = 'rotationMeasure';
   const [errorText, setErrorText] = React.useState('');
-
+  const { observatoryConstants } = useOSDAccessors();
   React.useEffect(() => {
     const timer = () => {
       setTimeout(() => {
@@ -42,7 +37,10 @@ export default function RotationMeasureField({
   }, [errorText]);
 
   const validateValue = (num: number) => {
-    if (num < ROTATION_MEASURE_MIN || num > ROTATION_MEASURE_MAX) {
+    if (
+      num < observatoryConstants.RotationMeasure.min ||
+      num > observatoryConstants.RotationMeasure.max
+    ) {
       return t('rotationMeasure.range.error');
     }
     return '';

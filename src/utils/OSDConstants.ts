@@ -231,5 +231,21 @@ export const OSD_CONSTANTS = {
     { label: 'MHz', value: 2 },
     { label: 'kHz', value: 3 },
     { label: 'Hz', value: 4 }
-  ]
+  ],
+  RotationMeasure: {
+    min: -2e9,
+    max: 2e9
+  },
+  DispersionMeasure: {
+    min: 0,
+    max: 100000
+  },
+  OutputFrequencyResolution: {
+    min: 1, // TODO get correct min max values
+    max: 1000 // TODO get correct min max values
+  },
+  OutputSamplingInterval: {
+    min: 1, // TODO get correct min max values
+    max: 1000 // TODO get correct min max values
+  }
 };

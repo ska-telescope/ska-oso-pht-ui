@@ -1,11 +1,8 @@
 import React from 'react';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import {
-  ERROR_SECS,
-  OUTPUT_SAMPLING_INTERVAL_MAX,
-  OUTPUT_SAMPLING_INTERVAL_MIN
-} from '@utils/constants.ts';
+import { ERROR_SECS } from '@utils/constants.ts';
+import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 
@@ -27,7 +24,7 @@ export default function OutputSamplingIntervalField({
   const { setHelp } = useHelp();
   const FIELD = 'outputSamplingInterval';
   const [errorText, setErrorText] = React.useState('');
-
+  const { observatoryConstants } = useOSDAccessors();
   React.useEffect(() => {
     const timer = () => {
       setTimeout(() => {
@@ -38,7 +35,10 @@ export default function OutputSamplingIntervalField({
   }, [errorText]);
 
   const validateValue = (num: number) => {
-    if (num < OUTPUT_SAMPLING_INTERVAL_MIN || num > OUTPUT_SAMPLING_INTERVAL_MAX) {
+    if (
+      num < observatoryConstants.OutputSamplingInterval.min ||
+      num > observatoryConstants.OutputSamplingInterval.max
+    ) {
       return t('outputSamplingInterval.range.error');
     }
     return '';
