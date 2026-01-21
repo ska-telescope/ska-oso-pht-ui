@@ -3,8 +3,6 @@ import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import {
   ERROR_SECS,
-  LAB_IS_BOLD,
-  LAB_POSITION,
   OUTPUT_FREQUENCY_RESOLUTION_MAX,
   OUTPUT_FREQUENCY_RESOLUTION_MIN
 } from '@utils/constants.ts';
@@ -18,14 +16,12 @@ interface OutputFrequencyResolutionFieldProps {
   suffix?: any;
   value: number;
   widthButton?: number;
-  widthLabel?: number;
 }
 
 export default function OutputFrequencyResolutionField({
   required = false,
   setValue,
-  value,
-  widthLabel = 6
+  value
 }: OutputFrequencyResolutionFieldProps) {
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
@@ -70,9 +66,6 @@ export default function OutputFrequencyResolutionField({
         value={String(value)}
         setValue={handleSetValue}
         label={t(FIELD + '.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={widthLabel}
         onFocus={() => setHelp(FIELD)}
         required={required}
         errorText={errorText}
