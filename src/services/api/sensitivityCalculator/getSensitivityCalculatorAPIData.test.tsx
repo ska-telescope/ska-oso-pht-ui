@@ -41,7 +41,7 @@ describe('getSensitivityCalculatorAPIData Service', () => {
   test('returns mapped mock data when USE_LOCAL_DATA_SENSITIVITY_CALC is true', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA_SENSITIVITY_CALC', 'get').mockReturnValue(true);
     const result = await getSensCalc(
-      CONSTANTS.DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
+      CONSTANTS.DEFAULT_CONTINUUM_OBSERVATION_LOW,
       CONSTANTS.DEFAULT_TARGETS,
       MOCK_CONTINUUM_DATA_PRODUCT
     );
@@ -54,7 +54,7 @@ describe('getSensitivityCalculatorAPIData Service', () => {
       data: sensCalcResultsAPIResponseMockContinuum
     });
     const result = await getSensCalc(
-      CONSTANTS.DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
+      CONSTANTS.DEFAULT_CONTINUUM_OBSERVATION_LOW,
       CONSTANTS.DEFAULT_TARGETS,
       MOCK_CONTINUUM_DATA_PRODUCT
     );
@@ -82,7 +82,7 @@ describe('getSensitivityCalculatorAPIData Service', () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     vi.spyOn(axiosClient, 'get').mockRejectedValue(new Error('Network Error'));
     const result = await getSensCalc(
-      CONSTANTS.DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
+      CONSTANTS.DEFAULT_CONTINUUM_OBSERVATION_LOW,
       CONSTANTS.DEFAULT_TARGETS,
       MOCK_CONTINUUM_DATA_PRODUCT
     );
@@ -101,7 +101,7 @@ describe('getSensitivityCalculatorAPIData Service', () => {
       message: errorOut.detail
     });
     const result = await getSensCalc(
-      CONSTANTS.DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
+      CONSTANTS.DEFAULT_CONTINUUM_OBSERVATION_LOW,
       CONSTANTS.DEFAULT_TARGETS,
       MOCK_CONTINUUM_DATA_PRODUCT
     );

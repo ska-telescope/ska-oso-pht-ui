@@ -747,7 +747,7 @@ export const DEFAULT_TARGETS: Target = {
   velUnit: 0
 };
 
-export const DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2: Observation = {
+export const DEFAULT_CONTINUUM_OBSERVATION_LOW: Observation = {
   id: 'obs-0000000',
   telescope: TELESCOPE_LOW_NUM,
   subarray: SA_AA2,
@@ -826,7 +826,7 @@ export const DEFAULT_PST_OBSERVATION_LOW_AA2: Observation = {
 
 export const DEFAULT_OBSERVATIONS_LOW_AA2: Observation[] = [
   DEFAULT_ZOOM_OBSERVATION_LOW_AA2,
-  DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
+  DEFAULT_CONTINUUM_OBSERVATION_LOW,
   DEFAULT_PST_OBSERVATION_LOW_AA2
 ];
 
