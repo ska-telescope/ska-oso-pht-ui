@@ -130,8 +130,7 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
 
   const timeAveragingField = () =>
     fieldWrapper(
-      <>
-        SARAH
+      <>        
         <TimeAveragingField
           labelWidth={LABEL_WIDTH}
           value={(sdpData as SDPVisibilitiesContinuumData)?.timeAveraging}
