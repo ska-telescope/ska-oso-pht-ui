@@ -1,7 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
   DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
-  DEFAULT_OBSERVATIONS_LOW_AA2,
   DEFAULT_PST_OBSERVATION_LOW_AA2,
   DEFAULT_ZOOM_OBSERVATION_LOW_AA2,
   TYPE_CONTINUUM,
@@ -12,6 +11,8 @@ import * as helpers from '../helpers';
 import { calculateSensCalcData } from '../sensCalc/sensCalc';
 import Proposal from '../types/proposal';
 import { SDPImageContinuumData, SDPSpectralData } from '../types/dataProduct';
+import { getDefaultObservationLowAA2 } from '../helpers';
+import Observation from '../types/observation';
 import autoLinking, { calibrationOut, dataProductSDPOut, observationOut } from './AutoLinking';
 import { mockCalibration } from './mockCalibration';
 import {
@@ -39,8 +40,8 @@ describe('autoLinking, observationOut', () => {
 describe('autoLinking, dataProductSDPOut', () => {
   test('SDP default continuum', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('SDP-0000000');
-    const obs = {
-      ...DEFAULT_OBSERVATIONS_LOW_AA2[TYPE_CONTINUUM],
+    const obs: Observation = {
+      ...getDefaultObservationLowAA2(TYPE_CONTINUUM),
       id: 'obs-123'
     };
     const sdp = dataProductSDPOut(obs);
@@ -48,8 +49,8 @@ describe('autoLinking, dataProductSDPOut', () => {
   });
   test('SDP default spectral', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('SDP-0000000');
-    const obs = {
-      ...DEFAULT_OBSERVATIONS_LOW_AA2[TYPE_ZOOM],
+    const obs: Observation = {
+      ...getDefaultObservationLowAA2(TYPE_ZOOM),
       id: 'obs-123'
     };
     const sdp = dataProductSDPOut(obs);
@@ -57,8 +58,8 @@ describe('autoLinking, dataProductSDPOut', () => {
   });
   test('SDP default PST', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('SDP-0000000');
-    const obs = {
-      ...DEFAULT_OBSERVATIONS_LOW_AA2[TYPE_PST],
+    const obs: Observation = {
+      ...getDefaultObservationLowAA2(TYPE_PST),
       id: 'obs-123'
     };
     const sdp = dataProductSDPOut(obs);

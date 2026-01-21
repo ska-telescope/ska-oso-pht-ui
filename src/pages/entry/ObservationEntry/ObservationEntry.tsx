@@ -367,9 +367,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   }, []);
 
   const setAfterChange = () => {
-    if (isContinuumOnly()) {
-      setObservationType(TYPE_CONTINUUM);
-    }
     setValidateToggle(!validateToggle);
     setMaxChannelsZoom(subarrayConfig);
   };
@@ -438,7 +435,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const isLow = () => observingBand === BAND_LOW_STR;
   const isMid = () => observingBand !== BAND_LOW_STR;
   const telescope = () => (isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM);
-  const isContinuumOnly = () => observingBand !== BAND_LOW_STR && subarrayConfig === SA_AA2;
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
@@ -667,17 +663,29 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const obj = low ? osdLOW : osdMID;
     const rec = obj?.subArrays.find(r => r.subArray === subarrayConfig);
     const modes = obTypeTransform(rec?.cbfModes ?? []);
-
     return modes.map(mode => ({
       label: t(`observationType.${mode}`),
       value: mode
     }));
   }, [subarrayConfig, low, osdLOW, osdMID, t]);
 
+  React.useEffect(() => {
+    if (obsTypeOptions.length === 0) return;
+
+    if (!observationType && obsTypeOptions.length > 0) {
+      setObservationType(obsTypeOptions[0].value);
+      return;
+    }
+
+    const isValid = obsTypeOptions.some(opt => opt.value === observationType);
+    if (!isValid && obsTypeOptions.length > 0) {
+      setObservationType(obsTypeOptions[0].value);
+    }
+  }, [observationType, obsTypeOptions, setObservationType]);
+
   const observationTypeField = () =>
     fieldWrapper(
       <ObservationTypeField
-        isContinuumOnly={isContinuumOnly()}
         options={obsTypeOptions}
         required
         value={observationType}

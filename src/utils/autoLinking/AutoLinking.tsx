@@ -1,5 +1,4 @@
 import {
-  DEFAULT_OBSERVATIONS_LOW_AA2,
   DP_TYPE_IMAGES,
   IW_UNIFORM,
   PULSAR_TIMING_VALUE,
@@ -8,7 +7,7 @@ import {
   TYPE_PST,
   TYPE_ZOOM
 } from '../constants';
-import { generateId } from '../helpers';
+import { generateId, getDefaultObservationLowAA2 } from '../helpers';
 import { calculateSensCalcData } from '../sensCalc/sensCalc';
 import { CalibrationStrategy } from '../types/calibrationStrategy';
 import {
@@ -29,9 +28,9 @@ interface DefaultsResults {
   error?: string;
 }
 
-export const observationOut = (obsMode: number) => {
+export const observationOut = (obsMode: string) => {
   const defaultObs: Observation = {
-    ...DEFAULT_OBSERVATIONS_LOW_AA2[obsMode], // TODO make this smarter / more generic for when not only low aa2 will be used
+    ...getDefaultObservationLowAA2(obsMode),
     id: generateId('obs-', 6)
   };
   return defaultObs;
@@ -77,6 +76,7 @@ export const SDPData = (
       } as SDPSpectralData;
     default:
       return {
+        continuumSubtraction: true,
         dataProductType: DP_TYPE_IMAGES,
         imageSizeValue: 2.5,
         imageSizeUnits: 0,
@@ -84,7 +84,7 @@ export const SDPData = (
         pixelSizeUnits: 2,
         weighting: IW_UNIFORM,
         polarisations: ['I', 'XX'],
-        channelsOut: 10,
+        channelsOut: 40,
         robust: ROBUST_DEFAULT,
         taperValue: TAPER_DEFAULT
       } as SDPImageContinuumData;
@@ -150,10 +150,11 @@ export default async function autoLinking(
   target: Target,
   getProposal: Function,
   setProposal: Function,
-  obsMode?: number, // science category is used for observation mode on SV
+  observationMode?: string, // science category is used for observation mode on SV
   abstract?: string | undefined
 ): Promise<DefaultsResults> {
-  const newObsMode = obsMode ?? getProposal().scienceCategory;
+  const newObsMode =
+    observationMode && observationMode.length > 0 ? observationMode : getProposal().scienceCategory;
   const newAbstract = abstract ?? getProposal().abstract;
   const newObservation = observationOut(newObsMode);
   const newDataProductSDP = dataProductSDPOut(newObservation);

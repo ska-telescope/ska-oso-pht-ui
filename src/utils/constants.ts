@@ -2,6 +2,7 @@ import { LABEL_POSITION, TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska
 import Target from './types/target';
 import Investigator from './types/investigator';
 import Observation from './types/observation';
+import { DataProductSDPNew } from './types/dataProduct';
 import { env } from '@/env';
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const cypressToken = window.localStorage.getItem('cypress:token');
@@ -140,6 +141,7 @@ export const FREQUENCY_UNITS = [
 ];
 
 export const TYPE_ZOOM = 'spectral';
+export const TYPE_ZOOM_LONG = 'spectral line';
 export const TYPE_CONTINUUM = 'continuum';
 export const TYPE_PST = 'pst';
 
@@ -537,19 +539,9 @@ export const SECONDS_UNITS = [
   { label: NANOSECOND_LABEL, toSeconds: 0.000000001 }
 ];
 
-export const TYPE_STR_ZOOM_SHORT = 'spectral';
-export const TYPE_STR_ZOOM = 'spectral line';
-export const TYPE_STR_CONTINUUM = 'continuum';
-export const TYPE_STR_PST = 'pst';
-
-export const OBS_TYPES = [TYPE_STR_ZOOM_SHORT, TYPE_STR_CONTINUUM];
 export const OBSERVATION_TYPE = [TYPE_ZOOM, TYPE_CONTINUUM, TYPE_PST];
-export const OBSERVATION_TYPE_BACKEND = [TYPE_STR_ZOOM, TYPE_STR_CONTINUUM, TYPE_STR_PST];
-export const OBSERVATION_TYPE_SHORT_BACKEND = [
-  TYPE_STR_ZOOM_SHORT,
-  TYPE_STR_CONTINUUM,
-  TYPE_STR_PST
-];
+export const OBSERVATION_TYPE_BACKEND = [TYPE_ZOOM, TYPE_CONTINUUM, TYPE_PST];
+export const OBSERVATION_TYPE_SHORT_BACKEND = [TYPE_ZOOM, TYPE_CONTINUUM, TYPE_PST];
 export const SUPPLIED_TYPE_INTEGRATION = 1;
 export const SUPPLIED_TYPE_SENSITIVITY = 2;
 export const SUPPLIED_INTEGRATION_TIME_UNITS_H = 2;
@@ -810,11 +802,22 @@ export const DEFAULT_PST_OBSERVATION_LOW_AA2: Observation = {
   pstMode: PULSAR_TIMING_VALUE
 };
 
-export const DEFAULT_OBSERVATIONS_LOW_AA2: Observation[] = [
-  DEFAULT_ZOOM_OBSERVATION_LOW_AA2,
-  DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
-  DEFAULT_PST_OBSERVATION_LOW_AA2
-];
+export const DEFAULT_DATA_PRODUCT: DataProductSDPNew = {
+  id: 'dp-0000000',
+  observationId: 'obs-0000000',
+  data: {
+    dataProductType: 0,
+    imageSizeValue: 0,
+    imageSizeUnits: 0,
+    pixelSizeValue: 0,
+    pixelSizeUnits: 0,
+    weighting: 0,
+    robust: 0,
+    taperValue: 0,
+    channelsOut: 0,
+    polarisations: []
+  }
+};
 
 export const DUMMY_PROPOSAL_ID = 'dummy-proposal-id';
 

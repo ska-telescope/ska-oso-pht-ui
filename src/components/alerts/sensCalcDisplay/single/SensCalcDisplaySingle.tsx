@@ -3,7 +3,7 @@ import { t } from 'i18next';
 import { presentSensCalcError, presentUnits, presentValue } from '@utils/present/present';
 import StatusIconDisplay from '../../../icon/status/statusIcon';
 import SensCalcModalSingle from '../../sensCalcModal/single/SensCalcModalSingle';
-import { OBS_TYPES, STATUS_OK } from '../../../../utils/constants';
+import { STATUS_OK, TYPE_ZOOM, TYPE_CONTINUUM } from '../../../../utils/constants';
 
 const VALUE = 'value';
 const UNITS = 'units';
@@ -37,7 +37,7 @@ export default function SensCalcDisplaySingle({
 
   const FieldFetch: any = (type: string, field: string) => {
     const observationTypeLabel: string =
-      sensCalc?.section2?.length > 0 ? OBS_TYPES[1] : OBS_TYPES[0];
+      sensCalc?.section2?.length > 0 ? TYPE_CONTINUUM : TYPE_ZOOM;
     if (sensCalc?.section1) {
       const result = sensCalc?.section1.find(
         (item: { field: string }) => item.field === `${observationTypeLabel}${field}`

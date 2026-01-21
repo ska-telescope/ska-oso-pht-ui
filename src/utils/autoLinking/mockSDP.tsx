@@ -24,6 +24,7 @@ export const CONTINUUM_IMAGE_DATA_PRODUCT: DataProductSDPNew = {
   id: 'SDP-0000000',
   observationId: 'obs-123',
   data: {
+    continuumSubtraction: true,
     dataProductType: DP_TYPE_IMAGES,
     imageSizeValue: 2.5,
     imageSizeUnits: 0,
@@ -31,7 +32,7 @@ export const CONTINUUM_IMAGE_DATA_PRODUCT: DataProductSDPNew = {
     pixelSizeUnits: 2,
     weighting: IW_UNIFORM,
     polarisations: ['I', 'XX'],
-    channelsOut: 10,
+    channelsOut: 40,
     robust: ROBUST_DEFAULT,
     taperValue: TAPER_DEFAULT
   } as SDPImageContinuumData

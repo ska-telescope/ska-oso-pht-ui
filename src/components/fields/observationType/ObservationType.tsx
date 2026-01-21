@@ -4,7 +4,6 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 
 interface ObservationTypeFieldProps {
-  isContinuumOnly?: boolean;
   disabled?: boolean;
   options?: any[];
   required?: boolean;
@@ -31,7 +30,7 @@ export default function ObservationTypeField({
     <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
       <Grid pl={suffix ? 1 : 0} size={{ xs: suffix ? 12 - widthButton : 12 }}>
         <DropDown
-          disabled={disabled}
+          disabled={disabled || options.length < 2}
           options={options}
           testId={FIELD}
           value={value}

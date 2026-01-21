@@ -5,7 +5,12 @@ import {
   SPEED_OF_LIGHT,
   TEXT_ENTRY_PARAMS,
   VELOCITY_UNITS,
-  BANDWIDTH_MIN_CHANNEL_WIDTH_HZ
+  BANDWIDTH_MIN_CHANNEL_WIDTH_HZ,
+  DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
+  DEFAULT_PST_OBSERVATION_LOW_AA2,
+  DEFAULT_ZOOM_OBSERVATION_LOW_AA2,
+  TYPE_ZOOM,
+  TYPE_PST
 } from './constants';
 import Observation from './types/observation';
 import { ValueUnitPair } from './types/valueUnitPair';
@@ -208,4 +213,15 @@ export const obTypeTransform = (inData: string[]) => {
   });
 
   return out;
+};
+
+export const getDefaultObservationLowAA2 = (type: string): Observation | null => {
+  switch (type) {
+    case TYPE_ZOOM:
+      return DEFAULT_ZOOM_OBSERVATION_LOW_AA2;
+    case TYPE_PST:
+      return DEFAULT_PST_OBSERVATION_LOW_AA2;
+    default:
+      return DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2;
+  }
 };
