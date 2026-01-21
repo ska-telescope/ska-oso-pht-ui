@@ -2,7 +2,6 @@ import { LABEL_POSITION, TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska
 import Target from './types/target';
 import Investigator from './types/investigator';
 import Observation from './types/observation';
-import { DataProductSDPNew } from './types/dataProduct';
 import { env } from '@/env';
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const cypressToken = window.localStorage.getItem('cypress:token');
@@ -750,7 +749,7 @@ export const DEFAULT_CONTINUUM_OBSERVATION_LOW: Observation = {
   effectiveResolution: ''
 };
 
-export const DEFAULT_ZOOM_OBSERVATION_LOW_AA2: Observation = {
+export const DEFAULT_ZOOM_OBSERVATION_LOW: Observation = {
   id: 'obs-0000000',
   telescope: TELESCOPE_LOW_NUM,
   subarray: SA_AA2,
@@ -776,7 +775,7 @@ export const DEFAULT_ZOOM_OBSERVATION_LOW_AA2: Observation = {
   zoomChannels: 1000
 };
 
-export const DEFAULT_PST_OBSERVATION_LOW_AA2: Observation = {
+export const DEFAULT_PST_OBSERVATION_LOW: Observation = {
   id: 'obs-0000000',
   telescope: TELESCOPE_LOW_NUM,
   subarray: SA_AA2,
@@ -803,9 +802,9 @@ export const DEFAULT_PST_OBSERVATION_LOW_AA2: Observation = {
 };
 
 export const DEFAULT_OBSERVATIONS_LOW_AA2: Observation[] = [
-  DEFAULT_ZOOM_OBSERVATION_LOW_AA2,
+  DEFAULT_ZOOM_OBSERVATION_LOW,
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
-  DEFAULT_PST_OBSERVATION_LOW_AA2
+  DEFAULT_PST_OBSERVATION_LOW
 ];
 
 export const DUMMY_PROPOSAL_ID = 'dummy-proposal-id';

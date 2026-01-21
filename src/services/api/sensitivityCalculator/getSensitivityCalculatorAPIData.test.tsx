@@ -66,7 +66,7 @@ describe('getSensitivityCalculatorAPIData Service', () => {
       data: sensCalcResultsAPIResponseMockSpectral
     });
     const result = await getSensCalc(
-      CONSTANTS.DEFAULT_ZOOM_OBSERVATION_LOW_AA2,
+      CONSTANTS.DEFAULT_ZOOM_OBSERVATION_LOW,
       CONSTANTS.DEFAULT_TARGETS,
       MOCK_CONTINUUM_DATA_PRODUCT
     );
@@ -112,7 +112,7 @@ describe('getSensitivityCalculatorAPIData Service', () => {
 
 describe('setMockObservation', () => {
   it('returns a new object and does not mutate the input', () => {
-    const original: Observation = CONSTANTS.DEFAULT_PST_OBSERVATION_LOW_AA2;
+    const original: Observation = CONSTANTS.DEFAULT_PST_OBSERVATION_LOW;
     const copy = setMockObservation(original);
     expect(original.type).toBe(CONSTANTS.TYPE_PST);
     expect(copy.type).toBe(CONSTANTS.TYPE_CONTINUUM);

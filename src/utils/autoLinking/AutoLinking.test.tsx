@@ -1,9 +1,8 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import {
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
-  DEFAULT_OBSERVATIONS_LOW_AA2,
-  DEFAULT_PST_OBSERVATION_LOW_AA2,
-  DEFAULT_ZOOM_OBSERVATION_LOW_AA2,
+  DEFAULT_PST_OBSERVATION_LOW,
+  DEFAULT_ZOOM_OBSERVATION_LOW,
   TYPE_CONTINUUM,
   TYPE_PST,
   TYPE_ZOOM
@@ -30,11 +29,11 @@ describe('autoLinking, observationOut', () => {
   });
   test('observationOut zoom', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
-    expect(observationOut(TYPE_ZOOM)).deep.equal(DEFAULT_ZOOM_OBSERVATION_LOW_AA2);
+    expect(observationOut(TYPE_ZOOM)).deep.equal(DEFAULT_ZOOM_OBSERVATION_LOW);
   });
   test('observationOut pst', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
-    expect(observationOut(TYPE_PST)).deep.equal(DEFAULT_PST_OBSERVATION_LOW_AA2);
+    expect(observationOut(TYPE_PST)).deep.equal(DEFAULT_PST_OBSERVATION_LOW);
   });
 });
 
@@ -243,7 +242,7 @@ describe('autoLinking()', () => {
     proposal = {
       scienceCategory: TYPE_PST,
       targets: [mockTarget],
-      observations: [{ ...DEFAULT_PST_OBSERVATION_LOW_AA2, id: 'existing-pst-obs' }],
+      observations: [{ ...DEFAULT_PST_OBSERVATION_LOW, id: 'existing-pst-obs' }],
       dataProductSDP: [
         {
           ...PST_TIMING_DATA_PRODUCT,
