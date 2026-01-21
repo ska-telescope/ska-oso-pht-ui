@@ -7,7 +7,6 @@ import {
   // ERROR_SECS,
   // FREQUENCY_UNITS,
   TELESCOPE_LOW_NUM,
-  TYPE_PST,
   TYPE_ZOOM
 } from '@utils/constants.ts';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
@@ -176,11 +175,7 @@ export default function BandwidthField({
           testId={FIELD}
           value={value}
           setValue={setValue}
-          label={
-            observationType === TYPE_PST
-              ? t(FIELD + '.label.' + TYPE_PST)
-              : t(FIELD + '.label.' + TYPE_ZOOM)
-          }
+          label={t(FIELD + '.label.0')}
           onFocus={() => setHelp(FIELD)}
           required={required}
           // errorText={errorText}
