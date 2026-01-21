@@ -250,15 +250,15 @@
     "label": "Product type",
     "help": "Select the desired data product(s) by checking the boxes as appropriate.",
     "options": {
-      "0": {
+      "spectral": {
         "1": "Spectral ODPs",
         "2": "Spectral ODPs"
       },
-      "1": {
+      "continuum": {
         "1": "Images",
         "2": "Visibilities"
       },
-      "2": {
+      "pst": {
         "1": "Flow through",
         "2": "Timing",
         "3": "Detected Filter bank"
