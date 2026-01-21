@@ -3,9 +3,8 @@ import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import {
   ERROR_SECS,
-  LAB_IS_BOLD,
-  LAB_POSITION,
   SPECTRAL_AVERAGING_MIN,
+  TYPE_CONTINUUM,
   ZOOM_SPECTRAL_AVERAGING_MAX
 } from '@utils/constants.ts';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
@@ -19,18 +18,16 @@ interface SpectralAveragingLOWFieldProps {
   suffix?: any;
   value: number;
   widthButton?: number;
-  widthLabel?: number;
   subarray: string;
-  type: number;
+  observationType: string;
 }
 
 export default function SpectralAveragingLOWField({
   required = false,
   setValue,
   value,
-  widthLabel = 6,
   subarray,
-  type
+  observationType
 }: SpectralAveragingLOWFieldProps) {
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
@@ -52,7 +49,7 @@ export default function SpectralAveragingLOWField({
       item => item.value === subarray
     );
     const spectralAverageMax =
-      type === 1
+      observationType === TYPE_CONTINUUM
         ? subarrayConfig && 'continuumSpectralAveragingMax' in subarrayConfig
           ? (subarrayConfig as any).continuumSpectralAveragingMax
           : SPECTRAL_AVERAGING_MIN
@@ -77,7 +74,7 @@ export default function SpectralAveragingLOWField({
   React.useEffect(() => {
     const error = validateValue(value);
     setErrorText(error);
-  }, [value, subarray, type, observatoryConstants]);
+  }, [value, subarray, observationType, observatoryConstants]);
 
   return (
     <Box pt={1}>
@@ -86,9 +83,6 @@ export default function SpectralAveragingLOWField({
         value={String(value)}
         setValue={handleSetValue}
         label={t(FIELD + '.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={widthLabel}
         onFocus={() => setHelp(FIELD)}
         required={required}
         errorText={errorText}

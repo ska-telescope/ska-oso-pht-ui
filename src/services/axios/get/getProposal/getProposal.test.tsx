@@ -1,16 +1,7 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import * as CONSTANTS from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
-import {
-  RA_TYPE_GALACTIC,
-  RA_TYPE_ICRS,
-  OBSERVATION_TYPE_BACKEND,
-  TYPE_ZOOM,
-  TYPE_PST,
-  TYPE_CONTINUUM,
-  FREQUENCY_UNITS,
-  BAND_LOW_STR
-} from '@utils/constants.ts';
+import { RA_TYPE_GALACTIC, RA_TYPE_ICRS, FREQUENCY_UNITS, BAND_LOW_STR } from '@utils/constants.ts';
 import GetProposal, {
   GetMockProposal,
   mapping,
@@ -19,7 +10,6 @@ import GetProposal, {
   getObservingMode,
   getReferenceCoordinate,
   getBandwidth,
-  getObservationType,
   getFrequencyAndBandwidthUnits
 } from './getProposal.tsx';
 import { MockProposalBackend, MockProposalBackendZoom } from './mockProposalBackend.tsx';
@@ -28,6 +18,7 @@ import {
   MockProposalFrontend,
   MockProposalFrontendZoom
 } from './mockProposalFrontend.tsx';
+
 describe('Helper Functions', () => {
   test('GetMockProposal returns mock proposal', () => {
     const result = GetMockProposal();
@@ -176,8 +167,8 @@ describe('getInvestigators', () => {
 
 describe('getObservingMode', () => {
   test('returns the correct value for a valid observing mode', () => {
-    expect(getObservingMode('Continuum')).toBe(1);
-    expect(getObservingMode('PST')).toBe(2);
+    expect(getObservingMode('Continuum')).toBe('continuum');
+    expect(getObservingMode('PST')).toBe('pst');
   });
 
   test('returns null for an invalid observing mode', () => {
@@ -296,64 +287,6 @@ describe('getBandwidth', () => {
     expect(getBandwidth(100, (undefined as unknown) as number)).toBe(1);
     expect(getBandwidth((null as unknown) as number, 1)).toBe(1);
     expect(getBandwidth(100, (null as unknown) as number)).toBe(1);
-  });
-});
-
-describe('getObservationType', () => {
-  test('returns TYPE_ZOOM for observation type "zoom"', () => {
-    const input = {
-      observation_type_details: {
-        observation_type: OBSERVATION_TYPE_BACKEND[TYPE_ZOOM]
-      }
-    };
-    const result = getObservationType(input);
-    expect(result).toBe(TYPE_ZOOM);
-  });
-
-  test('returns TYPE_PST for observation type "pst"', () => {
-    const input = {
-      observation_type_details: {
-        observation_type: OBSERVATION_TYPE_BACKEND[TYPE_PST]
-      }
-    };
-    const result = getObservationType(input);
-    expect(result).toBe(TYPE_PST);
-  });
-
-  test('returns TYPE_CONTINUUM for observation type "continuum"', () => {
-    const input = {
-      observation_type_details: {
-        observation_type: OBSERVATION_TYPE_BACKEND[TYPE_CONTINUUM]
-      }
-    };
-    const result = getObservationType(input);
-    expect(result).toBe(TYPE_CONTINUUM);
-  });
-
-  test('returns TYPE_CONTINUUM for unknown observation type', () => {
-    const input = {
-      observation_type_details: {
-        observation_type: 'unknown'
-      }
-    };
-    const result = getObservationType(input);
-    expect(result).toBe(TYPE_CONTINUUM);
-  });
-
-  test('returns TYPE_CONTINUUM when observation_type_details is undefined', () => {
-    const input = {};
-    const result = getObservationType(input);
-    expect(result).toBe(TYPE_CONTINUUM);
-  });
-
-  test('returns TYPE_CONTINUUM when observation_type is null', () => {
-    const input = {
-      observation_type_details: {
-        observation_type: null
-      }
-    };
-    const result = getObservationType(input);
-    expect(result).toBe(TYPE_CONTINUUM);
   });
 });
 

@@ -1,4 +1,11 @@
-import { BAND_LOW_STR, DEFAULT_USER, PROPOSAL_STATUS, SA_AA2 } from '@utils/constants.ts';
+import {
+  BAND_LOW_STR,
+  DEFAULT_USER,
+  PROPOSAL_STATUS,
+  SA_AA2,
+  TYPE_CONTINUUM,
+  TYPE_ZOOM
+} from '@utils/constants.ts';
 import { RA_TYPE_ICRS } from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
 
@@ -126,7 +133,7 @@ export const MockProposalFrontend: Proposal = {
       id: 'obs-obR1Ej',
       telescope: 2,
       subarray: SA_AA2,
-      type: 1,
+      type: TYPE_CONTINUUM,
       observingBand: BAND_LOW_STR,
       centralFrequency: 200,
       centralFrequencyUnits: 2,
@@ -232,8 +239,7 @@ export const MockProposalFrontend: Proposal = {
       id: 'cal-001',
       observationIdRef: 'obs-obR1Ej',
       calibrators: null,
-      notes: 'This is an observatory defined calibration strategy.',
-      isAddNote: true
+      notes: 'This is an observatory defined calibration strategy.'
     }
   ],
   technicalLoadStatus: 9,
@@ -250,7 +256,6 @@ export const MockProposalFrontend: Proposal = {
         weighting: 1,
         polarisations: ['X'],
         channelsOut: 1,
-        fitSpectralPol: 3,
         robust: 0,
         taperValue: 1,
         timeAveraging: 0,
@@ -297,8 +302,7 @@ export const MockProposalFrontendZoom: Proposal = {
       id: 'cal-002',
       observationIdRef: 'obs-arMIoY',
       calibrators: null,
-      notes: 'This is an other observatory defined calibration strategy.',
-      isAddNote: true
+      notes: 'This is an other observatory defined calibration strategy.'
     }
   ],
   targetOption: 1,
@@ -339,15 +343,15 @@ export const MockProposalFrontendZoom: Proposal = {
       id: 'obs-arMIoY',
       telescope: 2,
       subarray: SA_AA2,
-      type: 0,
+      type: TYPE_ZOOM,
       observingBand: BAND_LOW_STR,
       centralFrequency: 200,
       centralFrequencyUnits: 2,
       elevation: 20,
       numSubBands: 1,
       bandwidth: 1,
-      continuumBandwidth: null,
-      continuumBandwidthUnits: null,
+      continuumBandwidth: 150,
+      continuumBandwidthUnits: 2,
       supplied: {
         type: 1,
         value: 1,
@@ -427,7 +431,6 @@ export const MockProposalFrontendZoom: Proposal = {
         weighting: 1,
         polarisations: ['I'],
         channelsOut: 1,
-        fitSpectralPol: 3,
         robust: 0,
         taperValue: 1,
         timeAveraging: 0,

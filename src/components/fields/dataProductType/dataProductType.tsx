@@ -14,7 +14,7 @@ interface DataProductTypeFieldProps {
   onFocus?: Function;
   required?: boolean;
   setValue?: Function;
-  observationType?: number;
+  observationType?: string;
   suffix?: any;
   value: string | number;
   widthButton?: number;

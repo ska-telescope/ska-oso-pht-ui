@@ -14,7 +14,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 interface PolarisationsFieldProps {
   disabled?: boolean;
   required?: boolean;
-  observationType?: number;
+  observationType?: string;
   dataProductType?: number;
   labelWidth?: number;
   onFocus?: React.FocusEventHandler<HTMLInputElement>;

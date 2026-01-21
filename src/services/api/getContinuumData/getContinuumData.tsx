@@ -22,7 +22,7 @@ import {
   isSuppliedTime,
   shiftSensitivity
 } from '@utils/helpersSensCalc.ts';
-import { OBS_TYPES, SUPPLIED_TYPE_SENSITIVITY, TYPE_CONTINUUM } from '@utils/constants.ts';
+import { SUPPLIED_TYPE_SENSITIVITY, TYPE_CONTINUUM } from '@utils/constants.ts';
 import { SensCalcResults, ResultsSection } from '@utils/types/sensCalcResults.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import {
@@ -112,14 +112,14 @@ export function getFinalIndividualResultsForContinuum(
   results: any,
   theObservation: {
     supplied: { type: number; value: { toString: () => any }; units: number };
-    type: string | number;
+    type: string;
   }
 ): FinalIndividualResults {
   const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 
   let transformed_result = results.transformed_result;
 
-  const observationTypeLabel: string = OBS_TYPES[theObservation.type as number];
+  const observationTypeLabel: string = theObservation.type;
   const suppliedType = OSD_CONSTANTS.Supplied.find(
     sup => sup.value === theObservation.supplied.type
   )?.sensCalcResultsLabel;

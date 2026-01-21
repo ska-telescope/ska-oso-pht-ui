@@ -7,8 +7,6 @@ import {
   FREQUENCY_GHZ,
   FREQUENCY_HZ,
   FREQUENCY_MHZ,
-  LAB_IS_BOLD,
-  LAB_POSITION,
   TELESCOPE_LOW_NUM
 } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
@@ -18,7 +16,6 @@ interface CentralFrequencyProps {
   bandWidth: number;
   disabled?: boolean;
   required?: boolean;
-  labelWidth?: number;
   observingBand: string;
   setValue: Function;
   suffix?: any;
@@ -28,7 +25,6 @@ interface CentralFrequencyProps {
 export default function CentralFrequency({
   bandWidth,
   disabled = false,
-  labelWidth = 5,
   observingBand,
   required = false,
   setValue,
@@ -70,9 +66,6 @@ export default function CentralFrequency({
     <NumberEntry
       disabled={disabled}
       label={t(FIELD + '.label')}
-      labelBold={LAB_IS_BOLD}
-      labelPosition={LAB_POSITION}
-      labelWidth={labelWidth}
       testId={FIELD}
       value={value}
       setValue={checkValue}

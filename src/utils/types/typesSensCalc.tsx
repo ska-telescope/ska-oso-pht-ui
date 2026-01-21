@@ -147,7 +147,7 @@ export const NEW_ZOOM_DATA_LOW: ZoomData = {
 };
 
 export type ContinuumData = {
-  dataType: number;
+  dataType: string;
   bandwidth: ValueUnitPair;
   effectiveResolution: string;
   suppliedType: number;

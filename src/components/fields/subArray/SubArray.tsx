@@ -1,6 +1,6 @@
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { Grid } from '@mui/material';
-import { LAB_IS_BOLD, LAB_POSITION, SA_CUSTOM, TELESCOPE_LOW_NUM } from '@utils/constants.ts';
+import { SA_CUSTOM, TELESCOPE_LOW_NUM } from '@utils/constants.ts';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import { useMemo } from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -15,7 +15,6 @@ interface SubArrayFieldProps {
   suffix?: React.ReactNode;
   value: string;
   widthButton?: number;
-  widthLabel?: number;
 }
 
 export default function SubArrayField({
@@ -26,8 +25,7 @@ export default function SubArrayField({
   setValue,
   suffix = null,
   value,
-  widthButton = 2,
-  widthLabel = 6
+  widthButton = 2
 }: SubArrayFieldProps) {
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
@@ -63,9 +61,6 @@ export default function SubArrayField({
             value={value ?? ''} // prevents controlled/uncontrolled warnings
             setValue={setValue}
             label={t(`${FIELD}.label`)}
-            labelBold={LAB_IS_BOLD}
-            labelPosition={LAB_POSITION}
-            labelWidth={suffix ? widthLabel + 1 : widthLabel}
             onFocus={() => setHelp(`${FIELD}.help`)}
             required={required}
           />

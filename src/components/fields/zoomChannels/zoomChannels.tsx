@@ -2,14 +2,13 @@ import React from 'react';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
-import { ERROR_SECS, LAB_IS_BOLD, LAB_POSITION } from '@/utils/constants';
+import { ERROR_SECS } from '@/utils/constants';
 
 const ZOOM_CHANNELS_MIN = 1;
 
 interface ZoomChannelsProps {
   disabled?: boolean;
   required?: boolean;
-  labelWidth?: number;
   maxValue: number;
   setValue: Function;
   suffix?: any;
@@ -18,7 +17,6 @@ interface ZoomChannelsProps {
 
 export default function ZoomChannels({
   disabled = false,
-  labelWidth = 5,
   maxValue,
   required = false,
   setValue,
@@ -57,9 +55,6 @@ export default function ZoomChannels({
       disabled={disabled}
       errorText={errorMessage}
       label={t(FIELD + '.label')}
-      labelBold={LAB_IS_BOLD}
-      labelPosition={LAB_POSITION}
-      labelWidth={labelWidth}
       required={required}
       testId={FIELD}
       value={value}

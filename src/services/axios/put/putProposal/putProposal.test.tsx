@@ -11,10 +11,8 @@ import {
   DETECTED_FILTER_BANK_VALUE,
   PULSAR_TIMING_VALUE,
   IW_BRIGGS,
-  TYPE_STR_CONTINUUM,
-  TYPE_STR_ZOOM,
-  TYPE_STR_PST,
-  PST_MODES
+  PST_MODES,
+  TYPE_ZOOM_LONG
 } from '@utils/constants.ts';
 import * as CONSTANTS from '@utils/constants.ts';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
@@ -503,7 +501,7 @@ describe('getObservationTypeDetails', () => {
       type: TYPE_CONTINUUM
     } as any;
     const result = getObservationTypeDetails(obs);
-    expect(result.observation_type).toBe(TYPE_STR_CONTINUUM);
+    expect(result.observation_type).toBe(TYPE_CONTINUUM);
     expect(result.bandwidth).toBeDefined();
     expect(result.central_frequency).toBeDefined();
     expect(result.supplied).toBeDefined();
@@ -518,7 +516,7 @@ describe('getObservationTypeDetails', () => {
       spectralAveraging: 4
     } as any;
     const result = getObservationTypeDetails(obs);
-    expect(result.observation_type).toBe(TYPE_STR_ZOOM);
+    expect(result.observation_type).toBe(TYPE_ZOOM_LONG);
     expect(result.spectral_resolution).toBe(1.2);
     expect(result.effective_resolution).toBe(2.3);
     expect(result.spectral_averaging).toBe('4');
@@ -532,7 +530,7 @@ describe('getObservationTypeDetails', () => {
       pstMode: 1
     } as any;
     const result = getObservationTypeDetails(obs);
-    expect(result.observation_type).toBe(TYPE_STR_PST);
+    expect(result.observation_type).toBe(TYPE_PST);
     expect(result.pst_mode).toBe(PST_MODES[1].mapping);
   });
 
@@ -542,7 +540,7 @@ describe('getObservationTypeDetails', () => {
       type: 999
     } as any;
     const result = getObservationTypeDetails(obs);
-    expect(result.observation_type).toBe(TYPE_STR_PST);
+    expect(result.observation_type).toBe(TYPE_PST);
   });
 });
 

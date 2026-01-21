@@ -577,7 +577,10 @@
     "short": "Type",
     "0": "Spectral",
     "1": "Continuum",
-    "2": "PST"
+    "2": "PST",
+    "spectral": "Spectral",
+    "continuum": "Continuum",
+    "pst": "PST"
   },
   "observatoryDataProduct": {
     "id": "SDP Id",
@@ -1316,7 +1319,8 @@
     "help": "Select either Velocity or Redshift as required"
   },
   "suppliedType": {
-    "help": "The sensitivity for the observation in units of Jy/beam or K is used to calculate the integration time needed to reach this sensitivity. If the integration time of the observation is given, this is used to calculate the sensitivity that will be reached with this integration time."
+    "help": "The sensitivity for the observation in units of Jy/beam or K is used to calculate the integration time needed to reach this sensitivity. If the integration time of the observation is given, this is used to calculate the sensitivity that will be reached with this integration time.",
+    "label": "Supplied Type"
   },
   "suppliedUnits": {
     "help": "Select the unit that is appropriate"

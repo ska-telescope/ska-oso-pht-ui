@@ -5,8 +5,6 @@ import {
   BAND_LOW_STR,
   FREQUENCY_GHZ,
   FREQUENCY_HZ,
-  LAB_IS_BOLD,
-  LAB_POSITION,
   TEL_UNITS,
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_NUM,
@@ -25,7 +23,6 @@ interface ObservingBandFieldProps {
   suffix?: any;
   value: number | string;
   widthButton?: number;
-  widthLabel?: number;
 }
 
 export default function ObservingBandField({
@@ -34,8 +31,7 @@ export default function ObservingBandField({
   setValue,
   suffix = null,
   value,
-  widthButton = 2,
-  widthLabel = 6
+  widthButton = 2
 }: ObservingBandFieldProps) {
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
@@ -100,9 +96,6 @@ export default function ObservingBandField({
           value={value}
           setValue={setValue}
           label={t(FIELD + '.label')}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
-          labelWidth={suffix ? widthLabel + 1 : widthLabel}
           onFocus={() => setHelp(FIELD + '.help')}
           required={required}
         />

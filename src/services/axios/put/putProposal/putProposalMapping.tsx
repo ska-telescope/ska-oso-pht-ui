@@ -32,13 +32,11 @@ import {
   TELESCOPE_MID_BACKEND_MAPPING,
   TYPE_CONTINUUM,
   TYPE_PST,
-  TYPE_STR_CONTINUUM,
-  TYPE_STR_PST,
-  TYPE_STR_ZOOM,
   TYPE_ZOOM,
   VEL_UNITS,
   VELOCITY_TYPE,
-  IW_UNIFORM
+  IW_UNIFORM,
+  TYPE_ZOOM_LONG
 } from '@utils/constants.ts';
 import {
   DataProductSDPNew,
@@ -58,8 +56,8 @@ import { getBandwidthZoom, helpers } from '@/utils/helpers';
 import { CalibrationStrategy, CalibrationStrategyBackend } from '@/utils/types/calibrationStrategy';
 import { SuppliedBackend } from '@/utils/types/supplied';
 
-const isContinuum = (type: number) => type === TYPE_CONTINUUM;
-const isPST = (type: number) => type === TYPE_PST;
+const isContinuum = (type: string) => type === TYPE_CONTINUUM;
+const isPST = (type: string) => type === TYPE_PST;
 // const isZoom = (type: number) => type === TYPE_ZOOM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
 const isRedshift = (type: number) => type === VELOCITY_TYPE.REDSHIFT;
@@ -188,7 +186,6 @@ export const getDataProductScriptParameters = (
           },
           polarisations: data?.polarisations,
           channels_out: data?.channelsOut,
-          fit_spectral_pol: data?.fitSpectralPol ?? 0, // TODO check if this can be removed and update PDM
           gaussian_taper: data?.taperValue?.toString(),
           kind: 'continuum',
           variant: 'continuum image'
@@ -214,7 +211,6 @@ export const getDataProductScriptParameters = (
           },
           polarisations: data?.polarisations ?? [],
           channels_out: data?.channelsOut ?? 0,
-          fit_spectral_pol: data?.fitSpectralPol ?? 0, // TODO check if this can be removed and update PDM
           gaussian_taper: data?.taperValue?.toString() ?? '0',
           time_averaging: { value: data?.timeAveraging ?? 0, unit: 'second' },
           frequency_averaging: { value: data?.frequencyAveraging ?? 0, unit: 'MHz' },
@@ -241,7 +237,6 @@ export const getDataProductScriptParameters = (
         },
         polarisations: data?.polarisations ?? [],
         channels_out: data?.channelsOut ?? 0,
-        fit_spectral_pol: data?.fitSpectralPol ?? 0, // TODO check if this can be removed and update PDM
         gaussian_taper: data?.taperValue?.toString() ?? '0',
         kind: 'spectral',
         variant: 'spectral image',
@@ -374,14 +369,14 @@ export const getObservationTypeDetails = (obs: Observation) => {
         bandwidth: getBandwidth(obs),
         central_frequency: getCentralFrequency(obs),
         supplied: getSupplied(obs) as SuppliedBackend,
-        observation_type: TYPE_STR_CONTINUUM
+        observation_type: TYPE_CONTINUUM
       };
     case TYPE_ZOOM:
       return {
         bandwidth: getBandwidth(obs),
         central_frequency: getCentralFrequency(obs),
         supplied: getSupplied(obs) as SuppliedBackend,
-        observation_type: TYPE_STR_ZOOM,
+        observation_type: TYPE_ZOOM_LONG,
         spectral_resolution: obs.spectralResolution,
         effective_resolution: obs.effectiveResolution,
         spectral_averaging: obs.spectralAveraging?.toString(),
@@ -393,7 +388,7 @@ export const getObservationTypeDetails = (obs: Observation) => {
         bandwidth: getBandwidth(obs),
         central_frequency: getCentralFrequency(obs),
         supplied: getSupplied(obs) as SuppliedBackend,
-        observation_type: TYPE_STR_PST,
+        observation_type: TYPE_PST,
         pst_mode: typeof obs.pstMode !== 'undefined' ? PST_MODES[obs.pstMode].mapping : undefined
       };
   }
@@ -449,7 +444,7 @@ export interface SensCalcResults {
 
 const getSuppliedFieldsSensitivity = (
   suppliedType: string,
-  obsType: number,
+  obsType: string,
   tarObs: TargetObservation,
   spectralSection: string
 ) => {
@@ -518,7 +513,7 @@ const getSuppliedFieldsSensitivity = (
 
 export const getSuppliedFieldsIntegrationTime = (
   suppliedType: string,
-  obsType: number,
+  obsType: string,
   tarObs: TargetObservation
 ) => {
   const params: SuppliedRelatedFields = {
@@ -539,12 +534,12 @@ export const getSuppliedFieldsIntegrationTime = (
 };
 /***********************************************************/
 
-const getObsType = (incTarObs: TargetObservation, incObs: Observation[]): number => {
+const getObsType = (incTarObs: TargetObservation, incObs: Observation[]): string => {
   let obs = incObs.find(item => item?.id === incTarObs.observationId);
-  return obs?.type ?? 0;
+  return obs?.type ?? TYPE_CONTINUUM;
 };
 
-const getSpectralSection = (obsType: number) =>
+const getSpectralSection = (obsType: string) =>
   isContinuum(obsType) || isPST(obsType) ? 'section2' : 'section1';
 
 export const getDataProductRef = (

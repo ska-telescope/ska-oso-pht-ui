@@ -6,8 +6,6 @@ import {
   // BAND_LOW_STR,
   // ERROR_SECS,
   // FREQUENCY_UNITS,
-  LAB_IS_BOLD,
-  LAB_POSITION,
   TELESCOPE_LOW_NUM,
   TYPE_PST,
   TYPE_ZOOM
@@ -35,13 +33,12 @@ interface BandwidthFieldProps {
   telescope: number;
   value: number;
   widthButton?: number;
-  widthLabel?: number;
   observingBand?: string;
   centralFrequency?: number;
   centralFrequencyUnits?: number;
   subarrayConfig?: string;
   minimumChannelWidthHz?: number;
-  observationType?: number;
+  observationType?: string;
 }
 
 export default function BandwidthField({
@@ -52,7 +49,6 @@ export default function BandwidthField({
   value,
   telescope,
   widthButton = 50,
-  widthLabel = 5,
   // observingBand = BAND_LOW_STR,
   // centralFrequency = 0,
   // centralFrequencyUnits = 1,
@@ -185,9 +181,6 @@ export default function BandwidthField({
               ? t(FIELD + '.label.' + TYPE_PST)
               : t(FIELD + '.label.' + TYPE_ZOOM)
           }
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
-          labelWidth={suffix ? widthLabel + 1 : widthLabel}
           onFocus={() => setHelp(FIELD)}
           required={required}
           // errorText={errorText}

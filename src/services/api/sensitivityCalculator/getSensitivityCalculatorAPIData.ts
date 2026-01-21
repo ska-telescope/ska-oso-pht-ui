@@ -17,8 +17,8 @@ import { DataProductSDPNew } from '@/utils/types/dataProduct';
 
 type SensCalcAPIError = { error: string };
 
-export const setMockObservation = (obs: Observation, obsType: number = TYPE_CONTINUUM) => {
-  return { ...obs, type: obsType }; // important: don't use "obst.type = TYPE_CONTINUUM" instead as this mutates the original object
+export const setMockObservation = (obs: Observation, observationType: string = TYPE_CONTINUUM) => {
+  return { ...obs, type: observationType }; // important: don't use "obs.type = TYPE_CONTINUUM" instead as this mutates the original object
 };
 
 async function getSensCalc(

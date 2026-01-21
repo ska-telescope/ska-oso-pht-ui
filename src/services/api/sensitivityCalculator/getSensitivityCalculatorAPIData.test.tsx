@@ -1,6 +1,5 @@
 import { describe, test, expect, vi, it, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import { TYPE_CONTINUUM, TYPE_PST } from '../../../utils/constants';
 import Observation from '../../../utils/types/observation';
 import getSensCalc from './getSensitivityCalculatorAPIData';
 import {
@@ -115,8 +114,8 @@ describe('setMockObservation', () => {
   it('returns a new object and does not mutate the input', () => {
     const original: Observation = CONSTANTS.DEFAULT_PST_OBSERVATION_LOW_AA2;
     const copy = setMockObservation(original);
-    expect(original.type).toBe(TYPE_PST);
-    expect(copy.type).toBe(TYPE_CONTINUUM);
+    expect(original.type).toBe(CONSTANTS.TYPE_PST);
+    expect(copy.type).toBe(CONSTANTS.TYPE_CONTINUUM);
     expect(copy).not.toBe(original);
     expect(copy.id).toBe(original.id);
   });

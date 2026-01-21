@@ -3,41 +3,31 @@ import SpectralAveragingMIDField from './mid/SpectralAveragingMID';
 
 interface SpectralAveragingFieldProps {
   isLow?: boolean;
-  labelWidth: number;
   setValue?: Function;
   value: number;
   subarray: string;
-  type: number;
+  observationType: string;
 }
 
 export default function SpectralAveragingField({
   isLow = false,
-  labelWidth,
   setValue,
   value,
   subarray,
-  type
+  observationType
 }: SpectralAveragingFieldProps) {
   return (
     <>
       {isLow && (
         <SpectralAveragingLOWField
           required
-          widthLabel={labelWidth}
           value={value}
           setValue={setValue}
           subarray={subarray}
-          type={type}
+          observationType={observationType}
         />
       )}
-      {!isLow && (
-        <SpectralAveragingMIDField
-          widthLabel={labelWidth}
-          required
-          value={value}
-          setValue={setValue}
-        />
-      )}
+      {!isLow && <SpectralAveragingMIDField required value={value} setValue={setValue} />}
     </>
   );
 }

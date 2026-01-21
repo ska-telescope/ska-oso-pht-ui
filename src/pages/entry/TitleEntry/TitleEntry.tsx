@@ -328,7 +328,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         spacing={2}
       >
         <Grid>
-          <BorderedSection title={t('proposalType.plural')}>
+          <BorderedSection title={t('proposalType.plural')} sx={{ width: '80vw' }}>
             <Stack>
               <Typography variant="body2">{t('proposalType.help')}</Typography>
               {proposalTypes()}
@@ -350,7 +350,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         spacing={2}
       >
         <Grid>
-          <BorderedSection title={t('proposalAttribute.plural')}>
+          <BorderedSection title={t('proposalAttribute.plural')} sx={{ width: '80vw' }}>
             <Stack>
               <Typography variant="body2">{t('proposalAttribute.help')}</Typography>
               {proposalAttributes()}

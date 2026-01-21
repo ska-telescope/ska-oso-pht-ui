@@ -4,7 +4,7 @@ import {
   BAND_LOW_STR,
   PROPOSAL_STATUS,
   RA_TYPE_ICRS,
-  TYPE_STR_ZOOM
+  TYPE_ZOOM_LONG
 } from '@utils/constants.ts';
 
 export const MockProposalBackend: ProposalBackend = {
@@ -136,7 +136,6 @@ export const MockProposalBackend: ProposalBackend = {
           variant: 'continuum image',
           kind: 'continuum',
           channels_out: 1,
-          fit_spectral_pol: 3,
           gaussian_taper: '1',
           polarisations: ['I'],
           image_size: {
@@ -260,7 +259,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
           number_of_stations: 68
         },
         observation_type_details: {
-          observation_type: TYPE_STR_ZOOM,
+          observation_type: TYPE_ZOOM_LONG,
           bandwidth: {
             value: 24.4140625,
             unit: 'kHz'
@@ -291,7 +290,6 @@ export const MockProposalBackendZoom: ProposalBackend = {
           variant: 'continuum image',
           kind: 'continuum',
           channels_out: 1,
-          fit_spectral_pol: 3,
           gaussian_taper: '1',
           polarisations: ['I'],
           image_size: {
