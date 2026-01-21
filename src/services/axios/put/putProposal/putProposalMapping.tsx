@@ -188,7 +188,8 @@ export const getDataProductScriptParameters = (
           channels_out: data?.channelsOut,
           gaussian_taper: data?.taperValue?.toString(),
           kind: 'continuum',
-          variant: 'continuum image'
+          variant: 'continuum image',
+          fit_spectral_pol: 0 // TODO remove this once we are using the latest PDM (v27.0.0)
         };
       } else {
         const data = dp?.data as any; // TODO change type to SDPVisibilitiesContinuumData once PDM is updated
@@ -215,7 +216,8 @@ export const getDataProductScriptParameters = (
           time_averaging: { value: data?.timeAveraging ?? 0, unit: 'second' },
           frequency_averaging: { value: data?.frequencyAveraging ?? 0, unit: 'MHz' },
           kind: 'continuum',
-          variant: 'visibilities'
+          variant: 'visibilities',
+          fit_spectral_pol: 0 // TODO remove this once we are using the latest PDM (v27.0.0)
           // todo update PDM to remove unneeded fields for Visibilities
         };
       }
@@ -253,7 +255,8 @@ export const getDataProductScriptParameters = (
           time_averaging_factor: Math.round(Number(data?.timeAveraging ?? 0)), // TODO update PDM to allow floats
           frequency_averaging_factor: Math.round(Number(data?.frequencyAveraging ?? 0)), // TODO update PDM to allow floats
           kind: 'pst',
-          variant: 'detected filterbank'
+          variant: 'detected filterbank',
+          fit_spectral_pol: 0 // TODO remove this once we are using the latest PDM (v27.0.0)
           // todo update PDM to update fields for SDPFilterbankPSTData
         };
       } else if (pstMode === PULSAR_TIMING_VALUE) {
@@ -263,7 +266,8 @@ export const getDataProductScriptParameters = (
           bit_depth: data?.bitDepth ?? 1,
           // time_averaging_factor: 5,
           kind: 'pst',
-          variant: 'pulsar timing'
+          variant: 'pulsar timing',
+          fit_spectral_pol: 0 // TODO remove this once we are using the latest PDM (v27.0.0)
           // todo update PDM to remove unneeded fields for Pulsar Timing
         };
       } else {
