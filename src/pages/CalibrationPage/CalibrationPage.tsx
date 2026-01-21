@@ -66,7 +66,7 @@ export default function CalibrationPage() {
       <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
         <Grid size={{ md: 10 }}>
           <Alert
-            color={AlertColorTypes.Error}
+            color={AlertColorTypes.Warning}
             text={
               osdCyclePolicy?.maxObservations === 1 && hasTargetObservations
                 ? t('page.6.noObservations')
