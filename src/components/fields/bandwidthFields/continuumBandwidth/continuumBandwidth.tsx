@@ -144,9 +144,6 @@ export default function ContinuumBandwidthField({
     observingBand
   ]);
 
-  // Prevent controlled → uncontrolled warnings
-  const safeValue = Number.isFinite(value) ? value : '';
-
   return (
     <Box pt={1}>
       <NumberEntry
@@ -154,7 +151,7 @@ export default function ContinuumBandwidthField({
         label={t(FIELD + '.label')}
         suffix={suffix}
         testId={FIELD}
-        value={safeValue}
+        value={value}
         setValue={handleSetValue}
         onFocus={() => setHelp(FIELD)}
         required
