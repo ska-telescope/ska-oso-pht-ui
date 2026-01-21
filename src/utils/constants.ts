@@ -2,7 +2,6 @@ import { LABEL_POSITION, TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska
 import Target from './types/target';
 import Investigator from './types/investigator';
 import Observation from './types/observation';
-import { DataProductSDPNew } from './types/dataProduct';
 import { env } from '@/env';
 export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const cypressToken = window.localStorage.getItem('cypress:token');
@@ -213,7 +212,7 @@ export const HELP_FONT = 16;
 export const IW_BRIGGS = 2;
 export const IW_NATURAL = 0;
 export const IW_UNIFORM = 1;
-export const ROBUST_DEFAULT = 1;
+export const ROBUST_DEFAULT = 0;
 export const TAPER_DEFAULT = 0;
 export const CHANNELS_OUT_DEFAULT = 10;
 export const IMAGE_SIZE_DEFAULT = 2.5;
@@ -725,7 +724,7 @@ export const DEFAULT_TARGETS: Target = {
   velUnit: 0
 };
 
-export const DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2: Observation = {
+export const DEFAULT_CONTINUUM_OBSERVATION_LOW: Observation = {
   id: 'obs-0000000',
   telescope: TELESCOPE_LOW_NUM,
   subarray: SA_AA2,
@@ -750,7 +749,7 @@ export const DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2: Observation = {
   effectiveResolution: ''
 };
 
-export const DEFAULT_ZOOM_OBSERVATION_LOW_AA2: Observation = {
+export const DEFAULT_ZOOM_OBSERVATION_LOW: Observation = {
   id: 'obs-0000000',
   telescope: TELESCOPE_LOW_NUM,
   subarray: SA_AA2,
@@ -776,7 +775,7 @@ export const DEFAULT_ZOOM_OBSERVATION_LOW_AA2: Observation = {
   zoomChannels: 1000
 };
 
-export const DEFAULT_PST_OBSERVATION_LOW_AA2: Observation = {
+export const DEFAULT_PST_OBSERVATION_LOW: Observation = {
   id: 'obs-0000000',
   telescope: TELESCOPE_LOW_NUM,
   subarray: SA_AA2,
@@ -802,22 +801,11 @@ export const DEFAULT_PST_OBSERVATION_LOW_AA2: Observation = {
   pstMode: PULSAR_TIMING_VALUE
 };
 
-export const DEFAULT_DATA_PRODUCT: DataProductSDPNew = {
-  id: 'dp-0000000',
-  observationId: 'obs-0000000',
-  data: {
-    dataProductType: 0,
-    imageSizeValue: 0,
-    imageSizeUnits: 0,
-    pixelSizeValue: 0,
-    pixelSizeUnits: 0,
-    weighting: 0,
-    robust: 0,
-    taperValue: 0,
-    channelsOut: 0,
-    polarisations: []
-  }
-};
+export const DEFAULT_OBSERVATIONS_LOW_AA2: Observation[] = [
+  DEFAULT_ZOOM_OBSERVATION_LOW,
+  DEFAULT_CONTINUUM_OBSERVATION_LOW,
+  DEFAULT_PST_OBSERVATION_LOW
+];
 
 export const DUMMY_PROPOSAL_ID = 'dummy-proposal-id';
 

@@ -303,6 +303,13 @@
     "confirm": "Confirm Proposal Deletion.",
     "disabled": "This function is not available"
   },
+  "dispersionMeasure": {
+    "help": "This field displays the dispersion Measure.",
+    "label": "Dispersion Measure",
+    "range": {
+      "error": "A value between 0 and 100000 is required"
+    }
+  },
   "displayProposal": {
     "noneSelected": "None selected",
     "warning": "Please wait whilst we load the selected proposal."
@@ -595,6 +602,20 @@
     "arraySetUp": "Array Setup",
     "frequencySetUp": "Frequency Setup"
   },
+  "outputFrequencyResolution": {
+    "help": "This field displays the output frequency resolution.",
+    "label": "Output frequency resolution",
+    "range": {
+      "error": "A value between 1 and 1000 is required"
+    }
+  },
+  "outputSamplingInterval": {
+    "help": "This field displays the output sampling interval.",
+    "label": "Output sampling interval",
+    "range": {
+      "error": "A value between 0 and 100000 is required"
+    }
+  },
   "overview": {
     "title": "Overview",
     "toolTip": "Overview of proposals"
@@ -666,6 +687,13 @@
         "upload": "Upload the selected PDF for use as the science justification"
       },
       "warning": "Science Justification PDF being processed"
+    },
+    "rotationMeasure": {
+      "help": "This field displays the rotationMeasure.",
+      "label": "Rotation Measure",
+      "range": {
+        "error": "A value between -2e9 and 2e9 is required"
+      }
     },
     "technical": {
       "label": {
