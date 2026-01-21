@@ -58,7 +58,7 @@ export default function ElevationField({
 
   const errorMessage = fieldValid
     ? ''
-    : t(FIELD + '.range.error', {
+    : t(FIELD + '.range.warning', {
         min: MIN_ELEVATION,
         max: ELEVATION_MAX
       });
