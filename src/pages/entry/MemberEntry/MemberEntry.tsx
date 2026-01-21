@@ -59,6 +59,8 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
 
   const [forSearch, setForSearch] = React.useState(false);
 
+  const LABEL_WIDTH = 4;
+
   React.useEffect(() => {
     const invalidEmail = Boolean(emailValidation());
     setEmailInvalid(invalidEmail);
@@ -300,7 +302,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
 
   const firstNameField = () => (
     <TextEntry
-      label=""
+      label={t('firstName.label')}
       testId="firstName"
       value={firstName}
       setValue={setFirstName}
@@ -313,7 +315,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
 
   const lastNameField = () => (
     <TextEntry
-      label=""
+      label={t('lastName.label')}
       testId="lastName"
       value={lastName}
       setValue={setLastName}
@@ -326,7 +328,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
 
   const emailField = () => (
     <TextEntry
-      label=""
+      label={t('email.label')}
       testId="email"
       value={email}
       setValue={setEmail}
@@ -341,9 +343,9 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   const piField = () => (
     <Box p={0} m={0}>
       <TickBox
-        label=""
+        label={t('pi.label')}
         labelPosition={LAB_POS_TICK}
-        labelWidth={0}
+        labelWidth={LABEL_WIDTH}
         testId="piCheckbox"
         checked={pi}
         onChange={handleCheckboxChangePI}
@@ -355,9 +357,9 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   const phdThesisField = () => (
     <Box p={0} m={0}>
       <TickBox
-        label=""
+        label={t('phdThesis.label')}
         labelPosition={LAB_POS_TICK}
-        labelWidth={0}
+        labelWidth={LABEL_WIDTH}
         testId="PhDCheckbox"
         checked={phdThesis}
         onChange={handleCheckboxChangePhD}
@@ -366,32 +368,14 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
     </Box>
   );
 
-  const displayLabel = (inValue: string, isBold: boolean = false) => (
-    <Typography variant="subtitle1" style={{ fontWeight: isBold ? 600 : 300 }}>
-      {inValue}
-      {isBold ? ' *' : ''}
-    </Typography>
-  );
-
-  const row = (label: string, component: React.ReactNode, isBold: boolean = false) => (
-    <Grid container alignItems="center" justifyContent="center" spacing={GAP}>
-      <Grid size={{ xs: 3 }} style={{ alignSelf: 'flex-start', textAlign: 'left' }}>
-        {displayLabel(t(label), isBold)}
-      </Grid>
-      <Grid size={{ xs: 7 }} style={{ textAlign: 'left' }}>
-        {component}
-      </Grid>
-    </Grid>
-  );
-
   return (
-    <Stack pt={GAP} spacing={GAP}>
-      {row('email.label', emailField(), true)}
-      {row('firstName.label', firstNameField(), true)}
-      {row('lastName.label', lastNameField(), true)}
-      {!isSV && row('pi.label', piField())}
-      {!isSV && row('phdThesis.label', phdThesisField())}
-      <Stack p={GAP} spacing={GAP} direction="row">
+    <Stack p={GAP} spacing={GAP}>
+      {emailField()}
+      {firstNameField()}
+      {lastNameField()}
+      {!isSV && piField()}
+      {!isSV && phdThesisField()}
+      <Stack spacing={GAP} direction="row">
         <TeamInviteButton
           action={clickFunction}
           disabled={formInvalid}

@@ -1,6 +1,5 @@
 import { NumberEntry, TextEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/material';
-import { LAB_POSITION } from '@utils/constants.ts';
 import {
   validateSkyDirection2Number,
   validateSkyDirection2Text
@@ -9,7 +8,6 @@ import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface SkyDirection2FieldProps {
-  labelWidth?: number;
   setValue?: Function;
   skyUnits: number;
   value: string;
@@ -19,7 +17,6 @@ interface SkyDirection2FieldProps {
 }
 
 export default function SkyDirection2Field({
-  labelWidth = 5,
   setValue,
   skyUnits,
   value,
@@ -50,9 +47,6 @@ export default function SkyDirection2Field({
       <TextEntry
         errorText={errorText}
         label={t(FIELD + '.label.2.' + skyUnits.toString())}
-        labelBold
-        labelPosition={LAB_POSITION}
-        labelWidth={labelWidth}
         suffix={t(FIELD + '.units.2.' + skyUnits.toString())}
         testId={FIELD + 'Value2'}
         value={value}
@@ -68,9 +62,6 @@ export default function SkyDirection2Field({
       <NumberEntry
         errorText={errorNumber}
         label={t(FIELD + '.label.2.' + skyUnits.toString())}
-        labelBold
-        labelPosition={LAB_POSITION}
-        labelWidth={labelWidth}
         suffix={t(FIELD + '.units.2.' + skyUnits.toString())}
         testId={FIELD + 'Value'}
         value={value}

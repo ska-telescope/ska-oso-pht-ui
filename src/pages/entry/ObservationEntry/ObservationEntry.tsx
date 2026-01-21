@@ -659,6 +659,15 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const low = isLow();
 
   const obsTypeOptions = React.useMemo(() => {
+    if (osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1) {
+      const sc = getProposal().scienceCategory;
+      return [
+        {
+          label: t(`observationType.${sc}`),
+          value: sc
+        }
+      ];
+    }
     const obj = low ? osdLOW : osdMID;
     const rec = obj?.subArrays.find(r => r.subArray === subarrayConfig);
     const modes = obTypeTransform(rec?.cbfModes ?? []);
@@ -685,6 +694,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const observationTypeField = () =>
     fieldWrapper(
       <ObservationTypeField
+        disabled={
+          !isLoggedIn() ||
+          (osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1)
+        }
         options={obsTypeOptions}
         required
         value={observationType}

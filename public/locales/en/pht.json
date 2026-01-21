@@ -1316,7 +1316,8 @@
     "tooltip": "Progress the proposals to the submitted state"
   },
   "velocityType": {
-    "help": "Select either Velocity or Redshift as required"
+    "help": "Select either Velocity or Redshift as required",
+    "label": "Velocity Type"
   },
   "suppliedType": {
     "help": "The sensitivity for the observation in units of Jy/beam or K is used to calculate the integration time needed to reach this sensitivity. If the integration time of the observation is given, this is used to calculate the sensitivity that will be reached with this integration time.",

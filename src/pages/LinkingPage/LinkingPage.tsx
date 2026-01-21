@@ -284,7 +284,7 @@ export default function LinkingPage() {
 
   const isTargetSelected = (targetId: number) =>
     (getProposal().targetObservation ?? []).filter(
-      entry => entry.observationId === currRec?.id2 && entry.targetId === targetId
+      entry => entry.dataProductsSDPId === currRec?.id && entry.targetId === targetId
     ).length > 0;
 
   const targetSelectedToggle = (el: ElementT) => {
