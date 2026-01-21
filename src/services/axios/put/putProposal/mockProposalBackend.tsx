@@ -138,6 +138,7 @@ export const MockProposalBackend: ProposalBackend = {
           channels_out: 1,
           gaussian_taper: '1',
           polarisations: ['I'],
+          fit_spectral_pol: 0,
           image_size: {
             value: 15,
             unit: 'deg'
