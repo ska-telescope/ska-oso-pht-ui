@@ -15,9 +15,7 @@ import VelocityField from '@/components/fields/velocity/Velocity';
 import Target from '@/utils/types/target';
 import {
   RA_TYPE_ICRS,
-  LAB_POSITION,
   VELOCITY_TYPE,
-  LAB_IS_BOLD,
   FIELD_PATTERN_POINTING_CENTRES,
   WRAPPER_HEIGHT
 } from '@/utils/constants';
@@ -26,6 +24,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import autoLinking from '@/utils/autoLinking/AutoLinking';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import VelocityTypeField from '@/components/fields/velocityType/VelocityType';
 interface TargetEntryProps {
   raType: number;
   setTarget?: Function;
@@ -330,7 +329,6 @@ export default function TargetEntry({
   const referenceCoordinatesField = () =>
     wrapper(
       <ReferenceCoordinatesField
-        labelWidth={LAB_WIDTH}
         setValue={setReferenceCoordinates}
         value={referenceCoordinates.toUpperCase()}
       />
@@ -342,9 +340,6 @@ export default function TargetEntry({
         <TextEntry
           disabled={true}
           label={t('fieldPattern.label')}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
-          labelWidth={LAB_WIDTH}
           onFocus={() => setHelp('fieldPattern.help')}
           testId="fieldPatternId"
           value={fieldPattern}
@@ -359,9 +354,6 @@ export default function TargetEntry({
       <TextEntry
         required
         label={t('name.label')}
-        labelBold
-        labelPosition={LAB_POSITION}
-        labelWidth={LAB_WIDTH}
         testId={'name'}
         value={name}
         setValue={setTheName}
@@ -374,7 +366,6 @@ export default function TargetEntry({
   const skyDirection1Field = () =>
     wrapper(
       <SkyDirection1
-        labelWidth={LAB_WIDTH}
         setValue={setTheRA}
         skyUnits={raType}
         value={ra}
@@ -386,7 +377,6 @@ export default function TargetEntry({
   const skyDirection2Field = () =>
     wrapper(
       <SkyDirection2
-        labelWidth={LAB_WIDTH}
         setValue={setTheDec}
         skyUnits={raType}
         value={dec}
@@ -395,10 +385,18 @@ export default function TargetEntry({
       />
     );
 
+  const velocityTypeField = () =>
+    wrapper(
+      <VelocityTypeField
+        setVelType={setTheVelType}
+        velType={velType}
+        // velTypeFocus={() => setHelp('')}   TODO : Need to find out why this is not working great
+      />
+    );
+
   const velocityField = () =>
     wrapper(
       <VelocityField
-        labelWidth={LAB_WIDTH}
         setRedshift={setTheRedshift}
         setVel={setTheVel}
         setVelType={setTheVelType}
@@ -416,7 +414,6 @@ export default function TargetEntry({
   const referenceFrameField = () =>
     wrapper(
       <ReferenceFrameField
-        labelWidth={LAB_WIDTH}
         onFocus={() => setHelp('referenceFrame.help')}
         setValue={setTheReferenceFrame}
         value={referenceFrame}
@@ -444,6 +441,7 @@ export default function TargetEntry({
       <Grid pt={1}>
         <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
           <BorderedSection title={t('radialMotion.label')}>
+            {velocityTypeField()}
             {velocityField()}
             {velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}
           </BorderedSection>

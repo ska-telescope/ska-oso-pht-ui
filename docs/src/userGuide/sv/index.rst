@@ -1,13 +1,18 @@
 Science Verification Flow 
 =========================
 
-   TitlePage
-   TeamPage
-   DetailsPage
-   DescriptionPage
-   TargetPage
-   ObservationPage
-   TechnicalPage
-   CalibrationPage
-   submitConfirmation
+.. toctree::
+   :maxdepth: 2
+   :caption: PPT ( SV )
+
+   LandingPageSV
+   TitlePageSV
+   TeamPageSV
+   DetailsPageSV
+   DescriptionPageSV
+   TargetPageSV
+   ObservationPageSV
+   TechnicalPageSV
+   CalibrationPageSV
+   submitConfirmationSV
 

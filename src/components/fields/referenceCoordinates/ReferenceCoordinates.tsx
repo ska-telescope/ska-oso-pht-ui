@@ -1,19 +1,16 @@
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/material';
-import { LAB_IS_BOLD, LAB_POSITION } from '@utils/constants.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 // NOTE : DISABLED AT THIS TIME UNTIL GALACTIC IS IMPLEMENTED FULLY
 
 interface ReferenceCoordinatesFieldProps {
-  labelWidth?: number;
   setValue?: Function;
   value: String;
   valueFocus?: Function;
 }
 
 export default function ReferenceCoordinatesField({
-  labelWidth = 5,
   setValue,
   value,
   valueFocus
@@ -35,9 +32,6 @@ export default function ReferenceCoordinatesField({
           options={getOptions()}
           required
           label={t(FIELD + '.label')}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
-          labelWidth={labelWidth}
           testId={FIELD + 'Type'}
           value={value}
           setValue={setValue}
