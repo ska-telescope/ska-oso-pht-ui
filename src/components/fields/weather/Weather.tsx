@@ -1,6 +1,6 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { ERROR_SECS, LAB_IS_BOLD, LAB_POSITION } from '@utils/constants.ts';
+import { ERROR_SECS } from '@utils/constants.ts';
 import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
@@ -65,9 +65,6 @@ export default function WeatherField({
       <NumberEntry
         errorText={errorMessage}
         label={t('weather.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={widthLabel}
         testId="weather"
         value={value}
         setValue={checkValue}
