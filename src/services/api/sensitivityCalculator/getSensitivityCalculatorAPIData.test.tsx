@@ -11,6 +11,24 @@ import { SENSCALC_CONTINUUM_MOCKED, SENSCALC_SPECTRAL_MOCKED } from './SensCalcR
 import { setMockObservation } from './getSensitivityCalculatorAPIData';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 import * as CONSTANTS from '@/utils/constants';
+import { DataProductSDPNew, SDPImageContinuumData } from '@/utils/types/dataProduct';
+
+const MOCK_CONTINUUM_DATA_PRODUCT: DataProductSDPNew = {
+  id: 'dp-123456',
+  observationId: 'obs-123456',
+  data: {
+    dataProductType: CONSTANTS.DP_TYPE_IMAGES,
+    imageSizeValue: 2.5,
+    imageSizeUnits: 0,
+    pixelSizeValue: 1.6,
+    pixelSizeUnits: 2,
+    weighting: CONSTANTS.IW_UNIFORM,
+    polarisations: ['I', 'XX'],
+    channelsOut: 10,
+    robust: CONSTANTS.ROBUST_DEFAULT,
+    taperValue: CONSTANTS.TAPER_DEFAULT
+  } as SDPImageContinuumData
+};
 
 describe('getSensitivityCalculatorAPIData Service', () => {
   beforeEach(() => {
@@ -25,7 +43,7 @@ describe('getSensitivityCalculatorAPIData Service', () => {
     const result = await getSensCalc(
       CONSTANTS.DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
       CONSTANTS.DEFAULT_TARGETS,
-      CONSTANTS.DEFAULT_DATA_PRODUCT
+      MOCK_CONTINUUM_DATA_PRODUCT
     );
     expect(result).toEqual(SENSCALC_CONTINUUM_MOCKED);
   });
@@ -38,7 +56,7 @@ describe('getSensitivityCalculatorAPIData Service', () => {
     const result = await getSensCalc(
       CONSTANTS.DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
       CONSTANTS.DEFAULT_TARGETS,
-      CONSTANTS.DEFAULT_DATA_PRODUCT
+      MOCK_CONTINUUM_DATA_PRODUCT
     );
     expect(result).to.deep.equal(SENSCALC_CONTINUUM_MOCKED);
   });
@@ -51,7 +69,7 @@ describe('getSensitivityCalculatorAPIData Service', () => {
     const result = await getSensCalc(
       CONSTANTS.DEFAULT_ZOOM_OBSERVATION_LOW_AA2,
       CONSTANTS.DEFAULT_TARGETS,
-      CONSTANTS.DEFAULT_DATA_PRODUCT
+      MOCK_CONTINUUM_DATA_PRODUCT
     );
     expect(result).to.deep.equal(SENSCALC_SPECTRAL_MOCKED);
   });
@@ -66,7 +84,7 @@ describe('getSensitivityCalculatorAPIData Service', () => {
     const result = await getSensCalc(
       CONSTANTS.DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
       CONSTANTS.DEFAULT_TARGETS,
-      CONSTANTS.DEFAULT_DATA_PRODUCT
+      MOCK_CONTINUUM_DATA_PRODUCT
     );
     expect(result).to.deep.equal({ error: 'Error: Network Error' });
   });
@@ -85,7 +103,7 @@ describe('getSensitivityCalculatorAPIData Service', () => {
     const result = await getSensCalc(
       CONSTANTS.DEFAULT_CONTINUUM_OBSERVATION_LOW_AA2,
       CONSTANTS.DEFAULT_TARGETS,
-      CONSTANTS.DEFAULT_DATA_PRODUCT
+      MOCK_CONTINUUM_DATA_PRODUCT
     );
     expect(result).to.deep.equal({
       error: 'Error: Specified pointing centre is always below the horizon from the SKA LOW site'
