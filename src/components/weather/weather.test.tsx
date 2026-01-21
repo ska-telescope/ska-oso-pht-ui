@@ -2,8 +2,7 @@ import { describe, vi, test } from 'vitest';
 import React from 'react';
 import { render } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import WeatherField from './Weather';
-
+import WeatherField from '@components/weather/weather.tsx';
 const wrapper = (component: React.ReactElement) => {
   return render(<StoreProvider>{component}</StoreProvider>);
 };
