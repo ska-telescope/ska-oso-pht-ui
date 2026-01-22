@@ -5,6 +5,7 @@ Proposal Flow
    :maxdepth: 2
    :caption: PPT ( Proposal )
 
+   LandingPage
    TitlePage
    TeamPage
    DetailsPage

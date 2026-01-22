@@ -250,11 +250,6 @@ export const IMAGE_WEIGHTING = [
   { label: 'briggs', lookup: 'briggs', value: IW_BRIGGS }
 ];
 
-export const LAB_IS_BOLD = true;
-export const LAB_POSITION = LABEL_POSITION.START;
-
-export const LAB_POSITION_ABOVE = LABEL_POSITION.above;
-
 export const LAB_POS_TICK = LABEL_POSITION.START;
 
 export const MULTIPLIER_HZ_GHZ = [1, 1, 1000, 1000000, 1000000000];

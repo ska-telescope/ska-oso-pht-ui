@@ -49,7 +49,6 @@ export default function TargetEntry({
   const { autoLink, isSV } = useOSDAccessors();
   const { notifyError, notifySuccess } = useNotify();
 
-  const LAB_WIDTH = 5;
   const { application, updateAppContent2 } = storageObject.useStore();
   const [nameFieldError, setNameFieldError] = React.useState('');
   const [skyDirection1Error, setSkyDirection1Error] = React.useState('');
@@ -399,7 +398,6 @@ export default function TargetEntry({
       <VelocityField
         setRedshift={setTheRedshift}
         setVel={setTheVel}
-        setVelType={setTheVelType}
         setVelUnit={setTheVelUnit}
         redshift={redshift}
         vel={vel}

@@ -1,13 +1,12 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { ERROR_SECS, LAB_POSITION } from '@utils/constants.ts';
+import { ERROR_SECS } from '@utils/constants.ts';
 import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface TaperFieldProps {
   disabled?: boolean;
   required?: boolean;
-  labelWidth?: number;
   onFocus?: Function;
   setValue?: Function;
   suffix?: any;
@@ -17,7 +16,6 @@ interface TaperFieldProps {
 export default function TaperField({
   disabled = false,
   required = false,
-  labelWidth = 5,
   onFocus,
   setValue,
   suffix,
@@ -54,9 +52,6 @@ export default function TaperField({
     <Box pt={1}>
       <NumberEntry
         label={t(FIELD + '.label')}
-        labelBold
-        labelPosition={LAB_POSITION}
-        labelWidth={labelWidth}
         testId={FIELD}
         value={value}
         setValue={checkValue}

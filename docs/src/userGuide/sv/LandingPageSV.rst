@@ -1,5 +1,5 @@
-Starting a new Proposal
-########################
+Starting a Science Verification
+###############################
 
 
 .. |ico4| image:: /images/landingPageIcons.png

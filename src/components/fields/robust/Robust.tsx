@@ -1,6 +1,6 @@
 import { Grid } from '@mui/material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
-import { LAB_IS_BOLD, LAB_POSITION, ROBUST } from '../../../utils/constants';
+import { ROBUST } from '../../../utils/constants';
 
 interface RobustFieldProps {
   disabled?: boolean;
@@ -11,7 +11,6 @@ interface RobustFieldProps {
   suffix?: any;
   value: string | number;
   widthButton?: number;
-  labelWidth?: number;
 }
 
 export default function RobustField({
@@ -22,8 +21,7 @@ export default function RobustField({
   setValue = undefined,
   suffix = null,
   value,
-  widthButton = 0,
-  labelWidth = 5
+  widthButton = 0
 }: RobustFieldProps) {
   const FIELD = 'robust';
   return (
@@ -36,9 +34,6 @@ export default function RobustField({
           value={value}
           setValue={setValue}
           label={label}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
-          labelWidth={suffix ? labelWidth + 1 : labelWidth}
           onFocus={onFocus}
           required={required}
         />

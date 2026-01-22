@@ -1,7 +1,7 @@
 import React from 'react';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { ERROR_SECS, LAB_IS_BOLD, LAB_POSITION } from '@utils/constants.ts';
+import { ERROR_SECS } from '@utils/constants.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
@@ -13,14 +13,12 @@ interface RotationMeasureFieldProps {
   suffix?: any;
   value: number;
   widthButton?: number;
-  widthLabel?: number;
 }
 
 export default function RotationMeasureField({
   required = false,
   setValue,
-  value,
-  widthLabel = 6
+  value
 }: RotationMeasureFieldProps) {
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
@@ -68,9 +66,6 @@ export default function RotationMeasureField({
         value={String(value)}
         setValue={handleSetValue}
         label={t(FIELD + '.label')}
-        labelBold={LAB_IS_BOLD}
-        labelPosition={LAB_POSITION}
-        labelWidth={widthLabel}
         onFocus={() => setHelp(FIELD)}
         required={required}
         errorText={errorText}

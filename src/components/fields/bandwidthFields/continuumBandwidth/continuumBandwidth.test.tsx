@@ -29,8 +29,6 @@ vi.mock('@/utils/constants.ts', () => ({
   TELESCOPE_LOW: { code: 'LOW' },
   TELESCOPE_LOW_NUM: 1,
   FREQUENCY_STR_HZ: 'Hz',
-  LAB_IS_BOLD: true,
-  LAB_POSITION: 'left',
   TYPE_CONTINUUM: 'continuum',
   ERROR_SECS: 2000,
   BAND_LOW_STR: 'LOW',
