@@ -2,12 +2,12 @@
 import { Grid } from '@mui/material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import {
+  BANDWIDTH_LABEL_SELECTOR,
   // SA_AA2,
   // BAND_LOW_STR,
   // ERROR_SECS,
   // FREQUENCY_UNITS,
   TELESCOPE_LOW_NUM,
-  TYPE_PST,
   TYPE_ZOOM
 } from '@utils/constants.ts';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
@@ -176,11 +176,7 @@ export default function BandwidthField({
           testId={FIELD}
           value={value}
           setValue={setValue}
-          label={
-            observationType === TYPE_PST
-              ? t(FIELD + '.label.' + TYPE_PST)
-              : t(FIELD + '.label.' + TYPE_ZOOM)
-          }
+          label={t(FIELD + '.label.' + BANDWIDTH_LABEL_SELECTOR)}
           onFocus={() => setHelp(FIELD)}
           required={required}
           // errorText={errorText}

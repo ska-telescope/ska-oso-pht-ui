@@ -23,7 +23,6 @@ import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
-export const LAB_WIDTH = 5;
 const GAP = 5;
 
 interface MemberEntryProps {

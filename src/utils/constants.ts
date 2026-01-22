@@ -226,6 +226,8 @@ export const _TIME_AVERAGING_UNITS_DEFAULT = 0;
 export const FREQUENCY_AVERAGING_DEFAULT = 21.7;
 export const FREQUENCY_AVERAGING_UNIT_DEFAULT = 0;
 
+export const BANDWIDTH_LABEL_SELECTOR = 0;
+
 export const POLARISATIONS = [
   { value: 'I' },
   { value: 'Q' },
