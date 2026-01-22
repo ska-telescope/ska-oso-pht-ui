@@ -2,6 +2,7 @@
 import { Grid } from '@mui/material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import {
+  BANDWIDTH_LABEL_SELECTOR,
   // SA_AA2,
   // BAND_LOW_STR,
   // ERROR_SECS,
@@ -175,7 +176,7 @@ export default function BandwidthField({
           testId={FIELD}
           value={value}
           setValue={setValue}
-          label={t(FIELD + '.label.0')}
+          label={t(FIELD + '.label.' + BANDWIDTH_LABEL_SELECTOR)}
           onFocus={() => setHelp(FIELD)}
           required={required}
           // errorText={errorText}
