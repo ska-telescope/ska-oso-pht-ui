@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { TickBox } from '@ska-telescope/ska-gui-components';
-import { LAB_POSITION, WRAPPER_HEIGHT } from '@/utils/constants';
+import { WRAPPER_HEIGHT } from '@/utils/constants';
 import {
   PROPOSAL_ACCESS_SUBMIT,
   PROPOSAL_ACCESS_UPDATE,
@@ -59,8 +59,6 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
     return fieldWrapper(
       <TickBox
         label={t('manageTeamMember.submit.label')}
-        labelBold
-        labelPosition={LAB_POSITION}
         testId="submitCheckbox"
         checked={selectedOptions.includes(PROPOSAL_ACCESS_SUBMIT)}
         onChange={() => handleCheckboxChange(PROPOSAL_ACCESS_SUBMIT)}
@@ -73,8 +71,6 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
     return fieldWrapper(
       <TickBox
         label={t('manageTeamMember.edit.label')}
-        labelBold
-        labelPosition={LAB_POSITION}
         testId="editCheckbox"
         checked={selectedOptions.includes(PROPOSAL_ACCESS_UPDATE)}
         onChange={() => handleCheckboxChange(PROPOSAL_ACCESS_UPDATE)}
@@ -88,8 +84,6 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
     return fieldWrapper(
       <TickBox
         label={t('manageTeamMember.view.label')}
-        labelBold
-        labelPosition={LAB_POSITION}
         testId="viewCheckbox"
         checked={selectedOptions.includes(PROPOSAL_ACCESS_VIEW)}
         onChange={() => handleCheckboxChange(PROPOSAL_ACCESS_VIEW)}
