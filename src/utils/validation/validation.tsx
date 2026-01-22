@@ -121,7 +121,7 @@ export const validateSRCPage = () => STATUS_OK;
 
 export const validateCalibrationPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-  let count = proposal?.calibrationStrategy?.length > 0 ? 1 : 0;
+  let count = proposal?.calibrationStrategy?.length > 0 ? 2 : 0;
   return result[count];
 };
 

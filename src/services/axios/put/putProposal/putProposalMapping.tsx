@@ -242,7 +242,8 @@ export const getDataProductScriptParameters = (
         gaussian_taper: data?.taperValue?.toString() ?? '0',
         kind: 'spectral',
         variant: 'spectral image',
-        continuum_subtraction: data?.continuumSubtraction
+        continuum_subtraction: data?.continuumSubtraction,
+        fit_spectral_pol: 0 // TODO remove this once we are using the latest PDM (v27.0.0)
       };
     case TYPE_PST:
     default:
@@ -691,7 +692,6 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
       )
     }
   };
-
   helpers.transform.trimObject(transformedProposal);
   return transformedProposal;
 }
