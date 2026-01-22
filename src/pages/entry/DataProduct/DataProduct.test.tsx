@@ -33,7 +33,6 @@ vi.mock('@/utils/constants.ts', async importOriginal => {
   const actual = await importOriginal<any>();
   return {
     ...actual,
-    LAB_POSITION: 'START',
     PAGE_DATA_PRODUCTS: 'PAGE_DATA_PRODUCTS',
     TYPE_CONTINUUM: 1,
     TYPE_PST: 2,

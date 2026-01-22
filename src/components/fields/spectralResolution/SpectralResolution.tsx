@@ -10,7 +10,6 @@ interface SpectralResolutionFieldProps {
   frequency: number;
   frequencyUnits: number;
   label?: string;
-  labelWidth?: number;
   observingBand: string;
   observationType: string;
   onFocus?: Function;

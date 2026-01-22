@@ -17,9 +17,4 @@ describe('PixelSizeField', () => {
     wrapper(<PixelSizeField value={10} suffix="px" />);
     expect(screen.getByText('px')).toBeInTheDocument();
   });
-
-  it('renders the required indicator if required is true', () => {
-    wrapper(<PixelSizeField value={10} required />);
-    expect(screen.getByText('pixelSize.label *')).toBeInTheDocument();
-  });
 });

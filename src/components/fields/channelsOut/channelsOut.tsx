@@ -1,13 +1,12 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { CHANNELS_OUT_MAX, ERROR_SECS, LAB_POSITION } from '@utils/constants.ts';
+import { CHANNELS_OUT_MAX, ERROR_SECS } from '@utils/constants.ts';
 import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface ChannelsOutFieldProps {
   disabled?: boolean;
   required?: boolean;
-  labelWidth?: number;
   maxValue?: number;
   onFocus?: Function;
   setValue?: Function;
@@ -18,7 +17,6 @@ interface ChannelsOutFieldProps {
 export default function ChannelsOutField({
   disabled = false,
   required = false,
-  labelWidth = 5,
   onFocus,
   setValue,
   suffix,
@@ -55,9 +53,6 @@ export default function ChannelsOutField({
     <Box pt={1}>
       <NumberEntry
         label={t('channelsOut.label')}
-        labelBold
-        labelPosition={LAB_POSITION}
-        labelWidth={labelWidth}
         testId={FIELD}
         value={value}
         setValue={checkValue}

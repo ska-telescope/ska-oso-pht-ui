@@ -1,12 +1,6 @@
 import { Grid } from '@mui/material';
 import { DropDown } from '@ska-telescope/ska-gui-components';
-import {
-  DP_TYPE_IMAGES,
-  DP_TYPE_VISIBLE,
-  LAB_IS_BOLD,
-  LAB_POSITION,
-  TYPE_CONTINUUM
-} from '../../../utils/constants';
+import { DP_TYPE_IMAGES, DP_TYPE_VISIBLE, TYPE_CONTINUUM } from '../../../utils/constants';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface DataProductTypeFieldProps {
@@ -18,7 +12,6 @@ interface DataProductTypeFieldProps {
   suffix?: any;
   value: string | number;
   widthButton?: number;
-  labelWidth?: number;
 }
 
 export default function DataProductTypeField({
@@ -29,8 +22,7 @@ export default function DataProductTypeField({
   observationType = TYPE_CONTINUUM,
   suffix = null,
   value,
-  widthButton = 0,
-  labelWidth = 5
+  widthButton = 0
 }: DataProductTypeFieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'dataProductType';
@@ -49,9 +41,6 @@ export default function DataProductTypeField({
           value={value}
           setValue={setValue}
           label={t(FIELD + '.label')}
-          labelBold={LAB_IS_BOLD}
-          labelPosition={LAB_POSITION}
-          labelWidth={suffix ? labelWidth + 1 : labelWidth}
           onFocus={onFocus}
           required={required}
         />

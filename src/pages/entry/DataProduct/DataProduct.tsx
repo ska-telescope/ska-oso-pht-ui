@@ -71,7 +71,6 @@ import { DataProductSDPNew } from '@/utils/types/dataProduct';
 const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
 const PAGE_PREFIX = 'SDP';
-const LABEL_WIDTH = 5;
 const COL = 6;
 const COL_MID = 8;
 
@@ -242,7 +241,7 @@ export default function DataProduct({ data }: DataProductProps) {
   };
 
   // set correct default polarisations depending on data product type & pst mode from obs type
-  const getDefaultPolarisations = (obsType: number, dataProductType: number): string[] => {
+  const getDefaultPolarisations = (obsType: string, dataProductType: number): string[] => {
     if (obsType === TYPE_PST) {
       if (dataProductType === FLOW_THROUGH_VALUE) return ['X'];
       if (dataProductType === DETECTED_FILTER_BANK_VALUE) return ['I'];
@@ -252,7 +251,7 @@ export default function DataProduct({ data }: DataProductProps) {
   };
 
   // set correct data product type depending on pst mode from obs type
-  const getDataProductType = (obsType: number, pstMode: number): number => {
+  const getDataProductType = (obsType: string, pstMode: number): number => {
     if (obsType === TYPE_PST) {
       return pstMode;
     }
@@ -278,7 +277,7 @@ export default function DataProduct({ data }: DataProductProps) {
   React.useEffect(() => {
     if (!isEdit()) {
       const sdpType = getDataProductType(
-        Number(getObservation()?.type),
+        getObservation()?.type ?? '',
         Number(getObservation()?.pstMode)
       );
       setDataProductType(sdpType);
@@ -287,7 +286,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
   React.useEffect(() => {
     if (!isEdit()) {
-      const pol = getDefaultPolarisations(Number(getObservation()?.type), dataProductType);
+      const pol = getDefaultPolarisations(getObservation()?.type ?? '', dataProductType);
       setPolarisations(pol);
     }
   }, [dataProductType]);
@@ -324,7 +323,6 @@ export default function DataProduct({ data }: DataProductProps) {
   const taperField = () =>
     fieldWrapper(
       <TaperField
-        labelWidth={LABEL_WIDTH}
         onFocus={() => setHelp('taper')}
         required
         setValue={setTaperValue}
@@ -356,7 +354,6 @@ export default function DataProduct({ data }: DataProductProps) {
   const imageSizeField = () =>
     fieldWrapper(
       <ImageSizeField
-        labelWidth={LABEL_WIDTH}
         onFocus={() => setHelp('imageSize')}
         required
         setValue={setImageSizeValue}
@@ -410,7 +407,6 @@ export default function DataProduct({ data }: DataProductProps) {
   const timeAveragingField = () =>
     fieldWrapper(
       <TimeAveragingField
-        labelWidth={LABEL_WIDTH}
         onFocus={() => setHelp('timeAveraging')}
         required
         setValue={setTimeAveraging}
@@ -422,7 +418,6 @@ export default function DataProduct({ data }: DataProductProps) {
   const frequencyAveragingField = () =>
     fieldWrapper(
       <FrequencyAveragingField
-        labelWidth={LABEL_WIDTH}
         onFocus={() => setHelp('frequencyAveraging')}
         required
         setValue={setFrequencyAveraging}
@@ -440,7 +435,6 @@ export default function DataProduct({ data }: DataProductProps) {
   const pixelSizeField = () =>
     fieldWrapper(
       <PixelSizeField
-        labelWidth={LABEL_WIDTH}
         onFocus={() => setHelp('pixelSize')}
         setValue={setPixelSizeValue}
         required
@@ -452,7 +446,6 @@ export default function DataProduct({ data }: DataProductProps) {
   const imageWeightingField = () =>
     fieldWrapper(
       <ImageWeightingField
-        labelWidth={LABEL_WIDTH}
         onFocus={() => setHelp('imageWeighting')}
         required
         setValue={setWeighting}
@@ -463,7 +456,6 @@ export default function DataProduct({ data }: DataProductProps) {
   const bitDepthField = () =>
     fieldWrapper(
       <BitDepthField
-        labelWidth={LABEL_WIDTH}
         onFocus={() => setHelp('bitDepth')}
         required
         setValue={setBitDepth}
@@ -494,7 +486,6 @@ export default function DataProduct({ data }: DataProductProps) {
   const channelsOutField = () =>
     fieldWrapper(
       <ChannelsOutField
-        labelWidth={LABEL_WIDTH}
         onFocus={() => setHelp('channelsOut')}
         required
         setValue={setChannelsOut}

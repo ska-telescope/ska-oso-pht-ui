@@ -14,5 +14,5 @@ Science Verification Flow
    ObservationPageSV
    TechnicalPageSV
    CalibrationPageSV
-   submitConfirmationSV
+   SubmitConfirmationSV
 

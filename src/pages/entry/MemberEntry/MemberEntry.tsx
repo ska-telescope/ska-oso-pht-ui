@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
-import { Box, Grid, Typography, Stack } from '@mui/material';
+import { Box, Stack } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { TextEntry, TickBox, ButtonSizeTypes } from '@ska-telescope/ska-gui-components';
 import PostSendEmailInvite from '@services/axios/post/postSendEmailInvite/postSendEmailInvite';

@@ -11,7 +11,6 @@ import {
   PAGE_TITLE_ADD,
   PAGE_TARGET,
   PAGE_OBSERVATION,
-  PAGE_CALIBRATION,
   STATUS_ARRAY_PAGES_PROPOSAL,
   STATUS_ARRAY_PAGES_SV
 } from '@utils/constants.ts';
@@ -104,6 +103,12 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     t
   ]);
 
+  const nextPageInvalid = !validateProposalNavigation(
+    proposal,
+    nextPageNo,
+    osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1
+  );
+
   const showPrevNav = () => {
     if ((loggedIn && currPageNo > 0) || (cypressToken && currPageNo > 0)) {
       return true;
@@ -111,7 +116,8 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   };
 
   const showNextNav =
-    currPageNo === -1 || nextPageNo !== -2 || (!loggedIn && currPageNo === PAGE_TARGET);
+    (!loggedIn && currPageNo === PAGE_TARGET) ||
+    (loggedIn && !nextPageInvalid && (currPageNo === -1 || nextPageNo !== -2));
 
   const nextLabel = React.useCallback(() => {
     if (currPageNo === -2) return 'addBtn.label';
@@ -141,15 +147,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
       return;
     }
 
-    const invalid = !validateProposalNavigation(
-      proposal,
-      nextPageNo,
-      osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1
-    );
-
-    if (invalid) {
-      navigate(NAV[PAGE_CALIBRATION]);
-    } else if (nextPageNo < NAV.length) {
+    if (!nextPageInvalid && nextPageNo < NAV.length) {
       navigate(NAV[nextPageNo]);
     }
   }, [

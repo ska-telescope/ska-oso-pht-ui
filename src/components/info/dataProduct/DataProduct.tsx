@@ -48,7 +48,6 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
   const imageSizeField = () =>
     fieldWrapper(
       <ImageSizeField
-        labelWidth={LABEL_WIDTH}
         value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.imageSizeValue}
         disabled
       />
@@ -57,7 +56,6 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
     fieldWrapper(
       <RobustField
         label={t('robust.label')}
-        labelWidth={LABEL_WIDTH}
         value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.robust}
         disabled
       />
@@ -66,7 +64,6 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
   const pixelSizeField = () =>
     fieldWrapper(
       <PixelSizeField
-        labelWidth={LABEL_WIDTH}
         value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.pixelSizeValue}
         disabled
       />
@@ -75,7 +72,6 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
   const dataProductTypeField = () =>
     fieldWrapper(
       <DataProductTypeField
-        labelWidth={LABEL_WIDTH}
         value={(sdpData as SDPImageContinuumData | SDPFlowthroughPSTData)?.dataProductType}
         disabled
       />
@@ -84,7 +80,6 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
   const imageWeightingField = () =>
     fieldWrapper(
       <ImageWeightingField
-        labelWidth={LABEL_WIDTH}
         value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.weighting}
         disabled
       />
@@ -92,7 +87,6 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
   const channelsOutField = () =>
     fieldWrapper(
       <ChannelsOutField
-        labelWidth={LABEL_WIDTH}
         value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.channelsOut}
         disabled
       />
@@ -101,7 +95,6 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
   const taperField = () =>
     fieldWrapper(
       <TaperField
-        labelWidth={LABEL_WIDTH}
         value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.taperValue}
         disabled
       />
@@ -133,7 +126,6 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
       <>
         SARAH
         <TimeAveragingField
-          labelWidth={LABEL_WIDTH}
           value={(sdpData as SDPVisibilitiesContinuumData)?.timeAveraging}
           disabled
         />
@@ -143,7 +135,6 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
   const frequencyAveragingField = () =>
     fieldWrapper(
       <FrequencyAveragingField
-        labelWidth={LABEL_WIDTH}
         value={(sdpData as SDPVisibilitiesContinuumData)?.frequencyAveraging}
         disabled
       />
