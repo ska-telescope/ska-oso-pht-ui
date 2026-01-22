@@ -88,7 +88,7 @@ import { DataProductSDPNew } from '@/utils/types/dataProduct';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_OBSERVATION;
-const IMAGE_PATH_LOW_AA2 = '/assets/low_aa2.png';
+const IMAGE_PATH_LOW_AA2 = 'assets/low_aa2.png';
 
 interface ObservationEntryProps {
   data?: Observation;
