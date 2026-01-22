@@ -676,7 +676,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
             {isSpectral() && (
               <BorderedSection title={t('page.7.group.' + TYPE_ZOOM)}>
-                <Grid pb={1} container>
+                <Grid pb={1} container spacing={GAP}>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(imageSizeField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(pixelSizeField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(imageWeightingField())}</Grid>

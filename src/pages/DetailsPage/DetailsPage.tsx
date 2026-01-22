@@ -2,7 +2,14 @@ import React from 'react';
 import { Box, Grid, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { BorderedSection, DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
-import { SA_AA2, DETAILS, OBSERVATION_TYPE_SHORT_BACKEND, PAGE_DETAILS } from '@utils/constants.ts';
+import {
+  SA_AA2,
+  DETAILS,
+  PAGE_DETAILS,
+  TYPE_CONTINUUM,
+  TYPE_PST,
+  TYPE_ZOOM
+} from '@utils/constants.ts';
 import { countWords, obTypeTransform } from '@utils/helpers.ts';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { validateProposal } from '@utils/validation/validation.tsx';
@@ -195,13 +202,12 @@ export default function DetailsPage() {
     const sArray = record?.subArrays.find((sub: any) => sub.subArray === SA_AA2);
     const inData = obTypeTransform(sArray?.cbfModes ?? []);
     return inData.map(type => {
-      const index = OBSERVATION_TYPE_SHORT_BACKEND.findIndex(obsType => obsType === type);
-      const label = t('scienceCategory.' + index);
+      const label = t('scienceCategory.' + type);
       return {
         label,
         subCategory: [{ label: 'Not specified', value: 1 }],
-        value: index,
-        observationType: index
+        value: type,
+        observationType: type
       };
     });
   };
@@ -221,7 +227,15 @@ export default function DetailsPage() {
       <DropDown
         options={getCategoryOptions()}
         errorText={
-          typeof getProposal().scienceCategory === 'number' ? '' : t('scienceCategory.error')
+          isSV
+            ? getProposal().scienceCategory === TYPE_CONTINUUM ||
+              getProposal().scienceCategory === TYPE_ZOOM ||
+              getProposal().scienceCategory === TYPE_PST
+              ? ''
+              : t('scienceCategory.error')
+            : typeof getProposal().scienceCategory === 'number'
+            ? ''
+            : t('scienceCategory.error')
         }
         required
         testId="categoryId"

@@ -17,7 +17,10 @@ import {
   RA_TYPE_ICRS,
   VELOCITY_TYPE,
   FIELD_PATTERN_POINTING_CENTRES,
-  WRAPPER_HEIGHT
+  WRAPPER_HEIGHT,
+  TYPE_PST,
+  TYPE_ZOOM,
+  TYPE_CONTINUUM
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -239,7 +242,12 @@ export default function TargetEntry({
       };
 
       const addTargetAsync = async () => {
-        if (autoLink && typeof getProposal().scienceCategory === 'number') {
+        const proposal = getProposal();
+        if (
+          (autoLink && proposal.scienceCategory === TYPE_CONTINUUM) ||
+          proposal.scienceCategory === TYPE_ZOOM ||
+          proposal.scienceCategory === TYPE_PST
+        ) {
           generateAutoLinkData();
           return;
         }
