@@ -124,7 +124,6 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
   const timeAveragingField = () =>
     fieldWrapper(
       <>
-        SARAH
         <TimeAveragingField
           value={(sdpData as SDPVisibilitiesContinuumData)?.timeAveraging}
           disabled
