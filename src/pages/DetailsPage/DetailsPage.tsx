@@ -76,11 +76,7 @@ export default function DetailsPage() {
   }, [scienceCategoryId, abstract]);
 
   const handleChanges = () => {
-    if (
-      !autoLink ||
-      (getProposal().targets?.length ?? 0) <= 0 ||
-      typeof scienceCategoryId !== 'number'
-    ) {
+    if (!autoLink || (getProposal().targets?.length ?? 0) <= 0 || scienceCategoryId === '') {
       // set proposal category and abstract here when no autolink needed
       setProposal({
         ...getProposal(),

@@ -4,7 +4,8 @@ import {
   POLARISATIONS_PST_BANK,
   POLARISATIONS_PST_FLOW,
   TYPE_CONTINUUM,
-  TYPE_PST
+  TYPE_PST,
+  TYPE_ZOOM
 } from '@utils/constants.ts';
 import { Typography } from '@mui/material';
 import { LABEL_POSITION, TickBox } from '@ska-telescope/ska-gui-components';
@@ -39,7 +40,7 @@ export default function PolarisationsField({
 
   const options = useMemo(() => {
     const base =
-      observationType === TYPE_CONTINUUM
+      observationType === TYPE_CONTINUUM || observationType === TYPE_ZOOM
         ? POLARISATIONS
         : observationType === TYPE_PST && dataProductType === 1
         ? POLARISATIONS_PST_BANK
