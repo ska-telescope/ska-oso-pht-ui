@@ -75,8 +75,6 @@ export default function ContinuumBandwidthField({
   };
 
   const validateValue = (num: number) => {
-    if (!Number.isFinite(num)) return '';
-
     const scaledBandwidth = getScaledBandwidthOrFrequency(num, continuumBandwidthUnits ?? 0);
     const scaledFrequency = getScaledBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
 
@@ -129,11 +127,7 @@ export default function ContinuumBandwidthField({
 
   // Validate current value when dependencies change
   React.useEffect(() => {
-    if (Number.isFinite(value)) {
       setErrorText(validateValue(value));
-    } else {
-      setErrorText('');
-    }
   }, [
     value,
     continuumBandwidthUnits,
