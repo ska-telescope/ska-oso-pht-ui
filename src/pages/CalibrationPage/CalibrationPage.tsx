@@ -31,22 +31,11 @@ export default function CalibrationPage() {
     setHelp('page.' + PAGE + '.help');
   }, []);
 
-  const deleteConfirmed = () => {
-    // const obs1 = getProposal().dataProductSDP?.filter(e => e.id !== String(currentRow));
-    // setProposal({ ...getProposal(), dataProductSDP: obs1 }); // TODO if we create a SDP here, we should add the dataProductsSDPId to TargetObservation
-    // setCurrentRow(0);
-    // closeDeleteDialog();
-  };
+  const deleteConfirmed = () => {};
 
-  const editIconClicked = (row: any) => {
-    // setCurrObs(row.rec);
-    // navigate(PATH[2], { replace: true, state: row.rec });
-  };
+  const editIconClicked = (_row: any) => {};
 
-  const deleteIconClicked = (row: any) => {
-    // setCurrObs(row.rec);
-    // setOpenDeleteDialog(true);
-  };
+  const deleteIconClicked = (_row: any) => {};
 
   const hasData = (): boolean => {
     const proposal = getProposal();
@@ -68,7 +57,7 @@ export default function CalibrationPage() {
           <Alert
             color={AlertColorTypes.Warning}
             text={
-              osdCyclePolicy?.maxObservations === 1 && hasTargetObservations
+              osdCyclePolicy?.maxObservations === 1 && hasTargetObservations()
                 ? t('page.6.noObservations')
                 : t('error.noCalibrationsLoggedOut')
             }
@@ -104,8 +93,6 @@ export default function CalibrationPage() {
   };
 
   const alertContent = () => {
-    // const rec = getProposal().dataProductSDP?.find(p => String(p.id) === String(currentRow));
-    // const data = rec?.data as SDPImageContinuumData;
     return (
       <Grid
         p={2}
@@ -114,22 +101,7 @@ export default function CalibrationPage() {
         alignItems="space-evenly"
         justifyContent="space-around"
       >
-        {/* <FieldWrapper label={t('observations.dp.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec?.observationId}</Typography>
-        </FieldWrapper>
-        <FieldWrapper label={t('imageSize.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">
-            {data?.imageSizeValue} {presentUnits(String(data?.imageSizeUnits ?? ''))}
-          </Typography>
-        </FieldWrapper>
-        <FieldWrapper label={t('pixelSize.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">
-            {data?.pixelSizeValue} {'arcsec'}
-          </Typography>
-        </FieldWrapper>
-        <FieldWrapper label={t('weighting.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{t('imageWeighting.' + data?.weighting)}</Typography>
-        </FieldWrapper> */}
+        {}
       </Grid>
     );
   };
@@ -137,7 +109,7 @@ export default function CalibrationPage() {
   return (
     <Shell page={PAGE}>
       <Box pl={GAP}>
-        {!autoLink && (
+        {!autoLink && osdCyclePolicy?.calibrationFactoryDefined !== true && (
           <Box pb={GAP}>
             <AddButton
               title={'page.' + PAGE + '.title'}
@@ -151,8 +123,8 @@ export default function CalibrationPage() {
 
         {(autoLink ? hasTargetObservations() : hasData()) && (
           <>
-            {osdCyclePolicy?.maxDataProducts !== 1 && dataList()}
-            {osdCyclePolicy?.maxDataProducts === 1 && (
+            {osdCyclePolicy?.calibrationFactoryDefined !== true && dataList()}
+            {osdCyclePolicy?.calibrationFactoryDefined && (
               <Box p={GAP}>
                 <CalibrationEntry data={getProposal()?.calibrationStrategy?.[0]} />
               </Box>
@@ -162,46 +134,5 @@ export default function CalibrationPage() {
         <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       </Box>
     </Shell>
-
-    // <Shell page={PAGE}>
-    //   <>
-    //     {hasData() && (
-    //       <Grid
-    //         p={1}
-    //         container
-    //         direction="row"
-    //         alignItems="space-evenly"
-    //         justifyContent="center"
-    //         spacing={1}
-    //       >
-    //         <Grid size={{ xs: 4, md: 8 }} sx={{ position: 'relative' }}>
-    //           {!axiosViewError && <CalibrationEntry data={strategy} />}
-    //           {axiosViewError && (
-    //             <Alert
-    //               color={AlertColorTypes.Error}
-    //               testId="axiosErrorTestId"
-    //               text={axiosViewError}
-    //             />
-    //           )}
-    //         </Grid>
-    //       </Grid>
-    //     )}
-    //     {!hasData() && (
-    //       <Grid
-    //         p={10}
-    //         container
-    //         direction="column"
-    //         alignItems="space-evenly"
-    //         justifyContent="space-around"
-    //       >
-    //         <Alert
-    //           color={AlertColorTypes.Error}
-    //           text={t('page.' + PAGE + errorSuffix())}
-    //           testId="helpPanelId"
-    //         />
-    //       </Grid>
-    //     )}
-    //   </>
-    // </Shell>
   );
 }
