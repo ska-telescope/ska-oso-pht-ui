@@ -128,21 +128,6 @@ describe('checkAutoLink function works as expected', () => {
     velUnit: 0
   };
 
-  const mockTarget2: Target = {
-    kind: 0,
-    decStr: '-00:49:23.700',
-    id: 1,
-    name: 'm3',
-    b: 0,
-    l: 0,
-    raStr: '21:33:27.0200',
-    redshift: '',
-    referenceFrame: 'icrs',
-    vel: '-3.6',
-    velType: 0,
-    velUnit: 0
-  };
-
   test('autoLink, obs mode but no targets - no auto link triggered', () => {
     const isAutolink = checkAutoLink(true, [], 'continuum');
     expect(isAutolink).toBe(false);
@@ -174,7 +159,7 @@ describe('checkAutoLink function works as expected', () => {
   });
 
   test('autoLink, obs mode and targets - auto link triggered', () => {
-    const isAutolink = checkAutoLink(true, [mockTarget, mockTarget2], 'spectral');
+    const isAutolink = checkAutoLink(true, [mockTarget], 'spectral');
     expect(isAutolink).toBe(true);
   });
 });
