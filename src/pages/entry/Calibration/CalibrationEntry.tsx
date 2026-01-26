@@ -264,12 +264,11 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
 
   /**************************************************************/
 
-  const validateId = () =>
-    getProposal()?.calibrationStrategy?.find(t => t.id === id) ? t('calibrationId.notUnique') : '';
+  // const validateId = () =>
+  //   getProposal()?.calibrationStrategy?.find(t => t.id === id) ? t('calibrationId.notUnique') : '';
 
   const addButtonDisabled = () => {
-    // TODO : We need to make this a bit cleverer, but this will do for a short time
-    return isEdit() ? false : validateId() ? true : false;
+    return true; // isEdit() ? false : validateId() ? true : false;
   };
 
   const pageFooter = () => {

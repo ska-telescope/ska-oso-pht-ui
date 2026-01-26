@@ -21,7 +21,8 @@ import {
   getColProposalSC,
   getColProposalStatus,
   getColProposalTitle,
-  getColProposalType
+  getColProposalType,
+  getColProposalTypeCycle
 } from './columns/Columns';
 import GetProposalsReviewable from '@/services/axios/get/getProposalsReviewable/getProposalsReviewable';
 import Proposal from '@/utils/types/proposal';
@@ -52,7 +53,7 @@ export function getProposalType(value: number): string {
 export function filterProposals(
   proposals: Proposal[],
   searchTerm: string,
-  searchScienceCategory: number | null,
+  searchScienceCategory: string | null,
   searchProposalType: string
 ): Proposal[] {
   const fields: (keyof Proposal)[] = ['title'];
@@ -86,13 +87,13 @@ export default function GridProposals({
   tickBoxClicked = () => {}
 }: GridProposalsProps) {
   const { t } = useScopedTranslation();
-  const { isSV } = useOSDAccessors();
+  const { isSV, osdPolicies } = useOSDAccessors();
   const navigate = useNavigate();
   const { setHelp } = useHelp();
 
   const [proposals, setProposals] = React.useState<Proposal[]>([]);
   const [searchTerm, setSearchTerm] = React.useState('');
-  const [searchScienceCategory, setSearchScienceCategory] = React.useState<number | null>(null);
+  const [searchScienceCategory, setSearchScienceCategory] = React.useState<string | null>(null);
   const [searchProposalType, setSearchProposalType] = React.useState('');
 
   const {
@@ -260,6 +261,7 @@ export default function GridProposals({
         ...(showSelection ? [colSelect] : []),
         ...(showActions ? [colActions] : []),
         getColProposalTitle(t),
+        getColProposalTypeCycle(t, osdPolicies),
         getColProposalStatus(t),
         getColProposalSC(t),
         getColProposalPI(t)
@@ -334,7 +336,7 @@ export default function GridProposals({
     if (typeof response === 'string') {
       updateAppContent1({});
       updateAppContent2({});
-      storeProposalCopy(null);
+      storeProposalCopy({} as Proposal);
       setAxiosViewError(response);
       return false;
     } else {

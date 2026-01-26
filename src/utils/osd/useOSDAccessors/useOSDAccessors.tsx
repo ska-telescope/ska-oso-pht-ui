@@ -117,8 +117,8 @@ export function useOSDAccessors() {
     osdMID: capabilities?.mid,
     osdCapabilities: capabilities,
 
-    osdCycleDescription: selectedPolicy?.cycleDescription,
-    osdCycleId: cycleInformation?.cycleId,
+    osdCycleDescription: selectedPolicy?.cycleDescription ?? '',
+    osdCycleId: cycleInformation?.cycleId ?? '',
     osdCyclePolicy: cyclePolicies,
 
     observatoryConstants,

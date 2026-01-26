@@ -48,7 +48,8 @@ import {
   FREQUENCY_STR_GHZ,
   PULSAR_TIMING_VALUE,
   DETECTED_FILTER_BANK_VALUE,
-  FLOW_THROUGH_VALUE
+  FLOW_THROUGH_VALUE,
+  TYPE_ZOOM_LONG
 } from '@utils/constants.ts';
 import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import {
@@ -384,6 +385,11 @@ const getLinked = (
   return linkedTargetRef ? linkedTargetRef : '';
 };
 
+// This is here as there is inconsistent representation of spectral and spectral line.
+const typeCheck = (inType: string | undefined): any => {
+  return inType === TYPE_ZOOM_LONG ? TYPE_ZOOM : inType;
+};
+
 const getObservations = (
   inValue: ObservationSetBackend[] | null,
   inResults: SensCalcResultsBackend[] | null
@@ -399,7 +405,7 @@ const getObservations = (
       p => p.label.toLowerCase() === inValue[i]?.array_details?.subarray?.toLocaleLowerCase()
     )?.value;
 
-    const type = inValue[i]?.observation_type_details?.observation_type;
+    const type = typeCheck(inValue[i]?.observation_type_details?.observation_type);
 
     const observingBand = inValue[i]?.observing_band;
 

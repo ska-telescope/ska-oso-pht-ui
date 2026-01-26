@@ -1,6 +1,7 @@
 import { TableRow, TableCell, Box, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { getColors } from '@ska-telescope/ska-gui-components';
 import ViewIcon from '@/components/icon/viewIcon/viewIcon';
 import CloneIcon from '@/components/icon/cloneIcon/cloneIcon';
 import EditIcon from '@/components/icon/editIcon/editIcon';
@@ -38,11 +39,10 @@ export default function TableSubmissionsRow({
   const getAccess = () => application.content4 as ProposalAccess[];
   const { application } = storageObject.useStore();
   const cycleInfo = getCycle(item.cycle || '');
+
   useInitializeAccessStore();
 
-  const canEdit = (_item: { id: string }) => {
-    return true; // Placeholder until access rules are defined
-  };
+  const canEdit = (item: any) => item.status === PROPOSAL_STATUS.DRAFT;
 
   const canClone = (item: { id: string }) => {
     const update = accessUpdate(getAccess(), item.id);
@@ -51,6 +51,17 @@ export default function TableSubmissionsRow({
 
   const canDelete = (item: { status: string }) =>
     item.status === PROPOSAL_STATUS.DRAFT || item.status === PROPOSAL_STATUS.WITHDRAWN;
+
+  const getStatusColor = (status: string) => {
+    const colors = getColors({
+      type: 'proposalStatus',
+      colors: status,
+      asArray: true,
+      paletteIndex: Number(localStorage.getItem('skao_accessibility_mode')),
+      dim: 0.5
+    });
+    return colors;
+  };
 
   return (
     <>
@@ -67,8 +78,8 @@ export default function TableSubmissionsRow({
               <Box display="flex" flexDirection="column" alignItems="center">
                 <EditIcon
                   onClick={() => editClicked(item.id)}
-                  disabled={!canEdit(item.id)}
-                  toolTip={t(canEdit(item.id) ? 'editProposal.toolTip' : 'editProposal.disabled')}
+                  disabled={!canEdit(item)}
+                  toolTip={t(canEdit(item) ? 'editProposal.toolTip' : 'editProposal.disabled')}
                 />
                 <Typography variant="caption">{t('edit.label')}</Typography>
               </Box>
@@ -131,7 +142,14 @@ export default function TableSubmissionsRow({
           </Typography>
         </TableCell>
 
-        <TableCell role="gridcell" sx={{ width: 200, whiteSpace: 'nowrap' }}>
+        <TableCell
+          role="gridcell"
+          sx={{
+            width: 200,
+            whiteSpace: 'nowrap',
+            backgroundColor: getStatusColor(item.status).bg[0]
+          }}
+        >
           <Typography variant="body2" color="text.secondary">
             {item.status}
           </Typography>

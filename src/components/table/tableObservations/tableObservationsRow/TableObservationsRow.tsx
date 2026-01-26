@@ -13,11 +13,13 @@ import {
   TEL_UNITS,
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_NUM,
-  TYPE_CONTINUUM
+  TYPE_CONTINUUM,
+  TYPE_PST
 } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import ObservationInfo from '@/components/info/observation/Observation';
-import { frequencyConversion } from '@/utils/helpers';
+import { frequencyConversion, getBandwidthZoom } from '@/utils/helpers';
+import { OSD_CONSTANTS } from '@/utils/OSDConstants';
 
 // NOTE
 //
@@ -52,8 +54,14 @@ export default function TableObservationsRow({
 
   const observation = item;
   const isContinuum = observation?.type === TYPE_CONTINUUM;
+  const isPST = observation?.type === TYPE_PST;
   const isLow = observation?.telescope === TELESCOPE_LOW_NUM;
   const isMid = observation?.telescope === TELESCOPE_MID_NUM;
+
+  const getBandwidthLowZoom = (inValue: Number) => {
+    const obsTelescopeArray = OSD_CONSTANTS.array[1];
+    return obsTelescopeArray?.bandWidth?.find(b => b.value === inValue);
+  };
 
   let min = 0;
   let max = 0;
@@ -217,9 +225,15 @@ export default function TableObservationsRow({
             maxFreq={maxFreq}
             centerFreq={centerFreq}
             bandWidth={
-              isContinuum
+              isContinuum || isPST
                 ? observation?.rec?.continuumBandwidth ?? 0
-                : observation?.rec?.bandwidth ?? 0
+                : frequencyConversion(
+                    isLow
+                      ? getBandwidthLowZoom(observation.bandwidth)?.value ?? 0
+                      : getBandwidthZoom(observation),
+                    isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ,
+                    FREQUENCY_MHZ
+                  ) ?? 0
             }
             bandColor={colorsTelescopeDim.bg[0]}
             bandColorContrast={colorsTelescopeDim.fg[0]}

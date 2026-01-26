@@ -8,6 +8,7 @@ import {
   FOOTER_PMT_SPACER,
   PAGE_PANEL_MANAGEMENT,
   PMT,
+  PROPOSAL_STATUS,
   REVIEWER_STATUS
 } from '@utils/constants.ts';
 import BackButton from '@/components/button/Back/Back';
@@ -28,6 +29,7 @@ import AssignButton from '@/components/button/Assign/Assign';
 import PostPanelAssignments from '@/services/axios/post/postPanelAssignments/postPanelAssignments';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import PutProposal from '@/services/axios/put/putProposal/putProposal';
 
 const TAB_HEADER_HEIGHT = 55;
 const GAP = 5;
@@ -219,13 +221,19 @@ export default function PanelManagement() {
     });
   };
 
-  const proposalSelectedToggle = (proposal: Proposal, isSelected: boolean) => {
-    if (isSelected) {
-      // proposalForUpdate = undefined; // TODO : What happens if you unassign a proposal from a panel ?
-      deleteProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
-    } else {
-      // proposalForUpdate = proposal;
-      addProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
+  const proposalSelectedToggle = async (proposal: Proposal, isSelected: boolean) => {
+    const isSV = false; // Need to check this against the proposal ownership
+    const newProposal = {
+      ...proposal,
+      status: isSelected ? PROPOSAL_STATUS.SUBMITTED : PROPOSAL_STATUS.UNDER_REVIEW
+    };
+    const result = await PutProposal(authClient, newProposal, isSV);
+    if (await result) {
+      if (isSelected) {
+        deleteProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
+      } else {
+        addProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
+      }
     }
   };
 

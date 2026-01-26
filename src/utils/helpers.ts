@@ -185,9 +185,9 @@ export const leadZero = (coordinate: String): String => {
 
 /*********************************************************** map values *********************************************************/
 
-export const getBandwidthZoom = (incObs: Observation): ValueUnitPair => {
-  const obsTelescopeArray = OSD_CONSTANTS.array.find(o => o.value === incObs.telescope);
-  const bandwidth = obsTelescopeArray?.bandWidth?.find(b => b.value === incObs.bandwidth);
+export const getBandwidthZoom = (incObs: Observation | null): ValueUnitPair => {
+  const obsTelescopeArray = OSD_CONSTANTS.array.find(o => o.value === incObs?.telescope);
+  const bandwidth = obsTelescopeArray?.bandWidth?.find(b => b.value === incObs?.bandwidth);
   const valueUnit = bandwidth?.label?.split(' ');
   const value = valueUnit && valueUnit.length > 0 ? Number(valueUnit[0]) : 0;
   return {

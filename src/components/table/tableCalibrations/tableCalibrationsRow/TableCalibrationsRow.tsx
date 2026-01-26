@@ -63,14 +63,22 @@ export default function TableCalibrationsRow({
 
             {editClicked && (
               <Box display="flex" flexDirection="column" alignItems="center">
-                <EditIcon onClick={() => editClicked(item)} toolTip={t('Calibrations.edit')} />
+                <EditIcon
+                  disabled
+                  onClick={() => editClicked(item)}
+                  toolTip={t('Calibrations.edit')}
+                />
                 <Typography variant="caption">{t('edit.label')}</Typography>
               </Box>
             )}
 
             {deleteClicked && (
               <Box display="flex" flexDirection="column" alignItems="center">
-                <TrashIcon onClick={() => deleteClicked(item)} toolTip={t('Calibrations.delete')} />
+                <TrashIcon
+                  disabled
+                  onClick={() => deleteClicked(item)}
+                  toolTip={t('Calibrations.delete')}
+                />
                 <Typography variant="caption">{t('deleteBtn.label')}</Typography>
               </Box>
             )}
