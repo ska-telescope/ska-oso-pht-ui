@@ -22,11 +22,20 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useHelp } from '@/utils/help/useHelp';
 import { useNotify } from '@/utils/notify/useNotify';
 import autoLinking from '@/utils/autoLinking/AutoLinking';
+import Target from '@/utils/types/target';
 
 const PAGE = PAGE_DETAILS;
 const LINE_OFFSET = 30;
 const GAP = 0;
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
+
+export const checkAutoLink = (autolink: boolean, targets: Target[], scienceCat: string) => {
+  if (!autolink || (targets?.length ?? 0) <= 0 || scienceCat === '') {
+    return false;
+  } else {
+    return true;
+  }
+};
 
 export default function DetailsPage() {
   const { t } = useScopedTranslation();
@@ -76,8 +85,8 @@ export default function DetailsPage() {
   }, [scienceCategoryId, abstract]);
 
   const handleChanges = () => {
-    if (!autoLink || (getProposal().targets?.length ?? 0) <= 0 || scienceCategoryId === '') {
-      // set proposal category and abstract here when no autolink needed
+    const isAutolink = checkAutoLink(autoLink, getProposal().targets ?? [], scienceCategoryId);
+    if (!isAutolink) {
       setProposal({
         ...getProposal(),
         scienceCategory: scienceCategoryId,
@@ -85,7 +94,6 @@ export default function DetailsPage() {
         abstract: abstract
       });
     } else {
-      // set category and abstract along with autolink data
       generateAutoLinkData();
     }
   };
