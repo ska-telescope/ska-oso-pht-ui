@@ -87,6 +87,7 @@ export default function DetailsPage() {
   const handleChanges = () => {
     const isAutolink = checkAutoLink(autoLink, getProposal().targets ?? [], scienceCategoryId);
     if (!isAutolink) {
+      // set proposal category and abstract here when no autolink needed
       setProposal({
         ...getProposal(),
         scienceCategory: scienceCategoryId,
