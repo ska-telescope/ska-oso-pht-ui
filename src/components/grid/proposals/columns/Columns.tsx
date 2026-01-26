@@ -73,6 +73,20 @@ export const getColProposalType = (t: any) => ({
   }
 });
 
+export const getColProposalTypeCycle = (t: any, policies: any) => ({
+  field: 'proposalType',
+  headerName: t('proposalType.label'),
+  minWidth: 200,
+  renderCell: (e: { row: any }) => {
+    const cycle = policies.find((c: any) => c.cycleInformation.cycleId === e.row.cycle);
+    return (
+      <Tooltip title={cycle.cycleDescription ?? '????'}>
+        <>{cycle ? cycle.type : '????'}</>
+      </Tooltip>
+    );
+  }
+});
+
 export const getColProposalTitle = (t: any) => ({
   field: 'title',
   headerName: t('title.label'),

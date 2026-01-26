@@ -1,6 +1,6 @@
 import React from 'react';
-import { Box, Stack, useTheme } from '@mui/system';
-import { DataGrid } from '@ska-telescope/ska-gui-components';
+import { Box, Stack } from '@mui/system';
+import { DataGrid, getColors } from '@ska-telescope/ska-gui-components';
 import { Typography } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
@@ -24,7 +24,6 @@ export default function GridObservation({
   displayOption = 0
 }: GridObservationProps) {
   const { t } = useScopedTranslation();
-  const theme = useTheme();
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
   const hasSelectedRef = React.useRef(false);
   const { isSV } = useOSDAccessors();
@@ -124,6 +123,16 @@ export default function GridObservation({
 
   const isZoom = (inType: number) => inType === 0;
 
+  const getObservationColors = (type: string, value?: unknown, dim?: number) =>
+    getColors({
+      type,
+      colors: String(value ?? ''),
+      content: 'both',
+      asArray: true,
+      ...(dim ? { dim } : {}),
+      paletteIndex: Number(localStorage.getItem('skao_accessibility_mode'))
+    }) ?? [];
+
   const colObservation: GridColDef = {
     field: 'id',
     renderHeader: () => headerDisplay('observations.label'),
@@ -133,17 +142,27 @@ export default function GridObservation({
     resizable: false,
     renderCell: e => {
       const isSelected = String(e.row.id) === selectedId;
+      const centralFrequencyUnits = OSD_CONSTANTS.Units[e.row.centralFrequencyUnits]?.label ?? '';
+      const bandwidthUnits =
+        OSD_CONSTANTS.Units[
+          isZoom(e.row.type) ? e.row.zoomBandwidthUnits : e.row.continuumBandwidthUnits
+        ]?.label ?? '';
       return (
         <Stack
           direction="column"
           sx={{
-            backgroundColor: isSelected ? theme.palette.primary.light : 'transparent',
-            padding: 2
+            backgroundColor: isSelected
+              ? getObservationColors('observationType', e.row?.type, 0.2).bg[0]
+              : 'transparent',
+            border: '10px solid',
+            borderRadius: 1,
+            borderColor: getObservationColors('telescope', e.row?.telescope, 0.4).bg[0]
           }}
         >
           {displayName(e.row.id)}
-          {displayFrequency(e.row.centralFrequency)}
-          {!isZoom(e.row.type) && displayContinuumBandwidth(e.row.continuumBandwidth)}
+          {displayFrequency(e.row.centralFrequency + ' ' + centralFrequencyUnits)}
+          {!isZoom(e.row.type) &&
+            displayContinuumBandwidth(e.row.continuumBandwidth + ' ' + bandwidthUnits)}
           {isZoom(e.row.type) && displayZoomBandwidth(e.row.bandwidth)}
           {displayNumSubBands(e.row.numSubBands)}
           {displaySubarray(e.row.subarray, e.row.type)}

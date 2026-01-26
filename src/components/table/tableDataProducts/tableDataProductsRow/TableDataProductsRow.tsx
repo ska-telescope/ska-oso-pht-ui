@@ -10,13 +10,15 @@ import {
   FREQUENCY_GHZ,
   FREQUENCY_HZ,
   FREQUENCY_MHZ,
+  TEL_UNITS,
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_NUM,
-  TYPE_CONTINUUM
+  TYPE_CONTINUUM,
+  TYPE_PST
 } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import DataProduct from '@/components/info/dataProduct/DataProduct';
-import { frequencyConversion } from '@/utils/helpers';
+import { frequencyConversion, getBandwidthLowZoom, getBandwidthZoom } from '@/utils/helpers';
 import ExpandIcon from '@/components/icon/expandIcon/expandIcon';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 
@@ -28,7 +30,7 @@ interface TableDataProductsRowProps {
   deleteClicked?: Function;
   editClicked?: Function;
   toggleRow: (id: string) => void;
-  expandButtonRef: (el: HTMLButtonElement | null) => void;
+  expandButtonRef?: (el: HTMLButtonElement | null) => void;
   t: any; // useScopedTranslation
 }
 
@@ -40,7 +42,7 @@ export default function TableDataProductsRow({
   deleteClicked,
   editClicked,
   toggleRow,
-  expandButtonRef,
+  // expandButtonRef,
   t
 }: TableDataProductsRowProps) {
   const theme = useTheme();
@@ -53,6 +55,7 @@ export default function TableDataProductsRow({
   );
 
   const isContinuum = observation?.type === TYPE_CONTINUUM;
+  const isPST = observation?.type === TYPE_PST;
   const isLow = observation?.telescope === TELESCOPE_LOW_NUM;
   const isMid = observation?.telescope === TELESCOPE_MID_NUM;
 
@@ -143,6 +146,13 @@ export default function TableDataProductsRow({
           </Box>
         </TableCell>
 
+        {/* SDP ID */}
+        <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
+          <Typography variant="body2" color="text.secondary">
+            {item.id}
+          </Typography>
+        </TableCell>
+
         {/* Observation Type */}
         <TableCell
           role="gridcell"
@@ -156,13 +166,6 @@ export default function TableDataProductsRow({
         >
           <Typography variant="body2" color="text.secondary">
             {t('observationType.' + observation?.type)}
-          </Typography>
-        </TableCell>
-
-        {/* Observation ID */}
-        <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
-          <Typography variant="body2" color="text.secondary">
-            {item.id}
           </Typography>
         </TableCell>
 
@@ -221,11 +224,19 @@ export default function TableDataProductsRow({
             maxFreq={maxFreq}
             centerFreq={centerFreq}
             bandWidth={
-              isContinuum ? observation?.continuumBandwidth ?? 0 : observation?.bandwidth ?? 0
+              isContinuum || isPST
+                ? observation?.continuumBandwidth ?? 0
+                : frequencyConversion(
+                    isLow
+                      ? getBandwidthLowZoom(observation?.bandwidth ?? 0)?.value ?? 0
+                      : getBandwidthZoom(observation ?? null),
+                    isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ,
+                    FREQUENCY_MHZ
+                  ) ?? 0
             }
             bandColor={colorsTelescopeDim.bg[0]}
-            bandColorContrast={colorsTelescopeDim.fg[1]}
-            units={isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ}
+            bandColorContrast={colorsTelescopeDim.fg[0]}
+            unit={TEL_UNITS[observation?.telescope ?? 0]}
           />
         </TableCell>
       </TableRow>

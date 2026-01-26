@@ -417,7 +417,9 @@
   },
   "helpText": {
     "label": "Help",
-    "notAvailable": "Help text is not available in this field/page",
+    "notAvailable": {
+      "help": "Help text is not available in this field/page"
+    },
     "urlLabel": "Click for link"
   },
   "homeBtn": {
