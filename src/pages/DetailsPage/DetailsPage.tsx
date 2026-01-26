@@ -95,6 +95,7 @@ export default function DetailsPage() {
         abstract: abstract
       });
     } else {
+      // set category and abstract along with autolink data
       generateAutoLinkData();
     }
   };
