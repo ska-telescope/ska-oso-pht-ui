@@ -127,7 +127,7 @@ export default function ContinuumBandwidthField({
 
   // Validate current value when dependencies change
   React.useEffect(() => {
-      setErrorText(validateValue(value));
+    setErrorText(validateValue(value));
   }, [
     value,
     continuumBandwidthUnits,
