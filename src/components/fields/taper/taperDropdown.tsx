@@ -4,7 +4,7 @@ import { ERROR_SECS } from '@utils/constants.ts';
 import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
-interface TaperFieldProps {
+interface TaperDropdownFieldProps {
   disabled?: boolean;
   required?: boolean;
   onFocus?: Function;
@@ -13,16 +13,16 @@ interface TaperFieldProps {
   value: number;
 }
 
-export default function TaperField({
-  disabled,
+export default function TaperDropdownField({
+  disabled = false,
   required = false,
   onFocus,
   setValue,
   suffix,
   value
-}: TaperFieldProps) {
+}: TaperDropdownFieldProps) {
   const { t } = useScopedTranslation();
-  const FIELD = 'taper';
+  const FIELD = 'taperDropdown';
 
   const [fieldValid, setFieldValid] = React.useState(true);
 

@@ -15,35 +15,36 @@ import { useTheme } from '@mui/material/styles';
 import TickIcon from '@components/icon/tickIcon/tickIcon.tsx';
 import PolarisationsField from '@/components/fields/polarisations/polarisations';
 import {
+  _TIME_AVERAGING_UNITS_DEFAULT,
+  BAND_LOW_STR,
+  BIT_DEPTH_DEFAULT,
+  CHANNELS_OUT_DEFAULT,
   CHANNELS_OUT_MAX,
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
   FLOW_THROUGH_VALUE,
   FOOTER_HEIGHT_PHT,
+  FREQUENCY_AVERAGING_DEFAULT,
+  FREQUENCY_AVERAGING_UNIT_DEFAULT,
+  IMAGE_SIZE_DEFAULT,
+  IMAGE_SIZE_UNIT_DEFAULT,
   IW_NATURAL,
   IW_UNIFORM,
   NAV,
-  SA_CUSTOM,
   PAGE_DATA_PRODUCTS,
+  PIXEL_SIZE_DEFAULT,
+  PIXEL_SIZE_UNIT_DEFAULT,
   PULSAR_TIMING_VALUE,
   ROBUST_DEFAULT,
+  SA_CUSTOM,
+  SET_CONTINUUM_SUBSTRACTION_DEFAULT,
   STATUS_INITIAL,
   TAPER_DEFAULT,
+  TIME_AVERAGING_DEFAULT,
   TYPE_CONTINUUM,
   TYPE_PST,
   TYPE_ZOOM,
-  WRAPPER_HEIGHT,
-  CHANNELS_OUT_DEFAULT,
-  IMAGE_SIZE_DEFAULT,
-  PIXEL_SIZE_DEFAULT,
-  SET_CONTINUUM_SUBSTRACTION_DEFAULT,
-  PIXEL_SIZE_UNIT_DEFAULT,
-  IMAGE_SIZE_UNIT_DEFAULT,
-  BIT_DEPTH_DEFAULT,
-  TIME_AVERAGING_DEFAULT,
-  FREQUENCY_AVERAGING_DEFAULT,
-  _TIME_AVERAGING_UNITS_DEFAULT,
-  FREQUENCY_AVERAGING_UNIT_DEFAULT
+  WRAPPER_HEIGHT
 } from '@/utils/constants';
 import Proposal from '@/utils/types/proposal';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
@@ -135,6 +136,8 @@ export default function DataProduct({ data }: DataProductProps) {
     getObservation()?.type === TYPE_ZOOM || getProposal()?.scienceCategory === TYPE_ZOOM;
   const isPST = () =>
     getObservation()?.type === TYPE_PST || getProposal()?.scienceCategory === TYPE_PST;
+
+  const isLow = () => getObservation()?.observingBand === BAND_LOW_STR;
 
   const showSC =
     osdCyclePolicy?.maxObservations === 1 && osdCyclePolicy?.maxDataProducts === 1 && !isPST();
@@ -323,6 +326,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const taperField = () =>
     fieldWrapper(
       <TaperField
+        disabled={isLow()}
         onFocus={() => setHelp('taper')}
         required
         setValue={setTaperValue}
