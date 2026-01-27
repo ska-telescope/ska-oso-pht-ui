@@ -23,6 +23,7 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
       },
       cyclePolicies: {
         bands: [BAND_LOW_STR, BAND_5B_STR],
+        calibrationFactoryDefined: true,
         low: [],
         mid: []
       },
@@ -44,6 +45,7 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
         maxObservations: 1,
         maxTargets: 1,
         bands: [BAND_5B_STR],
+        calibrationFactoryDefined: true,
         low: [],
         mid: [SA_AA2]
       },
@@ -66,6 +68,7 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
         maxObservations: 100,
         maxTargets: 100,
         bands: [BAND_LOW_STR, BAND_1_STR],
+        calibrationFactoryDefined: true,
         low: [SA_AA2, SA_AA_STAR],
         mid: [SA_AA2, SA_AA_STAR]
       },
@@ -88,6 +91,7 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
         maxObservations: 100,
         maxTargets: 100,
         bands: [BAND_LOW_STR, 'mid'],
+        calibrationFactoryDefined: true,
         low: [SA_AA2],
         mid: [SA_AA2]
       },

@@ -6,12 +6,9 @@ import {
   BorderedSection,
   TextEntry,
   InfoCard,
-  InfoCardColorTypes,
-  SPACER_VERTICAL,
-  Spacer
+  InfoCardColorTypes
 } from '@ska-telescope/ska-gui-components';
 import {
-  FOOTER_SPACER,
   HELP_FONT,
   NAV,
   FOOTER_HEIGHT_PHT,
@@ -24,7 +21,6 @@ import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import Proposal from '@/utils/types/proposal';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
-import ArrowIcon from '@/components/icon/arrowIcon/arrowIcon';
 import { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
@@ -37,11 +33,9 @@ import HelpShell from '@/components/layout/HelpShell/HelpShell';
 const GAP = 4;
 const BACK_PAGE = PAGE_CALIBRATION;
 
-const WIDTH_NAME = 210;
-const WIDTH_DURATION = 220;
-const WIDTH_INTENT = 150;
-const WIDTH_TARGET = 210;
-const WIDTH_INTEGRATION_TIME = 220;
+const WIDTH_FIELD1 = 210;
+const WIDTH_FIELD2 = 220;
+const WIDTH_FIELD3 = 150;
 
 interface CalibrationEntryProps {
   data?: CalibrationStrategy;
@@ -176,40 +170,46 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
     </Box>
   );
 
-  const nameField = () => {
+  const nameField = (inLabel: string) => {
     return fieldWrapper(
       <TextEntry
         testId="calibratorName"
         value={calibrator ? calibrator.name : ''}
         disabled={true}
-        label={t('calibrator.calibrator')}
+        label={t(inLabel)}
         width="100%"
       />
     );
   };
+  const name1Field = () => nameField('calibrator.calibratorStart');
+  const name2Field = () => nameField('calibrator.calibratorEnd');
 
-  const durationField = () => {
+  const durationField = (inLabel: string) => {
     return fieldWrapper(
       <TextEntry
         testId="duration"
         value={calibrator ? calibrator.durationMin : 0}
         disabled={true}
-        label={t('calibrator.duration')}
+        label={t(inLabel)}
         suffix={t('calibrator.minutes')}
       />
     );
   };
+  const duration1Field = () => durationField('calibrator.durationStart');
+  const duration2Field = () => durationField('calibrator.durationEnd');
 
-  const intentField = () => {
+  const intentField = (inLabel: string) => {
     return fieldWrapper(
       <TextEntry
         testId="intent"
         value={calibrator ? calibrator.calibrationIntent : ''}
         disabled={true}
-        label={t('calibrator.intent')}
+        label={t(inLabel)}
       />
     );
   };
+  const intent1Field = () => intentField('calibrator.intentStart');
+  const intent2Field = () => intentField('calibrator.intentEnd');
 
   const targetField = () => {
     return fieldWrapper(
@@ -264,9 +264,6 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
 
   /**************************************************************/
 
-  // const validateId = () =>
-  //   getProposal()?.calibrationStrategy?.find(t => t.id === id) ? t('calibrationId.notUnique') : '';
-
   const addButtonDisabled = () => {
     return true; // isEdit() ? false : validateId() ? true : false;
   };
@@ -316,100 +313,70 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
     );
   };
 
+  const strategyRow = (field1: Function, field2: Function, field3?: Function) => {
+    return (
+      <Grid
+        container
+        direction="row"
+        alignItems="center"
+        justifyContent="flex-start"
+        sx={{ flexWrap: 'nowrap', xs: 4, md: 8 }}
+      >
+        <Grid size="grow" minWidth={WIDTH_FIELD1}>
+          {field1()}
+        </Grid>
+        <Grid size="grow" minWidth={WIDTH_FIELD2}>
+          {field2()}
+        </Grid>
+        <Grid size="grow" minWidth={WIDTH_FIELD3}>
+          {field3 ? field3() : null}
+        </Grid>
+      </Grid>
+    );
+  };
+
   /**************************************************************/
 
   return (
     <HelpShell page={PAGE}>
       <Box pl={GAP} pr={GAP}>
-        {(!loggedIn || (osdCyclePolicy?.maxObservations ?? 1) > 1) && (
+        {(!loggedIn || osdCyclePolicy?.calibrationFactoryDefined !== true) && (
           <PageBannerPPT backPage={BACK_PAGE} pageNo={PAGE} />
         )}
-        <Grid sx={{ overflow: 'hidden', width: '100%', xs: 4, md: 8 }}>
+        <Grid
+          container
+          spacing={2}
+          direction="column"
+          sx={{ overflow: 'hidden', width: '100%', xs: 4, md: 8 }}
+        >
           {(getProposal()?.targets?.length ?? 0) > 0 && (
             <Box pt={1} pr={10}>
               <InfoCard
                 color={InfoCardColorTypes.Warning}
-                fontSize={HELP_FONT}
+                fontSize={HELP_FONT * 1.5}
                 message={t('calibrator.limitReached')}
                 testId="calibrationLimitPanelId"
               />
             </Box>
           )}
-          <Grid pt={2} pb={4}>
+          <Grid>
             <Typography>{t('calibrator.desc')}</Typography>
           </Grid>
-          <Grid
-            pt={1}
-            container
-            direction="row"
-            alignItems="center"
-            justifyContent="flex-start"
-            sx={{ flexWrap: 'nowrap', xs: 4, md: 8 }}
-          >
-            <Grid width={50} pt={4} mr={5}>
-              <ArrowIcon disabled onClick={() => {}} />
-            </Grid>
-            <Grid size="grow" minWidth={WIDTH_NAME}>
-              {nameField()}
-            </Grid>
-            <Grid size="grow" minWidth={WIDTH_DURATION}>
-              {durationField()}
-            </Grid>
-            <Grid size="grow" minWidth={WIDTH_INTENT}>
-              {intentField()}
-            </Grid>
+          <Grid pr={10}>
+            <BorderedSection title={t('calibrator.observatoryDefined')}>
+              {strategyRow(name1Field, duration1Field, intent1Field)}
+              {strategyRow(targetField, integrationTimeField)}
+              {strategyRow(name2Field, duration2Field, intent2Field)}
+            </BorderedSection>
           </Grid>
-          <Grid
-            pt={1}
-            container
-            direction="row"
-            alignItems="center"
-            justifyContent="flex-start"
-            sx={{ flexWrap: 'nowrap', xs: 4, md: 8 }}
-          >
-            <Grid width={50} pt={5} mr={5}>
-              <ArrowIcon disabled onClick={() => {}} />
-            </Grid>
-            <Grid size="grow" minWidth={WIDTH_TARGET}>
-              {targetField()}
-            </Grid>
-            <Grid size="grow" minWidth={WIDTH_INTEGRATION_TIME}>
-              {integrationTimeField()}
-            </Grid>
-            <Grid size="grow" minWidth={WIDTH_INTENT}></Grid>
+          <Grid>
+            <Typography>{t('calibrator.note')}</Typography>
+            <Typography>{t('calibrator.disclaimer')}</Typography>
           </Grid>
-          <Grid
-            pt={1}
-            container
-            direction="row"
-            alignItems="center"
-            justifyContent="flex-start"
-            sx={{ flexWrap: 'nowrap', xs: 4, md: 8 }}
-          >
-            <Grid width={50} pt={4} mr={5}>
-              <ArrowIcon disabled onClick={() => {}} />
-            </Grid>
-            <Grid size="grow" minWidth={WIDTH_NAME}>
-              {nameField()}
-            </Grid>
-            <Grid size="grow" minWidth={WIDTH_DURATION}>
-              {durationField()}
-            </Grid>
-            <Grid size="grow" minWidth={WIDTH_INTENT}>
-              {intentField()}
-            </Grid>
-          </Grid>
-          <Grid pt={5}>
-            <Typography mt={3}>{t('calibrator.note')}</Typography>
-            <Typography mb={3}>{t('calibrator.disclaimer')}</Typography>
-          </Grid>
-          <Grid container direction="row" alignItems="center" justifyContent="flex-start">
-            <Grid size="grow">
-              <Grid mr={3}>{commentField()}</Grid>
-            </Grid>
+          <Grid>
+            <Grid pr={10}>{commentField()}</Grid>
           </Grid>
         </Grid>
-        <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
         {pageFooter()}
       </Box>
     </HelpShell>
