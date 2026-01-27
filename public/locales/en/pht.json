@@ -307,7 +307,7 @@
     "help": "This field displays the dispersion Measure.",
     "label": "Dispersion Measure",
     "range": {
-      "error": "A value between 0 and 100000 is required"
+      "error": "A value between {{min}} and {{max}} is required"
     }
   },
   "displayProposal": {
@@ -608,14 +608,14 @@
     "help": "This field displays the output frequency resolution.",
     "label": "Output frequency resolution",
     "range": {
-      "error": "A value between 1 and 1000 is required"
+      "error": "A value between {{min}} and {{max}} is required"
     }
   },
   "outputSamplingInterval": {
     "help": "This field displays the output sampling interval.",
     "label": "Output sampling interval",
     "range": {
-      "error": "A value between 0 and 100000 is required"
+      "error": "A value between {{min}} and {{max}} is required"
     }
   },
   "overview": {
@@ -1081,7 +1081,7 @@
     "help": "This field displays the rotationMeasure.",
     "label": "Rotation Measure",
     "range": {
-      "error": "A value between -2e9 and 2e9 is required"
+      "error": "A value between {{min}} and {{max}} is required"
     }
   },
   "channelsOut": {

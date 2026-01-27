@@ -40,7 +40,10 @@ export default function OutputFrequencyResolutionField({
       num < observatoryConstants.OutputFrequencyResolution.min ||
       num > observatoryConstants.OutputFrequencyResolution.max
     ) {
-      return t('outputFrequencyResolution.range.error');
+      return t('outputFrequencyResolution.range.error', {
+        min: observatoryConstants.OutputFrequencyResolution.min,
+        max: observatoryConstants.OutputFrequencyResolution.max
+      });
     }
     return '';
   };

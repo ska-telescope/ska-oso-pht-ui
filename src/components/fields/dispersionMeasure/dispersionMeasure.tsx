@@ -39,7 +39,10 @@ export default function DispersionMeasureField({
       num < observatoryConstants.DispersionMeasure.min ||
       num > observatoryConstants.DispersionMeasure.max
     ) {
-      return t('dispersionMeasure.range.error');
+      return t('dispersionMeasure.range.error', {
+        min: observatoryConstants.DispersionMeasure.min,
+        max: observatoryConstants.DispersionMeasure.max
+      });
     }
     return '';
   };

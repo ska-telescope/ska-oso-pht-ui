@@ -39,7 +39,10 @@ export default function RotationMeasureField({
       num < observatoryConstants.RotationMeasure.min ||
       num > observatoryConstants.RotationMeasure.max
     ) {
-      return t('rotationMeasure.range.error');
+      return t('rotationMeasure.range.error', {
+        min: observatoryConstants.RotationMeasure.min,
+        max: observatoryConstants.RotationMeasure.max
+      });
     }
     return '';
   };

@@ -39,7 +39,10 @@ export default function OutputSamplingIntervalField({
       num < observatoryConstants.OutputSamplingInterval.min ||
       num > observatoryConstants.OutputSamplingInterval.max
     ) {
-      return t('outputSamplingInterval.range.error');
+      return t('outputSamplingInterval.range.error', {
+        min: observatoryConstants.OutputSamplingInterval.min,
+        max: observatoryConstants.OutputSamplingInterval.max
+      });
     }
     return '';
   };
