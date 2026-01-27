@@ -690,13 +690,6 @@
       },
       "warning": "Science Justification PDF being processed"
     },
-    "rotationMeasure": {
-      "help": "This field displays the rotationMeasure.",
-      "label": "Rotation Measure",
-      "range": {
-        "error": "A value between -2e9 and 2e9 is required"
-      }
-    },
     "technical": {
       "label": {
         "choose": "Choose file",
@@ -1083,6 +1076,13 @@
   "robust": {
     "help": "For Briggs weighting, the robustness parameter can be set to -2 (closest to uniform weighting), -1, 0, 1 or 2 (closest to natural weighting).",
     "label": "Robust"
+  },
+  "rotationMeasure": {
+    "help": "This field displays the rotationMeasure.",
+    "label": "Rotation Measure",
+    "range": {
+      "error": "A value between -2e9 and 2e9 is required"
+    }
   },
   "channelsOut": {
     "help": "Channels Out help text TBD",
