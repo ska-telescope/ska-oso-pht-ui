@@ -20,6 +20,7 @@ export type ObservatoryPolicy = {
     maxDataProducts: number;
     maxObservations: number;
     maxTargets: number;
+    calibrationFactoryDefined: boolean;
     bands: string[];
     low: string[];
     mid: string[];

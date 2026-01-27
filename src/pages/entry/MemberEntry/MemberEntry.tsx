@@ -291,6 +291,8 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
     setForSearch(false);
   }
 
+  const isRequired = () => email !== '' || firstName !== '' || lastName !== '';
+
   const clickFunction = async () => {
     if (await sendEmailInvite(email, getProposal().id)) {
       await AddInvestigator();
@@ -307,7 +309,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
       setValue={setFirstName}
       onFocus={() => setHelp('firstName.help')}
       errorText={errorTextFirstName}
-      required
+      required={isRequired()}
       disabled={forSearch}
     />
   );
@@ -320,7 +322,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
       setValue={setLastName}
       onFocus={() => setHelp('lastName.help')}
       errorText={errorTextLastName}
-      required
+      required={isRequired()}
       disabled={forSearch}
     />
   );
@@ -333,7 +335,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
       setValue={setEmail}
       errorText={errorTextEmail ? t(errorTextEmail) : ''}
       onFocus={() => setHelp('email.help')}
-      required
+      required={isRequired()}
       disabled={forSearch}
       suffix={resolveButton()}
     />
