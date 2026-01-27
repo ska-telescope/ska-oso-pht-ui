@@ -269,7 +269,10 @@ export const getDataProductScriptParameters = (
           kind: 'pst',
           variant: 'pulsar timing',
           fit_spectral_pol: 0 // TODO remove this once we are using the latest PDM (v27.0.0)
-          // todo update PDM to remove unneeded fields for Pulsar Timing
+          // output_frequency_resolution: data?.outputFrequencyResolution ?? 1, // todo uncomment this once using PDM v27.0.0
+          // output_sampling_interval: data?.outputSamplingInterval ?? 1, // todo uncomment this once using PDM v27.0.0
+          // dispersion_measure: data?.dispersionMeasure ?? 1, // todo uncomment this once using PDM v27.0.0
+          // rotation_measure: data?.rotationMeasure ?? 1 // todo uncomment this once using PDM v27.0.0
         };
       } else {
         const data = dp?.data as SDPFlowthroughPSTData;
