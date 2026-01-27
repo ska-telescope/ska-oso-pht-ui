@@ -8,7 +8,14 @@ describe('<RotationMeasureField />', () => {
   test('renders correctly', () => {
     render(
       <StoreProvider>
-        <RotationMeasureField value={0} />
+        <RotationMeasureField value={1} />
+      </StoreProvider>
+    );
+  });
+  test('renders correctly with out of range value', () => {
+    render(
+      <StoreProvider>
+        <RotationMeasureField value={3e9} />
       </StoreProvider>
     );
   });
