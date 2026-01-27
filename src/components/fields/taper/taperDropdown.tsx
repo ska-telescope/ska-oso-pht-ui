@@ -1,66 +1,49 @@
-import { NumberEntry } from '@ska-telescope/ska-gui-components';
-import { Box } from '@mui/system';
-import { ERROR_SECS } from '@utils/constants.ts';
-import React from 'react';
-import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useScopedTranslation } from '@services/i18n/useScopedTranslation.tsx';
+import { TAPERING } from '@utils/constants.ts';
+import { Box } from '@mui/material';
+import { DropDown } from '@ska-telescope/ska-gui-components';
 
 interface TaperDropdownFieldProps {
-  disabled?: boolean;
   required?: boolean;
-  onFocus?: Function;
   setValue?: Function;
-  suffix?: any;
   value: number;
+  onFocus?: Function;
+  suffix?: any;
 }
 
 export default function TaperDropdownField({
-  disabled = false,
-  required = false,
-  onFocus,
+  required = true,
   setValue,
-  suffix,
-  value
+  value,
+  onFocus,
+  suffix
 }: TaperDropdownFieldProps) {
   const { t } = useScopedTranslation();
-  const FIELD = 'taperDropdown';
+  const FIELD = 'taper';
 
-  const [fieldValid, setFieldValid] = React.useState(true);
-
-  const checkValue = (e: number) => {
-    const num = Number(e);
-    if (num >= 0) {
-      setFieldValid(true);
-      if (setValue) {
-        setValue(num);
-      }
-    } else {
-      setFieldValid(false);
-    }
+  const getOptions = () => {
+    return TAPERING?.map((e: any) => {
+      return {
+        label: t(FIELD + '.options.' + e.value),
+        value: e.value
+      };
+    });
   };
 
-  const errorMessage = fieldValid ? '' : t(FIELD + '.error');
-
-  React.useEffect(() => {
-    const timer = () => {
-      setTimeout(() => {
-        setFieldValid(true);
-      }, ERROR_SECS);
-    };
-    timer();
-  }, [fieldValid]);
   return (
     <Box pt={1}>
-      <NumberEntry
-        label={t(FIELD + '.label')}
-        testId={FIELD}
-        value={value}
-        setValue={checkValue}
-        onFocus={onFocus}
-        disabled={disabled}
-        required={required}
-        suffix={suffix}
-        errorText={errorMessage}
-      />
+      {getOptions() && (
+        <DropDown
+          options={getOptions()}
+          testId={FIELD}
+          value={value}
+          setValue={setValue}
+          label={t(FIELD + '.label')}
+          onFocus={onFocus}
+          required={required}
+          suffix={suffix}
+        />
+      )}
     </Box>
   );
 }

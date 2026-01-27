@@ -1366,7 +1366,17 @@
     "label": "Gaussian Taper",
     "units": "Wavelengths (λ)",
     "0": "No gaussian taper",
-    "error": "A value equal or greater than zero is required"
+    "error": "A value equal or greater than zero is required",
+    "options": {
+      "0": "0",
+      "0.25": "0.25",
+      "1": "1",
+      "4": "4",
+      "16": "16",
+      "64": "64",
+      "256": "256",
+      "1024": "1024"
+    }
   },
   "targetImport": {
     "help": "Upload a list of targets in .csv format in the reference system selected. Currently only ICRS is available so define targets in ra: 'hh:mm:ss.s' and dec: 'dd:mm:ss.s' format. Example is .csv file with name, ra, dec. Fields with incomplete row entry and duplicate target names will be removed when uploaded."

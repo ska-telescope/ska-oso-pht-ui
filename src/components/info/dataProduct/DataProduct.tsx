@@ -1,5 +1,4 @@
 import { Box, Grid } from '@mui/material';
-import TaperDropdownField from '@components/fields/taper/taperDropdown.tsx';
 import { IW_BRIGGS, TYPE_CONTINUUM, TYPE_ZOOM, WRAPPER_HEIGHT } from '@/utils/constants';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
 import ImageSizeField from '@/components/fields/imageSize/imageSize';
@@ -100,14 +99,6 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
       />
     );
 
-  const taperDropdownField = () =>
-    fieldWrapper(
-      <TaperDropdownField
-        value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.taperValue}
-        disabled
-      />
-    );
-
   const polarisationField = () =>
     fieldWrapper(
       <PolarisationsField
@@ -191,7 +182,7 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
           <Grid size={{ md: 5 }}>
             {(sdpData as SDPImageContinuumData).weighting === IW_BRIGGS && robustField()}
           </Grid>
-          <Grid size={{ md: 5 }}>{isLow() ? taperField() : taperDropdownField()}</Grid>
+          <Grid size={{ md: 5 }}>{taperField()}</Grid>
           <Grid size={{ md: 5 }}>{channelsOutField()}</Grid>
           <Grid size={{ md: 5 }}>{polarisationField()}</Grid>
           <Grid size={{ md: 5 }}>{applySubtractionField()}</Grid>

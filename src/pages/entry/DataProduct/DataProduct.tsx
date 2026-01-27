@@ -13,6 +13,7 @@ import RobustField from '@components/fields/robust/Robust.tsx';
 import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
 import { useTheme } from '@mui/material/styles';
 import TickIcon from '@components/icon/tickIcon/tickIcon.tsx';
+import TaperDropdownField from '@components/fields/taper/taperDropdown.tsx';
 import PolarisationsField from '@/components/fields/polarisations/polarisations';
 import {
   _TIME_AVERAGING_UNITS_DEFAULT,
@@ -327,6 +328,17 @@ export default function DataProduct({ data }: DataProductProps) {
     fieldWrapper(
       <TaperField
         disabled={isLow()}
+        onFocus={() => setHelp('taper')}
+        required
+        setValue={setTaperValue}
+        value={taperValue}
+        suffix={t('taper.units')}
+      />
+    );
+
+  const taperDropdownField = () =>
+    fieldWrapper(
+      <TaperDropdownField
         onFocus={() => setHelp('taper')}
         required
         setValue={setTaperValue}
@@ -665,7 +677,9 @@ export default function DataProduct({ data }: DataProductProps) {
                       {fieldWrapper(imageWeightingField())}
                     </Grid>
                     <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(robustField())}</Grid>
-                    <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(taperField())}</Grid>
+                    <Grid size={{ md: COL_MID, lg: COL }}>
+                      {isLow() ? fieldWrapper(taperField()) : fieldWrapper(taperDropdownField())}
+                    </Grid>
                     <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(channelsOutField())}</Grid>
                   </Grid>
                 )}
@@ -685,7 +699,9 @@ export default function DataProduct({ data }: DataProductProps) {
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(pixelSizeField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(imageWeightingField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(robustField())}</Grid>
-                  <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(taperField())}</Grid>
+                  <Grid size={{ md: COL_MID, lg: COL }}>
+                    {isLow() ? fieldWrapper(taperField()) : fieldWrapper(taperDropdownField())}
+                  </Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(channelsOutField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>
                     {fieldWrapper(continuumSubtractionField())}

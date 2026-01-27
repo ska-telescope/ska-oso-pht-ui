@@ -443,6 +443,41 @@ export const PST_MODES = [
   }
 ];
 
+export const TAPERING = [
+  {
+    value: '0',
+    mapping: '0'
+  },
+  {
+    value: '0.25',
+    mapping: '0.25'
+  },
+  {
+    value: '1',
+    mapping: '1'
+  },
+  {
+    value: '4',
+    mapping: 'pulsar timing'
+  },
+  {
+    value: '16',
+    mapping: 'pulsar timing'
+  },
+  {
+    value: '64',
+    mapping: 'pulsar timing'
+  },
+  {
+    value: '256',
+    mapping: 'pulsar timing'
+  },
+  {
+    value: '1024',
+    mapping: 'pulsar timing'
+  }
+];
+
 export const SCIENCE_VERIFICATION = 'science_verification';
 
 export const PROPOSAL_STATUS = {
