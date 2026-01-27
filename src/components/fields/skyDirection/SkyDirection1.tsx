@@ -8,6 +8,7 @@ import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface SkyDirection1FieldProps {
+  required?: boolean;
   setValue?: Function;
   skyUnits: number;
   value: string;
@@ -17,6 +18,7 @@ interface SkyDirection1FieldProps {
 }
 
 export default function SkyDirection1Field({
+  required,
   setValue,
   skyUnits,
   value,
@@ -26,8 +28,9 @@ export default function SkyDirection1Field({
   const { t } = useScopedTranslation();
   const FIELD = 'skyDirection';
 
-  const errorText = validateSkyDirection1Text(value) ? '' : t(FIELD + '.error.1.0');
-  const errorNumber = validateSkyDirection1Number(value) ? '' : t(FIELD + '.error.1.0');
+  const errorText = !required || validateSkyDirection1Text(value) ? '' : t(FIELD + '.error.1.0');
+  const errorNumber =
+    !required || validateSkyDirection1Number(value) ? '' : t(FIELD + '.error.1.0');
 
   React.useEffect(() => {
     if (setErrorText) {
@@ -48,7 +51,7 @@ export default function SkyDirection1Field({
       value={value}
       setValue={setValue}
       onFocus={valueFocus}
-      required
+      required={required}
     />
   );
 
@@ -61,7 +64,7 @@ export default function SkyDirection1Field({
       value={value}
       setValue={setValue}
       onFocus={valueFocus}
-      required
+      required={required}
     />
   );
 

@@ -47,6 +47,7 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
           maxDataProducts: inData.observatory_policy.cycle_policies.max_data_products,
           maxObservations: inData.observatory_policy.cycle_policies.max_observation_setups,
           maxTargets: inData.observatory_policy.cycle_policies.max_targets,
+          calibrationFactoryDefined: true,
           bands: [
             inData?.observatory_policy?.telescope_capabilities?.Low !== null ? BAND_LOW_STR : '',
             inData?.observatory_policy?.telescope_capabilities?.Mid !== null ? BAND_5B_STR : '' // TODO: Update when more bands are available
@@ -72,6 +73,7 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
           maxDataProducts: 1,
           maxObservations: 1,
           maxTargets: 1,
+          calibrationFactoryDefined: true,
           bands: [BAND_5B_STR],
           low: [],
           mid: [SA_AA2]
@@ -94,6 +96,7 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
           maxDataProducts: 100,
           maxObservations: 100,
           maxTargets: 100,
+          calibrationFactoryDefined: true,
           bands: [BAND_LOW_STR, BAND_1_STR],
           low: [SA_AA2, SA_AA_STAR],
           mid: [SA_AA2, SA_AA_STAR]
@@ -116,6 +119,7 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
           maxDataProducts: 100,
           maxObservations: 100,
           maxTargets: 100,
+          calibrationFactoryDefined: true,
           bands: [BAND_LOW_STR, 'mid'],
           low: [SA_AA2],
           mid: [SA_AA2]

@@ -206,7 +206,7 @@ export const GRID_MEMBERS_ACTIONS = {
 
 export const HEADER_HEIGHT = 78;
 
-export const HELP_FONT = 16;
+export const HELP_FONT = 18;
 
 // SDP default values
 export const IW_BRIGGS = 2;

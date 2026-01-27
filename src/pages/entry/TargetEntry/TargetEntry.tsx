@@ -117,13 +117,14 @@ export default function TargetEntry({
     }
   };
 
-  const setTheDec = (inValue: string) => {
-    const formattedDec = leadZero(inValue);
-    setDec(formattedDec.toString());
-    if (setTarget) {
-      setTarget({ ...target, decStr: formattedDec.toString() });
-    }
-  };
+  // TODO : CHECK THIS : NOT SURE HOW THIS IS NO LONGER USED
+  // const setTheDec = (inValue: string) => {
+  //   const formattedDec = leadZero(inValue);
+  //   setDec(formattedDec.toString());
+  //   if (setTarget) {
+  //     setTarget({ ...target, decStr: formattedDec.toString() });
+  //   }
+  // };
 
   const setTheRA = (inValue: string) => {
     const formattedRA = leadZero(inValue);
@@ -327,6 +328,8 @@ export default function TargetEntry({
     );
   };
 
+  const isRequired = () => name !== '' || ra !== '' || dec !== '';
+
   const wrapper = (children?: React.JSX.Element) => (
     <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
       {children}
@@ -359,7 +362,7 @@ export default function TargetEntry({
   const nameField = () =>
     wrapper(
       <TextEntry
-        required
+        required={isRequired()}
         label={t('name.label')}
         testId={'name'}
         value={name}
@@ -373,6 +376,7 @@ export default function TargetEntry({
   const skyDirection1Field = () =>
     wrapper(
       <SkyDirection1
+        required={isRequired()}
         setValue={setTheRA}
         skyUnits={raType}
         value={ra}
@@ -384,7 +388,7 @@ export default function TargetEntry({
   const skyDirection2Field = () =>
     wrapper(
       <SkyDirection2
-        setValue={setTheDec}
+        required={isRequired()}
         skyUnits={raType}
         value={dec}
         valueFocus={() => setHelp('skyDirection.2')}
