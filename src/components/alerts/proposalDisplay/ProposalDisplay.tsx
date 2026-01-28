@@ -105,7 +105,7 @@ export default function ProposalDisplay({
   const observationType = () => {
     const cat = proposal?.scienceCategory;
     if (cat === null || cat === undefined) return NOT_SPECIFIED;
-    return <ObservingType type={'spectral'} />;
+    return <ObservingType type={cat} />;
   };
 
   const title = (inLabel: string, inValue: string) => {

@@ -206,15 +206,15 @@ export default function PHT() {
   //       For all options, you can return an empty list
   const getAccessibilityColors = () => {
     return [
-      // 'telescope',
+      'telescope',
       'chart',
-      // 'logo',
+      'logo',
       'reviewStatus',
       'proposalStatus',
       'observationType',
       'boolean',
-      // 'button',
-      // 'sbStatus',
+      'button',
+      'sbStatus',
       'status'
     ];
   };
