@@ -42,6 +42,8 @@ import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import { generateId } from '@/utils/helpers';
 import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
+import ObservingBand from '@/components/display/observingBand/observingBand';
+import ObservingType from '@/components/display/observingType/observingType';
 
 export default function LinkingPage() {
   const DATA_GRID_TARGET = '60vh';
@@ -420,31 +422,8 @@ export default function LinkingPage() {
         renderCell: (e: {
           row: { telescope: number; rec: { observingBand: string | number } };
         }) => {
-          const colorsTelescope = getColors({
-            type: 'telescope',
-            colors: String(e.row.telescope),
-            content: 'both',
-            asArray: true,
-            dim: 0.6,
-            paletteIndex: Number(localStorage.getItem('skao_accessibility_mode'))
-          });
           return (
-            <Box
-              sx={{
-                backgroundColor: colorsTelescope.bg[0],
-                borderRadius: 1,
-                px: 1,
-                display: 'inline-flex'
-              }}
-            >
-              <Typography
-                variant="body2"
-                color={colorsTelescope.fg[0]}
-                sx={{ whiteSpace: 'nowrap', p: 1 }}
-              >
-                {t('observingBand.short.' + e.row.rec.observingBand)}
-              </Typography>
-            </Box>
+            <ObservingBand telescope={e.row.telescope} band={String(e.row.rec.observingBand)} />
           );
         }
       },
@@ -487,28 +466,7 @@ export default function LinkingPage() {
         flex: 1,
         disableClickEventBubbling: true,
         renderCell: (e: { row: { type: number } }) => {
-          const colorsType = getColors({
-            type: 'observationType',
-            colors: String(e.row.type),
-            content: 'both',
-            asArray: true,
-            dim: 0.6,
-            paletteIndex: Number(localStorage.getItem('skao_accessibility_mode'))
-          });
-          return (
-            <Box
-              sx={{
-                backgroundColor: colorsType.bg[0],
-                borderRadius: 1,
-                px: 1,
-                display: 'inline-flex'
-              }}
-            >
-              <Typography variant="body2" sx={{ whiteSpace: 'nowrap', p: 1 }}>
-                {t(`observationType.${e.row.type}`)}
-              </Typography>
-            </Box>
-          );
+          return <ObservingType type={String(e.row.type)} />;
         }
       },
       {

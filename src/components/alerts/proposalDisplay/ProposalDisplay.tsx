@@ -23,6 +23,7 @@ import emptyCell from '../../../components/fields/emptyCell/emptyCell';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import ObservingType from '@/components/display/observingType/observingType';
 
 interface ProposalDisplayProps {
   proposal: Proposal | null;
@@ -97,8 +98,14 @@ export default function ProposalDisplay({
     const cat = proposal?.scienceCategory;
     if (cat === null || cat === undefined) return NOT_SPECIFIED;
 
-    const prefix = isSV ? 'observationType' : 'scienceCategory';
+    const prefix = 'scienceCategory';
     return t(`${prefix}.${cat}`);
+  };
+
+  const observationType = () => {
+    const cat = proposal?.scienceCategory;
+    if (cat === null || cat === undefined) return NOT_SPECIFIED;
+    return <ObservingType type={'spectral'} />;
   };
 
   const title = (inLabel: string, inValue: string) => {
@@ -198,6 +205,15 @@ export default function ProposalDisplay({
           {typeof inValue === 'number' ||
             (typeof inValue === 'string' && element(inValue, optional))}
         </Grid>
+      </Grid>
+    );
+  };
+
+  const entryObject = (inLabel: string, inValue: React.ReactNode) => {
+    return (
+      <Grid container direction="row" justifyContent="space-around" alignItems="center">
+        <Grid size={{ xs: 7 }}>{label(inLabel)}</Grid>
+        <Grid size={{ xs: 5 }}>{inValue}</Grid>
       </Grid>
     );
   };
@@ -322,11 +338,16 @@ export default function ProposalDisplay({
     <Grid>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid size={{ xs: 6 }}>{entry(t('proposalType.label'), proposalType())}</Grid>
-        <Grid size={{ xs: 6 }}>{entry(t('scienceCategory.label'), scienceCategory())}</Grid>
+        {isSV && (
+          <Grid size={{ xs: 6 }}>{entryObject(t('observationType.label'), observationType())}</Grid>
+        )}
         {!isSV && (
-          <Grid pt={2} size={{ xs: 6 }}>
-            {entry(t('proposalAttribute.plural'), proposalAttributes(), true)}
-          </Grid>
+          <>
+            <Grid size={{ xs: 6 }}>{entry(t('scienceCategory.label'), scienceCategory())}</Grid>
+            <Grid pt={2} size={{ xs: 6 }}>
+              {entry(t('proposalAttribute.plural'), proposalAttributes(), true)}
+            </Grid>
+          </>
         )}
       </Grid>
     </Grid>
@@ -371,7 +392,7 @@ export default function ProposalDisplay({
         {!isSV && (
           <Grid size={{ xs: 6 }}>
             {link(
-              t('page.7.label'),
+              t('page.6.label'),
               t('pdfDownload.technical.toolTip'),
               () => downloadPdf('technical'),
               proposal?.technicalPDF
