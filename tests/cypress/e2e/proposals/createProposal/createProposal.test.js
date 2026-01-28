@@ -20,7 +20,8 @@ import {
   verifyOsdDataCycleID,
   verifyOsdDataCycleDescription,
   verifyOsdDataProposalOpen,
-  verifyOsdDataProposalClose
+  verifyOsdDataProposalClose,
+  pageConfirmed
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -48,6 +49,7 @@ describe('Creating Proposal', () => {
     clickCreateSubmission();
     cy.wait('@mockCreateSubmission');
     verifySubmissionCreatedAlertFooter();
+    pageConfirmed('TEAM');
     clickHome();
     verifyOnLandingPage();
     verifyOnLandingPageFilterIsVisible();
@@ -64,6 +66,7 @@ describe('Creating Proposal', () => {
     clickCreateSubmission();
     cy.wait('@mockCreateSubmission');
     verifySubmissionCreatedAlertFooter();
+    pageConfirmed('TEAM');
     clickHome();
     verifyOnLandingPage();
     verifyOnLandingPageFilterIsVisible();
