@@ -47,14 +47,14 @@ export default function DispersionMeasureField({
     return '';
   };
 
-  const handleSetValue = (raw: unknown) => {
+  const handleSetValue = (raw: number) => {
     const num = Number(raw);
     const error = validateValue(num);
     if (error) {
       setErrorText(error);
     } else {
       setErrorText('');
-      setValue?.(Number(num));
+      setValue?.(num);
     }
   };
 
