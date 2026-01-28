@@ -126,6 +126,9 @@
       "rangeError": "Bandwidth must be fully contained within the band"
     }
   },
+  "frequencyBandwidthOutOfRange": {
+    "warning": "Frequency & bandwidth must be fully contained within the band limits."
+  },
   "baseBtn": {
     "label": "Add"
   },
