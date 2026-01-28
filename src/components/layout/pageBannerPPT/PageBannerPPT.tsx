@@ -315,8 +315,8 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   return (
     <Box p={2}>
-      {loggedIn ? row1() : row1buttonsLeft()}
-      {loggedIn && getProposal().id !== null && row2()}
+      {loggedIn || cypressToken ? row1() : row1buttonsLeft()}
+      {((loggedIn && getProposal().id !== null) || cypressToken) && row2()}
       {row3()}
 
       {openProposalDisplay && (
