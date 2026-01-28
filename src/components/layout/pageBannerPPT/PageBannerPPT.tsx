@@ -250,7 +250,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       </Grid>
       <Grid>
         {getProposal().id !== null && pages.includes(pageNo) && (
-          <SubmitButton action={submitClicked} disabled={!canSubmit} />
+          <SubmitButton action={submitClicked} disabled={!isSV && !canSubmit} />
         )}
       </Grid>
     </Grid>

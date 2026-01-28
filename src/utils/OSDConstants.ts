@@ -3,6 +3,7 @@ import {
   MILLISECOND_LABEL,
   NANOSECOND_LABEL,
   SA_AA2,
+  SA_AA_STAR,
   SA_CUSTOM,
   SECOND_LABEL,
   SUPPLIED_TYPE_INTEGRATION,
@@ -22,6 +23,13 @@ export const OSD_CONSTANTS = {
           map: SA_AA2,
           label: 'AA2',
           numOf13mAntennas: 0
+        },
+        {
+          value: SA_AA_STAR,
+          map: 'LOW_AAstar_all',
+          label: 'AA*',
+          numOf13mAntennas: 0,
+          continuumSpectralAveragingMax: 13812
         },
         {
           value: SA_CUSTOM,
@@ -50,6 +58,13 @@ export const OSD_CONSTANTS = {
           value: SA_AA2,
           map: 'LOW_AA2_all',
           label: 'AA2',
+          numOf13mAntennas: 0,
+          continuumSpectralAveragingMax: 13812
+        },
+        {
+          value: SA_AA_STAR,
+          map: 'LOW_AAstar_all',
+          label: 'AA*',
           numOf13mAntennas: 0,
           continuumSpectralAveragingMax: 13812
         },

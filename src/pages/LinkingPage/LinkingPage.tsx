@@ -89,7 +89,7 @@ export default function LinkingPage() {
 
   const getLevel = (obs: any) => {
     let result = STATUS_INITIAL;
-    filteredByObservation(obs.id)?.forEach(rec => {
+    filteredByObservation(obs.id2)?.forEach(rec => {
       if (typeof rec !== 'undefined') {
         switch (rec.statusGUI) {
           case STATUS_ERROR:
@@ -504,11 +504,7 @@ export default function LinkingPage() {
                 display: 'inline-flex'
               }}
             >
-              <Typography
-                variant="body2"
-                color={'#000000'} //</Box>colorsType.fg[0]}
-                sx={{ whiteSpace: 'nowrap', p: 1 }}
-              >
+              <Typography variant="body2" sx={{ whiteSpace: 'nowrap', p: 1 }}>
                 {t(`observationType.${e.row.type}`)}
               </Typography>
             </Box>
@@ -521,7 +517,7 @@ export default function LinkingPage() {
         sortable: false,
         width: 100,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: Observation }) => {
+        renderCell: (e: { row: any }) => {
           const obs = elementsO.find(p => p.id === e.row.id);
           return (
             <>

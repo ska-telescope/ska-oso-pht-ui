@@ -39,6 +39,7 @@ interface TargetEntryProps {
 }
 
 const NOTIFICATION_DELAY_IN_SECONDS = 5;
+const GAP = 2;
 
 export default function TargetEntry({
   raType,
@@ -336,6 +337,12 @@ export default function TargetEntry({
     </Box>
   );
 
+  const wrapper2 = (children?: React.JSX.Element) => (
+    <Box p={0} pt={2} sx={{ height: WRAPPER_HEIGHT }}>
+      {children}
+    </Box>
+  );
+
   const referenceCoordinatesField = () =>
     wrapper(
       <ReferenceCoordinatesField
@@ -397,7 +404,7 @@ export default function TargetEntry({
     );
 
   const velocityTypeField = () =>
-    wrapper(
+    wrapper2(
       <VelocityTypeField
         setVelType={setTheVelType}
         velType={velType}
@@ -443,16 +450,32 @@ export default function TargetEntry({
         <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
           <BorderedSection title={t('coordinate.label')}>
             {nameField()}
-            {skyDirection1Field()}
-            {skyDirection2Field()}
+            <Grid
+              container
+              spacing={GAP}
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Grid size={{ md: 12, lg: 6 }}>{skyDirection1Field()}</Grid>
+              <Grid size={{ md: 12, lg: 6 }}>{skyDirection2Field()}</Grid>
+            </Grid>
           </BorderedSection>
         </Box>
       </Grid>
       <Grid pt={1}>
         <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
           <BorderedSection title={t('radialMotion.label')}>
-            {velocityTypeField()}
-            {velocityField()}
+            <Grid
+              container
+              spacing={GAP}
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+            >
+              <Grid size={{ md: 12, lg: 6 }}>{velocityTypeField()}</Grid>
+              <Grid size={{ md: 12, lg: 6 }}>{velocityField()}</Grid>
+            </Grid>
             {velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}
           </BorderedSection>
         </Box>

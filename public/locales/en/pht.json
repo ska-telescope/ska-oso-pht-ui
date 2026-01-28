@@ -1655,6 +1655,7 @@
     "noObservations": "NO OBSERVATION SETUP IS ASSOCIATED WITH THIS PROPOSAL",
     "noObservationsLoggedOut": "NO OBSERVATION SETUP CREATED",
     "noCalibrationsLoggedOut": "NO CALIBRATIONS CREATED",
+    "noCalibrationsLinking": "THERE NEEDS TO BE TARGETS LINKED TO OBSERVATION / DATA PRODUCT COMBINATIONS",
     "pdf": "Syntax error or PDF not available",
     "iconClicked": "An error was encountered, please refresh page to continue",
     "invalidString": "Invalid input: Only numeric characters are allowed"
