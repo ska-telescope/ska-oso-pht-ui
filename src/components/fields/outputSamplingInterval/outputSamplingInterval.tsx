@@ -47,7 +47,8 @@ export default function OutputSamplingIntervalField({
     return '';
   };
 
-  const handleSetValue = (num: number) => {
+  const handleSetValue = (raw: unknown) => {
+    const num = Number(raw);
     const error = validateValue(num);
     if (error) {
       setErrorText(error);
