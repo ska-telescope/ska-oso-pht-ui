@@ -12,7 +12,7 @@ export const USE_LOCAL_DATA_SENSITIVITY_CALC =
   env.REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC === 'true';
 export const SKA_OSO_SERVICES_URL = env.REACT_APP_SKA_OSO_SERVICES_URL;
 export const SKA_SENSITIVITY_CALCULATOR_API_URL = env.REACT_APP_SKA_SENSITIVITY_CALC_URL;
-export const API_VERSION = '/senscalc/api/v11';
+export const API_VERSION = '/senscalc/api/v12';
 
 export const OSO_SERVICES_PHT = '/pht/';
 export const OSO_SERVICES_PANEL_PATH = `${OSO_SERVICES_PHT}panels`;
