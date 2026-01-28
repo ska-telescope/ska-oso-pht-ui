@@ -4,7 +4,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 export default function EmptyCell() {
   const { t } = useScopedTranslation();
-  const SIZE = 20;
+  const SIZE = 30;
 
   return (
     <StatusIcon

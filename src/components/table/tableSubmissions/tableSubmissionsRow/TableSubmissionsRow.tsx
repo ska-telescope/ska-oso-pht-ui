@@ -58,7 +58,7 @@ export default function TableSubmissionsRow({
       colors: status,
       asArray: true,
       paletteIndex: Number(localStorage.getItem('skao_accessibility_mode')),
-      dim: 0.5
+      dim: 1
     });
     return colors;
   };
@@ -150,7 +150,7 @@ export default function TableSubmissionsRow({
             backgroundColor: getStatusColor(item.status).bg[0]
           }}
         >
-          <Typography variant="body2" color="text.secondary">
+          <Typography variant="body2" color={getStatusColor(item.status).fg[0]}>
             {item.status}
           </Typography>
         </TableCell>

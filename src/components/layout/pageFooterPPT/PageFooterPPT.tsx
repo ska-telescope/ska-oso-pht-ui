@@ -206,7 +206,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
         </Grid>
 
         <Grid>
-          {showNextNav && (
+          {showNextNav() && (
             <NextPageButton
               disabled={buttonDisabled}
               testId="nextButtonTestId"

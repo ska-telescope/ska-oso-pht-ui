@@ -7,8 +7,9 @@ import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import Observation from '@/utils/types/observation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { TYPE_ZOOM } from '@/utils/constants';
 
-const ROW_HEIGHT = 200;
+const ROW_HEIGHT = 165;
 
 interface GridObservationProps {
   data: Observation[];
@@ -96,32 +97,23 @@ export default function GridObservation({
     </Typography>
   );
 
-  const displayZoomBandwidth = (inValue: string) => (
+  const displayZoomBandwidth = (inValue: number) => (
     <Typography variant="subtitle1">
       {t('bandwidth.label.0')}:{' '}
-      {OSD_CONSTANTS.array[1].bandWidth.find(ar => ar.value === Number(inValue))?.label}
-    </Typography>
-  );
-
-  const displayNumSubBands = (inValue: string) => (
-    <Typography variant="subtitle1">
-      {t('subBands.short')}:{' '}
       <Typography component="span" fontWeight="bold">
-        {inValue}
+        {OSD_CONSTANTS.array[0].bandWidth[inValue - 1]?.label}
       </Typography>
     </Typography>
   );
 
   const displaySubarray = (inArray: string, inType: string) => (
-    <Box pl={2}>
-      <Typography variant="subtitle1" fontWeight="bold">
-        {t('subArrayConfiguration.' + inArray)} |{' '}
-        {t((isSV ? 'observationType.' : 'scienceCategory.') + inType)}
-      </Typography>
-    </Box>
+    <Typography variant="subtitle1" fontWeight="bold">
+      {t('subArrayConfiguration.' + inArray)} |{' '}
+      {t((isSV ? 'observationType.' : 'scienceCategory.') + inType)}
+    </Typography>
   );
 
-  const isZoom = (inType: number) => inType === 0;
+  const isZoom = (inType: string) => inType === TYPE_ZOOM;
 
   const getObservationColors = (type: string, value?: unknown, dim?: number) =>
     getColors({
@@ -163,8 +155,7 @@ export default function GridObservation({
           {displayFrequency(e.row.centralFrequency + ' ' + centralFrequencyUnits)}
           {!isZoom(e.row.type) &&
             displayContinuumBandwidth(e.row.continuumBandwidth + ' ' + bandwidthUnits)}
-          {isZoom(e.row.type) && displayZoomBandwidth(e.row.bandwidth)}
-          {displayNumSubBands(e.row.numSubBands)}
+          {isZoom(e.row.type) && displayZoomBandwidth(Number(e.row.bandwidth))}
           {displaySubarray(e.row.subarray, e.row.type)}
         </Stack>
       );

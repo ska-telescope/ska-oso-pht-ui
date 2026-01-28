@@ -1,13 +1,7 @@
 import React from 'react';
 import { Box, Grid, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import {
-  AlertColorTypes,
-  BorderedSection,
-  // getColors,
-  Spacer,
-  SPACER_VERTICAL
-} from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { FOOTER_SPACER, RA_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
 import SvgAsImg from '@components/svg/svgAsImg.tsx';
@@ -23,7 +17,6 @@ import SpatialImaging from './SpatialImaging/SpatialImaging';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-// import D3LineChart from '@/components/charts/line/D3LineChart';
 
 export default function TargetListSection() {
   const { t } = useScopedTranslation();
@@ -332,30 +325,23 @@ export default function TargetListSection() {
   };
 
   return (
-    <Grid container direction="row" alignItems="space-evenly" justifyContent="space-evenly">
+    <>
       {osdCyclePolicy?.maxTargets &&
         (getProposal()?.targets?.length ?? 0) > osdCyclePolicy?.maxTargets - 1 && (
-          <Grid size={{ md: 10 }} mb={2}>
-            <BorderedSection borderColor={theme.palette.warning.main}>
-              <Grid
-                container
-                direction="row"
-                alignItems="space-evenly"
-                justifyContent="space-evenly"
-              >
-                <Grid>
-                  {t(
-                    osdCyclePolicy?.maxTargets > 1
-                      ? 'targets.limitReached_plural'
-                      : 'targets.limitReached',
-                    {
-                      value: osdCyclePolicy?.maxTargets
-                    }
-                  )}
-                </Grid>
-              </Grid>
-            </BorderedSection>
-          </Grid>
+          <Box pt={1} pr={10}>
+            <Alert
+              color={AlertColorTypes.Warning}
+              text={t(
+                osdCyclePolicy?.maxTargets > 1
+                  ? 'targets.limitReached_plural'
+                  : 'targets.limitReached',
+                {
+                  value: osdCyclePolicy?.maxTargets
+                }
+              )}
+              testId="targetLimitPanelId"
+            />
+          </Box>
         )}
       {displayRow1()}
       {openDeleteDialog && (
@@ -388,6 +374,6 @@ export default function TargetListSection() {
           />
         </AlertDialog>
       )}
-    </Grid>
+    </>
   );
 }

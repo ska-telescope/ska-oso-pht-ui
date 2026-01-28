@@ -21,6 +21,7 @@ import DataProduct from '@/components/info/dataProduct/DataProduct';
 import { frequencyConversion, getBandwidthLowZoom, getBandwidthZoom } from '@/utils/helpers';
 import ExpandIcon from '@/components/icon/expandIcon/expandIcon';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
+import ObservingBand from '@/components/display/observingBand/observingBand';
 
 interface TableDataProductsRowProps {
   item: any;
@@ -164,9 +165,11 @@ export default function TableDataProductsRow({
             whiteSpace: 'nowrap'
           }}
         >
-          <Typography variant="body2" color="text.secondary">
-            {t('observationType.' + observation?.type)}
-          </Typography>
+          <Box>
+            <Typography variant="body2" color="text.secondary">
+              {t('observationType.' + observation?.type)}
+            </Typography>
+          </Box>
         </TableCell>
 
         {/* Observation ID */}
@@ -199,22 +202,10 @@ export default function TableDataProductsRow({
 
         {/* Observing Band */}
         <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
-          <Box
-            sx={{
-              backgroundColor: colorsTelescopeDim.bg[0],
-              borderRadius: 0,
-              px: 1,
-              display: 'inline-flex'
-            }}
-          >
-            <Typography
-              variant="body2"
-              color={colorsTelescopeDim.fg[0]}
-              sx={{ whiteSpace: 'nowrap', p: 1 }}
-            >
-              {t('observingBand.short.' + observation?.observingBand)}
-            </Typography>
-          </Box>
+          <ObservingBand
+            telescope={String(observation?.telescope)}
+            band={observation?.observingBand}
+          />
         </TableCell>
 
         {/* Frequency Spectrum */}
