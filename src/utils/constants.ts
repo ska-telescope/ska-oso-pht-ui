@@ -450,31 +450,31 @@ export const TAPERING = [
   },
   {
     value: '0.25',
-    mapping: '0.25'
-  },
-  {
-    value: '1',
     mapping: '1'
   },
   {
+    value: '1',
+    mapping: '2'
+  },
+  {
     value: '4',
-    mapping: 'pulsar timing'
+    mapping: '3'
   },
   {
     value: '16',
-    mapping: 'pulsar timing'
+    mapping: '4'
   },
   {
     value: '64',
-    mapping: 'pulsar timing'
+    mapping: '5'
   },
   {
     value: '256',
-    mapping: 'pulsar timing'
+    mapping: '6'
   },
   {
     value: '1024',
-    mapping: 'pulsar timing'
+    mapping: '7'
   }
 ];
 

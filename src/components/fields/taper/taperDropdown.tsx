@@ -24,7 +24,7 @@ export default function TaperDropdownField({
   const getOptions = () => {
     return TAPERING?.map((e: any) => {
       return {
-        label: t(FIELD + '.options.' + e.value),
+        label: t(FIELD + '.options.' + e.mapping),
         value: e.value
       };
     });
