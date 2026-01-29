@@ -2,14 +2,8 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Box, Grid, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
+import { AlertColorTypes, BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
 import {
-  BorderedSection,
-  TextEntry,
-  InfoCard,
-  InfoCardColorTypes
-} from '@ska-telescope/ska-gui-components';
-import {
-  HELP_FONT,
   NAV,
   FOOTER_HEIGHT_PHT,
   PAGE_CALIBRATION,
@@ -24,6 +18,7 @@ import { useHelp } from '@/utils/help/useHelp';
 import { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
+import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import GetCalibratorList from '@/services/axios/get/getCalibratorList/getCalibratorList';
 import Target from '@/utils/types/target';
 import Observation from '@/utils/types/observation';
@@ -345,16 +340,15 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
         )}
         <Grid
           container
-          spacing={2}
+          spacing={GAP}
           direction="column"
           sx={{ overflow: 'hidden', width: '100%', xs: 4, md: 8 }}
         >
           {(getProposal()?.targets?.length ?? 0) > 0 && (
             <Box pt={1} pr={10}>
-              <InfoCard
-                color={InfoCardColorTypes.Warning}
-                fontSize={HELP_FONT * 1.5}
-                message={t('calibrator.limitReached')}
+              <Alert
+                color={AlertColorTypes.Warning}
+                text={t('calibrator.limitReached')}
                 testId="calibrationLimitPanelId"
               />
             </Box>

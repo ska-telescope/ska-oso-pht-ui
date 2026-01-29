@@ -20,6 +20,7 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import ObservationInfo from '@/components/info/observation/Observation';
 import { frequencyConversion, getBandwidthZoom } from '@/utils/helpers';
 import { OSD_CONSTANTS } from '@/utils/OSDConstants';
+import ObservingBand from '@/components/display/observingBand/observingBand';
 
 // NOTE
 //
@@ -200,22 +201,10 @@ export default function TableObservationsRow({
 
         {/* Observing Band */}
         <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
-          <Box
-            sx={{
-              backgroundColor: colorsTelescopeDim.bg[0],
-              borderRadius: 0,
-              px: 1,
-              display: 'inline-flex'
-            }}
-          >
-            <Typography
-              variant="body2"
-              color={colorsTelescopeDim.fg[0]}
-              sx={{ whiteSpace: 'nowrap', p: 1 }}
-            >
-              {t('observingBand.short.' + observation?.rec?.observingBand)}
-            </Typography>
-          </Box>
+          <ObservingBand
+            telescope={observation?.telescope}
+            band={observation?.rec?.observingBand}
+          />
         </TableCell>
 
         {/* Frequency Spectrum */}
