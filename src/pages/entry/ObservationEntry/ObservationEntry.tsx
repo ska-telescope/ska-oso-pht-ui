@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, Grid, Paper } from '@mui/material';
+import { Box, Grid, Paper, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTheme } from '@mui/material/styles';
@@ -12,7 +12,8 @@ import {
   Spacer,
   SPACER_VERTICAL,
   TextEntry,
-  BorderedSection
+  BorderedSection,
+  AlertColorTypes
 } from '@ska-telescope/ska-gui-components';
 import {
   NAV,
@@ -443,6 +444,55 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     </Box>
   );
 
+  const showWarning = () => {
+    let min = 0;
+    let max = 0;
+    let minResult = 0;
+    let maxResult = 0;
+
+    if (isMid()) {
+      const receiver = osdMID?.basicCapabilities?.receiverInformation.find(
+        e => e.rxId === String(observingBand)
+      );
+      min = receiver?.minFrequencyHz ?? 0;
+      max = receiver?.maxFrequencyHz ?? 0;
+
+      const minFreq = frequencyConversion(
+        min,
+        FREQUENCY_HZ,
+        isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ
+      );
+      const maxFreq = frequencyConversion(
+        max,
+        FREQUENCY_HZ,
+        isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ
+      );
+      const useBandwidth = isContinuum() ? continuumBandwidth : bandwidth;
+
+      minResult = minFreq + useBandwidth / 2;
+      maxResult = maxFreq - useBandwidth / 2;
+    } else {
+      min = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
+      max = osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0;
+
+      const minFreq = frequencyConversion(
+        min,
+        FREQUENCY_HZ,
+        isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ
+      );
+      const maxFreq = frequencyConversion(
+        max,
+        FREQUENCY_HZ,
+        isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ
+      );
+      const useBandwidth = isContinuum() ? continuumBandwidth : bandwidth;
+      minResult = minFreq + useBandwidth / 2;
+      maxResult = maxFreq - useBandwidth / 2;
+    }
+
+    return centralFrequency < minResult || centralFrequency > maxResult;
+  };
+
   const emptyField = () => <></>;
 
   /******************************************************/
@@ -504,25 +554,34 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
 
     return fieldWrapper(
-      <Box>
-        <FrequencySpectrum
-          minFreq={minFreq}
-          maxFreq={maxFreq}
-          centerFreq={cenFreq}
-          bandWidth={
-            isContinuum() || isPST()
-              ? continuumBandwidth ?? 0
-              : frequencyConversion(
-                  isLow() ? bandwidthLookup?.value ?? 0 : getBandwidthZoom(observationOut()),
-                  isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ,
-                  FREQUENCY_MHZ
-                ) ?? 0
-          }
-          bandColor={colors[0]}
-          boxWidth="100%"
-          unit={TEL_UNITS[isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM]}
-        />
-      </Box>
+      <Grid container justifyContent="space-around">
+        <Grid size={{ xs: 12 }}>
+          <FrequencySpectrum
+            minFreq={minFreq}
+            maxFreq={maxFreq}
+            centerFreq={cenFreq}
+            bandWidth={
+              isContinuum() || isPST()
+                ? continuumBandwidth ?? 0
+                : frequencyConversion(
+                    isLow() ? bandwidthLookup?.value ?? 0 : getBandwidthZoom(observationOut()),
+                    isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ,
+                    FREQUENCY_MHZ
+                  ) ?? 0
+            }
+            bandColor={colors[0]}
+            boxWidth="100%"
+            unit={TEL_UNITS[isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM]}
+          />
+        </Grid>
+        {showWarning() && (
+          <Grid>
+            <Typography color={AlertColorTypes.Warning}>
+              {t('frequencyBandwidthOutOfRange.warning')}
+            </Typography>
+          </Grid>
+        )}
+      </Grid>
     );
   };
 
