@@ -9,7 +9,7 @@ import { useHelp } from '@/utils/help/useHelp';
 interface OutputFrequencyResolutionFieldProps {
   disabled?: boolean;
   required?: boolean;
-  setValue?: Function;
+  setValue: Function;
   suffix?: any;
   value: number;
   widthButton?: number;
@@ -48,14 +48,13 @@ export default function OutputFrequencyResolutionField({
     return '';
   };
 
-  const handleSetValue = (raw: number) => {
-    const num = Number(raw);
+  const handleSetValue = (num: number) => {
     const error = validateValue(num);
     if (error) {
       setErrorText(error);
     } else {
       setErrorText('');
-      setValue?.(num);
+      setValue(num);
     }
   };
 

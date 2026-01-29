@@ -17,14 +17,6 @@ vi.mock('@/utils/help/useHelp', () => ({
 }));
 
 describe('<OutputSamplingIntervalField />', () => {
-  test('renders correctly', () => {
-    render(
-      <StoreProvider>
-        <OutputSamplingIntervalField value={1} />
-      </StoreProvider>
-    );
-  });
-
   test('updates correctly when value changed', async () => {
     const handleSetValue = vi.fn();
     render(

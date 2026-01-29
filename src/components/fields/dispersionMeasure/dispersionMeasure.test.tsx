@@ -17,14 +17,6 @@ vi.mock('@/utils/help/useHelp', () => ({
 }));
 
 describe('<DispersionMeasureField />', () => {
-  test('renders correctly', () => {
-    render(
-      <StoreProvider>
-        <DispersionMeasureField value={1} />
-      </StoreProvider>
-    );
-  });
-
   test('updates correctly when value changed', async () => {
     const handleSetValue = vi.fn();
     render(
@@ -36,7 +28,7 @@ describe('<DispersionMeasureField />', () => {
     const input = within(wrapper).getByRole('spinbutton') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 250 } });
     fireEvent.blur(input);
-    expect(handleSetValue).toHaveBeenCalledWith(250);
+    expect(handleSetValue).toHaveBeenCalledWith(Number(250));
   });
 
   test('does not update when value changed to out of range', async () => {

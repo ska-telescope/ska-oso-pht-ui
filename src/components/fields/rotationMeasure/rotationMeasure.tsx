@@ -47,8 +47,7 @@ export default function RotationMeasureField({
     return '';
   };
 
-  const handleSetValue = (raw: number) => {
-    const num = Number(raw);
+  const handleSetValue = (num: number) => {
     const error = validateValue(num);
     if (error) {
       setErrorText(error);
