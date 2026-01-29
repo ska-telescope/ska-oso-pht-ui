@@ -1534,6 +1534,7 @@
     "7": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO ADD DATA PRODUCTS AS THERE ARE NO OBSERVATIONS FOR THIS PROPOSAL",
       "noProducts": "THERE ARE NO DATA PRODUCTS ASSOCIATED WITH THIS PROPOSAL",
+      "pstUnavailable": "PST Data Products are not currently supported within the Sensitivity Calculator Application",
       "descTitle": "Data Product Description",
       "descContent": {
         "spectral": {

@@ -1,14 +1,19 @@
 import { AlertColorTypes, DataGrid } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
+import { Box } from '@mui/material';
 import EditIcon from '../../../components/icon/editIcon/editIcon';
 import TrashIcon from '../../../components/icon/trashIcon/trashIcon';
 import Alert from '../../alerts/standardAlert/StandardAlert';
 import Target from '../../../utils/types/target';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import ChartIcon from '@/components/icon/chartIcon/chartIcon';
+
+const ROW_HEIGHT = 300;
 
 interface GridTargetsProps {
-  deleteClicked?: Function;
-  editClicked?: Function;
+  deleteClicked?: Function | null;
+  editClicked?: Function | null;
+  chartClicked?: Function | null;
   height?: number | string;
   raType: number;
   rowClick?: Function;
@@ -16,8 +21,9 @@ interface GridTargetsProps {
 }
 
 export default function GridTargets({
-  deleteClicked,
-  editClicked,
+  deleteClicked = null,
+  editClicked = null,
+  chartClicked = null,
   height = 171,
   raType,
   rowClick,
@@ -63,17 +69,32 @@ export default function GridTargets({
         const rec: Target = e.row;
         return (
           <>
+            {chartClicked !== null && (
+              <Box display="flex" flexDirection="column" alignItems="center">
+                <ChartIcon
+                  onClick={() => (chartClicked ? chartClicked(rec) : null)}
+                  toolTip={t('chartTarget.toolTip')}
+                />
+                {/* <Typography variant="caption">{t('edit.label')}</Typography> */}
+              </Box>
+            )}
             {editClicked !== null && (
-              <EditIcon
-                onClick={() => (editClicked ? editClicked(rec) : null)}
-                toolTip={t('editTarget.toolTip')}
-              />
+              <Box display="flex" flexDirection="column" alignItems="center">
+                <EditIcon
+                  onClick={() => (editClicked ? editClicked(rec) : null)}
+                  toolTip={t('editTarget.toolTip')}
+                />
+                {/* <Typography variant="caption">{t('edit.label')}</Typography> */}
+              </Box>
             )}
             {deleteClicked !== null && (
-              <TrashIcon
-                onClick={() => (deleteClicked ? deleteClicked(rec) : null)}
-                toolTip={t('deleteTarget.toolTip')}
-              />
+              <Box display="flex" flexDirection="column" alignItems="center">
+                <TrashIcon
+                  onClick={() => (deleteClicked ? deleteClicked(rec) : null)}
+                  toolTip={t('deleteTarget.toolTip')}
+                />
+                {/* <Typography variant="caption">{t('deleteBtn.label')}</Typography> */}
+              </Box>
             )}
           </>
         );
@@ -94,6 +115,8 @@ export default function GridTargets({
           columns={getColumns()}
           height={height}
           onRowClick={rowClick}
+          rowHeight={ROW_HEIGHT}
+          S
           pagination={rows.length > 1} // Enable pagination only if more than 1 row // non SV
           rowsPerPageOptions={rows.length > 1 ? [100] : []}
           hideFooter={rows.length === 1}

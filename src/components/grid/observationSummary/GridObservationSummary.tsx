@@ -25,7 +25,7 @@ export default function GridObservationSummary({
 }: GridObservationSummaryProps) {
   const loggedIn = isLoggedIn();
   const { t } = useScopedTranslation();
-  const { isSV, observatoryConstants } = useOSDAccessors();
+  const { observatoryConstants } = useOSDAccessors();
 
   const headerDisplay = (inValue: string, inValue2?: string) => (
     <Typography variant="subtitle1" style={{ fontWeight: 600 }}>
