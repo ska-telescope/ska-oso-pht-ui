@@ -9,23 +9,12 @@ export type DataProductSDPContinuumImageBackend = {
   };
   polarisations: string[];
   channels_out?: number;
-  fit_spectral_pol?: number;
   gaussian_taper?: string;
   kind: string;
   variant: string;
 };
 
 export type DataProductSDPContinuumVisibilitiesBackend = {
-  image_size: ValueUnitPair;
-  image_cellsize?: ValueUnitPair;
-  weight: {
-    weighting?: string;
-    robust?: number;
-  };
-  polarisations: string[];
-  channels_out?: number;
-  fit_spectral_pol?: number;
-  gaussian_taper?: string;
   time_averaging: ValueUnitPair;
   frequency_averaging: ValueUnitPair;
   kind: string;
@@ -41,7 +30,6 @@ export type DataProductSDPSpectralImageBackend = {
   };
   polarisations: string[];
   channels_out?: number;
-  fit_spectral_pol?: number;
   gaussian_taper?: string;
   continuum_subtraction?: boolean;
   kind: string;
@@ -52,8 +40,6 @@ export type DataProductSDPPSTDetectedFilterBankBackend = {
   polarisations: string[];
   bit_depth: number;
   time_averaging_factor: number;
-  frequency_averaging_factor: number; // TODO remove once new PDM used (27.0.0)
-  output_frequency_resolution: number; // TODO remove once new PDM used (27.0.0)
   output_sampling_interval: number;
   dispersion_measure: number;
   rotation_measure: number;
@@ -62,8 +48,6 @@ export type DataProductSDPPSTDetectedFilterBankBackend = {
 };
 
 export type DataProductSDPPSTTimingBackend = {
-  polarisations: string[];
-  bit_depth: number;
   kind: string;
   variant: string;
 };
@@ -172,10 +156,10 @@ export type SDPFilterbankPSTData = {
   dataProductType: number;
   bitDepth: number;
   polarisations: string[];
-  outputFrequencyResolution: number; // TODO add to form & mapping once PDM updated (new)
-  outputSamplingInterval: number; // TODO add to form & mapping once PDM updated (new)
-  dispersionMeasure: number; // TODO add to form & mapping once PDM updated (new)
-  rotationMeasure: number; // TODO add to form & mapping once PDM updated (new)
+  outputFrequencyResolution: number;
+  outputSamplingInterval: number;
+  dispersionMeasure: number;
+  rotationMeasure: number;
 };
 
 export type DataProductSRC = {
