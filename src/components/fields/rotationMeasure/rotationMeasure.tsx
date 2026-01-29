@@ -39,7 +39,10 @@ export default function RotationMeasureField({
       num < observatoryConstants.RotationMeasure.min ||
       num > observatoryConstants.RotationMeasure.max
     ) {
-      return t('rotationMeasure.range.error');
+      return t('rotationMeasure.range.error', {
+        min: observatoryConstants.RotationMeasure.min,
+        max: observatoryConstants.RotationMeasure.max
+      });
     }
     return '';
   };
@@ -63,8 +66,8 @@ export default function RotationMeasureField({
     <Box pt={1}>
       <NumberEntry
         testId={FIELD}
-        value={String(value)}
-        setValue={handleSetValue}
+        value={value}
+        setValue={(v: number) => handleSetValue(Number(v))}
         label={t(FIELD + '.label')}
         onFocus={() => setHelp(FIELD)}
         required={required}

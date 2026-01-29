@@ -52,7 +52,11 @@ export type DataProductSDPPSTDetectedFilterBankBackend = {
   polarisations: string[];
   bit_depth: number;
   time_averaging_factor: number;
-  frequency_averaging_factor: number;
+  frequency_averaging_factor: number; // TODO remove once new PDM used (27.0.0)
+  output_frequency_resolution: number; // TODO remove once new PDM used (27.0.0)
+  output_sampling_interval: number;
+  dispersion_measure: number;
+  rotation_measure: number;
   kind: string;
   variant: string;
 };

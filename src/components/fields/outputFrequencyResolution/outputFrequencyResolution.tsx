@@ -9,7 +9,7 @@ import { useHelp } from '@/utils/help/useHelp';
 interface OutputFrequencyResolutionFieldProps {
   disabled?: boolean;
   required?: boolean;
-  setValue?: Function;
+  setValue: Function;
   suffix?: any;
   value: number;
   widthButton?: number;
@@ -40,7 +40,10 @@ export default function OutputFrequencyResolutionField({
       num < observatoryConstants.OutputFrequencyResolution.min ||
       num > observatoryConstants.OutputFrequencyResolution.max
     ) {
-      return t('outputFrequencyResolution.range.error');
+      return t('outputFrequencyResolution.range.error', {
+        min: observatoryConstants.OutputFrequencyResolution.min,
+        max: observatoryConstants.OutputFrequencyResolution.max
+      });
     }
     return '';
   };
@@ -51,7 +54,7 @@ export default function OutputFrequencyResolutionField({
       setErrorText(error);
     } else {
       setErrorText('');
-      setValue?.(num);
+      setValue(num);
     }
   };
 
@@ -64,8 +67,8 @@ export default function OutputFrequencyResolutionField({
     <Box pt={1}>
       <NumberEntry
         testId={FIELD}
-        value={String(value)}
-        setValue={handleSetValue}
+        value={value}
+        setValue={(v: number) => handleSetValue(Number(v))}
         label={t(FIELD + '.label')}
         onFocus={() => setHelp(FIELD)}
         required={required}
