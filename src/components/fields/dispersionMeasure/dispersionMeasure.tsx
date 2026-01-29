@@ -9,7 +9,7 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 interface DispersionMeasureFieldProps {
   disabled?: boolean;
   required?: boolean;
-  setValue?: Function;
+  setValue: Function;
   suffix?: any;
   value: number;
   widthButton?: number;
@@ -39,7 +39,10 @@ export default function DispersionMeasureField({
       num < observatoryConstants.DispersionMeasure.min ||
       num > observatoryConstants.DispersionMeasure.max
     ) {
-      return t('dispersionMeasure.range.error');
+      return t('dispersionMeasure.range.error', {
+        min: observatoryConstants.DispersionMeasure.min,
+        max: observatoryConstants.DispersionMeasure.max
+      });
     }
     return '';
   };
@@ -50,7 +53,7 @@ export default function DispersionMeasureField({
       setErrorText(error);
     } else {
       setErrorText('');
-      setValue?.(num);
+      setValue(num);
     }
   };
 
@@ -63,8 +66,8 @@ export default function DispersionMeasureField({
     <Box pt={1}>
       <NumberEntry
         testId={FIELD}
-        value={String(value)}
-        setValue={handleSetValue}
+        value={value}
+        setValue={(v: number) => handleSetValue(Number(v))}
         label={t(FIELD + '.label')}
         onFocus={() => setHelp(FIELD)}
         required={required}
