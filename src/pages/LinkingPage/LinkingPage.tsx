@@ -91,7 +91,7 @@ export default function LinkingPage() {
 
   const getLevel = (obs: any) => {
     let result = STATUS_INITIAL;
-    filteredByObservation(obs.id2)?.forEach(rec => {
+    filteredByDataProduct(obs.id)?.forEach(rec => {
       if (typeof rec !== 'undefined') {
         switch (rec.statusGUI) {
           case STATUS_ERROR:
@@ -112,7 +112,7 @@ export default function LinkingPage() {
 
   const getError = (obs: Observation) => {
     let result = '';
-    filteredByObservation(obs.id)?.forEach(rec => {
+    filteredByDataProduct(obs.id)?.forEach(rec => {
       if (typeof rec !== 'undefined' && rec.statusGUI === STATUS_ERROR) {
         result = rec.error ?? '';
       }
@@ -476,19 +476,19 @@ export default function LinkingPage() {
         width: 100,
         disableClickEventBubbling: true,
         renderCell: (e: { row: any }) => {
-          const obs = elementsO.find(p => p.id === e.row.id);
+          const rec = elementsO.find(p => p.id === e.row.id);
           return (
             <>
               {
                 <StatusIconDisplay
                   ariaDescription=" "
-                  ariaTitle={t('sensCalc.' + getLevel(obs))}
-                  level={getLevel(obs)}
+                  ariaTitle={t('sensCalc.' + getLevel(rec))}
+                  level={getLevel(rec)}
                   onClick={() =>
-                    getLevel(obs) === STATUS_INITIAL ? null : setOpenMultipleDialog(true)
+                    getLevel(rec) === STATUS_INITIAL ? null : setOpenMultipleDialog(true)
                   }
                   testId="testId"
-                  toolTip={t('sensCalc.' + getLevel(obs))}
+                  toolTip={t('sensCalc.' + getLevel(rec))}
                 />
               }
             </>
@@ -608,10 +608,10 @@ export default function LinkingPage() {
     else return [];
   };
 
-  const filteredByObservation = (obId: string) => {
+  const filteredByDataProduct = (id: string) => {
     const results: SensCalcResults[] = [];
     getProposal()?.targetObservation?.forEach(rec => {
-      if (rec.observationId === obId) {
+      if (rec.dataProductsSDPId === id) {
         results.push(rec.sensCalc);
       }
     });
@@ -687,14 +687,14 @@ export default function LinkingPage() {
             setOpen={setOpenDeleteDialog}
           />
         )}
-        {openMultipleDialog && currRec?.Obs && (
+        {openMultipleDialog && currRec?.rec && (
           <SensCalcModalMultiple
             open={openMultipleDialog}
             onClose={() => setOpenMultipleDialog(false)}
-            data={filteredByObservation(currRec?.Obs.id)}
-            observation={currRec?.Obs}
-            level={getLevel(currRec?.Obs)}
-            levelError={getError(currRec?.Obs)}
+            data={filteredByDataProduct(currRec?.id)}
+            observation={currRec?.rec}
+            level={getLevel(currRec?.rec)}
+            levelError={getError(currRec?.rec)}
             isCustom={isCustom()}
             isNatural={isNatural()}
           />

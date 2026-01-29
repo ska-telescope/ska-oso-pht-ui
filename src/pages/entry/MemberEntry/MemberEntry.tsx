@@ -58,7 +58,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
 
   const [forSearch, setForSearch] = React.useState(false);
 
-  const LABEL_WIDTH = 4;
+  const LABEL_WIDTH = 3;
 
   React.useEffect(() => {
     const invalidEmail = Boolean(emailValidation());

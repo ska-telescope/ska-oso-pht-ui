@@ -127,7 +127,7 @@ export default function DataProductsPage() {
           <Alert
             color={AlertColorTypes.Warning}
             text={
-              osdCyclePolicy?.maxObservations === 1 && hasTargetObservations
+              osdCyclePolicy?.maxObservations === 1 && hasTargetObservations()
                 ? t('page.8.noObservations')
                 : t('error.noObservationsLoggedOut')
             }

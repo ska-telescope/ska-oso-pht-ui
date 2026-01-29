@@ -31,13 +31,12 @@ export default function TargetListSection() {
   const [visibilitySVG, setVisibilitySVG] = React.useState(null);
   const { autoLink, isSV, osdCyclePolicy } = useOSDAccessors();
 
-  const DATA_GRID_HEIGHT = osdCyclePolicy?.maxTargets ? '18vh' : '60vh';
-
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+  const maxTargets = osdCyclePolicy?.maxTargets ?? null;
 
   React.useEffect(() => {
-    if ((getProposal()?.targets?.length ?? 0) > (osdCyclePolicy?.maxTargets ?? 0) - 1) {
+    if (maxTargets !== null && (getProposal()?.targets?.length ?? 0) > maxTargets - 1) {
       const ra = getProposal()?.targets?.map(target => {
         return { ra: target.raStr };
       });
@@ -63,7 +62,7 @@ export default function TargetListSection() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [getProposal()?.targets, osdCyclePolicy?.maxTargets]);
+  }, [getProposal()?.targets, maxTargets]);
 
   // React.useEffect(() => {
   //   function getDataFromSVG(svg: string): { name: number; value: number }[] {
@@ -240,41 +239,26 @@ export default function TargetListSection() {
         container
         direction="row"
         justifyContent="space-between"
-        alignItems="centre"
+        alignItems="top"
         spacing={4}
-        sx={{ height: '100vh', width: '95vw' }}
+        sx={{ height: '100&', width: '95vw' }}
       >
         <Grid size={{ md: 12, lg: 6 }} order={{ md: 2, lg: 1 }}>
           <Stack>
             <GridTargets
               deleteClicked={deleteIconClicked}
               editClicked={editIconClicked}
-              height={DATA_GRID_HEIGHT}
+              height={maxTargets === 1 ? '10vh' : '60vh'}
               raType={RA_TYPE_ICRS.value}
               rows={getProposal().targets}
             />
-            {visibilitySVG !== null && (getProposal()?.targets?.length ?? 0) > 0 && (
-              <>
-                <Box pt={6} px={3}>
+            {maxTargets === 1 &&
+              visibilitySVG !== null &&
+              (getProposal()?.targets?.length ?? 0) > 0 && (
+                <Box px={3}>
                   <SvgAsImg svgXml={visibilitySVG} />
                 </Box>
-                {/* <Box pt={6} px={3}>
-                  <D3LineChart
-                    data={visData}
-                    chartColors={getColors({
-                      type: 'telescope',
-                      colors: '',
-                      content: 'bg',
-                      paletteIndex: Number(localStorage.getItem('skao_accessibility_mode'))
-                    })}
-                    width={400}
-                    height={400}
-                    xDomain={[0, 24]}
-                    yDomain={[0, 90]}
-                  />
-                </Box> */}
-              </>
-            )}
+              )}
           </Stack>
         </Grid>
         <Grid size={{ md: 12, lg: 6 }} order={{ md: 1, lg: 2 }}>
@@ -326,23 +310,17 @@ export default function TargetListSection() {
 
   return (
     <>
-      {osdCyclePolicy?.maxTargets &&
-        (getProposal()?.targets?.length ?? 0) > osdCyclePolicy?.maxTargets - 1 && (
-          <Box pt={1} pr={10}>
-            <Alert
-              color={AlertColorTypes.Warning}
-              text={t(
-                osdCyclePolicy?.maxTargets > 1
-                  ? 'targets.limitReached_plural'
-                  : 'targets.limitReached',
-                {
-                  value: osdCyclePolicy?.maxTargets
-                }
-              )}
-              testId="targetLimitPanelId"
-            />
-          </Box>
-        )}
+      {maxTargets !== null && (getProposal()?.targets?.length ?? 0) > maxTargets - 1 && (
+        <Box pt={1} pr={10}>
+          <Alert
+            color={AlertColorTypes.Warning}
+            text={t(maxTargets > 1 ? 'targets.limitReached_plural' : 'targets.limitReached', {
+              value: osdCyclePolicy?.maxTargets
+            })}
+            testId="targetLimitPanelId"
+          />
+        </Box>
+      )}
       {displayRow1()}
       {openDeleteDialog && (
         <AlertDialog
