@@ -218,7 +218,7 @@ export const getDataProductScriptParameters = (
           kind: 'continuum',
           variant: 'visibilities',
           fit_spectral_pol: 0 // TODO remove this once we are using the latest PDM (v27.0.0)
-          // todo update PDM to remove unneeded fields for Visibilities
+          // TODO update PDM to remove unneeded fields for Visibilities
         };
       }
     }
@@ -258,7 +258,7 @@ export const getDataProductScriptParameters = (
           kind: 'pst',
           variant: 'detected filterbank',
           fit_spectral_pol: 0 // TODO remove this once we are using the latest PDM (v27.0.0)
-          // todo update PDM to update fields for SDPFilterbankPSTData
+          // TODO update PDM to update fields for SDPFilterbankPSTData
         };
       } else if (pstMode === PULSAR_TIMING_VALUE) {
         const data = dp?.data as any; // TODO change type to SDPTimingPSTData once PDM updated
@@ -269,7 +269,10 @@ export const getDataProductScriptParameters = (
           kind: 'pst',
           variant: 'pulsar timing',
           fit_spectral_pol: 0 // TODO remove this once we are using the latest PDM (v27.0.0)
-          // todo update PDM to remove unneeded fields for Pulsar Timing
+          // output_frequency_resolution: data?.outputFrequencyResolution ?? 1, // TODO uncomment this once using PDM v27.0.0
+          // output_sampling_interval: data?.outputSamplingInterval ?? 1, // TODO uncomment this once using PDM v27.0.0
+          // dispersion_measure: data?.dispersionMeasure ?? 1, // TODO uncomment this once using PDM v27.0.0
+          // rotation_measure: data?.rotationMeasure ?? 1 // TODO uncomment this once using PDM v27.0.0
         };
       } else {
         const data = dp?.data as SDPFlowthroughPSTData;

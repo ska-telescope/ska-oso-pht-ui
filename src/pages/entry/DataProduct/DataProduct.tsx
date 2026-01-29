@@ -67,6 +67,10 @@ import SensCalcContent from '@/components/alerts/sensCalcModal/content/SensCalcC
 import { updateDataProducts } from '@/utils/update/dataProducts/updateDataProducts';
 import { updateSensCalc } from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
+import OutputFrequencyResolutionField from '@/components/fields/outputFrequencyResolution/outputFrequencyResolution';
+import DispersionMeasureField from '@/components/fields/dispersionMeasure/dispersionMeasure';
+import RotationMeasureField from '@/components/fields/rotationMeasure/rotationMeasure';
+import OutputSamplingIntervalField from '@/components/fields/outputSamplingInterval/outputSamplingInterval';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
@@ -116,7 +120,10 @@ export default function DataProduct({ data }: DataProductProps) {
     SET_CONTINUUM_SUBSTRACTION_DEFAULT
   );
   const [polarisations, setPolarisations] = React.useState<string[]>([]);
-  // TODO add missing new fields for PST Filter Bank
+  const [outputFrequencyResolution, setOutputFrequencyResolution] = React.useState(1);
+  const [outputSamplingInterval, setOutputSamplingInterval] = React.useState(1);
+  const [dispersionMeasure, setDispersionMeasure] = React.useState(1);
+  const [rotationMeasure, setRotationMeasure] = React.useState(1);
 
   const maxObservationsReached = () =>
     baseObservations.length >= (osdCyclePolicy?.maxObservations ?? 0);
@@ -166,6 +173,10 @@ export default function DataProduct({ data }: DataProductProps) {
     setFrequencyAveragingUnits(data?.frequencyAveragingUnits ?? FREQUENCY_AVERAGING_UNIT_DEFAULT);
     setContinuumSubtraction(data?.continuumSubtraction ?? SET_CONTINUUM_SUBSTRACTION_DEFAULT);
     setBitDepth(data?.bitDepth ?? BIT_DEPTH_DEFAULT);
+    setOutputFrequencyResolution(data?.outputFrequencyResolution ?? 1);
+    setOutputSamplingInterval(data?.outputSamplingInterval ?? 1);
+    setDispersionMeasure(data?.dispersionMeasure ?? 1);
+    setRotationMeasure(data?.rotationMeasure ?? 1);
   };
 
   const dataProductOut = () => {
@@ -186,7 +197,11 @@ export default function DataProduct({ data }: DataProductProps) {
         timeAveraging,
         frequencyAveraging,
         bitDepth,
-        continuumSubtraction
+        continuumSubtraction,
+        outputFrequencyResolution,
+        outputSamplingInterval,
+        dispersionMeasure,
+        rotationMeasure
       }
     };
     return newDataProduct;
@@ -212,7 +227,11 @@ export default function DataProduct({ data }: DataProductProps) {
         timeAveraging,
         frequencyAveraging,
         bitDepth,
-        continuumSubtraction
+        continuumSubtraction,
+        outputFrequencyResolution,
+        outputSamplingInterval,
+        dispersionMeasure,
+        rotationMeasure
       }
     };
     setProposal({
@@ -311,7 +330,11 @@ export default function DataProduct({ data }: DataProductProps) {
     robust,
     channelsOut,
     continuumSubtraction,
-    polarisations
+    polarisations,
+    outputFrequencyResolution,
+    outputSamplingInterval,
+    dispersionMeasure,
+    rotationMeasure
   ]);
 
   const fieldWrapper = (children?: React.JSX.Element, height = WRAPPER_HEIGHT) => (
@@ -515,6 +538,34 @@ export default function DataProduct({ data }: DataProductProps) {
     );
   };
 
+  const outputFrequencyResolutionField = () =>
+    fieldWrapper(
+      <OutputFrequencyResolutionField
+        required
+        setValue={setOutputFrequencyResolution}
+        value={outputFrequencyResolution}
+      />
+    );
+
+  const outputSamplingIntervalField = () =>
+    fieldWrapper(
+      <OutputSamplingIntervalField
+        required
+        setValue={setOutputSamplingInterval}
+        value={outputSamplingInterval}
+      />
+    );
+
+  const dispersionMeasureField = () =>
+    fieldWrapper(
+      <DispersionMeasureField required setValue={setDispersionMeasure} value={dispersionMeasure} />
+    );
+
+  const rotationMeasureField = () =>
+    fieldWrapper(
+      <RotationMeasureField required setValue={setRotationMeasure} value={rotationMeasure} />
+    );
+
   const imageSizeValid = () => Number(imageSizeValue) > 0;
   const pixelSizeValid = () => pixelSizeValue > 0;
   const taperSizeValid = () => taperValue >= 0;
@@ -706,9 +757,19 @@ export default function DataProduct({ data }: DataProductProps) {
                 )}
                 {isDetectedFilterbank() && (
                   <Grid pb={1} container>
-                    <Grid size={{ md: COL_MID }}>{fieldWrapper(timeAveragingField())}</Grid>
-                    <Grid size={{ md: COL_MID }}>{fieldWrapper(frequencyAveragingField())}</Grid>
-                    <Grid size={{ md: COL_MID }}>{fieldWrapper(bitDepthField())}</Grid>
+                    <Grid size={{ md: COL_MID, lg: COL }}>
+                      {fieldWrapper(outputFrequencyResolutionField())}
+                    </Grid>
+                    <Grid size={{ md: COL_MID, lg: COL }}>
+                      {fieldWrapper(outputSamplingIntervalField())}
+                    </Grid>
+                    <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(bitDepthField())}</Grid>
+                    <Grid size={{ md: COL_MID, lg: COL }}>
+                      {fieldWrapper(dispersionMeasureField())}
+                    </Grid>
+                    <Grid size={{ md: COL_MID, lg: COL }}>
+                      {fieldWrapper(rotationMeasureField())}
+                    </Grid>
                   </Grid>
                 )}
               </BorderedSection>
