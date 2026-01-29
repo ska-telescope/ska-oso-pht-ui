@@ -28,7 +28,7 @@ describe('<OutputFrequencyResolutionField />', () => {
     const input = within(wrapper).getByRole('spinbutton') as HTMLInputElement;
     fireEvent.change(input, { target: { value: 250 } });
     fireEvent.blur(input);
-    expect(handleSetValue).toHaveBeenCalledWith(250);
+    expect(handleSetValue).toHaveBeenCalledWith(Number(250));
   });
 
   test('does not update when value changed to out of range', async () => {
