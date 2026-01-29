@@ -143,8 +143,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const isPST = () =>
     getObservation()?.type === TYPE_PST || getProposal()?.scienceCategory === TYPE_PST;
 
-  const showSC =
-    osdCyclePolicy?.maxObservations === 1 && osdCyclePolicy?.maxDataProducts === 1 && !isPST();
+  const showSC = osdCyclePolicy?.maxObservations === 1 && osdCyclePolicy?.maxDataProducts === 1;
 
   const getSuffix = () => {
     if (isContinuum() || isPST()) {
@@ -808,13 +807,22 @@ export default function DataProduct({ data }: DataProductProps) {
           {showSC && (
             <BorderedSection
               borderColor={
-                scData()?.statusGUI !== STATUS_INITIAL
+                isPST()
+                  ? theme.palette.warning.main
+                  : scData()?.statusGUI !== STATUS_INITIAL
                   ? theme.palette.success.main
                   : theme.palette.error.main
               }
               title={t('sensitivityCalculatorResults.title')}
             >
-              <SensCalcContent data={scData()} isCustom={isCustom()} isNatural={isNatural()} />
+              {isPST() && (
+                <Typography variant="subtitle1" color="text.disabled">
+                  {t('page.7.pstUnavailable')}
+                </Typography>
+              )}
+              {!isPST() && (
+                <SensCalcContent data={scData()} isCustom={isCustom()} isNatural={isNatural()} />
+              )}
             </BorderedSection>
           )}
         </Grid>
