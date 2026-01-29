@@ -66,8 +66,8 @@ export default function DispersionMeasureField({
     <Box pt={1}>
       <NumberEntry
         testId={FIELD}
-        value={String(value)}
-        setValue={handleSetValue}
+        value={value}
+        setValue={(v: number) => handleSetValue(Number(v))}
         label={t(FIELD + '.label')}
         onFocus={() => setHelp(FIELD)}
         required={required}
