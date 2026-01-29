@@ -443,41 +443,6 @@ export const PST_MODES = [
   }
 ];
 
-export const TAPERING = [
-  {
-    value: '0',
-    mapping: '0'
-  },
-  {
-    value: '0.25',
-    mapping: '1'
-  },
-  {
-    value: '1',
-    mapping: '2'
-  },
-  {
-    value: '4',
-    mapping: '3'
-  },
-  {
-    value: '16',
-    mapping: '4'
-  },
-  {
-    value: '64',
-    mapping: '5'
-  },
-  {
-    value: '256',
-    mapping: '6'
-  },
-  {
-    value: '1024',
-    mapping: '7'
-  }
-];
-
 export const SCIENCE_VERIFICATION = 'science_verification';
 
 export const PROPOSAL_STATUS = {

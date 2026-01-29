@@ -14,6 +14,7 @@ import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
 import { useTheme } from '@mui/material/styles';
 import TickIcon from '@components/icon/tickIcon/tickIcon.tsx';
 import TaperDropdownField from '@components/fields/taper/taperDropdown.tsx';
+import { ValueUnitPair } from '@utils/types/typesSensCalc.tsx';
 import PolarisationsField from '@/components/fields/polarisations/polarisations';
 import {
   _TIME_AVERAGING_UNITS_DEFAULT,
@@ -344,8 +345,18 @@ export default function DataProduct({ data }: DataProductProps) {
         setValue={setTaperValue}
         value={taperValue}
         suffix={t('taper.units')}
+        centralFrequency={getCentralFrequency()}
       />
     );
+
+  const getCentralFrequency = () => {
+    const obj = baseObservations.find(id => id.id === observationId);
+    const output: ValueUnitPair = {
+      value: Number(obj?.centralFrequency) ?? 0,
+      unit: obj?.centralFrequencyUnits.toString() ?? ''
+    };
+    return output;
+  };
 
   const imageSizeUnitsField = () => {
     const getOptions = () => {
