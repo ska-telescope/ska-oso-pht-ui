@@ -35,7 +35,6 @@ import {
   TYPE_ZOOM,
   VEL_UNITS,
   VELOCITY_TYPE,
-  IW_UNIFORM,
   TYPE_ZOOM_LONG
 } from '@utils/constants.ts';
 import {
@@ -43,6 +42,7 @@ import {
   DataProductSDPsBackend,
   DataProductSRC,
   DataProductSRCNetBackend,
+  SDPFilterbankPSTData,
   SDPFlowthroughPSTData,
   SDPImageContinuumData,
   SDPSpectralData,
@@ -188,37 +188,15 @@ export const getDataProductScriptParameters = (
           channels_out: data?.channelsOut,
           gaussian_taper: data?.taperValue?.toString(),
           kind: 'continuum',
-          variant: 'continuum image',
-          fit_spectral_pol: 0 // TODO remove this once we are using the latest PDM (v27.0.0)
+          variant: 'continuum image'
         };
       } else {
-        const data = dp?.data as any; // TODO change type to SDPVisibilitiesContinuumData once PDM is updated
+        const data = dp?.data as SDPVisibilitiesContinuumData;
         return {
-          image_size: {
-            value: data?.imageSizeValue ?? 0,
-            unit: IMAGE_SIZE_UNITS[data?.imageSizeUnits ?? 0]
-          },
-          image_cellsize: {
-            value: data?.pixelSizeValue,
-            unit: IMAGE_SIZE_UNITS[data?.pixelSizeUnits ?? 2]
-          },
-          weight: {
-            weighting: IMAGE_WEIGHTING.find(
-              item => item.value === Number(data?.weighting ?? IW_UNIFORM)
-            )?.label as string,
-            ...(Number(data?.weighting ?? IW_UNIFORM) === IW_BRIGGS && {
-              robust: ROBUST.find(item => item.value === (data?.robust ?? 0))?.value
-            })
-          },
-          polarisations: data?.polarisations ?? [],
-          channels_out: data?.channelsOut ?? 0,
-          gaussian_taper: data?.taperValue?.toString() ?? '0',
           time_averaging: { value: data?.timeAveraging ?? 0, unit: 'second' },
           frequency_averaging: { value: data?.frequencyAveraging ?? 0, unit: 'MHz' },
           kind: 'continuum',
-          variant: 'visibilities',
-          fit_spectral_pol: 0 // TODO remove this once we are using the latest PDM (v27.0.0)
-          // TODO update PDM to remove unneeded fields for Visibilities
+          variant: 'visibilities'
         };
       }
     }
@@ -242,37 +220,27 @@ export const getDataProductScriptParameters = (
         gaussian_taper: data?.taperValue?.toString() ?? '0',
         kind: 'spectral',
         variant: 'spectral image',
-        continuum_subtraction: data?.continuumSubtraction,
-        fit_spectral_pol: 0 // TODO remove this once we are using the latest PDM (v27.0.0)
+        continuum_subtraction: data?.continuumSubtraction
       };
     case TYPE_PST:
     default:
       const pstMode = obs?.find(o => o?.id === dp.observationId)?.pstMode;
       if (pstMode === DETECTED_FILTER_BANK_VALUE) {
-        const data = dp?.data as any; // TODO change type to SDPFilterbankPSTData once PDM updated
+        const data = dp?.data as SDPFilterbankPSTData;
         return {
           polarisations: data?.polarisations,
           bit_depth: Number(data?.bitDepth),
-          time_averaging_factor: Math.round(Number(data?.timeAveraging ?? 0)), // TODO update PDM to allow floats
-          frequency_averaging_factor: Math.round(Number(data?.frequencyAveraging ?? 0)), // TODO update PDM to allow floats
+          output_frequency_resolution: data?.outputFrequencyResolution ?? 0,
+          output_sampling_interval: data?.outputSamplingInterval ?? 0,
+          dispersion_measure: data?.dispersionMeasure ?? 0,
+          rotation_measure: data?.rotationMeasure ?? 0,
           kind: 'pst',
-          variant: 'detected filterbank',
-          fit_spectral_pol: 0 // TODO remove this once we are using the latest PDM (v27.0.0)
-          // TODO update PDM to update fields for SDPFilterbankPSTData
+          variant: 'detected filterbank'
         };
       } else if (pstMode === PULSAR_TIMING_VALUE) {
-        const data = dp?.data as any; // TODO change type to SDPTimingPSTData once PDM updated
         return {
-          polarisations: data?.polarisations ?? ['I'],
-          bit_depth: data?.bitDepth ?? 1,
-          // time_averaging_factor: 5,
           kind: 'pst',
-          variant: 'pulsar timing',
-          fit_spectral_pol: 0 // TODO remove this once we are using the latest PDM (v27.0.0)
-          // output_frequency_resolution: data?.outputFrequencyResolution ?? 1, // TODO uncomment this once using PDM v27.0.0
-          // output_sampling_interval: data?.outputSamplingInterval ?? 1, // TODO uncomment this once using PDM v27.0.0
-          // dispersion_measure: data?.dispersionMeasure ?? 1, // TODO uncomment this once using PDM v27.0.0
-          // rotation_measure: data?.rotationMeasure ?? 1 // TODO uncomment this once using PDM v27.0.0
+          variant: 'pulsar timing'
         };
       } else {
         const data = dp?.data as SDPFlowthroughPSTData;
