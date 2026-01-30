@@ -23,7 +23,8 @@ import {
   STATUS_INITIAL,
   STATUS_OK,
   STATUS_PARTIAL,
-  SUPPLIED_TYPE_INTEGRATION
+  SUPPLIED_TYPE_INTEGRATION,
+  TYPE_PST
 } from '../../utils/constants';
 import Target from '../../utils/types/target';
 import TargetObservation from '../../utils/types/targetObservation';
@@ -122,13 +123,18 @@ export default function LinkingPage() {
 
   const setTargetObservationAndCalibrationStorage = (
     targetObservations: TargetObservation[],
-    calibration: CalibrationStrategy[] | []
+    calibration: CalibrationStrategy[]
   ) => {
-    setProposal({
-      ...getProposal(),
+    const proposal = getProposal();
+    const hasCalibration = proposal.calibrationStrategy.length > 0;
+
+    const update = {
+      ...proposal,
       targetObservation: targetObservations,
-      calibrationStrategy: [...calibration]
-    });
+      ...(hasCalibration ? {} : { calibrationStrategy: [...calibration] })
+    };
+
+    setProposal(update);
   };
 
   const addTargetObservationAndCalibrationStorage = (
@@ -363,15 +369,20 @@ export default function LinkingPage() {
     return currRec?.Obs?.subarray !== SA_CUSTOM && weighting === IW_NATURAL;
   };
 
-  const getSensCalcSingle = (id: number, field: string) => (
-    <SensCalcDisplaySingle
-      sensCalc={getSensCalcForTargetGrid(id)}
-      show={isTargetSelected(id)}
-      field={field}
-      isCustom={isCustom()}
-      isNatural={isNatural()}
-    />
-  );
+  const getSensCalcSingle = (id: number, field: string) => {
+    const isPST = elementsO.find(e => e.id2 === currRec?.id2)?.type === TYPE_PST;
+    return (
+      <SensCalcDisplaySingle
+        sensCalc={
+          isPST ? { statusGUI: 0, title: '*SHOW PST MESSAGE*' } : getSensCalcForTargetGrid(id)
+        }
+        show={isTargetSelected(id)}
+        field={field}
+        isCustom={isCustom()}
+        isNatural={isNatural()}
+      />
+    );
+  };
 
   const extendedColumnsObservations = [
     ...[

@@ -1,11 +1,9 @@
 import React from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, Grid, Paper, Typography } from '@mui/material';
+import { useLocation } from 'react-router-dom';
+import { Box, Grid, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
 import {
-  NAV,
-  FOOTER_HEIGHT_PHT,
   PAGE_CALIBRATION,
   PAGE_CALIBRATION_ADD,
   PAGE_CALIBRATION_UPDATE,
@@ -22,7 +20,6 @@ import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import GetCalibratorList from '@/services/axios/get/getCalibratorList/getCalibratorList';
 import Target from '@/utils/types/target';
 import Observation from '@/utils/types/observation';
-import AddButton from '@/components/button/Add/Add';
 import HelpShell from '@/components/layout/HelpShell/HelpShell';
 
 const GAP = 4;
@@ -44,7 +41,6 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
 
   const isEdit = () => locationProperties.state !== null || data !== undefined;
   const PAGE = isEdit() ? PAGE_CALIBRATION_UPDATE : PAGE_CALIBRATION_ADD;
-  const navigate = useNavigate();
   const { application, updateAppContent2 } = storageObject.useStore();
   const { setHelp } = useHelp();
 
@@ -61,7 +57,6 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
   const [observationIdRef, setObservationIdRef] = React.useState('');
   const [calibrators, setCalibrators] = React.useState<Calibrator[] | null>(null);
   const [notes, setNotes] = React.useState('');
-  const [addNotes, setAddNotes] = React.useState(false);
 
   const calibrationIn = (inRec: CalibrationStrategy) => {
     setObservatoryDefined(inRec.observatoryDefined);
@@ -69,7 +64,6 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
     setObservationIdRef(inRec.observationIdRef);
     setCalibrators(inRec.calibrators);
     setNotes(inRec.notes ? inRec.notes : '');
-    setAddNotes(inRec.notes && inRec.notes.length > 0 ? true : false);
   };
 
   const calibrationOut = (): CalibrationStrategy => {
@@ -78,7 +72,7 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
       id: id,
       observationIdRef: observationIdRef,
       calibrators: calibrators,
-      notes: addNotes ? notes : null
+      notes: notes
     } as CalibrationStrategy;
   };
 
@@ -115,14 +109,6 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
 
   /**************************************************************/
 
-  const addCalibrationToProposal = () => {
-    const newCalibration: CalibrationStrategy = calibrationOut();
-    setProposal({
-      ...getProposal(),
-      calibrationStrategy: [...(getProposal().calibrationStrategy ?? []), newCalibration]
-    });
-  };
-
   function updateCalibrationOnProposal() {
     const newStrategy: CalibrationStrategy = calibrationOut();
     const record = {
@@ -135,7 +121,7 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
             id: newStrategy?.id,
             observationIdRef: newStrategy?.observationIdRef,
             calibrators: newStrategy?.calibrators,
-            notes: addNotes ? notes : null
+            notes: notes
           }
         ]
       ]
@@ -144,9 +130,7 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
   }
 
   const updateStorageProposal = () => {
-    if (loggedIn && (osdCyclePolicy?.maxObservations ?? 1) === 1) {
-      isEdit() ? updateCalibrationOnProposal() : addCalibrationToProposal();
-    }
+    updateCalibrationOnProposal();
   };
 
   /**************************************************************/
@@ -236,19 +220,12 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
   const commentField = () => {
     const numRows = 4;
 
-    function validateComment(inc: string) {
-      if (addNotes && (!inc || inc?.length === 0)) {
-        return `${t('title.empty')}`;
-      }
-    }
-
     return (
       <BorderedSection title={t('calibrator.comment.label')}>
         <TextEntry
           label=""
           testId="commentId"
           rows={numRows}
-          errorText={validateComment(notes)}
           value={notes}
           setValue={setNotes}
           onFocus={() => setHelp('calibrator.comment.help')}
@@ -258,55 +235,6 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
   };
 
   /**************************************************************/
-
-  const addButtonDisabled = () => {
-    return true; // isEdit() ? false : validateId() ? true : false;
-  };
-
-  const pageFooter = () => {
-    const buttonClicked = () => {
-      isEdit() ? updateCalibrationOnProposal() : addCalibrationToProposal();
-      if (!loggedIn || (osdCyclePolicy?.maxObservations ?? 1) !== 1) {
-        navigate(NAV[BACK_PAGE]);
-      }
-    };
-
-    return (
-      <Paper
-        sx={{
-          bgcolor: 'transparent',
-          position: 'fixed',
-          bottom:
-            FOOTER_HEIGHT_PHT + (loggedIn && (osdCyclePolicy?.maxObservations ?? 1) === 1 ? 60 : 0),
-          left: 0,
-          right: loggedIn && (osdCyclePolicy?.maxObservations ?? 1) === 1 ? 30 : 0
-        }}
-        elevation={0}
-      >
-        <Grid
-          p={2}
-          container
-          direction="row"
-          alignItems="space-between"
-          justifyContent="space-between"
-        >
-          <Grid />
-          <Grid />
-          <Grid>
-            {(!loggedIn || (osdCyclePolicy?.maxObservations ?? 1) !== 1) && (
-              <AddButton
-                action={buttonClicked}
-                disabled={addButtonDisabled()}
-                primary
-                testId={isEdit() ? 'updateCalibrationButtonEntry' : 'addCalibrationButtonEntry'}
-                title={isEdit() ? 'updateBtn.label' : 'addBtn.label'}
-              />
-            )}
-          </Grid>
-        </Grid>
-      </Paper>
-    );
-  };
 
   const strategyRow = (field1: Function, field2: Function, field3?: Function) => {
     return (
@@ -371,7 +299,6 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
             <Grid pr={10}>{commentField()}</Grid>
           </Grid>
         </Grid>
-        {pageFooter()}
       </Box>
     </HelpShell>
   );

@@ -123,7 +123,9 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   };
 
   const validateClicked = async (): Promise<boolean> => {
-    return validateTheProposal();
+    const result = await validateTheProposal();
+    setCanSubmit(result);
+    return result;
   };
 
   const prevPageNav = () => {
@@ -188,6 +190,10 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   }, [application.content2]);
 
   React.useEffect(() => {
+    if (!isSV) {
+      setCanSubmit(false);
+      return;
+    }
     const pagesIndexes = isSV ? STATUS_ARRAY_PAGES_SV : STATUS_ARRAY_PAGES_PROPOSAL;
     const pagesNeedToCheck = (application.content1 as number[]).filter((_value, idx) =>
       pagesIndexes.includes(idx)

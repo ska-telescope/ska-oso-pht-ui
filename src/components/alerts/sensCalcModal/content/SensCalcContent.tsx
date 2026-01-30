@@ -60,7 +60,7 @@ export default function SensCalcModalSingle({
 
   return (
     <>
-      {data?.statusGUI !== STATUS_INITIAL ? (
+      {data?.statusGUI !== STATUS_INITIAL && data?.title !== '*SHOW PST MESSAGE*' ? (
         <>
           {displayElement(
             t('sensitivityCalculatorResults.targetName'),
@@ -96,6 +96,10 @@ export default function SensCalcModalSingle({
             )
           )}
         </>
+      ) : data?.statusGUI !== STATUS_INITIAL && data?.title === '*SHOW PST MESSAGE*' ? (
+        <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
+          <Typography>{t('page.7.pstUnavailable')}</Typography>
+        </Alert>
       ) : (
         <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
           <Typography>{t('sensitivityCalculatorResults.noData')}</Typography>
