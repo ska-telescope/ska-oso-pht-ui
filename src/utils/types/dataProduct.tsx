@@ -39,7 +39,7 @@ export type DataProductSDPSpectralImageBackend = {
 export type DataProductSDPPSTDetectedFilterBankBackend = {
   polarisations: string[];
   bit_depth: number;
-  time_averaging_factor: number;
+  output_frequency_resolution: number;
   output_sampling_interval: number;
   dispersion_measure: number;
   rotation_measure: number;

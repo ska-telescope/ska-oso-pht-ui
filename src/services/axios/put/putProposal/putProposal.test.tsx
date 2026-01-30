@@ -18,6 +18,7 @@ import * as CONSTANTS from '@utils/constants.ts';
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import {
   DataProductSDPNew,
+  DataProductSDPPSTDetectedFilterBankBackend,
   DataProductSRC,
   DataProductSRCNetBackend,
   SDPFilterbankPSTData
@@ -303,7 +304,6 @@ describe('getDataProductScriptParameters', () => {
         weighting: 1,
         polarisations: ['XX'],
         channelsOut: 4,
-        fitSpectralPol: true,
         taperValue: 0.5
       }
     } as DataProductSDPNew;
@@ -329,7 +329,6 @@ describe('getDataProductScriptParameters', () => {
         weighting: 1,
         polarisations: ['YY'],
         channelsOut: 2,
-        fitSpectralPol: false,
         taperValue: 1.5,
         timeAveraging: 5,
         frequencyAveraging: 10
@@ -358,7 +357,6 @@ describe('getDataProductScriptParameters', () => {
         weighting: 2,
         polarisations: ['XY'],
         channelsOut: 8,
-        fitSpectralPol: true,
         taperValue: 0.1,
         continuumSubtraction: true,
         robust: 1
@@ -382,8 +380,6 @@ describe('getDataProductScriptParameters', () => {
         dataProductType: DETECTED_FILTER_BANK_VALUE,
         polarisations: ['YX'],
         bitDepth: 8,
-        timeAveraging: 2,
-        frequencyAveraging: 3,
         outputFrequencyResolution: 1,
         outputSamplingInterval: 1,
         dispersionMeasure: 10,
@@ -394,25 +390,22 @@ describe('getDataProductScriptParameters', () => {
     expect(result).toMatchObject({
       polarisations: ['YX'],
       bit_depth: 8,
-      time_averaging_factor: 2,
-      frequency_averaging_factor: 3,
+      output_frequency_resolution: 1,
+      output_sampling_interval: 1,
+      dispersion_measure: 10,
+      rotation_measure: 5,
       kind: 'pst',
       variant: 'detected filterbank'
-    });
+    } as DataProductSDPPSTDetectedFilterBankBackend);
   });
 
   test('should return pulsar timing for PST', () => {
     const dp = {
-      observationId: '4',
-      data: {
-        polarisations: ['YX'],
-        bitDepth: 16
-      }
+      id: 'dp-4',
+      observationId: '4'
     } as any;
     const result = getDataProductScriptParameters(obs, dp);
     expect(result).toMatchObject({
-      polarisations: ['YX'],
-      bit_depth: 16,
       kind: 'pst',
       variant: 'pulsar timing'
     });
@@ -456,7 +449,6 @@ describe('getDataProductScriptParameters', () => {
         robust: 2,
         polarisations: [],
         channelsOut: 1,
-        fitSpectralPol: false,
         taperValue: 0
       }
     } as DataProductSDPNew;
