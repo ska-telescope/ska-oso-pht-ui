@@ -6,16 +6,26 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
-* Changed: oso-services v12.0.0
-* Changed: oda-umbrella v15.1.0
-* Changed: improve error handling of sensitivity calculator requests
-* Added: Generate default linked observation on observation mode change for SV
+* Added: Generate default linked observation, data product & calibration on observation mode change for SV
+* Added: Cycle policies from the OSD are used for max  number of targets, observations & data products
+* Added: Linking page for proposal flow links a data product/observation combination to a target
+* Added: Calibration strategy for proposal flow
 * Added: Updated the library code and implemented accessibility for colors
-* Changed: Updated code so that number of stations is obtained from the OSD Data
-* Changed: SubArrays are now mapped to the values from the OSD and not numerically
+* [BREAKING] Changed: oso-services v12.0.0
+* [BREAKING] Changed: oda-umbrella v15.1.0 and PDM v27.0.0
+* Changed: Number of stations, SubArrays, & observation modes are obtained from the OSD Data
+* Changed: Validation data such as allowed bandwidth and frequency is coming fom the OSD Data
 * Changed: Updated to latest dependencies and libraries
 * Changed: Updated more components to make use of the accessible coloring
+* Changed: improve error handling of sensitivity calculator requests
+* Changed: Updates to data products fields
 * Changed: Use appropriate defaults values for each new SDP type for SV & proposal flow
+* Changed: Updates to observation entry page for proposal flow
+* Changed: Data Product validation for each variation
+* Changed: Data product is bound to an observation
+* Removed: PST beam on target page
+* Fixed: Navigation and status array for proposal flow
+* Fixed: grouping for proposal flow
 
 9.0.0
 ----------
