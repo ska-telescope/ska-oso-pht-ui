@@ -16,7 +16,7 @@
   "scripts": {
     "build": "vite build",
     "checker": "yarn prettier:fix && yarn lint:fix",
-    "code-analysis": "eslint src/**/*.{js,jsx,ts,tsx} --ignore-path .eslintignore -f junit -o linting.xml",
+    "code-analysis": "eslint src/**/*.{js,jsx,ts,tsx} -f junit -o linting.xml",
     "remove:cypress:ci": "cypress run --reporter junit --reporter-options 'mochaFile=build/reports/cypress-tests-[hash].xml'",
     "remove:cypress:open": "cypress open",
     "remove:cypress:run": "cypress run --config video=false",
