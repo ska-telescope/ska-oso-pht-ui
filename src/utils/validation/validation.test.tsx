@@ -10,7 +10,13 @@ import {
   SDPSpectralData,
   SDPVisibilitiesContinuumData
 } from '../types/dataProduct';
-import { IW_UNIFORM, ROBUST_DEFAULT, TAPER_DEFAULT } from '../constants';
+import {
+  DP_TYPE_IMAGES,
+  DP_TYPE_VISIBLE,
+  IW_UNIFORM,
+  ROBUST_DEFAULT,
+  TAPER_DEFAULT
+} from '../constants';
 
 describe('validateSpectralDataProduct', () => {
   it('returns true for valid spectral data product', () => {
@@ -126,7 +132,7 @@ describe('validateContinuumDataProduct', () => {
           id: 'SDP-0000000',
           observationId: 'obs-123',
           data: {
-            dataProductType: 1,
+            dataProductType: DP_TYPE_IMAGES,
             imageSizeValue: 100,
             imageSizeUnits: 1,
             pixelSizeValue: 0.5,
@@ -150,7 +156,7 @@ describe('validateContinuumDataProduct', () => {
           id: 'SDP-0000000',
           observationId: 'obs-123',
           data: {
-            dataProductType: 1,
+            dataProductType: DP_TYPE_IMAGES,
             imageSizeValue: 100,
             imageSizeUnits: 1,
             pixelSizeValue: 0.5,
@@ -172,7 +178,7 @@ describe('validateContinuumDataProduct', () => {
           id: 'SDP-0000000',
           observationId: 'obs-123',
           data: {
-            dataProductType: 1,
+            dataProductType: DP_TYPE_IMAGES,
             imageSizeValue: 100,
             imageSizeUnits: 1,
             pixelSizeValue: 0.5,
@@ -196,7 +202,7 @@ describe('validateContinuumDataProduct', () => {
           id: 'SDP-0000000',
           observationId: 'obs-123',
           data: {
-            dataProductType: 2,
+            dataProductType: DP_TYPE_VISIBLE,
             timeAveraging: 10,
             frequencyAveraging: 20
           } as SDPVisibilitiesContinuumData
@@ -214,7 +220,7 @@ describe('validateContinuumDataProduct', () => {
           observationId: 'obs-123',
 
           data: {
-            dataProductType: 2,
+            dataProductType: DP_TYPE_VISIBLE,
             timeAveraging: null as any,
             frequencyAveraging: 20
           } as SDPVisibilitiesContinuumData
@@ -232,7 +238,7 @@ describe('validateContinuumDataProduct', () => {
           observationId: 'obs-123',
 
           data: {
-            dataProductType: 2,
+            dataProductType: DP_TYPE_VISIBLE,
             timeAveraging: 10,
             frequencyAveraging: null as any
           } as SDPVisibilitiesContinuumData

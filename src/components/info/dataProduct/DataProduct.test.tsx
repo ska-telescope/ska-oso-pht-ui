@@ -2,7 +2,13 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 import DataProduct from './DataProduct';
-import { TYPE_CONTINUUM, TYPE_ZOOM, IW_BRIGGS } from '@/utils/constants';
+import {
+  TYPE_CONTINUUM,
+  TYPE_ZOOM,
+  IW_BRIGGS,
+  DP_TYPE_IMAGES,
+  DP_TYPE_VISIBLE
+} from '@/utils/constants';
 import {
   TYPE_PST,
   DETECTED_FILTER_BANK_VALUE,
@@ -55,7 +61,7 @@ const baseData: DataProductSDPNew = {
   id: '',
   observationId: '',
   data: {
-    dataProductType: 1,
+    dataProductType: DP_TYPE_IMAGES,
     imageSizeValue: 256,
     pixelSizeValue: 0.5,
     weighting: 2,
@@ -98,11 +104,11 @@ const baseObservation: Observation = {
 const t = (key: string) => key; // simple translation mock
 
 describe('DataProduct', () => {
-  it('renders continuum fields when dataProductType=1', () => {
+  it('renders continuum fields when dataProductType=DP_TYPE_IMAGES', () => {
     render(
       <DataProduct
         t={t}
-        sdp={{ ...baseData, data: { ...baseData.data, dataProductType: 1 } }}
+        sdp={{ ...baseData, data: { ...baseData.data, dataProductType: DP_TYPE_IMAGES } }}
         observation={baseObservation}
       />
     );
@@ -115,11 +121,11 @@ describe('DataProduct', () => {
     expect(screen.getByTestId('PolarisationsField')).toBeInTheDocument();
   });
 
-  it('renders continuum fields when dataProductType!=1', () => {
+  it('renders visibility fields when dataProductType!=DP_TYPE_IMAGES', () => {
     render(
       <DataProduct
         t={t}
-        sdp={{ ...baseData, data: { ...baseData.data, dataProductType: 2 } }}
+        sdp={{ ...baseData, data: { ...baseData.data, dataProductType: DP_TYPE_VISIBLE } }}
         observation={baseObservation}
       />
     );

@@ -7,6 +7,7 @@ import {
 } from '../types/dataProduct';
 import {
   DETECTED_FILTER_BANK_VALUE,
+  DP_TYPE_IMAGES,
   FLOW_THROUGH_VALUE,
   PAGE_DATA_PRODUCTS,
   PAGE_OBSERVATION,
@@ -92,11 +93,11 @@ export const checkDP = (proposal: Proposal) => {
     switch (
       proposal.scienceCategory // TODO: update validation to handle observation types instead?
     ) {
-      case TYPE_ZOOM: //Spectral
+      case TYPE_ZOOM:
         return validateSpectralDataProduct(proposal) ? 1 : 0;
-      case TYPE_CONTINUUM: //Continuum
+      case TYPE_CONTINUUM:
         return validateContinuumDataProduct(proposal) ? 1 : 0;
-      case TYPE_PST: //PST
+      case TYPE_PST:
         return validatePSTDataProduct(proposal) ? 1 : 0;
     }
   } else {
@@ -111,6 +112,7 @@ export const validateSDPPage = (proposal: Proposal, autoLink: boolean) => {
     let count = checkDP(proposal) ? 1 : 0;
     return result[count];
   } else {
+    // TODO proper validation of data products fields for proposal flow? Or should we keep it simple as below? Similar to observation entry
     let count =
       Array.isArray(proposal?.dataProductSDP) && proposal.dataProductSDP.length > 0 ? 1 : 0;
     return result[count];
@@ -230,6 +232,7 @@ export function validateSkyDirection2Number(value: string): string | null {
 
 export const validateSpectralDataProduct = (proposal: Proposal) => {
   //TODO: STAR-1854 - extend validation to account for multiple data products
+  // TODO: check if above statement is correct. Validation should check the active data product from the page?
   const dataProduct = proposal.dataProductSDP?.[0];
   if (dataProduct) {
     const data = dataProduct?.data as SDPSpectralData;
@@ -239,6 +242,7 @@ export const validateSpectralDataProduct = (proposal: Proposal) => {
       data?.pixelSizeValue != null &&
       data?.pixelSizeUnits != null &&
       data?.weighting != null &&
+      data?.robust !== null &&
       data?.taperValue != null &&
       data?.channelsOut != null &&
       data?.continuumSubtraction !== undefined &&
@@ -255,7 +259,7 @@ export const validateContinuumDataProduct = (proposal: Proposal) => {
   if (dataProduct) {
     if (
       (dataProduct?.data as SDPImageContinuumData | SDPVisibilitiesContinuumData)
-        ?.dataProductType === 1
+        ?.dataProductType === DP_TYPE_IMAGES
     ) {
       const data = dataProduct?.data as SDPImageContinuumData;
       return (
@@ -264,6 +268,7 @@ export const validateContinuumDataProduct = (proposal: Proposal) => {
         data?.pixelSizeValue != null &&
         data?.pixelSizeUnits != null &&
         data?.weighting != null &&
+        data?.robust !== null &&
         data?.taperValue != null &&
         data?.channelsOut != null &&
         data?.polarisations?.length > 0
@@ -288,10 +293,12 @@ export const validatePSTDataProduct = (proposal: Proposal) => {
       case DETECTED_FILTER_BANK_VALUE:
         const dataFB = dataProduct?.data as SDPFilterbankPSTData;
         return (
-          // dataFB?.timeAveraging != null &&
-          // dataFB?.frequencyAveraging != null &&
-          // TODO use new fields instead when SDP fields are updated on SDP page (outputFrequencyResolution, outputSamplingInterval, dispersionMeasure, rotationMeasure)
-          dataFB?.bitDepth != null && dataFB?.polarisations?.length > 0
+          dataFB?.bitDepth != null &&
+          dataFB?.outputFrequencyResolution != null &&
+          dataFB?.outputSamplingInterval != null &&
+          dataFB?.dispersionMeasure != null &&
+          dataFB?.rotationMeasure != null &&
+          dataFB?.polarisations?.length > 0
         );
       case PULSAR_TIMING_VALUE:
         return true; // no visible fields to verify
