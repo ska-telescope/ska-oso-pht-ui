@@ -151,6 +151,7 @@ export const MockProposalBackend: ProposalBackend = {
           spectral_averaging: '1'
         }
       }
+      // TODO add observations and data products for each PST modes
     ],
     data_product_sdps: [
       {
@@ -320,8 +321,6 @@ export const MockProposalBackendZoom: ProposalBackend = {
           },
           spectral_resolution: '14.13 Hz (21.2 m/s)',
           effective_resolution: '14.13 Hz (21.2 m/s)',
-          image_weighting: 'briggs',
-          robust: '1',
           spectral_averaging: '1',
           number_of_channels: '1024'
         }
@@ -330,7 +329,6 @@ export const MockProposalBackendZoom: ProposalBackend = {
     data_product_sdps: [
       {
         data_product_id: 'SDP-1',
-        products: ['Y', 'Y', 'Y', 'Y'],
         observation_set_ref: 'obs-arMIoY',
         script_parameters: {
           image_size: {
@@ -345,8 +343,10 @@ export const MockProposalBackendZoom: ProposalBackend = {
             weighting: '2',
             robust: 0
           },
-          polarisations: ['1234'],
-          channels_out: 1
+          polarisations: ['I', 'XX'],
+          channels_out: 1,
+          kind: 'spectral',
+          variant: 'spectral image'
         }
       }
     ],

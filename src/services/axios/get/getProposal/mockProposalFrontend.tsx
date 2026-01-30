@@ -261,7 +261,11 @@ export const MockProposalFrontend: Proposal = {
         timeAveraging: 0,
         frequencyAveraging: 0,
         bitDepth: 1,
-        continuumSubtraction: false
+        continuumSubtraction: false,
+        outputFrequencyResolution: 0,
+        outputSamplingInterval: 0,
+        dispersionMeasure: 0,
+        rotationMeasure: 0
       }
     }
   ],

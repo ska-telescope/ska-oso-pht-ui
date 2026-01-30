@@ -21,7 +21,8 @@ import {
   DataProductSDPPSTDetectedFilterBankBackend,
   DataProductSRC,
   DataProductSRCNetBackend,
-  SDPFilterbankPSTData
+  SDPFilterbankPSTData,
+  SDPVisibilitiesContinuumData
 } from '@utils/types/dataProduct.tsx';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import { MockProposalFrontend, MockProposalFrontendZoom } from './mockProposalFrontend.tsx';
@@ -322,22 +323,12 @@ describe('getDataProductScriptParameters', () => {
       observationId: '1',
       data: {
         dataProductType: 2,
-        imageSizeValue: 10,
-        imageSizeUnits: 0,
-        pixelSizeValue: 2,
-        pixelSizeUnits: 1,
-        weighting: 1,
-        polarisations: ['YY'],
-        channelsOut: 2,
-        taperValue: 1.5,
         timeAveraging: 5,
         frequencyAveraging: 10
-      }
+      } as SDPVisibilitiesContinuumData
     } as DataProductSDPNew;
     const result = getDataProductScriptParameters(obs, dp);
     expect(result).toMatchObject({
-      image_size: { value: 10, unit: 'deg' },
-      image_cellsize: { value: 2, unit: 'arcmin' },
       kind: 'continuum',
       variant: 'visibilities',
       time_averaging: { value: 5, unit: 'second' },

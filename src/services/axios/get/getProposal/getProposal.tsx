@@ -308,17 +308,16 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
             'frequency_averaging' in script ? Number(script.frequency_averaging.value) ?? 0 : 0,
           bitDepth: 'bit_depth' in script ? Number(script.bit_depth) ?? 1 : 1,
           continuumSubtraction:
-            'continuum_subtraction' in script ? Boolean(script.continuum_subtraction) : false
-          // TODO uncomment once new PDM used (27.0.0)
-          // outputFrequencyResolution:
-          //   'output_frequency_resolution' in script
-          //     ? Number(script.output_frequency_resolution) ?? 0
-          //     : 0,
-          // outputSamplingInterval:
-          //   'output_sampling_interval' in script ? Number(script.output_sampling_interval) ?? 0 : 0,
-          // dispersionMeasure:
-          //   'dispersion_measure' in script ? Number(script.dispersion_measure) ?? 0 : 0,
-          // rotationMeasure: 'rotation_measure' in script ? Number(script.rotation_measure) ?? 0 : 0
+            'continuum_subtraction' in script ? Boolean(script.continuum_subtraction) : false,
+          outputFrequencyResolution:
+            'output_frequency_resolution' in script
+              ? Number(script.output_frequency_resolution) ?? 0
+              : 0,
+          outputSamplingInterval:
+            'output_sampling_interval' in script ? Number(script.output_sampling_interval) ?? 0 : 0,
+          dispersionMeasure:
+            'dispersion_measure' in script ? Number(script.dispersion_measure) ?? 0 : 0,
+          rotationMeasure: 'rotation_measure' in script ? Number(script.rotation_measure) ?? 0 : 0
         }
       };
     }) ?? []
