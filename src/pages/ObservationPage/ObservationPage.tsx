@@ -144,7 +144,7 @@ export default function ObservationPage() {
           <Alert
             color={AlertColorTypes.Warning}
             text={
-              loggedIn && osdCyclePolicy?.maxObservations === 1 && hasTargetObservations
+              loggedIn && osdCyclePolicy?.maxObservations === 1 && hasTargetObservations()
                 ? t('page.5.noTarget')
                 : t('error.noObservationsLoggedOut')
             }

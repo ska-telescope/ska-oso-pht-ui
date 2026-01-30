@@ -115,9 +115,12 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     } else return !loggedIn && currPageNo !== 4;
   };
 
-  const showNextNav =
-    (!loggedIn && currPageNo === PAGE_TARGET) ||
-    (loggedIn && !nextPageInvalid && (currPageNo === -1 || nextPageNo !== -2));
+  const showNextNav = () => {
+    return (
+      (!loggedIn && currPageNo === PAGE_TARGET) ||
+      (loggedIn && !nextPageInvalid && (currPageNo === -1 || nextPageNo !== -2))
+    );
+  };
 
   const nextLabel = React.useCallback(() => {
     if (currPageNo === -2) return 'addBtn.label';
@@ -203,7 +206,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
         </Grid>
 
         <Grid>
-          {showNextNav && (
+          {showNextNav() && (
             <NextPageButton
               disabled={buttonDisabled}
               testId="nextButtonTestId"

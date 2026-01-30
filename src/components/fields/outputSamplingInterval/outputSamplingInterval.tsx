@@ -9,7 +9,7 @@ import { useHelp } from '@/utils/help/useHelp';
 interface OutputSamplingIntervalFieldProps {
   disabled?: boolean;
   required?: boolean;
-  setValue?: Function;
+  setValue: Function;
   suffix?: any;
   value: number;
   widthButton?: number;
@@ -47,14 +47,13 @@ export default function OutputSamplingIntervalField({
     return '';
   };
 
-  const handleSetValue = (raw: unknown) => {
-    const num = Number(raw);
+  const handleSetValue = (num: number) => {
     const error = validateValue(num);
     if (error) {
       setErrorText(error);
     } else {
       setErrorText('');
-      setValue?.(num);
+      setValue(num);
     }
   };
 
@@ -67,8 +66,8 @@ export default function OutputSamplingIntervalField({
     <Box pt={1}>
       <NumberEntry
         testId={FIELD}
-        value={String(value)}
-        setValue={handleSetValue}
+        value={value}
+        setValue={(v: number) => handleSetValue(Number(v))}
         label={t(FIELD + '.label')}
         onFocus={() => setHelp(FIELD)}
         required={required}

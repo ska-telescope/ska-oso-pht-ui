@@ -202,10 +202,21 @@ export default function PHT() {
     );
   };
 
-  // NOTE: It is likely that we will limit the options that the user gets to see, and this is the place to do it.
-  //       For now, we return all options, but annotated below is how to limit the options.
+  // NOTE: This is the place to limit the color options that can be seen.
+  //       For all options, you can return an empty list
   const getAccessibilityColors = () => {
-    return []; // All options, otherwise do something like this ['telescope', 'chart', 'observationType'];
+    return [
+      'telescope',
+      'chart',
+      'logo',
+      'reviewStatus',
+      'proposalStatus',
+      'observationType',
+      'boolean',
+      'button',
+      'sbStatus',
+      'status'
+    ];
   };
 
   return (

@@ -42,6 +42,8 @@ import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import { generateId } from '@/utils/helpers';
 import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
+import ObservingBand from '@/components/display/observingBand/observingBand';
+import ObservingType from '@/components/display/observingType/observingType';
 
 export default function LinkingPage() {
   const DATA_GRID_TARGET = '60vh';
@@ -89,7 +91,7 @@ export default function LinkingPage() {
 
   const getLevel = (obs: any) => {
     let result = STATUS_INITIAL;
-    filteredByObservation(obs.id)?.forEach(rec => {
+    filteredByDataProduct(obs.id)?.forEach(rec => {
       if (typeof rec !== 'undefined') {
         switch (rec.statusGUI) {
           case STATUS_ERROR:
@@ -110,7 +112,7 @@ export default function LinkingPage() {
 
   const getError = (obs: Observation) => {
     let result = '';
-    filteredByObservation(obs.id)?.forEach(rec => {
+    filteredByDataProduct(obs.id)?.forEach(rec => {
       if (typeof rec !== 'undefined' && rec.statusGUI === STATUS_ERROR) {
         result = rec.error ?? '';
       }
@@ -420,31 +422,8 @@ export default function LinkingPage() {
         renderCell: (e: {
           row: { telescope: number; rec: { observingBand: string | number } };
         }) => {
-          const colorsTelescope = getColors({
-            type: 'telescope',
-            colors: String(e.row.telescope),
-            content: 'both',
-            asArray: true,
-            dim: 0.6,
-            paletteIndex: Number(localStorage.getItem('skao_accessibility_mode'))
-          });
           return (
-            <Box
-              sx={{
-                backgroundColor: colorsTelescope.bg[0],
-                borderRadius: 1,
-                px: 1,
-                display: 'inline-flex'
-              }}
-            >
-              <Typography
-                variant="body2"
-                color={colorsTelescope.fg[0]}
-                sx={{ whiteSpace: 'nowrap', p: 1 }}
-              >
-                {t('observingBand.short.' + e.row.rec.observingBand)}
-              </Typography>
-            </Box>
+            <ObservingBand telescope={e.row.telescope} band={String(e.row.rec.observingBand)} />
           );
         }
       },
@@ -487,32 +466,7 @@ export default function LinkingPage() {
         flex: 1,
         disableClickEventBubbling: true,
         renderCell: (e: { row: { type: number } }) => {
-          const colorsType = getColors({
-            type: 'observationType',
-            colors: String(e.row.type),
-            content: 'both',
-            asArray: true,
-            dim: 0.6,
-            paletteIndex: Number(localStorage.getItem('skao_accessibility_mode'))
-          });
-          return (
-            <Box
-              sx={{
-                backgroundColor: colorsType.bg[0],
-                borderRadius: 1,
-                px: 1,
-                display: 'inline-flex'
-              }}
-            >
-              <Typography
-                variant="body2"
-                color={'#000000'} //</Box>colorsType.fg[0]}
-                sx={{ whiteSpace: 'nowrap', p: 1 }}
-              >
-                {t(`observationType.${e.row.type}`)}
-              </Typography>
-            </Box>
-          );
+          return <ObservingType type={String(e.row.type)} />;
         }
       },
       {
@@ -521,20 +475,20 @@ export default function LinkingPage() {
         sortable: false,
         width: 100,
         disableClickEventBubbling: true,
-        renderCell: (e: { row: Observation }) => {
-          const obs = elementsO.find(p => p.id === e.row.id);
+        renderCell: (e: { row: any }) => {
+          const rec = elementsO.find(p => p.id === e.row.id);
           return (
             <>
               {
                 <StatusIconDisplay
                   ariaDescription=" "
-                  ariaTitle={t('sensCalc.' + getLevel(obs))}
-                  level={getLevel(obs)}
+                  ariaTitle={t('sensCalc.' + getLevel(rec))}
+                  level={getLevel(rec)}
                   onClick={() =>
-                    getLevel(obs) === STATUS_INITIAL ? null : setOpenMultipleDialog(true)
+                    getLevel(rec) === STATUS_INITIAL ? null : setOpenMultipleDialog(true)
                   }
                   testId="testId"
-                  toolTip={t('sensCalc.' + getLevel(obs))}
+                  toolTip={t('sensCalc.' + getLevel(rec))}
                 />
               }
             </>
@@ -654,10 +608,10 @@ export default function LinkingPage() {
     else return [];
   };
 
-  const filteredByObservation = (obId: string) => {
+  const filteredByDataProduct = (id: string) => {
     const results: SensCalcResults[] = [];
     getProposal()?.targetObservation?.forEach(rec => {
-      if (rec.observationId === obId) {
+      if (rec.dataProductsSDPId === id) {
         results.push(rec.sensCalc);
       }
     });
@@ -733,14 +687,14 @@ export default function LinkingPage() {
             setOpen={setOpenDeleteDialog}
           />
         )}
-        {openMultipleDialog && currRec?.Obs && (
+        {openMultipleDialog && currRec?.rec && (
           <SensCalcModalMultiple
             open={openMultipleDialog}
             onClose={() => setOpenMultipleDialog(false)}
-            data={filteredByObservation(currRec?.Obs.id)}
-            observation={currRec?.Obs}
-            level={getLevel(currRec?.Obs)}
-            levelError={getError(currRec?.Obs)}
+            data={filteredByDataProduct(currRec?.id)}
+            observation={currRec?.rec}
+            level={getLevel(currRec?.rec)}
+            levelError={getError(currRec?.rec)}
             isCustom={isCustom()}
             isNatural={isNatural()}
           />

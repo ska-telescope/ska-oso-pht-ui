@@ -3,7 +3,7 @@ import { t } from 'i18next';
 import { presentSensCalcError, presentUnits, presentValue } from '@utils/present/present';
 import StatusIconDisplay from '../../../icon/status/statusIcon';
 import SensCalcModalSingle from '../../sensCalcModal/single/SensCalcModalSingle';
-import { STATUS_OK, TYPE_ZOOM, TYPE_CONTINUUM } from '../../../../utils/constants';
+import { STATUS_OK, TYPE_ZOOM, TYPE_CONTINUUM, STATUS_ERROR } from '../../../../utils/constants';
 
 const VALUE = 'value';
 const UNITS = 'units';
@@ -67,7 +67,7 @@ export default function SensCalcDisplaySingle({
           onClick={isDisabled() ? undefined : IconClicked}
           testId="statusId"
           toolTip={ariaStatusMessage(sensCalc)}
-          level={sensCalc?.statusGUI}
+          level={sensCalc?.statusGUI ?? STATUS_ERROR}
         />
       )}
       {show && field !== 'icon' && (
