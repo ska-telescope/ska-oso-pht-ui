@@ -25,8 +25,6 @@ export default function SensCalcDisplaySingle({
 }: SensCalcDisplaySingleProps) {
   const [openDialog, setOpenDialog] = React.useState(false);
 
-  console.log('SensCalcDisplaySingle render', sensCalc);
-
   const IconClicked = () => {
     setOpenDialog(true);
   };
