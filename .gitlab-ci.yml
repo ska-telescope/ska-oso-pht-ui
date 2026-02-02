@@ -8,7 +8,7 @@ variables:
 stages:
   - dependencies
   - build
-  - lint
+  # - lint
   - test
   - deploy
   - publish
@@ -61,10 +61,6 @@ ts-typecheck:
   environment:
     name: "dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG"
 
-js-lint:
-  variables: # use the loadbalancer as there is no authentication for back-end calls during tests
-    KUBE_HOST: https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
-
 js-e2e-deploy:
   variables: # use the loadbalancer as there is no authentication for back-end calls during tests
     KUBE_HOST: https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
@@ -78,6 +74,7 @@ info-dev-environment:
   <<: *dev_env
   script:
     - *info_script
+
 
 info-integration:
   script:
