@@ -5,7 +5,8 @@ import { presentSensCalcError, presentUnits, presentValue } from '@utils/present
 import {
   CUSTOM_VALID_FIELDS,
   SUPPLIED_TYPE_SENSITIVITY,
-  TYPE_CONTINUUM
+  TYPE_CONTINUUM,
+  TYPE_PST
 } from '@utils/constants.ts';
 import CancelButton from '../../../button/Cancel/Cancel';
 import Observation from '../../../../utils/types/observation';
@@ -42,6 +43,7 @@ export default function SensCalcModalMultiple({
   const { t } = useScopedTranslation();
 
   const isContinuum = () => observation.type === TYPE_CONTINUUM;
+  const isPST = () => observation.type === TYPE_PST;
   const isSensitivity = () => observation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 
   const PresentCustomResultValue = (rec: Rec) => {
@@ -310,7 +312,7 @@ export default function SensCalcModalMultiple({
           }}
         />
         <CardContent>
-          {data ? (
+          {!isPST() && data ? (
             <DataGrid
               rows={data}
               columns={getColumns()}
@@ -319,6 +321,10 @@ export default function SensCalcModalMultiple({
               testId="sensCalcDetailsList"
               // getRowId={(row: { field: any; value: any; }) => `${row.field}-${row.value}`}
             />
+          ) : isPST() ? (
+            <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
+              <Typography>{t('page.7.pstUnavailable')}</Typography>
+            </Alert>
           ) : (
             <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
               <Typography>{t('sensitivityCalculatorResults.noData')}</Typography>

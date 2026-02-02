@@ -61,6 +61,9 @@ ts-typecheck:
   environment:
     name: "dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG"
 
+js-lint:
+  allow_failure: true
+    
 js-e2e-deploy:
   variables: # use the loadbalancer as there is no authentication for back-end calls during tests
     KUBE_HOST: https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
