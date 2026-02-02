@@ -23,7 +23,6 @@ import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
   DETAILS,
-  OBSERVATION_TYPE_BACKEND,
   TYPE_CONTINUUM,
   TYPE_ZOOM,
   VEL_TYPES,
@@ -505,6 +504,7 @@ const getObservations = (
 const getResultsSection1 = (
   inResult: SensCalcResultsBackend,
   isContinuum: boolean,
+  isPST: boolean,
   isSensitivity: boolean,
   inObservationSets: ObservationSetBackend[],
   inResultObservationRef: string | null
@@ -512,9 +512,8 @@ const getResultsSection1 = (
   let section1 = [];
   const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
 
-  // for continuum observation
-  // if (inResult.continuum_confusion_noise) {
-  if (isContinuum) {
+  // for continuum or PST observation
+  if (isContinuum || isPST) {
     if (!isSensitivity) {
       section1.push({
         // This is only saved for supplied sensitivity obs in backend
@@ -661,7 +660,8 @@ const getTargetObservation = (
   }
   for (let result of inResults) {
     const resultObsType = getResultObsType(result, inObservationSets);
-    const isContinuum = resultObsType === OBSERVATION_TYPE_BACKEND[1];
+    const isContinuum = resultObsType === TYPE_CONTINUUM;
+    const isPST = resultObsType === TYPE_PST;
     const isSensitivity = result.result?.supplied_type === 'sensitivity';
 
     const targetObs: TargetObservation = {
@@ -677,13 +677,20 @@ const getTargetObservation = (
         section1: getResultsSection1(
           result,
           isContinuum,
+          isPST,
           isSensitivity,
           inObservationSets,
           result.observation_set_ref
         ),
-        section2: isContinuum
-          ? getResultsSection2(result, isSensitivity, inObservationSets, result.observation_set_ref)
-          : [], // only used for continuum observation
+        section2:
+          isContinuum || isPST
+            ? getResultsSection2(
+                result,
+                isSensitivity,
+                inObservationSets,
+                result.observation_set_ref
+              )
+            : [], // only used for continuum & PST observation
         section3: getResultsSection3(
           result.observation_set_ref,
           inObservationSets,
