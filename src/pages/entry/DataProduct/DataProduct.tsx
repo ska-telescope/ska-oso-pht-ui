@@ -722,6 +722,7 @@ export default function DataProduct({ data }: DataProductProps) {
             {baseObservations && (
               <GridObservation
                 data={baseObservations}
+                autoSelectId={observationId}
                 rowClick={(e: any) => setObservationId(e.row.id)}
                 disabled={maxObservationsReached()}
               />

@@ -1,8 +1,8 @@
 import React from 'react';
 import { Box, Stack } from '@mui/system';
+import { GridColDef } from '@mui/x-data-grid';
 import { DataGrid, getColors } from '@ska-telescope/ska-gui-components';
 import { Typography } from '@mui/material';
-import { GridColDef } from '@mui/x-data-grid';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import Observation from '@/utils/types/observation';
@@ -16,13 +16,15 @@ interface GridObservationProps {
   disabled?: boolean;
   rowClick?: (params: any) => void;
   displayOption?: number;
+  autoSelectId?: string | number;
 }
 
 export default function GridObservation({
   data,
   disabled = false,
   rowClick,
-  displayOption = 0
+  displayOption = 0,
+  autoSelectId
 }: GridObservationProps) {
   const { t } = useScopedTranslation();
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
@@ -44,13 +46,26 @@ export default function GridObservation({
   }, []);
 
   React.useEffect(() => {
-    if (data.length > 0 && !hasSelectedRef.current) {
-      const firstId = String(data[0].id);
-      setSelectedId(firstId);
-      rowClick?.({ row: data[0] });
+    if (data.length === 0) return;
+
+    // If an explicit autoSelectId is provided AND exists in the dataset
+    if (autoSelectId != null) {
+      const match = data.find(o => String(o.id) === String(autoSelectId));
+      if (match) {
+        setSelectedId(String(match.id));
+        rowClick?.({ row: match });
+        return;
+      }
+    }
+
+    // Otherwise fall back to first row, but only once
+    if (!hasSelectedRef.current) {
+      const first = data[0];
+      setSelectedId(String(first.id));
+      rowClick?.({ row: first });
       hasSelectedRef.current = true;
     }
-  }, [data, rowClick]);
+  }, [data, autoSelectId, rowClick]);
 
   const handleRowClick = (params: any) => {
     const clickedId = String(params.row.id);
@@ -132,7 +147,7 @@ export default function GridObservation({
     minWidth: 0,
     maxWidth: Number.MAX_SAFE_INTEGER,
     resizable: false,
-    renderCell: e => {
+    renderCell: (e: any) => {
       const isSelected = String(e.row.id) === selectedId;
       const centralFrequencyUnits = OSD_CONSTANTS.Units[e.row.centralFrequencyUnits]?.label ?? '';
       const bandwidthUnits =
