@@ -1,6 +1,7 @@
 import {
   BAND_LOW_STR,
   DEFAULT_USER,
+  DP_TYPE_IMAGES,
   PROPOSAL_STATUS,
   SA_AA2,
   TYPE_CONTINUUM,
@@ -248,7 +249,7 @@ export const MockProposalFrontend: Proposal = {
       id: 'SDP-2',
       observationId: 'obs-obR1Ej',
       data: {
-        dataProductType: 1,
+        dataProductType: DP_TYPE_IMAGES,
         imageSizeValue: 15,
         imageSizeUnits: 0,
         pixelSizeValue: 1.007,
@@ -427,7 +428,7 @@ export const MockProposalFrontendZoom: Proposal = {
       id: 'SDP-1',
       observationId: 'obs-arMIoY',
       data: {
-        dataProductType: 1,
+        dataProductType: DP_TYPE_IMAGES,
         imageSizeValue: 100,
         imageSizeUnits: 0,
         pixelSizeValue: 3.7,
