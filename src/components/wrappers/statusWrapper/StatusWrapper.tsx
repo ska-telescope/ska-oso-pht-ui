@@ -8,6 +8,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { validateProposalNavigation } from '@/utils/validation/validation';
 import { useNotify } from '@/utils/notify/useNotify';
+import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 interface StatusWrapperProps {
   level?: number;
@@ -22,9 +23,16 @@ export default function StatusWrapper({ level = 5, page }: StatusWrapperProps) {
   const { application } = storageObject.useStore();
   const { notifyClear, notifyError } = useNotify();
   const getProposal = () => application.content2 as Proposal;
+  const { isSV, osdCyclePolicy } = useOSDAccessors();
 
   const ClickFunction = () => {
-    if (!validateProposalNavigation(getProposal(), page)) {
+    if (
+      !validateProposalNavigation(
+        getProposal(),
+        page,
+        isSV && osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1
+      )
+    ) {
       notifyError(t('scienceCategory.validationNavigationError'));
       setTimeout(() => {
         notifyClear();

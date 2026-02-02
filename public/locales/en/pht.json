@@ -578,7 +578,8 @@
       "label": "Observation",
       "help": "Select the observation set for which you want to request a data product(s)."
     },
-    "group": "Group"
+    "group": "Group",
+    "missing": "No observations have been added to this proposal yet"
   },
   "observationType": {
     "label": "Observation Type",
@@ -1123,7 +1124,6 @@
     "null": "Not specified",
     "label": "Science Category",
     "help": "Select a category that best describes the science of your proposal.",
-    "validationNavigationError": "Science Category is required.  It is located on the General Information page.",
     "notSpecified": "Not specified",
     "error": "A value is required",
     "all": "All Science Categories",
@@ -1390,7 +1390,8 @@
     "empty": "There are no targets associated with this proposal",
     "loggedOut": "There are no targets created",
     "limitReached": "Only {{value}} target/object is allowed for this Proposal cycle.",
-    "limitReached_plural": "Only {{value}} target/object are allowed for Proposals."
+    "limitReached_plural": "Only {{value}} target/object are allowed for Proposals.",
+    "missing": "No targets have been added to this proposal yet"
   },
   "telescopes": {
     "2": "LOW",

@@ -38,7 +38,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const navigate = useNavigate();
   const { application, updateAppContent2, updateAppContent4 } = storageObject.useStore();
   const authClient = useAxiosAuthClient();
-  const { notifyError, notifySuccess, notifyWarning } = useNotify();
+  const { notifyClear, notifyError, notifySuccess, notifyWarning } = useNotify();
   const loggedIn = isLoggedIn();
   const { isSV, osdCycleId, osdCyclePolicy } = useOSDAccessors();
 
@@ -106,7 +106,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const nextPageInvalid = !validateProposalNavigation(
     proposal,
     nextPageNo,
-    osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1
+    isSV && osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1
   );
 
   const showPrevNav = () => {
@@ -118,7 +118,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const showNextNav = () => {
     return (
       (!loggedIn && currPageNo === PAGE_TARGET) ||
-      (loggedIn && !nextPageInvalid && (currPageNo === -1 || nextPageNo !== -2))
+      (loggedIn && (currPageNo === -1 || nextPageNo !== -2))
     );
   };
 
@@ -148,6 +148,13 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     if (!loggedIn && currPageNo === 0) {
       navigate(NAV[PAGE_TARGET]);
       return;
+    }
+
+    if (nextPageInvalid) {
+      notifyError(t('scienceCategory.validationNavigationError'));
+      setTimeout(() => {
+        notifyClear();
+      }, 4000);
     }
 
     if (!nextPageInvalid && nextPageNo < NAV.length) {

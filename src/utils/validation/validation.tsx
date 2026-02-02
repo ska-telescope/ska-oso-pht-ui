@@ -11,6 +11,7 @@ import {
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
   FLOW_THROUGH_VALUE,
+  PAGE_CALIBRATION,
   PAGE_DATA_PRODUCTS,
   PAGE_OBSERVATION,
   STATUS_ERROR,
@@ -168,11 +169,16 @@ export const validateProposal = (proposal: Proposal, autoLink: boolean) => {
 };
 
 export const validateProposalNavigation = (proposal: Proposal, page: number, checkLink = false) => {
-  if (checkLink && (page === PAGE_OBSERVATION || page === PAGE_DATA_PRODUCTS)) {
+  if (
+    checkLink &&
+    (page === PAGE_OBSERVATION || page === PAGE_DATA_PRODUCTS || page === PAGE_CALIBRATION)
+  ) {
     return (
-      proposal.scienceCategory === TYPE_CONTINUUM ||
-      proposal.scienceCategory === TYPE_PST ||
-      proposal.scienceCategory === TYPE_ZOOM
+      (proposal.scienceCategory === TYPE_CONTINUUM ||
+        proposal.scienceCategory === TYPE_PST ||
+        proposal.scienceCategory === TYPE_ZOOM) &&
+      Array.isArray(proposal?.targets) &&
+      proposal.targets.length > 0
     );
   }
   return true;
