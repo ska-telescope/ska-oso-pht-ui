@@ -43,6 +43,7 @@ export default function CalibrationPage() {
     const proposal = getProposal();
     return (
       !!proposal &&
+      !!(proposal?.targetObservation && proposal.targetObservation.length > 0) &&
       Array.isArray(proposal.calibrationStrategy) &&
       proposal.calibrationStrategy.length > 0
     );

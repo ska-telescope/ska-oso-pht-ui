@@ -103,8 +103,10 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
 
   // TODO : Extend for Proposals when there will be more than one proposal and target as an option
   React.useEffect(() => {
-    setTarget(getProposal()?.targets?.[0]);
-    setObservation(getProposal()?.observations?.[0]);
+    const proposal = getProposal();
+    const found = proposal?.targetObservation && proposal.targetObservation.length > 0;
+    setTarget(found ? proposal?.targets?.[0] : undefined);
+    setObservation(found ? proposal?.observations?.[0] : undefined);
   }, [observationIdRef]);
 
   /**************************************************************/
@@ -197,6 +199,7 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
         value={target ? target.name : ''}
         disabled={true}
         label={t('calibrator.target')}
+        errorText={target ? '' : t('targets.missing')}
       />
     );
   };
@@ -209,10 +212,11 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
     return fieldWrapper(
       <TextEntry
         testId="integrationTime"
-        value={observation ? observation.supplied.value : 1}
+        value={observation ? observation.supplied.value : undefined}
         disabled={true}
         label={theLabel}
         suffix={theUnits}
+        errorText={observation ? '' : t('observations.missing')}
       />
     );
   };

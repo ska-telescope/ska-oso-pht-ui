@@ -201,7 +201,6 @@ export default function DataProduct({ data }: DataProductProps) {
         polarisations,
         channelsOut,
         taperValue,
-        taperMidValue,
         timeAveraging,
         frequencyAveraging,
         bitDepth,
@@ -232,7 +231,6 @@ export default function DataProduct({ data }: DataProductProps) {
         polarisations,
         channelsOut,
         taperValue,
-        taperMidValue,
         timeAveraging,
         frequencyAveraging,
         bitDepth,
@@ -692,7 +690,7 @@ export default function DataProduct({ data }: DataProductProps) {
       sx={{
         flexGrow: 1,
         width: '100%',
-        overflow: 'hidden',
+        overflow: 'auto',
         display: 'flex',
         flexDirection: 'column',
         borderRadius: 0,
@@ -814,15 +812,17 @@ export default function DataProduct({ data }: DataProductProps) {
             {((isContinuum() && isDataTypeOne()) ||
               isSpectral() ||
               (isPST() && !isPulsarTiming())) && (
-              <BorderedSection
-                borderColor={polarisationsValid() ? 'text.disabled' : theme.palette.error.main}
-                title={t('polarisations.label')}
-              >
-                {fieldWrapper(
-                  polarisationsField(),
-                  (isContinuum() && isDataTypeOne()) || isSpectral() ? '150px' : undefined
-                )}
-              </BorderedSection>
+              <Box pb={GAP}>
+                <BorderedSection
+                  borderColor={polarisationsValid() ? 'text.disabled' : theme.palette.error.main}
+                  title={t('polarisations.label')}
+                >
+                  {fieldWrapper(
+                    polarisationsField(),
+                    (isContinuum() && isDataTypeOne()) || isSpectral() ? '150px' : undefined
+                  )}
+                </BorderedSection>
+              </Box>
             )}
           </Stack>
         </Grid>
