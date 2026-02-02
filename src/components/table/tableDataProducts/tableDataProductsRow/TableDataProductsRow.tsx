@@ -114,6 +114,7 @@ export default function TableDataProductsRow({
         {/* Collapse / Edit / Delete */}
         <TableCell role="gridcell" sx={{ maxWidth: 120, p: 0 }}>
           <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
+            {/* We should re-introduce expand/collapse functionality in future
             <Box display="flex" flexDirection="column" alignItems="center">
               <ExpandIcon
                 onClick={() => toggleRow(item.id)}
@@ -123,7 +124,7 @@ export default function TableDataProductsRow({
               <Typography variant="caption">
                 {t(expanded ? 'collapse.label' : 'expand.label')}
               </Typography>
-            </Box>
+            </Box> */}
 
             {editClicked && (
               <Box display="flex" flexDirection="column" alignItems="center">

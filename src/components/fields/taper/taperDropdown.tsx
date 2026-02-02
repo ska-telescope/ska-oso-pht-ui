@@ -29,6 +29,9 @@ export default function TaperDropdownField({
     options: { label: string; value: number }[],
     centralFrequency: ValueUnitPair | undefined
   ) => {
+    if (!centralFrequency || !centralFrequency.value || !centralFrequency.unit) {
+      return options;
+    }
     [0.25, 1, 4, 16, 64, 256, 1024].forEach(inValue => {
       const theLabel =
         (
