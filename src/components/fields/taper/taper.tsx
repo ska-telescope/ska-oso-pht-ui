@@ -14,7 +14,7 @@ interface TaperFieldProps {
 }
 
 export default function TaperField({
-  disabled = false,
+  disabled,
   required = false,
   onFocus,
   setValue,

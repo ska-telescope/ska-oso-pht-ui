@@ -36,7 +36,6 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
   const isSpectral = () => observation?.type === TYPE_ZOOM;
   const isPST = () => observation?.type === TYPE_PST;
   const isDataTypeOne = () => (sdp?.data as any)?.dataProductType === 1;
-
   const sdpData = sdp?.data;
 
   const fieldWrapper = (children?: React.JSX.Element, height = WRAPPER_HEIGHT) => (
@@ -96,9 +95,10 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
     fieldWrapper(
       <TaperField
         value={(sdpData as SDPImageContinuumData | SDPSpectralData)?.taperValue}
-        disabled
+        disabled={true}
       />
     );
+
   const polarisationField = () =>
     fieldWrapper(
       <PolarisationsField
