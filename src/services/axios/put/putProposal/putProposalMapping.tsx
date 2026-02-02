@@ -533,14 +533,12 @@ const getResults = (
   incTargets: Target[]
 ) => {
   const resultsArr = [];
-  console.log('incTargetObservations', incTargetObservations);
   if (incTargetObservations) {
     for (let tarObs of incTargetObservations) {
       if (tarObs.sensCalc?.error) {
         continue;
       }
       const obsType = getObsType(tarObs, incObs); // spectral or continuum
-      console.log('obsType', obsType);
       const spectralSection = getSpectralSection(obsType);
       const suppliedType =
         tarObs?.sensCalc?.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
