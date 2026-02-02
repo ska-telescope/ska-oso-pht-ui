@@ -23,7 +23,6 @@ import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
   DETAILS,
-  OBSERVATION_TYPE_BACKEND,
   TYPE_CONTINUUM,
   TYPE_ZOOM,
   VEL_TYPES,
@@ -661,8 +660,8 @@ const getTargetObservation = (
   }
   for (let result of inResults) {
     const resultObsType = getResultObsType(result, inObservationSets);
-    const isContinuum = resultObsType === OBSERVATION_TYPE_BACKEND[1];
-    const isPST = resultObsType === OBSERVATION_TYPE_BACKEND[2];
+    const isContinuum = resultObsType === TYPE_CONTINUUM;
+    const isPST = resultObsType === TYPE_PST;
     const isSensitivity = result.result?.supplied_type === 'sensitivity';
 
     const targetObs: TargetObservation = {
