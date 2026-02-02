@@ -505,6 +505,7 @@ const getObservations = (
 const getResultsSection1 = (
   inResult: SensCalcResultsBackend,
   isContinuum: boolean,
+  isPST: boolean,
   isSensitivity: boolean,
   inObservationSets: ObservationSetBackend[],
   inResultObservationRef: string | null
@@ -514,7 +515,7 @@ const getResultsSection1 = (
 
   // for continuum observation
   // if (inResult.continuum_confusion_noise) {
-  if (isContinuum) {
+  if (isContinuum || isPST) {
     if (!isSensitivity) {
       section1.push({
         // This is only saved for supplied sensitivity obs in backend
@@ -662,6 +663,7 @@ const getTargetObservation = (
   for (let result of inResults) {
     const resultObsType = getResultObsType(result, inObservationSets);
     const isContinuum = resultObsType === OBSERVATION_TYPE_BACKEND[1];
+    const isPST = resultObsType === OBSERVATION_TYPE_BACKEND[2];
     const isSensitivity = result.result?.supplied_type === 'sensitivity';
 
     const targetObs: TargetObservation = {
@@ -677,13 +679,20 @@ const getTargetObservation = (
         section1: getResultsSection1(
           result,
           isContinuum,
+          isPST,
           isSensitivity,
           inObservationSets,
           result.observation_set_ref
         ),
-        section2: isContinuum
-          ? getResultsSection2(result, isSensitivity, inObservationSets, result.observation_set_ref)
-          : [], // only used for continuum observation
+        section2:
+          isContinuum || isPST
+            ? getResultsSection2(
+                result,
+                isSensitivity,
+                inObservationSets,
+                result.observation_set_ref
+              )
+            : [], // only used for continuum & PST observation
         section3: getResultsSection3(
           result.observation_set_ref,
           inObservationSets,
