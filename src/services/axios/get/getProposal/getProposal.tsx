@@ -513,8 +513,7 @@ const getResultsSection1 = (
   let section1 = [];
   const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
 
-  // for continuum observation
-  // if (inResult.continuum_confusion_noise) {
+  // for continuum or PST observation
   if (isContinuum || isPST) {
     if (!isSensitivity) {
       section1.push({
