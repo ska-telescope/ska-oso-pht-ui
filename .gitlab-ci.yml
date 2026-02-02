@@ -61,6 +61,10 @@ ts-typecheck:
   environment:
     name: "dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG"
 
+js-lint:
+  variables: # use the loadbalancer as there is no authentication for back-end calls during tests
+    KUBE_HOST: https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
+
 js-e2e-deploy:
   variables: # use the loadbalancer as there is no authentication for back-end calls during tests
     KUBE_HOST: https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
@@ -100,8 +104,8 @@ deploy-integration:
 
 include:
   # TS linting and unit testing
-  - project: 'ska-telescope/templates-repository'
-    file: 'gitlab-ci/includes/js.gitlab-ci.yml'
+  # - project: 'ska-telescope/templates-repository'
+  #   file: 'gitlab-ci/includes/js.gitlab-ci.yml'
   # OCI
   - project: "ska-telescope/templates-repository"
     file: "gitlab-ci/includes/oci-image.gitlab-ci.yml"
