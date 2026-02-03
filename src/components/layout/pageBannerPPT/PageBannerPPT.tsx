@@ -271,7 +271,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         </Grid>
       ) : (
         <Grid size={{ xs: 7 }} display={'block'}>
-          {getProposal().id !== null && pages.includes(pageNo) && <StatusArray />}
+          {getProposal().id !== '' && pages.includes(pageNo) && <StatusArray />}
         </Grid>
       )}
 
@@ -322,7 +322,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   return (
     <Box p={2}>
       {loggedIn || cypressToken ? row1() : row1buttonsLeft()}
-      {((loggedIn && getProposal().id !== null) || cypressToken) && row2()}
+      {((loggedIn && getProposal().id !== '') || cypressToken) && row2()}
       {row3()}
 
       {openProposalDisplay && (
