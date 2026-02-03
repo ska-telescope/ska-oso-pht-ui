@@ -205,6 +205,7 @@ export default function PanelManagement() {
   }
 
   const handleProposalsChange = (proposalsList: PanelProposal[]) => {
+    console.log('handleProposalsChange', proposalsList);
     // Update the current panel's proposals with the new list
     setCurrentPanel(prevPanel => {
       if (!prevPanel) {
@@ -221,14 +222,26 @@ export default function PanelManagement() {
     });
   };
 
+  // const proposalSelectedToggle_original = (proposal: Proposal, isSelected: boolean) => {
+  //   if (isSelected) {
+  //     // proposalForUpdate = undefined; // TODO : What happens if you unassign a proposal from a panel ?
+  //     deleteProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
+  //   } else {
+  //     // proposalForUpdate = proposal;
+  //     addProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
+  // }
+
   const proposalSelectedToggle = async (proposal: Proposal, isSelected: boolean) => {
     const isSV = false; // Need to check this against the proposal ownership
     const newProposal = {
       ...proposal,
       status: isSelected ? PROPOSAL_STATUS.SUBMITTED : PROPOSAL_STATUS.UNDER_REVIEW
     };
+    console.log('newProposal', newProposal);
     const result = await PutProposal(authClient, newProposal, isSV);
+    console.log('result', result);
     if (await result) {
+      console.log('in await result', result);
       if (isSelected) {
         deleteProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
       } else {
