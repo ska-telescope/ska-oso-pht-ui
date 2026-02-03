@@ -52,7 +52,7 @@ import {
   getMinimumChannelWidth,
   obTypeTransform
 } from '@utils/helpers.ts';
-import WeatherField from '@components/weather/weather.tsx';
+import WeatherField from '@/components/fields/weather/weather';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
 import Proposal from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';

@@ -9,13 +9,14 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 interface DispersionMeasureFieldProps {
   disabled?: boolean;
   required?: boolean;
-  setValue: Function;
+  setValue?: Function;
   suffix?: any;
   value: number;
   widthButton?: number;
 }
 
 export default function DispersionMeasureField({
+  disabled = false,
   required = false,
   setValue,
   value
@@ -53,7 +54,9 @@ export default function DispersionMeasureField({
       setErrorText(error);
     } else {
       setErrorText('');
-      setValue(num);
+      if (setValue) {
+        setValue(num);
+      }
     }
   };
 
@@ -71,6 +74,8 @@ export default function DispersionMeasureField({
         label={t(FIELD + '.label')}
         onFocus={() => setHelp(FIELD)}
         required={required}
+        disabled={disabled}
+        disabledUnderline={disabled}
         errorText={errorText}
       />
     </Box>

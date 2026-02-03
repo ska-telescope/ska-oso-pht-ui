@@ -9,13 +9,14 @@ import { useHelp } from '@/utils/help/useHelp';
 interface OutputSamplingIntervalFieldProps {
   disabled?: boolean;
   required?: boolean;
-  setValue: Function;
+  setValue?: Function;
   suffix?: any;
   value: number;
   widthButton?: number;
 }
 
 export default function OutputSamplingIntervalField({
+  disabled = false,
   required = false,
   setValue,
   value
@@ -53,7 +54,9 @@ export default function OutputSamplingIntervalField({
       setErrorText(error);
     } else {
       setErrorText('');
-      setValue(num);
+      if (setValue) {
+        setValue(num);
+      }
     }
   };
 
@@ -67,6 +70,8 @@ export default function OutputSamplingIntervalField({
       <NumberEntry
         testId={FIELD}
         value={value}
+        disabled={disabled}
+        disabledUnderline={disabled}
         setValue={(v: number) => handleSetValue(Number(v))}
         label={t(FIELD + '.label')}
         onFocus={() => setHelp(FIELD)}
