@@ -227,7 +227,7 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
                     variant="body1"
                     color="text.secondary"
                   >
-                    {t('cycleDescription.label')}: {policy.cycleDescription}
+                    {t('cycleDescription.label')}: {policy?.cycleDescription}
                   </Typography>
                   <Typography
                     data-testid={policy.cycleInformation.cycleId + '_opens'}

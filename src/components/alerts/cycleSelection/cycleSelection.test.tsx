@@ -56,7 +56,7 @@ describe('CycleSelection component', () => {
       selectedPolicy: mockPolicy,
       setSelectedPolicy: vi.fn(),
       osdCycleId: mockPolicy.cycleInformation.cycleId,
-      osdCycleDescription: mockPolicy.cycleDescription,
+      osdCycleDescription: mockPolicy?.cycleDescription,
       osdOpens: () => mockPolicy.cycleInformation.proposalOpen,
       osdCloses: () => mockPolicy.cycleInformation.proposalClose,
       osdCyclePolicy: { maxTargets: 1, maxObservations: 1 }
@@ -116,7 +116,7 @@ describe('CycleSelection component', () => {
       selectedPolicy: mockPolicy,
       setSelectedPolicy: vi.fn(),
       osdCycleId: mockPolicy.cycleInformation.cycleId,
-      osdCycleDescription: mockPolicy.cycleDescription,
+      osdCycleDescription: mockPolicy?.cycleDescription,
       osdOpens: () => mockPolicy.cycleInformation.proposalOpen,
       osdCloses: () => mockPolicy.cycleInformation.proposalClose,
       osdCyclePolicy: { maxTargets: 1, maxObservations: 1 }
