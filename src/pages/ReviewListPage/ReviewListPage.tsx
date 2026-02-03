@@ -294,11 +294,8 @@ export default function ReviewListPage() {
     );
   };
 
-  const canEditTechnical = (tecReview: { status: string }) => {
-    return (
-      isReviewerTechnical() && tecReview && tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED
-    );
-  };
+  const canEditTechnical = (tecReview: { status: string }) =>
+    isReviewerTechnical() && tecReview && tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED;
 
   const hasTechnicalComments = (review: any) =>
     feasibleYes(review) ? true : review?.comments?.length > 0;
