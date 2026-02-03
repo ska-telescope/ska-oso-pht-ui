@@ -112,13 +112,13 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const showPrevNav = () => {
     if ((loggedIn && currPageNo > 0) || (cypressToken && currPageNo > 0)) {
       return true;
-    } else return !loggedIn && currPageNo !== 4;
+    } else return !loggedIn && !cypressToken && currPageNo !== 4;
   };
 
   const showNextNav = () => {
     return (
       (!loggedIn && currPageNo === PAGE_TARGET) ||
-      (loggedIn && (currPageNo === -1 || nextPageNo !== -2))
+      loggedIn || (cypressToken && (currPageNo === -1 || nextPageNo !== -2))
     );
   };
 
