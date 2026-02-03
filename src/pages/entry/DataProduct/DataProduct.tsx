@@ -109,7 +109,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const [imageSizeUnits, setImageSizeUnits] = React.useState(IMAGE_SIZE_UNIT_DEFAULT);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(PIXEL_SIZE_DEFAULT);
   const [pixelSizeUnits, setPixelSizeUnits] = React.useState(PIXEL_SIZE_UNIT_DEFAULT);
-  const [taperValue, setTaperValue] = React.useState(TAPER_DEFAULT);
+  const [taperLowValue, setTaperLowValue] = React.useState(TAPER_DEFAULT);
   const [taperMidValue, setTaperMidValue] = React.useState(TAPER_DEFAULT);
   const [timeAveraging, setTimeAveraging] = React.useState(TIME_AVERAGING_DEFAULT);
   const [timeAveragingUnits, setTimeAveragingUnits] = React.useState(_TIME_AVERAGING_UNITS_DEFAULT);
@@ -168,8 +168,8 @@ export default function DataProduct({ data }: DataProductProps) {
     setPixelSizeValue(data?.pixelSizeValue ?? PIXEL_SIZE_DEFAULT);
     setPixelSizeUnits(data?.pixelSizeUnits ?? PIXEL_SIZE_UNIT_DEFAULT);
     isLow()
-      ? setTaperValue(data?.taperValue ?? TAPER_DEFAULT)
-      : setTaperMidValue(data?.taperMidValue ?? TAPER_DEFAULT);
+      ? setTaperLowValue(data?.taperValue ?? TAPER_DEFAULT)
+      : setTaperMidValue(data?.taperValue ?? TAPER_DEFAULT);
     setWeighting(data?.weighting ?? IW_UNIFORM);
     setRobust(data?.robust ?? ROBUST_DEFAULT);
     setPolarisations(data?.polarisations ?? []);
@@ -187,6 +187,7 @@ export default function DataProduct({ data }: DataProductProps) {
   };
 
   const dataProductOut = () => {
+    const taper = isLow() ? taperLowValue : taperMidValue;
     const newDataProduct: DataProductSDPNew = {
       id: id,
       observationId,
@@ -200,7 +201,7 @@ export default function DataProduct({ data }: DataProductProps) {
         robust,
         polarisations,
         channelsOut,
-        taperValue,
+        taperValue: taper,
         timeAveraging,
         frequencyAveraging,
         bitDepth,
@@ -217,33 +218,9 @@ export default function DataProduct({ data }: DataProductProps) {
   /* ------------------------------------------- */
 
   const addToProposal = () => {
-    const newDataProduct: DataProductSDPNew = {
-      id: generateId(PAGE_PREFIX, 6),
-      observationId,
-      data: {
-        dataProductType,
-        imageSizeValue,
-        imageSizeUnits,
-        pixelSizeValue,
-        pixelSizeUnits,
-        weighting,
-        robust,
-        polarisations,
-        channelsOut,
-        taperValue,
-        timeAveraging,
-        frequencyAveraging,
-        bitDepth,
-        continuumSubtraction,
-        outputFrequencyResolution,
-        outputSamplingInterval,
-        dispersionMeasure,
-        rotationMeasure
-      }
-    };
     setProposal({
       ...getProposal(),
-      dataProductSDP: [...(getProposal()?.dataProductSDP ?? []), newDataProduct]
+      dataProductSDP: [...(getProposal()?.dataProductSDP ?? []), dataProductOut()]
     });
   };
 
@@ -293,9 +270,9 @@ export default function DataProduct({ data }: DataProductProps) {
 
     setBaseObservations(observations);
     if (isEdit()) {
-      dataProductIn(data ? data : locationProperties.state);
+      dataProductIn(data ? data : (locationProperties.state as DataProductSDPNew));
     } else {
-      // Nothing to do for now
+      setId(generateId(PAGE_PREFIX, 6));
     }
     // TODO : Need to set the appropriate setHelp value upon entry
   }, []);
@@ -328,7 +305,7 @@ export default function DataProduct({ data }: DataProductProps) {
     imageSizeUnits,
     pixelSizeValue,
     pixelSizeUnits,
-    taperValue,
+    taperLowValue,
     taperMidValue,
     timeAveraging,
     timeAveragingUnits,
@@ -351,29 +328,29 @@ export default function DataProduct({ data }: DataProductProps) {
     </Box>
   );
 
-  const taperField = () =>
-    fieldWrapper(
-      <TaperField
-        disabled={isLow()}
-        onFocus={() => setHelp('taper')}
-        required
-        setValue={setTaperValue}
-        value={taperValue}
-        suffix={t('taper.units')}
-      />
-    );
-
-  const taperDropdownField = () =>
-    fieldWrapper(
-      <TaperDropdownField
-        onFocus={() => setHelp('taper')}
-        required
-        setValue={setTaperMidValue}
-        value={taperMidValue}
-        suffix={t('taper.units')}
-        centralFrequency={getCentralFrequency()}
-      />
-    );
+  const taperField = () => {
+    return isLow()
+      ? fieldWrapper(
+          <TaperField
+            disabled={isLow()}
+            onFocus={() => setHelp('taper')}
+            required
+            setValue={setTaperLowValue}
+            value={taperLowValue}
+            suffix={t('taper.units')}
+          />
+        )
+      : fieldWrapper(
+          <TaperDropdownField
+            onFocus={() => setHelp('taper')}
+            required
+            setValue={setTaperMidValue}
+            value={taperMidValue}
+            suffix={t('taper.units')}
+            centralFrequency={getCentralFrequency()}
+          />
+        );
+  };
 
   const getCentralFrequency = () => {
     const obj = baseObservations.find(id => id.id === observationId);
@@ -598,7 +575,8 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const imageSizeValid = () => Number(imageSizeValue) > 0;
   const pixelSizeValid = () => pixelSizeValue > 0;
-  const taperSizeValid = () => taperValue >= 0 && taperMidValue >= 0;
+  const taperSizeValid = () => taperLowValue >= 0;
+  const taperMidSizeValid = () => taperMidValue >= 0;
   const channelsOutValid = () => channelsOut > 0 && channelsOut <= CHANNELS_OUT_MAX;
   const polarisationsValid = () => polarisations.length > 0;
   const timeAveragingValid = () => timeAveraging > 0;
@@ -611,6 +589,7 @@ export default function DataProduct({ data }: DataProductProps) {
           return (
             pixelSizeValid() &&
             imageSizeValid() &&
+            taperMidSizeValid() &&
             taperSizeValid() &&
             channelsOutValid() &&
             polarisationsValid()
@@ -743,9 +722,7 @@ export default function DataProduct({ data }: DataProductProps) {
                       {fieldWrapper(imageWeightingField())}
                     </Grid>
                     <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(robustField())}</Grid>
-                    <Grid size={{ md: COL_MID, lg: COL }}>
-                      {isLow() ? fieldWrapper(taperField()) : fieldWrapper(taperDropdownField())}
-                    </Grid>
+                    <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(taperField())}</Grid>
                     <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(channelsOutField())}</Grid>
                   </Grid>
                 )}
@@ -765,9 +742,7 @@ export default function DataProduct({ data }: DataProductProps) {
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(pixelSizeField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(imageWeightingField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(robustField())}</Grid>
-                  <Grid size={{ md: COL_MID, lg: COL }}>
-                    {isLow() ? fieldWrapper(taperField()) : fieldWrapper(taperDropdownField())}
-                  </Grid>
+                  <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(taperField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(channelsOutField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>
                     {fieldWrapper(continuumSubtractionField())}
