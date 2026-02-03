@@ -109,7 +109,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const [imageSizeUnits, setImageSizeUnits] = React.useState(IMAGE_SIZE_UNIT_DEFAULT);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(PIXEL_SIZE_DEFAULT);
   const [pixelSizeUnits, setPixelSizeUnits] = React.useState(PIXEL_SIZE_UNIT_DEFAULT);
-  const [taperValue, setTaperValue] = React.useState(TAPER_DEFAULT);
+  const [taperLowValue, setTaperLowValue] = React.useState(TAPER_DEFAULT);
   const [taperMidValue, setTaperMidValue] = React.useState(TAPER_DEFAULT);
   const [timeAveraging, setTimeAveraging] = React.useState(TIME_AVERAGING_DEFAULT);
   const [timeAveragingUnits, setTimeAveragingUnits] = React.useState(_TIME_AVERAGING_UNITS_DEFAULT);
@@ -168,7 +168,7 @@ export default function DataProduct({ data }: DataProductProps) {
     setPixelSizeValue(data?.pixelSizeValue ?? PIXEL_SIZE_DEFAULT);
     setPixelSizeUnits(data?.pixelSizeUnits ?? PIXEL_SIZE_UNIT_DEFAULT);
     isLow()
-      ? setTaperValue(data?.taperValue ?? TAPER_DEFAULT)
+      ? setTaperLowValue(data?.taperValue ?? TAPER_DEFAULT)
       : setTaperMidValue(data?.taperValue ?? TAPER_DEFAULT);
     setWeighting(data?.weighting ?? IW_UNIFORM);
     setRobust(data?.robust ?? ROBUST_DEFAULT);
@@ -187,7 +187,7 @@ export default function DataProduct({ data }: DataProductProps) {
   };
 
   const dataProductOut = () => {
-    const taper = isLow() ? taperValue : taperMidValue;
+    const taper = isLow() ? taperLowValue : taperMidValue;
     const newDataProduct: DataProductSDPNew = {
       id: id,
       observationId,
@@ -305,7 +305,8 @@ export default function DataProduct({ data }: DataProductProps) {
     imageSizeUnits,
     pixelSizeValue,
     pixelSizeUnits,
-    taperValue,
+    taperLowValue,
+    taperMidValue,
     timeAveraging,
     timeAveragingUnits,
     frequencyAveraging,
@@ -334,8 +335,8 @@ export default function DataProduct({ data }: DataProductProps) {
             disabled={isLow()}
             onFocus={() => setHelp('taper')}
             required
-            setValue={setTaperValue}
-            value={taperValue}
+            setValue={setTaperLowValue}
+            value={taperLowValue}
             suffix={t('taper.units')}
           />
         )
@@ -574,7 +575,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const imageSizeValid = () => Number(imageSizeValue) > 0;
   const pixelSizeValid = () => pixelSizeValue > 0;
-  const taperSizeValid = () => taperValue >= 0;
+  const taperSizeValid = () => taperLowValue >= 0;
   const taperMidSizeValid = () => taperMidValue >= 0;
   const channelsOutValid = () => channelsOut > 0 && channelsOut <= CHANNELS_OUT_MAX;
   const polarisationsValid = () => polarisations.length > 0;
