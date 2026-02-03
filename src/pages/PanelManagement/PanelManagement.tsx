@@ -205,7 +205,6 @@ export default function PanelManagement() {
   }
 
   const handleProposalsChange = (proposalsList: PanelProposal[]) => {
-    console.log('handleProposalsChange', proposalsList);
     // Update the current panel's proposals with the new list
     setCurrentPanel(prevPanel => {
       if (!prevPanel) {

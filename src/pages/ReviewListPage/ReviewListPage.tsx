@@ -285,14 +285,6 @@ export default function ReviewListPage() {
     tecReview: { reviewType: { isFeasible: string } };
     sciReview: { status: string; reviewType: { conflict: { hasConflict: boolean } } };
   }) => {
-    console.log(
-      'canEditScience',
-      isReviewerScience() &&
-        row?.sciReview &&
-        isFeasible(row) &&
-        row?.sciReview?.reviewType.conflict.hasConflict !== true &&
-        row?.sciReview?.status !== PANEL_DECISION_STATUS.REVIEWED
-    );
     return (
       isReviewerScience() &&
       row?.sciReview &&
@@ -303,10 +295,6 @@ export default function ReviewListPage() {
   };
 
   const canEditTechnical = (tecReview: { status: string }) => {
-    console.log(
-      'canEditTechnical',
-      isReviewerTechnical() && tecReview && tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED
-    );
     return (
       isReviewerTechnical() && tecReview && tecReview?.status !== PANEL_DECISION_STATUS.REVIEWED
     );
