@@ -212,6 +212,12 @@ export const checkStatusIndicatorDisabled = (testId, disabled) => {
       .should('be.enabled');
   }
 };
+
+export const verifyStatusIndicatorLabel = (testId, label) => {
+  cy.get('[data-testid="' + testId + '"]')
+    .closest('button')
+    .contains(label);
+};
 /*----------------------------------------------------------------------*/
 
 export const clickNav = (testId, title) => {
