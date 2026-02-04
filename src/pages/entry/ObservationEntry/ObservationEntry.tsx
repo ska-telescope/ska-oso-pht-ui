@@ -226,10 +226,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       dp => dp.observationId === newObservation.id
     );
     const oldTO = proposal?.targetObservation ?? [];
-    const to =
-      isSV && dataProductSDP
-        ? await updateSensCalc(proposal, newObservation, dataProductSDP)
-        : updateSensCalcPartial(oldTO, newObservation);
+    const to = dataProductSDP
+      ? await updateSensCalc(proposal, newObservation, dataProductSDP)
+      : updateSensCalcPartial(oldTO, newObservation);
 
     const tmp = {
       ...proposal,
@@ -318,12 +317,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       if (isMid()) {
         const sArray = osdMID?.subArrays.find((sub: any) => sub.subArray === subarrayConfig);
         setNumOf15mAntennas(sArray?.numberSkaDishes ?? undefined);
-        // TODO : Check to ensure this is correct field to show.
         setNumOf13mAntennas(sArray?.numberMeerkatDishes ?? undefined);
       }
     }
-    // setDefaultCentralFrequency(observingBand);
-    // setDefaultContinuumBandwidth(observingBand, e as string);
     setSubarrayConfig(e);
     updateStorageProposal();
   };

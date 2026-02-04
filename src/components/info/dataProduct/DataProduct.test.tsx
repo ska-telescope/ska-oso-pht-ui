@@ -144,7 +144,7 @@ describe('DataProduct', () => {
   });
 
   it('renders spectral fields', () => {
-    render(
+    wrapper(
       <DataProduct
         t={t}
         sdp={{ ...baseData, data: { ...baseData.data, weighting: IW_BRIGGS } }}

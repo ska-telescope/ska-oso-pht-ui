@@ -11,6 +11,7 @@ interface SensCalcContentProps {
   isNatural?: boolean;
 }
 
+const GAP = 4;
 const SPACER_HEIGHT = 30;
 
 export default function SensCalcModalSingle({
@@ -98,11 +99,11 @@ export default function SensCalcModalSingle({
         </>
       ) : data?.statusGUI !== STATUS_INITIAL && data?.title === '*SHOW PST MESSAGE*' ? (
         <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
-          <Typography>{t('page.7.pstUnavailable')}</Typography>
+          <Typography p={GAP}>{t('page.7.pstUnavailable')}</Typography>
         </Alert>
       ) : (
         <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
-          <Typography>{t('sensitivityCalculatorResults.noData')}</Typography>
+          <Typography p={GAP}>{t('sensitivityCalculatorResults.noData')}</Typography>
         </Alert>
       )}
     </>

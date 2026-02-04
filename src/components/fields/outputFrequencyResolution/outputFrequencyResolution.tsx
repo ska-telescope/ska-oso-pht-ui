@@ -55,7 +55,9 @@ export default function OutputFrequencyResolutionField({
       setErrorText(error);
     } else {
       setErrorText('');
-      setValue?.(num);
+      if (setValue) {
+        setValue(num);
+      }
     }
   };
 

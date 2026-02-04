@@ -121,13 +121,16 @@ export default function ObservationPage() {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
+    setElementsO(getProposal().observations?.map(rec => popElementO(rec)) ?? []);
   }, [getProposal()]);
 
   React.useEffect(() => {
+    const proposal = getProposal();
+    if (!proposal) return;
     setTheProposalState(
-      validateObservationPage(getProposal(), autoLink),
-      validateLinkingPage(getProposal()),
-      validateCalibrationPage(getProposal())
+      validateObservationPage(proposal, autoLink),
+      validateLinkingPage(proposal),
+      validateCalibrationPage(proposal)
     );
   }, [validateToggle]);
 
