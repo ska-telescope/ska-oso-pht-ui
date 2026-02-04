@@ -193,7 +193,7 @@ describe('filterProposals', () => {
   });
 
   test('filters by science category', () => {
-    const result = filterProposals(MockProposalFrontendList, '', 4, '');
+    const result = filterProposals(MockProposalFrontendList, '', '4', '');
     expect(result).toHaveLength(1);
     expect(result[0].proposalType).toBe(1);
   });
@@ -208,19 +208,19 @@ describe('filterProposals', () => {
     expect(result).toHaveLength(1);
     expect(result[0].title).toBe('The Milky Way View');
     expect(result[0].proposalType).toBe(1);
-    expect(result[0].scienceCategory).toBe(null);
+    expect(result[0].scienceCategory).toBe('');
   });
 
   test('filters by all criteria', () => {
     const result = filterProposals(
       MockProposalFrontendList,
       'Incomplete Proposal',
-      4,
+      '4',
       'standard_proposal'
     );
     expect(result).toHaveLength(1);
     expect(result[0].title).toBe('Incomplete Proposal');
     expect(result[0].proposalType).toBe(1);
-    expect(result[0].scienceCategory).toBe(4);
+    expect(result[0].scienceCategory).toBe('4');
   });
 });
