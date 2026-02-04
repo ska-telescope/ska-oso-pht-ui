@@ -118,9 +118,6 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
 
   const showNextNav = () => {
     return (
-      // (!loggedIn && currPageNo === PAGE_TARGET) ||
-      // loggedIn ||
-      // (cypressToken && (currPageNo === -1 && nextPageNo !== -2))
       (!loggedIn && currPageNo === PAGE_TARGET) ||
       ((loggedIn || cypressToken) && (currPageNo === -1 || nextPageNo !== -2))
     );
