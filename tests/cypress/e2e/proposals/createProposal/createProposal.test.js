@@ -21,7 +21,8 @@ import {
   verifyOsdDataCycleDescription,
   verifyOsdDataProposalOpen,
   verifyOsdDataProposalClose,
-  pageConfirmed
+  pageConfirmed,
+  verifyScienceIdeaCreatedAlertFooter
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -48,7 +49,7 @@ describe('Creating Proposal', () => {
     enterScienceVerificationIdeaTitle();
     clickCreateSubmission();
     cy.wait('@mockCreateSubmission');
-    verifySubmissionCreatedAlertFooter();
+    verifyScienceIdeaCreatedAlertFooter();
     pageConfirmed('TEAM');
     clickHome();
     verifyOnLandingPage();
