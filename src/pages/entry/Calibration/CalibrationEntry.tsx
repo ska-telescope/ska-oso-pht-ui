@@ -105,7 +105,9 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
   React.useEffect(() => {
     const proposal = getProposal();
     const found = proposal?.targetObservation && proposal.targetObservation.length > 0;
-    setTarget(found ? proposal?.targets?.[0] : undefined);
+    const targetId = (found && proposal?.targetObservation?.[0].targetId) ?? null;
+    const target = proposal?.targets?.find(tar => tar.id === targetId) ?? undefined;
+    setTarget(target);
     setObservation(found ? proposal?.observations?.[0] : undefined);
   }, [observationIdRef]);
 

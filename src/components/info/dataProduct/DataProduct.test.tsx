@@ -157,7 +157,7 @@ describe('DataProduct', () => {
     expect(screen.getByTestId('ContinuumSubtractionField')).toBeInTheDocument();
   });
 
-  it('wrappers PST fields with detected filterbank', () => {
+  it('renders PST fields : DETECTED_FILTER_BANK_VALUE', () => {
     wrapper(
       <DataProduct
         t={t}
@@ -169,12 +169,13 @@ describe('DataProduct', () => {
         }}
       />
     );
-    // expect(screen.getByTestId('TimeAveragingField')).toBeInTheDocument();
-    // expect(screen.getByTestId('FrequencyAveragingField')).toBeInTheDocument();
-    // expect(screen.getByTestId('PolarisationsField')).toBeInTheDocument();
+    expect(screen.getByTestId('outputFrequencyResolution')).toBeInTheDocument();
+    expect(screen.getByTestId('outputSamplingInterval')).toBeInTheDocument();
+    expect(screen.getByTestId('dispersionMeasure')).toBeInTheDocument();
+    expect(screen.getByTestId('rotationMeasure')).toBeInTheDocument();
   });
 
-  it('wrappers PST fields without detected filterbank', () => {
+  it('renders PST fields : PULSAR_TIMING_VALUE', () => {
     wrapper(
       <DataProduct
         t={t}
@@ -186,7 +187,6 @@ describe('DataProduct', () => {
         }}
       />
     );
-    // expect(screen.getByTestId('BitDepthField')).toBeInTheDocument();
-    // expect(screen.getByTestId('PolarisationsField')).toBeInTheDocument();
+    expect(screen.getByTestId('pulsarTimingValue')).toBeInTheDocument();
   });
 });
