@@ -150,7 +150,11 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
     fieldWrapper(<BitDepthField value={(sdpData as SDPFlowthroughPSTData)?.bitDepth} disabled />);
 
   const pulsarTimingValueField = () =>
-    fieldWrapper(<Typography p={GAP}>{t('page.7.group.pst.2')}</Typography>);
+    fieldWrapper(
+      <Typography p={GAP} data-testid="pulsarTimingValue">
+        {t('page.7.group.pst.2')}
+      </Typography>
+    );
 
   const timeAveragingField = () =>
     fieldWrapper(

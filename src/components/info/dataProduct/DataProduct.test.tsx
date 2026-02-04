@@ -158,7 +158,7 @@ describe('DataProduct', () => {
     expect(screen.getByTestId('ContinuumSubtractionField')).toBeInTheDocument();
   });
 
-  it('renders PST fields with detected filterbank', () => {
+  it('renders PST fields : DETECTED_FILTER_BANK_VALUE', () => {
     wrapper(
       <DataProduct
         t={t}
@@ -170,21 +170,24 @@ describe('DataProduct', () => {
         }}
       />
     );
+    expect(screen.getByTestId('outputFrequencyResolution')).toBeInTheDocument();
+    expect(screen.getByTestId('outputSamplingInterval')).toBeInTheDocument();
     expect(screen.getByTestId('dispersionMeasure')).toBeInTheDocument();
+    expect(screen.getByTestId('rotationMeasure')).toBeInTheDocument();
   });
 
-  // it('renders PST fields without detected filterbank', () => {
-  //   wrapper(
-  //     <DataProduct
-  //       t={t}
-  //       sdp={baseData}
-  //       observation={{
-  //         ...baseObservation,
-  //         type: TYPE_PST,
-  //         pstMode: PULSAR_TIMING_VALUE
-  //       }}
-  //     />
-  //   );
-  //   expect(screen.getByTestId('pulsarTimingValue')).toBeInTheDocument();
-  // });
+  it('renders PST fields : PULSAR_TIMING_VALUE', () => {
+    wrapper(
+      <DataProduct
+        t={t}
+        sdp={baseData}
+        observation={{
+          ...baseObservation,
+          type: TYPE_PST,
+          pstMode: PULSAR_TIMING_VALUE
+        }}
+      />
+    );
+    expect(screen.getByTestId('pulsarTimingValue')).toBeInTheDocument();
+  });
 });
