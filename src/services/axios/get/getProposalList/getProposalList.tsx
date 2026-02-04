@@ -51,11 +51,25 @@ const getInvestigators = (inc: InvestigatorBackend[] | null): Investigator[] => 
   return investigators as Investigator[];
 };
 
-const getScienceCategory = (scienceCat: string) => {
+const getObservingMode = (scienceCat: string): string => {
+  return scienceCat.toLowerCase();
+};
+
+const getScienceCategory = (scienceCat: string): string => {
   const cat = DETAILS.ScienceCategory.find(
     cat => cat.label?.toLowerCase() === scienceCat?.toLowerCase()
   )?.value;
-  return cat ? cat : null;
+  return cat ? String(cat) : '';
+};
+
+const getTheScienceCategory = (tmp: ProposalBackend): string => {
+  if (tmp.proposal_info?.science_category === undefined) {
+    return '';
+  }
+  const isSV = tmp.proposal_info?.proposal_type.main_type === SCIENCE_VERIFICATION;
+  return isSV
+    ? getObservingMode(tmp.proposal_info?.science_category)
+    : getScienceCategory(tmp.proposal_info?.science_category);
 };
 
 export function mappingList(inRec: ProposalBackend[]): Proposal[] {
@@ -77,11 +91,7 @@ export function mappingList(inRec: ProposalBackend[]): Proposal[] {
         tmp.proposal_info?.proposal_type?.attributes
           ? getSubType(tmp.proposal_info?.proposal_type)
           : [],
-      scienceCategory: tmp.proposal_info?.science_category
-        ? (getScienceCategory(
-            tmp?.proposal_info?.science_category !== null ? tmp.proposal_info.science_category : ''
-          ) as number)
-        : ((null as unknown) as number),
+      scienceCategory: getTheScienceCategory(tmp),
       title: tmp.proposal_info?.title,
       cycle: tmp?.cycle,
       investigators: tmp.proposal_info?.investigators

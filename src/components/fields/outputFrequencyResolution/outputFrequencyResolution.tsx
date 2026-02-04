@@ -9,7 +9,7 @@ import { useHelp } from '@/utils/help/useHelp';
 interface OutputFrequencyResolutionFieldProps {
   disabled?: boolean;
   required?: boolean;
-  setValue: Function;
+  setValue?: Function;
   suffix?: any;
   value: number;
   widthButton?: number;
@@ -54,7 +54,9 @@ export default function OutputFrequencyResolutionField({
       setErrorText(error);
     } else {
       setErrorText('');
-      setValue(num);
+      if (setValue) {
+        setValue(num);
+      }
     }
   };
 

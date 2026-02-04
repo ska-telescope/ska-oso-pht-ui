@@ -9,7 +9,7 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 interface DispersionMeasureFieldProps {
   disabled?: boolean;
   required?: boolean;
-  setValue: Function;
+  setValue?: Function;
   suffix?: any;
   value: number;
   widthButton?: number;
@@ -53,7 +53,9 @@ export default function DispersionMeasureField({
       setErrorText(error);
     } else {
       setErrorText('');
-      setValue(num);
+      if (setValue) {
+        setValue(num);
+      }
     }
   };
 

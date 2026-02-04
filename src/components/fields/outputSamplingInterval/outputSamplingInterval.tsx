@@ -9,7 +9,7 @@ import { useHelp } from '@/utils/help/useHelp';
 interface OutputSamplingIntervalFieldProps {
   disabled?: boolean;
   required?: boolean;
-  setValue: Function;
+  setValue?: Function;
   suffix?: any;
   value: number;
   widthButton?: number;
@@ -53,7 +53,7 @@ export default function OutputSamplingIntervalField({
       setErrorText(error);
     } else {
       setErrorText('');
-      setValue(num);
+      setValue?.(num);
     }
   };
 
