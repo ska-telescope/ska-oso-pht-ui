@@ -25,13 +25,13 @@ afterEach(() => {
 });
 
 describe('Data product validation', () => {
-  it.skip('Verify channels out range', () => {
+  it('SV Flow: Verify channels out range', () => {
     createScienceIdeaLoggedIn();
     cy.wait('@mockCreateSubmission');
     verifySubmissionCreatedAlertFooter();
     pageConfirmed('TEAM');
 
-    // clickStatusIconNav('statusId2');
+    clickStatusIconNav('statusId2');
     // selectContinuum();
 
     //  clickStatusIconNav('statusId5'); //Click to observation page

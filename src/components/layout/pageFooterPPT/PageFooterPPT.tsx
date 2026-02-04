@@ -49,7 +49,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
     isSV
   ]);
 
-  const currPageNo = proposal?.id == null ? -1 : pageNo;
+  const currPageNo = proposal?.id == null && !cypressToken ? -1 : pageNo;
 
   const { prevPageNo, nextPageNo } = React.useMemo(() => {
     const idx = pages.findIndex(p => p === currPageNo);
@@ -112,13 +112,15 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const showPrevNav = () => {
     if ((loggedIn && currPageNo > 0) || (cypressToken && currPageNo > 0)) {
       return true;
-    } else return !loggedIn && currPageNo !== 4;
+    }
+    return !loggedIn && !cypressToken && currPageNo !== PAGE_TARGET;
   };
 
   const showNextNav = () => {
     return (
       (!loggedIn && currPageNo === PAGE_TARGET) ||
-      (loggedIn && (currPageNo === -1 || nextPageNo !== -2))
+      loggedIn ||
+      (cypressToken && (currPageNo === -1 || nextPageNo !== -2))
     );
   };
 

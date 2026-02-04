@@ -105,15 +105,16 @@ const baseObservation: Observation = {
 
 const t = (key: string) => key; // simple translation mock
 
-const wrapper = (component: React.ReactElement) =>
-  render(
+const wrapper = (component: React.ReactElement) => {
+  return render(
     <StoreProvider>
       <ThemeA11yProvider>{component}</ThemeA11yProvider>
     </StoreProvider>
   );
+};
 
 describe('DataProduct', () => {
-  it('wrappers continuum fields when dataProductType=DP_TYPE_IMAGES', () => {
+  it('renders continuum fields when dataProductType=DP_TYPE_IMAGES', () => {
     wrapper(
       <DataProduct
         t={t}
@@ -130,7 +131,7 @@ describe('DataProduct', () => {
     expect(screen.getByTestId('PolarisationsField')).toBeInTheDocument();
   });
 
-  it('wrappers visibility fields when dataProductType!=DP_TYPE_IMAGES', () => {
+  it('renders visibility fields when dataProductType!=DP_TYPE_IMAGES', () => {
     wrapper(
       <DataProduct
         t={t}
@@ -142,7 +143,7 @@ describe('DataProduct', () => {
     expect(screen.getByTestId('FrequencyAveragingField')).toBeInTheDocument();
   });
 
-  it('wrappers spectral fields', () => {
+  it('renders spectral fields', () => {
     wrapper(
       <DataProduct
         t={t}

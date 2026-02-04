@@ -58,6 +58,7 @@ export default function ChannelsOutField({
         setValue={checkValue}
         onFocus={onFocus}
         disabled={disabled}
+        disabledUnderline={disabled}
         required={required}
         suffix={suffix}
         errorText={errorMessage}

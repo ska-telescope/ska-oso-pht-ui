@@ -58,6 +58,7 @@ export default function PixelSizeField({
         onFocus={onFocus}
         disabled={disabled}
         required={required}
+        disabledUnderline={disabled}
         suffix={suffix}
         errorText={errorMessage}
       />

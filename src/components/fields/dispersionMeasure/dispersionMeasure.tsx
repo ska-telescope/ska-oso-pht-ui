@@ -16,6 +16,7 @@ interface DispersionMeasureFieldProps {
 }
 
 export default function DispersionMeasureField({
+  disabled = false,
   required = false,
   setValue,
   value
@@ -73,6 +74,8 @@ export default function DispersionMeasureField({
         label={t(FIELD + '.label')}
         onFocus={() => setHelp(FIELD)}
         required={required}
+        disabled={disabled}
+        disabledUnderline={disabled}
         errorText={errorText}
       />
     </Box>

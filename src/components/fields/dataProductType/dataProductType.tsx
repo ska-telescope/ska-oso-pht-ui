@@ -36,6 +36,7 @@ export default function DataProductTypeField({
       <Grid pl={suffix ? 1 : 0} size={{ xs: suffix ? 12 - widthButton : 12 }}>
         <DropDown
           disabled={disabled}
+          disabledUnderline={disabled}
           options={options()}
           testId={FIELD}
           value={value}

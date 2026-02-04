@@ -16,6 +16,7 @@ interface OutputFrequencyResolutionFieldProps {
 }
 
 export default function OutputFrequencyResolutionField({
+  disabled = false,
   required = false,
   setValue,
   value
@@ -68,6 +69,8 @@ export default function OutputFrequencyResolutionField({
   return (
     <Box pt={1}>
       <NumberEntry
+        disabled={disabled}
+        disabledUnderline={disabled}
         testId={FIELD}
         value={value}
         setValue={(v: number) => handleSetValue(Number(v))}

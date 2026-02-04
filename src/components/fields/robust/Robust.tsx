@@ -29,6 +29,7 @@ export default function RobustField({
       <Grid pl={suffix ? 1 : 0} size={{ xs: suffix ? 12 - widthButton : 12 }}>
         <DropDown
           disabled={disabled}
+          disabledUnderline={disabled}
           options={ROBUST}
           testId={FIELD}
           value={value}
