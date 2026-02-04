@@ -9,13 +9,14 @@ import { useHelp } from '@/utils/help/useHelp';
 interface OutputFrequencyResolutionFieldProps {
   disabled?: boolean;
   required?: boolean;
-  setValue: Function;
+  setValue?: Function;
   suffix?: any;
   value: number;
   widthButton?: number;
 }
 
 export default function OutputFrequencyResolutionField({
+  disabled = false,
   required = false,
   setValue,
   value
@@ -54,7 +55,7 @@ export default function OutputFrequencyResolutionField({
       setErrorText(error);
     } else {
       setErrorText('');
-      setValue(num);
+      setValue?.(num);
     }
   };
 
@@ -66,6 +67,8 @@ export default function OutputFrequencyResolutionField({
   return (
     <Box pt={1}>
       <NumberEntry
+        disabled={disabled}
+        disabledUnderline={disabled}
         testId={FIELD}
         value={value}
         setValue={(v: number) => handleSetValue(Number(v))}

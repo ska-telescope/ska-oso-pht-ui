@@ -16,6 +16,7 @@ interface RotationMeasureFieldProps {
 }
 
 export default function RotationMeasureField({
+  disabled = false,
   required = false,
   setValue,
   value
@@ -66,6 +67,8 @@ export default function RotationMeasureField({
     <Box pt={1}>
       <NumberEntry
         testId={FIELD}
+        disabled={disabled}
+        disabledUnderline={disabled}
         value={value}
         setValue={(v: number) => handleSetValue(Number(v))}
         label={t(FIELD + '.label')}

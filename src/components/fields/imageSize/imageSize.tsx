@@ -57,6 +57,7 @@ export default function ImageSizeField({
         setValue={checkValue}
         onFocus={onFocus}
         disabled={disabled}
+        disabledUnderline={disabled}
         required={required}
         suffix={suffix}
         errorText={errorMessage}

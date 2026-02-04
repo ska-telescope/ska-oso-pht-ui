@@ -1,5 +1,14 @@
-import { Box, Grid } from '@mui/material';
-import { IW_BRIGGS, TYPE_CONTINUUM, TYPE_ZOOM, WRAPPER_HEIGHT } from '@/utils/constants';
+import { Box, Grid, Typography } from '@mui/material';
+import {
+  DP_TYPE_IMAGES,
+  DP_TYPE_VISIBLE,
+  FLOW_THROUGH_VALUE,
+  IW_BRIGGS,
+  PULSAR_TIMING_VALUE,
+  TYPE_CONTINUUM,
+  TYPE_ZOOM,
+  WRAPPER_HEIGHT
+} from '@/utils/constants';
 import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
 import ImageSizeField from '@/components/fields/imageSize/imageSize';
 import PolarisationsField from '@/components/fields/polarisations/polarisations';
@@ -16,13 +25,19 @@ import ContinuumSubtractionField from '@/components/fields/continuumSubtraction/
 import BitDepthField from '@/components/fields/bitDepth/bitDepth';
 import {
   DataProductSDPNew,
+  SDPFilterbankPSTData,
   SDPFlowthroughPSTData,
   SDPImageContinuumData,
   SDPSpectralData,
   SDPVisibilitiesContinuumData
 } from '@/utils/types/dataProduct';
+import OutputFrequencyResolutionField from '@/components/fields/outputFrequencyResolution/outputFrequencyResolution';
+import OutputSamplingIntervalField from '@/components/fields/outputSamplingInterval/outputSamplingInterval';
+import DispersionMeasureField from '@/components/fields/dispersionMeasure/dispersionMeasure';
+import RotationMeasureField from '@/components/fields/rotationMeasure/rotationMeasure';
 
 const LABEL_WIDTH = 3;
+const GAP = 2;
 
 interface DataProductProps {
   t: any; // useScopedTranslation
@@ -32,10 +47,13 @@ interface DataProductProps {
 
 export default function DataProduct({ t, sdp, observation }: DataProductProps) {
   const isDetectedFilterbank = () => observation.pstMode === DETECTED_FILTER_BANK_VALUE;
+  const isPulsarTimingValue = () => observation.pstMode === PULSAR_TIMING_VALUE;
+  const isFlowThroughValue = () => observation.pstMode === FLOW_THROUGH_VALUE;
   const isContinuum = () => observation?.type === TYPE_CONTINUUM;
   const isSpectral = () => observation?.type === TYPE_ZOOM;
   const isPST = () => observation?.type === TYPE_PST;
-  const isDataTypeOne = () => (sdp?.data as any)?.dataProductType === 1;
+  const isImages = () => (sdp?.data as any)?.dataProductType === DP_TYPE_IMAGES;
+  const isVisibilities = () => (sdp?.data as any)?.dataProductType === DP_TYPE_VISIBLE;
   const sdpData = sdp?.data;
 
   const fieldWrapper = (children?: React.JSX.Element, height = WRAPPER_HEIGHT) => (
@@ -109,6 +127,16 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
       />
     );
 
+  const polarisationFieldPST = () =>
+    fieldWrapper(
+      <PolarisationsField
+        labelWidth={LABEL_WIDTH}
+        value={(sdpData as SDPFlowthroughPSTData)?.polarisations}
+        disabled
+        displayOnly
+      />
+    );
+
   const applySubtractionField = () =>
     fieldWrapper(
       <ContinuumSubtractionField
@@ -120,6 +148,13 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
 
   const bitDepthField = () =>
     fieldWrapper(<BitDepthField value={(sdpData as SDPFlowthroughPSTData)?.bitDepth} disabled />);
+
+  const pulsarTimingValueField = () =>
+    fieldWrapper(
+      <Typography p={GAP} data-testid="pulsarTimingValue">
+        {t('page.7.group.pst.2')}
+      </Typography>
+    );
 
   const timeAveragingField = () =>
     fieldWrapper(
@@ -139,6 +174,48 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
       />
     );
 
+  const outputFrequencyResolutionField = () =>
+    fieldWrapper(
+      <OutputFrequencyResolutionField
+        disabled
+        value={(sdpData as SDPFilterbankPSTData)?.outputFrequencyResolution}
+      />
+    );
+
+  const outputSamplingIntervalField = () =>
+    fieldWrapper(
+      <OutputSamplingIntervalField
+        disabled
+        value={(sdpData as SDPFilterbankPSTData)?.outputSamplingInterval}
+      />
+    );
+
+  const bitDepthFieldFilterBank = () =>
+    fieldWrapper(<BitDepthField value={(sdpData as SDPFilterbankPSTData)?.bitDepth} disabled />);
+
+  const dispersionMeasureField = () =>
+    fieldWrapper(
+      <DispersionMeasureField
+        disabled
+        value={(sdpData as SDPFilterbankPSTData)?.dispersionMeasure}
+      />
+    );
+
+  const rotationMeasureField = () =>
+    fieldWrapper(
+      <RotationMeasureField disabled value={(sdpData as SDPFilterbankPSTData)?.rotationMeasure} />
+    );
+
+  const polarisationFieldFilterBank = () =>
+    fieldWrapper(
+      <PolarisationsField
+        labelWidth={LABEL_WIDTH}
+        value={(sdpData as SDPFilterbankPSTData)?.polarisations}
+        disabled
+        displayOnly
+      />
+    );
+
   return (
     <>
       {isContinuum() && (
@@ -149,23 +226,23 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
           alignItems="center"
           minHeight={100}
         >
-          {isDataTypeOne() && <Grid size={{ md: 5 }}>{dataProductTypeField()}</Grid>}
-          {isDataTypeOne() && <Grid size={{ md: 5 }}></Grid>}
-          {isDataTypeOne() && <Grid size={{ md: 5 }}>{imageSizeField()}</Grid>}
-          {isDataTypeOne() && <Grid size={{ md: 5 }}>{pixelSizeField()}</Grid>}
-          {isDataTypeOne() && <Grid size={{ md: 5 }}>{imageWeightingField()}</Grid>}
-          {isDataTypeOne() && (
+          {isImages() && <Grid size={{ md: 5 }}>{dataProductTypeField()}</Grid>}
+          {isImages() && <Grid size={{ md: 5 }}></Grid>}
+          {isImages() && <Grid size={{ md: 5 }}>{imageSizeField()}</Grid>}
+          {isImages() && <Grid size={{ md: 5 }}>{pixelSizeField()}</Grid>}
+          {isImages() && <Grid size={{ md: 5 }}>{imageWeightingField()}</Grid>}
+          {isImages() && (
             <Grid size={{ md: 5 }}>
               {(sdpData as SDPImageContinuumData).weighting === IW_BRIGGS && robustField()}
             </Grid>
           )}
-          {isDataTypeOne() && <Grid size={{ md: 5 }}>{taperField()}</Grid>}
-          {isDataTypeOne() && <Grid size={{ md: 5 }}>{channelsOutField()}</Grid>}
-          {isDataTypeOne() && <Grid size={{ md: 5 }}>{polarisationField()}</Grid>}
-          {isDataTypeOne() && <Grid size={{ md: 5 }}></Grid>}
+          {isImages() && <Grid size={{ md: 5 }}>{taperField()}</Grid>}
+          {isImages() && <Grid size={{ md: 5 }}>{channelsOutField()}</Grid>}
+          {isImages() && <Grid size={{ md: 5 }}>{polarisationField()}</Grid>}
+          {isImages() && <Grid size={{ md: 5 }}></Grid>}
 
-          {!isDataTypeOne() && <Grid size={{ md: 5 }}>{timeAveragingField()}</Grid>}
-          {!isDataTypeOne() && <Grid size={{ md: 5 }}>{frequencyAveragingField()}</Grid>}
+          {isVisibilities() && <Grid size={{ md: 5 }}>{timeAveragingField()}</Grid>}
+          {isVisibilities() && <Grid size={{ md: 5 }}>{frequencyAveragingField()}</Grid>}
         </Grid>
       )}
       {isSpectral() && (
@@ -196,12 +273,19 @@ export default function DataProduct({ t, sdp, observation }: DataProductProps) {
           alignItems="center"
           minHeight={100}
         >
-          {isDetectedFilterbank() && <Grid size={{ md: 5 }}>{timeAveragingField()}</Grid>}
-          {isDetectedFilterbank() && <Grid size={{ md: 5 }}>{frequencyAveragingField()}</Grid>}
-          {!isDetectedFilterbank() && <Grid size={{ md: 5 }}>{bitDepthField()}</Grid>}
-          {!isDetectedFilterbank() && <Grid size={{ md: 5 }}></Grid>}
-          {<Grid size={{ md: 5 }}>{polarisationField()}</Grid>}
-          {<Grid size={{ md: 5 }}></Grid>}
+          {isPulsarTimingValue() && <Grid size={{ md: 5 }}>{pulsarTimingValueField()}</Grid>}
+
+          {isDetectedFilterbank() && (
+            <Grid size={{ md: 5 }}>{outputFrequencyResolutionField()}</Grid>
+          )}
+          {isDetectedFilterbank() && <Grid size={{ md: 5 }}>{outputSamplingIntervalField()}</Grid>}
+          {isDetectedFilterbank() && <Grid size={{ md: 5 }}>{bitDepthFieldFilterBank()}</Grid>}
+          {isDetectedFilterbank() && <Grid size={{ md: 5 }}>{dispersionMeasureField()}</Grid>}
+          {isDetectedFilterbank() && <Grid size={{ md: 5 }}>{rotationMeasureField()}</Grid>}
+          {isDetectedFilterbank() && <Grid size={{ md: 5 }}>{polarisationFieldFilterBank()}</Grid>}
+
+          {isFlowThroughValue() && <Grid size={{ md: 5 }}>{bitDepthField()}</Grid>}
+          {isFlowThroughValue() && <Grid size={{ md: 5 }}>{polarisationFieldPST()}</Grid>}
         </Grid>
       )}
     </>
