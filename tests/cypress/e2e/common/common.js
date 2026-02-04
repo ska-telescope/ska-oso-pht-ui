@@ -212,6 +212,12 @@ export const checkStatusIndicatorDisabled = (testId, disabled) => {
       .should('be.enabled');
   }
 };
+
+export const verifyStatusIndicatorLabel = (testId, label) => {
+  cy.get('[data-testid="' + testId + '"]')
+    .closest('button')
+    .contains(label);
+};
 /*----------------------------------------------------------------------*/
 
 export const clickNav = (testId, title) => {
@@ -358,6 +364,10 @@ export const verifyOsdDataMaxTargets = data => {
     expect(osdData.observatory_policy.cycle_policies.max_targets).to.equal(data);
   });
 };
+
+export const verifyScienceIdeaCreatedAlertFooter = () =>
+  verifyContent('timeAlertFooter', 'Science Verification Idea added with unique identifier');
+
 export const verifySubmissionCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Submission added with unique identifier');
 
