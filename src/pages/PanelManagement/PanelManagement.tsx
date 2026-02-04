@@ -221,19 +221,11 @@ export default function PanelManagement() {
     });
   };
 
-  const proposalSelectedToggle = async (proposal: Proposal, isSelected: boolean) => {
-    const isSV = false; // Need to check this against the proposal ownership
-    const newProposal = {
-      ...proposal,
-      status: isSelected ? PROPOSAL_STATUS.SUBMITTED : PROPOSAL_STATUS.UNDER_REVIEW
-    };
-    const result = await PutProposal(authClient, newProposal, isSV);
-    if (await result) {
-      if (isSelected) {
-        deleteProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
-      } else {
-        addProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
-      }
+  const proposalSelectedToggle = (proposal: Proposal, isSelected: boolean) => {
+    if (isSelected) {
+      deleteProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
+    } else {
+      addProposalPanel(proposal, currentPanel as Panel, handleProposalsChange);
     }
   };
 
