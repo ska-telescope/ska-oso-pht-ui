@@ -36,7 +36,7 @@ describe('Verify navigation', () => {
     clickCreateSubmission();
     cy.wait('@mockCreateSubmission');
     verifyScienceIdeaCreatedAlertFooter();
-    //Verify navigation links are all enabled in page banner after proposal creation
+    //Verify navigation links are all enabled in page banner after SV creation
     checkStatusIndicatorDisabled('statusId0', false);
     checkStatusIndicatorDisabled('statusId1', false);
     checkStatusIndicatorDisabled('statusId2', false);
@@ -58,7 +58,7 @@ describe('Verify navigation', () => {
     clickCreateSubmission();
     cy.wait('@mockCreateSubmission');
     verifyScienceIdeaCreatedAlertFooter();
-    //Verify navigation links are all enabled in page banner after proposal creation
+    //Verify navigation in page banner is correct after science idea creation
     verifyStatusIndicatorLabel('statusId0', 'Title');
     verifyStatusIndicatorLabel('statusId1', 'Team');
     verifyStatusIndicatorLabel('statusId2', 'Details');
@@ -79,7 +79,7 @@ describe('Verify navigation', () => {
     clickCreateSubmission();
     cy.wait('@mockCreateSubmission');
     verifySubmissionCreatedAlertFooter();
-    //Verify navigation links are all enabled in page banner after proposal creation
+    //Verify navigation in page banner is correct after proposal creation
     verifyStatusIndicatorLabel('statusId0', 'Title');
     verifyStatusIndicatorLabel('statusId1', 'Team');
     verifyStatusIndicatorLabel('statusId2', 'Details');
