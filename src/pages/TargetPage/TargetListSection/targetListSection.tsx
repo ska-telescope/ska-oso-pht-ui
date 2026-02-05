@@ -174,7 +174,10 @@ export default function TargetListSection() {
                 rows={getProposal().targets}
               />
             </Box>
-              <Visualization target={getProposal()?.targets?.[0] ?? undefined} show={maxTargets === 1} />
+            <Visualization
+              target={getProposal()?.targets?.[0] ?? undefined}
+              show={maxTargets === 1}
+            />
           </Stack>
         </Grid>
         <Grid size={{ md: 12, lg: 6 }} order={{ md: 1, lg: 2 }}>
