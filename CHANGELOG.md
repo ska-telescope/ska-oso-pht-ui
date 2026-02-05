@@ -6,7 +6,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
-* Added: Generate default linked observation, data product & calibration on observation mode change for SV
+
+10.0.0
+----------
+* Added: Generate default linked observation, data product & calibration on observation mode change for SV flow
 * Added: Cycle policies from the OSD are used for max  number of targets, observations & data products
 * Added: Linking page for proposal flow links a data product/observation combination to a target
 * Added: Calibration strategy for proposal flow
@@ -18,8 +21,8 @@ UNRELEASED
 * Changed: Updated to latest dependencies and libraries
 * Changed: Updated more components to make use of the accessible coloring
 * Changed: improve error handling of sensitivity calculator requests
-* Changed: Updates to data products fields
-* Changed: Use appropriate defaults values for each new SDP type for SV & proposal flow
+* Changed: [BREAKING] changes to data products fields
+* Changed: Use appropriate defaults values for each new data product type for SV & proposal flow
 * Changed: Updates to observation entry page for proposal flow
 * Changed: Data Product validation for each variation
 * Changed: Data product is bound to an observation
