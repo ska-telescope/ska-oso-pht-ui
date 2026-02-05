@@ -36,7 +36,7 @@ describe('Verify Save', () => {
     clickAddSubmission();
     clickCycleSelectionSV();
     clickCycleConfirm();
-    //Verify save is not visible before proposal creation
+    //Verify save is not visible before sv creation
     checkFieldIsVisible('saveBtn', false);
   });
 
