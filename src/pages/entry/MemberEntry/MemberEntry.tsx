@@ -7,7 +7,12 @@ import PostSendEmailInvite from '@services/axios/post/postSendEmailInvite/postSe
 import PutProposal from '@services/axios/put/putProposal/putProposal';
 import { Proposal, ProposalBackend } from '@utils/types/proposal.tsx';
 import { generateId, helpers } from '@utils/helpers.ts';
-import { LAB_POS_TICK, PROPOSAL_STATUS, TEAM_STATUS_TYPE_OPTIONS } from '@utils/constants.ts';
+import {
+  LAB_POS_TICK,
+  NOTIFICATION_DELAY_IN_SECONDS,
+  PROPOSAL_STATUS,
+  TEAM_STATUS_TYPE_OPTIONS
+} from '@utils/constants.ts';
 import TeamInviteButton from '../../../components/button/TeamInvite/TeamInvite';
 import Investigator from '../../../utils/types/investigator';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
@@ -22,7 +27,6 @@ import ResetButton from '@/components/button/Reset/Reset';
 import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
-const NOTIFICATION_DELAY_IN_SECONDS = 5;
 const GAP = 5;
 
 interface MemberEntryProps {

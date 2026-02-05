@@ -24,7 +24,8 @@ import {
   STATUS_OK,
   STATUS_PARTIAL,
   SUPPLIED_TYPE_INTEGRATION,
-  TYPE_PST
+  TYPE_PST,
+  NOTIFICATION_DELAY_IN_SECONDS
 } from '../../utils/constants';
 import Target from '../../utils/types/target';
 import TargetObservation from '../../utils/types/targetObservation';
@@ -72,8 +73,6 @@ export default function LinkingPage() {
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const { notifyError } = useNotify();
-
-  const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number, valueCalibration: number) => {

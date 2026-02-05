@@ -12,7 +12,12 @@ import AlertDialog from '../../components/alerts/alertDialog/AlertDialog';
 import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import GridMembers from '../../components/grid/members/GridMembers';
 import StarIcon from '../../components/icon/starIcon/starIcon';
-import { FOOTER_SPACER, GRID_MEMBERS_ACTIONS, PAGE_TEAM } from '../../utils/constants';
+import {
+  FOOTER_SPACER,
+  GRID_MEMBERS_ACTIONS,
+  NOTIFICATION_DELAY_IN_SECONDS,
+  PAGE_TEAM
+} from '../../utils/constants';
 import TeamFileImport from './TeamFileImport/TeamFileImport';
 import MemberAccess from './MemberAccess/MemberAccess';
 import ProposalAccess from '@/utils/types/proposalAccess';
@@ -66,14 +71,11 @@ export default function TeamPage() {
     updateAppContent1(temp);
   };
 
-  const NOTIFICATION_DELAY_IN_SECONDS = 5;
-
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
   }, []);
 
   React.useEffect(() => {
-    // Set the selected options based on the current member's permissions when permissions change
     const memberPermissions = permissions.find(p => p.userId === currentMember);
     setSelectedOptions(memberPermissions?.permissions || []);
   }, [permissions]);
@@ -83,17 +85,13 @@ export default function TeamPage() {
     if (typeof response === 'object' && 'error' in response) {
       notifyError(response.error, NOTIFICATION_DELAY_IN_SECONDS);
     } else {
-      notifySuccess(t('manageTeamMember.success'), NOTIFICATION_DELAY_IN_SECONDS); // TODO add translation text
+      notifySuccess(t('manageTeamMember.success'), NOTIFICATION_DELAY_IN_SECONDS);
     }
     closeAccessDialog();
-    // get the updated access data
     fetchProposalAccessData();
   };
 
   React.useEffect(() => {
-    // Fetch proposal access data to set permissions:
-    //  * when the current member changes
-    //  * when the proposal's investigators change
     if (actionsAvailable()) fetchProposalAccessData();
   }, [currentMember, getProposal().investigators]);
 

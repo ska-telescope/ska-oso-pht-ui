@@ -15,13 +15,16 @@ import DownloadButton from '../../components/button/Download/Download';
 import PDFWrapper from '../../components/layout/PDFWrapper/PDFWrapper';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 import DeleteButton from '../../components/button/Delete/Delete';
-import { PAGE_TECHNICAL, UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
+import {
+  NOTIFICATION_DELAY_IN_SECONDS,
+  PAGE_TECHNICAL,
+  UPLOAD_MAX_WIDTH_PDF
+} from '../../utils/constants';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 
-const NOTIFICATION_DELAY_IN_SECONDS = 5;
 const PAGE = PAGE_TECHNICAL;
 
 export default function TechnicalPage() {

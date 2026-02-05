@@ -1,12 +1,5 @@
 import { Box, Grid } from '@mui/system';
-import {
-  POLARISATIONS,
-  POLARISATIONS_PST_BANK,
-  POLARISATIONS_PST_FLOW,
-  TYPE_CONTINUUM,
-  TYPE_PST,
-  TYPE_ZOOM
-} from '@utils/constants.ts';
+import { TYPE_CONTINUUM, TYPE_PST, TYPE_ZOOM } from '@utils/constants.ts';
 import { Typography } from '@mui/material';
 import { LABEL_POSITION, TickBox } from '@ska-telescope/ska-gui-components';
 import { useMemo } from 'react';
@@ -19,10 +12,24 @@ interface PolarisationsFieldProps {
   dataProductType?: number;
   labelWidth?: number;
   onFocus?: React.FocusEventHandler<HTMLInputElement>;
+  setError?: (error: string) => void;
   setValue?: (value: string[]) => void;
   value: string[];
   displayOnly?: boolean;
 }
+
+const POLARISATIONS = [
+  { value: 'I' },
+  { value: 'Q' },
+  { value: 'U' },
+  { value: 'V' },
+  { value: 'XX' },
+  { value: 'XY' },
+  { value: 'YX' },
+  { value: 'YY' }
+];
+const POLARISATIONS_PST_FLOW = [{ value: 'X' }, { value: 'Y' }];
+const POLARISATIONS_PST_BANK = [{ value: 'I' }, { value: 'Q' }, { value: 'U' }, { value: 'V' }];
 
 export default function PolarisationsField({
   disabled = false,
@@ -31,6 +38,7 @@ export default function PolarisationsField({
   dataProductType = 1,
   labelWidth = 5,
   onFocus,
+  setError,
   setValue,
   value,
   displayOnly = false
@@ -54,7 +62,12 @@ export default function PolarisationsField({
 
   const handleChange = (optionValue: string, checked: boolean) => {
     const newValue = checked ? [...value, optionValue] : value.filter(v => v !== optionValue);
-    setValue?.(newValue);
+    if (newValue.length > 0) {
+      setValue?.(newValue);
+      setError?.('');
+    } else {
+      setError?.(t(`${FIELD}.error`));
+    }
   };
 
   const displayString = options
@@ -65,7 +78,6 @@ export default function PolarisationsField({
   return (
     <Box pl={1} pt={2}>
       <Grid container spacing={2} alignItems="flex-start">
-        {/* Label Section */}
         {labelWidth > 0 && (
           <Grid size={{ md: labelWidth }}>
             <Typography
@@ -80,7 +92,6 @@ export default function PolarisationsField({
           </Grid>
         )}
 
-        {/* Value Section */}
         <Grid size={{ md: 12 - labelWidth }}>
           {displayOnly ? (
             <Typography pt={1} variant="body2" color="text.secondary">
