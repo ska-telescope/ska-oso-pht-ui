@@ -12,6 +12,7 @@ import {
 } from '../../common/common';
 import { reviewerScience } from '../users';
 
+// TODO : PMT Flows are under review, scenarios will be updated when functionality is finalised
 describe('Reviewer ( Science )', () => {
   beforeEach(() => {
     initialize(reviewerScience);

@@ -11,7 +11,7 @@ import {
   verifyUserMenuDecisions
 } from '../../common/common';
 import { reviewerTechnical } from '../users';
-
+// TODO : PMT Flows are under review, scenarios will be updated when functionality is finalised
 describe('Reviewer ( Technical )', () => {
   beforeEach(() => {
     initialize(reviewerTechnical);
