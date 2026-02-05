@@ -2,7 +2,7 @@
   "author": "Stargazers - OMC ART",
   "description": "SKA OSO PHT Application",
   "name": "ska-oso-pht-ui",
-  "version": "9.0.0",
+  "version": "10.0.0",
   "private": true,
   "license": "BSD 3-Clause",
   "repository": "git@https://gitlab.com/ska-telescope/ska-oso-pht-ui.git",
