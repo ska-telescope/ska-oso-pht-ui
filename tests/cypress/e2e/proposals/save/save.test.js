@@ -3,13 +3,16 @@ import {
   clearLocalStorage,
   clickCycleConfirm,
   enterProposalTitle,
-  // clickProposalTypePrincipleInvestigator,
-  // clickSubProposalTypeTargetOfOpportunity,
   checkFieldDisabled,
   clickAddSubmission,
   clickCreateSubmission,
   mockCreateSubmissionAPI,
-  verifySubmissionCreatedAlertFooter
+  verifySubmissionCreatedAlertFooter,
+  clickCycleSelectionSV,
+  checkFieldIsVisible,
+  clickCycleSelectionMockProposal,
+  clickProposalTypePrincipleInvestigator,
+  clickSubProposalTypeTargetOfOpportunity
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -29,23 +32,25 @@ describe('Verify Save', () => {
     });
   });
 
-  it('Verify save functionality is restricted before proposal creation', () => {
+  it('SV Flow: Verify save functionality is restricted before sv creation', () => {
     clickAddSubmission();
+    clickCycleSelectionSV();
     clickCycleConfirm();
-    //Verify save is disabled before proposal creation
-    // checkFieldDisabled('saveBtn', true);
+    //Verify save is not visible before proposal creation
+    checkFieldIsVisible('saveBtn', false);
   });
 
-  it('Verify save functionality is not restricted after proposal creation', () => {
+  it('Proposal Flow: Verify save functionality is not restricted after proposal creation', () => {
     clickAddSubmission();
+    clickCycleSelectionMockProposal();
     clickCycleConfirm();
     enterProposalTitle();
-    // clickProposalTypePrincipleInvestigator();
-    // clickSubProposalTypeTargetOfOpportunity();
+    clickProposalTypePrincipleInvestigator();
+    clickSubProposalTypeTargetOfOpportunity();
     clickCreateSubmission();
     cy.wait('@mockCreateSubmission');
     verifySubmissionCreatedAlertFooter();
     //Verify save is enabled after proposal creation
-    // checkFieldDisabled('saveBtn', false);
+    checkFieldDisabled('saveBtn', false);
   });
 });

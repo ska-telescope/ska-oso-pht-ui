@@ -218,6 +218,18 @@ export const verifyStatusIndicatorLabel = (testId, label) => {
     .closest('button')
     .contains(label);
 };
+
+export const checkFieldIsVisible = (testId, visible) => {
+  if (visible) {
+    cy.get('[data-testid="' + testId + '"]')
+      .closest('button')
+      .should('be.visible');
+  } else {
+    cy.get('body')
+      .find(`[data-testid="${testId}"]`)
+      .should('not.exist');
+  }
+};
 /*----------------------------------------------------------------------*/
 
 export const clickNav = (testId, title) => {
