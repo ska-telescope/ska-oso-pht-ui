@@ -16,7 +16,8 @@ import {
   verifyTeamMemberAccessUpdatedAlertFooter,
   createScienceIdeaLoggedIn,
   mockCreateSubmissionAPI,
-  verifySubmissionCreatedAlertFooter
+  verifySubmissionCreatedAlertFooter,
+  verifyScienceIdeaCreatedAlertFooter
 } from '../../common/common.js';
 import { entry } from '../../../fixtures/utils/cypress.js';
 
@@ -26,28 +27,26 @@ describe('Delegate Editing Rights', () => {
     mockCreateSubmissionAPI();
     mockGetUserByEmailAPI();
     mockEmailAPI();
-    createScienceIdeaLoggedIn();
-    cy.wait('@mockCreateSubmission');
-    verifySubmissionCreatedAlertFooter();
-    pageConfirmed('TEAM');
   });
 
   afterEach(() => {
     clearLocalStorage();
   });
 
-  it('Delegate editing rights to a Co-Investigator', { jiraKey: 'XTP-89609' }, () => {
+  it('SV Flow: Delegate editing rights to a Co-Investigator', { jiraKey: 'XTP-89609' }, () => {
+    createScienceIdeaLoggedIn();
+    cy.wait('@mockCreateSubmission');
+    verifyScienceIdeaCreatedAlertFooter();
+    pageConfirmed('TEAM');
     entry('email', 'Trevor.Swain@community.skao.int');
     clickUserSearch();
-    // cy.wait('@mockGetUserByEmailAPI'); // TODO see if this is needed
     verifyUserFoundAlertFooter();
-    // clickPICheckbox();
     clickSendInviteButton();
     cy.wait('@mockInviteUserByEmail');
     verifyUserInvitedAlertFooter();
     clickManageTeamMemberRights();
     clickSubmitRights();
     clickDialogConfirm();
-    // This can fail as it's waiting upon a response for too long.   verifyTeamMemberAccessUpdatedAlertFooter();
+    verifyTeamMemberAccessUpdatedAlertFooter();
   });
 });

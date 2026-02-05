@@ -11,7 +11,8 @@ import {
   updateDataProductField,
   verifyFieldError,
   mockCreateSubmissionAPI,
-  verifySubmissionCreatedAlertFooter, verifyScienceIdeaCreatedAlertFooter
+  verifySubmissionCreatedAlertFooter,
+  verifyScienceIdeaCreatedAlertFooter
 } from '../../common/common';
 import { standardUser } from '../../users/users.js';
 beforeEach(() => {
