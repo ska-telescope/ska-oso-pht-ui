@@ -12,7 +12,9 @@ import {
   checkFieldIsVisible,
   clickCycleSelectionMockProposal,
   clickProposalTypePrincipleInvestigator,
-  clickSubProposalTypeTargetOfOpportunity
+  clickSubProposalTypeTargetOfOpportunity,
+  enterScienceVerificationIdeaTitle,
+  verifyScienceIdeaCreatedAlertFooter
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -37,6 +39,26 @@ describe('Verify Save', () => {
     clickCycleSelectionSV();
     clickCycleConfirm();
     //Verify save is not visible before sv creation
+    checkFieldIsVisible('saveBtn', false);
+  });
+
+  it('SV Flow: Verify save functionality is not restricted after sv creation', () => {
+    clickAddSubmission();
+    clickCycleSelectionSV();
+    clickCycleConfirm();
+    enterScienceVerificationIdeaTitle();
+    clickCreateSubmission();
+    cy.wait('@mockCreateSubmission');
+    verifyScienceIdeaCreatedAlertFooter();
+    //Verify save is enabled after sv creation
+    checkFieldDisabled('saveBtn', false);
+  });
+
+  it('Proposal Flow: Verify save functionality is restricted before proposal creation', () => {
+    clickAddSubmission();
+    clickCycleSelectionMockProposal();
+    clickCycleConfirm();
+    //Verify save is not visible before proposal creation
     checkFieldIsVisible('saveBtn', false);
   });
 
