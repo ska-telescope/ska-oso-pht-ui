@@ -11,7 +11,7 @@ import {
   updateDataProductField,
   verifyFieldError,
   mockCreateSubmissionAPI,
-  verifySubmissionCreatedAlertFooter
+  verifySubmissionCreatedAlertFooter, verifyScienceIdeaCreatedAlertFooter
 } from '../../common/common';
 import { standardUser } from '../../users/users.js';
 beforeEach(() => {
@@ -28,7 +28,7 @@ describe('Data product validation', () => {
   it('SV Flow: Verify channels out range', () => {
     createScienceIdeaLoggedIn();
     cy.wait('@mockCreateSubmission');
-    verifySubmissionCreatedAlertFooter();
+    verifyScienceIdeaCreatedAlertFooter();
     pageConfirmed('TEAM');
 
     clickStatusIconNav('statusId2');
