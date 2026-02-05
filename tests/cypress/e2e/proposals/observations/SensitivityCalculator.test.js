@@ -113,7 +113,7 @@ const verifySensitivityCalculatorResults = rec => {
 
 describe('Sensitivity Calculator', () => {
   for (const rec of sensitivityCalculatorResults) {
-    // TODO MUI UPDATE
+    // TODO Scenario needs to be re-defined based on a non-logged in user flow - see STAR-1904
     it.skip('Sensitivity calculator results : ' + rec.test, { jiraKey: 'XTP-71885' }, () => {
       //add observation
       clickObservationSetup();

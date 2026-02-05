@@ -21,7 +21,7 @@ function commonConfiguration() {
   //add default observation
   clickObservationSetup();
 }
-
+// TODO Scenario needs to be re-defined based on a non-logged in user flow - see STAR-1904
 describe('Creating Observations, Verify spectral average limits, Continuum', () => {
   beforeEach(() => {
     commonConfiguration();
@@ -41,6 +41,7 @@ describe('Creating Observations, Verify spectral average limits, Continuum', () 
   );
 });
 
+// TODO Scenario needs to be re-defined based on a non-logged in user flow - see STAR-1904
 describe('Creating Observations, Verify spectral average limits, Zoom ', () => {
   beforeEach(() => {
     commonConfiguration();
