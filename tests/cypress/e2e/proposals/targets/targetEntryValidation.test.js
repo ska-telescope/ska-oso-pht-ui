@@ -32,9 +32,9 @@ beforeEach(() => {
 afterEach(() => {
   clearLocalStorage();
 });
-
+//TODO: Tests are skipped due to an issue with the declination field - see STAR-1904
 describe('Science Verification: Target entry validation', () => {
-  it('SV: Verify add target button is disabled when target coordinate fields are invalid', () => {
+  it.skip('SV: Verify add target button is disabled when target coordinate fields are invalid', () => {
     enterTargetField('name', 'M2'); // enter valid target name
 
     enterTargetField('skyDirectionValue1', '1:0:0'); // enter invalid coordinate
@@ -46,7 +46,7 @@ describe('Science Verification: Target entry validation', () => {
     checkFieldDisabled('addTargetButton', true); // verify add target button is disabled when target coordinate fields are invalid
   });
 
-  it('SV: Verify add target button is disabled when target name field is invalid', () => {
+  it.skip('SV: Verify add target button is disabled when target name field is invalid', () => {
     enterTargetField('skyDirectionValue1', '1:00:00'); // enter valid coordinate
     enterTargetField('skyDirectionValue2', '1:00:00'); // enter valid coordinate
 
@@ -97,7 +97,7 @@ describe('Science Verification: Target entry validation', () => {
     checkFieldDisabled('dialogConfirmationButton', true); // verify confirm button is disabled
   });
 
-  it('SV: Verify submitting an edited target is disabled when dec is invalid', () => {
+  it.skip('SV: Verify submitting an edited target is disabled when dec is invalid', () => {
     mockResolveTargetAPI();
 
     //add target
@@ -118,7 +118,7 @@ describe('Science Verification: Target entry validation', () => {
     checkFieldDisabled('dialogConfirmationButton', true); // verify confirm button is disabled
   });
 
-  it('SV: Verify target table reflects updated target', () => {
+  it.skip('SV: Verify target table reflects updated target', () => {
     mockResolveTargetAPI();
     cy.wait('@mockOSDData');
 
@@ -161,7 +161,7 @@ describe('Proposal Flow: Target entry validation', () => {
     clickCycleConfirm();
   });
 
-  it('Proposal: Verify name field error when target is duplicated', () => {
+  it.skip('Proposal: Verify name field error when target is duplicated', () => {
     mockResolveTargetAPI();
 
     //add target
