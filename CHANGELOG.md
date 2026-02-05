@@ -11,8 +11,8 @@ UNRELEASED
 * Added: Linking page for proposal flow links a data product/observation combination to a target
 * Added: Calibration strategy for proposal flow
 * Added: Updated the library code and implemented accessibility for colors
-* [BREAKING] Changed: oso-services v12.0.0
-* [BREAKING] Changed: oda-umbrella v15.1.0 and PDM v27.0.0
+* [BREAKING] Changed: oso-services v12.1.0
+* [BREAKING] Changed: oda-umbrella v15.2.0 and PDM v27.0.0
 * Changed: Number of stations, SubArrays, & observation modes are obtained from the OSD Data
 * Changed: Validation data such as allowed bandwidth and frequency is coming fom the OSD Data
 * Changed: Updated to latest dependencies and libraries
