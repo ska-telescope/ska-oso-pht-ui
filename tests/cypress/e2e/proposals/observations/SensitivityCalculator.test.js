@@ -9,7 +9,6 @@ import {
   initializeUserNotLoggedIn,
   clearLocalStorage,
   createMock
-  // clickListOfTargets
 } from '../../common/common';
 import sensitivityCalculatorResults from '../../../fixtures/sensitivityCalculatorResults.json';
 
@@ -17,8 +16,6 @@ beforeEach(() => {
   initializeUserNotLoggedIn();
   cy.fixture('sensitivityCalculatorResults.json').as('sensitivityCalculatorResults');
   createMock();
-  //add target
-  // clickListOfTargets();
   addTargetUsingCoordinates();
   clickToAddTarget();
   clickToObservationPage();
@@ -113,9 +110,7 @@ const verifySensitivityCalculatorResults = rec => {
 
 describe('Sensitivity Calculator', () => {
   for (const rec of sensitivityCalculatorResults) {
-    // TODO MUI UPDATE
     it.skip('Sensitivity calculator results : ' + rec.test, { jiraKey: 'XTP-71885' }, () => {
-      //add observation
       clickObservationSetup();
       updateBand(rec);
       updateSubarray(rec);

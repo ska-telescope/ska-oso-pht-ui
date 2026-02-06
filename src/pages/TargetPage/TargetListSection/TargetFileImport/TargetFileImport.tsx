@@ -4,13 +4,16 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import Papa from 'papaparse';
 import { Proposal } from '../../../../utils/types/proposal';
-import { RA_TYPE_ICRS, RA_TYPE_GALACTIC, UPLOAD_MAX_WIDTH_CSV } from '../../../../utils/constants';
+import {
+  RA_TYPE_ICRS,
+  RA_TYPE_GALACTIC,
+  UPLOAD_MAX_WIDTH_CSV,
+  NOTIFICATION_DELAY_IN_SECONDS
+} from '../../../../utils/constants';
 import Target from '@/utils/types/target';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
-
-const NOTIFICATION_DELAY_IN_SECONDS = 10;
 
 interface TargetFileImportProps {
   raType: number;

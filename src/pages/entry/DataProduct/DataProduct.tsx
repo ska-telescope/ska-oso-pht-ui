@@ -33,6 +33,7 @@ import {
   IW_NATURAL,
   IW_UNIFORM,
   NAV,
+  NOTIFICATION_DELAY_IN_SECONDS,
   PAGE_DATA_PRODUCTS,
   PIXEL_SIZE_DEFAULT,
   PIXEL_SIZE_UNIT_DEFAULT,
@@ -74,6 +75,9 @@ import OutputFrequencyResolutionField from '@/components/fields/outputFrequencyR
 import DispersionMeasureField from '@/components/fields/dispersionMeasure/dispersionMeasure';
 import RotationMeasureField from '@/components/fields/rotationMeasure/rotationMeasure';
 import OutputSamplingIntervalField from '@/components/fields/outputSamplingInterval/outputSamplingInterval';
+import { useNotify } from '@/utils/notify/useNotify';
+import { Console } from 'console';
+import { set } from 'lodash';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
@@ -128,6 +132,8 @@ export default function DataProduct({ data }: DataProductProps) {
   const [outputSamplingInterval, setOutputSamplingInterval] = React.useState(1);
   const [dispersionMeasure, setDispersionMeasure] = React.useState(1);
   const [rotationMeasure, setRotationMeasure] = React.useState(1);
+
+  const [polarisationsError, setPolarisationsError] = React.useState('');
 
   const maxObservationsReached = () =>
     baseObservations.length >= (osdCyclePolicy?.maxObservations ?? 0);
@@ -276,6 +282,14 @@ export default function DataProduct({ data }: DataProductProps) {
     }
     // TODO : Need to set the appropriate setHelp value upon entry
   }, []);
+
+  React.useEffect(() => {
+    if (!polarisationsError) return;
+    const timeout = setTimeout(() => {
+      setPolarisationsError('');
+    }, NOTIFICATION_DELAY_IN_SECONDS * 1000);
+    return () => clearTimeout(timeout);
+  }, [polarisationsError]);
 
   React.useEffect(() => {
     if (!isEdit()) {
@@ -539,6 +553,7 @@ export default function DataProduct({ data }: DataProductProps) {
         observationType={getObservation()?.type || TYPE_CONTINUUM}
         dataProductType={dataProductType}
         value={polarisations}
+        setError={setPolarisationsError}
         setValue={setPolarisations}
         labelWidth={0}
       />
@@ -790,8 +805,14 @@ export default function DataProduct({ data }: DataProductProps) {
               (isPST() && !isPulsarTiming())) && (
               <Box pb={GAP}>
                 <BorderedSection
-                  borderColor={polarisationsValid() ? 'text.disabled' : theme.palette.error.main}
-                  title={t('polarisations.label')}
+                  borderColor={
+                    polarisationsValid() && polarisationsError.length === 0
+                      ? 'text.disabled'
+                      : theme.palette.error.main
+                  }
+                  title={
+                    polarisationsError.length > 0 ? polarisationsError : t('polarisations.label')
+                  }
                 >
                   {fieldWrapper(
                     polarisationsField(),

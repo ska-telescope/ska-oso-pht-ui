@@ -55,7 +55,7 @@ export default function DataProductsPage() {
   }, [getProposal()]);
 
   React.useEffect(() => {
-    setTheProposalState(validateSDPPage(getProposal(), autoLink));
+    setTheProposalState(validateSDPPage(getProposal()));
   }, [validateToggle]);
 
   const deleteIconClicked = (e: DataProductSDPNew) => {

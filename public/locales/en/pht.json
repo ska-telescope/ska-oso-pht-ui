@@ -757,6 +757,7 @@
     "help": "Polarisations help text TBD",
     "label": "Polarisations",
     "noneSelected": "None selected",
+    "error": "A polarisation selection is required",
     "I": "I",
     "Q": "Q",
     "U": "U",
@@ -1679,6 +1680,10 @@
     "label": "Type",
     "toolTip": "Field Pattern selected.",
     "help": "Default value is Pointing Centres. Field Pattern selection currently unavailable."
+  },
+  "visualization": {
+    "loading": "Loading visualization",
+    "error": "An error occurred while loading the visualization. Please try again later."
   },
   "zoomChannels": {
     "help": "Maximum number of channels for Low AA2 is {{max}}. To increase bandwidth, increase the spectral averaging parameter",
