@@ -385,7 +385,7 @@ export const verifySubmissionCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Submission added with unique identifier');
 
 export const verifyInformationBannerText = text => {
-  cy.get('[data-testId="borderedSection"]').contains(text);
+  cy.get('[id="standardAlertId"]').contains(text);
 };
 
 export const verifyUserFoundAlertFooter = () =>

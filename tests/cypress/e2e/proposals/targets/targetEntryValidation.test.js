@@ -32,9 +32,8 @@ beforeEach(() => {
 afterEach(() => {
   clearLocalStorage();
 });
-//TODO: Tests are skipped due to an issue with the declination field - see STAR-1904
 describe('Science Verification: Target entry validation', () => {
-  it.skip('SV: Verify add target button is disabled when target coordinate fields are invalid', () => {
+  it('SV: Verify add target button is disabled when target coordinate fields are invalid', () => {
     enterTargetField('name', 'M2'); // enter valid target name
 
     enterTargetField('skyDirectionValue1', '1:0:0'); // enter invalid coordinate
@@ -46,7 +45,7 @@ describe('Science Verification: Target entry validation', () => {
     checkFieldDisabled('addTargetButton', true); // verify add target button is disabled when target coordinate fields are invalid
   });
 
-  it.skip('SV: Verify add target button is disabled when target name field is invalid', () => {
+  it('SV: Verify add target button is disabled when target name field is invalid', () => {
     enterTargetField('skyDirectionValue1', '1:00:00'); // enter valid coordinate
     enterTargetField('skyDirectionValue2', '1:00:00'); // enter valid coordinate
 
@@ -97,7 +96,7 @@ describe('Science Verification: Target entry validation', () => {
     checkFieldDisabled('dialogConfirmationButton', true); // verify confirm button is disabled
   });
 
-  it.skip('SV: Verify submitting an edited target is disabled when dec is invalid', () => {
+  it('SV: Verify submitting an edited target is disabled when dec is invalid', () => {
     mockResolveTargetAPI();
 
     //add target
@@ -118,7 +117,7 @@ describe('Science Verification: Target entry validation', () => {
     checkFieldDisabled('dialogConfirmationButton', true); // verify confirm button is disabled
   });
 
-  it.skip('SV: Verify target table reflects updated target', () => {
+  it('SV: Verify target table reflects updated target', () => {
     mockResolveTargetAPI();
     cy.wait('@mockOSDData');
 
@@ -146,7 +145,9 @@ describe('Science Verification: Target entry validation', () => {
 
     //verify only one target is available for SV, as per OSD
     verifyOsdDataMaxTargets(1);
-    verifyInformationBannerText('Only 1 target/object is allowed');
+    verifyInformationBannerText(
+      'Only 1 target/object is allowed for this Science Verification Idea cycle.'
+    );
   });
 });
 
@@ -161,7 +162,7 @@ describe('Proposal Flow: Target entry validation', () => {
     clickCycleConfirm();
   });
 
-  it.skip('Proposal: Verify name field error when target is duplicated', () => {
+  it('Proposal: Verify name field error when target is duplicated', () => {
     mockResolveTargetAPI();
 
     //add target
