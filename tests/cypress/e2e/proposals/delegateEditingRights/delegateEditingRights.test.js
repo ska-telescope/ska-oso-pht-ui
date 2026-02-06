@@ -14,7 +14,8 @@ import {
   clickDialogConfirm,
   createScienceIdeaLoggedIn,
   mockCreateSubmissionAPI,
-  verifySubmissionCreatedAlertFooter
+  verifyScienceIdeaCreatedAlertFooter,
+  verifyTeamMemberAccessUpdatedAlertFooter
 } from '../../common/common.js';
 import { entry } from '../../../fixtures/utils/cypress.js';
 
@@ -24,17 +25,17 @@ describe('Delegate Editing Rights', () => {
     mockCreateSubmissionAPI();
     mockGetUserByEmailAPI();
     mockEmailAPI();
-    createScienceIdeaLoggedIn();
-    cy.wait('@mockCreateSubmission');
-    verifySubmissionCreatedAlertFooter();
-    pageConfirmed('TEAM');
   });
 
   afterEach(() => {
     clearLocalStorage();
   });
 
-  it('Delegate editing rights to a Co-Investigator', { jiraKey: 'XTP-89609' }, () => {
+  it('SV Flow: Delegate editing rights to a Co-Investigator', { jiraKey: 'XTP-89609' }, () => {
+    createScienceIdeaLoggedIn();
+    cy.wait('@mockCreateSubmission');
+    verifyScienceIdeaCreatedAlertFooter();
+    pageConfirmed('TEAM');
     entry('email', 'Trevor.Swain@community.skao.int');
     clickUserSearch();
     verifyUserFoundAlertFooter();
@@ -44,5 +45,6 @@ describe('Delegate Editing Rights', () => {
     clickManageTeamMemberRights();
     clickSubmitRights();
     clickDialogConfirm();
+    verifyTeamMemberAccessUpdatedAlertFooter();
   });
 });

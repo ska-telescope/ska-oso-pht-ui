@@ -218,6 +218,18 @@ export const verifyStatusIndicatorLabel = (testId, label) => {
     .closest('button')
     .contains(label);
 };
+
+export const checkFieldIsVisible = (testId, visible) => {
+  if (visible) {
+    cy.get('[data-testid="' + testId + '"]')
+      .closest('button')
+      .should('be.visible');
+  } else {
+    cy.get('body')
+      .find(`[data-testid="${testId}"]`)
+      .should('not.exist');
+  }
+};
 /*----------------------------------------------------------------------*/
 
 export const clickNav = (testId, title) => {
@@ -270,7 +282,8 @@ export const clickUserMenuProposals = () => clickSignINBtns('menuItemProposals',
 export const clickUserMenuVerification = () => clickSignINBtns('menuItemVerification', '');
 export const clickUserMenuPanels = () =>
   clickSignINBtns('menuItemPanelSummary', 'PANEL MANAGEMENT');
-export const clickUserMenuReviews = () => clickSignINBtns('menuItemReviews', 'REVIEW PROPOSALS');
+export const clickUserMenuReviews = () =>
+  clickSignINBtns('menuItemReviews', 'REVIEW SCIENCE VERIFICATION IDEAS');
 export const clickUserMenuDecisions = () =>
   clickSignINBtns('menuItemReviewDecisions', 'REVIEW DECISIONS');
 export const clickUserMenuLogout = () => click('menuItemLogout');
@@ -385,8 +398,8 @@ export const verifyTeamMemberAccessUpdatedAlertFooter = () =>
   verifyContent('timeAlertFooter', "Team member's access has been updated.", 30000);
 
 export const clickEdit = () => {
-  cy.get('[data-testId="EditRoundedIcon"]').should('be.visible');
-  cy.get('[data-testId="EditRoundedIcon"]').click();
+  cy.get('[data-testId="editIcon"]').should('be.visible');
+  cy.get('[data-testId="editIcon"]').click();
 };
 export const tabToEditTarget = () => {
   cy.press('Tab');

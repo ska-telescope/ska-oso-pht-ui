@@ -28,6 +28,7 @@ describe('Guest User', () => {
     verify('loginButton');
   });
 
+  // TODO Scenario needs to be re-defined based on a non-logged in user flow - see STAR-1904
   it.skip('Access proposal screens without login', () => {
     createMock();
 

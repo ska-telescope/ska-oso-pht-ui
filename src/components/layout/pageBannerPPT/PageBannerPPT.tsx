@@ -222,7 +222,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         {!backPage && <HomeButton />}
       </Grid>
       <Grid>
-        {loggedIn && getProposal().id !== null && pages.includes(pageNo) && (
+        {(loggedIn || cypressToken) && getProposal().id !== null && pages.includes(pageNo) && (
           <SaveButton
             testId={'saveBtn'}
             disabled={isDisableEndpoints()}
