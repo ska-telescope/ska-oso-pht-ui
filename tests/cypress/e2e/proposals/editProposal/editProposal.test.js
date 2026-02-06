@@ -23,7 +23,8 @@ import {
   verifySensitivityCalculatorStatusSuccess,
   clickToCalibrationPage,
   mockCreateSubmissionAPI,
-  verifySubmissionCreatedAlertFooter
+  verifySubmissionCreatedAlertFooter,
+  verifyScienceIdeaCreatedAlertFooter
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -31,7 +32,6 @@ beforeEach(() => {
   initialize(standardUser);
   mockCreateSubmissionAPI();
   mockEmailAPI();
-  createScienceIdeaLoggedIn();
 });
 
 afterEach(() => {
@@ -45,9 +45,10 @@ describe('Edit Proposal', () => {
     });
   });
 
-  it('Edit a basic proposal', { jiraKey: 'XTP-71405' }, () => {
+  it('SV Flow: Edit a basic proposal', { jiraKey: 'XTP-71405' }, () => {
+    createScienceIdeaLoggedIn();
     cy.wait('@mockCreateSubmission');
-    verifySubmissionCreatedAlertFooter();
+    verifyScienceIdeaCreatedAlertFooter();
     pageConfirmed('TEAM');
 
     //edit existing proposal
@@ -56,18 +57,19 @@ describe('Edit Proposal', () => {
     verifyOnLandingPageFilterIsVisible();
     verifyMockedProposalOnLandingPageIsVisible();
     //TODO: Resolve edit selector which fails in the pipeline
-    // clickEdit();
-    // pageConfirmed('TITLE');
+    clickEdit();
+    pageConfirmed('TITLE');
 
     //complete mandatory fields
-    //TODO: FIX
-    // clickStatusIconNav('statusId1'); //Click to team page
-    // pageConfirmed('TEAM');
+    clickStatusIconNav('statusId1'); //Click to team page
+    pageConfirmed('TEAM');
 
-    // addInvestigator();
-    // cy.wait('@mockInviteUserByEmail');
-    // verifyEmailSentAlertFooter();
-    // clickStatusIconNav('statusId2'); //Click to general page
+    addInvestigator();
+    cy.wait('@mockInviteUserByEmail');
+    verifyEmailSentAlertFooter();
+    clickStatusIconNav('statusId2'); //Click to details page
+    pageConfirmed('DETAILS');
+
     //TODO: Resolve selector
     // selectObservingMode('101');
     // addAbstract();
