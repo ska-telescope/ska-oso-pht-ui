@@ -54,7 +54,7 @@ describe('Verify validate', () => {
     cy.wait('@mockCreateSubmission');
     verifyScienceIdeaCreatedAlertFooter();
     //Verify validate / submit is enabled after sv creation
-    checkFieldDisabled('submitBtnTestId ', false);
+    checkFieldDisabled('submitBtnTestId', false);
   });
 
   it('Proposal Flow: Verify validate functionality is restricted before proposal creation', () => {
