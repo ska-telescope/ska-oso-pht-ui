@@ -60,9 +60,6 @@ ts-typecheck:
     KUBE_HOST: https://k8s.stfc.skao.int
   environment:
     name: "dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG"
-
-js-lint:
-  allow_failure: true
     
 js-e2e-deploy:
   variables: # use the loadbalancer as there is no authentication for back-end calls during tests

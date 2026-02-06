@@ -5,7 +5,7 @@ A proposal needs to be created using the title page (:numref:`Figure %s <titlepa
 
 .. _titlepage:
 
-.. figure:: /images/titlePage.png
+.. figure:: /images/titlePageSV.png
    :width: 90%
    :align: center
    :alt: Image of the Title page

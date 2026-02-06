@@ -17,7 +17,7 @@ The Target Page allows you to add target(s) to your proposal (see :numref:`Figur
 
 .. _targetpage:
 
-.. figure:: /images/targetPage.png
+.. figure:: /images/targetPageSV2.png
    :width: 90%
    :align: center
    :alt: Image of the Target page for 'List of Targets'. 
