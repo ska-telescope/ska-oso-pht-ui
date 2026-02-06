@@ -15,7 +15,7 @@ Before submitting your proposal, click the “validate” button to check its co
 
 .. _submitpage:
 
-.. figure:: /images/submitConfirmation.png
+.. figure:: /images/validationResultsSV.png
    :width: 90%
    :align: center
    :alt: Image of the Submit Confirmation modal 

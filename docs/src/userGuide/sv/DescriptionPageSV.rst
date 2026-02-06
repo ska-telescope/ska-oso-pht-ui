@@ -5,7 +5,7 @@ The Science Page (see :numref:`Figure %s <sciencepage>`) enables science justifi
 
 .. _sciencepage:
 
-.. figure:: /images/sciencePage.png
+.. figure:: /images/descriptionPage1.png
    :width: 90%
    :align: center
    :alt: Image of the Science Justification page.
@@ -15,7 +15,7 @@ The Science Page (see :numref:`Figure %s <sciencepage>`) enables science justifi
 
 .. _sciencepageafter:
 
-.. figure:: /images/sciencePageafter.png
+.. figure:: /images/descriptionPage2.png
    :width: 90%
    :align: center
    :alt: Image of the Science Justification page after uploading a PDF.

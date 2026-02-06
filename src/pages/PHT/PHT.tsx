@@ -244,7 +244,8 @@ export default function PHT() {
             sx={{
               backgroundColor: 'background.default',
               borderRadius: '0px',
-              minHeight: '91vh'
+              border: '0px solid transparent',
+              height: '100vh'
             }}
           >
             {REQUIRED_WIDTH ? (

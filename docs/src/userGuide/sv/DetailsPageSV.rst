@@ -4,7 +4,7 @@ The general page (see :numref:`Figure %s <figure6>`), allows you to provide the 
 
 .. _figure6:
 
-.. figure:: /images/generalPage.png
+.. figure:: /images/detailsPage.png
    :width: 90%
    :align: center
    :alt: Image of the general page.
