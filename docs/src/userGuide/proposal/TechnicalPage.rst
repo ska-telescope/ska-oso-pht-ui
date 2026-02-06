@@ -5,7 +5,7 @@ The technical Page (see :numref:`Figure %s <technicalpage>`) enables technical j
 
 .. _technicalpage:
 
-.. figure:: /images/technicalPage.png
+.. figure:: /images/technicalEmptyPage.png
    :width: 90%
    :align: center
    :alt: Image of the Technical Justification page.
@@ -15,7 +15,7 @@ The technical Page (see :numref:`Figure %s <technicalpage>`) enables technical j
 
 .. _technicalpageafter:
 
-.. figure:: /images/technicalPageafter.png
+.. figure:: /images/technicalPage.png
    :width: 90%
    :align: center
    :alt: Image of the Technical Justification page after uploading a PDF.
