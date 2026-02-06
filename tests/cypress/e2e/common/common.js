@@ -398,8 +398,8 @@ export const verifyTeamMemberAccessUpdatedAlertFooter = () =>
   verifyContent('timeAlertFooter', "Team member's access has been updated.", 30000);
 
 export const clickEdit = () => {
-  cy.get('[data-testId="EditRoundedIcon"]').should('be.visible');
-  cy.get('[data-testId="EditRoundedIcon"]').click();
+  cy.get('[data-testId="editIcon"]').should('be.visible');
+  cy.get('[data-testId="editIcon"]').click();
 };
 export const tabToEditTarget = () => {
   cy.press('Tab');
