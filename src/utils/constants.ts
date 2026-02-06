@@ -228,24 +228,6 @@ export const FREQUENCY_AVERAGING_UNIT_DEFAULT = 0;
 
 export const BANDWIDTH_LABEL_SELECTOR = 0;
 
-export const POLARISATIONS = [
-  { value: 'I' },
-  { value: 'Q' },
-  { value: 'U' },
-  { value: 'V' },
-  { value: 'XX' },
-  { value: 'XY' },
-  { value: 'YX' },
-  { value: 'YY' }
-];
-export const POLARISATIONS_PST_FLOW = [{ value: 'X' }, { value: 'Y' }];
-export const POLARISATIONS_PST_BANK = [
-  { value: 'I' },
-  { value: 'Q' },
-  { value: 'U' },
-  { value: 'V' }
-];
-
 export const IMAGE_WEIGHTING = [
   { label: 'natural', lookup: 'natural', value: IW_NATURAL },
   { label: 'uniform', lookup: 'uniform', value: IW_UNIFORM },
@@ -253,6 +235,8 @@ export const IMAGE_WEIGHTING = [
 ];
 
 export const LAB_POS_TICK = LABEL_POSITION.START;
+
+export const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
 export const MULTIPLIER_HZ_GHZ = [1, 1, 1000, 1000000, 1000000000];
 

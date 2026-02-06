@@ -343,7 +343,6 @@ export default function GridProposals({
       updateAppContent1(validateProposal(response, autoLink));
       updateAppContent2(response);
       storeProposalCopy(response);
-      validateProposal(response, autoLink);
       return true;
     }
   };

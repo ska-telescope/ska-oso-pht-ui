@@ -4,8 +4,6 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { RA_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
-import SvgAsImg from '@components/svg/svgAsImg.tsx';
-import GetVisibility from '@services/axios/get/getVisibilitySVG/getVisibilitySVG.tsx';
 import deleteAutoLinking from '@utils/autoLinking/DeleteAutoLinking.tsx';
 import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
@@ -17,6 +15,7 @@ import SpatialImaging from './SpatialImaging/SpatialImaging';
 import TargetFileImport from './TargetFileImport/TargetFileImport';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import Visualization from '@/components/alerts/visualization/visualization';
 
 const GAP = 4;
 
@@ -30,40 +29,11 @@ export default function TargetListSection() {
   const [skyDirection1Error, setSkyDirection1Error] = React.useState('');
   const [skyDirection2Error, setSkyDirection2Error] = React.useState('');
   const [nameError, setNameError] = React.useState('');
-  const [visibilitySVG, setVisibilitySVG] = React.useState(null);
   const { autoLink, isSV, osdCyclePolicy } = useOSDAccessors();
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const maxTargets = osdCyclePolicy?.maxTargets ?? null;
-
-  React.useEffect(() => {
-    if (maxTargets !== null && (getProposal()?.targets?.length ?? 0) > maxTargets - 1) {
-      const ra = getProposal()?.targets?.map(target => {
-        return { ra: target.raStr };
-      });
-      const dec = getProposal()?.targets?.map(target => {
-        return { dec: target.decStr };
-      });
-      // only LOW for now
-      if (
-        ra &&
-        dec &&
-        ra.length > 0 &&
-        dec.length > 0 &&
-        typeof ra[0]?.ra === 'string' &&
-        typeof dec[0]?.dec === 'string'
-      ) {
-        GetVisibility(ra[0].ra, dec[0].dec, 'LOW').then(response => {
-          if (response && typeof response === 'object' && 'data' in response) {
-            setVisibilitySVG(response.data);
-          } else {
-            setVisibilitySVG(null);
-          }
-        });
-      }
-    }
-  }, [getProposal()?.targets, maxTargets]);
 
   const deleteIconClicked = (e: Target) => {
     setRowTarget(e);
@@ -97,7 +67,6 @@ export default function TargetListSection() {
         calibrationStrategy: calibrationStrategies ?? []
       });
     }
-    setVisibilitySVG(null);
     setRowTarget(null);
     closeDialog();
   };
@@ -185,24 +154,30 @@ export default function TargetListSection() {
         justifyContent="space-between"
         alignItems="top"
         spacing={GAP}
-        sx={{ height: '100&', width: '95vw' }}
+        sx={{ height: '100%', width: '95vw' }}
       >
         <Grid size={{ md: 12, lg: 6 }} order={{ md: 2, lg: 1 }}>
-          <Stack spacing={GAP / 2}>
-            <GridTargets
-              deleteClicked={deleteIconClicked}
-              editClicked={editIconClicked}
-              height={maxTargets === 1 ? '10vh' : '60vh'}
-              raType={RA_TYPE_ICRS.value}
-              rows={getProposal().targets}
+          <Stack
+            spacing={GAP}
+            sx={{
+              height: '100%',
+              display: 'flex',
+              minHeight: 0
+            }}
+          >
+            <Box sx={{ flexShrink: 0 }}>
+              <GridTargets
+                deleteClicked={deleteIconClicked}
+                editClicked={editIconClicked}
+                height={maxTargets === 1 ? '15vh' : '60vh'}
+                raType={RA_TYPE_ICRS.value}
+                rows={getProposal().targets}
+              />
+            </Box>
+            <Visualization
+              target={getProposal()?.targets?.[0] ?? undefined}
+              show={maxTargets === 1}
             />
-            {maxTargets === 1 &&
-              visibilitySVG !== null &&
-              (getProposal()?.targets?.length ?? 0) > 0 && (
-                <Box>
-                  <SvgAsImg svgXml={visibilitySVG} />
-                </Box>
-              )}
           </Stack>
         </Grid>
         <Grid size={{ md: 12, lg: 6 }} order={{ md: 1, lg: 2 }}>

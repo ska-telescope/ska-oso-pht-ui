@@ -70,7 +70,6 @@ export default function LandingPage() {
   const [openCycleDialog, setOpenCycleDialog] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
   const loggedIn = isLoggedIn();
-  // const getAccess = () => application.content4 as ProposalAccess[];
   const setAccess = (access: ProposalAccess[]) => updateAppContent4(access);
   const getProposal = () => application.content2 as Proposal;
   const { setHelp } = useHelp();
@@ -167,7 +166,6 @@ export default function LandingPage() {
       updateAppContent1(validateProposal(response, autoLink));
       updateAppContent2(response);
       storeProposalCopy(response);
-      validateProposal(response, autoLink);
       return true;
     }
   };
@@ -246,15 +244,6 @@ export default function LandingPage() {
     createProposal();
   };
 
-  // const deleteIconClicked = async (id: string) => {
-  //   const isValid = await getTheProposal(id);
-  //   if (isValid) {
-  //     setTimeout(() => {
-  //       setOpenDeleteDialog(true);
-  //     }, 1000);
-  //   }
-  // };
-
   const deleteConfirmed = async () => {
     const response = await PutProposal(authClient, getProposal(), isSV, PROPOSAL_STATUS.WITHDRAWN);
     if (response && !('error' in response)) {
@@ -264,91 +253,6 @@ export default function LandingPage() {
       setOpenDeleteDialog(false);
     }
   };
-
-  // const osdOpen = () => {
-  //   // TODO : We need to extend to also check the open date of the OSD record
-  //   if (osdCloses) {
-  //     const closes = osdCloses();
-  //     const formattedTimestamp = closes.replace(/^(\d{4})(\d{2})(\d{2})T/, '$1-$2-$3T');
-  //     // Use strict ISO parsing
-  //     const closeMoment = moment.utc(formattedTimestamp, moment.ISO_8601, true);
-  //     return closeMoment.isValid() ? closeMoment.isAfter(moment.utc()) : true;
-  //   } else {
-  //     return true;
-  //   }
-  // };
-
-  //   const canEdit = (e: { row: { id: string; status: string } }) => {
-  //     return (
-  //       e.row.status === PROPOSAL_STATUS.DRAFT && osdOpen() && accessUpdate(getAccess(), e.row.id)
-  //     );
-  //   };
-
-  //   const canClone = (e: { row: any }) => {
-  //     const update = accessUpdate(getAccess(), e.row.id);
-  //     return update;
-  //   };
-
-  //  const canDelete = (e: { row: { status: string } }) =>
-  // e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
-
-  // STAR-1826 : Keep until we are happy with all the functionality in table
-  // const colActions = {
-  //   field: 'actions',
-  //   type: 'actions',
-  //   headerName: 'Actions',
-  //   sortable: false,
-  //   width: 200,
-  //   disableClickEventBubbling: true,
-  //   renderCell: (e: { row: any }) => (
-  //     <>
-  //       <EditIcon
-  //         onClick={() => editIconClicked(e.row.id)}
-  //         disabled={!canEdit(e)}
-  //         toolTip={t(canEdit(e) ? 'editProposal.toolTip' : 'editProposal.disabled')}
-  //       />
-  //       <ViewIcon onClick={() => viewIconClicked(e.row.id)} toolTip={t('viewProposal.toolTip')} />
-  //       <CloneIcon
-  //         onClick={() => cloneIconClicked(e.row.id)}
-  //         disabled={!canClone(e)}
-  //         toolTip={t('cloneProposal.toolTip')}
-  //       />
-  //       {/* <TrashIcon
-  //         onClick={() => deleteIconClicked(e.row.id)}
-  //         disabled // TO BE re-introduced once API is completed  ={!canDelete(e)}
-  //         toolTip={t('deleteProposal.disabled')} // canDelete(e) ? 'deleteProposal.toolTip' : 'deleteProposal.disabled')}
-  //       /> */}
-  //     </>
-  //   )
-  // };
-
-  // STAR-1826 : Keep until we are happy with all the functionality in table
-  // const stdColumns = isSV
-  //   ? [
-  //       ...[
-  //         colActions,
-  //         getColProposalId(t),
-  //         getColCycle(t),
-  //         getColProposalTitle(t),
-  //         getColProposalPI(t),
-  //         getColProposalStatus(t),
-  //         getColProposalUpdated(t),
-  //         getColCycleClose(t)
-  //       ]
-  //     ]
-  //   : [
-  //       ...[
-  //         colActions,
-  //         getColProposalId(t),
-  //         getColProposalType(t),
-  //         getColCycle(t),
-  //         getColProposalTitle(t),
-  //         getColProposalPI(t),
-  //         getColProposalStatus(t),
-  //         getColProposalUpdated(t),
-  //         getColCycleClose(t)
-  //       ]
-  //     ];
 
   const searchableFields: (keyof Proposal)[] = ['id', 'title', 'cycle', 'investigators'];
 

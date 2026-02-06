@@ -8,7 +8,8 @@ import {
   PAGE_DETAILS,
   TYPE_CONTINUUM,
   TYPE_PST,
-  TYPE_ZOOM
+  TYPE_ZOOM,
+  NOTIFICATION_DELAY_IN_SECONDS
 } from '@utils/constants.ts';
 import { countWords, obTypeTransform } from '@utils/helpers.ts';
 import { Proposal } from '@utils/types/proposal.tsx';
@@ -27,7 +28,6 @@ import Target from '@/utils/types/target';
 const PAGE = PAGE_DETAILS;
 const LINE_OFFSET = 30;
 const GAP = 0;
-const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
 export const checkAutoLink = (autolink: boolean, targets: Target[], scienceCat: string) => {
   if (!autolink || (targets?.length ?? 0) <= 0 || scienceCat === '') {

@@ -100,12 +100,8 @@ export const checkDP = (proposal: Proposal): number => {
     proposal.dataProductSDP &&
     proposal.dataProductSDP?.length > 0
   ) {
-    // based on observing type verify data products fields
-    // note: appart from polarisations, the user should not be able to enter unvalid fields
     const dataProduct = proposal.dataProductSDP?.[0] as DataProductSDPNew;
-    switch (
-      proposal.scienceCategory // science category used as observing type for SV
-    ) {
+    switch (proposal.scienceCategory) {
       case TYPE_ZOOM:
         return validatePolarisations(dataProduct.data as SDPSpectralData);
       case TYPE_CONTINUUM:
@@ -124,17 +120,10 @@ export const checkDP = (proposal: Proposal): number => {
   return 0;
 };
 
-export const validateSDPPage = (proposal: Proposal, autoLink: boolean) => {
+export const validateSDPPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_OK];
-
-  if (autoLink) {
-    let count = checkDP(proposal) ? 1 : 0;
-    return result[count];
-  } else {
-    let count =
-      Array.isArray(proposal?.dataProductSDP) && proposal.dataProductSDP.length > 0 ? 1 : 0;
-    return result[count];
-  }
+  let count = Array.isArray(proposal?.dataProductSDP) && proposal.dataProductSDP.length > 0 ? 1 : 0;
+  return result[count];
 };
 
 export const validateSRCPage = () => STATUS_OK;
@@ -152,7 +141,7 @@ export const validateLinkingPage = (proposal: Proposal) => {
   return result[count];
 };
 
-export const validateProposal = (proposal: Proposal, autoLink: boolean) => {
+export const validateProposal = (proposal: Proposal, autoLink: boolean = false) => {
   return [
     validateTitlePage(proposal),
     validateTeamPage(proposal),
@@ -161,10 +150,10 @@ export const validateProposal = (proposal: Proposal, autoLink: boolean) => {
     validateTargetPage(proposal),
     validateObservationPage(proposal, autoLink),
     validateTechnicalPage(proposal),
-    validateSDPPage(proposal, autoLink),
+    validateSDPPage(proposal),
     validateLinkingPage(proposal),
     validateCalibrationPage(proposal)
-    // See SRCNet INACTIVE - validateSRCPage()
+    /* See SRCNet INACTIVE - validateSRCPage() */
   ];
 };
 
@@ -206,12 +195,10 @@ export function validateSkyDirection1Text(value: string): boolean {
 }
 
 export function validateSkyDirection1Number(value: string): boolean {
-  // Validate its a valid number
   if (!/^[0-9]*\.?[0-9]+$/.test(value)) {
     return false;
   }
   const number = parseFloat(value);
-  // Validate decimal right ascension range.
   return number >= 0 && number < 360;
 }
 
@@ -228,7 +215,7 @@ export function validateSkyDirection2Text(value: string): string | null {
 
   const hours = Number(arr[0]);
   const minutes = Number(arr[1]);
-  const seconds = Number(arr[2].split('.')[0]); // Ignore fractional part for range check
+  const seconds = Number(arr[2].split('.')[0]);
 
   if (Math.abs(hours) > 90 || (Math.abs(hours) === 90 && (minutes > 0 || seconds > 0))) {
     return '1';

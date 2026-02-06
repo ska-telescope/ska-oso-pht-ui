@@ -9,7 +9,6 @@ import {
   initializeUserNotLoggedIn,
   clearLocalStorage,
   createMock
-  // clickListOfTargets
 } from '../../common/common';
 import sensitivityCalculatorResults from '../../../fixtures/sensitivityCalculatorResults.json';
 
@@ -17,8 +16,6 @@ beforeEach(() => {
   initializeUserNotLoggedIn();
   cy.fixture('sensitivityCalculatorResults.json').as('sensitivityCalculatorResults');
   createMock();
-  //add target
-  // clickListOfTargets();
   addTargetUsingCoordinates();
   clickToAddTarget();
   clickToObservationPage();
@@ -115,7 +112,6 @@ describe('Sensitivity Calculator', () => {
   for (const rec of sensitivityCalculatorResults) {
     // TODO Scenario needs to be re-defined based on a non-logged in user flow - see STAR-1904
     it.skip('Sensitivity calculator results : ' + rec.test, { jiraKey: 'XTP-71885' }, () => {
-      //add observation
       clickObservationSetup();
       updateBand(rec);
       updateSubarray(rec);

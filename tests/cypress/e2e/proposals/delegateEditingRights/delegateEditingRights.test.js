@@ -6,18 +6,16 @@ import {
   pageConfirmed,
   initialize,
   clickUserSearch,
-  // clickPICheckbox,
   clickSendInviteButton,
   verifyUserFoundAlertFooter,
   verifyUserInvitedAlertFooter,
   clickManageTeamMemberRights,
   clickSubmitRights,
   clickDialogConfirm,
-  verifyTeamMemberAccessUpdatedAlertFooter,
   createScienceIdeaLoggedIn,
   mockCreateSubmissionAPI,
-  verifySubmissionCreatedAlertFooter,
-  verifyScienceIdeaCreatedAlertFooter
+  verifyScienceIdeaCreatedAlertFooter,
+  verifyTeamMemberAccessUpdatedAlertFooter
 } from '../../common/common.js';
 import { entry } from '../../../fixtures/utils/cypress.js';
 

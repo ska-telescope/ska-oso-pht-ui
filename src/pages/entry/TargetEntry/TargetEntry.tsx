@@ -20,7 +20,8 @@ import {
   WRAPPER_HEIGHT,
   TYPE_PST,
   TYPE_ZOOM,
-  TYPE_CONTINUUM
+  TYPE_CONTINUUM,
+  NOTIFICATION_DELAY_IN_SECONDS
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -38,7 +39,6 @@ interface TargetEntryProps {
   onNameFieldErrorChange?: (error: string) => void;
 }
 
-const NOTIFICATION_DELAY_IN_SECONDS = 5;
 const GAP = 2;
 
 export default function TargetEntry({

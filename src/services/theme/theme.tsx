@@ -1,4 +1,4 @@
-import { createTheme } from '@mui/material';
+import { createTheme, PaletteOptions } from '@mui/material';
 import {
   Theme,
   THEME_LIGHT,
@@ -14,10 +14,8 @@ import {
   ACCESSIBILITY_ACHROMATOPSIA
 } from '@ska-telescope/ska-gui-components';
 
-// Valid theme modes
 export type ThemeMode = typeof THEME_LIGHT | typeof THEME_DARK;
 
-// Valid accessibility modes
 export type AccessibilityMode =
   | typeof ACCESSIBILITY_DEFAULT
   | typeof ACCESSIBILITY_PROTANOPIA
@@ -29,7 +27,6 @@ export type AccessibilityMode =
   | typeof ACCESSIBILITY_ACHROMATOMALY
   | typeof ACCESSIBILITY_ACHROMATOPSIA;
 
-// Accepted input shape
 export type ThemeInput =
   | ThemeMode
   | {
@@ -39,7 +36,47 @@ export type ThemeInput =
       focusVisibleAlways?: boolean;
     };
 
-// Create and export the theme
-const theme = (mode: ThemeInput) => createTheme(Theme(mode));
+const COLOR_RED = 0;
+const COLOR_ORANGE = 1;
+const COLOR_GREEN = 3;
+const COLOR_BLUE = 4;
+
+const buildSemanticColors = (set: any): PaletteOptions => {
+  const c = set.colors;
+  const t = set.textColors;
+
+  return {
+    success: {
+      main: c[COLOR_GREEN],
+      contrastText: t[COLOR_GREEN]
+    },
+    warning: {
+      main: c[COLOR_ORANGE],
+      contrastText: t[COLOR_ORANGE]
+    },
+    error: {
+      main: c[COLOR_RED],
+      contrastText: t[COLOR_RED]
+    },
+    info: {
+      main: c[COLOR_BLUE],
+      contrastText: t[COLOR_BLUE]
+    }
+  };
+};
+
+const theme = (mode: ThemeInput) => {
+  const base = Theme(mode);
+  const paletteSet: any = (base as any).paletteSet;
+  const semantic = paletteSet ? buildSemanticColors(paletteSet) : {};
+
+  return createTheme({
+    ...base,
+    palette: {
+      ...base.palette,
+      ...semantic
+    }
+  });
+};
 
 export default theme;
