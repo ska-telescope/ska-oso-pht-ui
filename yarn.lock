@@ -5233,7 +5233,7 @@ cypress-xray-plugin@^8.5.0:
     form-data "^4.0.2"
     semver "^7.6.3"
 
-cypress@^15.8.1:
+cypress@15.10.0:
   version "15.10.0"
   resolved "https://registry.yarnpkg.com/cypress/-/cypress-15.10.0.tgz#06bed98a690fad1b98a21010613f9c8c7fa9f639"
   integrity sha512-OtUh7OMrfEjKoXydlAD1CfG2BvKxIqgWGY4/RMjrqQ3BKGBo5JFKoYNH+Tpcj4xKxWH4XK0Xri+9y8WkxhYbqQ==
