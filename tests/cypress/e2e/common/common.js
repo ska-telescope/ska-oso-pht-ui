@@ -282,7 +282,8 @@ export const clickUserMenuProposals = () => clickSignINBtns('menuItemProposals',
 export const clickUserMenuVerification = () => clickSignINBtns('menuItemVerification', '');
 export const clickUserMenuPanels = () =>
   clickSignINBtns('menuItemPanelSummary', 'PANEL MANAGEMENT');
-export const clickUserMenuReviews = () => clickSignINBtns('menuItemReviews', 'REVIEW PROPOSALS');
+export const clickUserMenuReviews = () =>
+  clickSignINBtns('menuItemReviews', 'REVIEW SCIENCE VERIFICATION IDEAS');
 export const clickUserMenuDecisions = () =>
   clickSignINBtns('menuItemReviewDecisions', 'REVIEW DECISIONS');
 export const clickUserMenuLogout = () => click('menuItemLogout');
