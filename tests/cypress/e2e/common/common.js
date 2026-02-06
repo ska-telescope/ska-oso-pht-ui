@@ -338,10 +338,13 @@ export const selectContinuum = () => clickDropdown('categoryId', '102');
 
 export const selectCosmology = () => clickDropdown('categoryId', '1');
 export const selectObservingMode = value => {
-  cy.get('[data-testid="categoryId"]').should('exist');
   cy.get('[data-testid="categoryId"]').click();
-  cy.get('li[data-value="' + value + '"]').click();
-};
+
+  cy.get('iframe').then($frame => {
+    const body = $frame.contents().find('body');
+    cy.wrap(body).contains('CONTINUUM').click();
+  });
+}
 
 export const clickProposalTypePrincipleInvestigator = () => selectId('ProposalType-1');
 export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalAttribute-1');
