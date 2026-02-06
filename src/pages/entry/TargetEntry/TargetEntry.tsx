@@ -118,14 +118,13 @@ export default function TargetEntry({
     }
   };
 
-  // TODO : CHECK THIS : NOT SURE HOW THIS IS NO LONGER USED
-  // const setTheDec = (inValue: string) => {
-  //   const formattedDec = leadZero(inValue);
-  //   setDec(formattedDec.toString());
-  //   if (setTarget) {
-  //     setTarget({ ...target, decStr: formattedDec.toString() });
-  //   }
-  // };
+  const setTheDec = (inValue: string) => {
+    const formattedDec = leadZero(inValue);
+    setDec(formattedDec.toString());
+    if (setTarget) {
+      setTarget({ ...target, decStr: formattedDec.toString() });
+    }
+  };
 
   const setTheRA = (inValue: string) => {
     const formattedRA = leadZero(inValue);
@@ -396,6 +395,7 @@ export default function TargetEntry({
     wrapper(
       <SkyDirection2
         required={isRequired()}
+        setValue={setTheDec}
         skyUnits={raType}
         value={dec}
         valueFocus={() => setHelp('skyDirection.2')}
