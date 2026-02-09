@@ -40,17 +40,6 @@ On entering the observation page for the first time, it will look like :numref:`
    :alt: Page filter
 
 
-
-.. _obspage1:
-.. figure:: /images/observationPageSV.png
-   :width: 90%
-   :align: center
-   :alt: Observation page with Observation(s) and target(s) added.
-
-   Observation page with Observation(s) and target(s) added.
-
-
-
 .. _editobservationpage:
 
 .. figure:: /images/editobservationpage.png

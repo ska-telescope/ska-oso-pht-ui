@@ -11,7 +11,7 @@ Data Products are associated to one or more Observation(s) which have a valid as
 
 .. _figure50:
 
-.. figure:: /images/dataProductPage.png
+.. figure:: /images/dpList.png
    :width: 100%
    :alt: Image of the Observatory Data Product page. 
 

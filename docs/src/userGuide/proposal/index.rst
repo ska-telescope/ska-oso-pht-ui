@@ -8,12 +8,12 @@ Proposal Flow
    LandingPage
    TitlePage
    TeamPage
-   DetailsPage
+   GeneralPage
    SciencePage
    TargetPage
    ObservationPage
    TechnicalPage
-   SDPDataPage
+   DataProductPage
    LinkingPage
    CalibrationPage
    SrcNetPage

@@ -26,7 +26,7 @@ On entering the observation page for the first time, it will look like :numref:`
 
 .. _obspage2:
 
-.. figure:: /images/observationPage2.png
+.. figure:: /images/observationEmptyPage.png
    :width: 90%
    :align: center
    :alt: Image of the Observation page
@@ -53,7 +53,7 @@ On entering the observation page for the first time, it will look like :numref:`
 
 .. _editobservationpage:
 
-.. figure:: /images/editobservationpage.png
+.. figure:: /images/observationEntryContinuum.png
    :width: 90%
    :align: center
    :alt: Observation page to edit observation.
