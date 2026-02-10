@@ -552,6 +552,11 @@ export const updateTargetField = (testId, value) => {
     .type(value);
 };
 
+export const updateFieldValue = (testId, value) => {
+  cy.get('[data-testid="' + testId + '"]').should('exist');
+  cy.get('[data-testid="' + testId + '"]').type(value);
+};
+
 export const verifyOnLandingPageFilterIsVisible = () => {
   cy.get('[data-testid="proposalType"]').should('exist');
   cy.get('[data-testid="proposalType"]').realClick();

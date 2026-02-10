@@ -28,23 +28,20 @@ import {
   addM2TargetUsingResolve,
   clickToAddTarget,
   mockResolveTargetAPI,
-  verifyAutoLinkAlertFooter
+  verifyAutoLinkAlertFooter,
+  updateFieldValue,
+  verifyFieldError
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
-describe('Creating Proposal', () => {
+describe('Validate Observation Fields', () => {
   beforeEach(() => {
     initialize(standardUser);
     mockCreateSubmissionAPI();
     mockOSDAPI();
     mockResolveTargetAPI();
-  });
 
-  afterEach(() => {
-    clearLocalStorage();
-  });
-
-  it('SV Flow: Create a basic science verification idea, verify AutoLink', () => {
+    //Create autoLink submission
     clickAddSubmission();
     cy.wait('@mockOSDData');
     verifyOsdDataCycleID('SKAO_2027_1');
@@ -69,26 +66,20 @@ describe('Creating Proposal', () => {
     clickToAddTarget();
     //Verify AutoLink to OSD data
     verifyAutoLinkAlertFooter();
-    clickHome();
-    verifyOnLandingPage();
-    verifyOnLandingPageFilterIsVisible();
-    verifyMockedProposalOnLandingPageIsVisible();
   });
 
-  it('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
-    clickAddSubmission();
-    clickCycleSelectionMockProposal();
-    clickCycleConfirm();
-    enterProposalTitle();
-    clickProposalTypePrincipleInvestigator();
-    clickSubProposalTypeTargetOfOpportunity();
-    clickCreateSubmission();
-    cy.wait('@mockCreateSubmission');
-    verifySubmissionCreatedAlertFooter();
-    pageConfirmed('TEAM');
-    clickHome();
-    verifyOnLandingPage();
-    verifyOnLandingPageFilterIsVisible();
-    verifyMockedProposalOnLandingPageIsVisible();
+  afterEach(() => {
+    clearLocalStorage();
+  });
+
+  it('SV Flow: Verify observation fields', () => {
+    clickStatusIconNav('statusId5'); //Click to observation page
+    pageConfirmed('OBSERVATION');
+    updateFieldValue('continuumBandwidth', '500'); //update continuum bandwidth to an invalid value
+    verifyFieldError(
+      'continuumBandwidth',
+      'Maximum bandwidth for this array assembly (150.00 MHz) exceeded',
+      true
+    ); //verify field error for continuum bandwidth
   });
 });

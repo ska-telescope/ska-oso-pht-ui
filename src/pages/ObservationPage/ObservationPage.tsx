@@ -11,6 +11,7 @@ import {
   validateObservationPage
 } from '@utils/validation/validation.tsx';
 import {
+  cypressToken,
   PAGE_CALIBRATION,
   PAGE_LINKING,
   PAGE_OBSERVATION,
@@ -147,7 +148,9 @@ export default function ObservationPage() {
           <Alert
             color={AlertColorTypes.Warning}
             text={
-              loggedIn && osdCyclePolicy?.maxObservations === 1 && hasTargetObservations()
+              (loggedIn || cypressToken) &&
+              osdCyclePolicy?.maxObservations === 1 &&
+              hasTargetObservations()
                 ? t('page.5.noTarget')
                 : t('error.noObservationsLoggedOut')
             }
@@ -192,12 +195,12 @@ export default function ObservationPage() {
   return (
     <Shell page={PAGE} helpDisabled>
       <>
-        {(osdCyclePolicy?.maxObservations !== 1 || !loggedIn) && AddTheButton()}
+        {(osdCyclePolicy?.maxObservations !== 1 || (!loggedIn && !cypressToken)) && AddTheButton()}
         {(autoLink ? !hasTargetObservations() : !hasObservations()) && noObservations()}
-        {(!loggedIn || osdCyclePolicy?.maxObservations !== 1) &&
+        {((!loggedIn && !cypressToken) || osdCyclePolicy?.maxObservations !== 1) &&
           (autoLink ? hasTargetObservations() : hasObservations()) &&
           observationList()}
-        {loggedIn &&
+        {(loggedIn || cypressToken) &&
           osdCyclePolicy?.maxObservations === 1 &&
           (autoLink ? hasTargetObservations() : hasObservations()) && (
             <ObservationEntry data={getProposal()?.observations?.[0]} />
