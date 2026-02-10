@@ -344,11 +344,10 @@ export const selectObservingMode = value => {
     force: true
   });
 
-  // Wait for the menu to appear
-  cy.get('ul[role="listbox"]', { timeout: 5000 }).should('be.visible');
-
   // Select the option
-  cy.contains('li[role="option"]', value).click({ force: true });
+  cy.get('li[role="option"]')
+    .filter((_, el) => el.innerText.trim() === value)
+    .click({ force: true });
 };
 
 export const clickProposalTypePrincipleInvestigator = () => selectId('ProposalType-1');
