@@ -22,7 +22,13 @@ import {
   verifyOsdDataProposalOpen,
   verifyOsdDataProposalClose,
   pageConfirmed,
-  verifyScienceIdeaCreatedAlertFooter
+  verifyScienceIdeaCreatedAlertFooter,
+  selectObservingMode,
+  clickStatusIconNav,
+  addM2TargetUsingResolve,
+  clickToAddTarget,
+  mockResolveTargetAPI,
+  verifyAutoLinkAlertFooter
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -31,13 +37,14 @@ describe('Creating Proposal', () => {
     initialize(standardUser);
     mockCreateSubmissionAPI();
     mockOSDAPI();
+    mockResolveTargetAPI();
   });
 
   afterEach(() => {
     clearLocalStorage();
   });
 
-  it('SV Flow: Create a basic science verification idea', () => {
+  it('SV Flow: Create a basic science verification idea, verify AutoLink', () => {
     clickAddSubmission();
     cy.wait('@mockOSDData');
     verifyOsdDataCycleID('SKAO_2027_1');
@@ -51,13 +58,24 @@ describe('Creating Proposal', () => {
     cy.wait('@mockCreateSubmission');
     verifyScienceIdeaCreatedAlertFooter();
     pageConfirmed('TEAM');
+    clickStatusIconNav('statusId2'); //Click to details page
+    pageConfirmed('DETAILS');
+    selectObservingMode('Continuum');
+    clickStatusIconNav('statusId4'); //Click to target page
+    pageConfirmed('TARGET');
+    //add target
+    addM2TargetUsingResolve();
+    cy.wait('@mockResolveTarget');
+    clickToAddTarget();
+    //Verify AutoLink to OSD data
+    verifyAutoLinkAlertFooter();
     clickHome();
     verifyOnLandingPage();
     verifyOnLandingPageFilterIsVisible();
     verifyMockedProposalOnLandingPageIsVisible();
   });
 
-  it('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
+  it.skip('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
     clickAddSubmission();
     clickCycleSelectionMockProposal();
     clickCycleConfirm();

@@ -388,6 +388,9 @@ export const verifyOsdDataMaxTargets = data => {
 export const verifyScienceIdeaCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Science Verification Idea added with unique identifier');
 
+export const verifyAutoLinkAlertFooter = () =>
+  verifyContent('timeAlertFooter', 'Target added and auto-linked successfully');
+
 export const verifySubmissionCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Submission added with unique identifier');
 
