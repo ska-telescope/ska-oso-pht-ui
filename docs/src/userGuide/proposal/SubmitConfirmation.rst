@@ -5,7 +5,7 @@ Before submitting your proposal, click the “validate” button to check its co
 
 .. _validpage:
 
-.. figure:: /images/validationresultmodal.png
+.. figure:: /images/validationResultsFail.png
    :width: 90%
    :align: center
    :alt: Image of the Validation Results modal 
@@ -15,7 +15,7 @@ Before submitting your proposal, click the “validate” button to check its co
 
 .. _submitpage:
 
-.. figure:: /images/submitConfirmation.png
+.. figure:: /images/validationResults.png
    :width: 90%
    :align: center
    :alt: Image of the Submit Confirmation modal 
