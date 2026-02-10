@@ -30,7 +30,8 @@ import {
   mockResolveTargetAPI,
   verifyAutoLinkAlertFooter,
   updateFieldValue,
-  verifyFieldError
+  verifyFieldError,
+  checkFieldDisabled
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -66,6 +67,8 @@ describe('Validate Observation Fields', () => {
     clickToAddTarget();
     //Verify AutoLink to OSD data
     verifyAutoLinkAlertFooter();
+    //verify addTarget is disabled after autoLink
+    checkFieldDisabled('addTargetButton', true);
   });
 
   afterEach(() => {
