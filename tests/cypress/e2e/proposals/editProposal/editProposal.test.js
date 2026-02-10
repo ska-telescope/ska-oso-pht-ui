@@ -24,7 +24,8 @@ import {
   clickToCalibrationPage,
   mockCreateSubmissionAPI,
   verifySubmissionCreatedAlertFooter,
-  verifyScienceIdeaCreatedAlertFooter, selectObservingMode
+  verifyScienceIdeaCreatedAlertFooter,
+  selectObservingMode
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -69,9 +70,7 @@ describe('Edit Proposal', () => {
     verifyEmailSentAlertFooter();
     clickStatusIconNav('statusId2'); //Click to details page
     pageConfirmed('DETAILS');
-
-    //TODO: Resolve selector
-    selectObservingMode('continuum');
+    selectObservingMode('Continuum');
     // addAbstract();
     // clickStatusIconNav('statusId5'); //Click to observation page
     // clickObservationSetup();

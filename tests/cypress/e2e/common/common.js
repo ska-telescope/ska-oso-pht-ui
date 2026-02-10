@@ -338,13 +338,18 @@ export const selectContinuum = () => clickDropdown('categoryId', '102');
 
 export const selectCosmology = () => clickDropdown('categoryId', '1');
 export const selectObservingMode = value => {
-  cy.get('[data-testid="categoryId"]').click();
-
-  cy.get('iframe').then($frame => {
-    const body = $frame.contents().find('body');
-    cy.wrap(body).contains('CONTINUUM').click();
+  // Open the dropdown using mousedown instead of click
+  cy.get('[data-testid="categoryId"] [role="combobox"]').trigger('mousedown', {
+    button: 0,
+    force: true
   });
-}
+
+  // Wait for the menu to appear
+  cy.get('ul[role="listbox"]', { timeout: 5000 }).should('be.visible');
+
+  // Select the option
+  cy.contains('li[role="option"]', value).click({ force: true });
+};
 
 export const clickProposalTypePrincipleInvestigator = () => selectId('ProposalType-1');
 export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalAttribute-1');
