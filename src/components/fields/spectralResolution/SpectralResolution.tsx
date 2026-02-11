@@ -1,6 +1,6 @@
 import React from 'react';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
-import { Box } from '@mui/system';
+import { Box } from '@mui/material';
 import { BAND_LOW_STR, FREQUENCY_UNITS, TYPE_CONTINUUM } from '../../../utils/constants';
 import { calculateVelocity, frequencyConversion } from '../../../utils/helpers';
 
@@ -34,9 +34,16 @@ export default function SpectralResolutionField({
 
   const LOWContinuumBase = () => 5.43;
   const LOWZoomBase = () => {
+    const BASE_CLOCK_FREQUENCY = 781250;
+    const FRACTIONAL_RESAMPLING_RATIO = 32 / 27;
+    const FFT_SIZE_N = 4096;
+    const DECIMATION_FACTOR = 16;
+    const CLOCKING_COMPONENT = BASE_CLOCK_FREQUENCY * FRACTIONAL_RESAMPLING_RATIO;
+    const RESOLUTION_COMPONENT = FFT_SIZE_N / DECIMATION_FACTOR;
+    const BASE_SPECTRAL_RESOLUTION_HZ = CLOCKING_COMPONENT / RESOLUTION_COMPONENT;
+
     const powersTwo = [1, 2, 4, 8, 16, 32, 64, 128];
-    const baseSpectralResolutionHz = (781250 * 32) / 27 / 4096 / 16; // TODO verify what these numbers are
-    const results = powersTwo.map(obj => obj * baseSpectralResolutionHz);
+    const results = powersTwo.map(obj => obj * BASE_SPECTRAL_RESOLUTION_HZ);
     return (results[bandWidth - 1]?.toFixed(2) as unknown) as number;
   };
 

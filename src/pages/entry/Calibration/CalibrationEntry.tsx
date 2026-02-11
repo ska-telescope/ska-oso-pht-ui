@@ -101,7 +101,7 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
     updateStorageProposal();
   }, [notes]);
 
-  // TODO : Extend for Proposals when there will be more than one proposal and target as an option
+  // Extend for Proposals when there will be more than one proposal and target as an option
   React.useEffect(() => {
     const proposal = getProposal();
     const found = proposal?.targetObservation && proposal.targetObservation.length > 0;

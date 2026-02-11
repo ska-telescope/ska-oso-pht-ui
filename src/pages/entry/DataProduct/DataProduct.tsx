@@ -13,7 +13,7 @@ import RobustField from '@components/fields/robust/Robust.tsx';
 import PixelSizeField from '@components/fields/pixelSize/pixelSize.tsx';
 import { useTheme } from '@mui/material/styles';
 import TickIcon from '@components/icon/tickIcon/tickIcon.tsx';
-import TaperDropdownField from '@components/fields/taper/taperDropdown.tsx';
+import TaperDropdown from '@/components/fields/taperDropdown/taperDropdown';
 import { ValueUnitPair } from '@utils/types/typesSensCalc.tsx';
 import PolarisationsField from '@/components/fields/polarisations/polarisations';
 import {
@@ -355,7 +355,7 @@ export default function DataProduct({ data }: DataProductProps) {
           />
         )
       : fieldWrapper(
-          <TaperDropdownField
+          <TaperDropdown
             onFocus={() => setHelp('taper')}
             required
             setValue={setTaperMidValue}

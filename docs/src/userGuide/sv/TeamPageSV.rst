@@ -14,7 +14,7 @@ Once on the team page, see :numref:`Figure %s <figure5>`,  you can move between 
    
 .. _figure5:
 
-.. figure:: /images/teamPage.png
+.. figure:: /images/teamPageSV.png
    :width: 90%
    :align: center
    :alt: Image of the Team page

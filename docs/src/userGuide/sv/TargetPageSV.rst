@@ -24,18 +24,9 @@ The Target Page allows you to add target(s) to your proposal (see :numref:`Figur
 
    Target page for 'List of Targets'
 
-.. _targetpageimport:
-
-.. figure:: /images/targetPageimport.png
-   :width: 90%
-   :align: center
-   :alt: Image of the Target page for 'Import Targets'. 
-
-   Target page for 'Import Targets'
-
 .. _targetpageedit:
 
-.. figure:: /images/targetPageedit.png
+.. figure:: /images/targetPageEdit.png
    :width: 90%
    :align: center
    :alt: Target page showing modal to edit target. 
@@ -45,7 +36,7 @@ The Target Page allows you to add target(s) to your proposal (see :numref:`Figur
 
 .. _targetpagedelete:
 
-.. figure:: /images/targetPagedelete.png
+.. figure:: /images/targetPageDelete.png
    :width: 90%
    :align: center
    :alt: Target page showing modal to delete target.

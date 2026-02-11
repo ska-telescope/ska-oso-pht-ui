@@ -12,7 +12,7 @@ Science Verification Flow
    DescriptionPageSV
    TargetPageSV
    ObservationPageSV
-   TechnicalPageSV
+   DataProductsPageSV
    CalibrationPageSV
    SubmitConfirmationSV
 

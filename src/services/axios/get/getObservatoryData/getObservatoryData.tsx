@@ -50,7 +50,7 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
           calibrationFactoryDefined: true,
           bands: [
             inData?.observatory_policy?.telescope_capabilities?.Low !== null ? BAND_LOW_STR : '',
-            inData?.observatory_policy?.telescope_capabilities?.Mid !== null ? BAND_5B_STR : '' // TODO: Update when more bands are available
+            inData?.observatory_policy?.telescope_capabilities?.Mid !== null ? BAND_5B_STR : '' // Update when more bands are available
           ].filter(band => band !== ''),
           low: toLowerCaseArray(inData?.observatory_policy?.telescope_capabilities?.Low),
           mid: toLowerCaseArray(inData?.observatory_policy?.telescope_capabilities?.Mid)

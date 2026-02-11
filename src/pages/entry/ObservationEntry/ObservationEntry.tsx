@@ -42,7 +42,8 @@ import {
   BAND_LOW_STR,
   SA_AA2,
   SA_CUSTOM,
-  PULSAR_TIMING_VALUE
+  PULSAR_TIMING_VALUE,
+  SUPPLIED_TYPE_INTEGRATION
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -136,7 +137,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   >(undefined);
   const [spectralAveraging, setSpectralAveraging] = React.useState(1);
   const [spectralResolution, setSpectralResolution] = React.useState('');
-  const [suppliedType, setSuppliedType] = React.useState(1);
+  const [suppliedType, setSuppliedType] = React.useState(SUPPLIED_TYPE_INTEGRATION);
   const [suppliedValue, setSuppliedValue] = React.useState(SUPPLIED_VALUE_DEFAULT_LOW);
   const [suppliedUnits, setSuppliedUnits] = React.useState(SUPPLIED_INTEGRATION_TIME_UNITS_H);
   const [continuumBandwidth, setContinuumBandwidth] = React.useState(0);
@@ -294,7 +295,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     }
     if (isMid() && e === 0) {
       setDefaultElevation();
-      setSuppliedType(1); // TODO : Replace with constant
+      setSuppliedType(SUPPLIED_TYPE_INTEGRATION);
       setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_H);
       setSuppliedValue(SUPPLIED_VALUE_DEFAULT_LOW);
     }

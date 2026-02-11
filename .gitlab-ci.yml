@@ -12,6 +12,7 @@ stages:
   - test
   - deploy
   - publish
+  - accessibility
   - scan
   - pages
   - integration
@@ -39,7 +40,7 @@ install-dependencies:
 ts-typecheck:
   image: ${JS_BUILD_IMAGE}
   stage: lint
-  allow_failure: true
+  # allow_failure: true
   before_script:
     - make js-install
   script:
@@ -66,7 +67,7 @@ js-e2e-deploy:
     KUBE_HOST: https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
 
 js-e2e-test:
-  allow_failure: true
+  # allow_failure: true
   variables: # use the loadbalancer as the cypress tests would hit the log in page otherwise
     KUBE_HOST: https://ingress-nginx-controller-lb-stfc-techops-production-cicd.ingress-nginx.svc.techops.internal.skao.int
 
@@ -99,6 +100,8 @@ deploy-integration:
     KUBE_HOST: https://k8s.stfc.skao.int
 
 include:
+  # Accessibility
+  - template: "Verify/Accessibility.gitlab-ci.yml"
   # TS linting and unit testing
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/js.gitlab-ci.yml'

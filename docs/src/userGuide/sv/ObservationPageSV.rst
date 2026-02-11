@@ -2,28 +2,6 @@ Observation Page
 ~~~~~~~~~~~~~~~~
 On entering the observation page for the first time, it will look like :numref:`Figure %s <obspage2>`. To add Observation(s), click the |icoobs| button (see :ref:`Add Observation section <obspage1>`). 
 
-
-
-.. |iconsuccess| image:: /images/statusnav2.png
-   :width: 5%
-   :alt: success Icon
-
-.. |icondelete| image:: /images/deleteicon.png
-   :width: 6%
-   :alt: delete Icon
-
-
-.. |iconedit| image:: /images/editicon.png
-   :width: 6%
-   :alt: success Icon
-
-
-.. |iconfailed| image:: /images/unacceptableicon.png
-   :width: 4%
-   :alt: Issues Icon
-
-
-
 .. _obspage2:
 
 .. figure:: /images/observationPageSV.png
@@ -32,34 +10,6 @@ On entering the observation page for the first time, it will look like :numref:`
    :alt: Image of the Observation page
 
    Image of the Observation page. 
-
-
-
-.. |icoobs| image:: /images/obsbutton.png
-   :width: 20%
-   :alt: Page filter
-
-
-.. _editobservationpage:
-
-.. figure:: /images/editobservationpage.png
-   :width: 90%
-   :align: center
-   :alt: Observation page to edit observation.
-
-   Observation page to edit an observation.
-
-.. _deleteobservationpage:
-
-.. figure:: /images/deleteobservationpage.png
-   :width: 90%
-   :align: center
-   :alt: Modal to edit an observation.
-
-   Modal to delete an observation.
-
-
-
 
 Layout and Navigation
 =====================
@@ -103,42 +53,7 @@ The Observation Page consists of two distinct sections - see :numref:`Figure %s 
      - The *weighted sensitivity* based on the sensitivity calculator result. Only appears after the target is linked to an observation.
      - The *beam size* based on the sensitivity calculator result. Only appears after the target is linked to an observation.
 
-
-
-.. _senscal:
-
-.. figure:: /images/obssenscal.png
-   :width: 90%
-   :align: center
-   :alt: Sensitivity calculator result modal display.
-
-   Sensitivity calculator observation level result modal display.
-
-.. tip:: 
-
-   - Link an observation to a target: When an observation is selected by clicking on it, it can be linked to a target by clicking the check box next to the target name on the right. This triggers a request to calculate the sensitivity/integration time.
-   - Sensitivity calculation is done on the fly so you can add and remove targets at any time.
-
-
-
 .. _addobs:
-
-Add observation
-+++++++++++++++
-
-When the |icoobs|  button is clicked, the  "Add Observation" page as shown in :numref:`Figure %s <addobspage>` comes up. After filling and adding this page, it will be added on the observation table.
-
-.. _addobspage:
-
-.. figure:: /images/observationSetup.png
-   :width: 90%
-   :align: center
-   :alt: Image of the add observation page.
-
-   The add observation page.
-
-
-
 
 Key Information and Actions
 ===========================
@@ -150,8 +65,5 @@ The Observation Page allows you to:
   - Link observations to specific targets.
   - Manage observation list.
   - View the Sensitivity Calculator results at individual target level and at observation level.
-
-
-
 
 |helpdesk|

@@ -420,7 +420,6 @@ export default function ReviewListPage() {
     headerName: t('dateAssigned.label'),
     width: 180,
     renderCell: (e: { row: any }) => {
-      // TODO retrieve assigned_on from reviewable response once backend updated & update type + mapping
       return e.row?.proposal?.assignedOn
         ? presentDate(e.row.proposal?.assignedOn)
         : t('unavailable');

@@ -260,7 +260,6 @@ export default function LinkingPage() {
       targetObservation: obs2,
       groupObservations: obs3
     });
-    // TODO : Need to check this is correct
     setElementsO(elementsO.filter(e => e.id !== currRec?.id));
     setCurrRec(null);
     closeDeleteDialog();

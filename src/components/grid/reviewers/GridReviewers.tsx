@@ -31,7 +31,7 @@ export function filterReviewers(
   searchTypeExpertise: string,
   searchTypeAffiliation: string
 ) {
-  const fields: (keyof Reviewer)[] = ['givenName', 'surname', 'jobTitle']; // TODO : All given field
+  const fields: (keyof Reviewer)[] = ['givenName', 'surname', 'jobTitle'];
   return reviewers.filter(
     item =>
       fields.some(field =>

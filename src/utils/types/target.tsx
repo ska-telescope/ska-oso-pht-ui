@@ -95,7 +95,6 @@ export type ReferenceCoordinateGalactic = {
 
 export type ReferenceCoordinateICRS = {
   kind: string;
-  // referenceFrame: string; // TODO check if this can be removed, not used in backend
   raStr: string;
   decStr: string;
   pmRa?: number;
