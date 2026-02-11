@@ -338,9 +338,16 @@ export const selectContinuum = () => clickDropdown('categoryId', '102');
 
 export const selectCosmology = () => clickDropdown('categoryId', '1');
 export const selectObservingMode = value => {
-  cy.get('[data-testid="categoryId"]').should('exist');
-  cy.get('[data-testid="categoryId"]').click();
-  cy.get('li[data-value="' + value + '"]').click();
+  // Open the dropdown using mousedown instead of click
+  cy.get('[data-testid="categoryId"] [role="combobox"]').trigger('mousedown', {
+    button: 0,
+    force: true
+  });
+
+  // Select the option
+  cy.get('li[role="option"]')
+    .filter((_, el) => el.innerText.trim() === value)
+    .click({ force: true });
 };
 
 export const clickProposalTypePrincipleInvestigator = () => selectId('ProposalType-1');
@@ -380,6 +387,9 @@ export const verifyOsdDataMaxTargets = data => {
 
 export const verifyScienceIdeaCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Science Verification Idea added with unique identifier');
+
+export const verifyAutoLinkAlertFooter = () =>
+  verifyContent('timeAlertFooter', 'Target added and auto-linked successfully');
 
 export const verifySubmissionCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Submission added with unique identifier');
@@ -540,6 +550,11 @@ export const updateTargetField = (testId, value) => {
     .eq(1)
     .clear()
     .type(value);
+};
+
+export const updateFieldValue = (testId, value) => {
+  cy.get('[data-testid="' + testId + '"]').should('exist');
+  cy.get('[data-testid="' + testId + '"]').type(value);
 };
 
 export const verifyOnLandingPageFilterIsVisible = () => {
