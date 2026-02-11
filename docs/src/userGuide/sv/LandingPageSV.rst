@@ -82,9 +82,9 @@ investigator or as a Co-Investigator. The table in :numref:`Figure %s <figure3>`
 Key Information and Actions
 ===========================
 
-.. |ico1| image:: /images/addProposalBtn.png
+.. |ico1| image:: /images/addSubmissionBtn.png
    :height: 4ex
-   :alt: Add proposal button
+   :alt: Add submission button
 
 .. |ico2| image:: /images/landingPageFilter.png
    :width: 20%
@@ -94,7 +94,7 @@ Key Information and Actions
    :width: 35%
    :alt: Page search filter
 
--  Click |ico1| to create a new proposal. 
+-  Click |ico1| to create a new submission. 
 -  Use the drop down |ico2| to filter proposals by status.
 - The search bar |ico3|  allows you to search proposal by title, PI and proposal ID.
 - The table is sortable by clicking on the column headers

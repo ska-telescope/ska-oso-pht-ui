@@ -16,8 +16,6 @@ import Observation from './types/observation';
 import { ValueUnitPair } from './types/valueUnitPair';
 import { OSD_CONSTANTS } from './OSDConstants';
 
-// TODO : Ensure that we remove all hard-coded values
-
 export const arraysAreEqual = (a: any[], b: any[]) => {
   if (a === b) return true;
   if (!Array.isArray(a) || !Array.isArray(b)) return false;

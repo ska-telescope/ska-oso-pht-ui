@@ -7,7 +7,7 @@ import {
   THEME_LIGHT
 } from '@ska-telescope/ska-gui-components';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { Typography, CssBaseline, ThemeProvider, Tooltip, Paper } from '@mui/material';
+import { Typography, CssBaseline, Tooltip, Paper } from '@mui/material';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import {
@@ -53,7 +53,6 @@ import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import TimedAlert from '@/components/alerts/timedAlert/TimedAlert';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import theme from '@/services/theme/theme';
 import { useHelp } from '@/utils/help/useHelp';
 
 const ROUTES = [
@@ -82,7 +81,19 @@ const ROUTES = [
   { path: PATH[PAGE_CALIBRATION_ENTRY], element: <CalibrationEntry /> }
 ];
 
-export default function PHT() {
+interface PHTPropTypes {
+  themeMode: string;
+  setThemeMode: (mode: string) => void;
+  accessibilityMode: number;
+  setAccessibilityMode: (mode: number) => void;
+}
+
+export default function PHT({
+  themeMode,
+  setThemeMode,
+  accessibilityMode,
+  setAccessibilityMode
+}: PHTPropTypes) {
   const { t } = useScopedTranslation();
   const { application, help, helpToggle } = storageObject.useStore();
   const { osdCloses, osdCountdown, osdCycleId, osdCycleDescription, osdOpens } = useOSDAccessors();
@@ -90,17 +101,7 @@ export default function PHT() {
   const location = useLocation();
   const { setHelp } = useHelp();
 
-  // Existing theme logic
-  const [themeMode, setThemeMode] = React.useState(
-    localStorage.getItem('skao_theme_mode') === THEME_DARK ? THEME_DARK : THEME_LIGHT
-  );
-  const [accessibilityMode, setAccessibilityMode] = React.useState(
-    Number(localStorage.getItem('skao_accessibility_mode')) || 0
-  );
-
-  const muiTheme = theme({ themeMode, accessibilityMode });
-
-  const LG = () => useMediaQuery(muiTheme.breakpoints.down('lg'));
+  const LG = () => useMediaQuery((theme: any) => theme.breakpoints.down('lg'));
   const REQUIRED_WIDTH = useMediaQuery('(min-width:600px)');
   const LOCAL_DATA = USE_LOCAL_DATA ? t('localData') : '';
   const loggedIn = isLoggedIn();
@@ -220,7 +221,7 @@ export default function PHT() {
   };
 
   return (
-    <ThemeProvider theme={muiTheme}>
+    <>
       <CssBaseline enableColorScheme />
       <AppWrapper
         accessibility
@@ -269,6 +270,6 @@ export default function PHT() {
         version={packageJson.version}
         versionTooltip={versionToolTip()}
       />
-    </ThemeProvider>
+    </>
   );
 }

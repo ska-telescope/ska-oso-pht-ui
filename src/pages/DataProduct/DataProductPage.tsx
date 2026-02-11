@@ -74,8 +74,7 @@ export default function DataProductsPage() {
 
   const deleteConfirmed = () => {
     const obs1 = getProposal().dataProductSDP?.filter(e => e.id !== String(currentRow));
-
-    setProposal({ ...getProposal(), dataProductSDP: obs1 }); // TODO if we create a SDP here, we should add the dataProductsSDPId to TargetObservation
+    setProposal({ ...getProposal(), dataProductSDP: obs1 });
     setCurrentRow(0);
     closeDeleteDialog();
   };

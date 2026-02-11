@@ -199,7 +199,7 @@ export default function PanelManagement() {
   async function savePanel(panel: Panel): Promise<string | { error: string }> {
     const response = await PutPanel(authClient, panel, osdCycleId);
     if (typeof response === 'object' && response?.error) {
-      // TODO
+      //
     }
     return response;
   }

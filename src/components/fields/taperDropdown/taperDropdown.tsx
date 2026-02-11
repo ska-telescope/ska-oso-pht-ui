@@ -5,7 +5,7 @@ import { DropDown } from '@ska-telescope/ska-gui-components';
 import { frequencyConversion } from '@utils/helpers.ts';
 import { ValueUnitPair } from '@utils/types/typesSensCalc.tsx';
 
-interface TaperDropdownFieldProps {
+interface TaperDropdownProps {
   required?: boolean;
   setValue?: Function;
   value: number;
@@ -14,14 +14,14 @@ interface TaperDropdownFieldProps {
   centralFrequency?: ValueUnitPair;
 }
 
-export default function TaperDropdownField({
+export default function TaperDropdown({
   required = true,
   setValue,
   value,
   onFocus,
   suffix,
   centralFrequency
-}: TaperDropdownFieldProps) {
+}: TaperDropdownProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'taper';
 
