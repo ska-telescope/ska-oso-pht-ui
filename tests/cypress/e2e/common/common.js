@@ -628,6 +628,19 @@ export const clickFirstRowOfTargetTable = () => {
     .click();
 };
 
+export const clickEditIconForRow = (tableTestId, text) => {
+  cy.get(`[data-testid="${tableTestId}"]`)
+    .find('[role="row"]')
+    .filter(`:contains("${text}")`)
+    .click()
+    .first()
+    .within(() => {
+      cy.get('[data-testid="editIcon"]')
+        .should('be.visible')
+        .click();
+    });
+};
+
 const clickToValidateProposal = () => {
   cy.get('[data-testid="validateBtn"]').should('exist');
   cy.get('[data-testid="validateBtn"]').click();

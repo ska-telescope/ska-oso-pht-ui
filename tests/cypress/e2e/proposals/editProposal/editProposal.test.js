@@ -28,7 +28,8 @@ import {
   verifyAutoLinkAlertFooter,
   mockResolveTargetAPI,
   createStandardProposalLoggedIn,
-  addSubmissionSummary
+  addSubmissionSummary,
+  clickEditIconForRow
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -88,8 +89,8 @@ describe('Edit Proposal', () => {
     verifyOnLandingPage();
     verifyOnLandingPageFilterIsVisible();
     verifyMockedProposalOnLandingPageIsVisible();
-    //TODO TYPE SHOULD BE PROPOSAL NOT SCIENCE IDEA
-    // clickEdit();
+    clickEditIconForRow('review-table', 'Proposal Title');
+    clickEdit();
     // pageConfirmed('TITLE');
     //
     // //complete mandatory fields
