@@ -3,7 +3,7 @@ import { PROPOSAL_STATUS } from '@/utils/constants';
 
 const MockProposal: ProposalBackend[] = [
   {
-    prsl_id: 'prp-test-20260213-00001',
+    prsl_id: 'prsl-test-20260213-00001',
     status: 'draft',
     submitted_by: '',
     metadata: {
@@ -38,7 +38,7 @@ const MockProposal: ProposalBackend[] = [
     observation_info: {}
   },
   {
-    prsl_id: 'prp-test-20260213-00002',
+    prsl_id: 'sv-test-20260213-00002',
     status: 'draft',
     submitted_by: '',
     metadata: {

@@ -28,7 +28,8 @@ import {
   addM2TargetUsingResolve,
   clickToAddTarget,
   mockResolveTargetAPI,
-  verifyAutoLinkAlertFooter
+  verifyAutoLinkAlertFooter,
+  verifyMockedScienceIdeaOnLandingPageIsVisible
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -72,7 +73,7 @@ describe('Creating Proposal', () => {
     clickHome();
     verifyOnLandingPage();
     verifyOnLandingPageFilterIsVisible();
-    verifyMockedProposalOnLandingPageIsVisible();
+    verifyMockedScienceIdeaOnLandingPageIsVisible();
   });
 
   it('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {

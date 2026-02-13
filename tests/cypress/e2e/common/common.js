@@ -564,6 +564,10 @@ export const verifyOnLandingPageFilterIsVisible = () => {
   cy.get('[data-value="draft"]').realClick();
 };
 
+export const verifyMockedScienceIdeaOnLandingPageIsVisible = () => {
+  cy.get('[data-testid="table-submissions"]').should('contain', 'sv-test');
+};
+
 export const verifyMockedProposalOnLandingPageIsVisible = () => {
   cy.get('[data-testid="table-submissions"]').should('contain', 'prsl-test');
 };
