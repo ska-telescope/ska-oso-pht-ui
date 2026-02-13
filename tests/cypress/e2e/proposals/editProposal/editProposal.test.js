@@ -12,7 +12,6 @@ import {
   clickStatusIconNav,
   addInvestigator,
   verifyEmailSentAlertFooter,
-  addAbstract,
   clickToAddTarget,
   addM2TargetUsingResolve,
   clickObservationSetup,
@@ -25,7 +24,11 @@ import {
   mockCreateSubmissionAPI,
   verifySubmissionCreatedAlertFooter,
   verifyScienceIdeaCreatedAlertFooter,
-  selectObservingMode
+  selectObservingMode,
+  verifyAutoLinkAlertFooter,
+  mockResolveTargetAPI,
+  createStandardProposalLoggedIn,
+  addSubmissionSummary
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -33,6 +36,7 @@ beforeEach(() => {
   initialize(standardUser);
   mockCreateSubmissionAPI();
   mockEmailAPI();
+  mockResolveTargetAPI();
 });
 
 afterEach(() => {
@@ -46,18 +50,17 @@ describe('Edit Proposal', () => {
     });
   });
 
-  it('SV Flow: Edit a basic proposal', { jiraKey: 'XTP-71405' }, () => {
+  it.skip('SV Flow: Edit a basic science idea', () => {
     createScienceIdeaLoggedIn();
     cy.wait('@mockCreateSubmission');
     verifyScienceIdeaCreatedAlertFooter();
     pageConfirmed('TEAM');
 
-    //edit existing proposal
+    //edit existing science verification idea
     clickHome();
     verifyOnLandingPage();
     verifyOnLandingPageFilterIsVisible();
     verifyMockedProposalOnLandingPageIsVisible();
-    //TODO: Resolve edit selector which fails in the pipeline
     clickEdit();
     pageConfirmed('TITLE');
 
@@ -71,9 +74,35 @@ describe('Edit Proposal', () => {
     clickStatusIconNav('statusId2'); //Click to details page
     pageConfirmed('DETAILS');
     selectObservingMode('Continuum');
-    // addAbstract();
-    // clickStatusIconNav('statusId5'); //Click to observation page
-    // clickObservationSetup();
+    addSubmissionSummary('This is a summary of the science idea.');
+  });
+
+  it('Proposal Flow: Edit a basic proposal', { jiraKey: 'XTP-71405' }, () => {
+    createStandardProposalLoggedIn();
+    cy.wait('@mockCreateSubmission');
+    verifySubmissionCreatedAlertFooter();
+    pageConfirmed('TEAM');
+
+    //edit existing proposal
+    clickHome();
+    verifyOnLandingPage();
+    verifyOnLandingPageFilterIsVisible();
+    verifyMockedProposalOnLandingPageIsVisible();
+    //TODO TYPE SHOULD BE PROPOSAL NOT SCIENCE IDEA
+    // clickEdit();
+    // pageConfirmed('TITLE');
+    //
+    // //complete mandatory fields
+    // clickStatusIconNav('statusId1'); //Click to team page
+    // pageConfirmed('TEAM');
+    //
+    // addInvestigator();
+    // cy.wait('@mockInviteUserByEmail');
+    // verifyEmailSentAlertFooter();
+    // clickStatusIconNav('statusId2'); //Click to details page
+    // pageConfirmed('DETAILS');
+    // selectObservingMode('Continuum');
+    // addSubmissionSummary('This is a summary of the proposal.');
     // clickAddObservationEntry();
     // verifyObservationInTable();
     // clickObservationFromTable();

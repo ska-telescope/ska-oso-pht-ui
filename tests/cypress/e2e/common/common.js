@@ -443,6 +443,7 @@ export const createMock = () => {
 
 export const createStandardProposalLoggedIn = () => {
   clickAddSubmission();
+  clickCycleSelectionMockProposal();
   clickCycleConfirm();
   enterProposalTitle();
   clickProposalTypePrincipleInvestigator();
@@ -523,9 +524,9 @@ export const addObservatoryDataProduct = () => {
   clickAddButton();
 };
 
-export const addAbstract = () => {
-  cy.get('[id="abstractId"]').should('exist');
-  cy.get('[id="abstractId"]').type('Test abstract');
+export const addSubmissionSummary = value => {
+  cy.get('[data-testid="abstractId"]').should('exist');
+  cy.get('[data-testid="abstractId"]').type(value);
 };
 
 export const addM2TargetUsingResolve = () => {
