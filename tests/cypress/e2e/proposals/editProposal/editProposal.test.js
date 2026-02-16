@@ -71,6 +71,16 @@ describe('Edit Proposal', () => {
     pageConfirmed('DETAILS');
     selectObservingMode('Continuum');
     addSubmissionSummary('This is a summary of the science idea.');
+    clickStatusIconNav('statusId3'); //Click to description page
+    pageConfirmed('DESCRIPTION');
+    clickStatusIconNav('statusId4'); //Click to target page
+    pageConfirmed('TARGET');
+    //add target
+    addM2TargetUsingResolve();
+    cy.wait('@mockResolveTarget');
+    clickToAddTarget();
+    //Verify AutoLink to OSD data
+    verifyAutoLinkAlertFooter();
   });
 
   it.skip('Proposal Flow: Edit a basic proposal', { jiraKey: 'XTP-71405' }, () => {
