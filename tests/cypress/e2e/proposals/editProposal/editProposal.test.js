@@ -8,19 +8,10 @@ import {
   initialize,
   clearLocalStorage,
   createScienceIdeaLoggedIn,
-  clickEdit,
   clickStatusIconNav,
-  addInvestigator,
-  verifyEmailSentAlertFooter,
   clickToAddTarget,
   addM2TargetUsingResolve,
   clickObservationSetup,
-  clickAddObservationEntry,
-  verifyObservationInTable,
-  clickObservationFromTable,
-  clickToLinkTargetAndObservation,
-  verifySensitivityCalculatorStatusSuccess,
-  clickToCalibrationPage,
   mockCreateSubmissionAPI,
   verifySubmissionCreatedAlertFooter,
   verifyScienceIdeaCreatedAlertFooter,
@@ -30,7 +21,16 @@ import {
   createStandardProposalLoggedIn,
   addSubmissionSummary,
   clickEditIconForRow,
-  verifyMockedScienceIdeaOnLandingPageIsVisible
+  verifyMockedScienceIdeaOnLandingPageIsVisible,
+  clickAddObservationEntry,
+  verifyDataInTable,
+  clickAddDataProduct,
+  addContinuumImagesObservatoryDataProduct,
+  clickToLinkTargetAndObservation,
+  clickObservationFromTable,
+  verifySensitivityCalculatorStatusSuccess,
+  validateProposal,
+  clickToValidateSV
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -81,9 +81,11 @@ describe('Edit Proposal', () => {
     clickToAddTarget();
     //Verify AutoLink to OSD data
     verifyAutoLinkAlertFooter();
+    clickToValidateSV();
+    //TODO: Verify SV is valid once mocking of file upload is resolved
   });
 
-  it.skip('Proposal Flow: Edit a basic proposal', { jiraKey: 'XTP-71405' }, () => {
+  it('Proposal Flow: Edit a basic proposal', { jiraKey: 'XTP-71405' }, () => {
     createStandardProposalLoggedIn();
     cy.wait('@mockCreateSubmission');
     verifySubmissionCreatedAlertFooter();
@@ -94,35 +96,38 @@ describe('Edit Proposal', () => {
     verifyOnLandingPage();
     verifyOnLandingPageFilterIsVisible();
     verifyMockedProposalOnLandingPageIsVisible();
-    clickEditIconForRow('review-table', 'Proposal Title');
+    clickEditIconForRow('review-table', 'Proposal');
     pageConfirmed('TITLE');
 
-    // //complete mandatory fields
-    // clickStatusIconNav('statusId1'); //Click to team page
-    // pageConfirmed('TEAM');
-    //
-    // addInvestigator();
-    // cy.wait('@mockInviteUserByEmail');
-    // verifyEmailSentAlertFooter();
-    // clickStatusIconNav('statusId2'); //Click to details page
-    // pageConfirmed('DETAILS');
-    // selectObservingMode('Continuum');
-    // addSubmissionSummary('This is a summary of the proposal.');
-    // clickAddObservationEntry();
-    // verifyObservationInTable();
-    // clickObservationFromTable();
-    // clickToLinkTargetAndObservation();
-    //TODO: Resolve Sensitivity calculator result
-    // verifySensitivityCalculatorStatusSuccess();
-    // clickSave();
-    // clickToTechnicalPage();
-    // clickToObservatoryDataProductPage();
-    // clickAddDataProduct();
-    // addObservatoryDataProduct();
-    // clickToCalibrationPage();
-    // //validate proposal
-    // validateProposal();
-    // //TODO: The remainder of this scenario can be reinstated upon completion of STAR-954
+    //complete mandatory fields
+    clickStatusIconNav('statusId2'); //Click to details page
+    pageConfirmed('DETAILS');
+    selectObservingMode('Cosmology');
+    addSubmissionSummary('This is a summary of the proposal.');
+    clickStatusIconNav('statusId4'); //Click to target page
+    pageConfirmed('TARGET');
+    //add target
+    addM2TargetUsingResolve();
+    cy.wait('@mockResolveTarget');
+    clickToAddTarget();
+    clickStatusIconNav('statusId5'); //Click to observation page
+    pageConfirmed('OBSERVATION');
+    clickObservationSetup();
+    clickAddObservationEntry();
+    verifyDataInTable('review-table', 'Continuum');
+    clickStatusIconNav('statusId7'); //Click to data product page
+    pageConfirmed('DATA PRODUCT');
+    clickAddDataProduct();
+    addContinuumImagesObservatoryDataProduct();
+    clickStatusIconNav('statusId8'); //Click to linking page
+    pageConfirmed('LINKING');
+    clickObservationFromTable();
+    clickToLinkTargetAndObservation();
+    verifySensitivityCalculatorStatusSuccess();
+    clickStatusIconNav('statusId9'); //Click to calibration page
+    pageConfirmed('CALIBRATION');
+    validateProposal();
+    // //TODO: Verify Proposal is valid once mocking of file upload is resolved
     // // verifyProposalIsValid()
     // //submit proposal
     // // clickToSubmitProposal();

@@ -151,6 +151,7 @@ export const clickButton = testId => {
 
 export const clickAddButton = () => clickButton('addButton');
 export const clickAddDataProduct = () => clickButton('addDataProductButton');
+export const clickAddDataProductEntry = () => clickButton('addDataProductButtonEntry');
 export const clickUserSearch = () => clickButton('userSearchButton');
 export const clickManageTeamMemberRights = () => clickButton('lockIcon');
 export const clickSubmitRights = () => clickButton('submitCheckbox');
@@ -516,12 +517,8 @@ export const verifySensitivityCalculatorStatusSuccess = () => {
   cy.get('[aria-label="Status : OK "]').should('exist');
 };
 
-export const addObservatoryDataProduct = () => {
-  pageConfirmed('DATA PRODUCT');
-  cy.get('[id="observations"]').type('{enter}');
-  cy.get('[data-testid="observatoryDataProduct1"]').click();
-  cy.get('[id="imageSize"]').type('1');
-  clickAddButton();
+export const addContinuumImagesObservatoryDataProduct = () => {
+  clickAddDataProductEntry();
 };
 
 export const addSubmissionSummary = value => {
@@ -587,6 +584,11 @@ export const verifyObservationInTable = () => {
   //  .should('contain', 'AA2');
   //  .should('have.length', 2);
 };
+export const verifyDataInTable = (tableTestId, text) => {
+  cy.get(`[data-testid="${tableTestId}"]`)
+    .find('[role="row"]')
+    .filter(`:contains("${text}")`);
+};
 
 export const verifyFieldError = (testId, error, exists) => {
   cy.get('[data-testid="' + testId + '"]').should('exist');
@@ -644,6 +646,11 @@ export const clickEditIconForRow = (tableTestId, text) => {
 const clickToValidateProposal = () => {
   cy.get('[data-testid="validateBtn"]').should('exist');
   cy.get('[data-testid="validateBtn"]').click();
+};
+
+export const clickToValidateSV = () => {
+  cy.get('[data-testid="submitBtnTestId"]').should('exist');
+  cy.get('[data-testid="submitBtnTestId"]').click();
 };
 
 const verifyProposalValidAlertFooter = () => {
