@@ -797,12 +797,9 @@ async function GetProposal(
   }
 
   if (isCypress) {
-    console.log('cypress SV? ', cypressSV);
     if (cypressSV) {
-      console.log('condition 1 SV, returning', mapping(MockProposal[1]));
       return mapping(MockProposal[1]);
     } else {
-      console.log('condition 2 Proposal, returning', mapping(MockProposal[0]));
       return mapping(MockProposal[0]);
     }
   }

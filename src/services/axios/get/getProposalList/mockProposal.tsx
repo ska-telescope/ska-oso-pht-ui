@@ -4,11 +4,11 @@ import { PROPOSAL_STATUS } from '@/utils/constants';
 const MockProposal: ProposalBackend[] = [
   {
     prsl_id: 'prsl-test-20260213-00001',
-    status: 'draft',
+    status: PROPOSAL_STATUS.DRAFT,
     submitted_by: '',
     metadata: {
       version: 1,
-      created_by: 'a3e51298-97cd-4304-ab80-760ba440b93f',
+      created_by: 'Cypress Default User',
       created_on: '2026-02-13T09:26:35.635130Z',
       last_modified_by: 'a3e51298-97cd-4304-ab80-760ba440b93f',
       last_modified_on: '2026-02-13T09:26:35.635130Z',
@@ -39,11 +39,11 @@ const MockProposal: ProposalBackend[] = [
   },
   {
     prsl_id: 'sv-test-20260213-00002',
-    status: 'draft',
+    status: PROPOSAL_STATUS.DRAFT,
     submitted_by: '',
     metadata: {
       version: 1,
-      created_by: 'a3e51298-97cd-4304-ab80-760ba440b93f',
+      created_by: 'Cypress Default User',
       created_on: '2026-02-13T08:51:51.104026Z',
       last_modified_by: 'a3e51298-97cd-4304-ab80-760ba440b93f',
       last_modified_on: '2026-02-13T08:51:51.104026Z',
