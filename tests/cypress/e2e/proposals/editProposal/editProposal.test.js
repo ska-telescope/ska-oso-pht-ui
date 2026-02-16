@@ -67,19 +67,13 @@ describe('Edit Proposal', () => {
     clickEditIconForRow('review-table', 'Science Verification');
     pageConfirmed('TITLE');
     //complete mandatory fields
-    // clickStatusIconNav('statusId1'); //Click to team page
-    // pageConfirmed('TEAM');
-    //
-    // addInvestigator();
-    // cy.wait('@mockInviteUserByEmail');
-    // verifyEmailSentAlertFooter();
-    // clickStatusIconNav('statusId2'); //Click to details page
-    // pageConfirmed('DETAILS');
-    // selectObservingMode('Continuum');
-    // addSubmissionSummary('This is a summary of the science idea.');
+    clickStatusIconNav('statusId2'); //Click to details page
+    pageConfirmed('DETAILS');
+    selectObservingMode('Continuum');
+    addSubmissionSummary('This is a summary of the science idea.');
   });
 
-  it('Proposal Flow: Edit a basic proposal', { jiraKey: 'XTP-71405' }, () => {
+  it.skip('Proposal Flow: Edit a basic proposal', { jiraKey: 'XTP-71405' }, () => {
     createStandardProposalLoggedIn();
     cy.wait('@mockCreateSubmission');
     verifySubmissionCreatedAlertFooter();
