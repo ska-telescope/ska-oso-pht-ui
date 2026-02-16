@@ -29,7 +29,8 @@ import {
   mockResolveTargetAPI,
   createStandardProposalLoggedIn,
   addSubmissionSummary,
-  clickEditIconForRow
+  clickEditIconForRow,
+  verifyMockedScienceIdeaOnLandingPageIsVisible
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -48,10 +49,11 @@ describe('Edit Proposal', () => {
   before(() => {
     cy.window().then(win => {
       win.localStorage.setItem('cypress:proposalEdit', 'true');
+      win.localStorage.setItem('cypress:scienceVerificationIdea', 'true');
     });
   });
 
-  it.skip('SV Flow: Edit a basic science idea', () => {
+  it('SV Flow: Edit a basic science idea', () => {
     createScienceIdeaLoggedIn();
     cy.wait('@mockCreateSubmission');
     verifyScienceIdeaCreatedAlertFooter();
@@ -61,21 +63,20 @@ describe('Edit Proposal', () => {
     clickHome();
     verifyOnLandingPage();
     verifyOnLandingPageFilterIsVisible();
-    verifyMockedProposalOnLandingPageIsVisible();
-    clickEdit();
+    verifyMockedScienceIdeaOnLandingPageIsVisible();
+    clickEditIconForRow('review-table', 'Science Verification');
     pageConfirmed('TITLE');
-
     //complete mandatory fields
-    clickStatusIconNav('statusId1'); //Click to team page
-    pageConfirmed('TEAM');
-
-    addInvestigator();
-    cy.wait('@mockInviteUserByEmail');
-    verifyEmailSentAlertFooter();
-    clickStatusIconNav('statusId2'); //Click to details page
-    pageConfirmed('DETAILS');
-    selectObservingMode('Continuum');
-    addSubmissionSummary('This is a summary of the science idea.');
+    // clickStatusIconNav('statusId1'); //Click to team page
+    // pageConfirmed('TEAM');
+    //
+    // addInvestigator();
+    // cy.wait('@mockInviteUserByEmail');
+    // verifyEmailSentAlertFooter();
+    // clickStatusIconNav('statusId2'); //Click to details page
+    // pageConfirmed('DETAILS');
+    // selectObservingMode('Continuum');
+    // addSubmissionSummary('This is a summary of the science idea.');
   });
 
   it('Proposal Flow: Edit a basic proposal', { jiraKey: 'XTP-71405' }, () => {
@@ -90,9 +91,8 @@ describe('Edit Proposal', () => {
     verifyOnLandingPageFilterIsVisible();
     verifyMockedProposalOnLandingPageIsVisible();
     clickEditIconForRow('review-table', 'Proposal Title');
-    clickEdit();
-    // pageConfirmed('TITLE');
-    //
+    pageConfirmed('TITLE');
+
     // //complete mandatory fields
     // clickStatusIconNav('statusId1'); //Click to team page
     // pageConfirmed('TEAM');

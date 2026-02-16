@@ -7,6 +7,7 @@ export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const cypressToken = window.localStorage.getItem('cypress:token');
 export const cypressProposal = window.localStorage.getItem('cypress:proposalCreated') === 'true';
 export const cypressEditProposal = window.localStorage.getItem('cypress:proposalEdit') === 'true';
+export const cypressSV = window.localStorage.getItem('cypress:scienceVerificationIdea') === 'true';
 
 export const USE_LOCAL_DATA_SENSITIVITY_CALC =
   env.REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC === 'true';
