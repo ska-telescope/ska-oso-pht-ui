@@ -151,6 +151,7 @@ export const clickButton = testId => {
 
 export const clickAddButton = () => clickButton('addButton');
 export const clickAddDataProduct = () => clickButton('addDataProductButton');
+export const clickAddDataProductEntry = () => clickButton('addDataProductButtonEntry');
 export const clickUserSearch = () => clickButton('userSearchButton');
 export const clickManageTeamMemberRights = () => clickButton('lockIcon');
 export const clickSubmitRights = () => clickButton('submitCheckbox');
@@ -443,6 +444,7 @@ export const createMock = () => {
 
 export const createStandardProposalLoggedIn = () => {
   clickAddSubmission();
+  clickCycleSelectionMockProposal();
   clickCycleConfirm();
   enterProposalTitle();
   clickProposalTypePrincipleInvestigator();
@@ -515,17 +517,13 @@ export const verifySensitivityCalculatorStatusSuccess = () => {
   cy.get('[aria-label="Status : OK "]').should('exist');
 };
 
-export const addObservatoryDataProduct = () => {
-  pageConfirmed('DATA PRODUCT');
-  cy.get('[id="observations"]').type('{enter}');
-  cy.get('[data-testid="observatoryDataProduct1"]').click();
-  cy.get('[id="imageSize"]').type('1');
-  clickAddButton();
+export const addContinuumImagesObservatoryDataProduct = () => {
+  clickAddDataProductEntry();
 };
 
-export const addAbstract = () => {
-  cy.get('[id="abstractId"]').should('exist');
-  cy.get('[id="abstractId"]').type('Test abstract');
+export const addSubmissionSummary = value => {
+  cy.get('[data-testid="abstractId"]').should('exist');
+  cy.get('[data-testid="abstractId"]').type(value);
 };
 
 export const addM2TargetUsingResolve = () => {
@@ -563,6 +561,10 @@ export const verifyOnLandingPageFilterIsVisible = () => {
   cy.get('[data-value="draft"]').realClick();
 };
 
+export const verifyMockedScienceIdeaOnLandingPageIsVisible = () => {
+  cy.get('[data-testid="table-submissions"]').should('contain', 'sv-test');
+};
+
 export const verifyMockedProposalOnLandingPageIsVisible = () => {
   cy.get('[data-testid="table-submissions"]').should('contain', 'prsl-test');
 };
@@ -581,6 +583,11 @@ export const verifyObservationInTable = () => {
     .should('contain', 'obs-');
   //  .should('contain', 'AA2');
   //  .should('have.length', 2);
+};
+export const verifyDataInTable = (tableTestId, text) => {
+  cy.get(`[data-testid="${tableTestId}"]`)
+    .find('[role="row"]')
+    .filter(`:contains("${text}")`);
 };
 
 export const verifyFieldError = (testId, error, exists) => {
@@ -623,9 +630,27 @@ export const clickFirstRowOfTargetTable = () => {
     .click();
 };
 
+export const clickEditIconForRow = (tableTestId, text) => {
+  cy.get(`[data-testid="${tableTestId}"]`)
+    .find('[role="row"]')
+    .filter(`:contains("${text}")`)
+    .click()
+    .first()
+    .within(() => {
+      cy.get('[data-testid="editIcon"]')
+        .should('be.visible')
+        .click();
+    });
+};
+
 const clickToValidateProposal = () => {
   cy.get('[data-testid="validateBtn"]').should('exist');
   cy.get('[data-testid="validateBtn"]').click();
+};
+
+export const clickToValidateSV = () => {
+  cy.get('[data-testid="submitBtnTestId"]').should('exist');
+  cy.get('[data-testid="submitBtnTestId"]').click();
 };
 
 const verifyProposalValidAlertFooter = () => {
