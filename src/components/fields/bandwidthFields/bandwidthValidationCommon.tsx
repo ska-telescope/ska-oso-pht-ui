@@ -1,3 +1,4 @@
+import sensCalHelpers from '@/services/axios/get/getSensitivityCalculator/sensitivityCalculator/sensCalHelpers';
 import {
   SA_AA2,
   ANTENNA_13M,
@@ -5,7 +6,6 @@ import {
   ANTENNA_MIXED,
   TELESCOPE_LOW_NUM
 } from '@utils/constants.ts';
-import sensCalHelpers from '../../../services/api/sensitivityCalculator/sensCalHelpers';
 
 const isLow = (telescope: number) => telescope === TELESCOPE_LOW_NUM;
 const isAA2 = (subarrayConfig: string) => subarrayConfig === SA_AA2;

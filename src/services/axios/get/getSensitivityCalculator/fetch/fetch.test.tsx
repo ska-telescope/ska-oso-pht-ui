@@ -1,6 +1,6 @@
 import { it, expect, vi } from 'vitest';
 import { STATUS_ERROR } from '@utils/constants.ts';
-import Fetch from '@services/api/fetch/Fetch.tsx';
+import Fetch from './Fetch';
 
 const mockTelescope = { code: 'TEST_TELESCOPE' };
 const mockBaseUrl = '/base';

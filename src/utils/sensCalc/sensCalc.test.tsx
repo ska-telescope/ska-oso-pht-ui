@@ -3,8 +3,14 @@ import Observation from '@utils/types/observation.tsx';
 import Target from '../types/target';
 import { DataProductSDPNew } from '../types/dataProduct';
 import { calculateSensCalcData } from './sensCalc';
-import getSensCalc from '@/services/api/sensitivityCalculator/getSensitivityCalculatorAPIData';
-vi.mock('@/services/api/sensitivityCalculator/getSensitivityCalculatorAPIData');
+import getSensCalc from '@/services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData';
+
+vi.mock(
+  '@/services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData',
+  () => ({
+    default: vi.fn()
+  })
+);
 
 describe('calculateSensCalcData', () => {
   test('calls getSensCalc with correct arguments and returns its result', async () => {
