@@ -177,6 +177,8 @@ export const clickToAddDataProduct = () => clickButton('addDataProductButton');
 export const clickToConfirmProposalSubmission = () => clickButton('displayConfirmationButton');
 export const clickToNextPage = () => clickButton('nextButtonTestId');
 export const clickToPreviousPage = () => clickButton('prevButtonTestId');
+export const clickFileUploadArea = () => clickButton('fileUpload');
+export const clickFileUpload = () => clickButton('fileUploadUploadButton');
 
 export const clickToLinkTargetObservation = () => clickButton('linkedTickBox');
 

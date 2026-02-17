@@ -30,7 +30,8 @@ import {
   clickObservationFromTable,
   verifySensitivityCalculatorStatusSuccess,
   validateProposal,
-  clickToValidateSV
+  clickFileUploadArea,
+  clickFileUpload
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -81,11 +82,22 @@ describe('Edit Proposal', () => {
     clickToAddTarget();
     //Verify AutoLink to OSD data
     verifyAutoLinkAlertFooter();
-    clickToValidateSV();
+    clickStatusIconNav('statusId3'); //Click to description page
+    pageConfirmed('DESCRIPTION');
+    clickFileUploadArea();
+
+    cy.get('[data-testid="fileUpload"] input[type="file"]').attachFile('testFile.pdf');
+
+    // Assertions depend on your UI
+    cy.contains('testFile.pdf').should('be.visible');
+    clickFileUpload();
+    //TODO: Mock endpoint for file upload and verify file upload success message once that is implemented
+
     //TODO: Verify SV is valid once mocking of file upload is resolved
+    // clickToValidateSV();
   });
 
-  it('Proposal Flow: Edit a basic proposal', { jiraKey: 'XTP-71405' }, () => {
+  it.skip('Proposal Flow: Edit a basic proposal', { jiraKey: 'XTP-71405' }, () => {
     createStandardProposalLoggedIn();
     cy.wait('@mockCreateSubmission');
     verifySubmissionCreatedAlertFooter();

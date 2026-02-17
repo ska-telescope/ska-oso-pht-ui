@@ -13,9 +13,9 @@ import DownloadButton from '../../components/button/Download/Download';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 import PDFWrapper from '../../components/layout/PDFWrapper/PDFWrapper';
 import Shell from '../../components/layout/Shell/Shell';
-import { Proposal } from '../../utils/types/proposal';
-import { validateSciencePage } from '../../utils/validation/validation';
-import { PAGE_DESCRIPTION, UPLOAD_MAX_WIDTH_PDF } from '../../utils/constants';
+import { Proposal } from '@utils/types/proposal.tsx';
+import { validateSciencePage } from '@utils/validation/validation.tsx';
+import { cypressToken, PAGE_DESCRIPTION, UPLOAD_MAX_WIDTH_PDF } from '@utils/constants.ts';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -37,7 +37,7 @@ export default function SciencePage() {
   const loggedIn = isLoggedIn();
   const authClient = useAxiosAuthClient();
 
-  const isDisableEndpoints = () => !loggedIn;
+  const isDisableEndpoints = () => !loggedIn && !cypressToken;
 
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
 
@@ -222,7 +222,7 @@ export default function SciencePage() {
   return (
     <Shell page={PAGE}>
       <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid size={{ xs: 6 }}>
+        <Grid size={{ xs: 6 }} data-testid="fileUpload">
           {isDisableEndpoints() ? (
             <>{t('pdfUpload.disabled')}</>
           ) : (
