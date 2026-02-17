@@ -1,9 +1,6 @@
 import {
   clearLocalStorage,
-  selectContinuum,
   clickStatusIconNav,
-  clickToAddDataProduct,
-  createObservation,
   createScienceIdeaLoggedIn,
   initialize,
   mockEmailAPI,
@@ -11,14 +8,20 @@ import {
   updateDataProductField,
   verifyFieldError,
   mockCreateSubmissionAPI,
-  verifySubmissionCreatedAlertFooter,
-  verifyScienceIdeaCreatedAlertFooter
+  verifyScienceIdeaCreatedAlertFooter,
+  selectObservingMode,
+  addM2TargetUsingResolve,
+  clickToAddTarget,
+  mockResolveTargetAPI,
+  verifyAutoLinkAlertFooter,
+  addSubmissionSummary
 } from '../../common/common';
 import { standardUser } from '../../users/users.js';
 beforeEach(() => {
   initialize(standardUser);
   mockCreateSubmissionAPI();
   mockEmailAPI();
+  mockResolveTargetAPI();
 });
 
 afterEach(() => {
@@ -32,16 +35,23 @@ describe('Data product validation', () => {
     verifyScienceIdeaCreatedAlertFooter();
     pageConfirmed('TEAM');
 
-    clickStatusIconNav('statusId2');
-    // selectContinuum();
+    clickStatusIconNav('statusId2'); //Click to details page
+    pageConfirmed('DETAILS');
+    selectObservingMode('Continuum');
+    addSubmissionSummary('This is a summary of the science idea.');
 
-    //  clickStatusIconNav('statusId5'); //Click to observation page
-    //  createObservation();
+    clickStatusIconNav('statusId4'); //Click to target page
+    pageConfirmed('TARGET');
+    //add target
+    addM2TargetUsingResolve();
+    cy.wait('@mockResolveTarget');
+    clickToAddTarget();
+    verifyAutoLinkAlertFooter();
 
-    //  clickStatusIconNav('statusId7'); //Click to data product page
-    //  clickToAddDataProduct();
+    clickStatusIconNav('statusId7'); //Click to data product page
+    pageConfirmed('DATA PRODUCT');
 
-    //  updateDataProductField('channelsOut', '41'); //enter invalid channels out
-    //  verifyFieldError('channelsOut', 'Valid range is 0 - 40', true); //verify field error
+    updateDataProductField('channelsOut', '41'); //enter invalid channels out
+    verifyFieldError('channelsOut', 'Valid range is 0 - 40', true); //verify field error
   });
 });
