@@ -24,10 +24,17 @@ const wrapper = (component: React.ReactElement) => {
 
 describe('<PHT />', () => {
   test('renders correctly', () => {
-    wrapper(<PHT themeMode={''} setThemeMode={function (_mode: string): void {
-      throw new Error('Function not implemented.');
-    } } accessibilityMode={0} setAccessibilityMode={function (_mode: number): void {
-      throw new Error('Function not implemented.');
-    } } />);
+    wrapper(
+      <PHT
+        themeMode={''}
+        setThemeMode={function(_mode: string): void {
+          throw new Error('Function not implemented.');
+        }}
+        accessibilityMode={0}
+        setAccessibilityMode={function(_mode: number): void {
+          throw new Error('Function not implemented.');
+        }}
+      />
+    );
   });
 });

@@ -526,7 +526,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       type: 'telescope',
       colors: isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM,
       content: 'bg',
-      dim: 0.6,
       asArray: true,
       paletteIndex: Number(localStorage.getItem('skao_accessibility_mode'))
     }) ?? [theme.palette.primary.main, theme.palette.primary.contrastText];
@@ -839,6 +838,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       const options = isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
       return (
         <DropDown
+          disabledUnderline
           options={options}
           testId="continuumBandwidthUnits"
           value={continuumBandwidthUnits}
@@ -852,6 +852,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     return fieldWrapper(
       <ContinuumBandwidthField
         setValue={setContinuumBandwidth}
+        step={0.1}
         value={continuumBandwidth}
         suffix={continuumBandwidthUnitsField()}
         telescope={telescope()}
@@ -962,14 +963,15 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           {isContinuum() ? continuumBandwidthField() : bandwidthField()}
         </Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
+        <Grid sx={{ height: 100 }} size={{ md: 12 }}></Grid>
         <Grid size={{ md: 12, lg: 6 }}>
-          {isPST()
+          {/* {isPST()
             ? pstModeField()
             : isZoom()
             ? spectralAveragingField()
             : isContinuum()
             ? SubBandsField()
-            : emptyField()}
+            : emptyField()} */}
         </Grid>
         <Grid size={{ md: 12, lg: 6 }}>{isZoom() ? spectralResolutionField() : emptyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{isZoom() ? effectiveResolutionField() : emptyField()}</Grid>
