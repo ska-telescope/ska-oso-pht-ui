@@ -137,6 +137,31 @@ export const mockOSDAPI = () => {
   });
 };
 
+export const mockGetSignedUrlAPI = () => {
+  cy.window().then(win => {
+    const token = win.localStorage.getItem('cypress:token');
+    cy.intercept('POST', '/pht/prsls/signed-url/upload/*.pdf', req => {
+      req.headers['Authorization'] = `Bearer ${token}`;
+      req.reply({
+        statusCode: 200,
+        body: 'https://example.com/signed-url'
+      });
+    }).as('mockGetSignedUrl');
+  });
+};
+
+export const mockUploadToS3API = () => {
+  cy.window().then(win => {
+    const token = win.localStorage.getItem('cypress:token');
+    cy.intercept('PUT', '/*proposal-handling-tool-storage.s3.amazonaws.com/*', req => {
+      req.headers['Authorization'] = `Bearer ${token}`;
+      req.reply({
+        statusCode: 200
+      });
+    }).as('mockUploadToS3');
+  });
+};
+
 /*----------------------------------------------------------------------*/
 
 export const verify = testId => {
