@@ -21,7 +21,7 @@ export default function TableDataProductsHeader() {
         {displayHeader('observationId.label')}
         {displayHeader('subArrayConfiguration.label')}
         {displayHeader('observingBand.label')}
-        {displayHeader('')}
+        {displayHeader('frequencyRange.label')}
       </TableRow>
     </TableHead>
   );

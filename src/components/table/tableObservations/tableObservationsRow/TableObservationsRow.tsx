@@ -210,6 +210,7 @@ export default function TableObservationsRow({
         {/* Frequency Spectrum */}
         <TableCell>
           <FrequencySpectrum
+            actual
             minFreq={minFreq}
             maxFreq={maxFreq}
             centerFreq={centerFreq}

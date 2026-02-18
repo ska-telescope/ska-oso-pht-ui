@@ -117,19 +117,22 @@ export default function ContinuumBandwidthField({
     return '';
   };
 
-  const handleSetValue = (num: any) => {
-    const error = validateValue(num);
+  const handleSetValue = (value: any) => {
+    const error = validateValue(value);
+    console.log('handleSetValue:', value, error);
     if (error) {
       setErrorText(error);
     } else {
       setErrorText('');
-      setValue?.(num);
+      setValue?.(value);
     }
   };
 
   // Validate current value when dependencies change
   React.useEffect(() => {
-    setErrorText(validateValue(value));
+    const error = validateValue(value);
+    console.log('Validating value on dependency change:', value, error);
+    setErrorText(error);
   }, [
     value,
     continuumBandwidthUnits,
@@ -153,7 +156,7 @@ export default function ContinuumBandwidthField({
         step={step}
         suffix={suffix}
         sx={{ width: '100%' }}
-        title={"t(FIELD + '.label')"}
+        title={t(FIELD + '.label')}
         testId={FIELD}
         value={value}
       />
