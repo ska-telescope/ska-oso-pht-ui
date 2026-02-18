@@ -101,7 +101,7 @@ describe('Edit Proposal', () => {
 
     //complete mandatory fields
     clickStatusIconNav('statusId2'); //Click to details page
-    pageConfirmed('DETAILS');
+    pageConfirmed('GENERAL');
     selectObservingMode('Cosmology');
     addSubmissionSummary('This is a summary of the proposal.');
     clickStatusIconNav('statusId4'); //Click to target page
