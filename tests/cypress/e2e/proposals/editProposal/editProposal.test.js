@@ -33,7 +33,8 @@ import {
   clickFileUploadArea,
   clickFileUpload,
   mockGetSignedUrlAPI,
-  mockUploadToS3API
+  mockUploadToS3API,
+  clickToValidateSV
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -42,8 +43,6 @@ beforeEach(() => {
   mockCreateSubmissionAPI();
   mockEmailAPI();
   mockResolveTargetAPI();
-  mockGetSignedUrlAPI();
-  mockUploadToS3API();
 });
 
 afterEach(() => {
@@ -95,12 +94,8 @@ describe('Edit Proposal', () => {
     // Assertions depend on your UI
     cy.contains('testFile.pdf').should('be.visible');
     clickFileUpload();
-    cy.wait('@mockGetSignedUrl');
-    cy.wait('@mockUploadToS3');
-    //TODO: Mock endpoint for file upload and verify file upload success message once that is implemented
-
-    //TODO: Verify SV is valid once mocking of file upload is resolved
-    // clickToValidateSV();
+    clickToValidateSV();
+    //TODO: Mock validate endpoint
   });
 
   it.skip('Proposal Flow: Edit a basic proposal', { jiraKey: 'XTP-71405' }, () => {

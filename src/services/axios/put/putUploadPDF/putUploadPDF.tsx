@@ -1,4 +1,4 @@
-import { USE_LOCAL_DATA } from '@utils/constants.ts';
+import { cypressToken, USE_LOCAL_DATA } from '@utils/constants.ts';
 import axiosClientPDF from '../../axiosClientPDF/axiosClientPDF';
 
 async function PutUploadPDF(signedUrl: string, selectedFile: any) {
@@ -6,7 +6,7 @@ async function PutUploadPDF(signedUrl: string, selectedFile: any) {
 
   //TODO: revisit error handling when s3 credential is added to the backend
 
-  if (USE_LOCAL_DATA) {
+  if (USE_LOCAL_DATA || cypressToken) {
     return `${UPLOAD_URL_DUMMY}`;
   }
 
