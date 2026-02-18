@@ -1,9 +1,9 @@
 import { Telescope } from '@ska-telescope/ska-gui-local-storage';
-import { SKA_SENSITIVITY_CALCULATOR_API_URL, STATUS_ERROR } from '../../../utils/constants';
-import { ContinuumData, PSSData, StandardData, ZoomData } from '../../../utils/types/typesSensCalc';
-import Target from '../../../utils/types/target';
-import Observation from '../../../utils/types/observation';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
+import Observation from '@/utils/types/observation';
+import Target from '@/utils/types/target';
+import { ContinuumData, PSSData, StandardData, ZoomData } from '@/utils/types/typesSensCalc';
+import { SKA_SENSITIVITY_CALCULATOR_API_URL, STATUS_ERROR } from '@/utils/constants';
 
 const Fetch = async (
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,

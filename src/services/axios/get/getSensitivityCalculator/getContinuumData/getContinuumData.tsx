@@ -33,11 +33,11 @@ import {
   pointingCentre,
   rxBand
 } from '../submissionEntries/submissionEntries';
-import Fetch from '../fetch/Fetch';
 import Target from '@/utils/types/target';
 import Observation from '@/utils/types/observation';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 import { DataProductSDPNew, SDPImageContinuumData } from '@/utils/types/dataProduct';
+import Fetch from '../fetch/Fetch';
 
 const mapping = (data: any, target: Target, observation: Observation): SensCalcResults =>
   getFinalResults(target, data, observation);
