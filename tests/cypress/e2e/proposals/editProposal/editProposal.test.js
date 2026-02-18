@@ -32,8 +32,6 @@ import {
   validateProposal,
   clickFileUploadArea,
   clickFileUpload,
-  mockGetSignedUrlAPI,
-  mockUploadToS3API,
   clickToValidateSV,
   uploadTestFile,
   verifyTestFileUploaded,
@@ -41,7 +39,6 @@ import {
   verifyAlertFooter,
   clickToSubmitProposal,
   clickToConfirmProposalSubmission,
-  verifyFirstProposalOnLandingPageHasSubmittedStatus,
   mockUpdateSubmissionAPI
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
