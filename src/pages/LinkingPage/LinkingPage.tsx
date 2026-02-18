@@ -569,15 +569,18 @@ export default function LinkingPage() {
       },
       {
         field: 'vel',
-        renderHeader: () => (
-          <>
-            {t(
-              isIntegrationTime(currRec?.Obs)
-                ? 'sensitivityCalculatorResults.weightedSensitivity'
-                : 'sensitivityCalculatorResults.integrationTime'
-            )}
-          </>
-        ),
+        renderHeader: () =>
+          currRec?.rec ? (
+            <>
+              {t(
+                isIntegrationTime(currRec?.rec as Observation)
+                  ? 'sensitivityCalculatorResults.weightedSensitivity'
+                  : 'sensitivityCalculatorResults.integrationTime'
+              )}
+            </>
+          ) : (
+            <></>
+          ),
         sortable: false,
         flex: 2,
         minWidth: 170,
@@ -585,7 +588,7 @@ export default function LinkingPage() {
         renderCell: (e: { row: any }) => {
           return getSensCalcSingle(
             e.row.id,
-            isIntegrationTime(currRec?.Obs as Observation)
+            isIntegrationTime(currRec?.rec as Observation)
               ? 'SensitivityWeighted'
               : 'IntegrationTime'
           );
@@ -593,12 +596,14 @@ export default function LinkingPage() {
       },
       {
         field: 'vel2',
-        renderHeader: () => <>{t('sensitivityCalculatorResults.beamSize')}</>,
+        renderHeader: () =>
+          currRec?.rec ? <>{t('sensitivityCalculatorResults.beamSize')}</> : <></>,
         sortable: false,
         flex: 2.5,
         minWidth: 150,
         disableClickEventBubbling: true,
         renderCell: (e: { row: any }) => {
+          console.log("TREVOR", currRec);
           return getSensCalcSingle(e.row.id, 'SynthBeamSize');
         }
       }
