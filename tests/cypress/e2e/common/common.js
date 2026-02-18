@@ -137,6 +137,19 @@ export const mockOSDAPI = () => {
   });
 };
 
+export const mockValidateAPI = () => {
+  cy.window().then(win => {
+    const token = win.localStorage.getItem('cypress:token');
+    cy.intercept('POST', '**/pht/prsls/validate', req => {
+      req.headers['Authorization'] = `Bearer ${token}`;
+      req.reply({
+        statusCode: 200,
+        body: { result: true, validation_errors: [] }
+      });
+    }).as('mockValidate');
+  });
+};
+
 /*----------------------------------------------------------------------*/
 
 export const verify = testId => {
@@ -403,6 +416,10 @@ export const verifyAutoLinkAlertFooter = () =>
 
 export const verifySubmissionCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Submission added with unique identifier');
+
+export const verifyAlertFooter = text => {
+  verifyContent('timeAlertFooter', text);
+};
 
 export const verifyInformationBannerText = text => {
   cy.get('[id="standardAlertId"]').contains(text);

@@ -36,7 +36,9 @@ import {
   mockUploadToS3API,
   clickToValidateSV,
   uploadTestFile,
-  verifyTestFileUploaded
+  verifyTestFileUploaded,
+  mockValidateAPI,
+  verifyAlertFooter
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -45,6 +47,7 @@ beforeEach(() => {
   mockCreateSubmissionAPI();
   mockEmailAPI();
   mockResolveTargetAPI();
+  mockValidateAPI();
 });
 
 afterEach(() => {
@@ -94,7 +97,8 @@ describe('Edit Proposal', () => {
     verifyTestFileUploaded('testFile.pdf');
     clickFileUpload();
     clickToValidateSV();
-    //TODO: Mock validate endpoint
+    cy.wait('@mockValidate');
+    verifyAlertFooter('Science Verification Idea is Valid');
   });
 
   it.skip('Proposal Flow: Edit a basic proposal', { jiraKey: 'XTP-71405' }, () => {
