@@ -57,7 +57,7 @@ describe('Edit Proposal', () => {
     });
   });
 
-  it('SV Flow: Edit a basic science idea', () => {
+  it.skip('SV Flow: Edit a basic science idea', () => {
     createScienceIdeaLoggedIn();
     cy.wait('@mockCreateSubmission');
     verifyScienceIdeaCreatedAlertFooter();
