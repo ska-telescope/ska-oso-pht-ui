@@ -1,15 +1,15 @@
 import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 import { Telescope } from '@ska-telescope/ska-gui-local-storage';
-import Observation from '../../../utils/types/observation';
-import Target from '../../../utils/types/target';
-import { SensCalcResults } from '../../../utils/types/sensCalcResults';
+import Observation from '../../../../../utils/types/observation';
+import Target from '../../../../../utils/types/target';
+import { SensCalcResults } from '../../../../../utils/types/sensCalcResults';
 import {
   USE_LOCAL_DATA_SENSITIVITY_CALC,
   TYPE_CONTINUUM,
   SA_CUSTOM,
   TELESCOPE_LOW_NUM,
   TYPE_ZOOM
-} from '../../../utils/constants';
+} from '../../../../../utils/constants';
 import GetZoomData from '../getZoomData/getZoomData';
 import GetContinuumData from '../getContinuumData/getContinuumData';
 import { SENSCALC_CONTINUUM_MOCKED } from './SensCalcResultsMock';

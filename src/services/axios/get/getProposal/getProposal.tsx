@@ -48,7 +48,8 @@ import {
   PULSAR_TIMING_VALUE,
   DETECTED_FILTER_BANK_VALUE,
   FLOW_THROUGH_VALUE,
-  TYPE_ZOOM_LONG
+  TYPE_ZOOM_LONG,
+  cypressSV
 } from '@utils/constants.ts';
 import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import {
@@ -796,7 +797,11 @@ async function GetProposal(
   }
 
   if (isCypress) {
-    return mapping(MockProposal[0]);
+    if (cypressSV) {
+      return mapping(MockProposal[1]);
+    } else {
+      return mapping(MockProposal[0]);
+    }
   }
 
   try {

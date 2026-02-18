@@ -4,7 +4,6 @@ import { ERROR_SECS, FREQUENCY_STR_HZ } from '@utils/constants.ts';
 import { getScaledBandwidthOrFrequency } from '@utils/helpers.ts';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import React from 'react';
-import sensCalHelpers from '../../../../services/api/sensitivityCalculator/sensCalHelpers';
 import {
   getMaxContBandwidthHz,
   checkMinimumChannelWidth,
@@ -13,6 +12,7 @@ import {
 } from '../bandwidthValidationCommon';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
+import sensCalHelpers from '@/services/axios/get/getSensitivityCalculator/sensitivityCalculator/sensCalHelpers';
 
 interface ContinuumBandwidthFieldProps {
   disabled?: boolean;

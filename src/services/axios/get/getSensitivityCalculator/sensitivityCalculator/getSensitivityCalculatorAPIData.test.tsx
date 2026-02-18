@@ -1,6 +1,5 @@
 import { describe, test, expect, vi, it, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
-import Observation from '../../../utils/types/observation';
 import getSensCalc from './getSensitivityCalculatorAPIData';
 import {
   sensCalcResultsAPIResponseMockContinuum,
@@ -11,6 +10,7 @@ import { setMockObservation } from './getSensitivityCalculatorAPIData';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 import * as CONSTANTS from '@/utils/constants';
 import { DataProductSDPNew, SDPImageContinuumData } from '@/utils/types/dataProduct';
+import Observation from '@/utils/types/observation';
 
 const MOCK_CONTINUUM_DATA_PRODUCT: DataProductSDPNew = {
   id: 'dp-123456',
