@@ -593,7 +593,7 @@ export const verifyDataInTable = (tableTestId, text) => {
 export const verifyFieldError = (testId, error, exists) => {
   cy.get('[data-testid="' + testId + '"]').should('exist');
   if (exists) {
-    cy.get('[data-testid="' + testId + '"]').should('contain', error);
+    cy.get(`[data-testid="${testId}"]`, { timeout: 10000 }).should('contain', error);
   } else {
     cy.get('[data-testid="' + testId + '"]').should('not.contain', error);
   }

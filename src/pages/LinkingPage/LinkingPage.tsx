@@ -569,18 +569,15 @@ export default function LinkingPage() {
       },
       {
         field: 'vel',
-        renderHeader: () =>
-          currRec?.Obs ? (
-            <>
-              {t(
-                isIntegrationTime(currRec?.Obs)
-                  ? 'sensitivityCalculatorResults.weightedSensitivity'
-                  : 'sensitivityCalculatorResults.integrationTime'
-              )}
-            </>
-          ) : (
-            <></>
-          ),
+        renderHeader: () => (
+          <>
+            {t(
+              isIntegrationTime(currRec?.Obs)
+                ? 'sensitivityCalculatorResults.weightedSensitivity'
+                : 'sensitivityCalculatorResults.integrationTime'
+            )}
+          </>
+        ),
         sortable: false,
         flex: 2,
         minWidth: 170,
@@ -596,8 +593,7 @@ export default function LinkingPage() {
       },
       {
         field: 'vel2',
-        renderHeader: () =>
-          currRec?.Obs ? <>{t('sensitivityCalculatorResults.beamSize')}</> : <></>,
+        renderHeader: () => <>{t('sensitivityCalculatorResults.beamSize')}</>,
         sortable: false,
         flex: 2.5,
         minWidth: 150,
