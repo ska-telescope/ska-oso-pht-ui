@@ -150,6 +150,21 @@ export const mockValidateAPI = () => {
   });
 };
 
+export const mockUpdateSubmissionAPI = () => {
+  cy.window().then(win => {
+    const token = win.localStorage.getItem('cypress:token');
+    cy.fixture('modifiedProposal.json').then(proposal => {
+      cy.intercept('PUT', '**/pht/prsls/prsl-*', req => {
+        req.headers['Authorization'] = `Bearer ${token}`;
+        req.reply({
+          statusCode: 200,
+          body: proposal
+        });
+      }).as('mockUpdateSubmission');
+    });
+  });
+};
+
 /*----------------------------------------------------------------------*/
 
 export const verify = testId => {
