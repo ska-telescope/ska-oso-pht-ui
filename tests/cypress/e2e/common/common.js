@@ -447,10 +447,6 @@ export const validateProposal = () => {
   clickToValidateProposal();
 };
 
-export const verifyProposalIsValid = () => {
-  verifyProposalValidAlertFooter();
-};
-
 export const createStandardProposal = () => {
   clickAddSubmission();
   enterProposalTitle();
@@ -677,10 +673,6 @@ const clickToValidateProposal = () => {
 export const clickToValidateSV = () => {
   cy.get('[data-testid="submitBtnTestId"]').should('exist');
   cy.get('[data-testid="submitBtnTestId"]').click();
-};
-
-const verifyProposalValidAlertFooter = () => {
-  get('timeAlertFooter').should('include.text', 'Proposal is Valid');
 };
 
 export const clickToSubmitProposal = () => {

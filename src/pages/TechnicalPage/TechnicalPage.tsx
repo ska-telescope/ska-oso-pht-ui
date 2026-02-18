@@ -16,6 +16,7 @@ import PDFWrapper from '../../components/layout/PDFWrapper/PDFWrapper';
 import PDFPreviewButton from '../../components/button/PDFPreview/PDFPreview';
 import DeleteButton from '../../components/button/Delete/Delete';
 import {
+  cypressToken,
   NOTIFICATION_DELAY_IN_SECONDS,
   PAGE_TECHNICAL,
   UPLOAD_MAX_WIDTH_PDF
@@ -39,7 +40,7 @@ export default function TechnicalPage() {
   const loggedIn = isLoggedIn();
   const { setHelp } = useHelp();
 
-  const isDisableEndpoints = () => !loggedIn;
+  const isDisableEndpoints = () => !loggedIn && !cypressToken;
 
   const handleClosePDFViewer = () => setOpenPDFViewer(false);
 
@@ -226,7 +227,7 @@ export default function TechnicalPage() {
   return (
     <Shell page={PAGE}>
       <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
-        <Grid size={{ xs: 6 }}>
+        <Grid size={{ xs: 6 }} data-testid="fileUpload">
           {isDisableEndpoints() ? (
             <>{t('pdfUpload.disabled')}</>
           ) : (

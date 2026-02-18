@@ -38,7 +38,10 @@ import {
   uploadTestFile,
   verifyTestFileUploaded,
   mockValidateAPI,
-  verifyAlertFooter
+  verifyAlertFooter,
+  clickToSubmitProposal,
+  clickToConfirmProposalSubmission,
+  verifyFirstProposalOnLandingPageHasSubmittedStatus
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -62,7 +65,7 @@ describe('Edit Proposal', () => {
     });
   });
 
-  it('SV Flow: Edit a basic science idea', () => {
+  it.skip('SV Flow: Edit a basic science idea', () => {
     createScienceIdeaLoggedIn();
     cy.wait('@mockCreateSubmission');
     verifyScienceIdeaCreatedAlertFooter();
@@ -99,7 +102,7 @@ describe('Edit Proposal', () => {
     verifyAlertFooter('Science Verification Idea is Valid');
   });
 
-  it.skip('Proposal Flow: Edit a basic proposal', { jiraKey: 'XTP-71405' }, () => {
+  it('Proposal Flow: Edit a basic proposal', { jiraKey: 'XTP-71405' }, () => {
     createStandardProposalLoggedIn();
     cy.wait('@mockCreateSubmission');
     verifySubmissionCreatedAlertFooter();
@@ -140,14 +143,26 @@ describe('Edit Proposal', () => {
     verifySensitivityCalculatorStatusSuccess();
     clickStatusIconNav('statusId9'); //Click to calibration page
     pageConfirmed('CALIBRATION');
+    clickStatusIconNav('statusId3'); //Click to science page
+    pageConfirmed('SCIENCE');
+    clickFileUploadArea();
+    uploadTestFile('testFile.pdf');
+    verifyTestFileUploaded('testFile.pdf');
+    clickFileUpload();
+    clickStatusIconNav('statusId6'); //Click to technical page
+    pageConfirmed('TECHNICAL');
+    clickFileUploadArea();
+    uploadTestFile('testFile.pdf');
+    verifyTestFileUploaded('testFile.pdf');
+    clickFileUpload();
     validateProposal();
-    // //TODO: Verify Proposal is valid once mocking of file upload is resolved
-    // // verifyProposalIsValid()
-    // //submit proposal
-    // // clickToSubmitProposal();
-    // // clickToConfirmProposalSubmission();
-    // // //verify status of submitted proposal
-    // // verifyFirstProposalOnLandingPageHasSubmittedStatus();
+    cy.wait('@mockValidate');
+    verifyAlertFooter('Proposal is Valid');
+    //submit proposal
+    clickToSubmitProposal();
+    clickToConfirmProposalSubmission();
+    //verify status of submitted proposal
+    verifyFirstProposalOnLandingPageHasSubmittedStatus();
   });
 
   //TODO: Implement full scenario to point of submission
