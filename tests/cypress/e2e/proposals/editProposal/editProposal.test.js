@@ -34,7 +34,9 @@ import {
   clickFileUpload,
   mockGetSignedUrlAPI,
   mockUploadToS3API,
-  clickToValidateSV
+  clickToValidateSV,
+  uploadTestFile,
+  verifyTestFileUploaded
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -57,7 +59,7 @@ describe('Edit Proposal', () => {
     });
   });
 
-  it.skip('SV Flow: Edit a basic science idea', () => {
+  it('SV Flow: Edit a basic science idea', () => {
     createScienceIdeaLoggedIn();
     cy.wait('@mockCreateSubmission');
     verifyScienceIdeaCreatedAlertFooter();
@@ -88,11 +90,8 @@ describe('Edit Proposal', () => {
     clickStatusIconNav('statusId3'); //Click to description page
     pageConfirmed('DESCRIPTION');
     clickFileUploadArea();
-
-    cy.get('[data-testid="fileUpload"] input[type="file"]').attachFile('testFile.pdf');
-
-    // Assertions depend on your UI
-    cy.contains('testFile.pdf').should('be.visible');
+    uploadTestFile('testFile.pdf');
+    verifyTestFileUploaded('testFile.pdf');
     clickFileUpload();
     clickToValidateSV();
     //TODO: Mock validate endpoint

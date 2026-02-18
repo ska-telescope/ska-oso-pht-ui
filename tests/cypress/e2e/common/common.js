@@ -235,6 +235,13 @@ export const checkFieldIsVisible = (testId, visible) => {
 };
 /*----------------------------------------------------------------------*/
 
+export const uploadTestFile = fileName => {
+  cy.get('[data-testid="fileUpload"] input[type="file"]').attachFile(fileName);
+};
+
+export const verifyTestFileUploaded = fileName => {
+  cy.contains(fileName).should('be.visible');
+};
 export const clickNav = (testId, title) => {
   click(testId);
   if (title.length) {
