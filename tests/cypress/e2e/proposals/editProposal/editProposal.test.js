@@ -84,12 +84,10 @@ describe('Edit Proposal', () => {
     pageConfirmed('DESCRIPTION');
     clickStatusIconNav('statusId4'); //Click to target page
     pageConfirmed('TARGET');
-    //add target
-    addM2TargetUsingResolve();
+    addM2TargetUsingResolve(); //add target
     cy.wait('@mockResolveTarget');
     clickToAddTarget();
-    //Verify AutoLink to OSD data
-    verifyAutoLinkAlertFooter();
+    verifyAutoLinkAlertFooter(); //Verify AutoLink to OSD data
     clickStatusIconNav('statusId3'); //Click to description page
     pageConfirmed('DESCRIPTION');
     clickFileUploadArea();
