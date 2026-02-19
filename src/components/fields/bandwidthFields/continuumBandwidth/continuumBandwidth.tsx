@@ -119,7 +119,6 @@ export default function ContinuumBandwidthField({
 
   const handleSetValue = (value: any) => {
     const error = validateValue(value);
-    console.log('handleSetValue:', value, error);
     if (error) {
       setErrorText(error);
     } else {
@@ -131,7 +130,6 @@ export default function ContinuumBandwidthField({
   // Validate current value when dependencies change
   React.useEffect(() => {
     const error = validateValue(value);
-    console.log('Validating value on dependency change:', value, error);
     setErrorText(error);
   }, [
     value,

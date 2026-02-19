@@ -603,7 +603,6 @@ export default function LinkingPage() {
         minWidth: 150,
         disableClickEventBubbling: true,
         renderCell: (e: { row: any }) => {
-          console.log('TREVOR', currRec);
           return getSensCalcSingle(e.row.id, 'SynthBeamSize');
         }
       }
