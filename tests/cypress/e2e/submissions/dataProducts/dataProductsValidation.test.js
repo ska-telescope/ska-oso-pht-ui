@@ -15,7 +15,7 @@ import {
   mockResolveTargetAPI,
   verifyAutoLinkAlertFooter,
   addSubmissionSummary
-} from '../../common/common';
+} from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 beforeEach(() => {
   initialize(standardUser);

@@ -4,14 +4,14 @@ import {
   clickToObservationPage,
   createMock,
   initializeUserNotLoggedIn
-} from '../../common/common';
+} from '../../common/common.js';
 import {
   selectObservationTypeZoom,
   selectSubArrayCustom,
   verifyContinuumSpectralAverageRangeAA2,
   verifyZoomSpectralAverageRangeAA2,
   verifyZoomSpectralAverageRangeCustom
-} from './observations';
+} from './observations.js';
 
 function commonConfiguration() {
   initializeUserNotLoggedIn();
