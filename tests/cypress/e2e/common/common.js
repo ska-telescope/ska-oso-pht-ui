@@ -137,6 +137,49 @@ export const mockOSDAPI = () => {
   });
 };
 
+export const mockValidateAPI = () => {
+  cy.window().then(win => {
+    const token = win.localStorage.getItem('cypress:token');
+    cy.intercept('POST', '**/pht/prsls/validate', req => {
+      req.headers['Authorization'] = `Bearer ${token}`;
+      req.reply({
+        statusCode: 200,
+        body: { result: true, validation_errors: [] }
+      });
+    }).as('mockValidate');
+  });
+};
+
+export const mockUpdateProposalAPI = () => {
+  cy.window().then(win => {
+    const token = win.localStorage.getItem('cypress:token');
+    cy.fixture('modifiedProposal.json').then(submission => {
+      cy.intercept('PUT', '**/pht/prsls/prsl-*', req => {
+        req.headers['Authorization'] = `Bearer ${token}`;
+        req.reply({
+          statusCode: 200,
+          body: submission
+        });
+      }).as('mockUpdateProposal');
+    });
+  });
+};
+
+export const mockUpdateSVIdeaAPI = () => {
+  cy.window().then(win => {
+    const token = win.localStorage.getItem('cypress:token');
+    cy.fixture('modifiedSVIdea.json').then(submission => {
+      cy.intercept('PUT', '**/pht/prsls/sv-*', req => {
+        req.headers['Authorization'] = `Bearer ${token}`;
+        req.reply({
+          statusCode: 200,
+          body: submission
+        });
+      }).as('mockUpdateSVIdea');
+    });
+  });
+};
+
 /*----------------------------------------------------------------------*/
 
 export const verify = testId => {
@@ -177,6 +220,8 @@ export const clickToAddDataProduct = () => clickButton('addDataProductButton');
 export const clickToConfirmProposalSubmission = () => clickButton('displayConfirmationButton');
 export const clickToNextPage = () => clickButton('nextButtonTestId');
 export const clickToPreviousPage = () => clickButton('prevButtonTestId');
+export const clickFileUploadArea = () => clickButton('fileUpload');
+export const clickFileUpload = () => clickButton('fileUploadUploadButton');
 
 export const clickToLinkTargetObservation = () => clickButton('linkedTickBox');
 
@@ -233,6 +278,13 @@ export const checkFieldIsVisible = (testId, visible) => {
 };
 /*----------------------------------------------------------------------*/
 
+export const uploadTestFile = fileName => {
+  cy.get('[data-testid="fileUpload"] input[type="file"]').attachFile(fileName);
+};
+
+export const verifyTestFileUploaded = fileName => {
+  cy.contains(fileName).should('be.visible');
+};
 export const clickNav = (testId, title) => {
   click(testId);
   if (title.length) {
@@ -395,6 +447,10 @@ export const verifyAutoLinkAlertFooter = () =>
 export const verifySubmissionCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Submission added with unique identifier');
 
+export const verifyAlertFooter = text => {
+  verifyContent('timeAlertFooter', text);
+};
+
 export const verifyInformationBannerText = text => {
   cy.get('[id="standardAlertId"]').contains(text);
 };
@@ -419,10 +475,6 @@ export const tabToEditTarget = () => {
 
 export const validateProposal = () => {
   clickToValidateProposal();
-};
-
-export const verifyProposalIsValid = () => {
-  verifyProposalValidAlertFooter();
 };
 
 export const createStandardProposal = () => {
@@ -659,10 +711,6 @@ const clickToValidateProposal = () => {
 export const clickToValidateSV = () => {
   cy.get('[data-testid="submitBtnTestId"]').should('exist');
   cy.get('[data-testid="submitBtnTestId"]').click();
-};
-
-const verifyProposalValidAlertFooter = () => {
-  get('timeAlertFooter').should('include.text', 'Proposal is Valid');
 };
 
 export const clickToSubmitProposal = () => {

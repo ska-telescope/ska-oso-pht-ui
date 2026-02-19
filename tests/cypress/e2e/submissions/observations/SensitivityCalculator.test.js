@@ -9,7 +9,7 @@ import {
   initializeUserNotLoggedIn,
   clearLocalStorage,
   createMock
-} from '../../common/common';
+} from '../../common/common.js';
 import sensitivityCalculatorResults from '../../../fixtures/sensitivityCalculatorResults.json';
 
 beforeEach(() => {

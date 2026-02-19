@@ -11,7 +11,7 @@ import {
   initializeUserNotLoggedIn,
   verifySensCalcStatus,
   mockResolveTargetAPI
-} from '../../common/common';
+} from '../../common/common.js';
 beforeEach(() => {
   initializeUserNotLoggedIn();
   createMock();
