@@ -1,8 +1,6 @@
-import { AccessibilityMode } from '@/services/theme/theme';
-
-// types.ts
 export type ColorBlindMode = 'none' | 'protanopia' | 'deuteranopia' | 'tritanopia';
 export type ContrastLevel = 'normal' | 'high';
+export type AccessibilityMode = string;
 
 export interface GetColorsSettings {
   version: 1;

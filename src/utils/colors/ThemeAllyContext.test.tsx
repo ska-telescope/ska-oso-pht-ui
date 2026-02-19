@@ -22,7 +22,7 @@ const Consumer: React.FC = () => {
             mode: 'light',
             reducedMotion: false,
             focusVisibleAlways: false,
-            accessibilityMode: false
+            accessibilityMode: ''
           })
         }
       >
@@ -65,7 +65,7 @@ describe('ThemeA11yContext', () => {
       mode: 'light',
       reducedMotion: false,
       focusVisibleAlways: false,
-      accessibilityMode: false
+      accessibilityMode: ''
     });
   });
 

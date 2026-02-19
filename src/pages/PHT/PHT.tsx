@@ -3,6 +3,7 @@ import { Routes, Route, useLocation, useNavigate } from 'react-router-dom';
 import {
   AlertColorTypes,
   AppWrapper,
+  SKABrandColor,
   THEME_DARK,
   THEME_LIGHT
 } from '@ska-telescope/ska-gui-components';
@@ -54,6 +55,8 @@ import TimedAlert from '@/components/alerts/timedAlert/TimedAlert';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
+import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
+import { useTheme } from '@mui/material/styles';
 
 const ROUTES = [
   { path: PATH[0], element: <LandingPage /> },
@@ -86,13 +89,21 @@ interface PHTPropTypes {
   setThemeMode: (mode: string) => void;
   accessibilityMode: number;
   setAccessibilityMode: (mode: number) => void;
+  buttonVariant: string;
+  setButtonVariant: (mode: string) => void;
+  flatten: boolean;
+  setFlatten: (mode: boolean) => void;
 }
 
 export default function PHT({
   themeMode,
   setThemeMode,
   accessibilityMode,
-  setAccessibilityMode
+  setAccessibilityMode,
+  buttonVariant,
+  setButtonVariant,
+  flatten,
+  setFlatten
 }: PHTPropTypes) {
   const { t } = useScopedTranslation();
   const { application, help, helpToggle } = storageObject.useStore();
@@ -100,6 +111,7 @@ export default function PHT({
   const navigate = useNavigate();
   const location = useLocation();
   const { setHelp } = useHelp();
+  const theme = useTheme();
 
   const LG = () => useMediaQuery((theme: any) => theme.breakpoints.down('lg'));
   const REQUIRED_WIDTH = useMediaQuery('(min-width:600px)');
@@ -131,6 +143,12 @@ export default function PHT({
   const accessibilityUpdate = (inValue: number) => {
     localStorage.setItem('skao_accessibility_mode', String(inValue));
     setAccessibilityMode(inValue);
+  };
+
+  const variantToggle = () => {
+    const newValue = buttonVariant === SKABrandColor.Blue ? SKABrandColor.Pink : SKABrandColor.Blue;
+    localStorage.setItem('skao_button_variant', newValue);
+    setButtonVariant(newValue);
   };
 
   const signIn = () => <ButtonUserMenu />;
@@ -221,7 +239,7 @@ export default function PHT({
   };
 
   return (
-    <>
+    <CssVarsProvider theme={theme}>
       <CssBaseline enableColorScheme />
       <AppWrapper
         accessibility
@@ -267,9 +285,13 @@ export default function PHT({
         storageHelpToggle={helpToggle}
         storageThemeMode={themeMode}
         storageToggleTheme={themeToggle}
+        storageButtonVariant={buttonVariant}
+        storageSetButtonVariant={variantToggle}
+        storageFlatten={flatten}
+        storageSetFlatten={setFlatten}
         version={packageJson.version}
         versionTooltip={versionToolTip()}
       />
-    </>
+    </CssVarsProvider>
   );
 }

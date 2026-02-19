@@ -21,7 +21,7 @@ export default function TableObservationsHeader() {
         {displayHeader('groupId.short')}
         {displayHeader('subArrayConfiguration.label')}
         {displayHeader('observingBand.label')}
-        {displayHeader('')}
+        {displayHeader('frequencyRange.label')}
       </TableRow>
     </TableHead>
   );

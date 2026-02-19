@@ -1,4 +1,4 @@
-import { NumberEntry } from '@ska-telescope/ska-gui-components';
+import { NumberEntry2 } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import { ERROR_SECS, FREQUENCY_STR_HZ } from '@utils/constants.ts';
 import { getScaledBandwidthOrFrequency } from '@utils/helpers.ts';
@@ -26,6 +26,7 @@ interface ContinuumBandwidthFieldProps {
   centralFrequency?: number;
   centralFrequencyUnits?: number;
   subarrayConfig?: string;
+  step?: number;
   minimumChannelWidthHz?: number;
 }
 
@@ -40,6 +41,7 @@ export default function ContinuumBandwidthField({
   centralFrequency,
   centralFrequencyUnits,
   subarrayConfig,
+  step = 1,
   minimumChannelWidthHz
 }: ContinuumBandwidthFieldProps) {
   const { t } = useScopedTranslation();
@@ -115,19 +117,20 @@ export default function ContinuumBandwidthField({
     return '';
   };
 
-  const handleSetValue = (num: number) => {
-    const error = validateValue(num);
+  const handleSetValue = (value: any) => {
+    const error = validateValue(value);
     if (error) {
       setErrorText(error);
     } else {
       setErrorText('');
-      setValue?.(num);
+      setValue?.(value);
     }
   };
 
   // Validate current value when dependencies change
   React.useEffect(() => {
-    setErrorText(validateValue(value));
+    const error = validateValue(value);
+    setErrorText(error);
   }, [
     value,
     continuumBandwidthUnits,
@@ -139,17 +142,21 @@ export default function ContinuumBandwidthField({
   ]);
 
   return (
-    <Box pt={1}>
-      <NumberEntry
+    <Box width="100%">
+      <NumberEntry2
+        required
         disabled={disabled}
-        label={t(FIELD + '.label')}
+        errorText={errorText}
+        fieldName={FIELD}
+        fullWidth
+        onFocus={() => setHelp(FIELD)}
+        setValue={handleSetValue}
+        step={step}
         suffix={suffix}
+        sx={{ width: '100%' }}
+        title={t(FIELD + '.label')}
         testId={FIELD}
         value={value}
-        setValue={handleSetValue}
-        onFocus={() => setHelp(FIELD)}
-        required
-        errorText={errorText}
       />
     </Box>
   );

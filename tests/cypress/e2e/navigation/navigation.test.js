@@ -82,7 +82,7 @@ describe('Verify navigation', () => {
     //Verify navigation in page banner is correct after proposal creation
     verifyStatusIndicatorLabel('statusId0', 'Title');
     verifyStatusIndicatorLabel('statusId1', 'Team');
-    verifyStatusIndicatorLabel('statusId2', 'Details');
+    verifyStatusIndicatorLabel('statusId2', 'General');
     verifyStatusIndicatorLabel('statusId3', 'Science');
     verifyStatusIndicatorLabel('statusId6', 'Technical');
     verifyStatusIndicatorLabel('statusId4', 'Target');
