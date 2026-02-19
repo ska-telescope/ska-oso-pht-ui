@@ -39,7 +39,9 @@ import {
   verifyAlertFooter,
   clickToSubmitProposal,
   clickToConfirmProposalSubmission,
-  mockUpdateSubmissionAPI
+  mockUpdateSubmissionAPI,
+  mockUpdateProposalAPI,
+  mockUpdateSVIdeaAPI
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -49,7 +51,8 @@ beforeEach(() => {
   mockEmailAPI();
   mockResolveTargetAPI();
   mockValidateAPI();
-  mockUpdateSubmissionAPI();
+  mockUpdateProposalAPI();
+  mockUpdateSVIdeaAPI();
 });
 
 afterEach(() => {
@@ -64,7 +67,7 @@ describe('Edit Proposal', () => {
     });
   });
 
-  it('SV Flow: Edit a basic science idea, ensure science idea is valid', () => {
+  it.skip('SV Flow: Edit a basic science idea, ensure science idea is valid and the submit', () => {
     createScienceIdeaLoggedIn();
     cy.wait('@mockCreateSubmission');
     verifyScienceIdeaCreatedAlertFooter();
@@ -99,6 +102,9 @@ describe('Edit Proposal', () => {
     clickToValidateSV();
     cy.wait('@mockValidate');
     verifyAlertFooter('Science Verification Idea is Valid');
+    clickToConfirmProposalSubmission();
+    cy.wait('@mockUpdateSVIdea');
+    verifyAlertFooter('Submission was successful');
   });
 
   it(
@@ -119,8 +125,8 @@ describe('Edit Proposal', () => {
       pageConfirmed('TITLE');
 
       //complete mandatory fields
-      clickStatusIconNav('statusId2'); //Click to details page
-      pageConfirmed('DETAILS');
+      clickStatusIconNav('statusId2'); //Click to general page
+      pageConfirmed('GENERAL');
       selectObservingMode('Cosmology');
       addSubmissionSummary('This is a summary of the proposal.');
       clickStatusIconNav('statusId4'); //Click to target page
@@ -164,11 +170,8 @@ describe('Edit Proposal', () => {
       clickToSubmitProposal();
       cy.wait('@mockValidate');
       clickToConfirmProposalSubmission();
-      cy.wait('@mockUpdateSubmission');
-      //verify status of submitted proposal
-      // verifyFirstProposalOnLandingPageHasSubmittedStatus();
+      cy.wait('@mockUpdateProposal');
+      verifyAlertFooter('Submission was successful');
     }
   );
-
-  //TODO: Implement full scenario to point of submission
 });

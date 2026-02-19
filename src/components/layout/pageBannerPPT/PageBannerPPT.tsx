@@ -151,7 +151,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   const submitClicked = async () => {
     const isValid = await validateTheProposal();
-    if (isValid && loggedIn) setOpenProposalDisplay(true);
+    if (isValid && (loggedIn || cypressToken)) setOpenProposalDisplay(true);
   };
 
   const submitConfirmed = async () => {
@@ -322,7 +322,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   return (
     <Box p={2}>
       {loggedIn || cypressToken ? row1() : row1buttonsLeft()}
-      {((loggedIn && getProposal().id !== '') || cypressToken) && row2()}
+      {(loggedIn || cypressToken) && getProposal().id !== '' && row2()}
       {row3()}
 
       {openProposalDisplay && (

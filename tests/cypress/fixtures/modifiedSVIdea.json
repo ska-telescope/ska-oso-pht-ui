@@ -1,0 +1,117 @@
+{
+  "prsl_id": "sv-test-20260213-00002",
+  "status": "submitted",
+  "submitted_on": "2026-02-19T14:20:35.985Z",
+  "submitted_by": "default-cypress-user",
+  "investigator_refs": ["a3e51298-97cd-4304-ab80-760ba440b93f"],
+  "cycle": "SKAO_2027_1",
+  "proposal_info": {
+    "title": "Science Verification Idea Title",
+    "proposal_type": { "main_type": "science_verification", "attributes": [] },
+    "abstract": "This is a summary of the science idea.",
+    "science_category": "Continuum",
+    "investigators": [
+      {
+        "user_id": "a3e51298-97cd-4304-ab80-760ba440b93f",
+        "status": "Accepted",
+        "given_name": "Chloe",
+        "family_name": "Gallacher",
+        "email": "Chloe.Gallacher@community.skao.int",
+        "for_phd": false,
+        "principal_investigator": true
+      }
+    ]
+  },
+  "observation_info": {
+    "targets": [
+      {
+        "name": "M2",
+        "target_id": "M2",
+        "reference_coordinate": {
+          "kind": "icrs",
+          "ra_str": "21:33:27.0200",
+          "dec_str": "-00:49:23.700"
+        },
+        "radial_velocity": {
+          "quantity": { "value": -3.6, "unit": "km/s" },
+          "definition": "RADIO",
+          "reference_frame": "LSRK",
+          "redshift": 0
+        }
+      }
+    ],
+    "documents": [
+      { "document_id": "science-doc-prp-apgsjdmb-20260219-446113406044862", "uploaded_pdf": true }
+    ],
+    "observation_sets": [
+      {
+        "observation_set_id": "obs-OwBdq6",
+        "group_id": "",
+        "elevation": 15,
+        "observing_band": "low_band",
+        "array_details": { "array": "ska_low", "subarray": "aa2", "number_of_stations": 68 },
+        "observation_type_details": {
+          "bandwidth": { "value": 150, "unit": "MHz" },
+          "central_frequency": { "value": 200, "unit": "MHz" },
+          "supplied": {
+            "supplied_type": "integration_time",
+            "quantity": { "value": 1, "unit": "h" }
+          },
+          "observation_type": "continuum"
+        }
+      }
+    ],
+    "calibration_strategy": [
+      {
+        "observatory_defined": true,
+        "calibration_id": "cal-Xv08l9",
+        "observation_set_ref": "obs-OwBdq6",
+        "calibrators": null,
+        "notes": null
+      }
+    ],
+    "data_product_sdps": [
+      {
+        "data_product_id": "SDP-QnMXcF",
+        "observation_set_ref": "obs-OwBdq6",
+        "script_parameters": {
+          "image_size": { "value": 2.5, "unit": "deg" },
+          "image_cellsize": { "value": 1.6, "unit": "arcsec" },
+          "weight": { "weighting": "uniform" },
+          "polarisations": ["I", "XX"],
+          "channels_out": 40,
+          "gaussian_taper": "0",
+          "kind": "continuum",
+          "variant": "continuum image"
+        }
+      }
+    ],
+    "data_product_src_nets": [],
+    "result_details": [
+      {
+        "observation_set_ref": "obs-OwBdq6",
+        "data_product_ref": "SDP-QnMXcF",
+        "target_ref": "M2",
+        "result": {
+          "supplied_type": "integration_time",
+          "weighted_continuum_sensitivity": { "value": 193.39869461690563, "unit": "μJy/beam" },
+          "total_continuum_sensitivity": { "value": 193.4049635877299, "unit": "μJy/beam" },
+          "weighted_spectral_sensitivity": { "value": 42.282426012622985, "unit": "mJy/beam" },
+          "total_spectral_sensitivity": { "value": 42.282426095695854, "unit": "mJy/beam" },
+          "surface_brightness_sensitivity": {
+            "continuum": 375.85865050198123,
+            "spectral": 55096.90764904839,
+            "unit": "K"
+          }
+        },
+        "continuum_confusion_noise": { "value": 1.5571964705842967, "unit": "μJy/beam" },
+        "synthesized_beam_size": {
+          "spectral": "5.92 x 3.96",
+          "continuum": "5.50 x 2.86",
+          "unit": "arcsec²"
+        },
+        "spectral_confusion_noise": { "value": 2.6504800547538223, "unit": "μJy/beam" }
+      }
+    ]
+  }
+}
