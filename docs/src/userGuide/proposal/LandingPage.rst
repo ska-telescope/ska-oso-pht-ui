@@ -1,5 +1,5 @@
-Starting a new Proposal
-########################
+Starting a Science Verification
+###############################
 
 
 .. |ico4| image:: /images/landingPageIcons.png
@@ -11,11 +11,6 @@ Starting a new Proposal
    :width: 20%
    :alt: View Icon
 
-.. |icondelete| image:: /images/deleteicon.png
-   :width: 7%
-   :alt: Delete Icon
-
-
 .. |iconedit| image:: /images/editicon.png
    :width: 20%
    :alt: Edit Icon
@@ -24,27 +19,22 @@ Starting a new Proposal
    :width: 20%
    :alt: Clone Icon
 
-
-.. |iconunaccept| image:: /images/unacceptableicon.png
-   :width: 3%
-   :alt: Clone Icon
-
-
+.. |confirmBtn| image:: /images/confirmBtn.png
+   :width: 20%
+   :alt: Confirm Button
 
 Landing Page
 ============
-On the landing page is a summary table of the proposals associated with you. These will be proposals you have participated in either as a Principal
-investigator or as a Co-Investigator. The table in :numref:`Figure %s <figure3>` lists proposals with the following information:
+On the landing page is a summary table of the submissions associated with you, either as a creator, or as a contributor. The table in :numref:`Figure %s <figure3>` lists submissions with the following information:
 
-- **Proposal ID** : Unique identifier for each proposal.
-- **Proposal Type** : The type of proposal. 
-- **Cycle** : SKAO observing cycle associated with the proposal.
-- **Proposal Title** : The title of the proposal.
-- **PI** : Principal Investigator of the proposal. A proposal without a PI indicated will have the |iconunaccept| icon as seen in :numref:`Figure %s <figure3>`.
-- **Status** : Current status of the proposal (e.g., draft, submitted, Under Review, Accepted, Withdrawn, Rejected). 
-- **Last Updated** : Date and time the proposal was last modified.
-- **Allowed actions** (|ico4|) on each proposal. See  :numref:`Table %s <mytest>`.
-
+- **Actions** (|ico4|) on each submission. See  :numref:`Table %s <mytest>`.
+- **Submission ID** : Unique identifier for each submission.
+- **Cycle selection** : SKAO observing cycle associated with the submission.
+- **Title** : The title of the submission.
+- **Type** : The type of submission. This can be either a proposal or a Science Verification.
+- **Status** : Current status of the submission (e.g., draft, submitted, Under Review, Accepted, Withdrawn, Rejected). 
+- **Last Updated** : Date and time the submission was last modified.
+- **Call Closes** : Date when the cycle associated with the submission will close.
 
 .. _figure3:
 
@@ -71,12 +61,9 @@ investigator or as a Co-Investigator. The table in :numref:`Figure %s <figure3>`
    * -  |iconedit| (Edit)
      - Edits the details of a proposal. This is only active for proposals in "Draft" status.
    * - |iconview| (View)
-     - Views the summary of a proposal.
+     - Views the summary of a submission.
    * - |iconclone| (Clone)
-     - Creates an exact copy of a proposal. This can be useful for creating new proposals based on similar propoals already created.
-   * - |icondelete| (Delete)
-     - Functionality is currently not available.
-
+     - Creates an exact copy of a submission. This can be useful for creating new submissions based on similar submissions already created.
 
 
 Key Information and Actions
@@ -96,18 +83,24 @@ Key Information and Actions
 
 -  Click |ico1| to create a new submission. 
 -  Use the drop down |ico2| to filter proposals by status.
-- The search bar |ico3|  allows you to search proposal by title, PI and proposal ID.
+- The search bar |ico3|  allows you to search proposal by title and proposal ID.
 - The table is sortable by clicking on the column headers
-
-
-
 
 
 Next Steps
 ==========
 
-- |ico1| takes you to the :doc:`Title Page </userGuide/TitlePage>`.
+- |ico1| opens up a cycle selection modal.
+- Select the appropriate cycle for the submission and click |confirmBtn| to proceed 
+- The application progresses to the :doc:`Title Page </userGuide/TitlePage>`.
 
+.. figure:: /images/cycleSelectionProposal.png
+   :width: 100%
+   :align: center
+   :alt: Image of the Cycle Selection Modal
+   :class: with-border
+
+   Image of the Cycle Selection Modal.
 
 
 |helpdesk|
