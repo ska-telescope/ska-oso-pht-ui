@@ -396,6 +396,9 @@
     "error": "A value greater than zero is required",
     "0": "MHz"
   },
+  "frequencyRange": {
+    "label": "Frequency Range"
+  },
   "frequencyUnits": {
     "help": "Select the appropriate unit."
   },
@@ -1496,11 +1499,11 @@
       "pageError": "The TEAM page is not complete"
     },
     "2": {
-      "status": "Details",
-      "title": "Details",
-      "titleShort": "Details",
-      "desc": "This page allows the user to provide details about the proposal.",
-      "pageError": "The DETAILS page is not complete"
+      "status": "General",
+      "title": "General",
+      "titleShort": "General",
+      "desc": "This page allows the user to provide general details about the proposal.",
+      "pageError": "The GENERAL page is not complete"
     },
     "3": {
       "status": "Science",

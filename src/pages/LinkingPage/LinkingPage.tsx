@@ -570,10 +570,10 @@ export default function LinkingPage() {
       {
         field: 'vel',
         renderHeader: () =>
-          currRec?.Obs ? (
+          currRec?.rec ? (
             <>
               {t(
-                isIntegrationTime(currRec?.Obs)
+                isIntegrationTime(currRec?.rec as Observation)
                   ? 'sensitivityCalculatorResults.weightedSensitivity'
                   : 'sensitivityCalculatorResults.integrationTime'
               )}
@@ -588,7 +588,7 @@ export default function LinkingPage() {
         renderCell: (e: { row: any }) => {
           return getSensCalcSingle(
             e.row.id,
-            isIntegrationTime(currRec?.Obs as Observation)
+            isIntegrationTime(currRec?.rec as Observation)
               ? 'SensitivityWeighted'
               : 'IntegrationTime'
           );
@@ -597,7 +597,7 @@ export default function LinkingPage() {
       {
         field: 'vel2',
         renderHeader: () =>
-          currRec?.Obs ? <>{t('sensitivityCalculatorResults.beamSize')}</> : <></>,
+          currRec?.rec ? <>{t('sensitivityCalculatorResults.beamSize')}</> : <></>,
         sortable: false,
         flex: 2.5,
         minWidth: 150,

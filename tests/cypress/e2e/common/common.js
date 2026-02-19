@@ -588,8 +588,10 @@ export const updateTargetField = (testId, value) => {
 };
 
 export const updateFieldValue = (testId, value) => {
-  cy.get('[data-testid="' + testId + '"]').should('exist');
-  cy.get('[data-testid="' + testId + '"]').type(value);
+  cy.get(`[data-testid="${testId}"]`)
+    .should('exist')
+    .type('{selectall}{backspace}')
+    .type(value);
 };
 
 export const verifyOnLandingPageFilterIsVisible = () => {
@@ -628,12 +630,18 @@ export const verifyDataInTable = (tableTestId, text) => {
 };
 
 export const verifyFieldError = (testId, error, exists) => {
-  cy.get('[data-testid="' + testId + '"]').should('exist');
-  if (exists) {
-    cy.get('[data-testid="' + testId + '"]').should('contain', error);
-  } else {
-    cy.get('[data-testid="' + testId + '"]').should('not.contain', error);
-  }
+  const selector = `[data-testid="${testId}"]`;
+
+  cy.get(selector)
+    .should('exist')
+    .parent() // move to parent
+    .then($parent => {
+      if (exists) {
+        cy.wrap($parent).should('contain.text', error);
+      } else {
+        cy.wrap($parent).should('not.contain.text', error);
+      }
+    });
 };
 
 export const clickObservationFromTable = () => {

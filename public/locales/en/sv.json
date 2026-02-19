@@ -229,6 +229,10 @@
       "desc": "Fellow participants can be optionally added to this Science Verification idea."
     },
     "2": {
+      "status": "Details",
+      "title": "Details",
+      "titleShort": "Details",
+      "pageError": "The DETAILS page is not complete",
       "desc": "This page allows the user to provide general information about the Science Verification Idea."
     },
     "3": {

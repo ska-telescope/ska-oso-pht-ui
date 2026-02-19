@@ -42,7 +42,7 @@ export function loadThemeA11y(): ThemeA11ySettings {
     mode: 'system',
     reducedMotion: false,
     focusVisibleAlways: false,
-    accessibilityMode: undefined
+    accessibilityMode: ''
   };
   const data = readJSON<ThemeA11ySettings>(STORAGE_KEYS.themeA11y);
   return data?.version === 1 ? data : defaultValue;
