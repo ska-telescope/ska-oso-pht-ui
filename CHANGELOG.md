@@ -20,7 +20,7 @@ UNRELEASED
 * Changed: Validation data such as allowed bandwidth and frequency is coming fom the OSD Data
 * Changed: Updated to latest dependencies and libraries
 * Changed: Updated more components to make use of the accessible coloring
-* Changed: improve error handling of sensitivity calculator requests
+* Changed: Improve error handling of sensitivity calculator requests
 * Changed: [BREAKING] changes to data products fields
 * Changed: Use appropriate defaults values for each new data product type for SV & proposal flow
 * Changed: Updates to observation entry page for proposal flow
@@ -29,6 +29,7 @@ UNRELEASED
 * Removed: PST beam on target page
 * Fixed: Navigation and status array for proposal flow
 * Fixed: grouping for proposal flow
+* Changed: Update documentation and README
 
 9.0.0
 ----------

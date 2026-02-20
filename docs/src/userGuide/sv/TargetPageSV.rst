@@ -1,28 +1,28 @@
 Target Page
 ~~~~~~~~~~~
 
-The Target Page allows you to add target(s) to your proposal (see :numref:`Figure %s <targetpage>`).
+The Target Page allows you to add a single target to your submission (see :numref:`Figure %s <targetpage>`).
 
 .. |icoresolve| image:: /images/resolvebutton.png
    :width: 10%
-   :alt: Landing page icons
+   :alt: target page icons
 
 .. |editicon| image:: /images/editicon.png
    :width: 6%
-   :alt: Landing page icons
+   :alt: target page icons
 
 .. |deleteicon| image:: /images/deleteicon.png
    :width: 6%
-   :alt: Landing page icons
+   :alt: target page icons
 
 .. _targetpage:
 
 .. figure:: /images/targetPageSV2.png
    :width: 90%
    :align: center
-   :alt: Image of the Target page for 'List of Targets'. 
+   :alt: Image of the Target page. 
 
-   Target page for 'List of Targets'
+   Target page
 
 .. _targetpageedit:
 
@@ -48,32 +48,21 @@ The Target Page allows you to add target(s) to your proposal (see :numref:`Figur
 Layout and Navigation
 =====================
 
-The layout of the Target Page shows three different ways to specify targets (top of page):
-
-1. **List of Targets**: The default reference system is the ICRS (the only system available at the moment).
+The layout of the Target Page shows for the entry of a single target to the submission (top of page)
+The default reference system is the ICRS (the only system available at the moment).
    
-   - **Left side** shows a table with the columns below:
+- **Left side** shows a table with the columns below:
   
-       - Name of the target.
-       - Right Ascension in Sexagesimal format.
-       - Declination in Sexagesimal format.
-       - Velocity in the selected unit.
-       - Redshift
-       - Actions: |editicon| icon to edit (see :numref:`Figure %s <targetpageedit>`) and |deleteicon| to delete a target from the list (see :numref:`Figure %s <targetpagedelete>`).
+   - Actions: |editicon| icon to edit (see :numref:`Figure %s <targetpageedit>`) and |deleteicon| to delete a target from the list (see :numref:`Figure %s <targetpagedelete>`).
+   - Name of the target.
+   - Right Ascension in Sexagesimal format.
+   - Declination in Sexagesimal format.
+   - Velocity in the selected unit.
+   - Redshift
+
+- **Right side**:
   
-   - **Right side**:
-  
-       - **Add Target**: Add individual targets by providing details of the target such as the name and coordinates (see :numref:`Figure %s <targetpage>`). The velocity/redshift field is optional to specify the velocity (km/s or m/s) or redshift. For known targets, these parameters can be auto-populated by querying the *SIMBAD* or *NED* database using the |icoresolve| button with the name e.g ``M2``. If the target name is not recognised, the error text ``Unable to resolve provided name`` is displayed.
-       - **Import from file**: Add a list of targets by uploading a ``.csv`` file (see :numref:`Figure %s <targetpageimport>`). This is controlled by the selected reference system. For ICRS, the csv header should be ``name, ra, dec``. If a file with a wrong format is uploaded, the error ``ICRS schema is invalid``. For rows with empty values in any fields, the rows will be omitted. 
-       - **Spatial Imaging**: *Not available at the moment*.
-  
-   
-
-2. **Target Mosaic**: *Not available at the moment*.
-
-3. **No Specific Target**: *Not available at the moment*.
-
-
+     Add individual target by providing details of the target such as the name and coordinates (see :numref:`Figure %s <targetpage>`). The velocity/redshift field is optional to specify the velocity (km/s or m/s) or redshift. For known targets, these parameters can be auto-populated by querying the *SIMBAD* or *NED* database using the |icoresolve| button with the name e.g ``M2``. If the target name is not recognised, the error text ``Unable to resolve provided name`` is displayed.
 
 
 Key Information and Actions

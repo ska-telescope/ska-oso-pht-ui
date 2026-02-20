@@ -72,16 +72,6 @@ The Team Page has two sections:
   
   Once the required fields are filled the |icosend| button will become active and once clicked will populate the table on the left with the appropriate status. 
 - **Import from File**: *Not available at the moment*.
-- **Search for a Member**: *Not available at the moment*.
-
-.. note:: 
-
-   The Invite Team Members option is intended for individuals that are not registered users. 
-   For registered users, they can be added to the proposal via the Search for a Member option,
-   which is not currently implemented
-
-
-
 
 
 |helpdesk|

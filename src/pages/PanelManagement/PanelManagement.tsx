@@ -29,7 +29,6 @@ import AssignButton from '@/components/button/Assign/Assign';
 import PostPanelAssignments from '@/services/axios/post/postPanelAssignments/postPanelAssignments';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import PutProposal from '@/services/axios/put/putProposal/putProposal';
 
 const TAB_HEADER_HEIGHT = 55;
 const GAP = 5;

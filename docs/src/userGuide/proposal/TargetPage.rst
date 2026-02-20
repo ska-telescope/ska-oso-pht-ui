@@ -1,7 +1,7 @@
 Target Page
 ~~~~~~~~~~~
 
-The Target Page allows you to add target(s) to your proposal (see :numref:`Figure %s <targetpage>`).
+The Target Page allows you to add target(s) to your submission (see :numref:`Figure %s <targetpage>`).
 
 .. |icoresolve| image:: /images/resolvebutton.png
    :width: 10%
@@ -81,14 +81,13 @@ The layout of the Target Page shows three different ways to specify targets (top
    
    - **Left side** shows a table with the columns below:
   
+       - Actions: |editicon| icon to edit (see :numref:`Figure %s <targetpageedit>`) and |deleteicon| to delete a target from the list (see :numref:`Figure %s <targetpagedelete>`).
        - Name of the target.
        - Right Ascension in Sexagesimal format.
        - Declination in Sexagesimal format.
        - Velocity in the selected unit.
        - Redshift
-       - PST Beam
-       - Actions: |editicon| icon to edit (see :numref:`Figure %s <targetpageedit>`) and |deleteicon| to delete a target from the list (see :numref:`Figure %s <targetpagedelete>`).
-  
+
    - **Right side**:
   
        - **Add Target**: Add individual targets by providing details of the target such as the name and coordinates (see :numref:`Figure %s <targetpage>`). The velocity/redshift field is optional to specify the velocity (km/s or m/s) or redshift. For known targets, these parameters can be auto-populated by querying the *SIMBAD* or *NED* database using the |icoresolve| button with the name e.g ``M2``. If the target name is not recognised, the error text ``Unable to resolve provided name`` is displayed. PST Beam(s) can be added to the target by clicking the 'Multiple Beams' radio button. Click the 'Add' button and provide details of the beam such as the name and coordinates before clicking the 'Confirm button'. For known beams, these parameters can be auto-populated by querying the SIMBAD or NED database using the 'Resolve' button.
@@ -100,7 +99,6 @@ The layout of the Target Page shows three different ways to specify targets (top
 2. **Target Mosaic**: *Not available at the moment*.
 
 3. **No Specific Target**: *Not available at the moment*.
-
 
 
 

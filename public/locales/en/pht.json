@@ -801,9 +801,9 @@
     }
   },
   "proposals": {
-    "empty": "THERE ARE NO PROPOSALS TO BE DISPLAYED",
-    "loggedOut": "NOT LOGGED IN, NO PROPOSALS AVAILABLE",
-    "label": "proposals",
+    "empty": "THERE ARE NO SUBMISSIONS TO BE DISPLAYED",
+    "loggedOut": "NOT LOGGED IN, NO SUBMISSIONS AVAILABLE",
+    "label": "submissions",
     "name": "Name",
     "overviewTooltip": "Tooltip for the card on the Overview"
   },

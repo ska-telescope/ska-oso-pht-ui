@@ -1,16 +1,16 @@
-Science Justification Page
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Description Page
+~~~~~~~~~~~~~~~~
 
-The Science Page (see :numref:`Figure %s <sciencepage>`) enables science justification document to be uploaded in a portable document format (PDF).
+The Description Page (see :numref:`Figure %s <sciencepage>`) enables a submission document to be uploaded in a portable document format (PDF).
 
 .. _sciencepage:
 
 .. figure:: /images/descriptionPage1.png
    :width: 90%
    :align: center
-   :alt: Image of the Science Justification page.
+   :alt: Image of the Description page.
 
-   Science Justification page before uploading a file.
+   Description page before uploading a file.
 
 
 .. _sciencepageafter:
@@ -18,18 +18,18 @@ The Science Page (see :numref:`Figure %s <sciencepage>`) enables science justifi
 .. figure:: /images/descriptionPage2.png
    :width: 90%
    :align: center
-   :alt: Image of the Science Justification page after uploading a PDF.
+   :alt: Image of the Description page after uploading a PDF.
 
-   Science Justification page after uploading a file.
+   Description page after uploading a file.
 
 .. _sciencepagepreview:
 
 .. figure:: /images/sciencePagepreview.png
    :width: 90%
    :align: center
-   :alt: Image of the Science Justification page after uploading a PDF.
+   :alt: Image of the Description page after uploading a PDF.
 
-   Science Justification file preview.
+   Description file preview.
 
 
 
@@ -59,19 +59,15 @@ The Science Page (see :numref:`Figure %s <sciencepage>`) enables science justifi
    :width: 13%
    :alt: View icon
 
-.. note:: 
-
-   - Technical Page is identical to the Science Justification page and has identical functionality.
-
 Layout and Navigation
 =====================
 
-The Science & Technical Pages have clear and consistent options as outlined on the table below:
+The Description Page has clear and consistent options as outlined on the table below:
 
 
 * Click the |choosebutton| to select a file from a local device. Once a file is selected, the |clearbutton| and |uploadbutton| buttons become visible.
-* Click |clearbutton| to clear the selected file and start again or |uploadbutton| to uplod the selected file.
-* Once the file is uploaded, the science page will look like :numref:`Figure %s <sciencepageafter>`.
+* Click |clearbutton| to clear the selected file and start again or |uploadbutton| to upload the selected file.
+* Once the file is uploaded, the description page will look like :numref:`Figure %s <sciencepageafter>`.
 * In :numref:`Figure %s <sciencepageafter>`, the |deletebutton| deletes the uploaded file and the |downloadbutton| button downloads a copy of the uploaded file to a local device.
 * The |previewbutton| brings up a modal that views the uploaded file as shown in :numref:`Figure %s <sciencepagepreview>`. To exit the preview modal, click outside the modal.
 
@@ -79,12 +75,10 @@ The Science & Technical Pages have clear and consistent options as outlined on t
 Key Information and Actions
 ===========================
 
-- Upload scientific justification document in PDF format.
-- Currently, only one PDF upload is allowed for the science justification.
+- Upload description document in PDF format.
+- Currently, only one PDF upload is allowed for the description.
 - Delete uploaded PDF
 - Preview uploaded PDF
-
-
 
 
 |helpdesk|
