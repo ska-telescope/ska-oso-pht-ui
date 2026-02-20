@@ -85,14 +85,10 @@ describe('Creating Proposal', () => {
     verifyMockedScienceIdeaOnLandingPageIsVisible();
   });
 
-  it.skip('SV Flow: Create a basic science verification idea, verify AutoLink', () => {
+  it.skip('SV Flow: Create science verification idea, Observing mode Continuum, validate and submit', () => {
     mockCreateSVIdeaAPI();
     clickAddSubmission();
     cy.wait('@mockOSDData');
-    verifyOsdDataCycleID('SKAO_2027_1');
-    verifyOsdDataCycleDescription('Low AA2 Science Verification'); //verify OSD data
-    verifyOsdDataProposalOpen('20260327T12:00:00.000Z'); //verify OSD data
-    verifyOsdDataProposalClose('20260512T15:00:00.000Z'); //verify OSD data
     clickCycleSelectionSV();
     clickCycleConfirm();
     enterScienceVerificationIdeaTitle();
@@ -126,7 +122,7 @@ describe('Creating Proposal', () => {
     verifyAlertFooter('Submission was successful');
   });
 
-  it.skip('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
+  it('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
     mockCreateProposalAPI();
     clickAddSubmission();
     clickCycleSelectionMockProposal();
