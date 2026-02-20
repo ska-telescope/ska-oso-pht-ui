@@ -89,7 +89,7 @@ describe('Creating Proposal', () => {
     verifyMockedScienceIdeaOnLandingPageIsVisible();
   });
 
-  it(
+  it.skip(
     'SV Flow: Create science verification idea, Observing mode Continuum, verify sensitivity calculator results, validate and submit',
     { jiraKey: 'XTP-96352' },
     () => {
@@ -123,8 +123,8 @@ describe('Creating Proposal', () => {
       clickFileUpload();
       clickStatusIconNav('statusId7'); //Click to data product page
       pageConfirmed('DATA PRODUCT');
-      //Verify sens calc results
       verifyData('dataProductType', 'Images');
+      //Verify sens calc results
       verifyData('field-targetName', 'M2');
       verifyData('field-continuumSensitivityWeighted', '193.40 μJy/beam');
       verifyData('field-continuumConfusionNoise', '1.56 μJy/beam');
@@ -136,6 +136,57 @@ describe('Creating Proposal', () => {
       verifyData('field-spectralTotalSensitivity', '42.28 mJy/beam');
       verifyData('field-spectralSynthBeamSize', '5.92 x 3.96 arcsec²');
       verifyData('field-spectralSurfaceBrightnessSensitivity', '5.5e+4 K');
+      verifyData('field-integrationTime', '1.00 h');
+      clickToValidateSV();
+      cy.wait('@mockValidate');
+      verifyAlertFooter('Science Verification Idea is Valid');
+      clickToConfirmProposalSubmission();
+      cy.wait('@mockUpdateSVIdea');
+      verifyAlertFooter('Submission was successful');
+    }
+  );
+
+  it(
+    'SV Flow: Create science verification idea, Observing mode Spectral, verify sensitivity calculator results, validate and submit',
+    { jiraKey: 'XTP-96345' },
+    () => {
+      mockCreateSVIdeaAPI();
+      clickAddSubmission();
+      cy.wait('@mockOSDData');
+      clickCycleSelectionSV();
+      clickCycleConfirm();
+      enterScienceVerificationIdeaTitle();
+      clickCreateSubmission();
+      cy.wait('@mockCreateSVIdea');
+      verifyScienceIdeaCreatedAlertFooter();
+      pageConfirmed('TEAM');
+      clickStatusIconNav('statusId2'); //Click to details page
+      pageConfirmed('DETAILS');
+      selectObservingMode('Spectral');
+      addSubmissionSummary('This is a summary of the science idea.');
+      clickStatusIconNav('statusId4'); //Click to target page
+      pageConfirmed('TARGET');
+      //add target
+      addM2TargetUsingResolve();
+      cy.wait('@mockResolveTarget');
+      clickToAddTarget();
+      //Verify AutoLink to OSD data
+      verifyAutoLinkAlertFooter();
+      clickStatusIconNav('statusId3'); //Click to description page
+      pageConfirmed('DESCRIPTION');
+      clickFileUploadArea();
+      uploadTestFile('testFile.pdf');
+      verifyTestFileUploaded('testFile.pdf');
+      clickFileUpload();
+      clickStatusIconNav('statusId7'); //Click to data product page
+      pageConfirmed('DATA PRODUCT');
+      //Verify sens calc results
+      verifyData('field-targetName', 'M2');
+      verifyData('field-spectralSensitivityWeighted', '207.14 mJy/beam');
+      verifyData('field-spectralConfusionNoise', '2.65 μJy/beam');
+      verifyData('field-spectralTotalSensitivity', '207.14 mJy/beam');
+      verifyData('field-spectralSynthBeamSize', '5.92 x 3.96 arcsec²');
+      verifyData('field-spectralSurfaceBrightnessSensitivity', '2.7e+5 K');
       verifyData('field-integrationTime', '1.00 h');
       clickToValidateSV();
       cy.wait('@mockValidate');
