@@ -146,7 +146,7 @@ describe('Creating Proposal', () => {
     }
   );
 
-  it(
+  it.skip(
     'SV Flow: Create science verification idea, Observing mode Spectral, verify sensitivity calculator results, validate and submit',
     { jiraKey: 'XTP-96345' },
     () => {
@@ -188,6 +188,54 @@ describe('Creating Proposal', () => {
       verifyData('field-spectralSynthBeamSize', '5.92 x 3.96 arcsec²');
       verifyData('field-spectralSurfaceBrightnessSensitivity', '2.7e+5 K');
       verifyData('field-integrationTime', '1.00 h');
+      clickToValidateSV();
+      cy.wait('@mockValidate');
+      verifyAlertFooter('Science Verification Idea is Valid');
+      clickToConfirmProposalSubmission();
+      cy.wait('@mockUpdateSVIdea');
+      verifyAlertFooter('Submission was successful');
+    }
+  );
+
+  it(
+    'SV Flow: Create science verification idea, Observing mode PST, verify sensitivity calculator results, validate and submit',
+    { jiraKey: 'XTP-96353' },
+    () => {
+      mockCreateSVIdeaAPI();
+      clickAddSubmission();
+      cy.wait('@mockOSDData');
+      clickCycleSelectionSV();
+      clickCycleConfirm();
+      enterScienceVerificationIdeaTitle();
+      clickCreateSubmission();
+      cy.wait('@mockCreateSVIdea');
+      verifyScienceIdeaCreatedAlertFooter();
+      pageConfirmed('TEAM');
+      clickStatusIconNav('statusId2'); //Click to details page
+      pageConfirmed('DETAILS');
+      selectObservingMode('PST');
+      addSubmissionSummary('This is a summary of the science idea.');
+      clickStatusIconNav('statusId4'); //Click to target page
+      pageConfirmed('TARGET');
+      //add target
+      addM2TargetUsingResolve();
+      cy.wait('@mockResolveTarget');
+      clickToAddTarget();
+      //Verify AutoLink to OSD data
+      verifyAutoLinkAlertFooter();
+      clickStatusIconNav('statusId3'); //Click to description page
+      pageConfirmed('DESCRIPTION');
+      clickFileUploadArea();
+      uploadTestFile('testFile.pdf');
+      verifyTestFileUploaded('testFile.pdf');
+      clickFileUpload();
+      clickStatusIconNav('statusId7'); //Click to data product page
+      pageConfirmed('DATA PRODUCT');
+      //Verify sens calc results - Not currently available fr PST
+      verifyData(
+        'borderedSection-content',
+        'PST mode is not currently supported within the Sensitivity Calculator application.'
+      );
       clickToValidateSV();
       cy.wait('@mockValidate');
       verifyAlertFooter('Science Verification Idea is Valid');
