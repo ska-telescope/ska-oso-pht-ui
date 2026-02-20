@@ -38,7 +38,11 @@ import {
   clickFileUpload,
   clickToValidateSV,
   verifyAlertFooter,
-  clickToConfirmProposalSubmission
+  clickToConfirmProposalSubmission,
+  verifyProductType,
+  verifySensitivityCalculatorResultTargetName,
+  verifySensitivityCalculatorResultWeightedContinuumSensitivity,
+  verifyData
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -85,7 +89,7 @@ describe('Creating Proposal', () => {
     verifyMockedScienceIdeaOnLandingPageIsVisible();
   });
 
-  it('SV Flow: Create science verification idea, Observing mode Continuum, validate and submit', () => {
+  it('SV Flow: Create science verification idea, Observing mode Continuum, verify sensitivity calculator results, validate and submit', () => {
     mockCreateSVIdeaAPI();
     clickAddSubmission();
     cy.wait('@mockOSDData');
@@ -114,6 +118,11 @@ describe('Creating Proposal', () => {
     uploadTestFile('testFile.pdf');
     verifyTestFileUploaded('testFile.pdf');
     clickFileUpload();
+    clickStatusIconNav('statusId7'); //Click to data product page
+    pageConfirmed('DATA PRODUCT');
+    verifyData('dataProductType', 'Images');
+    verifyData('field-targetName', 'M2');
+    verifyData('field-continuumSensitivityWeighted', '193.40 μJy/beam');
     //TODO: Verify continuum fields
     clickToValidateSV();
     cy.wait('@mockValidate');

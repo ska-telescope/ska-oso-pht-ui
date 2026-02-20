@@ -637,6 +637,9 @@ export const verifyMockedScienceIdeaOnLandingPageIsVisible = () => {
 export const verifyMockedProposalOnLandingPageIsVisible = () => {
   cy.get('[data-testid="table-submissions"]').should('contain', 'prsl-test');
 };
+export const verifyData = (testId, text) => {
+  cy.get(`[data-testid="${testId}"]`).should('contain', text);
+};
 
 export const verifyOnLandingPageNoProposalMsgIsVisible = () => {
   cy.get('[id="standardAlertId"]').should('contain', 'THERE ARE NO PROPOSALS TO BE DISPLAYED');
