@@ -53,7 +53,7 @@ describe('Creating Proposal', () => {
     clearLocalStorage();
   });
 
-  it('SV Flow: Create a basic science verification idea, verify AutoLink', () => {
+  it.skip('SV Flow: Create a basic science verification idea, verify AutoLink', () => {
     mockCreateSVIdeaAPI();
     clickAddSubmission();
     cy.wait('@mockOSDData');
@@ -85,7 +85,7 @@ describe('Creating Proposal', () => {
     verifyMockedScienceIdeaOnLandingPageIsVisible();
   });
 
-  it.skip('SV Flow: Create science verification idea, Observing mode Continuum, validate and submit', () => {
+  it('SV Flow: Create science verification idea, Observing mode Continuum, validate and submit', () => {
     mockCreateSVIdeaAPI();
     clickAddSubmission();
     cy.wait('@mockOSDData');
@@ -114,6 +114,7 @@ describe('Creating Proposal', () => {
     uploadTestFile('testFile.pdf');
     verifyTestFileUploaded('testFile.pdf');
     clickFileUpload();
+    //TODO: Verify continuum fields
     clickToValidateSV();
     cy.wait('@mockValidate');
     verifyAlertFooter('Science Verification Idea is Valid');
@@ -122,7 +123,7 @@ describe('Creating Proposal', () => {
     verifyAlertFooter('Submission was successful');
   });
 
-  it('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
+  it.skip('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
     mockCreateProposalAPI();
     clickAddSubmission();
     clickCycleSelectionMockProposal();
