@@ -89,48 +89,52 @@ describe('Creating Proposal', () => {
     verifyMockedScienceIdeaOnLandingPageIsVisible();
   });
 
-  it('SV Flow: Create science verification idea, Observing mode Continuum, verify sensitivity calculator results, validate and submit', () => {
-    mockCreateSVIdeaAPI();
-    clickAddSubmission();
-    cy.wait('@mockOSDData');
-    clickCycleSelectionSV();
-    clickCycleConfirm();
-    enterScienceVerificationIdeaTitle();
-    clickCreateSubmission();
-    cy.wait('@mockCreateSVIdea');
-    verifyScienceIdeaCreatedAlertFooter();
-    pageConfirmed('TEAM');
-    clickStatusIconNav('statusId2'); //Click to details page
-    pageConfirmed('DETAILS');
-    selectObservingMode('Continuum');
-    addSubmissionSummary('This is a summary of the science idea.');
-    clickStatusIconNav('statusId4'); //Click to target page
-    pageConfirmed('TARGET');
-    //add target
-    addM2TargetUsingResolve();
-    cy.wait('@mockResolveTarget');
-    clickToAddTarget();
-    //Verify AutoLink to OSD data
-    verifyAutoLinkAlertFooter();
-    clickStatusIconNav('statusId3'); //Click to description page
-    pageConfirmed('DESCRIPTION');
-    clickFileUploadArea();
-    uploadTestFile('testFile.pdf');
-    verifyTestFileUploaded('testFile.pdf');
-    clickFileUpload();
-    clickStatusIconNav('statusId7'); //Click to data product page
-    pageConfirmed('DATA PRODUCT');
-    verifyData('dataProductType', 'Images');
-    verifyData('field-targetName', 'M2');
-    verifyData('field-continuumSensitivityWeighted', '193.40 μJy/beam');
-    //TODO: Verify continuum fields
-    clickToValidateSV();
-    cy.wait('@mockValidate');
-    verifyAlertFooter('Science Verification Idea is Valid');
-    clickToConfirmProposalSubmission();
-    cy.wait('@mockUpdateSVIdea');
-    verifyAlertFooter('Submission was successful');
-  });
+  it(
+    'SV Flow: Create science verification idea, Observing mode Continuum, verify sensitivity calculator results, validate and submit',
+    { jiraKey: 'XTP-96352' },
+    () => {
+      mockCreateSVIdeaAPI();
+      clickAddSubmission();
+      cy.wait('@mockOSDData');
+      clickCycleSelectionSV();
+      clickCycleConfirm();
+      enterScienceVerificationIdeaTitle();
+      clickCreateSubmission();
+      cy.wait('@mockCreateSVIdea');
+      verifyScienceIdeaCreatedAlertFooter();
+      pageConfirmed('TEAM');
+      clickStatusIconNav('statusId2'); //Click to details page
+      pageConfirmed('DETAILS');
+      selectObservingMode('Continuum');
+      addSubmissionSummary('This is a summary of the science idea.');
+      clickStatusIconNav('statusId4'); //Click to target page
+      pageConfirmed('TARGET');
+      //add target
+      addM2TargetUsingResolve();
+      cy.wait('@mockResolveTarget');
+      clickToAddTarget();
+      //Verify AutoLink to OSD data
+      verifyAutoLinkAlertFooter();
+      clickStatusIconNav('statusId3'); //Click to description page
+      pageConfirmed('DESCRIPTION');
+      clickFileUploadArea();
+      uploadTestFile('testFile.pdf');
+      verifyTestFileUploaded('testFile.pdf');
+      clickFileUpload();
+      clickStatusIconNav('statusId7'); //Click to data product page
+      pageConfirmed('DATA PRODUCT');
+      verifyData('dataProductType', 'Images');
+      verifyData('field-targetName', 'M2');
+      verifyData('field-continuumSensitivityWeighted', '193.40 μJy/beam');
+      //TODO: Verify sens calc results
+      clickToValidateSV();
+      cy.wait('@mockValidate');
+      verifyAlertFooter('Science Verification Idea is Valid');
+      clickToConfirmProposalSubmission();
+      cy.wait('@mockUpdateSVIdea');
+      verifyAlertFooter('Submission was successful');
+    }
+  );
 
   it.skip('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
     mockCreateProposalAPI();
