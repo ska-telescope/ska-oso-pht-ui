@@ -123,10 +123,20 @@ describe('Creating Proposal', () => {
       clickFileUpload();
       clickStatusIconNav('statusId7'); //Click to data product page
       pageConfirmed('DATA PRODUCT');
+      //Verify sens calc results
       verifyData('dataProductType', 'Images');
       verifyData('field-targetName', 'M2');
       verifyData('field-continuumSensitivityWeighted', '193.40 μJy/beam');
-      //TODO: Verify sens calc results
+      verifyData('field-continuumConfusionNoise', '1.56 μJy/beam');
+      verifyData('field-continuumTotalSensitivity', '193.40 μJy/beam');
+      verifyData('field-continuumSynthBeamSize', '5.50 x 2.86 arcsec²');
+      verifyData('field-continuumSurfaceBrightnessSensitivity', '375.86 K');
+      verifyData('field-spectralSensitivityWeighted', '42.28 mJy/beam');
+      verifyData('field-spectralConfusionNoise', '2.65 μJy/beam');
+      verifyData('field-spectralTotalSensitivity', '42.28 mJy/beam');
+      verifyData('field-spectralSynthBeamSize', '5.92 x 3.96 arcsec²');
+      verifyData('field-spectralSurfaceBrightnessSensitivity', '5.5e+4 K');
+      verifyData('field-integrationTime', '1.00 h');
       clickToValidateSV();
       cy.wait('@mockValidate');
       verifyAlertFooter('Science Verification Idea is Valid');
