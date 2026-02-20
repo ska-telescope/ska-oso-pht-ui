@@ -8,33 +8,28 @@ import {
   checkFieldDisabled,
   clickAddSubmission,
   clickCreateSubmission,
-  mockCreateSubmissionAPI,
   verifySubmissionCreatedAlertFooter,
-  createScienceIdeaLoggedIn,
   clickCycleSelectionSV,
   checkFieldIsVisible,
   clickCycleSelectionMockProposal,
   clickProposalTypePrincipleInvestigator,
   clickSubProposalTypeTargetOfOpportunity,
   enterScienceVerificationIdeaTitle,
-  verifyScienceIdeaCreatedAlertFooter
+  verifyScienceIdeaCreatedAlertFooter,
+  mockCreateSVIdeaAPI,
+  mockCreateProposalAPI
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
 describe('Verify validate', () => {
   beforeEach(() => {
     initialize(standardUser);
-    mockCreateSubmissionAPI();
+    mockCreateSVIdeaAPI();
+    mockCreateProposalAPI();
   });
 
   afterEach(() => {
     clearLocalStorage();
-  });
-
-  before(() => {
-    cy.window().then(win => {
-      win.localStorage.setItem('cypress:proposalCreated', 'true');
-    });
   });
 
   it('SV Flow: Verify validate functionality is restricted before sv creation', () => {
@@ -51,7 +46,7 @@ describe('Verify validate', () => {
     clickCycleConfirm();
     enterScienceVerificationIdeaTitle();
     clickCreateSubmission();
-    cy.wait('@mockCreateSubmission');
+    cy.wait('@mockCreateSVIdea');
     verifyScienceIdeaCreatedAlertFooter();
     //Verify validate / submit is enabled after sv creation
     checkFieldDisabled('submitBtnTestId', false);
@@ -73,7 +68,7 @@ describe('Verify validate', () => {
     clickProposalTypePrincipleInvestigator();
     clickSubProposalTypeTargetOfOpportunity();
     clickCreateSubmission();
-    cy.wait('@mockCreateSubmission');
+    cy.wait('@mockCreateProposal');
     verifySubmissionCreatedAlertFooter();
     //Verify validate / submit is enabled after proposal creation
     checkFieldDisabled('validateBtn', false);

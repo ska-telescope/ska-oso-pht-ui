@@ -7,19 +7,19 @@ import {
   pageConfirmed,
   updateDataProductField,
   verifyFieldError,
-  mockCreateSubmissionAPI,
   verifyScienceIdeaCreatedAlertFooter,
   selectObservingMode,
   addM2TargetUsingResolve,
   clickToAddTarget,
   mockResolveTargetAPI,
   verifyAutoLinkAlertFooter,
-  addSubmissionSummary
+  addSubmissionSummary,
+  mockCreateSVIdeaAPI
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 beforeEach(() => {
   initialize(standardUser);
-  mockCreateSubmissionAPI();
+  mockCreateSVIdeaAPI();
   mockEmailAPI();
   mockResolveTargetAPI();
 });
@@ -31,7 +31,7 @@ afterEach(() => {
 describe('Data product validation', () => {
   it('SV Flow: Verify channels out range', () => {
     createScienceIdeaLoggedIn();
-    cy.wait('@mockCreateSubmission');
+    cy.wait('@mockCreateSVIdea');
     verifyScienceIdeaCreatedAlertFooter();
     pageConfirmed('TEAM');
 

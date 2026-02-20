@@ -152,9 +152,6 @@ describe('Science Verification: Target entry validation', () => {
 
 describe('Proposal Flow: Target entry validation', () => {
   beforeEach(() => {
-    cy.window().then(win => {
-      win.localStorage.setItem('cypress:proposalCreated', 'true');
-    });
     initializeUserNotLoggedIn();
     clickAddSubmission();
     clickCycleSelectionMockProposal();

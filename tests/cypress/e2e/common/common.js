@@ -76,17 +76,32 @@ export const verifyMockedAPICall = stubAlias => {
   });
 };
 
-export const mockCreateSubmissionAPI = () => {
+export const mockCreateProposalAPI = () => {
   cy.window().then(win => {
     const token = win.localStorage.getItem('cypress:token');
-    cy.fixture('proposal.json').then(proposal => {
+    cy.fixture('proposal.json').then(submission => {
       cy.intercept('POST', '**/pht/prsls/create', req => {
         req.headers['Authorization'] = `Bearer ${token}`;
         req.reply({
           statusCode: 200,
-          body: proposal
+          body: submission
         });
-      }).as('mockCreateSubmission');
+      }).as('mockCreateProposal');
+    });
+  });
+};
+
+export const mockCreateSVIdeaAPI = () => {
+  cy.window().then(win => {
+    const token = win.localStorage.getItem('cypress:token');
+    cy.fixture('svIdea.json').then(submission => {
+      cy.intercept('POST', '**/pht/prsls/create', req => {
+        req.headers['Authorization'] = `Bearer ${token}`;
+        req.reply({
+          statusCode: 200,
+          body: submission
+        });
+      }).as('mockCreateSVIdea');
     });
   });
 };

@@ -1,22 +1,11 @@
 import {
-  clickHome,
-  enterProposalTitle,
-  verifyOnLandingPage,
-  verifyOnLandingPageFilterIsVisible,
-  verifyMockedProposalOnLandingPageIsVisible,
   initialize,
   clearLocalStorage,
   clickCycleConfirm,
   clickAddSubmission,
   clickCreateSubmission,
-  mockCreateSubmissionAPI,
-  verifySubmissionCreatedAlertFooter,
   enterScienceVerificationIdeaTitle,
   clickCycleSelectionSV,
-  clickCycleSelectionMockProposal,
-  clickProposalTypePrincipleInvestigator,
-  clickSubProposalTypeTargetOfOpportunity,
-  mockOSDAPI,
   verifyOsdDataCycleID,
   verifyOsdDataCycleDescription,
   verifyOsdDataProposalOpen,
@@ -31,15 +20,15 @@ import {
   verifyAutoLinkAlertFooter,
   updateFieldValue,
   verifyFieldError,
-  checkFieldDisabled
+  checkFieldDisabled,
+  mockCreateSVIdeaAPI
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
 describe('Validate Observation Fields', () => {
   beforeEach(() => {
     initialize(standardUser);
-    mockCreateSubmissionAPI();
-    mockOSDAPI();
+    mockCreateSVIdeaAPI();
     mockResolveTargetAPI();
 
     //Create autoLink submission
@@ -53,7 +42,7 @@ describe('Validate Observation Fields', () => {
     clickCycleConfirm();
     enterScienceVerificationIdeaTitle();
     clickCreateSubmission();
-    cy.wait('@mockCreateSubmission');
+    cy.wait('@mockCreateSVIdea');
     verifyScienceIdeaCreatedAlertFooter();
     pageConfirmed('TEAM');
     clickStatusIconNav('statusId2'); //Click to details page

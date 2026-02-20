@@ -9,7 +9,6 @@ import {
   clickCycleConfirm,
   clickAddSubmission,
   clickCreateSubmission,
-  mockCreateSubmissionAPI,
   verifySubmissionCreatedAlertFooter,
   enterScienceVerificationIdeaTitle,
   clickCycleSelectionSV,
@@ -29,14 +28,23 @@ import {
   clickToAddTarget,
   mockResolveTargetAPI,
   verifyAutoLinkAlertFooter,
-  verifyMockedScienceIdeaOnLandingPageIsVisible
+  verifyMockedScienceIdeaOnLandingPageIsVisible,
+  mockCreateSVIdeaAPI,
+  mockCreateProposalAPI,
+  addSubmissionSummary,
+  clickFileUploadArea,
+  uploadTestFile,
+  verifyTestFileUploaded,
+  clickFileUpload,
+  clickToValidateSV,
+  verifyAlertFooter,
+  clickToConfirmProposalSubmission
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
 describe('Creating Proposal', () => {
   beforeEach(() => {
     initialize(standardUser);
-    mockCreateSubmissionAPI();
     mockOSDAPI();
     mockResolveTargetAPI();
   });
@@ -46,6 +54,7 @@ describe('Creating Proposal', () => {
   });
 
   it('SV Flow: Create a basic science verification idea, verify AutoLink', () => {
+    mockCreateSVIdeaAPI();
     clickAddSubmission();
     cy.wait('@mockOSDData');
     verifyOsdDataCycleID('SKAO_2027_1');
@@ -56,7 +65,7 @@ describe('Creating Proposal', () => {
     clickCycleConfirm();
     enterScienceVerificationIdeaTitle();
     clickCreateSubmission();
-    cy.wait('@mockCreateSubmission');
+    cy.wait('@mockCreateSVIdea');
     verifyScienceIdeaCreatedAlertFooter();
     pageConfirmed('TEAM');
     clickStatusIconNav('statusId2'); //Click to details page
@@ -76,7 +85,49 @@ describe('Creating Proposal', () => {
     verifyMockedScienceIdeaOnLandingPageIsVisible();
   });
 
-  it('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
+  it.skip('SV Flow: Create a basic science verification idea, verify AutoLink', () => {
+    mockCreateSVIdeaAPI();
+    clickAddSubmission();
+    cy.wait('@mockOSDData');
+    verifyOsdDataCycleID('SKAO_2027_1');
+    verifyOsdDataCycleDescription('Low AA2 Science Verification'); //verify OSD data
+    verifyOsdDataProposalOpen('20260327T12:00:00.000Z'); //verify OSD data
+    verifyOsdDataProposalClose('20260512T15:00:00.000Z'); //verify OSD data
+    clickCycleSelectionSV();
+    clickCycleConfirm();
+    enterScienceVerificationIdeaTitle();
+    clickCreateSubmission();
+    cy.wait('@mockCreateSVIdea');
+    verifyScienceIdeaCreatedAlertFooter();
+    pageConfirmed('TEAM');
+    clickStatusIconNav('statusId2'); //Click to details page
+    pageConfirmed('DETAILS');
+    selectObservingMode('Continuum');
+    addSubmissionSummary('This is a summary of the science idea.');
+    clickStatusIconNav('statusId4'); //Click to target page
+    pageConfirmed('TARGET');
+    //add target
+    addM2TargetUsingResolve();
+    cy.wait('@mockResolveTarget');
+    clickToAddTarget();
+    //Verify AutoLink to OSD data
+    verifyAutoLinkAlertFooter();
+    clickStatusIconNav('statusId3'); //Click to description page
+    pageConfirmed('DESCRIPTION');
+    clickFileUploadArea();
+    uploadTestFile('testFile.pdf');
+    verifyTestFileUploaded('testFile.pdf');
+    clickFileUpload();
+    clickToValidateSV();
+    cy.wait('@mockValidate');
+    verifyAlertFooter('Science Verification Idea is Valid');
+    clickToConfirmProposalSubmission();
+    cy.wait('@mockUpdateSVIdea');
+    verifyAlertFooter('Submission was successful');
+  });
+
+  it.skip('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
+    mockCreateProposalAPI();
     clickAddSubmission();
     clickCycleSelectionMockProposal();
     clickCycleConfirm();
@@ -84,7 +135,7 @@ describe('Creating Proposal', () => {
     clickProposalTypePrincipleInvestigator();
     clickSubProposalTypeTargetOfOpportunity();
     clickCreateSubmission();
-    cy.wait('@mockCreateSubmission');
+    cy.wait('@mockCreateProposal');
     verifySubmissionCreatedAlertFooter();
     pageConfirmed('TEAM');
     clickHome();

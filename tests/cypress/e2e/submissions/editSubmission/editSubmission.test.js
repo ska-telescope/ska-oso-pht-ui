@@ -12,7 +12,6 @@ import {
   clickToAddTarget,
   addM2TargetUsingResolve,
   clickObservationSetup,
-  mockCreateSubmissionAPI,
   verifySubmissionCreatedAlertFooter,
   verifyScienceIdeaCreatedAlertFooter,
   selectObservingMode,
@@ -39,15 +38,17 @@ import {
   verifyAlertFooter,
   clickToSubmitProposal,
   clickToConfirmProposalSubmission,
-  mockUpdateSubmissionAPI,
   mockUpdateProposalAPI,
-  mockUpdateSVIdeaAPI
+  mockUpdateSVIdeaAPI,
+  mockCreateSVIdeaAPI,
+  mockCreateProposalAPI
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
 beforeEach(() => {
   initialize(standardUser);
-  mockCreateSubmissionAPI();
+  mockCreateSVIdeaAPI();
+  mockCreateProposalAPI();
   mockEmailAPI();
   mockResolveTargetAPI();
   mockValidateAPI();
@@ -72,7 +73,7 @@ describe('Edit Proposal', () => {
     { jiraKey: 'XTP-96352' },
     () => {
       createScienceIdeaLoggedIn();
-      cy.wait('@mockCreateSubmission');
+      cy.wait('@mockCreateSVIdea');
       verifyScienceIdeaCreatedAlertFooter();
       pageConfirmed('TEAM');
 
@@ -116,7 +117,7 @@ describe('Edit Proposal', () => {
     { jiraKey: 'XTP-71405' },
     () => {
       createStandardProposalLoggedIn();
-      cy.wait('@mockCreateSubmission');
+      cy.wait('@mockCreateProposal');
       verifySubmissionCreatedAlertFooter();
       pageConfirmed('TEAM');
 
