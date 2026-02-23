@@ -39,7 +39,8 @@ import {
   clickToValidateSV,
   verifyAlertFooter,
   clickToConfirmProposalSubmission,
-  verifyData
+  verifyData,
+  mockValidateSVIdeaAPI
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
@@ -48,6 +49,7 @@ describe('Creating Proposal', () => {
     initialize(standardUser);
     mockOSDAPI();
     mockResolveTargetAPI();
+    mockValidateSVIdeaAPI();
   });
 
   afterEach(() => {
@@ -135,10 +137,9 @@ describe('Creating Proposal', () => {
       verifyData('field-spectralSurfaceBrightnessSensitivity', '5.5e+4 K');
       verifyData('field-integrationTime', '1.00 h');
       clickToValidateSV();
-      cy.wait('@mockValidate');
+      cy.wait('@mockValidateSVIdea');
       verifyAlertFooter('Science Verification Idea is Valid');
       clickToConfirmProposalSubmission();
-      cy.wait('@mockUpdateSVIdea');
       verifyAlertFooter('Submission was successful');
     }
   );
@@ -186,10 +187,9 @@ describe('Creating Proposal', () => {
       verifyData('field-spectralSurfaceBrightnessSensitivity', '2.7e+5 K');
       verifyData('field-integrationTime', '1.00 h');
       clickToValidateSV();
-      cy.wait('@mockValidate');
+      cy.wait('@mockValidateSVIdea');
       verifyAlertFooter('Science Verification Idea is Valid');
       clickToConfirmProposalSubmission();
-      cy.wait('@mockUpdateSVIdea');
       verifyAlertFooter('Submission was successful');
     }
   );
@@ -234,10 +234,9 @@ describe('Creating Proposal', () => {
         'PST mode is not currently supported within the Sensitivity Calculator application.'
       );
       clickToValidateSV();
-      cy.wait('@mockValidate');
+      cy.wait('@mockValidateSVIdea');
       verifyAlertFooter('Science Verification Idea is Valid');
       clickToConfirmProposalSubmission();
-      cy.wait('@mockUpdateSVIdea');
       verifyAlertFooter('Submission was successful');
     }
   );

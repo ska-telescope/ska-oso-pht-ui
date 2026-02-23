@@ -165,6 +165,21 @@ export const mockValidateAPI = () => {
   });
 };
 
+export const mockValidateSVIdeaAPI = () => {
+  cy.window().then(win => {
+    const token = win.localStorage.getItem('cypress:token');
+    cy.fixture('validateSVIdea.json').then(submission => {
+      cy.intercept('POST', '**/pht/prsls/validate', req => {
+        req.headers['Authorization'] = `Bearer ${token}`;
+        req.reply({
+          statusCode: 200,
+          body: { result: true, validation_errors: [] }
+        });
+      }).as('mockValidateSVIdea');
+    });
+  });
+};
+
 export const mockUpdateProposalAPI = () => {
   cy.window().then(win => {
     const token = win.localStorage.getItem('cypress:token');

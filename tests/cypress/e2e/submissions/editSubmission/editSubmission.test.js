@@ -47,8 +47,6 @@ import { standardUser } from '../../users/users.js';
 
 beforeEach(() => {
   initialize(standardUser);
-  mockCreateSVIdeaAPI();
-  mockCreateProposalAPI();
   mockEmailAPI();
   mockResolveTargetAPI();
   mockValidateAPI();
@@ -69,6 +67,7 @@ describe('Edit Proposal', () => {
   });
 
   it('SV Flow: Edit a basic science idea, ensure science idea is valid and the submit', () => {
+    mockCreateSVIdeaAPI();
     createScienceIdeaLoggedIn();
     cy.wait('@mockCreateSVIdea');
     verifyScienceIdeaCreatedAlertFooter();
@@ -112,6 +111,7 @@ describe('Edit Proposal', () => {
     'Proposal Flow: Edit a basic proposal, ensure proposal is valid and then submit',
     { jiraKey: 'XTP-71405' },
     () => {
+      mockCreateProposalAPI();
       createStandardProposalLoggedIn();
       cy.wait('@mockCreateProposal');
       verifySubmissionCreatedAlertFooter();
