@@ -14,6 +14,7 @@
     }
   },
   "scripts": {
+    "audit:prod": "yarn audit --groups dependencies",
     "build": "vite build",
     "checker": "yarn prettier:fix && yarn lint:fix",
     "code-analysis": "eslint src/**/*.{js,jsx,ts,tsx} -f junit -o linting.xml",
@@ -54,7 +55,7 @@
     "@mui/system": "^7.3.0",
     "@mui/x-data-grid": "^7.22.2",
     "@react-pdf/renderer": "^3.4.2",
-    "@ska-telescope/ska-gui-components": "^2.8.33",
+    "@ska-telescope/ska-gui-components": "^2.8.34",
     "@ska-telescope/ska-gui-local-storage": "^2.2.2",
     "@ska-telescope/ska-login-page": "^1.1.1",
     "@types/papaparse": "^5.5.0",
@@ -76,7 +77,6 @@
     "react-dom": "^18.3.1",
     "react-grid-layout": "^1.5.1",
     "react-i18next": "^11.15.3",
-    "react-inject-env": "^2.1.0",
     "react-latex-next": "^3.0.0",
     "react-pdf": "^10.0.1",
     "react-resizable": "^3.0.5",
@@ -122,7 +122,7 @@
     "cypress-xray-plugin": "^8.5.0",
     "debug": "^4.4.1",
     "esbuild": "^0.25.5",
-    "eslint": "^9.39.2",
+    "eslint": "^10.0.0",
     "eslint-config-airbnb": "^19.0.4",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-prettier": "^3.4.0",
@@ -142,6 +142,7 @@
     "multiple-cucumber-html-reporter": "3.6.2",
     "nyc": "^17.1.0",
     "prettier": "^1.15.3",
+    "react-inject-env": "^2.1.0",
     "sass": "^1.49.4",
     "vite": "^7.1.11",
     "vite-plugin-svgr": "^4.3.0",
@@ -162,6 +163,7 @@
     "undici": "^6.23.0",
     "react-is": "^18.3.1",
     "js-yaml": "4.1.1",
+    "minimatch": "^10.2.1",
     "systeminformation": "^5.27.14"
   }
 }
