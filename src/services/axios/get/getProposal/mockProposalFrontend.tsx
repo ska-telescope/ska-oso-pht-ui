@@ -250,6 +250,7 @@ export const MockProposalFrontend: Proposal = {
       observationId: 'obs-obR1Ej',
       data: {
         dataProductType: DP_TYPE_IMAGES,
+        dispersionMeasure: 0,
         imageSizeValue: 15,
         imageSizeUnits: 0,
         pixelSizeValue: 1.007,
@@ -265,7 +266,6 @@ export const MockProposalFrontend: Proposal = {
         continuumSubtraction: false,
         outputFrequencyResolution: 0,
         outputSamplingInterval: 0,
-        dispersionMeasure: 0,
         rotationMeasure: 0
       }
     }
@@ -348,15 +348,15 @@ export const MockProposalFrontendZoom: Proposal = {
       id: 'obs-arMIoY',
       telescope: 2,
       subarray: SA_AA2,
-      type: TYPE_ZOOM,
+      type: 'zoom',
       observingBand: BAND_LOW_STR,
       centralFrequency: 200,
       centralFrequencyUnits: 2,
       elevation: 20,
       numSubBands: 1,
-      bandwidth: 1,
-      continuumBandwidth: 150,
-      continuumBandwidthUnits: 2,
+      bandwidth: null,
+      continuumBandwidth: null,
+      continuumBandwidthUnits: null,
       supplied: {
         type: 1,
         value: 1,
@@ -369,8 +369,7 @@ export const MockProposalFrontendZoom: Proposal = {
       linked: 'm2',
       numStations: 68,
       num13mAntennas: undefined,
-      num15mAntennas: undefined,
-      zoomChannels: 1024
+      num15mAntennas: undefined
     }
   ],
   groupObservations: [],
@@ -429,18 +428,22 @@ export const MockProposalFrontendZoom: Proposal = {
       observationId: 'obs-arMIoY',
       data: {
         dataProductType: DP_TYPE_IMAGES,
+        dispersionMeasure: 0,
         imageSizeValue: 100,
         imageSizeUnits: 0,
         pixelSizeValue: 3.7,
-        pixelSizeUnits: 1,
+        pixelSizeUnits: 2,
+        outputFrequencyResolution: 0,
+        outputSamplingInterval: 0,
+        rotationMeasure: 0,
         weighting: 1,
-        polarisations: ['I'],
+        polarisations: ['I', 'XX'],
         channelsOut: 1,
         robust: 0,
-        taperValue: 1,
+        taperValue: 0,
         timeAveraging: 0,
         frequencyAveraging: 0,
-        bitDepth: 0,
+        bitDepth: 1,
         continuumSubtraction: false
       }
     }

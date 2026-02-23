@@ -1,29 +1,89 @@
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+// ------------------------------------------------------------
+// 1. MOCKS MUST COME BEFORE IMPORTS
+// ------------------------------------------------------------
+import { vi } from 'vitest';
+
+// Mock OSD accessors
+vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
+  useOSDAccessors: () => ({
+    osdLOW: {
+      basicCapabilities: {
+        minFrequencyHz: 100_000_000,
+        maxFrequencyHz: 200_000_000
+      }
+    },
+    osdMID: {
+      basicCapabilities: {
+        receiverInformation: [
+          {
+            rxId: '1',
+            minFrequencyHz: 100_000_000,
+            maxFrequencyHz: 200_000_000
+          }
+        ]
+      }
+    }
+  })
+}));
+
+// Partial mock of constants — keeps all real exports
+vi.mock('@/utils/constants', async () => {
+  const actual = await vi.importActual<any>('@/utils/constants');
+  return {
+    ...actual
+  };
+});
+
+vi.mock('@/utils/helpers', async () => {
+  const actual = await vi.importActual<any>('@/utils/helpers');
+  return {
+    ...actual,
+    frequencyConversion: (val: number, from: number, to: number) => {
+      if (from === FREQUENCY_HZ && to === FREQUENCY_MHZ) return val / 1e6;
+      if (from === FREQUENCY_HZ && to === FREQUENCY_GHZ) return val / 1e9;
+      return val;
+    }
+  };
+});
+
+// ------------------------------------------------------------
+// 2. IMPORTS (AFTER MOCKS)
+// ------------------------------------------------------------
+import { describe, it, expect } from 'vitest';
+import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TableObservationsRow from './TableObservationsRow';
 import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
+import { FREQUENCY_GHZ, FREQUENCY_HZ, FREQUENCY_MHZ } from '@/utils/constants';
 
-const wrapper = (component: React.ReactElement) => {
-  return render(<StoreProvider>{component}</StoreProvider>);
+// ------------------------------------------------------------
+// 3. TEST DATA
+// ------------------------------------------------------------
+const mockItem = {
+  id: 1,
+  id2: 'group-1',
+  type: 'CONTINUUM',
+  telescope: 1,
+  subarray: 'A',
+  bandwidth: 1,
+  rec: {
+    observingBand: '1',
+    centralFrequency: 1_000_000_000,
+    centralFrequencyUnits: 'Hz',
+    continuumBandwidth: 1_000_000
+  }
 };
 
+const wrapper = (component: React.ReactElement) =>
+  render(<StoreProvider>{component}</StoreProvider>);
+
+// ------------------------------------------------------------
+// 4. TESTS
+// ------------------------------------------------------------
 describe('TableObservationsRow', () => {
-  const mockItem = {
-    observationId: 'obs-dummy-id',
-    title: 'Sample Review Title',
-    scienceCategory: 'biology',
-    decisions: [],
-    lastUpdated: '2025-09-17T10:00:00Z',
-    rank: 5,
-    reviews: []
-  };
-
-  const mockProposal = MockProposalFrontend;
-
   const defaultProps = {
     item: mockItem,
-    proposal: mockProposal,
+    proposal: MockProposalFrontend,
     index: 0,
     expanded: false,
     deleteClicked: vi.fn(),
@@ -32,20 +92,11 @@ describe('TableObservationsRow', () => {
     expandButtonRef: () => null,
     updateItem: vi.fn(),
     tableLength: 1,
-    t: (key: string) => key // simple mock translation
+    t: (key: string) => key
   };
 
-  it.skip('renders review title and category', () => {
+  it('renders without crashing', () => {
     wrapper(<TableObservationsRow {...defaultProps} />);
-
-    expect(screen.getByText(/obs-dummy-id/i)).toBeInTheDocument();
-  });
-
-  it.skip('calls toggleRow when expand button is clicked', () => {
-    wrapper(<TableObservationsRow {...defaultProps} />);
-
-    const button = screen.getByTestId('expand-button-1');
-    fireEvent.click(button);
-    expect(defaultProps.toggleRow).toHaveBeenCalledWith(1);
+    expect(screen.getByText('group-1')).toBeInTheDocument();
   });
 });

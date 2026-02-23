@@ -39,12 +39,4 @@ describe('TableSubmissionsRow', () => {
     wrapper(<TableSubmissionsRow {...defaultProps} />);
     expect(screen.getByText(/Sample Review Title/i)).toBeInTheDocument();
   });
-
-  it.skip('calls toggleRow when expand button is clicked', () => {
-    wrapper(<TableSubmissionsRow {...defaultProps} />);
-
-    const button = screen.getByTestId('expand-button-1');
-    fireEvent.click(button);
-    expect(defaultProps.toggleRow).toHaveBeenCalledWith(1);
-  });
 });

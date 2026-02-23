@@ -30,7 +30,7 @@ describe('Helper Functions', () => {
     expect(proposalFrontEnd).to.deep.equal(MockProposalFrontend);
   });
 
-  test.skip('mapping returns mapped zoom proposal from backend to frontend format', () => {
+  test('mapping returns mapped zoom proposal from backend to frontend format', () => {
     const proposalFrontEnd: Proposal = mapping(MockProposalBackendZoom);
     expect(proposalFrontEnd).to.deep.equal(MockProposalFrontendZoom);
   });

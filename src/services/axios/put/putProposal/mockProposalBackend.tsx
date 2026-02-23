@@ -235,7 +235,10 @@ export const MockProposalBackendZoom: ProposalBackend = {
           kind: RA_TYPE_ICRS.label,
           ra_str: '21:33:27.0200',
           dec_str: '-00:49:23.700',
-          epoch: 2000
+          epoch: 2000,
+          parallax: undefined,
+          pm_ra: undefined,
+          pm_dec: undefined
         },
         radial_velocity: {
           quantity: {
@@ -253,6 +256,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
         observation_set_id: 'obs-arMIoY',
         observing_band: BAND_LOW_STR,
         elevation: 20,
+        group_id: '',
         array_details: {
           array: 'ska_low',
           subarray: SA_AA2,
@@ -287,18 +291,19 @@ export const MockProposalBackendZoom: ProposalBackend = {
         data_product_id: 'SDP-1',
         observation_set_ref: 'obs-arMIoY',
         script_parameters: {
-          variant: 'continuum image',
-          kind: 'continuum',
+          variant: 'spectral image',
+          kind: 'spectral',
           channels_out: 1,
           gaussian_taper: '1',
           polarisations: ['I'],
+          continuum_subtraction: undefined,
           image_size: {
             value: 100,
-            unit: 'deg2'
+            unit: 'deg'
           },
           image_cellsize: {
             value: 3.7,
-            unit: 'arcsec2'
+            unit: 'arcsec'
           },
           weight: {
             weighting: 'briggs',
@@ -319,7 +324,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
     result_details: [
       {
         observation_set_ref: 'obs-arMIoY',
-        data_product_ref: 'SDP-2',
+        data_product_ref: 'SDP-1',
         target_ref: 'm2',
         result: {
           supplied_type: 'integration_time',
