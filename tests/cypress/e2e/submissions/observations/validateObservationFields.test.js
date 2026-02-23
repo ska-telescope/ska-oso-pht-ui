@@ -21,14 +21,16 @@ import {
   updateFieldValue,
   verifyFieldError,
   checkFieldDisabled,
-  mockCreateSVIdeaAPI
+  mockCreateSVIdeaAPI,
+  mockOSDAPI
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
-describe('Validate Observation Fields', () => {
+describe('SV Flow: Validate Observation Fields', () => {
   beforeEach(() => {
     initialize(standardUser);
     mockCreateSVIdeaAPI();
+    mockOSDAPI();
     mockResolveTargetAPI();
 
     //Create autoLink submission
@@ -64,7 +66,7 @@ describe('Validate Observation Fields', () => {
     clearLocalStorage();
   });
 
-  it('SV Flow: Verify observation fields', () => {
+  it('SV Flow: Validate continuum bandwidth field', () => {
     clickStatusIconNav('statusId5'); //Click to observation page
     pageConfirmed('OBSERVATION');
     updateFieldValue('continuumBandwidth', '500'); //update continuum bandwidth to an invalid value
