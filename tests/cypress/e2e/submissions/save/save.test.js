@@ -22,8 +22,6 @@ import { standardUser } from '../../users/users.js';
 describe('Verify Save', () => {
   beforeEach(() => {
     initialize(standardUser);
-    mockCreateSVIdeaAPI();
-    mockCreateProposalAPI();
   });
 
   afterEach(() => {
@@ -31,6 +29,7 @@ describe('Verify Save', () => {
   });
 
   it('SV Flow: Verify save functionality is restricted before sv creation', () => {
+    mockCreateSVIdeaAPI();
     clickAddSubmission();
     clickCycleSelectionSV();
     clickCycleConfirm();
@@ -39,6 +38,7 @@ describe('Verify Save', () => {
   });
 
   it('SV Flow: Verify save functionality is not restricted after sv creation', () => {
+    mockCreateSVIdeaAPI();
     clickAddSubmission();
     clickCycleSelectionSV();
     clickCycleConfirm();
@@ -51,6 +51,7 @@ describe('Verify Save', () => {
   });
 
   it('Proposal Flow: Verify save functionality is restricted before proposal creation', () => {
+    mockCreateProposalAPI();
     clickAddSubmission();
     clickCycleSelectionMockProposal();
     clickCycleConfirm();
@@ -59,6 +60,7 @@ describe('Verify Save', () => {
   });
 
   it('Proposal Flow: Verify save functionality is not restricted after proposal creation', () => {
+    mockCreateProposalAPI();
     clickAddSubmission();
     clickCycleSelectionMockProposal();
     clickCycleConfirm();
