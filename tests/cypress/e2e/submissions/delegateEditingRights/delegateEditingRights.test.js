@@ -9,13 +9,13 @@ import {
   clickSendInviteButton,
   verifyUserFoundAlertFooter,
   verifyUserInvitedAlertFooter,
-  clickManageTeamMemberRights,
   clickSubmitRights,
   clickDialogConfirm,
   createScienceIdeaLoggedIn,
   verifyScienceIdeaCreatedAlertFooter,
   verifyTeamMemberAccessUpdatedAlertFooter,
-  mockCreateSVIdeaAPI
+  mockCreateSVIdeaAPI,
+  clickEditUserRightsIconForRow
 } from '../../common/common.js';
 import { entry } from '../../../fixtures/utils/cypress.js';
 
@@ -42,7 +42,7 @@ describe('Delegate Editing Rights', () => {
     clickSendInviteButton();
     cy.wait('@mockInviteUserByEmail');
     verifyUserInvitedAlertFooter();
-    clickManageTeamMemberRights();
+    clickEditUserRightsIconForRow('investigatorsTableId', 'Trevor');
     clickSubmitRights();
     clickDialogConfirm();
     verifyTeamMemberAccessUpdatedAlertFooter();

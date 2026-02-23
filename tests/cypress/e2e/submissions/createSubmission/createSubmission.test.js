@@ -39,9 +39,6 @@ import {
   clickToValidateSV,
   verifyAlertFooter,
   clickToConfirmProposalSubmission,
-  verifyProductType,
-  verifySensitivityCalculatorResultTargetName,
-  verifySensitivityCalculatorResultWeightedContinuumSensitivity,
   verifyData
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
@@ -57,7 +54,7 @@ describe('Creating Proposal', () => {
     clearLocalStorage();
   });
 
-  it.skip('SV Flow: Create a basic science verification idea, verify AutoLink', () => {
+  it('SV Flow: Create a basic science verification idea, verify AutoLink', () => {
     mockCreateSVIdeaAPI();
     clickAddSubmission();
     cy.wait('@mockOSDData');
@@ -89,7 +86,7 @@ describe('Creating Proposal', () => {
     verifyMockedScienceIdeaOnLandingPageIsVisible();
   });
 
-  it.skip(
+  it(
     'SV Flow: Create science verification idea, Observing mode Continuum, verify sensitivity calculator results, validate and submit',
     { jiraKey: 'XTP-96352' },
     () => {
@@ -146,7 +143,7 @@ describe('Creating Proposal', () => {
     }
   );
 
-  it.skip(
+  it(
     'SV Flow: Create science verification idea, Observing mode Spectral, verify sensitivity calculator results, validate and submit',
     { jiraKey: 'XTP-96345' },
     () => {
@@ -245,7 +242,7 @@ describe('Creating Proposal', () => {
     }
   );
 
-  it.skip('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
+  it('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
     mockCreateProposalAPI();
     clickAddSubmission();
     clickCycleSelectionMockProposal();

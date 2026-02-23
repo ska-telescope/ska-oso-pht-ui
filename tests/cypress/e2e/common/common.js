@@ -211,7 +211,6 @@ export const clickAddButton = () => clickButton('addButton');
 export const clickAddDataProduct = () => clickButton('addDataProductButton');
 export const clickAddDataProductEntry = () => clickButton('addDataProductButtonEntry');
 export const clickUserSearch = () => clickButton('userSearchButton');
-export const clickManageTeamMemberRights = () => clickButton('lockIcon');
 export const clickSubmitRights = () => clickButton('submitCheckbox');
 export const clickPICheckbox = () => clickButton('piCheckbox');
 export const clickAddSubmission = () => clickButton('addSubmissionButton');
@@ -716,6 +715,19 @@ export const clickEditIconForRow = (tableTestId, text) => {
     .first()
     .within(() => {
       cy.get('[data-testid="editIcon"]')
+        .should('be.visible')
+        .click();
+    });
+};
+
+export const clickEditUserRightsIconForRow = (tableTestId, text) => {
+  cy.get(`[data-testid="${tableTestId}"]`)
+    .find('[role="row"]')
+    .filter(`:contains("${text}")`)
+    .click()
+    .first()
+    .within(() => {
+      cy.get('[data-testid="lockIcon"]')
         .should('be.visible')
         .click();
     });
