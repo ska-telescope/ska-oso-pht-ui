@@ -38,8 +38,6 @@ import {
   verifyAlertFooter,
   clickToSubmitProposal,
   clickToConfirmProposalSubmission,
-  mockUpdateProposalAPI,
-  mockUpdateSVIdeaAPI,
   mockCreateSVIdeaAPI,
   mockCreateProposalAPI
 } from '../../common/common.js';
@@ -50,8 +48,6 @@ beforeEach(() => {
   mockEmailAPI();
   mockResolveTargetAPI();
   mockValidateAPI();
-  mockUpdateProposalAPI();
-  mockUpdateSVIdeaAPI();
 });
 
 afterEach(() => {
@@ -103,7 +99,6 @@ describe('Edit Proposal', () => {
     cy.wait('@mockValidate');
     verifyAlertFooter('Science Verification Idea is Valid');
     clickToConfirmProposalSubmission();
-    cy.wait('@mockUpdateSVIdea');
     verifyAlertFooter('Submission was successful');
   });
 
@@ -171,7 +166,6 @@ describe('Edit Proposal', () => {
       clickToSubmitProposal();
       cy.wait('@mockValidate');
       clickToConfirmProposalSubmission();
-      cy.wait('@mockUpdateProposal');
       verifyAlertFooter('Submission was successful');
     }
   );

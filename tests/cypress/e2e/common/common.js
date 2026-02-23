@@ -180,36 +180,6 @@ export const mockValidateSVIdeaAPI = () => {
   });
 };
 
-export const mockUpdateProposalAPI = () => {
-  cy.window().then(win => {
-    const token = win.localStorage.getItem('cypress:token');
-    cy.fixture('modifiedProposal.json').then(submission => {
-      cy.intercept('PUT', '**/pht/prsls/prsl-*', req => {
-        req.headers['Authorization'] = `Bearer ${token}`;
-        req.reply({
-          statusCode: 200,
-          body: submission
-        });
-      }).as('mockUpdateProposal');
-    });
-  });
-};
-
-export const mockUpdateSVIdeaAPI = () => {
-  cy.window().then(win => {
-    const token = win.localStorage.getItem('cypress:token');
-    cy.fixture('modifiedSVIdea.json').then(submission => {
-      cy.intercept('PUT', '**/pht/prsls/sv-*', req => {
-        req.headers['Authorization'] = `Bearer ${token}`;
-        req.reply({
-          statusCode: 200,
-          body: submission
-        });
-      }).as('mockUpdateSVIdea');
-    });
-  });
-};
-
 /*----------------------------------------------------------------------*/
 
 export const verify = testId => {
