@@ -3,8 +3,6 @@ import {
   clearLocalStorage,
   clickCycleConfirm,
   enterProposalTitle,
-  // clickProposalTypePrincipleInvestigator,
-  // clickSubProposalTypeTargetOfOpportunity,
   checkFieldDisabled,
   clickAddSubmission,
   clickCreateSubmission,
@@ -24,8 +22,6 @@ import { standardUser } from '../../users/users.js';
 describe('Verify validate', () => {
   beforeEach(() => {
     initialize(standardUser);
-    mockCreateSVIdeaAPI();
-    mockCreateProposalAPI();
   });
 
   afterEach(() => {
@@ -33,6 +29,7 @@ describe('Verify validate', () => {
   });
 
   it('SV Flow: Verify validate functionality is restricted before sv creation', () => {
+    mockCreateSVIdeaAPI();
     clickAddSubmission();
     clickCycleSelectionSV();
     clickCycleConfirm();
@@ -41,6 +38,7 @@ describe('Verify validate', () => {
   });
 
   it('SV Flow: Verify validate functionality is not restricted after sv creation', () => {
+    mockCreateSVIdeaAPI();
     clickAddSubmission();
     clickCycleSelectionSV();
     clickCycleConfirm();
@@ -53,6 +51,7 @@ describe('Verify validate', () => {
   });
 
   it('Proposal Flow: Verify validate functionality is restricted before proposal creation', () => {
+    mockCreateProposalAPI();
     clickAddSubmission();
     clickCycleSelectionMockProposal();
     clickCycleConfirm();
@@ -61,6 +60,7 @@ describe('Verify validate', () => {
   });
 
   it('Proposal Flow: Verify validate functionality is not restricted after proposal creation', () => {
+    mockCreateProposalAPI();
     clickAddSubmission();
     clickCycleSelectionMockProposal();
     clickCycleConfirm();
