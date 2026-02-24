@@ -18,7 +18,6 @@ import {
   enterScienceVerificationIdeaTitle,
   enterTargetField,
   initialize,
-  initializeUserNotLoggedIn,
   mockCreateProposalAPI,
   mockCreateSVIdeaAPI,
   mockOSDAPI,
