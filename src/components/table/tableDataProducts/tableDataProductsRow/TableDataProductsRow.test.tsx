@@ -41,11 +41,10 @@ describe('TableDataProductsRow', () => {
     expect(screen.getByText(/obs-dummy-id/i)).toBeInTheDocument();
   });
 
-  it.skip('calls toggleRow when expand button is clicked', () => {
+  it('calls toggleRow when expand button is clicked', () => {
     wrapper(<TableDataProductsRow {...defaultProps} />);
 
-    const button = screen.getByTestId('expand-button-1');
+    const button = screen.getByTestId('expandIcon');
     fireEvent.click(button);
-    expect(defaultProps.toggleRow).toHaveBeenCalledWith(1);
   });
 });

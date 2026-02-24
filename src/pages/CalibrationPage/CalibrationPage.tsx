@@ -1,7 +1,7 @@
 import React from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
-import { Box, Grid, Stack } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { Proposal } from '@utils/types/proposal.tsx';
 import Shell from '../../components/layout/Shell/Shell';
 import CalibrationEntry from '../entry/Calibration/CalibrationEntry';
@@ -11,8 +11,6 @@ import { FOOTER_SPACER, PATH, PAGE_CALIBRATION, PAGE_CALIBRATION_ENTRY } from '@
 import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import AddButton from '@/components/button/Add/Add';
-import AlertDialog from '@/components/alerts/alertDialog/AlertDialog';
-import TableCalibrations from '@/components/table/tableCalibrations/TableCalibrations';
 
 const PAGE = PAGE_CALIBRATION;
 const GAP = 4;
@@ -23,7 +21,6 @@ export default function CalibrationPage() {
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const { autoLink, osdCyclePolicy } = useOSDAccessors();
-  const [openDialog, setOpenDialog] = React.useState(false);
 
   const getProposal = () => application.content2 as Proposal;
 
@@ -32,12 +29,6 @@ export default function CalibrationPage() {
   React.useEffect(() => {
     setHelp('page.' + PAGE + '.help');
   }, []);
-
-  const deleteConfirmed = () => {};
-
-  const editIconClicked = (_row: any) => {};
-
-  const deleteIconClicked = (_row: any) => {};
 
   const hasData = (): boolean => {
     const proposal = getProposal();
@@ -72,41 +63,8 @@ export default function CalibrationPage() {
   };
 
   const dataList = () => {
-    return (
-      <>
-        <Stack pl={GAP} pr={GAP} spacing={GAP}>
-          <TableCalibrations
-            data={getProposal().calibrationStrategy ?? []}
-            deleteFunction={deleteIconClicked}
-            updateFunction={editIconClicked}
-          />
-        </Stack>
-        <AlertDialog
-          maxWidth="md"
-          open={openDialog}
-          onClose={() => setOpenDialog(false)}
-          onDialogResponse={deleteConfirmed}
-          title="deleteDataProduct.confirmTitle"
-          disabled={false}
-        >
-          {alertContent()}
-        </AlertDialog>
-      </>
-    );
-  };
-
-  const alertContent = () => {
-    return (
-      <Grid
-        p={2}
-        container
-        direction="column"
-        alignItems="space-evenly"
-        justifyContent="space-around"
-      >
-        {}
-      </Grid>
-    );
+    // For now, there is only ever one calibration entry, so we can skip the list and just show the single entry if it exists.
+    return <></>;
   };
 
   return (
