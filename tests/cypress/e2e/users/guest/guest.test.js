@@ -9,7 +9,7 @@ describe('Guest User', () => {
     clearLocalStorage();
   });
 
-  it('Validate not signed in', () => {
+  it('Validate user has not yet signed in, log in button is present', () => {
     verify('loginButton');
   });
 });
