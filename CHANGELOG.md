@@ -30,6 +30,7 @@ UNRELEASED
 * Fixed: Navigation and status array for proposal flow
 * Fixed: grouping for proposal flow
 * Changed: Update documentation and README
+* Changed: Added new e2e testing for SV and Proposal Flow
 
 9.0.0
 ----------
