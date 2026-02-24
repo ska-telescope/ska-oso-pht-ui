@@ -76,17 +76,32 @@ export const verifyMockedAPICall = stubAlias => {
   });
 };
 
-export const mockCreateSubmissionAPI = () => {
+export const mockCreateProposalAPI = () => {
   cy.window().then(win => {
     const token = win.localStorage.getItem('cypress:token');
-    cy.fixture('proposal.json').then(proposal => {
+    cy.fixture('proposal.json').then(submission => {
       cy.intercept('POST', '**/pht/prsls/create', req => {
         req.headers['Authorization'] = `Bearer ${token}`;
         req.reply({
           statusCode: 200,
-          body: proposal
+          body: submission
         });
-      }).as('mockCreateSubmission');
+      }).as('mockCreateProposal');
+    });
+  });
+};
+
+export const mockCreateSVIdeaAPI = () => {
+  cy.window().then(win => {
+    const token = win.localStorage.getItem('cypress:token');
+    cy.fixture('svIdea.json').then(submission => {
+      cy.intercept('POST', '**/pht/prsls/create', req => {
+        req.headers['Authorization'] = `Bearer ${token}`;
+        req.reply({
+          statusCode: 200,
+          body: submission
+        });
+      }).as('mockCreateSVIdea');
     });
   });
 };
@@ -101,8 +116,21 @@ export const mockGetUserByEmailAPI = () => {
           statusCode: 200,
           body: user
         });
-      }).as('mockgetUserByEmailAPI');
+      }).as('mockGetUserByEmailAPI');
     });
+  });
+};
+
+export const mockCreateProposalAccessAPI = () => {
+  cy.window().then(win => {
+    const token = win.localStorage.getItem('cypress:token');
+    cy.intercept('POST', '**/pht/proposal-access/create', req => {
+      req.headers['Authorization'] = `Bearer ${token}`;
+      req.reply({
+        statusCode: 200,
+        body: { message: 'prslacc-ddfdbe-733d6b8' }
+      });
+    }).as('mockCreateProposalAccessAPI');
   });
 };
 
@@ -150,32 +178,17 @@ export const mockValidateAPI = () => {
   });
 };
 
-export const mockUpdateProposalAPI = () => {
+export const mockValidateSVIdeaAPI = () => {
   cy.window().then(win => {
     const token = win.localStorage.getItem('cypress:token');
-    cy.fixture('modifiedProposal.json').then(submission => {
-      cy.intercept('PUT', '**/pht/prsls/prsl-*', req => {
+    cy.fixture('validateSVIdea.json').then(submission => {
+      cy.intercept('POST', '**/pht/prsls/validate', req => {
         req.headers['Authorization'] = `Bearer ${token}`;
         req.reply({
           statusCode: 200,
-          body: submission
+          body: { result: true, validation_errors: [] }
         });
-      }).as('mockUpdateProposal');
-    });
-  });
-};
-
-export const mockUpdateSVIdeaAPI = () => {
-  cy.window().then(win => {
-    const token = win.localStorage.getItem('cypress:token');
-    cy.fixture('modifiedSVIdea.json').then(submission => {
-      cy.intercept('PUT', '**/pht/prsls/sv-*', req => {
-        req.headers['Authorization'] = `Bearer ${token}`;
-        req.reply({
-          statusCode: 200,
-          body: submission
-        });
-      }).as('mockUpdateSVIdea');
+      }).as('mockValidateSVIdea');
     });
   });
 };
@@ -196,7 +209,6 @@ export const clickAddButton = () => clickButton('addButton');
 export const clickAddDataProduct = () => clickButton('addDataProductButton');
 export const clickAddDataProductEntry = () => clickButton('addDataProductButtonEntry');
 export const clickUserSearch = () => clickButton('userSearchButton');
-export const clickManageTeamMemberRights = () => clickButton('lockIcon');
 export const clickSubmitRights = () => clickButton('submitCheckbox');
 export const clickPICheckbox = () => clickButton('piCheckbox');
 export const clickAddSubmission = () => clickButton('addSubmissionButton');
@@ -622,6 +634,9 @@ export const verifyMockedScienceIdeaOnLandingPageIsVisible = () => {
 export const verifyMockedProposalOnLandingPageIsVisible = () => {
   cy.get('[data-testid="table-submissions"]').should('contain', 'prsl-test');
 };
+export const verifyData = (testId, text) => {
+  cy.get(`[data-testid="${testId}"]`).should('contain', text);
+};
 
 export const verifyOnLandingPageNoProposalMsgIsVisible = () => {
   cy.get('[id="standardAlertId"]').should('contain', 'THERE ARE NO PROPOSALS TO BE DISPLAYED');
@@ -698,6 +713,19 @@ export const clickEditIconForRow = (tableTestId, text) => {
     .first()
     .within(() => {
       cy.get('[data-testid="editIcon"]')
+        .should('be.visible')
+        .click();
+    });
+};
+
+export const clickEditUserRightsIconForRow = (tableTestId, text) => {
+  cy.get(`[data-testid="${tableTestId}"]`)
+    .find('[role="row"]')
+    .filter(`:contains("${text}")`)
+    .click()
+    .first()
+    .within(() => {
+      cy.get('[data-testid="lockIcon"]')
         .should('be.visible')
         .click();
     });

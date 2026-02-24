@@ -1,21 +1,20 @@
 {
-  "prsl_id": "prp-gy63fxah-20260220-221854968135080",
+  "prsl_id": "prp-gy63fxah-20260220-045091684973078",
   "status": "draft",
   "submitted_by": "",
   "metadata": {
     "version": 1,
     "created_by": "a3e51298-97cd-4304-ab80-760ba440b93f",
-    "created_on": "2026-02-20T15:01:53.116148Z",
+    "created_on": "2026-02-20T15:04:10.677943Z",
     "last_modified_by": "a3e51298-97cd-4304-ab80-760ba440b93f",
-    "last_modified_on": "2026-02-20T15:01:53.116148Z",
+    "last_modified_on": "2026-02-20T15:04:10.677943Z",
     "pdm_version": "26.3.0"
   },
-  "cycle": "CYCLE-003",
+  "cycle": "SKAO_2027_1",
   "proposal_info": {
-    "title": "Proposal Title",
+    "title": "Science Verification Idea Title",
     "proposal_type": {
-      "main_type": "standard_proposal",
-      "attributes": ["target_of_opportunity"]
+      "main_type": "science_verification"
     },
     "abstract": "",
     "science_category": "",

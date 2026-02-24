@@ -5,7 +5,6 @@ import {
   enterScienceVerificationIdeaTitle,
   clickAddSubmission,
   clickCreateSubmission,
-  mockCreateSubmissionAPI,
   verifySubmissionCreatedAlertFooter,
   clickCycleSelectionSV,
   checkStatusIndicatorDisabled,
@@ -14,14 +13,15 @@ import {
   clickCycleSelectionMockProposal,
   enterProposalTitle,
   clickProposalTypePrincipleInvestigator,
-  clickSubProposalTypeTargetOfOpportunity
+  clickSubProposalTypeTargetOfOpportunity,
+  mockCreateSVIdeaAPI,
+  mockCreateProposalAPI
 } from '../common/common.js';
 import { standardUser } from '../users/users.js';
 
 describe('Verify navigation', () => {
   beforeEach(() => {
     initialize(standardUser);
-    mockCreateSubmissionAPI();
   });
 
   afterEach(() => {
@@ -29,12 +29,13 @@ describe('Verify navigation', () => {
   });
 
   it('Science verification: Verify navigation functionality is not restricted after science idea creation', () => {
+    mockCreateSVIdeaAPI();
     clickAddSubmission();
     clickCycleSelectionSV();
     clickCycleConfirm();
     enterScienceVerificationIdeaTitle();
     clickCreateSubmission();
-    cy.wait('@mockCreateSubmission');
+    cy.wait('@mockCreateSVIdea');
     verifyScienceIdeaCreatedAlertFooter();
     //Verify navigation links are all enabled in page banner after SV creation
     checkStatusIndicatorDisabled('statusId0', false);
@@ -51,12 +52,13 @@ describe('Verify navigation', () => {
   });
 
   it('Science verification: Verify page banner has correct items', () => {
+    mockCreateSVIdeaAPI();
     clickAddSubmission();
     clickCycleSelectionSV();
     clickCycleConfirm();
     enterScienceVerificationIdeaTitle();
     clickCreateSubmission();
-    cy.wait('@mockCreateSubmission');
+    cy.wait('@mockCreateSVIdea');
     verifyScienceIdeaCreatedAlertFooter();
     //Verify navigation in page banner is correct after science idea creation
     verifyStatusIndicatorLabel('statusId0', 'Title');
@@ -70,6 +72,7 @@ describe('Verify navigation', () => {
   });
 
   it('Proposal: Verify page banner has correct items', () => {
+    mockCreateProposalAPI();
     clickAddSubmission();
     clickCycleSelectionMockProposal();
     clickCycleConfirm();
@@ -77,7 +80,7 @@ describe('Verify navigation', () => {
     clickProposalTypePrincipleInvestigator();
     clickSubProposalTypeTargetOfOpportunity();
     clickCreateSubmission();
-    cy.wait('@mockCreateSubmission');
+    cy.wait('@mockCreateProposal');
     verifySubmissionCreatedAlertFooter();
     //Verify navigation in page banner is correct after proposal creation
     verifyStatusIndicatorLabel('statusId0', 'Title');

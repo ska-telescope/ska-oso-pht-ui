@@ -1,15 +1,15 @@
 {
-  "prsl_id": "prp-krayr65f-20260218-435722365297658",
-  "status": "submitted",
-  "submitted_on": "2026-02-18T14:28:53.863Z",
-  "submitted_by": "cypress-default-user",
+  "prsl_id": "prp-3u2wu2z4-20260223-240078880640872",
+  "status": "draft",
+  "submitted_on": null,
+  "submitted_by": "",
   "investigator_refs": ["a3e51298-97cd-4304-ab80-760ba440b93f"],
-  "cycle": "CYCLE-003",
+  "cycle": "SKAO_2027_1",
   "proposal_info": {
     "title": "Science Verification Idea Title",
-    "proposal_type": { "main_type": "standard_proposal", "attributes": ["target_of_opportunity"] },
-    "abstract": "This is a summary of the proposal.",
-    "science_category": "Cosmology",
+    "proposal_type": { "main_type": "science_verification", "attributes": [] },
+    "abstract": "This is a summary of the science idea.",
+    "science_category": "Continuum",
     "investigators": [
       {
         "user_id": "a3e51298-97cd-4304-ab80-760ba440b93f",
@@ -41,14 +41,13 @@
       }
     ],
     "documents": [
-      { "document_id": "science-doc-prp-krayr65f-20260218-435722365297658", "uploaded_pdf": true },
-      { "document_id": "technical-doc-prp-krayr65f-20260218-435722365297658", "uploaded_pdf": true }
+      { "document_id": "science-doc-prp-3u2wu2z4-20260223-240078880640872", "uploaded_pdf": true }
     ],
     "observation_sets": [
       {
-        "observation_set_id": "obs-Sj6xOx",
+        "observation_set_id": "obs-ld20Lw",
         "group_id": "",
-        "elevation": 20,
+        "elevation": 15,
         "observing_band": "low_band",
         "array_details": { "array": "ska_low", "subarray": "aa2", "number_of_stations": 68 },
         "observation_type_details": {
@@ -65,22 +64,22 @@
     "calibration_strategy": [
       {
         "observatory_defined": true,
-        "calibration_id": "cal-Bjryxr07",
-        "observation_set_ref": "obs-Sj6xOx",
+        "calibration_id": "cal-d9k6Rw",
+        "observation_set_ref": "obs-ld20Lw",
         "calibrators": null,
         "notes": null
       }
     ],
     "data_product_sdps": [
       {
-        "data_product_id": "SDPbZNqLZ",
-        "observation_set_ref": "obs-Sj6xOx",
+        "data_product_id": "SDP-7dEEUA",
+        "observation_set_ref": "obs-ld20Lw",
         "script_parameters": {
           "image_size": { "value": 2.5, "unit": "deg" },
           "image_cellsize": { "value": 1.6, "unit": "arcsec" },
           "weight": { "weighting": "uniform" },
           "polarisations": ["I", "XX"],
-          "channels_out": 10,
+          "channels_out": 40,
           "gaussian_taper": "0",
           "kind": "continuum",
           "variant": "continuum image"
@@ -90,9 +89,9 @@
     "data_product_src_nets": [],
     "result_details": [
       {
-        "observation_set_ref": "obs-Sj6xOx",
-        "data_product_ref": "SDPbZNqLZ",
-        "target_ref": "M2",
+        "observation_set_ref": "obs-ld20Lw",
+        "data_product_ref": "SDP-7dEEUA",
+        "target_ref": "m2",
         "result": {
           "supplied_type": "integration_time",
           "weighted_continuum_sensitivity": { "value": 193.39869461690563, "unit": "μJy/beam" },

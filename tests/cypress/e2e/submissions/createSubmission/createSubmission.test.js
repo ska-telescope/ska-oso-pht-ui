@@ -9,7 +9,6 @@ import {
   clickCycleConfirm,
   clickAddSubmission,
   clickCreateSubmission,
-  mockCreateSubmissionAPI,
   verifySubmissionCreatedAlertFooter,
   enterScienceVerificationIdeaTitle,
   clickCycleSelectionSV,
@@ -29,16 +28,28 @@ import {
   clickToAddTarget,
   mockResolveTargetAPI,
   verifyAutoLinkAlertFooter,
-  verifyMockedScienceIdeaOnLandingPageIsVisible
+  verifyMockedScienceIdeaOnLandingPageIsVisible,
+  mockCreateSVIdeaAPI,
+  mockCreateProposalAPI,
+  addSubmissionSummary,
+  clickFileUploadArea,
+  uploadTestFile,
+  verifyTestFileUploaded,
+  clickFileUpload,
+  clickToValidateSV,
+  verifyAlertFooter,
+  clickToConfirmProposalSubmission,
+  verifyData,
+  mockValidateSVIdeaAPI
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
 describe('Creating Proposal', () => {
   beforeEach(() => {
     initialize(standardUser);
-    mockCreateSubmissionAPI();
     mockOSDAPI();
     mockResolveTargetAPI();
+    mockValidateSVIdeaAPI();
   });
 
   afterEach(() => {
@@ -46,6 +57,7 @@ describe('Creating Proposal', () => {
   });
 
   it('SV Flow: Create a basic science verification idea, verify AutoLink', () => {
+    mockCreateSVIdeaAPI();
     clickAddSubmission();
     cy.wait('@mockOSDData');
     verifyOsdDataCycleID('SKAO_2027_1');
@@ -56,7 +68,7 @@ describe('Creating Proposal', () => {
     clickCycleConfirm();
     enterScienceVerificationIdeaTitle();
     clickCreateSubmission();
-    cy.wait('@mockCreateSubmission');
+    cy.wait('@mockCreateSVIdea');
     verifyScienceIdeaCreatedAlertFooter();
     pageConfirmed('TEAM');
     clickStatusIconNav('statusId2'); //Click to details page
@@ -76,7 +88,161 @@ describe('Creating Proposal', () => {
     verifyMockedScienceIdeaOnLandingPageIsVisible();
   });
 
+  it(
+    'SV Flow: Create science verification idea, Observing mode Continuum, verify sensitivity calculator results, validate and submit',
+    { jiraKey: 'XTP-96352' },
+    () => {
+      mockCreateSVIdeaAPI();
+      clickAddSubmission();
+      cy.wait('@mockOSDData');
+      clickCycleSelectionSV();
+      clickCycleConfirm();
+      enterScienceVerificationIdeaTitle();
+      clickCreateSubmission();
+      cy.wait('@mockCreateSVIdea');
+      verifyScienceIdeaCreatedAlertFooter();
+      pageConfirmed('TEAM');
+      clickStatusIconNav('statusId2'); //Click to details page
+      pageConfirmed('DETAILS');
+      selectObservingMode('Continuum');
+      addSubmissionSummary('This is a summary of the science idea.');
+      clickStatusIconNav('statusId4'); //Click to target page
+      pageConfirmed('TARGET');
+      //add target
+      addM2TargetUsingResolve();
+      cy.wait('@mockResolveTarget');
+      clickToAddTarget();
+      //Verify AutoLink to OSD data
+      verifyAutoLinkAlertFooter();
+      clickStatusIconNav('statusId3'); //Click to description page
+      pageConfirmed('DESCRIPTION');
+      clickFileUploadArea();
+      uploadTestFile('testFile.pdf');
+      verifyTestFileUploaded('testFile.pdf');
+      clickFileUpload();
+      clickStatusIconNav('statusId7'); //Click to data product page
+      pageConfirmed('DATA PRODUCT');
+      verifyData('dataProductType', 'Images');
+      //Verify sens calc results
+      verifyData('field-targetName', 'M2');
+      verifyData('field-continuumSensitivityWeighted', '193.40 μJy/beam');
+      verifyData('field-continuumConfusionNoise', '1.56 μJy/beam');
+      verifyData('field-continuumTotalSensitivity', '193.40 μJy/beam');
+      verifyData('field-continuumSynthBeamSize', '5.50 x 2.86 arcsec²');
+      verifyData('field-continuumSurfaceBrightnessSensitivity', '375.86 K');
+      verifyData('field-spectralSensitivityWeighted', '42.28 mJy/beam');
+      verifyData('field-spectralConfusionNoise', '2.65 μJy/beam');
+      verifyData('field-spectralTotalSensitivity', '42.28 mJy/beam');
+      verifyData('field-spectralSynthBeamSize', '5.92 x 3.96 arcsec²');
+      verifyData('field-spectralSurfaceBrightnessSensitivity', '5.5e+4 K');
+      verifyData('field-integrationTime', '1.00 h');
+      clickToValidateSV();
+      cy.wait('@mockValidateSVIdea');
+      verifyAlertFooter('Science Verification Idea is Valid');
+      clickToConfirmProposalSubmission();
+      verifyAlertFooter('Submission was successful');
+    }
+  );
+
+  it(
+    'SV Flow: Create science verification idea, Observing mode Spectral, verify sensitivity calculator results, validate and submit',
+    { jiraKey: 'XTP-96345' },
+    () => {
+      mockCreateSVIdeaAPI();
+      clickAddSubmission();
+      cy.wait('@mockOSDData');
+      clickCycleSelectionSV();
+      clickCycleConfirm();
+      enterScienceVerificationIdeaTitle();
+      clickCreateSubmission();
+      cy.wait('@mockCreateSVIdea');
+      verifyScienceIdeaCreatedAlertFooter();
+      pageConfirmed('TEAM');
+      clickStatusIconNav('statusId2'); //Click to details page
+      pageConfirmed('DETAILS');
+      selectObservingMode('Spectral');
+      addSubmissionSummary('This is a summary of the science idea.');
+      clickStatusIconNav('statusId4'); //Click to target page
+      pageConfirmed('TARGET');
+      //add target
+      addM2TargetUsingResolve();
+      cy.wait('@mockResolveTarget');
+      clickToAddTarget();
+      //Verify AutoLink to OSD data
+      verifyAutoLinkAlertFooter();
+      clickStatusIconNav('statusId3'); //Click to description page
+      pageConfirmed('DESCRIPTION');
+      clickFileUploadArea();
+      uploadTestFile('testFile.pdf');
+      verifyTestFileUploaded('testFile.pdf');
+      clickFileUpload();
+      clickStatusIconNav('statusId7'); //Click to data product page
+      pageConfirmed('DATA PRODUCT');
+      //Verify sens calc results
+      verifyData('field-targetName', 'M2');
+      verifyData('field-spectralSensitivityWeighted', '207.14 mJy/beam');
+      verifyData('field-spectralConfusionNoise', '2.65 μJy/beam');
+      verifyData('field-spectralTotalSensitivity', '207.14 mJy/beam');
+      verifyData('field-spectralSynthBeamSize', '5.92 x 3.96 arcsec²');
+      verifyData('field-spectralSurfaceBrightnessSensitivity', '2.7e+5 K');
+      verifyData('field-integrationTime', '1.00 h');
+      clickToValidateSV();
+      cy.wait('@mockValidateSVIdea');
+      verifyAlertFooter('Science Verification Idea is Valid');
+      clickToConfirmProposalSubmission();
+      verifyAlertFooter('Submission was successful');
+    }
+  );
+
+  it(
+    'SV Flow: Create science verification idea, Observing mode PST, verify sensitivity calculator results, validate and submit',
+    { jiraKey: 'XTP-96353' },
+    () => {
+      mockCreateSVIdeaAPI();
+      clickAddSubmission();
+      cy.wait('@mockOSDData');
+      clickCycleSelectionSV();
+      clickCycleConfirm();
+      enterScienceVerificationIdeaTitle();
+      clickCreateSubmission();
+      cy.wait('@mockCreateSVIdea');
+      verifyScienceIdeaCreatedAlertFooter();
+      pageConfirmed('TEAM');
+      clickStatusIconNav('statusId2'); //Click to details page
+      pageConfirmed('DETAILS');
+      selectObservingMode('PST');
+      addSubmissionSummary('This is a summary of the science idea.');
+      clickStatusIconNav('statusId4'); //Click to target page
+      pageConfirmed('TARGET');
+      //add target
+      addM2TargetUsingResolve();
+      cy.wait('@mockResolveTarget');
+      clickToAddTarget();
+      //Verify AutoLink to OSD data
+      verifyAutoLinkAlertFooter();
+      clickStatusIconNav('statusId3'); //Click to description page
+      pageConfirmed('DESCRIPTION');
+      clickFileUploadArea();
+      uploadTestFile('testFile.pdf');
+      verifyTestFileUploaded('testFile.pdf');
+      clickFileUpload();
+      clickStatusIconNav('statusId7'); //Click to data product page
+      pageConfirmed('DATA PRODUCT');
+      //Verify sens calc results - Not currently available fr PST
+      verifyData(
+        'borderedSection-content',
+        'PST mode is not currently supported within the Sensitivity Calculator application.'
+      );
+      clickToValidateSV();
+      cy.wait('@mockValidateSVIdea');
+      verifyAlertFooter('Science Verification Idea is Valid');
+      clickToConfirmProposalSubmission();
+      verifyAlertFooter('Submission was successful');
+    }
+  );
+
   it('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
+    mockCreateProposalAPI();
     clickAddSubmission();
     clickCycleSelectionMockProposal();
     clickCycleConfirm();
@@ -84,7 +250,7 @@ describe('Creating Proposal', () => {
     clickProposalTypePrincipleInvestigator();
     clickSubProposalTypeTargetOfOpportunity();
     clickCreateSubmission();
-    cy.wait('@mockCreateSubmission');
+    cy.wait('@mockCreateProposal');
     verifySubmissionCreatedAlertFooter();
     pageConfirmed('TEAM');
     clickHome();

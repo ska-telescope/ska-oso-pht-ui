@@ -12,7 +12,6 @@ import {
   clickToAddTarget,
   addM2TargetUsingResolve,
   clickObservationSetup,
-  mockCreateSubmissionAPI,
   verifySubmissionCreatedAlertFooter,
   verifyScienceIdeaCreatedAlertFooter,
   selectObservingMode,
@@ -39,20 +38,16 @@ import {
   verifyAlertFooter,
   clickToSubmitProposal,
   clickToConfirmProposalSubmission,
-  mockUpdateSubmissionAPI,
-  mockUpdateProposalAPI,
-  mockUpdateSVIdeaAPI
+  mockCreateSVIdeaAPI,
+  mockCreateProposalAPI
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
 beforeEach(() => {
   initialize(standardUser);
-  mockCreateSubmissionAPI();
   mockEmailAPI();
   mockResolveTargetAPI();
   mockValidateAPI();
-  mockUpdateProposalAPI();
-  mockUpdateSVIdeaAPI();
 });
 
 afterEach(() => {
@@ -67,56 +62,53 @@ describe('Edit Proposal', () => {
     });
   });
 
-  it(
-    'SV Flow: Edit a basic science idea, ensure science idea is valid and the submit',
-    { jiraKey: 'XTP-96352' },
-    () => {
-      createScienceIdeaLoggedIn();
-      cy.wait('@mockCreateSubmission');
-      verifyScienceIdeaCreatedAlertFooter();
-      pageConfirmed('TEAM');
+  it('SV Flow: Edit a basic science idea, ensure science idea is valid and the submit', () => {
+    mockCreateSVIdeaAPI();
+    createScienceIdeaLoggedIn();
+    cy.wait('@mockCreateSVIdea');
+    verifyScienceIdeaCreatedAlertFooter();
+    pageConfirmed('TEAM');
 
-      //edit existing science verification idea
-      clickHome();
-      verifyOnLandingPage();
-      verifyOnLandingPageFilterIsVisible();
-      verifyMockedScienceIdeaOnLandingPageIsVisible();
-      clickEditIconForRow('review-table', 'Science Verification');
-      pageConfirmed('TITLE');
-      //complete mandatory fields
-      clickStatusIconNav('statusId2'); //Click to details page
-      pageConfirmed('DETAILS');
-      selectObservingMode('Continuum');
-      addSubmissionSummary('This is a summary of the science idea.');
-      clickStatusIconNav('statusId3'); //Click to description page
-      pageConfirmed('DESCRIPTION');
-      clickStatusIconNav('statusId4'); //Click to target page
-      pageConfirmed('TARGET');
-      addM2TargetUsingResolve(); //add target
-      cy.wait('@mockResolveTarget');
-      clickToAddTarget();
-      verifyAutoLinkAlertFooter(); //Verify AutoLink to OSD data
-      clickStatusIconNav('statusId3'); //Click to description page
-      pageConfirmed('DESCRIPTION');
-      clickFileUploadArea();
-      uploadTestFile('testFile.pdf');
-      verifyTestFileUploaded('testFile.pdf');
-      clickFileUpload();
-      clickToValidateSV();
-      cy.wait('@mockValidate');
-      verifyAlertFooter('Science Verification Idea is Valid');
-      clickToConfirmProposalSubmission();
-      cy.wait('@mockUpdateSVIdea');
-      verifyAlertFooter('Submission was successful');
-    }
-  );
+    //edit existing science verification idea
+    clickHome();
+    verifyOnLandingPage();
+    verifyOnLandingPageFilterIsVisible();
+    verifyMockedScienceIdeaOnLandingPageIsVisible();
+    clickEditIconForRow('review-table', 'Science Verification');
+    pageConfirmed('TITLE');
+    //complete mandatory fields
+    clickStatusIconNav('statusId2'); //Click to details page
+    pageConfirmed('DETAILS');
+    selectObservingMode('Continuum');
+    addSubmissionSummary('This is a summary of the science idea.');
+    clickStatusIconNav('statusId3'); //Click to description page
+    pageConfirmed('DESCRIPTION');
+    clickStatusIconNav('statusId4'); //Click to target page
+    pageConfirmed('TARGET');
+    addM2TargetUsingResolve(); //add target
+    cy.wait('@mockResolveTarget');
+    clickToAddTarget();
+    verifyAutoLinkAlertFooter(); //Verify AutoLink to OSD data
+    clickStatusIconNav('statusId3'); //Click to description page
+    pageConfirmed('DESCRIPTION');
+    clickFileUploadArea();
+    uploadTestFile('testFile.pdf');
+    verifyTestFileUploaded('testFile.pdf');
+    clickFileUpload();
+    clickToValidateSV();
+    cy.wait('@mockValidate');
+    verifyAlertFooter('Science Verification Idea is Valid');
+    clickToConfirmProposalSubmission();
+    verifyAlertFooter('Submission was successful');
+  });
 
   it(
     'Proposal Flow: Edit a basic proposal, ensure proposal is valid and then submit',
     { jiraKey: 'XTP-71405' },
     () => {
+      mockCreateProposalAPI();
       createStandardProposalLoggedIn();
-      cy.wait('@mockCreateSubmission');
+      cy.wait('@mockCreateProposal');
       verifySubmissionCreatedAlertFooter();
       pageConfirmed('TEAM');
 
@@ -174,7 +166,6 @@ describe('Edit Proposal', () => {
       clickToSubmitProposal();
       cy.wait('@mockValidate');
       clickToConfirmProposalSubmission();
-      cy.wait('@mockUpdateProposal');
       verifyAlertFooter('Submission was successful');
     }
   );

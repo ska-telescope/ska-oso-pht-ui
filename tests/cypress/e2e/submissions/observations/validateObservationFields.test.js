@@ -1,22 +1,11 @@
 import {
-  clickHome,
-  enterProposalTitle,
-  verifyOnLandingPage,
-  verifyOnLandingPageFilterIsVisible,
-  verifyMockedProposalOnLandingPageIsVisible,
   initialize,
   clearLocalStorage,
   clickCycleConfirm,
   clickAddSubmission,
   clickCreateSubmission,
-  mockCreateSubmissionAPI,
-  verifySubmissionCreatedAlertFooter,
   enterScienceVerificationIdeaTitle,
   clickCycleSelectionSV,
-  clickCycleSelectionMockProposal,
-  clickProposalTypePrincipleInvestigator,
-  clickSubProposalTypeTargetOfOpportunity,
-  mockOSDAPI,
   verifyOsdDataCycleID,
   verifyOsdDataCycleDescription,
   verifyOsdDataProposalOpen,
@@ -31,14 +20,16 @@ import {
   verifyAutoLinkAlertFooter,
   updateFieldValue,
   verifyFieldError,
-  checkFieldDisabled
+  checkFieldDisabled,
+  mockCreateSVIdeaAPI,
+  mockOSDAPI
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
-describe('Validate Observation Fields', () => {
+describe('SV Flow: Validate Observation Fields', () => {
   beforeEach(() => {
     initialize(standardUser);
-    mockCreateSubmissionAPI();
+    mockCreateSVIdeaAPI();
     mockOSDAPI();
     mockResolveTargetAPI();
 
@@ -53,7 +44,7 @@ describe('Validate Observation Fields', () => {
     clickCycleConfirm();
     enterScienceVerificationIdeaTitle();
     clickCreateSubmission();
-    cy.wait('@mockCreateSubmission');
+    cy.wait('@mockCreateSVIdea');
     verifyScienceIdeaCreatedAlertFooter();
     pageConfirmed('TEAM');
     clickStatusIconNav('statusId2'); //Click to details page
@@ -75,7 +66,7 @@ describe('Validate Observation Fields', () => {
     clearLocalStorage();
   });
 
-  it('SV Flow: Verify observation fields', () => {
+  it('SV Flow: Validate continuum bandwidth field', () => {
     clickStatusIconNav('statusId5'); //Click to observation page
     pageConfirmed('OBSERVATION');
     updateFieldValue('continuumBandwidth', '500'); //update continuum bandwidth to an invalid value
