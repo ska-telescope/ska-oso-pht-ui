@@ -1,4 +1,5 @@
 import {
+  cypressToken,
   OSO_SERVICES_PROPOSAL_PATH,
   PROPOSAL_STATUS,
   SKA_OSO_SERVICES_URL,
@@ -19,7 +20,7 @@ async function PutProposal(
   isSV: boolean,
   status?: string
 ): Promise<ProposalBackend | { error: string }> {
-  if (USE_LOCAL_DATA) {
+  if (USE_LOCAL_DATA || cypressToken) {
     return mockPutProposal();
   }
 

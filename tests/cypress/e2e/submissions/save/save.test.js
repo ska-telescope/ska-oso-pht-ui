@@ -6,7 +6,6 @@ import {
   checkFieldDisabled,
   clickAddSubmission,
   clickCreateSubmission,
-  mockCreateSubmissionAPI,
   verifySubmissionCreatedAlertFooter,
   clickCycleSelectionSV,
   checkFieldIsVisible,
@@ -14,27 +13,23 @@ import {
   clickProposalTypePrincipleInvestigator,
   clickSubProposalTypeTargetOfOpportunity,
   enterScienceVerificationIdeaTitle,
-  verifyScienceIdeaCreatedAlertFooter
+  verifyScienceIdeaCreatedAlertFooter,
+  mockCreateSVIdeaAPI,
+  mockCreateProposalAPI
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
 describe('Verify Save', () => {
   beforeEach(() => {
     initialize(standardUser);
-    mockCreateSubmissionAPI();
   });
 
   afterEach(() => {
     clearLocalStorage();
   });
 
-  before(() => {
-    cy.window().then(win => {
-      win.localStorage.setItem('cypress:proposalCreated', 'true');
-    });
-  });
-
   it('SV Flow: Verify save functionality is restricted before sv creation', () => {
+    mockCreateSVIdeaAPI();
     clickAddSubmission();
     clickCycleSelectionSV();
     clickCycleConfirm();
@@ -43,18 +38,20 @@ describe('Verify Save', () => {
   });
 
   it('SV Flow: Verify save functionality is not restricted after sv creation', () => {
+    mockCreateSVIdeaAPI();
     clickAddSubmission();
     clickCycleSelectionSV();
     clickCycleConfirm();
     enterScienceVerificationIdeaTitle();
     clickCreateSubmission();
-    cy.wait('@mockCreateSubmission');
+    cy.wait('@mockCreateSVIdea');
     verifyScienceIdeaCreatedAlertFooter();
     //Verify save is enabled after sv creation
     checkFieldDisabled('saveBtn', false);
   });
 
   it('Proposal Flow: Verify save functionality is restricted before proposal creation', () => {
+    mockCreateProposalAPI();
     clickAddSubmission();
     clickCycleSelectionMockProposal();
     clickCycleConfirm();
@@ -63,6 +60,7 @@ describe('Verify Save', () => {
   });
 
   it('Proposal Flow: Verify save functionality is not restricted after proposal creation', () => {
+    mockCreateProposalAPI();
     clickAddSubmission();
     clickCycleSelectionMockProposal();
     clickCycleConfirm();
@@ -70,7 +68,7 @@ describe('Verify Save', () => {
     clickProposalTypePrincipleInvestigator();
     clickSubProposalTypeTargetOfOpportunity();
     clickCreateSubmission();
-    cy.wait('@mockCreateSubmission');
+    cy.wait('@mockCreateProposal');
     verifySubmissionCreatedAlertFooter();
     //Verify save is enabled after proposal creation
     checkFieldDisabled('saveBtn', false);

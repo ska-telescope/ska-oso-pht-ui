@@ -9,22 +9,24 @@ import {
   clickSendInviteButton,
   verifyUserFoundAlertFooter,
   verifyUserInvitedAlertFooter,
-  clickManageTeamMemberRights,
   clickSubmitRights,
   clickDialogConfirm,
   createScienceIdeaLoggedIn,
-  mockCreateSubmissionAPI,
   verifyScienceIdeaCreatedAlertFooter,
-  verifyTeamMemberAccessUpdatedAlertFooter
+  verifyTeamMemberAccessUpdatedAlertFooter,
+  mockCreateSVIdeaAPI,
+  clickEditUserRightsIconForRow,
+  mockCreateProposalAccessAPI
 } from '../../common/common.js';
 import { entry } from '../../../fixtures/utils/cypress.js';
 
 describe('Delegate Editing Rights', () => {
   beforeEach(() => {
     initialize(reviewerAdmin);
-    mockCreateSubmissionAPI();
+    mockCreateSVIdeaAPI();
     mockGetUserByEmailAPI();
     mockEmailAPI();
+    mockCreateProposalAccessAPI();
   });
 
   afterEach(() => {
@@ -33,16 +35,17 @@ describe('Delegate Editing Rights', () => {
 
   it('SV Flow: Delegate editing rights to a Co-Investigator', { jiraKey: 'XTP-89609' }, () => {
     createScienceIdeaLoggedIn();
-    cy.wait('@mockCreateSubmission');
+    cy.wait('@mockCreateSVIdea');
     verifyScienceIdeaCreatedAlertFooter();
     pageConfirmed('TEAM');
     entry('email', 'Trevor.Swain@community.skao.int');
     clickUserSearch();
     verifyUserFoundAlertFooter();
     clickSendInviteButton();
-    cy.wait('@mockInviteUserByEmail');
     verifyUserInvitedAlertFooter();
-    clickManageTeamMemberRights();
+    cy.wait('@mockInviteUserByEmail');
+    cy.wait('@mockCreateProposalAccessAPI');
+    clickEditUserRightsIconForRow('investigatorsTableId', 'Trevor');
     clickSubmitRights();
     clickDialogConfirm();
     verifyTeamMemberAccessUpdatedAlertFooter();
