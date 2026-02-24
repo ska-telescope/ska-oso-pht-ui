@@ -140,8 +140,6 @@ describe('Science Verification: Target entry validation', () => {
 
   it('SV: Verify target table reflects updated target', () => {
     mockResolveTargetAPI();
-    cy.wait('@mockOSDData');
-
     //add target
     addM2TargetUsingResolve();
     cy.wait('@mockResolveTarget');
