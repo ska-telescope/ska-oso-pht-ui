@@ -15,7 +15,8 @@ import {
   verifyScienceIdeaCreatedAlertFooter,
   verifyTeamMemberAccessUpdatedAlertFooter,
   mockCreateSVIdeaAPI,
-  clickEditUserRightsIconForRow
+  clickEditUserRightsIconForRow,
+  mockCreateProposalAccessAPI
 } from '../../common/common.js';
 import { entry } from '../../../fixtures/utils/cypress.js';
 
@@ -25,6 +26,7 @@ describe('Delegate Editing Rights', () => {
     mockCreateSVIdeaAPI();
     mockGetUserByEmailAPI();
     mockEmailAPI();
+    mockCreateProposalAccessAPI();
   });
 
   afterEach(() => {
@@ -40,8 +42,9 @@ describe('Delegate Editing Rights', () => {
     clickUserSearch();
     verifyUserFoundAlertFooter();
     clickSendInviteButton();
-    cy.wait('@mockInviteUserByEmail');
     verifyUserInvitedAlertFooter();
+    cy.wait('@mockInviteUserByEmail');
+    cy.wait('@mockCreateProposalAccessAPI');
     clickEditUserRightsIconForRow('investigatorsTableId', 'Trevor');
     clickSubmitRights();
     clickDialogConfirm();

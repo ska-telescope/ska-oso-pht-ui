@@ -116,8 +116,21 @@ export const mockGetUserByEmailAPI = () => {
           statusCode: 200,
           body: user
         });
-      }).as('mockgetUserByEmailAPI');
+      }).as('mockGetUserByEmailAPI');
     });
+  });
+};
+
+export const mockCreateProposalAccessAPI = () => {
+  cy.window().then(win => {
+    const token = win.localStorage.getItem('cypress:token');
+    cy.intercept('POST', '**/pht/proposal-access/create', req => {
+      req.headers['Authorization'] = `Bearer ${token}`;
+      req.reply({
+        statusCode: 200,
+        body: { message: 'prslacc-ddfdbe-733d6b8' }
+      });
+    }).as('mockCreateProposalAccessAPI');
   });
 };
 
