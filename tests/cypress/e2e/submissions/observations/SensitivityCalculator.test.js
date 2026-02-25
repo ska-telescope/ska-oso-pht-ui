@@ -4,7 +4,6 @@ import {
   clickToAddTarget,
   clickToLinkTargetAndObservation,
   clickToObservationPage,
-  verifyObservationInTable,
   clickAddObservationEntry,
   clearLocalStorage,
   initialize,
@@ -20,16 +19,13 @@ import {
   verifySubmissionCreatedAlertFooter,
   clickStatusIconNav,
   pageConfirmed,
-  clickToObservatoryDataProductPage,
   clickAddDataProduct,
   clickAddDataProductEntry,
   selectOptionFromDropdown,
-  verifyDataInTable,
-  addContinuumImagesObservatoryDataProduct
+  verifyDataInTable
 } from '../../common/common.js';
 import sensitivityCalculatorResults from '../../../fixtures/sensitivityCalculatorResults.json';
 import { standardUser } from '../../users/users.js';
-import { click } from '../../../fixtures/utils/cypress.js';
 
 beforeEach(() => {
   cy.fixture('sensitivityCalculatorResults.json').as('sensitivityCalculatorResults');
