@@ -244,7 +244,7 @@ export const clickStatusIconNav = testId => {
 };
 
 /*----------------------------------------------------------------------*/
-
+//TODO: REMOVE????
 export const clickDropdown = (testId, value) => {
   verifyExists(testId);
   click(testId);
@@ -414,6 +414,18 @@ export const selectObservingMode = value => {
     .filter((_, el) => el.innerText.trim() === value)
     .click({ force: true });
 };
+export const selectOptionFromDropdown = (testId, value) => {
+  // Open the dropdown using mousedown instead of click
+  cy.get('[data-testid="' + testId + '"] [role="combobox"]').trigger('mousedown', {
+    button: 0,
+    force: true
+  });
+
+  // Select the option
+  cy.get('li[role="option"]')
+    .filter((_, el) => el.innerText.trim() === value)
+    .click({ force: true });
+};
 
 export const clickProposalTypePrincipleInvestigator = () => selectId('ProposalType-1');
 export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalAttribute-1');
@@ -566,11 +578,6 @@ export const clickToTechnicalPage = () => {
   pageConfirmed('TECHNICAL');
 };
 
-export const clickToObservatoryDataProductPage = () => {
-  clickToNextPage();
-  pageConfirmed('OBSERVATORY DATA PRODUCT');
-};
-
 export const clickToCalibrationPage = () => {
   clickToNextPage();
   pageConfirmed('CALIBRATION');
@@ -646,13 +653,6 @@ export const verifyOnLandingPageNotLoggedInMsgIsVisible = () => {
   cy.get('[id="standardAlertId"]').should('contain', 'NOT LOGGED IN, NO PROPOSALS AVAILABLE');
 };
 
-export const verifyObservationInTable = () => {
-  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
-    .children('div[role="row"]')
-    .should('contain', 'obs-');
-  //  .should('contain', 'AA2');
-  //  .should('have.length', 2);
-};
 export const verifyDataInTable = (tableTestId, text) => {
   cy.get(`[data-testid="${tableTestId}"]`)
     .find('[role="row"]')
