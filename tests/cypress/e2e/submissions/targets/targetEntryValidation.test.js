@@ -3,29 +3,49 @@ import {
   checkFieldDisabled,
   clearLocalStorage,
   clickAddSubmission,
+  clickCreateSubmission,
   clickCycleConfirm,
   clickCycleSelectionMockProposal,
   clickCycleSelectionSV,
   clickDialogConfirm,
   clickEdit,
   clickFirstRowOfTargetTable,
+  clickProposalTypePrincipleInvestigator,
+  clickStatusIconNav,
+  clickSubProposalTypeTargetOfOpportunity,
   clickToAddTarget,
+  enterProposalTitle,
+  enterScienceVerificationIdeaTitle,
   enterTargetField,
-  initializeUserNotLoggedIn,
+  initialize,
+  mockCreateProposalAPI,
+  mockCreateSVIdeaAPI,
   mockOSDAPI,
   mockResolveTargetAPI,
+  pageConfirmed,
   updateTargetField,
   verifyFieldError,
   verifyInformationBannerText,
   verifyOsdDataMaxTargets,
+  verifyScienceIdeaCreatedAlertFooter,
+  verifySubmissionCreatedAlertFooter,
   verifyTargetInTargetTable
 } from '../../common/common.js';
+import { standardUser } from '../../users/users.js';
 beforeEach(() => {
-  initializeUserNotLoggedIn();
+  initialize(standardUser);
   mockOSDAPI();
+  mockCreateSVIdeaAPI();
   clickAddSubmission();
+  cy.wait('@mockOSDData');
   clickCycleSelectionSV();
   clickCycleConfirm();
+  enterScienceVerificationIdeaTitle();
+  clickCreateSubmission();
+  cy.wait('@mockCreateSVIdea');
+  verifyScienceIdeaCreatedAlertFooter();
+  clickStatusIconNav('statusId4'); //Click to target page
+  pageConfirmed('TARGET');
   checkFieldDisabled('addTargetButton', true); //verify add target button is disabled when all target fields are incomplete
 });
 
@@ -120,8 +140,6 @@ describe('Science Verification: Target entry validation', () => {
 
   it('SV: Verify target table reflects updated target', () => {
     mockResolveTargetAPI();
-    cy.wait('@mockOSDData');
-
     //add target
     addM2TargetUsingResolve();
     cy.wait('@mockResolveTarget');
@@ -152,10 +170,22 @@ describe('Science Verification: Target entry validation', () => {
 
 describe('Proposal Flow: Target entry validation', () => {
   beforeEach(() => {
-    initializeUserNotLoggedIn();
+    initialize(standardUser);
+    mockOSDAPI();
+    mockCreateProposalAPI();
     clickAddSubmission();
+    cy.wait('@mockOSDData');
     clickCycleSelectionMockProposal();
     clickCycleConfirm();
+    enterProposalTitle();
+    clickProposalTypePrincipleInvestigator();
+    clickSubProposalTypeTargetOfOpportunity();
+    clickCreateSubmission();
+    cy.wait('@mockCreateProposal');
+    verifySubmissionCreatedAlertFooter();
+    clickStatusIconNav('statusId4'); //Click to target page
+    pageConfirmed('TARGET');
+    checkFieldDisabled('addTargetButton', true); //verify add target button is disabled when all target fields are incomplete
   });
 
   it('Proposal: Verify name field error when target is duplicated', () => {
