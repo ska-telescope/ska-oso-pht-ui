@@ -373,7 +373,7 @@ export default function LandingPage() {
       <Grid container p={5} direction="row" alignItems="center" justifyContent="space-around">
         <Grid size={{ xs: 12 }}>{loggedIn && pageDescription()}</Grid>
         <Grid size={{ sm: 4, md: 3, lg: 2 }} p={2}>
-          {loggedIn ? addSubmissionButton() : null}
+          {loggedIn || cypressToken ? addSubmissionButton() : null}
         </Grid>
         <Grid size={{ sm: 4 }} p={2}>
           {displayField() && searchDropdown()}
