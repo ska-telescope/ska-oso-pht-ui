@@ -29,7 +29,7 @@ On the landing page is a summary table of the submissions associated with you, e
 
 - **Actions** (|ico4|) on each submission. See  :numref:`Table %s <mytest>`.
 - **Submission ID** : Unique identifier for each submission.
-- **Cycle selection** : SKAO observing cycle associated with the submission.
+- **Cycle Selection** : SKAO observing cycle associated with the submission.
 - **Title** : The title of the submission.
 - **Type** : The type of submission. This can be either a proposal or a Science Verification.
 - **Status** : Current status of the submission (e.g., draft, submitted, Under Review, Accepted, Withdrawn, Rejected). 
@@ -59,7 +59,7 @@ On the landing page is a summary table of the submissions associated with you, e
      - Purpose
   
    * -  |iconedit| (Edit)
-     - Edits the details of a proposal. This is only active for proposals in "Draft" status.
+     - Edits the details of a submission. This is only active for submissions in "Draft" status.
    * - |iconview| (View)
      - Views the summary of a submission.
    * - |iconclone| (Clone)
@@ -82,8 +82,8 @@ Key Information and Actions
    :alt: Page search filter
 
 -  Click |ico1| to create a new submission. 
--  Use the drop down |ico2| to filter proposals by status.
-- The search bar |ico3|  allows you to search proposal by title and proposal ID.
+-  Use the drop down |ico2| to filter submissions by status.
+- The search bar |ico3|  allows you to search submissions by title and submission ID.
 - The table is sortable by clicking on the column headers
 
 

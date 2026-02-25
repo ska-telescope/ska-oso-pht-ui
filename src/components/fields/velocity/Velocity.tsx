@@ -37,7 +37,7 @@ export default function VelocityField({
   const RedShiftValueField = () => {
     return (
       <TextEntry
-        label={t('velocity.' + velType)}
+        label={t('velocity.' + velType + '.label')}
         testId="redshiftValue"
         value={redshift}
         setValue={setRedshift}
@@ -49,7 +49,7 @@ export default function VelocityField({
   const VelocityValueField = () => {
     return (
       <TextEntry
-        label={t('velocity.' + velType)}
+        label={t('velocity.' + velType + '.label')}
         testId="velocityValue"
         value={vel}
         setValue={setVel}

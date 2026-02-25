@@ -6,7 +6,7 @@
 /*-----------------------------------------------------*/
 
 export const calculateCentralFrequency = (inCap: any, sc: string) => {
-  const cap = inCap.basicCapabilities;
+  const cap = inCap?.basicCapabilities ?? null;
   if (cap?.minFrequencyHz !== undefined && cap?.maxFrequencyHz !== undefined) {
     return (cap.minFrequencyHz + cap.maxFrequencyHz) / 2;
   }

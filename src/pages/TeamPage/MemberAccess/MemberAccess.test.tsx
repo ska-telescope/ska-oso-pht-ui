@@ -24,5 +24,3 @@ describe('<MemberAccess />', () => {
     render(<TestWrapper />);
   });
 });
-
-// TODO - Add more tests for MemberAccess component

@@ -7,8 +7,7 @@ import {
   // BAND_LOW_STR,
   // ERROR_SECS,
   // FREQUENCY_UNITS,
-  TELESCOPE_LOW_NUM,
-  TYPE_ZOOM
+  TELESCOPE_LOW_NUM
 } from '@utils/constants.ts';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 // import sensCalHelpers from '../../../../services/api/sensitivityCalculator/sensCalHelpers';
@@ -48,14 +47,14 @@ export default function BandwidthField({
   suffix = null,
   value,
   telescope,
-  widthButton = 50,
-  // observingBand = BAND_LOW_STR,
-  // centralFrequency = 0,
-  // centralFrequencyUnits = 1,
-  // subarrayConfig = SA_AA2,
-  // minimumChannelWidthHz = 0,
-  observationType = TYPE_ZOOM
-}: BandwidthFieldProps) {
+  widthButton = 50
+}: // observingBand = BAND_LOW_STR,
+// centralFrequency = 0,
+// centralFrequencyUnits = 1,
+// subarrayConfig = SA_AA2,
+// minimumChannelWidthHz = 0,
+// observationType = TYPE_ZOOM
+BandwidthFieldProps) {
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const { observatoryConstants } = useOSDAccessors();
@@ -66,7 +65,7 @@ export default function BandwidthField({
   const isLow = () => telescope === TELESCOPE_LOW_NUM;
 
   const getOptions = () => {
-    return observatoryConstants.array[telescope - 1].bandWidth;
+    return observatoryConstants?.array[telescope - 1]?.bandWidth ?? [];
   };
   const roundBandwidthValue = (options: any[]) =>
     options.map((obj: { label: string; value: any; mapping: any }) => {

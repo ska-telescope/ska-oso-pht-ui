@@ -49,7 +49,6 @@ describe('Review Administrator', () => {
     clickUserMenuProposals();
   });
 
-  //TODO: Resolve getSubmittedProposals API call
   it('Display a list of proposals', () => {
     clickUserMenuPanels();
     clickFirstPanel();
@@ -59,7 +58,6 @@ describe('Review Administrator', () => {
     // verifyProposalOnGridIsVisible('In a galaxy far, far away');
   });
 
-  //TODO: Resolve getReviewers API call
   it('Display a list of reviewers', () => {
     clickUserMenuPanels(); // (real getReviewers api call would be made at this point and intercepted)
     verifyMockedAPICall('@getReviewers');
@@ -67,7 +65,6 @@ describe('Review Administrator', () => {
     // verifyReviewerOnGridIsVisible('Aisha');
   });
 
-  //TODO: Resolve getReviewers API call
   it('Add a reviewer to a panel', () => {
     clickUserMenuPanels();
     verifyMockedAPICall('@getReviewers');
@@ -76,7 +73,6 @@ describe('Review Administrator', () => {
     // verifyTickBoxIsSelected(2);
   });
 
-  //TODO: Resolve getSubmittedProposals API call
   it('Add a proposal to a panel', () => {
     clickUserMenuPanels();
     clickFirstPanel();

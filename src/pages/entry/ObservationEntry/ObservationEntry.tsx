@@ -173,9 +173,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setContinuumBandwidthUnits(ob?.continuumBandwidthUnits ?? 0);
     setSpectralResolution(ob?.spectralResolution ?? '');
     setSpectralAveraging(ob?.spectralAveraging ?? 1);
-    setSuppliedType(ob?.supplied.type);
-    setSuppliedValue(ob?.supplied.value);
-    setSuppliedUnits(ob?.supplied.units);
+    setSuppliedType(ob?.supplied?.type);
+    setSuppliedValue(ob?.supplied?.value);
+    setSuppliedUnits(ob?.supplied?.units);
     setSubBands(ob?.numSubBands ?? 0);
     setNumOf15mAntennas(ob?.num15mAntennas ?? 0);
     setNumOf13mAntennas(ob?.num13mAntennas ?? 0);
@@ -256,7 +256,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   };
 
   const setDefaultCentralFrequency = (inBand: string) => {
-    const obsBand = telescopeBand(inBand) === TELESCOPE_LOW_NUM ? osdLOW : osdMID;
+    const obsBand = telescopeBand
+      ? telescopeBand(inBand) === TELESCOPE_LOW_NUM
+        ? osdLOW
+        : osdMID
+      : null;
     const newUnits = inBand === BAND_LOW_STR ? FREQUENCY_MHZ : FREQUENCY_GHZ;
     const newValueHz = calculateCentralFrequency(obsBand, inBand);
     const newValue = frequencyConversion(newValueHz, FREQUENCY_HZ, newUnits);
@@ -331,7 +335,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const record = isLow() ? osdLOW : osdMID;
     setMaxZoomChannels(0);
     if (record) {
-      const sArray = record.subArrays.find((sub: any) => sub.subArray === SA_AA2);
+      const sArray = record?.subArrays?.find((sub: any) => sub.subArray === SA_AA2);
       setMaxZoomChannels(sArray?.numberZoomChannels ?? 0);
     }
   };
@@ -713,7 +717,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       ];
     }
     const obj = low ? osdLOW : osdMID;
-    const rec = obj?.subArrays.find(r => r.subArray === subarrayConfig);
+    const rec = obj?.subArrays?.find(r => r.subArray === subarrayConfig) ?? null;
     const modes = obTypeTransform(rec?.cbfModes ?? []);
     return modes.map(mode => ({
       label: t(`observationType.${mode}`),
@@ -750,14 +754,18 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
 
   const suppliedTypeField = () => {
-    const getOptions = () =>
-      isLow() ? [observatoryConstants?.Supplied[0]] : observatoryConstants?.Supplied;
+    const getOptions = () => {
+      const supplied = observatoryConstants?.Supplied ?? [];
+      if (supplied.length === 0) return [];
+      return isLow() ? [supplied[0]] : supplied;
+    };
+
     return (
       <Box pt={2}>
         <DropDown
           options={getOptions()}
           testId="suppliedType"
-          value={suppliedType}
+          value={suppliedType ?? ''}
           setValue={setSuppliedType}
           disabled={getOptions()?.length < 2}
           label={t('suppliedType.label')}
@@ -771,9 +779,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const suppliedField = () => {
     const suppliedUnitsField = () => {
       const getOptions = () => {
-        return suppliedType && suppliedType > 0
-          ? observatoryConstants.Supplied[suppliedType - 1].units
-          : [];
+        const supplied = observatoryConstants?.Supplied ?? [];
+        if (!suppliedType || suppliedType <= 0) return [];
+        const entry = supplied[suppliedType - 1];
+        if (!entry || !Array.isArray(entry.units)) return [];
+        return entry.units;
       };
 
       return (
@@ -1023,7 +1033,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   };
 
   const addButtonDisabled = () => {
-    // TODO : We need to make this a bit cleverer, but this will do for a short time
     return isEdit() ? false : validateId() ? true : false;
   };
 
