@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Changed: upgrade to oso-services v13.2.0
 
 10.0.0
 ----------
