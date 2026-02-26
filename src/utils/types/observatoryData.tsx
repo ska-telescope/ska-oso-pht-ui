@@ -95,7 +95,7 @@ export type BasicCapabilitiesLow = {
 
 export type subarrayConfigurationMidBackend = {
   allowed_channel_count_range_max: number[];
-  allowed_c_channel_count_range_min: number[];
+  allowed_channel_count_range_min: number[];
   allowed_channel_width_values: number[];
   available_receivers: string[];
   number_ska_dishes: number;
