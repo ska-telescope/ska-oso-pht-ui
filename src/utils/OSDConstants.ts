@@ -211,7 +211,6 @@ export const OSD_CONSTANTS = {
   ],
   Supplied: [
     {
-      label: 'Integration Time', // TODO check if label still needed as we use sensCalcResultsLabel in calculate results
       sensCalcResultsLabel: 'integrationTime',
       mappingLabel: 'integration_time',
       value: SUPPLIED_TYPE_INTEGRATION,
@@ -226,7 +225,6 @@ export const OSD_CONSTANTS = {
       ]
     },
     {
-      label: 'Sensitivity', // TODO check if label still needed as we use sensCalcResultsLabel in calculate results
       sensCalcResultsLabel: 'sensitivity',
       mappingLabel: 'sensitivity',
       value: SUPPLIED_TYPE_SENSITIVITY,

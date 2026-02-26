@@ -47,14 +47,14 @@ export const getMaxSpecBandwidthHz = (
   osdLOW: any,
   observatoryConstants: any
 ): any => {
-  //TODO: AA2 will be extended as OSD Data is extended
+  // STAR-1923: AA2 will be extended as OSD Data is extended
   if (isAA2(subarrayConfig)) {
     const sArray = (isLow(telescope) ? osdLOW : osdMID)?.subArrays.find(
       (sub: any) => sub.subArray === SA_AA2
     );
     return sArray?.channelWidthHz;
   } else {
-    //TODO: Refactor as custom does not have this field
+    // STAR-1923 : Refactor as custom does not have this field
     return observatoryConstants.array
       .find((item: any) => item.value === telescope)
       ?.subarray?.find((ar: any) => ar.value === subarrayConfig)?.maxContBandwidthHz;
@@ -77,7 +77,7 @@ const getSubArrayAntennasCounts = (
 ) => {
   const observationArray = observatoryConstants.array.find((arr: any) => arr.value === telescope);
   const subArray = observationArray?.subarray?.find((sub: any) => sub.value === subarrayConfig);
-  //TODO: AA2 will be extended as OSD Data is extended
+  // STAR-1923 : AA2 will be extended as OSD Data is extended
   if (!isLow(telescope) && isAA2(subarrayConfig)) {
     const sArray = osdMID.subArrays.find((sub: any) => sub.subArray === SA_AA2);
     return {

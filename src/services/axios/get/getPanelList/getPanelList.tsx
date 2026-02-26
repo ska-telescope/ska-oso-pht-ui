@@ -36,9 +36,9 @@ export function mappingList(inRec: PanelBackend[]): Panel[] {
   for (let i = 0; i < inRec.length; i++) {
     const rec: Panel = {
       id: inRec[i].panel_id?.toString(),
-      metadata: inRec[i].metadata, // TODO create metadata backend type and mapping + modify frontend type to be camelCase
+      metadata: inRec[i].metadata,
       name: inRec[i].name,
-      expiresOn: inRec[i].expires_on, // TODO check why PDM doesn't have expiry date
+      expiresOn: inRec[i].expires_on,
       proposals:
         inRec[i].proposals?.length > 0
           ? inRec[i].proposals.map(proposal => getProposal(proposal, inRec[i].panel_id))

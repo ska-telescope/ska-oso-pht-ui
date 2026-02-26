@@ -3,7 +3,7 @@ type Investigator = {
   firstName: string;
   lastName: string;
   email: string; // This should always be a SKAO email (@community.skao.int or @skao.int)
-  affiliation: string; // TODO should we remove affiliation and just use officeLocation?
+  affiliation: string;
   phdThesis: boolean;
   status: string;
   pi: boolean;
@@ -19,7 +19,7 @@ export type InvestigatorBackend = {
   given_name: string;
   family_name: string;
   email: string;
-  organization?: string; // TODO should we remove organization and just use affiliation?
+  organization?: string;
   for_phd?: boolean;
   principal_investigator?: boolean;
   officeLocation: string | null;

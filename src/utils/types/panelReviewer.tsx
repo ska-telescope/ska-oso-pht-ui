@@ -1,12 +1,12 @@
 export type PanelReviewer = {
   reviewerId: string;
   panelId: string;
-  assignedOn?: string; // TODO clarify if assignedOn should be set in the database
+  assignedOn?: string;
   status: string;
 };
 
 export type PanelReviewerBackend = {
   reviewer_id: string;
-  assigned_on?: string; // TODO clarify if assignedOn should be set in the database
+  assigned_on?: string;
   status: string;
 };

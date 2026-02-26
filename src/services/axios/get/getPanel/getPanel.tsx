@@ -28,9 +28,9 @@ const getReviewer = (reviewer: PanelReviewerBackend, panelId: string): PanelRevi
 export function mapping(inRec: PanelBackend): Panel {
   const rec: Panel = {
     id: inRec.panel_id?.toString(),
-    metadata: inRec.metadata, // TODO create metadata backend type and mapping + modify frontend type to be camelCase
+    metadata: inRec.metadata,
     name: inRec.name,
-    expiresOn: inRec.expires_on, // TODO check why PDM doesn't have expiry date
+    expiresOn: inRec.expires_on,
     proposals:
       inRec.proposals?.length > 0
         ? inRec.proposals.map(proposal => getProposal(proposal, inRec.panel_id))
