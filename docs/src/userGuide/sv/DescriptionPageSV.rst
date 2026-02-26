@@ -31,17 +31,9 @@ The Description Page (see :numref:`Figure %s <sciencepage>`) enables a submissio
 
    Description file preview.
 
-
-
-.. |choosebutton| image:: /images/choosebutton.png
-   :width: 15%
-   :alt: View icon
-
-
 .. |clearbutton| image:: /images/clearbutton.png
    :width: 13%
    :alt: View icon
-
 
 .. |uploadbutton| image:: /images/uploadbutton.png
    :width: 13%
@@ -65,7 +57,7 @@ Layout and Navigation
 The Description Page has clear and consistent options as outlined on the table below:
 
 
-* Click the |choosebutton| to select a file from a local device. Once a file is selected, the |clearbutton| and |uploadbutton| buttons become visible.
+* Click the selection area to select a file from a local device. Once a file is selected, the |clearbutton| and |uploadbutton| buttons become visible.
 * Click |clearbutton| to clear the selected file and start again or |uploadbutton| to upload the selected file.
 * Once the file is uploaded, the description page will look like :numref:`Figure %s <sciencepageafter>`.
 * In :numref:`Figure %s <sciencepageafter>`, the |deletebutton| deletes the uploaded file and the |downloadbutton| button downloads a copy of the uploaded file to a local device.

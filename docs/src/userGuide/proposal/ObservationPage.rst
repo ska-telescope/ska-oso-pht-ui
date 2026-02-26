@@ -45,9 +45,9 @@ On entering the observation page for the first time, it will look like :numref:`
 .. figure:: /images/observationPage.png
    :width: 90%
    :align: center
-   :alt: Observation page with Observation(s) and target(s) added.
+   :alt: Observation page with Observation(s) added.
 
-   Observation page with Observation(s) and target(s) added.
+   Observation page with Observation(s) added.
 
 
 
@@ -82,7 +82,7 @@ The Observation Page consists of the Observation set table, which displays the f
       - |iconedit| icon allows an observation to be edited as shown in  :numref:`Figure %s <editobservationpage>`. This is identical to the 'Add Observation' page but the difference is 'Update' at the bottom of the page instead of 'Add'. Upon completion of this action, any affected Sensitivity Calculation results will be replaced, so it is encouraged to check that the results are still appropriate. 
       - |icondelete| icon provides the ability to delete ( after confirmation ) the selected observation. Once clicked, a summary of the selected observation is displayed as seen in :numref:`Figure %s <deleteobservationpage>`.  Upon confirmation, the selected observation, together with all the links to targets and data products will be removed. 
    
-   - **Type** : Observation type i.e Continuum or Zoom.
+   - **Type** : Observation type i.e Continuum, Spectral or PST.
    - **Id** : Unique id for each observation set.
    - **Group** : Group name if a given observation belongs to a group.
    - **Subarray** : The selected sub-array of the observation.

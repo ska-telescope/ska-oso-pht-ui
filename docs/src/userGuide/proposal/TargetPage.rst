@@ -24,27 +24,9 @@ The Target Page allows you to add target(s) to your submission (see :numref:`Fig
 
    Target page for 'List of Targets'
 
-.. _targetpagenopstbeam:
-
-.. figure:: /images/targetPageDefaultNoPSTBeam.png
-   :width: 90%
-   :align: center
-   :alt: Image of the Target page for 'Pulsar Timing Beam' section. Default selection is 'No Beam'.
-
-   'Pulsar Timing Beam' section. Default selection is 'No Beam'.
-
-.. _targetpageaddpstbeams:
-
-.. figure:: /images/targetPageAddPSTBeam.png
-   :width: 90%
-   :align: center
-   :alt: Image of the Target page for 'Pulsar Timing Beam' section. To add a new PST Beam.
-
-   'Pulsar Timing Beam' section 'Multiple Beams' selected.
-
 .. _targetpageimport:
 
-.. figure:: /images/targetPageimport.png
+.. figure:: /images/targetPageImport.png
    :width: 90%
    :align: center
    :alt: Image of the Target page for 'Import Targets'. 
@@ -53,7 +35,7 @@ The Target Page allows you to add target(s) to your submission (see :numref:`Fig
 
 .. _targetpageedit:
 
-.. figure:: /images/targetPageedit.png
+.. figure:: /images/targetPageEdit.png
    :width: 90%
    :align: center
    :alt: Target page showing modal to edit target. 
@@ -63,7 +45,7 @@ The Target Page allows you to add target(s) to your submission (see :numref:`Fig
 
 .. _targetpagedelete:
 
-.. figure:: /images/targetPagedelete.png
+.. figure:: /images/targetPageDelete.png
    :width: 90%
    :align: center
    :alt: Target page showing modal to delete target.
@@ -106,7 +88,7 @@ Key Information and Actions
 ===========================
 
 - Add target:
-  Use the entry form on the right of the page, under the tab ''**Add Target**'' If adding multiple PST Beams, each beam will display in a table within the 'Pulsar Timing Beam' section until 'Add target' is clicked. Beam names will display in a comma separated format under the column ''PST Beam'' in the target list.
+  Use the entry form on the right of the page, under the tab ''**Add Target**''.
 
 - Edit target:
   When selected, a modal is displayed with a form containing details of the selected target (see :numref:`Figure %s <targetpageedit>`).
