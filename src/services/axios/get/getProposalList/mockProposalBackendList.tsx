@@ -120,7 +120,7 @@ const MockProposalBackendList: ProposalBackend[] = [
           group_id: '2',
           observing_band: 'mid_band_1',
           elevation: 15,
-          // TODO: use this once latest PDM changes merged
+          // TODO PDM : use this once latest PDM changes merged
           /*
           elevation: {
             default: 15,
@@ -167,7 +167,7 @@ const MockProposalBackendList: ProposalBackend[] = [
           group_id: '2',
           observing_band: 'mid_band_1',
           elevation: 15,
-          // TODO: use this once latest PDM changes merged
+          // TODO PDM : use this once latest PDM changes merged
           /*
           elevation: {
             default: 15,
@@ -453,7 +453,7 @@ const MockProposalBackendList: ProposalBackend[] = [
           group_id: '2',
           observing_band: 'mid_band_1',
           elevation: 15,
-          // TODO: use this once latest PDM changes merged
+          // TODO PDM : use this once latest PDM changes merged
           /*
           elevation: {
             default: 15,
@@ -500,7 +500,7 @@ const MockProposalBackendList: ProposalBackend[] = [
           group_id: '2',
           observing_band: 'mid_band_1',
           elevation: 15,
-          // TODO: use this once latest PDM changes merged
+          // TODO PDM : use this once latest PDM changes merged
           /*
           elevation: {
             default: 15,
@@ -786,7 +786,7 @@ const MockProposalBackendList: ProposalBackend[] = [
           group_id: '2',
           observing_band: 'mid_band_1',
           elevation: 15,
-          // TODO: use this once latest PDM changes merged
+          // TODO PDM: use this once latest PDM changes merged
           /*
           elevation: {
             default: 15,
@@ -833,7 +833,7 @@ const MockProposalBackendList: ProposalBackend[] = [
           group_id: '2',
           observing_band: 'mid_band_1',
           elevation: 15,
-          // TODO: use this once latest PDM changes merged
+          // TODO PDM: use this once latest PDM changes merged
           /*
           elevation: {
             default: 15,

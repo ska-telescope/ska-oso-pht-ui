@@ -35,7 +35,8 @@ import {
   TYPE_ZOOM,
   VEL_UNITS,
   VELOCITY_TYPE,
-  TYPE_ZOOM_LONG
+  TYPE_ZOOM_LONG,
+  SA_AA4
 } from '@utils/constants.ts';
 import {
   DataProductSDPNew,
@@ -282,7 +283,7 @@ const getSubArray = (incSubArray: string, incTelescope: number): string => {
   const subArray = array?.subarray
     ?.find(sub => sub.value === incSubArray)
     ?.label?.toLocaleLowerCase();
-  return subArray ? subArray : 'aa4'; // TODO : fallback needs to be moved to a constant
+  return subArray ? subArray : SA_AA4;
 };
 
 const getArrayDetails = (incObs: Observation): ArrayDetailsLowBackend | ArrayDetailsMidBackend => {
@@ -356,7 +357,7 @@ export const getObservationTypeDetails = (obs: Observation) => {
         spectral_resolution: obs.spectralResolution,
         effective_resolution: obs.effectiveResolution,
         spectral_averaging: obs.spectralAveraging?.toString(),
-        number_of_channels: '1024' // TODO : Need to get right value from PDM/UI
+        number_of_channels: '1024' // TODO PDM : Need to get right value from PDM/UI
       };
     case TYPE_PST:
     default:
@@ -505,7 +506,6 @@ export const getSuppliedFieldsIntegrationTime = (
     value: Number(tarObs.sensCalc.section3?.[0]?.value),
     unit: tarObs.sensCalc.section3?.[0]?.units ?? ''
   };
-  // TODO : check if it's ok to send the same value for continuum and zoom? Is this not implemented in the UI?
   return params;
 };
 /***********************************************************/
@@ -522,7 +522,6 @@ export const getDataProductRef = (
   incTarObs: TargetObservation,
   incDataProductSDP: DataProductSDPNew[]
 ) => {
-  // TODO make data product mandatory when sens calc is requested so it's never undefined
   return String(incDataProductSDP.find(dp => dp.observationId === incTarObs.observationId)?.id);
 };
 
@@ -573,7 +572,7 @@ const getResults = (
           continuum:
             isContinuum(obsType) || isPST(obsType)
               ? tarObs.sensCalc.section1?.find(o => o.field === 'continuumSynthBeamSize')?.value
-              : 'dummy', // TODO: investigate typescript not taking empty string
+              : '',
           unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
             ?.units
         },

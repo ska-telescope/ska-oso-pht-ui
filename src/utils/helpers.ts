@@ -53,7 +53,6 @@ export const countWords = (text: string) => {
         .filter(Boolean).length;
 };
 
-// TODO double-check function and/or multipliers
 export const frequencyConversion = (inValue: any, from: number, to: number = FREQUENCY_HZ) => {
   return (inValue * FREQUENCY_UNITS[to - 1].toHz) / FREQUENCY_UNITS[from - 1].toHz;
 };

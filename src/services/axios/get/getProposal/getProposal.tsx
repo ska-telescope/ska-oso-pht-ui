@@ -181,14 +181,14 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       kind: getTargetType(referenceCoordinate),
       epoch: e?.reference_coordinate?.epoch,
       parallax: e?.reference_coordinate?.parallax,
-      id: i + 1, // TODO use e.target_id once it is a number => needs to be changed in ODA & PDM
+      id: i + 1, // TODO ODA : use e.target_id once it is a number => needs to be changed in ODA & PDM
       name: e?.target_id,
       b: undefined,
       l: undefined,
       redshift: e.radial_velocity.redshift.toString(),
       raReferenceFrame: e.radial_velocity.reference_frame,
-      raDefinition: e.radial_velocity.definition, // TODO modify as definition not implemented in the front-end yet
-      velType: getVelType(e.radial_velocity.definition), // TODO modify as definition not implemented in the front-end yet
+      raDefinition: e.radial_velocity.definition,
+      velType: getVelType(e.radial_velocity.definition),
       vel: e.radial_velocity.quantity?.value?.toString(),
       velUnit: VEL_UNITS.find(
         u => u.label === e.radial_velocity?.quantity?.unit?.split(' ').join('')
@@ -349,9 +349,12 @@ const getWeighting = (inImageWeighting: string): number => {
 };
 
 const getSupplied = (inSupplied: SuppliedBackend | null): Supplied => {
-  const suppliedType = OSD_CONSTANTS.Supplied?.find(s => s.mappingLabel === inSupplied?.supplied_type);
-  const suppliedUnits = suppliedType?.units?.find(u => u.label === inSupplied?.quantity.unit)
-    ?.value ?? inSupplied?.supplied_type;
+  const suppliedType = OSD_CONSTANTS.Supplied?.find(
+    s => s.mappingLabel === inSupplied?.supplied_type
+  );
+  const suppliedUnits =
+    suppliedType?.units?.find(u => u.label === inSupplied?.quantity.unit)?.value ??
+    inSupplied?.supplied_type;
   const supplied = {
     type: suppliedType?.value,
     value: inSupplied?.quantity.value,
@@ -517,9 +520,9 @@ const getResultsSection1 = (
       section1.push({
         // This is only saved for supplied sensitivity obs in backend
         // However, we do display continuumSensitivityWeighted, etc. for supplied integration in UI
-        // TODO -> sens calcs results in UI need to be updated to have different fields for integration time results and sensitivity results
+        // TODO SC -> sens calcs results in UI need to be updated to have different fields for integration time results and sensitivity results
         // => see sensitivity calculator
-        // TODO once sens calcs results updated, mapping of results will need updating to reflect different fields for different results
+        // TODO SC once sens calcs results updated, mapping of results will need updating to reflect different fields for different results
         field: 'continuumSensitivityWeighted',
         value: inResult.result?.weighted_continuum_sensitivity?.value.toString(),
         units: inResult?.result?.weighted_continuum_sensitivity?.unit?.split(' ')?.join('') // trim white spaces
@@ -664,7 +667,7 @@ const getTargetObservation = (
     const isSensitivity = result.result?.supplied_type === 'sensitivity';
 
     const targetObs: TargetObservation = {
-      // TODO for targetId, use result.target_ref once it is a number => needs to be changed in ODA & PDM
+      // TODO ODA : for targetId, use result.target_ref once it is a number => needs to be changed in ODA & PDM
       targetId: outTargets.find(tar => tar.name === result.target_ref)?.id as number,
       observationId: result.observation_set_ref as string,
       dataProductsSDPId: result?.data_product_ref,
@@ -750,7 +753,7 @@ export function mapping(inRec: ProposalBackend): Proposal {
       : getScienceCategory((inRec.proposal_info?.science_category as string) || ''),
     scienceSubCategory: [1], // Not used currently
     sciencePDF: sciencePDF,
-    scienceLoadStatus: sciencePDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
+    scienceLoadStatus: sciencePDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL,
     targetOption: 1, // TODO check what to map to
     targets: targets,
     observations: getObservations(
@@ -767,12 +770,12 @@ export function mapping(inRec: ProposalBackend): Proposal {
           )
         : [],
     calibrationStrategy: getCalibrationStrategy(inRec.observation_info?.calibration_strategy),
-    technicalPDF: isSV ? undefined : technicalPDF, // TODO sort doc link on ProposalDisplay
+    technicalPDF: isSV ? undefined : technicalPDF,
     technicalLoadStatus: isSV
       ? FileUploadStatus.INITIAL
       : technicalPDF
       ? FileUploadStatus.OK
-      : FileUploadStatus.INITIAL, //TODO align loadStatus to UploadButton status
+      : FileUploadStatus.INITIAL,
     dataProductSDP: inRec?.observation_info?.data_product_sdps
       ? getDataProductSDP(inRec.observation_info?.data_product_sdps as DataProductSDPsBackend[])
       : [],
