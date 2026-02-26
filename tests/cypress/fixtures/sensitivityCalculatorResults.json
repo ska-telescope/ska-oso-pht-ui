@@ -34,9 +34,9 @@
     "integrationTime": "1.00 h"
   },
   {
-    "test": "MID telescope, with subarray AA2, Continuum",
+    "test": "MID telescope, with subarray AA2, Zoom",
     "band": "Mid Band_1 (0.35 - 1.05 GHz)",
-    "subarray": "AA2",
+    "subarray": "AA*",
     "observationType": "Spectral",
     "weightedContinuumSensitivity": "",
     "continuumConfusionNoise": "",
@@ -51,7 +51,7 @@
     "integrationTime": "1.00 h"
   },
   {
-    "test": "MID telescope, with subarray AA2, Zoom",
+    "test": "MID telescope, with subarray AA*, Continuum",
     "band": "Mid Band_1 (0.35 - 1.05 GHz)",
     "subarray": "AA2",
     "observationType": "Continuum",
