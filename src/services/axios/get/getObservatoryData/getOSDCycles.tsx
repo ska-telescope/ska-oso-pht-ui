@@ -18,9 +18,9 @@ import { MockObservatoryDataBackend } from './mockObservatoryDataBackend';
 import {
   ObservatoryDataBackend,
   ObservatoryData,
-  ObservatoryPolicy
+  ObservatoryPolicy,
+  subBandsBackend
 } from '@/utils/types/observatoryData';
-import { capabilities } from 'happy-dom/lib/PropertySymbol';
 
 /*****************************************************************************************************************************/
 
@@ -78,10 +78,18 @@ const mapping = (inData: ObservatoryDataBackend[]): ObservatoryData => {
 
   console.log('policies', policies);
 
-  // TODO map subbands
-  // const mapSubBands = (data): any[] => {
+  const mapSubBands = (incSb: subBandsBackend[] | null): any => { // TODO suband type
+    if (!incSb) return null;
 
-  // }
+    return incSb.map(sb => ({
+      subBand: sb.sub_band,
+      maxFrequencyHz: sb.max_frequency_hz,
+      minFrequencyHz: sb.min_frequency_hz,
+      loFrequencyHz: sb.lo_frequency_hz,
+      sideband: sb.sideband
+    }));
+
+  }
 
   const mapCapabilities = (inData: ObservatoryDataBackend): ObservatoryData['capabilities'] => {
     console.log('mapCapabilities inData', inData);
@@ -154,40 +162,40 @@ const mapping = (inData: ObservatoryDataBackend[]): ObservatoryData => {
               maxFrequencyHz:
                 inData?.capabilities?.mid?.basic_capabilities?.receiver_information[5]
                   ?.max_frequency_hz,
-              // suBands: inData?.capabilities?.mid?.basic_capabilities?.receiver_information[5]?.sub_bands ? mapSubBands() : null,
-              subBands: [
-                {
-                  subBand:
-                    inData?.capabilities?.mid?.basic_capabilities?.receiver_information[5]
-                      ?.sub_bands[0]?.sub_band,
-                  maxFrequencyHz:
-                    inData?.capabilities?.mid?.basic_capabilities?.receiver_information[5]
-                      ?.sub_bands[0]?.max_frequency_hz,
-                  minFrequencyHz:
-                    inData?.capabilities?.mid?.basic_capabilities?.receiver_information[5]
-                      ?.sub_bands[0]?.min_frequency_hz,
-                  loFrequencyHz:
-                    inData?.capabilities?.mid?.basic_capabilities?.receiver_information[5]
-                      ?.sub_bands[0]?.lo_frequency_hz,
-                  sideband:
-                    inData?.capabilities?.mid?.basic_capabilities?.receiver_information[5]
-                      ?.sub_bands[0]?.sideband
-                },
-                {
-                  subBand: 2,
-                  maxFrequencyHz: 13510000000,
-                  minFrequencyHz: 12810000000,
-                  loFrequencyHz: 13860000000,
-                  sideband: 'low'
-                },
-                {
-                  subBand: 3,
-                  maxFrequencyHz: 12850000000,
-                  minFrequencyHz: 12150000000,
-                  loFrequencyHz: 11100000000,
-                  sideband: 'high'
-                }
-              ]
+              subBands: mapSubBands(inData?.capabilities?.mid?.basic_capabilities?.receiver_information[5]?.sub_bands),
+              // subBands: [
+              //   {
+              //     subBand:
+              //       inData?.capabilities?.mid?.basic_capabilities?.receiver_information[5]
+              //         ?.sub_bands[0]?.sub_band,
+              //     maxFrequencyHz:
+              //       inData?.capabilities?.mid?.basic_capabilities?.receiver_information[5]
+              //         ?.sub_bands[0]?.max_frequency_hz,
+              //     minFrequencyHz:
+              //       inData?.capabilities?.mid?.basic_capabilities?.receiver_information[5]
+              //         ?.sub_bands[0]?.min_frequency_hz,
+              //     loFrequencyHz:
+              //       inData?.capabilities?.mid?.basic_capabilities?.receiver_information[5]
+              //         ?.sub_bands[0]?.lo_frequency_hz,
+              //     sideband:
+              //       inData?.capabilities?.mid?.basic_capabilities?.receiver_information[5]
+              //         ?.sub_bands[0]?.sideband
+              //   },
+              //   {
+              //     subBand: 2,
+              //     maxFrequencyHz: 13510000000,
+              //     minFrequencyHz: 12810000000,
+              //     loFrequencyHz: 13860000000,
+              //     sideband: 'low'
+              //   },
+              //   {
+              //     subBand: 3,
+              //     maxFrequencyHz: 12850000000,
+              //     minFrequencyHz: 12150000000,
+              //     loFrequencyHz: 11100000000,
+              //     sideband: 'high'
+              //   }
+              // ]
             }
           ]
         },
