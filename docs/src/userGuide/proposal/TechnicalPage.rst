@@ -31,13 +31,6 @@ The technical Page (see :numref:`Figure %s <technicalpage>`) enables technical j
 
    Technical Justification file preview.
 
-
-
-.. |choosebutton| image:: /images/choosebutton.png
-   :width: 15%
-   :alt: View icon
-
-
 .. |clearbutton| image:: /images/clearbutton.png
    :width: 13%
    :alt: View icon
@@ -69,7 +62,7 @@ Layout and Navigation
 The Science & Technical Pages have clear and consistent options as outlined on the table below:
 
 
-* Click the |choosebutton| to select a file from a local device. Once a file is selected, the |clearbutton| and |uploadbutton| buttons become visible.
+* Click the selection area to select a file from a local device. Once a file is selected, the |clearbutton| and |uploadbutton| buttons become visible.
 * Click |clearbutton| to clear the selected file and start again or |uploadbutton| to uplod the selected file.
 * Once the file is uploaded, the technical page will look like :numref:`Figure %s <technicalpageafter>`.
 * In :numref:`Figure %s <technicalpageafter>`, the |deletebutton| deletes the uploaded file and the |downloadbutton| button downloads a copy of the uploaded file to a local device.
