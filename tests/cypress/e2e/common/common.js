@@ -242,7 +242,7 @@ export const clickStatusIconNav = testId => {
 };
 
 /*----------------------------------------------------------------------*/
-//TODO: REMOVE????
+
 export const clickDropdown = (testId, value) => {
   verifyExists(testId);
   click(testId);
