@@ -1,10 +1,12 @@
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
-import { Box, Grid, Paper, Typography } from '@mui/material';
+import { Box, Grid, Paper, Stack, Typography } from '@mui/material';
+import { useTheme } from '@mui/material/styles';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import {
   AlertColorTypes,
+  BorderedSection,
   DropDown,
   SearchEntry,
   Spacer,
@@ -44,12 +46,14 @@ import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAPI } from '@/services/axios/use/useOSDAPI/useOSDAPI';
 import TableSubmissions from '@/components/table/tableSubmissions/TableSubmissions';
+import SensCalcButton from '@/components/button/SensCalc/SensCalc';
 
 export default function LandingPage() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
   const { autoLink, isSV, osdCycleId, setSelectedPolicyByCycleId } = useOSDAccessors();
+  const theme = useTheme();
 
   const {
     application,
@@ -369,7 +373,7 @@ export default function LandingPage() {
       <Grid container p={5} direction="row" alignItems="center" justifyContent="space-around">
         <Grid size={{ xs: 12 }}>{loggedIn && pageDescription()}</Grid>
         <Grid size={{ sm: 4, md: 3, lg: 2 }} p={2}>
-          {addSubmissionButton()}
+          {loggedIn || cypressToken ? addSubmissionButton() : null}
         </Grid>
         <Grid size={{ sm: 4 }} p={2}>
           {displayField() && searchDropdown()}
@@ -396,6 +400,19 @@ export default function LandingPage() {
             </Box>
           )}
         </Grid>
+        {!loggedIn && !cypressToken && (
+          <Grid size={{ xs: 6 }} pt={5}>
+            <BorderedSection title={t('sensCalc.label')} borderColor={theme.palette.info.main}>
+              <Stack spacing={10} alignItems="center" justifyContent="center" p={5}>
+                <Typography align="center" variant="h6" minHeight="5vh">
+                  {t('sensCalc.description')}
+                </Typography>
+                {/* WE NEED TO DYNAMICALLY DETERMINE THE PATH FOR THE URL */}
+                <SensCalcButton link={t('sensCalc.url')} primary />
+              </Stack>
+            </BorderedSection>
+          </Grid>
+        )}
       </Grid>
       <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {openDeleteDialog && deleteClicked()}

@@ -21,6 +21,8 @@ export const initialize = user => {
   });
 };
 
+// IMPROVEMENT  move cy. commands out of this file into cypress.js and create a function for it
+
 export const initializeUserNotLoggedIn = () => {
   viewPort();
   cy.visit('/', {
@@ -39,7 +41,6 @@ export const clearLocalStorage = () => {
 // Stubbed API calls
 // see: https://docs.cypress.io/app/guides/network-requests#Routing
 
-// TODO move cy. commands out of this file into cypress.js and create a function for it
 export const getProposals = () => {
   cy.fixture('proposals.json').then(proposals => {
     cy.intercept('GET', '**/pht/prsls/mine', {
@@ -49,7 +50,6 @@ export const getProposals = () => {
   });
 };
 
-// TODO move cy. commands out of this file into cypress.js and create a function for it
 export const getSubmittedProposals = () => {
   cy.fixture('proposals.json').then(proposals => {
     cy.intercept('GET', '**/pht/prsls/submitted', {
@@ -59,7 +59,6 @@ export const getSubmittedProposals = () => {
   });
 };
 
-// TODO move cy. commands out of this file into cypress.js and create a function for it
 export const getReviewers = () => {
   cy.fixture('reviewers.json').then(reviewers => {
     cy.intercept('GET', '**/pht/reviewers', {
@@ -69,7 +68,6 @@ export const getReviewers = () => {
   });
 };
 
-// TODO move cy. commands out of this file into cypress.js and create a function for it
 export const verifyMockedAPICall = stubAlias => {
   cy.wait(stubAlias).then(interception => {
     assert.isNotNull(interception.response.body, 'API call has data');

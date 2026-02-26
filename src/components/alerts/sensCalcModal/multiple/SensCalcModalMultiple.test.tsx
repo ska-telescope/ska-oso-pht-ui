@@ -11,7 +11,6 @@ const data = [
   {
     id: 1,
     section1: [
-      // TODO use more meaningful results
       {
         field: 'testField1-1',
         value: '0',

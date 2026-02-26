@@ -11,7 +11,7 @@ import {
   verifyUserMenuDecisions
 } from '../../common/common';
 import { reviewerTechnical } from '../users';
-// TODO : PMT Flows are under review, scenarios will be updated when functionality is finalised
+// PMT Flows are under review, scenarios will be updated when functionality is finalised
 describe('Reviewer ( Technical )', () => {
   beforeEach(() => {
     initialize(reviewerTechnical);
@@ -36,6 +36,6 @@ describe('Reviewer ( Technical )', () => {
   });
   it('Perform a review', () => {
     clickUserMenuReviews();
-    // TODO : Perhaps do some stuff in here ?
+    // Do some stuff in here ?
   });
 });

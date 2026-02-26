@@ -12,7 +12,7 @@ import {
 } from '../../common/common';
 import { reviewerScience } from '../users';
 
-// TODO : PMT Flows are under review, scenarios will be updated when functionality is finalised
+// PMT Flows are under review, scenarios will be updated when functionality is finalised
 describe('Reviewer ( Science )', () => {
   beforeEach(() => {
     initialize(reviewerScience);
@@ -37,6 +37,6 @@ describe('Reviewer ( Science )', () => {
   });
   it('Perform a review', () => {
     clickUserMenuReviews();
-    // TODO : Perhaps do some stuff in here ?
+    // Do some stuff in here ?
   });
 });

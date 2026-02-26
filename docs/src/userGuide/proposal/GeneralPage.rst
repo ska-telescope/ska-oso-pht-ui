@@ -34,8 +34,7 @@ The General Page has a clear structure:
    * Magnetism
    * Our Galaxy
    * Pulsars
-   * Solar
-   * Heliospheric and Ionospheric Physics
+   * Solar, Heliospheric and Ionospheric Physics
    * Transients
    * VLBI
 - Abstract area: A text box for the proposal abstract (maximum of 250 words). This field accepts latex syntax, which can be previewed by clicking the |icoview| icon next to the abstract field.

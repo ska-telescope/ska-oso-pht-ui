@@ -28,14 +28,14 @@ export const getMaxContBandwidthHz = (
   osdMID: any,
   osdLOW: any
 ): any => {
-  //TODO: Need to deal with custom case
-
   if (isLow(telescope)) {
-    const sArray = osdLOW?.subArrays.find((sub: any) => sub.subArray === subarrayConfig);
-    return sArray?.availableBandwidthHz;
+    const subArrays = osdLOW?.subArrays ?? [];
+    const sArray = subArrays.find((sub: any) => sub.subArray === subarrayConfig);
+    return sArray?.availableBandwidthHz ?? undefined;
   } else {
-    const rec = osdMID?.basicCapabilities.receiverInformation.find((r: any) => r.rxId === band);
-    return rec ? rec.maxFrequencyHz : undefined;
+    const receiverInfo = osdMID?.basicCapabilities?.receiverInformation ?? [];
+    const rec = receiverInfo.find((r: any) => r.rxId === band);
+    return rec?.maxFrequencyHz ?? undefined;
   }
 };
 
@@ -124,7 +124,7 @@ const getBandLimits = (
   observatoryConstants: any,
   findBand: Function
 ) => {
-  const band = findBand(observingBand);
+  const band = findBand ? findBand(observingBand) : null;
   if (!band) {
     return [band?.minFrequencyHz, band?.maxFrequencyHz];
   }
