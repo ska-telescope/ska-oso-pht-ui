@@ -178,8 +178,6 @@ export default function GridProposals({
 
   const canEdit = (e: { row: { status: string } }) => e.row.status === PROPOSAL_STATUS.DRAFT;
   const canClone = () => true;
-  // TODO const canDelete = (e: { row: { status: string } }) =>
-  // TODO  e.row.status === PROPOSAL_STATUS.DRAFT || e.row.status === PROPOSAL_STATUS.WITHDRAWN;
 
   const isProposalSelected = (proposalId: string): boolean => {
     return proposalsCollection?.filter(entry => entry.id === proposalId)?.length > 0;

@@ -330,7 +330,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     updateStorageProposal();
   };
 
-  // TODO : This will need to be a lookup if/when the OSD correctly provides subarrays in an array
+  // STAR-1923 : This will need to be a lookup if/when the OSD correctly provides subarrays in an array
   const setMaxChannelsZoom = (_subarrayConfig: string) => {
     const record = isLow() ? osdLOW : osdMID;
     setMaxZoomChannels(0);
@@ -1192,7 +1192,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
             </BorderedSection>
           </Grid>
           {isLow() &&
-          subarrayConfig === SA_AA2 && ( // TODO : Need to make this generic from OSD Data or endpoint
+          subarrayConfig === SA_AA2 && ( // STAR-1923 : Need to make this generic from OSD Data or endpoint
               <Grid sx={{ p: { md: 5, lg: 0 } }} size={{ md: 12, lg: 3 }}>
                 <Box px={3}>
                   <img src={IMAGE_PATH_LOW_AA2} alt="Low AA2" width="100%" />

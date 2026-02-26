@@ -280,7 +280,6 @@ export default function DataProduct({ data }: DataProductProps) {
     } else {
       setId(generateId(PAGE_PREFIX, 6));
     }
-    // TODO : Need to set the appropriate setHelp value upon entry
   }, []);
 
   React.useEffect(() => {

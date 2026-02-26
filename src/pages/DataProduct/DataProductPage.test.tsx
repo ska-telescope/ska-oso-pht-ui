@@ -19,6 +19,6 @@ describe('<DataProductPage />', () => {
   });
 });
 
-// TODO : Test for no observations message
-// TODO : Test for DataProduct table rendering
-// TODO : Test for single DataProduct rendering
+// Additions : Test for no observations message
+// Additions : Test for DataProduct table rendering
+// Additions : Test for single DataProduct rendering
