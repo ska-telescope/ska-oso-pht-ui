@@ -4,18 +4,46 @@ import {
   clickToAddTarget,
   clickToLinkTargetAndObservation,
   clickToObservationPage,
-  verifyObservationInTable,
   clickAddObservationEntry,
-  initializeUserNotLoggedIn,
   clearLocalStorage,
-  createMock
+  initialize,
+  mockOSDAPI,
+  mockCreateProposalAPI,
+  clickAddSubmission,
+  clickCycleSelectionMockProposal,
+  clickCycleConfirm,
+  enterProposalTitle,
+  clickProposalTypePrincipleInvestigator,
+  clickSubProposalTypeTargetOfOpportunity,
+  clickCreateSubmission,
+  verifySubmissionCreatedAlertFooter,
+  clickStatusIconNav,
+  pageConfirmed,
+  clickAddDataProduct,
+  clickAddDataProductEntry,
+  selectOptionFromDropdown,
+  verifyDataInTable
 } from '../../common/common.js';
 import sensitivityCalculatorResults from '../../../fixtures/sensitivityCalculatorResults.json';
+import { standardUser } from '../../users/users.js';
 
 beforeEach(() => {
-  initializeUserNotLoggedIn();
   cy.fixture('sensitivityCalculatorResults.json').as('sensitivityCalculatorResults');
-  createMock();
+  initialize(standardUser);
+  mockOSDAPI();
+  mockCreateProposalAPI();
+  clickAddSubmission();
+  cy.wait('@mockOSDData');
+  clickCycleSelectionMockProposal();
+  clickCycleConfirm();
+  enterProposalTitle();
+  clickProposalTypePrincipleInvestigator();
+  clickSubProposalTypeTargetOfOpportunity();
+  clickCreateSubmission();
+  cy.wait('@mockCreateProposal');
+  verifySubmissionCreatedAlertFooter();
+  clickStatusIconNav('statusId4'); //Click to target page
+  pageConfirmed('TARGET');
   addTargetUsingCoordinates();
   clickToAddTarget();
   clickToObservationPage();
@@ -26,10 +54,10 @@ afterEach(() => {
 });
 
 const addTargetUsingCoordinates = () => {
-  cy.get('[id="name"]').should('exist');
-  cy.get('[id="name"]').type('test');
-  cy.get('[id="skyDirectionValue1"]').type('00:00:00.0');
-  cy.get('[id="skyDirectionValue2"]').type('00:00:00.0');
+  cy.get('[data-testid="name"]').should('exist');
+  cy.get('[data-testid="name"]').type('test');
+  cy.get('[data-testid="skyDirectionValue1"]').type('00:00:00.0');
+  cy.get('[data-testid="skyDirectionValue2"]').type('00:00:00.0');
 };
 
 const verifySensitivityCalculatorStatusSuccess = () => {
@@ -40,23 +68,6 @@ const verifySensitivityCalculatorStatusSuccess = () => {
 const clickToViewSensitivityCalculatorResults = () => {
   cy.get('[data-testid="statusId"]').click();
 };
-
-const updateDropdown = (testId, value) => {
-  cy.get('[data-testid="' + testId + '"]', { timeout: 10000 })
-    .should('exist')
-    .should('be.visible')
-    .realClick();
-  cy.get('[data-value="' + value + '"]', { timeout: 10000 }) // wait for it to appear
-    .should('exist')
-    .should('be.visible')
-    .realClick();
-  cy.get('body').click(0, 0);
-};
-
-const updateBand = rec => updateDropdown('observingBand', rec.band);
-const updateSubarray = rec => updateDropdown('subArrayConfiguration', rec.subarray);
-const updateObservationType = rec => updateDropdown('observationType', rec.observationType);
-
 const verifyField = (id, value) => {
   if (value !== '') {
     cy.get('[id="' + id + '"]').should('contain', value);
@@ -96,6 +107,8 @@ const verifySpectralSurfaceBrightnessSensitivity = rec =>
     rec.spectralSurfaceBrightnessSensitivity
   );
 
+const verifyIntegrationTime = rec => verifyField('integrationTimeLabel', rec.integrationTime);
+
 const verifySensitivityCalculatorResults = rec => {
   verifyWeightedContinuumSensitivity(rec);
   verifyContinuumConfusionNoise(rec);
@@ -106,22 +119,31 @@ const verifySensitivityCalculatorResults = rec => {
   verifyTotalSpectralSensitivity(rec);
   verifySpectralSynthesizedBeamSize(rec);
   verifySpectralSurfaceBrightnessSensitivity(rec);
+  verifyIntegrationTime(rec);
 };
 
-describe('Sensitivity Calculator', () => {
+describe('Proposal Flow: Sensitivity Calculator', () => {
   for (const rec of sensitivityCalculatorResults) {
-    // STAR-1904 : Scenario needs to be re-defined based on a non-logged in user flow
-    it.skip('Sensitivity calculator results : ' + rec.test, { jiraKey: 'XTP-71885' }, () => {
+    it('Proposal: Sensitivity calculator results : ' + rec.test, { jiraKey: 'XTP-71885' }, () => {
       clickObservationSetup();
-      updateBand(rec);
-      updateSubarray(rec);
-      updateObservationType(rec);
+      selectOptionFromDropdown('observingBand', rec.band);
+      selectOptionFromDropdown('subArrayConfiguration', rec.subarray);
+      selectOptionFromDropdown('observationType', rec.observationType);
       clickAddObservationEntry();
-      verifyObservationInTable();
-      //
+      verifyDataInTable('review-table', 'obs-');
+      verifyDataInTable('review-table', rec.subarray);
+
+      clickStatusIconNav('statusId7'); //Click to data product page
+      pageConfirmed('DATA PRODUCT');
+      clickAddDataProduct();
+      clickAddDataProductEntry();
+
+      clickStatusIconNav('statusId8'); //Click to linking page
+      pageConfirmed('LINKING');
       clickObservationFromTable();
       clickToLinkTargetAndObservation();
       verifySensitivityCalculatorStatusSuccess();
+
       clickToViewSensitivityCalculatorResults();
       verifySensitivityCalculatorResults(rec);
     });

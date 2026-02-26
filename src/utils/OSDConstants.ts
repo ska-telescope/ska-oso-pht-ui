@@ -25,7 +25,7 @@ export const OSD_CONSTANTS = {
         },
         {
           value: SA_AA_STAR,
-          map: 'LOW_AAstar_all',
+          map: SA_AA_STAR,
           label: 'AA*',
           numOf13mAntennas: 0,
           continuumSpectralAveragingMax: 13812
@@ -62,7 +62,7 @@ export const OSD_CONSTANTS = {
         },
         {
           value: SA_AA_STAR,
-          map: 'LOW_AAstar_all',
+          map: SA_AA_STAR,
           label: 'AA*',
           numOf13mAntennas: 0,
           continuumSpectralAveragingMax: 13812
