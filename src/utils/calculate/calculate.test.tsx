@@ -3,36 +3,50 @@ import { calculateCentralFrequency, calculateContinuumBandwidth } from '../calcu
 import { SA_AA2 } from '../constants';
 
 const mockCapabilitiesLOW = {
-  minFrequencyHz: 10000000,
-  maxFrequencyHz: 20000000,
-  subArrays: [{ subArray: SA_AA2, availableBandwidthHz: 1000000000, channelWidthHz: 1000000 }]
+  basicCapabilities: {
+    minFrequencyHz: 10_000_000,
+    maxFrequencyHz: 20_000_000
+  },
+  subArrays: [{ subArray: SA_AA2, availableBandwidthHz: 1_000_000_000, channelWidthHz: 1_000_000 }]
 };
 
 const mockCapabilitiesMID = {
-  receiverInformation: [{ rxId: SA_AA2, minFrequencyHz: 100, maxFrequencyHz: 200 }],
-  subArrays: [{ subArray: SA_AA2, availableBandwidthHz: 1000000000, channelWidthHz: 1000000 }]
+  basicCapabilities: {
+    receiverInformation: [{ rxId: SA_AA2, minFrequencyHz: 100, maxFrequencyHz: 200 }]
+  },
+  subArrays: [{ subArray: SA_AA2, availableBandwidthHz: 1_000_000_000 }]
 };
 
-describe('Calculate Central Frequency', () => {
-  it('should return the correct value for LOW', () => {
+describe('calculateCentralFrequency', () => {
+  it('returns midpoint for LOW basicCapabilities', () => {
     const result = calculateCentralFrequency(mockCapabilitiesLOW, SA_AA2);
-    expect(result).toBe(0);
+    expect(result).toBe((10_000_000 + 20_000_000) / 2);
   });
 
-  it('should return the correct value for MID', () => {
+  it('returns midpoint for MID receiverInformation', () => {
     const result = calculateCentralFrequency(mockCapabilitiesMID, SA_AA2);
+    expect(result).toBe((100 + 200) / 2);
+  });
+
+  it('returns 0 when no matching data exists', () => {
+    const result = calculateCentralFrequency({}, SA_AA2);
     expect(result).toBe(0);
   });
 });
 
-describe('Calculate Continuum Bandwidth', () => {
-  it('should return the correct value for LOW', () => {
+describe('calculateContinuumBandwidth', () => {
+  it('returns bandwidth for LOW', () => {
     const result = calculateContinuumBandwidth(mockCapabilitiesLOW, SA_AA2);
-    expect(result).toBe(1000000000);
+    expect(result).toBe(1_000_000_000);
   });
 
-  it('should return the correct value for MID', () => {
+  it('returns bandwidth for MID', () => {
     const result = calculateContinuumBandwidth(mockCapabilitiesMID, SA_AA2);
-    expect(result).toBe(1000000000);
+    expect(result).toBe(1_000_000_000);
+  });
+
+  it('returns 0 when subArray not found', () => {
+    const result = calculateContinuumBandwidth({ subArrays: [] }, SA_AA2);
+    expect(result).toBe(0);
   });
 });

@@ -349,9 +349,12 @@ const getWeighting = (inImageWeighting: string): number => {
 };
 
 const getSupplied = (inSupplied: SuppliedBackend | null): Supplied => {
-  const suppliedType = OSD_CONSTANTS.Supplied?.find(s => s.mappingLabel === inSupplied?.supplied_type);
-  const suppliedUnits = suppliedType?.units?.find(u => u.label === inSupplied?.quantity.unit)
-    ?.value ?? inSupplied?.supplied_type;
+  const suppliedType = OSD_CONSTANTS.Supplied?.find(
+    s => s.mappingLabel === inSupplied?.supplied_type
+  );
+  const suppliedUnits =
+    suppliedType?.units?.find(u => u.label === inSupplied?.quantity.unit)?.value ??
+    inSupplied?.supplied_type;
   const supplied = {
     type: suppliedType?.value,
     value: inSupplied?.quantity.value,
