@@ -136,22 +136,22 @@ Below is a working set of entries, although it is recommended to check to get th
 Note the version number at the end of the URL entries, these are most often the items requiring to be changed
 
 window.env = {
-  "REACT_APP_SKA_PHT_BASE_URL": "",
-  "REACT_APP_SKA_OSO_SERVICES_URL":'http://192.168.49.2/ska-oso-services/oso/api/v13',
-  "REACT_APP_SKA_SENSITIVITY_CALC_URL": "http://192.168.49.2/ska-ost-senscalc/api/v11/",
-  "REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC": "false",
-  "REACT_APP_USE_LOCAL_DATA": "false",
-  "REACT_APP_USE_MOCK_CALL": "true",
-  "REACT_APP_DOMAIN": "https://sdhp.stfc.skao.int",
-  "REACT_APP_SKA_LOGIN_APP_URL": "http://localhost:4201",
-  "MSENTRA_CLIENT_ID":"msentra-client-id", // to replace with msentra-client-id
-  "MSENTRA_TENANT_ID":"msentra-tenant-id", // to replace with msentra-tenant-id
-  "MSENTRA_REDIRECT_URI":"http://localhost:6101",
-  // "REACT_APP_OVERRIDE_GROUPS": 'obs-oauth2role-opsproposaladmin-1-1535351309' // OPS_PROPOSAL_ADMIN
-  // "REACT_APP_OVERRIDE_GROUPS": 'obs-oauth2role-opsreviewersci-1635769025' // OPS_REVIEWER_SCIENCE
-  // "REACT_APP_OVERRIDE_GROUPS": 'obs-oauth2role-opsreviewertec-1-1994146425' // OPS_REVIEWER_TECHNICAL
-  // "REACT_APP_OVERRIDE_GROUPS": 'Guest user' // STANDARD USER
-  // "REACT_APP_OVERRIDE_GROUPS": 'obs-oauth2role-opsreviewerchair-11741547065' // OPS_REVIEWER_CHAIR
+"REACT_APP_SKA_PHT_BASE_URL": "",
+"REACT_APP_SKA_OSO_SERVICES_URL":'http://192.168.49.2/ska-oso-services/oso/api/v13',
+"REACT_APP_SKA_SENSITIVITY_CALC_URL": "http://192.168.49.2/ska-ost-senscalc/api/v11/",
+"REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC": "false",
+"REACT_APP_USE_LOCAL_DATA": "false",
+"REACT_APP_USE_MOCK_CALL": "true",
+"REACT_APP_DOMAIN": "https://sdhp.stfc.skao.int",
+"REACT_APP_SKA_LOGIN_APP_URL": "http://localhost:4201",
+"MSENTRA_CLIENT_ID":"msentra-client-id", // to replace with msentra-client-id
+"MSENTRA_TENANT_ID":"msentra-tenant-id", // to replace with msentra-tenant-id
+"MSENTRA_REDIRECT_URI":"http://localhost:6101",
+// "REACT_APP_OVERRIDE_GROUPS": 'obs-oauth2role-opsproposaladmin-1-1535351309' // OPS_PROPOSAL_ADMIN
+// "REACT_APP_OVERRIDE_GROUPS": 'obs-oauth2role-opsreviewersci-1635769025' // OPS_REVIEWER_SCIENCE
+// "REACT_APP_OVERRIDE_GROUPS": 'obs-oauth2role-opsreviewertec-1-1994146425' // OPS_REVIEWER_TECHNICAL
+// "REACT_APP_OVERRIDE_GROUPS": 'Guest user' // STANDARD USER
+// "REACT_APP_OVERRIDE_GROUPS": 'obs-oauth2role-opsreviewerchair-11741547065' // OPS_REVIEWER_CHAIR
 
 # Backend Requirements
 
@@ -166,7 +166,7 @@ If the UI fails to load data:
 
 - Verify backend URLs in `.env`
 - Confirm Minikube IP
-- Ensure API versions (`v12`, `v11`) match deployed services
+- Ensure API versions (`v13`, `v11`) match deployed services
 
 # Git Hooks (Pre-Commit Checks)
 
