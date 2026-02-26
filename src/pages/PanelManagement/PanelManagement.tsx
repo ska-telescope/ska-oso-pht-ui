@@ -8,7 +8,6 @@ import {
   FOOTER_PMT_SPACER,
   PAGE_PANEL_MANAGEMENT,
   PMT,
-  PROPOSAL_STATUS,
   REVIEWER_STATUS
 } from '@utils/constants.ts';
 import BackButton from '@/components/button/Back/Back';
@@ -131,19 +130,6 @@ export default function PanelManagement() {
   /*------------------------------------------------------------------*/
 
   const boxRefPanel = React.useRef<HTMLDivElement>(null);
-  const [boxHeightPanel, setBoxHeightPanel] = React.useState<number | undefined>(undefined);
-  React.useLayoutEffect(() => {
-    const updateHeightPanel = () => {
-      if (boxRefPanel.current) {
-        setBoxHeightPanel(boxRefPanel.current.offsetHeight);
-      }
-    };
-    updateHeightPanel();
-    window.addEventListener('resize', updateHeightPanel);
-    return () => {
-      window.removeEventListener('resize', updateHeightPanel);
-    };
-  }, []);
 
   /*------------------------------------------------------------------*/
 
@@ -283,7 +269,7 @@ export default function PanelManagement() {
           alignItems="flex-start"
           spacing={GAP}
           m={GAP}
-          sx={{ flexGrow: 1 }}
+          sx={{ flexGrow: 1, minHeight: 0 }}
         >
           <Grid size={{ sm: 12, md: 4, lg: 2.75 }} sx={{ height: '100%' }}>
             <Box
@@ -294,12 +280,13 @@ export default function PanelManagement() {
                 flexDirection: 'column',
                 border: '1px solid',
                 borderColor: '#ccc',
-                borderRadius: '8px'
+                borderRadius: '8px',
+                overflow: 'auto'
               }}
               ref={boxRefPanel}
             >
               <GridReviewPanels
-                height={String(boxHeightPanel) ?? '100%'}
+                height={'100%'}
                 listOnly
                 onRowClick={row => handlePanelChange(row)}
               />
@@ -336,7 +323,8 @@ export default function PanelManagement() {
               <Box
                 sx={{
                   width: '100%',
-                  height: `calc(100% - ${TAB_HEADER_HEIGHT}px)`
+                  height: `calc(100% - ${TAB_HEADER_HEIGHT}px)`,
+                  overflow: 'auto'
                 }}
               >
                 {theValue === 0 && (
@@ -363,7 +351,6 @@ export default function PanelManagement() {
             </Box>
           </Grid>
         </Grid>
-        <Spacer size={FOOTER_PMT_SPACER} axis={{ SPACER_VERTICAL }} />
       </Box>
       <PageFooterPMT />
     </Box>
