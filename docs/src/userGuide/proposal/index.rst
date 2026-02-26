@@ -10,9 +10,9 @@ Proposal Flow
    TeamPage
    GeneralPage
    SciencePage
+   TechnicalPage
    TargetPage
    ObservationPage
-   TechnicalPage
    DataProductPage
    LinkingPage
    CalibrationPage
