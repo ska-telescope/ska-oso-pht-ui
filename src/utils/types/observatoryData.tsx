@@ -29,10 +29,19 @@ export type ObservatoryPolicy = {
   type: string;
 };
 
+export type subBandsBackend = {
+  lo_frequency_hz: number;
+  max_frequency_hz: number;
+  min_frequency_hz: number;
+  sideband: string;
+  sub_band: number;
+};
+
 export type ReceiverInformationBackend = {
   rx_id: string;
   min_frequency_hz: number;
   max_frequency_hz: number;
+  sub_bands: subBandsBackend[] | null;
 };
 
 export type ReceiverInformationFrontend = {
