@@ -6,7 +6,8 @@ import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
   BAND_LOW_STR,
-  BAND_5B_STR
+  BAND_5B_STR,
+  BAND_1_STR
 } from '@utils/constants.ts';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.tsx';
 import { MockObservatoryDataBackend } from './mockObservatoryDataBackend';
@@ -36,18 +37,19 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
   const mapCycle = (inc: ObservatoryDataBackend): ObservatoryPolicy => {
     return {
       cycleNumber: inc?.observatory_policy?.cycle_number,
-      cycleDescription: inc?.observatory_policy?.type
-        ? inc?.observatory_policy?.cycle_description
-        : 'Mock Proposal Cycle', // we are mocking this to proposal if the type is not provided, so matching the description for consistency
+      // set to SV if not provided
+      cycleDescription: inc?.observatory_policy?.cycle_description ?? 'Science Verification',
       cycleInformation: {
         cycleId: inc?.observatory_policy?.cycle_information?.cycle_id,
         proposalOpen: inc?.observatory_policy?.cycle_information?.proposal_open,
         proposalClose: inc?.observatory_policy?.cycle_information?.proposal_close
       },
       cyclePolicies: {
-        maxDataProducts: inc?.observatory_policy?.cycle_policies?.max_data_products,
-        maxObservations: inc?.observatory_policy?.cycle_policies?.max_observation_setups,
-        maxTargets: inc?.observatory_policy?.cycle_policies?.max_targets,
+        // set to 1 for SV if not provided
+        // this may need to be revisited after Science Verification or when the OSD data is more complete
+        maxDataProducts: inc?.observatory_policy?.cycle_policies?.max_data_products ?? 1,
+        maxObservations: inc?.observatory_policy?.cycle_policies?.max_observation_setups ?? 1,
+        maxTargets: inc?.observatory_policy?.cycle_policies?.max_targets ?? 1,
         calibrationFactoryDefined: true,
         bands: [
           inc?.observatory_policy?.telescope_capabilities?.Low !== null ? BAND_LOW_STR : '',
@@ -60,7 +62,7 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
         low: inc?.observatory_policy?.telescope_capabilities?.Low,
         mid: inc?.observatory_policy?.telescope_capabilities?.Mid
       },
-      type: inc?.observatory_policy?.type ?? 'Proposal'
+      type: inc?.observatory_policy?.type ?? 'Science Verification'
     };
   };
 
@@ -116,28 +118,45 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
                 psBeamBandwidthHz: inData?.capabilities?.mid?.AA2.ps_beam_bandwidth_hz,
                 numberFsps: inData?.capabilities?.mid?.AA2.number_fsps
               },
+              // MID SA_AA_STAR is currently mock to give us access to more than 1 subbarray configuration
               {
                 subArray: SA_AA_STAR,
-                allowedChannelCountRangeMax:
-                  inData?.capabilities?.mid?.AA2.allowed_channel_count_range_max,
-                allowedChannelCountRangeMin:
-                  inData?.capabilities?.mid?.AA2.allowed_channel_count_range_min,
-                allowedChannelWidthValues:
-                  inData?.capabilities?.mid?.AA2.allowed_channel_width_values,
-                availableReceivers: inData?.capabilities?.mid?.AA2.available_receivers,
-                numberSkaDishes: inData?.capabilities?.mid?.AA2.number_ska_dishes,
-                numberMeerkatDishes: inData?.capabilities?.mid?.AA2.number_meerkat_dishes,
-                numberMeerkatPlusDishes: inData?.capabilities?.mid?.AA2.number_meerkatplus_dishes,
-                maxBaselineKm: inData?.capabilities?.mid?.AA2.max_baseline_km,
-                availableBandwidthHz: inData?.capabilities?.mid?.AA2.available_bandwidth_hz,
-                numberChannels: inData?.capabilities?.mid?.AA2.number_channels,
-                cbfModes: inData?.capabilities?.mid?.AA2.cbf_modes,
-                numberZoomWindows: inData?.capabilities?.mid?.AA2.number_zoom_windows,
-                numberZoomChannels: inData?.capabilities?.mid?.AA2.number_zoom_channels,
-                numberPssBeams: inData?.capabilities?.mid?.AA2.number_pss_beams,
-                numberPstBeams: inData?.capabilities?.mid?.AA2.number_pst_beams,
-                psBeamBandwidthHz: inData?.capabilities?.mid?.AA2.ps_beam_bandwidth_hz,
-                numberFsps: inData?.capabilities?.mid?.AA2.number_fsps
+                allowedChannelCountRangeMax: [214748647],
+                allowedChannelCountRangeMin: [1],
+                allowedChannelWidthValues: [
+                  210,
+                  420,
+                  840,
+                  1680,
+                  3360,
+                  6720,
+                  13440,
+                  26880,
+                  40320,
+                  53760,
+                  80640,
+                  107520,
+                  161280,
+                  215040,
+                  322560,
+                  416640,
+                  430080,
+                  645120
+                ],
+                availableReceivers: [BAND_1_STR],
+                numberSkaDishes: 64,
+                numberMeerkatDishes: 20,
+                numberMeerkatPlusDishes: 0,
+                maxBaselineKm: 110,
+                availableBandwidthHz: 80000000,
+                numberChannels: null,
+                cbfModes: ['correlation', 'pst', 'pss'],
+                numberZoomWindows: 17,
+                numberZoomChannels: 14880,
+                numberPssBeams: 385,
+                numberPstBeams: 6,
+                psBeamBandwidthHz: 800000000,
+                numberFsps: 35
               }
             ] as subarrayConfigurationMid[]
           }
@@ -166,7 +185,7 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
                 numberBeams: inData.capabilities.low.AA2.number_beams,
                 numberVlbiBeams: inData.capabilities.low.AA2.number_vlbi_beams
               },
-              // SA_AA_STAR is currently mock to give us access to more than 1 subbarray configuration
+              // LOW SA_AA_STAR is currently mock to give us access to more than 1 subbarray configuration
               {
                 subArray: SA_AA_STAR,
                 numberStations: inData.capabilities.low.AA2.number_stations,
@@ -207,6 +226,55 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
     policies: inData.map(cycle => mapCycle(cycle)),
     capabilities: mergedCapabilities
   };
+
+  // add hardcoded cycles for proposal flow as this is not provided yet by OSD:
+  result.policies.push({
+    cycleNumber: 3,
+    cycleDescription: 'Mock Proposal Cycle',
+    cycleInformation: {
+      cycleId: 'CYCLE-003',
+      proposalOpen: '2025-07-01',
+      proposalClose: '2026-09-01'
+    },
+    cyclePolicies: {
+      maxDataProducts: 100,
+      maxObservations: 100,
+      maxTargets: 100,
+      calibrationFactoryDefined: true,
+      bands: [BAND_LOW_STR, BAND_1_STR],
+      low: [SA_AA2, SA_AA_STAR],
+      mid: [SA_AA2, SA_AA_STAR]
+    },
+    telescopeCapabilities: {
+      low: null,
+      mid: null
+    },
+    type: 'Proposal'
+  });
+
+  result.policies.push({
+    cycleNumber: 4,
+    cycleDescription: 'Fourth mock cycle',
+    cycleInformation: {
+      cycleId: 'CYCLE-004',
+      proposalOpen: '2025-10-01',
+      proposalClose: '2025-12-01'
+    },
+    cyclePolicies: {
+      maxDataProducts: 100,
+      maxObservations: 100,
+      maxTargets: 100,
+      calibrationFactoryDefined: true,
+      bands: [BAND_LOW_STR, 'mid'],
+      low: [SA_AA2],
+      mid: [SA_AA2]
+    },
+    telescopeCapabilities: {
+      low: null,
+      mid: null
+    },
+    type: 'Proposal'
+  });
 
   return result;
 };
