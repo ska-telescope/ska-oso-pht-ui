@@ -29,8 +29,8 @@ export const useOSDAPI = (setAxiosError: (error: string) => void) => {
 
     const fetchObservatoryData = async () => {
       try {
-        //const response = await GetObservatoryData(authClient, SV_LOW_AA2_CYCLE_NUMBER);
-        const response = await GetOSDCycles(authClient);
+        // const response = await GetObservatoryData(authClient, SV_LOW_AA2_CYCLE_NUMBER); // use this call to only use 1 cycle
+        const response = await GetOSDCycles(authClient); // use this call to get all cycles
         if (typeof response === 'string' || (response && (response as any).error)) {
           setAxiosError(response.toString());
         } else if (isObservatoryData(response)) {

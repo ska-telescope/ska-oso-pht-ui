@@ -23,7 +23,7 @@ import {
 /*****************************************************************************************************************************/
 
 export function GetMockData(mock = [MockObservatoryDataBackend]): ObservatoryData {
-  return mapping(mock);
+  return osdMapping(mock);
 }
 
 export const toLowerCaseArray = (value: unknown): string[] => {
@@ -32,7 +32,7 @@ export const toLowerCaseArray = (value: unknown): string[] => {
   return value.filter(item => typeof item === 'string').map(item => item.toLowerCase());
 };
 
-const mapping = (inData: ObservatoryDataBackend[]): ObservatoryData => {
+export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData => {
   const mapCycle = (inc: ObservatoryDataBackend): ObservatoryPolicy => {
     return {
       cycleNumber: inc?.observatory_policy?.cycle_number,
@@ -96,9 +96,9 @@ const mapping = (inData: ObservatoryDataBackend[]): ObservatoryData => {
               {
                 subArray: SA_AA2,
                 allowedChannelCountRangeMax:
-                  inData?.capabilities?.mid?.AA2.allowed_channel_count_range_max[0],
+                  inData?.capabilities?.mid?.AA2.allowed_channel_count_range_max,
                 allowedChannelCountRangeMin:
-                  inData?.capabilities?.mid?.AA2.allowed_channel_count_range_min[0],
+                  inData?.capabilities?.mid?.AA2.allowed_channel_count_range_min,
                 allowedChannelWidthValues:
                   inData?.capabilities?.mid?.AA2.allowed_channel_width_values,
                 availableReceivers: inData?.capabilities?.mid?.AA2.available_receivers,
@@ -166,6 +166,7 @@ const mapping = (inData: ObservatoryDataBackend[]): ObservatoryData => {
                 numberBeams: inData.capabilities.low.AA2.number_beams,
                 numberVlbiBeams: inData.capabilities.low.AA2.number_vlbi_beams
               },
+              // SA_AA_STAR is currently mock to give us access to more than 1 subbarray configuration
               {
                 subArray: SA_AA_STAR,
                 numberStations: inData.capabilities.low.AA2.number_stations,
@@ -207,8 +208,6 @@ const mapping = (inData: ObservatoryDataBackend[]): ObservatoryData => {
     capabilities: mergedCapabilities
   };
 
-  console.log('result', result);
-
   return result;
 };
 
@@ -224,7 +223,7 @@ async function GetOSDCycles(
     const result = await authAxiosClient.get(
       `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PROPOSAL_PATH}${URL_PATH}cycles`
     );
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapping(result.data);
+    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : osdMapping(result.data);
   } catch (e) {
     if (e instanceof Error) {
       return e.message;
