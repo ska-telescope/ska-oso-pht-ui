@@ -424,9 +424,17 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
           onChange={handleTabChange}
           aria-label="basic tabs example"
         >
-          <Tab label={t('rank.label')} {...a11yProps(0)} />
-          <Tab label={t('generalComments.label')} {...a11yProps(1)} />
-          <Tab label={t('srcNetComments.label')} {...a11yProps(2)} />
+          <Tab data-testId={t('rank.label')} label={t('rank.label')} {...a11yProps(0)} />
+          <Tab
+            data-testId={t('generalComments.label')}
+            label={t('generalComments.label')}
+            {...a11yProps(1)}
+          />
+          <Tab
+            data-testId={t('srcNetComments.label')}
+            label={t('srcNetComments.label')}
+            {...a11yProps(2)}
+          />
         </Tabs>
         {tabValueReview === 0 && <>{rankField()}</>}
         {tabValueReview === 1 && <>{generalCommentsField()}</>}

@@ -231,7 +231,7 @@ export const clickToConfirmProposalSubmission = () => clickButton('displayConfir
 export const clickToNextPage = () => clickButton('nextButtonTestId');
 export const clickFileUploadArea = () => clickButton('fileUpload');
 export const clickFileUpload = () => clickButton('fileUploadUploadButton');
-
+export const clickRank9 = () => clickButton('Rank9');
 export const clickStatusIconNav = testId => {
   cy.get('[data-testid="' + testId + '"]')
     .eq(0)
@@ -368,6 +368,12 @@ export const verifyOnLandingPage = () => verifyExists('addSubmissionButton');
 export const clickConfirmButtonWithinPopup = () => {
   cy.get('[role="dialog"]').within(() => {
     cy.get('[data-testid="displayConfirmationButton"]').click();
+  });
+};
+
+export const clickGeneralCommentsTab = testId => {
+  cy.get(`[data-testid="${testId}"]`).click({
+    force: true
   });
 };
 
