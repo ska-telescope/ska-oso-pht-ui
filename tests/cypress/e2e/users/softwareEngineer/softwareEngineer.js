@@ -3,9 +3,7 @@ import {
   clickUserMenuPanels,
   clickUserMenuProposals,
   clickUserMenuReviews,
-  getSubmittedProposals,
   clickUserMenuDecisions,
-  getReviewers,
   initialize,
   clearLocalStorage,
   clickUserMenuOverview,
@@ -23,8 +21,6 @@ describe('Software Engineer', () => {
     cy.window().then(win => {
       win.localStorage.setItem('USE_LOCAL_DATA', 'true');
     });
-    getSubmittedProposals(); // Load mocked proposals fixture
-    getReviewers(); // Load mocked reviewers fixture
   });
 
   afterEach(() => {

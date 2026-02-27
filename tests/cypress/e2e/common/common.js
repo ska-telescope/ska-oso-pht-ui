@@ -40,45 +40,6 @@ export const clearLocalStorage = () => {
 // Stubbed API calls
 // see: https://docs.cypress.io/app/guides/network-requests#Routing
 
-export const getProposals = () => {
-  cy.fixture('proposals.json').then(proposals => {
-    cy.intercept('GET', '**/pht/prsls/mine', {
-      statusCode: 200,
-      body: proposals
-    }).as('getProposals');
-  });
-};
-
-export const getSubmittedProposals = () => {
-  cy.fixture('proposals.json').then(proposals => {
-    cy.intercept('GET', '**/pht/prsls/submitted', {
-      statusCode: 200,
-      body: proposals
-    }).as('getSubmittedProposals');
-  });
-};
-
-export const getReviewers = () => {
-  cy.window().then(win => {
-    const token = win.localStorage.getItem('cypress:token');
-    cy.fixture('reviewers.json').then(reviewers => {
-      cy.intercept('GET', '**/pht/reviewers', req => {
-        req.headers['Authorization'] = `Bearer ${token}`;
-        req.reply({
-          statusCode: 200,
-          body: reviewers
-        });
-      }).as('getReviewers');
-    });
-  });
-};
-
-export const verifyMockedAPICall = stubAlias => {
-  cy.wait(stubAlias).then(interception => {
-    assert.isNotNull(interception.response.body, 'API call has data');
-  });
-};
-
 export const mockCreateProposalAPI = () => {
   cy.window().then(win => {
     const token = win.localStorage.getItem('cypress:token');
@@ -220,9 +181,7 @@ export const clickCycleConfirm = () => clickButton('cycleConfirmationButton');
 export const clickUserMenu = () => clickButton('usernameMenu');
 export const clickObservationSetup = () => clickButton('addObservationButton');
 export const clickAddObservationEntry = () => clickButton('addObservationButtonEntry');
-export const clickPanelManagementButton = () => clickButton('pmtBackButton');
 export const clickResolveButton = () => clickButton('resolveButton');
-export const clickReviewOverviewButton = () => clickButton('overviewButtonTestId');
 export const clickSendInviteButton = () => clickButton('sendInviteButton');
 export const clickToAddTarget = () => clickButton('addTargetButton');
 export const clickCycleSelectionMockProposal = () => clickButton('CYCLE-003_ID');
@@ -301,10 +260,6 @@ export const clickFirstPanel = () =>
     .click();
 
 export const clickPanelProposalsTab = () => selectId('simple-tab-1');
-
-export const verifyPanelOnGridIsVisible = PanelName => {
-  verifyContent('dataGridId', PanelName);
-};
 
 export const verifyReviewerOnGridIsVisible = ReviewerName => {
   verifyContent('dataGridReviewers', ReviewerName);
@@ -564,14 +519,6 @@ export const verifyData = (testId, text) => {
   cy.get(`[data-testid="${testId}"]`).should('contain', text);
 };
 
-export const verifyOnLandingPageNoProposalMsgIsVisible = () => {
-  cy.get('[id="standardAlertId"]').should('contain', 'THERE ARE NO PROPOSALS TO BE DISPLAYED');
-};
-
-export const verifyOnLandingPageNotLoggedInMsgIsVisible = () => {
-  cy.get('[id="standardAlertId"]').should('contain', 'NOT LOGGED IN, NO PROPOSALS AVAILABLE');
-};
-
 export const verifyDataInTable = (tableTestId, text) => {
   cy.get(`[data-testid="${tableTestId}"]`)
     .find('[role="row"]')
@@ -676,49 +623,4 @@ export const clickToValidateSV = () => {
 export const clickToSubmitProposal = () => {
   cy.get('[data-testid="submitBtnTestId"]').should('exist');
   cy.get('[data-testid="submitBtnTestId"]').click();
-};
-
-export const verifyFirstProposalOnLandingPageHasSubmittedStatus = () => {
-  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
-    .eq(0)
-    .children('div[role="row"]')
-    .should('contain', 'prsl-t0001-')
-    .should('contain', 'Proposal Title')
-    .should('contain', 'Submitted');
-};
-
-export const verifyHomeButtonWarningModal = () => {
-  cy.get('#alert-dialog-proposal-change .MuiDialogContent-root').should(
-    'contain',
-    'You are not logged in'
-  );
-};
-
-export const verifyUnlinkedObservationInTable = () => {
-  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
-    .children('div[role="row"]')
-    .should('contain', 'obs-')
-    .should('contain', 'AA2')
-    .should('have.length', 1);
-};
-
-export const clickUnlinkedObservationInTable = () => {
-  cy.get('div[role="presentation"].MuiDataGrid-virtualScrollerContent > div[role="rowgroup"]')
-    .children('div[role="row"]')
-    .should('contain', 'obs-')
-    .should('contain', 'AA2')
-    .click({ multiple: true });
-};
-
-export const verifySensCalcStatus = () => {
-  cy.get('[data-testid="statusId"]')
-    .should('be.visible')
-    .invoke('attr', 'aria-label')
-    .should('include', 'Status : OK');
-};
-
-export const createObservation = () => {
-  //add default observation
-  clickObservationSetup();
-  clickAddObservationEntry();
 };

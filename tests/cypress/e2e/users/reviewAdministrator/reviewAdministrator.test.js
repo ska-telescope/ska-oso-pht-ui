@@ -2,7 +2,6 @@ import {
   clickUserMenu,
   clickUserMenuPanels,
   clickUserMenuProposals,
-  getSubmittedProposals,
   initialize,
   clearLocalStorage,
   clickUserMenuOverview,
@@ -26,7 +25,6 @@ describe('Review Administrator', () => {
     cy.window().then(win => {
       win.localStorage.setItem('USE_LOCAL_DATA', 'true');
     });
-    getSubmittedProposals(); // Load mocked proposals fixture
   });
 
   afterEach(() => {
