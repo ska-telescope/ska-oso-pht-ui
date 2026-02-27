@@ -4,8 +4,6 @@ import axiosClientPDF from '../../axiosClientPDF/axiosClientPDF';
 async function PutUploadPDF(signedUrl: string, selectedFile: any) {
   const UPLOAD_URL_DUMMY = 'https://httpbin.org/put';
 
-  //TODO: revisit error handling when s3 credential is added to the backend
-
   if (USE_LOCAL_DATA || cypressToken) {
     return `${UPLOAD_URL_DUMMY}`;
   }

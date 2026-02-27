@@ -336,7 +336,6 @@ function GetContinuumData(
 
   const observingBand = (observation: Observation) => observation.observingBand;
 
-  // TODO handle custom subarray
   const subArray = (observation: Observation) => {
     const result = OSD_CONSTANTS.array
       .find(t => t.value === observation.telescope)
@@ -345,7 +344,7 @@ function GetContinuumData(
   };
 
   const standardData: StandardData = {
-    observingBand: observingBand(observation), // TODO handle band 5a and 5b correctly
+    observingBand: observingBand(observation),
     weather: { value: observation.weather ?? 0, unit: 'mm' },
     subarray: subArray(observation),
     num15mAntennas: observation.num15mAntennas ?? 0,
