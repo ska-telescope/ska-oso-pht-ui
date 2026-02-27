@@ -42,18 +42,22 @@ describe('Reviewer ( Science )', () => {
     clickUserMenuProposals();
     clickUserMenuReviews();
   });
-  it('Science Verification: Perform a review, then validate and submit', () => {
-    clickUserMenuReviews();
-    //Click on the review for the submission "In a galaxy far, far away"
-    clickIconForRow('dataGridId', 'scienceIcon', 'In a galaxy far, far away');
-    //confirm no conflict of interest
-    clickConfirmButtonWithinPopup();
-    //select rank and add general comments
-    clickRank9();
-    clickGeneralCommentsTab('General Comments');
-    entry('generalCommentsId', 'This is a general comment for the submission');
-    //click validate / submit
-    clickToValidateSV();
-    verifyAlertFooter('Review record has been updated');
-  });
+  it(
+    'Science Verification: Perform a review, then validate and submit',
+    { jiraKey: 'XTP-96332' },
+    () => {
+      clickUserMenuReviews();
+      //Click on the review for the submission "In a galaxy far, far away"
+      clickIconForRow('dataGridId', 'scienceIcon', 'In a galaxy far, far away');
+      //confirm no conflict of interest
+      clickConfirmButtonWithinPopup();
+      //select rank and add general comments
+      clickRank9();
+      clickGeneralCommentsTab('General Comments');
+      entry('generalCommentsId', 'This is a general comment for the submission');
+      //click validate / submit
+      clickToValidateSV();
+      verifyAlertFooter('Review record has been updated');
+    }
+  );
 });

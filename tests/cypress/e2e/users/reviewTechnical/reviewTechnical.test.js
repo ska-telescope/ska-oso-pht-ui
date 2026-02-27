@@ -39,14 +39,18 @@ describe('Reviewer ( Technical )', () => {
     clickUserMenuReviews();
   });
 
-  it('Science Verification: Perform a review, then validate and submit', () => {
-    clickUserMenuReviews();
-    //Click on the review for the submission "In a galaxy far, far away"
-    clickIconForRow('dataGridId', 'BuildIcon', 'In a galaxy far, far away');
-    //select feasibility
-    clickFeasibilityYes();
-    //click validate / submit
-    clickToValidateSV();
-    verifyAlertFooter('Review record has been updated');
-  });
+  it(
+    'Science Verification: Perform a review, then validate and submit',
+    { jiraKey: 'XTP-96341' },
+    () => {
+      clickUserMenuReviews();
+      //Click on the review for the submission "In a galaxy far, far away"
+      clickIconForRow('dataGridId', 'BuildIcon', 'In a galaxy far, far away');
+      //select feasibility
+      clickFeasibilityYes();
+      //click validate / submit
+      clickToValidateSV();
+      verifyAlertFooter('Review record has been updated');
+    }
+  );
 });
