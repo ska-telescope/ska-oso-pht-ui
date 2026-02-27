@@ -155,8 +155,8 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
     if (isTechnical()) {
       setReview(locationProperties?.state?.tecReview);
-      setFeasibility(locationProperties?.state?.tecReview.reviewType?.isFeasible);
-      setComments(locationProperties?.state?.tecReview.comments);
+      setFeasibility(locationProperties?.state?.tecReview?.reviewType?.isFeasible);
+      setComments(locationProperties?.state?.tecReview?.comments);
     } else {
       setReview(locationProperties?.state?.sciReview);
       setRank(locationProperties?.state?.sciReview.reviewType.rank ?? 0);

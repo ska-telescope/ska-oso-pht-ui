@@ -128,8 +128,8 @@ export default function ReviewListPage() {
 
   const getTechnicalReviewType = (row: any): TechnicalReview => {
     return {
-      kind: row?.reviewType.kind,
-      isFeasible: row?.reviewType.isFeasible
+      kind: row?.reviewType?.kind,
+      isFeasible: row?.reviewType?.isFeasible
     };
   };
 
@@ -140,7 +140,7 @@ export default function ReviewListPage() {
       id: review.id,
       prslId: row.id,
       reviewType:
-        review?.reviewType.kind === REVIEW_TYPE.SCIENCE
+        review?.reviewType?.kind === REVIEW_TYPE.SCIENCE
           ? getScienceReviewType(review)
           : getTechnicalReviewType(review),
       comments: review?.comments,
@@ -280,7 +280,7 @@ export default function ReviewListPage() {
   const feasibleNo = (review: any) => review?.reviewType?.isFeasible === FEASIBLE_NO;
 
   const isFeasible = (row: { tecReview: any; sciReview?: { status: string } }) =>
-    row.tecReview?.reviewType.isFeasible ? !feasibleNo(row.tecReview) : true;
+    row.tecReview?.reviewType?.isFeasible ? !feasibleNo(row.tecReview) : true;
 
   const canEditScience = (row: {
     tecReview: { reviewType: { isFeasible: string } };
