@@ -1,7 +1,8 @@
 import {
   SKA_OSO_SERVICES_URL,
   USE_LOCAL_DATA,
-  OSO_SERVICES_REVIEWS_PATH
+  OSO_SERVICES_REVIEWS_PATH,
+  cypressToken
 } from '@utils/constants.ts';
 import { getUniqueMostRecentItems } from '@utils/helpers.ts';
 import { ProposalReview, ProposalReviewBackend } from '@utils/types/proposalReview.tsx';
@@ -28,7 +29,7 @@ export function GetMockProposalReviewList(mock = MockProposalReviewListBackend):
 async function GetProposalReviewList(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>
 ): Promise<ProposalReview[] | string> {
-  if (USE_LOCAL_DATA) {
+  if (USE_LOCAL_DATA || cypressToken) {
     return GetMockProposalReviewList();
   }
 

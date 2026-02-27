@@ -8,9 +8,16 @@ import {
   verifyUserMenuProposals,
   verifyUserMenuPanels,
   verifyUserMenuReviews,
-  verifyUserMenuDecisions
+  verifyUserMenuDecisions,
+  clickIconForRow,
+  clickConfirmButtonWithinPopup,
+  clickRank9,
+  clickGeneralCommentsTab,
+  clickToValidateSV,
+  verifyAlertFooter
 } from '../../common/common';
 import { reviewerScience } from '../users';
+import { entry } from '../../../fixtures/utils/cypress.js';
 
 // PMT Flows are under review, scenarios will be updated when functionality is finalised
 describe('Reviewer ( Science )', () => {
@@ -35,8 +42,22 @@ describe('Reviewer ( Science )', () => {
     clickUserMenuProposals();
     clickUserMenuReviews();
   });
-  it('Perform a review', () => {
-    clickUserMenuReviews();
-    // Do some stuff in here ?
-  });
+  it(
+    'Science Verification: Perform a review, then validate and submit',
+    { jiraKey: 'XTP-96332' },
+    () => {
+      clickUserMenuReviews();
+      //Click on the review for the submission "In a galaxy far, far away"
+      clickIconForRow('dataGridId', 'scienceIcon', 'In a galaxy far, far away');
+      //confirm no conflict of interest
+      clickConfirmButtonWithinPopup();
+      //select rank and add general comments
+      clickRank9();
+      clickGeneralCommentsTab('General Comments');
+      entry('generalCommentsId', 'This is a general comment for the submission');
+      //click validate / submit
+      clickToValidateSV();
+      verifyAlertFooter('Review record has been updated');
+    }
+  );
 });
