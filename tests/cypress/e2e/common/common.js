@@ -3,7 +3,6 @@ import {
   entry,
   get,
   selectId,
-  selectValue,
   verifyContent,
   verifyExists,
   verifyVisible,
@@ -209,17 +208,14 @@ export const clickButton = testId => {
   click(testId);
 };
 
-export const clickAddButton = () => clickButton('addButton');
 export const clickAddDataProduct = () => clickButton('addDataProductButton');
 export const clickAddDataProductEntry = () => clickButton('addDataProductButtonEntry');
 export const clickUserSearch = () => clickButton('userSearchButton');
 export const clickSubmitRights = () => clickButton('submitCheckbox');
-export const clickPICheckbox = () => clickButton('piCheckbox');
 export const clickAddSubmission = () => clickButton('addSubmissionButton');
 export const clickCreateSubmission = () => clickButton('nextButtonTestId');
 export const clickHome = () => clickButton('homeButtonTestId');
 export const clickDialogConfirm = () => clickButton('dialogConfirmationButton');
-export const clickLoginUser = () => clickButton('loginButton');
 export const clickCycleConfirm = () => clickButton('cycleConfirmationButton');
 export const clickUserMenu = () => clickButton('usernameMenu');
 export const clickObservationSetup = () => clickButton('addObservationButton');
@@ -227,19 +223,14 @@ export const clickAddObservationEntry = () => clickButton('addObservationButtonE
 export const clickPanelManagementButton = () => clickButton('pmtBackButton');
 export const clickResolveButton = () => clickButton('resolveButton');
 export const clickReviewOverviewButton = () => clickButton('overviewButtonTestId');
-export const clickSave = () => clickButton('saveBtn');
 export const clickSendInviteButton = () => clickButton('sendInviteButton');
 export const clickToAddTarget = () => clickButton('addTargetButton');
 export const clickCycleSelectionMockProposal = () => clickButton('CYCLE-003_ID');
 export const clickCycleSelectionSV = () => clickButton('SKAO_2027_1_ID');
-export const clickToAddDataProduct = () => clickButton('addDataProductButton');
 export const clickToConfirmProposalSubmission = () => clickButton('displayConfirmationButton');
 export const clickToNextPage = () => clickButton('nextButtonTestId');
-export const clickToPreviousPage = () => clickButton('prevButtonTestId');
 export const clickFileUploadArea = () => clickButton('fileUpload');
 export const clickFileUpload = () => clickButton('fileUploadUploadButton');
-
-export const clickToLinkTargetObservation = () => clickButton('linkedTickBox');
 
 export const clickStatusIconNav = testId => {
   cy.get('[data-testid="' + testId + '"]')
@@ -248,12 +239,6 @@ export const clickStatusIconNav = testId => {
 };
 
 /*----------------------------------------------------------------------*/
-
-export const clickDropdown = (testId, value) => {
-  verifyExists(testId);
-  click(testId);
-  selectValue(value);
-};
 
 export const checkFieldDisabled = (testId, disabled) => {
   if (disabled) {
@@ -307,12 +292,7 @@ export const clickNav = (testId, title) => {
     verifyContent('pageTitle', title);
   }
 };
-export const clickNavId = (testId, title) => {
-  cy.get('#{' + testId + '} > .MuiButtonBase-root');
-  if (title.length) {
-    verifyContent('pageTitle', title);
-  }
-};
+
 export const clickFirstPanel = () =>
   get('dataGridId')
     .find('.MuiDataGrid-row')
@@ -348,15 +328,12 @@ export const clickSignINBtns = (testId, title) => {
 };
 export const clickUserMenuOverview = () => clickSignINBtns('menuItemOverview', 'OVERVIEW');
 export const clickUserMenuProposals = () => clickSignINBtns('menuItemProposals', '');
-export const clickUserMenuVerification = () => clickSignINBtns('menuItemVerification', '');
 export const clickUserMenuPanels = () =>
   clickSignINBtns('menuItemPanelSummary', 'PANEL MANAGEMENT');
 export const clickUserMenuReviews = () =>
   clickSignINBtns('menuItemReviews', 'REVIEW SCIENCE VERIFICATION IDEAS');
 export const clickUserMenuDecisions = () =>
   clickSignINBtns('menuItemReviewDecisions', 'REVIEW DECISIONS');
-export const clickUserMenuLogout = () => click('menuItemLogout');
-export const clickListOfTargets = () => cy.get('#listOfTargets').click();
 
 /*----------------------------------------------------------------------*/
 
@@ -379,7 +356,6 @@ function verifyUserMenu(testId, shouldExist) {
 }
 export const verifyUserMenuOverview = exists => verifyUserMenu('menuItemOverview', exists);
 export const verifyUserMenuProposals = exists => verifyUserMenu('menuItemProposals', exists);
-export const verifyUserMenuVerification = exists => verifyUserMenu('menuItemVerification', exists);
 export const verifyUserMenuPanels = exists => verifyUserMenu('menuItemPanelSummary', exists);
 export const verifyUserMenuReviews = exists => verifyUserMenu('menuItemReviews', exists);
 export const verifyUserMenuDecisions = exists => verifyUserMenu('menuItemReviewDecisions', exists);
@@ -390,11 +366,9 @@ export const pageConfirmed = label => cy.get('#pageTitle').contains(label);
 export const verifyOnLandingPage = () => verifyExists('addSubmissionButton');
 
 export const clickConfirmButtonWithinPopup = () => {
-  cy.get('[role="dialog"]')
-    .eq(1)
-    .within(() => {
-      cy.get('[data-testid="dialogConfirmationButton"]').click();
-    });
+  cy.get('[role="dialog"]').within(() => {
+    cy.get('[data-testid="displayConfirmationButton"]').click();
+  });
 };
 
 /*----------------------------------------------------------------------*/
@@ -403,9 +377,6 @@ export const enterProposalTitle = () => entry('titleId', 'Proposal Title');
 export const enterScienceVerificationIdeaTitle = () =>
   entry('titleId', 'Science Verification Idea Title');
 
-export const selectContinuum = () => clickDropdown('categoryId', '102');
-
-export const selectCosmology = () => clickDropdown('categoryId', '1');
 export const selectObservingMode = value => {
   // Open the dropdown using mousedown instead of click
   cy.get('[data-testid="categoryId"] [role="combobox"]').trigger('mousedown', {
@@ -496,30 +467,9 @@ export const clickEdit = () => {
   cy.get('[data-testId="editIcon"]').should('be.visible');
   cy.get('[data-testId="editIcon"]').click();
 };
-export const tabToEditTarget = () => {
-  cy.press('Tab');
-  cy.focused().click(); //click edit target
-};
 
 export const validateProposal = () => {
   clickToValidateProposal();
-};
-
-export const createStandardProposal = () => {
-  clickAddSubmission();
-  enterProposalTitle();
-  // clickProposalTypePrincipleInvestigator();
-  // clickSubProposalTypeTargetOfOpportunity();
-  clickCreateSubmission();
-  verifySubmissionCreatedAlertFooter();
-  pageConfirmed('TEAM');
-};
-
-export const createMock = () => {
-  clickAddSubmission();
-  clickCycleSelectionSV();
-  clickCycleConfirm();
-  pageConfirmed('TARGET');
 };
 
 export const createStandardProposalLoggedIn = () => {
@@ -540,51 +490,9 @@ export const createScienceIdeaLoggedIn = () => {
   clickCreateSubmission();
 };
 
-export const clickToTeamPage = () => {
-  clickToNextPage();
-  pageConfirmed('TEAM');
-};
-
-export const addInvestigator = () => {
-  entry('firstName', 'Test');
-  entry('lastName', 'User');
-  entry('email', 'TestUser@test.com');
-  clickSendInviteButton();
-};
-
-export const verifyEmailSentAlertFooter = () => {
-  // TODO : DISABLED : Will fix once migration to Vite has been completed
-  // get('timeAlertFooter').should('include.text', 'Email invite has been sent.');
-};
-
-export const clickToGeneralPage = () => {
-  clickToNextPage();
-  pageConfirmed('GENERAL');
-};
-
-export const clickToSciencePage = () => {
-  clickToNextPage();
-  pageConfirmed('SCIENCE');
-};
-
-export const clickToTargetPage = () => {
-  clickToNextPage();
-  pageConfirmed('TARGET');
-};
-
 export const clickToObservationPage = () => {
   clickToNextPage();
   pageConfirmed('OBSERVATION');
-};
-
-export const clickToTechnicalPage = () => {
-  clickToNextPage();
-  pageConfirmed('TECHNICAL');
-};
-
-export const clickToCalibrationPage = () => {
-  clickToNextPage();
-  pageConfirmed('CALIBRATION');
 };
 
 export const verifySensitivityCalculatorStatusSuccess = () => {
@@ -730,6 +638,19 @@ export const clickEditUserRightsIconForRow = (tableTestId, text) => {
     .first()
     .within(() => {
       cy.get('[data-testid="lockIcon"]')
+        .should('be.visible')
+        .click();
+    });
+};
+
+export const clickIconForRow = (tableTestId, iconTestId, text) => {
+  cy.get(`[data-testid="${tableTestId}"]`)
+    .find('[role="row"]')
+    .filter(`:contains("${text}")`)
+    .click()
+    .first()
+    .within(() => {
+      cy.get(`[data-testid="${iconTestId}"]`)
         .should('be.visible')
         .click();
     });

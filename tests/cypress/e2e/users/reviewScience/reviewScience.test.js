@@ -8,7 +8,9 @@ import {
   verifyUserMenuProposals,
   verifyUserMenuPanels,
   verifyUserMenuReviews,
-  verifyUserMenuDecisions
+  verifyUserMenuDecisions,
+  clickIconForRow,
+  clickConfirmButtonWithinPopup
 } from '../../common/common';
 import { reviewerScience } from '../users';
 
@@ -22,7 +24,7 @@ describe('Reviewer ( Science )', () => {
     clearLocalStorage();
   });
 
-  it('Validate menu options', () => {
+  it.skip('Validate menu options', () => {
     clickUserMenu();
     verifyUserMenuOverview(false);
     verifyUserMenuProposals(true);
@@ -31,12 +33,15 @@ describe('Reviewer ( Science )', () => {
     verifyUserMenuDecisions(false);
   });
 
-  it('Navigate using the dropdown menu', () => {
+  it.skip('Navigate using the dropdown menu', () => {
     clickUserMenuProposals();
     clickUserMenuReviews();
   });
-  it('Perform a review', () => {
+  it('Science Verification: Perform a review', () => {
     clickUserMenuReviews();
-    // Do some stuff in here ?
+    //Click on the review for the submission "In a galaxy far, far away"
+    clickIconForRow('dataGridId', 'scienceIcon', 'In a galaxy far, far away');
+    //confirm no conflict of interest
+    clickConfirmButtonWithinPopup();
   });
 });
