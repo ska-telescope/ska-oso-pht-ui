@@ -1253,7 +1253,7 @@
   resolved "https://registry.yarnpkg.com/@cucumber/message-streams/-/message-streams-4.0.1.tgz#a5339d3504594bb2edb5732aaae94dddb24d0970"
   integrity sha512-Kxap9uP5jD8tHUZVjTWgzxemi/0uOsbGjd4LBOSxcJoOCRbESFwemUzilJuzNTB8pcTQUh8D5oudUyxfkJOKmA==
 
-"@cucumber/messages@32.0.1", "@cucumber/messages@>=31.0.0 <33", "@cucumber/messages@^32.0.0":
+"@cucumber/messages@32.0.1":
   version "32.0.1"
   resolved "https://registry.yarnpkg.com/@cucumber/messages/-/messages-32.0.1.tgz#500a8be56e89b02db5a217a26dd2ba80d4cca912"
   integrity sha512-1OSoW+GQvFUNAl6tdP2CTBexTXMNJF0094goVUcvugtQeXtJ0K8sCP0xbq7GGoiezs/eJAAOD03+zAPT64orHQ==
@@ -1270,6 +1270,14 @@
     class-transformer "0.5.1"
     reflect-metadata "0.2.2"
     uuid "10.0.0"
+
+"@cucumber/messages@>=31.0.0 <33", "@cucumber/messages@^32.0.0":
+  version "32.1.0"
+  resolved "https://registry.yarnpkg.com/@cucumber/messages/-/messages-32.1.0.tgz#2b8a711832476c83b193fa03db4fdaabd2850557"
+  integrity sha512-eYe6DAjOlR7GYW9/dctpw0/hi6mthgIMJA2bdph/PupP4HqCkZmWaczPmj0uzRBbm68nDhD3mDBZsikPhwbECA==
+  dependencies:
+    class-transformer "0.5.1"
+    reflect-metadata "0.2.2"
 
 "@cucumber/messages@^27.2.0":
   version "27.2.0"
@@ -4329,9 +4337,9 @@ boolbase@^1.0.0:
   integrity sha512-JZOSA7Mo9sNGB8+UjSgzdLtokWAky1zbztM3WRLCbZ70/3cTANmQmOdR7y2g+J0e2WXywy1yS468tY+IruqEww==
 
 brace-expansion@^5.0.2:
-  version "5.0.3"
-  resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-5.0.3.tgz#6a9c6c268f85b53959ec527aeafe0f7300258eef"
-  integrity sha512-fy6KJm2RawA5RcHkLa1z/ScpBeA762UF9KmZQxwIbDtRJrgLzM10depAiEQ+CXYcoiqW1/m96OAAoke2nE9EeA==
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/brace-expansion/-/brace-expansion-5.0.4.tgz#614daaecd0a688f660bbbc909a8748c3d80d4336"
+  integrity sha512-h+DEnpVvxmfVefa4jFbCf5HdH5YMDXRsmKflpf1pILZWRFlTbJpxeU55nJl4Smt5HQaGzg1o6RHFPJaOqnmBDg==
   dependencies:
     balanced-match "^4.0.2"
 
