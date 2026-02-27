@@ -10,7 +10,7 @@ type Observation = {
   type: string;
   observingBand: string;
   weather?: number; // only for MID
-  elevation: number; // TODO should be only for Mid => what property for LOW?
+  elevation: number; // only for Mid
   centralFrequency: number;
   centralFrequencyUnits: number;
   bandwidth: number | null; // only for zoom
@@ -21,7 +21,7 @@ type Observation = {
   supplied: Supplied;
   spectralResolution: string;
   effectiveResolution: string;
-  numSubBands?: number; // only for MID -> TODO should be for LOW too, PDM needs updating
+  numSubBands?: number; // only for MID -> TODO PDM : should be for LOW too, PDM needs updating
   num15mAntennas?: number; // only for MID
   num13mAntennas?: number; // only for MID
   numStations?: number;

@@ -46,7 +46,7 @@ export function mappingPostProposal(
       },
       abstract: '',
       science_category: '',
-      investigators: [] // TODO: check if investigator_refs replaces investigators in PDM
+      investigators: [] // TODO PDM : check if investigator_refs replaces investigators in PDM
     },
     observation_info: {
       targets: [],

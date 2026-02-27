@@ -355,7 +355,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
           unit: ''
         },
         synthesized_beam_size: {
-          continuum: 'dummy',
+          continuum: '',
           spectral: '13.47 x 11.10',
           unit: 'arcsec²'
         },

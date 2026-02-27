@@ -18,10 +18,6 @@ describe('PostProposalAccess Service', () => {
     expect(result).toEqual('PROPOSAL-ACCESS-ID-001');
   });
 
-  test('returns data from API when USE_LOCAL_DATA is false', async () => {
-    //TODO
-  });
-
   test('returns error message on API failure', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockRejectedValue(new Error('Network Error'));

@@ -56,7 +56,7 @@ describe('Helper Functions', () => {
     expect(technicalReviewBackEnd).to.deep.equal(MockProposalTechnicalReviewBackend);
   });
 
-  /* TODO - Recheck this later
+  /* IMPROVEMENT - Recheck this later
   test('mappingReviewFrontendToBackend generates cycle id when not provided', () => {
     const reviewBackEnd: ProposalReviewBackend = mappingReviewFrontendToBackend(
       {
