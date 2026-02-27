@@ -60,11 +60,17 @@ export const getSubmittedProposals = () => {
 };
 
 export const getReviewers = () => {
-  cy.fixture('reviewers.json').then(reviewers => {
-    cy.intercept('GET', '**/pht/reviewers', {
-      statusCode: 200,
-      body: reviewers
-    }).as('getReviewers');
+  cy.window().then(win => {
+    const token = win.localStorage.getItem('cypress:token');
+    cy.fixture('reviewers.json').then(reviewers => {
+      cy.intercept('GET', '**/pht/reviewers', req => {
+        req.headers['Authorization'] = `Bearer ${token}`;
+        req.reply({
+          statusCode: 200,
+          body: reviewers
+        });
+      }).as('getReviewers');
+    });
   });
 };
 
