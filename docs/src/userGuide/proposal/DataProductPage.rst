@@ -1,4 +1,4 @@
-ObservatoryData Product Page
+Observatory Data Product Page
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Data Products are associated to an Observation which have a valid association to a target. Here, you can request a single or multiple observatory data products for an observation set added to your submission. The |icosdp| button is not active until an observation exists. 

@@ -30,6 +30,7 @@ import {
   FREQUENCY_AVERAGING_UNIT_DEFAULT,
   IMAGE_SIZE_DEFAULT,
   IMAGE_SIZE_UNIT_DEFAULT,
+  IW_BRIGGS,
   IW_NATURAL,
   IW_UNIFORM,
   NAV,
@@ -735,7 +736,9 @@ export default function DataProduct({ data }: DataProductProps) {
                     <Grid size={{ md: COL_MID, lg: COL }}>
                       {fieldWrapper(imageWeightingField())}
                     </Grid>
-                    <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(robustField())}</Grid>
+                    <Grid size={{ md: COL_MID, lg: COL }}>
+                      {weighting === IW_BRIGGS && fieldWrapper(robustField())}
+                    </Grid>
                     <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(taperField())}</Grid>
                     <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(channelsOutField())}</Grid>
                   </Grid>
@@ -755,7 +758,9 @@ export default function DataProduct({ data }: DataProductProps) {
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(imageSizeField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(pixelSizeField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(imageWeightingField())}</Grid>
-                  <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(robustField())}</Grid>
+                  <Grid size={{ md: COL_MID, lg: COL }}>
+                    {weighting === IW_BRIGGS && fieldWrapper(robustField())}
+                  </Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(taperField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>{fieldWrapper(channelsOutField())}</Grid>
                   <Grid size={{ md: COL_MID, lg: COL }}>

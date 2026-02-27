@@ -79,34 +79,6 @@
   "lastName": {
     "help": "Last name of the team member"
   },
-  "manageTeamMember": {
-    "label": "Manage Team Member Rights",
-    "success": "Team member's access has been updated.",
-    "toolTip": "Manage Team Member Rights",
-    "error": "Failed to update team member's access.",
-    "help": "Select the rights for this team member. The creating participant has all rights by default. They can assign rights to other team members as needed.",
-    "rights": "Rights",
-    "submit": {
-      "label": "Submit rights",
-      "short": "Submit",
-      "help": "Check to indicate that this participant can submit, edit and view the Science Verification Idea."
-    },
-    "edit": {
-      "label": "Edit rights",
-      "short": "Edit",
-      "help": "Check to indicate that this participant can edit and view the Science Verification Idea."
-    },
-    "update": {
-      "label": "Update rights",
-      "short": "Update",
-      "help": "Check to indicate that this participant can update and view the Science Verification Idea."
-    },
-    "view": {
-      "label": "View rights",
-      "short": "View",
-      "help": "Check to indicate that this participant can view the Science Verification Idea."
-    }
-  },
   "overview": {
     "toolTip": "Overview of Science Verification Ideas"
   },
