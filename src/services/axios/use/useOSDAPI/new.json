@@ -1,0 +1,239 @@
+{
+  "policies": [
+    {
+      "cycleNumber": 1,
+      "cycleDescription": "Science Verification",
+      "cycleInformation": {
+        "cycleId": "SKAO_2027_1",
+        "proposalOpen": "20260327T12:00:00.000Z",
+        "proposalClose": "20260512T15:00:00.000z"
+      },
+      "cyclePolicies": {
+        "maxDataProducts": null,
+        "maxObservations": null,
+        "maxTargets": null,
+        "calibrationFactoryDefined": true,
+        "bands": ["low_band", "Band_5b"],
+        "low": [],
+        "mid": []
+      },
+      "telescopeCapabilities": {
+        "low": "AA2",
+        "mid": "AA2"
+      },
+      "type": "Proposal"
+    },
+    {
+      "cycleNumber": 10000,
+      "cycleDescription": "Low AA2 Science Verification",
+      "cycleInformation": {
+        "cycleId": "SKAO_2027_1",
+        "proposalOpen": "20260327T12:00:00.000Z",
+        "proposalClose": "20260512T15:00:00.000Z"
+      },
+      "cyclePolicies": {
+        "maxDataProducts": 1,
+        "maxObservations": 1,
+        "maxTargets": 1,
+        "calibrationFactoryDefined": true,
+        "bands": ["low_band"],
+        "low": [],
+        "mid": []
+      },
+      "telescopeCapabilities": {
+        "low": "AA2",
+        "mid": null
+      },
+      "type": "Science Verification"
+    }
+  ],
+  "capabilities": {
+    "mid": {
+      "basicCapabilities": {
+        "dishElevationLimitDeg": 15,
+        "receiverInformation": [
+          {
+            "rxId": "Band_1",
+            "minFrequencyHz": 350000000,
+            "maxFrequencyHz": 1050000000,
+            "subBands": null
+          },
+          {
+            "rxId": "Band_2",
+            "minFrequencyHz": 950000000,
+            "maxFrequencyHz": 1760000000,
+            "subBands": null
+          },
+          {
+            "rxId": "Band_3",
+            "minFrequencyHz": 1650000000,
+            "maxFrequencyHz": 3050000000,
+            "subBands": null
+          },
+          {
+            "rxId": "Band_4",
+            "minFrequencyHz": 2800000000,
+            "maxFrequencyHz": 5180000000,
+            "subBands": null
+          },
+          {
+            "rxId": "Band_5a",
+            "minFrequencyHz": 4600000000,
+            "maxFrequencyHz": 8500000000,
+            "subBands": null
+          },
+          {
+            "rxId": "Band_5b",
+            "minFrequencyHz": 11450000000,
+            "maxFrequencyHz": 13510000000,
+            "subBands": [
+              {
+                "subBand": 1,
+                "maxFrequencyHz": 12150000000,
+                "minFrequencyHz": 11450000000,
+                "loFrequencyHz": 11100000000,
+                "sideband": "high"
+              },
+              {
+                "subBand": 2,
+                "maxFrequencyHz": 13510000000,
+                "minFrequencyHz": 12810000000,
+                "loFrequencyHz": 13860000000,
+                "sideband": "low"
+              },
+              {
+                "subBand": 3,
+                "maxFrequencyHz": 12850000000,
+                "minFrequencyHz": 12150000000,
+                "loFrequencyHz": 11100000000,
+                "sideband": "high"
+              }
+            ]
+          }
+        ]
+      },
+      "subArrays": [
+        {
+          "subArray": "aa2",
+          "allowedChannelCountRangeMax": 214748647,
+          "allowedChannelCountRangeMin": 1,
+          "allowedChannelWidthValues": [
+            210,
+            420,
+            840,
+            1680,
+            3360,
+            6720,
+            13440,
+            26880,
+            40320,
+            53760,
+            80640,
+            107520,
+            161280,
+            215040,
+            322560,
+            416640,
+            430080,
+            645120
+          ],
+          "availableReceivers": ["Band_1", "Band_2", "Band_5a", "Band_5b"],
+          "numberSkaDishes": 64,
+          "numberMeerkatDishes": 20,
+          "numberMeerkatPlusDishes": 0,
+          "maxBaselineKm": 110,
+          "availableBandwidthHz": 800000000,
+          "numberChannels": null,
+          "cbfModes": ["correlation", "pst", "pss"],
+          "numberZoomWindows": 17,
+          "numberZoomChannels": 14880,
+          "numberPssBeams": 385,
+          "numberPstBeams": 6,
+          "psBeamBandwidthHz": 800000000,
+          "numberFsps": 35
+        },
+        {
+          "subArray": "aa*",
+          "allowedChannelCountRangeMax": [214748647],
+          "allowedChannelCountRangeMin": [1],
+          "allowedChannelWidthValues": [
+            210,
+            420,
+            840,
+            1680,
+            3360,
+            6720,
+            13440,
+            26880,
+            40320,
+            53760,
+            80640,
+            107520,
+            161280,
+            215040,
+            322560,
+            416640,
+            430080,
+            645120
+          ],
+          "availableReceivers": ["Band_1", "Band_2", "Band_5a", "Band_5b"],
+          "numberSkaDishes": 64,
+          "numberMeerkatDishes": 20,
+          "numberMeerkatPlusDishes": 0,
+          "maxBaselineKm": 110,
+          "availableBandwidthHz": 800000000,
+          "numberChannels": null,
+          "cbfModes": ["correlation", "pst", "pss"],
+          "numberZoomWindows": 17,
+          "numberZoomChannels": 14880,
+          "numberPssBeams": 385,
+          "numberPstBeams": 6,
+          "psBeamBandwidthHz": 800000000,
+          "numberFsps": 35
+        }
+      ]
+    },
+    "low": {
+      "basicCapabilities": {
+        "minFrequencyHz": 50000000,
+        "maxFrequencyHz": 350000000
+      },
+      "subArrays": [
+        {
+          "subArray": "aa2",
+          "numberStations": 68,
+          "numberSubstations": 720,
+          "maxBaselineKm": 40,
+          "availableBandwidthHz": 150000000,
+          "cbfModes": ["vis", "pst", "pss"],
+          "numberZoomWindows": 16,
+          "numberZoomChannels": 1800,
+          "numberPssBeams": 30,
+          "numberPstBeams": 4,
+          "psBeamBandwidthHz": 118000000,
+          "numberFsps": 10,
+          "channelWidthHz": null,
+          "numberBeams": 8,
+          "numberVlbiBeams": 0
+        },
+        {
+          "subArray": "aa*",
+          "numberStations": 68,
+          "numberSubstations": 720,
+          "maxBaselineKm": 40,
+          "availableBandwidthHz": 150000000,
+          "cbfModes": ["vis", "pst", "pss"],
+          "numberZoomWindows": 16,
+          "numberZoomChannels": 1800,
+          "numberPssBeams": 30,
+          "numberPstBeams": 4,
+          "psBeamBandwidthHz": 118000000,
+          "numberFsps": 10,
+          "channelWidthHz": null,
+          "numberBeams": 8,
+          "numberVlbiBeams": 0
+        }
+      ]
+    }
+  }
+}

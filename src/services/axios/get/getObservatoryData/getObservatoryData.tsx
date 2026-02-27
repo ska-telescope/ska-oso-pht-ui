@@ -33,7 +33,7 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
   //
   //  If/when the API provides multiple cycles, this section will need to be updated to map all cycles
   //
-  return {
+  const result = {
     policies: [
       {
         cycleNumber: inData.observatory_policy.cycle_number,
@@ -328,6 +328,8 @@ const mapping = (inData: ObservatoryDataBackend): ObservatoryData => {
         : null
     }
   };
+  console.log('old result', result);
+  return result;
 };
 
 async function GetObservatoryData(

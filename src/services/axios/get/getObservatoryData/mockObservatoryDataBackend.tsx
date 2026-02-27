@@ -4,6 +4,7 @@ import { ObservatoryDataBackend } from '@/utils/types/observatoryData';
 export const MockObservatoryDataBackend: ObservatoryDataBackend = {
   observatory_policy: {
     cycle_number: 1,
+    type: null,
     cycle_description: 'Science Verification',
     cycle_information: {
       cycle_id: 'SKAO_2027_1',
@@ -11,7 +12,10 @@ export const MockObservatoryDataBackend: ObservatoryDataBackend = {
       proposal_close: '20260512T15:00:00.000z'
     },
     cycle_policies: {
-      normal_max_hours: 100.0
+      normal_max_hours: 100.0,
+      max_data_products: null,
+      max_observation_setups: null,
+      max_targets: null
     },
     telescope_capabilities: {
       Mid: SA_AA2,
@@ -26,32 +30,44 @@ export const MockObservatoryDataBackend: ObservatoryDataBackend = {
           {
             rx_id: 'Band_1',
             min_frequency_hz: 350000000.0,
-            max_frequency_hz: 1050000000.0
+            max_frequency_hz: 1050000000.0,
+            sideband: 'high',
+            sub_bands: null
           },
           {
             rx_id: 'Band_2',
             min_frequency_hz: 950000000.0,
-            max_frequency_hz: 1760000000.0
+            max_frequency_hz: 1760000000.0,
+            sideband: 'high',
+            sub_bands: null
           },
           {
             rx_id: 'Band_3',
             min_frequency_hz: 1650000000.0,
-            max_frequency_hz: 3050000000.0
+            max_frequency_hz: 3050000000.0,
+            sideband: 'high',
+            sub_bands: null
           },
           {
             rx_id: 'Band_4',
             min_frequency_hz: 2800000000.0,
-            max_frequency_hz: 5180000000.0
+            max_frequency_hz: 5180000000.0,
+            sideband: 'high',
+            sub_bands: null
           },
           {
             rx_id: 'Band_5a',
             min_frequency_hz: 4600000000.0,
-            max_frequency_hz: 8500000000.0
+            max_frequency_hz: 8500000000.0,
+            sideband: 'high',
+            sub_bands: null
           },
           {
             rx_id: 'Band_5b',
             min_frequency_hz: 8300000000.0,
-            max_frequency_hz: 15400000000.0
+            max_frequency_hz: 15400000000.0,
+            sideband: 'high',
+            sub_bands: null
           }
         ]
       },
@@ -69,7 +85,10 @@ export const MockObservatoryDataBackend: ObservatoryDataBackend = {
         number_pss_beams: 384,
         number_pst_beams: 6,
         ps_beam_bandwidth_hz: 800000000.0,
-        number_fsps: 4
+        number_fsps: 4,
+        allowed_channel_count_range_max: [14880, 14880, 14880],
+        allowed_channel_count_range_min: [1],
+        allowed_channel_width_values: [210, 420, 840, 1680]
       }
     },
     low: {
