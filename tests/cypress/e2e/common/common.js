@@ -600,8 +600,9 @@ export const clickEditUserRightsIconForRow = (tableTestId, text) => {
 export const clickIconForRow = (tableTestId, iconTestId, text) => {
   cy.get(`[data-testid="${tableTestId}"]`)
     .find('[role="row"]')
-    .contains(text) // finds the cell containing the text
-    .closest('[role="row"]') // gets the row itself
+    .filter(`:contains("${text}")`)
+    .click()
+    .first()
     .within(() => {
       cy.get(`[data-testid="${iconTestId}"]`)
         .should('be.visible')

@@ -45,7 +45,7 @@ describe('Reviewer ( Technical )', () => {
     () => {
       clickUserMenuReviews();
       //Click on the review for the submission "In a galaxy far, far away"
-      clickIconForRow('dataGridId', 'BuildIcon', 'In a galaxy far, far away');
+      clickIconForRow('dataGridId', 'technicalIcon', 'In a galaxy far, far away');
       //select feasibility
       clickFeasibilityYes();
       //click validate / submit
