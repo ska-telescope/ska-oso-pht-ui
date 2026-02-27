@@ -1,5 +1,6 @@
 export type ObservatoryPolicyBackend = {
   cycle_number: number;
+  cycle_id: string;
   cycle_description: string;
   cycle_information: CycleInformationBackend;
   cycle_policies: {

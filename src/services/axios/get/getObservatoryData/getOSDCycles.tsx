@@ -20,6 +20,7 @@ import {
   subarrayConfigurationMid,
   subBands
 } from '@/utils/types/observatoryData';
+import { generateId } from '@/utils/helpers';
 
 /*****************************************************************************************************************************/
 
@@ -40,7 +41,7 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
       // set to SV if not provided
       cycleDescription: inc?.observatory_policy?.cycle_description ?? 'Science Verification',
       cycleInformation: {
-        cycleId: inc?.observatory_policy?.cycle_information?.cycle_id,
+        cycleId: inc?.observatory_policy?.cycle_id ?? generateId('CYCLE-', 3),
         proposalOpen: inc?.observatory_policy?.cycle_information?.proposal_open,
         proposalClose: inc?.observatory_policy?.cycle_information?.proposal_close
       },
@@ -276,6 +277,8 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
     type: 'Proposal'
   });
 
+  console.log('result', result);
+
   return result;
 };
 
@@ -291,7 +294,9 @@ async function GetOSDCycles(
     const result = await authAxiosClient.get(
       `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PROPOSAL_PATH}${URL_PATH}cycles`
     );
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : osdMapping(result.data);
+    return typeof result === 'undefined'
+      ? 'error.API_UNKNOWN_ERROR'
+      : osdMapping(result.data.reverse()); // reverse to to display LOW AA2 first
   } catch (e) {
     if (e instanceof Error) {
       return e.message;
