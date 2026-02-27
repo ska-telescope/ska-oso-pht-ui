@@ -191,7 +191,7 @@ export const clickToNextPage = () => clickButton('nextButtonTestId');
 export const clickFileUploadArea = () => clickButton('fileUpload');
 export const clickFileUpload = () => clickButton('fileUploadUploadButton');
 export const clickRank9 = () => clickButton('Rank9');
-export const clickFeasibilityYes = () => clickButton('CheckIcon');
+export const clickFeasibilityYes = () => clickButton('FeasibilityYes');
 export const clickStatusIconNav = testId => {
   cy.get('[data-testid="' + testId + '"]')
     .eq(0)
