@@ -5,6 +5,7 @@ export const MockObservatoryDataBackend: ObservatoryDataBackend = {
   observatory_policy: {
     cycle_number: 1,
     type: null,
+    cycle_id: 'SKAO_2027_1',
     cycle_description: 'Science Verification',
     cycle_information: {
       cycle_id: 'SKAO_2027_1',
