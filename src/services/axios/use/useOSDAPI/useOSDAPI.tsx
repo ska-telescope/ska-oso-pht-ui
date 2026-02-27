@@ -1,21 +1,23 @@
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { useState, useEffect } from 'react';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
-import GetObservatoryData from '../../get/getObservatoryData/getObservatoryData';
 import ObservatoryData from '@/utils/types/observatoryData';
-import { SV_LOW_AA2_CYCLE_NUMBER } from '@/utils/constants';
 import GetOSDCycles from '../../get/getObservatoryData/getOSDCycles';
 
 export const useOSDAPI = (setAxiosError: (error: string) => void) => {
   const { application, updateAppContent3 } = storageObject.useStore();
   const authClient = useAxiosAuthClient();
 
-  const [osdData, setOsdData] = useState<ObservatoryData | null>(null);
+  const [osdData, setOsdData] = useState<ObservatoryData[] | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const isObservatoryData = (data: any): data is ObservatoryData => {
+  const isObservatoryData = (data: any): data is ObservatoryData[] => {
     return (
-      data && typeof data === 'object' && Array.isArray(data.policies) && 'capabilities' in data
+      Array.isArray(data) &&
+      data.length > 0 &&
+      typeof data[0] === 'object' &&
+      Array.isArray(data[0].policies) &&
+      'capabilities' in data[0]
     );
   };
 
