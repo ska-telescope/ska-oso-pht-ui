@@ -975,13 +975,13 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
         <Grid sx={{ height: 100 }} size={{ md: 12 }}></Grid>
         <Grid size={{ md: 12, lg: 6 }}>
-          {/* {isPST()
+          {isPST()
             ? pstModeField()
             : isZoom()
             ? spectralAveragingField()
             : isContinuum()
             ? SubBandsField()
-            : emptyField()} */}
+            : emptyField()}
         </Grid>
         <Grid size={{ md: 12, lg: 6 }}>{isZoom() ? spectralResolutionField() : emptyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{isZoom() ? effectiveResolutionField() : emptyField()}</Grid>
