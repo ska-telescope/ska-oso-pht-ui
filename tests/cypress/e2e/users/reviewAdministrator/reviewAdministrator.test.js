@@ -3,20 +3,20 @@ import {
   clickUserMenuPanels,
   clickUserMenuProposals,
   getSubmittedProposals,
-  getReviewers,
   initialize,
   clearLocalStorage,
   clickUserMenuOverview,
   clickFirstPanel,
   clickPanelProposalsTab,
-  verifyMockedAPICall,
   verifyUserMenuOverview,
   verifyUserMenuProposals,
   verifyUserMenuPanels,
   verifyUserMenuReviews,
   verifyUserMenuDecisions,
   verifyProposalOnGridIsVisible,
-  verifyReviewerOnGridIsVisible
+  verifyReviewerOnGridIsVisible,
+  clickLinkedTickedBox,
+  verifyTickBoxIsSelected
 } from '../../common/common';
 import { reviewerAdmin } from '../users.js';
 
@@ -33,7 +33,7 @@ describe('Review Administrator', () => {
     clearLocalStorage();
   });
 
-  it.skip('Validate menu options', () => {
+  it('Validate menu options', () => {
     clickUserMenu();
     verifyUserMenuOverview(true);
     verifyUserMenuProposals(true);
@@ -42,41 +42,38 @@ describe('Review Administrator', () => {
     verifyUserMenuDecisions(true);
   });
 
-  it.skip('Navigate using the dropdown menu', () => {
+  it('Navigate using the dropdown menu', () => {
     clickUserMenuOverview();
     clickUserMenuPanels();
     clickUserMenuProposals();
   });
 
-  it.skip('Display a list of proposals', () => {
+  it('Display a list of proposals', () => {
     clickUserMenuPanels();
     clickFirstPanel();
-    clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
-    // verifyMockedAPICall('@getSubmittedProposals');
-    // verifyProposalOnGridIsVisible('The Milky Way View');
-    // verifyProposalOnGridIsVisible('In a galaxy far, far away');
+    clickPanelProposalsTab();
+    verifyProposalOnGridIsVisible('The Milky Way View');
+    verifyProposalOnGridIsVisible('In a galaxy far, far away');
   });
 
   it('Display a list of reviewers', () => {
-    clickUserMenuPanels(); // (real getReviewers api call would be made at this point and intercepted)
+    clickUserMenuPanels();
     clickFirstPanel();
     verifyReviewerOnGridIsVisible('Aisha');
   });
 
-  it.skip('Add a reviewer to a panel', () => {
+  it('Add a reviewer to a panel', () => {
     clickUserMenuPanels();
-    verifyMockedAPICall('@getReviewers');
     clickFirstPanel();
-    // clickLinkedTickedBox(2);
-    // verifyTickBoxIsSelected(2);
+    clickLinkedTickedBox(2);
+    verifyTickBoxIsSelected(2);
   });
 
-  it.skip('Add a proposal to a panel', () => {
+  it('Add a proposal to a panel', () => {
     clickUserMenuPanels();
     clickFirstPanel();
-    // clickPanelProposalsTab(); // (real getProposals api call would be made at this point and intercepted)
-    // verifyMockedAPICall('@getSubmittedProposals');
-    // clickLinkedTickedBox(0);
-    // verifyTickBoxIsSelected(0);
+    clickPanelProposalsTab();
+    clickLinkedTickedBox(0);
+    verifyTickBoxIsSelected(0);
   });
 });
