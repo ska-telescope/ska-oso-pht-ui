@@ -973,7 +973,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           {isContinuum() ? continuumBandwidthField() : bandwidthField()}
         </Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
-        <Grid sx={{ height: 100 }} size={{ md: 12 }}></Grid>
         <Grid size={{ md: 12, lg: 6 }}>
           {isPST()
             ? pstModeField()
