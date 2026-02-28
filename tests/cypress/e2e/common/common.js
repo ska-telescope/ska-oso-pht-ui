@@ -185,7 +185,7 @@ export const clickResolveButton = () => clickButton('resolveButton');
 export const clickSendInviteButton = () => clickButton('sendInviteButton');
 export const clickToAddTarget = () => clickButton('addTargetButton');
 export const clickCycleSelectionMockProposal = () => clickButton('CYCLE-003_ID');
-export const clickCycleSelectionSV = () => clickButton('SKAO_2027_1');
+export const clickCycleSelectionSV = () => clickButton('SKAO_2027_1_ID');
 export const clickToConfirmProposalSubmission = () => clickButton('displayConfirmationButton');
 export const clickToNextPage = () => clickButton('nextButtonTestId');
 export const clickFileUploadArea = () => clickButton('fileUpload');
@@ -369,7 +369,7 @@ export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalA
 
 export const verifyOsdDataCycleID = data => {
   cy.fixture('osd.json').then(osdData => {
-    expect(osdData[0]?.observatory_policy?.cycle_information?.cycle_id).to.equal(data);
+    expect(`${osdData[0]?.observatory_policy?.cycle_information?.cycle_id}_ID`).to.equal(data);
   });
 };
 
