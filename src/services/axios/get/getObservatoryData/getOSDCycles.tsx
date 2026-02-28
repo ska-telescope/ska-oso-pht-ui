@@ -1,4 +1,3 @@
-// import axios from 'axios';
 import {
   SA_AA2,
   SA_AA_STAR,
@@ -119,7 +118,7 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
                 psBeamBandwidthHz: inData?.capabilities?.mid?.AA2.ps_beam_bandwidth_hz,
                 numberFsps: inData?.capabilities?.mid?.AA2.number_fsps
               },
-              // MID SA_AA_STAR is currently mock to give us access to more than 1 subbarray configuration
+              // MID SA_AA_STAR is currently mocedk to give us access to more than 1 subbarray configuration
               {
                 subArray: SA_AA_STAR,
                 allowedChannelCountRangeMax: [214748647],
@@ -186,7 +185,7 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
                 numberBeams: inData.capabilities.low.AA2.number_beams,
                 numberVlbiBeams: inData.capabilities.low.AA2.number_vlbi_beams
               },
-              // LOW SA_AA_STAR is currently mock to give us access to more than 1 subbarray configuration
+              // LOW SA_AA_STAR is currently mocked to give us access to more than 1 subbarray configuration
               {
                 subArray: SA_AA_STAR,
                 numberStations: inData.capabilities.low.AA2.number_stations,

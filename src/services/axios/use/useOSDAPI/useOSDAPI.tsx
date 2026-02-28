@@ -23,7 +23,7 @@ export const useOSDAPI = (setAxiosError: (error: string) => void) => {
       setOsdData(currentData);
       setLoading(false);
       return;
-    } 
+    }
 
     const fetchObservatoryData = async () => {
       try {

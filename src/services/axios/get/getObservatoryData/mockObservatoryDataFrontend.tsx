@@ -36,29 +36,6 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
       },
       type: 'Science Verification'
     },
-    // {
-    //   cycleNumber: 2,
-    //   cycleDescription: 'Mid AA2 Science Verification',
-    //   cycleInformation: {
-    //     cycleId: 'CYCLE-002',
-    //     proposalOpen: '2025-04-01',
-    //     proposalClose: '2026-06-01'
-    //   },
-    //   cyclePolicies: {
-    //     maxDataProducts: 1,
-    //     maxObservations: 1,
-    //     maxTargets: 1,
-    //     bands: [BAND_5B_STR],
-    //     calibrationFactoryDefined: true,
-    //     low: [],
-    //     mid: [SA_AA2]
-    //   },
-    //   telescopeCapabilities: {
-    //     low: null,
-    //     mid: null
-    //   },
-    //   type: 'Science Verification'
-    // },
     {
       cycleNumber: 3,
       cycleDescription: 'Mock Proposal Cycle',
@@ -146,29 +123,6 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
             minFrequencyHz: 8300000000,
             maxFrequencyHz: 15400000000,
             subBands: null
-            // subBands: [
-            //   {
-            //     subBand: 1,
-            //     maxFrequencyHz: 12150000000,
-            //     minFrequencyHz: 11450000000,
-            //     loFrequencyHz: 11100000000,
-            //     sideband: 'high'
-            //   },
-            //   {
-            //     subBand: 2,
-            //     maxFrequencyHz: 13510000000,
-            //     minFrequencyHz: 12810000000,
-            //     loFrequencyHz: 13860000000,
-            //     sideband: 'low'
-            //   },
-            //   {
-            //     subBand: 3,
-            //     maxFrequencyHz: 12850000000,
-            //     minFrequencyHz: 12150000000,
-            //     loFrequencyHz: 11100000000,
-            //     sideband: 'high'
-            //   }
-            // ]
           }
         ]
       },
