@@ -16,13 +16,15 @@ import {
   verifyTeamMemberAccessUpdatedAlertFooter,
   mockCreateSVIdeaAPI,
   clickEditUserRightsIconForRow,
-  mockCreateProposalAccessAPI
+  mockCreateProposalAccessAPI,
+  mockOSDAPI
 } from '../../common/common.js';
 import { entry } from '../../../fixtures/utils/cypress.js';
 
 describe('Delegate Editing Rights', () => {
   beforeEach(() => {
     initialize(reviewerAdmin);
+    mockOSDAPI();
     mockCreateSVIdeaAPI();
     mockGetUserByEmailAPI();
     mockEmailAPI();
@@ -34,6 +36,7 @@ describe('Delegate Editing Rights', () => {
   });
 
   it('SV Flow: Delegate editing rights to a Co-Investigator', { jiraKey: 'XTP-89609' }, () => {
+    cy.wait('@mockOSDData');
     createScienceIdeaLoggedIn();
     cy.wait('@mockCreateSVIdea');
     verifyScienceIdeaCreatedAlertFooter();

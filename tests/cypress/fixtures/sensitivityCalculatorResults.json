@@ -49,22 +49,5 @@
     "spectralSynthesizedBeamSize": "2.21 x 1.92 arcsec²",
     "spectralSurfaceBrightnessSensitivity": "1.1e+4 K",
     "integrationTime": "600.00 s"
-  },
-  {
-    "test": "MID telescope, with subarray AA2, Continuum",
-    "band": "Mid Band_1 (0.35 - 1.05 GHz)",
-    "subarray": "AA2",
-    "observationType": "Continuum",
-    "weightedContinuumSensitivity": "346.65 μJy/beam",
-    "continuumConfusionNoise": "0 Jy/beam",
-    "totalContinuumSensitivity": "346.65 μJy/beam",
-    "continuumSynthesizedBeamSize": "1.48 x 0.50 arcsec²",
-    "continuumSurfaceBrightnessSensitivity": "1.2e+3 K",
-    "weightedSpectralSensitivity": "16.74 mJy/beam",
-    "spectralConfusionNoise": "54.49 nJy/beam",
-    "totalSpectralSensitivity": "16.74 mJy/beam",
-    "spectralSynthesizedBeamSize": "1.94 x 1.62 arcsec²",
-    "spectralSurfaceBrightnessSensitivity": "1.3e+4 K",
-    "integrationTime": "600.00 s"
   }
 ]

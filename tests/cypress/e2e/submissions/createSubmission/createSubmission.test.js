@@ -244,6 +244,7 @@ describe('Creating Proposal', () => {
   it('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
     mockCreateProposalAPI();
     clickAddSubmission();
+    cy.wait('@mockOSDData');
     clickCycleSelectionMockProposal();
     clickCycleConfirm();
     enterProposalTitle();
