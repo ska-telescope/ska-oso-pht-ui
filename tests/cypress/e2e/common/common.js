@@ -158,7 +158,7 @@ export const mockResolveTargetAPI = () => {
 
 export const mockOSDAPI = () => {
   cy.fixture('osd.json').then(osdData => {
-    cy.intercept('GET', '**/osd/10000', {
+    cy.intercept('GET', '**/osd/cycles', {
       statusCode: 200,
       body: osdData
     }).as('mockOSDData');
@@ -227,7 +227,7 @@ export const clickSave = () => clickButton('saveBtn');
 export const clickSendInviteButton = () => clickButton('sendInviteButton');
 export const clickToAddTarget = () => clickButton('addTargetButton');
 export const clickCycleSelectionMockProposal = () => clickButton('CYCLE-003_ID');
-export const clickCycleSelectionSV = () => clickButton('SKAO_2027_1_ID');
+export const clickCycleSelectionSV = () => clickButton('SKAO_2027_Low_AA2_SV_ID');
 export const clickToAddDataProduct = () => clickButton('addDataProductButton');
 export const clickToConfirmProposalSubmission = () => clickButton('displayConfirmationButton');
 export const clickToNextPage = () => clickButton('nextButtonTestId');

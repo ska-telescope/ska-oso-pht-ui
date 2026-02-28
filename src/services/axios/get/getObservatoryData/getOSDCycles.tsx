@@ -212,8 +212,6 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
 
   const capabilities = inData.map(cycle => mapCapabilities(cycle));
 
-  console.log('capabilities', capabilities);
-
   const mergedCapabilities = capabilities.slice(1).reduce(
     (acc, obj) => {
       for (const key in acc) {
@@ -278,8 +276,6 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
     },
     type: 'Proposal'
   });
-
-  console.log('result', result);
 
   return result;
 };

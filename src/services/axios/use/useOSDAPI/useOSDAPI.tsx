@@ -8,16 +8,12 @@ export const useOSDAPI = (setAxiosError: (error: string) => void) => {
   const { application, updateAppContent3 } = storageObject.useStore();
   const authClient = useAxiosAuthClient();
 
-  const [osdData, setOsdData] = useState<ObservatoryData[] | null>(null);
+  const [osdData, setOsdData] = useState<ObservatoryData | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const isObservatoryData = (data: any): data is ObservatoryData[] => {
+  const isObservatoryData = (data: any): data is ObservatoryData => {
     return (
-      Array.isArray(data) &&
-      data.length > 0 &&
-      typeof data[0] === 'object' &&
-      Array.isArray(data[0].policies) &&
-      'capabilities' in data[0]
+      data && typeof data === 'object' && Array.isArray(data.policies) && 'capabilities' in data
     );
   };
 
@@ -27,7 +23,7 @@ export const useOSDAPI = (setAxiosError: (error: string) => void) => {
       setOsdData(currentData);
       setLoading(false);
       return;
-    }
+    } 
 
     const fetchObservatoryData = async () => {
       try {

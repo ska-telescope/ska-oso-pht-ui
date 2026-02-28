@@ -2,16 +2,18 @@ import { describe, it, expect, vi } from 'vitest';
 import { renderHook, waitFor } from '@testing-library/react';
 import { useOSDAPI } from './useOSDAPI';
 import ObservatoryData from '@/utils/types/observatoryData';
+import { SA_AA2 } from '@/utils/constants';
 
-const mockObservatoryData: ObservatoryData[] = [
-  {
-    capabilities: {
-      low: {
-        basicCapabilities: {
-          minFrequencyHz: 50,
-          maxFrequencyHz: 350
-        },
-        AA2: {
+const mockObservatoryData: ObservatoryData = {
+  capabilities: {
+    low: {
+      basicCapabilities: {
+        minFrequencyHz: 50,
+        maxFrequencyHz: 350
+      },
+      subArrays: [
+        {
+          subArray: SA_AA2,
           numberStations: 256,
           numberSubstations: 64,
           maxBaselineKm: 65,
@@ -27,19 +29,22 @@ const mockObservatoryData: ObservatoryData[] = [
           numberBeams: 16,
           numberVlbiBeams: 2
         }
+      ]
+    },
+    mid: {
+      basicCapabilities: {
+        dishElevationLimitDeg: 15,
+        receiverInformation: [
+          {
+            rxId: 'B1',
+            minFrequencyHz: 350,
+            maxFrequencyHz: 1050
+          }
+        ]
       },
-      mid: {
-        basicCapabilities: {
-          dishElevationLimitDeg: 15,
-          receiverInformation: [
-            {
-              rxId: 'B1',
-              minFrequencyHz: 350,
-              maxFrequencyHz: 1050
-            }
-          ]
-        },
-        AA2: {
+      subArrays: [
+        {
+          subArray: SA_AA2,
           availableReceivers: ['B1'],
           numberSkaDishes: 64,
           numberMeerkatDishes: 32,
@@ -53,37 +58,40 @@ const mockObservatoryData: ObservatoryData[] = [
           numberPssBeams: 12,
           numberPstBeams: 6,
           psBeamBandwidthHz: 1000000,
-          numberFsps: 4
+          numberFsps: 4,
+          allowedChannelCountRangeMin: [1],
+          allowedChannelWidthValues: [1000, 2000, 5000],
+          allowedChannelCountRangeMax: [4096]
         }
-      }
-    },
-    policies: [
-      {
-        cycleNumber: 42,
-        cycleDescription: 'Cycle 42',
-        cycleInformation: {
-          cycleId: 'CYCLE-ID-2025',
-          proposalOpen: '20250901T08:00:00',
-          proposalClose: '20250930T12:00:00'
-        },
-        cyclePolicies: {
-          maxDataProducts: 0,
-          maxObservations: 0,
-          maxTargets: 0,
-          bands: [],
-          low: [],
-          mid: [],
-          observationType: []
-        },
-        telescopeCapabilities: {
-          mid: 'MID Telescope Description',
-          low: 'LOW Telescope Description'
-        },
-        type: ''
-      }
-    ]
-  }
-];
+      ]
+    }
+  },
+  policies: [
+    {
+      cycleNumber: 42,
+      cycleDescription: 'Cycle 42',
+      cycleInformation: {
+        cycleId: 'CYCLE-ID-2025',
+        proposalOpen: '20250901T08:00:00',
+        proposalClose: '20250930T12:00:00'
+      },
+      cyclePolicies: {
+        maxDataProducts: 0,
+        maxObservations: 0,
+        maxTargets: 0,
+        calibrationFactoryDefined: true,
+        bands: [],
+        low: [],
+        mid: []
+      },
+      telescopeCapabilities: {
+        mid: 'MID Telescope Description',
+        low: 'LOW Telescope Description'
+      },
+      type: ''
+    }
+  ]
+};
 
 vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
   storageObject: {
@@ -113,13 +121,12 @@ describe('useOSDAPI hook', () => {
       expect(result.current.loading).toBe(false);
     });
 
-    console.log('OSD Data:', result.current.osdData);
+    // await waitFor(() => {
     expect(result.current.osdData).not.toBeNull();
-    expect(result.current.osdData?.[0]?.policies[0].cycleNumber).toBe(42);
-    expect(result.current.osdData?.[0]?.capabilities?.low?.basicCapabilities?.minFrequencyHz).toBe(
-      50
-    );
+    expect(result.current.osdData?.policies[0]?.cycleNumber).toBe(42);
+    expect(result.current.osdData?.capabilities?.low?.basicCapabilities?.minFrequencyHz).toBe(50);
     expect(mockErrorSetter).not.toHaveBeenCalled();
+    // });
   });
 
   it('handles invalid response format', async () => {
