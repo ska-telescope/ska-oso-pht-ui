@@ -185,7 +185,7 @@ export const clickResolveButton = () => clickButton('resolveButton');
 export const clickSendInviteButton = () => clickButton('sendInviteButton');
 export const clickToAddTarget = () => clickButton('addTargetButton');
 export const clickCycleSelectionMockProposal = () => clickButton('CYCLE-003_ID');
-export const clickCycleSelectionSV = () => clickButton('SKAO_2027_Low_AA2_SV_ID');
+export const clickCycleSelectionSV = () => clickButton('SKAO_2027_1');
 export const clickToConfirmProposalSubmission = () => clickButton('displayConfirmationButton');
 export const clickToNextPage = () => clickButton('nextButtonTestId');
 export const clickFileUploadArea = () => clickButton('fileUpload');
@@ -369,33 +369,33 @@ export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalA
 
 export const verifyOsdDataCycleID = data => {
   cy.fixture('osd.json').then(osdData => {
-    expect(osdData.observatory_policy.cycle_information.cycle_id).to.equal(data);
+    expect(osdData[0]?.observatory_policy?.cycle_information?.cycle_id).to.equal(data);
   });
 };
 
 export const verifyOsdDataCycleDescription = data => {
   cy.fixture('osd.json').then(osdData => {
-    expect(osdData.observatory_policy.cycle_description).to.equal(data);
+    expect(osdData[0]?.observatory_policy?.cycle_description).to.equal(data);
   });
 };
 
 export const verifyOsdDataProposalOpen = data => {
   cy.fixture('osd.json').then(osdData => {
-    expect(osdData.observatory_policy.cycle_information.proposal_open).to.equal(data);
+    expect(osdData[0]?.observatory_policy?.cycle_information?.proposal_open).to.equal(data);
     verifyContent('SKAO_2027_1_opens', '27-03-2026');
   });
 };
 
 export const verifyOsdDataProposalClose = data => {
   cy.fixture('osd.json').then(osdData => {
-    expect(osdData.observatory_policy.cycle_information.proposal_close).to.equal(data);
+    expect(osdData[0]?.observatory_policy?.cycle_information?.proposal_close).to.equal(data);
     verifyContent('SKAO_2027_1_closes', '12-05-2026');
   });
 };
 
 export const verifyOsdDataMaxTargets = data => {
   cy.fixture('osd.json').then(osdData => {
-    expect(osdData.observatory_policy.cycle_policies.max_targets).to.equal(data);
+    expect(osdData[0]?.observatory_policy?.cycle_policies?.max_targets).to.equal(data);
   });
 };
 

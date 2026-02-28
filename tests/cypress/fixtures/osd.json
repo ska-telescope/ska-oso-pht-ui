@@ -2,7 +2,7 @@
   {
     "observatory_policy": {
       "cycle_number": 10000,
-      "cycle_id": "SKAO_2027_Low_AA2_SV",
+      "cycle_id": "SKAO_2027_1",
       "type": "Science Verification",
       "cycle_description": "Low AA2 Science Verification",
       "cycle_information": {
