@@ -4,8 +4,7 @@ import {
   DP_TYPE_IMAGES,
   PROPOSAL_STATUS,
   SA_AA2,
-  TYPE_CONTINUUM,
-  TYPE_ZOOM
+  TYPE_CONTINUUM
 } from '@utils/constants.ts';
 import { RA_TYPE_ICRS } from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';

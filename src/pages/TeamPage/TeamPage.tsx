@@ -193,12 +193,16 @@ export default function TeamPage() {
         <FieldWrapper label={t('email.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec?.email}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('phdThesis.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{t(rec?.phdThesis ? 'yes' : 'no')}</Typography>
-        </FieldWrapper>
-        <FieldWrapper label={t('pi.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{t(rec?.pi ? 'yes' : 'no')}</Typography>
-        </FieldWrapper>
+        {!isSV && (
+          <FieldWrapper label={t('phdThesis.label')} labelWidth={LABEL_WIDTH}>
+            <Typography variant="body1">{t(rec?.phdThesis ? 'yes' : 'no')}</Typography>
+          </FieldWrapper>
+        )}
+        {!isSV && (
+          <FieldWrapper label={t('pi.label')} labelWidth={LABEL_WIDTH}>
+            <Typography variant="body1">{t(rec?.pi ? 'yes' : 'no')}</Typography>
+          </FieldWrapper>
+        )}
       </Grid>
     );
   };

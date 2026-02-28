@@ -28,14 +28,14 @@ export const getMaxContBandwidthHz = (
   osdMID: any,
   osdLOW: any
 ): any => {
-  //TODO: Need to deal with custom case
-
   if (isLow(telescope)) {
-    const sArray = osdLOW?.subArrays.find((sub: any) => sub.subArray === subarrayConfig);
-    return sArray?.availableBandwidthHz;
+    const subArrays = osdLOW?.subArrays ?? [];
+    const sArray = subArrays.find((sub: any) => sub.subArray === subarrayConfig);
+    return sArray?.availableBandwidthHz ?? undefined;
   } else {
-    const rec = osdMID?.basicCapabilities.receiverInformation.find((r: any) => r.rxId === band);
-    return rec ? rec.maxFrequencyHz : undefined;
+    const receiverInfo = osdMID?.basicCapabilities?.receiverInformation ?? [];
+    const rec = receiverInfo.find((r: any) => r.rxId === band);
+    return rec?.maxFrequencyHz ?? undefined;
   }
 };
 
@@ -47,14 +47,14 @@ export const getMaxSpecBandwidthHz = (
   osdLOW: any,
   observatoryConstants: any
 ): any => {
-  //TODO: AA2 will be extended as OSD Data is extended
+  // STAR-1923: AA2 will be extended as OSD Data is extended
   if (isAA2(subarrayConfig)) {
     const sArray = (isLow(telescope) ? osdLOW : osdMID)?.subArrays.find(
       (sub: any) => sub.subArray === SA_AA2
     );
     return sArray?.channelWidthHz;
   } else {
-    //TODO: Refactor as custom does not have this field
+    // STAR-1923 : Refactor as custom does not have this field
     return observatoryConstants.array
       .find((item: any) => item.value === telescope)
       ?.subarray?.find((ar: any) => ar.value === subarrayConfig)?.maxContBandwidthHz;
@@ -77,7 +77,7 @@ const getSubArrayAntennasCounts = (
 ) => {
   const observationArray = observatoryConstants.array.find((arr: any) => arr.value === telescope);
   const subArray = observationArray?.subarray?.find((sub: any) => sub.value === subarrayConfig);
-  //TODO: AA2 will be extended as OSD Data is extended
+  // STAR-1923 : AA2 will be extended as OSD Data is extended
   if (!isLow(telescope) && isAA2(subarrayConfig)) {
     const sArray = osdMID.subArrays.find((sub: any) => sub.subArray === SA_AA2);
     return {
@@ -124,7 +124,7 @@ const getBandLimits = (
   observatoryConstants: any,
   findBand: Function
 ) => {
-  const band = findBand(observingBand);
+  const band = findBand ? findBand(observingBand) : null;
   if (!band) {
     return [band?.minFrequencyHz, band?.maxFrequencyHz];
   }

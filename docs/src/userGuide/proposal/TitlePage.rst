@@ -47,9 +47,9 @@ Key Information and Actions
    :header: "Submission Attributes", "Initials", "Description"
 
     "Target of Opportunity", "ToO", "These are submissions that require rapid response to alerts that have been triggered by events either externally or internally to the SKA."
-    "Joint SKA submission", "JSP", "A submission that requires both SKA-LOW and SKA-MID telescopes to achieve the science goals. Such submissions may be linked so that observations can be executed contemporaneously."
-    "Coordinated Submission", "CP", "A  submission  requiring  observing  to  be  coordinated  with  another  facility    (either    ground- or   space-based)    with    user-specified scheduling constraints provided. The SKA Observatory will seek to establish  relationships  with  key,  complementary  facilities  (e.g.,  ALMA)  to  facilitate  CPs.  Submissions  for  VLBI  will be  considered  as  Coordinated Submissions."
-    "Long Term Submission", "LTS", "These are for projects that require more than one time allocation cycle  to  complete  (e.g.,  long-term  monitoring  campaigns)  but  are  too short in overall observing time to qualify as a KSP."
+    "Joint SKA Proposal", "JSP", "A submission that requires both SKA-LOW and SKA-MID telescopes to achieve the science goals. Such submissions may be linked so that observations can be executed contemporaneously."
+    "Coordinated Proposal", "CP", "A  submission  requiring  observing  to  be  coordinated  with  another  facility    (either    ground- or   space-based)    with    user-specified scheduling constraints provided. The SKA Observatory will seek to establish  relationships  with  key,  complementary  facilities  (e.g.,  ALMA)  to  facilitate  CPs.  Submissions  for  VLBI  will be  considered  as  Coordinated Submissions."
+    "Long Term Projects", "LTS", "These are for projects that require more than one time allocation cycle  to  complete  (e.g.,  long-term  monitoring  campaigns)  but  are  too short in overall observing time to qualify as a KSP."
 
 
 

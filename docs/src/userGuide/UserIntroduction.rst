@@ -40,6 +40,18 @@ When using the tool as a non-logged in user, functionality is restricted to only
 
    Status, Navigation and Validation displayed at the top of each page in a proposal.
 
+Capabilities prior to login:
+============================
+
+.. figure:: /images/landingPageNotLoggedIn.png
+   :width: 90%
+   :align: center
+   :alt: Image of the application prior to login.
+   
+   Application prior to login.
+
+Current implementation is that the user can only access the various pages of the application once they have logged.
+Prior to login, the user is presented with an option to navigate to the Sensitivity Calculator Tool, as shown above
 
 Common Elements Overview:
 =========================

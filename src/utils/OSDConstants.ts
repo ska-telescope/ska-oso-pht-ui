@@ -12,7 +12,6 @@ import {
 
 //NOTE:: not to be referenced directly, outside useOSDAccessors
 export const OSD_CONSTANTS = {
-  // TODO create a type for this
   array: [
     {
       value: 1,
@@ -26,7 +25,7 @@ export const OSD_CONSTANTS = {
         },
         {
           value: SA_AA_STAR,
-          map: 'LOW_AAstar_all',
+          map: SA_AA_STAR,
           label: 'AA*',
           numOf13mAntennas: 0,
           continuumSpectralAveragingMax: 13812
@@ -63,7 +62,7 @@ export const OSD_CONSTANTS = {
         },
         {
           value: SA_AA_STAR,
-          map: 'LOW_AAstar_all',
+          map: SA_AA_STAR,
           label: 'AA*',
           numOf13mAntennas: 0,
           continuumSpectralAveragingMax: 13812
@@ -211,7 +210,6 @@ export const OSD_CONSTANTS = {
   ],
   Supplied: [
     {
-      label: 'Integration Time', // TODO check if label still needed as we use sensCalcResultsLabel in calculate results
       sensCalcResultsLabel: 'integrationTime',
       mappingLabel: 'integration_time',
       value: SUPPLIED_TYPE_INTEGRATION,
@@ -226,7 +224,6 @@ export const OSD_CONSTANTS = {
       ]
     },
     {
-      label: 'Sensitivity', // TODO check if label still needed as we use sensCalcResultsLabel in calculate results
       sensCalcResultsLabel: 'sensitivity',
       mappingLabel: 'sensitivity',
       value: SUPPLIED_TYPE_SENSITIVITY,

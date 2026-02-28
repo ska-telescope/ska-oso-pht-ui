@@ -30,16 +30,9 @@ describe('<LandingPage />', () => {
     // You can add assertions here if needed
   });
 
-  test('creates dummy proposal when not logged in', async () => {
+  test('does not show addSubmissionButton when not logged in', () => {
     wrapper(<LandingPage />);
-
     expect(isLoggedIn()).toBe(false);
-
-    fireEvent.click(screen.getByTestId('addSubmissionButton'));
-    /*
-    await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith(expect.anything());
-    });
-    */
+    expect(screen.queryByTestId('addSubmissionButton')).toBeNull();
   });
 });

@@ -107,7 +107,7 @@ export function getFinalIndividualResultsForZoom(
   const shifted1 = shiftSensitivity(transformed_result?.weighted_continuum_sensitivity);
   const results1 = {
     field: `continuumSensitivityWeighted`,
-    value: shifted1.value.toString(), // not zoom - TODO: remove?
+    value: shifted1.value.toString(),
     units: shifted1.unit
   };
 
@@ -301,7 +301,7 @@ const addPropertiesMID = (
   properties += rxBand(standardData.observingBand);
 
   if (standardData.subarray !== SA_CUSTOM) {
-    properties += addValue('subarray_configuration', standardData.subarray);
+    properties += addValue('subarray_configuration', standardData.subarray.toUpperCase());
   } else {
     properties += addValue('n_ska', standardData.num15mAntennas);
     properties += addValue('n_meer', standardData.num13mAntennas);
@@ -357,7 +357,6 @@ async function GetZoomData(
 
   const observingBand = (observation: Observation) => observation.observingBand;
 
-  // TODO handle custom subarray
   const subArray = (observation: Observation) => {
     const result = OSD_CONSTANTS.array
       .find(t => t.value === observation.telescope)

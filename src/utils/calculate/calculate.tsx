@@ -1,12 +1,5 @@
-// import { BAND_1_STR, BAND_2_STR, BAND_5A_STR, BAND_5B_STR } from '../constants';
-
-// const lookupArrayValue = (arr: any[], inValue: string | number) =>
-//   arr.find(e => e.lookup.toString() === inValue.toString())?.value;
-
-/*-----------------------------------------------------*/
-
 export const calculateCentralFrequency = (inCap: any, sc: string) => {
-  const cap = inCap.basicCapabilities;
+  const cap = inCap?.basicCapabilities ?? null;
   if (cap?.minFrequencyHz !== undefined && cap?.maxFrequencyHz !== undefined) {
     return (cap.minFrequencyHz + cap.maxFrequencyHz) / 2;
   }

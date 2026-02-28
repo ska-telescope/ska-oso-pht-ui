@@ -8,10 +8,14 @@ import {
   verifyUserMenuProposals,
   verifyUserMenuPanels,
   verifyUserMenuReviews,
-  verifyUserMenuDecisions
+  verifyUserMenuDecisions,
+  clickIconForRow,
+  clickToValidateSV,
+  verifyAlertFooter,
+  clickFeasibilityYes
 } from '../../common/common';
 import { reviewerTechnical } from '../users';
-// TODO : PMT Flows are under review, scenarios will be updated when functionality is finalised
+// PMT Flows are under review, scenarios will be updated when functionality is finalised
 describe('Reviewer ( Technical )', () => {
   beforeEach(() => {
     initialize(reviewerTechnical);
@@ -34,8 +38,19 @@ describe('Reviewer ( Technical )', () => {
     clickUserMenuProposals();
     clickUserMenuReviews();
   });
-  it('Perform a review', () => {
-    clickUserMenuReviews();
-    // TODO : Perhaps do some stuff in here ?
-  });
+
+  it(
+    'Science Verification: Perform a review, then validate and submit',
+    { jiraKey: 'XTP-96341' },
+    () => {
+      clickUserMenuReviews();
+      //Click on the review for the submission "In a galaxy far, far away"
+      clickIconForRow('dataGridId', 'technicalIcon', 'In a galaxy far, far away');
+      //select feasibility
+      clickFeasibilityYes();
+      //click validate / submit
+      clickToValidateSV();
+      verifyAlertFooter('Review record has been updated');
+    }
+  );
 });

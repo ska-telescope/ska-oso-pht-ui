@@ -36,7 +36,7 @@ export default function SubArrayField({
   const options = useMemo(() => {
     if (telescope <= 0) return [];
 
-    const telBand = telescopeBand(observingBand);
+    const telBand = telescopeBand ? telescopeBand(observingBand) : null;
     const policy = selectedPolicy?.cyclePolicies;
 
     const arr = telBand === TELESCOPE_LOW_NUM ? policy?.low : policy?.mid;
@@ -56,9 +56,9 @@ export default function SubArrayField({
         {options.length > 0 && (
           <DropDown
             disabled={disabled || options.length < 2}
-            options={options}
+            options={options ?? []}
             testId={FIELD}
-            value={value ?? ''} // prevents controlled/uncontrolled warnings
+            value={value ?? ''}
             setValue={setValue}
             label={t(`${FIELD}.label`)}
             onFocus={() => setHelp(`${FIELD}.help`)}

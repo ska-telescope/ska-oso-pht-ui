@@ -19,7 +19,7 @@ export default function VelocityTypeField({
   const VelocityTypeTypeField = () => {
     const getOptions = () => {
       return [VELOCITY_TYPE.VELOCITY, VELOCITY_TYPE.REDSHIFT].map(e => ({
-        label: t('velocity.' + e),
+        label: t('velocity.' + e + '.label'),
         value: e
       }));
     };

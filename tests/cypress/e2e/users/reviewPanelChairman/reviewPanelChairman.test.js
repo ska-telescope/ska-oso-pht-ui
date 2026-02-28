@@ -37,7 +37,4 @@ describe('Review Chairman', () => {
     clickUserMenuDecisions();
     clickUserMenuProposals();
   });
-  it('Make a review decision', () => {
-    clickUserMenuDecisions();
-  });
 });

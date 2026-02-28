@@ -142,6 +142,7 @@ export const MockProposalBackend: ProposalBackend = {
           supplied: {
             supplied_type: 'integration_time',
             quantity: {
+              type: 1,
               value: 1,
               unit: 'h'
             }
@@ -151,7 +152,6 @@ export const MockProposalBackend: ProposalBackend = {
           spectral_averaging: '1'
         }
       }
-      // TODO add observations and data products for each PST modes
     ],
     data_product_sdps: [
       {

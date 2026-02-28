@@ -1215,6 +1215,11 @@
     "label": "Selected"
   },
   "sensCalc": {
+    "button": "Open Sensitivity Calculator",
+    "label": "Sensitivity Calculator",
+    "description": "The SKA sensitivity calculator provides estimates of the sensitivity for a given set of observing parameters. The calculator uses the most up-to-date information on the telescope performance and can be used to inform the design of observations and proposals.",
+    "tooltip": "Open the SKA sensitivity calculator in a new tab",
+    "url": "https://sensitivity-calculator.skao.int/",
     "0": "All sensitivity calculations for this observation are valid",
     "1": "One or more sensitivity calculations for this observation are invalid",
     "3": "Sensitivity calculations for this observation are in progress",
@@ -1448,15 +1453,19 @@
   "velocity": {
     "label": "Velocity",
     "helpType": "Specify either velocity or redshift",
-    "help0": "This can be specified as either a velocity in km/s or m/s, or as a redshift using the field dropdown.  This field will be populated by the Resolve functionality if the value is in SIMBAD or NED",
-    "help1": "This can be specified as either a velocity in km/s or m/s, or as a redshift using the field dropdown.  This field will be populated by the Resolve functionality if the value is in SIMBAD or NED",
     "help": "Selected either velocity or redshift",
     "units": {
       "0": "km/s",
       "1": "m/s"
     },
-    "0": "Velocity",
-    "1": "Redshift"
+    "0": {
+      "label": "Velocity",
+      "help": "This can be specified as either a velocity in km/s or m/s, or as a redshift using the field dropdown.  This field will be populated by the Resolve functionality if the value is in SIMBAD or NED"
+    },
+    "1": {
+      "label": "Redshift",
+      "help": "This can be specified as either a velocity in km/s or m/s, or as a redshift using the field dropdown.  This field will be populated by the Resolve functionality if the value is in SIMBAD or NED"
+    }
   },
   "velocityRedshift": {
     "label": "Vel/Redshift"

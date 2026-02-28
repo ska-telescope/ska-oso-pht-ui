@@ -504,6 +504,7 @@ export const OSCILLATION_UNITS = [
 ];
 //TODO: Refactor such that these identifiers are no longer needed and references can be per array label
 export const SA_AA2 = 'aa2';
+export const SA_AA4 = 'aa4';
 export const SA_AA_STAR = 'aa*';
 export const SA_CUSTOM = 'custom';
 
@@ -592,7 +593,6 @@ export const STATUS = {
 };
 export const SUPPLIED_VALUE_DEFAULT_MID = 600;
 export const SUPPLIED_VALUE_DEFAULT_LOW = 1;
-// TODO check if we should use different default values for mid and low bandwidth
 export const ZOOM_BANDWIDTH_DEFAULT_MID = 1;
 export const ZOOM_BANDWIDTH_DEFAULT_LOW = 5;
 

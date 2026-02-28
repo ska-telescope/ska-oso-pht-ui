@@ -408,7 +408,7 @@ export default function TargetEntry({
       <VelocityTypeField
         setVelType={setTheVelType}
         velType={velType}
-        // velTypeFocus={() => setHelp('')}   TODO : Need to find out why this is not working great
+        velTypeFocus={() => setHelp('velocityType')}
       />
     );
 
@@ -422,9 +422,8 @@ export default function TargetEntry({
         vel={vel}
         velType={velType}
         velUnit={velUnit}
-        velFocus={() => setHelp('velocity.help' + velType)}
-        // velTypeFocus={() => setHelp('')}   TODO : Need to find out why this is not working great
-        velUnitFocus={() => setHelp('velocity.help' + velType)}
+        velFocus={() => setHelp('velocity.' + velType)}
+        velUnitFocus={() => setHelp('velocity.' + velType)}
       />
     );
 

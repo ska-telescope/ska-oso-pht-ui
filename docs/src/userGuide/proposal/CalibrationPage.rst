@@ -1,8 +1,13 @@
 Calibration Page
 ================
 
+The calibration strategy is defined by the SKA Observatory. You have the option to add comments.
+
 You need to have observations and targets added to your proposal to see the calibration strategy. 
 The calibration page allows you to view the observatory defined calibration strategy for an observation and target combination. 
+If there are several observations or targets for the proposal, the page displays the first observation/target combination by default.
+
+Appart from the comment section, all the fields are automatically populated.
 
 .. figure:: /images/calibrationPage.png
    :width: 90%
@@ -14,23 +19,22 @@ The calibration page allows you to view the observatory defined calibration stra
 Layout and Navigation
 ++++++++++++++++++++++
 
-The calibration page is divided into several sections, each providing different functionalities:
+The calibration page is divided into the following sections:
 
-1. **Calibrator pre-processing**: Displays the calibrator selected for pre-processing the observation data. This includes:
+1. **Starting Calibrator**: Displays the calibrator selected for pre-processing the observation data. This includes:
    - Calibrator Name: The name of the calibrator.
    - Duration: The duration (in minutes) for which the calibrator is used.
    - Intent: The purpose of the calibration (e.g., phase, amplitude).
 
 2. **Target name and integration time of the observation**: This section shows:
-   - Target Name: Automatically retrieved from the proposal based on the selected observation.
-   - Integration Time: The total integration time (in minutes) for the selected observation, derived from the supplied sensitivity parameters.
+   - Target Name: Automatically retrieved from the proposal based on the linked observation.
+   - Integration Time: The total integration time (in minutes) for the linked observation.
 
-3. **Calibrator post-processing**: Displays the calibrator used after the observation. This section mirrors the pre-processing calibrator fields (name, duration, intent) and is currently assumed to be the same as the pre-processing calibrator.
+3. **Ending Calibrator**: Displays the calibrator used at the end of the observation. This section mirrors the starting calibrator fields (name, duration, intent) and is currently assumed to be the same.
 
-4. **Comments and Notes**: 
-   - Add Note Checkbox: Allows users to indicate whether they want to include a comment.
-   - Comment Field: A multi-line text field for entering additional notes or justifications related to the calibration strategy.
-   - Validation: If the checkbox is selected, the comment field becomes mandatory.
+4. **Comments**: 
+   - Comment Field: A multi-line text field for entering additional notes or suggestions related to the calibration strategy.
+   - Validation: The comment field is optional.
 
 
 
