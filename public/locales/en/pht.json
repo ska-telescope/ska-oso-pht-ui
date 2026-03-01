@@ -126,6 +126,15 @@
       "rangeError": "Bandwidth must be fully contained within the band"
     }
   },
+  "colors": {
+    "label": "Colors",
+    "toolTip": "Click here for color variations of the application"
+  },
+  "docs": {
+    "label": "Docs",
+    "toolTip": "Click here for PHT documentation",
+    "URL": "https://developer.skao.int/projects/ska-oso-pht-ui/en/{{version}}/userGuide/UserIntroduction.html"
+  },
   "frequencyBandwidthOutOfRange": {
     "warning": "Frequency & bandwidth must be fully contained within the band limits."
   },
@@ -1658,8 +1667,6 @@
   },
   "toolTip": {
     "button": {
-      "docs": "Click here for PHT documentation",
-      "docsURL": "https://developer.skao.int/projects/ska-oso-pht-ui/en/{{version}}/userGuide/UserIntroduction.html",
       "mode": "Color Mode Toggle",
       "skao": "SKAO WebSite",
       "telescopeToggle": "Switch between available telescopes"
