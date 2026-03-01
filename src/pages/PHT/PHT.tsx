@@ -253,8 +253,10 @@ export default function PHT({
         }
         footerChildrenMiddle={footerMainChildren()}
         headerChildren={null}
-        iconDocsToolTip={t('toolTip.button.docs')}
-        iconDocsURL={t('toolTip.button.docsURL', { version: packageJson.version })}
+        iconDocsLabel={t('docs.label')}
+        iconDocsToolTip={t('docs.toolTip')}
+        iconDocsURL={t('docs.URL', { version: packageJson.version })}
+        iconFeedbackLabel={''}
         iconFeedbackToolTip={''}
         iconFeedbackURL={''}
         loginComponent={signIn()}
@@ -282,6 +284,8 @@ export default function PHT({
         storageAccessibility={accessibilityMode}
         storageAccessibilityUpdate={accessibilityUpdate}
         storageHelp={help}
+        storageColorLabel={t('colors.label')}
+        storageHelpLabel={t('help')}
         storageHelpToggle={helpToggle}
         storageThemeMode={themeMode}
         storageToggleTheme={themeToggle}
