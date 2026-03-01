@@ -14,11 +14,13 @@ import {
   mockResolveTargetAPI,
   verifyAutoLinkAlertFooter,
   addSubmissionSummary,
-  mockCreateSVIdeaAPI
+  mockCreateSVIdeaAPI,
+  mockOSDAPI
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 beforeEach(() => {
   initialize(standardUser);
+  mockOSDAPI();
   mockCreateSVIdeaAPI();
   mockEmailAPI();
   mockResolveTargetAPI();
@@ -30,6 +32,7 @@ afterEach(() => {
 
 describe('Data product validation', () => {
   it('SV Flow: Verify channels out range', () => {
+    cy.wait('@mockOSDData');
     createScienceIdeaLoggedIn();
     cy.wait('@mockCreateSVIdea');
     verifyScienceIdeaCreatedAlertFooter();

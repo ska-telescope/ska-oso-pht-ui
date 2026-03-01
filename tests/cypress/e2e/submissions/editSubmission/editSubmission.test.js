@@ -39,12 +39,14 @@ import {
   clickToSubmitProposal,
   clickToConfirmProposalSubmission,
   mockCreateSVIdeaAPI,
-  mockCreateProposalAPI
+  mockCreateProposalAPI,
+  mockOSDAPI
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
 beforeEach(() => {
   initialize(standardUser);
+  mockOSDAPI();
   mockEmailAPI();
   mockResolveTargetAPI();
   mockValidateAPI();
@@ -63,6 +65,7 @@ describe('Edit Proposal', () => {
   });
 
   it('SV Flow: Edit a basic science idea, ensure science idea is valid and the submit', () => {
+    cy.wait('@mockOSDData');
     mockCreateSVIdeaAPI();
     createScienceIdeaLoggedIn();
     cy.wait('@mockCreateSVIdea');
@@ -106,6 +109,7 @@ describe('Edit Proposal', () => {
     'Proposal Flow: Edit a basic proposal, ensure proposal is valid and then submit',
     { jiraKey: 'XTP-71405' },
     () => {
+      cy.wait('@mockOSDData');
       mockCreateProposalAPI();
       createStandardProposalLoggedIn();
       cy.wait('@mockCreateProposal');

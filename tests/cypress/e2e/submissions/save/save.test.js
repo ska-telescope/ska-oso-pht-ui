@@ -15,13 +15,15 @@ import {
   enterScienceVerificationIdeaTitle,
   verifyScienceIdeaCreatedAlertFooter,
   mockCreateSVIdeaAPI,
-  mockCreateProposalAPI
+  mockCreateProposalAPI,
+  mockOSDAPI
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
 describe('Verify Save', () => {
   beforeEach(() => {
     initialize(standardUser);
+    mockOSDAPI();
   });
 
   afterEach(() => {
@@ -31,6 +33,7 @@ describe('Verify Save', () => {
   it('SV Flow: Verify save functionality is restricted before sv creation', () => {
     mockCreateSVIdeaAPI();
     clickAddSubmission();
+    cy.wait('@mockOSDData');
     clickCycleSelectionSV();
     clickCycleConfirm();
     //Verify save is not visible before sv creation
@@ -40,6 +43,7 @@ describe('Verify Save', () => {
   it('SV Flow: Verify save functionality is not restricted after sv creation', () => {
     mockCreateSVIdeaAPI();
     clickAddSubmission();
+    cy.wait('@mockOSDData');
     clickCycleSelectionSV();
     clickCycleConfirm();
     enterScienceVerificationIdeaTitle();
@@ -53,6 +57,7 @@ describe('Verify Save', () => {
   it('Proposal Flow: Verify save functionality is restricted before proposal creation', () => {
     mockCreateProposalAPI();
     clickAddSubmission();
+    cy.wait('@mockOSDData');
     clickCycleSelectionMockProposal();
     clickCycleConfirm();
     //Verify save is not visible before proposal creation
@@ -62,6 +67,7 @@ describe('Verify Save', () => {
   it('Proposal Flow: Verify save functionality is not restricted after proposal creation', () => {
     mockCreateProposalAPI();
     clickAddSubmission();
+    cy.wait('@mockOSDData');
     clickCycleSelectionMockProposal();
     clickCycleConfirm();
     enterProposalTitle();

@@ -122,7 +122,7 @@ export const mockResolveTargetAPI = () => {
 
 export const mockOSDAPI = () => {
   cy.fixture('osd.json').then(osdData => {
-    cy.intercept('GET', '**/osd/10000', {
+    cy.intercept('GET', '**/osd/cycles', {
       statusCode: 200,
       body: osdData
     }).as('mockOSDData');
@@ -286,8 +286,7 @@ export const clickUserMenuOverview = () => clickSignINBtns('menuItemOverview', '
 export const clickUserMenuProposals = () => clickSignINBtns('menuItemProposals', '');
 export const clickUserMenuPanels = () =>
   clickSignINBtns('menuItemPanelSummary', 'PANEL MANAGEMENT');
-export const clickUserMenuReviews = () =>
-  clickSignINBtns('menuItemReviews', 'REVIEW SCIENCE VERIFICATION IDEAS');
+export const clickUserMenuReviews = () => clickSignINBtns('menuItemReviews', 'REVIEW PROPOSALS');
 export const clickUserMenuDecisions = () =>
   clickSignINBtns('menuItemReviewDecisions', 'REVIEW DECISIONS');
 
@@ -369,33 +368,33 @@ export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalA
 
 export const verifyOsdDataCycleID = data => {
   cy.fixture('osd.json').then(osdData => {
-    expect(osdData.observatory_policy.cycle_information.cycle_id).to.equal(data);
+    expect(`${osdData[0]?.observatory_policy?.cycle_information?.cycle_id}_ID`).to.equal(data);
   });
 };
 
 export const verifyOsdDataCycleDescription = data => {
   cy.fixture('osd.json').then(osdData => {
-    expect(osdData.observatory_policy.cycle_description).to.equal(data);
+    expect(osdData[0]?.observatory_policy?.cycle_description).to.equal(data);
   });
 };
 
 export const verifyOsdDataProposalOpen = data => {
   cy.fixture('osd.json').then(osdData => {
-    expect(osdData.observatory_policy.cycle_information.proposal_open).to.equal(data);
+    expect(osdData[0]?.observatory_policy?.cycle_information?.proposal_open).to.equal(data);
     verifyContent('SKAO_2027_1_opens', '27-03-2026');
   });
 };
 
 export const verifyOsdDataProposalClose = data => {
   cy.fixture('osd.json').then(osdData => {
-    expect(osdData.observatory_policy.cycle_information.proposal_close).to.equal(data);
+    expect(osdData[0]?.observatory_policy?.cycle_information?.proposal_close).to.equal(data);
     verifyContent('SKAO_2027_1_closes', '12-05-2026');
   });
 };
 
 export const verifyOsdDataMaxTargets = data => {
   cy.fixture('osd.json').then(osdData => {
-    expect(osdData.observatory_policy.cycle_policies.max_targets).to.equal(data);
+    expect(osdData[0]?.observatory_policy?.cycle_policies?.max_targets).to.equal(data);
   });
 };
 

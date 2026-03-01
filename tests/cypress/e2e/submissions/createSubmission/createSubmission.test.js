@@ -60,7 +60,7 @@ describe('Creating Proposal', () => {
     mockCreateSVIdeaAPI();
     clickAddSubmission();
     cy.wait('@mockOSDData');
-    verifyOsdDataCycleID('SKAO_2027_1');
+    verifyOsdDataCycleID('SKAO_2027_1_ID');
     verifyOsdDataCycleDescription('Low AA2 Science Verification'); //verify OSD data
     verifyOsdDataProposalOpen('20260327T12:00:00.000Z'); //verify OSD data
     verifyOsdDataProposalClose('20260512T15:00:00.000Z'); //verify OSD data
@@ -244,6 +244,7 @@ describe('Creating Proposal', () => {
   it('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
     mockCreateProposalAPI();
     clickAddSubmission();
+    cy.wait('@mockOSDData');
     clickCycleSelectionMockProposal();
     clickCycleConfirm();
     enterProposalTitle();

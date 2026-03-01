@@ -21,7 +21,7 @@ type Observation = {
   supplied: Supplied;
   spectralResolution: string;
   effectiveResolution: string;
-  numSubBands?: number; // only for MID -> TODO PDM : should be for LOW too, PDM needs updating
+  numSubBands?: number; // only for MID
   num15mAntennas?: number; // only for MID
   num13mAntennas?: number; // only for MID
   numStations?: number;

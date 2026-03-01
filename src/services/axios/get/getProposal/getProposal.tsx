@@ -181,7 +181,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       kind: getTargetType(referenceCoordinate),
       epoch: e?.reference_coordinate?.epoch,
       parallax: e?.reference_coordinate?.parallax,
-      id: i + 1, // TODO ODA : use e.target_id once it is a number => needs to be changed in ODA & PDM
+      id: i + 1, // only used in the front-end
       name: e?.target_id,
       b: undefined,
       l: undefined,
@@ -451,7 +451,7 @@ const getObservations = (
       elevation: inValue[i]?.elevation as number,
       num15mAntennas: num13mAntennas,
       num13mAntennas: num15mAntennas,
-      numSubBands: numSubBands ? numSubBands : 1, // TODO PDM needs to be updated to allow subbands for LOW
+      numSubBands: numSubBands ? numSubBands : 1,
       bandwidth:
         type === TYPE_ZOOM
           ? getBandwidth(inValue[i].observation_type_details?.bandwidth?.value ?? 0, arr)
@@ -667,7 +667,6 @@ const getTargetObservation = (
     const isSensitivity = result.result?.supplied_type === 'sensitivity';
 
     const targetObs: TargetObservation = {
-      // TODO ODA : for targetId, use result.target_ref once it is a number => needs to be changed in ODA & PDM
       targetId: outTargets.find(tar => tar.name === result.target_ref)?.id as number,
       observationId: result.observation_set_ref as string,
       dataProductsSDPId: result?.data_product_ref,
@@ -780,7 +779,7 @@ export function mapping(inRec: ProposalBackend): Proposal {
       ? getDataProductSDP(inRec.observation_info?.data_product_sdps as DataProductSDPsBackend[])
       : [],
     dataProductSRC: getDataProductSRC(inRec.observation_info?.data_product_src_nets),
-    pipeline: '' // TODO part of Data Products section not implemented yet
+    pipeline: '' // TODO remove this property from type as not needed
   };
   return convertedProposal as Proposal;
 }

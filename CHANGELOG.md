@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 UNRELEASED
 ----------
 * Changed: upgrade to oso-services v13.2.0
+* Added : Use of `GET prsls/osd/cycles` to fetch multiple cycles from OSD instead of a unique cycle
+* Changed: Unit & e2e tests improvements
+* Changed: Documentations updates to reflect both SV and Proposal flows
+* Fixed: bug when fetching spectral sensitivity calculator results for proposal flow
 
 10.0.0
 ----------

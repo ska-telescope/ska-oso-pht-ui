@@ -25,33 +25,14 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
         bands: [BAND_LOW_STR, BAND_5B_STR],
         calibrationFactoryDefined: true,
         low: [],
-        mid: []
+        mid: [],
+        maxDataProducts: 1,
+        maxObservations: 1,
+        maxTargets: 1
       },
       telescopeCapabilities: {
         low: SA_AA2,
         mid: SA_AA2
-      }
-    },
-    {
-      cycleNumber: 2,
-      cycleDescription: 'Mid AA2 Science Verification',
-      cycleInformation: {
-        cycleId: 'CYCLE-002',
-        proposalOpen: '2025-04-01',
-        proposalClose: '2026-06-01'
-      },
-      cyclePolicies: {
-        maxDataProducts: 1,
-        maxObservations: 1,
-        maxTargets: 1,
-        bands: [BAND_5B_STR],
-        calibrationFactoryDefined: true,
-        low: [],
-        mid: [SA_AA2]
-      },
-      telescopeCapabilities: {
-        low: null,
-        mid: null
       },
       type: 'Science Verification'
     },
@@ -105,110 +86,66 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
   capabilities: {
     mid: {
       basicCapabilities: {
-        dishElevationLimitDeg: 15, //            inData.capabilities.mid.basic_capabilities.dish_elevation_limit_deg,
-        // receiverInformation: inData.capabilities.mid.basic_capabilities.receiver_information.map(
-        //   rx => ({
-        //     rxId: rx.rx_id,
-        //     minFrequencyHz: rx.min_frequency_hz,
-        //     maxFrequencyHz: rx.max_frequency_hz,
-        //     subBands: rx.sub_bands
-        //   })
-        // )
+        dishElevationLimitDeg: 15,
         receiverInformation: [
           {
             rxId: BAND_1_STR,
             minFrequencyHz: 350000000,
-            maxFrequencyHz: 1050000000
+            maxFrequencyHz: 1050000000,
+            subBands: null
           },
           {
             rxId: BAND_2_STR,
             minFrequencyHz: 950000000,
-            maxFrequencyHz: 1760000000
+            maxFrequencyHz: 1760000000,
+            subBands: null
           },
           {
             rxId: BAND_3_STR,
             minFrequencyHz: 1650000000,
-            maxFrequencyHz: 3050000000
+            maxFrequencyHz: 3050000000,
+            subBands: null
           },
           {
             rxId: BAND_4_STR,
             minFrequencyHz: 2800000000,
-            maxFrequencyHz: 5180000000
+            maxFrequencyHz: 5180000000,
+            subBands: null
           },
           {
             rxId: BAND_5A_STR,
             minFrequencyHz: 4600000000,
-            maxFrequencyHz: 8500000000
+            maxFrequencyHz: 8500000000,
+            subBands: null
           },
           {
             rxId: BAND_5B_STR,
-            minFrequencyHz: 11450000000,
-            maxFrequencyHz: 13510000000,
-            subBands: [
-              {
-                subBand: 1,
-                maxFrequencyHz: 12150000000,
-                minFrequencyHz: 11450000000,
-                loFrequencyHz: 11100000000,
-                sideband: 'high'
-              },
-              {
-                subBand: 2,
-                maxFrequencyHz: 13510000000,
-                minFrequencyHz: 12810000000,
-                loFrequencyHz: 13860000000,
-                sideband: 'low'
-              },
-              {
-                subBand: 3,
-                maxFrequencyHz: 12850000000,
-                minFrequencyHz: 12150000000,
-                loFrequencyHz: 11100000000,
-                sideband: 'high'
-              }
-            ]
+            minFrequencyHz: 8300000000,
+            maxFrequencyHz: 15400000000,
+            subBands: null
           }
         ]
       },
       subArrays: [
         {
           subArray: SA_AA2,
-          allowedChannelCountRangeMax: [214748647],
+          allowedChannelCountRangeMax: [14880, 14880, 14880],
           allowedChannelCountRangeMin: [1],
-          allowedChannelWidthValues: [
-            210,
-            420,
-            840,
-            1680,
-            3360,
-            6720,
-            13440,
-            26880,
-            40320,
-            53760,
-            80640,
-            107520,
-            161280,
-            215040,
-            322560,
-            416640,
-            430080,
-            645120
-          ],
-          availableReceivers: [BAND_1_STR],
+          allowedChannelWidthValues: [210, 420, 840, 1680],
+          availableReceivers: [BAND_1_STR, BAND_2_STR, BAND_5A_STR, BAND_5B_STR],
           numberSkaDishes: 64,
-          numberMeerkatDishes: 20,
+          numberMeerkatDishes: 4,
           numberMeerkatPlusDishes: 0,
           maxBaselineKm: 110,
-          availableBandwidthHz: 80000000,
-          numberChannels: null,
-          cbfModes: ['correlation', 'pst', 'pss'],
-          numberZoomWindows: 17,
+          availableBandwidthHz: 800000000,
+          numberChannels: 14880,
+          cbfModes: ['CORR', 'PST_BF', 'PSS_BF'],
+          numberZoomWindows: 16,
           numberZoomChannels: 14880,
-          numberPssBeams: 385,
+          numberPssBeams: 384,
           numberPstBeams: 6,
           psBeamBandwidthHz: 800000000,
-          numberFsps: 35
+          numberFsps: 4
         },
         {
           subArray: SA_AA_STAR,

@@ -1,9 +1,9 @@
-import { Target } from 'node:inspector';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import { CalibrationStrategy } from '@utils/types/calibrationStrategy.tsx';
-import { DataProductSDP } from '@utils/types/dataProduct.tsx';
+import { DataProductSDPNew } from '@utils/types/dataProduct.tsx';
 import Observation from '@utils/types/observation.tsx';
 import deleteAutoLinking from '@utils/autoLinking/DeleteAutoLinking.tsx';
+import Target from '../types/target';
 
 describe('deleteAutoLinking', () => {
   const target: Target = { id: 't1' } as Target;
@@ -17,7 +17,7 @@ describe('deleteAutoLinking', () => {
       { observationIdRef: 'o1' },
       { observationIdRef: 'o2' }
     ] as CalibrationStrategy[],
-    dataProductSDP: [{ observationId: 'o1' }, { observationId: 'o2' }] as DataProductSDP[],
+    dataProductSDP: [{ observationId: 'o1' }, { observationId: 'o2' }] as DataProductSDPNew[],
     observations: [{ id: 'o1' }, { id: 'o2' }] as Observation[]
   };
 

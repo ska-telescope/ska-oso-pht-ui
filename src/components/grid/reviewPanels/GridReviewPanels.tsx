@@ -7,14 +7,12 @@ import { Panel } from '@/utils/types/panel';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import PostPanelGenerate from '@/services/axios/post/postPanelGenerate/postPanelGenerate';
-import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { PAGE_OBSERVATION_UPDATE } from '@/utils/constants';
 
 interface GridReviewPanelsProps {
   height?: string;
   listOnly?: boolean;
   onRowClick: (row: any) => void;
-  // updatedData: Panel | null;
 }
 
 export default function GridReviewPanels({
@@ -28,7 +26,6 @@ export default function GridReviewPanels({
   const [createList, setCreateList] = React.useState(false);
   const [fetchList, setFetchList] = React.useState(false);
   const [, setAxiosError] = React.useState('');
-  const { osdCycleDescription } = useOSDAccessors();
 
   const GetReviewPanels = async () => {
     const response = await GetPanelList(authClient);
@@ -45,7 +42,7 @@ export default function GridReviewPanels({
 
   React.useEffect(() => {
     const autoGeneratePanels = async () => {
-      await PostPanelGenerate(authClient, osdCycleDescription);
+      await PostPanelGenerate(authClient);
       setFetchList(!fetchList);
     };
     if (createList) {

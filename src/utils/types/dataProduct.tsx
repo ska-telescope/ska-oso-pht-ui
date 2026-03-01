@@ -75,29 +75,8 @@ export type DataProductSRCNetBackend = {
   data_products_src_id: string;
 };
 
-// TODO remove this type when once SDP types for Proposal flow updated as DataProductSDPNew should be used instead
-// (LinkingPage.tsx)
-export type DataProductSDP = {
-  id: string;
-  dataProductType: number;
-  observationId: string;
-  imageSizeValue: number;
-  imageSizeUnits: number;
-  pixelSizeValue: number;
-  pixelSizeUnits: number;
-  weighting: number;
-  robust: number;
-  polarisations: string[];
-  channelsOut: number;
-  taperValue: number;
-  fitSpectralPol: number;
-  timeAveraging: number;
-  frequencyAveraging: number;
-  bitDepth: number;
-  continuumSubtraction: boolean;
-};
-
 export type DataProductSDPNew = {
+  // TODO rename DataProductSDP instead
   id: string;
   observationId: string;
   data:

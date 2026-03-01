@@ -1,15 +1,16 @@
 export type ObservatoryPolicyBackend = {
   cycle_number: number;
+  cycle_id: string;
   cycle_description: string;
   cycle_information: CycleInformationBackend;
   cycle_policies: {
-    max_data_products: number;
-    max_observation_setups: number;
-    max_targets: number;
+    max_data_products: number | null;
+    max_observation_setups: number | null;
+    max_targets: number | null;
     normal_max_hours: number;
   };
   telescope_capabilities: TelescopeInformationBackend;
-  type: string;
+  type: string | null;
 };
 
 export type ObservatoryPolicy = {
@@ -17,9 +18,9 @@ export type ObservatoryPolicy = {
   cycleDescription: string;
   cycleInformation: CycleInformationFrontend;
   cyclePolicies: {
-    maxDataProducts: number;
-    maxObservations: number;
-    maxTargets: number;
+    maxDataProducts: number | null;
+    maxObservations: number | null;
+    maxTargets: number | null;
     calibrationFactoryDefined: boolean;
     bands: string[];
     low: string[];
@@ -29,17 +30,35 @@ export type ObservatoryPolicy = {
   type: string;
 };
 
+export type subBandsBackend = {
+  lo_frequency_hz: number;
+  max_frequency_hz: number;
+  min_frequency_hz: number;
+  sideband: string;
+  sub_band: number;
+};
+
+export type subBands = {
+  subBand: number;
+  maxFrequencyHz: number;
+  minFrequencyHz: number;
+  loFrequencyHz: number;
+  sideband: string;
+};
+
 export type ReceiverInformationBackend = {
   rx_id: string;
   min_frequency_hz: number;
   max_frequency_hz: number;
+  sideband: string;
+  sub_bands: subBandsBackend[] | null;
 };
 
 export type ReceiverInformationFrontend = {
   rxId: string;
   minFrequencyHz: number;
   maxFrequencyHz: number;
-  subBands?: any[];
+  subBands?: subBands[] | null;
 };
 
 export type TelescopeInformationBackend = {
@@ -86,7 +105,7 @@ export type BasicCapabilitiesLow = {
 
 export type subarrayConfigurationMidBackend = {
   allowed_channel_count_range_max: number[];
-  allowed_c_channel_count_range_min: number[];
+  allowed_channel_count_range_min: number[];
   allowed_channel_width_values: number[];
   available_receivers: string[];
   number_ska_dishes: number;

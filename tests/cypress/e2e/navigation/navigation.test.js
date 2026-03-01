@@ -15,13 +15,15 @@ import {
   clickProposalTypePrincipleInvestigator,
   clickSubProposalTypeTargetOfOpportunity,
   mockCreateSVIdeaAPI,
-  mockCreateProposalAPI
+  mockCreateProposalAPI,
+  mockOSDAPI
 } from '../common/common.js';
 import { standardUser } from '../users/users.js';
 
 describe('Verify navigation', () => {
   beforeEach(() => {
     initialize(standardUser);
+    mockOSDAPI();
   });
 
   afterEach(() => {
@@ -31,6 +33,7 @@ describe('Verify navigation', () => {
   it('Science verification: Verify navigation functionality is not restricted after science idea creation', () => {
     mockCreateSVIdeaAPI();
     clickAddSubmission();
+    cy.wait('@mockOSDData');
     clickCycleSelectionSV();
     clickCycleConfirm();
     enterScienceVerificationIdeaTitle();
@@ -54,6 +57,7 @@ describe('Verify navigation', () => {
   it('Science verification: Verify page banner has correct items', () => {
     mockCreateSVIdeaAPI();
     clickAddSubmission();
+    cy.wait('@mockOSDData');
     clickCycleSelectionSV();
     clickCycleConfirm();
     enterScienceVerificationIdeaTitle();
@@ -74,6 +78,7 @@ describe('Verify navigation', () => {
   it('Proposal: Verify page banner has correct items', () => {
     mockCreateProposalAPI();
     clickAddSubmission();
+    cy.wait('@mockOSDData');
     clickCycleSelectionMockProposal();
     clickCycleConfirm();
     enterProposalTitle();
