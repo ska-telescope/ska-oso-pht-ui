@@ -131,4 +131,7 @@ include:
   # Finalize badges
   - project: "ska-telescope/templates-repository"
     file: "gitlab-ci/includes/finaliser.gitlab-ci.yml"
+  # SonarQube
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/sonar-scan.gitlab-ci.yml'
     
