@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Added: SonarQube for static analysis of code quality
 
 10.1.0
 ----------
