@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Updated: use ska-oso-services v14.0.1 and ODA v17.1.0
 
 10.1.0
 ----------
