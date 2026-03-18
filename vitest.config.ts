@@ -19,7 +19,7 @@ export default defineConfig({
     coverage: {
       enabled: true,
       provider: 'v8',
-      reporter: ['cobertura', 'text', 'json', 'html'],
+      reporter: ['cobertura', 'text', 'json', 'html', 'lcov'],
       reportsDirectory: 'build/coverage',
       include: ['src/{components,pages,utils,services}/**/*.tsx'],
       exclude: [
