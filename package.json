@@ -30,7 +30,7 @@
     "prettier": "prettier --check \"**/*\"",
     "prettier:fix": "prettier --write \"**/*\"",
     "skao:update": "yarn add @ska-telescope/ska-gui-local-storage@latest  @ska-telescope/ska-login-page@latest @ska-telescope/ska-gui-components@latest",
-    "start": "vite serve --open --port 6101",
+    "start": "make set-dev-env-vars && BACKEND_PROXY=${BACKEND_PROXY:-https://k8s.stfc.skao.int/integration-oso-cloud} vite serve --open --port 6101",
     "test:remove:coverage:report": "npx nyc report --report-dir=build/reports --reporter=html",
     "test:remove:coverage:summary": "npx nyc report --reporter=text-summary",
     "test:remove:headless": "yarn cypress:run",
@@ -164,5 +164,6 @@
     "js-yaml": "4.1.1",
     "minimatch": "^10.2.3",
     "systeminformation": "^5.27.14"
-  }
+  },
+  "packageManager": "yarn@1.22.22+sha512.a6b2f7906b721bba3d67d4aff083df04dad64c399707841b7acf00f6b133b7ac24255f2652fa22ae3534329dc6180534e98d17432037ff6fd140556e2bb3137e"
 }

@@ -2,7 +2,7 @@
 # using Helm.  If this does not already exist it will be created
 KUBE_NAMESPACE ?= ska-oso-pht-ui
 K8S_CHART ?= ska-oso-pht-ui-umbrella
-# KUBE_HOST ?= http://`minikube ip`
+KUBE_HOST ?= http://localhost
 RELEASE_NAME ?= test
 
 # JS Template Variables
@@ -51,15 +51,15 @@ XRAY_EXECUTION_CONFIG_FILE ?= tests/xray-config.json
 # CI_ENVIRONMENT_SLUG should only be defined when running on the CI/CD pipeline, so these variables are set for a local deployment
 # Set cluster_domain to minikube default (cluster.local) in local development
 ifeq ($(CI_ENVIRONMENT_SLUG),)
-OSO_SERVICES_URL=http://`minikube ip`/$(KUBE_NAMESPACE)/oso/api/v$(MAJOR_VERSION)
+OSO_SERVICES_URL=localhost/$(KUBE_NAMESPACE)/oso/api/v$(MAJOR_VERSION)
 SGCLUSTER = oda
 SGCLUSTER_NAMESPACE = oda
 
 K8S_CHART_PARAMS += \
   --set global.cluster_domain="cluster.local" \
-  --set ska-oso-services.rest.image.tag=$(VERSION) \
-  --set ska-db-oda-umbrella.vault.enabled=false \
-  --set ska-oso-services.vault.enabled=false \
+  --set ska-oso-pht-ui.vault.enabled=false \
+  --set ska-oso-pht-ui.rest.image.tag=$(VERSION) \
+  --set ska-oso-services-umbrella.ska-oso-services.vault.enabled=false \
   --set global.oda.postgres.secret.vault.enabled=false \
   --set global.oda.postgres.cluster=$(SGCLUSTER) \
   --set global.oda.postgres.clusterNamespace=$(SGCLUSTER_NAMESPACE)
@@ -82,9 +82,18 @@ endif
 ENV_CHECK_DEV := $(shell echo $(CI_ENVIRONMENT_SLUG) | grep 'dev')
 ifneq ($(ENV_CHECK_DEV),)
 K8S_CHART_PARAMS += \
-  --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl="/integration-ska-oso-services/oso/api/v13"
+  --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl="/integration-ska-oso-services/oso/api/v14"
 endif
 
 set-dev-env-vars:
-	BASE_URL="/" BACKEND_URL=$(BACKEND_URL) ENVJS_FILE=./public/env.js ./nginx_env_config.sh
+	REACT_APP_SKA_PHT_BASE_URL="/" \
+	REACT_APP_SKA_OSO_SERVICES_URL="/oso/api/v14" \
+	REACT_APP_SKA_SENSITIVITY_CALC_URL="/senscalc/api" \
+	REACT_APP_USE_LOCAL_DATA="false" \
+	REACT_APP_DOMAIN="$(KUBE_HOST)" \
+	REACT_APP_SKA_LOGIN_APP_URL="$(KUBE_HOST)/$(KUBE_NAMESPACE)/login" \
+	MSENTRA_CLIENT_ID="2445e300-54c9-470f-9578-0f54840672af" \
+	MSENTRA_TENANT_ID="78887040-bad7-494b-8760-88dcacfb3805" \
+	MSENTRA_REDIRECT_URI="http://localhost:6101" \
+	ENVJS_FILE=./public/env.js ./scripts/write_env_js.sh
 	
