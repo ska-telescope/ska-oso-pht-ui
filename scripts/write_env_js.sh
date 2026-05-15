@@ -9,7 +9,6 @@ OUTPUT_FILE="${ENVJS_FILE:-/usr/share/nginx/html/env.js}"
 rm -f $OUTPUT_FILE
 
 ENV_VAR_NAMES=(
-  "SKIP_PREFLIGHT_CHECK"
   "REACT_APP_SKA_PHT_BASE_URL"
   "REACT_APP_SKA_OSO_SERVICES_URL"
   "REACT_APP_SKA_SENSITIVITY_CALC_URL"
@@ -27,8 +26,8 @@ ENV_STRING="window.env = {"
 for varname in "${ENV_VAR_NAMES[@]}"; do
   # Read value of current variable if exists as Environment variable
   value=$(printf '%s\n' "${!varname}")
-  # Exit with error if environment variable not defined
-  [[ -z $value ]] && { echo "Environment variable $varname is not defined" ; exit 1; }
+  # Warn if environment variable not defined
+  [[ -z $value ]] && { echo "WARNING: Environment variable $varname does not have a value" ; }
 
   # Append configuration property to JS file
   ENV_STRING+="  $varname: \"$value\","
