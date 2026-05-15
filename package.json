@@ -30,7 +30,7 @@
     "prettier": "prettier --check \"**/*\"",
     "prettier:fix": "prettier --write \"**/*\"",
     "skao:update": "yarn add @ska-telescope/ska-gui-local-storage@latest  @ska-telescope/ska-login-page@latest @ska-telescope/ska-gui-components@latest",
-    "start": "make dev-start",
+    "start": "vite serve --open --port 6101",
     "test:remove:coverage:report": "npx nyc report --report-dir=build/reports --reporter=html",
     "test:remove:coverage:summary": "npx nyc report --reporter=text-summary",
     "test:remove:headless": "yarn cypress:run",

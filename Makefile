@@ -96,5 +96,5 @@ set-dev-env-vars:
 	ENVJS_FILE=./public/env.js ./scripts/write_env_js.sh
 
 dev-start: set-dev-env-vars
-	BACKEND_PROXY="$(BACKEND_PROXY)" vite serve --open --port 6101
+	BACKEND_PROXY="$(BACKEND_PROXY)" yarn start
 	
