@@ -84,7 +84,7 @@ endif
 
 set-dev-env-vars:
 	REACT_APP_SKA_PHT_BASE_URL="/" \
-	REACT_APP_SKA_OSO_SERVICES_URL="https://k8s.stfc.skao.int/dev-ska-oso-pht-ui-aaa/oso/api/v14" \
+	REACT_APP_SKA_OSO_SERVICES_URL="/oso/api/v14" \
 	REACT_APP_SKA_SENSITIVITY_CALC_URL="/senscalc/api" \
 	REACT_APP_USE_LOCAL_DATA="false" \
 	REACT_APP_DOMAIN="$(KUBE_HOST)" \

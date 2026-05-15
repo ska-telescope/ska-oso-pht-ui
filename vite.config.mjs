@@ -5,7 +5,7 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import viteTsconfigPaths from 'vite-tsconfig-paths';
 
-const proxyTarget = process.env.BACKEND_PROXY;
+const proxyTarget = process.env.BACKEND_PROXY || 'https://k8s.stfc.skao.int/dev-ska-oso-pht-ui-aaa';
 
 export default defineConfig({
   base: './',
