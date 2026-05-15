@@ -48,110 +48,122 @@ You will need the returned IP for your `.env` configuration.
 
 # Quick Start (Local Development)
 
-This assumes:
+There are three modes of local deployment, depending on where your backend services are running:
 
-- You have deployed **ska-oso-services** and **ska-ost-senscalc**
-- They are accessible via Minikube
+| Mode | Frontend | Backend | Use case |
+|------|----------|---------|----------|
+| **Full k8s** | Deployed in Minikube | Deployed in Minikube | Integration testing, mimics production |
+| **Yarn + local k8s** | `yarn start` on localhost | Deployed in Minikube | Fast UI iteration with real backends |
+| **Yarn + remote k8s** | `yarn start` on localhost | Deployed on remote cluster (e.g. k8s.stfc.skao.int) | No local cluster needed |
 
-## 1. Clone the repository
+## Prerequisites (all modes)
 
+- Node.js (recommended LTS)
+- Yarn (classic v1)
+- Git
+
+## 1. Clone and install
+
+```bash
 git clone https://gitlab.com/ska-telescope/oso/ska-oso-pht-ui.git
 cd ska-oso-pht-ui
-
-## 2. Initialize submodules
-
-This project uses git submodules:
-
 git submodule update --init --recursive
-git submodule update --recursive --remote
-
-## 3. Install dependencies
-
 yarn
-
-## 4. Configure Environment
-
-Create a `.env` file in the project root.
-
-### Example `.env`
-
-```env
-SKIP_PREFLIGHT_CHECK=true
-
-REACT_APP_SKA_PHT_BASE_URL=''
-
-REACT_APP_SKA_OSO_SERVICES_URL='http://192.168.49.2/ska-oso-services/oso/api/v12'
-REACT_APP_SKA_SENSITIVITY_CALC_URL='http://192.168.49.2/ska-ost-senscalc/api/v11/'
-
-REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC=false
-REACT_APP_USE_LOCAL_DATA=false
-
-REACT_APP_DOMAIN='https://sdhp.stfc.skao.int'
-REACT_APP_SKA_LOGIN_APP_URL='http://localhost:4201'
-
 ```
 
-### Environment Variable Explanation
+---
 
-| Variable                                    | Purpose                                   |
-| ------------------------------------------- | ----------------------------------------- |
-| `REACT_APP_SKA_OSO_SERVICES_URL`            | Base URL for proposal backend APIs        |
-| `REACT_APP_SKA_SENSITIVITY_CALC_URL`        | Sensitivity calculator backend            |
-| `REACT_APP_USE_LOCAL_DATA`                  | Use mock proposal data instead of backend |
-| `REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC` | Use mock sensitivity calculator data      |
-| `REACT_APP_DOMAIN`                          | Domain used for authentication            |
-| `REACT_APP_SKA_LOGIN_APP_URL`               | Login application URL                     |
+## Mode 1: Full k8s deployment
 
-If using Minikube, ensure the IP matches the output of `minikube ip`.
+Everything runs inside Minikube (or another local cluster). The UI is built as a container image and deployed via Helm.
 
-## 5. Generate `env.js` and Start the Application
+**Additional prerequisites:** Minikube, Helm, Make, Docker
 
-For local development, `env.js` must be located in the `public/` folder.
+```bash
+# Deploy the umbrella chart (includes PHT UI + backend services)
+make k8s-install-chart
 
-Run:
+# Access at:
+# http://<minikube ip>/ska-oso-pht-ui/pht/
+```
 
-yarn dev
+The `env.js` is generated at container startup by the nginx entrypoint script — no manual env configuration needed.
 
-This:
+---
 
-- Generates `public/env.js` from your `.env`
-- Starts the development server
+## Mode 2: Yarn + local k8s backend
 
-The UI should now be available at:
+The UI runs on your host via vite, but API requests are proxied to backend services deployed in your local Minikube.
 
-http://localhost:6101/
+**Additional prerequisites:** Minikube with backends deployed
 
-## Alternative Start Command
+```bash
+# Start with defaults (proxies to http://localhost/ska-oso-pht-ui)
+yarn start
+```
 
-yarn local
+This runs `make dev` which:
+1. Generates `public/env.js` with relative API paths (`/oso/api/v14`, `/senscalc/api`)
+2. Starts vite with a proxy that forwards `/oso/` and `/senscalc/` requests to your local cluster
 
-This runs the application **without regenerating** `public/env.js`.
+If your Minikube IP is not `localhost`, override `KUBE_HOST`:
 
-Use this if you do not want your existing `env.js` overwritten.
+```bash
+make dev KUBE_HOST=http://192.168.49.2
+```
 
-# public/env.js
+The UI is available at http://localhost:6101/
 
-If the yarn local is to be used, then there needs to be a env.js in the public folder.
-Below is a working set of entries, although it is recommended to check to get the latest values
-Note the version number at the end of the URL entries, these are most often the items requiring to be changed
+---
 
-window.env = {
-"REACT_APP_SKA_PHT_BASE_URL": "",
-"REACT_APP_SKA_OSO_SERVICES_URL":'http://192.168.49.2/ska-oso-services/oso/api/v13',
-"REACT_APP_SKA_SENSITIVITY_CALC_URL": "http://192.168.49.2/ska-ost-senscalc/api/v11/",
-"REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC": "false",
-"REACT_APP_USE_LOCAL_DATA": "false",
-"REACT_APP_USE_MOCK_CALL": "true",
-"REACT_APP_DOMAIN": "https://sdhp.stfc.skao.int",
-"REACT_APP_SKA_LOGIN_APP_URL": "http://localhost:4201",
-"MSENTRA_CLIENT_ID":"msentra-client-id", // to replace with msentra-client-id
-"MSENTRA_TENANT_ID":"msentra-tenant-id", // to replace with msentra-tenant-id
-"MSENTRA_REDIRECT_URI":"http://localhost:6101",
-// "REACT_APP_OVERRIDE_GROUPS": 'obs-oauth2role-opsproposaladmin-1-1535351309' // OPS_PROPOSAL_ADMIN
-// "REACT_APP_OVERRIDE_GROUPS": 'obs-oauth2role-opsreviewersci-1635769025' // OPS_REVIEWER_SCIENCE
-// "REACT_APP_OVERRIDE_GROUPS": 'obs-oauth2role-opsreviewertec-1-1994146425' // OPS_REVIEWER_TECHNICAL
-// "REACT_APP_OVERRIDE_GROUPS": 'Guest user' // STANDARD USER
-// "REACT_APP_OVERRIDE_GROUPS": 'obs-oauth2role-opsreviewerchair-11741547065' // OPS_REVIEWER_CHAIR
+## Mode 3: Yarn + remote k8s backend
+
+The UI runs locally but talks to a backend deployed on a remote cluster (e.g. a dev environment on `k8s.stfc.skao.int`). The vite proxy avoids CORS issues.
+
+```bash
+make dev-start BACKEND_PROXY=https://k8s.stfc.skao.int/dev-ska-oso-pht-ui-aaa
+```
+
+This proxies `/oso/` and `/senscalc/` requests to the remote cluster. No CORS headers needed on the backend.
+
+The UI is available at http://localhost:6101/
+
+NOTE: This mode requires login before any requests will succeed.
+---
+
+## How it works
+
+The app loads environment variables at runtime from `public/env.js` (a script tag in `index.html` that sets `window.env`). This file is generated by `scripts/write_env_js.sh`.
+
+For local dev (`yarn start` / `make dev`):
+- `env.js` is written with **relative** API paths (e.g. `/oso/api/v14`)
+- Vite's dev server proxies these paths to the target specified by `BACKEND_PROXY`
+- The browser only talks to `localhost:6101` — no cross-origin requests
+
+For k8s deployments:
+- `env.js` is generated at container startup with fully-qualified URLs
+- No proxy is involved — nginx serves the built app directly
+
+### Makefile variables
+
+| Variable | Default | Purpose |
+|----------|---------|---------|
+| `KUBE_HOST` | `http://localhost` | Host of your k8s ingress |
+| `KUBE_NAMESPACE` | `ska-oso-pht-ui` | k8s namespace |
+| `BACKEND_PROXY` | `$(KUBE_HOST)/$(KUBE_NAMESPACE)` | Vite proxy target (origin + path prefix) |
+
+### Environment Variable Reference
+
+| Variable | Purpose |
+|----------|---------|
+| `REACT_APP_SKA_OSO_SERVICES_URL` | Base URL for proposal backend APIs |
+| `REACT_APP_SKA_SENSITIVITY_CALC_URL` | Sensitivity calculator backend |
+| `REACT_APP_USE_LOCAL_DATA` | Use mock proposal data instead of backend |
+| `REACT_APP_DOMAIN` | Domain used for authentication |
+| `REACT_APP_SKA_LOGIN_APP_URL` | Login application URL |
+| `MSENTRA_CLIENT_ID` | MS Entra client ID for auth |
+| `MSENTRA_TENANT_ID` | MS Entra tenant ID |
+| `MSENTRA_REDIRECT_URI` | OAuth redirect URI |
 
 # Backend Requirements
 
