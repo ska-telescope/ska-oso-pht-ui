@@ -54,9 +54,9 @@ SGCLUSTER_NAMESPACE = oda
 
 K8S_CHART_PARAMS += \
   --set global.cluster_domain="cluster.local" \
-  --set ska-oso-services.rest.image.tag=$(VERSION) \
-  --set ska-db-oda-umbrella.vault.enabled=false \
-  --set ska-oso-services.vault.enabled=false \
+  --set ska-oso-pht-ui.vault.enabled=false \
+  --set ska-oso-pht-ui.rest.image.tag=$(VERSION) \
+  --set ska-oso-services-umbrella.ska-oso-services.vault.enabled=false \
   --set global.oda.postgres.secret.vault.enabled=false \
   --set global.oda.postgres.cluster=$(SGCLUSTER) \
   --set global.oda.postgres.clusterNamespace=$(SGCLUSTER_NAMESPACE)
