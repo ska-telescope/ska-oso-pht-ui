@@ -27,7 +27,10 @@ js-pre-e2e-test:
 	mkdir -p build/.nyc_output
 
 # The default PHT_BACKEND_URL points to the umbrella chart PHT back-end deployment
-BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/api/v13
+BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/oso/api/v14
+
+# BACKEND_PROXY is the remote origin to proxy API requests through in local dev (avoids CORS)
+BACKEND_PROXY ?= https://k8s.stfc.skao.int/ska-oso-pht-ui
 
 K8S_CHART_PARAMS += \
   --set ska-oso-pht-ui.backendURL=$(BACKEND_URL)
