@@ -744,7 +744,7 @@
     "help": "Check to indicate that part of the data from this proposal will be used towards a PhD thesis."
   },
   "pht": {
-    "short": "ST",
+    "short": "Submission Tool",
     "title": "Submission Tool"
   },
   "pi": {

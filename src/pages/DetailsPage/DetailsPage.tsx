@@ -275,14 +275,6 @@ export default function DetailsPage() {
   return (
     <Shell page={PAGE}>
       <Stack pt={GAP} spacing={GAP}>
-        {row2(
-          <BorderedSection title={t('cycle.label') + ': ' + getProposal().cycle}>
-            <Stack>
-              {row('cycleOpens.label', cycleOpensField())}
-              {row('cycleCloses.label', cycleClosesField())}
-            </Stack>
-          </BorderedSection>
-        )}
         <Grid mt={4}>{row2(categoryField())}</Grid>
         <Grid mt={7}>{row2(abstractField())}</Grid>
       </Stack>

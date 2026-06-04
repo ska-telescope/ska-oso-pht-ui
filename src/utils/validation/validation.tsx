@@ -174,7 +174,7 @@ export const validateProposalNavigation = (proposal: Proposal, page: number, che
 };
 
 export function validateSkyDirection1Text(value: string): boolean {
-  const formatValid = /^[-+]?\d{1,2}:\d{2}:\d{2}((\.?)|(\.\d+))$/.test(value);
+  const formatValid = /^[-+]?\d{1,2}:\d{2}:\d{2}((\.?)|(\.\d+\s+|\.\d+))$/.test(value);
   if (!formatValid) {
     return false;
   }
@@ -203,7 +203,7 @@ export function validateSkyDirection1Number(value: string): boolean {
 }
 
 export function validateSkyDirection2Text(value: string): string | null {
-  const formatValid = /^[-+]?\d{1,2}:\d{2}:\d{2}(\.\d+)?$/.test(value);
+  const formatValid = /^[-+]?\d{1,2}:\d{2}:\d{2}(\.\d+\s+|\.\d+)?$/.test(value);
   if (!formatValid) {
     return '0';
   }
