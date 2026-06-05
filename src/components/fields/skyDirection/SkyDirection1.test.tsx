@@ -41,6 +41,7 @@ describe('validateSkyDirection1Text function', () => {
   test('validates fractional seconds', () => {
     expect(validateSkyDirection1Text('12:34:56.789')).toBe(true); // Valid fractional seconds
     expect(validateSkyDirection1Text('-12:34:56.789')).toBe(true); // Valid negative fractional seconds
+    expect(validateSkyDirection1Text('12:34:56.789 ')).toBe(true); //Valid with trailing whitespace
   });
 
   test('rejects out-of-range values', () => {
