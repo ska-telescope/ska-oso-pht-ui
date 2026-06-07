@@ -1,4 +1,4 @@
-import { describe, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
@@ -43,7 +43,9 @@ describe('isDisableEndpoints (Save button gate)', () => {
   });
 
   test('is disabled when title exceeds the word limit', () => {
-    const overLimit = Array(maxTitleWords + 1).fill('word').join(' ');
+    const overLimit = Array(maxTitleWords + 1)
+      .fill('word')
+      .join(' ');
     expect(isDisableEndpoints(overLimit, 'some-id', true)).toBe(true);
   });
 
@@ -52,7 +54,9 @@ describe('isDisableEndpoints (Save button gate)', () => {
   });
 
   test('is enabled when title is exactly at the word limit', () => {
-    const atLimit = Array(maxTitleWords).fill('word').join(' ');
+    const atLimit = Array(maxTitleWords)
+      .fill('word')
+      .join(' ');
     expect(isDisableEndpoints(atLimit, 'some-id', true)).toBe(false);
   });
 });

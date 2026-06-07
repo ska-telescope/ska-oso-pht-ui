@@ -1,4 +1,4 @@
-import { describe, test } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
@@ -38,8 +38,7 @@ describe('<AddProposal />', () => {
 describe('contentValid (Create button gate)', () => {
   const maxTitleWords = Number(phtTranslations.title.maxWord);
 
-  const titleValid = (title: string) =>
-    title?.length > 0 && countWords(title) <= maxTitleWords;
+  const titleValid = (title: string) => title?.length > 0 && countWords(title) <= maxTitleWords;
 
   test('is invalid when title is empty', () => {
     expect(titleValid('')).toBe(false);
@@ -50,12 +49,16 @@ describe('contentValid (Create button gate)', () => {
   });
 
   test('is valid when title is exactly at the word limit', () => {
-    const atLimit = Array(maxTitleWords).fill('word').join(' ');
+    const atLimit = Array(maxTitleWords)
+      .fill('word')
+      .join(' ');
     expect(titleValid(atLimit)).toBe(true);
   });
 
   test('is invalid when title exceeds the word limit', () => {
-    const overLimit = Array(maxTitleWords + 1).fill('word').join(' ');
+    const overLimit = Array(maxTitleWords + 1)
+      .fill('word')
+      .join(' ');
     expect(titleValid(overLimit)).toBe(false);
   });
 });
