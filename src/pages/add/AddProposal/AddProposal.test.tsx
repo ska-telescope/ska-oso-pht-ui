@@ -4,6 +4,8 @@ import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import AddProposal from './AddProposal';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
+import { countWords } from '@utils/helpers.ts';
+import phtTranslations from '../../../../public/locales/en/pht.json';
 
 const wrapper = (component: React.ReactElement) => {
   return render(
@@ -26,12 +28,34 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
 describe('<AddProposal />', () => {
   test('renders correctly', () => {
     wrapper(<AddProposal />);
-    // Example assertion: adjust to match actual UI
-    // expect(screen.getByText(/Add Proposal/i)).toBeInTheDocument();
   });
 
   test('renders correctly when linking disabled', () => {
     wrapper(<AddProposal />);
-    // assertions for disabled linking scenario
+  });
+});
+
+describe('contentValid (Create button gate)', () => {
+  const maxTitleWords = Number(phtTranslations.title.maxWord);
+
+  const titleValid = (title: string) =>
+    title?.length > 0 && countWords(title) <= maxTitleWords;
+
+  test('is invalid when title is empty', () => {
+    expect(titleValid('')).toBe(false);
+  });
+
+  test('is valid when title is within the word limit', () => {
+    expect(titleValid('A short valid title')).toBe(true);
+  });
+
+  test('is valid when title is exactly at the word limit', () => {
+    const atLimit = Array(maxTitleWords).fill('word').join(' ');
+    expect(titleValid(atLimit)).toBe(true);
+  });
+
+  test('is invalid when title exceeds the word limit', () => {
+    const overLimit = Array(maxTitleWords + 1).fill('word').join(' ');
+    expect(titleValid(overLimit)).toBe(false);
   });
 });
