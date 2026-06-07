@@ -26,7 +26,7 @@ Key Information and Actions
 
 
 
-- The submission title allows a maximum of 50 words. The title field accepts latex syntax - which can be previewed by clicking the |icoview| icon next to the title field (see :numref:`Figure %s <titlepage>`).
+- The submission title allows a maximum of 20 words. Titles exceeding this limit are flagged with an error and cannot be saved until the word count is reduced. The title field accepts latex syntax - which can be previewed by clicking the |icoview| icon next to the title field (see :numref:`Figure %s <titlepage>`).
 - Once submission title is populated, click |icocreate| to create a submission and proceed to the next page. 
 
 
