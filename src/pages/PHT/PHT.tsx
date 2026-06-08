@@ -247,7 +247,7 @@ export default function PHT({
         application={t(LG() ? 'pht.short' : 'pht.title')}
         footerChildren={
           <Typography pt={1} variant="body1">
-            {loggedIn || cypressToken ? getProposal()?.id : ''}
+            {loggedIn || cypressToken ? (getProposal()?.id ? `Submission ID: ${getProposal()?.id}` : '') : ''}
             {LOCAL_DATA}
           </Typography>
         }
