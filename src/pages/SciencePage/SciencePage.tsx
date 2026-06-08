@@ -1,6 +1,6 @@
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
-import { Grid } from '@mui/material';
+import { FormHelperText, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import DeletePDF from '@services/axios/delete/deletePDF/deletePDF.tsx';
@@ -15,11 +15,18 @@ import PDFWrapper from '../../components/layout/PDFWrapper/PDFWrapper';
 import Shell from '../../components/layout/Shell/Shell';
 import { Proposal } from '@utils/types/proposal.tsx';
 import { validateSciencePage } from '@utils/validation/validation.tsx';
-import { cypressToken, PAGE_DESCRIPTION, UPLOAD_MAX_WIDTH_PDF } from '@utils/constants.ts';
+import {
+  cypressToken,
+  PAGE_DESCRIPTION,
+  SCIENCE_PDF_MAX_PAGES,
+  SCIENCE_PDF_MAX_SIZE_MB,
+  UPLOAD_MAX_WIDTH_PDF
+} from '@utils/constants.ts';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
+import { getPdfPageCount } from '@/utils/pdf/pdfPageCount';
 
 const PAGE = PAGE_DESCRIPTION;
 
@@ -31,6 +38,8 @@ export default function SciencePage() {
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [currentFile, setCurrentFile] = React.useState<string | null | undefined>(null);
   const [originalFile, setOriginalFile] = React.useState<string | null>(null);
+  const [pdfError, setPdfError] = React.useState<string | null>(null);
+  const validationFileRef = React.useRef<File | null>(null);
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
 
@@ -53,10 +62,35 @@ export default function SciencePage() {
     updateAppContent1(temp);
   };
 
-  const setFile = (theFile: string | null) => {
-    if (theFile) {
-      setCurrentFile(theFile);
+  const validatePdf = async (file: File): Promise<string | null> => {
+    const sizeBytes = file.size;
+    const maxBytes = SCIENCE_PDF_MAX_SIZE_MB * 1024 * 1024;
+    if (sizeBytes > maxBytes) {
+      const currentMB = parseFloat((sizeBytes / (1024 * 1024)).toFixed(2));
+      return t('pdfUpload.science.sizeError', { current: currentMB, max: SCIENCE_PDF_MAX_SIZE_MB });
+    }
+    try {
+      const pageCount = await getPdfPageCount(file);
+      if (pageCount > SCIENCE_PDF_MAX_PAGES) {
+        return t('pdfUpload.science.pageError', { current: pageCount, max: SCIENCE_PDF_MAX_PAGES });
+      }
+      return null;
+    } catch {
+      return t('pdfUpload.science.pageCountError');
+    }
+  };
+
+  const setFile = (theFile: File | '') => {
+    if (theFile instanceof File) {
+      validationFileRef.current = theFile;
+      validatePdf(theFile).then(error => {
+        if (validationFileRef.current === theFile) {
+          setPdfError(error);
+        }
+      });
     } else {
+      validationFileRef.current = null;
+      setPdfError(null);
       setProposal({
         ...getProposal(),
         sciencePDF: null
@@ -70,6 +104,12 @@ export default function SciencePage() {
   };
 
   const uploadPdftoSignedUrl = async (theFile: any) => {
+    const error = await validatePdf(theFile);
+    if (error !== null) {
+      setPdfError(error);
+      return;
+    }
+    setPdfError(null);
     setUploadStatus(FileUploadStatus.PENDING);
 
     try {
@@ -99,7 +139,7 @@ export default function SciencePage() {
 
       notifySuccess(t('pdfUpload.science.success'));
     } catch (e) {
-      setFile(null);
+      setFile('');
       setUploadStatus(FileUploadStatus.ERROR);
     }
   };
@@ -226,28 +266,31 @@ export default function SciencePage() {
           {isDisableEndpoints() ? (
             <>{t('pdfUpload.disabled')}</>
           ) : (
-            <FileUpload
-              chooseToolTip={t('pdfUpload.science.tooltip.choose')}
-              clearLabel={t('clearBtn.label')}
-              clearToolTip={t('pdfUpload.science.tooltip.clear')}
-              dropzone
-              dropzoneAccepted={{
-                'application/pdf': ['.pdf']
-              }}
-              dropzoneIcons={false}
-              dropzonePrompt={t('dropzone.prompt')}
-              dropzonePreview={false}
-              direction="row"
-              file={originalFile}
-              maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
-              setFile={setFile}
-              setStatus={setUploadStatus}
-              testId="fileUpload"
-              uploadFunction={uploadPdftoSignedUrl}
-              uploadToolTip={t('pdfUpload.science.tooltip.upload')}
-              status={getProposal().scienceLoadStatus}
-              suffix={uploadSuffix()}
-            />
+            <>
+              <FileUpload
+                chooseToolTip={t('pdfUpload.science.tooltip.choose')}
+                clearLabel={t('clearBtn.label')}
+                clearToolTip={t('pdfUpload.science.tooltip.clear')}
+                dropzone
+                dropzoneAccepted={{
+                  'application/pdf': ['.pdf']
+                }}
+                dropzoneIcons={false}
+                dropzonePrompt={t('dropzone.prompt')}
+                dropzonePreview={false}
+                direction="row"
+                file={originalFile}
+                maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
+                setFile={setFile}
+                setStatus={setUploadStatus}
+                testId="fileUpload"
+                uploadFunction={uploadPdftoSignedUrl}
+                uploadToolTip={t('pdfUpload.science.tooltip.upload')}
+                status={getProposal().scienceLoadStatus}
+                suffix={uploadSuffix()}
+              />
+              {pdfError && <FormHelperText error sx={{ ml: 1.75 }}>{pdfError}</FormHelperText>}
+            </>
           )}
         </Grid>
       </Grid>
