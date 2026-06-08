@@ -395,6 +395,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     suppliedUnits,
     centralFrequency,
     centralFrequencyUnits,
+    bandwidth,
     continuumBandwidth,
     subBands,
     numOf15mAntennas,
