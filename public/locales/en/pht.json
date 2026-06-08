@@ -1425,7 +1425,7 @@
     "short": "Title",
     "empty": "A value is required",
     "maxChar": "939",
-    "maxWord": "50",
+    "maxWord": "20",
     "helper": "Please enter your title information. This field supports latex syntax. - Word count {{current}} / {{max}}"
   },
   "updateBtn": {
