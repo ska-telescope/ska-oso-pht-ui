@@ -37,6 +37,8 @@ import { accessSubmit } from '@/utils/aaa/aaaUtils';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { countWords } from '@utils/helpers.ts';
+import phtTranslations from '../../../../public/locales/en/pht.json';
 
 interface PageBannerPPTProps {
   pageNo: number;
@@ -76,9 +78,12 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const accessCanSubmit = accessSubmit(getAccess(), getProposal().id);
 
   const isDisableEndpoints = () => {
+    const maxTitleWords = Number(phtTranslations.title.maxWord);
     if (
       (loggedIn || cypressToken) &&
-      (getProposal().id == null || getProposal()?.title?.trim()?.length === 0)
+      (getProposal().id == null ||
+        getProposal()?.title?.trim()?.length === 0 ||
+        countWords(getProposal().title) > maxTitleWords)
     ) {
       return true;
     } else if (!loggedIn) {

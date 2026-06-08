@@ -222,9 +222,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
 
   const titleField = (ipad: boolean = false) => {
     const setTitle = (e: string) => {
-      if (countWords(e) < MAX_WORD || (countWords(e) === MAX_WORD && !/\s$/.test(e))) {
-        setProposal({ ...getProposal(), title: e.substring(0, MAX_CHAR) });
-      }
+      setProposal({ ...getProposal(), title: e.substring(0, MAX_CHAR) });
     };
 
     const helperFunction = (title: string) => {
@@ -234,9 +232,9 @@ export default function TitleEntry({ page }: TitleEntryProps) {
         current: countWords(title),
         max: MAX_WORD
       });
-      return countWords(title) === MAX_WORD ? (
+      return countWords(title) > MAX_WORD ? (
         <>
-          {baseHelperText} <span style={{ color: color }}>(MAX WORD COUNT REACHED)</span>
+          {baseHelperText} <span style={{ color: color }}>(WORD LIMIT EXCEEDED)</span>
         </>
       ) : (
         baseHelperText

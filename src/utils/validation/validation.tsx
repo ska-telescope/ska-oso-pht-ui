@@ -22,8 +22,14 @@ import {
   TYPE_ZOOM
 } from './../constants';
 import Proposal from './../types/proposal';
+import { countWords } from '../helpers';
+import phtTranslations from '../../../public/locales/en/pht.json';
 
 export const validateTitlePage = (proposal: Proposal) => {
+  const maxTitleWords = Number(phtTranslations.title.maxWord);
+  if (countWords(proposal?.title) > maxTitleWords) {
+    return STATUS_ERROR;
+  }
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
   let count = 0;
   if (proposal?.title?.length > 0) {

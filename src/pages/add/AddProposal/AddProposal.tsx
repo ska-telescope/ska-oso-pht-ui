@@ -6,6 +6,8 @@ import Shell from '../../../components/layout/Shell/Shell';
 import TitleEntry from '../../entry/TitleEntry/TitleEntry';
 import Proposal, { NEW_PROPOSAL } from '../../../utils/types/proposal';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { countWords } from '@utils/helpers.ts';
+import phtTranslations from '../../../../public/locales/en/pht.json';
 
 const PAGE = PAGE_TITLE_ADD;
 const PAGE_INNER = 0;
@@ -22,7 +24,9 @@ export default function AddProposal() {
     updateAppContent2(temp);
   }, []);
 
-  const titleValid = () => getProposal()?.title?.length > 0;
+  const maxTitleWords = Number(phtTranslations.title.maxWord);
+  const titleValid = () =>
+    getProposal()?.title?.length > 0 && countWords(getProposal()?.title) <= maxTitleWords;
   const typeValid = () => (isSV ? true : getProposal()?.proposalType > 0);
   const contentValid = () => titleValid() && typeValid();
 

@@ -12,6 +12,7 @@ UNRELEASED
 * Removed: The `Cycle Selection` information box from the Details Page.
 * Changed: upgrade to oso-services v14.4.1
 * Fixed: RA and Dec validation rules now allow trailing whitespace.  
+* Changed: Acceptable proposal/idea title length reduced to 20 words. 
 
 10.1.0
 ----------
