@@ -37,7 +37,7 @@ The General Page has a clear structure:
    * Solar, Heliospheric and Ionospheric Physics
    * Transients
    * VLBI
-- Abstract area: A text box for the proposal abstract (maximum of 250 words). This field accepts latex syntax, which can be previewed by clicking the |icoview| icon next to the abstract field.
+- Abstract area: A text box for the proposal abstract (maximum of 250 words). Exceeding the word limit flags an error and blocks saving the proposal. This field accepts latex syntax, which can be previewed by clicking the |icoview| icon next to the abstract field.
 
 
 

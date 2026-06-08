@@ -9,6 +9,8 @@ UNRELEASED
 * Added: SonarQube for static analysis of code quality
 * Changed: upgrade to oso-services v14.4.1
 * Changed: Acceptable proposal/idea title length reduced to 20 words. 
+* Changed: Title and summary fields will allow user to add text longer than the word limit but the pages won't pass
+  validation until the word limit is respected. 
 
 10.1.0
 ----------

@@ -151,9 +151,7 @@ export default function DetailsPage() {
     const numRows = Number(t('abstract.minDisplayRows'));
 
     const setValue = (e: string) => {
-      if (countWords(e) < MAX_WORD || (countWords(e) === MAX_WORD && !/\s$/.test(e))) {
-        setAbstract(e.substring(0, MAX_CHAR));
-      }
+      setAbstract(e.substring(0, MAX_CHAR));
     };
 
     const helperFunction = (abstract: string) => {
@@ -163,9 +161,9 @@ export default function DetailsPage() {
         current: countWords(abstract),
         max: MAX_WORD
       });
-      return countWords(abstract) === MAX_WORD ? (
+      return countWords(abstract) > MAX_WORD ? (
         <>
-          {baseHelperText} <span style={{ color: color }}>(MAX WORD COUNT REACHED)</span>
+          {baseHelperText} <span style={{ color: color }}>(WORD LIMIT EXCEEDED)</span>
         </>
       ) : (
         baseHelperText

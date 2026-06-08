@@ -79,11 +79,13 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   const isDisableEndpoints = () => {
     const maxTitleWords = Number(phtTranslations.title.maxWord);
+    const maxAbstractWords = Number(phtTranslations.abstract.maxWord);
     if (
       (loggedIn || cypressToken) &&
       (getProposal().id == null ||
         getProposal()?.title?.trim()?.length === 0 ||
-        countWords(getProposal().title) > maxTitleWords)
+        countWords(getProposal().title) > maxTitleWords ||
+        countWords(getProposal().abstract) > maxAbstractWords)
     ) {
       return true;
     } else if (!loggedIn) {
