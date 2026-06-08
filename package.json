@@ -155,7 +155,7 @@
     "not op_mini all"
   ],
   "engines": {
-    "node": "22.16.0"
+    "node": "24.11.1"
   },
   "resolutions": {
     "diff": "^8.0.3",
