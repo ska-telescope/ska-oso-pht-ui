@@ -8,6 +8,7 @@ UNRELEASED
 ----------
 * Added: SonarQube for static analysis of code quality
 * Changed: upgrade to oso-services v14.4.1
+* Changed: Acceptable proposal/idea title length reduced to 20 words. 
 
 10.1.0
 ----------
