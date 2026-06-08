@@ -229,7 +229,7 @@ export function validateSkyDirection2Text(value: string): string | null {
   if (minutes > 59) {
     return '1';
   }
-  if (seconds >= 59) {
+  if (seconds > 59) {
     return '1';
   }
   return null;
