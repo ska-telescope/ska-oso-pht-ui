@@ -26,7 +26,7 @@ The Details Page has a clear structure:
    * Continuum
    * Spectral
    * PST ( Currently Sensitivity Calculation results are not available for this observing mode)
-- Idea Summary area: A text box for the submission Idea Summary (maximum of 250 words). This field accepts latex syntax, which can be previewed by clicking the |icoview| icon next to the abstract field.
+- Idea Summary area: A text box for the submission Idea Summary (maximum of 250 words). Exceeding the word limit flags an error and blocks saving the submission. This field accepts latex syntax, which can be previewed by clicking the |icoview| icon next to the abstract field.
 
 
 

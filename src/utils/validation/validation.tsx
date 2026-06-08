@@ -48,6 +48,10 @@ export const validateTeamPage = (proposal: Proposal) => {
 };
 
 export const validateDetailsPage = (proposal: Proposal) => {
+  const maxAbstractWords = Number(phtTranslations.abstract.maxWord);
+  if (countWords(proposal?.abstract) > maxAbstractWords) {
+    return STATUS_ERROR;
+  }
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
   let count = 0;
 
