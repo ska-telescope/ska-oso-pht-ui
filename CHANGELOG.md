@@ -7,7 +7,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 UNRELEASED
 ----------
 * Added: SonarQube for static analysis of code quality
+* Changed: Full and Short name in SV Tool header are now full="Science Verification Idea Submission Tool" or short="SV Idea Submission Tool". (Rather than Submission Tool and ST)
+* Added: New text `Submission ID:` before the SV idea UID in the footer.
+* Removed: The `Cycle Selection` information box from the Details Page.
 * Changed: upgrade to oso-services v14.4.1
+* Fixed: RA and Dec validation rules now allow trailing whitespace.  
 
 10.1.0
 ----------
