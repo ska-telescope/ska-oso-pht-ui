@@ -9,12 +9,11 @@ import ObservationEntry from './ObservationEntry';
 
 // ---- Module mocks ----
 
-// Override the global setupTests react-router-dom mock, which returns a
-// non-null location state. That non-null state would make isEdit() return true
-// in every test here (even add-mode ones), because isEdit() checks
-// locationProperties.state !== null || data !== undefined. Setting state=null
-// ensures add-mode tests correctly get isEdit()=false. Edit-mode tests supply
-// a `data` prop instead, which is the authoritative signal for edit mode.
+// Setting `state=null` ensures that we can define some non "edit mode" tests. 
+// (If we didn't do this the testing environment created state would 
+// look as though it had some content so the component would always think 
+// it's in edit mode.)
+// Edit-mode tests supply a `data` prop instead to explicitly trigger edit mode.
 vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
   return {
