@@ -76,7 +76,7 @@ export default function SciencePage() {
       }
       return null;
     } catch {
-      return t('pdfUpload.science.pageCountError');
+      return t('pdfUpload.science.invalidFileError');
     }
   };
 

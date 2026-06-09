@@ -250,7 +250,7 @@ describe('SciencePage', () => {
       );
     });
 
-    it('unreadable PDF: pageCountError shown, upload blocked', async () => {
+    it('unreadable PDF: invalidFileError shown, upload blocked', async () => {
       mockGetPdfPageCount.mockRejectedValue(new Error('Corrupt PDF'));
       wrapper(<SciencePage />);
 
@@ -259,7 +259,7 @@ describe('SciencePage', () => {
         await capturedUploadFunction!(file);
       });
 
-      expect(screen.getByText('pdfUpload.science.pageCountError')).toBeInTheDocument();
+      expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
       expect(GetPresignedUploadUrl).not.toHaveBeenCalled();
       expect(notifyWarning).not.toHaveBeenCalled();
     });

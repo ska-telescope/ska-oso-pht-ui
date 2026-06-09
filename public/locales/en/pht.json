@@ -701,7 +701,7 @@
       "error": "It was unable to upload the Science Justification PDF",
       "sizeError": "Exceeded maximum file size: {{current}} MB / {{max}} MB",
       "pageError": "Exceeded maximum page count: {{current}} / {{max}} pages",
-      "pageCountError": "Unable to validate PDF page count.",
+      "invalidFileError": "Unable to read the selected file. Please ensure it is a valid PDF.",
       "success": "Science Justification PDF successfully uploaded",
       "tooltip": {
         "choose": "Choose the science justification PDF for upload",
