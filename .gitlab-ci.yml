@@ -46,6 +46,14 @@ ts-typecheck:
   script:
     - make typecheck
 
+CHANGELOG:
+  stage: lint
+  only:
+    - merge_requests
+  allow_failure: true
+  script:
+    - if git diff --quiet $CI_MERGE_REQUEST_DIFF_BASE_SHA...HEAD -- CHANGELOG.rst; then exit 1; fi
+
 # The info script in the templates is for a generic tango environment. We overwrite it to give more useful PHT information
 .info_script: &info_script
     - |-
