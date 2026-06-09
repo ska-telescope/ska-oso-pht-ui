@@ -2,6 +2,7 @@ import axios, { AxiosError } from 'axios';
 import { useMsal } from '@azure/msal-react';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
 import { MSENTRA_API_URI } from '@/utils/constants';
+import { isLocalhost, setLocalTokenProvider } from '../authToken/localAuthToken';
 
 export enum LogLevel {
   Error,
@@ -21,6 +22,20 @@ export const loginRequest = {
 const useAxiosAuthClient = (baseURL: string = '/') => {
   const { instance } = useMsal();
 
+  // On localhost the auth cookie isn't sent, so register a token provider that
+  // the shared (unauthenticated) axiosClient uses to add a bearer token instead.
+  // No-op on remote deployments.
+  if (isLocalhost()) {
+    setLocalTokenProvider(async () => {
+      const account = instance.getAllAccounts()?.[0];
+      if (!account) {
+        return null;
+      }
+      const tokenResponse = await instance.acquireTokenSilent({ ...loginRequest, account });
+      return tokenResponse.accessToken;
+    });
+  }
+
   const axiosClient = axios.create({
     baseURL,
     headers: {
@@ -32,12 +47,10 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
 
   axiosClient.interceptors.request.use(
     async request => {
-      const isLocalhost =
-        window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
       const isHttp = request?.baseURL?.startsWith(HTTP);
-      if (isHttp && !isLocalhost) {
+      if (isHttp && !isLocalhost()) {
         return Promise.reject('HTTP is not allowed except on localhost.');
-      } else if (isHttp && !isLocalhost && request.baseURL && !request.baseURL.startsWith(HTTPS)) {
+      } else if (isHttp && !isLocalhost() && request.baseURL && !request.baseURL.startsWith(HTTPS)) {
         request.baseURL = request.baseURL.replace(HTTP, HTTPS);
       }
 
