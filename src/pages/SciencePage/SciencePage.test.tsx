@@ -86,13 +86,15 @@ vi.mock('@/utils/pdf/pdfPageCount', () => ({
 // Mock FileUpload to capture setFile and uploadFunction props
 let capturedSetFile: ((file: File | '') => void) | undefined;
 let capturedUploadFunction: ((file: File) => Promise<void>) | undefined;
+let capturedUploadDisabled: boolean | undefined;
 vi.mock('@ska-telescope/ska-gui-components', async importOriginal => {
   const actual = (await importOriginal()) as any;
   return {
     ...actual,
-    FileUpload: vi.fn(({ setFile, uploadFunction, suffix }: any) => {
+    FileUpload: vi.fn(({ setFile, uploadFunction, uploadDisabled, suffix }: any) => {
       capturedSetFile = setFile;
       capturedUploadFunction = uploadFunction;
+      capturedUploadDisabled = uploadDisabled;
       return <>{suffix}</>;
     })
   };
@@ -128,6 +130,7 @@ describe('SciencePage', () => {
     vi.clearAllMocks();
     capturedSetFile = undefined;
     capturedUploadFunction = undefined;
+    capturedUploadDisabled = undefined;
     mockGetPdfPageCount.mockResolvedValue(2);
     vi.mock('@ska-telescope/ska-login-page', () => ({
       isLoggedIn: () => true
@@ -292,6 +295,23 @@ describe('SciencePage', () => {
       });
 
       expect(screen.queryByText('pdfUpload.science.pageError')).not.toBeInTheDocument();
+    });
+
+    it('uploadDisabled is false when there is no error', () => {
+      wrapper(<SciencePage />);
+      expect(capturedUploadDisabled).toBe(false);
+    });
+
+    it('uploadDisabled is true when pdfError is set', async () => {
+      mockGetPdfPageCount.mockResolvedValue(5);
+      wrapper(<SciencePage />);
+
+      const file = makeFile('too-long.pdf');
+      await act(async () => {
+        await capturedUploadFunction!(file);
+      });
+
+      expect(capturedUploadDisabled).toBe(true);
     });
 
     it('upload clears a previous error when valid file is uploaded', async () => {
