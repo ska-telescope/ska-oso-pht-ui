@@ -65,18 +65,23 @@ export function useOSDAccessors() {
     const updateCountdown = () => {
       const now = new Date();
       const diffMs = closeDate.getTime() - now.getTime();
+      const five_mins_ms = 5 * 60 * 1000;
 
       if (diffMs <= 0) {
         setCountdown(t('cycleCloses.countdown', { days: 0, hours: 0, minutes: 0, seconds: 0 }));
         return;
+      } else if (diffMs <= five_mins_ms && diffMs > 0) {
+        const minutes = Math.floor(diffMs / (1000 * 60));      // total mins remaining (0–4)
+        const seconds = Math.floor((diffMs / 1000) % 60);
+        setCountdown(t('cycleCloses.countdownUrgent', { minutes, seconds }));
+      } else {
+        const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diffMs / (1000 * 60)) % 60);
+        const seconds = Math.floor((diffMs / 1000) % 60);
+
+        setCountdown(t('cycleCloses.countdown', { days, hours, minutes, seconds }));
       }
-
-      const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diffMs / (1000 * 60)) % 60);
-      const seconds = Math.floor((diffMs / 1000) % 60);
-
-      setCountdown(t('cycleCloses.countdown', { days, hours, minutes, seconds }));
     };
 
     updateCountdown();
