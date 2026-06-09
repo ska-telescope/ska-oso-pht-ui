@@ -251,7 +251,8 @@
   },
   "cycleCloses": {
     "label": "Call closes",
-    "countdown": "Cycle closes in {{days}}d {{hours}}h {{minutes}}m {{seconds}}s"
+    "countdown": "Cycle closes in {{days}}d {{hours}}h {{minutes}}m",
+    "countdownUrgent": "Cycle closes in {{minutes}}m {{seconds}}s"
   },
   "cycleDescription": {
     "label": "Cycle description"

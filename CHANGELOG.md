@@ -16,6 +16,8 @@ UNRELEASED
 * Changed: Title and summary fields will allow user to add text longer than the word limit but the pages won't pass
   validation until the word limit is respected. 
 * Fixed: The incorrect validation error which reported that a declination with seconds >= 59 was out of range. 
+* Changed: Moved the `Cycle closes` countdown timer from the Footer to the Header.
+* Added: Countdown timer will show days, hours, mins until the last 5 minutes then will show minutes, seconds.
 
 10.1.0
 ----------

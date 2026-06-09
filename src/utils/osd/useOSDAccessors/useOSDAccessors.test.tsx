@@ -128,6 +128,68 @@ describe('useOSDAccessors', () => {
     expect(result.current.osdCountdown).toContain('cycleCloses.countdown');
   });
 
+  it('uses countdownUrgent format in last 5 minutes', () => {
+    (useOSD as vi.Mock).mockReturnValue({
+      capabilities: {
+        low: { basicCapabilities: { lowValue: 1 } },
+        mid: {
+          basicCapabilities: {
+            receiverInformation: [{ rxId: 'MID1', value: 123 }]
+          }
+        }
+      },
+      policies: [
+        {
+          type: 'Science Verification',
+          cycleInformation: {
+            cycleId: 'C1',
+            proposalOpen: '20250101T000000',
+            proposalClose: '20250101T12:03:00Z'
+          },
+          cyclePolicies: {
+            low: ['custom'],
+            mid: [],
+            maxTargets: 1,
+            maxObservations: 1
+          },
+          cycleDescription: 'Cycle 1 description'
+        }
+      ]
+    });
+
+    (storageObject.useStore as vi.Mock).mockReturnValue({
+      application: {
+        content8: [
+          {
+            type: 'Science Verification',
+            cycleDescription: 'Cycle 1 description',
+            cycleInformation: {
+              cycleId: 'C1',
+              proposalOpen: '20250101T000000',
+              proposalClose: '20250101T12:03:00Z'
+            },
+            cyclePolicies: {
+              low: ['custom'],
+              mid: [],
+              maxTargets: 1,
+              maxObservations: 1
+            }
+          }
+        ]
+      },
+      updateAppContent8: vi.fn()
+    })
+
+
+    const { result } = renderHook(() => useOSDAccessors());
+
+    act (() => { 
+      vi.advanceTimersByTime(1000);
+    });
+
+    expect(result.current.osdCountdown).toContain('cycleCloses.countdownUrgent');
+  });
+
   // ----------------------
   // isCustomAllowed
   // ----------------------
