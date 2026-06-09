@@ -269,7 +269,7 @@ export default function SciencePage() {
             <>
               <Box
                 sx={{
-                  '& [data-testid="fileUploadUploadButton"].Mui-disabled': {
+                  '& .MuiButton-root.Mui-disabled': {
                     opacity: 0.38
                   }
                 }}
