@@ -23,11 +23,20 @@ describe('<PageBannerPPT />', () => {
 
 describe('isDisableEndpoints (Save button gate)', () => {
   const maxTitleWords = Number(phtTranslations.title.maxWord);
+  const maxAbstractWords = Number(phtTranslations.abstract.maxWord);
 
-  const isDisableEndpoints = (title: string, id: string | null, loggedIn: boolean) => {
+  const isDisableEndpoints = (
+    title: string,
+    abstract: string,
+    id: string | null,
+    loggedIn: boolean
+  ) => {
     if (
       loggedIn &&
-      (id == null || title?.trim()?.length === 0 || countWords(title) > maxTitleWords)
+      (id == null ||
+        title?.trim()?.length === 0 ||
+        countWords(title) > maxTitleWords ||
+        countWords(abstract) > maxAbstractWords)
     ) {
       return true;
     }
@@ -35,28 +44,42 @@ describe('isDisableEndpoints (Save button gate)', () => {
   };
 
   test('is disabled when title is empty', () => {
-    expect(isDisableEndpoints('', 'some-id', true)).toBe(true);
+    expect(isDisableEndpoints('', 'valid abstract', 'some-id', true)).toBe(true);
   });
 
   test('is disabled when proposal has no id', () => {
-    expect(isDisableEndpoints('A valid title', null, true)).toBe(true);
+    expect(isDisableEndpoints('A valid title', 'valid abstract', null, true)).toBe(true);
   });
 
   test('is disabled when title exceeds the word limit', () => {
     const overLimit = Array(maxTitleWords + 1)
       .fill('word')
       .join(' ');
-    expect(isDisableEndpoints(overLimit, 'some-id', true)).toBe(true);
+    expect(isDisableEndpoints(overLimit, 'valid abstract', 'some-id', true)).toBe(true);
+  });
+
+  test('is disabled when abstract exceeds the word limit', () => {
+    const overLimit = Array(maxAbstractWords + 1)
+      .fill('word')
+      .join(' ');
+    expect(isDisableEndpoints('A valid title', overLimit, 'some-id', true)).toBe(true);
   });
 
   test('is enabled when title is within the word limit and proposal has an id', () => {
-    expect(isDisableEndpoints('A valid title', 'some-id', true)).toBe(false);
+    expect(isDisableEndpoints('A valid title', 'valid abstract', 'some-id', true)).toBe(false);
   });
 
   test('is enabled when title is exactly at the word limit', () => {
     const atLimit = Array(maxTitleWords)
       .fill('word')
       .join(' ');
-    expect(isDisableEndpoints(atLimit, 'some-id', true)).toBe(false);
+    expect(isDisableEndpoints(atLimit, 'valid abstract', 'some-id', true)).toBe(false);
+  });
+
+  test('is enabled when abstract is exactly at the word limit', () => {
+    const atLimit = Array(maxAbstractWords)
+      .fill('word')
+      .join(' ');
+    expect(isDisableEndpoints('A valid title', atLimit, 'some-id', true)).toBe(false);
   });
 });
