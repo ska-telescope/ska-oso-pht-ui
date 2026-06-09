@@ -1,6 +1,6 @@
 import React from 'react';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
-import { FormHelperText, Grid } from '@mui/material';
+import { Box, FormHelperText, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import DeletePDF from '@services/axios/delete/deletePDF/deletePDF.tsx';
@@ -267,28 +267,41 @@ export default function SciencePage() {
             <>{t('pdfUpload.disabled')}</>
           ) : (
             <>
-              <FileUpload
-                chooseToolTip={t('pdfUpload.science.tooltip.choose')}
-                clearLabel={t('clearBtn.label')}
-                clearToolTip={t('pdfUpload.science.tooltip.clear')}
-                dropzone
-                dropzoneAccepted={{
-                  'application/pdf': ['.pdf']
+              <Box
+                sx={{
+                  '& [data-testid="fileUploadUploadButton"].Mui-disabled': {
+                    opacity: 0.38
+                  }
                 }}
-                dropzoneIcons={false}
-                dropzonePrompt={t('dropzone.prompt')}
-                dropzonePreview={false}
-                direction="row"
-                file={originalFile}
-                maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
-                setFile={setFile}
-                setStatus={setUploadStatus}
-                testId="fileUpload"
-                uploadFunction={uploadPdftoSignedUrl}
-                uploadToolTip={t('pdfUpload.science.tooltip.upload')}
-                status={getProposal().scienceLoadStatus}
-                suffix={uploadSuffix()}
-              />
+              >
+                <FileUpload
+                  chooseToolTip={t('pdfUpload.science.tooltip.choose')}
+                  clearLabel={t('clearBtn.label')}
+                  clearToolTip={t('pdfUpload.science.tooltip.clear')}
+                  dropzone
+                  dropzoneAccepted={{
+                    'application/pdf': ['.pdf']
+                  }}
+                  dropzoneIcons={false}
+                  dropzonePrompt={t('dropzone.prompt')}
+                  dropzonePreview={false}
+                  direction="row"
+                  file={originalFile}
+                  maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
+                  setFile={setFile}
+                  setStatus={setUploadStatus}
+                  testId="fileUpload"
+                  uploadDisabled={!!pdfError}
+                  uploadFunction={uploadPdftoSignedUrl}
+                  uploadToolTip={
+                    pdfError
+                      ? t('pdfUpload.science.tooltip.uploadDisabled')
+                      : t('pdfUpload.science.tooltip.upload')
+                  }
+                  status={getProposal().scienceLoadStatus}
+                  suffix={uploadSuffix()}
+                />
+              </Box>
               {pdfError && <FormHelperText error sx={{ ml: 1.75 }}>{pdfError}</FormHelperText>}
             </>
           )}

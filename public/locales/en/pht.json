@@ -709,7 +709,8 @@
         "delete": "Delete the science justification PDF",
         "download": "Download the science justification PDF",
         "preview": "This is the PDF preview button on the science page",
-        "upload": "Upload the selected PDF for use as the science justification"
+        "upload": "Upload the selected PDF for use as the science justification",
+        "uploadDisabled": "PDF cannot be uploaded: the selected file does not meet the size or page count requirements"
       },
       "warning": "Science Justification PDF being processed"
     },
