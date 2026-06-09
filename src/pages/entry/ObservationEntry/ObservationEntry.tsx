@@ -397,11 +397,16 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     centralFrequencyUnits,
     bandwidth,
     continuumBandwidth,
+    continuumBandwidthUnits,
     subBands,
     numOf15mAntennas,
     numOf13mAntennas,
     numOfStations,
-    pstMode
+    pstMode,
+    spectralAveraging,
+    spectralResolution,
+    effectiveResolution,
+    zoomChannels
   ]);
 
   React.useEffect(() => {
