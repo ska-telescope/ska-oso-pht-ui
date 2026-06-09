@@ -16,7 +16,7 @@ UNRELEASED
 * Changed: Title and summary fields will allow user to add text longer than the word limit but the pages won't pass
   validation until the word limit is respected. 
 * Added: Science Justification PDF upload now validates file size and page count; files exceeding 100 MB or 4 pages are rejected with an inline error.
-* Fixed: The incorrect validation error which reported that a declination with seconds >= 59 was out of range. 
+* Fixed: The incorrect validation error which reported that a declination with seconds >= 59 was out of range.
 
 10.1.0
 ----------
