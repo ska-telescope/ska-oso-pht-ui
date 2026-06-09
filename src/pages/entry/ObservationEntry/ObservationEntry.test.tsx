@@ -84,12 +84,7 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
   StoreProvider: ({ children }: { children: React.ReactNode }) => <>{children}</>
 }));
 
-// In tests, osdLOW.subArrays=[] so obTypeTransform receives an empty array and
-// returns no options. Empty obsTypeOptions leaves observationType at the default
-// TYPE_CONTINUUM and continuumBandwidthField() is rendered instead of
-// bandwidthField(). Returning only ['spectral'] here forces obsTypeOptions to
-// contain one zoom entry; the observationType effect then replaces the invalid
-// continuum default with TYPE_ZOOM so bandwidthField() is rendered.
+// Force a spectral zoom observation type for all tests, so we can verify bandwidth changes
 vi.mock('@utils/helpers.ts', async () => {
   const actual = await vi.importActual<typeof import('@utils/helpers')>('@utils/helpers.ts');
   return {
