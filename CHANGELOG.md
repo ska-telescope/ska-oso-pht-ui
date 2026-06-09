@@ -13,6 +13,7 @@ UNRELEASED
 * Changed: upgrade to oso-services v14.4.1
 * Fixed: RA and Dec validation rules now allow trailing whitespace.  
 * Changed: Acceptable proposal/idea title length reduced to 20 words. 
+* Fixed: The incorrect validation error which reported that a declination with seconds >= 59 was out of range. 
 
 10.1.0
 ----------
