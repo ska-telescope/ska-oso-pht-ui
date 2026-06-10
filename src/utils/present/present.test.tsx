@@ -98,4 +98,13 @@ describe('Present', () => {
   test('presentTime : en-GB Europe/London', () => {
     expect(presentTime('2025-07-29T08:07:35.338860Z')).toBe('09:07:35');
   });
+  test('presentDateTime : OSD legacy timestamp format', () => {
+    expect(presentDateTime('20260327T12:00:00.000Z')).toBe('27/03/2026, 12:00:00');
+  });
+  test('presentDate : OSD legacy timestamp format', () => {
+    expect(presentDate('20260327T12:00:00.000Z')).toBe('27/03/2026');
+  });
+    test('presentTime : OSD legacy timestamp format', () => {
+    expect(presentTime('20260327T12:00:00.000Z')).toBe('12:00:00');
+  });
 });
