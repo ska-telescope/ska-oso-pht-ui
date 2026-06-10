@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import { FileUploadStatus } from '@ska-telescope/ska-gui-components';
 import SciencePage from './SciencePage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
@@ -12,10 +12,12 @@ vi.mock('@ska-telescope/ska-login-page', () => ({
 // Mock notify
 const notifySuccess = vi.fn();
 const notifyError = vi.fn();
+const notifyWarning = vi.fn();
 vi.mock('@/utils/notify/useNotify', () => ({
   useNotify: () => ({
     notifySuccess,
-    notifyError
+    notifyError,
+    notifyWarning
   })
 }));
 
@@ -75,9 +77,28 @@ vi.mock('@services/axios/delete/deletePDF/deletePDF.tsx', () => ({
   default: vi.fn().mockResolvedValue({})
 }));
 
-const wrapper = (component: React.ReactElement) => {
-  return render(<ThemeA11yProvider>{component}</ThemeA11yProvider>);
-};
+// Mock getPdfPageCount
+const mockGetPdfPageCount = vi.fn();
+vi.mock('@/utils/pdf/pdfPageCount', () => ({
+  getPdfPageCount: (...args: any[]) => mockGetPdfPageCount(...args)
+}));
+
+// Mock FileUpload to capture setFile and uploadFunction props
+let capturedSetFile: ((file: File | '') => void) | undefined;
+let capturedUploadFunction: ((file: File) => Promise<void>) | undefined;
+let capturedUploadDisabled: boolean | undefined;
+vi.mock('@ska-telescope/ska-gui-components', async importOriginal => {
+  const actual = (await importOriginal()) as any;
+  return {
+    ...actual,
+    FileUpload: vi.fn(({ setFile, uploadFunction, uploadDisabled, suffix }: any) => {
+      capturedSetFile = setFile;
+      capturedUploadFunction = uploadFunction;
+      capturedUploadDisabled = uploadDisabled;
+      return <>{suffix}</>;
+    })
+  };
+});
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({
@@ -89,9 +110,28 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   })
 }));
 
+const wrapper = (component: React.ReactElement) => {
+  return render(<ThemeA11yProvider>{component}</ThemeA11yProvider>);
+};
+
+const makeFile = (name = 'test.pdf', sizeOverride?: number): File => {
+  const file = new File(['dummy'], name, { type: 'application/pdf' });
+  if (sizeOverride !== undefined) {
+    Object.defineProperty(file, 'size', { value: sizeOverride });
+  }
+  return file;
+};
+
+import GetPresignedUploadUrl from '@services/axios/get/getPresignedUploadUrl/getPresignedUploadUrl';
+import PutUploadPDF from '@services/axios/put/putUploadPDF/putUploadPDF';
+
 describe('SciencePage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    capturedSetFile = undefined;
+    capturedUploadFunction = undefined;
+    capturedUploadDisabled = undefined;
+    mockGetPdfPageCount.mockResolvedValue(2);
     vi.mock('@ska-telescope/ska-login-page', () => ({
       isLoggedIn: () => true
     }));
@@ -99,17 +139,10 @@ describe('SciencePage', () => {
 
   it('renders file upload and buttons when logged in', () => {
     wrapper(<SciencePage />);
-    // expect(screen.getByTestId('fileUpload')).toBeInTheDocument();
     expect(screen.getByText('pdfUpload.science.label.preview')).toBeInTheDocument();
     expect(screen.getByText('pdfUpload.science.label.download')).toBeInTheDocument();
     expect(screen.getByText('pdfUpload.science.label.delete')).toBeInTheDocument();
   });
-
-  // it('uploads PDF and updates proposal', async () => {
-  //   wrapper(<SciencePage />);
-  //   const uploadFn = screen.getByTestId('fileUpload').getAttribute('uploadFunction');
-  //   expect(uploadFn).toBeDefined();
-  // });
 
   it('previews PDF and opens viewer', async () => {
     wrapper(<SciencePage />);
@@ -136,17 +169,168 @@ describe('SciencePage', () => {
     });
   });
 
-  // it('handles upload error gracefully', async () => {
-  //   const PutUploadPDF = require('@services/axios/put/putUploadPDF/putUploadPDF').default;
-  //   PutUploadPDF.mockResolvedValue({ error: true });
-  //   wrapper(<SciencePage />);
-  //   const uploadFn = screen.getByTestId('fileUpload').getAttribute('uploadFunction');
-  //   expect(uploadFn).toBeDefined();
-  // });
+  describe('PDF validation', () => {
+    it('file within size limit with 4 pages: no error, upload proceeds', async () => {
+      mockGetPdfPageCount.mockResolvedValue(4);
+      wrapper(<SciencePage />);
 
-  // it('triggers setHelp and validation on mount', () => {
-  //   wrapper(<SciencePage />);
-  //   expect(mockStore.setHelp).toHaveBeenCalledWith('page.3.help');
-  //   expect(mockStore.updateAppContent1).toHaveBeenCalled();
-  // });
+      const file = makeFile('valid.pdf');
+      await act(async () => {
+        await capturedUploadFunction!(file);
+      });
+
+      expect(screen.queryByRole('presentation')).not.toBeInTheDocument();
+      expect(GetPresignedUploadUrl).toHaveBeenCalled();
+      expect(PutUploadPDF).toHaveBeenCalled();
+      expect(notifyWarning).toHaveBeenCalledWith('pdfUpload.science.warning');
+    });
+
+    it('file exactly 100 MB: no error, upload proceeds', async () => {
+      mockGetPdfPageCount.mockResolvedValue(2);
+      wrapper(<SciencePage />);
+
+      const file = makeFile('exact.pdf', 100 * 1024 * 1024);
+      await act(async () => {
+        await capturedUploadFunction!(file);
+      });
+
+      expect(screen.queryByText('pdfUpload.science.sizeError')).not.toBeInTheDocument();
+      expect(GetPresignedUploadUrl).toHaveBeenCalled();
+    });
+
+    it('file 100 MB + 1 byte: sizeError shown, upload blocked', async () => {
+      wrapper(<SciencePage />);
+
+      const file = makeFile('too-big.pdf', 100 * 1024 * 1024 + 1);
+      await act(async () => {
+        await capturedUploadFunction!(file);
+      });
+
+      expect(screen.getByText('pdfUpload.science.sizeError')).toBeInTheDocument();
+      expect(mockGetPdfPageCount).not.toHaveBeenCalled();
+      expect(GetPresignedUploadUrl).not.toHaveBeenCalled();
+      expect(PutUploadPDF).not.toHaveBeenCalled();
+      expect(notifyWarning).not.toHaveBeenCalled();
+    });
+
+    it('file within size limit but 5 pages: pageError shown, upload blocked', async () => {
+      mockGetPdfPageCount.mockResolvedValue(5);
+      wrapper(<SciencePage />);
+
+      const file = makeFile('too-long.pdf');
+      await act(async () => {
+        await capturedUploadFunction!(file);
+      });
+
+      expect(screen.getByText('pdfUpload.science.pageError')).toBeInTheDocument();
+      expect(GetPresignedUploadUrl).not.toHaveBeenCalled();
+      expect(PutUploadPDF).not.toHaveBeenCalled();
+      expect(notifyWarning).not.toHaveBeenCalled();
+    });
+
+    it('clear file: error cleared and proposal state cleared', async () => {
+      mockGetPdfPageCount.mockResolvedValue(5);
+      wrapper(<SciencePage />);
+
+      const file = makeFile('too-long.pdf');
+      await act(async () => {
+        await capturedUploadFunction!(file);
+      });
+      expect(screen.getByText('pdfUpload.science.pageError')).toBeInTheDocument();
+
+      act(() => {
+        capturedSetFile!('');
+      });
+
+      await waitFor(() => {
+        expect(screen.queryByText('pdfUpload.science.pageError')).not.toBeInTheDocument();
+      });
+      expect(mockStore.updateAppContent2).toHaveBeenCalledWith(
+        expect.objectContaining({ sciencePDF: null })
+      );
+    });
+
+    it('unreadable PDF: invalidFileError shown, upload blocked', async () => {
+      mockGetPdfPageCount.mockRejectedValue(new Error('Corrupt PDF'));
+      wrapper(<SciencePage />);
+
+      const file = makeFile('corrupt.pdf');
+      await act(async () => {
+        await capturedUploadFunction!(file);
+      });
+
+      expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
+      expect(GetPresignedUploadUrl).not.toHaveBeenCalled();
+      expect(notifyWarning).not.toHaveBeenCalled();
+    });
+
+    it('stale validation ignored when second file selected before first resolves', async () => {
+      let resolveFirstPageCount!: (n: number) => void;
+      const deferredFirst = new Promise<number>(res => {
+        resolveFirstPageCount = res;
+      });
+      mockGetPdfPageCount.mockReturnValueOnce(deferredFirst).mockResolvedValueOnce(2);
+
+      wrapper(<SciencePage />);
+
+      const file1 = makeFile('file1.pdf');
+      const file2 = makeFile('file2.pdf');
+
+      act(() => {
+        capturedSetFile!(file1);
+      });
+      act(() => {
+        capturedSetFile!(file2);
+      });
+
+      // file2 validation resolves (2 pages — valid); no error
+      await waitFor(() => {
+        expect(screen.queryByText('pdfUpload.science.pageError')).not.toBeInTheDocument();
+      });
+
+      // Now resolve file1 with 5 pages (would be an error) — should be ignored
+      await act(async () => {
+        resolveFirstPageCount(5);
+        await new Promise(r => setTimeout(r, 0));
+      });
+
+      expect(screen.queryByText('pdfUpload.science.pageError')).not.toBeInTheDocument();
+    });
+
+    it('uploadDisabled is false when there is no error', () => {
+      wrapper(<SciencePage />);
+      expect(capturedUploadDisabled).toBe(false);
+    });
+
+    it('uploadDisabled is true when pdfError is set', async () => {
+      mockGetPdfPageCount.mockResolvedValue(5);
+      wrapper(<SciencePage />);
+
+      const file = makeFile('too-long.pdf');
+      await act(async () => {
+        await capturedUploadFunction!(file);
+      });
+
+      expect(capturedUploadDisabled).toBe(true);
+    });
+
+    it('upload clears a previous error when valid file is uploaded', async () => {
+      mockGetPdfPageCount.mockResolvedValueOnce(5).mockResolvedValueOnce(2);
+      wrapper(<SciencePage />);
+
+      const badFile = makeFile('bad.pdf');
+      await act(async () => {
+        await capturedUploadFunction!(badFile);
+      });
+      expect(screen.getByText('pdfUpload.science.pageError')).toBeInTheDocument();
+
+      const goodFile = makeFile('good.pdf');
+      await act(async () => {
+        await capturedUploadFunction!(goodFile);
+      });
+
+      expect(screen.queryByText('pdfUpload.science.pageError')).not.toBeInTheDocument();
+      expect(GetPresignedUploadUrl).toHaveBeenCalled();
+    });
+  });
 });
