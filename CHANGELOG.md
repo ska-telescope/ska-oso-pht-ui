@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Bugfix: Fix population of `bandwidth` between Observation and Data Product page 
 * Added: SonarQube for static analysis of code quality
 * Changed: Full and Short name in SV Tool header are now full="Science Verification Idea Submission Tool" or short="SV Idea Submission Tool". (Rather than Submission Tool and ST)
 * Added: New text `Submission ID:` before the SV idea UID in the footer.
