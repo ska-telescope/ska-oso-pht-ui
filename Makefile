@@ -3,7 +3,8 @@
 KUBE_NAMESPACE ?= ska-oso-pht-ui
 K8S_CHART ?= ska-oso-pht-ui-umbrella
 KUBE_HOST ?= http://localhost
-RELEASE_NAME ?= test
+
+K8S_WAIT_LABEL_FILTER_ARGS = -l release=$(HELM_RELEASE)
 
 # JS Template Variables
 JS_E2E_TEST_BASE_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/
