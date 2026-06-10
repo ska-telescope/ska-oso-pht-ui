@@ -128,7 +128,7 @@ describe('useOSDAccessors', () => {
     expect(result.current.osdCountdown).toContain('cycleCloses.countdown');
   });
 
-  it('uses countdownUrgent format in last 5 minutes', () => {
+  it('uses countdownUrgent format when the time is <= the URGENT THRESHOLD', () => {
     (useOSD as vi.Mock).mockReturnValue({
       capabilities: {
         low: { basicCapabilities: { lowValue: 1 } },
