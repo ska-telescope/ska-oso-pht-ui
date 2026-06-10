@@ -88,10 +88,10 @@ describe('Present', () => {
     expect(presentValue(3, 4)).toBe('3.0000');
   });
 
-  test('presentDateTime  : maxFaradayDepth', () => {
-    expect(presentDateTime('2025-07-29T08:07:35.338860Z')).toBe('29-07-2025 09:07:35');
+  test('presentDateTime : en-GB Europe/London', () => {
+    expect(presentDateTime('2025-07-29T08:07:35.338860Z')).toBe('29/07/2025, 09:07:35');
   });
-  test('presentDate : maxFaradayDepth', () => {
-    expect(presentDate('2025-07-29T08:07:35.338860Z')).toBe('29-07-2025');
+  test('presentDate : en-GB Europe/London', () => {
+    expect(presentDate('2025-07-29T08:07:35.338860Z')).toBe('29/07/2025');
   });
 });
