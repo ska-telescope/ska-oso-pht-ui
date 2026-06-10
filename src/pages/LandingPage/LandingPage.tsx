@@ -402,9 +402,17 @@ export default function LandingPage() {
         </Grid>
         {!loggedIn && !cypressToken && (
           <Grid size={{ xs: 6 }} pt={5}>
-            <BorderedSection title={t('sensCalc.label')} borderColor={theme.palette.info.main}>
+            <BorderedSection title={t('landingWelcome.label')} borderColor={theme.palette.info.main}>
               <Stack spacing={10} alignItems="center" justifyContent="center" p={5}>
                 <Typography align="center" variant="h6" minHeight="5vh">
+                  {t('landingWelcome.description')}
+                </Typography>
+                <SensCalcButton link={t('sensCalc.url')} primary />
+              </Stack>
+            </BorderedSection>
+            <BorderedSection title={t('sensCalc.label')} borderColor={theme.palette.grey[800]}>
+              <Stack spacing={10} alignItems="center" justifyContent="center" p={5}>
+                <Typography align="center" variant="h6" minHeight="3vh" color={theme.palette.grey[800]}>
                   {t('sensCalc.description')}
                 </Typography>
                 {/* WE NEED TO DYNAMICALLY DETERMINE THE PATH FOR THE URL */}

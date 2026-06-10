@@ -476,6 +476,12 @@
   "inviteTeamMember": {
     "label": "Invite Team Member"
   },
+  "landingWelcome":{
+    "button": "Register / Sign in",
+    "label": "Submit Your SKA-Low Science Idea",
+    "description": "Use this tool to develop and submit your science idea for SKA-Low science verification.<br/>Access is available to registered users only. Please sign in or create an account to continue.",
+    "tooltip": "Open the SKA sensitivity calculator in a new tab"
+  },
   "latex": {
     "toolTip": "LaTex Preview.",
     "previewTitle": "LaTeX Preview"
