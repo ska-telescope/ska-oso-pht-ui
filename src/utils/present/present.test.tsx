@@ -7,6 +7,7 @@ import {
   presentDateTime,
   presentLatex,
   presentSensCalcError,
+  presentTime,
   presentUnits,
   presentValue
 } from './present';
@@ -93,5 +94,8 @@ describe('Present', () => {
   });
   test('presentDate : en-GB Europe/London', () => {
     expect(presentDate('2025-07-29T08:07:35.338860Z')).toBe('29/07/2025');
+  });
+  test('presentTime : en-GB Europe/London', () => {
+    expect(presentTime('2025-07-29T08:07:35.338860Z')).toBe('09:07:35');
   });
 });
