@@ -71,21 +71,21 @@ const parseDate = (input: string): Date | null => {
   return isNaN(date.getTime()) ? null : date;
 };
 
-const formatDate = (input: string, options: Intl.DateTimeFormatOptions): string => {
+const formatDate = (input: string, options: Intl.DateTimeFormatOptions, locale?: string): string => {
   const date = parseDate(input);
   if (!date){
     return '';
   }
-  return new Intl.DateTimeFormat(undefined, options).format(date);
+  return new Intl.DateTimeFormat(locale, options).format(date);
 }
 
-export const presentDate = (input: string) => 
-  formatDate(input, { year: 'numeric', month: 'numeric', day: 'numeric' });
+export const presentDate = (input: string, locale?: string) =>
+  formatDate(input, { year: 'numeric', month: 'numeric', day: 'numeric' }, locale);
 
-export const presentTime = (input: string) =>
-  formatDate(input, { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+export const presentTime = (input: string, locale?: string) =>
+  formatDate(input, { hour: '2-digit', minute: '2-digit', second: '2-digit' }, locale);
 
-export const presentDateTime = (input: string) =>
+export const presentDateTime = (input: string, locale?: string) =>
   formatDate(input, {
     year: 'numeric',
     month: 'numeric',
@@ -93,7 +93,7 @@ export const presentDateTime = (input: string) =>
     hour: '2-digit',
     minute: '2-digit',
     second: '2-digit'
-  });
+  }, locale);
 
 export const trimText = (text: string, maxLength: number): string => {
   if (!text || maxLength <= 0) return '';
