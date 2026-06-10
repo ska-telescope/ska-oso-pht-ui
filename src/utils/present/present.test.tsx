@@ -92,4 +92,13 @@ describe('Present', () => {
     test('presentTime : OSD legacy timestamp format', () => {
     expect(presentTime('20260327T12:00:00.000Z')).toBe('12:00:00');
   });
+  test('presentDateTime " invalid date string', () => {
+    expect(presentDateTime('invalid date string')).toBe('');
+  });
+  test('presentDate " invalid date string', () => {
+    expect(presentDate('invalid date string')).toBe('');
+  });
+  test('presentTime " invalid date string', () => {
+    expect(presentTime('invalid date string')).toBe('');
+  });
 });
