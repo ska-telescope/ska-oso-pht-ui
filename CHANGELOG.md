@@ -18,6 +18,7 @@ UNRELEASED
   validation until the word limit is respected. 
 * Added: Science Justification PDF upload now validates file size and page count; files exceeding 100 MB or 4 pages are rejected with an inline error.
 * Fixed: The incorrect validation error which reported that a declination with seconds >= 59 was out of range.
+* Removed: An alert banner from the calibrator page has been removed
 
 10.1.0
 ----------
