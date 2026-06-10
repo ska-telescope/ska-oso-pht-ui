@@ -12,21 +12,6 @@ import {
   presentValue
 } from './present';
 
-vi.mock('i18next', () => ({
-  t: (key: string) => {
-    switch (key) {
-      case 'date_format_one':
-        return '29-07-2025';
-      case 'date_format_two':
-        return '29-07-2025';
-      case 'time_format':
-        return '09:07:35';
-      default:
-        return '';
-    }
-  }
-}));
-
 describe('Present', () => {
   test('presentLatex : Dummy string', () => {
     expect(presentLatex('Dummy string')).toStrictEqual(<Latex>Dummy string</Latex>);
