@@ -1,7 +1,7 @@
 {
   "abstract": {
     "label": "Idea Summary",
-    "help": "The Science Verification Idea summary should clearly communicate the Science Verification Idea’s objectives, relevance, expected outcomes, and potential impact, serving as a high-level overview of the Science Verification Idea's essential points. The summary should be succinct yet detailed enough to convey the essence of the Science Verification Idea, highlighting its innovation and relevance to the field. The text should be a maximum of 250 words.",
+    "help": "",
     "helper": "Please enter the summary of your Science Verification Idea. This field allows latex syntax. - Word count {{current}} / {{max}}"
   },
   "addProposal": {
@@ -84,7 +84,7 @@
   },
   "pht": {
     "short": "ST",
-    "title": "Submission Tool"
+    "title": "Science Verification Idea Submission Tool"
   },
   "pi": {
     "short": "Participant"
@@ -158,7 +158,7 @@
     "1": "Continuum",
     "2": "PST",
     "label": "Observing Mode",
-    "help": "Select a mode that best describes the science of your Science Verification Idea.",
+    "help": "Detailed information about the capabilities available during the current call for SKA-Low science verification ideas is available here. You can find descriptions of the available modes here. Please review these carefully, as your selection determines the configuration options in the following steps. When writing the summary, clearly describe the core idea, the verification opportunities, and the choice of target. Indicate what will be tested or demonstrated through the observation.",
     "validationNavigationError": "Observation mode and a target are required. They are located on the Details and Target pages.",
     "notSpecified": "Not specified",
     "short": "Mode",
@@ -181,7 +181,7 @@
     "limitReached_plural": "Only {{value}} target/object are allowed for Science Verification Ideas."
   },
   "uploadCsvBtn": {
-    "uploadSuccessMsg": "All targets in file have been uploaded into the Science Verification Idea"
+    "uploadSuccessMsg": "All targets in filqe have been uploaded into the Science Verification Idea"
   },
   "validationBtn": {
     "success": "Science Verification Idea is Valid",
@@ -195,39 +195,44 @@
   },
   "page": {
     "0": {
-      "desc": "Provide a title for the Science Verification idea."
+      "desc": "Submit a Science Verification Idea. Welcome to the Ideas submission tool for Science Verification! The current call is for SKA-Low AA2. In just a few simple steps, you can share an idea with us. During this stage of SV, ideas are limited to one source observed in one observing mode. To begin, provide a title for the science verification idea."
     },
     "1": {
-      "desc": "Fellow participants can be optionally added to this Science Verification idea."
+      "desc": "Add idea collaborators. All collaborators must have an SKA account. If you add someone that does not yet have an account, they will receive an invitation to register.",
+      "help": "Before submitting a science verification idea, ensure that all collaborators are registered in the SKAO system - you can register here. There is no formal limit on the number of idea originators that can be included in a science verification idea."
     },
     "2": {
       "status": "Details",
       "title": "Details",
       "titleShort": "Details",
       "pageError": "The DETAILS page is not complete",
-      "desc": "This page allows the user to provide general information about the Science Verification Idea."
+      "desc": "Describe the Science Verification Idea. Choose the mode (Continuum, Spectral Line, or PST) the Science Verification idea will be testing. Only one mode can be chosen for this stage of Science Verification. Your selection will define the available settings on the pages that follow. Add a summary describing the science verification idea.",
+      "help": "Detailed information about the capabilities available during the current call for SKA-Low science verification ideas is available here. You can find descriptions of the available modes here. Please review these carefully, as your selection determines the configuration options in the following steps. When writing the summary, clearly describe the core idea, the verification oppotunities, and the choice of target. Indicate what will be tested or demonstrated through the observation."
     },
     "3": {
       "label": "Description",
       "status": "Description",
       "title": "Description",
       "titleShort": "Description",
-      "desc": "Upload a brief description of the Science Verification idea in a portable document format (PDF).",
+      "desc": "Upload a description of the Science Verification Idea. Provide a description of the science verification idea, outlining how it will contribute to the Science Verification of SKA-Low. The description must be uploaded as a PDF file and must not exceed X pages.",
       "pageError": "The DESCRIPTION page is not complete",
-      "help": "This document should include a brief justification of the target, the suggested observations and its suitability for Science Verification."
+      "help": "Please refer to the call for SKA-Low science verification ideas for guidance on the required content of a submission. The description must be uploaded as a single PDF file, including all text, figures, and references. The document may be prepared using LaTeX or any standard word processing software. The document must not exceed XX pages, the recommended format is Noto Sans, 12 pt font size."
     },
     "4": {
-      "desc": "Please specify the target associated with this science verification idea."
+      "desc": "Add the target. Science Verification ideas in the current call are limited to one target only. Enter the target details below. The system will generate a visibility plot for SKA-Low to support planning. Please ensure the coordinates and source information are correct.",
+      "help": "The form can resolve targets using standard astronomical databases. The returned coordinates correspond to the catalogued source position, so please review and adjust them if necessary to ensure they match the intended target. A visibility plot for the selected target is shown as a reference for the current day."
     },
     "5": {
-      "desc": "Add observation set up.",
-      "noTarget": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE  OBSERVATION SET-UP,  AS THERE ARE NO TARGET / OBSERVATION MODE SELECTED FOR THIS SCIENCE VERIFICATION IDEA. THE OBSERVATION MODE CAN BE SELECTED ON THE DETAILS PAGE."
+      "desc": "Review the Observation Configuration. The available parameters on this page are determined by the mode you selected earlier. Review the configuration below and provide the required observing details. Some parameters are predefined for Science Verification and cannot be modified.",
+      "noTarget": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE  OBSERVATION SET-UP,  AS THERE ARE NO TARGET / OBSERVATION MODE SELECTED FOR THIS SCIENCE VERIFICATION IDEA. THE OBSERVATION MODE CAN BE SELECTED ON THE DETAILS PAGE.",
+      "help": "The array layout for SKA-Low Science Verification is shown for reference. Further details on the array configuration and parameters are available here. Descriptions of the available modes can be found here (Continuum, Spectral Line, PST). The Spectral Line page provides additional information on available spectral resolutions, while the PST page describes the supported PST modes in more detail. Please note that the frequency range 242–272 MHz is significantly affected by radio frequency interference (RFI) and should be used with caution."
     },
     "6": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE CALIBRATION STRATEGY, AS THERE ARE NO TARGET / OBSERVATION MODE SELECTED FOR THIS SCIENCE VERIFICATION IDEA. OBSERVATION MODE CAN BE SELECTED ON THE DETAILS PAGE."
     },
     "7": {
-      "desc": "This page allows you to request and define observatory data products for Observation(s)."
+      "desc": "Review the Observatory Data Products. This page outlines the data products available for the selected mode. Science Verification includes a predefined set of ODPs. You may adjust the active parameters. Sensitivity estimates for the target are provided below to help you assess the expected performance.",
+      "help": "The observation setup panel on the left provides a summary of the parameters selected in previous steps. To modify any of these values, please return to the Details section. The data product panel describes the standard outputs available based on the mode selected. Further details on standard SKA-Low Science Verification data products are available here. The default image size and pixel size values assume ..... Please adjust these parameters if this default setup does not match the science verification case. Sensitivity estimates are shown based on the selected parameters to help assess expected performance. For more detailed analysis, you can access the full Sensitivity Calculator."
     },
     "8": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE DATA PRODUCTS, AS THERE ARE NO TARGET / OBSERVATION MODE SELECTED FOR THIS SCIENCE VERIFICATION IDEA. OBSERVATION MODE CAN BE SELECTED ON THE DETAILS PAGE.",
