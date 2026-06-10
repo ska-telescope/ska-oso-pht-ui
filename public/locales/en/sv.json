@@ -181,7 +181,7 @@
     "limitReached_plural": "Only {{value}} target/object are allowed for Science Verification Ideas."
   },
   "uploadCsvBtn": {
-    "uploadSuccessMsg": "All targets in filqe have been uploaded into the Science Verification Idea"
+    "uploadSuccessMsg": "All targets in file have been uploaded into the Science Verification Idea"
   },
   "validationBtn": {
     "success": "Science Verification Idea is Valid",
