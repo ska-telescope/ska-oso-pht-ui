@@ -75,22 +75,31 @@ describe('Present', () => {
   });
 
   test('presentDateTime : en-GB Europe/London', () => {
-    expect(presentDateTime('2025-07-29T08:07:35.338860Z')).toBe('29/07/2025, 09:07:35');
+    expect(presentDateTime('2025-07-29T08:07:35.338860Z', 'en-GB')).toBe('29/07/2025, 09:07:35');
   });
   test('presentDate : en-GB Europe/London', () => {
-    expect(presentDate('2025-07-29T08:07:35.338860Z')).toBe('29/07/2025');
+    expect(presentDate('2025-07-29T08:07:35.338860Z', 'en-GB')).toBe('29/07/2025');
   });
   test('presentTime : en-GB Europe/London', () => {
-    expect(presentTime('2025-07-29T08:07:35.338860Z')).toBe('09:07:35');
+    expect(presentTime('2025-07-29T08:07:35.338860Z', 'en-GB')).toBe('09:07:35');
+  });
+  test('presentDateTime : en-US America/New_York', () => {
+    expect(presentDateTime('2025-07-29T08:07:35.338860Z', 'en-US')).toBe('7/29/2025, 09:07:35 AM');
+  });
+  test('presentDate : en-US America/New_York', () => {
+    expect(presentDate('2025-07-29T08:07:35.338860Z', 'en-US')).toBe('7/29/2025');
+  });
+  test('presentTime : en-US America/New_York', () => {
+    expect(presentTime('2025-07-29T08:07:35.338860Z', 'en-US')).toBe('09:07:35 AM');
   });
   test('presentDateTime : OSD legacy timestamp format', () => {
-    expect(presentDateTime('20260327T12:00:00.000Z')).toBe('27/03/2026, 12:00:00');
+    expect(presentDateTime('20260327T12:00:00.000Z', 'en-GB')).toBe('27/03/2026, 12:00:00');
   });
   test('presentDate : OSD legacy timestamp format', () => {
-    expect(presentDate('20260327T12:00:00.000Z')).toBe('27/03/2026');
+    expect(presentDate('20260327T12:00:00.000Z', 'en-GB')).toBe('27/03/2026');
   });
     test('presentTime : OSD legacy timestamp format', () => {
-    expect(presentTime('20260327T12:00:00.000Z')).toBe('12:00:00');
+    expect(presentTime('20260327T12:00:00.000Z', 'en-GB')).toBe('12:00:00');
   });
   test('presentDateTime " invalid date string', () => {
     expect(presentDateTime('invalid date string')).toBe('');
