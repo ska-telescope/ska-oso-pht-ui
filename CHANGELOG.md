@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Bugfix: Fix population of `bandwidth` between Observation and Data Product page 
 * Added: SonarQube for static analysis of code quality
 * Changed: Full and Short name in SV Tool header are now full="Science Verification Idea Submission Tool" or short="SV Idea Submission Tool". (Rather than Submission Tool and ST)
 * Added: New text `Submission ID:` before the SV idea UID in the footer.
@@ -15,7 +16,8 @@ UNRELEASED
 * Changed: Acceptable proposal/idea title length reduced to 20 words. 
 * Changed: Title and summary fields will allow user to add text longer than the word limit but the pages won't pass
   validation until the word limit is respected. 
-* Fixed: The incorrect validation error which reported that a declination with seconds >= 59 was out of range. 
+* Added: Science Justification PDF upload now validates file size and page count; files exceeding 100 MB or 4 pages are rejected with an inline error.
+* Fixed: The incorrect validation error which reported that a declination with seconds >= 59 was out of range.
 * Changed: Moved the `Cycle closes` countdown timer from the Footer to the Header.
 * Added: Countdown timer will show days, hours, mins until the last 5 minutes then will show minutes, seconds.
 

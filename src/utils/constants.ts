@@ -547,6 +547,8 @@ export const ROBUST = [
 
 export const UPLOAD_MAX_WIDTH_CSV = 25;
 export const UPLOAD_MAX_WIDTH_PDF = 25;
+export const SCIENCE_PDF_MAX_PAGES = 4;
+export const SCIENCE_PDF_MAX_SIZE_MB = 100;
 
 export const VEL_TYPES = [
   { label: 'Velocity', value: 0 },
