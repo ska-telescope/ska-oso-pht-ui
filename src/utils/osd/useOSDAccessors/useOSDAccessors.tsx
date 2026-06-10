@@ -69,7 +69,7 @@ export function useOSDAccessors() {
       if (diffMs <= 0) {
         setCountdown(t('cycleCloses.countdown', { days: 0, hours: 0, minutes: 0, seconds: 0 }));
         return;
-      } else if (diffMs <= COUNTDOWN_URGENT_THRESHOLD_MS && diffMs > 0) {
+      } else if (diffMs <= COUNTDOWN_URGENT_THRESHOLD_MS) {
         const minutes = Math.floor(diffMs / (1000 * 60));      // total mins remaining (0–4)
         const seconds = Math.floor((diffMs / 1000) % 60);
         setCountdown(t('cycleCloses.countdownUrgent', { minutes, seconds }));

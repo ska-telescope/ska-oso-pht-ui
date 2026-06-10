@@ -163,8 +163,7 @@ export default function PHT({
       (!showNotification() && (loggedIn || cypressToken) && getProposal()?.id?.length) ?? false;
     const opt2 = showNotification();
 
-    if (!opt1 && !opt2) return null;
-    return (
+    if (opt2) return (
       <div>
         {opt2 && (
           <TimedAlert
