@@ -163,7 +163,26 @@ export default function PHT({
       (!showNotification() && (loggedIn || cypressToken) && getProposal()?.id?.length) ?? false;
     const opt2 = showNotification();
 
-    if (!opt1 && !opt2) return null;
+    if (opt2) return (
+      <div>
+        {opt2 && (
+          <TimedAlert
+            color={(application.content5 as Notification)?.level}
+            gap={0}
+            delay={(application.content5 as Notification)?.delay}
+            testId="timeAlertFooter"
+            text={(application.content5 as Notification)?.message}
+          />
+        )}
+      </div>
+    );
+  };
+
+  const headerCountdown = () => {
+    const opt1 =
+      (!showNotification() && (loggedIn || cypressToken) && getProposal()?.id?.length) ?? false;
+
+    if (!opt1) return null;
     return (
       <div>
         {opt1 && (
@@ -191,15 +210,6 @@ export default function PHT({
               {osdCountdown}
             </Typography>
           </Tooltip>
-        )}
-        {opt2 && (
-          <TimedAlert
-            color={(application.content5 as Notification)?.level}
-            gap={0}
-            delay={(application.content5 as Notification)?.delay}
-            testId="timeAlertFooter"
-            text={(application.content5 as Notification)?.message}
-          />
         )}
       </div>
     );
@@ -252,7 +262,7 @@ export default function PHT({
           </Typography>
         }
         footerChildrenMiddle={footerMainChildren()}
-        headerChildren={null}
+        headerChildren={headerCountdown()}
         iconDocsLabel={t('docs.label')}
         iconDocsToolTip={t('docs.toolTip')}
         iconDocsURL={t('docs.URL', { version: packageJson.version })}
