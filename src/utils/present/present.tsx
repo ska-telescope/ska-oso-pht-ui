@@ -79,14 +79,15 @@ const formatDate = (input: string, options: Intl.DateTimeFormatOptions, locale?:
   return new Intl.DateTimeFormat(locale, options).format(date);
 }
 
-export const presentDate = (input: string, locale?: string) =>
-  formatDate(input, { year: 'numeric', month: 'numeric', day: 'numeric' }, locale);
+export const presentDate = (input: string, locale?: string, timeZone?: string) =>
+  formatDate(input, { timeZone, year: 'numeric', month: 'numeric', day: 'numeric' }, locale);
 
-export const presentTime = (input: string, locale?: string) =>
-  formatDate(input, { hour: '2-digit', minute: '2-digit', second: '2-digit' }, locale);
+export const presentTime = (input: string, locale?: string, timeZone?: string) =>
+  formatDate(input, { timeZone, hour: '2-digit', minute: '2-digit', second: '2-digit' }, locale);
 
-export const presentDateTime = (input: string, locale?: string) =>
+export const presentDateTime = (input: string, locale?: string, timeZone?: string) =>
   formatDate(input, {
+    timeZone,
     year: 'numeric',
     month: 'numeric',
     day: 'numeric',
