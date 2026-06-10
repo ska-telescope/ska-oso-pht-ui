@@ -67,23 +67,40 @@ const normalizeDateString = (inString: string): string => {
   return inString;
 };
 
-export const presentDate = (inString: string, reverse: boolean = false) => {
+export const presentDate = (inString: string) => {
   const normalized = normalizeDateString(inString);
   const dateObj = new Date(normalized);
   if (isNaN(dateObj.getTime())) return '';
-  return t(reverse ? 'date_format_one' : 'date_format_two', { date: dateObj });
+  return new Intl.DateTimeFormat(undefined, {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric'
+    }).format(dateObj);
 };
 
 export const presentTime = (inString: string) => {
   const normalized = normalizeDateString(inString);
   const dateObj = new Date(normalized);
   if (isNaN(dateObj.getTime())) return '';
-  return t('time_format', { date: dateObj });
+  return new Intl.DateTimeFormat(undefined, {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  }).format(dateObj);
 };
 
-export const presentDateTime = (inString: string, reverse: boolean = false) => {
+export const presentDateTime = (inString: string) => {
   const normalized = normalizeDateString(inString);
-  return presentDate(normalized, reverse) + ' ' + presentTime(normalized);
+  const dateObj = new Date(normalized);
+  if (isNaN(dateObj.getTime())) return '';
+  return new Intl.DateTimeFormat(undefined, {
+    year: 'numeric',
+    month: 'numeric',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit'
+  }).format(dateObj);
 };
 
 export const trimText = (text: string, maxLength: number): string => {
