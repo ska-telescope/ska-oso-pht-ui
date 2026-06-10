@@ -168,8 +168,7 @@
     "comment": {
       "label": "Comments on this strategy",
       "help": "You can provide a comment on the observatory defined calibration strategy here."
-    },
-    "limitReached": "Only 1 observation can currently be used for the calibration strategy."
+    }
   },
   "cancelBtn": {
     "label": "Cancel"
