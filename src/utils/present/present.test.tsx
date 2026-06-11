@@ -89,14 +89,14 @@ describe('Present', () => {
   test('presetTime : en-GB Europe/London BST', () => {
     expect(presentTime('2025-07-29T08:07:35.338860Z', 'en-GB', 'Europe/London', 'short')).toBe('09:07:35 BST');
   });
-  test('presentDateTime : en-US America/New_York', () => {
-    expect(presentDateTime('2025-07-29T08:07:35.338860Z', 'en-US', 'America/New_York')).toBe('7/29/2025, 04:07:35 AM');
+  test('presentDateTime : en-AU Australia/Perth', () => {
+    expect(presentDateTime('2025-07-29T08:07:35.338860Z', 'en-AU', 'Australia/Perth', 'short')).toBe('29/07/2025, 04:07:35 pm AWST');
   });
-  test('presentDate : en-US America/New_York', () => {
-    expect(presentDate('2025-07-29T08:07:35.338860Z', 'en-US', 'America/New_York')).toBe('7/29/2025');
+  test('presentDate : en-AU Australia/Perth', () => {
+    expect(presentDate('2025-07-29T08:07:35.338860Z', 'en-AU', 'Australia/Perth')).toBe('29/07/2025');
   });
-  test('presentTime : en-US America/New_York', () => {
-    expect(presentTime('2025-07-29T08:07:35.338860Z', 'en-US', 'America/New_York')).toBe('04:07:35 AM');
+  test('presentTime : en-AU Australia/Perth', () => {
+    expect(presentTime('2025-07-29T08:07:35.338860Z', 'en-AU', 'Australia/Perth', 'short')).toBe('04:07:35 pm AWST');
   });
   test('presentDateTime : OSD legacy timestamp format', () => {
     expect(presentDateTime('20260327T12:00:00.000Z', 'en-GB', 'Europe/London')).toBe('27/03/2026, 12:00:00');
