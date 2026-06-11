@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { beforeEach, describe, expect, test, vi, afterEach } from 'vitest';
 import '@testing-library/jest-dom';
 import Latex from 'react-latex-next';
 import { NOT_APPLICABLE } from '../constants';
@@ -11,6 +11,8 @@ import {
   presentUnits,
   presentValue
 } from './present';
+
+const RealDateTimeFormat = Intl.DateTimeFormat;
 
 describe('Present', () => {
   test('presentLatex : Dummy string', () => {
@@ -98,6 +100,37 @@ describe('Present', () => {
   test('presentTime : en-AU Australia/Perth', () => {
     expect(presentTime('2025-07-29T08:07:35.338860Z', 'en-AU', 'Australia/Perth', 'short')).toBe('04:07:35 pm AWST');
   });
+  describe('uses browser locale/timezone when locale and timezone are omitted', () => {
+    beforeEach(() => {
+      vi.spyOn(Intl, 'DateTimeFormat').mockImplementation(
+        ((locale, options) =>
+          new RealDateTimeFormat(
+            locale ?? 'en-ZA',
+            {
+              ...options,
+              timeZone: options?.timeZone ?? 'Africa/Johannesburg',
+            },
+          )) as typeof Intl.DateTimeFormat
+      );
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    test('presentDateTime : defaults to en-ZA Africa/Johannesburg', () => {
+      expect(presentDateTime('2025-07-29T08:07:35.338860Z')).toBe('2025/07/29, 10:07:35');
+    });
+
+    test('presentDate : defaults to en-ZA Africa/Johannesburg', () => {
+      expect(presentDate('2025-07-29T08:07:35.338860Z')).toBe('2025/07/29');
+    });
+
+    test('presentTime : defaults to en-ZA Africa/Johannesburg', () => {
+      expect(presentTime('2025-07-29T08:07:35.338860Z')).toBe('10:07:35');
+    });
+  });
+
   test('presentDateTime : OSD legacy timestamp format', () => {
     expect(presentDateTime('20260327T12:00:00.000Z', 'en-GB', 'Europe/London')).toBe('27/03/2026, 12:00:00');
   });
