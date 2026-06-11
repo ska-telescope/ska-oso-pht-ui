@@ -139,7 +139,7 @@ describe('<LandingPage />', () => {
 // ---- Clone proposal tests ----
 
 describe('clone proposal', () => {
-  const ORIGINAL_PROPOSAL_ID = 'prp-1;
+  const ORIGINAL_PROPOSAL_ID = 'prp-1';
   const CLONED_PROPOSAL_ID = 'prp-c10ne2';
 
   const mockRichOriginalProposal: Partial<Proposal> = {
