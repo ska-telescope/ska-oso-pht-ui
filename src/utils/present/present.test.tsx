@@ -83,6 +83,12 @@ describe('Present', () => {
   test('presentTime : en-GB Europe/London', () => {
     expect(presentTime('2025-07-29T08:07:35.338860Z', 'en-GB', 'Europe/London')).toBe('09:07:35');
   });
+ test('presentDateTime : en-GB Europe/London BST', () => {
+    expect(presentDateTime('2025-07-29T08:07:35.338860Z', 'en-GB', 'Europe/London', 'short')).toBe('29/07/2025, 09:07:35 BST');
+  });
+  test('presetTime : en-GB Europe/London BST', () => {
+    expect(presentTime('2025-07-29T08:07:35.338860Z', 'en-GB', 'Europe/London', 'short')).toBe('09:07:35 BST');
+  });
   test('presentDateTime : en-US America/New_York', () => {
     expect(presentDateTime('2025-07-29T08:07:35.338860Z', 'en-US', 'America/New_York')).toBe('7/29/2025, 04:07:35 AM');
   });
