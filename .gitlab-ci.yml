@@ -113,6 +113,7 @@ integration-debug:  # Run some debug commands on kubectl
   tags:
     - ${SKA_K8S_RUNNER}
   script:
+    - kubectl -n integration-ska-oso-pht-ui get pods
     - kubectl -n integration-ska-oso-pht-ui get pgdbinstances
 
 include:
