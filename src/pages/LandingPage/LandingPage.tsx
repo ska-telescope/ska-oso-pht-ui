@@ -222,9 +222,14 @@ export default function LandingPage() {
 
     if (response && !('error' in response)) {
       notifySuccess(t('addProposal.success') + response.id);
-      setProposal({
-        ...(response as Proposal)
-      });
+      const clonedProposal = {
+        ...originalProposal,
+        id: (response as Proposal).id,
+        title: originalProposal.title + ' ' + t('cloneProposal.suffix'),
+        cycle: osdCycleId ?? ''
+      };
+      setProposal(clonedProposal);
+      updateAppContent1(validateProposal(clonedProposal, autoLink));
       // Create a new access entry for the PI.  Saves doing the endpoint
       const newAcc: Partial<ProposalAccess> = {
         prslId: response.id,
