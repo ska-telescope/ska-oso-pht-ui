@@ -53,3 +53,4 @@ unit-tests.xml
 PrivateRules.mak
 
 manifests.yaml
+scripts/test-aws-prod.yml
