@@ -1,5 +1,4 @@
 import Latex from 'react-latex-next';
-import { t } from 'i18next';
 import 'katex/dist/katex.min.css';
 import { NOT_APPLICABLE } from '../constants';
 
