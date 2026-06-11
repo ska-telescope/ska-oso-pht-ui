@@ -8,6 +8,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import Observation from '@/utils/types/observation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { TYPE_ZOOM } from '@/utils/constants';
+import { getBandwidthOrFrequencyUnitsLabel } from '@/utils/helpers';
 
 const ROW_HEIGHT = 165;
 
@@ -149,11 +150,9 @@ export default function GridObservation({
     resizable: false,
     renderCell: (e: any) => {
       const isSelected = String(e.row.id) === selectedId;
-      const centralFrequencyUnits = OSD_CONSTANTS.Units[e.row.centralFrequencyUnits]?.label ?? '';
-      const bandwidthUnits =
-        OSD_CONSTANTS.Units[
-          isZoom(e.row.type) ? e.row.zoomBandwidthUnits : e.row.continuumBandwidthUnits
-        ]?.label ?? '';
+      const centralFrequencyUnits = getBandwidthOrFrequencyUnitsLabel(e.row.centralFrequencyUnits) ?? '';
+      const bandwidthUnits = getBandwidthOrFrequencyUnitsLabel(
+        isZoom(e.row.type) ? e.row.zoomBandwidthUnits : e.row.continuumBandwidthUnits) ?? '';
       return (
         <Stack
           direction="column"
