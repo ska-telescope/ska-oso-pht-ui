@@ -52,7 +52,7 @@ CHANGELOG:
     - merge_requests
   allow_failure: true
   script:
-    - if git diff --quiet $CI_MERGE_REQUEST_DIFF_BASE_SHA...HEAD -- CHANGELOG.rst; then exit 1; fi
+    - if git diff --quiet $CI_MERGE_REQUEST_DIFF_BASE_SHA...HEAD -- CHANGELOG.md; then exit 1; fi
 
 # The info script in the templates is for a generic tango environment. We overwrite it to give more useful PHT information
 .info_script: &info_script
@@ -106,12 +106,6 @@ stop-dev-environment:
 deploy-integration:
   variables:
     KUBE_HOST: https://k8s.stfc.skao.int
-
-stop-integration:
-  script: # Tmp template overwrite to test stop-integration
-    - make k8s-uninstall-chart
-    - kubectl -n $KUBE_NAMESPACE delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,configmaps,pgdbinstances --all
-    - make k8s-delete-namespace
 
 include:
   # Accessibility
