@@ -4,7 +4,7 @@ import { useState, useEffect, useMemo } from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { find } from 'lodash';
 import { useOSD } from '../useOSD/useOSD';
-import { presentDate, presentTime } from '@/utils/present/present';
+import { presentDateTime } from '@/utils/present/present';
 import { BAND_LOW_STR, TELESCOPE_LOW_NUM, TELESCOPE_MID_NUM, COUNTDOWN_URGENT_THRESHOLD_MS } from '@/utils/constants';
 
 export function useOSDAccessors() {
@@ -40,7 +40,7 @@ export function useOSDAccessors() {
   const format = (val: string | undefined) =>
     val?.replace(/^(\d{4})(\d{2})(\d{2})T/, '$1-$2-$3T') ?? '';
   const present = (val: string, shouldPresent: boolean) =>
-    shouldPresent ? `${presentDate(val)} ${presentTime(val)}` : val;
+    shouldPresent ? presentDateTime(val, { timeZoneName: 'short' }) : val;
 
   const [countdown, setCountdown] = useState<string | null>(null);
 
