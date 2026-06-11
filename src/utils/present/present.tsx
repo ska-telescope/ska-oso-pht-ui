@@ -82,12 +82,13 @@ const formatDate = (input: string, options: Intl.DateTimeFormatOptions, locale?:
 export const presentDate = (input: string, locale?: string, timeZone?: string) =>
   formatDate(input, { timeZone, year: 'numeric', month: 'numeric', day: 'numeric' }, locale);
 
-export const presentTime = (input: string, locale?: string, timeZone?: string) =>
-  formatDate(input, { timeZone, hour: '2-digit', minute: '2-digit', second: '2-digit' }, locale);
+export const presentTime = (input: string, locale?: string, timeZone?: string, timeZoneName?: Intl.DateTimeFormatOptions['timeZoneName']) =>
+  formatDate(input, { timeZone, timeZoneName, hour: '2-digit', minute: '2-digit', second: '2-digit' }, locale);
 
-export const presentDateTime = (input: string, locale?: string, timeZone?: string) =>
+export const presentDateTime = (input: string, locale?: string, timeZone?: string, timeZoneName?: Intl.DateTimeFormatOptions['timeZoneName']) =>
   formatDate(input, {
     timeZone,
+    timeZoneName,
     year: 'numeric',
     month: 'numeric',
     day: 'numeric',
