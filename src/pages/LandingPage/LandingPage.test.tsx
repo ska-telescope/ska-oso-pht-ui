@@ -209,8 +209,7 @@ describe('clone proposal', () => {
     (GetProposalAccessForUser as Mock).mockResolvedValue(mockAccessList);
     (PostProposal as Mock).mockResolvedValue(mockPostProposalSkeleton);
 
-    storageObject.useStore = () =>
-    ({
+    vi.spyOn(storageObject, 'useStore').mockReturnValue({
       application: {
         content1: [],
         content2: mockRichOriginalProposal,
@@ -226,6 +225,10 @@ describe('clone proposal', () => {
       updateAppContent4: mockUpdateAppContent4,
       updateAppContent5: vi.fn()
     } as any);
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   const triggerCloneConfirm = async () => {
