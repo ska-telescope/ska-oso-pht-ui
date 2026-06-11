@@ -57,6 +57,7 @@ export default function TargetEntry({
   const [nameFieldError, setNameFieldError] = React.useState('');
   const [skyDirection1Error, setSkyDirection1Error] = React.useState('');
   const [skyDirection2Error, setSkyDirection2Error] = React.useState('');
+  const [velocityFieldError, setVelocityFieldError] = React.useState('');
   const { setHelp } = useHelp();
 
   const getProposal = () => application.content2 as Proposal;
@@ -275,6 +276,7 @@ export default function TargetEntry({
         nameFieldError !== '' ||
         skyDirection1Error !== '' ||
         skyDirection2Error !== '' ||
+        velocityFieldError !== '' ||
         !(name?.length && ra?.length && dec?.length && targetLengthCheck())
       );
     };
@@ -424,6 +426,7 @@ export default function TargetEntry({
         velUnit={velUnit}
         velFocus={() => setHelp('velocity.' + velType)}
         velUnitFocus={() => setHelp('velocity.' + velType)}
+        setErrorText={setVelocityFieldError}
       />
     );
 
