@@ -6,6 +6,7 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
 stages:
+  - production
   - dependencies
   - build
   - lint
