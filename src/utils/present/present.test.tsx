@@ -77,28 +77,28 @@ describe('Present', () => {
   });
 
   test('presentDateTime : en-GB Europe/London', () => {
-    expect(presentDateTime('2025-07-29T08:07:35.338860Z', 'en-GB', 'Europe/London')).toBe('29/07/2025, 09:07:35');
+    expect(presentDateTime('2025-07-29T08:07:35.338860Z', { locale: 'en-GB', timeZone: 'Europe/London' })).toBe('29/07/2025, 09:07:35');
   });
   test('presentDate : en-GB Europe/London', () => {
-    expect(presentDate('2025-07-29T08:07:35.338860Z', 'en-GB', 'Europe/London')).toBe('29/07/2025');
+    expect(presentDate('2025-07-29T08:07:35.338860Z', { locale: 'en-GB', timeZone: 'Europe/London' })).toBe('29/07/2025');
   });
   test('presentTime : en-GB Europe/London', () => {
-    expect(presentTime('2025-07-29T08:07:35.338860Z', 'en-GB', 'Europe/London')).toBe('09:07:35');
+    expect(presentTime('2025-07-29T08:07:35.338860Z', { locale: 'en-GB', timeZone: 'Europe/London' })).toBe('09:07:35');
   });
  test('presentDateTime : en-GB Europe/London BST', () => {
-    expect(presentDateTime('2025-07-29T08:07:35.338860Z', 'en-GB', 'Europe/London', 'short')).toBe('29/07/2025, 09:07:35 BST');
+    expect(presentDateTime('2025-07-29T08:07:35.338860Z', { locale: 'en-GB', timeZone: 'Europe/London', timeZoneName: 'short' })).toBe('29/07/2025, 09:07:35 BST');
   });
   test('presetTime : en-GB Europe/London BST', () => {
-    expect(presentTime('2025-07-29T08:07:35.338860Z', 'en-GB', 'Europe/London', 'short')).toBe('09:07:35 BST');
+    expect(presentTime('2025-07-29T08:07:35.338860Z', { locale: 'en-GB', timeZone: 'Europe/London', timeZoneName: 'short' })).toBe('09:07:35 BST');
   });
   test('presentDateTime : en-AU Australia/Perth', () => {
-    expect(presentDateTime('2025-07-29T08:07:35.338860Z', 'en-AU', 'Australia/Perth', 'short')).toBe('29/07/2025, 04:07:35 pm AWST');
+    expect(presentDateTime('2025-07-29T08:07:35.338860Z', { locale: 'en-AU', timeZone: 'Australia/Perth', timeZoneName: 'short' })).toBe('29/07/2025, 04:07:35 pm AWST');
   });
   test('presentDate : en-AU Australia/Perth', () => {
-    expect(presentDate('2025-07-29T08:07:35.338860Z', 'en-AU', 'Australia/Perth')).toBe('29/07/2025');
+    expect(presentDate('2025-07-29T08:07:35.338860Z', { locale: 'en-AU', timeZone: 'Australia/Perth' })).toBe('29/07/2025');
   });
   test('presentTime : en-AU Australia/Perth', () => {
-    expect(presentTime('2025-07-29T08:07:35.338860Z', 'en-AU', 'Australia/Perth', 'short')).toBe('04:07:35 pm AWST');
+    expect(presentTime('2025-07-29T08:07:35.338860Z', { locale: 'en-AU', timeZone: 'Australia/Perth', timeZoneName: 'short' })).toBe('04:07:35 pm AWST');
   });
   describe('uses browser locale/timezone when locale and timezone are omitted', () => {
     beforeEach(() => {
@@ -129,16 +129,24 @@ describe('Present', () => {
     test('presentTime : defaults to en-ZA Africa/Johannesburg', () => {
       expect(presentTime('2025-07-29T08:07:35.338860Z')).toBe('10:07:35');
     });
+
+    test('presentDateTime : defaults to en-ZA Africa/Johannesburg with timezone', () => {
+        expect(presentDateTime('2025-07-29T08:07:35.338860Z', { timeZoneName: 'short' })).toBe('2025/07/29, 10:07:35 SAST');
+    });
+
+    test('presentTime : defaults to en-ZA Africa/Johannesburg with timezone', () => {
+      expect(presentTime('2025-07-29T08:07:35.338860Z', { timeZoneName: 'short' })).toBe('10:07:35 SAST');
+    });
   });
 
   test('presentDateTime : OSD legacy timestamp format', () => {
-    expect(presentDateTime('20260327T12:00:00.000Z', 'en-GB', 'Europe/London')).toBe('27/03/2026, 12:00:00');
+    expect(presentDateTime('20260327T12:00:00.000Z', { locale: 'en-GB', timeZone: 'Europe/London' })).toBe('27/03/2026, 12:00:00');
   });
   test('presentDate : OSD legacy timestamp format', () => {
-    expect(presentDate('20260327T12:00:00.000Z', 'en-GB', 'Europe/London')).toBe('27/03/2026');
+    expect(presentDate('20260327T12:00:00.000Z', { locale: 'en-GB', timeZone: 'Europe/London' })).toBe('27/03/2026');
   });
     test('presentTime : OSD legacy timestamp format', () => {
-    expect(presentTime('20260327T12:00:00.000Z', 'en-GB', 'Europe/London')).toBe('12:00:00');
+    expect(presentTime('20260327T12:00:00.000Z', { locale: 'en-GB', timeZone: 'Europe/London' })).toBe('12:00:00');
   });
   test('presentDateTime " invalid date string', () => {
     expect(presentDateTime('invalid date string')).toBe('');
