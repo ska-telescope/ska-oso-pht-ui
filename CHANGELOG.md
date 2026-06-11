@@ -24,6 +24,7 @@ UNRELEASED
 * Added: New "register /login" text box to Landing page.
 * Changed: The style and formatting of the Sensivitity Calculator text box on the landing page.
 * Added: A new 'underTest' warning bar to the Landing Page for use on the Submission Tool during productionisation.
+* Removed: The NOT LOGGED IN, NO SUBMISSION AVAILABLE info message.
 
 10.1.0
 ----------
