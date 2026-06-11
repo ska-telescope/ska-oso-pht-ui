@@ -21,6 +21,9 @@ UNRELEASED
 * Changed: Moved the `Cycle closes` countdown timer from the Footer to the Header.
 * Added: Countdown timer will show days, hours, mins until the last 5 minutes then will show minutes, seconds.
 * Removed: An alert banner from the calibrator page has been removed
+* Added: New "register /login" text box to Landing page.
+* Changed: The style and formatting of the Sensivitity Calculator text box on the landing page.
+* Added: A new 'underTest' warning bar to the Landing Page for use on the Submission Tool during productionisation.
 
 10.1.0
 ----------

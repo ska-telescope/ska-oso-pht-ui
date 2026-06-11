@@ -382,6 +382,7 @@ export default function LandingPage() {
           {displayField() && searchEntryField('searchId')}
         </Grid>
         <Grid size={{ xs: 12 }} pt={1}>
+          {/* TODO(BTN-3258): remove "under test" notice before go-live */}
           {!axiosViewError && (
             <Alert
               color={AlertColorTypes.Warning}
