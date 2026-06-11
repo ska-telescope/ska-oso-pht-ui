@@ -226,7 +226,8 @@ export default function LandingPage() {
         ...originalProposal,
         id: (response as Proposal).id,
         title: originalProposal.title + ' ' + t('cloneProposal.suffix'),
-        cycle: osdCycleId ?? ''
+        cycle: osdCycleId ?? '',
+        status: PROPOSAL_STATUS.DRAFT
       };
       setProposal(clonedProposal);
       updateAppContent1(validateProposal(clonedProposal, autoLink));
