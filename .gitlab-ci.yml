@@ -107,12 +107,6 @@ deploy-integration:
   variables:
     KUBE_HOST: https://k8s.stfc.skao.int
 
-stop-integration:
-  script: # Tmp template overwrite to test stop-integration
-    - make k8s-uninstall-chart
-    - kubectl -n $KUBE_NAMESPACE delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,configmaps,pgdbinstances --all
-    - make k8s-delete-namespace
-
 include:
   # Accessibility
   - template: Code-Quality.gitlab-ci.yml
