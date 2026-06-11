@@ -479,7 +479,7 @@
   "landingWelcome":{
     "button": "Register / Sign in",
     "label": "Submit Your SKA-Low Science Idea",
-    "description": "Use this tool to develop and submit your science idea for SKA-Low science verification.\nAccess is available to registered users only.\n Please sign in or create an account to continue.",
+    "description": "Use this tool to develop and submit a Science Verification idea for SKA-Low science verification.\nAccess is available to registered users only.\n Please sign in or create an account to continue.",
     "tooltip": "Sign in or create an account to use the Submission Tool"
   },
   "latex": {
@@ -822,7 +822,7 @@
   "proposals": {
     "empty": "THERE ARE NO SUBMISSIONS TO BE DISPLAYED",
     "loggedOut": "NOT LOGGED IN, NO SUBMISSIONS AVAILABLE",
-    "underTest": "This site is under test and will become available for the SKA-Low Science Verification call for ideas.",
+    "underTest": "This site is under test and will become available once the call for SKA-Low Science Verification ideas opens.",
     "label": "submissions",
     "name": "Name",
     "overviewTooltip": "Tooltip for the card on the Overview"
@@ -1237,7 +1237,7 @@
   "sensCalc": {
     "button": "Open Sensitivity Calculator",
     "label": "Sensitivity Calculator",
-    "description": "If you are still developing your science idea, the SKA Sensitivity Calculator provides a useful starting point.\nThe SKA sensitivity calculator provides estimages of the sensitivity for a give set of observing parameters and uses the most up-to-date information on the telescope performance.",
+    "description": "If you are still developing a Science Verification idea, the SKA Sensitivity Calculator provides a useful starting point.\nThe SKA sensitivity calculator provides estimages of the sensitivity for a give set of observing parameters and uses the most up-to-date information on the telescope performance.",
     "tooltip": "Open the SKA sensitivity calculator in a new tab",
     "url": "https://sensitivity-calculator.skao.int/",
     "0": "All sensitivity calculations for this observation are valid",
