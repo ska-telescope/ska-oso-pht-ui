@@ -227,55 +227,6 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
     capabilities: mergedCapabilities
   };
 
-  // add hardcoded cycles for proposal flow as this is not provided yet by OSD:
-  result.policies.push({
-    cycleNumber: 3,
-    cycleDescription: 'Mock Proposal Cycle',
-    cycleInformation: {
-      cycleId: 'CYCLE-003',
-      proposalOpen: '2025-07-01',
-      proposalClose: '2026-09-01'
-    },
-    cyclePolicies: {
-      maxDataProducts: 100,
-      maxObservations: 100,
-      maxTargets: 100,
-      calibrationFactoryDefined: true,
-      bands: [BAND_LOW_STR, BAND_1_STR],
-      low: [SA_AA2, SA_AA_STAR],
-      mid: [SA_AA2, SA_AA_STAR]
-    },
-    telescopeCapabilities: {
-      low: null,
-      mid: null
-    },
-    type: 'Proposal'
-  });
-
-  result.policies.push({
-    cycleNumber: 4,
-    cycleDescription: 'Fourth mock cycle',
-    cycleInformation: {
-      cycleId: 'CYCLE-004',
-      proposalOpen: '2025-10-01',
-      proposalClose: '2025-12-01'
-    },
-    cyclePolicies: {
-      maxDataProducts: 100,
-      maxObservations: 100,
-      maxTargets: 100,
-      calibrationFactoryDefined: true,
-      bands: [BAND_LOW_STR, 'mid'],
-      low: [SA_AA2],
-      mid: [SA_AA2]
-    },
-    telescopeCapabilities: {
-      low: null,
-      mid: null
-    },
-    type: 'Proposal'
-  });
-
   return result;
 };
 
