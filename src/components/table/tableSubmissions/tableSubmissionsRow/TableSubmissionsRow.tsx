@@ -162,7 +162,7 @@ export default function TableSubmissionsRow({
         </TableCell>
 
         <TableCell role="gridcell" sx={{ width: 200, whiteSpace: 'nowrap' }}>
-          <>{presentDate(cycleInfo?.cycleInformation?.proposalClose || NOT_SPECIFIED)}</>
+          <>{presentDateTime(cycleInfo?.cycleInformation?.proposalClose || NOT_SPECIFIED, { timeZoneName: 'short' })}</>
         </TableCell>
       </TableRow>
     </>
