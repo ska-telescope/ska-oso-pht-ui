@@ -157,37 +157,7 @@ deployment-2-aws-services:
     KUBE_NAMESPACE: prod-ska-oso-pht-ui
     K8S_SKIP_NAMESPACE: true
   script:
-    - kubectl apply -f - <<'EOF'
-      apiVersion: v1
-      kind: Pod
-      metadata:
-        name: pg-pht-test-client
-        namespace: prod-ska-oso-pht-ui
-      spec:
-        containers:
-        - name: psql
-          image: postgres:18
-          command: ["sleep", "infinity"]
-          env:
-          - name: PGHOST
-            value: "pg-pht-test.prod-ska-oso-pht-ui.svc.cluster.local"
-          - name: PGPORT
-            value: "5432"
-          - name: PGUSER
-            valueFrom:
-              secretKeyRef:
-                name: pg-pht-test
-                key: superuser-username
-          - name: PGPASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: pg-pht-test
-                key: superuser-password
-        restartPolicy: Never
-      EOF
-      kubectl wait --for=condition=Ready pod/pg-pht-test-client -n prod-ska-oso-pht-ui --timeout=60s
-      kubectl exec pg-pht-test-client -n prod-ska-oso-pht-ui -- psql -l
-      kubectl delete pod pg-pht-test-client -n prod-ska-oso-pht-ui
+    - sh script/test-aws-prod.sh
   when: manual
   environment:
       name: production
