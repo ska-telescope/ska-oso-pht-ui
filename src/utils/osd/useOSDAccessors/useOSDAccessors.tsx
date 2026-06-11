@@ -5,7 +5,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { find } from 'lodash';
 import { useOSD } from '../useOSD/useOSD';
 import { presentDate, presentTime } from '@/utils/present/present';
-import { BAND_LOW_STR, TELESCOPE_LOW_NUM, TELESCOPE_MID_NUM } from '@/utils/constants';
+import { BAND_LOW_STR, TELESCOPE_LOW_NUM, TELESCOPE_MID_NUM, COUNTDOWN_URGENT_THRESHOLD_MS } from '@/utils/constants';
 
 export function useOSDAccessors() {
   const osd = useOSD();
@@ -69,14 +69,18 @@ export function useOSDAccessors() {
       if (diffMs <= 0) {
         setCountdown(t('cycleCloses.countdown', { days: 0, hours: 0, minutes: 0, seconds: 0 }));
         return;
+      } else if (diffMs <= COUNTDOWN_URGENT_THRESHOLD_MS) {
+        const minutes = Math.floor(diffMs / (1000 * 60));      // total mins remaining (0–4)
+        const seconds = Math.floor((diffMs / 1000) % 60);
+        setCountdown(t('cycleCloses.countdownUrgent', { minutes, seconds }));
+      } else {
+        const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
+        const minutes = Math.floor((diffMs / (1000 * 60)) % 60);
+        const seconds = Math.floor((diffMs / 1000) % 60);
+
+        setCountdown(t('cycleCloses.countdown', { days, hours, minutes, seconds }));
       }
-
-      const days = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diffMs / (1000 * 60 * 60)) % 24);
-      const minutes = Math.floor((diffMs / (1000 * 60)) % 60);
-      const seconds = Math.floor((diffMs / 1000) % 60);
-
-      setCountdown(t('cycleCloses.countdown', { days, hours, minutes, seconds }));
     };
 
     updateCountdown();

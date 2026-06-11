@@ -41,6 +41,8 @@ export const isCypress = typeof window !== 'undefined' && window.Cypress;
 
 export const AUTO_SAVE_INTERVAL = 30; // seconds
 
+export const COUNTDOWN_URGENT_THRESHOLD_MS = 5 * 60 * 1000; //The threshold in ms at which the countdown timer will only display mins and seconds.
+
 export const BAND_LOW_STR = 'low_band';
 export const BAND_1_STR = 'Band_1';
 export const BAND_2_STR = 'Band_2';
@@ -545,6 +547,8 @@ export const ROBUST = [
 
 export const UPLOAD_MAX_WIDTH_CSV = 25;
 export const UPLOAD_MAX_WIDTH_PDF = 25;
+export const SCIENCE_PDF_MAX_PAGES = 4;
+export const SCIENCE_PDF_MAX_SIZE_MB = 100;
 
 export const VEL_TYPES = [
   { label: 'Velocity', value: 0 },
@@ -812,4 +816,4 @@ export const STATUS_ARRAY_PAGES_PROPOSAL = [
 ];
 
 export const SV_LOW_AA2_CYCLE_NUMBER = 10000;
-export const SV_LOW_MID_AA2_CYCLE_NUMBER = 1;
+export const SV_LOW_MID_AA2_CYCLE_NUMBER = 1; 

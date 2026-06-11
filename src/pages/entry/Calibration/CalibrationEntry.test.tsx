@@ -89,10 +89,4 @@ describe('CalibrationEntry', () => {
     expect(screen.getByText('calibrator.desc')).toBeInTheDocument();
   });
 
-  it('shows the warning alert when proposal has targets', async () => {
-    wrapper(<CalibrationEntry />);
-
-    const alert = await screen.findByText('calibrator.limitReached');
-    expect(alert).toBeInTheDocument();
-  });
 });

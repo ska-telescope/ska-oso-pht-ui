@@ -1,12 +1,8 @@
 import React from 'react';
 import { Box, Typography, useTheme } from '@mui/material';
-import { Document, Page, pdfjs } from 'react-pdf';
+import '@/utils/pdf/pdfSetup';
+import { Document, Page } from 'react-pdf';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-
-pdfjs.GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.min.mjs',
-  import.meta.url
-).toString();
 
 interface PDFViewerProps {
   url?: string;

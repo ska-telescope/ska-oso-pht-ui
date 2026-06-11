@@ -74,6 +74,8 @@ Key Information and Actions
 
 - Upload scientific justification document in PDF format.
 - Currently, only one PDF upload is allowed for the science justification.
+- Science justification PDF must not exceed 100 MB; an inline error is shown if the limit is exceeded.
+- Science justification PDF must not exceed 4 pages; an inline error is shown if the limit is exceeded.
 - Delete uploaded PDF
 - Preview uploaded PDF
 

@@ -6,14 +6,22 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Bugfix: fix displayed units for bandwidth and Frequency on the Data Product Page
+* Bugfix: Fix population of `bandwidth` between Observation and Data Product page
 * Added: SonarQube for static analysis of code quality
 * Changed: Full and Short name in SV Tool header are now full="Science Verification Idea Submission Tool" or short="SV Idea Submission Tool". (Rather than Submission Tool and ST)
 * Added: New text `Submission ID:` before the SV idea UID in the footer.
 * Removed: The `Cycle Selection` information box from the Details Page.
 * Changed: upgrade to oso-services v14.4.1
-* Fixed: RA and Dec validation rules now allow trailing whitespace.  
-* Changed: Acceptable proposal/idea title length reduced to 20 words. 
+* Fixed: RA and Dec validation rules now allow trailing whitespace.
+* Changed: Acceptable proposal/idea title length reduced to 20 words.
 * Changed: Title and summary fields will allow user to add text longer than the word limit but the pages won't pass
+  validation until the word limit is respected.
+* Added: Science Justification PDF upload now validates file size and page count; files exceeding 100 MB or 4 pages are rejected with an inline error.
+* Fixed: The incorrect validation error which reported that a declination with seconds >= 59 was out of range.
+* Changed: Moved the `Cycle closes` countdown timer from the Footer to the Header.
+* Added: Countdown timer will show days, hours, mins until the last 5 minutes then will show minutes, seconds.
+* Removed: An alert banner from the calibrator page has been removed
   validation until the word limit is respected. 
 * Fixed: The incorrect validation error which reported that a declination with seconds >= 59 was out of range. 
 * Fixed: Non-numeric input in Radial Velocity field does not produce a validation error
@@ -60,7 +68,7 @@ UNRELEASED
 * Changed: Implemented the isSV function so that specific SV flow thru the application can be realized.
 * Fixed: use of REACT_APP_USE_LOCAL_DATA for local development
 * Changed: to show notification when there is an senscalc error after mapping target-observation
-* Changed: Added validation to target fields 
+* Changed: Added validation to target fields
 * Added: Calibration page content
 * Changed: use ska base images `ska-build-node` and `ska-webserver`
 * Changed: Updated ordering of pages
@@ -90,7 +98,7 @@ UNRELEASED
 * Changed: Amended Panel Management so that reviewers will be shown once for each review type they are capable of performing
 * Changed: Restricted title and abstract fields, disabling the entry of more than the max word count
 * Changed: Cypress vesion to 15.5.0
-* Changed: Fixed help panel display on observation page 
+* Changed: Fixed help panel display on observation page
 
 7.0.0
 ----------
@@ -213,17 +221,17 @@ UNRELEASED
 -------
 
    * Reworked as previous patch failed to deploy
-   
+
 1.0.1
 
 -------
 
-   * Added: 
+   * Added:
 
       * All Pages
          - Responsiveness
       * Target page
-         - Validation on name field in Add target, remove ability to add duplicate targets 
+         - Validation on name field in Add target, remove ability to add duplicate targets
 
    * Changed:
 
@@ -236,23 +244,23 @@ UNRELEASED
 
 -------
 
-   * Added: 
-   
+   * Added:
+
       * Observation page
          - Added Continuum and Zoom Bandwidth validation for Mid and Low
-   
+
       * Utilities
          - Validation also checks and reports the status of each page.
-  
+
    * Updated:
-   
+
       * API mappings:
          - Updated PHT services version 2.4.0 to use ODA 6.2.1 to use PDM 16.0.1
          - Updated mailtoappings accordingly for PDM changes
       * Landing page
          - Time added to last update column
       * Team Page
-         - Used SKAO email service so members can receive email through the tool. 
+         - Used SKAO email service so members can receive email through the tool.
       * General Page
          - Changed order of Science Category and Abstract fields
       * Observation Page
@@ -264,7 +272,7 @@ UNRELEASED
          - Updated all the pages of the user guide based on feedback from SciOps
 
    * Fixed:
-  
+
       * Target page
          - Fixed issue where navigation thru the target entry would cause the entire page to re-render
       * Observation
@@ -286,7 +294,7 @@ UNRELEASED
 
 * Utilities
   - Close icon added to Warning/Error notifications, timer removed
-  - Close icon added to Success/Info notifications, timer still in place  
+  - Close icon added to Success/Info notifications, timer still in place
   - Validation failure changed to a modal containing list of all errors
   - Added presentation utility for the error results returned by the SensCalc API
 * Validation button
@@ -306,14 +314,14 @@ UNRELEASED
 
 ---
 
-0.4.2 
+0.4.2
 
 ---
 
 * Team Page:
-   - Removed mailto implementation on the Team Member invitation button and replaced with functionality utilizing /send-email endpoint 
+   - Removed mailto implementation on the Team Member invitation button and replaced with functionality utilizing /send-email endpoint
 * Types:
-   - Added new model EmailInviteBackend to support new endpoint /send-email 
+   - Added new model EmailInviteBackend to support new endpoint /send-email
 * Sensitivity Calculations
    - Updated mappings
    - Updated display variations
@@ -336,19 +344,19 @@ UNRELEASED
 
 ---
 
-0.4.1 
+0.4.1
 
 ---
 
 * API mappings:
    - Updated PHT services version 2.2.0 to use refactored validate endpoint
 * Target Page:
-   - Disabled galactic coordinate 
+   - Disabled galactic coordinate
 * Observation page:
    - Updated sensitivity calculator results modal and results
-* Testing: 
+* Testing:
    - Added BDD tests
-   
+
 0.4.0
 
 ---
@@ -368,15 +376,15 @@ UNRELEASED
    - Upgrade to version 5.2.0 of SKA-DB-ODA
    - Update pages accordingly for breaking changes
 * Migrations:
-   - Added the active proposal ID into the bottom-right of the footer for reference 
+   - Added the active proposal ID into the bottom-right of the footer for reference
    - Migrated Image Weighting labels to the PHT.json file
    - Migrated Proposal Type labels and descriptions to the PHT.json file
    - Migrated Proposal Attribute labels and descriptions to the PHT.json file
-   - Migrate page validations into separate utility 
+   - Migrate page validations into separate utility
 * Duplicates:
    - BUG: Display only most recent proposal for duplicates in ProposalList
-* Sensitivity Calculation results: 
-   - Correct Sensitivity Calculator Results for Confusion Noise, Total Sensitivity, 
+* Sensitivity Calculation results:
+   - Correct Sensitivity Calculator Results for Confusion Noise, Total Sensitivity,
    - Weighted Sensitivity, Beam Size, LOW SBS and MID SBS Zoom
    - Fix observing band not being retrieved in mapping after update
    - Update SensCalc display results to display sensitivity or integration time
@@ -411,7 +419,7 @@ UNRELEASED
    - Image Size forced to be +ve
    - Migrated Image Weighting to a separate component with testing coverage of 100%
    - Updated the Observation selection to remove duplicates and update fields correctly when selected
-   - Corrected SensCalc loading issue  
+   - Corrected SensCalc loading issue
    - Updated display of the SensCalc for Observations
    - Observation updates in regards to MID Telescope
    - Addition of robust to the mappings
@@ -421,10 +429,10 @@ UNRELEASED
 * Screen Auto-resizing:
    - Started to check screen resizing ( landing page and page banner so far ).
    - Standard height of the InfoCard
-* Testing:  
+* Testing:
    - Add e2e Testing into the CI/CD Pipeline
    - added user journeys
-* Validation:  
+* Validation:
    - Implement validation from of proposal with validate endpoint
 
 0.3.1

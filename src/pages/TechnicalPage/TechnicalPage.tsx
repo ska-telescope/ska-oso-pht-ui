@@ -61,10 +61,8 @@ export default function TechnicalPage() {
     setProposal({ ...getProposal(), technicalLoadStatus: status });
   };
 
-  const setFile = (theFile: string | null) => {
-    if (theFile) {
-      setCurrentFile(theFile);
-    } else {
+  const setFile = (theFile: File | '') => {
+    if (!(theFile instanceof File)) {
       setProposal({
         ...getProposal(),
         technicalPDF: null
@@ -103,7 +101,7 @@ export default function TechnicalPage() {
       });
       notifySuccess(t('pdfUpload.technical.success'), NOTIFICATION_DELAY_IN_SECONDS);
     } catch (e) {
-      setFile(null);
+      setFile('');
       setUploadStatus(FileUploadStatus.ERROR);
     }
   };

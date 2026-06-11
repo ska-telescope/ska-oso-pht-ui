@@ -168,8 +168,7 @@
     "comment": {
       "label": "Comments on this strategy",
       "help": "You can provide a comment on the observatory defined calibration strategy here."
-    },
-    "limitReached": "Only 1 observation can currently be used for the calibration strategy."
+    }
   },
   "cancelBtn": {
     "label": "Cancel"
@@ -251,7 +250,8 @@
   },
   "cycleCloses": {
     "label": "Call closes",
-    "countdown": "Cycle closes in {{days}}d {{hours}}h {{minutes}}m {{seconds}}s"
+    "countdown": "Cycle closes in {{days}}d {{hours}}h {{minutes}}m",
+    "countdownUrgent": "Cycle closes in {{minutes}}m {{seconds}}s"
   },
   "cycleDescription": {
     "label": "Cycle description"
@@ -699,6 +699,9 @@
         "upload": "Upload"
       },
       "error": "It was unable to upload the Science Justification PDF",
+      "sizeError": "Exceeded maximum file size: {{current}} MB / {{max}} MB",
+      "pageError": "Exceeded maximum page count: {{current}} / {{max}} pages",
+      "invalidFileError": "Unable to read the selected file. Please ensure it is a valid PDF.",
       "success": "Science Justification PDF successfully uploaded",
       "tooltip": {
         "choose": "Choose the science justification PDF for upload",
@@ -706,7 +709,8 @@
         "delete": "Delete the science justification PDF",
         "download": "Download the science justification PDF",
         "preview": "This is the PDF preview button on the science page",
-        "upload": "Upload the selected PDF for use as the science justification"
+        "upload": "Upload the selected PDF for use as the science justification",
+        "uploadDisabled": "PDF cannot be uploaded: the selected file does not meet the size or page count requirements"
       },
       "warning": "Science Justification PDF being processed"
     },
