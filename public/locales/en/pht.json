@@ -479,8 +479,8 @@
   "landingWelcome":{
     "button": "Register / Sign in",
     "label": "Submit Your SKA-Low Science Idea",
-    "description": "Use this tool to develop and submit your science idea for SKA-Low science verification.<br/>Access is available to registered users only. Please sign in or create an account to continue.",
-    "tooltip": "Open the SKA sensitivity calculator in a new tab"
+    "description": "Use this tool to develop and submit your science idea for SKA-Low science verification.\nAccess is available to registered users only.\n Please sign in or create an account to continue.",
+    "tooltip": "Sign in or create an account to use the Submission Tool"
   },
   "latex": {
     "toolTip": "LaTex Preview.",
@@ -822,6 +822,7 @@
   "proposals": {
     "empty": "THERE ARE NO SUBMISSIONS TO BE DISPLAYED",
     "loggedOut": "NOT LOGGED IN, NO SUBMISSIONS AVAILABLE",
+    "underTest": "This site is under test and will become available for the SKA-Low Science Verification call for ideas.",
     "label": "submissions",
     "name": "Name",
     "overviewTooltip": "Tooltip for the card on the Overview"
@@ -1236,7 +1237,7 @@
   "sensCalc": {
     "button": "Open Sensitivity Calculator",
     "label": "Sensitivity Calculator",
-    "description": "The SKA sensitivity calculator provides estimates of the sensitivity for a given set of observing parameters. The calculator uses the most up-to-date information on the telescope performance and can be used to inform the design of observations and proposals.",
+    "description": "If you are still developing your science idea, the SKA Sensitivity Calculator provides a useful starting point.\nThe SKA sensitivity calculator provides estimages of the sensitivity for a give set of observing parameters and uses the most up-to-date information on the telescope performance.",
     "tooltip": "Open the SKA sensitivity calculator in a new tab",
     "url": "https://sensitivity-calculator.skao.int/",
     "0": "All sensitivity calculations for this observation are valid",
