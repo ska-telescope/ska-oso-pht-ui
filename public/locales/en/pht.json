@@ -1,8 +1,5 @@
 {
   "language": "English",
-  "date_format_one": "{{-date, YYYY/MM/DD}}",
-  "date_format_two": "{{date, DD-MM-YYYY}}",
-  "time_format": "{{date, hh:mm:ss}}",
   "dummy": "I am in ENGLISH translation file only",
   "intlNumber": "{{val, number}}",
   "localData": "LOCAL DATA",
