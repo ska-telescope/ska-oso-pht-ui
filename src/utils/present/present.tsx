@@ -71,7 +71,17 @@ const parseDate = (input: string): Date | null => {
   return isNaN(date.getTime()) ? null : date;
 };
 
-const formatDate = (input: string, options: Intl.DateTimeFormatOptions, locale?: string): string => {
+type PresentDateOptions = {
+  locale?: string;
+  timeZone?: string;
+  timeZoneName?: Intl.DateTimeFormatOptions['timeZoneName'];
+};
+
+const formatDate = (
+  input: string,
+  options: Intl.DateTimeFormatOptions,
+  { locale }: PresentDateOptions = {}
+): string => {
   const date = parseDate(input);
   if (!date){
     return '';
@@ -79,23 +89,31 @@ const formatDate = (input: string, options: Intl.DateTimeFormatOptions, locale?:
   return new Intl.DateTimeFormat(locale, options).format(date);
 }
 
-export const presentDate = (input: string, locale?: string, timeZone?: string) =>
-  formatDate(input, { timeZone, year: 'numeric', month: 'numeric', day: 'numeric' }, locale);
+export const presentDate = (input: string, { timeZone, locale }: PresentDateOptions = {}) =>
+  formatDate(input, { timeZone, year: 'numeric', month: 'numeric', day: 'numeric' }, { locale });
 
-export const presentTime = (input: string, locale?: string, timeZone?: string, timeZoneName?: Intl.DateTimeFormatOptions['timeZoneName']) =>
-  formatDate(input, { timeZone, timeZoneName, hour: '2-digit', minute: '2-digit', second: '2-digit' }, locale);
+export const presentTime = (input: string, { locale, timeZone, timeZoneName }: PresentDateOptions = {}) =>
+  formatDate(
+    input,
+    { timeZone, timeZoneName, hour: '2-digit', minute: '2-digit', second: '2-digit' },
+    { locale }
+  );
 
-export const presentDateTime = (input: string, locale?: string, timeZone?: string, timeZoneName?: Intl.DateTimeFormatOptions['timeZoneName']) =>
-  formatDate(input, {
-    timeZone,
-    timeZoneName,
-    year: 'numeric',
-    month: 'numeric',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    second: '2-digit'
-  }, locale);
+export const presentDateTime = (input: string, { locale, timeZone, timeZoneName }: PresentDateOptions = {}) =>
+  formatDate(
+    input,
+    {
+      timeZone,
+      timeZoneName,
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    },
+    { locale }
+  );
 
 export const trimText = (text: string, maxLength: number): string => {
   if (!text || maxLength <= 0) return '';
