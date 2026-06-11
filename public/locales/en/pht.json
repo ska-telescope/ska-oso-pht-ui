@@ -1237,7 +1237,7 @@
   "sensCalc": {
     "button": "Open Sensitivity Calculator",
     "label": "Sensitivity Calculator",
-    "description": "If you are still developing a Science Verification idea, the SKA Sensitivity Calculator provides a useful starting point.\nThe SKA sensitivity calculator provides estimates of the sensitivity for a given set of observing parameters and uses the most up-to-date information on the telescope performance.",
+    "description": "If you are still developing a Science Verification idea, the SKA Sensitivity Calculator provides a useful starting point. The SKA sensitivity calculator provides estimates of the sensitivity for a given set of observing parameters and uses the most up-to-date information on the telescope performance.",
     "tooltip": "Open the SKA sensitivity calculator in a new tab",
     "url": "https://sensitivity-calculator.skao.int/",
     "0": "All sensitivity calculations for this observation are valid",
