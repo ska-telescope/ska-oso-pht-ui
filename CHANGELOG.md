@@ -16,6 +16,7 @@ UNRELEASED
 * Changed: Title and summary fields will allow user to add text longer than the word limit but the pages won't pass
   validation until the word limit is respected. 
 * Fixed: The incorrect validation error which reported that a declination with seconds >= 59 was out of range. 
+* Fixed: Non-numeric input in Radial Velocity field does not produce a validation error
 
 10.1.0
 ----------
