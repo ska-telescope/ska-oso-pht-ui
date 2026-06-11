@@ -159,7 +159,7 @@ deployment-2-aws-services:
     KUBE_NAMESPACE: prod-ska-oso-pht-ui
     K8S_SKIP_NAMESPACE: true
   script:
-    - sh scripts/test-aws-prod.sh
+    - ./scripts/test-aws-prod.sh
   when: manual
   environment:
       name: production
