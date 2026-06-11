@@ -36,7 +36,7 @@ export default function VelocityField({
   const velocityInputValue = velType === VELOCITY_TYPE.VELOCITY ? vel : redshift;
   const velocityFieldError =
     velocityInputValue && validateVelocity(velocityInputValue) === '0'
-      ? t('skyDirection.error.2.0')
+      ? t('velocity.error')
       : '';
 
   React.useEffect(() => {
