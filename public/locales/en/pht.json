@@ -478,7 +478,7 @@
   },
   "landingWelcome":{
     "button": "Register / Sign in",
-    "label": "Submit Your SKA-Low Science Idea",
+    "label": "Submit an SKA-Low Science Idea",
     "description": "Use this tool to develop and submit a Science Verification idea for SKA-Low science verification.\nAccess is available to registered users only.\n Please sign in or create an account to continue.",
     "tooltip": "Sign in or create an account to use the Submission Tool"
   },
