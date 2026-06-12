@@ -28,7 +28,7 @@ js-pre-e2e-test:
 	mkdir -p build/.nyc_output
 
 # The default PHT_BACKEND_URL points to the umbrella chart PHT back-end deployment
-BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/oso/api/v14
+BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/oso/api/v15
 
 # BACKEND_PROXY is the target origin (+ path prefix) for the vite dev proxy (avoids CORS).
 # For local k8s:  http://<minikube-ip>/<namespace>  (default)
@@ -86,7 +86,7 @@ endif
 
 set-dev-env-vars:
 	REACT_APP_SKA_PHT_BASE_URL="/" \
-	REACT_APP_SKA_OSO_SERVICES_URL="/oso/api/v14" \
+	REACT_APP_SKA_OSO_SERVICES_URL="/oso/api/v15" \
 	REACT_APP_SKA_SENSITIVITY_CALC_URL="/senscalc/api/" \
 	REACT_APP_USE_LOCAL_DATA="false" \
 	REACT_APP_DOMAIN="$(KUBE_HOST)" \
