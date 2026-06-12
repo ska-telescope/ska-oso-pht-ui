@@ -3,6 +3,9 @@ ARG BASE_IMAGE="artefact.skao.int/ska-build-node:0.1.2"
 ARG FINAL_IMAGE="artefact.skao.int/ska-webserver:0.1.4"
 FROM $BASE_IMAGE AS base
 
+ARG http_proxy
+ARG https_proxy
+
 # # set the working direction
 WORKDIR /app
 COPY . .

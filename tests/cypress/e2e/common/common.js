@@ -121,12 +121,7 @@ export const mockResolveTargetAPI = () => {
 };
 
 export const mockOSDAPI = () => {
-  cy.fixture('osd.json').then(osdData => {
-    cy.intercept('GET', '**/osd/cycles', {
-      statusCode: 200,
-      body: osdData
-    }).as('mockOSDData');
-  });
+  cy.intercept('GET', '**/osd/cycles', { fixture: 'osd.json' }).as('mockOSDData');
 };
 
 export const mockValidateAPI = () => {
