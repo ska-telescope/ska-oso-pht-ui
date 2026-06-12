@@ -28,9 +28,9 @@ import { standardUser } from '../../users/users.js';
 
 describe('SV Flow: Validate Observation Fields', () => {
   beforeEach(() => {
+    mockOSDAPI();
     initialize(standardUser);
     mockCreateSVIdeaAPI();
-    mockOSDAPI();
     mockResolveTargetAPI();
 
     //Create autoLink submission
