@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Bugfix: Fix Clone Proposal to make a copy of the data from the original proposal and revalidate correctly after cloning
 * Bugfix: fix displayed units for bandwidth and Frequency on the Data Product Page
 * Bugfix: Fix population of `bandwidth` between Observation and Data Product page
 * Added: SonarQube for static analysis of code quality
