@@ -9,8 +9,8 @@ export const MockObservatoryDataBackend: ObservatoryDataBackend = {
     cycle_description: 'Science Verification',
     cycle_information: {
       cycle_id: 'SKAO_2027_1',
-      proposal_open: '20260327T12:00:00.000Z',
-      proposal_close: '20260512T15:00:00.000z'
+      proposal_open: '2026-03-27T12:00:00.000Z',
+      proposal_close: '2026-05-12T15:00:00.000Z'
     },
     cycle_policies: {
       normal_max_hours: 100.0,

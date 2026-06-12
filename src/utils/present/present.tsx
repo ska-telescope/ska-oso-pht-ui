@@ -1,5 +1,4 @@
 import Latex from 'react-latex-next';
-import { t } from 'i18next';
 import 'katex/dist/katex.min.css';
 import { NOT_APPLICABLE } from '../constants';
 
@@ -58,33 +57,62 @@ export const presentValue = (inValue: string | number, fractionLength = 2) => {
   return result < 0.01 || result > 999 ? result.toExponential(1) : result.toFixed(fractionLength);
 };
 
-const normalizeDateString = (inString: string): string => {
-  if (!inString) return '';
-  const match = /^(\d{4})(\d{2})(\d{2})T/.exec(inString);
-  if (match) {
-    return `${match[1]}-${match[2]}-${match[3]}T${inString.slice(match[0].length)}`;
+const normalizeDateString = (input: string): string => {
+  if (!input) return '';
+  const match = /^(\d{4})(\d{2})(\d{2})T/.exec(input);
+  return match
+    ? `${match[1]}-${match[2]}-${match[3]}T${input.slice(match[0].length)}`
+    : input;
+};
+
+const parseDate = (input: string): Date | null => {
+  const date = new Date(normalizeDateString(input));
+  return isNaN(date.getTime()) ? null : date;
+};
+
+type PresentDateOptions = {
+  locale?: string;
+  timeZone?: string;
+  timeZoneName?: Intl.DateTimeFormatOptions['timeZoneName'];
+};
+
+const formatDate = (
+  input: string,
+  options: Intl.DateTimeFormatOptions,
+  { locale }: PresentDateOptions = {}
+): string => {
+  const date = parseDate(input);
+  if (!date){
+    return '';
   }
-  return inString;
-};
+  return new Intl.DateTimeFormat(locale, options).format(date);
+}
 
-export const presentDate = (inString: string, reverse: boolean = false) => {
-  const normalized = normalizeDateString(inString);
-  const dateObj = new Date(normalized);
-  if (isNaN(dateObj.getTime())) return '';
-  return t(reverse ? 'date_format_one' : 'date_format_two', { date: dateObj });
-};
+export const presentDate = (input: string, { timeZone, locale }: PresentDateOptions = {}) =>
+  formatDate(input, { timeZone, year: 'numeric', month: 'numeric', day: 'numeric' }, { locale });
 
-export const presentTime = (inString: string) => {
-  const normalized = normalizeDateString(inString);
-  const dateObj = new Date(normalized);
-  if (isNaN(dateObj.getTime())) return '';
-  return t('time_format', { date: dateObj });
-};
+export const presentTime = (input: string, { locale, timeZone, timeZoneName }: PresentDateOptions = {}) =>
+  formatDate(
+    input,
+    { timeZone, timeZoneName, hour: '2-digit', minute: '2-digit', second: '2-digit' },
+    { locale }
+  );
 
-export const presentDateTime = (inString: string, reverse: boolean = false) => {
-  const normalized = normalizeDateString(inString);
-  return presentDate(normalized, reverse) + ' ' + presentTime(normalized);
-};
+export const presentDateTime = (input: string, { locale, timeZone, timeZoneName }: PresentDateOptions = {}) =>
+  formatDate(
+    input,
+    {
+      timeZone,
+      timeZoneName,
+      year: 'numeric',
+      month: 'numeric',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    },
+    { locale }
+  );
 
 export const trimText = (text: string, maxLength: number): string => {
   if (!text || maxLength <= 0) return '';

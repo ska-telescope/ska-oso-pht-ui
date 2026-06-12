@@ -22,9 +22,10 @@ UNRELEASED
 * Changed: Moved the `Cycle closes` countdown timer from the Footer to the Header.
 * Added: Countdown timer will show days, hours, mins until the last 5 minutes then will show minutes, seconds.
 * Removed: An alert banner from the calibrator page has been removed
+* Changed: Cycle open/close datetimes are presented with user's timezone.
   validation until the word limit is respected. 
 * Fixed: The incorrect validation error which reported that a declination with seconds >= 59 was out of range. 
-* Fixed: Non-numeric input in Radial Velocity field does not produce a validation error
+* Fixed: Non-numeric input in Radial Velocity field does not produce a validation error.
 
 10.1.0
 ----------

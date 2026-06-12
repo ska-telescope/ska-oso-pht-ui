@@ -47,8 +47,8 @@ describe('useOSDAccessors', () => {
           type: 'Science Verification',
           cycleInformation: {
             cycleId: 'C1',
-            proposalOpen: '20250101T000000',
-            proposalClose: '20250102T000000'
+            proposalOpen: '2025-01-01T00:00:00',
+            proposalClose: '2025-01-02T00:00:00'
           },
           cyclePolicies: {
             low: ['custom'],
@@ -69,8 +69,8 @@ describe('useOSDAccessors', () => {
             cycleDescription: 'Cycle 1 description',
             cycleInformation: {
               cycleId: 'C1',
-              proposalOpen: '20250101T000000',
-              proposalClose: '20250102T000000'
+              proposalOpen: '2025-01-01T00:00:00',
+              proposalClose: '2025-01-02T00:00:00'
             },
             cyclePolicies: {
               low: ['custom'],
@@ -143,8 +143,8 @@ describe('useOSDAccessors', () => {
           type: 'Science Verification',
           cycleInformation: {
             cycleId: 'C1',
-            proposalOpen: '20250101T000000',
-            proposalClose: '20250101T12:03:00Z'
+            proposalOpen: '2025-01-01T00:00:00',
+            proposalClose: '2025-01-01T12:03:00Z'
           },
           cyclePolicies: {
             low: ['custom'],
@@ -165,8 +165,8 @@ describe('useOSDAccessors', () => {
             cycleDescription: 'Cycle 1 description',
             cycleInformation: {
               cycleId: 'C1',
-              proposalOpen: '20250101T000000',
-              proposalClose: '20250101T12:03:00Z'
+              proposalOpen: '2025-01-01T00:00:00',
+              proposalClose: '2025-01-01T12:03:00Z'
             },
             cyclePolicies: {
               low: ['custom'],
@@ -263,8 +263,8 @@ describe('useOSDAccessors', () => {
           type: 'Science Verification',
           cycleInformation: {
             cycleId: 'C1',
-            proposalOpen: '20250101T000000',
-            proposalClose: '20250102T000000'
+            proposalOpen: '2025-01-01T00:00:00',
+            proposalClose: '2025-01-02T00:00:00'
           },
           cyclePolicies: {}
         }
