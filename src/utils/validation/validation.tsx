@@ -250,7 +250,7 @@ export function validateSkyDirection2Number(value: string): string | null {
   return null;
 }
 
-export function validateVelocity(value: string): string | null {
+export function validateRadialMotion(value: string): string | null {
   if (!/^[-+]?[0-9]*\.?[0-9]+$/.test(value)) {
     return '0';
   }

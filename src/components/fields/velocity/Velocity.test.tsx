@@ -24,6 +24,6 @@ describe('<Velocity />', () => {
       />
     );
 
-    expect(screen.getByText('velocity.error')).toBeInTheDocument();
+    expect(screen.getByText('Numeric value required')).toBeInTheDocument();
   });
 });
