@@ -22,6 +22,7 @@ UNRELEASED
 * Changed: Moved the `Cycle closes` countdown timer from the Footer to the Header.
 * Added: Countdown timer will show days, hours, mins until the last 5 minutes then will show minutes, seconds.
 * Removed: An alert banner from the calibrator page has been removed
+* Changed: Cycle open/close datetimes are presented with user's timezone.
 
 10.1.0
 ----------
