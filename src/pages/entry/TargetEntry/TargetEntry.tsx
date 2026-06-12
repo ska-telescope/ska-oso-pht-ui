@@ -300,18 +300,23 @@ export default function TargetEntry({
   const resolveButton = () => {
     const processCoordinatesResults = (response: any) => {
       if (response && !response.error) {
-        const values = response.split(' ');
-        const redshift =
-          values?.length > 2 && values[2] !== 'null'
-            ? Number(values[2])
-                .toExponential(2)
-                .toString()
-            : '';
-        const vel = values?.length > 3 && values[3] !== 'null' ? values[3] : '';
-        setDec(values[0]);
-        setRA(values[1]);
-        setRedshift(redshift);
-        setVel(vel);
+        setDec(response.reference_coordinate.dec_str);
+        setRA(response.reference_coordinate.ra_str);
+
+        const redshift = response.radial_velocity?.redshift;
+
+        setRedshift(
+          redshift != null
+            ? Number(redshift).toExponential(2)
+            : ''
+        );
+
+        setVel(
+          response.radial_velocity?.quantity?.value != null
+            ? String(response.radial_velocity.quantity.value)
+          : ''
+        );
+
         setNameFieldError('');
       } else {
         setNameFieldError(t('resolve.error.' + response.error));
