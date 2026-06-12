@@ -214,7 +214,7 @@
       "status": "Description",
       "title": "Description",
       "titleShort": "Description",
-      "desc": "Upload a description of the Science Verification Idea. Provide a description of the science verification idea, outlining how it will contribute to the Science Verification of SKA-Low. The description must be uploaded as a PDF file and must not exceed X pages.",
+      "desc": "Upload a description of the Science Verification Idea. Provide a description of the science verification idea, outlining how it will contribute to the Science Verification of SKA-Low. The description must be uploaded as a PDF file and must not exceed 4 pages.",
       "pageError": "The DESCRIPTION page is not complete",
       "help": "Please refer to the call for SKA-Low science verification ideas for guidance on the required content of a submission. The description must be uploaded as a single PDF file, including all text, figures, and references. The document may be prepared using LaTeX or any standard word processing software. The document must not exceed 4 pages, the recommended format is Noto Sans, 12 pt font size."
     },
@@ -232,7 +232,7 @@
     },
     "7": {
       "desc": "Review the Observatory Data Products. This page outlines the data products available for the selected mode. Science Verification includes a predefined set of ODPs. You may adjust the active parameters. Sensitivity estimates for the target are provided below to help you assess the expected performance.",
-      "help": "The observation setup panel on the left provides a summary of the parameters selected in previous steps. To modify any of these values, please return to the Details section. The data product panel describes the standard outputs available based on the mode selected. Further details on standard SKA-Low Science Verification data products are available here. The default image size and pixel size values assume ..... Please adjust these parameters if this default setup does not match the science verification case. Sensitivity estimates are shown based on the selected parameters to help assess expected performance. For more detailed analysis, you can access the full Sensitivity Calculator."
+      "help": "The observation setup panel on the left provides a summary of the parameters selected in previous steps. To modify any of these values, please return to the Details section. The data product panel describes the standard outputs available based on the mode selected. Further details on standard SKA-Low Science Verification data products are available here. The default image size and pixel size provide a suitable starting point for typical SKA-Low imaging observations. Review these values carefully and adjust them to suit your science verification idea and target characteristics. Please adjust these parameters if this default setup does not match the science verification case. Sensitivity estimates are shown based on the selected parameters to help assess expected performance. For more detailed analysis, you can access the full Sensitivity Calculator."
     },
     "8": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE DATA PRODUCTS, AS THERE ARE NO TARGET / OBSERVATION MODE SELECTED FOR THIS SCIENCE VERIFICATION IDEA. OBSERVATION MODE CAN BE SELECTED ON THE DETAILS PAGE.",
