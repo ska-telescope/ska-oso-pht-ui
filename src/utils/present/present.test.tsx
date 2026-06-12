@@ -1,4 +1,4 @@
-import { describe, expect, test } from 'vitest';
+import { beforeEach, describe, expect, test, vi, afterEach } from 'vitest';
 import '@testing-library/jest-dom';
 import Latex from 'react-latex-next';
 import { NOT_APPLICABLE } from '../constants';
@@ -7,24 +7,12 @@ import {
   presentDateTime,
   presentLatex,
   presentSensCalcError,
+  presentTime,
   presentUnits,
   presentValue
 } from './present';
 
-vi.mock('i18next', () => ({
-  t: (key: string) => {
-    switch (key) {
-      case 'date_format_one':
-        return '29-07-2025';
-      case 'date_format_two':
-        return '29-07-2025';
-      case 'time_format':
-        return '09:07:35';
-      default:
-        return '';
-    }
-  }
-}));
+const RealDateTimeFormat = Intl.DateTimeFormat;
 
 describe('Present', () => {
   test('presentLatex : Dummy string', () => {
@@ -88,13 +76,85 @@ describe('Present', () => {
     expect(presentValue(3, 4)).toBe('3.0000');
   });
 
-  test('presentDateTime  : maxFaradayDepth', () => {
-    expect(presentDateTime('2025-07-29T08:07:35.338860Z')).toBe('29-07-2025 09:07:35');
+  test('presentDateTime : en-GB Europe/London', () => {
+    expect(presentDateTime('2025-07-29T08:07:35.338860Z', { locale: 'en-GB', timeZone: 'Europe/London' })).toBe('29/07/2025, 09:07:35');
   });
-  test('presentDate : maxFaradayDepth', () => {
-    expect(presentDate('2025-07-29T08:07:35.338860Z')).toBe('29-07-2025');
+  test('presentDate : en-GB Europe/London', () => {
+    expect(presentDate('2025-07-29T08:07:35.338860Z', { locale: 'en-GB', timeZone: 'Europe/London' })).toBe('29/07/2025');
   });
-  test('presentDate : maxFaradayDepth reversed', () => {
-    expect(presentDate('2025-07-29T08:07:35.338860Z', true)).toBe('29-07-2025');
+  test('presentTime : en-GB Europe/London', () => {
+    expect(presentTime('2025-07-29T08:07:35.338860Z', { locale: 'en-GB', timeZone: 'Europe/London' })).toBe('09:07:35');
+  });
+ test('presentDateTime : en-GB Europe/London BST', () => {
+    expect(presentDateTime('2025-07-29T08:07:35.338860Z', { locale: 'en-GB', timeZone: 'Europe/London', timeZoneName: 'short' })).toBe('29/07/2025, 09:07:35 BST');
+  });
+  test('presetTime : en-GB Europe/London BST', () => {
+    expect(presentTime('2025-07-29T08:07:35.338860Z', { locale: 'en-GB', timeZone: 'Europe/London', timeZoneName: 'short' })).toBe('09:07:35 BST');
+  });
+  test('presentDateTime : en-AU Australia/Perth', () => {
+    expect(presentDateTime('2025-07-29T08:07:35.338860Z', { locale: 'en-AU', timeZone: 'Australia/Perth', timeZoneName: 'short' })).toBe('29/07/2025, 04:07:35 pm AWST');
+  });
+  test('presentDate : en-AU Australia/Perth', () => {
+    expect(presentDate('2025-07-29T08:07:35.338860Z', { locale: 'en-AU', timeZone: 'Australia/Perth' })).toBe('29/07/2025');
+  });
+  test('presentTime : en-AU Australia/Perth', () => {
+    expect(presentTime('2025-07-29T08:07:35.338860Z', { locale: 'en-AU', timeZone: 'Australia/Perth', timeZoneName: 'short' })).toBe('04:07:35 pm AWST');
+  });
+  describe('uses browser locale/timezone when locale and timezone are omitted', () => {
+    beforeEach(() => {
+      vi.spyOn(Intl, 'DateTimeFormat').mockImplementation(
+        ((locale, options) =>
+          new RealDateTimeFormat(
+            locale ?? 'en-ZA',
+            {
+              ...options,
+              timeZone: options?.timeZone ?? 'Africa/Johannesburg',
+            },
+          )) as typeof Intl.DateTimeFormat
+      );
+    });
+
+    afterEach(() => {
+      vi.restoreAllMocks();
+    });
+
+    test('presentDateTime : defaults to en-ZA Africa/Johannesburg', () => {
+      expect(presentDateTime('2025-07-29T08:07:35.338860Z')).toBe('2025/07/29, 10:07:35');
+    });
+
+    test('presentDate : defaults to en-ZA Africa/Johannesburg', () => {
+      expect(presentDate('2025-07-29T08:07:35.338860Z')).toBe('2025/07/29');
+    });
+
+    test('presentTime : defaults to en-ZA Africa/Johannesburg', () => {
+      expect(presentTime('2025-07-29T08:07:35.338860Z')).toBe('10:07:35');
+    });
+
+    test('presentDateTime : defaults to en-ZA Africa/Johannesburg with timezone', () => {
+        expect(presentDateTime('2025-07-29T08:07:35.338860Z', { timeZoneName: 'short' })).toBe('2025/07/29, 10:07:35 SAST');
+    });
+
+    test('presentTime : defaults to en-ZA Africa/Johannesburg with timezone', () => {
+      expect(presentTime('2025-07-29T08:07:35.338860Z', { timeZoneName: 'short' })).toBe('10:07:35 SAST');
+    });
+  });
+
+  test('presentDateTime : OSD legacy timestamp format', () => {
+    expect(presentDateTime('20260327T12:00:00.000Z', { locale: 'en-GB', timeZone: 'Europe/London' })).toBe('27/03/2026, 12:00:00');
+  });
+  test('presentDate : OSD legacy timestamp format', () => {
+    expect(presentDate('20260327T12:00:00.000Z', { locale: 'en-GB', timeZone: 'Europe/London' })).toBe('27/03/2026');
+  });
+    test('presentTime : OSD legacy timestamp format', () => {
+    expect(presentTime('20260327T12:00:00.000Z', { locale: 'en-GB', timeZone: 'Europe/London' })).toBe('12:00:00');
+  });
+  test('presentDateTime " invalid date string', () => {
+    expect(presentDateTime('invalid date string')).toBe('');
+  });
+  test('presentDate " invalid date string', () => {
+    expect(presentDate('invalid date string')).toBe('');
+  });
+  test('presentTime " invalid date string', () => {
+    expect(presentTime('invalid date string')).toBe('');
   });
 });

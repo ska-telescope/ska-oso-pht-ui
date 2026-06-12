@@ -18,8 +18,8 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
       cycleDescription: 'Science Verification',
       cycleInformation: {
         cycleId: 'SKAO_2027_1',
-        proposalOpen: '20260327T12:00:00.000Z',
-        proposalClose: '20260512T15:00:00.000z'
+        proposalOpen: '2026-03-27T12:00:00.000Z',
+        proposalClose: '2026-05-12T15:00:00.000Z'
       },
       cyclePolicies: {
         bands: [BAND_LOW_STR, BAND_5B_STR],

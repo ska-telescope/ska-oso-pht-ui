@@ -72,8 +72,8 @@ const mockObservatoryData: ObservatoryData = {
       cycleDescription: 'Cycle 42',
       cycleInformation: {
         cycleId: 'CYCLE-ID-2025',
-        proposalOpen: '20250901T08:00:00',
-        proposalClose: '20250930T12:00:00'
+        proposalOpen: '2025-09-01T08:00:00',
+        proposalClose: '2025-09-30T12:00:00'
       },
       cyclePolicies: {
         maxDataProducts: 0,

@@ -76,9 +76,6 @@ import OutputFrequencyResolutionField from '@/components/fields/outputFrequencyR
 import DispersionMeasureField from '@/components/fields/dispersionMeasure/dispersionMeasure';
 import RotationMeasureField from '@/components/fields/rotationMeasure/rotationMeasure';
 import OutputSamplingIntervalField from '@/components/fields/outputSamplingInterval/outputSamplingInterval';
-import { useNotify } from '@/utils/notify/useNotify';
-import { Console } from 'console';
-import { set } from 'lodash';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;

@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Bugfix: fix displayed units for bandwidth and Frequency on the Data Product Page
 * Bugfix: Fix population of `bandwidth` between Observation and Data Product page
 * Added: SonarQube for static analysis of code quality
 * Changed: Full and Short name in SV Tool header are now full="Science Verification Idea Submission Tool" or short="SV Idea Submission Tool". (Rather than Submission Tool and ST)
@@ -21,6 +22,7 @@ UNRELEASED
 * Changed: Moved the `Cycle closes` countdown timer from the Footer to the Header.
 * Added: Countdown timer will show days, hours, mins until the last 5 minutes then will show minutes, seconds.
 * Removed: An alert banner from the calibrator page has been removed
+* Changed: Cycle open/close datetimes are presented with user's timezone.
 * Added: New "register /login" text box to Landing page.
 * Changed: The style and formatting of the Sensivitity Calculator text box on the landing page.
 * Added: A new 'underTest' warning bar to the Landing Page for use on the Submission Tool during productionisation.
