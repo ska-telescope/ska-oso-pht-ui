@@ -207,7 +207,7 @@
       "titleShort": "Details",
       "pageError": "The DETAILS page is not complete",
       "desc": "Describe the Science Verification Idea. Choose the mode (Continuum, Spectral Line, or PST) the Science Verification idea will be testing. Only one mode can be chosen for this stage of Science Verification. Your selection will define the available settings on the pages that follow. Add a summary describing the science verification idea.",
-      "help": "Detailed information about the capabilities available during the current call for SKA-Low science verification ideas is available here. You can find descriptions of the available modes here. Please review these carefully, as your selection determines the configuration options in the following steps. When writing the summary, clearly describe the core idea, the verification oppotunities, and the choice of target. Indicate what will be tested or demonstrated through the observation."
+      "help": "Detailed information about the capabilities available during the current call for SKA-Low science verification ideas is available here. You can find descriptions of the available modes here. Please review these carefully, as your selection determines the configuration options in the following steps. When writing the summary, clearly describe the core idea, the verification opportunities, and the choice of target. Indicate what will be tested or demonstrated through the observation."
     },
     "3": {
       "label": "Description",
