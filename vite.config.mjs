@@ -25,7 +25,8 @@ export default defineConfig({
           '/senscalc/': {
             target: proxyTarget,
             changeOrigin: true,
-            secure: false
+            secure: false,
+            rewrite: (path) => path.replace(/^\/senscalc/, '')
           }
         }
       : undefined
