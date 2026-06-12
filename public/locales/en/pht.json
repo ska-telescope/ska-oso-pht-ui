@@ -250,8 +250,8 @@
   },
   "cycleCloses": {
     "label": "Call closes",
-    "countdown": "Cycle closes in {{days}}d {{hours}}h {{minutes}}m",
-    "countdownUrgent": "Cycle closes in {{minutes}}m {{seconds}}s"
+    "countdown": "Call closes in {{days}}d {{hours}}h {{minutes}}m",
+    "countdownUrgent": "Call closes in {{minutes}}m {{seconds}}s"
   },
   "cycleDescription": {
     "label": "Cycle description"
@@ -821,7 +821,6 @@
   },
   "proposals": {
     "empty": "THERE ARE NO SUBMISSIONS TO BE DISPLAYED",
-    "loggedOut": "NOT LOGGED IN, NO SUBMISSIONS AVAILABLE",
     "underTest": "This site is under test and will become available once the call for SKA-Low Science Verification ideas opens.",
     "label": "submissions",
     "name": "Name",
