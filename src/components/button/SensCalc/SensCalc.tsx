@@ -1,4 +1,4 @@
-import AutoAwesomeOutlinedIcon from '@mui/icons-material/AutoAwesomeOutlined';
+import CalculateOutlinedIcon from '@mui/icons-material/CalculateOutlined';
 import BaseButton from '../Base/Button';
 
 interface SensCalcButtonProps {
@@ -27,7 +27,7 @@ export default function SensCalcButton({
       <BaseButton
         action={ClickFunction}
         disabled={disabled}
-        icon={<AutoAwesomeOutlinedIcon />}
+        icon={<CalculateOutlinedIcon />}
         primary={primary}
         testId={testId}
         title={title}
