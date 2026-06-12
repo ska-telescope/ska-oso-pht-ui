@@ -27,8 +27,11 @@ js-pre-e2e-test:
 	mkdir -p build/reports
 	mkdir -p build/.nyc_output
 
+OSO_SERVICES_MAJOR_VERSION ?= $(shell helm dependency list ./charts/ska-oso-pht-ui-umbrella/ | grep ska-oso-services | gawk -F'[[:space:]]+|[.]' '{print $$2}')
+OST_SENSCALC_MAJOR_VERSION ?= $(shell helm dependency list ./charts/ska-oso-pht-ui-umbrella/ | grep ska-ost-senscalc | gawk -F'[[:space:]]+|[.]' '{print $$2}')
+
 # The default PHT_BACKEND_URL points to the umbrella chart PHT back-end deployment
-BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/oso/api/v14
+BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/oso/api/v$(OSO_SERVICES_MAJOR_VERSION)
 
 # BACKEND_PROXY is the target origin (+ path prefix) for the vite dev proxy (avoids CORS).
 # For local k8s:  http://<minikube-ip>/<namespace>  (default)
@@ -86,8 +89,8 @@ endif
 
 set-dev-env-vars:
 	REACT_APP_SKA_PHT_BASE_URL="/" \
-	REACT_APP_SKA_OSO_SERVICES_URL="/oso/api/v14" \
-	REACT_APP_SKA_SENSITIVITY_CALC_URL="/senscalc/api/" \
+	REACT_APP_SKA_OSO_SERVICES_URL="/oso/api/v$(OSO_SERVICES_MAJOR_VERSION)" \
+	REACT_APP_SKA_SENSITIVITY_CALC_URL="/senscalc/api/v$(OST_SENSCALC_MAJOR_VERSION)/" \
 	REACT_APP_USE_LOCAL_DATA="false" \
 	REACT_APP_DOMAIN="$(KUBE_HOST)" \
 	REACT_APP_SKA_LOGIN_APP_URL="$(KUBE_HOST)/$(KUBE_NAMESPACE)/login" \
