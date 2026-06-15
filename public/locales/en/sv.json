@@ -195,31 +195,31 @@
   },
   "page": {
     "0": {
-      "desc": "Submit a Science Verification Idea. Welcome to the Ideas submission tool for Science Verification! The current call is for SKA-Low AA2. In just a few simple steps, you can share an idea with us. During this stage of SV, ideas are limited to one source observed in one observing mode. To begin, provide a title for the science verification idea."
+      "desc": "Submit a Science Verification Idea. Welcome to the Ideas submission tool for Science Verification! The current call is for SKA-Low AA2. In just a few simple steps, you can share an idea with us. During this stage of SV, ideas are limited to one source observed in one observing mode. To begin, provide a title for the Science Verification Idea."
     },
     "1": {
       "desc": "Add idea collaborators. All collaborators must have an SKA account. If you add someone that does not yet have an account, they will receive an invitation to register.",
-      "help": "Before submitting a science verification idea, ensure that all collaborators are registered in the SKAO system - you can register here. There is no formal limit on the number of idea originators that can be included in a science verification idea."
+      "help": "Before submitting a Science Verification Idea, ensure that all collaborators are registered in the SKAO system - you can register here. There is no formal limit on the number of idea originators that can be included in a Science Verification Idea."
     },
     "2": {
       "status": "Details",
       "title": "Details",
       "titleShort": "Details",
       "pageError": "The DETAILS page is not complete",
-      "desc": "Describe the Science Verification Idea. Choose the mode (Continuum, Spectral Line, or PST) the Science Verification idea will be testing. Only one mode can be chosen for this stage of Science Verification. Your selection will define the available settings on the pages that follow. Add a summary describing the science verification idea.",
-      "help": "Detailed information about the capabilities available during the current call for SKA-Low science verification ideas is available here. You can find descriptions of the available modes here. Please review these carefully, as your selection determines the configuration options in the following steps. When writing the summary, clearly describe the core idea, the verification opportunities, and the choice of target. Indicate what will be tested or demonstrated through the observation."
+      "desc": "Describe the Science Verification Idea. Choose the mode (Continuum, Spectral Line, or PST) the Science Verification Idea will be testing. Only one mode can be chosen for this stage of Science Verification. Your selection will define the available settings on the pages that follow. Add a summary describing the Science Verification Idea.",
+      "help": "Detailed information about the capabilities available during the current call for SKA-Low Science Verification Ideas is available here. You can find descriptions of the available modes here. Please review these carefully, as your selection determines the configuration options in the following steps. When writing the summary, clearly describe the core idea, the verification opportunities, and the choice of target. Indicate what will be tested or demonstrated through the observation."
     },
     "3": {
       "label": "Description",
       "status": "Description",
       "title": "Description",
       "titleShort": "Description",
-      "desc": "Upload a description of the Science Verification Idea. Provide a description of the science verification idea, outlining how it will contribute to the Science Verification of SKA-Low. The description must be uploaded as a PDF file and must not exceed 4 pages.",
+      "desc": "Upload a description of the Science Verification Idea. Provide a description of the Science Verification Idea, outlining how it will contribute to the Science Verification of SKA-Low. The description must be uploaded as a PDF file and must not exceed 4 pages.",
       "pageError": "The DESCRIPTION page is not complete",
-      "help": "Please refer to the call for SKA-Low science verification ideas for guidance on the required content of a submission. The description must be uploaded as a single PDF file, including all text, figures, and references. The document may be prepared using LaTeX or any standard word processing software. The document must not exceed 4 pages, the recommended format is Noto Sans, 12 pt font size."
+      "help": "Please refer to the call for SKA-Low Science Verification Ideas for guidance on the required content of a submission. The description must be uploaded as a single PDF file, including all text, figures, and references. The document may be prepared using LaTeX or any standard word processing software. The document must not exceed 4 pages, the recommended format is Noto Sans, 12 pt font size."
     },
     "4": {
-      "desc": "Add the target. Science Verification ideas in the current call are limited to one target only. Enter the target details below. The system will generate a visibility plot for SKA-Low to support planning. Please ensure the coordinates and source information are correct.",
+      "desc": "Add the target. Science Verification Ideas in the current call are limited to one target only. Enter the target details below. The system will generate a visibility plot for SKA-Low to support planning. Please ensure the coordinates and source information are correct.",
       "help": "The form can resolve targets using standard astronomical databases. The returned coordinates correspond to the catalogued source position, so please review and adjust them if necessary to ensure they match the intended target. A visibility plot for the selected target is shown as a reference for the current day."
     },
     "5": {
@@ -232,7 +232,7 @@
     },
     "7": {
       "desc": "Review the Observatory Data Products. This page outlines the data products available for the selected mode. Science Verification includes a predefined set of ODPs. You may adjust the active parameters. Sensitivity estimates for the target are provided below to help you assess the expected performance.",
-      "help": "The observation setup panel on the left provides a summary of the parameters selected in previous steps. To modify any of these values, please return to the Details section. The data product panel describes the standard outputs available based on the mode selected. Further details on standard SKA-Low Science Verification data products are available here. The default image size and pixel size provide a suitable starting point for typical SKA-Low imaging observations. Review these values carefully and adjust them to suit your science verification idea and target characteristics. Please adjust these parameters if this default setup does not match the science verification case. Sensitivity estimates are shown based on the selected parameters to help assess expected performance. For more detailed analysis, you can access the full Sensitivity Calculator."
+      "help": "The observation setup panel on the left provides a summary of the parameters selected in previous steps. To modify any of these values, please return to the Details section. The data product panel describes the standard outputs available based on the mode selected. Further details on standard SKA-Low Science Verification data products are available here. The default image size and pixel size provide a suitable starting point for typical SKA-Low imaging observations. Review these values carefully and adjust them to suit your Science Verification Idea and target characteristics. Please adjust these parameters if this default setup does not match the science verification case. Sensitivity estimates are shown based on the selected parameters to help assess expected performance. For more detailed analysis, you can access the full Sensitivity Calculator."
     },
     "8": {
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE DATA PRODUCTS, AS THERE ARE NO TARGET / OBSERVATION MODE SELECTED FOR THIS SCIENCE VERIFICATION IDEA. OBSERVATION MODE CAN BE SELECTED ON THE DETAILS PAGE.",
