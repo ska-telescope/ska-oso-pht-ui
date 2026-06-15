@@ -94,6 +94,6 @@ describe('SV Flow: Validate Observation Fields', () => {
     updateFieldValue('centralFrequency', '110');
     cy.get('[data-testid="statusId5"]')
       .should('have.attr', 'aria-label')
-      .and('include', 'Partial');
+      .and('include', 'Error');
   });
 });

@@ -18,8 +18,8 @@ import {
   PAGE_OBSERVATION,
   PAGE_OBSERVATION_ENTRY,
   PATH,
-  STATUS_OK,
-  STATUS_PARTIAL
+  STATUS_ERROR,
+  STATUS_OK
 } from '@utils/constants.ts';
 import GroupObservation from '@utils/types/groupObservation.tsx';
 import Shell from '../../components/layout/Shell/Shell';
@@ -136,7 +136,7 @@ export default function ObservationPage() {
       isObservationFrequencyOutOfRange(obs, osdLOW, osdMID)
     );
     setTheProposalState(
-      obsStatus === STATUS_OK && freqOutOfRange ? STATUS_PARTIAL : obsStatus,
+      obsStatus === STATUS_OK && freqOutOfRange ? STATUS_ERROR : obsStatus,
       validateLinkingPage(proposal),
       validateCalibrationPage(proposal)
     );

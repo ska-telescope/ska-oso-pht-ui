@@ -546,7 +546,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         </Grid>
         {showWarning() && (
           <Grid>
-            <Typography color={AlertColorTypes.Warning}>
+            <Typography color={AlertColorTypes.Error}>
               {t('frequencyBandwidthOutOfRange.warning')}
             </Typography>
           </Grid>
