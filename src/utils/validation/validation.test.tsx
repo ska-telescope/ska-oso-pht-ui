@@ -19,7 +19,7 @@ import {
   TYPE_PST,
   TYPE_ZOOM
 } from '../constants';
-import { checkDP } from './validation';
+import { checkDP, validateNumericText } from './validation';
 
 describe('checkDP for spectral data product', () => {
   it('returns 1 for valid spectral data product', () => {
@@ -361,5 +361,48 @@ describe('checkDP for pst data product', () => {
       ] as DataProductSDPNew[]
     };
     expect(checkDP(proposal as any)).toEqual(1);
+  });
+});
+
+describe('validateNumericText', () => {
+  it('validates decimals with no bounds', () => {
+    expect(validateNumericText('0')).toBe(true);
+    expect(validateNumericText('-1.5')).toBe(true);
+    expect(validateNumericText('+2')).toBe(true);
+    expect(validateNumericText('.25')).toBe(true);
+  });
+
+  it('validates with only min bound', () => {
+    expect(validateNumericText('-1.9', { min: -2 })).toBe(true);
+    expect(validateNumericText('-2', { min: -2 })).toBe(true);
+    expect(validateNumericText('-2.1', { min: -2 })).toBe(false);
+  });
+
+  it('validates with only max bound', () => {
+    expect(validateNumericText('1.9', { max: 2 })).toBe(true);
+    expect(validateNumericText('2', { max: 2 })).toBe(true);
+    expect(validateNumericText('2.1', { max: 2 })).toBe(false);
+  });
+
+  it('validates with both min and max bounds', () => {
+    expect(validateNumericText('-2', { min: -2, max: 2 })).toBe(true);
+    expect(validateNumericText('0.5', { min: -2, max: 2 })).toBe(true);
+    expect(validateNumericText('2.0', { min: -2, max: 2 })).toBe(true);
+    expect(validateNumericText('2.1', { min: -2, max: 2 })).toBe(false);
+    expect(validateNumericText('-2.1', { min: -2, max: 2 })).toBe(false);
+  });
+
+  it('supports scientific notation only when enabled', () => {
+    expect(validateNumericText('1e-1')).toBe(false);
+    expect(validateNumericText('-4E+2')).toBe(false);
+    expect(validateNumericText('1e-1', { allowScientificNotation: true })).toBe(true);
+    expect(validateNumericText('-4E+2', { allowScientificNotation: true })).toBe(true);
+  });
+
+  it('rejects non-numeric text', () => {
+    expect(validateNumericText('abc')).toBe(false);
+    expect(validateNumericText('1..2')).toBe(false);
+    expect(validateNumericText('')).toBe(false);
+    expect(validateNumericText(' ')).toBe(false);
   });
 });
