@@ -38,7 +38,7 @@ export default function GridTargets({
     { field: 'decStr', headerName: t('skyDirection.short.2.' + raType), width: 120 },
     {
       field: 'vel',
-      headerName: t('velocity.0'),
+      headerName: t('velocity.0.label'),
       width: 160,
       disableClickEventBubbling: true,
       renderCell: (e: { row: Target }) => {
@@ -51,7 +51,7 @@ export default function GridTargets({
     },
     {
       field: 'redshift',
-      headerName: t('velocity.1'),
+      headerName: t('velocity.1.label'),
       width: 160,
       disableClickEventBubbling: true
     }
