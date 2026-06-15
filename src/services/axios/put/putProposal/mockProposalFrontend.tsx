@@ -407,7 +407,7 @@ export const MockProposalFrontendZoom: Proposal = {
         weighting: 2,
         polarisations: ['I'],
         channelsOut: 1,
-        robust: 2,
+        robust: 0.5,
         taperValue: 1
       } as SDPImageContinuumData
     }

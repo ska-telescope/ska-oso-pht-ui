@@ -340,8 +340,8 @@ export const MockProposalBackendZoom: ProposalBackend = {
             unit: 'arcsec'
           },
           weight: {
-            weighting: '2',
-            robust: 0
+            weighting: 'briggs',
+            robust: 0.5
           },
           polarisations: ['I', 'XX'],
           channels_out: 1,

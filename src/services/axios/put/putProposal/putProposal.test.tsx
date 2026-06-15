@@ -437,7 +437,7 @@ describe('getDataProductScriptParameters', () => {
         pixelSizeValue: 1,
         pixelSizeUnits: 0,
         weighting: IW_BRIGGS,
-        robust: 2,
+        robust: 0.5,
         polarisations: [],
         channelsOut: 1,
         taperValue: 0
@@ -445,7 +445,7 @@ describe('getDataProductScriptParameters', () => {
     } as DataProductSDPNew;
     const result = getDataProductScriptParameters(obs, dp);
     expect(result?.weight?.weighting).toBe('briggs');
-    expect(result?.weight?.robust).toBe(2);
+    expect(result?.weight?.robust).toBe(0.5);
   });
 });
 
