@@ -1481,7 +1481,8 @@
     "1": {
       "label": "Redshift",
       "help": "This can be specified as either a velocity in km/s or m/s, or as a redshift using the field dropdown.  This field will be populated by the Resolve functionality if the value is in SIMBAD or NED"
-    }
+    },
+    "error": "Numeric value required"
   },
   "velocityRedshift": {
     "label": "Vel/Redshift"
