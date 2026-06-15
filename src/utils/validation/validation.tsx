@@ -25,6 +25,38 @@ import Proposal from './../types/proposal';
 import { countWords } from '../helpers';
 import phtTranslations from '../../../public/locales/en/pht.json';
 
+export interface NumericRange {
+  min?: number;
+  max?: number;
+}
+
+export interface NumericValidationOptions extends NumericRange {
+  allowScientificNotation?: boolean;
+}
+
+export function validateNumericText(value: string, options: NumericValidationOptions = {}): boolean {
+  const { min, max, allowScientificNotation = false } = options;
+  const numericPattern = allowScientificNotation
+    ? /^[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?$/
+    : /^[-+]?(?:\d+\.?\d*|\.\d+)$/;
+
+  if (!numericPattern.test(value)) {
+    return false;
+  }
+
+  const number = Number(value);
+  if (!Number.isFinite(number)) {
+    return false;
+  }
+  if (min !== undefined && number < min) {
+    return false;
+  }
+  if (max !== undefined && number > max) {
+    return false;
+  }
+  return true;
+}
+
 export const validateTitlePage = (proposal: Proposal) => {
   const maxTitleWords = Number(phtTranslations.title.maxWord);
   if (countWords(proposal?.title) > maxTitleWords) {
