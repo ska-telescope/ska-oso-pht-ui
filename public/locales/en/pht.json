@@ -216,7 +216,7 @@
     "label": "Conflict Declaration",
     "reason": {
       "conflict-none": "I have no conflict of interest",
-      "conflict-investigator": "I am an investigator on this science idea",
+      "conflict-investigator": "I am an investigator on this Science Verification Idea",
       "conflict-collaborator": "I am a current / recent collaborator of the author(s)",
       "conflict-other": "Other reasons prevent me from rendering a fair and impartial judgement"
     },
@@ -476,7 +476,7 @@
   "landingWelcome":{
     "button": "Register / Sign in",
     "label": "Submit an SKA-Low Science Idea",
-    "description": "Use this tool to develop and submit a Science Verification idea for SKA-Low science verification.\nAccess is available to registered users only.\nPlease sign in or create an account to continue.",
+    "description": "Use this tool to develop and submit a Science Verification Idea for SKA-Low science verification.\nAccess is available to registered users only.\nPlease sign in or create an account to continue.",
     "tooltip": "Sign in or create an account to use the Submission Tool"
   },
   "latex": {
@@ -818,7 +818,7 @@
   },
   "proposals": {
     "empty": "THERE ARE NO SUBMISSIONS TO BE DISPLAYED",
-    "underTest": "This site is under test and will become available once the call for SKA-Low Science Verification ideas opens.",
+    "underTest": "This site is under test and will become available once the call for SKA-Low Science Verification Ideas opens.",
     "label": "submissions",
     "name": "Name",
     "overviewTooltip": "Tooltip for the card on the Overview"
@@ -1233,7 +1233,7 @@
   "sensCalc": {
     "button": "Open Sensitivity Calculator",
     "label": "Sensitivity Calculator",
-    "description": "If you are still developing a Science Verification idea, the SKA Sensitivity Calculator provides a useful starting point. The SKA sensitivity calculator provides estimates of the sensitivity for a given set of observing parameters and uses the most up-to-date information on the telescope performance.",
+    "description": "If you are still developing a Science Verification Idea, the SKA Sensitivity Calculator provides a useful starting point. The SKA sensitivity calculator provides estimates of the sensitivity for a given set of observing parameters and uses the most up-to-date information on the telescope performance.",
     "tooltip": "Open the SKA sensitivity calculator in a new tab",
     "url": "https://sensitivity-calculator.skao.int/",
     "0": "All sensitivity calculations for this observation are valid",
