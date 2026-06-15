@@ -1101,9 +1101,9 @@
     "label": "Right ascension"
   },
   "robust": {
-    "help": "For Briggs weighting, the robustness parameter can be set to -2 (closest to uniform weighting), -1, 0, 1 or 2 (closest to natural weighting).",
+    "help": "For Briggs weighting, the robustness parameter can be set between -2 (closest to uniform weighting) and 2 (closest to natural weighting).",
     "label": "Robust",
-    "error": "Numeric value required"
+    "error": "Numeric value between -2 and 2 required"
   },
   "rotationMeasure": {
     "help": "This field displays the rotationMeasure.",
