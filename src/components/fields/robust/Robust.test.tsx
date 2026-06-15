@@ -3,14 +3,8 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Robust from './Robust';
 
-vi.mock('../../../utils/constants', () => ({
-  ROBUST: [
-    { label: '-2', value: -2 },
-    { label: '-1', value: -1 },
-    { label: '0', value: 0 },
-    { label: '1', value: 1 },
-    { label: '2', value: 2 }
-  ]
+vi.mock('@/services/i18n/useScopedTranslation', () => ({
+  useScopedTranslation: () => ({ t: (k: string) => k })
 }));
 
 describe('<Robust /> behavior', () => {
@@ -35,6 +29,6 @@ describe('<Robust /> behavior', () => {
     fireEvent.change(screen.getByRole('textbox'), { target: { value: '1e-1' } });
 
     expect(setValue).not.toHaveBeenCalled();
-    expect(screen.getByTestId('robust-error')).toBeInTheDocument();
+    expect(screen.getByText('robust.error')).toBeInTheDocument();
   });
 });
