@@ -2,6 +2,7 @@ import { Grid } from '@mui/material';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { validateNumericText } from '@/utils/validation/validation';
 
 interface RobustFieldProps {
   disabled?: boolean;
@@ -26,17 +27,16 @@ export default function RobustField({
 }: RobustFieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'robust';
+  const ROBUST_RANGE = { min: -2, max: 2 };
   const [inputValue, setInputValue] = React.useState(String(value ?? ''));
 
   React.useEffect(() => {
     setInputValue(String(value ?? ''));
   }, [value]);
 
-  const validateValue = (inValue: string) => /^[-+]?(?:\d+\.?\d*|\.\d+)$/.test(inValue);
-
   const handleSetValue = (nextValue: string) => {
     setInputValue(nextValue);
-    if (!validateValue(nextValue)) {
+    if (!validateNumericText(nextValue, ROBUST_RANGE)) {
       return;
     }
 
@@ -45,7 +45,10 @@ export default function RobustField({
     }
   };
 
-  const errorText = inputValue.length > 0 && !validateValue(inputValue) ? t('robust.error') : '';
+  const errorText =
+    inputValue.length > 0 && !validateNumericText(inputValue, ROBUST_RANGE)
+      ? t('robust.error')
+      : '';
 
   return (
     <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">

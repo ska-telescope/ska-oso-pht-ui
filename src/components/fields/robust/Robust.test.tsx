@@ -31,4 +31,14 @@ describe('<Robust /> behavior', () => {
     expect(setValue).not.toHaveBeenCalled();
     expect(screen.getByText('robust.error')).toBeInTheDocument();
   });
+
+  test('rejects values outside [-2, 2] and shows an error', () => {
+    const setValue = vi.fn();
+    render(<Robust label="Robust" value={0} setValue={setValue} />);
+
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: '2.1' } });
+
+    expect(setValue).not.toHaveBeenCalled();
+    expect(screen.getByText('robust.error')).toBeInTheDocument();
+  });
 });
