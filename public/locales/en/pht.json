@@ -1613,7 +1613,7 @@
       "status": "Calibration",
       "title": "Calibration",
       "titleShort": "Calibration",
-      "desc": "Observatory defined calibration strategy",
+      "desc": "Review Calibration strategy. This page outlines the standard calibration strategy planned for the selected mode during SKA-Low Science Verification. The listed calibrators assume that the target scan will be centred at transit. Please note that the use of these calibrators is not guaranteed. You may add comments or suggestions regarding the calibration strategy in the field below.",
       "pageError": "The CALIBRATION STRATEGY page is not complete",
       "help": "The listed strategy is representative and not guaranteed at the time of execution. User defined calibration strategies are not currently supported.",
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE CALIBRATION STRATEGY AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL"
