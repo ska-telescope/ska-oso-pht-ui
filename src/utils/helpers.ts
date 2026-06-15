@@ -1,6 +1,8 @@
 import { scaleBandwidthOrFrequency } from '@components/fields/bandwidthFields/bandwidthValidationCommon.tsx';
 import {
+  FREQUENCY_GHZ,
   FREQUENCY_HZ,
+  FREQUENCY_MHZ,
   FREQUENCY_UNITS,
   SPEED_OF_LIGHT,
   TEXT_ENTRY_PARAMS,
@@ -55,6 +57,36 @@ export const countWords = (text: string) => {
 
 export const frequencyConversion = (inValue: any, from: number, to: number = FREQUENCY_HZ) => {
   return (inValue * FREQUENCY_UNITS[to - 1].toHz) / FREQUENCY_UNITS[from - 1].toHz;
+};
+
+export const isFrequencyRangeOutOfBand = (
+  centralFrequency: number,
+  bandwidth: number,
+  isLow: boolean,
+  observingBand: string,
+  osdLOW: any,
+  osdMID: any
+): boolean => {
+  let minHz = 0;
+  let maxHz = 0;
+  if (isLow) {
+    minHz = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
+    maxHz = osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0;
+  } else {
+    const receiver = osdMID?.basicCapabilities?.receiverInformation?.find(
+      (e: any) => e.rxId === String(observingBand)
+    );
+    minHz = receiver?.minFrequencyHz ?? 0;
+    maxHz = receiver?.maxFrequencyHz ?? 0;
+  }
+
+  if (minHz === 0 && maxHz === 0) return false;
+
+  const targetUnits = isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ;
+  const minFreq = frequencyConversion(minHz, FREQUENCY_HZ, targetUnits);
+  const maxFreq = frequencyConversion(maxHz, FREQUENCY_HZ, targetUnits);
+
+  return centralFrequency < minFreq + bandwidth / 2 || centralFrequency > maxFreq - bandwidth / 2;
 };
 
 export const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {

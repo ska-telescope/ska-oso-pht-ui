@@ -6,6 +6,7 @@ import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { Proposal } from '@utils/types/proposal.tsx';
 import {
+  isObservationFrequencyOutOfRange,
   validateCalibrationPage,
   validateLinkingPage,
   validateObservationPage
@@ -16,7 +17,9 @@ import {
   PAGE_LINKING,
   PAGE_OBSERVATION,
   PAGE_OBSERVATION_ENTRY,
-  PATH
+  PATH,
+  STATUS_OK,
+  STATUS_PARTIAL
 } from '@utils/constants.ts';
 import GroupObservation from '@utils/types/groupObservation.tsx';
 import Shell from '../../components/layout/Shell/Shell';
@@ -35,7 +38,7 @@ const GAP = 4;
 export default function ObservationPage() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
-  const { autoLink, osdCyclePolicy } = useOSDAccessors();
+  const { autoLink, osdCyclePolicy, osdLOW, osdMID } = useOSDAccessors();
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -128,8 +131,12 @@ export default function ObservationPage() {
   React.useEffect(() => {
     const proposal = getProposal();
     if (!proposal) return;
+    const obsStatus = validateObservationPage(proposal, autoLink);
+    const freqOutOfRange = (proposal.observations ?? []).some(obs =>
+      isObservationFrequencyOutOfRange(obs, osdLOW, osdMID)
+    );
     setTheProposalState(
-      validateObservationPage(proposal, autoLink),
+      obsStatus === STATUS_OK && freqOutOfRange ? STATUS_PARTIAL : obsStatus,
       validateLinkingPage(proposal),
       validateCalibrationPage(proposal)
     );

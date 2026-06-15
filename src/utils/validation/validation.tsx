@@ -17,12 +17,13 @@ import {
   STATUS_ERROR,
   STATUS_OK,
   STATUS_PARTIAL,
+  TELESCOPE_LOW_NUM,
   TYPE_CONTINUUM,
   TYPE_PST,
   TYPE_ZOOM
 } from './../constants';
 import Proposal from './../types/proposal';
-import { countWords } from '../helpers';
+import { countWords, isFrequencyRangeOutOfBand } from '../helpers';
 import phtTranslations from '../../../public/locales/en/pht.json';
 
 export const validateTitlePage = (proposal: Proposal) => {
@@ -88,6 +89,22 @@ export const validateObservationPage = (proposal: Proposal, autoLink: boolean) =
     let count = hasObservations() ? 2 : 0;
     return result[count];
   }
+};
+
+export const isObservationFrequencyOutOfRange = (
+  obs: Observation,
+  osdLOW: any,
+  osdMID: any
+): boolean => {
+  const useBandwidth = obs.type === TYPE_ZOOM ? (obs.bandwidth ?? 0) : (obs.continuumBandwidth ?? 0);
+  return isFrequencyRangeOutOfBand(
+    obs.centralFrequency,
+    useBandwidth,
+    obs.telescope === TELESCOPE_LOW_NUM,
+    obs.observingBand,
+    osdLOW,
+    osdMID
+  );
 };
 
 export const validateTechnicalPage = (proposal: Proposal) => {

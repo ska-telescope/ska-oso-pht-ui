@@ -52,6 +52,7 @@ import {
   getBandwidthLowZoom,
   getBandwidthZoom,
   getMinimumChannelWidth,
+  isFrequencyRangeOutOfBand,
   obTypeTransform
 } from '@utils/helpers.ts';
 import WeatherField from '@/components/fields/weather/weather';
@@ -452,52 +453,15 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   );
 
   const showWarning = () => {
-    let min = 0;
-    let max = 0;
-    let minResult = 0;
-    let maxResult = 0;
-
-    if (isMid()) {
-      const receiver = osdMID?.basicCapabilities?.receiverInformation.find(
-        e => e.rxId === String(observingBand)
-      );
-      min = receiver?.minFrequencyHz ?? 0;
-      max = receiver?.maxFrequencyHz ?? 0;
-
-      const minFreq = frequencyConversion(
-        min,
-        FREQUENCY_HZ,
-        isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ
-      );
-      const maxFreq = frequencyConversion(
-        max,
-        FREQUENCY_HZ,
-        isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ
-      );
-      const useBandwidth = isContinuum() ? continuumBandwidth : bandwidth;
-
-      minResult = minFreq + useBandwidth / 2;
-      maxResult = maxFreq - useBandwidth / 2;
-    } else {
-      min = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
-      max = osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0;
-
-      const minFreq = frequencyConversion(
-        min,
-        FREQUENCY_HZ,
-        isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ
-      );
-      const maxFreq = frequencyConversion(
-        max,
-        FREQUENCY_HZ,
-        isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ
-      );
-      const useBandwidth = isContinuum() ? continuumBandwidth : bandwidth;
-      minResult = minFreq + useBandwidth / 2;
-      maxResult = maxFreq - useBandwidth / 2;
-    }
-
-    return centralFrequency < minResult || centralFrequency > maxResult;
+    const useBandwidth = isContinuum() ? continuumBandwidth : bandwidth;
+    return isFrequencyRangeOutOfBand(
+      centralFrequency,
+      useBandwidth,
+      isLow(),
+      String(observingBand),
+      osdLOW,
+      osdMID
+    );
   };
 
   const emptyField = () => <></>;
