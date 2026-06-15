@@ -30,7 +30,6 @@ import {
   TELESCOPE_MID_BACKEND_MAPPING,
   TELESCOPE_LOW_BACKEND_MAPPING,
   FREQUENCY_UNITS,
-  ROBUST,
   OSO_SERVICES_PROPOSAL_PATH,
   PDF_NAME_PREFIXES,
   RA_TYPE_ICRS,
@@ -298,7 +297,7 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
               : 0,
           robust:
             'weight' in script && script.weight?.weighting === 'briggs'
-              ? ROBUST.find(item => item.label === String(script.weight?.robust ?? ''))?.value ?? 0
+              ? Number(script.weight?.robust ?? 0)
               : 0,
           polarisations: 'polarisations' in script ? script.polarisations : undefined,
           channelsOut: 'channels_out' in script ? Number(script.channels_out) ?? 0 : 0,

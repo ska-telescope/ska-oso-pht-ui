@@ -25,7 +25,6 @@ import {
   PULSAR_TIMING_VALUE,
   RA_TYPE_GALACTIC,
   RA_TYPE_ICRS,
-  ROBUST,
   SCIENCE_VERIFICATION,
   TELESCOPE_LOW_BACKEND_MAPPING,
   TELESCOPE_LOW_NUM,
@@ -182,7 +181,7 @@ export const getDataProductScriptParameters = (
             weighting: IMAGE_WEIGHTING.find(item => item.value === Number(data?.weighting))
               ?.label as string,
             ...(Number(data?.weighting) === IW_BRIGGS && {
-              robust: ROBUST.find(item => item.value === data?.robust)?.value
+              robust: data?.robust != null ? Number(data?.robust) : undefined
             })
           },
           polarisations: data?.polarisations,
@@ -213,7 +212,7 @@ export const getDataProductScriptParameters = (
           weighting: IMAGE_WEIGHTING.find(item => item.value === Number(data?.weighting))
             ?.label as string,
           ...(Number(data?.weighting) === IW_BRIGGS && {
-            robust: ROBUST.find(item => item.value === data?.robust)?.value
+            robust: data?.robust != null ? Number(data?.robust) : undefined
           })
         },
         polarisations: data?.polarisations ?? [],
