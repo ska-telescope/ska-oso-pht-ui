@@ -247,8 +247,8 @@
   },
   "cycleCloses": {
     "label": "Call Closes",
-    "countdown": "Cycle closes in {{days}}d {{hours}}h {{minutes}}m",
-    "countdownUrgent": "Cycle closes in {{minutes}}m {{seconds}}s"
+    "countdown": "Call closes in {{days}}d {{hours}}h {{minutes}}m",
+    "countdownUrgent": "Call closes in {{minutes}}m {{seconds}}s"
   },
   "cycleDescription": {
     "label": "Cycle description"
@@ -472,6 +472,12 @@
   },
   "inviteTeamMember": {
     "label": "Invite Team Member"
+  },
+  "landingWelcome":{
+    "button": "Register / Sign in",
+    "label": "Submit an SKA-Low Science Idea",
+    "description": "Use this tool to develop and submit a Science Verification idea for SKA-Low science verification.\nAccess is available to registered users only.\nPlease sign in or create an account to continue.",
+    "tooltip": "Sign in or create an account to use the Submission Tool"
   },
   "latex": {
     "toolTip": "LaTex Preview.",
@@ -812,7 +818,7 @@
   },
   "proposals": {
     "empty": "THERE ARE NO SUBMISSIONS TO BE DISPLAYED",
-    "loggedOut": "NOT LOGGED IN, NO SUBMISSIONS AVAILABLE",
+    "underTest": "This site is under test and will become available once the call for SKA-Low Science Verification ideas opens.",
     "label": "submissions",
     "name": "Name",
     "overviewTooltip": "Tooltip for the card on the Overview"
@@ -1227,7 +1233,7 @@
   "sensCalc": {
     "button": "Open Sensitivity Calculator",
     "label": "Sensitivity Calculator",
-    "description": "The SKA sensitivity calculator provides estimates of the sensitivity for a given set of observing parameters. The calculator uses the most up-to-date information on the telescope performance and can be used to inform the design of observations and proposals.",
+    "description": "If you are still developing a Science Verification idea, the SKA Sensitivity Calculator provides a useful starting point. The SKA sensitivity calculator provides estimates of the sensitivity for a given set of observing parameters and uses the most up-to-date information on the telescope performance.",
     "tooltip": "Open the SKA sensitivity calculator in a new tab",
     "url": "https://sensitivity-calculator.skao.int/",
     "0": "All sensitivity calculations for this observation are valid",
@@ -1608,7 +1614,7 @@
       "status": "Calibration",
       "title": "Calibration",
       "titleShort": "Calibration",
-      "desc": "Observatory defined calibration strategy",
+      "desc": "Review Calibration strategy. This page outlines the standard calibration strategy planned for the selected mode during SKA-Low Science Verification. The listed calibrators assume that the target scan will be centred at transit. Please note that the use of these calibrators is not guaranteed. You may add comments or suggestions regarding the calibration strategy in the field below.",
       "pageError": "The CALIBRATION STRATEGY page is not complete",
       "help": "The listed strategy is representative and not guaranteed at the time of execution. User defined calibration strategies are not currently supported.",
       "noObservations": "IT IS NOT CURRENTLY POSSIBLE TO VIEW THE CALIBRATION STRATEGY AS THERE ARE NO TARGET / OBSERVATION COMBINATIONS FOR THIS PROPOSAL"

@@ -24,6 +24,10 @@ UNRELEASED
 * Added: Countdown timer will show days, hours, mins until the last 5 minutes then will show minutes, seconds.
 * Removed: An alert banner from the calibrator page has been removed
 * Changed: Cycle open/close datetimes are presented with user's timezone.
+* Added: New "register /login" text box to Landing page.
+* Changed: The style and formatting of the Sensivitity Calculator text box on the landing page.
+* Added: A new 'underTest' warning bar to the Landing Page for use on the Submission Tool during productionisation.
+* Removed: The NOT LOGGED IN, NO SUBMISSION AVAILABLE info message.
   validation until the word limit is respected. 
 * Fixed: The incorrect validation error which reported that a declination with seconds >= 59 was out of range. 
 * Fixed: Non-numeric input in Radial Velocity field does not produce a validation error.

@@ -1,5 +1,5 @@
 import React from 'react';
-import { isLoggedIn } from '@ska-telescope/ska-login-page';
+import { ButtonLogin, isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useNavigate } from 'react-router-dom';
 import { Box, Grid, Paper, Stack, Typography } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
@@ -388,10 +388,18 @@ export default function LandingPage() {
           {displayField() && searchEntryField('searchId')}
         </Grid>
         <Grid size={{ xs: 12 }} pt={1}>
-          {!axiosViewError && (!filteredData || filteredData.length === 0) && (
+          {/* TODO(BTN-3258): remove "under test" notice before go-live */}
+          {!axiosViewError && (
+            <Alert
+              color={AlertColorTypes.Warning}
+              text={t('proposals.underTest')}
+              testId="underTestPanelId"
+            />
+          )}
+          {!axiosViewError && (loggedIn || cypressToken) && (!filteredData || filteredData.length === 0) && (
             <Alert
               color={AlertColorTypes.Info}
-              text={loggedIn || cypressToken ? t('proposals.empty') : t('proposals.loggedOut')}
+              text={t('proposals.empty')}
               testId="helpPanelId"
             />
           )}
@@ -407,16 +415,40 @@ export default function LandingPage() {
           )}
         </Grid>
         {!loggedIn && !cypressToken && (
-          <Grid size={{ xs: 6 }} pt={5}>
-            <BorderedSection title={t('sensCalc.label')} borderColor={theme.palette.info.main}>
-              <Stack spacing={10} alignItems="center" justifyContent="center" p={5}>
-                <Typography align="center" variant="h6" minHeight="5vh">
-                  {t('sensCalc.description')}
-                </Typography>
-                {/* WE NEED TO DYNAMICALLY DETERMINE THE PATH FOR THE URL */}
-                <SensCalcButton link={t('sensCalc.url')} primary />
-              </Stack>
-            </BorderedSection>
+          <Grid size={{ xs: 12, md: 6 }} pt={5}>
+            <Stack spacing={4}>
+              <BorderedSection title={t('landingWelcome.label')} borderColor={theme.palette.info.main}>
+                <Stack spacing={5} alignItems="center" justifyContent="center" p={4}>
+                  <Typography
+                    align="center"
+                    variant="h6"
+                    minHeight="5vh"
+                    sx={{ whiteSpace: 'pre-line' }}
+                  >
+                    {t('landingWelcome.description')}
+                  </Typography>
+                  <Box sx ={{minWidth: 300, '& button': {width: '100%'}}}>
+                    <ButtonLogin
+                      label={t('landingWelcome.button')}
+                      toolTip={t('landingWelcome.tooltip')}
+                      colorBG={theme.palette.secondary.main}
+                      colorFG={theme.palette.secondary.contrastText}
+                      testId="landingWelcomeLoginButton"
+                    />
+                  </Box>
+                </Stack>
+              </BorderedSection>
+              <BorderedSection title={t('sensCalc.label')} borderColor={theme.palette.grey[600]}>
+                <Stack spacing={3} alignItems="center" justifyContent="center" p={4}>
+                  <Typography align="center" variant="h6" minHeight="5vh" color={theme.palette.grey[600]}>
+                    {t('sensCalc.description')}
+                  </Typography>
+                  <Box sx={{ '& .MuiButton-root': { textTransform: 'none', fontSize: '18px' } }}>
+                    <SensCalcButton link={t('sensCalc.url')} primary />
+                  </Box>
+                </Stack>
+              </BorderedSection>
+            </Stack>
           </Grid>
         )}
       </Grid>

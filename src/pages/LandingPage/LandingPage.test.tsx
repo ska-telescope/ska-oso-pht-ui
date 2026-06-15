@@ -23,7 +23,8 @@ vi.mock('react-router-dom', () => ({
 }));
 
 vi.mock('@ska-telescope/ska-login-page', () => ({
-  isLoggedIn: vi.fn(() => false)
+  isLoggedIn: vi.fn(() => false),
+  ButtonLogin: (props: any) => <button data-testid={props.testId}>{props.label}</button>
 }));
 
 vi.mock('@azure/msal-react', () => ({
@@ -134,6 +135,11 @@ describe('<LandingPage />', () => {
     expect(isLoggedIn()).toBe(false);
     expect(screen.queryByTestId('addSubmissionButton')).toBeNull();
   });
+
+  test('shows the sign-in button when not logged in', () => {
+    wrapper(<LandingPage />);
+    expect(screen.getByTestId('landingWelcomeLoginButton')).toBeInTheDocument();
+  })
 });
 
 // ---- Clone proposal tests ----
