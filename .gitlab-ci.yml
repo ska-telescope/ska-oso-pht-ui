@@ -6,7 +6,6 @@ variables:
   GIT_SUBMODULE_STRATEGY: recursive
 
 stages:
-  - production
   - dependencies
   - build
   - lint
@@ -17,6 +16,7 @@ stages:
   - scan
   - pages
   - integration
+  - production
   # - staging
 
 #Install basic dependencies using yarn
