@@ -25,7 +25,7 @@ describe('Standard', () => {
   it('Validate menu options', () => {
     clickUserMenu();
     verifyUserMenuOverview(false);
-    verifyUserMenuProposals(false);
+    verifyUserMenuProposals(true);
     verifyUserMenuPanels(false);
     verifyUserMenuReviews(false);
     verifyUserMenuDecisions(false);
