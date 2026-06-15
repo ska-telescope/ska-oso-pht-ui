@@ -5,6 +5,7 @@ import { BorderedSection, DropDown, TextEntry } from '@ska-telescope/ska-gui-com
 import {
   SA_AA2,
   DETAILS,
+  ERROR_SECS,
   PAGE_DETAILS,
   TYPE_CONTINUUM,
   TYPE_PST,
@@ -77,12 +78,28 @@ export default function DetailsPage() {
     setTheProposalState();
   }, [validateToggle]);
 
+  // Science category changes (should trigger auto-linking / regeneration)
   React.useEffect(() => {
     if (!initial) {
       handleChanges();
     }
     setInitial(false);
-  }, [scienceCategoryId, abstract]);
+  }, [scienceCategoryId]);
+
+  // Abstract changes (save without triggering autogeneration)
+  React.useEffect(() => {
+    if (!initial) {
+      // Using a 2s debounce here to avoid saving on every keystroke
+      // ERROR_SECS is already used in a similar context as the delay for recalculating 
+      // field level errors. 
+      // in practice this may need to be adjusted to something shorter to get the right 
+      // ballance between responsiveness and performance
+      const timer = setTimeout(() => {
+        setProposal({ ...getProposal(), abstract: abstract });
+      }, ERROR_SECS);
+      return () => clearTimeout(timer);
+    }
+  }, [abstract]);
 
   const handleChanges = () => {
     const isAutolink = checkAutoLink(autoLink, getProposal().targets ?? [], scienceCategoryId);
@@ -186,6 +203,7 @@ export default function DetailsPage() {
           value={abstract}
           setValue={(e: string) => setValue(e)}
           onFocus={() => setHelp('abstract.help')}
+          onBlur={() => setProposal({ ...getProposal(), abstract: abstract })}
           helperText={helperFunction(abstract)}
           errorText={validateWordCount(abstract)}
           suffix={<ViewIcon onClick={handleOpenAbstractLatexModal} toolTip="preview latex" />}
