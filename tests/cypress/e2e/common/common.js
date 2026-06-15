@@ -374,17 +374,23 @@ export const verifyOsdDataCycleDescription = data => {
   });
 };
 
+const normalizeDateStr = str => str.replace(/^(\d{4})(\d{2})(\d{2})T/, '$1-$2-$3T');
+const formatDateForLocale = str =>
+  new Intl.DateTimeFormat(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' }).format(
+    new Date(normalizeDateStr(str))
+  );
+
 export const verifyOsdDataProposalOpen = data => {
   cy.fixture('osd.json').then(osdData => {
     expect(osdData[0]?.observatory_policy?.cycle_information?.proposal_open).to.equal(data);
-    verifyContent('SKAO_2027_1_opens', '27/03/2026');
+    verifyContent('SKAO_2027_1_opens', formatDateForLocale(data));
   });
 };
 
 export const verifyOsdDataProposalClose = data => {
   cy.fixture('osd.json').then(osdData => {
     expect(osdData[0]?.observatory_policy?.cycle_information?.proposal_close).to.equal(data);
-    verifyContent('SKAO_2027_1_closes', '12/05/2026');
+    verifyContent('SKAO_2027_1_closes', formatDateForLocale(data));
   });
 };
 

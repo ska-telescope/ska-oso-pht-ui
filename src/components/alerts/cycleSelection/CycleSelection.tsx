@@ -234,14 +234,14 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
                     variant="body2"
                     color="text.secondary"
                   >
-                    {t('cycleOpens.label')}: {presentDateTime(policy.cycleInformation.proposalOpen, { locale: 'en-GB', timeZone: 'UTC', timeZoneName: 'short' })}
+                    {t('cycleOpens.label')}: {presentDateTime(policy.cycleInformation.proposalOpen, { timeZoneName: 'short' })}
                   </Typography>
                   <Typography
                     data-testid={policy.cycleInformation.cycleId + '_closes'}
                     variant="body2"
                     color="text.secondary"
                   >
-                    {t('cycleCloses.label')}: {presentDateTime(policy.cycleInformation.proposalClose, { locale: 'en-GB', timeZone: 'UTC', timeZoneName: 'short' })}
+                    {t('cycleCloses.label')}: {presentDateTime(policy.cycleInformation.proposalClose, { timeZoneName: 'short' })}
                   </Typography>
                 </CardContent>
               </CardActionArea>
