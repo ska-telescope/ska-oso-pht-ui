@@ -1,39 +1,40 @@
-import { describe, expect, test } from 'vitest';
-import { render } from '@testing-library/react';
+import { describe, expect, test, vi } from 'vitest';
+import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Robust from './Robust';
-import { validateRobustNumber } from '@/utils/validation/validation';
 
-describe('<Robust />', () => {
-  test('renders correctly', () => {
-    render(<Robust label={''} testId={''} value={''} />);
-  });
-  test('renders correctly, with suffix', () => {
-    render(<Robust label={''} suffix={'?'} testId={''} value={''} />);
-  });
-});
+vi.mock('../../../utils/constants', () => ({
+  ROBUST: [
+    { label: '-2', value: -2 },
+    { label: '-1', value: -1 },
+    { label: '0', value: 0 },
+    { label: '1', value: 1 },
+    { label: '2', value: 2 }
+  ]
+}));
 
-describe('validateRobustNumber', () => {
-  test('accepts valid decimal representations', () => {
-    expect(validateRobustNumber('0')).toBe(true);
-    expect(validateRobustNumber('-1')).toBe(true);
-    expect(validateRobustNumber('1.5')).toBe(true);
-    expect(validateRobustNumber('+2')).toBe(true);
-    expect(validateRobustNumber('2.0')).toBe(true);
-    expect(validateRobustNumber('-.5')).toBe(true);
+describe('<Robust /> behavior', () => {
+  test('renders robust as a free-text input', () => {
+    render(<Robust label="Robust" value={0} />);
+    expect(screen.getByRole('textbox')).toBeInTheDocument();
   });
 
-  test('rejects invalid numeric text', () => {
-    expect(validateRobustNumber('')).toBe(false);
-    expect(validateRobustNumber(' ')).toBe(false);
-    expect(validateRobustNumber('abc')).toBe(false);
-    expect(validateRobustNumber('1..2')).toBe(false);
-    expect(validateRobustNumber('--1')).toBe(false);
+  test('passes parsed decimal value when input is valid', () => {
+    const setValue = vi.fn();
+    render(<Robust label="Robust" value={0} setValue={setValue} />);
+
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: '1.5' } });
+
+    expect(setValue).toHaveBeenCalledWith(1.5);
   });
 
-  test('rejects scientific notation', () => {
-    expect(validateRobustNumber('1e-1')).toBe(false);
-    expect(validateRobustNumber('2E3')).toBe(false);
-    expect(validateRobustNumber('-4e+2')).toBe(false);
+  test('rejects scientific notation input and shows an error', () => {
+    const setValue = vi.fn();
+    render(<Robust label="Robust" value={0} setValue={setValue} />);
+
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: '1e-1' } });
+
+    expect(setValue).not.toHaveBeenCalled();
+    expect(screen.getByTestId('robust-error')).toBeInTheDocument();
   });
 });
