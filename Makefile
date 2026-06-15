@@ -27,8 +27,9 @@ js-pre-e2e-test:
 	mkdir -p build/reports
 	mkdir -p build/.nyc_output
 
-OSO_SERVICES_MAJOR_VERSION ?= $(shell helm dependency list ./charts/ska-oso-pht-ui-umbrella/ | grep ska-oso-services | gawk -F'[[:space:]]+|[.]' '{print $$2}')
-OST_SENSCALC_MAJOR_VERSION ?= $(shell helm dependency list ./charts/ska-oso-pht-ui-umbrella/ | grep ska-ost-senscalc | gawk -F'[[:space:]]+|[.]' '{print $$2}')
+AWK := $(shell command -v gawk 2>/dev/null || command -v awk 2>/dev/null)
+OSO_SERVICES_MAJOR_VERSION ?= $(shell helm dependency list ./charts/ska-oso-pht-ui-umbrella/ | grep ska-oso-services | $(AWK) -F'[[:space:]]+|[.]' '{print $$2}')
+OST_SENSCALC_MAJOR_VERSION ?= $(shell helm dependency list ./charts/ska-oso-pht-ui-umbrella/ | grep ska-ost-senscalc | $(AWK) -F'[[:space:]]+|[.]' '{print $$2}')
 
 # The default PHT_BACKEND_URL points to the umbrella chart PHT back-end deployment
 BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/oso/api/v$(OSO_SERVICES_MAJOR_VERSION)
@@ -37,6 +38,7 @@ BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/oso/api/v$(OSO_SERVICES_MAJOR_VERS
 # For local k8s:  http://<minikube-ip>/<namespace>  (default)
 # For remote k8s: https://k8s.stfc.skao.int/dev-ska-oso-pht-ui-aaa
 BACKEND_PROXY ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)
+
 
 K8S_CHART_PARAMS += \
   --set ska-oso-pht-ui.backendURL=$(BACKEND_URL)
