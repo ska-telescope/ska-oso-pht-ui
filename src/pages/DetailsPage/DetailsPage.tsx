@@ -61,6 +61,12 @@ export default function DetailsPage() {
     updateAppContent1(validateProposal(getProposal(), autoLink));
   };
 
+  const saveAbstract = () => {
+    const p = { ...getProposal(), abstract };
+    setProposal(p);
+    updateAppContent1(validateProposal(p, autoLink));
+  };
+
   const [openAbstractLatexModal, setOpenAbstractLatexModal] = React.useState(false);
   const handleOpenAbstractLatexModal = () => setOpenAbstractLatexModal(true);
   const handleCloseAbstractLatexModal = () => setOpenAbstractLatexModal(false);
@@ -89,14 +95,10 @@ export default function DetailsPage() {
   // Abstract changes (save without triggering autogeneration)
   React.useEffect(() => {
     if (!initial) {
-      // Using a 2s debounce here to avoid saving on every keystroke
-      // ERROR_SECS is already used in a similar context as the delay for recalculating 
-      // field level errors. 
-      // in practice this may need to be adjusted to something shorter to get the right 
-      // ballance between responsiveness and performance
-      const timer = setTimeout(() => {
-        setProposal({ ...getProposal(), abstract: abstract });
-      }, ERROR_SECS);
+      // Debounce to avoid saving on every keystroke; breadcrumb validation is also
+      // updated here (rather than relying on the [getProposal()] chain) to ensure
+      // it reflects the saved abstract without requiring a full re-render cycle.
+      const timer = setTimeout(saveAbstract, ERROR_SECS);
       return () => clearTimeout(timer);
     }
   }, [abstract]);
@@ -203,7 +205,7 @@ export default function DetailsPage() {
           value={abstract}
           setValue={(e: string) => setValue(e)}
           onFocus={() => setHelp('abstract.help')}
-          onBlur={() => setProposal({ ...getProposal(), abstract: abstract })}
+          onBlur={saveAbstract}
           helperText={helperFunction(abstract)}
           errorText={validateWordCount(abstract)}
           suffix={<ViewIcon onClick={handleOpenAbstractLatexModal} toolTip="preview latex" />}
