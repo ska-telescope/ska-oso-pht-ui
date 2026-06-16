@@ -3,7 +3,7 @@ import { Box, Grid, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '@utils/types/proposal.tsx';
-import { RA_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
+import { REFERENCE_COORDINATE_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
 import deleteAutoLinking from '@utils/autoLinking/DeleteAutoLinking.tsx';
 import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
@@ -106,13 +106,13 @@ export default function TargetListSection() {
           <Typography variant="body1">{rec?.name}</Typography>
         </FieldWrapper>
         <FieldWrapper
-          label={t('skyDirection.label.1.' + RA_TYPE_ICRS.value)}
+          label={t('skyDirection.label.1.' + REFERENCE_COORDINATE_TYPE_ICRS.value)}
           labelWidth={LABEL_WIDTH}
         >
           <Typography variant="body1">{rec?.raStr}</Typography>
         </FieldWrapper>
         <FieldWrapper
-          label={t('skyDirection.label.2.' + RA_TYPE_ICRS.value)}
+          label={t('skyDirection.label.2.' + REFERENCE_COORDINATE_TYPE_ICRS.value)}
           labelWidth={LABEL_WIDTH}
         >
           <Typography variant="body1">{rec?.decStr}</Typography>
@@ -170,7 +170,7 @@ export default function TargetListSection() {
                 deleteClicked={deleteIconClicked}
                 editClicked={editIconClicked}
                 height={maxTargets === 1 ? '15vh' : '60vh'}
-                raType={RA_TYPE_ICRS.value}
+                referenceCoordinateType={REFERENCE_COORDINATE_TYPE_ICRS.value}
                 rows={getProposal().targets}
               />
             </Box>
@@ -217,8 +217,8 @@ export default function TargetListSection() {
                 />
               )}
             </Tabs>
-            {value === 0 && <TargetEntry raType={RA_TYPE_ICRS.value} textAlign="left" />}
-            {value === 1 && <TargetFileImport raType={RA_TYPE_ICRS.value} />}
+            {value === 0 && <TargetEntry referenceCoordinateType={REFERENCE_COORDINATE_TYPE_ICRS.value} textAlign="left" />}
+            {value === 1 && <TargetFileImport referenceCoordinateType={REFERENCE_COORDINATE_TYPE_ICRS.value} />}
             {value === 2 && <SpatialImaging />}
           </Box>
         </Grid>
@@ -261,7 +261,7 @@ export default function TargetListSection() {
           title="editTarget.label"
         >
           <TargetEntry
-            raType={RA_TYPE_ICRS.value}
+            referenceCoordinateType={REFERENCE_COORDINATE_TYPE_ICRS.value}
             setTarget={setRowTarget}
             target={rowTarget ? rowTarget : undefined}
             onRAFieldErrorChange={setSkyDirection1Error} // Pass callback

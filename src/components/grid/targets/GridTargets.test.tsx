@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import '@testing-library/jest-dom';
 import GridTargets from './GridTargets';
-import { RA_TYPE_GALACTIC, RA_TYPE_ICRS } from '@/utils/constants';
+import { REFERENCE_COORDINATE_TYPE_GALACTIC, REFERENCE_COORDINATE_TYPE_ICRS } from '@/utils/constants';
 
 const wrapper = (component: React.ReactElement) => {
   return render(<StoreProvider>{component}</StoreProvider>);
@@ -11,15 +11,15 @@ const wrapper = (component: React.ReactElement) => {
 
 describe('<GridTargets />', () => {
   test('renders correctly', () => {
-    wrapper(<GridTargets raType={0} />);
+    wrapper(<GridTargets referenceCoordinateType={0} />);
   });
   test('renders correctly with rows', () => {
     wrapper(
       <GridTargets
-        raType={0}
+        referenceCoordinateType={0}
         rows={[
           {
-            kind: RA_TYPE_GALACTIC.value,
+            kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value,
             id: 1,
             name: 'Galactic target',
             b: 45.0,
@@ -37,16 +37,16 @@ describe('<GridTargets />', () => {
     wrapper(
       <GridTargets
         deleteClicked={vi.fn()}
-        raType={0}
+        referenceCoordinateType={0}
         rows={[
           {
-            kind: RA_TYPE_ICRS.value,
+            kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
             id: 1,
             decStr: '-45:00:00.0',
             name: 'ICRS target',
             raStr: '12:30:00.0',
             redshift: '',
-            referenceFrame: RA_TYPE_ICRS.label,
+            referenceFrame: REFERENCE_COORDINATE_TYPE_ICRS.label,
             velType: 0,
             vel: '',
             velUnit: 0
@@ -59,16 +59,16 @@ describe('<GridTargets />', () => {
     wrapper(
       <GridTargets
         editClicked={vi.fn()}
-        raType={0}
+        referenceCoordinateType={0}
         rows={[
           {
-            kind: RA_TYPE_ICRS.value,
+            kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
             id: 1,
             decStr: '-45:00:00.0',
             name: 'ICRS target',
             raStr: '12:30:00.0',
             redshift: '',
-            referenceFrame: RA_TYPE_ICRS.label,
+            referenceFrame: REFERENCE_COORDINATE_TYPE_ICRS.label,
             velType: 0,
             vel: '',
             velUnit: 0

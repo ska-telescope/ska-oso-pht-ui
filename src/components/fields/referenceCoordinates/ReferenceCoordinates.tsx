@@ -19,11 +19,19 @@ export default function ReferenceCoordinatesField({
   const FIELD = 'referenceCoordinates';
 
   const ReferenceCoordinatesValueField = () => {
-    const OPTIONS = [0]; // NOTE , 1];
+    const OPTIONS = [0, 1, 2];
 
     const getOptions = () => {
-      return OPTIONS.map(e => ({ label: t(FIELD + '.' + e), value: e }));
-    };
+  const options = OPTIONS.map(e => ({
+    label: t(FIELD + '.' + e),
+    value: e
+  }));
+
+  console.log('Coordinate options:', options);
+
+  return options;
+  };
+
 
     return (
       <Box pt={1}>

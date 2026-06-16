@@ -15,7 +15,7 @@ interface GridTargetsProps {
   editClicked?: Function | null;
   chartClicked?: Function | null;
   height?: number | string;
-  raType: number;
+  referenceCoordinateType: number;
   rowClick?: Function;
   rows?: Target[];
 }
@@ -25,7 +25,7 @@ export default function GridTargets({
   editClicked = null,
   chartClicked = null,
   height = 171,
-  raType,
+  referenceCoordinateType,
   rowClick,
   rows = []
 }: GridTargetsProps) {
@@ -34,8 +34,8 @@ export default function GridTargets({
 
   const basicColumns = [
     { field: 'name', headerName: t('name.label'), flex: 2 },
-    { field: 'raStr', headerName: t('skyDirection.short.1.' + raType), width: 120 },
-    { field: 'decStr', headerName: t('skyDirection.short.2.' + raType), width: 120 },
+    { field: 'raStr', headerName: t('skyDirection.short.1.' + referenceCoordinateType), width: 120 },
+    { field: 'decStr', headerName: t('skyDirection.short.2.' + referenceCoordinateType), width: 120 },
     {
       field: 'vel',
       headerName: t('velocity.0.label'),

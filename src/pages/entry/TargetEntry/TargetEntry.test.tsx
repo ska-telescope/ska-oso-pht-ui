@@ -55,7 +55,7 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
 
 describe('<TargetEntry />', () => {
   test('renders correctly', () => {
-    wrapper(<TargetEntry raType={0} />);
+    wrapper(<TargetEntry referenceCoordinateType={0} />);
   });
 });
 

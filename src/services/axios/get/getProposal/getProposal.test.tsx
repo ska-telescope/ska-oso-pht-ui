@@ -1,7 +1,7 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import * as CONSTANTS from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
-import { RA_TYPE_GALACTIC, RA_TYPE_ICRS, FREQUENCY_UNITS, BAND_LOW_STR } from '@utils/constants.ts';
+import { REFERENCE_COORDINATE_TYPE_GALACTIC, REFERENCE_COORDINATE_TYPE_ICRS, FREQUENCY_UNITS, BAND_LOW_STR } from '@utils/constants.ts';
 import GetProposal, {
   GetMockProposal,
   mapping,
@@ -196,7 +196,7 @@ describe('getScienceCategory', () => {
 describe('getReferenceCoordinate', () => {
   test('should return a galactic reference coordinate when kind is galactic', () => {
     const input = {
-      kind: RA_TYPE_GALACTIC.label,
+      kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
       l: 123.45,
       b: -67.89,
       pm_l: 0.12,
@@ -206,7 +206,7 @@ describe('getReferenceCoordinate', () => {
     };
 
     const expectedOutput = {
-      kind: RA_TYPE_GALACTIC.label,
+      kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
       l: 123.45,
       b: -67.89,
       pmL: 0.12,
@@ -221,7 +221,7 @@ describe('getReferenceCoordinate', () => {
 
   test('should return an ICRS reference coordinate when kind is ICRS', () => {
     const input = {
-      kind: RA_TYPE_ICRS.label,
+      kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
       ra_str: '12:34:56.78',
       dec_str: '-12:34:56.78',
       pm_ra: 1.23,
@@ -231,7 +231,7 @@ describe('getReferenceCoordinate', () => {
     };
 
     const expectedOutput = {
-      kind: RA_TYPE_ICRS.label,
+      kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
       raStr: '12:34:56.78',
       decStr: '-12:34:56.78',
       pmRa: 1.23,
@@ -246,13 +246,13 @@ describe('getReferenceCoordinate', () => {
 
   test('should handle missing properties gracefully', () => {
     const input = {
-      kind: RA_TYPE_ICRS.label,
+      kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
       ra_str: '12:34:56.78',
       dec_str: '-12:34:56.78'
     };
 
     const expectedOutput = {
-      kind: RA_TYPE_ICRS.label,
+      kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
       raStr: '12:34:56.78',
       decStr: '-12:34:56.78',
       pmRa: undefined,
