@@ -453,7 +453,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   );
 
   const showWarning = () => {
-    const useBandwidth = isContinuum() ? continuumBandwidth : bandwidth;
+    const useBandwidth = observationType === TYPE_ZOOM ? bandwidth : continuumBandwidth;
     return isFrequencyRangeOutOfBand(
       centralFrequency,
       useBandwidth,
