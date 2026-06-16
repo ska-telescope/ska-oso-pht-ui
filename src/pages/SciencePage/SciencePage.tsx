@@ -63,6 +63,18 @@ export default function SciencePage() {
   };
 
   const validatePdf = async (file: File): Promise<string | null> => {
+    // All PDFs begin with '%PDF', so we can also check for that
+    const headerBytes = new Uint8Array(await file.slice(0, 4).arrayBuffer());
+    const hasPdfMagic =
+      headerBytes.length === 4 &&
+      headerBytes[0] === 0x25 &&
+      headerBytes[1] === 0x50 &&
+      headerBytes[2] === 0x44 &&
+      headerBytes[3] === 0x46;
+    if (!hasPdfMagic) {
+      return t('pdfUpload.science.invalidFileError');
+    }
+
     const sizeBytes = file.size;
     const maxBytes = SCIENCE_PDF_MAX_SIZE_MB * 1024 * 1024;
     if (sizeBytes > maxBytes) {
@@ -103,9 +115,35 @@ export default function SciencePage() {
     setProposal({ ...getProposal(), scienceLoadStatus: status });
   };
 
-  const handleDropRejected = () => {
-    validationFileRef.current = null;
-    setPdfError(t('pdfUpload.science.invalidFileError'));
+  /**
+   * Capture file-input changes emitted from inside FileUpload so we can validate selected files
+   * even when react-dropzone rejects them before FileUpload calls setFile (for example, when the
+   * picker starts with PDF filters but users switch to "all files" and pick a non-PDF).
+   *
+   * This is required to show the same invalid-file warning for picker-based non-PDF selections.
+   *
+   * This is moderately brittle:
+   *  - it assumes FileUpload renders a native <input type="file"> inside that wrapper.                                                                                                                                                                                                                                ┃
+   *  - it assumes the input change event bubbles/captures through the box wrapper.                                                                                                                                                                                                                                       ┃
+   *  - if ska-gui-components changes DOM structure, portals the input elsewhere, or changes event
+   *    handling, this hook could stop firing.                                                                                                                                                                              ┃
+   *
+   * Longer term, the better fix is a first-class rejection callback in GUI component FileUpload
+   * (for example onDropRejected/onFileRejected) and moving this warning handling to that API.
+   */
+  const handleFileInputChangeCapture = (event: React.FormEvent<HTMLDivElement>) => {
+    const target = event.target as HTMLInputElement;
+    if (target.tagName !== 'INPUT' || target.type !== 'file' || !target.files?.length) {
+      return;
+    }
+
+    const selectedFile = target.files[0];
+    validationFileRef.current = selectedFile;
+    validatePdf(selectedFile).then(error => {
+      if (validationFileRef.current === selectedFile) {
+        setPdfError(error);
+      }
+    });
   };
 
   const uploadPdftoSignedUrl = async (theFile: any) => {
@@ -273,6 +311,7 @@ export default function SciencePage() {
           ) : (
             <>
               <Box
+                onChangeCapture={handleFileInputChangeCapture}
                 sx={{
                   '& .MuiButton-root.Mui-disabled': {
                     opacity: 0.38
@@ -290,7 +329,6 @@ export default function SciencePage() {
                   dropzoneIcons={false}
                   dropzonePrompt={t('dropzone.prompt')}
                   dropzonePreview={false}
-                  onDropRejected={handleDropRejected}
                   direction="row"
                   file={originalFile}
                   maxFileWidth={UPLOAD_MAX_WIDTH_PDF}

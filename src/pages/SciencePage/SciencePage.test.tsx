@@ -87,17 +87,22 @@ vi.mock('@/utils/pdf/pdfPageCount', () => ({
 let capturedSetFile: ((file: File | '') => void) | undefined;
 let capturedUploadFunction: ((file: File) => Promise<void>) | undefined;
 let capturedUploadDisabled: boolean | undefined;
-let capturedOnDropRejected: (() => void) | undefined;
+let capturedDropzoneAccepted: Record<string, string[]> | undefined;
 vi.mock('@ska-telescope/ska-gui-components', async importOriginal => {
   const actual = (await importOriginal()) as any;
   return {
     ...actual,
-    FileUpload: vi.fn(({ setFile, uploadFunction, uploadDisabled, onDropRejected, suffix }: any) => {
+    FileUpload: vi.fn(({ setFile, uploadFunction, uploadDisabled, dropzoneAccepted, suffix }: any) => {
       capturedSetFile = setFile;
       capturedUploadFunction = uploadFunction;
       capturedUploadDisabled = uploadDisabled;
-      capturedOnDropRejected = onDropRejected;
-      return <>{suffix}</>;
+      capturedDropzoneAccepted = dropzoneAccepted;
+      return (
+        <>
+          <input data-testid="mock-file-input" type="file" />
+          {suffix}
+        </>
+      );
     })
   };
 });
@@ -117,12 +122,16 @@ const wrapper = (component: React.ReactElement) => {
 };
 
 const makeFile = (name = 'test.pdf', sizeOverride?: number): File => {
-  const file = new File(['dummy'], name, { type: 'application/pdf' });
+  const file = new File(['%PDF-1.7\ndummy'], name, { type: 'application/pdf' });
   if (sizeOverride !== undefined) {
     Object.defineProperty(file, 'size', { value: sizeOverride });
   }
   return file;
 };
+
+const makeNonPdfFile = (name = 'test.txt'): File => new File(['dummy'], name, { type: 'text/plain' });
+const makeFakePdfFile = (name = 'fake.pdf'): File =>
+  new File(['not-a-pdf'], name, { type: 'application/pdf' });
 
 import GetPresignedUploadUrl from '@services/axios/get/getPresignedUploadUrl/getPresignedUploadUrl';
 import PutUploadPDF from '@services/axios/put/putUploadPDF/putUploadPDF';
@@ -133,7 +142,7 @@ describe('SciencePage', () => {
     capturedSetFile = undefined;
     capturedUploadFunction = undefined;
     capturedUploadDisabled = undefined;
-    capturedOnDropRejected = undefined;
+    capturedDropzoneAccepted = undefined;
     mockGetPdfPageCount.mockResolvedValue(2);
     vi.mock('@ska-telescope/ska-login-page', () => ({
       isLoggedIn: () => true
@@ -305,12 +314,39 @@ describe('SciencePage', () => {
       expect(capturedUploadDisabled).toBe(false);
     });
 
-    it('rejected drop shows invalidFileError', async () => {
+    it('dropzone pre-filters file type to PDF in picker configuration', () => {
+      wrapper(<SciencePage />);
+      expect(capturedDropzoneAccepted).toEqual({ 'application/pdf': ['.pdf'] });
+    });
+
+    it('selecting non-PDF file shows invalidFileError', async () => {
       wrapper(<SciencePage />);
       act(() => {
-        capturedOnDropRejected!();
+        capturedSetFile!(makeNonPdfFile());
+      });
+      await waitFor(() => {
+        expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
+      });
+    });
+
+    it('file selector non-PDF change event shows invalidFileError', async () => {
+      wrapper(<SciencePage />);
+      fireEvent.change(screen.getByTestId('mock-file-input'), {
+        target: { files: [makeNonPdfFile()] }
+      });
+      await waitFor(() => {
+        expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
+      });
+    });
+
+    it('pdf extension/mime without PDF magic shows invalidFileError', async () => {
+      wrapper(<SciencePage />);
+      await act(async () => {
+        await capturedUploadFunction!(makeFakePdfFile());
       });
       expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
+      expect(GetPresignedUploadUrl).not.toHaveBeenCalled();
+      expect(mockGetPdfPageCount).not.toHaveBeenCalled();
     });
 
     it('uploadDisabled is true when pdfError is set', async () => {

@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Bugfix: display error message for invalid PDFs selected via drag-and-drop and file selector 
 * Bugfix: Fix target field validation and formatting
 * Bugfix: Fix Clone Proposal to make a copy of the data from the original proposal and revalidate correctly after cloning
 * Bugfix: fix displayed units for bandwidth and Frequency on the Data Product Page
