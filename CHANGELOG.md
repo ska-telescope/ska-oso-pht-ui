@@ -31,6 +31,7 @@ UNRELEASED
   validation until the word limit is respected. 
 * Fixed: The incorrect validation error which reported that a declination with seconds >= 59 was out of range. 
 * Fixed: Non-numeric input in Radial Velocity field does not produce a validation error.
+* Fixed: Missing plot on observation page is now present.
 
 10.1.0
 ----------
