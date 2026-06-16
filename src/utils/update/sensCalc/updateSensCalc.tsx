@@ -3,27 +3,10 @@ import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import Observation from '@/utils/types/observation';
 import Proposal from '@/utils/types/proposal';
-import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import Target from '@/utils/types/target';
 import TargetObservation from '@/utils/types/targetObservation';
+import { SensCalcResults } from '@utils/types/sensCalcResults.tsx';
 
-const getSensCalcData = async (
-  observation: Observation,
-  target: Target,
-  dataProductSDP: DataProductSDPNew
-): Promise<SensCalcResults | null> => {
-  try {
-    const response = await calculateSensCalcData(observation, target, dataProductSDP);
-
-    if (!response || (response as any).error) {
-      return null;
-    }
-
-    return response as SensCalcResults;
-  } catch {
-    return null;
-  }
-};
 
 /**
  * Internal helper: performs the full sensCalc update.
@@ -36,7 +19,7 @@ const updateSensCalcAsync = async (
 ): Promise<TargetObservation[]> => {
   if (!proposal.targetObservation) return [];
 
-  const result = await Promise.all(
+  return await Promise.all(
     proposal.targetObservation.map(async (rec: TargetObservation) => {
       if (rec?.observationId === ob?.id) {
         const target: Target | undefined = proposal.targets?.find(t => t.id === rec.targetId);
@@ -44,14 +27,14 @@ const updateSensCalcAsync = async (
           return rec;
         }
 
-        const sensCalc = await getSensCalcData(ob, target, dp);
+        const sensCalcResponse = await calculateSensCalcData(ob, target, dp);
         return {
           ...rec,
-          sensCalc: sensCalc ?? {
+          sensCalc: !sensCalcResponse.error ? sensCalcResponse as SensCalcResults : {
             id: rec.targetId,
             title: '',
             statusGUI: -1,
-            error: 'SensCalc failed'
+            error: sensCalcResponse.error
           }
         };
       }
@@ -59,8 +42,6 @@ const updateSensCalcAsync = async (
       return rec;
     })
   );
-
-  return result;
 };
 
 export const updateSensCalc = async (

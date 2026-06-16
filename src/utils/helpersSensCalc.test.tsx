@@ -333,6 +333,6 @@ describe('Sensitivity Calculator helper functions', () => {
   });
 
   test('Image Weighting, value 2, return robust', () => {
-    expect(getImageWeightingMapping(2)).equal('briggs');
+    expect(getImageWeightingMapping(2)).equal('robust');
   });
 });

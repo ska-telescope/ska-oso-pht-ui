@@ -233,7 +233,7 @@ export const BANDWIDTH_LABEL_SELECTOR = 0;
 export const IMAGE_WEIGHTING = [
   { label: 'natural', lookup: 'natural', value: IW_NATURAL },
   { label: 'uniform', lookup: 'uniform', value: IW_UNIFORM },
-  { label: 'briggs', lookup: 'briggs', value: IW_BRIGGS }
+  { label: 'briggs', lookup: 'robust', value: IW_BRIGGS }
 ];
 
 export const LAB_POS_TICK = LABEL_POSITION.START;
