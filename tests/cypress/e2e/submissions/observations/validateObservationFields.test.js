@@ -87,7 +87,7 @@ describe('SV Flow: Validate Observation Fields', () => {
       .and('include', 'OK');
   });
 
-  it('SV Flow: Frequency bandwidth extending outside band edge shows Partial in the observation breadcrumb', () => {
+  it('SV Flow: Frequency bandwidth extending outside band edge shows Error in the observation breadcrumb', () => {
     clickStatusIconNav('statusId5');
     pageConfirmed('OBSERVATION');
     // 110 MHz: lower edge = 110 - 75 = 35 MHz, below the 50 MHz band floor
