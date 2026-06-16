@@ -78,7 +78,7 @@ describe('getSensitivityCalculatorAPIData Service', () => {
   // IMPROVEMENT add tests for custom and natural
 
   test('returns error message on API failure', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA_SENSITIVITY_CALC', 'get').mockReturnValue(false);
     vi.spyOn(axiosClient, 'get').mockRejectedValue(new Error('Network Error'));
     const result = await getSensCalc(
       CONSTANTS.DEFAULT_CONTINUUM_OBSERVATION_LOW,
@@ -89,7 +89,7 @@ describe('getSensitivityCalculatorAPIData Service', () => {
   });
 
   test('returns error message on Sensitivity Calculator Error', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA_SENSITIVITY_CALC', 'get').mockReturnValue(false);
     const errorOut = {
       title: 'Validation Error',
       detail: 'Specified pointing centre is always below the horizon from the SKA LOW site'
