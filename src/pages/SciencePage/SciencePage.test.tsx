@@ -132,6 +132,16 @@ const makeFile = (name = 'test.pdf', sizeOverride?: number): File => {
 const makeNonPdfFile = (name = 'test.txt'): File => new File(['dummy'], name, { type: 'text/plain' });
 const makeFakePdfFile = (name = 'fake.pdf'): File =>
   new File(['not-a-pdf'], name, { type: 'application/pdf' });
+const makeUnreadablePdfFile = (name = 'unreadable.pdf'): File => {
+  const file = makeFile(name);
+  Object.defineProperty(file, 'slice', {
+    value: vi.fn(() => ({
+      arrayBuffer: () => Promise.reject(new Error('Cannot read file bytes'))
+    })),
+    configurable: true
+  });
+  return file;
+};
 
 import GetPresignedUploadUrl from '@services/axios/get/getPresignedUploadUrl/getPresignedUploadUrl';
 import PutUploadPDF from '@services/axios/put/putUploadPDF/putUploadPDF';
@@ -276,6 +286,16 @@ describe('SciencePage', () => {
       expect(notifyWarning).not.toHaveBeenCalled();
     });
 
+    it('failed header read: invalidFileError shown and upload blocked', async () => {
+      wrapper(<SciencePage />);
+      await act(async () => {
+        await capturedUploadFunction!(makeUnreadablePdfFile());
+      });
+      expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
+      expect(GetPresignedUploadUrl).not.toHaveBeenCalled();
+      expect(notifyWarning).not.toHaveBeenCalled();
+    });
+
     it('stale validation ignored when second file selected before first resolves', async () => {
       let resolveFirstPageCount!: (n: number) => void;
       const deferredFirst = new Promise<number>(res => {
@@ -323,6 +343,16 @@ describe('SciencePage', () => {
       wrapper(<SciencePage />);
       act(() => {
         capturedSetFile!(makeNonPdfFile());
+      });
+      await waitFor(() => {
+        expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
+      });
+    });
+
+    it('selecting unreadable file shows invalidFileError', async () => {
+      wrapper(<SciencePage />);
+      act(() => {
+        capturedSetFile!(makeUnreadablePdfFile());
       });
       await waitFor(() => {
         expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();

@@ -64,7 +64,12 @@ export default function SciencePage() {
 
   const validatePdf = async (file: File): Promise<string | null> => {
     // All PDFs begin with '%PDF', so we can also check for that
-    const headerBytes = new Uint8Array(await file.slice(0, 4).arrayBuffer());
+    let headerBytes: Uint8Array;
+    try {
+      headerBytes = new Uint8Array(await file.slice(0, 4).arrayBuffer());
+    } catch {
+      return t('pdfUpload.science.invalidFileError');
+    }
     const hasPdfMagic =
       headerBytes.length === 4 &&
       headerBytes[0] === 0x25 &&
@@ -98,6 +103,10 @@ export default function SciencePage() {
       validatePdf(theFile).then(error => {
         if (validationFileRef.current === theFile) {
           setPdfError(error);
+        }
+      }).catch(() => {
+        if (validationFileRef.current === theFile) {
+          setPdfError(t('pdfUpload.science.invalidFileError'));
         }
       });
     } else {
@@ -142,6 +151,10 @@ export default function SciencePage() {
     validatePdf(selectedFile).then(error => {
       if (validationFileRef.current === selectedFile) {
         setPdfError(error);
+      }
+    }).catch(() => {
+      if (validationFileRef.current === selectedFile) {
+        setPdfError(t('pdfUpload.science.invalidFileError'));
       }
     });
   };
