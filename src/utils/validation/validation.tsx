@@ -101,7 +101,7 @@ export const isObservationFrequencyOutOfRange = (
     obs.centralFrequency,
     useBandwidth,
     obs.telescope === TELESCOPE_LOW_NUM,
-    obs.observingBand,
+    String(obs.observingBand ?? ''),
     osdLOW,
     osdMID
   );
@@ -168,14 +168,26 @@ export const validateLinkingPage = (proposal: Proposal) => {
   return result[count];
 };
 
-export const validateProposal = (proposal: Proposal, autoLink: boolean = false) => {
+export const validateProposal = (
+  proposal: Proposal,
+  autoLink: boolean = false,
+  osdLOW?: any,
+  osdMID?: any
+) => {
+  const obsStatus = validateObservationPage(proposal, autoLink);
+  const freqOutOfRange =
+    osdLOW !== undefined || osdMID !== undefined
+      ? (proposal.observations ?? []).some(obs =>
+          isObservationFrequencyOutOfRange(obs, osdLOW, osdMID)
+        )
+      : false;
   return [
     validateTitlePage(proposal),
     validateTeamPage(proposal),
     validateDetailsPage(proposal),
     validateSciencePage(proposal),
     validateTargetPage(proposal),
-    validateObservationPage(proposal, autoLink),
+    obsStatus === STATUS_OK && freqOutOfRange ? STATUS_ERROR : obsStatus,
     validateTechnicalPage(proposal),
     validateSDPPage(proposal),
     validateLinkingPage(proposal),

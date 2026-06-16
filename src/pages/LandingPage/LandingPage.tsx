@@ -52,7 +52,7 @@ export default function LandingPage() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
-  const { autoLink, isSV, osdCycleId, setSelectedPolicyByCycleId } = useOSDAccessors();
+  const { autoLink, isSV, osdCycleId, osdLOW, osdMID, setSelectedPolicyByCycleId } = useOSDAccessors();
   const theme = useTheme();
 
   const {
@@ -167,7 +167,7 @@ export default function LandingPage() {
       return false;
     } else {
       setSelectedPolicyByCycleId((response as Proposal).cycle ?? '');
-      updateAppContent1(validateProposal(response, autoLink));
+      updateAppContent1(validateProposal(response, autoLink, osdLOW, osdMID));
       updateAppContent2(response);
       storeProposalCopy(response);
       return true;
@@ -230,7 +230,7 @@ export default function LandingPage() {
         status: PROPOSAL_STATUS.DRAFT
       };
       setProposal(clonedProposal);
-      updateAppContent1(validateProposal(clonedProposal, autoLink));
+      updateAppContent1(validateProposal(clonedProposal, autoLink, osdLOW, osdMID));
       // Create a new access entry for the PI.  Saves doing the endpoint
       const newAcc: Partial<ProposalAccess> = {
         prslId: response.id,

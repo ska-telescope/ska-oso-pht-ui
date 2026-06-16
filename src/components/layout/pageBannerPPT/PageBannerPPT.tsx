@@ -37,6 +37,7 @@ import { accessSubmit } from '@/utils/aaa/aaaUtils';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { validateProposal } from '@/utils/validation/validation';
 import { countWords } from '@utils/helpers.ts';
 import phtTranslations from '../../../../public/locales/en/pht.json';
 
@@ -49,7 +50,7 @@ const widthWrapStatusArray = '1500px';
 
 export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) {
   const theme = useTheme();
-  const { isSV } = useOSDAccessors();
+  const { autoLink, isSV, osdLOW, osdMID } = useOSDAccessors();
   const LG = useMediaQuery(theme.breakpoints.down('lg'), {
     defaultMatches: false,
     noSsr: true
@@ -57,7 +58,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const wrapStatusArray = useMediaQuery(`(max-width:${widthWrapStatusArray})`); // revisit to implement override breakpoint
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
-  const { application } = storageObject.useStore();
+  const { application, updateAppContent1 } = storageObject.useStore();
   const [canSubmit, setCanSubmit] = React.useState(false);
   const [openProposalDisplay, setOpenProposalDisplay] = React.useState(false);
   const [openValidationResults, setOpenValidationResults] = React.useState(false);
@@ -84,8 +85,8 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       (loggedIn || cypressToken) &&
       (getProposal().id == null ||
         getProposal()?.title?.trim()?.length === 0 ||
-        countWords(getProposal().title) > maxTitleWords ||
-        countWords(getProposal().abstract) > maxAbstractWords)
+        countWords(getProposal().title ?? '') > maxTitleWords ||
+        countWords(getProposal().abstract ?? '') > maxAbstractWords)
     ) {
       return true;
     } else if (!loggedIn) {
@@ -100,21 +101,22 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const validateTheProposal = async (): Promise<boolean> => {
     let result = false;
     setValidationResults([]);
-    let results = [];
+    let results: string[] = [];
 
-    for (let key in application.content1) {
-      const obj: { [key: string]: any } = application.content1;
+    const statuses = validateProposal(getProposal(), autoLink, osdLOW, osdMID);
+    updateAppContent1(statuses);
 
+    statuses.forEach((status, key) => {
       if (
-        obj[key] === STATUS_ERROR ||
-        obj[key] === STATUS_PARTIAL ||
-        (obj[key] === STATUS_INITIAL && key !== PAGE_SRC_NET.toString())
+        status === STATUS_ERROR ||
+        status === STATUS_PARTIAL ||
+        (status === STATUS_INITIAL && key !== PAGE_SRC_NET)
       ) {
-        if ((key !== PAGE_TECHNICAL.toString() && key !== PAGE_LINKING.toString()) || !isSV) {
+        if ((key !== PAGE_TECHNICAL && key !== PAGE_LINKING) || !isSV) {
           results.push(t('page.' + key + '.pageError'));
         }
       }
-    }
+    });
     const response = await PostProposalValidate(authClient, getProposal(), isSV);
 
     if (response.valid && !response.error && results.length === 0) {

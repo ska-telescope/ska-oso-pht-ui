@@ -5,21 +5,14 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { Proposal } from '@utils/types/proposal.tsx';
-import {
-  isObservationFrequencyOutOfRange,
-  validateCalibrationPage,
-  validateLinkingPage,
-  validateObservationPage
-} from '@utils/validation/validation.tsx';
+import { validateProposal } from '@utils/validation/validation.tsx';
 import {
   cypressToken,
   PAGE_CALIBRATION,
   PAGE_LINKING,
   PAGE_OBSERVATION,
   PAGE_OBSERVATION_ENTRY,
-  PATH,
-  STATUS_ERROR,
-  STATUS_OK
+  PATH
 } from '@utils/constants.ts';
 import GroupObservation from '@utils/types/groupObservation.tsx';
 import Shell from '../../components/layout/Shell/Shell';
@@ -131,15 +124,8 @@ export default function ObservationPage() {
   React.useEffect(() => {
     const proposal = getProposal();
     if (!proposal) return;
-    const obsStatus = validateObservationPage(proposal, autoLink);
-    const freqOutOfRange = (proposal.observations ?? []).some(obs =>
-      isObservationFrequencyOutOfRange(obs, osdLOW, osdMID)
-    );
-    setTheProposalState(
-      obsStatus === STATUS_OK && freqOutOfRange ? STATUS_ERROR : obsStatus,
-      validateLinkingPage(proposal),
-      validateCalibrationPage(proposal)
-    );
+    const statuses = validateProposal(proposal, autoLink, osdLOW, osdMID);
+    setTheProposalState(statuses[PAGE], statuses[PAGE_LINKING], statuses[PAGE_CALIBRATION]);
   }, [validateToggle]);
 
   const hasObservations = () => elementsO?.length > 0;

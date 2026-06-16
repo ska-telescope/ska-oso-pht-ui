@@ -14,7 +14,7 @@ import {
 } from '@utils/constants.ts';
 import { countWords, obTypeTransform } from '@utils/helpers.ts';
 import { Proposal } from '@utils/types/proposal.tsx';
-import { validateProposal } from '@utils/validation/validation.tsx';
+import { validateDetailsPage } from '@utils/validation/validation.tsx';
 import { useTheme } from '@mui/material/styles';
 import Shell from '../../components/layout/Shell/Shell';
 import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPreviewModal';
@@ -57,14 +57,19 @@ export default function DetailsPage() {
   const [abstract, setAbstract] = React.useState(getProposal().abstract ?? '');
   const [initial, setInitial] = React.useState(true);
 
+  const getProposalState = () => application.content1 as number[];
   const setTheProposalState = () => {
-    updateAppContent1(validateProposal(getProposal(), autoLink));
+    const status = validateDetailsPage(getProposal());
+    const temp = getProposalState().map((v, i) => (i === PAGE ? status : v));
+    updateAppContent1(temp);
   };
 
   const saveAbstract = () => {
     const p = { ...getProposal(), abstract };
     setProposal(p);
-    updateAppContent1(validateProposal(p, autoLink));
+    const status = validateDetailsPage(p);
+    const temp = getProposalState().map((v, i) => (i === PAGE ? status : v));
+    updateAppContent1(temp);
   };
 
   const [openAbstractLatexModal, setOpenAbstractLatexModal] = React.useState(false);
