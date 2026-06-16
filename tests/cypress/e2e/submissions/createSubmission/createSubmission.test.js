@@ -46,8 +46,8 @@ import { standardUser } from '../../users/users.js';
 
 describe('Creating Proposal', () => {
   beforeEach(() => {
-    initialize(standardUser);
     mockOSDAPI();
+    initialize(standardUser);
     mockResolveTargetAPI();
     mockValidateSVIdeaAPI();
   });

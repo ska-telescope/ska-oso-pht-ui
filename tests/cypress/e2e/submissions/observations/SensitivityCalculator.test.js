@@ -29,8 +29,8 @@ import { standardUser } from '../../users/users.js';
 
 beforeEach(() => {
   cy.fixture('sensitivityCalculatorResults.json').as('sensitivityCalculatorResults');
-  initialize(standardUser);
   mockOSDAPI();
+  initialize(standardUser);
   mockCreateProposalAPI();
   clickAddSubmission();
   cy.wait('@mockOSDData');

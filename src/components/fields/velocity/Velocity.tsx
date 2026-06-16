@@ -2,6 +2,7 @@ import React from 'react';
 import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/material';
 import { VELOCITY_TYPE } from '../../../utils/constants';
+import { validateRadialMotion } from '@utils/validation/validation.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface VelocityFieldProps {
@@ -15,6 +16,7 @@ interface VelocityFieldProps {
   velTypeFocus?: Function;
   velUnit: number;
   velUnitFocus?: Function;
+  setErrorText?: (error: string) => void;
 }
 
 export default function VelocityField({
@@ -26,17 +28,31 @@ export default function VelocityField({
   velFocus,
   velType,
   velUnit,
-  velUnitFocus
+  velUnitFocus,
+  setErrorText
 }: VelocityFieldProps) {
   const { t } = useScopedTranslation();
+
+  const rmValue = velType === VELOCITY_TYPE.VELOCITY ? vel : redshift;
+  const rmFieldError = 
+    rmValue && validateRadialMotion(rmValue) === '0'
+      ? t('velocity.error')
+      : '';
 
   React.useEffect(() => {
     if (setVel) setVel('');
   }, [velType]);
 
+  React.useEffect(() => {
+    if (setErrorText) {
+      setErrorText(rmFieldError);
+    }
+  }, [setErrorText, rmFieldError]);
+
   const RedShiftValueField = () => {
     return (
       <TextEntry
+        errorText={rmFieldError}
         label={t('velocity.' + velType + '.label')}
         testId="redshiftValue"
         value={redshift}
@@ -49,6 +65,7 @@ export default function VelocityField({
   const VelocityValueField = () => {
     return (
       <TextEntry
+        errorText={rmFieldError}
         label={t('velocity.' + velType + '.label')}
         testId="velocityValue"
         value={vel}
