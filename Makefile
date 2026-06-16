@@ -28,6 +28,9 @@ js-pre-e2e-test:
 	mkdir -p build/.nyc_output
 
 AWK := $(shell command -v gawk 2>/dev/null || command -v awk 2>/dev/null)
+ifeq ($(AWK),)
+  $(error This script relies on gawk for setting the correct URI paths to the services and senscalc. Please install gawk and try again.)
+endif
 OSO_SERVICES_MAJOR_VERSION ?= $(shell helm dependency list ./charts/ska-oso-pht-ui-umbrella/ | grep ska-oso-services | $(AWK) -F'[[:space:]]+|[.]' '{print $$2}')
 OST_SENSCALC_MAJOR_VERSION ?= $(shell helm dependency list ./charts/ska-oso-pht-ui-umbrella/ | grep ska-ost-senscalc | $(AWK) -F'[[:space:]]+|[.]' '{print $$2}')
 
