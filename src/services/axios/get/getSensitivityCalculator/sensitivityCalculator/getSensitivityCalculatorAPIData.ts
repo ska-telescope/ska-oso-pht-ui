@@ -39,11 +39,11 @@ async function getSensCalc(
       return { error: 'error.API_UNKNOWN_ERROR' }
     }
     if (output.error && output.results) {
-      return { error: `Error from Sensitivity Calculator API: ${output.results}` }
+      return { error: `${output.error}: ${output.results}` }
     }
     return output;
   } catch (e) {
-    return e ? { error: String(e) } : { error: 'error.API_UNKNOWN_ERROR' };
+    return { error: e instanceof Error ? e.message : String(e) };
   }
 }
 

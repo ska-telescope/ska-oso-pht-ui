@@ -85,7 +85,7 @@ describe('getSensitivityCalculatorAPIData Service', () => {
       CONSTANTS.DEFAULT_TARGETS,
       MOCK_CONTINUUM_DATA_PRODUCT
     );
-    expect(result).to.deep.equal({ error: 'Error from Sensitivity Calculator API: Network Error' });
+    expect(result).to.deep.equal({ error: 'Sensitivity Calculator API error: Network Error' });
   });
 
   test('returns error message on Sensitivity Calculator Error', async () => {
@@ -105,7 +105,7 @@ describe('getSensitivityCalculatorAPIData Service', () => {
       MOCK_CONTINUUM_DATA_PRODUCT
     );
     expect(result).to.deep.equal({
-      error: 'Error from Sensitivity Calculator API: Specified pointing centre is always below the horizon from the SKA LOW site'
+      error: 'Validation Error: Specified pointing centre is always below the horizon from the SKA LOW site'
     });
   });
 });

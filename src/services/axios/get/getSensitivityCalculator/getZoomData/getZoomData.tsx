@@ -394,8 +394,6 @@ async function GetZoomData(
     URL_PATH,
     properties,
     mapping,
-    standardData,
-    zoomData,
     target,
     observation
   );

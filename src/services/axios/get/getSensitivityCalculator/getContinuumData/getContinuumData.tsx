@@ -369,8 +369,6 @@ function GetContinuumData(
     URL_PATH,
     properties,
     mapping,
-    standardData,
-    continuumData,
     target,
     observation
   );
