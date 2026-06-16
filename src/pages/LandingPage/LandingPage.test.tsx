@@ -292,7 +292,9 @@ describe('clone proposal', () => {
     await waitFor(() => {
       expect(validateProposal).toHaveBeenCalledWith(
         expect.objectContaining({ id: CLONED_PROPOSAL_ID }),
-        expect.anything()
+        expect.anything(),
+        undefined,
+        undefined
       );
     });
   });
