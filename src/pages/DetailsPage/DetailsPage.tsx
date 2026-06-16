@@ -72,6 +72,10 @@ export default function DetailsPage() {
     updateAppContent1(temp);
   };
 
+  // Avoid a stale copy of the abstract being stored on the debounce by explicitly keeping a ref to it. 
+  const saveAbstractRef = React.useRef(saveAbstract);
+  saveAbstractRef.current = saveAbstract;
+
   const [openAbstractLatexModal, setOpenAbstractLatexModal] = React.useState(false);
   const handleOpenAbstractLatexModal = () => setOpenAbstractLatexModal(true);
   const handleCloseAbstractLatexModal = () => setOpenAbstractLatexModal(false);
@@ -103,7 +107,7 @@ export default function DetailsPage() {
       // Debounce to avoid saving on every keystroke; breadcrumb validation is also
       // updated here (rather than relying on the [getProposal()] chain) to ensure
       // it reflects the saved abstract without requiring a full re-render cycle.
-      const timer = setTimeout(saveAbstract, ERROR_SECS);
+      const timer = setTimeout(() => saveAbstractRef.current(), ERROR_SECS);
       return () => clearTimeout(timer);
     }
   }, [abstract]);
