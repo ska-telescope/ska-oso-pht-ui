@@ -103,6 +103,11 @@ export default function SciencePage() {
     setProposal({ ...getProposal(), scienceLoadStatus: status });
   };
 
+  const handleDropRejected = () => {
+    validationFileRef.current = null;
+    setPdfError(t('pdfUpload.science.invalidFileError'));
+  };
+
   const uploadPdftoSignedUrl = async (theFile: any) => {
     const error = await validatePdf(theFile);
     if (error !== null) {
@@ -285,6 +290,7 @@ export default function SciencePage() {
                   dropzoneIcons={false}
                   dropzonePrompt={t('dropzone.prompt')}
                   dropzonePreview={false}
+                  onDropRejected={handleDropRejected}
                   direction="row"
                   file={originalFile}
                   maxFileWidth={UPLOAD_MAX_WIDTH_PDF}
