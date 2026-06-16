@@ -28,7 +28,7 @@ import phtTranslations from '../../../public/locales/en/pht.json';
 
 export const validateTitlePage = (proposal: Proposal) => {
   const maxTitleWords = Number(phtTranslations.title.maxWord);
-  if (countWords(proposal?.title) > maxTitleWords) {
+  if (countWords(proposal?.title ?? '') > maxTitleWords) {
     return STATUS_ERROR;
   }
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
@@ -91,21 +91,44 @@ export const validateObservationPage = (proposal: Proposal, autoLink: boolean) =
   }
 };
 
+export const isFrequencyOutOfRange = (
+  centralFrequency: number,
+  bandwidth: number,
+  isLow: boolean,
+  observingBand: string,
+  osdLOW: any,
+  osdMID: any
+): boolean => {
+  let minHz = 0;
+  let maxHz = 0;
+
+  if (isLow) {
+    minHz = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
+    maxHz = osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0;
+  } else {
+    const receiver = osdMID?.basicCapabilities?.receiverInformation?.find(
+      (e: any) => e.rxId === observingBand
+    );
+    minHz = receiver?.minFrequencyHz ?? 0;
+    maxHz = receiver?.maxFrequencyHz ?? 0;
+  }
+
+  return isFrequencyRangeOutOfBand(centralFrequency, bandwidth, isLow, minHz, maxHz);
+};
+
 export const isObservationFrequencyOutOfRange = (
   obs: Observation,
   osdLOW: any,
   osdMID: any
-): boolean => {
-  const useBandwidth = obs.type === TYPE_ZOOM ? (obs.bandwidth ?? 0) : (obs.continuumBandwidth ?? 0);
-  return isFrequencyRangeOutOfBand(
+): boolean =>
+  isFrequencyOutOfRange(
     obs.centralFrequency,
-    useBandwidth,
+    obs.type === TYPE_ZOOM ? (obs.bandwidth ?? 0) : (obs.continuumBandwidth ?? 0),
     obs.telescope === TELESCOPE_LOW_NUM,
     String(obs.observingBand ?? ''),
     osdLOW,
     osdMID
   );
-};
 
 export const validateTechnicalPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
@@ -174,6 +197,7 @@ export const validateProposal = (
   osdLOW?: any,
   osdMID?: any
 ) => {
+
   const obsStatus = validateObservationPage(proposal, autoLink);
   const freqOutOfRange =
     osdLOW !== undefined || osdMID !== undefined
