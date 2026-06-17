@@ -4,16 +4,16 @@ import {
   DECIMAL_PLACES,
   FREQUENCY_HZ,
   FREQUENCY_MHZ,
+  IW_UNIFORM,
+  RA_TYPE_GALACTIC,
+  RA_TYPE_ICRS,
+  ROBUST_DEFAULT,
   SA_CUSTOM,
   SEPARATOR0,
   STATUS_OK,
+  TAPER_DEFAULT,
   TIME_HOURS,
-  TIME_SECS,
-  RA_TYPE_GALACTIC,
-  RA_TYPE_ICRS,
-  IW_UNIFORM,
-  ROBUST_DEFAULT,
-  TAPER_DEFAULT
+  TIME_SECS
 } from '@utils/constants';
 import {
   getImageWeightingMapping,
@@ -23,7 +23,7 @@ import {
   shiftSensitivity
 } from '@utils/helpersSensCalc.ts';
 import { SUPPLIED_TYPE_SENSITIVITY, TYPE_CONTINUUM } from '@utils/constants.ts';
-import { SensCalcResults, ResultsSection } from '@utils/types/sensCalcResults.tsx';
+import { ResultsSection, SensCalcResults } from '@utils/types/sensCalcResults.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import {
   addFrequency,
@@ -363,17 +363,14 @@ function GetContinuumData(
   let properties = isLow(telescope)
     ? addPropertiesLOW(standardData, continuumData)
     : addPropertiesMID(standardData, continuumData);
-  const response = Fetch(
+  return Fetch(
     axiosClient,
     telescope,
     URL_PATH,
     properties,
     mapping,
-    standardData,
-    continuumData,
     target,
     observation
   );
-  return response;
 }
 export default GetContinuumData;

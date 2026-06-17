@@ -14,7 +14,7 @@ interface SensCalcContentProps {
 const GAP = 4;
 const SPACER_HEIGHT = 30;
 
-export default function SensCalcModalSingle({
+export default function SensCalcContent({
   data,
   isCustom = false,
   isNatural = false
@@ -61,7 +61,7 @@ export default function SensCalcModalSingle({
 
   return (
     <>
-      {data?.statusGUI !== STATUS_INITIAL && data?.title !== '*SHOW PST MESSAGE*' ? (
+      {data?.statusGUI !== STATUS_INITIAL && data?.title !== '*SHOW PST MESSAGE*' && (data?.error === '' || data?.error === undefined) ? (
         <>
           {displayElement(
             t('sensitivityCalculatorResults.targetName'),
@@ -101,8 +101,12 @@ export default function SensCalcModalSingle({
         <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
           <Typography p={GAP}>{t('page.7.pstUnavailable')}</Typography>
         </Alert>
-      ) : (
+      ) : (data?.error !== '' && data?.error !== undefined) ? (
         <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
+          <Typography p={GAP}>{data.error}</Typography>
+        </Alert>
+      ) : (
+        <Alert>
           <Typography p={GAP}>{t('sensitivityCalculatorResults.noData')}</Typography>
         </Alert>
       )}

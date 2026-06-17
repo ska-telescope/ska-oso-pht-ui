@@ -381,10 +381,6 @@ async function GetZoomData(
     modules: []
   };
 
-  /*if (mocked) {
-    return Promise.resolve(ZOOM_DATA_MOCKED);
-  } else {
-   */
   const URL_PATH = `/zoom/calculate`;
 
   let properties = isLow(telescope)
@@ -398,8 +394,6 @@ async function GetZoomData(
     URL_PATH,
     properties,
     mapping,
-    standardData,
-    zoomData,
     target,
     observation
   );

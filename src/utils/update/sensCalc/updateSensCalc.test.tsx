@@ -77,7 +77,9 @@ describe('updateSensCalc', () => {
   });
 
   it('falls back to default sensCalc when calculateSensCalcData returns null', async () => {
-    (calculateSensCalcData as any).mockResolvedValue(null);
+    (calculateSensCalcData as any).mockResolvedValue({
+      error: 'SensCalc error message'
+    });
 
     const result = await updateSensCalc(proposalBase, observation, dp);
 
@@ -85,7 +87,7 @@ describe('updateSensCalc', () => {
       id: 't1',
       title: '',
       statusGUI: STATUS_PARTIAL, // override applied
-      error: 'SensCalc failed'
+      error: 'SensCalc error message'
     });
   });
 

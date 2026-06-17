@@ -7,8 +7,6 @@ const mockBaseUrl = '/base';
 const mockProperties = '?prop=value';
 const mockTarget = { name: 'Target1' };
 const mockObservation = { duration: 1000 };
-const mockStandardData = null;
-const mockContinuumData = null;
 
 const mockMapping = vi.fn((data, target, observation) => ({
   mapped: true,
@@ -29,8 +27,6 @@ it('should fetch data and map it successfully', async () => {
     mockBaseUrl,
     mockProperties,
     mockMapping,
-    mockStandardData,
-    mockContinuumData,
     mockTarget,
     mockObservation
   );
@@ -65,8 +61,6 @@ it('should handle error with title and detail from response.data', async () => {
     mockBaseUrl,
     mockProperties,
     mockMapping,
-    mockStandardData,
-    mockContinuumData,
     mockTarget
   );
 
@@ -74,7 +68,7 @@ it('should handle error with title and detail from response.data', async () => {
     id: 1,
     statusGUI: STATUS_ERROR,
     error: 'Custom Error Title',
-    results: ['Detailed error message']
+    results: 'Detailed error message'
   });
 });
 
@@ -93,16 +87,14 @@ it('should handle error with message fallback', async () => {
     mockBaseUrl,
     mockProperties,
     mockMapping,
-    mockStandardData,
-    mockContinuumData,
     mockTarget
   );
 
   expect(result).toEqual({
     id: 1,
     statusGUI: STATUS_ERROR,
-    error: 'api.error',
-    results: ['Fallback error message']
+    error: 'Sensitivity Calculator API error',
+    results: 'Fallback error message'
   });
 });
 
@@ -119,15 +111,13 @@ it('should handle error with generic string fallback', async () => {
     mockBaseUrl,
     mockProperties,
     mockMapping,
-    mockStandardData,
-    mockContinuumData,
     mockTarget
   );
 
   expect(result).toEqual({
     id: 1,
     statusGUI: STATUS_ERROR,
-    error: 'api.error',
-    results: ['api.error']
+    error: 'Sensitivity Calculator API error',
+    results: 'api.error'
   });
 });

@@ -78,18 +78,18 @@ describe('getSensitivityCalculatorAPIData Service', () => {
   // IMPROVEMENT add tests for custom and natural
 
   test('returns error message on API failure', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA_SENSITIVITY_CALC', 'get').mockReturnValue(false);
     vi.spyOn(axiosClient, 'get').mockRejectedValue(new Error('Network Error'));
     const result = await getSensCalc(
       CONSTANTS.DEFAULT_CONTINUUM_OBSERVATION_LOW,
       CONSTANTS.DEFAULT_TARGETS,
       MOCK_CONTINUUM_DATA_PRODUCT
     );
-    expect(result).to.deep.equal({ error: 'Error: Network Error' });
+    expect(result).to.deep.equal({ error: 'Sensitivity Calculator API error: Network Error' });
   });
 
   test('returns error message on Sensitivity Calculator Error', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA_SENSITIVITY_CALC', 'get').mockReturnValue(false);
     const errorOut = {
       title: 'Validation Error',
       detail: 'Specified pointing centre is always below the horizon from the SKA LOW site'
@@ -105,7 +105,7 @@ describe('getSensitivityCalculatorAPIData Service', () => {
       MOCK_CONTINUUM_DATA_PRODUCT
     );
     expect(result).to.deep.equal({
-      error: 'Error: Specified pointing centre is always below the horizon from the SKA LOW site'
+      error: 'Validation Error: Specified pointing centre is always below the horizon from the SKA LOW site'
     });
   });
 });
