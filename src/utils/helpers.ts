@@ -1,8 +1,6 @@
 import { scaleBandwidthOrFrequency } from '@components/fields/bandwidthFields/bandwidthValidationCommon.tsx';
 import {
-  FREQUENCY_GHZ,
   FREQUENCY_HZ,
-  FREQUENCY_MHZ,
   FREQUENCY_UNITS,
   SPEED_OF_LIGHT,
   TEXT_ENTRY_PARAMS,
@@ -62,15 +60,10 @@ export const frequencyConversion = (inValue: any, from: number, to: number = FRE
 export const isFrequencyRangeOutOfBand = (
   centralFrequency: number,
   bandwidth: number,
-  isLow: boolean,
-  minHz: number,
-  maxHz: number
+  minFreq: number,
+  maxFreq: number
 ): boolean => {
-  if (minHz === 0 && maxHz === 0) return false;
-  const targetUnits = isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ;
-  const minFreq = frequencyConversion(minHz, FREQUENCY_HZ, targetUnits);
-  const maxFreq = frequencyConversion(maxHz, FREQUENCY_HZ, targetUnits);
-
+  if (minFreq === 0 && maxFreq === 0) return false;
   return centralFrequency < minFreq + bandwidth / 2 || centralFrequency > maxFreq - bandwidth / 2;
 };
 

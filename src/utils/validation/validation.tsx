@@ -11,6 +11,9 @@ import {
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
   FLOW_THROUGH_VALUE,
+  FREQUENCY_GHZ,
+  FREQUENCY_HZ,
+  FREQUENCY_MHZ,
   PAGE_CALIBRATION,
   PAGE_DATA_PRODUCTS,
   PAGE_OBSERVATION,
@@ -23,7 +26,7 @@ import {
   TYPE_ZOOM
 } from './../constants';
 import Proposal from './../types/proposal';
-import { countWords, isFrequencyRangeOutOfBand } from '../helpers';
+import { countWords, frequencyConversion, isFrequencyRangeOutOfBand } from '../helpers';
 import { useOSDAccessors } from '../osd/useOSDAccessors/useOSDAccessors';
 import phtTranslations from '../../../public/locales/en/pht.json';
 
@@ -110,7 +113,10 @@ export const useIsFrequencyOutOfRange = () => {
       maxHz = receiver?.maxFrequencyHz ?? 0;
     }
 
-    return isFrequencyRangeOutOfBand(centralFrequency, bandwidth, isLow, minHz, maxHz);
+    const targetUnits = isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ;
+    const minFreq = frequencyConversion(minHz, FREQUENCY_HZ, targetUnits);
+    const maxFreq = frequencyConversion(maxHz, FREQUENCY_HZ, targetUnits);
+    return isFrequencyRangeOutOfBand(centralFrequency, bandwidth, minFreq, maxFreq);
   };
 };
 
