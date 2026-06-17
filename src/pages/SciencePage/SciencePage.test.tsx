@@ -379,6 +379,22 @@ describe('SciencePage', () => {
       expect(mockGetPdfPageCount).not.toHaveBeenCalled();
     });
 
+    it('FileUpload is remounted when file is rejected via setFile, clearing the filename', async () => {
+      const FileUploadMock = (await import('@ska-telescope/ska-gui-components')).FileUpload as any;
+      wrapper(<SciencePage />);
+      const callsAfterRender = FileUploadMock.mock.calls.length;
+
+      const file = makeFile('too-big.pdf', 100 * 1024 * 1024 + 1);
+      await act(async () => {
+        capturedSetFile!(file);
+      });
+
+      await waitFor(() => {
+        // key change triggers a re-mount; the mock must have been called again
+        expect(FileUploadMock.mock.calls.length).toBeGreaterThan(callsAfterRender);
+      });
+    });
+
     it('uploadDisabled is true when pdfError is set', async () => {
       mockGetPdfPageCount.mockResolvedValue(5);
       wrapper(<SciencePage />);

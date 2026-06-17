@@ -39,6 +39,7 @@ export default function SciencePage() {
   const [currentFile, setCurrentFile] = React.useState<string | null | undefined>(null);
   const [originalFile, setOriginalFile] = React.useState<string | null>(null);
   const [pdfError, setPdfError] = React.useState<string | null>(null);
+  const [fileUploadKey, setFileUploadKey] = React.useState(0);
   const validationFileRef = React.useRef<File | null>(null);
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
@@ -103,10 +104,22 @@ export default function SciencePage() {
       validatePdf(theFile).then(error => {
         if (validationFileRef.current === theFile) {
           setPdfError(error);
+          if (error !== null) {
+            /*
+             * key={fileUploadKey}: FileUpload owns its displayed filename in internal
+             * React state, and setting the `file` prop to null/'' does not clear it
+             * (the component's useEffect guard is `v && …`, so falsy values are ignored).
+             * Incrementing the key forces React to unmount the old instance and mount a
+             * fresh one — resetting the filename display — whenever validation rejects a
+             * file.
+             */
+            setFileUploadKey(k => k + 1);
+          }
         }
       }).catch(() => {
         if (validationFileRef.current === theFile) {
           setPdfError(t('pdfUpload.science.invalidFileError'));
+          setFileUploadKey(k => k + 1);
         }
       });
     } else {
@@ -332,6 +345,7 @@ export default function SciencePage() {
                 }}
               >
                 <FileUpload
+                  key={fileUploadKey}
                   chooseToolTip={t('pdfUpload.science.tooltip.choose')}
                   clearLabel={t('clearBtn.label')}
                   clearToolTip={t('pdfUpload.science.tooltip.clear')}
