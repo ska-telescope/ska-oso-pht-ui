@@ -30,7 +30,14 @@ export default function ReferenceCoordinatesField({
   console.log('Coordinate options:', options);
 
   return options;
-  };
+    const getOptions = () => {
+      const options = OPTIONS.map(e => ({
+        label: t(FIELD + '.' + e),
+        value: e
+      }));
+
+      return options;
+    };
 
 
     return (
