@@ -87,23 +87,29 @@ vi.mock('@/utils/pdf/pdfPageCount', () => ({
 let capturedSetFile: ((file: File | '') => void) | undefined;
 let capturedUploadFunction: ((file: File) => Promise<void>) | undefined;
 let capturedUploadDisabled: boolean | undefined;
+let capturedClearDisabled: boolean | undefined;
 let capturedDropzoneAccepted: Record<string, string[]> | undefined;
+let capturedFile: string | null | undefined;
 vi.mock('@ska-telescope/ska-gui-components', async importOriginal => {
   const actual = (await importOriginal()) as any;
   return {
     ...actual,
-    FileUpload: vi.fn(({ setFile, uploadFunction, uploadDisabled, dropzoneAccepted, suffix }: any) => {
+    FileUpload: vi.fn(
+      ({ setFile, uploadFunction, uploadDisabled, clearDisabled, dropzoneAccepted, file, suffix }: any) => {
       capturedSetFile = setFile;
       capturedUploadFunction = uploadFunction;
       capturedUploadDisabled = uploadDisabled;
+      capturedClearDisabled = clearDisabled;
       capturedDropzoneAccepted = dropzoneAccepted;
+      capturedFile = file;
       return (
         <>
           <input data-testid="mock-file-input" type="file" />
           {suffix}
         </>
       );
-    })
+      }
+    )
   };
 });
 
@@ -152,7 +158,9 @@ describe('SciencePage', () => {
     capturedSetFile = undefined;
     capturedUploadFunction = undefined;
     capturedUploadDisabled = undefined;
+    capturedClearDisabled = undefined;
     capturedDropzoneAccepted = undefined;
+    capturedFile = undefined;
     mockGetPdfPageCount.mockResolvedValue(2);
     vi.mock('@ska-telescope/ska-login-page', () => ({
       isLoggedIn: () => true
@@ -189,6 +197,22 @@ describe('SciencePage', () => {
     await waitFor(() => {
       expect(notifySuccess).toHaveBeenCalledWith('pdfDelete.science.success');
     });
+  });
+
+  it('deletes PDF and remounts FileUpload to clear displayed filename', async () => {
+    const FileUploadMock = (await import('@ska-telescope/ska-gui-components')).FileUpload as any;
+    wrapper(<SciencePage />);
+    const callsAfterRender = FileUploadMock.mock.calls.length;
+
+    fireEvent.click(screen.getByText('pdfUpload.science.label.delete'));
+
+    await waitFor(() => {
+      expect(notifySuccess).toHaveBeenCalledWith('pdfDelete.science.success');
+      expect(FileUploadMock.mock.calls.length).toBeGreaterThan(callsAfterRender);
+    });
+    // originalFile (the `file` prop) must be cleared, otherwise the dropzone
+    // re-renders the deleted filename after the remount.
+    expect(capturedFile).toBeNull();
   });
 
   describe('PDF validation', () => {
@@ -334,6 +358,11 @@ describe('SciencePage', () => {
       expect(capturedUploadDisabled).toBe(false);
     });
 
+    it('clearDisabled is true when an uploaded science PDF exists', () => {
+      wrapper(<SciencePage />);
+      expect(capturedClearDisabled).toBe(true);
+    });
+
     it('dropzone pre-filters file type to PDF in picker configuration', () => {
       wrapper(<SciencePage />);
       expect(capturedDropzoneAccepted).toEqual({ 'application/pdf': ['.pdf'] });
@@ -407,6 +436,9 @@ describe('SciencePage', () => {
       await waitFor(() => {
         expect(FileUploadMock.mock.calls.length).toBeGreaterThan(callsAfterRender);
       });
+      // originalFile (the `file` prop) must be cleared, otherwise the dropzone
+      // re-renders the cleared filename after the remount.
+      expect(capturedFile).toBeNull();
     });
 
     it('uploadDisabled is true when pdfError is set', async () => {

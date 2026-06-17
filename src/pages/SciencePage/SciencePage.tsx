@@ -126,11 +126,14 @@ export default function SciencePage() {
       validationFileRef.current = null;
       setPdfError(null);
       /*
-       * FileUpload currently has no explicit controlled-clear sync hook for externally setting
-       * display name to empty. Force a re-mount on clear so the internal filename state resets.
+       * FileUpload has no controlled-clear API: its file-prop sync effect ignores falsy values, so
+       * clearing the displayed name needs both (a) a remount via the key to reset its internal
+       * filename state and (b) originalFile (the `file` prop) set to null, since the dropzone
+       * renders the `file` prop directly as the selected file.
        * TODO: switch to a first-class ska-gui-components API when available.
        */
       setFileUploadKey(k => k + 1);
+      setOriginalFile(null);
       setProposal({
         ...getProposal(),
         sciencePDF: null
@@ -235,29 +238,44 @@ export default function SciencePage() {
 
   const deletePdfUsingSignedUrl = async () => {
     try {
-      const proposal = getProposal();
-      const signedUrl = await GetPresignedDeleteUrl(authClient, `${proposal.id}-science.pdf`);
+          const proposal = getProposal();
+          const signedUrl = await GetPresignedDeleteUrl(authClient, `${proposal.id}-science.pdf`);
 
-      if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
+          if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
 
-      const deleteResult = await DeletePDF(signedUrl);
+          const deleteResult = await DeletePDF(signedUrl);
 
-      if (deleteResult.error || deleteResult === 'error.API_UNKNOWN_ERROR') {
-        throw new Error('Not able to Delete Science PDF');
-      }
+          if (deleteResult.error || deleteResult === 'error.API_UNKNOWN_ERROR') {
+            throw new Error('Not able to Delete Science PDF');
+          }
 
-      const sciencePDFDeleted = {
-        documentId: `science-doc-${proposal.id}`,
-        isUploadedPdf: false
-      };
+          /*
+           * SW: sciencePDF was set to sciencePDFDeleted. It seems deliberate, but I don't know why
+           * it would be done as it had the effect of making it look like a phantom PDF had been
+           * uploaded.
+          */
+          // const sciencePDFDeleted = {
+          //   documentId: `science-doc-${proposal.id}`,
+          //   isUploadedPdf: false
+          // };
 
-      setProposal({
-        ...getProposal(),
-        sciencePDF: sciencePDFDeleted,
-        scienceLoadStatus: FileUploadStatus.INITIAL
-      });
-      notifySuccess(t('pdfDelete.science.success'));
-    } catch (e) {
+          setProposal({
+            ...getProposal(),
+            sciencePDF: null,
+            scienceLoadStatus: FileUploadStatus.INITIAL
+          });
+
+          /*
+           * FileUpload has no controlled-clear API: its file-prop sync effect ignores falsy values, so
+           * clearing the displayed name after delete needs both (a) a remount via the key to reset its
+           * internal filename state and (b) originalFile (the `file` prop) set to null, since the
+           * dropzone renders the `file` prop directly as the selected file. Until a first-class
+           * controlled clear API exists in ska-gui-components.
+           */
+          setFileUploadKey(k => k + 1);
+          setOriginalFile(null);
+          notifySuccess(t('pdfDelete.science.success'));
+        } catch (e) {
       new Error(t('pdfDelete.science.error'));
       notifyError(t('pdfDelete.science.error'));
     }
@@ -368,6 +386,7 @@ export default function SciencePage() {
                   setFile={setFile}
                   setStatus={setUploadStatus}
                   testId="fileUpload"
+                  clearDisabled={!!getProposal()?.sciencePDF?.isUploadedPdf}
                   uploadDisabled={!!pdfError}
                   uploadFunction={uploadPdftoSignedUrl}
                   uploadToolTip={
