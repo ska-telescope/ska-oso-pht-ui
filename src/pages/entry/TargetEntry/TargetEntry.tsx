@@ -120,18 +120,16 @@ export default function TargetEntry({
   };
 
   const setTheDec = (inValue: string) => {
-    const formattedDec = leadZero(inValue);
-    setDec(formattedDec.toString());
+    setDec(inValue);
     if (setTarget) {
-      setTarget({ ...target, decStr: formattedDec.toString() });
+      setTarget({ ...target, decStr: inValue });
     }
   };
 
   const setTheRA = (inValue: string) => {
-    const formattedRA = leadZero(inValue);
-    setRA(formattedRA.toString());
+    setRA(inValue);
     if (setTarget) {
-      setTarget({ ...target, raStr: formattedRA.toString() });
+      setTarget({ ...target, raStr: inValue });
     }
   };
 
@@ -181,6 +179,39 @@ export default function TargetEntry({
     setRedshift(target?.redshift ?? '');
     setReferenceFrame(target?.kind ?? RA_TYPE_ICRS.value);
   };
+
+
+  const blurRA = () => {
+    const formatted = leadZero(ra.trimEnd()).toString();
+    setRA(formatted);
+    if (setTarget) setTarget({ ...target, raStr: formatted });
+  };
+
+  const blurDec = () => {
+    const formatted = leadZero(dec.trimEnd()).toString();
+    setDec(formatted);
+    if (setTarget) setTarget({ ...target, decStr: formatted });
+  };
+
+  const blurName = () => {
+    const formatted = name.trimEnd();
+    setName(formatted);
+    if (setTarget) setTarget({ ...target, name: formatted });
+  };
+
+
+  const blurVel = () => {
+    const formatted = vel.trimEnd();
+    setVel(formatted);
+    if (setTarget) setTarget({ ...target, vel: formatted });
+  };
+
+  const blurRedshift = () => {
+    const formatted = redshift.trimEnd();
+    setRedshift(formatted);
+    if (setTarget) setTarget({ ...target, redshift: formatted });
+  };
+
 
   React.useEffect(() => {
     setHelp('name.help');
@@ -376,6 +407,7 @@ export default function TargetEntry({
         value={name}
         setValue={setTheName}
         suffix={resolveButton()}
+        onBlur={blurName}
         onFocus={() => setHelp('name.help')}
         errorText={nameFieldError}
       />
@@ -388,6 +420,7 @@ export default function TargetEntry({
         setValue={setTheRA}
         skyUnits={raType}
         value={ra}
+        valueBlur={blurRA}
         valueFocus={() => setHelp('skyDirection.1')}
         setErrorText={setSkyDirection1Error} // Pass the callback
       />
@@ -401,6 +434,7 @@ export default function TargetEntry({
         skyUnits={raType}
         value={dec}
         valueFocus={() => setHelp('skyDirection.2')}
+        valueBlur={blurDec}
         setErrorText={setSkyDirection2Error} // Pass the callback
       />
     );
@@ -421,11 +455,14 @@ export default function TargetEntry({
         setVel={setTheVel}
         setVelUnit={setTheVelUnit}
         redshift={redshift}
+        redshiftBlur={blurRedshift}
         vel={vel}
         velType={velType}
         velUnit={velUnit}
         velFocus={() => setHelp('velocity.' + velType)}
         velUnitFocus={() => setHelp('velocity.' + velType)}
+        velBlur={blurVel}
+
         setErrorText={setRmFieldError}
       />
     );

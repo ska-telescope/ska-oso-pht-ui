@@ -1,3 +1,4 @@
+import { expect } from 'vitest';
 import { renderHook } from '@testing-library/react';
 import { useScopedTranslation } from './useScopedTranslation';
 

@@ -49,7 +49,7 @@ export const validateTeamPage = (proposal: Proposal) => {
 
 export const validateDetailsPage = (proposal: Proposal) => {
   const maxAbstractWords = Number(phtTranslations.abstract.maxWord);
-  if (countWords(proposal?.abstract) > maxAbstractWords) {
+  if (countWords(proposal?.abstract ?? '') > maxAbstractWords) {
     return STATUS_ERROR;
   }
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
@@ -184,7 +184,7 @@ export const validateProposalNavigation = (proposal: Proposal, page: number, che
 };
 
 export function validateSkyDirection1Text(value: string): boolean {
-  const formatValid = /^[-+]?\d{1,2}:\d{2}:\d{2}((\.?)|(\.\d+\s+|\.\d+))$/.test(value);
+  const formatValid = /^\+?\d{1,2}:\d{2}:\d{2}((\.?)|(\.\d+\s+|\.\d+))$/.test(value);
   if (!formatValid) {
     return false;
   }
@@ -192,7 +192,7 @@ export function validateSkyDirection1Text(value: string): boolean {
   if (arr?.length !== 3) {
     return false;
   }
-  if (Math.abs(Number(arr[0])) > 24) {
+  if (Number(arr[0]) > 24) {
     return false;
   }
   if (Number(arr[1]) > 59) {
@@ -230,11 +230,14 @@ export function validateSkyDirection2Text(value: string): string | null {
   if (Math.abs(hours) > 90 || (Math.abs(hours) === 90 && (minutes > 0 || seconds > 0))) {
     return '1';
   }
+
+  // explicitly treat these as a format rather than a range error 
+  // because they are not valid in the context of sky direction
   if (minutes > 59) {
-    return '1';
+    return '0';
   }
   if (seconds > 59) {
-    return '1';
+    return '0';
   }
   return null;
 }

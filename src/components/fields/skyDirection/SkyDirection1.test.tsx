@@ -1,4 +1,4 @@
-import { describe, test } from 'vitest';
+import { describe, test, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import '@testing-library/jest-dom';
@@ -22,7 +22,7 @@ describe('validateSkyDirection1Text function', () => {
   test('validates correct equatorial format', () => {
     expect(validateSkyDirection1Text('12:34:56')).toBe(true);
     expect(validateSkyDirection1Text('2:34:56')).toBe(true);
-    expect(validateSkyDirection1Text('-12:34:56')).toBe(true);
+
     expect(validateSkyDirection1Text('+12:34:56')).toBe(true);
   });
 
@@ -40,16 +40,22 @@ describe('validateSkyDirection1Text function', () => {
 
   test('validates fractional seconds', () => {
     expect(validateSkyDirection1Text('12:34:56.789')).toBe(true); // Valid fractional seconds
-    expect(validateSkyDirection1Text('-12:34:56.789')).toBe(true); // Valid negative fractional seconds
-    expect(validateSkyDirection1Text('12:34:56.789 ')).toBe(true); //Valid with trailing whitespace
+     expect(validateSkyDirection1Text('12:34:56.789 ')).toBe(true); //Valid with trailing whitespace
   });
 
   test('rejects out-of-range values', () => {
     expect(validateSkyDirection1Text('91:00:00')).toBe(false); // Hours out of range
-    expect(validateSkyDirection1Text('-91:00:00')).toBe(false); // Negative hours out of range
+    expect(validateSkyDirection1Text('-91:00:00')).toBe(false); // Both Negative and out of range
     expect(validateSkyDirection1Text('12:60:00')).toBe(false); // Minutes out of range
     expect(validateSkyDirection1Text('12:34:60')).toBe(false); // Seconds out of range
+
+
   });
+
+  test('rejects negativevalues', () => {
+    expect(validateSkyDirection1Text('-12:34:56')).toBe(false); // Negative value is invalid
+    expect(validateSkyDirection1Text('-12:34:56.789')).toBe(false); // Still invalid even with fractional seconds
+   });
 
   test('rejects targets not visible', () => {
     expect(validateSkyDirection1Text('50:00:00')).toBe(false);

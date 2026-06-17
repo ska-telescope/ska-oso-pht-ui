@@ -1,4 +1,4 @@
-import { describe, test } from 'vitest';
+import { describe, test, expect } from 'vitest';
 import { render } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import '@testing-library/jest-dom';
@@ -50,8 +50,8 @@ describe('validateSkyDirection2Text function', () => {
   test('rejects out-of-range values', () => {
     expect(validateSkyDirection2Text('91:00:00')).toBe('1'); // Hours out of range
     expect(validateSkyDirection2Text('-91:00:00')).toBe('1'); // Negative hours out of range
-    expect(validateSkyDirection2Text('12:60:00')).toBe('1'); // Minutes out of range
-    expect(validateSkyDirection2Text('12:34:60')).toBe('1'); // Seconds out of range
+    expect(validateSkyDirection2Text('12:60:00')).toBe('0'); // Invalid format (60 min has no meaning in context of sky direction)
+    expect(validateSkyDirection2Text('12:34:60')).toBe('0'); // Invalid format (60 sec has no meaning in context of sky direction)
   });
 });
 
