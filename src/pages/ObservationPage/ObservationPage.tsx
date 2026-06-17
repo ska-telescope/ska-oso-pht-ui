@@ -23,6 +23,7 @@ import DeleteObservationConfirmation from '../../components/alerts/deleteObserva
 import ObservationEntry from '../entry/ObservationEntry/ObservationEntry';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { useNotify } from '@/utils/notify/useNotify';
 import TableObservations from '@/components/table/tableObservations/TableObservations';
 
 const PAGE = PAGE_OBSERVATION;
@@ -31,6 +32,7 @@ const GAP = 4;
 export default function ObservationPage() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
+  const { notifyWarning } = useNotify();
   const { autoLink, osdCyclePolicy } = useOSDAccessors();
   const validateProposal = useValidateProposal();
 
@@ -113,6 +115,11 @@ export default function ObservationPage() {
   };
 
   React.useEffect(() => {
+    if (!getProposal()?.id) {
+      notifyWarning(t('error.proposalNotLoaded'));
+      navigate(PATH[0]);
+      return;
+    }
     setValidateToggle(!validateToggle);
     setElementsO(getProposal().observations?.map(rec => popElementO(rec)) ?? []);
   }, []);
