@@ -217,7 +217,7 @@ export default function TargetListSection() {
                 />
               )}
             </Tabs>
-            {value === 0 && <TargetEntry referenceCoordinateType={REFERENCE_COORDINATE_TYPE_ICRS.value} textAlign="left" />}
+            {value === 0 && <TargetEntry textAlign="left" />}
             {value === 1 && <TargetFileImport referenceCoordinateType={REFERENCE_COORDINATE_TYPE_ICRS.value} />}
             {value === 2 && <SpatialImaging />}
           </Box>

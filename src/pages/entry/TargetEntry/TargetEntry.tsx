@@ -30,7 +30,6 @@ import autoLinking from '@/utils/autoLinking/AutoLinking';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import VelocityTypeField from '@/components/fields/velocityType/VelocityType';
 interface TargetEntryProps {
-  referenceCoordinateType: number;
   setTarget?: Function;
   target?: Target;
   textAlign?: string;
@@ -42,7 +41,6 @@ interface TargetEntryProps {
 const GAP = 2;
 
 export default function TargetEntry({
-  referenceCoordinateType,
   setTarget = undefined,
   target = undefined,
   onRAFieldErrorChange,
@@ -72,7 +70,7 @@ export default function TargetEntry({
   const [velUnit, setVelUnit] = React.useState(0);
   const [redshift, setRedshift] = React.useState('');
   const [referenceFrame, setReferenceFrame] = React.useState(REFERENCE_COORDINATE_TYPE_ICRS.value);
-  const [referenceCoordinates, setReferenceCoordinates] = React.useState(REFERENCE_COORDINATE_TYPE_ICRS.label);
+  const [referenceCoordinates, setReferenceCoordinates] = React.useState(REFERENCE_COORDINATE_TYPE_ICRS.value);
   const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
 
   React.useEffect(() => {
@@ -350,7 +348,7 @@ export default function TargetEntry({
     };
 
     const getCoordinates = async () => {
-      const response = await GetCoordinates(name, referenceCoordinateType);
+      const response = await GetCoordinates(name, referenceCoordinates);
       processCoordinatesResults(response);
     };
 
@@ -377,7 +375,7 @@ export default function TargetEntry({
     wrapper(
       <ReferenceCoordinatesField
         setValue={setReferenceCoordinates}
-        value={referenceCoordinates.toUpperCase()}
+        value={referenceCoordinates.toString()}
       />
     );
 
@@ -416,7 +414,7 @@ export default function TargetEntry({
       <SkyDirection1
         required={isRequired()}
         setValue={setTheRA}
-        skyUnits={referenceCoordinateType}
+        skyUnits={referenceCoordinates}
         value={ra}
         valueBlur={blurRA}
         valueFocus={() => setHelp('skyDirection.1')}
@@ -429,7 +427,7 @@ export default function TargetEntry({
       <SkyDirection2
         required={isRequired()}
         setValue={setTheDec}
-        skyUnits={referenceCoordinateType}
+        skyUnits={referenceCoordinates}
         value={dec}
         valueFocus={() => setHelp('skyDirection.2')}
         valueBlur={blurDec}
