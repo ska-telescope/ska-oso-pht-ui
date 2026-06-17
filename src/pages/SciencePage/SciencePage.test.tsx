@@ -155,6 +155,10 @@ import PutUploadPDF from '@services/axios/put/putUploadPDF/putUploadPDF';
 describe('SciencePage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockStore.application.content2 = {
+      ...mockProposal,
+      sciencePDF: mockProposal.sciencePDF ? { ...mockProposal.sciencePDF } : null
+    };
     capturedSetFile = undefined;
     capturedUploadFunction = undefined;
     capturedUploadDisabled = undefined;
@@ -275,6 +279,7 @@ describe('SciencePage', () => {
     });
 
     it('clear file: error cleared and proposal state cleared', async () => {
+      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
       mockGetPdfPageCount.mockResolvedValue(5);
       wrapper(<SciencePage />);
 
@@ -358,9 +363,20 @@ describe('SciencePage', () => {
       expect(capturedUploadDisabled).toBe(false);
     });
 
-    it('clearDisabled is true when an uploaded science PDF exists', () => {
+    it('clearDisabled is true when an uploaded science PDF exists and there is no PDF error', () => {
       wrapper(<SciencePage />);
       expect(capturedClearDisabled).toBe(true);
+    });
+
+    it('clearDisabled becomes false when there is a PDF validation error', async () => {
+      wrapper(<SciencePage />);
+      act(() => {
+        capturedSetFile!(makeNonPdfFile());
+      });
+      await waitFor(() => {
+        expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
+      });
+      expect(capturedClearDisabled).toBe(false);
     });
 
     it('dropzone pre-filters file type to PDF in picker configuration', () => {
@@ -425,6 +441,7 @@ describe('SciencePage', () => {
     });
 
     it('FileUpload is remounted when clear is triggered via setFile, clearing the filename', async () => {
+      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
       const FileUploadMock = (await import('@ska-telescope/ska-gui-components')).FileUpload as any;
       wrapper(<SciencePage />);
       const callsAfterRender = FileUploadMock.mock.calls.length;
@@ -439,6 +456,28 @@ describe('SciencePage', () => {
       // originalFile (the `file` prop) must be cleared, otherwise the dropzone
       // re-renders the cleared filename after the remount.
       expect(capturedFile).toBeNull();
+    });
+
+    it('clearing after validation error does not remove an already uploaded PDF', async () => {
+      wrapper(<SciencePage />);
+
+      act(() => {
+        capturedSetFile!(makeNonPdfFile());
+      });
+      await waitFor(() => {
+        expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
+      });
+
+      act(() => {
+        capturedSetFile!('');
+      });
+
+      await waitFor(() => {
+        expect(screen.queryByText('pdfUpload.science.invalidFileError')).not.toBeInTheDocument();
+      });
+      expect(mockStore.updateAppContent2).not.toHaveBeenCalledWith(
+        expect.objectContaining({ sciencePDF: null })
+      );
     });
 
     it('uploadDisabled is true when pdfError is set', async () => {

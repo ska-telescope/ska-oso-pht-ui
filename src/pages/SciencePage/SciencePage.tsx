@@ -125,6 +125,7 @@ export default function SciencePage() {
           }
         });
     } else {
+      const hasUploadedSciencePdf = !!getProposal()?.sciencePDF?.isUploadedPdf;
       validationFileRef.current = null;
       setPdfError(null);
       /*
@@ -135,12 +136,16 @@ export default function SciencePage() {
        * TODO: switch to a first-class ska-gui-components API when available.
        */
       setFileUploadKey(k => k + 1);
-      setOriginalFile(null);
-      setProposal({
-        ...getProposal(),
-        sciencePDF: null
-      });
-      setCurrentFile(null);
+      if (hasUploadedSciencePdf) {
+        setOriginalFile(getProposal()?.sciencePDF?.documentId + t('fileType.pdf'));
+      } else {
+        setOriginalFile(null);
+        setProposal({
+          ...getProposal(),
+          sciencePDF: null
+        });
+        setCurrentFile(null);
+      }
     }
   };
 
@@ -390,7 +395,7 @@ export default function SciencePage() {
                   setFile={setFile}
                   setStatus={setUploadStatus}
                   testId="fileUpload"
-                  clearDisabled={!!getProposal()?.sciencePDF?.isUploadedPdf}
+                  clearDisabled={!!getProposal()?.sciencePDF?.isUploadedPdf && !pdfError}
                   uploadDisabled={!!pdfError}
                   uploadFunction={uploadPdftoSignedUrl}
                   uploadToolTip={
