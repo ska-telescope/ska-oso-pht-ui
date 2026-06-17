@@ -24,6 +24,7 @@ import {
 } from './../constants';
 import Proposal from './../types/proposal';
 import { countWords, isFrequencyRangeOutOfBand } from '../helpers';
+import { useOSDAccessors } from '../osd/useOSDAccessors/useOSDAccessors';
 import phtTranslations from '../../../public/locales/en/pht.json';
 
 export const validateTitlePage = (proposal: Proposal) => {
@@ -91,44 +92,39 @@ export const validateObservationPage = (proposal: Proposal, autoLink: boolean) =
   }
 };
 
-export const isFrequencyOutOfRange = (
-  centralFrequency: number,
-  bandwidth: number,
-  isLow: boolean,
-  observingBand: string,
-  osdLOW: any,
-  osdMID: any
-): boolean => {
-  let minHz = 0;
-  let maxHz = 0;
+export const useIsFrequencyOutOfRange = () => {
+  const { osdLOW, osdMID } = useOSDAccessors();
 
-  if (isLow) {
-    minHz = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
-    maxHz = osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0;
-  } else {
-    const receiver = osdMID?.basicCapabilities?.receiverInformation?.find(
-      (e: any) => e.rxId === observingBand
-    );
-    minHz = receiver?.minFrequencyHz ?? 0;
-    maxHz = receiver?.maxFrequencyHz ?? 0;
-  }
+  return (centralFrequency: number, bandwidth: number, isLow: boolean, observingBand: string): boolean => {
+    let minHz = 0;
+    let maxHz = 0;
 
-  return isFrequencyRangeOutOfBand(centralFrequency, bandwidth, isLow, minHz, maxHz);
+    if (isLow) {
+      minHz = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
+      maxHz = osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0;
+    } else {
+      const receiver = osdMID?.basicCapabilities?.receiverInformation?.find(
+        (e: any) => e.rxId === observingBand
+      );
+      minHz = receiver?.minFrequencyHz ?? 0;
+      maxHz = receiver?.maxFrequencyHz ?? 0;
+    }
+
+    return isFrequencyRangeOutOfBand(centralFrequency, bandwidth, isLow, minHz, maxHz);
+  };
 };
 
-export const isObservationFrequencyOutOfRange = (
-  obs: Observation,
-  osdLOW: any,
-  osdMID: any
-): boolean =>
-  isFrequencyOutOfRange(
-    obs.centralFrequency,
-    obs.type === TYPE_ZOOM ? (obs.bandwidth ?? 0) : (obs.continuumBandwidth ?? 0),
-    obs.telescope === TELESCOPE_LOW_NUM,
-    String(obs.observingBand ?? ''),
-    osdLOW,
-    osdMID
-  );
+export const useIsObservationFrequencyOutOfRange = () => {
+  const isFrequencyOutOfRange = useIsFrequencyOutOfRange();
+
+  return (obs: Observation): boolean =>
+    isFrequencyOutOfRange(
+      obs.centralFrequency,
+      obs.type === TYPE_ZOOM ? (obs.bandwidth ?? 0) : (obs.continuumBandwidth ?? 0),
+      obs.telescope === TELESCOPE_LOW_NUM,
+      String(obs.observingBand ?? '')
+    );
+};
 
 export const validateTechnicalPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
@@ -191,33 +187,29 @@ export const validateLinkingPage = (proposal: Proposal) => {
   return result[count];
 };
 
-export const validateProposal = (
-  proposal: Proposal,
-  autoLink: boolean = false,
-  osdLOW?: any,
-  osdMID?: any
-) => {
+export const useValidateProposal = () => {
+  const { autoLink } = useOSDAccessors();
+  const isObservationFrequencyOutOfRange = useIsObservationFrequencyOutOfRange();
 
-  const obsStatus = validateObservationPage(proposal, autoLink);
-  const freqOutOfRange =
-    osdLOW !== undefined || osdMID !== undefined
-      ? (proposal.observations ?? []).some(obs =>
-          isObservationFrequencyOutOfRange(obs, osdLOW, osdMID)
-        )
-      : false;
-  return [
-    validateTitlePage(proposal),
-    validateTeamPage(proposal),
-    validateDetailsPage(proposal),
-    validateSciencePage(proposal),
-    validateTargetPage(proposal),
-    obsStatus === STATUS_OK && freqOutOfRange ? STATUS_ERROR : obsStatus,
-    validateTechnicalPage(proposal),
-    validateSDPPage(proposal),
-    validateLinkingPage(proposal),
-    validateCalibrationPage(proposal)
-    /* See SRCNet INACTIVE - validateSRCPage() */
-  ];
+  return (proposal: Proposal) => {
+    const obsStatus = validateObservationPage(proposal, autoLink);
+    const freqOutOfRange = (proposal.observations ?? []).some(obs =>
+      isObservationFrequencyOutOfRange(obs)
+    );
+    return [
+      validateTitlePage(proposal),
+      validateTeamPage(proposal),
+      validateDetailsPage(proposal),
+      validateSciencePage(proposal),
+      validateTargetPage(proposal),
+      obsStatus === STATUS_OK && freqOutOfRange ? STATUS_ERROR : obsStatus,
+      validateTechnicalPage(proposal),
+      validateSDPPage(proposal),
+      validateLinkingPage(proposal),
+      validateCalibrationPage(proposal)
+      /* See SRCNet INACTIVE - validateSRCPage() */
+    ];
+  };
 };
 
 export const validateProposalNavigation = (proposal: Proposal, page: number, checkLink = false) => {

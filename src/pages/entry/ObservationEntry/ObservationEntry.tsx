@@ -89,7 +89,7 @@ import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalc
 import updateSensCalc from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import lowAA2Image from '@assets/low_aa2.png';
-import { isFrequencyOutOfRange } from '@/utils/validation/validation';
+import { useIsFrequencyOutOfRange } from '@/utils/validation/validation';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_OBSERVATION;
@@ -113,6 +113,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     selectedPolicy,
     telescopeBand
   } = useOSDAccessors();
+  const isFrequencyOutOfRange = useIsFrequencyOutOfRange();
 
   const isEdit = () => locationProperties.state !== null || data !== undefined;
 
@@ -454,14 +455,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const showWarning = () => {
     const useBandwidth = observationType === TYPE_ZOOM ? bandwidth : continuumBandwidth;
-    return isFrequencyOutOfRange(
-      centralFrequency,
-      useBandwidth,
-      isLow(),
-      String(observingBand),
-      osdLOW,
-      osdMID
-    );
+    return isFrequencyOutOfRange(centralFrequency, useBandwidth, isLow(), String(observingBand));
   };
 
   const emptyField = () => <></>;

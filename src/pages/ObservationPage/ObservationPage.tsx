@@ -5,7 +5,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { Proposal } from '@utils/types/proposal.tsx';
-import { validateProposal } from '@utils/validation/validation.tsx';
+import { useValidateProposal } from '@utils/validation/validation.tsx';
 import {
   cypressToken,
   PAGE_CALIBRATION,
@@ -31,7 +31,8 @@ const GAP = 4;
 export default function ObservationPage() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
-  const { autoLink, osdCyclePolicy, osdLOW, osdMID } = useOSDAccessors();
+  const { autoLink, osdCyclePolicy } = useOSDAccessors();
+  const validateProposal = useValidateProposal();
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -124,7 +125,7 @@ export default function ObservationPage() {
   React.useEffect(() => {
     const proposal = getProposal();
     if (!proposal) return;
-    const statuses = validateProposal(proposal, autoLink, osdLOW, osdMID);
+    const statuses = validateProposal(proposal);
     setTheProposalState(statuses[PAGE], statuses[PAGE_LINKING], statuses[PAGE_CALIBRATION]);
   }, [validateToggle]);
 

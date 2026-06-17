@@ -37,7 +37,7 @@ import { accessSubmit } from '@/utils/aaa/aaaUtils';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import { validateProposal } from '@/utils/validation/validation';
+import { useValidateProposal } from '@/utils/validation/validation';
 import { countWords } from '@utils/helpers.ts';
 import phtTranslations from '../../../../public/locales/en/pht.json';
 
@@ -50,7 +50,8 @@ const widthWrapStatusArray = '1500px';
 
 export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) {
   const theme = useTheme();
-  const { autoLink, isSV, osdLOW, osdMID } = useOSDAccessors();
+  const { isSV } = useOSDAccessors();
+  const validateProposal = useValidateProposal();
   const LG = useMediaQuery(theme.breakpoints.down('lg'), {
     defaultMatches: false,
     noSsr: true
@@ -103,7 +104,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     setValidationResults([]);
     let results: string[] = [];
 
-    const statuses = validateProposal(getProposal(), autoLink, osdLOW, osdMID);
+    const statuses = validateProposal(getProposal());
     updateAppContent1(statuses);
 
     statuses.forEach((status, key) => {

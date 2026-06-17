@@ -22,7 +22,7 @@ import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
 import Proposal from '@/utils/types/proposal';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
-import { validateProposal } from '@/utils/validation/validation';
+import { useValidateProposal } from '@/utils/validation/validation';
 import {
   cypressToken,
   DUMMY_PROPOSAL_ID,
@@ -52,7 +52,8 @@ export default function LandingPage() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const { notifyError, notifySuccess, notifyWarning } = useNotify();
-  const { autoLink, isSV, osdCycleId, osdLOW, osdMID, setSelectedPolicyByCycleId } = useOSDAccessors();
+  const { isSV, osdCycleId, setSelectedPolicyByCycleId } = useOSDAccessors();
+  const validateProposal = useValidateProposal();
   const theme = useTheme();
 
   const {
@@ -167,7 +168,7 @@ export default function LandingPage() {
       return false;
     } else {
       setSelectedPolicyByCycleId((response as Proposal).cycle ?? '');
-      updateAppContent1(validateProposal(response, autoLink, osdLOW, osdMID));
+      updateAppContent1(validateProposal(response));
       updateAppContent2(response);
       storeProposalCopy(response);
       return true;
@@ -230,7 +231,7 @@ export default function LandingPage() {
         status: PROPOSAL_STATUS.DRAFT
       };
       setProposal(clonedProposal);
-      updateAppContent1(validateProposal(clonedProposal, autoLink, osdLOW, osdMID));
+      updateAppContent1(validateProposal(clonedProposal));
       // Create a new access entry for the PI.  Saves doing the endpoint
       const newAcc: Partial<ProposalAccess> = {
         prslId: response.id,
