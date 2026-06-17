@@ -395,6 +395,20 @@ describe('SciencePage', () => {
       });
     });
 
+    it('FileUpload is remounted when clear is triggered via setFile, clearing the filename', async () => {
+      const FileUploadMock = (await import('@ska-telescope/ska-gui-components')).FileUpload as any;
+      wrapper(<SciencePage />);
+      const callsAfterRender = FileUploadMock.mock.calls.length;
+
+      act(() => {
+        capturedSetFile!('');
+      });
+
+      await waitFor(() => {
+        expect(FileUploadMock.mock.calls.length).toBeGreaterThan(callsAfterRender);
+      });
+    });
+
     it('uploadDisabled is true when pdfError is set', async () => {
       mockGetPdfPageCount.mockResolvedValue(5);
       wrapper(<SciencePage />);

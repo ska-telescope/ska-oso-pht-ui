@@ -125,6 +125,12 @@ export default function SciencePage() {
     } else {
       validationFileRef.current = null;
       setPdfError(null);
+      /*
+       * FileUpload currently has no explicit controlled-clear sync hook for externally setting
+       * display name to empty. Force a re-mount on clear so the internal filename state resets.
+       * TODO: switch to a first-class ska-gui-components API when available.
+       */
+      setFileUploadKey(k => k + 1);
       setProposal({
         ...getProposal(),
         sciencePDF: null
