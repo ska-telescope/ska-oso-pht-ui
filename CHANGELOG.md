@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 UNRELEASED
 ----------
 * Bugfix: Fix target field validation and formatting
+* Bugfix: If proposal is not properly loaded due to browser refresh - prompt user to reload manually (may need a better fix later)
 * Bugfix: Fix Invalid Frequency Warning not highligted on breadcrumbs
 * Bugfix: Changing summary should not trigger reset of project
 * Bugfix: Fix Clone Proposal to make a copy of the data from the original proposal and revalidate correctly after cloning
