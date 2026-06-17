@@ -1,8 +1,8 @@
-import { TextEntry } from '@ska-telescope/ska-gui-components';
+import { DropDown } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/material';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-
-// NOTE : DISABLED AT THIS TIME UNTIL GALACTIC IS IMPLEMENTED FULLY
+import React from 'react';
+import { REFERENCE_COORDINATE_OPTIONS } from '@utils/constants.ts';
 
 interface ReferenceCoordinatesFieldProps {
   setValue?: Function;
@@ -19,32 +19,11 @@ export default function ReferenceCoordinatesField({
   const FIELD = 'referenceCoordinates';
 
   const ReferenceCoordinatesValueField = () => {
-    const OPTIONS = [0, 1, 2];
-
-    const getOptions = () => {
-  const options = OPTIONS.map(e => ({
-    label: t(FIELD + '.' + e),
-    value: e
-  }));
-
-  console.log('Coordinate options:', options);
-
-  return options;
-    const getOptions = () => {
-      const options = OPTIONS.map(e => ({
-        label: t(FIELD + '.' + e),
-        value: e
-      }));
-
-      return options;
-    };
-
 
     return (
       <Box pt={1}>
-        <TextEntry
-          disabled={OPTIONS.length < 2}
-          options={getOptions()}
+        <DropDown
+          options={REFERENCE_COORDINATE_OPTIONS}
           required
           label={t(FIELD + '.label')}
           testId={FIELD + 'Type'}
