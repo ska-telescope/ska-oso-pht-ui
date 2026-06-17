@@ -101,27 +101,29 @@ export default function SciencePage() {
   const setFile = (theFile: File | '') => {
     if (theFile instanceof File) {
       validationFileRef.current = theFile;
-      validatePdf(theFile).then(error => {
-        if (validationFileRef.current === theFile) {
-          setPdfError(error);
-          if (error !== null) {
-            /*
-             * key={fileUploadKey}: FileUpload owns its displayed filename in internal
-             * React state, and setting the `file` prop to null/'' does not clear it
-             * (the component's useEffect guard is `v && …`, so falsy values are ignored).
-             * Incrementing the key forces React to unmount the old instance and mount a
-             * fresh one — resetting the filename display — whenever validation rejects a
-             * file.
-             */
+      validatePdf(theFile)
+        .then(error => {
+          if (validationFileRef.current === theFile) {
+            setPdfError(error);
+            if (error !== null) {
+              /*
+               * key={fileUploadKey}: FileUpload owns its displayed filename in internal
+               * React state, and setting the `file` prop to null/'' does not clear it
+               * (the component's useEffect guard is `v && …`, so falsy values are ignored).
+               * Incrementing the key forces React to unmount the old instance and mount a
+               * fresh one — resetting the filename display — whenever validation rejects a
+               * file.
+               */
+              setFileUploadKey(k => k + 1);
+            }
+          }
+        })
+        .catch(() => {
+          if (validationFileRef.current === theFile) {
+            setPdfError(t('pdfUpload.science.invalidFileError'));
             setFileUploadKey(k => k + 1);
           }
-        }
-      }).catch(() => {
-        if (validationFileRef.current === theFile) {
-          setPdfError(t('pdfUpload.science.invalidFileError'));
-          setFileUploadKey(k => k + 1);
-        }
-      });
+        });
     } else {
       validationFileRef.current = null;
       setPdfError(null);
@@ -170,15 +172,17 @@ export default function SciencePage() {
 
     const selectedFile = target.files[0];
     validationFileRef.current = selectedFile;
-    validatePdf(selectedFile).then(error => {
-      if (validationFileRef.current === selectedFile) {
-        setPdfError(error);
-      }
-    }).catch(() => {
-      if (validationFileRef.current === selectedFile) {
-        setPdfError(t('pdfUpload.science.invalidFileError'));
-      }
-    });
+    validatePdf(selectedFile)
+      .then(error => {
+        if (validationFileRef.current === selectedFile) {
+          setPdfError(error);
+        }
+      })
+      .catch(() => {
+        if (validationFileRef.current === selectedFile) {
+          setPdfError(t('pdfUpload.science.invalidFileError'));
+        }
+      });
   };
 
   const uploadPdftoSignedUrl = async (theFile: any) => {
@@ -238,44 +242,44 @@ export default function SciencePage() {
 
   const deletePdfUsingSignedUrl = async () => {
     try {
-          const proposal = getProposal();
-          const signedUrl = await GetPresignedDeleteUrl(authClient, `${proposal.id}-science.pdf`);
+      const proposal = getProposal();
+      const signedUrl = await GetPresignedDeleteUrl(authClient, `${proposal.id}-science.pdf`);
 
-          if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
+      if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
 
-          const deleteResult = await DeletePDF(signedUrl);
+      const deleteResult = await DeletePDF(signedUrl);
 
-          if (deleteResult.error || deleteResult === 'error.API_UNKNOWN_ERROR') {
-            throw new Error('Not able to Delete Science PDF');
-          }
+      if (deleteResult.error || deleteResult === 'error.API_UNKNOWN_ERROR') {
+        throw new Error('Not able to Delete Science PDF');
+      }
 
-          /*
-           * SW: sciencePDF was set to sciencePDFDeleted. It seems deliberate, but I don't know why
-           * it would be done as it had the effect of making it look like a phantom PDF had been
-           * uploaded.
-          */
-          // const sciencePDFDeleted = {
-          //   documentId: `science-doc-${proposal.id}`,
-          //   isUploadedPdf: false
-          // };
+      /*
+       * SW: sciencePDF was set to sciencePDFDeleted. It seems deliberate, but I don't know why
+       * it would be done as it had the effect of making it look like a phantom PDF had been
+       * uploaded.
+       */
+      // const sciencePDFDeleted = {
+      //   documentId: `science-doc-${proposal.id}`,
+      //   isUploadedPdf: false
+      // };
 
-          setProposal({
-            ...getProposal(),
-            sciencePDF: null,
-            scienceLoadStatus: FileUploadStatus.INITIAL
-          });
+      setProposal({
+        ...getProposal(),
+        sciencePDF: null,
+        scienceLoadStatus: FileUploadStatus.INITIAL
+      });
 
-          /*
-           * FileUpload has no controlled-clear API: its file-prop sync effect ignores falsy values, so
-           * clearing the displayed name after delete needs both (a) a remount via the key to reset its
-           * internal filename state and (b) originalFile (the `file` prop) set to null, since the
-           * dropzone renders the `file` prop directly as the selected file. Until a first-class
-           * controlled clear API exists in ska-gui-components.
-           */
-          setFileUploadKey(k => k + 1);
-          setOriginalFile(null);
-          notifySuccess(t('pdfDelete.science.success'));
-        } catch (e) {
+      /*
+       * FileUpload has no controlled-clear API: its file-prop sync effect ignores falsy values, so
+       * clearing the displayed name after delete needs both (a) a remount via the key to reset its
+       * internal filename state and (b) originalFile (the `file` prop) set to null, since the
+       * dropzone renders the `file` prop directly as the selected file. Until a first-class
+       * controlled clear API exists in ska-gui-components.
+       */
+      setFileUploadKey(k => k + 1);
+      setOriginalFile(null);
+      notifySuccess(t('pdfDelete.science.success'));
+    } catch (e) {
       new Error(t('pdfDelete.science.error'));
       notifyError(t('pdfDelete.science.error'));
     }
@@ -398,7 +402,11 @@ export default function SciencePage() {
                   suffix={uploadSuffix()}
                 />
               </Box>
-              {pdfError && <FormHelperText error sx={{ ml: 1.75 }}>{pdfError}</FormHelperText>}
+              {pdfError && (
+                <FormHelperText error sx={{ ml: 1.75 }}>
+                  {pdfError}
+                </FormHelperText>
+              )}
             </>
           )}
         </Grid>
