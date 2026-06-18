@@ -170,14 +170,15 @@ export const getUniqueMostRecentItems = (data: any[], idKey: string) => {
 };
 
 export const leadZero = (coordinate: String): String => {
-  const arr = coordinate.split(':');
+  const normalised = coordinate.toString().replace(/^\+/, '');
+  const arr = normalised.split(':');
   const num = Number(arr[0]);
   if (arr?.length === 3 && num > -1 && num < 10 && arr[0]?.length < 2) {
     return '0' + arr[0] + ':' + arr[1] + ':' + arr[2];
   } else if (arr?.length === 3 && num > -10 && num < 0 && arr[0].length < 3) {
     return '-0' + Math.abs(Number(arr[0])) + ':' + arr[1] + ':' + arr[2];
   }
-  return coordinate;
+  return normalised;
 };
 
 /*********************************************************** map values *********************************************************/

@@ -163,4 +163,12 @@ describe('leadZero', () => {
     const result = leadZero('0:30:15');
     expect(result).toBe('00:30:15');
   });
+
+  it('strips leading + and pads single-digit hours', () => {
+    expect(leadZero('+2:34:56')).toBe('02:34:56');
+  });
+
+  it('strips leading + from already two-digit hours', () => {
+    expect(leadZero('+12:34:56')).toBe('12:34:56');
+  });
 });
