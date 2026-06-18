@@ -54,6 +54,9 @@ export default function SciencePage() {
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
+  const getSciencePdfDisplayFilename = () =>
+    getProposal()?.sciencePDF?.documentId + t('fileType.pdf');
+
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
     const temp: number[] = [];
@@ -137,7 +140,7 @@ export default function SciencePage() {
        */
       setFileUploadKey(k => k + 1);
       if (hasUploadedSciencePdf) {
-        setOriginalFile(getProposal()?.sciencePDF?.documentId + t('fileType.pdf'));
+        setOriginalFile(getSciencePdfDisplayFilename());
       } else {
         setOriginalFile(null);
         setProposal({
@@ -309,7 +312,7 @@ export default function SciencePage() {
     setValidateToggle(!validateToggle);
     if (getProposal()?.sciencePDF?.documentId) {
       setCurrentFile(getProposal()?.sciencePDF?.documentId);
-      setOriginalFile(getProposal()?.sciencePDF?.documentId + t('fileType.pdf'));
+      setOriginalFile(getSciencePdfDisplayFilename());
     }
     setHelp('page.' + PAGE + '.help');
   }, []);
