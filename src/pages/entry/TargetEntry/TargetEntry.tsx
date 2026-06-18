@@ -182,15 +182,11 @@ export default function TargetEntry({
 
 
   const blurRA = () => {
-    const formatted = leadZero(ra.trimEnd()).toString();
-    setRA(formatted);
-    if (setTarget) setTarget({ ...target, raStr: formatted });
+    setRA(leadZero(ra.trimEnd()).toString());
   };
 
   const blurDec = () => {
-    const formatted = leadZero(dec.trimEnd()).toString();
-    setDec(formatted);
-    if (setTarget) setTarget({ ...target, decStr: formatted });
+    setDec(leadZero(dec.trimEnd()).toString());
   };
 
   const blurName = () => {
@@ -201,15 +197,11 @@ export default function TargetEntry({
 
 
   const blurVel = () => {
-    const formatted = vel.trimEnd();
-    setVel(formatted);
-    if (setTarget) setTarget({ ...target, vel: formatted });
+    setVel(vel.trimEnd());
   };
 
   const blurRedshift = () => {
-    const formatted = redshift.trimEnd();
-    setRedshift(formatted);
-    if (setTarget) setTarget({ ...target, redshift: formatted });
+    setRedshift(redshift.trimEnd());
   };
 
 
