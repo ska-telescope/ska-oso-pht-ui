@@ -21,5 +21,12 @@ declare module '@/env' {
     MSENTRA_TENANT_ID: string;
     MSENTRA_REDIRECT_URI: string;
     REACT_APP_OVERRIDE_GROUPS: string;
+    USE_INDIGO: string;
+    INDIGO_AUTHORITY: string;
+    INDIGO_CLIENT_ID: string;
+    INDIGO_REDIRECT_URI: string;
+    INDIGO_SCOPE: string;
+    INDIGO_AUDIENCE: string;
+    INDIGO_API_SCOPE: string;
   };
 }

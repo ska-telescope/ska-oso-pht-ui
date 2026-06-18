@@ -54,6 +54,20 @@ spec:
                   key: MSENTRA_TENANT_ID
             - name: MSENTRA_REDIRECT_URI
               value: {{ include "ska-oso-pht-ui.urls-msentraRedirectUri" . | quote }}
+            - name: USE_INDIGO
+              value: {{ .Values.runtimeEnv.useIndigo | toString | quote }}
+            - name: INDIGO_AUTHORITY
+              value: {{ .Values.runtimeEnv.indigoAuthority | quote }}
+            - name: INDIGO_CLIENT_ID
+              value: {{ .Values.runtimeEnv.indigoClientId | quote }}
+            - name: INDIGO_REDIRECT_URI
+              value: {{ include "ska-oso-pht-ui.urls-msentraRedirectUri" . | quote }}
+            - name: INDIGO_SCOPE
+              value: {{ .Values.runtimeEnv.indigoScope | quote }}
+            - name: INDIGO_AUDIENCE
+              value: {{ .Values.runtimeEnv.indigoAudience | quote }}
+            - name: INDIGO_API_SCOPE
+              value: {{ .Values.runtimeEnv.indigoApiScope | quote }}
           livenessProbe:
             httpGet:
               path: /

@@ -13,6 +13,13 @@ runtimeEnv:
   domain: "https://sdhp.stfc.skao.int"
   skaLoginAppUrl: ""
   msentraRedirectUri: ""
+  useIndigo: false
+  indigoAuthority: ""
+  indigoClientId: ""
+  indigoRedirectUri: ""
+  indigoScope: "openid profile email"
+  indigoAudience: ""
+  indigoApiScope: ""
 
 component: pht-ui
 function: ui

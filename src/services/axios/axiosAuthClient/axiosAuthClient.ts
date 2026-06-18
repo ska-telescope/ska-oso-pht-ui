@@ -1,7 +1,8 @@
 import axios, { AxiosError } from 'axios';
 import { useMsal } from '@azure/msal-react';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
-import { MSENTRA_API_URI } from '@/utils/constants';
+import { INDIGO_API_SCOPE, MSENTRA_API_URI } from '@/utils/constants';
+import { getUseIndigo } from '@/utils/authConfig';
 import { isLocalhost, setLocalTokenProvider } from '../authToken/localAuthToken';
 
 export enum LogLevel {
@@ -16,7 +17,9 @@ const HTTP = 'http://';
 const HTTPS = 'https://';
 
 export const loginRequest = {
-  scopes: [`${MSENTRA_API_URI}/pht:readwrite ${MSENTRA_API_URI}/pht:update `]
+  scopes: getUseIndigo()
+    ? [INDIGO_API_SCOPE || 'openid profile email']
+    : [`${MSENTRA_API_URI}/pht:readwrite ${MSENTRA_API_URI}/pht:update`]
 };
 
 const useAxiosAuthClient = (baseURL: string = '/') => {
