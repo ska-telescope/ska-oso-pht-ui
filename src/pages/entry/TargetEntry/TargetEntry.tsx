@@ -230,7 +230,6 @@ export default function TargetEntry({
         return;
       } else {
         AddTheTarget();
-        clearForm();
       }
     };
 
@@ -261,6 +260,7 @@ export default function TargetEntry({
         const defaults = await autoLinking(newTarget, getProposal, setProposal);
         if (defaults && defaults.success) {
           notifySuccess(t('autoLink.targetSuccess'), NOTIFICATION_DELAY_IN_SECONDS);
+          clearForm();
         } else {
           notifyError(defaults?.error ?? t('autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
         }
@@ -282,6 +282,7 @@ export default function TargetEntry({
         };
         setProposal(updatedProposal);
         notifySuccess(t('addTarget.success'), NOTIFICATION_DELAY_IN_SECONDS);
+        clearForm();
       };
       addTargetAsync();
     };
