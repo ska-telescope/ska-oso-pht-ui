@@ -52,12 +52,9 @@ describe('validateSkyDirection1Text function', () => {
 
   });
 
-  test('rejects negativevalues', () => {
-    expect(validateSkyDirection1Text('-12:34:56')).toBe(false); // Negative value is invalid
-    expect(validateSkyDirection1Text('-12:34:56.789')).toBe(false); // Still invalid even with fractional seconds
   test('rejects negative values', () => {
-    expect(validateSkyDirection1Text('-12:34:56')).toBe(false); // Negative value is invalid
-    expect(validateSkyDirection1Text('-12:34:56.789')).toBe(false); // Still invalid even with fractional seconds
+    expect(validateSkyDirection1Text('-12:34:56')).toBe(false);
+    expect(validateSkyDirection1Text('-12:34:56.789')).toBe(false);
   });
 
   test('rejects targets not visible', () => {
