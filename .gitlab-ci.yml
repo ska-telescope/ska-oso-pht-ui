@@ -144,3 +144,10 @@ include:
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/sonar-scan.gitlab-ci.yml'
     
+js-audit:
+  stage: scan
+  when: always
+
+sonar-scan:
+  stage: scan
+  when: always
