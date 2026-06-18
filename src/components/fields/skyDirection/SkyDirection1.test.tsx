@@ -20,47 +20,44 @@ describe('<SkyDirection1 />', () => {
 
 describe('validateSkyDirection1Text function', () => {
   test('validates correct equatorial format', () => {
-    expect(validateSkyDirection1Text('12:34:56')).toBe(true);
-    expect(validateSkyDirection1Text('2:34:56')).toBe(true);
-
-    expect(validateSkyDirection1Text('+12:34:56')).toBe(true);
+    expect(validateSkyDirection1Text('12:34:56')).toBeNull();
+    expect(validateSkyDirection1Text('2:34:56')).toBeNull();
+    expect(validateSkyDirection1Text('+12:34:56')).toBeNull();
   });
 
   test('rejects incorrect equatorial format', () => {
-    expect(validateSkyDirection1Text('123:45:67')).toBe(false); // Invalid hours
-    expect(validateSkyDirection1Text('12:345:67')).toBe(false); // Invalid minutes
-    expect(validateSkyDirection1Text('12:3:67')).toBe(false); // Invalid minutes
-    expect(validateSkyDirection1Text('12:34:567')).toBe(false); // Invalid seconds
-    expect(validateSkyDirection1Text('12:34:5')).toBe(false); // Invalid seconds
-    expect(validateSkyDirection1Text('12:34')).toBe(false); // Missing seconds
-    expect(validateSkyDirection1Text('12:34:')).toBe(false); // Missing seconds value
-    expect(validateSkyDirection1Text('')).toBe(false); // Empty string
-    expect(validateSkyDirection1Text('abc:def:ghi')).toBe(false); // Non-numeric input
+    expect(validateSkyDirection1Text('123:45:67')).toBe('0'); // Invalid hours
+    expect(validateSkyDirection1Text('12:345:67')).toBe('0'); // Invalid minutes
+    expect(validateSkyDirection1Text('12:3:67')).toBe('0'); // Invalid minutes
+    expect(validateSkyDirection1Text('12:34:567')).toBe('0'); // Invalid seconds
+    expect(validateSkyDirection1Text('12:34:5')).toBe('0'); // Invalid seconds
+    expect(validateSkyDirection1Text('12:34')).toBe('0'); // Missing seconds
+    expect(validateSkyDirection1Text('12:34:')).toBe('0'); // Missing seconds value
+    expect(validateSkyDirection1Text('')).toBe('0'); // Empty string
+    expect(validateSkyDirection1Text('abc:def:ghi')).toBe('0'); // Non-numeric input
   });
 
   test('validates fractional seconds', () => {
-    expect(validateSkyDirection1Text('12:34:56.789')).toBe(true); // Valid fractional seconds
-     expect(validateSkyDirection1Text('12:34:56.789 ')).toBe(true); //Valid with trailing whitespace
+    expect(validateSkyDirection1Text('12:34:56.789')).toBeNull(); // Valid fractional seconds
+    expect(validateSkyDirection1Text('12:34:56.789 ')).toBeNull(); // Valid with trailing whitespace
   });
 
   test('rejects out-of-range values', () => {
-    expect(validateSkyDirection1Text('91:00:00')).toBe(false); // Hours out of range
-    expect(validateSkyDirection1Text('-91:00:00')).toBe(false); // Both Negative and out of range
-    expect(validateSkyDirection1Text('12:60:00')).toBe(false); // Minutes out of range
-    expect(validateSkyDirection1Text('12:34:60')).toBe(false); // Seconds out of range
-
-
+    expect(validateSkyDirection1Text('91:00:00')).toBe('1'); // Hours out of range
+    expect(validateSkyDirection1Text('-91:00:00')).toBe('0'); // Negative sign → format error
+    expect(validateSkyDirection1Text('12:60:00')).toBe('1'); // Minutes out of range
+    expect(validateSkyDirection1Text('12:34:60')).toBe('1'); // Seconds out of range
   });
 
   test('rejects negative values', () => {
-    expect(validateSkyDirection1Text('-12:34:56')).toBe(false);
-    expect(validateSkyDirection1Text('-12:34:56.789')).toBe(false);
+    expect(validateSkyDirection1Text('-12:34:56')).toBe('0');
+    expect(validateSkyDirection1Text('-12:34:56.789')).toBe('0');
   });
 
   test('rejects targets not visible', () => {
-    expect(validateSkyDirection1Text('50:00:00')).toBe(false);
-    expect(validateSkyDirection1Text('89:50:00')).toBe(false);
-    expect(validateSkyDirection1Text('90:00:00')).toBe(false);
+    expect(validateSkyDirection1Text('50:00:00')).toBe('1');
+    expect(validateSkyDirection1Text('89:50:00')).toBe('1');
+    expect(validateSkyDirection1Text('90:00:00')).toBe('1');
   });
 });
 

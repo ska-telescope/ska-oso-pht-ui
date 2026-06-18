@@ -183,25 +183,28 @@ export const validateProposalNavigation = (proposal: Proposal, page: number, che
   return true;
 };
 
-export function validateSkyDirection1Text(value: string): boolean {
+export function validateSkyDirection1Text(value: string): string | null {
   const formatValid = /^\+?\d{1,2}:\d{2}:\d{2}((\.?)|(\.\d+\s+|\.\d+))$/.test(value);
   if (!formatValid) {
-    return false;
+    return '0';
   }
   const arr = value.split(':');
   if (arr?.length !== 3) {
-    return false;
+    return '0';
   }
   if (Number(arr[0]) > 24) {
-    return false;
+    return '1';
   }
   if (Number(arr[1]) > 59) {
-    return false;
+    return '1';
   }
   if (Number(arr[2]) >= 60) {
-    return false;
+    return '1';
   }
-  return !(Number(arr[0]) === 24 && (Number(arr[1]) > 0 || Number(arr[2]) > 0));
+  if (Number(arr[0]) === 24 && (Number(arr[1]) > 0 || Number(arr[2]) > 0)) {
+    return '1';
+  }
+  return null;
 }
 
 export function validateSkyDirection1Number(value: string): boolean {

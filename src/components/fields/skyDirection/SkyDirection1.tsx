@@ -30,7 +30,8 @@ export default function SkyDirection1Field({
   const { t } = useScopedTranslation();
   const FIELD = 'skyDirection';
 
-  const errorText = !required || validateSkyDirection1Text(value) ? '' : t(FIELD + '.error.1.0');
+  const parseResultText = validateSkyDirection1Text(value);
+  const errorText = !required || !parseResultText ? '' : t(FIELD + '.error.1.' + parseResultText);
   const errorNumber =
     !required || validateSkyDirection1Number(value) ? '' : t(FIELD + '.error.1.0');
 
