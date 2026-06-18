@@ -6,7 +6,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
-* Bugfix: display error message for invalid PDFs selected via drag-and-drop and file selector 
+* Bugfix: clearing after a validation error should not remove an already uploaded PDF
+* Bugfix: 'clear' button was not disabled after PDF upload
+* Bugfix: filename was still displayed after deleting uploading PDF
+* Bugfix: filename was still displayed after clearing file selection
+* Bugfix: filename was still displayed for invalid PDFs
+* Bugfix: no error message was displayed for invalid PDFs selected via file dialog
+* Bugfix: no error message was displayed for invalid PDFs selected via drag-and-drop 
 * Bugfix: Fix target field validation and formatting
 * Bugfix: Fix Clone Proposal to make a copy of the data from the original proposal and revalidate correctly after cloning
 * Bugfix: fix displayed units for bandwidth and Frequency on the Data Product Page
