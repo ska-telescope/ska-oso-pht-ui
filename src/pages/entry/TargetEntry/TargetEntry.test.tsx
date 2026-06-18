@@ -95,7 +95,7 @@ describe('<TargetEntry /> form preservation on autoLinking error', () => {
     });
 
     expect(nameInput.value).toBe('My Target');
-    expect(raInput.value).toBe('12:34:56');
-    expect(decInput.value).toBe('45:00:00');
+    expect(raInput.value).toBe('12:34:56.000');
+    expect(decInput.value).toBe('45:00:00.000');
   });
 });

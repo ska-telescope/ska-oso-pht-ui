@@ -196,10 +196,10 @@ export function validateSkyDirection1Text(value: string): string | null {
     return '1';
   }
   if (Number(arr[1]) > 59) {
-    return '1';
+    return '0';
   }
   if (Number(arr[2]) >= 60) {
-    return '1';
+    return '0';
   }
   if (Number(arr[0]) === 24 && (Number(arr[1]) > 0 || Number(arr[2]) > 0)) {
     return '1';
@@ -216,7 +216,7 @@ export function validateSkyDirection1Number(value: string): boolean {
 }
 
 export function validateSkyDirection2Text(value: string): string | null {
-  const formatValid = /^[-+]?\d{1,2}:\d{2}:\d{2}(\.\d+\s+|\.\d+)?$/.test(value);
+  const formatValid = /^[-+]?\d{1,2}:\d{2}:\d{2}((\.?)|(\.\d+\s+|\.\d+))$/.test(value);
   if (!formatValid) {
     return '0';
   }

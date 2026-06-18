@@ -40,13 +40,14 @@ describe('validateSkyDirection1Text function', () => {
   test('validates fractional seconds', () => {
     expect(validateSkyDirection1Text('12:34:56.789')).toBeNull(); // Valid fractional seconds
     expect(validateSkyDirection1Text('12:34:56.789 ')).toBeNull(); // Valid with trailing whitespace
+    expect(validateSkyDirection1Text('12:34:56.')).toBeNull(); // Valid trailing dot
   });
 
   test('rejects out-of-range values', () => {
     expect(validateSkyDirection1Text('91:00:00')).toBe('1'); // Hours out of range
     expect(validateSkyDirection1Text('-91:00:00')).toBe('0'); // Negative sign → format error
-    expect(validateSkyDirection1Text('12:60:00')).toBe('1'); // Minutes out of range
-    expect(validateSkyDirection1Text('12:34:60')).toBe('1'); // Seconds out of range
+    expect(validateSkyDirection1Text('12:60:00')).toBe('0'); // Minutes > 59 is a format error (hours are fine)
+    expect(validateSkyDirection1Text('12:34:60')).toBe('0'); // Seconds >= 60 is a format error (hours are fine)
   });
 
   test('rejects negative values', () => {

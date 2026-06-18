@@ -181,6 +181,19 @@ export const leadZero = (coordinate: String): String => {
   return normalised;
 };
 
+export const trailingZeros = (coordinate: string): string => {
+  const parts = coordinate.split(':');
+  if (parts.length !== 3) return coordinate;
+  const dotIndex = parts[2].indexOf('.');
+  if (dotIndex === -1) {
+    parts[2] = parts[2] + '.000';
+  } else {
+    const fracPart = parts[2].substring(dotIndex + 1);
+    parts[2] = parts[2].substring(0, dotIndex + 1) + fracPart.padEnd(3, '0');
+  }
+  return parts.join(':');
+};
+
 /*********************************************************** map values *********************************************************/
 
 export const getBandwidthZoom = (incObs: Observation | null): ValueUnitPair => {

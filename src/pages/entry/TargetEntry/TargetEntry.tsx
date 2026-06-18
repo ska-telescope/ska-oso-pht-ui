@@ -4,7 +4,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
-import { leadZero } from '@utils/helpers.ts';
+import { leadZero, trailingZeros } from '@utils/helpers.ts';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import ResolveButton from '@/components/button/Resolve/Resolve';
@@ -182,11 +182,11 @@ export default function TargetEntry({
 
 
   const blurRA = () => {
-    setRA(leadZero(ra.trimEnd()).toString());
+    setRA(trailingZeros(leadZero(ra.trimEnd()).toString()));
   };
 
   const blurDec = () => {
-    setDec(leadZero(dec.trimEnd()).toString());
+    setDec(trailingZeros(leadZero(dec.trimEnd()).toString()));
   };
 
   const blurName = () => {
