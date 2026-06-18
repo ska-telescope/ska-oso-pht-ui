@@ -88,10 +88,12 @@ import updateDataProductsPST from '@/utils/update/dataProductsPST/updateDataProd
 import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalcPartial';
 import updateSensCalc from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
-import lowAA2Image from '@assets/low_aa2.png';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_OBSERVATION;
+const AUTO_UPDATE_DEBOUNCE_MS = 600;
+const IMAGE_PATH_LOW_AA2 =
+  window.location.hostname === 'localhost' ? '/assets/low_aa2.png' : './assets/low_aa2.png';
 
 interface ObservationEntryProps {
   data?: Observation;
@@ -155,6 +157,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
   const [once, setOnce] = React.useState<Observation | null>(null);
+  const updateDebounceRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const observationIn = (ob: Observation) => {
     setMyObsId(ob?.id);
@@ -252,6 +255,17 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     if ((loggedIn || cypressToken) && (osdCyclePolicy?.maxObservations ?? 1) === 1) {
       isEdit() ? updateObservationOnProposal() : addObservationToProposal();
     }
+  };
+
+  const scheduleUpdateStorageProposal = () => {
+    if (updateDebounceRef.current) {
+      clearTimeout(updateDebounceRef.current);
+    }
+
+    updateDebounceRef.current = setTimeout(() => {
+      updateStorageProposal();
+      updateDebounceRef.current = null;
+    }, AUTO_UPDATE_DEBOUNCE_MS);
   };
 
   const setDefaultCentralFrequency = (inBand: string) => {
@@ -384,7 +398,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    updateStorageProposal();
+    scheduleUpdateStorageProposal();
   }, [
     groupObservation,
     elevation,
@@ -407,6 +421,14 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     effectiveResolution,
     zoomChannels
   ]);
+
+  React.useEffect(() => {
+    return () => {
+      if (updateDebounceRef.current) {
+        clearTimeout(updateDebounceRef.current);
+      }
+    };
+  }, []);
 
   React.useEffect(() => {
     const calculateSubarray = () => {
@@ -1199,7 +1221,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           subarrayConfig === SA_AA2 && ( // STAR-1923 : Need to make this generic from OSD Data or endpoint
               <Grid sx={{ p: { md: 5, lg: 0 } }} size={{ md: 12, lg: 3 }}>
                 <Box px={3}>
-                  <img src={lowAA2Image} alt="Low AA2" width="100%" />
+                  <img src={IMAGE_PATH_LOW_AA2} alt="Low AA2" width="100%" />
                 </Box>
               </Grid>
             )}

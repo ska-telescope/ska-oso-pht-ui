@@ -2,7 +2,6 @@ import React from 'react';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
-import { ERROR_SECS } from '@/utils/constants';
 
 const ZOOM_CHANNELS_MIN = 1;
 
@@ -27,28 +26,28 @@ export default function ZoomChannels({
   const { setHelp } = useHelp();
   const FIELD = 'zoomChannels';
   const [fieldValid, setFieldValid] = React.useState(true);
+  const [zValue, setZValue] = React.useState<string>(value != null ? String(value) : '');
 
-  const checkValue = (e: number) => {
-    const num = Number(e);
-    if (num >= ZOOM_CHANNELS_MIN && num <= maxValue) {
-      setFieldValid(true);
-      setValue(num);
-    } else {
+  React.useEffect(() => {
+    setZValue(value != null ? String(value) : '');
+  }, [value]);
+
+  const handleValueChange = (zoomValue: string) => {
+    setZValue(zoomValue);
+
+    if (zoomValue === '' || isNaN(Number(zoomValue))) {
       setFieldValid(false);
+      return;
     }
+
+    const num = Number(zoomValue);
+    setFieldValid(num >= ZOOM_CHANNELS_MIN && num <= maxValue);
+    setValue(num);
   };
+
   const errorMessage = fieldValid
     ? ''
     : t(FIELD + '.range.error', { min: ZOOM_CHANNELS_MIN, max: maxValue });
-
-  React.useEffect(() => {
-    const timer = () => {
-      setTimeout(() => {
-        setFieldValid(true);
-      }, ERROR_SECS);
-    };
-    timer();
-  }, [fieldValid]);
 
   return (
     <NumberEntry
@@ -57,8 +56,8 @@ export default function ZoomChannels({
       label={t(FIELD + '.label')}
       required={required}
       testId={FIELD}
-      value={value}
-      setValue={checkValue}
+      value={zValue}
+      setValue={handleValueChange}
       onFocus={() => setHelp(FIELD)}
       suffix={suffix}
     />
