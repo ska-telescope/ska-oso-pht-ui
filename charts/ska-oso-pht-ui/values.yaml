@@ -14,12 +14,12 @@ runtimeEnv:
   skaLoginAppUrl: ""
   msentraRedirectUri: ""
   useIndigo: false
-  indigoAuthority: ""
-  indigoClientId: ""
+  indigoAuthority: "https://iam-1.staging.devx.skao.int/"
+  indigoClientId: "ad5fcc0b-acd2-40a9-af5d-a27604fd903b"
   indigoRedirectUri: ""
-  indigoScope: "openid profile email"
-  indigoAudience: ""
-  indigoApiScope: ""
+  indigoScope: "pht:readwrite openid profile"
+  indigoAudience: "test:pht"
+  indigoApiScope: "pht:readwrite openid profile"
 
 component: pht-ui
 function: ui

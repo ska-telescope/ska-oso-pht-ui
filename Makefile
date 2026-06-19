@@ -98,12 +98,12 @@ set-dev-env-vars:
 	MSENTRA_TENANT_ID="78887040-bad7-494b-8760-88dcacfb3805" \
 	MSENTRA_REDIRECT_URI="http://localhost:6101" \
 	USE_INDIGO="false" \
-	INDIGO_AUTHORITY="" \
-	INDIGO_CLIENT_ID="" \
+	INDIGO_AUTHORITY="https://iam-1.staging.devx.skao.int/" \
+	INDIGO_CLIENT_ID="ad5fcc0b-acd2-40a9-af5d-a27604fd903b" \
 	INDIGO_REDIRECT_URI="http://localhost:6101" \
-	INDIGO_SCOPE="openid profile email" \
-	INDIGO_AUDIENCE="" \
-	INDIGO_API_SCOPE="" \
+	INDIGO_SCOPE="pht:readwrite openid profile" \
+	INDIGO_AUDIENCE="test:pht" \
+	INDIGO_API_SCOPE="pht:readwrite openid profile" \
 	ENVJS_FILE=./public/env.js ./scripts/write_env_js.sh
 
 dev-start: set-dev-env-vars
