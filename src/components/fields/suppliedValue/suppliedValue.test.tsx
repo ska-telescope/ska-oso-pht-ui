@@ -19,13 +19,14 @@ vi.mock('@ska-telescope/ska-gui-components', () => ({
   },
   TELESCOPE_MID: 'MID',
   TELESCOPE_LOW: 'LOW',
-  NumberEntry: ({ errorText, value, setValue, onFocus, testId }: any) => (
+  NumberEntry: ({ errorText, value, setValue, onFocus, onBlur, testId }: any) => (
     <div>
       <input
         data-testid={testId}
         value={value}
         onChange={e => setValue(Number(e.target.value))}
         onFocus={onFocus}
+        onBlur={onBlur}
       />
       {errorText && <span data-testid="error">{errorText}</span>}
     </div>
@@ -62,6 +63,23 @@ describe('SuppliedValue component', () => {
     render(<SuppliedValue value={1} setValue={vi.fn()} maxValue={14400} currentUnitLabel="s" />);
     fireEvent.change(screen.getByTestId('suppliedValue'), { target: { value: '14401' } });
     expect(screen.getByTestId('error')).toHaveTextContent('suppliedValue.range.maxError');
+  });
+
+  it('shows error on invalid input, clears on valid input, and only commits to parent on blur', () => {
+    const mockSetValue = vi.fn();
+    render(<SuppliedValue value={1} setValue={mockSetValue} minValue={0} maxValue={14400} currentUnitLabel="h" />);
+    const input = screen.getByTestId('suppliedValue');
+
+    fireEvent.change(input, { target: { value: '0' } });
+    expect(screen.getByTestId('error')).toHaveTextContent('suppliedValue.range.error');
+    expect(mockSetValue).not.toHaveBeenCalled();
+
+    fireEvent.change(input, { target: { value: '0.5' } });
+    expect(screen.queryByTestId('error')).not.toBeInTheDocument();
+    expect(mockSetValue).not.toHaveBeenCalled();
+
+    fireEvent.blur(input);
+    expect(mockSetValue).toHaveBeenCalledWith(0.5);
   });
 
   it('shows a range error if value is outside the specified range', () => {

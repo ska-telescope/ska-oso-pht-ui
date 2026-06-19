@@ -126,6 +126,7 @@ UNRELEASED
 
 7.0.0
 ----------
+* Fixed: bug preventing entering values < 1 in the integration time field
 * Changed: Non logged in users have restricted use of the PHT to target and observation pages.
 * Removed: E2E tests related to functionality which is no longer required.
 * Fixed: Inaccurate validation message shown after pairing a valid target–observation following an invalid one

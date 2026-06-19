@@ -31,6 +31,11 @@ export default function SuppliedValue({
   const { setHelp } = useHelp();
   const FIELD = 'suppliedValue';
   const [errorKey, setErrorKey] = React.useState<string | null>(null);
+  const [localValue, setLocalValue] = React.useState<number>(value);
+
+  React.useEffect(() => {
+    setLocalValue(value);
+  }, [value]);
 
   const getErrorKey = (num: number): string | null => {
     const belowMin = minValue !== undefined && num <= minValue;
@@ -41,16 +46,19 @@ export default function SuppliedValue({
     return 'range.maxError';
   };
 
-  const checkValue = (e: number) => {
+  const handleChange = (e: number) => {
     const num = Number(e);
-    const key = getErrorKey(num);
-    setErrorKey(key);
-    if (!key) setValue(num);
+    setLocalValue(num);
+    setErrorKey(getErrorKey(num));
   };
 
- const errorMessage = errorKey
-  ? t(`${FIELD}.${errorKey}`, { min: minValue, max: maxValue, units: currentUnitLabel })
-  : '';
+  const handleBlur = () => {
+    if (!errorKey) setValue(localValue);
+  };
+
+  const errorMessage = errorKey
+    ? t(`${FIELD}.${errorKey}`, { min: minValue, max: maxValue, units: currentUnitLabel })
+    : '';
 
   React.useEffect(() => {
     const timer = () => {
@@ -68,8 +76,9 @@ export default function SuppliedValue({
       label={label}
       required={required}
       testId={FIELD}
-      value={value}
-      setValue={checkValue}
+      value={localValue}
+      setValue={handleChange}
+      onBlur={handleBlur}
       onFocus={() => setHelp(FIELD)}
       suffix={suffix}
     />
