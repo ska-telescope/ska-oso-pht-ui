@@ -14,6 +14,7 @@ import {
   useInitializeAccessStore
 } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { buildLoginRequest } from '@/utils/authConfig';
 
 export interface ButtonUserMenuProps {
   ariaDescription?: string;
@@ -88,6 +89,7 @@ export default function ButtonUserMenu({
             <ButtonLogin
               colorBG={theme.palette.secondary.main}
               colorFG={theme.palette.secondary.contrastText}
+              loginRequest={buildLoginRequest()}
             />
           </Box>
         )}
