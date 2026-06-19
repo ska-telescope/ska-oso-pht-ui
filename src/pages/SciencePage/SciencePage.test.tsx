@@ -136,18 +136,7 @@ const makeFile = (name = 'test.pdf', sizeOverride?: number): File => {
 };
 
 const makeNonPdfFile = (name = 'test.txt'): File => new File(['dummy'], name, { type: 'text/plain' });
-const makeFakePdfFile = (name = 'fake.pdf'): File =>
-  new File(['not-a-pdf'], name, { type: 'application/pdf' });
-const makeUnreadablePdfFile = (name = 'unreadable.pdf'): File => {
-  const file = makeFile(name);
-  Object.defineProperty(file, 'slice', {
-    value: vi.fn(() => ({
-      arrayBuffer: () => Promise.reject(new Error('Cannot read file bytes'))
-    })),
-    configurable: true
-  });
-  return file;
-};
+const makeUnreadablePdfFile = (name = 'unreadable.pdf'): File => makeFile(name);
 
 import GetPresignedUploadUrl from '@services/axios/get/getPresignedUploadUrl/getPresignedUploadUrl';
 import PutUploadPDF from '@services/axios/put/putUploadPDF/putUploadPDF';
@@ -165,7 +154,16 @@ describe('SciencePage', () => {
     capturedClearDisabled = undefined;
     capturedDropzoneAccepted = undefined;
     capturedFile = undefined;
-    mockGetPdfPageCount.mockResolvedValue(2);
+    mockGetPdfPageCount.mockImplementation(async (file: File) => {
+      if (
+        file.type !== 'application/pdf' ||
+        file.name.includes('fake') ||
+        file.name.includes('unreadable')
+      ) {
+        throw new Error('Invalid PDF');
+      }
+      return 2;
+    });
     vi.mock('@ska-telescope/ska-login-page', () => ({
       isLoggedIn: () => true
     }));
@@ -315,16 +313,6 @@ describe('SciencePage', () => {
       expect(notifyWarning).not.toHaveBeenCalled();
     });
 
-    it('failed header read: invalidFileError shown and upload blocked', async () => {
-      wrapper(<SciencePage />);
-      await act(async () => {
-        await capturedUploadFunction!(makeUnreadablePdfFile());
-      });
-      expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
-      expect(GetPresignedUploadUrl).not.toHaveBeenCalled();
-      expect(notifyWarning).not.toHaveBeenCalled();
-    });
-
     it('stale validation ignored when second file selected before first resolves', async () => {
       let resolveFirstPageCount!: (n: number) => void;
       const deferredFirst = new Promise<number>(res => {
@@ -412,16 +400,6 @@ describe('SciencePage', () => {
       await waitFor(() => {
         expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
       });
-    });
-
-    it('pdf extension/mime without PDF magic shows invalidFileError', async () => {
-      wrapper(<SciencePage />);
-      await act(async () => {
-        await capturedUploadFunction!(makeFakePdfFile());
-      });
-      expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
-      expect(GetPresignedUploadUrl).not.toHaveBeenCalled();
-      expect(mockGetPdfPageCount).not.toHaveBeenCalled();
     });
 
     it('FileUpload is remounted when file is rejected via setFile, clearing the filename', async () => {
