@@ -735,7 +735,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           value={suppliedType ?? ''}
           setValue={setSuppliedType}
           disabled={getOptions()?.length < 2}
-          label={t('suppliedType.label')}
+          label=""
           onFocus={() => setHelp('suppliedType')}
           required
         />
@@ -775,7 +775,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           value={suppliedValue}
           setValue={setSuppliedValue}
           suffix={suppliedUnitsField()}
-          label={suppliedType ? observatoryConstants?.Supplied[suppliedType - 1].label : ''}
+          label={suppliedType === SUPPLIED_TYPE_INTEGRATION ? t('suppliedValue.integrationTime.label') : t('suppliedValue.sensitivity.label')}
           minValue={0}
           maxValue={suppliedType === SUPPLIED_TYPE_INTEGRATION 
             ? timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, suppliedUnits) 
