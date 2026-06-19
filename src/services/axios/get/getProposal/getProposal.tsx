@@ -209,7 +209,6 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       target.pmL = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_l;
       target.pmB = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_b;
     } else if (!isTargetGalactic(referenceCoordinate)) {
-      // target.referenceFrame = (e.reference_coordinate as ReferenceCoordinateICRSBackend).reference_frame;
       target.raStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).ra_str;
       target.decStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).dec_str;
       target.pmRa = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_ra;

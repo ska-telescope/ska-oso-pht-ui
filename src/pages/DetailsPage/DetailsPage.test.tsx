@@ -115,7 +115,6 @@ describe('checkAutoLink function works as expected', () => {
     l: 0,
     raStr: '21:33:27.0200',
     redshift: '',
-    referenceFrame: 'icrs',
     vel: '-3.6',
     velType: 0,
     velUnit: 0

@@ -8,7 +8,6 @@ import { leadZero, trailingZeros } from '@utils/helpers.ts';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import ResolveButton from '@/components/button/Resolve/Resolve';
-import ReferenceFrameField from '@/components/fields/referenceFrame/ReferenceFrame';
 import SkyDirection1 from '@/components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
 import VelocityField from '@/components/fields/velocity/Velocity';
@@ -70,7 +69,6 @@ export default function TargetEntry({
   const [vel, setVel] = React.useState('');
   const [velUnit, setVelUnit] = React.useState(0);
   const [redshift, setRedshift] = React.useState('');
-  const [referenceFrame, setReferenceFrame] = React.useState(REFERENCE_COORDINATE_TYPE_ICRS.value);
   const [referenceCoordinates, setReferenceCoordinates] = React.useState(REFERENCE_COORDINATE_TYPE_ICRS.value);
   const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
 
@@ -161,13 +159,6 @@ export default function TargetEntry({
     }
   };
 
-  const setTheReferenceFrame = (inValue: React.SetStateAction<number>) => {
-    setReferenceFrame(inValue);
-    if (setTarget) {
-      setTarget({ ...target, kind: inValue });
-    }
-  };
-
   const setTheVel = (inValue: string) => {
     setVel(inValue);
     if (setTarget) {
@@ -198,7 +189,7 @@ export default function TargetEntry({
     setVel(target?.vel ?? '');
     setVelUnit(target?.velUnit ?? 0);
     setRedshift(target?.redshift ?? '');
-    setReferenceFrame(target?.kind ?? REFERENCE_COORDINATE_TYPE_ICRS.value);
+    setReferenceCoordinates(target?.kind ?? REFERENCE_COORDINATE_TYPE_ICRS.value);
   };
 
 
@@ -281,7 +272,6 @@ export default function TargetEntry({
             }),
 
         redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift ?? '' : '',
-        referenceFrame: referenceCoordinates.toString(),
         vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : '',
         velType: velType ?? 0,
         velUnit: velUnit ?? 0
@@ -513,15 +503,6 @@ export default function TargetEntry({
       />
     );
 
-  const referenceFrameField = () =>
-    wrapper(
-      <ReferenceFrameField
-        onFocus={() => setHelp('referenceFrame.help')}
-        setValue={setTheReferenceFrame}
-        value={referenceFrame}
-      />
-    );
-
   return (
     <>
       <Grid pt={4}>
@@ -561,7 +542,7 @@ export default function TargetEntry({
               <Grid size={{ md: 12, lg: 6 }}>{velocityTypeField()}</Grid>
               <Grid size={{ md: 12, lg: 6 }}>{velocityField()}</Grid>
             </Grid>
-            {velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}
+            {velType === VELOCITY_TYPE.VELOCITY}
           </BorderedSection>
         </Box>
       </Grid>

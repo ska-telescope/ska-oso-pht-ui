@@ -725,7 +725,6 @@ export const DEFAULT_TARGETS: Target = {
   name: 'DUMMY',
   raStr: '123',
   redshift: '123',
-  referenceFrame: REFERENCE_COORDINATE_TYPE_ICRS.label,
   vel: '123',
   velType: 0,
   velUnit: 0

@@ -61,7 +61,6 @@ describe('<TargetListSection />', () => {
 
   it('renders correctly', () => {
     wrapper(<TargetListSection />);
-    expect(screen.getByTestId('referenceFrame')).toBeInTheDocument();
     expect(screen.getByTestId('addTargetButton')).toBeInTheDocument();
   });
 

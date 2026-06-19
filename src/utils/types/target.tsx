@@ -127,7 +127,6 @@ type Target = {
   b?: number; // for Galactic
   pmL?: number; // NOT USED YET // for Galactic
   pmB?: number; // NOT USED YET // for Galactic
-  referenceFrame?: string; // for ICRS
   raStr?: string; // replaces ra for ICRS
   decStr?: string; // replaces dec for ICRS
   pmRa?: number; // NOT USED YET // for ICRS

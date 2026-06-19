@@ -58,7 +58,6 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
       name,
       raStr: ra,
       redshift: '',
-      referenceFrame: REFERENCE_COORDINATE_TYPE_ICRS.label,
       velType: 0,
       vel: '',
       velUnit: 0
