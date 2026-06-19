@@ -19,7 +19,7 @@ vi.mock('@ska-telescope/ska-gui-components', () => ({
   },
   TELESCOPE_MID: 'MID',
   TELESCOPE_LOW: 'LOW',
-  NumberEntry: ({ errorText, value, setValue, onFocus, onBlur, testId }: any) => (
+  NumberEntry: ({ errorText, value, setValue, onFocus, onBlur, onKeyDown, testId }: any) => (
     <div>
       <input
         data-testid={testId}
@@ -27,6 +27,7 @@ vi.mock('@ska-telescope/ska-gui-components', () => ({
         onChange={e => setValue(Number(e.target.value))}
         onFocus={onFocus}
         onBlur={onBlur}
+        onKeyDown={onKeyDown}
       />
       {errorText && <span data-testid="error">{errorText}</span>}
     </div>
@@ -45,35 +46,50 @@ describe('SuppliedValue component', () => {
     render(<SuppliedValue value={5} setValue={vi.fn()} />);
   });
 
-  it('shows minError when value is <= zero and only a minValue is supplied', () => {
-    render(<SuppliedValue value={5} setValue={vi.fn()} minValue={0.001} />);
-    fireEvent.change(screen.getByTestId('suppliedValue'), { target: { value: '0' } });
-    expect(screen.getByTestId('error')).toHaveTextContent('suppliedValue.range.minError');
-    fireEvent.change(screen.getByTestId('suppliedValue'), { target: { value: '-1' } });
+  it('shows error immediately when typing an invalid value', () => {
+    render(<SuppliedValue value={5} setValue={vi.fn()} minValue={0} />);
+    const input = screen.getByTestId('suppliedValue');
+    fireEvent.keyDown(input, { key: '0' });
+    fireEvent.change(input, { target: { value: '0' } });
     expect(screen.getByTestId('error')).toHaveTextContent('suppliedValue.range.minError');
   });
 
-  it('does not show error when value is within range', () => {
-    render(<SuppliedValue value={1} setValue={vi.fn()} minValue={0.001} maxValue={14400} />);
-    fireEvent.change(screen.getByTestId('suppliedValue'), { target: { value: '3600' } });
+  it('does not show error immediately when using arrow keys or spinner', () => {
+    render(<SuppliedValue value={1} setValue={vi.fn()} minValue={0} />);
+    const input = screen.getByTestId('suppliedValue');
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    fireEvent.change(input, { target: { value: '0' } });
     expect(screen.queryByTestId('error')).not.toBeInTheDocument();
   });
 
-  it('shows maxError when value is >= maxValue and only a maxValue is supplied', () => {
+  it('does not show error when value is within range', () => {
+    render(<SuppliedValue value={1} setValue={vi.fn()} minValue={0} maxValue={14400} />);
+    const input = screen.getByTestId('suppliedValue');
+    fireEvent.keyDown(input, { key: '3' });
+    fireEvent.change(input, { target: { value: '3600' } });
+    expect(screen.queryByTestId('error')).not.toBeInTheDocument();
+  });
+
+  it('shows error on blur regardless of how the value was changed', () => {
     render(<SuppliedValue value={1} setValue={vi.fn()} maxValue={14400} currentUnitLabel="s" />);
-    fireEvent.change(screen.getByTestId('suppliedValue'), { target: { value: '14401' } });
+    const input = screen.getByTestId('suppliedValue');
+    fireEvent.keyDown(input, { key: 'ArrowUp' });
+    fireEvent.change(input, { target: { value: '14401' } });
+    expect(screen.queryByTestId('error')).not.toBeInTheDocument();
+    fireEvent.blur(input);
     expect(screen.getByTestId('error')).toHaveTextContent('suppliedValue.range.maxError');
   });
 
-  it('shows error on invalid input, clears on valid input, and only commits to parent on blur', () => {
+  it('does not commit value to parent until blur, and does not commit if invalid on blur', () => {
     const mockSetValue = vi.fn();
     render(<SuppliedValue value={1} setValue={mockSetValue} minValue={0} maxValue={14400} currentUnitLabel="h" />);
     const input = screen.getByTestId('suppliedValue');
 
+    fireEvent.keyDown(input, { key: '0' });
     fireEvent.change(input, { target: { value: '0' } });
-    expect(screen.getByTestId('error')).toHaveTextContent('suppliedValue.range.error');
     expect(mockSetValue).not.toHaveBeenCalled();
 
+    fireEvent.keyDown(input, { key: '.' });
     fireEvent.change(input, { target: { value: '0.5' } });
     expect(screen.queryByTestId('error')).not.toBeInTheDocument();
     expect(mockSetValue).not.toHaveBeenCalled();
@@ -82,10 +98,11 @@ describe('SuppliedValue component', () => {
     expect(mockSetValue).toHaveBeenCalledWith(0.5);
   });
 
-  it('shows a range error if value is outside the specified range', () => {
-    render(<SuppliedValue value={1} setValue={vi.fn()} minValue={0}maxValue={14400} currentUnitLabel="s" />);
-    fireEvent.change(screen.getByTestId('suppliedValue'), { target: { value: '14401' } });
+  it('shows between-range error on blur when both min and max are set', () => {
+    render(<SuppliedValue value={1} setValue={vi.fn()} minValue={0} maxValue={14400} currentUnitLabel="s" />);
+    const input = screen.getByTestId('suppliedValue');
+    fireEvent.change(input, { target: { value: '14401' } });
+    fireEvent.blur(input);
     expect(screen.getByTestId('error')).toHaveTextContent('suppliedValue.range.error');
   });
-
 });

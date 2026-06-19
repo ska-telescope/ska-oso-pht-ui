@@ -14,6 +14,7 @@ interface SuppliedValueProps {
   minValue?: number;
   maxValue?: number;
   currentUnitLabel?: string;
+  step?: number;
 }
 
 export default function SuppliedValue({
@@ -26,12 +27,15 @@ export default function SuppliedValue({
   minValue,
   maxValue,
   currentUnitLabel,
+  step,
 }: SuppliedValueProps) {
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const FIELD = 'suppliedValue';
   const [errorKey, setErrorKey] = React.useState<string | null>(null);
   const [localValue, setLocalValue] = React.useState<number>(value);
+  const errorTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const isTypingRef = React.useRef(false);
 
   React.useEffect(() => {
     setLocalValue(value);
@@ -46,28 +50,37 @@ export default function SuppliedValue({
     return 'range.maxError';
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    isTypingRef.current = e.key !== 'ArrowUp' && e.key !== 'ArrowDown';
+  };
+
   const handleChange = (e: number) => {
     const num = Number(e);
     setLocalValue(num);
-    setErrorKey(getErrorKey(num));
+    const key = getErrorKey(num);
+    if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
+    if (key) {
+      if (isTypingRef.current) {
+        setErrorKey(key);
+      } else {
+        errorTimerRef.current = setTimeout(() => setErrorKey(key), ERROR_SECS);
+      }
+    } else {
+      setErrorKey(null);
+    }
+    isTypingRef.current = false;
   };
 
   const handleBlur = () => {
-    if (!errorKey) setValue(localValue);
+    if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
+    const key = getErrorKey(localValue);
+    setErrorKey(key);
+    if (!key) setValue(localValue);
   };
 
   const errorMessage = errorKey
     ? t(`${FIELD}.${errorKey}`, { min: minValue, max: maxValue, units: currentUnitLabel })
     : '';
-
-  React.useEffect(() => {
-    const timer = () => {
-      setTimeout(() => {
-        setErrorKey(null);
-      }, ERROR_SECS);
-    };
-    timer();
-  }, [errorKey]);
 
   return (
     <NumberEntry
@@ -79,7 +92,9 @@ export default function SuppliedValue({
       value={localValue}
       setValue={handleChange}
       onBlur={handleBlur}
+      onKeyDown={handleKeyDown}
       onFocus={() => setHelp(FIELD)}
+      step={step}
       suffix={suffix}
     />
   );

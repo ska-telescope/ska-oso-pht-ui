@@ -777,9 +777,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           suffix={suppliedUnitsField()}
           label={suppliedType === SUPPLIED_TYPE_INTEGRATION ? t('suppliedValue.integrationTime.label') : t('suppliedValue.sensitivity.label')}
           minValue={0}
-          maxValue={suppliedType === SUPPLIED_TYPE_INTEGRATION 
-            ? timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, suppliedUnits) 
+          maxValue={suppliedType === SUPPLIED_TYPE_INTEGRATION
+            ? timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, suppliedUnits)
             : undefined}
+          step={suppliedType === SUPPLIED_TYPE_INTEGRATION && suppliedUnits !== TIME_HOURS ? 1 : undefined}
           currentUnitLabel={suppliedType === SUPPLIED_TYPE_INTEGRATION 
             ? TIME_UNITS[suppliedUnits - 1].value 
             : undefined}
