@@ -264,8 +264,8 @@ export default function TargetListSection() {
             referenceCoordinateType={REFERENCE_COORDINATE_TYPE_ICRS.value}
             setTarget={setRowTarget}
             target={rowTarget ? rowTarget : undefined}
-            onRAFieldErrorChange={setSkyDirection1Error} // Pass callback
-            onDecFieldErrorChange={setSkyDirection2Error} // Pass callback
+            onCoord1FieldErrorChange={setSkyDirection1Error} // Pass callback
+            onCoord2FieldErrorChange={setSkyDirection2Error} // Pass callback
             onNameFieldErrorChange={setNameError} // Pass callback
           />
         </AlertDialog>

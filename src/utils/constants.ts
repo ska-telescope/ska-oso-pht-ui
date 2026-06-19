@@ -540,14 +540,20 @@ export const SUPPLIED_INTEGRATION_TIME_STEP_HOURS = 0.1;
 export const SUPPLIED_INTEGRATION_TIME_STEP_MINS = 1;
 export const SUPPLIED_SENSITIVITY_STEP = 1;
 
-export const REFERENCE_COORDINATE_OPTIONS = [
-  { label: 'icrs', value: 0},
-  { label: 'galactic', value: 1 },
-  { label: 'solar system object', value: 2},
-];
 
 export const REFERENCE_COORDINATE_TYPE_ICRS = { value: 0, label: 'icrs' };
 export const REFERENCE_COORDINATE_TYPE_GALACTIC = { value: 1, label: 'galactic' };
+
+export const REFERENCE_COORDINATE_OPTIONS = [
+  {
+    label: 'ICRS',
+    value: REFERENCE_COORDINATE_TYPE_ICRS.value
+  },
+  {
+    label: 'Galactic',
+    value: REFERENCE_COORDINATE_TYPE_GALACTIC.value
+  }
+];
 
 export const SEPARATOR0 = '?';
 export const SEPARATOR1 = '&';

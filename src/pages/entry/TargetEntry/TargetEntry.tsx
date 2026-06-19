@@ -15,6 +15,7 @@ import VelocityField from '@/components/fields/velocity/Velocity';
 import Target from '@/utils/types/target';
 import {
   REFERENCE_COORDINATE_TYPE_ICRS,
+  REFERENCE_COORDINATE_TYPE_GALACTIC,
   VELOCITY_TYPE,
   FIELD_PATTERN_POINTING_CENTRES,
   WRAPPER_HEIGHT,
@@ -33,8 +34,8 @@ interface TargetEntryProps {
   setTarget?: Function;
   target?: Target;
   textAlign?: string;
-  onRAFieldErrorChange?: (error: string) => void;
-  onDecFieldErrorChange?: (error: string) => void;
+  onCoord1FieldErrorChange?: (error: string) => void;
+  onCoord2FieldErrorChange?: (error: string) => void;
   onNameFieldErrorChange?: (error: string) => void;
 }
 
@@ -43,8 +44,8 @@ const GAP = 2;
 export default function TargetEntry({
   setTarget = undefined,
   target = undefined,
-  onRAFieldErrorChange,
-  onDecFieldErrorChange,
+  onCoord1FieldErrorChange,
+  onCoord2FieldErrorChange,
   onNameFieldErrorChange
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
@@ -63,8 +64,8 @@ export default function TargetEntry({
 
   const [id, setId] = React.useState(0);
   const [name, setName] = React.useState('');
-  const [ra, setRA] = React.useState('');
-  const [dec, setDec] = React.useState('');
+  const [coord1, setCoord1] = React.useState('');
+  const [coord2, setCoord2] = React.useState('');
   const [velType, setVelType] = React.useState(0);
   const [vel, setVel] = React.useState('');
   const [velUnit, setVelUnit] = React.useState(0);
@@ -81,21 +82,21 @@ export default function TargetEntry({
     }
   }, [name]);
 
-  React.useEffect(() => {
-    if (setTarget) {
-      setTarget({ ...target, decStr: dec, raStr: ra, vel: vel, redshift: redshift });
-    }
-  }, [ra, dec, vel, redshift]);
+  // React.useEffect(() => {
+  //   if (setTarget) {
+  //     setTarget({ ...target, decStr: dec, raStr: ra, vel: vel, redshift: redshift });
+  //   }
+  // }, [ra, dec, vel, redshift]);
 
   React.useEffect(() => {
-    if (onRAFieldErrorChange) {
-      onRAFieldErrorChange(skyDirection1Error); // Notify parent
+    if (onCoord1FieldErrorChange) {
+      onCoord1FieldErrorChange(skyDirection1Error); // Notify parent
     }
   }, [skyDirection1Error]);
 
   React.useEffect(() => {
-    if (onDecFieldErrorChange) {
-      onDecFieldErrorChange(skyDirection2Error); // Notify parent
+    if (onCoord2FieldErrorChange) {
+      onCoord2FieldErrorChange(skyDirection2Error); // Notify parent
     }
   }, [skyDirection2Error]);
 
@@ -117,19 +118,41 @@ export default function TargetEntry({
     }
   };
 
-  const setTheDec = (inValue: string) => {
-    setDec(inValue);
-    if (setTarget) {
-      setTarget({ ...target, decStr: inValue });
-    }
-  };
 
-  const setTheRA = (inValue: string) => {
-    setRA(inValue);
-    if (setTarget) {
-      setTarget({ ...target, raStr: inValue });
-    }
-  };
+  const setTheCoord1 = (value: string) => {
+  setCoord1(value);
+
+  if (!setTarget) return;
+
+  if (referenceCoordinates === REFERENCE_COORDINATE_TYPE_GALACTIC.value) {
+    setTarget({
+      ...target,
+      l: parseFloat(value)
+    });
+  } else {
+    setTarget({
+      ...target,
+      raStr: leadZero(value).toString()
+    });
+  }
+};
+  const setTheCoord2 = (value: string) => {
+  setCoord2(value);
+
+  if (!setTarget) return;
+
+  if (referenceCoordinates === REFERENCE_COORDINATE_TYPE_GALACTIC.value) {
+    setTarget({
+      ...target,
+      b: parseFloat(value)
+    });
+  } else {
+    setTarget({
+      ...target,
+      decStr: leadZero(value).toString()
+    });
+  }
+};
 
   const setTheRedshift = (inValue: string) => {
     setRedshift(inValue);
@@ -169,8 +192,8 @@ export default function TargetEntry({
   const targetIn = (target: Target) => {
     setId(target?.id ?? 0);
     setName(target?.name ?? '');
-    setRA(target?.raStr ?? '');
-    setDec(target?.decStr ?? '');
+    setCoord1(target?.raStr ?? '');
+    setCoord2(target?.decStr ?? '');
     setVelType(target?.velType ?? 0);
     setVel(target?.vel ?? '');
     setVelUnit(target?.velUnit ?? 0);
@@ -179,12 +202,12 @@ export default function TargetEntry({
   };
 
 
-  const blurRA = () => {
-    setRA(trailingZeros(leadZero(ra.trimEnd()).toString()));
+  const blurCoord1 = () => {
+    setCoord1(trailingZeros(leadZero(coord1.trimEnd()).toString()));
   };
 
   const blurDec = () => {
-    setDec(trailingZeros(leadZero(dec.trimEnd()).toString()));
+    setCoord2(trailingZeros(leadZero(coord2.trimEnd()).toString()));
   };
 
   const blurName = () => {
@@ -239,16 +262,26 @@ export default function TargetEntry({
         : null;
       const highestId = highest ? highest.id : 0;
 
+        const isICRS =
+    referenceCoordinates === REFERENCE_COORDINATE_TYPE_ICRS.value;
+
       const newTarget: Target = {
-        kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
-        decStr: dec ?? '',
+        kind: referenceCoordinates,
         id: highestId + 1,
         name: name ?? '',
-        b: 0, // Default value for `b`
-        l: 0, // Default value for `l`
-        raStr: ra ?? '',
+
+        ...(isICRS
+          ? {
+              raStr: coord1 ?? '',
+              decStr: coord2 ?? ''
+            }
+          : {
+              l: Number(coord1),
+              b: Number(coord2)
+            }),
+
         redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift ?? '' : '',
-        referenceFrame: REFERENCE_COORDINATE_TYPE_ICRS.label,
+        referenceFrame: referenceCoordinates.toString(),
         vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : '',
         velType: velType ?? 0,
         velUnit: velUnit ?? 0
@@ -287,8 +320,8 @@ export default function TargetEntry({
 
     const clearForm = () => {
       setName('');
-      setRA('');
-      setDec('');
+      setCoord1('');
+      setCoord2('');
       setVel('');
       setRedshift('');
     };
@@ -299,7 +332,7 @@ export default function TargetEntry({
         skyDirection1Error !== '' ||
         skyDirection2Error !== '' ||
         rmFieldError !== '' ||
-        !(name?.length && ra?.length && dec?.length && targetLengthCheck())
+        !(name?.length && coord1?.length && coord2?.length && targetLengthCheck())
       );
     };
 
@@ -324,14 +357,32 @@ export default function TargetEntry({
   const resolveButton = () => {
     const processCoordinatesResults = (response: any) => {
       if (response && !response.error) {
-        setDec(response.reference_coordinate.dec_str);
-        setRA(response.reference_coordinate.ra_str);
+        if (response.reference_coordinate.kind === 'galactic') {
+      setTheCoord1(String(response.reference_coordinate.l));
+      setTheCoord2(String(response.reference_coordinate.b));
+    } else {
+      setTheCoord1(response.reference_coordinate.ra_str);
+      setTheCoord2(response.reference_coordinate.dec_str);
+    }
 
+        const velocity = response.radial_velocity?.quantity?.value;
         const redshift = response.radial_velocity?.redshift;
+
+        if (redshift && redshift !== 0) {
+          setVelType(VELOCITY_TYPE.REDSHIFT);
+
+          setRedshift(Number(redshift).toExponential(2));
+          setVel('');
+        } else {
+          setVelType(VELOCITY_TYPE.VELOCITY);
+
+          setVel(velocity != null ? String(velocity) : '');
+          setRedshift('');
+        }
 
         setRedshift(
           redshift != null
-            ? Number(redshift).toExponential(2)
+            ? String(redshift)
             : ''
         );
 
@@ -357,7 +408,7 @@ export default function TargetEntry({
     );
   };
 
-  const isRequired = () => name !== '' || ra !== '' || dec !== '';
+  const isRequired = () => name !== '' || coord1 !== '' || coord2 !== '';
 
   const wrapper = (children?: React.JSX.Element) => (
     <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
@@ -413,10 +464,10 @@ export default function TargetEntry({
     wrapper(
       <SkyDirection1
         required={isRequired()}
-        setValue={setTheRA}
+        setValue={setCoord1}
         skyUnits={referenceCoordinates}
-        value={ra}
-        valueBlur={blurRA}
+        value={coord1}
+        valueBlur={blurCoord1}
         valueFocus={() => setHelp('skyDirection.1')}
         setErrorText={setSkyDirection1Error} // Pass the callback
       />
@@ -426,11 +477,11 @@ export default function TargetEntry({
     wrapper(
       <SkyDirection2
         required={isRequired()}
-        setValue={setTheDec}
+        setValue={setCoord2}
         skyUnits={referenceCoordinates}
-        value={dec}
+        value={coord2}
         valueFocus={() => setHelp('skyDirection.2')}
-        valueBlur={blurDec}
+        valueBlur={blurCoord2}
         setErrorText={setSkyDirection2Error} // Pass the callback
       />
     );
@@ -458,7 +509,6 @@ export default function TargetEntry({
         velFocus={() => setHelp('velocity.' + velType)}
         velUnitFocus={() => setHelp('velocity.' + velType)}
         velBlur={blurVel}
-
         setErrorText={setRmFieldError}
       />
     );
