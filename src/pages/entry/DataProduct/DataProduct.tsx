@@ -827,7 +827,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
         <Grid size={{ md: 11, lg: 3 }}>
           <BorderedSection borderColor={theme.palette.info.main} title={t('page.7.descTitle')}>
-            <Typography variant="subtitle1" color="text.disabled">
+            <Typography variant="subtitle1">
               {t('page.7.descContent.' + getObservation()?.type + '.' + getSuffix())
                 .split('\n')
                 .map((line, index) => (
@@ -851,7 +851,7 @@ export default function DataProduct({ data }: DataProductProps) {
               title={t('sensitivityCalculatorResults.title')}
             >
               {isPST() && (
-                <Typography variant="subtitle1" color="text.disabled">
+                <Typography variant="subtitle1">
                   {t('page.7.pstUnavailable')}
                 </Typography>
               )}
