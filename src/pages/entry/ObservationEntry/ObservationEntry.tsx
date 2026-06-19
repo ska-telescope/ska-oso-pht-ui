@@ -44,7 +44,10 @@ import {
   SA_CUSTOM,
   PULSAR_TIMING_VALUE,
   SUPPLIED_TYPE_INTEGRATION,
-  cypressToken
+  cypressToken,
+  TIME_HOURS,
+  SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
+  TIME_UNITS
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -52,7 +55,8 @@ import {
   getBandwidthLowZoom,
   getBandwidthZoom,
   getMinimumChannelWidth,
-  obTypeTransform
+  obTypeTransform,
+  timeConversion
 } from '@utils/helpers.ts';
 import WeatherField from '@/components/fields/weather/weather';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
@@ -772,6 +776,13 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           setValue={setSuppliedValue}
           suffix={suppliedUnitsField()}
           label={suppliedType ? observatoryConstants?.Supplied[suppliedType - 1].label : ''}
+          minValue={0}
+          maxValue={suppliedType === SUPPLIED_TYPE_INTEGRATION 
+            ? timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, suppliedUnits) 
+            : undefined}
+          currentUnitLabel={suppliedType === SUPPLIED_TYPE_INTEGRATION 
+            ? TIME_UNITS[suppliedUnits - 1].value 
+            : undefined}
           required
         />
       </Box>

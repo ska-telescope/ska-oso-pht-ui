@@ -473,7 +473,7 @@
   "inviteTeamMember": {
     "label": "Invite Team Member"
   },
-  "landingWelcome":{
+  "landingWelcome": {
     "button": "Register / Sign in",
     "label": "Submit an SKA-Low Science Idea",
     "description": "Use this tool to develop and submit a Science Verification Idea for SKA-Low science verification.\nAccess is available to registered users only.\nPlease sign in or create an account to continue.",
@@ -1369,7 +1369,9 @@
   "suppliedValue": {
     "help": "Add the required time, selecting the appropriate unit, to reach the desired target sensitivity or the required sensitivity which will be used to estimate the required integration time",
     "range": {
-      "error": "Value is outside of allowed range"
+      "minError": "Must be greater than {{min}} {{units}}",
+      "maxError": "Must be less than {{max}} {{units}}",
+      "error": "Must be between {{min}} and {{max}} {{units}}"
     }
   },
   "tableReviewDecision": {

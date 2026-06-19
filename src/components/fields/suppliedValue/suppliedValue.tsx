@@ -11,6 +11,9 @@ interface SuppliedValueProps {
   setValue: Function;
   suffix?: any;
   value: number;
+  minValue?: number;
+  maxValue?: number;
+  currentUnitLabel?: string;
 }
 
 export default function SuppliedValue({
@@ -19,32 +22,44 @@ export default function SuppliedValue({
   label = '',
   setValue,
   suffix,
-  value
+  value,
+  minValue,
+  maxValue,
+  currentUnitLabel,
 }: SuppliedValueProps) {
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const FIELD = 'suppliedValue';
-  const [fieldValid, setFieldValid] = React.useState(true);
+  const [errorKey, setErrorKey] = React.useState<string | null>(null);
+
+  const getErrorKey = (num: number): string | null => {
+    const belowMin = minValue !== undefined && num <= minValue;
+    const aboveMax = maxValue !== undefined && num > maxValue;
+    if (!belowMin && !aboveMax) return null;
+    if (minValue !== undefined && maxValue !== undefined) return 'range.error';
+    if (belowMin) return 'range.minError';
+    return 'range.maxError';
+  };
 
   const checkValue = (e: number) => {
     const num = Number(e);
-    if (num > 0) {
-      setFieldValid(true);
-      setValue(num);
-    } else {
-      setFieldValid(false);
-    }
+    const key = getErrorKey(num);
+    setErrorKey(key);
+    if (!key) setValue(num);
   };
-  const errorMessage = fieldValid ? '' : t(FIELD + '.range.error');
+
+ const errorMessage = errorKey
+  ? t(`${FIELD}.${errorKey}`, { min: minValue, max: maxValue, units: currentUnitLabel })
+  : '';
 
   React.useEffect(() => {
     const timer = () => {
       setTimeout(() => {
-        setFieldValid(true);
+        setErrorKey(null);
       }, ERROR_SECS);
     };
     timer();
-  }, [fieldValid]);
+  }, [errorKey]);
 
   return (
     <NumberEntry

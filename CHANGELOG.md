@@ -21,6 +21,7 @@ UNRELEASED
 * Bugfix: If proposal is not properly loaded due to browser refresh - prompt user to reload manually (may need a better fix later)
 * Bugfix: Fix Invalid Frequency Warning not highligted on breadcrumbs
 * Bugfix: Changing summary should not trigger reset of project
+* Added: cap integration time input at 4 hrs
 * Bugfix: Fix Clone Proposal to make a copy of the data from the original proposal and revalidate correctly after cloning
 * Bugfix: fix displayed units for bandwidth and Frequency on the Data Product Page
 * Bugfix: Fix population of `bandwidth` between Observation and Data Product page

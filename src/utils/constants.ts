@@ -527,6 +527,7 @@ export const SUPPLIED_TYPE_INTEGRATION = 1;
 export const SUPPLIED_TYPE_SENSITIVITY = 2;
 export const SUPPLIED_INTEGRATION_TIME_UNITS_H = 2;
 export const SUPPLIED_INTEGRATION_TIME_UNITS_S = 4;
+export const SUPPLIED_INTEGRATION_TIME_MAX_HOURS = 4;
 
 export const RA_TYPE_ICRS = { value: 0, label: 'icrs' };
 export const RA_TYPE_GALACTIC = { value: 1, label: 'galactic' };
@@ -817,4 +818,4 @@ export const STATUS_ARRAY_PAGES_PROPOSAL = [
 ];
 
 export const SV_LOW_AA2_CYCLE_NUMBER = 10000;
-export const SV_LOW_MID_AA2_CYCLE_NUMBER = 1; 
+export const SV_LOW_MID_AA2_CYCLE_NUMBER = 1;
