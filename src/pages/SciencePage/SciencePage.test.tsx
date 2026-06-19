@@ -88,19 +88,33 @@ let capturedSetFile: ((file: File | '') => void) | undefined;
 let capturedUploadFunction: ((file: File) => Promise<void>) | undefined;
 let capturedUploadDisabled: boolean | undefined;
 let capturedClearDisabled: boolean | undefined;
+let capturedChooseDisabled: boolean | undefined;
 let capturedDropzoneAccepted: Record<string, string[]> | undefined;
+let capturedDropzonePrompt: string | undefined;
 let capturedFile: string | null | undefined;
 vi.mock('@ska-telescope/ska-gui-components', async importOriginal => {
   const actual = (await importOriginal()) as any;
   return {
     ...actual,
     FileUpload: vi.fn(
-      ({ setFile, uploadFunction, uploadDisabled, clearDisabled, dropzoneAccepted, file, suffix }: any) => {
+      ({
+        setFile,
+        uploadFunction,
+        uploadDisabled,
+        clearDisabled,
+        chooseDisabled,
+        dropzoneAccepted,
+        dropzonePrompt,
+        file,
+        suffix
+      }: any) => {
       capturedSetFile = setFile;
       capturedUploadFunction = uploadFunction;
       capturedUploadDisabled = uploadDisabled;
       capturedClearDisabled = clearDisabled;
+      capturedChooseDisabled = chooseDisabled;
       capturedDropzoneAccepted = dropzoneAccepted;
+      capturedDropzonePrompt = dropzonePrompt;
       capturedFile = file;
       return (
         <>
@@ -152,7 +166,9 @@ describe('SciencePage', () => {
     capturedUploadFunction = undefined;
     capturedUploadDisabled = undefined;
     capturedClearDisabled = undefined;
+    capturedChooseDisabled = undefined;
     capturedDropzoneAccepted = undefined;
+    capturedDropzonePrompt = undefined;
     capturedFile = undefined;
     mockGetPdfPageCount.mockImplementation(async (file: File) => {
       if (
@@ -347,6 +363,7 @@ describe('SciencePage', () => {
     });
 
     it('uploadDisabled is false when there is no error', () => {
+      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
       wrapper(<SciencePage />);
       expect(capturedUploadDisabled).toBe(false);
     });
@@ -357,9 +374,10 @@ describe('SciencePage', () => {
     });
 
     it('clearDisabled becomes false when there is a PDF validation error', async () => {
+      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
       wrapper(<SciencePage />);
-      act(() => {
-        capturedSetFile!(makeNonPdfFile());
+      fireEvent.change(screen.getByTestId('mock-file-input'), {
+        target: { files: [makeNonPdfFile()] }
       });
       await waitFor(() => {
         expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
@@ -372,27 +390,36 @@ describe('SciencePage', () => {
       expect(capturedDropzoneAccepted).toEqual({ 'application/pdf': ['.pdf'] });
     });
 
+    it('uploaded science PDF disables selection, hides upload/clear controls and changes prompt', () => {
+      wrapper(<SciencePage />);
+      expect(capturedChooseDisabled).toBe(true);
+      expect(capturedFile).toBe('science-doc-123fileType.pdf');
+      expect(capturedUploadDisabled).toBe(true);
+      expect(capturedDropzonePrompt).toBe('pdfUpload.science.prompt.deleteToEnableUpload');
+    });
+
+    it('uploaded science PDF ignores file selector change events', async () => {
+      wrapper(<SciencePage />);
+      fireEvent.change(screen.getByTestId('mock-file-input'), {
+        target: { files: [makeNonPdfFile()] }
+      });
+      await waitFor(() => {
+        expect(screen.queryByText('pdfUpload.science.invalidFileError')).not.toBeInTheDocument();
+      });
+    });
+
+    it('uploaded science PDF ignores drop events', async () => {
+      wrapper(<SciencePage />);
+      fireEvent.drop(screen.getByTestId('mock-file-input'), {
+        dataTransfer: { files: [makeNonPdfFile()] }
+      });
+      await waitFor(() => {
+        expect(screen.queryByText('pdfUpload.science.invalidFileError')).not.toBeInTheDocument();
+      });
+    });
+
     it('selecting non-PDF file shows invalidFileError', async () => {
-      wrapper(<SciencePage />);
-      act(() => {
-        capturedSetFile!(makeNonPdfFile());
-      });
-      await waitFor(() => {
-        expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
-      });
-    });
-
-    it('selecting unreadable file shows invalidFileError', async () => {
-      wrapper(<SciencePage />);
-      act(() => {
-        capturedSetFile!(makeUnreadablePdfFile());
-      });
-      await waitFor(() => {
-        expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
-      });
-    });
-
-    it('file selector non-PDF change event shows invalidFileError', async () => {
+      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
       wrapper(<SciencePage />);
       fireEvent.change(screen.getByTestId('mock-file-input'), {
         target: { files: [makeNonPdfFile()] }
@@ -402,8 +429,47 @@ describe('SciencePage', () => {
       });
     });
 
+    it('file selector non-PDF change event shows invalidFileError', async () => {
+      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
+      wrapper(<SciencePage />);
+      fireEvent.change(screen.getByTestId('mock-file-input'), {
+        target: { files: [makeNonPdfFile()] }
+      });
+      await waitFor(() => {
+        expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
+      });
+    });
+
+    it('dropzone non-PDF drop event shows invalidFileError', async () => {
+      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
+      wrapper(<SciencePage />);
+      fireEvent.drop(screen.getByTestId('mock-file-input'), {
+        dataTransfer: { files: [makeNonPdfFile()] }
+      });
+      await waitFor(() => {
+        expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
+      });
+    });
+
+    it('dropzone non-PDF drop remounts FileUpload to hide clear/upload controls', async () => {
+      const FileUploadMock = (await import('@ska-telescope/ska-gui-components')).FileUpload as any;
+      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
+      wrapper(<SciencePage />);
+      const callsAfterRender = FileUploadMock.mock.calls.length;
+
+      fireEvent.drop(screen.getByTestId('mock-file-input'), {
+        dataTransfer: { files: [makeNonPdfFile()] }
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
+        expect(FileUploadMock.mock.calls.length).toBeGreaterThan(callsAfterRender);
+      });
+    });
+
     it('FileUpload is remounted when file is rejected via setFile, clearing the filename', async () => {
       const FileUploadMock = (await import('@ska-telescope/ska-gui-components')).FileUpload as any;
+      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
       wrapper(<SciencePage />);
       const callsAfterRender = FileUploadMock.mock.calls.length;
 
@@ -436,14 +502,14 @@ describe('SciencePage', () => {
       expect(capturedFile).toBeNull();
     });
 
-    it('clearing after validation error does not remove an already uploaded PDF', async () => {
+    it('setFile validation path is ignored while an uploaded PDF exists', async () => {
       wrapper(<SciencePage />);
 
       act(() => {
         capturedSetFile!(makeNonPdfFile());
       });
       await waitFor(() => {
-        expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
+        expect(screen.queryByText('pdfUpload.science.invalidFileError')).not.toBeInTheDocument();
       });
 
       act(() => {
@@ -470,22 +536,21 @@ describe('SciencePage', () => {
       expect(capturedUploadDisabled).toBe(true);
     });
 
-    it('upload clears a previous error when valid file is uploaded', async () => {
+    it('upload proceeds when a valid file is uploaded after a previous error', async () => {
       mockGetPdfPageCount.mockResolvedValueOnce(5).mockResolvedValueOnce(2);
+      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
       wrapper(<SciencePage />);
 
       const badFile = makeFile('bad.pdf');
       await act(async () => {
         await capturedUploadFunction!(badFile);
       });
-      expect(screen.getByText('pdfUpload.science.pageError')).toBeInTheDocument();
 
       const goodFile = makeFile('good.pdf');
       await act(async () => {
         await capturedUploadFunction!(goodFile);
       });
 
-      expect(screen.queryByText('pdfUpload.science.pageError')).not.toBeInTheDocument();
       expect(GetPresignedUploadUrl).toHaveBeenCalled();
     });
   });

@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Changed: Split PDF selection into two modes: 'file selection' mode and 'uploaded PDF' mode, with file selection/drop
+  disabled when a PDF has been uploaded, and preview/download/delete operations disabled when in file selection mode.
 * Bugfix: clearing after a validation error should not remove an already uploaded PDF
 * Bugfix: 'clear' button was not disabled after PDF upload
 * Bugfix: filename was still displayed after deleting uploading PDF

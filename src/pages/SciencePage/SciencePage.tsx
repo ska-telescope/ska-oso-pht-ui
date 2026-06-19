@@ -86,6 +86,13 @@ export default function SciencePage() {
 
   const setFile = (theFile: File | '') => {
     if (theFile instanceof File) {
+      if (getProposal()?.sciencePDF?.isUploadedPdf) {
+        /*
+         * FileUpload has no dedicated prop to disable dropzone file acceptance while preserving
+         * the dropzone prompt/preview. Guarding here blocks replacement attempts until delete.
+         */
+        return;
+      }
       validationFileRef.current = theFile;
       validatePdf(theFile)
         .then(error => {
@@ -139,6 +146,38 @@ export default function SciencePage() {
     setProposal({ ...getProposal(), scienceLoadStatus: status });
   };
 
+  const validateSelectedFile = (selectedFile: File) => {
+    validationFileRef.current = selectedFile;
+    validatePdf(selectedFile)
+      .then(error => {
+        if (validationFileRef.current === selectedFile) {
+          setPdfError(error);
+        }
+      })
+      .catch(() => {
+        if (validationFileRef.current === selectedFile) {
+          setPdfError(t('pdfUpload.science.invalidFileError'));
+        }
+      });
+  };
+
+  const isAcceptedPdfFile = (file: File) => {
+    const isPdfByMime = file.type === 'application/pdf';
+    const isPdfByExtension = file.name.toLowerCase().endsWith('.pdf');
+    return isPdfByMime || isPdfByExtension;
+  };
+
+  const rejectInvalidNonPdfSelection = (file: File) => {
+    validationFileRef.current = file;
+    setPdfError(t('pdfUpload.science.invalidFileError'));
+    /*
+     * Workaround for missing FileUpload rejection hooks/state control:
+     * when dropzone rejects non-PDF files, setFile is not called, so FileUpload keeps internal
+     * "selected file" state and keeps clear/upload buttons visible unless we remount it.
+     */
+    setFileUploadKey(k => k + 1);
+  };
+
   /**
    * Capture file-input changes emitted from inside FileUpload so we can validate selected files
    * even when react-dropzone rejects them before FileUpload calls setFile (for example, when the
@@ -156,24 +195,66 @@ export default function SciencePage() {
    * (for example onDropRejected/onFileRejected) and moving this warning handling to that API.
    */
   const handleFileInputChangeCapture = (event: React.FormEvent<HTMLDivElement>) => {
+    if (getProposal()?.sciencePDF?.isUploadedPdf) {
+      return;
+    }
+
     const target = event.target as HTMLInputElement;
     if (target.tagName !== 'INPUT' || target.type !== 'file' || !target.files?.length) {
       return;
     }
 
     const selectedFile = target.files[0];
-    validationFileRef.current = selectedFile;
-    validatePdf(selectedFile)
-      .then(error => {
-        if (validationFileRef.current === selectedFile) {
-          setPdfError(error);
-        }
-      })
-      .catch(() => {
-        if (validationFileRef.current === selectedFile) {
-          setPdfError(t('pdfUpload.science.invalidFileError'));
-        }
-      });
+    if (!isAcceptedPdfFile(selectedFile)) {
+      rejectInvalidNonPdfSelection(selectedFile);
+      return;
+    }
+
+    validateSelectedFile(selectedFile);
+  };
+
+  const blockUploadInteractionWhenPdfExists = (
+    event: React.SyntheticEvent<HTMLDivElement, Event>
+  ) => {
+    if (!getProposal()?.sciencePDF?.isUploadedPdf) {
+      return;
+    }
+
+    const target = event.target as HTMLElement;
+    if (target.closest('button')) {
+      return;
+    }
+
+    /*
+     * Workaround for missing FileUpload "disable dropzone interactions" API:
+     * prevent dropzone clicks/drops from opening file picker or accepting files while a PDF is
+     * already uploaded, but keep suffix action buttons (delete/preview/download) usable.
+     */
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  /**
+   * Workaround for missing FileUpload rejection hooks:
+   * FileUpload does not expose react-dropzone's onDropRejected / fileRejections, so rejected
+   * non-PDF drag/drop attempts never call setFile and otherwise provide no invalid-file feedback.
+   * Capturing drop events here lets SciencePage surface invalidFileError consistently.
+   */
+  const handleDropCapture = (event: React.DragEvent<HTMLDivElement>) => {
+    if (getProposal()?.sciencePDF?.isUploadedPdf) {
+      blockUploadInteractionWhenPdfExists(event);
+      return;
+    }
+
+    const droppedFile = event.dataTransfer.files?.[0];
+    if (!droppedFile) {
+      return;
+    }
+    if (isAcceptedPdfFile(droppedFile)) {
+      return;
+    }
+
+    rejectInvalidNonPdfSelection(droppedFile);
   };
 
   const uploadPdftoSignedUrl = async (theFile: any) => {
@@ -347,6 +428,11 @@ export default function SciencePage() {
     </Grid>
   );
 
+  const hasUploadedSciencePdf = !!getProposal()?.sciencePDF?.isUploadedPdf;
+  const dropzonePrompt = hasUploadedSciencePdf
+    ? t('pdfUpload.science.prompt.deleteToEnableUpload')
+    : t('dropzone.prompt');
+
   return (
     <Shell page={PAGE}>
       <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
@@ -356,15 +442,33 @@ export default function SciencePage() {
           ) : (
             <>
               <Box
+                onClickCapture={blockUploadInteractionWhenPdfExists}
                 onChangeCapture={handleFileInputChangeCapture}
+                onDragOverCapture={blockUploadInteractionWhenPdfExists}
+                onDropCapture={handleDropCapture}
                 sx={{
                   '& .MuiButton-root.Mui-disabled': {
                     opacity: 0.38
-                  }
+                  },
+                  ...(hasUploadedSciencePdf
+                    ? {
+                        /*
+                         * Workaround for FileUpload limitations:
+                         * we need `file` set so the uploaded filename is shown, but FileUpload ties
+                         * clear/upload button visibility to internal selected-file state. Hide those
+                         * buttons while an uploaded PDF already exists.
+                         */
+                        '& [data-testid="fileUploadClearButton"], & [data-testid="fileUploadUploadButton"]':
+                          {
+                            display: 'none'
+                          }
+                      }
+                    : {})
                 }}
               >
                 <FileUpload
                   key={fileUploadKey}
+                  chooseDisabled={hasUploadedSciencePdf}
                   chooseToolTip={t('pdfUpload.science.tooltip.choose')}
                   clearLabel={t('clearBtn.label')}
                   clearToolTip={t('pdfUpload.science.tooltip.clear')}
@@ -373,7 +477,7 @@ export default function SciencePage() {
                     'application/pdf': ['.pdf']
                   }}
                   dropzoneIcons={false}
-                  dropzonePrompt={t('dropzone.prompt')}
+                  dropzonePrompt={dropzonePrompt}
                   dropzonePreview={false}
                   direction="row"
                   file={originalFile}
@@ -382,7 +486,7 @@ export default function SciencePage() {
                   setStatus={setUploadStatus}
                   testId="fileUpload"
                   clearDisabled={!!getProposal()?.sciencePDF?.isUploadedPdf && !pdfError}
-                  uploadDisabled={!!pdfError}
+                  uploadDisabled={hasUploadedSciencePdf || !!pdfError}
                   uploadFunction={uploadPdftoSignedUrl}
                   uploadToolTip={
                     pdfError
