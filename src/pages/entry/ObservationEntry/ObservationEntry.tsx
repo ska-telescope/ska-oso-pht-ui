@@ -88,12 +88,11 @@ import updateDataProductsPST from '@/utils/update/dataProductsPST/updateDataProd
 import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalcPartial';
 import updateSensCalc from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
+import lowAA2Image from '@assets/low_aa2.png';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_OBSERVATION;
 const AUTO_UPDATE_DEBOUNCE_MS = 600;
-const IMAGE_PATH_LOW_AA2 =
-  window.location.hostname === 'localhost' ? '/assets/low_aa2.png' : './assets/low_aa2.png';
 
 interface ObservationEntryProps {
   data?: Observation;
@@ -1221,7 +1220,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           subarrayConfig === SA_AA2 && ( // STAR-1923 : Need to make this generic from OSD Data or endpoint
               <Grid sx={{ p: { md: 5, lg: 0 } }} size={{ md: 12, lg: 3 }}>
                 <Box px={3}>
-                  <img src={IMAGE_PATH_LOW_AA2} alt="Low AA2" width="100%" />
+                  <img src={lowAA2Image} alt="Low AA2" width="100%" />
                 </Box>
               </Grid>
             )}

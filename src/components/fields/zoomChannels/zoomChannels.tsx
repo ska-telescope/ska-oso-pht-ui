@@ -40,9 +40,12 @@ export default function ZoomChannels({
       return;
     }
 
-    const num = Number(zoomValue);
-    setFieldValid(num >= ZOOM_CHANNELS_MIN && num <= maxValue);
-    setValue(num);
+    const zoom = Number(zoomValue);
+    const inRange = zoom >= ZOOM_CHANNELS_MIN && zoom <= maxValue;
+    setFieldValid(inRange);
+    if (inRange) {
+      setValue(zoom);
+    }
   };
 
   const errorMessage = fieldValid

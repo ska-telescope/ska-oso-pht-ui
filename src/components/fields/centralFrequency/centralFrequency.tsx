@@ -47,13 +47,17 @@ export default function CentralFrequency({
     if (cfValue === '' || isNaN(Number(cfValue))) {
       setFieldValid(false);
     } else {
-      const num = Number(cfValue);
+      const cf = Number(cfValue);
       const band = findBand(observingBand);
       const units: number = telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? FREQUENCY_MHZ : FREQUENCY_GHZ;
       const min = frequencyConversion(band?.minFrequencyHz ?? 0, FREQUENCY_HZ, units);
       const max = frequencyConversion(band?.maxFrequencyHz ?? 0, FREQUENCY_HZ, units);
-      setValue(num);
-      setFieldValid(num >= min && num <= max);
+
+      const inRange = cf >= min && cf <= max;
+      setFieldValid(inRange);
+      if (inRange) {
+        setValue(cf);
+      }
     }
   };
 
