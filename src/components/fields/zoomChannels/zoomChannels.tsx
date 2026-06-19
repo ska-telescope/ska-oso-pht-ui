@@ -30,6 +30,7 @@ export default function ZoomChannels({
 
   React.useEffect(() => {
     setZValue(value != null ? String(value) : '');
+    setFieldValid(true);
   }, [value]);
 
   const handleValueChange = (zoomValue: string) => {

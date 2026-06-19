@@ -39,6 +39,7 @@ export default function CentralFrequency({
 
   React.useEffect(() => {
     setCfValue(value != null ? String(value) : '');
+    setFieldValid(true);
   }, [value]);
 
   const checkValue = (cfValue: string) => {
