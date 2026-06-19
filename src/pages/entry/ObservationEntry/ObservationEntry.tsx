@@ -92,7 +92,6 @@ import lowAA2Image from '@assets/low_aa2.png';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_OBSERVATION;
-const AUTO_UPDATE_DEBOUNCE_MS = 600;
 
 interface ObservationEntryProps {
   data?: Observation;
@@ -156,7 +155,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
   const [once, setOnce] = React.useState<Observation | null>(null);
-  const updateDebounceRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const observationIn = (ob: Observation) => {
     setMyObsId(ob?.id);
@@ -254,17 +252,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     if ((loggedIn || cypressToken) && (osdCyclePolicy?.maxObservations ?? 1) === 1) {
       isEdit() ? updateObservationOnProposal() : addObservationToProposal();
     }
-  };
-
-  const scheduleUpdateStorageProposal = () => {
-    if (updateDebounceRef.current) {
-      clearTimeout(updateDebounceRef.current);
-    }
-
-    updateDebounceRef.current = setTimeout(() => {
-      updateStorageProposal();
-      updateDebounceRef.current = null;
-    }, AUTO_UPDATE_DEBOUNCE_MS);
   };
 
   const setDefaultCentralFrequency = (inBand: string) => {
@@ -397,7 +384,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    scheduleUpdateStorageProposal();
+    updateStorageProposal();
   }, [
     groupObservation,
     elevation,
@@ -420,14 +407,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     effectiveResolution,
     zoomChannels
   ]);
-
-  React.useEffect(() => {
-    return () => {
-      if (updateDebounceRef.current) {
-        clearTimeout(updateDebounceRef.current);
-      }
-    };
-  }, []);
 
   React.useEffect(() => {
     const calculateSubarray = () => {
