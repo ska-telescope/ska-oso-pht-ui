@@ -1,8 +1,9 @@
 import React from 'react';
 import { useMsal } from '@azure/msal-react';
+import { EventType } from '@azure/msal-browser';
 import { Box, Divider, Menu, MenuItem } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
-import { ButtonLogin, ButtonUser, ButtonLogout } from '@ska-telescope/ska-login-page';
+import { ButtonLogin, ButtonUser, ButtonLogout, getUserInfo } from '@ska-telescope/ska-login-page';
 import { ButtonColorTypes, ButtonVariantTypes } from '@ska-telescope/ska-gui-components';
 import { useNavigate } from 'react-router-dom';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -15,6 +16,7 @@ import {
 } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { buildLoginRequest } from '@/utils/authConfig';
+import { useNotify } from '@/utils/notify/useNotify';
 
 export interface ButtonUserMenuProps {
   ariaDescription?: string;
@@ -42,8 +44,34 @@ export default function ButtonUserMenu({
   const buttonWrapperRef = React.useRef<HTMLDivElement>(null);
   const loginButtonRef = React.useRef<HTMLDivElement>(null);
   const { updateAppContent2 } = storageObject.useStore();
-  const { accounts } = useMsal();
-  const username = accounts.length > 0 ? accounts[0].name + cypressLogin : cypressLogin;
+  const { instance, accounts } = useMsal();
+  const { notifyError } = useNotify();
+  const [displayName, setDisplayName] = React.useState<string>(accounts[0]?.name ?? '');
+
+  React.useEffect(() => {
+    const account = accounts[0];
+    if (!account) { setDisplayName(''); return; }
+    if (account.idToken) {
+      getUserInfo(account.idToken).then((info: { displayName?: string } | null) =>
+        setDisplayName(info?.displayName ?? account.name ?? '')
+      );
+    } else {
+      setDisplayName(account.name ?? '');
+    }
+  }, [accounts]);
+
+  React.useEffect(() => {
+    const callbackId = instance.addEventCallback((event) => {
+      if (event.eventType === EventType.LOGIN_FAILURE && event.error) {
+        notifyError(`Login failed (${event.error.errorCode}): ${event.error.message}`);
+      }
+    });
+    return () => {
+      if (callbackId) instance.removeEventCallback(callbackId);
+    };
+  }, [instance]);
+
+  const username = displayName + cypressLogin;
 
   React.useEffect(() => {
     const accountStr = localStorage.getItem('cypress:account');

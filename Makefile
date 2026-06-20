@@ -80,7 +80,7 @@ K8S_CHART_PARAMS += --set global.oda.postgres.database=$(PGDATABASE) \
 ENV_CHECK := $(shell echo $(CI_ENVIRONMENT_SLUG) | egrep 'test|dev|integration')
 ifneq ($(ENV_CHECK),)
 K8S_CHART_PARAMS += --set ska-oso-pht-ui.image.tag=$(VERSION)-dev.c$(CI_COMMIT_SHORT_SHA) \
-	--set ska-oso-pht-ui.image.registry=$(CI_REGISTRY)/ska-telescope/oso/ska-oso-pht-ui 
+	--set ska-oso-pht-ui.image.registry=$(CI_REGISTRY)/ska-telescope/oso/ska-oso-pht-ui
 endif
 
 ENV_CHECK_DEV := $(shell echo $(CI_ENVIRONMENT_SLUG) | grep 'dev')
@@ -97,10 +97,10 @@ set-dev-env-vars:
 	MSENTRA_CLIENT_ID="2445e300-54c9-470f-9578-0f54840672af" \
 	MSENTRA_TENANT_ID="78887040-bad7-494b-8760-88dcacfb3805" \
 	MSENTRA_REDIRECT_URI="http://localhost:6101" \
-	USE_INDIGO="false" \
+	USE_INDIGO="true" \
 	INDIGO_AUTHORITY="https://iam-1.staging.devx.skao.int/" \
 	INDIGO_CLIENT_ID="ad5fcc0b-acd2-40a9-af5d-a27604fd903b" \
-	INDIGO_REDIRECT_URI="http://localhost:6101" \
+	INDIGO_REDIRECT_URI="http://localhost:6101/" \
 	INDIGO_SCOPE="pht:readwrite openid profile" \
 	INDIGO_AUDIENCE="test:pht" \
 	INDIGO_API_SCOPE="pht:readwrite openid profile" \
@@ -108,4 +108,3 @@ set-dev-env-vars:
 
 dev-start: set-dev-env-vars
 	BACKEND_PROXY="$(BACKEND_PROXY)" yarn start
-	
