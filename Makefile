@@ -99,7 +99,7 @@ set-dev-env-vars:
 	MSENTRA_REDIRECT_URI="http://localhost:6101" \
 	USE_INDIGO="true" \
 	INDIGO_AUTHORITY="https://iam-1.staging.devx.skao.int/" \
-	INDIGO_CLIENT_ID="ad5fcc0b-acd2-40a9-af5d-a27604fd903b" \
+	INDIGO_CLIENT_ID="d546e462-637c-44ff-b2b9-3345a960ad42" \
 	INDIGO_REDIRECT_URI="http://localhost:6101/" \
 	INDIGO_SCOPE="pht:readwrite openid profile" \
 	INDIGO_AUDIENCE="test:pht" \
