@@ -18,7 +18,7 @@ const HTTPS = 'https://';
 
 export const loginRequest = {
   scopes: getUseIndigo()
-    ? [INDIGO_API_SCOPE || 'openid profile email']
+    ? (INDIGO_API_SCOPE || 'openid profile').split(' ').filter(Boolean)
     : [`${MSENTRA_API_URI}/pht:readwrite ${MSENTRA_API_URI}/pht:update`]
 };
 

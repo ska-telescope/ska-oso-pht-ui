@@ -15,7 +15,7 @@ import {
   useInitializeAccessStore
 } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { buildLoginRequest } from '@/utils/authConfig';
+import { buildLoginRequest, getUseIndigo } from '@/utils/authConfig';
 import { useNotify } from '@/utils/notify/useNotify';
 
 export interface ButtonUserMenuProps {
@@ -132,7 +132,7 @@ export default function ButtonUserMenu({
             colorFG={theme.palette.primary.contrastText}
             label={username}
             onClick={handleMenuOpen}
-            showPhoto
+            showPhoto={!getUseIndigo()}
             showUsername
             testId="usernameMenu"
             toolTip={toolTip}
