@@ -288,6 +288,11 @@ export const TIME_UNITS = [
   { id: TIME_NS, value: 'ns', toDay: 86400 * 1000000000 }
 ];
 
+export const INTEGRATION_TIME_UNITS = [
+  { id: TIME_HOURS, value: 'h', toDay: 24 },
+  { id: TIME_MINS, value: 'min', toDay: 1440 }
+];
+
 export const INFINITY = 'Infinity';
 
 export const DECIMAL_PLACES = 2;
