@@ -35,6 +35,10 @@ export const useNumericInput = (
     inputRef.current.max = maxValue !== undefined ? String(maxValue) : '';
   }, [step, minValue, maxValue]);
 
+  React.useEffect(() => {
+    return () => { if (errorTimerRef.current) clearTimeout(errorTimerRef.current); };
+  }, []);
+
   const runValidation = (num: number): string => {
     if (isNaN(num)) return requiredMessage;
     return validate ? validate(num) : '';
