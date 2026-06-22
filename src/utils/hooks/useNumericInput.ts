@@ -28,17 +28,6 @@ export const useNumericInput = (
   const errorTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
   const inputRef = React.useRef<HTMLInputElement>(null);
 
-  React.useEffect(() => {
-    if (!inputRef.current || step === undefined) return;
-    inputRef.current.step = String(step);
-    inputRef.current.min = minValue !== undefined ? String(minValue + step) : '';
-    inputRef.current.max = maxValue !== undefined ? String(maxValue) : '';
-  }, [step, minValue, maxValue]);
-
-  React.useEffect(() => {
-    return () => { if (errorTimerRef.current) clearTimeout(errorTimerRef.current); };
-  }, []);
-
   const runValidation = (num: number): string => {
     if (isNaN(num)) return requiredMessage;
     return validate ? validate(num) : '';
@@ -48,6 +37,17 @@ export const useNumericInput = (
     setLocalValue(value);
     setErrorText(runValidation(value));
   }, [value]);
+
+  React.useEffect(() => {
+    if (inputRef.current && step !== undefined) {
+      inputRef.current.step = String(step);
+      inputRef.current.min = minValue !== undefined ? String(minValue + step) : '';
+      inputRef.current.max = maxValue !== undefined ? String(maxValue) : '';
+    }
+    if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
+    setErrorText(runValidation(localValue));
+    return () => { if (errorTimerRef.current) clearTimeout(errorTimerRef.current); };
+  }, [step, minValue, maxValue]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleChange = (input: number) => {
     setLocalValue(input);
