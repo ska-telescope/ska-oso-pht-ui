@@ -8,6 +8,12 @@ import { useUserGroups } from '@ska-telescope/ska-login-page';
 import { IPublicClientApplication } from '@azure/msal-browser';
 import ButtonUserMenu from './UserMenu';
 
+const mockInstance = {
+  addEventCallback: vi.fn().mockReturnValue('mock-callback-id'),
+  removeEventCallback: vi.fn(),
+  getAllAccounts: vi.fn().mockReturnValue([])
+} as unknown as IPublicClientApplication;
+
 // Mocks
 vi.mock('@azure/msal-react', () => ({
   useMsal: vi.fn()
@@ -63,7 +69,7 @@ describe('UserMenu', () => {
           localAccountId: ''
         }
       ],
-      instance: {} as IPublicClientApplication,
+      instance: mockInstance,
       inProgress: 'none',
       logger: new Logger({ loggerCallback: () => {} })
     });
@@ -81,7 +87,7 @@ describe('UserMenu', () => {
   it('renders login button when no user is present', () => {
     vi.mocked(useMsal).mockReturnValue({
       accounts: [],
-      instance: {} as IPublicClientApplication,
+      instance: mockInstance,
       inProgress: 'none',
       logger: new Logger({ loggerCallback: () => {} })
     });
@@ -130,7 +136,7 @@ describe('UserMenu', () => {
   it('navigates to home page when login button is clicked', () => {
     vi.mocked(useMsal).mockReturnValue({
       accounts: [],
-      instance: {} as IPublicClientApplication,
+      instance: mockInstance,
       inProgress: 'none',
       logger: new Logger({ loggerCallback: () => {} })
     });
