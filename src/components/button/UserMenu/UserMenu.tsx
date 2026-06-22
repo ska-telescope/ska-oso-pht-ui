@@ -52,9 +52,11 @@ export default function ButtonUserMenu({
     const account = accounts[0];
     if (!account) { setDisplayName(''); return; }
     if (account.idToken) {
-      getUserInfo(account.idToken).then((info: { displayName?: string } | null) =>
-        setDisplayName(info?.displayName ?? account.name ?? '')
-      );
+      getUserInfo(account.idToken)
+        .then((info: { displayName?: string } | null) =>
+          setDisplayName(info?.displayName ?? account.name ?? '')
+        )
+        .catch(() => setDisplayName(account.name ?? ''));
     } else {
       setDisplayName(account.name ?? '');
     }
