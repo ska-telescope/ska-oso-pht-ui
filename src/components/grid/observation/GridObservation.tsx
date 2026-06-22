@@ -143,7 +143,7 @@ export default function GridObservation({
 
   const colObservation: GridColDef = {
     field: 'id',
-    renderHeader: () => headerDisplay('observations.label'),
+    renderHeader: () => null,
     flex: 1,
     minWidth: 0,
     maxWidth: Number.MAX_SAFE_INTEGER,
@@ -201,6 +201,7 @@ export default function GridObservation({
         rows={data}
         columns={getColumns(displayOption)}
         getRowHeight={() => ROW_HEIGHT}
+        columnHeaderHeight={0}
         hideFooter
         onRowClick={disabled ? undefined : handleRowClick}
         rowSelectionModel={disabled ? [] : selectedId ? [selectedId] : []}
@@ -211,8 +212,13 @@ export default function GridObservation({
           height: gridHeight,
           minHeight: 0,
           overflow: 'hidden',
+          border: '0 none',
           pointerEvents: disabled ? 'none' : 'auto',
-          opacity: disabled ? 0.5 : 1
+          opacity: disabled ? 0.5 : 1,
+          '& .MuiDataGrid-row': { borderBottom: 'none' },
+          '& .MuiDataGrid-cell': { borderBottom: 'none' },
+          '& .MuiDataGrid-cell:focus, & .MuiDataGrid-cell:focus-within': { outline: 'none' },
+          '--DataGrid-rowBorderColor': 'transparent'
         }}
       />
     </Box>

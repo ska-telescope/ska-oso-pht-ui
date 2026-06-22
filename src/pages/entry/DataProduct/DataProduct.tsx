@@ -699,12 +699,15 @@ export default function DataProduct({ data }: DataProductProps) {
         sx={{ flexGrow: 1 }}
       >
         <Grid size={{ md: 4, lg: 2 }} sx={{ display: 'flex', flexDirection: 'column' }}>
+          <BorderedSection
+            title={t('page.7.obsTitle')}
+          >
           <Box
             sx={{
               flex: 1,
               display: 'flex',
               flexDirection: 'column',
-              border: '1px solid',
+              border: '0 none',
               borderColor: '#ccc',
               borderRadius: '8px',
               minHeight: 0
@@ -719,6 +722,7 @@ export default function DataProduct({ data }: DataProductProps) {
               />
             )}
           </Box>
+        </BorderedSection>
         </Grid>
         <Grid size={{ md: 7, lg: 7 }}>
           <Stack spacing={GAP}>
