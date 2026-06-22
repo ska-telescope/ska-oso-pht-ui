@@ -781,8 +781,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
             ? timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, suppliedUnits)
             : undefined}
           step={suppliedType === SUPPLIED_TYPE_INTEGRATION && suppliedUnits !== TIME_HOURS ? 1 : undefined}
-          currentUnitLabel={suppliedType === SUPPLIED_TYPE_INTEGRATION 
-            ? INTEGRATION_TIME_UNITS[suppliedUnits - 1].value 
+          currentUnitLabel={suppliedType === SUPPLIED_TYPE_INTEGRATION
+            ? INTEGRATION_TIME_UNITS.find(u => u.id === suppliedUnits)?.value
             : undefined}
           required
         />
