@@ -13,10 +13,10 @@ runtimeEnv:
   domain: "https://sdhp.stfc.skao.int"
   skaLoginAppUrl: ""
   msentraRedirectUri: ""
-  useIndigo: false
+  useIndigo: true
   indigoAuthority: "https://iam-1.staging.devx.skao.int/"
-  indigoClientId: "ad5fcc0b-acd2-40a9-af5d-a27604fd903b"
-  indigoRedirectUri: ""
+  indigoClientId: "d546e462-637c-44ff-b2b9-3345a960ad42"
+  indigoRedirectUri: "/"
   indigoScope: "pht:readwrite openid profile"
   indigoAudience: "test:pht"
   indigoApiScope: "pht:readwrite openid profile"
