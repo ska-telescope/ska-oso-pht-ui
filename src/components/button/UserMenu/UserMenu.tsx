@@ -1,6 +1,6 @@
 import React from 'react';
 import { useMsal } from '@azure/msal-react';
-import { EventType } from '@azure/msal-browser';
+import { EventType, AuthError } from '@azure/msal-browser';
 import { Box, Divider, Menu, MenuItem } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { ButtonLogin, ButtonUser, ButtonLogout, getUserInfo } from '@ska-telescope/ska-login-page';
@@ -63,10 +63,12 @@ export default function ButtonUserMenu({
   React.useEffect(() => {
     const callbackId = instance.addEventCallback((event) => {
       if (event.eventType === EventType.LOGIN_FAILURE && event.error) {
-        notifyError(`Login failed (${event.error.errorCode}): ${event.error.message}`);
+        const err = event.error as AuthError;
+        notifyError(`Login failed (${err.errorCode}): ${err.message}`);
       }
       if (event.eventType === EventType.ACQUIRE_TOKEN_FAILURE && event.error) {
-        console.warn('[MSAL] ACQUIRE_TOKEN_FAILURE', event.error.errorCode, event.error.message);
+        const err = event.error as AuthError;
+        console.warn('[MSAL] ACQUIRE_TOKEN_FAILURE', err.errorCode, err.message);
       }
     });
     return () => {

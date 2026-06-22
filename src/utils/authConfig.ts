@@ -2,6 +2,15 @@ import { env } from '@/env';
 
 const USE_INDIGO_SESSION_KEY = 'pht:use_indigo';
 
+const REQUIRED_INDIGO_KEYS = [
+  'INDIGO_AUTHORITY',
+  'INDIGO_CLIENT_ID',
+  'INDIGO_REDIRECT_URI',
+  'INDIGO_SCOPE',
+  'INDIGO_AUDIENCE',
+  'INDIGO_API_SCOPE',
+] as const;
+
 export function getUseIndigo(): boolean {
   const params = new URLSearchParams(window.location.search);
 
@@ -20,12 +29,18 @@ export function getUseIndigo(): boolean {
   return sessionStorage.getItem(USE_INDIGO_SESSION_KEY) === 'true';
 }
 
+// Returns missing required env key names when USE_INDIGO is active. Empty array = all good.
+export function validateIndigoConfig(): string[] {
+  if (!getUseIndigo()) return [];
+  return REQUIRED_INDIGO_KEYS.filter(key => !env[key]);
+}
+
 // Returns undefined for Entra (ButtonLogin's default User.Read is correct).
 // For Indigo, overrides the scope so we don't send the MS Graph User.Read scope.
 export function buildLoginRequest(): { scopes: string[] } | undefined {
   if (!getUseIndigo()) return undefined;
   return {
-    scopes: (env.INDIGO_SCOPE || 'pht:readwrite openid profile').split(' ').filter(Boolean),
+    scopes: env.INDIGO_SCOPE.split(' ').filter(Boolean),
   };
 }
 
@@ -35,7 +50,7 @@ export function buildAuthConfig() {
       authority: env.INDIGO_AUTHORITY,
       clientId: env.INDIGO_CLIENT_ID,
       redirectUri: env.INDIGO_REDIRECT_URI,
-      scope: env.INDIGO_SCOPE || 'pht:readwrite openid profile',
+      scope: env.INDIGO_SCOPE,
       audience: env.INDIGO_AUDIENCE,
     };
   }
