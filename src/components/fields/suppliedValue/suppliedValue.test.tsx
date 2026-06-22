@@ -46,20 +46,13 @@ describe('SuppliedValue component', () => {
     render(<SuppliedValue value={5} setValue={vi.fn()} />);
   });
 
-  it('shows error immediately when typing an invalid value', () => {
+  it('does not show error immediately when typing an invalid value', () => {
     render(<SuppliedValue value={5} setValue={vi.fn()} minValue={0} />);
     const input = screen.getByTestId('suppliedValue');
-    fireEvent.keyDown(input, { key: '0' });
-    fireEvent.change(input, { target: { value: '0' } });
-    expect(screen.getByTestId('error')).toHaveTextContent('suppliedValue.range.minError');
-  });
-
-  it('does not show error immediately when using arrow keys or spinner', () => {
-    render(<SuppliedValue value={1} setValue={vi.fn()} minValue={0} />);
-    const input = screen.getByTestId('suppliedValue');
-    fireEvent.keyDown(input, { key: 'ArrowDown' });
     fireEvent.change(input, { target: { value: '0' } });
     expect(screen.queryByTestId('error')).not.toBeInTheDocument();
+    fireEvent.blur(input);
+    expect(screen.getByTestId('error')).toHaveTextContent('suppliedValue.range.minError');
   });
 
   it('does not show error when value is within range', () => {

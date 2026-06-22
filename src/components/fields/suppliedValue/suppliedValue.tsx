@@ -1,4 +1,3 @@
-import React from 'react';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
@@ -34,17 +33,7 @@ export default function SuppliedValue({
   const { setHelp } = useHelp();
   const FIELD = 'suppliedValue';
 
-  const inputRef = React.useRef<HTMLInputElement>(null);
-
-  React.useEffect(() => {
-    if (inputRef.current) {
-      inputRef.current.step = String(step ?? 1);
-      inputRef.current.min = minValue !== undefined ? String(minValue + (step ?? 1)) : '';
-      inputRef.current.max = maxValue !== undefined ? String(maxValue) : '';
-    }
-  }, [step, minValue, maxValue]);
-
-  const { localValue, errorText, handleChange, handleKeyDown, handleBlur } = useNumericInput(
+  const { localValue, errorText, handleChange, handleBlur, inputRef } = useNumericInput(
     value,
     setValue,
     {
@@ -59,7 +48,10 @@ export default function SuppliedValue({
         return t(`${FIELD}.range.maxError`, { max: maxValue, units: currentUnitLabel });
       },
       commitOnBlur: true,
-      errorDelayMs: ERROR_SECS
+      errorDelayMs: ERROR_SECS,
+      step,
+      minValue,
+      maxValue
     }
   );
 
@@ -74,7 +66,6 @@ export default function SuppliedValue({
       value={localValue}
       setValue={handleChange}
       onBlur={handleBlur}
-      onKeyDown={handleKeyDown}
       onFocus={() => setHelp(FIELD)}
       suffix={suffix}
     />

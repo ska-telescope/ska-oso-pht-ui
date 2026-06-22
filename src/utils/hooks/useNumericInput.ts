@@ -5,6 +5,9 @@ interface NumericInputOptions {
   requiredMessage?: string;
   commitOnBlur?: boolean;
   errorDelayMs?: number;
+  step?: number;
+  minValue?: number;
+  maxValue?: number;
 }
 
 export const useNumericInput = (
@@ -14,13 +17,23 @@ export const useNumericInput = (
     validate,
     requiredMessage = 'required',
     commitOnBlur = false,
-    errorDelayMs
+    errorDelayMs,
+    step,
+    minValue,
+    maxValue
   }: NumericInputOptions = {}
 ) => {
   const [localValue, setLocalValue] = React.useState<number>(value);
   const [errorText, setErrorText] = React.useState('');
   const errorTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-  const isTypingRef = React.useRef(false);
+  const inputRef = React.useRef<HTMLInputElement>(null);
+
+  React.useEffect(() => {
+    if (!inputRef.current || step === undefined) return;
+    inputRef.current.step = String(step);
+    inputRef.current.min = minValue !== undefined ? String(minValue + step) : '';
+    inputRef.current.max = maxValue !== undefined ? String(maxValue) : '';
+  }, [step, minValue, maxValue]);
 
   const runValidation = (num: number): string => {
     if (isNaN(num)) return requiredMessage;
@@ -37,7 +50,7 @@ export const useNumericInput = (
     const error = runValidation(input);
     if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
     if (error) {
-      if (!errorDelayMs || isTypingRef.current) {
+      if (!errorDelayMs) {
         setErrorText(error);
       } else {
         errorTimerRef.current = setTimeout(() => setErrorText(error), errorDelayMs);
@@ -45,15 +58,8 @@ export const useNumericInput = (
     } else {
       setErrorText('');
     }
-    isTypingRef.current = false;
     if (!error && !commitOnBlur) onCommit(input);
   };
-
-  const handleKeyDown = errorDelayMs
-    ? (e: React.KeyboardEvent) => {
-        isTypingRef.current = e.key !== 'ArrowUp' && e.key !== 'ArrowDown';
-      }
-    : undefined;
 
   const handleBlur = commitOnBlur
     ? () => {
@@ -64,5 +70,5 @@ export const useNumericInput = (
       }
     : undefined;
 
-  return { localValue, errorText, handleChange, handleKeyDown, handleBlur };
+  return { localValue, errorText, handleChange, handleBlur, inputRef };
 };
