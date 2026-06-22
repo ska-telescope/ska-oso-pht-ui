@@ -6,6 +6,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Changed: Split PDF selection into two modes: 'file selection' mode and 'uploaded PDF' mode, with file selection/drop
+  disabled when a PDF has been uploaded, and preview/download/delete operations disabled when in file selection mode.
+* Bugfix: clearing after a validation error should not remove an already uploaded PDF
+* Bugfix: 'clear' button was not disabled after PDF upload
+* Bugfix: filename was still displayed after deleting uploading PDF
+* Bugfix: filename was still displayed after clearing file selection
+* Bugfix: filename was still displayed for invalid PDFs
+* Bugfix: no error message was displayed for invalid PDFs selected via file dialog
+* Bugfix: no error message was displayed for invalid PDFs selected via drag-and-drop 
 * Bugfix: Fix target field validation and formatting
 * Bugfix: If proposal is not properly loaded due to browser refresh - prompt user to reload manually (may need a better fix later)
 * Bugfix: Fix Invalid Frequency Warning not highligted on breadcrumbs

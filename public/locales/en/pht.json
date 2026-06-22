@@ -705,13 +705,16 @@
       "sizeError": "Exceeded maximum file size: {{current}} MB / {{max}} MB",
       "pageError": "Exceeded maximum page count: {{current}} / {{max}} pages",
       "invalidFileError": "Unable to read the selected file. Please ensure it is a valid PDF.",
+      "prompt": {
+        "deleteToEnableUpload": "Delete PDF to enable file selection and upload"
+      },
       "success": "Science Justification PDF successfully uploaded",
       "tooltip": {
         "choose": "Choose the science justification PDF for upload",
         "clear": "Clears the currently selected file",
         "delete": "Delete the science justification PDF",
         "download": "Download the science justification PDF",
-        "preview": "This is the PDF preview button on the science page",
+        "preview": "Preview the science justification PDF",
         "upload": "Upload the selected PDF for use as the science justification",
         "uploadDisabled": "PDF cannot be uploaded: the selected file does not meet the size or page count requirements"
       },

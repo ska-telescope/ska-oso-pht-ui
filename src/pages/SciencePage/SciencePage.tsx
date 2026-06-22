@@ -39,6 +39,7 @@ export default function SciencePage() {
   const [currentFile, setCurrentFile] = React.useState<string | null | undefined>(null);
   const [originalFile, setOriginalFile] = React.useState<string | null>(null);
   const [pdfError, setPdfError] = React.useState<string | null>(null);
+  const [fileUploadKey, setFileUploadKey] = React.useState(0);
   const validationFileRef = React.useRef<File | null>(null);
 
   const [openPDFViewer, setOpenPDFViewer] = React.useState(false);
@@ -52,6 +53,9 @@ export default function SciencePage() {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+
+  const getSciencePdfDisplayFilename = () =>
+    getProposal()?.sciencePDF?.documentId + t('fileType.pdf');
 
   const getProposalState = () => application.content1 as number[];
   const setTheProposalState = (value: number) => {
@@ -82,25 +86,175 @@ export default function SciencePage() {
 
   const setFile = (theFile: File | '') => {
     if (theFile instanceof File) {
+      if (getProposal()?.sciencePDF?.isUploadedPdf) {
+        /*
+         * FileUpload has no dedicated prop to disable dropzone file acceptance while preserving
+         * the dropzone prompt/preview. Guarding here blocks replacement attempts until delete.
+         */
+        return;
+      }
       validationFileRef.current = theFile;
-      validatePdf(theFile).then(error => {
-        if (validationFileRef.current === theFile) {
-          setPdfError(error);
-        }
-      });
+      validatePdf(theFile)
+        .then(error => {
+          if (validationFileRef.current === theFile) {
+            setPdfError(error);
+            if (error !== null) {
+              /*
+               * key={fileUploadKey}: FileUpload owns its displayed filename in internal
+               * React state, and setting the `file` prop to null/'' does not clear it
+               * (the component's useEffect guard is `v && …`, so falsy values are ignored).
+               * Incrementing the key forces React to unmount the old instance and mount a
+               * fresh one — resetting the filename display — whenever validation rejects a
+               * file.
+               */
+              setFileUploadKey(k => k + 1);
+            }
+          }
+        })
+        .catch(() => {
+          if (validationFileRef.current === theFile) {
+            setPdfError(t('pdfUpload.science.invalidFileError'));
+            setFileUploadKey(k => k + 1);
+          }
+        });
     } else {
+      const hasUploadedSciencePdf = !!getProposal()?.sciencePDF?.isUploadedPdf;
       validationFileRef.current = null;
       setPdfError(null);
-      setProposal({
-        ...getProposal(),
-        sciencePDF: null
-      });
-      setCurrentFile(null);
+      /*
+       * FileUpload has no controlled-clear API: its file-prop sync effect ignores falsy values, so
+       * clearing the displayed name needs both (a) a remount via the key to reset its internal
+       * filename state and (b) originalFile (the `file` prop) set to null, since the dropzone
+       * renders the `file` prop directly as the selected file.
+       * TODO: switch to a first-class ska-gui-components API when available.
+       */
+      setFileUploadKey(k => k + 1);
+      if (hasUploadedSciencePdf) {
+        setOriginalFile(getSciencePdfDisplayFilename());
+      } else {
+        setOriginalFile(null);
+        setProposal({
+          ...getProposal(),
+          sciencePDF: null
+        });
+        setCurrentFile(null);
+      }
     }
   };
 
   const setUploadStatus = (status: typeof FileUploadStatus) => {
     setProposal({ ...getProposal(), scienceLoadStatus: status });
+  };
+
+  const validateSelectedFile = (selectedFile: File) => {
+    validationFileRef.current = selectedFile;
+    validatePdf(selectedFile)
+      .then(error => {
+        if (validationFileRef.current === selectedFile) {
+          setPdfError(error);
+        }
+      })
+      .catch(() => {
+        if (validationFileRef.current === selectedFile) {
+          setPdfError(t('pdfUpload.science.invalidFileError'));
+        }
+      });
+  };
+
+  const isAcceptedPdfFile = (file: File) => {
+    const isPdfByMime = file.type === 'application/pdf';
+    const isPdfByExtension = file.name.toLowerCase().endsWith('.pdf');
+    return isPdfByMime || isPdfByExtension;
+  };
+
+  const rejectInvalidNonPdfSelection = (file: File) => {
+    validationFileRef.current = file;
+    setPdfError(t('pdfUpload.science.invalidFileError'));
+    /*
+     * Workaround for missing FileUpload rejection hooks/state control:
+     * when dropzone rejects non-PDF files, setFile is not called, so FileUpload keeps internal
+     * "selected file" state and keeps clear/upload buttons visible unless we remount it.
+     */
+    setFileUploadKey(k => k + 1);
+  };
+
+  /**
+   * Capture file-input changes emitted from inside FileUpload so we can validate selected files
+   * even when react-dropzone rejects them before FileUpload calls setFile (for example, when the
+   * picker starts with PDF filters but users switch to "all files" and pick a non-PDF).
+   *
+   * This is required to show the same invalid-file warning for picker-based non-PDF selections.
+   *
+   * This is moderately brittle:
+   *  - it assumes FileUpload renders a native <input type="file"> inside that wrapper.                                                                                                                                                                                                                                ┃
+   *  - it assumes the input change event bubbles/captures through the box wrapper.                                                                                                                                                                                                                                       ┃
+   *  - if ska-gui-components changes DOM structure, portals the input elsewhere, or changes event
+   *    handling, this hook could stop firing.                                                                                                                                                                              ┃
+   *
+   * Longer term, the better fix is a first-class rejection callback in GUI component FileUpload
+   * (for example onDropRejected/onFileRejected) and moving this warning handling to that API.
+   */
+  const handleFileInputChangeCapture = (event: React.FormEvent<HTMLDivElement>) => {
+    if (getProposal()?.sciencePDF?.isUploadedPdf) {
+      return;
+    }
+
+    const target = event.target as HTMLInputElement;
+    if (target.tagName !== 'INPUT' || target.type !== 'file' || !target.files?.length) {
+      return;
+    }
+
+    const selectedFile = target.files[0];
+    if (!isAcceptedPdfFile(selectedFile)) {
+      rejectInvalidNonPdfSelection(selectedFile);
+      return;
+    }
+
+    validateSelectedFile(selectedFile);
+  };
+
+  const blockUploadInteractionWhenPdfExists = (
+    event: React.SyntheticEvent<HTMLDivElement, Event>
+  ) => {
+    if (!getProposal()?.sciencePDF?.isUploadedPdf) {
+      return;
+    }
+
+    const target = event.target as HTMLElement;
+    if (target.closest('button')) {
+      return;
+    }
+
+    /*
+     * Workaround for missing FileUpload "disable dropzone interactions" API:
+     * prevent dropzone clicks/drops from opening file picker or accepting files while a PDF is
+     * already uploaded, but keep suffix action buttons (delete/preview/download) usable.
+     */
+    event.preventDefault();
+    event.stopPropagation();
+  };
+
+  /**
+   * Workaround for missing FileUpload rejection hooks:
+   * FileUpload does not expose react-dropzone's onDropRejected / fileRejections, so rejected
+   * non-PDF drag/drop attempts never call setFile and otherwise provide no invalid-file feedback.
+   * Capturing drop events here lets SciencePage surface invalidFileError consistently.
+   */
+  const handleDropCapture = (event: React.DragEvent<HTMLDivElement>) => {
+    if (getProposal()?.sciencePDF?.isUploadedPdf) {
+      blockUploadInteractionWhenPdfExists(event);
+      return;
+    }
+
+    const droppedFile = event.dataTransfer.files?.[0];
+    if (!droppedFile) {
+      return;
+    }
+    if (isAcceptedPdfFile(droppedFile)) {
+      return;
+    }
+
+    rejectInvalidNonPdfSelection(droppedFile);
   };
 
   const uploadPdftoSignedUrl = async (theFile: any) => {
@@ -171,16 +325,31 @@ export default function SciencePage() {
         throw new Error('Not able to Delete Science PDF');
       }
 
-      const sciencePDFDeleted = {
-        documentId: `science-doc-${proposal.id}`,
-        isUploadedPdf: false
-      };
+      /*
+       * SW: sciencePDF was set to sciencePDFDeleted. It seems deliberate, but I don't know why
+       * it would be done as it had the effect of making it look like a phantom PDF had been
+       * uploaded.
+       */
+      // const sciencePDFDeleted = {
+      //   documentId: `science-doc-${proposal.id}`,
+      //   isUploadedPdf: false
+      // };
 
       setProposal({
         ...getProposal(),
-        sciencePDF: sciencePDFDeleted,
+        sciencePDF: null,
         scienceLoadStatus: FileUploadStatus.INITIAL
       });
+
+      /*
+       * FileUpload has no controlled-clear API: its file-prop sync effect ignores falsy values, so
+       * clearing the displayed name after delete needs both (a) a remount via the key to reset its
+       * internal filename state and (b) originalFile (the `file` prop) set to null, since the
+       * dropzone renders the `file` prop directly as the selected file. Until a first-class
+       * controlled clear API exists in ska-gui-components.
+       */
+      setFileUploadKey(k => k + 1);
+      setOriginalFile(null);
       notifySuccess(t('pdfDelete.science.success'));
     } catch (e) {
       new Error(t('pdfDelete.science.error'));
@@ -207,7 +376,7 @@ export default function SciencePage() {
     setValidateToggle(!validateToggle);
     if (getProposal()?.sciencePDF?.documentId) {
       setCurrentFile(getProposal()?.sciencePDF?.documentId);
-      setOriginalFile(getProposal()?.sciencePDF?.documentId + t('fileType.pdf'));
+      setOriginalFile(getSciencePdfDisplayFilename());
     }
     setHelp('page.' + PAGE + '.help');
   }, []);
@@ -259,6 +428,11 @@ export default function SciencePage() {
     </Grid>
   );
 
+  const hasUploadedSciencePdf = !!getProposal()?.sciencePDF?.isUploadedPdf;
+  const dropzonePrompt = hasUploadedSciencePdf
+    ? t('pdfUpload.science.prompt.deleteToEnableUpload')
+    : t('dropzone.prompt');
+
   return (
     <Shell page={PAGE}>
       <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
@@ -268,13 +442,33 @@ export default function SciencePage() {
           ) : (
             <>
               <Box
+                onClickCapture={blockUploadInteractionWhenPdfExists}
+                onChangeCapture={handleFileInputChangeCapture}
+                onDragOverCapture={blockUploadInteractionWhenPdfExists}
+                onDropCapture={handleDropCapture}
                 sx={{
                   '& .MuiButton-root.Mui-disabled': {
                     opacity: 0.38
-                  }
+                  },
+                  ...(hasUploadedSciencePdf
+                    ? {
+                        /*
+                         * Workaround for FileUpload limitations:
+                         * we need `file` set so the uploaded filename is shown, but FileUpload ties
+                         * clear/upload button visibility to internal selected-file state. Hide those
+                         * buttons while an uploaded PDF already exists.
+                         */
+                        '& [data-testid="fileUploadClearButton"], & [data-testid="fileUploadUploadButton"]':
+                          {
+                            display: 'none'
+                          }
+                      }
+                    : {})
                 }}
               >
                 <FileUpload
+                  key={fileUploadKey}
+                  chooseDisabled={hasUploadedSciencePdf}
                   chooseToolTip={t('pdfUpload.science.tooltip.choose')}
                   clearLabel={t('clearBtn.label')}
                   clearToolTip={t('pdfUpload.science.tooltip.clear')}
@@ -283,7 +477,7 @@ export default function SciencePage() {
                     'application/pdf': ['.pdf']
                   }}
                   dropzoneIcons={false}
-                  dropzonePrompt={t('dropzone.prompt')}
+                  dropzonePrompt={dropzonePrompt}
                   dropzonePreview={false}
                   direction="row"
                   file={originalFile}
@@ -291,7 +485,8 @@ export default function SciencePage() {
                   setFile={setFile}
                   setStatus={setUploadStatus}
                   testId="fileUpload"
-                  uploadDisabled={!!pdfError}
+                  clearDisabled={!!getProposal()?.sciencePDF?.isUploadedPdf && !pdfError}
+                  uploadDisabled={hasUploadedSciencePdf || !!pdfError}
                   uploadFunction={uploadPdftoSignedUrl}
                   uploadToolTip={
                     pdfError
@@ -302,7 +497,11 @@ export default function SciencePage() {
                   suffix={uploadSuffix()}
                 />
               </Box>
-              {pdfError && <FormHelperText error sx={{ ml: 1.75 }}>{pdfError}</FormHelperText>}
+              {pdfError && (
+                <FormHelperText error sx={{ ml: 1.75 }}>
+                  {pdfError}
+                </FormHelperText>
+              )}
             </>
           )}
         </Grid>
