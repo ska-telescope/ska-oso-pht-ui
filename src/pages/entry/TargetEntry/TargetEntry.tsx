@@ -197,7 +197,7 @@ export default function TargetEntry({
     setCoord1(trailingZeros(leadZero(coord1.trimEnd()).toString()));
   };
 
-  const blurDec = () => {
+  const blurCoord2 = () => {
     setCoord2(trailingZeros(leadZero(coord2.trimEnd()).toString()));
   };
 
