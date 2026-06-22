@@ -57,6 +57,16 @@ export const frequencyConversion = (inValue: any, from: number, to: number = FRE
   return (inValue * FREQUENCY_UNITS[to - 1].toHz) / FREQUENCY_UNITS[from - 1].toHz;
 };
 
+export const isFrequencyRangeOutOfBand = (
+  centralFrequency: number,
+  bandwidth: number,
+  minFreq: number,
+  maxFreq: number
+): boolean => {
+  if (minFreq === 0 && maxFreq === 0) return false;
+  return centralFrequency < minFreq + bandwidth / 2 || centralFrequency > maxFreq - bandwidth / 2;
+};
+
 export const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
   const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * SPEED_OF_LIGHT : 0;
   const occ = velocity < 1000 ? 0 : 1;

@@ -5,6 +5,7 @@ import { BorderedSection, DropDown, TextEntry } from '@ska-telescope/ska-gui-com
 import {
   SA_AA2,
   DETAILS,
+  ERROR_SECS,
   PAGE_DETAILS,
   TYPE_CONTINUUM,
   TYPE_PST,
@@ -13,7 +14,7 @@ import {
 } from '@utils/constants.ts';
 import { countWords, obTypeTransform } from '@utils/helpers.ts';
 import { Proposal } from '@utils/types/proposal.tsx';
-import { validateProposal } from '@utils/validation/validation.tsx';
+import { validateDetailsPage } from '@utils/validation/validation.tsx';
 import { useTheme } from '@mui/material/styles';
 import Shell from '../../components/layout/Shell/Shell';
 import LatexPreviewModal from '../../components/info/latexPreviewModal/latexPreviewModal';
@@ -56,9 +57,24 @@ export default function DetailsPage() {
   const [abstract, setAbstract] = React.useState(getProposal().abstract ?? '');
   const [initial, setInitial] = React.useState(true);
 
+  const getProposalState = () => application.content1 as number[];
   const setTheProposalState = () => {
-    updateAppContent1(validateProposal(getProposal(), autoLink));
+    const status = validateDetailsPage(getProposal());
+    const temp = getProposalState().map((v, i) => (i === PAGE ? status : v));
+    updateAppContent1(temp);
   };
+
+  const saveAbstract = () => {
+    const p = { ...getProposal(), abstract };
+    setProposal(p);
+    const status = validateDetailsPage(p);
+    const temp = getProposalState().map((v, i) => (i === PAGE ? status : v));
+    updateAppContent1(temp);
+  };
+
+  // Avoid a stale copy of the abstract being stored on the debounce by explicitly keeping a ref to it. 
+  const saveAbstractRef = React.useRef(saveAbstract);
+  saveAbstractRef.current = saveAbstract;
 
   const [openAbstractLatexModal, setOpenAbstractLatexModal] = React.useState(false);
   const handleOpenAbstractLatexModal = () => setOpenAbstractLatexModal(true);
@@ -77,12 +93,24 @@ export default function DetailsPage() {
     setTheProposalState();
   }, [validateToggle]);
 
+  // Science category changes (should trigger auto-linking / regeneration)
   React.useEffect(() => {
     if (!initial) {
       handleChanges();
     }
     setInitial(false);
-  }, [scienceCategoryId, abstract]);
+  }, [scienceCategoryId]);
+
+  // Abstract changes (save without triggering autogeneration)
+  React.useEffect(() => {
+    if (!initial) {
+      // Debounce to avoid saving on every keystroke; breadcrumb validation is also
+      // updated here (rather than relying on the [getProposal()] chain) to ensure
+      // it reflects the saved abstract without requiring a full re-render cycle.
+      const timer = setTimeout(() => saveAbstractRef.current(), ERROR_SECS);
+      return () => clearTimeout(timer);
+    }
+  }, [abstract]);
 
   const handleChanges = () => {
     const isAutolink = checkAutoLink(autoLink, getProposal().targets ?? [], scienceCategoryId);
@@ -186,6 +214,7 @@ export default function DetailsPage() {
           value={abstract}
           setValue={(e: string) => setValue(e)}
           onFocus={() => setHelp('abstract.help')}
+          onBlur={saveAbstract}
           helperText={helperFunction(abstract)}
           errorText={validateWordCount(abstract)}
           suffix={<ViewIcon onClick={handleOpenAbstractLatexModal} toolTip="preview latex" />}

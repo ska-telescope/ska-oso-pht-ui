@@ -11,23 +11,28 @@ import {
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
   FLOW_THROUGH_VALUE,
+  FREQUENCY_GHZ,
+  FREQUENCY_HZ,
+  FREQUENCY_MHZ,
   PAGE_CALIBRATION,
   PAGE_DATA_PRODUCTS,
   PAGE_OBSERVATION,
   STATUS_ERROR,
   STATUS_OK,
   STATUS_PARTIAL,
+  TELESCOPE_LOW_NUM,
   TYPE_CONTINUUM,
   TYPE_PST,
   TYPE_ZOOM
 } from './../constants';
 import Proposal from './../types/proposal';
-import { countWords } from '../helpers';
+import { countWords, frequencyConversion, isFrequencyRangeOutOfBand } from '../helpers';
+import { useOSDAccessors } from '../osd/useOSDAccessors/useOSDAccessors';
 import phtTranslations from '../../../public/locales/en/pht.json';
 
 export const validateTitlePage = (proposal: Proposal) => {
   const maxTitleWords = Number(phtTranslations.title.maxWord);
-  if (countWords(proposal?.title) > maxTitleWords) {
+  if (countWords(proposal?.title ?? '') > maxTitleWords) {
     return STATUS_ERROR;
   }
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
@@ -88,6 +93,43 @@ export const validateObservationPage = (proposal: Proposal, autoLink: boolean) =
     let count = hasObservations() ? 2 : 0;
     return result[count];
   }
+};
+
+export const useIsFrequencyOutOfRange = () => {
+  const { osdLOW, osdMID } = useOSDAccessors();
+
+  return (centralFrequency: number, bandwidth: number, isLow: boolean, observingBand: string): boolean => {
+    let minHz = 0;
+    let maxHz = 0;
+
+    if (isLow) {
+      minHz = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
+      maxHz = osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0;
+    } else {
+      const receiver = osdMID?.basicCapabilities?.receiverInformation?.find(
+        (e: any) => e.rxId === observingBand
+      );
+      minHz = receiver?.minFrequencyHz ?? 0;
+      maxHz = receiver?.maxFrequencyHz ?? 0;
+    }
+
+    const targetUnits = isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ;
+    const minFreq = frequencyConversion(minHz, FREQUENCY_HZ, targetUnits);
+    const maxFreq = frequencyConversion(maxHz, FREQUENCY_HZ, targetUnits);
+    return isFrequencyRangeOutOfBand(centralFrequency, bandwidth, minFreq, maxFreq);
+  };
+};
+
+export const useIsObservationFrequencyOutOfRange = () => {
+  const isFrequencyOutOfRange = useIsFrequencyOutOfRange();
+
+  return (obs: Observation): boolean =>
+    isFrequencyOutOfRange(
+      obs.centralFrequency,
+      obs.type === TYPE_ZOOM ? (obs.bandwidth ?? 0) : (obs.continuumBandwidth ?? 0),
+      obs.telescope === TELESCOPE_LOW_NUM,
+      String(obs.observingBand ?? '')
+    );
 };
 
 export const validateTechnicalPage = (proposal: Proposal) => {
@@ -151,20 +193,29 @@ export const validateLinkingPage = (proposal: Proposal) => {
   return result[count];
 };
 
-export const validateProposal = (proposal: Proposal, autoLink: boolean = false) => {
-  return [
-    validateTitlePage(proposal),
-    validateTeamPage(proposal),
-    validateDetailsPage(proposal),
-    validateSciencePage(proposal),
-    validateTargetPage(proposal),
-    validateObservationPage(proposal, autoLink),
-    validateTechnicalPage(proposal),
-    validateSDPPage(proposal),
-    validateLinkingPage(proposal),
-    validateCalibrationPage(proposal)
-    /* See SRCNet INACTIVE - validateSRCPage() */
-  ];
+export const useValidateProposal = () => {
+  const { autoLink } = useOSDAccessors();
+  const isObservationFrequencyOutOfRange = useIsObservationFrequencyOutOfRange();
+
+  return (proposal: Proposal) => {
+    const obsStatus = validateObservationPage(proposal, autoLink);
+    const freqOutOfRange = (proposal.observations ?? []).some(obs =>
+      isObservationFrequencyOutOfRange(obs)
+    );
+    return [
+      validateTitlePage(proposal),
+      validateTeamPage(proposal),
+      validateDetailsPage(proposal),
+      validateSciencePage(proposal),
+      validateTargetPage(proposal),
+      obsStatus === STATUS_OK && freqOutOfRange ? STATUS_ERROR : obsStatus,
+      validateTechnicalPage(proposal),
+      validateSDPPage(proposal),
+      validateLinkingPage(proposal),
+      validateCalibrationPage(proposal)
+      /* See SRCNet INACTIVE - validateSRCPage() */
+    ];
+  };
 };
 
 export const validateProposalNavigation = (proposal: Proposal, page: number, checkLink = false) => {

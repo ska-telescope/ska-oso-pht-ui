@@ -76,4 +76,24 @@ describe('SV Flow: Validate Observation Fields', () => {
       true
     ); //verify field error for continuum bandwidth
   });
+
+  it('SV Flow: Valid frequency shows OK in the observation breadcrumb', () => {
+    clickStatusIconNav('statusId5');
+    pageConfirmed('OBSERVATION');
+    // Default auto-linked observation: 200 MHz central frequency, 150 MHz bandwidth
+    // Valid centre range for LOW (50–350 MHz band): [50+75, 350-75] = [125, 275] MHz
+    cy.get('[data-testid="statusId5"]')
+      .should('have.attr', 'aria-label')
+      .and('include', 'OK');
+  });
+
+  it('SV Flow: Frequency bandwidth extending outside band edge shows Error in the observation breadcrumb', () => {
+    clickStatusIconNav('statusId5');
+    pageConfirmed('OBSERVATION');
+    // 110 MHz: lower edge = 110 - 75 = 35 MHz, below the 50 MHz band floor
+    updateFieldValue('centralFrequency', '110');
+    cy.get('[data-testid="statusId5"]')
+      .should('have.attr', 'aria-label')
+      .and('include', 'Error');
+  });
 });

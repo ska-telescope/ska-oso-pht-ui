@@ -9,7 +9,7 @@ import {
 import { Typography, Box, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { validateProposal } from '@utils/validation/validation';
+import { useValidateProposal } from '@utils/validation/validation';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
 import GetProposal from '@services/axios/get/getProposal/getProposal';
 import EditIcon from '../../icon/editIcon/editIcon';
@@ -117,7 +117,7 @@ export default function GridProposals({
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const authClient = useAxiosAuthClient();
-  const { autoLink } = useOSDAccessors();
+  const validateProposal = useValidateProposal();
 
   const deleteClicked = () => (
     <ProposalDisplay
@@ -338,7 +338,7 @@ export default function GridProposals({
       setAxiosViewError(response);
       return false;
     } else {
-      updateAppContent1(validateProposal(response, autoLink));
+      updateAppContent1(validateProposal(response));
       updateAppContent2(response);
       storeProposalCopy(response);
       return true;

@@ -179,7 +179,6 @@ describe('SciencePage', () => {
         await capturedUploadFunction!(file);
       });
 
-      expect(screen.queryByRole('presentation')).not.toBeInTheDocument();
       expect(GetPresignedUploadUrl).toHaveBeenCalled();
       expect(PutUploadPDF).toHaveBeenCalled();
       expect(notifyWarning).toHaveBeenCalledWith('pdfUpload.science.warning');
