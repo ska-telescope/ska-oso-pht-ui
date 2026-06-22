@@ -32,7 +32,8 @@ UNRELEASED
 * Fixed: The incorrect validation error which reported that a declination with seconds >= 59 was out of range. 
 * Fixed: Non-numeric input in Radial Velocity field does not produce a validation error.
 * Fixed: Missing plot on observation page is now present.
-* Changed: Data Product Description text is black rather than grey on the Observation Page.
+* Changed: Data Product Description text is black rather than grey on the Observatory Data Product page.
+* Changed: Made the Observations panel have the same title and boarder as other panels on the Observatory Data Product page.
 
 10.1.0
 ----------

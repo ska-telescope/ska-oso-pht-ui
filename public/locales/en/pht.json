@@ -1576,7 +1576,7 @@
         },
         "continuum": {
           "1": "In Science Verification, Continuum data products include: \n\n• Calibrated visibilities averaged to 3.4 s and 21.7 kHz (to enable full verification of the imaging ODPs).\n• MFS image \n• Channel images for spectral index estimation as specified in 'channels out'. \n• Model images per channel.\n• PSF images per channel.\n• Residual images per channel.\n• Ancillary data product including Local Sky Model catalogue and QA report.",
-          "2": "In Science Verification, Continuum data products include: \n\n• Calibrated visibilities averaged to the specified values (to enable full verification of the imaging ODPs).\n• MFS image†.\n• Model image\n• PSF image\n• Residual image\n• Ancillary data product including Local Sky Model catalogue and QA report.\n• Residual image.\n• Ancillary data product including Local Sky Model catalogue and QA report\n\n† The MFS images are generated with ..."
+          "2": "In Science Verification, Continuum data products include: \n\n• Calibrated visibilities averaged to the specified values (to enable full verification of the imaging ODPs).\n• MFS image†.\n• Model image\n• PSF image\n• Residual image\n• Ancillary data product including Local Sky Model catalogue and QA report.\n• Residual image.\n• Ancillary data product including Local Sky Model catalogue and QA report\n\n† The MFS images are generated using the Briggs weighting scheme with robust parameter set to 0."
         },
         "pst": {
           "0": "In Science Verification, PST Flow through data products include: \n\n• Single or dual-polarisation beam-formed voltages requantised to the specified bit depth.\n• QA report.",
