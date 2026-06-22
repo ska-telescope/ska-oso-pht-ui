@@ -43,6 +43,9 @@ BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/oso/api/v$(OSO_SERVICES_MAJOR_VERS
 BACKEND_PROXY ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)
 
 
+# Major version of the deployed ska-ost-senscalc — keep in sync with charts/ska-oso-pht-ui-umbrella/Chart.yaml
+SENSCALC_API_VERSION ?= v11
+
 K8S_CHART_PARAMS += \
   --set ska-oso-pht-ui.backendURL=$(BACKEND_URL)
 

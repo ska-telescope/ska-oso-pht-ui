@@ -89,6 +89,7 @@ import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalc
 import updateSensCalc from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import lowAA2Image from '@assets/low_aa2.png';
+import { useIsFrequencyOutOfRange } from '@/utils/validation/validation';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_OBSERVATION;
@@ -112,6 +113,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     selectedPolicy,
     telescopeBand
   } = useOSDAccessors();
+  const isFrequencyOutOfRange = useIsFrequencyOutOfRange();
 
   const isEdit = () => locationProperties.state !== null || data !== undefined;
 
@@ -452,52 +454,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   );
 
   const showWarning = () => {
-    let min = 0;
-    let max = 0;
-    let minResult = 0;
-    let maxResult = 0;
-
-    if (isMid()) {
-      const receiver = osdMID?.basicCapabilities?.receiverInformation.find(
-        e => e.rxId === String(observingBand)
-      );
-      min = receiver?.minFrequencyHz ?? 0;
-      max = receiver?.maxFrequencyHz ?? 0;
-
-      const minFreq = frequencyConversion(
-        min,
-        FREQUENCY_HZ,
-        isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ
-      );
-      const maxFreq = frequencyConversion(
-        max,
-        FREQUENCY_HZ,
-        isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ
-      );
-      const useBandwidth = isContinuum() ? continuumBandwidth : bandwidth;
-
-      minResult = minFreq + useBandwidth / 2;
-      maxResult = maxFreq - useBandwidth / 2;
-    } else {
-      min = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
-      max = osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0;
-
-      const minFreq = frequencyConversion(
-        min,
-        FREQUENCY_HZ,
-        isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ
-      );
-      const maxFreq = frequencyConversion(
-        max,
-        FREQUENCY_HZ,
-        isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ
-      );
-      const useBandwidth = isContinuum() ? continuumBandwidth : bandwidth;
-      minResult = minFreq + useBandwidth / 2;
-      maxResult = maxFreq - useBandwidth / 2;
-    }
-
-    return centralFrequency < minResult || centralFrequency > maxResult;
+    const useBandwidth = observationType === TYPE_ZOOM ? bandwidth : continuumBandwidth;
+    return isFrequencyOutOfRange(centralFrequency, useBandwidth, isLow(), String(observingBand));
   };
 
   const emptyField = () => <></>;
@@ -582,7 +540,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         </Grid>
         {showWarning() && (
           <Grid>
-            <Typography color={AlertColorTypes.Warning}>
+            <Typography color={AlertColorTypes.Error}>
               {t('frequencyBandwidthOutOfRange.warning')}
             </Typography>
           </Grid>
