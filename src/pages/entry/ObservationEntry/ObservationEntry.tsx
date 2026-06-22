@@ -47,7 +47,7 @@ import {
   cypressToken,
   TIME_HOURS,
   SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
-  TIME_UNITS
+  INTEGRATION_TIME_UNITS
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -782,7 +782,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
             : undefined}
           step={suppliedType === SUPPLIED_TYPE_INTEGRATION && suppliedUnits !== TIME_HOURS ? 1 : undefined}
           currentUnitLabel={suppliedType === SUPPLIED_TYPE_INTEGRATION 
-            ? TIME_UNITS[suppliedUnits - 1].value 
+            ? INTEGRATION_TIME_UNITS[suppliedUnits - 1].value 
             : undefined}
           required
         />
