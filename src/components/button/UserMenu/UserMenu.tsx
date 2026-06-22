@@ -65,6 +65,9 @@ export default function ButtonUserMenu({
       if (event.eventType === EventType.LOGIN_FAILURE && event.error) {
         notifyError(`Login failed (${event.error.errorCode}): ${event.error.message}`);
       }
+      if (event.eventType === EventType.ACQUIRE_TOKEN_FAILURE && event.error) {
+        console.warn('[MSAL] ACQUIRE_TOKEN_FAILURE', event.error.errorCode, event.error.message);
+      }
     });
     return () => {
       if (callbackId) instance.removeEventCallback(callbackId);

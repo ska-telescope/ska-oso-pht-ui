@@ -67,6 +67,11 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
           request.headers['Authorization'] = `Bearer ${tokenResponse.accessToken}`;
         } catch (error) {
           if (error instanceof InteractionRequiredAuthError) {
+            console.warn(
+              '[axiosAuthClient] acquireTokenSilent failed, redirecting to login:',
+              (error as InteractionRequiredAuthError).errorCode,
+              (error as InteractionRequiredAuthError).message
+            );
             instance.loginRedirect({
               ...loginRequest,
               redirectUri: window.location.origin

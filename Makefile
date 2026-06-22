@@ -97,7 +97,7 @@ set-dev-env-vars:
 	MSENTRA_CLIENT_ID="2445e300-54c9-470f-9578-0f54840672af" \
 	MSENTRA_TENANT_ID="78887040-bad7-494b-8760-88dcacfb3805" \
 	MSENTRA_REDIRECT_URI="http://localhost:6101" \
-	USE_INDIGO="true" \
+	USE_INDIGO="false" \
 	INDIGO_AUTHORITY="https://iam-1.staging.devx.skao.int/" \
 	INDIGO_CLIENT_ID="d546e462-637c-44ff-b2b9-3345a960ad42" \
 	INDIGO_REDIRECT_URI="http://localhost:6101/" \
