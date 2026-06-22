@@ -49,7 +49,7 @@ export const validateTeamPage = (proposal: Proposal) => {
 
 export const validateDetailsPage = (proposal: Proposal) => {
   const maxAbstractWords = Number(phtTranslations.abstract.maxWord);
-  if (countWords(proposal?.abstract) > maxAbstractWords) {
+  if (countWords(proposal?.abstract ?? '') > maxAbstractWords) {
     return STATUS_ERROR;
   }
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
@@ -183,25 +183,28 @@ export const validateProposalNavigation = (proposal: Proposal, page: number, che
   return true;
 };
 
-export function validateSkyDirection1Text(value: string): boolean {
-  const formatValid = /^[-+]?\d{1,2}:\d{2}:\d{2}((\.?)|(\.\d+\s+|\.\d+))$/.test(value);
+export function validateSkyDirection1Text(value: string): string | null {
+  const formatValid = /^\+?\d{1,2}:\d{2}:\d{2}((\.?)|(\.\d+\s+|\.\d+))$/.test(value);
   if (!formatValid) {
-    return false;
+    return '0';
   }
   const arr = value.split(':');
   if (arr?.length !== 3) {
-    return false;
+    return '0';
   }
-  if (Math.abs(Number(arr[0])) > 24) {
-    return false;
+  if (Number(arr[0]) > 24) {
+    return '1';
   }
   if (Number(arr[1]) > 59) {
-    return false;
+    return '0';
   }
   if (Number(arr[2]) >= 60) {
-    return false;
+    return '0';
   }
-  return !(Number(arr[0]) === 24 && (Number(arr[1]) > 0 || Number(arr[2]) > 0));
+  if (Number(arr[0]) === 24 && (Number(arr[1]) > 0 || Number(arr[2]) > 0)) {
+    return '1';
+  }
+  return null;
 }
 
 export function validateSkyDirection1Number(value: string): boolean {
@@ -213,7 +216,7 @@ export function validateSkyDirection1Number(value: string): boolean {
 }
 
 export function validateSkyDirection2Text(value: string): string | null {
-  const formatValid = /^[-+]?\d{1,2}:\d{2}:\d{2}(\.\d+\s+|\.\d+)?$/.test(value);
+  const formatValid = /^[-+]?\d{1,2}:\d{2}:\d{2}((\.?)|(\.\d+\s+|\.\d+))$/.test(value);
   if (!formatValid) {
     return '0';
   }
@@ -230,11 +233,14 @@ export function validateSkyDirection2Text(value: string): string | null {
   if (Math.abs(hours) > 90 || (Math.abs(hours) === 90 && (minutes > 0 || seconds > 0))) {
     return '1';
   }
+
+  // explicitly treat these as a format rather than a range error 
+  // because they are not valid in the context of sky direction
   if (minutes > 59) {
-    return '1';
+    return '0';
   }
   if (seconds > 59) {
-    return '1';
+    return '0';
   }
   return null;
 }

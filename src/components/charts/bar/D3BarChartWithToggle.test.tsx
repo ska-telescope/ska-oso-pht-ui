@@ -1,4 +1,5 @@
 import React from 'react';
+import { expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import D3BarChartWithToggle from './D3BarChartWithToggle'; // Adjust path if needed
 

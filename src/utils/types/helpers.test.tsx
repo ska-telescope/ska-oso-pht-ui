@@ -1,4 +1,4 @@
-import { describe, test } from 'vitest';
+import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
 import {
   calculateVelocity,
