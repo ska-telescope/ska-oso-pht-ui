@@ -82,6 +82,7 @@ export const BIT_DEPTH = [
   { value: '32' }
 ];
 
+export const CHANNELS_OUT_MIN = 1;
 export const CHANNELS_OUT_MAX = 40;
 
 export const CONFLICT_REASONS = [

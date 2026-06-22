@@ -1115,9 +1115,9 @@
     }
   },
   "channelsOut": {
-    "help": "Channels Out help text TBD",
+    "help": "The number of output channels for this data product. Enter a whole number between {{min}} and {{max}}.",
     "label": "Channels Out",
-    "error": "Valid range is 0 - 40"
+    "error": "Valid range is {{min}} - {{max}}"
   },
   "fitSpectralPol": {
     "help": "Fit Spectral Pol help text TBD",

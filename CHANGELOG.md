@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Bugfix: 'Channels Out' allowed 0 channels to be selected
 * Bugfix: target table displays internal localisation IDs
 * Changed: Split PDF selection into two modes: 'file selection' mode and 'uploaded PDF' mode, with file selection/drop
   disabled when a PDF has been uploaded, and preview/download/delete operations disabled when in file selection mode.
