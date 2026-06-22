@@ -12,7 +12,9 @@ async function GetCoordinates(targetName: string, skyUnits: number) {
     const result = await axiosClient.get(
       `${SKA_OSO_SERVICES_URL}${URL_PATH}${targetName}/${UNITS[units]}`
     );
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : result.data;
+    return typeof result === 'undefined'
+  ? { error: 'error.API_UNKNOWN_ERROR' }
+  : result.data;
   } catch (e) {
     if (e instanceof Error) {
       return { error: e.message };

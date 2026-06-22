@@ -62,11 +62,11 @@ describe('GetCoordinates Service', () => {
   });
 
   test('returns error.API_UNKNOWN_ERROR if axiosClient returns undefined', async () => {
-    vi.mocked(axiosClient.get).mockResolvedValueOnce(undefined);
+  vi.mocked(axiosClient.get).mockResolvedValueOnce(undefined);
 
-    const result = await GetCoordinates('M1', 0);
-    expect(result).toBe('error.API_UNKNOWN_ERROR');
-  });
+  const result = await GetCoordinates('M1', 0);
+  expect(result).toEqual({ error: 'error.API_UNKNOWN_ERROR' });
+});
 
   test('returns error message if axiosClient throws an Error', async () => {
     vi.mocked(axiosClient.get).mockRejectedValueOnce(new Error('Network failure'));
