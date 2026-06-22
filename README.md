@@ -193,15 +193,15 @@ Project repository-provided git hooks.
 The following global state is stored in Redux:
 
 | Store Path             | Purpose                                    |
-| ---------------------- | ------------------------------------------ |
+| ---------------------- |--------------------------------------------|
 | `Application.Content1` | Proposal status per page                   |
 | `Application.Content2` | Currently edited proposal                  |
-| `Application.Content3` | Original loaded proposal (for comparison)  |
+| `Application.Content3` | Cycle policy data from OSD                 |
 | `Application.Content4` | `ProposalAccess[]`, used during submission |
 | `Application.Content5` | Global notifications                       |
 | `Application.Content6` | Not used                                   |
 | `Application.Content7` | Not used                                   |
-| `Application.Content8` | Not used                                   |
+| `Application.Content8` | The currently selected OSD cycle/policy    |
 | `Application.Content9` | Not used                                   |
 | `Help.component`       | Field-dependent help information           |
 

@@ -10,6 +10,7 @@ import {
 } from '@utils/constants.ts';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.tsx';
 import { MockObservatoryDataBackend } from './mockObservatoryDataBackend';
+import { MockODTConfigurationBackend } from './mockODTConfigurationBackend.tsx';
 import {
   ObservatoryDataBackend,
   ObservatoryData,
@@ -17,14 +18,18 @@ import {
   subBandsBackend,
   ReceiverInformationBackend,
   subarrayConfigurationMid,
-  subBands
+  subBands, ObservatoryDataCapabilities
 } from '@/utils/types/observatoryData';
+import { ODTConfigurationBackend } from '@utils/types/odtConfiguration.tsx';
 import { generateId } from '@/utils/helpers';
 
 /*****************************************************************************************************************************/
 
-export function GetMockData(mock = [MockObservatoryDataBackend]): ObservatoryData {
-  return osdMapping(mock);
+export function GetMockData(
+  mock = [MockObservatoryDataBackend],
+  odtConfig = MockODTConfigurationBackend
+): ObservatoryData {
+  return osdMapping(mock, odtConfig);
 }
 
 export const toLowerCaseArray = (value: unknown): string[] => {
@@ -33,7 +38,10 @@ export const toLowerCaseArray = (value: unknown): string[] => {
   return value.filter(item => typeof item === 'string').map(item => item.toLowerCase());
 };
 
-export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData => {
+export const osdMapping = (
+  inData: ObservatoryDataBackend[],
+  odtConfig: ODTConfigurationBackend
+): ObservatoryData => {
   const mapCycle = (inc: ObservatoryDataBackend): ObservatoryPolicy => {
     return {
       cycleNumber: inc?.observatory_policy?.cycle_number,
@@ -78,7 +86,7 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
     }));
   };
 
-  const mapCapabilities = (inData: ObservatoryDataBackend): ObservatoryData['capabilities'] => {
+  const mapCapabilities = (inData: ObservatoryDataBackend, odtConfig: ODTConfigurationBackend): ObservatoryDataCapabilities => {
     return {
       mid: inData?.capabilities?.mid
         ? {
@@ -118,7 +126,7 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
                 psBeamBandwidthHz: inData?.capabilities?.mid?.AA2.ps_beam_bandwidth_hz,
                 numberFsps: inData?.capabilities?.mid?.AA2.number_fsps
               },
-              // MID SA_AA_STAR is currently mocedk to give us access to more than 1 subbarray configuration
+              // MID SA_AA_STAR is currently mocked to give us access to more than 1 subarray configuration
               {
                 subArray: SA_AA_STAR,
                 allowedChannelCountRangeMax: [214748647],
@@ -165,7 +173,14 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
         ? {
             basicCapabilities: {
               minFrequencyHz: inData.capabilities.low.basic_capabilities.min_frequency_hz,
-              maxFrequencyHz: inData.capabilities.low.basic_capabilities.max_frequency_hz
+              maxFrequencyHz: inData.capabilities.low.basic_capabilities.max_frequency_hz,
+              coarseChannelWidthHz: odtConfig?.ska_low?.frequency_band?.coarse_channel_width_hz ?? 0,
+              numberOfChannelsPerCoarseChannel: {
+                continuum: odtConfig?.ska_low?.frequency_band?.number_continuum_channels_per_coarse_channel ?? 0,
+                zoom: odtConfig?.ska_low?.frequency_band?.number_zoom_channels_per_coarse_channel ?? 0,
+                pst: odtConfig?.ska_low?.frequency_band?.number_pst_channels_per_coarse_channel ?? 0,
+                pss: odtConfig?.ska_low?.frequency_band?.number_pss_channels_per_coarse_channel ?? 0
+              }
             },
             subArrays: [
               {
@@ -185,7 +200,7 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
                 numberBeams: inData.capabilities.low.AA2.number_beams,
                 numberVlbiBeams: inData.capabilities.low.AA2.number_vlbi_beams
               },
-              // LOW SA_AA_STAR is currently mocked to give us access to more than 1 subbarray configuration
+              // LOW SA_AA_STAR is currently mocked to give us access to more than 1 subarray configuration
               {
                 subArray: SA_AA_STAR,
                 numberStations: inData.capabilities.low.AA2.number_stations,
@@ -209,7 +224,7 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
     };
   };
 
-  const capabilities = inData.map(cycle => mapCapabilities(cycle));
+  const capabilities = inData.map(cycle => mapCapabilities(cycle, odtConfig));
 
   const mergedCapabilities = capabilities.slice(1).reduce(
     (acc, obj) => {
@@ -219,7 +234,7 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
       }
       return acc;
     },
-    { ...capabilities[0] } as ObservatoryData['capabilities']
+    { ...capabilities[0] } as ObservatoryDataCapabilities
   );
 
   const result = {
@@ -287,13 +302,19 @@ async function GetOSDCycles(
   }
 
   try {
-    const URL_PATH = `/osd/`;
-    const result = await authAxiosClient.get(
-      `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PROPOSAL_PATH}${URL_PATH}cycles`
-    );
-    return typeof result === 'undefined'
-      ? 'error.API_UNKNOWN_ERROR'
-      : osdMapping(result.data.reverse()); // reverse to to display LOW AA2 first
+    const [cyclesResult, odtResult] = await Promise.all([
+      authAxiosClient.get(
+        `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PROPOSAL_PATH}/osd/cycles`
+      ),
+      // TODO: The OSD related endpoints will be consolidated in oso-services in the future after
+      //   which we should not need to retrieve data from two different endpoints anymore
+      authAxiosClient.get(`${SKA_OSO_SERVICES_URL}/odt/configuration`)
+    ]);
+
+    const cyclesData = cyclesResult?.data as ObservatoryDataBackend[] | undefined;
+    const odtConfig = odtResult?.data as ODTConfigurationBackend | undefined;
+    if (!cyclesData || !odtConfig) return 'error.API_UNKNOWN_ERROR';
+    return osdMapping(cyclesData.reverse(), odtConfig); // reverse to display LOW AA2 first
   } catch (e) {
     if (e instanceof Error) {
       return e.message;

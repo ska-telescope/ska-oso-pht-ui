@@ -6,20 +6,19 @@ import {
 } from '@utils/constants.ts';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.tsx';
 import { MockObservatoryDataBackend } from './mockObservatoryDataBackend';
-import { ObservatoryData } from '@/utils/types/observatoryData';
+import { MockODTConfigurationBackend } from './mockODTConfigurationBackend';
+import { ObservatoryData, ObservatoryDataBackend } from '@/utils/types/observatoryData';
+import { ODTConfigurationBackend } from '@/utils/types/telescopeCapabilities';
 import { osdMapping } from './getOSDCycles';
 
 /*****************************************************************************************************************************/
 
-export function GetMockData(mock = MockObservatoryDataBackend): ObservatoryData {
-  return osdMapping([mock]);
+export function GetMockData(
+  mock = MockObservatoryDataBackend,
+  odtConfig = MockODTConfigurationBackend
+): ObservatoryData {
+  return osdMapping([mock], odtConfig);
 }
-
-export const toLowerCaseArray = (value: unknown): string[] => {
-  if (!Array.isArray(value)) return [];
-
-  return value.filter(item => typeof item === 'string').map(item => item.toLowerCase());
-};
 
 async function GetObservatoryData(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
@@ -30,11 +29,18 @@ async function GetObservatoryData(
   }
 
   try {
-    const URL_PATH = `/osd/`;
-    const result = await authAxiosClient.get(
-      `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PROPOSAL_PATH}${URL_PATH}${cycleNumber}`
-    );
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : osdMapping([result.data]);
+    const [cycleResult, odtResult] = await Promise.all([
+      authAxiosClient.get(
+        `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PROPOSAL_PATH}/osd/${cycleNumber}`
+      ),
+      authAxiosClient.get(`${SKA_OSO_SERVICES_URL}/odt/configuration`)
+    ]);
+
+    const cycleData = cycleResult?.data as ObservatoryDataBackend | undefined;
+    if (!cycleData) return 'error.API_UNKNOWN_ERROR';
+
+    const odtConfig = odtResult?.data as ODTConfigurationBackend | undefined;
+    return osdMapping([cycleData], odtConfig);
   } catch (e) {
     if (e instanceof Error) {
       return e.message;

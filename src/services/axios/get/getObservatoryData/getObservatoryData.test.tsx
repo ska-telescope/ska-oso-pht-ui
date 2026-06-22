@@ -3,6 +3,7 @@ import ObservatoryData from '@utils/types/observatoryData.tsx';
 import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend.tsx';
 import GetObservatoryData from '@/services/axios/get/getObservatoryData/getObservatoryData';
 import { MockObservatoryDataBackend } from '@/services/axios/get/getObservatoryData/mockObservatoryDataBackend';
+import { MockODTConfigurationBackend } from '@/services/axios/get/getObservatoryData/mockODTConfigurationBackend';
 
 describe('GetObservatoryData Service', () => {
   let mockedAuthClient: any;
@@ -21,7 +22,9 @@ describe('GetObservatoryData Service', () => {
   });
 
   test('returns mapped data from API', async () => {
-    mockedAuthClient.get.mockResolvedValue({ data: MockObservatoryDataBackend });
+    mockedAuthClient.get
+      .mockResolvedValueOnce({ data: MockObservatoryDataBackend })
+      .mockResolvedValueOnce({ data: MockODTConfigurationBackend });
     const result = (await GetObservatoryData(
       mockedAuthClient,
       MockObservatoryDataBackend.observatory_policy.cycle_number

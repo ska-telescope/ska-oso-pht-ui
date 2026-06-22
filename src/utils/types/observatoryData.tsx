@@ -101,6 +101,13 @@ export type BasicCapabilitiesLowBackend = {
 export type BasicCapabilitiesLow = {
   minFrequencyHz: number;
   maxFrequencyHz: number;
+  coarseChannelWidthHz: number;
+  numberOfChannelsPerCoarseChannel: {
+    continuum: number;
+    zoom: number;
+    pst: number;
+    pss: number;
+  }
 };
 
 export type subarrayConfigurationMidBackend = {
@@ -193,18 +200,20 @@ export type ObservatoryDataBackend = {
   };
 };
 
+export type ObservatoryDataCapabilities = {
+  mid: {
+    basicCapabilities: BasicCapabilitiesMid;
+    subArrays: subarrayConfigurationMid[];
+  } | null;
+  low: {
+    basicCapabilities: BasicCapabilitiesLow;
+    subArrays: subarrayConfigurationLow[];
+  } | null;
+}
+
 export type ObservatoryData = {
   policies: ObservatoryPolicy[];
-  capabilities: {
-    mid: {
-      basicCapabilities: BasicCapabilitiesMid;
-      subArrays: subarrayConfigurationMid[];
-    } | null;
-    low: {
-      basicCapabilities: BasicCapabilitiesLow;
-      subArrays: subarrayConfigurationLow[];
-    } | null;
-  };
+  capabilities: ObservatoryDataCapabilities;
 };
 
 export default ObservatoryData;
