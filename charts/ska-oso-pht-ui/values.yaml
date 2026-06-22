@@ -13,7 +13,7 @@ runtimeEnv:
   domain: "https://sdhp.stfc.skao.int"
   skaLoginAppUrl: ""
   msentraRedirectUri: ""
-  useIndigo: true
+  useIndigo: false
   indigoAuthority: "https://iam-1.staging.devx.skao.int/"
   indigoClientId: "d546e462-637c-44ff-b2b9-3345a960ad42"
   indigoRedirectUri: "/"
