@@ -16,6 +16,8 @@ interface VelocityFieldProps {
   velTypeFocus?: Function;
   velUnit: number;
   velUnitFocus?: Function;
+  velBlur?: Function;
+  redshiftBlur?: Function;
   setErrorText?: (error: string) => void;
 }
 
@@ -24,11 +26,14 @@ export default function VelocityField({
   setVel,
   setVelUnit,
   redshift,
+  redshiftBlur,
   vel,
+  velBlur,
   velFocus,
   velType,
   velUnit,
   velUnitFocus,
+
   setErrorText
 }: VelocityFieldProps) {
   const { t } = useScopedTranslation();
@@ -58,6 +63,7 @@ export default function VelocityField({
         value={redshift}
         setValue={setRedshift}
         onFocus={velFocus}
+        onBlur={redshiftBlur}
       />
     );
   };
@@ -72,6 +78,7 @@ export default function VelocityField({
         setValue={setVel}
         suffix={VelocityUnitField()}
         onFocus={velFocus}
+        onBlur={velBlur}
       />
     );
   };

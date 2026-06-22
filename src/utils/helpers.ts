@@ -57,6 +57,16 @@ export const frequencyConversion = (inValue: any, from: number, to: number = FRE
   return (inValue * FREQUENCY_UNITS[to - 1].toHz) / FREQUENCY_UNITS[from - 1].toHz;
 };
 
+export const isFrequencyRangeOutOfBand = (
+  centralFrequency: number,
+  bandwidth: number,
+  minFreq: number,
+  maxFreq: number
+): boolean => {
+  if (minFreq === 0 && maxFreq === 0) return false;
+  return centralFrequency < minFreq + bandwidth / 2 || centralFrequency > maxFreq - bandwidth / 2;
+};
+
 export const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
   const velocity = frequencyHz > 0 ? (resolutionHz / frequencyHz) * SPEED_OF_LIGHT : 0;
   const occ = velocity < 1000 ? 0 : 1;
@@ -170,14 +180,28 @@ export const getUniqueMostRecentItems = (data: any[], idKey: string) => {
 };
 
 export const leadZero = (coordinate: String): String => {
-  const arr = coordinate.split(':');
+  const normalised = coordinate.toString().replace(/^\+/, '');
+  const arr = normalised.split(':');
   const num = Number(arr[0]);
   if (arr?.length === 3 && num > -1 && num < 10 && arr[0]?.length < 2) {
     return '0' + arr[0] + ':' + arr[1] + ':' + arr[2];
   } else if (arr?.length === 3 && num > -10 && num < 0 && arr[0].length < 3) {
     return '-0' + Math.abs(Number(arr[0])) + ':' + arr[1] + ':' + arr[2];
   }
-  return coordinate;
+  return normalised;
+};
+
+export const trailingZeros = (coordinate: string): string => {
+  const parts = coordinate.split(':');
+  if (parts.length !== 3) return coordinate;
+  const dotIndex = parts[2].indexOf('.');
+  if (dotIndex === -1) {
+    parts[2] = parts[2] + '.000';
+  } else {
+    const fracPart = parts[2].substring(dotIndex + 1);
+    parts[2] = parts[2].substring(0, dotIndex + 1) + fracPart.padEnd(3, '0');
+  }
+  return parts.join(':');
 };
 
 /*********************************************************** map values *********************************************************/
