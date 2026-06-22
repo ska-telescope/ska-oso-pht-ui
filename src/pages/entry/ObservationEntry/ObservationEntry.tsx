@@ -724,7 +724,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const getOptions = () => {
       const supplied = observatoryConstants?.Supplied ?? [];
       if (supplied.length === 0) return [];
-      return isLow() ? [supplied[0]] : supplied;
+      const options = isLow() ? [supplied[0]] : supplied;
+      return options.map(opt => ({
+        ...opt,
+        label: t(`sensitivityCalculatorResults.${opt.sensCalcResultsLabel}`)
+      }));
     };
 
     return (
@@ -775,12 +779,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           value={suppliedValue}
           setValue={setSuppliedValue}
           suffix={suppliedUnitsField()}
-          label={suppliedType === SUPPLIED_TYPE_INTEGRATION ? t('suppliedValue.integrationTime.label') : t('suppliedValue.sensitivity.label')}
+          label=""
           minValue={0}
           maxValue={suppliedType === SUPPLIED_TYPE_INTEGRATION
             ? timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, suppliedUnits)
             : undefined}
-          step={suppliedType === SUPPLIED_TYPE_INTEGRATION && suppliedUnits !== TIME_HOURS ? 1 : undefined}
+          step={suppliedType === SUPPLIED_TYPE_INTEGRATION && suppliedUnits === TIME_HOURS ? 0.1 : 1}
           currentUnitLabel={suppliedType === SUPPLIED_TYPE_INTEGRATION
             ? INTEGRATION_TIME_UNITS.find(u => u.id === suppliedUnits)?.value
             : undefined}
