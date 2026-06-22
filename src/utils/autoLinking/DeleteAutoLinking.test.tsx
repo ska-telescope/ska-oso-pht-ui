@@ -1,3 +1,4 @@
+import { expect } from 'vitest';
 import TargetObservation from '@utils/types/targetObservation.tsx';
 import { CalibrationStrategy } from '@utils/types/calibrationStrategy.tsx';
 import { DataProductSDPNew } from '@utils/types/dataProduct.tsx';

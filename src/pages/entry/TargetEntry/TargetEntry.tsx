@@ -4,7 +4,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
-import { leadZero } from '@utils/helpers.ts';
+import { leadZero, trailingZeros } from '@utils/helpers.ts';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import ResolveButton from '@/components/button/Resolve/Resolve';
@@ -120,18 +120,16 @@ export default function TargetEntry({
   };
 
   const setTheDec = (inValue: string) => {
-    const formattedDec = leadZero(inValue);
-    setDec(formattedDec.toString());
+    setDec(inValue);
     if (setTarget) {
-      setTarget({ ...target, decStr: formattedDec.toString() });
+      setTarget({ ...target, decStr: inValue });
     }
   };
 
   const setTheRA = (inValue: string) => {
-    const formattedRA = leadZero(inValue);
-    setRA(formattedRA.toString());
+    setRA(inValue);
     if (setTarget) {
-      setTarget({ ...target, raStr: formattedRA.toString() });
+      setTarget({ ...target, raStr: inValue });
     }
   };
 
@@ -182,6 +180,31 @@ export default function TargetEntry({
     setReferenceFrame(target?.kind ?? RA_TYPE_ICRS.value);
   };
 
+
+  const blurRA = () => {
+    setRA(trailingZeros(leadZero(ra.trimEnd()).toString()));
+  };
+
+  const blurDec = () => {
+    setDec(trailingZeros(leadZero(dec.trimEnd()).toString()));
+  };
+
+  const blurName = () => {
+    const formatted = name.trimEnd();
+    setName(formatted);
+    if (setTarget) setTarget({ ...target, name: formatted });
+  };
+
+
+  const blurVel = () => {
+    setVel(vel.trimEnd());
+  };
+
+  const blurRedshift = () => {
+    setRedshift(redshift.trimEnd());
+  };
+
+
   React.useEffect(() => {
     setHelp('name.help');
     if (target) {
@@ -207,7 +230,6 @@ export default function TargetEntry({
         return;
       } else {
         AddTheTarget();
-        clearForm();
       }
     };
 
@@ -238,6 +260,7 @@ export default function TargetEntry({
         const defaults = await autoLinking(newTarget, getProposal, setProposal);
         if (defaults && defaults.success) {
           notifySuccess(t('autoLink.targetSuccess'), NOTIFICATION_DELAY_IN_SECONDS);
+          clearForm();
         } else {
           notifyError(defaults?.error ?? t('autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
         }
@@ -259,6 +282,7 @@ export default function TargetEntry({
         };
         setProposal(updatedProposal);
         notifySuccess(t('addTarget.success'), NOTIFICATION_DELAY_IN_SECONDS);
+        clearForm();
       };
       addTargetAsync();
     };
@@ -376,6 +400,7 @@ export default function TargetEntry({
         value={name}
         setValue={setTheName}
         suffix={resolveButton()}
+        onBlur={blurName}
         onFocus={() => setHelp('name.help')}
         errorText={nameFieldError}
       />
@@ -388,6 +413,7 @@ export default function TargetEntry({
         setValue={setTheRA}
         skyUnits={raType}
         value={ra}
+        valueBlur={blurRA}
         valueFocus={() => setHelp('skyDirection.1')}
         setErrorText={setSkyDirection1Error} // Pass the callback
       />
@@ -401,6 +427,7 @@ export default function TargetEntry({
         skyUnits={raType}
         value={dec}
         valueFocus={() => setHelp('skyDirection.2')}
+        valueBlur={blurDec}
         setErrorText={setSkyDirection2Error} // Pass the callback
       />
     );
@@ -421,11 +448,14 @@ export default function TargetEntry({
         setVel={setTheVel}
         setVelUnit={setTheVelUnit}
         redshift={redshift}
+        redshiftBlur={blurRedshift}
         vel={vel}
         velType={velType}
         velUnit={velUnit}
         velFocus={() => setHelp('velocity.' + velType)}
         velUnitFocus={() => setHelp('velocity.' + velType)}
+        velBlur={blurVel}
+
         setErrorText={setRmFieldError}
       />
     );
