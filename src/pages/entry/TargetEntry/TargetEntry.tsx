@@ -361,7 +361,7 @@ export default function TargetEntry({
         if (redshift && redshift !== 0) {
           setVelType(VELOCITY_TYPE.REDSHIFT);
 
-          setRedshift(Number(redshift).toExponential(2));
+          setRedshift(String(redshift));
           setVel('');
         } else {
           setVelType(VELOCITY_TYPE.VELOCITY);
@@ -369,18 +369,6 @@ export default function TargetEntry({
           setVel(velocity != null ? String(velocity) : '');
           setRedshift('');
         }
-
-        setRedshift(
-          redshift != null
-            ? String(redshift)
-            : ''
-        );
-
-        setVel(
-          response.radial_velocity?.quantity?.value != null
-            ? String(response.radial_velocity.quantity.value)
-          : ''
-        );
 
         setNameFieldError('');
       } else {
