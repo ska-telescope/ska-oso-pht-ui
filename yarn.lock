@@ -3677,15 +3677,15 @@
     "@types/babel__core" "^7.20.5"
     react-refresh "^0.17.0"
 
-"@vitest/browser@^3.1.4":
-  version "3.2.4"
-  resolved "https://registry.yarnpkg.com/@vitest/browser/-/browser-3.2.4.tgz#4238600dc8343b8a9c032266c743f7d38ae3da84"
-  integrity sha512-tJxiPrWmzH8a+w9nLKlQMzAKX/7VjFs50MWgcAj7p9XQ7AQ9/35fByFYptgPELyLw+0aixTnC4pUWV+APcZ/kw==
+"@vitest/browser@^3.2.5":
+  version "3.2.6"
+  resolved "https://registry.yarnpkg.com/@vitest/browser/-/browser-3.2.6.tgz#be15aa4ebe37a17f441b4e0772b7d4e46eaf068e"
+  integrity sha512-CNjSynGBtAVOMTfQITv6Bc8da4/XTU1izorocbDStjUsynXcgx2FHVssh+10a8bKd/BxoqDdQtuSbYHfk302Wg==
   dependencies:
     "@testing-library/dom" "^10.4.0"
     "@testing-library/user-event" "^14.6.1"
-    "@vitest/mocker" "3.2.4"
-    "@vitest/utils" "3.2.4"
+    "@vitest/mocker" "3.2.6"
+    "@vitest/utils" "3.2.6"
     magic-string "^0.30.17"
     sirv "^3.0.1"
     tinyrainbow "^2.0.0"
@@ -3737,15 +3737,6 @@
     chai "^5.2.0"
     tinyrainbow "^2.0.0"
 
-"@vitest/mocker@3.2.4":
-  version "3.2.4"
-  resolved "https://registry.yarnpkg.com/@vitest/mocker/-/mocker-3.2.4.tgz#4471c4efbd62db0d4fa203e65cc6b058a85cabd3"
-  integrity sha512-46ryTE9RZO/rfDd7pEqFl7etuyzekzEhUbTW3BvmeO/BcCMEgq59BKhek3dXDWgAj4oMK6OZi+vRr1wPW6qjEQ==
-  dependencies:
-    "@vitest/spy" "3.2.4"
-    estree-walker "^3.0.3"
-    magic-string "^0.30.17"
-
 "@vitest/mocker@3.2.6":
   version "3.2.6"
   resolved "https://registry.yarnpkg.com/@vitest/mocker/-/mocker-3.2.6.tgz#fd0f2bc2a86d82b6013b3456ad662d04a3551434"
@@ -3786,13 +3777,6 @@
     "@vitest/pretty-format" "3.2.6"
     magic-string "^0.30.17"
     pathe "^2.0.3"
-
-"@vitest/spy@3.2.4":
-  version "3.2.4"
-  resolved "https://registry.yarnpkg.com/@vitest/spy/-/spy-3.2.4.tgz#cc18f26f40f3f028da6620046881f4e4518c2599"
-  integrity sha512-vAfasCOe6AIK70iP5UD11Ac4siNUNJ9i/9PZ3NKx07sG6sUxeag1LWdNrMWeKKYBLlzuK+Gn65Yd5nyL6ds+nw==
-  dependencies:
-    tinyspy "^4.0.3"
 
 "@vitest/spy@3.2.6":
   version "3.2.6"
