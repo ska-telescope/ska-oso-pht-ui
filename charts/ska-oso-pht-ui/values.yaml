@@ -19,7 +19,6 @@ runtimeEnv:
   indigoRedirectUri: "/"
   indigoScope: "pht:readwrite openid profile"
   indigoAudience: "test:pht"
-  indigoApiScope: "pht:readwrite openid profile"
 
 component: pht-ui
 function: ui

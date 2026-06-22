@@ -66,8 +66,6 @@ spec:
               value: {{ .Values.runtimeEnv.indigoScope | quote }}
             - name: INDIGO_AUDIENCE
               value: {{ .Values.runtimeEnv.indigoAudience | quote }}
-            - name: INDIGO_API_SCOPE
-              value: {{ .Values.runtimeEnv.indigoApiScope | quote }}
           livenessProbe:
             httpGet:
               path: /

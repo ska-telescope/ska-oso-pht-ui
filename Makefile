@@ -103,7 +103,6 @@ set-dev-env-vars:
 	INDIGO_REDIRECT_URI="http://localhost:6101/" \
 	INDIGO_SCOPE="pht:readwrite openid profile" \
 	INDIGO_AUDIENCE="test:pht" \
-	INDIGO_API_SCOPE="pht:readwrite openid profile" \
 	ENVJS_FILE=./public/env.js ./scripts/write_env_js.sh
 
 dev-start: set-dev-env-vars

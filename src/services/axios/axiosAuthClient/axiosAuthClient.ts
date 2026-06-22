@@ -1,8 +1,9 @@
 import axios, { AxiosError } from 'axios';
 import { useMsal } from '@azure/msal-react';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
-import { INDIGO_API_SCOPE, MSENTRA_API_URI } from '@/utils/constants';
+import { MSENTRA_API_URI } from '@/utils/constants';
 import { getUseIndigo } from '@/utils/authConfig';
+import { env } from '@/env';
 import { isLocalhost, setLocalTokenProvider } from '../authToken/localAuthToken';
 
 export enum LogLevel {
@@ -18,7 +19,7 @@ const HTTPS = 'https://';
 
 export const loginRequest = {
   scopes: getUseIndigo()
-    ? INDIGO_API_SCOPE.split(' ').filter(Boolean)
+    ? env.INDIGO_SCOPE.split(' ').filter(Boolean)
     : [`${MSENTRA_API_URI}/pht:readwrite ${MSENTRA_API_URI}/pht:update`]
 };
 

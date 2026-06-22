@@ -8,7 +8,6 @@ const REQUIRED_INDIGO_KEYS = [
   'INDIGO_REDIRECT_URI',
   'INDIGO_SCOPE',
   'INDIGO_AUDIENCE',
-  'INDIGO_API_SCOPE',
 ] as const;
 
 export function getUseIndigo(): boolean {

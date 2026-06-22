@@ -27,6 +27,5 @@ declare module '@/env' {
     INDIGO_REDIRECT_URI: string;
     INDIGO_SCOPE: string;
     INDIGO_AUDIENCE: string;
-    INDIGO_API_SCOPE: string;
   };
 }
