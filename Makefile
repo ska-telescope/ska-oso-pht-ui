@@ -54,6 +54,10 @@ K8S_CHART_PARAMS += \
 XRAY_TEST_RESULT_FILE ?= ctrf/ctrf-report.json
 XRAY_EXECUTION_CONFIG_FILE ?= tests/xray-config.json
 
+ifneq ($(USE_INDIGO),)
+  K8S_CHART_PARAMS += --set ska-oso-pht-ui.runtimeEnv.useIndigo=$(USE_INDIGO)
+endif
+
 # CI_ENVIRONMENT_SLUG should only be defined when running on the CI/CD pipeline, so these variables are set for a local deployment
 # Set cluster_domain to minikube default (cluster.local) in local development
 ifeq ($(CI_ENVIRONMENT_SLUG),)
@@ -64,7 +68,6 @@ K8S_CHART_PARAMS += \
   --set global.cluster_domain="cluster.local" \
   --set ska-oso-pht-ui.vault.enabled=false \
   --set ska-oso-pht-ui.rest.image.tag=$(VERSION) \
-  --set ska-oso-pht-ui.runtimeEnv.useIndigo=$(USE_INDIGO) \
   --set ska-oso-services-umbrella.ska-oso-services.vault.enabled=false \
   --set global.oda.postgres.secret.vault.enabled=false \
   --set global.oda.postgres.cluster=$(SGCLUSTER) \
@@ -98,7 +101,7 @@ set-dev-env-vars:
 	MSENTRA_CLIENT_ID="2445e300-54c9-470f-9578-0f54840672af" \
 	MSENTRA_TENANT_ID="78887040-bad7-494b-8760-88dcacfb3805" \
 	MSENTRA_REDIRECT_URI="http://localhost:6101" \
-	USE_INDIGO="false" \
+	USE_INDIGO="$(or $(USE_INDIGO),false)" \
 	INDIGO_AUTHORITY="https://iam-1.staging.devx.skao.int/" \
 	INDIGO_CLIENT_ID="d546e462-637c-44ff-b2b9-3345a960ad42" \
 	INDIGO_REDIRECT_URI="http://localhost:6101/" \
