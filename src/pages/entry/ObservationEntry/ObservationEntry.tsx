@@ -96,6 +96,10 @@ import updateDataProductsPST from '@/utils/update/dataProductsPST/updateDataProd
 import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalcPartial';
 import updateSensCalc from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
+import {
+  subarrayConfigurationLow,
+  subarrayConfigurationMid
+} from '@/utils/types/observatoryData';
 import lowAA2Image from '@assets/low_aa2.png';
 import { useIsFrequencyOutOfRange } from '@/utils/validation/validation';
 
@@ -337,16 +341,16 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   };
 
   const setTheSubarrayConfig = (e: React.SetStateAction<string>) => {
-    const record = (observatoryConstants.array[telescope() - 1].subarray as any[]).find(
+    const record = observatoryConstants.array[telescope() - 1].subarray.find(
       element => element.value === e
     );
     if (record) {
       if (isLow()) {
-        const sArray = osdLOW?.subArrays.find((sub: any) => sub.subArray === subarrayConfig);
+        const sArray = osdLOW?.subArrays.find(sub => sub.subArray === subarrayConfig);
         setNumOfStations(sArray?.numberStations ?? undefined);
       }
       if (isMid()) {
-        const sArray = osdMID?.subArrays.find((sub: any) => sub.subArray === subarrayConfig);
+        const sArray = osdMID?.subArrays.find(sub => sub.subArray === subarrayConfig);
         setNumOf15mAntennas(sArray?.numberSkaDishes ?? undefined);
         setNumOf13mAntennas(sArray?.numberMeerkatDishes ?? undefined);
       }
@@ -360,7 +364,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const record = isLow() ? osdLOW : osdMID;
     setMaxZoomChannels(0);
     if (record) {
-      const sArray = (record?.subArrays as any[])?.find(sub => sub.subArray === SA_AA2);
+      const sArray = (record?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined)?.find(sub => sub.subArray === SA_AA2);
       setMaxZoomChannels(sArray?.numberZoomChannels ?? 0);
     }
   };
@@ -704,7 +708,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       ];
     }
     const obj = low ? osdLOW : osdMID;
-    const rec = (obj?.subArrays as any[])?.find(r => r.subArray === subarrayConfig) ?? null;
+    const rec = (obj?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined)?.find(r => r.subArray === subarrayConfig) ?? null;
     const modes = obTypeTransform(rec?.cbfModes ?? []);
     return modes.map(mode => ({
       label: t(`observationType.${mode}`),
