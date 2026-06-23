@@ -398,7 +398,9 @@ export default function TargetEntry({
 
         setNameFieldError('');
       } else {
-        setNameFieldError(t('resolve.error.API_UNKNOWN_ERROR'));
+        setNameFieldError(
+  t('resolve.error.' + response.error)
+        );
       }
     };
 
