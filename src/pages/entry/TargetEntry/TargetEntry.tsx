@@ -177,17 +177,20 @@ export default function TargetEntry({
   };
 
   const targetIn = (target: Target) => {
+    const incomingKind = target?.kind ?? REFERENCE_COORDINATE_TYPE_ICRS.value;
+    const incomingIsICRS = incomingKind === REFERENCE_COORDINATE_TYPE_ICRS.value;
+    setReferenceCoordinates(incomingKind);
     setId(target?.id ?? 0);
     setName(target?.name ?? '');
     setCoord1(
-      isICRS
+      incomingIsICRS
         ? target.raStr ?? ''
         : target.l != null
           ? String(target.l)
           : ''
     );
     setCoord2(
-      isICRS
+      incomingIsICRS
         ? target.decStr ?? ''
         : target.b != null
           ? String(target.b)
@@ -197,7 +200,6 @@ export default function TargetEntry({
     setVel(target?.vel ?? '');
     setVelUnit(target?.velUnit ?? 0);
     setRedshift(target?.redshift ?? '');
-    setReferenceCoordinates(target?.kind ?? REFERENCE_COORDINATE_TYPE_ICRS.value);
   };
 
 
@@ -369,7 +371,7 @@ export default function TargetEntry({
         if (redshift && redshift !== 0) {
           setVelType(VELOCITY_TYPE.REDSHIFT);
 
-          setRedshift(Number(redshift).toExponential(2));
+          setRedshift(String(redshift));
           setVel('');
         } else {
           setVelType(VELOCITY_TYPE.VELOCITY);
@@ -377,18 +379,6 @@ export default function TargetEntry({
           setVel(velocity != null ? String(velocity) : '');
           setRedshift('');
         }
-
-        setRedshift(
-          redshift != null
-            ? String(redshift)
-            : ''
-        );
-
-        setVel(
-          response.radial_velocity?.quantity?.value != null
-            ? String(response.radial_velocity.quantity.value)
-          : ''
-        );
 
         setNameFieldError('');
       } else {
@@ -425,7 +415,7 @@ export default function TargetEntry({
     wrapper(
       <ReferenceCoordinatesField
         setValue={setReferenceCoordinates}
-        value={referenceCoordinates.toString()}
+        value={referenceCoordinates}
       />
     );
 

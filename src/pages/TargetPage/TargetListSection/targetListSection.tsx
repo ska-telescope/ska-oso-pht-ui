@@ -93,7 +93,7 @@ export default function TargetListSection() {
   const alertDeleteContent = () => {
     const LABEL_WIDTH = 6;
     const rec = getProposal()?.targets?.find(p => p.id === rowTarget?.id);
-    const isICRS = rec?.kind === 0
+    const isICRS = rec?.kind === REFERENCE_COORDINATE_TYPE_ICRS.value
     return (
       <Grid
         p={2}
@@ -148,7 +148,7 @@ export default function TargetListSection() {
   };
 
   const rows = getProposal().targets.map(t => {
-    const isICRS = t.kind === 0;
+    const isICRS = t.kind === REFERENCE_COORDINATE_TYPE_ICRS.value;
     return {
       ...t,
       coord1: isICRS? t.raStr : t.l,

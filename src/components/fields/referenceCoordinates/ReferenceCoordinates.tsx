@@ -6,7 +6,7 @@ import { REFERENCE_COORDINATE_OPTIONS } from '@utils/constants.ts';
 
 interface ReferenceCoordinatesFieldProps {
   setValue?: Function;
-  value: String;
+  value: Number;
   valueFocus?: Function;
 }
 

@@ -7,6 +7,7 @@ import Alert from '../../alerts/standardAlert/StandardAlert';
 import Target from '../../../utils/types/target';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import ChartIcon from '@/components/icon/chartIcon/chartIcon';
+import { REFERENCE_COORDINATE_TYPE_ICRS } from '@utils/constants.ts';
 
 const ROW_HEIGHT = 300;
 
@@ -30,8 +31,8 @@ export default function GridTargets({
   const loggedIn = isLoggedIn();
   const { t } = useScopedTranslation();
 
-  const kind = rows?.[0]?.kind;
-  const isICRS = kind === 0;
+
+  const isICRS = rows?.[0]?.kind === REFERENCE_COORDINATE_TYPE_ICRS.value;
 
   const coordLabels = isICRS
     ? [t('skyDirection.short.1.0'), t('skyDirection.short.2.0')]
