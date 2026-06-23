@@ -21,5 +21,6 @@ declare module '@/env' {
     MSENTRA_TENANT_ID: string;
     MSENTRA_REDIRECT_URI: string;
     REACT_APP_OVERRIDE_GROUPS: string;
+    REACT_APP_LOW_UNITS_UNLOCKED: string;
   };
 }

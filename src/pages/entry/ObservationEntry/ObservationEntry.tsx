@@ -45,6 +45,7 @@ import {
   PULSAR_TIMING_VALUE,
   SUPPLIED_TYPE_INTEGRATION,
   cypressToken,
+  cypressLowUnitsUnlocked,
   TIME_HOURS,
   SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
   SUPPLIED_INTEGRATION_TIME_STEP_HOURS,
@@ -782,7 +783,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           options={getUnitOptions()}
           testId="suppliedUnits"
           value={suppliedUnits}
-          disabled={isLow()}
+          disabled={isLow() && !cypressLowUnitsUnlocked}
           setValue={setSuppliedUnits}
           label=""
           onFocus={() => setHelp('suppliedUnits')}
