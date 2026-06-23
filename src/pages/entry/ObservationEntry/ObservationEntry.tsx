@@ -800,7 +800,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
             ? timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, suppliedUnits)
             : undefined}
           step={suppliedType === SUPPLIED_TYPE_INTEGRATION && suppliedUnits === TIME_HOURS ? 0.1 : 1}
-          currentUnitLabel={getUnitOptions().find(u => u.value === suppliedUnits)?.label}
+          currentUnitLabel={getUnitOptions().find(u => u.value === suppliedUnits)?.label ?? ''}
           required
         />
       </Box>

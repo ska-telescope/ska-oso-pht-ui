@@ -41,7 +41,12 @@ export default function SuppliedValue({
         const belowMin = minValue !== undefined && num <= minValue;
         const aboveMax = maxValue !== undefined && num > maxValue;
         if (!belowMin && !aboveMax) return '';
-        if (maxValue !== undefined)
+
+        // Note explicitily here we only have two scenarios, 
+        // - For Integration Time we have a min and max so range error is used 
+        // - for Sensitivity we only have a min value so min error is used. 
+        // (point being we don't have a scenario where we only have a max value set).
+        if (minValue !== undefined && maxValue !== undefined)
           return t(`${FIELD}.range.error`, { min: minValue, max: maxValue, units: currentUnitLabel });
         return t(`${FIELD}.range.minError`, { min: minValue, units: currentUnitLabel });
       },
