@@ -149,7 +149,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState<number | undefined>(0);
   const [numOfStations, setNumOfStations] = React.useState<number | undefined>(0);
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [minimumChannelWidthHz, setMinimumChannelWidthHz] = React.useState<number>(0);
   const [zoomChannels, setZoomChannels] = React.useState<number>(0);
   const [pstMode, setPstMode] = React.useState(PULSAR_TIMING_VALUE);
   const [maxZoomChannels, setMaxZoomChannels] = React.useState<number>(0);
@@ -431,13 +430,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       setDefaultCentralFrequency(observingBand);
       setDefaultContinuumBandwidth(observingBand);
     }
-    const calculateMinimumChannelWidthHz = () =>
-      setMinimumChannelWidthHz(getMinimumChannelWidth(telescope()));
-
     calculateSubarray();
     setAfterChange();
     setFrequencyUnits();
-    calculateMinimumChannelWidthHz();
   }, [observingBand]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
@@ -446,6 +441,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const isLow = () => observingBand === BAND_LOW_STR;
   const isMid = () => observingBand !== BAND_LOW_STR;
   const telescope = () => (isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM);
+  const LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP = 8;
+  const minimumChannelWidthHz = (isLow() ? osdLOW?.basicCapabilities?.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP : );
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>

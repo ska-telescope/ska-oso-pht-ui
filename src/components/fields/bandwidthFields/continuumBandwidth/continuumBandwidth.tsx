@@ -48,15 +48,9 @@ export default function ContinuumBandwidthField({
   const { setHelp } = useHelp();
   const FIELD = 'continuumBandwidth';
   const { findBand, osdMID, osdLOW, observatoryConstants } = useOSDAccessors();
+  const [fieldValid, setFieldValid] = React.useState(true);
 
   const [errorText, setErrorText] = React.useState('');
-
-  // Auto-clear error text after ERROR_SECS
-  React.useEffect(() => {
-    if (!errorText) return;
-    const timer = setTimeout(() => setErrorText(''), ERROR_SECS);
-    return () => clearTimeout(timer);
-  }, [errorText]);
 
   const displayMinimumChannelWidthErrorMessage = (
     minimumChannelWidthHz: number | undefined
@@ -119,6 +113,8 @@ export default function ContinuumBandwidthField({
 
   const handleSetValue = (value: any) => {
     const error = validateValue(value);
+    console.log('Checking for error');
+    console.log(error);
     if (error) {
       setErrorText(error);
     } else {
@@ -129,6 +125,8 @@ export default function ContinuumBandwidthField({
 
   // Validate current value when dependencies change
   React.useEffect(() => {
+    console.log('Validating value: ');
+    console.log(value);
     const error = validateValue(value);
     setErrorText(error);
   }, [
