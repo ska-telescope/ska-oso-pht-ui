@@ -51,8 +51,9 @@ export const useNumericInput = (
   }, [step, minValue, maxValue]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleChange = (input: number) => {
-    setLocalValue(input);
-    const error = runValidation(input);
+    const num = Number(input);
+    setLocalValue(num);
+    const error = runValidation(num);
     if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
     if (error) {
       if (!errorDelayMs) {
@@ -63,7 +64,7 @@ export const useNumericInput = (
     } else {
       setErrorText('');
     }
-    if (!error && !commitOnBlur) onCommit(input);
+    if (!error && !commitOnBlur) onCommit(num);
   };
 
   const handleBlur = commitOnBlur
