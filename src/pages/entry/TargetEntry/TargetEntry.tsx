@@ -468,7 +468,7 @@ export default function TargetEntry({
     wrapper(
       <SkyDirection1
         required={isRequired()}
-        setValue={setCoord1}
+        setValue={setTheCoord1}
         skyUnits={referenceCoordinates}
         value={coord1}
         valueBlur={blurCoord1}
@@ -481,7 +481,7 @@ export default function TargetEntry({
     wrapper(
       <SkyDirection2
         required={isRequired()}
-        setValue={setCoord2}
+        setValue={setTheCoord2}
         skyUnits={referenceCoordinates}
         value={coord2}
         valueFocus={() => setHelp('skyDirection.2')}
