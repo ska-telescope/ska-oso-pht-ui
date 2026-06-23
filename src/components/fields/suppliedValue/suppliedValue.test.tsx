@@ -63,14 +63,33 @@ describe('SuppliedValue component', () => {
     expect(screen.queryByTestId('error')).not.toBeInTheDocument();
   });
 
-  it('shows error on blur regardless of how the value was changed', () => {
-    render(<SuppliedValue value={1} setValue={vi.fn()} minValue={0} maxValue={14400} currentUnitLabel="s" />);
+  it('commits step-incremented value on blur after ArrowUp; no commit or error during edit', () => {
+    const mockSetValue = vi.fn();
+    render(<SuppliedValue value={1200} setValue={mockSetValue} minValue={0} maxValue={14400} step={600} />);
     const input = screen.getByTestId('suppliedValue');
+
+    // Simulate native browser ArrowUp: fires onChange with value incremented by step (1200 + 600 = 1800)
     fireEvent.keyDown(input, { key: 'ArrowUp' });
-    fireEvent.change(input, { target: { value: '14401' } });
+    fireEvent.change(input, { target: { value: '1800' } });
+    expect(mockSetValue).not.toHaveBeenCalled();
     expect(screen.queryByTestId('error')).not.toBeInTheDocument();
+
     fireEvent.blur(input);
-    expect(screen.getByTestId('error')).toHaveTextContent('suppliedValue.range.error');
+    expect(mockSetValue).toHaveBeenCalledWith(1800);
+  });
+
+  it('shows error on blur when ArrowDown steps value to or below minimum', () => {
+    render(<SuppliedValue value={1800} setValue={vi.fn()} minValue={1200} step={600} />);
+    const input = screen.getByTestId('suppliedValue');
+
+    // Simulate native browser ArrowDown: fires onChange with value decremented by step (1800 - 600 = 1200)
+    // 1200 <= minValue(1200) so this is invalid
+    fireEvent.keyDown(input, { key: 'ArrowDown' });
+    fireEvent.change(input, { target: { value: '1200' } });
+    expect(screen.queryByTestId('error')).not.toBeInTheDocument(); // error is delayed until blur
+
+    fireEvent.blur(input);
+    expect(screen.getByTestId('error')).toHaveTextContent('suppliedValue.range.minError');
   });
 
   it('does not commit value to parent until blur, and does not commit if invalid on blur', () => {
