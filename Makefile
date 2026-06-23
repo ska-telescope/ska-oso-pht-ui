@@ -30,16 +30,13 @@ js-pre-e2e-test:
 OSO_SERVICES_MAJOR_VERSION ?= $(shell helm dependency list ./charts/ska-oso-pht-ui-umbrella/ | grep ska-oso-services | gawk -F'[[:space:]]+|[.]' '{print $$2}')
 OST_SENSCALC_MAJOR_VERSION ?= $(shell helm dependency list ./charts/ska-oso-pht-ui-umbrella/ | grep ska-ost-senscalc | gawk -F'[[:space:]]+|[.]' '{print $$2}')
 
-# The default PHT_BACKEND_URL points to the umbrella chart PHT back-end deployment
-BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/oso/api/v$(OSO_SERVICES_MAJOR_VERSION)
-
 # BACKEND_PROXY is the target origin (+ path prefix) for the vite dev proxy (avoids CORS).
 # For local k8s:  http://<minikube-ip>/<namespace>  (default)
 # For remote k8s: https://k8s.stfc.skao.int/dev-ska-oso-pht-ui-aaa
 BACKEND_PROXY ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)
 
 K8S_CHART_PARAMS += \
-  --set ska-oso-pht-ui.backendURL=$(BACKEND_URL)
+  --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl="/$(KUBE_NAMESPACE)/oso/api/v$(OSO_SERVICES_MAJOR_VERSION)"
 
 # include core makefile targets for release management
 -include .make/base.mk

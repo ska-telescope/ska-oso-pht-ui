@@ -33,7 +33,7 @@ spec:
             - name: REACT_APP_SKA_PHT_BASE_URL
               value: {{ include "ska-oso-pht-ui.ingress.path" . | quote }}
             - name: REACT_APP_SKA_OSO_SERVICES_URL
-              value: {{ include "ska-oso-pht-ui.urls-skaOsoServicesUrl" . | quote }}
+              value: {{ .Values.runtimeEnv.skaOsoServicesUrl | quote }}
             - name: REACT_APP_SKA_SENSITIVITY_CALC_URL
               value: {{ include "ska-oso-pht-ui.urls-skaSensitivityCalcUrl" . | quote }}
             - name: REACT_APP_USE_LOCAL_DATA

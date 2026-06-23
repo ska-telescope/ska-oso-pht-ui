@@ -7,7 +7,7 @@ ingress:
 
 runtimeEnv:
   skipPreflightCheck: "true"
-  skaOsoServicesUrl: ""
+  skaOsoServicesUrl: ~ # Set dynamically in the Makefile
   skaSensitivityCalcUrl: ""
   useLocalData: "false"
   domain: "https://sdhp.stfc.skao.int"
