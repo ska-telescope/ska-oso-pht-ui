@@ -49,10 +49,16 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 
-{{- define "ska-oso-pht-ui.urls-msentraRedirectUri" -}}
-{{- if .Values.runtimeEnv.msentraRedirectUri -}}
-{{ .Values.runtimeEnv.msentraRedirectUri }}
+{{/*
+Build an OAuth2 redirect URI. Pass a dict with keys:
+  redirectUri - explicit override (uses it verbatim if set)
+  namespace   - .Release.Namespace
+  path        - .Values.ingress.path
+*/}}
+{{- define "ska-oso-pht-ui.urls-oauth2RedirectUri" -}}
+{{- if .redirectUri -}}
+{{ .redirectUri }}
 {{- else -}}
-/{{ .Release.Namespace }}/pht/
+/{{ .namespace }}/{{ .path }}/
 {{- end }}
 {{- end }}

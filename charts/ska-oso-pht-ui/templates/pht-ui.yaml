@@ -53,7 +53,7 @@ spec:
                   name: ska-oso-pht-ui-allsecrets-{{ $.Release.Name }}
                   key: MSENTRA_TENANT_ID
             - name: MSENTRA_REDIRECT_URI
-              value: {{ include "ska-oso-pht-ui.urls-msentraRedirectUri" . | quote }}
+              value: {{ include "ska-oso-pht-ui.urls-oauth2RedirectUri" (dict "redirectUri" .Values.runtimeEnv.msentraRedirectUri "namespace" .Release.Namespace "path" .Values.ingress.path) | quote }}
             - name: USE_INDIGO
               value: {{ .Values.runtimeEnv.useIndigo | toString | quote }}
             - name: INDIGO_AUTHORITY
@@ -61,7 +61,7 @@ spec:
             - name: INDIGO_CLIENT_ID
               value: {{ .Values.runtimeEnv.indigoClientId | quote }}
             - name: INDIGO_REDIRECT_URI
-              value: {{ .Values.runtimeEnv.indigoRedirectUri | quote }}
+              value: {{ include "ska-oso-pht-ui.urls-oauth2RedirectUri" (dict "redirectUri" .Values.runtimeEnv.indigoRedirectUri "namespace" .Release.Namespace "path" .Values.ingress.path) | quote }}
             - name: INDIGO_SCOPE
               value: {{ .Values.runtimeEnv.indigoScope | quote }}
             - name: INDIGO_AUDIENCE
