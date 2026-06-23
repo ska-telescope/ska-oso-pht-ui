@@ -249,5 +249,8 @@ export const getDefaultObservationLowAA2 = (type: string): Observation | null =>
 };
 
 export const timeConversion = (inValue: number, from: number, to: number) => {
-  return (inValue * TIME_UNITS[to - 1].toDay) / TIME_UNITS[from - 1].toDay;
+  const fromUnit = TIME_UNITS.find(u => u.id === from);
+  const toUnit = TIME_UNITS.find(u => u.id === to);
+  if (!fromUnit || !toUnit) return inValue;
+  return (inValue * toUnit.toDay) / fromUnit.toDay;
 };

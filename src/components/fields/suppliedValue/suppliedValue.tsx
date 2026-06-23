@@ -41,11 +41,9 @@ export default function SuppliedValue({
         const belowMin = minValue !== undefined && num <= minValue;
         const aboveMax = maxValue !== undefined && num > maxValue;
         if (!belowMin && !aboveMax) return '';
-        if (minValue !== undefined && maxValue !== undefined)
+        if (maxValue !== undefined)
           return t(`${FIELD}.range.error`, { min: minValue, max: maxValue, units: currentUnitLabel });
-        if (belowMin)
-          return t(`${FIELD}.range.minError`, { min: minValue, units: currentUnitLabel });
-        return t(`${FIELD}.range.maxError`, { max: maxValue, units: currentUnitLabel });
+        return t(`${FIELD}.range.minError`, { min: minValue, units: currentUnitLabel });
       },
       commitOnBlur: true,
       errorDelayMs: ERROR_SECS,
