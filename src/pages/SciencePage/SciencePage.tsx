@@ -126,7 +126,8 @@ export default function SciencePage() {
        * clearing the displayed name needs both (a) a remount via the key to reset its internal
        * filename state and (b) originalFile (the `file` prop) set to null, since the dropzone
        * renders the `file` prop directly as the selected file.
-       * TODO: switch to a first-class ska-gui-components API when available.
+       * This workaround should be replaced with a first-class ska-gui-components API when
+       * available.
        */
       setFileUploadKey(k => k + 1);
       if (hasUploadedSciencePdf) {
@@ -324,16 +325,6 @@ export default function SciencePage() {
       if (deleteResult.error || deleteResult === 'error.API_UNKNOWN_ERROR') {
         throw new Error('Not able to Delete Science PDF');
       }
-
-      /*
-       * SW: sciencePDF was set to sciencePDFDeleted. It seems deliberate, but I don't know why
-       * it would be done as it had the effect of making it look like a phantom PDF had been
-       * uploaded.
-       */
-      // const sciencePDFDeleted = {
-      //   documentId: `science-doc-${proposal.id}`,
-      //   isUploadedPdf: false
-      // };
 
       setProposal({
         ...getProposal(),
