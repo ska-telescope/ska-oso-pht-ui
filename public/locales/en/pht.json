@@ -1376,7 +1376,6 @@
     },
     "range": {
       "minError": "Must be greater than {{min}} {{units}}",
-      "maxError": "Must be less than {{max}} {{units}}",
       "error": "Must be between {{min}} and {{max}} {{units}}"
     }
   },
