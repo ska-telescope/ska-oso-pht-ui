@@ -89,7 +89,6 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
 
             let errorInRows = false;
             let targets;
-
             if (referenceCoordinateType === REFERENCE_COORDINATE_TYPE_ICRS.value) {
               if (!isSameHeader(result.meta.fields, validEquatorialCsvHeader))
                 throw t('uploadCsvBtn.uploadErrorEquatorialNotValidMsg');

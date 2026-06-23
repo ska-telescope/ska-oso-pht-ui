@@ -79,12 +79,6 @@ export default function TargetEntry({
     }
   }, [name]);
 
-  // React.useEffect(() => {
-  //   if (setTarget) {
-  //     setTarget({ ...target, decStr: dec, raStr: ra, vel: vel, redshift: redshift });
-  //   }
-  // }, [ra, dec, vel, redshift]);
-
   React.useEffect(() => {
     if (onCoord1FieldErrorChange) {
       onCoord1FieldErrorChange(skyDirection1Error); // Notify parent
@@ -398,8 +392,7 @@ export default function TargetEntry({
 
         setNameFieldError('');
       } else {
-        setNameFieldError(
-  t('resolve.error.' + response.error)
+        setNameFieldError(t('resolve.error.' + response.error)
         );
       }
     };

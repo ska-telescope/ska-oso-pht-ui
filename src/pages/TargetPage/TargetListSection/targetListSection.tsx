@@ -146,6 +146,15 @@ export default function TargetListSection() {
     setValue(newValue);
   };
 
+  const rows = getProposal().targets.map(t => {
+    const isICRS = t.kind === 0;
+    return {
+      ...t,
+      coord1: isICRS? t.raStr : t.l,
+      coord2: isICRS? t.decStr : t.b
+    };
+  });
+
   const displayRow1 = () => {
     return (
       <Grid
@@ -170,8 +179,7 @@ export default function TargetListSection() {
                 deleteClicked={deleteIconClicked}
                 editClicked={editIconClicked}
                 height={maxTargets === 1 ? '15vh' : '60vh'}
-                referenceCoordinateType={REFERENCE_COORDINATE_TYPE_ICRS.value}
-                rows={getProposal().targets}
+                rows={rows}
               />
             </Box>
             <Visualization
