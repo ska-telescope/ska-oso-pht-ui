@@ -64,6 +64,7 @@ K8S_CHART_PARAMS += \
   --set global.cluster_domain="cluster.local" \
   --set ska-oso-pht-ui.vault.enabled=false \
   --set ska-oso-pht-ui.rest.image.tag=$(VERSION) \
+  --set ska-oso-pht-ui.runtimeEnv.useIndigo=$(USE_INDIGO) \
   --set ska-oso-services-umbrella.ska-oso-services.vault.enabled=false \
   --set global.oda.postgres.secret.vault.enabled=false \
   --set global.oda.postgres.cluster=$(SGCLUSTER) \
