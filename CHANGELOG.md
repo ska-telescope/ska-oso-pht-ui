@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Updated: to use the new /coordinate endpoint response
+* Added: Support for Galactic targets
 * Bugfix: 'Channels Out' allowed 0 channels to be selected
 * Bugfix: target table displays internal localisation IDs
 * Changed: Split PDF selection into two modes: 'file selection' mode and 'uploaded PDF' mode, with file selection/drop
