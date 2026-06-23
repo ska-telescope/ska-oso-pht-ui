@@ -261,7 +261,6 @@ export default function TargetListSection() {
           title="editTarget.label"
         >
           <TargetEntry
-            referenceCoordinateType={REFERENCE_COORDINATE_TYPE_ICRS.value}
             setTarget={setRowTarget}
             target={rowTarget ? rowTarget : undefined}
             onCoord1FieldErrorChange={setSkyDirection1Error} // Pass callback
