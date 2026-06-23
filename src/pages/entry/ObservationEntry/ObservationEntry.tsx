@@ -47,6 +47,9 @@ import {
   cypressToken,
   TIME_HOURS,
   SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
+  SUPPLIED_INTEGRATION_TIME_STEP_HOURS,
+  SUPPLIED_INTEGRATION_TIME_STEP_MINS,
+  SUPPLIED_SENSITIVITY_STEP,
   INTEGRATION_TIME_UNITS,
 } from '@utils/constants.ts';
 import {
@@ -799,7 +802,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           maxValue={suppliedType === SUPPLIED_TYPE_INTEGRATION
             ? timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, suppliedUnits)
             : undefined}
-          step={suppliedType === SUPPLIED_TYPE_INTEGRATION && suppliedUnits === TIME_HOURS ? 0.1 : 1}
+          step={suppliedType === SUPPLIED_TYPE_INTEGRATION
+            ? (suppliedUnits === TIME_HOURS ? SUPPLIED_INTEGRATION_TIME_STEP_HOURS : SUPPLIED_INTEGRATION_TIME_STEP_MINS)
+            : SUPPLIED_SENSITIVITY_STEP}
           currentUnitLabel={getUnitOptions().find(u => u.value === suppliedUnits)?.label ?? ''}
           required
         />

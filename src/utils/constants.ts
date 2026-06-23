@@ -533,6 +533,9 @@ export const SUPPLIED_TYPE_SENSITIVITY = 2;
 export const SUPPLIED_INTEGRATION_TIME_UNITS_H = 2;
 export const SUPPLIED_INTEGRATION_TIME_UNITS_M = 3;
 export const SUPPLIED_INTEGRATION_TIME_MAX_HOURS = 4;
+export const SUPPLIED_INTEGRATION_TIME_STEP_HOURS = 0.1;
+export const SUPPLIED_INTEGRATION_TIME_STEP_MINS = 1;
+export const SUPPLIED_SENSITIVITY_STEP = 1;
 
 export const RA_TYPE_ICRS = { value: 0, label: 'icrs' };
 export const RA_TYPE_GALACTIC = { value: 1, label: 'galactic' };
