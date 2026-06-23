@@ -102,7 +102,7 @@ set-dev-env-vars:
 	INDIGO_AUTHORITY="https://iam-1.staging.devx.skao.int/" \
 	INDIGO_CLIENT_ID="d546e462-637c-44ff-b2b9-3345a960ad42" \
 	INDIGO_REDIRECT_URI="http://localhost:6101/" \
-	INDIGO_SCOPE="pht:readwrite openid profile" \
+	INDIGO_SCOPE="pht:readwrite pht:read openid profile" \
 	INDIGO_AUDIENCE="test:pht" \
 	ENVJS_FILE=./public/env.js ./scripts/write_env_js.sh
 

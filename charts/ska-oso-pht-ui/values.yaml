@@ -17,7 +17,7 @@ runtimeEnv:
   indigoAuthority: "https://iam-1.staging.devx.skao.int/"
   indigoClientId: "d546e462-637c-44ff-b2b9-3345a960ad42"
   indigoRedirectUri: "/"
-  indigoScope: "pht:readwrite openid profile"
+  indigoScope: "pht:readwrite pht:read openid profile"
   indigoAudience: "test:pht"
 
 component: pht-ui
