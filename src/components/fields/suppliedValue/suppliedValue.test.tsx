@@ -64,13 +64,13 @@ describe('SuppliedValue component', () => {
   });
 
   it('shows error on blur regardless of how the value was changed', () => {
-    render(<SuppliedValue value={1} setValue={vi.fn()} maxValue={14400} currentUnitLabel="s" />);
+    render(<SuppliedValue value={1} setValue={vi.fn()} minValue={0} maxValue={14400} currentUnitLabel="s" />);
     const input = screen.getByTestId('suppliedValue');
     fireEvent.keyDown(input, { key: 'ArrowUp' });
     fireEvent.change(input, { target: { value: '14401' } });
     expect(screen.queryByTestId('error')).not.toBeInTheDocument();
     fireEvent.blur(input);
-    expect(screen.getByTestId('error')).toHaveTextContent('suppliedValue.range.maxError');
+    expect(screen.getByTestId('error')).toHaveTextContent('suppliedValue.range.error');
   });
 
   it('does not commit value to parent until blur, and does not commit if invalid on blur', () => {
