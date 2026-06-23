@@ -93,6 +93,7 @@ export default function TargetListSection() {
   const alertDeleteContent = () => {
     const LABEL_WIDTH = 6;
     const rec = getProposal()?.targets?.find(p => p.id === rowTarget?.id);
+    const isICRS = rec?.kind === 0
     return (
       <Grid
         p={2}
@@ -106,21 +107,21 @@ export default function TargetListSection() {
           <Typography variant="body1">{rec?.name}</Typography>
         </FieldWrapper>
         <FieldWrapper
-          label={t('skyDirection.label.1.' + REFERENCE_COORDINATE_TYPE_ICRS.value)}
+          label={isICRS ? t('skyDirection.label.1.0') : t('skyDirection.label.1.1')}
           labelWidth={LABEL_WIDTH}
         >
-          <Typography variant="body1">{rec?.raStr}</Typography>
+          <Typography>{isICRS ? rec?.raStr : rec?.l}</Typography>
         </FieldWrapper>
         <FieldWrapper
-          label={t('skyDirection.label.2.' + REFERENCE_COORDINATE_TYPE_ICRS.value)}
+          label={isICRS ? t('skyDirection.label.2.0') : t('skyDirection.label.2.1')}
           labelWidth={LABEL_WIDTH}
         >
-          <Typography variant="body1">{rec?.decStr}</Typography>
+          <Typography>{isICRS ? rec?.decStr : rec?.b}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('velocity.0')} labelWidth={LABEL_WIDTH}>
+        <FieldWrapper label={t('velocity.0.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec?.vel}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('velocity.1')} labelWidth={LABEL_WIDTH}>
+        <FieldWrapper label={t('velocity.1.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec?.redshift}</Typography>
         </FieldWrapper>
 

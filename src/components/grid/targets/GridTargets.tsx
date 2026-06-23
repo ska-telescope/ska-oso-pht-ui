@@ -25,21 +25,28 @@ export default function GridTargets({
   chartClicked = null,
   height = 171,
   rowClick,
-  rows = []
+  rows = [],
 }: GridTargetsProps) {
   const loggedIn = isLoggedIn();
   const { t } = useScopedTranslation();
+
+  const kind = rows?.[0]?.kind;
+  const isICRS = kind === 0;
+
+  const coordLabels = isICRS
+    ? [t('skyDirection.short.1.0'), t('skyDirection.short.2.0')]
+    : [t('skyDirection.short.1.1'), t('skyDirection.short.2.1')];
 
   const basicColumns = [
     { field: 'name', headerName: t('name.label'), flex: 2 },
     {
       field: 'coord1',
-      headerName: t('skyDirection.short.1'),
+      headerName: coordLabels[0],
       width: 120
     },
     {
       field: 'coord2',
-      headerName: t('skyDirection.short.2'),
+      headerName: coordLabels[1],
       width: 120
     },
     {
