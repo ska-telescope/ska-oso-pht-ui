@@ -18,6 +18,7 @@ const mockProposal = {
   targets: [
     {
       id: '1',
+      kind: 0,
       name: 'Target1',
       raStr: '12:00',
       decStr: '-45:00',

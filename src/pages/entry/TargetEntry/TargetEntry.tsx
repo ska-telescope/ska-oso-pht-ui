@@ -131,22 +131,33 @@ export default function TargetEntry({
   }
 };
   const setTheCoord2 = (value: string) => {
-  setCoord2(value);
+    setCoord2(value);
 
-  if (!setTarget) return;
+    if (!setTarget) return;
 
-  if (isICRS) {
-    setTarget({
-      ...target,
-      decStr: leadZero(value).toString()
-    });
-  } else {
-    setTarget({
-      ...target,
-      b: parseFloat(value)
-    });
-  }
-};
+    if (isICRS) {
+      setTarget({
+        ...target,
+        decStr: leadZero(value).toString()
+      });
+    } else {
+      setTarget({
+        ...target,
+        b: parseFloat(value)
+      });
+    }
+  };
+
+  const setTheReferenceCoordinates = (newKind: number) => {
+    setReferenceCoordinates(newKind);
+
+    if (setTarget) {
+      setTarget({
+        ...target,
+        kind: newKind
+      });
+    }
+  };
 
   const setTheRedshift = (inValue: string) => {
     setRedshift(inValue);
@@ -414,7 +425,7 @@ export default function TargetEntry({
   const referenceCoordinatesField = () =>
     wrapper(
       <ReferenceCoordinatesField
-        setValue={setReferenceCoordinates}
+        setValue={setTheReferenceCoordinates}
         value={referenceCoordinates}
       />
     );
