@@ -14,7 +14,6 @@ import VelocityField from '@/components/fields/velocity/Velocity';
 import Target from '@/utils/types/target';
 import {
   REFERENCE_COORDINATE_TYPE_ICRS,
-  REFERENCE_COORDINATE_TYPE_GALACTIC,
   VELOCITY_TYPE,
   FIELD_PATTERN_POINTING_CENTRES,
   WRAPPER_HEIGHT,
@@ -116,21 +115,24 @@ export default function TargetEntry({
     }
   };
 
+  const isICRS =
+  referenceCoordinates === REFERENCE_COORDINATE_TYPE_ICRS.value;
+
 
   const setTheCoord1 = (value: string) => {
   setCoord1(value);
 
   if (!setTarget) return;
 
-  if (referenceCoordinates === REFERENCE_COORDINATE_TYPE_GALACTIC.value) {
-    setTarget({
-      ...target,
-      l: parseFloat(value)
-    });
-  } else {
+  if (isICRS) {
     setTarget({
       ...target,
       raStr: leadZero(value).toString()
+    });
+  } else {
+        setTarget({
+      ...target,
+      l: parseFloat(value)
     });
   }
 };
@@ -139,15 +141,15 @@ export default function TargetEntry({
 
   if (!setTarget) return;
 
-  if (referenceCoordinates === REFERENCE_COORDINATE_TYPE_GALACTIC.value) {
+  if (isICRS) {
     setTarget({
       ...target,
-      b: parseFloat(value)
+      decStr: leadZero(value).toString()
     });
   } else {
     setTarget({
       ...target,
-      decStr: leadZero(value).toString()
+      b: parseFloat(value)
     });
   }
 };
@@ -183,8 +185,20 @@ export default function TargetEntry({
   const targetIn = (target: Target) => {
     setId(target?.id ?? 0);
     setName(target?.name ?? '');
-    setCoord1(target?.raStr ?? '');
-    setCoord2(target?.decStr ?? '');
+    setCoord1(
+      isICRS
+        ? target.raStr ?? ''
+        : target.l != null
+          ? String(target.l)
+          : ''
+    );
+    setCoord2(
+      isICRS
+        ? target.decStr ?? ''
+        : target.b != null
+          ? String(target.b)
+          : ''
+    );
     setVelType(target?.velType ?? 0);
     setVel(target?.vel ?? '');
     setVelUnit(target?.velUnit ?? 0);
