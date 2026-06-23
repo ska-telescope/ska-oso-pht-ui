@@ -13,13 +13,13 @@ async function GetCoordinates(targetName: string, skyUnits: number) {
       `${SKA_OSO_SERVICES_URL}${URL_PATH}${targetName}/${UNITS[units]}`
     );
     return typeof result === 'undefined'
-  ? { error: 'error.API_UNKNOWN_ERROR' }
+  ? { error: 'API_UNKNOWN_ERROR' }
   : result.data;
   } catch (e) {
     if (e instanceof Error) {
       return { error: e.message };
     }
-    return { error: 'error.API_UNKNOWN_ERROR' };
+    return { error: 'API_UNKNOWN_ERROR' };
   }
 }
 
