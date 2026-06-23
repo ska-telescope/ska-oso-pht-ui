@@ -34,6 +34,7 @@ export const useNumericInput = (
   };
 
   React.useEffect(() => {
+    if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
     setLocalValue(value);
     setErrorText(runValidation(value));
   }, [value]);
