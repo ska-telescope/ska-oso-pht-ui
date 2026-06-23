@@ -1368,12 +1368,7 @@
   },
   "suppliedValue": {
     "help": "Add the required time, selecting the appropriate unit, to reach the desired target sensitivity or the required sensitivity which will be used to estimate the required integration time",
-    "integrationTime": {
-      "label": "Integration Time"
-    },
-    "sensitivity": {
-      "label": "Sensitivity"
-    },
+    "required": "A value is required",
     "range": {
       "minError": "Must be greater than {{min}} {{units}}",
       "error": "Must be between {{min}} and {{max}} {{units}}"
