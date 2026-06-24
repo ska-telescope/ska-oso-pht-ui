@@ -8,7 +8,7 @@ import viteTsconfigPaths from 'vite-tsconfig-paths';
 const proxyTarget = process.env.BACKEND_PROXY;
 
 export default defineConfig({
-  base: './',
+  base: '/',
   build: { rollupOptions: { external: ['/env.js'] } },
   plugins: [react(), viteTsconfigPaths()],
   server: {
