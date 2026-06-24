@@ -11,12 +11,11 @@ const wrapper = (component: React.ReactElement) => {
 
 describe('<GridTargets />', () => {
   test('renders correctly', () => {
-    wrapper(<GridTargets referenceCoordinateType={0} />);
+    wrapper(<GridTargets />);
   });
   test('renders correctly with rows', () => {
     wrapper(
       <GridTargets
-        referenceCoordinateType={0}
         rows={[
           {
             kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value,
@@ -37,7 +36,6 @@ describe('<GridTargets />', () => {
     wrapper(
       <GridTargets
         deleteClicked={vi.fn()}
-        referenceCoordinateType={0}
         rows={[
           {
             kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
@@ -58,7 +56,6 @@ describe('<GridTargets />', () => {
     wrapper(
       <GridTargets
         editClicked={vi.fn()}
-        referenceCoordinateType={0}
         rows={[
           {
             kind: REFERENCE_COORDINATE_TYPE_ICRS.value,

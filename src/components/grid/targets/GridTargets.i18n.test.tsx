@@ -47,7 +47,6 @@ describe('<GridTargets /> localization', () => {
   test('does not display localisation IDs in velocity column headers', () => {
     wrapper(
       <GridTargets
-        raType={0}
         rows={[
           {
             kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
