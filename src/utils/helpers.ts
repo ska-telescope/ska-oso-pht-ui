@@ -10,7 +10,8 @@ import {
   DEFAULT_ZOOM_OBSERVATION_LOW,
   TYPE_ZOOM,
   TYPE_PST,
-  DEFAULT_CONTINUUM_OBSERVATION_LOW
+  DEFAULT_CONTINUUM_OBSERVATION_LOW,
+  TIME_UNITS
 } from './constants';
 import Observation from './types/observation';
 import { ValueUnitPair } from './types/valueUnitPair';
@@ -245,4 +246,11 @@ export const getDefaultObservationLowAA2 = (type: string): Observation | null =>
     default:
       return DEFAULT_CONTINUUM_OBSERVATION_LOW;
   }
+};
+
+export const timeConversion = (inValue: number, from: number, to: number) => {
+  const fromUnit = TIME_UNITS.find(u => u.id === from);
+  const toUnit = TIME_UNITS.find(u => u.id === to);
+  if (!fromUnit || !toUnit) return inValue;
+  return (inValue * toUnit.toDay) / fromUnit.toDay;
 };

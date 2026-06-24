@@ -2,7 +2,7 @@ declare module '@ska-telescope/ska-login-page';
 declare module '@ska-telescope/ska-gui-components';
 declare module 'd3-textwrap';
 declare module '*.css';
-declare module '*.png'
+declare module '*.png';
 declare module '@/env' {
   export const env: {
     production: boolean;
@@ -21,5 +21,6 @@ declare module '@/env' {
     MSENTRA_TENANT_ID: string;
     MSENTRA_REDIRECT_URI: string;
     REACT_APP_OVERRIDE_GROUPS: string;
+    REACT_APP_LOW_UNITS_UNLOCKED: string;
   };
 }

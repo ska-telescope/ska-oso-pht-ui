@@ -7,6 +7,9 @@ export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const cypressToken = window.localStorage.getItem('cypress:token');
 export const cypressEditProposal = window.localStorage.getItem('cypress:proposalEdit') === 'true';
 export const cypressSV = window.localStorage.getItem('cypress:scienceVerificationIdea') === 'true';
+export const cypressLowUnitsUnlocked =
+  window.localStorage.getItem('cypress:lowUnitsUnlocked') === 'true' ||
+  env.REACT_APP_LOW_UNITS_UNLOCKED === 'true';
 
 export const USE_LOCAL_DATA_SENSITIVITY_CALC =
   env.REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC === 'true';
@@ -288,6 +291,11 @@ export const TIME_UNITS = [
   { id: TIME_NS, value: 'ns', toDay: 86400 * 1000000000 }
 ];
 
+export const INTEGRATION_TIME_UNITS = [
+  { id: TIME_HOURS, value: 'h', toDay: 24 },
+  { id: TIME_MINS, value: 'min', toDay: 1440 }
+];
+
 export const INFINITY = 'Infinity';
 
 export const DECIMAL_PLACES = 2;
@@ -526,7 +534,11 @@ export const SECONDS_UNITS = [
 export const SUPPLIED_TYPE_INTEGRATION = 1;
 export const SUPPLIED_TYPE_SENSITIVITY = 2;
 export const SUPPLIED_INTEGRATION_TIME_UNITS_H = 2;
-export const SUPPLIED_INTEGRATION_TIME_UNITS_S = 4;
+export const SUPPLIED_INTEGRATION_TIME_UNITS_M = 3;
+export const SUPPLIED_INTEGRATION_TIME_MAX_HOURS = 4;
+export const SUPPLIED_INTEGRATION_TIME_STEP_HOURS = 0.1;
+export const SUPPLIED_INTEGRATION_TIME_STEP_MINS = 1;
+export const SUPPLIED_SENSITIVITY_STEP = 1;
 
 export const RA_TYPE_ICRS = { value: 0, label: 'icrs' };
 export const RA_TYPE_GALACTIC = { value: 1, label: 'galactic' };
@@ -596,7 +608,7 @@ export const STATUS = {
   PARTIAL: STATUS_PARTIAL,
   INITIAL: STATUS_INITIAL
 };
-export const SUPPLIED_VALUE_DEFAULT_MID = 600;
+export const SUPPLIED_VALUE_DEFAULT_MID = 10;
 export const SUPPLIED_VALUE_DEFAULT_LOW = 1;
 export const ZOOM_BANDWIDTH_DEFAULT_MID = 1;
 export const ZOOM_BANDWIDTH_DEFAULT_LOW = 5;
@@ -817,4 +829,4 @@ export const STATUS_ARRAY_PAGES_PROPOSAL = [
 ];
 
 export const SV_LOW_AA2_CYCLE_NUMBER = 10000;
-export const SV_LOW_MID_AA2_CYCLE_NUMBER = 1; 
+export const SV_LOW_MID_AA2_CYCLE_NUMBER = 1;
