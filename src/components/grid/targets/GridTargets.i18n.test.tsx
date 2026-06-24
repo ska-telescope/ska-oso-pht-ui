@@ -55,7 +55,6 @@ describe('<GridTargets /> localization', () => {
             name: 'ICRS target',
             raStr: '12:30:00.0',
             redshift: '',
-            referenceFrame: REFERENCE_COORDINATE_TYPE_ICRS.label,
             velType: 0,
             vel: '',
             velUnit: 0
