@@ -442,7 +442,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const isMid = () => observingBand !== BAND_LOW_STR;
   const telescope = () => (isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM);
   const LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP = 8;
-  const minimumChannelWidthHz = (isLow() ? osdLOW?.basicCapabilities?.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP : );
+  // TODO: Min channel width for Mid hardcoded for now since I'm not sure if it's correct
+  const minimumChannelWidthHz = (isLow() ? osdLOW?.basicCapabilities?.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP : 13.44e3);
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
