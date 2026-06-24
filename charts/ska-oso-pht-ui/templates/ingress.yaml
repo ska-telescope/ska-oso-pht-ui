@@ -24,15 +24,17 @@ spec:
         path: {{ include "ska-oso-pht-ui.ingress.path" . }}/(?!oso)(.*)
         pathType: ImplementationSpecific
 ---
-# Redirect the bare base path (no trailing slash) to the canonical path with trailing slash.
-# Indigo IAM strips trailing slashes from redirect_uri; this ensures the OAuth callback lands correctly.
+# Redirect the bare base path (no trailing slash) to the canonical path.
+# Indigo IAM strips trailing slashes from redirect_uri; the configuration-snippet
+# fires inside the matched location block so nginx variables and query string are preserved.
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   annotations:
     kubernetes.io/ingress.class: nginx
 {{ include "ska-oso-pht-ui.labels" . | indent 4 }}
-    nginx.ingress.kubernetes.io/permanent-redirect: "$scheme://$host{{ include "ska-oso-pht-ui.ingress.path" . | trim }}/$is_args$args"
+    nginx.ingress.kubernetes.io/configuration-snippet: |
+      return 301 $scheme://$host$uri/$is_args$args;
   labels:
 {{ include "ska-oso-pht-ui.labels" . | indent 4 }}
   name: {{ $.Chart.Name }}-base-redirect-ingress
