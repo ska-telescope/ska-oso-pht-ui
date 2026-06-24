@@ -149,15 +149,28 @@ export default function TargetEntry({
   };
 
   const setTheReferenceCoordinates = (newKind: number) => {
-    setReferenceCoordinates(newKind);
+  if (newKind !== referenceCoordinates) {
+    setName('');
+    setCoord1('');
+    setCoord2('');
+    setVel('');
+    setRedshift('');
 
-    if (setTarget) {
-      setTarget({
-        ...target,
-        kind: newKind
-      });
-    }
-  };
+    setSkyDirection1Error('');
+    setSkyDirection2Error('');
+    setRmFieldError('');
+    setNameFieldError('');
+  }
+
+  setReferenceCoordinates(newKind);
+
+  if (setTarget) {
+    setTarget({
+      ...target,
+      kind: newKind
+    });
+  }
+};
 
   const setTheRedshift = (inValue: string) => {
     setRedshift(inValue);
