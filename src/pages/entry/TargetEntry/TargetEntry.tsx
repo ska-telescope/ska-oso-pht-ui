@@ -20,7 +20,7 @@ import {
   TYPE_PST,
   TYPE_ZOOM,
   TYPE_CONTINUUM,
-  NOTIFICATION_DELAY_IN_SECONDS
+  NOTIFICATION_DELAY_IN_SECONDS, REFERENCE_COORDINATE_TYPE_GALACTIC
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -339,6 +339,7 @@ export default function TargetEntry({
 
     const disabled = () => {
       return (
+        referenceCoordinates === REFERENCE_COORDINATE_TYPE_GALACTIC.value ||
         nameFieldError !== '' ||
         skyDirection1Error !== '' ||
         skyDirection2Error !== '' ||
@@ -359,7 +360,11 @@ export default function TargetEntry({
           primary
           testId={'addTargetButton'}
           title="addTarget.label"
-          toolTip="addTarget.toolTip"
+          toolTip={
+            referenceCoordinates === REFERENCE_COORDINATE_TYPE_GALACTIC.value
+              ? 'addTarget.galacticDisabled'
+              : 'addTarget.toolTip'
+          }
         />
       </Grid>
     );
