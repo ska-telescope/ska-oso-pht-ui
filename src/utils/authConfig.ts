@@ -45,10 +45,12 @@ export function buildLoginRequest(): { scopes: string[] } | undefined {
 
 export function buildAuthConfig() {
   if (getUseIndigo()) {
+    // Resolve to an absolute URL so MSAL doesn't strip a trailing slash during normalization.
+    const redirectUri = new URL(env.INDIGO_REDIRECT_URI, window.location.origin).href;
     return {
       authority: env.INDIGO_AUTHORITY,
       clientId: env.INDIGO_CLIENT_ID,
-      redirectUri: env.INDIGO_REDIRECT_URI,
+      redirectUri,
       scope: env.INDIGO_SCOPE,
       audience: env.INDIGO_AUDIENCE,
     };
