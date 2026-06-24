@@ -21,11 +21,11 @@ export function getUseIndigo(): boolean {
     return result;
   }
 
+  // Session flag set on a previous call this tab session (e.g. before the redirect).
+  if (sessionStorage.getItem(USE_INDIGO_SESSION_KEY) !== null) return sessionStorage.getItem(USE_INDIGO_SESSION_KEY) === 'true';
+
   // Env var: authoritative for deployed Indigo environments.
   if (env.USE_INDIGO === 'true') return true;
-
-  // Session flag set on a previous call this tab session (e.g. before the redirect).
-  return sessionStorage.getItem(USE_INDIGO_SESSION_KEY) === 'true';
 }
 
 // Returns missing required env key names when USE_INDIGO is active. Empty array = all good.
