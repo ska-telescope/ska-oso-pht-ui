@@ -7,7 +7,7 @@ const REQUIRED_INDIGO_KEYS = [
   'INDIGO_CLIENT_ID',
   'INDIGO_REDIRECT_URI',
   'INDIGO_SCOPE',
-  'INDIGO_AUDIENCE',
+  'INDIGO_AUDIENCE'
 ] as const;
 
 export function getUseIndigo(): boolean {
@@ -22,10 +22,15 @@ export function getUseIndigo(): boolean {
   }
 
   // Session flag set on a previous call this tab session (e.g. before the redirect).
-  if (sessionStorage.getItem(USE_INDIGO_SESSION_KEY) !== null) return sessionStorage.getItem(USE_INDIGO_SESSION_KEY) === 'true';
+  if (sessionStorage.getItem(USE_INDIGO_SESSION_KEY) !== null) {
+    return sessionStorage.getItem(USE_INDIGO_SESSION_KEY) === 'true';
+  }
 
   // Env var: authoritative for deployed Indigo environments.
-  if (env.USE_INDIGO === 'true') return true;
+  if (env.USE_INDIGO === 'true') {
+    return true;
+  }
+  return false;
 }
 
 // Returns missing required env key names when USE_INDIGO is active. Empty array = all good.
@@ -39,7 +44,7 @@ export function validateIndigoConfig(): string[] {
 export function buildLoginRequest(): { scopes: string[] } | undefined {
   if (!getUseIndigo()) return undefined;
   return {
-    scopes: env.INDIGO_SCOPE.split(' ').filter(Boolean),
+    scopes: env.INDIGO_SCOPE.split(' ').filter(Boolean)
   };
 }
 
@@ -52,12 +57,12 @@ export function buildAuthConfig() {
       clientId: env.INDIGO_CLIENT_ID,
       redirectUri,
       scope: env.INDIGO_SCOPE,
-      audience: env.INDIGO_AUDIENCE,
+      audience: env.INDIGO_AUDIENCE
     };
   }
   return {
     MSENTRA_CLIENT_ID: env.MSENTRA_CLIENT_ID,
     MSENTRA_TENANT_ID: env.MSENTRA_TENANT_ID,
-    MSENTRA_REDIRECT_URI: env.MSENTRA_REDIRECT_URI,
+    MSENTRA_REDIRECT_URI: env.MSENTRA_REDIRECT_URI
   };
 }
