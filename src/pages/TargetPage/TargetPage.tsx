@@ -4,7 +4,7 @@ import { Grid, Typography, Card, CardContent, CardActionArea, Tooltip } from '@m
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import Shell from '../../components/layout/Shell/Shell';
-import { validateProposal } from '../../utils/validation/validation';
+import { validateTargetPage } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
 import { PAGE_TARGET, TARGET_OPTION } from '../../utils/constants';
 import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';
@@ -24,10 +24,12 @@ export default function TargetPage() {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const { autoLink, isSV } = useOSDAccessors();
+  const { isSV } = useOSDAccessors();
 
+  const getProposalState = () => application.content1 as number[];
   const setTheProposalState = () => {
-    updateAppContent1(validateProposal(getProposal(), autoLink));
+    const status = validateTargetPage(getProposal());
+    updateAppContent1(getProposalState().map((v, i) => (i === PAGE ? status : v)));
   };
 
   React.useEffect(() => {

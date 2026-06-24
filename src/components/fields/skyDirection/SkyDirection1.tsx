@@ -14,6 +14,7 @@ interface SkyDirection1FieldProps {
   value: string;
   valueFocus?: Function;
   valueTypeFocus?: Function;
+  valueBlur?: Function;
   setErrorText?: (error: string) => void;
 }
 
@@ -23,12 +24,14 @@ export default function SkyDirection1Field({
   skyUnits,
   value,
   valueFocus,
+  valueBlur,
   setErrorText
 }: SkyDirection1FieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'skyDirection';
 
-  const errorText = !required || validateSkyDirection1Text(value) ? '' : t(FIELD + '.error.1.0');
+  const parseResultText = validateSkyDirection1Text(value);
+  const errorText = !required || !parseResultText ? '' : t(FIELD + '.error.1.' + parseResultText);
   const errorNumber =
     !required || validateSkyDirection1Number(value) ? '' : t(FIELD + '.error.1.0');
 
@@ -51,6 +54,7 @@ export default function SkyDirection1Field({
       value={value}
       setValue={setValue}
       onFocus={valueFocus}
+      onBlur={valueBlur}
       required={required}
     />
   );
@@ -64,6 +68,7 @@ export default function SkyDirection1Field({
       value={value}
       setValue={setValue}
       onFocus={valueFocus}
+      onBlur={valueBlur}
       required={required}
     />
   );

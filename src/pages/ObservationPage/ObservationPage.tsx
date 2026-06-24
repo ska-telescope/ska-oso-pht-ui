@@ -5,11 +5,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { Proposal } from '@utils/types/proposal.tsx';
-import {
-  validateCalibrationPage,
-  validateLinkingPage,
-  validateObservationPage
-} from '@utils/validation/validation.tsx';
+import { useValidateProposal } from '@utils/validation/validation.tsx';
 import {
   cypressToken,
   PAGE_CALIBRATION,
@@ -27,6 +23,7 @@ import DeleteObservationConfirmation from '../../components/alerts/deleteObserva
 import ObservationEntry from '../entry/ObservationEntry/ObservationEntry';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { useNotify } from '@/utils/notify/useNotify';
 import TableObservations from '@/components/table/tableObservations/TableObservations';
 
 const PAGE = PAGE_OBSERVATION;
@@ -35,7 +32,9 @@ const GAP = 4;
 export default function ObservationPage() {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
+  const { notifyWarning } = useNotify();
   const { autoLink, osdCyclePolicy } = useOSDAccessors();
+  const validateProposal = useValidateProposal();
 
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
   const [validateToggle, setValidateToggle] = React.useState(false);
@@ -116,6 +115,11 @@ export default function ObservationPage() {
   };
 
   React.useEffect(() => {
+    if (!getProposal()?.id) {
+      notifyWarning(t('error.proposalNotLoaded'));
+      navigate(PATH[0]);
+      return;
+    }
     setValidateToggle(!validateToggle);
     setElementsO(getProposal().observations?.map(rec => popElementO(rec)) ?? []);
   }, []);
@@ -128,11 +132,8 @@ export default function ObservationPage() {
   React.useEffect(() => {
     const proposal = getProposal();
     if (!proposal) return;
-    setTheProposalState(
-      validateObservationPage(proposal, autoLink),
-      validateLinkingPage(proposal),
-      validateCalibrationPage(proposal)
-    );
+    const statuses = validateProposal(proposal);
+    setTheProposalState(statuses[PAGE], statuses[PAGE_LINKING], statuses[PAGE_CALIBRATION]);
   }, [validateToggle]);
 
   const hasObservations = () => elementsO?.length > 0;

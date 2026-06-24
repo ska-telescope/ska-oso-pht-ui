@@ -9,7 +9,7 @@ import GetProposal from '@services/axios/get/getProposal/getProposal';
 import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
 import PostProposal from '@/services/axios/post/postProposal/postProposal';
-import { validateProposal } from '@/utils/validation/validation';
+const mockValidateFn = vi.hoisted(() => vi.fn(() => []));
 import { PROPOSAL_STATUS } from '@/utils/constants';
 import { ProposalAccess } from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
@@ -56,7 +56,7 @@ vi.mock('@/services/axios/post/postProposal/postProposal', () => ({
 }));
 
 vi.mock('@/utils/validation/validation', () => ({
-  validateProposal: vi.fn(() => [])
+  useValidateProposal: () => mockValidateFn
 }));
 
 vi.mock('@/utils/storage/proposalData', () => ({
@@ -290,9 +290,8 @@ describe('clone proposal', () => {
     // After confirming the clone, we expect validateProposal to be called once for the new
     // cloned proposal (with the new ID so that the contents and state match.
     await waitFor(() => {
-      expect(validateProposal).toHaveBeenCalledWith(
-        expect.objectContaining({ id: CLONED_PROPOSAL_ID }),
-        expect.anything()
+      expect(mockValidateFn).toHaveBeenCalledWith(
+        expect.objectContaining({ id: CLONED_PROPOSAL_ID })
       );
     });
   });

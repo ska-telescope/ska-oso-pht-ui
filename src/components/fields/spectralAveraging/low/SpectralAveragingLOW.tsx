@@ -2,7 +2,6 @@ import React from 'react';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import {
-  ERROR_SECS,
   SPECTRAL_AVERAGING_MIN,
   TYPE_CONTINUUM,
   ZOOM_SPECTRAL_AVERAGING_MAX
@@ -34,17 +33,19 @@ export default function SpectralAveragingLOWField({
   const FIELD = 'spectralAveraging';
   const { observatoryConstants } = useOSDAccessors();
   const [errorText, setErrorText] = React.useState('');
-
+  const [saValue, setSaValue] = React.useState<string>(value != null ? String(value) : '');
+  
   React.useEffect(() => {
-    const timer = () => {
-      setTimeout(() => {
-        setErrorText('');
-      }, ERROR_SECS);
-    };
-    timer();
-  }, [errorText]);
+    setSaValue(value != null ? String(value) : '');
+  }, [value]);
 
-  const validateValue = (num: number) => {
+  const validateValue = (saValue: string) => {
+    setSaValue(saValue);
+
+    if (saValue === '' || isNaN(Number(saValue))) {
+      return t('spectralAveraging.error');
+    }
+
     const subarrayConfig = observatoryConstants.array[1].subarray.find(
       item => item.value === subarray
     );
@@ -55,24 +56,27 @@ export default function SpectralAveragingLOWField({
           : SPECTRAL_AVERAGING_MIN
         : ZOOM_SPECTRAL_AVERAGING_MAX;
 
-    if (num < SPECTRAL_AVERAGING_MIN || num > spectralAverageMax) {
+    const sa = Number(saValue);
+
+    if (sa < SPECTRAL_AVERAGING_MIN || sa > spectralAverageMax) {
       return t('spectralAveraging.range.error');
     }
+
     return '';
   };
 
-  const handleSetValue = (num: number) => {
-    const error = validateValue(num);
+  const handleSetValue = (e: string) => {
+    const error = validateValue(e);
     if (error) {
       setErrorText(error);
     } else {
       setErrorText('');
-      setValue?.(num);
+      setValue?.(Number(e));
     }
   };
 
   React.useEffect(() => {
-    const error = validateValue(value);
+    const error = validateValue(String(value));
     setErrorText(error);
   }, [value, subarray, observationType, observatoryConstants]);
 
@@ -80,7 +84,7 @@ export default function SpectralAveragingLOWField({
     <Box pt={1}>
       <NumberEntry
         testId={FIELD}
-        value={String(value)}
+        value={saValue}
         setValue={handleSetValue}
         label={t(FIELD + '.label')}
         onFocus={() => setHelp(FIELD)}
