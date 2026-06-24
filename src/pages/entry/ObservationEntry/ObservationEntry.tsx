@@ -20,7 +20,7 @@ import {
   SUPPLIED_VALUE_DEFAULT_MID,
   TYPE_CONTINUUM,
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
-  SUPPLIED_INTEGRATION_TIME_UNITS_S,
+  SUPPLIED_INTEGRATION_TIME_UNITS_M,
   SUPPLIED_VALUE_DEFAULT_LOW,
   FREQUENCY_UNITS,
   FREQUENCY_MHZ,
@@ -44,7 +44,14 @@ import {
   SA_CUSTOM,
   PULSAR_TIMING_VALUE,
   SUPPLIED_TYPE_INTEGRATION,
-  cypressToken
+  cypressToken,
+  cypressLowUnitsUnlocked,
+  TIME_HOURS,
+  SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
+  SUPPLIED_INTEGRATION_TIME_STEP_HOURS,
+  SUPPLIED_INTEGRATION_TIME_STEP_MINS,
+  SUPPLIED_SENSITIVITY_STEP,
+  INTEGRATION_TIME_UNITS,
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -52,7 +59,8 @@ import {
   getBandwidthLowZoom,
   getBandwidthZoom,
   getMinimumChannelWidth,
-  obTypeTransform
+  obTypeTransform,
+  timeConversion
 } from '@utils/helpers.ts';
 import WeatherField from '@/components/fields/weather/weather';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
@@ -88,6 +96,10 @@ import updateDataProductsPST from '@/utils/update/dataProductsPST/updateDataProd
 import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalcPartial';
 import updateSensCalc from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
+import {
+  subarrayConfigurationLow,
+  subarrayConfigurationMid
+} from '@/utils/types/observatoryData';
 import lowAA2Image from '@assets/low_aa2.png';
 import { useIsFrequencyOutOfRange } from '@/utils/validation/validation';
 
@@ -175,8 +187,24 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setSpectralResolution(ob?.spectralResolution ?? '');
     setSpectralAveraging(ob?.spectralAveraging ?? 1);
     setSuppliedType(ob?.supplied?.type);
-    setSuppliedValue(ob?.supplied?.value);
-    setSuppliedUnits(ob?.supplied?.units);
+
+    // If the supplied units are not one of the integration time units, 
+    // we will convert the value to the default units for the telescope.
+    // Currently the default units are hours for low and minutes for mid.
+    const loadedUnits = ob?.supplied?.units;
+    const loadedValue = ob?.supplied?.value;
+    const isValidUnit = ob?.supplied?.type !== SUPPLIED_TYPE_INTEGRATION
+      || INTEGRATION_TIME_UNITS.some(u => u.id === loadedUnits);
+    if (isValidUnit) {
+      setSuppliedValue(loadedValue);
+      setSuppliedUnits(loadedUnits);
+    } else {
+      const defaultUnits = ob?.observingBand === BAND_LOW_STR
+        ? SUPPLIED_INTEGRATION_TIME_UNITS_H
+        : SUPPLIED_INTEGRATION_TIME_UNITS_M;
+      setSuppliedValue(timeConversion(loadedValue, loadedUnits, defaultUnits));
+      setSuppliedUnits(defaultUnits);
+    }
     setSubBands(ob?.numSubBands ?? 0);
     setNumOf15mAntennas(ob?.num15mAntennas ?? 0);
     setNumOf13mAntennas(ob?.num13mAntennas ?? 0);
@@ -296,7 +324,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const setTheObservingBand = (e: React.SetStateAction<number>) => {
     if (isLow() && e !== 0) {
       setDefaultElevation();
-      setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_S);
+      setSuppliedUnits(SUPPLIED_INTEGRATION_TIME_UNITS_M);
       setSuppliedValue(SUPPLIED_VALUE_DEFAULT_MID);
     }
     if (isMid() && e === 0) {
@@ -318,11 +346,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
     if (record) {
       if (isLow()) {
-        const sArray = osdLOW?.subArrays.find((sub: any) => sub.subArray === subarrayConfig);
+        const sArray = osdLOW?.subArrays.find(sub => sub.subArray === subarrayConfig);
         setNumOfStations(sArray?.numberStations ?? undefined);
       }
       if (isMid()) {
-        const sArray = osdMID?.subArrays.find((sub: any) => sub.subArray === subarrayConfig);
+        const sArray = osdMID?.subArrays.find(sub => sub.subArray === subarrayConfig);
         setNumOf15mAntennas(sArray?.numberSkaDishes ?? undefined);
         setNumOf13mAntennas(sArray?.numberMeerkatDishes ?? undefined);
       }
@@ -336,7 +364,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const record = isLow() ? osdLOW : osdMID;
     setMaxZoomChannels(0);
     if (record) {
-      const sArray = record?.subArrays?.find((sub: any) => sub.subArray === SA_AA2);
+      const sArray = (record?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined)?.find(sub => sub.subArray === SA_AA2);
       setMaxZoomChannels(sArray?.numberZoomChannels ?? 0);
     }
   };
@@ -680,7 +708,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       ];
     }
     const obj = low ? osdLOW : osdMID;
-    const rec = obj?.subArrays?.find(r => r.subArray === subarrayConfig) ?? null;
+    const rec = (obj?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined)?.find(r => r.subArray === subarrayConfig) ?? null;
     const modes = obTypeTransform(rec?.cbfModes ?? []);
     return modes.map(mode => ({
       label: t(`observationType.${mode}`),
@@ -720,7 +748,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const getOptions = () => {
       const supplied = observatoryConstants?.Supplied ?? [];
       if (supplied.length === 0) return [];
-      return isLow() ? [supplied[0]] : supplied;
+      const options = isLow() ? [supplied[0]] : supplied;
+      return options.map(opt => ({
+        ...opt,
+        label: t(`sensitivityCalculatorResults.${opt.sensCalcResultsLabel}`)
+      }));
     };
 
     return (
@@ -731,39 +763,38 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           value={suppliedType ?? ''}
           setValue={setSuppliedType}
           disabled={getOptions()?.length < 2}
-          label={t('suppliedType.label')}
+          label=""
           onFocus={() => setHelp('suppliedType')}
-          required
         />
       </Box>
     );
   };
 
   const suppliedField = () => {
-    const suppliedUnitsField = () => {
-      const getOptions = () => {
-        const supplied = observatoryConstants?.Supplied ?? [];
-        if (!suppliedType || suppliedType <= 0) return [];
-        const entry = supplied[suppliedType - 1];
-        if (!entry || !Array.isArray(entry.units)) return [];
-        return entry.units;
-      };
-
-      return (
-        <Box>
-          <DropDown
-            options={getOptions()}
-            testId="suppliedUnits"
-            value={suppliedUnits}
-            disabled={isLow()}
-            setValue={setSuppliedUnits}
-            label=""
-            onFocus={() => setHelp('suppliedUnits')}
-            InputProps={{ disableUnderline: true }}
-          />
-        </Box>
-      );
+    const getUnitOptions = () => {
+      const supplied = observatoryConstants?.Supplied ?? [];
+      if (!suppliedType || suppliedType <= 0) return [];
+      const entry = supplied[suppliedType - 1];
+      if (!entry || !Array.isArray(entry.units)) return [];
+      if (suppliedType === SUPPLIED_TYPE_INTEGRATION)
+        return entry.units.filter(u => INTEGRATION_TIME_UNITS.some(allowed => allowed.id === u.value));
+      return entry.units;
     };
+
+    const suppliedUnitsField = () => (
+      <Box>
+        <DropDown
+          options={getUnitOptions()}
+          testId="suppliedUnits"
+          value={suppliedUnits}
+          disabled={isLow() && !cypressLowUnitsUnlocked}
+          setValue={setSuppliedUnits}
+          label=""
+          onFocus={() => setHelp('suppliedUnits')}
+          InputProps={{ disableUnderline: true }}
+        />
+      </Box>
+    );
 
     return (
       <Box pt={2}>
@@ -771,7 +802,15 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           value={suppliedValue}
           setValue={setSuppliedValue}
           suffix={suppliedUnitsField()}
-          label={suppliedType ? observatoryConstants?.Supplied[suppliedType - 1].label : ''}
+          label=""
+          minValue={0}
+          maxValue={suppliedType === SUPPLIED_TYPE_INTEGRATION
+            ? timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, suppliedUnits)
+            : undefined}
+          step={suppliedType === SUPPLIED_TYPE_INTEGRATION
+            ? (suppliedUnits === TIME_HOURS ? SUPPLIED_INTEGRATION_TIME_STEP_HOURS : SUPPLIED_INTEGRATION_TIME_STEP_MINS)
+            : SUPPLIED_SENSITIVITY_STEP}
+          currentUnitLabel={getUnitOptions().find(u => u.value === suppliedUnits)?.label ?? ''}
           required
         />
       </Box>
