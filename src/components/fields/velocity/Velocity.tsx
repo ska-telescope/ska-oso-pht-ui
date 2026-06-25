@@ -45,10 +45,6 @@ export default function VelocityField({
       : '';
 
   React.useEffect(() => {
-    if (setVel) setVel('');
-  }, [velType]);
-
-  React.useEffect(() => {
     if (setErrorText) {
       setErrorText(rmFieldError);
     }

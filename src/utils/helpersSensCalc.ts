@@ -2,7 +2,7 @@ import { SUPPLIED_TYPE_INTEGRATION } from './constants';
 import {
   DECIMAL_PLACES,
   IMAGE_WEIGHTING,
-  RA_TYPE_GALACTIC,
+  REFERENCE_COORDINATE_TYPE_GALACTIC,
   SENSITIVITY_UNITS,
   TELESCOPE_LOW_CODE,
   TIME_SECS,
@@ -80,7 +80,7 @@ export const transformPerSubBandTime = (inValues: {
   } - ${minRange.value.toFixed(DECIMAL_PLACES).toString()} ${minRange.unit}`;
 };
 
-export const isGalactic = (skyDirectionType: any) => skyDirectionType === RA_TYPE_GALACTIC;
+export const isGalactic = (skyDirectionType: any) => skyDirectionType === REFERENCE_COORDINATE_TYPE_GALACTIC;
 
 // Converts a Declination string value in degrees to its sexagesimal equivalent.
 // It returns a Declination sexagesimal value.

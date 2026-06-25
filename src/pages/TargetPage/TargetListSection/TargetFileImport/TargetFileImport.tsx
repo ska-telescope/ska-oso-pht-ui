@@ -5,8 +5,8 @@ import { FileUpload, FileUploadStatus } from '@ska-telescope/ska-gui-components'
 import Papa from 'papaparse';
 import { Proposal } from '../../../../utils/types/proposal';
 import {
-  RA_TYPE_ICRS,
-  RA_TYPE_GALACTIC,
+  REFERENCE_COORDINATE_TYPE_ICRS,
+  REFERENCE_COORDINATE_TYPE_GALACTIC,
   UPLOAD_MAX_WIDTH_CSV,
   NOTIFICATION_DELAY_IN_SECONDS
 } from '../../../../utils/constants';
@@ -16,10 +16,10 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 
 interface TargetFileImportProps {
-  raType: number;
+  referenceCoordinateType: number;
 }
 
-export default function TargetFileImport({ raType }: TargetFileImportProps) {
+export default function TargetFileImport({ referenceCoordinateType }: TargetFileImportProps) {
   const { t } = useScopedTranslation();
   const { notifyError, notifySuccess } = useNotify();
 
@@ -36,7 +36,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
   const AddTheTargetGalactic = (id: string, name: string, latitude: string, longitude: string) => {
     const newTarget = {
       //Default values from AddTarget.tsx
-      kind: RA_TYPE_GALACTIC.value,
+      kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value,
       id,
       name,
       b: Number(latitude),
@@ -51,14 +51,13 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
 
   const AddTheTargetEquatorial = (id: number, name: string, ra: string, dec: string): Target => {
     const newTarget = {
-      kind: RA_TYPE_ICRS.value,
+      kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
       //Default values from AddTarget.tsx
       decStr: dec,
       id,
       name,
       raStr: ra,
       redshift: '',
-      referenceFrame: RA_TYPE_ICRS.label,
       velType: 0,
       vel: '',
       velUnit: 0
@@ -90,8 +89,7 @@ export default function TargetFileImport({ raType }: TargetFileImportProps) {
 
             let errorInRows = false;
             let targets;
-
-            if (raType === RA_TYPE_ICRS.value) {
+            if (referenceCoordinateType === REFERENCE_COORDINATE_TYPE_ICRS.value) {
               if (!isSameHeader(result.meta.fields, validEquatorialCsvHeader))
                 throw t('uploadCsvBtn.uploadErrorEquatorialNotValidMsg');
               targets = result.data.reduce(

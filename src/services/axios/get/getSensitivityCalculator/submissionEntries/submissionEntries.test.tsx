@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { IW_BRIGGS, RA_TYPE_GALACTIC, SEPARATOR1, TYPE_ZOOM } from '@utils/constants.ts';
+import { IW_BRIGGS, REFERENCE_COORDINATE_TYPE_GALACTIC, SEPARATOR1, TYPE_ZOOM } from '@utils/constants.ts';
 import {
   addRobustProperty,
   addFrequency,
@@ -96,7 +96,7 @@ describe('addValue', () => {
 describe('pointingCentre', () => {
   it('returns galactic coordinates when isGalactic is true', () => {
     const data: StandardData = {
-      skyDirectionType: RA_TYPE_GALACTIC,
+      skyDirectionType: REFERENCE_COORDINATE_TYPE_GALACTIC,
       raGalactic: {
         value: '123.4',
         unit: ''
