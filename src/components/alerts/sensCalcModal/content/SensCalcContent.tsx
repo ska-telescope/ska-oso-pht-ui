@@ -61,7 +61,9 @@ export default function SensCalcContent({
 
   return (
     <>
-      {data?.statusGUI !== STATUS_INITIAL && data?.title !== '*SHOW PST MESSAGE*' && (data?.error === '' || data?.error === undefined) ? (
+      {data?.statusGUI !== STATUS_INITIAL &&
+      data?.title !== '*SHOW PST MESSAGE*' &&
+      (data?.error === '' || data?.error === undefined) ? (
         <>
           {displayElement(
             t('sensitivityCalculatorResults.targetName'),
@@ -101,7 +103,7 @@ export default function SensCalcContent({
         <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
           <Typography p={GAP}>{t('page.7.pstUnavailable')}</Typography>
         </Alert>
-      ) : (data?.error !== '' && data?.error !== undefined) ? (
+      ) : data?.error !== '' && data?.error !== undefined ? (
         <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Error}>
           <Typography p={GAP}>{data.error}</Typography>
         </Alert>

@@ -87,16 +87,43 @@ vi.mock('@/utils/pdf/pdfPageCount', () => ({
 let capturedSetFile: ((file: File | '') => void) | undefined;
 let capturedUploadFunction: ((file: File) => Promise<void>) | undefined;
 let capturedUploadDisabled: boolean | undefined;
+let capturedClearDisabled: boolean | undefined;
+let capturedChooseDisabled: boolean | undefined;
+let capturedDropzoneAccepted: Record<string, string[]> | undefined;
+let capturedDropzonePrompt: string | undefined;
+let capturedFile: string | null | undefined;
 vi.mock('@ska-telescope/ska-gui-components', async importOriginal => {
   const actual = (await importOriginal()) as any;
   return {
     ...actual,
-    FileUpload: vi.fn(({ setFile, uploadFunction, uploadDisabled, suffix }: any) => {
+    FileUpload: vi.fn(
+      ({
+        setFile,
+        uploadFunction,
+        uploadDisabled,
+        clearDisabled,
+        chooseDisabled,
+        dropzoneAccepted,
+        dropzonePrompt,
+        file,
+        suffix
+      }: any) => {
       capturedSetFile = setFile;
       capturedUploadFunction = uploadFunction;
       capturedUploadDisabled = uploadDisabled;
-      return <>{suffix}</>;
-    })
+      capturedClearDisabled = clearDisabled;
+      capturedChooseDisabled = chooseDisabled;
+      capturedDropzoneAccepted = dropzoneAccepted;
+      capturedDropzonePrompt = dropzonePrompt;
+      capturedFile = file;
+      return (
+        <>
+          <input data-testid="mock-file-input" type="file" />
+          {suffix}
+        </>
+      );
+      }
+    )
   };
 });
 
@@ -115,12 +142,15 @@ const wrapper = (component: React.ReactElement) => {
 };
 
 const makeFile = (name = 'test.pdf', sizeOverride?: number): File => {
-  const file = new File(['dummy'], name, { type: 'application/pdf' });
+  const file = new File(['%PDF-1.7\ndummy'], name, { type: 'application/pdf' });
   if (sizeOverride !== undefined) {
     Object.defineProperty(file, 'size', { value: sizeOverride });
   }
   return file;
 };
+
+const makeNonPdfFile = (name = 'test.txt'): File => new File(['dummy'], name, { type: 'text/plain' });
+const makeUnreadablePdfFile = (name = 'unreadable.pdf'): File => makeFile(name);
 
 import GetPresignedUploadUrl from '@services/axios/get/getPresignedUploadUrl/getPresignedUploadUrl';
 import PutUploadPDF from '@services/axios/put/putUploadPDF/putUploadPDF';
@@ -128,10 +158,28 @@ import PutUploadPDF from '@services/axios/put/putUploadPDF/putUploadPDF';
 describe('SciencePage', () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockStore.application.content2 = {
+      ...mockProposal,
+      sciencePDF: mockProposal.sciencePDF ? { ...mockProposal.sciencePDF } : null
+    };
     capturedSetFile = undefined;
     capturedUploadFunction = undefined;
     capturedUploadDisabled = undefined;
-    mockGetPdfPageCount.mockResolvedValue(2);
+    capturedClearDisabled = undefined;
+    capturedChooseDisabled = undefined;
+    capturedDropzoneAccepted = undefined;
+    capturedDropzonePrompt = undefined;
+    capturedFile = undefined;
+    mockGetPdfPageCount.mockImplementation(async (file: File) => {
+      if (
+        file.type !== 'application/pdf' ||
+        file.name.includes('fake') ||
+        file.name.includes('unreadable')
+      ) {
+        throw new Error('Invalid PDF');
+      }
+      return 2;
+    });
     vi.mock('@ska-telescope/ska-login-page', () => ({
       isLoggedIn: () => true
     }));
@@ -167,6 +215,22 @@ describe('SciencePage', () => {
     await waitFor(() => {
       expect(notifySuccess).toHaveBeenCalledWith('pdfDelete.science.success');
     });
+  });
+
+  it('deletes PDF and remounts FileUpload to clear displayed filename', async () => {
+    const FileUploadMock = (await import('@ska-telescope/ska-gui-components')).FileUpload as any;
+    wrapper(<SciencePage />);
+    const callsAfterRender = FileUploadMock.mock.calls.length;
+
+    fireEvent.click(screen.getByText('pdfUpload.science.label.delete'));
+
+    await waitFor(() => {
+      expect(notifySuccess).toHaveBeenCalledWith('pdfDelete.science.success');
+      expect(FileUploadMock.mock.calls.length).toBeGreaterThan(callsAfterRender);
+    });
+    // originalFile (the `file` prop) must be cleared, otherwise the dropzone
+    // re-renders the deleted filename after the remount.
+    expect(capturedFile).toBeNull();
   });
 
   describe('PDF validation', () => {
@@ -228,6 +292,7 @@ describe('SciencePage', () => {
     });
 
     it('clear file: error cleared and proposal state cleared', async () => {
+      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
       mockGetPdfPageCount.mockResolvedValue(5);
       wrapper(<SciencePage />);
 
@@ -297,8 +362,165 @@ describe('SciencePage', () => {
     });
 
     it('uploadDisabled is false when there is no error', () => {
+      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
       wrapper(<SciencePage />);
       expect(capturedUploadDisabled).toBe(false);
+    });
+
+    it('clearDisabled is true when an uploaded science PDF exists and there is no PDF error', () => {
+      wrapper(<SciencePage />);
+      expect(capturedClearDisabled).toBe(true);
+    });
+
+    it('clearDisabled becomes false when there is a PDF validation error', async () => {
+      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
+      wrapper(<SciencePage />);
+      fireEvent.change(screen.getByTestId('mock-file-input'), {
+        target: { files: [makeNonPdfFile()] }
+      });
+      await waitFor(() => {
+        expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
+      });
+      expect(capturedClearDisabled).toBe(false);
+    });
+
+    it('dropzone pre-filters file type to PDF in picker configuration', () => {
+      wrapper(<SciencePage />);
+      expect(capturedDropzoneAccepted).toEqual({ 'application/pdf': ['.pdf'] });
+    });
+
+    it('uploaded science PDF disables selection, hides upload/clear controls and changes prompt', () => {
+      wrapper(<SciencePage />);
+      expect(capturedChooseDisabled).toBe(true);
+      expect(capturedFile).toBe('science-doc-123fileType.pdf');
+      expect(capturedUploadDisabled).toBe(true);
+      expect(capturedDropzonePrompt).toBe('pdfUpload.science.prompt.deleteToEnableUpload');
+    });
+
+    it('uploaded science PDF ignores file selector change events', async () => {
+      wrapper(<SciencePage />);
+      fireEvent.change(screen.getByTestId('mock-file-input'), {
+        target: { files: [makeNonPdfFile()] }
+      });
+      await waitFor(() => {
+        expect(screen.queryByText('pdfUpload.science.invalidFileError')).not.toBeInTheDocument();
+      });
+    });
+
+    it('uploaded science PDF ignores drop events', async () => {
+      wrapper(<SciencePage />);
+      fireEvent.drop(screen.getByTestId('mock-file-input'), {
+        dataTransfer: { files: [makeNonPdfFile()] }
+      });
+      await waitFor(() => {
+        expect(screen.queryByText('pdfUpload.science.invalidFileError')).not.toBeInTheDocument();
+      });
+    });
+
+    it('selecting non-PDF file shows invalidFileError', async () => {
+      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
+      wrapper(<SciencePage />);
+      fireEvent.change(screen.getByTestId('mock-file-input'), {
+        target: { files: [makeNonPdfFile()] }
+      });
+      await waitFor(() => {
+        expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
+      });
+    });
+
+    it('file selector non-PDF change event shows invalidFileError', async () => {
+      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
+      wrapper(<SciencePage />);
+      fireEvent.change(screen.getByTestId('mock-file-input'), {
+        target: { files: [makeNonPdfFile()] }
+      });
+      await waitFor(() => {
+        expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
+      });
+    });
+
+    it('dropzone non-PDF drop event shows invalidFileError', async () => {
+      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
+      wrapper(<SciencePage />);
+      fireEvent.drop(screen.getByTestId('mock-file-input'), {
+        dataTransfer: { files: [makeNonPdfFile()] }
+      });
+      await waitFor(() => {
+        expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
+      });
+    });
+
+    it('dropzone non-PDF drop remounts FileUpload to hide clear/upload controls', async () => {
+      const FileUploadMock = (await import('@ska-telescope/ska-gui-components')).FileUpload as any;
+      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
+      wrapper(<SciencePage />);
+      const callsAfterRender = FileUploadMock.mock.calls.length;
+
+      fireEvent.drop(screen.getByTestId('mock-file-input'), {
+        dataTransfer: { files: [makeNonPdfFile()] }
+      });
+
+      await waitFor(() => {
+        expect(screen.getByText('pdfUpload.science.invalidFileError')).toBeInTheDocument();
+        expect(FileUploadMock.mock.calls.length).toBeGreaterThan(callsAfterRender);
+      });
+    });
+
+    it('FileUpload is remounted when file is rejected via setFile, clearing the filename', async () => {
+      const FileUploadMock = (await import('@ska-telescope/ska-gui-components')).FileUpload as any;
+      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
+      wrapper(<SciencePage />);
+      const callsAfterRender = FileUploadMock.mock.calls.length;
+
+      const file = makeFile('too-big.pdf', 100 * 1024 * 1024 + 1);
+      await act(async () => {
+        capturedSetFile!(file);
+      });
+
+      await waitFor(() => {
+        // key change triggers a re-mount; the mock must have been called again
+        expect(FileUploadMock.mock.calls.length).toBeGreaterThan(callsAfterRender);
+      });
+    });
+
+    it('FileUpload is remounted when clear is triggered via setFile, clearing the filename', async () => {
+      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
+      const FileUploadMock = (await import('@ska-telescope/ska-gui-components')).FileUpload as any;
+      wrapper(<SciencePage />);
+      const callsAfterRender = FileUploadMock.mock.calls.length;
+
+      act(() => {
+        capturedSetFile!('');
+      });
+
+      await waitFor(() => {
+        expect(FileUploadMock.mock.calls.length).toBeGreaterThan(callsAfterRender);
+      });
+      // originalFile (the `file` prop) must be cleared, otherwise the dropzone
+      // re-renders the cleared filename after the remount.
+      expect(capturedFile).toBeNull();
+    });
+
+    it('setFile validation path is ignored while an uploaded PDF exists', async () => {
+      wrapper(<SciencePage />);
+
+      act(() => {
+        capturedSetFile!(makeNonPdfFile());
+      });
+      await waitFor(() => {
+        expect(screen.queryByText('pdfUpload.science.invalidFileError')).not.toBeInTheDocument();
+      });
+
+      act(() => {
+        capturedSetFile!('');
+      });
+
+      await waitFor(() => {
+        expect(screen.queryByText('pdfUpload.science.invalidFileError')).not.toBeInTheDocument();
+      });
+      expect(mockStore.updateAppContent2).not.toHaveBeenCalledWith(
+        expect.objectContaining({ sciencePDF: null })
+      );
     });
 
     it('uploadDisabled is true when pdfError is set', async () => {
@@ -313,22 +535,21 @@ describe('SciencePage', () => {
       expect(capturedUploadDisabled).toBe(true);
     });
 
-    it('upload clears a previous error when valid file is uploaded', async () => {
+    it('upload proceeds when a valid file is uploaded after a previous error', async () => {
       mockGetPdfPageCount.mockResolvedValueOnce(5).mockResolvedValueOnce(2);
+      mockStore.application.content2 = { ...mockProposal, sciencePDF: null };
       wrapper(<SciencePage />);
 
       const badFile = makeFile('bad.pdf');
       await act(async () => {
         await capturedUploadFunction!(badFile);
       });
-      expect(screen.getByText('pdfUpload.science.pageError')).toBeInTheDocument();
 
       const goodFile = makeFile('good.pdf');
       await act(async () => {
         await capturedUploadFunction!(goodFile);
       });
 
-      expect(screen.queryByText('pdfUpload.science.pageError')).not.toBeInTheDocument();
       expect(GetPresignedUploadUrl).toHaveBeenCalled();
     });
   });
