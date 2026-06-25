@@ -44,7 +44,7 @@ function App() {
           buttonVariant={buttonVariant}
           flatten={flatten}
         >
-          <Router basename={window?.env?.REACT_APP_SKA_PHT_BASE_URL || '/'}>
+          <Router basename={(window?.env?.REACT_APP_SKA_PHT_BASE_URL || '/').replace(/\/?$/, '/')}>
             <PHT
               themeMode={themeMode}
               setThemeMode={setThemeMode}

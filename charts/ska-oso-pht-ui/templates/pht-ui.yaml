@@ -31,7 +31,7 @@ spec:
             - name: SKIP_PREFLIGHT_CHECK
               value: {{ .Values.runtimeEnv.skipPreflightCheck | quote }}
             - name: REACT_APP_SKA_PHT_BASE_URL
-              value: {{ printf "%s/" (include "ska-oso-pht-ui.ingress.path" . | trim) | quote }}
+              value: {{ printf "%s/" (include "ska-oso-pht-ui.ingress.path" . | trimSuffix "/") | quote }}
             - name: REACT_APP_SKA_OSO_SERVICES_URL
               value: {{ .Values.runtimeEnv.skaOsoServicesUrl | quote }}
             - name: REACT_APP_SKA_SENSITIVITY_CALC_URL
