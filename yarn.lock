@@ -2831,15 +2831,16 @@
     svgo "^3.2.0"
     vite "7.1.11"
 
-"@ska-telescope/ska-login-page@^1.1.1":
-  version "1.1.1"
-  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-login-page/-/ska-login-page-1.1.1.tgz#df0c1db9386bec7ae3905d7350eab3ad1e817f22"
-  integrity sha512-K+pXPUhjf4Orm0p72fkIOVtG7IVo/ApyrBcjtzYl0Ndh8FkPttbkeo2oh3tBR6f5MtMjR1CVj3VaKUmnNJa6LQ==
+"@ska-telescope/ska-login-page@^1.2.0":
+  version "1.2.0"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-login-page/-/ska-login-page-1.2.0.tgz#380c9479b3c5373517022e5c65326b64752a6269"
+  integrity sha512-QBzuV4rv1w7AQ66U3nJbyT2nCX6xhp6Vr6/JbrMpyWxf/Exifv37N/5g/+eCG8PerwCj4aEslKKiB/blYZEtAg==
   dependencies:
     "@azure/msal-browser" "^4.0.2"
     "@azure/msal-react" "^3.0.2"
     "@react-spring/web" "^9.7.3"
     "@types/uuid" "^9.0.4"
+    jwt-decode "^4.0.0"
     react-dropzone "^14.3.5"
     styled-components "^6.1.13"
 
@@ -7807,6 +7808,11 @@ junit-report-merger@^7.0.1:
     commander "~12.1.0"
     fast-glob "~3.3.0"
     xmlbuilder2 "3.1.1"
+
+jwt-decode@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/jwt-decode/-/jwt-decode-4.0.0.tgz#2270352425fd413785b2faf11f6e755c5151bd4b"
+  integrity sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA==
 
 katex@^0.16.0:
   version "0.16.33"

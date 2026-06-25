@@ -34,9 +34,6 @@ endif
 OSO_SERVICES_MAJOR_VERSION ?= $(shell helm dependency list ./charts/ska-oso-pht-ui-umbrella/ | grep ska-oso-services | $(AWK) -F'[[:space:]]+|[.]' '{print $$2}')
 OST_SENSCALC_MAJOR_VERSION ?= $(shell helm dependency list ./charts/ska-oso-pht-ui-umbrella/ | grep ska-ost-senscalc | $(AWK) -F'[[:space:]]+|[.]' '{print $$2}')
 
-# The default PHT_BACKEND_URL points to the umbrella chart PHT back-end deployment
-BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/oso/api/v$(OSO_SERVICES_MAJOR_VERSION)
-
 # BACKEND_PROXY is the target origin (+ path prefix) for the vite dev proxy (avoids CORS).
 # For local k8s:  http://<minikube-ip>/<namespace>  (default)
 # For remote k8s: https://k8s.stfc.skao.int/dev-ska-oso-pht-ui-aaa
@@ -47,7 +44,7 @@ BACKEND_PROXY ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)
 SENSCALC_API_VERSION ?= v11
 
 K8S_CHART_PARAMS += \
-  --set ska-oso-pht-ui.backendURL=$(BACKEND_URL)
+  --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl="/$(KUBE_NAMESPACE)/oso/api/v$(OSO_SERVICES_MAJOR_VERSION)"
 
 # include core makefile targets for release management
 -include .make/base.mk
@@ -61,6 +58,10 @@ K8S_CHART_PARAMS += \
 
 XRAY_TEST_RESULT_FILE ?= ctrf/ctrf-report.json
 XRAY_EXECUTION_CONFIG_FILE ?= tests/xray-config.json
+
+ifneq ($(USE_INDIGO),)
+  K8S_CHART_PARAMS += --set ska-oso-pht-ui.runtimeEnv.useIndigo=$(USE_INDIGO)
+endif
 
 # CI_ENVIRONMENT_SLUG should only be defined when running on the CI/CD pipeline, so these variables are set for a local deployment
 # Set cluster_domain to minikube default (cluster.local) in local development
@@ -88,7 +89,7 @@ K8S_CHART_PARAMS += --set global.oda.postgres.database=$(PGDATABASE) \
 ENV_CHECK := $(shell echo $(CI_ENVIRONMENT_SLUG) | egrep 'test|dev|integration')
 ifneq ($(ENV_CHECK),)
 K8S_CHART_PARAMS += --set ska-oso-pht-ui.image.tag=$(VERSION)-dev.c$(CI_COMMIT_SHORT_SHA) \
-	--set ska-oso-pht-ui.image.registry=$(CI_REGISTRY)/ska-telescope/oso/ska-oso-pht-ui 
+	--set ska-oso-pht-ui.image.registry=$(CI_REGISTRY)/ska-telescope/oso/ska-oso-pht-ui
 endif
 
 ENV_CHECK_DEV := $(shell echo $(CI_ENVIRONMENT_SLUG) | grep 'dev')
@@ -105,8 +106,13 @@ set-dev-env-vars:
 	MSENTRA_CLIENT_ID="2445e300-54c9-470f-9578-0f54840672af" \
 	MSENTRA_TENANT_ID="78887040-bad7-494b-8760-88dcacfb3805" \
 	MSENTRA_REDIRECT_URI="http://localhost:6101" \
+	USE_INDIGO="$(or $(USE_INDIGO),false)" \
+	INDIGO_AUTHORITY="https://iam-1.staging.devx.skao.int/" \
+	INDIGO_CLIENT_ID="d546e462-637c-44ff-b2b9-3345a960ad42" \
+	INDIGO_REDIRECT_URI="http://localhost:6101/" \
+	INDIGO_SCOPE="pht:readwrite pht:read openid profile" \
+	INDIGO_AUDIENCE="test:pht" \
 	ENVJS_FILE=./public/env.js ./scripts/write_env_js.sh
 
 dev-start: set-dev-env-vars
 	BACKEND_PROXY="$(BACKEND_PROXY)" yarn start
-	

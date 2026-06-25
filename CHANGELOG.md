@@ -18,7 +18,7 @@ UNRELEASED
 * Bugfix: filename was still displayed after clearing file selection
 * Bugfix: filename was still displayed for invalid PDFs
 * Bugfix: no error message was displayed for invalid PDFs selected via file dialog
-* Bugfix: no error message was displayed for invalid PDFs selected via drag-and-drop 
+* Bugfix: no error message was displayed for invalid PDFs selected via drag-and-drop
 * Bugfix: Fix target field validation and formatting
 * Bugfix: If proposal is not properly loaded due to browser refresh - prompt user to reload manually (may need a better fix later)
 * Bugfix: Fix Invalid Frequency Warning not highligted on breadcrumbs
@@ -46,11 +46,12 @@ UNRELEASED
 * Changed: The style and formatting of the Sensivitity Calculator text box on the landing page.
 * Added: A new 'underTest' warning bar to the Landing Page for use on the Submission Tool during productionisation.
 * Removed: The NOT LOGGED IN, NO SUBMISSION AVAILABLE info message.
-  validation until the word limit is respected. 
-* Fixed: The incorrect validation error which reported that a declination with seconds >= 59 was out of range. 
+  validation until the word limit is respected.
+* Fixed: The incorrect validation error which reported that a declination with seconds >= 59 was out of range.
 * Fixed: Non-numeric input in Radial Velocity field does not produce a validation error.
 * Fixed: Missing plot on observation page is now present.
 * Added: Matomo analytics script to collect usage statistics.
+* Added: Support for Indigo as login provider with ?use_indigo=true query parameter.
 
 10.1.0
 ----------

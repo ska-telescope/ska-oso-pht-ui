@@ -22,5 +22,10 @@ declare module '@/env' {
     MSENTRA_REDIRECT_URI: string;
     REACT_APP_OVERRIDE_GROUPS: string;
     REACT_APP_LOW_UNITS_UNLOCKED: string;
+    USE_INDIGO: string;
+    INDIGO_AUTHORITY: string;
+    INDIGO_CLIENT_ID: string;
+    INDIGO_SCOPE: string;
+    INDIGO_AUDIENCE: string;
   };
 }

@@ -57,7 +57,7 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 
-{{- define "ska-oso-pht-ui.urls-msentraRedirectUri" -}}
+{{- define "ska-oso-pht-ui.urls-redirectUri" -}}
 {{- if .Values.runtimeEnv.msentraRedirectUri -}}
 {{ .Values.runtimeEnv.msentraRedirectUri }}
 {{- else -}}
