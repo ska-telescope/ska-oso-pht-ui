@@ -440,11 +440,15 @@ export default function TargetEntry({
     </Box>
   );
 
+  // this allows for the
+  const isEditMode = !!target;
+
   const referenceCoordinatesField = () =>
     wrapper(
       <ReferenceCoordinatesField
         setValue={setTheReferenceCoordinates}
         value={referenceCoordinates}
+        disabled={isEditMode}
       />
     );
 

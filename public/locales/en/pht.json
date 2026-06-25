@@ -348,7 +348,7 @@
     "disabled": "This function is not available"
   },
   "editTarget": {
-    "label": "Edit this target ? ",
+    "label": "Edit target",
     "toolTip": "Edit the target"
   },
   "effectiveResolution": {
@@ -925,9 +925,9 @@
     "undefined": ""
   },
   "referenceCoordinates": {
-    "help": "Only Galactic and ICRS reference systems are available.",
+    "help": "Only targets with ICRS coordinates are supported at this time.",
     "label": "Coordinate Type",
-    "tooltip": "This feature is currently disabled",
+    "tooltip": "This feature is not available in edit mode",
     "0": "ICRS",
     "1": "Galactic"
   },

@@ -5,16 +5,18 @@ import React from 'react';
 import { REFERENCE_COORDINATE_OPTIONS } from '@utils/constants.ts';
 
 interface ReferenceCoordinatesFieldProps {
-  setValue?: Function;
-  value: Number;
-  valueFocus?: Function;
+  setValue?: Function,
+  value: number,
+  valueFocus?: Function,
+  disabled?: boolean
 }
 
 export default function ReferenceCoordinatesField({
-  setValue,
-  value,
-  valueFocus
-}: ReferenceCoordinatesFieldProps) {
+                                                    setValue,
+                                                    value,
+                                                    valueFocus,
+                                                    disabled
+                                                  }: ReferenceCoordinatesFieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'referenceCoordinates';
 
@@ -30,7 +32,8 @@ export default function ReferenceCoordinatesField({
           value={value}
           setValue={setValue}
           onFocus={valueFocus}
-          toolTip={t(FIELD + '.tooltip')}
+          disabled={disabled}
+          toolTip={disabled ? t(FIELD + '.tooltip'): undefined}
         />
       </Box>
     );
