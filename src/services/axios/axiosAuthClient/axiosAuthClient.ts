@@ -73,10 +73,7 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
               (error as InteractionRequiredAuthError).errorCode,
               (error as InteractionRequiredAuthError).message
             );
-            instance.loginRedirect({
-              ...loginRequest,
-              redirectUri: window.location.origin
-            });
+            instance.loginRedirect(loginRequest);
           }
           return Promise.reject(error);
         }
