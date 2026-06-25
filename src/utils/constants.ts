@@ -540,8 +540,20 @@ export const SUPPLIED_INTEGRATION_TIME_STEP_HOURS = 0.1;
 export const SUPPLIED_INTEGRATION_TIME_STEP_MINS = 1;
 export const SUPPLIED_SENSITIVITY_STEP = 1;
 
-export const RA_TYPE_ICRS = { value: 0, label: 'icrs' };
-export const RA_TYPE_GALACTIC = { value: 1, label: 'galactic' };
+
+export const REFERENCE_COORDINATE_TYPE_ICRS = { value: 0, label: 'icrs' };
+export const REFERENCE_COORDINATE_TYPE_GALACTIC = { value: 1, label: 'galactic' };
+
+export const REFERENCE_COORDINATE_OPTIONS = [
+  {
+    label: 'ICRS',
+    value: REFERENCE_COORDINATE_TYPE_ICRS.value
+  },
+  {
+    label: 'Galactic',
+    value: REFERENCE_COORDINATE_TYPE_GALACTIC.value
+  }
+];
 
 export const SEPARATOR0 = '?';
 export const SEPARATOR1 = '&';
@@ -705,7 +717,7 @@ export const DEFAULT_INVESTIGATOR: Investigator = {
 };
 
 export const DEFAULT_TARGETS: Target = {
-  kind: RA_TYPE_ICRS.value,
+  kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
   decStr: '123',
   id: 1,
   b: 123,
@@ -713,7 +725,6 @@ export const DEFAULT_TARGETS: Target = {
   name: 'DUMMY',
   raStr: '123',
   redshift: '123',
-  referenceFrame: RA_TYPE_ICRS.label,
   vel: '123',
   velType: 0,
   velUnit: 0

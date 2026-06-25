@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as papaModule from 'papaparse';
 import TargetFileImport from './TargetFileImport';
-import { RA_TYPE_ICRS, RA_TYPE_GALACTIC } from '@/utils/constants';
+import { REFERENCE_COORDINATE_TYPE_ICRS, REFERENCE_COORDINATE_TYPE_GALACTIC } from '@/utils/constants';
 
 // Helper to get the exposed mock
 
@@ -69,7 +69,7 @@ describe('TargetFileImport', () => {
       });
     });
 
-    render(<TargetFileImport raType={RA_TYPE_ICRS.value} />);
+    render(<TargetFileImport referenceCoordinateType={REFERENCE_COORDINATE_TYPE_ICRS.value} />);
     screen.getByTestId('csvUpload').click();
 
     expect(notifySuccessMock).toHaveBeenCalled();
@@ -84,7 +84,7 @@ describe('TargetFileImport', () => {
       });
     });
 
-    render(<TargetFileImport raType={RA_TYPE_GALACTIC.value} />);
+    render(<TargetFileImport referenceCoordinateType={REFERENCE_COORDINATE_TYPE_GALACTIC.value} />);
     screen.getByTestId('csvUpload').click();
 
     expect(notifySuccessMock).toHaveBeenCalled();
@@ -96,7 +96,7 @@ describe('TargetFileImport', () => {
       opts.complete({ meta: { fields: ['wrong', 'header'] }, data: [] });
     });
 
-    render(<TargetFileImport raType={RA_TYPE_ICRS.value} />);
+    render(<TargetFileImport referenceCoordinateType={REFERENCE_COORDINATE_TYPE_ICRS.value} />);
     screen.getByTestId('csvUpload').click();
 
     expect(notifyErrorMock).toHaveBeenCalled();
@@ -107,7 +107,7 @@ describe('TargetFileImport', () => {
       opts.complete({ meta: { fields: ['bad', 'header'] }, data: [] });
     });
 
-    render(<TargetFileImport raType={RA_TYPE_GALACTIC.value} />);
+    render(<TargetFileImport referenceCoordinateType={REFERENCE_COORDINATE_TYPE_GALACTIC.value} />);
     screen.getByTestId('csvUpload').click();
 
     expect(notifyErrorMock).toHaveBeenCalled();
@@ -121,7 +121,7 @@ describe('TargetFileImport', () => {
       });
     });
 
-    render(<TargetFileImport raType={RA_TYPE_ICRS.value} />);
+    render(<TargetFileImport referenceCoordinateType={REFERENCE_COORDINATE_TYPE_ICRS.value} />);
     screen.getByTestId('csvUpload').click();
 
     expect(notifyErrorMock).toHaveBeenCalled();
@@ -132,7 +132,7 @@ describe('TargetFileImport', () => {
       opts.error('Parser failed');
     });
 
-    render(<TargetFileImport raType={RA_TYPE_ICRS.value} />);
+    render(<TargetFileImport referenceCoordinateType={REFERENCE_COORDINATE_TYPE_ICRS.value} />);
     screen.getByTestId('csvUpload').click();
 
     expect(notifyErrorMock).toHaveBeenCalled();

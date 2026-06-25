@@ -7,7 +7,7 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import TargetEntry from './TargetEntry';
 import autoLinking from '@/utils/autoLinking/AutoLinking';
-import { RA_TYPE_ICRS, TYPE_ZOOM } from '@/utils/constants';
+import { TYPE_ZOOM } from '@/utils/constants';
 
 const wrapper = (component: React.ReactElement) => {
   return render(
@@ -55,7 +55,7 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
 
 describe('<TargetEntry />', () => {
   test('renders correctly', () => {
-    wrapper(<TargetEntry raType={0} />);
+    wrapper(<TargetEntry />);
   });
 });
 
@@ -73,7 +73,7 @@ describe('<TargetEntry /> form preservation on autoLinking error', () => {
     const user = userEvent.setup();
 
     await act(async () => {
-      wrapper(<TargetEntry raType={RA_TYPE_ICRS.value} />);
+      wrapper(<TargetEntry/>);
     });
 
     const nameInput = screen.getByTestId('name').querySelector('input')!;

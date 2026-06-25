@@ -54,7 +54,8 @@
     "error": "Failed to add target - check for duplicate",
     "valueError": "Please provide a target name",
     "label": "Add Target",
-    "toolTip": "Will add the target to the list associated with this proposal.",
+    "toolTip": "Will add the target to the list associated with this proposal",
+    "galacticDisabled": "Galactic targets are not yet supported, full integration imminient",
     "success": "Target is successfully added",
     "warning": "Saving the target"
   },
@@ -347,7 +348,7 @@
     "disabled": "This function is not available"
   },
   "editTarget": {
-    "label": "Edit this target ? ",
+    "label": "Edit target",
     "toolTip": "Edit the target"
   },
   "effectiveResolution": {
@@ -924,9 +925,9 @@
     "undefined": ""
   },
   "referenceCoordinates": {
-    "help": "Only Galactic and ICRS reference systems are available.",
+    "help": "Only targets with ICRS coordinates are supported at this time.",
     "label": "Coordinate Type",
-    "tooltip": "This feature is currently disabled",
+    "tooltip": "This feature is not available in edit mode",
     "0": "ICRS",
     "1": "Galactic"
   },
@@ -948,12 +949,13 @@
   },
   "resolve": {
     "label": "Resolve",
-    "toolTip": "Query SIMBAD and NED",
+    "toolTip": "Query SIMBAD, NED and VizieR",
     "error": {
       "mapping": "Unable to map results from API.",
       "name": "Unable to resolve provided name",
       "Request failed with status code 500": "Unable to resolve provided name",
-      "Request failed with status code 404": "Object not found in SIMBAD or NED"
+      "Request failed with status code 404": "Object not found in SIMBAD, NED or VizieR",
+      "API_UNKNOWN_ERROR": "An unexpected error occurred while resolving the target."
     }
   },
   "reviewDashboard": {
@@ -1204,7 +1206,7 @@
     "units": {
       "1": {
         "0": "hh:mm:ss.s",
-        "1": "dd:mm:ss.s"
+        "1": "deg"
       },
       "2": {
         "0": "dd:mm:ss.s",

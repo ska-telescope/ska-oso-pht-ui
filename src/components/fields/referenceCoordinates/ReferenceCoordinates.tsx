@@ -1,42 +1,39 @@
-import { TextEntry } from '@ska-telescope/ska-gui-components';
+import { DropDown } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/material';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-
-// NOTE : DISABLED AT THIS TIME UNTIL GALACTIC IS IMPLEMENTED FULLY
+import React from 'react';
+import { REFERENCE_COORDINATE_OPTIONS } from '@utils/constants.ts';
 
 interface ReferenceCoordinatesFieldProps {
-  setValue?: Function;
-  value: String;
-  valueFocus?: Function;
+  setValue?: Function,
+  value: number,
+  valueFocus?: Function,
+  disabled?: boolean
 }
 
 export default function ReferenceCoordinatesField({
-  setValue,
-  value,
-  valueFocus
-}: ReferenceCoordinatesFieldProps) {
+                                                    setValue,
+                                                    value,
+                                                    valueFocus,
+                                                    disabled
+                                                  }: ReferenceCoordinatesFieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'referenceCoordinates';
 
   const ReferenceCoordinatesValueField = () => {
-    const OPTIONS = [0]; // NOTE , 1];
-
-    const getOptions = () => {
-      return OPTIONS.map(e => ({ label: t(FIELD + '.' + e), value: e }));
-    };
 
     return (
       <Box pt={1}>
-        <TextEntry
-          disabled={OPTIONS.length < 2}
-          options={getOptions()}
+        <DropDown
+          options={REFERENCE_COORDINATE_OPTIONS}
           required
           label={t(FIELD + '.label')}
           testId={FIELD + 'Type'}
           value={value}
           setValue={setValue}
           onFocus={valueFocus}
-          toolTip={t(FIELD + '.tooltip')}
+          disabled={disabled}
+          toolTip={disabled ? t(FIELD + '.tooltip'): undefined}
         />
       </Box>
     );

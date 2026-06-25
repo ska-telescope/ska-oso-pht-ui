@@ -7,6 +7,7 @@ import Alert from '../../alerts/standardAlert/StandardAlert';
 import Target from '../../../utils/types/target';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import ChartIcon from '@/components/icon/chartIcon/chartIcon';
+import { REFERENCE_COORDINATE_TYPE_ICRS } from '@utils/constants.ts';
 
 const ROW_HEIGHT = 300;
 
@@ -15,7 +16,6 @@ interface GridTargetsProps {
   editClicked?: Function | null;
   chartClicked?: Function | null;
   height?: number | string;
-  raType: number;
   rowClick?: Function;
   rows?: Target[];
 }
@@ -25,17 +25,31 @@ export default function GridTargets({
   editClicked = null,
   chartClicked = null,
   height = 171,
-  raType,
   rowClick,
-  rows = []
+  rows = [],
 }: GridTargetsProps) {
   const loggedIn = isLoggedIn();
   const { t } = useScopedTranslation();
 
+
+  const isICRS = rows?.[0]?.kind === REFERENCE_COORDINATE_TYPE_ICRS.value;
+
+  const coordLabels = isICRS
+    ? [t('skyDirection.short.1.0'), t('skyDirection.short.2.0')]
+    : [t('skyDirection.short.1.1'), t('skyDirection.short.2.1')];
+
   const basicColumns = [
     { field: 'name', headerName: t('name.label'), flex: 2 },
-    { field: 'raStr', headerName: t('skyDirection.short.1.' + raType), width: 120 },
-    { field: 'decStr', headerName: t('skyDirection.short.2.' + raType), width: 120 },
+    {
+      field: 'coord1',
+      headerName: coordLabels[0],
+      width: 120
+    },
+    {
+      field: 'coord2',
+      headerName: coordLabels[1],
+      width: 120
+    },
     {
       field: 'vel',
       headerName: t('velocity.0.label'),
