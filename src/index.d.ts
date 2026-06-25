@@ -25,7 +25,6 @@ declare module '@/env' {
     USE_INDIGO: string;
     INDIGO_AUTHORITY: string;
     INDIGO_CLIENT_ID: string;
-    INDIGO_REDIRECT_URI: string;
     INDIGO_SCOPE: string;
     INDIGO_AUDIENCE: string;
   };

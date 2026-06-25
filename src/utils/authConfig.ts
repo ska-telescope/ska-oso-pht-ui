@@ -5,7 +5,6 @@ const USE_INDIGO_SESSION_KEY = 'pht:use_indigo';
 const REQUIRED_INDIGO_KEYS = [
   'INDIGO_AUTHORITY',
   'INDIGO_CLIENT_ID',
-  'INDIGO_REDIRECT_URI',
   'INDIGO_SCOPE',
   'INDIGO_AUDIENCE'
 ] as const;
@@ -50,8 +49,9 @@ export function buildLoginRequest(): { scopes: string[] } | undefined {
 
 export function buildAuthConfig() {
   if (getUseIndigo()) {
-    // Resolve to an absolute URL so MSAL doesn't strip a trailing slash during normalization.
-    const redirectUri = new URL(env.INDIGO_REDIRECT_URI, window.location.origin).href;
+    // Kept the MSENTRA_ env var name for backwards-compatibility.
+    // TODO: Remove when we're done with Entra.
+    const redirectUri = env.MSENTRA_REDIRECT_URI;
     return {
       authority: env.INDIGO_AUTHORITY,
       clientId: env.INDIGO_CLIENT_ID,

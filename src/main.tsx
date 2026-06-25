@@ -6,6 +6,7 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import App from './App/App';
 import { buildAuthConfig } from './utils/authConfig';
 
+
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <StoreProvider>
