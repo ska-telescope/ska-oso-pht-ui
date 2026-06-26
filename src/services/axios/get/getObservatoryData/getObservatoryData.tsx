@@ -8,7 +8,7 @@ import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.
 import { MockObservatoryDataBackend } from './mockObservatoryDataBackend';
 import { MockODTConfigurationBackend } from './mockODTConfigurationBackend';
 import { ObservatoryData, ObservatoryDataBackend } from '@/utils/types/observatoryData';
-import { ODTConfigurationBackend } from '@/utils/types/telescopeCapabilities';
+import { ODTConfigurationBackend } from '@utils/types/odtConfiguration.tsx';
 import { osdMapping } from './getOSDCycles';
 
 /*****************************************************************************************************************************/
@@ -37,9 +37,9 @@ async function GetObservatoryData(
     ]);
 
     const cycleData = cycleResult?.data as ObservatoryDataBackend | undefined;
-    if (!cycleData) return 'error.API_UNKNOWN_ERROR';
-
     const odtConfig = odtResult?.data as ODTConfigurationBackend | undefined;
+    if (!cycleData || !odtConfig) return 'error.API_UNKNOWN_ERROR';
+    
     return osdMapping([cycleData], odtConfig);
   } catch (e) {
     if (e instanceof Error) {

@@ -46,7 +46,7 @@ export default function CentralFrequency({
   const validate = (cfValue: number): string => {
     const lowStationChannelWidthMHz = frequencyConversion(osdLOW?.basicCapabilities.coarseChannelWidthHz, FREQUENCY_HZ, FREQUENCY_MHZ);
     if (cfValue < minFreq || cfValue > maxFreq) return t(FIELD + '.error.range');
-    if (isLow && Number.isInteger(cfValue + 0.5 * lowStationChannelWidthMHz / lowStationChannelWidthMHz)) {
+    if (isLow && !Number.isInteger((cfValue + 0.5 * lowStationChannelWidthMHz) / lowStationChannelWidthMHz)) {
       return t(FIELD + '.error.divisibility', { value: stepMHz });
     }
     return '';
