@@ -6,7 +6,7 @@ import {
   USE_LOCAL_DATA,
   BAND_LOW_STR,
   BAND_5B_STR,
-  BAND_1_STR
+  BAND_1_STR, FREQUENCY_HZ, FREQUENCY_MHZ
 } from '@utils/constants.ts';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.tsx';
 import { MockObservatoryDataBackend } from './mockObservatoryDataBackend';
@@ -21,7 +21,7 @@ import {
   subBands, ObservatoryDataCapabilities
 } from '@/utils/types/observatoryData';
 import { ODTConfigurationBackend } from '@utils/types/odtConfiguration.tsx';
-import { generateId } from '@/utils/helpers';
+import { frequencyConversion, generateId } from '@/utils/helpers';
 
 /*****************************************************************************************************************************/
 
@@ -172,9 +172,11 @@ export const osdMapping = (
       low: inData?.capabilities?.low?.basic_capabilities
         ? {
             basicCapabilities: {
-              minFrequencyHz: inData.capabilities.low.basic_capabilities.min_frequency_hz,
-              maxFrequencyHz: inData.capabilities.low.basic_capabilities.max_frequency_hz,
-              coarseChannelWidthHz: odtConfig?.ska_low?.frequency_band?.coarse_channel_width_hz ?? 0,
+              minFrequencyHz: (odtConfig.ska_low.frequency_band.min_coarse_channel - 0.5) * odtConfig.ska_low.frequency_band.coarse_channel_width_hz,
+              maxFrequencyHz: (odtConfig.ska_low.frequency_band.max_coarse_channel + 0.5) * odtConfig.ska_low.frequency_band.coarse_channel_width_hz,
+              minCoarseChannel: odtConfig.ska_low.frequency_band.min_coarse_channel,
+              maxCoarseChannel: odtConfig.ska_low.frequency_band.max_coarse_channel,
+              coarseChannelWidthHz: odtConfig.ska_low.frequency_band.coarse_channel_width_hz,
               numberOfChannelsPerCoarseChannel: {
                 continuum: odtConfig?.ska_low?.frequency_band?.number_continuum_channels_per_coarse_channel ?? 0,
                 zoom: odtConfig?.ska_low?.frequency_band?.number_zoom_channels_per_coarse_channel ?? 0,

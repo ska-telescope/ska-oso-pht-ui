@@ -29,10 +29,16 @@ vi.mock('@/utils/constants.ts', () => ({
   TELESCOPE_LOW: { code: 'LOW' },
   TELESCOPE_LOW_NUM: 1,
   FREQUENCY_STR_HZ: 'Hz',
+  FREQUENCY_HZ: 4,
+  FREQUENCY_KHZ: 3,
+  FREQUENCY_MHZ: 2,
+  LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP: 8,
   TYPE_CONTINUUM: 'continuum',
   ERROR_SECS: 2000,
   BAND_LOW_STR: 'LOW',
   ANTENNA_MIXED: 'mixed',
+  ANTENNA_13M: '13m',
+  ANTENNA_15M: '15m',
   SA_AA2: 'aa2'
 }));
 
@@ -50,6 +56,14 @@ vi.mock('@utils/osd/useOSDAccessors/useOSDAccessors.tsx', () => ({
   useOSDAccessors: () => ({
     osdMID: {},
     osdLOW: {
+      basicCapabilities: {
+        minFrequencyHz: 50000000,
+        maxFrequencyHz: 350000000,
+        minCoarseChannel: 64,
+        maxCoarseChannel: 447,
+        coarseChannelWidthHz: 781250,
+        numberOfChannelsPerCoarseChannel: { continuum: 144, zoom: 432, pst: 216, pss: 54 }
+      },
       subArrays: [
         {
           subArray: SA_AA2,
@@ -91,7 +105,8 @@ vi.mock('@utils/osd/useOSDAccessors/useOSDAccessors.tsx', () => ({
 }));
 
 vi.mock('@/utils/helpers.ts', () => ({
-  getScaledBandwidthOrFrequency: vi.fn(() => 42)
+  getScaledBandwidthOrFrequency: vi.fn(() => 20),
+  frequencyConversion: vi.fn(() => 42)
 }));
 
 // ----------------------
@@ -121,9 +136,12 @@ describe('<ContinuumBandwidth />', () => {
     vi.clearAllMocks(); // <-- important fix
   });
 
+  const getHelperText = () =>
+    document.querySelector('.MuiFormHelperText-root')?.textContent ?? '';
+
   test('renders correctly', () => {
     renderField();
-    expect(screen.getByTestId('continuumBandwidth')).toBeInTheDocument();
+    expect(screen.getByRole('spinbutton')).toBeInTheDocument();
   });
 
   test('shows no error when all checks pass', () => {
@@ -133,17 +151,14 @@ describe('<ContinuumBandwidth />', () => {
     vi.spyOn(bandwidthValidationCommon, 'getMaxContBandwidthHz').mockReturnValue(1000);
 
     renderField();
-    const errorText = screen.getByTestId('continuumBandwidth').getAttribute('data-errortext');
-    expect(errorText).toBe('');
+    expect(getHelperText()).toBe('');
   });
 
   test('shows minimum channel width error when check fails', () => {
     vi.spyOn(bandwidthValidationCommon, 'checkMinimumChannelWidth').mockReturnValue(false);
 
     renderField({ minimumChannelWidthHz: 5 });
-    const errorText = screen.getByTestId('continuumBandwidth').getAttribute('data-errortext');
-
-    expect(errorText).toContain('bandwidth.range.minimumChannelWidthError');
+    expect(getHelperText()).toContain('bandwidth.range.minimumChannelWidthError');
   });
 
   test('shows max bandwidth error when check fails', () => {
@@ -151,9 +166,7 @@ describe('<ContinuumBandwidth />', () => {
     vi.spyOn(bandwidthValidationCommon, 'checkMaxBandwidthHz').mockReturnValue(false);
 
     renderField();
-    const errorText = screen.getByTestId('continuumBandwidth').getAttribute('data-errortext');
-
-    expect(errorText).toContain('bandwidth.range.contMaximumExceededError');
+    expect(getHelperText()).toContain('bandwidth.range.contMaximumExceededError');
   });
 
   test('shows band limits error when check fails', () => {
@@ -162,8 +175,6 @@ describe('<ContinuumBandwidth />', () => {
     vi.spyOn(bandwidthValidationCommon, 'checkBandLimits').mockReturnValue(false);
 
     renderField();
-    const errorText = screen.getByTestId('continuumBandwidth').getAttribute('data-errortext');
-
-    expect(errorText).toContain('bandwidth.range.rangeError');
+    expect(getHelperText()).toContain('bandwidth.range.rangeError');
   });
 });

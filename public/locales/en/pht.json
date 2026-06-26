@@ -120,7 +120,8 @@
     "range": {
       "minimumChannelWidthError": "Bandwidth must be larger than the channel width ({{value}} kHz)",
       "contMaximumExceededError": "Maximum bandwidth for this array assembly ({{value}} MHz) exceeded",
-      "rangeError": "Bandwidth must be fully contained within the band"
+      "rangeError": "Bandwidth must be fully contained within the band",
+      "divisibilityError": "Bandwidth must be a multiple of {{value}} kHz"
     }
   },
   "colors": {
@@ -173,8 +174,9 @@
   "centralFrequency": {
     "help": "The central frequency of the observation. Must be within the selected band.",
     "label": "Central Frequency",
-    "range": {
-      "error": "Observing frequency out of range"
+    "error": {
+      "range": "Observing frequency out of range",
+      "divisibility": "The first channel of the SPW must be even"
     }
   },
   "changeProposal": {
@@ -228,7 +230,8 @@
     "range": {
       "minimumChannelWidthError": "Bandwidth must be larger than the channel width ({{value}} kHz)",
       "contMaximumExceededError": "Maximum bandwidth for this array assembly ({{value}} MHz) exceeded",
-      "rangeError": "Bandwidth must be fully contained within the band"
+      "rangeError": "Bandwidth must be fully contained within the band",
+      "divisibilityError": "Bandwidth must be a multiple of {{value}} kHz"
     }
   },
   "continuumUnits": {

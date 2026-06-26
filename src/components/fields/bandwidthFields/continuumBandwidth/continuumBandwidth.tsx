@@ -1,7 +1,11 @@
-import { NumberEntry2 } from '@ska-telescope/ska-gui-components';
-import { Box } from '@mui/system';
-import { ERROR_SECS, FREQUENCY_STR_HZ } from '@utils/constants.ts';
-import { getScaledBandwidthOrFrequency } from '@utils/helpers.ts';
+import { TextField, InputAdornment } from '@mui/material';
+import {
+  FREQUENCY_HZ, FREQUENCY_KHZ, FREQUENCY_MHZ,
+  FREQUENCY_STR_HZ,
+  LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP,
+  TELESCOPE_LOW_NUM
+} from '@utils/constants.ts';
+import { frequencyConversion, getScaledBandwidthOrFrequency } from '@utils/helpers.ts';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import React from 'react';
 import {
@@ -20,14 +24,13 @@ interface ContinuumBandwidthFieldProps {
   setValue?: (v: number) => void;
   value: number;
   suffix?: any;
-  telescope?: number;
+  telescope: number;
   observingBand?: string;
   continuumBandwidthUnits?: number;
   centralFrequency?: number;
   centralFrequencyUnits?: number;
   subarrayConfig?: string;
-  step?: number;
-  minimumChannelWidthHz?: number;
+  minimumChannelWidthHz: number;
 }
 
 export default function ContinuumBandwidthField({
@@ -41,46 +44,46 @@ export default function ContinuumBandwidthField({
   centralFrequency,
   centralFrequencyUnits,
   subarrayConfig,
-  step = 1,
   minimumChannelWidthHz
 }: ContinuumBandwidthFieldProps) {
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const FIELD = 'continuumBandwidth';
   const { findBand, osdMID, osdLOW, observatoryConstants } = useOSDAccessors();
-  const [fieldValid, setFieldValid] = React.useState(true);
-
   const [errorText, setErrorText] = React.useState('');
 
-  const displayMinimumChannelWidthErrorMessage = (
-    minimumChannelWidthHz: number | undefined
-  ): string => {
-    const minimumChannelWidthKHz = sensCalHelpers.format
-      .convertBandwidthToKHz(Number(minimumChannelWidthHz), FREQUENCY_STR_HZ)
-      .toFixed(2);
+  const displayMinimumChannelWidthErrorMessage = (): string => {
+    const minimumChannelWidthKHz = frequencyConversion(minimumChannelWidthHz, FREQUENCY_HZ, FREQUENCY_KHZ).toFixed(2);
     return t('bandwidth.range.minimumChannelWidthError', {
       value: minimumChannelWidthKHz
     });
   };
 
-  const displayMaxContBandwidthErrorMessage = (maxContBandwidthHz: number | undefined): string => {
-    const maxContBandwidthMHz = sensCalHelpers.format
-      .convertBandwidthToMHz(Number(maxContBandwidthHz), FREQUENCY_STR_HZ)
-      .toFixed(2);
+  const maxContBandwidthHz: number | undefined = getMaxContBandwidthHz(
+    Number(telescope),
+    observingBand ?? '',
+    subarrayConfig ?? '',
+    osdMID,
+    osdLOW
+  );
+
+  const displayMaxContBandwidthErrorMessage = (): string => {
+    const maxContBandwidthMHz = frequencyConversion(maxContBandwidthHz, FREQUENCY_HZ, FREQUENCY_MHZ).toFixed(2);
     return t('bandwidth.range.contMaximumExceededError', { value: maxContBandwidthMHz });
   };
+
+  const displayDivisibilityErrorMessage = (): string => {
+    const valueKHz = frequencyConversion(minimumChannelWidthHz, FREQUENCY_HZ, FREQUENCY_KHZ).toFixed(2);
+    return t('bandwidth.range.divisibilityError', { value: valueKHz });
+  };
+
+  const stepInUnits = minimumChannelWidthHz && continuumBandwidthUnits
+    ? frequencyConversion(minimumChannelWidthHz, FREQUENCY_HZ, continuumBandwidthUnits)
+    : 0;
 
   const validateValue = (num: number) => {
     const scaledBandwidth = getScaledBandwidthOrFrequency(num, continuumBandwidthUnits ?? 0);
     const scaledFrequency = getScaledBandwidthOrFrequency(centralFrequency, centralFrequencyUnits);
-
-    const maxContBandwidthHz: number | undefined = getMaxContBandwidthHz(
-      Number(telescope),
-      observingBand ?? '',
-      subarrayConfig ?? '',
-      osdMID,
-      osdLOW
-    );
 
     const invalidMinChannel = !checkMinimumChannelWidth(
       Number(minimumChannelWidthHz),
@@ -100,35 +103,37 @@ export default function ContinuumBandwidthField({
     );
 
     if (invalidMinChannel) {
-      return displayMinimumChannelWidthErrorMessage(minimumChannelWidthHz);
+      return displayMinimumChannelWidthErrorMessage();
     }
     if (invalidMaxBandwidth) {
-      return displayMaxContBandwidthErrorMessage(maxContBandwidthHz);
+      return displayMaxContBandwidthErrorMessage();
     }
     if (invalidBandLimits) {
       return t('bandwidth.range.rangeError');
     }
+    if (minimumChannelWidthHz && minimumChannelWidthHz > 0) {
+      const remainder = Math.abs(scaledBandwidth % minimumChannelWidthHz);
+      if (remainder > 1e-9 && Math.abs(remainder - minimumChannelWidthHz) > 1e-9)
+        return displayDivisibilityErrorMessage();
+    }
     return '';
   };
 
-  const handleSetValue = (value: any) => {
-    const error = validateValue(value);
-    console.log('Checking for error');
-    console.log(error);
-    if (error) {
-      setErrorText(error);
-    } else {
-      setErrorText('');
-      setValue?.(value);
+  const checkValue = (newValue: number) => {
+    if (stepInUnits > 0 && Math.abs(Math.abs(newValue - value) - stepInUnits) < 1e-6) {
+      const snapped = newValue > value
+        ? Math.ceil((value + 1e-9) / stepInUnits) * stepInUnits
+        : Math.floor((value - 1e-9) / stepInUnits) * stepInUnits;
+      setErrorText(validateValue(snapped));
+      setValue?.(snapped);
+      return;
     }
+    setErrorText(validateValue(newValue));
+    setValue?.(newValue);
   };
 
-  // Validate current value when dependencies change
   React.useEffect(() => {
-    console.log('Validating value: ');
-    console.log(value);
-    const error = validateValue(value);
-    setErrorText(error);
+    setErrorText(validateValue(value));
   }, [
     value,
     continuumBandwidthUnits,
@@ -139,23 +144,37 @@ export default function ContinuumBandwidthField({
     observingBand
   ]);
 
+  const minChannelWidthMHz = frequencyConversion(
+    telescope === TELESCOPE_LOW_NUM ?
+    osdLOW?.basicCapabilities.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP :
+    // TODO: Mid values should come from OSD in the future - 13440 is Mid channel width in Hz
+    //  and until AA2 bandwidth has to be multiple of 20 channels.
+    Math.round(20 * 13440 * 1e12) / 1e12,
+    FREQUENCY_HZ,
+    FREQUENCY_MHZ
+  );
+
   return (
-    <Box width="100%">
-      <NumberEntry2
-        required
-        disabled={disabled}
-        errorText={errorText}
-        fieldName={FIELD}
-        fullWidth
-        onFocus={() => setHelp(FIELD)}
-        setValue={handleSetValue}
-        step={step}
-        suffix={suffix}
-        sx={{ width: '100%' }}
-        title={t(FIELD + '.label')}
-        testId={FIELD}
-        value={value}
-      />
-    </Box>
+    <TextField
+      type="number"
+      variant="standard"
+      fullWidth
+      required
+      disabled={disabled}
+      label={t(FIELD + '.label')}
+      value={value}
+      onChange={(e) => checkValue(Number(e.target.value))}
+      error={!!errorText}
+      helperText={errorText}
+      onFocus={() => setHelp(FIELD)}
+      slotProps={{
+        htmlInput: {
+          step: minChannelWidthMHz,
+          min: minChannelWidthMHz,
+          max: frequencyConversion(maxContBandwidthHz, FREQUENCY_HZ, FREQUENCY_MHZ)
+        },
+        input: suffix ? { endAdornment: <InputAdornment position="end">{suffix}</InputAdornment> } : undefined
+      }}
+    />
   );
 }

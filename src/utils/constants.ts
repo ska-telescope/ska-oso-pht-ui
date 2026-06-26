@@ -244,8 +244,6 @@ export const LAB_POS_TICK = LABEL_POSITION.START;
 
 export const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
-export const MULTIPLIER_HZ_GHZ = [1, 1, 1000, 1000000, 1000000000];
-
 export const NAV = [
   '/proposal/title',
   '/proposal/team',
@@ -628,6 +626,8 @@ export const TEAM_STATUS_TYPE_OPTIONS = {
   rejected: 'Rejected'
 };
 
+export const LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP = 8;
+
 export const TELESCOPE_MID_NUM = 1;
 export const TELESCOPE_LOW_NUM = 2;
 export const TELESCOPES = [
@@ -635,11 +635,6 @@ export const TELESCOPES = [
   { label: TELESCOPE_LOW.code?.toUpperCase(), value: 2 }
 ];
 
-// This is the fundamental limits of the bandwidth provided by SKA LOW and MID
-export const BANDWIDTH_MIN_CHANNEL_WIDTH_HZ = {
-  [TELESCOPE_MID_NUM]: 13.44e3,
-  [TELESCOPE_LOW_NUM]: (24 * 781.25e3) / 3456
-};
 
 export const TELESCOPE_LOW_BACKEND_MAPPING = 'ska_low';
 export const TELESCOPE_MID_BACKEND_MAPPING = 'ska_mid';

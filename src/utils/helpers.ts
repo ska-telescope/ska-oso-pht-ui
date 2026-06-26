@@ -5,8 +5,7 @@ import {
   SPEED_OF_LIGHT,
   TEXT_ENTRY_PARAMS,
   VELOCITY_UNITS,
-  BANDWIDTH_MIN_CHANNEL_WIDTH_HZ,
-  DEFAULT_PST_OBSERVATION_LOW,
+DEFAULT_PST_OBSERVATION_LOW,
   DEFAULT_ZOOM_OBSERVATION_LOW,
   TYPE_ZOOM,
   TYPE_PST,
@@ -75,10 +74,6 @@ export const calculateVelocity = (resolutionHz: number, frequencyHz: number, pre
     (velocity / VELOCITY_UNITS[occ].convert).toFixed(precision) + ' ' + VELOCITY_UNITS[occ].label
   );
 };
-
-// fundamental limit of the bandwidth provided by SKA MID or LOW
-export const getMinimumChannelWidth = (telescope: number): number =>
-  BANDWIDTH_MIN_CHANNEL_WIDTH_HZ[telescope as keyof typeof BANDWIDTH_MIN_CHANNEL_WIDTH_HZ];
 
 export const helpers = {
   validate: {

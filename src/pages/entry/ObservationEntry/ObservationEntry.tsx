@@ -51,14 +51,13 @@ import {
   SUPPLIED_INTEGRATION_TIME_STEP_HOURS,
   SUPPLIED_INTEGRATION_TIME_STEP_MINS,
   SUPPLIED_SENSITIVITY_STEP,
-  INTEGRATION_TIME_UNITS,
+  INTEGRATION_TIME_UNITS, LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
   generateId,
   getBandwidthLowZoom,
   getBandwidthZoom,
-  getMinimumChannelWidth,
   obTypeTransform,
   timeConversion
 } from '@utils/helpers.ts';
@@ -469,7 +468,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const isLow = () => observingBand === BAND_LOW_STR;
   const isMid = () => observingBand !== BAND_LOW_STR;
   const telescope = () => (isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM);
-  const LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP = 8;
   // TODO: Min channel width for Mid hardcoded for now since I'm not sure if it's correct
   const minimumChannelWidthHz = (isLow() ? osdLOW?.basicCapabilities?.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP : 13.44e3);
 
@@ -535,6 +533,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       min = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
       max = osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0;
     }
+    // TODO: The first set of minFreq and maxFreq variables is what we would ideally want as the range but different range for
+    //  display and validation is not currently supported by the spectral view GUI component. See MR of BTN-3416 for more details.
+    // const minFreq = Math.round(frequencyConversion(min - 5e6, FREQUENCY_HZ, isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ));
+    // const maxFreq = Math.round(frequencyConversion(max + 5e6, FREQUENCY_HZ, isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ));
     const minFreq = frequencyConversion(min, FREQUENCY_HZ, isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
     const maxFreq = frequencyConversion(max, FREQUENCY_HZ, isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
     const cenFreq = frequencyConversion(
@@ -832,12 +834,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     return fieldWrapper(
       <Box pt={1}>
         <CentralFrequency
-          bandWidth={isContinuum() ? continuumBandwidth : bandwidth}
           observingBand={observingBand}
           value={centralFrequency}
           setValue={setCentralFrequency}
           suffix={centralFrequencyUnitsField()}
-          required
         />
       </Box>
     );
@@ -846,6 +846,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const continuumBandwidthField = () => {
     const continuumBandwidthUnitsField = () => {
       const options = isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
+      if (options?.length === 1) {
+        return options[0].label;
+      }
       return (
         <DropDown
           disabledUnderline
@@ -854,7 +857,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           value={continuumBandwidthUnits}
           setValue={setContinuumBandwidthUnits}
           label=""
-          disabled={options?.length === 1}
           onFocus={() => setHelp('frequencyUnits')}
         />
       );
@@ -862,7 +864,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     return fieldWrapper(
       <ContinuumBandwidthField
         setValue={setContinuumBandwidth}
-        step={0.1}
         value={continuumBandwidth}
         suffix={continuumBandwidthUnitsField()}
         telescope={telescope()}
@@ -936,6 +937,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const centralFrequencyUnitsField = () => {
     // Only have MHz for Low
     const options = isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
+    if (options?.length === 1) {
+      return options[0].label;
+    }
     return (
       <DropDown
         options={options}
@@ -943,7 +947,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         value={centralFrequencyUnits}
         setValue={setCentralFrequencyUnits}
         label=""
-        disabled={options?.length === 1}
         onFocus={() => setHelp('frequencyUnits')}
       />
     );

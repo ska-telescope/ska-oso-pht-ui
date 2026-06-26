@@ -101,6 +101,8 @@ export type BasicCapabilitiesLowBackend = {
 export type BasicCapabilitiesLow = {
   minFrequencyHz: number;
   maxFrequencyHz: number;
+  minCoarseChannel: number;
+  maxCoarseChannel: number;
   coarseChannelWidthHz: number;
   numberOfChannelsPerCoarseChannel: {
     continuum: number;

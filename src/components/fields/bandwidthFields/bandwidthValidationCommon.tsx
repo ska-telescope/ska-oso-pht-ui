@@ -18,7 +18,7 @@ export const scaleBandwidthOrFrequency = (incValue: number, incUnits: string): n
 export const checkMinimumChannelWidth = (
   minimumChannelWidthHz: number,
   scaledBandwidth: number
-): boolean => (scaledBandwidth < minimumChannelWidthHz ? false : true);
+): boolean => (scaledBandwidth >= minimumChannelWidthHz);
 
 // get maximum bandwidth defined for the subarray ( Continuum )
 export const getMaxContBandwidthHz = (

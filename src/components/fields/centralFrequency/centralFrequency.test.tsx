@@ -66,7 +66,6 @@ describe('CentralFrequency component', () => {
   it('renders with initial value', () => {
     wrapper(
       <CentralFrequency
-        bandWidth={150}
         observingBand={BAND_LOW_STR}
         value={150}
         setValue={vi.fn()}

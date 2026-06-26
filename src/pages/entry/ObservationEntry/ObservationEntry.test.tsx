@@ -50,6 +50,7 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', async () => {
       },
       observatoryConstants: OSD_CONSTANTS,
       telescopeBand: vi.fn(() => 2),
+      findBand: vi.fn(() => ({ minFrequencyHz: 100_000_000, maxFrequencyHz: 200_000_000 })),
       isSV: false,
       selectedPolicy: null,
       osdCyclePolicy: null
