@@ -16,7 +16,6 @@ import {
 } from '../bandwidthValidationCommon';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
-import sensCalHelpers from '@/services/axios/get/getSensitivityCalculator/sensitivityCalculator/sensCalHelpers';
 
 interface ContinuumBandwidthFieldProps {
   disabled?: boolean;
@@ -136,6 +135,7 @@ export default function ContinuumBandwidthField({
     setErrorText(validateValue(value));
   }, [
     value,
+    minimumChannelWidthHz,
     continuumBandwidthUnits,
     centralFrequency,
     centralFrequencyUnits,
