@@ -1,5 +1,6 @@
 ingress:
   enabled: true
+  production: false
   host: ""
   path: pht
   prependByNamespace: true # if true, the ingress rule will use `/{NAMESPACE}/{.Values.ingress.path}`
