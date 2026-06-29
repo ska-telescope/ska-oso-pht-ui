@@ -48,15 +48,6 @@ Create chart name and version as used by the chart label.
 {{- end }}
 {{- end }}
 
-{{- define "ska-oso-pht-ui.urls-skaLoginAppUrl" -}}
-{{- if .Values.runtimeEnv.skaLoginAppUrl -}}
-{{ .Values.runtimeEnv.skaLoginAppUrl }}
-{{- else -}}
-/{{ .Release.Namespace }}/login/
-{{- end }}
-{{- end }}
-
-
 {{- define "ska-oso-pht-ui.urls-redirectUri" -}}
 {{- if .Values.runtimeEnv.msentraRedirectUri -}}
 {{ .Values.runtimeEnv.msentraRedirectUri }}
