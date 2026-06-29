@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ $.Chart.Name }}-environment
+  namespace: {{ .Release.Namespace }}
+  labels:
+{{ include "ska-oso-pht-ui.labels" . | indent 4 }}
+data:
+  REACT_APP_SKA_PHT_BASE_URL: {{ printf "%s/" (include "ska-oso-pht-ui.ingress.path" . | trimSuffix "/") | quote }}
+  REACT_APP_SKA_OSO_SERVICES_URL: {{ include "ska-oso-pht-ui.urls-skaOsoServicesUrl" . | quote }}
+  REACT_APP_SKA_SENSITIVITY_CALC_URL: {{ include "ska-oso-pht-ui.urls-skaSensitivityCalcUrl" . | quote }}
+  # TODO remove local data and its use in the app
+  REACT_APP_USE_LOCAL_DATA: {{ .Values.runtimeEnv.useLocalData | quote }}
+  MSENTRA_CLIENT_ID: {{ .Values.runtimeEnv.msenstraClientId }}
+  MSENTRA_TENANT_ID: {{ .Values.runtimeEnv.msenstraTenantId }}
+  MSENTRA_REDIRECT_URI: {{ include "ska-oso-pht-ui.urls-redirectUri" . | quote }}
+  USE_INDIGO: {{ .Values.runtimeEnv.useIndigo | toString | quote }}
+  INDIGO_AUTHORITY: {{ .Values.runtimeEnv.indigoAuthority | quote }}
+  INDIGO_CLIENT_ID: {{ .Values.runtimeEnv.indigoClientId | quote }}
+  INDIGO_SCOPE: {{ .Values.runtimeEnv.indigoScope | quote }}
+  INDIGO_AUDIENCE: {{ .Values.runtimeEnv.indigoAudience | quote }}
