@@ -73,6 +73,7 @@ PRODUCTION_URL=sv-ideas.skao.int
 API_DEPLOY_PATH=/api
 
 K8S_CHART_PARAMS += --set ska-oso-pht-ui.ingress.host=$(PRODUCTION_URL) \
+  --set ska-oso-pht-ui.ingress.production=true \
   --set ska-oso-pht-ui.ingress.prependByNamespace=false \
   --set ska-oso-pht-ui.ingress.path= \
   --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl=$(API_DEPLOY_PATH) \
