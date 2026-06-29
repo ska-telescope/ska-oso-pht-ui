@@ -78,8 +78,9 @@ CHANGELOG:
     - ska-aws-client
   variables:
     KUBE_NAMESPACE: prod-ska-oso-pht-ui
-  rules:
-    - if: $CI_COMMIT_TAG
+  needs: []
+#  rules:
+#    - if: $CI_COMMIT_TAG
     
 js-e2e-deploy:
   variables: # use the loadbalancer as there is no authentication for back-end calls during tests
@@ -133,15 +134,17 @@ info-production:
     - |-
       echo "Status of pods in $KUBE_NAMESPACE namespace:"
       kubectl get pods -n $KUBE_NAMESPACE -o jsonpath="{range .items[*]}{'Pod: '}{.metadata.name}:{'\n'}{'\t'}{'Image: '}{.spec.containers[*].image}{'\n'}{'\t'}{'Status: '}{.status.phase}{'\n'}{end}{'\n'}"
+      kubectl describe pods -n $KUBE_NAMESPACE 
+      kubectl describe secrets -n $KUBE_NAMESPACE
   when: manual
   environment:
     name: prod-ska-oso-pht-ui
 
 stop-production:
   <<: *production_env
-  rules:
-    - if: $CI_COMMIT_TAG
-    - when: never # disabled as we should never really need to run this
+#  rules:
+#    - if: $CI_COMMIT_TAG
+#    - when: never # disabled as we should never really need to run this
   script:
     - make k8s-uninstall-chart
     - kubectl -n $KUBE_NAMESPACE delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,configmaps --all

@@ -81,13 +81,16 @@ K8S_CHART_PARAMS += --set ska-oso-pht-ui.ingress.host=$(PRODUCTION_URL) \
   --set ska-oso-pht-ui.runtimeEnv.msentraRedirectUri=/ \
   --set ska-ost-senscalc.enabled=false \
   --set ska-oso-services-umbrella.ska-oso-services.ingress.host=$(PRODUCTION_URL) \
-  --set ska-oso-services-umbrella.ska-oso-services.ingress.pathOverride=$(API_DEPLOY_PATH)
+  --set ska-oso-services-umbrella.ska-oso-services.ingress.pathOverride=$(API_DEPLOY_PATH) \
+  --set ska-oso-services-umbrella.ska-db-oda-umbrella.postgres.enabled=false \
+  --set ska-oso-services-umbrella.ska-db-oda-umbrella.ska-db-oda.ska-db-migrations.liquibase.contextFilter='' \
+  --set global.oda.postgres.secret.vault.mount=aws-eu-west-2 \
+  --set global.oda.postgres.secret.vault.secretPath=production/ska-ser-postgres/pghqaa/oda/odaadm \
+  --set 'global.oda.postgres.secret.vault.secretKeys={PGHOST,PGPORT,PGDATABASE,PGUSER,PGPASSWORD,PGOPTIONS}'
 
 # TODO Disabled while ODA deployment is worked on and until secrets are available in prod Vault path
 K8S_CHART_PARAMS += --set ska-oso-pht-ui.vault.enabled=false \
-  --set ska-oso-services-umbrella.ska-oso-services.vault.enabled=false \
-  --set ska-oso-services-umbrella.ska-db-oda-umbrella.enabled=false \
-  --set global.oda.postgres.secret.vault.enabled=false
+  --set ska-oso-services-umbrella.ska-oso-services.vault.enabled=false
 endif
 
 # CI_ENVIRONMENT_SLUG should only be defined when running on the CI/CD pipeline, so these variables are set for a local deployment
@@ -113,9 +116,9 @@ K8S_CHART_PARAMS += --set global.oda.postgres.database=$(PGDATABASE) \
 
 
 # For the test, dev and integration environment, use the freshly built image in the GitLab registry
-ENV_CHECK := $(shell echo $(CI_ENVIRONMENT_SLUG) | egrep 'test|dev|integration')
+ENV_CHECK := $(shell echo $(CI_ENVIRONMENT_SLUG) | egrep 'test|dev|integration|prod')
 ifneq ($(ENV_CHECK),)
-K8S_CHART_PARAMS += --set ska-oso-pht-ui.image.tag=$(VERSION)-dev.c$(CI_COMMIT_SHORT_SHA) \
+K8S_CHART_PARAMS += --set ska-oso-pht-ui.image.tag=10.1.0-dev.cb7808ad2 \
 	--set ska-oso-pht-ui.image.registry=$(CI_REGISTRY)/ska-telescope/oso/ska-oso-pht-ui
 endif
 
