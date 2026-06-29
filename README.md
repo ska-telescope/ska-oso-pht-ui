@@ -159,8 +159,6 @@ For k8s deployments:
 | `REACT_APP_SKA_OSO_SERVICES_URL` | Base URL for proposal backend APIs |
 | `REACT_APP_SKA_SENSITIVITY_CALC_URL` | Sensitivity calculator backend |
 | `REACT_APP_USE_LOCAL_DATA` | Use mock proposal data instead of backend |
-| `REACT_APP_DOMAIN` | Domain used for authentication |
-| `REACT_APP_SKA_LOGIN_APP_URL` | Login application URL |
 | `MSENTRA_CLIENT_ID` | MS Entra client ID for auth |
 | `MSENTRA_TENANT_ID` | MS Entra tenant ID |
 | `MSENTRA_REDIRECT_URI` | OAuth redirect URI |
@@ -237,9 +235,3 @@ https://developer.skao.int/en/latest/
 - Verify Minikube IP has not changed
 - Confirm backend services are running
 - Confirm API versions match
-
-### Authentication issues
-
-- Verify `REACT_APP_DOMAIN`
-- Confirm login app is reachable
-- Ensure correct MS Entra configuration

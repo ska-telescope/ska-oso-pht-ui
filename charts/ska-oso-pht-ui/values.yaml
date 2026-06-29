@@ -1,5 +1,3 @@
-
-# Configure Ingress
 ingress:
   enabled: true
   host: ""
@@ -7,12 +5,9 @@ ingress:
   prependByNamespace: true # if true, the ingress rule will use `/{NAMESPACE}/{.Values.ingress.path}`
 
 runtimeEnv:
-  skipPreflightCheck: "true"
   skaOsoServicesUrl: ~ # Set dynamically in the Makefile
   skaSensitivityCalcUrl: ""
   useLocalData: "false"
-  domain: "https://sdhp.stfc.skao.int"
-  skaLoginAppUrl: ""
   msentraRedirectUri: ""
   useIndigo: false # Can be overwritten by setting USE_INDIGO environment variable to true
   indigoAuthority: "https://iam-1.staging.devx.skao.int/"

@@ -75,10 +75,8 @@ API_DEPLOY_PATH=/api
 K8S_CHART_PARAMS += --set ska-oso-pht-ui.ingress.host=$(PRODUCTION_URL) \
   --set ska-oso-pht-ui.ingress.prependByNamespace=false \
   --set ska-oso-pht-ui.ingress.path= \
-  --set ska-oso-pht-ui.runtimeEnv.domain=$(PRODUCTION_URL) \
   --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl=$(API_DEPLOY_PATH) \
   --set ska-oso-pht-ui.runtimeEnv.skaSensitivityCalcUrl=https://sensitivity-calculator.skao.int/api/v11 \
-  --set ska-oso-pht-ui.runtimeEnv.skaLoginAppUrl=/login \
   --set ska-oso-pht-ui.runtimeEnv.msentraRedirectUri=/ \
   --set ska-ost-senscalc.enabled=false \
   --set ska-oso-services-umbrella.ska-oso-services.ingress.host=$(PRODUCTION_URL) \
@@ -129,8 +127,6 @@ set-dev-env-vars:
 	REACT_APP_SKA_OSO_SERVICES_URL="/oso/api/v$(OSO_SERVICES_MAJOR_VERSION)" \
 	REACT_APP_SKA_SENSITIVITY_CALC_URL="/senscalc/api/v$(OST_SENSCALC_MAJOR_VERSION)/" \
 	REACT_APP_USE_LOCAL_DATA="false" \
-	REACT_APP_DOMAIN="$(KUBE_HOST)" \
-	REACT_APP_SKA_LOGIN_APP_URL="$(KUBE_HOST)/$(KUBE_NAMESPACE)/login" \
 	MSENTRA_CLIENT_ID="2445e300-54c9-470f-9578-0f54840672af" \
 	MSENTRA_TENANT_ID="78887040-bad7-494b-8760-88dcacfb3805" \
 	MSENTRA_REDIRECT_URI="http://localhost:6101" \
