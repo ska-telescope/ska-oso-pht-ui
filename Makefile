@@ -69,12 +69,38 @@ ifneq ($(USE_INDIGO),)
   K8S_CHART_PARAMS += --set ska-oso-pht-ui.runtimeEnv.useIndigo=$(USE_INDIGO)
 endif
 
+# PRODUCTION DEPLOYMENT CONFIG
+ENV_CHECK := $(shell echo $(CI_ENVIRONMENT_SLUG) | egrep 'prod')
+ifneq ($(ENV_CHECK),)
+
+PRODUCTION_URL=sv-ideas.skao.int
+API_DEPLOY_PATH=/api
+
+K8S_CHART_PARAMS += --set ska-oso-pht-ui.ingress.host=$(PRODUCTION_URL) \
+  --set ska-oso-pht-ui.ingress.prependByNamespace=false \
+  --set ska-oso-pht-ui.ingress.path= \
+  --set ska-oso-pht-ui.runtimeEnv.domain=$(PRODUCTION_URL) \
+  --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl=$(API_DEPLOY_PATH) \
+  --set ska-oso-pht-ui.runtimeEnv.skaSensitivityCalcUrl=https://sensitivity-calculator.skao.int/api/v11 \
+  --set ska-oso-pht-ui.runtimeEnv.skaLoginAppUrl=/login \
+  --set ska-oso-pht-ui.runtimeEnv.msentraRedirectUri=/ \
+  --set ska-ost-senscalc.enabled=false \
+  --set ska-oso-services-umbrella.ska-oso-services.ingress.host=$(PRODUCTION_URL) \
+  --set ska-oso-services-umbrella.ska-oso-services.ingress.pathOverride=$(API_DEPLOY_PATH)
+
+# TODO Disabled while ODA deployment is worked on and until secrets are available in prod Vault path
+K8S_CHART_PARAMS += --set ska-oso-pht-ui.vault.enabled=false \
+  --set ska-oso-services-umbrella.ska-oso-services.vault.enabled=false \
+  --set ska-oso-services-umbrella.ska-db-oda-umbrella.enabled=false \
+  --set global.oda.postgres.secret.vault.enabled=false
+endif
+
 # CI_ENVIRONMENT_SLUG should only be defined when running on the CI/CD pipeline, so these variables are set for a local deployment
 # Set cluster_domain to minikube default (cluster.local) in local development
 ifeq ($(CI_ENVIRONMENT_SLUG),)
 SGCLUSTER = oda
 SGCLUSTER_NAMESPACE = oda
-  
+
 K8S_CHART_PARAMS += \
   --set global.cluster_domain="cluster.local" \
   --set ska-oso-pht-ui.vault.enabled=false \
