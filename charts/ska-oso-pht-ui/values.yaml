@@ -2,8 +2,9 @@
 # Configure Ingress
 ingress:
   enabled: true
-  prependByNamespace: true
+  host: ""
   path: pht
+  prependByNamespace: true # if true, the ingress rule will use `/{NAMESPACE}/{.Values.ingress.path}`
 
 runtimeEnv:
   skipPreflightCheck: "true"

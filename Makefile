@@ -43,8 +43,6 @@ BACKEND_PROXY ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)
 # Major version of the deployed ska-ost-senscalc — keep in sync with charts/ska-oso-pht-ui-umbrella/Chart.yaml
 SENSCALC_API_VERSION ?= v11
 
-K8S_CHART_PARAMS += \
-  --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl="/$(KUBE_NAMESPACE)/oso/api/v$(OSO_SERVICES_MAJOR_VERSION)"
 
 # include core makefile targets for release management
 -include .make/base.mk
@@ -61,6 +59,36 @@ XRAY_EXECUTION_CONFIG_FILE ?= tests/xray-config.json
 
 ifneq ($(USE_INDIGO),)
   K8S_CHART_PARAMS += --set ska-oso-pht-ui.runtimeEnv.useIndigo=$(USE_INDIGO)
+endif
+
+K8S_CHART_PARAMS += \
+  --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl="/$(KUBE_NAMESPACE)/oso/api/v$(OSO_SERVICES_MAJOR_VERSION)"
+
+
+# PRODUCTION DEPLOYMENT CONFIG
+ENV_CHECK := $(shell echo $(CI_ENVIRONMENT_SLUG) | egrep 'prod')
+ifneq ($(ENV_CHECK),)
+
+PRODUCTION_URL=sv-ideas.skao.int
+API_DEPLOY_PATH=/api
+
+K8S_CHART_PARAMS += --set ska-oso-pht-ui.ingress.host=$(PRODUCTION_URL) \
+  --set ska-oso-pht-ui.ingress.prependByNamespace=false \
+  --set ska-oso-pht-ui.ingress.path= \
+  --set ska-oso-pht-ui.runtimeEnv.domain=$(PRODUCTION_URL) \
+  --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl=$(API_DEPLOY_PATH) \
+  --set ska-oso-pht-ui.runtimeEnv.skaSensitivityCalcUrl=https://sensitivity-calculator.skao.int/api/v11 \
+  --set ska-oso-pht-ui.runtimeEnv.skaLoginAppUrl=/login \
+  --set ska-oso-pht-ui.runtimeEnv.msentraRedirectUri=/ \
+  --set ska-ost-senscalc.enabled=false \
+  --set ska-oso-services-umbrella.ska-oso-services.ingress.host=$(PRODUCTION_URL) \
+  --set ska-oso-services-umbrella.ska-oso-services.ingress.pathOverride=$(API_DEPLOY_PATH)
+
+# TODO Disabled while ODA deployment is worked on and until secrets are available in prod Vault path
+K8S_CHART_PARAMS += --set ska-oso-pht-ui.vault.enabled=false \
+  --set ska-oso-services-umbrella.ska-oso-services.vault.enabled=false \
+  --set ska-oso-services-umbrella.ska-db-oda-umbrella.enabled=false \
+  --set global.oda.postgres.secret.vault.enabled=false
 endif
 
 # CI_ENVIRONMENT_SLUG should only be defined when running on the CI/CD pipeline, so these variables are set for a local deployment
