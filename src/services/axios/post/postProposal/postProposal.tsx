@@ -81,8 +81,21 @@ async function PostProposal(
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/create`;
     // Use the full mapping so cloned proposals carry all content (targets, observations, etc.).
-    // prsl_id is omitted — the backend always generates a fresh SKUID on /create.
-    const { prsl_id: _omit, ...convertedProposal } = MappingPutProposal(proposal, isSV, status as string);
+    // prsl_id is omitted — the backend generates a fresh SKUID on /create.
+    // investigator_refs is omitted — the backend builds it from the investigators in proposal_info.
+    // investigator status is stripped — it is proposal-scoped and should not be inherited by the clone.
+    const { prsl_id: _omit, investigator_refs: _invRefs, ...mapped } = MappingPutProposal(proposal, isSV, status as string);
+    const convertedProposal = {
+      ...mapped,
+      proposal_info: mapped.proposal_info
+        ? {
+            ...mapped.proposal_info,
+            investigators: mapped.proposal_info.investigators?.map(
+              ({ status: _s, ...inv }) => inv
+            ) ?? []
+          }
+        : mapped.proposal_info
+    };
 
     const result = await authAxiosClient.post(
       `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
