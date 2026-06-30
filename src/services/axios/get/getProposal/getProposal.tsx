@@ -33,8 +33,8 @@ import {
   ROBUST,
   OSO_SERVICES_PROPOSAL_PATH,
   PDF_NAME_PREFIXES,
-  RA_TYPE_ICRS,
-  RA_TYPE_GALACTIC,
+  REFERENCE_COORDINATE_TYPE_ICRS,
+  REFERENCE_COORDINATE_TYPE_GALACTIC,
   isCypress,
   SCIENCE_VERIFICATION,
   TYPE_PST,
@@ -145,9 +145,9 @@ export const getVelType = (InDefinition: string) => {
 export const getReferenceCoordinate = (
   tar: ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend
 ): ReferenceCoordinateICRS | ReferenceCoordinateGalactic => {
-  if ('kind' in tar && tar.kind === RA_TYPE_GALACTIC.label) {
+  if ('kind' in tar && tar.kind === REFERENCE_COORDINATE_TYPE_GALACTIC.label) {
     return {
-      kind: RA_TYPE_GALACTIC.label,
+      kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
       l: (tar as ReferenceCoordinateGalacticBackend).l,
       b: (tar as ReferenceCoordinateGalacticBackend).b,
       pmL: (tar as ReferenceCoordinateGalacticBackend).pm_l,
@@ -157,7 +157,7 @@ export const getReferenceCoordinate = (
     };
   }
   return {
-    kind: RA_TYPE_ICRS.label,
+    kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
     raStr: (tar as ReferenceCoordinateICRSBackend).ra_str,
     decStr: (tar as ReferenceCoordinateICRSBackend).dec_str,
     pmRa: (tar as ReferenceCoordinateICRSBackend).pm_ra,
@@ -167,10 +167,10 @@ export const getReferenceCoordinate = (
   };
 };
 
-const isTargetGalactic = (kind: string): boolean => kind === RA_TYPE_GALACTIC.label;
+const isTargetGalactic = (kind: string): boolean => kind === REFERENCE_COORDINATE_TYPE_GALACTIC.label;
 
 const getTargetType = (kind: string): number =>
-  kind === RA_TYPE_GALACTIC.label ? RA_TYPE_GALACTIC.value : RA_TYPE_ICRS.value;
+  kind === REFERENCE_COORDINATE_TYPE_GALACTIC.label ? REFERENCE_COORDINATE_TYPE_GALACTIC.value : REFERENCE_COORDINATE_TYPE_ICRS.value;
 
 const getTargets = (inRec: TargetBackend[]): Target[] => {
   let results = [];
@@ -209,7 +209,6 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       target.pmL = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_l;
       target.pmB = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_b;
     } else if (!isTargetGalactic(referenceCoordinate)) {
-      // target.referenceFrame = (e.reference_coordinate as ReferenceCoordinateICRSBackend).reference_frame;
       target.raStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).ra_str;
       target.decStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).dec_str;
       target.pmRa = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_ra;

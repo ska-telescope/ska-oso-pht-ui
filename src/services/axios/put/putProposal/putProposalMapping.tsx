@@ -23,8 +23,8 @@ import {
   PROPOSAL_STATUS,
   PST_MODES,
   PULSAR_TIMING_VALUE,
-  RA_TYPE_GALACTIC,
-  RA_TYPE_ICRS,
+  REFERENCE_COORDINATE_TYPE_GALACTIC,
+  REFERENCE_COORDINATE_TYPE_ICRS,
   ROBUST,
   SCIENCE_VERIFICATION,
   TELESCOPE_LOW_BACKEND_MAPPING,
@@ -78,9 +78,9 @@ const getSubType = (proposalType: number, proposalSubType: number[]): any => {
 export const getReferenceCoordinate = (
   tar: Target | ReferenceCoordinateICRS | ReferenceCoordinateGalactic
 ): ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend => {
-  if ('kind' in tar && tar.kind === RA_TYPE_GALACTIC.value) {
+  if ('kind' in tar && tar.kind === REFERENCE_COORDINATE_TYPE_GALACTIC.value) {
     return {
-      kind: RA_TYPE_GALACTIC.label,
+      kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
       l: (tar as Target).l,
       b: (tar as Target).b,
       pm_l: (tar as Target).pmL,
@@ -90,7 +90,7 @@ export const getReferenceCoordinate = (
     } as ReferenceCoordinateGalacticBackend;
   }
   return {
-    kind: RA_TYPE_ICRS.label,
+    kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
     ra_str: ((tar as Target) || (tar as ReferenceCoordinateICRS)).raStr,
     dec_str: ((tar as Target) || (tar as ReferenceCoordinateICRS)).decStr,
     pm_ra: ((tar as Target) || (tar as ReferenceCoordinateICRS)).pmRa,

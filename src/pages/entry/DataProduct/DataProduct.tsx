@@ -22,6 +22,7 @@ import {
   BIT_DEPTH_DEFAULT,
   CHANNELS_OUT_DEFAULT,
   CHANNELS_OUT_MAX,
+  CHANNELS_OUT_MIN,
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
   FLOW_THROUGH_VALUE,
@@ -527,7 +528,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const channelsOutField = () =>
     fieldWrapper(
       <ChannelsOutField
-        onFocus={() => setHelp('channelsOut')}
+        onFocus={() => setHelp('channelsOut', { min: CHANNELS_OUT_MIN, max: CHANNELS_OUT_MAX })}
         required
         setValue={setChannelsOut}
         value={channelsOut}
@@ -589,7 +590,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const pixelSizeValid = () => pixelSizeValue > 0;
   const taperSizeValid = () => taperLowValue >= 0;
   const taperMidSizeValid = () => taperMidValue >= 0;
-  const channelsOutValid = () => channelsOut > 0 && channelsOut <= CHANNELS_OUT_MAX;
+  const channelsOutValid = () => Number.isInteger(channelsOut) && channelsOut >= CHANNELS_OUT_MIN && channelsOut <= CHANNELS_OUT_MAX;
   const polarisationsValid = () => polarisations.length > 0;
   const timeAveragingValid = () => timeAveraging > 0;
   const frequencyAveragingValid = () => frequencyAveraging > 0;

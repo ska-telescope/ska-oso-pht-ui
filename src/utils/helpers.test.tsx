@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import { helpers, leadZero } from '@/utils/helpers.ts';
+import { helpers, leadZero, trailingZeros } from '@/utils/helpers.ts';
 
 describe('Helper functions, validateTextEntry', () => {
   test('Valid input passes TITLE validation', () => {
@@ -140,27 +140,66 @@ describe('Helper functions, validateTextEntry', () => {
 
 describe('leadZero', () => {
   it('adds leading zero to positive single-digit numbers', () => {
-    const result = leadZero('5:30:15');
-    expect(result).toBe('05:30:15');
+    expect(leadZero('5:30:15')).toBe('05:30:15');
   });
 
   it('adds leading zero to negative single-digit numbers', () => {
-    const result = leadZero('-5:30:15');
-    expect(result).toBe('-05:30:15');
+    expect(leadZero('-5:30:15')).toBe('-05:30:15');
   });
 
   it('does not modify already formatted positive numbers', () => {
-    const result = leadZero('15:30:15');
-    expect(result).toBe('15:30:15');
+    expect(leadZero('15:30:15')).toBe('15:30:15');
   });
 
   it('does not modify already formatted negative numbers', () => {
-    const result = leadZero('-15:30:15');
-    expect(result).toBe('-15:30:15');
+    expect(leadZero('-15:30:15')).toBe('-15:30:15');
   });
 
   it('handles edge case of zero correctly', () => {
-    const result = leadZero('0:30:15');
-    expect(result).toBe('00:30:15');
+    expect(leadZero('0:30:15')).toBe('00:30:15');
+  });
+
+  it('strips leading + and pads single-digit hours', () => {
+    expect(leadZero('+2:34:56')).toBe('02:34:56');
+  });
+
+  it('strips leading + from already two-digit hours', () => {
+    expect(leadZero('+12:34:56')).toBe('12:34:56');
+  });
+});
+
+describe('trailingZeros', () => {
+  it('appends .000 when no fractional part', () => {
+    expect(trailingZeros('12:34:56')).toBe('12:34:56.000');
+  });
+
+  it('pads trailing dot to .000', () => {
+    expect(trailingZeros('12:34:56.')).toBe('12:34:56.000');
+  });
+
+  it('pads one decimal place to .000', () => {
+    expect(trailingZeros('12:34:56.0')).toBe('12:34:56.000');
+  });
+
+  it('pads two decimal places to .000', () => {
+    expect(trailingZeros('12:34:56.00')).toBe('12:34:56.000');
+  });
+
+  it('leaves three decimal places unchanged', () => {
+    expect(trailingZeros('12:34:56.000')).toBe('12:34:56.000');
+  });
+
+  it('leaves non-zero fractional seconds unchanged when already 3 places', () => {
+    expect(trailingZeros('12:34:56.789')).toBe('12:34:56.789');
+  });
+
+  it('works with negative declination values', () => {
+    expect(trailingZeros('-05:30:15')).toBe('-05:30:15.000');
+    expect(trailingZeros('-05:30:15.')).toBe('-05:30:15.000');
+    expect(trailingZeros('-05:30:15.1')).toBe('-05:30:15.100');
+  });
+
+  it('returns non-sexagesimal input unchanged', () => {
+    expect(trailingZeros('123.45')).toBe('123.45');
   });
 });

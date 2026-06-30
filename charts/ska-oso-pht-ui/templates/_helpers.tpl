@@ -36,7 +36,7 @@ Create chart name and version as used by the chart label.
 {{- if .Values.runtimeEnv.skaOsoServicesUrl -}}
 {{ .Values.runtimeEnv.skaOsoServicesUrl }}
 {{- else -}}
-/{{ .Release.Namespace }}/oso/api/v14
+/{{ .Release.Namespace }}/oso/api/v15
 {{- end }}
 {{- end }}
 
@@ -57,7 +57,7 @@ Create chart name and version as used by the chart label.
 {{- end }}
 
 
-{{- define "ska-oso-pht-ui.urls-msentraRedirectUri" -}}
+{{- define "ska-oso-pht-ui.urls-redirectUri" -}}
 {{- if .Values.runtimeEnv.msentraRedirectUri -}}
 {{ .Values.runtimeEnv.msentraRedirectUri }}
 {{- else -}}

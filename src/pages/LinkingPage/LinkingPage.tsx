@@ -18,7 +18,7 @@ import {
   SA_CUSTOM,
   PAGE_CALIBRATION,
   PAGE_LINKING,
-  RA_TYPE_ICRS,
+  REFERENCE_COORDINATE_TYPE_ICRS,
   STATUS_ERROR,
   STATUS_INITIAL,
   STATUS_OK,
@@ -554,8 +554,8 @@ export default function LinkingPage() {
         }
       },
       { field: 'name', headerName: t('name.label'), flex: 1.5, minWidth: 120 },
-      { field: 'raStr', headerName: t('skyDirection.short.1.' + RA_TYPE_ICRS.value), width: 120 },
-      { field: 'decStr', headerName: t('skyDirection.short.2.' + RA_TYPE_ICRS.value), width: 120 },
+      { field: 'raStr', headerName: t('skyDirection.short.1.' + REFERENCE_COORDINATE_TYPE_ICRS.value), width: 120 },
+      { field: 'decStr', headerName: t('skyDirection.short.2.' + REFERENCE_COORDINATE_TYPE_ICRS.value), width: 120 },
       {
         field: 'actions',
         type: 'actions',

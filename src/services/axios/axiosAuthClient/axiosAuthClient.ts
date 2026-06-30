@@ -2,6 +2,8 @@ import axios, { AxiosError } from 'axios';
 import { useMsal } from '@azure/msal-react';
 import { InteractionRequiredAuthError } from '@azure/msal-browser';
 import { MSENTRA_API_URI } from '@/utils/constants';
+import { getUseIndigo } from '@/utils/authConfig';
+import { env } from '@/env';
 import { isLocalhost, setLocalTokenProvider } from '../authToken/localAuthToken';
 
 export enum LogLevel {
@@ -16,7 +18,9 @@ const HTTP = 'http://';
 const HTTPS = 'https://';
 
 export const loginRequest = {
-  scopes: [`${MSENTRA_API_URI}/pht:readwrite ${MSENTRA_API_URI}/pht:update `]
+  scopes: getUseIndigo()
+    ? env.INDIGO_SCOPE.split(' ').filter(Boolean)
+    : [`${MSENTRA_API_URI}/pht:readwrite ${MSENTRA_API_URI}/pht:update`]
 };
 
 const useAxiosAuthClient = (baseURL: string = '/') => {
@@ -64,10 +68,12 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
           request.headers['Authorization'] = `Bearer ${tokenResponse.accessToken}`;
         } catch (error) {
           if (error instanceof InteractionRequiredAuthError) {
-            instance.loginRedirect({
-              ...loginRequest,
-              redirectUri: window.location.origin
-            });
+            console.warn(
+              '[axiosAuthClient] acquireTokenSilent failed, redirecting to login:',
+              (error as InteractionRequiredAuthError).errorCode,
+              (error as InteractionRequiredAuthError).message
+            );
+            instance.loginRedirect(loginRequest);
           }
           return Promise.reject(error);
         }

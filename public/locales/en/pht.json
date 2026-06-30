@@ -54,7 +54,8 @@
     "error": "Failed to add target - check for duplicate",
     "valueError": "Please provide a target name",
     "label": "Add Target",
-    "toolTip": "Will add the target to the list associated with this proposal.",
+    "toolTip": "Will add the target to the list associated with this proposal",
+    "galacticDisabled": "Galactic targets are not yet supported, full integration imminient",
     "success": "Target is successfully added",
     "warning": "Saving the target"
   },
@@ -347,7 +348,7 @@
     "disabled": "This function is not available"
   },
   "editTarget": {
-    "label": "Edit this target ? ",
+    "label": "Edit target",
     "toolTip": "Edit the target"
   },
   "effectiveResolution": {
@@ -473,7 +474,7 @@
   "inviteTeamMember": {
     "label": "Invite Team Member"
   },
-  "landingWelcome":{
+  "landingWelcome": {
     "button": "Register / Sign in",
     "label": "Submit an SKA-Low Science Idea",
     "description": "Use this tool to develop and submit a Science Verification Idea for SKA-Low science verification.\nAccess is available to registered users only.\nPlease sign in or create an account to continue.",
@@ -705,13 +706,16 @@
       "sizeError": "Exceeded maximum file size: {{current}} MB / {{max}} MB",
       "pageError": "Exceeded maximum page count: {{current}} / {{max}} pages",
       "invalidFileError": "Unable to read the selected file. Please ensure it is a valid PDF.",
+      "prompt": {
+        "deleteToEnableUpload": "Delete PDF to enable file selection and upload"
+      },
       "success": "Science Justification PDF successfully uploaded",
       "tooltip": {
         "choose": "Choose the science justification PDF for upload",
         "clear": "Clears the currently selected file",
         "delete": "Delete the science justification PDF",
         "download": "Download the science justification PDF",
-        "preview": "This is the PDF preview button on the science page",
+        "preview": "Preview the science justification PDF",
         "upload": "Upload the selected PDF for use as the science justification",
         "uploadDisabled": "PDF cannot be uploaded: the selected file does not meet the size or page count requirements"
       },
@@ -921,9 +925,9 @@
     "undefined": ""
   },
   "referenceCoordinates": {
-    "help": "Only Galactic and ICRS reference systems are available.",
+    "help": "Only targets with ICRS coordinates are supported at this time.",
     "label": "Coordinate Type",
-    "tooltip": "This feature is currently disabled",
+    "tooltip": "This feature is not available in edit mode",
     "0": "ICRS",
     "1": "Galactic"
   },
@@ -945,12 +949,13 @@
   },
   "resolve": {
     "label": "Resolve",
-    "toolTip": "Query SIMBAD and NED",
+    "toolTip": "Query SIMBAD, NED and VizieR",
     "error": {
       "mapping": "Unable to map results from API.",
       "name": "Unable to resolve provided name",
       "Request failed with status code 500": "Unable to resolve provided name",
-      "Request failed with status code 404": "Object not found in SIMBAD or NED"
+      "Request failed with status code 404": "Object not found in SIMBAD, NED or VizieR",
+      "API_UNKNOWN_ERROR": "An unexpected error occurred while resolving the target."
     }
   },
   "reviewDashboard": {
@@ -1112,9 +1117,9 @@
     }
   },
   "channelsOut": {
-    "help": "Channels Out help text TBD",
+    "help": "The number of output channels for this data product. Enter a whole number between {{min}} and {{max}}.",
     "label": "Channels Out",
-    "error": "Valid range is 0 - 40"
+    "error": "Valid range is {{min}} - {{max}}"
   },
   "fitSpectralPol": {
     "help": "Fit Spectral Pol help text TBD",
@@ -1201,7 +1206,7 @@
     "units": {
       "1": {
         "0": "hh:mm:ss.s",
-        "1": "dd:mm:ss.s"
+        "1": "deg"
       },
       "2": {
         "0": "dd:mm:ss.s",
@@ -1210,7 +1215,8 @@
     },
     "error": {
       "1": {
-        "0": "Input formatted incorrectly"
+        "0": "Input formatted incorrectly",
+        "1": "Valid range is 0 to 24 hours"
       },
       "2": {
         "0": "Input formatted incorrectly",
@@ -1364,8 +1370,10 @@
   },
   "suppliedValue": {
     "help": "Add the required time, selecting the appropriate unit, to reach the desired target sensitivity or the required sensitivity which will be used to estimate the required integration time",
+    "required": "A value is required",
     "range": {
-      "error": "Value is outside of allowed range"
+      "minError": "Must be greater than {{min}} {{units}}",
+      "error": "Must be between {{min}} and {{max}} {{units}}"
     }
   },
   "tableReviewDecision": {
@@ -1691,6 +1699,7 @@
     "noCalibrationsLinking": "THERE NEEDS TO BE TARGETS LINKED TO OBSERVATION / DATA PRODUCT COMBINATIONS",
     "pdf": "Syntax error or PDF not available",
     "iconClicked": "An error was encountered, please refresh page to continue",
+    "proposalNotLoaded": "No proposal loaded — please select a proposal to continue.",
     "invalidString": "Invalid input: Only numeric characters are allowed"
   },
   "pstMode": {

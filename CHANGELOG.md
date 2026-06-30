@@ -6,6 +6,24 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Updated: to use the new /coordinate endpoint response
+* Added: Support for Galactic targets
+* Bugfix: 'Channels Out' allowed 0 channels to be selected
+* Bugfix: target table displays internal localisation IDs
+* Changed: Split PDF selection into two modes: 'file selection' mode and 'uploaded PDF' mode, with file selection/drop
+  disabled when a PDF has been uploaded, and preview/download/delete operations disabled when in file selection mode.
+* Bugfix: clearing after a validation error should not remove an already uploaded PDF
+* Bugfix: 'clear' button was not disabled after PDF upload
+* Bugfix: filename was still displayed after deleting uploading PDF
+* Bugfix: filename was still displayed after clearing file selection
+* Bugfix: filename was still displayed for invalid PDFs
+* Bugfix: no error message was displayed for invalid PDFs selected via file dialog
+* Bugfix: no error message was displayed for invalid PDFs selected via drag-and-drop
+* Bugfix: Fix target field validation and formatting
+* Bugfix: If proposal is not properly loaded due to browser refresh - prompt user to reload manually (may need a better fix later)
+* Bugfix: Fix Invalid Frequency Warning not highligted on breadcrumbs
+* Bugfix: Changing summary should not trigger reset of project
+* Added: cap integration time input at 4 hrs
 * Bugfix: Fix Clone Proposal to make a copy of the data from the original proposal and revalidate correctly after cloning
 * Bugfix: fix displayed units for bandwidth and Frequency on the Data Product Page
 * Bugfix: Fix population of `bandwidth` between Observation and Data Product page
@@ -28,10 +46,12 @@ UNRELEASED
 * Changed: The style and formatting of the Sensivitity Calculator text box on the landing page.
 * Added: A new 'underTest' warning bar to the Landing Page for use on the Submission Tool during productionisation.
 * Removed: The NOT LOGGED IN, NO SUBMISSION AVAILABLE info message.
-  validation until the word limit is respected. 
-* Fixed: The incorrect validation error which reported that a declination with seconds >= 59 was out of range. 
+  validation until the word limit is respected.
+* Fixed: The incorrect validation error which reported that a declination with seconds >= 59 was out of range.
 * Fixed: Non-numeric input in Radial Velocity field does not produce a validation error.
 * Fixed: Missing plot on observation page is now present.
+* Added: Matomo analytics script to collect usage statistics.
+* Added: Support for Indigo as login provider with ?use_indigo=true query parameter.
 * Changed: Data Product Description text is black rather than grey on the Observatory Data Product page.
 * Changed: Made the Observations panel have the same title and border as other panels on the Observatory Data Product page.
 
@@ -111,6 +131,7 @@ UNRELEASED
 
 7.0.0
 ----------
+* Fixed: bug preventing entering values < 1 in the integration time field
 * Changed: Non logged in users have restricted use of the PHT to target and observation pages.
 * Removed: E2E tests related to functionality which is no longer required.
 * Fixed: Inaccurate validation message shown after pairing a valid target–observation following an invalid one

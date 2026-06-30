@@ -31,7 +31,7 @@ spec:
             - name: SKIP_PREFLIGHT_CHECK
               value: {{ .Values.runtimeEnv.skipPreflightCheck | quote }}
             - name: REACT_APP_SKA_PHT_BASE_URL
-              value: {{ include "ska-oso-pht-ui.ingress.path" . | quote }}
+              value: {{ printf "%s/" (include "ska-oso-pht-ui.ingress.path" . | trimSuffix "/") | quote }}
             - name: REACT_APP_SKA_OSO_SERVICES_URL
               value: {{ include "ska-oso-pht-ui.urls-skaOsoServicesUrl" . | quote }}
             - name: REACT_APP_SKA_SENSITIVITY_CALC_URL
@@ -53,7 +53,17 @@ spec:
                   name: ska-oso-pht-ui-allsecrets-{{ $.Release.Name }}
                   key: MSENTRA_TENANT_ID
             - name: MSENTRA_REDIRECT_URI
-              value: {{ include "ska-oso-pht-ui.urls-msentraRedirectUri" . | quote }}
+              value: {{ include "ska-oso-pht-ui.urls-redirectUri" . | quote }}
+            - name: USE_INDIGO
+              value: {{ .Values.runtimeEnv.useIndigo | toString | quote }}
+            - name: INDIGO_AUTHORITY
+              value: {{ .Values.runtimeEnv.indigoAuthority | quote }}
+            - name: INDIGO_CLIENT_ID
+              value: {{ .Values.runtimeEnv.indigoClientId | quote }}
+            - name: INDIGO_SCOPE
+              value: {{ .Values.runtimeEnv.indigoScope | quote }}
+            - name: INDIGO_AUDIENCE
+              value: {{ .Values.runtimeEnv.indigoAudience | quote }}
           livenessProbe:
             httpGet:
               path: /

@@ -3,7 +3,6 @@ import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import {
-  ERROR_SECS,
   FREQUENCY_GHZ,
   FREQUENCY_HZ,
   FREQUENCY_MHZ,
@@ -36,31 +35,33 @@ export default function CentralFrequency({
   const FIELD = 'centralFrequency';
   const [fieldValid, setFieldValid] = React.useState(true);
   const { findBand, telescopeBand } = useOSDAccessors();
+  const [cfValue, setCfValue] = React.useState<string>(value != null ? String(value) : '');
 
   React.useEffect(() => {
-    const timer = () => {
-      setTimeout(() => {
-        setFieldValid(true);
-      }, ERROR_SECS);
-    };
-    timer();
-  }, [fieldValid]);
+    setCfValue(value != null ? String(value) : '');
+    setFieldValid(true);
+  }, [value]);
 
-  const checkValue = (e: number) => {
-    const num = Number(e);
-    const band = findBand(observingBand);
-    const units: number =
-      telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? FREQUENCY_MHZ : FREQUENCY_GHZ;
-    const min = frequencyConversion(band?.minFrequencyHz ?? 0, FREQUENCY_HZ, units);
-    const max = frequencyConversion(band?.maxFrequencyHz ?? 0, FREQUENCY_HZ, units);
+  const checkValue = (cfValue: string) => {
+    setCfValue(cfValue);
 
-    if (num >= min && num <= max) {
-      setFieldValid(true);
-      setValue(num);
-    } else {
+    if (cfValue === '' || isNaN(Number(cfValue))) {
       setFieldValid(false);
+    } else {
+      const cf = Number(cfValue);
+      const band = findBand(observingBand);
+      const units: number = telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? FREQUENCY_MHZ : FREQUENCY_GHZ;
+      const min = frequencyConversion(band?.minFrequencyHz ?? 0, FREQUENCY_HZ, units);
+      const max = frequencyConversion(band?.maxFrequencyHz ?? 0, FREQUENCY_HZ, units);
+
+      const inRange = cf >= min && cf <= max;
+      setFieldValid(inRange);
+      if (inRange) {
+        setValue(cf);
+      }
     }
   };
+
   const errorMessage = fieldValid ? '' : t(FIELD + '.range.error');
 
   return (
@@ -68,7 +69,7 @@ export default function CentralFrequency({
       disabled={disabled}
       label={t(FIELD + '.label')}
       testId={FIELD}
-      value={value}
+      value={cfValue}
       setValue={checkValue}
       onFocus={() => setHelp(FIELD)}
       required={required}

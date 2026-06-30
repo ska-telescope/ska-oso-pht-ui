@@ -4,24 +4,23 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
-import { leadZero } from '@utils/helpers.ts';
+import { leadZero, trailingZeros } from '@utils/helpers.ts';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
 import ResolveButton from '@/components/button/Resolve/Resolve';
-import ReferenceFrameField from '@/components/fields/referenceFrame/ReferenceFrame';
 import SkyDirection1 from '@/components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
 import VelocityField from '@/components/fields/velocity/Velocity';
 import Target from '@/utils/types/target';
 import {
-  RA_TYPE_ICRS,
+  REFERENCE_COORDINATE_TYPE_ICRS,
   VELOCITY_TYPE,
   FIELD_PATTERN_POINTING_CENTRES,
   WRAPPER_HEIGHT,
   TYPE_PST,
   TYPE_ZOOM,
   TYPE_CONTINUUM,
-  NOTIFICATION_DELAY_IN_SECONDS
+  NOTIFICATION_DELAY_IN_SECONDS, REFERENCE_COORDINATE_TYPE_GALACTIC
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -30,23 +29,21 @@ import autoLinking from '@/utils/autoLinking/AutoLinking';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import VelocityTypeField from '@/components/fields/velocityType/VelocityType';
 interface TargetEntryProps {
-  raType: number;
   setTarget?: Function;
   target?: Target;
   textAlign?: string;
-  onRAFieldErrorChange?: (error: string) => void;
-  onDecFieldErrorChange?: (error: string) => void;
+  onCoord1FieldErrorChange?: (error: string) => void;
+  onCoord2FieldErrorChange?: (error: string) => void;
   onNameFieldErrorChange?: (error: string) => void;
 }
 
 const GAP = 2;
 
 export default function TargetEntry({
-  raType,
   setTarget = undefined,
   target = undefined,
-  onRAFieldErrorChange,
-  onDecFieldErrorChange,
+  onCoord1FieldErrorChange,
+  onCoord2FieldErrorChange,
   onNameFieldErrorChange
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
@@ -65,14 +62,13 @@ export default function TargetEntry({
 
   const [id, setId] = React.useState(0);
   const [name, setName] = React.useState('');
-  const [ra, setRA] = React.useState('');
-  const [dec, setDec] = React.useState('');
+  const [coord1, setCoord1] = React.useState('');
+  const [coord2, setCoord2] = React.useState('');
   const [velType, setVelType] = React.useState(0);
   const [vel, setVel] = React.useState('');
   const [velUnit, setVelUnit] = React.useState(0);
   const [redshift, setRedshift] = React.useState('');
-  const [referenceFrame, setReferenceFrame] = React.useState(RA_TYPE_ICRS.value);
-  const [referenceCoordinates, setReferenceCoordinates] = React.useState(RA_TYPE_ICRS.label);
+  const [referenceCoordinates, setReferenceCoordinates] = React.useState(REFERENCE_COORDINATE_TYPE_ICRS.value);
   const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
 
   React.useEffect(() => {
@@ -84,20 +80,14 @@ export default function TargetEntry({
   }, [name]);
 
   React.useEffect(() => {
-    if (setTarget) {
-      setTarget({ ...target, decStr: dec, raStr: ra, vel: vel, redshift: redshift });
-    }
-  }, [ra, dec, vel, redshift]);
-
-  React.useEffect(() => {
-    if (onRAFieldErrorChange) {
-      onRAFieldErrorChange(skyDirection1Error); // Notify parent
+    if (onCoord1FieldErrorChange) {
+      onCoord1FieldErrorChange(skyDirection1Error); // Notify parent
     }
   }, [skyDirection1Error]);
 
   React.useEffect(() => {
-    if (onDecFieldErrorChange) {
-      onDecFieldErrorChange(skyDirection2Error); // Notify parent
+    if (onCoord2FieldErrorChange) {
+      onCoord2FieldErrorChange(skyDirection2Error); // Notify parent
     }
   }, [skyDirection2Error]);
 
@@ -119,33 +109,73 @@ export default function TargetEntry({
     }
   };
 
-  const setTheDec = (inValue: string) => {
-    const formattedDec = leadZero(inValue);
-    setDec(formattedDec.toString());
-    if (setTarget) {
-      setTarget({ ...target, decStr: formattedDec.toString() });
+  const isICRS =
+  referenceCoordinates === REFERENCE_COORDINATE_TYPE_ICRS.value;
+
+
+  const setTheCoord1 = (value: string) => {
+  setCoord1(value);
+
+  if (!setTarget) return;
+
+  if (isICRS) {
+    setTarget({
+      ...target,
+      raStr: leadZero(value).toString()
+    });
+  } else {
+        setTarget({
+      ...target,
+      l: parseFloat(value)
+    });
+  }
+};
+  const setTheCoord2 = (value: string) => {
+    setCoord2(value);
+
+    if (!setTarget) return;
+
+    if (isICRS) {
+      setTarget({
+        ...target,
+        decStr: leadZero(value).toString()
+      });
+    } else {
+      setTarget({
+        ...target,
+        b: parseFloat(value)
+      });
     }
   };
 
-  const setTheRA = (inValue: string) => {
-    const formattedRA = leadZero(inValue);
-    setRA(formattedRA.toString());
-    if (setTarget) {
-      setTarget({ ...target, raStr: formattedRA.toString() });
-    }
-  };
+  const setTheReferenceCoordinates = (newKind: number) => {
+  if (newKind !== referenceCoordinates) {
+    setName('');
+    setCoord1('');
+    setCoord2('');
+    setVel('');
+    setRedshift('');
+
+    setSkyDirection1Error('');
+    setSkyDirection2Error('');
+    setRmFieldError('');
+    setNameFieldError('');
+  }
+
+  setReferenceCoordinates(newKind);
+
+  if (setTarget) {
+    setTarget({
+      ...target,
+      kind: newKind
+    });
+  }
+};
 
   const setTheRedshift = (inValue: string) => {
     setRedshift(inValue);
     if (setTarget) {
       setTarget({ ...target, redshift: inValue });
-    }
-  };
-
-  const setTheReferenceFrame = (inValue: React.SetStateAction<number>) => {
-    setReferenceFrame(inValue);
-    if (setTarget) {
-      setTarget({ ...target, kind: inValue });
     }
   };
 
@@ -171,16 +201,55 @@ export default function TargetEntry({
   };
 
   const targetIn = (target: Target) => {
+    const incomingKind = target?.kind ?? REFERENCE_COORDINATE_TYPE_ICRS.value;
+    const incomingIsICRS = incomingKind === REFERENCE_COORDINATE_TYPE_ICRS.value;
+    setReferenceCoordinates(incomingKind);
     setId(target?.id ?? 0);
     setName(target?.name ?? '');
-    setRA(target?.raStr ?? '');
-    setDec(target?.decStr ?? '');
+    setCoord1(
+      incomingIsICRS
+        ? target.raStr ?? ''
+        : target.l != null
+          ? String(target.l)
+          : ''
+    );
+    setCoord2(
+      incomingIsICRS
+        ? target.decStr ?? ''
+        : target.b != null
+          ? String(target.b)
+          : ''
+    );
     setVelType(target?.velType ?? 0);
     setVel(target?.vel ?? '');
     setVelUnit(target?.velUnit ?? 0);
     setRedshift(target?.redshift ?? '');
-    setReferenceFrame(target?.kind ?? RA_TYPE_ICRS.value);
   };
+
+
+  const blurCoord1 = () => {
+    setCoord1(trailingZeros(leadZero(coord1.trimEnd()).toString()));
+  };
+
+  const blurCoord2 = () => {
+    setCoord2(trailingZeros(leadZero(coord2.trimEnd()).toString()));
+  };
+
+  const blurName = () => {
+    const formatted = name.trimEnd();
+    setName(formatted);
+    if (setTarget) setTarget({ ...target, name: formatted });
+  };
+
+
+  const blurVel = () => {
+    setVel(vel.trimEnd());
+  };
+
+  const blurRedshift = () => {
+    setRedshift(redshift.trimEnd());
+  };
+
 
   React.useEffect(() => {
     setHelp('name.help');
@@ -207,7 +276,6 @@ export default function TargetEntry({
         return;
       } else {
         AddTheTarget();
-        clearForm();
       }
     };
 
@@ -219,16 +287,25 @@ export default function TargetEntry({
         : null;
       const highestId = highest ? highest.id : 0;
 
+        const isICRS =
+    referenceCoordinates === REFERENCE_COORDINATE_TYPE_ICRS.value;
+
       const newTarget: Target = {
-        kind: RA_TYPE_ICRS.value,
-        decStr: dec ?? '',
+        kind: referenceCoordinates,
         id: highestId + 1,
         name: name ?? '',
-        b: 0, // Default value for `b`
-        l: 0, // Default value for `l`
-        raStr: ra ?? '',
+
+        ...(isICRS
+          ? {
+              raStr: coord1 ?? '',
+              decStr: coord2 ?? ''
+            }
+          : {
+              l: Number(coord1),
+              b: Number(coord2)
+            }),
+
         redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift ?? '' : '',
-        referenceFrame: RA_TYPE_ICRS.label,
         vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : '',
         velType: velType ?? 0,
         velUnit: velUnit ?? 0
@@ -238,6 +315,7 @@ export default function TargetEntry({
         const defaults = await autoLinking(newTarget, getProposal, setProposal);
         if (defaults && defaults.success) {
           notifySuccess(t('autoLink.targetSuccess'), NOTIFICATION_DELAY_IN_SECONDS);
+          clearForm();
         } else {
           notifyError(defaults?.error ?? t('autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
         }
@@ -259,25 +337,27 @@ export default function TargetEntry({
         };
         setProposal(updatedProposal);
         notifySuccess(t('addTarget.success'), NOTIFICATION_DELAY_IN_SECONDS);
+        clearForm();
       };
       addTargetAsync();
     };
 
     const clearForm = () => {
       setName('');
-      setRA('');
-      setDec('');
+      setCoord1('');
+      setCoord2('');
       setVel('');
       setRedshift('');
     };
 
     const disabled = () => {
       return (
+        referenceCoordinates === REFERENCE_COORDINATE_TYPE_GALACTIC.value ||
         nameFieldError !== '' ||
         skyDirection1Error !== '' ||
         skyDirection2Error !== '' ||
         rmFieldError !== '' ||
-        !(name?.length && ra?.length && dec?.length && targetLengthCheck())
+        !(name?.length && coord1?.length && coord2?.length && targetLengthCheck())
       );
     };
 
@@ -293,7 +373,11 @@ export default function TargetEntry({
           primary
           testId={'addTargetButton'}
           title="addTarget.label"
-          toolTip="addTarget.toolTip"
+          toolTip={
+            referenceCoordinates === REFERENCE_COORDINATE_TYPE_GALACTIC.value
+              ? 'addTarget.galacticDisabled'
+              : 'addTarget.toolTip'
+          }
         />
       </Grid>
     );
@@ -302,26 +386,38 @@ export default function TargetEntry({
   const resolveButton = () => {
     const processCoordinatesResults = (response: any) => {
       if (response && !response.error) {
-        const values = response.split(' ');
-        const redshift =
-          values?.length > 2 && values[2] !== 'null'
-            ? Number(values[2])
-                .toExponential(2)
-                .toString()
-            : '';
-        const vel = values?.length > 3 && values[3] !== 'null' ? values[3] : '';
-        setDec(values[0]);
-        setRA(values[1]);
-        setRedshift(redshift);
-        setVel(vel);
+        if (response.reference_coordinate.kind === 'galactic') {
+      setTheCoord1(String(response.reference_coordinate.l));
+      setTheCoord2(String(response.reference_coordinate.b));
+    } else {
+      setTheCoord1(response.reference_coordinate.ra_str);
+      setTheCoord2(response.reference_coordinate.dec_str);
+    }
+
+        const velocity = response.radial_velocity?.quantity?.value;
+        const redshift = response.radial_velocity?.redshift;
+
+        if (redshift && redshift !== 0) {
+          setVelType(VELOCITY_TYPE.REDSHIFT);
+
+          setRedshift(String(redshift));
+          setVel('');
+        } else {
+          setVelType(VELOCITY_TYPE.VELOCITY);
+
+          setVel(velocity != null ? String(velocity) : '');
+          setRedshift('');
+        }
+
         setNameFieldError('');
       } else {
-        setNameFieldError(t('resolve.error.' + response.error));
+        setNameFieldError(t('resolve.error.' + response.error)
+        );
       }
     };
 
     const getCoordinates = async () => {
-      const response = await GetCoordinates(name, raType);
+      const response = await GetCoordinates(name, referenceCoordinates);
       processCoordinatesResults(response);
     };
 
@@ -330,7 +426,7 @@ export default function TargetEntry({
     );
   };
 
-  const isRequired = () => name !== '' || ra !== '' || dec !== '';
+  const isRequired = () => name !== '' || coord1 !== '' || coord2 !== '';
 
   const wrapper = (children?: React.JSX.Element) => (
     <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
@@ -344,11 +440,15 @@ export default function TargetEntry({
     </Box>
   );
 
+  // this allows for the
+  const isEditMode = !!target;
+
   const referenceCoordinatesField = () =>
     wrapper(
       <ReferenceCoordinatesField
-        setValue={setReferenceCoordinates}
-        value={referenceCoordinates.toUpperCase()}
+        setValue={setTheReferenceCoordinates}
+        value={referenceCoordinates}
+        disabled={isEditMode}
       />
     );
 
@@ -376,6 +476,7 @@ export default function TargetEntry({
         value={name}
         setValue={setTheName}
         suffix={resolveButton()}
+        onBlur={blurName}
         onFocus={() => setHelp('name.help')}
         errorText={nameFieldError}
       />
@@ -385,9 +486,10 @@ export default function TargetEntry({
     wrapper(
       <SkyDirection1
         required={isRequired()}
-        setValue={setTheRA}
-        skyUnits={raType}
-        value={ra}
+        setValue={setTheCoord1}
+        skyUnits={referenceCoordinates}
+        value={coord1}
+        valueBlur={blurCoord1}
         valueFocus={() => setHelp('skyDirection.1')}
         setErrorText={setSkyDirection1Error} // Pass the callback
       />
@@ -397,10 +499,11 @@ export default function TargetEntry({
     wrapper(
       <SkyDirection2
         required={isRequired()}
-        setValue={setTheDec}
-        skyUnits={raType}
-        value={dec}
+        setValue={setTheCoord2}
+        skyUnits={referenceCoordinates}
+        value={coord2}
         valueFocus={() => setHelp('skyDirection.2')}
+        valueBlur={blurCoord2}
         setErrorText={setSkyDirection2Error} // Pass the callback
       />
     );
@@ -421,21 +524,14 @@ export default function TargetEntry({
         setVel={setTheVel}
         setVelUnit={setTheVelUnit}
         redshift={redshift}
+        redshiftBlur={blurRedshift}
         vel={vel}
         velType={velType}
         velUnit={velUnit}
         velFocus={() => setHelp('velocity.' + velType)}
         velUnitFocus={() => setHelp('velocity.' + velType)}
+        velBlur={blurVel}
         setErrorText={setRmFieldError}
-      />
-    );
-
-  const referenceFrameField = () =>
-    wrapper(
-      <ReferenceFrameField
-        onFocus={() => setHelp('referenceFrame.help')}
-        setValue={setTheReferenceFrame}
-        value={referenceFrame}
       />
     );
 
@@ -478,7 +574,7 @@ export default function TargetEntry({
               <Grid size={{ md: 12, lg: 6 }}>{velocityTypeField()}</Grid>
               <Grid size={{ md: 12, lg: 6 }}>{velocityField()}</Grid>
             </Grid>
-            {velType === VELOCITY_TYPE.VELOCITY && referenceFrameField()}
+            {velType === VELOCITY_TYPE.VELOCITY}
           </BorderedSection>
         </Box>
       </Grid>

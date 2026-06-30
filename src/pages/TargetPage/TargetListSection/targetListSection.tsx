@@ -3,7 +3,7 @@ import { Box, Grid, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '@utils/types/proposal.tsx';
-import { RA_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
+import { REFERENCE_COORDINATE_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
 import deleteAutoLinking from '@utils/autoLinking/DeleteAutoLinking.tsx';
 import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
@@ -93,6 +93,7 @@ export default function TargetListSection() {
   const alertDeleteContent = () => {
     const LABEL_WIDTH = 6;
     const rec = getProposal()?.targets?.find(p => p.id === rowTarget?.id);
+    const isICRS = rec?.kind === REFERENCE_COORDINATE_TYPE_ICRS.value
     return (
       <Grid
         p={2}
@@ -106,21 +107,21 @@ export default function TargetListSection() {
           <Typography variant="body1">{rec?.name}</Typography>
         </FieldWrapper>
         <FieldWrapper
-          label={t('skyDirection.label.1.' + RA_TYPE_ICRS.value)}
+          label={isICRS ? t('skyDirection.label.1.0') : t('skyDirection.label.1.1')}
           labelWidth={LABEL_WIDTH}
         >
-          <Typography variant="body1">{rec?.raStr}</Typography>
+          <Typography>{isICRS ? rec?.raStr : rec?.l}</Typography>
         </FieldWrapper>
         <FieldWrapper
-          label={t('skyDirection.label.2.' + RA_TYPE_ICRS.value)}
+          label={isICRS ? t('skyDirection.label.2.0') : t('skyDirection.label.2.1')}
           labelWidth={LABEL_WIDTH}
         >
-          <Typography variant="body1">{rec?.decStr}</Typography>
+          <Typography>{isICRS ? rec?.decStr : rec?.b}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('velocity.0')} labelWidth={LABEL_WIDTH}>
+        <FieldWrapper label={t('velocity.0.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec?.vel}</Typography>
         </FieldWrapper>
-        <FieldWrapper label={t('velocity.1')} labelWidth={LABEL_WIDTH}>
+        <FieldWrapper label={t('velocity.1.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec?.redshift}</Typography>
         </FieldWrapper>
 
@@ -146,6 +147,15 @@ export default function TargetListSection() {
     setValue(newValue);
   };
 
+  const rows = getProposal().targets.map(t => {
+    const isICRS = t.kind === REFERENCE_COORDINATE_TYPE_ICRS.value;
+    return {
+      ...t,
+      coord1: isICRS? t.raStr : t.l,
+      coord2: isICRS? t.decStr : t.b
+    };
+  });
+
   const displayRow1 = () => {
     return (
       <Grid
@@ -170,8 +180,7 @@ export default function TargetListSection() {
                 deleteClicked={deleteIconClicked}
                 editClicked={editIconClicked}
                 height={maxTargets === 1 ? '15vh' : '60vh'}
-                raType={RA_TYPE_ICRS.value}
-                rows={getProposal().targets}
+                rows={rows}
               />
             </Box>
             <Visualization
@@ -217,8 +226,8 @@ export default function TargetListSection() {
                 />
               )}
             </Tabs>
-            {value === 0 && <TargetEntry raType={RA_TYPE_ICRS.value} textAlign="left" />}
-            {value === 1 && <TargetFileImport raType={RA_TYPE_ICRS.value} />}
+            {value === 0 && <TargetEntry textAlign="left" />}
+            {value === 1 && <TargetFileImport referenceCoordinateType={REFERENCE_COORDINATE_TYPE_ICRS.value} />}
             {value === 2 && <SpatialImaging />}
           </Box>
         </Grid>
@@ -261,11 +270,10 @@ export default function TargetListSection() {
           title="editTarget.label"
         >
           <TargetEntry
-            raType={RA_TYPE_ICRS.value}
             setTarget={setRowTarget}
             target={rowTarget ? rowTarget : undefined}
-            onRAFieldErrorChange={setSkyDirection1Error} // Pass callback
-            onDecFieldErrorChange={setSkyDirection2Error} // Pass callback
+            onCoord1FieldErrorChange={setSkyDirection1Error} // Pass callback
+            onCoord2FieldErrorChange={setSkyDirection2Error} // Pass callback
             onNameFieldErrorChange={setNameError} // Pass callback
           />
         </AlertDialog>
