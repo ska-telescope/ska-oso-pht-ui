@@ -37,10 +37,13 @@ import {
   PROPOSAL_STATUS_OPTIONS
 } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
-import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
+import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ACCESS_VIEW, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import CycleSelection from '@/components/alerts/cycleSelection/CycleSelection';
 import PostProposal from '@/services/axios/post/postProposal/postProposal';
+import PostProposalAccess from '@/services/axios/post/postProposalAccess/postProposalAccess';
+import PostSendEmailInvite from '@/services/axios/post/postSendEmailInvite/postSendEmailInvite';
+import { generateId } from '@/utils/helpers.ts';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useHelp } from '@/utils/help/useHelp';
@@ -244,6 +247,25 @@ export default function LandingPage() {
         : [];
 
       updateAppContent4([...acc, newAcc]);
+
+      // Replicate the manual investigator-add process for each co-investigator:
+      // create access rights (if they have a real Entra ID) and send an email invite.
+      const coInvestigators = originalProposal.investigators?.filter(inv => !inv.pi) ?? [];
+      await Promise.allSettled(
+        coInvestigators.map(async inv => {
+          if (!inv.id.startsWith('temp-')) {
+            await PostProposalAccess(authClient, {
+              id: generateId('access-'),
+              prslId: clonedProposal.id,
+              userId: inv.id,
+              role: 'Co-Investigator',
+              permissions: [PROPOSAL_ACCESS_VIEW]
+            });
+          }
+          await PostSendEmailInvite(authClient, { email: inv.email, prsl_id: clonedProposal.id });
+        })
+      );
+
       goToTitlePage();
     } else {
       notifyError((response as { error: string }).error);
