@@ -7,6 +7,7 @@ import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/R
 import { leadZero, trailingZeros } from '@utils/helpers.ts';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
+import CancelButton from '@/components/button/Cancel/Cancel';
 import ResolveButton from '@/components/button/Resolve/Resolve';
 import SkyDirection1 from '@/components/fields/skyDirection/SkyDirection1';
 import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
@@ -270,6 +271,22 @@ export default function TargetEntry({
     return valid;
   }
 
+  const clearForm = () => {
+    setName('');
+    setCoord1('');
+    setCoord2('');
+    setVel('');
+    setRedshift('');
+    setVelType(VELOCITY_TYPE.VELOCITY);
+    setVelUnit(0);
+    setReferenceCoordinates(REFERENCE_COORDINATE_TYPE_ICRS.value);
+    setFieldPattern(FIELD_PATTERN_POINTING_CENTRES);
+    setNameFieldError('');
+    setSkyDirection1Error('');
+    setSkyDirection2Error('');
+    setRmFieldError('');
+  };
+
   const addButton = () => {
     const addButtonAction = () => {
       if (!formValidation()) {
@@ -342,14 +359,6 @@ export default function TargetEntry({
       addTargetAsync();
     };
 
-    const clearForm = () => {
-      setName('');
-      setCoord1('');
-      setCoord2('');
-      setVel('');
-      setRedshift('');
-    };
-
     const disabled = () => {
       return (
         referenceCoordinates === REFERENCE_COORDINATE_TYPE_GALACTIC.value ||
@@ -365,8 +374,15 @@ export default function TargetEntry({
       return isSV ? getProposal()?.targets?.length === 0 : true;
     };
 
+    const hasAnyFieldEntered = () => {
+      const hasTextValue = [name, coord1, coord2, vel, redshift].some(
+        value => value.trim().length > 0
+      );
+      return hasTextValue || referenceCoordinates !== REFERENCE_COORDINATE_TYPE_ICRS.value;
+    };
+
     return (
-      <Grid size={{ xs: 12 }} sx={{ position: 'relative', zIndex: 99 }} mb={4}>
+      <Grid size={{ xs: 12 }} sx={{ position: 'relative', display: "flex", justifyContent: "space-between", width: "90%" }} mb={4}>
         <AddButton
           action={addButtonAction}
           disabled={disabled()}
@@ -379,6 +395,19 @@ export default function TargetEntry({
               : 'addTarget.toolTip'
           }
         />
+
+        {hasAnyFieldEntered() ? (
+          <CancelButton
+          action={clearForm}
+          disabled={false}
+          primary={false}
+          testId={'clearFormButton'}
+          title="clearBtn.label"
+          toolTip="addTarget.clearToolTip"
+        />
+        ): null}
+
+         
       </Grid>
     );
   };
