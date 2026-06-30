@@ -9,6 +9,7 @@ import {
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
 import { mapping } from '../../get/getProposal/getProposal.tsx';
+import MappingPutProposal from '../../put/putProposal/putProposalMapping.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
 
 export function mappingPostProposal(
@@ -28,7 +29,7 @@ export function mappingPostProposal(
   };
 
   const transformedProposal: ProposalBackend = {
-    prsl_id: proposal?.id?.toString(),
+    prsl_id: proposal.id,
     status: status as string,
     submitted_by: '',
     submitted_on: null,
@@ -79,7 +80,9 @@ async function PostProposal(
 
   try {
     const URL_PATH = `${OSO_SERVICES_PROPOSAL_PATH}/create`;
-    const convertedProposal = mappingPostProposal(proposal, status, isSV);
+    // Use the full mapping so cloned proposals carry all content (targets, observations, etc.).
+    // prsl_id is omitted — the backend always generates a fresh SKUID on /create.
+    const { prsl_id: _omit, ...convertedProposal } = MappingPutProposal(proposal, isSV, status as string);
 
     const result = await authAxiosClient.post(
       `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
