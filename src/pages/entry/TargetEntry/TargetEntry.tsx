@@ -65,7 +65,7 @@ export default function TargetEntry({
   const [name, setName] = React.useState('');
   const [coord1, setCoord1] = React.useState('');
   const [coord2, setCoord2] = React.useState('');
-  const [velType, setVelType] = React.useState(0);
+  const [velType, setVelType] = React.useState(VELOCITY_TYPE.VELOCITY);
   const [vel, setVel] = React.useState('');
   const [velUnit, setVelUnit] = React.useState(0);
   const [redshift, setRedshift] = React.useState('');
@@ -378,7 +378,13 @@ export default function TargetEntry({
       const hasTextValue = [name, coord1, coord2, vel, redshift].some(
         value => value.trim().length > 0
       );
-      return hasTextValue || referenceCoordinates !== REFERENCE_COORDINATE_TYPE_ICRS.value;
+      const hasSelectorChange =
+        velType !== VELOCITY_TYPE.VELOCITY || velUnit !== 0;
+      return (
+        hasTextValue ||
+        hasSelectorChange ||
+        referenceCoordinates !== REFERENCE_COORDINATE_TYPE_ICRS.value
+      );
     };
 
     return (
