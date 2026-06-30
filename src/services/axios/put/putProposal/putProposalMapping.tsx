@@ -27,6 +27,7 @@ import {
   REFERENCE_COORDINATE_TYPE_ICRS,
   ROBUST,
   SCIENCE_VERIFICATION,
+  SCIENCE_VERIFICATION_TYPE_ID,
   TELESCOPE_LOW_BACKEND_MAPPING,
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_BACKEND_MAPPING,
@@ -596,7 +597,7 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
   // isSV from the caller reflects the current OSD cycle. Guard against mismatch by also
   // treating the proposal as SV when its proposalType doesn't resolve to a known project
   // (SV proposals use id 9 in the frontend which is not in PROJECTS).
-  const proposalIsSV = isSV || !projectMapping;
+  const proposalIsSV = isSV || proposal.proposalType === SCIENCE_VERIFICATION_TYPE_ID;
 
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,

@@ -439,6 +439,7 @@ export const PST_MODES = [
 ];
 
 export const SCIENCE_VERIFICATION = 'science_verification';
+export const SCIENCE_VERIFICATION_TYPE_ID = 9;
 
 export const PROPOSAL_STATUS = {
   DRAFT: 'draft',
