@@ -592,6 +592,12 @@ const getResults = (
 /*************************************************************************************************************************/
 
 export default function MappingPutProposal(proposal: Proposal, isSV: boolean, status: string) {
+  const projectMapping = PROJECTS.find(item => item?.id === proposal.proposalType)?.mapping;
+  // isSV from the caller reflects the current OSD cycle. Guard against mismatch by also
+  // treating the proposal as SV when its proposalType doesn't resolve to a known project
+  // (SV proposals use id 9 in the frontend which is not in PROJECTS).
+  const proposalIsSV = isSV || !projectMapping;
+
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
     status: status,
@@ -604,16 +610,16 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
     proposal_info: {
       title: proposal.title,
       proposal_type: {
-        main_type: isSV
+        main_type: proposalIsSV
           ? SCIENCE_VERIFICATION
-          : (PROJECTS.find(item => item?.id === proposal.proposalType)?.mapping as string),
+          : (projectMapping as string),
         attributes:
-          !isSV && proposal.proposalSubType
+          !proposalIsSV && proposal.proposalSubType
             ? getSubType(proposal.proposalType, proposal.proposalSubType)
             : []
       },
       abstract: proposal.abstract as string,
-      science_category: isSV
+      science_category: proposalIsSV
         ? (DETAILS.ObservingMode?.find(category => category.value === proposal?.scienceCategory)
             ?.label as string)
         : (DETAILS.ScienceCategory?.find(category => category.value === proposal?.scienceCategory)

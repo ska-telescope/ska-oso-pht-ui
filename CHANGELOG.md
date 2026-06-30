@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Bugfix: fix for proposal cloning scenarios which were throwing errors
 * Updated: to use the new /coordinate endpoint response
 * Added: Support for Galactic targets
 * Bugfix: 'Channels Out' allowed 0 channels to be selected
