@@ -61,6 +61,7 @@ describe('PostProposal Service', () => {
     const result = await PostProposal(
       mockedAuthClient,
       MockProposalFrontend,
+      false,
       PROPOSAL_STATUS.DRAFT
     );
     expect(result).to.deep.equal(mapping(MockProposalBackend));
@@ -72,6 +73,7 @@ describe('PostProposal Service', () => {
     const result = (await PostProposal(
       mockedAuthClient,
       MockProposalFrontend,
+      false,
       PROPOSAL_STATUS.DRAFT
     )) as Proposal;
     expect(result).to.deep.equal(mapping(MockProposalBackend));
@@ -83,6 +85,7 @@ describe('PostProposal Service', () => {
     const result = await PostProposal(
       mockedAuthClient,
       MockProposalFrontend,
+      false,
       PROPOSAL_STATUS.DRAFT
     );
     expect(result).toStrictEqual({ error: 'Network Error' });
@@ -94,6 +97,7 @@ describe('PostProposal Service', () => {
     const result = await PostProposal(
       mockedAuthClient,
       MockProposalFrontend,
+      false,
       PROPOSAL_STATUS.DRAFT
     );
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
@@ -105,9 +109,22 @@ describe('PostProposal Service', () => {
     const result = await PostProposal(
       mockedAuthClient,
       MockProposalFrontend,
+      false,
       PROPOSAL_STATUS.DRAFT
     );
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
+  });
+
+  test('sends payload without prsl_id, investigator_refs, or stale result_details', async () => {
+    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+    mockedAuthClient.post.mockResolvedValue({ data: MockProposalBackend });
+
+    await PostProposal(mockedAuthClient, MockProposalFrontend, false, PROPOSAL_STATUS.DRAFT);
+
+    const [, sentBody] = mockedAuthClient.post.mock.calls[0];
+    expect(sentBody).not.toHaveProperty('prsl_id');
+    expect(sentBody).not.toHaveProperty('investigator_refs');
+    expect(sentBody.observation_info.result_details).toEqual([]);
   });
 
   test('returns error.API_UNKNOWN_ERROR when result null', async () => {
@@ -116,6 +133,7 @@ describe('PostProposal Service', () => {
     const result = await PostProposal(
       mockedAuthClient,
       MockProposalFrontend,
+      false,
       PROPOSAL_STATUS.DRAFT
     );
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });

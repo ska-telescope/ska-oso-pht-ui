@@ -84,18 +84,21 @@ async function PostProposal(
     // prsl_id is omitted — the backend generates a fresh SKUID on /create.
     // investigator_refs is omitted — the backend builds it from the investigators in proposal_info.
     // investigator status is stripped — it is proposal-scoped and should not be inherited by the clone.
+    // result_details is reset to [] — sensitivity-calc results are stale for a new proposal.
     const { prsl_id: _omit, investigator_refs: _invRefs, ...mapped } = MappingPutProposal(proposal, isSV, status as string);
-    const convertedProposal = {
+    const convertedProposal = helpers.transform.trimObject({
       ...mapped,
-      proposal_info: mapped.proposal_info
-        ? {
-            ...mapped.proposal_info,
-            investigators: mapped.proposal_info.investigators?.map(
-              ({ status: _s, ...inv }) => inv
-            ) ?? []
-          }
-        : mapped.proposal_info
-    };
+      proposal_info: {
+        ...mapped.proposal_info,
+        investigators: mapped.proposal_info.investigators?.map(
+          ({ status: _s, ...inv }) => inv
+        ) ?? []
+      },
+      observation_info: {
+        ...mapped.observation_info,
+        result_details: []
+      }
+    });
 
     const result = await authAxiosClient.post(
       `${SKA_OSO_SERVICES_URL}${URL_PATH}`,
