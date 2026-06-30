@@ -4,6 +4,7 @@ import {
   PROJECTS,
   SCIENCE_VERIFICATION,
   SKA_OSO_SERVICES_URL,
+  TEAM_STATUS_TYPE_OPTIONS,
   USE_LOCAL_DATA
 } from '@utils/constants.ts';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
@@ -83,7 +84,7 @@ async function PostProposal(
     // Use the full mapping so cloned proposals carry all content (targets, observations, etc.).
     // prsl_id is omitted — the backend generates a fresh SKUID on /create.
     // investigator_refs is omitted — the backend builds it from the investigators in proposal_info.
-    // investigator status is stripped — it is proposal-scoped and should not be inherited by the clone.
+    // investigator status is reset to 'Pending' — invitation to the new proposal is fresh.
     // result_details is reset to [] — sensitivity-calc results are stale for a new proposal.
     const { prsl_id: _omit, investigator_refs: _invRefs, ...mapped } = MappingPutProposal(proposal, isSV, status as string);
     const convertedProposal = helpers.transform.trimObject({
@@ -91,7 +92,7 @@ async function PostProposal(
       proposal_info: {
         ...mapped.proposal_info,
         investigators: mapped.proposal_info.investigators?.map(
-          ({ status: _s, ...inv }) => inv
+          ({ status: _s, ...inv }) => ({ ...inv, status: TEAM_STATUS_TYPE_OPTIONS.pending })
         ) ?? []
       },
       observation_info: {
