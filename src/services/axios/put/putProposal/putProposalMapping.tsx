@@ -594,10 +594,11 @@ const getResults = (
 
 export default function MappingPutProposal(proposal: Proposal, isSV: boolean, status: string) {
   const projectMapping = PROJECTS.find(item => item?.id === proposal.proposalType)?.mapping;
-  // isSV from the caller reflects the current OSD cycle. Guard against mismatch by also
-  // treating the proposal as SV when its proposalType doesn't resolve to a known project
-  // (SV proposals use id 9 in the frontend which is not in PROJECTS).
-  const proposalIsSV = isSV || proposal.proposalType === SCIENCE_VERIFICATION_TYPE_ID;
+  // The proposal's own type is counted as authoritative if it exists. 
+  // isSV is used as a fallback when proposalType  doesn't resolve to a known project type.
+  // Most likely scenario would be a brand new proposal that hasn't had its type set yet. 
+  const proposalIsSV =
+    proposal.proposalType === SCIENCE_VERIFICATION_TYPE_ID || (!projectMapping && isSV);
 
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
