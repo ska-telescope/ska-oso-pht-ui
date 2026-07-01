@@ -88,6 +88,13 @@ K8S_CHART_PARAMS += --set ska-oso-pht-ui.ingress.host=$(PRODUCTION_URL) \
   --set global.oda.postgres.secret.vault.secretPath=production/ska-ser-postgres/pghqaa/oda/odaadm \
   --set 'global.oda.postgres.secret.vault.secretKeys={PGHOST,PGPORT,PGDATABASE,PGUSER,PGPASSWORD,PGOPTIONS}'
 
+# tmp
+K8S_CHART_PARAMS += --set ska-oso-services-umbrella.ska-db-oda-umbrella.enabled=false \
+  --set ska-db-oda-umbrella.postgres.enabled=false \
+  --set ska-db-oda-umbrella.ska-db-oda.ska-db-migrations.liquibase.contextFilter='' \
+  --set ska-db-oda-umbrella.ska-db-oda.ska-db-migrations.liquibase.liquibaseSchemaName='liquibase' \
+
+#todo disable engineering
 # TODO Disabled while ODA deployment is worked on and until secrets are available in prod Vault path
 K8S_CHART_PARAMS += --set ska-oso-pht-ui.vault.enabled=false \
   --set ska-oso-services-umbrella.ska-oso-services.vault.enabled=false
