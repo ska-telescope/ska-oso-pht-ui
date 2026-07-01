@@ -137,7 +137,10 @@ info-production:
       kubectl describe secrets -n $KUBE_NAMESPACE
       kubectl describe jobs -n $KUBE_NAMESPACE
       echo "Logs of job:"
-      kubectl logs -l job-name=ska-db-oda-liquibase-test -n $KUBE_NAMESPACE
+      POD=$(kubectl get pod -n "$KUBE_NAMESPACE" -l job-name=ska-db-oda-liquibase-test -o jsonpath='{.items[0].metadata.name}')
+      echo "$POD"
+      kubectl logs "$POD" --previous -n "$KUBE_NAMESPACE"
+      kubectl describe pod "$POD" -n $KUBE_NAMESPACE
   when: manual
   environment:
     name: prod-ska-oso-pht-ui
