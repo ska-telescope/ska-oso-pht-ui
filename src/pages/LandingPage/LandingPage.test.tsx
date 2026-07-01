@@ -9,7 +9,12 @@ import GetProposal from '@services/axios/get/getProposal/getProposal';
 import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
 import PostProposal from '@/services/axios/post/postProposal/postProposal';
+import PostProposalAccess from '@/services/axios/post/postProposalAccess/postProposalAccess';
+import PostSendEmailInvite from '@/services/axios/post/postSendEmailInvite/postSendEmailInvite';
 const mockValidateFn = vi.hoisted(() => vi.fn(() => []));
+const mockNotifyError = vi.hoisted(() => vi.fn());
+const mockNotifySuccess = vi.hoisted(() => vi.fn());
+const mockNotifyWarning = vi.hoisted(() => vi.fn());
 import { PROPOSAL_STATUS } from '@/utils/constants';
 import { ProposalAccess } from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
@@ -55,6 +60,14 @@ vi.mock('@/services/axios/post/postProposal/postProposal', () => ({
   default: vi.fn()
 }));
 
+vi.mock('@/services/axios/post/postProposalAccess/postProposalAccess', () => ({
+  default: vi.fn()
+}));
+
+vi.mock('@/services/axios/post/postSendEmailInvite/postSendEmailInvite', () => ({
+  default: vi.fn()
+}));
+
 vi.mock('@/utils/validation/validation', () => ({
   useValidateProposal: () => mockValidateFn
 }));
@@ -77,9 +90,9 @@ vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
 
 vi.mock('@/utils/notify/useNotify', () => ({
   useNotify: () => ({
-    notifyError: vi.fn(),
-    notifySuccess: vi.fn(),
-    notifyWarning: vi.fn()
+    notifyError: mockNotifyError,
+    notifySuccess: mockNotifySuccess,
+    notifyWarning: mockNotifyWarning
   })
 }));
 
@@ -214,6 +227,8 @@ describe('clone proposal', () => {
     (GetProposalList as Mock).mockResolvedValue([mockRichOriginalProposal]);
     (GetProposalAccessForUser as Mock).mockResolvedValue(mockAccessList);
     (PostProposal as Mock).mockResolvedValue(mockPostProposalSkeleton);
+    (PostProposalAccess as Mock).mockResolvedValue('PROPOSAL-ACCESS-ID-001');
+    (PostSendEmailInvite as Mock).mockResolvedValue('email sent');
 
     vi.spyOn(storageObject, 'useStore').mockReturnValue({
       application: {
@@ -293,6 +308,62 @@ describe('clone proposal', () => {
       expect(mockValidateFn).toHaveBeenCalledWith(
         expect.objectContaining({ id: CLONED_PROPOSAL_ID })
       );
+    });
+  });
+
+  describe('with a co-investigator on the original proposal', () => {
+    const mockProposalWithCoInvestigator: Partial<Proposal> = {
+      ...mockRichOriginalProposal,
+      investigators: [
+        ...(mockRichOriginalProposal.investigators as any[]),
+        {
+          id: 'inv-2',
+          firstName: 'John',
+          lastName: 'Smith',
+          pi: false,
+          email: 'john@example.com'
+        } as any
+      ]
+    };
+
+    beforeEach(() => {
+      (GetProposal as Mock).mockResolvedValue(mockProposalWithCoInvestigator);
+      vi.spyOn(storageObject, 'useStore').mockReturnValue({
+        application: {
+          content1: [],
+          content2: mockProposalWithCoInvestigator,
+          content4: mockAccessList,
+          content5: null,
+          content6: {},
+          content7: {},
+          content8: {},
+          content9: {}
+        },
+        updateAppContent1: mockUpdateAppContent1,
+        updateAppContent2: mockUpdateAppContent2,
+        updateAppContent4: mockUpdateAppContent4,
+        updateAppContent5: vi.fn()
+      } as any);
+    });
+
+    test('warns the user when granting access or inviting a co-investigator fails', async () => {
+      (PostProposalAccess as Mock).mockResolvedValue({ error: 'error.API_UNKNOWN_ERROR' });
+
+      await triggerCloneConfirm();
+
+      await waitFor(() => {
+        expect(mockNotifyWarning).toHaveBeenCalledWith('cloneProposal.investigatorWarning');
+      });
+    });
+
+    test('does not warn the user when all co-investigators are added successfully', async () => {
+      await triggerCloneConfirm();
+
+      await waitFor(() => {
+        expect(mockUpdateAppContent2).toHaveBeenCalled();
+      });
+
+      expect(mockNotifyWarning).not.toHaveBeenCalledWith('cloneProposal.investigatorWarning');
     });
   });
 });
