@@ -708,7 +708,10 @@ export default function DataProduct({ data }: DataProductProps) {
               border: '1px solid',
               borderColor: '#ccc',
               borderRadius: '8px',
-              minHeight: 0
+              minHeight: 0,
+              maxHeight: 'calc(100vh - 260px)',
+              overflowY: 'auto',
+              overflowX: 'hidden',
             }}
           >
             {baseObservations && (
