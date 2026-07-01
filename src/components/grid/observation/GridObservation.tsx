@@ -59,7 +59,6 @@ export default function GridObservation({
     const observingMode = t((isSV ? 'observationType.' : 'scienceCategory.') + row.type);
     const integrationTime = row.supplied?.value != null ? `${row.supplied.value} h` : '-';
 
-    console.log('rowContent row:', row);
 
     return (
       <Stack
