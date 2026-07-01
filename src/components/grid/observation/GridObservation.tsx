@@ -86,7 +86,7 @@ export default function GridObservation({
         <Typography variant="subtitle2">
           Central Frequency: {row.centralFrequency} {centralFrequencyUnits}
         </Typography>
-        {row.spectralResolution && (
+        {row.type === 'spectral' && row.spectralResolution && (
           <Typography variant="subtitle2">Spectral Resolution: {row.spectralResolution}</Typography>
         )}
         <Typography variant="subtitle2">Integration Time: {integrationTime}</Typography>
