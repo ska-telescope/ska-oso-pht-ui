@@ -251,20 +251,39 @@ export default function LandingPage() {
       // Replicate the manual investigator-add process for each co-investigator:
       // create access rights (if they have a real Entra ID) and send an email invite.
       const coInvestigators = originalProposal.investigators?.filter(inv => !inv.pi) ?? [];
+      const failedInvestigators: string[] = [];
       await Promise.allSettled(
         coInvestigators.map(async inv => {
+          let failed = false;
           if (!inv.id.startsWith('temp-')) {
-            await PostProposalAccess(authClient, {
+            const accessResponse = await PostProposalAccess(authClient, {
               id: generateId('access-'),
               prslId: clonedProposal.id,
               userId: inv.id,
               role: 'Co-Investigator',
               permissions: [PROPOSAL_ACCESS_VIEW]
             });
+            if (accessResponse && typeof accessResponse === 'object' && 'error' in accessResponse) {
+              failed = true;
+            }
           }
-          await PostSendEmailInvite(authClient, { email: inv.email, prsl_id: clonedProposal.id });
+          const emailResponse = await PostSendEmailInvite(authClient, {
+            email: inv.email,
+            prsl_id: clonedProposal.id
+          });
+          if (emailResponse && typeof emailResponse === 'object' && 'error' in emailResponse) {
+            failed = true;
+          }
+          if (failed) {
+            failedInvestigators.push(`${inv.firstName} ${inv.lastName}`);
+          }
         })
       );
+
+      if (failedInvestigators.length > 0) {
+        console.error('Failed to add investigators to cloned proposal:', failedInvestigators);
+        notifyWarning(t('cloneProposal.investigatorWarning', { names: failedInvestigators.join('\n') }));
+      }
 
       goToTitlePage();
     } else {
