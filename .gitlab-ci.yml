@@ -136,6 +136,7 @@ info-production:
       kubectl get pods -n $KUBE_NAMESPACE -o jsonpath="{range .items[*]}{'Pod: '}{.metadata.name}:{'\n'}{'\t'}{'Image: '}{.spec.containers[*].image}{'\n'}{'\t'}{'Status: '}{.status.phase}{'\n'}{end}{'\n'}"
       kubectl describe pods -n $KUBE_NAMESPACE 
       kubectl describe secrets -n $KUBE_NAMESPACE
+      kubectl describe jobs -n $KUBE_NAMESPACE
   when: manual
   environment:
     name: prod-ska-oso-pht-ui
