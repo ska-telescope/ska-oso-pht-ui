@@ -136,7 +136,7 @@ info-production:
       kubectl describe pods -n $KUBE_NAMESPACE 
       kubectl describe secrets -n $KUBE_NAMESPACE
       kubectl describe jobs -n $KUBE_NAMESPACE
-      kubectl logs -l app=ska-db-oda -n $KUBE_NAMESPACE
+      kubectl logs -l job-name=ska-db-oda-liquibase-test -n $KUBE_NAMESPACE
   when: manual
   environment:
     name: prod-ska-oso-pht-ui
