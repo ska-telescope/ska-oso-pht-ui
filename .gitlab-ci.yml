@@ -132,10 +132,10 @@ info-production:
   script:
     - |-
       echo "Status of pods in $KUBE_NAMESPACE namespace:"
-      kubectl get pods -n $KUBE_NAMESPACE -o jsonpath="{range .items[*]}{'Pod: '}{.metadata.name}:{'\n'}{'\t'}{'Image: '}{.spec.containers[*].image}{'\n'}{'\t'}{'Status: '}{.status.phase}{'\n'}{end}{'\n'}"
-      kubectl describe pods -n $KUBE_NAMESPACE 
-      kubectl describe secrets -n $KUBE_NAMESPACE
-      kubectl describe jobs -n $KUBE_NAMESPACE
+#      kubectl get pods -n $KUBE_NAMESPACE -o jsonpath="{range .items[*]}{'Pod: '}{.metadata.name}:{'\n'}{'\t'}{'Image: '}{.spec.containers[*].image}{'\n'}{'\t'}{'Status: '}{.status.phase}{'\n'}{end}{'\n'}"
+#      kubectl describe pods -n $KUBE_NAMESPACE
+#      kubectl describe secrets -n $KUBE_NAMESPACE
+#      kubectl describe jobs -n $KUBE_NAMESPACE
       kubectl logs -l job-name=ska-db-oda-liquibase-test --previous -n $KUBE_NAMESPACE
   when: manual
   environment:
