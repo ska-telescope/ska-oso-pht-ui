@@ -553,8 +553,8 @@ export const verifyTargetInTargetTable = (targetName, ra, dec, velocity) => {
     .eq(0)
     .within(() => {
       cy.get('[data-field="name"]').should('contain', targetName);
-      cy.get('[data-field="raStr"]').should('contain', ra);
-      cy.get('[data-field="decStr"]').should('contain', dec);
+      cy.get('[data-field="coord1"]').should('contain', ra);
+      cy.get('[data-field="coord2"]').should('contain', dec);
       cy.get('[data-field="vel"]').should('contain', velocity);
     });
 };

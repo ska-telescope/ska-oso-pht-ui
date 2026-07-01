@@ -43,12 +43,15 @@ export default function ChannelsOutField({
     : t(FIELD + '.error', { min: CHANNELS_OUT_MIN, max: CHANNELS_OUT_MAX });
 
   React.useEffect(() => {
-    const timer = () => {
-      setTimeout(() => {
+    let timerId: ReturnType<typeof setTimeout> | null = null;
+    if (!fieldValid) {
+      timerId = setTimeout(() => {
         setFieldValid(true);
       }, ERROR_SECS);
+    }
+    return () => {
+      if (timerId !== null) clearTimeout(timerId);
     };
-    timer();
   }, [fieldValid]);
 
   return (

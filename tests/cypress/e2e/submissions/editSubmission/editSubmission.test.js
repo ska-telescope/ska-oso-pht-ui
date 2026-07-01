@@ -95,6 +95,7 @@ describe('Edit Proposal', () => {
       uploadTestFile('testFile.pdf');
       verifyTestFileUploaded('testFile.pdf');
       clickFileUpload();
+      verifyAlertFooter('Science Justification PDF successfully uploaded'); //Wait for async PDF upload to complete before validating
       clickToValidateSV();
       cy.wait('@mockValidate');
       verifyAlertFooter('Science Verification Idea is Valid');

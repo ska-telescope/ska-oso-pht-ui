@@ -67,7 +67,9 @@ describe('SV Flow: Observation setup is preserved when details page fields chang
 
     clickStatusIconNav('statusId2');
     pageConfirmed('DETAILS');
-    cy.get('[data-testid="abstractId"]').should('have.value', 'Debounce test summary.');
+    cy.get('[data-testid="abstractId"]')
+      .find('textarea')
+      .should('have.value', 'Debounce test summary.');
   });
 
   it('Changing the abstract does not reset the observation frequency setup, and the abstract is saved', () => {
@@ -82,10 +84,14 @@ describe('SV Flow: Observation setup is preserved when details page fields chang
     // Navigating away blurs the field, triggering the onBlur save
     clickStatusIconNav('statusId5');
     pageConfirmed('OBSERVATION');
-    cy.get('[data-testid="centralFrequency"]').should('have.value', '180');
+    cy.get('[data-testid="centralFrequency"]')
+      .find('input')
+      .should('have.value', '180');
 
     clickStatusIconNav('statusId2');
     pageConfirmed('DETAILS');
-    cy.get('[data-testid="abstractId"]').should('have.value', 'This is a summary of the science idea.');
+    cy.get('[data-testid="abstractId"]')
+      .find('textarea')
+      .should('have.value', 'This is a summary of the science idea.');
   });
 });

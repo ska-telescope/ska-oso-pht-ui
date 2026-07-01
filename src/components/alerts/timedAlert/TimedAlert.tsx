@@ -23,15 +23,16 @@ export default function TimedAlert({ color, gap = 1, delay = 2, testId, text }: 
   };
 
   React.useEffect(() => {
-    const timer = () => {
-      setTimeout(() => {
-        closeFunction();
-      }, delay * ERROR_SECS);
-    };
+    let timerId: ReturnType<typeof setTimeout> | null = null;
     setShow(true);
     if (color === AlertColorTypes.Info || color === AlertColorTypes.Success) {
-      timer();
+      timerId = setTimeout(() => {
+        closeFunction();
+      }, delay * ERROR_SECS);
     }
+    return () => {
+      if (timerId !== null) clearTimeout(timerId);
+    };
   }, [color, delay, text]);
   return (
     <>
