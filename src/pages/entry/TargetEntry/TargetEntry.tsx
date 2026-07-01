@@ -4,6 +4,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
+import SolarSystemObjectField from '@components/fields/solarSystemObject/solarSystemObject.tsx';
 import { leadZero, trailingZeros } from '@utils/helpers.ts';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
@@ -14,15 +15,16 @@ import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
 import VelocityField from '@/components/fields/velocity/Velocity';
 import Target from '@/utils/types/target';
 import {
+  REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
+  REFERENCE_COORDINATE_TYPE_SSO,
   VELOCITY_TYPE,
   FIELD_PATTERN_POINTING_CENTRES,
   WRAPPER_HEIGHT,
   TYPE_PST,
   TYPE_ZOOM,
   TYPE_CONTINUUM,
-  NOTIFICATION_DELAY_IN_SECONDS,
-  REFERENCE_COORDINATE_TYPE_GALACTIC
+  NOTIFICATION_DELAY_IN_SECONDS
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -116,7 +118,15 @@ export default function TargetEntry({
     }
   };
 
-  const isICRS = referenceCoordinates === DEFAULT_REFERENCE_COORDINATES;
+  const isICRS =
+  referenceCoordinates === REFERENCE_COORDINATE_TYPE_ICRS.value;
+
+  const isSSO =
+      referenceCoordinates === REFERENCE_COORDINATE_TYPE_SSO.value;
+
+  const isGalactic =
+      referenceCoordinates === REFERENCE_COORDINATE_TYPE_GALACTIC.value;
+
 
   const setTheCoord1 = (value: string) => {
     setCoord1(value);
@@ -129,7 +139,7 @@ export default function TargetEntry({
         raStr: leadZero(value).toString()
       });
     } else {
-      setTarget({
+          setTarget({
         ...target,
         l: parseFloat(value)
       });
@@ -293,28 +303,44 @@ export default function TargetEntry({
         : null;
       const highestId = highest ? highest.id : 0;
 
-      const isICRS = referenceCoordinates === REFERENCE_COORDINATE_TYPE_ICRS.value;
-
-      const newTarget: Target = {
+      const baseTarget = {
         kind: referenceCoordinates,
         id: highestId + 1,
-        name: name ?? '',
-
-        ...(isICRS
-          ? {
-              raStr: coord1 ?? '',
-              decStr: coord2 ?? ''
-            }
-          : {
-              l: Number(coord1),
-              b: Number(coord2)
-            }),
-
-        redshift: velType === VELOCITY_TYPE.REDSHIFT ? (redshift ?? '') : '',
-        vel: velType === VELOCITY_TYPE.VELOCITY ? (vel ?? '') : '',
-        velType: velType ?? 0,
-        velUnit: velUnit ?? 0
+        name: name ?? ''
       };
+
+      let newTarget: Target;
+
+      if (isSSO) {
+        newTarget = {
+          ...baseTarget,
+          redshift: '',
+          vel: '',
+          velType: 0,
+          velUnit: 0
+        };
+      } else if (isICRS) {
+        newTarget = {
+          ...baseTarget,
+          raStr: coord1 ?? '',
+          decStr: coord2 ?? '',
+          redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift ?? '' : '',
+          vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : '',
+          velType: velType ?? 0,
+          velUnit: velUnit ?? 0
+        };
+      } else {
+        newTarget = {
+          ...baseTarget,
+          l: Number(coord1),
+          b: Number(coord2),
+          redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift ?? '' : '',
+          vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : '',
+          velType: velType ?? 0,
+          velUnit: velUnit ?? 0
+        };
+      }
+
 
       const generateAutoLinkData = async () => {
         const defaults = await autoLinking(newTarget, getProposal, setProposal);
@@ -479,6 +505,14 @@ export default function TargetEntry({
       />
     );
 
+    const solarSystemObjectField = () =>
+    wrapper(
+      <SolarSystemObjectField
+        setValue={setTheName}
+        value={name}
+      />
+    );
+
   const fieldPatternTypeField = () => {
     return wrapper(
       <Box pt={1}>
@@ -502,7 +536,7 @@ export default function TargetEntry({
         testId={'name'}
         value={name}
         setValue={setTheName}
-        suffix={resolveButton()}
+        suffix={!isSSO ? resolveButton() : undefined}
         onBlur={blurName}
         onFocus={() => setHelp('name.help')}
         errorText={nameFieldError}
@@ -574,7 +608,10 @@ export default function TargetEntry({
       <Grid pt={1}>
         <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
           <BorderedSection title={t('coordinate.label')}>
-            {nameField()}
+            {isSSO
+              ? solarSystemObjectField()
+              : nameField()}
+            {!isSSO && (
             <Grid
               container
               spacing={GAP}
@@ -585,9 +622,11 @@ export default function TargetEntry({
               <Grid size={{ md: 12, lg: 6 }}>{skyDirection1Field()}</Grid>
               <Grid size={{ md: 12, lg: 6 }}>{skyDirection2Field()}</Grid>
             </Grid>
+              )}
           </BorderedSection>
         </Box>
       </Grid>
+      {!isSSO && (
       <Grid pt={1}>
         <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
           <BorderedSection title={t('radialMotion.label')}>
@@ -605,6 +644,7 @@ export default function TargetEntry({
           </BorderedSection>
         </Box>
       </Grid>
+      )}
       {!isSV && (
         <Grid pt={1}>
           <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>

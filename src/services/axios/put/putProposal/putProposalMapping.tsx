@@ -2,7 +2,7 @@ import Target, {
   ReferenceCoordinateGalactic,
   ReferenceCoordinateGalacticBackend,
   ReferenceCoordinateICRS,
-  ReferenceCoordinateICRSBackend,
+  ReferenceCoordinateICRSBackend, ReferenceCoordinateSSO, ReferenceCoordinateSSOBackend,
   TargetBackend
 } from '@utils/types/target.tsx';
 import Observation from '@utils/types/observation.tsx';
@@ -36,7 +36,7 @@ import {
   VEL_UNITS,
   VELOCITY_TYPE,
   TYPE_ZOOM_LONG,
-  SA_AA4
+  SA_AA4, REFERENCE_COORDINATE_TYPE_SSO
 } from '@utils/constants.ts';
 import {
   DataProductSDPNew,
@@ -76,28 +76,37 @@ const getSubType = (proposalType: number, proposalSubType: number[]): any => {
 };
 
 export const getReferenceCoordinate = (
-  tar: Target | ReferenceCoordinateICRS | ReferenceCoordinateGalactic
-): ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend => {
-  if ('kind' in tar && tar.kind === REFERENCE_COORDINATE_TYPE_GALACTIC.value) {
-    return {
-      kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
-      l: (tar as Target).l,
-      b: (tar as Target).b,
-      pm_l: (tar as Target).pmL,
-      pm_b: (tar as Target).pmB,
-      epoch: tar.epoch,
-      parallax: tar.parallax
-    } as ReferenceCoordinateGalacticBackend;
+  tar: Target | ReferenceCoordinateICRS | ReferenceCoordinateGalactic | ReferenceCoordinateSSO
+): ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend | ReferenceCoordinateSSOBackend => {
+  switch (tar.kind) {
+    case REFERENCE_COORDINATE_TYPE_ICRS.value:
+        return {
+          kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
+          ra_str: ((tar as Target) || (tar as ReferenceCoordinateICRS)).raStr,
+          dec_str: ((tar as Target) || (tar as ReferenceCoordinateICRS)).decStr,
+          pm_ra: ((tar as Target) || (tar as ReferenceCoordinateICRS)).pmRa,
+          pm_dec: ((tar as Target) || (tar as ReferenceCoordinateICRS)).pmDec,
+          epoch: ((tar as Target) || (tar as ReferenceCoordinateICRS)).epoch,
+          parallax: ((tar as Target) || (tar as ReferenceCoordinateICRS)).parallax
+        } as ReferenceCoordinateICRSBackend;
+
+    case REFERENCE_COORDINATE_TYPE_GALACTIC.value:
+          return {
+            kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
+            l: (tar as Target).l,
+            b: (tar as Target).b,
+            pm_l: (tar as Target).pmL,
+            pm_b: (tar as Target).pmB,
+            epoch: (tar as Target).epoch,
+            parallax: (tar as Target).parallax
+          } as ReferenceCoordinateGalacticBackend;
+
+    case REFERENCE_COORDINATE_TYPE_SSO.value:
+      return {
+        kind: REFERENCE_COORDINATE_TYPE_SSO.label,
+        name: (tar as Target).name
+      } as ReferenceCoordinateSSOBackend
   }
-  return {
-    kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
-    ra_str: ((tar as Target) || (tar as ReferenceCoordinateICRS)).raStr,
-    dec_str: ((tar as Target) || (tar as ReferenceCoordinateICRS)).decStr,
-    pm_ra: ((tar as Target) || (tar as ReferenceCoordinateICRS)).pmRa,
-    pm_dec: ((tar as Target) || (tar as ReferenceCoordinateICRS)).pmDec,
-    epoch: ((tar as Target) || (tar as ReferenceCoordinateICRS)).epoch,
-    parallax: ((tar as Target) || (tar as ReferenceCoordinateICRS)).parallax
-  } as ReferenceCoordinateICRSBackend;
 };
 
 const getTargets = (targets: Target[]): TargetBackend[] => {
