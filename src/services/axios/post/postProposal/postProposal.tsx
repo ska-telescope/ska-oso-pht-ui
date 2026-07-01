@@ -86,14 +86,20 @@ async function PostProposal(
     // investigator_refs is omitted — the backend builds it from the investigators in proposal_info.
     // investigator status is reset to 'Pending' — invitation to the new proposal is fresh.
     // result_details is reset to [] — sensitivity-calc results are stale for a new proposal.
-    const { prsl_id: _omit, investigator_refs: _invRefs, ...mapped } = MappingPutProposal(proposal, isSV, status as string);
+    const {
+      prsl_id: _omit,
+      investigator_refs: _invRefs,
+      ...mapped
+    } = MappingPutProposal(proposal, isSV, status as string);
     const convertedProposal = helpers.transform.trimObject({
       ...mapped,
       proposal_info: {
         ...mapped.proposal_info,
-        investigators: mapped.proposal_info.investigators?.map(
-          ({ status: _s, ...inv }) => ({ ...inv, status: TEAM_STATUS_TYPE_OPTIONS.pending })
-        ) ?? []
+        investigators:
+          mapped.proposal_info.investigators?.map(({ status: _s, ...inv }) => ({
+            ...inv,
+            status: TEAM_STATUS_TYPE_OPTIONS.pending
+          })) ?? []
       },
       observation_info: {
         ...mapped.observation_info,

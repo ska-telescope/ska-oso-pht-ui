@@ -597,7 +597,7 @@ const getResults = (
 /*************************************************************************************************************************/
 
 export default function MappingPutProposal(proposal: Proposal, isSV: boolean, status: string) {
-  const projectMapping = PROJECTS.find(item => item?.id === proposal.proposalType)?.mapping;
+  const projectMapping = PROJECTS.find((item) => item?.id === proposal.proposalType)?.mapping;
   // isSV from the caller reflects the current OSD cycle. Guard against mismatch by also
   // treating the proposal as SV when its proposalType doesn't resolve to a known project
   // (SV proposals use id 9 in the frontend which is not in PROJECTS).

@@ -42,6 +42,15 @@ export default function ChannelsOutField({
     ? ''
     : t(FIELD + '.error', { min: CHANNELS_OUT_MIN, max: CHANNELS_OUT_MAX });
 
+  React.useEffect(() => {
+    const timer = () => {
+      setTimeout(() => {
+        setFieldValid(true);
+      }, ERROR_SECS);
+    };
+    timer();
+  }, [fieldValid]);
+
   return (
     <Box pt={1}>
       <NumberEntry

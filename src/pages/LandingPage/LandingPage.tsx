@@ -37,7 +37,11 @@ import {
   PROPOSAL_STATUS_OPTIONS
 } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
-import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ACCESS_VIEW, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
+import {
+  PROPOSAL_ACCESS_PERMISSIONS,
+  PROPOSAL_ACCESS_VIEW,
+  PROPOSAL_ROLE_PI
+} from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import CycleSelection from '@/components/alerts/cycleSelection/CycleSelection';
 import PostProposal from '@/services/axios/post/postProposal/postProposal';
@@ -250,9 +254,9 @@ export default function LandingPage() {
 
       // Replicate the manual investigator-add process for each co-investigator:
       // create access rights (if they have a real Entra ID) and send an email invite.
-      const coInvestigators = originalProposal.investigators?.filter(inv => !inv.pi) ?? [];
+      const coInvestigators = originalProposal.investigators?.filter((inv) => !inv.pi) ?? [];
       await Promise.allSettled(
-        coInvestigators.map(async inv => {
+        coInvestigators.map(async (inv) => {
           if (!inv.id.startsWith('temp-')) {
             await PostProposalAccess(authClient, {
               id: generateId('access-'),

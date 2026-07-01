@@ -738,7 +738,7 @@ export function mapping(inRec: ProposalBackend): Proposal {
     title: inRec.proposal_info?.title,
     proposalType: isSV
       ? SCIENCE_VERIFICATION_TYPE_ID
-      : PROJECTS?.find(p => p.mapping === inRec.proposal_info?.proposal_type?.main_type)?.id,
+      : PROJECTS?.find((p) => p.mapping === inRec.proposal_info?.proposal_type?.main_type)?.id,
     proposalSubType: isSV
       ? []
       : inRec.proposal_info?.proposal_type?.attributes
