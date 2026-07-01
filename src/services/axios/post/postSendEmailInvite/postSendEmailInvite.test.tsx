@@ -26,6 +26,6 @@ describe('PostSendEmailInvite Service', () => {
   test('returns error.API_UNKNOWN_ERROR when result undefined', async () => {
     mockedAuthClient.post.mockResolvedValue(undefined);
     const result = await postSendEmailInvite(mockedAuthClient, MockEmailInvite);
-    expect(result).to.deep.equal('error.API_UNKNOWN_ERROR');
+    expect(result).to.deep.equal({ error: 'error.API_UNKNOWN_ERROR' });
   });
 });
