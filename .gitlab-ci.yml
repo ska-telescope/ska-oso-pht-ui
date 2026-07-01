@@ -137,6 +137,7 @@ info-production:
       kubectl describe pods -n $KUBE_NAMESPACE 
       kubectl describe secrets -n $KUBE_NAMESPACE
       kubectl describe jobs -n $KUBE_NAMESPACE
+      kubectl logs -l app=ska-db-oda
   when: manual
   environment:
     name: prod-ska-oso-pht-ui
