@@ -91,7 +91,7 @@ K8S_CHART_PARAMS += --set ska-oso-pht-ui.ingress.host=$(PRODUCTION_URL) \
 # tmp
 K8S_CHART_PARAMS += --set ska-oso-services-umbrella.ska-db-oda-umbrella.enabled=false \
   --set ska-db-oda-umbrella.postgres.enabled=false \
-  --set ska-db-oda-umbrella.ska-db-oda.ska-db-migrations.liquibase.contextFilter='' \
+  --set ska-db-oda-umbrella.ska-db-oda.ska-db-migrations.liquibase.contextFilter='without-schema-or-extension' \
   --set ska-db-oda-umbrella.ska-db-oda.ska-db-migrations.liquibase.liquibaseSchemaName='liquibase' \
 
 #todo disable engineering
