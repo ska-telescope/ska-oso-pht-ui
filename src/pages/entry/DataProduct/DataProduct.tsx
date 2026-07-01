@@ -26,7 +26,6 @@ import {
   DP_TYPE_IMAGES,
   FLOW_THROUGH_VALUE,
   FOOTER_HEIGHT_PHT,
-  FOOTER_SPACER,
   FREQUENCY_AVERAGING_DEFAULT,
   IMAGE_SIZE_DEFAULT,
   IMAGE_SIZE_UNIT_DEFAULT,
@@ -135,7 +134,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const isDataTypeOne = () => dataProductType === DP_TYPE_IMAGES;
 
-  const getObservation = () => baseObservations?.find((obs) => obs.id === observationId);
+  const getObservation = () => baseObservations?.find(obs => obs.id === observationId);
 
   const isFlowThrough = () => getObservation()?.pstMode === FLOW_THROUGH_VALUE;
   const isDetectedFilterbank = () => getObservation()?.pstMode === DETECTED_FILTER_BANK_VALUE;
@@ -357,7 +356,7 @@ export default function DataProduct({ data }: DataProductProps) {
   };
 
   const getCentralFrequency = () => {
-    const obj = baseObservations.find((id) => id.id === observationId);
+    const obj = baseObservations.find(id => id.id === observationId);
     const output: ValueUnitPair = {
       value: Number(obj?.centralFrequency) ?? 0,
       unit: obj?.centralFrequencyUnits.toString() ?? ''
@@ -367,7 +366,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const imageSizeUnitsField = () => {
     const getOptions = () => {
-      return [0, 1, 2].map((e) => ({
+      return [0, 1, 2].map(e => ({
         label: presentUnits(t('imageSize.' + e)),
         value: e
       }));
@@ -396,8 +395,50 @@ export default function DataProduct({ data }: DataProductProps) {
       />
     );
 
-  const timeAveragingField = () => {
-    return fieldWrapper(
+  const timeAveragingUnitsField = () => {
+    const getOptions = () => {
+      return [0].map(e => ({
+        label: presentUnits(t('timeAveraging.' + e)),
+        value: e
+      }));
+    };
+
+    return (
+      <DropDown
+        disabled
+        options={getOptions()}
+        testId="timeAveragingUnits"
+        value={timeAveragingUnits}
+        setValue={setTimeAveragingUnits}
+        label=""
+        onFocus={() => setHelp('timeAveragingUnits')}
+      />
+    );
+  };
+
+  const frequencyAveragingUnitsField = () => {
+    const getOptions = () => {
+      return [0].map(e => ({
+        label: presentUnits(t('frequencyAveraging.' + e)),
+        value: e
+      }));
+    };
+
+    return (
+      <DropDown
+        disabled
+        options={getOptions()}
+        testId="frequencyAveragingUnits"
+        value={frequencyAveragingUnits}
+        setValue={setFrequencyAveragingUnits}
+        label=""
+        onFocus={() => setHelp('frequencyAveragingUnits')}
+      />
+    );
+  };
+
+  const timeAveragingField = () =>
+    fieldWrapper(
       <TimeAveragingField
         onFocus={() => setHelp('timeAveraging')}
         required
@@ -405,7 +446,6 @@ export default function DataProduct({ data }: DataProductProps) {
         value={Number(timeAveraging)}
       />
     );
-  };
 
   const frequencyAveragingField = () =>
     fieldWrapper(
@@ -539,10 +579,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const pixelSizeValid = () => pixelSizeValue > 0;
   const taperSizeValid = () => taperLowValue >= 0;
   const taperMidSizeValid = () => taperMidValue >= 0;
-  const channelsOutValid = () =>
-    Number.isInteger(channelsOut) &&
-    channelsOut >= CHANNELS_OUT_MIN &&
-    channelsOut <= CHANNELS_OUT_MAX;
+  const channelsOutValid = () => Number.isInteger(channelsOut) && channelsOut >= CHANNELS_OUT_MIN && channelsOut <= CHANNELS_OUT_MAX;
   const polarisationsValid = () => polarisations.length > 0;
 
   const pageFooter = () => {
@@ -650,28 +687,35 @@ export default function DataProduct({ data }: DataProductProps) {
         sx={{ flexGrow: 1 }}
       >
         <Grid size={{ md: 4, lg: 2 }} sx={{ display: 'flex', flexDirection: 'column' }}>
-          <BorderedSection title={t('page.7.obsTitle')}>
-            <Box
-              sx={{
-                flex: 1,
-                display: 'flex',
-                flexDirection: 'column',
-                border: 'none',
-                borderColor: '#ccc',
-                borderRadius: '8px',
-                minHeight: 0
-              }}
-            >
-              {baseObservations && (
-                <GridObservation
-                  data={baseObservations}
-                  autoSelectId={observationId}
-                  rowClick={(e: any) => setObservationId(e.row.id)}
-                  disabled={maxObservationsReached()}
-                />
-              )}
-            </Box>
+           <BorderedSection
+            title={t('page.7.obsTitle')}
+          >
+
+          <Box
+            sx={{
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              border: '1px solid',
+              borderColor: '#ccc',
+              borderRadius: '8px',
+              minHeight: 0,
+              maxHeight: 'calc(100vh - 260px)',
+              overflowY: 'auto',
+              overflowX: 'hidden',
+            }}
+          >
+            {baseObservations && (
+              <GridObservation
+                data={baseObservations}
+                autoSelectId={observationId}
+                rowClick={(e: any) => setObservationId(e.row.id)}
+                disabled={maxObservationsReached()}
+              />
+            )}
+          </Box>
           </BorderedSection>
+
         </Grid>
         <Grid size={{ md: 7, lg: 7 }}>
           <Stack spacing={GAP}>
@@ -780,7 +824,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
         <Grid size={{ md: 11, lg: 3 }}>
           <BorderedSection borderColor={theme.palette.info.main} title={t('page.7.descTitle')}>
-            <Typography variant="subtitle1">
+            <Typography variant="subtitle1" >
               {t('page.7.descContent.' + getObservation()?.type + '.' + getSuffix())
                 .split('\n')
                 .map((line, index) => (
@@ -798,12 +842,16 @@ export default function DataProduct({ data }: DataProductProps) {
                 isPST()
                   ? theme.palette.warning.main
                   : scData()?.statusGUI !== STATUS_INITIAL
-                    ? theme.palette.success.main
-                    : theme.palette.error.main
+                  ? theme.palette.success.main
+                  : theme.palette.error.main
               }
               title={t('sensitivityCalculatorResults.title')}
             >
-              {isPST() && <Typography variant="subtitle1">{t('page.7.pstUnavailable')}</Typography>}
+              {isPST() && (
+                <Typography variant="subtitle1">
+                  {t('page.7.pstUnavailable')}
+                </Typography>
+              )}
               {!isPST() && (
                 <SensCalcContent data={scData()} isCustom={isCustom()} isNatural={isNatural()} />
               )}
@@ -811,12 +859,7 @@ export default function DataProduct({ data }: DataProductProps) {
           )}
         </Grid>
       </Grid>
-      {osdCyclePolicy?.maxDataProducts !== 1 && (
-        <>
-          <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
-          {pageFooter()}
-        </>
-      )}
+      {osdCyclePolicy?.maxDataProducts !== 1 && pageFooter()}
     </Box>
   );
 }
