@@ -252,7 +252,6 @@ export default function LandingPage() {
         cycle: osdCycleId ?? '',
         investigators: clonedInvestigators
       },
-      isSV ? true : false,
       PROPOSAL_STATUS.DRAFT
     );
 
@@ -293,7 +292,7 @@ export default function LandingPage() {
   };
 
   const deleteConfirmed = async () => {
-    const response = await PutProposal(authClient, getProposal(), isSV, PROPOSAL_STATUS.WITHDRAWN);
+    const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.WITHDRAWN);
     if (response && !('error' in response)) {
       setOpenDeleteDialog(false);
       setFetchList(!fetchList);

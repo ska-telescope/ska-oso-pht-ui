@@ -592,13 +592,11 @@ const getResults = (
 };
 /*************************************************************************************************************************/
 
-export default function MappingPutProposal(proposal: Proposal, isSV: boolean, status: string) {
+export default function MappingPutProposal(proposal: Proposal, status: string) {
   const projectMapping = PROJECTS.find(item => item?.id === proposal.proposalType)?.mapping;
-  // The proposal's own type is counted as authoritative if it exists. 
-  // isSV is used as a fallback when proposalType  doesn't resolve to a known project type.
-  // Most likely scenario would be a brand new proposal that hasn't had its type set yet. 
-  const proposalIsSV =
-    proposal.proposalType === SCIENCE_VERIFICATION_TYPE_ID || (!projectMapping && isSV);
+  // proposalType is always resolved before this is called (set explicitly at creation in
+  // PageFooterPPT.tsx), so it alone is authoritative for SV-ness.
+  const proposalIsSV = proposal.proposalType === SCIENCE_VERIFICATION_TYPE_ID;
 
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,

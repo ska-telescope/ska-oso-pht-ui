@@ -165,7 +165,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
   };
 
   const updateProposal = async (rec: Proposal) => {
-    const response = await PutProposal(authClient, rec, isSV, PROPOSAL_STATUS.DRAFT);
+    const response = await PutProposal(authClient, rec, PROPOSAL_STATUS.DRAFT);
     updateProposalResponse(response);
   };
 

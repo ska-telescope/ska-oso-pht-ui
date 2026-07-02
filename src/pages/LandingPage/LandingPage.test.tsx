@@ -195,7 +195,7 @@ describe('clone proposal', () => {
   };
 
   // Skeleton response returned by PostProposal — mimics what the backend creates:
-  // a minimal record with only the fields sent by mappingPostProposal (title, type, cycle).
+  // a minimal record with only the fields sent in the create payload (title, type, cycle).
   // All rich data fields (targets, observations, abstract, etc.) are empty.
   const mockPostProposalSkeleton: Partial<Proposal> = {
     id: CLONED_PROPOSAL_ID,

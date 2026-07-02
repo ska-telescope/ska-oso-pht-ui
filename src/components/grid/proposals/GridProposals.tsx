@@ -392,7 +392,7 @@ export default function GridProposals({
   };
 
   const deleteConfirmed = async () => {
-    const response = await PutProposal(authClient, getProposal(), isSV, PROPOSAL_STATUS.WITHDRAWN);
+    const response = await PutProposal(authClient, getProposal(), PROPOSAL_STATUS.WITHDRAWN);
     if (response && !('error' in response)) {
       setOpenDeleteDialog(false);
       setFetchList(!fetchList);

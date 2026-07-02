@@ -11,6 +11,7 @@ import {
   PAGE_TITLE_ADD,
   PAGE_TARGET,
   PAGE_OBSERVATION,
+  SCIENCE_VERIFICATION_TYPE_ID,
   STATUS_ARRAY_PAGES_PROPOSAL,
   STATUS_ARRAY_PAGES_SV
 } from '@utils/constants.ts';
@@ -62,10 +63,17 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const createProposal = React.useCallback(async () => {
     notifyWarning(t('addProposal.warning'));
 
+    // SV proposals never go through the proposalType picker (TitleEntry only shows it for
+    // normal proposals), so proposalType is still unset here for SV. isSV is only
+    // trustworthy at this exact moment (the proposal is brand new), so resolve it into
+    // proposalType now rather than passing isSV further down the chain.
     const response = await PostProposal(
       authClient,
-      { ...proposal, cycle: osdCycleId ?? null },
-      isSV,
+      {
+        ...proposal,
+        cycle: osdCycleId ?? null,
+        proposalType: isSV ? SCIENCE_VERIFICATION_TYPE_ID : proposal.proposalType
+      },
       PROPOSAL_STATUS.DRAFT
     );
 
