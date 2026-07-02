@@ -8,7 +8,7 @@ import {
   DataGrid,
   TickBox
 } from '@ska-telescope/ska-gui-components';
-import { getColors, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import { getColors } from '@ska-telescope/ska-gui-components';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import SensCalcDisplaySingle from '../../components/alerts/sensCalcDisplay/single/SensCalcDisplaySingle';
 import Observation from '../../utils/types/observation';
@@ -32,7 +32,6 @@ import TargetObservation from '../../utils/types/targetObservation';
 import DeleteObservationConfirmation from '../../components/alerts/deleteObservationConfirmation/deleteObservationConfirmation';
 import SensCalcModalMultiple from '../../components/alerts/sensCalcModal/multiple/SensCalcModalMultiple';
 import StatusIconDisplay from '../../components/icon/status/statusIcon';
-import { FOOTER_SPACER } from '../../utils/constants';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
 import Alert from '../../components/alerts/standardAlert/StandardAlert';
@@ -686,7 +685,6 @@ export default function LinkingPage() {
           </BorderedSection>
         </Grid>
       </Grid>
-      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       <>
         {openDeleteDialog && currRec?.Obs && (
           <DeleteObservationConfirmation
