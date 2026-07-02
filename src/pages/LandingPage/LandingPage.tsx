@@ -37,17 +37,10 @@ import {
   PROPOSAL_STATUS_OPTIONS
 } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
-import {
-  PROPOSAL_ACCESS_PERMISSIONS,
-  PROPOSAL_ACCESS_VIEW,
-  PROPOSAL_ROLE_PI
-} from '@/utils/aaa/aaaUtils';
+import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ACCESS_VIEW, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import CycleSelection from '@/components/alerts/cycleSelection/CycleSelection';
 import PostProposal from '@/services/axios/post/postProposal/postProposal';
-import PostProposalAccess from '@/services/axios/post/postProposalAccess/postProposalAccess';
-import PostSendEmailInvite from '@/services/axios/post/postSendEmailInvite/postSendEmailInvite';
-import { generateId } from '@/utils/helpers.ts';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useHelp } from '@/utils/help/useHelp';
@@ -216,13 +209,25 @@ export default function LandingPage() {
   const createProposal = async () => {
     notifyWarning(t('addProposal.warning'));
     const originalProposal = getProposal();
+
+    // The clone should only carry over a single investigator, added as PI — not the
+    // original proposal's full investigator list. Prefer the person doing the cloning
+    // (found via their own record on the original proposal); if they're not listed there
+    // (e.g. accessed via an admin/reviewer override), fall back to the original PI instead
+    // of leaving the clone without an investigator.
+    const selfInvestigator = originalProposal.investigators?.find(inv => inv.id === getUserId());
+    const originalPI = originalProposal.investigators?.find(inv => inv.pi);
+    const investigatorToClone = selfInvestigator ?? originalPI;
+    const clonedInvestigators = investigatorToClone ? [{ ...investigatorToClone, pi: true }] : [];
+
     const response = await PostProposal(
       authClient,
       {
         ...originalProposal,
         id: '',
         title: originalProposal.title + ' ' + t('cloneProposal.suffix'),
-        cycle: osdCycleId ?? ''
+        cycle: osdCycleId ?? '',
+        investigators: clonedInvestigators
       },
       isSV ? true : false,
       PROPOSAL_STATUS.DRAFT
@@ -235,7 +240,8 @@ export default function LandingPage() {
         id: (response as Proposal).id,
         title: originalProposal.title + ' ' + t('cloneProposal.suffix'),
         cycle: osdCycleId ?? '',
-        status: PROPOSAL_STATUS.DRAFT
+        status: PROPOSAL_STATUS.DRAFT,
+        investigators: clonedInvestigators
       };
       setProposal(clonedProposal);
       updateAppContent1(validateProposal(clonedProposal));
@@ -254,11 +260,9 @@ export default function LandingPage() {
 
       // Replicate the manual investigator-add process for each co-investigator:
       // create access rights (if they have a real Entra ID) and send an email invite.
-      const coInvestigators = originalProposal.investigators?.filter((inv) => !inv.pi) ?? [];
       const coInvestigators = originalProposal.investigators?.filter(inv => !inv.pi) ?? [];
       const failedInvestigators: string[] = [];
       await Promise.allSettled(
-        coInvestigators.map(async (inv) => {
         coInvestigators.map(async inv => {
           let failed = false;
           if (!inv.id.startsWith('temp-')) {

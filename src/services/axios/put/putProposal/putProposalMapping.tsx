@@ -597,10 +597,10 @@ const getResults = (
 /*************************************************************************************************************************/
 
 export default function MappingPutProposal(proposal: Proposal, isSV: boolean, status: string) {
-  const projectMapping = PROJECTS.find(item => item?.id === proposal.proposalType)?.mapping;
-  // The proposal's own type is counted as authoritative if it exists. 
+  const projectMapping = PROJECTS.find((item) => item?.id === proposal.proposalType)?.mapping;
+  // The proposal's own type is counted as authoritative if it exists.
   // isSV is used as a fallback when proposalType  doesn't resolve to a known project type.
-  // Most likely scenario would be a brand new proposal that hasn't had its type set yet. 
+  // Most likely scenario would be a brand new proposal that hasn't had its type set yet.
   const proposalIsSV =
     proposal.proposalType === SCIENCE_VERIFICATION_TYPE_ID || (!projectMapping && isSV);
 
