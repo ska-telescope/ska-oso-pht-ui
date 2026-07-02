@@ -708,7 +708,7 @@ export default function DataProduct({ data }: DataProductProps) {
               flex: 1,
               display: 'flex',
               flexDirection: 'column',
-              border: '0 none',
+              border: 'none',
               borderColor: '#ccc',
               borderRadius: '8px',
               minHeight: 0
