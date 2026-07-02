@@ -21,6 +21,7 @@ import GetProposalList from '@/services/axios/get/getProposalList/getProposalLis
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
 import Proposal from '@/utils/types/proposal';
+import Investigator from '@/utils/types/investigator';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
 import { useValidateProposal } from '@/utils/validation/validation';
 import {
@@ -29,6 +30,7 @@ import {
   FOOTER_HEIGHT_PHT,
   FOOTER_SPACER,
   isCypress,
+  TEAM_STATUS_TYPE_OPTIONS,
   TYPE_CONTINUUM,
   NAV,
   PAGE_LANDING,
@@ -37,7 +39,13 @@ import {
   PROPOSAL_STATUS_OPTIONS
 } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
-import { getUserId, PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
+import {
+  getUserEmail,
+  getUserId,
+  getUserName,
+  PROPOSAL_ACCESS_PERMISSIONS,
+  PROPOSAL_ROLE_PI
+} from '@/utils/aaa/aaaUtils';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import CycleSelection from '@/components/alerts/cycleSelection/CycleSelection';
 import PostProposal from '@/services/axios/post/postProposal/postProposal';
@@ -210,15 +218,30 @@ export default function LandingPage() {
     notifyWarning(t('addProposal.warning'));
     const originalProposal = getProposal();
 
-    // The clone should only carry over a single investigator, added as PI — not the
-    // original proposal's full investigator list. Prefer the person doing the cloning
-    // (found via their own record on the original proposal); if they're not listed there
-    // (e.g. accessed via an admin/reviewer override), fall back to the original PI instead
-    // of leaving the clone without an investigator.
+    // The person doing the cloning always becomes the sole PI of the new proposal — not
+    // the original proposal's full investigator list. Prefer their own record on the
+    // original proposal (richer/already-on-file details); if they're not listed there
+    // (e.g. accessed via an admin/reviewer override), build a fresh record from their
+    // logged-in account so the clone is never left without a PI.
+    const buildSelfInvestigatorFromAccount = (): Investigator => {
+      const [firstName, ...rest] = getUserName().split(' ');
+      return {
+        id: getUserId(),
+        firstName: firstName ?? '',
+        lastName: rest.join(' '),
+        email: getUserEmail(),
+        affiliation: '',
+        phdThesis: false,
+        status: TEAM_STATUS_TYPE_OPTIONS.pending,
+        pi: true,
+        officeLocation: null,
+        jobTitle: null
+      };
+    };
     const selfInvestigator = originalProposal.investigators?.find(inv => inv.id === getUserId());
-    const originalPI = originalProposal.investigators?.find(inv => inv.pi);
-    const investigatorToClone = selfInvestigator ?? originalPI;
-    const clonedInvestigators = investigatorToClone ? [{ ...investigatorToClone, pi: true }] : [];
+    const clonedInvestigators = [
+      selfInvestigator ? { ...selfInvestigator, pi: true } : buildSelfInvestigatorFromAccount()
+    ];
 
     const response = await PostProposal(
       authClient,

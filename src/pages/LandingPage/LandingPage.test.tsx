@@ -373,48 +373,24 @@ describe('clone proposal', () => {
       } as any);
     });
 
-    test('falls back to the original PI rather than the cloning user or a co-investigator', async () => {
+    test('still adds the cloning user as sole PI, built from their account rather than someone else\'s record', async () => {
       await triggerCloneConfirm();
 
+      // getUserName()/getUserEmail() read from the (unset in tests) MSAL account, so they
+      // resolve to '' here — the point of this test is that a record is always built for
+      // the cloning user's own id, never reusing John's or Alex's details.
       await waitFor(() => {
         expect(mockUpdateAppContent2).toHaveBeenLastCalledWith(
           expect.objectContaining({
-            investigators: [expect.objectContaining({ id: 'inv-2', firstName: 'John', pi: true })]
+            investigators: [
+              expect.objectContaining({ id: TMP_REVIEWER_ID, email: '', pi: true })
+            ]
           })
         );
       });
-    });
 
-    test('clones with no investigators when the original proposal has no PI either', async () => {
-      const mockProposalWithoutAnyPI: Partial<Proposal> = {
-        ...mockProposalWithoutSelf,
-        investigators: mockProposalWithoutSelf.investigators?.map(inv => ({ ...inv, pi: false }))
-      };
-      (GetProposal as Mock).mockResolvedValue(mockProposalWithoutAnyPI);
-      vi.spyOn(storageObject, 'useStore').mockReturnValue({
-        application: {
-          content1: [],
-          content2: mockProposalWithoutAnyPI,
-          content4: mockAccessList,
-          content5: null,
-          content6: {},
-          content7: {},
-          content8: {},
-          content9: {}
-        },
-        updateAppContent1: mockUpdateAppContent1,
-        updateAppContent2: mockUpdateAppContent2,
-        updateAppContent4: mockUpdateAppContent4,
-        updateAppContent5: vi.fn()
-      } as any);
-
-      await triggerCloneConfirm();
-
-      await waitFor(() => {
-        expect(mockUpdateAppContent2).toHaveBeenLastCalledWith(
-          expect.objectContaining({ investigators: [] })
-        );
-      });
+      const lastCall = mockUpdateAppContent2.mock.calls.at(-1)?.[0];
+      expect(lastCall?.investigators).toHaveLength(1);
     });
   });
 });

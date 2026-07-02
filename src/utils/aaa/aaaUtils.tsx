@@ -41,7 +41,8 @@ export const SW_ENGINEER = 'obs-integrationenvs-oauth2role-sweng-11162868063';
 
 // Access logic
 const hasOverride = () => APP_OVERRIDE_GROUPS && APP_OVERRIDE_GROUPS.length > 0;
-const testOverride = (group: string) => APP_OVERRIDE_GROUPS.split(',').includes(group);
+// Unrelated pre-existing type error, spotted during development.
+const testOverride = (group: string) => (APP_OVERRIDE_GROUPS ?? '').split(',').includes(group);
 
 export const hasAccess = (group: string) =>
   hasOverride() ? testOverride(group) : getUserGroups().hasGroup(group);
@@ -73,6 +74,13 @@ export const getUserName = () => {
   const account = getAccount();
   return account && typeof account === 'object' && 'name' in account
     ? (account as { name?: string }).name ?? ''
+    : '';
+};
+
+export const getUserEmail = () => {
+  const account = getAccount();
+  return account && typeof account === 'object' && 'username' in account
+    ? (account as { username?: string }).username ?? ''
     : '';
 };
 
