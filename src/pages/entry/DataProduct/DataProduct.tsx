@@ -27,6 +27,7 @@ import {
   DP_TYPE_IMAGES,
   FLOW_THROUGH_VALUE,
   FOOTER_HEIGHT_PHT,
+  FOOTER_SPACER,
   FREQUENCY_AVERAGING_DEFAULT,
   FREQUENCY_AVERAGING_UNIT_DEFAULT,
   IMAGE_SIZE_DEFAULT,
@@ -863,6 +864,7 @@ export default function DataProduct({ data }: DataProductProps) {
           )}
         </Grid>
       </Grid>
+      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       {osdCyclePolicy?.maxDataProducts !== 1 && pageFooter()}
     </Box>
   );

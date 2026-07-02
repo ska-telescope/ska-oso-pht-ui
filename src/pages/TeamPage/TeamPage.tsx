@@ -3,7 +3,6 @@ import React from 'react';
 import { Box, Grid, Tab, Tabs, SvgIcon, Typography } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import { validateTeamPage } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
 import Shell from '../../components/layout/Shell/Shell';
@@ -13,7 +12,6 @@ import FieldWrapper from '../../components/wrappers/fieldWrapper/FieldWrapper';
 import GridMembers from '../../components/grid/members/GridMembers';
 import StarIcon from '../../components/icon/starIcon/starIcon';
 import {
-  FOOTER_SPACER,
   GRID_MEMBERS_ACTIONS,
   NOTIFICATION_DELAY_IN_SECONDS,
   PAGE_TEAM
@@ -312,7 +310,6 @@ export default function TeamPage() {
       >
         {accessAlertContent()}
       </AlertDialog>
-      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
     </Shell>
   );
 }

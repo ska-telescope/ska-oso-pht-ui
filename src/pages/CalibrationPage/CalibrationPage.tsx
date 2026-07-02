@@ -1,13 +1,13 @@
 import React from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { AlertColorTypes, Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Box, Grid } from '@mui/material';
 import { Proposal } from '@utils/types/proposal.tsx';
 import Shell from '../../components/layout/Shell/Shell';
 import CalibrationEntry from '../entry/Calibration/CalibrationEntry';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import { FOOTER_SPACER, PATH, PAGE_CALIBRATION, PAGE_CALIBRATION_ENTRY } from '@/utils/constants';
+import { PATH, PAGE_CALIBRATION, PAGE_CALIBRATION_ENTRY } from '@/utils/constants';
 import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import AddButton from '@/components/button/Add/Add';
@@ -92,7 +92,6 @@ export default function CalibrationPage() {
             )}
           </>
         )}
-        <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       </Box>
     </Shell>
   );
