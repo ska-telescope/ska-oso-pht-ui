@@ -10,7 +10,8 @@ import {
   FREQUENCY_MHZ,
   SA_AA2,
   TYPE_CONTINUUM,
-  TYPE_ZOOM
+  TYPE_ZOOM,
+  TYPE_PST
 } from '@/utils/constants';
 
 // Mock ResizeObserver for test environment
@@ -269,12 +270,10 @@ describe('GridObservation spectral resolution conditional rendering', () => {
 
     wrapper(<GridObservation data={multiObs} rowClick={rowClickMock} />);
     
-    // Continuum observation should not show spectral resolution
-    const continuumSection = screen.getByText('CONTINUUM-OBS').parentElement;
-    expect(continuumSection?.querySelector('*')).toBeTruthy();
-    expect(continuumSection?.textContent).not.toContain('Spectral Resolution');
+    // Continuum observation should show hard-coded spectral resolution
+    expect(screen.getByText(/Spectral Resolution: 5\.43 kHz/)).toBeInTheDocument();
 
-    // Zoom observation should show spectral resolution
+    // Zoom observation should show spectral resolution from row value
     expect(screen.getByText(/Spectral Resolution: 1\.0/)).toBeInTheDocument();
   });
 });
@@ -371,3 +370,71 @@ describe('GridObservation disabled state', () => {
     expect(rowClickMock).toHaveBeenCalledTimes(firstCallCount + 1);
   });
 });
+describe('GridObservation hard-coded spectral resolution fallback', () => {
+  let rowClickMock: ReturnType<typeof vi.fn>;
+
+  beforeEach(() => {
+    rowClickMock = vi.fn();
+  });
+
+  const makeObs = (overrides: Partial<Observation>): Observation[] => [
+    {
+      id: 'OBS-SPECTRAL',
+      centralFrequency: 200,
+      centralFrequencyUnits: FREQUENCY_MHZ,
+      continuumBandwidth: 150,
+      continuumBandwidthUnits: FREQUENCY_MHZ,
+      bandwidth: 5,
+      numSubBands: 1,
+      subarray: SA_AA2,
+      type: TYPE_ZOOM,
+      telescope: 0,
+      linked: '',
+      observingBand: BAND_LOW_STR,
+      elevation: 0,
+      supplied: { type: 0, value: 10, units: 0 },
+      spectralResolution: '',
+      effectiveResolution: '',
+      ...overrides
+    }
+  ];
+
+  it('displays spectral resolution from row value when type is spectral', () => {
+    wrapper(
+      <GridObservation
+        data={makeObs({ 
+          type: TYPE_ZOOM, 
+          spectralResolution: '0.75 kHz' 
+        })}
+        rowClick={rowClickMock}
+      />
+    );
+    expect(screen.getByText('Spectral Resolution: 0.75 kHz')).toBeInTheDocument();
+  });
+
+  it('displays hard-coded 5.43 kHz for continuum observations without spectral resolution', () => {
+    wrapper(
+      <GridObservation
+        data={makeObs({ 
+          type: TYPE_CONTINUUM, 
+          spectralResolution: '' 
+        })}
+        rowClick={rowClickMock}
+      />
+    );
+    expect(screen.getByText('Spectral Resolution: 5.43 kHz')).toBeInTheDocument();
+  });
+
+  it('displays hard-coded 3.62 kHz for PST observations without spectral resolution', () => {
+    wrapper(
+      <GridObservation
+        data={makeObs({ 
+          type: TYPE_PST, 
+          spectralResolution: '' 
+        })}
+        rowClick={rowClickMock}
+      />
+    );
+    expect(screen.getByText('Spectral Resolution: 3.62 kHz')).toBeInTheDocument();
+  });
+ });

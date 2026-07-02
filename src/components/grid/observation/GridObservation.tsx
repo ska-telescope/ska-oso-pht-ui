@@ -14,6 +14,11 @@ interface GridObservationProps {
   autoSelectId?: string | number;
 }
 
+const HARD_CODED_SPECTRAL_RESOLUTION_BY_TYPE: Record<string, string> = {
+  continuum: '5.43 kHz',
+  pst: '3.62 kHz'
+};
+
 export default function GridObservation({
   data,
   disabled = false,
@@ -58,6 +63,10 @@ export default function GridObservation({
     const centralFrequencyUnits = getBandwidthOrFrequencyUnitsLabel(row.centralFrequencyUnits) ?? '';
     const observingMode = t((isSV ? 'observationType.' : 'scienceCategory.') + row.type);
     const integrationTime = row.supplied?.value != null ? `${row.supplied.value} h` : '-';
+    const spectralResolution =
+      row.type === 'spectral'
+        ? row.spectralResolution
+        : HARD_CODED_SPECTRAL_RESOLUTION_BY_TYPE[row.type];
 
 
     return (
@@ -85,8 +94,8 @@ export default function GridObservation({
         <Typography variant="subtitle2">
           Central Frequency: {row.centralFrequency} {centralFrequencyUnits}
         </Typography>
-        {row.type === 'spectral' && row.spectralResolution && (
-          <Typography variant="subtitle2">Spectral Resolution: {row.spectralResolution}</Typography>
+        {spectralResolution && (
+          <Typography variant="subtitle2">Spectral Resolution: {spectralResolution}</Typography>
         )}
         <Typography variant="subtitle2">Integration Time: {integrationTime}</Typography>
       </Stack>
