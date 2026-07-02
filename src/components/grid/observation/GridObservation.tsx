@@ -212,7 +212,7 @@ export default function GridObservation({
           height: gridHeight,
           minHeight: 0,
           overflow: 'hidden',
-          border: '0 none',
+          border: 'none',
           pointerEvents: disabled ? 'none' : 'auto',
           opacity: disabled ? 0.5 : 1,
           '& .MuiDataGrid-row': { borderBottom: 'none' },
