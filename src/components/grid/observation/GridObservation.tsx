@@ -15,13 +15,10 @@ interface GridObservationProps {
   autoSelectId?: string | number;
 }
 
-
 const HARD_CODED_SPECTRAL_RESOLUTION_BY_TYPE: Record<string, string> = {
   continuum: '5.43 kHz',
   pst: '3.62 kHz'
 };
-
-
 export default function GridObservation({
   data,
   disabled = false,
