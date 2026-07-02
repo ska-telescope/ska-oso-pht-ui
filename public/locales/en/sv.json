@@ -10,7 +10,8 @@
     "warning": "Please wait whilst we create a new Science Verification Idea."
   },
   "addTarget": {
-    "toolTip": "Will add the target to the list associated with this Science Verification Idea."
+    "toolTip": "Will add the target to the list associated with this Science Verification Idea.",
+    "clearToolTip": "Clear all entered target form values"
   },
   "assignBtn": {
     "toolTip": "Assign Science Verification Ideas to a review panel"

@@ -55,6 +55,7 @@
     "valueError": "Please provide a target name",
     "label": "Add Target",
     "toolTip": "Will add the target to the list associated with this proposal",
+    "clearToolTip": "Clear all entered target form values",
     "galacticDisabled": "Galactic targets are not yet supported, full integration imminient",
     "success": "Target is successfully added",
     "warning": "Saving the target"
