@@ -47,7 +47,6 @@ describe('Helper Functions', () => {
   test('mappingPutProposal returns mapped proposal from frontend to backend format', () => {
     const proposalBackEnd: ProposalBackend = MappingPutProposal(
       MockProposalFrontend,
-      false,
       PROPOSAL_STATUS.DRAFT
     );
     expect(proposalBackEnd).to.deep.equal(MockProposalBackend);
@@ -56,7 +55,6 @@ describe('Helper Functions', () => {
   test('mappingPutProposal returns mapped proposal with zoom observation from frontend to backend format', () => {
     const proposalBackEnd: ProposalBackend = MappingPutProposal(
       MockProposalFrontendZoom,
-      false,
       PROPOSAL_STATUS.DRAFT
     );
     expect(proposalBackEnd).to.deep.equal(MockProposalBackendZoom);
@@ -66,7 +64,6 @@ describe('Helper Functions', () => {
     const proposal = { ...MockProposalFrontend, proposalSubType: undefined };
     const proposalBackEnd: ProposalBackend = MappingPutProposal(
       proposal,
-      false,
       PROPOSAL_STATUS.DRAFT
     );
     expect(proposalBackEnd).to.deep.equal({
@@ -100,7 +97,6 @@ describe('PutProposal Service', () => {
     const result = await PutProposal(
       mockedAuthClient,
       MockProposalFrontend,
-      false,
       PROPOSAL_STATUS.DRAFT
     );
     expect(result).to.deep.equal(MockProposalBackend);
@@ -112,7 +108,6 @@ describe('PutProposal Service', () => {
     const result = await PutProposal(
       mockedAuthClient,
       MockProposalFrontend,
-      false,
       PROPOSAL_STATUS.DRAFT
     );
     expect(result).to.deep.equal(MockProposalBackend);
@@ -124,7 +119,6 @@ describe('PutProposal Service', () => {
     const result = await PutProposal(
       mockedAuthClient,
       MockProposalFrontend,
-      false,
       PROPOSAL_STATUS.DRAFT
     );
     expect(result).toStrictEqual({ error: 'Network Error' });
@@ -136,7 +130,6 @@ describe('PutProposal Service', () => {
     const result = await PutProposal(
       mockedAuthClient,
       MockProposalFrontend,
-      false,
       PROPOSAL_STATUS.DRAFT
     );
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
@@ -148,7 +141,6 @@ describe('PutProposal Service', () => {
     const result = await PutProposal(
       mockedAuthClient,
       MockProposalFrontend,
-      false,
       PROPOSAL_STATUS.DRAFT
     );
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
@@ -160,7 +152,6 @@ describe('PutProposal Service', () => {
     const result = await PutProposal(
       mockedAuthClient,
       MockProposalFrontend,
-      false,
       PROPOSAL_STATUS.DRAFT
     );
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });

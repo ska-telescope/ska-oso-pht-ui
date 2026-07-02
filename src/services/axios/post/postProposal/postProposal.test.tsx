@@ -1,10 +1,10 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
+import Proposal from '@utils/types/proposal.tsx';
 import { PROPOSAL_STATUS } from '@utils/constants.ts';
 import * as CONSTANTS from '@utils/constants.ts';
 import { mapping } from '../../get/getProposal/getProposal.tsx';
-import PostProposal, { mappingPostProposal, mockPostProposal } from './postProposal.tsx';
+import PostProposal, { mockPostProposal } from './postProposal.tsx';
 import { MockProposalFrontend } from './mockProposalFrontend.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
 
@@ -12,31 +12,6 @@ describe('Helper Functions', () => {
   test('mockPostProposal returns mock proposal', () => {
     const result = mockPostProposal();
     expect(result).to.deep.equal(mapping(MockProposalBackend));
-  });
-
-  test('mappingPostProposal returns mapped proposal from frontend to backend format', () => {
-    const proposalBackEnd: ProposalBackend = mappingPostProposal(
-      MockProposalFrontend,
-      PROPOSAL_STATUS.DRAFT,
-      false
-    );
-    expect(proposalBackEnd).to.deep.equal(MockProposalBackend);
-  });
-
-  test('mappingPostProposal returns mapped proposal and returns empty array of sub-type when not specified', () => {
-    const proposal = { ...MockProposalFrontend, proposalSubType: undefined };
-    const proposalBackEnd: ProposalBackend = mappingPostProposal(
-      proposal,
-      PROPOSAL_STATUS.DRAFT,
-      false
-    );
-    expect(proposalBackEnd).to.deep.equal({
-      ...MockProposalBackend,
-      proposal_info: {
-        ...MockProposalBackend.proposal_info,
-        proposal_type: { ...MockProposalBackend.proposal_info.proposal_type, attributes: [] }
-      }
-    });
   });
 });
 
@@ -61,7 +36,6 @@ describe('PostProposal Service', () => {
     const result = await PostProposal(
       mockedAuthClient,
       MockProposalFrontend,
-      false,
       PROPOSAL_STATUS.DRAFT
     );
     expect(result).to.deep.equal(mapping(MockProposalBackend));
@@ -73,7 +47,6 @@ describe('PostProposal Service', () => {
     const result = (await PostProposal(
       mockedAuthClient,
       MockProposalFrontend,
-      false,
       PROPOSAL_STATUS.DRAFT
     )) as Proposal;
     expect(result).to.deep.equal(mapping(MockProposalBackend));
@@ -85,7 +58,6 @@ describe('PostProposal Service', () => {
     const result = await PostProposal(
       mockedAuthClient,
       MockProposalFrontend,
-      false,
       PROPOSAL_STATUS.DRAFT
     );
     expect(result).toStrictEqual({ error: 'Network Error' });
@@ -97,7 +69,6 @@ describe('PostProposal Service', () => {
     const result = await PostProposal(
       mockedAuthClient,
       MockProposalFrontend,
-      false,
       PROPOSAL_STATUS.DRAFT
     );
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
@@ -109,7 +80,6 @@ describe('PostProposal Service', () => {
     const result = await PostProposal(
       mockedAuthClient,
       MockProposalFrontend,
-      false,
       PROPOSAL_STATUS.DRAFT
     );
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
@@ -119,7 +89,7 @@ describe('PostProposal Service', () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockResolvedValue({ data: MockProposalBackend });
 
-    await PostProposal(mockedAuthClient, MockProposalFrontend, false, PROPOSAL_STATUS.DRAFT);
+    await PostProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
 
     const [, sentBody] = mockedAuthClient.post.mock.calls[0];
     expect(sentBody).not.toHaveProperty('prsl_id');
@@ -133,7 +103,6 @@ describe('PostProposal Service', () => {
     const result = await PostProposal(
       mockedAuthClient,
       MockProposalFrontend,
-      false,
       PROPOSAL_STATUS.DRAFT
     );
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });

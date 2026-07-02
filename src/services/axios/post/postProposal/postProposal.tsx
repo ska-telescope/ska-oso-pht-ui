@@ -1,13 +1,11 @@
 import { helpers } from '@utils/helpers.ts';
 import {
   OSO_SERVICES_PROPOSAL_PATH,
-  PROJECTS,
-  SCIENCE_VERIFICATION,
   SKA_OSO_SERVICES_URL,
   TEAM_STATUS_TYPE_OPTIONS,
   USE_LOCAL_DATA
 } from '@utils/constants.ts';
-import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
+import Proposal from '@utils/types/proposal.tsx';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
 import { mapping } from '../../get/getProposal/getProposal.tsx';
 import MappingPutProposal from '../../put/putProposal/putProposalMapping.tsx';
@@ -72,7 +70,6 @@ export function mockPostProposal() {
 async function PostProposal(
   authAxiosClient: ReturnType<typeof useAxiosAuthClient>,
   proposal: Proposal,
-  isSV: boolean,
   status?: string
 ): Promise<Proposal | { error: string }> {
   if (USE_LOCAL_DATA) {
