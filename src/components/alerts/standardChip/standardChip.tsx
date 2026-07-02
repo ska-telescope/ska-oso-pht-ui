@@ -74,14 +74,7 @@ export default function StandardChip({
             sx={{
               fontWeight: 400,
               borderColor: themeColor(color),
-              borderWidth: 2,
-              height: 'auto',
-              '& .MuiChip-label': {
-                whiteSpace: 'pre-line',
-                display: 'block',
-                paddingTop: '6px',
-                paddingBottom: '6px'
-              }
+              borderWidth: 2
             }}
           />
         </div>

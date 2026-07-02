@@ -191,8 +191,7 @@
     "label": "Clone",
     "toolTip": "Clone proposal",
     "confirm": "Clone this proposal.",
-    "suffix": " - Copy",
-    "investigatorWarning": "A problem occurred while adding the following investigators to your new proposal:\n{{names}}\nPlease check your investigator list and manually add any missing investigators."
+    "suffix": " - Copy"
   },
   "closeBtn": {
     "label": "Close"

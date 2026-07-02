@@ -9,13 +9,11 @@ import GetProposal from '@services/axios/get/getProposal/getProposal';
 import GetProposalList from '@/services/axios/get/getProposalList/getProposalList';
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
 import PostProposal from '@/services/axios/post/postProposal/postProposal';
-import PostProposalAccess from '@/services/axios/post/postProposalAccess/postProposalAccess';
-import PostSendEmailInvite from '@/services/axios/post/postSendEmailInvite/postSendEmailInvite';
 const mockValidateFn = vi.hoisted(() => vi.fn(() => []));
 const mockNotifyError = vi.hoisted(() => vi.fn());
 const mockNotifySuccess = vi.hoisted(() => vi.fn());
 const mockNotifyWarning = vi.hoisted(() => vi.fn());
-import { PROPOSAL_STATUS } from '@/utils/constants';
+import { PROPOSAL_STATUS, TMP_REVIEWER_ID } from '@/utils/constants';
 import { ProposalAccess } from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 import Proposal from '@/utils/types/proposal';
@@ -173,11 +171,18 @@ describe('clone proposal', () => {
     observations: [{ id: 'obs-1', telescope: 'SKA-LOW' } as any],
     investigators: [
       {
-        id: 'inv-1',
+        id: TMP_REVIEWER_ID,
         firstName: 'Jane',
         lastName: 'Doe',
         pi: true,
         email: 'jane@example.com'
+      } as any,
+      {
+        id: 'inv-2',
+        firstName: 'John',
+        lastName: 'Smith',
+        pi: false,
+        email: 'john@example.com'
       } as any
     ],
     dataProductSDP: [{ id: 'dp-1' } as any],
@@ -227,8 +232,6 @@ describe('clone proposal', () => {
     (GetProposalList as Mock).mockResolvedValue([mockRichOriginalProposal]);
     (GetProposalAccessForUser as Mock).mockResolvedValue(mockAccessList);
     (PostProposal as Mock).mockResolvedValue(mockPostProposalSkeleton);
-    (PostProposalAccess as Mock).mockResolvedValue('PROPOSAL-ACCESS-ID-001');
-    (PostSendEmailInvite as Mock).mockResolvedValue('email sent');
 
     vi.spyOn(storageObject, 'useStore').mockReturnValue({
       application: {
@@ -279,11 +282,29 @@ describe('clone proposal', () => {
           targets: mockRichOriginalProposal.targets,
           observations: mockRichOriginalProposal.observations,
           abstract: mockRichOriginalProposal.abstract,
-          dataProductSDP: mockRichOriginalProposal.dataProductSDP,
-          investigators: mockRichOriginalProposal.investigators
+          dataProductSDP: mockRichOriginalProposal.dataProductSDP
         })
       );
     });
+  });
+
+  test('adds only the cloning user as PI, dropping the original co-investigators', async () => {
+    await triggerCloneConfirm();
+
+    // mockRichOriginalProposal's investigators are [Jane Doe (PI, id === TMP_REVIEWER_ID), John Smith (co-I)].
+    // The clone should carry over only Jane, re-marked as PI, and drop John entirely.
+    await waitFor(() => {
+      expect(mockUpdateAppContent2).toHaveBeenLastCalledWith(
+        expect.objectContaining({
+          investigators: [
+            expect.objectContaining({ id: TMP_REVIEWER_ID, firstName: 'Jane', pi: true })
+          ]
+        })
+      );
+    });
+
+    const lastCall = mockUpdateAppContent2.mock.calls.at(-1)?.[0];
+    expect(lastCall?.investigators).toHaveLength(1);
   });
 
   test('does not overwrite cloned proposal with empty PostProposal skeleton', async () => {
@@ -311,27 +332,33 @@ describe('clone proposal', () => {
     });
   });
 
-  describe('with a co-investigator on the original proposal', () => {
-    const mockProposalWithCoInvestigator: Partial<Proposal> = {
+  describe('when the cloning user is not listed as an investigator on the original proposal', () => {
+    const mockProposalWithoutSelf: Partial<Proposal> = {
       ...mockRichOriginalProposal,
       investigators: [
-        ...(mockRichOriginalProposal.investigators as any[]),
         {
           id: 'inv-2',
           firstName: 'John',
           lastName: 'Smith',
-          pi: false,
+          pi: true,
           email: 'john@example.com'
+        } as any,
+        {
+          id: 'inv-3',
+          firstName: 'Alex',
+          lastName: 'Jones',
+          pi: false,
+          email: 'alex@example.com'
         } as any
       ]
     };
 
     beforeEach(() => {
-      (GetProposal as Mock).mockResolvedValue(mockProposalWithCoInvestigator);
+      (GetProposal as Mock).mockResolvedValue(mockProposalWithoutSelf);
       vi.spyOn(storageObject, 'useStore').mockReturnValue({
         application: {
           content1: [],
-          content2: mockProposalWithCoInvestigator,
+          content2: mockProposalWithoutSelf,
           content4: mockAccessList,
           content5: null,
           content6: {},
@@ -346,24 +373,48 @@ describe('clone proposal', () => {
       } as any);
     });
 
-    test('warns the user when granting access or inviting a co-investigator fails', async () => {
-      (PostProposalAccess as Mock).mockResolvedValue({ error: 'error.API_UNKNOWN_ERROR' });
-
+    test('falls back to the original PI rather than the cloning user or a co-investigator', async () => {
       await triggerCloneConfirm();
 
       await waitFor(() => {
-        expect(mockNotifyWarning).toHaveBeenCalledWith('cloneProposal.investigatorWarning');
+        expect(mockUpdateAppContent2).toHaveBeenLastCalledWith(
+          expect.objectContaining({
+            investigators: [expect.objectContaining({ id: 'inv-2', firstName: 'John', pi: true })]
+          })
+        );
       });
     });
 
-    test('does not warn the user when all co-investigators are added successfully', async () => {
+    test('clones with no investigators when the original proposal has no PI either', async () => {
+      const mockProposalWithoutAnyPI: Partial<Proposal> = {
+        ...mockProposalWithoutSelf,
+        investigators: mockProposalWithoutSelf.investigators?.map(inv => ({ ...inv, pi: false }))
+      };
+      (GetProposal as Mock).mockResolvedValue(mockProposalWithoutAnyPI);
+      vi.spyOn(storageObject, 'useStore').mockReturnValue({
+        application: {
+          content1: [],
+          content2: mockProposalWithoutAnyPI,
+          content4: mockAccessList,
+          content5: null,
+          content6: {},
+          content7: {},
+          content8: {},
+          content9: {}
+        },
+        updateAppContent1: mockUpdateAppContent1,
+        updateAppContent2: mockUpdateAppContent2,
+        updateAppContent4: mockUpdateAppContent4,
+        updateAppContent5: vi.fn()
+      } as any);
+
       await triggerCloneConfirm();
 
       await waitFor(() => {
-        expect(mockUpdateAppContent2).toHaveBeenCalled();
+        expect(mockUpdateAppContent2).toHaveBeenLastCalledWith(
+          expect.objectContaining({ investigators: [] })
+        );
       });
-
-      expect(mockNotifyWarning).not.toHaveBeenCalledWith('cloneProposal.investigatorWarning');
     });
   });
 });
