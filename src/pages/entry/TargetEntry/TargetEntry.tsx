@@ -39,6 +39,9 @@ interface TargetEntryProps {
 }
 
 const GAP = 2;
+const DEFAULT_VELOCITY_TYPE = VELOCITY_TYPE.VELOCITY;
+const DEFAULT_VELOCITY_UNIT = 0;
+const DEFAULT_REFERENCE_COORDINATES = REFERENCE_COORDINATE_TYPE_ICRS.value;
 
 export default function TargetEntry({
   setTarget = undefined,
@@ -65,11 +68,13 @@ export default function TargetEntry({
   const [name, setName] = React.useState('');
   const [coord1, setCoord1] = React.useState('');
   const [coord2, setCoord2] = React.useState('');
-  const [velType, setVelType] = React.useState(VELOCITY_TYPE.VELOCITY);
+  const [velType, setVelType] = React.useState(DEFAULT_VELOCITY_TYPE);
   const [vel, setVel] = React.useState('');
-  const [velUnit, setVelUnit] = React.useState(0);
+  const [velUnit, setVelUnit] = React.useState(DEFAULT_VELOCITY_UNIT);
   const [redshift, setRedshift] = React.useState('');
-  const [referenceCoordinates, setReferenceCoordinates] = React.useState(REFERENCE_COORDINATE_TYPE_ICRS.value);
+  const [referenceCoordinates, setReferenceCoordinates] = React.useState(
+    DEFAULT_REFERENCE_COORDINATES
+  );
   const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
 
   React.useEffect(() => {
@@ -111,7 +116,7 @@ export default function TargetEntry({
   };
 
   const isICRS =
-  referenceCoordinates === REFERENCE_COORDINATE_TYPE_ICRS.value;
+  referenceCoordinates === DEFAULT_REFERENCE_COORDINATES;
 
 
   const setTheCoord1 = (value: string) => {
@@ -221,9 +226,9 @@ export default function TargetEntry({
           ? String(target.b)
           : ''
     );
-    setVelType(target?.velType ?? 0);
+    setVelType(target?.velType ?? DEFAULT_VELOCITY_TYPE);
     setVel(target?.vel ?? '');
-    setVelUnit(target?.velUnit ?? 0);
+    setVelUnit(target?.velUnit ?? DEFAULT_VELOCITY_UNIT);
     setRedshift(target?.redshift ?? '');
   };
 
@@ -277,9 +282,9 @@ export default function TargetEntry({
     setCoord2('');
     setVel('');
     setRedshift('');
-    setVelType(VELOCITY_TYPE.VELOCITY);
-    setVelUnit(0);
-    setReferenceCoordinates(REFERENCE_COORDINATE_TYPE_ICRS.value);
+    setVelType(DEFAULT_VELOCITY_TYPE);
+    setVelUnit(DEFAULT_VELOCITY_UNIT);
+    setReferenceCoordinates(DEFAULT_REFERENCE_COORDINATES);
     setFieldPattern(FIELD_PATTERN_POINTING_CENTRES);
     setNameFieldError('');
     setSkyDirection1Error('');
@@ -379,11 +384,11 @@ export default function TargetEntry({
         value => value.trim().length > 0
       );
       const hasSelectorChange =
-        velType !== VELOCITY_TYPE.VELOCITY || velUnit !== 0;
+        velType !== DEFAULT_VELOCITY_TYPE || velUnit !== DEFAULT_VELOCITY_UNIT;
       return (
         hasTextValue ||
         hasSelectorChange ||
-        referenceCoordinates !== REFERENCE_COORDINATE_TYPE_ICRS.value
+        referenceCoordinates !== DEFAULT_REFERENCE_COORDINATES
       );
     };
 
