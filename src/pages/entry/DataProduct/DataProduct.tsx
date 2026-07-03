@@ -868,8 +868,12 @@ export default function DataProduct({ data }: DataProductProps) {
           )}
         </Grid>
       </Grid>
-      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
-      {osdCyclePolicy?.maxDataProducts !== 1 && pageFooter()}
+      {osdCyclePolicy?.maxDataProducts !== 1 && (
+        <>
+          <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
+          {pageFooter()}
+        </>
+      )}
     </Box>
   );
 }
