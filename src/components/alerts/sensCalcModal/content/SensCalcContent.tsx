@@ -6,19 +6,21 @@ import { SensCalcResults } from '../../../../utils/types/sensCalcResults';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface SensCalcContentProps {
-  data: SensCalcResults;
-  isCustom?: boolean;
-  isNatural?: boolean;
+  data: SensCalcResults,
+  isCustom?: boolean,
+  isNatural?: boolean,
+  isSSO?: undefined | boolean
 }
 
 const GAP = 4;
 const SPACER_HEIGHT = 30;
 
 export default function SensCalcContent({
-  data,
-  isCustom = false,
-  isNatural = false
-}: SensCalcContentProps) {
+                                          data,
+                                          isCustom = false,
+                                          isNatural = false,
+                                          isSSO = false,
+                                        }: SensCalcContentProps) {
   const { t } = useScopedTranslation();
 
   const PresentCustomResultValue = (eValue: any, eId: string) => {
@@ -61,7 +63,11 @@ export default function SensCalcContent({
 
   return (
     <>
-      {data?.statusGUI !== STATUS_INITIAL &&
+      {isSSO ? (
+        <Alert testId="alertSensCalResultsId" color={AlertColorTypes.Warning}>
+          <Typography p={GAP}>{t('sensitivityCalculatorResults.notApplicableForSSO')}</Typography>
+        </Alert>
+      ) : data?.statusGUI !== STATUS_INITIAL &&
       data?.title !== '*SHOW PST MESSAGE*' &&
       (data?.error === '' || data?.error === undefined) ? (
         <>

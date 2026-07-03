@@ -19,6 +19,7 @@ import {
   PAGE_CALIBRATION,
   PAGE_LINKING,
   REFERENCE_COORDINATE_TYPE_ICRS,
+  REFERENCE_COORDINATE_TYPE_SSO,
   STATUS_ERROR,
   STATUS_INITIAL,
   STATUS_OK,
@@ -311,7 +312,10 @@ export default function LinkingPage() {
       const dataProductSDP = proposal.dataProductSDP?.find(
         (d) => d.id === results.dataProductsSDPId
       );
-      if (observation && target && dataProductSDP) {
+      if (observation &&
+        target &&
+        target.kind !== REFERENCE_COORDINATE_TYPE_SSO.value &&
+        dataProductSDP) {
         getSensCalcData(observation, target, dataProductSDP);
       }
     }

@@ -6,7 +6,7 @@ import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { presentUnits } from '@utils/present/present';
 import { validateSDPPage } from '@utils/validation/validation.tsx';
 import { Proposal } from '@utils/types/proposal.tsx';
-import { PAGE_DATA_PRODUCTS, PATH } from '@utils/constants.ts';
+import { PAGE_DATA_PRODUCTS, PATH, REFERENCE_COORDINATE_TYPE_SSO } from '@utils/constants.ts';
 import { DataProductSDPNew, SDPImageContinuumData } from '@utils/types/dataProduct.tsx';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
@@ -119,6 +119,11 @@ export default function DataProductsPage() {
     return (getProposal()?.targetObservation?.length ?? 0) > 0;
   };
 
+  const isTargetSSO =(): boolean => {
+    const proposal = getProposal();
+    return proposal.targets?.[0]?.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
+  }
+
   const noObservations = () => {
     return (
       <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
@@ -180,7 +185,7 @@ export default function DataProductsPage() {
           <>
             {osdCyclePolicy?.maxDataProducts !== 1 && dataProductList()}
             {osdCyclePolicy?.maxDataProducts === 1 && (
-              <DataProduct data={getProposal()?.dataProductSDP?.[0]} />
+              <DataProduct isSSO={isTargetSSO()} data={getProposal()?.dataProductSDP?.[0]} />
             )}
           </>
         )}

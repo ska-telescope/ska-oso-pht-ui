@@ -84,10 +84,11 @@ const COL = 6;
 const COL_MID = 8;
 
 interface DataProductProps {
-  data?: DataProductSDPNew;
+  data?: DataProductSDPNew,
+  isSSO?: boolean
 }
 
-export default function DataProduct({ data }: DataProductProps) {
+export default function DataProduct({ data, isSSO }: DataProductProps) {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const locationProperties = useLocation();
@@ -335,25 +336,25 @@ export default function DataProduct({ data }: DataProductProps) {
   const taperField = () => {
     return isLow()
       ? fieldWrapper(
-          <TaperField
-            disabled={isLow()}
-            onFocus={() => setHelp('taper')}
-            required
-            setValue={setTaperLowValue}
-            value={taperLowValue}
-            suffix={t('taper.units')}
-          />
-        )
+        <TaperField
+          disabled={isLow()}
+          onFocus={() => setHelp('taper')}
+          required
+          setValue={setTaperLowValue}
+          value={taperLowValue}
+          suffix={t('taper.units')}
+        />
+      )
       : fieldWrapper(
-          <TaperDropdown
-            onFocus={() => setHelp('taper')}
-            required
-            setValue={setTaperMidValue}
-            value={taperMidValue}
-            suffix={t('taper.units')}
-            centralFrequency={getCentralFrequency()}
-          />
-        );
+        <TaperDropdown
+          onFocus={() => setHelp('taper')}
+          required
+          setValue={setTaperMidValue}
+          value={taperMidValue}
+          suffix={t('taper.units')}
+          centralFrequency={getCentralFrequency()}
+        />
+      );
   };
 
   const getCentralFrequency = () => {
@@ -730,7 +731,8 @@ export default function DataProduct({ data }: DataProductProps) {
                 {isPulsarTiming() && (
                   <Grid pb={1} container>
                     <Grid size={{ md: COL_MID, lg: COL }}>
-                      {<TickIcon onClick={() => {}} />}All set!
+                      {<TickIcon onClick={() => {
+                      }} />}All set!
                     </Grid>
                   </Grid>
                 )}
@@ -805,7 +807,7 @@ export default function DataProduct({ data }: DataProductProps) {
             >
               {isPST() && <Typography variant="subtitle1">{t('page.7.pstUnavailable')}</Typography>}
               {!isPST() && (
-                <SensCalcContent data={scData()} isCustom={isCustom()} isNatural={isNatural()} />
+                <SensCalcContent data={scData()} isSSO={isSSO} isCustom={isCustom()} isNatural={isNatural()} />
               )}
             </BorderedSection>
           )}
