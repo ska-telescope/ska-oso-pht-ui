@@ -8,6 +8,7 @@ UNRELEASED
 ----------
 * Updated: to 16.1 version of oso-services
 * Bugfix: spacer added to bottom of page to prevent page content overlapping bottom banner
+* Refactoring of the spectral line frequency setup on the Observation page
 * Updated: to use the new /coordinate endpoint response
 * Added: Support for Galactic targets
 * Bugfix: 'Channels Out' allowed 0 channels to be selected

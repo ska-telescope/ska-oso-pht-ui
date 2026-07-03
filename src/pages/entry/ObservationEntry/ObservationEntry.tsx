@@ -36,6 +36,7 @@ import {
   PAGE_OBSERVATION_ADD,
   FREQUENCY_HZ,
   ZOOM_BANDWIDTH_DEFAULT_LOW,
+  ZOOM_CHANNELS_DEFAULT_LOW,
   TYPE_PST,
   ZOOM_BANDWIDTH_DEFAULT_MID,
   TEL_UNITS,
@@ -56,12 +57,12 @@ import {
 import {
   frequencyConversion,
   generateId,
-  getBandwidthLowZoom,
   getBandwidthZoom,
   getMinimumChannelWidth,
   obTypeTransform,
   timeConversion
 } from '@utils/helpers.ts';
+import { channelsToBandwidthHz, getZoomResolutionHz } from '@utils/zoomWindow.ts';
 import WeatherField from '@/components/fields/weather/weather';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
 import Proposal from '@/utils/types/proposal';
@@ -143,9 +144,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [centralFrequency, setCentralFrequency] = React.useState(0);
   const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_MHZ);
   const [bandwidth, setBandwidth] = React.useState(ZOOM_BANDWIDTH_DEFAULT_LOW);
-  const [bandwidthLookup, setBandwidthLookup] = React.useState<
-    { label: string; value: number; mapping: string } | undefined
-  >(undefined);
   const [spectralAveraging, setSpectralAveraging] = React.useState(1);
   const [spectralResolution, setSpectralResolution] = React.useState('');
   const [suppliedType, setSuppliedType] = React.useState(SUPPLIED_TYPE_INTEGRATION);
@@ -358,7 +356,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     updateStorageProposal();
   };
 
-  // STAR-1923 : This will need to be a lookup if/when the OSD correctly provides subarrays in an array
   const setMaxChannelsZoom = (_subarrayConfig: string) => {
     const record = isLow() ? osdLOW : osdMID;
     setMaxZoomChannels(0);
@@ -397,6 +394,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         )
       );
       setContinuumBandwidthUnits(isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+      if (isLow()) {
+        setZoomChannels(ZOOM_CHANNELS_DEFAULT_LOW);
+      }
     }
   }, []);
 
@@ -408,10 +408,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   React.useEffect(() => {
     setAfterChange();
   }, [subarrayConfig]);
-
-  React.useEffect(() => {
-    setBandwidthLookup(getBandwidthLowZoom(bandwidth));
-  }, [bandwidth]);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -475,6 +471,14 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const isLow = () => observingBand === BAND_LOW_STR;
   const isMid = () => observingBand !== BAND_LOW_STR;
   const telescope = () => (isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM);
+
+  // LOW-zoom channel resolution (Hz) for the selected `bandwidth` index, and the total zoom
+  // window bandwidth (Hz) derived from it and the current channel count - replaces the old
+  // bandwidthLookup/getBandwidthLowZoom lookup, which only ever reflected a per-channel value.
+  const getResolutionHz = () => (isLow() && isZoom() ? getZoomResolutionHz(bandwidth) : 0);
+  const getZoomBandwidthHz = () => channelsToBandwidthHz(zoomChannels, getResolutionHz());
+  const getCentralFrequencyHz = () =>
+    frequencyConversion(centralFrequency ?? 0, centralFrequencyUnits ?? FREQUENCY_HZ, FREQUENCY_HZ);
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
@@ -846,11 +850,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     return fieldWrapper(
       <Box pt={1}>
         <CentralFrequency
-          bandWidth={isContinuum() ? continuumBandwidth : bandwidth}
           observingBand={observingBand}
           value={centralFrequency}
           setValue={setCentralFrequency}
           suffix={centralFrequencyUnitsField()}
+          steppable={isLow() && isZoom()}
+          channelWidthHz={getResolutionHz()}
           required
         />
       </Box>
@@ -897,11 +902,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         setValue={setBandwidth}
         value={bandwidth}
         telescope={telescope()}
-        observingBand={observingBand}
-        centralFrequency={centralFrequency}
-        centralFrequencyUnits={centralFrequencyUnits}
-        subarrayConfig={subarrayConfig}
-        minimumChannelWidthHz={minimumChannelWidthHz}
+        zoomChannels={zoomChannels}
+        setZoomChannels={setZoomChannels}
+        maxZoomChannels={maxZoomChannels}
+        resolutionHz={getResolutionHz()}
+        centralFrequencyHz={getCentralFrequencyHz()}
       />
     </Box>
   );
@@ -913,11 +918,14 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         bandWidthUnits={isContinuum() ? continuumBandwidthUnits : isLow() ? 3 : 2}
         frequency={centralFrequency}
         frequencyUnits={centralFrequencyUnits}
+        interactive={isLow() && isZoom()}
         label={t('spectralResolution.label')}
         observingBand={observingBand}
         observationType={observationType}
         onFocus={() => setHelp('spectralResolution')}
+        setBandWidth={setBandwidth}
         setValue={setSpectralResolution}
+        subarrayConfig={subarrayConfig}
       />
     );
 
@@ -1023,7 +1031,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         </Grid>
         <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{zoomChannelsField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{isLow() ? emptyField() : zoomChannelsField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{emptyField()}</Grid>

@@ -5,23 +5,27 @@ import { useHelp } from '@/utils/help/useHelp';
 import { FREQUENCY_GHZ, FREQUENCY_HZ, FREQUENCY_MHZ, TELESCOPE_LOW_NUM } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { frequencyConversion } from '@/utils/helpers';
+import { stepCentralFrequencyHz } from '@/utils/zoomWindow';
+import SteppedNumberField from '@/components/wrappers/steppedNumberField/SteppedNumberField';
 
 interface CentralFrequencyProps {
-  bandWidth: number;
+  channelWidthHz?: number;
   disabled?: boolean;
   required?: boolean;
   observingBand: string;
   setValue: Function;
+  steppable?: boolean;
   suffix?: any;
   value: number;
 }
 
 export default function CentralFrequency({
-  bandWidth,
+  channelWidthHz = 0,
   disabled = false,
   observingBand,
   required = false,
   setValue,
+  steppable = false,
   suffix,
   value
 }: CentralFrequencyProps) {
@@ -37,28 +41,58 @@ export default function CentralFrequency({
     setFieldValid(true);
   }, [value]);
 
-  const checkValue = (cfValue: string) => {
-    setCfValue(cfValue);
+  const units: number = telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? FREQUENCY_MHZ : FREQUENCY_GHZ;
+  const band = findBand(observingBand);
+  const minHz = band?.minFrequencyHz ?? 0;
+  const maxHz = band?.maxFrequencyHz ?? 0;
+  const min = frequencyConversion(minHz, FREQUENCY_HZ, units);
+  const max = frequencyConversion(maxHz, FREQUENCY_HZ, units);
 
-    if (cfValue === '' || isNaN(Number(cfValue))) {
-      setFieldValid(false);
-    } else {
-      const cf = Number(cfValue);
-      const band = findBand(observingBand);
-      const units: number =
-        telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? FREQUENCY_MHZ : FREQUENCY_GHZ;
-      const min = frequencyConversion(band?.minFrequencyHz ?? 0, FREQUENCY_HZ, units);
-      const max = frequencyConversion(band?.maxFrequencyHz ?? 0, FREQUENCY_HZ, units);
-
-      const inRange = cf >= min && cf <= max;
-      setFieldValid(inRange);
-      if (inRange) {
-        setValue(cf);
-      }
+  const commit = (cf: number) => {
+    const inRange = cf >= min && cf <= max;
+    setFieldValid(inRange);
+    if (inRange) {
+      setValue(cf);
     }
   };
 
+  const checkValue = (raw: string) => {
+    setCfValue(raw);
+    if (raw === '' || isNaN(Number(raw))) {
+      setFieldValid(false);
+    } else {
+      commit(Number(raw));
+    }
+  };
+
+  // Snaps the current value to the nearest legal centre frequency (first channel of the zoom
+  // window on an integer multiple of channel width), then steps by one channel width.
+  const step = (currentValue: number, direction: 1 | -1) => {
+    const cfHz = frequencyConversion(currentValue, units, FREQUENCY_HZ);
+    const steppedHz = stepCentralFrequencyHz(cfHz, direction, channelWidthHz, minHz, maxHz);
+    // Round to 1 Hz precision (6 d.p. in MHz) to avoid floating-point noise building up
+    // across repeated arrow presses.
+    return Number(frequencyConversion(steppedHz, FREQUENCY_HZ, units).toFixed(6));
+  };
+
   const errorMessage = fieldValid ? '' : t(FIELD + '.range.error');
+
+  if (steppable) {
+    return (
+      <SteppedNumberField
+        testId={FIELD}
+        label={t(FIELD + '.label')}
+        value={value}
+        onCommit={commit}
+        onStep={step}
+        onFocus={() => setHelp(FIELD)}
+        disabled={disabled}
+        required={required}
+        errorText={errorMessage}
+        suffix={suffix}
+      />
+    );
+  }
 
   return (
     <NumberEntry

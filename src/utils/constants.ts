@@ -517,6 +517,10 @@ export const SA_AA4 = 'aa4';
 export const SA_AA_STAR = 'aa*';
 export const SA_CUSTOM = 'custom';
 
+// Convention is that the zoom modes are listed in frequency order
+// (1-4 are the fine zoom modes, currently restricted for AA2 and AA* subarrays,)
+export const FIRST_COARSE_ZOOM = 5;
+
 export const SECOND_LABEL = 's';
 export const MILLISECOND_LABEL = 'ms';
 export const NANOSECOND_LABEL = 'us';
@@ -620,7 +624,8 @@ export const STATUS = {
 export const SUPPLIED_VALUE_DEFAULT_MID = 10;
 export const SUPPLIED_VALUE_DEFAULT_LOW = 1;
 export const ZOOM_BANDWIDTH_DEFAULT_MID = 1;
-export const ZOOM_BANDWIDTH_DEFAULT_LOW = 5;
+export const ZOOM_BANDWIDTH_DEFAULT_LOW = 8;
+export const ZOOM_CHANNELS_DEFAULT_LOW = 1000;
 
 export const TARGET_OPTION = {
   LIST_OF_TARGETS: 1,
@@ -773,8 +778,8 @@ export const DEFAULT_ZOOM_OBSERVATION_LOW: Observation = {
     units: SUPPLIED_INTEGRATION_TIME_UNITS_H
   },
   spectralAveraging: 1,
-  spectralResolution: '226.06 Hz (338.9 m/s)',
-  effectiveResolution: '226.06 Hz (338.9 m/s)',
+  spectralResolution: '1808.45 Hz (2.7 km/s)',
+  effectiveResolution: '1808.45 Hz (2.7 km/s)',
   zoomChannels: 1000
 };
 

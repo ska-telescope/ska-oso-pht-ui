@@ -1,7 +1,8 @@
 // CentralFrequency.test.tsx
-import { render } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
-import { vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import CentralFrequency from './centralFrequency';
 import { BAND_LOW_STR } from '@/utils/constants.ts';
@@ -65,12 +66,28 @@ const wrapper = (component: React.ReactElement) => {
 describe('CentralFrequency component', () => {
   it('renders with initial value', () => {
     wrapper(
+      <CentralFrequency observingBand={BAND_LOW_STR} value={150} setValue={vi.fn()} />
+    );
+  });
+
+  it('non-steppable mode renders the plain NumberEntry, unchanged', () => {
+    wrapper(<CentralFrequency observingBand={BAND_LOW_STR} value={150} setValue={vi.fn()} />);
+    expect(screen.getByTestId('centralFrequency')).toBeInTheDocument();
+    expect(screen.queryByLabelText('centralFrequency-increment')).not.toBeInTheDocument();
+  });
+
+  it('steppable mode renders a stepped number field and calls setValue on increment', async () => {
+    const setValue = vi.fn();
+    wrapper(
       <CentralFrequency
-        bandWidth={150}
         observingBand={BAND_LOW_STR}
-        value={150}
-        setValue={vi.fn()}
+        value={200}
+        setValue={setValue}
+        steppable
+        channelWidthHz={1808.449074}
       />
     );
+    await userEvent.click(screen.getByLabelText('centralFrequency-increment'));
+    expect(setValue).toHaveBeenCalled();
   });
 });

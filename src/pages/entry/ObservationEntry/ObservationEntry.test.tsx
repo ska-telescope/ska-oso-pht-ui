@@ -49,6 +49,10 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', async () => {
       },
       observatoryConstants: OSD_CONSTANTS,
       telescopeBand: vi.fn(() => 2),
+      findBand: vi.fn(() => ({
+        minFrequencyHz: 100_000_000,
+        maxFrequencyHz: 200_000_000
+      })),
       isSV: false,
       selectedPolicy: null,
       osdCyclePolicy: null
@@ -93,7 +97,7 @@ vi.mock('@utils/helpers.ts', async () => {
 
 // Replace BandwidthField with a button so tests can drive setBandwidth
 // without needing to operate a full MUI Select.
-const NEW_BANDWIDTH = 3; // must differ from ZOOM_BANDWIDTH_DEFAULT_LOW (5)
+const NEW_BANDWIDTH = 6; // must differ from ZOOM_BANDWIDTH_DEFAULT_LOW (8), and be a legal coarse zoom value (5-8)
 vi.mock('@/components/fields/bandwidthFields/bandwidth/bandwidth', () => ({
   default: ({ setValue }: { setValue: (v: number) => void }) => (
     <button data-testid="bandwidth-change-btn" onClick={() => setValue(NEW_BANDWIDTH)}>
