@@ -31,6 +31,14 @@ vi.mock('@/utils/help/useHelp', () => ({
   })
 }));
 
+// Mock useOSDAccessors so findBand returns a known 50-350 MHz LOW band for the window-clamping tests
+vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
+  useOSDAccessors: () => ({
+    findBand: () => ({ minFrequencyHz: 50_000_000, maxFrequencyHz: 350_000_000 }),
+    telescopeBand: () => 2 // TELESCOPE_LOW_NUM
+  })
+}));
+
 // Mock NumberEntry component from ska-gui-components
 vi.mock('@ska-telescope/ska-gui-components', () => ({
   LABEL_POSITION: {
@@ -85,9 +93,66 @@ describe('CentralFrequency component', () => {
         setValue={setValue}
         steppable
         channelWidthHz={1808.449074}
+        windowBandwidthHz={1_808_449.074}
       />
     );
     await userEvent.click(screen.getByLabelText('centralFrequency-increment'));
-    expect(setValue).toHaveBeenCalled();
+    expect(setValue).toHaveBeenCalledWith(200.001808);
+  });
+
+  it('steppable mode accepts a typed value when the whole window fits in the band', async () => {
+    const setValue = vi.fn();
+    wrapper(
+      <CentralFrequency
+        observingBand={BAND_LOW_STR}
+        value={200}
+        setValue={setValue}
+        steppable
+        channelWidthHz={1808.449074}
+        windowBandwidthHz={1_808_449.074} // 1.808449074 MHz wide window
+      />
+    );
+    const input = screen.getByTestId('centralFrequency');
+    await userEvent.clear(input);
+    await userEvent.type(input, '300');
+    expect(setValue).toHaveBeenCalledWith(300);
+    expect(screen.queryByText('centralFrequency.range.error')).not.toBeInTheDocument();
+  });
+
+  it('steppable mode rejects a typed value where the window would spill outside the band', async () => {
+    const setValue = vi.fn();
+    wrapper(
+      <CentralFrequency
+        observingBand={BAND_LOW_STR}
+        value={200}
+        setValue={setValue}
+        steppable
+        channelWidthHz={1808.449074}
+        windowBandwidthHz={1_808_449.074}
+      />
+    );
+    // Window is ~0.9 MHz either side of centre - centring on 50 MHz would spill below the band.
+    const input = screen.getByTestId('centralFrequency');
+    await userEvent.clear(input);
+    await userEvent.type(input, '50');
+    expect(setValue).not.toHaveBeenCalled();
+    expect(screen.getByText('centralFrequency.range.error')).toBeInTheDocument();
+  });
+
+  it('steppable mode clamps an increment so the window never spills past the band edge', async () => {
+    const setValue = vi.fn();
+    wrapper(
+      <CentralFrequency
+        observingBand={BAND_LOW_STR}
+        value={349.999} // window's upper edge (349.999 + ~0.9 MHz) already exceeds 350 MHz
+        setValue={setValue}
+        steppable
+        channelWidthHz={1808.449074}
+        windowBandwidthHz={1_808_449.074}
+      />
+    );
+    await userEvent.click(screen.getByLabelText('centralFrequency-increment'));
+    const [[committed]] = setValue.mock.calls;
+    expect(committed).toBeLessThanOrEqual(350 - 1_808_449.074 / 1_000_000 / 2 + 1e-6);
   });
 });

@@ -1,8 +1,26 @@
+import React from 'react';
 import { describe, test, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import SteppedNumberField from './SteppedNumberField';
+
+// Simulates a field whose committed value is a lossy transform of what's typed (e.g. a typed
+// frequency rounded to an integer channel count elsewhere, then converted back for display) -
+// the same shape as the real bandwidth-in-frequency field.
+function LossyRoundTripField() {
+  const [channels, setChannels] = React.useState(1000);
+  const displayValue = channels * 1.8; // arbitrary "resolution" - never round-trips exactly
+  return (
+    <SteppedNumberField
+      testId="lossy"
+      value={displayValue}
+      format={v => v.toFixed(2)}
+      onCommit={raw => setChannels(Math.round(raw / 1.8))}
+      onStep={v => v}
+    />
+  );
+}
 
 describe('<SteppedNumberField />', () => {
   test('renders the current value, formatted', () => {
@@ -63,6 +81,29 @@ describe('<SteppedNumberField />', () => {
     await userEvent.type(input, '5');
     await userEvent.tab();
     expect(input).toHaveValue('1000');
+  });
+
+  test('a lossy round-tripped commit does not interrupt typing while still focused', async () => {
+    render(<LossyRoundTripField />);
+    const input = screen.getByTestId('lossy');
+
+    await userEvent.clear(input);
+    // Type a value that never round-trips exactly through the channels->display conversion.
+    // Each keystroke commits a rounded-off value upstream; while focused, the field must keep
+    // showing exactly what was typed rather than snapping to the rounded echo.
+    await userEvent.type(input, '1234.56');
+    expect(input).toHaveValue('1234.56');
+  });
+
+  test('a lossy round-tripped commit resyncs the display once the field is blurred', async () => {
+    render(<LossyRoundTripField />);
+    const input = screen.getByTestId('lossy');
+
+    await userEvent.clear(input);
+    await userEvent.type(input, '1234.56');
+    await userEvent.tab();
+    // 1234.56 / 1.8 rounds to 686 channels -> 686 * 1.8 = 1234.8
+    expect(input).toHaveValue('1234.80');
   });
 
   test('arrows respect increment/decrement disabled bounds', () => {

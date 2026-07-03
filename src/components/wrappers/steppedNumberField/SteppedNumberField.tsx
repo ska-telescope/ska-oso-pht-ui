@@ -46,9 +46,16 @@ export default function SteppedNumberField({
   value
 }: SteppedNumberFieldProps) {
   const [inputValue, setInputValue] = React.useState(format(value));
+  // Tracks whether the input is currently focused. When a commit round-trips through a lossy
+  // transform (e.g. a typed frequency gets rounded to an integer channel count elsewhere and the
+  // displayed value is recomputed from that), the value prop echoed back rarely matches exactly
+  // what's mid-typing - resyncing from it on every keystroke would otherwise interrupt typing.
+  const isFocused = React.useRef(false);
 
   React.useEffect(() => {
-    setInputValue(format(value));
+    if (!isFocused.current) {
+      setInputValue(format(value));
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
@@ -60,6 +67,16 @@ export default function SteppedNumberField({
     }
   };
 
+  const handleFocus = () => {
+    isFocused.current = true;
+    onFocus?.();
+  };
+
+  const handleBlur = () => {
+    isFocused.current = false;
+    setInputValue(format(value));
+  };
+
   const step = (direction: 1 | -1) => onCommit(onStep(value, direction));
 
   return (
@@ -69,9 +86,9 @@ export default function SteppedNumberField({
         disabled={disabled}
         error={!!errorText}
         label={label}
-        onBlur={() => setInputValue(format(value))}
+        onBlur={handleBlur}
         onChange={e => handleChange(e.target.value)}
-        onFocus={onFocus}
+        onFocus={handleFocus}
         required={required}
         slotProps={{
           htmlInput: { 'data-testid': testId },

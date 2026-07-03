@@ -43,28 +43,28 @@ export const bandwidthHzToChannels = (
 export const stepChannels = (channels: number, direction: 1 | -1, maxChannels: number): number =>
   Math.min(Math.max(channels + direction, 1), maxChannels || 1);
 
-// Working assumption pending confirmation of the exact central-frequency constraint (TBC):
-// the first channel of the zoom window sits on an integer multiple of channel width, i.e. legal
-// centre frequencies fall on the channel-centre grid (n + 0.5) * channelWidthHz. Mirrors
-// ska-oso-odt-ui's spectralWindow.ts zod constraint ("The first channel of the SPW must be even").
-export const snapCentralFrequencyToLegalHz = (
+// The exact centre-frequency legal-value constraint is still TBC - for now, the only rule
+// applied is that the whole zoom window (centre +/- half the window bandwidth) stays within
+// [minHz, maxHz], not just the centre point itself.
+export const clampCentralFrequencyToWindowHz = (
   freqHz: number,
-  channelWidthHz: number,
+  windowBandwidthHz: number,
   minHz: number,
   maxHz: number
 ): number => {
-  if (channelWidthHz <= 0) return freqHz;
-  const n = Math.round(freqHz / channelWidthHz - 0.5);
-  return Math.min(Math.max((n + 0.5) * channelWidthHz, minHz), maxHz);
+  const halfWindow = windowBandwidthHz / 2;
+  const lowerBound = minHz + halfWindow;
+  const upperBound = maxHz - halfWindow;
+  if (upperBound < lowerBound) return (minHz + maxHz) / 2;
+  return Math.min(Math.max(freqHz, lowerBound), upperBound);
 };
 
 export const stepCentralFrequencyHz = (
   freqHz: number,
   direction: 1 | -1,
   channelWidthHz: number,
+  windowBandwidthHz: number,
   minHz: number,
   maxHz: number
-): number => {
-  const legal = snapCentralFrequencyToLegalHz(freqHz, channelWidthHz, minHz, maxHz);
-  return Math.min(Math.max(legal + direction * channelWidthHz, minHz), maxHz);
-};
+): number =>
+  clampCentralFrequencyToWindowHz(freqHz + direction * channelWidthHz, windowBandwidthHz, minHz, maxHz);

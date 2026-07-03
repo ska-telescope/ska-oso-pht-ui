@@ -17,6 +17,7 @@ interface CentralFrequencyProps {
   steppable?: boolean;
   suffix?: any;
   value: number;
+  windowBandwidthHz?: number;
 }
 
 export default function CentralFrequency({
@@ -27,7 +28,8 @@ export default function CentralFrequency({
   setValue,
   steppable = false,
   suffix,
-  value
+  value,
+  windowBandwidthHz = 0
 }: CentralFrequencyProps) {
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
@@ -45,8 +47,14 @@ export default function CentralFrequency({
   const band = findBand(observingBand);
   const minHz = band?.minFrequencyHz ?? 0;
   const maxHz = band?.maxFrequencyHz ?? 0;
-  const min = frequencyConversion(minHz, FREQUENCY_HZ, units);
-  const max = frequencyConversion(maxHz, FREQUENCY_HZ, units);
+  // For a steppable (LOW zoom) field, the legal range is inset by half the zoom window's
+  // bandwidth, so the whole window - not just its centre point - stays within the band. The
+  // exact legal-value constraint is still TBC; this is the only rule applied for now.
+  const halfWindowUnits = steppable
+    ? frequencyConversion(windowBandwidthHz, FREQUENCY_HZ, units) / 2
+    : 0;
+  const min = frequencyConversion(minHz, FREQUENCY_HZ, units) + halfWindowUnits;
+  const max = frequencyConversion(maxHz, FREQUENCY_HZ, units) - halfWindowUnits;
 
   const commit = (cf: number) => {
     const inRange = cf >= min && cf <= max;
@@ -65,11 +73,16 @@ export default function CentralFrequency({
     }
   };
 
-  // Snaps the current value to the nearest legal centre frequency (first channel of the zoom
-  // window on an integer multiple of channel width), then steps by one channel width.
   const step = (currentValue: number, direction: 1 | -1) => {
     const cfHz = frequencyConversion(currentValue, units, FREQUENCY_HZ);
-    const steppedHz = stepCentralFrequencyHz(cfHz, direction, channelWidthHz, minHz, maxHz);
+    const steppedHz = stepCentralFrequencyHz(
+      cfHz,
+      direction,
+      channelWidthHz,
+      windowBandwidthHz,
+      minHz,
+      maxHz
+    );
     // Round to 1 Hz precision (6 d.p. in MHz) to avoid floating-point noise building up
     // across repeated arrow presses.
     return Number(frequencyConversion(steppedHz, FREQUENCY_HZ, units).toFixed(6));

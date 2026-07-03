@@ -7,7 +7,7 @@ import {
   channelsToBandwidthHz,
   bandwidthHzToChannels,
   stepChannels,
-  snapCentralFrequencyToLegalHz,
+  clampCentralFrequencyToWindowHz,
   stepCentralFrequencyHz
 } from '@/utils/zoomWindow.ts';
 
@@ -95,27 +95,54 @@ describe('channel count <-> bandwidth conversion', () => {
   });
 });
 
-describe('central frequency snap/step', () => {
+describe('central frequency window clamp/step', () => {
   const channelWidthHz = 1808.449074;
+  const windowBandwidthHz = 1_808_449.074; // 1000 channels
   const minHz = 50_000_000;
   const maxHz = 350_000_000;
 
-  test('snaps a frequency to the nearest channel-centre grid point', () => {
-    const snapped = snapCentralFrequencyToLegalHz(200_000_000, channelWidthHz, minHz, maxHz);
-    const remainder = (snapped / channelWidthHz - 0.5) % 1;
-    expect(Math.abs(remainder)).toBeLessThan(1e-6);
+  test('leaves a value unchanged when the whole window already fits', () => {
+    const clamped = clampCentralFrequencyToWindowHz(200_000_000, windowBandwidthHz, minHz, maxHz);
+    expect(clamped).toBe(200_000_000);
   });
 
-  test('stays within min/max bounds', () => {
-    const snapped = snapCentralFrequencyToLegalHz(10_000_000, channelWidthHz, minHz, maxHz);
-    expect(snapped).toBeGreaterThanOrEqual(minHz);
-    const snappedHigh = snapCentralFrequencyToLegalHz(400_000_000, channelWidthHz, minHz, maxHz);
-    expect(snappedHigh).toBeLessThanOrEqual(maxHz);
+  test('clamps so the window does not spill below the band minimum', () => {
+    const clamped = clampCentralFrequencyToWindowHz(10_000_000, windowBandwidthHz, minHz, maxHz);
+    expect(clamped).toBeCloseTo(minHz + windowBandwidthHz / 2, 6);
   });
 
-  test('steps by an integer multiple of channel width from a legal value', () => {
-    const base = snapCentralFrequencyToLegalHz(200_000_000, channelWidthHz, minHz, maxHz);
-    const stepped = stepCentralFrequencyHz(base, 1, channelWidthHz, minHz, maxHz);
-    expect(stepped - base).toBeCloseTo(channelWidthHz, 2);
+  test('clamps so the window does not spill above the band maximum', () => {
+    const clamped = clampCentralFrequencyToWindowHz(400_000_000, windowBandwidthHz, minHz, maxHz);
+    expect(clamped).toBeCloseTo(maxHz - windowBandwidthHz / 2, 6);
+  });
+
+  test('centres the window if it is wider than the whole band', () => {
+    const clamped = clampCentralFrequencyToWindowHz(200_000_000, 400_000_000, minHz, maxHz);
+    expect(clamped).toBeCloseTo((minHz + maxHz) / 2, 6);
+  });
+
+  test('steps by exactly one channel width when staying within bounds', () => {
+    const stepped = stepCentralFrequencyHz(
+      200_000_000,
+      1,
+      channelWidthHz,
+      windowBandwidthHz,
+      minHz,
+      maxHz
+    );
+    expect(stepped - 200_000_000).toBeCloseTo(channelWidthHz, 6);
+  });
+
+  test('stepping past the edge clamps to the nearest legal value instead of overshooting', () => {
+    const nearMax = maxHz - windowBandwidthHz / 2;
+    const stepped = stepCentralFrequencyHz(
+      nearMax,
+      1,
+      channelWidthHz,
+      windowBandwidthHz,
+      minHz,
+      maxHz
+    );
+    expect(stepped).toBeCloseTo(nearMax, 6);
   });
 });

@@ -487,7 +487,14 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   );
 
   const showWarning = () => {
-    const useBandwidth = observationType === TYPE_ZOOM ? bandwidth : continuumBandwidth;
+    // For LOW zoom, `bandwidth` is a resolution-mode index, not a real bandwidth - use the actual
+    // channel-count-derived window bandwidth instead (MID zoom is unaffected, out of scope).
+    const useBandwidth =
+      observationType === TYPE_ZOOM
+        ? isLow()
+          ? frequencyConversion(getZoomBandwidthHz(), FREQUENCY_HZ, FREQUENCY_MHZ)
+          : bandwidth
+        : continuumBandwidth;
     return isFrequencyOutOfRange(centralFrequency, useBandwidth, isLow(), String(observingBand));
   };
 
@@ -856,6 +863,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           suffix={centralFrequencyUnitsField()}
           steppable={isLow() && isZoom()}
           channelWidthHz={getResolutionHz()}
+          windowBandwidthHz={getZoomBandwidthHz()}
           required
         />
       </Box>
