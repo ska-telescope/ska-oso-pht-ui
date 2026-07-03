@@ -88,21 +88,7 @@ export default function BandwidthField({
   if (isLow()) {
     return (
       <Grid pt={1} spacing={2} container justifyContent="space-between" direction="row">
-        <Grid size={{ xs: 6 }}>
-          <SteppedNumberField
-            testId="zoomChannels"
-            label={t('zoomChannels.label')}
-            value={zoomChannels}
-            onCommit={commitChannels}
-            onStep={stepChannelsValue}
-            onFocus={() => setHelp('zoomChannels')}
-            incrementDisabled={disabled || zoomChannels >= maxZoomChannels}
-            decrementDisabled={disabled || zoomChannels <= 1}
-            disabled={disabled}
-            required={required}
-          />
-        </Grid>
-        <Grid size={{ xs: 6 }}>
+        <Grid size={{ xs: 8 }}>
           <SteppedNumberField
             testId={FIELD}
             label={t(FIELD + '.label.' + BANDWIDTH_LABEL_SELECTOR)}
@@ -116,17 +102,38 @@ export default function BandwidthField({
             disabled={disabled}
             required={required}
             suffix={
-              <SelectField
-                testId={FIELD + 'Units'}
-                options={BANDWIDTH_UNIT_OPTIONS}
-                value={bandwidthUnits}
-                setValue={setBandwidthUnits}
-              />
+              <>
+                <SelectField
+                  testId={FIELD + 'Units'}
+                  options={BANDWIDTH_UNIT_OPTIONS}
+                  value={bandwidthUnits}
+                  setValue={setBandwidthUnits}
+                />
+                <Typography
+                  variant="body1"
+                  whiteSpace="nowrap"
+                  pl={1}
+                  data-testid={FIELD + 'Velocity'}
+                >
+                  ({calculateVelocity(bandwidthHz, centralFrequencyHz)})
+                </Typography>
+              </>
             }
           />
-          <Typography variant="caption" data-testid={FIELD + 'Velocity'}>
-            {calculateVelocity(bandwidthHz, centralFrequencyHz)}
-          </Typography>
+        </Grid>
+        <Grid size={{ xs: 4 }}>
+          <SteppedNumberField
+            testId="zoomChannels"
+            label={t('zoomChannels.label')}
+            value={zoomChannels}
+            onCommit={commitChannels}
+            onStep={stepChannelsValue}
+            onFocus={() => setHelp('zoomChannels')}
+            incrementDisabled={disabled || zoomChannels >= maxZoomChannels}
+            decrementDisabled={disabled || zoomChannels <= 1}
+            disabled={disabled}
+            required={required}
+          />
         </Grid>
       </Grid>
     );

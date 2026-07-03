@@ -83,6 +83,7 @@ export default function SteppedNumberField({
     <Box>
       <TextField
         fullWidth
+        variant="standard"
         disabled={disabled}
         error={!!errorText}
         label={label}
@@ -95,7 +96,6 @@ export default function SteppedNumberField({
           input: {
             endAdornment: (
               <InputAdornment position="end">
-                {suffix}
                 <IconButton
                   aria-label={`${testId}-increment`}
                   disabled={disabled || incrementDisabled}
@@ -112,6 +112,7 @@ export default function SteppedNumberField({
                 >
                   <KeyboardArrowDownIcon fontSize="small" />
                 </IconButton>
+                {suffix}
               </InputAdornment>
             )
           }

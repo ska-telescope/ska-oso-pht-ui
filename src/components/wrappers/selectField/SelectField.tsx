@@ -39,7 +39,7 @@ export default function SelectField({
   };
 
   return (
-    <FormControl fullWidth error={!!errorText} required={required} disabled={disabled}>
+    <FormControl fullWidth variant="standard" error={!!errorText} required={required} disabled={disabled}>
       {label && <InputLabel id={labelId}>{label}</InputLabel>}
       <Select
         labelId={labelId}

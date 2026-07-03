@@ -994,6 +994,23 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
 
   const frequencySetUp = () => {
+    // Matches the ticket's described layout: resolution, then bandwidth (freq + channels), then
+    // centre frequency, all in one line. LOW zoom only - MID zoom/continuum/PST keep their
+    // existing layout below.
+    if (isLow() && isZoom()) {
+      return (
+        <>
+          <Grid size={{ md: 12, lg: 12 }} p={2}>
+            {frequencySpectrumField()}
+          </Grid>
+          <Grid size={{ md: 12, lg: 2 }}>{spectralResolutionField()}</Grid>
+          <Grid size={{ md: 12, lg: 7 }}>{bandwidthField()}</Grid>
+          <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
+          <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
+          <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>
+        </>
+      );
+    }
     return (
       <>
         <Grid size={{ md: 12, lg: 12 }} p={2}>
@@ -1032,6 +1049,22 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   };
 
   const frequencySetUpSpectralSV = () => {
+    // Matches the ticket's described layout: resolution, then bandwidth (freq + channels), then
+    // centre frequency, all in one line. LOW only - MID zoom SV keeps its existing layout below.
+    if (isLow()) {
+      return (
+        <>
+          <Grid size={{ md: 12, lg: 12 }} p={2}>
+            {frequencySpectrumField()}
+          </Grid>
+          <Grid size={{ md: 12, lg: 2 }}>{spectralResolutionField()}</Grid>
+          <Grid size={{ md: 12, lg: 7 }}>{bandwidthField()}</Grid>
+          <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
+          <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
+          <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>
+        </>
+      );
+    }
     return (
       <>
         <Grid size={{ md: 12, lg: 12 }} p={2}>
@@ -1039,7 +1072,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         </Grid>
         <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{isLow() ? emptyField() : zoomChannelsField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{zoomChannelsField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{emptyField()}</Grid>
