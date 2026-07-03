@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Bugfix: spacer added to bottom of page to prevent page content overlapping bottom banner
 * Updated: to use the new /coordinate endpoint response
 * Added: Support for Galactic targets
 * Bugfix: 'Channels Out' allowed 0 channels to be selected
