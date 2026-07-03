@@ -131,7 +131,7 @@ const updateProposal = (
     observations: [newObservation].filter((obs): obs is Observation => obs !== undefined),
     dataProductSDP: [...[], newDataProductSDP as DataProductSDPNew],
     targetObservation:
-      sensCalcResult && newObservation && newObservation.id && newDataProductSDP?.id
+       newObservation && newObservation.id && newDataProductSDP?.id
         ? [
             {
               targetId: newTarget?.id,
