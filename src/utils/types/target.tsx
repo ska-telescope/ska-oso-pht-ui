@@ -116,12 +116,12 @@ export type ReferenceCoordinateSSO = {
 type Target = {
   id: number;
   name: string;
-  redshift: string;
+  redshift?: string;
   raReferenceFrame?: string; // NOT USED
   raDefinition?: string; // NOT USED
-  velType: number;
-  vel: string;
-  velUnit: number;
+  velType?: number;
+  vel?: string;
+  velUnit?: number;
   /*------- reference coordinate properties --------------------- */
   kind: number; // for both ICRS, Galactic and SSO
   l?: number; // for Galactic

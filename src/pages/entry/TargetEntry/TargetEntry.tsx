@@ -313,11 +313,7 @@ export default function TargetEntry({
 
       if (isSSO) {
         newTarget = {
-          ...baseTarget,
-          redshift: '',
-          vel: '',
-          velType: 0,
-          velUnit: 0
+          ...baseTarget
         };
       } else if (isICRS) {
         newTarget = {

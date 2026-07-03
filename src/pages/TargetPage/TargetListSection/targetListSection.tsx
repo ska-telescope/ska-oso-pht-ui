@@ -3,7 +3,7 @@ import { Box, Grid, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '@utils/types/proposal.tsx';
-import { REFERENCE_COORDINATE_TYPE_ICRS, VELOCITY_TYPE } from '@utils/constants.ts';
+import { REFERENCE_COORDINATE_TYPE_ICRS, REFERENCE_COORDINATE_TYPE_SSO, VELOCITY_TYPE } from '@utils/constants.ts';
 import deleteAutoLinking from '@utils/autoLinking/DeleteAutoLinking.tsx';
 import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
@@ -158,6 +158,10 @@ export default function TargetListSection() {
   });
 
   const displayRow1 = () => {
+    const target = getProposal()?.targets?.[0];
+    const isSSO =
+      target?.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
+
     return (
       <Grid
         container
@@ -184,10 +188,12 @@ export default function TargetListSection() {
                 rows={rows}
               />
             </Box>
+            {!isSSO &&(
             <Visualization
               target={getProposal()?.targets?.[0] ?? undefined}
               show={maxTargets === 1}
             />
+            )}
           </Stack>
         </Grid>
         <Grid size={{ md: 12, lg: 6 }} order={{ md: 1, lg: 2 }}>
