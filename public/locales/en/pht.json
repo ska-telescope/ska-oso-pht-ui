@@ -1290,7 +1290,7 @@
   },
   "spectralResolution": {
     "help": "",
-    "label": "Spectral Mode"
+    "label": "Spectral Resolution"
   },
   "srcNet": {
     "label": "SRCNet"

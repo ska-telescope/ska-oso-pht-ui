@@ -7,6 +7,7 @@ import Bandwidth from './bandwidth';
 import { TELESCOPE_LOW_NUM, TELESCOPE_MID_NUM } from '@/utils/constants.ts';
 
 const RESOLUTION_HZ = 1808.449074;
+const MAX_ZOOM_CHANNELS_FOR_AA2 = 1800;
 
 const wrapper = (component: React.ReactElement) => {
   return render(<StoreProvider>{component}</StoreProvider>);
@@ -46,7 +47,7 @@ describe('<Bandwidth />', () => {
         setValue={vi.fn()}
         zoomChannels={1000}
         setZoomChannels={setZoomChannels}
-        maxZoomChannels={1800}
+        maxZoomChannels={MAX_ZOOM_CHANNELS_FOR_AA2}
         resolutionHz={RESOLUTION_HZ}
       />
     );
@@ -54,6 +55,26 @@ describe('<Bandwidth />', () => {
     await userEvent.clear(channelsInput);
     await userEvent.type(channelsInput, '500');
     expect(setZoomChannels).toHaveBeenLastCalledWith(500);
+  });
+
+  test('LOW: entering a channel count above maxZoomChannels is capped at the max', async () => {
+    const setZoomChannels = vi.fn();
+
+    wrapper(
+      <Bandwidth
+        telescope={TELESCOPE_LOW_NUM}
+        value={8}
+        setValue={vi.fn()}
+        zoomChannels={1000}
+        setZoomChannels={setZoomChannels}
+        maxZoomChannels={MAX_ZOOM_CHANNELS_FOR_AA2}
+        resolutionHz={RESOLUTION_HZ}
+      />
+    );
+    const channelsInput = screen.getByTestId('zoomChannels');
+    await userEvent.clear(channelsInput);
+    await userEvent.type(channelsInput, '5000');
+    expect(setZoomChannels).toHaveBeenLastCalledWith(MAX_ZOOM_CHANNELS_FOR_AA2);
   });
 
   test('LOW: the channel-count arrow steps by one channel', async () => {
