@@ -1260,6 +1260,7 @@
     "maxFaradayDepthExtent": "Maximum Faraday Depth Extent",
     "maxFaradayDepth": "Maximum Faraday Extent",
     "noData": "No data available",
+    "notApplicableForSSO": "Currently unavailable for non-sidereal objects",
     "sensitivity": "Sensitivity",
     "spectralSensitivityWeighted": "Weighted spectral sensitivity",
     "spectralConfusionNoise": "Spectral confusion noise",
