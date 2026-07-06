@@ -82,12 +82,12 @@ export const getReferenceCoordinate = (
     case REFERENCE_COORDINATE_TYPE_ICRS.value:
         return {
           kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
-          ra_str: ((tar as Target) || (tar as ReferenceCoordinateICRS)).raStr,
-          dec_str: ((tar as Target) || (tar as ReferenceCoordinateICRS)).decStr,
-          pm_ra: ((tar as Target) || (tar as ReferenceCoordinateICRS)).pmRa,
-          pm_dec: ((tar as Target) || (tar as ReferenceCoordinateICRS)).pmDec,
-          epoch: ((tar as Target) || (tar as ReferenceCoordinateICRS)).epoch,
-          parallax: ((tar as Target) || (tar as ReferenceCoordinateICRS)).parallax
+          ra_str: (tar as Target).raStr,
+          dec_str: (tar as Target).decStr,
+          pm_ra: (tar as Target).pmRa,
+          pm_dec: (tar as Target).pmDec,
+          epoch: (tar as Target).epoch,
+          parallax: (tar as Target).parallax
         } as ReferenceCoordinateICRSBackend;
 
     case REFERENCE_COORDINATE_TYPE_GALACTIC.value:
@@ -105,7 +105,10 @@ export const getReferenceCoordinate = (
       return {
         kind: REFERENCE_COORDINATE_TYPE_SSO.label,
         name: (tar as Target).name
-      } as ReferenceCoordinateSSOBackend
+      } as ReferenceCoordinateSSOBackend;
+
+      default:
+      throw new Error(`Unsupported reference coordinate kind: ${tar.kind}`);
   }
 };
 

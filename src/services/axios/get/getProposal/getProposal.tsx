@@ -172,7 +172,10 @@ export const getReferenceCoordinate = (
     case REFERENCE_COORDINATE_TYPE_SSO.label:
       return {
         kind: REFERENCE_COORDINATE_TYPE_SSO.label,
-      }
+      };
+
+    default:
+      throw new Error(`Unsupported reference coordinate kind: ${tar.kind}`);
   }
 };
 
