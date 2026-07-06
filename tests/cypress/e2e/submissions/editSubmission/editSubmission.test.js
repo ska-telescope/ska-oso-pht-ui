@@ -29,7 +29,6 @@ import {
   clickObservationFromTable,
   verifySensitivityCalculatorStatusSuccess,
   validateProposal,
-  clickFileUploadArea,
   clickFileUpload,
   clickToValidateSV,
   uploadTestFile,
@@ -91,7 +90,6 @@ describe('Edit Proposal', () => {
       verifyAutoLinkAlertFooter(); //Verify AutoLink to OSD data
       clickStatusIconNav('statusId3'); //Click to description page
       pageConfirmed('DESCRIPTION');
-      clickFileUploadArea();
       uploadTestFile('testFile.pdf');
       verifyTestFileUploaded('testFile.pdf');
       clickFileUpload();
@@ -165,14 +163,12 @@ describe('Edit Proposal', () => {
         pageConfirmed('CALIBRATION');
         clickStatusIconNav('statusId3'); //Click to science page
         pageConfirmed('SCIENCE');
-        clickFileUploadArea();
         uploadTestFile('testFile.pdf');
         verifyTestFileUploaded('testFile.pdf');
         clickFileUpload();
         verifyAlertFooter('Science Justification PDF successfully uploaded');
         clickStatusIconNav('statusId6'); //Click to technical page
         pageConfirmed('TECHNICAL');
-        clickFileUploadArea();
         uploadTestFile('testFile.pdf');
         verifyTestFileUploaded('testFile.pdf');
         clickFileUpload();

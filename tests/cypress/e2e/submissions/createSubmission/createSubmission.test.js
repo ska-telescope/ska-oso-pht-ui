@@ -32,7 +32,6 @@ import {
   mockCreateSVIdeaAPI,
   mockCreateProposalAPI,
   addSubmissionSummary,
-  clickFileUploadArea,
   uploadTestFile,
   verifyTestFileUploaded,
   clickFileUpload,
@@ -116,7 +115,6 @@ describe('Creating Proposal', () => {
       verifyAutoLinkAlertFooter();
       clickStatusIconNav('statusId3'); //Click to description page
       pageConfirmed('DESCRIPTION');
-      clickFileUploadArea();
       uploadTestFile('testFile.pdf');
       verifyTestFileUploaded('testFile.pdf');
       clickFileUpload();
@@ -173,7 +171,6 @@ describe('Creating Proposal', () => {
       verifyAutoLinkAlertFooter();
       clickStatusIconNav('statusId3'); //Click to description page
       pageConfirmed('DESCRIPTION');
-      clickFileUploadArea();
       uploadTestFile('testFile.pdf');
       verifyTestFileUploaded('testFile.pdf');
       clickFileUpload();
@@ -224,7 +221,6 @@ describe('Creating Proposal', () => {
       verifyAutoLinkAlertFooter();
       clickStatusIconNav('statusId3'); //Click to description page
       pageConfirmed('DESCRIPTION');
-      clickFileUploadArea();
       uploadTestFile('testFile.pdf');
       verifyTestFileUploaded('testFile.pdf');
       clickFileUpload();
