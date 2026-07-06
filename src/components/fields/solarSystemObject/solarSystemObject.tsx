@@ -7,8 +7,7 @@ import { SSO_OPTIONS } from '@utils/constants.ts';
 interface SolarSystemObjectFieldProps {
   setValue?: Function,
   value: string,
-  valueFocus?: Function,
-  disabled?: boolean
+  valueFocus?: Function
 }
 
 
