@@ -306,7 +306,8 @@ export default function TargetEntry({
       const baseTarget = {
         kind: referenceCoordinates,
         id: highestId + 1,
-        name: name ?? ''
+        name: name ?? '',
+        velUnit: velUnit ?? 0,
       };
 
       let newTarget: Target;
