@@ -226,7 +226,7 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
     /*------- reference coordinate properties --------------------- */
 
     switch (referenceCoordinate) {
-      case REFERENCE_COORDINATE_TYPE_ICRS:
+      case REFERENCE_COORDINATE_TYPE_ICRS.label:
         target.raStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).ra_str;
         target.decStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).dec_str;
         target.pmRa = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_ra;
