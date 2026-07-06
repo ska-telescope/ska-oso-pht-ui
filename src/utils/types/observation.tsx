@@ -17,7 +17,7 @@ type Observation = {
   // bandwidthUnits: number; // only for zoom
   continuumBandwidth: number | null; // only for continuum
   continuumBandwidthUnits: number | null; // only for continuum
-  spectralAveraging?: number; // only for LOW
+  spectralAveraging?: number; // no longer user-adjustable via UI; defaults to 1
   supplied: Supplied;
   spectralResolution: string;
   effectiveResolution: string;

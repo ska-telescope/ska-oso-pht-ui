@@ -72,9 +72,7 @@ import Observation from '@/utils/types/observation';
 import SubArrayField from '@/components/fields/subArray/SubArray';
 import ObservingBandField from '@/components/fields/observingBand/ObservingBand';
 import ObservationTypeField from '@/components/fields/observationType/ObservationType';
-import EffectiveResolutionField from '@/components/fields/effectiveResolution/EffectiveResolution';
 import ElevationField, { ELEVATION_DEFAULT } from '@/components/fields/elevation/Elevation';
-import SpectralAveragingField from '@/components/fields/spectralAveraging/SpectralAveraging';
 import SpectralResolutionField from '@/components/fields/spectralResolution/SpectralResolution';
 import NumStations from '@/components/fields/numStations/NumStations';
 import ContinuumBandwidthField from '@/components/fields/bandwidthFields/continuumBandwidth/continuumBandwidth';
@@ -138,7 +136,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [subarrayConfig, setSubarrayConfig] = React.useState(SA_AA2);
   const [observingBand, setObservingBand] = React.useState(BAND_LOW_STR);
   const [observationType, setObservationType] = React.useState(TYPE_CONTINUUM);
-  const [effectiveResolution, setEffectiveResolution] = React.useState('');
   const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT[TELESCOPE_LOW_NUM - 1]);
   const [weather, setWeather] = React.useState(Number(t('weather.default')));
   const [centralFrequency, setCentralFrequency] = React.useState(0);
@@ -232,7 +229,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         units: suppliedUnits
       },
       spectralResolution,
-      effectiveResolution,
+      effectiveResolution: spectralResolution,
       numSubBands: subBands,
       num15mAntennas: numOf15mAntennas,
       num13mAntennas: numOf13mAntennas,
@@ -431,7 +428,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     pstMode,
     spectralAveraging,
     spectralResolution,
-    effectiveResolution,
     zoomChannels
   ]);
 
@@ -937,32 +933,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       />
     );
 
-  const spectralAveragingField = () =>
-    fieldWrapper(
-      <SpectralAveragingField
-        isLow={isLow()}
-        value={spectralAveraging}
-        setValue={setSpectralAveraging}
-        subarray={subarrayConfig}
-        observationType={observationType}
-      />
-    );
-
-  const effectiveResolutionField = () =>
-    fieldWrapper(
-      <EffectiveResolutionField
-        label={t('effectiveResolution.label')}
-        frequency={centralFrequency}
-        frequencyUnits={centralFrequencyUnits}
-        spectralAveraging={spectralAveraging}
-        spectralResolution={spectralResolution}
-        observingBand={observingBand}
-        observationType={observationType}
-        onFocus={() => setHelp('effectiveResolution')}
-        setValue={setEffectiveResolution}
-      />
-    );
-
   const centralFrequencyUnitsField = () => {
     // Only have MHz for Low
     const options = isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
@@ -1006,8 +976,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           <Grid size={{ md: 12, lg: 2 }}>{spectralResolutionField()}</Grid>
           <Grid size={{ md: 12, lg: 7 }}>{bandwidthField()}</Grid>
           <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
-          <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
-          <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>
         </>
       );
     }
@@ -1030,7 +998,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
                 : emptyField()}
         </Grid>
         <Grid size={{ md: 12, lg: 6 }}>{isZoom() ? spectralResolutionField() : emptyField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{isZoom() ? effectiveResolutionField() : emptyField()}</Grid>
       </>
     );
   };
@@ -1060,8 +1027,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           <Grid size={{ md: 12, lg: 2 }}>{spectralResolutionField()}</Grid>
           <Grid size={{ md: 12, lg: 7 }}>{bandwidthField()}</Grid>
           <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
-          <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
-          <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>
         </>
       );
     }
@@ -1070,12 +1035,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <Grid size={{ md: 12, lg: 12 }} p={2}>
           {frequencySpectrumField()}
         </Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{emptyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{zoomChannelsField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{emptyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{bandwidthField()}</Grid>
       </>
     );
