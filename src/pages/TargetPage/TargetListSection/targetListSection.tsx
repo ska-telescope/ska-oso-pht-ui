@@ -95,6 +95,7 @@ export default function TargetListSection() {
     const LABEL_WIDTH = 6;
     const rec = getProposal()?.targets?.find((p) => p.id === rowTarget?.id);
     const isICRS = rec?.kind === REFERENCE_COORDINATE_TYPE_ICRS.value;
+    const isSSO = rec?.kind === REFERENCE_COORDINATE_TYPE_SSO.value
     return (
       <Grid
         p={2}
@@ -107,6 +108,8 @@ export default function TargetListSection() {
         <FieldWrapper label={t('name.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec?.name}</Typography>
         </FieldWrapper>
+        {!isSSO && (
+          <>
         <FieldWrapper
           label={isICRS ? t('skyDirection.label.1.0') : t('skyDirection.label.1.1')}
           labelWidth={LABEL_WIDTH}
@@ -125,7 +128,8 @@ export default function TargetListSection() {
         <FieldWrapper label={t('velocity.1.label')} labelWidth={LABEL_WIDTH}>
           <Typography variant="body1">{rec?.redshift}</Typography>
         </FieldWrapper>
-
+        </>
+          )}
         <Alert
           color={AlertColorTypes.Info}
           text={t('deleteTarget.info')}
