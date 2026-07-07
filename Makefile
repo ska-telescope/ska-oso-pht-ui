@@ -85,7 +85,8 @@ K8S_CHART_PARAMS += --set ska-oso-pht-ui.ingress.host=$(PRODUCTION_URL) \
   --set ska-oso-pht-ui.runtimeEnv.msentraRedirectUri=/ \
   --set ska-ost-senscalc.enabled=false \
   --set ska-oso-services-umbrella.ska-oso-services.ingress.host=$(PRODUCTION_URL) \
-  --set ska-oso-services-umbrella.ska-oso-services.ingress.pathOverride=$(API_DEPLOY_PATH)
+  --set ska-oso-services-umbrella.ska-oso-services.ingress.pathOverride=$(API_DEPLOY_PATH) \
+  --set ska-oso-services-umbrella.ska-oso-services.rest.engineeringApiEnabled=false
 
 # TODO Disabled while ODA deployment is worked on and until secrets are available in prod Vault path
 K8S_CHART_PARAMS += --set ska-oso-pht-ui.vault.enabled=false \
