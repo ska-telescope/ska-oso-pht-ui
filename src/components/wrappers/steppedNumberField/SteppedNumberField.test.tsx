@@ -114,7 +114,7 @@ describe('<SteppedNumberField />', () => {
         value={0}
         digitsOnly
         onCommit={onCommit}
-        onStep={v => v}
+        onStep={(v) => v}
       />
     );
 

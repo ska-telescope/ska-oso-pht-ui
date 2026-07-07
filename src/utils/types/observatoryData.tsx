@@ -27,7 +27,19 @@ export type ObservatoryPolicy = {
     mid: string[];
   };
   telescopeCapabilities: TelescopeInformationFrontend;
+  capabilities: ObservatoryCapabilities;
   type: string;
+};
+
+export type ObservatoryCapabilities = {
+  mid: {
+    basicCapabilities: BasicCapabilitiesMid;
+    subArrays: subarrayConfigurationMid[];
+  } | null;
+  low: {
+    basicCapabilities: BasicCapabilitiesLow;
+    subArrays: subarrayConfigurationLow[];
+  } | null;
 };
 
 export type subBandsBackend = {
@@ -182,29 +194,22 @@ export type subarrayConfigurationLow = {
 export type ObservatoryDataBackend = {
   observatory_policy: ObservatoryPolicyBackend;
   capabilities: {
+    // the OSD only ever returns a single array_assembly key per cycle (e.g. "AA2" or
+    // "AA2_SV"), determined by that cycle's own telescope_capabilities - not always "AA2".
     mid: {
       basic_capabilities: BasicCapabilitiesMidBackend;
-      AA2: subarrayConfigurationMidBackend;
+      [arrayAssembly: string]: BasicCapabilitiesMidBackend | subarrayConfigurationMidBackend;
     };
     low: {
       basic_capabilities: BasicCapabilitiesLowBackend;
-      AA2_SV: subarrayConfigurationLowBackend;
+      [arrayAssembly: string]: BasicCapabilitiesLowBackend | subarrayConfigurationLowBackend;
     };
   };
 };
 
 export type ObservatoryData = {
   policies: ObservatoryPolicy[];
-  capabilities: {
-    mid: {
-      basicCapabilities: BasicCapabilitiesMid;
-      subArrays: subarrayConfigurationMid[];
-    } | null;
-    low: {
-      basicCapabilities: BasicCapabilitiesLow;
-      subArrays: subarrayConfigurationLow[];
-    } | null;
-  };
+  capabilities: ObservatoryCapabilities;
 };
 
 export default ObservatoryData;
