@@ -36,6 +36,13 @@ const BANDWIDTH_UNIT_OPTIONS = [
   { label: 'MHz', value: FREQUENCY_MHZ }
 ];
 
+// Displayed bandwidth is always precise to the nearest centi-Hz (0.01 Hz), regardless of unit -
+// so the decimal places shown must grow with the unit's scale relative to Hz.
+const BANDWIDTH_DECIMAL_PLACES: Record<number, number> = {
+  [FREQUENCY_KHZ]: 5,
+  [FREQUENCY_MHZ]: 8
+};
+
 export default function BandwidthField({
   centralFrequencyHz = 0,
   disabled = false,
@@ -93,7 +100,7 @@ export default function BandwidthField({
             testId={FIELD}
             label={t(FIELD + '.label.' + BANDWIDTH_LABEL_SELECTOR)}
             value={bandwidthDisplayValue}
-            format={(v) => v.toFixed(2)}
+            format={v => v.toFixed(BANDWIDTH_DECIMAL_PLACES[bandwidthUnits] ?? 2)}
             onCommit={commitBandwidth}
             onStep={stepBandwidthValue}
             onFocus={() => setHelp(FIELD)}

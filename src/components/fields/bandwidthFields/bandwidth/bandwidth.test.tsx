@@ -34,8 +34,9 @@ describe('<Bandwidth />', () => {
       />
     );
     expect(screen.getByTestId('zoomChannels')).toHaveValue('1000');
-    // 1000 channels * 1808.449074 Hz = 1,808,449.074 Hz = 1808.45 kHz
-    expect(screen.getByTestId('bandwidth')).toHaveValue('1808.45');
+    // 1000 channels * 1808.449074 Hz = 1,808,449.074 Hz = 1808.449074 kHz, shown to the nearest
+    // centi-Hz (5dp in kHz)
+    expect(screen.getByTestId('bandwidth')).toHaveValue('1808.44907');
   });
 
   test('LOW: editing channel count pushes the new value via setZoomChannels', async () => {
