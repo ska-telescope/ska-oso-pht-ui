@@ -93,7 +93,7 @@ export default function BandwidthField({
             testId={FIELD}
             label={t(FIELD + '.label.' + BANDWIDTH_LABEL_SELECTOR)}
             value={bandwidthDisplayValue}
-            format={v => v.toFixed(2)}
+            format={(v) => v.toFixed(2)}
             onCommit={commitBandwidth}
             onStep={stepBandwidthValue}
             onFocus={() => setHelp(FIELD)}

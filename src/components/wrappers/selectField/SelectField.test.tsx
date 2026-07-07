@@ -32,7 +32,7 @@ describe('<SelectField />', () => {
     render(
       <SelectField
         testId="resolution"
-        options={OPTIONS.filter(o => o.value >= 5)}
+        options={OPTIONS.filter((o) => o.value >= 5)}
         value={5}
         setValue={vi.fn()}
       />

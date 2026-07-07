@@ -15,15 +15,15 @@ const parseResolutionHz = (label: string): number => Number(label.split(' ')[0])
 
 export const getZoomResolutionOptions = (subarrayConfig?: string): ZoomResolutionOption[] =>
   OSD_CONSTANTS.SpectralResolutionObLowZoom.filter(
-    entry => !isFineZoomRestricted(subarrayConfig) || entry.bandWidthValue >= FIRST_COARSE_ZOOM
-  ).map(entry => ({
+    (entry) => !isFineZoomRestricted(subarrayConfig) || entry.bandWidthValue >= FIRST_COARSE_ZOOM
+  ).map((entry) => ({
     value: entry.bandWidthValue,
     label: `${parseResolutionHz(entry.value).toFixed(DECIMAL_PLACES)} Hz`
   }));
 
 export const getZoomResolutionHz = (bandwidthIndex: number): number => {
   const entry = OSD_CONSTANTS.SpectralResolutionObLowZoom.find(
-    e => e.bandWidthValue === bandwidthIndex
+    (e) => e.bandWidthValue === bandwidthIndex
   );
   return entry ? parseResolutionHz(entry.value) : 0;
 };
@@ -67,4 +67,9 @@ export const stepCentralFrequencyHz = (
   minHz: number,
   maxHz: number
 ): number =>
-  clampCentralFrequencyToWindowHz(freqHz + direction * channelWidthHz, windowBandwidthHz, minHz, maxHz);
+  clampCentralFrequencyToWindowHz(
+    freqHz + direction * channelWidthHz,
+    windowBandwidthHz,
+    minHz,
+    maxHz
+  );

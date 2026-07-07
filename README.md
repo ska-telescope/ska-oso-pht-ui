@@ -139,6 +139,7 @@ For local dev (`yarn start` / `make dev-start`):
 
 - `env.js` is written with **relative** API paths (e.g. `/oso/api/v14`)
 - Vite's dev server proxies these paths to the target specified by `BACKEND_PROXY`
+- `/oso/` can be pointed at a different target than `/senscalc/` via `OSO_SERVICES_PROXY` (see Mode 4) — useful for testing a local backend change in isolation
 - The browser only talks to `localhost:6101` — no cross-origin requests
 
 For k8s deployments:

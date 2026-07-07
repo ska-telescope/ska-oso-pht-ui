@@ -29,27 +29,27 @@ describe('isFineZoomRestricted', () => {
 describe('getZoomResolutionOptions', () => {
   test('returns only the coarse options for AA2', () => {
     const options = getZoomResolutionOptions(SA_AA2);
-    expect(options.map(o => o.value)).toEqual([5, 6, 7, 8]);
+    expect(options.map((o) => o.value)).toEqual([5, 6, 7, 8]);
   });
 
   test('returns only the coarse options for AA*', () => {
     const options = getZoomResolutionOptions(SA_AA_STAR);
-    expect(options.map(o => o.value)).toEqual([5, 6, 7, 8]);
+    expect(options.map((o) => o.value)).toEqual([5, 6, 7, 8]);
   });
 
   test('returns all 8 options for AA4', () => {
     const options = getZoomResolutionOptions(SA_AA4);
-    expect(options.map(o => o.value)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+    expect(options.map((o) => o.value)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
   });
 
   test('returns all 8 options for Custom', () => {
     const options = getZoomResolutionOptions(SA_CUSTOM);
-    expect(options.map(o => o.value)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
+    expect(options.map((o) => o.value)).toEqual([1, 2, 3, 4, 5, 6, 7, 8]);
   });
 
   test('formats labels in Hz to 2 d.p.', () => {
     const options = getZoomResolutionOptions(SA_AA2);
-    expect(options.map(o => o.label)).toEqual([
+    expect(options.map((o) => o.label)).toEqual([
       '226.06 Hz',
       '452.11 Hz',
       '904.22 Hz',

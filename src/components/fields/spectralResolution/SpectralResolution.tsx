@@ -1,7 +1,12 @@
 import React from 'react';
 import { TextEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/material';
-import { BAND_LOW_STR, FIRST_COARSE_ZOOM, FREQUENCY_UNITS, TYPE_CONTINUUM } from '../../../utils/constants';
+import {
+  BAND_LOW_STR,
+  FIRST_COARSE_ZOOM,
+  FREQUENCY_UNITS,
+  TYPE_CONTINUUM
+} from '../../../utils/constants';
 import { calculateVelocity, frequencyConversion } from '../../../utils/helpers';
 import {
   getZoomResolutionHz,
@@ -44,11 +49,10 @@ export default function SpectralResolutionField({
   const isContinuum = () => observationType === TYPE_CONTINUUM;
   const isLow = () => observingBand === BAND_LOW_STR;
 
-  // For AA2/AA* subarrays, the fine zoom modes are not available, 
+  // For AA2/AA* subarrays, the fine zoom modes are not available,
   // if one of those is selected, we fall back to the coarsest one both for what's displayed and what gets propagated to the parent.
   const restricted = interactive && isFineZoomRestricted(subarrayConfig);
-  const safeBandWidth =
-    restricted && bandWidth < FIRST_COARSE_ZOOM ? FIRST_COARSE_ZOOM : bandWidth;
+  const safeBandWidth = restricted && bandWidth < FIRST_COARSE_ZOOM ? FIRST_COARSE_ZOOM : bandWidth;
 
   React.useEffect(() => {
     if (restricted && bandWidth < FIRST_COARSE_ZOOM) {
@@ -112,7 +116,7 @@ export default function SpectralResolutionField({
           label={label}
           options={getZoomResolutionOptions(subarrayConfig)}
           value={safeBandWidth}
-          setValue={value => setBandWidth?.(value)}
+          setValue={(value) => setBandWidth?.(value)}
           onFocus={() => onFocus?.()}
         />
       ) : (

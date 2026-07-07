@@ -88,7 +88,7 @@ export default function SteppedNumberField({
         error={!!errorText}
         label={label}
         onBlur={handleBlur}
-        onChange={e => handleChange(e.target.value)}
+        onChange={(e) => handleChange(e.target.value)}
         onFocus={handleFocus}
         required={required}
         slotProps={{

@@ -1,5 +1,12 @@
 import { HTMLAttributes } from 'react';
-import { FormControl, FormHelperText, InputLabel, MenuItem, Select, SelectChangeEvent } from '@mui/material';
+import {
+  FormControl,
+  FormHelperText,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent
+} from '@mui/material';
 
 export interface SelectFieldOption {
   label: string;
@@ -39,7 +46,13 @@ export default function SelectField({
   };
 
   return (
-    <FormControl fullWidth variant="standard" error={!!errorText} required={required} disabled={disabled}>
+    <FormControl
+      fullWidth
+      variant="standard"
+      error={!!errorText}
+      required={required}
+      disabled={disabled}
+    >
       {label && <InputLabel id={labelId}>{label}</InputLabel>}
       <Select
         labelId={labelId}
@@ -49,7 +62,7 @@ export default function SelectField({
         onFocus={onFocus}
         SelectDisplayProps={selectDisplayProps}
       >
-        {options.map(option => (
+        {options.map((option) => (
           <MenuItem key={option.value} value={option.value}>
             {option.label}
           </MenuItem>

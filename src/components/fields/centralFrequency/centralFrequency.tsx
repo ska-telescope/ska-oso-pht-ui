@@ -43,7 +43,8 @@ export default function CentralFrequency({
     setFieldValid(true);
   }, [value]);
 
-  const units: number = telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? FREQUENCY_MHZ : FREQUENCY_GHZ;
+  const units: number =
+    telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? FREQUENCY_MHZ : FREQUENCY_GHZ;
   const band = findBand(observingBand);
   const minHz = band?.minFrequencyHz ?? 0;
   const maxHz = band?.maxFrequencyHz ?? 0;

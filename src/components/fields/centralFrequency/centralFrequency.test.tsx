@@ -73,9 +73,7 @@ const wrapper = (component: React.ReactElement) => {
 
 describe('CentralFrequency component', () => {
   it('renders with initial value', () => {
-    wrapper(
-      <CentralFrequency observingBand={BAND_LOW_STR} value={150} setValue={vi.fn()} />
-    );
+    wrapper(<CentralFrequency observingBand={BAND_LOW_STR} value={150} setValue={vi.fn()} />);
   });
 
   it('non-steppable mode renders the plain NumberEntry, unchanged', () => {

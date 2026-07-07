@@ -15,9 +15,9 @@ function LossyRoundTripField() {
     <SteppedNumberField
       testId="lossy"
       value={displayValue}
-      format={v => v.toFixed(2)}
-      onCommit={raw => setChannels(Math.round(raw / 1.8))}
-      onStep={v => v}
+      format={(v) => v.toFixed(2)}
+      onCommit={(raw) => setChannels(Math.round(raw / 1.8))}
+      onStep={(v) => v}
     />
   );
 }
@@ -28,9 +28,9 @@ describe('<SteppedNumberField />', () => {
       <SteppedNumberField
         testId="zoomChannels"
         value={1000}
-        format={v => `${v}!`}
+        format={(v) => `${v}!`}
         onCommit={vi.fn()}
-        onStep={v => v}
+        onStep={(v) => v}
       />
     );
     expect(screen.getByTestId('zoomChannels')).toHaveValue('1000!');
@@ -55,7 +55,7 @@ describe('<SteppedNumberField />', () => {
   test('typing a valid number calls onCommit with the parsed value', async () => {
     const onCommit = vi.fn();
     render(
-      <SteppedNumberField testId="zoomChannels" value={0} onCommit={onCommit} onStep={v => v} />
+      <SteppedNumberField testId="zoomChannels" value={0} onCommit={onCommit} onStep={(v) => v} />
     );
 
     await userEvent.type(screen.getByTestId('zoomChannels'), '5');
@@ -65,7 +65,7 @@ describe('<SteppedNumberField />', () => {
   test('typing an invalid value does not call onCommit', async () => {
     const onCommit = vi.fn();
     render(
-      <SteppedNumberField testId="zoomChannels" value={0} onCommit={onCommit} onStep={v => v} />
+      <SteppedNumberField testId="zoomChannels" value={0} onCommit={onCommit} onStep={(v) => v} />
     );
 
     await userEvent.type(screen.getByTestId('zoomChannels'), '-');
@@ -74,7 +74,7 @@ describe('<SteppedNumberField />', () => {
 
   test('blur resets the displayed value back to the formatted prop value', async () => {
     render(
-      <SteppedNumberField testId="zoomChannels" value={1000} onCommit={vi.fn()} onStep={v => v} />
+      <SteppedNumberField testId="zoomChannels" value={1000} onCommit={vi.fn()} onStep={(v) => v} />
     );
     const input = screen.getByTestId('zoomChannels');
     await userEvent.clear(input);
@@ -112,7 +112,7 @@ describe('<SteppedNumberField />', () => {
         testId="zoomChannels"
         value={1000}
         onCommit={vi.fn()}
-        onStep={v => v}
+        onStep={(v) => v}
         incrementDisabled
       />
     );
