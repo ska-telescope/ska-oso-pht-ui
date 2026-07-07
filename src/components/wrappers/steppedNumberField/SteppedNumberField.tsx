@@ -9,6 +9,7 @@ const defaultParse = (raw: string): number | null =>
 
 interface SteppedNumberFieldProps {
   decrementDisabled?: boolean;
+  digitsOnly?: boolean;
   disabled?: boolean;
   errorText?: string;
   format?: (value: number) => string;
@@ -31,6 +32,7 @@ interface SteppedNumberFieldProps {
 // and how to compute the next value for a single step (`onStep`, e.g. snap-to-legal-value).
 export default function SteppedNumberField({
   decrementDisabled = false,
+  digitsOnly = false,
   disabled = false,
   errorText = '',
   format = defaultFormat,
@@ -60,8 +62,9 @@ export default function SteppedNumberField({
   }, [value]);
 
   const handleChange = (raw: string) => {
-    setInputValue(raw);
-    const parsed = parse(raw);
+    const sanitized = digitsOnly ? raw.replace(/[^0-9]/g, '') : raw;
+    setInputValue(sanitized);
+    const parsed = parse(sanitized);
     if (parsed !== null) {
       onCommit(parsed);
     }
