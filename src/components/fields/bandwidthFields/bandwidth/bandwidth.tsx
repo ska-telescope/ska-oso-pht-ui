@@ -126,6 +126,7 @@ export default function BandwidthField({
             testId="zoomChannels"
             label={t('zoomChannels.label')}
             value={zoomChannels}
+            digitsOnly
             onCommit={commitChannels}
             onStep={stepChannelsValue}
             onFocus={() => setHelp('zoomChannels')}

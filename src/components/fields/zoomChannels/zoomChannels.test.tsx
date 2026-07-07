@@ -1,5 +1,5 @@
 // ZoomChannels.test.tsx
-import { render } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { vi } from 'vitest';
 import ZoomChannels from './zoomChannels';
@@ -46,5 +46,14 @@ vi.mock('@ska-telescope/ska-gui-components', () => ({
 describe('ZoomChannels component', () => {
   it('renders with initial value', () => {
     render(<ZoomChannels value={5} setValue={vi.fn()} />);
+  });
+
+  it('strips non-digit characters from typed input', () => {
+    const setValue = vi.fn();
+    render(<ZoomChannels value={0} maxValue={100} setValue={setValue} />);
+
+    fireEvent.change(screen.getByTestId('zoomChannels'), { target: { value: 'a12.3b-4e5' } });
+
+    expect(screen.getByTestId('zoomChannels')).toHaveValue('12345');
   });
 });

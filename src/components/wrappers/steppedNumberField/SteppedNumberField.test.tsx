@@ -106,6 +106,25 @@ describe('<SteppedNumberField />', () => {
     expect(input).toHaveValue('1234.80');
   });
 
+  test('digitsOnly strips non-digit characters as they are typed', async () => {
+    const onCommit = vi.fn();
+    render(
+      <SteppedNumberField
+        testId="zoomChannels"
+        value={0}
+        digitsOnly
+        onCommit={onCommit}
+        onStep={v => v}
+      />
+    );
+
+    const input = screen.getByTestId('zoomChannels');
+    await userEvent.clear(input);
+    await userEvent.type(input, 'a12.3b-4e5');
+    expect(input).toHaveValue('12345');
+    expect(onCommit).toHaveBeenLastCalledWith(12345);
+  });
+
   test('arrows respect increment/decrement disabled bounds', () => {
     render(
       <SteppedNumberField
