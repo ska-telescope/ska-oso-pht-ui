@@ -6,3 +6,11 @@ global:
 
 ska-ost-senscalc:
   enabled: true
+
+ska-oso-services-umbrella:
+  ska-oso-services:
+    rest:
+      image:
+        registry: registry.gitlab.com
+        image: ska-telescope/oso/ska-oso-services/ska-oso-services
+        tag: 16.0.0-dev.cf559b8e5

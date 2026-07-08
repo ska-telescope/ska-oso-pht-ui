@@ -13,8 +13,8 @@ dependencies:
 # OSO services provides services required by the PHT UI and acts as the proxy
 # for all ODA operations (load proposal, save proposal, etc.)
 - name: ska-oso-services-umbrella
-  version: 16.0.0
-  repository: https://artefact.skao.int/repository/helm-internal
+  version: 16.0.0-dev.cf559b8e5
+  repository: https://gitlab.com/api/v4/projects/56175331/packages/helm/dev
 
 # Sensitivity calculator services required by the PHT for the observation page
 - name: ska-ost-senscalc
