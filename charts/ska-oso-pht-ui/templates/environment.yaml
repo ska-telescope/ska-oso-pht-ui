@@ -11,8 +11,8 @@ data:
   REACT_APP_SKA_SENSITIVITY_CALC_URL: {{ include "ska-oso-pht-ui.urls-skaSensitivityCalcUrl" . | quote }}
   # TODO remove local data and its use in the app
   REACT_APP_USE_LOCAL_DATA: {{ .Values.runtimeEnv.useLocalData | quote }}
-  MSENTRA_CLIENT_ID: {{ .Values.runtimeEnv.msenstraClientId | quote }}
-  MSENTRA_TENANT_ID: {{ .Values.runtimeEnv.msenstraTenantId | quote }}
+  MSENTRA_CLIENT_ID: {{ .Values.runtimeEnv.msentraClientId | quote }}
+  MSENTRA_TENANT_ID: {{ .Values.runtimeEnv.msentraTenantId | quote }}
   MSENTRA_REDIRECT_URI: {{ include "ska-oso-pht-ui.urls-redirectUri" . | quote }}
   USE_INDIGO: {{ .Values.runtimeEnv.useIndigo | toString | quote }}
   INDIGO_AUTHORITY: {{ .Values.runtimeEnv.indigoAuthority | quote }}

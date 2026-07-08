@@ -128,9 +128,9 @@ K8S_CHART_PARAMS += --set global.oda.postgres.database=$(PGDATABASE) \
 
 
 # For the test, dev and integration environment, use the freshly built image in the GitLab registry
-ENV_CHECK := $(shell echo $(CI_ENVIRONMENT_SLUG) | egrep 'test|dev|integration|prod')
+ENV_CHECK := $(shell echo $(CI_ENVIRONMENT_SLUG) | egrep 'test|dev|integration')
 ifneq ($(ENV_CHECK),)
-K8S_CHART_PARAMS += --set ska-oso-pht-ui.image.tag=10.1.0-dev.cb7808ad2 \
+K8S_CHART_PARAMS += --set ska-oso-pht-ui.image.tag=$(VERSION)-dev.c$(CI_COMMIT_SHORT_SHA) \
 	--set ska-oso-pht-ui.image.registry=$(CI_REGISTRY)/ska-telescope/oso/ska-oso-pht-ui
 endif
 
