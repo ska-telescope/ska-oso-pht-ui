@@ -116,3 +116,29 @@ export const MockObservatoryDataBackend: ObservatoryDataBackend = {
     }
   }
 };
+
+// Second backend cycle (type: 'Proposal') to test multi-policy mapping.
+export const MockObservatoryDataBackendProposal: ObservatoryDataBackend = {
+  observatory_policy: {
+    cycle_number: 3,
+    type: 'Proposal',
+    cycle_id: 'CYCLE-003',
+    cycle_description: 'Mock Proposal Cycle',
+    cycle_information: {
+      cycle_id: 'CYCLE-003',
+      proposal_open: '2025-07-01',
+      proposal_close: '2026-09-01'
+    },
+    cycle_policies: {
+      normal_max_hours: 100.0,
+      max_data_products: 100,
+      max_observation_setups: 100,
+      max_targets: 100
+    },
+    telescope_capabilities: {
+      Mid: SA_AA2,
+      Low: SA_AA2
+    }
+  },
+  capabilities: MockObservatoryDataBackend.capabilities
+};

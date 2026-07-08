@@ -2,7 +2,11 @@ import { beforeEach, describe, expect, test, vi } from 'vitest';
 import ObservatoryData from '@utils/types/observatoryData.tsx';
 import { MockObservatoryDataFrontend } from '@services/axios/get/getObservatoryData/mockObservatoryDataFrontend.tsx';
 import GetObservatoryData from '@/services/axios/get/getObservatoryData/getObservatoryData';
-import { MockObservatoryDataBackend } from '@/services/axios/get/getObservatoryData/mockObservatoryDataBackend';
+import {
+  MockObservatoryDataBackend,
+  MockObservatoryDataBackendProposal
+} from '@/services/axios/get/getObservatoryData/mockObservatoryDataBackend';
+import { osdMapping } from '@/services/axios/get/getObservatoryData/getOSDCycles';
 
 describe('GetObservatoryData Service', () => {
   let mockedAuthClient: any;
@@ -35,6 +39,18 @@ describe('GetObservatoryData Service', () => {
     );
     const expectedResult = { ...MockObservatoryDataFrontend, policies: expectedPolicies };
     expect(stripFunctions(result)).to.deep.equal(stripFunctions(expectedResult));
+  });
+
+  test('maps multiple backend cycles to frontend policies', () => {
+    const result = osdMapping([
+      MockObservatoryDataBackend,
+      MockObservatoryDataBackendProposal
+    ]) as ObservatoryData;
+    const stripFunctions = (obj: any) =>
+      JSON.parse(
+        JSON.stringify(obj, (_key, value) => (typeof value === 'function' ? undefined : value))
+      );
+    expect(stripFunctions(result)).to.deep.equal(stripFunctions(MockObservatoryDataFrontend));
   });
 
   test('returns error message on API failure', async () => {
