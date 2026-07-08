@@ -30,7 +30,11 @@ describe('GetObservatoryData Service', () => {
       JSON.parse(
         JSON.stringify(obj, (_key, value) => (typeof value === 'function' ? undefined : value))
       );
-    expect(stripFunctions(result)).to.deep.equal(stripFunctions(MockObservatoryDataFrontend));
+    const expectedPolicies = MockObservatoryDataFrontend.policies.filter(
+      (policy) => policy.cycleNumber === MockObservatoryDataBackend.observatory_policy.cycle_number
+    );
+    const expectedResult = { ...MockObservatoryDataFrontend, policies: expectedPolicies };
+    expect(stripFunctions(result)).to.deep.equal(stripFunctions(expectedResult));
   });
 
   test('returns error message on API failure', async () => {
