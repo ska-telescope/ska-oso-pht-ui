@@ -70,7 +70,6 @@ SGCLUSTER = oda
 SGCLUSTER_NAMESPACE = oda
   
 K8S_CHART_PARAMS += \
-  --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl="/$(KUBE_NAMESPACE)/oso/api/v$(OSO_SERVICES_MAJOR_VERSION)" \
   --set global.cluster_domain=$(CLUSTER_DOMAIN) \
   --set ska-oso-pht-ui.vault.enabled=false \
   --set ska-oso-pht-ui.rest.image.tag=$(VERSION) \
