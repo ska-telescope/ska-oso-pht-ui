@@ -1,3 +1,5 @@
+import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
+import { FOOTER_SPACER } from '@/utils/constants';
 import EdgeSlider from '../EdgeSlider/EdgeSlider';
 import PageBannerPPT from '../pageBannerPPT/PageBannerPPT';
 import PageFooterPPT from '../pageFooterPPT/PageFooterPPT';
@@ -22,6 +24,7 @@ export default function Shell({
       <PageBannerPPT pageNo={page} />
       {!helpDisabled && <EdgeSlider />}
       {children}
+      <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       <PageFooterPPT pageNo={footerPage} buttonDisabled={buttonDisabled} />
     </>
   );
