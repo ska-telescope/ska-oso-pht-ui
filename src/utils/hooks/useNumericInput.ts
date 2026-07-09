@@ -47,7 +47,9 @@ export const useNumericInput = (
     }
     if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
     setErrorText(runValidation(localValue));
-    return () => { if (errorTimerRef.current) clearTimeout(errorTimerRef.current); };
+    return () => {
+      if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
+    };
   }, [step, minValue, maxValue]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const handleChange = (input: number) => {

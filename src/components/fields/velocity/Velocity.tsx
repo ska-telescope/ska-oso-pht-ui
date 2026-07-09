@@ -39,10 +39,7 @@ export default function VelocityField({
   const { t } = useScopedTranslation();
 
   const rmValue = velType === VELOCITY_TYPE.VELOCITY ? vel : redshift;
-  const rmFieldError = 
-    rmValue && validateRadialMotion(rmValue) === '0'
-      ? t('velocity.error')
-      : '';
+  const rmFieldError = rmValue && validateRadialMotion(rmValue) === '0' ? t('velocity.error') : '';
 
   React.useEffect(() => {
     if (setErrorText) {

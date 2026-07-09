@@ -150,9 +150,12 @@ export default function GridObservation({
     resizable: false,
     renderCell: (e: any) => {
       const isSelected = String(e.row.id) === selectedId;
-      const centralFrequencyUnits = getBandwidthOrFrequencyUnitsLabel(e.row.centralFrequencyUnits) ?? '';
-      const bandwidthUnits = getBandwidthOrFrequencyUnitsLabel(
-        isZoom(e.row.type) ? e.row.zoomBandwidthUnits : e.row.continuumBandwidthUnits) ?? '';
+      const centralFrequencyUnits =
+        getBandwidthOrFrequencyUnitsLabel(e.row.centralFrequencyUnits) ?? '';
+      const bandwidthUnits =
+        getBandwidthOrFrequencyUnitsLabel(
+          isZoom(e.row.type) ? e.row.zoomBandwidthUnits : e.row.continuumBandwidthUnits
+        ) ?? '';
       return (
         <Stack
           direction="column"

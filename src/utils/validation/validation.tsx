@@ -98,7 +98,12 @@ export const validateObservationPage = (proposal: Proposal, autoLink: boolean) =
 export const useIsFrequencyOutOfRange = () => {
   const { osdLOW, osdMID } = useOSDAccessors();
 
-  return (centralFrequency: number, bandwidth: number, isLow: boolean, observingBand: string): boolean => {
+  return (
+    centralFrequency: number,
+    bandwidth: number,
+    isLow: boolean,
+    observingBand: string
+  ): boolean => {
     let minHz = 0;
     let maxHz = 0;
 
@@ -126,7 +131,7 @@ export const useIsObservationFrequencyOutOfRange = () => {
   return (obs: Observation): boolean =>
     isFrequencyOutOfRange(
       obs.centralFrequency,
-      obs.type === TYPE_ZOOM ? (obs.bandwidth ?? 0) : (obs.continuumBandwidth ?? 0),
+      obs.type === TYPE_ZOOM ? obs.bandwidth ?? 0 : obs.continuumBandwidth ?? 0,
       obs.telescope === TELESCOPE_LOW_NUM,
       String(obs.observingBand ?? '')
     );
@@ -285,7 +290,7 @@ export function validateSkyDirection2Text(value: string): string | null {
     return '1';
   }
 
-  // explicitly treat these as a format rather than a range error 
+  // explicitly treat these as a format rather than a range error
   // because they are not valid in the context of sky direction
   if (minutes > 59) {
     return '0';

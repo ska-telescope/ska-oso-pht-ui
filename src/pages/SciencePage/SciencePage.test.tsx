@@ -108,20 +108,20 @@ vi.mock('@ska-telescope/ska-gui-components', async importOriginal => {
         file,
         suffix
       }: any) => {
-      capturedSetFile = setFile;
-      capturedUploadFunction = uploadFunction;
-      capturedUploadDisabled = uploadDisabled;
-      capturedClearDisabled = clearDisabled;
-      capturedChooseDisabled = chooseDisabled;
-      capturedDropzoneAccepted = dropzoneAccepted;
-      capturedDropzonePrompt = dropzonePrompt;
-      capturedFile = file;
-      return (
-        <>
-          <input data-testid="mock-file-input" type="file" />
-          {suffix}
-        </>
-      );
+        capturedSetFile = setFile;
+        capturedUploadFunction = uploadFunction;
+        capturedUploadDisabled = uploadDisabled;
+        capturedClearDisabled = clearDisabled;
+        capturedChooseDisabled = chooseDisabled;
+        capturedDropzoneAccepted = dropzoneAccepted;
+        capturedDropzonePrompt = dropzonePrompt;
+        capturedFile = file;
+        return (
+          <>
+            <input data-testid="mock-file-input" type="file" />
+            {suffix}
+          </>
+        );
       }
     )
   };
@@ -149,7 +149,8 @@ const makeFile = (name = 'test.pdf', sizeOverride?: number): File => {
   return file;
 };
 
-const makeNonPdfFile = (name = 'test.txt'): File => new File(['dummy'], name, { type: 'text/plain' });
+const makeNonPdfFile = (name = 'test.txt'): File =>
+  new File(['dummy'], name, { type: 'text/plain' });
 const makeUnreadablePdfFile = (name = 'unreadable.pdf'): File => makeFile(name);
 
 import GetPresignedUploadUrl from '@services/axios/get/getPresignedUploadUrl/getPresignedUploadUrl';

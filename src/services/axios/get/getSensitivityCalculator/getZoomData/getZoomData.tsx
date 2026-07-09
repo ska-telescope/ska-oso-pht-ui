@@ -388,14 +388,6 @@ async function GetZoomData(
     : addPropertiesMID(standardData, zoomData, observation);
 
   // const mapping: Function = undefined;
-  return Fetch(
-    axiosClient,
-    telescope,
-    URL_PATH,
-    properties,
-    mapping,
-    target,
-    observation
-  );
+  return Fetch(axiosClient, telescope, URL_PATH, properties, mapping, target, observation);
 }
 export default GetZoomData;

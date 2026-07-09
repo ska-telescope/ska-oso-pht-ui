@@ -591,7 +591,10 @@ export default function DataProduct({ data }: DataProductProps) {
   const pixelSizeValid = () => pixelSizeValue > 0;
   const taperSizeValid = () => taperLowValue >= 0;
   const taperMidSizeValid = () => taperMidValue >= 0;
-  const channelsOutValid = () => Number.isInteger(channelsOut) && channelsOut >= CHANNELS_OUT_MIN && channelsOut <= CHANNELS_OUT_MAX;
+  const channelsOutValid = () =>
+    Number.isInteger(channelsOut) &&
+    channelsOut >= CHANNELS_OUT_MIN &&
+    channelsOut <= CHANNELS_OUT_MAX;
   const polarisationsValid = () => polarisations.length > 0;
   const timeAveragingValid = () => timeAveraging > 0;
   const frequencyAveragingValid = () => frequencyAveraging > 0;
@@ -701,30 +704,28 @@ export default function DataProduct({ data }: DataProductProps) {
         sx={{ flexGrow: 1 }}
       >
         <Grid size={{ md: 4, lg: 2 }} sx={{ display: 'flex', flexDirection: 'column' }}>
-          <BorderedSection
-            title={t('page.7.obsTitle')}
-          >
-          <Box
-            sx={{
-              flex: 1,
-              display: 'flex',
-              flexDirection: 'column',
-              border: 'none',
-              borderColor: '#ccc',
-              borderRadius: '8px',
-              minHeight: 0
-            }}
-          >
-            {baseObservations && (
-              <GridObservation
-                data={baseObservations}
-                autoSelectId={observationId}
-                rowClick={(e: any) => setObservationId(e.row.id)}
-                disabled={maxObservationsReached()}
-              />
-            )}
-          </Box>
-        </BorderedSection>
+          <BorderedSection title={t('page.7.obsTitle')}>
+            <Box
+              sx={{
+                flex: 1,
+                display: 'flex',
+                flexDirection: 'column',
+                border: 'none',
+                borderColor: '#ccc',
+                borderRadius: '8px',
+                minHeight: 0
+              }}
+            >
+              {baseObservations && (
+                <GridObservation
+                  data={baseObservations}
+                  autoSelectId={observationId}
+                  rowClick={(e: any) => setObservationId(e.row.id)}
+                  disabled={maxObservationsReached()}
+                />
+              )}
+            </Box>
+          </BorderedSection>
         </Grid>
         <Grid size={{ md: 7, lg: 7 }}>
           <Stack spacing={GAP}>
@@ -856,11 +857,7 @@ export default function DataProduct({ data }: DataProductProps) {
               }
               title={t('sensitivityCalculatorResults.title')}
             >
-              {isPST() && (
-                <Typography variant="subtitle1">
-                  {t('page.7.pstUnavailable')}
-                </Typography>
-              )}
+              {isPST() && <Typography variant="subtitle1">{t('page.7.pstUnavailable')}</Typography>}
               {!isPST() && (
                 <SensCalcContent data={scData()} isCustom={isCustom()} isNatural={isNatural()} />
               )}

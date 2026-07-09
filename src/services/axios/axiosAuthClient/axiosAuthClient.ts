@@ -54,7 +54,12 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
       const isHttp = request?.baseURL?.startsWith(HTTP);
       if (isHttp && !isLocalhost()) {
         return Promise.reject('HTTP is not allowed except on localhost.');
-      } else if (isHttp && !isLocalhost() && request.baseURL && !request.baseURL.startsWith(HTTPS)) {
+      } else if (
+        isHttp &&
+        !isLocalhost() &&
+        request.baseURL &&
+        !request.baseURL.startsWith(HTTPS)
+      ) {
         request.baseURL = request.baseURL.replace(HTTP, HTTPS);
       }
 

@@ -51,7 +51,7 @@ import {
   SUPPLIED_INTEGRATION_TIME_STEP_HOURS,
   SUPPLIED_INTEGRATION_TIME_STEP_MINS,
   SUPPLIED_SENSITIVITY_STEP,
-  INTEGRATION_TIME_UNITS,
+  INTEGRATION_TIME_UNITS
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -96,10 +96,7 @@ import updateDataProductsPST from '@/utils/update/dataProductsPST/updateDataProd
 import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalcPartial';
 import updateSensCalc from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
-import {
-  subarrayConfigurationLow,
-  subarrayConfigurationMid
-} from '@/utils/types/observatoryData';
+import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
 import lowAA2Image from '@assets/low_aa2.png';
 import { useIsFrequencyOutOfRange } from '@/utils/validation/validation';
 
@@ -188,20 +185,22 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setSpectralAveraging(ob?.spectralAveraging ?? 1);
     setSuppliedType(ob?.supplied?.type);
 
-    // If the supplied units are not one of the integration time units, 
+    // If the supplied units are not one of the integration time units,
     // we will convert the value to the default units for the telescope.
     // Currently the default units are hours for low and minutes for mid.
     const loadedUnits = ob?.supplied?.units;
     const loadedValue = ob?.supplied?.value;
-    const isValidUnit = ob?.supplied?.type !== SUPPLIED_TYPE_INTEGRATION
-      || INTEGRATION_TIME_UNITS.some(u => u.id === loadedUnits);
+    const isValidUnit =
+      ob?.supplied?.type !== SUPPLIED_TYPE_INTEGRATION ||
+      INTEGRATION_TIME_UNITS.some(u => u.id === loadedUnits);
     if (isValidUnit) {
       setSuppliedValue(loadedValue);
       setSuppliedUnits(loadedUnits);
     } else {
-      const defaultUnits = ob?.observingBand === BAND_LOW_STR
-        ? SUPPLIED_INTEGRATION_TIME_UNITS_H
-        : SUPPLIED_INTEGRATION_TIME_UNITS_M;
+      const defaultUnits =
+        ob?.observingBand === BAND_LOW_STR
+          ? SUPPLIED_INTEGRATION_TIME_UNITS_H
+          : SUPPLIED_INTEGRATION_TIME_UNITS_M;
       setSuppliedValue(timeConversion(loadedValue, loadedUnits, defaultUnits));
       setSuppliedUnits(defaultUnits);
     }
@@ -364,7 +363,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const record = isLow() ? osdLOW : osdMID;
     setMaxZoomChannels(0);
     if (record) {
-      const sArray = (record?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined)?.find(sub => sub.subArray === SA_AA2);
+      const sArray = (record?.subArrays as
+        | (subarrayConfigurationLow | subarrayConfigurationMid)[]
+        | undefined)?.find(sub => sub.subArray === SA_AA2);
       setMaxZoomChannels(sArray?.numberZoomChannels ?? 0);
     }
   };
@@ -708,7 +709,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       ];
     }
     const obj = low ? osdLOW : osdMID;
-    const rec = (obj?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined)?.find(r => r.subArray === subarrayConfig) ?? null;
+    const rec =
+      (obj?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined)?.find(
+        r => r.subArray === subarrayConfig
+      ) ?? null;
     const modes = obTypeTransform(rec?.cbfModes ?? []);
     return modes.map(mode => ({
       label: t(`observationType.${mode}`),
@@ -777,7 +781,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       const entry = supplied[suppliedType - 1];
       if (!entry || !Array.isArray(entry.units)) return [];
       if (suppliedType === SUPPLIED_TYPE_INTEGRATION)
-        return entry.units.filter(u => INTEGRATION_TIME_UNITS.some(allowed => allowed.id === u.value));
+        return entry.units.filter(u =>
+          INTEGRATION_TIME_UNITS.some(allowed => allowed.id === u.value)
+        );
       return entry.units;
     };
 
@@ -804,12 +810,18 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           suffix={suppliedUnitsField()}
           label=""
           minValue={0}
-          maxValue={suppliedType === SUPPLIED_TYPE_INTEGRATION
-            ? timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, suppliedUnits)
-            : undefined}
-          step={suppliedType === SUPPLIED_TYPE_INTEGRATION
-            ? (suppliedUnits === TIME_HOURS ? SUPPLIED_INTEGRATION_TIME_STEP_HOURS : SUPPLIED_INTEGRATION_TIME_STEP_MINS)
-            : SUPPLIED_SENSITIVITY_STEP}
+          maxValue={
+            suppliedType === SUPPLIED_TYPE_INTEGRATION
+              ? timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, suppliedUnits)
+              : undefined
+          }
+          step={
+            suppliedType === SUPPLIED_TYPE_INTEGRATION
+              ? suppliedUnits === TIME_HOURS
+                ? SUPPLIED_INTEGRATION_TIME_STEP_HOURS
+                : SUPPLIED_INTEGRATION_TIME_STEP_MINS
+              : SUPPLIED_SENSITIVITY_STEP
+          }
           currentUnitLabel={getUnitOptions().find(u => u.value === suppliedUnits)?.label ?? ''}
           required
         />

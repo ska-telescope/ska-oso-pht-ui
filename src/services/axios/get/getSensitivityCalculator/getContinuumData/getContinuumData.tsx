@@ -13,7 +13,7 @@ import {
   STATUS_OK,
   TAPER_DEFAULT,
   TIME_HOURS,
-  TIME_SECS,
+  TIME_SECS
 } from '@utils/constants';
 import {
   getImageWeightingMapping,
@@ -363,14 +363,6 @@ function GetContinuumData(
   let properties = isLow(telescope)
     ? addPropertiesLOW(standardData, continuumData)
     : addPropertiesMID(standardData, continuumData);
-  return Fetch(
-    axiosClient,
-    telescope,
-    URL_PATH,
-    properties,
-    mapping,
-    target,
-    observation
-  );
+  return Fetch(axiosClient, telescope, URL_PATH, properties, mapping, target, observation);
 }
 export default GetContinuumData;

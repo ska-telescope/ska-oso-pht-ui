@@ -1,7 +1,12 @@
 import { describe, test, expect, vi, beforeEach } from 'vitest';
 import * as CONSTANTS from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
-import { REFERENCE_COORDINATE_TYPE_GALACTIC, REFERENCE_COORDINATE_TYPE_ICRS, FREQUENCY_UNITS, BAND_LOW_STR } from '@utils/constants.ts';
+import {
+  REFERENCE_COORDINATE_TYPE_GALACTIC,
+  REFERENCE_COORDINATE_TYPE_ICRS,
+  FREQUENCY_UNITS,
+  BAND_LOW_STR
+} from '@utils/constants.ts';
 import GetProposal, {
   GetMockProposal,
   mapping,

@@ -449,10 +449,9 @@ export default function SciencePage() {
                          * clear/upload button visibility to internal selected-file state. Hide those
                          * buttons while an uploaded PDF already exists.
                          */
-                        '& [data-testid="fileUploadClearButton"], & [data-testid="fileUploadUploadButton"]':
-                          {
-                            display: 'none'
-                          }
+                        '& [data-testid="fileUploadClearButton"], & [data-testid="fileUploadUploadButton"]': {
+                          display: 'none'
+                        }
                       }
                     : {})
                 }}

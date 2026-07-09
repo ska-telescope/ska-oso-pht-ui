@@ -8,11 +8,11 @@ import { useUserGroups } from '@ska-telescope/ska-login-page';
 import { IPublicClientApplication } from '@azure/msal-browser';
 import ButtonUserMenu from './UserMenu';
 
-const mockInstance = {
+const mockInstance = ({
   addEventCallback: vi.fn().mockReturnValue('mock-callback-id'),
   removeEventCallback: vi.fn(),
   getAllAccounts: vi.fn().mockReturnValue([])
-} as unknown as IPublicClientApplication;
+} as unknown) as IPublicClientApplication;
 
 // Mocks
 vi.mock('@azure/msal-react', () => ({

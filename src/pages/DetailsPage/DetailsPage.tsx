@@ -72,7 +72,7 @@ export default function DetailsPage() {
     updateAppContent1(temp);
   };
 
-  // Avoid a stale copy of the abstract being stored on the debounce by explicitly keeping a ref to it. 
+  // Avoid a stale copy of the abstract being stored on the debounce by explicitly keeping a ref to it.
   const saveAbstractRef = React.useRef(saveAbstract);
   saveAbstractRef.current = saveAbstract;
 

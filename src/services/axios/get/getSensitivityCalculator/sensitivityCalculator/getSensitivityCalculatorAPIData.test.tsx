@@ -105,7 +105,8 @@ describe('getSensitivityCalculatorAPIData Service', () => {
       MOCK_CONTINUUM_DATA_PRODUCT
     );
     expect(result).to.deep.equal({
-      error: 'Validation Error: Specified pointing centre is always below the horizon from the SKA LOW site'
+      error:
+        'Validation Error: Specified pointing centre is always below the horizon from the SKA LOW site'
     });
   });
 });

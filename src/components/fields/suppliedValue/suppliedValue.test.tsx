@@ -65,7 +65,15 @@ describe('SuppliedValue component', () => {
 
   it('commits step-incremented value on blur after ArrowUp; no commit or error during edit', () => {
     const mockSetValue = vi.fn();
-    render(<SuppliedValue value={1200} setValue={mockSetValue} minValue={0} maxValue={14400} step={600} />);
+    render(
+      <SuppliedValue
+        value={1200}
+        setValue={mockSetValue}
+        minValue={0}
+        maxValue={14400}
+        step={600}
+      />
+    );
     const input = screen.getByTestId('suppliedValue');
 
     // Simulate native browser ArrowUp: fires onChange with value incremented by step (1200 + 600 = 1800)
@@ -94,7 +102,15 @@ describe('SuppliedValue component', () => {
 
   it('does not commit value to parent until blur, and does not commit if invalid on blur', () => {
     const mockSetValue = vi.fn();
-    render(<SuppliedValue value={1} setValue={mockSetValue} minValue={0} maxValue={14400} currentUnitLabel="h" />);
+    render(
+      <SuppliedValue
+        value={1}
+        setValue={mockSetValue}
+        minValue={0}
+        maxValue={14400}
+        currentUnitLabel="h"
+      />
+    );
     const input = screen.getByTestId('suppliedValue');
 
     fireEvent.keyDown(input, { key: '0' });
@@ -111,7 +127,15 @@ describe('SuppliedValue component', () => {
   });
 
   it('shows between-range error on blur when both min and max are set', () => {
-    render(<SuppliedValue value={1} setValue={vi.fn()} minValue={0} maxValue={14400} currentUnitLabel="s" />);
+    render(
+      <SuppliedValue
+        value={1}
+        setValue={vi.fn()}
+        minValue={0}
+        maxValue={14400}
+        currentUnitLabel="s"
+      />
+    );
     const input = screen.getByTestId('suppliedValue');
     fireEvent.change(input, { target: { value: '14401' } });
     fireEvent.blur(input);

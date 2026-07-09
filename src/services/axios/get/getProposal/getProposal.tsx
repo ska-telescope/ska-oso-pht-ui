@@ -167,10 +167,13 @@ export const getReferenceCoordinate = (
   };
 };
 
-const isTargetGalactic = (kind: string): boolean => kind === REFERENCE_COORDINATE_TYPE_GALACTIC.label;
+const isTargetGalactic = (kind: string): boolean =>
+  kind === REFERENCE_COORDINATE_TYPE_GALACTIC.label;
 
 const getTargetType = (kind: string): number =>
-  kind === REFERENCE_COORDINATE_TYPE_GALACTIC.label ? REFERENCE_COORDINATE_TYPE_GALACTIC.value : REFERENCE_COORDINATE_TYPE_ICRS.value;
+  kind === REFERENCE_COORDINATE_TYPE_GALACTIC.label
+    ? REFERENCE_COORDINATE_TYPE_GALACTIC.value
+    : REFERENCE_COORDINATE_TYPE_ICRS.value;
 
 const getTargets = (inRec: TargetBackend[]): Target[] => {
   let results = [];

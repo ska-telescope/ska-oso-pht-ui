@@ -21,7 +21,8 @@ import {
   TYPE_PST,
   TYPE_ZOOM,
   TYPE_CONTINUUM,
-  NOTIFICATION_DELAY_IN_SECONDS, REFERENCE_COORDINATE_TYPE_GALACTIC
+  NOTIFICATION_DELAY_IN_SECONDS,
+  REFERENCE_COORDINATE_TYPE_GALACTIC
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -115,27 +116,25 @@ export default function TargetEntry({
     }
   };
 
-  const isICRS =
-  referenceCoordinates === DEFAULT_REFERENCE_COORDINATES;
-
+  const isICRS = referenceCoordinates === DEFAULT_REFERENCE_COORDINATES;
 
   const setTheCoord1 = (value: string) => {
-  setCoord1(value);
+    setCoord1(value);
 
-  if (!setTarget) return;
+    if (!setTarget) return;
 
-  if (isICRS) {
-    setTarget({
-      ...target,
-      raStr: leadZero(value).toString()
-    });
-  } else {
-        setTarget({
-      ...target,
-      l: parseFloat(value)
-    });
-  }
-};
+    if (isICRS) {
+      setTarget({
+        ...target,
+        raStr: leadZero(value).toString()
+      });
+    } else {
+      setTarget({
+        ...target,
+        l: parseFloat(value)
+      });
+    }
+  };
   const setTheCoord2 = (value: string) => {
     setCoord2(value);
 
@@ -155,28 +154,28 @@ export default function TargetEntry({
   };
 
   const setTheReferenceCoordinates = (newKind: number) => {
-  if (newKind !== referenceCoordinates) {
-    setName('');
-    setCoord1('');
-    setCoord2('');
-    setVel('');
-    setRedshift('');
+    if (newKind !== referenceCoordinates) {
+      setName('');
+      setCoord1('');
+      setCoord2('');
+      setVel('');
+      setRedshift('');
 
-    setSkyDirection1Error('');
-    setSkyDirection2Error('');
-    setRmFieldError('');
-    setNameFieldError('');
-  }
+      setSkyDirection1Error('');
+      setSkyDirection2Error('');
+      setRmFieldError('');
+      setNameFieldError('');
+    }
 
-  setReferenceCoordinates(newKind);
+    setReferenceCoordinates(newKind);
 
-  if (setTarget) {
-    setTarget({
-      ...target,
-      kind: newKind
-    });
-  }
-};
+    if (setTarget) {
+      setTarget({
+        ...target,
+        kind: newKind
+      });
+    }
+  };
 
   const setTheRedshift = (inValue: string) => {
     setRedshift(inValue);
@@ -212,26 +211,13 @@ export default function TargetEntry({
     setReferenceCoordinates(incomingKind);
     setId(target?.id ?? 0);
     setName(target?.name ?? '');
-    setCoord1(
-      incomingIsICRS
-        ? target.raStr ?? ''
-        : target.l != null
-          ? String(target.l)
-          : ''
-    );
-    setCoord2(
-      incomingIsICRS
-        ? target.decStr ?? ''
-        : target.b != null
-          ? String(target.b)
-          : ''
-    );
+    setCoord1(incomingIsICRS ? target.raStr ?? '' : target.l != null ? String(target.l) : '');
+    setCoord2(incomingIsICRS ? target.decStr ?? '' : target.b != null ? String(target.b) : '');
     setVelType(target?.velType ?? DEFAULT_VELOCITY_TYPE);
     setVel(target?.vel ?? '');
     setVelUnit(target?.velUnit ?? DEFAULT_VELOCITY_UNIT);
     setRedshift(target?.redshift ?? '');
   };
-
 
   const blurCoord1 = () => {
     setCoord1(trailingZeros(leadZero(coord1.trimEnd()).toString()));
@@ -247,7 +233,6 @@ export default function TargetEntry({
     if (setTarget) setTarget({ ...target, name: formatted });
   };
 
-
   const blurVel = () => {
     setVel(vel.trimEnd());
   };
@@ -255,7 +240,6 @@ export default function TargetEntry({
   const blurRedshift = () => {
     setRedshift(redshift.trimEnd());
   };
-
 
   React.useEffect(() => {
     setHelp('name.help');
@@ -309,8 +293,7 @@ export default function TargetEntry({
         : null;
       const highestId = highest ? highest.id : 0;
 
-        const isICRS =
-    referenceCoordinates === REFERENCE_COORDINATE_TYPE_ICRS.value;
+      const isICRS = referenceCoordinates === REFERENCE_COORDINATE_TYPE_ICRS.value;
 
       const newTarget: Target = {
         kind: referenceCoordinates,
@@ -386,14 +369,21 @@ export default function TargetEntry({
       const hasSelectorChange =
         velType !== DEFAULT_VELOCITY_TYPE || velUnit !== DEFAULT_VELOCITY_UNIT;
       return (
-        hasTextValue ||
-        hasSelectorChange ||
-        referenceCoordinates !== DEFAULT_REFERENCE_COORDINATES
+        hasTextValue || hasSelectorChange || referenceCoordinates !== DEFAULT_REFERENCE_COORDINATES
       );
     };
 
     return (
-      <Grid size={{ xs: 12 }} sx={{ position: 'relative', display: "flex", justifyContent: "space-between", width: "90%" }} mb={4}>
+      <Grid
+        size={{ xs: 12 }}
+        sx={{
+          position: 'relative',
+          display: 'flex',
+          justifyContent: 'space-between',
+          width: '90%'
+        }}
+        mb={4}
+      >
         <AddButton
           action={addButtonAction}
           disabled={disabled()}
@@ -409,16 +399,14 @@ export default function TargetEntry({
 
         {hasAnyFieldEntered() ? (
           <CancelButton
-          action={clearForm}
-          disabled={false}
-          primary={false}
-          testId={'clearFormButton'}
-          title="clearBtn.label"
-          toolTip="addTarget.clearToolTip"
-        />
-        ): null}
-
-         
+            action={clearForm}
+            disabled={false}
+            primary={false}
+            testId={'clearFormButton'}
+            title="clearBtn.label"
+            toolTip="addTarget.clearToolTip"
+          />
+        ) : null}
       </Grid>
     );
   };
@@ -427,12 +415,12 @@ export default function TargetEntry({
     const processCoordinatesResults = (response: any) => {
       if (response && !response.error) {
         if (response.reference_coordinate.kind === 'galactic') {
-      setTheCoord1(String(response.reference_coordinate.l));
-      setTheCoord2(String(response.reference_coordinate.b));
-    } else {
-      setTheCoord1(response.reference_coordinate.ra_str);
-      setTheCoord2(response.reference_coordinate.dec_str);
-    }
+          setTheCoord1(String(response.reference_coordinate.l));
+          setTheCoord2(String(response.reference_coordinate.b));
+        } else {
+          setTheCoord1(response.reference_coordinate.ra_str);
+          setTheCoord2(response.reference_coordinate.dec_str);
+        }
 
         const velocity = response.radial_velocity?.quantity?.value;
         const redshift = response.radial_velocity?.redshift;
@@ -451,8 +439,7 @@ export default function TargetEntry({
 
         setNameFieldError('');
       } else {
-        setNameFieldError(t('resolve.error.' + response.error)
-        );
+        setNameFieldError(t('resolve.error.' + response.error));
       }
     };
 

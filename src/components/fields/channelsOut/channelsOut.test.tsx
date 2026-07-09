@@ -17,7 +17,13 @@ vi.mock('@ska-telescope/ska-gui-components', () => ({
   // (1) constants.ts reads these at module load — e.g. LAB_POS_TICK = LABEL_POSITION.START
   // and TELESCOPE_MID/LOW.code — so the mock must define them even though the
   // component itself only uses NumberEntry.
-  LABEL_POSITION: { CONTAINED: 'contained', START: 'start', TOP: 'top', BOTTOM: 'bottom', END: 'end' },
+  LABEL_POSITION: {
+    CONTAINED: 'contained',
+    START: 'start',
+    TOP: 'top',
+    BOTTOM: 'bottom',
+    END: 'end'
+  },
   TELESCOPE_MID: { code: 'mid' },
   TELESCOPE_LOW: { code: 'low' },
   NumberEntry: ({ setValue, errorText, testId }: any) => (
@@ -25,10 +31,7 @@ vi.mock('@ska-telescope/ska-gui-components', () => ({
       {/* (2) Uncontrolled on purpose: a controlled input (value={value}) makes React
           suppress onChange when the entered value equals the prop, which silently
           broke the "accepts 1" case since the field initialises at value 1. */}
-      <input
-        data-testid={testId}
-        onChange={e => setValue(Number(e.target.value))}
-      />
+      <input data-testid={testId} onChange={e => setValue(Number(e.target.value))} />
       {errorText && <span data-testid={`${testId}-error`}>{errorText}</span>}
     </div>
   )

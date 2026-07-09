@@ -34,7 +34,7 @@ export default function SpectralAveragingLOWField({
   const { observatoryConstants } = useOSDAccessors();
   const [errorText, setErrorText] = React.useState('');
   const [saValue, setSaValue] = React.useState<string>(value != null ? String(value) : '');
-  
+
   React.useEffect(() => {
     setSaValue(value != null ? String(value) : '');
   }, [value]);

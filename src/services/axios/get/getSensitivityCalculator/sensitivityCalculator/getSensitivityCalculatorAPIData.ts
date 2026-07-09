@@ -33,13 +33,18 @@ async function getSensCalc(
   }
 
   try {
-    const output: any = await getSensitivityCalculatorAPIData(observation, target, dataProductSDP, isCustom());
+    const output: any = await getSensitivityCalculatorAPIData(
+      observation,
+      target,
+      dataProductSDP,
+      isCustom()
+    );
 
     if (!output) {
-      return { error: 'error.API_UNKNOWN_ERROR' }
+      return { error: 'error.API_UNKNOWN_ERROR' };
     }
     if (output.error && output.results) {
-      return { error: `${output.error}: ${output.results}` }
+      return { error: `${output.error}: ${output.results}` };
     }
     return output;
   } catch (e) {

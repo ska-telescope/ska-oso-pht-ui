@@ -334,7 +334,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       {/* I'm assuming intention is to display row2() when loggedIn is true?
       if someone understands better than I do please feel free to
       remove in favour of whatever is supposed to happen here. */}
-       {((loggedIn && getProposal().id !== '') || !!cypressToken) && row2()}
+      {((loggedIn && getProposal().id !== '') || !!cypressToken) && row2()}
       {row3()}
 
       {openProposalDisplay && (

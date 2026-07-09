@@ -7,7 +7,6 @@ import Target from '@/utils/types/target';
 import TargetObservation from '@/utils/types/targetObservation';
 import { SensCalcResults } from '@utils/types/sensCalcResults.tsx';
 
-
 /**
  * Internal helper: performs the full sensCalc update.
  * Not exported — only used by updateSensCalc.
@@ -30,12 +29,14 @@ const updateSensCalcAsync = async (
         const sensCalcResponse = await calculateSensCalcData(ob, target, dp);
         return {
           ...rec,
-          sensCalc: !sensCalcResponse.error ? sensCalcResponse as SensCalcResults : {
-            id: rec.targetId,
-            title: '',
-            statusGUI: -1,
-            error: sensCalcResponse.error
-          }
+          sensCalc: !sensCalcResponse.error
+            ? (sensCalcResponse as SensCalcResults)
+            : {
+                id: rec.targetId,
+                title: '',
+                statusGUI: -1,
+                error: sensCalcResponse.error
+              }
         };
       }
 

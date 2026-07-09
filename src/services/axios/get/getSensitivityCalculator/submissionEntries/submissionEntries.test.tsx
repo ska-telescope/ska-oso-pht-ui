@@ -1,5 +1,10 @@
 import { describe, it, expect } from 'vitest';
-import { IW_BRIGGS, REFERENCE_COORDINATE_TYPE_GALACTIC, SEPARATOR1, TYPE_ZOOM } from '@utils/constants.ts';
+import {
+  IW_BRIGGS,
+  REFERENCE_COORDINATE_TYPE_GALACTIC,
+  SEPARATOR1,
+  TYPE_ZOOM
+} from '@utils/constants.ts';
 import {
   addRobustProperty,
   addFrequency,

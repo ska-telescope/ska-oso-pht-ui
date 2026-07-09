@@ -177,13 +177,17 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
       <Grid size={{ xs: 12 }}>
         {details(
           t('cycleOpens.label'),
-          presentDateTime(currentPolicy?.cycleInformation?.proposalOpen ?? '', { timeZoneName: 'short' })
+          presentDateTime(currentPolicy?.cycleInformation?.proposalOpen ?? '', {
+            timeZoneName: 'short'
+          })
         )}
       </Grid>
       <Grid size={{ xs: 12 }}>
         {details(
           t('cycleCloses.label'),
-          presentDateTime(currentPolicy?.cycleInformation?.proposalClose ?? '', { timeZoneName: 'short' })
+          presentDateTime(currentPolicy?.cycleInformation?.proposalClose ?? '', {
+            timeZoneName: 'short'
+          })
         )}
       </Grid>
     </Grid>
@@ -234,14 +238,20 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
                     variant="body2"
                     color="text.secondary"
                   >
-                    {t('cycleOpens.label')}: {presentDateTime(policy.cycleInformation.proposalOpen, { timeZoneName: 'short' })}
+                    {t('cycleOpens.label')}:{' '}
+                    {presentDateTime(policy.cycleInformation.proposalOpen, {
+                      timeZoneName: 'short'
+                    })}
                   </Typography>
                   <Typography
                     data-testid={policy.cycleInformation.cycleId + '_closes'}
                     variant="body2"
                     color="text.secondary"
                   >
-                    {t('cycleCloses.label')}: {presentDateTime(policy.cycleInformation.proposalClose, { timeZoneName: 'short' })}
+                    {t('cycleCloses.label')}:{' '}
+                    {presentDateTime(policy.cycleInformation.proposalClose, {
+                      timeZoneName: 'short'
+                    })}
                   </Typography>
                 </CardContent>
               </CardActionArea>
