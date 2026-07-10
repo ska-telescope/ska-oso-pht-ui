@@ -93,7 +93,10 @@ describe('Edit Proposal', () => {
       uploadTestFile('testFile.pdf');
       verifyTestFileUploaded('testFile.pdf');
       clickFileUpload();
-      verifyAlertFooter('Science Justification PDF successfully uploaded');
+      // The upload is a real async round trip (presigned URL + S3 PUT) that sets
+      // sciencePDF.isUploadedPdf on completion - wait for the preview button, which only
+      // renders once that's true, otherwise validate can run before the upload has landed.
+      cy.get('[data-testid="pdfPreviewButtonTestId"]').should('exist');
       clickToValidateSV();
       cy.wait('@mockValidate');
       verifyAlertFooter('Science Verification Idea is Valid');
