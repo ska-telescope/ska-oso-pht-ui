@@ -44,7 +44,8 @@ BACKEND_PROXY ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)
 SENSCALC_API_VERSION ?= v11
 
 K8S_CHART_PARAMS += \
-  --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl="/$(KUBE_NAMESPACE)/oso/api/v$(OSO_SERVICES_MAJOR_VERSION)"
+  --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl="/$(KUBE_NAMESPACE)/oso/api/v$(OSO_SERVICES_MAJOR_VERSION)" \
+  --set global.cluster_domain=$(CLUSTER_DOMAIN)
 
 # include core makefile targets for release management
 -include .make/base.mk
