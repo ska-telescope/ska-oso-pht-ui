@@ -179,11 +179,11 @@ describe('Creating Proposal', () => {
       pageConfirmed('DATA PRODUCT');
       //Verify sens calc results
       verifyData('field-targetName', 'M2');
-      verifyData('field-spectralSensitivityWeighted', '207.14 mJy/beam');
+      verifyData('field-spectralSensitivityWeighted', '73.23 mJy/beam');
       verifyData('field-spectralConfusionNoise', '2.65 μJy/beam');
-      verifyData('field-spectralTotalSensitivity', '207.14 mJy/beam');
+      verifyData('field-spectralTotalSensitivity', '73.23 mJy/beam');
       verifyData('field-spectralSynthBeamSize', '5.92 x 3.96 arcsec²');
-      verifyData('field-spectralSurfaceBrightnessSensitivity', '2.7e+5 K');
+      verifyData('field-spectralSurfaceBrightnessSensitivity', '9.5e+4 K');
       verifyData('field-integrationTime', '1.00 h');
       clickToValidateSV();
       cy.wait('@mockValidateSVIdea');

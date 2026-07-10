@@ -391,6 +391,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         )
       );
       setContinuumBandwidthUnits(isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+      setBandwidth(isLow() ? ZOOM_BANDWIDTH_DEFAULT_LOW : ZOOM_BANDWIDTH_DEFAULT_MID);
       if (isLow()) {
         setZoomChannels(ZOOM_CHANNELS_DEFAULT_LOW);
       }
