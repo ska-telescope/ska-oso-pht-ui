@@ -1,6 +1,11 @@
 import { defineConfig } from 'cypress';
 import vitePreprocessor from 'cypress-vite';
 
+// Headless Chrome/Electron tries to persist GTK theme settings via dconf over D-Bus, which
+// doesn't exist in most CI containers. Forcing an in-memory GSettings backend stops it
+// from trying.
+process.env.GSETTINGS_BACKEND = 'memory';
+
 export default defineConfig({
   video: false,
   projectId: 'ssiwb9', //projectId to enable cypress cloud
