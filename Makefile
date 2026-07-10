@@ -27,6 +27,11 @@ js-pre-e2e-test:
 	mkdir -p build/reports
 	mkdir -p build/.nyc_output
 
+js-pre-lint:
+	$(JS_COMMAND_RUNNER) prettier
+typecheck:
+	$(JS_COMMAND_RUNNER) typecheck
+
 AWK := $(shell command -v gawk 2>/dev/null || command -v awk 2>/dev/null)
 ifeq ($(AWK),)
   $(error This script relies on gawk (or awk) for setting the correct URI paths to the services and senscalc. Please install gawk or awk and try again.)
