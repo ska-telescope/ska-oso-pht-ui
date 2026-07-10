@@ -43,9 +43,9 @@
     "totalContinuumSensitivity": "",
     "continuumSynthesizedBeamSize": "",
     "continuumSurfaceBrightnessSensitivity": "",
-    "weightedSpectralSensitivity": "18.79 mJy/beam",
+    "weightedSpectralSensitivity": "75.16 mJy/beam",
     "spectralConfusionNoise": "92.75 nJy/beam",
-    "totalSpectralSensitivity": "18.79 mJy/beam",
+    "totalSpectralSensitivity": "75.16 mJy/beam",
     "spectralSynthesizedBeamSize": "2.21 x 1.92 arcsec²",
     "spectralSurfaceBrightnessSensitivity": "1.1e+4 K",
     "integrationTime": "10.00 min"
