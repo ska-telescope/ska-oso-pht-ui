@@ -67,6 +67,8 @@ describe('SV Flow: Observation setup is preserved when details page fields chang
 
     clickStatusIconNav('statusId2');
     pageConfirmed('DETAILS');
+    // The testid lands on the MuiFormControl wrapper, not the actual <textarea> - a div has no
+    // .value property, so the assertion must target the nested field directly.
     cy.get('[data-testid="abstractId"] textarea')
       .first()
       .should('have.value', 'Debounce test summary.');
@@ -84,10 +86,12 @@ describe('SV Flow: Observation setup is preserved when details page fields chang
     // Navigating away blurs the field, triggering the onBlur save
     clickStatusIconNav('statusId5');
     pageConfirmed('OBSERVATION');
+    // Same wrapper-vs-input testid issue as above.
     cy.get('[data-testid="centralFrequency"] input').should('have.value', '180');
 
     clickStatusIconNav('statusId2');
     pageConfirmed('DETAILS');
+
     cy.get('[data-testid="abstractId"] textarea')
       .first()
       .should('have.value', 'This is a summary of the science idea.');
