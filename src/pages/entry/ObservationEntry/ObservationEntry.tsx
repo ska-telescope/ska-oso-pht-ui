@@ -331,6 +331,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setDefaultCentralFrequency(String(e));
     setDefaultContinuumBandwidth(String(e));
     setObservingBand(String(e));
+    // The zoom-mode bandwidth default is telescope-specific (MID and LOW use different lookup
+    // tables) - reset it whenever the band changes, otherwise a stale value from the previously
+    // selected telescope can be out of range for the new one.
+    setBandwidth(
+      String(e) === BAND_LOW_STR ? ZOOM_BANDWIDTH_DEFAULT_LOW : ZOOM_BANDWIDTH_DEFAULT_MID
+    );
     updateStorageProposal();
   };
 
