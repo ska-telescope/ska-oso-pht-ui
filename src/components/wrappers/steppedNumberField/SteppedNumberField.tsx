@@ -15,6 +15,7 @@ interface SteppedNumberFieldProps {
   format?: (value: number) => string;
   incrementDisabled?: boolean;
   label?: string;
+  onBlurCommit?: (value: number) => void;
   onCommit: (value: number) => void;
   onFocus?: () => void;
   onStep: (value: number, direction: 1 | -1) => number;
@@ -38,6 +39,7 @@ export default function SteppedNumberField({
   format = defaultFormat,
   incrementDisabled = false,
   label,
+  onBlurCommit,
   onCommit,
   onFocus,
   onStep,
@@ -78,6 +80,7 @@ export default function SteppedNumberField({
   const handleBlur = () => {
     isFocused.current = false;
     setInputValue(format(value));
+    onBlurCommit?.(value);
   };
 
   const step = (direction: 1 | -1) => onCommit(onStep(value, direction));

@@ -43,9 +43,6 @@ export const bandwidthHzToChannels = (
 export const stepChannels = (channels: number, direction: 1 | -1, maxChannels: number): number =>
   Math.min(Math.max(channels + direction, 1), maxChannels || 1);
 
-// The exact centre-frequency legal-value constraint is still TBC - for now, the only rule
-// applied is that the whole zoom window (centre +/- half the window bandwidth) stays within
-// [minHz, maxHz], not just the centre point itself.
 export const clampCentralFrequencyToWindowHz = (
   freqHz: number,
   windowBandwidthHz: number,
@@ -59,6 +56,20 @@ export const clampCentralFrequencyToWindowHz = (
   return Math.min(Math.max(freqHz, lowerBound), upperBound);
 };
 
+// The band is divided into channels of width channelWidthHz starting at minHz, so the window's
+// start channel (channel_number) must be an integer:
+// central_frequency = minHz + (channel_number + number_of_channels / 2) * channelWidthHz
+export const snapCentralFrequencyToChannelGridHz = (
+  freqHz: number,
+  channelWidthHz: number,
+  numberOfChannels: number,
+  minHz: number
+): number => {
+  if (channelWidthHz <= 0) return freqHz;
+  const startChannel = Math.round((freqHz - minHz) / channelWidthHz - numberOfChannels / 2);
+  return minHz + (startChannel + numberOfChannels / 2) * channelWidthHz;
+};
+
 export const stepCentralFrequencyHz = (
   freqHz: number,
   direction: 1 | -1,
@@ -66,10 +77,13 @@ export const stepCentralFrequencyHz = (
   windowBandwidthHz: number,
   minHz: number,
   maxHz: number
-): number =>
-  clampCentralFrequencyToWindowHz(
+): number => {
+  const numberOfChannels = channelWidthHz > 0 ? windowBandwidthHz / channelWidthHz : 0;
+  const stepped = snapCentralFrequencyToChannelGridHz(
     freqHz + direction * channelWidthHz,
-    windowBandwidthHz,
-    minHz,
-    maxHz
+    channelWidthHz,
+    numberOfChannels,
+    minHz
   );
+  return clampCentralFrequencyToWindowHz(stepped, windowBandwidthHz, minHz, maxHz);
+};

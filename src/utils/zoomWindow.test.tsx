@@ -8,6 +8,7 @@ import {
   bandwidthHzToChannels,
   stepChannels,
   clampCentralFrequencyToWindowHz,
+  snapCentralFrequencyToChannelGridHz,
   stepCentralFrequencyHz
 } from '@/utils/zoomWindow.ts';
 
@@ -121,7 +122,20 @@ describe('central frequency window clamp/step', () => {
     expect(clamped).toBeCloseTo((minHz + maxHz) / 2, 6);
   });
 
-  test('steps by exactly one channel width when staying within bounds', () => {
+  test('steps by exactly one channel width from an already grid-aligned position', () => {
+    const alignedStart = minHz + (windowBandwidthHz / channelWidthHz / 2) * channelWidthHz;
+    const stepped = stepCentralFrequencyHz(
+      alignedStart,
+      1,
+      channelWidthHz,
+      windowBandwidthHz,
+      minHz,
+      maxHz
+    );
+    expect(stepped - alignedStart).toBeCloseTo(channelWidthHz, 6);
+  });
+
+  test('stepping also corrects a starting position that is not grid-aligned', () => {
     const stepped = stepCentralFrequencyHz(
       200_000_000,
       1,
@@ -130,7 +144,9 @@ describe('central frequency window clamp/step', () => {
       minHz,
       maxHz
     );
-    expect(stepped - 200_000_000).toBeCloseTo(channelWidthHz, 6);
+    const numberOfChannels = windowBandwidthHz / channelWidthHz;
+    const startChannel = (stepped - minHz) / channelWidthHz - numberOfChannels / 2;
+    expect(startChannel).toBeCloseTo(Math.round(startChannel), 6);
   });
 
   test('stepping past the edge clamps to the nearest legal value instead of overshooting', () => {
@@ -144,5 +160,71 @@ describe('central frequency window clamp/step', () => {
       maxHz
     );
     expect(stepped).toBeCloseTo(nearMax, 6);
+  });
+});
+
+describe('snapCentralFrequencyToChannelGridHz', () => {
+  const channelWidthHz = 1808.449074;
+  const numberOfChannels = 1000;
+  const minHz = 50_000_000;
+
+  test('leaves an already grid-aligned value unchanged', () => {
+    const aligned = minHz + (numberOfChannels / 2 + 42) * channelWidthHz;
+    const snapped = snapCentralFrequencyToChannelGridHz(
+      aligned,
+      channelWidthHz,
+      numberOfChannels,
+      minHz
+    );
+    expect(snapped).toBeCloseTo(aligned, 6);
+  });
+
+  test('snaps an arbitrary value to the nearest whole start channel', () => {
+    const aligned = minHz + (numberOfChannels / 2 + 42) * channelWidthHz;
+    const snapped = snapCentralFrequencyToChannelGridHz(
+      aligned + channelWidthHz * 0.3,
+      channelWidthHz,
+      numberOfChannels,
+      minHz
+    );
+    expect(snapped).toBeCloseTo(aligned, 6);
+  });
+
+  test('returns the input unchanged if channel width is not positive', () => {
+    expect(snapCentralFrequencyToChannelGridHz(123_456, 0, numberOfChannels, minHz)).toBe(123_456);
+  });
+});
+
+describe('snapCentralFrequencyToChannelGridHz - worked examples', () => {
+  // minHz here plays the role of "the reference frequency the examples are counted from".
+  const minHz = 200_000_000;
+
+  const isOnGrid = (freqHz: number, channelWidthHz: number, numberOfChannels: number) =>
+    Math.abs(
+      snapCentralFrequencyToChannelGridHz(freqHz, channelWidthHz, numberOfChannels, minHz) - freqHz
+    ) < 1e-6;
+
+  test('200 MHz with an even number of channels of any width is fine', () => {
+    expect(isOnGrid(200_000_000, 1808.449074, 1000)).toBe(true);
+    expect(isOnGrid(200_000_000, 226.056, 500)).toBe(true);
+  });
+
+  test('200 MHz with an odd number of channels of any width is not fine', () => {
+    expect(isOnGrid(200_000_000, 1808.449074, 1001)).toBe(false);
+    expect(isOnGrid(200_000_000, 226.056, 501)).toBe(false);
+  });
+
+  test('200.000226 MHz with an even number of channels of width 226 Hz is fine', () => {
+    expect(isOnGrid(200_000_226, 226, 1000)).toBe(true);
+  });
+
+  test('200.000226 MHz with an even number of channels of width 1808 Hz is not fine', () => {
+    expect(isOnGrid(200_000_226, 1808, 1000)).toBe(false);
+  });
+
+  test('201 MHz is never fine', () => {
+    expect(isOnGrid(201_000_000, 1808.449074, 1000)).toBe(false);
+    expect(isOnGrid(201_000_000, 1808.449074, 1001)).toBe(false);
+    expect(isOnGrid(201_000_000, 226.056, 1000)).toBe(false);
   });
 });

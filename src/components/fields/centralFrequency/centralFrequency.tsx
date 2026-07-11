@@ -5,7 +5,11 @@ import { useHelp } from '@/utils/help/useHelp';
 import { FREQUENCY_GHZ, FREQUENCY_HZ, FREQUENCY_MHZ, TELESCOPE_LOW_NUM } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { frequencyConversion } from '@/utils/helpers';
-import { stepCentralFrequencyHz } from '@/utils/zoomWindow';
+import {
+  clampCentralFrequencyToWindowHz,
+  snapCentralFrequencyToChannelGridHz,
+  stepCentralFrequencyHz
+} from '@/utils/zoomWindow';
 import SteppedNumberField from '@/components/wrappers/steppedNumberField/SteppedNumberField';
 
 interface CentralFrequencyProps {
@@ -91,6 +95,21 @@ export default function CentralFrequency({
 
   const errorMessage = fieldValid ? '' : t(FIELD + '.range.error');
 
+  // On losing focus, snap to the nearest central frequency whose start channel is a whole
+  // number of channels from the band's minimum frequency.
+  const snapToChannelGrid = (currentValue: number) => {
+    const cfHz = frequencyConversion(currentValue, units, FREQUENCY_HZ);
+    const numberOfChannels = channelWidthHz > 0 ? windowBandwidthHz / channelWidthHz : 0;
+    const snappedHz = snapCentralFrequencyToChannelGridHz(
+      cfHz,
+      channelWidthHz,
+      numberOfChannels,
+      minHz
+    );
+    const clampedHz = clampCentralFrequencyToWindowHz(snappedHz, windowBandwidthHz, minHz, maxHz);
+    commit(Number(frequencyConversion(clampedHz, FREQUENCY_HZ, units).toFixed(6)));
+  };
+
   if (steppable) {
     return (
       <SteppedNumberField
@@ -99,6 +118,7 @@ export default function CentralFrequency({
         value={value}
         onCommit={commit}
         onStep={step}
+        onBlurCommit={snapToChannelGrid}
         onFocus={() => setHelp(FIELD)}
         disabled={disabled}
         required={required}

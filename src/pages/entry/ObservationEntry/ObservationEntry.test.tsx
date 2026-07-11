@@ -4,7 +4,11 @@ import userEvent from '@testing-library/user-event';
 import { describe, test, it, vi, expect, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
-import { DEFAULT_ZOOM_OBSERVATION_LOW } from '@utils/constants';
+import {
+  DEFAULT_ZOOM_OBSERVATION_LOW,
+  ZOOM_BANDWIDTH_DEFAULT_LOW,
+  ZOOM_CHANNELS_DEFAULT_LOW
+} from '@utils/constants';
 import ObservationEntry from './ObservationEntry';
 
 // ---- Module mocks ----
@@ -30,8 +34,8 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', async () => {
     useOSDAccessors: () => ({
       osdLOW: {
         basicCapabilities: {
-          minFrequencyHz: 100_000_000,
-          maxFrequencyHz: 200_000_000
+          minFrequencyHz: 50_000_000,
+          maxFrequencyHz: 350_000_000
         },
         subArrays: []
       },
@@ -50,8 +54,8 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', async () => {
       observatoryConstants: OSD_CONSTANTS,
       telescopeBand: vi.fn(() => 2),
       findBand: vi.fn(() => ({
-        minFrequencyHz: 100_000_000,
-        maxFrequencyHz: 200_000_000
+        minFrequencyHz: 50_000_000,
+        maxFrequencyHz: 350_000_000
       })),
       isSV: false,
       selectedPolicy: null,
@@ -118,6 +122,26 @@ describe('<ObservationEntry />', () => {
     await act(async () => {
       wrapper(<ObservationEntry />);
     });
+  });
+
+  test('defaults a new LOW zoom observation to the coarsest resolution, 1000 channels, and the band centre frequency', async () => {
+    vi.clearAllMocks();
+
+    await act(async () => {
+      wrapper(<ObservationEntry />);
+    });
+
+    expect(mockUpdateAppContent2).toHaveBeenCalledWith(
+      expect.objectContaining({
+        observations: expect.arrayContaining([
+          expect.objectContaining({
+            bandwidth: ZOOM_BANDWIDTH_DEFAULT_LOW,
+            zoomChannels: ZOOM_CHANNELS_DEFAULT_LOW,
+            centralFrequency: 200
+          })
+        ])
+      })
+    );
   });
 
   describe('bandwidth propagation to storage', () => {
