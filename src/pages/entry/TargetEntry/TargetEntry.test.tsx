@@ -73,7 +73,7 @@ describe('<TargetEntry /> form preservation on autoLinking error', () => {
     const user = userEvent.setup();
 
     await act(async () => {
-      wrapper(<TargetEntry/>);
+      wrapper(<TargetEntry />);
     });
 
     const nameInput = screen.getByTestId('name').querySelector('input')!;

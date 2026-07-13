@@ -15,14 +15,7 @@ describe('<Velocity />', () => {
   });
 
   test('displays error when a non-numeric value is entered in the velocity field', () => {
-    wrapper(
-      <Velocity
-        setVel={vi.fn()}
-        vel={'abc'}
-        velType={VELOCITY_TYPE.VELOCITY}
-        velUnit={0}
-      />
-    );
+    wrapper(<Velocity setVel={vi.fn()} vel={'abc'} velType={VELOCITY_TYPE.VELOCITY} velUnit={0} />);
 
     expect(screen.getByText('velocity.error')).toBeInTheDocument();
   });

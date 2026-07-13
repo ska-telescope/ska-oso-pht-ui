@@ -149,10 +149,11 @@ export default function GridMembers({
       minWidth: 160,
       disableClickEventBubbling: true,
       renderCell: (params: any) => {
-        const userAccess = permissions.find((acc: ProposalAccess) => acc.userId === params.row.id)
-          ?.permissions;
+        const userAccess = permissions.find(
+          (acc: ProposalAccess) => acc.userId === params.row.id
+        )?.permissions;
         const desiredOrder = PROPOSAL_ACCESS_PERMISSIONS;
-        const ordered = desiredOrder.filter(item => userAccess?.includes(item.toLowerCase()));
+        const ordered = desiredOrder.filter((item) => userAccess?.includes(item.toLowerCase()));
         const accessDisplay = ordered
           ?.map((perm: string) => {
             return t(`manageTeamMember.${perm}.short`);

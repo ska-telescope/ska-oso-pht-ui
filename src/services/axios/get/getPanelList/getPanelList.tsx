@@ -41,15 +41,15 @@ export function mappingList(inRec: PanelBackend[]): Panel[] {
       expiresOn: inRec[i].expires_on,
       proposals:
         inRec[i].proposals?.length > 0
-          ? inRec[i].proposals.map(proposal => getProposal(proposal, inRec[i].panel_id))
+          ? inRec[i].proposals.map((proposal) => getProposal(proposal, inRec[i].panel_id))
           : [],
       sciReviewers:
         inRec[i].sci_reviewers?.length > 0
-          ? inRec[i].sci_reviewers.map(reviewer => getReviewer(reviewer, inRec[i].panel_id))
+          ? inRec[i].sci_reviewers.map((reviewer) => getReviewer(reviewer, inRec[i].panel_id))
           : [],
       tecReviewers:
         inRec[i].tech_reviewers?.length > 0
-          ? inRec[i].tech_reviewers.map(reviewer => getReviewer(reviewer, inRec[i].panel_id))
+          ? inRec[i].tech_reviewers.map((reviewer) => getReviewer(reviewer, inRec[i].panel_id))
           : []
     };
     output.push(rec);

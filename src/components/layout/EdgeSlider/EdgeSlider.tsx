@@ -21,7 +21,7 @@ export default function EdgeSlider() {
   const hasLink = help?.componentURL?.length > 1;
 
   const togglePanel = () => {
-    setExpanded(prev => !prev);
+    setExpanded((prev) => !prev);
   };
 
   function getHelp(): string {
@@ -47,7 +47,7 @@ export default function EdgeSlider() {
   });
 
   const Panel = styled(Paper, {
-    shouldForwardProp: prop => prop !== 'expanded'
+    shouldForwardProp: (prop) => prop !== 'expanded'
   })<{ expanded: boolean }>(({ expanded, theme }) => ({
     position: 'absolute',
     right: 0,

@@ -86,6 +86,9 @@ describe('SV Flow: Observation setup is preserved when details page fields chang
 
     clickStatusIconNav('statusId2');
     pageConfirmed('DETAILS');
-    cy.get('[data-testid="abstractId"]').should('have.value', 'This is a summary of the science idea.');
+    cy.get('[data-testid="abstractId"]').should(
+      'have.value',
+      'This is a summary of the science idea.'
+    );
   });
 });

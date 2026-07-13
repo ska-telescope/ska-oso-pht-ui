@@ -88,5 +88,4 @@ describe('CalibrationEntry', () => {
 
     expect(screen.getByText('calibrator.desc')).toBeInTheDocument();
   });
-
 });

@@ -3,12 +3,15 @@ import { render, screen } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import * as papaModule from 'papaparse';
 import TargetFileImport from './TargetFileImport';
-import { REFERENCE_COORDINATE_TYPE_ICRS, REFERENCE_COORDINATE_TYPE_GALACTIC } from '@/utils/constants';
+import {
+  REFERENCE_COORDINATE_TYPE_ICRS,
+  REFERENCE_COORDINATE_TYPE_GALACTIC
+} from '@/utils/constants';
 
 // Helper to get the exposed mock
 
 // --- Mock dependencies ---
-vi.mock('@ska-telescope/ska-gui-components', async importOriginal => {
+vi.mock('@ska-telescope/ska-gui-components', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@ska-telescope/ska-gui-components')>();
   return {
     ...actual,

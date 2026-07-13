@@ -16,7 +16,7 @@ describe('updateSensCalc', () => {
 
   const proposalBase: Proposal = {
     targetObservation: [
-      ({
+      {
         observationId: 'obs1',
         targetId: 't1',
         dataProductsSDPId: 'dp1',
@@ -26,7 +26,7 @@ describe('updateSensCalc', () => {
           statusGUI: 0,
           error: ''
         }
-      } as unknown) as TargetObservation
+      } as unknown as TargetObservation
     ],
     targets: [{ id: 't1' }] as any,
     dataProductSDP: [{ id: 'dp1' }] as any,
@@ -95,11 +95,11 @@ describe('updateSensCalc', () => {
     const proposal = {
       ...proposalBase,
       targetObservation: [
-        ({
+        {
           observationId: 'obs2',
           targetId: 't2',
           dataProductsSDPId: 'dp2'
-        } as unknown) as TargetObservation
+        } as unknown as TargetObservation
       ]
     };
     const result = await updateSensCalc(proposal, observation, dp);

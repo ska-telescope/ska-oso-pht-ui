@@ -44,13 +44,13 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
       selectedPolicy?.cycleInformation?.cycleId ??
       osdPolicies[0]?.cycleInformation?.cycleId ??
       null;
-    setLocalSelectedCycleId(prev => prev ?? nextId);
+    setLocalSelectedCycleId((prev) => prev ?? nextId);
   }, [selectedPolicy, osdPolicies]);
 
   // Derive the currently selected policy for confirm action
   const currentPolicy = useMemo(() => {
     if (!localSelectedCycleId) return null;
-    return osdPolicies.find(p => p.cycleInformation?.cycleId === localSelectedCycleId) ?? null;
+    return osdPolicies.find((p) => p.cycleInformation?.cycleId === localSelectedCycleId) ?? null;
   }, [osdPolicies, localSelectedCycleId]);
 
   const handleCardClick = (policy: any) => {
@@ -177,13 +177,17 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
       <Grid size={{ xs: 12 }}>
         {details(
           t('cycleOpens.label'),
-          presentDateTime(currentPolicy?.cycleInformation?.proposalOpen ?? '', { timeZoneName: 'short' })
+          presentDateTime(currentPolicy?.cycleInformation?.proposalOpen ?? '', {
+            timeZoneName: 'short'
+          })
         )}
       </Grid>
       <Grid size={{ xs: 12 }}>
         {details(
           t('cycleCloses.label'),
-          presentDateTime(currentPolicy?.cycleInformation?.proposalClose ?? '', { timeZoneName: 'short' })
+          presentDateTime(currentPolicy?.cycleInformation?.proposalClose ?? '', {
+            timeZoneName: 'short'
+          })
         )}
       </Grid>
     </Grid>
@@ -191,7 +195,7 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
 
   const listContent = () => (
     <Grid container spacing={2}>
-      {osdPolicies.map(policy => {
+      {osdPolicies.map((policy) => {
         const policyId = policy.cycleInformation?.cycleId;
         const isSelected = policyId && localSelectedCycleId === policyId;
 
@@ -234,14 +238,20 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
                     variant="body2"
                     color="text.secondary"
                   >
-                    {t('cycleOpens.label')}: {presentDateTime(policy.cycleInformation.proposalOpen, { timeZoneName: 'short' })}
+                    {t('cycleOpens.label')}:{' '}
+                    {presentDateTime(policy.cycleInformation.proposalOpen, {
+                      timeZoneName: 'short'
+                    })}
                   </Typography>
                   <Typography
                     data-testid={policy.cycleInformation.cycleId + '_closes'}
                     variant="body2"
                     color="text.secondary"
                   >
-                    {t('cycleCloses.label')}: {presentDateTime(policy.cycleInformation.proposalClose, { timeZoneName: 'short' })}
+                    {t('cycleCloses.label')}:{' '}
+                    {presentDateTime(policy.cycleInformation.proposalClose, {
+                      timeZoneName: 'short'
+                    })}
                   </Typography>
                 </CardContent>
               </CardActionArea>

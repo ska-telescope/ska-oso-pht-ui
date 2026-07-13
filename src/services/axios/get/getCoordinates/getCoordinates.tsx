@@ -1,4 +1,4 @@
-import { SKA_OSO_SERVICES_URL} from '@utils/constants.ts';
+import { SKA_OSO_SERVICES_URL } from '@utils/constants.ts';
 import axiosClient from '../../axiosClient/axiosClient.tsx';
 
 const UNITS = ['equatorial', 'galactic'];
@@ -12,9 +12,7 @@ async function GetCoordinates(targetName: string, skyUnits: number) {
     const result = await axiosClient.get(
       `${SKA_OSO_SERVICES_URL}${URL_PATH}${targetName}/${UNITS[units]}`
     );
-    return typeof result === 'undefined'
-  ? { error: 'API_UNKNOWN_ERROR' }
-  : result.data;
+    return typeof result === 'undefined' ? { error: 'API_UNKNOWN_ERROR' } : result.data;
   } catch (e) {
     if (e instanceof Error) {
       return { error: e.message };

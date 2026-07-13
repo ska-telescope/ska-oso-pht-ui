@@ -32,7 +32,7 @@ export default function TaperDropdown({
     if (!centralFrequency || !centralFrequency.value || !centralFrequency.unit) {
       return options;
     }
-    [0.25, 1, 4, 16, 64, 256, 1024].forEach(inValue => {
+    [0.25, 1, 4, 16, 64, 256, 1024].forEach((inValue) => {
       const theLabel =
         (
           inValue *

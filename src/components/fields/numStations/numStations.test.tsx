@@ -41,7 +41,7 @@ describe('NumStationsField', () => {
     const input = inputWrapper.querySelector('input');
     await userEvent.clear(input!);
     await userEvent.type(input!, '5');
-    expect(mockSetValue.mock.calls.some(call => call[0] === '5')).toBe(false);
+    expect(mockSetValue.mock.calls.some((call) => call[0] === '5')).toBe(false);
   });
 
   it('respects disabled prop', () => {

@@ -178,12 +178,11 @@ describe('useOSDAccessors', () => {
         ]
       },
       updateAppContent8: vi.fn()
-    })
-
+    });
 
     const { result } = renderHook(() => useOSDAccessors());
 
-    act (() => { 
+    act(() => {
       vi.advanceTimersByTime(1000);
     });
 

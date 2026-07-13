@@ -22,7 +22,7 @@ export default function BitDepthField({
   const FIELD = 'bitDepth';
 
   const options = () =>
-    BIT_DEPTH.map(el => {
+    BIT_DEPTH.map((el) => {
       return { label: el.value, lookup: el.value, value: el.value };
     });
 

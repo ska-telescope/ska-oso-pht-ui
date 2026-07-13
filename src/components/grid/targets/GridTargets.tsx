@@ -26,11 +26,10 @@ export default function GridTargets({
   chartClicked = null,
   height = 171,
   rowClick,
-  rows = [],
+  rows = []
 }: GridTargetsProps) {
   const loggedIn = isLoggedIn();
   const { t } = useScopedTranslation();
-
 
   const isICRS = rows?.[0]?.kind === REFERENCE_COORDINATE_TYPE_ICRS.value;
 

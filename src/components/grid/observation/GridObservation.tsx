@@ -51,7 +51,7 @@ export default function GridObservation({
 
     // If an explicit autoSelectId is provided AND exists in the dataset
     if (autoSelectId != null) {
-      const match = data.find(o => String(o.id) === String(autoSelectId));
+      const match = data.find((o) => String(o.id) === String(autoSelectId));
       if (match) {
         setSelectedId(String(match.id));
         rowClick?.({ row: match });
@@ -150,9 +150,12 @@ export default function GridObservation({
     resizable: false,
     renderCell: (e: any) => {
       const isSelected = String(e.row.id) === selectedId;
-      const centralFrequencyUnits = getBandwidthOrFrequencyUnitsLabel(e.row.centralFrequencyUnits) ?? '';
-      const bandwidthUnits = getBandwidthOrFrequencyUnitsLabel(
-        isZoom(e.row.type) ? e.row.zoomBandwidthUnits : e.row.continuumBandwidthUnits) ?? '';
+      const centralFrequencyUnits =
+        getBandwidthOrFrequencyUnitsLabel(e.row.centralFrequencyUnits) ?? '';
+      const bandwidthUnits =
+        getBandwidthOrFrequencyUnitsLabel(
+          isZoom(e.row.type) ? e.row.zoomBandwidthUnits : e.row.continuumBandwidthUnits
+        ) ?? '';
       return (
         <Stack
           direction="column"

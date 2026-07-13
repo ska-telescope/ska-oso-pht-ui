@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import { Box, Stack } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
@@ -71,7 +70,7 @@ export default function MemberEntry({ invitationBtnClicked = () => {} }: MemberE
 
   function emailValidation() {
     let count = 0;
-    let emptyField = email === '';
+    const emptyField = email === '';
     let isValid = !emptyField;
     count += isValid ? 0 : 1;
     if (!emptyField) {

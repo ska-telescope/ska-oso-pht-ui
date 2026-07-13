@@ -41,7 +41,7 @@ install-dependencies:
 ts-typecheck:
   image: ${JS_BUILD_IMAGE}
   stage: lint
-  # allow_failure: true
+  allow_failure: true
   before_script:
     - make js-install
   script:

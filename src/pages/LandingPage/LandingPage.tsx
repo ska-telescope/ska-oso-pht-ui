@@ -80,7 +80,7 @@ export default function LandingPage() {
   const { setHelp } = useHelp();
   useOSDAPI(setAxiosError);
 
-  const mock = ({
+  const mock = {
     abstract: '',
     createdBy: '',
     createdOn: '',
@@ -109,7 +109,7 @@ export default function LandingPage() {
     technicalPDF: undefined,
     title: '',
     version: 0
-  } as unknown) as Proposal;
+  } as unknown as Proposal;
 
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const authClient = useAxiosAuthClient();
@@ -269,8 +269,8 @@ export default function LandingPage() {
 
   function filterProposals() {
     return proposals.filter(
-      item =>
-        searchableFields.some(field =>
+      (item) =>
+        searchableFields.some((field) =>
           String(item[field])
             ?.toLowerCase()
             .includes(searchTerm?.toLowerCase() || '')
@@ -397,13 +397,15 @@ export default function LandingPage() {
               testId="underTestPanelId"
             />
           )}
-          {!axiosViewError && (loggedIn || cypressToken) && (!filteredData || filteredData.length === 0) && (
-            <Alert
-              color={AlertColorTypes.Info}
-              text={t('proposals.empty')}
-              testId="helpPanelId"
-            />
-          )}
+          {!axiosViewError &&
+            (loggedIn || cypressToken) &&
+            (!filteredData || filteredData.length === 0) && (
+              <Alert
+                color={AlertColorTypes.Info}
+                text={t('proposals.empty')}
+                testId="helpPanelId"
+              />
+            )}
           {!axiosViewError && filteredData.length > 0 && (
             <Box pt={5}>
               <TableSubmissions
@@ -418,7 +420,10 @@ export default function LandingPage() {
         {!loggedIn && !cypressToken && (
           <Grid size={{ xs: 12, md: 6 }} pt={5}>
             <Stack spacing={4}>
-              <BorderedSection title={t('landingWelcome.label')} borderColor={theme.palette.info.main}>
+              <BorderedSection
+                title={t('landingWelcome.label')}
+                borderColor={theme.palette.info.main}
+              >
                 <Stack spacing={5} alignItems="center" justifyContent="center" p={4}>
                   <Typography
                     align="center"
@@ -428,7 +433,7 @@ export default function LandingPage() {
                   >
                     {t('landingWelcome.description')}
                   </Typography>
-                  <Box sx ={{minWidth: 300, '& button': {width: '100%'}}}>
+                  <Box sx={{ minWidth: 300, '& button': { width: '100%' } }}>
                     <ButtonLogin
                       label={t('landingWelcome.button')}
                       toolTip={t('landingWelcome.tooltip')}
@@ -441,7 +446,12 @@ export default function LandingPage() {
               </BorderedSection>
               <BorderedSection title={t('sensCalc.label')} borderColor={theme.palette.grey[600]}>
                 <Stack spacing={3} alignItems="center" justifyContent="center" p={4}>
-                  <Typography align="center" variant="h6" minHeight="5vh" color={theme.palette.grey[600]}>
+                  <Typography
+                    align="center"
+                    variant="h6"
+                    minHeight="5vh"
+                    color={theme.palette.grey[600]}
+                  >
                     {t('sensCalc.description')}
                   </Typography>
                   <Box sx={{ '& .MuiButton-root': { textTransform: 'none', fontSize: '18px' } }}>

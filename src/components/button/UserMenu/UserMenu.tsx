@@ -50,7 +50,10 @@ export default function ButtonUserMenu({
 
   React.useEffect(() => {
     const account = accounts[0];
-    if (!account) { setDisplayName(''); return; }
+    if (!account) {
+      setDisplayName('');
+      return;
+    }
     if (account.idToken) {
       getUserInfo(account.idToken)
         .then((info: { displayName?: string } | null) =>

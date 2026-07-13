@@ -45,14 +45,15 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
   const proposal = application.content2 as Proposal;
   const notification = application.content5 as Notification;
 
-  const pages = React.useMemo(() => (isSV ? STATUS_ARRAY_PAGES_SV : STATUS_ARRAY_PAGES_PROPOSAL), [
-    isSV
-  ]);
+  const pages = React.useMemo(
+    () => (isSV ? STATUS_ARRAY_PAGES_SV : STATUS_ARRAY_PAGES_PROPOSAL),
+    [isSV]
+  );
 
   const currPageNo = proposal?.id == null && !cypressToken ? -1 : pageNo;
 
   const { prevPageNo, nextPageNo } = React.useMemo(() => {
-    const idx = pages.findIndex(p => p === currPageNo);
+    const idx = pages.findIndex((p) => p === currPageNo);
     return {
       prevPageNo: idx > 0 ? pages[idx - 1] : -2,
       nextPageNo: idx >= 0 && idx < pages.length - 1 ? pages[idx + 1] : -2

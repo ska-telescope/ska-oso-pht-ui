@@ -22,7 +22,7 @@ vi.mock('@ska-telescope/ska-gui-components', () => ({
         data-testid={testId}
         disabled={disabled}
         value={value}
-        onChange={e => setValue?.(e.target.value)} // ✅ keep raw value, no Number()
+        onChange={(e) => setValue?.(e.target.value)} // ✅ keep raw value, no Number()
         onFocus={onFocus}
       >
         {options.map((opt: any) => (

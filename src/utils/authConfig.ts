@@ -35,7 +35,7 @@ export function getUseIndigo(): boolean {
 // Returns missing required env key names when USE_INDIGO is active. Empty array = all good.
 export function validateIndigoConfig(): string[] {
   if (!getUseIndigo()) return [];
-  return REQUIRED_INDIGO_KEYS.filter(key => !env[key]);
+  return REQUIRED_INDIGO_KEYS.filter((key) => !env[key]);
 }
 
 // Returns undefined for Entra (ButtonLogin's default User.Read is correct).

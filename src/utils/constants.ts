@@ -540,7 +540,6 @@ export const SUPPLIED_INTEGRATION_TIME_STEP_HOURS = 0.1;
 export const SUPPLIED_INTEGRATION_TIME_STEP_MINS = 1;
 export const SUPPLIED_SENSITIVITY_STEP = 1;
 
-
 export const REFERENCE_COORDINATE_TYPE_ICRS = { value: 0, label: 'icrs' };
 export const REFERENCE_COORDINATE_TYPE_GALACTIC = { value: 1, label: 'galactic' };
 
@@ -671,12 +670,12 @@ export const TEXT_ENTRY_PARAMS = {
   TITLE: {
     MAX_LENGTH: 20,
     ERROR_TEXT: 'specialCharacters.invalid',
-    // eslint-disable-next-line no-useless-escape
+
     PATTERN: /^[a-zA-Z0-9\s\-_:;$^!&><#.,"%*+='{}/\\?]*$/
   },
   NUMBER_ONLY: {
     ERROR_TEXT: 'error.invalidString',
-    // eslint-disable-next-line no-useless-escape
+
     PATTERN: /^[0-9]+(\.[0-9]+)?$/
   }
 };

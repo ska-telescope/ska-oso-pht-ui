@@ -72,7 +72,7 @@ export default function DetailsPage() {
     updateAppContent1(temp);
   };
 
-  // Avoid a stale copy of the abstract being stored on the debounce by explicitly keeping a ref to it. 
+  // Avoid a stale copy of the abstract being stored on the debounce by explicitly keeping a ref to it.
   const saveAbstractRef = React.useRef(saveAbstract);
   saveAbstractRef.current = saveAbstract;
 
@@ -234,7 +234,7 @@ export default function DetailsPage() {
     const record = osdLOW ? osdLOW : osdMID;
     const sArray = record?.subArrays.find((sub: any) => sub.subArray === SA_AA2);
     const inData = obTypeTransform(sArray?.cbfModes ?? []);
-    return inData.map(type => {
+    return inData.map((type) => {
       const label = t('scienceCategory.' + type);
       return {
         label,
@@ -244,11 +244,10 @@ export default function DetailsPage() {
       };
     });
   };
-  const svObservingModes = React.useMemo(() => getObservingModeOptions(), [
-    osdCyclePolicy,
-    osdLOW,
-    osdMID
-  ]);
+  const svObservingModes = React.useMemo(
+    () => getObservingModeOptions(),
+    [osdCyclePolicy, osdLOW, osdMID]
+  );
 
   const getCategoryOptions = () => {
     return isSV ? svObservingModes : DETAILS.ScienceCategory;
@@ -267,8 +266,8 @@ export default function DetailsPage() {
               ? ''
               : t('scienceCategory.error')
             : typeof getProposal().scienceCategory === 'number'
-            ? ''
-            : t('scienceCategory.error')
+              ? ''
+              : t('scienceCategory.error')
         }
         required
         testId="categoryId"
