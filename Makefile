@@ -68,7 +68,7 @@ endif
 ifeq ($(CI_ENVIRONMENT_SLUG),)
 SGCLUSTER = oda
 SGCLUSTER_NAMESPACE = oda
-
+  
 K8S_CHART_PARAMS += \
   --set global.cluster_domain="cluster.local" \
   --set ska-oso-pht-ui.vault.enabled=false \
@@ -82,6 +82,7 @@ endif
 PGDATABASE ?= $(subst -,_,$(KUBE_NAMESPACE))
 PGUSER = $(PGDATABASE)_admin
 K8S_CHART_PARAMS += --set global.oda.postgres.database=$(PGDATABASE) \
+    --set global.cluster_domain=$(CLUSTER_DOMAIN) \
 	--set global.oda.postgres.user=$(PGUSER)
 
 

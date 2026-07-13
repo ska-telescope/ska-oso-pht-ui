@@ -276,7 +276,7 @@ export default function PHT({
               backgroundColor: 'background.default',
               borderRadius: '0px',
               border: '0px solid transparent',
-              height: '100vh'
+              minHeight: '100vh'
             }}
           >
             {REQUIRED_WIDTH ? (

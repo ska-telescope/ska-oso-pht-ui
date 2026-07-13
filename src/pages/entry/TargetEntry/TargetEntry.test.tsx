@@ -98,4 +98,50 @@ describe('<TargetEntry /> form preservation on autoLinking error', () => {
     expect(raInput.value).toBe('12:34:56.000');
     expect(decInput.value).toBe('45:00:00.000');
   });
+
+  it('shows clear button only when at least one field has been entered', async () => {
+    const user = userEvent.setup();
+
+    await act(async () => {
+      wrapper(<TargetEntry />);
+    });
+
+    expect(screen.queryByTestId('clearFormButton')).not.toBeInTheDocument();
+
+    const nameInput = screen.getByTestId('name').querySelector('input')!;
+    await user.type(nameInput, 'Temporary target');
+
+    await waitFor(() => {
+      expect(screen.getByTestId('clearFormButton')).toBeInTheDocument();
+    });
+  });
+
+  it('clears entered values when clear button is clicked', async () => {
+    const user = userEvent.setup();
+
+    await act(async () => {
+      wrapper(<TargetEntry />);
+    });
+
+    const nameInput = screen.getByTestId('name').querySelector('input')!;
+    const raInput = screen.getByTestId('skyDirectionValue1').querySelector('input')!;
+    const decInput = screen.getByTestId('skyDirectionValue2').querySelector('input')!;
+
+    await user.type(nameInput, 'Reset me');
+    await user.type(raInput, '10:20:30');
+    await user.type(decInput, '40:50:00');
+
+    await waitFor(() => {
+      expect(screen.getByTestId('clearFormButton')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByTestId('clearFormButton'));
+
+    await waitFor(() => {
+      expect(nameInput.value).toBe('');
+      expect(raInput.value).toBe('');
+      expect(decInput.value).toBe('');
+      expect(screen.queryByTestId('clearFormButton')).not.toBeInTheDocument();
+    });
+  });
 });

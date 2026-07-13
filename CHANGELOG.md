@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Bugfix: spacer added to bottom of page to prevent page content overlapping bottom banner
 * Updated: to use the new /coordinate endpoint response
 * Added: Support for Galactic targets
 * Bugfix: 'Channels Out' allowed 0 channels to be selected
@@ -52,6 +53,8 @@ UNRELEASED
 * Fixed: Missing plot on observation page is now present.
 * Added: Matomo analytics script to collect usage statistics.
 * Added: Support for Indigo as login provider with ?use_indigo=true query parameter.
+* Changed: Data Product Description text is black rather than grey on the Observatory Data Product page.
+* Changed: Made the Observations panel have the same title and border as other panels on the Observatory Data Product page.
 
 10.1.0
 ----------

@@ -27,6 +27,7 @@ import {
   DP_TYPE_IMAGES,
   FLOW_THROUGH_VALUE,
   FOOTER_HEIGHT_PHT,
+  FOOTER_SPACER,
   FREQUENCY_AVERAGING_DEFAULT,
   FREQUENCY_AVERAGING_UNIT_DEFAULT,
   IMAGE_SIZE_DEFAULT,
@@ -700,12 +701,15 @@ export default function DataProduct({ data }: DataProductProps) {
         sx={{ flexGrow: 1 }}
       >
         <Grid size={{ md: 4, lg: 2 }} sx={{ display: 'flex', flexDirection: 'column' }}>
+          <BorderedSection
+            title={t('page.7.obsTitle')}
+          >
           <Box
             sx={{
               flex: 1,
               display: 'flex',
               flexDirection: 'column',
-              border: '1px solid',
+              border: 'none',
               borderColor: '#ccc',
               borderRadius: '8px',
               minHeight: 0
@@ -720,6 +724,7 @@ export default function DataProduct({ data }: DataProductProps) {
               />
             )}
           </Box>
+        </BorderedSection>
         </Grid>
         <Grid size={{ md: 7, lg: 7 }}>
           <Stack spacing={GAP}>
@@ -828,7 +833,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
         <Grid size={{ md: 11, lg: 3 }}>
           <BorderedSection borderColor={theme.palette.info.main} title={t('page.7.descTitle')}>
-            <Typography variant="subtitle1" color="text.disabled">
+            <Typography variant="subtitle1">
               {t('page.7.descContent.' + getObservation()?.type + '.' + getSuffix())
                 .split('\n')
                 .map((line, index) => (
@@ -852,7 +857,7 @@ export default function DataProduct({ data }: DataProductProps) {
               title={t('sensitivityCalculatorResults.title')}
             >
               {isPST() && (
-                <Typography variant="subtitle1" color="text.disabled">
+                <Typography variant="subtitle1">
                   {t('page.7.pstUnavailable')}
                 </Typography>
               )}
@@ -863,7 +868,12 @@ export default function DataProduct({ data }: DataProductProps) {
           )}
         </Grid>
       </Grid>
-      {osdCyclePolicy?.maxDataProducts !== 1 && pageFooter()}
+      {osdCyclePolicy?.maxDataProducts !== 1 && (
+        <>
+          <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
+          {pageFooter()}
+        </>
+      )}
     </Box>
   );
 }
