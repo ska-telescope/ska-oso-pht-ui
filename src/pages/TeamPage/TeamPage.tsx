@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unstable-nested-components */
 import React from 'react';
 import { Box, Grid, Tab, Tabs, SvgIcon, Typography } from '@mui/material';
 import CheckIcon from '@mui/icons-material/Check';
@@ -74,7 +73,7 @@ export default function TeamPage() {
   }, []);
 
   React.useEffect(() => {
-    const memberPermissions = permissions.find(p => p.userId === currentMember);
+    const memberPermissions = permissions.find((p) => p.userId === currentMember);
     setSelectedOptions(memberPermissions?.permissions || []);
   }, [permissions]);
 
@@ -152,7 +151,7 @@ export default function TeamPage() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = getProposal()?.investigators?.filter(e => e.id !== currentMember);
+    const obs1 = getProposal()?.investigators?.filter((e) => e.id !== currentMember);
 
     setProposal({ ...getProposal(), investigators: obs1 });
     setCurrentMember('');
@@ -161,7 +160,7 @@ export default function TeamPage() {
 
   const accessConfirmed = () => {
     const access: ProposalAccess = {
-      id: permissions.find(p => p.userId === currentMember)?.id as string,
+      id: permissions.find((p) => p.userId === currentMember)?.id as string,
       prslId: getProposal()?.id,
       userId: currentMember,
       role: 'Co-Investigator',
@@ -173,7 +172,7 @@ export default function TeamPage() {
 
   const displayMemberInfo = () => {
     const LABEL_WIDTH = 6;
-    const rec = getProposal()?.investigators?.find(p => p.id === currentMember);
+    const rec = getProposal()?.investigators?.find((p) => p.id === currentMember);
     return (
       <Grid
         p={2}

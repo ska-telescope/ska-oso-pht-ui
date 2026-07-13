@@ -50,7 +50,7 @@ export const useNumericInput = (
     return () => {
       if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
     };
-  }, [step, minValue, maxValue]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [step, minValue, maxValue]);
 
   const handleChange = (input: number) => {
     const num = Number(input);

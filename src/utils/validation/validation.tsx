@@ -87,10 +87,10 @@ export const validateObservationPage = (proposal: Proposal, autoLink: boolean) =
   const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
 
   if (autoLink) {
-    let count = hasTargetObservations() ? 2 : 0;
+    const count = hasTargetObservations() ? 2 : 0;
     return result[count];
   } else {
-    let count = hasObservations() ? 2 : 0;
+    const count = hasObservations() ? 2 : 0;
     return result[count];
   }
 };
@@ -131,7 +131,7 @@ export const useIsObservationFrequencyOutOfRange = () => {
   return (obs: Observation): boolean =>
     isFrequencyOutOfRange(
       obs.centralFrequency,
-      obs.type === TYPE_ZOOM ? obs.bandwidth ?? 0 : obs.continuumBandwidth ?? 0,
+      obs.type === TYPE_ZOOM ? (obs.bandwidth ?? 0) : (obs.continuumBandwidth ?? 0),
       obs.telescope === TELESCOPE_LOW_NUM,
       String(obs.observingBand ?? '')
     );
@@ -179,7 +179,8 @@ export const checkDP = (proposal: Proposal): number => {
 
 export const validateSDPPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_OK];
-  let count = Array.isArray(proposal?.dataProductSDP) && proposal.dataProductSDP.length > 0 ? 1 : 0;
+  const count =
+    Array.isArray(proposal?.dataProductSDP) && proposal.dataProductSDP.length > 0 ? 1 : 0;
   return result[count];
 };
 
@@ -187,14 +188,14 @@ export const validateSRCPage = () => STATUS_OK;
 
 export const validateCalibrationPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-  let count = proposal?.calibrationStrategy?.length > 0 ? 2 : 0;
+  const count = proposal?.calibrationStrategy?.length > 0 ? 2 : 0;
   return result[count];
 };
 
 export const validateLinkingPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
   const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
-  let count = hasTargetObservations() ? 2 : 0;
+  const count = hasTargetObservations() ? 2 : 0;
   return result[count];
 };
 
@@ -204,7 +205,7 @@ export const useValidateProposal = () => {
 
   return (proposal: Proposal) => {
     const obsStatus = validateObservationPage(proposal, autoLink);
-    const freqOutOfRange = (proposal.observations ?? []).some(obs =>
+    const freqOutOfRange = (proposal.observations ?? []).some((obs) =>
       isObservationFrequencyOutOfRange(obs)
     );
     return [

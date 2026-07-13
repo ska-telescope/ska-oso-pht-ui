@@ -38,7 +38,7 @@ export default function SuppliedValue({
     setValue,
     {
       requiredMessage: t(`${FIELD}.required`),
-      validate: num => {
+      validate: (num) => {
         const belowMin = minValue !== undefined && num <= minValue;
         const aboveMax = maxValue !== undefined && num > maxValue;
         if (!belowMin && !aboveMax) return '';

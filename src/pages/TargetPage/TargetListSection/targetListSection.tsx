@@ -46,15 +46,16 @@ export default function TargetListSection() {
   };
 
   const deleteConfirmed = () => {
-    const targets = getProposal().targets?.filter(e => e.id !== rowTarget?.id);
+    const targets = getProposal().targets?.filter((e) => e.id !== rowTarget?.id);
     const targetObservations = getProposal().targetObservation?.filter(
-      e => e.targetId !== rowTarget?.id
+      (e) => e.targetId !== rowTarget?.id
     );
-    const obsId = getProposal().targetObservation?.find(e => e.targetId === rowTarget?.id)
-      ?.observationId;
+    const obsId = getProposal().targetObservation?.find(
+      (e) => e.targetId === rowTarget?.id
+    )?.observationId;
     const calibrationStrategies =
       getProposal().calibrationStrategy?.[0] !== undefined
-        ? getProposal().calibrationStrategy.filter(e => e.observationIdRef !== obsId)
+        ? getProposal().calibrationStrategy.filter((e) => e.observationIdRef !== obsId)
         : undefined;
 
     if (autoLink) {
@@ -82,7 +83,7 @@ export default function TargetListSection() {
     } else if (rowTarget) {
       rowTarget.vel = '';
     }
-    const obs1 = getProposal().targets?.map(rec => {
+    const obs1 = getProposal().targets?.map((rec) => {
       return rec.id === rowTarget?.id ? rowTarget : rec;
     });
     setProposal({ ...getProposal(), targets: obs1 });
@@ -92,7 +93,7 @@ export default function TargetListSection() {
 
   const alertDeleteContent = () => {
     const LABEL_WIDTH = 6;
-    const rec = getProposal()?.targets?.find(p => p.id === rowTarget?.id);
+    const rec = getProposal()?.targets?.find((p) => p.id === rowTarget?.id);
     const isICRS = rec?.kind === REFERENCE_COORDINATE_TYPE_ICRS.value;
     return (
       <Grid
@@ -147,7 +148,7 @@ export default function TargetListSection() {
     setValue(newValue);
   };
 
-  const rows = getProposal().targets.map(t => {
+  const rows = getProposal().targets.map((t) => {
     const isICRS = t.kind === REFERENCE_COORDINATE_TYPE_ICRS.value;
     return {
       ...t,

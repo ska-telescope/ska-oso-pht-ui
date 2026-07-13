@@ -44,13 +44,13 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
       selectedPolicy?.cycleInformation?.cycleId ??
       osdPolicies[0]?.cycleInformation?.cycleId ??
       null;
-    setLocalSelectedCycleId(prev => prev ?? nextId);
+    setLocalSelectedCycleId((prev) => prev ?? nextId);
   }, [selectedPolicy, osdPolicies]);
 
   // Derive the currently selected policy for confirm action
   const currentPolicy = useMemo(() => {
     if (!localSelectedCycleId) return null;
-    return osdPolicies.find(p => p.cycleInformation?.cycleId === localSelectedCycleId) ?? null;
+    return osdPolicies.find((p) => p.cycleInformation?.cycleId === localSelectedCycleId) ?? null;
   }, [osdPolicies, localSelectedCycleId]);
 
   const handleCardClick = (policy: any) => {
@@ -195,7 +195,7 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
 
   const listContent = () => (
     <Grid container spacing={2}>
-      {osdPolicies.map(policy => {
+      {osdPolicies.map((policy) => {
         const policyId = policy.cycleInformation?.cycleId;
         const isSelected = policyId && localSelectedCycleId === policyId;
 

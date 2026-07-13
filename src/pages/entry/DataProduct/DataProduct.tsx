@@ -140,7 +140,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const isDataTypeOne = () => dataProductType === DP_TYPE_IMAGES;
 
-  const getObservation = () => baseObservations?.find(obs => obs.id === observationId);
+  const getObservation = () => baseObservations?.find((obs) => obs.id === observationId);
 
   const isFlowThrough = () => getObservation()?.pstMode === FLOW_THROUGH_VALUE;
   const isDetectedFilterbank = () => getObservation()?.pstMode === DETECTED_FILTER_BANK_VALUE;
@@ -366,7 +366,7 @@ export default function DataProduct({ data }: DataProductProps) {
   };
 
   const getCentralFrequency = () => {
-    const obj = baseObservations.find(id => id.id === observationId);
+    const obj = baseObservations.find((id) => id.id === observationId);
     const output: ValueUnitPair = {
       value: Number(obj?.centralFrequency) ?? 0,
       unit: obj?.centralFrequencyUnits.toString() ?? ''
@@ -376,7 +376,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const imageSizeUnitsField = () => {
     const getOptions = () => {
-      return [0, 1, 2].map(e => ({
+      return [0, 1, 2].map((e) => ({
         label: presentUnits(t('imageSize.' + e)),
         value: e
       }));
@@ -407,7 +407,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const timeAveragingUnitsField = () => {
     const getOptions = () => {
-      return [0].map(e => ({
+      return [0].map((e) => ({
         label: presentUnits(t('timeAveraging.' + e)),
         value: e
       }));
@@ -428,7 +428,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const frequencyAveragingUnitsField = () => {
     const getOptions = () => {
-      return [0].map(e => ({
+      return [0].map((e) => ({
         label: presentUnits(t('frequencyAveraging.' + e)),
         value: e
       }));
@@ -852,8 +852,8 @@ export default function DataProduct({ data }: DataProductProps) {
                 isPST()
                   ? theme.palette.warning.main
                   : scData()?.statusGUI !== STATUS_INITIAL
-                  ? theme.palette.success.main
-                  : theme.palette.error.main
+                    ? theme.palette.success.main
+                    : theme.palette.error.main
               }
               title={t('sensitivityCalculatorResults.title')}
             >

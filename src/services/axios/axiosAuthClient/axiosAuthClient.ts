@@ -50,16 +50,11 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
   });
 
   axiosClient.interceptors.request.use(
-    async request => {
+    async (request) => {
       const isHttp = request?.baseURL?.startsWith(HTTP);
       if (isHttp && !isLocalhost()) {
         return Promise.reject('HTTP is not allowed except on localhost.');
-      } else if (
-        isHttp &&
-        !isLocalhost() &&
-        request.baseURL &&
-        !request.baseURL.startsWith(HTTPS)
-      ) {
+      } else if (!isLocalhost() && request.baseURL && !request.baseURL.startsWith(HTTPS)) {
         request.baseURL = request.baseURL.replace(HTTP, HTTPS);
       }
 
@@ -85,11 +80,11 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
       }
       return request;
     },
-    error => Promise.reject(error)
+    (error) => Promise.reject(error)
   );
 
   axiosClient.interceptors.response.use(
-    response => response,
+    (response) => response,
     (error: AxiosError) => {
       if (error.code === 'ECONNABORTED' && error.message.includes('timeout')) {
         return Promise.reject(new Error('Request timed out. Please try again.'));

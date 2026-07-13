@@ -117,11 +117,11 @@ export function getFinalIndividualResultsForContinuum(
 ): FinalIndividualResults {
   const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 
-  let transformed_result = results.transformed_result;
+  const transformed_result = results.transformed_result;
 
   const observationTypeLabel: string = theObservation.type;
   const suppliedType = OSD_CONSTANTS.Supplied.find(
-    sup => sup.value === theObservation.supplied.type
+    (sup) => sup.value === theObservation.supplied.type
   )?.sensCalcResultsLabel;
 
   const shifted1 = shiftSensitivity(transformed_result?.weighted_continuum_sensitivity);
@@ -204,16 +204,16 @@ export function getFinalIndividualResultsForContinuum(
       ? transformed_result?.spectral_integration_time?.value?.toString()
       : transformed_result?.spectral_surface_brightness_sensitivity?.value?.toString(),
     units: isSuppliedSensitivity()
-      ? transformed_result?.spectral_integration_time?.unit ?? 'ERR10a'
-      : transformed_result?.spectral_surface_brightness_sensitivity?.unit ?? 'ERR10b'
+      ? (transformed_result?.spectral_integration_time?.unit ?? 'ERR10a')
+      : (transformed_result?.spectral_surface_brightness_sensitivity?.unit ?? 'ERR10b')
   };
 
   const results11 = {
     field: suppliedType,
     value: theObservation?.supplied?.value?.toString(),
     units:
-      OSD_CONSTANTS.Supplied.find(s => s.sensCalcResultsLabel === suppliedType)?.units?.find(
-        u => u.value === theObservation.supplied.units
+      OSD_CONSTANTS.Supplied.find((s) => s.sensCalcResultsLabel === suppliedType)?.units?.find(
+        (u) => u.value === theObservation.supplied.units
       )?.label ?? ''
   };
 
@@ -338,8 +338,8 @@ function GetContinuumData(
 
   const subArray = (observation: Observation) => {
     const result = OSD_CONSTANTS.array
-      .find(t => t.value === observation.telescope)
-      ?.subarray?.find(s => s.value === observation.subarray);
+      .find((t) => t.value === observation.telescope)
+      ?.subarray?.find((s) => s.value === observation.subarray);
     return result ? result.map : '';
   };
 
@@ -360,7 +360,7 @@ function GetContinuumData(
     modules: []
   };
 
-  let properties = isLow(telescope)
+  const properties = isLow(telescope)
     ? addPropertiesLOW(standardData, continuumData)
     : addPropertiesMID(standardData, continuumData);
   return Fetch(axiosClient, telescope, URL_PATH, properties, mapping, target, observation);

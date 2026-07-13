@@ -3,7 +3,7 @@ import { renderHook } from '@testing-library/react';
 import { useScopedTranslation } from './useScopedTranslation';
 
 vi.mock('react-i18next', () => ({
-  useTranslation: vi.fn().mockImplementation(namespaces => ({
+  useTranslation: vi.fn().mockImplementation((namespaces) => ({
     t: (key: string) => {
       if (key === 'existing.key') return 'Translated';
       return key;
@@ -12,7 +12,7 @@ vi.mock('react-i18next', () => ({
   }))
 }));
 
-vi.mock('@/utils/constants.ts', async importOriginal => {
+vi.mock('@/utils/constants.ts', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@/utils/constants.ts')>();
   return {
     ...actual,

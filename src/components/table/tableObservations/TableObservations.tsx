@@ -44,11 +44,12 @@ export default function TableObservations({
         <TableBody>
           {data?.map((item: any, index: number) => (
             <TableObservationsRow
+              key={item.id}
               item={item}
               index={index}
               expanded={expandedRows.has(item.id)}
               toggleRow={toggleRow}
-              expandButtonRef={el => (expandButtonRefs.current[item.id] = el)}
+              expandButtonRef={(el) => (expandButtonRefs.current[item.id] = el)}
               deleteClicked={deleteFunction}
               editClicked={updateFunction}
               t={t}

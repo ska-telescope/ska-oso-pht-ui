@@ -20,7 +20,7 @@ export default function AddProposal() {
 
   React.useEffect(() => {
     updateAppContent1(EMPTY_STATUS);
-    let temp = NEW_PROPOSAL;
+    const temp = NEW_PROPOSAL;
     updateAppContent2(temp);
   }, []);
 

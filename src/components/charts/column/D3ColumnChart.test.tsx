@@ -40,7 +40,7 @@ describe('D3ColumnChart', () => {
     expect(labels.length).toBe(sampleData.length);
 
     // Check that one of the labels contains the correct value
-    const labelTexts = Array.from(labels).map(l => l.textContent);
+    const labelTexts = Array.from(labels).map((l) => l.textContent);
     expect(labelTexts).toContain('10');
     expect(labelTexts).toContain('20');
   });
@@ -66,8 +66,8 @@ describe('D3ColumnChart', () => {
 
     // Labels should include group info
     const labels = svg.querySelectorAll('text.bar-label');
-    const labelTexts = Array.from(labels).map(l => l.textContent);
-    expect(labelTexts.some(text => text?.includes('(G1)'))).toBe(true);
-    expect(labelTexts.some(text => text?.includes('(G2)'))).toBe(true);
+    const labelTexts = Array.from(labels).map((l) => l.textContent);
+    expect(labelTexts.some((text) => text?.includes('(G1)'))).toBe(true);
+    expect(labelTexts.some((text) => text?.includes('(G2)'))).toBe(true);
   });
 });

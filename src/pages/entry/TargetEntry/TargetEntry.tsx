@@ -211,8 +211,8 @@ export default function TargetEntry({
     setReferenceCoordinates(incomingKind);
     setId(target?.id ?? 0);
     setName(target?.name ?? '');
-    setCoord1(incomingIsICRS ? target.raStr ?? '' : target.l != null ? String(target.l) : '');
-    setCoord2(incomingIsICRS ? target.decStr ?? '' : target.b != null ? String(target.b) : '');
+    setCoord1(incomingIsICRS ? (target.raStr ?? '') : target.l != null ? String(target.l) : '');
+    setCoord2(incomingIsICRS ? (target.decStr ?? '') : target.b != null ? String(target.b) : '');
     setVelType(target?.velType ?? DEFAULT_VELOCITY_TYPE);
     setVel(target?.vel ?? '');
     setVelUnit(target?.velUnit ?? DEFAULT_VELOCITY_UNIT);
@@ -251,7 +251,7 @@ export default function TargetEntry({
   function formValidation() {
     let valid = true;
     const targets = getProposal()?.targets;
-    targets?.forEach(rec => {
+    targets?.forEach((rec) => {
       if (rec.name.toLowerCase() === name.toLowerCase()) {
         valid = false;
         setNameFieldError(t('addTarget.error'));
@@ -310,8 +310,8 @@ export default function TargetEntry({
               b: Number(coord2)
             }),
 
-        redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift ?? '' : '',
-        vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : '',
+        redshift: velType === VELOCITY_TYPE.REDSHIFT ? (redshift ?? '') : '',
+        vel: velType === VELOCITY_TYPE.VELOCITY ? (vel ?? '') : '',
         velType: velType ?? 0,
         velUnit: velUnit ?? 0
       };
@@ -364,7 +364,7 @@ export default function TargetEntry({
 
     const hasAnyFieldEntered = () => {
       const hasTextValue = [name, coord1, coord2, vel, redshift].some(
-        value => value.trim().length > 0
+        (value) => value.trim().length > 0
       );
       const hasSelectorChange =
         velType !== DEFAULT_VELOCITY_TYPE || velUnit !== DEFAULT_VELOCITY_UNIT;
