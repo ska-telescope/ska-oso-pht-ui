@@ -157,8 +157,8 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
       cyclePolicies: {
         bands: [BAND_LOW_STR, BAND_5B_STR],
         calibrationFactoryDefined: true,
-        low: [],
-        mid: [],
+        low: [SA_AA2],
+        mid: [SA_AA2],
         maxDataProducts: 1,
         maxObservations: 1,
         maxTargets: 1

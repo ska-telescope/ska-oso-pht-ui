@@ -32,7 +32,9 @@ async function GetConfiguration(
     const result = await authAxiosClient.get(
       `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_ODT_CONFIGURATION_PATH}`
     );
-    return typeof result === 'undefined' ? 'error.API_UNKNOWN_ERROR' : mapConfiguration(result.data);
+    return typeof result === 'undefined'
+      ? 'error.API_UNKNOWN_ERROR'
+      : mapConfiguration(result.data);
   } catch (e) {
     if (e instanceof Error) {
       return e.message;
