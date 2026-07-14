@@ -6,7 +6,6 @@ import Observation from '@/utils/types/observation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { getBandwidthOrFrequencyUnitsLabel } from '@/utils/helpers';
 
-
 interface GridObservationProps {
   data: Observation[];
   disabled?: boolean;
@@ -54,14 +53,14 @@ export default function GridObservation({
   };
 
   const rowContent = (row: Observation) => {
-    const centralFrequencyUnits = getBandwidthOrFrequencyUnitsLabel(row.centralFrequencyUnits) ?? '';
+    const centralFrequencyUnits =
+      getBandwidthOrFrequencyUnitsLabel(row.centralFrequencyUnits) ?? '';
     const observingMode = t((isSV ? 'observationType.' : 'scienceCategory.') + row.type);
     const integrationTime = row.supplied?.value != null ? `${row.supplied.value} h` : '-';
     const spectralResolution =
       row.type === 'spectral'
         ? row.spectralResolution
         : HARD_CODED_SPECTRAL_RESOLUTION_BY_TYPE[row.type];
-
 
     return (
       <Stack
@@ -76,7 +75,7 @@ export default function GridObservation({
           // p: 2,1
           mb: 1.5,
           cursor: disabled ? 'default' : 'pointer',
-          pointerEvents: disabled ? 'none' : 'auto',
+          pointerEvents: disabled ? 'none' : 'auto'
           // opacity: disabled ? 0.5 : 1
         }}
       >
@@ -131,16 +130,12 @@ export default function GridObservation({
         minHeight: 0
       }}
     >
-      <Box data-testid="gridObservation" sx={{ width: '90%', overflowY: 'auto',
-        margin: '0 auto', 
-        flex: 1, 
-        minHeight: 0 
-      }}>
-        <Box>
-          {data.map(row => rowContent(row))}
-          </Box>
+      <Box
+        data-testid="gridObservation"
+        sx={{ width: '90%', overflowY: 'auto', margin: '0 auto', flex: 1, minHeight: 0 }}
+      >
+        <Box>{data.map(row => rowContent(row))}</Box>
       </Box>
     </Box>
   );
 }
-
