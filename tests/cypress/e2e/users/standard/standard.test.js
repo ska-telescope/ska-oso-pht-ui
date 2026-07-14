@@ -13,7 +13,7 @@ import { standardUser } from '../users.js';
 describe('Standard', () => {
   beforeEach(() => {
     initialize(standardUser);
-    cy.window().then((win) => {
+    cy.window().then(win => {
       win.localStorage.setItem('USE_LOCAL_DATA', 'true');
     });
   });

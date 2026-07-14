@@ -80,6 +80,15 @@ const wrapper = (component: React.ReactElement) => {
   );
 };
 
+const expectSpectralResolutionText = (value: string) => {
+  expect(
+    screen.getByText((_, element) =>
+      (element?.textContent ?? '').replace(/\s+/g, ' ').trim() ===
+      `Spectral Resolution: ${value}`
+    )
+  ).toBeInTheDocument();
+};
+
 describe('GridObservation', () => {
   let rowClickMock: ReturnType<typeof vi.fn>;
 
@@ -205,7 +214,7 @@ describe('GridObservation spectral resolution conditional rendering', () => {
         rowClick={rowClickMock} 
       />
     );
-    expect(screen.getByText(/Spectral Resolution: 0\.5/)).toBeInTheDocument();
+    expectSpectralResolutionText('0.5');
   });
 
   it('does not display Spectral Resolution line when value is empty string', () => {
@@ -271,10 +280,10 @@ describe('GridObservation spectral resolution conditional rendering', () => {
     wrapper(<GridObservation data={multiObs} rowClick={rowClickMock} />);
     
     // Continuum observation should show hard-coded spectral resolution
-    expect(screen.getByText(/Spectral Resolution: 5\.43 kHz/)).toBeInTheDocument();
+    expectSpectralResolutionText('5.43 kHz');
 
     // Zoom observation should show spectral resolution from row value
-    expect(screen.getByText(/Spectral Resolution: 1\.0/)).toBeInTheDocument();
+    expectSpectralResolutionText('1.0');
   });
 });
 
@@ -409,7 +418,7 @@ describe('GridObservation hard-coded spectral resolution fallback', () => {
         rowClick={rowClickMock}
       />
     );
-    expect(screen.getByText('Spectral Resolution: 0.75 kHz')).toBeInTheDocument();
+    expectSpectralResolutionText('0.75 kHz');
   });
 
   it('displays hard-coded 5.43 kHz for continuum observations without spectral resolution', () => {
@@ -422,7 +431,7 @@ describe('GridObservation hard-coded spectral resolution fallback', () => {
         rowClick={rowClickMock}
       />
     );
-    expect(screen.getByText('Spectral Resolution: 5.43 kHz')).toBeInTheDocument();
+    expectSpectralResolutionText('5.43 kHz');
   });
 
   it('displays hard-coded 3.62 kHz for PST observations without spectral resolution', () => {
@@ -435,6 +444,6 @@ describe('GridObservation hard-coded spectral resolution fallback', () => {
         rowClick={rowClickMock}
       />
     );
-    expect(screen.getByText('Spectral Resolution: 3.62 kHz')).toBeInTheDocument();
+    expectSpectralResolutionText('3.62 kHz');
   });
  });

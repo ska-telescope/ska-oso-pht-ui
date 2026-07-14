@@ -23,7 +23,7 @@ describe('Guest User', () => {
     verifyInformationBannerText('NOT LOGGED IN, NO SUBMISSIONS AVAILABLE');
 
     //stub window.open to verify the correct URL is being opened
-    cy.window().then((win) => {
+    cy.window().then(win => {
       cy.stub(win, 'open').as('windowOpen');
     });
 
