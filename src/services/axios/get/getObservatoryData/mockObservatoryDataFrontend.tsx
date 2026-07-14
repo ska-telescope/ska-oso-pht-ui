@@ -9,81 +9,9 @@ import {
   SA_AA2,
   SA_AA_STAR
 } from '@/utils/constants';
-import ObservatoryData from '@/utils/types/observatoryData';
+import ObservatoryData, { ObservatoryCapabilities } from '@/utils/types/observatoryData';
 
-export const MockObservatoryDataFrontend: ObservatoryData = {
-  policies: [
-    {
-      cycleNumber: 1,
-      cycleDescription: 'Science Verification',
-      cycleInformation: {
-        cycleId: 'SKAO_2027_1',
-        proposalOpen: '2026-03-27T12:00:00.000Z',
-        proposalClose: '2026-05-12T15:00:00.000Z'
-      },
-      cyclePolicies: {
-        bands: [BAND_LOW_STR, BAND_5B_STR],
-        calibrationFactoryDefined: true,
-        low: [],
-        mid: [],
-        maxDataProducts: 1,
-        maxObservations: 1,
-        maxTargets: 1
-      },
-      telescopeCapabilities: {
-        low: SA_AA2,
-        mid: SA_AA2
-      },
-      type: 'Science Verification'
-    },
-    {
-      cycleNumber: 3,
-      cycleDescription: 'Mock Proposal Cycle',
-      cycleInformation: {
-        cycleId: 'CYCLE-003',
-        proposalOpen: '2025-07-01',
-        proposalClose: '2026-09-01'
-      },
-      cyclePolicies: {
-        maxDataProducts: 100,
-        maxObservations: 100,
-        maxTargets: 100,
-        bands: [BAND_LOW_STR, BAND_1_STR],
-        calibrationFactoryDefined: true,
-        low: [SA_AA2, SA_AA_STAR],
-        mid: [SA_AA2, SA_AA_STAR]
-      },
-      telescopeCapabilities: {
-        low: null,
-        mid: null
-      },
-      type: 'Proposal'
-    },
-    {
-      cycleNumber: 4,
-      cycleDescription: 'Fourth mock cycle',
-      cycleInformation: {
-        cycleId: 'CYCLE-004',
-        proposalOpen: '2025-10-01',
-        proposalClose: '2025-12-01'
-      },
-      cyclePolicies: {
-        maxDataProducts: 100,
-        maxObservations: 100,
-        maxTargets: 100,
-        bands: [BAND_LOW_STR, 'mid'],
-        calibrationFactoryDefined: true,
-        low: [SA_AA2],
-        mid: [SA_AA2]
-      },
-      telescopeCapabilities: {
-        low: null,
-        mid: null
-      },
-      type: 'Proposal'
-    }
-  ],
-  capabilities: {
+const mockCapabilities: ObservatoryCapabilities = {
     mid: {
       basicCapabilities: {
         dishElevationLimitDeg: 15,
@@ -214,5 +142,82 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
         }
       ]
     }
-  }
+};
+
+export const MockObservatoryDataFrontend: ObservatoryData = {
+  policies: [
+    {
+      cycleNumber: 1,
+      cycleDescription: 'Science Verification',
+      cycleInformation: {
+        cycleId: 'SKAO_2027_1',
+        proposalOpen: '2026-03-27T12:00:00.000Z',
+        proposalClose: '2026-05-12T15:00:00.000Z'
+      },
+      cyclePolicies: {
+        bands: [BAND_LOW_STR, BAND_5B_STR],
+        calibrationFactoryDefined: true,
+        low: [],
+        mid: [],
+        maxDataProducts: 1,
+        maxObservations: 1,
+        maxTargets: 1
+      },
+      telescopeCapabilities: {
+        low: SA_AA2,
+        mid: SA_AA2
+      },
+      capabilities: mockCapabilities,
+      type: 'Science Verification'
+    },
+    {
+      cycleNumber: 3,
+      cycleDescription: 'Mock Proposal Cycle',
+      cycleInformation: {
+        cycleId: 'CYCLE-003',
+        proposalOpen: '2025-07-01',
+        proposalClose: '2026-09-01'
+      },
+      cyclePolicies: {
+        maxDataProducts: 100,
+        maxObservations: 100,
+        maxTargets: 100,
+        bands: [BAND_LOW_STR, BAND_1_STR],
+        calibrationFactoryDefined: true,
+        low: [SA_AA2, SA_AA_STAR],
+        mid: [SA_AA2, SA_AA_STAR]
+      },
+      telescopeCapabilities: {
+        low: null,
+        mid: null
+      },
+      capabilities: mockCapabilities,
+      type: 'Proposal'
+    },
+    {
+      cycleNumber: 4,
+      cycleDescription: 'Fourth mock cycle',
+      cycleInformation: {
+        cycleId: 'CYCLE-004',
+        proposalOpen: '2025-10-01',
+        proposalClose: '2025-12-01'
+      },
+      cyclePolicies: {
+        maxDataProducts: 100,
+        maxObservations: 100,
+        maxTargets: 100,
+        bands: [BAND_LOW_STR, 'mid'],
+        calibrationFactoryDefined: true,
+        low: [SA_AA2],
+        mid: [SA_AA2]
+      },
+      telescopeCapabilities: {
+        low: null,
+        mid: null
+      },
+      capabilities: mockCapabilities,
+      type: 'Proposal'
+    }
+  ],
+  capabilities: mockCapabilities
 };

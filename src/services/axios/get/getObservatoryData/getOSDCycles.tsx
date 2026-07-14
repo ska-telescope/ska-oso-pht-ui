@@ -213,22 +213,16 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
     };
   };
 
-  const capabilities = inData.map((cycle) => mapCapabilities(cycle));
-
-  const mergedCapabilities = capabilities.slice(1).reduce(
-    (acc, obj) => {
-      for (const key in acc) {
-        // keep acc[key] unless obj[key] is NOT null/undefined
-        (acc as any)[key] = (obj as any)[key] ?? (acc as any)[key];
-      }
-      return acc;
-    },
-    { ...capabilities[0] } as ObservatoryData['capabilities']
-  );
+  //  TODO: the mock cycles below have no real OSD-provided capability data of their
+  // own so they explicitly use AA2's capabilities as a template.
+  // Revisit once OSD provides capabilities for the "Proposal" cycle type - change this
+  // constant if a different cycle should become the template.
+  const FALLBACK_CAPABILITIES_CYCLE_INDEX = 0;
+  const fallbackCapabilities = mapCapabilities(inData[FALLBACK_CAPABILITIES_CYCLE_INDEX]);
 
   const result = {
     policies: inData.map((cycle) => mapCycle(cycle)),
-    capabilities: mergedCapabilities
+    capabilities: fallbackCapabilities
   };
 
   // add hardcoded cycles for proposal flow as this is not provided yet by OSD:

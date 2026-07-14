@@ -571,7 +571,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
               isContinuum() || isPST()
                 ? (continuumBandwidth ?? 0)
                 : (frequencyConversion(
-                    isLow() ? (bandwidthLookup?.value ?? 0) : getBandwidthZoom(observationOut()),
+                    isLow()
+                      ? frequencyConversion(getZoomBandwidthHz(), FREQUENCY_HZ, FREQUENCY_MHZ)
+                      : getBandwidthZoom(observationOut()),
                     isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ,
                     FREQUENCY_MHZ
                   ) ?? 0)
@@ -999,7 +1001,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           {isPST()
             ? pstModeField()
             : isZoom()
-              ? spectralAveragingField()
+              ? emptyField()
               : isContinuum()
                 ? SubBandsField()
                 : emptyField()}
