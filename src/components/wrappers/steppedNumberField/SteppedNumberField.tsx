@@ -55,12 +55,13 @@ export default function SteppedNumberField({
   // displayed value is recomputed from that), the value prop echoed back rarely matches exactly
   // what's mid-typing - resyncing from it on every keystroke would otherwise interrupt typing.
   const isFocused = React.useRef(false);
+  const formatRef = React.useRef(format);
+  formatRef.current = format;
 
   React.useEffect(() => {
     if (!isFocused.current) {
-      setInputValue(format(value));
+      setInputValue(formatRef.current(value));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [value]);
 
   const handleChange = (raw: string) => {

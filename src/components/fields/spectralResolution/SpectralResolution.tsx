@@ -55,10 +55,10 @@ export default function SpectralResolutionField({
   const safeBandWidth = restricted && bandWidth < FIRST_COARSE_ZOOM ? FIRST_COARSE_ZOOM : bandWidth;
 
   React.useEffect(() => {
-    if (restricted && bandWidth < FIRST_COARSE_ZOOM) {
+    const isRestricted = interactive && isFineZoomRestricted(subarrayConfig);
+    if (isRestricted && bandWidth < FIRST_COARSE_ZOOM) {
       setBandWidth?.(FIRST_COARSE_ZOOM);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subarrayConfig, bandWidth, interactive]);
 
   const LOWContinuumBase = () => 5.43;
