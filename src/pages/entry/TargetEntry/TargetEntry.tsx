@@ -124,10 +124,6 @@ export default function TargetEntry({
   const isSSO =
       referenceCoordinates === REFERENCE_COORDINATE_TYPE_SSO.value;
 
-  const isGalactic =
-      referenceCoordinates === REFERENCE_COORDINATE_TYPE_GALACTIC.value;
-
-
   const setTheCoord1 = (value: string) => {
     setCoord1(value);
 
@@ -307,37 +303,45 @@ export default function TargetEntry({
         kind: referenceCoordinates,
         id: highestId + 1,
         name: name ?? '',
-        velUnit: velUnit ?? 0,
+        velUnit: velUnit ?? DEFAULT_VELOCITY_UNIT,
       };
 
-      let newTarget: Target;
+      const buildTarget = (): Target => {
+        switch (referenceCoordinates) {
+          case REFERENCE_COORDINATE_TYPE_SSO.value:
+            return {
+              ...baseTarget,
+              vel: '',
+              redshift: '',
+              velType: DEFAULT_VELOCITY_TYPE,
+            };
 
-      if (isSSO) {
-        newTarget = {
-          ...baseTarget
-        };
-      } else if (isICRS) {
-        newTarget = {
-          ...baseTarget,
-          raStr: coord1 ?? '',
-          decStr: coord2 ?? '',
-          redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift ?? '' : '',
-          vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : '',
-          velType: velType ?? 0,
-          velUnit: velUnit ?? 0
-        };
-      } else {
-        newTarget = {
-          ...baseTarget,
-          l: Number(coord1),
-          b: Number(coord2),
-          redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift ?? '' : '',
-          vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : '',
-          velType: velType ?? 0,
-          velUnit: velUnit ?? 0
-        };
-      }
+          case REFERENCE_COORDINATE_TYPE_ICRS.value:
+            return {
+              ...baseTarget,
+              velType: velType ?? DEFAULT_VELOCITY_TYPE,
+              raStr: coord1 ?? '',
+              decStr: coord2 ?? '',
+              redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift ?? '' : '',
+              vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : '',
+            };
 
+          case REFERENCE_COORDINATE_TYPE_GALACTIC.value:
+            return {
+              ...baseTarget,
+              velType: velType ?? DEFAULT_VELOCITY_TYPE,
+              l: Number(coord1),
+              b: Number(coord2),
+              redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift ?? '' : '',
+              vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : '',
+            };
+
+          default:
+            throw new Error(`Unsupported reference coordinate kind: ${referenceCoordinates}`);
+        }
+      };
+
+      const newTarget: Target = buildTarget();
 
       const generateAutoLinkData = async () => {
         const defaults = await autoLinking(newTarget, getProposal, setProposal);
@@ -377,7 +381,7 @@ export default function TargetEntry({
         skyDirection1Error !== '' ||
         skyDirection2Error !== '' ||
         rmFieldError !== '' ||
-        !(name?.length && coord1?.length && coord2?.length && targetLengthCheck())
+          !(name?.length && (isSSO || (coord1?.length && coord2?.length)) && targetLengthCheck())
       );
     };
 

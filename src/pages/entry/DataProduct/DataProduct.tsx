@@ -797,7 +797,7 @@ export default function DataProduct({ data, isSSO }: DataProductProps) {
           {showSC && (
             <BorderedSection
               borderColor={
-                isPST()
+                isPST() || isSSO
                   ? theme.palette.warning.main
                   : scData()?.statusGUI !== STATUS_INITIAL
                     ? theme.palette.success.main

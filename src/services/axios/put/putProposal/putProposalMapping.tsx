@@ -106,7 +106,6 @@ export const getReferenceCoordinate = (
         kind: REFERENCE_COORDINATE_TYPE_SSO.label,
         name: (tar as Target).name
       } as ReferenceCoordinateSSOBackend;
-
       default:
       throw new Error(`Unsupported reference coordinate kind: ${tar.kind}`);
   }
