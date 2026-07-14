@@ -1,4 +1,3 @@
-import React from 'react';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
 

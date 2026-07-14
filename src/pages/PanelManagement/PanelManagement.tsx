@@ -5,7 +5,6 @@ import { useTheme } from '@mui/material/styles';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import {
   BANNER_PMT_SPACER_MIN,
-  FOOTER_PMT_SPACER,
   PAGE_PANEL_MANAGEMENT,
   PMT,
   REVIEWER_STATUS

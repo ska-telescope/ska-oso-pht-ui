@@ -107,8 +107,7 @@ describe('useAxiosAuthClient', () => {
   */
 
   it('handles ECONNABORTED timeout error', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const client = useAxiosAuthClient();
+    useAxiosAuthClient();
     const errorHandler = mockResponseInterceptor.use.mock.calls[0][1];
 
     const error = { code: 'ECONNABORTED', message: 'timeout exceeded' };
@@ -116,8 +115,7 @@ describe('useAxiosAuthClient', () => {
   });
 
   it('handles ESOCKETTIMEDOUT error', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const client = useAxiosAuthClient();
+    useAxiosAuthClient();
     const errorHandler = mockResponseInterceptor.use.mock.calls[0][1];
 
     const error = { code: 'ESOCKETTIMEDOUT', message: 'socket timeout' };
@@ -127,8 +125,7 @@ describe('useAxiosAuthClient', () => {
   });
 
   it('handles server response error', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const client = useAxiosAuthClient();
+    useAxiosAuthClient();
     const errorHandler = mockResponseInterceptor.use.mock.calls[0][1];
 
     const error = { response: { status: 500 } };
@@ -136,8 +133,7 @@ describe('useAxiosAuthClient', () => {
   });
 
   it('handles no response error', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const client = useAxiosAuthClient();
+    useAxiosAuthClient();
     const errorHandler = mockResponseInterceptor.use.mock.calls[0][1];
 
     const error = { request: {} };
@@ -145,8 +141,7 @@ describe('useAxiosAuthClient', () => {
   });
 
   it('handles generic setup error', async () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const client = useAxiosAuthClient();
+    useAxiosAuthClient();
     const errorHandler = mockResponseInterceptor.use.mock.calls[0][1];
 
     const error = { message: 'Something went wrong' };

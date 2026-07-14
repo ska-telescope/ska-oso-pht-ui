@@ -1,7 +1,7 @@
 import React from 'react';
-import { Box, Grid, Stack, Typography } from '@mui/material';
+import { Box, Grid, Stack } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { BorderedSection, DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
+import { DropDown, TextEntry } from '@ska-telescope/ska-gui-components';
 import {
   SA_AA2,
   DETAILS,
@@ -50,7 +50,7 @@ export default function DetailsPage() {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const { isSV, osdCloses, osdOpens } = useOSDAccessors();
+  const { isSV } = useOSDAccessors();
   const [scienceCategoryId, setScienceCategoryId] = React.useState(
     getProposal().scienceCategory ?? ''
   );
@@ -143,35 +143,6 @@ export default function DetailsPage() {
       notifyError(defaults?.error ?? t('autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
     }
   };
-
-  const displayLabel = (inValue: string, isBold: boolean = false) => (
-    <Typography variant="subtitle1" style={{ fontWeight: isBold ? 600 : 300 }}>
-      {inValue}
-      {isBold ? ' *' : ''}
-    </Typography>
-  );
-
-  const cycleClosesField = () => (
-    <TextEntry
-      disabledUnderline
-      label=""
-      testId="cycleCloses"
-      value={osdCloses(true)}
-      onFocus={() => setHelp('abstract.help')}
-      disabled
-    />
-  );
-
-  const cycleOpensField = () => (
-    <TextEntry
-      disabledUnderline
-      label=""
-      testId="cycleOpens"
-      value={osdOpens(true)}
-      onFocus={() => setHelp('abstract.help')}
-      disabled
-    />
-  );
 
   const abstractField = () => {
     const MAX_CHAR = Number(t('abstract.maxChar'));
@@ -277,17 +248,6 @@ export default function DetailsPage() {
         onFocus={() => setHelp('scienceCategory.help')}
       />
     </Box>
-  );
-
-  const row = (label: string, component: React.ReactNode, isBold: boolean = false) => (
-    <Grid container alignItems="center" justifyContent="center" spacing={GAP}>
-      <Grid size={{ xs: 2 }} style={{ alignSelf: 'flex-start', textAlign: 'left' }}>
-        {displayLabel(t(label), isBold)}
-      </Grid>
-      <Grid size={{ xs: 7 }} style={{ textAlign: 'left' }}>
-        {component}
-      </Grid>
-    </Grid>
   );
 
   const row2 = (component: React.ReactNode) => (

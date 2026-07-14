@@ -151,7 +151,6 @@ const makeFile = (name = 'test.pdf', sizeOverride?: number): File => {
 
 const makeNonPdfFile = (name = 'test.txt'): File =>
   new File(['dummy'], name, { type: 'text/plain' });
-const makeUnreadablePdfFile = (name = 'unreadable.pdf'): File => makeFile(name);
 
 import GetPresignedUploadUrl from '@services/axios/get/getPresignedUploadUrl/getPresignedUploadUrl';
 import PutUploadPDF from '@services/axios/put/putUploadPDF/putUploadPDF';
