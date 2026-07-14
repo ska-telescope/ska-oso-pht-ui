@@ -62,7 +62,12 @@ import {
   obTypeTransform,
   timeConversion
 } from '@utils/helpers.ts';
-import { channelsToBandwidthHz, getZoomResolutionHz } from '@utils/zoomWindow.ts';
+import {
+  channelsToBandwidthHz,
+  coarseChannelRangeToHz,
+  getZoomResolutionHz
+} from '@utils/zoomWindow.ts';
+import { useConfiguration } from '@/services/axios/use/useConfiguration/useConfiguration';
 import WeatherField from '@/components/fields/weather/weather';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
 import Proposal from '@/utils/types/proposal';
@@ -122,6 +127,14 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     telescopeBand
   } = useOSDAccessors();
   const isFrequencyOutOfRange = useIsFrequencyOutOfRange();
+  const { configuration } = useConfiguration();
+  const coarseChannelRangeHz = configuration?.low
+    ? coarseChannelRangeToHz(
+        configuration.low.minCoarseChannel,
+        configuration.low.maxCoarseChannel,
+        configuration.low.coarseChannelWidthHz
+      )
+    : null;
 
   const isEdit = () => locationProperties.state !== null || data !== undefined;
 
@@ -869,6 +882,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           steppable={isLow() && isZoom()}
           channelWidthHz={getResolutionHz()}
           windowBandwidthHz={getZoomBandwidthHz()}
+          coarseChannelMinHz={coarseChannelRangeHz?.minHz}
+          coarseChannelMaxHz={coarseChannelRangeHz?.maxHz}
           required
         />
       </Box>

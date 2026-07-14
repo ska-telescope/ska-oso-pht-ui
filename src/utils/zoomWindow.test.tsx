@@ -8,6 +8,7 @@ import {
   bandwidthHzToChannels,
   stepChannels,
   clampCentralFrequencyToWindowHz,
+  coarseChannelRangeToHz,
   snapCentralFrequencyToChannelGridHz,
   stepCentralFrequencyHz
 } from '@/utils/zoomWindow.ts';
@@ -226,5 +227,13 @@ describe('snapCentralFrequencyToChannelGridHz - worked examples', () => {
     expect(isOnGrid(201_000_000, 1808.449074, 1000)).toBe(false);
     expect(isOnGrid(201_000_000, 1808.449074, 1001)).toBe(false);
     expect(isOnGrid(201_000_000, 226.056, 1000)).toBe(false);
+  });
+});
+
+describe('coarseChannelRangeToHz', () => {
+  test('matches the real LOW OSD values (min 64, max 447, width 781250 Hz)', () => {
+    const range = coarseChannelRangeToHz(64, 447, 781250);
+    expect(range.minHz).toBeCloseTo(49_609_375, 6);
+    expect(range.maxHz).toBeCloseTo(349_609_375, 6);
   });
 });

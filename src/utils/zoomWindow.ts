@@ -43,6 +43,18 @@ export const bandwidthHzToChannels = (
 export const stepChannels = (channels: number, direction: 1 | -1, maxChannels: number): number =>
   Math.min(Math.max(channels + direction, 1), maxChannels || 1);
 
+// Same coarse-channel range that constrains the continuum, converted to Hz. The
+// number_zoom_channels_per_coarse_channel term cancels out of the equivalent channel-count
+// version of this formula, so it comes out resolution-independent.
+export const coarseChannelRangeToHz = (
+  minCoarseChannel: number,
+  maxCoarseChannel: number,
+  coarseChannelWidthHz: number
+): { minHz: number; maxHz: number } => ({
+  minHz: (minCoarseChannel - 0.5) * coarseChannelWidthHz,
+  maxHz: (maxCoarseChannel + 0.5) * coarseChannelWidthHz
+});
+
 export const clampCentralFrequencyToWindowHz = (
   freqHz: number,
   windowBandwidthHz: number,

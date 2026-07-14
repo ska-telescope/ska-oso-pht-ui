@@ -14,6 +14,8 @@ import SteppedNumberField from '@/components/wrappers/steppedNumberField/Stepped
 
 interface CentralFrequencyProps {
   channelWidthHz?: number;
+  coarseChannelMaxHz?: number;
+  coarseChannelMinHz?: number;
   disabled?: boolean;
   required?: boolean;
   observingBand: string;
@@ -26,6 +28,8 @@ interface CentralFrequencyProps {
 
 export default function CentralFrequency({
   channelWidthHz = 0,
+  coarseChannelMaxHz,
+  coarseChannelMinHz,
   disabled = false,
   observingBand,
   required = false,
@@ -50,8 +54,10 @@ export default function CentralFrequency({
   const units: number =
     telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? FREQUENCY_MHZ : FREQUENCY_GHZ;
   const band = findBand(observingBand);
-  const minHz = band?.minFrequencyHz ?? 0;
-  const maxHz = band?.maxFrequencyHz ?? 0;
+  // The legal range is the intersection of the band's own edges and the (usually tighter)
+  // coarse-channel-derived range, when the latter is available.
+  const minHz = Math.max(band?.minFrequencyHz ?? 0, coarseChannelMinHz ?? -Infinity);
+  const maxHz = Math.min(band?.maxFrequencyHz ?? 0, coarseChannelMaxHz ?? Infinity);
   // For a steppable (LOW zoom) field, the legal range is inset by half the zoom window's
   // bandwidth, so the whole window - not just its centre point - stays within the band. The
   // exact legal-value constraint is still TBC; this is the only rule applied for now.
