@@ -65,7 +65,8 @@ import {
 import {
   channelsToBandwidthHz,
   coarseChannelRangeToHz,
-  getZoomResolutionHz
+  getZoomResolutionHz,
+  snapCentralFrequencyToChannelGridHz
 } from '@utils/zoomWindow.ts';
 import { useConfiguration } from '@/services/axios/use/useConfiguration/useConfiguration';
 import WeatherField from '@/components/fields/weather/weather';
@@ -175,6 +176,27 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [myObsId, setMyObsId] = React.useState('');
   const [once, setOnce] = React.useState<Observation | null>(null);
 
+  // Loaded observations may pre-date the channel-grid constraint (or have been written by
+  // something other than this form), so re-snap on load rather than trusting the stored value.
+  // Uses ob's own fields directly rather than component state, since the state setters called
+  // elsewhere in observationIn() haven't taken effect yet at this point.
+  const getSnappedCentralFrequency = (ob: Observation): number => {
+    if (ob?.observingBand !== BAND_LOW_STR || ob?.type !== TYPE_ZOOM) {
+      return ob?.centralFrequency;
+    }
+    const units = ob?.centralFrequencyUnits ?? FREQUENCY_HZ;
+    const cfHz = frequencyConversion(ob?.centralFrequency ?? 0, units, FREQUENCY_HZ);
+    const channelWidthHz = getZoomResolutionHz(ob?.bandwidth ?? 0);
+    const minHz = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
+    const snappedHz = snapCentralFrequencyToChannelGridHz(
+      cfHz,
+      channelWidthHz,
+      ob?.zoomChannels ?? 0,
+      minHz
+    );
+    return Number(frequencyConversion(snappedHz, FREQUENCY_HZ, units).toFixed(6));
+  };
+
   const observationIn = (ob: Observation) => {
     setMyObsId(ob?.id);
     setSubarrayConfig(ob?.subarray);
@@ -182,7 +204,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     if (!once) setObservingBand(ob?.observingBand);
     setWeather(ob?.weather ?? Number(t('weather.default')));
     setElevation(ob?.elevation);
-    setCentralFrequency(ob?.centralFrequency);
+    setCentralFrequency(getSnappedCentralFrequency(ob));
     setCentralFrequencyUnits(ob?.centralFrequencyUnits);
     setBandwidth(
       ob?.bandwidth ?? (isLow() ? ZOOM_BANDWIDTH_DEFAULT_LOW : ZOOM_BANDWIDTH_DEFAULT_MID)
@@ -220,6 +242,13 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setPstMode(ob?.pstMode ?? PULSAR_TIMING_VALUE);
   };
 
+  // Storing sub-Hz precision doesn't reflect anything a real receiver can tune to, so round to
+  // the nearest Hz at the point of save rather than trusting whatever precision the field held.
+  const roundCentralFrequencyToHz = (value: number, units: number): number => {
+    const hz = Math.round(frequencyConversion(Number(value), units, FREQUENCY_HZ));
+    return Number(frequencyConversion(hz, FREQUENCY_HZ, units).toFixed(6));
+  };
+
   const observationOut = () => {
     const newObservation: Observation = {
       id: myObsId,
@@ -230,7 +259,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       observingBand,
       weather,
       elevation: elevation,
-      centralFrequency: Number(centralFrequency),
+      centralFrequency: roundCentralFrequencyToHz(centralFrequency, centralFrequencyUnits),
       centralFrequencyUnits: centralFrequencyUnits,
       bandwidth: bandwidth,
       continuumBandwidth: continuumBandwidth,

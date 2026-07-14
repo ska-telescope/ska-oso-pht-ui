@@ -5,6 +5,7 @@ import { describe, test, it, vi, expect, beforeEach } from 'vitest';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import {
+  DEFAULT_CONTINUUM_OBSERVATION_LOW,
   DEFAULT_ZOOM_OBSERVATION_LOW,
   ZOOM_BANDWIDTH_DEFAULT_LOW,
   ZOOM_CHANNELS_DEFAULT_LOW
@@ -190,6 +191,52 @@ describe('<ObservationEntry />', () => {
         expect.objectContaining({
           observations: expect.arrayContaining([
             expect.objectContaining({ bandwidth: NEW_BANDWIDTH })
+          ])
+        })
+      );
+    });
+  });
+
+  describe('central frequency rounding and grid-snapping', () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+    });
+
+    it('rounds central frequency to the nearest Hz when saving to storage', async () => {
+      const observation = {
+        ...DEFAULT_CONTINUUM_OBSERVATION_LOW,
+        centralFrequency: 200.0000006 // 200,000,000.6 Hz
+      };
+
+      await act(async () => {
+        wrapper(<ObservationEntry data={observation} />);
+      });
+      await act(async () => {});
+
+      expect(mockUpdateAppContent2).toHaveBeenCalledWith(
+        expect.objectContaining({
+          observations: expect.arrayContaining([
+            expect.objectContaining({ centralFrequency: 200.000001 }) // rounds up to 200,000,001 Hz
+          ])
+        })
+      );
+    });
+
+    it('snaps a misaligned central frequency to the channel grid when loading a LOW zoom observation', async () => {
+      const observation = {
+        ...DEFAULT_ZOOM_OBSERVATION_LOW,
+        centralFrequency: 200.001 // not aligned to the 1808.449074-Hz channel grid
+      };
+
+      await act(async () => {
+        wrapper(<ObservationEntry data={observation} />);
+      });
+      await act(async () => {});
+
+      expect(mockUpdateAppContent2).toHaveBeenCalledWith(
+        expect.objectContaining({
+          observations: expect.arrayContaining([
+            expect.objectContaining({ centralFrequency: 200.001808 })
           ])
         })
       );
