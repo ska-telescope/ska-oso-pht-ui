@@ -90,4 +90,21 @@ describe('GetObservatoryData Service', () => {
     );
     expect(sArray?.numberZoomChannels).toBe(4000);
   });
+
+  test('normalizes telescope_capabilities of "AA2_SV" to SA_AA2 in cyclePolicies.low/mid', () => {
+    const aa2SvCycle = {
+      ...MockObservatoryDataBackend,
+      observatory_policy: {
+        ...MockObservatoryDataBackend.observatory_policy,
+        telescope_capabilities: {
+          Mid: 'AA2_SV',
+          Low: 'AA2_SV'
+        }
+      }
+    };
+
+    const result = osdMapping([aa2SvCycle]);
+    expect(result.policies[0].cyclePolicies.low).toEqual([SA_AA2]);
+    expect(result.policies[0].cyclePolicies.mid).toEqual([SA_AA2]);
+  });
 });
