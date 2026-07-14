@@ -82,9 +82,9 @@ const wrapper = (component: React.ReactElement) => {
 
 const expectSpectralResolutionText = (value: string) => {
   expect(
-    screen.getByText((_, element) =>
-      (element?.textContent ?? '').replace(/\s+/g, ' ').trim() ===
-      `Spectral Resolution: ${value}`
+    screen.getByText(
+      (_, element) =>
+        (element?.textContent ?? '').replace(/\s+/g, ' ').trim() === `Spectral Resolution: ${value}`
     )
   ).toBeInTheDocument();
 };
@@ -146,17 +146,32 @@ describe('GridObservation unit label display', () => {
   ];
 
   it('displays MHz label for central frequency when units are MHz', () => {
-    wrapper(<GridObservation data={makeObs({ centralFrequencyUnits: FREQUENCY_MHZ })} rowClick={rowClickMock} />);
+    wrapper(
+      <GridObservation
+        data={makeObs({ centralFrequencyUnits: FREQUENCY_MHZ })}
+        rowClick={rowClickMock}
+      />
+    );
     expect(screen.getByText(/200 MHz/)).toBeInTheDocument();
   });
 
   it('does not display kHz label for central frequency when units are MHz', () => {
-    wrapper(<GridObservation data={makeObs({ centralFrequencyUnits: FREQUENCY_MHZ })} rowClick={rowClickMock} />);
+    wrapper(
+      <GridObservation
+        data={makeObs({ centralFrequencyUnits: FREQUENCY_MHZ })}
+        rowClick={rowClickMock}
+      />
+    );
     expect(screen.queryByText(/200 kHz/)).not.toBeInTheDocument();
   });
 
   it('displays GHz label for central frequency when units are GHz', () => {
-    wrapper(<GridObservation data={makeObs({ centralFrequencyUnits: FREQUENCY_GHZ, centralFrequency: 5 })} rowClick={rowClickMock} />);
+    wrapper(
+      <GridObservation
+        data={makeObs({ centralFrequencyUnits: FREQUENCY_GHZ, centralFrequency: 5 })}
+        rowClick={rowClickMock}
+      />
+    );
     expect(screen.getByText(/5 GHz/)).toBeInTheDocument();
   });
 });
@@ -209,30 +224,19 @@ describe('GridObservation spectral resolution conditional rendering', () => {
 
   it('displays Spectral Resolution when value is provided', () => {
     wrapper(
-      <GridObservation 
-        data={makeObs({ spectralResolution: '0.5' })} 
-        rowClick={rowClickMock} 
-      />
+      <GridObservation data={makeObs({ spectralResolution: '0.5' })} rowClick={rowClickMock} />
     );
     expectSpectralResolutionText('0.5');
   });
 
   it('does not display Spectral Resolution line when value is empty string', () => {
-    wrapper(
-      <GridObservation 
-        data={makeObs({ spectralResolution: '' })} 
-        rowClick={rowClickMock} 
-      />
-    );
+    wrapper(<GridObservation data={makeObs({ spectralResolution: '' })} rowClick={rowClickMock} />);
     expect(screen.queryByText(/Spectral Resolution:/)).not.toBeInTheDocument();
   });
 
   it('does not display Spectral Resolution line when value is undefined', () => {
     wrapper(
-      <GridObservation 
-        data={makeObs({ spectralResolution: undefined })} 
-        rowClick={rowClickMock} 
-      />
+      <GridObservation data={makeObs({ spectralResolution: undefined })} rowClick={rowClickMock} />
     );
     expect(screen.queryByText(/Spectral Resolution:/)).not.toBeInTheDocument();
   });
@@ -278,7 +282,7 @@ describe('GridObservation spectral resolution conditional rendering', () => {
     ];
 
     wrapper(<GridObservation data={multiObs} rowClick={rowClickMock} />);
-    
+
     // Continuum observation should show hard-coded spectral resolution
     expectSpectralResolutionText('5.43 kHz');
 
@@ -300,31 +304,19 @@ describe('GridObservation auto-select behavior', () => {
   });
 
   it('prioritizes autoSelectId over first row auto-select', () => {
-    wrapper(
-      <GridObservation 
-        data={mockData} 
-        rowClick={rowClickMock} 
-        autoSelectId="OBS002"
-      />
-    );
+    wrapper(<GridObservation data={mockData} rowClick={rowClickMock} autoSelectId="OBS002" />);
     expect(rowClickMock).toHaveBeenCalledWith({ row: mockData[1] });
   });
 
   it('falls back to first row when autoSelectId does not exist in data', () => {
     wrapper(
-      <GridObservation 
-        data={mockData} 
-        rowClick={rowClickMock} 
-        autoSelectId="NON_EXISTENT"
-      />
+      <GridObservation data={mockData} rowClick={rowClickMock} autoSelectId="NON_EXISTENT" />
     );
     expect(rowClickMock).toHaveBeenCalledWith({ row: mockData[0] });
   });
 
   it('only auto-selects once even with data updates', () => {
-    const { rerender } = wrapper(
-      <GridObservation data={mockData} rowClick={rowClickMock} />
-    );
+    const { rerender } = wrapper(<GridObservation data={mockData} rowClick={rowClickMock} />);
     expect(rowClickMock).toHaveBeenCalledTimes(1);
 
     rerender(
@@ -346,36 +338,24 @@ describe('GridObservation disabled state', () => {
   });
 
   it('does not call rowClick when disabled prop is true', () => {
-    wrapper(
-      <GridObservation 
-        data={mockData} 
-        rowClick={rowClickMock} 
-        disabled={true}
-      />
-    );
-    
+    wrapper(<GridObservation data={mockData} rowClick={rowClickMock} disabled={true} />);
+
     const firstCallCount = rowClickMock.mock.calls.length;
-    
+
     const secondRow = screen.getByText('OBS002');
     fireEvent.click(secondRow);
-    
+
     expect(rowClickMock).toHaveBeenCalledTimes(firstCallCount);
   });
 
   it('calls rowClick when disabled prop is false', () => {
-    wrapper(
-      <GridObservation 
-        data={mockData} 
-        rowClick={rowClickMock} 
-        disabled={false}
-      />
-    );
-    
+    wrapper(<GridObservation data={mockData} rowClick={rowClickMock} disabled={false} />);
+
     const firstCallCount = rowClickMock.mock.calls.length;
-    
+
     const secondRow = screen.getByText('OBS002');
     fireEvent.click(secondRow);
-    
+
     expect(rowClickMock).toHaveBeenCalledTimes(firstCallCount + 1);
   });
 });
@@ -411,9 +391,9 @@ describe('GridObservation hard-coded spectral resolution fallback', () => {
   it('displays spectral resolution from row value when type is spectral', () => {
     wrapper(
       <GridObservation
-        data={makeObs({ 
-          type: TYPE_ZOOM, 
-          spectralResolution: '0.75 kHz' 
+        data={makeObs({
+          type: TYPE_ZOOM,
+          spectralResolution: '0.75 kHz'
         })}
         rowClick={rowClickMock}
       />
@@ -424,9 +404,9 @@ describe('GridObservation hard-coded spectral resolution fallback', () => {
   it('displays hard-coded 5.43 kHz for continuum observations without spectral resolution', () => {
     wrapper(
       <GridObservation
-        data={makeObs({ 
-          type: TYPE_CONTINUUM, 
-          spectralResolution: '' 
+        data={makeObs({
+          type: TYPE_CONTINUUM,
+          spectralResolution: ''
         })}
         rowClick={rowClickMock}
       />
@@ -437,13 +417,13 @@ describe('GridObservation hard-coded spectral resolution fallback', () => {
   it('displays hard-coded 3.62 kHz for PST observations without spectral resolution', () => {
     wrapper(
       <GridObservation
-        data={makeObs({ 
-          type: TYPE_PST, 
-          spectralResolution: '' 
+        data={makeObs({
+          type: TYPE_PST,
+          spectralResolution: ''
         })}
         rowClick={rowClickMock}
       />
     );
     expectSpectralResolutionText('3.62 kHz');
   });
- });
+});
