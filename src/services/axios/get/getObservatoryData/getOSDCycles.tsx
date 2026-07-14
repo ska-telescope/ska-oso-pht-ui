@@ -90,29 +90,23 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
     }));
   };
 
-  // The OSD declares both AA2 and AA2_SV keys per cycle, but only ever populates one -
-  // the other is always null. Normalise explicitly between the two known keys (rather than a
-  // wildcard "any non-null key" search) so an unexpected/malformed key can't be silently picked
-  // up as valid data. The result is tagged SA_AA2 regardless of which key backed it: that tag is
+  // The OSD returns a single array_assembly key per cycle (e.g. "AA2" or "AA2_SV"),
+  // matching that cycle's own telescope_capabilities - not always "AA2". Find it dynamically
+  // rather than assuming the key, but keep tagging the resulting entry as SA_AA2: that tag is
   // this app's internal "primary/default subarray slot" identifier, used throughout the UI to
-  // look up the default subarray regardless of which real array_assembly supplied it.
-  const pickArrayAssemblyData = <T,>(section?: {
-    AA2?: T | null;
-    AA2_SV?: T | null;
-  }): T | undefined => section?.AA2 ?? section?.AA2_SV ?? undefined;
+  // look up the default subarray regardless of which real array_assembly backs it.
+  const pickArrayAssemblyData = <T,>(section?: Record<string, T>): T | undefined => {
+    if (!section) return undefined;
+    const key = Object.keys(section).find((k) => k !== 'basic_capabilities' && section[k] != null);
+    return key ? section[key] : undefined;
+  };
 
   const mapCapabilities = (inData: ObservatoryDataBackend): ObservatoryData['capabilities'] => {
     const midAA = pickArrayAssemblyData<subarrayConfigurationMidBackend>(
-      inData?.capabilities?.mid as unknown as {
-        AA2?: subarrayConfigurationMidBackend | null;
-        AA2_SV?: subarrayConfigurationMidBackend | null;
-      }
+      inData?.capabilities?.mid as unknown as Record<string, subarrayConfigurationMidBackend>
     );
     const lowAA = pickArrayAssemblyData<subarrayConfigurationLowBackend>(
-      inData?.capabilities?.low as unknown as {
-        AA2?: subarrayConfigurationLowBackend | null;
-        AA2_SV?: subarrayConfigurationLowBackend | null;
-      }
+      inData?.capabilities?.low as unknown as Record<string, subarrayConfigurationLowBackend>
     );
 
     return {
