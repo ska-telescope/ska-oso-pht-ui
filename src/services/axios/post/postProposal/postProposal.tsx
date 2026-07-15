@@ -35,11 +35,16 @@ async function PostProposal(
       prsl_id: _omit,
       investigator_refs: _invRefs,
       ...mapped
-    } = MappingPutProposal(proposal, isSV, status as string);
+    } = MappingPutProposal(proposal, status as string);
     const convertedProposal = helpers.transform.trimObject({
       ...mapped,
       proposal_info: {
         ...mapped.proposal_info,
+        investigators:
+          mapped.proposal_info.investigators?.map(({ status: _s, ...inv }) => ({
+            ...inv,
+            status: TEAM_STATUS_TYPE_OPTIONS.pending
+          })) ?? []
         investigators:
           mapped.proposal_info.investigators?.map(({ status: _s, ...inv }) => ({
             ...inv,

@@ -597,7 +597,7 @@ const getResults = (
 /*************************************************************************************************************************/
 
 export default function MappingPutProposal(proposal: Proposal, status: string) {
-  const projectMapping = PROJECTS.find(item => item?.id === proposal.proposalType)?.mapping;
+  const projectMapping = PROJECTS.find((item) => item?.id === proposal.proposalType)?.mapping;
   // proposalType is always resolved before this is called (set explicitly at creation in
   // PageFooterPPT.tsx), so it alone is authoritative for SV-ness.
   const proposalIsSV = proposal.proposalType === SCIENCE_VERIFICATION_TYPE_ID;

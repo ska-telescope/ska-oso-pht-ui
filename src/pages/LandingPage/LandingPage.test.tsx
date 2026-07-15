@@ -373,7 +373,7 @@ describe('clone proposal', () => {
       } as any);
     });
 
-    test('still adds the cloning user as sole PI, built from their account rather than someone else\'s record', async () => {
+    test("still adds the cloning user as sole PI, built from their account rather than someone else's record", async () => {
       await triggerCloneConfirm();
 
       // getUserName()/getUserEmail() read from the (unset in tests) MSAL account, so they
@@ -382,9 +382,7 @@ describe('clone proposal', () => {
       await waitFor(() => {
         expect(mockUpdateAppContent2).toHaveBeenLastCalledWith(
           expect.objectContaining({
-            investigators: [
-              expect.objectContaining({ id: TMP_REVIEWER_ID, email: '', pi: true })
-            ]
+            investigators: [expect.objectContaining({ id: TMP_REVIEWER_ID, email: '', pi: true })]
           })
         );
       });

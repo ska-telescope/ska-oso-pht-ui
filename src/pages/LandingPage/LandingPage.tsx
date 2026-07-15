@@ -218,6 +218,32 @@ export default function LandingPage() {
   const createProposal = async () => {
     notifyWarning(t('addProposal.warning'));
     const originalProposal = getProposal();
+
+    // The person doing the cloning always becomes the sole PI of the new proposal — not
+    // the original proposal's full investigator list. Prefer their own record on the
+    // original proposal (richer/already-on-file details); if they're not listed there
+    // (e.g. accessed via an admin/reviewer override), build a fresh record from their
+    // logged-in account so the clone is never left without a PI.
+    const buildSelfInvestigatorFromAccount = (): Investigator => {
+      const [firstName, ...rest] = getUserName().split(' ');
+      return {
+        id: getUserId(),
+        firstName: firstName ?? '',
+        lastName: rest.join(' '),
+        email: getUserEmail(),
+        affiliation: '',
+        phdThesis: false,
+        status: TEAM_STATUS_TYPE_OPTIONS.pending,
+        pi: true,
+        officeLocation: null,
+        jobTitle: null
+      };
+    };
+    const selfInvestigator = originalProposal.investigators?.find((inv) => inv.id === getUserId());
+    const clonedInvestigators = [
+      selfInvestigator ? { ...selfInvestigator, pi: true } : buildSelfInvestigatorFromAccount()
+    ];
+
     const response = await PostProposal(
       authClient,
       {

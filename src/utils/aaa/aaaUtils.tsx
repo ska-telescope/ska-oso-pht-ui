@@ -80,7 +80,7 @@ export const getUserName = () => {
 export const getUserEmail = () => {
   const account = getAccount();
   return account && typeof account === 'object' && 'username' in account
-    ? (account as { username?: string }).username ?? ''
+    ? ((account as { username?: string }).username ?? '')
     : '';
 };
 
