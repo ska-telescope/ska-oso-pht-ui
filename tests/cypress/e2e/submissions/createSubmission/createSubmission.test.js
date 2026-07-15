@@ -120,6 +120,7 @@ describe('Creating Proposal', () => {
       uploadTestFile('testFile.pdf');
       verifyTestFileUploaded('testFile.pdf');
       clickFileUpload();
+      verifyAlertFooter('Science Justification PDF successfully uploaded');
       clickStatusIconNav('statusId7'); //Click to data product page
       pageConfirmed('DATA PRODUCT');
       verifyData('dataProductType', 'Images');
@@ -176,6 +177,7 @@ describe('Creating Proposal', () => {
       uploadTestFile('testFile.pdf');
       verifyTestFileUploaded('testFile.pdf');
       clickFileUpload();
+      verifyAlertFooter('Science Justification PDF successfully uploaded');
       clickStatusIconNav('statusId7'); //Click to data product page
       pageConfirmed('DATA PRODUCT');
       //Verify sens calc results
@@ -226,6 +228,7 @@ describe('Creating Proposal', () => {
       uploadTestFile('testFile.pdf');
       verifyTestFileUploaded('testFile.pdf');
       clickFileUpload();
+      verifyAlertFooter('Science Justification PDF successfully uploaded');
       clickStatusIconNav('statusId7'); //Click to data product page
       pageConfirmed('DATA PRODUCT');
       //Verify sens calc results - Not currently available fr PST
