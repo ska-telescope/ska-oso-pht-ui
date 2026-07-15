@@ -123,7 +123,7 @@ export default function GridObservation({
   );
 
   const displaySubarray = (inArray: string, inType: string) => (
-    <Typography variant="subtitle1" fontWeight="bold">
+    <Typography variant="body2" fontWeight="bold">
       {t('subArrayConfiguration.' + inArray)} |{' '}
       {t((isSV ? 'observationType.' : 'scienceCategory.') + inType)}
     </Typography>

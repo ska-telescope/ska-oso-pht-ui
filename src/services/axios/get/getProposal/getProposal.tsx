@@ -420,7 +420,7 @@ const getObservations = (
     const arr = inValue[i]?.array_details?.array === TELESCOPE_MID_BACKEND_MAPPING ? 1 : 2;
     //TODO: Rework logic to reference array label rather than number
     const sub = OSD_CONSTANTS.array[arr - 1].subarray?.find(
-      (p) => p.label.toLowerCase() === inValue[i]?.array_details?.subarray?.toLocaleLowerCase()
+      (p) => p.value.toLowerCase() === inValue[i]?.array_details?.subarray?.toLocaleLowerCase()
     )?.value;
 
     const type = typeCheck(inValue[i]?.observation_type_details?.observation_type);
