@@ -288,23 +288,44 @@ describe('clone proposal', () => {
     });
   });
 
-  test('adds only the cloning user as PI, dropping the original co-investigators', async () => {
+  test('sends no investigators when creating the clone, regardless of the original investigator list', async () => {
+    // mockRichOriginalProposal already has [Jane Doe (PI), John Smith (co-I)] - none of that
+    // should be forwarded. POST /create builds the PI itself from the caller's verified auth
+    // token (see ska_oso_services' create_proposal), so the client must not pre-empt that.
     await triggerCloneConfirm();
 
-    // mockRichOriginalProposal's investigators are [Jane Doe (PI, id === TMP_REVIEWER_ID), John Smith (co-I)].
-    // The clone should carry over only Jane, re-marked as PI, and drop John entirely.
     await waitFor(() => {
-      expect(mockUpdateAppContent2).toHaveBeenLastCalledWith(
-        expect.objectContaining({
-          investigators: [
-            expect.objectContaining({ id: TMP_REVIEWER_ID, firstName: 'Jane', pi: true })
-          ]
-        })
+      expect(PostProposal).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ investigators: [] }),
+        PROPOSAL_STATUS.DRAFT
       );
     });
+  });
 
-    const lastCall = mockUpdateAppContent2.mock.calls.at(-1)?.[0];
-    expect(lastCall?.investigators).toHaveLength(1);
+  test('uses the investigators returned by PostProposal as the sole source of truth for the clone', async () => {
+    // The backend appends exactly one investigator (the caller, from their auth token) to
+    // whatever was sent - simulate that response and confirm the client copies it verbatim
+    // rather than reconstructing anything itself.
+    const backendInjectedPI = {
+      id: 'real-signed-in-account-id',
+      firstName: 'Real',
+      lastName: 'Cloner',
+      email: 'real.cloner@example.com',
+      pi: true
+    } as any;
+    (PostProposal as Mock).mockResolvedValue({
+      ...mockPostProposalSkeleton,
+      investigators: [backendInjectedPI]
+    });
+
+    await triggerCloneConfirm();
+
+    await waitFor(() => {
+      expect(mockUpdateAppContent2).toHaveBeenLastCalledWith(
+        expect.objectContaining({ investigators: [backendInjectedPI] })
+      );
+    });
   });
 
   test('does not overwrite cloned proposal with empty PostProposal skeleton', async () => {
@@ -332,63 +353,4 @@ describe('clone proposal', () => {
     });
   });
 
-  describe('when the cloning user is not listed as an investigator on the original proposal', () => {
-    const mockProposalWithoutSelf: Partial<Proposal> = {
-      ...mockRichOriginalProposal,
-      investigators: [
-        {
-          id: 'inv-2',
-          firstName: 'John',
-          lastName: 'Smith',
-          pi: true,
-          email: 'john@example.com'
-        } as any,
-        {
-          id: 'inv-3',
-          firstName: 'Alex',
-          lastName: 'Jones',
-          pi: false,
-          email: 'alex@example.com'
-        } as any
-      ]
-    };
-
-    beforeEach(() => {
-      (GetProposal as Mock).mockResolvedValue(mockProposalWithoutSelf);
-      vi.spyOn(storageObject, 'useStore').mockReturnValue({
-        application: {
-          content1: [],
-          content2: mockProposalWithoutSelf,
-          content4: mockAccessList,
-          content5: null,
-          content6: {},
-          content7: {},
-          content8: {},
-          content9: {}
-        },
-        updateAppContent1: mockUpdateAppContent1,
-        updateAppContent2: mockUpdateAppContent2,
-        updateAppContent4: mockUpdateAppContent4,
-        updateAppContent5: vi.fn()
-      } as any);
-    });
-
-    test("still adds the cloning user as sole PI, built from their account rather than someone else's record", async () => {
-      await triggerCloneConfirm();
-
-      // getUserName()/getUserEmail() read from the (unset in tests) MSAL account, so they
-      // resolve to '' here — the point of this test is that a record is always built for
-      // the cloning user's own id, never reusing John's or Alex's details.
-      await waitFor(() => {
-        expect(mockUpdateAppContent2).toHaveBeenLastCalledWith(
-          expect.objectContaining({
-            investigators: [expect.objectContaining({ id: TMP_REVIEWER_ID, email: '', pi: true })]
-          })
-        );
-      });
-
-      const lastCall = mockUpdateAppContent2.mock.calls.at(-1)?.[0];
-      expect(lastCall?.investigators).toHaveLength(1);
-    });
-  });
 });

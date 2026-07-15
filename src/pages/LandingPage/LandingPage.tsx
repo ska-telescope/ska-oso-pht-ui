@@ -21,7 +21,6 @@ import GetProposalList from '@/services/axios/get/getProposalList/getProposalLis
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
 import Proposal from '@/utils/types/proposal';
-import Investigator from '@/utils/types/investigator';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
 import { useValidateProposal } from '@/utils/validation/validation';
 import {
@@ -30,7 +29,6 @@ import {
   FOOTER_HEIGHT_PHT,
   FOOTER_SPACER,
   isCypress,
-  TEAM_STATUS_TYPE_OPTIONS,
   TYPE_CONTINUUM,
   NAV,
   PAGE_LANDING,
@@ -219,31 +217,12 @@ export default function LandingPage() {
     notifyWarning(t('addProposal.warning'));
     const originalProposal = getProposal();
 
-    // The person doing the cloning always becomes the sole PI of the new proposal — not
-    // the original proposal's full investigator list. Prefer their own record on the
-    // original proposal (richer/already-on-file details); if they're not listed there
-    // (e.g. accessed via an admin/reviewer override), build a fresh record from their
-    // logged-in account so the clone is never left without a PI.
-    const buildSelfInvestigatorFromAccount = (): Investigator => {
-      const [firstName, ...rest] = getUserName().split(' ');
-      return {
-        id: getUserId(),
-        firstName: firstName ?? '',
-        lastName: rest.join(' '),
-        email: getUserEmail(),
-        affiliation: '',
-        phdThesis: false,
-        status: TEAM_STATUS_TYPE_OPTIONS.pending,
-        pi: true,
-        officeLocation: null,
-        jobTitle: null
-      };
-    };
-    const selfInvestigator = originalProposal.investigators?.find((inv) => inv.id === getUserId());
-    const clonedInvestigators = [
-      selfInvestigator ? { ...selfInvestigator, pi: true } : buildSelfInvestigatorFromAccount()
-    ];
-
+    // The person doing the cloning always becomes the sole PI of the new proposal — not the
+    // original proposal's full investigator list. Rather than guessing their identity
+    // client-side, send no investigators at all: POST /create already builds a PI record from
+    // the caller's verified auth token and appends it server-side (see
+    // ska_oso_services/pht/api/prsls.py's create_proposal), so the response is the
+    // authoritative source for who that investigator is.
     const response = await PostProposal(
       authClient,
       {
