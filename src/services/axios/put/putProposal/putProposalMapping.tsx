@@ -614,16 +614,14 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
     proposal_info: {
       title: proposal.title,
       proposal_type: {
-        main_type: proposalIsSV
-          ? SCIENCE_VERIFICATION
-          : (PROJECTS.find((item) => item?.id === proposal.proposalType)?.mapping as string),
+        main_type: proposalIsSV ? SCIENCE_VERIFICATION : (projectMapping as string),
         attributes:
           !proposalIsSV && proposal.proposalSubType
             ? getSubType(proposal.proposalType, proposal.proposalSubType)
             : []
       },
       abstract: proposal.abstract as string,
-      science_category: isSV
+      science_category: proposalIsSV
         ? (DETAILS.ObservingMode?.find((category) => category.value === proposal?.scienceCategory)
             ?.label as string)
         : (DETAILS.ScienceCategory?.find((category) => category.value === proposal?.scienceCategory)

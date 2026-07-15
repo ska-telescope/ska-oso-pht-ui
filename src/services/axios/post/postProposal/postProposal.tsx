@@ -11,58 +11,6 @@ import { mapping } from '../../get/getProposal/getProposal.tsx';
 import MappingPutProposal from '../../put/putProposal/putProposalMapping.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
 
-export function mappingPostProposal(
-  proposal: Proposal,
-  status: string | undefined,
-  isSV: boolean
-): ProposalBackend {
-  const getSubType = (proposalType: number, proposalSubType: number[]): any => {
-    const project = PROJECTS.find(({ id }) => id === proposalType);
-    const subTypes: string[] = [];
-    for (const subtype of proposalSubType) {
-      if (subtype) {
-        subTypes.push(project?.subProjects?.find((item) => item.id === subtype)?.mapping as any);
-      }
-    }
-    return subTypes;
-  };
-
-  const transformedProposal: ProposalBackend = {
-    prsl_id: proposal.id,
-    status: status as string,
-    submitted_by: '',
-    submitted_on: null,
-    investigator_refs: [],
-    cycle: proposal.cycle,
-    proposal_info: {
-      title: proposal.title,
-      proposal_type: {
-        main_type: isSV
-          ? SCIENCE_VERIFICATION
-          : (PROJECTS.find((item) => item.id === proposal.proposalType)?.mapping as string),
-        attributes: proposal.proposalSubType
-          ? getSubType(proposal.proposalType, proposal.proposalSubType)
-          : []
-      },
-      abstract: '',
-      science_category: '',
-      investigators: []
-    },
-    observation_info: {
-      targets: [],
-      documents: [],
-      observation_sets: [],
-      data_product_sdps: [],
-      data_product_src_nets: [],
-      result_details: [],
-      calibration_strategy: []
-    }
-  };
-  // trim undefined properties
-  helpers.transform.trimObject(transformedProposal);
-  return transformedProposal;
-}
-
 export function mockPostProposal() {
   return mapping(MockProposalBackend);
 }
