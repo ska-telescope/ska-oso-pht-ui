@@ -404,13 +404,13 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     updateStorageProposal();
   };
 
-  const setMaxChannelsZoom = (_subarrayConfig: string) => {
+  const setMaxChannelsZoom = (subarrayConfig: string) => {
     const record = isLow() ? osdLOW : osdMID;
     setMaxZoomChannels(0);
     if (record) {
       const sArray = (
         record?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined
-      )?.find((sub) => sub.subArray === SA_AA2);
+      )?.find((sub) => sub.subArray === subarrayConfig);
       setMaxZoomChannels(sArray?.numberZoomChannels ?? 0);
     }
   };
