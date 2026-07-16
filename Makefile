@@ -36,7 +36,7 @@ BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/oso/api/v14
 BACKEND_PROXY ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)
 
 K8S_CHART_PARAMS += \
-  --set ska-oso-pht-ui.backendURL=$(BACKEND_URL)
+  --wait --set ska-oso-pht-ui.backendURL=$(BACKEND_URL)
 
 # include core makefile targets for release management
 -include .make/base.mk
