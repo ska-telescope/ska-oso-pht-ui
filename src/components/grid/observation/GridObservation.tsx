@@ -74,12 +74,6 @@ export default function GridObservation({
     rowClick?.(params);
   };
 
-  const headerDisplay = (inValue: string) => (
-    <Typography variant="subtitle1" fontWeight="bold">
-      {t(inValue)}
-    </Typography>
-  );
-
   const displayName = (inValue: string) => (
     <Typography
       variant="subtitle1"

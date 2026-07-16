@@ -95,6 +95,7 @@ describe('Edit Proposal', () => {
       uploadTestFile('testFile.pdf');
       verifyTestFileUploaded('testFile.pdf');
       clickFileUpload();
+      verifyAlertFooter('Science Justification PDF successfully uploaded');
       clickToValidateSV();
       cy.wait('@mockValidate');
       verifyAlertFooter('Science Verification Idea is Valid');
@@ -168,12 +169,14 @@ describe('Edit Proposal', () => {
         uploadTestFile('testFile.pdf');
         verifyTestFileUploaded('testFile.pdf');
         clickFileUpload();
+        verifyAlertFooter('Science Justification PDF successfully uploaded');
         clickStatusIconNav('statusId6'); //Click to technical page
         pageConfirmed('TECHNICAL');
         clickFileUploadArea();
         uploadTestFile('testFile.pdf');
         verifyTestFileUploaded('testFile.pdf');
         clickFileUpload();
+        verifyAlertFooter('Technical Justification PDF successfully uploaded');
         validateProposal();
         cy.wait('@mockValidate');
         verifyAlertFooter('Proposal is Valid');
