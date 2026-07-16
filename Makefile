@@ -49,6 +49,7 @@ BACKEND_PROXY ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)
 SENSCALC_API_VERSION ?= v11
 
 K8S_CHART_PARAMS += \
+  --wait \
   --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl="/$(KUBE_NAMESPACE)/oso/api/v$(OSO_SERVICES_MAJOR_VERSION)" \
   --set global.cluster_domain=$(CLUSTER_DOMAIN)
 
