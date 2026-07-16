@@ -207,7 +207,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setCentralFrequency(getSnappedCentralFrequency(ob));
     setCentralFrequencyUnits(ob?.centralFrequencyUnits);
     setBandwidth(
-      ob?.bandwidth ?? (isLow() ? ZOOM_BANDWIDTH_DEFAULT_LOW : ZOOM_BANDWIDTH_DEFAULT_MID)
+      ob?.bandwidth ??
+        (ob?.observingBand === BAND_LOW_STR
+          ? ZOOM_BANDWIDTH_DEFAULT_LOW
+          : ZOOM_BANDWIDTH_DEFAULT_MID)
     );
     setContinuumBandwidth(ob?.continuumBandwidth ?? 0);
     setContinuumBandwidthUnits(ob?.continuumBandwidthUnits ?? 0);
