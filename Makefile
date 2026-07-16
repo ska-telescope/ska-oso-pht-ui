@@ -88,7 +88,6 @@ endif
 PGDATABASE ?= $(subst -,_,$(KUBE_NAMESPACE))
 PGUSER = $(PGDATABASE)_admin
 K8S_CHART_PARAMS += --set global.oda.postgres.database=$(PGDATABASE) \
-    --set global.cluster_domain=$(CLUSTER_DOMAIN) \
 	--set global.oda.postgres.user=$(PGUSER)
 
 
