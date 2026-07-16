@@ -259,8 +259,8 @@ export const MockProposalFrontend: Proposal = {
         channelsOut: 1,
         robust: 0,
         taperValue: 1,
-        timeAveraging: 0,
-        frequencyAveraging: 0,
+        timeAveraging: 1,
+        frequencyAveraging: 1,
         bitDepth: 1,
         continuumSubtraction: false,
         outputFrequencyResolution: 0,
@@ -440,8 +440,8 @@ export const MockProposalFrontendZoom: Proposal = {
         channelsOut: 1,
         robust: 0,
         taperValue: 0,
-        timeAveraging: 0,
-        frequencyAveraging: 0,
+        timeAveraging: 1,
+        frequencyAveraging: 1,
         bitDepth: 1,
         continuumSubtraction: false
       }

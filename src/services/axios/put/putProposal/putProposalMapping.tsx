@@ -194,8 +194,8 @@ export const getDataProductScriptParameters = (
       } else {
         const data = dp?.data as SDPVisibilitiesContinuumData;
         return {
-          time_averaging: { value: data?.timeAveraging ?? 0, unit: 'second' },
-          frequency_averaging: { value: data?.frequencyAveraging ?? 0, unit: 'MHz' },
+          time_averaging: data?.timeAveraging ?? 0,
+          frequency_averaging: data?.frequencyAveraging ?? 0,
           kind: 'continuum',
           variant: 'visibilities'
         };

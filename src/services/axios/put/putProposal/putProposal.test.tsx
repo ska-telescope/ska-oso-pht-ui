@@ -331,8 +331,8 @@ describe('getDataProductScriptParameters', () => {
     expect(result).toMatchObject({
       kind: 'continuum',
       variant: 'visibilities',
-      time_averaging: { value: 5, unit: 'second' },
-      frequency_averaging: { value: 10, unit: 'MHz' }
+      time_averaging: 5,
+      frequency_averaging: 10
     });
   });
 

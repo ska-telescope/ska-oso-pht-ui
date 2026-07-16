@@ -17,7 +17,6 @@ import TaperDropdown from '@/components/fields/taperDropdown/taperDropdown';
 import { ValueUnitPair } from '@utils/types/typesSensCalc.tsx';
 import PolarisationsField from '@/components/fields/polarisations/polarisations';
 import {
-  _TIME_AVERAGING_UNITS_DEFAULT,
   BAND_LOW_STR,
   BIT_DEPTH_DEFAULT,
   CHANNELS_OUT_DEFAULT,
@@ -29,7 +28,6 @@ import {
   FOOTER_HEIGHT_PHT,
   FOOTER_SPACER,
   FREQUENCY_AVERAGING_DEFAULT,
-  FREQUENCY_AVERAGING_UNIT_DEFAULT,
   IMAGE_SIZE_DEFAULT,
   IMAGE_SIZE_UNIT_DEFAULT,
   IW_BRIGGS,
@@ -116,11 +114,8 @@ export default function DataProduct({ data }: DataProductProps) {
   const [taperLowValue, setTaperLowValue] = React.useState(TAPER_DEFAULT);
   const [taperMidValue, setTaperMidValue] = React.useState(TAPER_DEFAULT);
   const [timeAveraging, setTimeAveraging] = React.useState(TIME_AVERAGING_DEFAULT);
-  const [timeAveragingUnits, setTimeAveragingUnits] = React.useState(_TIME_AVERAGING_UNITS_DEFAULT);
   const [frequencyAveraging, setFrequencyAveraging] = React.useState(FREQUENCY_AVERAGING_DEFAULT);
-  const [frequencyAveragingUnits, setFrequencyAveragingUnits] = React.useState(
-    FREQUENCY_AVERAGING_UNIT_DEFAULT
-  );
+
   const [weighting, setWeighting] = React.useState(IW_UNIFORM);
   const [robust, setRobust] = React.useState(ROBUST_DEFAULT);
   const [channelsOut, setChannelsOut] = React.useState(CHANNELS_OUT_DEFAULT);
@@ -181,9 +176,7 @@ export default function DataProduct({ data }: DataProductProps) {
     setPolarisations(data?.polarisations ?? []);
     setChannelsOut(data?.channelsOut ?? CHANNELS_OUT_DEFAULT);
     setTimeAveraging(data?.timeAveraging ?? TIME_AVERAGING_DEFAULT);
-    setTimeAveragingUnits(data?.timeAveragingUnits ?? _TIME_AVERAGING_UNITS_DEFAULT);
     setFrequencyAveraging(data?.frequencyAveraging ?? FREQUENCY_AVERAGING_DEFAULT);
-    setFrequencyAveragingUnits(data?.frequencyAveragingUnits ?? FREQUENCY_AVERAGING_UNIT_DEFAULT);
     setContinuumSubtraction(data?.continuumSubtraction ?? SET_CONTINUUM_SUBSTRACTION_DEFAULT);
     setBitDepth(data?.bitDepth ?? BIT_DEPTH_DEFAULT);
     setOutputFrequencyResolution(data?.outputFrequencyResolution ?? 1);
@@ -321,9 +314,7 @@ export default function DataProduct({ data }: DataProductProps) {
     taperLowValue,
     taperMidValue,
     timeAveraging,
-    timeAveragingUnits,
     frequencyAveraging,
-    frequencyAveragingUnits,
     weighting,
     robust,
     channelsOut,
@@ -405,58 +396,16 @@ export default function DataProduct({ data }: DataProductProps) {
       />
     );
 
-  const timeAveragingUnitsField = () => {
-    const getOptions = () => {
-      return [0].map((e) => ({
-        label: presentUnits(t('timeAveraging.' + e)),
-        value: e
-      }));
-    };
-
-    return (
-      <DropDown
-        disabled
-        options={getOptions()}
-        testId="timeAveragingUnits"
-        value={timeAveragingUnits}
-        setValue={setTimeAveragingUnits}
-        label=""
-        onFocus={() => setHelp('timeAveragingUnits')}
-      />
-    );
-  };
-
-  const frequencyAveragingUnitsField = () => {
-    const getOptions = () => {
-      return [0].map((e) => ({
-        label: presentUnits(t('frequencyAveraging.' + e)),
-        value: e
-      }));
-    };
-
-    return (
-      <DropDown
-        disabled
-        options={getOptions()}
-        testId="frequencyAveragingUnits"
-        value={frequencyAveragingUnits}
-        setValue={setFrequencyAveragingUnits}
-        label=""
-        onFocus={() => setHelp('frequencyAveragingUnits')}
-      />
-    );
-  };
-
-  const timeAveragingField = () =>
-    fieldWrapper(
+  const timeAveragingField = () => {
+    return fieldWrapper(
       <TimeAveragingField
         onFocus={() => setHelp('timeAveraging')}
         required
         setValue={setTimeAveraging}
         value={Number(timeAveraging)}
-        suffix={timeAveragingUnitsField()}
       />
     );
+  };
 
   const frequencyAveragingField = () =>
     fieldWrapper(
@@ -465,7 +414,6 @@ export default function DataProduct({ data }: DataProductProps) {
         required
         setValue={setFrequencyAveraging}
         value={Number(frequencyAveraging)}
-        suffix={frequencyAveragingUnitsField()}
       />
     );
 
@@ -596,8 +544,6 @@ export default function DataProduct({ data }: DataProductProps) {
     channelsOut >= CHANNELS_OUT_MIN &&
     channelsOut <= CHANNELS_OUT_MAX;
   const polarisationsValid = () => polarisations.length > 0;
-  const timeAveragingValid = () => timeAveraging > 0;
-  const frequencyAveragingValid = () => frequencyAveraging > 0;
 
   const pageFooter = () => {
     const enabled = () => {
@@ -615,7 +561,7 @@ export default function DataProduct({ data }: DataProductProps) {
           if (isFlowThrough()) {
             return polarisationsValid();
           } else if (isDetectedFilterbank()) {
-            return timeAveragingValid() && frequencyAveragingValid() && polarisationsValid();
+            return polarisationsValid();
           }
           return true;
         case TYPE_CONTINUUM:
@@ -629,7 +575,7 @@ export default function DataProduct({ data }: DataProductProps) {
               polarisationsValid()
             );
           } else {
-            return timeAveragingValid() && frequencyAveragingValid();
+            return true;
           }
       }
     };
