@@ -9,7 +9,7 @@ import Proposal from '@utils/types/proposal.tsx';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
 
 export interface ValidateResponseData {
-  result: Boolean;
+  result: boolean;
   validation_errors: string[];
 }
 

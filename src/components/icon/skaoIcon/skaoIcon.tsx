@@ -2,7 +2,7 @@ import { useTheme } from '@mui/material/styles';
 import { Logo, Symbol, THEME_DARK } from '@ska-telescope/ska-gui-components';
 interface SKAOIconProps {
   logoHeight?: number;
-  useSymbol?: Boolean;
+  useSymbol?: boolean;
 }
 
 export default function SKAOIcon({ logoHeight = 60, useSymbol = false }: SKAOIconProps) {

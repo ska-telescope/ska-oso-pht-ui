@@ -39,8 +39,8 @@ const mockPolicy = {
   cycleDescription: 'Science Verification',
   cycleInformation: {
     cycleId: 'SKAO_2027_1',
-    proposalOpen: '27-03-2026 12:00:00',
-    proposalClose: '12-05-2026 04:00:00'
+    proposalOpen: '2026-03-27T12:00:00',
+    proposalClose: '2026-05-12T04:00:00'
   }
 };
 
@@ -107,8 +107,8 @@ describe('CycleSelection component', () => {
       cycleDescription: 'Cycle Two',
       cycleInformation: {
         cycleId: 'FAKE_ID_FOR_TESTING',
-        proposalOpen: '01-01-2027 00:00:00',
-        proposalClose: '01-02-2027 00:00:00'
+        proposalOpen: '2027-01-01T00:00:00',
+        proposalClose: '2027-02-01T00:00:00'
       }
     };
     (accessors.useOSDAccessors as Mock).mockReturnValue({
@@ -127,10 +127,10 @@ describe('CycleSelection component', () => {
 
     // Both policies visible
     expect(screen.getByText(/SKAO_2027_1/)).toBeInTheDocument();
-    expect(screen.getByText(c => c.includes('FAKE_ID_FOR_TESTING'))).toBeInTheDocument();
+    expect(screen.getByText((c) => c.includes('FAKE_ID_FOR_TESTING'))).toBeInTheDocument();
 
     // Click second card
-    fireEvent.click(screen.getByText(c => c.includes('FAKE_ID_FOR_TESTING')));
+    fireEvent.click(screen.getByText((c) => c.includes('FAKE_ID_FOR_TESTING')));
 
     // Confirm should be called with second policy
     fireEvent.click(screen.getByTestId('cycleConfirmationButton'));

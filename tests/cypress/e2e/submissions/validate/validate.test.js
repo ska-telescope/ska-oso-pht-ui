@@ -22,8 +22,8 @@ import { standardUser } from '../../users/users.js';
 
 describe('Verify validate', () => {
   beforeEach(() => {
-    initialize(standardUser);
     mockOSDAPI();
+    initialize(standardUser);
   });
 
   afterEach(() => {

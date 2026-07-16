@@ -27,16 +27,31 @@ js-pre-e2e-test:
 	mkdir -p build/reports
 	mkdir -p build/.nyc_output
 
-# The default PHT_BACKEND_URL points to the umbrella chart PHT back-end deployment
-BACKEND_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/oso/api/v14
+js-pre-lint:
+	$(JS_COMMAND_RUNNER) prettier
+typecheck:
+	$(JS_COMMAND_RUNNER) typecheck
+
+AWK := $(shell command -v gawk 2>/dev/null || command -v awk 2>/dev/null)
+ifeq ($(AWK),)
+  $(error This script relies on gawk (or awk) for setting the correct URI paths to the services and senscalc. Please install gawk or awk and try again.)
+endif
+OSO_SERVICES_MAJOR_VERSION ?= $(shell helm dependency list ./charts/ska-oso-pht-ui-umbrella/ | grep ska-oso-services | $(AWK) -F'[[:space:]]+|[.]' '{print $$2}')
+OST_SENSCALC_MAJOR_VERSION ?= $(shell helm dependency list ./charts/ska-oso-pht-ui-umbrella/ | grep ska-ost-senscalc | $(AWK) -F'[[:space:]]+|[.]' '{print $$2}')
 
 # BACKEND_PROXY is the target origin (+ path prefix) for the vite dev proxy (avoids CORS).
 # For local k8s:  http://<minikube-ip>/<namespace>  (default)
 # For remote k8s: https://k8s.stfc.skao.int/dev-ska-oso-pht-ui-aaa
 BACKEND_PROXY ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)
 
+
+# Major version of the deployed ska-ost-senscalc — keep in sync with charts/ska-oso-pht-ui-umbrella/Chart.yaml
+SENSCALC_API_VERSION ?= v11
+
 K8S_CHART_PARAMS += \
-  --wait --set ska-oso-pht-ui.backendURL=$(BACKEND_URL)
+  --wait \
+  --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl="/$(KUBE_NAMESPACE)/oso/api/v$(OSO_SERVICES_MAJOR_VERSION)" \
+  --set global.cluster_domain=$(CLUSTER_DOMAIN)
 
 # include core makefile targets for release management
 -include .make/base.mk
@@ -51,12 +66,16 @@ K8S_CHART_PARAMS += \
 XRAY_TEST_RESULT_FILE ?= ctrf/ctrf-report.json
 XRAY_EXECUTION_CONFIG_FILE ?= tests/xray-config.json
 
+ifneq ($(USE_INDIGO),)
+  K8S_CHART_PARAMS += --set ska-oso-pht-ui.runtimeEnv.useIndigo=$(USE_INDIGO)
+endif
+
 # CI_ENVIRONMENT_SLUG should only be defined when running on the CI/CD pipeline, so these variables are set for a local deployment
 # Set cluster_domain to minikube default (cluster.local) in local development
 ifeq ($(CI_ENVIRONMENT_SLUG),)
 SGCLUSTER = oda
 SGCLUSTER_NAMESPACE = oda
-
+  
 K8S_CHART_PARAMS += \
   --set global.cluster_domain="cluster.local" \
   --set ska-oso-pht-ui.vault.enabled=false \
@@ -70,6 +89,7 @@ endif
 PGDATABASE ?= $(subst -,_,$(KUBE_NAMESPACE))
 PGUSER = $(PGDATABASE)_admin
 K8S_CHART_PARAMS += --set global.oda.postgres.database=$(PGDATABASE) \
+    --set global.cluster_domain=$(CLUSTER_DOMAIN) \
 	--set global.oda.postgres.user=$(PGUSER)
 
 
@@ -77,7 +97,7 @@ K8S_CHART_PARAMS += --set global.oda.postgres.database=$(PGDATABASE) \
 ENV_CHECK := $(shell echo $(CI_ENVIRONMENT_SLUG) | egrep 'test|dev|integration')
 ifneq ($(ENV_CHECK),)
 K8S_CHART_PARAMS += --set ska-oso-pht-ui.image.tag=$(VERSION)-dev.c$(CI_COMMIT_SHORT_SHA) \
-	--set ska-oso-pht-ui.image.registry=$(CI_REGISTRY)/ska-telescope/oso/ska-oso-pht-ui 
+	--set ska-oso-pht-ui.image.registry=$(CI_REGISTRY)/ska-telescope/oso/ska-oso-pht-ui
 endif
 
 ENV_CHECK_DEV := $(shell echo $(CI_ENVIRONMENT_SLUG) | grep 'dev')
@@ -86,16 +106,21 @@ endif
 
 set-dev-env-vars:
 	REACT_APP_SKA_PHT_BASE_URL="/" \
-	REACT_APP_SKA_OSO_SERVICES_URL="/oso/api/v14" \
-	REACT_APP_SKA_SENSITIVITY_CALC_URL="/senscalc/api/" \
+	REACT_APP_SKA_OSO_SERVICES_URL="/oso/api/v$(OSO_SERVICES_MAJOR_VERSION)" \
+	REACT_APP_SKA_SENSITIVITY_CALC_URL="/senscalc/api/v$(OST_SENSCALC_MAJOR_VERSION)/" \
 	REACT_APP_USE_LOCAL_DATA="false" \
 	REACT_APP_DOMAIN="$(KUBE_HOST)" \
 	REACT_APP_SKA_LOGIN_APP_URL="$(KUBE_HOST)/$(KUBE_NAMESPACE)/login" \
 	MSENTRA_CLIENT_ID="2445e300-54c9-470f-9578-0f54840672af" \
 	MSENTRA_TENANT_ID="78887040-bad7-494b-8760-88dcacfb3805" \
 	MSENTRA_REDIRECT_URI="http://localhost:6101" \
+	USE_INDIGO="$(or $(USE_INDIGO),false)" \
+	INDIGO_AUTHORITY="https://iam-1.staging.devx.skao.int/" \
+	INDIGO_CLIENT_ID="d546e462-637c-44ff-b2b9-3345a960ad42" \
+	INDIGO_REDIRECT_URI="http://localhost:6101/" \
+	INDIGO_SCOPE="pht:readwrite pht:read openid profile" \
+	INDIGO_AUDIENCE="test:pht" \
 	ENVJS_FILE=./public/env.js ./scripts/write_env_js.sh
 
 dev-start: set-dev-env-vars
 	BACKEND_PROXY="$(BACKEND_PROXY)" yarn start
-	

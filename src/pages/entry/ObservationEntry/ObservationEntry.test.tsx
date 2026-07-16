@@ -9,9 +9,9 @@ import ObservationEntry from './ObservationEntry';
 
 // ---- Module mocks ----
 
-// Setting `state=null` ensures that we can define some non "edit mode" tests. 
-// (If we didn't do this the testing environment created state would 
-// look as though it had some content so the component would always think 
+// Setting `state=null` ensures that we can define some non "edit mode" tests.
+// (If we didn't do this the testing environment created state would
+// look as though it had some content so the component would always think
 // it's in edit mode.)
 // Edit-mode tests supply a `data` prop instead to explicitly trigger edit mode.
 vi.mock('react-router-dom', async () => {
@@ -24,9 +24,8 @@ vi.mock('react-router-dom', async () => {
 });
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', async () => {
-  const { OSD_CONSTANTS } = await vi.importActual<
-    typeof import('@utils/OSDConstants')
-  >('@utils/OSDConstants');
+  const { OSD_CONSTANTS } =
+    await vi.importActual<typeof import('@utils/OSDConstants')>('@utils/OSDConstants');
   return {
     useOSDAccessors: () => ({
       osdLOW: {
@@ -105,7 +104,8 @@ vi.mock('@/components/fields/bandwidthFields/bandwidth/bandwidth', () => ({
 
 // ---- Helpers ----
 
-const wrapper = (component: React.ReactElement) => render(<StoreProvider>{component}</StoreProvider>);
+const wrapper = (component: React.ReactElement) =>
+  render(<StoreProvider>{component}</StoreProvider>);
 
 // ---- Tests ----
 

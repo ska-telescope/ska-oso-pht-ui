@@ -31,26 +31,24 @@ async function getSensCalc(
   if (USE_LOCAL_DATA_SENSITIVITY_CALC) {
     return Promise.resolve(SENSCALC_CONTINUUM_MOCKED);
   }
-  const fetchSensCalc = async (
-    observation: Observation,
-    target: Target,
-    dataProductSDP: DataProductSDPNew
-  ) => {
-    return await getSensitivityCalculatorAPIData(observation, target, dataProductSDP, isCustom());
-  };
 
   try {
-    const output: any = await fetchSensCalc(observation, target, dataProductSDP);
+    const output: any = await getSensitivityCalculatorAPIData(
+      observation,
+      target,
+      dataProductSDP,
+      isCustom()
+    );
 
     if (!output) {
-      throw new Error('error.API_UNKNOWN_ERROR');
+      return { error: 'error.API_UNKNOWN_ERROR' };
     }
     if (output.error && output.results) {
-      throw new Error(`${output.results}`);
+      return { error: `${output.error}: ${output.results}` };
     }
     return output;
   } catch (e) {
-    return e ? { error: String(e) } : { error: 'error.API_UNKNOWN_ERROR' };
+    return { error: e instanceof Error ? e.message : String(e) };
   }
 }
 
@@ -68,8 +66,8 @@ async function getSensitivityCalculatorAPIData(
   return observation.type === TYPE_CONTINUUM
     ? GetContinuumData(telescope, observation, target, dataProductSDP)
     : observation.type === TYPE_ZOOM
-    ? GetZoomData(telescope, observation, target, dataProductSDP)
-    : GetContinuumData(telescope, setMockObservation(observation), target, dataProductSDP);
+      ? GetZoomData(telescope, observation, target, dataProductSDP)
+      : GetContinuumData(telescope, setMockObservation(observation), target, dataProductSDP);
 }
 
 export default getSensCalc;

@@ -33,8 +33,8 @@ import {
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 beforeEach(() => {
-  initialize(standardUser);
   mockOSDAPI();
+  initialize(standardUser);
   mockCreateSVIdeaAPI();
   clickAddSubmission();
   cy.wait('@mockOSDData');
@@ -170,8 +170,8 @@ describe('Science Verification: Target entry validation', () => {
 
 describe('Proposal Flow: Target entry validation', () => {
   beforeEach(() => {
-    initialize(standardUser);
     mockOSDAPI();
+    initialize(standardUser);
     mockCreateProposalAPI();
     clickAddSubmission();
     cy.wait('@mockOSDData');

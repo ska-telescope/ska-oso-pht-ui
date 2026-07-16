@@ -9,16 +9,16 @@ export function mappingPostPanel(panel: Panel, cycleId: string): PanelBackend {
     cycle: panel.cycle ? panel.cycle : cycleId,
     name: panel.name,
     expires_on: panel.expiresOn,
-    proposals: panel.proposals.map(proposal => ({
+    proposals: panel.proposals.map((proposal) => ({
       prsl_id: proposal.proposalId,
       assigned_on: proposal.assignedOn ? proposal.assignedOn : new Date().toISOString()
     })),
-    sci_reviewers: panel.sciReviewers.map(reviewer => ({
+    sci_reviewers: panel.sciReviewers.map((reviewer) => ({
       reviewer_id: reviewer.reviewerId,
       assigned_on: reviewer.assignedOn ? reviewer.assignedOn : new Date().toISOString(),
       status: reviewer.status
     })),
-    tech_reviewers: panel.tecReviewers.map(reviewer => ({
+    tech_reviewers: panel.tecReviewers.map((reviewer) => ({
       reviewer_id: reviewer.reviewerId,
       assigned_on: reviewer.assignedOn ? reviewer.assignedOn : new Date().toISOString(),
       status: reviewer.status

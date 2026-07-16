@@ -10,10 +10,13 @@ import {
 } from '@ska-telescope/ska-gui-components';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import '@ska-telescope/ska-gui-components/dist/assets/index.css';
+import { useNotify } from '@/utils/notify/useNotify';
+import { validateIndigoConfig } from '@/utils/authConfig';
 
 declare const window: any;
 
 function App() {
+  const { notifyError } = useNotify();
   const [themeMode, setThemeMode] = React.useState(
     localStorage.getItem('skao_theme_mode') === THEME_DARK ? THEME_DARK : THEME_LIGHT
   );
@@ -25,6 +28,13 @@ function App() {
   );
   const [flatten, setFlatten] = React.useState(localStorage.getItem('skao_flatten') === 'true');
 
+  React.useEffect(() => {
+    const missing = validateIndigoConfig();
+    if (missing.length > 0) {
+      notifyError(`Indigo IAM misconfiguration — missing env vars: ${missing.join(', ')}`);
+    }
+  }, []);
+
   return (
     <React.Suspense fallback={<Loader />}>
       <ThemeA11yProvider>
@@ -34,7 +44,7 @@ function App() {
           buttonVariant={buttonVariant}
           flatten={flatten}
         >
-          <Router basename={window?.env?.REACT_APP_SKA_PHT_BASE_URL || '/'}>
+          <Router basename={(window?.env?.REACT_APP_SKA_PHT_BASE_URL || '/').replace(/\/?$/, '/')}>
             <PHT
               themeMode={themeMode}
               setThemeMode={setThemeMode}

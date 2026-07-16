@@ -1,6 +1,6 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { CHANNELS_OUT_MAX, ERROR_SECS } from '@utils/constants.ts';
+import { CHANNELS_OUT_MAX, CHANNELS_OUT_MIN, ERROR_SECS } from '@utils/constants.ts';
 import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
@@ -28,7 +28,7 @@ export default function ChannelsOutField({
 
   const checkValue = (e: number) => {
     const num = Number(e);
-    if (num > 0 && num <= CHANNELS_OUT_MAX) {
+    if (Number.isInteger(num) && num >= CHANNELS_OUT_MIN && num <= CHANNELS_OUT_MAX) {
       setFieldValid(true);
       if (setValue) {
         setValue(num);
@@ -38,7 +38,9 @@ export default function ChannelsOutField({
     }
   };
 
-  const errorMessage = fieldValid ? '' : t(FIELD + '.error');
+  const errorMessage = fieldValid
+    ? ''
+    : t(FIELD + '.error', { min: CHANNELS_OUT_MIN, max: CHANNELS_OUT_MAX });
 
   React.useEffect(() => {
     const timer = () => {

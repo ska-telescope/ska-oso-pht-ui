@@ -14,6 +14,7 @@ interface SkyDirection2FieldProps {
   value: string;
   valueFocus?: Function;
   valueTypeFocus?: Function;
+  valueBlur?: Function;
   setErrorText?: (error: string) => void;
 }
 
@@ -23,6 +24,7 @@ export default function SkyDirection2Field({
   skyUnits,
   value,
   valueFocus,
+  valueBlur,
   setErrorText
 }: SkyDirection2FieldProps) {
   const { t } = useScopedTranslation();
@@ -55,6 +57,7 @@ export default function SkyDirection2Field({
         value={value}
         setValue={setValue}
         onFocus={valueFocus}
+        onBlur={valueBlur}
         required={required}
       />
     );
@@ -70,6 +73,7 @@ export default function SkyDirection2Field({
         value={value}
         setValue={setValue}
         onFocus={valueFocus}
+        onBlur={valueBlur}
         required={required}
       />
     );

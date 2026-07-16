@@ -61,9 +61,9 @@ describe('<GridReviewers /> with selected reviewers', () => {
     });
     wrapper(<GridReviewers showSelection selectedReviewers={mockedSelectedReviewers} />);
     const checkboxes = await screen.findAllByRole('checkbox');
-    checkboxes.forEach(checkbox => {
+    checkboxes.forEach((checkbox) => {
       const reviewerId = checkbox.getAttribute('data-id');
-      const isSelected = mockedSelectedReviewers.some(r => r.id === reviewerId);
+      const isSelected = mockedSelectedReviewers.some((r) => r.id === reviewerId);
       const isChecked = checkbox.getAttribute('aria-checked') === 'true';
       expect(isChecked).toBe(isSelected);
     });

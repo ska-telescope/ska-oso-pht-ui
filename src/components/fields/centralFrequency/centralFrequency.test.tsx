@@ -7,7 +7,7 @@ import CentralFrequency from './centralFrequency';
 import { BAND_LOW_STR } from '@/utils/constants.ts';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 
-vi.mock(import('@/utils/constants.ts'), async importOriginal => {
+vi.mock(import('@/utils/constants.ts'), async (importOriginal) => {
   const actual = await importOriginal();
   return {
     ...actual
@@ -46,7 +46,7 @@ vi.mock('@ska-telescope/ska-gui-components', () => ({
       <input
         data-testid={testId}
         value={value}
-        onChange={e => setValue(Number(e.target.value))}
+        onChange={(e) => setValue(Number(e.target.value))}
         onFocus={onFocus}
       />
       {errorText && <span data-testid="error">{errorText}</span>}

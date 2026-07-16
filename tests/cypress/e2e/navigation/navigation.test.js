@@ -22,8 +22,8 @@ import { standardUser } from '../users/users.js';
 
 describe('Verify navigation', () => {
   beforeEach(() => {
-    initialize(standardUser);
     mockOSDAPI();
+    initialize(standardUser);
   });
 
   afterEach(() => {

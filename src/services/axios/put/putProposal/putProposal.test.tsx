@@ -2,8 +2,8 @@ import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
 import {
   PROPOSAL_STATUS,
-  RA_TYPE_GALACTIC,
-  RA_TYPE_ICRS,
+  REFERENCE_COORDINATE_TYPE_GALACTIC,
+  REFERENCE_COORDINATE_TYPE_ICRS,
   TYPE_CONTINUUM,
   TYPE_ZOOM,
   TYPE_PST,
@@ -240,7 +240,7 @@ describe('getCalibrationStrategy', () => {
 describe('getReferenceCoordinate', () => {
   test('should map galactic coordinates correctly', () => {
     const galactic = {
-      kind: RA_TYPE_GALACTIC.value,
+      kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value,
       l: 123.4,
       b: 56.7,
       pmL: 1.1,
@@ -250,7 +250,7 @@ describe('getReferenceCoordinate', () => {
     };
     const result = getReferenceCoordinate(galactic);
     expect(result).toEqual({
-      kind: RA_TYPE_GALACTIC.label,
+      kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
       l: 123.4,
       b: 56.7,
       pm_l: 1.1,
@@ -262,7 +262,7 @@ describe('getReferenceCoordinate', () => {
 
   test('should map ICRS coordinates correctly', () => {
     const icrs = {
-      kind: RA_TYPE_ICRS.value,
+      kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
       raStr: '12:34:56.7',
       decStr: '-12:34:56.7',
       pmRa: 0.1,
@@ -272,7 +272,7 @@ describe('getReferenceCoordinate', () => {
     };
     const result = getReferenceCoordinate(icrs);
     expect(result).toEqual({
-      kind: RA_TYPE_ICRS.label,
+      kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
       ra_str: '12:34:56.7',
       dec_str: '-12:34:56.7',
       pm_ra: 0.1,

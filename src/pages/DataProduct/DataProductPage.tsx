@@ -2,11 +2,11 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Grid, Stack, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { AlertColorTypes, SPACER_VERTICAL, Spacer } from '@ska-telescope/ska-gui-components';
+import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { presentUnits } from '@utils/present/present';
 import { validateSDPPage } from '@utils/validation/validation.tsx';
 import { Proposal } from '@utils/types/proposal.tsx';
-import { FOOTER_SPACER, PAGE_DATA_PRODUCTS, PATH } from '@utils/constants.ts';
+import { PAGE_DATA_PRODUCTS, PATH } from '@utils/constants.ts';
 import { DataProductSDPNew, SDPImageContinuumData } from '@utils/types/dataProduct.tsx';
 import Shell from '../../components/layout/Shell/Shell';
 import AddButton from '../../components/button/Add/Add';
@@ -73,14 +73,14 @@ export default function DataProductsPage() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = getProposal().dataProductSDP?.filter(e => e.id !== String(currentRow));
+    const obs1 = getProposal().dataProductSDP?.filter((e) => e.id !== String(currentRow));
     setProposal({ ...getProposal(), dataProductSDP: obs1 });
     setCurrentRow(0);
     closeDeleteDialog();
   };
 
   const alertContent = () => {
-    const rec = getProposal().dataProductSDP?.find(p => String(p.id) === String(currentRow));
+    const rec = getProposal().dataProductSDP?.find((p) => String(p.id) === String(currentRow));
     const data = rec?.data as SDPImageContinuumData;
     return (
       <Grid
@@ -184,7 +184,6 @@ export default function DataProductsPage() {
             )}
           </>
         )}
-        <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
       </>
     </Shell>
   );

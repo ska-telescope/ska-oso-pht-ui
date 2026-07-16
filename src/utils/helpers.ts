@@ -10,7 +10,8 @@ import {
   DEFAULT_ZOOM_OBSERVATION_LOW,
   TYPE_ZOOM,
   TYPE_PST,
-  DEFAULT_CONTINUUM_OBSERVATION_LOW
+  DEFAULT_CONTINUUM_OBSERVATION_LOW,
+  TIME_UNITS
 } from './constants';
 import Observation from './types/observation';
 import { ValueUnitPair } from './types/valueUnitPair';
@@ -33,7 +34,7 @@ export const generateId = (prefix: string, length: number = 8) => {
 };
 
 export const getBandwidthOrFrequencyUnitsLabel = (incValue: number): string => {
-  return FREQUENCY_UNITS.find(item => item.value === incValue)?.label as string;
+  return FREQUENCY_UNITS.find((item) => item.value === incValue)?.label as string;
 };
 
 export const getScaledBandwidthOrFrequency = (
@@ -45,16 +46,21 @@ export const getScaledBandwidthOrFrequency = (
 };
 
 export const countWords = (text: string) => {
-  return !text
-    ? 0
-    : text
-        .trim()
-        .split(/\s+/)
-        .filter(Boolean).length;
+  return !text ? 0 : text.trim().split(/\s+/).filter(Boolean).length;
 };
 
 export const frequencyConversion = (inValue: any, from: number, to: number = FREQUENCY_HZ) => {
   return (inValue * FREQUENCY_UNITS[to - 1].toHz) / FREQUENCY_UNITS[from - 1].toHz;
+};
+
+export const isFrequencyRangeOutOfBand = (
+  centralFrequency: number,
+  bandwidth: number,
+  minFreq: number,
+  maxFreq: number
+): boolean => {
+  if (minFreq === 0 && maxFreq === 0) return false;
+  return centralFrequency < minFreq + bandwidth / 2 || centralFrequency > maxFreq - bandwidth / 2;
 };
 
 export const calculateVelocity = (resolutionHz: number, frequencyHz: number, precision = 1) => {
@@ -77,7 +83,6 @@ export const helpers = {
       setErrorText: Function,
       textType?: keyof typeof TEXT_ENTRY_PARAMS
     ): boolean {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       textType = textType ?? 'DEFAULT';
       const textEntryParams = TEXT_ENTRY_PARAMS[textType];
       if (!textEntryParams) {
@@ -100,11 +105,11 @@ export const helpers = {
       if (Array.isArray(obj)) {
         // Recursively trim each element, then filter out null/undefined/empty string
         return obj
-          .map(item => this.trimObject(item))
-          .filter(item => item !== undefined && item !== null && item !== '');
+          .map((item) => this.trimObject(item))
+          .filter((item) => item !== undefined && item !== null && item !== '');
       } else if (obj && typeof obj === 'object') {
         const newObj: any = {};
-        Object.keys(obj).forEach(key => {
+        Object.keys(obj).forEach((key) => {
           const value = obj[key];
           if (value === undefined || value === '' || value === null) {
             if (
@@ -135,7 +140,7 @@ export const helpers = {
 /*********************************************************** filter *********************************************************/
 
 const sortByLastUpdated = (array: any[]): any[] => {
-  array.sort(function(a, b) {
+  array.sort(function (a, b) {
     return (
       new Date(b.metadata?.last_modified_on as string)?.valueOf() -
       new Date(a.metadata?.last_modified_on as string)?.valueOf()
@@ -145,22 +150,25 @@ const sortByLastUpdated = (array: any[]): any[] => {
 };
 
 const groupBylId = (data: any[], idKey: string) => {
-  return data.reduce((grouped: { [key: string]: any[] }, obj) => {
-    if (!grouped[obj[idKey]]) {
-      grouped[obj[idKey]] = [obj];
-    } else {
-      grouped[obj[idKey]].push(obj);
-    }
-    return grouped;
-  }, {} as { [key: string]: any[] });
+  return data.reduce(
+    (grouped: { [key: string]: any[] }, obj) => {
+      if (!grouped[obj[idKey]]) {
+        grouped[obj[idKey]] = [obj];
+      } else {
+        grouped[obj[idKey]].push(obj);
+      }
+      return grouped;
+    },
+    {} as { [key: string]: any[] }
+  );
 };
 
 export const getUniqueMostRecentItems = (data: any[], idKey: string) => {
   // retrieve unique items based on idKey
-  let grouped: { [key: string]: any[] } = groupBylId(data, idKey);
+  const grouped: { [key: string]: any[] } = groupBylId(data, idKey);
 
   // sort each group by last_modified_on and take the most recent item
-  let sorted = (Object as any).values(grouped).map((arr: any[]) => {
+  const sorted = (Object as any).values(grouped).map((arr: any[]) => {
     sortByLastUpdated(arr);
     return arr[0];
   });
@@ -169,22 +177,36 @@ export const getUniqueMostRecentItems = (data: any[], idKey: string) => {
   return sortByLastUpdated(sorted);
 };
 
-export const leadZero = (coordinate: String): String => {
-  const arr = coordinate.split(':');
+export const leadZero = (coordinate: string): string => {
+  const normalised = coordinate.toString().replace(/^\+/, '');
+  const arr = normalised.split(':');
   const num = Number(arr[0]);
   if (arr?.length === 3 && num > -1 && num < 10 && arr[0]?.length < 2) {
     return '0' + arr[0] + ':' + arr[1] + ':' + arr[2];
   } else if (arr?.length === 3 && num > -10 && num < 0 && arr[0].length < 3) {
     return '-0' + Math.abs(Number(arr[0])) + ':' + arr[1] + ':' + arr[2];
   }
-  return coordinate;
+  return normalised;
+};
+
+export const trailingZeros = (coordinate: string): string => {
+  const parts = coordinate.split(':');
+  if (parts.length !== 3) return coordinate;
+  const dotIndex = parts[2].indexOf('.');
+  if (dotIndex === -1) {
+    parts[2] = parts[2] + '.000';
+  } else {
+    const fracPart = parts[2].substring(dotIndex + 1);
+    parts[2] = parts[2].substring(0, dotIndex + 1) + fracPart.padEnd(3, '0');
+  }
+  return parts.join(':');
 };
 
 /*********************************************************** map values *********************************************************/
 
 export const getBandwidthZoom = (incObs: Observation | null): ValueUnitPair => {
-  const obsTelescopeArray = OSD_CONSTANTS.array.find(o => o.value === incObs?.telescope);
-  const bandwidth = obsTelescopeArray?.bandWidth?.find(b => b.value === incObs?.bandwidth);
+  const obsTelescopeArray = OSD_CONSTANTS.array.find((o) => o.value === incObs?.telescope);
+  const bandwidth = obsTelescopeArray?.bandWidth?.find((b) => b.value === incObs?.bandwidth);
   const valueUnit = bandwidth?.label?.split(' ');
   const value = valueUnit && valueUnit.length > 0 ? Number(valueUnit[0]) : 0;
   return {
@@ -193,14 +215,14 @@ export const getBandwidthZoom = (incObs: Observation | null): ValueUnitPair => {
   };
 };
 
-export const getBandwidthLowZoom = (inValue: Number) => {
+export const getBandwidthLowZoom = (inValue: number) => {
   const obsTelescopeArray = OSD_CONSTANTS.array[1];
-  return obsTelescopeArray?.bandWidth?.find(b => b.value === inValue);
+  return obsTelescopeArray?.bandWidth?.find((b) => b.value === inValue);
 };
 
 export const obTypeTransform = (inData: string[]) => {
   const out: string[] = [];
-  inData.forEach(item => {
+  inData.forEach((item) => {
     if (item === 'vis' || item === 'correlation') {
       out.push('continuum', 'spectral');
     } else if (item === 'pst') {
@@ -221,4 +243,11 @@ export const getDefaultObservationLowAA2 = (type: string): Observation | null =>
     default:
       return DEFAULT_CONTINUUM_OBSERVATION_LOW;
   }
+};
+
+export const timeConversion = (inValue: number, from: number, to: number) => {
+  const fromUnit = TIME_UNITS.find((u) => u.id === from);
+  const toUnit = TIME_UNITS.find((u) => u.id === to);
+  if (!fromUnit || !toUnit) return inValue;
+  return (inValue * toUnit.toDay) / fromUnit.toDay;
 };

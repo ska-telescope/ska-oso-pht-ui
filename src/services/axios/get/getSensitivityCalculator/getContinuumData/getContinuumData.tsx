@@ -4,16 +4,16 @@ import {
   DECIMAL_PLACES,
   FREQUENCY_HZ,
   FREQUENCY_MHZ,
+  IW_UNIFORM,
+  REFERENCE_COORDINATE_TYPE_GALACTIC,
+  REFERENCE_COORDINATE_TYPE_ICRS,
+  ROBUST_DEFAULT,
   SA_CUSTOM,
   SEPARATOR0,
   STATUS_OK,
+  TAPER_DEFAULT,
   TIME_HOURS,
-  TIME_SECS,
-  RA_TYPE_GALACTIC,
-  RA_TYPE_ICRS,
-  IW_UNIFORM,
-  ROBUST_DEFAULT,
-  TAPER_DEFAULT
+  TIME_SECS
 } from '@utils/constants';
 import {
   getImageWeightingMapping,
@@ -23,7 +23,7 @@ import {
   shiftSensitivity
 } from '@utils/helpersSensCalc.ts';
 import { SUPPLIED_TYPE_SENSITIVITY, TYPE_CONTINUUM } from '@utils/constants.ts';
-import { SensCalcResults, ResultsSection } from '@utils/types/sensCalcResults.tsx';
+import { ResultsSection, SensCalcResults } from '@utils/types/sensCalcResults.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import {
   addFrequency,
@@ -117,11 +117,11 @@ export function getFinalIndividualResultsForContinuum(
 ): FinalIndividualResults {
   const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 
-  let transformed_result = results.transformed_result;
+  const transformed_result = results.transformed_result;
 
   const observationTypeLabel: string = theObservation.type;
   const suppliedType = OSD_CONSTANTS.Supplied.find(
-    sup => sup.value === theObservation.supplied.type
+    (sup) => sup.value === theObservation.supplied.type
   )?.sensCalcResultsLabel;
 
   const shifted1 = shiftSensitivity(transformed_result?.weighted_continuum_sensitivity);
@@ -204,16 +204,16 @@ export function getFinalIndividualResultsForContinuum(
       ? transformed_result?.spectral_integration_time?.value?.toString()
       : transformed_result?.spectral_surface_brightness_sensitivity?.value?.toString(),
     units: isSuppliedSensitivity()
-      ? transformed_result?.spectral_integration_time?.unit ?? 'ERR10a'
-      : transformed_result?.spectral_surface_brightness_sensitivity?.unit ?? 'ERR10b'
+      ? (transformed_result?.spectral_integration_time?.unit ?? 'ERR10a')
+      : (transformed_result?.spectral_surface_brightness_sensitivity?.unit ?? 'ERR10b')
   };
 
   const results11 = {
     field: suppliedType,
     value: theObservation?.supplied?.value?.toString(),
     units:
-      OSD_CONSTANTS.Supplied.find(s => s.sensCalcResultsLabel === suppliedType)?.units?.find(
-        u => u.value === theObservation.supplied.units
+      OSD_CONSTANTS.Supplied.find((s) => s.sensCalcResultsLabel === suppliedType)?.units?.find(
+        (u) => u.value === theObservation.supplied.units
       )?.label ?? ''
   };
 
@@ -338,8 +338,8 @@ function GetContinuumData(
 
   const subArray = (observation: Observation) => {
     const result = OSD_CONSTANTS.array
-      .find(t => t.value === observation.telescope)
-      ?.subarray?.find(s => s.value === observation.subarray);
+      .find((t) => t.value === observation.telescope)
+      ?.subarray?.find((s) => s.value === observation.subarray);
     return result ? result.map : '';
   };
 
@@ -350,30 +350,19 @@ function GetContinuumData(
     num15mAntennas: observation.num15mAntennas ?? 0,
     num13mAntennas: observation.num13mAntennas ?? 0,
     numStations: observation.numStations ?? 0,
-    skyDirectionType: RA_TYPE_GALACTIC,
-    raGalactic: { value: String(target.raStr), unit: RA_TYPE_GALACTIC.label },
-    decGalactic: { value: String(target.decStr), unit: RA_TYPE_GALACTIC.label },
-    raEquatorial: { value: 0, unit: RA_TYPE_ICRS.label },
-    decEquatorial: { value: 0, unit: RA_TYPE_ICRS.label },
+    skyDirectionType: REFERENCE_COORDINATE_TYPE_GALACTIC,
+    raGalactic: { value: String(target.raStr), unit: REFERENCE_COORDINATE_TYPE_GALACTIC.label },
+    decGalactic: { value: String(target.decStr), unit: REFERENCE_COORDINATE_TYPE_GALACTIC.label },
+    raEquatorial: { value: 0, unit: REFERENCE_COORDINATE_TYPE_ICRS.label },
+    decEquatorial: { value: 0, unit: REFERENCE_COORDINATE_TYPE_ICRS.label },
     elevation: { value: observation.elevation, unit: 'deg' },
     advancedData: null,
     modules: []
   };
 
-  let properties = isLow(telescope)
+  const properties = isLow(telescope)
     ? addPropertiesLOW(standardData, continuumData)
     : addPropertiesMID(standardData, continuumData);
-  const response = Fetch(
-    axiosClient,
-    telescope,
-    URL_PATH,
-    properties,
-    mapping,
-    standardData,
-    continuumData,
-    target,
-    observation
-  );
-  return response;
+  return Fetch(axiosClient, telescope, URL_PATH, properties, mapping, target, observation);
 }
 export default GetContinuumData;

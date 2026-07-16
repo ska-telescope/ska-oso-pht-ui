@@ -27,7 +27,7 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
         content3: {
           observatoryPolicy: {
             cycleInformation: {
-              proposalClose: '20250930T12:00:00'
+              proposalClose: '2025-09-30T12:00:00'
             }
           }
         }

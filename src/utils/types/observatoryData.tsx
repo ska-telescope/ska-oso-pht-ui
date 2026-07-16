@@ -188,7 +188,7 @@ export type ObservatoryDataBackend = {
     };
     low: {
       basic_capabilities: BasicCapabilitiesLowBackend;
-      AA2: subarrayConfigurationLowBackend;
+      AA2_SV: subarrayConfigurationLowBackend;
     };
   };
 };

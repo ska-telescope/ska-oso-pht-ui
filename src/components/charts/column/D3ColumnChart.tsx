@@ -46,10 +46,7 @@ const D3ColumnChart: React.FC<Props> = ({
 
     const innerH = height - margin.top - margin.bottom;
 
-    chartGroup
-      .append('g')
-      .attr('class', 'x-axis')
-      .attr('transform', `translate(0,${innerH})`);
+    chartGroup.append('g').attr('class', 'x-axis').attr('transform', `translate(0,${innerH})`);
 
     chartGroup.append('g').attr('class', 'y-axis');
 
@@ -70,28 +67,16 @@ const D3ColumnChart: React.FC<Props> = ({
     const innerW = width - margin.left - margin.right;
     const innerH = height - margin.top - margin.bottom;
 
-    const categories = Array.from(new Set(data.map(d => d.name)));
-    const groups = Array.from(new Set(data.map(d => d.group).filter(Boolean) as string[]));
+    const categories = Array.from(new Set(data.map((d) => d.name)));
+    const groups = Array.from(new Set(data.map((d) => d.group).filter(Boolean) as string[]));
 
-    const x0 = d3
-      .scaleBand()
-      .domain(categories)
-      .range([0, innerW])
-      .padding(0.2);
+    const x0 = d3.scaleBand().domain(categories).range([0, innerW]).padding(0.2);
     const x1 = groups.length
-      ? d3
-          .scaleBand()
-          .domain(groups)
-          .range([0, x0.bandwidth()])
-          .padding(0.08)
+      ? d3.scaleBand().domain(groups).range([0, x0.bandwidth()]).padding(0.08)
       : null;
 
-    const maxY = d3.max(data, d => d.value) ?? 1;
-    const y = d3
-      .scaleLinear()
-      .domain([0, maxY])
-      .nice()
-      .range([innerH, 0]);
+    const maxY = d3.max(data, (d) => d.value) ?? 1;
+    const y = d3.scaleLinear().domain([0, maxY]).nice().range([innerH, 0]);
 
     const fallbackColors = d3.schemeTableau10;
     const color = d3
@@ -118,61 +103,61 @@ const D3ColumnChart: React.FC<Props> = ({
     if (groups.length && x1) {
       const bars = chartGroup
         .selectAll<SVGRectElement, ColumnData>('rect')
-        .data(data, d => `${d.name}-${d.group}`);
+        .data(data, (d) => `${d.name}-${d.group}`);
 
       bars
         .enter()
         .append('rect')
-        .attr('x', d => x0(d.name)! + x1(d.group!)!)
+        .attr('x', (d) => x0(d.name)! + x1(d.group!)!)
         .attr('y', innerH)
         .attr('width', x1.bandwidth())
         .attr('height', 0)
-        .attr('fill', d => chartColors?.[d.group!.toLowerCase()]?.bg ?? color(d.group!))
+        .attr('fill', (d) => chartColors?.[d.group!.toLowerCase()]?.bg ?? color(d.group!))
         .transition()
         .duration(800)
         .ease(d3.easeCubicOut)
-        .attr('y', d => y(d.value))
-        .attr('height', d => innerH - y(d.value));
+        .attr('y', (d) => y(d.value))
+        .attr('height', (d) => innerH - y(d.value));
 
       bars
         .transition()
         .duration(800)
         .ease(d3.easeCubicOut)
-        .attr('x', d => x0(d.name)! + x1(d.group!)!)
-        .attr('y', d => y(d.value))
+        .attr('x', (d) => x0(d.name)! + x1(d.group!)!)
+        .attr('y', (d) => y(d.value))
         .attr('width', x1.bandwidth())
-        .attr('height', d => innerH - y(d.value))
-        .attr('fill', d => chartColors?.[d.group!.toLowerCase()]?.bg ?? color(d.group!));
+        .attr('height', (d) => innerH - y(d.value))
+        .attr('fill', (d) => chartColors?.[d.group!.toLowerCase()]?.bg ?? color(d.group!));
 
       bars.exit().remove();
 
       const labels = chartGroup
         .selectAll<SVGTextElement, ColumnData>('text.bar-label')
-        .data(data, d => `${d.name}-${d.group}`);
+        .data(data, (d) => `${d.name}-${d.group}`);
 
       labels
         .enter()
         .append('text')
         .attr('class', 'bar-label')
-        .attr('x', d => x0(d.name)! + x1(d.group!)! + x1.bandwidth() / 2)
+        .attr('x', (d) => x0(d.name)! + x1(d.group!)! + x1.bandwidth() / 2)
         .attr('y', innerH - 5)
         .attr('text-anchor', 'middle')
         .style('opacity', 0)
         .style('font-size', FONT_SIZE)
         .style('fill', theme.palette.text.primary)
-        .text(d => `${d.value} (${d.group})`)
+        .text((d) => `${d.value} (${d.group})`)
         .transition()
         .delay(800)
         .duration(400)
         .style('opacity', 1)
-        .attr('y', d => y(d.value) - 5);
+        .attr('y', (d) => y(d.value) - 5);
 
       labels
         .transition()
         .duration(400)
-        .text(d => `${d.value} (${d.group})`)
-        .attr('x', d => x0(d.name)! + x1(d.group!)! + x1.bandwidth() / 2)
-        .attr('y', d => y(d.value) - 5)
+        .text((d) => `${d.value} (${d.group})`)
+        .attr('x', (d) => x0(d.name)! + x1(d.group!)! + x1.bandwidth() / 2)
+        .attr('y', (d) => y(d.value) - 5)
         .style('fill', theme.palette.text.primary);
 
       labels.exit().remove();
@@ -181,7 +166,7 @@ const D3ColumnChart: React.FC<Props> = ({
       const legend = svg.select<SVGGElement>('.legend');
       legend.selectAll('*').remove();
       let offsetX = 0;
-      groups.forEach(g => {
+      groups.forEach((g) => {
         const legendItem = legend.append('g').attr('transform', `translate(${offsetX},0)`);
         legendItem
           .append('rect')
@@ -201,13 +186,13 @@ const D3ColumnChart: React.FC<Props> = ({
     } else {
       const bars = chartGroup
         .selectAll<SVGRectElement, ColumnData>('rect.bar')
-        .data(data, d => d.name);
+        .data(data, (d) => d.name);
 
       bars
         .enter()
         .append('rect')
         .attr('class', 'bar')
-        .attr('x', d => x0(d.name)!)
+        .attr('x', (d) => x0(d.name)!)
         .attr('y', innerH)
         .attr('width', x0.bandwidth())
         .attr('height', 0)
@@ -219,17 +204,17 @@ const D3ColumnChart: React.FC<Props> = ({
         .transition()
         .duration(800)
         .ease(d3.easeCubicOut)
-        .attr('y', d => y(d.value))
-        .attr('height', d => innerH - y(d.value));
+        .attr('y', (d) => y(d.value))
+        .attr('height', (d) => innerH - y(d.value));
 
       bars
         .transition()
         .duration(800)
         .ease(d3.easeCubicOut)
-        .attr('x', d => x0(d.name)!)
-        .attr('y', d => y(d.value))
+        .attr('x', (d) => x0(d.name)!)
+        .attr('y', (d) => y(d.value))
         .attr('width', x0.bandwidth())
-        .attr('height', d => innerH - y(d.value))
+        .attr('height', (d) => innerH - y(d.value))
         .attr(
           'fill',
           (d, i) =>
@@ -240,31 +225,31 @@ const D3ColumnChart: React.FC<Props> = ({
 
       const labels = chartGroup
         .selectAll<SVGTextElement, ColumnData>('text.bar-label')
-        .data(data, d => d.name);
+        .data(data, (d) => d.name);
 
       labels
         .enter()
         .append('text')
         .attr('class', 'bar-label')
-        .attr('x', d => x0(d.name)! + x0.bandwidth() / 2)
+        .attr('x', (d) => x0(d.name)! + x0.bandwidth() / 2)
         .attr('y', innerH - 5)
         .attr('text-anchor', 'middle')
         .style('opacity', 0)
         .style('font-size', FONT_SIZE)
         .style('fill', theme.palette.text.primary)
-        .text(d => d.value)
+        .text((d) => d.value)
         .transition()
         .delay(800)
         .duration(400)
         .style('opacity', 1)
-        .attr('y', d => y(d.value) - 5);
+        .attr('y', (d) => y(d.value) - 5);
 
       labels
         .transition()
         .duration(400)
-        .text(d => d.value)
-        .attr('x', d => x0(d.name)! + x0.bandwidth() / 2)
-        .attr('y', d => y(d.value) - 5)
+        .text((d) => d.value)
+        .attr('x', (d) => x0(d.name)! + x0.bandwidth() / 2)
+        .attr('y', (d) => y(d.value) - 5)
         .style('fill', theme.palette.text.primary);
 
       labels.exit().remove();

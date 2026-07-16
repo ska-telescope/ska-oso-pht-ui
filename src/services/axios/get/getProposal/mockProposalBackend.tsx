@@ -1,6 +1,6 @@
 import { ProposalBackend } from '@utils/types/proposal.tsx';
 import { SA_AA2, BAND_LOW_STR, DEFAULT_USER, PROPOSAL_STATUS } from '@utils/constants.ts';
-import { RA_TYPE_ICRS } from '@utils/constants.ts';
+import { REFERENCE_COORDINATE_TYPE_ICRS } from '@utils/constants.ts';
 
 export const MockProposalBackend: ProposalBackend = {
   prsl_id: 'prsl-t0001-20250613-00002',
@@ -43,7 +43,7 @@ export const MockProposalBackend: ProposalBackend = {
           ]
         },
         reference_coordinate: {
-          kind: RA_TYPE_ICRS.label,
+          kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
           ra_str: '00:00:00.0',
           dec_str: '00:00:00.0',
           epoch: 2000
@@ -72,7 +72,7 @@ export const MockProposalBackend: ProposalBackend = {
           ]
         },
         reference_coordinate: {
-          kind: RA_TYPE_ICRS.label,
+          kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
           ra_str: '05:34:30.900',
           dec_str: '+22:00:53.000',
           epoch: 2000
@@ -101,7 +101,7 @@ export const MockProposalBackend: ProposalBackend = {
           ]
         },
         reference_coordinate: {
-          kind: RA_TYPE_ICRS.label,
+          kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
           ra_str: '21:33:27.0200',
           dec_str: '-00:49:23.700',
           epoch: 2000
@@ -276,7 +276,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
           ]
         },
         reference_coordinate: {
-          kind: RA_TYPE_ICRS.label,
+          kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
           ra_str: '21:33:27.0200',
           dec_str: '-00:49:23.700',
           epoch: 2000

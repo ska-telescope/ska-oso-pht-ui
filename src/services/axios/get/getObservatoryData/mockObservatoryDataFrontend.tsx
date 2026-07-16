@@ -18,8 +18,8 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
       cycleDescription: 'Science Verification',
       cycleInformation: {
         cycleId: 'SKAO_2027_1',
-        proposalOpen: '20260327T12:00:00.000Z',
-        proposalClose: '20260512T15:00:00.000z'
+        proposalOpen: '2026-03-27T12:00:00.000Z',
+        proposalClose: '2026-05-12T15:00:00.000Z'
       },
       cyclePolicies: {
         bands: [BAND_LOW_STR, BAND_5B_STR],
@@ -152,24 +152,8 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
           allowedChannelCountRangeMax: [214748647],
           allowedChannelCountRangeMin: [1],
           allowedChannelWidthValues: [
-            210,
-            420,
-            840,
-            1680,
-            3360,
-            6720,
-            13440,
-            26880,
-            40320,
-            53760,
-            80640,
-            107520,
-            161280,
-            215040,
-            322560,
-            416640,
-            430080,
-            645120
+            210, 420, 840, 1680, 3360, 6720, 13440, 26880, 40320, 53760, 80640, 107520, 161280,
+            215040, 322560, 416640, 430080, 645120
           ],
           availableReceivers: [BAND_1_STR],
           numberSkaDishes: 64,

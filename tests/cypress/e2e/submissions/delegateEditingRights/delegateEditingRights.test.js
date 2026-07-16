@@ -23,8 +23,8 @@ import { entry } from '../../../fixtures/utils/cypress.js';
 
 describe('Delegate Editing Rights', () => {
   beforeEach(() => {
-    initialize(reviewerAdmin);
     mockOSDAPI();
+    initialize(reviewerAdmin);
     mockCreateSVIdeaAPI();
     mockGetUserByEmailAPI();
     mockEmailAPI();

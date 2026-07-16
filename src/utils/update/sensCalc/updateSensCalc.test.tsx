@@ -16,7 +16,7 @@ describe('updateSensCalc', () => {
 
   const proposalBase: Proposal = {
     targetObservation: [
-      ({
+      {
         observationId: 'obs1',
         targetId: 't1',
         dataProductsSDPId: 'dp1',
@@ -26,7 +26,7 @@ describe('updateSensCalc', () => {
           statusGUI: 0,
           error: ''
         }
-      } as unknown) as TargetObservation
+      } as unknown as TargetObservation
     ],
     targets: [{ id: 't1' }] as any,
     dataProductSDP: [{ id: 'dp1' }] as any,
@@ -77,7 +77,9 @@ describe('updateSensCalc', () => {
   });
 
   it('falls back to default sensCalc when calculateSensCalcData returns null', async () => {
-    (calculateSensCalcData as any).mockResolvedValue(null);
+    (calculateSensCalcData as any).mockResolvedValue({
+      error: 'SensCalc error message'
+    });
 
     const result = await updateSensCalc(proposalBase, observation, dp);
 
@@ -85,7 +87,7 @@ describe('updateSensCalc', () => {
       id: 't1',
       title: '',
       statusGUI: STATUS_PARTIAL, // override applied
-      error: 'SensCalc failed'
+      error: 'SensCalc error message'
     });
   });
 
@@ -93,11 +95,11 @@ describe('updateSensCalc', () => {
     const proposal = {
       ...proposalBase,
       targetObservation: [
-        ({
+        {
           observationId: 'obs2',
           targetId: 't2',
           dataProductsSDPId: 'dp2'
-        } as unknown) as TargetObservation
+        } as unknown as TargetObservation
       ]
     };
     const result = await updateSensCalc(proposal, observation, dp);

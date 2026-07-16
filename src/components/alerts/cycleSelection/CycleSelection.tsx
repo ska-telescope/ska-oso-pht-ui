@@ -15,7 +15,7 @@ import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
-import { presentDate } from '@/utils/present/present';
+import { presentDateTime } from '@/utils/present/present';
 
 interface CycleSelectionProps {
   open: boolean;
@@ -44,13 +44,13 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
       selectedPolicy?.cycleInformation?.cycleId ??
       osdPolicies[0]?.cycleInformation?.cycleId ??
       null;
-    setLocalSelectedCycleId(prev => prev ?? nextId);
+    setLocalSelectedCycleId((prev) => prev ?? nextId);
   }, [selectedPolicy, osdPolicies]);
 
   // Derive the currently selected policy for confirm action
   const currentPolicy = useMemo(() => {
     if (!localSelectedCycleId) return null;
-    return osdPolicies.find(p => p.cycleInformation?.cycleId === localSelectedCycleId) ?? null;
+    return osdPolicies.find((p) => p.cycleInformation?.cycleId === localSelectedCycleId) ?? null;
   }, [osdPolicies, localSelectedCycleId]);
 
   const handleCardClick = (policy: any) => {
@@ -177,13 +177,17 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
       <Grid size={{ xs: 12 }}>
         {details(
           t('cycleOpens.label'),
-          presentDate(currentPolicy?.cycleInformation?.proposalOpen ?? '')
+          presentDateTime(currentPolicy?.cycleInformation?.proposalOpen ?? '', {
+            timeZoneName: 'short'
+          })
         )}
       </Grid>
       <Grid size={{ xs: 12 }}>
         {details(
           t('cycleCloses.label'),
-          presentDate(currentPolicy?.cycleInformation?.proposalClose ?? '')
+          presentDateTime(currentPolicy?.cycleInformation?.proposalClose ?? '', {
+            timeZoneName: 'short'
+          })
         )}
       </Grid>
     </Grid>
@@ -191,7 +195,7 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
 
   const listContent = () => (
     <Grid container spacing={2}>
-      {osdPolicies.map(policy => {
+      {osdPolicies.map((policy) => {
         const policyId = policy.cycleInformation?.cycleId;
         const isSelected = policyId && localSelectedCycleId === policyId;
 
@@ -234,14 +238,20 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
                     variant="body2"
                     color="text.secondary"
                   >
-                    {t('cycleOpens.label')}: {presentDate(policy.cycleInformation.proposalOpen)}
+                    {t('cycleOpens.label')}:{' '}
+                    {presentDateTime(policy.cycleInformation.proposalOpen, {
+                      timeZoneName: 'short'
+                    })}
                   </Typography>
                   <Typography
                     data-testid={policy.cycleInformation.cycleId + '_closes'}
                     variant="body2"
                     color="text.secondary"
                   >
-                    {t('cycleCloses.label')}: {presentDate(policy.cycleInformation.proposalClose)}
+                    {t('cycleCloses.label')}:{' '}
+                    {presentDateTime(policy.cycleInformation.proposalClose, {
+                      timeZoneName: 'short'
+                    })}
                   </Typography>
                 </CardContent>
               </CardActionArea>

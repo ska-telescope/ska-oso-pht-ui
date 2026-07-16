@@ -9,7 +9,7 @@ import {
 import { Typography, Box, Grid } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { validateProposal } from '@utils/validation/validation';
+import { useValidateProposal } from '@utils/validation/validation';
 import PutProposal from '@services/axios/put/putProposal/putProposal';
 import GetProposal from '@services/axios/get/getProposal/getProposal';
 import EditIcon from '../../icon/editIcon/editIcon';
@@ -46,7 +46,7 @@ import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 export function getProposalType(value: number): string {
-  const type = PROJECTS.find(item => item.id === value)?.mapping;
+  const type = PROJECTS.find((item) => item.id === value)?.mapping;
   return type ? type : '';
 }
 
@@ -58,8 +58,8 @@ export function filterProposals(
 ): Proposal[] {
   const fields: (keyof Proposal)[] = ['title'];
   return proposals.filter(
-    item =>
-      fields.some(field =>
+    (item) =>
+      fields.some((field) =>
         (item[field] as string)?.toLowerCase().includes(searchTerm?.toLowerCase())
       ) &&
       (searchScienceCategory === null || item?.scienceCategory === searchScienceCategory) &&
@@ -96,12 +96,8 @@ export default function GridProposals({
   const [searchScienceCategory, setSearchScienceCategory] = React.useState<string | null>(null);
   const [searchProposalType, setSearchProposalType] = React.useState('');
 
-  const {
-    application,
-    updateAppContent1,
-    updateAppContent2,
-    updateAppContent5
-  } = storageObject.useStore();
+  const { application, updateAppContent1, updateAppContent2, updateAppContent5 } =
+    storageObject.useStore();
 
   const [axiosError, setAxiosError] = React.useState('');
   const [axiosViewError, setAxiosViewError] = React.useState('');
@@ -117,7 +113,7 @@ export default function GridProposals({
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const authClient = useAxiosAuthClient();
-  const { autoLink } = useOSDAccessors();
+  const validateProposal = useValidateProposal();
 
   const deleteClicked = () => (
     <ProposalDisplay
@@ -150,7 +146,7 @@ export default function GridProposals({
   );
 
   React.useEffect(() => {
-    updateAppContent2((null as unknown) as Proposal);
+    updateAppContent2(null as unknown as Proposal);
     setFetchList(!fetchList);
   }, []);
 
@@ -180,7 +176,7 @@ export default function GridProposals({
   const canClone = () => true;
 
   const isProposalSelected = (proposalId: string): boolean => {
-    return proposalsCollection?.filter(entry => entry.id === proposalId)?.length > 0;
+    return proposalsCollection?.filter((entry) => entry.id === proposalId)?.length > 0;
   };
 
   const colSelect = {
@@ -279,7 +275,7 @@ export default function GridProposals({
     : [...[getColProposalType(t), getColProposalTitle(t), getColAuthors(t), getColProposalSC(t)]];
 
   const selectedData = proposals
-    ? proposals.filter(e =>
+    ? proposals.filter((e) =>
         isProposalSelected(e.id) ? checkState !== 'unchecked' : checkState !== 'checked'
       )
     : [];
@@ -338,7 +334,7 @@ export default function GridProposals({
       setAxiosViewError(response);
       return false;
     } else {
-      updateAppContent1(validateProposal(response, autoLink));
+      updateAppContent1(validateProposal(response));
       updateAppContent2(response);
       storeProposalCopy(response);
       return true;

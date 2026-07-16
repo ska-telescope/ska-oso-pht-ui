@@ -39,6 +39,11 @@ export type ReferenceCoordinateICRSBackend = {
   epoch?: number;
 };
 
+// Solar System objects
+export type ReferenceCoordinateSSOBackend = {
+  kind: string;
+};
+
 export type TargetBackend = {
   target_id: string;
   name: string;
@@ -56,7 +61,7 @@ export type TargetBackend = {
 };
 
 /************************************************************************************
- *  NOTE : raUnit & decUnit are currently mapped as follows:
+ *  NOTE : coordinates are currently mapped as follows:
  *   '0' : values are Right Ascension & Declination
  *   "1" : values are Latitude & Longitude.
  ***********************************************************************************/
@@ -103,6 +108,10 @@ export type ReferenceCoordinateICRS = {
   epoch?: number;
 };
 
+export type ReferenceCoordinateSSO = {
+  kind: string;
+};
+
 type Target = {
   id: number;
   name: string;
@@ -113,12 +122,11 @@ type Target = {
   vel: string;
   velUnit: number;
   /*------- reference coordinate properties --------------------- */
-  kind: number; // for both ICRS and Galactic
-  l?: number; // NOT USED YET replaces longitude // for Galactic
-  b?: number; // NOT USED YET replaces latitude // for Galactic
+  kind: number; // for both ICRS, Galactic and SSO
+  l?: number; // for Galactic
+  b?: number; // for Galactic
   pmL?: number; // NOT USED YET // for Galactic
   pmB?: number; // NOT USED YET // for Galactic
-  referenceFrame?: string; // for ICRS
   raStr?: string; // replaces ra for ICRS
   decStr?: string; // replaces dec for ICRS
   pmRa?: number; // NOT USED YET // for ICRS

@@ -19,8 +19,8 @@ import {
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 beforeEach(() => {
-  initialize(standardUser);
   mockOSDAPI();
+  initialize(standardUser);
   mockCreateSVIdeaAPI();
   mockEmailAPI();
   mockResolveTargetAPI();

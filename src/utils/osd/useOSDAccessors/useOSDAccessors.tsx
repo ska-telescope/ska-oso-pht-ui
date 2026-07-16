@@ -4,8 +4,13 @@ import { useState, useEffect, useMemo } from 'react';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { find } from 'lodash';
 import { useOSD } from '../useOSD/useOSD';
-import { presentDate, presentTime } from '@/utils/present/present';
-import { BAND_LOW_STR, TELESCOPE_LOW_NUM, TELESCOPE_MID_NUM, COUNTDOWN_URGENT_THRESHOLD_MS } from '@/utils/constants';
+import { presentDateTime } from '@/utils/present/present';
+import {
+  BAND_LOW_STR,
+  TELESCOPE_LOW_NUM,
+  TELESCOPE_MID_NUM,
+  COUNTDOWN_URGENT_THRESHOLD_MS
+} from '@/utils/constants';
 
 export function useOSDAccessors() {
   const osd = useOSD();
@@ -16,22 +21,22 @@ export function useOSDAccessors() {
   const policies = osd?.policies ?? [];
   const observatoryConstants = OSD_CONSTANTS;
 
-  let selectedPolicy: typeof policies[number] | null = null;
+  let selectedPolicy: (typeof policies)[number] | null = null;
   if (Array.isArray(application.content8)) {
     selectedPolicy = application.content8[0] ?? null;
   } else {
-    selectedPolicy = application.content8 as typeof policies[number] | null;
+    selectedPolicy = application.content8 as (typeof policies)[number] | null;
   }
 
   const setSelectedPolicyByCycleId = (cycleId: string) => {
-    const match = policies.find(p => p.cycleInformation?.cycleId === cycleId);
+    const match = policies.find((p) => p.cycleInformation?.cycleId === cycleId);
     if (match) {
       updateAppContent8(match);
     }
   };
 
   const getCycle = (cycleId: string) => {
-    return policies.find(p => p.cycleInformation?.cycleId === cycleId) ?? null;
+    return policies.find((p) => p.cycleInformation?.cycleId === cycleId) ?? null;
   };
 
   const cycleInformation = selectedPolicy?.cycleInformation;
@@ -40,7 +45,7 @@ export function useOSDAccessors() {
   const format = (val: string | undefined) =>
     val?.replace(/^(\d{4})(\d{2})(\d{2})T/, '$1-$2-$3T') ?? '';
   const present = (val: string, shouldPresent: boolean) =>
-    shouldPresent ? `${presentDate(val)} ${presentTime(val)}` : val;
+    shouldPresent ? presentDateTime(val, { timeZoneName: 'short' }) : val;
 
   const [countdown, setCountdown] = useState<string | null>(null);
 
@@ -70,7 +75,7 @@ export function useOSDAccessors() {
         setCountdown(t('cycleCloses.countdown', { days: 0, hours: 0, minutes: 0, seconds: 0 }));
         return;
       } else if (diffMs <= COUNTDOWN_URGENT_THRESHOLD_MS) {
-        const minutes = Math.floor(diffMs / (1000 * 60));      // total mins remaining (0–4)
+        const minutes = Math.floor(diffMs / (1000 * 60)); // total mins remaining (0–4)
         const seconds = Math.floor((diffMs / 1000) % 60);
         setCountdown(t('cycleCloses.countdownUrgent', { minutes, seconds }));
       } else {
@@ -92,7 +97,7 @@ export function useOSDAccessors() {
   useEffect(() => {
     if (!selectedPolicy && policies.length > 0) {
       const now = new Date();
-      const active = policies.find(p => {
+      const active = policies.find((p) => {
         const openStr = p.cycleInformation?.proposalOpen;
         const closeStr = p.cycleInformation?.proposalClose;
         if (!openStr || !closeStr) return false;

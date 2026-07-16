@@ -7,6 +7,9 @@ export const USE_LOCAL_DATA = env.REACT_APP_USE_LOCAL_DATA === 'true';
 export const cypressToken = window.localStorage.getItem('cypress:token');
 export const cypressEditProposal = window.localStorage.getItem('cypress:proposalEdit') === 'true';
 export const cypressSV = window.localStorage.getItem('cypress:scienceVerificationIdea') === 'true';
+export const cypressLowUnitsUnlocked =
+  window.localStorage.getItem('cypress:lowUnitsUnlocked') === 'true' ||
+  env.REACT_APP_LOW_UNITS_UNLOCKED === 'true';
 
 export const USE_LOCAL_DATA_SENSITIVITY_CALC =
   env.REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC === 'true';
@@ -82,6 +85,7 @@ export const BIT_DEPTH = [
   { value: '32' }
 ];
 
+export const CHANNELS_OUT_MIN = 1;
 export const CHANNELS_OUT_MAX = 40;
 
 export const CONFLICT_REASONS = [
@@ -233,7 +237,7 @@ export const BANDWIDTH_LABEL_SELECTOR = 0;
 export const IMAGE_WEIGHTING = [
   { label: 'natural', lookup: 'natural', value: IW_NATURAL },
   { label: 'uniform', lookup: 'uniform', value: IW_UNIFORM },
-  { label: 'briggs', lookup: 'briggs', value: IW_BRIGGS }
+  { label: 'briggs', lookup: 'robust', value: IW_BRIGGS }
 ];
 
 export const LAB_POS_TICK = LABEL_POSITION.START;
@@ -285,6 +289,11 @@ export const TIME_UNITS = [
   { id: TIME_MS, value: 'ms', toDay: 86400 * 1000 },
   { id: TIME_US, value: 'μs', toDay: 86400 * 1000000 },
   { id: TIME_NS, value: 'ns', toDay: 86400 * 1000000000 }
+];
+
+export const INTEGRATION_TIME_UNITS = [
+  { id: TIME_HOURS, value: 'h', toDay: 24 },
+  { id: TIME_MINS, value: 'min', toDay: 1440 }
 ];
 
 export const INFINITY = 'Infinity';
@@ -505,7 +514,7 @@ export const OSCILLATION_UNITS = [
   { label: FREQUENCY_STR_GHZ, toHz: 10000000000 }
 ];
 //TODO: Refactor such that these identifiers are no longer needed and references can be per array label
-export const SA_AA2 = 'aa2';
+export const SA_AA2 = 'aa2_sv';
 export const SA_AA4 = 'aa4';
 export const SA_AA_STAR = 'aa*';
 export const SA_CUSTOM = 'custom';
@@ -525,10 +534,25 @@ export const SECONDS_UNITS = [
 export const SUPPLIED_TYPE_INTEGRATION = 1;
 export const SUPPLIED_TYPE_SENSITIVITY = 2;
 export const SUPPLIED_INTEGRATION_TIME_UNITS_H = 2;
-export const SUPPLIED_INTEGRATION_TIME_UNITS_S = 4;
+export const SUPPLIED_INTEGRATION_TIME_UNITS_M = 3;
+export const SUPPLIED_INTEGRATION_TIME_MAX_HOURS = 4;
+export const SUPPLIED_INTEGRATION_TIME_STEP_HOURS = 0.1;
+export const SUPPLIED_INTEGRATION_TIME_STEP_MINS = 1;
+export const SUPPLIED_SENSITIVITY_STEP = 1;
 
-export const RA_TYPE_ICRS = { value: 0, label: 'icrs' };
-export const RA_TYPE_GALACTIC = { value: 1, label: 'galactic' };
+export const REFERENCE_COORDINATE_TYPE_ICRS = { value: 0, label: 'icrs' };
+export const REFERENCE_COORDINATE_TYPE_GALACTIC = { value: 1, label: 'galactic' };
+
+export const REFERENCE_COORDINATE_OPTIONS = [
+  {
+    label: 'ICRS',
+    value: REFERENCE_COORDINATE_TYPE_ICRS.value
+  },
+  {
+    label: 'Galactic',
+    value: REFERENCE_COORDINATE_TYPE_GALACTIC.value
+  }
+];
 
 export const SEPARATOR0 = '?';
 export const SEPARATOR1 = '&';
@@ -595,7 +619,7 @@ export const STATUS = {
   PARTIAL: STATUS_PARTIAL,
   INITIAL: STATUS_INITIAL
 };
-export const SUPPLIED_VALUE_DEFAULT_MID = 600;
+export const SUPPLIED_VALUE_DEFAULT_MID = 10;
 export const SUPPLIED_VALUE_DEFAULT_LOW = 1;
 export const ZOOM_BANDWIDTH_DEFAULT_MID = 1;
 export const ZOOM_BANDWIDTH_DEFAULT_LOW = 5;
@@ -646,12 +670,12 @@ export const TEXT_ENTRY_PARAMS = {
   TITLE: {
     MAX_LENGTH: 20,
     ERROR_TEXT: 'specialCharacters.invalid',
-    // eslint-disable-next-line no-useless-escape
+
     PATTERN: /^[a-zA-Z0-9\s\-_:;$^!&><#.,"%*+='{}/\\?]*$/
   },
   NUMBER_ONLY: {
     ERROR_TEXT: 'error.invalidString',
-    // eslint-disable-next-line no-useless-escape
+
     PATTERN: /^[0-9]+(\.[0-9]+)?$/
   }
 };
@@ -692,7 +716,7 @@ export const DEFAULT_INVESTIGATOR: Investigator = {
 };
 
 export const DEFAULT_TARGETS: Target = {
-  kind: RA_TYPE_ICRS.value,
+  kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
   decStr: '123',
   id: 1,
   b: 123,
@@ -700,7 +724,6 @@ export const DEFAULT_TARGETS: Target = {
   name: 'DUMMY',
   raStr: '123',
   redshift: '123',
-  referenceFrame: RA_TYPE_ICRS.label,
   vel: '123',
   velType: 0,
   velUnit: 0
@@ -816,4 +839,4 @@ export const STATUS_ARRAY_PAGES_PROPOSAL = [
 ];
 
 export const SV_LOW_AA2_CYCLE_NUMBER = 10000;
-export const SV_LOW_MID_AA2_CYCLE_NUMBER = 1; 
+export const SV_LOW_MID_AA2_CYCLE_NUMBER = 1;

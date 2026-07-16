@@ -6,7 +6,7 @@ import {
   SA_AA2,
   TYPE_CONTINUUM
 } from '@utils/constants.ts';
-import { RA_TYPE_ICRS } from '@utils/constants.ts';
+import { REFERENCE_COORDINATE_TYPE_ICRS } from '@utils/constants.ts';
 import Proposal from '@utils/types/proposal.tsx';
 
 export const MockProposalFrontend: Proposal = {
@@ -38,7 +38,7 @@ export const MockProposalFrontend: Proposal = {
   targetOption: 1,
   targets: [
     {
-      kind: RA_TYPE_ICRS.value,
+      kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
       epoch: 2000,
       decStr: '00:00:00.0',
       id: 1,
@@ -68,7 +68,7 @@ export const MockProposalFrontend: Proposal = {
       }
     },
     {
-      kind: RA_TYPE_ICRS.value,
+      kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
       epoch: 2000,
       decStr: '+22:00:53.000',
       id: 2,
@@ -98,7 +98,7 @@ export const MockProposalFrontend: Proposal = {
       }
     },
     {
-      kind: RA_TYPE_ICRS.value,
+      kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
       epoch: 2000,
       decStr: '-00:49:23.700',
       id: 3,
@@ -312,7 +312,7 @@ export const MockProposalFrontendZoom: Proposal = {
   targetOption: 1,
   targets: [
     {
-      kind: RA_TYPE_ICRS.value,
+      kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
       epoch: 2000,
       decStr: '-00:49:23.700',
       id: 1,

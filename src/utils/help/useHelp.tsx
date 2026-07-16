@@ -8,13 +8,14 @@ export function useHelp() {
   /**
    * Sets help text and optional URL using translation keys.
    * @param key - Base translation key (e.g. "email" or "firstName" or "email.help")
+   * @param options - Optional i18next interpolation values (e.g. { min, max })
    */
-  function setHelp(key: string) {
+  function setHelp(key: string, options?: any) {
     const helpKey = key.endsWith('.help') ? key : `${key}.help`;
     const helpURLKey = key.endsWith('.helpURL') ? key : `${key}.helpURL`;
 
     // Always set help text
-    helpComponent(t(helpKey));
+    helpComponent(t(helpKey, options));
 
     function isValidUrl(str: string): boolean {
       try {
