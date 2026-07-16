@@ -45,11 +45,6 @@ async function PostProposal(
             ...inv,
             status: TEAM_STATUS_TYPE_OPTIONS.pending
           })) ?? []
-        investigators:
-          mapped.proposal_info.investigators?.map(({ status: _s, ...inv }) => ({
-            ...inv,
-            status: TEAM_STATUS_TYPE_OPTIONS.pending
-          })) ?? []
       },
       observation_info: {
         ...mapped.observation_info,
