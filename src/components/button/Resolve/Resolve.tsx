@@ -1,4 +1,3 @@
-import React from 'react';
 import MyLocationIcon from '@mui/icons-material/MyLocation';
 import { Box } from '@mui/material';
 import { ButtonSizeTypes } from '@ska-telescope/ska-gui-components';

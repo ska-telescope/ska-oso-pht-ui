@@ -3,7 +3,7 @@ import { renderHook } from '@testing-library/react';
 import { useScopedTranslation } from './useScopedTranslation';
 
 vi.mock('react-i18next', () => ({
-  useTranslation: vi.fn().mockImplementation((namespaces) => ({
+  useTranslation: vi.fn().mockImplementation(() => ({
     t: (key: string) => {
       if (key === 'existing.key') return 'Translated';
       return key;

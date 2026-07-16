@@ -70,4 +70,12 @@ describe('<ChannelsOut />', () => {
     expect(mockSetValue).not.toHaveBeenCalled();
     expect(screen.getByTestId('channelsOut-error')).toBeInTheDocument();
   });
+
+  test('the error does not auto-clear while the value is still invalid', () => {
+    render(<ChannelsOut value={1} setValue={mockSetValue} />);
+    enterValue(41);
+    expect(screen.getByTestId('channelsOut-error')).toBeInTheDocument();
+    vi.advanceTimersByTime(5000);
+    expect(screen.getByTestId('channelsOut-error')).toBeInTheDocument();
+  });
 });

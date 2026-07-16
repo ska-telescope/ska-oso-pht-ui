@@ -530,8 +530,7 @@ export const getDataProductRef = (
 const getResults = (
   incTargetObservations: TargetObservation[],
   incObs: Observation[],
-  incDataProductSDP: DataProductSDPNew[],
-  incTargets: Target[]
+  incDataProductSDP: DataProductSDPNew[]
 ) => {
   const resultsArr = [];
   if (incTargetObservations) {
@@ -662,8 +661,7 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
       result_details: getResults(
         proposal.targetObservation as TargetObservation[],
         proposal.observations as Observation[],
-        proposal.dataProductSDP as DataProductSDPNew[],
-        proposal.targets as Target[]
+        proposal.dataProductSDP as DataProductSDPNew[]
       )
     }
   };

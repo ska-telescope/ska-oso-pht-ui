@@ -159,8 +159,6 @@ export default function PHT({
   };
 
   const footerMainChildren = () => {
-    const opt1 =
-      (!showNotification() && (loggedIn || cypressToken) && getProposal()?.id?.length) ?? false;
     const opt2 = showNotification();
 
     if (opt2)

@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TableSubmissionsRow from './TableSubmissionsRow';
 import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
