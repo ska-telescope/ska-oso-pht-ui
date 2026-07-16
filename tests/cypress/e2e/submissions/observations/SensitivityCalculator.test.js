@@ -131,7 +131,7 @@ describe('Proposal Flow: Sensitivity Calculator', () => {
       selectOptionFromDropdown('observationType', rec.observationType);
       clickAddObservationEntry();
       verifyDataInTable('review-table', 'obs-');
-      verifyDataInTable('review-table', rec.subarray);
+      verifyDataInTable('review-table', rec.subarrayTableLabel);
 
       clickStatusIconNav('statusId7'); //Click to data product page
       pageConfirmed('DATA PRODUCT');

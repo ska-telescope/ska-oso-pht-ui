@@ -2,7 +2,8 @@
   {
     "test": "LOW telescope, with subarray AA2, Continuum",
     "band": "Low (50 - 350 MHz)",
-    "subarray": "AA2",
+    "subarray": "AA2_SV",
+    "subarrayTableLabel": "AA2 (Science Verification)",
     "observationType": "Continuum",
     "weightedContinuumSensitivity": "142.16 μJy/beam",
     "continuumConfusionNoise": "1.58 μJy/beam",
@@ -19,7 +20,8 @@
   {
     "test": "LOW telescope, with subarray AA2, Zoom",
     "band": "Low (50 - 350 MHz)",
-    "subarray": "AA2",
+    "subarray": "AA2_SV",
+    "subarrayTableLabel": "AA2 (Science Verification)",
     "observationType": "Spectral",
     "weightedContinuumSensitivity": "",
     "continuumConfusionNoise": "",
@@ -37,6 +39,7 @@
     "test": "MID telescope, with subarray AA*, Zoom",
     "band": "Mid Band_1 (0.35 - 1.05 GHz)",
     "subarray": "AA*",
+    "subarrayTableLabel": "AA*",
     "observationType": "Spectral",
     "weightedContinuumSensitivity": "",
     "continuumConfusionNoise": "",
