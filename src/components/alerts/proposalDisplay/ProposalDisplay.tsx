@@ -314,9 +314,7 @@ export default function ProposalDisplay({
     <Grid>
       <Grid container direction="row" justifyContent="space-between" alignItems="center">
         <Grid size={{ xs: 2 }}>{skaoIcon({ useSymbol: false })}</Grid>
-        <Grid size={{ xs: 6 }}>
-          {title(t('page.' + PAGE_TITLE_ADD + '.title') + '  ', proposal?.title ?? '')}
-        </Grid>
+        <Grid size={{ xs: 6 }} />
         <Grid size={{ xs: 4 }}>
           <Grid container direction="column" justifyContent="space-between" alignItems="right">
             <Grid>{details(t('page.' + PAGE_CYCLE + '.short'), proposal?.cycle ?? '')}</Grid>
@@ -330,6 +328,7 @@ export default function ProposalDisplay({
   const abstractContent = () => (
     <Grid>
       <Grid container direction="column" justifyContent="center" alignItems="center">
+        <Grid>{title('', proposal?.title ?? '')}</Grid>
         <Grid>{label(t('abstract.label'))}</Grid>
         <Grid>{proposal?.abstract?.length ? showLaTex(proposal?.abstract) : emptyCell()}</Grid>
       </Grid>
