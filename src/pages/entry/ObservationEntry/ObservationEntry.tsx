@@ -453,12 +453,23 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   // If this component mounted before OSD capability data arrived, the snap above ran against
   // a 0 Hz fallback band minimum instead of the real LOW value, and (being a mount-only effect)
   // never re-ran once osdLOW arrived. Re-snap here as soon as the real minimum is available -
-  // guarded to fire at most once so it can't later overwrite a value the user has since edited.
+  // guarded to fire at most once. Snaps the current field values rather than the stale `once`
+  // observation, so an edit made by the user while osdLOW was still loading isn't overwritten.
   React.useEffect(() => {
     if (!once || hasSnappedWithBandMinimum.current) return;
     if (osdLOW?.basicCapabilities?.minFrequencyHz == null) return;
     hasSnappedWithBandMinimum.current = true;
-    setCentralFrequency(getSnappedCentralFrequency(once));
+    setCentralFrequency(
+      getSnappedCentralFrequency({
+        ...once,
+        observingBand,
+        type: observationType,
+        centralFrequency,
+        centralFrequencyUnits,
+        bandwidth,
+        zoomChannels
+      })
+    );
   }, [once, osdLOW]);
 
   const setAfterChange = () => {
