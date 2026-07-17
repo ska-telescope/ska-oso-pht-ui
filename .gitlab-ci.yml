@@ -9,8 +9,8 @@ variables:
 stages:
   - dependencies
   - build
-  - lint
   - test
+  - lint
   - deploy
   - publish
   - accessibility

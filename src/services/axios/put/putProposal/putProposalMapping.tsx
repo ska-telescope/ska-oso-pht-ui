@@ -550,7 +550,10 @@ export const getDataProductRef = (
   incTarObs: TargetObservation,
   incDataProductSDP: DataProductSDPNew[]
 ) => {
-  return String(incDataProductSDP.find((dp) => dp.observationId === incTarObs.observationId)?.id);
+  return String(
+    incTarObs.dataProductsSDPId ??
+      incDataProductSDP.find((dp) => dp.observationId === incTarObs.observationId)?.id
+  );
 };
 
 const getResults = (

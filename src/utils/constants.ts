@@ -220,10 +220,10 @@ export const IW_NATURAL = 0;
 export const IW_UNIFORM = 1;
 export const ROBUST_DEFAULT = 0;
 export const TAPER_DEFAULT = 0;
-export const CHANNELS_OUT_DEFAULT = 10;
-export const IMAGE_SIZE_DEFAULT = 2.5;
+export const CHANNELS_OUT_DEFAULT = 40;
+export const IMAGE_SIZE_DEFAULT = 2.2;
 export const IMAGE_SIZE_UNIT_DEFAULT = 0;
-export const PIXEL_SIZE_DEFAULT = 1.6;
+export const PIXEL_SIZE_DEFAULT = 1.3;
 export const PIXEL_SIZE_UNIT_DEFAULT = 2;
 export const SET_CONTINUUM_SUBSTRACTION_DEFAULT = true;
 export const BIT_DEPTH_DEFAULT = 1;
@@ -637,6 +637,10 @@ export const ZOOM_SPECTRAL_AVERAGING_MAX = 864;
 
 export const SPEED_OF_LIGHT = 299792458; // m/s
 
+// TODO get from OSD
+export const AA2_LOW_LONGEST_BASELINE_M = 79e3;
+export const AA2_LOW_STATION_DIAMETER_M = 39;
+
 export const STATUS_OK = 0;
 export const STATUS_ERROR = 1;
 export const STATUS_ERROR_SYMBOL = '!';
@@ -861,6 +865,7 @@ export const STATUS_ARRAY_PAGES_PROPOSAL = [
   PAGE_TECHNICAL,
   PAGE_TARGET,
   PAGE_OBSERVATION,
+  PAGE_DATA_PRODUCTS,
   PAGE_DATA_PRODUCTS,
   PAGE_LINKING,
   PAGE_CALIBRATION

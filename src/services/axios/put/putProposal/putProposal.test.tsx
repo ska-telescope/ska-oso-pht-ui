@@ -529,7 +529,21 @@ describe('getSuppliedFieldsIntegrationTime', () => {
 });
 
 describe('getDataProductRef', () => {
-  test('returns the id as string when observationId matches', () => {
+  test('returns the explicitly linked data product id when present', () => {
+    const incTarObs = {
+      observationId: 'obs-1',
+      dataProductsSDPId: 'linked-sdp'
+    } as TargetObservation;
+    const incDataProductSDP = [
+      { observationId: 'obs-1', id: '123' } as Partial<DataProductSDPNew>,
+      { observationId: 'obs-1', id: '456' } as Partial<DataProductSDPNew>
+    ];
+    expect(getDataProductRef(incTarObs, incDataProductSDP as DataProductSDPNew[])).toBe(
+      'linked-sdp'
+    );
+  });
+
+  test('returns the unique data product id when exactly one observation match exists', () => {
     const incTarObs = { observationId: 'obs-1' } as TargetObservation;
     const incDataProductSDP = [
       { observationId: 'obs-1', id: '123' } as Partial<DataProductSDPNew>,

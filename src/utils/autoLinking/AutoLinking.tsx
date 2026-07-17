@@ -1,10 +1,17 @@
 import {
+  CHANNELS_OUT_DEFAULT,
   DP_TYPE_IMAGES,
+  DP_TYPE_VISIBLE,
+  IMAGE_SIZE_DEFAULT,
+  IMAGE_SIZE_UNIT_DEFAULT,
   IW_UNIFORM,
+  PIXEL_SIZE_DEFAULT,
+  PIXEL_SIZE_UNIT_DEFAULT,
   PULSAR_TIMING_VALUE,
   REFERENCE_COORDINATE_TYPE_SSO,
   ROBUST_DEFAULT,
   TAPER_DEFAULT,
+  TYPE_CONTINUUM,
   TYPE_PST,
   TYPE_ZOOM
 } from '../constants';
@@ -23,33 +30,34 @@ import {
 import Observation from '../types/observation';
 import { SensCalcResults } from '../types/sensCalcResults';
 import Target from '../types/target';
+import Proposal from '@utils/types/proposal.tsx';
+import TargetObservation from '@utils/types/targetObservation.tsx';
 
 interface DefaultsResults {
   success: boolean;
   error?: string;
 }
 
-export const observationOut = (obsMode: string, maxZoomChannels?: number) => {
-  const defaultObs: Observation = {
-    ...getDefaultObservationLowAA2(obsMode),
+export const newObservationForMode = (observationMode: string, maxZoomChannels?: number): Observation => {
+  return {
+    ...getDefaultObservationLowAA2(observationMode),
     id: generateId('obs-', 6),
-    // DEFAULT_ZOOM_OBSERVATION_LOW's zoomChannels is a static placeholder (1000) with no
+        // DEFAULT_ZOOM_OBSERVATION_LOW's zoomChannels is a static placeholder (1000) with no
     // knowledge of the actual subarray's channel cap - override it with the real cap when the
     // caller has it available, rather than baking the placeholder into the saved observation.
-    ...(obsMode === TYPE_ZOOM && maxZoomChannels ? { zoomChannels: maxZoomChannels } : {})
+    ...(observationMode === TYPE_ZOOM && maxZoomChannels ? { zoomChannels: maxZoomChannels } : {})
+
   };
-  return defaultObs;
 };
 
-export const calibrationOut = (observationId: string) => {
-  const newCalibration: CalibrationStrategy = {
+export const newCalibrationStrategy = (observationId: string): CalibrationStrategy => {
+  return {
     observatoryDefined: true,
     id: generateId('cal-', 6),
     observationIdRef: observationId,
     calibrators: null,
     notes: null
   };
-  return newCalibration;
 };
 
 export const SDPData = (
@@ -68,13 +76,13 @@ export const SDPData = (
       } as SDPFlowthroughPSTData;
     case TYPE_ZOOM:
       return {
-        imageSizeValue: 2.5,
-        imageSizeUnits: 0,
-        pixelSizeValue: 1.6,
-        pixelSizeUnits: 2,
+        imageSizeValue: IMAGE_SIZE_DEFAULT,
+        imageSizeUnits: IMAGE_SIZE_UNIT_DEFAULT,
+        pixelSizeValue: PIXEL_SIZE_DEFAULT,
+        pixelSizeUnits: PIXEL_SIZE_UNIT_DEFAULT,
         weighting: IW_UNIFORM,
         polarisations: ['I', 'XX'],
-        channelsOut: 40,
+        channelsOut: CHANNELS_OUT_DEFAULT,
         robust: ROBUST_DEFAULT,
         taperValue: TAPER_DEFAULT,
         continuumSubtraction: true
@@ -83,20 +91,57 @@ export const SDPData = (
       return {
         continuumSubtraction: true,
         dataProductType: DP_TYPE_IMAGES,
-        imageSizeValue: 2.5,
-        imageSizeUnits: 0,
-        pixelSizeValue: 1.6,
-        pixelSizeUnits: 2,
+        imageSizeValue: IMAGE_SIZE_DEFAULT,
+        imageSizeUnits: IMAGE_SIZE_UNIT_DEFAULT,
+        pixelSizeValue: PIXEL_SIZE_DEFAULT,
+        pixelSizeUnits: PIXEL_SIZE_UNIT_DEFAULT,
         weighting: IW_UNIFORM,
         polarisations: ['I', 'XX'],
-        channelsOut: 40,
+        channelsOut: CHANNELS_OUT_DEFAULT,
         robust: ROBUST_DEFAULT,
         taperValue: TAPER_DEFAULT
       } as SDPImageContinuumData;
   }
 };
 
-export const dataProductSDPOut = (observation: Observation) => {
+export const HiddenSDPData = (
+  observation: Observation
+):
+  | SDPImageContinuumData
+  | SDPVisibilitiesContinuumData
+  | SDPSpectralData
+  | SDPFilterbankPSTData
+  | SDPTimingPSTData
+  | SDPFlowthroughPSTData
+  | null => {
+  switch (observation.type) {
+    case TYPE_PST:
+      return null;
+    case TYPE_ZOOM:
+      return {
+        dataProductType: DP_TYPE_VISIBLE,
+        timeAveraging: 4,
+        frequencyAveraging: 1
+      } as SDPVisibilitiesContinuumData;
+    case TYPE_CONTINUUM:
+      return {
+        dataProductType: DP_TYPE_VISIBLE,
+        timeAveraging: 4,
+        frequencyAveraging: 4
+      } as SDPVisibilitiesContinuumData;
+    // TODO BTN-3259
+    // case TYPE_CONTINUUM_SPECTRAL:
+    //   return {
+    //     dataProductType: DP_TYPE_VISIBLE,
+    //     timeAveraging: 4,
+    //     frequencyAveraging: 1
+    //   } as SDPVisibilitiesContinuumData;
+    default:
+      return null;
+  }
+};
+
+export const newDataProductsForMode = (observation: Observation) => {
   const data = SDPData(observation);
   const newDSP: DataProductSDPNew = {
     id: generateId('SDP-', 6),
@@ -104,7 +149,17 @@ export const dataProductSDPOut = (observation: Observation) => {
     data
   };
 
-  return newDSP;
+  const hiddenData = HiddenSDPData(observation);
+  if (hiddenData) {
+    const hiddenDataProduct = {
+      id: generateId('SDP-', 6),
+      observationId: observation.id,
+      data: hiddenData
+    };
+    return [newDSP, hiddenDataProduct];
+  }
+
+  return [newDSP];
 };
 
 const getSensCalcData = async (
@@ -116,41 +171,6 @@ const getSensCalcData = async (
   return response?.error ? response?.error : (response as SensCalcResults);
 };
 
-const updateProposal = (
-  newObsMode: number,
-  newAbstract: string | undefined,
-  newTarget: Target,
-  newObservation: Observation,
-  newCalibration: CalibrationStrategy,
-  newDataProductSDP: DataProductSDPNew,
-  sensCalcResult: any,
-  getProposal: Function,
-  setProposal: Function
-) => {
-  const updatedProposal = {
-    ...getProposal(),
-    scienceCategory: newObsMode,
-    scienceSubCategory: [1],
-    abstract: newAbstract,
-    targets: [...[], newTarget],
-    observations: [newObservation].filter((obs): obs is Observation => obs !== undefined),
-    dataProductSDP: [...[], newDataProductSDP as DataProductSDPNew],
-    targetObservation:
-      newObservation && newObservation.id && newDataProductSDP?.id
-        ? [
-            {
-              targetId: newTarget?.id,
-              observationId: newObservation?.id,
-              dataProductsSDPId: newDataProductSDP.id,
-              sensCalc: sensCalcResult
-            }
-          ]
-        : [],
-    calibrationStrategy: [...[], newCalibration as CalibrationStrategy]
-  };
-  setProposal(updatedProposal);
-};
-
 export default async function autoLinking(
   target: Target,
   getProposal: Function,
@@ -159,41 +179,77 @@ export default async function autoLinking(
   abstract?: string | undefined,
   maxZoomChannels?: number
 ): Promise<DefaultsResults> {
-  const newObsMode =
-    observationMode && observationMode.length > 0 ? observationMode : getProposal().scienceCategory;
-  const newAbstract = abstract ?? getProposal().abstract;
-  const newObservation = observationOut(newObsMode, maxZoomChannels);
-  const newDataProductSDP = dataProductSDPOut(newObservation);
-  const sensCalcResult = await getSensCalcData(newObservation, target, newDataProductSDP);
+  /**
+   * This function is used to automatically create an observing set up and data products
+   * when a target is added, and link them in the Proposal. It is also called again if the target or observing mode is changed.
+   * This is useful UX for the SV call as only one observation is allowed.
+   **/
 
-  const isValidSensCalcResult = (r: any): boolean =>
+  if (!observationMode) {
+    observationMode = getProposal().scienceCategory;
+  }
+  if (!abstract) {
+    abstract = getProposal().abstract;
+  }
+
+  const newObservation = newObservationForMode(observationMode as string, maxZoomChannels);
+
+  const newDataProducts = newDataProductsForMode(newObservation);
+
+  // For the SV call, we want the Proposal to contain both data products (where applicable)
+  // but only the one the user selects in the dropdown to be linked via the results
+  const mainDataProduct = newDataProducts[0];
+
+  const isSSO = target.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
+
+  let sensCalcResult = undefined;
+
+  if (!isSSO) {
+    sensCalcResult = await getSensCalcData(newObservation, target, mainDataProduct);
+
+
+      const isValidSensCalcResult = (r: any): boolean =>
     !!r &&
     !r.error && // { error: string } failures
     !r.detail && // { title, detail } validation failures
     Array.isArray(r.section1); // a real result has sections; failures don't
 
-  const isSSO = target.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
+
+
 
   // if a specific error message from backend → surface it
   if (typeof sensCalcResult === 'string') {
     return { success: false, error: 'autoLink.errorNoSensCalcResponse' };
   }
 
-  if (!isSSO && !isValidSensCalcResult(sensCalcResult)) {
+  if (!isValidSensCalcResult(sensCalcResult)) {
     return { success: false, error: 'autoLink.errorNoSensCalcResponse' };
   }
-  const newCalibration = calibrationOut(newObservation?.id);
+  }
 
-  updateProposal(
-    newObsMode,
-    newAbstract,
-    target,
-    newObservation,
-    newCalibration,
-    newDataProductSDP,
-    sensCalcResult,
-    getProposal,
-    setProposal
-  );
+
+  const targetObservation: TargetObservation = {
+    targetId: target?.id,
+    observationId: newObservation?.id,
+    dataProductsSDPId: mainDataProduct.id,
+    sensCalc: sensCalcResult
+  };
+
+  const calibrationStrategy = newCalibrationStrategy(newObservation?.id);
+
+  const updatedProposal: Proposal = {
+    ...getProposal(),
+    scienceCategory: observationMode,
+    scienceSubCategory: [1],
+    abstract: abstract,
+    targets: [target],
+    observations: [newObservation],
+    dataProductSDP: newDataProducts,
+    targetObservation: [targetObservation],
+    calibrationStrategy: [calibrationStrategy]
+  };
+
+  setProposal(updatedProposal);
+
   return { success: true };
 }
