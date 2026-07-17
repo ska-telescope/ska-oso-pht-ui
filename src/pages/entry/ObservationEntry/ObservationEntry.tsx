@@ -481,6 +481,20 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setAfterChange();
   }, [subarrayConfig]);
 
+  const hasRefreshedMaxChannelsCap = React.useRef(false);
+
+  // If this mounted before osdLOW/osdMID arrived, setMaxChannelsZoom ran against an undefined
+  // record and fell back to a 0 cap, and (being tied only to mount/subarrayConfig) never
+  // recalculated once the real record loaded. Recalculate once here as soon as it's available -
+  // guarded to fire at most once, since osdLOW/osdMID may be a new object reference on every
+  // render and this would otherwise loop against setAfterChange's own state updates.
+  React.useEffect(() => {
+    const record = isLow() ? osdLOW : osdMID;
+    if (hasRefreshedMaxChannelsCap.current || !record) return;
+    hasRefreshedMaxChannelsCap.current = true;
+    setMaxChannelsZoom(subarrayConfig);
+  }, [osdLOW, osdMID]);
+
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
     updateStorageProposal();
