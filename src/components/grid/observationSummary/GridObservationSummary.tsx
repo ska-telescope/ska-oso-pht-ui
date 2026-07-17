@@ -54,7 +54,7 @@ export default function GridObservationSummary({
         {!inArr || (inArr?.length === 0 && emptyCell())}
         {inArr && inArr?.length > 0 && (
           <Grid container direction="column" justifyContent="space-between" alignItems="left">
-            {inArr.map(el => {
+            {inArr.map((el) => {
               return (
                 <Grid key={el} size={{ xs: 12 }}>
                   {element(el)}
@@ -72,7 +72,7 @@ export default function GridObservationSummary({
       rec.supplied.value +
       ' ' +
       observatoryConstants?.Supplied[rec.supplied.type]?.units.find(
-        e => (e.value = rec.supplied.units)
+        (e) => (e.value = rec.supplied.units)
       )?.label
     );
   };
@@ -81,13 +81,13 @@ export default function GridObservationSummary({
     const array =
       proposal &&
       proposal.targetObservation &&
-      proposal.targetObservation.filter(e => e.observationId === rec.id);
+      proposal.targetObservation.filter((e) => e.observationId === rec.id);
     if (!array || array?.length === 0) {
       return [];
     } else {
       const output: string[] = [];
-      array.forEach(el => {
-        const target = proposal.targets?.find(e => e.id === el.targetId);
+      array.forEach((el) => {
+        const target = proposal.targets?.find((e) => e.id === el.targetId);
         output.push(target?.name ?? '');
       });
       return output;
@@ -95,8 +95,8 @@ export default function GridObservationSummary({
   };
 
   const getDataProducts = (rec: { type?: number; id?: string | number }): string[] => {
-    const array = proposal?.dataProductSDP?.filter(e => e.observationId === rec.id) ?? [];
-    return array.flatMap(item =>
+    const array = proposal?.dataProductSDP?.filter((e) => e.observationId === rec.id) ?? [];
+    return array.flatMap((item) =>
       t(
         'dataProductType.options.' +
           rec.type +

@@ -7,16 +7,12 @@ export const viewPort = (format = 'pc') => {
 
 /*----------------------------------------------------------------------*/
 
-export const click = testId =>
-  get(testId)
-    .scrollIntoView()
-    .should('exist')
-    .should('be.visible')
-    .click();
+export const click = (testId) =>
+  get(testId).scrollIntoView().should('exist').should('be.visible').click();
 export const entry = (testId, value) => get(testId).type(value);
-export const get = testId => cy.get('[data-testid="' + testId + '"]');
-export const selectId = id => cy.get('[id="' + id + '"]').click();
-export const selectValue = value => {
+export const get = (testId) => cy.get('[data-testid="' + testId + '"]');
+export const selectId = (id) => cy.get('[id="' + id + '"]').click();
+export const selectValue = (value) => {
   cy.get(`li[role="option"][data-value="${value}"]`)
     .scrollIntoView()
     .should('be.visible')
@@ -25,11 +21,8 @@ export const selectValue = value => {
 
 export const verifyContent = (testId, value, timeout = 10000) =>
   get(testId, { timeout }).should('contain.text', value);
-export const verifyExists = testId => get(testId, { timeout: 10000 }).should('exist');
-export const verifyVisible = testId =>
-  get(testId)
-    .scrollIntoView()
-    .should('be.visible');
-export const getCheckboxInRow = index => {
+export const verifyExists = (testId) => get(testId, { timeout: 10000 }).should('exist');
+export const verifyVisible = (testId) => get(testId).scrollIntoView().should('be.visible');
+export const getCheckboxInRow = (index) => {
   return cy.get(`[data-rowindex="${index}"]`).find('input[type="checkbox"]');
 };

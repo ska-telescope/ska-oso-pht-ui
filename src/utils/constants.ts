@@ -227,10 +227,8 @@ export const PIXEL_SIZE_DEFAULT = 1.6;
 export const PIXEL_SIZE_UNIT_DEFAULT = 2;
 export const SET_CONTINUUM_SUBSTRACTION_DEFAULT = true;
 export const BIT_DEPTH_DEFAULT = 1;
-export const TIME_AVERAGING_DEFAULT = 3.4;
-export const _TIME_AVERAGING_UNITS_DEFAULT = 0;
-export const FREQUENCY_AVERAGING_DEFAULT = 21.7;
-export const FREQUENCY_AVERAGING_UNIT_DEFAULT = 0;
+export const TIME_AVERAGING_DEFAULT = 1;
+export const FREQUENCY_AVERAGING_DEFAULT = 1;
 
 export const BANDWIDTH_LABEL_SELECTOR = 0;
 
@@ -514,7 +512,7 @@ export const OSCILLATION_UNITS = [
   { label: FREQUENCY_STR_GHZ, toHz: 10000000000 }
 ];
 //TODO: Refactor such that these identifiers are no longer needed and references can be per array label
-export const SA_AA2 = 'aa2';
+export const SA_AA2 = 'aa2_sv';
 export const SA_AA4 = 'aa4';
 export const SA_AA_STAR = 'aa*';
 export const SA_CUSTOM = 'custom';
@@ -539,7 +537,6 @@ export const SUPPLIED_INTEGRATION_TIME_MAX_HOURS = 4;
 export const SUPPLIED_INTEGRATION_TIME_STEP_HOURS = 0.1;
 export const SUPPLIED_INTEGRATION_TIME_STEP_MINS = 1;
 export const SUPPLIED_SENSITIVITY_STEP = 1;
-
 
 export const REFERENCE_COORDINATE_TYPE_ICRS = { value: 0, label: 'icrs' };
 export const REFERENCE_COORDINATE_TYPE_GALACTIC = { value: 1, label: 'galactic' };
@@ -671,12 +668,12 @@ export const TEXT_ENTRY_PARAMS = {
   TITLE: {
     MAX_LENGTH: 20,
     ERROR_TEXT: 'specialCharacters.invalid',
-    // eslint-disable-next-line no-useless-escape
+
     PATTERN: /^[a-zA-Z0-9\s\-_:;$^!&><#.,"%*+='{}/\\?]*$/
   },
   NUMBER_ONLY: {
     ERROR_TEXT: 'error.invalidString',
-    // eslint-disable-next-line no-useless-escape
+
     PATTERN: /^[0-9]+(\.[0-9]+)?$/
   }
 };

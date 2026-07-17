@@ -2,12 +2,7 @@ import React from 'react';
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
-import {
-  FREQUENCY_GHZ,
-  FREQUENCY_HZ,
-  FREQUENCY_MHZ,
-  TELESCOPE_LOW_NUM
-} from '@/utils/constants';
+import { FREQUENCY_GHZ, FREQUENCY_HZ, FREQUENCY_MHZ, TELESCOPE_LOW_NUM } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { frequencyConversion } from '@/utils/helpers';
 
@@ -50,7 +45,8 @@ export default function CentralFrequency({
     } else {
       const cf = Number(cfValue);
       const band = findBand(observingBand);
-      const units: number = telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? FREQUENCY_MHZ : FREQUENCY_GHZ;
+      const units: number =
+        telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? FREQUENCY_MHZ : FREQUENCY_GHZ;
       const min = frequencyConversion(band?.minFrequencyHz ?? 0, FREQUENCY_HZ, units);
       const max = frequencyConversion(band?.maxFrequencyHz ?? 0, FREQUENCY_HZ, units);
 

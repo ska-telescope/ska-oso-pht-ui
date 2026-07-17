@@ -32,7 +32,7 @@ export function mapping(data: InvestigatorMSGraph): Investigator {
 // This mocks fetching a user by email using Stargazer team
 export function GetMockUserByEmail(email: string): Investigator | string {
   const teamList: Investigator[] = MockUserMSGraphList.map(mapping);
-  const user = teamList.find(user => user?.email?.toLowerCase() === email?.toLowerCase());
+  const user = teamList.find((user) => user?.email?.toLowerCase() === email?.toLowerCase());
   if (!user) {
     return 'error.API_UNKNOWN_ERROR';
   }

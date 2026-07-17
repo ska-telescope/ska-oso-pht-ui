@@ -13,7 +13,7 @@ import { Telescope, ValueUnitPair } from './types/typesSensCalc';
 export const isLow = (telescope: Telescope) => telescope?.code === TELESCOPE_LOW_CODE;
 
 export const getImageWeightingMapping = (value: number) => {
-  return IMAGE_WEIGHTING.find(e => e.value === value)?.lookup;
+  return IMAGE_WEIGHTING.find((e) => e.value === value)?.lookup;
 };
 
 export const getBeamSize = (obj: any, fraction: number = 1) => {
@@ -80,7 +80,8 @@ export const transformPerSubBandTime = (inValues: {
   } - ${minRange.value.toFixed(DECIMAL_PLACES).toString()} ${minRange.unit}`;
 };
 
-export const isGalactic = (skyDirectionType: any) => skyDirectionType === REFERENCE_COORDINATE_TYPE_GALACTIC;
+export const isGalactic = (skyDirectionType: any) =>
+  skyDirectionType === REFERENCE_COORDINATE_TYPE_GALACTIC;
 
 // Converts a Declination string value in degrees to its sexagesimal equivalent.
 // It returns a Declination sexagesimal value.
@@ -137,7 +138,7 @@ export const shiftSensitivity = (inValues: ValueUnitPair) => {
     return { value: 0, unit: inValues.unit };
   }
 
-  let posUnits = SENSITIVITY_UNITS.find(e => e.mapping === useUnits)?.id;
+  let posUnits = SENSITIVITY_UNITS.find((e) => e.mapping === useUnits)?.id;
   const baseValue = sensitivityConversion(inValues.value, posUnits ? posUnits : 4, 4);
   if (baseValue > 1000000000) {
     posUnits = 1;
@@ -169,7 +170,7 @@ export const shiftTime = (inValues: ValueUnitPair, secondsOnly = false) => {
     return { value: 0, unit: inValues.unit };
   }
 
-  let posUnits = TIME_UNITS.find(e => e.value === inValues.unit)?.id;
+  let posUnits = TIME_UNITS.find((e) => e.value === inValues.unit)?.id;
   const baseValue = timeConversion(inValues.value, posUnits ? posUnits : 4, 4);
   if (!secondsOnly && baseValue > 1000000000) {
     posUnits = 1;

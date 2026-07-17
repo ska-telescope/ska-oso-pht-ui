@@ -33,8 +33,8 @@ export function filterReviewers(
 ) {
   const fields: (keyof Reviewer)[] = ['givenName', 'surname', 'jobTitle'];
   return reviewers.filter(
-    item =>
-      fields.some(field =>
+    (item) =>
+      fields.some((field) =>
         (item[field] as string)?.toLowerCase().includes(searchTerm?.toLowerCase())
       ) &&
       (searchTypeExpertise === '' ||
@@ -78,7 +78,7 @@ export default function GridReviewers({
     const filterScienceAndTechnical = (users: any[]) => {
       const result: any[] = [];
 
-      users.forEach(user => {
+      users.forEach((user) => {
         if (user.isScience) {
           result.push({
             ...user,
@@ -118,7 +118,7 @@ export default function GridReviewers({
   }, [selectedReviewers]);
 
   const isReviewerSelected = (reviewerId: string): boolean => {
-    return reviewersCollection?.filter(entry => entry.id === reviewerId).length > 0;
+    return reviewersCollection?.filter((entry) => entry.id === reviewerId).length > 0;
   };
 
   const isReviewerType = (reviewer: Reviewer): boolean => {
@@ -181,7 +181,7 @@ export default function GridReviewers({
 
   const selectedData = reviewers
     ? reviewers.filter(
-        e =>
+        (e) =>
           (isReviewerSelected(e.id) ? checkState !== 'unchecked' : checkState !== 'checked') &&
           isReviewerType(e)
       )
@@ -210,9 +210,9 @@ export default function GridReviewers({
 
   const getAffiliationOptions = () => {
     const affiliations = reviewers
-      .map(reviewer => reviewer.officeLocation)
+      .map((reviewer) => reviewer.officeLocation)
       .filter((value, index, self) => self.indexOf(value) === index && value !== '');
-    return affiliations.map(affiliation => ({
+    return affiliations.map((affiliation) => ({
       label: affiliation,
       value: affiliation
     }));

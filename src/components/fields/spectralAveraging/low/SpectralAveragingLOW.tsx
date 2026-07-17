@@ -34,7 +34,7 @@ export default function SpectralAveragingLOWField({
   const { observatoryConstants } = useOSDAccessors();
   const [errorText, setErrorText] = React.useState('');
   const [saValue, setSaValue] = React.useState<string>(value != null ? String(value) : '');
-  
+
   React.useEffect(() => {
     setSaValue(value != null ? String(value) : '');
   }, [value]);
@@ -47,7 +47,7 @@ export default function SpectralAveragingLOWField({
     }
 
     const subarrayConfig = observatoryConstants.array[1].subarray.find(
-      item => item.value === subarray
+      (item) => item.value === subarray
     );
     const spectralAverageMax =
       observationType === TYPE_CONTINUUM

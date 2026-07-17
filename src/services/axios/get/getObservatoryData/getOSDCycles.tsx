@@ -30,7 +30,7 @@ export function GetMockData(mock = [MockObservatoryDataBackend]): ObservatoryDat
 export const toLowerCaseArray = (value: unknown): string[] => {
   if (!Array.isArray(value)) return [];
 
-  return value.filter(item => typeof item === 'string').map(item => item.toLowerCase());
+  return value.filter((item) => typeof item === 'string').map((item) => item.toLowerCase());
 };
 
 export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData => {
@@ -54,7 +54,7 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
         bands: [
           inc?.observatory_policy?.telescope_capabilities?.Low !== null ? BAND_LOW_STR : '',
           inc?.observatory_policy?.telescope_capabilities?.Mid !== null ? BAND_5B_STR : '' // Update when more bands are available
-        ].filter(band => band !== ''),
+        ].filter((band) => band !== ''),
         low: toLowerCaseArray(inc?.observatory_policy?.telescope_capabilities?.Low),
         mid: toLowerCaseArray(inc?.observatory_policy?.telescope_capabilities?.Mid)
       },
@@ -69,7 +69,7 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
   const mapSubBands = (incSb: subBandsBackend[] | null): subBands[] | null => {
     if (!incSb) return null;
 
-    return incSb.map(sb => ({
+    return incSb.map((sb) => ({
       subBand: sb.sub_band,
       maxFrequencyHz: sb.max_frequency_hz,
       minFrequencyHz: sb.min_frequency_hz,
@@ -85,14 +85,15 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
             basicCapabilities: {
               dishElevationLimitDeg:
                 inData?.capabilities?.mid?.basic_capabilities?.dish_elevation_limit_deg,
-              receiverInformation: inData?.capabilities?.mid?.basic_capabilities?.receiver_information?.map(
-                (rx: ReceiverInformationBackend) => ({
-                  rxId: rx.rx_id,
-                  minFrequencyHz: rx.min_frequency_hz,
-                  maxFrequencyHz: rx.max_frequency_hz,
-                  subBands: mapSubBands(rx.sub_bands)
-                })
-              )
+              receiverInformation:
+                inData?.capabilities?.mid?.basic_capabilities?.receiver_information?.map(
+                  (rx: ReceiverInformationBackend) => ({
+                    rxId: rx.rx_id,
+                    minFrequencyHz: rx.min_frequency_hz,
+                    maxFrequencyHz: rx.max_frequency_hz,
+                    subBands: mapSubBands(rx.sub_bands)
+                  })
+                )
             },
             subArrays: [
               {
@@ -124,24 +125,8 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
                 allowedChannelCountRangeMax: [214748647],
                 allowedChannelCountRangeMin: [1],
                 allowedChannelWidthValues: [
-                  210,
-                  420,
-                  840,
-                  1680,
-                  3360,
-                  6720,
-                  13440,
-                  26880,
-                  40320,
-                  53760,
-                  80640,
-                  107520,
-                  161280,
-                  215040,
-                  322560,
-                  416640,
-                  430080,
-                  645120
+                  210, 420, 840, 1680, 3360, 6720, 13440, 26880, 40320, 53760, 80640, 107520,
+                  161280, 215040, 322560, 416640, 430080, 645120
                 ],
                 availableReceivers: [BAND_1_STR],
                 numberSkaDishes: 64,
@@ -170,38 +155,38 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
             subArrays: [
               {
                 subArray: SA_AA2,
-                numberStations: inData.capabilities.low.AA2.number_stations,
-                numberSubstations: inData.capabilities.low.AA2.number_substations,
-                maxBaselineKm: inData.capabilities.low.AA2.max_baseline_km,
-                availableBandwidthHz: inData.capabilities.low.AA2.available_bandwidth_hz,
-                cbfModes: inData.capabilities.low.AA2.cbf_modes,
-                numberZoomWindows: inData.capabilities.low.AA2.number_zoom_windows,
-                numberZoomChannels: inData.capabilities.low.AA2.number_zoom_channels,
-                numberPssBeams: inData.capabilities.low.AA2.number_pss_beams,
-                numberPstBeams: inData.capabilities.low.AA2.number_pst_beams,
-                psBeamBandwidthHz: inData.capabilities.low.AA2.ps_beam_bandwidth_hz,
-                numberFsps: inData.capabilities.low.AA2.number_fsps,
-                channelWidthHz: inData.capabilities.low.AA2.channel_width_hz,
-                numberBeams: inData.capabilities.low.AA2.number_beams,
-                numberVlbiBeams: inData.capabilities.low.AA2.number_vlbi_beams
+                numberStations: inData.capabilities.low.AA2_SV.number_stations,
+                numberSubstations: inData.capabilities.low.AA2_SV.number_substations,
+                maxBaselineKm: inData.capabilities.low.AA2_SV.max_baseline_km,
+                availableBandwidthHz: inData.capabilities.low.AA2_SV.available_bandwidth_hz,
+                cbfModes: inData.capabilities.low.AA2_SV.cbf_modes,
+                numberZoomWindows: inData.capabilities.low.AA2_SV.number_zoom_windows,
+                numberZoomChannels: inData.capabilities.low.AA2_SV.number_zoom_channels,
+                numberPssBeams: inData.capabilities.low.AA2_SV.number_pss_beams,
+                numberPstBeams: inData.capabilities.low.AA2_SV.number_pst_beams,
+                psBeamBandwidthHz: inData.capabilities.low.AA2_SV.ps_beam_bandwidth_hz,
+                numberFsps: inData.capabilities.low.AA2_SV.number_fsps,
+                channelWidthHz: inData.capabilities.low.AA2_SV.channel_width_hz,
+                numberBeams: inData.capabilities.low.AA2_SV.number_beams,
+                numberVlbiBeams: inData.capabilities.low.AA2_SV.number_vlbi_beams
               },
               // LOW SA_AA_STAR is currently mocked to give us access to more than 1 subbarray configuration
               {
                 subArray: SA_AA_STAR,
-                numberStations: inData.capabilities.low.AA2.number_stations,
-                numberSubstations: inData.capabilities.low.AA2.number_substations,
-                maxBaselineKm: inData.capabilities.low.AA2.max_baseline_km,
-                availableBandwidthHz: inData.capabilities.low.AA2.available_bandwidth_hz,
-                cbfModes: inData.capabilities.low.AA2.cbf_modes,
-                numberZoomWindows: inData.capabilities.low.AA2.number_zoom_windows,
-                numberZoomChannels: inData.capabilities.low.AA2.number_zoom_channels,
-                numberPssBeams: inData.capabilities.low.AA2.number_pss_beams,
-                numberPstBeams: inData.capabilities.low.AA2.number_pst_beams,
-                psBeamBandwidthHz: inData.capabilities.low.AA2.ps_beam_bandwidth_hz,
-                numberFsps: inData.capabilities.low.AA2.number_fsps,
-                channelWidthHz: inData.capabilities.low.AA2.channel_width_hz,
-                numberBeams: inData.capabilities.low.AA2.number_beams,
-                numberVlbiBeams: inData.capabilities.low.AA2.number_vlbi_beams
+                numberStations: inData.capabilities.low.AA2_SV.number_stations,
+                numberSubstations: inData.capabilities.low.AA2_SV.number_substations,
+                maxBaselineKm: inData.capabilities.low.AA2_SV.max_baseline_km,
+                availableBandwidthHz: inData.capabilities.low.AA2_SV.available_bandwidth_hz,
+                cbfModes: inData.capabilities.low.AA2_SV.cbf_modes,
+                numberZoomWindows: inData.capabilities.low.AA2_SV.number_zoom_windows,
+                numberZoomChannels: inData.capabilities.low.AA2_SV.number_zoom_channels,
+                numberPssBeams: inData.capabilities.low.AA2_SV.number_pss_beams,
+                numberPstBeams: inData.capabilities.low.AA2_SV.number_pst_beams,
+                psBeamBandwidthHz: inData.capabilities.low.AA2_SV.ps_beam_bandwidth_hz,
+                numberFsps: inData.capabilities.low.AA2_SV.number_fsps,
+                channelWidthHz: inData.capabilities.low.AA2_SV.channel_width_hz,
+                numberBeams: inData.capabilities.low.AA2_SV.number_beams,
+                numberVlbiBeams: inData.capabilities.low.AA2_SV.number_vlbi_beams
               }
             ]
           }
@@ -209,7 +194,7 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
     };
   };
 
-  const capabilities = inData.map(cycle => mapCapabilities(cycle));
+  const capabilities = inData.map((cycle) => mapCapabilities(cycle));
 
   const mergedCapabilities = capabilities.slice(1).reduce(
     (acc, obj) => {
@@ -223,7 +208,7 @@ export const osdMapping = (inData: ObservatoryDataBackend[]): ObservatoryData =>
   );
 
   const result = {
-    policies: inData.map(cycle => mapCycle(cycle)),
+    policies: inData.map((cycle) => mapCycle(cycle)),
     capabilities: mergedCapabilities
   };
 

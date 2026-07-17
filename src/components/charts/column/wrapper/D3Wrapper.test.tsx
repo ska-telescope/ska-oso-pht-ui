@@ -14,7 +14,7 @@ vi.mock('@ska-telescope/ska-gui-components', () => ({
       data-testid={testId}
       aria-label={label}
       value={value}
-      onChange={e => setValue(e.target.value)}
+      onChange={(e) => setValue(e.target.value)}
     >
       {options.map((opt: any) => (
         <option key={opt.value} value={opt.value}>

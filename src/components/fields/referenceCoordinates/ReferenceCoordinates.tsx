@@ -1,27 +1,25 @@
 import { DropDown } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/material';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
-import React from 'react';
 import { REFERENCE_COORDINATE_OPTIONS } from '@utils/constants.ts';
 
 interface ReferenceCoordinatesFieldProps {
-  setValue?: Function,
-  value: number,
-  valueFocus?: Function,
-  disabled?: boolean
+  setValue?: Function;
+  value: number;
+  valueFocus?: Function;
+  disabled?: boolean;
 }
 
 export default function ReferenceCoordinatesField({
-                                                    setValue,
-                                                    value,
-                                                    valueFocus,
-                                                    disabled
-                                                  }: ReferenceCoordinatesFieldProps) {
+  setValue,
+  value,
+  valueFocus,
+  disabled
+}: ReferenceCoordinatesFieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'referenceCoordinates';
 
   const ReferenceCoordinatesValueField = () => {
-
     return (
       <Box pt={1}>
         <DropDown
@@ -33,7 +31,7 @@ export default function ReferenceCoordinatesField({
           setValue={setValue}
           onFocus={valueFocus}
           disabled={disabled}
-          toolTip={disabled ? t(FIELD + '.tooltip'): undefined}
+          toolTip={disabled ? t(FIELD + '.tooltip') : undefined}
         />
       </Box>
     );

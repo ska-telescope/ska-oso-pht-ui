@@ -97,7 +97,7 @@ export const MockObservatoryDataBackend: ObservatoryDataBackend = {
         min_frequency_hz: 50000000,
         max_frequency_hz: 350000000
       },
-      AA2: {
+      AA2_SV: {
         number_stations: 68,
         number_substations: 720,
         number_beams: 8,

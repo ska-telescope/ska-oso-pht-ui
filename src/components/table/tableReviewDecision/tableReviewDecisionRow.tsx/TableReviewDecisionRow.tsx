@@ -58,7 +58,7 @@ export default function TableReviewDecisionRow({
   const hasRecommendation = (el: string) =>
     el === RECOMMENDATION[0] || el === RECOMMENDATION[1] || el === RECOMMENDATION[2];
 
-  const getOptions = () => RECOMMENDATION.map(e => ({ label: e, value: e }));
+  const getOptions = () => RECOMMENDATION.map((e) => ({ label: e, value: e }));
 
   React.useEffect(() => {
     if (!item || typeof item.displayRank !== 'number' || !item.decisions) return;

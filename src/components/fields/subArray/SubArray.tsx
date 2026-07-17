@@ -42,12 +42,12 @@ export default function SubArrayField({
     const arr = telBand === TELESCOPE_LOW_NUM ? policy?.low : policy?.mid;
     if (!arr) return [];
 
-    const merged = arr.map(key => ({
+    const merged = arr.map((key) => ({
       value: key.toLowerCase(),
       label: key.toUpperCase()
     }));
 
-    return isCustomAllowed(telescope) ? merged : merged.filter(o => o.value !== SA_CUSTOM);
+    return isCustomAllowed(telescope) ? merged : merged.filter((o) => o.value !== SA_CUSTOM);
   }, [telescope, observingBand, selectedPolicy, osdCapabilities, isCustomAllowed]);
 
   return (

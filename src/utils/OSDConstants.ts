@@ -56,7 +56,7 @@ export const OSD_CONSTANTS = {
         {
           value: SA_AA2,
           map: 'LOW_AA2_all',
-          label: 'AA2',
+          label: 'AA2_SV',
           numOf13mAntennas: 0,
           continuumSpectralAveragingMax: 13812
         },

@@ -1,4 +1,3 @@
-import React from 'react';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import BaseButton from '../Base/Button';
 

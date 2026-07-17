@@ -32,7 +32,7 @@ export default function Visualization({ target, show }: VisualizationProps) {
     ) {
       setVisibilitySVG(null); // reset while loading
 
-      GetVisibility(ra, dec, 'LOW').then(response => {
+      GetVisibility(ra, dec, 'LOW').then((response) => {
         if (response && typeof response === 'object' && 'data' in response) {
           setVisibilitySVG(response.data);
         } else {
@@ -71,9 +71,7 @@ export default function Visualization({ target, show }: VisualizationProps) {
    ---------------------------------------------------------- */
 
 function SvgAsImg({ svgXml }: { svgXml: string }) {
-  const svgEncoded = encodeURIComponent(svgXml)
-    .replace(/'/g, '%27')
-    .replace(/"/g, '%22');
+  const svgEncoded = encodeURIComponent(svgXml).replace(/'/g, '%27').replace(/"/g, '%22');
 
   const dataUri = `data:image/svg+xml;utf8,${svgEncoded}`;
 

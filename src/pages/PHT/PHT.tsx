@@ -159,23 +159,22 @@ export default function PHT({
   };
 
   const footerMainChildren = () => {
-    const opt1 =
-      (!showNotification() && (loggedIn || cypressToken) && getProposal()?.id?.length) ?? false;
     const opt2 = showNotification();
 
-    if (opt2) return (
-      <div>
-        {opt2 && (
-          <TimedAlert
-            color={(application.content5 as Notification)?.level}
-            gap={0}
-            delay={(application.content5 as Notification)?.delay}
-            testId="timeAlertFooter"
-            text={(application.content5 as Notification)?.message}
-          />
-        )}
-      </div>
-    );
+    if (opt2)
+      return (
+        <div>
+          {opt2 && (
+            <TimedAlert
+              color={(application.content5 as Notification)?.level}
+              gap={0}
+              delay={(application.content5 as Notification)?.delay}
+              testId="timeAlertFooter"
+              text={(application.content5 as Notification)?.message}
+            />
+          )}
+        </div>
+      );
   };
 
   const headerCountdown = () => {
@@ -257,7 +256,11 @@ export default function PHT({
         application={t(LG() ? 'pht.short' : 'pht.title')}
         footerChildren={
           <Typography pt={1} variant="body1">
-            {loggedIn || cypressToken ? (getProposal()?.id ? `Submission ID: ${getProposal()?.id}` : '') : ''}
+            {loggedIn || cypressToken
+              ? getProposal()?.id
+                ? `Submission ID: ${getProposal()?.id}`
+                : ''
+              : ''}
             {LOCAL_DATA}
           </Typography>
         }

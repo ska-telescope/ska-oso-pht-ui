@@ -31,7 +31,7 @@ vi.mock('@azure/msal-react', () => ({
   useMsal: vi.fn(() => ({ accounts: [] }))
 }));
 
-vi.mock('@/utils/aaa/aaaUtils', async importOriginal => {
+vi.mock('@/utils/aaa/aaaUtils', async (importOriginal) => {
   const actual = (await importOriginal()) as any;
   return {
     ...actual,
@@ -139,7 +139,7 @@ describe('<LandingPage />', () => {
   test('shows the sign-in button when not logged in', () => {
     wrapper(<LandingPage />);
     expect(screen.getByTestId('landingWelcomeLoginButton')).toBeInTheDocument();
-  })
+  });
 });
 
 // ---- Clone proposal tests ----
@@ -274,7 +274,7 @@ describe('clone proposal', () => {
   test('does not overwrite cloned proposal with empty PostProposal skeleton', async () => {
     await triggerCloneConfirm();
 
-    // The last state update is expected to be a full proposal object containing all the original proposal data 
+    // The last state update is expected to be a full proposal object containing all the original proposal data
     // (not the empty skeleton returned by PostProposal).
     await waitFor(() => {
       const lastCall = mockUpdateAppContent2.mock.calls.at(-1)?.[0];

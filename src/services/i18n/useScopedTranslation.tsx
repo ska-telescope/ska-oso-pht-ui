@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
 import React from 'react';
-import { isCypress } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 const isDev = process.env.NODE_ENV === 'development';

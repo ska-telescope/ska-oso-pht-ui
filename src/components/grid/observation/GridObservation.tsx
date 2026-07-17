@@ -51,7 +51,7 @@ export default function GridObservation({
 
     // If an explicit autoSelectId is provided AND exists in the dataset
     if (autoSelectId != null) {
-      const match = data.find(o => String(o.id) === String(autoSelectId));
+      const match = data.find((o) => String(o.id) === String(autoSelectId));
       if (match) {
         setSelectedId(String(match.id));
         rowClick?.({ row: match });
@@ -73,12 +73,6 @@ export default function GridObservation({
     setSelectedId(clickedId);
     rowClick?.(params);
   };
-
-  const headerDisplay = (inValue: string) => (
-    <Typography variant="subtitle1" fontWeight="bold">
-      {t(inValue)}
-    </Typography>
-  );
 
   const displayName = (inValue: string) => (
     <Typography
@@ -123,7 +117,7 @@ export default function GridObservation({
   );
 
   const displaySubarray = (inArray: string, inType: string) => (
-    <Typography variant="subtitle1" fontWeight="bold">
+    <Typography variant="body2" fontWeight="bold">
       {t('subArrayConfiguration.' + inArray)} |{' '}
       {t((isSV ? 'observationType.' : 'scienceCategory.') + inType)}
     </Typography>
@@ -150,9 +144,12 @@ export default function GridObservation({
     resizable: false,
     renderCell: (e: any) => {
       const isSelected = String(e.row.id) === selectedId;
-      const centralFrequencyUnits = getBandwidthOrFrequencyUnitsLabel(e.row.centralFrequencyUnits) ?? '';
-      const bandwidthUnits = getBandwidthOrFrequencyUnitsLabel(
-        isZoom(e.row.type) ? e.row.zoomBandwidthUnits : e.row.continuumBandwidthUnits) ?? '';
+      const centralFrequencyUnits =
+        getBandwidthOrFrequencyUnitsLabel(e.row.centralFrequencyUnits) ?? '';
+      const bandwidthUnits =
+        getBandwidthOrFrequencyUnitsLabel(
+          isZoom(e.row.type) ? e.row.zoomBandwidthUnits : e.row.continuumBandwidthUnits
+        ) ?? '';
       return (
         <Stack
           direction="column"

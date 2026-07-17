@@ -46,15 +46,16 @@ export default function TargetListSection() {
   };
 
   const deleteConfirmed = () => {
-    const targets = getProposal().targets?.filter(e => e.id !== rowTarget?.id);
+    const targets = getProposal().targets?.filter((e) => e.id !== rowTarget?.id);
     const targetObservations = getProposal().targetObservation?.filter(
-      e => e.targetId !== rowTarget?.id
+      (e) => e.targetId !== rowTarget?.id
     );
-    const obsId = getProposal().targetObservation?.find(e => e.targetId === rowTarget?.id)
-      ?.observationId;
+    const obsId = getProposal().targetObservation?.find(
+      (e) => e.targetId === rowTarget?.id
+    )?.observationId;
     const calibrationStrategies =
       getProposal().calibrationStrategy?.[0] !== undefined
-        ? getProposal().calibrationStrategy.filter(e => e.observationIdRef !== obsId)
+        ? getProposal().calibrationStrategy.filter((e) => e.observationIdRef !== obsId)
         : undefined;
 
     if (autoLink) {
@@ -82,7 +83,7 @@ export default function TargetListSection() {
     } else if (rowTarget) {
       rowTarget.vel = '';
     }
-    const obs1 = getProposal().targets?.map(rec => {
+    const obs1 = getProposal().targets?.map((rec) => {
       return rec.id === rowTarget?.id ? rowTarget : rec;
     });
     setProposal({ ...getProposal(), targets: obs1 });
@@ -92,8 +93,8 @@ export default function TargetListSection() {
 
   const alertDeleteContent = () => {
     const LABEL_WIDTH = 6;
-    const rec = getProposal()?.targets?.find(p => p.id === rowTarget?.id);
-    const isICRS = rec?.kind === REFERENCE_COORDINATE_TYPE_ICRS.value
+    const rec = getProposal()?.targets?.find((p) => p.id === rowTarget?.id);
+    const isICRS = rec?.kind === REFERENCE_COORDINATE_TYPE_ICRS.value;
     return (
       <Grid
         p={2}
@@ -147,12 +148,12 @@ export default function TargetListSection() {
     setValue(newValue);
   };
 
-  const rows = getProposal().targets.map(t => {
+  const rows = getProposal().targets.map((t) => {
     const isICRS = t.kind === REFERENCE_COORDINATE_TYPE_ICRS.value;
     return {
       ...t,
-      coord1: isICRS? t.raStr : t.l,
-      coord2: isICRS? t.decStr : t.b
+      coord1: isICRS ? t.raStr : t.l,
+      coord2: isICRS ? t.decStr : t.b
     };
   });
 
@@ -227,7 +228,9 @@ export default function TargetListSection() {
               )}
             </Tabs>
             {value === 0 && <TargetEntry textAlign="left" />}
-            {value === 1 && <TargetFileImport referenceCoordinateType={REFERENCE_COORDINATE_TYPE_ICRS.value} />}
+            {value === 1 && (
+              <TargetFileImport referenceCoordinateType={REFERENCE_COORDINATE_TYPE_ICRS.value} />
+            )}
             {value === 2 && <SpatialImaging />}
           </Box>
         </Grid>

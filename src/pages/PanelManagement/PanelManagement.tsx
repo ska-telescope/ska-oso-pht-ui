@@ -5,7 +5,6 @@ import { useTheme } from '@mui/material/styles';
 import { Spacer, SPACER_VERTICAL } from '@ska-telescope/ska-gui-components';
 import {
   BANNER_PMT_SPACER_MIN,
-  FOOTER_PMT_SPACER,
   PAGE_PANEL_MANAGEMENT,
   PMT,
   REVIEWER_STATUS
@@ -62,11 +61,11 @@ export const deleteReviewerPanel = (
 ) => {
   function filterSciRecords(id: string) {
     const stripped = id.replace('-science', '');
-    return localPanel?.sciReviewers?.filter(item => !(item.reviewerId === stripped));
+    return localPanel?.sciReviewers?.filter((item) => !(item.reviewerId === stripped));
   }
   function filterTecRecords(id: string) {
     const stripped = id.replace('-technical', '');
-    return localPanel?.tecReviewers?.filter(item => !(item.reviewerId === stripped));
+    return localPanel?.tecReviewers?.filter((item) => !(item.reviewerId === stripped));
   }
   const sciFiltered = filterSciRecords(reviewer.id);
   const tecFiltered = filterTecRecords(reviewer.id);
@@ -76,7 +75,7 @@ export const deleteReviewerPanel = (
 export const convertPanelProposalToProposalIdList = (
   panelProposals: PanelProposal[]
 ): IdObject[] => {
-  return panelProposals.map(panelProposal => ({
+  return panelProposals.map((panelProposal) => ({
     id: panelProposal.proposalId
   }));
 };
@@ -84,7 +83,7 @@ export const convertPanelProposalToProposalIdList = (
 export const convertPanelReviewerToReviewerIdList = (
   panelReviewers: PanelReviewer[]
 ): IdObject[] => {
-  return panelReviewers.map(panelReviewer => ({
+  return panelReviewers.map((panelReviewer) => ({
     id: panelReviewer.reviewerId
   }));
 };
@@ -108,7 +107,7 @@ export const deleteProposalPanel = (
   setProposalPanels: Function
 ) => {
   function filterRecords(id: string) {
-    return localPanel?.proposals?.filter(item => !(item.proposalId === id));
+    return localPanel?.proposals?.filter((item) => !(item.proposalId === id));
   }
   const filtered = filterRecords(proposal.id);
   setProposalPanels(filtered);
@@ -157,8 +156,8 @@ export default function PanelManagement() {
       ? convertPanelReviewerToReviewerIdList(currentPanel?.tecReviewers)
       : [];
     setPanelReviewers([
-      ...sciReviewers.map(reviewer => ({ id: reviewer.id + '-science' })),
-      ...tecReviewers.map(reviewer => ({ id: reviewer.id + '-technical' }))
+      ...sciReviewers.map((reviewer) => ({ id: reviewer.id + '-science' })),
+      ...tecReviewers.map((reviewer) => ({ id: reviewer.id + '-technical' }))
     ]);
   }, [currentPanel]);
 
@@ -167,7 +166,7 @@ export default function PanelManagement() {
   };
 
   const handleReviewersChange = (sciReviewers: PanelReviewer[], tecReviewers: PanelReviewer[]) => {
-    setCurrentPanel(prevPanel => {
+    setCurrentPanel((prevPanel) => {
       if (!prevPanel) return prevPanel;
       const updatedPanel = {
         ...prevPanel,
@@ -191,7 +190,7 @@ export default function PanelManagement() {
 
   const handleProposalsChange = (proposalsList: PanelProposal[]) => {
     // Update the current panel's proposals with the new list
-    setCurrentPanel(prevPanel => {
+    setCurrentPanel((prevPanel) => {
       if (!prevPanel) {
         return prevPanel;
       }
@@ -288,7 +287,7 @@ export default function PanelManagement() {
               <GridReviewPanels
                 height={'100%'}
                 listOnly
-                onRowClick={row => handlePanelChange(row)}
+                onRowClick={(row) => handlePanelChange(row)}
               />
             </Box>
           </Grid>

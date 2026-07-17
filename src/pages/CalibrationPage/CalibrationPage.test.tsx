@@ -19,7 +19,7 @@ vi.mock('@/services/axios/get/getCalibratorList/getCalibratorList', () => ({
   default: vi.fn().mockResolvedValue(MockCalibratorFrontendList)
 }));
 
-vi.mock('@/utils/aaa/aaaUtils', async importOriginal => {
+vi.mock('@/utils/aaa/aaaUtils', async (importOriginal) => {
   const actual = (await importOriginal()) as any;
   return {
     ...actual,

@@ -48,6 +48,6 @@
     "totalSpectralSensitivity": "18.79 mJy/beam",
     "spectralSynthesizedBeamSize": "2.21 x 1.92 arcsec²",
     "spectralSurfaceBrightnessSensitivity": "1.1e+4 K",
-    "integrationTime": "600.00 s"
+    "integrationTime": "10.00 min"
   }
 ]

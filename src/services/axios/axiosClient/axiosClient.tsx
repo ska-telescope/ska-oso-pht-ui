@@ -18,7 +18,7 @@ const axiosClient = axios.create({
 
 // On local deployments the auth cookie is not sent (different origin via the dev
 // proxy), so attach a bearer token instead. No-op on remote deployments.
-axiosClient.interceptors.request.use(async config => {
+axiosClient.interceptors.request.use(async (config) => {
   if (isLocalhost()) {
     const token = await getLocalToken();
     if (token) {

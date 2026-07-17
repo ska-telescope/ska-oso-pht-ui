@@ -87,10 +87,10 @@ export const validateObservationPage = (proposal: Proposal, autoLink: boolean) =
   const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
 
   if (autoLink) {
-    let count = hasTargetObservations() ? 2 : 0;
+    const count = hasTargetObservations() ? 2 : 0;
     return result[count];
   } else {
-    let count = hasObservations() ? 2 : 0;
+    const count = hasObservations() ? 2 : 0;
     return result[count];
   }
 };
@@ -98,7 +98,12 @@ export const validateObservationPage = (proposal: Proposal, autoLink: boolean) =
 export const useIsFrequencyOutOfRange = () => {
   const { osdLOW, osdMID } = useOSDAccessors();
 
-  return (centralFrequency: number, bandwidth: number, isLow: boolean, observingBand: string): boolean => {
+  return (
+    centralFrequency: number,
+    bandwidth: number,
+    isLow: boolean,
+    observingBand: string
+  ): boolean => {
     let minHz = 0;
     let maxHz = 0;
 
@@ -174,7 +179,8 @@ export const checkDP = (proposal: Proposal): number => {
 
 export const validateSDPPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_OK];
-  let count = Array.isArray(proposal?.dataProductSDP) && proposal.dataProductSDP.length > 0 ? 1 : 0;
+  const count =
+    Array.isArray(proposal?.dataProductSDP) && proposal.dataProductSDP.length > 0 ? 1 : 0;
   return result[count];
 };
 
@@ -182,14 +188,14 @@ export const validateSRCPage = () => STATUS_OK;
 
 export const validateCalibrationPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
-  let count = proposal?.calibrationStrategy?.length > 0 ? 2 : 0;
+  const count = proposal?.calibrationStrategy?.length > 0 ? 2 : 0;
   return result[count];
 };
 
 export const validateLinkingPage = (proposal: Proposal) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
   const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
-  let count = hasTargetObservations() ? 2 : 0;
+  const count = hasTargetObservations() ? 2 : 0;
   return result[count];
 };
 
@@ -199,7 +205,7 @@ export const useValidateProposal = () => {
 
   return (proposal: Proposal) => {
     const obsStatus = validateObservationPage(proposal, autoLink);
-    const freqOutOfRange = (proposal.observations ?? []).some(obs =>
+    const freqOutOfRange = (proposal.observations ?? []).some((obs) =>
       isObservationFrequencyOutOfRange(obs)
     );
     return [
@@ -285,7 +291,7 @@ export function validateSkyDirection2Text(value: string): string | null {
     return '1';
   }
 
-  // explicitly treat these as a format rather than a range error 
+  // explicitly treat these as a format rather than a range error
   // because they are not valid in the context of sky direction
   if (minutes > 59) {
     return '0';
