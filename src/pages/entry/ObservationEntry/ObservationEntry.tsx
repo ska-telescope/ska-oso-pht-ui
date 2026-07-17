@@ -191,7 +191,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const snappedHz = snapCentralFrequencyToChannelGridHz(
       cfHz,
       channelWidthHz,
-      ob?.zoomChannels ?? 0,
+      ob?.zoomChannels ?? ZOOM_CHANNELS_DEFAULT_LOW,
       minHz
     );
     return Number(frequencyConversion(snappedHz, FREQUENCY_HZ, units).toFixed(6));
@@ -241,7 +241,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setNumOf15mAntennas(ob?.num15mAntennas ?? 0);
     setNumOf13mAntennas(ob?.num13mAntennas ?? 0);
     setNumOfStations(ob?.numStations ?? 0);
-    setZoomChannels(ob?.zoomChannels ?? 0);
+    setZoomChannels(ob?.zoomChannels ?? ZOOM_CHANNELS_DEFAULT_LOW);
     setPstMode(ob?.pstMode ?? PULSAR_TIMING_VALUE);
   };
 
