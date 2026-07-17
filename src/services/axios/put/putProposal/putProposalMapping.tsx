@@ -434,6 +434,10 @@ const getSuppliedFieldsSensitivity = (
   tarObs: TargetObservation,
   spectralSection: string
 ) => {
+  if (!tarObs?.sensCalc) {
+    return null;
+  }
+
   const params: SuppliedRelatedFields = {
     supplied_type: suppliedType
   };
@@ -506,6 +510,10 @@ export const getSuppliedFieldsIntegrationTime = (
   obsType: string,
   tarObs: TargetObservation
 ) => {
+  if (!tarObs?.sensCalc) {
+    return null;
+  }
+
   const params: SuppliedRelatedFields = {
     supplied_type: suppliedType
   };
@@ -546,13 +554,13 @@ const getResults = (
   const resultsArr = [];
   if (incTargetObservations) {
     for (const tarObs of incTargetObservations) {
-      if (tarObs.sensCalc?.error) {
+      if (!tarObs.sensCalc || tarObs.sensCalc?.error) {
         continue;
       }
       const obsType = getObsType(tarObs, incObs); // spectral or continuum
       const spectralSection = getSpectralSection(obsType);
       const suppliedType =
-        tarObs?.sensCalc?.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
+        tarObs.sensCalc.section3?.[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
 
       const suppliedRelatedFields =
         suppliedType === 'sensitivity'
