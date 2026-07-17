@@ -21,7 +21,7 @@ set the ingress url path
 {{- else if .Values.ingress.path -}}
 /{{ .Values.ingress.path }}
 {{- else -}}
-
+/
 {{- end }}
 {{- end }}
 

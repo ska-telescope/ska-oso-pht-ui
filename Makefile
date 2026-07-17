@@ -70,7 +70,7 @@ ifneq ($(USE_INDIGO),)
 endif
 
 # PRODUCTION DEPLOYMENT CONFIG
-ENV_CHECK := $(shell echo $(CI_ENVIRONMENT_SLUG) | egrep 'prod')
+ENV_CHECK := $(shell echo $(KUBE_NAMESPACE) | egrep 'prod-ska-oso-pht-ui')
 ifneq ($(ENV_CHECK),)
 
 PRODUCTION_URL=sv-ideas.skao.int
