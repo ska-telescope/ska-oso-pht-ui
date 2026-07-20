@@ -93,6 +93,14 @@ export default function SpectralResolutionField({
     return isLow() ? calculateLOW() : calculateMID();
   };
 
+  // interactive is only used for LOW zoom (non-continuum), so this mirrors calculateLOW()'s
+  // frequency handling directly rather than re-deriving isContinuum()'s branch.
+  const resolutionOptionsWithVelocity = () =>
+    getZoomResolutionOptions(subarrayConfig).map((option) => ({
+      ...option,
+      label: `${option.label} (${calculateVelocity(getZoomResolutionHz(option.value), frequency * 1e6)})`
+    }));
+
   const getDisplay = () => {
     setSpectralResolution(`${getBaseValue()} ${getUnits1()} (${calculate()})`);
     if (setValue) {
@@ -114,7 +122,7 @@ export default function SpectralResolutionField({
         <SelectField
           testId="spectralResolution"
           label={label}
-          options={getZoomResolutionOptions(subarrayConfig)}
+          options={resolutionOptionsWithVelocity()}
           value={safeBandWidth}
           setValue={(value) => setBandWidth?.(value)}
           onFocus={() => onFocus?.()}

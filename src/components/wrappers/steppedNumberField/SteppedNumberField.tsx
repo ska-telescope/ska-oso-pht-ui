@@ -98,27 +98,39 @@ export default function SteppedNumberField({
         onChange={(e) => handleChange(e.target.value)}
         onFocus={handleFocus}
         required={required}
+        // MUI's standard-variant focus state colors the shrunk label and the active underline
+        // with primary.main by default - this theme's primary.main is near-white, so both go
+        // invisible while focused. Use secondary (the theme's brand color) instead, matching
+        // how @ska-telescope/ska-gui-components' own NumberEntry already works around this.
+        sx={{
+          '& .MuiInputLabel-root.Mui-focused': { color: 'secondary.main' },
+          '& .MuiInput-underline:after': { borderBottomColor: 'secondary.main' }
+        }}
         slotProps={{
           htmlInput: { 'data-testid': testId },
           input: {
             endAdornment: (
               <InputAdornment position="end">
-                <IconButton
-                  aria-label={`${testId}-increment`}
-                  disabled={disabled || incrementDisabled}
-                  onClick={() => step(1)}
-                  size="small"
-                >
-                  <KeyboardArrowUpIcon fontSize="small" />
-                </IconButton>
-                <IconButton
-                  aria-label={`${testId}-decrement`}
-                  disabled={disabled || decrementDisabled}
-                  onClick={() => step(-1)}
-                  size="small"
-                >
-                  <KeyboardArrowDownIcon fontSize="small" />
-                </IconButton>
+                <Box sx={{ display: 'flex', flexDirection: 'column', mr: 1 }}>
+                  <IconButton
+                    aria-label={`${testId}-increment`}
+                    disabled={disabled || incrementDisabled}
+                    onClick={() => step(1)}
+                    size="small"
+                    sx={{ p: 0 }}
+                  >
+                    <KeyboardArrowUpIcon sx={{ fontSize: 16 }} />
+                  </IconButton>
+                  <IconButton
+                    aria-label={`${testId}-decrement`}
+                    disabled={disabled || decrementDisabled}
+                    onClick={() => step(-1)}
+                    size="small"
+                    sx={{ p: 0 }}
+                  >
+                    <KeyboardArrowDownIcon sx={{ fontSize: 16 }} />
+                  </IconButton>
+                </Box>
                 {suffix}
               </InputAdornment>
             )

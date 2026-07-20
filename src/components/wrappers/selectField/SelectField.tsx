@@ -52,6 +52,14 @@ export default function SelectField({
       error={!!errorText}
       required={required}
       disabled={disabled}
+      // MUI's standard-variant focus state colors the shrunk label and the active underline
+      // with primary.main by default - this theme's primary.main is near-white, so both go
+      // invisible while focused/open. Use secondary (the theme's brand color) instead, matching
+      // how @ska-telescope/ska-gui-components' own NumberEntry already works around this.
+      sx={{
+        '& .MuiInputLabel-root.Mui-focused': { color: 'secondary.main' },
+        '& .MuiInput-underline:after': { borderBottomColor: 'secondary.main' }
+      }}
     >
       {label && <InputLabel id={labelId}>{label}</InputLabel>}
       <Select

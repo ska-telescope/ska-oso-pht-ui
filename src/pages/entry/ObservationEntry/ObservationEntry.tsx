@@ -6,7 +6,6 @@ import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTheme } from '@mui/material/styles';
 import {
   DropDown,
-  FrequencySpectrum,
   getColors,
   NumberEntry,
   Spacer,
@@ -15,6 +14,7 @@ import {
   BorderedSection,
   AlertColorTypes
 } from '@ska-telescope/ska-gui-components';
+import { FrequencySpectrum } from '@/components/wrappers/frequencySpectrum/FrequencySpectrum';
 import {
   NAV,
   SUPPLIED_VALUE_DEFAULT_MID,
@@ -405,15 +405,21 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     updateStorageProposal();
   };
 
-  const setMaxChannelsZoom = (subarrayConfig: string) => {
+  // Returns the newly computed cap (not just the pending maxZoomChannels state setter) so
+  // callers that need the fresh value in the same tick - e.g. to default zoomChannels to it -
+  // don't read back the stale pre-update state.
+  const setMaxChannelsZoom = (subarrayConfig: string): number => {
     const record = isLow() ? osdLOW : osdMID;
     setMaxZoomChannels(0);
     if (record) {
       const sArray = (
         record?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined
       )?.find((sub) => sub.subArray === subarrayConfig);
-      setMaxZoomChannels(sArray?.numberZoomChannels ?? 0);
+      const max = sArray?.numberZoomChannels ?? 0;
+      setMaxZoomChannels(max);
+      return max;
     }
+    return 0;
   };
 
   React.useEffect(() => {
@@ -426,7 +432,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       const obsBand = telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? osdLOW : osdMID;
       setMyObsId(generateId(t('addObservation.idPrefix'), 6));
       setTheSubarrayConfig(subarrayConfig);
-      setMaxChannelsZoom(subarrayConfig);
+      const maxChannels = setMaxChannelsZoom(subarrayConfig);
       setCentralFrequency(
         frequencyConversion(
           calculateCentralFrequency(obsBand, observingBand),
@@ -445,7 +451,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       setContinuumBandwidthUnits(isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
       setBandwidth(isLow() ? ZOOM_BANDWIDTH_DEFAULT_LOW : ZOOM_BANDWIDTH_DEFAULT_MID);
       if (isLow()) {
-        setZoomChannels(ZOOM_CHANNELS_DEFAULT_LOW);
+        // Default to the subarray's full channel cap rather than an arbitrary fixed count. If
+        // osdLOW/osdMID hasn't loaded yet, maxChannels is 0 - fall back to the old constant until
+        // the catch-up effect below corrects it once the real cap is available.
+        setZoomChannels(maxChannels || ZOOM_CHANNELS_DEFAULT_LOW);
       }
     }
   }, []);
@@ -492,7 +501,13 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const record = isLow() ? osdLOW : osdMID;
     if (hasRefreshedMaxChannelsCap.current || !record) return;
     hasRefreshedMaxChannelsCap.current = true;
-    setMaxChannelsZoom(subarrayConfig);
+    const maxChannels = setMaxChannelsZoom(subarrayConfig);
+    // A new observation defaults zoomChannels to the cap, but that cap wasn't known yet at
+    // mount - correct it now, unless the user has already changed it away from the interim
+    // fallback while waiting for osdLOW/osdMID to arrive.
+    if (!isEdit() && isLow() && maxChannels > 0 && zoomChannels === ZOOM_CHANNELS_DEFAULT_LOW) {
+      setZoomChannels(maxChannels);
+    }
   }, [osdLOW, osdMID]);
 
   React.useEffect(() => {
@@ -992,8 +1007,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
   };
 
-  const bandwidthField = () => (
-    <Box pt={1}>
+  const bandwidthField = () =>
+    fieldWrapper(
       <BandwidthField
         required
         setValue={setBandwidth}
@@ -1005,8 +1020,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         resolutionHz={getResolutionHz()}
         centralFrequencyHz={getCentralFrequencyHz()}
       />
-    </Box>
-  );
+    );
 
   const spectralResolutionField = () =>
     fieldWrapper(
