@@ -9,9 +9,9 @@ import {
   SA_AA2,
   SA_AA_STAR
 } from '@/utils/constants';
-import ObservatoryData, { ObservatoryCapabilities } from '@/utils/types/observatoryData';
+import ObservatoryData, { ObservatoryDataCapabilities } from '@/utils/types/observatoryData';
 
-const mockCapabilities: ObservatoryCapabilities = {
+const mockCapabilities: ObservatoryDataCapabilities = {
   mid: {
     basicCapabilities: {
       dishElevationLimitDeg: 15,
@@ -102,8 +102,17 @@ const mockCapabilities: ObservatoryCapabilities = {
   },
   low: {
     basicCapabilities: {
-      minFrequencyHz: 50000000,
-      maxFrequencyHz: 350000000
+      minFrequencyHz: 49609375,
+      maxFrequencyHz: 349609375,
+      minCoarseChannel: 64,
+      maxCoarseChannel: 447,
+      coarseChannelWidthHz: 781250,
+      numberOfChannelsPerCoarseChannel: {
+        continuum: 144,
+        zoom: 432,
+        pst: 216,
+        pss: 54
+      }
     },
     subArrays: [
       {

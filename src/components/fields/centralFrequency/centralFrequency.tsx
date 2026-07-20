@@ -1,8 +1,15 @@
 import React from 'react';
-import { NumberEntry } from '@ska-telescope/ska-gui-components';
+import { InputAdornment, TextField } from '@mui/material';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
-import { FREQUENCY_GHZ, FREQUENCY_HZ, FREQUENCY_MHZ, TELESCOPE_LOW_NUM } from '@/utils/constants';
+import {
+  BAND_LOW_STR,
+  FREQUENCY_GHZ,
+  FREQUENCY_HZ,
+  FREQUENCY_MHZ,
+  LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP,
+  TELESCOPE_LOW_NUM
+} from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { frequencyConversion } from '@/utils/helpers';
 import {
@@ -42,18 +49,15 @@ export default function CentralFrequency({
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const FIELD = 'centralFrequency';
-  const [fieldValid, setFieldValid] = React.useState(true);
-  const { findBand, telescopeBand } = useOSDAccessors();
-  const [cfValue, setCfValue] = React.useState<string>(value != null ? String(value) : '');
-
-  React.useEffect(() => {
-    setCfValue(value != null ? String(value) : '');
-    setFieldValid(true);
-  }, [value]);
-
+  const { findBand, telescopeBand, osdLOW } = useOSDAccessors();
+  const isLow = observingBand === BAND_LOW_STR;
   const units: number =
     telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? FREQUENCY_MHZ : FREQUENCY_GHZ;
   const band = findBand(observingBand);
+
+  // ---- Steppable (LOW zoom) mode: SteppedNumberField + channel-grid snap ----
+  const [fieldValid, setFieldValid] = React.useState(true);
+
   // The legal range is the intersection of the band's own edges and the (usually tighter)
   // coarse-channel-derived range, when the latter is available.
   const minHz = Math.max(band?.minFrequencyHz ?? 0, coarseChannelMinHz ?? -Infinity);
@@ -75,15 +79,6 @@ export default function CentralFrequency({
     }
   };
 
-  const checkValue = (raw: string) => {
-    setCfValue(raw);
-    if (raw === '' || isNaN(Number(raw))) {
-      setFieldValid(false);
-    } else {
-      commit(Number(raw));
-    }
-  };
-
   const step = (currentValue: number, direction: 1 | -1) => {
     const cfHz = frequencyConversion(currentValue, units, FREQUENCY_HZ);
     const steppedHz = stepCentralFrequencyHz(
@@ -99,7 +94,7 @@ export default function CentralFrequency({
     return Number(frequencyConversion(steppedHz, FREQUENCY_HZ, units).toFixed(6));
   };
 
-  const errorMessage = fieldValid ? '' : t(FIELD + '.range.error');
+  const stepErrorMessage = fieldValid ? '' : t(FIELD + '.range.error');
 
   // On losing focus, snap to the nearest central frequency whose start channel is a whole
   // number of channels from the band's minimum frequency.
@@ -116,6 +111,60 @@ export default function CentralFrequency({
     commit(Number(frequencyConversion(clampedHz, FREQUENCY_HZ, units).toFixed(6)));
   };
 
+  // ---- Non-steppable (continuum/MID) mode: native TextField + divisibility validation ----
+  const [errorMessage, setErrorMessage] = React.useState('');
+  const minFreq = frequencyConversion(band?.minFrequencyHz ?? 0, FREQUENCY_HZ, units);
+  const maxFreq = frequencyConversion(band?.maxFrequencyHz ?? 0, FREQUENCY_HZ, units);
+  const stepMHz = frequencyConversion(
+    (osdLOW?.basicCapabilities.coarseChannelWidthHz ?? 1) * 2,
+    FREQUENCY_HZ,
+    FREQUENCY_MHZ
+  );
+
+  const validate = (cfValue: number): string => {
+    const lowStationChannelWidthMHz = frequencyConversion(
+      osdLOW?.basicCapabilities.coarseChannelWidthHz,
+      FREQUENCY_HZ,
+      FREQUENCY_MHZ
+    );
+    if (cfValue < minFreq || cfValue > maxFreq) return t(FIELD + '.error.range');
+    if (
+      isLow &&
+      !Number.isInteger((cfValue + 0.5 * lowStationChannelWidthMHz) / lowStationChannelWidthMHz)
+    ) {
+      return t(FIELD + '.error.divisibility', { value: stepMHz });
+    }
+    return '';
+  };
+
+  const checkValue = (cfValue: number) => {
+    if (isLow && Math.abs(Math.abs(cfValue - value) - stepMHz) < 1e-6) {
+      const snapped =
+        cfValue > value
+          ? minFreq + Math.ceil((cfValue - minFreq) / stepMHz) * stepMHz
+          : minFreq + Math.floor((cfValue - minFreq) / stepMHz) * stepMHz;
+      setValue(snapped);
+      setErrorMessage(validate(snapped));
+      return;
+    }
+    setValue(cfValue);
+    setErrorMessage(validate(cfValue));
+  };
+
+  // The minimum frequency the input should allow should be the minimum valid frequency - this is
+  // not the actual minimum frequency but minFreq + minBandwidth / 2
+  const halfBandwidthMHz =
+    frequencyConversion(
+      osdLOW?.basicCapabilities.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP ??
+        // TODO: Mid values should come from OSD in the future - 13440 is Mid channel width in Hz
+        //  and until AA2 bandwidth has to be multiple of 20 channels.
+        Math.round(20 * 13440 * 1e12) / 1e12,
+      FREQUENCY_HZ,
+      FREQUENCY_MHZ
+    ) / 2;
+  const minAllowedFrequency = halfBandwidthMHz + minFreq;
+  const maxAllowedFrequency = maxFreq - halfBandwidthMHz;
+
   if (steppable) {
     return (
       <SteppedNumberField
@@ -128,23 +177,35 @@ export default function CentralFrequency({
         onFocus={() => setHelp(FIELD)}
         disabled={disabled}
         required={required}
-        errorText={errorMessage}
+        errorText={stepErrorMessage}
         suffix={suffix}
       />
     );
   }
 
   return (
-    <NumberEntry
+    <TextField
+      type="number"
+      variant="standard"
+      fullWidth
+      required={required}
       disabled={disabled}
       label={t(FIELD + '.label')}
-      testId={FIELD}
-      value={cfValue}
-      setValue={checkValue}
+      value={value}
+      onChange={(e) => checkValue(Number(e.target.value))}
+      error={!!errorMessage}
+      helperText={errorMessage}
       onFocus={() => setHelp(FIELD)}
-      required={required}
-      suffix={suffix}
-      errorText={errorMessage}
+      slotProps={{
+        htmlInput: {
+          step: isLow ? stepMHz : 1,
+          min: minAllowedFrequency,
+          max: maxAllowedFrequency
+        },
+        input: suffix
+          ? { endAdornment: <InputAdornment position="end">{suffix}</InputAdornment> }
+          : undefined
+      }}
     />
   );
 }

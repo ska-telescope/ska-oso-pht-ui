@@ -52,13 +52,13 @@ import {
   SUPPLIED_INTEGRATION_TIME_STEP_HOURS,
   SUPPLIED_INTEGRATION_TIME_STEP_MINS,
   SUPPLIED_SENSITIVITY_STEP,
-  INTEGRATION_TIME_UNITS
+  INTEGRATION_TIME_UNITS,
+  LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
   generateId,
   getBandwidthZoom,
-  getMinimumChannelWidth,
   obTypeTransform,
   timeConversion
 } from '@utils/helpers.ts';
@@ -167,7 +167,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [numOf13mAntennas, setNumOf13mAntennas] = React.useState<number | undefined>(0);
   const [numOfStations, setNumOfStations] = React.useState<number | undefined>(0);
   const [validateToggle, setValidateToggle] = React.useState(false);
-  const [minimumChannelWidthHz, setMinimumChannelWidthHz] = React.useState<number>(0);
   const [zoomChannels, setZoomChannels] = React.useState<number>(0);
   // Tracks a genuine user edit, as opposed to the value merely matching the interim default -
   // e.g. the user deliberately choosing/keeping ZOOM_CHANNELS_DEFAULT_LOW is not "unedited".
@@ -576,13 +575,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       setDefaultCentralFrequency(observingBand);
       setDefaultContinuumBandwidth(observingBand);
     }
-    const calculateMinimumChannelWidthHz = () =>
-      setMinimumChannelWidthHz(getMinimumChannelWidth(telescope()));
-
     calculateSubarray();
     setAfterChange();
     setFrequencyUnits();
-    calculateMinimumChannelWidthHz();
   }, [observingBand]);
 
   const isContinuum = () => observationType === TYPE_CONTINUUM;
@@ -591,6 +586,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const isLow = () => observingBand === BAND_LOW_STR;
   const isMid = () => observingBand !== BAND_LOW_STR;
   const telescope = () => (isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM);
+  // TODO: Min channel width for Mid hardcoded for now since I'm not sure if it's correct
+  const minimumChannelWidthHz = isLow()
+    ? osdLOW?.basicCapabilities?.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
+    : 13.44e3;
 
   // LOW-zoom channel resolution (Hz) for the selected `bandwidth` index, and the total zoom
   // window bandwidth (Hz) derived from it and the current channel count - replaces the old
@@ -669,6 +668,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       min = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
       max = osdLOW?.basicCapabilities?.maxFrequencyHz ?? 0;
     }
+    // TODO: The first set of minFreq and maxFreq variables is what we would ideally want as the range but different range for
+    //  display and validation is not currently supported by the spectral view GUI component. See MR of BTN-3416 for more details.
+    // const minFreq = Math.round(frequencyConversion(min - 5e6, FREQUENCY_HZ, isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ));
+    // const maxFreq = Math.round(frequencyConversion(max + 5e6, FREQUENCY_HZ, isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ));
     const minFreq = frequencyConversion(min, FREQUENCY_HZ, isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
     const maxFreq = frequencyConversion(max, FREQUENCY_HZ, isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
     const cenFreq = frequencyConversion(
@@ -997,6 +1000,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const continuumBandwidthField = () => {
     const continuumBandwidthUnitsField = () => {
       const options = isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
+      if (options?.length === 1) {
+        return options[0].label;
+      }
       return (
         <DropDown
           disabledUnderline
@@ -1005,7 +1011,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           value={continuumBandwidthUnits}
           setValue={setContinuumBandwidthUnits}
           label=""
-          disabled={options?.length === 1}
           onFocus={() => setHelp('frequencyUnits')}
         />
       );
@@ -1013,7 +1018,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     return fieldWrapper(
       <ContinuumBandwidthField
         setValue={setContinuumBandwidth}
-        step={0.1}
         value={continuumBandwidth}
         suffix={continuumBandwidthUnitsField()}
         telescope={telescope()}
@@ -1063,6 +1067,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const centralFrequencyUnitsField = () => {
     // Only have MHz for Low
     const options = isLow() ? [FREQUENCY_UNITS[1]] : FREQUENCY_UNITS;
+    if (options?.length === 1) {
+      return options[0].label;
+    }
     return (
       <DropDown
         options={options}
@@ -1070,7 +1077,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         value={centralFrequencyUnits}
         setValue={setCentralFrequencyUnits}
         label=""
-        disabled={options?.length === 1}
         onFocus={() => setHelp('frequencyUnits')}
       />
     );

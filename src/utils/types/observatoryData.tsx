@@ -27,19 +27,8 @@ export type ObservatoryPolicy = {
     mid: string[];
   };
   telescopeCapabilities: TelescopeInformationFrontend;
-  capabilities: ObservatoryCapabilities;
+  capabilities: ObservatoryDataCapabilities;
   type: string;
-};
-
-export type ObservatoryCapabilities = {
-  mid: {
-    basicCapabilities: BasicCapabilitiesMid;
-    subArrays: subarrayConfigurationMid[];
-  } | null;
-  low: {
-    basicCapabilities: BasicCapabilitiesLow;
-    subArrays: subarrayConfigurationLow[];
-  } | null;
 };
 
 export type subBandsBackend = {
@@ -113,6 +102,15 @@ export type BasicCapabilitiesLowBackend = {
 export type BasicCapabilitiesLow = {
   minFrequencyHz: number;
   maxFrequencyHz: number;
+  minCoarseChannel: number;
+  maxCoarseChannel: number;
+  coarseChannelWidthHz: number;
+  numberOfChannelsPerCoarseChannel: {
+    continuum: number;
+    zoom: number;
+    pst: number;
+    pss: number;
+  };
 };
 
 export type subarrayConfigurationMidBackend = {
@@ -207,9 +205,20 @@ export type ObservatoryDataBackend = {
   };
 };
 
+export type ObservatoryDataCapabilities = {
+  mid: {
+    basicCapabilities: BasicCapabilitiesMid;
+    subArrays: subarrayConfigurationMid[];
+  } | null;
+  low: {
+    basicCapabilities: BasicCapabilitiesLow;
+    subArrays: subarrayConfigurationLow[];
+  } | null;
+};
+
 export type ObservatoryData = {
   policies: ObservatoryPolicy[];
-  capabilities: ObservatoryCapabilities;
+  capabilities: ObservatoryDataCapabilities;
 };
 
 export default ObservatoryData;

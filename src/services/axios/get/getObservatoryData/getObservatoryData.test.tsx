@@ -5,6 +5,7 @@ import GetObservatoryData from '@/services/axios/get/getObservatoryData/getObser
 import { MockObservatoryDataBackend } from '@/services/axios/get/getObservatoryData/mockObservatoryDataBackend';
 import { osdMapping } from '@/services/axios/get/getObservatoryData/getOSDCycles';
 import { SA_AA2 } from '@/utils/constants';
+import { MockODTConfigurationBackend } from '@/services/axios/get/getObservatoryData/mockODTConfigurationBackend';
 
 describe('GetObservatoryData Service', () => {
   let mockedAuthClient: any;
@@ -23,7 +24,9 @@ describe('GetObservatoryData Service', () => {
   });
 
   test('returns mapped data from API', async () => {
-    mockedAuthClient.get.mockResolvedValue({ data: MockObservatoryDataBackend });
+    mockedAuthClient.get
+      .mockResolvedValueOnce({ data: MockObservatoryDataBackend })
+      .mockResolvedValueOnce({ data: MockODTConfigurationBackend });
     const result = (await GetObservatoryData(
       mockedAuthClient,
       MockObservatoryDataBackend.observatory_policy.cycle_number
@@ -84,7 +87,7 @@ describe('GetObservatoryData Service', () => {
       }
     };
 
-    const result = osdMapping([aa2SvCycle]);
+    const result = osdMapping([aa2SvCycle], MockODTConfigurationBackend);
     const sArray = result.policies[0].capabilities.low?.subArrays.find(
       (s) => s.subArray === SA_AA2
     );
@@ -103,7 +106,7 @@ describe('GetObservatoryData Service', () => {
       }
     };
 
-    const result = osdMapping([aa2SvCycle]);
+    const result = osdMapping([aa2SvCycle], MockODTConfigurationBackend);
     expect(result.policies[0].cyclePolicies.low).toEqual([SA_AA2]);
     expect(result.policies[0].cyclePolicies.mid).toEqual([SA_AA2]);
   });

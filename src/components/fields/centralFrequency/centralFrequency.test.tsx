@@ -31,36 +31,15 @@ vi.mock('@/utils/help/useHelp', () => ({
   })
 }));
 
-// Mock useOSDAccessors so findBand returns a known 50-350 MHz LOW band for the window-clamping tests
+// Mock useOSDAccessors so findBand returns a known 50-350 MHz LOW band for the window-clamping
+// (steppable) tests, and osdLOW provides a coarse channel width for the non-steppable mode's
+// divisibility validation.
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({
     findBand: () => ({ minFrequencyHz: 50_000_000, maxFrequencyHz: 350_000_000 }),
-    telescopeBand: () => 2 // TELESCOPE_LOW_NUM
+    telescopeBand: () => 2, // TELESCOPE_LOW_NUM
+    osdLOW: { basicCapabilities: { coarseChannelWidthHz: 781250 } }
   })
-}));
-
-// Mock NumberEntry component from ska-gui-components
-vi.mock('@ska-telescope/ska-gui-components', () => ({
-  LABEL_POSITION: {
-    CONTAINED: 'contained',
-    START: 'start',
-    TOP: 'top',
-    BOTTOM: 'bottom',
-    END: 'end'
-  },
-  TELESCOPE_MID: 'MID',
-  TELESCOPE_LOW: 'LOW',
-  NumberEntry: ({ errorText, value, setValue, onFocus, testId }: any) => (
-    <div>
-      <input
-        data-testid={testId}
-        value={value}
-        onChange={(e) => setValue(Number(e.target.value))}
-        onFocus={onFocus}
-      />
-      {errorText && <span data-testid="error">{errorText}</span>}
-    </div>
-  )
 }));
 
 const wrapper = (component: React.ReactElement) => {
@@ -76,9 +55,9 @@ describe('CentralFrequency component', () => {
     wrapper(<CentralFrequency observingBand={BAND_LOW_STR} value={150} setValue={vi.fn()} />);
   });
 
-  it('non-steppable mode renders the plain NumberEntry, unchanged', () => {
+  it('non-steppable mode renders a plain text field, not the stepped variant', () => {
     wrapper(<CentralFrequency observingBand={BAND_LOW_STR} value={150} setValue={vi.fn()} />);
-    expect(screen.getByTestId('centralFrequency')).toBeInTheDocument();
+    expect(screen.getByLabelText('centralFrequency.label')).toBeInTheDocument();
     expect(screen.queryByLabelText('centralFrequency-increment')).not.toBeInTheDocument();
   });
 
