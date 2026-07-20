@@ -19,7 +19,7 @@ export const MockObservatoryDataBackend: ObservatoryDataBackend = {
       max_targets: null
     },
     telescope_capabilities: {
-      Mid: SA_AA2,
+      Mid: null,
       Low: SA_AA2
     }
   },

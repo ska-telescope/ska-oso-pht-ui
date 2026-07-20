@@ -22,7 +22,7 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
         proposalClose: '2026-05-12T15:00:00.000Z'
       },
       cyclePolicies: {
-        bands: [BAND_LOW_STR, BAND_5B_STR],
+        bands: [BAND_LOW_STR],
         calibrationFactoryDefined: true,
         low: [],
         mid: [],
@@ -32,7 +32,7 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
       },
       telescopeCapabilities: {
         low: SA_AA2,
-        mid: SA_AA2
+        mid: null
       },
       type: 'Science Verification'
     },
