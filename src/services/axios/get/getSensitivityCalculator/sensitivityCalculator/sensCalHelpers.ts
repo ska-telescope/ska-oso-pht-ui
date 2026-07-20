@@ -1,23 +1,11 @@
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
-import { FREQUENCY_STR_HZ, FREQUENCY_STR_KHZ, FREQUENCY_STR_MHZ } from '@/utils/constants';
+import { FREQUENCY_STR_HZ, FREQUENCY_STR_KHZ } from '@/utils/constants';
+
+// TODO: We should refactor the code so that these are no longer needed. We already have a conversion function
+//  'frequencyConversion' in utils/helpers.ts that we should use instead.
 
 const sensCalHelpers = {
   format: {
-    convertBandwidthToMHz(
-      bandwidthValue: number,
-      bandwidthUnits: string = FREQUENCY_STR_MHZ
-    ): number {
-      const unitMap: { [key: string]: number } = {
-        GHz: 1000,
-        MHz: 1,
-        kHz: 0.001,
-        Hz: 0.000001
-      };
-      if (!unitMap[bandwidthUnits]) {
-        throw new Error('Invalid bandwidth unit');
-      }
-      return bandwidthValue * unitMap[bandwidthUnits];
-    },
     convertBandwidthToKHz(
       bandwidthValue: number,
       bandwidthUnits: string = FREQUENCY_STR_KHZ
