@@ -6,18 +6,17 @@ version: 10.1.0
 appVersion: 10.1.0
 icon: https://www.skatelescope.org/wp-content/uploads/2016/07/09545_NEW_LOGO_2014.png
 dependencies:
-- name: ska-oso-pht-ui
-  version: 10.1.0
-  repository: file://../ska-oso-pht-ui
+  - name: ska-oso-pht-ui
+    version: 10.1.0
+    repository: file://../ska-oso-pht-ui
 
-# OSO services provides services required by the PHT UI and acts as the proxy
-# for all ODA operations (load proposal, save proposal, etc.)
-- name: ska-oso-services-umbrella
-  version: 14.7.0
-  repository: https://artefact.skao.int/repository/helm-internal
+  # OSO services provides services required by the PHT UI and acts as the proxy
+  # for all ODA operations (load proposal, save proposal, etc.)
+  - name: ska-oso-services-umbrella
+    version: 16.1.0
+    repository: https://artefact.skao.int/repository/helm-internal
 
-# Sensitivity calculator services required by the PHT for the observation page
-- name: ska-ost-senscalc
-  version: 11.3.0
-  repository: https://artefact.skao.int/repository/helm-internal
-
+  # Sensitivity calculator services required by the PHT for the observation page
+  - name: ska-ost-senscalc
+    version: 11.3.0
+    repository: https://artefact.skao.int/repository/helm-internal

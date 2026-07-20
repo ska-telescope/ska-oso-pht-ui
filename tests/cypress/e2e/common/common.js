@@ -33,7 +33,7 @@ export const initializeUserNotLoggedIn = () => {
 };
 
 export const clearLocalStorage = () => {
-  cy.window().then(win => {
+  cy.window().then((win) => {
     win.localStorage.clear();
   });
 };
@@ -42,10 +42,10 @@ export const clearLocalStorage = () => {
 // see: https://docs.cypress.io/app/guides/network-requests#Routing
 
 export const mockCreateProposalAPI = () => {
-  cy.window().then(win => {
+  cy.window().then((win) => {
     const token = win.localStorage.getItem('cypress:token');
-    cy.fixture('proposal.json').then(submission => {
-      cy.intercept('POST', '**/pht/prsls/create', req => {
+    cy.fixture('proposal.json').then((submission) => {
+      cy.intercept('POST', '**/pht/prsls/create', (req) => {
         req.headers['Authorization'] = `Bearer ${token}`;
         req.reply({
           statusCode: 200,
@@ -57,10 +57,10 @@ export const mockCreateProposalAPI = () => {
 };
 
 export const mockCreateSVIdeaAPI = () => {
-  cy.window().then(win => {
+  cy.window().then((win) => {
     const token = win.localStorage.getItem('cypress:token');
-    cy.fixture('svIdea.json').then(submission => {
-      cy.intercept('POST', '**/pht/prsls/create', req => {
+    cy.fixture('svIdea.json').then((submission) => {
+      cy.intercept('POST', '**/pht/prsls/create', (req) => {
         req.headers['Authorization'] = `Bearer ${token}`;
         req.reply({
           statusCode: 200,
@@ -72,10 +72,10 @@ export const mockCreateSVIdeaAPI = () => {
 };
 
 export const mockGetUserByEmailAPI = () => {
-  cy.window().then(win => {
+  cy.window().then((win) => {
     const token = win.localStorage.getItem('cypress:token');
-    cy.fixture('userMSGraph.json').then(user => {
-      cy.intercept('GET', '**/pht/prsls/member/Trevor.Swain@community.skao.int', req => {
+    cy.fixture('userMSGraph.json').then((user) => {
+      cy.intercept('GET', '**/pht/prsls/member/Trevor.Swain@community.skao.int', (req) => {
         req.headers['Authorization'] = `Bearer ${token}`;
         req.reply({
           statusCode: 200,
@@ -87,9 +87,9 @@ export const mockGetUserByEmailAPI = () => {
 };
 
 export const mockCreateProposalAccessAPI = () => {
-  cy.window().then(win => {
+  cy.window().then((win) => {
     const token = win.localStorage.getItem('cypress:token');
-    cy.intercept('POST', '**/pht/proposal-access/create', req => {
+    cy.intercept('POST', '**/pht/proposal-access/create', (req) => {
       req.headers['Authorization'] = `Bearer ${token}`;
       req.reply({
         statusCode: 200,
@@ -100,9 +100,9 @@ export const mockCreateProposalAccessAPI = () => {
 };
 
 export const mockEmailAPI = () => {
-  cy.window().then(win => {
+  cy.window().then((win) => {
     const token = win.localStorage.getItem('cypress:token');
-    cy.intercept('POST', '**/pht/prsls/send-email/', req => {
+    cy.intercept('POST', '**/pht/prsls/send-email/', (req) => {
       req.headers['Authorization'] = `Bearer ${token}`;
       req.reply({
         statusCode: 200,
@@ -113,7 +113,7 @@ export const mockEmailAPI = () => {
 };
 
 export const mockResolveTargetAPI = () => {
-  cy.fixture('target.json').then(target => {
+  cy.fixture('target.json').then((target) => {
     cy.intercept('GET', '**/coordinates/M2/equatorial', {
       statusCode: 200,
       body: target
@@ -126,9 +126,9 @@ export const mockOSDAPI = () => {
 };
 
 export const mockValidateAPI = () => {
-  cy.window().then(win => {
+  cy.window().then((win) => {
     const token = win.localStorage.getItem('cypress:token');
-    cy.intercept('POST', '**/pht/prsls/validate', req => {
+    cy.intercept('POST', '**/pht/prsls/validate', (req) => {
       req.headers['Authorization'] = `Bearer ${token}`;
       req.reply({
         statusCode: 200,
@@ -139,10 +139,10 @@ export const mockValidateAPI = () => {
 };
 
 export const mockValidateSVIdeaAPI = () => {
-  cy.window().then(win => {
+  cy.window().then((win) => {
     const token = win.localStorage.getItem('cypress:token');
-    cy.fixture('validateSVIdea.json').then(submission => {
-      cy.intercept('POST', '**/pht/prsls/validate', req => {
+    cy.fixture('validateSVIdea.json').then((submission) => {
+      cy.intercept('POST', '**/pht/prsls/validate', (req) => {
         req.headers['Authorization'] = `Bearer ${token}`;
         req.reply({
           statusCode: 200,
@@ -155,12 +155,12 @@ export const mockValidateSVIdeaAPI = () => {
 
 /*----------------------------------------------------------------------*/
 
-export const verify = testId => {
+export const verify = (testId) => {
   verifyExists(testId);
   verifyVisible(testId);
 };
 
-export const clickButton = testId => {
+export const clickButton = (testId) => {
   verify(testId);
   click(testId);
 };
@@ -188,7 +188,7 @@ export const clickFileUploadArea = () => clickButton('fileUpload');
 export const clickFileUpload = () => clickButton('fileUploadUploadButton');
 export const clickRank9 = () => clickButton('Rank9');
 export const clickFeasibilityYes = () => clickButton('FeasibilityYes');
-export const clickStatusIconNav = testId => {
+export const clickStatusIconNav = (testId) => {
   cy.get('[data-testid="' + testId + '"]')
     .eq(0)
     .click();
@@ -228,18 +228,16 @@ export const checkFieldIsVisible = (testId, visible) => {
       .closest('button')
       .should('be.visible');
   } else {
-    cy.get('body')
-      .find(`[data-testid="${testId}"]`)
-      .should('not.exist');
+    cy.get('body').find(`[data-testid="${testId}"]`).should('not.exist');
   }
 };
 /*----------------------------------------------------------------------*/
 
-export const uploadTestFile = fileName => {
+export const uploadTestFile = (fileName) => {
   cy.get('[data-testid="fileUpload"] input[type="file"]').attachFile(fileName);
 };
 
-export const verifyTestFileUploaded = fileName => {
+export const verifyTestFileUploaded = (fileName) => {
   cy.contains(fileName).should('be.visible');
 };
 export const clickNav = (testId, title) => {
@@ -249,26 +247,22 @@ export const clickNav = (testId, title) => {
   }
 };
 
-export const clickFirstPanel = () =>
-  get('dataGridId')
-    .find('.MuiDataGrid-row')
-    .first()
-    .click();
+export const clickFirstPanel = () => get('dataGridId').find('.MuiDataGrid-row').first().click();
 
 export const clickPanelProposalsTab = () => selectId('simple-tab-1');
 
-export const verifyReviewerOnGridIsVisible = ReviewerName => {
+export const verifyReviewerOnGridIsVisible = (ReviewerName) => {
   verifyContent('dataGridReviewers', ReviewerName);
 };
-export const verifyProposalOnGridIsVisible = ProposalName => {
+export const verifyProposalOnGridIsVisible = (ProposalName) => {
   verifyContent('dataGridProposals', ProposalName);
 };
 
-export const clickLinkedTickedBox = index => {
+export const clickLinkedTickedBox = (index) => {
   getCheckboxInRow(index).click({ force: true });
 };
 
-export const verifyTickBoxIsSelected = index => {
+export const verifyTickBoxIsSelected = (index) => {
   getCheckboxInRow(index).should('be.checked');
 };
 
@@ -282,7 +276,8 @@ export const clickUserMenuOverview = () => clickSignINBtns('menuItemOverview', '
 export const clickUserMenuProposals = () => clickSignINBtns('menuItemProposals', '');
 export const clickUserMenuPanels = () =>
   clickSignINBtns('menuItemPanelSummary', 'PANEL MANAGEMENT');
-export const clickUserMenuReviews = () => clickSignINBtns('menuItemReviews', 'REVIEW PROPOSALS');
+export const clickUserMenuReviews = () =>
+  clickSignINBtns('menuItemReviews', 'REVIEW SCIENCE VERIFICATION IDEAS');
 export const clickUserMenuDecisions = () =>
   clickSignINBtns('menuItemReviewDecisions', 'REVIEW DECISIONS');
 
@@ -292,11 +287,9 @@ function verifyUserMenu(testId, shouldExist) {
   const selector = `[data-testid="${testId}"]`;
 
   if (shouldExist) {
-    cy.get(selector)
-      .should('exist')
-      .and('be.visible');
+    cy.get(selector).should('exist').and('be.visible');
   } else {
-    cy.get('body').then($body => {
+    cy.get('body').then(($body) => {
       if ($body.find(selector).length > 0) {
         cy.get(selector).should('not.be.visible');
       } else {
@@ -305,15 +298,16 @@ function verifyUserMenu(testId, shouldExist) {
     });
   }
 }
-export const verifyUserMenuOverview = exists => verifyUserMenu('menuItemOverview', exists);
-export const verifyUserMenuProposals = exists => verifyUserMenu('menuItemProposals', exists);
-export const verifyUserMenuPanels = exists => verifyUserMenu('menuItemPanelSummary', exists);
-export const verifyUserMenuReviews = exists => verifyUserMenu('menuItemReviews', exists);
-export const verifyUserMenuDecisions = exists => verifyUserMenu('menuItemReviewDecisions', exists);
+export const verifyUserMenuOverview = (exists) => verifyUserMenu('menuItemOverview', exists);
+export const verifyUserMenuProposals = (exists) => verifyUserMenu('menuItemProposals', exists);
+export const verifyUserMenuPanels = (exists) => verifyUserMenu('menuItemPanelSummary', exists);
+export const verifyUserMenuReviews = (exists) => verifyUserMenu('menuItemReviews', exists);
+export const verifyUserMenuDecisions = (exists) =>
+  verifyUserMenu('menuItemReviewDecisions', exists);
 
 /*----------------------------------------------------------------------*/
 
-export const pageConfirmed = label => cy.get('#pageTitle').contains(label);
+export const pageConfirmed = (label) => cy.get('#pageTitle').contains(label);
 export const verifyOnLandingPage = () => verifyExists('addSubmissionButton');
 
 export const clickConfirmButtonWithinPopup = () => {
@@ -322,7 +316,7 @@ export const clickConfirmButtonWithinPopup = () => {
   });
 };
 
-export const clickGeneralCommentsTab = testId => {
+export const clickGeneralCommentsTab = (testId) => {
   cy.get(`[data-testid="${testId}"]`).click({
     force: true
   });
@@ -334,7 +328,7 @@ export const enterProposalTitle = () => entry('titleId', 'Proposal Title');
 export const enterScienceVerificationIdeaTitle = () =>
   entry('titleId', 'Science Verification Idea Title');
 
-export const selectObservingMode = value => {
+export const selectObservingMode = (value) => {
   // Open the dropdown using mousedown instead of click
   cy.get('[data-testid="categoryId"] [role="combobox"]').trigger('mousedown', {
     button: 0,
@@ -362,40 +356,40 @@ export const selectOptionFromDropdown = (testId, value) => {
 export const clickProposalTypePrincipleInvestigator = () => selectId('ProposalType-1');
 export const clickSubProposalTypeTargetOfOpportunity = () => selectId('proposalAttribute-1');
 
-export const verifyOsdDataCycleID = data => {
-  cy.fixture('osd.json').then(osdData => {
+export const verifyOsdDataCycleID = (data) => {
+  cy.fixture('osd.json').then((osdData) => {
     expect(`${osdData[0]?.observatory_policy?.cycle_information?.cycle_id}_ID`).to.equal(data);
   });
 };
 
-export const verifyOsdDataCycleDescription = data => {
-  cy.fixture('osd.json').then(osdData => {
+export const verifyOsdDataCycleDescription = (data) => {
+  cy.fixture('osd.json').then((osdData) => {
     expect(osdData[0]?.observatory_policy?.cycle_description).to.equal(data);
   });
 };
 
-const normalizeDateStr = str => str.replace(/^(\d{4})(\d{2})(\d{2})T/, '$1-$2-$3T');
-const formatDateForLocale = str =>
+const normalizeDateStr = (str) => str.replace(/^(\d{4})(\d{2})(\d{2})T/, '$1-$2-$3T');
+const formatDateForLocale = (str) =>
   new Intl.DateTimeFormat(undefined, { year: 'numeric', month: 'numeric', day: 'numeric' }).format(
     new Date(normalizeDateStr(str))
   );
 
-export const verifyOsdDataProposalOpen = data => {
-  cy.fixture('osd.json').then(osdData => {
+export const verifyOsdDataProposalOpen = (data) => {
+  cy.fixture('osd.json').then((osdData) => {
     expect(osdData[0]?.observatory_policy?.cycle_information?.proposal_open).to.equal(data);
     verifyContent('SKAO_2027_1_opens', formatDateForLocale(data));
   });
 };
 
-export const verifyOsdDataProposalClose = data => {
-  cy.fixture('osd.json').then(osdData => {
+export const verifyOsdDataProposalClose = (data) => {
+  cy.fixture('osd.json').then((osdData) => {
     expect(osdData[0]?.observatory_policy?.cycle_information?.proposal_close).to.equal(data);
     verifyContent('SKAO_2027_1_closes', formatDateForLocale(data));
   });
 };
 
-export const verifyOsdDataMaxTargets = data => {
-  cy.fixture('osd.json').then(osdData => {
+export const verifyOsdDataMaxTargets = (data) => {
+  cy.fixture('osd.json').then((osdData) => {
     expect(osdData[0]?.observatory_policy?.cycle_policies?.max_targets).to.equal(data);
   });
 };
@@ -409,11 +403,11 @@ export const verifyAutoLinkAlertFooter = () =>
 export const verifySubmissionCreatedAlertFooter = () =>
   verifyContent('timeAlertFooter', 'Submission added with unique identifier');
 
-export const verifyAlertFooter = text => {
+export const verifyAlertFooter = (text) => {
   verifyContent('timeAlertFooter', text);
 };
 
-export const verifyInformationBannerText = text => {
+export const verifyInformationBannerText = (text) => {
   cy.get('[id="standardAlertId"]').contains(text);
 };
 
@@ -467,7 +461,7 @@ export const addContinuumImagesObservatoryDataProduct = () => {
   clickAddDataProductEntry();
 };
 
-export const addSubmissionSummary = value => {
+export const addSubmissionSummary = (value) => {
   cy.get('[data-testid="abstractId"]').should('exist');
   cy.get('[data-testid="abstractId"]').type(value);
 };
@@ -497,10 +491,7 @@ export const updateTargetField = (testId, value) => {
 };
 
 export const updateFieldValue = (testId, value) => {
-  cy.get(`[data-testid="${testId}"]`)
-    .should('exist')
-    .type('{selectall}{backspace}')
-    .type(value);
+  cy.get(`[data-testid="${testId}"]`).should('exist').type('{selectall}{backspace}').type(value);
 };
 
 export const verifyOnLandingPageFilterIsVisible = () => {
@@ -521,9 +512,7 @@ export const verifyData = (testId, text) => {
 };
 
 export const verifyDataInTable = (tableTestId, text) => {
-  cy.get(`[data-testid="${tableTestId}"]`)
-    .find('[role="row"]')
-    .filter(`:contains("${text}")`);
+  cy.get(`[data-testid="${tableTestId}"]`).find('[role="row"]').filter(`:contains("${text}")`);
 };
 
 export const verifyFieldError = (testId, error, exists) => {
@@ -532,7 +521,7 @@ export const verifyFieldError = (testId, error, exists) => {
   cy.get(selector)
     .should('exist')
     .parent() // move to parent
-    .then($parent => {
+    .then(($parent) => {
       if (exists) {
         cy.wrap($parent).should('contain.text', error);
       } else {
@@ -553,8 +542,8 @@ export const verifyTargetInTargetTable = (targetName, ra, dec, velocity) => {
     .eq(0)
     .within(() => {
       cy.get('[data-field="name"]').should('contain', targetName);
-      cy.get('[data-field="raStr"]').should('contain', ra);
-      cy.get('[data-field="decStr"]').should('contain', dec);
+      cy.get('[data-field="coord1"]').should('contain', ra);
+      cy.get('[data-field="coord2"]').should('contain', dec);
       cy.get('[data-field="vel"]').should('contain', velocity);
     });
 };
@@ -579,9 +568,7 @@ export const clickEditIconForRow = (tableTestId, text) => {
     .click()
     .first()
     .within(() => {
-      cy.get('[data-testid="editIcon"]')
-        .should('be.visible')
-        .click();
+      cy.get('[data-testid="editIcon"]').should('be.visible').click();
     });
 };
 
@@ -592,9 +579,7 @@ export const clickEditUserRightsIconForRow = (tableTestId, text) => {
     .click()
     .first()
     .within(() => {
-      cy.get('[data-testid="lockIcon"]')
-        .should('be.visible')
-        .click();
+      cy.get('[data-testid="lockIcon"]').should('be.visible').click();
     });
 };
 
@@ -605,9 +590,7 @@ export const clickIconForRow = (tableTestId, iconTestId, text) => {
     .click()
     .first()
     .within(() => {
-      cy.get(`[data-testid="${iconTestId}"]`)
-        .should('be.visible')
-        .click();
+      cy.get(`[data-testid="${iconTestId}"]`).should('be.visible').click();
     });
 };
 

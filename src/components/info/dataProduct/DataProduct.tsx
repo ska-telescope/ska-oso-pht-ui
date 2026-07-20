@@ -46,6 +46,8 @@ interface DataProductProps {
 }
 
 export default function DataProduct({ t, sdp, observation }: DataProductProps) {
+  // BUTTONS: This version of the DataProduct is used in the PHT to display the data product info when expanding the table row
+  // The view is read only, which is why the fields aren't passed any setters
   const isDetectedFilterbank = () => observation.pstMode === DETECTED_FILTER_BANK_VALUE;
   const isPulsarTimingValue = () => observation.pstMode === PULSAR_TIMING_VALUE;
   const isFlowThroughValue = () => observation.pstMode === FLOW_THROUGH_VALUE;

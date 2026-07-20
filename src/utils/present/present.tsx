@@ -60,9 +60,7 @@ export const presentValue = (inValue: string | number, fractionLength = 2) => {
 const normalizeDateString = (input: string): string => {
   if (!input) return '';
   const match = /^(\d{4})(\d{2})(\d{2})T/.exec(input);
-  return match
-    ? `${match[1]}-${match[2]}-${match[3]}T${input.slice(match[0].length)}`
-    : input;
+  return match ? `${match[1]}-${match[2]}-${match[3]}T${input.slice(match[0].length)}` : input;
 };
 
 const parseDate = (input: string): Date | null => {
@@ -82,23 +80,29 @@ const formatDate = (
   { locale }: PresentDateOptions = {}
 ): string => {
   const date = parseDate(input);
-  if (!date){
+  if (!date) {
     return '';
   }
   return new Intl.DateTimeFormat(locale, options).format(date);
-}
+};
 
 export const presentDate = (input: string, { timeZone, locale }: PresentDateOptions = {}) =>
   formatDate(input, { timeZone, year: 'numeric', month: 'numeric', day: 'numeric' }, { locale });
 
-export const presentTime = (input: string, { locale, timeZone, timeZoneName }: PresentDateOptions = {}) =>
+export const presentTime = (
+  input: string,
+  { locale, timeZone, timeZoneName }: PresentDateOptions = {}
+) =>
   formatDate(
     input,
     { timeZone, timeZoneName, hour: '2-digit', minute: '2-digit', second: '2-digit' },
     { locale }
   );
 
-export const presentDateTime = (input: string, { locale, timeZone, timeZoneName }: PresentDateOptions = {}) =>
+export const presentDateTime = (
+  input: string,
+  { locale, timeZone, timeZoneName }: PresentDateOptions = {}
+) =>
   formatDate(
     input,
     {

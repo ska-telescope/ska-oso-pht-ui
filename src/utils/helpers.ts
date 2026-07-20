@@ -5,7 +5,7 @@ import {
   SPEED_OF_LIGHT,
   TEXT_ENTRY_PARAMS,
   VELOCITY_UNITS,
-DEFAULT_PST_OBSERVATION_LOW,
+  DEFAULT_PST_OBSERVATION_LOW,
   DEFAULT_ZOOM_OBSERVATION_LOW,
   TYPE_ZOOM,
   TYPE_PST,
@@ -33,7 +33,7 @@ export const generateId = (prefix: string, length: number = 8) => {
 };
 
 export const getBandwidthOrFrequencyUnitsLabel = (incValue: number): string => {
-  return FREQUENCY_UNITS.find(item => item.value === incValue)?.label as string;
+  return FREQUENCY_UNITS.find((item) => item.value === incValue)?.label as string;
 };
 
 export const getScaledBandwidthOrFrequency = (
@@ -45,12 +45,7 @@ export const getScaledBandwidthOrFrequency = (
 };
 
 export const countWords = (text: string) => {
-  return !text
-    ? 0
-    : text
-        .trim()
-        .split(/\s+/)
-        .filter(Boolean).length;
+  return !text ? 0 : text.trim().split(/\s+/).filter(Boolean).length;
 };
 
 export const frequencyConversion = (inValue: any, from: number, to: number = FREQUENCY_HZ) => {
@@ -83,7 +78,6 @@ export const helpers = {
       setErrorText: Function,
       textType?: keyof typeof TEXT_ENTRY_PARAMS
     ): boolean {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
       textType = textType ?? 'DEFAULT';
       const textEntryParams = TEXT_ENTRY_PARAMS[textType];
       if (!textEntryParams) {
@@ -106,11 +100,11 @@ export const helpers = {
       if (Array.isArray(obj)) {
         // Recursively trim each element, then filter out null/undefined/empty string
         return obj
-          .map(item => this.trimObject(item))
-          .filter(item => item !== undefined && item !== null && item !== '');
+          .map((item) => this.trimObject(item))
+          .filter((item) => item !== undefined && item !== null && item !== '');
       } else if (obj && typeof obj === 'object') {
         const newObj: any = {};
-        Object.keys(obj).forEach(key => {
+        Object.keys(obj).forEach((key) => {
           const value = obj[key];
           if (value === undefined || value === '' || value === null) {
             if (
@@ -141,7 +135,7 @@ export const helpers = {
 /*********************************************************** filter *********************************************************/
 
 const sortByLastUpdated = (array: any[]): any[] => {
-  array.sort(function(a, b) {
+  array.sort(function (a, b) {
     return (
       new Date(b.metadata?.last_modified_on as string)?.valueOf() -
       new Date(a.metadata?.last_modified_on as string)?.valueOf()
@@ -151,22 +145,25 @@ const sortByLastUpdated = (array: any[]): any[] => {
 };
 
 const groupBylId = (data: any[], idKey: string) => {
-  return data.reduce((grouped: { [key: string]: any[] }, obj) => {
-    if (!grouped[obj[idKey]]) {
-      grouped[obj[idKey]] = [obj];
-    } else {
-      grouped[obj[idKey]].push(obj);
-    }
-    return grouped;
-  }, {} as { [key: string]: any[] });
+  return data.reduce(
+    (grouped: { [key: string]: any[] }, obj) => {
+      if (!grouped[obj[idKey]]) {
+        grouped[obj[idKey]] = [obj];
+      } else {
+        grouped[obj[idKey]].push(obj);
+      }
+      return grouped;
+    },
+    {} as { [key: string]: any[] }
+  );
 };
 
 export const getUniqueMostRecentItems = (data: any[], idKey: string) => {
   // retrieve unique items based on idKey
-  let grouped: { [key: string]: any[] } = groupBylId(data, idKey);
+  const grouped: { [key: string]: any[] } = groupBylId(data, idKey);
 
   // sort each group by last_modified_on and take the most recent item
-  let sorted = (Object as any).values(grouped).map((arr: any[]) => {
+  const sorted = (Object as any).values(grouped).map((arr: any[]) => {
     sortByLastUpdated(arr);
     return arr[0];
   });
@@ -175,7 +172,7 @@ export const getUniqueMostRecentItems = (data: any[], idKey: string) => {
   return sortByLastUpdated(sorted);
 };
 
-export const leadZero = (coordinate: String): String => {
+export const leadZero = (coordinate: string): string => {
   const normalised = coordinate.toString().replace(/^\+/, '');
   const arr = normalised.split(':');
   const num = Number(arr[0]);
@@ -203,8 +200,8 @@ export const trailingZeros = (coordinate: string): string => {
 /*********************************************************** map values *********************************************************/
 
 export const getBandwidthZoom = (incObs: Observation | null): ValueUnitPair => {
-  const obsTelescopeArray = OSD_CONSTANTS.array.find(o => o.value === incObs?.telescope);
-  const bandwidth = obsTelescopeArray?.bandWidth?.find(b => b.value === incObs?.bandwidth);
+  const obsTelescopeArray = OSD_CONSTANTS.array.find((o) => o.value === incObs?.telescope);
+  const bandwidth = obsTelescopeArray?.bandWidth?.find((b) => b.value === incObs?.bandwidth);
   const valueUnit = bandwidth?.label?.split(' ');
   const value = valueUnit && valueUnit.length > 0 ? Number(valueUnit[0]) : 0;
   return {
@@ -213,14 +210,14 @@ export const getBandwidthZoom = (incObs: Observation | null): ValueUnitPair => {
   };
 };
 
-export const getBandwidthLowZoom = (inValue: Number) => {
+export const getBandwidthLowZoom = (inValue: number) => {
   const obsTelescopeArray = OSD_CONSTANTS.array[1];
-  return obsTelescopeArray?.bandWidth?.find(b => b.value === inValue);
+  return obsTelescopeArray?.bandWidth?.find((b) => b.value === inValue);
 };
 
 export const obTypeTransform = (inData: string[]) => {
   const out: string[] = [];
-  inData.forEach(item => {
+  inData.forEach((item) => {
     if (item === 'vis' || item === 'correlation') {
       out.push('continuum', 'spectral');
     } else if (item === 'pst') {
@@ -244,8 +241,8 @@ export const getDefaultObservationLowAA2 = (type: string): Observation | null =>
 };
 
 export const timeConversion = (inValue: number, from: number, to: number) => {
-  const fromUnit = TIME_UNITS.find(u => u.id === from);
-  const toUnit = TIME_UNITS.find(u => u.id === to);
+  const fromUnit = TIME_UNITS.find((u) => u.id === from);
+  const toUnit = TIME_UNITS.find((u) => u.id === to);
   if (!fromUnit || !toUnit) return inValue;
   return (inValue * toUnit.toDay) / fromUnit.toDay;
 };

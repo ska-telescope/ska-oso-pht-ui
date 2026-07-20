@@ -33,13 +33,18 @@ async function getSensCalc(
   }
 
   try {
-    const output: any = await getSensitivityCalculatorAPIData(observation, target, dataProductSDP, isCustom());
+    const output: any = await getSensitivityCalculatorAPIData(
+      observation,
+      target,
+      dataProductSDP,
+      isCustom()
+    );
 
     if (!output) {
-      return { error: 'error.API_UNKNOWN_ERROR' }
+      return { error: 'error.API_UNKNOWN_ERROR' };
     }
     if (output.error && output.results) {
-      return { error: `${output.error}: ${output.results}` }
+      return { error: `${output.error}: ${output.results}` };
     }
     return output;
   } catch (e) {
@@ -61,8 +66,8 @@ async function getSensitivityCalculatorAPIData(
   return observation.type === TYPE_CONTINUUM
     ? GetContinuumData(telescope, observation, target, dataProductSDP)
     : observation.type === TYPE_ZOOM
-    ? GetZoomData(telescope, observation, target, dataProductSDP)
-    : GetContinuumData(telescope, setMockObservation(observation), target, dataProductSDP);
+      ? GetZoomData(telescope, observation, target, dataProductSDP)
+      : GetContinuumData(telescope, setMockObservation(observation), target, dataProductSDP);
 }
 
 export default getSensCalc;

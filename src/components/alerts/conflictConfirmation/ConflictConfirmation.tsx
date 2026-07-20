@@ -110,7 +110,7 @@ export default function ConflictConfirmation({
   );
 
   const getOptions = () => {
-    return CONFLICT_REASONS.map(e => ({ label: t('conflict.reason.' + e), value: e }));
+    return CONFLICT_REASONS.map((e) => ({ label: t('conflict.reason.' + e), value: e }));
   };
 
   const buttonLeft = () => <CancelButton action={handleCancel} testId="cancelButtonTestId" />;

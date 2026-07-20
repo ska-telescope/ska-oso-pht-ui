@@ -18,8 +18,8 @@ import {
   transformSynthesizedBeamSizePerSubBandData
 } from '@/utils/helpersSensCalc.ts';
 import {
-  RA_TYPE_ICRS,
-  RA_TYPE_GALACTIC,
+  REFERENCE_COORDINATE_TYPE_ICRS,
+  REFERENCE_COORDINATE_TYPE_GALACTIC,
   SUPPLIED_TYPE_INTEGRATION,
   SUPPLIED_TYPE_SENSITIVITY
 } from '@/utils/constants.ts';
@@ -171,10 +171,10 @@ describe('Sensitivity Calculator helper functions', () => {
   });
 
   test('Coordinate check, is Galactic, Returns false when supplied value is "RA_TYPE_ICRS"', () => {
-    expect(isGalactic(RA_TYPE_ICRS)).equal(false);
+    expect(isGalactic(REFERENCE_COORDINATE_TYPE_ICRS)).equal(false);
   });
   test('Coordinate check, is Galactic, Returns true when supplied value is "RA_TYPE_GALACTIC"', () => {
-    expect(isGalactic(RA_TYPE_GALACTIC)).equal(true);
+    expect(isGalactic(REFERENCE_COORDINATE_TYPE_GALACTIC)).equal(true);
   });
 
   test('Supplied Time check, Returns true when supplied value is "SUPPLIED_TYPE_INTEGRATION"', () => {

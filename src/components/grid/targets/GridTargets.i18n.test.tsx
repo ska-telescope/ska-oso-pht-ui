@@ -3,18 +3,18 @@ import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import '@testing-library/jest-dom';
 import GridTargets from './GridTargets';
-import { RA_TYPE_ICRS } from '@/utils/constants';
+import { REFERENCE_COORDINATE_TYPE_ICRS } from '@/utils/constants';
 
 // This test is kept separate from GridTargets.test.tsx because it needs module-level mocks
 // for DataGrid and i18n. In Vitest those mocks are hoisted and would otherwise change what
 // the regular GridTargets smoke tests in GridTargets.test.tsx are exercising.
-vi.mock('@ska-telescope/ska-gui-components', async importOriginal => {
+vi.mock('@ska-telescope/ska-gui-components', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@ska-telescope/ska-gui-components')>();
   return {
     ...actual,
     DataGrid: ({ columns }: { columns: Array<{ field: string; headerName: string }> }) => (
       <div data-testid="grid-targets-columns">
-        {columns.map(column => (
+        {columns.map((column) => (
           <span key={column.field}>{column.headerName}</span>
         ))}
       </div>
@@ -47,16 +47,14 @@ describe('<GridTargets /> localization', () => {
   test('does not display localisation IDs in velocity column headers', () => {
     wrapper(
       <GridTargets
-        raType={0}
         rows={[
           {
-            kind: RA_TYPE_ICRS.value,
+            kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
             id: 1,
             decStr: '-45:00:00.0',
             name: 'ICRS target',
             raStr: '12:30:00.0',
             redshift: '',
-            referenceFrame: RA_TYPE_ICRS.label,
             velType: 0,
             vel: '',
             velUnit: 0

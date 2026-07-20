@@ -45,8 +45,8 @@ export default function SpectralResolutionField({
       PFB_OVERSAMPLING_DENOMINATOR /
       FFT_SIZE_N /
       DECIMATION_FACTOR;
-    const results = powersTwo.map(obj => obj * baseSpectralResolutionHz);
-    return (results[bandWidth - 1]?.toFixed(2) as unknown) as number;
+    const results = powersTwo.map((obj) => obj * baseSpectralResolutionHz);
+    return results[bandWidth - 1]?.toFixed(2) as unknown as number;
   };
 
   const MIDContinuumBase = () => 13.44;

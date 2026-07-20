@@ -14,7 +14,7 @@ import { MockProposalReviewListBackend } from './mockProposalReviewListBackend.t
 /*********************************************************** mapping *********************************************************/
 
 export function mappingList(inRec: ProposalReviewBackend[]): ProposalReview[] {
-  const output = inRec.map(item => mappingReviewBackendToFrontend(item));
+  const output = inRec.map((item) => mappingReviewBackendToFrontend(item));
   return output;
 }
 

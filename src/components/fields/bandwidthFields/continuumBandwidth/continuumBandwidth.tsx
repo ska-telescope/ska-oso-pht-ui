@@ -1,6 +1,8 @@
 import { TextField, InputAdornment } from '@mui/material';
 import {
-  FREQUENCY_HZ, FREQUENCY_KHZ, FREQUENCY_MHZ,
+  FREQUENCY_HZ,
+  FREQUENCY_KHZ,
+  FREQUENCY_MHZ,
   FREQUENCY_STR_HZ,
   LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP,
   TELESCOPE_LOW_NUM
@@ -52,7 +54,11 @@ export default function ContinuumBandwidthField({
   const [errorText, setErrorText] = React.useState('');
 
   const displayMinimumChannelWidthErrorMessage = (): string => {
-    const minimumChannelWidthKHz = frequencyConversion(minimumChannelWidthHz, FREQUENCY_HZ, FREQUENCY_KHZ).toFixed(2);
+    const minimumChannelWidthKHz = frequencyConversion(
+      minimumChannelWidthHz,
+      FREQUENCY_HZ,
+      FREQUENCY_KHZ
+    ).toFixed(2);
     return t('bandwidth.range.minimumChannelWidthError', {
       value: minimumChannelWidthKHz
     });
@@ -67,18 +73,27 @@ export default function ContinuumBandwidthField({
   );
 
   const displayMaxContBandwidthErrorMessage = (): string => {
-    const maxContBandwidthMHz = frequencyConversion(maxContBandwidthHz, FREQUENCY_HZ, FREQUENCY_MHZ).toFixed(2);
+    const maxContBandwidthMHz = frequencyConversion(
+      maxContBandwidthHz,
+      FREQUENCY_HZ,
+      FREQUENCY_MHZ
+    ).toFixed(2);
     return t('bandwidth.range.contMaximumExceededError', { value: maxContBandwidthMHz });
   };
 
   const displayDivisibilityErrorMessage = (): string => {
-    const valueKHz = frequencyConversion(minimumChannelWidthHz, FREQUENCY_HZ, FREQUENCY_KHZ).toFixed(2);
+    const valueKHz = frequencyConversion(
+      minimumChannelWidthHz,
+      FREQUENCY_HZ,
+      FREQUENCY_KHZ
+    ).toFixed(2);
     return t('bandwidth.range.divisibilityError', { value: valueKHz });
   };
 
-  const stepInUnits = minimumChannelWidthHz && continuumBandwidthUnits
-    ? frequencyConversion(minimumChannelWidthHz, FREQUENCY_HZ, continuumBandwidthUnits)
-    : 0;
+  const stepInUnits =
+    minimumChannelWidthHz && continuumBandwidthUnits
+      ? frequencyConversion(minimumChannelWidthHz, FREQUENCY_HZ, continuumBandwidthUnits)
+      : 0;
 
   const validateValue = (num: number) => {
     const scaledBandwidth = getScaledBandwidthOrFrequency(num, continuumBandwidthUnits ?? 0);
@@ -120,9 +135,10 @@ export default function ContinuumBandwidthField({
 
   const checkValue = (newValue: number) => {
     if (stepInUnits > 0 && Math.abs(Math.abs(newValue - value) - stepInUnits) < 1e-6) {
-      const snapped = newValue > value
-        ? Math.ceil((value + 1e-9) / stepInUnits) * stepInUnits
-        : Math.floor((value - 1e-9) / stepInUnits) * stepInUnits;
+      const snapped =
+        newValue > value
+          ? Math.ceil((value + 1e-9) / stepInUnits) * stepInUnits
+          : Math.floor((value - 1e-9) / stepInUnits) * stepInUnits;
       setErrorText(validateValue(snapped));
       setValue?.(snapped);
       return;
@@ -145,11 +161,11 @@ export default function ContinuumBandwidthField({
   ]);
 
   const minChannelWidthMHz = frequencyConversion(
-    telescope === TELESCOPE_LOW_NUM ?
-    osdLOW?.basicCapabilities.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP :
-    // TODO: Mid values should come from OSD in the future - 13440 is Mid channel width in Hz
-    //  and until AA2 bandwidth has to be multiple of 20 channels.
-    Math.round(20 * 13440 * 1e12) / 1e12,
+    telescope === TELESCOPE_LOW_NUM
+      ? osdLOW?.basicCapabilities.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
+      : // TODO: Mid values should come from OSD in the future - 13440 is Mid channel width in Hz
+        //  and until AA2 bandwidth has to be multiple of 20 channels.
+        Math.round(20 * 13440 * 1e12) / 1e12,
     FREQUENCY_HZ,
     FREQUENCY_MHZ
   );
@@ -173,7 +189,9 @@ export default function ContinuumBandwidthField({
           min: minChannelWidthMHz,
           max: frequencyConversion(maxContBandwidthHz, FREQUENCY_HZ, FREQUENCY_MHZ)
         },
-        input: suffix ? { endAdornment: <InputAdornment position="end">{suffix}</InputAdornment> } : undefined
+        input: suffix
+          ? { endAdornment: <InputAdornment position="end">{suffix}</InputAdornment> }
+          : undefined
       }}
     />
   );

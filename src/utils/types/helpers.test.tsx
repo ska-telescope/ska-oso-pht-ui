@@ -1,10 +1,6 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import {
-  calculateVelocity,
-  countWords,
-  generateId
-} from '@/utils/helpers.ts';
+import { calculateVelocity, countWords, generateId } from '@/utils/helpers.ts';
 
 describe('PHT UI helper functions', () => {
   test('Generate ID', () => {

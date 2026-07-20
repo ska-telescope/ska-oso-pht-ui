@@ -12,7 +12,7 @@ import Proposal from '@/utils/types/proposal';
 import { NOT_SPECIFIED, PROPOSAL_STATUS } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { ProposalAccess } from '@/utils/types/proposalAccess';
-import { presentDate, presentDateTime } from '@/utils/present/present';
+import { presentDateTime } from '@/utils/present/present';
 
 interface TableSubmissionsRowProps {
   item: any;
@@ -162,7 +162,11 @@ export default function TableSubmissionsRow({
         </TableCell>
 
         <TableCell role="gridcell" sx={{ width: 200, whiteSpace: 'nowrap' }}>
-          <>{presentDateTime(cycleInfo?.cycleInformation?.proposalClose || NOT_SPECIFIED, { timeZoneName: 'short' })}</>
+          <>
+            {presentDateTime(cycleInfo?.cycleInformation?.proposalClose || NOT_SPECIFIED, {
+              timeZoneName: 'short'
+            })}
+          </>
         </TableCell>
       </TableRow>
     </>

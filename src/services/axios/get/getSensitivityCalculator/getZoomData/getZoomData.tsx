@@ -9,8 +9,8 @@ import {
   TIME_HOURS,
   FREQUENCY_MHZ,
   DECIMAL_PLACES,
-  RA_TYPE_GALACTIC,
-  RA_TYPE_ICRS,
+  REFERENCE_COORDINATE_TYPE_GALACTIC,
+  REFERENCE_COORDINATE_TYPE_ICRS,
   TIME_SECS,
   TAPER_DEFAULT,
   ROBUST_DEFAULT,
@@ -98,10 +98,10 @@ export function getFinalIndividualResultsForZoom(
 ): FinalIndividualResults {
   const isSuppliedSensitivity = () => theObservation.supplied.type === SUPPLIED_TYPE_SENSITIVITY;
 
-  let transformed_result = results.transformed_result[0]; // ui only uses first result
+  const transformed_result = results.transformed_result[0]; // ui only uses first result
 
   const suppliedType = OSD_CONSTANTS.Supplied.find(
-    sup => sup.value === theObservation.supplied.type
+    (sup) => sup.value === theObservation.supplied.type
   )?.sensCalcResultsLabel;
 
   const shifted1 = shiftSensitivity(transformed_result?.weighted_continuum_sensitivity);
@@ -184,16 +184,16 @@ export function getFinalIndividualResultsForZoom(
       ? transformed_result?.spectral_integration_time?.value?.toString()
       : transformed_result?.spectral_surface_brightness_sensitivity?.value?.toString(),
     units: isSuppliedSensitivity()
-      ? transformed_result?.spectral_integration_time?.unit ?? 'ERR10a'
-      : transformed_result?.spectral_surface_brightness_sensitivity?.unit ?? 'ERR10b'
+      ? (transformed_result?.spectral_integration_time?.unit ?? 'ERR10a')
+      : (transformed_result?.spectral_surface_brightness_sensitivity?.unit ?? 'ERR10b')
   };
 
   const results11 = {
     field: suppliedType,
     value: theObservation?.supplied?.value?.toString(),
     units:
-      OSD_CONSTANTS.Supplied.find(s => s.sensCalcResultsLabel === suppliedType)?.units?.find(
-        u => u.value === theObservation.supplied.units
+      OSD_CONSTANTS.Supplied.find((s) => s.sensCalcResultsLabel === suppliedType)?.units?.find(
+        (u) => u.value === theObservation.supplied.units
       )?.label ?? ''
   };
 
@@ -232,11 +232,12 @@ const addPropertiesLOW = (
   observation: Observation
 ) => {
   const getBandwidthValues = () =>
-    OSD_CONSTANTS.array?.find(item => item.value === observation.telescope)?.bandWidth;
+    OSD_CONSTANTS.array?.find((item) => item.value === observation.telescope)?.bandWidth;
 
   function getZoomBandwidthValueUnit() {
-    const bandWidthValue = getBandwidthValues()?.find(item => item.value === observation?.bandwidth)
-      ?.label;
+    const bandWidthValue = getBandwidthValues()?.find(
+      (item) => item.value === observation?.bandwidth
+    )?.label;
     return bandWidthValue?.split(' ');
   }
 
@@ -278,11 +279,12 @@ const addPropertiesMID = (
   observation: Observation
 ) => {
   const getBandwidthValues = () =>
-    OSD_CONSTANTS.array.find(item => item.value === observation.telescope)?.bandWidth;
+    OSD_CONSTANTS.array.find((item) => item.value === observation.telescope)?.bandWidth;
 
   function getZoomBandwidthValueUnit() {
-    const bandWidthValue = getBandwidthValues()?.find(item => item.value === observation?.bandwidth)
-      ?.label;
+    const bandWidthValue = getBandwidthValues()?.find(
+      (item) => item.value === observation?.bandwidth
+    )?.label;
     return bandWidthValue?.split(' ');
   }
 
@@ -359,8 +361,8 @@ async function GetZoomData(
 
   const subArray = (observation: Observation) => {
     const result = OSD_CONSTANTS.array
-      .find(t => t.value === observation.telescope)
-      ?.subarray?.find(s => s.value === observation.subarray);
+      .find((t) => t.value === observation.telescope)
+      ?.subarray?.find((s) => s.value === observation.subarray);
     return result ? result.map : '';
   };
 
@@ -371,11 +373,11 @@ async function GetZoomData(
     num15mAntennas: observation.num15mAntennas ?? 0,
     num13mAntennas: observation.num13mAntennas ?? 0,
     numStations: observation.numStations ?? 0,
-    skyDirectionType: RA_TYPE_GALACTIC,
-    raGalactic: { value: target.raStr as string, unit: RA_TYPE_GALACTIC.label },
-    decGalactic: { value: target.decStr as string, unit: RA_TYPE_GALACTIC.label },
-    raEquatorial: { value: 0, unit: RA_TYPE_ICRS.label },
-    decEquatorial: { value: 0, unit: RA_TYPE_ICRS.label },
+    skyDirectionType: REFERENCE_COORDINATE_TYPE_GALACTIC,
+    raGalactic: { value: target.raStr as string, unit: REFERENCE_COORDINATE_TYPE_GALACTIC.label },
+    decGalactic: { value: target.decStr as string, unit: REFERENCE_COORDINATE_TYPE_GALACTIC.label },
+    raEquatorial: { value: 0, unit: REFERENCE_COORDINATE_TYPE_ICRS.label },
+    decEquatorial: { value: 0, unit: REFERENCE_COORDINATE_TYPE_ICRS.label },
     elevation: { value: observation.elevation, unit: 'deg' },
     advancedData: null,
     modules: []
@@ -383,19 +385,11 @@ async function GetZoomData(
 
   const URL_PATH = `/zoom/calculate`;
 
-  let properties = isLow(telescope)
+  const properties = isLow(telescope)
     ? addPropertiesLOW(standardData, zoomData, observation)
     : addPropertiesMID(standardData, zoomData, observation);
 
   // const mapping: Function = undefined;
-  return Fetch(
-    axiosClient,
-    telescope,
-    URL_PATH,
-    properties,
-    mapping,
-    target,
-    observation
-  );
+  return Fetch(axiosClient, telescope, URL_PATH, properties, mapping, target, observation);
 }
 export default GetZoomData;

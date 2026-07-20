@@ -7,7 +7,7 @@ import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import TargetEntry from './TargetEntry';
 import autoLinking from '@/utils/autoLinking/AutoLinking';
-import { RA_TYPE_ICRS, TYPE_ZOOM } from '@/utils/constants';
+import { TYPE_ZOOM } from '@/utils/constants';
 
 const wrapper = (component: React.ReactElement) => {
   return render(
@@ -55,7 +55,7 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
 
 describe('<TargetEntry />', () => {
   test('renders correctly', () => {
-    wrapper(<TargetEntry raType={0} />);
+    wrapper(<TargetEntry />);
   });
 });
 
@@ -73,7 +73,7 @@ describe('<TargetEntry /> form preservation on autoLinking error', () => {
     const user = userEvent.setup();
 
     await act(async () => {
-      wrapper(<TargetEntry raType={RA_TYPE_ICRS.value} />);
+      wrapper(<TargetEntry />);
     });
 
     const nameInput = screen.getByTestId('name').querySelector('input')!;
@@ -97,5 +97,51 @@ describe('<TargetEntry /> form preservation on autoLinking error', () => {
     expect(nameInput.value).toBe('My Target');
     expect(raInput.value).toBe('12:34:56.000');
     expect(decInput.value).toBe('45:00:00.000');
+  });
+
+  it('shows clear button only when at least one field has been entered', async () => {
+    const user = userEvent.setup();
+
+    await act(async () => {
+      wrapper(<TargetEntry />);
+    });
+
+    expect(screen.queryByTestId('clearFormButton')).not.toBeInTheDocument();
+
+    const nameInput = screen.getByTestId('name').querySelector('input')!;
+    await user.type(nameInput, 'Temporary target');
+
+    await waitFor(() => {
+      expect(screen.getByTestId('clearFormButton')).toBeInTheDocument();
+    });
+  });
+
+  it('clears entered values when clear button is clicked', async () => {
+    const user = userEvent.setup();
+
+    await act(async () => {
+      wrapper(<TargetEntry />);
+    });
+
+    const nameInput = screen.getByTestId('name').querySelector('input')!;
+    const raInput = screen.getByTestId('skyDirectionValue1').querySelector('input')!;
+    const decInput = screen.getByTestId('skyDirectionValue2').querySelector('input')!;
+
+    await user.type(nameInput, 'Reset me');
+    await user.type(raInput, '10:20:30');
+    await user.type(decInput, '40:50:00');
+
+    await waitFor(() => {
+      expect(screen.getByTestId('clearFormButton')).toBeInTheDocument();
+    });
+
+    await user.click(screen.getByTestId('clearFormButton'));
+
+    await waitFor(() => {
+      expect(nameInput.value).toBe('');
+      expect(raInput.value).toBe('');
+      expect(decInput.value).toBe('');
+      expect(screen.queryByTestId('clearFormButton')).not.toBeInTheDocument();
+    });
   });
 });

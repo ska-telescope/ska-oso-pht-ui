@@ -22,7 +22,7 @@ const getSubType = (proposalType: {
   attributes?: string[] | undefined;
 }): any => {
   const project = PROJECTS.find(({ mapping }) => mapping === proposalType.main_type);
-  const subProjects = proposalType.attributes?.map(subType =>
+  const subProjects = proposalType.attributes?.map((subType) =>
     project?.subProjects?.find(({ mapping }) => mapping === subType)
   ) as { id: number; mapping: string }[];
   return subProjects?.filter(({ id }) => id)?.map(({ id }) => id);
@@ -33,7 +33,7 @@ const getInvestigators = (inc: InvestigatorBackend[] | null): Investigator[] => 
   if (!inc) {
     return [];
   }
-  for (let item of inc) {
+  for (const item of inc) {
     const investigator = {
       id: item.user_id,
       firstName: item.given_name,
@@ -57,7 +57,7 @@ const getObservingMode = (scienceCat: string): string => {
 
 const getScienceCategory = (scienceCat: string): string => {
   const cat = DETAILS.ScienceCategory.find(
-    cat => cat.label?.toLowerCase() === scienceCat?.toLowerCase()
+    (cat) => cat.label?.toLowerCase() === scienceCat?.toLowerCase()
   )?.value;
   return cat ? String(cat) : '';
 };
@@ -84,7 +84,7 @@ export function mappingList(inRec: ProposalBackend[]): Proposal[] {
       createdOn: tmp.metadata?.created_on as string,
       createdBy: tmp.metadata?.created_by as string,
       version: tmp.metadata?.version as number,
-      proposalType: PROJECTS.find(p => p.mapping === tmp.proposal_info?.proposal_type.main_type)
+      proposalType: PROJECTS.find((p) => p.mapping === tmp.proposal_info?.proposal_type.main_type)
         ?.id as number,
       proposalSubType:
         tmp.proposal_info?.proposal_type.main_type !== SCIENCE_VERIFICATION &&

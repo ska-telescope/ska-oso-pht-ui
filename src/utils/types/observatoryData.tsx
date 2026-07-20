@@ -109,7 +109,7 @@ export type BasicCapabilitiesLow = {
     zoom: number;
     pst: number;
     pss: number;
-  }
+  };
 };
 
 export type subarrayConfigurationMidBackend = {
@@ -197,7 +197,7 @@ export type ObservatoryDataBackend = {
     };
     low: {
       basic_capabilities: BasicCapabilitiesLowBackend;
-      AA2: subarrayConfigurationLowBackend;
+      AA2_SV: subarrayConfigurationLowBackend;
     };
   };
 };
@@ -211,7 +211,7 @@ export type ObservatoryDataCapabilities = {
     basicCapabilities: BasicCapabilitiesLow;
     subArrays: subarrayConfigurationLow[];
   } | null;
-}
+};
 
 export type ObservatoryData = {
   policies: ObservatoryPolicy[];

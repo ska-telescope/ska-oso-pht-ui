@@ -6,7 +6,9 @@ import {
   USE_LOCAL_DATA,
   BAND_LOW_STR,
   BAND_5B_STR,
-  BAND_1_STR, FREQUENCY_HZ, FREQUENCY_MHZ
+  BAND_1_STR,
+  FREQUENCY_HZ,
+  FREQUENCY_MHZ
 } from '@utils/constants.ts';
 import useAxiosAuthClient from '@services/axios/axiosAuthClient/axiosAuthClient.tsx';
 import { MockObservatoryDataBackend } from './mockObservatoryDataBackend';
@@ -18,7 +20,8 @@ import {
   subBandsBackend,
   ReceiverInformationBackend,
   subarrayConfigurationMid,
-  subBands, ObservatoryDataCapabilities
+  subBands,
+  ObservatoryDataCapabilities
 } from '@/utils/types/observatoryData';
 import { ODTConfigurationBackend } from '@utils/types/odtConfiguration.tsx';
 import { frequencyConversion, generateId } from '@/utils/helpers';
@@ -35,7 +38,7 @@ export function GetMockData(
 export const toLowerCaseArray = (value: unknown): string[] => {
   if (!Array.isArray(value)) return [];
 
-  return value.filter(item => typeof item === 'string').map(item => item.toLowerCase());
+  return value.filter((item) => typeof item === 'string').map((item) => item.toLowerCase());
 };
 
 export const osdMapping = (
@@ -62,7 +65,7 @@ export const osdMapping = (
         bands: [
           inc?.observatory_policy?.telescope_capabilities?.Low !== null ? BAND_LOW_STR : '',
           inc?.observatory_policy?.telescope_capabilities?.Mid !== null ? BAND_5B_STR : '' // Update when more bands are available
-        ].filter(band => band !== ''),
+        ].filter((band) => band !== ''),
         low: toLowerCaseArray(inc?.observatory_policy?.telescope_capabilities?.Low),
         mid: toLowerCaseArray(inc?.observatory_policy?.telescope_capabilities?.Mid)
       },
@@ -77,7 +80,7 @@ export const osdMapping = (
   const mapSubBands = (incSb: subBandsBackend[] | null): subBands[] | null => {
     if (!incSb) return null;
 
-    return incSb.map(sb => ({
+    return incSb.map((sb) => ({
       subBand: sb.sub_band,
       maxFrequencyHz: sb.max_frequency_hz,
       minFrequencyHz: sb.min_frequency_hz,
@@ -86,21 +89,25 @@ export const osdMapping = (
     }));
   };
 
-  const mapCapabilities = (inData: ObservatoryDataBackend, odtConfig: ODTConfigurationBackend): ObservatoryDataCapabilities => {
+  const mapCapabilities = (
+    inData: ObservatoryDataBackend,
+    odtConfig: ODTConfigurationBackend
+  ): ObservatoryDataCapabilities => {
     return {
       mid: inData?.capabilities?.mid
         ? {
             basicCapabilities: {
               dishElevationLimitDeg:
                 inData?.capabilities?.mid?.basic_capabilities?.dish_elevation_limit_deg,
-              receiverInformation: inData?.capabilities?.mid?.basic_capabilities?.receiver_information?.map(
-                (rx: ReceiverInformationBackend) => ({
-                  rxId: rx.rx_id,
-                  minFrequencyHz: rx.min_frequency_hz,
-                  maxFrequencyHz: rx.max_frequency_hz,
-                  subBands: mapSubBands(rx.sub_bands)
-                })
-              )
+              receiverInformation:
+                inData?.capabilities?.mid?.basic_capabilities?.receiver_information?.map(
+                  (rx: ReceiverInformationBackend) => ({
+                    rxId: rx.rx_id,
+                    minFrequencyHz: rx.min_frequency_hz,
+                    maxFrequencyHz: rx.max_frequency_hz,
+                    subBands: mapSubBands(rx.sub_bands)
+                  })
+                )
             },
             subArrays: [
               {
@@ -132,24 +139,8 @@ export const osdMapping = (
                 allowedChannelCountRangeMax: [214748647],
                 allowedChannelCountRangeMin: [1],
                 allowedChannelWidthValues: [
-                  210,
-                  420,
-                  840,
-                  1680,
-                  3360,
-                  6720,
-                  13440,
-                  26880,
-                  40320,
-                  53760,
-                  80640,
-                  107520,
-                  161280,
-                  215040,
-                  322560,
-                  416640,
-                  430080,
-                  645120
+                  210, 420, 840, 1680, 3360, 6720, 13440, 26880, 40320, 53760, 80640, 107520,
+                  161280, 215040, 322560, 416640, 430080, 645120
                 ],
                 availableReceivers: [BAND_1_STR],
                 numberSkaDishes: 64,
@@ -172,53 +163,61 @@ export const osdMapping = (
       low: inData?.capabilities?.low?.basic_capabilities
         ? {
             basicCapabilities: {
-              minFrequencyHz: (odtConfig.ska_low.frequency_band.min_coarse_channel - 0.5) * odtConfig.ska_low.frequency_band.coarse_channel_width_hz,
-              maxFrequencyHz: (odtConfig.ska_low.frequency_band.max_coarse_channel + 0.5) * odtConfig.ska_low.frequency_band.coarse_channel_width_hz,
+              minFrequencyHz:
+                (odtConfig.ska_low.frequency_band.min_coarse_channel - 0.5) *
+                odtConfig.ska_low.frequency_band.coarse_channel_width_hz,
+              maxFrequencyHz:
+                (odtConfig.ska_low.frequency_band.max_coarse_channel + 0.5) *
+                odtConfig.ska_low.frequency_band.coarse_channel_width_hz,
               minCoarseChannel: odtConfig.ska_low.frequency_band.min_coarse_channel,
               maxCoarseChannel: odtConfig.ska_low.frequency_band.max_coarse_channel,
               coarseChannelWidthHz: odtConfig.ska_low.frequency_band.coarse_channel_width_hz,
               numberOfChannelsPerCoarseChannel: {
-                continuum: odtConfig?.ska_low?.frequency_band?.number_continuum_channels_per_coarse_channel ?? 0,
-                zoom: odtConfig?.ska_low?.frequency_band?.number_zoom_channels_per_coarse_channel ?? 0,
-                pst: odtConfig?.ska_low?.frequency_band?.number_pst_channels_per_coarse_channel ?? 0,
+                continuum:
+                  odtConfig?.ska_low?.frequency_band
+                    ?.number_continuum_channels_per_coarse_channel ?? 0,
+                zoom:
+                  odtConfig?.ska_low?.frequency_band?.number_zoom_channels_per_coarse_channel ?? 0,
+                pst:
+                  odtConfig?.ska_low?.frequency_band?.number_pst_channels_per_coarse_channel ?? 0,
                 pss: odtConfig?.ska_low?.frequency_band?.number_pss_channels_per_coarse_channel ?? 0
               }
             },
             subArrays: [
               {
                 subArray: SA_AA2,
-                numberStations: inData.capabilities.low.AA2.number_stations,
-                numberSubstations: inData.capabilities.low.AA2.number_substations,
-                maxBaselineKm: inData.capabilities.low.AA2.max_baseline_km,
-                availableBandwidthHz: inData.capabilities.low.AA2.available_bandwidth_hz,
-                cbfModes: inData.capabilities.low.AA2.cbf_modes,
-                numberZoomWindows: inData.capabilities.low.AA2.number_zoom_windows,
-                numberZoomChannels: inData.capabilities.low.AA2.number_zoom_channels,
-                numberPssBeams: inData.capabilities.low.AA2.number_pss_beams,
-                numberPstBeams: inData.capabilities.low.AA2.number_pst_beams,
-                psBeamBandwidthHz: inData.capabilities.low.AA2.ps_beam_bandwidth_hz,
-                numberFsps: inData.capabilities.low.AA2.number_fsps,
-                channelWidthHz: inData.capabilities.low.AA2.channel_width_hz,
-                numberBeams: inData.capabilities.low.AA2.number_beams,
-                numberVlbiBeams: inData.capabilities.low.AA2.number_vlbi_beams
+                numberStations: inData.capabilities.low.AA2_SV.number_stations,
+                numberSubstations: inData.capabilities.low.AA2_SV.number_substations,
+                maxBaselineKm: inData.capabilities.low.AA2_SV.max_baseline_km,
+                availableBandwidthHz: inData.capabilities.low.AA2_SV.available_bandwidth_hz,
+                cbfModes: inData.capabilities.low.AA2_SV.cbf_modes,
+                numberZoomWindows: inData.capabilities.low.AA2_SV.number_zoom_windows,
+                numberZoomChannels: inData.capabilities.low.AA2_SV.number_zoom_channels,
+                numberPssBeams: inData.capabilities.low.AA2_SV.number_pss_beams,
+                numberPstBeams: inData.capabilities.low.AA2_SV.number_pst_beams,
+                psBeamBandwidthHz: inData.capabilities.low.AA2_SV.ps_beam_bandwidth_hz,
+                numberFsps: inData.capabilities.low.AA2_SV.number_fsps,
+                channelWidthHz: inData.capabilities.low.AA2_SV.channel_width_hz,
+                numberBeams: inData.capabilities.low.AA2_SV.number_beams,
+                numberVlbiBeams: inData.capabilities.low.AA2_SV.number_vlbi_beams
               },
               // LOW SA_AA_STAR is currently mocked to give us access to more than 1 subarray configuration
               {
                 subArray: SA_AA_STAR,
-                numberStations: inData.capabilities.low.AA2.number_stations,
-                numberSubstations: inData.capabilities.low.AA2.number_substations,
-                maxBaselineKm: inData.capabilities.low.AA2.max_baseline_km,
-                availableBandwidthHz: inData.capabilities.low.AA2.available_bandwidth_hz,
-                cbfModes: inData.capabilities.low.AA2.cbf_modes,
-                numberZoomWindows: inData.capabilities.low.AA2.number_zoom_windows,
-                numberZoomChannels: inData.capabilities.low.AA2.number_zoom_channels,
-                numberPssBeams: inData.capabilities.low.AA2.number_pss_beams,
-                numberPstBeams: inData.capabilities.low.AA2.number_pst_beams,
-                psBeamBandwidthHz: inData.capabilities.low.AA2.ps_beam_bandwidth_hz,
-                numberFsps: inData.capabilities.low.AA2.number_fsps,
-                channelWidthHz: inData.capabilities.low.AA2.channel_width_hz,
-                numberBeams: inData.capabilities.low.AA2.number_beams,
-                numberVlbiBeams: inData.capabilities.low.AA2.number_vlbi_beams
+                numberStations: inData.capabilities.low.AA2_SV.number_stations,
+                numberSubstations: inData.capabilities.low.AA2_SV.number_substations,
+                maxBaselineKm: inData.capabilities.low.AA2_SV.max_baseline_km,
+                availableBandwidthHz: inData.capabilities.low.AA2_SV.available_bandwidth_hz,
+                cbfModes: inData.capabilities.low.AA2_SV.cbf_modes,
+                numberZoomWindows: inData.capabilities.low.AA2_SV.number_zoom_windows,
+                numberZoomChannels: inData.capabilities.low.AA2_SV.number_zoom_channels,
+                numberPssBeams: inData.capabilities.low.AA2_SV.number_pss_beams,
+                numberPstBeams: inData.capabilities.low.AA2_SV.number_pst_beams,
+                psBeamBandwidthHz: inData.capabilities.low.AA2_SV.ps_beam_bandwidth_hz,
+                numberFsps: inData.capabilities.low.AA2_SV.number_fsps,
+                channelWidthHz: inData.capabilities.low.AA2_SV.channel_width_hz,
+                numberBeams: inData.capabilities.low.AA2_SV.number_beams,
+                numberVlbiBeams: inData.capabilities.low.AA2_SV.number_vlbi_beams
               }
             ]
           }
@@ -226,7 +225,7 @@ export const osdMapping = (
     };
   };
 
-  const capabilities = inData.map(cycle => mapCapabilities(cycle, odtConfig));
+  const capabilities = inData.map((cycle) => mapCapabilities(cycle, odtConfig));
 
   const mergedCapabilities = capabilities.slice(1).reduce(
     (acc, obj) => {
@@ -240,7 +239,7 @@ export const osdMapping = (
   );
 
   const result = {
-    policies: inData.map(cycle => mapCycle(cycle)),
+    policies: inData.map((cycle) => mapCycle(cycle)),
     capabilities: mergedCapabilities
   };
 
@@ -305,9 +304,7 @@ async function GetOSDCycles(
 
   try {
     const [cyclesResult, odtResult] = await Promise.all([
-      authAxiosClient.get(
-        `${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PROPOSAL_PATH}/osd/cycles`
-      ),
+      authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PROPOSAL_PATH}/osd/cycles`),
       // TODO: The OSD related endpoints will be consolidated in oso-services in the future after
       //   which we should not need to retrieve data from two different endpoints anymore
       authAxiosClient.get(`${SKA_OSO_SERVICES_URL}/odt/configuration`)

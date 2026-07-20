@@ -136,27 +136,52 @@ describe('GridObservation unit label display', () => {
   ];
 
   it('displays MHz label for central frequency when units are MHz', () => {
-    wrapper(<GridObservation data={makeObs({ centralFrequencyUnits: FREQUENCY_MHZ })} rowClick={rowClickMock} />);
+    wrapper(
+      <GridObservation
+        data={makeObs({ centralFrequencyUnits: FREQUENCY_MHZ })}
+        rowClick={rowClickMock}
+      />
+    );
     expect(screen.getByText(/200 MHz/)).toBeInTheDocument();
   });
 
   it('does not display kHz label for central frequency when units are MHz', () => {
-    wrapper(<GridObservation data={makeObs({ centralFrequencyUnits: FREQUENCY_MHZ })} rowClick={rowClickMock} />);
+    wrapper(
+      <GridObservation
+        data={makeObs({ centralFrequencyUnits: FREQUENCY_MHZ })}
+        rowClick={rowClickMock}
+      />
+    );
     expect(screen.queryByText(/200 kHz/)).not.toBeInTheDocument();
   });
 
   it('displays GHz label for central frequency when units are GHz', () => {
-    wrapper(<GridObservation data={makeObs({ centralFrequencyUnits: FREQUENCY_GHZ, centralFrequency: 5 })} rowClick={rowClickMock} />);
+    wrapper(
+      <GridObservation
+        data={makeObs({ centralFrequencyUnits: FREQUENCY_GHZ, centralFrequency: 5 })}
+        rowClick={rowClickMock}
+      />
+    );
     expect(screen.getByText(/5 GHz/)).toBeInTheDocument();
   });
 
   it('displays MHz label for continuum bandwidth when units are MHz', () => {
-    wrapper(<GridObservation data={makeObs({ continuumBandwidthUnits: FREQUENCY_MHZ, type: TYPE_CONTINUUM })} rowClick={rowClickMock} />);
+    wrapper(
+      <GridObservation
+        data={makeObs({ continuumBandwidthUnits: FREQUENCY_MHZ, type: TYPE_CONTINUUM })}
+        rowClick={rowClickMock}
+      />
+    );
     expect(screen.getByText(/150 MHz/)).toBeInTheDocument();
   });
 
   it('does not display kHz label for continuum bandwidth when units are MHz', () => {
-    wrapper(<GridObservation data={makeObs({ continuumBandwidthUnits: FREQUENCY_MHZ, type: TYPE_CONTINUUM })} rowClick={rowClickMock} />);
+    wrapper(
+      <GridObservation
+        data={makeObs({ continuumBandwidthUnits: FREQUENCY_MHZ, type: TYPE_CONTINUUM })}
+        rowClick={rowClickMock}
+      />
+    );
     expect(screen.queryByText(/150 kHz/)).not.toBeInTheDocument();
   });
 });

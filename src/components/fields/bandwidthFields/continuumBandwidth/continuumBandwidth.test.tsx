@@ -136,8 +136,7 @@ describe('<ContinuumBandwidth />', () => {
     vi.clearAllMocks(); // <-- important fix
   });
 
-  const getHelperText = () =>
-    document.querySelector('.MuiFormHelperText-root')?.textContent ?? '';
+  const getHelperText = () => document.querySelector('.MuiFormHelperText-root')?.textContent ?? '';
 
   test('renders correctly', () => {
     renderField();

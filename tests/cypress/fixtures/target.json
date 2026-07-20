@@ -1,8 +1,13 @@
 {
-  "equatorial": {
-    "ra": "21:33:27.0200",
-    "dec": "-00:49:23.700",
-    "velocity": -3.6,
+  "reference_coordinate": {
+    "kind": "icrs",
+    "ra_str": "21:33:27.0200",
+    "dec_str": "-00:49:23.700"
+  },
+  "radial_velocity": {
+    "quantity": { "value": -3.6, "unit": "km/s" },
+    "definition": "RADIO",
+    "reference_frame": "LSRK",
     "redshift": 0.0
   }
 }

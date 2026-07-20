@@ -65,9 +65,10 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const [openValidationResults, setOpenValidationResults] = React.useState(false);
   const [validationResults, setValidationResults] = React.useState<string[]>([]);
 
-  const pages = React.useMemo(() => (isSV ? STATUS_ARRAY_PAGES_SV : STATUS_ARRAY_PAGES_PROPOSAL), [
-    isSV
-  ]);
+  const pages = React.useMemo(
+    () => (isSV ? STATUS_ARRAY_PAGES_SV : STATUS_ARRAY_PAGES_PROPOSAL),
+    [isSV]
+  );
 
   const authClient = useAxiosAuthClient();
   const { notifyError, notifySuccess } = useNotify();
@@ -102,7 +103,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
   const validateTheProposal = async (): Promise<boolean> => {
     let result = false;
     setValidationResults([]);
-    let results: string[] = [];
+    const results: string[] = [];
 
     const statuses = validateProposal(getProposal());
     updateAppContent1(statuses);
@@ -208,7 +209,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       pagesIndexes.includes(idx)
     );
 
-    if (pagesNeedToCheck.every(lvl => lvl === 0) && accessCanSubmit) {
+    if (pagesNeedToCheck.every((lvl) => lvl === 0) && accessCanSubmit) {
       setCanSubmit(true);
     } else {
       setCanSubmit(false);
@@ -334,7 +335,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
       {/* I'm assuming intention is to display row2() when loggedIn is true?
       if someone understands better than I do please feel free to
       remove in favour of whatever is supposed to happen here. */}
-       {((loggedIn && getProposal().id !== '') || !!cypressToken) && row2()}
+      {((loggedIn && getProposal().id !== '') || !!cypressToken) && row2()}
       {row3()}
 
       {openProposalDisplay && (

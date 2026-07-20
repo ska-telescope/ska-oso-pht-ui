@@ -34,7 +34,8 @@ export default function CentralFrequency({
   const { findBand, telescopeBand, osdLOW } = useOSDAccessors();
   const band = findBand(observingBand);
   const isLow = observingBand === BAND_LOW_STR;
-  const units: number = telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? FREQUENCY_MHZ : FREQUENCY_GHZ;
+  const units: number =
+    telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? FREQUENCY_MHZ : FREQUENCY_GHZ;
   const minFreq = frequencyConversion(band?.minFrequencyHz ?? 0, FREQUENCY_HZ, units);
   const maxFreq = frequencyConversion(band?.maxFrequencyHz ?? 0, FREQUENCY_HZ, units);
   const stepMHz = frequencyConversion(
@@ -44,9 +45,16 @@ export default function CentralFrequency({
   );
 
   const validate = (cfValue: number): string => {
-    const lowStationChannelWidthMHz = frequencyConversion(osdLOW?.basicCapabilities.coarseChannelWidthHz, FREQUENCY_HZ, FREQUENCY_MHZ);
+    const lowStationChannelWidthMHz = frequencyConversion(
+      osdLOW?.basicCapabilities.coarseChannelWidthHz,
+      FREQUENCY_HZ,
+      FREQUENCY_MHZ
+    );
     if (cfValue < minFreq || cfValue > maxFreq) return t(FIELD + '.error.range');
-    if (isLow && !Number.isInteger((cfValue + 0.5 * lowStationChannelWidthMHz) / lowStationChannelWidthMHz)) {
+    if (
+      isLow &&
+      !Number.isInteger((cfValue + 0.5 * lowStationChannelWidthMHz) / lowStationChannelWidthMHz)
+    ) {
       return t(FIELD + '.error.divisibility', { value: stepMHz });
     }
     return '';
@@ -54,9 +62,10 @@ export default function CentralFrequency({
 
   const checkValue = (cfValue: number) => {
     if (isLow && Math.abs(Math.abs(cfValue - value) - stepMHz) < 1e-6) {
-      const snapped = cfValue > value
-        ? minFreq + Math.ceil((cfValue - minFreq) / stepMHz) * stepMHz
-        : minFreq + Math.floor((cfValue - minFreq) / stepMHz) * stepMHz;
+      const snapped =
+        cfValue > value
+          ? minFreq + Math.ceil((cfValue - minFreq) / stepMHz) * stepMHz
+          : minFreq + Math.floor((cfValue - minFreq) / stepMHz) * stepMHz;
       setValue(snapped);
       setErrorMessage(validate(snapped));
       return;
@@ -84,7 +93,9 @@ export default function CentralFrequency({
           min: minFreq,
           max: maxFreq
         },
-        input: suffix ? { endAdornment: <InputAdornment position="end">{suffix}</InputAdornment> } : undefined
+        input: suffix
+          ? { endAdornment: <InputAdornment position="end">{suffix}</InputAdornment> }
+          : undefined
       }}
     />
   );

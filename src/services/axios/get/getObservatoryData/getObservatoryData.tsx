@@ -39,7 +39,7 @@ async function GetObservatoryData(
     const cycleData = cycleResult?.data as ObservatoryDataBackend | undefined;
     const odtConfig = odtResult?.data as ODTConfigurationBackend | undefined;
     if (!cycleData || !odtConfig) return 'error.API_UNKNOWN_ERROR';
-    
+
     return osdMapping([cycleData], odtConfig);
   } catch (e) {
     if (e instanceof Error) {

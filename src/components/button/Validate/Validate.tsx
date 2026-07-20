@@ -1,4 +1,3 @@
-import React from 'react';
 import FactCheckIcon from '@mui/icons-material/FactCheck';
 import BaseButton from '../Base/Button';
 

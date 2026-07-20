@@ -17,7 +17,6 @@ export default function RankEntryField({
   setSelectedRank,
   suggestedRank = 0,
   selectedRank,
-  colorBlindness = 0,
   colorIndex = 0,
   isProgressive = true
 }: RankEntryFieldProps) {

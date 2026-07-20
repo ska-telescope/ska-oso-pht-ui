@@ -51,7 +51,8 @@ import {
   SUPPLIED_INTEGRATION_TIME_STEP_HOURS,
   SUPPLIED_INTEGRATION_TIME_STEP_MINS,
   SUPPLIED_SENSITIVITY_STEP,
-  INTEGRATION_TIME_UNITS, LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
+  INTEGRATION_TIME_UNITS,
+  LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
@@ -95,10 +96,7 @@ import updateDataProductsPST from '@/utils/update/dataProductsPST/updateDataProd
 import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalcPartial';
 import updateSensCalc from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
-import {
-  subarrayConfigurationLow,
-  subarrayConfigurationMid
-} from '@/utils/types/observatoryData';
+import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
 import lowAA2Image from '@assets/low_aa2.png';
 import { useIsFrequencyOutOfRange } from '@/utils/validation/validation';
 
@@ -186,20 +184,22 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setSpectralAveraging(ob?.spectralAveraging ?? 1);
     setSuppliedType(ob?.supplied?.type);
 
-    // If the supplied units are not one of the integration time units, 
+    // If the supplied units are not one of the integration time units,
     // we will convert the value to the default units for the telescope.
     // Currently the default units are hours for low and minutes for mid.
     const loadedUnits = ob?.supplied?.units;
     const loadedValue = ob?.supplied?.value;
-    const isValidUnit = ob?.supplied?.type !== SUPPLIED_TYPE_INTEGRATION
-      || INTEGRATION_TIME_UNITS.some(u => u.id === loadedUnits);
+    const isValidUnit =
+      ob?.supplied?.type !== SUPPLIED_TYPE_INTEGRATION ||
+      INTEGRATION_TIME_UNITS.some((u) => u.id === loadedUnits);
     if (isValidUnit) {
       setSuppliedValue(loadedValue);
       setSuppliedUnits(loadedUnits);
     } else {
-      const defaultUnits = ob?.observingBand === BAND_LOW_STR
-        ? SUPPLIED_INTEGRATION_TIME_UNITS_H
-        : SUPPLIED_INTEGRATION_TIME_UNITS_M;
+      const defaultUnits =
+        ob?.observingBand === BAND_LOW_STR
+          ? SUPPLIED_INTEGRATION_TIME_UNITS_H
+          : SUPPLIED_INTEGRATION_TIME_UNITS_M;
       setSuppliedValue(timeConversion(loadedValue, loadedUnits, defaultUnits));
       setSuppliedUnits(defaultUnits);
     }
@@ -252,7 +252,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const oldObservations = proposal.observations ?? [];
     const oldDataProducts = proposal.dataProductSDP ?? [];
     const dataProductSDP: DataProductSDPNew | undefined = proposal.dataProductSDP?.find(
-      dp => dp.observationId === newObservation.id
+      (dp) => dp.observationId === newObservation.id
     );
     const oldTO = proposal?.targetObservation ?? [];
     const to = dataProductSDP
@@ -317,7 +317,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   };
 
   const validateId = () =>
-    getProposal()?.observations?.find(t => t.id === myObsId) ? t('observationId.notUnique') : '';
+    getProposal()?.observations?.find((t) => t.id === myObsId) ? t('observationId.notUnique') : '';
 
   const setTheObservingBand = (e: React.SetStateAction<number>) => {
     if (isLow() && e !== 0) {
@@ -340,15 +340,15 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const setTheSubarrayConfig = (e: React.SetStateAction<string>) => {
     const record = observatoryConstants.array[telescope() - 1].subarray.find(
-      element => element.value === e
+      (element) => element.value === e
     );
     if (record) {
       if (isLow()) {
-        const sArray = osdLOW?.subArrays.find(sub => sub.subArray === subarrayConfig);
+        const sArray = osdLOW?.subArrays.find((sub) => sub.subArray === subarrayConfig);
         setNumOfStations(sArray?.numberStations ?? undefined);
       }
       if (isMid()) {
-        const sArray = osdMID?.subArrays.find(sub => sub.subArray === subarrayConfig);
+        const sArray = osdMID?.subArrays.find((sub) => sub.subArray === subarrayConfig);
         setNumOf15mAntennas(sArray?.numberSkaDishes ?? undefined);
         setNumOf13mAntennas(sArray?.numberMeerkatDishes ?? undefined);
       }
@@ -362,7 +362,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const record = isLow() ? osdLOW : osdMID;
     setMaxZoomChannels(0);
     if (record) {
-      const sArray = (record?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined)?.find(sub => sub.subArray === SA_AA2);
+      const sArray = (
+        record?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined
+      )?.find((sub) => sub.subArray === SA_AA2);
       setMaxZoomChannels(sArray?.numberZoomChannels ?? 0);
     }
   };
@@ -469,7 +471,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const isMid = () => observingBand !== BAND_LOW_STR;
   const telescope = () => (isLow() ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM);
   // TODO: Min channel width for Mid hardcoded for now since I'm not sure if it's correct
-  const minimumChannelWidthHz = (isLow() ? osdLOW?.basicCapabilities?.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP : 13.44e3);
+  const minimumChannelWidthHz = isLow()
+    ? osdLOW?.basicCapabilities?.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
+    : 13.44e3;
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
@@ -525,7 +529,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     let max = 0;
     if (isMid()) {
       const receiver = osdMID?.basicCapabilities?.receiverInformation.find(
-        e => e.rxId === String(observingBand)
+        (e) => e.rxId === String(observingBand)
       );
       min = receiver?.minFrequencyHz ?? 0;
       max = receiver?.maxFrequencyHz ?? 0;
@@ -554,12 +558,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
             centerFreq={cenFreq}
             bandWidth={
               isContinuum() || isPST()
-                ? continuumBandwidth ?? 0
-                : frequencyConversion(
-                    isLow() ? bandwidthLookup?.value ?? 0 : getBandwidthZoom(observationOut()),
+                ? (continuumBandwidth ?? 0)
+                : (frequencyConversion(
+                    isLow() ? (bandwidthLookup?.value ?? 0) : getBandwidthZoom(observationOut()),
                     isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ,
                     FREQUENCY_MHZ
-                  ) ?? 0
+                  ) ?? 0)
             }
             bandColor={colors[0]}
             boxWidth="100%"
@@ -708,9 +712,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       ];
     }
     const obj = low ? osdLOW : osdMID;
-    const rec = (obj?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined)?.find(r => r.subArray === subarrayConfig) ?? null;
+    const rec =
+      (obj?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined)?.find(
+        (r) => r.subArray === subarrayConfig
+      ) ?? null;
     const modes = obTypeTransform(rec?.cbfModes ?? []);
-    return modes.map(mode => ({
+    return modes.map((mode) => ({
       label: t(`observationType.${mode}`),
       value: mode
     }));
@@ -724,7 +731,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       return;
     }
 
-    const isValid = obsTypeOptions.some(opt => opt.value === observationType);
+    const isValid = obsTypeOptions.some((opt) => opt.value === observationType);
     if (!isValid && obsTypeOptions.length > 0) {
       setObservationType(obsTypeOptions[0].value);
     }
@@ -749,7 +756,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       const supplied = observatoryConstants?.Supplied ?? [];
       if (supplied.length === 0) return [];
       const options = isLow() ? [supplied[0]] : supplied;
-      return options.map(opt => ({
+      return options.map((opt) => ({
         ...opt,
         label: t(`sensitivityCalculatorResults.${opt.sensCalcResultsLabel}`)
       }));
@@ -777,7 +784,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       const entry = supplied[suppliedType - 1];
       if (!entry || !Array.isArray(entry.units)) return [];
       if (suppliedType === SUPPLIED_TYPE_INTEGRATION)
-        return entry.units.filter(u => INTEGRATION_TIME_UNITS.some(allowed => allowed.id === u.value));
+        return entry.units.filter((u) =>
+          INTEGRATION_TIME_UNITS.some((allowed) => allowed.id === u.value)
+        );
       return entry.units;
     };
 
@@ -804,13 +813,19 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           suffix={suppliedUnitsField()}
           label=""
           minValue={0}
-          maxValue={suppliedType === SUPPLIED_TYPE_INTEGRATION
-            ? timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, suppliedUnits)
-            : undefined}
-          step={suppliedType === SUPPLIED_TYPE_INTEGRATION
-            ? (suppliedUnits === TIME_HOURS ? SUPPLIED_INTEGRATION_TIME_STEP_HOURS : SUPPLIED_INTEGRATION_TIME_STEP_MINS)
-            : SUPPLIED_SENSITIVITY_STEP}
-          currentUnitLabel={getUnitOptions().find(u => u.value === suppliedUnits)?.label ?? ''}
+          maxValue={
+            suppliedType === SUPPLIED_TYPE_INTEGRATION
+              ? timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, suppliedUnits)
+              : undefined
+          }
+          step={
+            suppliedType === SUPPLIED_TYPE_INTEGRATION
+              ? suppliedUnits === TIME_HOURS
+                ? SUPPLIED_INTEGRATION_TIME_STEP_HOURS
+                : SUPPLIED_INTEGRATION_TIME_STEP_MINS
+              : SUPPLIED_SENSITIVITY_STEP
+          }
+          currentUnitLabel={getUnitOptions().find((u) => u.value === suppliedUnits)?.label ?? ''}
           required
         />
       </Box>
@@ -980,10 +995,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           {isPST()
             ? pstModeField()
             : isZoom()
-            ? spectralAveragingField()
-            : isContinuum()
-            ? SubBandsField()
-            : emptyField()}
+              ? spectralAveragingField()
+              : isContinuum()
+                ? SubBandsField()
+                : emptyField()}
         </Grid>
         <Grid size={{ md: 12, lg: 6 }}>{isZoom() ? spectralResolutionField() : emptyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{isZoom() ? effectiveResolutionField() : emptyField()}</Grid>
@@ -1194,7 +1209,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
             </BorderedSection>
           </Grid>
           {isLow() &&
-          subarrayConfig === SA_AA2 && ( // STAR-1923 : Need to make this generic from OSD Data or endpoint
+            subarrayConfig === SA_AA2 && ( // STAR-1923 : Need to make this generic from OSD Data or endpoint
               <Grid sx={{ p: { md: 5, lg: 0 } }} size={{ md: 12, lg: 3 }}>
                 <Box px={3}>
                   <img src={lowAA2Image} alt="Low AA2" width="100%" />

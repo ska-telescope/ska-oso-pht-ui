@@ -15,8 +15,8 @@ export type DataProductSDPContinuumImageBackend = {
 };
 
 export type DataProductSDPContinuumVisibilitiesBackend = {
-  time_averaging: ValueUnitPair;
-  frequency_averaging: ValueUnitPair;
+  time_averaging: number;
+  frequency_averaging: number;
   kind: string;
   variant: string;
 };

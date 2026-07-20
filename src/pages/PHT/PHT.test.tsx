@@ -27,11 +27,11 @@ describe('<PHT />', () => {
     wrapper(
       <PHT
         themeMode={''}
-        setThemeMode={function(_mode: string): void {
+        setThemeMode={function (_mode: string): void {
           throw new Error('Function not implemented.');
         }}
         accessibilityMode={0}
-        setAccessibilityMode={function(_mode: number): void {
+        setAccessibilityMode={function (_mode: number): void {
           throw new Error('Function not implemented.');
         }}
       />

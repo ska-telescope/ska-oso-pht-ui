@@ -1,4 +1,3 @@
-import React from 'react';
 import { expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import D3BarChartWithToggle from './D3BarChartWithToggle'; // Adjust path if needed
@@ -28,7 +27,7 @@ describe('D3BarChartWithToggle', () => {
     expect(fieldSelect).toBeInTheDocument();
 
     // Check that each field label appears at least once
-    allFields.forEach(field => {
+    allFields.forEach((field) => {
       const matches = screen.getAllByText(field);
       expect(matches.length).toBeGreaterThan(0);
     });

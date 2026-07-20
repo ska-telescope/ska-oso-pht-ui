@@ -51,7 +51,7 @@ export default function TableDataProductsRow({
   useInitializeAccessStore();
 
   const observation = useMemo(
-    () => proposal?.observations?.find(obs => obs.id === item.observationId),
+    () => proposal?.observations?.find((obs) => obs.id === item.observationId),
     [proposal, item.observationId]
   );
 
@@ -64,7 +64,7 @@ export default function TableDataProductsRow({
   let max = 0;
   if (isMid) {
     const receiver = osdMID?.basicCapabilities?.receiverInformation.find(
-      e => e.rxId === String(observation?.observingBand)
+      (e) => e.rxId === String(observation?.observingBand)
     );
     min = receiver?.minFrequencyHz ?? 0;
     max = receiver?.maxFrequencyHz ?? 0;
@@ -94,9 +94,10 @@ export default function TableDataProductsRow({
     () => getObservationColors('observationType', observation?.type, 0.6),
     [observation?.type]
   );
-  const colorsTelescope = useMemo(() => getObservationColors('telescope', observation?.telescope), [
-    observation?.telescope
-  ]);
+  const colorsTelescope = useMemo(
+    () => getObservationColors('telescope', observation?.telescope),
+    [observation?.telescope]
+  );
   const colorsTelescopeDim = useMemo(
     () => getObservationColors('telescope', observation?.telescope, 0.6),
     [observation?.telescope]
@@ -216,14 +217,14 @@ export default function TableDataProductsRow({
             centerFreq={centerFreq}
             bandWidth={
               isContinuum || isPST
-                ? observation?.continuumBandwidth ?? 0
-                : frequencyConversion(
+                ? (observation?.continuumBandwidth ?? 0)
+                : (frequencyConversion(
                     isLow
-                      ? getBandwidthLowZoom(observation?.bandwidth ?? 0)?.value ?? 0
+                      ? (getBandwidthLowZoom(observation?.bandwidth ?? 0)?.value ?? 0)
                       : getBandwidthZoom(observation ?? null),
                     isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ,
                     FREQUENCY_MHZ
-                  ) ?? 0
+                  ) ?? 0)
             }
             bandColor={colorsTelescopeDim.bg[0]}
             bandColorContrast={colorsTelescopeDim.fg[0]}
