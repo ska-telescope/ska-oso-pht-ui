@@ -6,6 +6,7 @@ import {
   FREQUENCY_GHZ,
   FREQUENCY_HZ,
   FREQUENCY_MHZ,
+  LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP,
   TELESCOPE_LOW_NUM
 } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
@@ -74,6 +75,20 @@ export default function CentralFrequency({
     setErrorMessage(validate(cfValue));
   };
 
+  // The minimum frequency the input should allow should be the minimum valid frequency - this is
+  // not the actual minimum frequency but minFreq + minBandwidth / 2
+  const halfBandwidthMHz =
+    frequencyConversion(
+      osdLOW?.basicCapabilities.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP ??
+        // TODO: Mid values should come from OSD in the future - 13440 is Mid channel width in Hz
+        //  and until AA2 bandwidth has to be multiple of 20 channels.
+        Math.round(20 * 13440 * 1e12) / 1e12,
+      FREQUENCY_HZ,
+      FREQUENCY_MHZ
+    ) / 2;
+  const minAllowedFrequency = halfBandwidthMHz + minFreq;
+  const maxAllowedFrequency = maxFreq - halfBandwidthMHz;
+
   return (
     <TextField
       type="number"
@@ -90,8 +105,8 @@ export default function CentralFrequency({
       slotProps={{
         htmlInput: {
           step: isLow ? stepMHz : 1,
-          min: minFreq,
-          max: maxFreq
+          min: minAllowedFrequency,
+          max: maxAllowedFrequency
         },
         input: suffix
           ? { endAdornment: <InputAdornment position="end">{suffix}</InputAdornment> }
