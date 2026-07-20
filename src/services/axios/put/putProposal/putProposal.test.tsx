@@ -496,14 +496,15 @@ describe('getObservationTypeDetails', () => {
       type: TYPE_ZOOM,
       spectralResolution: 1.2,
       effectiveResolution: 2.3,
-      spectralAveraging: 4
+      spectralAveraging: 4,
+      zoomChannels: 2000
     } as any;
     const result = getObservationTypeDetails(obs);
     expect(result.observation_type).toBe(TYPE_ZOOM_LONG);
     expect(result.spectral_resolution).toBe(1.2);
     expect(result.effective_resolution).toBe(2.3);
     expect(result.spectral_averaging).toBe('4');
-    expect(result.number_of_channels).toBe('1024');
+    expect(result.number_of_channels).toBe('2000');
   });
 
   test('should return correct details for TYPE_PST', () => {

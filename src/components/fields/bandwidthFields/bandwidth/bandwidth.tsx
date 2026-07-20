@@ -74,6 +74,19 @@ export default function BandwidthField({
   const bandwidthHz = channelsToBandwidthHz(zoomChannels, resolutionHz);
   const bandwidthDisplayValue = frequencyConversion(bandwidthHz, FREQUENCY_HZ, bandwidthUnits);
 
+  // The selected unit is local UI state, not part of the saved observation - only the
+  // underlying channel count is persisted. Re-mounting (e.g. leaving and reopening this
+  // observation) always starts from the kHz default, discarding whatever unit was showing
+  // before. Pick a sensible default once real data is available, based on its magnitude, rather
+  // than always defaulting to kHz - guarded to fire only once so it doesn't override a later
+  // manual unit change.
+  const hasSetInitialUnits = React.useRef(false);
+  React.useEffect(() => {
+    if (hasSetInitialUnits.current || zoomChannels <= 0 || resolutionHz <= 0) return;
+    hasSetInitialUnits.current = true;
+    setBandwidthUnits(bandwidthHz >= 1_000_000 ? FREQUENCY_MHZ : FREQUENCY_KHZ);
+  }, [zoomChannels, resolutionHz, bandwidthHz]);
+
   const commitChannels = (raw: number) => {
     setZoomChannels?.(Math.min(Math.max(Math.round(raw), 1), maxZoomChannels || 1));
   };

@@ -34,9 +34,9 @@ describe('<Bandwidth />', () => {
       />
     );
     expect(screen.getByTestId('zoomChannels')).toHaveValue('1000');
-    // 1000 channels * 1808.449074 Hz = 1,808,449.074 Hz = 1808.449074 kHz, shown to the nearest
-    // centi-Hz (5dp in kHz)
-    expect(screen.getByTestId('bandwidth')).toHaveValue('1808.44907');
+    // 1000 channels * 1808.449074 Hz = 1,808,449.074 Hz. That's >= 1 MHz, so the field defaults
+    // to MHz (1.808449074 MHz), shown to the nearest centi-Hz (8dp in MHz).
+    expect(screen.getByTestId('bandwidth')).toHaveValue('1.80844907');
   });
 
   test('LOW: editing channel count pushes the new value via setZoomChannels', async () => {
@@ -125,9 +125,11 @@ describe('<Bandwidth />', () => {
         resolutionHz={RESOLUTION_HZ}
       />
     );
+    // With zoomChannels=1000 the field defaults to MHz (see the "synced from zoomChannels"
+    // test above) - 3.6169 MHz is the MHz-equivalent of the 2000-channel target.
     const bandwidthInput = screen.getByTestId('bandwidth');
     await userEvent.clear(bandwidthInput);
-    await userEvent.type(bandwidthInput, '3616.9');
+    await userEvent.type(bandwidthInput, '3.6169');
     expect(setZoomChannels).toHaveBeenLastCalledWith(2000);
   });
 

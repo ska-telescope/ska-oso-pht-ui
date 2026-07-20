@@ -169,6 +169,13 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [minimumChannelWidthHz, setMinimumChannelWidthHz] = React.useState<number>(0);
   const [zoomChannels, setZoomChannels] = React.useState<number>(0);
+  // Tracks a genuine user edit, as opposed to the value merely matching the interim default -
+  // e.g. the user deliberately choosing/keeping ZOOM_CHANNELS_DEFAULT_LOW is not "unedited".
+  const zoomChannelsEditedByUser = React.useRef(false);
+  const handleZoomChannelsChange = (newValue: number) => {
+    zoomChannelsEditedByUser.current = true;
+    setZoomChannels(newValue);
+  };
   const [pstMode, setPstMode] = React.useState(PULSAR_TIMING_VALUE);
   const [maxZoomChannels, setMaxZoomChannels] = React.useState<number>(0);
 
@@ -496,19 +503,32 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   // record and fell back to a 0 cap, and (being tied only to mount/subarrayConfig) never
   // recalculated once the real record loaded. Recalculate once here as soon as it's available -
   // guarded to fire at most once, since osdLOW/osdMID may be a new object reference on every
-  // render and this would otherwise loop against setAfterChange's own state updates.
+  // render and this would otherwise loop against setAfterChange's own state updates. Only marks
+  // itself done once the lookup actually succeeds (maxChannels > 0) - if subarrayConfig hasn't
+  // settled to a value the loaded record recognises yet, this keeps retrying (also depends on
+  // subarrayConfig) rather than giving up.
   React.useEffect(() => {
+    if (hasRefreshedMaxChannelsCap.current) return;
     const record = isLow() ? osdLOW : osdMID;
-    if (hasRefreshedMaxChannelsCap.current || !record) return;
-    hasRefreshedMaxChannelsCap.current = true;
+    if (!record) return;
     const maxChannels = setMaxChannelsZoom(subarrayConfig);
-    // A new observation defaults zoomChannels to the cap, but that cap wasn't known yet at
-    // mount - correct it now, unless the user has already changed it away from the interim
-    // fallback while waiting for osdLOW/osdMID to arrive.
-    if (!isEdit() && isLow() && maxChannels > 0 && zoomChannels === ZOOM_CHANNELS_DEFAULT_LOW) {
-      setZoomChannels(maxChannels);
-    }
-  }, [osdLOW, osdMID]);
+    if (maxChannels <= 0) return;
+    hasRefreshedMaxChannelsCap.current = true;
+  }, [osdLOW, osdMID, subarrayConfig]);
+
+  const hasSetZoomChannelsDefault = React.useRef(false);
+
+  // Correcting zoomChannels used to be duplicated inside whichever effect happened to first
+  // compute a real maxZoomChannels, which meant it only actually fired for the specific
+  // code path that ref-guard logic anticipated. Driving it directly off maxZoomChannels itself
+  // instead catches the moment the cap becomes valid regardless of which of the several places
+  // that call setMaxChannelsZoom is the one that gets there first.
+  React.useEffect(() => {
+    if (hasSetZoomChannelsDefault.current) return;
+    if (isEdit() || !isLow() || maxZoomChannels <= 0 || zoomChannelsEditedByUser.current) return;
+    hasSetZoomChannelsDefault.current = true;
+    setZoomChannels(maxZoomChannels);
+  }, [maxZoomChannels]);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -949,7 +969,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           maxValue={maxZoomChannels}
           required
           value={zoomChannels}
-          setValue={setZoomChannels}
+          setValue={handleZoomChannelsChange}
         />
       </Box>
     );
@@ -1015,7 +1035,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         value={bandwidth}
         telescope={telescope()}
         zoomChannels={zoomChannels}
-        setZoomChannels={setZoomChannels}
+        setZoomChannels={handleZoomChannelsChange}
         maxZoomChannels={maxZoomChannels}
         resolutionHz={getResolutionHz()}
         centralFrequencyHz={getCentralFrequencyHz()}

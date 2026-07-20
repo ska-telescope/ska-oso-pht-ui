@@ -388,11 +388,18 @@ export const getFrequencyAndBandwidthUnits = (
 };
 
 export const getBandwidth = (incBandwidth: number, telescope: number): number => {
-  const array = OSD_CONSTANTS.array?.find((item) => item?.value === telescope);
-  const bandwidth = array?.bandWidth?.find((bandwidth) =>
-    bandwidth?.label?.includes(String(incBandwidth?.toString()))
-  )?.value;
-  return bandwidth ? bandwidth : 1;
+  const options = OSD_CONSTANTS.array?.find((item) => item?.value === telescope)?.bandWidth ?? [];
+  if (options.length === 0) return 1;
+  // Match by nearest numeric value rather than an exact substring of the label, since the
+  // backend can round/reformat the stored number (e.g. 390.625 -> 390.63) - an exact string
+  // match would silently fall through to the default and lose the saved selection.
+  const closest = options.reduce((best, candidate) =>
+    Math.abs(Number(candidate?.label?.split(' ')[0]) - incBandwidth) <
+    Math.abs(Number(best?.label?.split(' ')[0]) - incBandwidth)
+      ? candidate
+      : best
+  );
+  return closest.value;
 };
 
 const getLinked = (
