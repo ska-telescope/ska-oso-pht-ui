@@ -406,7 +406,7 @@
     "label": "Frequency Averaging",
     "help": "Frequency Averaging Help",
     "error": "A value greater than zero is required",
-    "0": "MHz"
+    "0": "kHz"
   },
   "frequencyRange": {
     "label": "Frequency Range"
