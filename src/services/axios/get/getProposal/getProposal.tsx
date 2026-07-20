@@ -350,7 +350,7 @@ const getCalibrationStrategy = (
 /*********************************************************** observation parameters mapping *********************************************************/
 const getWeighting = (inImageWeighting: string): number => {
   const weighting = IMAGE_WEIGHTING?.find(
-    (item) => item.lookup.toLowerCase() === inImageWeighting?.toLowerCase()
+    (item) => item.label.toLowerCase() === inImageWeighting?.toLowerCase()
   )?.value;
   return weighting ? weighting : 1; // fallback
 };
