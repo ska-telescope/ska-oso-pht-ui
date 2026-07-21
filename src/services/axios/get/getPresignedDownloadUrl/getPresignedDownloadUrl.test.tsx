@@ -29,10 +29,22 @@ describe('GetPresignedDownloadUrl', () => {
 
   it('returns result.data when post succeeds', async () => {
     vi.spyOn(constants, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+    vi.spyOn(constants, 'S3_SIGNED_URL_OVERRIDE', 'get').mockReturnValue('');
     mockedAuthClient.post.mockResolvedValue({ data: 'download-url-success' });
 
     const result = await GetPresignedDownloadUrl(mockedAuthClient, selectedFile);
     expect(result).toBe('download-url-success');
+  });
+
+  it('rewrites signed URL when S3_SIGNED_URL_OVERRIDE is set', async () => {
+    vi.spyOn(constants, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+    vi.spyOn(constants, 'S3_SIGNED_URL_OVERRIDE', 'get').mockReturnValue('/s3mock');
+    mockedAuthClient.post.mockResolvedValue({
+      data: 'https://s3.amazonaws.com/test-bucket/download.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256'
+    });
+
+    const result = await GetPresignedDownloadUrl(mockedAuthClient, selectedFile);
+    expect(result).toBe('/s3mock/test-bucket/download.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256');
   });
 
   it('returns API_UNKNOWN_ERROR when post returns undefined', async () => {

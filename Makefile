@@ -43,6 +43,11 @@ OST_SENSCALC_MAJOR_VERSION ?= $(shell helm dependency list ./charts/ska-oso-pht-
 # For local k8s:  http://<minikube-ip>/<namespace>  (default)
 # For remote k8s: https://k8s.stfc.skao.int/dev-ska-oso-pht-ui-aaa
 BACKEND_PROXY ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)
+S3MOCK_PROXY ?= http://localhost:9090
+S3_SIGNED_URL_OVERRIDE ?= $(shell curl -s --max-time 1 $(S3MOCK_PROXY) >/dev/null 2>&1 && echo /s3mock)
+S3MOCK_BUCKET_NAME ?= local-s3-bucket-name
+S3_SIGNED_URL_BUCKET_REWRITE_FROM ?= local_s3_bucket_name
+S3_SIGNED_URL_BUCKET_REWRITE_TO ?= $(S3MOCK_BUCKET_NAME)
 
 
 # Major version of the deployed ska-ost-senscalc — keep in sync with charts/ska-oso-pht-ui-umbrella/Chart.yaml
@@ -106,6 +111,9 @@ set-dev-env-vars:
 	REACT_APP_SKA_PHT_BASE_URL="/" \
 	REACT_APP_SKA_OSO_SERVICES_URL="/oso/api/v$(OSO_SERVICES_MAJOR_VERSION)" \
 	REACT_APP_SKA_SENSITIVITY_CALC_URL="/senscalc/api/v$(OST_SENSCALC_MAJOR_VERSION)/" \
+	REACT_APP_S3_SIGNED_URL_OVERRIDE="$(S3_SIGNED_URL_OVERRIDE)" \
+	REACT_APP_S3_SIGNED_URL_BUCKET_REWRITE_FROM="$(S3_SIGNED_URL_BUCKET_REWRITE_FROM)" \
+	REACT_APP_S3_SIGNED_URL_BUCKET_REWRITE_TO="$(S3_SIGNED_URL_BUCKET_REWRITE_TO)" \
 	REACT_APP_USE_LOCAL_DATA="false" \
 	REACT_APP_DOMAIN="$(KUBE_HOST)" \
 	REACT_APP_SKA_LOGIN_APP_URL="$(KUBE_HOST)/$(KUBE_NAMESPACE)/login" \
@@ -120,5 +128,27 @@ set-dev-env-vars:
 	INDIGO_AUDIENCE="test:pht" \
 	ENVJS_FILE=./public/env.js ./scripts/write_env_js.sh
 
-dev-start: set-dev-env-vars
-	BACKEND_PROXY="$(BACKEND_PROXY)" yarn start
+create-s3mock-bucket:
+	@if [ -z "$(S3_SIGNED_URL_OVERRIDE)" ]; then \
+		echo "S3 signed URL override disabled; skipping s3mock bucket bootstrap."; \
+		exit 0; \
+	fi
+	@if ! curl -s --max-time 2 "$(S3MOCK_PROXY)" >/dev/null 2>&1; then \
+		echo "s3mock unavailable at $(S3MOCK_PROXY); skipping bucket bootstrap."; \
+		exit 0; \
+	fi
+	@status=$$(curl -s -o /dev/null -w "%{http_code}" "$(S3MOCK_PROXY)/$(S3MOCK_BUCKET_NAME)/"); \
+	if [ "$$status" = "200" ]; then \
+		echo "s3mock bucket '$(S3MOCK_BUCKET_NAME)' already exists."; \
+		exit 0; \
+	fi; \
+	echo "Creating s3mock bucket '$(S3MOCK_BUCKET_NAME)' at $(S3MOCK_PROXY)"; \
+	create_status=$$(curl -s -o /dev/null -w "%{http_code}" -X PUT "$(S3MOCK_PROXY)/$(S3MOCK_BUCKET_NAME)/"); \
+	if [ "$$create_status" != "200" ] && [ "$$create_status" != "409" ]; then \
+		echo "Failed to create s3mock bucket '$(S3MOCK_BUCKET_NAME)' (HTTP $$create_status)."; \
+		exit 1; \
+	fi; \
+	echo "s3mock bucket '$(S3MOCK_BUCKET_NAME)' is ready."
+
+dev-start: set-dev-env-vars create-s3mock-bucket
+	BACKEND_PROXY="$(BACKEND_PROXY)" S3MOCK_PROXY="$(S3MOCK_PROXY)" yarn start

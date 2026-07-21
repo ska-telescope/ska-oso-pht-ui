@@ -98,6 +98,9 @@ The UI runs on your host via vite, but API requests are proxied to backend servi
 **Additional prerequisites:** Minikube with backends deployed
 
 ```bash
+# (optional) run S3Mock for PDF uploads
+docker run -p 9090:9090 -p 9191:9191 adobe/s3mock
+
 # Start with defaults (proxies to http://localhost/ska-oso-pht-ui)
 make dev-start
 ```
@@ -106,6 +109,8 @@ This runs `yarn start` with an appropriate `BACKEND_PROXY` configured, which:
 
 1. Generates `public/env.js` with relative API paths (`/oso/api/v14`, `/senscalc/api`)
 2. Starts vite with a proxy that forwards `/oso/` and `/senscalc/` requests to your local cluster
+3. If s3mock is reachable on `http://localhost:9090`, also routes signed PDF S3 URLs through `/s3mock/*`
+4. Ensures the s3mock bucket exists before starting (`create-s3mock-bucket`)
 
 If your Minikube IP is not `localhost`, override `KUBE_HOST`:
 
@@ -126,6 +131,11 @@ make dev-start BACKEND_PROXY=https://k8s.stfc.skao.int/dev-ska-oso-pht-ui-aaa
 ```
 
 This proxies `/oso/` and `/senscalc/` requests to the remote cluster. No CORS headers needed on the backend.
+If needed, you can disable s3mock URL rewriting for this mode with:
+
+```bash
+make dev-start BACKEND_PROXY=https://k8s.stfc.skao.int/dev-ska-oso-pht-ui-aaa S3_SIGNED_URL_OVERRIDE=
+```
 
 The UI is available at http://localhost:6101/
 
@@ -139,6 +149,7 @@ For local dev (`yarn start` / `make dev-start`):
 
 - `env.js` is written with **relative** API paths (e.g. `/oso/api/v14`)
 - Vite's dev server proxies these paths to the target specified by `BACKEND_PROXY`
+- Signed PDF URLs can be rewritten to `/s3mock/*` via `REACT_APP_S3_SIGNED_URL_OVERRIDE`
 - The browser only talks to `localhost:6101` — no cross-origin requests
 
 For k8s deployments:
@@ -148,24 +159,32 @@ For k8s deployments:
 
 ### Makefile variables
 
-| Variable         | Default                          | Purpose                                  |
-| ---------------- | -------------------------------- | ---------------------------------------- |
-| `KUBE_HOST`      | `http://localhost`               | Host of your k8s ingress                 |
-| `KUBE_NAMESPACE` | `ska-oso-pht-ui`                 | k8s namespace                            |
-| `BACKEND_PROXY`  | `$(KUBE_HOST)/$(KUBE_NAMESPACE)` | Vite proxy target (origin + path prefix) |
+| Variable                            | Default                                        | Purpose                                            |
+|-------------------------------------|------------------------------------------------|----------------------------------------------------|
+| `KUBE_HOST`                         | `http://localhost`                             | Host of your k8s ingress                           |
+| `KUBE_NAMESPACE`                    | `ska-oso-pht-ui`                               | k8s namespace                                      |
+| `BACKEND_PROXY`                     | `$(KUBE_HOST)/$(KUBE_NAMESPACE)`               | Vite proxy target (origin + path prefix)           |
+| `S3MOCK_PROXY`                      | `http://localhost:9090`                        | Vite proxy target for `/s3mock/*`                  |
+| `S3_SIGNED_URL_OVERRIDE`            | `/s3mock` when s3mock is reachable, else empty | Rewrites presigned PDF URLs in dev                 |
+| `S3MOCK_BUCKET_NAME`                | `local-s3-bucket-name`                         | Bucket created in s3mock by `create-s3mock-bucket` |
+| `S3_SIGNED_URL_BUCKET_REWRITE_FROM` | `local_s3_bucket_name`                         | Source bucket segment in presigned URL path        |
+| `S3_SIGNED_URL_BUCKET_REWRITE_TO`   | `$(S3MOCK_BUCKET_NAME)`                        | Replacement bucket segment for s3mock requests     |
 
 ### Environment Variable Reference
 
-| Variable                             | Purpose                                   |
-| ------------------------------------ | ----------------------------------------- |
-| `REACT_APP_SKA_OSO_SERVICES_URL`     | Base URL for proposal backend APIs        |
-| `REACT_APP_SKA_SENSITIVITY_CALC_URL` | Sensitivity calculator backend            |
-| `REACT_APP_USE_LOCAL_DATA`           | Use mock proposal data instead of backend |
-| `REACT_APP_DOMAIN`                   | Domain used for authentication            |
-| `REACT_APP_SKA_LOGIN_APP_URL`        | Login application URL                     |
-| `MSENTRA_CLIENT_ID`                  | MS Entra client ID for auth               |
-| `MSENTRA_TENANT_ID`                  | MS Entra tenant ID                        |
-| `MSENTRA_REDIRECT_URI`               | OAuth redirect URI                        |
+| Variable                                      | Purpose                                                               |
+|-----------------------------------------------|-----------------------------------------------------------------------|
+| `REACT_APP_SKA_OSO_SERVICES_URL`              | Base URL for proposal backend APIs                                    |
+| `REACT_APP_SKA_SENSITIVITY_CALC_URL`          | Sensitivity calculator backend                                        |
+| `REACT_APP_S3_SIGNED_URL_OVERRIDE`            | Optional override for presigned PDF URLs (e.g. `/s3mock`)             |
+| `REACT_APP_S3_SIGNED_URL_BUCKET_REWRITE_FROM` | Optional bucket name segment to rewrite in presigned URL paths        |
+| `REACT_APP_S3_SIGNED_URL_BUCKET_REWRITE_TO`   | Optional replacement bucket segment for rewritten presigned URL paths |
+| `REACT_APP_USE_LOCAL_DATA`                    | Use mock proposal data instead of backend                             |
+| `REACT_APP_DOMAIN`                            | Domain used for authentication                                        |
+| `REACT_APP_SKA_LOGIN_APP_URL`                 | Login application URL                                                 |
+| `MSENTRA_CLIENT_ID`                           | MS Entra client ID for auth                                           |
+| `MSENTRA_TENANT_ID`                           | MS Entra tenant ID                                                    |
+| `MSENTRA_REDIRECT_URI`                        | OAuth redirect URI                                                    |
 
 # Backend Requirements
 

@@ -29,10 +29,22 @@ describe('GetPresignedDeleteUrl', () => {
 
   it('returns result.data when post succeeds', async () => {
     vi.spyOn(constants, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+    vi.spyOn(constants, 'S3_SIGNED_URL_OVERRIDE', 'get').mockReturnValue('');
     mockedAuthClient.post.mockResolvedValue({ data: 'delete-url-success' });
 
     const result = await GetPresignedDeleteUrl(mockedAuthClient, selectedFile);
     expect(result).toBe('delete-url-success');
+  });
+
+  it('rewrites signed URL when S3_SIGNED_URL_OVERRIDE is set', async () => {
+    vi.spyOn(constants, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+    vi.spyOn(constants, 'S3_SIGNED_URL_OVERRIDE', 'get').mockReturnValue('/s3mock');
+    mockedAuthClient.post.mockResolvedValue({
+      data: 'https://s3.amazonaws.com/test-bucket/delete.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256'
+    });
+
+    const result = await GetPresignedDeleteUrl(mockedAuthClient, selectedFile);
+    expect(result).toBe('/s3mock/test-bucket/delete.pdf?X-Amz-Algorithm=AWS4-HMAC-SHA256');
   });
 
   it('returns API_UNKNOWN_ERROR when post returns undefined', async () => {
