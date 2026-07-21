@@ -11,11 +11,7 @@ import {
 } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { frequencyConversion } from '@/utils/helpers';
-import {
-  clampCentralFrequencyToWindowHz,
-  snapCentralFrequencyToChannelGridHz,
-  stepCentralFrequencyHz
-} from '@/utils/zoomWindow';
+import { stepCentralFrequencyHz } from '@/utils/zoomWindow';
 import SteppedNumberField from '@/components/wrappers/steppedNumberField/SteppedNumberField';
 
 interface CentralFrequencyProps {
@@ -54,8 +50,8 @@ export default function CentralFrequency({
     telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? FREQUENCY_MHZ : FREQUENCY_GHZ;
   const band = findBand(observingBand);
 
-  // ---- Steppable (LOW zoom) mode: window-clamped channel-grid snap ----
-  const [fieldValid, setFieldValid] = React.useState(true);
+  // ---- Steppable (LOW zoom) mode: window-clamped channel-grid validation ----
+  const [errorMessage, setErrorMessage] = React.useState('');
 
   // The legal range is the intersection of the band's own edges and the (usually tighter)
   // coarse-channel-derived range, when the latter is available.
@@ -70,12 +66,31 @@ export default function CentralFrequency({
   const min = frequencyConversion(minHz, FREQUENCY_HZ, units) + halfWindowUnits;
   const max = frequencyConversion(maxHz, FREQUENCY_HZ, units) - halfWindowUnits;
 
+  // A valid central frequency has the zoom window's start channel land on a whole number of
+  // channels from the band's minimum frequency (see snapCentralFrequencyToChannelGridHz, which
+  // this mirrors as a check rather than a correction). Tolerance is in Hz, not a fraction of a
+  // channel - values round-trip through a 6-d.p. MHz display, which alone can introduce ~0.5 Hz
+  // of noise, easily dwarfing a fixed fractional-channel tolerance when channelWidthHz is small.
+  const isOnChannelGrid = (cf: number): boolean => {
+    if (channelWidthHz <= 0) return true;
+    const cfHz = frequencyConversion(cf, units, FREQUENCY_HZ);
+    const numberOfChannels = windowBandwidthHz / channelWidthHz;
+    const startChannel = Math.round((cfHz - minHz) / channelWidthHz - numberOfChannels / 2);
+    const gridHz = minHz + (startChannel + numberOfChannels / 2) * channelWidthHz;
+    return Math.abs(cfHz - gridHz) < 1;
+  };
+
+  const validateStep = (cf: number): string => {
+    if (cf < min || cf > max) return t(FIELD + '.error.range');
+    if (!isOnChannelGrid(cf)) return t(FIELD + '.error.divisibility');
+    return '';
+  };
+
+  // Always accepts the typed value and flags an error if invalid, rather than silently
+  // rejecting/reverting it - matching how the non-steppable path's checkValue behaves below.
   const commit = (cf: number) => {
-    const inRange = cf >= min && cf <= max;
-    setFieldValid(inRange);
-    if (inRange) {
-      setValue(cf);
-    }
+    setValue(cf);
+    setErrorMessage(validateStep(cf));
   };
 
   const step = (currentValue: number, direction: 1 | -1) => {
@@ -93,70 +108,43 @@ export default function CentralFrequency({
     return Number(frequencyConversion(steppedHz, FREQUENCY_HZ, units).toFixed(6));
   };
 
-  const stepErrorMessage = fieldValid ? '' : t(FIELD + '.range.error');
-
-  // On losing focus, snap to the nearest central frequency whose start channel is a whole
-  // number of channels from the band's minimum frequency.
-  const snapToChannelGrid = (currentValue: number) => {
-    const cfHz = frequencyConversion(currentValue, units, FREQUENCY_HZ);
-    const numberOfChannels = channelWidthHz > 0 ? windowBandwidthHz / channelWidthHz : 0;
-    const snappedHz = snapCentralFrequencyToChannelGridHz(
-      cfHz,
-      channelWidthHz,
-      numberOfChannels,
-      minHz
-    );
-    const clampedHz = clampCentralFrequencyToWindowHz(snappedHz, windowBandwidthHz, minHz, maxHz);
-    commit(Number(frequencyConversion(clampedHz, FREQUENCY_HZ, units).toFixed(6)));
-  };
-
   // ---- Non-steppable (continuum/MID) mode: coarse-channel-grid divisibility validation ----
-  const [errorMessage, setErrorMessage] = React.useState('');
   const minFreq = frequencyConversion(band?.minFrequencyHz ?? 0, FREQUENCY_HZ, units);
   const maxFreq = frequencyConversion(band?.maxFrequencyHz ?? 0, FREQUENCY_HZ, units);
-  const stepMHz = frequencyConversion(
-    (osdLOW?.basicCapabilities.coarseChannelWidthHz ?? 1) * 2,
+  const channelWidthMHz = frequencyConversion(
+    osdLOW?.basicCapabilities.coarseChannelWidthHz ?? 1,
     FREQUENCY_HZ,
     FREQUENCY_MHZ
   );
+  const stepMHz = channelWidthMHz * 2;
 
   const validate = (cfValue: number): string => {
-    const lowStationChannelWidthMHz = frequencyConversion(
-      osdLOW?.basicCapabilities.coarseChannelWidthHz,
-      FREQUENCY_HZ,
-      FREQUENCY_MHZ
-    );
     if (cfValue < minFreq || cfValue > maxFreq) return t(FIELD + '.error.range');
-    if (
-      isLow &&
-      !Number.isInteger((cfValue + 0.5 * lowStationChannelWidthMHz) / lowStationChannelWidthMHz)
-    ) {
+    if (isLow && !Number.isInteger((cfValue + 0.5 * channelWidthMHz) / channelWidthMHz)) {
       return t(FIELD + '.error.divisibility', { value: stepMHz });
     }
     return '';
   };
 
-  // Snapping on every keystroke would corrupt mid-typing values (e.g. typing "180" one
-  // character at a time), so onChange just accepts the raw value - snapping happens once,
-  // on blur, via snapToStepGrid below.
+  // A valid central frequency sits at a half-channel offset from absolute 0 Hz (so the SPW's
+  // first coarse channel is even) - see validate()'s divisibility check above, which enforces
+  // the same rule. minFreq is itself a whole-channel multiple (not a half-channel offset), so
+  // snapping relative to minFreq instead of 0 would land on the wrong grid entirely.
+  const snapToValidGrid = (currentValue: number) =>
+    (Math.round(currentValue / channelWidthMHz - 0.5) + 0.5) * channelWidthMHz;
+
   const checkValue = (cfValue: number) => {
     setValue(cfValue);
     setErrorMessage(validate(cfValue));
   };
 
-  const snapToStepGrid = (currentValue: number) => {
-    if (!isLow) return;
-    const snapped = minFreq + Math.round((currentValue - minFreq) / stepMHz) * stepMHz;
-    setValue(snapped);
-    setErrorMessage(validate(snapped));
-  };
-
   // Steps by one coarse-channel-grid unit (LOW) or a plain 1-unit increment (MID, which has no
   // channel-grid constraint), snapping to the grid first if not already aligned - same principle
-  // as the steppable path's onStep, just against the flat stepMHz grid instead of a window.
+  // as the steppable path's onStep. Stepping by a full stepMHz (2 channels) preserves the grid's
+  // half-channel-offset parity.
   const stepNonSteppable = (currentValue: number, direction: 1 | -1): number => {
     const stepped = isLow
-      ? minFreq + (Math.round((currentValue - minFreq) / stepMHz) + direction) * stepMHz
+      ? snapToValidGrid(currentValue) + direction * stepMHz
       : currentValue + direction;
     return Number(Math.min(maxAllowedFrequency, Math.max(minAllowedFrequency, stepped)).toFixed(6));
   };
@@ -182,11 +170,10 @@ export default function CentralFrequency({
       value={value}
       onCommit={steppable ? commit : checkValue}
       onStep={steppable ? step : stepNonSteppable}
-      onBlurCommit={steppable ? snapToChannelGrid : snapToStepGrid}
       onFocus={() => setHelp(FIELD)}
       disabled={disabled}
       required={required}
-      errorText={steppable ? stepErrorMessage : errorMessage}
+      errorText={errorMessage}
       suffix={suffix}
     />
   );
