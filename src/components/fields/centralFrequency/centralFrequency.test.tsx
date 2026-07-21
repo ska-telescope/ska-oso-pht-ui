@@ -1,4 +1,5 @@
 // CentralFrequency.test.tsx
+import React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
@@ -50,15 +51,41 @@ const wrapper = (component: React.ReactElement) => {
   );
 };
 
+// onBlurCommit reads back the component's own `value` prop, so a mocked setValue that doesn't
+// feed into a re-render can't exercise a real type-then-blur round trip - this wires value/
+// setValue together like a real caller would.
+const StatefulCentralFrequency = ({ initial }: { initial: number }) => {
+  const [value, setValue] = React.useState(initial);
+  return <CentralFrequency observingBand={BAND_LOW_STR} value={value} setValue={setValue} />;
+};
+
 describe('CentralFrequency component', () => {
   it('renders with initial value', () => {
     wrapper(<CentralFrequency observingBand={BAND_LOW_STR} value={150} setValue={vi.fn()} />);
   });
 
-  it('non-steppable mode renders a plain text field, not the stepped variant', () => {
+  it('non-steppable mode still renders the stepped number field (same control, coarse-channel-grid stepping instead of window-clamping)', () => {
     wrapper(<CentralFrequency observingBand={BAND_LOW_STR} value={150} setValue={vi.fn()} />);
     expect(screen.getByLabelText('centralFrequency.label')).toBeInTheDocument();
-    expect(screen.queryByLabelText('centralFrequency-increment')).not.toBeInTheDocument();
+    expect(screen.getByLabelText('centralFrequency-increment')).toBeInTheDocument();
+  });
+
+  it('non-steppable mode steps by one coarse-channel-grid unit on increment', async () => {
+    const setValue = vi.fn();
+    // 150 MHz is already grid-aligned (50 + 64 x 1.5625 MHz coarse-channel step).
+    wrapper(<CentralFrequency observingBand={BAND_LOW_STR} value={150} setValue={setValue} />);
+    await userEvent.click(screen.getByLabelText('centralFrequency-increment'));
+    expect(setValue).toHaveBeenCalledWith(151.5625);
+  });
+
+  it('non-steppable mode does not snap while typing, only on blur', async () => {
+    wrapper(<StatefulCentralFrequency initial={150} />);
+    const input = screen.getByTestId('centralFrequency') as HTMLInputElement;
+    await userEvent.clear(input);
+    await userEvent.type(input, '155'); // not on the 1.5625 MHz grid
+    expect(input.value).toBe('155');
+    await userEvent.tab(); // blur
+    expect(input.value).toBe('154.6875'); // snapped to the nearest grid point
   });
 
   it('steppable mode renders a stepped number field and calls setValue on increment', async () => {

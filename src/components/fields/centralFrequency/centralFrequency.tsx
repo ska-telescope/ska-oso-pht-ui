@@ -1,5 +1,4 @@
 import React from 'react';
-import { InputAdornment, TextField } from '@mui/material';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import {
@@ -55,7 +54,7 @@ export default function CentralFrequency({
     telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? FREQUENCY_MHZ : FREQUENCY_GHZ;
   const band = findBand(observingBand);
 
-  // ---- Steppable (LOW zoom) mode: SteppedNumberField + channel-grid snap ----
+  // ---- Steppable (LOW zoom) mode: window-clamped channel-grid snap ----
   const [fieldValid, setFieldValid] = React.useState(true);
 
   // The legal range is the intersection of the band's own edges and the (usually tighter)
@@ -111,7 +110,7 @@ export default function CentralFrequency({
     commit(Number(frequencyConversion(clampedHz, FREQUENCY_HZ, units).toFixed(6)));
   };
 
-  // ---- Non-steppable (continuum/MID) mode: native TextField + divisibility validation ----
+  // ---- Non-steppable (continuum/MID) mode: coarse-channel-grid divisibility validation ----
   const [errorMessage, setErrorMessage] = React.useState('');
   const minFreq = frequencyConversion(band?.minFrequencyHz ?? 0, FREQUENCY_HZ, units);
   const maxFreq = frequencyConversion(band?.maxFrequencyHz ?? 0, FREQUENCY_HZ, units);
@@ -145,11 +144,21 @@ export default function CentralFrequency({
     setErrorMessage(validate(cfValue));
   };
 
-  const snapToStepGrid = () => {
+  const snapToStepGrid = (currentValue: number) => {
     if (!isLow) return;
-    const snapped = minFreq + Math.round((value - minFreq) / stepMHz) * stepMHz;
+    const snapped = minFreq + Math.round((currentValue - minFreq) / stepMHz) * stepMHz;
     setValue(snapped);
     setErrorMessage(validate(snapped));
+  };
+
+  // Steps by one coarse-channel-grid unit (LOW) or a plain 1-unit increment (MID, which has no
+  // channel-grid constraint), snapping to the grid first if not already aligned - same principle
+  // as the steppable path's onStep, just against the flat stepMHz grid instead of a window.
+  const stepNonSteppable = (currentValue: number, direction: 1 | -1): number => {
+    const stepped = isLow
+      ? minFreq + (Math.round((currentValue - minFreq) / stepMHz) + direction) * stepMHz
+      : currentValue + direction;
+    return Number(Math.min(maxAllowedFrequency, Math.max(minAllowedFrequency, stepped)).toFixed(6));
   };
 
   // The minimum frequency the input should allow should be the minimum valid frequency - this is
@@ -166,49 +175,19 @@ export default function CentralFrequency({
   const minAllowedFrequency = halfBandwidthMHz + minFreq;
   const maxAllowedFrequency = maxFreq - halfBandwidthMHz;
 
-  if (steppable) {
-    return (
-      <SteppedNumberField
-        testId={FIELD}
-        label={t(FIELD + '.label')}
-        value={value}
-        onCommit={commit}
-        onStep={step}
-        onBlurCommit={snapToChannelGrid}
-        onFocus={() => setHelp(FIELD)}
-        disabled={disabled}
-        required={required}
-        errorText={stepErrorMessage}
-        suffix={suffix}
-      />
-    );
-  }
-
   return (
-    <TextField
-      type="number"
-      variant="standard"
-      fullWidth
-      required={required}
-      disabled={disabled}
+    <SteppedNumberField
+      testId={FIELD}
       label={t(FIELD + '.label')}
       value={value}
-      onChange={(e) => checkValue(Number(e.target.value))}
-      onBlur={snapToStepGrid}
-      error={!!errorMessage}
-      helperText={errorMessage}
+      onCommit={steppable ? commit : checkValue}
+      onStep={steppable ? step : stepNonSteppable}
+      onBlurCommit={steppable ? snapToChannelGrid : snapToStepGrid}
       onFocus={() => setHelp(FIELD)}
-      slotProps={{
-        htmlInput: {
-          'data-testid': FIELD,
-          step: isLow ? stepMHz : 1,
-          min: minAllowedFrequency,
-          max: maxAllowedFrequency
-        },
-        input: suffix
-          ? { endAdornment: <InputAdornment position="end">{suffix}</InputAdornment> }
-          : undefined
-      }}
+      disabled={disabled}
+      required={required}
+      errorText={steppable ? stepErrorMessage : errorMessage}
+      suffix={suffix}
     />
   );
 }
