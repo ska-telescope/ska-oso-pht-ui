@@ -307,10 +307,10 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
           polarisations: 'polarisations' in script ? script.polarisations : undefined,
           channelsOut: 'channels_out' in script ? (Number(script.channels_out) ?? 0) : 0,
           taperValue: 'gaussian_taper' in script ? (Number(script.gaussian_taper) ?? 0) : 0,
-          timeAveraging:
-            'time_averaging' in script ? (Number(script.time_averaging.value) ?? 0) : 0,
-          frequencyAveraging:
-            'frequency_averaging' in script ? (Number(script.frequency_averaging.value) ?? 0) : 0,
+          // TODO - we shouldn't need so many conditionals in this function. Fix when we have
+          // refactored with better typing
+          timeAveraging: script.time_averaging ?? 1,
+          frequencyAveraging: script.frequency_averaging ?? 1,
           bitDepth: 'bit_depth' in script ? (Number(script.bit_depth) ?? 1) : 1,
           continuumSubtraction:
             'continuum_subtraction' in script ? Boolean(script.continuum_subtraction) : false,
@@ -420,7 +420,7 @@ const getObservations = (
     const arr = inValue[i]?.array_details?.array === TELESCOPE_MID_BACKEND_MAPPING ? 1 : 2;
     //TODO: Rework logic to reference array label rather than number
     const sub = OSD_CONSTANTS.array[arr - 1].subarray?.find(
-      (p) => p.label.toLowerCase() === inValue[i]?.array_details?.subarray?.toLocaleLowerCase()
+      (p) => p.value.toLowerCase() === inValue[i]?.array_details?.subarray?.toLocaleLowerCase()
     )?.value;
 
     const type = typeCheck(inValue[i]?.observation_type_details?.observation_type);

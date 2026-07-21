@@ -194,8 +194,8 @@ export const getDataProductScriptParameters = (
       } else {
         const data = dp?.data as SDPVisibilitiesContinuumData;
         return {
-          time_averaging: { value: data?.timeAveraging ?? 0, unit: 'second' },
-          frequency_averaging: { value: data?.frequencyAveraging ?? 0, unit: 'MHz' },
+          time_averaging: data?.timeAveraging ?? 0,
+          frequency_averaging: data?.frequencyAveraging ?? 0,
           kind: 'continuum',
           variant: 'visibilities'
         };
@@ -280,9 +280,7 @@ const getObservingBand = (observingBand: string) => observingBand;
 
 const getSubArray = (incSubArray: string, incTelescope: number): string => {
   const array = OSD_CONSTANTS.array.find((a) => a.value === incTelescope);
-  const subArray = array?.subarray
-    ?.find((sub) => sub.value === incSubArray)
-    ?.label?.toLocaleLowerCase();
+  const subArray = array?.subarray?.find((sub) => sub.value === incSubArray)?.value;
   return subArray ? subArray : SA_AA4;
 };
 
@@ -532,8 +530,7 @@ export const getDataProductRef = (
 const getResults = (
   incTargetObservations: TargetObservation[],
   incObs: Observation[],
-  incDataProductSDP: DataProductSDPNew[],
-  incTargets: Target[]
+  incDataProductSDP: DataProductSDPNew[]
 ) => {
   const resultsArr = [];
   if (incTargetObservations) {
@@ -664,8 +661,7 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
       result_details: getResults(
         proposal.targetObservation as TargetObservation[],
         proposal.observations as Observation[],
-        proposal.dataProductSDP as DataProductSDPNew[],
-        proposal.targets as Target[]
+        proposal.dataProductSDP as DataProductSDPNew[]
       )
     }
   };

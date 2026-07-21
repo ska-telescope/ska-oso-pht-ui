@@ -55,6 +55,6 @@ describe('Data product validation', () => {
     pageConfirmed('DATA PRODUCT');
 
     updateDataProductField('channelsOut', '41'); //enter invalid channels out
-    verifyFieldError('channelsOut', 'Valid range is 0 - 40', true); //verify field error
+    verifyFieldError('channelsOut', 'Valid range is 1 - 40', true); //verify field error
   });
 });

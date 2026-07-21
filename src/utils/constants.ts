@@ -227,10 +227,8 @@ export const PIXEL_SIZE_DEFAULT = 1.6;
 export const PIXEL_SIZE_UNIT_DEFAULT = 2;
 export const SET_CONTINUUM_SUBSTRACTION_DEFAULT = true;
 export const BIT_DEPTH_DEFAULT = 1;
-export const TIME_AVERAGING_DEFAULT = 3.4;
-export const _TIME_AVERAGING_UNITS_DEFAULT = 0;
-export const FREQUENCY_AVERAGING_DEFAULT = 21.7;
-export const FREQUENCY_AVERAGING_UNIT_DEFAULT = 0;
+export const TIME_AVERAGING_DEFAULT = 1;
+export const FREQUENCY_AVERAGING_DEFAULT = 1;
 
 export const BANDWIDTH_LABEL_SELECTOR = 0;
 
@@ -243,8 +241,6 @@ export const IMAGE_WEIGHTING = [
 export const LAB_POS_TICK = LABEL_POSITION.START;
 
 export const NOTIFICATION_DELAY_IN_SECONDS = 5;
-
-export const MULTIPLIER_HZ_GHZ = [1, 1, 1000, 1000000, 1000000000];
 
 export const NAV = [
   '/proposal/title',
@@ -514,7 +510,7 @@ export const OSCILLATION_UNITS = [
   { label: FREQUENCY_STR_GHZ, toHz: 10000000000 }
 ];
 //TODO: Refactor such that these identifiers are no longer needed and references can be per array label
-export const SA_AA2 = 'aa2';
+export const SA_AA2 = 'aa2_sv';
 export const SA_AA4 = 'aa4';
 export const SA_AA_STAR = 'aa*';
 export const SA_CUSTOM = 'custom';
@@ -639,18 +635,14 @@ export const TEAM_STATUS_TYPE_OPTIONS = {
   rejected: 'Rejected'
 };
 
+export const LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP = 8;
+
 export const TELESCOPE_MID_NUM = 1;
 export const TELESCOPE_LOW_NUM = 2;
 export const TELESCOPES = [
   { label: TELESCOPE_MID.code?.toUpperCase(), value: 1 },
   { label: TELESCOPE_LOW.code?.toUpperCase(), value: 2 }
 ];
-
-// This is the fundamental limits of the bandwidth provided by SKA LOW and MID
-export const BANDWIDTH_MIN_CHANNEL_WIDTH_HZ = {
-  [TELESCOPE_MID_NUM]: 13.44e3,
-  [TELESCOPE_LOW_NUM]: (24 * 781.25e3) / 3456
-};
 
 export const TELESCOPE_LOW_BACKEND_MAPPING = 'ska_low';
 export const TELESCOPE_MID_BACKEND_MAPPING = 'ska_mid';

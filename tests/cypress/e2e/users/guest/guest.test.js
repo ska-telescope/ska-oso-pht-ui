@@ -1,9 +1,4 @@
-import {
-  initializeUserNotLoggedIn,
-  clearLocalStorage,
-  verify,
-  verifyInformationBannerText
-} from '../../common/common';
+import { initializeUserNotLoggedIn, clearLocalStorage, verify } from '../../common/common';
 
 describe('Guest User', () => {
   beforeEach(() => {
@@ -19,8 +14,8 @@ describe('Guest User', () => {
   });
 
   it('Verify a guest user can use the external link to the sensitivity calculator application', () => {
-    //verify not logged in information banner
-    verifyInformationBannerText('NOT LOGGED IN, NO SUBMISSIONS AVAILABLE');
+    //verify not logged in - the landing page prompts the guest to sign in
+    verify('landingWelcomeLoginButton');
 
     //stub window.open to verify the correct URL is being opened
     cy.window().then(win => {

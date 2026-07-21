@@ -2,13 +2,13 @@ import { describe, expect, test, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import '@testing-library/jest-dom';
-import TimeAveraging from './timeAveraging';
+import FrequencyAveraging from './frequencyAveraging';
 
 vi.mock('@/services/i18n/useScopedTranslation', () => ({
   useScopedTranslation: () => ({
     t: (key: string) => {
-      if (key === 'timeAveraging.label') return 'Time averaging';
-      if (key === 'timeAveraging.0') return 'seconds';
+      if (key === 'frequencyAveraging.label') return 'Frequency averaging';
+      if (key === 'frequencyAveraging.0') return 'kHz';
       return key;
     }
   })
@@ -42,18 +42,18 @@ vi.mock('@ska-telescope/ska-gui-components', async (importOriginal) => {
   };
 });
 
-describe('<TimeAveraging />', () => {
-  test('renders formatted units and expected dropdown options', () => {
+describe('<FrequencyAveraging />', () => {
+  test('renders formatted units and expected 2-decimal dropdown options', () => {
     render(
       <StoreProvider>
-        <TimeAveraging value={1} />
+        <FrequencyAveraging value={1} />
       </StoreProvider>
     );
 
-    const dropdown = screen.getByTestId('timeAveraging');
-    expect(dropdown).toHaveAttribute('data-label', 'Time averaging');
+    const dropdown = screen.getByTestId('frequencyAveraging');
+    expect(dropdown).toHaveAttribute('data-label', 'Frequency averaging');
     expect(dropdown).toHaveAttribute('data-value', '1');
-    expect(screen.getByText('seconds')).toBeInTheDocument();
+    expect(screen.getByText('kHz')).toBeInTheDocument();
 
     const options = JSON.parse(dropdown.getAttribute('data-options') || '[]') as Array<{
       label: string;
@@ -61,17 +61,17 @@ describe('<TimeAveraging />', () => {
     }>;
 
     expect(options).toHaveLength(12);
-    expect(options[0]).toEqual({ label: '0.849', value: 1 });
-    expect(options[11]).toEqual({ label: '10.192', value: 12 });
+    expect(options[0]).toEqual({ label: '5.43', value: 1 });
+    expect(options[11]).toEqual({ label: '65.10', value: 12 });
   });
 
   test('passes disabled state to dropdown', () => {
     render(
       <StoreProvider>
-        <TimeAveraging value={2} disabled />
+        <FrequencyAveraging value={2} disabled />
       </StoreProvider>
     );
 
-    expect(screen.getByTestId('timeAveraging')).toHaveAttribute('data-disabled', 'true');
+    expect(screen.getByTestId('frequencyAveraging')).toHaveAttribute('data-disabled', 'true');
   });
 });

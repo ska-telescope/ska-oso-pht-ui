@@ -1,7 +1,6 @@
 import { beforeEach, describe, expect, test, vi } from 'vitest';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates.tsx';
 import axiosClient from '../../axiosClient/axiosClient';
-import * as CONSTANTS from '@/utils/constants';
 
 vi.mock('@services/axiosClient/axiosClient.tsx', () => ({
   default: {
