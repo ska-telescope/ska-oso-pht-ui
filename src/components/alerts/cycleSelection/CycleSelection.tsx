@@ -81,21 +81,6 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
     </Box>
   );
 
-  const details = (inLabel: string, inValue: string | number | null | undefined) => (
-    <Grid container direction="row" justifyContent="space-between" alignItems="center">
-      <Grid size={{ xs: 6 }}>
-        <Typography variant="subtitle1" fontWeight={600} color="text.primary">
-          {inLabel}
-        </Typography>
-      </Grid>
-      <Grid size={{ xs: 6 }}>
-        <Typography variant="body1" color="text.secondary">
-          {inValue ?? ''} {/* null safety */}
-        </Typography>
-      </Grid>
-    </Grid>
-  );
-
   const sectionTitle = () => (
     <Grid>
       <Grid
@@ -159,39 +144,6 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
   );
 
   const headerContent = () => <Grid>{title()}</Grid>;
-
-  const descriptionContent = () => (
-    <Grid
-      container
-      spacing={2}
-      justifyContent="center"
-      sx={{ width: '100%' }}
-      id="alert-dialog-description" // accessibility link
-    >
-      <Grid size={{ xs: 12 }}>
-        {details(t('id.label'), currentPolicy?.cycleInformation?.cycleId ?? '')}
-      </Grid>
-      <Grid size={{ xs: 12 }}>
-        {details(t('cycleDescription.label'), currentPolicy?.cycleDescription ?? '')}
-      </Grid>
-      <Grid size={{ xs: 12 }}>
-        {details(
-          t('cycleOpens.label'),
-          presentDateTime(currentPolicy?.cycleInformation?.proposalOpen ?? '', {
-            timeZoneName: 'short'
-          })
-        )}
-      </Grid>
-      <Grid size={{ xs: 12 }}>
-        {details(
-          t('cycleCloses.label'),
-          presentDateTime(currentPolicy?.cycleInformation?.proposalClose ?? '', {
-            timeZoneName: 'short'
-          })
-        )}
-      </Grid>
-    </Grid>
-  );
 
   const listContent = () => (
     <Grid container spacing={2}>
@@ -262,9 +214,6 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
     </Grid>
   );
 
-  // Guard against empty data to avoid rendering a non-selected list
-  const content = osdPolicies.length <= 1 ? descriptionContent() : listContent();
-
   return (
     <Dialog
       open={open}
@@ -290,7 +239,7 @@ export default function CycleSelection({ open, onClose, onConfirm }: CycleSelect
         >
           {headerContent()}
           {sectionTitle()}
-          {content}
+          {listContent()}
           {sectionTitle()}
         </Grid>
       </DialogContent>
