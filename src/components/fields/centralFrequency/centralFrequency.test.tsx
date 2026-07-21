@@ -94,7 +94,9 @@ describe('CentralFrequency component', () => {
     const setValue = vi.fn();
     // A valid centre frequency sits at a half-channel offset from 0 Hz (192.5 x 0.78125 MHz
     // channels here), not merely a multiple of the 1.5625 MHz step from the band minimum.
-    wrapper(<CentralFrequency observingBand={BAND_LOW_STR} value={150.390625} setValue={setValue} />);
+    wrapper(
+      <CentralFrequency observingBand={BAND_LOW_STR} value={150.390625} setValue={setValue} />
+    );
     await userEvent.click(screen.getByLabelText('centralFrequency-increment'));
     expect(setValue).toHaveBeenCalledWith(151.953125);
   });

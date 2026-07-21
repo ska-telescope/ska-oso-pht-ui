@@ -94,7 +94,12 @@ export const isCentralFrequencyOnChannelGrid = (
 ): boolean => {
   if (channelWidthHz <= 0) return true;
   const numberOfChannels = windowBandwidthHz / channelWidthHz;
-  const gridHz = snapCentralFrequencyToChannelGridHz(freqHz, channelWidthHz, numberOfChannels, minHz);
+  const gridHz = snapCentralFrequencyToChannelGridHz(
+    freqHz,
+    channelWidthHz,
+    numberOfChannels,
+    minHz
+  );
   return Math.abs(freqHz - gridHz) < 1;
 };
 
