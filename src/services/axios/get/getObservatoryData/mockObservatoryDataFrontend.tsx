@@ -6,6 +6,8 @@ import {
   BAND_5A_STR,
   BAND_5B_STR,
   BAND_LOW_STR,
+  LOW_AA2_SV,
+  MID_AA2,
   SA_AA2,
   SA_AA_STAR
 } from '@/utils/constants';
@@ -31,7 +33,7 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
         maxTargets: 1
       },
       telescopeCapabilities: {
-        low: SA_AA2,
+        low: LOW_AA2_SV,
         mid: null
       },
       type: 'Science Verification'
@@ -54,8 +56,8 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
         mid: []
       },
       telescopeCapabilities: {
-        low: SA_AA2,
-        mid: SA_AA2
+        low: LOW_AA2_SV,
+        mid: MID_AA2
       },
       type: 'Proposal'
     }

@@ -1,4 +1,4 @@
-import { SA_AA2 } from '@/utils/constants';
+import { LOW_AA2_SV, MID_AA2 } from '@/utils/constants';
 import { ObservatoryDataBackend } from '@/utils/types/observatoryData';
 
 export const MockObservatoryDataBackend: ObservatoryDataBackend = {
@@ -20,7 +20,7 @@ export const MockObservatoryDataBackend: ObservatoryDataBackend = {
     },
     telescope_capabilities: {
       Mid: null,
-      Low: SA_AA2
+      Low: LOW_AA2_SV
     }
   },
   capabilities: {
@@ -136,8 +136,8 @@ export const MockObservatoryDataBackendProposal: ObservatoryDataBackend = {
       max_targets: 100
     },
     telescope_capabilities: {
-      Mid: SA_AA2,
-      Low: SA_AA2
+      Mid: MID_AA2,
+      Low: LOW_AA2_SV
     }
   },
   capabilities: MockObservatoryDataBackend.capabilities

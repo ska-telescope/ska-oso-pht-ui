@@ -517,6 +517,17 @@ export const SA_AA4 = 'aa4';
 export const SA_AA_STAR = 'aa*';
 export const SA_CUSTOM = 'custom';
 
+// Names of array assemblies
+export const LOW_AA05 = 'AA0.5';
+export const LOW_AA1 = 'AA1';
+export const LOW_AA2 = 'AA2';
+export const LOW_ITF = 'Low_ITF';
+export const LOW_AA2_SV = 'AA2_SV';
+export const MID_AA05 = 'AA0.5';
+export const MID_AA1 = 'AA1';
+export const MID_AA2 = 'AA2';
+export const MID_ITF = 'Mid_ITF';
+
 export const SECOND_LABEL = 's';
 export const MILLISECOND_LABEL = 'ms';
 export const NANOSECOND_LABEL = 'us';
