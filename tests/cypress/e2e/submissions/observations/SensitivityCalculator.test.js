@@ -74,42 +74,42 @@ const verifyField = (id, value) => {
   }
 };
 
-const verifyWeightedContinuumSensitivity = rec =>
+const verifyWeightedContinuumSensitivity = (rec) =>
   verifyField('continuumSensitivityWeightedLabel', rec.weightedContinuumSensitivity);
 
-const verifyContinuumConfusionNoise = rec =>
+const verifyContinuumConfusionNoise = (rec) =>
   verifyField('continuumConfusionNoiseLabel', rec.continuumConfusionNoise);
 
-const verifyTotalContinuumSensitivity = rec =>
+const verifyTotalContinuumSensitivity = (rec) =>
   verifyField('continuumTotalSensitivityLabel', rec.totalContinuumSensitivity);
 
-const verifyContinuumSurfaceBrightnessSensitivity = rec =>
+const verifyContinuumSurfaceBrightnessSensitivity = (rec) =>
   verifyField(
     'continuumSurfaceBrightnessSensitivityLabel',
     rec.continuumSurfaceBrightnessSensitivity
   );
 
-const verifyWeightedSpectralSensitivity = rec =>
+const verifyWeightedSpectralSensitivity = (rec) =>
   verifyField('spectralSensitivityWeightedLabel', rec.weightedSpectralSensitivity);
 
-const verifySpectralConfusionNoise = rec =>
+const verifySpectralConfusionNoise = (rec) =>
   verifyField('spectralConfusionNoiseLabel', rec.spectralConfusionNoise);
 
-const verifyTotalSpectralSensitivity = rec =>
+const verifyTotalSpectralSensitivity = (rec) =>
   verifyField('spectralTotalSensitivityLabel', rec.totalSpectralSensitivity);
 
-const verifySpectralSynthesizedBeamSize = rec =>
+const verifySpectralSynthesizedBeamSize = (rec) =>
   verifyField('spectralSynthBeamSizeLabel', rec.spectralSynthesizedBeamSize);
 
-const verifySpectralSurfaceBrightnessSensitivity = rec =>
+const verifySpectralSurfaceBrightnessSensitivity = (rec) =>
   verifyField(
     'spectralSurfaceBrightnessSensitivityLabel',
     rec.spectralSurfaceBrightnessSensitivity
   );
 
-const verifyIntegrationTime = rec => verifyField('integrationTimeLabel', rec.integrationTime);
+const verifyIntegrationTime = (rec) => verifyField('integrationTimeLabel', rec.integrationTime);
 
-const verifySensitivityCalculatorResults = rec => {
+const verifySensitivityCalculatorResults = (rec) => {
   verifyWeightedContinuumSensitivity(rec);
   verifyContinuumConfusionNoise(rec);
   verifyTotalContinuumSensitivity(rec);
