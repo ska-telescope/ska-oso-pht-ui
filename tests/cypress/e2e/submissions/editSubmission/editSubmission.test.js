@@ -22,6 +22,7 @@ import {
   clickEditIconForRow,
   verifyMockedScienceIdeaOnLandingPageIsVisible,
   clickAddObservationEntry,
+  updateFieldValue,
   verifyDataInTable,
   clickAddDataProduct,
   addContinuumImagesObservatoryDataProduct,
@@ -151,6 +152,10 @@ describe('Edit Proposal', () => {
         clickStatusIconNav('statusId5'); //Click to observation page
         pageConfirmed('OBSERVATION');
         clickObservationSetup();
+        // The default centre frequency (band midpoint) isn't on the coarse-channel grid (see
+        // isCentralFrequencyDivisible) - set a valid one so the observation page doesn't fail
+        // its own validation before the proposal is even submitted.
+        updateFieldValue('centralFrequency', '200.390625');
         clickAddObservationEntry();
         verifyDataInTable('review-table', 'Continuum');
         clickStatusIconNav('statusId7'); //Click to data product page

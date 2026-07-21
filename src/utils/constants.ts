@@ -736,7 +736,9 @@ export const DEFAULT_CONTINUUM_OBSERVATION_LOW: Observation = {
   linked: '0',
   type: TYPE_CONTINUUM,
   observingBand: BAND_LOW_STR,
-  centralFrequency: 200,
+  // Not 200 exactly - the real 50-350 MHz band midpoint isn't on the coarse-channel grid (see
+  // isCentralFrequencyDivisible); this is the nearest valid point (781250 Hz coarse channel).
+  centralFrequency: 200.390625,
   centralFrequencyUnits: FREQUENCY_MHZ,
   continuumBandwidth: 150,
   continuumBandwidthUnits: FREQUENCY_MHZ,
@@ -787,7 +789,9 @@ export const DEFAULT_PST_OBSERVATION_LOW: Observation = {
   linked: '0',
   type: TYPE_PST,
   observingBand: BAND_LOW_STR,
-  centralFrequency: 200,
+  // Not 200 exactly - the real 50-350 MHz band midpoint isn't on the coarse-channel grid (see
+  // isCentralFrequencyDivisible); this is the nearest valid point (781250 Hz coarse channel).
+  centralFrequency: 200.390625,
   centralFrequencyUnits: FREQUENCY_MHZ,
   continuumBandwidth: 150,
   continuumBandwidthUnits: FREQUENCY_MHZ,
