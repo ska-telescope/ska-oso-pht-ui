@@ -33,7 +33,7 @@ export default function GridObservation({
 
     // If an explicit autoSelectId is provided AND exists in the dataset
     if (autoSelectId != null) {
-      const match = data.find(o => String(o.id) === String(autoSelectId));
+      const match = data.find((o) => String(o.id) === String(autoSelectId));
       if (match) {
         rowClick?.({ row: match });
         return;
@@ -53,6 +53,7 @@ export default function GridObservation({
   };
 
   const rowContent = (row: Observation) => {
+    const isSelected = String(row.id) === String(autoSelectId);
     const centralFrequencyUnits =
       getBandwidthOrFrequencyUnitsLabel(row.centralFrequencyUnits) ?? '';
     const observingMode = t((isSV ? 'observationType.' : 'scienceCategory.') + row.type);
@@ -68,15 +69,10 @@ export default function GridObservation({
         direction="column"
         onClick={disabled ? undefined : () => handleRowClick({ row })}
         sx={{
-          backgroundColor: 'transparent',
-          // border: '1px solid',
-          // borderRadius: 1,
-          // borderColor: 'grey.400',
-          // p: 2,1
+          backgroundColor: isSelected ? 'action.selected' : 'transparent',
           mb: 1.5,
           cursor: disabled ? 'default' : 'pointer',
           pointerEvents: disabled ? 'none' : 'auto'
-          // opacity: disabled ? 0.5 : 1
         }}
       >
         <Typography variant="subtitle1" fontWeight="bold">
@@ -134,7 +130,7 @@ export default function GridObservation({
         data-testid="gridObservation"
         sx={{ width: '90%', overflowY: 'auto', margin: '0 auto', flex: 1, minHeight: 0 }}
       >
-        <Box>{data.map(row => rowContent(row))}</Box>
+        <Box>{data.map((row) => rowContent(row))}</Box>
       </Box>
     </Box>
   );

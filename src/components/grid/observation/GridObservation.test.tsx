@@ -186,7 +186,7 @@ describe('GridObservation border styling', () => {
   it('applies grey.400 border color to all observation cards', () => {
     wrapper(<GridObservation data={mockData} rowClick={rowClickMock} />);
     const rows = screen.getAllByText(/OBS00/);
-    rows.forEach(row => {
+    rows.forEach((row) => {
       const card = row.closest('[class*="MuiStack"]');
       expect(card).toHaveStyle({ borderColor: expect.stringContaining('rgb') });
     });
