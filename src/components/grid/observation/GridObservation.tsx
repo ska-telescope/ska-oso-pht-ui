@@ -53,7 +53,6 @@ export default function GridObservation({
   };
 
   const rowContent = (row: Observation) => {
-    const isSelected = String(row.id) === String(autoSelectId);
     const centralFrequencyUnits =
       getBandwidthOrFrequencyUnitsLabel(row.centralFrequencyUnits) ?? '';
     const observingMode = t((isSV ? 'observationType.' : 'scienceCategory.') + row.type);
@@ -69,7 +68,7 @@ export default function GridObservation({
         direction="column"
         onClick={disabled ? undefined : () => handleRowClick({ row })}
         sx={{
-          backgroundColor: isSelected ? 'action.selected' : 'transparent',
+          backgroundColor: 'transparent',
           mb: 1.5,
           cursor: disabled ? 'default' : 'pointer',
           pointerEvents: disabled ? 'none' : 'auto'
