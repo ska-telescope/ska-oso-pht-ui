@@ -63,7 +63,7 @@
     "@mui/system": "^7.3.0",
     "@mui/x-data-grid": "^7.22.2",
     "@react-pdf/renderer": "^3.4.2",
-    "@ska-telescope/ska-gui-components": "^2.8.36",
+    "@ska-telescope/ska-gui-components": "^2.8.39",
     "@ska-telescope/ska-gui-local-storage": "^2.2.2",
     "@ska-telescope/ska-login-page": "^1.2.0",
     "@ska-telescope/skuid": "^3.0.0",
