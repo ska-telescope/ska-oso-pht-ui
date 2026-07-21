@@ -949,7 +949,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           value={centralFrequency}
           setValue={setCentralFrequency}
           suffix={centralFrequencyUnitsField()}
-          steppable={isLow() && isZoom()}
+          isLowZoom={isLow() && isZoom()}
           channelWidthHz={getResolutionHz()}
           windowBandwidthHz={getZoomBandwidthHz()}
           coarseChannelMinHz={coarseChannelRangeHz?.minHz}

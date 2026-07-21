@@ -26,7 +26,7 @@ interface CentralFrequencyProps {
   required?: boolean;
   observingBand: string;
   setValue: Function;
-  steppable?: boolean;
+  isLowZoom?: boolean;
   suffix?: any;
   value: number;
   windowBandwidthHz?: number;
@@ -40,7 +40,7 @@ export default function CentralFrequency({
   observingBand,
   required = false,
   setValue,
-  steppable = false,
+  isLowZoom = false,
   suffix,
   value,
   windowBandwidthHz = 0
@@ -54,17 +54,17 @@ export default function CentralFrequency({
     telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? FREQUENCY_MHZ : FREQUENCY_GHZ;
   const band = findBand(observingBand);
 
-  // ---- Steppable (LOW zoom) mode: window-clamped channel-grid validation ----
+  // ----  LOW zoom mode: window-clamped channel-grid validation ----
   const [errorMessage, setErrorMessage] = React.useState('');
 
   // The legal range is the intersection of the band's own edges and the (usually tighter)
   // coarse-channel-derived range, when the latter is available.
   const minHz = Math.max(band?.minFrequencyHz ?? 0, coarseChannelMinHz ?? -Infinity);
   const maxHz = Math.min(band?.maxFrequencyHz ?? 0, coarseChannelMaxHz ?? Infinity);
-  // For a steppable (LOW zoom) field, the legal range is inset by half the zoom window's
+  // For a LOW zoom field, the legal range is inset by half the zoom window's
   // bandwidth, so the whole window - not just its centre point - stays within the band. The
   // exact legal-value constraint is still TBC; this is the only rule applied for now.
-  const halfWindowUnits = steppable
+  const halfWindowUnits = isLowZoom
     ? frequencyConversion(windowBandwidthHz, FREQUENCY_HZ, units) / 2
     : 0;
   const min = frequencyConversion(minHz, FREQUENCY_HZ, units) + halfWindowUnits;
@@ -80,7 +80,7 @@ export default function CentralFrequency({
   };
 
   // Always accepts the typed value and flags an error if invalid, rather than silently
-  // rejecting/reverting it - matching how the non-steppable path's checkValue behaves below.
+  // rejecting/reverting it.
   const commit = (cf: number) => {
     setValue(cf);
     setErrorMessage(validateStep(cf));
@@ -101,7 +101,7 @@ export default function CentralFrequency({
     return Number(frequencyConversion(steppedHz, FREQUENCY_HZ, units).toFixed(6));
   };
 
-  // ---- Non-steppable (continuum/MID) mode: coarse-channel-grid divisibility validation ----
+  // ---- Continuum/MID mode: coarse-channel-grid divisibility validation ----
   const minFreq = frequencyConversion(band?.minFrequencyHz ?? 0, FREQUENCY_HZ, units);
   const maxFreq = frequencyConversion(band?.maxFrequencyHz ?? 0, FREQUENCY_HZ, units);
   const channelWidthMHz = frequencyConversion(
@@ -132,9 +132,8 @@ export default function CentralFrequency({
   };
 
   // Steps by one coarse-channel-grid unit (LOW) or a plain 1-unit increment (MID, which has no
-  // channel-grid constraint), snapping to the grid first if not already aligned - same principle
-  // as the steppable path's onStep. Stepping by a full stepMHz (2 channels) preserves the grid's
-  // half-channel-offset parity.
+  // channel-grid constraint), snapping to the grid first if not already aligned.
+  // Stepping by a full stepMHz (2 channels) preserves the grid's alf-channel-offset parity.
   const stepNonSteppable = (currentValue: number, direction: 1 | -1): number => {
     const stepped = isLow
       ? snapToValidGrid(currentValue) + direction * stepMHz
@@ -156,20 +155,29 @@ export default function CentralFrequency({
   const minAllowedFrequency = halfBandwidthMHz + minFreq;
   const maxAllowedFrequency = maxFreq - halfBandwidthMHz;
 
+  // validateStep/validate close over values (e.g. the mocked `t` in tests) that can get a new
+  // identity on every render without the underlying validity actually changing. Reading them via
+  // a ref - updated on every render, but not itself a dependency - keeps the effect below from
+  // re-running (and clobbering an error just set by onCommit) unless value/isLowZoom truly change.
+  const validateStepRef = React.useRef(validateStep);
+  validateStepRef.current = validateStep;
+  const validateRef = React.useRef(validate);
+  validateRef.current = validate;
+
   // Validates the current value whenever it changes for any reason - not just a user edit via
   // onCommit - e.g. on mount with a value loaded from a saved observation, or once async OSD
   // band/channel data arrives late. The value itself is never touched here, only the warning.
   React.useEffect(() => {
-    setErrorMessage(steppable ? validateStep(value) : validate(value));
-  }, [value, steppable, validateStep, validate]);
+    setErrorMessage(isLowZoom ? validateStepRef.current(value) : validateRef.current(value));
+  }, [value, isLowZoom]);
 
   return (
     <SteppedNumberField
       testId={FIELD}
       label={t(FIELD + '.label')}
       value={value}
-      onCommit={steppable ? commit : checkValue}
-      onStep={steppable ? step : stepNonSteppable}
+      onCommit={isLowZoom ? commit : checkValue}
+      onStep={isLowZoom ? step : stepNonSteppable}
       onFocus={() => setHelp(FIELD)}
       disabled={disabled}
       required={required}
