@@ -11,7 +11,11 @@ import {
 } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { frequencyConversion } from '@/utils/helpers';
-import { stepCentralFrequencyHz } from '@/utils/zoomWindow';
+import {
+  isCentralFrequencyDivisible,
+  isCentralFrequencyOnChannelGrid,
+  stepCentralFrequencyHz
+} from '@/utils/zoomWindow';
 import SteppedNumberField from '@/components/wrappers/steppedNumberField/SteppedNumberField';
 
 interface CentralFrequencyProps {
@@ -66,23 +70,12 @@ export default function CentralFrequency({
   const min = frequencyConversion(minHz, FREQUENCY_HZ, units) + halfWindowUnits;
   const max = frequencyConversion(maxHz, FREQUENCY_HZ, units) - halfWindowUnits;
 
-  // A valid central frequency has the zoom window's start channel land on a whole number of
-  // channels from the band's minimum frequency (see snapCentralFrequencyToChannelGridHz, which
-  // this mirrors as a check rather than a correction). Tolerance is in Hz, not a fraction of a
-  // channel - values round-trip through a 6-d.p. MHz display, which alone can introduce ~0.5 Hz
-  // of noise, easily dwarfing a fixed fractional-channel tolerance when channelWidthHz is small.
-  const isOnChannelGrid = (cf: number): boolean => {
-    if (channelWidthHz <= 0) return true;
-    const cfHz = frequencyConversion(cf, units, FREQUENCY_HZ);
-    const numberOfChannels = windowBandwidthHz / channelWidthHz;
-    const startChannel = Math.round((cfHz - minHz) / channelWidthHz - numberOfChannels / 2);
-    const gridHz = minHz + (startChannel + numberOfChannels / 2) * channelWidthHz;
-    return Math.abs(cfHz - gridHz) < 1;
-  };
-
   const validateStep = (cf: number): string => {
     if (cf < min || cf > max) return t(FIELD + '.error.range');
-    if (!isOnChannelGrid(cf)) return t(FIELD + '.error.divisibility');
+    const cfHz = frequencyConversion(cf, units, FREQUENCY_HZ);
+    if (!isCentralFrequencyOnChannelGrid(cfHz, channelWidthHz, windowBandwidthHz, minHz)) {
+      return t(FIELD + '.error.divisibility');
+    }
     return '';
   };
 
@@ -120,7 +113,7 @@ export default function CentralFrequency({
 
   const validate = (cfValue: number): string => {
     if (cfValue < minFreq || cfValue > maxFreq) return t(FIELD + '.error.range');
-    if (isLow && !Number.isInteger((cfValue + 0.5 * channelWidthMHz) / channelWidthMHz)) {
+    if (isLow && !isCentralFrequencyDivisible(cfValue, channelWidthMHz)) {
       return t(FIELD + '.error.divisibility', { value: stepMHz });
     }
     return '';
@@ -162,6 +155,13 @@ export default function CentralFrequency({
     ) / 2;
   const minAllowedFrequency = halfBandwidthMHz + minFreq;
   const maxAllowedFrequency = maxFreq - halfBandwidthMHz;
+
+  // Validates the current value whenever it changes for any reason - not just a user edit via
+  // onCommit - e.g. on mount with a value loaded from a saved observation, or once async OSD
+  // band/channel data arrives late. The value itself is never touched here, only the warning.
+  React.useEffect(() => {
+    setErrorMessage(steppable ? validateStep(value) : validate(value));
+  }, [value, steppable, validateStep, validate]);
 
   return (
     <SteppedNumberField

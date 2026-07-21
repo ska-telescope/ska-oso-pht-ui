@@ -222,7 +222,7 @@ describe('<ObservationEntry />', () => {
       );
     });
 
-    it('snaps a misaligned central frequency to the channel grid when loading a LOW zoom observation', async () => {
+    it('preserves a misaligned central frequency exactly when loading a LOW zoom observation, rather than auto-snapping it', async () => {
       const observation = {
         ...DEFAULT_ZOOM_OBSERVATION_LOW,
         centralFrequency: 200.001 // not aligned to the 1808.449074-Hz channel grid
@@ -236,7 +236,7 @@ describe('<ObservationEntry />', () => {
       expect(mockUpdateAppContent2).toHaveBeenCalledWith(
         expect.objectContaining({
           observations: expect.arrayContaining([
-            expect.objectContaining({ centralFrequency: 200.001808 })
+            expect.objectContaining({ centralFrequency: 200.001 })
           ])
         })
       );

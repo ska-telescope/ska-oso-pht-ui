@@ -82,6 +82,32 @@ export const snapCentralFrequencyToChannelGridHz = (
   return minHz + (startChannel + numberOfChannels / 2) * channelWidthHz;
 };
 
+// Checks (rather than corrects) whether freqHz already sits on the grid that
+// snapCentralFrequencyToChannelGridHz snaps to. Tolerance is in Hz, not a fraction of a channel -
+// values commonly round-trip through a 6-d.p. MHz display, which alone can introduce ~0.5 Hz of
+// noise, easily dwarfing a fixed fractional-channel tolerance when channelWidthHz is small.
+export const isCentralFrequencyOnChannelGrid = (
+  freqHz: number,
+  channelWidthHz: number,
+  windowBandwidthHz: number,
+  minHz: number
+): boolean => {
+  if (channelWidthHz <= 0) return true;
+  const numberOfChannels = windowBandwidthHz / channelWidthHz;
+  const gridHz = snapCentralFrequencyToChannelGridHz(freqHz, channelWidthHz, numberOfChannels, minHz);
+  return Math.abs(freqHz - gridHz) < 1;
+};
+
+// A valid continuum/PST central frequency sits at a half-coarse-channel offset from absolute
+// 0 Hz, so the SPW's first coarse channel is even.
+export const isCentralFrequencyDivisible = (
+  cfValueMHz: number,
+  channelWidthMHz: number
+): boolean => {
+  if (channelWidthMHz <= 0) return true;
+  return Number.isInteger((cfValueMHz + 0.5 * channelWidthMHz) / channelWidthMHz);
+};
+
 export const stepCentralFrequencyHz = (
   freqHz: number,
   direction: 1 | -1,

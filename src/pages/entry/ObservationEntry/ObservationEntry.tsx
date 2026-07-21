@@ -65,8 +65,7 @@ import {
 import {
   channelsToBandwidthHz,
   coarseChannelRangeToHz,
-  getZoomResolutionHz,
-  snapCentralFrequencyToChannelGridHz
+  getZoomResolutionHz
 } from '@utils/zoomWindow.ts';
 import { useConfiguration } from '@/services/axios/use/useConfiguration/useConfiguration';
 import WeatherField from '@/components/fields/weather/weather';
@@ -181,35 +180,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [groupObservation, setGroupObservation] = React.useState(0);
   const [myObsId, setMyObsId] = React.useState('');
   const [once, setOnce] = React.useState<Observation | null>(null);
-  const hasSnappedWithBandMinimum = React.useRef(false);
-  // Tracks a genuine user edit to centralFrequency, so the deferred re-snap below doesn't
-  // clobber a value the user has since chosen.
-  const centralFrequencyEditedByUser = React.useRef(false);
-  const handleCentralFrequencyChange = (newValue: number) => {
-    centralFrequencyEditedByUser.current = true;
-    setCentralFrequency(newValue);
-  };
-
-  // Loaded observations may pre-date the channel-grid constraint (or have been written by
-  // something other than this form), so re-snap on load rather than trusting the stored value.
-  // Uses ob's own fields directly rather than component state, since the state setters called
-  // elsewhere in observationIn() haven't taken effect yet at this point.
-  const getSnappedCentralFrequency = (ob: Observation): number => {
-    if (ob?.observingBand !== BAND_LOW_STR || ob?.type !== TYPE_ZOOM) {
-      return ob?.centralFrequency;
-    }
-    const units = ob?.centralFrequencyUnits ?? FREQUENCY_HZ;
-    const cfHz = frequencyConversion(ob?.centralFrequency ?? 0, units, FREQUENCY_HZ);
-    const channelWidthHz = getZoomResolutionHz(ob?.bandwidth ?? 0);
-    const minHz = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
-    const snappedHz = snapCentralFrequencyToChannelGridHz(
-      cfHz,
-      channelWidthHz,
-      ob?.zoomChannels ?? ZOOM_CHANNELS_DEFAULT_LOW,
-      minHz
-    );
-    return Number(frequencyConversion(snappedHz, FREQUENCY_HZ, units).toFixed(6));
-  };
 
   const observationIn = (ob: Observation) => {
     setMyObsId(ob?.id);
@@ -218,7 +188,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     if (!once) setObservingBand(ob?.observingBand);
     setWeather(ob?.weather ?? Number(t('weather.default')));
     setElevation(ob?.elevation);
-    setCentralFrequency(getSnappedCentralFrequency(ob));
+    setCentralFrequency(ob?.centralFrequency);
     setCentralFrequencyUnits(ob?.centralFrequencyUnits);
     setBandwidth(
       ob?.bandwidth ??
@@ -472,32 +442,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     }
   }, []);
 
-  // If this component mounted before OSD capability data arrived, the snap above ran against
-  // a 0 Hz fallback band minimum instead of the real LOW value, and (being a mount-only effect)
-  // never re-ran once osdLOW arrived. Re-snap here as soon as the real minimum is available -
-  // guarded to fire at most once. Snaps `once`'s original loaded value directly rather than the
-  // current centralFrequency state, since that may already be the result of the earlier
-  // 0 Hz-fallback snap - re-snapping an already-snapped value isn't equivalent to snapping the
-  // original once against the real minimum. Skipped entirely if the user has since edited the
-  // field themselves.
-  React.useEffect(() => {
-    if (!once || hasSnappedWithBandMinimum.current) return;
-    if (osdLOW?.basicCapabilities?.minFrequencyHz == null) return;
-    hasSnappedWithBandMinimum.current = true;
-    if (centralFrequencyEditedByUser.current) return;
-    setCentralFrequency(
-      getSnappedCentralFrequency({
-        ...once,
-        observingBand,
-        type: observationType,
-        centralFrequency: once.centralFrequency,
-        centralFrequencyUnits: once.centralFrequencyUnits,
-        bandwidth,
-        zoomChannels
-      })
-    );
-  }, [once, osdLOW]);
-
   const setAfterChange = () => {
     setValidateToggle(!validateToggle);
     setMaxChannelsZoom(subarrayConfig);
@@ -625,7 +569,15 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           ? frequencyConversion(getZoomBandwidthHz(), FREQUENCY_HZ, FREQUENCY_MHZ)
           : bandwidth
         : continuumBandwidth;
-    return isFrequencyOutOfRange(centralFrequency, useBandwidth, isLow(), String(observingBand));
+    return isFrequencyOutOfRange(
+      centralFrequency,
+      useBandwidth,
+      isLow(),
+      String(observingBand),
+      observationType,
+      getResolutionHz(),
+      getZoomBandwidthHz()
+    );
   };
 
   const emptyField = () => <></>;
@@ -995,7 +947,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <CentralFrequency
           observingBand={observingBand}
           value={centralFrequency}
-          setValue={handleCentralFrequencyChange}
+          setValue={setCentralFrequency}
           suffix={centralFrequencyUnitsField()}
           steppable={isLow() && isZoom()}
           channelWidthHz={getResolutionHz()}

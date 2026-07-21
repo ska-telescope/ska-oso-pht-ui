@@ -28,6 +28,12 @@ import {
 import Proposal from './../types/proposal';
 import { countWords, frequencyConversion, isFrequencyRangeOutOfBand } from '../helpers';
 import { useOSDAccessors } from '../osd/useOSDAccessors/useOSDAccessors';
+import {
+  channelsToBandwidthHz,
+  getZoomResolutionHz,
+  isCentralFrequencyDivisible,
+  isCentralFrequencyOnChannelGrid
+} from '../zoomWindow';
 import phtTranslations from '../../../public/locales/en/pht.json';
 
 export const validateTitlePage = (proposal: Proposal) => {
@@ -102,7 +108,10 @@ export const useIsFrequencyOutOfRange = () => {
     centralFrequency: number,
     bandwidth: number,
     isLow: boolean,
-    observingBand: string
+    observingBand: string,
+    type?: string,
+    channelWidthHz?: number,
+    windowBandwidthHz?: number
   ): boolean => {
     let minHz = 0;
     let maxHz = 0;
@@ -121,20 +130,58 @@ export const useIsFrequencyOutOfRange = () => {
     const targetUnits = isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ;
     const minFreq = frequencyConversion(minHz, FREQUENCY_HZ, targetUnits);
     const maxFreq = frequencyConversion(maxHz, FREQUENCY_HZ, targetUnits);
-    return isFrequencyRangeOutOfBand(centralFrequency, bandwidth, minFreq, maxFreq);
+    if (isFrequencyRangeOutOfBand(centralFrequency, bandwidth, minFreq, maxFreq)) return true;
+
+    // The channel-grid/divisibility constraint is LOW-only, matching centralFrequency.tsx's own
+    // validation (see isCentralFrequencyOnChannelGrid/isCentralFrequencyDivisible there).
+    if (!isLow) return false;
+
+    if (type === TYPE_ZOOM) {
+      const cfHz = frequencyConversion(centralFrequency, targetUnits, FREQUENCY_HZ);
+      return !isCentralFrequencyOnChannelGrid(
+        cfHz,
+        channelWidthHz ?? 0,
+        windowBandwidthHz ?? 0,
+        minHz
+      );
+    }
+
+    const channelWidthMHz = frequencyConversion(
+      osdLOW?.basicCapabilities?.coarseChannelWidthHz ?? 0,
+      FREQUENCY_HZ,
+      FREQUENCY_MHZ
+    );
+    return !isCentralFrequencyDivisible(centralFrequency, channelWidthMHz);
   };
 };
 
 export const useIsObservationFrequencyOutOfRange = () => {
   const isFrequencyOutOfRange = useIsFrequencyOutOfRange();
 
-  return (obs: Observation): boolean =>
-    isFrequencyOutOfRange(
+  return (obs: Observation): boolean => {
+    const isLow = obs.telescope === TELESCOPE_LOW_NUM;
+    const isZoom = obs.type === TYPE_ZOOM;
+    const channelWidthHz = isLow && isZoom ? getZoomResolutionHz(obs.bandwidth ?? 0) : 0;
+    const windowBandwidthHz =
+      isLow && isZoom ? channelsToBandwidthHz(obs.zoomChannels ?? 0, channelWidthHz) : 0;
+    // For LOW zoom, obs.bandwidth is a resolution-mode index, not a real bandwidth - use the
+    // actual channel-count-derived window bandwidth for the range check too (MID zoom unaffected,
+    // out of scope, matching ObservationEntry.tsx's own showWarning()).
+    const bandwidth = isZoom
+      ? isLow
+        ? frequencyConversion(windowBandwidthHz, FREQUENCY_HZ, FREQUENCY_MHZ)
+        : (obs.bandwidth ?? 0)
+      : (obs.continuumBandwidth ?? 0);
+    return isFrequencyOutOfRange(
       obs.centralFrequency,
-      obs.type === TYPE_ZOOM ? (obs.bandwidth ?? 0) : (obs.continuumBandwidth ?? 0),
-      obs.telescope === TELESCOPE_LOW_NUM,
-      String(obs.observingBand ?? '')
+      bandwidth,
+      isLow,
+      String(obs.observingBand ?? ''),
+      obs.type,
+      channelWidthHz,
+      windowBandwidthHz
     );
+  };
 };
 
 export const validateTechnicalPage = (proposal: Proposal) => {

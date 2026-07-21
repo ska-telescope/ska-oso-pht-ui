@@ -10,7 +10,9 @@ import {
   clampCentralFrequencyToWindowHz,
   coarseChannelRangeToHz,
   snapCentralFrequencyToChannelGridHz,
-  stepCentralFrequencyHz
+  stepCentralFrequencyHz,
+  isCentralFrequencyOnChannelGrid,
+  isCentralFrequencyDivisible
 } from '@/utils/zoomWindow.ts';
 
 describe('isFineZoomRestricted', () => {
@@ -227,6 +229,64 @@ describe('snapCentralFrequencyToChannelGridHz - worked examples', () => {
     expect(isOnGrid(201_000_000, 1808.449074, 1000)).toBe(false);
     expect(isOnGrid(201_000_000, 1808.449074, 1001)).toBe(false);
     expect(isOnGrid(201_000_000, 226.056, 1000)).toBe(false);
+  });
+});
+
+describe('isCentralFrequencyOnChannelGrid', () => {
+  const channelWidthHz = 1808.449074;
+  const numberOfChannels = 1000;
+  const windowBandwidthHz = channelWidthHz * numberOfChannels;
+  const minHz = 50_000_000;
+
+  test('returns true for a value already on the grid', () => {
+    const aligned = minHz + (numberOfChannels / 2 + 42) * channelWidthHz;
+    expect(isCentralFrequencyOnChannelGrid(aligned, channelWidthHz, windowBandwidthHz, minHz)).toBe(
+      true
+    );
+  });
+
+  test('returns false for a value off the grid', () => {
+    const aligned = minHz + (numberOfChannels / 2 + 42) * channelWidthHz;
+    expect(
+      isCentralFrequencyOnChannelGrid(
+        aligned + channelWidthHz * 0.3,
+        channelWidthHz,
+        windowBandwidthHz,
+        minHz
+      )
+    ).toBe(false);
+  });
+
+  test('tolerates ~1 Hz of rounding noise from a 6-d.p. MHz round-trip', () => {
+    const aligned = minHz + (numberOfChannels / 2 + 42) * channelWidthHz;
+    const roundedHz = Number((aligned / 1e6).toFixed(6)) * 1e6;
+    expect(
+      isCentralFrequencyOnChannelGrid(roundedHz, channelWidthHz, windowBandwidthHz, minHz)
+    ).toBe(true);
+  });
+
+  test('returns true when channel width is not positive', () => {
+    expect(isCentralFrequencyOnChannelGrid(123_456, 0, windowBandwidthHz, minHz)).toBe(true);
+  });
+});
+
+describe('isCentralFrequencyDivisible', () => {
+  const channelWidthMHz = 0.78125; // 781250 Hz coarse channel
+
+  test('returns true for a value at a half-channel offset from 0', () => {
+    expect(isCentralFrequencyDivisible(192.5 * channelWidthMHz, channelWidthMHz)).toBe(true);
+  });
+
+  test('returns false for a value at a whole-channel offset from 0', () => {
+    expect(isCentralFrequencyDivisible(192 * channelWidthMHz, channelWidthMHz)).toBe(false);
+  });
+
+  test('returns false for an arbitrary off-grid value', () => {
+    expect(isCentralFrequencyDivisible(123.456, channelWidthMHz)).toBe(false);
+  });
+
+  test('returns true when channel width is not positive', () => {
+    expect(isCentralFrequencyDivisible(123.456, 0)).toBe(true);
   });
 });
 
