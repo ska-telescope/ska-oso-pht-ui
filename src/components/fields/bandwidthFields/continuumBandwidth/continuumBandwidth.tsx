@@ -191,7 +191,8 @@ export default function ContinuumBandwidthField({
         },
         input: suffix
           ? { endAdornment: <InputAdornment position="end">{suffix}</InputAdornment> }
-          : undefined
+          : undefined,
+        formHelperText: { 'data-testid': FIELD + 'Error' } as any
       }}
     />
   );

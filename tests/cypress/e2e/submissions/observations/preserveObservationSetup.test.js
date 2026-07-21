@@ -86,8 +86,8 @@ describe('SV Flow: Observation setup is preserved when details page fields chang
     // Navigating away blurs the field, triggering the onBlur save
     clickStatusIconNav('statusId5');
     pageConfirmed('OBSERVATION');
-    // Same wrapper-vs-input testid issue as above.
-    cy.get('[data-testid="centralFrequency"] input').should('have.value', '180');
+    // centralFrequency's testid is on the input itself (slotProps.htmlInput), not a wrapper.
+    cy.get('[data-testid="centralFrequency"]').should('have.value', '180');
 
     clickStatusIconNav('statusId2');
     pageConfirmed('DETAILS');

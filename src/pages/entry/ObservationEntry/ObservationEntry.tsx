@@ -182,6 +182,13 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [myObsId, setMyObsId] = React.useState('');
   const [once, setOnce] = React.useState<Observation | null>(null);
   const hasSnappedWithBandMinimum = React.useRef(false);
+  // Tracks a genuine user edit to centralFrequency, so the deferred re-snap below doesn't
+  // clobber a value the user has since chosen.
+  const centralFrequencyEditedByUser = React.useRef(false);
+  const handleCentralFrequencyChange = (newValue: number) => {
+    centralFrequencyEditedByUser.current = true;
+    setCentralFrequency(newValue);
+  };
 
   // Loaded observations may pre-date the channel-grid constraint (or have been written by
   // something other than this form), so re-snap on load rather than trusting the stored value.
@@ -468,19 +475,23 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   // If this component mounted before OSD capability data arrived, the snap above ran against
   // a 0 Hz fallback band minimum instead of the real LOW value, and (being a mount-only effect)
   // never re-ran once osdLOW arrived. Re-snap here as soon as the real minimum is available -
-  // guarded to fire at most once. Snaps the current field values rather than the stale `once`
-  // observation, so an edit made by the user while osdLOW was still loading isn't overwritten.
+  // guarded to fire at most once. Snaps `once`'s original loaded value directly rather than the
+  // current centralFrequency state, since that may already be the result of the earlier
+  // 0 Hz-fallback snap - re-snapping an already-snapped value isn't equivalent to snapping the
+  // original once against the real minimum. Skipped entirely if the user has since edited the
+  // field themselves.
   React.useEffect(() => {
     if (!once || hasSnappedWithBandMinimum.current) return;
     if (osdLOW?.basicCapabilities?.minFrequencyHz == null) return;
     hasSnappedWithBandMinimum.current = true;
+    if (centralFrequencyEditedByUser.current) return;
     setCentralFrequency(
       getSnappedCentralFrequency({
         ...once,
         observingBand,
         type: observationType,
-        centralFrequency,
-        centralFrequencyUnits,
+        centralFrequency: once.centralFrequency,
+        centralFrequencyUnits: once.centralFrequencyUnits,
         bandwidth,
         zoomChannels
       })
@@ -984,7 +995,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <CentralFrequency
           observingBand={observingBand}
           value={centralFrequency}
-          setValue={setCentralFrequency}
+          setValue={handleCentralFrequencyChange}
           suffix={centralFrequencyUnitsField()}
           steppable={isLow() && isZoom()}
           channelWidthHz={getResolutionHz()}

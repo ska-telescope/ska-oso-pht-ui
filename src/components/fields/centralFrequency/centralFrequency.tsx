@@ -137,18 +137,19 @@ export default function CentralFrequency({
     return '';
   };
 
+  // Snapping on every keystroke would corrupt mid-typing values (e.g. typing "180" one
+  // character at a time), so onChange just accepts the raw value - snapping happens once,
+  // on blur, via snapToStepGrid below.
   const checkValue = (cfValue: number) => {
-    if (isLow && Math.abs(Math.abs(cfValue - value) - stepMHz) < 1e-6) {
-      const snapped =
-        cfValue > value
-          ? minFreq + Math.ceil((cfValue - minFreq) / stepMHz) * stepMHz
-          : minFreq + Math.floor((cfValue - minFreq) / stepMHz) * stepMHz;
-      setValue(snapped);
-      setErrorMessage(validate(snapped));
-      return;
-    }
     setValue(cfValue);
     setErrorMessage(validate(cfValue));
+  };
+
+  const snapToStepGrid = () => {
+    if (!isLow) return;
+    const snapped = minFreq + Math.round((value - minFreq) / stepMHz) * stepMHz;
+    setValue(snapped);
+    setErrorMessage(validate(snapped));
   };
 
   // The minimum frequency the input should allow should be the minimum valid frequency - this is
@@ -193,6 +194,7 @@ export default function CentralFrequency({
       label={t(FIELD + '.label')}
       value={value}
       onChange={(e) => checkValue(Number(e.target.value))}
+      onBlur={snapToStepGrid}
       error={!!errorMessage}
       helperText={errorMessage}
       onFocus={() => setHelp(FIELD)}
