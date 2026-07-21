@@ -17,13 +17,62 @@ import TaperDropdown from '@/components/fields/taperDropdown/taperDropdown';
 import { ValueUnitPair } from '@utils/types/typesSensCalc.tsx';
 import PolarisationsField from '@/components/fields/polarisations/polarisations';
 import {
+  BAND_LOW_STR,
+  BIT_DEPTH_DEFAULT,
+  CHANNELS_OUT_DEFAULT,
+  CHANNELS_OUT_MAX,
+  CHANNELS_OUT_MIN,
+  DETECTED_FILTER_BANK_VALUE,
+  DP_TYPE_IMAGES,
+  FLOW_THROUGH_VALUE,
+  FOOTER_HEIGHT_PHT,
+  FOOTER_SPACER,
+  FREQUENCY_AVERAGING_DEFAULT,
+  IMAGE_SIZE_DEFAULT,
+  IMAGE_SIZE_UNIT_DEFAULT,
+  IW_BRIGGS,
+  IW_NATURAL,
+  IW_UNIFORM,
+  NAV,
+  NOTIFICATION_DELAY_IN_SECONDS,
+  PAGE_DATA_PRODUCTS,
+  PIXEL_SIZE_DEFAULT,
+  PIXEL_SIZE_UNIT_DEFAULT,
+  PULSAR_TIMING_VALUE,
+  ROBUST_DEFAULT,
+  SA_CUSTOM,
+  SET_CONTINUUM_SUBSTRACTION_DEFAULT,
+  STATUS_INITIAL,
+  TAPER_DEFAULT,
+  TIME_AVERAGING_DEFAULT,
+  TYPE_CONTINUUM,
+  TYPE_PST,
+  TYPE_ZOOM,
+  WRAPPER_HEIGHT
+} from '@/utils/constants';
+import Proposal from '@/utils/types/proposal';
+import ImageWeightingField from '@/components/fields/imageWeighting/imageWeighting';
+import AddButton from '@/components/button/Add/Add';
+import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { presentUnits } from '@/utils/present/present';
+import Observation from '@/utils/types/observation';
+import GridObservation from '@/components/grid/observation/GridObservation';
+import ImageSizeField from '@/components/fields/imageSize/imageSize';
+import ChannelsOutField from '@/components/fields/channelsOut/channelsOut';
+import DataProductTypeField from '@/components/fields/dataProductType/dataProductType';
+import TaperField from '@/components/fields/taper/taper';
+import TimeAveragingField from '@/components/fields/timeAveraging/timeAveraging';
+import FrequencyAveragingField from '@/components/fields/frequencyAveraging/frequencyAveraging';
+import BitDepthField from '@/components/fields/bitDepth/bitDepth';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { generateId } from '@/utils/helpers';
+import { useHelp } from '@/utils/help/useHelp';
 import ContinuumSubtractionField from '@/components/fields/continuumSubtraction/continuumSubtraction';
 import SensCalcContent from '@/components/alerts/sensCalcModal/content/SensCalcContent';
 import { updateDataProducts } from '@/utils/update/dataProducts/updateDataProducts';
 import { updateSensCalc } from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
+import OutputFrequencyResolutionField from '@/components/fields/outputFrequencyResolution/outputFrequencyResolution';
 import DispersionMeasureField from '@/components/fields/dispersionMeasure/dispersionMeasure';
 import RotationMeasureField from '@/components/fields/rotationMeasure/rotationMeasure';
 import OutputSamplingIntervalField from '@/components/fields/outputSamplingInterval/outputSamplingInterval';
@@ -35,6 +84,7 @@ const COL = 6;
 const COL_MID = 8;
 
 interface DataProductProps {
+  data?: DataProductSDPNew;
 }
 
 export default function DataProduct({ data }: DataProductProps) {
