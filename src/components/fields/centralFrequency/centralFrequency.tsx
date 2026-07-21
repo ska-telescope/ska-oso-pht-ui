@@ -198,6 +198,7 @@ export default function CentralFrequency({
       onFocus={() => setHelp(FIELD)}
       slotProps={{
         htmlInput: {
+          'data-testid': FIELD,
           step: isLow ? stepMHz : 1,
           min: minAllowedFrequency,
           max: maxAllowedFrequency

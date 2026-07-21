@@ -188,12 +188,21 @@ export const osdMapping = (
       low: inData?.capabilities?.low?.basic_capabilities
         ? {
             basicCapabilities: {
+              // Round the half-channel-inset edges to the nearest MHz - the coarse-channel
+              // maths otherwise lands a few kHz short of the clean band edges (e.g. 49.609375
+              // MHz instead of 50 MHz).
               minFrequencyHz:
-                (odtConfig.ska_low.frequency_band.min_coarse_channel - 0.5) *
-                odtConfig.ska_low.frequency_band.coarse_channel_width_hz,
+                Math.round(
+                  ((odtConfig.ska_low.frequency_band.min_coarse_channel - 0.5) *
+                    odtConfig.ska_low.frequency_band.coarse_channel_width_hz) /
+                    1e6
+                ) * 1e6,
               maxFrequencyHz:
-                (odtConfig.ska_low.frequency_band.max_coarse_channel + 0.5) *
-                odtConfig.ska_low.frequency_band.coarse_channel_width_hz,
+                Math.round(
+                  ((odtConfig.ska_low.frequency_band.max_coarse_channel + 0.5) *
+                    odtConfig.ska_low.frequency_band.coarse_channel_width_hz) /
+                    1e6
+                ) * 1e6,
               minCoarseChannel: odtConfig.ska_low.frequency_band.min_coarse_channel,
               maxCoarseChannel: odtConfig.ska_low.frequency_band.max_coarse_channel,
               coarseChannelWidthHz: odtConfig.ska_low.frequency_band.coarse_channel_width_hz,
@@ -332,16 +341,24 @@ async function GetOSDCycles(
   }
 
   try {
-    const [cyclesResult, odtResult] = await Promise.all([
+    // TODO: The OSD related endpoints will be consolidated in oso-services in the future after
+    //   which we should not need to retrieve data from two different endpoints anymore
+    const [cyclesResult, odtResult] = await Promise.allSettled([
       authAxiosClient.get(`${SKA_OSO_SERVICES_URL}${OSO_SERVICES_PROPOSAL_PATH}/osd/cycles`),
-      // TODO: The OSD related endpoints will be consolidated in oso-services in the future after
-      //   which we should not need to retrieve data from two different endpoints anymore
       authAxiosClient.get(`${SKA_OSO_SERVICES_URL}/odt/configuration`)
     ]);
 
-    const cyclesData = cyclesResult?.data as ObservatoryDataBackend[] | undefined;
-    const odtConfig = odtResult?.data as ODTConfigurationBackend | undefined;
-    if (!cyclesData || !odtConfig) return 'error.API_UNKNOWN_ERROR';
+    const cyclesData =
+      cyclesResult.status === 'fulfilled'
+        ? (cyclesResult.value?.data as ObservatoryDataBackend[] | undefined)
+        : undefined;
+    if (!cyclesData) return 'error.API_UNKNOWN_ERROR';
+
+    const odtConfig: ODTConfigurationBackend =
+      odtResult.status === 'fulfilled' && odtResult.value?.data
+        ? (odtResult.value.data as ODTConfigurationBackend)
+        : MockODTConfigurationBackend;
+
     return osdMapping(cyclesData.reverse(), odtConfig); // reverse to display LOW AA2 first
   } catch (e) {
     if (e instanceof Error) {

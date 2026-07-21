@@ -184,6 +184,7 @@ export default function ContinuumBandwidthField({
       onFocus={() => setHelp(FIELD)}
       slotProps={{
         htmlInput: {
+          'data-testid': FIELD,
           step: minChannelWidthMHz,
           min: minChannelWidthMHz,
           max: frequencyConversion(maxContBandwidthHz, FREQUENCY_HZ, FREQUENCY_MHZ)
