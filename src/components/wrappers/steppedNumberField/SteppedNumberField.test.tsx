@@ -142,7 +142,14 @@ describe('<SteppedNumberField />', () => {
     // A real spin-button click has already stepped the DOM value by the native HTML `step`
     // (here, 1) before firing an `input` event with no inputType - unlike a typed/pasted edit,
     // which always sets one. That's the only signal distinguishing it from typing.
-    input.value = '1001';
+    // Goes through the native (not React-patched) value setter - assigning `input.value` directly
+    // would update React's own change-tracking too, making it think nothing changed and swallow
+    // the synthetic onChange entirely.
+    const nativeValueSetter = Object.getOwnPropertyDescriptor(
+      window.HTMLInputElement.prototype,
+      'value'
+    )!.set!;
+    nativeValueSetter.call(input, '1001');
     fireEvent(input, new InputEvent('input', { bubbles: true, cancelable: true }));
 
     expect(onStep).toHaveBeenCalledWith(1000, 1);

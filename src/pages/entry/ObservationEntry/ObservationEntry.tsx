@@ -64,7 +64,6 @@ import {
 } from '@utils/helpers.ts';
 import {
   channelsToBandwidthHz,
-  coarseChannelRangeToHz,
   getZoomResolutionHz,
   snapCentralFrequencyToChannelGridHz
 } from '@utils/zoomWindow.ts';
@@ -127,13 +126,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     telescopeBand
   } = useOSDAccessors();
   const isFrequencyOutOfRange = useIsFrequencyOutOfRange();
-  const coarseChannelRangeHz = osdLOW?.basicCapabilities
-    ? coarseChannelRangeToHz(
-        osdLOW.basicCapabilities.minCoarseChannel,
-        osdLOW.basicCapabilities.maxCoarseChannel,
-        osdLOW.basicCapabilities.coarseChannelWidthHz
-      )
-    : null;
 
   const isEdit = () => locationProperties.state !== null || data !== undefined;
 
@@ -987,8 +979,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           isLowZoom={isLow() && isZoom()}
           channelWidthHz={getResolutionHz()}
           windowBandwidthHz={getZoomBandwidthHz()}
-          coarseChannelMinHz={coarseChannelRangeHz?.minHz}
-          coarseChannelMaxHz={coarseChannelRangeHz?.maxHz}
           required
         />
       </Box>

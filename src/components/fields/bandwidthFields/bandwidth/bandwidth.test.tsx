@@ -38,10 +38,10 @@ describe('<Bandwidth />', () => {
         centralFrequencyHz={200_000_000}
       />
     );
-    expect(screen.getByTestId('zoomChannels')).toHaveValue('1000');
+    expect(screen.getByTestId('zoomChannels')).toHaveValue(1000);
     // 1000 channels * 1808.449074 Hz = 1,808,449.074 Hz. That's >= 1 MHz, so the field defaults
     // to MHz (1.808449074 MHz), shown to the nearest centi-Hz (8dp in MHz).
-    expect(screen.getByTestId('bandwidth')).toHaveValue('1.80844907');
+    expect(screen.getByTestId('bandwidth')).toHaveValue(1.80844907);
   });
 
   test('LOW: editing channel count pushes the new value via setZoomChannels', async () => {

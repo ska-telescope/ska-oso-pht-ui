@@ -12,6 +12,7 @@ import {
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { frequencyConversion } from '@/utils/helpers';
 import {
+  coarseChannelRangeToHz,
   isCentralFrequencyDivisible,
   isCentralFrequencyOnChannelGrid,
   stepCentralFrequencyHz
@@ -20,8 +21,6 @@ import SteppedNumberField from '@/components/wrappers/steppedNumberField/Stepped
 
 interface CentralFrequencyProps {
   channelWidthHz?: number;
-  coarseChannelMaxHz?: number;
-  coarseChannelMinHz?: number;
   disabled?: boolean;
   required?: boolean;
   observingBand: string;
@@ -34,8 +33,6 @@ interface CentralFrequencyProps {
 
 export default function CentralFrequency({
   channelWidthHz = 0,
-  coarseChannelMaxHz,
-  coarseChannelMinHz,
   disabled = false,
   observingBand,
   required = false,
@@ -59,8 +56,17 @@ export default function CentralFrequency({
 
   // The legal range is the intersection of the band's own edges and the (usually tighter)
   // coarse-channel-derived range, when the latter is available.
-  const minHz = Math.max(band?.minFrequencyHz ?? 0, coarseChannelMinHz ?? -Infinity);
-  const maxHz = Math.min(band?.maxFrequencyHz ?? 0, coarseChannelMaxHz ?? Infinity);
+  const coarseChannelRangeHz = osdLOW?.basicCapabilities
+    ? coarseChannelRangeToHz(
+        osdLOW.basicCapabilities.minCoarseChannel,
+        osdLOW.basicCapabilities.maxCoarseChannel,
+        osdLOW.basicCapabilities.coarseChannelWidthHz
+      )
+    : null;
+  // Need to still round for clean display otherwise could be a few kHz off.
+  // Perhaps could be done either at source or  in the frequencyConversion function but that would be a breaking change.
+  const minHz = Math.max(band?.minFrequencyHz ?? 0, coarseChannelRangeHz?.minHz ?? -Infinity);
+  const maxHz = Math.min(band?.maxFrequencyHz ?? 0, coarseChannelRangeHz?.maxHz ?? Infinity);
   // For a LOW zoom field, the legal range is inset by half the zoom window's
   // bandwidth, so the whole window - not just its centre point - stays within the band. The
   // exact legal-value constraint is still TBC; this is the only rule applied for now.

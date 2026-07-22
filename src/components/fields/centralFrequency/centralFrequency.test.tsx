@@ -33,13 +33,21 @@ vi.mock('@/utils/help/useHelp', () => ({
 }));
 
 // Mock useOSDAccessors so findBand returns a known 50-350 MHz LOW band for the window-clamping
-// tests, and osdLOW provides a coarse channel width for the non-clamped mode's
-// divisibility validation.
+// tests, and osdLOW provides a coarse channel width for the non-clamped mode's divisibility
+// validation. minCoarseChannel/maxCoarseChannel are set wide enough that the coarse-channel-
+// derived range comfortably contains the whole 50-350 MHz test band, so it never becomes the
+// binding constraint in these tests - only the band edges themselves are meant to be exercised.
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
   useOSDAccessors: () => ({
     findBand: () => ({ minFrequencyHz: 50_000_000, maxFrequencyHz: 350_000_000 }),
     telescopeBand: () => 2, // TELESCOPE_LOW_NUM
-    osdLOW: { basicCapabilities: { coarseChannelWidthHz: 781250 } }
+    osdLOW: {
+      basicCapabilities: {
+        coarseChannelWidthHz: 781250,
+        minCoarseChannel: 1,
+        maxCoarseChannel: 1000
+      }
+    }
   })
 }));
 
