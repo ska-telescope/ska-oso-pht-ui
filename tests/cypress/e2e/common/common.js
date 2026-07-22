@@ -123,6 +123,12 @@ export const mockResolveTargetAPI = () => {
 
 export const mockOSDAPI = () => {
   cy.intercept('GET', '**/osd/cycles', { fixture: 'osd.json' }).as('mockOSDData');
+  // GetOSDCycles also fetches ODT configuration alongside OSD cycles (see BTN-3416) - without
+  // this intercept the real request fails, GetOSDCycles rejects the whole Promise.all, and no
+  // cycle policies ever load.
+  cy.intercept('GET', '**/odt/configuration', { fixture: 'odtConfiguration.json' }).as(
+    'mockODTConfiguration'
+  );
 };
 
 export const mockValidateAPI = () => {

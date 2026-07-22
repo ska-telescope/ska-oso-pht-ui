@@ -1,6 +1,29 @@
 [
   {
     "observatory_policy": {
+      "cycle_number": 5000,
+      "cycle_id": "SKA_5000_2023",
+      "type": "Science Verification",
+      "cycle_description": "Legacy SV cycle used by the mock reviewable-proposal fixtures",
+      "cycle_information": {
+        "cycle_id": "SKA_5000_2023",
+        "proposal_open": "20220101T00:00:00.000Z",
+        "proposal_close": "20991231T23:59:59.000Z"
+      },
+      "cycle_policies": {
+        "normal_max_hours": 100,
+        "max_targets": 1,
+        "max_observation_setups": 1,
+        "max_data_products": 1
+      },
+      "telescope_capabilities": {
+        "Mid": null,
+        "Low": null
+      }
+    }
+  },
+  {
+    "observatory_policy": {
       "cycle_number": 10000,
       "cycle_id": "SKAO_2027_1",
       "type": "Science Verification",

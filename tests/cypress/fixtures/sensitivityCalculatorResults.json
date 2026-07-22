@@ -1,7 +1,7 @@
 [
   {
     "test": "LOW telescope, with subarray AA2, Continuum",
-    "band": "Low (50 - 350 MHz)",
+    "band": "Low (49.609375 - 349.609375 MHz)",
     "subarray": "AA2_SV",
     "subarrayTableLabel": "AA2 (Science Verification)",
     "observationType": "Continuum",
@@ -19,7 +19,7 @@
   },
   {
     "test": "LOW telescope, with subarray AA2, Zoom",
-    "band": "Low (50 - 350 MHz)",
+    "band": "Low (49.609375 - 349.609375 MHz)",
     "subarray": "AA2_SV",
     "subarrayTableLabel": "AA2 (Science Verification)",
     "observationType": "Spectral",
