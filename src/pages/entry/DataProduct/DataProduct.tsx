@@ -396,50 +396,8 @@ export default function DataProduct({ data }: DataProductProps) {
       />
     );
 
-  const timeAveragingUnitsField = () => {
-    const getOptions = () => {
-      return [0].map(e => ({
-        label: presentUnits(t('timeAveraging.' + e)),
-        value: e
-      }));
-    };
-
-    return (
-      <DropDown
-        disabled
-        options={getOptions()}
-        testId="timeAveragingUnits"
-        value={timeAveragingUnits}
-        setValue={setTimeAveragingUnits}
-        label=""
-        onFocus={() => setHelp('timeAveragingUnits')}
-      />
-    );
-  };
-
-  const frequencyAveragingUnitsField = () => {
-    const getOptions = () => {
-      return [0].map(e => ({
-        label: presentUnits(t('frequencyAveraging.' + e)),
-        value: e
-      }));
-    };
-
-    return (
-      <DropDown
-        disabled
-        options={getOptions()}
-        testId="frequencyAveragingUnits"
-        value={frequencyAveragingUnits}
-        setValue={setFrequencyAveragingUnits}
-        label=""
-        onFocus={() => setHelp('frequencyAveragingUnits')}
-      />
-    );
-  };
-
-  const timeAveragingField = () =>
-    fieldWrapper(
+  const timeAveragingField = () => {
+    return fieldWrapper(
       <TimeAveragingField
         onFocus={() => setHelp('timeAveraging')}
         required
@@ -447,6 +405,7 @@ export default function DataProduct({ data }: DataProductProps) {
         value={Number(timeAveraging)}
       />
     );
+  };
 
   const frequencyAveragingField = () =>
     fieldWrapper(
