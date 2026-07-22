@@ -85,14 +85,17 @@ describe('PostProposal Service', () => {
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
-  test('sends payload without prsl_id, investigator_refs, or stale result_details', async () => {
+  test('sends payload with a freshly minted prsl_id, without investigator_refs, or stale result_details', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockResolvedValue({ data: MockProposalBackend });
 
     await PostProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
 
     const [, sentBody] = mockedAuthClient.post.mock.calls[0];
-    expect(sentBody).not.toHaveProperty('prsl_id');
+    // The client mints its own SKUID rather than relying on the backend to generate one - see
+    // postProposal.tsx for why this is safe (ska-db-oda only mints its own as a fallback).
+    expect(sentBody.prsl_id).toMatch(/^prp-[0-9a-z]+$/);
+    expect(sentBody.prsl_id).not.toEqual(MockProposalFrontend.id);
     expect(sentBody).not.toHaveProperty('investigator_refs');
     expect(sentBody.observation_info.result_details).toEqual([]);
   });

@@ -2009,6 +2009,11 @@
     react-dropzone "^14.3.5"
     styled-components "^6.1.13"
 
+"@ska-telescope/skuid@^3.0.0":
+  version "3.0.0"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/skuid/-/skuid-3.0.0.tgz#a778c3a17592c740abd4cf3f4bc3fc6347e1f1e5"
+  integrity sha1-p3jDoXWSx0Cr1M8/S8P8Y0fh8eU=
+
 "@standard-schema/spec@^1.0.0":
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/@standard-schema/spec/-/spec-1.1.0.tgz#a79b55dbaf8604812f52d140b2c9ab41bc150bb8"
