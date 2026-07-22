@@ -172,6 +172,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const handleZoomChannelsChange = (newValue: number) => {
     zoomChannelsEditedByUser.current = true;
     setZoomChannels(newValue);
+    // Snapped synchronously (same batch as the state update above) rather than left to the
+    // effect further down, so the channel-grid warning never has a render where zoomChannels has
+    // already changed but centralFrequency hasn't caught up yet.
+    snapCentralFrequencyForChannelCount(newValue);
   };
   const [pstMode, setPstMode] = React.useState(PULSAR_TIMING_VALUE);
   const [maxZoomChannels, setMaxZoomChannels] = React.useState<number>(0);
@@ -554,16 +558,16 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     frequencyConversion(centralFrequency ?? 0, centralFrequencyUnits ?? FREQUENCY_HZ, FREQUENCY_HZ);
 
   // Changing zoomChannels shifts the channel grid by half a channel whenever channel-count parity
-  // flips (even <-> odd) - re-snap centralFrequency onto the new grid immediately so a previously-
-  // valid centre frequency doesn't spuriously fail the channel-grid check and surface the generic
-  // out-of-band warning purely because the channel count changed underneath it.
-  React.useEffect(() => {
+  // flips (even <-> odd) - re-snap centralFrequency onto the new grid so a previously-valid centre
+  // frequency doesn't spuriously fail the channel-grid check and surface the generic out-of-band
+  // warning purely because the channel count changed underneath it.
+  const snapCentralFrequencyForChannelCount = (channels: number) => {
     if (!isLow() || !isZoom()) return;
     const channelWidthHz = getResolutionHz();
     if (channelWidthHz <= 0) return;
     const minHz = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
     const cfHz = getCentralFrequencyHz();
-    const snappedHz = snapCentralFrequencyToChannelGridHz(cfHz, channelWidthHz, zoomChannels, minHz);
+    const snappedHz = snapCentralFrequencyToChannelGridHz(cfHz, channelWidthHz, channels, minHz);
     if (Math.abs(snappedHz - cfHz) < 1) return;
     setCentralFrequency(
       Number(
@@ -574,6 +578,15 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         ).toFixed(6)
       )
     );
+  };
+
+  // handleZoomChannelsChange (the interactive path) already re-snaps synchronously, in the same
+  // batch as the zoomChannels update, so the warning never has stale state to flash against. This
+  // effect is the fallback for the other, non-interactive places zoomChannels gets set (loading a
+  // saved observation, defaulting to the subarray's channel cap) - those don't go through
+  // handleZoomChannelsChange, so this is what keeps them consistent too.
+  React.useEffect(() => {
+    snapCentralFrequencyForChannelCount(zoomChannels);
   }, [zoomChannels]);
 
   const fieldWrapper = (children?: React.JSX.Element) => (
