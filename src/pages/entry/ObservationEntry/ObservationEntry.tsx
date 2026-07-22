@@ -67,7 +67,6 @@ import {
   coarseChannelRangeToHz,
   getZoomResolutionHz
 } from '@utils/zoomWindow.ts';
-import { useConfiguration } from '@/services/axios/use/useConfiguration/useConfiguration';
 import WeatherField from '@/components/fields/weather/weather';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
 import Proposal from '@/utils/types/proposal';
@@ -127,12 +126,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     telescopeBand
   } = useOSDAccessors();
   const isFrequencyOutOfRange = useIsFrequencyOutOfRange();
-  const { configuration } = useConfiguration();
-  const coarseChannelRangeHz = configuration?.low
+  const coarseChannelRangeHz = osdLOW?.basicCapabilities
     ? coarseChannelRangeToHz(
-        configuration.low.minCoarseChannel,
-        configuration.low.maxCoarseChannel,
-        configuration.low.coarseChannelWidthHz
+        osdLOW.basicCapabilities.minCoarseChannel,
+        osdLOW.basicCapabilities.maxCoarseChannel,
+        osdLOW.basicCapabilities.coarseChannelWidthHz
       )
     : null;
 

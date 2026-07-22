@@ -28,9 +28,6 @@ export const OSO_SERVICES_REVIEWERS_PATH = `${OSO_SERVICES_PHT}reviewers`;
 export const OSO_SERVICES_MEMBER_PATH = `${OSO_SERVICES_PHT}prsls/member`;
 export const OSO_SERVICES_CALIBRATORS_PATH = `${OSO_SERVICES_PHT}calibrators`;
 export const OSO_SERVICES_VISIBILITY_PATH = `${SKA_OSO_SERVICES_URL}/visibility/visibility`;
-// Borrowed from the ODT app's endpoint - there's no PHT-specific equivalent yet. Isolated behind
-// getConfiguration.tsx so switching to a future /pht/configuration only needs changing this path.
-export const OSO_SERVICES_ODT_CONFIGURATION_PATH = '/odt/configuration';
 //
 export const MSENTRA_CLIENT_ID = env.MSENTRA_CLIENT_ID;
 export const MSENTRA_TENANT_ID = env.MSENTRA_TENANT_ID;
