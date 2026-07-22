@@ -10,23 +10,32 @@ vi.mock('@/services/i18n/useScopedTranslation', () => ({
 describe('<Robust /> behavior', () => {
   test('renders robust as a free-text input', () => {
     render(<Robust label="Robust" value={0} />);
-    expect(screen.getByRole('textbox')).toBeInTheDocument();
+    expect(screen.getByRole('spinbutton')).toBeInTheDocument();
   });
 
   test('passes parsed decimal value when input is valid', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={0} setValue={setValue} />);
 
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: '1.5' } });
+    fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '1.5' } });
 
     expect(setValue).toHaveBeenCalledWith(1.5);
+  });
+
+  test('preserves typed decimal precision', () => {
+    const setValue = vi.fn();
+    render(<Robust label="Robust" value={0} setValue={setValue} />);
+
+    fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '1.45' } });
+
+    expect(setValue).toHaveBeenCalledWith(1.45);
   });
 
   test('rejects scientific notation input and shows an error', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={0} setValue={setValue} />);
 
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: '1e-1' } });
+    fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '1e-1' } });
 
     expect(setValue).not.toHaveBeenCalled();
     expect(screen.getByText('robust.error')).toBeInTheDocument();
@@ -36,7 +45,7 @@ describe('<Robust /> behavior', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={0} setValue={setValue} />);
 
-    fireEvent.change(screen.getByRole('textbox'), { target: { value: '2.1' } });
+    fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '2.1' } });
 
     expect(setValue).not.toHaveBeenCalled();
     expect(screen.getByText('robust.error')).toBeInTheDocument();
