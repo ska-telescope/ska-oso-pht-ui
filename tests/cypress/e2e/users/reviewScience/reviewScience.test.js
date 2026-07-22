@@ -15,7 +15,7 @@ import {
   clickGeneralCommentsTab,
   clickToValidateSV,
   verifyAlertFooter,
-  mockOSDAPI
+  mockOSDAPIWithReviewCycle
 } from '../../common/common';
 import { reviewerScience } from '../users';
 import { entry } from '../../../fixtures/utils/cypress.js';
@@ -25,7 +25,7 @@ describe('Reviewer ( Science )', () => {
   beforeEach(() => {
     // The review list's title/wording is derived from the reviewed proposal's own cycle (see
     // ReviewListPage.tsx) - OSD cycle data must be mocked for that lookup to resolve.
-    mockOSDAPI();
+    mockOSDAPIWithReviewCycle();
     initialize(reviewerScience);
     cy.wait('@mockOSDData');
   });

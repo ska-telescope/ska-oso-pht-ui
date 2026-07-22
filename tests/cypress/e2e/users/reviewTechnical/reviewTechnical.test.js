@@ -13,7 +13,7 @@ import {
   clickToValidateSV,
   verifyAlertFooter,
   clickFeasibilityYes,
-  mockOSDAPI
+  mockOSDAPIWithReviewCycle
 } from '../../common/common';
 import { reviewerTechnical } from '../users';
 // PMT Flows are under review, scenarios will be updated when functionality is finalised
@@ -21,7 +21,7 @@ describe('Reviewer ( Technical )', () => {
   beforeEach(() => {
     // The review list's title/wording is derived from the reviewed proposal's own cycle (see
     // ReviewListPage.tsx) - OSD cycle data must be mocked for that lookup to resolve.
-    mockOSDAPI();
+    mockOSDAPIWithReviewCycle();
     initialize(reviewerTechnical);
     cy.wait('@mockOSDData');
   });
