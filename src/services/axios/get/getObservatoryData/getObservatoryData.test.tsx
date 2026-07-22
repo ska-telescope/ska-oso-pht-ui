@@ -45,10 +45,10 @@ describe('GetObservatoryData Service', () => {
   });
 
   test('maps multiple backend cycles to frontend policies', () => {
-    const result = osdMapping([
-      MockObservatoryDataBackend,
-      MockObservatoryDataBackendProposal
-    ]) as ObservatoryData;
+    const result = osdMapping(
+      [MockObservatoryDataBackend, MockObservatoryDataBackendProposal],
+      MockODTConfigurationBackend
+    ) as ObservatoryData;
     const stripFunctions = (obj: any) =>
       JSON.parse(
         JSON.stringify(obj, (_key, value) => (typeof value === 'function' ? undefined : value))
