@@ -171,6 +171,7 @@ export default function ContinuumBandwidthField({
 
   return (
     <TextField
+      data-testid={FIELD}
       type="number"
       variant="standard"
       fullWidth

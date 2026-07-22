@@ -91,6 +91,7 @@ export default function CentralFrequency({
 
   return (
     <TextField
+      data-testid={FIELD}
       type="number"
       variant="standard"
       fullWidth
