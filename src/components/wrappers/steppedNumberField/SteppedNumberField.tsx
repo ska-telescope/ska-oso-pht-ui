@@ -29,10 +29,12 @@ interface SteppedNumberFieldProps {
 
 // Thin wrapper around MUI's TextField in its native type="number" form - the browser supplies the
 // up/down spinner, `step`/`min`/`max` are plain HTML attributes as they'd be on any number input.
-// Both ArrowUp/ArrowDown and a native spin-button click invoke the input's own stepUp()/stepDown()
-// with no distinguishing inputType on the resulting event (unlike typed/pasted edits, which always
-// set one) - that lets both be routed through the field's own snap-to-legal-value logic (`onStep`)
-// instead of the browser's fixed arithmetic step, without resorting to a diff-based heuristic.
+// ArrowUp/ArrowDown are intercepted directly (rather than inferred after the fact from the
+// resulting value, as a diff-based heuristic would) so they call the field's own snap-to-legal-
+// value logic (`onStep`) instead of the browser's fixed arithmetic step. A native spin-button
+// mouse click isn't distinguished from typing this way (an inputType-based check was tried and
+// reverted - it isn't reliably set for every real typing path, which silently corrupted genuinely
+// typed values) - it falls through to the browser's own raw stepped value like any other edit.
 export default function SteppedNumberField({
   decrementDisabled = false,
   digitsOnly = false,
@@ -69,23 +71,7 @@ export default function SteppedNumberField({
     }
   }, [value]);
 
-  const handleChange = (raw: string, inputType?: string) => {
-    if (!inputType) {
-      // No inputType means this change came from the input's own stepUp()/stepDown() rather
-      // than a typed/pasted edit - ArrowUp/ArrowDown are already handled above, so in practice
-      // this is a native spin-button click. Direction is read off the browser's own (unsnapped)
-      // raw value purely to know which way to step, not used as the committed value itself.
-      const rawValue = parse(raw);
-      const direction =
-        rawValue === null ? null : rawValue > value ? 1 : rawValue < value ? -1 : null;
-      if (direction && !(direction === 1 ? incrementDisabled : decrementDisabled)) {
-        const stepped = onStep(value, direction);
-        setInputValue(format(stepped));
-        onCommit(stepped);
-        return;
-      }
-    }
-
+  const handleChange = (raw: string) => {
     const sanitized = digitsOnly ? raw.replace(/[^0-9]/g, '') : raw;
     setInputValue(sanitized);
     const parsed = parse(sanitized);
@@ -125,7 +111,7 @@ export default function SteppedNumberField({
         error={!!errorText}
         label={label}
         onBlur={handleBlur}
-        onChange={(e) => handleChange(e.target.value, (e.nativeEvent as InputEvent).inputType)}
+        onChange={(e) => handleChange(e.target.value)}
         onFocus={handleFocus}
         onKeyDown={handleKeyDown}
         required={required}

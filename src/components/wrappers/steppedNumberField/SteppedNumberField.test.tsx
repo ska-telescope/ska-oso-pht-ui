@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, test, expect, vi } from 'vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import SteppedNumberField from './SteppedNumberField';
@@ -129,31 +129,6 @@ describe('<SteppedNumberField />', () => {
     await userEvent.type(input, '123');
     expect(input).toHaveValue(123);
     expect(onCommit).toHaveBeenLastCalledWith(123);
-  });
-
-  test('a native spin-button click (input event with no inputType) steps via onStep, not the raw browser value', () => {
-    const onCommit = vi.fn();
-    const onStep = vi.fn((v: number, direction: 1 | -1) => v + direction * 10);
-    render(
-      <SteppedNumberField testId="zoomChannels" value={1000} onCommit={onCommit} onStep={onStep} />
-    );
-    const input = screen.getByTestId('zoomChannels') as HTMLInputElement;
-
-    // A real spin-button click has already stepped the DOM value by the native HTML `step`
-    // (here, 1) before firing an `input` event with no inputType - unlike a typed/pasted edit,
-    // which always sets one. That's the only signal distinguishing it from typing.
-    // Goes through the native (not React-patched) value setter - assigning `input.value` directly
-    // would update React's own change-tracking too, making it think nothing changed and swallow
-    // the synthetic onChange entirely.
-    const nativeValueSetter = Object.getOwnPropertyDescriptor(
-      window.HTMLInputElement.prototype,
-      'value'
-    )!.set!;
-    nativeValueSetter.call(input, '1001');
-    fireEvent(input, new InputEvent('input', { bubbles: true, cancelable: true }));
-
-    expect(onStep).toHaveBeenCalledWith(1000, 1);
-    expect(onCommit).toHaveBeenCalledWith(1010);
   });
 
   test('ArrowUp/ArrowDown respect increment/decrement disabled bounds', async () => {
