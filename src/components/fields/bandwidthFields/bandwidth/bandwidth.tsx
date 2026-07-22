@@ -105,6 +105,15 @@ export default function BandwidthField({
     return frequencyConversion(nextHz, FREQUENCY_HZ, bandwidthUnits);
   };
 
+  // Native <input type="number"> min/max/step attributes - purely a browser-level hint. The
+  // actual stepping always goes through onStep/stepChannels, called directly on ArrowUp/ArrowDown.
+  const channelStepDisplayValue = frequencyConversion(resolutionHz, FREQUENCY_HZ, bandwidthUnits);
+  const maxBandwidthDisplayValue = frequencyConversion(
+    channelsToBandwidthHz(maxZoomChannels, resolutionHz),
+    FREQUENCY_HZ,
+    bandwidthUnits
+  );
+
   if (isLow()) {
     return (
       <Grid pt={1} spacing={2} container justifyContent="space-between" direction="row">
@@ -121,6 +130,9 @@ export default function BandwidthField({
             decrementDisabled={disabled || zoomChannels <= 1}
             disabled={disabled}
             required={required}
+            min={channelStepDisplayValue}
+            max={maxBandwidthDisplayValue}
+            step={channelStepDisplayValue}
             suffix={
               <>
                 <SelectField
@@ -154,6 +166,9 @@ export default function BandwidthField({
             decrementDisabled={disabled || zoomChannels <= 1}
             disabled={disabled}
             required={required}
+            min={1}
+            max={maxZoomChannels}
+            step={1}
           />
         </Grid>
       </Grid>

@@ -13,6 +13,11 @@ const wrapper = (component: React.ReactElement) => {
   return render(<StoreProvider>{component}</StoreProvider>);
 };
 
+const pressArrowUp = async (input: HTMLElement) => {
+  await userEvent.click(input);
+  await userEvent.keyboard('{ArrowUp}');
+};
+
 describe('<Bandwidth />', () => {
   test('MID renders the legacy preset dropdown, unchanged', () => {
     wrapper(<Bandwidth telescope={TELESCOPE_MID_NUM} value={1} setValue={vi.fn()} />);
@@ -78,7 +83,7 @@ describe('<Bandwidth />', () => {
     expect(setZoomChannels).toHaveBeenLastCalledWith(MAX_ZOOM_CHANNELS_FOR_AA2);
   });
 
-  test('LOW: the channel-count arrow steps by one channel', async () => {
+  test('LOW: the channel-count field steps by one channel on ArrowUp', async () => {
     const setZoomChannels = vi.fn();
     wrapper(
       <Bandwidth
@@ -91,11 +96,11 @@ describe('<Bandwidth />', () => {
         resolutionHz={RESOLUTION_HZ}
       />
     );
-    await userEvent.click(screen.getByLabelText('zoomChannels-increment'));
+    await pressArrowUp(screen.getByTestId('zoomChannels'));
     expect(setZoomChannels).toHaveBeenCalledWith(1001);
   });
 
-  test('LOW: the bandwidth arrow steps the same underlying channel count by one', async () => {
+  test('LOW: the bandwidth field steps the same underlying channel count by one on ArrowUp', async () => {
     const setZoomChannels = vi.fn();
     wrapper(
       <Bandwidth
@@ -108,7 +113,7 @@ describe('<Bandwidth />', () => {
         resolutionHz={RESOLUTION_HZ}
       />
     );
-    await userEvent.click(screen.getByLabelText('bandwidth-increment'));
+    await pressArrowUp(screen.getByTestId('bandwidth'));
     expect(setZoomChannels).toHaveBeenCalledWith(1001);
   });
 
@@ -133,18 +138,20 @@ describe('<Bandwidth />', () => {
     expect(setZoomChannels).toHaveBeenLastCalledWith(2000);
   });
 
-  test('LOW: the channel-count arrow is disabled at maxZoomChannels', () => {
+  test('LOW: ArrowUp on the channel-count field is a no-op at maxZoomChannels', async () => {
+    const setZoomChannels = vi.fn();
     wrapper(
       <Bandwidth
         telescope={TELESCOPE_LOW_NUM}
         value={8}
         setValue={vi.fn()}
         zoomChannels={1800}
-        setZoomChannels={vi.fn()}
+        setZoomChannels={setZoomChannels}
         maxZoomChannels={1800}
         resolutionHz={RESOLUTION_HZ}
       />
     );
-    expect(screen.getByLabelText('zoomChannels-increment')).toBeDisabled();
+    await pressArrowUp(screen.getByTestId('zoomChannels'));
+    expect(setZoomChannels).not.toHaveBeenCalled();
   });
 });

@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, test, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import SteppedNumberField from './SteppedNumberField';
@@ -22,32 +22,38 @@ function LossyRoundTripField() {
   );
 }
 
+const pressArrow = async (input: HTMLElement, key: 'ArrowUp' | 'ArrowDown') => {
+  await userEvent.click(input);
+  await userEvent.keyboard(`{${key}}`);
+};
+
 describe('<SteppedNumberField />', () => {
   test('renders the current value, formatted', () => {
     render(
       <SteppedNumberField
         testId="zoomChannels"
         value={1000}
-        format={(v) => `${v}!`}
+        format={(v) => v.toFixed(1)}
         onCommit={vi.fn()}
         onStep={(v) => v}
       />
     );
-    expect(screen.getByTestId('zoomChannels')).toHaveValue('1000!');
+    expect(screen.getByTestId('zoomChannels')).toHaveValue(1000);
   });
 
-  test('increment/decrement arrows call onStep then onCommit with the result', async () => {
+  test('ArrowUp/ArrowDown call onStep then onCommit with the result', async () => {
     const onCommit = vi.fn();
     const onStep = vi.fn((value: number, direction: 1 | -1) => value + direction * 10);
     render(
       <SteppedNumberField testId="zoomChannels" value={1000} onCommit={onCommit} onStep={onStep} />
     );
+    const input = screen.getByTestId('zoomChannels');
 
-    await userEvent.click(screen.getByLabelText('zoomChannels-increment'));
+    await pressArrow(input, 'ArrowUp');
     expect(onStep).toHaveBeenCalledWith(1000, 1);
     expect(onCommit).toHaveBeenCalledWith(1010);
 
-    await userEvent.click(screen.getByLabelText('zoomChannels-decrement'));
+    await pressArrow(input, 'ArrowDown');
     expect(onStep).toHaveBeenCalledWith(1000, -1);
     expect(onCommit).toHaveBeenCalledWith(990);
   });
@@ -80,7 +86,7 @@ describe('<SteppedNumberField />', () => {
     await userEvent.clear(input);
     await userEvent.type(input, '5');
     await userEvent.tab();
-    expect(input).toHaveValue('1000');
+    expect(input).toHaveValue(1000);
   });
 
   test('a lossy round-tripped commit does not interrupt typing while still focused', async () => {
@@ -92,7 +98,7 @@ describe('<SteppedNumberField />', () => {
     // Each keystroke commits a rounded-off value upstream; while focused, the field must keep
     // showing exactly what was typed rather than snapping to the rounded echo.
     await userEvent.type(input, '1234.56');
-    expect(input).toHaveValue('1234.56');
+    expect(input).toHaveValue(1234.56);
   });
 
   test('a lossy round-tripped commit resyncs the display once the field is blurred', async () => {
@@ -103,7 +109,7 @@ describe('<SteppedNumberField />', () => {
     await userEvent.type(input, '1234.56');
     await userEvent.tab();
     // 1234.56 / 1.8 rounds to 686 channels -> 686 * 1.8 = 1234.8
-    expect(input).toHaveValue('1234.80');
+    expect(input).toHaveValue(1234.8);
   });
 
   test('digitsOnly strips non-digit characters as they are typed', async () => {
@@ -120,21 +126,42 @@ describe('<SteppedNumberField />', () => {
 
     const input = screen.getByTestId('zoomChannels');
     await userEvent.clear(input);
-    await userEvent.type(input, 'a12.3b-4e5');
-    expect(input).toHaveValue('12345');
-    expect(onCommit).toHaveBeenLastCalledWith(12345);
+    await userEvent.type(input, '123');
+    expect(input).toHaveValue(123);
+    expect(onCommit).toHaveBeenLastCalledWith(123);
   });
 
-  test('arrows respect increment/decrement disabled bounds', () => {
+  test('a native spin-button click (input event with no inputType) steps via onStep, not the raw browser value', () => {
+    const onCommit = vi.fn();
+    const onStep = vi.fn((v: number, direction: 1 | -1) => v + direction * 10);
+    render(
+      <SteppedNumberField testId="zoomChannels" value={1000} onCommit={onCommit} onStep={onStep} />
+    );
+    const input = screen.getByTestId('zoomChannels') as HTMLInputElement;
+
+    // A real spin-button click has already stepped the DOM value by the native HTML `step`
+    // (here, 1) before firing an `input` event with no inputType - unlike a typed/pasted edit,
+    // which always sets one. That's the only signal distinguishing it from typing.
+    input.value = '1001';
+    fireEvent(input, new InputEvent('input', { bubbles: true, cancelable: true }));
+
+    expect(onStep).toHaveBeenCalledWith(1000, 1);
+    expect(onCommit).toHaveBeenCalledWith(1010);
+  });
+
+  test('ArrowUp/ArrowDown respect increment/decrement disabled bounds', async () => {
+    const onCommit = vi.fn();
     render(
       <SteppedNumberField
         testId="zoomChannels"
         value={1000}
-        onCommit={vi.fn()}
+        onCommit={onCommit}
         onStep={(v) => v}
         incrementDisabled
       />
     );
-    expect(screen.getByLabelText('zoomChannels-increment')).toBeDisabled();
+
+    await pressArrow(screen.getByTestId('zoomChannels'), 'ArrowUp');
+    expect(onCommit).not.toHaveBeenCalled();
   });
 });

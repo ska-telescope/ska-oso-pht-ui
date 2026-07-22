@@ -1,7 +1,5 @@
 import React from 'react';
-import { Box, FormHelperText, IconButton, InputAdornment, TextField } from '@mui/material';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import { Box, FormHelperText, InputAdornment, TextField } from '@mui/material';
 
 const defaultFormat = (value: number): string => String(value);
 const defaultParse = (raw: string): number | null =>
@@ -15,22 +13,26 @@ interface SteppedNumberFieldProps {
   format?: (value: number) => string;
   incrementDisabled?: boolean;
   label?: string;
+  max?: number;
+  min?: number;
   onBlurCommit?: (value: number) => void;
   onCommit: (value: number) => void;
   onFocus?: () => void;
   onStep: (value: number, direction: 1 | -1) => number;
   parse?: (raw: string) => number | null;
   required?: boolean;
+  step?: number;
   suffix?: JSX.Element;
   testId: string;
   value: number;
 }
 
-// Thin wrapper around MUI's TextField with step arrows. Unlike @ska-telescope/ska-gui-components'
-// NumberEntry, this owns the display/typed-value mirroring and step dispatch itself - callers only
-// supply the two things that actually differ per field: how to turn a typed number into a
-// committed value (`onCommit`, e.g. range-checked or converted into some other underlying state),
-// and how to compute the next value for a single step (`onStep`, e.g. snap-to-legal-value).
+// Thin wrapper around MUI's TextField in its native type="number" form - the browser supplies the
+// up/down spinner, `step`/`min`/`max` are plain HTML attributes as they'd be on any number input.
+// Both ArrowUp/ArrowDown and a native spin-button click invoke the input's own stepUp()/stepDown()
+// with no distinguishing inputType on the resulting event (unlike typed/pasted edits, which always
+// set one) - that lets both be routed through the field's own snap-to-legal-value logic (`onStep`)
+// instead of the browser's fixed arithmetic step, without resorting to a diff-based heuristic.
 export default function SteppedNumberField({
   decrementDisabled = false,
   digitsOnly = false,
@@ -39,12 +41,15 @@ export default function SteppedNumberField({
   format = defaultFormat,
   incrementDisabled = false,
   label,
+  max,
+  min,
   onBlurCommit,
   onCommit,
   onFocus,
   onStep,
   parse = defaultParse,
   required = false,
+  step,
   suffix,
   testId,
   value
@@ -64,7 +69,23 @@ export default function SteppedNumberField({
     }
   }, [value]);
 
-  const handleChange = (raw: string) => {
+  const handleChange = (raw: string, inputType?: string) => {
+    if (!inputType) {
+      // No inputType means this change came from the input's own stepUp()/stepDown() rather
+      // than a typed/pasted edit - ArrowUp/ArrowDown are already handled above, so in practice
+      // this is a native spin-button click. Direction is read off the browser's own (unsnapped)
+      // raw value purely to know which way to step, not used as the committed value itself.
+      const rawValue = parse(raw);
+      const direction =
+        rawValue === null ? null : rawValue > value ? 1 : rawValue < value ? -1 : null;
+      if (direction && !(direction === 1 ? incrementDisabled : decrementDisabled)) {
+        const stepped = onStep(value, direction);
+        setInputValue(format(stepped));
+        onCommit(stepped);
+        return;
+      }
+    }
+
     const sanitized = digitsOnly ? raw.replace(/[^0-9]/g, '') : raw;
     setInputValue(sanitized);
     const parsed = parse(sanitized);
@@ -84,19 +105,29 @@ export default function SteppedNumberField({
     onBlurCommit?.(value);
   };
 
-  const step = (direction: 1 | -1) => onCommit(onStep(value, direction));
+  // Owns ArrowUp/ArrowDown itself rather than letting the browser step the raw value by the
+  // `step` attribute - `onStep` may snap to a non-uniform legal grid the HTML step can't express.
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
+    e.preventDefault();
+    const direction = e.key === 'ArrowUp' ? 1 : -1;
+    if (direction === 1 ? incrementDisabled : decrementDisabled) return;
+    onCommit(onStep(value, direction));
+  };
 
   return (
     <Box>
       <TextField
         fullWidth
+        type="number"
         variant="standard"
         disabled={disabled}
         error={!!errorText}
         label={label}
         onBlur={handleBlur}
-        onChange={(e) => handleChange(e.target.value)}
+        onChange={(e) => handleChange(e.target.value, (e.nativeEvent as InputEvent).inputType)}
         onFocus={handleFocus}
+        onKeyDown={handleKeyDown}
         required={required}
         // MUI's standard-variant focus state colors the shrunk label and the active underline
         // with primary.main by default - this theme's primary.main is near-white, so both go
@@ -107,34 +138,10 @@ export default function SteppedNumberField({
           '& .MuiInput-underline:after': { borderBottomColor: 'secondary.main' }
         }}
         slotProps={{
-          htmlInput: { 'data-testid': testId },
-          input: {
-            endAdornment: (
-              <InputAdornment position="end">
-                <Box sx={{ display: 'flex', flexDirection: 'column', mr: 1 }}>
-                  <IconButton
-                    aria-label={`${testId}-increment`}
-                    disabled={disabled || incrementDisabled}
-                    onClick={() => step(1)}
-                    size="small"
-                    sx={{ p: 0 }}
-                  >
-                    <KeyboardArrowUpIcon sx={{ fontSize: 16 }} />
-                  </IconButton>
-                  <IconButton
-                    aria-label={`${testId}-decrement`}
-                    disabled={disabled || decrementDisabled}
-                    onClick={() => step(-1)}
-                    size="small"
-                    sx={{ p: 0 }}
-                  >
-                    <KeyboardArrowDownIcon sx={{ fontSize: 16 }} />
-                  </IconButton>
-                </Box>
-                {suffix}
-              </InputAdornment>
-            )
-          }
+          htmlInput: { 'data-testid': testId, min, max, step },
+          input: suffix
+            ? { endAdornment: <InputAdornment position="end">{suffix}</InputAdornment> }
+            : undefined
         }}
         value={inputValue}
       />

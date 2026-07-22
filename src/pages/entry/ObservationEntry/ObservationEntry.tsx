@@ -65,7 +65,8 @@ import {
 import {
   channelsToBandwidthHz,
   coarseChannelRangeToHz,
-  getZoomResolutionHz
+  getZoomResolutionHz,
+  snapCentralFrequencyToChannelGridHz
 } from '@utils/zoomWindow.ts';
 import WeatherField from '@/components/fields/weather/weather';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
@@ -551,6 +552,29 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const getZoomBandwidthHz = () => channelsToBandwidthHz(zoomChannels, getResolutionHz());
   const getCentralFrequencyHz = () =>
     frequencyConversion(centralFrequency ?? 0, centralFrequencyUnits ?? FREQUENCY_HZ, FREQUENCY_HZ);
+
+  // Changing zoomChannels shifts the channel grid by half a channel whenever channel-count parity
+  // flips (even <-> odd) - re-snap centralFrequency onto the new grid immediately so a previously-
+  // valid centre frequency doesn't spuriously fail the channel-grid check and surface the generic
+  // out-of-band warning purely because the channel count changed underneath it.
+  React.useEffect(() => {
+    if (!isLow() || !isZoom()) return;
+    const channelWidthHz = getResolutionHz();
+    if (channelWidthHz <= 0) return;
+    const minHz = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
+    const cfHz = getCentralFrequencyHz();
+    const snappedHz = snapCentralFrequencyToChannelGridHz(cfHz, channelWidthHz, zoomChannels, minHz);
+    if (Math.abs(snappedHz - cfHz) < 1) return;
+    setCentralFrequency(
+      Number(
+        frequencyConversion(
+          snappedHz,
+          FREQUENCY_HZ,
+          centralFrequencyUnits ?? FREQUENCY_MHZ
+        ).toFixed(6)
+      )
+    );
+  }, [zoomChannels]);
 
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
