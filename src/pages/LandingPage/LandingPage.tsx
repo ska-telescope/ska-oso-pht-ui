@@ -21,6 +21,7 @@ import GetProposalList from '@/services/axios/get/getProposalList/getProposalLis
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
 import Proposal from '@/utils/types/proposal';
+import TargetObservation from '@/utils/types/targetObservation';
 import { storeProposalCopy } from '@/utils/storage/proposalData';
 import { useValidateProposal } from '@/utils/validation/validation';
 import {
@@ -34,7 +35,8 @@ import {
   PAGE_LANDING,
   PATH,
   PROPOSAL_STATUS,
-  PROPOSAL_STATUS_OPTIONS
+  PROPOSAL_STATUS_OPTIONS,
+  STATUS_PARTIAL
 } from '@/utils/constants';
 import ProposalAccess from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
@@ -206,6 +208,16 @@ export default function LandingPage() {
     }
   };
 
+  // The clone keeps the original's target/observation/data-product links (same targets and
+  // observations carry over), but not the calculated sensCalc results attached to them - those
+  // are stale for the new proposal. Reset each link to the same "linked, not yet calculated"
+  // shape LinkingPage.tsx uses for a brand new link, rather than dropping the links entirely.
+  const resetTargetObservationResults = (targetObservation?: TargetObservation[]) =>
+    targetObservation?.map((rec) => ({
+      ...rec,
+      sensCalc: { id: rec.targetId, title: '', statusGUI: STATUS_PARTIAL, error: '' }
+    })) ?? [];
+
   const createProposal = async () => {
     notifyWarning(t('addProposal.warning'));
     const originalProposal = getProposal();
@@ -223,7 +235,8 @@ export default function LandingPage() {
         id: '',
         title: originalProposal.title + ' ' + t('cloneProposal.suffix'),
         cycle: osdCycleId ?? '',
-        investigators: []
+        investigators: [],
+        targetObservation: resetTargetObservationResults(originalProposal.targetObservation)
       },
       PROPOSAL_STATUS.DRAFT
     );
@@ -236,7 +249,8 @@ export default function LandingPage() {
         title: originalProposal.title + ' ' + t('cloneProposal.suffix'),
         cycle: osdCycleId ?? '',
         status: PROPOSAL_STATUS.DRAFT,
-        investigators: (response as Proposal).investigators
+        investigators: (response as Proposal).investigators,
+        targetObservation: resetTargetObservationResults(originalProposal.targetObservation)
       };
       setProposal(clonedProposal);
       updateAppContent1(validateProposal(clonedProposal));
