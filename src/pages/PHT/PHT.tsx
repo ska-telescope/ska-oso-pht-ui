@@ -57,6 +57,7 @@ import TimedAlert from '@/components/alerts/timedAlert/TimedAlert';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
+import { useNotify } from '@/utils/notify/useNotify';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
@@ -116,6 +117,7 @@ export default function PHT({
   const location = useLocation();
   const authClient = useAxiosAuthClient();
   const { setHelp } = useHelp();
+  const { notifyError } = useNotify();
   const theme = useTheme();
   const previousPathRef = React.useRef(location.pathname);
 
@@ -154,11 +156,16 @@ export default function PHT({
       proposal.id !== '';
 
     if (canAutoSave) {
-      void PutProposal(authClient, proposal, isSV, PROPOSAL_STATUS.DRAFT);
+      void (async () => {
+        const response = await PutProposal(authClient, proposal, isSV, PROPOSAL_STATUS.DRAFT);
+        if ('error' in response) {
+          notifyError(response.error);
+        }
+      })();
     }
 
     previousPathRef.current = currentPath;
-  }, [location.pathname, application.content2, loggedIn, authClient, isSV]);
+  }, [location.pathname, application.content2, loggedIn, authClient, isSV, notifyError]);
 
   const mediaSizeNotSupported = () => (
     <Alert color={AlertColorTypes.Error} text={t('mediaSize.notSupported')} testId="helpPanelId" />
