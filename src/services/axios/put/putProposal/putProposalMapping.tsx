@@ -27,6 +27,7 @@ import {
   REFERENCE_COORDINATE_TYPE_ICRS,
   ROBUST,
   SCIENCE_VERIFICATION,
+  SCIENCE_VERIFICATION_TYPE_ID,
   TELESCOPE_LOW_BACKEND_MAPPING,
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_BACKEND_MAPPING,
@@ -595,7 +596,12 @@ const getResults = (
 };
 /*************************************************************************************************************************/
 
-export default function MappingPutProposal(proposal: Proposal, isSV: boolean, status: string) {
+export default function MappingPutProposal(proposal: Proposal, status: string) {
+  const projectMapping = PROJECTS.find((item) => item?.id === proposal.proposalType)?.mapping;
+  // proposalType is always resolved before this is called (set explicitly at creation in
+  // PageFooterPPT.tsx), so it alone is authoritative for SV-ness.
+  const proposalIsSV = proposal.proposalType === SCIENCE_VERIFICATION_TYPE_ID;
+
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
     status: status,
@@ -608,16 +614,14 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
     proposal_info: {
       title: proposal.title,
       proposal_type: {
-        main_type: isSV
-          ? SCIENCE_VERIFICATION
-          : (PROJECTS.find((item) => item?.id === proposal.proposalType)?.mapping as string),
+        main_type: proposalIsSV ? SCIENCE_VERIFICATION : (projectMapping as string),
         attributes:
-          !isSV && proposal.proposalSubType
+          !proposalIsSV && proposal.proposalSubType
             ? getSubType(proposal.proposalType, proposal.proposalSubType)
             : []
       },
       abstract: proposal.abstract as string,
-      science_category: isSV
+      science_category: proposalIsSV
         ? (DETAILS.ObservingMode?.find((category) => category.value === proposal?.scienceCategory)
             ?.label as string)
         : (DETAILS.ScienceCategory?.find((category) => category.value === proposal?.scienceCategory)

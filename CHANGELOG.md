@@ -9,6 +9,7 @@ UNRELEASED
 * Updated: to 16.1 version of oso-services
 * Bugfix: spacer added to bottom of page to prevent page content overlapping bottom banner
 * Refactoring of the spectral line frequency setup on the Observation page
+* Bugfix: fix for proposal cloning scenarios which were throwing errors
 * Updated: to use the new /coordinate endpoint response
 * Added: Support for Galactic targets
 * Bugfix: 'Channels Out' allowed 0 channels to be selected
@@ -57,6 +58,7 @@ UNRELEASED
 * Added: Support for Indigo as login provider with ?use_indigo=true query parameter.
 * Changed: Data Product Description text is black rather than grey on the Observatory Data Product page.
 * Changed: Made the Observations panel have the same title and border as other panels on the Observatory Data Product page.
+* Removed: Drop hardcoded mock observation cycles from Submission Tool cycle selector.
 
 10.1.0
 ----------

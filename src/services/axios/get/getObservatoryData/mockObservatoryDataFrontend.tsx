@@ -6,6 +6,8 @@ import {
   BAND_5A_STR,
   BAND_5B_STR,
   BAND_LOW_STR,
+  LOW_AA2_SV,
+  MID_AA2,
   SA_AA2,
   SA_AA_STAR
 } from '@/utils/constants';
@@ -164,7 +166,7 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
         proposalClose: '2026-05-12T15:00:00.000Z'
       },
       cyclePolicies: {
-        bands: [BAND_LOW_STR, BAND_5B_STR],
+        bands: [BAND_LOW_STR],
         calibrationFactoryDefined: true,
         low: [SA_AA2],
         mid: [SA_AA2],
@@ -173,8 +175,8 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
         maxTargets: 1
       },
       telescopeCapabilities: {
-        low: SA_AA2,
-        mid: SA_AA2
+        low: LOW_AA2_SV,
+        mid: null
       },
       capabilities: mockCapabilities,
       type: 'Science Verification'
@@ -191,10 +193,10 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
         maxDataProducts: 100,
         maxObservations: 100,
         maxTargets: 100,
-        bands: [BAND_LOW_STR, BAND_1_STR],
+        bands: [BAND_LOW_STR, BAND_5B_STR],
         calibrationFactoryDefined: true,
-        low: [SA_AA2, SA_AA_STAR],
-        mid: [SA_AA2, SA_AA_STAR]
+        low: [],
+        mid: []
       },
       telescopeCapabilities: {
         low: null,
@@ -221,8 +223,8 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
         mid: [SA_AA2]
       },
       telescopeCapabilities: {
-        low: null,
-        mid: null
+        low: LOW_AA2_SV,
+        mid: MID_AA2
       },
       capabilities: mockCapabilities,
       type: 'Proposal'

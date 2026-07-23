@@ -29,6 +29,8 @@ js-pre-e2e-test:
 
 js-pre-lint:
 	$(JS_COMMAND_RUNNER) prettier
+js-pre-format:
+	$(JS_COMMAND_RUNNER) prettier:fix
 typecheck:
 	$(JS_COMMAND_RUNNER) typecheck
 

@@ -38,6 +38,7 @@ import {
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   isCypress,
   SCIENCE_VERIFICATION,
+  SCIENCE_VERIFICATION_TYPE_ID,
   TYPE_PST,
   PST_MODES,
   DP_TYPE_IMAGES,
@@ -748,7 +749,7 @@ export function mapping(inRec: ProposalBackend): Proposal {
     id: inRec.prsl_id,
     title: inRec.proposal_info?.title,
     proposalType: isSV
-      ? 9
+      ? SCIENCE_VERIFICATION_TYPE_ID
       : PROJECTS?.find((p) => p.mapping === inRec.proposal_info?.proposal_type?.main_type)?.id,
     proposalSubType: isSV
       ? []

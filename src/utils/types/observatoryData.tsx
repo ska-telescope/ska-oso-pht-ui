@@ -63,8 +63,8 @@ export type ReceiverInformationFrontend = {
 };
 
 export type TelescopeInformationBackend = {
-  Mid: string;
-  Low: string;
+  Mid: string | null;
+  Low: string | null;
 };
 
 export type TelescopeInformationFrontend = {

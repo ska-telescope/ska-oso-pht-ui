@@ -435,6 +435,7 @@ export const PST_MODES = [
 ];
 
 export const SCIENCE_VERIFICATION = 'science_verification';
+export const SCIENCE_VERIFICATION_TYPE_ID = 9;
 
 export const PROPOSAL_STATUS = {
   DRAFT: 'draft',
@@ -518,6 +519,17 @@ export const SA_CUSTOM = 'custom';
 // Convention is that the zoom modes are listed in frequency order
 // (1-4 are the fine zoom modes, currently restricted for AA2 and AA* subarrays,)
 export const FIRST_COARSE_ZOOM = 5;
+
+// Names of array assemblies
+export const LOW_AA05 = 'AA0.5';
+export const LOW_AA1 = 'AA1';
+export const LOW_AA2 = 'AA2';
+export const LOW_ITF = 'Low_ITF';
+export const LOW_AA2_SV = 'AA2_SV';
+export const MID_AA05 = 'AA0.5';
+export const MID_AA1 = 'AA1';
+export const MID_AA2 = 'AA2';
+export const MID_ITF = 'Mid_ITF';
 
 export const SECOND_LABEL = 's';
 export const MILLISECOND_LABEL = 'ms';

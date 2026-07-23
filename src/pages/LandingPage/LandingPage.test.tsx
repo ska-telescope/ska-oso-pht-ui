@@ -10,7 +10,10 @@ import GetProposalList from '@/services/axios/get/getProposalList/getProposalLis
 import GetProposalAccessForUser from '@/services/axios/get/getProposalAccess/user/getProposalAccessForUser';
 import PostProposal from '@/services/axios/post/postProposal/postProposal';
 const mockValidateFn = vi.hoisted(() => vi.fn(() => []));
-import { PROPOSAL_STATUS } from '@/utils/constants';
+const mockNotifyError = vi.hoisted(() => vi.fn());
+const mockNotifySuccess = vi.hoisted(() => vi.fn());
+const mockNotifyWarning = vi.hoisted(() => vi.fn());
+import { PROPOSAL_STATUS, TMP_REVIEWER_ID } from '@/utils/constants';
 import { ProposalAccess } from '@/utils/types/proposalAccess';
 import { PROPOSAL_ACCESS_PERMISSIONS, PROPOSAL_ROLE_PI } from '@/utils/aaa/aaaUtils';
 import Proposal from '@/utils/types/proposal';
@@ -55,6 +58,14 @@ vi.mock('@/services/axios/post/postProposal/postProposal', () => ({
   default: vi.fn()
 }));
 
+vi.mock('@/services/axios/post/postProposalAccess/postProposalAccess', () => ({
+  default: vi.fn()
+}));
+
+vi.mock('@/services/axios/post/postSendEmailInvite/postSendEmailInvite', () => ({
+  default: vi.fn()
+}));
+
 vi.mock('@/utils/validation/validation', () => ({
   useValidateProposal: () => mockValidateFn
 }));
@@ -77,9 +88,9 @@ vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
 
 vi.mock('@/utils/notify/useNotify', () => ({
   useNotify: () => ({
-    notifyError: vi.fn(),
-    notifySuccess: vi.fn(),
-    notifyWarning: vi.fn()
+    notifyError: mockNotifyError,
+    notifySuccess: mockNotifySuccess,
+    notifyWarning: mockNotifyWarning
   })
 }));
 
@@ -160,11 +171,18 @@ describe('clone proposal', () => {
     observations: [{ id: 'obs-1', telescope: 'SKA-LOW' } as any],
     investigators: [
       {
-        id: 'inv-1',
+        id: TMP_REVIEWER_ID,
         firstName: 'Jane',
         lastName: 'Doe',
         pi: true,
         email: 'jane@example.com'
+      } as any,
+      {
+        id: 'inv-2',
+        firstName: 'John',
+        lastName: 'Smith',
+        pi: false,
+        email: 'john@example.com'
       } as any
     ],
     dataProductSDP: [{ id: 'dp-1' } as any],
@@ -177,7 +195,7 @@ describe('clone proposal', () => {
   };
 
   // Skeleton response returned by PostProposal — mimics what the backend creates:
-  // a minimal record with only the fields sent by mappingPostProposal (title, type, cycle).
+  // a minimal record with only the fields sent in the create payload (title, type, cycle).
   // All rich data fields (targets, observations, abstract, etc.) are empty.
   const mockPostProposalSkeleton: Partial<Proposal> = {
     id: CLONED_PROPOSAL_ID,
@@ -264,9 +282,48 @@ describe('clone proposal', () => {
           targets: mockRichOriginalProposal.targets,
           observations: mockRichOriginalProposal.observations,
           abstract: mockRichOriginalProposal.abstract,
-          dataProductSDP: mockRichOriginalProposal.dataProductSDP,
-          investigators: mockRichOriginalProposal.investigators
+          dataProductSDP: mockRichOriginalProposal.dataProductSDP
         })
+      );
+    });
+  });
+
+  test('sends no investigators when creating the clone, regardless of the original investigator list', async () => {
+    // mockRichOriginalProposal already has [Jane Doe (PI), John Smith (co-I)] - none of that
+    // should be forwarded. POST /create builds the PI itself from the caller's verified auth
+    // token (see ska_oso_services' create_proposal), so the client must not pre-empt that.
+    await triggerCloneConfirm();
+
+    await waitFor(() => {
+      expect(PostProposal).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({ investigators: [] }),
+        PROPOSAL_STATUS.DRAFT
+      );
+    });
+  });
+
+  test('uses the investigators returned by PostProposal as the sole source of truth for the clone', async () => {
+    // The backend appends exactly one investigator (the caller, from their auth token) to
+    // whatever was sent - simulate that response and confirm the client copies it verbatim
+    // rather than reconstructing anything itself.
+    const backendInjectedPI = {
+      id: 'real-signed-in-account-id',
+      firstName: 'Real',
+      lastName: 'Cloner',
+      email: 'real.cloner@example.com',
+      pi: true
+    } as any;
+    (PostProposal as Mock).mockResolvedValue({
+      ...mockPostProposalSkeleton,
+      investigators: [backendInjectedPI]
+    });
+
+    await triggerCloneConfirm();
+
+    await waitFor(() => {
+      expect(mockUpdateAppContent2).toHaveBeenLastCalledWith(
+        expect.objectContaining({ investigators: [backendInjectedPI] })
       );
     });
   });
