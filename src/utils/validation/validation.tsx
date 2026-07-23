@@ -23,7 +23,8 @@ import {
   TELESCOPE_LOW_NUM,
   TYPE_CONTINUUM,
   TYPE_PST,
-  TYPE_ZOOM
+  TYPE_ZOOM,
+  ZOOM_CHANNELS_DEFAULT_LOW
 } from './../constants';
 import Proposal from './../types/proposal';
 import { countWords, frequencyConversion, isFrequencyRangeOutOfBand } from '../helpers';
@@ -161,8 +162,13 @@ export const useIsObservationFrequencyOutOfRange = () => {
     const isLow = obs.telescope === TELESCOPE_LOW_NUM;
     const isZoom = obs.type === TYPE_ZOOM;
     const channelWidthHz = isLow && isZoom ? getZoomResolutionHz(obs.bandwidth ?? 0) : 0;
+    // Matches ObservationEntry.tsx's own load-time fallback - a saved observation predating
+    // zoomChannels must resolve to the same legacy default the editor would show, not a
+    // zero-width window that produces a different validity grid.
     const windowBandwidthHz =
-      isLow && isZoom ? channelsToBandwidthHz(obs.zoomChannels ?? 0, channelWidthHz) : 0;
+      isLow && isZoom
+        ? channelsToBandwidthHz(obs.zoomChannels ?? ZOOM_CHANNELS_DEFAULT_LOW, channelWidthHz)
+        : 0;
     // For LOW zoom, obs.bandwidth is a resolution-mode index, not a real bandwidth - use the
     // actual channel-count-derived window bandwidth for the range check too (MID zoom unaffected,
     // out of scope, matching ObservationEntry.tsx's own showWarning()).
