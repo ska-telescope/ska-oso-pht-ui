@@ -271,22 +271,28 @@ describe('isCentralFrequencyOnChannelGrid', () => {
 });
 
 describe('isCentralFrequencyDivisible', () => {
-  const channelWidthMHz = 0.78125; // 781250 Hz coarse channel
+  const channelWidthHz = 781250; // 781250 Hz coarse channel
 
   test('returns true for a value at a half-channel offset from 0', () => {
-    expect(isCentralFrequencyDivisible(192.5 * channelWidthMHz, channelWidthMHz)).toBe(true);
+    expect(isCentralFrequencyDivisible(192.5 * channelWidthHz, channelWidthHz)).toBe(true);
   });
 
   test('returns false for a value at a whole-channel offset from 0', () => {
-    expect(isCentralFrequencyDivisible(192 * channelWidthMHz, channelWidthMHz)).toBe(false);
+    expect(isCentralFrequencyDivisible(192 * channelWidthHz, channelWidthHz)).toBe(false);
   });
 
   test('returns false for an arbitrary off-grid value', () => {
-    expect(isCentralFrequencyDivisible(123.456, channelWidthMHz)).toBe(false);
+    expect(isCentralFrequencyDivisible(123.456, channelWidthHz)).toBe(false);
   });
 
   test('returns true when channel width is not positive', () => {
     expect(isCentralFrequencyDivisible(123.456, 0)).toBe(true);
+  });
+
+  test('tolerates ~1 Hz of rounding noise from a 6-d.p. MHz round-trip', () => {
+    const aligned = 192.5 * channelWidthHz;
+    const roundedHz = Number((aligned / 1e6).toFixed(6)) * 1e6;
+    expect(isCentralFrequencyDivisible(roundedHz, channelWidthHz)).toBe(true);
   });
 });
 

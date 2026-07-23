@@ -146,12 +146,11 @@ export const useIsFrequencyOutOfRange = () => {
       );
     }
 
-    const channelWidthMHz = frequencyConversion(
-      osdLOW?.basicCapabilities?.coarseChannelWidthHz ?? 0,
-      FREQUENCY_HZ,
-      FREQUENCY_MHZ
+    const coarseChannelWidthHz = osdLOW?.basicCapabilities?.coarseChannelWidthHz ?? 0;
+    return !isCentralFrequencyDivisible(
+      frequencyConversion(centralFrequency, targetUnits, FREQUENCY_HZ),
+      coarseChannelWidthHz
     );
-    return !isCentralFrequencyDivisible(centralFrequency, channelWidthMHz);
   };
 };
 

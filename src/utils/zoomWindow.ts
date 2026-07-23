@@ -104,13 +104,15 @@ export const isCentralFrequencyOnChannelGrid = (
 };
 
 // A valid continuum/PST central frequency sits at a half-coarse-channel offset from absolute
-// 0 Hz, so the SPW's first coarse channel is even.
-export const isCentralFrequencyDivisible = (
-  cfValueMHz: number,
-  channelWidthMHz: number
-): boolean => {
-  if (channelWidthMHz <= 0) return true;
-  return Number.isInteger((cfValueMHz + 0.5 * channelWidthMHz) / channelWidthMHz);
+// 0 Hz, so the SPW's first coarse channel is even. Tolerance is in Hz, not a fraction of a
+// channel - mirrors isCentralFrequencyOnChannelGrid above, since values commonly round-trip
+// through a 6-d.p. MHz display, which alone can introduce ~0.5 Hz of noise that a strict
+// Number.isInteger check can't absorb.
+export const isCentralFrequencyDivisible = (cfValueHz: number, channelWidthHz: number): boolean => {
+  if (channelWidthHz <= 0) return true;
+  const nearestOffset = Math.round(cfValueHz / channelWidthHz - 0.5);
+  const gridHz = (nearestOffset + 0.5) * channelWidthHz;
+  return Math.abs(cfValueHz - gridHz) < 1;
 };
 
 export const stepCentralFrequencyHz = (

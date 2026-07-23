@@ -110,16 +110,19 @@ export default function CentralFrequency({
   // ---- Continuum/MID mode: coarse-channel-grid divisibility validation ----
   const minFreq = frequencyConversion(band?.minFrequencyHz ?? 0, FREQUENCY_HZ, units);
   const maxFreq = frequencyConversion(band?.maxFrequencyHz ?? 0, FREQUENCY_HZ, units);
-  const channelWidthMHz = frequencyConversion(
-    osdLOW?.basicCapabilities.coarseChannelWidthHz ?? 1,
-    FREQUENCY_HZ,
-    FREQUENCY_MHZ
-  );
+  const coarseChannelWidthHz = osdLOW?.basicCapabilities.coarseChannelWidthHz ?? 1;
+  const channelWidthMHz = frequencyConversion(coarseChannelWidthHz, FREQUENCY_HZ, FREQUENCY_MHZ);
   const stepMHz = channelWidthMHz * 2;
 
   const validate = (cfValue: number): string => {
     if (cfValue < minFreq || cfValue > maxFreq) return t(FIELD + '.error.range');
-    if (isLow && !isCentralFrequencyDivisible(cfValue, channelWidthMHz)) {
+    if (
+      isLow &&
+      !isCentralFrequencyDivisible(
+        frequencyConversion(cfValue, units, FREQUENCY_HZ),
+        coarseChannelWidthHz
+      )
+    ) {
       return t(FIELD + '.error.divisibility', { value: stepMHz });
     }
     return '';
