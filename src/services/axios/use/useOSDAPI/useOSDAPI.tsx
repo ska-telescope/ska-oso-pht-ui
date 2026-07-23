@@ -4,7 +4,7 @@ import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient';
 import ObservatoryData from '@/utils/types/observatoryData';
 import GetOSDCycles from '../../get/getObservatoryData/getOSDCycles';
 
-export const useOSDAPI = (setAxiosError: (error: string) => void) => {
+export const useOSDAPI = (setAxiosError: (error: string) => void, enabled: boolean) => {
   const { application, updateAppContent3 } = storageObject.useStore();
   const authClient = useAxiosAuthClient();
 
@@ -24,6 +24,10 @@ export const useOSDAPI = (setAxiosError: (error: string) => void) => {
       setLoading(false);
       return;
     }
+
+    // Wait for auth to settle: fetching too early races the login redirect and
+    // never retries, leaving this stuck unset. See caller for the enabled condition.
+    if (!enabled) return;
 
     const fetchObservatoryData = async () => {
       try {
@@ -45,7 +49,7 @@ export const useOSDAPI = (setAxiosError: (error: string) => void) => {
     };
 
     fetchObservatoryData();
-  }, []);
+  }, [enabled]);
 
   return { osdData, loading };
 };
