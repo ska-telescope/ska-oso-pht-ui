@@ -66,6 +66,7 @@
     "@ska-telescope/ska-gui-components": "^2.8.39",
     "@ska-telescope/ska-gui-local-storage": "^2.2.2",
     "@ska-telescope/ska-login-page": "^1.2.0",
+    "@ska-telescope/skuid": "^3.0.0",
     "@types/papaparse": "^5.5.0",
     "axios": "^1.6.3",
     "bundle-loader": "^0.5.6",

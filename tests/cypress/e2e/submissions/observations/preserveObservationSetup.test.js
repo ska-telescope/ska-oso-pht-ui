@@ -67,8 +67,8 @@ describe('SV Flow: Observation setup is preserved when details page fields chang
 
     clickStatusIconNav('statusId2');
     pageConfirmed('DETAILS');
-    cy.get('[data-testid="abstractId"] textarea')
-      .first()
+    cy.get('[data-testid="abstractId"]')
+      .find('textarea')
       .should('have.value', 'Debounce test summary.');
   });
 
@@ -84,12 +84,12 @@ describe('SV Flow: Observation setup is preserved when details page fields chang
     // Navigating away blurs the field, triggering the onBlur save
     clickStatusIconNav('statusId5');
     pageConfirmed('OBSERVATION');
-    cy.get('[data-testid="centralFrequency"] input').should('have.value', '180');
+    cy.get('[data-testid="centralFrequency"]').should('have.value', '180');
 
     clickStatusIconNav('statusId2');
     pageConfirmed('DETAILS');
-    cy.get('[data-testid="abstractId"] textarea')
-      .first()
+    cy.get('[data-testid="abstractId"]')
+      .find('textarea')
       .should('have.value', 'This is a summary of the science idea.');
   });
 });

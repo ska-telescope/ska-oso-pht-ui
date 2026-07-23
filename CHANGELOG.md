@@ -8,6 +8,7 @@ UNRELEASED
 ----------
 * Updated: to 16.1 version of oso-services
 * Bugfix: spacer added to bottom of page to prevent page content overlapping bottom banner
+* Bugfix: fix for proposal cloning scenarios which were throwing errors
 * Updated: to use the new /coordinate endpoint response
 * Added: Support for Galactic targets
 * Bugfix: 'Channels Out' allowed 0 channels to be selected

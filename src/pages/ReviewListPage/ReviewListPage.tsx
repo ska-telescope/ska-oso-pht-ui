@@ -45,7 +45,6 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 
 export default function ReviewListPage() {
-  const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const { notifyError, notifySuccess } = useNotify();
   useInitializeAccessStore();
@@ -74,8 +73,17 @@ export default function ReviewListPage() {
   const [proposalReviews, setProposalReviews] = React.useState<ProposalReview[]>([]);
 
   const authClient = useAxiosAuthClient();
-  const { osdCycleId } = useOSDAccessors();
+  const { osdCycleId, getCycle } = useOSDAccessors();
   const userId = getUserId();
+
+  // useScopedTranslation's default namespace choice is driven by the OSD cycle's isSV flag,
+  // which reflects the cycle a proposal is being drafted under - meaningless here, since
+  // reviewers never select one. Instead derive it from the cycle the reviewed proposal itself
+  // belongs to, so the list is worded correctly whether it's an SV or standard proposal review.
+  const reviewListIsSV = (getCycle(proposals[0]?.cycle ?? '')?.type?.toLowerCase() ?? '').includes(
+    'science verification'
+  );
+  const { t } = useScopedTranslation(reviewListIsSV ? ['sv', 'pht'] : ['pht']);
 
   const DATA_GRID_HEIGHT = '60vh';
 
