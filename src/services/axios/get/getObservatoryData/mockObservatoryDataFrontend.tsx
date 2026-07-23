@@ -169,7 +169,7 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
         bands: [BAND_LOW_STR],
         calibrationFactoryDefined: true,
         low: [SA_AA2],
-        mid: [SA_AA2],
+        mid: [],
         maxDataProducts: 1,
         maxObservations: 1,
         maxTargets: 1
@@ -195,32 +195,8 @@ export const MockObservatoryDataFrontend: ObservatoryData = {
         maxTargets: 100,
         bands: [BAND_LOW_STR, BAND_5B_STR],
         calibrationFactoryDefined: true,
-        low: [],
-        mid: []
-      },
-      telescopeCapabilities: {
-        low: null,
-        mid: null
-      },
-      capabilities: mockCapabilities,
-      type: 'Proposal'
-    },
-    {
-      cycleNumber: 4,
-      cycleDescription: 'Fourth mock cycle',
-      cycleInformation: {
-        cycleId: 'CYCLE-004',
-        proposalOpen: '2025-10-01',
-        proposalClose: '2025-12-01'
-      },
-      cyclePolicies: {
-        maxDataProducts: 100,
-        maxObservations: 100,
-        maxTargets: 100,
-        bands: [BAND_LOW_STR, 'mid'],
-        calibrationFactoryDefined: true,
         low: [SA_AA2],
-        mid: [SA_AA2]
+        mid: [MID_AA2.toLowerCase()]
       },
       telescopeCapabilities: {
         low: LOW_AA2_SV,
