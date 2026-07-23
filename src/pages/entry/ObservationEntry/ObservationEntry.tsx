@@ -977,8 +977,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           setValue={setCentralFrequency}
           suffix={centralFrequencyUnitsField()}
           isLowZoom={isLow() && isZoom()}
-          channelWidthHz={getResolutionHz()}
-          windowBandwidthHz={getZoomBandwidthHz()}
+          channelWidthHz={isZoom() ? getResolutionHz() : osdLOW?.basicCapabilities.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP}
+          bandwidthHz={isZoom() ? getZoomBandwidthHz() : frequencyConversion(continuumBandwidth, continuumBandwidthUnits, FREQUENCY_HZ)}
           required
         />
       </Box>

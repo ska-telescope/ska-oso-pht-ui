@@ -8,7 +8,6 @@ import {
   bandwidthHzToChannels,
   stepChannels,
   clampCentralFrequencyToWindowHz,
-  coarseChannelRangeToHz,
   snapCentralFrequencyToChannelGridHz,
   stepCentralFrequencyHz,
   isCentralFrequencyOnChannelGrid,
@@ -293,13 +292,5 @@ describe('isCentralFrequencyDivisible', () => {
     const aligned = 192.5 * channelWidthHz;
     const roundedHz = Number((aligned / 1e6).toFixed(6)) * 1e6;
     expect(isCentralFrequencyDivisible(roundedHz, channelWidthHz)).toBe(true);
-  });
-});
-
-describe('coarseChannelRangeToHz', () => {
-  test('matches the real LOW OSD values (min 64, max 447, width 781250 Hz)', () => {
-    const range = coarseChannelRangeToHz(64, 447, 781250);
-    expect(range.minHz).toBeCloseTo(49_609_375, 6);
-    expect(range.maxHz).toBeCloseTo(349_609_375, 6);
   });
 });

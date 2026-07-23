@@ -15,7 +15,6 @@ interface SteppedNumberFieldProps {
   label?: string;
   max?: number;
   min?: number;
-  onBlurCommit?: (value: number) => void;
   onCommit: (value: number) => void;
   onFocus?: () => void;
   onStep: (value: number, direction: 1 | -1) => number;
@@ -45,7 +44,6 @@ export default function SteppedNumberField({
   label,
   max,
   min,
-  onBlurCommit,
   onCommit,
   onFocus,
   onStep,
@@ -85,12 +83,6 @@ export default function SteppedNumberField({
     onFocus?.();
   };
 
-  const handleBlur = () => {
-    isFocused.current = false;
-    setInputValue(format(value));
-    onBlurCommit?.(value);
-  };
-
   // Owns ArrowUp/ArrowDown itself rather than letting the browser step the raw value by the
   // `step` attribute - `onStep` may snap to a non-uniform legal grid the HTML step can't express.
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -110,7 +102,6 @@ export default function SteppedNumberField({
         disabled={disabled}
         error={!!errorText}
         label={label}
-        onBlur={handleBlur}
         onChange={(e) => handleChange(e.target.value)}
         onFocus={handleFocus}
         onKeyDown={handleKeyDown}
