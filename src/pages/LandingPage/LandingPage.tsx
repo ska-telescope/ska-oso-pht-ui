@@ -80,7 +80,8 @@ export default function LandingPage() {
   const setAccess = (access: ProposalAccess[]) => updateAppContent4(access);
   const getProposal = () => application.content2 as Proposal;
   const { setHelp } = useHelp();
-  useOSDAPI(setAxiosError);
+  // Same bypass as the rest of this page's gates; keeps the cypressToken local-dev flow working.
+  useOSDAPI(setAxiosError, Boolean(loggedIn || cypressToken));
 
   const mock = {
     abstract: '',
