@@ -115,7 +115,7 @@ vi.mock('../../get/getObservatoryData/getOSDCycles', () => ({
 describe('useOSDAPI hook', () => {
   it('fetches and returns observatory data', async () => {
     const mockErrorSetter = vi.fn();
-    const { result } = renderHook(() => useOSDAPI(mockErrorSetter));
+    const { result } = renderHook(() => useOSDAPI(mockErrorSetter, true));
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
@@ -136,7 +136,7 @@ describe('useOSDAPI hook', () => {
       Promise.resolve({ invalid: true })
     );
 
-    const { result } = renderHook(() => useOSDAPI(mockErrorSetter));
+    const { result } = renderHook(() => useOSDAPI(mockErrorSetter, true));
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
@@ -153,7 +153,7 @@ describe('useOSDAPI hook', () => {
       Promise.reject(new Error('Network error'))
     );
 
-    const { result } = renderHook(() => useOSDAPI(mockErrorSetter));
+    const { result } = renderHook(() => useOSDAPI(mockErrorSetter, true));
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
