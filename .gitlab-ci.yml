@@ -17,6 +17,7 @@ stages:
   - scan
   - pages
   - integration
+  - staging
   - production
 
 #Install basic dependencies using yarn
@@ -71,6 +72,14 @@ CHANGELOG:
   environment:
     name: "dev-$CI_PROJECT_NAME-$CI_COMMIT_REF_SLUG"
 
+.staging_env: &staging_env
+  variables:
+    KUBE_HOST: https://k8s.stfc.skao.int
+    KUBE_NAMESPACE: "staging-$CI_PROJECT_NAME"
+  rules:
+  - if: $CI_COMMIT_TAG
+  needs: []
+
 .production_env: &production_env
   stage: production
   image: $SKA_K8S_TOOLS_BUILD_DEPLOY
@@ -115,13 +124,33 @@ deploy-integration:
   variables:
     KUBE_HOST: https://k8s.stfc.skao.int
 
+deploy-staging:
+  <<: *staging_env
+  script:
+    - make k8s-install-chart-car
+    - make k8s-wait
+
+redeploy-staging:
+  <<: *staging_env
+  script:
+    - make k8s-uninstall-chart
+    - kubectl -n $KUBE_NAMESPACE delete pods,svc,daemonsets,deployments,replicasets,statefulsets,cronjobs,jobs,ingresses,configmaps --all
+    - make k8s-install-chart-car
+    - make k8s-wait
+
+info-staging:
+  <<: *staging_env
+
+stop-staging:
+  <<: *staging_env
+
 deploy-production:
   <<: *production_env
   variables:
     KUBE_NAMESPACE: prod-ska-oso-pht-ui
     K8S_SKIP_NAMESPACE: true
   script:
-    - make k8s-install-chart
+    - make k8s-install-chart-car
     - make k8s-wait
   environment:
     name: prod-ska-oso-pht-ui
@@ -176,6 +205,8 @@ include:
     file: 'gitlab-ci/includes/deploy.dev.gitlab-ci.yml'
   - project: 'ska-telescope/templates-repository'
     file: 'gitlab-ci/includes/deploy.integration.gitlab-ci.yml'
+  - project: 'ska-telescope/templates-repository'
+    file: 'gitlab-ci/includes/deploy.staging.gitlab-ci.yml'
   # Finalize badges
   - project: "ska-telescope/templates-repository"
     file: "gitlab-ci/includes/finaliser.gitlab-ci.yml"
