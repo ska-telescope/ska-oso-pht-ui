@@ -16,6 +16,7 @@ import {
   NAV,
   PATH,
   PMT,
+  PROPOSAL_STATUS,
   REVIEW_TYPE,
   USE_LOCAL_DATA,
   SKA_OSO_SERVICES_URL,
@@ -49,6 +50,7 @@ import LinkingPage from '../LinkingPage/LinkingPage';
 import CalibrationEntry from '../entry/Calibration/CalibrationEntry';
 import Proposal from '@/utils/types/proposal';
 import Notification from '@/utils/types/notification';
+import PutProposal from '@/services/axios/put/putProposal/putProposal';
 import ButtonUserMenu from '@/components/button/UserMenu/UserMenu';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import TimedAlert from '@/components/alerts/timedAlert/TimedAlert';
@@ -57,6 +59,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import { useNotify } from '@/utils/notify/useNotify';
 import autoLinking from '@/utils/autoLinking/AutoLinking';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
 
@@ -109,13 +112,15 @@ export default function PHT({
 }: PHTPropTypes) {
   const { t } = useScopedTranslation();
   const { application, help, helpToggle, updateAppContent2 } = storageObject.useStore();
-  const { autoLink, osdCloses, osdCountdown, osdCycleId, osdCycleDescription, osdOpens } =
+  const { autoLink, osdCloses, osdCountdown, osdCycleId, osdCycleDescription, osdOpens, isSV } =
     useOSDAccessors();
   const navigate = useNavigate();
   const location = useLocation();
+  const authClient = useAxiosAuthClient();
   const { setHelp } = useHelp();
-  const { notifyWarning } = useNotify();
+  const { notifyWarning, notifyError } = useNotify();
   const theme = useTheme();
+  const previousPathRef = React.useRef(location.pathname);
 
   const LG = () => useMediaQuery((theme: any) => theme.breakpoints.down('lg'));
   const REQUIRED_WIDTH = useMediaQuery('(min-width:600px)');
@@ -165,6 +170,35 @@ export default function PHT({
       }
     );
   }, [getProposal(), autoLink]);
+
+  React.useEffect(() => {
+    const previousPath = previousPathRef.current;
+    const currentPath = location.pathname;
+
+    if (previousPath === currentPath) {
+      return;
+    }
+
+    const isProposalPageTransition =
+      NAV.includes(previousPath) && (NAV.includes(currentPath) || currentPath === PATH[0]);
+    const proposal = getProposal();
+    const canAutoSave =
+      isProposalPageTransition &&
+      (loggedIn || cypressToken) &&
+      proposal?.id != null &&
+      proposal.id !== '';
+
+    if (canAutoSave) {
+      void (async () => {
+        const response = await PutProposal(authClient, proposal, PROPOSAL_STATUS.DRAFT);
+        if ('error' in response) {
+          notifyError(response.error);
+        }
+      })();
+    }
+
+    previousPathRef.current = currentPath;
+  }, [location.pathname, application.content2, loggedIn, authClient, isSV, notifyError]);
 
   const mediaSizeNotSupported = () => (
     <Alert color={AlertColorTypes.Error} text={t('mediaSize.notSupported')} testId="helpPanelId" />

@@ -8,7 +8,16 @@ const mockCapabilities: ObservatoryData['capabilities'] = {
   low: {
     basicCapabilities: {
       minFrequencyHz: 50,
-      maxFrequencyHz: 350
+      maxFrequencyHz: 350,
+      minCoarseChannel: 64,
+      maxCoarseChannel: 447,
+      coarseChannelWidthHz: 781250,
+      numberOfChannelsPerCoarseChannel: {
+        continuum: 1,
+        zoom: 1,
+        pst: 1,
+        pss: 1
+      }
     },
     subArrays: [
       {
@@ -118,7 +127,7 @@ vi.mock('../../get/getObservatoryData/getOSDCycles', () => ({
 describe('useOSDAPI hook', () => {
   it('fetches and returns observatory data', async () => {
     const mockErrorSetter = vi.fn();
-    const { result } = renderHook(() => useOSDAPI(mockErrorSetter));
+    const { result } = renderHook(() => useOSDAPI(mockErrorSetter, true));
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
@@ -139,7 +148,7 @@ describe('useOSDAPI hook', () => {
       Promise.resolve({ invalid: true })
     );
 
-    const { result } = renderHook(() => useOSDAPI(mockErrorSetter));
+    const { result } = renderHook(() => useOSDAPI(mockErrorSetter, true));
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
@@ -156,7 +165,7 @@ describe('useOSDAPI hook', () => {
       Promise.reject(new Error('Network error'))
     );
 
-    const { result } = renderHook(() => useOSDAPI(mockErrorSetter));
+    const { result } = renderHook(() => useOSDAPI(mockErrorSetter, true));
 
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
