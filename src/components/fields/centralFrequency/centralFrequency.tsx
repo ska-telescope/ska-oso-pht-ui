@@ -18,6 +18,9 @@ import {
 } from '@/utils/zoomWindow';
 import SteppedNumberField from '@/components/wrappers/steppedNumberField/SteppedNumberField';
 
+const clampAndRound = (value: number, min: number, max: number): number =>
+  Number(Math.min(max, Math.max(min, value)).toFixed(6));
+
 interface CentralFrequencyProps {
   channelWidthHz?: number;
   continuumBandwidthHz?: number;
@@ -88,7 +91,7 @@ export default function CentralFrequency({
     setErrorMessage(validateStep(cf));
   };
 
-  const step = (currentValue: number, direction: 1 | -1) => {
+  const stepWindowBandwidth = (currentValue: number, direction: 1 | -1) => {
     const cfHz = frequencyConversion(currentValue, units, FREQUENCY_HZ);
     const steppedHz = stepCentralFrequencyHz(
       cfHz,
@@ -98,9 +101,7 @@ export default function CentralFrequency({
       minHz,
       maxHz
     );
-    // Round to 1 Hz precision (6 d.p. in MHz) to avoid floating-point noise building up
-    // across repeated arrow presses.
-    return Number(frequencyConversion(steppedHz, FREQUENCY_HZ, units).toFixed(6));
+    return clampAndRound(frequencyConversion(steppedHz, FREQUENCY_HZ, units), min, max);
   };
 
   // ---- Continuum/MID mode: coarse-channel-grid divisibility validation ----
@@ -139,11 +140,11 @@ export default function CentralFrequency({
   // Steps by one coarse-channel-grid unit (LOW) or a plain 1-unit increment (MID, which has no
   // channel-grid constraint), snapping to the grid first if not already aligned.
   // Stepping by a full stepMHz (2 channels) preserves the grid's alf-channel-offset parity.
-  const stepNonSteppable = (currentValue: number, direction: 1 | -1): number => {
+  const stepChannel = (currentValue: number, direction: 1 | -1): number => {
     const stepped = isLow
       ? snapToValidGrid(currentValue) + direction * stepMHz
       : currentValue + direction;
-    return Number(Math.min(maxAllowedFrequency, Math.max(minAllowedFrequency, stepped)).toFixed(6));
+    return clampAndRound(stepped, minAllowedFrequency, maxAllowedFrequency);
   };
 
   // The legal centre-frequency range must keep the *whole* configured continuum bandwidth inside
@@ -195,7 +196,7 @@ export default function CentralFrequency({
       label={t(FIELD + '.label')}
       value={value}
       onCommit={isLowZoom ? commit : checkValue}
-      onStep={isLowZoom ? step : stepNonSteppable}
+      onStep={isLowZoom ? stepWindowBandwidth : stepChannel}
       onFocus={() => setHelp(FIELD)}
       disabled={disabled}
       required={required}
