@@ -38,7 +38,7 @@ interface SteppedNumberFieldProps {
 }
 
 // Thin wrapper around MUI's TextField in its native type="number" form - `step`/`min`/`max` are
-// plain HTML attributes 
+// plain HTML attributes
 export default function SteppedNumberField({
   decrementDisabled,
   digitsOnly = false,
