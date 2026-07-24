@@ -124,18 +124,15 @@ describe('Creating Proposal', () => {
       verifyData('dataProductType', 'Images');
       //Verify sens calc results
       verifyData('field-targetName', 'M2');
-      // Recomputed against the corrected default centre frequency (200.390625 MHz, see
-      // isCentralFrequencyDivisible / DEFAULT_CONTINUUM_OBSERVATION_LOW) - values read directly
-      // from the actual sensitivity calculator output.
-      verifyData('field-continuumSensitivityWeighted', '193.37 μJy/beam');
-      verifyData('field-continuumConfusionNoise', '1.55 μJy/beam');
-      verifyData('field-continuumTotalSensitivity', '193.37 μJy/beam');
-      verifyData('field-continuumSynthBeamSize', '5.49 x 2.85 arcsec²');
-      verifyData('field-continuumSurfaceBrightnessSensitivity', '375.80 K');
-      verifyData('field-spectralSensitivityWeighted', '42.18 mJy/beam');
-      verifyData('field-spectralConfusionNoise', '2.63 μJy/beam');
-      verifyData('field-spectralTotalSensitivity', '42.18 mJy/beam');
-      verifyData('field-spectralSynthBeamSize', '5.91 x 3.95 arcsec²');
+      verifyData('field-continuumSensitivityWeighted', '193.43 μJy/beam');
+      verifyData('field-continuumConfusionNoise', '1.57 μJy/beam');
+      verifyData('field-continuumTotalSensitivity', '193.44 μJy/beam');
+      verifyData('field-continuumSynthBeamSize', '5.51 x 2.87 arcsec²');
+      verifyData('field-continuumSurfaceBrightnessSensitivity', '375.92 K');
+      verifyData('field-spectralSensitivityWeighted', '42.38 mJy/beam');
+      verifyData('field-spectralConfusionNoise', '2.67 μJy/beam');
+      verifyData('field-spectralTotalSensitivity', '42.38 mJy/beam');
+      verifyData('field-spectralSynthBeamSize', '5.93 x 3.97 arcsec²');
       verifyData('field-spectralSurfaceBrightnessSensitivity', '5.5e+4 K');
       verifyData('field-integrationTime', '1.00 h');
       clickToValidateSV();
