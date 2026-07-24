@@ -187,12 +187,7 @@ describe('<PHT />', () => {
     rerenderPHT();
 
     await waitFor(() => {
-      expect(PutProposal).toHaveBeenCalledWith(
-        {},
-        { id: 'prsl-123' },
-        false,
-        PROPOSAL_STATUS.DRAFT
-      );
+      expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT);
     });
   });
 
@@ -206,12 +201,7 @@ describe('<PHT />', () => {
     rerenderPHT();
 
     await waitFor(() => {
-      expect(PutProposal).toHaveBeenCalledWith(
-        {},
-        { id: 'prsl-123' },
-        false,
-        PROPOSAL_STATUS.DRAFT
-      );
+      expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT);
     });
   });
 });
