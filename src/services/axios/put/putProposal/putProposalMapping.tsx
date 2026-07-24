@@ -573,7 +573,7 @@ const getResults = (
         result: null,
         continuum_confusion_noise: null,
         spectral_confusion_noise: null,
-        synthesized_beam_size: null
+        synthesized_beam_size: null,
       };
 
       if (hasSensCalc) {
@@ -605,6 +605,17 @@ const getResults = (
               ? tarObs.sensCalc.section1?.find((o) => o.field === 'continuumConfusionNoise')?.units
               : ''
         };
+
+        result.synthesized_beam_size = {
+          spectral: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralSynthBeamSize')
+            ?.value,
+          continuum:
+            isContinuum(obsType) || isPST(obsType)
+              ? tarObs.sensCalc.section1?.find((o) => o.field === 'continuumSynthBeamSize')?.value
+              : '',
+          unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralSynthBeamSize')?.units
+        };
+
 
         result.spectral_confusion_noise = {
           value: Number(
