@@ -386,8 +386,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   // Returns the newly computed cap (not just the pending maxZoomChannels state setter) so
   // callers that need the fresh value in the same tick - e.g. to default zoomChannels to it -
   // don't read back the stale pre-update state.
-  const setMaxChannelsZoom = (subarrayConfig: string): number => {
-    const record = isLow() ? osdLOW : osdMID;
+  const setMaxChannelsZoom = (subarrayConfig: string, low = isLow()): number => {
+    const record = low ? osdLOW : osdMID;
     setMaxZoomChannels(0);
     if (record) {
       const sArray = (
@@ -403,9 +403,16 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   React.useEffect(() => {
     setHelp('observationId');
     if (isEdit()) {
-      observationIn(data ? data : locationProperties.state);
-      setMaxChannelsZoom(subarrayConfig);
-      setOnce(data ? data : locationProperties.state);
+      const loaded = data ? data : locationProperties.state;
+      observationIn(loaded);
+      // observationIn only schedules setObservingBand/setSubarrayConfig - subarrayConfig/isLow()
+      // below would still read the pre-load state in this same tick, so pass the loaded
+      // observation's own band/subarray directly rather than via setMaxChannelsZoom's defaults.
+      setMaxChannelsZoom(
+        loaded?.subarray ?? subarrayConfig,
+        loaded?.observingBand === BAND_LOW_STR
+      );
+      setOnce(loaded);
     } else {
       const obsBand = telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? osdLOW : osdMID;
       setMyObsId(generateId(t('addObservation.idPrefix'), 6));
