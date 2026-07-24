@@ -130,5 +130,22 @@ export const stepCentralFrequencyHz = (
     numberOfChannels,
     minHz
   );
-  return clampCentralFrequencyToWindowHz(stepped, windowBandwidthHz, minHz, maxHz);
+  const clamped = clampCentralFrequencyToWindowHz(stepped, windowBandwidthHz, minHz, maxHz);
+  if (
+    clamped === stepped ||
+    channelWidthHz <= 0 ||
+    isCentralFrequencyOnChannelGrid(clamped, channelWidthHz, windowBandwidthHz, minHz)
+  ) {
+    return clamped;
+  }
+  // Clamping (a raw arithmetic boundary) pulled the value off the channel grid - e.g. when
+  // correcting down from a value way above the band's max, the snap-then-clamp above lands
+  // exactly on that boundary, which usually isn't itself a valid grid point. Re-snap towards the
+  // interior of the window (floor when clamping pulled the value down to the upper edge, ceil
+  // when it pushed the value up to the lower edge) so the corrected value is always genuinely
+  // on-grid, without spilling back past the boundary that was just enforced.
+  const rawStartChannel = (clamped - minHz) / channelWidthHz - numberOfChannels / 2;
+  const startChannel =
+    clamped < stepped ? Math.floor(rawStartChannel + 1e-6) : Math.ceil(rawStartChannel - 1e-6);
+  return minHz + (startChannel + numberOfChannels / 2) * channelWidthHz;
 };

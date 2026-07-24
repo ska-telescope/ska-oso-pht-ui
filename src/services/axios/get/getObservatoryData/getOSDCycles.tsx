@@ -188,21 +188,17 @@ export const osdMapping = (
       low: inData?.capabilities?.low?.basic_capabilities
         ? {
             basicCapabilities: {
-              // Round the half-channel-inset edges to the nearest MHz - the coarse-channel
-              // maths otherwise lands a few kHz short of the clean band edges (e.g. 49.609375
-              // MHz instead of 50 MHz).
+              // The half-channel-inset band edges - deliberately left unrounded (e.g.
+              // 49,609,375 Hz rather than a "clean" 50 MHz), since this is the actual grid
+              // anchor for LOW zoom channel-grid math (see zoomWindow.ts) as well as the
+              // continuum band-edge range check; rounding it here would shift that grid instead
+              // of just tidying its display. Round only at comparison/display call sites.
               minFrequencyHz:
-                Math.round(
-                  ((odtConfig.ska_low.frequency_band.min_coarse_channel - 0.5) *
-                    odtConfig.ska_low.frequency_band.coarse_channel_width_hz) /
-                    1e6
-                ) * 1e6,
+                (odtConfig.ska_low.frequency_band.min_coarse_channel - 0.5) *
+                odtConfig.ska_low.frequency_band.coarse_channel_width_hz,
               maxFrequencyHz:
-                Math.round(
-                  ((odtConfig.ska_low.frequency_band.max_coarse_channel + 0.5) *
-                    odtConfig.ska_low.frequency_band.coarse_channel_width_hz) /
-                    1e6
-                ) * 1e6,
+                (odtConfig.ska_low.frequency_band.max_coarse_channel + 0.5) *
+                odtConfig.ska_low.frequency_band.coarse_channel_width_hz,
               minCoarseChannel: odtConfig.ska_low.frequency_band.min_coarse_channel,
               maxCoarseChannel: odtConfig.ska_low.frequency_band.max_coarse_channel,
               coarseChannelWidthHz: odtConfig.ska_low.frequency_band.coarse_channel_width_hz,

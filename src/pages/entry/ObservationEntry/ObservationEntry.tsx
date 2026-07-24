@@ -553,6 +553,16 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   // bandwidthLookup/getBandwidthLowZoom lookup, which only ever reflected a per-channel value.
   const getResolutionHz = () => (isLow() && isZoom() ? getZoomResolutionHz(bandwidth) : 0);
   const getZoomBandwidthHz = () => channelsToBandwidthHz(zoomChannels, getResolutionHz());
+  // continuumBandwidthUnits is explicitly null (not undefined) on zoom/spectral observations
+  // (they have no continuum bandwidth), and the load path folds that null down to 0 - which isn't
+  // a valid FREQUENCY_UNITS index, so it must be treated as "unset" (||) rather than merely
+  // nullish (??).
+  const getContinuumBandwidthHz = () =>
+    frequencyConversion(
+      continuumBandwidth ?? 0,
+      continuumBandwidthUnits || FREQUENCY_HZ,
+      FREQUENCY_HZ
+    );
   const getCentralFrequencyHz = () =>
     frequencyConversion(centralFrequency ?? 0, centralFrequencyUnits ?? FREQUENCY_HZ, FREQUENCY_HZ);
 
@@ -986,6 +996,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           isLowZoom={isLow() && isZoom()}
           channelWidthHz={getResolutionHz()}
           windowBandwidthHz={getZoomBandwidthHz()}
+          continuumBandwidthHz={getContinuumBandwidthHz()}
           required
         />
       </Box>

@@ -12,7 +12,6 @@ import {
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { frequencyConversion } from '@/utils/helpers';
 import {
-  coarseChannelRangeToHz,
   isCentralFrequencyDivisible,
   isCentralFrequencyOnChannelGrid,
   stepCentralFrequencyHz
@@ -21,6 +20,7 @@ import SteppedNumberField from '@/components/wrappers/steppedNumberField/Stepped
 
 interface CentralFrequencyProps {
   channelWidthHz?: number;
+  continuumBandwidthHz?: number;
   disabled?: boolean;
   required?: boolean;
   observingBand: string;
@@ -33,6 +33,7 @@ interface CentralFrequencyProps {
 
 export default function CentralFrequency({
   channelWidthHz = 0,
+  continuumBandwidthHz = 0,
   disabled = false,
   observingBand,
   required = false,
@@ -54,27 +55,22 @@ export default function CentralFrequency({
   // ----  LOW zoom mode: window-clamped channel-grid validation ----
   const [errorMessage, setErrorMessage] = React.useState('');
 
-  // The legal range is the intersection of the band's own edges and the (usually tighter)
-  // coarse-channel-derived range, when the latter is available.
-  const coarseChannelRangeHz = osdLOW?.basicCapabilities
-    ? coarseChannelRangeToHz(
-        osdLOW.basicCapabilities.minCoarseChannel,
-        osdLOW.basicCapabilities.maxCoarseChannel,
-        osdLOW.basicCapabilities.coarseChannelWidthHz
-      )
-    : null;
-  // Need to still round for clean display otherwise could be a few kHz off.
-  // Perhaps could be done either at source or  in the frequencyConversion function but that would be a breaking change.
-  const minHz = Math.max(band?.minFrequencyHz ?? 0, coarseChannelRangeHz?.minHz ?? -Infinity);
-  const maxHz = Math.min(band?.maxFrequencyHz ?? 0, coarseChannelRangeHz?.maxHz ?? Infinity);
+  // band is osdLOW.basicCapabilities itself for LOW (see findBand in useOSDAccessors), which
+  // already carries the coarse-channel-derived edges (see getOSDCycles.tsx) - no need to
+  // recompute them from minCoarseChannel/maxCoarseChannel/coarseChannelWidthHz here too.
+  const minHz = band?.minFrequencyHz ?? 0;
+  const maxHz = band?.maxFrequencyHz ?? 0;
   // For a LOW zoom field, the legal range is inset by half the zoom window's
   // bandwidth, so the whole window - not just its centre point - stays within the band. The
   // exact legal-value constraint is still TBC; this is the only rule applied for now.
-  const halfWindowUnits = isLowZoom
-    ? frequencyConversion(windowBandwidthHz, FREQUENCY_HZ, units) / 2
-    : 0;
-  const min = frequencyConversion(minHz, FREQUENCY_HZ, units) + halfWindowUnits;
-  const max = frequencyConversion(maxHz, FREQUENCY_HZ, units) - halfWindowUnits;
+  // The inset is applied in Hz first (matching clampCentralFrequencyToWindowHz/stepCentralFrequencyHz's
+  // own arithmetic) and the result rounded to 6 d.p. the same way commit()/step() round a
+  // committed value - otherwise a value that's genuinely exactly at the boundary can differ from
+  // min/max by a fraction of a Hz (from the separate Hz->units conversion, and from that rounding
+  // never being applied here) and get wrongly flagged as out of range.
+  const halfWindowHz = isLowZoom ? windowBandwidthHz / 2 : 0;
+  const min = Number(frequencyConversion(minHz + halfWindowHz, FREQUENCY_HZ, units).toFixed(6));
+  const max = Number(frequencyConversion(maxHz - halfWindowHz, FREQUENCY_HZ, units).toFixed(6));
 
   const validateStep = (cf: number): string => {
     if (cf < min || cf > max) return t(FIELD + '.error.range');
@@ -130,8 +126,8 @@ export default function CentralFrequency({
 
   // A valid central frequency sits at a half-channel offset from absolute 0 Hz (so the SPW's
   // first coarse channel is even) - see validate()'s divisibility check above, which enforces
-  // the same rule. minFreq is itself a whole-channel multiple (not a half-channel offset), so
-  // snapping relative to minFreq instead of 0 would land on the wrong grid entirely.
+  // the same rule. minFreq is itself a half-channel-inset value (not a whole-channel multiple),
+  // so snapping relative to minFreq instead of 0 would land on the wrong grid entirely.
   const snapToValidGrid = (currentValue: number) =>
     (Math.round(currentValue / channelWidthMHz - 0.5) + 0.5) * channelWidthMHz;
 
@@ -150,17 +146,19 @@ export default function CentralFrequency({
     return Number(Math.min(maxAllowedFrequency, Math.max(minAllowedFrequency, stepped)).toFixed(6));
   };
 
-  // The minimum frequency the input should allow should be the minimum valid frequency - this is
-  // not the actual minimum frequency but minFreq + minBandwidth / 2
+  // The legal centre-frequency range must keep the *whole* configured continuum bandwidth inside
+  // the band, so it's inset by half of the actual bandwidth - not a fixed minimum-bandwidth
+  // assumption (which only leaves room for the smallest possible bandwidth, letting a much wider
+  // real bandwidth spill past the band edge). Falls back to the old minimum-bandwidth inset only
+  // if the caller hasn't got a real bandwidth to pass yet.
+  const fallbackBandwidthHz = osdLOW?.basicCapabilities.coarseChannelWidthHz
+    ? osdLOW.basicCapabilities.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
+    : // TODO: Mid values should come from OSD in the future - 13440 is Mid channel width in Hz
+      //  and until AA2 bandwidth has to be multiple of 20 channels.
+      Math.round(20 * 13440 * 1e12) / 1e12;
   const halfBandwidthMHz =
-    frequencyConversion(
-      osdLOW?.basicCapabilities.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP ??
-        // TODO: Mid values should come from OSD in the future - 13440 is Mid channel width in Hz
-        //  and until AA2 bandwidth has to be multiple of 20 channels.
-        Math.round(20 * 13440 * 1e12) / 1e12,
-      FREQUENCY_HZ,
-      FREQUENCY_MHZ
-    ) / 2;
+    frequencyConversion(continuumBandwidthHz || fallbackBandwidthHz, FREQUENCY_HZ, FREQUENCY_MHZ) /
+    2;
   const minAllowedFrequency = halfBandwidthMHz + minFreq;
   const maxAllowedFrequency = maxFreq - halfBandwidthMHz;
 

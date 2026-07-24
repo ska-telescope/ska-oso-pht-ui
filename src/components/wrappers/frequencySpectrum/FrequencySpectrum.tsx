@@ -39,9 +39,12 @@ export const FrequencySpectrum: React.FC<FrequencySpectrumProps> = ({
   const actualMin = Number((centerFreq - bandWidth / 2).toFixed(2));
   const actualMax = Number((centerFreq + bandWidth / 2).toFixed(2));
 
-  // Normal-mode geometry
-  const bandStartFreq = centerFreq - bandWidth / 2;
-  const bandEndFreq = centerFreq + bandWidth / 2;
+  // Normal-mode geometry - reuses the same rounded values as actualMin/actualMax above (same
+  // underlying quantity) rather than recomputing unrounded, so a band whose edge is genuinely
+  // right at minFreq/maxFreq doesn't get flagged red purely from floating-point noise in
+  // centerFreq/bandWidth, which callers often assemble from separately-rounded pieces.
+  const bandStartFreq = actualMin;
+  const bandEndFreq = actualMax;
 
   const bandOffsetPercent = ((bandStartFreq - minFreq) / totalWidth) * 100;
   const bandPercent = (bandWidth / totalWidth) * 100;

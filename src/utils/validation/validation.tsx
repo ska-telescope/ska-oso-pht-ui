@@ -24,6 +24,7 @@ import {
   TYPE_CONTINUUM,
   TYPE_PST,
   TYPE_ZOOM,
+  ZOOM_BANDWIDTH_DEFAULT_LOW,
   ZOOM_CHANNELS_DEFAULT_LOW
 } from './../constants';
 import Proposal from './../types/proposal';
@@ -129,18 +130,23 @@ export const useIsFrequencyOutOfRange = () => {
     }
 
     const targetUnits = isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ;
-    const minFreq = frequencyConversion(minHz, FREQUENCY_HZ, targetUnits);
-    const maxFreq = frequencyConversion(maxHz, FREQUENCY_HZ, targetUnits);
-    if (isFrequencyRangeOutOfBand(centralFrequency, bandwidth, minFreq, maxFreq)) return true;
+    // Compare in Hz, rounded to the nearest Hz, rather than converting minHz/maxHz into
+    // MHz/GHz first - minFrequencyHz/maxFrequencyHz are no longer pre-rounded to a clean MHz
+    // boundary (see getOSDCycles.tsx), and a GHz round-trip only keeps ~1000 Hz of precision at
+    // 6 d.p., which that prior rounding used to mask.
+    const centralFrequencyHz = Math.round(
+      frequencyConversion(centralFrequency, targetUnits, FREQUENCY_HZ)
+    );
+    const bandwidthHz = Math.round(frequencyConversion(bandwidth, targetUnits, FREQUENCY_HZ));
+    if (isFrequencyRangeOutOfBand(centralFrequencyHz, bandwidthHz, minHz, maxHz)) return true;
 
     // The channel-grid/divisibility constraint is LOW-only, matching centralFrequency.tsx's own
     // validation (see isCentralFrequencyOnChannelGrid/isCentralFrequencyDivisible there).
     if (!isLow) return false;
 
     if (type === TYPE_ZOOM) {
-      const cfHz = frequencyConversion(centralFrequency, targetUnits, FREQUENCY_HZ);
       return !isCentralFrequencyOnChannelGrid(
-        cfHz,
+        centralFrequencyHz,
         channelWidthHz ?? 0,
         windowBandwidthHz ?? 0,
         minHz
@@ -148,10 +154,7 @@ export const useIsFrequencyOutOfRange = () => {
     }
 
     const coarseChannelWidthHz = osdLOW?.basicCapabilities?.coarseChannelWidthHz ?? 0;
-    return !isCentralFrequencyDivisible(
-      frequencyConversion(centralFrequency, targetUnits, FREQUENCY_HZ),
-      coarseChannelWidthHz
-    );
+    return !isCentralFrequencyDivisible(centralFrequencyHz, coarseChannelWidthHz);
   };
 };
 
@@ -161,7 +164,11 @@ export const useIsObservationFrequencyOutOfRange = () => {
   return (obs: Observation): boolean => {
     const isLow = obs.telescope === TELESCOPE_LOW_NUM;
     const isZoom = obs.type === TYPE_ZOOM;
-    const channelWidthHz = isLow && isZoom ? getZoomResolutionHz(obs.bandwidth ?? 0) : 0;
+    // Matches ObservationEntry.tsx's own load-time fallback - a resolution-mode index of 0
+    // matches no real entry, so getZoomResolutionHz would silently return a 0 Hz channel width
+    // that the grid checks below then treat as "always on-grid" instead of actually unavailable.
+    const channelWidthHz =
+      isLow && isZoom ? getZoomResolutionHz(obs.bandwidth ?? ZOOM_BANDWIDTH_DEFAULT_LOW) : 0;
     // Matches ObservationEntry.tsx's own load-time fallback - a saved observation predating
     // zoomChannels must resolve to the same legacy default the editor would show, not a
     // zero-width window that produces a different validity grid.
