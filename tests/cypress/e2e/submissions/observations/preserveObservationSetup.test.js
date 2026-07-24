@@ -67,8 +67,10 @@ describe('SV Flow: Observation setup is preserved when details page fields chang
 
     clickStatusIconNav('statusId2');
     pageConfirmed('DETAILS');
-    cy.get('[data-testid="abstractId"]')
-      .find('textarea')
+    // The testid lands on the MuiFormControl wrapper, not the actual <textarea> - a div has no
+    // .value property, so the assertion must target the nested field directly.
+    cy.get('[data-testid="abstractId"] textarea')
+      .first()
       .should('have.value', 'Debounce test summary.');
   });
 
@@ -84,12 +86,14 @@ describe('SV Flow: Observation setup is preserved when details page fields chang
     // Navigating away blurs the field, triggering the onBlur save
     clickStatusIconNav('statusId5');
     pageConfirmed('OBSERVATION');
+    // centralFrequency's testid is on the input itself (slotProps.htmlInput), not a wrapper.
     cy.get('[data-testid="centralFrequency"]').should('have.value', '180');
 
     clickStatusIconNav('statusId2');
     pageConfirmed('DETAILS');
-    cy.get('[data-testid="abstractId"]')
-      .find('textarea')
+
+    cy.get('[data-testid="abstractId"] textarea')
+      .first()
       .should('have.value', 'This is a summary of the science idea.');
   });
 });

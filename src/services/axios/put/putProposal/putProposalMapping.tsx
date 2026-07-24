@@ -356,7 +356,7 @@ export const getObservationTypeDetails = (obs: Observation) => {
         spectral_resolution: obs.spectralResolution,
         effective_resolution: obs.effectiveResolution,
         spectral_averaging: obs.spectralAveraging?.toString(),
-        number_of_channels: '1024'
+        number_of_channels: obs.zoomChannels?.toString()
       };
     case TYPE_PST:
     default:

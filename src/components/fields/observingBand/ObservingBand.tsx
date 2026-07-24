@@ -47,16 +47,24 @@ export default function ObservingBandField({
           label:
             TEL[TELESCOPE_LOW_NUM] +
             ' (' +
-            frequencyConversion(
-              osdLOW.basicCapabilities.minFrequencyHz,
-              FREQUENCY_HZ,
-              FREQUENCY_MHZ
+            // minFrequencyHz/maxFrequencyHz are the exact half-channel-inset band edges (e.g.
+            // 49,609,375 Hz), not a clean MHz boundary - shown here to the nearest Hz (6 d.p. in
+            // MHz) rather than rounded away to a whole MHz, and rounded only here for display
+            // rather than at the source (see getOSDCycles.tsx), which would shift the actual grid.
+            Number(
+              frequencyConversion(
+                osdLOW.basicCapabilities.minFrequencyHz,
+                FREQUENCY_HZ,
+                FREQUENCY_MHZ
+              ).toFixed(6)
             ) +
             ' - ' +
-            frequencyConversion(
-              osdLOW.basicCapabilities.maxFrequencyHz,
-              FREQUENCY_HZ,
-              FREQUENCY_MHZ
+            Number(
+              frequencyConversion(
+                osdLOW.basicCapabilities.maxFrequencyHz,
+                FREQUENCY_HZ,
+                FREQUENCY_MHZ
+              ).toFixed(6)
             ) +
             ' ' +
             TEL_UNITS[TELESCOPE_LOW_NUM] +

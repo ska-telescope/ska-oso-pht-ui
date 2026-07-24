@@ -34,14 +34,15 @@ export default function ZoomChannels({
   }, [value]);
 
   const handleValueChange = (zoomValue: string) => {
-    setZValue(zoomValue);
+    const sanitized = zoomValue.replace(/[^0-9]/g, '');
+    setZValue(sanitized);
 
-    if (zoomValue === '' || isNaN(Number(zoomValue))) {
+    if (sanitized === '') {
       setFieldValid(false);
       return;
     }
 
-    const zoom = Number(zoomValue);
+    const zoom = Number(sanitized);
     const inRange = zoom >= ZOOM_CHANNELS_MIN && zoom <= maxValue;
     setFieldValid(inRange);
     if (inRange) {

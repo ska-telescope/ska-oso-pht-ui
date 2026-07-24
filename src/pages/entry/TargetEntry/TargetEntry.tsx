@@ -22,7 +22,8 @@ import {
   TYPE_ZOOM,
   TYPE_CONTINUUM,
   NOTIFICATION_DELAY_IN_SECONDS,
-  REFERENCE_COORDINATE_TYPE_GALACTIC
+  REFERENCE_COORDINATE_TYPE_GALACTIC,
+  SA_AA2
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -52,7 +53,7 @@ export default function TargetEntry({
   onNameFieldErrorChange
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
-  const { autoLink, isSV } = useOSDAccessors();
+  const { autoLink, isSV, osdLOW, osdMID } = useOSDAccessors();
   const { notifyError, notifySuccess } = useNotify();
 
   const { application, updateAppContent2 } = storageObject.useStore();
@@ -317,7 +318,18 @@ export default function TargetEntry({
       };
 
       const generateAutoLinkData = async () => {
-        const defaults = await autoLinking(newTarget, getProposal, setProposal);
+        // The default zoom observation's zoomChannels is a static placeholder with no knowledge
+        // of the actual subarray's channel cap - pass the real cap through so it isn't baked in.
+        const record = osdLOW ? osdLOW : osdMID;
+        const sArray = record?.subArrays.find((sub: any) => sub.subArray === SA_AA2);
+        const defaults = await autoLinking(
+          newTarget,
+          getProposal,
+          setProposal,
+          undefined,
+          undefined,
+          sArray?.numberZoomChannels
+        );
         if (defaults && defaults.success) {
           notifySuccess(t('autoLink.targetSuccess'), NOTIFICATION_DELAY_IN_SECONDS);
           clearForm();

@@ -53,13 +53,13 @@ export default function ContinuumBandwidthField({
   const [errorText, setErrorText] = React.useState('');
 
   const displayMinimumChannelWidthErrorMessage = (): string => {
-    const minimumChannelWidthKHz = frequencyConversion(
+    const minimumChannelWidthMHz = frequencyConversion(
       minimumChannelWidthHz,
       FREQUENCY_HZ,
-      FREQUENCY_KHZ
+      FREQUENCY_MHZ
     ).toFixed(2);
     return t('bandwidth.range.minimumChannelWidthError', {
-      value: minimumChannelWidthKHz
+      value: minimumChannelWidthMHz
     });
   };
 
@@ -84,7 +84,7 @@ export default function ContinuumBandwidthField({
     const valueKHz = frequencyConversion(
       minimumChannelWidthHz,
       FREQUENCY_HZ,
-      FREQUENCY_KHZ
+      FREQUENCY_MHZ
     ).toFixed(2);
     return t('bandwidth.range.divisibilityError', { value: valueKHz });
   };

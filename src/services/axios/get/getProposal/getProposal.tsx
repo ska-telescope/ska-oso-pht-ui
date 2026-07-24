@@ -29,6 +29,7 @@ import {
   VEL_UNITS,
   TELESCOPE_MID_BACKEND_MAPPING,
   TELESCOPE_LOW_BACKEND_MAPPING,
+  SA_AA2,
   FREQUENCY_UNITS,
   ROBUST,
   OSO_SERVICES_PROPOSAL_PATH,
@@ -388,11 +389,18 @@ export const getFrequencyAndBandwidthUnits = (
 };
 
 export const getBandwidth = (incBandwidth: number, telescope: number): number => {
-  const array = OSD_CONSTANTS.array?.find((item) => item?.value === telescope);
-  const bandwidth = array?.bandWidth?.find((bandwidth) =>
-    bandwidth?.label?.includes(String(incBandwidth?.toString()))
-  )?.value;
-  return bandwidth ? bandwidth : 1;
+  const options = OSD_CONSTANTS.array?.find((item) => item?.value === telescope)?.bandWidth ?? [];
+  if (options.length === 0) return 1;
+  // Match by nearest numeric value rather than an exact substring of the label, since the
+  // backend can round/reformat the stored number (e.g. 390.625 -> 390.63) - an exact string
+  // match would silently fall through to the default and lose the saved selection.
+  const closest = options.reduce((best, candidate) =>
+    Math.abs(Number(candidate?.label?.split(' ')[0]) - incBandwidth) <
+    Math.abs(Number(best?.label?.split(' ')[0]) - incBandwidth)
+      ? candidate
+      : best
+  );
+  return closest.value;
 };
 
 const getLinked = (
@@ -420,8 +428,12 @@ const getObservations = (
   for (let i = 0; i < inValue?.length; i++) {
     const arr = inValue[i]?.array_details?.array === TELESCOPE_MID_BACKEND_MAPPING ? 1 : 2;
     //TODO: Rework logic to reference array label rather than number
+    // Older observations may have been saved as 'aa2' before the LOW array assembly was
+    // renamed to 'aa2_sv' - normalise so those still resolve to the current SA_AA2 entry.
+    const backendSubarray = inValue[i]?.array_details?.subarray?.toLocaleLowerCase();
+    const normalizedSubarray = backendSubarray === 'aa2' ? SA_AA2 : backendSubarray;
     const sub = OSD_CONSTANTS.array[arr - 1].subarray?.find(
-      (p) => p.value.toLowerCase() === inValue[i]?.array_details?.subarray?.toLocaleLowerCase()
+      (p) => p.value.toLowerCase() === normalizedSubarray
     )?.value;
 
     const type = typeCheck(inValue[i]?.observation_type_details?.observation_type);

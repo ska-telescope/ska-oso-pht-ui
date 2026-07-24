@@ -28,10 +28,14 @@ interface DefaultsResults {
   error?: string;
 }
 
-export const observationOut = (obsMode: string) => {
+export const observationOut = (obsMode: string, maxZoomChannels?: number) => {
   const defaultObs: Observation = {
     ...getDefaultObservationLowAA2(obsMode),
-    id: generateId('obs-', 6)
+    id: generateId('obs-', 6),
+    // DEFAULT_ZOOM_OBSERVATION_LOW's zoomChannels is a static placeholder (1000) with no
+    // knowledge of the actual subarray's channel cap - override it with the real cap when the
+    // caller has it available, rather than baking the placeholder into the saved observation.
+    ...(obsMode === TYPE_ZOOM && maxZoomChannels ? { zoomChannels: maxZoomChannels } : {})
   };
   return defaultObs;
 };
@@ -151,12 +155,13 @@ export default async function autoLinking(
   getProposal: Function,
   setProposal: Function,
   observationMode?: string, // science category is used for observation mode on SV
-  abstract?: string | undefined
+  abstract?: string | undefined,
+  maxZoomChannels?: number
 ): Promise<DefaultsResults> {
   const newObsMode =
     observationMode && observationMode.length > 0 ? observationMode : getProposal().scienceCategory;
   const newAbstract = abstract ?? getProposal().abstract;
-  const newObservation = observationOut(newObsMode);
+  const newObservation = observationOut(newObsMode, maxZoomChannels);
   const newDataProductSDP = dataProductSDPOut(newObservation);
   const sensCalcResult = await getSensCalcData(newObservation, target, newDataProductSDP);
   if (typeof sensCalcResult === 'string') {

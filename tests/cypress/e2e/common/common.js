@@ -492,8 +492,11 @@ export const addM2TargetUsingResolve = () => {
 };
 
 export const updateDataProductField = (testId, value) => {
+  // The underlying NumberEntry component puts data-testid on the outer MuiFormControl
+  // wrapper, not the actual <input> - type into the nested input directly, otherwise
+  // Cypress silently types into the non-editable wrapper and the field never changes.
   cy.get('[data-testid="' + testId + '"]').should('exist');
-  cy.get('[data-testid="' + testId + '"]').type(value);
+  cy.get('[data-testid="' + testId + '"] input').type(value);
 };
 
 export const enterTargetField = (testId, value) => {
