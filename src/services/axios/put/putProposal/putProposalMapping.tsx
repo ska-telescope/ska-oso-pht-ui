@@ -549,32 +549,50 @@ export const getDataProductRef = (
 const getResults = (
   incTargetObservations: TargetObservation[],
   incObs: Observation[],
-  incDataProductSDP: DataProductSDPNew[]
+  incDataProductSDP: DataProductSDPNew[],
+  incTargets: Target[]
 ) => {
   const resultsArr = [];
   if (incTargetObservations) {
     for (const tarObs of incTargetObservations) {
-      if (!tarObs.sensCalc || tarObs.sensCalc?.error) {
+      // errored sensCalc is still skipped, as before
+      if (tarObs.sensCalc?.error) {
         continue;
       }
-      const obsType = getObsType(tarObs, incObs); // spectral or continuum
-      const spectralSection = getSpectralSection(obsType);
-      const suppliedType =
-        tarObs.sensCalc.section3?.[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
 
-      const suppliedRelatedFields =
-        suppliedType === 'sensitivity'
-          ? getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs)
-          : getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection);
+      const hasSensCalc = !!tarObs.sensCalc;
+      const obsType = getObsType(tarObs, incObs);
+      const spectralSection = getSpectralSection(obsType);
+      const target = incTargets?.find((t) => t.id === tarObs.targetId);
+
+      // refs always populate; result/noise blocks are null when there's no sensCalc (SSO)
       const result: SensCalcResultsBackend = {
         observation_set_ref: tarObs.observationId,
         data_product_ref: tarObs.dataProductsSDPId ?? getDataProductRef(tarObs, incDataProductSDP),
-        target_ref: tarObs.sensCalc?.title,
-        result: {
+        target_ref: tarObs.sensCalc?.title ?? target?.name, // see note below
+        result: null,
+        continuum_confusion_noise: null,
+        spectral_confusion_noise: null,
+        synthesized_beam_size: null
+      };
+
+      if (hasSensCalc) {
+        const suppliedType =
+          tarObs.sensCalc.section3?.[0]?.field === 'sensitivity'
+            ? 'sensitivity'
+            : 'integration_time';
+
+        const suppliedRelatedFields =
+          suppliedType === 'sensitivity'
+            ? getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs)
+            : getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection);
+
+        result.result = {
           supplied_type: suppliedType,
           ...suppliedRelatedFields
-        },
-        continuum_confusion_noise: {
+        };
+
+        result.continuum_confusion_noise = {
           value:
             isContinuum(obsType) || isPST(obsType)
               ? Number(
@@ -586,27 +604,18 @@ const getResults = (
             isContinuum(obsType) || isPST(obsType)
               ? tarObs.sensCalc.section1?.find((o) => o.field === 'continuumConfusionNoise')?.units
               : ''
-        },
-        synthesized_beam_size: {
-          spectral: tarObs.sensCalc[spectralSection]?.find(
-            (o) => o.field === 'spectralSynthBeamSize'
-          )?.value,
-          continuum:
-            isContinuum(obsType) || isPST(obsType)
-              ? tarObs.sensCalc.section1?.find((o) => o.field === 'continuumSynthBeamSize')?.value
-              : '',
-          unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralSynthBeamSize')
-            ?.units
-        },
-        spectral_confusion_noise: {
+        };
+
+        result.spectral_confusion_noise = {
           value: Number(
             tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralConfusionNoise')
               ?.value
           ),
           unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralConfusionNoise')
             ?.units
-        }
-      };
+        };
+      }
+
       resultsArr.push(result);
     }
   }
@@ -680,7 +689,8 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
       result_details: getResults(
         proposal.targetObservation as TargetObservation[],
         proposal.observations as Observation[],
-        proposal.dataProductSDP as DataProductSDPNew[]
+        proposal.dataProductSDP as DataProductSDPNew[],
+        proposal.targets as Target[]
       )
     }
   };
