@@ -18,5 +18,5 @@ dependencies:
 
   # Sensitivity calculator services required by the PHT for the observation page
   - name: ska-ost-senscalc
-    version: 11.3.0
+    version: 11.4.1
     repository: https://artefact.skao.int/repository/helm-internal
