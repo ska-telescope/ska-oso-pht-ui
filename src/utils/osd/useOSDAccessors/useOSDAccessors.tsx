@@ -21,22 +21,22 @@ export function useOSDAccessors() {
   const policies = osd?.policies ?? [];
   const observatoryConstants = OSD_CONSTANTS;
 
-  let selectedPolicy: (typeof policies)[number] | null = null;
+  let selectedPolicy: typeof policies[number] | null = null;
   if (Array.isArray(application.content8)) {
     selectedPolicy = application.content8[0] ?? null;
   } else {
-    selectedPolicy = application.content8 as (typeof policies)[number] | null;
+    selectedPolicy = application.content8 as typeof policies[number] | null;
   }
 
   const setSelectedPolicyByCycleId = (cycleId: string) => {
-    const match = policies.find((p) => p.cycleInformation?.cycleId === cycleId);
+    const match = policies.find(p => p.cycleInformation?.cycleId === cycleId);
     if (match) {
       updateAppContent8(match);
     }
   };
 
   const getCycle = (cycleId: string) => {
-    return policies.find((p) => p.cycleInformation?.cycleId === cycleId) ?? null;
+    return policies.find(p => p.cycleInformation?.cycleId === cycleId) ?? null;
   };
 
   const cycleInformation = selectedPolicy?.cycleInformation;
@@ -97,7 +97,7 @@ export function useOSDAccessors() {
   useEffect(() => {
     if (!selectedPolicy && policies.length > 0) {
       const now = new Date();
-      const active = policies.find((p) => {
+      const active = policies.find(p => {
         const openStr = p.cycleInformation?.proposalOpen;
         const closeStr = p.cycleInformation?.proposalClose;
         if (!openStr || !closeStr) return false;

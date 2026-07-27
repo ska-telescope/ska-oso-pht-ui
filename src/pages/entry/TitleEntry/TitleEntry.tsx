@@ -98,7 +98,7 @@ export default function TitleEntry({ page }: TitleEntryProps) {
   function clickSubProposal(id: number) {
     let removed = false;
     const newList = [];
-    getProposal().proposalSubType?.forEach((subType) => {
+    getProposal().proposalSubType?.forEach(subType => {
       if (subType !== id) {
         newList.push(subType);
       } else {
@@ -119,15 +119,15 @@ export default function TitleEntry({ page }: TitleEntryProps) {
     in1 && in1 === in2 ? 'active' : 'inactive';
 
   const setCardBG2 = (in1: number[], in2: number) => {
-    const num = in1.findIndex((obj) => obj === in2);
+    const num = in1.findIndex(obj => obj === in2);
     return num !== -1 ? theme.palette.secondary.main : theme.palette.primary.main;
   };
   const setCardFG2 = (in1: number[], in2: number) => {
-    const num = in1.findIndex((obj) => obj === in2);
+    const num = in1.findIndex(obj => obj === in2);
     return num !== -1 ? theme.palette.secondary.contrastText : theme.palette.primary.contrastText;
   };
   const setCardClassName2 = (in1: number[], in2: number) => {
-    const num = in1.findIndex((obj) => obj === in2);
+    const num = in1.findIndex(obj => obj === in2);
     return num !== -1 ? 'active' : 'inactive';
   };
 

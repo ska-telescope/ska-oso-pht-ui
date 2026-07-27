@@ -21,7 +21,7 @@ export function mappingPostProposal(
     const subTypes: string[] = [];
     for (const subtype of proposalSubType) {
       if (subtype) {
-        subTypes.push(project?.subProjects?.find((item) => item.id === subtype)?.mapping as any);
+        subTypes.push(project?.subProjects?.find(item => item.id === subtype)?.mapping as any);
       }
     }
     return subTypes;
@@ -39,7 +39,7 @@ export function mappingPostProposal(
       proposal_type: {
         main_type: isSV
           ? SCIENCE_VERIFICATION
-          : (PROJECTS.find((item) => item.id === proposal.proposalType)?.mapping as string),
+          : (PROJECTS.find(item => item.id === proposal.proposalType)?.mapping as string),
         attributes: proposal.proposalSubType
           ? getSubType(proposal.proposalType, proposal.proposalSubType)
           : []

@@ -32,7 +32,7 @@ export default function SaveButton({
   React.useEffect(() => {
     if (autoSaveInterval > 0) {
       const intervalId = setInterval(() => {
-        setCountdown((prev) => {
+        setCountdown(prev => {
           if (prev <= 1) {
             if (typeof action === 'function') {
               action(); // trigger auto-save

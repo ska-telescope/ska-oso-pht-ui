@@ -9,7 +9,7 @@ export type SensCalcResultsBackend = {
     // only for Supplied Integration Time - suggested to swap Integration Time/Sensitivity in STAR-670
     // check if it's the other way around
     // ********************************** //
-    weighted_continuum_sensitivity?: ValueUnitPair ;
+    weighted_continuum_sensitivity?: ValueUnitPair;
     weighted_spectral_sensitivity?: ValueUnitPair;
     total_continuum_sensitivity?: ValueUnitPair;
     total_spectral_sensitivity?: ValueUnitPair;

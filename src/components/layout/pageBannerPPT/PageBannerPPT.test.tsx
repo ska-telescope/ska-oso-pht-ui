@@ -70,12 +70,16 @@ describe('isDisableEndpoints (Save button gate)', () => {
   });
 
   test('is enabled when title is exactly at the word limit', () => {
-    const atLimit = Array(maxTitleWords).fill('word').join(' ');
+    const atLimit = Array(maxTitleWords)
+      .fill('word')
+      .join(' ');
     expect(isDisableEndpoints(atLimit, 'valid abstract', 'some-id', true)).toBe(false);
   });
 
   test('is enabled when abstract is exactly at the word limit', () => {
-    const atLimit = Array(maxAbstractWords).fill('word').join(' ');
+    const atLimit = Array(maxAbstractWords)
+      .fill('word')
+      .join(' ');
     expect(isDisableEndpoints('A valid title', atLimit, 'some-id', true)).toBe(false);
   });
 });

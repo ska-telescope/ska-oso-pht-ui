@@ -24,8 +24,9 @@ vi.mock('react-router-dom', async () => {
 });
 
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', async () => {
-  const { OSD_CONSTANTS } =
-    await vi.importActual<typeof import('@utils/OSDConstants')>('@utils/OSDConstants');
+  const { OSD_CONSTANTS } = await vi.importActual<typeof import('@utils/OSDConstants')>(
+    '@utils/OSDConstants'
+  );
   return {
     useOSDAccessors: () => ({
       osdLOW: {

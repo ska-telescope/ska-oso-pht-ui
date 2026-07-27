@@ -97,9 +97,9 @@ describe('<GridProposals /> with selected proposals', () => {
     });
     wrapper(<GridProposals showSelection selectedProposals={mockedSelectedProposals} />);
     const checkboxes = await screen.findAllByRole('checkbox');
-    checkboxes.forEach((checkbox) => {
+    checkboxes.forEach(checkbox => {
       const proposalId = checkbox.getAttribute('data-id');
-      const isSelected = mockedSelectedProposals.some((p) => p.id === proposalId);
+      const isSelected = mockedSelectedProposals.some(p => p.id === proposalId);
       const isChecked = checkbox.getAttribute('aria-checked') === 'true';
       expect(isChecked).toBe(isSelected);
     });

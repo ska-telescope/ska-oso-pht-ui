@@ -42,7 +42,7 @@ describe('ChoiceCards', () => {
     expect(buttons).toHaveLength(3);
 
     // Each button should contain an SVG icon
-    buttons.forEach((button) => {
+    buttons.forEach(button => {
       expect(button.querySelector('svg')).toBeInTheDocument();
     });
   });
@@ -121,7 +121,7 @@ describe('ChoiceCards', () => {
 
     const buttons = screen.getAllByRole('button');
 
-    buttons.forEach((button) => {
+    buttons.forEach(button => {
       expect(button).toBeEnabled();
       expect(button).toHaveAttribute('type', 'button');
     });
@@ -137,7 +137,7 @@ describe('ChoiceCards', () => {
 
     // All buttons should be unselected
     const buttons = screen.getAllByRole('button');
-    buttons.forEach((button) => {
+    buttons.forEach(button => {
       expect(button).not.toHaveStyle({ backgroundColor: 'rgb(76, 175, 80)' });
       expect(button).not.toHaveStyle({ backgroundColor: 'rgb(244, 67, 54)' });
       expect(button).not.toHaveStyle({ backgroundColor: 'rgb(255, 152, 0)' });

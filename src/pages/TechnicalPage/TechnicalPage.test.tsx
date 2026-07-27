@@ -41,7 +41,7 @@ const mockStore = {
   updateAppContent2: vi.fn()
 };
 
-vi.mock('@/utils/aaa/aaaUtils', async (importOriginal) => {
+vi.mock('@/utils/aaa/aaaUtils', async importOriginal => {
   const actual = (await importOriginal()) as any;
   return {
     ...actual,

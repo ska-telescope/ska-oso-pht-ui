@@ -4,7 +4,7 @@ import updateDataProducts from './updateDataProducts';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 
 // Helper to construct a minimal record for tests and cast to DataProductSDP
-const makeRec = (id: string, name: string) => ({ id, name }) as unknown as DataProductSDPNew;
+const makeRec = (id: string, name: string) => (({ id, name } as unknown) as DataProductSDPNew);
 
 describe('updateDataProducts', () => {
   it('replaces an existing record with the same id', () => {

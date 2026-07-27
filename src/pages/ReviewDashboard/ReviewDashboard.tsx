@@ -132,28 +132,22 @@ export default function ReviewDashboard() {
       field === 'decisionStatus' ? 'reviewDashboard.undecided' : 'reviewDashboard.unknown'
     );
     const filteredReport = report.filter(
-      (record) => !excludeStatuses.includes(record.proposalStatus)
+      record => !excludeStatuses.includes(record.proposalStatus)
     );
     const uniqueRecords = Object.values(
-      filteredReport.reduce(
-        (acc, record) => {
-          if (record.prslId) {
-            acc[record.prslId] = record;
-          }
-          return acc;
-        },
-        {} as Record<string, any>
-      )
+      filteredReport.reduce((acc, record) => {
+        if (record.prslId) {
+          acc[record.prslId] = record;
+        }
+        return acc;
+      }, {} as Record<string, any>)
     );
     const counts = Object.entries(
-      uniqueRecords.reduce(
-        (acc: Record<string, number>, record: any) => {
-          const key = record[field] || fallback;
-          acc[key] = (acc[key] || 0) + 1;
-          return acc;
-        },
-        {} as Record<string, number>
-      )
+      uniqueRecords.reduce((acc: Record<string, number>, record: any) => {
+        const key = record[field] || fallback;
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>)
     ).map(([name, value]) => ({ name, value }));
 
     setter(counts);
@@ -169,29 +163,23 @@ export default function ReviewDashboard() {
       field === 'decisionStatus' ? 'reviewDashboard.undecided' : 'reviewDashboard.unknown'
     );
     const filteredReport = report.filter(
-      (record) =>
+      record =>
         !excludeStatuses.includes(record.proposalStatus) && record.decisionStatus !== undefined
     );
     const uniqueRecords = Object.values(
-      filteredReport.reduce(
-        (acc, record) => {
-          if (record.prslId) {
-            acc[record.prslId] = record;
-          }
-          return acc;
-        },
-        {} as Record<string, any>
-      )
+      filteredReport.reduce((acc, record) => {
+        if (record.prslId) {
+          acc[record.prslId] = record;
+        }
+        return acc;
+      }, {} as Record<string, any>)
     );
     const counts = Object.entries(
-      uniqueRecords.reduce(
-        (acc: Record<string, number>, record: any) => {
-          const key = record[field] || fallback;
-          acc[key] = (acc[key] || 0) + 1;
-          return acc;
-        },
-        {} as Record<string, number>
-      )
+      uniqueRecords.reduce((acc: Record<string, number>, record: any) => {
+        const key = record[field] || fallback;
+        acc[key] = (acc[key] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>)
     ).map(([name, value]) => ({ name, value }));
 
     setter(counts);
@@ -199,7 +187,7 @@ export default function ReviewDashboard() {
 
   const calculateAllStats = (report: any[]) => {
     const reportGroupByPanel = groupBy(
-      report.filter((r) => r.panelId != null && r.panelId !== ''),
+      report.filter(r => r.panelId != null && r.panelId !== ''),
       'panelId'
     );
     const reportGroupByPanelWithKeys = Object.entries(reportGroupByPanel).map(([key, value]) => ({
@@ -207,10 +195,10 @@ export default function ReviewDashboard() {
       value
     }));
 
-    const reportGroupByPanelsThenProposalsReviewers = reportGroupByPanelWithKeys.map((panel) => {
-      const groupByProposal = Object.entries(groupBy(panel.value, 'prslId')).map(
-        ([key, value]) => ({ prslId: key, value })
-      );
+    const reportGroupByPanelsThenProposalsReviewers = reportGroupByPanelWithKeys.map(panel => {
+      const groupByProposal = Object.entries(
+        groupBy(panel.value, 'prslId')
+      ).map(([key, value]) => ({ prslId: key, value }));
       const groupByReviewer = Object.entries(groupBy(panel.value, 'reviewerId'))
         .filter(([key]) => key !== 'undefined' && key !== undefined)
         .map(([key, value]) => ({ reviewerId: key, value }));
@@ -220,56 +208,54 @@ export default function ReviewDashboard() {
         reviewGroupByPanelReviewer: groupByReviewer
       };
     });
-    const resultPanelTable = reportGroupByPanelsThenProposalsReviewers.map((panel) => ({
+    const resultPanelTable = reportGroupByPanelsThenProposalsReviewers.map(panel => ({
       panelId: panel.panelId,
       panelName: panel.value[0].panelName,
       numProposal: panel.reviewGroupByPanelProposal.length,
       numReviewer: panel.reviewGroupByPanelReviewer.length,
       totalReviewedPercentage:
-        (panel.value.filter((r) => r.reviewStatus === PANEL_DECISION_STATUS.REVIEWED).length *
-          100) /
+        (panel.value.filter(r => r.reviewStatus === PANEL_DECISION_STATUS.REVIEWED).length * 100) /
         panel.value.length,
       pendingReviewedPercentage:
-        (panel.value.filter((r) => r.reviewStatus === PANEL_DECISION_STATUS.TO_DO).length * 100) /
+        (panel.value.filter(r => r.reviewStatus === PANEL_DECISION_STATUS.TO_DO).length * 100) /
         panel.value.length,
       numInProgressReviews:
-        (panel.value.filter((r) => r.reviewStatus === PANEL_DECISION_STATUS.IN_PROGRESS).length *
+        (panel.value.filter(r => r.reviewStatus === PANEL_DECISION_STATUS.IN_PROGRESS).length *
           100) /
         panel.value.length
     }));
     setPanelTableData(resultPanelTable);
 
     const reportGroupByReviewer = groupBy(
-      report.filter((r) => r.panelId != null && r.panelId !== ''),
+      report.filter(r => r.panelId != null && r.panelId !== ''),
       'reviewerId'
     );
-    const reportGroupByReviewerWithKeys = Object.entries(reportGroupByReviewer).map(
-      ([key, value]) => ({ reviewerId: key, value })
-    );
-    const reportGroupByReviewersThenProposals = reportGroupByReviewerWithKeys.map((reviewer) => {
-      const groupByProposal = Object.entries(groupBy(reviewer.value, 'prslId')).map(
-        ([key, value]) => ({ prslId: key, value })
-      );
+    const reportGroupByReviewerWithKeys = Object.entries(
+      reportGroupByReviewer
+    ).map(([key, value]) => ({ reviewerId: key, value }));
+    const reportGroupByReviewersThenProposals = reportGroupByReviewerWithKeys.map(reviewer => {
+      const groupByProposal = Object.entries(
+        groupBy(reviewer.value, 'prslId')
+      ).map(([key, value]) => ({ prslId: key, value }));
       return { ...reviewer, reviewGroupByReviewerProposal: groupByProposal };
     });
-    const resultPanelReviewerTable = reportGroupByReviewersThenProposals.map((reviewer) => ({
+    const resultPanelReviewerTable = reportGroupByReviewersThenProposals.map(reviewer => ({
       panelId: reviewer.value[0].panelId,
       panelName: reviewer.value[0].panelName,
       reviewerId: reviewer.reviewerId,
       numProposal: reviewer.reviewGroupByReviewerProposal.length,
       numReviewed:
-        (reviewer.value.filter((r) => r.reviewStatus === PANEL_DECISION_STATUS.REVIEWED).length *
+        (reviewer.value.filter(r => r.reviewStatus === PANEL_DECISION_STATUS.REVIEWED).length *
           100) /
         reviewer.value.length,
       numPendingReview:
-        (reviewer.value.filter((r) => r.reviewStatus === PANEL_DECISION_STATUS.TO_DO).length *
-          100) /
+        (reviewer.value.filter(r => r.reviewStatus === PANEL_DECISION_STATUS.TO_DO).length * 100) /
         reviewer.value.length
     }));
     setPanelReviewerTableData(resultPanelReviewerTable);
 
     const reportGroupByScienceCategory = groupBy(
-      report.filter((r) => r.panelId != null && r.panelId !== ''),
+      report.filter(r => r.panelId != null && r.panelId !== ''),
       'scienceCategory'
     );
 
@@ -280,7 +266,7 @@ export default function ReviewDashboard() {
       })
     );
     const reportGroupByScienceCategoryThenProposals = reportGroupByScienceCategoryWithKeys.map(
-      (sc) => {
+      sc => {
         const groupByProposal = Object.entries(groupBy(sc.value, 'prslId')).map(([key, value]) => ({
           prslId: key,
           value
@@ -289,14 +275,14 @@ export default function ReviewDashboard() {
       }
     );
     setPanelScienceCategoryTableData(
-      reportGroupByScienceCategoryThenProposals.map((sc) => ({
+      reportGroupByScienceCategoryThenProposals.map(sc => ({
         scienceCategory: sc.scienceCategory,
         numProposal: sc.reviewGroupByScienceCategoryProposal.length,
         numReviewed:
-          (sc.value.filter((r) => r.reviewStatus === PANEL_DECISION_STATUS.REVIEWED).length * 100) /
+          (sc.value.filter(r => r.reviewStatus === PANEL_DECISION_STATUS.REVIEWED).length * 100) /
           sc.value.length,
         numPendingReview:
-          (sc.value.filter((r) => r.reviewStatus === PANEL_DECISION_STATUS.TO_DO).length * 100) /
+          (sc.value.filter(r => r.reviewStatus === PANEL_DECISION_STATUS.TO_DO).length * 100) /
           sc.value.length
       }))
     );
@@ -333,15 +319,17 @@ export default function ReviewDashboard() {
 
   const filterReport = (report: any[]) => {
     if (!report || report.length === 0) return [];
-    const filterReportBySearch = report.filter((review) => {
+    const filterReportBySearch = report.filter(review => {
       if (search === '') return true;
-      return Object.values(review).some((value) =>
-        String(value).toLowerCase().includes(search.toLowerCase())
+      return Object.values(review).some(value =>
+        String(value)
+          .toLowerCase()
+          .includes(search.toLowerCase())
       );
     });
     return filter.telescope === ''
       ? filterReportBySearch
-      : filterReportBySearch.filter((review) => review.array === filter.telescope);
+      : filterReportBySearch.filter(review => review.array === filter.telescope);
   };
 
   React.useEffect(() => {
@@ -575,7 +563,7 @@ export default function ReviewDashboard() {
       <Grid size={{ xs: 12, sm: 4 }}>
         <Card
           onClick={() => setActiveView(key)}
-          sx={(theme) => ({
+          sx={theme => ({
             cursor: 'pointer',
             p: 2.5,
             border: `2px solid ${
@@ -620,7 +608,7 @@ export default function ReviewDashboard() {
           {pieChart('reviewDashboard.panel.title3', reviewCategoryData, 'observationType')}
           {colWrapper(
             'reviewDashboard.panel.title8',
-            filteredReport.filter((record) => !['draft'].includes(record.proposalStatus))
+            filteredReport.filter(record => !['draft'].includes(record.proposalStatus))
           )}
         </Grid>
         <Grid

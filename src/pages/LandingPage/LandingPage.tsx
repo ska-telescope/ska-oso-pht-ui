@@ -80,7 +80,7 @@ export default function LandingPage() {
   const { setHelp } = useHelp();
   useOSDAPI(setAxiosError);
 
-  const mock = {
+  const mock = ({
     abstract: '',
     createdBy: '',
     createdOn: '',
@@ -109,7 +109,7 @@ export default function LandingPage() {
     technicalPDF: undefined,
     title: '',
     version: 0
-  } as unknown as Proposal;
+  } as unknown) as Proposal;
 
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const authClient = useAxiosAuthClient();
@@ -269,8 +269,8 @@ export default function LandingPage() {
 
   function filterProposals() {
     return proposals.filter(
-      (item) =>
-        searchableFields.some((field) =>
+      item =>
+        searchableFields.some(field =>
           String(item[field])
             ?.toLowerCase()
             .includes(searchTerm?.toLowerCase() || '')

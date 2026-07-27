@@ -51,17 +51,17 @@ export default function PolarisationsField({
       observationType === TYPE_CONTINUUM || observationType === TYPE_ZOOM
         ? POLARISATIONS
         : observationType === TYPE_PST && dataProductType === 1
-          ? POLARISATIONS_PST_BANK
-          : POLARISATIONS_PST_FLOW;
+        ? POLARISATIONS_PST_BANK
+        : POLARISATIONS_PST_FLOW;
 
-    return base.map((el) => ({
+    return base.map(el => ({
       label: t(`${FIELD}.${el.value}`),
       value: el.value
     }));
   }, [observationType, dataProductType, t]);
 
   const handleChange = (optionValue: string, checked: boolean) => {
-    const newValue = checked ? [...value, optionValue] : value.filter((v) => v !== optionValue);
+    const newValue = checked ? [...value, optionValue] : value.filter(v => v !== optionValue);
     if (newValue.length > 0) {
       setValue?.(newValue);
       setError?.('');
@@ -71,8 +71,8 @@ export default function PolarisationsField({
   };
 
   const displayString = options
-    ?.filter((opt) => value?.includes(opt?.value))
-    ?.map((opt) => opt?.label)
+    ?.filter(opt => value?.includes(opt?.value))
+    ?.map(opt => opt?.label)
     ?.join(', ');
 
   return (
@@ -99,7 +99,7 @@ export default function PolarisationsField({
             </Typography>
           ) : (
             <Grid container spacing={2}>
-              {options.map((option) => (
+              {options.map(option => (
                 <Grid size={{ xs: 6, sm: 4, md: 3 }} key={option.value}>
                   <TickBox
                     label={option.label}

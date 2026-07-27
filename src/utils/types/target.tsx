@@ -52,7 +52,10 @@ export type TargetBackend = {
     active: string;
     parameters: PointingPatternParamsBackend[];
   };
-  reference_coordinate: ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend | ReferenceCoordinateSSOBackend;
+  reference_coordinate:
+    | ReferenceCoordinateICRSBackend
+    | ReferenceCoordinateGalacticBackend
+    | ReferenceCoordinateSSOBackend;
   radial_velocity: {
     quantity: ValueUnitPair;
     definition: string;

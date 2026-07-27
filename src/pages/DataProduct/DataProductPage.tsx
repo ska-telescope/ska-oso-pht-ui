@@ -73,14 +73,14 @@ export default function DataProductsPage() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = getProposal().dataProductSDP?.filter((e) => e.id !== String(currentRow));
+    const obs1 = getProposal().dataProductSDP?.filter(e => e.id !== String(currentRow));
     setProposal({ ...getProposal(), dataProductSDP: obs1 });
     setCurrentRow(0);
     closeDeleteDialog();
   };
 
   const alertContent = () => {
-    const rec = getProposal().dataProductSDP?.find((p) => String(p.id) === String(currentRow));
+    const rec = getProposal().dataProductSDP?.find(p => String(p.id) === String(currentRow));
     const data = rec?.data as SDPImageContinuumData;
     return (
       <Grid
@@ -119,10 +119,10 @@ export default function DataProductsPage() {
     return (getProposal()?.targetObservation?.length ?? 0) > 0;
   };
 
-  const isTargetSSO =(): boolean => {
+  const isTargetSSO = (): boolean => {
     const proposal = getProposal();
     return proposal.targets?.[0]?.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
-  }
+  };
 
   const noObservations = () => {
     return (

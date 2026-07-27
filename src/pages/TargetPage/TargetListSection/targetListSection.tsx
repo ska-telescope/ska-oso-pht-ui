@@ -3,7 +3,11 @@ import { Box, Grid, Stack, Tab, Tabs, Typography, useTheme } from '@mui/material
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { Proposal } from '@utils/types/proposal.tsx';
-import { REFERENCE_COORDINATE_TYPE_ICRS, REFERENCE_COORDINATE_TYPE_SSO, VELOCITY_TYPE } from '@utils/constants.ts';
+import {
+  REFERENCE_COORDINATE_TYPE_ICRS,
+  REFERENCE_COORDINATE_TYPE_SSO,
+  VELOCITY_TYPE
+} from '@utils/constants.ts';
 import deleteAutoLinking from '@utils/autoLinking/DeleteAutoLinking.tsx';
 import TargetEntry from '../../entry/TargetEntry/TargetEntry';
 import Alert from '../../../components/alerts/standardAlert/StandardAlert';
@@ -46,16 +50,15 @@ export default function TargetListSection() {
   };
 
   const deleteConfirmed = () => {
-    const targets = getProposal().targets?.filter((e) => e.id !== rowTarget?.id);
+    const targets = getProposal().targets?.filter(e => e.id !== rowTarget?.id);
     const targetObservations = getProposal().targetObservation?.filter(
-      (e) => e.targetId !== rowTarget?.id
+      e => e.targetId !== rowTarget?.id
     );
-    const obsId = getProposal().targetObservation?.find(
-      (e) => e.targetId === rowTarget?.id
-    )?.observationId;
+    const obsId = getProposal().targetObservation?.find(e => e.targetId === rowTarget?.id)
+      ?.observationId;
     const calibrationStrategies =
       getProposal().calibrationStrategy?.[0] !== undefined
-        ? getProposal().calibrationStrategy.filter((e) => e.observationIdRef !== obsId)
+        ? getProposal().calibrationStrategy.filter(e => e.observationIdRef !== obsId)
         : undefined;
 
     if (autoLink) {
@@ -83,7 +86,7 @@ export default function TargetListSection() {
     } else if (rowTarget) {
       rowTarget.vel = '';
     }
-    const obs1 = getProposal().targets?.map((rec) => {
+    const obs1 = getProposal().targets?.map(rec => {
       return rec.id === rowTarget?.id ? rowTarget : rec;
     });
     setProposal({ ...getProposal(), targets: obs1 });
@@ -93,9 +96,9 @@ export default function TargetListSection() {
 
   const alertDeleteContent = () => {
     const LABEL_WIDTH = 6;
-    const rec = getProposal()?.targets?.find((p) => p.id === rowTarget?.id);
+    const rec = getProposal()?.targets?.find(p => p.id === rowTarget?.id);
     const isICRS = rec?.kind === REFERENCE_COORDINATE_TYPE_ICRS.value;
-    const isSSO = rec?.kind === REFERENCE_COORDINATE_TYPE_SSO.value
+    const isSSO = rec?.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
     return (
       <Grid
         p={2}
@@ -110,26 +113,26 @@ export default function TargetListSection() {
         </FieldWrapper>
         {!isSSO && (
           <>
-        <FieldWrapper
-          label={isICRS ? t('skyDirection.label.1.0') : t('skyDirection.label.1.1')}
-          labelWidth={LABEL_WIDTH}
-        >
-          <Typography>{isICRS ? rec?.raStr : rec?.l}</Typography>
-        </FieldWrapper>
-        <FieldWrapper
-          label={isICRS ? t('skyDirection.label.2.0') : t('skyDirection.label.2.1')}
-          labelWidth={LABEL_WIDTH}
-        >
-          <Typography>{isICRS ? rec?.decStr : rec?.b}</Typography>
-        </FieldWrapper>
-        <FieldWrapper label={t('velocity.0.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec?.vel}</Typography>
-        </FieldWrapper>
-        <FieldWrapper label={t('velocity.1.label')} labelWidth={LABEL_WIDTH}>
-          <Typography variant="body1">{rec?.redshift}</Typography>
-        </FieldWrapper>
-        </>
-          )}
+            <FieldWrapper
+              label={isICRS ? t('skyDirection.label.1.0') : t('skyDirection.label.1.1')}
+              labelWidth={LABEL_WIDTH}
+            >
+              <Typography>{isICRS ? rec?.raStr : rec?.l}</Typography>
+            </FieldWrapper>
+            <FieldWrapper
+              label={isICRS ? t('skyDirection.label.2.0') : t('skyDirection.label.2.1')}
+              labelWidth={LABEL_WIDTH}
+            >
+              <Typography>{isICRS ? rec?.decStr : rec?.b}</Typography>
+            </FieldWrapper>
+            <FieldWrapper label={t('velocity.0.label')} labelWidth={LABEL_WIDTH}>
+              <Typography variant="body1">{rec?.vel}</Typography>
+            </FieldWrapper>
+            <FieldWrapper label={t('velocity.1.label')} labelWidth={LABEL_WIDTH}>
+              <Typography variant="body1">{rec?.redshift}</Typography>
+            </FieldWrapper>
+          </>
+        )}
         <Alert
           color={AlertColorTypes.Info}
           text={t('deleteTarget.info')}
@@ -152,7 +155,7 @@ export default function TargetListSection() {
     setValue(newValue);
   };
 
-  const rows = getProposal().targets.map((t) => {
+  const rows = getProposal().targets.map(t => {
     const isICRS = t.kind === REFERENCE_COORDINATE_TYPE_ICRS.value;
     return {
       ...t,
@@ -163,8 +166,7 @@ export default function TargetListSection() {
 
   const displayRow1 = () => {
     const target = getProposal()?.targets?.[0];
-    const isSSO =
-      target?.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
+    const isSSO = target?.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
 
     return (
       <Grid
@@ -192,11 +194,11 @@ export default function TargetListSection() {
                 rows={rows}
               />
             </Box>
-            {!isSSO &&(
-            <Visualization
-              target={getProposal()?.targets?.[0] ?? undefined}
-              show={maxTargets === 1}
-            />
+            {!isSSO && (
+              <Visualization
+                target={getProposal()?.targets?.[0] ?? undefined}
+                show={maxTargets === 1}
+              />
             )}
           </Stack>
         </Grid>

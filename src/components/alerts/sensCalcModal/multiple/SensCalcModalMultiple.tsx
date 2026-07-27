@@ -71,7 +71,7 @@ export default function SensCalcModalMultiple({
     const arr = sent.split(' ');
     return (
       <Stack>
-        {arr.map((rec) => {
+        {arr.map(rec => {
           return HeaderLine(rec);
         })}
       </Stack>

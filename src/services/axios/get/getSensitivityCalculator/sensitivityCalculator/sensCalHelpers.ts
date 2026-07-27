@@ -40,8 +40,7 @@ const sensCalHelpers = {
       if (typeof bandwidthUnits === 'number') {
         const numericValue = bandwidthUnits;
         bandwidthUnits =
-          OSD_CONSTANTS.Units.find((item) => item.value === numericValue)?.label ??
-          FREQUENCY_STR_HZ;
+          OSD_CONSTANTS.Units.find(item => item.value === numericValue)?.label ?? FREQUENCY_STR_HZ;
       }
       const unitMap: { [key: string]: number } = {
         GHz: 1000000000,

@@ -40,7 +40,7 @@ describe('D3LineChart', () => {
     expect(points.length).toBe(sampleData.length);
 
     // Labels are not used here, but we can check point positions
-    const cxValues = Array.from(points).map((p) => p.getAttribute('cx'));
+    const cxValues = Array.from(points).map(p => p.getAttribute('cx'));
     expect(cxValues.length).toBe(sampleData.length);
   });
 
@@ -69,7 +69,7 @@ describe('D3LineChart', () => {
     const legend = svg.querySelector('.legend');
     expect(legend).toBeTruthy();
     const legendTexts = legend?.querySelectorAll('text') ?? [];
-    const legendLabels = Array.from(legendTexts).map((t) => t.textContent);
+    const legendLabels = Array.from(legendTexts).map(t => t.textContent);
     expect(legendLabels).toContain('G1');
     expect(legendLabels).toContain('G2');
   });

@@ -14,7 +14,7 @@ interface TimeAveragingFieldProps {
 
 const UNAVERAGED_VALUE_S = 0.84934656;
 
-const OPTIONS = range(1, 13).map((value) => ({
+const OPTIONS = range(1, 13).map(value => ({
   label: (value * UNAVERAGED_VALUE_S).toFixed(3),
   value
 }));

@@ -134,7 +134,7 @@ export default function ReviewListPage() {
   };
 
   const getReview = (row: any): ProposalReview | null => {
-    const review = proposalReviews.find((p) => p.id === row.reviewId);
+    const review = proposalReviews.find(p => p.id === row.reviewId);
     if (!review) return null;
     return {
       id: review.id,
@@ -237,7 +237,7 @@ export default function ReviewListPage() {
         navigate(conflictRoute, { replace: true, state: updatedRow });
       } else {
         let forDB = null;
-        const updatedProposalReviews = proposalReviews.map((review) => {
+        const updatedProposalReviews = proposalReviews.map(review => {
           const rec = review;
           if (review.id === conflictRow?.sciReview.id && 'conflict' in rec.reviewType) {
             rec.reviewType.conflict.reason = reason;
@@ -500,13 +500,11 @@ export default function ReviewListPage() {
     }
 
     function unionProposalsAndReviews() {
-      return proposals.map((proposal) => {
-        const reviews = proposalReviews.filter((r) => r.prslId === proposal.id);
-        const technicalReviews = reviews.filter(
-          (r) => r?.reviewType?.kind === REVIEW_TYPE.TECHNICAL
-        );
+      return proposals.map(proposal => {
+        const reviews = proposalReviews.filter(r => r.prslId === proposal.id);
+        const technicalReviews = reviews.filter(r => r?.reviewType?.kind === REVIEW_TYPE.TECHNICAL);
         const technicalReview = getMostRecentReview(technicalReviews);
-        const scienceReviews = reviews.filter((r) => r?.reviewType?.kind === REVIEW_TYPE.SCIENCE);
+        const scienceReviews = reviews.filter(r => r?.reviewType?.kind === REVIEW_TYPE.SCIENCE);
         const scienceReview = getMostRecentReview(scienceReviews);
         const output = {
           id: proposal.id,
@@ -518,11 +516,11 @@ export default function ReviewListPage() {
       });
     }
 
-    return unionProposalsAndReviews().filter((item) => {
+    return unionProposalsAndReviews().filter(item => {
       const fieldsToSearch = [item.proposal.id, item.proposal.title];
       return (
         fieldsToSearch.some(
-          (field) =>
+          field =>
             typeof field === 'string' && field.toLowerCase().includes(searchTerm?.toLowerCase())
         ) &&
         (searchType === '' || item?.sciReview?.status?.toLowerCase() === searchType?.toLowerCase())
@@ -551,7 +549,7 @@ export default function ReviewListPage() {
 
   const submitAllDisabled = () => {
     let disabled = true;
-    filteredData.forEach((row) => {
+    filteredData.forEach(row => {
       if (canSubmit(row)) {
         disabled = false;
       }

@@ -51,8 +51,8 @@ export default function CalibrationPage() {
           ? t('page.6.noObservations')
           : t('error.noCalibrationsLoggedOut')
         : hasTargetObservations()
-          ? t('page.6.noObservations')
-          : t('error.noCalibrationsLinking');
+        ? t('page.6.noObservations')
+        : t('error.noCalibrationsLinking');
     return (
       <Grid container direction="row" alignItems="space-evenly" justifyContent="space-around">
         <Grid size={{ md: 10 }}>

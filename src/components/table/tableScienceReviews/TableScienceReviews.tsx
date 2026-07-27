@@ -32,7 +32,7 @@ export default function TableScienceReviews({ data, excludeFunction }: TableScie
   useInitializeAccessStore();
 
   const filteredData = (reviews: any[]) =>
-    reviews.filter((el) => el?.reviewType?.kind === REVIEW_TYPE.SCIENCE);
+    reviews.filter(el => el?.reviewType?.kind === REVIEW_TYPE.SCIENCE);
 
   return (
     <Box sx={{ width: '100%', p: 3 }}>

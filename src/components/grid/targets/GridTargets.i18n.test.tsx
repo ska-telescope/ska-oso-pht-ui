@@ -8,13 +8,13 @@ import { REFERENCE_COORDINATE_TYPE_ICRS } from '@/utils/constants';
 // This test is kept separate from GridTargets.test.tsx because it needs module-level mocks
 // for DataGrid and i18n. In Vitest those mocks are hoisted and would otherwise change what
 // the regular GridTargets smoke tests in GridTargets.test.tsx are exercising.
-vi.mock('@ska-telescope/ska-gui-components', async (importOriginal) => {
+vi.mock('@ska-telescope/ska-gui-components', async importOriginal => {
   const actual = await importOriginal<typeof import('@ska-telescope/ska-gui-components')>();
   return {
     ...actual,
     DataGrid: ({ columns }: { columns: Array<{ field: string; headerName: string }> }) => (
       <div data-testid="grid-targets-columns">
-        {columns.map((column) => (
+        {columns.map(column => (
           <span key={column.field}>{column.headerName}</span>
         ))}
       </div>

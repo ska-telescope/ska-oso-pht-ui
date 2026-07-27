@@ -540,7 +540,7 @@ export const SUPPLIED_SENSITIVITY_STEP = 1;
 
 export const REFERENCE_COORDINATE_TYPE_ICRS = { value: 0, label: 'icrs' };
 export const REFERENCE_COORDINATE_TYPE_GALACTIC = { value: 1, label: 'galactic' };
-export const REFERENCE_COORDINATE_TYPE_SSO = { value: 2, label: 'special' }
+export const REFERENCE_COORDINATE_TYPE_SSO = { value: 2, label: 'special' };
 
 export const REFERENCE_COORDINATE_OPTIONS = [
   {
@@ -568,7 +568,6 @@ export const SSO_OPTIONS = [
   { label: 'Moon', value: 'Moon' },
   { label: 'Sun', value: 'Sun' }
 ];
-
 
 export const SEPARATOR0 = '?';
 export const SEPARATOR1 = '&';

@@ -13,7 +13,7 @@ export function mappingList(
   panelDecisionList: PanelDecisionBackend[],
   cycleId: string
 ): PanelDecision[] {
-  return panelDecisionList.map((decision) =>
+  return panelDecisionList.map(decision =>
     mappingPanelDecisionBackendToFrontend(decision, cycleId)
   );
 }

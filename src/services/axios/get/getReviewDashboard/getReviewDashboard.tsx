@@ -47,7 +47,7 @@ export function mappingReviewDashboardBackendToFrontend(
     return reviewDashboard;
   };
 
-  return reviewDashboardBackend.map((item) => transformedReviewDashboard(item));
+  return reviewDashboardBackend.map(item => transformedReviewDashboard(item));
 }
 
 async function getReviewDashboard(

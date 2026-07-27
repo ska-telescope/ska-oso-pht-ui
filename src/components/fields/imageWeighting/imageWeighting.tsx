@@ -22,7 +22,7 @@ export default function ImageWeightingField({
   const FIELD = 'imageWeighting';
 
   const options = () =>
-    IMAGE_WEIGHTING.map((el) => {
+    IMAGE_WEIGHTING.map(el => {
       return { label: t('imageWeighting.' + el.value), lookup: el.lookup, value: el.value };
     });
 

@@ -6,21 +6,21 @@ import { SensCalcResults } from '../../../../utils/types/sensCalcResults';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface SensCalcContentProps {
-  data: SensCalcResults,
-  isCustom?: boolean,
-  isNatural?: boolean,
-  isSSO?: undefined | boolean
+  data: SensCalcResults;
+  isCustom?: boolean;
+  isNatural?: boolean;
+  isSSO?: undefined | boolean;
 }
 
 const GAP = 4;
 const SPACER_HEIGHT = 30;
 
 export default function SensCalcContent({
-                                          data,
-                                          isCustom = false,
-                                          isNatural = false,
-                                          isSSO = false,
-                                        }: SensCalcContentProps) {
+  data,
+  isCustom = false,
+  isNatural = false,
+  isSSO = false
+}: SensCalcContentProps) {
   const { t } = useScopedTranslation();
 
   const PresentCustomResultValue = (eValue: any, eId: string) => {
@@ -68,8 +68,8 @@ export default function SensCalcContent({
           <Typography p={GAP}>{t('sensitivityCalculatorResults.notApplicableForSSO')}</Typography>
         </Alert>
       ) : data?.statusGUI !== STATUS_INITIAL &&
-      data?.title !== '*SHOW PST MESSAGE*' &&
-      (data?.error === '' || data?.error === undefined) ? (
+        data?.title !== '*SHOW PST MESSAGE*' &&
+        (data?.error === '' || data?.error === undefined) ? (
         <>
           {displayElement(
             t('sensitivityCalculatorResults.targetName'),
@@ -78,7 +78,7 @@ export default function SensCalcContent({
             'targetName'
           )}
           {data?.section1 && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
-          {data?.section1?.map((rec) =>
+          {data?.section1?.map(rec =>
             displayElement(
               t('sensitivityCalculatorResults.' + rec.field),
               rec.value,
@@ -87,7 +87,7 @@ export default function SensCalcContent({
             )
           )}
           {data?.section2 && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
-          {data?.section2?.map((rec) =>
+          {data?.section2?.map(rec =>
             displayElement(
               t('sensitivityCalculatorResults.' + rec.field),
               rec.value,
@@ -96,7 +96,7 @@ export default function SensCalcContent({
             )
           )}
           {data?.section3 && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
-          {data?.section3?.map((rec) =>
+          {data?.section3?.map(rec =>
             displayElement(
               t('sensitivityCalculatorResults.' + rec.field),
               rec.value,

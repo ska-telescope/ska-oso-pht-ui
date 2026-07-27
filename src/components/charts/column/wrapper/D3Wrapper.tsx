@@ -22,7 +22,7 @@ const ColumnChartWrapper: React.FC<WrapperProps> = ({ data, fields, t }) => {
 
   useEffect(() => {
     if (!chartAreaRef.current) return;
-    const observer = new ResizeObserver((entries) => {
+    const observer = new ResizeObserver(entries => {
       const rect = entries[0].contentRect;
       setSize({
         width: rect.width,
@@ -37,14 +37,14 @@ const ColumnChartWrapper: React.FC<WrapperProps> = ({ data, fields, t }) => {
     if (!xField) return [];
     if (!groupField) {
       const counts: Record<string, number> = {};
-      data.forEach((d) => {
+      data.forEach(d => {
         const key = String(d[xField] ?? '∅');
         counts[key] = (counts[key] ?? 0) + 1;
       });
       return Object.entries(counts).map(([name, value]) => ({ name, value }));
     } else {
       const counts: Record<string, number> = {};
-      data.forEach((d) => {
+      data.forEach(d => {
         const xKey = String(d[xField] ?? '∅');
         const gKey = String(d[groupField] ?? '∅');
         const composite = `${xKey}||${gKey}`;
@@ -70,14 +70,14 @@ const ColumnChartWrapper: React.FC<WrapperProps> = ({ data, fields, t }) => {
   };
 
   const optionsDropdown1 = useMemo(
-    () => safeFields.map((e) => ({ label: t(e + '.label'), value: e })),
+    () => safeFields.map(e => ({ label: t(e + '.label'), value: e })),
     [safeFields, t]
   );
 
   const optionsDropdown2 = useMemo(
     () => [
       { label: t('none'), value: '' },
-      ...safeFields.filter((e) => e !== xField).map((e) => ({ label: t(e + '.label'), value: e }))
+      ...safeFields.filter(e => e !== xField).map(e => ({ label: t(e + '.label'), value: e }))
     ],
     [safeFields, xField, t]
   );

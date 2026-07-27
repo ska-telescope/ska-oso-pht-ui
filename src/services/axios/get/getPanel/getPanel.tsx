@@ -33,15 +33,15 @@ export function mapping(inRec: PanelBackend): Panel {
     expiresOn: inRec.expires_on,
     proposals:
       inRec.proposals?.length > 0
-        ? inRec.proposals.map((proposal) => getProposal(proposal, inRec.panel_id))
+        ? inRec.proposals.map(proposal => getProposal(proposal, inRec.panel_id))
         : [],
     sciReviewers:
       inRec.sci_reviewers?.length > 0
-        ? inRec.sci_reviewers.map((reviewer) => getReviewer(reviewer, inRec.panel_id))
+        ? inRec.sci_reviewers.map(reviewer => getReviewer(reviewer, inRec.panel_id))
         : [],
     tecReviewers:
       inRec.tech_reviewers?.length > 0
-        ? inRec.tech_reviewers.map((reviewer) => getReviewer(reviewer, inRec.panel_id))
+        ? inRec.tech_reviewers.map(reviewer => getReviewer(reviewer, inRec.panel_id))
         : []
   };
   return rec;

@@ -28,12 +28,12 @@ const D3PieChart: React.FC<Props> = ({
 
     const logicalSize = 300;
     const radius = logicalSize / 1.5;
-    const total = d3.sum(data, (d) => (isFinite(Number(d.value)) ? Number(d.value) : 0));
+    const total = d3.sum(data, d => (isFinite(Number(d.value)) ? Number(d.value) : 0));
     const centerLabel = centerText || total.toString();
 
     const pie = d3
       .pie<PieData>()
-      .value((d) => (isFinite(Number(d.value)) ? Number(d.value) : 0))
+      .value(d => (isFinite(Number(d.value)) ? Number(d.value) : 0))
       .sort(null);
 
     const arc = d3
@@ -94,7 +94,7 @@ const D3PieChart: React.FC<Props> = ({
           100
         ).toFixed(1)}%)`;
       })
-      .on('mousemove', (event) => {
+      .on('mousemove', event => {
         const tooltip = tooltipRef.current;
         const rect = svgRef.current?.getBoundingClientRect();
         if (!tooltip || !rect) return;
@@ -111,9 +111,9 @@ const D3PieChart: React.FC<Props> = ({
     paths
       .transition()
       .duration(500)
-      .attrTween('d', function (d) {
+      .attrTween('d', function(d) {
         const i = d3.interpolate({ startAngle: 0, endAngle: 0 }, d);
-        return (t) => arc(i(t))!;
+        return t => arc(i(t))!;
       });
 
     if (showTotal) {
@@ -133,13 +133,13 @@ const D3PieChart: React.FC<Props> = ({
       .data(sliceData)
       .enter()
       .append('polyline')
-      .attr('points', (d) => {
+      .attr('points', d => {
         const pos = outerArc.centroid(d);
         const midAngle = (d.startAngle + d.endAngle) / 2;
         pos[0] = radius * 1.15 * (midAngle < Math.PI ? 1 : -1);
 
         const points = [arc.centroid(d), outerArc.centroid(d), pos];
-        return points.map((p) => p.join(',')).join(' ');
+        return points.map(p => p.join(',')).join(' ');
       })
       .attr('fill', 'none')
       .attr('stroke', theme.palette.text.primary)
@@ -152,23 +152,23 @@ const D3PieChart: React.FC<Props> = ({
       .enter()
       .append('text')
       .attr('class', 'label')
-      .attr('data-testid', (d) => `pie-chart-label-${d.data.name}`)
-      .attr('transform', (d) => {
+      .attr('data-testid', d => `pie-chart-label-${d.data.name}`)
+      .attr('transform', d => {
         const pos = outerArc.centroid(d);
         const midAngle = (d.startAngle + d.endAngle) / 2;
         pos[0] = radius * 1.15 * (midAngle < Math.PI ? 1 : -1);
         return `translate(${pos})`;
       })
-      .attr('text-anchor', (d) => ((d.startAngle + d.endAngle) / 2 < Math.PI ? 'start' : 'end'))
+      .attr('text-anchor', d => ((d.startAngle + d.endAngle) / 2 < Math.PI ? 'start' : 'end'))
       .attr('dy', '0.35em')
       .style('font-size', theme.typography.h5.fontSize ?? '1.25rem')
       .style('fill', theme.palette.text.primary)
       .style('pointer-events', 'none')
-      .text((d) => d.data.name)
+      .text(d => d.data.name)
       .call(wrapText, 80);
 
     function wrapText(text: d3.Selection<SVGTextElement, any, any, any>, width: number) {
-      text.each(function () {
+      text.each(function() {
         const el = d3.select(this);
         const words = el.text().split(/\s+/);
         el.text(null);
@@ -180,7 +180,11 @@ const D3PieChart: React.FC<Props> = ({
         const y = el.attr('y') ?? '0';
         const dy = parseFloat(el.attr('dy') ?? '0');
 
-        let tspan = el.append('tspan').attr('x', x).attr('y', y).attr('dy', `${dy}em`);
+        let tspan = el
+          .append('tspan')
+          .attr('x', x)
+          .attr('y', y)
+          .attr('dy', `${dy}em`);
 
         for (const word of words) {
           line.push(word);

@@ -33,7 +33,7 @@ export default function GroupObservationsField({
 
   const observationGroupId = (id: string): string => {
     const proposal = getProposal();
-    const group = proposal?.groupObservations?.find((e) => e.observationId === id);
+    const group = proposal?.groupObservations?.find(e => e.observationId === id);
     return group?.groupId ?? '';
   };
 
@@ -52,8 +52,8 @@ export default function GroupObservationsField({
 
   const options = () => {
     const uniqueGroups: GroupObservation[] = [];
-    getProposal()?.groupObservations?.forEach((rec) => {
-      const existingGroup = uniqueGroups.find((g) => g.groupId === rec.groupId);
+    getProposal()?.groupObservations?.forEach(rec => {
+      const existingGroup = uniqueGroups.find(g => g.groupId === rec.groupId);
       if (!existingGroup) {
         uniqueGroups.push(rec);
       }
@@ -62,7 +62,7 @@ export default function GroupObservationsField({
     const formattedGroupObs = [
       { label: t('groupObservations.new'), value: -1 },
       { label: t('groupObservations.none'), value: 0 },
-      ...uniqueGroups.map((group) => ({
+      ...uniqueGroups.map(group => ({
         label: group?.groupId,
         value: group?.groupId ?? 0
       }))
@@ -73,7 +73,7 @@ export default function GroupObservationsField({
   const removeGroup = () => {
     const proposal = getProposal();
     const filtered =
-      proposal?.groupObservations?.filter((item) => item.observationId !== obsId) ?? [];
+      proposal?.groupObservations?.filter(item => item.observationId !== obsId) ?? [];
 
     setProposal({
       ...proposal,
@@ -87,7 +87,7 @@ export default function GroupObservationsField({
       observationId: obsId
     };
     const filtered =
-      getProposal()?.groupObservations?.filter((item) => item.observationId !== obsId) ?? [];
+      getProposal()?.groupObservations?.filter(item => item.observationId !== obsId) ?? [];
     setProposal({
       ...getProposal(),
       groupObservations: [...filtered, newGroupObs]
@@ -105,7 +105,7 @@ export default function GroupObservationsField({
     };
 
     const filtered =
-      proposal?.groupObservations?.filter((item) => item.observationId !== obsId) ?? [];
+      proposal?.groupObservations?.filter(item => item.observationId !== obsId) ?? [];
 
     setProposal({
       ...proposal,

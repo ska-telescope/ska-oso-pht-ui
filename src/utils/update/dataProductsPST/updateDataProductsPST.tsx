@@ -48,7 +48,7 @@ export const updateDataProductsPST = (oldRecs: DataProductSDPNew[], newRec: Obse
       data: PSTData(newRec)
     };
     if (oldRecs && oldRecs?.length > 0) {
-      oldRecs.forEach((inValue) => {
+      oldRecs.forEach(inValue => {
         newDataProducts.push(
           inValue.observationId === newRec.id &&
             newRec?.pstMode !==

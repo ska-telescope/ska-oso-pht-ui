@@ -54,7 +54,7 @@ export default function GridReviewPanels({
     const fetchData = async () => {
       const response = await GetReviewPanels();
       if (response) {
-        const panels = response as unknown as Panel[];
+        const panels = (response as unknown) as Panel[];
         if (panels?.length > 0) {
           setData(panels);
         } else {

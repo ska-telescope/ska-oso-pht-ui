@@ -27,7 +27,7 @@ export default function DataProductTypeField({
   const { t } = useScopedTranslation();
   const FIELD = 'dataProductType';
   const options = () =>
-    [DP_TYPE_IMAGES, DP_TYPE_VISIBLE].map((el) => {
+    [DP_TYPE_IMAGES, DP_TYPE_VISIBLE].map(el => {
       return { label: t(FIELD + '.options.' + observationType + '.' + el), lookup: el, value: el };
     });
 

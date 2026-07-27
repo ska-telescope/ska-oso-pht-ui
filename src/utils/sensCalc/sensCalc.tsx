@@ -10,14 +10,9 @@ export const calculateSensCalcData = async (
   target: Target,
   dataProductSDP: DataProductSDPNew
 ): Promise<SensCalcResults | { error: string } | undefined> => {
-
   if (target.kind === REFERENCE_COORDINATE_TYPE_SSO.value) {
     return undefined;
   }
 
-  return await getSensCalc(
-    observation,
-    target,
-    dataProductSDP
-  );
+  return await getSensCalc(observation, target, dataProductSDP);
 };

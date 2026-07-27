@@ -81,7 +81,7 @@ export function ChoiceCards({ value, onChange }: ChoiceCardsProps) {
       </Box>
 
       <Grid container spacing={2}>
-        {choices.slice(0, 2).map((choice) => {
+        {choices.slice(0, 2).map(choice => {
           const Icon = choice.icon;
           const isSelected = selectedValue === choice.value;
 
@@ -140,7 +140,7 @@ export function ChoiceCards({ value, onChange }: ChoiceCardsProps) {
 
       {/* Maybe button below */}
       {(() => {
-        const maybe = choices.find((c) => c.value === FEASIBLE_MAYBE);
+        const maybe = choices.find(c => c.value === FEASIBLE_MAYBE);
         if (!maybe) return null;
         const Icon = maybe.icon;
         const isSelected = selectedValue === maybe.value;

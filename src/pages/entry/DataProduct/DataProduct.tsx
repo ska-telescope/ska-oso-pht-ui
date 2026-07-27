@@ -84,8 +84,8 @@ const COL = 6;
 const COL_MID = 8;
 
 interface DataProductProps {
-  data?: DataProductSDPNew,
-  isSSO?: boolean
+  data?: DataProductSDPNew;
+  isSSO?: boolean;
 }
 
 export default function DataProduct({ data, isSSO }: DataProductProps) {
@@ -136,7 +136,7 @@ export default function DataProduct({ data, isSSO }: DataProductProps) {
 
   const isDataTypeOne = () => dataProductType === DP_TYPE_IMAGES;
 
-  const getObservation = () => baseObservations?.find((obs) => obs.id === observationId);
+  const getObservation = () => baseObservations?.find(obs => obs.id === observationId);
 
   const isFlowThrough = () => getObservation()?.pstMode === FLOW_THROUGH_VALUE;
   const isDetectedFilterbank = () => getObservation()?.pstMode === DETECTED_FILTER_BANK_VALUE;
@@ -336,29 +336,29 @@ export default function DataProduct({ data, isSSO }: DataProductProps) {
   const taperField = () => {
     return isLow()
       ? fieldWrapper(
-        <TaperField
-          disabled={isLow()}
-          onFocus={() => setHelp('taper')}
-          required
-          setValue={setTaperLowValue}
-          value={taperLowValue}
-          suffix={t('taper.units')}
-        />
-      )
+          <TaperField
+            disabled={isLow()}
+            onFocus={() => setHelp('taper')}
+            required
+            setValue={setTaperLowValue}
+            value={taperLowValue}
+            suffix={t('taper.units')}
+          />
+        )
       : fieldWrapper(
-        <TaperDropdown
-          onFocus={() => setHelp('taper')}
-          required
-          setValue={setTaperMidValue}
-          value={taperMidValue}
-          suffix={t('taper.units')}
-          centralFrequency={getCentralFrequency()}
-        />
-      );
+          <TaperDropdown
+            onFocus={() => setHelp('taper')}
+            required
+            setValue={setTaperMidValue}
+            value={taperMidValue}
+            suffix={t('taper.units')}
+            centralFrequency={getCentralFrequency()}
+          />
+        );
   };
 
   const getCentralFrequency = () => {
-    const obj = baseObservations.find((id) => id.id === observationId);
+    const obj = baseObservations.find(id => id.id === observationId);
     const output: ValueUnitPair = {
       value: Number(obj?.centralFrequency) ?? 0,
       unit: obj?.centralFrequencyUnits.toString() ?? ''
@@ -368,7 +368,7 @@ export default function DataProduct({ data, isSSO }: DataProductProps) {
 
   const imageSizeUnitsField = () => {
     const getOptions = () => {
-      return [0, 1, 2].map((e) => ({
+      return [0, 1, 2].map(e => ({
         label: presentUnits(t('imageSize.' + e)),
         value: e
       }));
@@ -731,8 +731,7 @@ export default function DataProduct({ data, isSSO }: DataProductProps) {
                 {isPulsarTiming() && (
                   <Grid pb={1} container>
                     <Grid size={{ md: COL_MID, lg: COL }}>
-                      {<TickIcon onClick={() => {
-                      }} />}All set!
+                      {<TickIcon onClick={() => {}} />}All set!
                     </Grid>
                   </Grid>
                 )}
@@ -800,14 +799,19 @@ export default function DataProduct({ data, isSSO }: DataProductProps) {
                 isPST() || isSSO
                   ? theme.palette.warning.main
                   : scData()?.statusGUI !== STATUS_INITIAL
-                    ? theme.palette.success.main
-                    : theme.palette.error.main
+                  ? theme.palette.success.main
+                  : theme.palette.error.main
               }
               title={t('sensitivityCalculatorResults.title')}
             >
               {isPST() && <Typography variant="subtitle1">{t('page.7.pstUnavailable')}</Typography>}
               {!isPST() && (
-                <SensCalcContent data={scData()} isSSO={isSSO} isCustom={isCustom()} isNatural={isNatural()} />
+                <SensCalcContent
+                  data={scData()}
+                  isSSO={isSSO}
+                  isCustom={isCustom()}
+                  isNatural={isNatural()}
+                />
               )}
             </BorderedSection>
           )}

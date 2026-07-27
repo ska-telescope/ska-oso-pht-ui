@@ -47,7 +47,7 @@ export default function SpectralAveragingLOWField({
     }
 
     const subarrayConfig = observatoryConstants.array[1].subarray.find(
-      (item) => item.value === subarray
+      item => item.value === subarray
     );
     const spectralAverageMax =
       observationType === TYPE_CONTINUUM

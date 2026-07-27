@@ -118,11 +118,9 @@ export default function TargetEntry({
     }
   };
 
-  const isICRS =
-  referenceCoordinates === REFERENCE_COORDINATE_TYPE_ICRS.value;
+  const isICRS = referenceCoordinates === REFERENCE_COORDINATE_TYPE_ICRS.value;
 
-  const isSSO =
-      referenceCoordinates === REFERENCE_COORDINATE_TYPE_SSO.value;
+  const isSSO = referenceCoordinates === REFERENCE_COORDINATE_TYPE_SSO.value;
 
   const setTheCoord1 = (value: string) => {
     setCoord1(value);
@@ -135,7 +133,7 @@ export default function TargetEntry({
         raStr: leadZero(value).toString()
       });
     } else {
-          setTarget({
+      setTarget({
         ...target,
         l: parseFloat(value)
       });
@@ -217,8 +215,8 @@ export default function TargetEntry({
     setReferenceCoordinates(incomingKind);
     setId(target?.id ?? 0);
     setName(target?.name ?? '');
-    setCoord1(incomingIsICRS ? (target.raStr ?? '') : target.l != null ? String(target.l) : '');
-    setCoord2(incomingIsICRS ? (target.decStr ?? '') : target.b != null ? String(target.b) : '');
+    setCoord1(incomingIsICRS ? target.raStr ?? '' : target.l != null ? String(target.l) : '');
+    setCoord2(incomingIsICRS ? target.decStr ?? '' : target.b != null ? String(target.b) : '');
     setVelType(target?.velType ?? DEFAULT_VELOCITY_TYPE);
     setVel(target?.vel ?? '');
     setVelUnit(target?.velUnit ?? DEFAULT_VELOCITY_UNIT);
@@ -257,7 +255,7 @@ export default function TargetEntry({
   function formValidation() {
     let valid = true;
     const targets = getProposal()?.targets;
-    targets?.forEach((rec) => {
+    targets?.forEach(rec => {
       if (rec.name.toLowerCase() === name.toLowerCase()) {
         valid = false;
         setNameFieldError(t('addTarget.error'));
@@ -303,7 +301,7 @@ export default function TargetEntry({
         kind: referenceCoordinates,
         id: highestId + 1,
         name: name ?? '',
-        velUnit: velUnit ?? DEFAULT_VELOCITY_UNIT,
+        velUnit: velUnit ?? DEFAULT_VELOCITY_UNIT
       };
 
       const buildTarget = (): Target => {
@@ -313,7 +311,7 @@ export default function TargetEntry({
               ...baseTarget,
               vel: '',
               redshift: '',
-              velType: DEFAULT_VELOCITY_TYPE,
+              velType: DEFAULT_VELOCITY_TYPE
             };
 
           case REFERENCE_COORDINATE_TYPE_ICRS.value:
@@ -323,7 +321,7 @@ export default function TargetEntry({
               raStr: coord1 ?? '',
               decStr: coord2 ?? '',
               redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift ?? '' : '',
-              vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : '',
+              vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : ''
             };
 
           case REFERENCE_COORDINATE_TYPE_GALACTIC.value:
@@ -333,7 +331,7 @@ export default function TargetEntry({
               l: Number(coord1),
               b: Number(coord2),
               redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift ?? '' : '',
-              vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : '',
+              vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : ''
             };
 
           default:
@@ -381,7 +379,7 @@ export default function TargetEntry({
         skyDirection1Error !== '' ||
         skyDirection2Error !== '' ||
         rmFieldError !== '' ||
-          !(name?.length && (isSSO || (coord1?.length && coord2?.length)) && targetLengthCheck())
+        !(name?.length && (isSSO || (coord1?.length && coord2?.length)) && targetLengthCheck())
       );
     };
 
@@ -391,7 +389,7 @@ export default function TargetEntry({
 
     const hasAnyFieldEntered = () => {
       const hasTextValue = [name, coord1, coord2, vel, redshift].some(
-        (value) => value.trim().length > 0
+        value => value.trim().length > 0
       );
       const hasSelectorChange =
         velType !== DEFAULT_VELOCITY_TYPE || velUnit !== DEFAULT_VELOCITY_UNIT;
@@ -506,13 +504,8 @@ export default function TargetEntry({
       />
     );
 
-    const solarSystemObjectField = () =>
-    wrapper(
-      <SolarSystemObjectField
-        setValue={setTheName}
-        value={name}
-      />
-    );
+  const solarSystemObjectField = () =>
+    wrapper(<SolarSystemObjectField setValue={setTheName} value={name} />);
 
   const fieldPatternTypeField = () => {
     return wrapper(
@@ -609,42 +602,40 @@ export default function TargetEntry({
       <Grid pt={1}>
         <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
           <BorderedSection title={t('coordinate.label')}>
-            {isSSO
-              ? solarSystemObjectField()
-              : nameField()}
+            {isSSO ? solarSystemObjectField() : nameField()}
             {!isSSO && (
-            <Grid
-              container
-              spacing={GAP}
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Grid size={{ md: 12, lg: 6 }}>{skyDirection1Field()}</Grid>
-              <Grid size={{ md: 12, lg: 6 }}>{skyDirection2Field()}</Grid>
-            </Grid>
-              )}
+              <Grid
+                container
+                spacing={GAP}
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Grid size={{ md: 12, lg: 6 }}>{skyDirection1Field()}</Grid>
+                <Grid size={{ md: 12, lg: 6 }}>{skyDirection2Field()}</Grid>
+              </Grid>
+            )}
           </BorderedSection>
         </Box>
       </Grid>
       {!isSSO && (
-      <Grid pt={1}>
-        <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
-          <BorderedSection title={t('radialMotion.label')}>
-            <Grid
-              container
-              spacing={GAP}
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Grid size={{ md: 12, lg: 6 }}>{velocityTypeField()}</Grid>
-              <Grid size={{ md: 12, lg: 6 }}>{velocityField()}</Grid>
-            </Grid>
-            {velType === VELOCITY_TYPE.VELOCITY}
-          </BorderedSection>
-        </Box>
-      </Grid>
+        <Grid pt={1}>
+          <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
+            <BorderedSection title={t('radialMotion.label')}>
+              <Grid
+                container
+                spacing={GAP}
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Grid size={{ md: 12, lg: 6 }}>{velocityTypeField()}</Grid>
+                <Grid size={{ md: 12, lg: 6 }}>{velocityField()}</Grid>
+              </Grid>
+              {velType === VELOCITY_TYPE.VELOCITY}
+            </BorderedSection>
+          </Box>
+        </Grid>
       )}
       {!isSV && (
         <Grid pt={1}>

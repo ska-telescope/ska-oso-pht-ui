@@ -40,7 +40,7 @@ export default function ElevationField({
   const [fieldValid, setFieldValid] = React.useState(true);
   const MIN_ELEVATION = isLow
     ? ELEVATION_MIN_LOW
-    : (osdMID?.basicCapabilities?.dishElevationLimitDeg ?? ELEVATION_MIN_LOW);
+    : osdMID?.basicCapabilities?.dishElevationLimitDeg ?? ELEVATION_MIN_LOW;
 
   const checkValue = (e: number) => {
     const num = Number(e);

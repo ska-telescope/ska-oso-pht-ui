@@ -80,7 +80,7 @@ export default function VelocityField({
     const OPTIONS = [0, 1];
 
     const getOptions = () => {
-      return OPTIONS.map((e) => ({ label: t('velocity.units.' + e), value: e }));
+      return OPTIONS.map(e => ({ label: t('velocity.units.' + e), value: e }));
     };
 
     return (

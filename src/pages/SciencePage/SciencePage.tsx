@@ -95,7 +95,7 @@ export default function SciencePage() {
       }
       validationFileRef.current = theFile;
       validatePdf(theFile)
-        .then((error) => {
+        .then(error => {
           if (validationFileRef.current === theFile) {
             setPdfError(error);
             if (error !== null) {
@@ -107,14 +107,14 @@ export default function SciencePage() {
                * fresh one — resetting the filename display — whenever validation rejects a
                * file.
                */
-              setFileUploadKey((k) => k + 1);
+              setFileUploadKey(k => k + 1);
             }
           }
         })
         .catch(() => {
           if (validationFileRef.current === theFile) {
             setPdfError(t('pdfUpload.science.invalidFileError'));
-            setFileUploadKey((k) => k + 1);
+            setFileUploadKey(k => k + 1);
           }
         });
     } else {
@@ -129,7 +129,7 @@ export default function SciencePage() {
        * This workaround should be replaced with a first-class ska-gui-components API when
        * available.
        */
-      setFileUploadKey((k) => k + 1);
+      setFileUploadKey(k => k + 1);
       if (hasUploadedSciencePdf) {
         setOriginalFile(getSciencePdfDisplayFilename());
       } else {
@@ -150,7 +150,7 @@ export default function SciencePage() {
   const validateSelectedFile = (selectedFile: File) => {
     validationFileRef.current = selectedFile;
     validatePdf(selectedFile)
-      .then((error) => {
+      .then(error => {
         if (validationFileRef.current === selectedFile) {
           setPdfError(error);
         }
@@ -176,7 +176,7 @@ export default function SciencePage() {
      * when dropzone rejects non-PDF files, setFile is not called, so FileUpload keeps internal
      * "selected file" state and keeps clear/upload buttons visible unless we remount it.
      */
-    setFileUploadKey((k) => k + 1);
+    setFileUploadKey(k => k + 1);
   };
 
   /**
@@ -339,7 +339,7 @@ export default function SciencePage() {
        * dropzone renders the `file` prop directly as the selected file. Until a first-class
        * controlled clear API exists in ska-gui-components.
        */
-      setFileUploadKey((k) => k + 1);
+      setFileUploadKey(k => k + 1);
       setOriginalFile(null);
       notifySuccess(t('pdfDelete.science.success'));
     } catch (e) {
@@ -449,10 +449,9 @@ export default function SciencePage() {
                          * clear/upload button visibility to internal selected-file state. Hide those
                          * buttons while an uploaded PDF already exists.
                          */
-                        '& [data-testid="fileUploadClearButton"], & [data-testid="fileUploadUploadButton"]':
-                          {
-                            display: 'none'
-                          }
+                        '& [data-testid="fileUploadClearButton"], & [data-testid="fileUploadUploadButton"]': {
+                          display: 'none'
+                        }
                       }
                     : {})
                 }}

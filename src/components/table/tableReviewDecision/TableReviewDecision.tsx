@@ -24,11 +24,11 @@ export default function TableReviewDecision({
   const [expandedRows, setExpandedRows] = React.useState(new Set<number>());
 
   const getReviews = (reviews: any[], reviewType: string) =>
-    reviews?.filter((el) => el?.reviewType?.kind === reviewType) ?? [];
+    reviews?.filter(el => el?.reviewType?.kind === reviewType) ?? [];
 
   const getReviewsReviewed = (reviews: any[]) =>
     getReviews(reviews, REVIEW_TYPE.SCIENCE)?.filter(
-      (el) => el?.status === PANEL_DECISION_STATUS.REVIEWED
+      el => el?.status === PANEL_DECISION_STATUS.REVIEWED
     ) ?? [];
 
   const toggleRow = (id: number) => {
@@ -40,7 +40,7 @@ export default function TableReviewDecision({
   const calculateScore = (details: Array<any>) => {
     if (!details || details.length === 0) return parseFloat('0').toFixed(1);
     const filtered = details.filter(
-      (el) =>
+      el =>
         el?.reviewType.kind === 'Science Review' &&
         !el?.reviewType?.excludedFromDecision &&
         el?.status !== 'To Do'
@@ -82,7 +82,7 @@ export default function TableReviewDecision({
 
     const results = itemsWithScores.map((item: { score: number; id: number }) => ({
       ...item,
-      displayRank: item.score === 0 ? zeroScoreRank : (rankMap.get(item.id) ?? zeroScoreRank)
+      displayRank: item.score === 0 ? zeroScoreRank : rankMap.get(item.id) ?? zeroScoreRank
     }));
 
     // checkForUpdatesForAPI(results);
@@ -101,7 +101,7 @@ export default function TableReviewDecision({
               index={index}
               expanded={expandedRows.has(item.id)}
               toggleRow={toggleRow}
-              expandButtonRef={(el) => (expandButtonRefs.current[item.id] = el)}
+              expandButtonRef={el => (expandButtonRefs.current[item.id] = el)}
               excludeFunction={excludeFunction}
               updateDecisionItem={updateFunction}
               getReviews={getReviews}

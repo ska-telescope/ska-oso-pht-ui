@@ -51,7 +51,7 @@ export default function MemberAccess({ selectedOptions, setSelectedOptions }: Me
 
   const handleCheckboxChange = (value: string) => {
     setSelectedOptions((prev: string[]) => {
-      return prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value];
+      return prev.includes(value) ? prev.filter(v => v !== value) : [...prev, value];
     });
   };
 

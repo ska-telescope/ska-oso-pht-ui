@@ -66,8 +66,8 @@ async function getSensitivityCalculatorAPIData(
   return observation.type === TYPE_CONTINUUM
     ? GetContinuumData(telescope, observation, target, dataProductSDP)
     : observation.type === TYPE_ZOOM
-      ? GetZoomData(telescope, observation, target, dataProductSDP)
-      : GetContinuumData(telescope, setMockObservation(observation), target, dataProductSDP);
+    ? GetZoomData(telescope, observation, target, dataProductSDP)
+    : GetContinuumData(telescope, setMockObservation(observation), target, dataProductSDP);
 }
 
 export default getSensCalc;

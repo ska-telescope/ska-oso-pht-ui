@@ -66,7 +66,7 @@ export default function ButtonUserMenu({
   }, [accounts]);
 
   React.useEffect(() => {
-    const callbackId = instance.addEventCallback((event) => {
+    const callbackId = instance.addEventCallback(event => {
       if (event.eventType === EventType.LOGIN_FAILURE && event.error) {
         const err = event.error as AuthError;
         notifyError(`Login failed (${err.errorCode}): ${err.message}`);

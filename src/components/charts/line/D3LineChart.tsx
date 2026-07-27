@@ -49,7 +49,10 @@ const D3LineChart: React.FC<Props> = ({
 
     const innerH = height - margin.top - margin.bottom;
 
-    chartGroup.append('g').attr('class', 'x-axis').attr('transform', `translate(0,${innerH})`);
+    chartGroup
+      .append('g')
+      .attr('class', 'x-axis')
+      .attr('transform', `translate(0,${innerH})`);
 
     chartGroup.append('g').attr('class', 'y-axis');
 
@@ -76,26 +79,30 @@ const D3LineChart: React.FC<Props> = ({
     let x: d3.ScaleLinear<number, number> | d3.ScalePoint<string>;
     if (isNumeric) {
       const defaultXDomain: [number, number] = [
-        d3.min(data, (d) => d.name as number)!,
-        d3.max(data, (d) => d.name as number)!
+        d3.min(data, d => d.name as number)!,
+        d3.max(data, d => d.name as number)!
       ];
       x = d3
         .scaleLinear()
         .domain(xDomain ?? defaultXDomain)
         .range([0, innerW]);
     } else {
-      const categories = data.map((d) => d.name as string);
-      x = d3.scalePoint().domain(categories).range([0, innerW]).padding(0.5);
+      const categories = data.map(d => d.name as string);
+      x = d3
+        .scalePoint()
+        .domain(categories)
+        .range([0, innerW])
+        .padding(0.5);
     }
 
-    const defaultYDomain: [number, number] = [0, d3.max(data, (d) => d.value)!];
+    const defaultYDomain: [number, number] = [0, d3.max(data, d => d.value)!];
     const y = d3
       .scaleLinear()
       .domain(yDomain ?? defaultYDomain)
       .nice()
       .range([innerH, 0]);
 
-    const groups = Array.from(new Set(data.map((d) => d.group).filter(Boolean) as string[]));
+    const groups = Array.from(new Set(data.map(d => d.group).filter(Boolean) as string[]));
     const fallbackColors = d3.schemeTableau10;
     const color = d3
       .scaleOrdinal<string, string>()
@@ -123,9 +130,9 @@ const D3LineChart: React.FC<Props> = ({
 
     // Group data by series
     const series = groups.length
-      ? groups.map((g) => ({
+      ? groups.map(g => ({
           key: g,
-          values: data.filter((d) => d.group === g)
+          values: data.filter(d => d.group === g)
         }))
       : [{ key: 'default', values: data }];
 
@@ -133,17 +140,17 @@ const D3LineChart: React.FC<Props> = ({
     const line = d3
       .line<LineData>()
       .defined((_, i, arr) => i > 0 && i < arr.length - 1) // skip endpoints
-      .x((d) =>
+      .x(d =>
         isNumeric
           ? (x as d3.ScaleLinear<number, number>)(d.name as number)
           : (x as d3.ScalePoint<string>)(d.name as string)!
       )
-      .y((d) => y(d.value))
+      .y(d => y(d.value))
       .curve(d3.curveMonotoneX);
 
     // Clear old line(s) and draw new
     chartGroup.selectAll('path.line').remove();
-    series.forEach((s) => {
+    series.forEach(s => {
       chartGroup
         .append('path')
         .datum(s.values)
@@ -157,34 +164,33 @@ const D3LineChart: React.FC<Props> = ({
     // Points
     const points = chartGroup
       .selectAll<SVGCircleElement, LineData>('circle.point')
-      .data(data, (d) => `${d.name}-${d.group ?? 'default'}`);
+      .data(data, d => `${d.name}-${d.group ?? 'default'}`);
 
     points
       .enter()
       .append('circle')
       .attr('class', 'point')
-      .attr('cx', (d) =>
+      .attr('cx', d =>
         isNumeric
           ? (x as d3.ScaleLinear<number, number>)(d.name as number)
           : (x as d3.ScalePoint<string>)(d.name as string)!
       )
-      .attr('cy', (d) => y(d.value))
+      .attr('cy', d => y(d.value))
       .attr('r', 5)
       .attr(
         'fill',
-        (d) =>
-          chartColors?.[(d.group ?? 'default').toLowerCase()]?.bg ?? color(d.group ?? 'default')
+        d => chartColors?.[(d.group ?? 'default').toLowerCase()]?.bg ?? color(d.group ?? 'default')
       );
 
     points
       .transition()
       .duration(800)
-      .attr('cx', (d) =>
+      .attr('cx', d =>
         isNumeric
           ? (x as d3.ScaleLinear<number, number>)(d.name as number)
           : (x as d3.ScalePoint<string>)(d.name as string)!
       )
-      .attr('cy', (d) => y(d.value));
+      .attr('cy', d => y(d.value));
 
     points.exit().remove();
 
@@ -192,7 +198,7 @@ const D3LineChart: React.FC<Props> = ({
     const legend = svg.select<SVGGElement>('.legend');
     legend.selectAll('*').remove();
     let offsetX = 0;
-    series.forEach((s) => {
+    series.forEach(s => {
       const legendItem = legend.append('g').attr('transform', `translate(${offsetX},0)`);
       legendItem
         .append('rect')

@@ -63,7 +63,7 @@ export default function ValidationResults({
   const resultsContent = (results: string[]) => (
     <Grid>
       <Stack spacing={1}>
-        {results?.map((el) => (
+        {results?.map(el => (
           <Box
             key={el}
             sx={{

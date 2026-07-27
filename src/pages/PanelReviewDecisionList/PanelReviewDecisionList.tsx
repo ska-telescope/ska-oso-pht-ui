@@ -125,9 +125,9 @@ export default function ReviewDecisionListPage() {
       return [];
     }
 
-    return proposals.map((proposal) => {
-      const reviews = proposalReviews.filter((r) => r.prslId === proposal.id);
-      const decisions = reviewDecisions.find((d) => d.proposalId === proposal.id);
+    return proposals.map(proposal => {
+      const reviews = proposalReviews.filter(r => r.prslId === proposal.id);
+      const decisions = reviewDecisions.find(d => d.proposalId === proposal.id);
       return {
         ...proposal,
         decisions,
@@ -139,9 +139,9 @@ export default function ReviewDecisionListPage() {
 
   const rankMap = React.useMemo(() => {
     const rankMap = [...mergedData]
-      .map((item) => {
+      .map(item => {
         const filtered = item.reviews?.filter(
-          (r) =>
+          r =>
             r.reviewType.kind === REVIEW_TYPE.SCIENCE &&
             (r.reviewType as ScienceReview).excludedFromDecision !== true
         );
@@ -155,7 +155,7 @@ export default function ReviewDecisionListPage() {
             ) / filtered.length
           : 0;
         const abandon = item.reviews?.some(
-          (r) =>
+          r =>
             r.reviewType.kind === REVIEW_TYPE.TECHNICAL &&
             'isFeasible' in r.reviewType &&
             r.reviewType.isFeasible === FEASIBLE_NO
@@ -164,26 +164,23 @@ export default function ReviewDecisionListPage() {
       })
       .sort((a, b) => b.avg - a.avg)
       .map((item, index) => ({ ...item, rank: index + 1 }))
-      .reduce(
-        (acc, item) => {
-          acc[Number(item.id)] = item.rank;
-          return acc;
-        },
-        {} as Record<number, number>
-      );
+      .reduce((acc, item) => {
+        acc[Number(item.id)] = item.rank;
+        return acc;
+      }, {} as Record<number, number>);
     return rankMap;
   }, [mergedData]);
 
   const filteredData = React.useMemo(() => {
     return mergedData
-      .filter((item) => {
+      .filter(item => {
         const fieldsToSearch = [item.id, item.title];
         return fieldsToSearch.some(
-          (field) =>
+          field =>
             typeof field === 'string' && field.toLowerCase().includes(searchTerm.toLowerCase())
         );
       })
-      .map((item) => ({
+      .map(item => ({
         ...item,
         rank: rankMap[Number(item.id)]
       }));
@@ -199,7 +196,7 @@ export default function ReviewDecisionListPage() {
   );
 
   function handleExcludeAction(review: any): void {
-    const results = proposalReviews.map((rec) => {
+    const results = proposalReviews.map(rec => {
       const el: ProposalReview = rec;
       if (el.id === review.id) {
         const tmp: ScienceReview = el.reviewType as ScienceReview;

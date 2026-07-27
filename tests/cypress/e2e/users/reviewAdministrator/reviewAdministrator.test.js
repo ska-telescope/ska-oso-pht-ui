@@ -22,7 +22,7 @@ import { reviewerAdmin } from '../users.js';
 describe('Review Administrator', () => {
   beforeEach(() => {
     initialize(reviewerAdmin);
-    cy.window().then((win) => {
+    cy.window().then(win => {
       win.localStorage.setItem('USE_LOCAL_DATA', 'true');
     });
   });

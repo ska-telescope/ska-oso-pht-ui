@@ -18,7 +18,7 @@ export function GetMockData(mock = MockObservatoryDataBackend): ObservatoryData 
 export const toLowerCaseArray = (value: unknown): string[] => {
   if (!Array.isArray(value)) return [];
 
-  return value.filter((item) => typeof item === 'string').map((item) => item.toLowerCase());
+  return value.filter(item => typeof item === 'string').map(item => item.toLowerCase());
 };
 
 async function GetObservatoryData(

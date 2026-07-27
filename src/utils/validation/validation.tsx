@@ -131,7 +131,7 @@ export const useIsObservationFrequencyOutOfRange = () => {
   return (obs: Observation): boolean =>
     isFrequencyOutOfRange(
       obs.centralFrequency,
-      obs.type === TYPE_ZOOM ? (obs.bandwidth ?? 0) : (obs.continuumBandwidth ?? 0),
+      obs.type === TYPE_ZOOM ? obs.bandwidth ?? 0 : obs.continuumBandwidth ?? 0,
       obs.telescope === TELESCOPE_LOW_NUM,
       String(obs.observingBand ?? '')
     );
@@ -205,7 +205,7 @@ export const useValidateProposal = () => {
 
   return (proposal: Proposal) => {
     const obsStatus = validateObservationPage(proposal, autoLink);
-    const freqOutOfRange = (proposal.observations ?? []).some((obs) =>
+    const freqOutOfRange = (proposal.observations ?? []).some(obs =>
       isObservationFrequencyOutOfRange(obs)
     );
     return [

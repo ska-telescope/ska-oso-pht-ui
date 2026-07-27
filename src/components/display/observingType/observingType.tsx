@@ -29,10 +29,10 @@ export default function ObservingType({ type }: ObservingTypeProps) {
     };
   }, []);
 
-  const colorsTelescopeDim = React.useMemo(
-    () => safeGetColors('observationType', type, 0.6),
-    [type, safeGetColors]
-  );
+  const colorsTelescopeDim = React.useMemo(() => safeGetColors('observationType', type, 0.6), [
+    type,
+    safeGetColors
+  ]);
 
   return (
     <Box

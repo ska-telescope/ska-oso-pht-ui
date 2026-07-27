@@ -49,7 +49,9 @@ describe('contentValid (Create button gate)', () => {
   });
 
   test('is valid when title is exactly at the word limit', () => {
-    const atLimit = Array(maxTitleWords).fill('word').join(' ');
+    const atLimit = Array(maxTitleWords)
+      .fill('word')
+      .join(' ');
     expect(titleValid(atLimit)).toBe(true);
   });
 

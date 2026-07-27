@@ -11,7 +11,7 @@ import {
 // Helper to get the exposed mock
 
 // --- Mock dependencies ---
-vi.mock('@ska-telescope/ska-gui-components', async (importOriginal) => {
+vi.mock('@ska-telescope/ska-gui-components', async importOriginal => {
   const actual = await importOriginal<typeof import('@ska-telescope/ska-gui-components')>();
   return {
     ...actual,

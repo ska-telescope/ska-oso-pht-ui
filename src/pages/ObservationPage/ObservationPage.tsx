@@ -55,10 +55,10 @@ export default function ObservationPage() {
         PAGE === i
           ? value
           : PAGE_CALIBRATION === i
-            ? valueCalibration
-            : PAGE_LINKING === i
-              ? valueLinking
-              : getProposalState()[i]
+          ? valueCalibration
+          : PAGE_LINKING === i
+          ? valueLinking
+          : getProposalState()[i]
       );
     }
     updateAppContent1(temp);
@@ -94,16 +94,14 @@ export default function ObservationPage() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = (getProposal().observations ?? []).filter((e) => e.id !== currObs?.id);
+    const obs1 = (getProposal().observations ?? []).filter(e => e.id !== currObs?.id);
     const obs2 = (getProposal().targetObservation ?? []).filter(
-      (e) => e.observationId !== currObs?.id
+      e => e.observationId !== currObs?.id
     );
     const obs3 = (getProposal().groupObservations ?? []).filter(
-      (e) => e.observationId !== currObs?.id
+      e => e.observationId !== currObs?.id
     );
-    const obs4 = getProposal().calibrationStrategy?.filter(
-      (e) => e.observationIdRef !== currObs?.id
-    );
+    const obs4 = getProposal().calibrationStrategy?.filter(e => e.observationIdRef !== currObs?.id);
     setProposal({
       ...getProposal(),
       observations: obs1,
@@ -111,7 +109,7 @@ export default function ObservationPage() {
       groupObservations: obs3,
       calibrationStrategy: obs4
     });
-    setElementsO(elementsO.filter((e) => e.id !== currObs?.id));
+    setElementsO(elementsO.filter(e => e.id !== currObs?.id));
     setCurrObs(null);
     closeDeleteDialog();
   };
@@ -123,12 +121,12 @@ export default function ObservationPage() {
       return;
     }
     setValidateToggle(!validateToggle);
-    setElementsO(getProposal().observations?.map((rec) => popElementO(rec)) ?? []);
+    setElementsO(getProposal().observations?.map(rec => popElementO(rec)) ?? []);
   }, []);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
-    setElementsO(getProposal().observations?.map((rec) => popElementO(rec)) ?? []);
+    setElementsO(getProposal().observations?.map(rec => popElementO(rec)) ?? []);
   }, [getProposal()]);
 
   React.useEffect(() => {

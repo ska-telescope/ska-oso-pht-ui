@@ -91,7 +91,7 @@ export default function LinkingPage() {
 
   const getLevel = (obs: any) => {
     let result = STATUS_INITIAL;
-    filteredByDataProduct(obs.id)?.forEach((rec) => {
+    filteredByDataProduct(obs.id)?.forEach(rec => {
       if (typeof rec !== 'undefined') {
         switch (rec.statusGUI) {
           case STATUS_ERROR:
@@ -112,7 +112,7 @@ export default function LinkingPage() {
 
   const getError = (obs: Observation) => {
     let result = '';
-    filteredByDataProduct(obs.id)?.forEach((rec) => {
+    filteredByDataProduct(obs.id)?.forEach(rec => {
       if (typeof rec !== 'undefined' && rec.statusGUI === STATUS_ERROR) {
         result = rec.error ?? '';
       }
@@ -159,11 +159,11 @@ export default function LinkingPage() {
       sensCalc: results
     };
     const base = getProposal().targetObservation?.filter(
-      (e) => !(e.targetId === target.id && e.observationId === observationId)
+      e => !(e.targetId === target.id && e.observationId === observationId)
     );
     base?.push(temp);
     const existingCalibration = getProposal().calibrationStrategy?.find(
-      (cal) => cal.observationIdRef === observationId
+      cal => cal.observationIdRef === observationId
     );
     setTargetObservationAndCalibrationStorage(
       base ?? [],
@@ -174,12 +174,12 @@ export default function LinkingPage() {
   const deleteObservationTargetAndCalibration = (row: any) => {
     function filterRecords(id: number) {
       return getProposal().targetObservation?.filter(
-        (item) => !(item.observationId === currRec?.id2 && item.targetId === id)
+        item => !(item.observationId === currRec?.id2 && item.targetId === id)
       );
     }
     function filterRecordsCalibration(id: number) {
       return getProposal().calibrationStrategy?.filter(
-        (item) => item.observationIdRef === id.toString()
+        item => item.observationIdRef === id.toString()
       );
     }
     setTargetObservationAndCalibrationStorage(
@@ -249,18 +249,18 @@ export default function LinkingPage() {
   };
 
   const deleteConfirmed = () => {
-    const obs1 = getProposal().observations?.filter((e) => e.id !== currRec?.id2) ?? [];
+    const obs1 = getProposal().observations?.filter(e => e.id !== currRec?.id2) ?? [];
     const obs2 =
-      getProposal().targetObservation?.filter((e) => e.observationId !== currRec?.id2) ?? [];
+      getProposal().targetObservation?.filter(e => e.observationId !== currRec?.id2) ?? [];
     const obs3 =
-      getProposal().groupObservations?.filter((e) => e.observationId !== currRec?.id2) ?? [];
+      getProposal().groupObservations?.filter(e => e.observationId !== currRec?.id2) ?? [];
     setProposal({
       ...getProposal(),
       observations: obs1,
       targetObservation: obs2,
       groupObservations: obs3
     });
-    setElementsO(elementsO.filter((e) => e.id !== currRec?.id));
+    setElementsO(elementsO.filter(e => e.id !== currRec?.id));
     setCurrRec(null);
     closeDeleteDialog();
   };
@@ -290,7 +290,7 @@ export default function LinkingPage() {
 
   const isTargetSelected = (targetId: number) =>
     (getProposal().targetObservation ?? []).filter(
-      (entry) => entry.dataProductsSDPId === currRec?.id && entry.targetId === targetId
+      entry => entry.dataProductsSDPId === currRec?.id && entry.targetId === targetId
     ).length > 0;
 
   const targetSelectedToggle = (el: ElementT) => {
@@ -303,19 +303,17 @@ export default function LinkingPage() {
 
   const checkPartials = () => {
     const proposal = getProposal();
-    const results = proposal?.targetObservation?.find(
-      (p) => p.sensCalc.statusGUI === STATUS_PARTIAL
-    );
+    const results = proposal?.targetObservation?.find(p => p.sensCalc.statusGUI === STATUS_PARTIAL);
     if (results) {
-      const target = proposal.targets?.find((e) => e.id === results.targetId);
-      const observation = proposal.observations?.find((e) => e.id === results.observationId);
-      const dataProductSDP = proposal.dataProductSDP?.find(
-        (d) => d.id === results.dataProductsSDPId
-      );
-      if (observation &&
+      const target = proposal.targets?.find(e => e.id === results.targetId);
+      const observation = proposal.observations?.find(e => e.id === results.observationId);
+      const dataProductSDP = proposal.dataProductSDP?.find(d => d.id === results.dataProductsSDPId);
+      if (
+        observation &&
         target &&
         target.kind !== REFERENCE_COORDINATE_TYPE_SSO.value &&
-        dataProductSDP) {
+        dataProductSDP
+      ) {
         getSensCalcData(observation, target, dataProductSDP);
       }
     }
@@ -326,13 +324,13 @@ export default function LinkingPage() {
     setValidateToggle(!validateToggle);
     setElementsO(
       (
-        proposal.dataProductSDP?.map((rec) => {
-          const obs = proposal.observations?.find((o) => o.id === rec.observationId);
+        proposal.dataProductSDP?.map(rec => {
+          const obs = proposal.observations?.find(o => o.id === rec.observationId);
           return obs ? popElementO(rec, obs) : null;
         }) ?? []
       ).filter((item): item is ReturnType<typeof popElementO> => item !== null)
     );
-    setElementsT(proposal.targets?.map((rec) => popElementT(rec)) ?? []);
+    setElementsT(proposal.targets?.map(rec => popElementT(rec)) ?? []);
   }, []);
 
   React.useEffect(() => {
@@ -363,19 +361,19 @@ export default function LinkingPage() {
 
   const getSensCalcForTargetGrid = (targetId: number) =>
     getProposal()?.targetObservation?.find(
-      (p) => p.observationId === currRec?.id2 && p.targetId === targetId
+      p => p.observationId === currRec?.id2 && p.targetId === targetId
     )?.sensCalc;
 
   const isCustom = () => currRec?.Obs?.subarray === SA_CUSTOM;
   const isNatural = () => {
-    const dp = elementsO.find((e) => e.id === currRec?.id2)?.dp;
+    const dp = elementsO.find(e => e.id === currRec?.id2)?.dp;
     const weighting =
       typeof (dp?.data as any)?.weighting === 'string' ? (dp?.data as any).weighting : undefined;
     return currRec?.Obs?.subarray !== SA_CUSTOM && weighting === IW_NATURAL;
   };
 
   const getSensCalcSingle = (id: number, field: string) => {
-    const isPST = elementsO.find((e) => e.id2 === currRec?.id2)?.type === TYPE_PST;
+    const isPST = elementsO.find(e => e.id2 === currRec?.id2)?.type === TYPE_PST;
     return (
       <SensCalcDisplaySingle
         sensCalc={
@@ -492,7 +490,7 @@ export default function LinkingPage() {
         width: 100,
         disableClickEventBubbling: true,
         renderCell: (e: { row: any }) => {
-          const rec = elementsO.find((p) => p.id === e.row.id);
+          const rec = elementsO.find(p => p.id === e.row.id);
           return (
             <>
               {
@@ -627,15 +625,14 @@ export default function LinkingPage() {
   const filteredTargets = () => {
     const safeElementsT = elementsT ?? [];
     if (checkState === 'indeterminate') return safeElementsT;
-    else if (checkState === 'checked') return safeElementsT.filter((e) => isTargetSelected(e.id));
-    else if (checkState === 'unchecked')
-      return safeElementsT.filter((e) => !isTargetSelected(e.id));
+    else if (checkState === 'checked') return safeElementsT.filter(e => isTargetSelected(e.id));
+    else if (checkState === 'unchecked') return safeElementsT.filter(e => !isTargetSelected(e.id));
     else return [];
   };
 
   const filteredByDataProduct = (id: string) => {
     const results: SensCalcResults[] = [];
-    getProposal()?.targetObservation?.forEach((rec) => {
+    getProposal()?.targetObservation?.forEach(rec => {
       if (rec.dataProductsSDPId === id) {
         results.push(rec.sensCalc);
       }

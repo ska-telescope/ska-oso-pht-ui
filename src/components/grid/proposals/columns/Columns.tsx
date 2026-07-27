@@ -19,7 +19,7 @@ const getAuthors = (arr: Investigator[]) => {
     return element(NOT_SPECIFIED);
   }
   const results: string[] = [];
-  arr.forEach((e) => {
+  arr.forEach(e => {
     if (e.pi) {
       results.push(e.lastName + ', ' + e.firstName);
     }

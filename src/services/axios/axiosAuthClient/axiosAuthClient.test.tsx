@@ -34,7 +34,7 @@ const mockAxiosInstance = {
   }
 };
 
-vi.mock('axios', async (importOriginal) => {
+vi.mock('axios', async importOriginal => {
   const actual = await importOriginal<typeof import('axios')>();
   return {
     ...actual,

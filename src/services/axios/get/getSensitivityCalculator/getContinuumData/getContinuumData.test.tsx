@@ -101,8 +101,8 @@ describe('getFinalResults', () => {
     };
     const result = getFinalResults(target, resultsBase, obs);
 
-    expect(result.section1?.find((r) => r.field.includes('SensitivityWeighted'))).toBeUndefined();
-    expect(result.section2?.find((r) => r.field === 'spectralSensitivityWeighted')).toBeUndefined();
+    expect(result.section1?.find(r => r.field.includes('SensitivityWeighted'))).toBeUndefined();
+    expect(result.section2?.find(r => r.field === 'spectralSensitivityWeighted')).toBeUndefined();
     expect(result.section3?.length).toBe(1);
   });
 

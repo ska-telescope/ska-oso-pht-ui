@@ -36,20 +36,24 @@ const D3BarChartWithToggle: React.FC<Props> = ({ data, groupByOptions, allFields
       .attr('viewBox', `0 0 ${containerWidth} ${containerHeight}`)
       .attr('preserveAspectRatio', 'xMidYMid meet');
 
-    const groups = Array.from(new Set(data.map((d) => d[groupBy])));
+    const groups = Array.from(new Set(data.map(d => d[groupBy])));
     const x0 = d3
       .scaleBand<string>()
       .domain(groups)
       .range([MARGIN.left, MARGIN.left + width])
       .padding(0.2);
-    const x1 = d3.scaleBand<string>().domain(visibleFields).range([0, x0.bandwidth()]).padding(0.1);
+    const x1 = d3
+      .scaleBand<string>()
+      .domain(visibleFields)
+      .range([0, x0.bandwidth()])
+      .padding(0.1);
 
     const maxValue =
       d3.max(
-        groups.flatMap((group) =>
-          visibleFields.map((field) => {
-            const entries = data.filter((d) => d[groupBy] === group);
-            return d3.sum(entries, (d) => +d[field] || 0);
+        groups.flatMap(group =>
+          visibleFields.map(field => {
+            const entries = data.filter(d => d[groupBy] === group);
+            return d3.sum(entries, d => +d[field] || 0);
           })
         )
       ) || 0;
@@ -59,18 +63,24 @@ const D3BarChartWithToggle: React.FC<Props> = ({ data, groupByOptions, allFields
       .domain([0, maxValue])
       .nice()
       .range([MARGIN.top + height, MARGIN.top]);
-    const color = d3.scaleOrdinal<string>().domain(allFields).range(d3.schemeTableau10);
+    const color = d3
+      .scaleOrdinal<string>()
+      .domain(allFields)
+      .range(d3.schemeTableau10);
 
     svg
       .append('g')
       .attr('transform', `translate(0, ${MARGIN.top + height})`)
       .call(d3.axisBottom(x0));
 
-    svg.append('g').attr('transform', `translate(${MARGIN.left}, 0)`).call(d3.axisLeft(y));
+    svg
+      .append('g')
+      .attr('transform', `translate(${MARGIN.left}, 0)`)
+      .call(d3.axisLeft(y));
 
-    groups.forEach((group) => {
-      const entries = data.filter((d) => d[groupBy] === group);
-      visibleFields.forEach((field) => {
+    groups.forEach(group => {
+      const entries = data.filter(d => d[groupBy] === group);
+      visibleFields.forEach(field => {
         const value = entries.length;
         const x = x0(group)! + x1(field)!;
         const y1 = y(value);
@@ -85,7 +95,7 @@ const D3BarChartWithToggle: React.FC<Props> = ({ data, groupByOptions, allFields
           .attr('fill', color(field))
           .attr('stroke', '#e5e7eb')
           .attr('stroke-width', 0.5)
-          .on('mouseover', (event) => {
+          .on('mouseover', event => {
             const [mx, my] = d3.pointer(event, svgRef.current);
             d3.select(tooltipRef.current)
               .style('left', `${mx + 15}px`)
@@ -107,7 +117,10 @@ const D3BarChartWithToggle: React.FC<Props> = ({ data, groupByOptions, allFields
 
     visibleFields.forEach((field, i) => {
       const lg = legend.append('g').attr('transform', `translate(${i * 120}, 0)`);
-      lg.append('rect').attr('width', 15).attr('height', 15).attr('fill', color(field));
+      lg.append('rect')
+        .attr('width', 15)
+        .attr('height', 15)
+        .attr('fill', color(field));
       lg.append('text')
         .attr('x', 20)
         .attr('y', 12)
@@ -127,9 +140,9 @@ const D3BarChartWithToggle: React.FC<Props> = ({ data, groupByOptions, allFields
         <select
           className="border px-2 py-1 rounded"
           value={groupBy}
-          onChange={(e) => setGroupBy(e.target.value)}
+          onChange={e => setGroupBy(e.target.value)}
         >
-          {groupByOptions.map((option) => (
+          {groupByOptions.map(option => (
             <option key={option} value={option}>
               {option}
             </option>
@@ -139,12 +152,12 @@ const D3BarChartWithToggle: React.FC<Props> = ({ data, groupByOptions, allFields
           multiple
           className="border px-2 py-1 rounded h-24"
           value={visibleFields}
-          onChange={(e) => {
-            const selected = Array.from(e.target.selectedOptions).map((opt) => opt.value);
+          onChange={e => {
+            const selected = Array.from(e.target.selectedOptions).map(opt => opt.value);
             setVisibleFields(selected);
           }}
         >
-          {allFields.map((option) => (
+          {allFields.map(option => (
             <option key={option} value={option}>
               {option}
             </option>

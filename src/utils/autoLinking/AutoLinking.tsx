@@ -132,7 +132,7 @@ const updateProposal = (
     observations: [newObservation].filter((obs): obs is Observation => obs !== undefined),
     dataProductSDP: [...[], newDataProductSDP as DataProductSDPNew],
     targetObservation:
-       newObservation && newObservation.id && newDataProductSDP?.id
+      newObservation && newObservation.id && newDataProductSDP?.id
         ? [
             {
               targetId: newTarget?.id,
@@ -162,11 +162,10 @@ export default async function autoLinking(
   const sensCalcResult = await getSensCalcData(newObservation, target, newDataProductSDP);
 
   const isValidSensCalcResult = (r: any): boolean =>
-  !!r &&
-  !r.error &&        // { error: string } failures
-  !r.detail &&       // { title, detail } validation failures
-  Array.isArray(r.section1);   // a real result has sections; failures don't
-
+    !!r &&
+    !r.error && // { error: string } failures
+    !r.detail && // { title, detail } validation failures
+    Array.isArray(r.section1); // a real result has sections; failures don't
 
   const isSSO = target.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
   if (!isSSO && !isValidSensCalcResult(sensCalcResult)) {

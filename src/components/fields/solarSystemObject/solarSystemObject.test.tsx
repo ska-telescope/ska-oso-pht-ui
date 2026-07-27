@@ -10,6 +10,6 @@ const wrapper = (component: React.ReactElement) => {
 
 describe('<SolarSys />', () => {
   test('renders correctly', () => {
-    wrapper(<SolarSystemObjectField value={"Mars"} />);
+    wrapper(<SolarSystemObjectField value={'Mars'} />);
   });
 });

@@ -41,38 +41,38 @@ export default function GridTargets({
   const basicColumns = [
     { field: 'name', headerName: t('name.label'), flex: 2 },
     ...(isSSO
-    ? []
-    : [
-      {
-        field: 'coord1',
-        headerName: coordLabels[0],
-        width: 120
-      },
-      {
-        field: 'coord2',
-        headerName: coordLabels[1],
-        width: 120
-      },
-      {
-        field: 'vel',
-        headerName: t('velocity.0.label'),
-        width: 160,
-        disableClickEventBubbling: true,
-        renderCell: (e: { row: Target }) => {
-          if (e.row.vel === null || e.row.vel === '') {
-            return null;
+      ? []
+      : [
+          {
+            field: 'coord1',
+            headerName: coordLabels[0],
+            width: 120
+          },
+          {
+            field: 'coord2',
+            headerName: coordLabels[1],
+            width: 120
+          },
+          {
+            field: 'vel',
+            headerName: t('velocity.0.label'),
+            width: 160,
+            disableClickEventBubbling: true,
+            renderCell: (e: { row: Target }) => {
+              if (e.row.vel === null || e.row.vel === '') {
+                return null;
+              }
+              const units = e.row.velUnit === 1 ? 1 : 0;
+              return e.row.vel + ' ' + t('velocity.units.' + units);
+            }
+          },
+          {
+            field: 'redshift',
+            headerName: t('velocity.1.label'),
+            width: 160,
+            disableClickEventBubbling: true
           }
-          const units = e.row.velUnit === 1 ? 1 : 0;
-          return e.row.vel + ' ' + t('velocity.units.' + units);
-        }
-      },
-      {
-        field: 'redshift',
-        headerName: t('velocity.1.label'),
-        width: 160,
-        disableClickEventBubbling: true
-      }
-    ])
+        ])
   ];
 
   const colActions = [

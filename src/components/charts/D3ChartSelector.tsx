@@ -10,9 +10,9 @@ export const D3ChartSelector: React.FC<{
 }> = ({ data, width = 640, height = 400 }) => {
   const allFields = useMemo(() => (data[0] ? Object.keys(data[0]) : []), [data]);
   const stringFields = allFields.filter(
-    (k) => typeof data[0]?.[k] === 'string' || typeof data[0]?.[k] === 'boolean'
+    k => typeof data[0]?.[k] === 'string' || typeof data[0]?.[k] === 'boolean'
   );
-  const numberFields = allFields.filter((k) => typeof data[0]?.[k] === 'number');
+  const numberFields = allFields.filter(k => typeof data[0]?.[k] === 'number');
 
   const [chartType, setChartType] = useState<'bar' | 'pie'>('bar');
   const [groupField, setGroupField] = useState<string>(stringFields[0] || '');
@@ -23,10 +23,10 @@ export const D3ChartSelector: React.FC<{
 
     const reducer =
       chartType === 'bar' && valueField
-        ? (v: DataRow[]) => d3.mean(v, (d) => +d[valueField])
+        ? (v: DataRow[]) => d3.mean(v, d => +d[valueField])
         : (v: DataRow[]) => v.length;
 
-    const rollup = d3.rollup(data, reducer, (d) => d[groupField]);
+    const rollup = d3.rollup(data, reducer, d => d[groupField]);
     return Array.from(rollup, ([key, value]) => ({
       key: key as string,
       value: value as number
@@ -44,7 +44,7 @@ export const D3ChartSelector: React.FC<{
         <select
           data-testid="chartTypeSelect"
           value={chartType}
-          onChange={(e) => setChartType(e.target.value as 'bar' | 'pie')}
+          onChange={e => setChartType(e.target.value as 'bar' | 'pie')}
           className="select select-bordered"
         >
           <option value="bar">Bar</option>
@@ -55,10 +55,10 @@ export const D3ChartSelector: React.FC<{
         <select
           data-testid="groupFieldSelect"
           value={groupField}
-          onChange={(e) => setGroupField(e.target.value)}
+          onChange={e => setGroupField(e.target.value)}
           className="select select-bordered"
         >
-          {stringFields.map((f) => (
+          {stringFields.map(f => (
             <option key={f}>{f}</option>
           ))}
         </select>
@@ -69,10 +69,10 @@ export const D3ChartSelector: React.FC<{
             <select
               data-testid="valueFieldSelect"
               value={valueField}
-              onChange={(e) => setValueField(e.target.value)}
+              onChange={e => setValueField(e.target.value)}
               className="select select-bordered"
             >
-              {numberFields.map((f) => (
+              {numberFields.map(f => (
                 <option key={f}>{f}</option>
               ))}
             </select>
@@ -114,19 +114,21 @@ const BarChart: React.FC<{
 
     const x = d3
       .scaleBand<string>()
-      .domain(data.map((d) => d.key))
+      .domain(data.map(d => d.key))
       .range([0, w])
       .padding(0.2);
 
     const y = d3
       .scaleLinear()
-      .domain([0, d3.max(data, (d) => d.value) || 1])
+      .domain([0, d3.max(data, d => d.value) || 1])
       .nice()
       .range([h, 0]);
 
     const g = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
-    g.append('g').attr('transform', `translate(0,${h})`).call(d3.axisBottom(x));
+    g.append('g')
+      .attr('transform', `translate(0,${h})`)
+      .call(d3.axisBottom(x));
 
     g.append('g').call(d3.axisLeft(y));
 
@@ -134,15 +136,15 @@ const BarChart: React.FC<{
       .data(data)
       .enter()
       .append('rect')
-      .attr('x', (d) => x(d.key)!)
+      .attr('x', d => x(d.key)!)
       .attr('y', h)
       .attr('width', x.bandwidth())
       .attr('height', 0)
       .attr('fill', '#3182bd')
       .transition()
       .duration(500)
-      .attr('y', (d) => y(d.value))
-      .attr('height', (d) => h - y(d.value));
+      .attr('y', d => y(d.value))
+      .attr('height', d => h - y(d.value));
   }, [data, width, height]);
 
   return (
@@ -173,7 +175,7 @@ const PieChart: React.FC<{
 
     const color = d3
       .scaleOrdinal<string>()
-      .domain(data.map((d) => d.key))
+      .domain(data.map(d => d.key))
       .range(d3.schemeTableau10);
 
     const arc = d3
@@ -184,7 +186,7 @@ const PieChart: React.FC<{
     const pie = d3
       .pie<KV>()
       .sort(null)
-      .value((d) => d.value);
+      .value(d => d.value);
 
     const g = svg.append('g').attr('transform', `translate(${width / 2},${height / 2})`);
 
@@ -193,7 +195,7 @@ const PieChart: React.FC<{
       .enter()
       .append('path')
       .attr('d', arc as any)
-      .attr('fill', (d) => color(d.data.key))
+      .attr('fill', d => color(d.data.key))
       .attr('stroke', '#fff')
       .attr('stroke-width', 1);
 
@@ -206,11 +208,11 @@ const PieChart: React.FC<{
       .data(pie(data))
       .enter()
       .append('text')
-      .attr('transform', (d) => `translate(${labelArc.centroid(d)})`)
+      .attr('transform', d => `translate(${labelArc.centroid(d)})`)
       .attr('dy', '0.35em')
       .attr('text-anchor', 'middle')
       .attr('class', 'text-xs')
-      .text((d) => d.data.key);
+      .text(d => d.data.key);
   }, [data, width, height]);
 
   return (

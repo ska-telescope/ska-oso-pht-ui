@@ -39,37 +39,38 @@ export const mapAxiosError = (error: AxiosError): Error => {
   }
 };
 
-export const createRequestInterceptor =
-  (instance: MsalInstance) => async (request: InternalAxiosRequestConfig) => {
-    const isHttp = request?.baseURL?.startsWith(HTTP);
-    if (isHttp && !isLocalhost()) {
-      return Promise.reject('HTTP is not allowed except on localhost.');
-    } else if (!isLocalhost() && request.baseURL && !request.baseURL.startsWith(HTTPS)) {
-      request.baseURL = request.baseURL.replace(HTTP, HTTPS);
-    }
+export const createRequestInterceptor = (instance: MsalInstance) => async (
+  request: InternalAxiosRequestConfig
+) => {
+  const isHttp = request?.baseURL?.startsWith(HTTP);
+  if (isHttp && !isLocalhost()) {
+    return Promise.reject('HTTP is not allowed except on localhost.');
+  } else if (!isLocalhost() && request.baseURL && !request.baseURL.startsWith(HTTPS)) {
+    request.baseURL = request.baseURL.replace(HTTP, HTTPS);
+  }
 
-    const account = instance.getAllAccounts()[0];
-    if (account) {
-      try {
-        const tokenResponse = await instance.acquireTokenSilent({
-          ...loginRequest,
-          account
-        });
-        request.headers['Authorization'] = `Bearer ${tokenResponse.accessToken}`;
-      } catch (error) {
-        if (error instanceof InteractionRequiredAuthError) {
-          console.warn(
-            '[axiosAuthClient] acquireTokenSilent failed, redirecting to login:',
-            (error as InteractionRequiredAuthError).errorCode,
-            (error as InteractionRequiredAuthError).message
-          );
-          instance.loginRedirect(loginRequest);
-        }
-        return Promise.reject(error);
+  const account = instance.getAllAccounts()[0];
+  if (account) {
+    try {
+      const tokenResponse = await instance.acquireTokenSilent({
+        ...loginRequest,
+        account
+      });
+      request.headers['Authorization'] = `Bearer ${tokenResponse.accessToken}`;
+    } catch (error) {
+      if (error instanceof InteractionRequiredAuthError) {
+        console.warn(
+          '[axiosAuthClient] acquireTokenSilent failed, redirecting to login:',
+          (error as InteractionRequiredAuthError).errorCode,
+          (error as InteractionRequiredAuthError).message
+        );
+        instance.loginRedirect(loginRequest);
       }
+      return Promise.reject(error);
     }
-    return request;
-  };
+  }
+  return request;
+};
 
 const useAxiosAuthClient = (baseURL: string = '/') => {
   const { instance } = useMsal();
@@ -97,12 +98,12 @@ const useAxiosAuthClient = (baseURL: string = '/') => {
     timeout: 10000
   });
 
-  axiosClient.interceptors.request.use(createRequestInterceptor(instance), (error) =>
+  axiosClient.interceptors.request.use(createRequestInterceptor(instance), error =>
     Promise.reject(error)
   );
 
   axiosClient.interceptors.response.use(
-    (response) => response,
+    response => response,
     (error: AxiosError) => Promise.reject(mapAxiosError(error))
   );
 

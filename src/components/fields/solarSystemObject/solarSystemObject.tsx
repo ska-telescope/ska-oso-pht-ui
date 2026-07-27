@@ -5,22 +5,20 @@ import React from 'react';
 import { SSO_OPTIONS } from '@utils/constants.ts';
 
 interface SolarSystemObjectFieldProps {
-  setValue?: Function,
-  value: string,
-  valueFocus?: Function
+  setValue?: Function;
+  value: string;
+  valueFocus?: Function;
 }
 
-
 export default function SolarSystemObjectField({
-                                                    setValue,
-                                                    value,
-                                                    valueFocus,
-                                                  }: SolarSystemObjectFieldProps) {
+  setValue,
+  value,
+  valueFocus
+}: SolarSystemObjectFieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'solarSystemObject';
 
   const SolarSystemObjectValueField = () => {
-
     return (
       <Box pt={1}>
         <DropDown
