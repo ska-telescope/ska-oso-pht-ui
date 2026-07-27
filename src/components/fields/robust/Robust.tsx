@@ -49,10 +49,13 @@ export default function RobustField({
 
   const handleSetValue = (nextValue: string) => {
     setInputValue(nextValue);
-    if (!isValidRobustValue(nextValue)) {
+  };
+
+  const commitIfValid = () => {
+    if (!isValidRobustValue(inputValue)) {
       return;
     }
-    setValue?.(Number(nextValue));
+    setValue?.(Number(inputValue));
   };
 
   const errorText =
@@ -72,6 +75,7 @@ export default function RobustField({
           value={inputValue}
           inputProps={{ 'data-testid': FIELD }}
           onChange={(event) => handleSetValue(event.target.value)}
+          onBlur={commitIfValid}
           label={label}
           onFocus={onFocus}
           slotProps={{

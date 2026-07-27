@@ -13,20 +13,33 @@ describe('<Robust /> behavior', () => {
     expect(screen.getByRole('spinbutton')).toBeInTheDocument();
   });
 
-  test('passes parsed decimal value when input is valid', () => {
+  test('commits parsed decimal value on blur when input is valid', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={0} setValue={setValue} />);
 
-    fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '1.5' } });
+    const field = screen.getByRole('spinbutton');
+    fireEvent.change(field, { target: { value: '1.5' } });
+    fireEvent.blur(field);
 
     expect(setValue).toHaveBeenCalledWith(1.5);
   });
 
-  test('preserves typed decimal precision', () => {
+  test('does not commit intermediate valid value before blur', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={0} setValue={setValue} />);
 
-    fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '1.45' } });
+    fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '1' } });
+
+    expect(setValue).not.toHaveBeenCalled();
+  });
+
+  test('preserves typed decimal precision when committed', () => {
+    const setValue = vi.fn();
+    render(<Robust label="Robust" value={0} setValue={setValue} />);
+
+    const field = screen.getByRole('spinbutton');
+    fireEvent.change(field, { target: { value: '1.45' } });
+    fireEvent.blur(field);
 
     expect(setValue).toHaveBeenCalledWith(1.45);
   });
@@ -35,7 +48,9 @@ describe('<Robust /> behavior', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={0} setValue={setValue} />);
 
-    fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '1e-1' } });
+    const field = screen.getByRole('spinbutton');
+    fireEvent.change(field, { target: { value: '1e-1' } });
+    fireEvent.blur(field);
 
     expect(setValue).not.toHaveBeenCalled();
     expect(screen.getByText('robust.error')).toBeInTheDocument();
@@ -45,7 +60,9 @@ describe('<Robust /> behavior', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={0} setValue={setValue} />);
 
-    fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '2.1' } });
+    const field = screen.getByRole('spinbutton');
+    fireEvent.change(field, { target: { value: '2.1' } });
+    fireEvent.blur(field);
 
     expect(setValue).not.toHaveBeenCalled();
     expect(screen.getByText('robust.error')).toBeInTheDocument();
