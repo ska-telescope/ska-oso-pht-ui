@@ -31,7 +31,7 @@ vi.mock('@ska-telescope/ska-gui-components', () => ({
       {/* (2) Uncontrolled on purpose: a controlled input (value={value}) makes React
           suppress onChange when the entered value equals the prop, which silently
           broke the "accepts 1" case since the field initialises at value 1. */}
-      <input data-testid={testId} onChange={e => setValue(Number(e.target.value))} />
+      <input data-testid={testId} onChange={(e) => setValue(Number(e.target.value))} />
       {errorText && <span data-testid={`${testId}-error`}>{errorText}</span>}
     </div>
   )
@@ -56,14 +56,14 @@ describe('<ChannelsOut />', () => {
     expect(screen.getByTestId('channelsOut')).toBeInTheDocument();
   });
 
-  test.each([[1], [40]])('accepts valid value %i and calls setValue', value => {
+  test.each([[1], [40]])('accepts valid value %i and calls setValue', (value) => {
     render(<ChannelsOut value={1} setValue={mockSetValue} />);
     enterValue(value);
     expect(mockSetValue).toHaveBeenCalledWith(value);
     expect(screen.queryByTestId('channelsOut-error')).not.toBeInTheDocument();
   });
 
-  test.each([[0], [1.5], [41]])('rejects invalid value %s without calling setValue', value => {
+  test.each([[0], [1.5], [41]])('rejects invalid value %s without calling setValue', (value) => {
     render(<ChannelsOut value={1} setValue={mockSetValue} />);
     enterValue(value);
     expect(mockSetValue).not.toHaveBeenCalled();

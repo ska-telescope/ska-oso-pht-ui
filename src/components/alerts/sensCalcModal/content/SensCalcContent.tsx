@@ -78,7 +78,7 @@ export default function SensCalcContent({
             'targetName'
           )}
           {data?.section1 && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
-          {data?.section1?.map(rec =>
+          {data?.section1?.map((rec) =>
             displayElement(
               t('sensitivityCalculatorResults.' + rec.field),
               rec.value,
@@ -87,7 +87,7 @@ export default function SensCalcContent({
             )
           )}
           {data?.section2 && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
-          {data?.section2?.map(rec =>
+          {data?.section2?.map((rec) =>
             displayElement(
               t('sensitivityCalculatorResults.' + rec.field),
               rec.value,
@@ -96,7 +96,7 @@ export default function SensCalcContent({
             )
           )}
           {data?.section3 && <Spacer size={SPACER_HEIGHT} axis={SPACER_VERTICAL} />}
-          {data?.section3?.map(rec =>
+          {data?.section3?.map((rec) =>
             displayElement(
               t('sensitivityCalculatorResults.' + rec.field),
               rec.value,

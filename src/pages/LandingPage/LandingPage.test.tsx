@@ -34,7 +34,7 @@ vi.mock('@azure/msal-react', () => ({
   useMsal: vi.fn(() => ({ accounts: [] }))
 }));
 
-vi.mock('@/utils/aaa/aaaUtils', async importOriginal => {
+vi.mock('@/utils/aaa/aaaUtils', async (importOriginal) => {
   const actual = (await importOriginal()) as any;
   return {
     ...actual,

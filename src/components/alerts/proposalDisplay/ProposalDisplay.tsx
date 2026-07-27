@@ -89,7 +89,7 @@ export default function ProposalDisplay({
     const output: string[] = [];
     const subTypes: number[] = proposal?.proposalSubType ?? [];
     if (subTypes?.length && subTypes[0] > 0) {
-      subTypes.forEach(element => output.push(t('proposalAttribute.title.' + element)));
+      subTypes.forEach((element) => output.push(t('proposalAttribute.title.' + element)));
     }
     return output;
   };
@@ -179,7 +179,7 @@ export default function ProposalDisplay({
         {!optional && inArr?.length === 0 && emptyCell()}
         {inArr?.length > 0 && (
           <Grid container direction="column" justifyContent="space-between" alignItems="left">
-            {inArr.map(el => (
+            {inArr.map((el) => (
               <Grid key={el} size={{ xs: 12 }}>
                 {element(el)}
               </Grid>
@@ -296,9 +296,11 @@ export default function ProposalDisplay({
         </Grid>
       </Grid>
       <Grid>
-        {false && (
-          <DownloadButton action={handleDownload} disabled testId="downloadButtonTestId" />
-        ) /* See STAR-246 */}
+        {
+          false && (
+            <DownloadButton action={handleDownload} disabled testId="downloadButtonTestId" />
+          ) /* See STAR-246 */
+        }
       </Grid>
       <Grid size={{ xs: 3 }}>
         <Grid container direction="row" alignItems="center" justifyContent="flex-end">

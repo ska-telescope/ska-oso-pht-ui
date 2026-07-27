@@ -570,7 +570,7 @@ const getResults = (
       const hasSensCalc = !!tarObs.sensCalc;
       const obsType = getObsType(tarObs, incObs);
       const spectralSection = getSpectralSection(obsType);
-      const target = incTargets?.find(t => t.id === tarObs.targetId);
+      const target = incTargets?.find((t) => t.id === tarObs.targetId);
 
       // refs always populate; result/noise blocks are null when there's no sensCalc (SSO)
       const result: SensCalcResultsBackend = {
@@ -603,31 +603,34 @@ const getResults = (
           value:
             isContinuum(obsType) || isPST(obsType)
               ? Number(
-                  tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.value
+                  tarObs.sensCalc.section1?.find((o) => o.field === 'continuumConfusionNoise')
+                    ?.value
                 )
               : 0,
           unit:
             isContinuum(obsType) || isPST(obsType)
-              ? tarObs.sensCalc.section1?.find(o => o.field === 'continuumConfusionNoise')?.units
+              ? tarObs.sensCalc.section1?.find((o) => o.field === 'continuumConfusionNoise')?.units
               : ''
         };
 
         result.synthesized_beam_size = {
-          spectral: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
-            ?.value,
+          spectral: tarObs.sensCalc[spectralSection]?.find(
+            (o) => o.field === 'spectralSynthBeamSize'
+          )?.value,
           continuum:
             isContinuum(obsType) || isPST(obsType)
-              ? tarObs.sensCalc.section1?.find(o => o.field === 'continuumSynthBeamSize')?.value
+              ? tarObs.sensCalc.section1?.find((o) => o.field === 'continuumSynthBeamSize')?.value
               : '',
-          unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSynthBeamSize')
+          unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralSynthBeamSize')
             ?.units
         };
 
         result.spectral_confusion_noise = {
           value: Number(
-            tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise')?.value
+            tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralConfusionNoise')
+              ?.value
           ),
-          unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralConfusionNoise')
+          unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralConfusionNoise')
             ?.units
         };
       }

@@ -52,7 +52,7 @@ vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
 
 // --- Setup ---
 const mockNavigate = vi.fn();
-((useNavigate as unknown) as Mock).mockReturnValue(mockNavigate);
+(useNavigate as unknown as Mock).mockReturnValue(mockNavigate);
 
 const mockProposal = { id: 123, title: 'Test Proposal' };
 const mockAccess = [NEW_PROPOSAL_ACCESS];
@@ -64,7 +64,7 @@ const mockNotification = {
   okRequired: false
 };
 
-((PostProposal as unknown) as Mock).mockResolvedValue(MockProposalBackend);
+(PostProposal as unknown as Mock).mockResolvedValue(MockProposalBackend);
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -83,7 +83,7 @@ beforeEach(() => {
       },
       updateAppContent2: vi.fn(),
       updateAppContent4: vi.fn()
-    } as any);
+    }) as any;
 });
 
 const wrapper = (component: React.ReactElement) =>

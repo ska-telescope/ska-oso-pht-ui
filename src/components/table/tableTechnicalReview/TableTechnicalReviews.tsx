@@ -24,7 +24,7 @@ export default function TableTechnicalReviews({ data }: TableTechnicalReviewsPro
   const theme = useTheme();
 
   const filteredData = (reviews: any[]) =>
-    reviews.filter(el => el?.reviewType?.kind === REVIEW_TYPE.TECHNICAL);
+    reviews.filter((el) => el?.reviewType?.kind === REVIEW_TYPE.TECHNICAL);
 
   return (
     <Box sx={{ width: '100%', p: 3 }}>

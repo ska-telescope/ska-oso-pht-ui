@@ -125,10 +125,10 @@ describe('CycleSelection component', () => {
 
     // Both policies visible
     expect(screen.getByText(/SKAO_2027_1/)).toBeInTheDocument();
-    expect(screen.getByText(c => c.includes('FAKE_ID_FOR_TESTING'))).toBeInTheDocument();
+    expect(screen.getByText((c) => c.includes('FAKE_ID_FOR_TESTING'))).toBeInTheDocument();
 
     // Click second card
-    fireEvent.click(screen.getByText(c => c.includes('FAKE_ID_FOR_TESTING')));
+    fireEvent.click(screen.getByText((c) => c.includes('FAKE_ID_FOR_TESTING')));
 
     // Confirm should be called with second policy
     fireEvent.click(screen.getByTestId('cycleConfirmationButton'));

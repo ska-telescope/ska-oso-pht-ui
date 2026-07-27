@@ -14,7 +14,7 @@ vi.mock('@/services/i18n/useScopedTranslation', () => ({
   })
 }));
 
-vi.mock('@ska-telescope/ska-gui-components', async importOriginal => {
+vi.mock('@ska-telescope/ska-gui-components', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@ska-telescope/ska-gui-components')>();
   return {
     ...actual,

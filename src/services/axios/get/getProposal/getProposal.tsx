@@ -827,8 +827,8 @@ export function mapping(inRec: ProposalBackend): Proposal {
     technicalLoadStatus: isSV
       ? FileUploadStatus.INITIAL
       : technicalPDF
-      ? FileUploadStatus.OK
-      : FileUploadStatus.INITIAL,
+        ? FileUploadStatus.OK
+        : FileUploadStatus.INITIAL,
     dataProductSDP: inRec?.observation_info?.data_product_sdps
       ? getDataProductSDP(inRec.observation_info?.data_product_sdps as DataProductSDPsBackend[])
       : [],

@@ -18,7 +18,7 @@ describe('Guest User', () => {
     verify('landingWelcomeLoginButton');
 
     //stub window.open to verify the correct URL is being opened
-    cy.window().then(win => {
+    cy.window().then((win) => {
       cy.stub(win, 'open').as('windowOpen');
     });
 

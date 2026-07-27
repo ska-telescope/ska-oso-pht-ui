@@ -29,7 +29,7 @@ vi.mock('@/utils/helpers', () => ({ generateId: () => 'SDP000001' }));
 vi.mock('@/utils/present/present', () => ({ presentUnits: (val: string) => `unit(${val})` }));
 
 // Safe constants mock
-vi.mock('@/utils/constants.ts', async importOriginal => {
+vi.mock('@/utils/constants.ts', async (importOriginal) => {
   const actual = await importOriginal<any>();
   return {
     ...actual,

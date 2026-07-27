@@ -33,7 +33,7 @@ export default function GridObservation({
 
     // If an explicit autoSelectId is provided AND exists in the dataset
     if (autoSelectId != null) {
-      const match = data.find(o => String(o.id) === String(autoSelectId));
+      const match = data.find((o) => String(o.id) === String(autoSelectId));
       if (match) {
         rowClick?.({ row: match });
         return;

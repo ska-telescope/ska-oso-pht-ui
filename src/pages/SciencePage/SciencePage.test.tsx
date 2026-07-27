@@ -48,7 +48,7 @@ vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
   }
 }));
 
-vi.mock('@/utils/aaa/aaaUtils', async importOriginal => {
+vi.mock('@/utils/aaa/aaaUtils', async (importOriginal) => {
   const actual = (await importOriginal()) as any;
   return {
     ...actual,
@@ -92,7 +92,7 @@ let capturedChooseDisabled: boolean | undefined;
 let capturedDropzoneAccepted: Record<string, string[]> | undefined;
 let capturedDropzonePrompt: string | undefined;
 let capturedFile: string | null | undefined;
-vi.mock('@ska-telescope/ska-gui-components', async importOriginal => {
+vi.mock('@ska-telescope/ska-gui-components', async (importOriginal) => {
   const actual = (await importOriginal()) as any;
   return {
     ...actual,
@@ -330,7 +330,7 @@ describe('SciencePage', () => {
 
     it('stale validation ignored when second file selected before first resolves', async () => {
       let resolveFirstPageCount!: (n: number) => void;
-      const deferredFirst = new Promise<number>(res => {
+      const deferredFirst = new Promise<number>((res) => {
         resolveFirstPageCount = res;
       });
       mockGetPdfPageCount.mockReturnValueOnce(deferredFirst).mockResolvedValueOnce(2);
@@ -355,7 +355,7 @@ describe('SciencePage', () => {
       // Now resolve file1 with 5 pages (would be an error) — should be ignored
       await act(async () => {
         resolveFirstPageCount(5);
-        await new Promise(r => setTimeout(r, 0));
+        await new Promise((r) => setTimeout(r, 0));
       });
 
       expect(screen.queryByText('pdfUpload.science.pageError')).not.toBeInTheDocument();

@@ -117,22 +117,38 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
             } else {
               if (!isSameHeader(result.meta.fields, validGalacticCsvHeader))
                 throw t('uploadCsvBtn.uploadErrorGalacticNotValidMsg');
-              targets = result.data.reduce((result: { //Default values from AddTarget.tsx
-                kind: number; id: string; name: string; b: number; l: number; redshift: null; vel: string; velUnit: string }[], target: { name: string; latitude: string; longitude: string }, index: number) => {
-                if (target.name && target.latitude && target.longitude) {
-                  result.push(
-                    AddTheTargetGalactic(
-                      index + highestId.toString() + 1,
-                      target.name,
-                      target.latitude,
-                      target.longitude
-                    )
-                  );
-                } else {
-                  errorInRows = true;
-                }
-                return result;
-              }, []);
+              targets = result.data.reduce(
+                (
+                  result: {
+                    //Default values from AddTarget.tsx
+                    kind: number;
+                    id: string;
+                    name: string;
+                    b: number;
+                    l: number;
+                    redshift: null;
+                    vel: string;
+                    velUnit: string;
+                  }[],
+                  target: { name: string; latitude: string; longitude: string },
+                  index: number
+                ) => {
+                  if (target.name && target.latitude && target.longitude) {
+                    result.push(
+                      AddTheTargetGalactic(
+                        index + highestId.toString() + 1,
+                        target.name,
+                        target.latitude,
+                        target.longitude
+                      )
+                    );
+                  } else {
+                    errorInRows = true;
+                  }
+                  return result;
+                },
+                []
+              );
             }
             setProposal({
               ...getProposal(),

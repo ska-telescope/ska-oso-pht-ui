@@ -321,8 +321,8 @@ export default function TargetEntry({
               velType: velType ?? DEFAULT_VELOCITY_TYPE,
               raStr: coord1 ?? '',
               decStr: coord2 ?? '',
-              redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift ?? '' : '',
-              vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : ''
+              redshift: velType === VELOCITY_TYPE.REDSHIFT ? (redshift ?? '') : '',
+              vel: velType === VELOCITY_TYPE.VELOCITY ? (vel ?? '') : ''
             };
 
           case REFERENCE_COORDINATE_TYPE_GALACTIC.value:
@@ -331,8 +331,8 @@ export default function TargetEntry({
               velType: velType ?? DEFAULT_VELOCITY_TYPE,
               l: Number(coord1),
               b: Number(coord2),
-              redshift: velType === VELOCITY_TYPE.REDSHIFT ? redshift ?? '' : '',
-              vel: velType === VELOCITY_TYPE.VELOCITY ? vel ?? '' : ''
+              redshift: velType === VELOCITY_TYPE.REDSHIFT ? (redshift ?? '') : '',
+              vel: velType === VELOCITY_TYPE.VELOCITY ? (vel ?? '') : ''
             };
 
           default:

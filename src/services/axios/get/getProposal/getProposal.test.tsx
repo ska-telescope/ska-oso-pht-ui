@@ -179,7 +179,7 @@ describe('getObservingMode', () => {
   test('returns null for an invalid observing mode', () => {
     expect(getObservingMode('Zoom')).toBeNull();
     expect(getObservingMode('')).toBeNull();
-    expect(getObservingMode((null as unknown) as string)).toBeNull();
+    expect(getObservingMode(null as unknown as string)).toBeNull();
     expect(getObservingMode('undefined')).toBeNull();
   });
 });
@@ -193,7 +193,7 @@ describe('getScienceCategory', () => {
   test('returns null for an invalid science category', () => {
     expect(getScienceCategory('Biology')).toBeNull();
     expect(getScienceCategory('')).toBeNull();
-    expect(getScienceCategory((null as unknown) as string)).toBeNull();
+    expect(getScienceCategory(null as unknown as string)).toBeNull();
     expect(getScienceCategory('undefined')).toBeNull();
   });
 });
@@ -296,10 +296,10 @@ describe('getBandwidth', () => {
   });
 
   test('handles edge cases with undefined or null inputs', () => {
-    expect(getBandwidth((undefined as unknown) as number, 1)).toBe(1);
-    expect(getBandwidth(100, (undefined as unknown) as number)).toBe(1);
-    expect(getBandwidth((null as unknown) as number, 1)).toBe(1);
-    expect(getBandwidth(100, (null as unknown) as number)).toBe(1);
+    expect(getBandwidth(undefined as unknown as number, 1)).toBe(1);
+    expect(getBandwidth(100, undefined as unknown as number)).toBe(1);
+    expect(getBandwidth(null as unknown as number, 1)).toBe(1);
+    expect(getBandwidth(100, null as unknown as number)).toBe(1);
   });
 });
 

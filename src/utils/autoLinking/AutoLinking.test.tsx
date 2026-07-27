@@ -334,7 +334,7 @@ describe('autoLinking()', () => {
 
   it('handles missing properties in getProposal gracefully', async () => {
     // Override proposal to have only scienceCategory to simulate missing fields
-    proposal = ({ scienceCategory: TYPE_CONTINUUM } as unknown) as Proposal;
+    proposal = { scienceCategory: TYPE_CONTINUUM } as unknown as Proposal;
 
     const mockSensCal = { continuum_sensitivity: { value: 130.3344803749966, unit: 'uJy / beam' } };
     vi.mocked(calculateSensCalcData as any).mockResolvedValue(mockSensCal);

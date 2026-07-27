@@ -14,7 +14,7 @@ interface FrequencyAveragingFieldProps {
 
 const UNAVERAGED_VALUE_KHZ = 781.25 / 144;
 
-const OPTIONS = range(1, 13).map(value => ({
+const OPTIONS = range(1, 13).map((value) => ({
   label: (value * UNAVERAGED_VALUE_KHZ).toFixed(2),
   value
 }));

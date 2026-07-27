@@ -22,7 +22,7 @@ const updateSensCalcAsync = async (
   return await Promise.all(
     proposal.targetObservation.map(async (rec: TargetObservation) => {
       if (rec?.observationId === ob?.id) {
-        const target: Target | undefined = proposal.targets?.find(t => t.id === rec.targetId);
+        const target: Target | undefined = proposal.targets?.find((t) => t.id === rec.targetId);
         if (!target || !dp) {
           return rec;
         }
@@ -63,7 +63,7 @@ export const updateSensCalc = async (
 ): Promise<TargetObservation[]> => {
   const updated = await updateSensCalcAsync(proposal, ob, dp);
 
-  return updated.map(rec => {
+  return updated.map((rec) => {
     if (rec?.observationId === ob?.id) {
       if (rec.sensCalc === undefined) {
         return rec;
