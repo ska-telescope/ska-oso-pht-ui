@@ -167,10 +167,13 @@ export default function CentralFrequency({
 
   // Validates the current value whenever it changes for any reason - not just a user edit via
   // onCommit - e.g. on mount with a value loaded from a saved observation, or once async OSD
-  // band/channel data arrives late. The value itself is never touched here, only the warning.
+  // band/channel data arrives late. Also re-runs when min/max shift under an unchanged value -
+  // e.g. continuumBandwidthHz moving from its loading fallback to the resolved real bandwidth -
+  // so a value that becomes invalid under the new bounds is flagged without needing a fresh edit.
+  // The value itself is never touched here, only the warning.
   React.useEffect(() => {
     setErrorMessage(validateStepRef.current(value));
-  }, [value]);
+  }, [value, min, max]);
 
   // Native <input type="number"> step attributes - purely a browser-level hint (for the
   // native spinner and keyboard input restrictions). The actual snap-to-grid stepping always goes
