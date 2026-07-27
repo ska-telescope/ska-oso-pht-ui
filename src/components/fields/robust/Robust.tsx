@@ -4,14 +4,18 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
 interface RobustFieldProps {
   disabled?: boolean;
-  onFocus?: Function;
+  onFocus?: () => void;
   label: string;
   required?: boolean;
-  setValue?: Function;
-  suffix?: any;
+  setValue?: (nextValue: number) => void;
+  suffix?: React.ReactNode;
   value: string | number;
   widthButton?: number;
 }
+
+const ROBUST_RANGE = { min: -2, max: 2 };
+const ROBUST_STEP = 0.1;
+const FIELD = 'robust';
 
 const validateNumericText = (value: string, min: number, max: number): boolean => {
   const numericPattern = /^[-+]?(?:\d+\.?\d*|\.\d+)$/;
@@ -21,6 +25,9 @@ const validateNumericText = (value: string, min: number, max: number): boolean =
   const number = Number(value);
   return Number.isFinite(number) && number >= min && number <= max;
 };
+
+const isValidRobustValue = (value: string) =>
+  validateNumericText(value, ROBUST_RANGE.min, ROBUST_RANGE.max);
 
 export default function RobustField({
   disabled = false,
@@ -33,30 +40,23 @@ export default function RobustField({
   widthButton = 0
 }: RobustFieldProps) {
   const { t } = useScopedTranslation();
-  const FIELD = 'robust';
-  const ROBUST_RANGE = { min: -2, max: 2 };
-  const ROBUST_STEP = 0.1;
   const [inputValue, setInputValue] = React.useState(String(value ?? ''));
 
   React.useEffect(() => {
-    setInputValue(String(value ?? ''));
+    const nextValue = String(value ?? '');
+    setInputValue((previousValue) => (previousValue === nextValue ? previousValue : nextValue));
   }, [value]);
 
   const handleSetValue = (nextValue: string) => {
     setInputValue(nextValue);
-    if (!validateNumericText(nextValue, ROBUST_RANGE.min, ROBUST_RANGE.max)) {
+    if (!isValidRobustValue(nextValue)) {
       return;
     }
-
-    if (setValue) {
-      setValue(Number(nextValue));
-    }
+    setValue?.(Number(nextValue));
   };
 
   const errorText =
-    inputValue.length > 0 && !validateNumericText(inputValue, ROBUST_RANGE.min, ROBUST_RANGE.max)
-      ? t('robust.error')
-      : '';
+    inputValue.length > 0 && !isValidRobustValue(inputValue) ? t('robust.error') : '';
 
   return (
     <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
@@ -71,9 +71,9 @@ export default function RobustField({
           required={required}
           value={inputValue}
           inputProps={{ 'data-testid': FIELD }}
-          onChange={(e) => handleSetValue(e.target.value)}
+          onChange={(event) => handleSetValue(event.target.value)}
           label={label}
-          onFocus={() => onFocus?.()}
+          onFocus={onFocus}
           slotProps={{
             htmlInput: {
               step: ROBUST_STEP,
