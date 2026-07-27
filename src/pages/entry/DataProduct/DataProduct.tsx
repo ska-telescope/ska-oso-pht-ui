@@ -39,6 +39,7 @@ import {
   PAGE_DATA_PRODUCTS,
   PIXEL_SIZE_DEFAULT,
   PIXEL_SIZE_UNIT_DEFAULT,
+  POLARISATIONS_DEFAULT,
   PULSAR_TIMING_VALUE,
   REFERENCE_COORDINATE_TYPE_SSO,
   ROBUST_DEFAULT,
@@ -73,7 +74,11 @@ import ContinuumSubtractionField from '@/components/fields/continuumSubtraction/
 import SensCalcContent from '@/components/alerts/sensCalcModal/content/SensCalcContent';
 import { updateDataProducts } from '@/utils/update/dataProducts/updateDataProducts';
 import { updateSensCalc } from '@/utils/update/sensCalc/updateSensCalc';
-import { DataProductSDPNew, SDPVisibilitiesContinuumData } from '@/utils/types/dataProduct';
+import {
+  DataProductSDPNew,
+  SDPImageContinuumData,
+  SDPVisibilitiesContinuumData
+} from '@/utils/types/dataProduct';
 import OutputFrequencyResolutionField from '@/components/fields/outputFrequencyResolution/outputFrequencyResolution';
 import DispersionMeasureField from '@/components/fields/dispersionMeasure/dispersionMeasure';
 import RotationMeasureField from '@/components/fields/rotationMeasure/rotationMeasure';
@@ -204,7 +209,17 @@ export default function DataProduct({ data }: DataProductProps) {
     // the hidden option still exists within the data model, and we need to set
     // its values to something sensible.
     if (getDataProductTypeValue(dp) === DP_TYPE_IMAGES) {
-      return updateImagesDataProductSizes(dp, observation.centralFrequency);
+      const continuumImagesData = {
+        ...dp,
+        data: {
+          ...dp,
+          weighting: IW_BRIGGS,
+          robust: ROBUST_DEFAULT,
+          polarisations: POLARISATIONS_DEFAULT,
+          channelsOut: CHANNELS_OUT_DEFAULT
+        }
+      };
+      return updateImagesDataProductSizes(continuumImagesData, observation.centralFrequency);
     }
 
     const continuumVisibilityData = dp.data as SDPVisibilitiesContinuumData;

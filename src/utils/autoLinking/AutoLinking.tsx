@@ -7,6 +7,7 @@ import {
   IW_UNIFORM,
   PIXEL_SIZE_DEFAULT,
   PIXEL_SIZE_UNIT_DEFAULT,
+  POLARISATIONS_DEFAULT,
   PULSAR_TIMING_VALUE,
   REFERENCE_COORDINATE_TYPE_SSO,
   ROBUST_DEFAULT,
@@ -38,15 +39,17 @@ interface DefaultsResults {
   error?: string;
 }
 
-export const newObservationForMode = (observationMode: string, maxZoomChannels?: number): Observation => {
+export const newObservationForMode = (
+  observationMode: string,
+  maxZoomChannels?: number
+): Observation => {
   return {
     ...getDefaultObservationLowAA2(observationMode),
     id: generateId('obs-', 6),
-        // DEFAULT_ZOOM_OBSERVATION_LOW's zoomChannels is a static placeholder (1000) with no
+    // DEFAULT_ZOOM_OBSERVATION_LOW's zoomChannels is a static placeholder (1000) with no
     // knowledge of the actual subarray's channel cap - override it with the real cap when the
     // caller has it available, rather than baking the placeholder into the saved observation.
     ...(observationMode === TYPE_ZOOM && maxZoomChannels ? { zoomChannels: maxZoomChannels } : {})
-
   };
 };
 
@@ -81,7 +84,7 @@ export const SDPData = (
         pixelSizeValue: PIXEL_SIZE_DEFAULT,
         pixelSizeUnits: PIXEL_SIZE_UNIT_DEFAULT,
         weighting: IW_UNIFORM,
-        polarisations: ['I', 'XX'],
+        polarisations: POLARISATIONS_DEFAULT,
         channelsOut: CHANNELS_OUT_DEFAULT,
         robust: ROBUST_DEFAULT,
         taperValue: TAPER_DEFAULT,
@@ -96,7 +99,7 @@ export const SDPData = (
         pixelSizeValue: PIXEL_SIZE_DEFAULT,
         pixelSizeUnits: PIXEL_SIZE_UNIT_DEFAULT,
         weighting: IW_UNIFORM,
-        polarisations: ['I', 'XX'],
+        polarisations: POLARISATIONS_DEFAULT,
         channelsOut: CHANNELS_OUT_DEFAULT,
         robust: ROBUST_DEFAULT,
         taperValue: TAPER_DEFAULT
@@ -207,26 +210,21 @@ export default async function autoLinking(
   if (!isSSO) {
     sensCalcResult = await getSensCalcData(newObservation, target, mainDataProduct);
 
+    const isValidSensCalcResult = (r: any): boolean =>
+      !!r &&
+      !r.error && // { error: string } failures
+      !r.detail && // { title, detail } validation failures
+      Array.isArray(r.section1); // a real result has sections; failures don't
 
-      const isValidSensCalcResult = (r: any): boolean =>
-    !!r &&
-    !r.error && // { error: string } failures
-    !r.detail && // { title, detail } validation failures
-    Array.isArray(r.section1); // a real result has sections; failures don't
+    // if a specific error message from backend → surface it
+    if (typeof sensCalcResult === 'string') {
+      return { success: false, error: 'autoLink.errorNoSensCalcResponse' };
+    }
 
-
-
-
-  // if a specific error message from backend → surface it
-  if (typeof sensCalcResult === 'string') {
-    return { success: false, error: 'autoLink.errorNoSensCalcResponse' };
+    if (!isValidSensCalcResult(sensCalcResult)) {
+      return { success: false, error: 'autoLink.errorNoSensCalcResponse' };
+    }
   }
-
-  if (!isValidSensCalcResult(sensCalcResult)) {
-    return { success: false, error: 'autoLink.errorNoSensCalcResponse' };
-  }
-  }
-
 
   const targetObservation: TargetObservation = {
     targetId: target?.id,

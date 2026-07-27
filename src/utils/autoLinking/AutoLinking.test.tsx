@@ -51,17 +51,19 @@ describe('autoLinking, newObservationForMode', () => {
   });
   test('observationOut zoom overrides the static zoomChannels placeholder with the real cap', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
-    const result = observationOut(TYPE_ZOOM, 4000);
+    const result = newObservationForMode(TYPE_ZOOM, 4000);
     expect(result.zoomChannels).toBe(4000);
     expect(result).toEqual({ ...DEFAULT_ZOOM_OBSERVATION_LOW, zoomChannels: 4000 });
   });
   test('observationOut zoom keeps the static placeholder when no cap is provided', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
-    expect(observationOut(TYPE_ZOOM)).deep.equal(DEFAULT_ZOOM_OBSERVATION_LOW);
+    expect(newObservationForMode(TYPE_ZOOM)).deep.equal(DEFAULT_ZOOM_OBSERVATION_LOW);
   });
   test('observationOut continuum ignores maxZoomChannels (not a zoom observation)', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
-    expect(observationOut(TYPE_CONTINUUM, 4000)).deep.equal(DEFAULT_CONTINUUM_OBSERVATION_LOW);
+    expect(newObservationForMode(TYPE_CONTINUUM, 4000)).deep.equal(
+      DEFAULT_CONTINUUM_OBSERVATION_LOW
+    );
   });
 });
 
@@ -397,7 +399,7 @@ describe('autoLinking()', () => {
     // the link is still created — that's the whole point of SSO support
     expect(proposal.targets).toHaveLength(1);
     expect(proposal.observations).toHaveLength(1);
-    expect(proposal.dataProductSDP).toHaveLength(1);
+    expect(proposal.dataProductSDP).toHaveLength(2);
     expect(proposal.calibrationStrategy).toHaveLength(1);
     expect(proposal.targetObservation).toHaveLength(1);
 

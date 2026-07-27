@@ -66,7 +66,10 @@ export const updateDataProductsOnObservationChange = (
       (dataProduct) => dataProduct.observationId === observation.id
     );
     if (pstDataProductIndex != -1) {
-      newDataProducts[pstDataProductIndex] = dataProductForPstMode;
+      newDataProducts[pstDataProductIndex] = {
+        ...dataProductForPstMode,
+        id: newDataProducts[pstDataProductIndex].id
+      };
     }
   } else {
     const imagesDataProductIndex = newDataProducts.findIndex(
@@ -94,6 +97,10 @@ export const updateImagesDataProductSizes = (
   imagesDataProduct: DataProductSDPNew,
   centralFrequencyMhz: number
 ): DataProductSDPNew => {
+  if (!centralFrequencyMhz || centralFrequencyMhz <= 0) {
+    return imagesDataProduct;
+  }
+
   const centralWavelengthM = SPEED_OF_LIGHT / (centralFrequencyMhz * 1e6);
   const imageSizeDeg = (180 / Math.PI) * (centralWavelengthM / AA2_LOW_STATION_DIAMETER_M);
   const pixelSizeDeg =
