@@ -54,8 +54,11 @@ export const FrequencySpectrum: React.FC<FrequencySpectrumProps> = ({
     bandColorContrast === '' ? theme.palette.primary.contrastText : bandColorContrast;
 
   // Apply a tolerance to the boundary checks, so that a value that's genuinely exactly at the
-  // boundary (but which may differ from min/max by a fraction of a Hz (due to rounding / fp arithmetic
-  const BOUNDARY_TOLERANCE = 0.001;
+  // boundary (but which may differ from min/max by a fraction of a Hz due to rounding/fp
+  // arithmetic) isn't flagged as a breach. 1 Hz, converted into whatever display unit this
+  // instance uses - matches the tolerance isCentralFrequencyOnChannelGrid/isCentralFrequencyDivisible
+  // use for the same reason, rather than a flat value that's wrong for GHz-scale MID bands.
+  const BOUNDARY_TOLERANCE = 1 / (unit === 'GHz' ? 1e9 : 1e6);
   if (bandStartFreq < minFreq - BOUNDARY_TOLERANCE || bandEndFreq > maxFreq + BOUNDARY_TOLERANCE) {
     usedColor = theme.palette.error.main;
     usedColorContrast = theme.palette.error.contrastText;
