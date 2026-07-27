@@ -2,6 +2,7 @@ import {
   DP_TYPE_IMAGES,
   IW_UNIFORM,
   PULSAR_TIMING_VALUE,
+  REFERENCE_COORDINATE_TYPE_SSO,
   ROBUST_DEFAULT,
   TAPER_DEFAULT,
   TYPE_PST,
@@ -150,7 +151,7 @@ export default async function autoLinking(
   target: Target,
   getProposal: Function,
   setProposal: Function,
-  observationMode?: string, // science category is used for observation mode on SV
+  observationMode?: string,
   abstract?: string | undefined
 ): Promise<DefaultsResults> {
   const newObsMode =
@@ -162,6 +163,12 @@ export default async function autoLinking(
   if (typeof sensCalcResult === 'string') {
     return { success: false, error: sensCalcResult };
   }
+
+  const isSSO = target.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
+  if (!isSSO && !sensCalcResult) {
+    return { success: false, error: 'autoLink.errorNoSensCalcResponse' };
+  }
+
   const newCalibration = calibrationOut(newObservation?.id);
 
   updateProposal(
