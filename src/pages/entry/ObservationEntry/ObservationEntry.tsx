@@ -613,15 +613,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           ? frequencyConversion(getZoomBandwidthHz(), FREQUENCY_HZ, FREQUENCY_MHZ)
           : bandwidth
         : continuumBandwidth;
-    return isFrequencyOutOfRange(
-      centralFrequency,
-      useBandwidth,
-      isLow(),
-      String(observingBand),
-      observationType,
-      getResolutionHz(),
-      getZoomBandwidthHz()
-    );
+    return isFrequencyOutOfRange(centralFrequency, useBandwidth, isLow(), String(observingBand));
   };
 
   const emptyField = () => <></>;
