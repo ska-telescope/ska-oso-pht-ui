@@ -75,8 +75,6 @@ export default function SteppedNumberField({
   const isFocused = React.useRef(false);
   const formatRef = React.useRef(format);
   formatRef.current = format;
-  // Hide spin buttons when the field doesn't have focus
-  const [showSpinButtons, setShowSpinButtons] = React.useState(false);
 
   React.useEffect(() => {
     if (!isFocused.current) {
@@ -95,13 +93,11 @@ export default function SteppedNumberField({
 
   const handleFocus = () => {
     isFocused.current = true;
-    setShowSpinButtons(true);
     onFocus?.();
   };
 
   const handleBlur = () => {
     isFocused.current = false;
-    setShowSpinButtons(false);
     setInputValue(format(value));
     onBlurCommit?.(value);
   };
@@ -192,14 +188,10 @@ export default function SteppedNumberField({
     doStep(direction);
   };
 
-  // Hidden until the field is focused (opacity/pointer-events rather than unmounting, so
-  // clicking a button doesn't first have to re-mount it under the same mousedown)
   const spinButtons = (
     <Stack
       sx={{
-        mr: suffix ? 0.5 : 0,
-        opacity: showSpinButtons ? 1 : 0,
-        pointerEvents: showSpinButtons ? 'auto' : 'none'
+        mr: suffix ? 0.5 : 0
       }}
     >
       <IconButton
