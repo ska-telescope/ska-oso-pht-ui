@@ -66,10 +66,8 @@ describe('CycleSelection component', () => {
   it('renders cycle details correctly when open', () => {
     wrapper(<CycleSelection open={true} onClose={vi.fn()} onConfirm={vi.fn()} />);
     expect(screen.getByText('Cycle')).toBeInTheDocument();
-    expect(screen.getByText('Cycle ID')).toBeInTheDocument();
-    expect(screen.getByText(/SKAO_2027_1/)).toBeInTheDocument();
-    expect(screen.getByText('Description')).toBeInTheDocument();
-    expect(screen.getByText('Science Verification')).toBeInTheDocument();
+    expect(screen.getByText(/Cycle ID:\s*SKAO_2027_1/)).toBeInTheDocument();
+    expect(screen.getByText(/Description:\s*Science Verification/)).toBeInTheDocument();
   });
 
   it('does not render when open is false', () => {

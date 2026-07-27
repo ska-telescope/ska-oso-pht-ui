@@ -47,7 +47,6 @@ describe('Helper Functions', () => {
   test('mappingPutProposal returns mapped proposal from frontend to backend format', () => {
     const proposalBackEnd: ProposalBackend = MappingPutProposal(
       MockProposalFrontend,
-      false,
       PROPOSAL_STATUS.DRAFT
     );
     expect(proposalBackEnd).to.deep.equal(MockProposalBackend);
@@ -56,7 +55,6 @@ describe('Helper Functions', () => {
   test('mappingPutProposal returns mapped proposal with zoom observation from frontend to backend format', () => {
     const proposalBackEnd: ProposalBackend = MappingPutProposal(
       MockProposalFrontendZoom,
-      false,
       PROPOSAL_STATUS.DRAFT
     );
     expect(proposalBackEnd).to.deep.equal(MockProposalBackendZoom);
@@ -64,11 +62,7 @@ describe('Helper Functions', () => {
 
   test('mappingPutProposal returns mapped proposal and returns empty array of sub-type when not specified', () => {
     const proposal = { ...MockProposalFrontend, proposalSubType: undefined };
-    const proposalBackEnd: ProposalBackend = MappingPutProposal(
-      proposal,
-      false,
-      PROPOSAL_STATUS.DRAFT
-    );
+    const proposalBackEnd: ProposalBackend = MappingPutProposal(proposal, PROPOSAL_STATUS.DRAFT);
     expect(proposalBackEnd).to.deep.equal({
       ...MockProposalBackend,
       proposal_info: {
@@ -97,72 +91,42 @@ describe('PutProposal Service', () => {
 
   test('returns mock data when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await PutProposal(
-      mockedAuthClient,
-      MockProposalFrontend,
-      false,
-      PROPOSAL_STATUS.DRAFT
-    );
+    const result = await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
     expect(result).to.deep.equal(MockProposalBackend);
   });
 
   test('returns data from API when USE_LOCAL_DATA is false', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.put.mockResolvedValue({ data: MockProposalBackend });
-    const result = await PutProposal(
-      mockedAuthClient,
-      MockProposalFrontend,
-      false,
-      PROPOSAL_STATUS.DRAFT
-    );
+    const result = await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
     expect(result).to.deep.equal(MockProposalBackend);
   });
 
   test('returns error message on API failure', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.put.mockRejectedValue(new Error('Network Error'));
-    const result = await PutProposal(
-      mockedAuthClient,
-      MockProposalFrontend,
-      false,
-      PROPOSAL_STATUS.DRAFT
-    );
+    const result = await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
     expect(result).toStrictEqual({ error: 'Network Error' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when thrown error is not an instance of Error', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.put.mockRejectedValue({ unexpected: 'object' });
-    const result = await PutProposal(
-      mockedAuthClient,
-      MockProposalFrontend,
-      false,
-      PROPOSAL_STATUS.DRAFT
-    );
+    const result = await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result undefined', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.put.mockResolvedValue(undefined);
-    const result = await PutProposal(
-      mockedAuthClient,
-      MockProposalFrontend,
-      false,
-      PROPOSAL_STATUS.DRAFT
-    );
+    const result = await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 
   test('returns error.API_UNKNOWN_ERROR when result null', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.put.mockResolvedValue(null);
-    const result = await PutProposal(
-      mockedAuthClient,
-      MockProposalFrontend,
-      false,
-      PROPOSAL_STATUS.DRAFT
-    );
+    const result = await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
   });
 });
@@ -496,14 +460,15 @@ describe('getObservationTypeDetails', () => {
       type: TYPE_ZOOM,
       spectralResolution: 1.2,
       effectiveResolution: 2.3,
-      spectralAveraging: 4
+      spectralAveraging: 4,
+      zoomChannels: 2000
     } as any;
     const result = getObservationTypeDetails(obs);
     expect(result.observation_type).toBe(TYPE_ZOOM_LONG);
     expect(result.spectral_resolution).toBe(1.2);
     expect(result.effective_resolution).toBe(2.3);
     expect(result.spectral_averaging).toBe('4');
-    expect(result.number_of_channels).toBe('1024');
+    expect(result.number_of_channels).toBe('2000');
   });
 
   test('should return correct details for TYPE_PST', () => {

@@ -31,6 +31,7 @@ import {
   VEL_UNITS,
   TELESCOPE_MID_BACKEND_MAPPING,
   TELESCOPE_LOW_BACKEND_MAPPING,
+  SA_AA2,
   FREQUENCY_UNITS,
   ROBUST,
   OSO_SERVICES_PROPOSAL_PATH,
@@ -39,6 +40,7 @@ import {
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   isCypress,
   SCIENCE_VERIFICATION,
+  SCIENCE_VERIFICATION_TYPE_ID,
   TYPE_PST,
   PST_MODES,
   DP_TYPE_IMAGES,
@@ -105,7 +107,7 @@ const getAttributes = (proposalType: {
   const project = PROJECTS?.find(({ mapping }) => mapping === proposalType.main_type);
 
   const subProjects = proposalType.attributes
-    ?.map(attr => project?.subProjects?.find(({ mapping }) => mapping === attr))
+    ?.map((attr) => project?.subProjects?.find(({ mapping }) => mapping === attr))
     ?.filter((sp): sp is { id: number; label: string; mapping: string } => sp !== undefined);
 
   const result = subProjects?.map(({ id }) => id);
@@ -114,14 +116,14 @@ const getAttributes = (proposalType: {
 
 export const getScienceCategory = (scienceCat: string) => {
   const cat = DETAILS.ScienceCategory?.find(
-    c => c.label.toLowerCase() === scienceCat?.toLowerCase()
+    (c) => c.label.toLowerCase() === scienceCat?.toLowerCase()
   )?.value;
   return cat === null || cat === undefined ? null : cat;
 };
 
 export const getObservingMode = (observingMode: string) => {
   const obsMode = DETAILS.ObservingMode?.find(
-    obsMode => obsMode.label.toLowerCase() === observingMode?.toLowerCase()
+    (obsMode) => obsMode.label.toLowerCase() === observingMode?.toLowerCase()
   )?.value;
   return obsMode === null || obsMode === undefined ? null : obsMode;
 };
@@ -129,7 +131,7 @@ export const getObservingMode = (observingMode: string) => {
 const getPDF = (documents: DocumentBackend[] | null, documentId: string): DocumentPDF | null => {
   if (!documents) return null;
 
-  const documentById = documents.find(document => document.document_id === documentId);
+  const documentById = documents.find((document) => document.document_id === documentId);
 
   if (!documentById) return null;
 
@@ -140,8 +142,9 @@ const getPDF = (documents: DocumentBackend[] | null, documentId: string): Docume
 };
 
 export const getVelType = (InDefinition: string) => {
-  const velType = VEL_TYPES.find(item => item.label.toLowerCase() === InDefinition?.toLowerCase())
-    ?.value;
+  const velType = VEL_TYPES.find(
+    (item) => item.label.toLowerCase() === InDefinition?.toLowerCase()
+  )?.value;
   return velType ? velType : 1; // fallback
 };
 
@@ -219,11 +222,11 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       velType: getVelType(e.radial_velocity.definition),
       vel: e.radial_velocity.quantity?.value?.toString(),
       velUnit: VEL_UNITS.find(
-        u => u.label === e.radial_velocity?.quantity?.unit?.split(' ').join('')
+        (u) => u.label === e.radial_velocity?.quantity?.unit?.split(' ').join('')
       )?.value as number,
       pointingPattern: {
         active: e.pointing_pattern?.active as string,
-        parameters: e.pointing_pattern?.parameters?.map(p => ({
+        parameters: e.pointing_pattern?.parameters?.map((p) => ({
           kind: p.kind,
           offsetXArcsec: p.offset_x_arcsec,
           offsetYArcsec: p.offset_y_arcsec
@@ -280,7 +283,7 @@ const getGroupObservations = (inValue: ObservationSetBackend[] | null) => {
 
 const getDataProductSRC = (inValue: DataProductSRCNetBackend[] | null): DataProductSRC[] => {
   return inValue
-    ? inValue.map(dp => ({
+    ? inValue.map((dp) => ({
         id: dp?.data_products_src_id,
         dataProductType: 0,
         observationId: ''
@@ -316,47 +319,50 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
     unit ? PIXEL_SIZE_UNITS.indexOf(unit) : 0;
 
   return (
-    inValue?.map(dp => {
+    inValue?.map((dp) => {
       const script = dp?.script_parameters ?? {};
       return {
         id: dp?.data_product_id ?? '',
         observationId: dp?.observation_set_ref ?? '',
         data: {
           dataProductType: getDataProductType(script) ?? 0,
-          imageSizeValue: 'image_size' in script ? script.image_size?.value ?? 0 : 0,
+          imageSizeValue: 'image_size' in script ? (script.image_size?.value ?? 0) : 0,
           imageSizeUnits:
             'image_size' in script ? getImageSizeUnits(script.image_size?.unit ?? null) : 0,
 
-          pixelSizeValue: 'image_cellsize' in script ? script.image_cellsize?.value ?? 0 : 0,
+          pixelSizeValue: 'image_cellsize' in script ? (script.image_cellsize?.value ?? 0) : 0,
           pixelSizeUnits:
             'image_cellsize' in script ? getPixelSizeUnits(script.image_cellsize?.unit ?? null) : 0,
           weighting:
             'weight' in script && script.weight?.weighting
-              ? getWeighting(script.weight.weighting as string) ?? 0
+              ? (getWeighting(script.weight.weighting as string) ?? 0)
               : 0,
           robust:
             'weight' in script && script.weight?.weighting === 'briggs'
-              ? ROBUST.find(item => item.label === String(script.weight?.robust ?? ''))?.value ?? 0
+              ? (ROBUST.find((item) => item.label === String(script.weight?.robust ?? ''))?.value ??
+                0)
               : 0,
           polarisations: 'polarisations' in script ? script.polarisations : undefined,
-          channelsOut: 'channels_out' in script ? Number(script.channels_out) ?? 0 : 0,
-          taperValue: 'gaussian_taper' in script ? Number(script.gaussian_taper) ?? 0 : 0,
+          channelsOut: 'channels_out' in script ? (Number(script.channels_out) ?? 0) : 0,
+          taperValue: 'gaussian_taper' in script ? (Number(script.gaussian_taper) ?? 0) : 0,
           // TODO - we shouldn't need so many conditionals in this function. Fix when we have
           // refactored with better typing
           timeAveraging: script.time_averaging ?? 1,
           frequencyAveraging: script.frequency_averaging ?? 1,
-          bitDepth: 'bit_depth' in script ? Number(script.bit_depth) ?? 1 : 1,
+          bitDepth: 'bit_depth' in script ? (Number(script.bit_depth) ?? 1) : 1,
           continuumSubtraction:
             'continuum_subtraction' in script ? Boolean(script.continuum_subtraction) : false,
           outputFrequencyResolution:
             'output_frequency_resolution' in script
-              ? Number(script.output_frequency_resolution) ?? 0
+              ? (Number(script.output_frequency_resolution) ?? 0)
               : 0,
           outputSamplingInterval:
-            'output_sampling_interval' in script ? Number(script.output_sampling_interval) ?? 0 : 0,
+            'output_sampling_interval' in script
+              ? (Number(script.output_sampling_interval) ?? 0)
+              : 0,
           dispersionMeasure:
-            'dispersion_measure' in script ? Number(script.dispersion_measure) ?? 0 : 0,
-          rotationMeasure: 'rotation_measure' in script ? Number(script.rotation_measure) ?? 0 : 0
+            'dispersion_measure' in script ? (Number(script.dispersion_measure) ?? 0) : 0,
+          rotationMeasure: 'rotation_measure' in script ? (Number(script.rotation_measure) ?? 0) : 0
         }
       };
     }) ?? []
@@ -367,12 +373,12 @@ const getCalibrationStrategy = (
   inValue: CalibrationStrategyBackend[] | null
 ): CalibrationStrategy[] => {
   return inValue
-    ? inValue.map(strategy => ({
+    ? inValue.map((strategy) => ({
         observatoryDefined: strategy?.observatory_defined,
         id: strategy?.calibration_id,
         observationIdRef: strategy?.observation_set_ref,
         calibrators: strategy?.calibrators
-          ? strategy?.calibrators?.map(calibrator => calibratorMapping(calibrator))
+          ? strategy?.calibrators?.map((calibrator) => calibratorMapping(calibrator))
           : null,
         notes: strategy.notes
       }))
@@ -382,17 +388,17 @@ const getCalibrationStrategy = (
 /*********************************************************** observation parameters mapping *********************************************************/
 const getWeighting = (inImageWeighting: string): number => {
   const weighting = IMAGE_WEIGHTING?.find(
-    item => item.lookup.toLowerCase() === inImageWeighting?.toLowerCase()
+    (item) => item.lookup.toLowerCase() === inImageWeighting?.toLowerCase()
   )?.value;
   return weighting ? weighting : 1; // fallback
 };
 
 const getSupplied = (inSupplied: SuppliedBackend | null): Supplied => {
   const suppliedType = OSD_CONSTANTS.Supplied?.find(
-    s => s.mappingLabel === inSupplied?.supplied_type
+    (s) => s.mappingLabel === inSupplied?.supplied_type
   );
   const suppliedUnits =
-    suppliedType?.units?.find(u => u.label === inSupplied?.quantity.unit)?.value ??
+    suppliedType?.units?.find((u) => u.label === inSupplied?.quantity.unit)?.value ??
     inSupplied?.supplied_type;
   const supplied = {
     type: suppliedType?.value,
@@ -406,23 +412,31 @@ export const getFrequencyAndBandwidthUnits = (
   inUnits: string | null,
   observingBand: string
 ): number => {
-  const units = FREQUENCY_UNITS.find(item => item.mapping.toLowerCase() === inUnits?.toLowerCase())
-    ?.value;
+  const units = FREQUENCY_UNITS.find(
+    (item) => item.mapping.toLowerCase() === inUnits?.toLowerCase()
+  )?.value;
   return units
     ? units
     : (FREQUENCY_UNITS.find(
-        item =>
+        (item) =>
           item.label.toLowerCase() ===
           (observingBand === BAND_LOW_STR ? FREQUENCY_STR_GHZ : FREQUENCY_STR_MHZ).toLowerCase()
       )?.value as number);
 };
 
 export const getBandwidth = (incBandwidth: number, telescope: number): number => {
-  const array = OSD_CONSTANTS.array?.find(item => item?.value === telescope);
-  const bandwidth = array?.bandWidth?.find(bandwidth =>
-    bandwidth?.label?.includes(String(incBandwidth?.toString()))
-  )?.value;
-  return bandwidth ? bandwidth : 1;
+  const options = OSD_CONSTANTS.array?.find((item) => item?.value === telescope)?.bandWidth ?? [];
+  if (options.length === 0) return 1;
+  // Match by nearest numeric value rather than an exact substring of the label, since the
+  // backend can round/reformat the stored number (e.g. 390.625 -> 390.63) - an exact string
+  // match would silently fall through to the default and lose the saved selection.
+  const closest = options.reduce((best, candidate) =>
+    Math.abs(Number(candidate?.label?.split(' ')[0]) - incBandwidth) <
+    Math.abs(Number(best?.label?.split(' ')[0]) - incBandwidth)
+      ? candidate
+      : best
+  );
+  return closest.value;
 };
 
 const getLinked = (
@@ -430,7 +444,7 @@ const getLinked = (
   inResults: SensCalcResultsBackend[] | null
 ) => {
   const obsRef = inObservation.observation_set_id;
-  const linkedTargetRef = inResults?.find(res => res?.observation_set_ref === obsRef)?.target_ref;
+  const linkedTargetRef = inResults?.find((res) => res?.observation_set_ref === obsRef)?.target_ref;
   return linkedTargetRef ? linkedTargetRef : '';
 };
 
@@ -450,8 +464,12 @@ const getObservations = (
   for (let i = 0; i < inValue?.length; i++) {
     const arr = inValue[i]?.array_details?.array === TELESCOPE_MID_BACKEND_MAPPING ? 1 : 2;
     //TODO: Rework logic to reference array label rather than number
+    // Older observations may have been saved as 'aa2' before the LOW array assembly was
+    // renamed to 'aa2_sv' - normalise so those still resolve to the current SA_AA2 entry.
+    const backendSubarray = inValue[i]?.array_details?.subarray?.toLocaleLowerCase();
+    const normalizedSubarray = backendSubarray === 'aa2' ? SA_AA2 : backendSubarray;
     const sub = OSD_CONSTANTS.array[arr - 1].subarray?.find(
-      p => p.value.toLowerCase() === inValue[i]?.array_details?.subarray?.toLocaleLowerCase()
+      (p) => p.value.toLowerCase() === normalizedSubarray
     )?.value;
 
     const type = typeCheck(inValue[i]?.observation_type_details?.observation_type);
@@ -511,7 +529,7 @@ const getObservations = (
       linked: getLinked(inValue[i], inResults),
       continuumBandwidth:
         type === TYPE_CONTINUUM || type === TYPE_PST
-          ? inValue[i].observation_type_details?.bandwidth?.value ?? null
+          ? (inValue[i].observation_type_details?.bandwidth?.value ?? null)
           : null,
       continuumBandwidthUnits:
         type === TYPE_CONTINUUM || type === TYPE_PST
@@ -529,7 +547,7 @@ const getObservations = (
       }),
       ...(type === TYPE_PST && {
         pstMode: PST_MODES?.find(
-          mode =>
+          (mode) =>
             mode?.mapping ===
             (inValue[i].observation_type_details as ObservationTypeDetailsPSTBackend)?.pst_mode
         )?.value
@@ -551,7 +569,7 @@ const getResultsSection1 = (
   inResultObservationRef: string | null
 ): SensCalcResults['section1'] => {
   let section1 = [];
-  const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
+  const obs = inObservationSets?.find((o) => o.observation_set_id === inResultObservationRef);
 
   // for continuum or PST observation
   if (isContinuum || isPST) {
@@ -616,7 +634,7 @@ const getResultsSection2 = (
   inResultObservationRef: string | null
 ): SensCalcResults['section2'] => {
   const section2 = [];
-  const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
+  const obs = inObservationSets?.find((o) => o.observation_set_id === inResultObservationRef);
 
   if (!isSensitivity) {
     section2.push({
@@ -664,7 +682,7 @@ const getResultsSection3 = (
   _inResult: SensCalcResultsBackend,
   isSensitivity: boolean
 ): SensCalcResults['section3'] => {
-  const obs = inObservationSets?.find(o => o.observation_set_id === inResultObservationRef);
+  const obs = inObservationSets?.find((o) => o.observation_set_id === inResultObservationRef);
   const field = isSensitivity ? 'sensitivity' : 'integrationTime';
   return [
     {
@@ -680,7 +698,7 @@ const getResultObsType = (
   inObservationSets: ObservationSetBackend[]
 ) => {
   const obsSetRef = result.observation_set_ref;
-  const obs = inObservationSets.find(item => item.observation_set_id === obsSetRef);
+  const obs = inObservationSets.find((item) => item.observation_set_id === obsSetRef);
   return obs?.observation_type_details?.observation_type;
 };
 
@@ -706,7 +724,7 @@ const getTargetObservation = (
     const isSensitivity = result.result?.supplied_type === 'sensitivity';
 
     const targetObs: TargetObservation = {
-      targetId: outTargets.find(tar => tar.name === result.target_ref)?.id as number,
+      targetId: outTargets.find((tar) => tar.name === result.target_ref)?.id as number,
       observationId: result.observation_set_ref as string,
       dataProductsSDPId: result?.data_product_ref,
       sensCalc: {
@@ -749,16 +767,16 @@ const getTargetObservation = (
 export function mapping(inRec: ProposalBackend): Proposal {
   const isSV: boolean = inRec.proposal_info?.proposal_type?.main_type === SCIENCE_VERIFICATION;
 
-  const sciencePDF: DocumentPDF = (getPDF(
+  const sciencePDF: DocumentPDF = getPDF(
     inRec?.observation_info?.documents,
     PDF_NAME_PREFIXES.SCIENCE + inRec.prsl_id
-  ) as unknown) as DocumentPDF;
+  ) as unknown as DocumentPDF;
   const technicalPDF: DocumentPDF | undefined = isSV
     ? undefined
-    : ((getPDF(
+    : (getPDF(
         inRec?.observation_info?.documents,
         PDF_NAME_PREFIXES.TECHNICAL + inRec.prsl_id
-      ) as unknown) as DocumentPDF);
+      ) as unknown as DocumentPDF);
 
   const targets = getTargets(inRec.observation_info?.targets);
 
@@ -767,13 +785,13 @@ export function mapping(inRec: ProposalBackend): Proposal {
     id: inRec.prsl_id,
     title: inRec.proposal_info?.title,
     proposalType: isSV
-      ? 9
-      : PROJECTS?.find(p => p.mapping === inRec.proposal_info?.proposal_type?.main_type)?.id,
+      ? SCIENCE_VERIFICATION_TYPE_ID
+      : PROJECTS?.find((p) => p.mapping === inRec.proposal_info?.proposal_type?.main_type)?.id,
     proposalSubType: isSV
       ? []
       : inRec.proposal_info?.proposal_type?.attributes
-      ? getAttributes(inRec.proposal_info?.proposal_type)
-      : [],
+        ? getAttributes(inRec.proposal_info?.proposal_type)
+        : [],
     status: inRec.status,
     lastUpdated: inRec.metadata?.last_modified_on,
     lastUpdatedBy: inRec.metadata?.last_modified_by,

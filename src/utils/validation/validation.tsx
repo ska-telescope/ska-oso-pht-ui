@@ -23,11 +23,19 @@ import {
   TELESCOPE_LOW_NUM,
   TYPE_CONTINUUM,
   TYPE_PST,
-  TYPE_ZOOM
+  TYPE_ZOOM,
+  ZOOM_BANDWIDTH_DEFAULT_LOW,
+  ZOOM_CHANNELS_DEFAULT_LOW
 } from './../constants';
 import Proposal from './../types/proposal';
 import { countWords, frequencyConversion, isFrequencyRangeOutOfBand } from '../helpers';
 import { useOSDAccessors } from '../osd/useOSDAccessors/useOSDAccessors';
+import {
+  channelsToBandwidthHz,
+  getZoomResolutionHz,
+  isCentralFrequencyDivisible,
+  isCentralFrequencyOnChannelGrid
+} from '../zoomWindow';
 import phtTranslations from '../../../public/locales/en/pht.json';
 
 export const validateTitlePage = (proposal: Proposal) => {
@@ -102,7 +110,10 @@ export const useIsFrequencyOutOfRange = () => {
     centralFrequency: number,
     bandwidth: number,
     isLow: boolean,
-    observingBand: string
+    observingBand: string,
+    type?: string,
+    channelWidthHz?: number,
+    windowBandwidthHz?: number
   ): boolean => {
     let minHz = 0;
     let maxHz = 0;
@@ -119,22 +130,70 @@ export const useIsFrequencyOutOfRange = () => {
     }
 
     const targetUnits = isLow ? FREQUENCY_MHZ : FREQUENCY_GHZ;
-    const minFreq = frequencyConversion(minHz, FREQUENCY_HZ, targetUnits);
-    const maxFreq = frequencyConversion(maxHz, FREQUENCY_HZ, targetUnits);
-    return isFrequencyRangeOutOfBand(centralFrequency, bandwidth, minFreq, maxFreq);
+    // Compare in Hz, rounded to the nearest Hz, rather than converting minHz/maxHz into
+    // MHz/GHz first - minFrequencyHz/maxFrequencyHz are no longer pre-rounded to a clean MHz
+    // boundary (see getOSDCycles.tsx), and a GHz round-trip only keeps ~1000 Hz of precision at
+    // 6 d.p., which that prior rounding used to mask.
+    const centralFrequencyHz = Math.round(
+      frequencyConversion(centralFrequency, targetUnits, FREQUENCY_HZ)
+    );
+    const bandwidthHz = Math.round(frequencyConversion(bandwidth, targetUnits, FREQUENCY_HZ));
+    if (isFrequencyRangeOutOfBand(centralFrequencyHz, bandwidthHz, minHz, maxHz)) return true;
+
+    // The channel-grid/divisibility constraint is LOW-only, matching centralFrequency.tsx's own
+    // validation (see isCentralFrequencyOnChannelGrid/isCentralFrequencyDivisible there).
+    if (!isLow) return false;
+
+    if (type === TYPE_ZOOM) {
+      return !isCentralFrequencyOnChannelGrid(
+        centralFrequencyHz,
+        channelWidthHz ?? 0,
+        windowBandwidthHz ?? 0,
+        minHz
+      );
+    }
+
+    const coarseChannelWidthHz = osdLOW?.basicCapabilities?.coarseChannelWidthHz ?? 0;
+    return !isCentralFrequencyDivisible(centralFrequencyHz, coarseChannelWidthHz);
   };
 };
 
 export const useIsObservationFrequencyOutOfRange = () => {
   const isFrequencyOutOfRange = useIsFrequencyOutOfRange();
 
-  return (obs: Observation): boolean =>
-    isFrequencyOutOfRange(
+  return (obs: Observation): boolean => {
+    const isLow = obs.telescope === TELESCOPE_LOW_NUM;
+    const isZoom = obs.type === TYPE_ZOOM;
+    // Matches ObservationEntry.tsx's own load-time fallback - a resolution-mode index of 0
+    // matches no real entry, so getZoomResolutionHz would silently return a 0 Hz channel width
+    // that the grid checks below then treat as "always on-grid" instead of actually unavailable.
+    const channelWidthHz =
+      isLow && isZoom ? getZoomResolutionHz(obs.bandwidth ?? ZOOM_BANDWIDTH_DEFAULT_LOW) : 0;
+    // Matches ObservationEntry.tsx's own load-time fallback - a saved observation predating
+    // zoomChannels must resolve to the same legacy default the editor would show, not a
+    // zero-width window that produces a different validity grid.
+    const windowBandwidthHz =
+      isLow && isZoom
+        ? channelsToBandwidthHz(obs.zoomChannels ?? ZOOM_CHANNELS_DEFAULT_LOW, channelWidthHz)
+        : 0;
+    // For LOW zoom, obs.bandwidth is a resolution-mode index, not a real bandwidth - use the
+    // actual channel-count-derived window bandwidth for the range check too (MID zoom unaffected,
+    // out of scope, matching ObservationEntry.tsx's own showWarning()).
+    const bandwidth = isZoom
+      ? isLow
+        ? frequencyConversion(windowBandwidthHz, FREQUENCY_HZ, FREQUENCY_MHZ)
+        : (obs.bandwidth ?? 0)
+      : (obs.continuumBandwidth ?? 0);
+    return isFrequencyOutOfRange(
       obs.centralFrequency,
-      obs.type === TYPE_ZOOM ? obs.bandwidth ?? 0 : obs.continuumBandwidth ?? 0,
-      obs.telescope === TELESCOPE_LOW_NUM,
-      String(obs.observingBand ?? '')
+      bandwidth,
+      isLow,
+      String(obs.observingBand ?? ''),
+      obs.type,
+      channelWidthHz,
+      windowBandwidthHz
     );
+  };
 };
 
 export const validateTechnicalPage = (proposal: Proposal) => {
@@ -205,7 +264,7 @@ export const useValidateProposal = () => {
 
   return (proposal: Proposal) => {
     const obsStatus = validateObservationPage(proposal, autoLink);
-    const freqOutOfRange = (proposal.observations ?? []).some(obs =>
+    const freqOutOfRange = (proposal.observations ?? []).some((obs) =>
       isObservationFrequencyOutOfRange(obs)
     );
     return [

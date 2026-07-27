@@ -17,7 +17,6 @@ export function useOSDAccessors() {
   const { t } = useTranslation();
   const { application, updateAppContent8 } = storageObject.useStore();
 
-  const capabilities = osd?.capabilities;
   const policies = osd?.policies ?? [];
   const observatoryConstants = OSD_CONSTANTS;
 
@@ -122,9 +121,9 @@ export function useOSDAccessors() {
     setSelectedPolicy: updateAppContent8,
     getCycle,
 
-    osdLOW: capabilities?.low,
-    osdMID: capabilities?.mid,
-    osdCapabilities: capabilities,
+    osdLOW: selectedPolicy?.capabilities?.low,
+    osdMID: selectedPolicy?.capabilities?.mid,
+    osdCapabilities: selectedPolicy?.capabilities,
 
     osdCycleDescription: selectedPolicy?.cycleDescription ?? '',
     osdCycleId: cycleInformation?.cycleId ?? '',
@@ -142,11 +141,12 @@ export function useOSDAccessors() {
       observingBand === BAND_LOW_STR ? TELESCOPE_LOW_NUM : TELESCOPE_MID_NUM,
     findBand: (observingBand: string) => {
       if (observingBand === BAND_LOW_STR) {
-        return capabilities?.low?.basicCapabilities || null;
+        return selectedPolicy?.capabilities?.low?.basicCapabilities || null;
       }
       return (
-        find(capabilities?.mid?.basicCapabilities?.receiverInformation, { rxId: observingBand }) ||
-        null
+        find(selectedPolicy?.capabilities?.mid?.basicCapabilities?.receiverInformation, {
+          rxId: observingBand
+        }) || null
       );
     },
 

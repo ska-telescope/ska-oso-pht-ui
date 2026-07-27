@@ -1937,10 +1937,10 @@
     domhandler "^5.0.3"
     selderee "^0.11.0"
 
-"@ska-telescope/ska-gui-components@^2.8.36":
-  version "2.8.36"
-  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-2.8.36.tgz#21737266fdef373542ed1979320825b1d15a4db8"
-  integrity sha512-glVjFOCQTv5h7slhCQLJboDGT+HcXrDiV7RhPVx2jtoys7UoqAui7MKmsZtuzwasm+9z6/Ybb4HMwiAqWzpqZA==
+"@ska-telescope/ska-gui-components@^2.8.39":
+  version "2.8.39"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/ska-gui-components/-/ska-gui-components-2.8.39.tgz#c9924d526baaec842c9f8ddc4c8789046b39e54c"
+  integrity sha1-yZJNUmuq7IQsn43cTIeJBGs55Uw=
   dependencies:
     "@base-ui/react" "^1.0.0-alpha.6"
     "@fontsource/material-icons" "^5.2.5"
@@ -2008,6 +2008,11 @@
     jwt-decode "^4.0.0"
     react-dropzone "^14.3.5"
     styled-components "^6.1.13"
+
+"@ska-telescope/skuid@^3.0.0":
+  version "3.0.0"
+  resolved "https://artefact.skao.int/repository/npm-internal/@ska-telescope/skuid/-/skuid-3.0.0.tgz#a778c3a17592c740abd4cf3f4bc3fc6347e1f1e5"
+  integrity sha1-p3jDoXWSx0Cr1M8/S8P8Y0fh8eU=
 
 "@standard-schema/spec@^1.0.0":
   version "1.1.0"

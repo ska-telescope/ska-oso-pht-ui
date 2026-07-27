@@ -8,7 +8,7 @@ K8S_WAIT_LABEL_FILTER_ARGS = -l release=$(HELM_RELEASE)
 
 # JS Template Variables
 JS_E2E_TEST_BASE_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/
-JS_E2E_COVERAGE_COMMAND_ENABLED = false
+JS_E2E_COVERAGE_ENABLED = false
 JS_ESLINT_CONFIG ?= eslint.config.js
 JS_E2E_TESTS_DIR ?= tests/cypress
 
@@ -29,6 +29,8 @@ js-pre-e2e-test:
 
 js-pre-lint:
 	$(JS_COMMAND_RUNNER) prettier
+js-pre-format:
+	$(JS_COMMAND_RUNNER) prettier:fix
 typecheck:
 	$(JS_COMMAND_RUNNER) typecheck
 

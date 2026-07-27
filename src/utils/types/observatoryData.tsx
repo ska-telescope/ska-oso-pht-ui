@@ -27,6 +27,7 @@ export type ObservatoryPolicy = {
     mid: string[];
   };
   telescopeCapabilities: TelescopeInformationFrontend;
+  capabilities: ObservatoryDataCapabilities;
   type: string;
 };
 
@@ -62,8 +63,8 @@ export type ReceiverInformationFrontend = {
 };
 
 export type TelescopeInformationBackend = {
-  Mid: string;
-  Low: string;
+  Mid: string | null;
+  Low: string | null;
 };
 
 export type TelescopeInformationFrontend = {
@@ -101,6 +102,15 @@ export type BasicCapabilitiesLowBackend = {
 export type BasicCapabilitiesLow = {
   minFrequencyHz: number;
   maxFrequencyHz: number;
+  minCoarseChannel: number;
+  maxCoarseChannel: number;
+  coarseChannelWidthHz: number;
+  numberOfChannelsPerCoarseChannel: {
+    continuum: number;
+    zoom: number;
+    pst: number;
+    pss: number;
+  };
 };
 
 export type subarrayConfigurationMidBackend = {
@@ -182,29 +192,33 @@ export type subarrayConfigurationLow = {
 export type ObservatoryDataBackend = {
   observatory_policy: ObservatoryPolicyBackend;
   capabilities: {
+    // the OSD only ever returns a single array_assembly key per cycle (e.g. "AA2" or
+    // "AA2_SV"), determined by that cycle's own telescope_capabilities - not always "AA2".
     mid: {
       basic_capabilities: BasicCapabilitiesMidBackend;
-      AA2: subarrayConfigurationMidBackend;
+      [arrayAssembly: string]: BasicCapabilitiesMidBackend | subarrayConfigurationMidBackend;
     };
     low: {
       basic_capabilities: BasicCapabilitiesLowBackend;
-      AA2_SV: subarrayConfigurationLowBackend;
+      [arrayAssembly: string]: BasicCapabilitiesLowBackend | subarrayConfigurationLowBackend;
     };
   };
 };
 
+export type ObservatoryDataCapabilities = {
+  mid: {
+    basicCapabilities: BasicCapabilitiesMid;
+    subArrays: subarrayConfigurationMid[];
+  } | null;
+  low: {
+    basicCapabilities: BasicCapabilitiesLow;
+    subArrays: subarrayConfigurationLow[];
+  } | null;
+};
+
 export type ObservatoryData = {
   policies: ObservatoryPolicy[];
-  capabilities: {
-    mid: {
-      basicCapabilities: BasicCapabilitiesMid;
-      subArrays: subarrayConfigurationMid[];
-    } | null;
-    low: {
-      basicCapabilities: BasicCapabilitiesLow;
-      subArrays: subarrayConfigurationLow[];
-    } | null;
-  };
+  capabilities: ObservatoryDataCapabilities;
 };
 
 export default ObservatoryData;

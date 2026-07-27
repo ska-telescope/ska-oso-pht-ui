@@ -6,8 +6,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Bugfix: prevent 401 errors, wait until successful login before requesting observatory data
 * Updated: to 16.1 version of oso-services
 * Bugfix: spacer added to bottom of page to prevent page content overlapping bottom banner
+* Refactoring of the spectral line frequency setup on the Observation page
+* Bugfix: fix for proposal cloning scenarios which were throwing errors
 * Updated: to use the new /coordinate endpoint response
 * Added: Support for Galactic targets
 * Bugfix: 'Channels Out' allowed 0 channels to be selected
@@ -43,9 +46,9 @@ UNRELEASED
 * Changed: Moved the `Cycle closes` countdown timer from the Footer to the Header.
 * Added: Countdown timer will show days, hours, mins until the last 5 minutes then will show minutes, seconds.
 * Removed: An alert banner from the calibrator page has been removed
-* Changed: Cycle open/close datetimes are presented with user's timezone.
+* Changed: Cycle open/close date times are presented with user's timezone.
 * Added: New "register /login" text box to Landing page.
-* Changed: The style and formatting of the Sensivitity Calculator text box on the landing page.
+* Changed: The style and formatting of the Sensitivity Calculator text box on the landing page.
 * Added: A new 'underTest' warning bar to the Landing Page for use on the Submission Tool during productionisation.
 * Removed: The NOT LOGGED IN, NO SUBMISSION AVAILABLE info message.
   validation until the word limit is respected.
@@ -56,6 +59,7 @@ UNRELEASED
 * Added: Support for Indigo as login provider with ?use_indigo=true query parameter.
 * Changed: Data Product Description text is black rather than grey on the Observatory Data Product page.
 * Changed: Made the Observations panel have the same title and border as other panels on the Observatory Data Product page.
+* Removed: Drop hardcoded mock observation cycles from Submission Tool cycle selector.
 
 10.1.0
 ----------
@@ -128,7 +132,7 @@ UNRELEASED
 * [BREAKING]: Changed: ODA : v12.0.1
 * Changed: Amended Panel Management so that reviewers will be shown once for each review type they are capable of performing
 * Changed: Restricted title and abstract fields, disabling the entry of more than the max word count
-* Changed: Cypress vesion to 15.5.0
+* Changed: Cypress version to 15.5.0
 * Changed: Fixed help panel display on observation page
 
 7.0.0
@@ -288,7 +292,7 @@ UNRELEASED
 
       * API mappings:
          - Updated PHT services version 2.4.0 to use ODA 6.2.1 to use PDM 16.0.1
-         - Updated mailtoappings accordingly for PDM changes
+         - Updated `mailto` mappings accordingly for PDM changes
       * Landing page
          - Time added to last update column
       * Team Page

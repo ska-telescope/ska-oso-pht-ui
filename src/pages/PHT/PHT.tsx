@@ -16,6 +16,7 @@ import {
   NAV,
   PATH,
   PMT,
+  PROPOSAL_STATUS,
   REVIEW_TYPE,
   USE_LOCAL_DATA,
   SKA_OSO_SERVICES_URL,
@@ -49,12 +50,16 @@ import LinkingPage from '../LinkingPage/LinkingPage';
 import CalibrationEntry from '../entry/Calibration/CalibrationEntry';
 import Proposal from '@/utils/types/proposal';
 import Notification from '@/utils/types/notification';
+import PutProposal from '@/services/axios/put/putProposal/putProposal';
 import ButtonUserMenu from '@/components/button/UserMenu/UserMenu';
 import Alert from '@/components/alerts/standardAlert/StandardAlert';
 import TimedAlert from '@/components/alerts/timedAlert/TimedAlert';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
+import { useNotify } from '@/utils/notify/useNotify';
+import autoLinking from '@/utils/autoLinking/AutoLinking';
+import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
 
@@ -106,12 +111,16 @@ export default function PHT({
   setFlatten
 }: PHTPropTypes) {
   const { t } = useScopedTranslation();
-  const { application, help, helpToggle } = storageObject.useStore();
-  const { osdCloses, osdCountdown, osdCycleId, osdCycleDescription, osdOpens } = useOSDAccessors();
+  const { application, help, helpToggle, updateAppContent2 } = storageObject.useStore();
+  const { autoLink, osdCloses, osdCountdown, osdCycleId, osdCycleDescription, osdOpens, isSV } =
+    useOSDAccessors();
   const navigate = useNavigate();
   const location = useLocation();
+  const authClient = useAxiosAuthClient();
   const { setHelp } = useHelp();
+  const { notifyWarning, notifyError } = useNotify();
   const theme = useTheme();
+  const previousPathRef = React.useRef(location.pathname);
 
   const LG = () => useMediaQuery((theme: any) => theme.breakpoints.down('lg'));
   const REQUIRED_WIDTH = useMediaQuery('(min-width:600px)');
@@ -129,6 +138,67 @@ export default function PHT({
   }, [navigate]);
 
   const getProposal = () => application.content2 as Proposal;
+  const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
+
+  const autoRepairAttemptedForId = React.useRef<string | undefined>(undefined);
+
+  // A target can end up linked with no matching targetObservation entry (e.g. an older
+  // proposal affected by a past subarray-mapping bug), leaving the Observation page stuck on
+  // "no observation" with no way to recover. Runs once per loaded proposal, regardless of which
+  // page the user lands on first - re-running the same auto-link route used when a target is
+  // first added. autoLink depends on OSD/cycle-policy data that may not have resolved yet when
+  // the proposal is fetched, so this does not latch until autoLink actually becomes true.
+  React.useEffect(() => {
+    const proposal = getProposal();
+    const target = proposal?.targets?.[0];
+    if (
+      !proposal?.id ||
+      autoRepairAttemptedForId.current === proposal.id ||
+      !autoLink ||
+      !target ||
+      !proposal?.scienceCategory ||
+      (proposal?.targetObservation?.length ?? 0) > 0
+    ) {
+      return;
+    }
+    autoRepairAttemptedForId.current = proposal.id;
+    autoLinking(target, getProposal, setProposal, proposal.scienceCategory, proposal.abstract).then(
+      (result) => {
+        if (!result?.success) {
+          notifyWarning(result?.error ?? t('autoLink.error'));
+        }
+      }
+    );
+  }, [getProposal(), autoLink]);
+
+  React.useEffect(() => {
+    const previousPath = previousPathRef.current;
+    const currentPath = location.pathname;
+
+    if (previousPath === currentPath) {
+      return;
+    }
+
+    const isProposalPageTransition =
+      NAV.includes(previousPath) && (NAV.includes(currentPath) || currentPath === PATH[0]);
+    const proposal = getProposal();
+    const canAutoSave =
+      isProposalPageTransition &&
+      (loggedIn || cypressToken) &&
+      proposal?.id != null &&
+      proposal.id !== '';
+
+    if (canAutoSave) {
+      void (async () => {
+        const response = await PutProposal(authClient, proposal, PROPOSAL_STATUS.DRAFT);
+        if ('error' in response) {
+          notifyError(response.error);
+        }
+      })();
+    }
+
+    previousPathRef.current = currentPath;
+  }, [location.pathname, application.content2, loggedIn, authClient, isSV, notifyError]);
 
   const mediaSizeNotSupported = () => (
     <Alert color={AlertColorTypes.Error} text={t('mediaSize.notSupported')} testId="helpPanelId" />

@@ -14,7 +14,7 @@ const MockProposalFrontendList: Proposal[] = [
     proposalSubType: [3],
     scienceCategory: '',
     title: 'In a galaxy far, far away',
-    cycle: 'SKA_5000_2023',
+    cycle: 'SKA_2026_1',
     sciencePDF: null,
     technicalPDF: null,
     abstract:
@@ -47,7 +47,7 @@ const MockProposalFrontendList: Proposal[] = [
     proposalSubType: [3],
     scienceCategory: '',
     title: 'The Milky Way View',
-    cycle: 'SKA_5000_2023',
+    cycle: 'SKA_2026_1',
     sciencePDF: null,
     technicalPDF: null,
     abstract:
@@ -80,7 +80,7 @@ const MockProposalFrontendList: Proposal[] = [
     proposalSubType: [],
     scienceCategory: '4',
     title: 'Incomplete Proposal',
-    cycle: 'SKA_5000_2023',
+    cycle: 'SKA_2026_1',
     sciencePDF: null,
     technicalPDF: null,
     abstract:

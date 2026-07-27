@@ -35,6 +35,20 @@ describe('autoLinking, observationOut', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
     expect(observationOut(TYPE_PST)).deep.equal(DEFAULT_PST_OBSERVATION_LOW);
   });
+  test('observationOut zoom overrides the static zoomChannels placeholder with the real cap', () => {
+    vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
+    const result = observationOut(TYPE_ZOOM, 4000);
+    expect(result.zoomChannels).toBe(4000);
+    expect(result).toEqual({ ...DEFAULT_ZOOM_OBSERVATION_LOW, zoomChannels: 4000 });
+  });
+  test('observationOut zoom keeps the static placeholder when no cap is provided', () => {
+    vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
+    expect(observationOut(TYPE_ZOOM)).deep.equal(DEFAULT_ZOOM_OBSERVATION_LOW);
+  });
+  test('observationOut continuum ignores maxZoomChannels (not a zoom observation)', () => {
+    vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
+    expect(observationOut(TYPE_CONTINUUM, 4000)).deep.equal(DEFAULT_CONTINUUM_OBSERVATION_LOW);
+  });
 });
 
 describe('autoLinking, dataProductSDPOut', () => {

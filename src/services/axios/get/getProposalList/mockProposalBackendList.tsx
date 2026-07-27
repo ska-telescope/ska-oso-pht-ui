@@ -16,7 +16,7 @@ const MockProposalBackendList: ProposalBackend[] = [
       last_modified_on: '2022-09-23T15:43:53.971548Z',
       pdm_version: '1.0.0'
     },
-    cycle: 'SKA_5000_2023',
+    cycle: 'SKA_2026_1',
     proposal_info: {
       title: 'In a galaxy far, far away',
       proposal_type: {
@@ -327,7 +327,7 @@ const MockProposalBackendList: ProposalBackend[] = [
       last_modified_on: '2022-09-23T15:43:53.971548Z',
       pdm_version: '1.0.0'
     },
-    cycle: 'SKA_5000_2023',
+    cycle: 'SKA_2026_1',
     proposal_info: {
       title: 'The Milky Way View',
       proposal_type: {
@@ -638,7 +638,7 @@ const MockProposalBackendList: ProposalBackend[] = [
       last_modified_on: '2022-09-23T15:43:53.971548Z',
       pdm_version: '1.0.0'
     },
-    cycle: 'SKA_5000_2023',
+    cycle: 'SKA_2026_1',
     proposal_info: {
       title: 'Incomplete Proposal',
       proposal_type: {

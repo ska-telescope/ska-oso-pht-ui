@@ -24,7 +24,8 @@ import {
   TYPE_PST,
   TYPE_ZOOM,
   TYPE_CONTINUUM,
-  NOTIFICATION_DELAY_IN_SECONDS
+  NOTIFICATION_DELAY_IN_SECONDS,
+  SA_AA2
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -54,7 +55,7 @@ export default function TargetEntry({
   onNameFieldErrorChange
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
-  const { autoLink, isSV } = useOSDAccessors();
+  const { autoLink, isSV, osdLOW, osdMID } = useOSDAccessors();
   const { notifyError, notifySuccess } = useNotify();
 
   const { application, updateAppContent2 } = storageObject.useStore();
@@ -215,8 +216,8 @@ export default function TargetEntry({
     setReferenceCoordinates(incomingKind);
     setId(target?.id ?? 0);
     setName(target?.name ?? '');
-    setCoord1(incomingIsICRS ? target.raStr ?? '' : target.l != null ? String(target.l) : '');
-    setCoord2(incomingIsICRS ? target.decStr ?? '' : target.b != null ? String(target.b) : '');
+    setCoord1(incomingIsICRS ? (target.raStr ?? '') : target.l != null ? String(target.l) : '');
+    setCoord2(incomingIsICRS ? (target.decStr ?? '') : target.b != null ? String(target.b) : '');
     setVelType(target?.velType ?? DEFAULT_VELOCITY_TYPE);
     setVel(target?.vel ?? '');
     setVelUnit(target?.velUnit ?? DEFAULT_VELOCITY_UNIT);
@@ -255,7 +256,7 @@ export default function TargetEntry({
   function formValidation() {
     let valid = true;
     const targets = getProposal()?.targets;
-    targets?.forEach(rec => {
+    targets?.forEach((rec) => {
       if (rec.name.toLowerCase() === name.toLowerCase()) {
         valid = false;
         setNameFieldError(t('addTarget.error'));
@@ -342,7 +343,18 @@ export default function TargetEntry({
       const newTarget: Target = buildTarget();
 
       const generateAutoLinkData = async () => {
-        const defaults = await autoLinking(newTarget, getProposal, setProposal);
+        // The default zoom observation's zoomChannels is a static placeholder with no knowledge
+        // of the actual subarray's channel cap - pass the real cap through so it isn't baked in.
+        const record = osdLOW ? osdLOW : osdMID;
+        const sArray = record?.subArrays.find((sub: any) => sub.subArray === SA_AA2);
+        const defaults = await autoLinking(
+          newTarget,
+          getProposal,
+          setProposal,
+          undefined,
+          undefined,
+          sArray?.numberZoomChannels
+        );
         if (defaults && defaults.success) {
           notifySuccess(t('autoLink.targetSuccess'), NOTIFICATION_DELAY_IN_SECONDS);
           clearForm();
@@ -389,7 +401,7 @@ export default function TargetEntry({
 
     const hasAnyFieldEntered = () => {
       const hasTextValue = [name, coord1, coord2, vel, redshift].some(
-        value => value.trim().length > 0
+        (value) => value.trim().length > 0
       );
       const hasSelectorChange =
         velType !== DEFAULT_VELOCITY_TYPE || velUnit !== DEFAULT_VELOCITY_UNIT;

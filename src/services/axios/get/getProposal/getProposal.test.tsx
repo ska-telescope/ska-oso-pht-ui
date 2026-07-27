@@ -277,13 +277,21 @@ describe('getBandwidth', () => {
     expect(result).toBe(6);
   });
 
-  test('returns the fallback value of 1 when no match is found', () => {
+  test('returns the nearest bandwidth value when there is no exact match', () => {
+    // MID options are 3.125/6.25/12.5/25/50/100/200 MHz - 300 is nearest to 200 (value 7).
     const result = getBandwidth(300, 1);
-    expect(result).toBe(1);
+    expect(result).toBe(7);
   });
 
-  test('returns the fallback value of 1 when telescope is not found', () => {
+  test('returns the nearest bandwidth value for a different telescope', () => {
+    // LOW options are 24.4140625/48.828125/97.65625/... kHz - 100 is nearest to 97.65625
+    // (value 3).
     const result = getBandwidth(100, 2);
+    expect(result).toBe(3);
+  });
+
+  test('returns the fallback value of 1 when the telescope has no bandwidth options', () => {
+    const result = getBandwidth(100, 99);
     expect(result).toBe(1);
   });
 

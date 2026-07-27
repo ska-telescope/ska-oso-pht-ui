@@ -139,6 +139,7 @@ For local dev (`yarn start` / `make dev-start`):
 
 - `env.js` is written with **relative** API paths (e.g. `/oso/api/v14`)
 - Vite's dev server proxies these paths to the target specified by `BACKEND_PROXY`
+- `/oso/` can be pointed at a different target than `/senscalc/` via `OSO_SERVICES_PROXY` (see Mode 4) — useful for testing a local backend change in isolation
 - The browser only talks to `localhost:6101` — no cross-origin requests
 
 For k8s deployments:
@@ -195,15 +196,15 @@ Project repository-provided git hooks.
 The following global state is stored in Redux:
 
 | Store Path             | Purpose                                    |
-| ---------------------- | ------------------------------------------ |
+| ---------------------- |--------------------------------------------|
 | `Application.Content1` | Proposal status per page                   |
 | `Application.Content2` | Currently edited proposal                  |
-| `Application.Content3` | Original loaded proposal (for comparison)  |
+| `Application.Content3` | Cycle policy data from OSD                 |
 | `Application.Content4` | `ProposalAccess[]`, used during submission |
 | `Application.Content5` | Global notifications                       |
 | `Application.Content6` | Not used                                   |
 | `Application.Content7` | Not used                                   |
-| `Application.Content8` | Not used                                   |
+| `Application.Content8` | The currently selected OSD cycle/policy    |
 | `Application.Content9` | Not used                                   |
 | `Help.component`       | Field-dependent help information           |
 

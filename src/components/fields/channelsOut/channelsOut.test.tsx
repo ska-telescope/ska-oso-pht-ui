@@ -42,7 +42,6 @@ describe('<ChannelsOut />', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    // Prevent the error-clearing timer (ERROR_SECS) from firing mid-test
     vi.useFakeTimers();
   });
   afterEach(() => {

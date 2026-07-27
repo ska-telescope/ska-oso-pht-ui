@@ -29,6 +29,7 @@ import {
   REFERENCE_COORDINATE_TYPE_ICRS,
   ROBUST,
   SCIENCE_VERIFICATION,
+  SCIENCE_VERIFICATION_TYPE_ID,
   TELESCOPE_LOW_BACKEND_MAPPING,
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_BACKEND_MAPPING,
@@ -72,7 +73,7 @@ const getSubType = (proposalType: number, proposalSubType: number[]): any => {
   const subTypes: string[] = [];
   for (const subtype of proposalSubType) {
     if (subtype && project) {
-      subTypes.push(project.subProjects.find(item => item?.id === subtype)?.mapping as string);
+      subTypes.push(project.subProjects.find((item) => item?.id === subtype)?.mapping as string);
     }
   }
   return subTypes;
@@ -118,14 +119,14 @@ export const getReferenceCoordinate = (
 };
 
 const getTargets = (targets: Target[]): TargetBackend[] => {
-  const mappedTargets = targets.map(tar => ({
+  const mappedTargets = targets.map((tar) => ({
     name: tar.name,
     target_id: tar.name,
     reference_coordinate: getReferenceCoordinate(tar),
     radial_velocity: {
       quantity: {
         value: isVelocity(tar.velType) ? Number(tar.vel) : 0,
-        unit: VEL_UNITS.find(u => u.value === Number(tar.velUnit))?.label ?? ''
+        unit: VEL_UNITS.find((u) => u.value === Number(tar.velUnit))?.label ?? ''
       },
       definition: 'RADIO',
       reference_frame: tar.raReferenceFrame ?? 'LSRK',
@@ -158,12 +159,12 @@ const getDocuments = (
 export const getCalibrationStrategy = (
   calibrationStrategies: CalibrationStrategy[]
 ): CalibrationStrategyBackend[] => {
-  const calibrationOut = calibrationStrategies?.map(strategy => ({
+  const calibrationOut = calibrationStrategies?.map((strategy) => ({
     observatory_defined: strategy?.observatoryDefined,
     calibration_id: strategy?.id,
     observation_set_ref: strategy?.observationIdRef,
     calibrators: strategy?.calibrators
-      ? strategy?.calibrators?.map(calibrator => ({
+      ? strategy?.calibrators?.map((calibrator) => ({
           calibration_intent: calibrator?.calibrationIntent,
           name: calibrator?.name,
           duration_min: calibrator?.durationMin,
@@ -181,7 +182,7 @@ export const getDataProductScriptParameters = (
   dp: DataProductSDPNew
 ) => {
   const IMAGE_SIZE_UNITS = ['deg', 'arcmin', 'arcsec'];
-  const obType = obs?.find(o => o?.id === dp.observationId)?.type;
+  const obType = obs?.find((o) => o?.id === dp.observationId)?.type;
   switch (obType) {
     case TYPE_CONTINUUM: {
       if (
@@ -196,10 +197,10 @@ export const getDataProductScriptParameters = (
             unit: IMAGE_SIZE_UNITS[data?.pixelSizeUnits]
           },
           weight: {
-            weighting: IMAGE_WEIGHTING.find(item => item.value === Number(data?.weighting))
+            weighting: IMAGE_WEIGHTING.find((item) => item.value === Number(data?.weighting))
               ?.label as string,
             ...(Number(data?.weighting) === IW_BRIGGS && {
-              robust: ROBUST.find(item => item.value === data?.robust)?.value
+              robust: ROBUST.find((item) => item.value === data?.robust)?.value
             })
           },
           polarisations: data?.polarisations,
@@ -227,10 +228,10 @@ export const getDataProductScriptParameters = (
           unit: IMAGE_SIZE_UNITS[data?.pixelSizeUnits]
         },
         weight: {
-          weighting: IMAGE_WEIGHTING.find(item => item.value === Number(data?.weighting))
+          weighting: IMAGE_WEIGHTING.find((item) => item.value === Number(data?.weighting))
             ?.label as string,
           ...(Number(data?.weighting) === IW_BRIGGS && {
-            robust: ROBUST.find(item => item.value === data?.robust)?.value
+            robust: ROBUST.find((item) => item.value === data?.robust)?.value
           })
         },
         polarisations: data?.polarisations ?? [],
@@ -242,7 +243,7 @@ export const getDataProductScriptParameters = (
       };
     case TYPE_PST:
     default:
-      const pstMode = obs?.find(o => o?.id === dp.observationId)?.pstMode;
+      const pstMode = obs?.find((o) => o?.id === dp.observationId)?.pstMode;
       if (pstMode === DETECTED_FILTER_BANK_VALUE) {
         const data = dp?.data as SDPFilterbankPSTData;
         return {
@@ -276,7 +277,7 @@ const getDataProductSDP = (
   obs: Observation[] | null,
   dataProducts: DataProductSDPNew[]
 ): DataProductSDPsBackend[] => {
-  const sdp = dataProducts?.map(dp => ({
+  const sdp = dataProducts?.map((dp) => ({
     data_product_id: dp.id?.toString(),
     observation_set_ref: dp.observationId,
     script_parameters: getDataProductScriptParameters(obs, dp)
@@ -285,19 +286,19 @@ const getDataProductSDP = (
 };
 
 export const getDataProductSRC = (dataProducts: DataProductSRC[]): DataProductSRCNetBackend[] => {
-  return dataProducts?.map(dp => ({ data_products_src_id: dp?.id }));
+  return dataProducts?.map((dp) => ({ data_products_src_id: dp?.id }));
 };
 
 const getGroupObservation = (obsId: string, observationGroups: GroupObservation[] | undefined) => {
-  const groupId = observationGroups?.find(group => group.observationId === obsId)?.groupId ?? '';
+  const groupId = observationGroups?.find((group) => group.observationId === obsId)?.groupId ?? '';
   return groupId ? groupId : '';
 };
 
 const getObservingBand = (observingBand: string) => observingBand;
 
 const getSubArray = (incSubArray: string, incTelescope: number): string => {
-  const array = OSD_CONSTANTS.array.find(a => a.value === incTelescope);
-  const subArray = array?.subarray?.find(sub => sub.value === incSubArray)?.value;
+  const array = OSD_CONSTANTS.array.find((a) => a.value === incTelescope);
+  const subArray = array?.subarray?.find((sub) => sub.value === incSubArray)?.value;
   return subArray ? subArray : SA_AA4;
 };
 
@@ -323,7 +324,7 @@ const getArrayDetails = (incObs: Observation): ArrayDetailsLowBackend | ArrayDet
 };
 
 const getFrequencyAndBandwidthUnits = (incUnitValue: number): string => {
-  return FREQUENCY_UNITS.find(u => u.value === incUnitValue)?.mapping as string;
+  return FREQUENCY_UNITS.find((u) => u.value === incUnitValue)?.mapping as string;
 };
 
 const getBandwidthContinuum = (incObs: Observation): ValueUnitPair => {
@@ -344,12 +345,12 @@ const getCentralFrequency = (incObs: Observation): ValueUnitPair => {
 };
 
 const getSupplied = (inObs: Observation) => {
-  const supplied = OSD_CONSTANTS.Supplied.find(s => s.value === inObs?.supplied?.type);
+  const supplied = OSD_CONSTANTS.Supplied.find((s) => s.value === inObs?.supplied?.type);
   return {
     supplied_type: supplied?.mappingLabel,
     quantity: {
       value: inObs.supplied?.value,
-      unit: supplied?.units?.find(u => u.value === inObs?.supplied?.units)?.label
+      unit: supplied?.units?.find((u) => u.value === inObs?.supplied?.units)?.label
     }
   };
 };
@@ -372,7 +373,7 @@ export const getObservationTypeDetails = (obs: Observation) => {
         spectral_resolution: obs.spectralResolution,
         effective_resolution: obs.effectiveResolution,
         spectral_averaging: obs.spectralAveraging?.toString(),
-        number_of_channels: '1024'
+        number_of_channels: obs.zoomChannels?.toString()
       };
     case TYPE_PST:
     default:
@@ -451,12 +452,13 @@ const getSuppliedFieldsSensitivity = (
     value:
       isContinuum(obsType) || isPST(obsType)
         ? Number(
-            tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumSensitivityWeighted')?.value
+            tarObs?.sensCalc?.section1?.find((o) => o.field === 'continuumSensitivityWeighted')
+              ?.value
           )
         : 0,
     unit:
       isContinuum(obsType) || isPST(obsType)
-        ? (tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumSensitivityWeighted')
+        ? (tarObs?.sensCalc?.section1?.find((o) => o.field === 'continuumSensitivityWeighted')
             ?.units as string)
         : ''
   };
@@ -464,44 +466,47 @@ const getSuppliedFieldsSensitivity = (
     value:
       isContinuum(obsType) || isPST(obsType)
         ? Number(
-            tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumTotalSensitivity')?.value
+            tarObs?.sensCalc?.section1?.find((o) => o.field === 'continuumTotalSensitivity')?.value
           )
         : 0,
     unit:
       isContinuum(obsType) || isPST(obsType)
-        ? (tarObs?.sensCalc?.section1?.find(o => o.field === 'continuumTotalSensitivity')
+        ? (tarObs?.sensCalc?.section1?.find((o) => o.field === 'continuumTotalSensitivity')
             ?.units as string)
         : ''
   };
 
   params.weighted_spectral_sensitivity = {
     value: Number(
-      tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSensitivityWeighted')?.value
+      tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralSensitivityWeighted')
+        ?.value
     ),
-    unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralSensitivityWeighted')
+    unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralSensitivityWeighted')
       ?.units
   };
   params.total_spectral_sensitivity = {
     value: Number(
-      tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralTotalSensitivity')?.value
+      tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralTotalSensitivity')?.value
     ),
-    unit: tarObs.sensCalc[spectralSection]?.find(o => o.field === 'spectralTotalSensitivity')?.units
+    unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralTotalSensitivity')
+      ?.units
   };
   params.surface_brightness_sensitivity = {
     continuum:
       isContinuum(obsType) || isPST(obsType)
         ? Number(
-            tarObs.sensCalc.section1?.find(o => o.field === 'continuumSurfaceBrightnessSensitivity')
-              ?.value
+            tarObs.sensCalc.section1?.find(
+              (o) => o.field === 'continuumSurfaceBrightnessSensitivity'
+            )?.value
           )
         : 0,
     spectral: Number(
       tarObs.sensCalc[spectralSection]?.find(
-        o => o.field === 'spectralSurfaceBrightnessSensitivity'
+        (o) => o.field === 'spectralSurfaceBrightnessSensitivity'
       )?.value
     ),
     unit: tarObs.sensCalc[spectralSection]?.find(
-      o => o.field === 'spectralSurfaceBrightnessSensitivity'
+      (o) => o.field === 'spectralSurfaceBrightnessSensitivity'
     )?.units
   };
   return params;
@@ -522,7 +527,7 @@ export const getSuppliedFieldsIntegrationTime = (
   params.continuum = {
     value:
       isContinuum(obsType) || isPST(obsType) ? Number(tarObs.sensCalc.section3?.[0]?.value) : 0,
-    unit: isContinuum(obsType) || isPST(obsType) ? tarObs.sensCalc.section3?.[0]?.units ?? '' : ''
+    unit: isContinuum(obsType) || isPST(obsType) ? (tarObs.sensCalc.section3?.[0]?.units ?? '') : ''
   };
 
   params.spectral = {
@@ -534,7 +539,7 @@ export const getSuppliedFieldsIntegrationTime = (
 /***********************************************************/
 
 const getObsType = (incTarObs: TargetObservation, incObs: Observation[]): string => {
-  const obs = incObs.find(item => item?.id === incTarObs.observationId);
+  const obs = incObs.find((item) => item?.id === incTarObs.observationId);
   return obs?.type ?? TYPE_CONTINUUM;
 };
 
@@ -545,7 +550,7 @@ export const getDataProductRef = (
   incTarObs: TargetObservation,
   incDataProductSDP: DataProductSDPNew[]
 ) => {
-  return String(incDataProductSDP.find(dp => dp.observationId === incTarObs.observationId)?.id);
+  return String(incDataProductSDP.find((dp) => dp.observationId === incTarObs.observationId)?.id);
 };
 
 const getResults = (
@@ -634,35 +639,38 @@ const getResults = (
 };
 /*************************************************************************************************************************/
 
-export default function MappingPutProposal(proposal: Proposal, isSV: boolean, status: string) {
+export default function MappingPutProposal(proposal: Proposal, status: string) {
+  const projectMapping = PROJECTS.find((item) => item?.id === proposal.proposalType)?.mapping;
+  // proposalType is always resolved before this is called (set explicitly at creation in
+  // PageFooterPPT.tsx), so it alone is authoritative for SV-ness.
+  const proposalIsSV = proposal.proposalType === SCIENCE_VERIFICATION_TYPE_ID;
+
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
     status: status,
     submitted_on: status === PROPOSAL_STATUS.SUBMITTED ? new Date().toISOString() : null, // note: null since oso-services 1.1.0  does not support ''
     submitted_by: status === PROPOSAL_STATUS.SUBMITTED ? userId : '',
-    investigator_refs: proposal.investigators?.map(investigator => {
+    investigator_refs: proposal.investigators?.map((investigator) => {
       return investigator?.id?.toString();
     }),
     cycle: proposal.cycle,
     proposal_info: {
       title: proposal.title,
       proposal_type: {
-        main_type: isSV
-          ? SCIENCE_VERIFICATION
-          : (PROJECTS.find(item => item?.id === proposal.proposalType)?.mapping as string),
+        main_type: proposalIsSV ? SCIENCE_VERIFICATION : (projectMapping as string),
         attributes:
-          !isSV && proposal.proposalSubType
+          !proposalIsSV && proposal.proposalSubType
             ? getSubType(proposal.proposalType, proposal.proposalSubType)
             : []
       },
       abstract: proposal.abstract as string,
-      science_category: isSV
-        ? (DETAILS.ObservingMode?.find(category => category.value === proposal?.scienceCategory)
+      science_category: proposalIsSV
+        ? (DETAILS.ObservingMode?.find((category) => category.value === proposal?.scienceCategory)
             ?.label as string)
-        : (DETAILS.ScienceCategory?.find(category => category.value === proposal?.scienceCategory)
+        : (DETAILS.ScienceCategory?.find((category) => category.value === proposal?.scienceCategory)
             ?.label as string),
       investigators: proposal?.investigators
-        ? proposal.investigators.map(investigator => {
+        ? proposal.investigators.map((investigator) => {
             return {
               user_id: investigator?.id?.toString(),
               status: investigator.status,

@@ -657,10 +657,13 @@ export default function DataProduct({ data, isSSO }: DataProductProps) {
                 flex: 1,
                 display: 'flex',
                 flexDirection: 'column',
-                border: 'none',
+                border: '1px solid',
                 borderColor: '#ccc',
                 borderRadius: '8px',
-                minHeight: 0
+                minHeight: 0,
+                maxHeight: 'calc(100vh - 260px)',
+                overflowY: 'auto',
+                overflowX: 'hidden'
               }}
             >
               {baseObservations && (
@@ -817,12 +820,7 @@ export default function DataProduct({ data, isSSO }: DataProductProps) {
           )}
         </Grid>
       </Grid>
-      {osdCyclePolicy?.maxDataProducts !== 1 && (
-        <>
-          <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
-          {pageFooter()}
-        </>
-      )}
+      {osdCyclePolicy?.maxDataProducts !== 1 && pageFooter()}
     </Box>
   );
 }

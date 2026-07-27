@@ -242,8 +242,6 @@ export const LAB_POS_TICK = LABEL_POSITION.START;
 
 export const NOTIFICATION_DELAY_IN_SECONDS = 5;
 
-export const MULTIPLIER_HZ_GHZ = [1, 1, 1000, 1000000, 1000000000];
-
 export const NAV = [
   '/proposal/title',
   '/proposal/team',
@@ -437,6 +435,7 @@ export const PST_MODES = [
 ];
 
 export const SCIENCE_VERIFICATION = 'science_verification';
+export const SCIENCE_VERIFICATION_TYPE_ID = 9;
 
 export const PROPOSAL_STATUS = {
   DRAFT: 'draft',
@@ -516,6 +515,21 @@ export const SA_AA2 = 'aa2_sv';
 export const SA_AA4 = 'aa4';
 export const SA_AA_STAR = 'aa*';
 export const SA_CUSTOM = 'custom';
+
+// Convention is that the zoom modes are listed in frequency order
+// (1-4 are the fine zoom modes, currently restricted for AA2 and AA* subarrays,)
+export const FIRST_COARSE_ZOOM = 5;
+
+// Names of array assemblies
+export const LOW_AA05 = 'AA0.5';
+export const LOW_AA1 = 'AA1';
+export const LOW_AA2 = 'AA2';
+export const LOW_ITF = 'Low_ITF';
+export const LOW_AA2_SV = 'AA2_SV';
+export const MID_AA05 = 'AA0.5';
+export const MID_AA1 = 'AA1';
+export const MID_AA2 = 'AA2';
+export const MID_ITF = 'Mid_ITF';
 
 export const SECOND_LABEL = 's';
 export const MILLISECOND_LABEL = 'ms';
@@ -637,7 +651,8 @@ export const STATUS = {
 export const SUPPLIED_VALUE_DEFAULT_MID = 10;
 export const SUPPLIED_VALUE_DEFAULT_LOW = 1;
 export const ZOOM_BANDWIDTH_DEFAULT_MID = 1;
-export const ZOOM_BANDWIDTH_DEFAULT_LOW = 5;
+export const ZOOM_BANDWIDTH_DEFAULT_LOW = 8;
+export const ZOOM_CHANNELS_DEFAULT_LOW = 1000;
 
 export const TARGET_OPTION = {
   LIST_OF_TARGETS: 1,
@@ -654,18 +669,14 @@ export const TEAM_STATUS_TYPE_OPTIONS = {
   rejected: 'Rejected'
 };
 
+export const LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP = 8;
+
 export const TELESCOPE_MID_NUM = 1;
 export const TELESCOPE_LOW_NUM = 2;
 export const TELESCOPES = [
   { label: TELESCOPE_MID.code?.toUpperCase(), value: 1 },
   { label: TELESCOPE_LOW.code?.toUpperCase(), value: 2 }
 ];
-
-// This is the fundamental limits of the bandwidth provided by SKA LOW and MID
-export const BANDWIDTH_MIN_CHANNEL_WIDTH_HZ = {
-  [TELESCOPE_MID_NUM]: 13.44e3,
-  [TELESCOPE_LOW_NUM]: (24 * 781.25e3) / 3456
-};
 
 export const TELESCOPE_LOW_BACKEND_MAPPING = 'ska_low';
 export const TELESCOPE_MID_BACKEND_MAPPING = 'ska_mid';
@@ -751,7 +762,7 @@ export const DEFAULT_CONTINUUM_OBSERVATION_LOW: Observation = {
   linked: '0',
   type: TYPE_CONTINUUM,
   observingBand: BAND_LOW_STR,
-  centralFrequency: 200,
+  centralFrequency: 199.609375,
   centralFrequencyUnits: FREQUENCY_MHZ,
   continuumBandwidth: 150,
   continuumBandwidthUnits: FREQUENCY_MHZ,
@@ -790,8 +801,8 @@ export const DEFAULT_ZOOM_OBSERVATION_LOW: Observation = {
     units: SUPPLIED_INTEGRATION_TIME_UNITS_H
   },
   spectralAveraging: 1,
-  spectralResolution: '226.06 Hz (338.9 m/s)',
-  effectiveResolution: '226.06 Hz (338.9 m/s)',
+  spectralResolution: '1808.45 Hz (2.7 km/s)',
+  effectiveResolution: '1808.45 Hz (2.7 km/s)',
   zoomChannels: 1000
 };
 
@@ -802,7 +813,9 @@ export const DEFAULT_PST_OBSERVATION_LOW: Observation = {
   linked: '0',
   type: TYPE_PST,
   observingBand: BAND_LOW_STR,
-  centralFrequency: 200,
+  // Not 200 exactly - the real 50-350 MHz band midpoint isn't on the coarse-channel grid (see
+  // isCentralFrequencyDivisible); this is the nearest valid point (781250 Hz coarse channel).
+  centralFrequency: 200.390625,
   centralFrequencyUnits: FREQUENCY_MHZ,
   continuumBandwidth: 150,
   continuumBandwidthUnits: FREQUENCY_MHZ,

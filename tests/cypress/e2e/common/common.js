@@ -123,6 +123,25 @@ export const mockResolveTargetAPI = () => {
 
 export const mockOSDAPI = () => {
   cy.intercept('GET', '**/osd/cycles', { fixture: 'osd.json' }).as('mockOSDData');
+  // GetOSDCycles also fetches ODT configuration alongside OSD cycles (see BTN-3416) - without
+  // this intercept the real request fails, GetOSDCycles rejects the whole Promise.all, and no
+  // cycle policies ever load.
+  cy.intercept('GET', '**/odt/configuration', { fixture: 'odtConfiguration.json' }).as(
+    'mockODTConfiguration'
+  );
+};
+
+// The reviewer flows review the mock proposal list (mockProposalBackendList.tsx), whose
+// "In a galaxy far, far away" proposal is on cycle SKA_2026_1 - ReviewListPage derives its
+// SV/standard wording from that proposal's own cycle (via getCycle), so this cycle must be
+// resolvable. Kept separate from osd.json/mockOSDAPI: osd.json's single-entry order is relied
+// on directly (unreversed) by verifyOsdDataCycleID elsewhere, so it can't gain a second entry
+// without breaking that.
+export const mockOSDAPIWithReviewCycle = () => {
+  cy.intercept('GET', '**/osd/cycles', { fixture: 'osdWithReviewCycle.json' }).as('mockOSDData');
+  cy.intercept('GET', '**/odt/configuration', { fixture: 'odtConfiguration.json' }).as(
+    'mockODTConfiguration'
+  );
 };
 
 export const mockValidateAPI = () => {
@@ -480,8 +499,11 @@ export const addM2TargetUsingResolve = () => {
 };
 
 export const updateDataProductField = (testId, value) => {
+  // The underlying NumberEntry component puts data-testid on the outer MuiFormControl
+  // wrapper, not the actual <input> - type into the nested input directly, otherwise
+  // Cypress silently types into the non-editable wrapper and the field never changes.
   cy.get('[data-testid="' + testId + '"]').should('exist');
-  cy.get('[data-testid="' + testId + '"]').type(value);
+  cy.get('[data-testid="' + testId + '"] input').type(value);
 };
 
 export const enterTargetField = (testId, value) => {

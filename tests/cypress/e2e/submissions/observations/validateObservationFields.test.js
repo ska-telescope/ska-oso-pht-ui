@@ -19,7 +19,6 @@ import {
   mockResolveTargetAPI,
   verifyAutoLinkAlertFooter,
   updateFieldValue,
-  verifyFieldError,
   checkFieldDisabled,
   mockCreateSVIdeaAPI,
   mockOSDAPI
@@ -70,11 +69,13 @@ describe('SV Flow: Validate Observation Fields', () => {
     clickStatusIconNav('statusId5'); //Click to observation page
     pageConfirmed('OBSERVATION');
     updateFieldValue('continuumBandwidth', '500'); //update continuum bandwidth to an invalid value
-    verifyFieldError(
-      'continuumBandwidth',
-      'Maximum bandwidth for this array assembly (150.00 MHz) exceeded',
-      true
-    ); //verify field error for continuum bandwidth
+    // continuumBandwidth's testid is on the input itself, and its FormHelperText is a sibling
+    // of the input's own parent (not reachable via verifyFieldError's single .parent() hop), so
+    // it carries its own dedicated testid instead.
+    cy.get('[data-testid="continuumBandwidthError"]').should(
+      'contain.text',
+      'Maximum bandwidth for this array assembly (150.00 MHz) exceeded'
+    );
   });
 
   it('SV Flow: Valid frequency shows OK in the observation breadcrumb', () => {
