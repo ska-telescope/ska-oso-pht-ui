@@ -35,16 +35,12 @@ export const FrequencySpectrum: React.FC<FrequencySpectrumProps> = ({
   const theme = useTheme();
   const totalWidth = maxFreq - minFreq;
 
-  // Actual min/max
-  const actualMin = Number((centerFreq - bandWidth / 2).toFixed(2));
-  const actualMax = Number((centerFreq + bandWidth / 2).toFixed(2));
+  const bandStartFreq = centerFreq - bandWidth / 2;
+  const bandEndFreq = centerFreq + bandWidth / 2;
 
-  // Normal-mode geometry - reuses the same rounded values as actualMin/actualMax above (same
-  // underlying quantity) rather than recomputing unrounded, so a band whose edge is genuinely
-  // right at minFreq/maxFreq doesn't get flagged red purely from floating-point noise in
-  // centerFreq/bandWidth, which callers often assemble from separately-rounded pieces.
-  const bandStartFreq = actualMin;
-  const bandEndFreq = actualMax;
+  // Display bounds for min and max of band (rounded to 2dp)
+  const displayGeometryMin = Number(bandStartFreq.toFixed(2));
+  const displayGeometryMax = Number(bandEndFreq.toFixed(2));
 
   const bandOffsetPercent = ((bandStartFreq - minFreq) / totalWidth) * 100;
   const bandPercent = (bandWidth / totalWidth) * 100;
@@ -57,10 +53,16 @@ export const FrequencySpectrum: React.FC<FrequencySpectrumProps> = ({
   let usedColorContrast =
     bandColorContrast === '' ? theme.palette.primary.contrastText : bandColorContrast;
 
-  if (bandStartFreq < minFreq || bandEndFreq > maxFreq) {
+  // Apply a tolerance to the boundary checks, so that a value that's genuinely exactly at the
+  // boundary (but which may differ from min/max by a fraction of a Hz (due to rounding / fp arithmetic
+  const BOUNDARY_TOLERANCE = 0.001;
+  if (bandStartFreq < minFreq - BOUNDARY_TOLERANCE || bandEndFreq > maxFreq + BOUNDARY_TOLERANCE) {
     usedColor = theme.palette.error.main;
     usedColorContrast = theme.palette.error.contrastText;
-  } else if (bandStartFreq < minEdge || bandEndFreq > maxEdge) {
+  } else if (
+    bandStartFreq < minEdge - BOUNDARY_TOLERANCE ||
+    bandEndFreq > maxEdge + BOUNDARY_TOLERANCE
+  ) {
     usedColor = theme.palette.warning.light;
     usedColorContrast = theme.palette.error.contrastText;
   }
@@ -85,7 +87,7 @@ export const FrequencySpectrum: React.FC<FrequencySpectrumProps> = ({
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 2 }}>
         {/* Min Frequency */}
         <Typography variant="body2" sx={{ whiteSpace: 'nowrap' }}>
-          {actual ? `${actualMin} ${unit}` : `${minFreq} ${unit}`}
+          {actual ? `${displayGeometryMin} ${unit}` : `${minFreq} ${unit}`}
         </Typography>
 
         {/* Wrapper for label + bar */}
@@ -217,7 +219,7 @@ export const FrequencySpectrum: React.FC<FrequencySpectrumProps> = ({
 
         {/* Max Frequency */}
         <Typography variant="body2" sx={{ whiteSpace: 'nowrap' }}>
-          {actual ? `${actualMax} ${unit}` : `${maxFreq} ${unit}`}
+          {actual ? `${displayGeometryMax} ${unit}` : `${maxFreq} ${unit}`}
         </Typography>
       </Box>
     </Box>
