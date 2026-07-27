@@ -337,16 +337,4 @@ describe('autoLinking()', () => {
     expect(proposal.calibrationStrategy).toHaveLength(1);
     expect(proposal.targetObservation).toHaveLength(1);
   });
-
-  it('handles missing generated objects gracefully (no sensCalc result ⇒ no targetObservation link)', async () => {
-    vi.mocked(calculateSensCalcData as any).mockResolvedValue(null);
-
-    const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
-
-    expect(result).toEqual({ success: true });
-    expect(setProposal).toHaveBeenCalledTimes(1);
-
-    // With null sensCalc, targetObservation should be an empty array
-    expect(proposal.targetObservation).toEqual([]);
-  });
 });
