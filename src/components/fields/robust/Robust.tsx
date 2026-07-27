@@ -36,7 +36,6 @@ export default function RobustField({
       requiredMessage: t('robust.error'),
       validate: (num) =>
         num < ROBUST_RANGE.min || num > ROBUST_RANGE.max ? t('robust.error') : '',
-      commitOnBlur: true,
       step: ROBUST_STEP,
       minValue: ROBUST_RANGE.min,
       maxValue: ROBUST_RANGE.max

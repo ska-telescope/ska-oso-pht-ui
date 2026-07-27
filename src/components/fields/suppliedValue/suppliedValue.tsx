@@ -55,7 +55,6 @@ export default function SuppliedValue({
           });
         return t(`${FIELD}.range.minError`, { min: minValue, units: currentUnitLabel });
       },
-      commitOnBlur: true,
       errorDelayMs: ERROR_SECS,
       step,
       minValue,
