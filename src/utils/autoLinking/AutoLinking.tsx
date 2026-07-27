@@ -160,12 +160,16 @@ export default async function autoLinking(
   const newObservation = observationOut(newObsMode);
   const newDataProductSDP = dataProductSDPOut(newObservation);
   const sensCalcResult = await getSensCalcData(newObservation, target, newDataProductSDP);
-  if (typeof sensCalcResult === 'string') {
-    return { success: false, error: sensCalcResult };
-  }
+
+  const isValidSensCalcResult = (r: any): boolean =>
+  !!r &&
+  !r.error &&        // { error: string } failures
+  !r.detail &&       // { title, detail } validation failures
+  Array.isArray(r.section1);   // a real result has sections; failures don't
+
 
   const isSSO = target.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
-  if (!isSSO && !sensCalcResult) {
+  if (!isSSO && !isValidSensCalcResult(sensCalcResult)) {
     return { success: false, error: 'autoLink.errorNoSensCalcResponse' };
   }
 
