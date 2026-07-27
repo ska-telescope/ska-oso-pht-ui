@@ -8,16 +8,18 @@ vi.mock('@/services/i18n/useScopedTranslation', () => ({
 }));
 
 describe('<Robust /> behavior', () => {
-  test('renders robust as a free-text input', () => {
+  const getField = () => screen.getByRole('spinbutton');
+
+  test('renders robust NumberEntry input', () => {
     render(<Robust label="Robust" value={0} />);
-    expect(screen.getByRole('spinbutton')).toBeInTheDocument();
+    expect(getField()).toBeInTheDocument();
   });
 
   test('commits parsed decimal value on blur when input is valid', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={0} setValue={setValue} />);
 
-    const field = screen.getByRole('spinbutton');
+    const field = getField();
     fireEvent.change(field, { target: { value: '1.5' } });
     fireEvent.blur(field);
 
@@ -28,7 +30,7 @@ describe('<Robust /> behavior', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={0} setValue={setValue} />);
 
-    fireEvent.change(screen.getByRole('spinbutton'), { target: { value: '1' } });
+    fireEvent.change(getField(), { target: { value: '1' } });
 
     expect(setValue).not.toHaveBeenCalled();
   });
@@ -37,19 +39,19 @@ describe('<Robust /> behavior', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={0} setValue={setValue} />);
 
-    const field = screen.getByRole('spinbutton');
+    const field = getField();
     fireEvent.change(field, { target: { value: '1.45' } });
     fireEvent.blur(field);
 
     expect(setValue).toHaveBeenCalledWith(1.45);
   });
 
-  test('rejects scientific notation input and shows an error', () => {
+  test('rejects values below range and shows an error', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={0} setValue={setValue} />);
 
-    const field = screen.getByRole('spinbutton');
-    fireEvent.change(field, { target: { value: '1e-1' } });
+    const field = getField();
+    fireEvent.change(field, { target: { value: '-2.1' } });
     fireEvent.blur(field);
 
     expect(setValue).not.toHaveBeenCalled();
@@ -60,7 +62,7 @@ describe('<Robust /> behavior', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={0} setValue={setValue} />);
 
-    const field = screen.getByRole('spinbutton');
+    const field = getField();
     fireEvent.change(field, { target: { value: '2.1' } });
     fireEvent.blur(field);
 
