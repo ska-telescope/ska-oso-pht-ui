@@ -6,6 +6,7 @@ import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTheme } from '@mui/material/styles';
 import {
   DropDown,
+  FrequencySpectrum,
   getColors,
   NumberEntry,
   Spacer,
@@ -14,7 +15,6 @@ import {
   BorderedSection,
   AlertColorTypes
 } from '@ska-telescope/ska-gui-components';
-import { FrequencySpectrum } from '@/components/wrappers/frequencySpectrum/FrequencySpectrum';
 import {
   NAV,
   SUPPLIED_VALUE_DEFAULT_MID,
