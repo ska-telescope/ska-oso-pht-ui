@@ -21,6 +21,14 @@ describe('<Robust /> behavior', () => {
     expect(getField()).toBeInTheDocument();
   });
 
+  test('applies spinner bounds and step for robust range', () => {
+    render(<Robust label="Robust" value={0} />);
+    const field = getField();
+    expect(field).toHaveAttribute('step', '0.1');
+    expect(field).toHaveAttribute('min', '-2');
+    expect(field).toHaveAttribute('max', '2');
+  });
+
   test('commits parsed decimal value on blur when input is valid', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={0} setValue={setValue} />);

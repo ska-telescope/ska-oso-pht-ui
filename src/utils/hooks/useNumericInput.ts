@@ -8,6 +8,8 @@ interface NumericInputOptions {
   step?: number;
   minValue?: number;
   maxValue?: number;
+  minInclusive?: boolean;
+  maxInclusive?: boolean;
 }
 
 export const useNumericInput = (
@@ -20,7 +22,9 @@ export const useNumericInput = (
     errorDelayMs,
     step,
     minValue,
-    maxValue
+    maxValue,
+    minInclusive = true,
+    maxInclusive = true
   }: NumericInputOptions = {}
 ) => {
   const [localValue, setLocalValue] = React.useState<number>(value);
@@ -39,18 +43,30 @@ export const useNumericInput = (
     setErrorText(runValidation(value));
   }, [value]);
 
+  const getInputMin = (): string => {
+    if (minValue === undefined) return '';
+    if (minInclusive || step === undefined) return String(minValue);
+    return String(minValue + step);
+  };
+
+  const getInputMax = (): string => {
+    if (maxValue === undefined) return '';
+    if (maxInclusive || step === undefined) return String(maxValue);
+    return String(maxValue - step);
+  };
+
   React.useEffect(() => {
     if (inputRef.current && step !== undefined) {
       inputRef.current.step = String(step);
-      inputRef.current.min = minValue !== undefined ? String(minValue + step) : '';
-      inputRef.current.max = maxValue !== undefined ? String(maxValue) : '';
+      inputRef.current.min = getInputMin();
+      inputRef.current.max = getInputMax();
     }
     if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
     setErrorText(runValidation(localValue));
     return () => {
       if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
     };
-  }, [step, minValue, maxValue]);
+  }, [step, minValue, maxValue, minInclusive, maxInclusive]);
 
   const handleChange = (input: number) => {
     const num = Number(input);
