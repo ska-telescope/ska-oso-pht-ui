@@ -269,11 +269,17 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const updateObservationOnProposal = async () => {
     const proposal = getProposal();
     const newObservation: Observation = observationOut();
+
     const oldObservations = proposal.observations ?? [];
     const oldDataProducts = proposal.dataProductSDP ?? [];
+    const linkedDataProductId = proposal.targetObservation?.find(
+      (to) => to.observationId === newObservation.id
+    )?.dataProductsSDPId;
+
     const dataProductSDP: DataProductSDPNew | undefined = proposal.dataProductSDP?.find(
-      (dp) => dp.observationId === newObservation.id
+      (dp) => dp.id === linkedDataProductId
     );
+
     const oldTO = proposal?.targetObservation ?? [];
     const to = dataProductSDP
       ? await updateSensCalc(proposal, newObservation, dataProductSDP)
