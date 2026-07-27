@@ -536,13 +536,17 @@ const getResults = (
   const resultsArr = [];
   if (incTargetObservations) {
     for (const tarObs of incTargetObservations) {
-      if (tarObs.sensCalc?.error) {
+      // A target-observation that hasn't been (re)calculated yet - e.g. a freshly cloned
+      // proposal, whose links are deliberately reset to this shape with no section3 - has no
+      // sensitivity result to report at all, not just an error one. Skip it rather than reading
+      // section3[0] unguarded, which would throw on the missing array.
+      if (tarObs.sensCalc?.error || !tarObs.sensCalc?.section3) {
         continue;
       }
       const obsType = getObsType(tarObs, incObs); // spectral or continuum
       const spectralSection = getSpectralSection(obsType);
       const suppliedType =
-        tarObs?.sensCalc?.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
+        tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
 
       const suppliedRelatedFields =
         suppliedType === 'sensitivity'
