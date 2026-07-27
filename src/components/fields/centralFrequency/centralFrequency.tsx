@@ -170,10 +170,13 @@ export default function CentralFrequency({
   // band/channel data arrives late. Also re-runs when min/max shift under an unchanged value -
   // e.g. continuumBandwidthHz moving from its loading fallback to the resolved real bandwidth -
   // so a value that becomes invalid under the new bounds is flagged without needing a fresh edit.
+  // coarseChannelWidthHz is listed separately from min/max because it can change on its own -
+  // it's a standalone OSD field, not derived from the band edges that produce min/max - so a
+  // width-only OSD update wouldn't otherwise re-run this check.
   // The value itself is never touched here, only the warning.
   React.useEffect(() => {
     setErrorMessage(validateStepRef.current(value));
-  }, [value, min, max]);
+  }, [value, min, max, coarseChannelWidthHz]);
 
   // Native <input type="number"> step attributes - purely a browser-level hint (for the
   // native spinner and keyboard input restrictions). The actual snap-to-grid stepping always goes
