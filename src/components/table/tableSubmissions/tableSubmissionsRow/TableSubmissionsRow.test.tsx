@@ -69,10 +69,10 @@ describe('TableSubmissionsRow', () => {
     expect(screen.getByText(/Sample Review Title/i)).toBeInTheDocument();
   });
 
-  it('renders title in an overflow-managed container', () => {
+  it('renders title with ellipsis overflow styles', () => {
     wrapper(<TableSubmissionsRow {...defaultProps} proposal={mockProposal} />);
 
     const title = screen.getByTestId('row-title-test-row-id');
-    expect(title).toHaveStyle({ overflow: 'hidden' });
+    expect(title).toHaveStyle({ overflow: 'hidden', textOverflow: 'ellipsis' });
   });
 });
