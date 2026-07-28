@@ -4,9 +4,22 @@ import { Grid, Typography, Card, CardContent, CardActionArea, Tooltip } from '@m
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import Shell from '../../components/layout/Shell/Shell';
-import { validateTargetPage } from '../../utils/validation/validation';
+import {
+  validateCalibrationPage,
+  validateLinkingPage,
+  validateObservationPage,
+  validateSDPPage,
+  validateTargetPage
+} from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
-import { PAGE_TARGET, TARGET_OPTION } from '../../utils/constants';
+import {
+  PAGE_CALIBRATION,
+  PAGE_DATA_PRODUCTS,
+  PAGE_LINKING,
+  PAGE_OBSERVATION,
+  PAGE_TARGET,
+  TARGET_OPTION
+} from '../../utils/constants';
 import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';
 import TargetNoSpecificSection from './TargetNoSpecificSection/targetNoSpecificSection';
 import TargetListSection from './TargetListSection/targetListSection';
@@ -20,29 +33,31 @@ export default function TargetPage() {
   const { t } = useScopedTranslation();
   const theme = useTheme();
   const { application, updateAppContent1, updateAppContent2 } = storageObject.useStore();
-  const [validateToggle, setValidateToggle] = React.useState(false);
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const { isSV } = useOSDAccessors();
-
-  const getProposalState = () => application.content1 as number[];
-  const setTheProposalState = () => {
-    const status = validateTargetPage(getProposal());
-    updateAppContent1(getProposalState().map((v, i) => (i === PAGE ? status : v)));
-  };
+  const { isSV, autoLink } = useOSDAccessors();
 
   React.useEffect(() => {
-    setValidateToggle(!validateToggle);
-  }, []);
+    const proposal = getProposal();
+    if (!proposal) return;
 
-  React.useEffect(() => {
-    setValidateToggle(!validateToggle);
-  }, [getProposal()]);
+    const current = (application.content1 as number[]) ?? [];
+    const next = [...current];
 
-  React.useEffect(() => {
-    setTheProposalState();
-  }, [validateToggle]);
+    next[PAGE_TARGET] = validateTargetPage(proposal);
+    next[PAGE_OBSERVATION] = validateObservationPage(proposal, autoLink);
+    next[PAGE_DATA_PRODUCTS] = validateSDPPage(proposal);
+    next[PAGE_CALIBRATION] = validateCalibrationPage(proposal);
+    if (!isSV) {
+      next[PAGE_LINKING] = validateLinkingPage(proposal);
+    }
+
+    const hasChanges = next.some((value, idx) => value !== current[idx]);
+    if (hasChanges) {
+      updateAppContent1(next);
+    }
+  }, [application.content2, autoLink, isSV, updateAppContent1]);
 
   const handleClick = (index: number) => {
     setProposal({ ...getProposal(), targetOption: index });
