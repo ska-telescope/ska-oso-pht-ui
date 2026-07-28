@@ -54,4 +54,12 @@ describe('TableSubmissions', () => {
     render(<TableSubmissions data={[]} updateFunction={vi.fn()} />);
     expect(screen.queryByTestId('row')).toBeNull();
   });
+
+  it('defines all 8 columns in the colgroup', () => {
+    render(<TableSubmissions data={[]} updateFunction={vi.fn()} />);
+
+    const table = screen.getByTestId('table-submissions');
+    const cols = table.querySelectorAll('colgroup col');
+    expect(cols).toHaveLength(8);
+  });
 });
