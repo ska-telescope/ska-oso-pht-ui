@@ -176,7 +176,7 @@ export default async function autoLinking(
 
   // if a specific error message from backend → surface it
   if (typeof sensCalcResult === 'string') {
-    return { success: false, error: sensCalcResult };
+    return { success: false, error: 'autoLink.errorNoSensCalcResponse' };
   }
 
   if (!isSSO && !isValidSensCalcResult(sensCalcResult)) {

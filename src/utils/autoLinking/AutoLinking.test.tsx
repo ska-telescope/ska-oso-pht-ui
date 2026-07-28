@@ -339,7 +339,7 @@ describe('autoLinking()', () => {
 
     const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
 
-    expect(result).to.deep.equal({ success: false, error: 'Boom!' });
+    expect(result).to.deep.equal({ success: false, error: "autoLink.errorNoSensCalcResponse" });
     expect(setProposal).not.toHaveBeenCalled();
 
     // proposal should remain unchanged
