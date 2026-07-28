@@ -1249,7 +1249,9 @@
     "0": "All sensitivity calculations for this observation are valid",
     "1": "One or more sensitivity calculations for this observation are invalid",
     "3": "Sensitivity calculations for this observation are in progress",
-    "5": "No Sensitivity calculations"
+    "5": "No Sensitivity calculations",
+    "headerLabel": "Sens Calc",
+    "toolTip": "Click here for Sensitivity Calculator"
   },
   "sensitivityCalculatorResults": {
     "beamSize": "Beam Size",
