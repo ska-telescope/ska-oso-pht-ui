@@ -148,11 +148,14 @@ export default function TableSubmissionsRow({
             color="text.secondary"
             data-testid={`row-title-${item.id}`}
             sx={{
-              display: 'block',
+              display: { xs: '-webkit-box', md: 'block' },
               width: '100%',
               overflow: 'hidden',
               textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap'
+              whiteSpace: { xs: 'normal', md: 'nowrap' },
+              overflowWrap: 'anywhere',
+              WebkitBoxOrient: 'vertical',
+              WebkitLineClamp: { xs: 3, md: 'unset' }
             }}
           >
             {item.title}
