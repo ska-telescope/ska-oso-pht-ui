@@ -56,7 +56,7 @@ describe('TableSubmissions', () => {
   });
 
   it('defines all 8 columns in the colgroup', () => {
-    render(<TableSubmissions data={[]} updateFunction={vi.fn()} />);
+    render(<TableSubmissions data={[]} />);
 
     const table = screen.getByTestId('table-submissions');
     const cols = table.querySelectorAll('colgroup col');
