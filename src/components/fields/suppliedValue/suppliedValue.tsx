@@ -15,6 +15,7 @@ interface SuppliedValueProps {
   maxValue?: number;
   currentUnitLabel?: string;
   step?: number;
+  commitOnBlur?: boolean;
 }
 
 export default function SuppliedValue({
@@ -27,7 +28,8 @@ export default function SuppliedValue({
   minValue,
   maxValue,
   currentUnitLabel,
-  step
+  step,
+  commitOnBlur = true
 }: SuppliedValueProps) {
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
@@ -55,7 +57,7 @@ export default function SuppliedValue({
           });
         return t(`${FIELD}.range.minError`, { min: minValue, units: currentUnitLabel });
       },
-      commitOnBlur: true,
+      commitOnBlur,
       errorDelayMs: ERROR_SECS,
       step,
       minValue,
