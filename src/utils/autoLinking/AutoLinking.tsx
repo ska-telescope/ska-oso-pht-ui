@@ -173,6 +173,12 @@ export default async function autoLinking(
     Array.isArray(r.section1); // a real result has sections; failures don't
 
   const isSSO = target.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
+
+  // if a specific error message from backend → surface it
+  if (typeof sensCalcResult === 'string') {
+    return { success: false, error: sensCalcResult };
+  }
+
   if (!isSSO && !isValidSensCalcResult(sensCalcResult)) {
     return { success: false, error: 'autoLink.errorNoSensCalcResponse' };
   }
