@@ -359,7 +359,7 @@ export default function TargetEntry({
           notifySuccess(t('autoLink.targetSuccess'), NOTIFICATION_DELAY_IN_SECONDS);
           clearForm();
         } else {
-          notifyError(defaults?.error ?? t('autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
+          notifyError(t(defaults?.error ?? 'autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
         }
       };
 

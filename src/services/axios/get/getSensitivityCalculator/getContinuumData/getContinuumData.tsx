@@ -305,7 +305,7 @@ function GetContinuumData(
   target: Target,
   dataProductSDP: DataProductSDPNew
 ) {
-  const URL_PATH = `/continuum/calculate`;
+  const URL_PATH = `/continuum/calculates`;
 
   const continuumData: ContinuumData = {
     dataType: observation.type,
