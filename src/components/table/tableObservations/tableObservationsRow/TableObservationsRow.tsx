@@ -3,7 +3,7 @@ import { ChevronRight, ExpandMore } from '@mui/icons-material';
 import { useTheme } from '@mui/material/styles';
 import { useMemo } from 'react';
 import { getColors } from '@ska-telescope/ska-gui-components';
-import { FrequencySpectrum } from '@/components/wrappers/frequencySpectrum/FrequencySpectrum';
+import { FrequencySpectrum } from '@ska-telescope/ska-gui-components';
 import EditIcon from '@/components/icon/editIcon/editIcon';
 import TrashIcon from '@/components/icon/trashIcon/trashIcon';
 import { useInitializeAccessStore } from '@/utils/aaa/aaaUtils';
