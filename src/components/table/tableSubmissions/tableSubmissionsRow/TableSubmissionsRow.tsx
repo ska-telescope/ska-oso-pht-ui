@@ -135,7 +135,14 @@ export default function TableSubmissionsRow({
           </Typography>
         </TableCell>
 
-        <TableCell role="gridcell" sx={{ minWidth: 0, maxWidth: 0 }}>
+        <TableCell
+          role="gridcell"
+          sx={{
+            width: { xs: '16ch', sm: '16ch', md: '100%' },
+            minWidth: { xs: '16ch', sm: '16ch', md: '16ch' },
+            maxWidth: { md: 0 }
+          }}
+        >
           <Typography
             variant="body2"
             color="text.secondary"
