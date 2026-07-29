@@ -35,12 +35,14 @@ export default function TableSubmissions({
       >
         {<TableSubmissionsHeader />}
         <colgroup>
-          <col style={{ width: '5%' }} />
-          <col style={{ width: '5%' }} />
-          <col style={{ width: '5%' }} />
-          <col style={{ width: '5%' }} />
-          <col style={{ width: '5%' }} />
-          <col style={{ width: '5%' }} />
+          <col style={{ width: '1%' }} />
+          <col style={{ width: '1%' }} />
+          <col style={{ width: '1%' }} />
+          <col />
+          <col style={{ width: '1%' }} />
+          <col style={{ width: '1%' }} />
+          <col style={{ width: '1%' }} />
+          <col style={{ width: '1%' }} />
         </colgroup>
 
         <TableBody>

@@ -1,7 +1,13 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import TableSubmissionsHeader from './TableSubmissionsHeader';
+
+vi.mock('@/services/i18n/useScopedTranslation', () => ({
+  useScopedTranslation: () => ({
+    t: (key: string) => key
+  })
+}));
 
 const wrapper = (component: React.ReactElement) => {
   return render(<StoreProvider>{component}</StoreProvider>);

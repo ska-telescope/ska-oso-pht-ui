@@ -63,6 +63,11 @@ export default function TableSubmissionsRow({
     return colors;
   };
 
+  const nonTitleTextCellSx = {
+    whiteSpace: { xs: 'normal', md: 'nowrap' },
+    overflowWrap: 'anywhere'
+  } as const;
+
   return (
     <>
       <TableRow
@@ -72,7 +77,7 @@ export default function TableSubmissionsRow({
         role="row"
         aria-rowindex={index + 2}
       >
-        <TableCell role="gridcell" sx={{ maxWidth: 200, p: 0 }}>
+        <TableCell role="gridcell" sx={{ p: 0, whiteSpace: { xs: 'normal', md: 'nowrap' } }}>
           <Box sx={{ display: 'inline-flex', alignItems: 'center', gap: 1 }}>
             {editClicked && (
               <Box display="flex" flexDirection="column" alignItems="center">
@@ -118,25 +123,46 @@ export default function TableSubmissionsRow({
           </Box>
         </TableCell>
 
-        <TableCell role="gridcell" sx={{ maxWidth: 200 }}>
+        <TableCell role="gridcell" sx={nonTitleTextCellSx}>
           <Typography variant="body2" color="text.secondary">
             {item.id}
           </Typography>
         </TableCell>
 
-        <TableCell role="gridcell" sx={{ maxWidth: 200, whiteSpace: 'nowrap' }}>
+        <TableCell role="gridcell" sx={nonTitleTextCellSx}>
           <Typography variant="body2" color="text.secondary">
             {item.cycle}
           </Typography>
         </TableCell>
 
-        <TableCell role="gridcell" sx={{ whiteSpace: 'nowrap' }}>
-          <Typography variant="body2" color="text.secondary">
+        <TableCell
+          role="gridcell"
+          sx={{
+            width: { xs: '16ch', sm: '16ch', md: '100%' },
+            minWidth: { xs: '16ch', sm: '16ch', md: '16ch' },
+            maxWidth: { md: 0 }
+          }}
+        >
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            data-testid={`row-title-${item.id}`}
+            sx={{
+              display: { xs: '-webkit-box', md: 'block' },
+              width: '100%',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: { xs: 'normal', md: 'nowrap' },
+              overflowWrap: 'anywhere',
+              WebkitBoxOrient: 'vertical',
+              WebkitLineClamp: { xs: 3, md: 'unset' }
+            }}
+          >
             {item.title}
           </Typography>
         </TableCell>
 
-        <TableCell role="gridcell" sx={{ width: 200, whiteSpace: 'nowrap' }}>
+        <TableCell role="gridcell" sx={nonTitleTextCellSx}>
           <Typography variant="body2" color="text.secondary">
             {cycleInfo?.type ?? NOT_SPECIFIED}
           </Typography>
@@ -145,8 +171,7 @@ export default function TableSubmissionsRow({
         <TableCell
           role="gridcell"
           sx={{
-            width: 200,
-            whiteSpace: 'nowrap',
+            ...nonTitleTextCellSx,
             backgroundColor: getStatusColor(item.status).bg[0]
           }}
         >
@@ -155,13 +180,13 @@ export default function TableSubmissionsRow({
           </Typography>
         </TableCell>
 
-        <TableCell role="gridcell" sx={{ width: 200, whiteSpace: 'nowrap' }}>
+        <TableCell role="gridcell" sx={nonTitleTextCellSx}>
           <Typography variant="body2" color="text.secondary">
             {presentDateTime(item.lastUpdated)}
           </Typography>
         </TableCell>
 
-        <TableCell role="gridcell" sx={{ width: 200, whiteSpace: 'nowrap' }}>
+        <TableCell role="gridcell" sx={nonTitleTextCellSx}>
           <>
             {presentDateTime(cycleInfo?.cycleInformation?.proposalClose || NOT_SPECIFIED, {
               timeZoneName: 'short'
