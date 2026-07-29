@@ -121,7 +121,7 @@
       "1": "Bandwidth"
     },
     "range": {
-      "minimumChannelWidthError": "Bandwidth must be larger than the channel width ({{value}} kHz)",
+      "minimumChannelWidthError": "Bandwidth must be larger than the channel width ({{value}} MHz)",
       "contMaximumExceededError": "Maximum bandwidth for this array assembly ({{value}} MHz) exceeded",
       "rangeError": "Bandwidth must be fully contained within the band",
       "divisibilityError": "Bandwidth must be a multiple of {{value}} kHz"
@@ -179,7 +179,8 @@
     "label": "Central Frequency",
     "error": {
       "range": "Observing frequency out of range",
-      "divisibility": "Invalid central frequency - please adjust using the arrows"
+      "divisibility": "Invalid central frequency - please adjust using the arrows",
+      "required": "Central frequency is required"
     }
   },
   "changeProposal": {

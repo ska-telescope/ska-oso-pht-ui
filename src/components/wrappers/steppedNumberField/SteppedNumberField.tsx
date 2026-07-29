@@ -25,7 +25,6 @@ interface SteppedNumberFieldProps {
   label?: string;
   max?: number;
   min?: number;
-  onBlurCommit?: (value: number) => void;
   onCommit: (value: number) => void;
   onFocus?: () => void;
   onStep: (value: number, direction: 1 | -1) => number;
@@ -49,7 +48,6 @@ export default function SteppedNumberField({
   label,
   max,
   min,
-  onBlurCommit,
   onCommit,
   onFocus,
   onStep,
@@ -101,7 +99,7 @@ export default function SteppedNumberField({
   const handleBlur = () => {
     isFocused.current = false;
     setInputValue(format(value));
-    onBlurCommit?.(value);
+    onCommit(value);
   };
 
   // Shared by the keyboard handler and the custom spin buttons below, so both step through
@@ -120,6 +118,7 @@ export default function SteppedNumberField({
       if (min && clamped < min) {
         clamped = min;
       }
+      onCommit(clamped);
       setInputValue(format(clamped));
       return;
     }

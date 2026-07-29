@@ -1,7 +1,5 @@
-import { TextField, InputAdornment } from '@mui/material';
 import {
   FREQUENCY_HZ,
-  FREQUENCY_KHZ,
   FREQUENCY_MHZ,
   LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP,
   TELESCOPE_LOW_NUM
@@ -17,6 +15,7 @@ import {
 } from '../bandwidthValidationCommon';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
+import SteppedNumberField from '@components/wrappers/steppedNumberField/SteppedNumberField.tsx';
 
 interface ContinuumBandwidthFieldProps {
   disabled?: boolean;
@@ -70,6 +69,7 @@ export default function ContinuumBandwidthField({
     osdMID,
     osdLOW
   );
+  const maxContBandwidthMHz = frequencyConversion(maxContBandwidthHz, FREQUENCY_HZ, FREQUENCY_MHZ);
 
   const displayMaxContBandwidthErrorMessage = (): string => {
     const maxContBandwidthMHz = frequencyConversion(
@@ -132,18 +132,17 @@ export default function ContinuumBandwidthField({
     return '';
   };
 
-  const checkValue = (newValue: number) => {
-    if (stepInUnits > 0 && Math.abs(Math.abs(newValue - value) - stepInUnits) < 1e-6) {
-      const snapped =
-        newValue > value
-          ? Math.ceil((value + 1e-9) / stepInUnits) * stepInUnits
-          : Math.floor((value - 1e-9) / stepInUnits) * stepInUnits;
-      setErrorText(validateValue(snapped));
-      setValue?.(snapped);
-      return;
-    }
+  const setValueAndValidate = (newValue: number) => {
     setErrorText(validateValue(newValue));
     setValue?.(newValue);
+  };
+
+  const step = (newValue: number, direction: -1 | 1) => {
+    if (direction == -1 && newValue > maxContBandwidthMHz) return maxContBandwidthMHz;
+    if (direction == 1 && newValue < minChannelWidthMHz) return minChannelWidthMHz;
+    return direction === 1
+      ? Math.ceil((value + 1e-9) / stepInUnits) * stepInUnits
+      : Math.floor((value - 1e-9) / stepInUnits) * stepInUnits;
   };
 
   React.useEffect(() => {
@@ -170,30 +169,20 @@ export default function ContinuumBandwidthField({
   );
 
   return (
-    <TextField
-      type="number"
-      variant="standard"
-      fullWidth
-      required
-      disabled={disabled}
+    <SteppedNumberField
+      testId={FIELD}
       label={t(FIELD + '.label')}
       value={value}
-      onChange={(e) => checkValue(Number(e.target.value))}
-      error={!!errorText}
-      helperText={errorText}
+      onStep={step}
+      onCommit={setValueAndValidate}
       onFocus={() => setHelp(FIELD)}
-      slotProps={{
-        htmlInput: {
-          'data-testid': FIELD,
-          step: minChannelWidthMHz,
-          min: minChannelWidthMHz,
-          max: frequencyConversion(maxContBandwidthHz, FREQUENCY_HZ, FREQUENCY_MHZ)
-        },
-        input: suffix
-          ? { endAdornment: <InputAdornment position="end">{suffix}</InputAdornment> }
-          : undefined,
-        formHelperText: { 'data-testid': FIELD + 'Error' } as any
-      }}
+      disabled={disabled}
+      required={true}
+      errorText={errorText}
+      suffix={suffix}
+      min={minChannelWidthMHz}
+      max={maxContBandwidthMHz}
+      step={minChannelWidthMHz}
     />
   );
 }

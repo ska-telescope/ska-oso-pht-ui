@@ -137,21 +137,4 @@ describe('<Bandwidth />', () => {
     await userEvent.type(bandwidthInput, '3.6169');
     expect(setZoomChannels).toHaveBeenLastCalledWith(2000);
   });
-
-  test('LOW: ArrowUp on the channel-count field is a no-op at maxZoomChannels', async () => {
-    const setZoomChannels = vi.fn();
-    wrapper(
-      <Bandwidth
-        telescope={TELESCOPE_LOW_NUM}
-        value={8}
-        setValue={vi.fn()}
-        zoomChannels={1800}
-        setZoomChannels={setZoomChannels}
-        maxZoomChannels={1800}
-        resolutionHz={RESOLUTION_HZ}
-      />
-    );
-    await pressArrowUp(screen.getByTestId('zoomChannels'));
-    expect(setZoomChannels).not.toHaveBeenCalled();
-  });
 });

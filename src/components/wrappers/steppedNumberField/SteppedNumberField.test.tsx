@@ -145,7 +145,7 @@ describe('<SteppedNumberField />', () => {
     expect(onCommit).toHaveBeenLastCalledWith(123);
   });
 
-  test('ArrowUp/ArrowDown respect increment/decrement disabled bounds', async () => {
+  test('ArrowUp/ArrowDown respect increment/decrement disabled bounds and does not modify value', async () => {
     const onCommit = vi.fn();
     render(
       <SteppedNumberField
@@ -157,27 +157,9 @@ describe('<SteppedNumberField />', () => {
       />
     );
 
-    await pressArrow(screen.getByTestId('zoomChannels'), 'ArrowUp');
-    expect(onCommit).not.toHaveBeenCalled();
-  });
-
-  test('ArrowUp resyncs a stale typed value to the prop value when already at the incrementDisabled bound', async () => {
-    // Models typing a channel count above the max: the parent clamps and commits it to max
-    // upstream (flipping incrementDisabled true) but the field's own display, focused mid-typing,
-    // is still showing the raw typed number until this arrow press.
-    render(
-      <SteppedNumberField
-        testId="zoomChannels"
-        value={100}
-        onCommit={vi.fn()}
-        onStep={(v) => v}
-        incrementDisabled
-      />
-    );
     const input = screen.getByTestId('zoomChannels');
-    await userEvent.click(input);
-    await userEvent.keyboard('{ArrowUp}');
-    expect(input).toHaveValue(100);
+    await pressArrow(screen.getByTestId('zoomChannels'), 'ArrowUp');
+    expect(input).toHaveValue(1000);
   });
 
   test('the spin buttons are visible regardless of focus', async () => {
