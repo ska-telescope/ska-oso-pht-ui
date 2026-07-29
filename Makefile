@@ -69,6 +69,16 @@ ifneq ($(USE_INDIGO),)
   K8S_CHART_PARAMS += --set ska-oso-pht-ui.runtimeEnv.useIndigo=$(USE_INDIGO)
 endif
 
+# CAR DEPLOYMENT CHART VERSION
+# Staging and production deploy with k8s-install-chart-car, which resolves
+# skatelescope/$(K8S_CHART) to whatever is newest in CAR. Pin the chart to this
+# pipeline's version so a deployment always installs the release it was built
+# from, rather than the latest chart that happens to be published at the time.
+CAR_DEPLOY_CHECK := $(shell echo $(KUBE_NAMESPACE) | egrep 'staging-|prod-')
+ifneq ($(CAR_DEPLOY_CHECK),)
+K8S_CHART_PARAMS += --version $(VERSION)
+endif
+
 # PRODUCTION DEPLOYMENT CONFIG
 ENV_CHECK := $(shell echo $(KUBE_NAMESPACE) | egrep 'prod-ska-oso-pht-ui')
 ifneq ($(ENV_CHECK),)
