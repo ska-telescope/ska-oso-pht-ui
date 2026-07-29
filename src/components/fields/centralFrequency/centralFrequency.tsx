@@ -17,6 +17,7 @@ import {
   stepCentralFrequencyHz
 } from '@/utils/zoomWindow';
 import SteppedNumberField from '@/components/wrappers/steppedNumberField/SteppedNumberField';
+import { isInteger } from 'lodash';
 
 const clampAndRound = (value: number, min: number, max: number): number =>
   Number(Math.min(max, Math.max(min, value)).toFixed(6));
@@ -125,11 +126,6 @@ export default function CentralFrequency({
   const channelWidthMHz = frequencyConversion(coarseChannelWidthHz, FREQUENCY_HZ, FREQUENCY_MHZ);
   const stepMHz = channelWidthMHz * 2;
 
-  // A valid central frequency sits at a half-channel offset from absolute 0 Hz (so the SPW's
-  // first coarse channel is even) - see validate()'s divisibility check above, which enforces
-  // the same rule.
-  const snapToValidGrid = (currentValue: number) =>
-    (Math.round(currentValue / channelWidthMHz - 0.5) + 0.5) * channelWidthMHz;
   // Directional variants used only to correct a clamped-to-boundary value back onto the grid
   // (see stepChannel below) - rounding towards the interior of [min, max] rather than to the
   // nearest grid point, so the correction can never overshoot back past the boundary it came from.
@@ -142,12 +138,15 @@ export default function CentralFrequency({
   // channel-grid constraint), snapping to the grid first if not already aligned.
   // Stepping by a full stepMHz (2 channels) preserves the grid's alf-channel-offset parity.
   const stepChannel = (currentValue: number, direction: 1 | -1): number => {
-    if (Number.isInteger(currentValue / channelWidthMHz)) {
-      return isLow
-      ? currentValue + direction * stepMHz
-      : currentValue + direction;
+    if (direction == -1 && currentValue > max) return max;
+    if (direction == 1 && currentValue < min) return min;
+    const channelNumber = (currentValue + 0.5 * channelWidthMHz) / channelWidthMHz;
+    if (isLow ? channelNumber % 2 === 0 : isInteger(channelNumber)) {
+      return isLow ? currentValue + direction * stepMHz : currentValue + direction * stepMHz;
     } else {
-      return direction === -1 ? snapToValidGridFloor(currentValue) : snapToValidGridCeil(currentValue);
+      return direction === -1
+        ? snapToValidGridFloor(currentValue)
+        : snapToValidGridCeil(currentValue);
     }
   };
 

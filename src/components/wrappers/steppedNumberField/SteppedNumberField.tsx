@@ -65,8 +65,10 @@ export default function SteppedNumberField({
   // flagged) even though stepping in either direction is exactly what corrects it back in range.
   const steppedUp = onStep(value, 1);
   const steppedDown = onStep(value, -1);
-  const effectiveIncrementDisabled = incrementDisabled ?? steppedUp === value;
-  const effectiveDecrementDisabled = decrementDisabled ?? steppedDown === value;
+  const effectiveIncrementDisabled =
+    incrementDisabled ?? (steppedUp === value || value >= (max ?? Infinity));
+  const effectiveDecrementDisabled =
+    decrementDisabled ?? (steppedDown === value || value <= (min ?? -Infinity));
   const [inputValue, setInputValue] = React.useState(format(value));
   // Tracks whether the input is currently focused. When a commit round-trips through a lossy
   // transform (e.g. a typed frequency gets rounded to an integer channel count elsewhere and the
