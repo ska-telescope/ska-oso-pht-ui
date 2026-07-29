@@ -6,6 +6,7 @@ import Proposal from '@/utils/types/proposal';
 import Target from '@/utils/types/target';
 import TargetObservation from '@/utils/types/targetObservation';
 import { SensCalcResults } from '@utils/types/sensCalcResults.tsx';
+import { REFERENCE_COORDINATE_TYPE_SSO } from '@/utils/constants';
 
 /**
  * Internal helper: performs the full sensCalc update.
@@ -26,17 +27,27 @@ const updateSensCalcAsync = async (
           return rec;
         }
 
+        const isSSO = target.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
+
+        if (isSSO) {
+          return {
+            ...rec,
+            sensCalc: undefined
+          };
+        }
+
         const sensCalcResponse = await calculateSensCalcData(ob, target, dp);
         return {
           ...rec,
-          sensCalc: !sensCalcResponse.error
-            ? (sensCalcResponse as SensCalcResults)
-            : {
-                id: rec.targetId,
-                title: '',
-                statusGUI: -1,
-                error: sensCalcResponse.error
-              }
+          sensCalc:
+            sensCalcResponse && !sensCalcResponse.error
+              ? (sensCalcResponse as SensCalcResults)
+              : {
+                  id: rec.targetId,
+                  title: '',
+                  statusGUI: -1,
+                  error: sensCalcResponse?.error
+                }
         };
       }
 
@@ -54,6 +65,9 @@ export const updateSensCalc = async (
 
   return updated.map((rec) => {
     if (rec?.observationId === ob?.id) {
+      if (rec.sensCalc === undefined) {
+        return rec;
+      }
       return {
         ...rec,
         sensCalc: {

@@ -554,6 +554,7 @@ export const SUPPLIED_SENSITIVITY_STEP = 1;
 
 export const REFERENCE_COORDINATE_TYPE_ICRS = { value: 0, label: 'icrs' };
 export const REFERENCE_COORDINATE_TYPE_GALACTIC = { value: 1, label: 'galactic' };
+export const REFERENCE_COORDINATE_TYPE_SSO = { value: 2, label: 'special' };
 
 export const REFERENCE_COORDINATE_OPTIONS = [
   {
@@ -563,7 +564,23 @@ export const REFERENCE_COORDINATE_OPTIONS = [
   {
     label: 'Galactic',
     value: REFERENCE_COORDINATE_TYPE_GALACTIC.value
+  },
+  {
+    label: 'Solar System Object',
+    value: REFERENCE_COORDINATE_TYPE_SSO.value
   }
+];
+
+export const SSO_OPTIONS = [
+  { label: 'Mercury', value: 'Mercury' },
+  { label: 'Venus', value: 'Venus' },
+  { label: 'Mars', value: 'Mars' },
+  { label: 'Jupiter', value: 'Jupiter' },
+  { label: 'Saturn', value: 'Saturn' },
+  { label: 'Uranus', value: 'Uranus' },
+  { label: 'Neptune', value: 'Neptune' },
+  { label: 'Moon', value: 'Moon' },
+  { label: 'Sun', value: 'Sun' }
 ];
 
 export const SEPARATOR0 = '?';

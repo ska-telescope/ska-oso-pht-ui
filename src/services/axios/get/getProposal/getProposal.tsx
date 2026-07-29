@@ -13,6 +13,8 @@ import Target, {
   ReferenceCoordinateGalacticBackend,
   ReferenceCoordinateICRS,
   ReferenceCoordinateICRSBackend,
+  ReferenceCoordinateSSO,
+  ReferenceCoordinateSSOBackend,
   TargetBackend
 } from '@utils/types/target.tsx';
 import Observation from '@utils/types/observation.tsx';
@@ -51,7 +53,8 @@ import {
   DETECTED_FILTER_BANK_VALUE,
   FLOW_THROUGH_VALUE,
   TYPE_ZOOM_LONG,
-  cypressSV
+  cypressSV,
+  REFERENCE_COORDINATE_TYPE_SSO
 } from '@utils/constants.ts';
 import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import {
@@ -146,37 +149,59 @@ export const getVelType = (InDefinition: string) => {
 };
 
 export const getReferenceCoordinate = (
-  tar: ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend
-): ReferenceCoordinateICRS | ReferenceCoordinateGalactic => {
-  if ('kind' in tar && tar.kind === REFERENCE_COORDINATE_TYPE_GALACTIC.label) {
-    return {
-      kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
-      l: (tar as ReferenceCoordinateGalacticBackend).l,
-      b: (tar as ReferenceCoordinateGalacticBackend).b,
-      pmL: (tar as ReferenceCoordinateGalacticBackend).pm_l,
-      pmB: (tar as ReferenceCoordinateGalacticBackend).pm_b,
-      epoch: tar.epoch,
-      parallax: tar.parallax
-    };
+  tar:
+    | ReferenceCoordinateICRSBackend
+    | ReferenceCoordinateGalacticBackend
+    | ReferenceCoordinateSSOBackend
+): ReferenceCoordinateICRS | ReferenceCoordinateGalactic | ReferenceCoordinateSSO => {
+  switch (tar.kind) {
+    case REFERENCE_COORDINATE_TYPE_ICRS.label:
+      return {
+        kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
+        raStr: (tar as ReferenceCoordinateICRSBackend).ra_str,
+        decStr: (tar as ReferenceCoordinateICRSBackend).dec_str,
+        pmRa: (tar as ReferenceCoordinateICRSBackend).pm_ra,
+        pmDec: (tar as ReferenceCoordinateICRSBackend).pm_dec,
+        epoch: (tar as ReferenceCoordinateICRSBackend).epoch,
+        parallax: (tar as ReferenceCoordinateICRSBackend).parallax
+      };
+
+    case REFERENCE_COORDINATE_TYPE_GALACTIC.label:
+      return {
+        kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
+        l: (tar as ReferenceCoordinateGalacticBackend).l,
+        b: (tar as ReferenceCoordinateGalacticBackend).b,
+        pmL: (tar as ReferenceCoordinateGalacticBackend).pm_l,
+        pmB: (tar as ReferenceCoordinateGalacticBackend).pm_b,
+        epoch: (tar as ReferenceCoordinateGalacticBackend).epoch,
+        parallax: (tar as ReferenceCoordinateGalacticBackend).parallax
+      };
+
+    case REFERENCE_COORDINATE_TYPE_SSO.label:
+      return {
+        kind: REFERENCE_COORDINATE_TYPE_SSO.label
+      };
+
+    default:
+      throw new Error(`Unsupported reference coordinate kind: ${tar.kind}`);
   }
-  return {
-    kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
-    raStr: (tar as ReferenceCoordinateICRSBackend).ra_str,
-    decStr: (tar as ReferenceCoordinateICRSBackend).dec_str,
-    pmRa: (tar as ReferenceCoordinateICRSBackend).pm_ra,
-    pmDec: (tar as ReferenceCoordinateICRSBackend).pm_dec,
-    epoch: (tar as ReferenceCoordinateICRSBackend).epoch,
-    parallax: (tar as ReferenceCoordinateICRSBackend).parallax
-  };
 };
 
-const isTargetGalactic = (kind: string): boolean =>
-  kind === REFERENCE_COORDINATE_TYPE_GALACTIC.label;
+const getTargetType = (kind: string): number => {
+  switch (kind) {
+    case REFERENCE_COORDINATE_TYPE_ICRS.label:
+      return REFERENCE_COORDINATE_TYPE_ICRS.value;
 
-const getTargetType = (kind: string): number =>
-  kind === REFERENCE_COORDINATE_TYPE_GALACTIC.label
-    ? REFERENCE_COORDINATE_TYPE_GALACTIC.value
-    : REFERENCE_COORDINATE_TYPE_ICRS.value;
+    case REFERENCE_COORDINATE_TYPE_GALACTIC.label:
+      return REFERENCE_COORDINATE_TYPE_GALACTIC.value;
+
+    case REFERENCE_COORDINATE_TYPE_SSO.label:
+      return REFERENCE_COORDINATE_TYPE_SSO.value;
+
+    default:
+      throw new Error(`Unsupported coordinate type: ${kind}`);
+  }
+};
 
 const getTargets = (inRec: TargetBackend[]): Target[] => {
   const results = [];
@@ -209,16 +234,27 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       }
     };
     /*------- reference coordinate properties --------------------- */
-    if (isTargetGalactic(referenceCoordinate)) {
-      target.l = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).l;
-      target.b = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).b;
-      target.pmL = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_l;
-      target.pmB = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_b;
-    } else if (!isTargetGalactic(referenceCoordinate)) {
-      target.raStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).ra_str;
-      target.decStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).dec_str;
-      target.pmRa = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_ra;
-      target.pmDec = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_dec;
+
+    switch (referenceCoordinate) {
+      case REFERENCE_COORDINATE_TYPE_ICRS.label:
+        target.raStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).ra_str;
+        target.decStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).dec_str;
+        target.pmRa = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_ra;
+        target.pmDec = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_dec;
+        break;
+
+      case REFERENCE_COORDINATE_TYPE_GALACTIC.label:
+        target.l = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).l;
+        target.b = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).b;
+        target.pmL = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_l;
+        target.pmB = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_b;
+        break;
+
+      case REFERENCE_COORDINATE_TYPE_SSO.label:
+        break;
+
+      default:
+        throw new Error(`Unsupported coordinate type ${referenceCoordinate}`);
     }
     /*------- end of reference coordinate properties --------------------- */
     results.push(target);
