@@ -103,6 +103,12 @@ export const validateObservationPage = (proposal: Proposal, autoLink: boolean) =
   }
 };
 
+// Only the "centre frequency ± bandwidth spills past the band edge" check - deliberately does
+// not also check the channel-grid/divisibility constraint (isCentralFrequencyOnChannelGrid /
+// isCentralFrequencyDivisible), which is a different failure kind. Callers that need that too
+// (e.g. useIsObservationFrequencyOutOfRange below) check it explicitly and separately, rather
+// than this hook folding both into one boolean and forcing every caller to show the same
+// "out of range" wording for either failure.
 export const useIsFrequencyOutOfRange = () => {
   const { osdLOW, osdMID } = useOSDAccessors();
 
@@ -110,10 +116,7 @@ export const useIsFrequencyOutOfRange = () => {
     centralFrequency: number,
     bandwidth: number,
     isLow: boolean,
-    observingBand: string,
-    type?: string,
-    channelWidthHz?: number,
-    windowBandwidthHz?: number
+    observingBand: string
   ): boolean => {
     let minHz = 0;
     let maxHz = 0;
@@ -138,28 +141,13 @@ export const useIsFrequencyOutOfRange = () => {
       frequencyConversion(centralFrequency, targetUnits, FREQUENCY_HZ)
     );
     const bandwidthHz = Math.round(frequencyConversion(bandwidth, targetUnits, FREQUENCY_HZ));
-    if (isFrequencyRangeOutOfBand(centralFrequencyHz, bandwidthHz, minHz, maxHz)) return true;
-
-    // The channel-grid/divisibility constraint is LOW-only, matching centralFrequency.tsx's own
-    // validation (see isCentralFrequencyOnChannelGrid/isCentralFrequencyDivisible there).
-    if (!isLow) return false;
-
-    if (type === TYPE_ZOOM) {
-      return !isCentralFrequencyOnChannelGrid(
-        centralFrequencyHz,
-        channelWidthHz ?? 0,
-        windowBandwidthHz ?? 0,
-        minHz
-      );
-    }
-
-    const coarseChannelWidthHz = osdLOW?.basicCapabilities?.coarseChannelWidthHz ?? 0;
-    return !isCentralFrequencyDivisible(centralFrequencyHz, coarseChannelWidthHz);
+    return isFrequencyRangeOutOfBand(centralFrequencyHz, bandwidthHz, minHz, maxHz);
   };
 };
 
 export const useIsObservationFrequencyOutOfRange = () => {
   const isFrequencyOutOfRange = useIsFrequencyOutOfRange();
+  const { osdLOW } = useOSDAccessors();
 
   return (obs: Observation): boolean => {
     const isLow = obs.telescope === TELESCOPE_LOW_NUM;
@@ -184,15 +172,33 @@ export const useIsObservationFrequencyOutOfRange = () => {
         ? frequencyConversion(windowBandwidthHz, FREQUENCY_HZ, FREQUENCY_MHZ)
         : (obs.bandwidth ?? 0)
       : (obs.continuumBandwidth ?? 0);
-    return isFrequencyOutOfRange(
-      obs.centralFrequency,
-      bandwidth,
-      isLow,
-      String(obs.observingBand ?? ''),
-      obs.type,
-      channelWidthHz,
-      windowBandwidthHz
+
+    if (
+      isFrequencyOutOfRange(obs.centralFrequency, bandwidth, isLow, String(obs.observingBand ?? ''))
+    ) {
+      return true;
+    }
+
+    // The channel-grid/divisibility constraint is LOW-only, matching centralFrequency.tsx's own
+    // validation (see isCentralFrequencyOnChannelGrid/isCentralFrequencyDivisible there).
+    if (!isLow) return false;
+
+    const minHz = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
+    const centralFrequencyHz = Math.round(
+      frequencyConversion(obs.centralFrequency, FREQUENCY_MHZ, FREQUENCY_HZ)
     );
+
+    if (isZoom) {
+      return !isCentralFrequencyOnChannelGrid(
+        centralFrequencyHz,
+        channelWidthHz,
+        windowBandwidthHz,
+        minHz
+      );
+    }
+
+    const coarseChannelWidthHz = osdLOW?.basicCapabilities?.coarseChannelWidthHz ?? 0;
+    return !isCentralFrequencyDivisible(centralFrequencyHz, coarseChannelWidthHz);
   };
 };
 

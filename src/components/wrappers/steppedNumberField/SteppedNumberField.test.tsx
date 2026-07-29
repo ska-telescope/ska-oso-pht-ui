@@ -180,18 +180,18 @@ describe('<SteppedNumberField />', () => {
     expect(input).toHaveValue(100);
   });
 
-  test('the spin buttons are hidden until the field is focused, and hide again on blur', async () => {
+  test('the spin buttons are visible regardless of focus', async () => {
     render(
       <SteppedNumberField testId="zoomChannels" value={1000} onCommit={vi.fn()} onStep={(v) => v} />
     );
     const increment = screen.getByTestId('zoomChannelsIncrement');
-    expect(increment).not.toBeVisible();
+    expect(increment).toBeVisible();
 
     await userEvent.click(screen.getByTestId('zoomChannels'));
     expect(increment).toBeVisible();
 
     await userEvent.tab();
-    expect(increment).not.toBeVisible();
+    expect(increment).toBeVisible();
   });
 
   test('clicking the custom spin buttons calls onStep then onCommit with the result, same as the arrow keys', async () => {

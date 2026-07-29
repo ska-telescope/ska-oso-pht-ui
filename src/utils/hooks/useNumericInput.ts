@@ -3,6 +3,7 @@ import React from 'react';
 interface NumericInputOptions {
   validate?: (num: number) => string;
   requiredMessage?: string;
+  commitOnBlur?: boolean;
   errorDelayMs?: number;
   step?: number;
   minValue?: number;
@@ -17,6 +18,7 @@ export const useNumericInput = (
   {
     validate,
     requiredMessage = 'required',
+    commitOnBlur = true,
     errorDelayMs,
     step,
     minValue,
@@ -94,6 +96,9 @@ export const useNumericInput = (
       }
     } else {
       setErrorText('');
+      if (!commitOnBlur) {
+        onCommit(num);
+      }
     }
   };
 
@@ -106,7 +111,7 @@ export const useNumericInput = (
     }
     const error = runValidation(num);
     setErrorText(error);
-    if (!error) onCommit(num);
+    if (!error && commitOnBlur) onCommit(num);
   };
 
   return { localValue, errorText, handleChange, handleBlur, inputRef };

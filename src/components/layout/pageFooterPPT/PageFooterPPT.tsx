@@ -190,7 +190,16 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
 
   return (
     <Paper
-      sx={{ backgroundColor: 'transparent', position: 'fixed', bottom: 40, left: 0, right: 0 }}
+      sx={{
+        backgroundColor: 'transparent',
+        position: 'fixed',
+        bottom: 40,
+        left: 0,
+        right: 0,
+        // even though nothing is visibly there this component can still absorb clicks.
+        // Re-enabled per-child below.
+        pointerEvents: 'none'
+      }}
       elevation={0}
     >
       <Grid
@@ -201,7 +210,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
         alignItems="flex-end"
         justifyContent="space-between"
       >
-        <Grid>
+        <Grid sx={{ pointerEvents: 'auto' }}>
           {showPrevNav() && (
             <PreviousPageButton
               action={prevPageNav}
@@ -211,7 +220,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
           )}
         </Grid>
 
-        <Grid>
+        <Grid sx={{ pointerEvents: 'auto' }}>
           {showNotification && (
             <TimedAlert
               color={notification.level}
@@ -222,7 +231,7 @@ export default function PageFooterPPT({ pageNo, buttonDisabled = false }: PageFo
           )}
         </Grid>
 
-        <Grid>
+        <Grid sx={{ pointerEvents: 'auto' }}>
           {showNextNav() && (
             <NextPageButton
               disabled={buttonDisabled}

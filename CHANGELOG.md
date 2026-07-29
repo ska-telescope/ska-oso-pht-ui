@@ -61,6 +61,7 @@ UNRELEASED
 * Changed: Made the Observations panel have the same title and border as other panels on the Observatory Data Product page.
 * Removed: Drop hardcoded mock observation cycles from Submission Tool cycle selector.
 * Changed: Robust parameter can be set to any floating point value in the range [-2, 2]
+* Bugfix: Updated duration now used in sensitivity calculations on page change
 
 10.1.0
 ----------

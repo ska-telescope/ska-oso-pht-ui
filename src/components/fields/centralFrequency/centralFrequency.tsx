@@ -6,6 +6,7 @@ import {
   FREQUENCY_GHZ,
   FREQUENCY_HZ,
   FREQUENCY_MHZ,
+  LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP,
   TELESCOPE_LOW_NUM
 } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
@@ -69,7 +70,17 @@ export default function CentralFrequency({
   // committed value - otherwise a value that's genuinely exactly at the boundary can differ from
   // min/max by a fraction of a Hz (from the separate Hz->units conversion, and from that rounding
   // never being applied here) and get wrongly flagged as out of range.
-  const halfWindowHz = (isLowZoom ? windowBandwidthHz : continuumBandwidthHz) / 2;
+  // continuumBandwidthHz can be legitimately 0 for a moment (e.g. the caller's own default hasn't
+  // resolved yet because it depends on OSD data that's still loading) - falling back to a fixed
+  // minimum-bandwidth inset in that case avoids a 0 Hz inset, which would let the real (usually
+  // much wider) bandwidth spill straight past the band edge once it does resolve.
+  const fallbackBandwidthHz = osdLOW?.basicCapabilities.coarseChannelWidthHz
+    ? osdLOW.basicCapabilities.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
+    : // TODO: Mid values should come from OSD in the future - 13440 is Mid channel width in Hz
+      //  and until AA2 bandwidth has to be multiple of 20 channels.
+      Math.round(20 * 13440 * 1e12) / 1e12;
+  const halfWindowHz =
+    (isLowZoom ? windowBandwidthHz : continuumBandwidthHz || fallbackBandwidthHz) / 2;
   const min = Number(frequencyConversion(minHz + halfWindowHz, FREQUENCY_HZ, units).toFixed(6));
   const max = Number(frequencyConversion(maxHz - halfWindowHz, FREQUENCY_HZ, units).toFixed(6));
 
@@ -119,6 +130,13 @@ export default function CentralFrequency({
   // the same rule.
   const snapToValidGrid = (currentValue: number) =>
     (Math.round(currentValue / channelWidthMHz - 0.5) + 0.5) * channelWidthMHz;
+  // Directional variants used only to correct a clamped-to-boundary value back onto the grid
+  // (see stepChannel below) - rounding towards the interior of [min, max] rather than to the
+  // nearest grid point, so the correction can never overshoot back past the boundary it came from.
+  const snapToValidGridFloor = (currentValue: number) =>
+    (Math.floor(currentValue / channelWidthMHz - 0.5 + 1e-9) + 0.5) * channelWidthMHz;
+  const snapToValidGridCeil = (currentValue: number) =>
+    (Math.ceil(currentValue / channelWidthMHz - 0.5 - 1e-9) + 0.5) * channelWidthMHz;
 
   // Steps by one coarse-channel-grid unit (LOW) or a plain 1-unit increment (MID, which has no
   // channel-grid constraint), snapping to the grid first if not already aligned.
@@ -127,7 +145,17 @@ export default function CentralFrequency({
     const stepped = isLow
       ? snapToValidGrid(currentValue) + direction * stepMHz
       : currentValue + direction;
-    return clampAndRound(stepped, min, max);
+    const clamped = clampAndRound(stepped, min, max);
+    if (!isLow) return clamped;
+    const clampedHz = frequencyConversion(clamped, units, FREQUENCY_HZ);
+    if (isCentralFrequencyDivisible(clampedHz, coarseChannelWidthHz)) return clamped;
+    // Clamping (a raw arithmetic boundary) pulled the value off the channel grid - e.g. when
+    // correcting down from a value way above the band's max with a bandwidth that isn't a whole
+    // multiple of the channel-grid step, the clamp above lands exactly on that boundary, which
+    // usually isn't itself a valid grid point. Re-snap towards the interior of [min, max].
+    const resnapped =
+      clamped < stepped ? snapToValidGridFloor(clamped) : snapToValidGridCeil(clamped);
+    return clampAndRound(resnapped, min, max);
   };
 
   // validateStep/validate close over values (e.g. the mocked `t` in tests) that can get a new
@@ -139,10 +167,16 @@ export default function CentralFrequency({
 
   // Validates the current value whenever it changes for any reason - not just a user edit via
   // onCommit - e.g. on mount with a value loaded from a saved observation, or once async OSD
-  // band/channel data arrives late. The value itself is never touched here, only the warning.
+  // band/channel data arrives late. Also re-runs when min/max shift under an unchanged value -
+  // e.g. continuumBandwidthHz moving from its loading fallback to the resolved real bandwidth -
+  // so a value that becomes invalid under the new bounds is flagged without needing a fresh edit.
+  // coarseChannelWidthHz is listed separately from min/max because it can change on its own -
+  // it's a standalone OSD field, not derived from the band edges that produce min/max - so a
+  // width-only OSD update wouldn't otherwise re-run this check.
+  // The value itself is never touched here, only the warning.
   React.useEffect(() => {
     setErrorMessage(validateStepRef.current(value));
-  }, [value]);
+  }, [value, min, max, coarseChannelWidthHz]);
 
   // Native <input type="number"> step attributes - purely a browser-level hint (for the
   // native spinner and keyboard input restrictions). The actual snap-to-grid stepping always goes

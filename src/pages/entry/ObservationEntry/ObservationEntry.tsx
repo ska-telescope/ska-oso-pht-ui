@@ -6,6 +6,7 @@ import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTheme } from '@mui/material/styles';
 import {
   DropDown,
+  FrequencySpectrum,
   getColors,
   NumberEntry,
   Spacer,
@@ -14,7 +15,6 @@ import {
   BorderedSection,
   AlertColorTypes
 } from '@ska-telescope/ska-gui-components';
-import { FrequencySpectrum } from '@/components/wrappers/frequencySpectrum/FrequencySpectrum';
 import {
   NAV,
   SUPPLIED_VALUE_DEFAULT_MID,
@@ -613,15 +613,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           ? frequencyConversion(getZoomBandwidthHz(), FREQUENCY_HZ, FREQUENCY_MHZ)
           : bandwidth
         : continuumBandwidth;
-    return isFrequencyOutOfRange(
-      centralFrequency,
-      useBandwidth,
-      isLow(),
-      String(observingBand),
-      observationType,
-      getResolutionHz(),
-      getZoomBandwidthHz()
-    );
+    return isFrequencyOutOfRange(centralFrequency, useBandwidth, isLow(), String(observingBand));
   };
 
   const emptyField = () => <></>;
@@ -950,6 +942,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <SuppliedValue
           value={suppliedValue}
           setValue={setSuppliedValue}
+          commitOnBlur={suppliedType !== SUPPLIED_TYPE_INTEGRATION}
           suffix={suppliedUnitsField()}
           label=""
           minValue={0}
