@@ -1,6 +1,11 @@
 import {
+  CHANNELS_OUT_DEFAULT,
   DP_TYPE_IMAGES,
+  IMAGE_SIZE_DEFAULT,
+  IMAGE_SIZE_UNIT_DEFAULT,
   IW_UNIFORM,
+  PIXEL_SIZE_DEFAULT,
+  PIXEL_SIZE_UNIT_DEFAULT,
   PULSAR_TIMING_VALUE,
   ROBUST_DEFAULT,
   TAPER_DEFAULT
@@ -26,13 +31,13 @@ export const CONTINUUM_IMAGE_DATA_PRODUCT: DataProductSDPNew = {
   data: {
     continuumSubtraction: true,
     dataProductType: DP_TYPE_IMAGES,
-    imageSizeValue: 2.5,
-    imageSizeUnits: 0,
-    pixelSizeValue: 1.6,
-    pixelSizeUnits: 2,
+    imageSizeValue: IMAGE_SIZE_DEFAULT,
+    imageSizeUnits: IMAGE_SIZE_UNIT_DEFAULT,
+    pixelSizeValue: PIXEL_SIZE_DEFAULT,
+    pixelSizeUnits: PIXEL_SIZE_UNIT_DEFAULT,
     weighting: IW_UNIFORM,
     polarisations: ['I', 'XX'],
-    channelsOut: 40,
+    channelsOut: CHANNELS_OUT_DEFAULT,
     robust: ROBUST_DEFAULT,
     taperValue: TAPER_DEFAULT
   } as SDPImageContinuumData
@@ -42,13 +47,13 @@ export const SPECTRAL_DATA_PRODUCT: DataProductSDPNew = {
   id: 'SDP-0000000',
   observationId: 'obs-123',
   data: {
-    imageSizeValue: 2.5,
-    imageSizeUnits: 0,
-    pixelSizeValue: 1.6,
-    pixelSizeUnits: 2,
+    imageSizeValue: IMAGE_SIZE_DEFAULT,
+    imageSizeUnits: IMAGE_SIZE_UNIT_DEFAULT,
+    pixelSizeValue: PIXEL_SIZE_DEFAULT,
+    pixelSizeUnits: PIXEL_SIZE_UNIT_DEFAULT,
     weighting: IW_UNIFORM,
     polarisations: ['I', 'XX'],
-    channelsOut: 40,
+    channelsOut: CHANNELS_OUT_DEFAULT,
     robust: ROBUST_DEFAULT,
     taperValue: TAPER_DEFAULT,
     continuumSubtraction: true

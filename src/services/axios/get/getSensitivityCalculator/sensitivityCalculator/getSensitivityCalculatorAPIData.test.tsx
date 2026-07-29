@@ -17,13 +17,13 @@ const MOCK_CONTINUUM_DATA_PRODUCT: DataProductSDPNew = {
   observationId: 'obs-123456',
   data: {
     dataProductType: CONSTANTS.DP_TYPE_IMAGES,
-    imageSizeValue: 2.5,
-    imageSizeUnits: 0,
-    pixelSizeValue: 1.6,
-    pixelSizeUnits: 2,
+    imageSizeValue: CONSTANTS.IMAGE_SIZE_DEFAULT,
+    imageSizeUnits: CONSTANTS.IMAGE_SIZE_UNIT_DEFAULT,
+    pixelSizeValue: CONSTANTS.PIXEL_SIZE_DEFAULT,
+    pixelSizeUnits: CONSTANTS.PIXEL_SIZE_UNIT_DEFAULT,
     weighting: CONSTANTS.IW_UNIFORM,
     polarisations: ['I', 'XX'],
-    channelsOut: 10,
+    channelsOut: CONSTANTS.CHANNELS_OUT_DEFAULT,
     robust: CONSTANTS.ROBUST_DEFAULT,
     taperValue: CONSTANTS.TAPER_DEFAULT
   } as SDPImageContinuumData

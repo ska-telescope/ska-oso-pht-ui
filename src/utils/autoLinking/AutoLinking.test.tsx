@@ -3,6 +3,7 @@ import {
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
   DEFAULT_PST_OBSERVATION_LOW,
   DEFAULT_ZOOM_OBSERVATION_LOW,
+  DP_TYPE_VISIBLE,
   REFERENCE_COORDINATE_TYPE_SSO,
   STATUS_OK,
   TYPE_CONTINUUM,
@@ -15,7 +16,11 @@ import Proposal from '../types/proposal';
 import { SDPImageContinuumData, SDPSpectralData } from '../types/dataProduct';
 import { getDefaultObservationLowAA2 } from '../helpers';
 import Observation from '../types/observation';
-import autoLinking, { calibrationOut, dataProductSDPOut, observationOut } from './AutoLinking';
+import autoLinking, {
+  newCalibrationStrategy,
+  newDataProductsForMode,
+  newObservationForMode
+} from './AutoLinking';
 import { mockCalibration } from './mockCalibration';
 import {
   CONTINUUM_IMAGE_DATA_PRODUCT,
@@ -31,69 +36,84 @@ const validMockSensCal = {
   section1: [{ field: 'continuumSensitivityWeighted', value: '130.33', units: 'uJy / beam' }]
 };
 
-describe('autoLinking, observationOut', () => {
-  test('observationOut continuum', () => {
+describe('autoLinking, newObservationForMode', () => {
+  test('creates continuum observation', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
-    expect(observationOut(TYPE_CONTINUUM)).deep.equal(DEFAULT_CONTINUUM_OBSERVATION_LOW);
+    expect(newObservationForMode(TYPE_CONTINUUM)).deep.equal(DEFAULT_CONTINUUM_OBSERVATION_LOW);
   });
-  test('observationOut zoom', () => {
+  test('creates zoom observation', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
-    expect(observationOut(TYPE_ZOOM)).deep.equal(DEFAULT_ZOOM_OBSERVATION_LOW);
+    expect(newObservationForMode(TYPE_ZOOM)).deep.equal(DEFAULT_ZOOM_OBSERVATION_LOW);
   });
-  test('observationOut pst', () => {
+  test('creates pst observation', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
-    expect(observationOut(TYPE_PST)).deep.equal(DEFAULT_PST_OBSERVATION_LOW);
+    expect(newObservationForMode(TYPE_PST)).deep.equal(DEFAULT_PST_OBSERVATION_LOW);
   });
   test('observationOut zoom overrides the static zoomChannels placeholder with the real cap', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
-    const result = observationOut(TYPE_ZOOM, 4000);
+    const result = newObservationForMode(TYPE_ZOOM, 4000);
     expect(result.zoomChannels).toBe(4000);
     expect(result).toEqual({ ...DEFAULT_ZOOM_OBSERVATION_LOW, zoomChannels: 4000 });
   });
   test('observationOut zoom keeps the static placeholder when no cap is provided', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
-    expect(observationOut(TYPE_ZOOM)).deep.equal(DEFAULT_ZOOM_OBSERVATION_LOW);
+    expect(newObservationForMode(TYPE_ZOOM)).deep.equal(DEFAULT_ZOOM_OBSERVATION_LOW);
   });
   test('observationOut continuum ignores maxZoomChannels (not a zoom observation)', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
-    expect(observationOut(TYPE_CONTINUUM, 4000)).deep.equal(DEFAULT_CONTINUUM_OBSERVATION_LOW);
+    expect(newObservationForMode(TYPE_CONTINUUM, 4000)).deep.equal(
+      DEFAULT_CONTINUUM_OBSERVATION_LOW
+    );
   });
 });
 
-describe('autoLinking, dataProductSDPOut', () => {
+describe('autoLinking, newDataProductsForMode', () => {
   test('SDP default continuum', () => {
-    vi.spyOn(helpers, 'generateId').mockReturnValue('SDP-0000000');
+    vi.spyOn(helpers, 'generateId')
+      .mockReturnValueOnce('SDP-0000000')
+      .mockReturnValueOnce('SDP-0000001');
     const obs: Observation = {
       ...getDefaultObservationLowAA2(TYPE_CONTINUUM),
       id: 'obs-123'
     };
-    const sdp = dataProductSDPOut(obs);
-    expect(sdp).to.deep.equal(CONTINUUM_IMAGE_DATA_PRODUCT);
+    const sdps = newDataProductsForMode(obs);
+    expect(sdps).toHaveLength(2);
+    expect(sdps[0]).to.deep.equal(CONTINUUM_IMAGE_DATA_PRODUCT);
+    expect(sdps[1].observationId).toBe('obs-123');
+    expect(sdps[1].data?.dataProductType).toBe(DP_TYPE_VISIBLE);
   });
+
   test('SDP default spectral', () => {
-    vi.spyOn(helpers, 'generateId').mockReturnValue('SDP-0000000');
+    vi.spyOn(helpers, 'generateId')
+      .mockReturnValueOnce('SDP-0000000')
+      .mockReturnValueOnce('SDP-0000001');
     const obs: Observation = {
       ...getDefaultObservationLowAA2(TYPE_ZOOM),
       id: 'obs-123'
     };
-    const sdp = dataProductSDPOut(obs);
-    expect(sdp).to.deep.equal(SPECTRAL_DATA_PRODUCT);
+    const sdps = newDataProductsForMode(obs);
+    expect(sdps).toHaveLength(2);
+    expect(sdps[0]).to.deep.equal(SPECTRAL_DATA_PRODUCT);
+    expect(sdps[1].observationId).toBe('obs-123');
+    expect(sdps[1].data?.dataProductType).toBe(DP_TYPE_VISIBLE);
   });
+
   test('SDP default PST', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('SDP-0000000');
     const obs: Observation = {
       ...getDefaultObservationLowAA2(TYPE_PST),
       id: 'obs-123'
     };
-    const sdp = dataProductSDPOut(obs);
-    expect(sdp).to.deep.equal(PST_TIMING_DATA_PRODUCT);
+    const sdps = newDataProductsForMode(obs);
+    expect(sdps).toHaveLength(1);
+    expect(sdps[0]).to.deep.equal(PST_TIMING_DATA_PRODUCT);
   });
 });
 
-describe('autoLinking, calibrationOut', () => {
-  test('calibrationOut', () => {
+describe('autoLinking, newCalibrationStrategy', () => {
+  test('creates default calibration strategy', () => {
     vi.spyOn(helpers, 'generateId').mockReturnValue('cal-0000000');
-    const calibration = calibrationOut('obs-123');
+    const calibration = newCalibrationStrategy('obs-123');
     expect(calibration).to.deep.equal(mockCalibration);
   });
 });
@@ -153,7 +173,7 @@ describe('autoLinking()', () => {
     expect(proposal.targets).toHaveLength(1);
     expect(proposal.targets?.[0]).toEqual(mockTarget);
 
-    expect(proposal.dataProductSDP).toHaveLength(1);
+    expect(proposal.dataProductSDP).toHaveLength(2);
     expect(proposal.dataProductSDP?.[0].observationId).toBe('mock-0000000');
 
     expect(proposal.calibrationStrategy).toHaveLength(1);
@@ -174,7 +194,7 @@ describe('autoLinking()', () => {
 
     expect(proposal.targets).toHaveLength(1);
     expect(proposal.observations).toHaveLength(1);
-    expect(proposal.dataProductSDP).toHaveLength(1);
+    expect(proposal.dataProductSDP).toHaveLength(2);
     expect(proposal.calibrationStrategy).toHaveLength(1);
 
     expect(proposal.observations?.[0].id).not.toBe('existing-obs');
@@ -241,7 +261,7 @@ describe('autoLinking()', () => {
 
     expect(proposal.targets).toHaveLength(1);
     expect(proposal.observations).toHaveLength(1);
-    expect(proposal.dataProductSDP).toHaveLength(1);
+    expect(proposal.dataProductSDP).toHaveLength(2);
     expect(proposal.calibrationStrategy).toHaveLength(1);
     expect(proposal.targetObservation).toHaveLength(1);
 
@@ -308,7 +328,7 @@ describe('autoLinking()', () => {
 
     expect(proposal.targets).toHaveLength(1);
     expect(proposal.observations).toHaveLength(1);
-    expect(proposal.dataProductSDP).toHaveLength(1);
+    expect(proposal.dataProductSDP).toHaveLength(2);
     expect(proposal.calibrationStrategy).toHaveLength(1);
     expect(proposal.targetObservation).toHaveLength(1);
 
@@ -361,7 +381,7 @@ describe('autoLinking()', () => {
     // The function should populate the required arrays even if they were missing
     expect(proposal.targets).toHaveLength(1);
     expect(proposal.observations).toHaveLength(1);
-    expect(proposal.dataProductSDP).toHaveLength(1);
+    expect(proposal.dataProductSDP).toHaveLength(2);
     expect(proposal.calibrationStrategy).toHaveLength(1);
     expect(proposal.targetObservation).toHaveLength(1);
   });
@@ -379,7 +399,7 @@ describe('autoLinking()', () => {
     // the link is still created — that's the whole point of SSO support
     expect(proposal.targets).toHaveLength(1);
     expect(proposal.observations).toHaveLength(1);
-    expect(proposal.dataProductSDP).toHaveLength(1);
+    expect(proposal.dataProductSDP).toHaveLength(2);
     expect(proposal.calibrationStrategy).toHaveLength(1);
     expect(proposal.targetObservation).toHaveLength(1);
 

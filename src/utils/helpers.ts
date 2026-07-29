@@ -229,7 +229,7 @@ export const obTypeTransform = (inData: string[]) => {
   return out;
 };
 
-export const getDefaultObservationLowAA2 = (type: string): Observation | null => {
+export const getDefaultObservationLowAA2 = (type: string): Observation => {
   switch (type) {
     case TYPE_ZOOM:
       return DEFAULT_ZOOM_OBSERVATION_LOW;
