@@ -69,7 +69,9 @@ export default function ContinuumBandwidthField({
     osdMID,
     osdLOW
   );
-  const maxContBandwidthMHz = frequencyConversion(maxContBandwidthHz, FREQUENCY_HZ, FREQUENCY_MHZ);
+  const maxContBandwidthMHz = maxContBandwidthHz
+    ? frequencyConversion(maxContBandwidthHz, FREQUENCY_HZ, FREQUENCY_MHZ)
+    : undefined;
 
   const displayMaxContBandwidthErrorMessage = (): string => {
     const maxContBandwidthMHz = frequencyConversion(
@@ -81,12 +83,12 @@ export default function ContinuumBandwidthField({
   };
 
   const displayDivisibilityErrorMessage = (): string => {
-    const valueKHz = frequencyConversion(
+    const valueMHz = frequencyConversion(
       minimumChannelWidthHz,
       FREQUENCY_HZ,
       FREQUENCY_MHZ
     ).toFixed(2);
-    return t('bandwidth.range.divisibilityError', { value: valueKHz });
+    return t('continuumBandwidth.range.divisibilityError', { value: valueMHz });
   };
 
   const stepInUnits =
@@ -182,7 +184,6 @@ export default function ContinuumBandwidthField({
       suffix={suffix}
       min={minChannelWidthMHz}
       max={maxContBandwidthMHz}
-      step={minChannelWidthMHz}
     />
   );
 }

@@ -30,7 +30,6 @@ interface SteppedNumberFieldProps {
   onStep: (value: number, direction: 1 | -1) => number;
   parse?: (raw: string) => number | null;
   required?: boolean;
-  step?: number;
   suffix?: JSX.Element;
   testId: string;
   value: number;
