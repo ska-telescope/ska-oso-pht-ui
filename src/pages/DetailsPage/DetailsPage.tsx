@@ -145,7 +145,7 @@ export default function DetailsPage() {
     if (defaults && defaults.success) {
       notifySuccess(t('autoLink.success'), NOTIFICATION_DELAY_IN_SECONDS);
     } else {
-      notifyError(defaults?.error ?? t('autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
+      notifyError(t(defaults?.error ?? 'autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
     }
   };
 

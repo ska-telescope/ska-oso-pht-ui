@@ -42,6 +42,7 @@ export type ReferenceCoordinateICRSBackend = {
 // Solar System objects
 export type ReferenceCoordinateSSOBackend = {
   kind: string;
+  name: string;
 };
 
 export type TargetBackend = {
@@ -51,7 +52,10 @@ export type TargetBackend = {
     active: string;
     parameters: PointingPatternParamsBackend[];
   };
-  reference_coordinate: ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend;
+  reference_coordinate:
+    | ReferenceCoordinateICRSBackend
+    | ReferenceCoordinateGalacticBackend
+    | ReferenceCoordinateSSOBackend;
   radial_velocity: {
     quantity: ValueUnitPair;
     definition: string;
@@ -115,12 +119,12 @@ export type ReferenceCoordinateSSO = {
 type Target = {
   id: number;
   name: string;
-  redshift: string;
+  redshift?: string;
   raReferenceFrame?: string; // NOT USED
   raDefinition?: string; // NOT USED
-  velType: number;
-  vel: string;
-  velUnit: number;
+  velType?: number;
+  vel?: string;
+  velUnit?: number;
   /*------- reference coordinate properties --------------------- */
   kind: number; // for both ICRS, Galactic and SSO
   l?: number; // for Galactic

@@ -17,21 +17,21 @@ export type SensCalcResultsBackend = {
       continuum?: number;
       spectral: number;
       unit: string;
-    };
+    } | null;
     // ********************************** //
     // only for Supplied Sensitivity- suggested to swap Integration Time/Sensitivity in STAR-670
     // ********************************** //
     continuum?: ValueUnitPair;
     spectral?: ValueUnitPair;
     // ********************************** //
-  };
-  continuum_confusion_noise?: ValueUnitPair;
+  } | null;
+  continuum_confusion_noise?: ValueUnitPair | null;
   synthesized_beam_size?: {
     continuum?: string;
     spectral: string;
     unit: string;
-  };
-  spectral_confusion_noise?: ValueUnitPair;
+  } | null;
+  spectral_confusion_noise?: ValueUnitPair | null;
 };
 
 export type SensCalcResults = {

@@ -100,7 +100,8 @@
   "autoLink": {
     "targetSuccess": "Target added and auto-linked successfully.",
     "success": "Observation setup auto-linked successfully.",
-    "error": "Error while auto-linking observation setup "
+    "error": "Error while auto-linking observation setup ",
+    "errorNoSensCalcResponse": "Error while auto-linking observation setup, no Sensitivity Calculator Response"
   },
   "authors": {
     "label": "Authors"
@@ -1263,6 +1264,7 @@
     "maxFaradayDepthExtent": "Maximum Faraday Depth Extent",
     "maxFaradayDepth": "Maximum Faraday Extent",
     "noData": "No data available",
+    "notApplicableForSSO": "Currently unavailable for non-sidereal objects",
     "sensitivity": "Sensitivity",
     "spectralSensitivityWeighted": "Weighted spectral sensitivity",
     "spectralConfusionNoise": "Spectral confusion noise",

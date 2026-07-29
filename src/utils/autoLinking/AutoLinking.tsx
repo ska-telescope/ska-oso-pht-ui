@@ -2,6 +2,7 @@ import {
   DP_TYPE_IMAGES,
   IW_UNIFORM,
   PULSAR_TIMING_VALUE,
+  REFERENCE_COORDINATE_TYPE_SSO,
   ROBUST_DEFAULT,
   TAPER_DEFAULT,
   TYPE_PST,
@@ -135,7 +136,7 @@ const updateProposal = (
     observations: [newObservation].filter((obs): obs is Observation => obs !== undefined),
     dataProductSDP: [...[], newDataProductSDP as DataProductSDPNew],
     targetObservation:
-      sensCalcResult && newObservation && newObservation.id && newDataProductSDP?.id
+      newObservation && newObservation.id && newDataProductSDP?.id
         ? [
             {
               targetId: newTarget?.id,
@@ -164,8 +165,22 @@ export default async function autoLinking(
   const newObservation = observationOut(newObsMode, maxZoomChannels);
   const newDataProductSDP = dataProductSDPOut(newObservation);
   const sensCalcResult = await getSensCalcData(newObservation, target, newDataProductSDP);
+
+  const isValidSensCalcResult = (r: any): boolean =>
+    !!r &&
+    !r.error && // { error: string } failures
+    !r.detail && // { title, detail } validation failures
+    Array.isArray(r.section1); // a real result has sections; failures don't
+
+  const isSSO = target.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
+
+  // if a specific error message from backend → surface it
   if (typeof sensCalcResult === 'string') {
-    return { success: false, error: sensCalcResult };
+    return { success: false, error: 'autoLink.errorNoSensCalcResponse' };
+  }
+
+  if (!isSSO && !isValidSensCalcResult(sensCalcResult)) {
+    return { success: false, error: 'autoLink.errorNoSensCalcResponse' };
   }
   const newCalibration = calibrationOut(newObservation?.id);
 
