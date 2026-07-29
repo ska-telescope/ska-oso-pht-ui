@@ -5,7 +5,7 @@ export default function TableSubmissionsHeader() {
   const { t } = useScopedTranslation();
 
   const displayHeader = (inValue: string) => (
-    <TableCell sx={{ whiteSpace: 'nowrap', width: 0, paddingRight: 2 }}>
+    <TableCell sx={{ whiteSpace: { xs: 'normal', md: 'nowrap' }, paddingRight: 2 }}>
       <Typography variant="subtitle2" fontWeight="bold">
         {inValue ? t(inValue) : ''}
       </Typography>
