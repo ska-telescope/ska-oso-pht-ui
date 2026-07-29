@@ -18,7 +18,7 @@ export const useNumericInput = (
   {
     validate,
     requiredMessage = 'required',
-    commitOnBlur = true,
+    commitOnBlur = false,
     errorDelayMs,
     step,
     minValue,

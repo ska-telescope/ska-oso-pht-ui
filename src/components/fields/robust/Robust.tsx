@@ -8,6 +8,7 @@ interface RobustFieldProps {
   onFocus?: () => void;
   label: string;
   required?: boolean;
+  commitOnBlur?: boolean;
   setValue?: (nextValue: number) => void;
   suffix?: React.ReactNode;
   value: string | number;
@@ -23,6 +24,7 @@ export default function RobustField({
   onFocus = undefined,
   label,
   required = false,
+  commitOnBlur = true,
   setValue = undefined,
   suffix = null,
   value,
@@ -36,6 +38,7 @@ export default function RobustField({
       requiredMessage: t('robust.error'),
       validate: (num) =>
         num < ROBUST_RANGE.min || num > ROBUST_RANGE.max ? t('robust.error') : '',
+      commitOnBlur,
       step: ROBUST_STEP,
       minValue: ROBUST_RANGE.min,
       maxValue: ROBUST_RANGE.max
