@@ -39,6 +39,7 @@ import {
   PIXEL_SIZE_DEFAULT,
   PIXEL_SIZE_UNIT_DEFAULT,
   PULSAR_TIMING_VALUE,
+  REFERENCE_COORDINATE_TYPE_SSO,
   ROBUST_DEFAULT,
   SA_CUSTOM,
   SET_CONTINUUM_SUBSTRACTION_DEFAULT,
@@ -85,10 +86,9 @@ const COL_MID = 8;
 
 interface DataProductProps {
   data?: DataProductSDPNew;
-  isSSO?: boolean;
 }
 
-export default function DataProduct({ data, isSSO }: DataProductProps) {
+export default function DataProduct({ data }: DataProductProps) {
   const { t } = useScopedTranslation();
   const navigate = useNavigate();
   const locationProperties = useLocation();
@@ -622,7 +622,16 @@ export default function DataProduct({ data, isSSO }: DataProductProps) {
     );
   };
 
+  // These two functions only work for the SV call as they assume one target
+  // and access the first element of an array. A better way here might be to find the
+  // targetObservation that is linked to the id of the DataProduct (that is stored in this component state `id`)
+  // and then use this to get the sensCalc and target. At the time of writing, that isn't a
+  // ball of string I want to start pulling..
   const scData = (): any => getProposal()?.targetObservation?.[0]?.sensCalc;
+  const isTargetSSO = (): boolean => {
+    const proposal = getProposal();
+    return proposal.targets?.[0]?.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
+  };
 
   const isCustom = () => getObservation()?.subarray === SA_CUSTOM;
   const isNatural = () =>
@@ -799,7 +808,7 @@ export default function DataProduct({ data, isSSO }: DataProductProps) {
           {showSC && (
             <BorderedSection
               borderColor={
-                isPST() || isSSO
+                isPST() || isTargetSSO()
                   ? theme.palette.warning.main
                   : scData()?.statusGUI !== STATUS_INITIAL
                     ? theme.palette.success.main
@@ -811,7 +820,7 @@ export default function DataProduct({ data, isSSO }: DataProductProps) {
               {!isPST() && (
                 <SensCalcContent
                   data={scData()}
-                  isSSO={isSSO}
+                  isSSO={isTargetSSO()}
                   isCustom={isCustom()}
                   isNatural={isNatural()}
                 />
