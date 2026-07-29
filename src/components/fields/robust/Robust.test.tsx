@@ -11,6 +11,9 @@ describe('<Robust /> behavior', () => {
   const getField = () => screen.getByRole('spinbutton');
   const spinAndBlur = (direction: 'ArrowUp' | 'ArrowDown', nextValue: string) => {
     const field = getField();
+    // In the browser, spinner clicks update the input value and then blur commits.
+    // In jsdom tests, keyDown does not apply native number-step changes, so we
+    // emulate the resulting value via change while still keeping step+blur separate.
     fireEvent.keyDown(field, { key: direction });
     fireEvent.change(field, { target: { value: nextValue } });
     fireEvent.blur(field);
