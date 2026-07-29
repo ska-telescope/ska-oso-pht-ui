@@ -540,7 +540,7 @@ const getResults = (
       // proposal, whose links are deliberately reset to this shape with no section3 - has no
       // sensitivity result to report at all, not just an error one. Skip it rather than reading
       // section3[0] unguarded, which would throw on the missing array.
-      if (tarObs.sensCalc?.error || !tarObs.sensCalc?.section3) {
+      if (tarObs.sensCalc?.error || !tarObs.sensCalc?.section3?.[0]) {
         continue;
       }
       const obsType = getObsType(tarObs, incObs); // spectral or continuum
