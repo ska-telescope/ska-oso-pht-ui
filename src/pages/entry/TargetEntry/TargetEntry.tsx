@@ -4,6 +4,7 @@ import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
+import SolarSystemObjectField from '@components/fields/solarSystemObject/solarSystemObject.tsx';
 import { leadZero, trailingZeros } from '@utils/helpers.ts';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
@@ -14,7 +15,9 @@ import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
 import VelocityField from '@/components/fields/velocity/Velocity';
 import Target from '@/utils/types/target';
 import {
+  REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
+  REFERENCE_COORDINATE_TYPE_SSO,
   VELOCITY_TYPE,
   FIELD_PATTERN_POINTING_CENTRES,
   WRAPPER_HEIGHT,
@@ -22,7 +25,6 @@ import {
   TYPE_ZOOM,
   TYPE_CONTINUUM,
   NOTIFICATION_DELAY_IN_SECONDS,
-  REFERENCE_COORDINATE_TYPE_GALACTIC,
   SA_AA2
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
@@ -117,7 +119,9 @@ export default function TargetEntry({
     }
   };
 
-  const isICRS = referenceCoordinates === DEFAULT_REFERENCE_COORDINATES;
+  const isICRS = referenceCoordinates === REFERENCE_COORDINATE_TYPE_ICRS.value;
+
+  const isSSO = referenceCoordinates === REFERENCE_COORDINATE_TYPE_SSO.value;
 
   const setTheCoord1 = (value: string) => {
     setCoord1(value);
@@ -294,28 +298,49 @@ export default function TargetEntry({
         : null;
       const highestId = highest ? highest.id : 0;
 
-      const isICRS = referenceCoordinates === REFERENCE_COORDINATE_TYPE_ICRS.value;
-
-      const newTarget: Target = {
+      const baseTarget = {
         kind: referenceCoordinates,
         id: highestId + 1,
         name: name ?? '',
-
-        ...(isICRS
-          ? {
-              raStr: coord1 ?? '',
-              decStr: coord2 ?? ''
-            }
-          : {
-              l: Number(coord1),
-              b: Number(coord2)
-            }),
-
-        redshift: velType === VELOCITY_TYPE.REDSHIFT ? (redshift ?? '') : '',
-        vel: velType === VELOCITY_TYPE.VELOCITY ? (vel ?? '') : '',
-        velType: velType ?? 0,
-        velUnit: velUnit ?? 0
+        velUnit: velUnit ?? DEFAULT_VELOCITY_UNIT
       };
+
+      const buildTarget = (): Target => {
+        switch (referenceCoordinates) {
+          case REFERENCE_COORDINATE_TYPE_SSO.value:
+            return {
+              ...baseTarget,
+              vel: '',
+              redshift: '',
+              velType: DEFAULT_VELOCITY_TYPE
+            };
+
+          case REFERENCE_COORDINATE_TYPE_ICRS.value:
+            return {
+              ...baseTarget,
+              velType: velType ?? DEFAULT_VELOCITY_TYPE,
+              raStr: coord1 ?? '',
+              decStr: coord2 ?? '',
+              redshift: velType === VELOCITY_TYPE.REDSHIFT ? (redshift ?? '') : '',
+              vel: velType === VELOCITY_TYPE.VELOCITY ? (vel ?? '') : ''
+            };
+
+          case REFERENCE_COORDINATE_TYPE_GALACTIC.value:
+            return {
+              ...baseTarget,
+              velType: velType ?? DEFAULT_VELOCITY_TYPE,
+              l: Number(coord1),
+              b: Number(coord2),
+              redshift: velType === VELOCITY_TYPE.REDSHIFT ? (redshift ?? '') : '',
+              vel: velType === VELOCITY_TYPE.VELOCITY ? (vel ?? '') : ''
+            };
+
+          default:
+            throw new Error(`Unsupported reference coordinate kind: ${referenceCoordinates}`);
+        }
+      };
+
+      const newTarget: Target = buildTarget();
 
       const generateAutoLinkData = async () => {
         // The default zoom observation's zoomChannels is a static placeholder with no knowledge
@@ -334,7 +359,7 @@ export default function TargetEntry({
           notifySuccess(t('autoLink.targetSuccess'), NOTIFICATION_DELAY_IN_SECONDS);
           clearForm();
         } else {
-          notifyError(defaults?.error ?? t('autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
+          notifyError(t(defaults?.error ?? 'autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
         }
       };
 
@@ -366,7 +391,7 @@ export default function TargetEntry({
         skyDirection1Error !== '' ||
         skyDirection2Error !== '' ||
         rmFieldError !== '' ||
-        !(name?.length && coord1?.length && coord2?.length && targetLengthCheck())
+        !(name?.length && (isSSO || (coord1?.length && coord2?.length)) && targetLengthCheck())
       );
     };
 
@@ -491,6 +516,9 @@ export default function TargetEntry({
       />
     );
 
+  const solarSystemObjectField = () =>
+    wrapper(<SolarSystemObjectField setValue={setTheName} value={name} />);
+
   const fieldPatternTypeField = () => {
     return wrapper(
       <Box pt={1}>
@@ -514,7 +542,7 @@ export default function TargetEntry({
         testId={'name'}
         value={name}
         setValue={setTheName}
-        suffix={resolveButton()}
+        suffix={!isSSO ? resolveButton() : undefined}
         onBlur={blurName}
         onFocus={() => setHelp('name.help')}
         errorText={nameFieldError}
@@ -586,37 +614,41 @@ export default function TargetEntry({
       <Grid pt={1}>
         <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
           <BorderedSection title={t('coordinate.label')}>
-            {nameField()}
-            <Grid
-              container
-              spacing={GAP}
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Grid size={{ md: 12, lg: 6 }}>{skyDirection1Field()}</Grid>
-              <Grid size={{ md: 12, lg: 6 }}>{skyDirection2Field()}</Grid>
-            </Grid>
+            {isSSO ? solarSystemObjectField() : nameField()}
+            {!isSSO && (
+              <Grid
+                container
+                spacing={GAP}
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Grid size={{ md: 12, lg: 6 }}>{skyDirection1Field()}</Grid>
+                <Grid size={{ md: 12, lg: 6 }}>{skyDirection2Field()}</Grid>
+              </Grid>
+            )}
           </BorderedSection>
         </Box>
       </Grid>
-      <Grid pt={1}>
-        <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
-          <BorderedSection title={t('radialMotion.label')}>
-            <Grid
-              container
-              spacing={GAP}
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Grid size={{ md: 12, lg: 6 }}>{velocityTypeField()}</Grid>
-              <Grid size={{ md: 12, lg: 6 }}>{velocityField()}</Grid>
-            </Grid>
-            {velType === VELOCITY_TYPE.VELOCITY}
-          </BorderedSection>
-        </Box>
-      </Grid>
+      {!isSSO && (
+        <Grid pt={1}>
+          <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
+            <BorderedSection title={t('radialMotion.label')}>
+              <Grid
+                container
+                spacing={GAP}
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Grid size={{ md: 12, lg: 6 }}>{velocityTypeField()}</Grid>
+                <Grid size={{ md: 12, lg: 6 }}>{velocityField()}</Grid>
+              </Grid>
+              {velType === VELOCITY_TYPE.VELOCITY}
+            </BorderedSection>
+          </Box>
+        </Grid>
+      )}
       {!isSV && (
         <Grid pt={1}>
           <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>

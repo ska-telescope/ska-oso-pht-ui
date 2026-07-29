@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Added: Support for Solar System Objects
 * Bugfix: prevent 401 errors, wait until successful login before requesting observatory data
 * Updated: to 16.1 version of oso-services
 * Bugfix: spacer added to bottom of page to prevent page content overlapping bottom banner
@@ -60,6 +61,9 @@ UNRELEASED
 * Changed: Data Product Description text is black rather than grey on the Observatory Data Product page.
 * Changed: Made the Observations panel have the same title and border as other panels on the Observatory Data Product page.
 * Removed: Drop hardcoded mock observation cycles from Submission Tool cycle selector.
+* Bugfix: Updated duration now used in sensitivity calculations on page change
+* Fixed: Submission table column widths adapt to content
+* Fixed: Long titles hidden with ellipsis and wrap across multiple lines for small viewers
 
 10.1.0
 ----------

@@ -3,6 +3,8 @@ import Target, {
   ReferenceCoordinateGalacticBackend,
   ReferenceCoordinateICRS,
   ReferenceCoordinateICRSBackend,
+  ReferenceCoordinateSSO,
+  ReferenceCoordinateSSOBackend,
   TargetBackend
 } from '@utils/types/target.tsx';
 import Observation from '@utils/types/observation.tsx';
@@ -37,7 +39,8 @@ import {
   VEL_UNITS,
   VELOCITY_TYPE,
   TYPE_ZOOM_LONG,
-  SA_AA4
+  SA_AA4,
+  REFERENCE_COORDINATE_TYPE_SSO
 } from '@utils/constants.ts';
 import {
   DataProductSDPNew,
@@ -77,28 +80,42 @@ const getSubType = (proposalType: number, proposalSubType: number[]): any => {
 };
 
 export const getReferenceCoordinate = (
-  tar: Target | ReferenceCoordinateICRS | ReferenceCoordinateGalactic
-): ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend => {
-  if ('kind' in tar && tar.kind === REFERENCE_COORDINATE_TYPE_GALACTIC.value) {
-    return {
-      kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
-      l: (tar as Target).l,
-      b: (tar as Target).b,
-      pm_l: (tar as Target).pmL,
-      pm_b: (tar as Target).pmB,
-      epoch: tar.epoch,
-      parallax: tar.parallax
-    } as ReferenceCoordinateGalacticBackend;
+  tar: Target | ReferenceCoordinateICRS | ReferenceCoordinateGalactic | ReferenceCoordinateSSO
+):
+  | ReferenceCoordinateICRSBackend
+  | ReferenceCoordinateGalacticBackend
+  | ReferenceCoordinateSSOBackend => {
+  switch (tar.kind) {
+    case REFERENCE_COORDINATE_TYPE_ICRS.value:
+      return {
+        kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
+        ra_str: (tar as Target).raStr,
+        dec_str: (tar as Target).decStr,
+        pm_ra: (tar as Target).pmRa,
+        pm_dec: (tar as Target).pmDec,
+        epoch: (tar as Target).epoch,
+        parallax: (tar as Target).parallax
+      } as ReferenceCoordinateICRSBackend;
+
+    case REFERENCE_COORDINATE_TYPE_GALACTIC.value:
+      return {
+        kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
+        l: (tar as Target).l,
+        b: (tar as Target).b,
+        pm_l: (tar as Target).pmL,
+        pm_b: (tar as Target).pmB,
+        epoch: (tar as Target).epoch,
+        parallax: (tar as Target).parallax
+      } as ReferenceCoordinateGalacticBackend;
+
+    case REFERENCE_COORDINATE_TYPE_SSO.value:
+      return {
+        kind: REFERENCE_COORDINATE_TYPE_SSO.label,
+        name: (tar as Target).name
+      } as ReferenceCoordinateSSOBackend;
+    default:
+      throw new Error(`Unsupported reference coordinate kind: ${tar.kind}`);
   }
-  return {
-    kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
-    ra_str: ((tar as Target) || (tar as ReferenceCoordinateICRS)).raStr,
-    dec_str: ((tar as Target) || (tar as ReferenceCoordinateICRS)).decStr,
-    pm_ra: ((tar as Target) || (tar as ReferenceCoordinateICRS)).pmRa,
-    pm_dec: ((tar as Target) || (tar as ReferenceCoordinateICRS)).pmDec,
-    epoch: ((tar as Target) || (tar as ReferenceCoordinateICRS)).epoch,
-    parallax: ((tar as Target) || (tar as ReferenceCoordinateICRS)).parallax
-  } as ReferenceCoordinateICRSBackend;
 };
 
 const getTargets = (targets: Target[]): TargetBackend[] => {
@@ -424,6 +441,10 @@ const getSuppliedFieldsSensitivity = (
   tarObs: TargetObservation,
   spectralSection: string
 ) => {
+  if (!tarObs?.sensCalc) {
+    return null;
+  }
+
   const params: SuppliedRelatedFields = {
     supplied_type: suppliedType
   };
@@ -496,6 +517,10 @@ export const getSuppliedFieldsIntegrationTime = (
   obsType: string,
   tarObs: TargetObservation
 ) => {
+  if (!tarObs?.sensCalc) {
+    return null;
+  }
+
   const params: SuppliedRelatedFields = {
     supplied_type: suppliedType
   };
@@ -531,32 +556,50 @@ export const getDataProductRef = (
 const getResults = (
   incTargetObservations: TargetObservation[],
   incObs: Observation[],
-  incDataProductSDP: DataProductSDPNew[]
+  incDataProductSDP: DataProductSDPNew[],
+  incTargets: Target[]
 ) => {
   const resultsArr = [];
   if (incTargetObservations) {
     for (const tarObs of incTargetObservations) {
+      // errored sensCalc is still skipped, as before
       if (tarObs.sensCalc?.error) {
         continue;
       }
-      const obsType = getObsType(tarObs, incObs); // spectral or continuum
-      const spectralSection = getSpectralSection(obsType);
-      const suppliedType =
-        tarObs?.sensCalc?.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
 
-      const suppliedRelatedFields =
-        suppliedType === 'sensitivity'
-          ? getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs)
-          : getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection);
+      const hasSensCalc = !!tarObs.sensCalc;
+      const obsType = getObsType(tarObs, incObs);
+      const spectralSection = getSpectralSection(obsType);
+      const target = incTargets?.find((t) => t.id === tarObs.targetId);
+
+      // refs always populate; result/noise blocks are null when there's no sensCalc (SSO)
       const result: SensCalcResultsBackend = {
         observation_set_ref: tarObs.observationId,
         data_product_ref: tarObs.dataProductsSDPId ?? getDataProductRef(tarObs, incDataProductSDP),
-        target_ref: tarObs.sensCalc?.title,
-        result: {
+        target_ref: tarObs.sensCalc?.title ?? target?.name, // see note below
+        result: null,
+        continuum_confusion_noise: null,
+        spectral_confusion_noise: null,
+        synthesized_beam_size: null
+      };
+
+      if (hasSensCalc) {
+        const suppliedType =
+          tarObs.sensCalc.section3?.[0]?.field === 'sensitivity'
+            ? 'sensitivity'
+            : 'integration_time';
+
+        const suppliedRelatedFields =
+          suppliedType === 'sensitivity'
+            ? getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs)
+            : getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection);
+
+        result.result = {
           supplied_type: suppliedType,
           ...suppliedRelatedFields
-        },
-        continuum_confusion_noise: {
+        };
+
+        result.continuum_confusion_noise = {
           value:
             isContinuum(obsType) || isPST(obsType)
               ? Number(
@@ -568,8 +611,9 @@ const getResults = (
             isContinuum(obsType) || isPST(obsType)
               ? tarObs.sensCalc.section1?.find((o) => o.field === 'continuumConfusionNoise')?.units
               : ''
-        },
-        synthesized_beam_size: {
+        };
+
+        result.synthesized_beam_size = {
           spectral: tarObs.sensCalc[spectralSection]?.find(
             (o) => o.field === 'spectralSynthBeamSize'
           )?.value,
@@ -579,16 +623,18 @@ const getResults = (
               : '',
           unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralSynthBeamSize')
             ?.units
-        },
-        spectral_confusion_noise: {
+        };
+
+        result.spectral_confusion_noise = {
           value: Number(
             tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralConfusionNoise')
               ?.value
           ),
           unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralConfusionNoise')
             ?.units
-        }
-      };
+        };
+      }
+
       resultsArr.push(result);
     }
   }
@@ -665,7 +711,8 @@ export default function MappingPutProposal(proposal: Proposal, status: string) {
       result_details: getResults(
         proposal.targetObservation as TargetObservation[],
         proposal.observations as Observation[],
-        proposal.dataProductSDP as DataProductSDPNew[]
+        proposal.dataProductSDP as DataProductSDPNew[],
+        proposal.targets as Target[]
       )
     }
   };

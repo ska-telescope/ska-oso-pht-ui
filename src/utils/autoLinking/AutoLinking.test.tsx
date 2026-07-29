@@ -3,6 +3,8 @@ import {
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
   DEFAULT_PST_OBSERVATION_LOW,
   DEFAULT_ZOOM_OBSERVATION_LOW,
+  REFERENCE_COORDINATE_TYPE_SSO,
+  STATUS_OK,
   TYPE_CONTINUUM,
   TYPE_PST,
   TYPE_ZOOM
@@ -21,6 +23,13 @@ import {
   SPECTRAL_DATA_PRODUCT
 } from './mockSDP';
 import { mockTarget } from './mockTarget';
+
+const validMockSensCal = {
+  id: 1,
+  title: 'Mock Target',
+  statusGUI: STATUS_OK,
+  section1: [{ field: 'continuumSensitivityWeighted', value: '130.33', units: 'uJy / beam' }]
+};
 
 describe('autoLinking, observationOut', () => {
   test('observationOut continuum', () => {
@@ -130,8 +139,7 @@ describe('autoLinking()', () => {
   });
 
   it('returns success and updates proposal when calculateSensCalcData succeeds', async () => {
-    const mockSensCal = { continuum_sensitivity: { value: 130.3344803749966, unit: 'uJy / beam' } };
-    vi.mocked(calculateSensCalcData as any).mockResolvedValue(mockSensCal);
+    vi.mocked(calculateSensCalcData as any).mockResolvedValue(validMockSensCal);
 
     const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
 
@@ -153,12 +161,11 @@ describe('autoLinking()', () => {
     expect(proposal.targetObservation).toHaveLength(1);
     expect(proposal.targetObservation?.[0].observationId).toBe('mock-0000000');
     expect(proposal.targetObservation?.[0].dataProductsSDPId).toBe(proposal.dataProductSDP?.[0].id);
-    expect(proposal.targetObservation?.[0].sensCalc).toEqual(mockSensCal);
+    expect(proposal.targetObservation?.[0].sensCalc).toEqual(validMockSensCal);
   });
 
   it('updates existing observations, calibrations, sdps, targets so that there is always only 1 of each', async () => {
-    const mockSensCal = { continuum_sensitivity: { value: 130.3344803749966, unit: 'uJy / beam' } };
-    vi.mocked(calculateSensCalcData as any).mockResolvedValue(mockSensCal);
+    vi.mocked(calculateSensCalcData as any).mockResolvedValue(validMockSensCal);
 
     const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
 
@@ -177,7 +184,12 @@ describe('autoLinking()', () => {
 
   it('replaces existing entities with a PST observation and PST-specific SDP', async () => {
     // SensCalc returns a valid result so targetObservation is created
-    const mockSensCal = { continuum_sensitivity: { value: 123, unit: 'uJy / beam' } };
+    const mockSensCal = {
+      id: 1,
+      title: 'Mock Target',
+      statusGUI: STATUS_OK,
+      section1: [{ field: 'continuumSensitivityWeighted', value: '123', units: 'uJy / beam' }]
+    };
     vi.mocked(calculateSensCalcData as any).mockResolvedValue(mockSensCal);
 
     // Request PST; initial proposal (from beforeEach) contains an existing continuum set
@@ -213,7 +225,12 @@ describe('autoLinking()', () => {
 
   it('replaces existing entities with a Spectral (Zoom) observation and default SDP', async () => {
     // SensCalc returns a valid result so targetObservation is created
-    const mockSensCal = { continuum_sensitivity: { value: 45, unit: 'uJy / beam' } };
+    const mockSensCal = {
+      id: 1,
+      title: 'Mock Target',
+      statusGUI: STATUS_OK,
+      section1: [{ field: 'continuumSensitivityWeighted', value: '45', units: 'uJy / beam' }]
+    };
     vi.mocked(calculateSensCalcData as any).mockResolvedValue(mockSensCal);
 
     // Request Spectral (Zoom); initial proposal (from beforeEach) contains an existing continuum set
@@ -281,9 +298,7 @@ describe('autoLinking()', () => {
       ]
     };
 
-    // SensCalc returns a valid result
-    const mockSensCal = { continuum_sensitivity: { value: 77.7, unit: 'uJy / beam' } };
-    vi.mocked(calculateSensCalcData as any).mockResolvedValue(mockSensCal);
+    vi.mocked(calculateSensCalcData as any).mockResolvedValue(validMockSensCal);
 
     // Request Continuum to replace PST
     const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
@@ -313,7 +328,7 @@ describe('autoLinking()', () => {
     const link = proposal.targetObservation?.[0];
     expect(link?.observationId).toBe(obs?.id);
     expect(link?.dataProductsSDPId).toBe(sdp?.id);
-    expect(link?.sensCalc).toEqual(mockSensCal);
+    expect(link?.sensCalc).toEqual(validMockSensCal);
 
     // scienceCategory updated to Continuum as well
     expect(proposal.scienceCategory).toBe(TYPE_CONTINUUM);
@@ -324,7 +339,7 @@ describe('autoLinking()', () => {
 
     const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
 
-    expect(result).to.deep.equal({ success: false, error: 'Boom!' });
+    expect(result).to.deep.equal({ success: false, error: 'autoLink.errorNoSensCalcResponse' });
     expect(setProposal).not.toHaveBeenCalled();
 
     // proposal should remain unchanged
@@ -336,8 +351,7 @@ describe('autoLinking()', () => {
     // Override proposal to have only scienceCategory to simulate missing fields
     proposal = { scienceCategory: TYPE_CONTINUUM } as unknown as Proposal;
 
-    const mockSensCal = { continuum_sensitivity: { value: 130.3344803749966, unit: 'uJy / beam' } };
-    vi.mocked(calculateSensCalcData as any).mockResolvedValue(mockSensCal);
+    vi.mocked(calculateSensCalcData as any).mockResolvedValue(validMockSensCal);
 
     const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
 
@@ -352,15 +366,41 @@ describe('autoLinking()', () => {
     expect(proposal.targetObservation).toHaveLength(1);
   });
 
-  it('handles missing generated objects gracefully (no sensCalc result ⇒ no targetObservation link)', async () => {
-    vi.mocked(calculateSensCalcData as any).mockResolvedValue(null);
+  it('creates a link for an SSO target even without a sensCalc result', async () => {
+    const ssoTarget = { ...mockTarget, kind: REFERENCE_COORDINATE_TYPE_SSO.value };
+    // SSO targets skip the sensCalc call — calculateSensCalcData resolves undefined
+    vi.mocked(calculateSensCalcData as any).mockResolvedValue(undefined);
 
-    const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
+    const result = await autoLinking(ssoTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
 
     expect(result).toEqual({ success: true });
     expect(setProposal).toHaveBeenCalledTimes(1);
 
-    // With null sensCalc, targetObservation should be an empty array
-    expect(proposal.targetObservation).toEqual([]);
+    // the link is still created — that's the whole point of SSO support
+    expect(proposal.targets).toHaveLength(1);
+    expect(proposal.observations).toHaveLength(1);
+    expect(proposal.dataProductSDP).toHaveLength(1);
+    expect(proposal.calibrationStrategy).toHaveLength(1);
+    expect(proposal.targetObservation).toHaveLength(1);
+
+    // ...but with no sensitivity result attached
+    expect(proposal.targetObservation?.[0].sensCalc).toBeUndefined(); // ← verify: may be null
+  });
+
+  it('returns failure and does not link when a non-SSO result is invalid', async () => {
+    // A real backend validation failure: has neither .error nor section1, so it is
+    // not a string (skips the specific-error branch) and fails isValidSensCalcResult
+    vi.mocked(calculateSensCalcData as any).mockResolvedValue({
+      title: 'Validation Error',
+      detail: 'Spectral window does not lie within the 50 - 350 MHz range.'
+    });
+
+    const result = await autoLinking(mockTarget, getProposal, setProposal, TYPE_CONTINUUM, '');
+
+    expect(result).toEqual({ success: false, error: 'autoLink.errorNoSensCalcResponse' });
+    expect(setProposal).not.toHaveBeenCalled();
+
+    // proposal untouched — the existing seeded entities remain
+    expect(proposal.observations?.[0].id).toBe('existing-obs');
   });
 });

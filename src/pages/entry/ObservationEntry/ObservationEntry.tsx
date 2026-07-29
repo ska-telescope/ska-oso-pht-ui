@@ -942,6 +942,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <SuppliedValue
           value={suppliedValue}
           setValue={setSuppliedValue}
+          commitOnBlur={suppliedType !== SUPPLIED_TYPE_INTEGRATION}
           suffix={suppliedUnitsField()}
           label=""
           minValue={0}
