@@ -61,7 +61,8 @@ export default function SuppliedValue({
       errorDelayMs: ERROR_SECS,
       step,
       minValue,
-      maxValue
+      maxValue,
+      minInclusive: false
     }
   );
 

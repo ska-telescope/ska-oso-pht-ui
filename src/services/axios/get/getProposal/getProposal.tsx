@@ -33,7 +33,6 @@ import {
   TELESCOPE_LOW_BACKEND_MAPPING,
   SA_AA2,
   FREQUENCY_UNITS,
-  ROBUST,
   OSO_SERVICES_PROPOSAL_PATH,
   PDF_NAME_PREFIXES,
   REFERENCE_COORDINATE_TYPE_ICRS,
@@ -339,8 +338,7 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
               : 0,
           robust:
             'weight' in script && script.weight?.weighting === 'briggs'
-              ? (ROBUST.find((item) => item.label === String(script.weight?.robust ?? ''))?.value ??
-                0)
+              ? Number(script.weight?.robust ?? 0)
               : 0,
           polarisations: 'polarisations' in script ? script.polarisations : undefined,
           channelsOut: 'channels_out' in script ? (Number(script.channels_out) ?? 0) : 0,
@@ -388,7 +386,7 @@ const getCalibrationStrategy = (
 /*********************************************************** observation parameters mapping *********************************************************/
 const getWeighting = (inImageWeighting: string): number => {
   const weighting = IMAGE_WEIGHTING?.find(
-    (item) => item.lookup.toLowerCase() === inImageWeighting?.toLowerCase()
+    (item) => item.label.toLowerCase() === inImageWeighting?.toLowerCase()
   )?.value;
   return weighting ? weighting : 1; // fallback
 };

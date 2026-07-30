@@ -465,7 +465,7 @@
     "error": "A value greater than zero is required"
   },
   "imageWeighting": {
-    "help": "Select natural, uniform or Briggs weighting.\n\nFor Briggs weighting, the robustness parameter can be set to a value listed below:\n\n-2 (closest to Uniform weighting),\n-1,\n 0,\n 1\n2 (closest to natural weighting).",
+    "help": "Select natural, uniform or Briggs weighting.\n\nFor Briggs weighting, the robustness parameter can be set between -2 (closest to uniform weighting) and 2 (closest to natural weighting).",
     "helpURL": "https://sensitivity-calculator.skao.int/",
     "label": "Image Weighting",
     "0": "Natural",
@@ -1111,8 +1111,9 @@
     "label": "Right ascension"
   },
   "robust": {
-    "help": "For Briggs weighting, the robustness parameter can be set to -2 (closest to uniform weighting), -1, 0, 1 or 2 (closest to natural weighting).",
-    "label": "Robust"
+    "help": "For Briggs weighting, the robustness parameter can be set between -2 (closest to uniform weighting) and 2 (closest to natural weighting).",
+    "label": "Robust",
+    "error": "Numeric value between -2 and 2 required"
   },
   "rotationMeasure": {
     "help": "This field displays the rotationMeasure.",
@@ -1522,7 +1523,7 @@
   },
   "weighting": {
     "label": "Weighting",
-    "help": "The calculator offers natural, uniform or Briggs weighting. For Briggs weighting, the robustness parameter can be set to -2 (closest to uniform weighting), -1, 0, 1 or 2 (closest to natural weighting)."
+    "help": "The calculator offers natural, uniform or Briggs weighting. For Briggs weighting, the robustness parameter can be set between -2 (closest to uniform weighting) and 2 (closest to natural weighting)."
   },
   "page": {
     "0": {
