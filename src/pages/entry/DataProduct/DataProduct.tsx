@@ -24,6 +24,7 @@ import {
   CHANNELS_OUT_MIN,
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
+  DP_TYPE_VISIBLE,
   FLOW_THROUGH_VALUE,
   FOOTER_HEIGHT_PHT,
   FOOTER_SPACER,
@@ -38,6 +39,7 @@ import {
   PAGE_DATA_PRODUCTS,
   PIXEL_SIZE_DEFAULT,
   PIXEL_SIZE_UNIT_DEFAULT,
+  POLARISATIONS_DEFAULT,
   PULSAR_TIMING_VALUE,
   REFERENCE_COORDINATE_TYPE_SSO,
   ROBUST_DEFAULT,
@@ -72,11 +74,17 @@ import ContinuumSubtractionField from '@/components/fields/continuumSubtraction/
 import SensCalcContent from '@/components/alerts/sensCalcModal/content/SensCalcContent';
 import { updateDataProducts } from '@/utils/update/dataProducts/updateDataProducts';
 import { updateSensCalc } from '@/utils/update/sensCalc/updateSensCalc';
-import { DataProductSDPNew } from '@/utils/types/dataProduct';
+import {
+  DataProductSDPNew,
+  SDPImageContinuumData,
+  SDPVisibilitiesContinuumData
+} from '@/utils/types/dataProduct';
 import OutputFrequencyResolutionField from '@/components/fields/outputFrequencyResolution/outputFrequencyResolution';
 import DispersionMeasureField from '@/components/fields/dispersionMeasure/dispersionMeasure';
 import RotationMeasureField from '@/components/fields/rotationMeasure/rotationMeasure';
 import OutputSamplingIntervalField from '@/components/fields/outputSamplingInterval/outputSamplingInterval';
+import TargetObservation from '@/utils/types/targetObservation';
+import { updateImagesDataProductSizes } from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
@@ -136,7 +144,40 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const isDataTypeOne = () => dataProductType === DP_TYPE_IMAGES;
 
-  const getObservation = () => baseObservations?.find((obs) => obs.id === observationId);
+  const getObservation = (obsId = observationId) =>
+    baseObservations?.find((obs) => obs.id === obsId) ??
+    getProposal()?.observations?.find((obs) => obs.id === obsId);
+
+  const getDataProductTypeValue = (dp?: DataProductSDPNew) =>
+    Number(dp?.data?.dataProductType ?? DP_TYPE_IMAGES);
+
+  const getObservationDataProducts = (obsId: string) =>
+    (getProposal()?.dataProductSDP ?? []).filter((dp) => dp.observationId === obsId);
+
+  const getObservationTargetObservations = (obsId: string) =>
+    (getProposal()?.targetObservation ?? []).filter((rec) => rec.observationId === obsId);
+
+  const getLinkedDataProductId = (obsId: string, fallbackId = '') =>
+    getObservationTargetObservations(obsId)[0]?.dataProductsSDPId ?? fallbackId;
+
+  const getLinkedDataProduct = (obsId: string, fallbackId = '') => {
+    const observationDataProducts = getObservationDataProducts(obsId);
+    const linkedDataProductId = getLinkedDataProductId(obsId, fallbackId);
+    return (
+      observationDataProducts.find((dp) => dp.id === linkedDataProductId) ??
+      observationDataProducts.find((dp) => dp.id === fallbackId) ??
+      observationDataProducts[0]
+    );
+  };
+
+  const getSiblingContinuumDataProduct = (
+    obsId: string,
+    currentDataProductId: string,
+    nextType: number
+  ) =>
+    getObservationDataProducts(obsId).find(
+      (dp) => dp.id !== currentDataProductId && getDataProductTypeValue(dp) === nextType
+    );
 
   const isFlowThrough = () => getObservation()?.pstMode === FLOW_THROUGH_VALUE;
   const isDetectedFilterbank = () => getObservation()?.pstMode === DETECTED_FILTER_BANK_VALUE;
@@ -159,6 +200,48 @@ export default function DataProduct({ data }: DataProductProps) {
     }
     return '1';
   };
+
+  const resetContinuumDataProduct = (
+    dp: DataProductSDPNew,
+    observation: Observation
+  ): DataProductSDPNew => {
+    // When the user changes between Images and Visibilities for the data product,
+    // the hidden option still exists within the data model, and we need to set
+    // its values to something sensible.
+    if (getDataProductTypeValue(dp) === DP_TYPE_IMAGES) {
+      const continuumImagesData = {
+        ...dp,
+        data: {
+          ...dp,
+          weighting: IW_BRIGGS,
+          robust: ROBUST_DEFAULT,
+          polarisations: POLARISATIONS_DEFAULT,
+          channelsOut: CHANNELS_OUT_DEFAULT
+        }
+      };
+      return updateImagesDataProductSizes(continuumImagesData, observation.centralFrequency);
+    }
+
+    const continuumVisibilityData = dp.data as SDPVisibilitiesContinuumData;
+    return {
+      ...dp,
+      data: {
+        ...continuumVisibilityData,
+        dataProductType: DP_TYPE_VISIBLE,
+        timeAveraging: 4,
+        frequencyAveraging: 4
+      }
+    };
+  };
+
+  const updateLinkedDataProductId = (
+    targetObservations: TargetObservation[],
+    obsId: string,
+    dataProductsSDPId: string
+  ) =>
+    targetObservations.map((rec) =>
+      rec.observationId === obsId ? { ...rec, dataProductsSDPId } : rec
+    );
 
   const dataProductIn = (dp: DataProductSDPNew) => {
     const data = dp.data as any;
@@ -261,6 +344,67 @@ export default function DataProduct({ data }: DataProductProps) {
     return DP_TYPE_IMAGES; // default for non-pst
   };
 
+  const handleDataProductTypeChange = async (nextType: string | number) => {
+    const newDataProductType = Number(nextType);
+
+    if (!isEdit() || newDataProductType === dataProductType) {
+      setDataProductType(newDataProductType);
+      return;
+    }
+
+    if (!isContinuum()) {
+      setDataProductType(newDataProductType);
+      return;
+    }
+
+    const proposal = getProposal();
+    const observation = getObservation();
+
+    if (!observation) {
+      return;
+    }
+
+    const currentLinkedDataProduct = getLinkedDataProduct(observation.id, id) ?? dataProductOut();
+    const currentDataProduct =
+      currentLinkedDataProduct.id === id ? dataProductOut() : currentLinkedDataProduct;
+    const nextLinkedDataProduct = getSiblingContinuumDataProduct(
+      observation.id,
+      currentDataProduct.id,
+      newDataProductType
+    );
+
+    if (!nextLinkedDataProduct) {
+      return;
+    }
+
+    const resetUnlinkedDataProduct = resetContinuumDataProduct(currentDataProduct, observation);
+    const dataProductsAfterReset = updateDataProducts(
+      updateDataProducts(proposal.dataProductSDP ?? [], resetUnlinkedDataProduct),
+      nextLinkedDataProduct
+    );
+    const linkedTargetObservations = updateLinkedDataProductId(
+      proposal.targetObservation ?? [],
+      observation.id,
+      nextLinkedDataProduct.id
+    );
+    const proposalForSensCalc: Proposal = {
+      ...proposal,
+      dataProductSDP: dataProductsAfterReset,
+      targetObservation: linkedTargetObservations
+    };
+    const updatedTargetObservations = await updateSensCalc(
+      proposalForSensCalc,
+      observation,
+      nextLinkedDataProduct
+    );
+
+    setProposal({
+      ...proposalForSensCalc,
+      targetObservation: updatedTargetObservations
+    });
+    dataProductIn(nextLinkedDataProduct);
+  };
+
   /* ------------------------------------------- */
 
   React.useEffect(() => {
@@ -270,7 +414,13 @@ export default function DataProduct({ data }: DataProductProps) {
 
     setBaseObservations(observations);
     if (isEdit()) {
-      dataProductIn(data ? data : (locationProperties.state as DataProductSDPNew));
+      const selectedDataProduct = data ? data : (locationProperties.state as DataProductSDPNew);
+      const linkedDataProduct = getLinkedDataProduct(
+        selectedDataProduct.observationId,
+        selectedDataProduct.id
+      );
+
+      dataProductIn(linkedDataProduct ?? selectedDataProduct);
     } else {
       setId(generateId(PAGE_PREFIX, 6));
     }
@@ -460,7 +610,7 @@ export default function DataProduct({ data }: DataProductProps) {
       <DataProductTypeField
         observationType={getObservation()?.type || TYPE_CONTINUUM}
         onFocus={() => setHelp('dataProductType')}
-        setValue={setDataProductType}
+        setValue={handleDataProductTypeChange}
         value={dataProductType}
       />
     );
@@ -632,6 +782,8 @@ export default function DataProduct({ data }: DataProductProps) {
     const proposal = getProposal();
     return proposal.targets?.[0]?.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
   };
+  const linkedScData = (): any =>
+    getProposal()?.targetObservation?.find((rec) => rec.observationId === observationId)?.sensCalc;
 
   const isCustom = () => getObservation()?.subarray === SA_CUSTOM;
   const isNatural = () =>
@@ -819,7 +971,7 @@ export default function DataProduct({ data }: DataProductProps) {
               {isPST() && <Typography variant="subtitle1">{t('page.7.pstUnavailable')}</Typography>}
               {!isPST() && (
                 <SensCalcContent
-                  data={scData()}
+                  data={linkedScData() ?? scData()}
                   isSSO={isTargetSSO()}
                   isCustom={isCustom()}
                   isNatural={isNatural()}

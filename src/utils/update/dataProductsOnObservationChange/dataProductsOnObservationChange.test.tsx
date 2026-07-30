@@ -1,5 +1,7 @@
 import { describe, it, expect } from 'vitest';
-import updateDataProductsPST, { PSTData } from './updateDataProductsPST';
+import updateDataProductsOnObservationChange, {
+  PSTData
+} from './updateDataProductsOnObservationChange.tsx';
 
 import {
   DETECTED_FILTER_BANK_VALUE,
@@ -44,7 +46,7 @@ describe('PSTData', () => {
   });
 });
 
-describe('updateDataProductsPST', () => {
+describe('dataProductsOnObservationChange', () => {
   const baseDataProduct: DataProductSDPNew = {
     id: 'SDP-0000000',
     observationId: 'obs1',
@@ -78,7 +80,7 @@ describe('updateDataProductsPST', () => {
       }
     ];
 
-    const result = updateDataProductsPST(oldRecs, obsPST);
+    const result = updateDataProductsOnObservationChange(oldRecs, obsPST);
 
     expect(result).toHaveLength(1);
     expect(result[0].observationId).toBe(obsPST.id);
@@ -87,7 +89,7 @@ describe('updateDataProductsPST', () => {
     );
   });
 
-  it('keeps existing record when TYPE_PST and pstMode is the same', () => {
+  it('normalizes existing record when TYPE_PST and pstMode is the same', () => {
     const oldRecs: DataProductSDPNew[] = [
       {
         ...baseDataProduct,
@@ -104,27 +106,31 @@ describe('updateDataProductsPST', () => {
       pstMode: DETECTED_FILTER_BANK_VALUE
     };
 
-    const result = updateDataProductsPST(oldRecs, obsSameMode);
+    const result = updateDataProductsOnObservationChange(oldRecs, obsSameMode);
 
     expect(result).toHaveLength(1);
-    expect(result[0]).toEqual(oldRecs[0]);
+    expect(result[0]).toEqual({
+      id: 'SDP-0000000',
+      observationId: 'obs1',
+      data: PSTData(obsSameMode)
+    });
   });
 
   it('returns empty array when TYPE_PST and oldRecs is empty', () => {
-    const result = updateDataProductsPST([], obsPST);
+    const result = updateDataProductsOnObservationChange([], obsPST);
     expect(result).toEqual([]);
   });
 
   it('returns old records unchanged when type is not TYPE_PST', () => {
     const oldRecs: DataProductSDPNew[] = [baseDataProduct];
-    const result = updateDataProductsPST(oldRecs, obsNonPST);
+    const result = updateDataProductsOnObservationChange(oldRecs, obsNonPST);
 
     expect(result).toEqual(oldRecs);
   });
 
   it('returns empty array when non-PST and oldRecs is undefined', () => {
     // @ts-expect-error testing undefined input
-    const result = updateDataProductsPST(undefined, obsNonPST);
+    const result = updateDataProductsOnObservationChange(undefined, obsNonPST);
     expect(result).toEqual([]);
   });
 });

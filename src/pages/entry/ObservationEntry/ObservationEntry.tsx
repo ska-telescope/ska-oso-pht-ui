@@ -95,7 +95,7 @@ import CentralFrequency from '@/components/fields/centralFrequency/centralFreque
 import ZoomChannels from '@/components/fields/zoomChannels/zoomChannels';
 import SubBands from '@/components/fields/subBands/subBands';
 import updateObservations from '@/utils/update/observations/updateObservations';
-import updateDataProductsPST from '@/utils/update/dataProductsPST/updateDataProductsPST';
+import updateDataProductsOnObservationChange from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
 import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalcPartial';
 import updateSensCalc from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
@@ -269,11 +269,17 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const updateObservationOnProposal = async () => {
     const proposal = getProposal();
     const newObservation: Observation = observationOut();
+
     const oldObservations = proposal.observations ?? [];
     const oldDataProducts = proposal.dataProductSDP ?? [];
+    const linkedDataProductId = proposal.targetObservation?.find(
+      (to) => to.observationId === newObservation.id
+    )?.dataProductsSDPId;
+
     const dataProductSDP: DataProductSDPNew | undefined = proposal.dataProductSDP?.find(
-      (dp) => dp.observationId === newObservation.id
+      (dp) => dp.id === linkedDataProductId
     );
+
     const oldTO = proposal?.targetObservation ?? [];
     const to = dataProductSDP
       ? await updateSensCalc(proposal, newObservation, dataProductSDP)
@@ -282,7 +288,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const tmp = {
       ...proposal,
       observations: updateObservations(oldObservations ?? [], newObservation),
-      dataProductSDP: updateDataProductsPST(oldDataProducts, newObservation),
+      dataProductSDP: updateDataProductsOnObservationChange(oldDataProducts, newObservation),
       targetObservation: to
     };
     setProposal(tmp);
