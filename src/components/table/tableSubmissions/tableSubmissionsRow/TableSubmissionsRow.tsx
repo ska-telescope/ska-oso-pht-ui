@@ -12,7 +12,7 @@ import Proposal from '@/utils/types/proposal';
 import { NOT_SPECIFIED, PROPOSAL_STATUS } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { ProposalAccess } from '@/utils/types/proposalAccess';
-import { presentDateTime } from '@/utils/present/present';
+import { presentDateTime, presentLatex } from '@/utils/present/present';
 
 interface TableSubmissionsRowProps {
   item: any;
@@ -158,7 +158,7 @@ export default function TableSubmissionsRow({
               WebkitLineClamp: { xs: 3, md: 'unset' }
             }}
           >
-            {item.title}
+            {presentLatex(item.title)}
           </Typography>
         </TableCell>
 

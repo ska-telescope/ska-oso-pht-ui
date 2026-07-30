@@ -2,7 +2,10 @@ import Latex from 'react-latex-next';
 import 'katex/dist/katex.min.css';
 import { NOT_APPLICABLE } from '../constants';
 
-export const presentLatex = (inStr: string) => <Latex>{inStr}</Latex>;
+export const presentLatex = (inStr: string) => {
+  if (!inStr) return null;
+  return <Latex>{inStr}</Latex>;
+};
 
 export const presentSensCalcError = (inArr: string, length = 0) => {
   if (!inArr) {

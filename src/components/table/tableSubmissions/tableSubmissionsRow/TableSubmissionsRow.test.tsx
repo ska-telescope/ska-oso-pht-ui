@@ -75,4 +75,25 @@ describe('TableSubmissionsRow', () => {
     const title = screen.getByTestId('row-title-test-row-id');
     expect(title).toHaveStyle({ overflow: 'hidden', textOverflow: 'ellipsis' });
   });
+
+  it('renders latex titles via KaTeX and keeps them truncated with ellipsis', () => {
+    const longLatexTitle = '$\\frac{1234567890123456789012345678901234567890}{x}$';
+
+    wrapper(
+      <TableSubmissionsRow
+        {...defaultProps}
+        proposal={mockProposal}
+        item={{ ...mockItem, title: longLatexTitle }}
+      />
+    );
+
+    const title = screen.getByTestId('row-title-test-row-id');
+    const renderedFraction = title.querySelector('.katex .mfrac');
+    expect(renderedFraction).toBeInTheDocument();
+    const renderedLatex = title.querySelector('.katex-html');
+    expect(renderedLatex).toBeInTheDocument();
+    expect(renderedLatex).not.toHaveTextContent(/\\[a-zA-Z]+/);
+
+    expect(title).toHaveStyle({ overflow: 'hidden', textOverflow: 'ellipsis' });
+  });
 });
