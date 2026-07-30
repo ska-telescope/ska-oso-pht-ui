@@ -108,8 +108,12 @@ export default function BandwidthField({
   };
 
   const commitBandwidth = (raw: number) => {
+    // resolutionHz isn't available yet (e.g. still loading from OSD) - bandwidthHzToChannels
+    // itself returns 0 (not a valid channel count) in this case, so there's nothing meaningful
+    // to commit or range-check yet.
+    if (resolutionHz <= 0) return;
     const hz = frequencyConversion(raw, bandwidthUnits, FREQUENCY_HZ);
-    const requested = resolutionHz > 0 ? Math.round(hz / resolutionHz) : 1;
+    const requested = Math.round(hz / resolutionHz);
     setBandwidthRangeError(requested < 1 || requested > maxZoomChannels);
     setChannelsRangeError(false);
     setZoomChannels?.(bandwidthHzToChannels(hz, resolutionHz, maxZoomChannels));
