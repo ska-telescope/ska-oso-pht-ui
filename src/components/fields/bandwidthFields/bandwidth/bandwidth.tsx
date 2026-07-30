@@ -87,12 +87,31 @@ export default function BandwidthField({
     setBandwidthUnits(bandwidthHz >= 1_000_000 ? FREQUENCY_MHZ : FREQUENCY_KHZ);
   }, [zoomChannels, resolutionHz, bandwidthHz]);
 
+  // Both fields always commit a clamped value, so a requested value outside [1, maxZoomChannels]
+  // is flagged here rather than by validating the (already-clamped) committed value itself.
+  // Tracked per-field rather than as one shared flag - they're two views of the same underlying
+  // channel count, but only the field the user actually typed an out-of-range value into should
+  // show an error; the other field's own displayed value is derived fresh from the clamped result
+  // and is therefore always in range, so flagging it too would be wrong.
+  const [channelsRangeError, setChannelsRangeError] = React.useState(false);
+  const [bandwidthRangeError, setBandwidthRangeError] = React.useState(false);
+
+  const zoomChannelsRangeErrorMessage = channelsRangeError
+    ? t('zoomChannels.range.error', { min: 1, max: maxZoomChannels })
+    : '';
+
   const commitChannels = (raw: number) => {
-    setZoomChannels?.(Math.min(Math.max(Math.round(raw), 1), maxZoomChannels || 1));
+    const requested = Math.round(raw);
+    setChannelsRangeError(requested < 1 || requested > maxZoomChannels);
+    setBandwidthRangeError(false);
+    setZoomChannels?.(Math.min(Math.max(requested, 1), maxZoomChannels || 1));
   };
 
   const commitBandwidth = (raw: number) => {
     const hz = frequencyConversion(raw, bandwidthUnits, FREQUENCY_HZ);
+    const requested = resolutionHz > 0 ? Math.round(hz / resolutionHz) : 1;
+    setBandwidthRangeError(requested < 1 || requested > maxZoomChannels);
+    setChannelsRangeError(false);
     setZoomChannels?.(bandwidthHzToChannels(hz, resolutionHz, maxZoomChannels));
   };
 
@@ -114,6 +133,20 @@ export default function BandwidthField({
     bandwidthUnits
   );
 
+  // Same underlying channel-count range as zoomChannelsRangeErrorMessage above, but expressed in
+  // this field's own displayed unit/bounds (channelStepDisplayValue/maxBandwidthDisplayValue,
+  // the same values already passed as this field's min/max) rather than a raw channel count.
+  const bandwidthUnitLabel =
+    BANDWIDTH_UNIT_OPTIONS.find((option) => option.value === bandwidthUnits)?.label ?? '';
+  const bandwidthDecimalPlaces = BANDWIDTH_DECIMAL_PLACES[bandwidthUnits] ?? 2;
+  const bandwidthRangeErrorMessage = bandwidthRangeError
+    ? t('bandwidth.range.channelRangeError', {
+        min: channelStepDisplayValue.toFixed(bandwidthDecimalPlaces),
+        max: maxBandwidthDisplayValue.toFixed(bandwidthDecimalPlaces),
+        unit: bandwidthUnitLabel
+      })
+    : '';
+
   if (isLow()) {
     return (
       <Grid pt={1} spacing={2} container justifyContent="space-between" direction="row">
@@ -130,6 +163,8 @@ export default function BandwidthField({
             decrementDisabled={disabled || zoomChannels <= 1}
             disabled={disabled}
             required={required}
+            errorText={bandwidthRangeErrorMessage}
+            requiredText={t(FIELD + '.required')}
             min={channelStepDisplayValue}
             max={maxBandwidthDisplayValue}
             step={channelStepDisplayValue}
@@ -166,6 +201,8 @@ export default function BandwidthField({
             decrementDisabled={disabled || zoomChannels <= 1}
             disabled={disabled}
             required={required}
+            errorText={zoomChannelsRangeErrorMessage}
+            requiredText={t('zoomChannels.required')}
             min={1}
             max={maxZoomChannels}
             step={1}

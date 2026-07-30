@@ -190,6 +190,7 @@ export default function CentralFrequency({
       disabled={disabled}
       required={required}
       errorText={errorMessage}
+      requiredText={t(FIELD + '.error.required')}
       suffix={suffix}
       min={min}
       max={max}

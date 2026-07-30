@@ -181,6 +181,7 @@ export default function ContinuumBandwidthField({
       disabled={disabled}
       required={true}
       errorText={errorText}
+      requiredText={t(FIELD + '.required')}
       suffix={suffix}
       min={minChannelWidthMHz}
       max={maxContBandwidthMHz}
