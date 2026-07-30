@@ -81,6 +81,7 @@ export default function TargetEntry({
   );
   const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
   const [resolutionLoading, setResolutionLoading] = React.useState(false);
+  const activeResolveRequestIdRef = React.useRef(0);
 
   React.useEffect(() => {
     if (nameFieldError === t('addTarget.error')) {
@@ -438,7 +439,7 @@ export default function TargetEntry({
         {hasAnyFieldEntered() ? (
           <CancelButton
             action={clearForm}
-            disabled={false}
+            disabled={resolutionLoading}
             primary={false}
             testId={'clearFormButton'}
             title="clearBtn.label"
@@ -450,7 +451,15 @@ export default function TargetEntry({
   };
 
   const resolveButton = () => {
-    const processCoordinatesResults = (response: any) => {
+    const processCoordinatesResults = (response: any, requestId: number, requestName: string) => {
+      if (activeResolveRequestIdRef.current !== requestId) {
+        return;
+      }
+
+      if (name !== requestName) {
+        return;
+      }
+
       if (response && !response.error) {
         if (response.reference_coordinate.kind === 'galactic') {
           setTheCoord1(String(response.reference_coordinate.l));
@@ -482,15 +491,23 @@ export default function TargetEntry({
     };
 
     const getCoordinates = async () => {
+      const requestId = activeResolveRequestIdRef.current + 1;
+      activeResolveRequestIdRef.current = requestId;
+      const requestName = name;
+
       setResolutionLoading(true);
 
       try {
-        const response = await GetCoordinates(name, referenceCoordinates);
-        processCoordinatesResults(response);
+        const response = await GetCoordinates(requestName, referenceCoordinates);
+        processCoordinatesResults(response, requestId, requestName);
       } catch {
-        setNameFieldError(t('resolve.error'));
+        if (activeResolveRequestIdRef.current === requestId) {
+          setNameFieldError(t('resolve.error'));
+        }
       } finally {
-        setResolutionLoading(false);
+        if (activeResolveRequestIdRef.current === requestId) {
+          setResolutionLoading(false);
+        }
       }
     };
 
@@ -531,7 +548,7 @@ export default function TargetEntry({
       <ReferenceCoordinatesField
         setValue={setTheReferenceCoordinates}
         value={referenceCoordinates}
-        disabled={isEditMode}
+        disabled={isEditMode || resolutionLoading}
       />
     );
 
@@ -565,6 +582,7 @@ export default function TargetEntry({
         onBlur={blurName}
         onFocus={() => setHelp('name.help')}
         errorText={nameFieldError}
+        disabled={resolutionLoading}
       />
     );
 

@@ -126,6 +126,27 @@ describe('<TargetEntry /> form preservation on autoLinking error', () => {
     });
   });
 
+  it('disables editing and clearing while coordinates are resolving', async () => {
+    const mockedGetCoordinates = vi.mocked(GetCoordinates);
+    mockedGetCoordinates.mockReturnValue(new Promise(() => {}) as never);
+
+    const user = userEvent.setup();
+
+    await act(async () => {
+      wrapper(<TargetEntry />);
+    });
+
+    const nameInput = screen.getByTestId('name').querySelector('input')!;
+    await user.type(nameInput, 'Resolving target');
+
+    await user.click(screen.getByTestId('resolveButton'));
+
+    await waitFor(() => {
+      expect(nameInput).toBeDisabled();
+      expect(screen.getByTestId('clearFormButton')).toBeDisabled();
+    });
+  });
+
   it('shows clear button only when at least one field has been entered', async () => {
     const user = userEvent.setup();
 
