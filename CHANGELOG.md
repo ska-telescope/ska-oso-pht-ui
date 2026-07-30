@@ -65,6 +65,7 @@ UNRELEASED
 * Bugfix: Updated duration now used in sensitivity calculations on page change
 * Fixed: Submission table column widths adapt to content
 * Fixed: Long titles hidden with ellipsis and wrap across multiple lines for small viewers
+* Fixed: Title LaTeX is now rendered before truncation in proposal validation/confirmation display, preventing raw LaTeX syntax from being shown
 
 10.1.0
 ----------
