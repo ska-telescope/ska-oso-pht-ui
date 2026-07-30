@@ -1,8 +1,8 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import { ERROR_SECS } from '@utils/constants.ts';
-import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useAutoClearingState } from '@/utils/hooks/useAutoClearingState';
 
 interface TaperFieldProps {
   disabled?: boolean;
@@ -24,7 +24,7 @@ export default function TaperField({
   const { t } = useScopedTranslation();
   const FIELD = 'taper';
 
-  const [fieldValid, setFieldValid] = React.useState(true);
+  const [fieldValid, setFieldValid] = useAutoClearingState(true, ERROR_SECS);
 
   const checkValue = (e: number) => {
     const num = Number(e);
@@ -40,13 +40,6 @@ export default function TaperField({
 
   const errorMessage = fieldValid ? '' : t(FIELD + '.error');
 
-  React.useEffect(() => {
-    if (fieldValid) return;
-    const timerId = setTimeout(() => {
-      setFieldValid(true);
-    }, ERROR_SECS);
-    return () => clearTimeout(timerId);
-  }, [fieldValid]);
   return (
     <Box pt={1}>
       <NumberEntry

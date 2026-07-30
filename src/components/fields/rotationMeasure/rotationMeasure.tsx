@@ -5,6 +5,7 @@ import { ERROR_SECS } from '@utils/constants.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { useAutoClearingState } from '@/utils/hooks/useAutoClearingState';
 
 interface RotationMeasureFieldProps {
   disabled?: boolean;
@@ -24,15 +25,8 @@ export default function RotationMeasureField({
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const FIELD = 'rotationMeasure';
-  const [errorText, setErrorText] = React.useState('');
+  const [errorText, setErrorText] = useAutoClearingState('', ERROR_SECS);
   const { observatoryConstants } = useOSDAccessors();
-  React.useEffect(() => {
-    if (!errorText) return;
-    const timerId = setTimeout(() => {
-      setErrorText('');
-    }, ERROR_SECS);
-    return () => clearTimeout(timerId);
-  }, [errorText]);
 
   const validateValue = (num: number) => {
     if (

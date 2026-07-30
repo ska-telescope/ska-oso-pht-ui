@@ -5,6 +5,7 @@ import { ERROR_SECS } from '@utils/constants.ts';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
+import { useAutoClearingState } from '@/utils/hooks/useAutoClearingState';
 
 interface OutputSamplingIntervalFieldProps {
   disabled?: boolean;
@@ -24,15 +25,8 @@ export default function OutputSamplingIntervalField({
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const FIELD = 'outputSamplingInterval';
-  const [errorText, setErrorText] = React.useState('');
+  const [errorText, setErrorText] = useAutoClearingState('', ERROR_SECS);
   const { observatoryConstants } = useOSDAccessors();
-  React.useEffect(() => {
-    if (!errorText) return;
-    const timerId = setTimeout(() => {
-      setErrorText('');
-    }, ERROR_SECS);
-    return () => clearTimeout(timerId);
-  }, [errorText]);
 
   const validateValue = (num: number) => {
     if (
