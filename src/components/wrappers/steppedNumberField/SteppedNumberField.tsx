@@ -111,10 +111,10 @@ export default function SteppedNumberField({
       // flipped true off the back of that clamp) - resync it to the real committed value rather
       // than leaving the step look like a no-op.
       let clamped = value;
-      if (max && clamped > max) {
+      if (max !== undefined && clamped > max) {
         clamped = max;
       }
-      if (min && clamped < min) {
+      if (min !== undefined && clamped < min) {
         clamped = min;
       }
       onCommit(clamped);

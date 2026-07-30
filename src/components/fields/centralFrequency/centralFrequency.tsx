@@ -170,15 +170,6 @@ export default function CentralFrequency({
     setErrorMessage(validateStepRef.current(value));
   }, [value, min, max, coarseChannelWidthHz]);
 
-  // Native <input type="number"> step attributes - purely a browser-level hint (for the
-  // native spinner and keyboard input restrictions). The actual snap-to-grid stepping always goes
-  // through onStep, which SteppedNumberField calls directly on ArrowUp/ArrowDown.
-  const nativeStep = isLowZoom
-    ? frequencyConversion(channelWidthHz || 1, FREQUENCY_HZ, units)
-    : isLow
-      ? stepMHz
-      : 1;
-
   return (
     <SteppedNumberField
       testId={FIELD}
@@ -194,7 +185,6 @@ export default function CentralFrequency({
       suffix={suffix}
       min={min}
       max={max}
-      step={nativeStep}
     />
   );
 }

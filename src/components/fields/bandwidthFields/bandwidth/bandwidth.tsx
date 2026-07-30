@@ -171,7 +171,6 @@ export default function BandwidthField({
             requiredText={t(FIELD + '.required')}
             min={channelStepDisplayValue}
             max={maxBandwidthDisplayValue}
-            step={channelStepDisplayValue}
             suffix={
               <>
                 <SelectField
@@ -209,7 +208,6 @@ export default function BandwidthField({
             requiredText={t('zoomChannels.required')}
             min={1}
             max={maxZoomChannels}
-            step={1}
           />
         </Grid>
       </Grid>

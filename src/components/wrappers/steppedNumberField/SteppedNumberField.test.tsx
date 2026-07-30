@@ -162,6 +162,42 @@ describe('<SteppedNumberField />', () => {
     expect(input).toHaveValue(1000);
   });
 
+  test('a blocked step still clamps a stale over-max value down to max, even when max is 0', async () => {
+    const onCommit = vi.fn();
+    render(
+      <SteppedNumberField
+        testId="zoomChannels"
+        value={5}
+        max={0}
+        incrementDisabled
+        onCommit={onCommit}
+        onStep={(v) => v}
+      />
+    );
+
+    await pressArrow(screen.getByTestId('zoomChannels'), 'ArrowUp');
+    expect(onCommit).toHaveBeenCalledWith(0);
+    expect(screen.getByTestId('zoomChannels')).toHaveValue(0);
+  });
+
+  test('a blocked step still clamps a stale under-min value up to min, even when min is 0', async () => {
+    const onCommit = vi.fn();
+    render(
+      <SteppedNumberField
+        testId="zoomChannels"
+        value={-5}
+        min={0}
+        decrementDisabled
+        onCommit={onCommit}
+        onStep={(v) => v}
+      />
+    );
+
+    await pressArrow(screen.getByTestId('zoomChannels'), 'ArrowDown');
+    expect(onCommit).toHaveBeenCalledWith(0);
+    expect(screen.getByTestId('zoomChannels')).toHaveValue(0);
+  });
+
   test('the spin buttons are visible regardless of focus', async () => {
     render(
       <SteppedNumberField testId="zoomChannels" value={1000} onCommit={vi.fn()} onStep={(v) => v} />
