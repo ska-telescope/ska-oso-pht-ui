@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
+import { BorderedSection, TextEntry, Progress } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
 import SolarSystemObjectField from '@components/fields/solarSystemObject/solarSystemObject.tsx';
@@ -80,6 +80,7 @@ export default function TargetEntry({
     DEFAULT_REFERENCE_COORDINATES
   );
   const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
+  const [resolutionLoading, setResolutionLoading] = React.useState(false);
 
   React.useEffect(() => {
     if (nameFieldError === t('addTarget.error')) {
@@ -481,12 +482,30 @@ export default function TargetEntry({
     };
 
     const getCoordinates = async () => {
-      const response = await GetCoordinates(name, referenceCoordinates);
-      processCoordinatesResults(response);
+      setResolutionLoading(true);
+
+      try {
+        const response = await GetCoordinates(name, referenceCoordinates);
+        processCoordinatesResults(response);
+      } catch {
+        setNameFieldError(t('resolve.error'));
+      } finally {
+        setResolutionLoading(false);
+      }
     };
 
     return (
-      <ResolveButton action={() => getCoordinates()} disabled={!name} testId={'resolveButton'} />
+      <>
+        {resolutionLoading ? (
+          <Progress size={20} />
+        ) : (
+          <ResolveButton
+            action={() => getCoordinates()}
+            disabled={!name || resolutionLoading}
+            testId={'resolveButton'}
+          />
+        )}
+      </>
     );
   };
 

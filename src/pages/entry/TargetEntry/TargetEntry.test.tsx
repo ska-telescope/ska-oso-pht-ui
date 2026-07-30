@@ -8,6 +8,7 @@ import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import TargetEntry from './TargetEntry';
 import autoLinking from '@/utils/autoLinking/AutoLinking';
 import { TYPE_ZOOM } from '@/utils/constants';
+import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 
 const wrapper = (component: React.ReactElement) => {
   return render(
@@ -28,6 +29,10 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
 }));
 
 vi.mock('@/utils/autoLinking/AutoLinking', () => ({
+  default: vi.fn()
+}));
+
+vi.mock('@services/axios/get/getCoordinates/getCoordinates', () => ({
   default: vi.fn()
 }));
 
@@ -65,10 +70,12 @@ describe('<TargetEntry /> form preservation on autoLinking error', () => {
   });
 
   it('retains field values when the sensitivity calculator returns an error', async () => {
-    vi.mocked(autoLinking as any).mockResolvedValue({
+    const mockedAutoLinking = vi.mocked(autoLinking);
+
+    mockedAutoLinking.mockResolvedValue({
       success: false,
       error: 'Declination not supported by sensitivity calculator'
-    });
+    } as never);
 
     const user = userEvent.setup();
 
@@ -91,12 +98,32 @@ describe('<TargetEntry /> form preservation on autoLinking error', () => {
     await user.click(screen.getByTestId('addTargetButton'));
 
     await waitFor(() => {
-      expect(vi.mocked(autoLinking as any)).toHaveBeenCalled();
+      expect(mockedAutoLinking).toHaveBeenCalled();
     });
 
     expect(nameInput.value).toBe('My Target');
     expect(raInput.value).toBe('12:34:56.000');
     expect(decInput.value).toBe('45:00:00.000');
+  });
+
+  it('shows a loading state while coordinates are resolving', async () => {
+    const mockedGetCoordinates = vi.mocked(GetCoordinates);
+    mockedGetCoordinates.mockReturnValue(new Promise(() => {}) as never);
+
+    const user = userEvent.setup();
+
+    await act(async () => {
+      wrapper(<TargetEntry />);
+    });
+
+    const nameInput = screen.getByTestId('name').querySelector('input')!;
+    await user.type(nameInput, 'Resolving target');
+
+    await user.click(screen.getByTestId('resolveButton'));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('resolveButton')).not.toBeInTheDocument();
+    });
   });
 
   it('shows clear button only when at least one field has been entered', async () => {
