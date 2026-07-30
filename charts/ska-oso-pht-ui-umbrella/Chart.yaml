@@ -20,3 +20,4 @@ dependencies:
   - name: ska-ost-senscalc
     version: 11.3.0
     repository: https://artefact.skao.int/repository/helm-internal
+    condition: ska-ost-senscalc.enabled

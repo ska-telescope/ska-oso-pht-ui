@@ -1,18 +1,17 @@
-
-# Configure Ingress
 ingress:
   enabled: true
-  prependByNamespace: true
+  production: false
+  host: ""
   path: pht
+  prependByNamespace: true # if true, the ingress rule will use `/{NAMESPACE}/{.Values.ingress.path}`
 
 runtimeEnv:
-  skipPreflightCheck: "true"
   skaOsoServicesUrl: ~ # Set dynamically in the Makefile
   skaSensitivityCalcUrl: ""
   useLocalData: "false"
-  domain: "https://sdhp.stfc.skao.int"
-  skaLoginAppUrl: ""
   msentraRedirectUri: ""
+  msentraClientId: "2445e300-54c9-470f-9578-0f54840672af"
+  msentraTenantId: "78887040-bad7-494b-8760-88dcacfb3805"
   useIndigo: false # Can be overwritten by setting USE_INDIGO environment variable to true
   indigoAuthority: "https://iam-1.staging.devx.skao.int/"
   indigoClientId: "d546e462-637c-44ff-b2b9-3345a960ad42"
@@ -28,11 +27,3 @@ image:
   image: ska-oso-pht-ui
   tag: ~
   pullPolicy: IfNotPresent
-
-vault:
-  enabled: true
-  mount: dev
-  secretPath: "stargazers/ska-oso-pht-ui"
-  secretKeys:
-  - "MSENTRA_CLIENT_ID"
-  - "MSENTRA_TENANT_ID"
