@@ -30,6 +30,7 @@ interface SteppedNumberFieldProps {
   onStep: (value: number, direction: 1 | -1) => number;
   parse?: (raw: string) => number | null;
   required?: boolean;
+  requiredText?: string;
   suffix?: JSX.Element;
   testId: string;
   value: number;
@@ -52,6 +53,7 @@ export default function SteppedNumberField({
   onStep,
   parse = defaultParse,
   required = false,
+  requiredText = '',
   suffix,
   testId,
   value
@@ -67,6 +69,9 @@ export default function SteppedNumberField({
   const effectiveDecrementDisabled =
     decrementDisabled ?? (steppedDown === value || value <= (min ?? -Infinity));
   const [inputValue, setInputValue] = React.useState(format(value));
+  // surface a required-field warning while the input is left blank, without touching `value`
+  // it always resyncs back to the last genuinely committed value on blur.
+  const [isBlank, setIsBlank] = React.useState(false);
   // Tracks whether the input is currently focused. When a commit round-trips through a lossy
   // transform (e.g. a typed frequency gets rounded to an integer channel count elsewhere and the
   // displayed value is recomputed from that), the value prop echoed back rarely matches exactly
@@ -84,6 +89,7 @@ export default function SteppedNumberField({
   const handleChange = (raw: string) => {
     const sanitized = digitsOnly ? raw.replace(/[^0-9]/g, '') : raw;
     setInputValue(sanitized);
+    setIsBlank(sanitized === '');
     const parsed = parse(sanitized);
     if (parsed !== null) {
       onCommit(parsed);
@@ -98,6 +104,7 @@ export default function SteppedNumberField({
   const handleBlur = () => {
     isFocused.current = false;
     setInputValue(format(value));
+    setIsBlank(false);
     onCommit(value);
   };
 
@@ -228,6 +235,9 @@ export default function SteppedNumberField({
     ? `Nearest valid values: ${format(steppedDown)} and ${format(steppedUp)} - please use arrows to step to a valid value`
     : '';
 
+  const requiredError = required && isBlank ? requiredText : '';
+  const effectiveErrorText = errorText || requiredError;
+
   return (
     <Box>
       <Tooltip title={validityHint} arrow placement="bottom">
@@ -236,7 +246,7 @@ export default function SteppedNumberField({
           type="number"
           variant="standard"
           disabled={disabled}
-          error={!!errorText}
+          error={!!effectiveErrorText}
           label={label}
           onBlur={handleBlur}
           onChange={(e) => handleChange(e.target.value)}
@@ -272,7 +282,11 @@ export default function SteppedNumberField({
           value={inputValue}
         />
       </Tooltip>
-      {errorText && <FormHelperText error>{errorText}</FormHelperText>}
+      {effectiveErrorText && (
+        <FormHelperText error data-testid={`${testId}Error`}>
+          {effectiveErrorText}
+        </FormHelperText>
+      )}
     </Box>
   );
 }
