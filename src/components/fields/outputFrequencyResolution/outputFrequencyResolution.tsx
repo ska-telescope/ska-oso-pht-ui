@@ -5,6 +5,7 @@ import { ERROR_SECS } from '@utils/constants.ts';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
+import { useAutoClearingState } from '@/utils/hooks/useAutoClearingState';
 
 interface OutputFrequencyResolutionFieldProps {
   disabled?: boolean;
@@ -24,17 +25,8 @@ export default function OutputFrequencyResolutionField({
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const FIELD = 'outputFrequencyResolution';
-  const [errorText, setErrorText] = React.useState('');
+  const [errorText, setErrorText] = useAutoClearingState('', ERROR_SECS);
   const { observatoryConstants } = useOSDAccessors();
-
-  React.useEffect(() => {
-    const timer = () => {
-      setTimeout(() => {
-        setErrorText('');
-      }, ERROR_SECS);
-    };
-    timer();
-  }, [errorText]);
 
   const validateValue = (num: number) => {
     if (

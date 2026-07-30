@@ -1,8 +1,8 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import { ERROR_SECS } from '@utils/constants.ts';
-import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useAutoClearingState } from '@/utils/hooks/useAutoClearingState';
 
 interface WeatherFieldProps {
   disabled?: boolean;
@@ -25,7 +25,7 @@ export default function WeatherField({
   label = ''
 }: WeatherFieldProps) {
   const { t } = useScopedTranslation();
-  const [fieldValid, setFieldValid] = React.useState(true);
+  const [fieldValid, setFieldValid] = useAutoClearingState(true, ERROR_SECS);
   const min = Number(t('weather.range.lower'));
   const max = Number(t('weather.range.upper'));
 
@@ -48,15 +48,6 @@ export default function WeatherField({
         min: min,
         max: max
       });
-
-  React.useEffect(() => {
-    const timer = () => {
-      setTimeout(() => {
-        setFieldValid(true);
-      }, ERROR_SECS);
-    };
-    timer();
-  }, [fieldValid]);
 
   const weatherUnitsField = () => t('weather.units');
 

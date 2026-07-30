@@ -1,8 +1,8 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import { ERROR_SECS } from '@utils/constants.ts';
-import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
+import { useAutoClearingState } from '@/utils/hooks/useAutoClearingState';
 
 interface ImageSizeFieldProps {
   disabled?: boolean;
@@ -23,7 +23,7 @@ export default function ImageSizeField({
 }: ImageSizeFieldProps) {
   const { t } = useScopedTranslation();
   const FIELD = 'imageSize';
-  const [fieldValid, setFieldValid] = React.useState(true);
+  const [fieldValid, setFieldValid] = useAutoClearingState(true, ERROR_SECS);
 
   const checkValue = (e: number) => {
     const num = Number(e);
@@ -38,15 +38,6 @@ export default function ImageSizeField({
   };
 
   const errorMessage = fieldValid ? '' : t(FIELD + '.error');
-
-  React.useEffect(() => {
-    const timer = () => {
-      setTimeout(() => {
-        setFieldValid(true);
-      }, ERROR_SECS);
-    };
-    timer();
-  }, [fieldValid]);
 
   return (
     <Box pt={1}>

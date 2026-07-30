@@ -1,9 +1,9 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
 import { ERROR_SECS } from '@utils/constants.ts';
-import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { useAutoClearingState } from '@/utils/hooks/useAutoClearingState';
 
 interface ElevationFieldProps {
   disabled?: boolean;
@@ -37,7 +37,7 @@ export default function ElevationField({
   const { t } = useScopedTranslation();
   const { osdMID } = useOSDAccessors();
   const FIELD = 'elevation';
-  const [fieldValid, setFieldValid] = React.useState(true);
+  const [fieldValid, setFieldValid] = useAutoClearingState(true, ERROR_SECS);
   const MIN_ELEVATION = isLow
     ? ELEVATION_MIN_LOW
     : (osdMID?.basicCapabilities?.dishElevationLimitDeg ?? ELEVATION_MIN_LOW);
@@ -61,15 +61,6 @@ export default function ElevationField({
         min: MIN_ELEVATION,
         max: ELEVATION_MAX
       });
-
-  React.useEffect(() => {
-    const timer = () => {
-      setTimeout(() => {
-        setFieldValid(true);
-      }, ERROR_SECS);
-    };
-    timer();
-  }, [fieldValid]);
 
   return (
     <Box pt={1}>
