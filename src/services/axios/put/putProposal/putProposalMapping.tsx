@@ -565,15 +565,19 @@ const getResults = (
   const resultsArr = [];
   if (incTargetObservations) {
     for (const tarObs of incTargetObservations) {
-      // errored sensCalc is still skipped, as before
-      if (tarObs.sensCalc?.error) {
+      // A target-observation that hasn't been (re)calculated yet - e.g. a freshly cloned
+      // proposal, whose links are deliberately reset to this shape with no section3 - has no
+      // sensitivity result to report at all, not just an error one. Skip it rather than reading
+      // section3[0] unguarded, which would throw on the missing array.
+      if (tarObs.sensCalc?.error || !tarObs.sensCalc?.section3?.[0]) {
         continue;
       }
 
       const hasSensCalc = !!tarObs.sensCalc;
       const obsType = getObsType(tarObs, incObs);
       const spectralSection = getSpectralSection(obsType);
-      const target = incTargets?.find((t) => t.id === tarObs.targetId);
+      const suppliedType =
+        tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
 
       // refs always populate; result/noise blocks are null when there's no sensCalc (SSO)
       const result: SensCalcResultsBackend = {
