@@ -91,10 +91,10 @@ export default function CentralFrequency({
     if (
       isLowZoom
         ? !isCentralFrequencyOnChannelGrid(cfHz, channelWidthHz, windowBandwidthHz, minHz)
-        : !isCentralFrequencyDivisible(
-            frequencyConversion(cf, units, FREQUENCY_HZ),
-            coarseChannelWidthHz
-          )
+        : ((frequencyConversion(cfHz, FREQUENCY_HZ, FREQUENCY_MHZ) + 0.5 * channelWidthMHz) /
+            channelWidthMHz) %
+            2 !==
+          0
     ) {
       return t(FIELD + '.error.divisibility');
     }
@@ -129,10 +129,15 @@ export default function CentralFrequency({
   // Directional variants used only to correct a clamped-to-boundary value back onto the grid
   // (see stepChannel below) - rounding towards the interior of [min, max] rather than to the
   // nearest grid point, so the correction can never overshoot back past the boundary it came from.
-  const snapToValidGridFloor = (currentValue: number) =>
-    (Math.floor(currentValue / channelWidthMHz - 0.5 + 1e-9) + 0.5) * channelWidthMHz;
-  const snapToValidGridCeil = (currentValue: number) =>
-    (Math.ceil(currentValue / channelWidthMHz - 0.5 - 1e-9) + 0.5) * channelWidthMHz;
+  const snapToValidGrid = (roundedChannelNumber: number, oddAdjustment: 1 | -1) => {
+    const evenChannelNumber =
+      roundedChannelNumber % 2 === 0 ? roundedChannelNumber : roundedChannelNumber + oddAdjustment;
+    return (evenChannelNumber - 0.5) * channelWidthMHz;
+  };
+  const snapToValidGridFloor = (channelNumber: number) =>
+    snapToValidGrid(Math.floor(channelNumber), -1);
+  const snapToValidGridCeil = (channelNumber: number) =>
+    snapToValidGrid(Math.ceil(channelNumber), 1);
 
   // Steps by one coarse-channel-grid unit (LOW) or a plain 1-unit increment (MID, which has no
   // channel-grid constraint), snapping to the grid first if not already aligned.
@@ -145,8 +150,8 @@ export default function CentralFrequency({
       return isLow ? currentValue + direction * stepMHz : currentValue + direction * stepMHz;
     } else {
       return direction === -1
-        ? snapToValidGridFloor(currentValue)
-        : snapToValidGridCeil(currentValue);
+        ? snapToValidGridFloor(channelNumber)
+        : snapToValidGridCeil(channelNumber);
     }
   };
 
