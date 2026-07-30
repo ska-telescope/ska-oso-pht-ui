@@ -50,12 +50,11 @@ export default function WeatherField({
       });
 
   React.useEffect(() => {
-    const timer = () => {
-      setTimeout(() => {
-        setFieldValid(true);
-      }, ERROR_SECS);
-    };
-    timer();
+    if (fieldValid) return;
+    const timerId = setTimeout(() => {
+      setFieldValid(true);
+    }, ERROR_SECS);
+    return () => clearTimeout(timerId);
   }, [fieldValid]);
 
   const weatherUnitsField = () => t('weather.units');

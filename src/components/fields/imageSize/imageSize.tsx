@@ -40,12 +40,11 @@ export default function ImageSizeField({
   const errorMessage = fieldValid ? '' : t(FIELD + '.error');
 
   React.useEffect(() => {
-    const timer = () => {
-      setTimeout(() => {
-        setFieldValid(true);
-      }, ERROR_SECS);
-    };
-    timer();
+    if (fieldValid) return;
+    const timerId = setTimeout(() => {
+      setFieldValid(true);
+    }, ERROR_SECS);
+    return () => clearTimeout(timerId);
   }, [fieldValid]);
 
   return (

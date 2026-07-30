@@ -27,12 +27,11 @@ export default function DispersionMeasureField({
   const [errorText, setErrorText] = React.useState('');
   const { observatoryConstants } = useOSDAccessors();
   React.useEffect(() => {
-    const timer = () => {
-      setTimeout(() => {
-        setErrorText('');
-      }, ERROR_SECS);
-    };
-    timer();
+    if (!errorText) return;
+    const timerId = setTimeout(() => {
+      setErrorText('');
+    }, ERROR_SECS);
+    return () => clearTimeout(timerId);
   }, [errorText]);
 
   const validateValue = (num: number) => {
