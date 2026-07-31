@@ -19,6 +19,7 @@ import {
   NAV,
   SUPPLIED_VALUE_DEFAULT_MID,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_INTEGRATION_TIME_UNITS_M,
   SUPPLIED_VALUE_DEFAULT_LOW,
@@ -139,7 +140,15 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const [subarrayConfig, setSubarrayConfig] = React.useState(SA_AA2);
   const [observingBand, setObservingBand] = React.useState(BAND_LOW_STR);
-  const [observationType, setObservationType] = React.useState(TYPE_CONTINUUM);
+  // In the SV single-target/single-observation case, obsTypeOptions (below) collapses to a
+  // single entry matching the proposal's scienceCategory - seed the initial value the same way,
+  // otherwise a fresh (non-edit) observation starts at TYPE_CONTINUUM and briefly mismatches that
+  // one option before the correcting effect further down fixes it up.
+  const [observationType, setObservationType] = React.useState(() =>
+    osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1
+      ? (getProposal().scienceCategory ?? TYPE_CONTINUUM)
+      : TYPE_CONTINUUM
+  );
   const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT[TELESCOPE_LOW_NUM - 1]);
   const [weather, setWeather] = React.useState(Number(t('weather.default')));
   const [centralFrequency, setCentralFrequency] = React.useState(0);
@@ -514,7 +523,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     pstMode,
     spectralAveraging,
     spectralResolution,
-    zoomChannels
+    zoomChannels,
+    observationType
   ]);
 
   React.useEffect(() => {
@@ -543,7 +553,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setFrequencyUnits();
   }, [observingBand]);
 
-  const isContinuum = () => observationType === TYPE_CONTINUUM;
+  const isContinuum = () =>
+    observationType === TYPE_CONTINUUM || observationType === TYPE_CONTINUUM_SPECTRAL;
   const isZoom = () => observationType === TYPE_ZOOM;
   const isPST = () => observationType === TYPE_PST;
   const isLow = () => observingBand === BAND_LOW_STR;

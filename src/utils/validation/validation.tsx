@@ -22,6 +22,7 @@ import {
   STATUS_PARTIAL,
   TELESCOPE_LOW_NUM,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
   TYPE_ZOOM,
   ZOOM_BANDWIDTH_DEFAULT_LOW,
@@ -225,6 +226,7 @@ export const checkDP = (proposal: Proposal): number => {
     const dataProduct = proposal.dataProductSDP?.[0] as DataProductSDPNew;
     switch (proposal.scienceCategory) {
       case TYPE_ZOOM:
+      case TYPE_CONTINUUM_SPECTRAL:
         return validatePolarisations(dataProduct.data as SDPSpectralData);
       case TYPE_CONTINUUM:
         return (dataProduct?.data as SDPImageContinuumData | SDPVisibilitiesContinuumData)
@@ -297,6 +299,7 @@ export const validateProposalNavigation = (proposal: Proposal, page: number, che
     return (
       (proposal.scienceCategory === TYPE_CONTINUUM ||
         proposal.scienceCategory === TYPE_PST ||
+        proposal.scienceCategory === TYPE_CONTINUUM_SPECTRAL ||
         proposal.scienceCategory === TYPE_ZOOM) &&
       Array.isArray(proposal?.targets) &&
       proposal.targets.length > 0

@@ -21,6 +21,7 @@ import {
   BIT_DEPTH_DEFAULT,
   CHANNELS_OUT_DEFAULT,
   CHANNELS_OUT_MAX,
+  CHANNELS_OUT_MAX_COMBINED,
   CHANNELS_OUT_MIN,
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
@@ -49,6 +50,7 @@ import {
   TAPER_DEFAULT,
   TIME_AVERAGING_DEFAULT,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
   TYPE_ZOOM,
   WRAPPER_HEIGHT
@@ -186,9 +188,16 @@ export default function DataProduct({ data }: DataProductProps) {
   const isContinuum = () =>
     getObservation()?.type === TYPE_CONTINUUM || getProposal()?.scienceCategory === TYPE_CONTINUUM;
   const isSpectral = () =>
-    getObservation()?.type === TYPE_ZOOM || getProposal()?.scienceCategory === TYPE_ZOOM;
+    getObservation()?.type === TYPE_ZOOM ||
+    getProposal()?.scienceCategory === TYPE_ZOOM ||
+    getObservation()?.type === TYPE_CONTINUUM_SPECTRAL ||
+    getProposal()?.scienceCategory === TYPE_CONTINUUM_SPECTRAL;
   const isPST = () =>
     getObservation()?.type === TYPE_PST || getProposal()?.scienceCategory === TYPE_PST;
+  const isCombined = () =>
+    getObservation()?.type === TYPE_CONTINUUM_SPECTRAL ||
+    getProposal()?.scienceCategory === TYPE_CONTINUUM_SPECTRAL;
+  const channelsOutMax = () => (isCombined() ? CHANNELS_OUT_MAX_COMBINED : CHANNELS_OUT_MAX);
 
   const isLow = () => getObservation()?.observingBand === BAND_LOW_STR;
 
@@ -628,7 +637,8 @@ export default function DataProduct({ data }: DataProductProps) {
   const channelsOutField = () =>
     fieldWrapper(
       <ChannelsOutField
-        onFocus={() => setHelp('channelsOut', { min: CHANNELS_OUT_MIN, max: CHANNELS_OUT_MAX })}
+        maxValue={channelsOutMax()}
+        onFocus={() => setHelp('channelsOut', { min: CHANNELS_OUT_MIN, max: channelsOutMax() })}
         required
         setValue={setChannelsOut}
         value={channelsOut}
@@ -693,13 +703,14 @@ export default function DataProduct({ data }: DataProductProps) {
   const channelsOutValid = () =>
     Number.isInteger(channelsOut) &&
     channelsOut >= CHANNELS_OUT_MIN &&
-    channelsOut <= CHANNELS_OUT_MAX;
+    channelsOut <= channelsOutMax();
   const polarisationsValid = () => polarisations.length > 0;
 
   const pageFooter = () => {
     const enabled = () => {
       switch (getObservation()?.type) {
         case TYPE_ZOOM:
+        case TYPE_CONTINUUM_SPECTRAL:
           return (
             pixelSizeValid() &&
             imageSizeValid() &&

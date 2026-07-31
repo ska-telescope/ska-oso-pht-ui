@@ -8,6 +8,7 @@ import {
   ERROR_SECS,
   PAGE_DETAILS,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
   TYPE_ZOOM,
   NOTIFICATION_DELAY_IN_SECONDS
@@ -238,7 +239,8 @@ export default function DetailsPage() {
           isSV
             ? getProposal().scienceCategory === TYPE_CONTINUUM ||
               getProposal().scienceCategory === TYPE_ZOOM ||
-              getProposal().scienceCategory === TYPE_PST
+              getProposal().scienceCategory === TYPE_PST ||
+              getProposal().scienceCategory === TYPE_CONTINUUM_SPECTRAL
               ? ''
               : t('scienceCategory.error')
             : typeof getProposal().scienceCategory === 'number'

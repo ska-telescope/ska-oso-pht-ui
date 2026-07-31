@@ -26,6 +26,7 @@ import {
   USE_LOCAL_DATA,
   DETAILS,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   TYPE_ZOOM,
   VEL_TYPES,
   VEL_UNITS,
@@ -526,11 +527,11 @@ const getObservations = (
       ),
       linked: getLinked(inValue[i], inResults),
       continuumBandwidth:
-        type === TYPE_CONTINUUM || type === TYPE_PST
+        type === TYPE_CONTINUUM || type === TYPE_PST || type === TYPE_CONTINUUM_SPECTRAL
           ? (inValue[i].observation_type_details?.bandwidth?.value ?? null)
           : null,
       continuumBandwidthUnits:
-        type === TYPE_CONTINUUM || type === TYPE_PST
+        type === TYPE_CONTINUUM || type === TYPE_PST || type === TYPE_CONTINUUM_SPECTRAL
           ? getFrequencyAndBandwidthUnits(
               inValue[i]?.observation_type_details?.bandwidth?.unit ?? null,
               observingBand

@@ -17,6 +17,7 @@ import { SensCalcResultsBackend } from '@utils/types/sensCalcResults.tsx';
 import {
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
+  DP_TYPE_VISIBLE,
   FREQUENCY_UNITS,
   DETAILS,
   IMAGE_WEIGHTING,
@@ -33,6 +34,7 @@ import {
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_BACKEND_MAPPING,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
   TYPE_ZOOM,
   VEL_UNITS,
@@ -60,7 +62,7 @@ import { getBandwidthZoom, helpers } from '@/utils/helpers';
 import { CalibrationStrategy, CalibrationStrategyBackend } from '@/utils/types/calibrationStrategy';
 import { SuppliedBackend } from '@/utils/types/supplied';
 
-const isContinuum = (type: string) => type === TYPE_CONTINUUM;
+const isContinuum = (type: string) => type === TYPE_CONTINUUM || type === TYPE_CONTINUUM_SPECTRAL;
 const isPST = (type: string) => type === TYPE_PST;
 // const isZoom = (type: number) => type === TYPE_ZOOM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
@@ -219,6 +221,21 @@ export const getDataProductScriptParameters = (
       }
     }
     case TYPE_ZOOM:
+    case TYPE_CONTINUUM_SPECTRAL: {
+      // Both modes also produce a hidden visibilities data product (see HiddenSDPData in
+      // AutoLinking.tsx) - the backend only has one "visibilities" script-parameters shape
+      // (kind: continuum / variant: visibilities), regardless of the mode that created it.
+      if (
+        (dp?.data as SDPVisibilitiesContinuumData)?.dataProductType === DP_TYPE_VISIBLE
+      ) {
+        const data = dp?.data as SDPVisibilitiesContinuumData;
+        return {
+          time_averaging: data?.timeAveraging ?? 0,
+          frequency_averaging: data?.frequencyAveraging ?? 0,
+          kind: 'continuum',
+          variant: 'visibilities'
+        };
+      }
       const data = dp?.data as SDPSpectralData;
       return {
         image_size: { value: data?.imageSizeValue, unit: IMAGE_SIZE_UNITS[data?.imageSizeUnits] },
@@ -236,10 +253,12 @@ export const getDataProductScriptParameters = (
         polarisations: data?.polarisations ?? [],
         channels_out: data?.channelsOut ?? 0,
         gaussian_taper: data?.taperValue?.toString() ?? '0',
-        kind: 'spectral',
-        variant: 'spectral image',
+        kind: obType === TYPE_CONTINUUM_SPECTRAL ? 'continuum and spectral line' : 'spectral',
+        variant:
+          obType === TYPE_CONTINUUM_SPECTRAL ? 'continuum and spectral line image' : 'spectral image',
         continuum_subtraction: data?.continuumSubtraction
       };
+    }
     case TYPE_PST:
     default:
       const pstMode = obs?.find((o) => o?.id === dp.observationId)?.pstMode;
@@ -362,6 +381,13 @@ export const getObservationTypeDetails = (obs: Observation) => {
         central_frequency: getCentralFrequency(obs),
         supplied: getSupplied(obs) as SuppliedBackend,
         observation_type: TYPE_CONTINUUM
+      };
+    case TYPE_CONTINUUM_SPECTRAL:
+      return {
+        bandwidth: getBandwidth(obs),
+        central_frequency: getCentralFrequency(obs),
+        supplied: getSupplied(obs) as SuppliedBackend,
+        observation_type: TYPE_CONTINUUM_SPECTRAL
       };
     case TYPE_ZOOM:
       return {
@@ -577,6 +603,15 @@ const getResults = (
       const spectralSection = getSpectralSection(obsType);
       const suppliedType =
         tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
+
+      console.error(
+        '[getResults] obsType:',
+        obsType,
+        'spectralSection:',
+        spectralSection,
+        'sensCalc:',
+        JSON.stringify(tarObs.sensCalc)
+      );
 
       // refs always populate; result/noise blocks are null when there's no sensCalc (SSO)
       const result: SensCalcResultsBackend = {

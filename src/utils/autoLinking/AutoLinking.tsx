@@ -13,6 +13,7 @@ import {
   ROBUST_DEFAULT,
   TAPER_DEFAULT,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
   TYPE_ZOOM
 } from '../constants';
@@ -46,6 +47,10 @@ export const newObservationForMode = (
   return {
     ...getDefaultObservationLowAA2(observationMode),
     id: generateId('obs-', 6),
+    // getDefaultObservationLowAA2 falls back to the continuum defaults object for modes that
+    // reuse its field values (e.g. combined mode), which bakes in `type: TYPE_CONTINUUM` - force
+    // it back to the actually-selected mode so downstream panel/field selection sees it.
+    type: observationMode,
     // DEFAULT_ZOOM_OBSERVATION_LOW's zoomChannels is a static placeholder (1000) with no
     // knowledge of the actual subarray's channel cap - override it with the real cap when the
     // caller has it available, rather than baking the placeholder into the saved observation.
@@ -78,6 +83,7 @@ export const SDPData = (
         dataProductType: PULSAR_TIMING_VALUE
       } as SDPFlowthroughPSTData;
     case TYPE_ZOOM:
+    case TYPE_CONTINUUM_SPECTRAL:
       return {
         imageSizeValue: IMAGE_SIZE_DEFAULT,
         imageSizeUnits: IMAGE_SIZE_UNIT_DEFAULT,
@@ -132,13 +138,12 @@ export const HiddenSDPData = (
         timeAveraging: 4,
         frequencyAveraging: 4
       } as SDPVisibilitiesContinuumData;
-    // TODO BTN-3259
-    // case TYPE_CONTINUUM_SPECTRAL:
-    //   return {
-    //     dataProductType: DP_TYPE_VISIBLE,
-    //     timeAveraging: 4,
-    //     frequencyAveraging: 1
-    //   } as SDPVisibilitiesContinuumData;
+    case TYPE_CONTINUUM_SPECTRAL:
+      return {
+        dataProductType: DP_TYPE_VISIBLE,
+        timeAveraging: 4,
+        frequencyAveraging: 1
+      } as SDPVisibilitiesContinuumData;
     default:
       return null;
   }

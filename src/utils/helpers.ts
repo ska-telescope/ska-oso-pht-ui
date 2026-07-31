@@ -9,6 +9,7 @@ import {
   DEFAULT_ZOOM_OBSERVATION_LOW,
   TYPE_ZOOM,
   TYPE_PST,
+  TYPE_CONTINUUM_SPECTRAL,
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
   TIME_UNITS
 } from './constants';
@@ -219,7 +220,7 @@ export const obTypeTransform = (inData: string[]) => {
   const out: string[] = [];
   inData.forEach((item) => {
     if (item === 'vis' || item === 'correlation') {
-      out.push('continuum', 'spectral');
+      out.push('continuum', 'spectral', TYPE_CONTINUUM_SPECTRAL);
     } else if (item === 'pst') {
       out.push('pst');
     }
@@ -235,6 +236,7 @@ export const getDefaultObservationLowAA2 = (type: string): Observation => {
       return DEFAULT_ZOOM_OBSERVATION_LOW;
     case TYPE_PST:
       return DEFAULT_PST_OBSERVATION_LOW;
+    case TYPE_CONTINUUM_SPECTRAL:
     default:
       return DEFAULT_CONTINUUM_OBSERVATION_LOW;
   }

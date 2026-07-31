@@ -63,6 +63,11 @@ async function getSensitivityCalculatorAPIData(
 ) {
   const telescope: Telescope = getTelescope(observation.telescope);
 
+  // TODO BTN-3259: TYPE_CONTINUUM_SPECTRAL (combined mode) falls into continuum
+  // fallback (along with any other unhandled type). Its "spectral" figures are therefore whatever
+  // sub-band breakdown comes from the continuum endpoint - NOT derived from the spectral-line
+  // data product's channelsOut, so not certain if they reflect the actual combined-mode setup.
+  // Need to check with Andy if we need to implement a separate combined-mode endpoint.
   return observation.type === TYPE_CONTINUUM
     ? GetContinuumData(telescope, observation, target, dataProductSDP)
     : observation.type === TYPE_ZOOM
