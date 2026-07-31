@@ -9,9 +9,9 @@ interface RobustFieldProps {
   label: string;
   required?: boolean;
   commitOnBlur?: boolean;
-  setValue?: (nextValue: number) => void;
+  setValue: (nextValue: number) => void;
   suffix?: React.ReactNode;
-  value: string | number;
+  value: number;
   widthButton?: number;
 }
 
@@ -25,15 +25,15 @@ export default function RobustField({
   label,
   required = false,
   commitOnBlur = true,
-  setValue = undefined,
+  setValue,
   suffix = null,
   value,
   widthButton = 0
 }: RobustFieldProps) {
   const { t } = useScopedTranslation();
   const { localValue, errorText, handleChange, handleBlur, inputRef } = useNumericInput(
-    Number(value ?? 0),
-    (num) => setValue?.(num),
+    value,
+    setValue,
     {
       requiredMessage: t('robust.error'),
       validate: (num) =>
