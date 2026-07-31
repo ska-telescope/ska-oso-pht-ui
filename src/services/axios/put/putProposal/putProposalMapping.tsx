@@ -604,15 +604,6 @@ const getResults = (
       const suppliedType =
         tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
 
-      console.error(
-        '[getResults] obsType:',
-        obsType,
-        'spectralSection:',
-        spectralSection,
-        'sensCalc:',
-        JSON.stringify(tarObs.sensCalc)
-      );
-
       // refs always populate; result/noise blocks are null when there's no sensCalc (SSO)
       const result: SensCalcResultsBackend = {
         observation_set_ref: tarObs.observationId,

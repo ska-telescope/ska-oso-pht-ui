@@ -36,7 +36,6 @@ export const mapAxiosError = (error: AxiosError): Error => {
   } else if (error.code === 'ESOCKETTIMEDOUT') {
     return new Error('Connection timed out. Please check your internet connection and try again.');
   } else if (error.response) {
-    console.error('[mapAxiosError] response body:', error.response.data);
     return new Error(`Server responded with an error: ${error.response.status}`);
   } else if (error.request) {
     return new Error('No response received from the server.');

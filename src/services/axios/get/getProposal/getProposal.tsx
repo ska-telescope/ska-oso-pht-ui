@@ -718,7 +718,8 @@ const getTargetObservation = (
   }
   for (const result of inResults) {
     const resultObsType = getResultObsType(result, inObservationSets);
-    const isContinuum = resultObsType === TYPE_CONTINUUM;
+    const isContinuum =
+      resultObsType === TYPE_CONTINUUM || resultObsType === TYPE_CONTINUUM_SPECTRAL;
     const isPST = resultObsType === TYPE_PST;
     const isSensitivity = result.result?.supplied_type === 'sensitivity';
 
