@@ -225,9 +225,7 @@ export const getDataProductScriptParameters = (
       // Both modes also produce a hidden visibilities data product (see HiddenSDPData in
       // AutoLinking.tsx) - the backend only has one "visibilities" script-parameters shape
       // (kind: continuum / variant: visibilities), regardless of the mode that created it.
-      if (
-        (dp?.data as SDPVisibilitiesContinuumData)?.dataProductType === DP_TYPE_VISIBLE
-      ) {
+      if ((dp?.data as SDPVisibilitiesContinuumData)?.dataProductType === DP_TYPE_VISIBLE) {
         const data = dp?.data as SDPVisibilitiesContinuumData;
         return {
           time_averaging: data?.timeAveraging ?? 0,
@@ -255,7 +253,9 @@ export const getDataProductScriptParameters = (
         gaussian_taper: data?.taperValue?.toString() ?? '0',
         kind: obType === TYPE_CONTINUUM_SPECTRAL ? 'continuum and spectral line' : 'spectral',
         variant:
-          obType === TYPE_CONTINUUM_SPECTRAL ? 'continuum and spectral line image' : 'spectral image',
+          obType === TYPE_CONTINUUM_SPECTRAL
+            ? 'continuum and spectral line image'
+            : 'spectral image',
         continuum_subtraction: data?.continuumSubtraction
       };
     }

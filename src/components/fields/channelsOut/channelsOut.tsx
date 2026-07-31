@@ -39,7 +39,9 @@ export default function ChannelsOutField({
     }
   };
 
-  const errorMessage = fieldValid ? '' : t(FIELD + '.error', { min: CHANNELS_OUT_MIN, max: maxValue });
+  const errorMessage = fieldValid
+    ? ''
+    : t(FIELD + '.error', { min: CHANNELS_OUT_MIN, max: maxValue });
 
   React.useEffect(() => {
     let timerId: ReturnType<typeof setTimeout> | null = null;
