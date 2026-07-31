@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, test, it, vi, expect, beforeEach } from 'vitest';
-import { render, screen, waitFor, act } from '@testing-library/react';
+import { render, screen, waitFor, act, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
@@ -123,6 +123,40 @@ describe('<TargetEntry /> form preservation on autoLinking error', () => {
 
     await waitFor(() => {
       expect(screen.queryByTestId('resolveButton')).not.toBeInTheDocument();
+    });
+  });
+
+  it('ignores stale resolution responses after the form changes', async () => {
+    let resolvePromiseResolver: ((value: unknown) => void) | undefined;
+    const deferredResponse = new Promise<unknown>((resolve) => {
+      resolvePromiseResolver = resolve;
+    });
+
+    vi.mocked(GetCoordinates).mockReturnValue(deferredResponse as never);
+
+    const user = userEvent.setup();
+
+    await act(async () => {
+      wrapper(<TargetEntry />);
+    });
+
+    const nameInput = screen.getByTestId('name').querySelector('input')!;
+    const raInput = screen.getByTestId('skyDirectionValue1').querySelector('input')!;
+    await user.type(nameInput, 'Original target');
+    await user.click(screen.getByTestId('resolveButton'));
+
+    fireEvent.change(nameInput, { target: { value: 'Updated target' } });
+
+    await act(async () => {
+      resolvePromiseResolver?.({
+        reference_coordinate: { kind: 'icrs', ra_str: '01:02:03', dec_str: '04:05:06' },
+        radial_velocity: { quantity: { value: 5 }, redshift: 0 }
+      });
+    });
+
+    await waitFor(() => {
+      expect(nameInput.value).toBe('Updated target');
+      expect(raInput.value).toBe('');
     });
   });
 

@@ -81,7 +81,12 @@ export default function TargetEntry({
   );
   const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
   const [resolutionLoading, setResolutionLoading] = React.useState(false);
-  const activeResolveRequestIdRef = React.useRef(0);
+  const resolveRevisionRef = React.useRef(0);
+
+  const invalidatePendingResolve = () => {
+    resolveRevisionRef.current += 1;
+    setResolutionLoading(false);
+  };
 
   React.useEffect(() => {
     if (nameFieldError === t('addTarget.error')) {
@@ -110,6 +115,7 @@ export default function TargetEntry({
   }, [nameFieldError]);
 
   const setTheName = (inValue: string) => {
+    invalidatePendingResolve();
     setName(inValue);
     if (!inValue.trim()) {
       setNameFieldError(t('addTarget.valueError'));
@@ -126,6 +132,7 @@ export default function TargetEntry({
   const isSSO = referenceCoordinates === REFERENCE_COORDINATE_TYPE_SSO.value;
 
   const setTheCoord1 = (value: string) => {
+    invalidatePendingResolve();
     setCoord1(value);
 
     if (!setTarget) return;
@@ -143,6 +150,7 @@ export default function TargetEntry({
     }
   };
   const setTheCoord2 = (value: string) => {
+    invalidatePendingResolve();
     setCoord2(value);
 
     if (!setTarget) return;
@@ -161,6 +169,8 @@ export default function TargetEntry({
   };
 
   const setTheReferenceCoordinates = (newKind: number) => {
+    invalidatePendingResolve();
+
     if (newKind !== referenceCoordinates) {
       setName('');
       setCoord1('');
@@ -185,6 +195,7 @@ export default function TargetEntry({
   };
 
   const setTheRedshift = (inValue: string) => {
+    invalidatePendingResolve();
     setRedshift(inValue);
     if (setTarget) {
       setTarget({ ...target, redshift: inValue });
@@ -192,6 +203,7 @@ export default function TargetEntry({
   };
 
   const setTheVel = (inValue: string) => {
+    invalidatePendingResolve();
     setVel(inValue);
     if (setTarget) {
       setTarget({ ...target, vel: inValue });
@@ -199,6 +211,7 @@ export default function TargetEntry({
   };
 
   const setTheVelType = (inValue: number) => {
+    invalidatePendingResolve();
     setVelType(inValue);
     if (setTarget) {
       setTarget({ ...target, velType: inValue });
@@ -206,6 +219,7 @@ export default function TargetEntry({
   };
 
   const setTheVelUnit = (inValue: number) => {
+    invalidatePendingResolve();
     setVelUnit(inValue);
     if (setTarget) {
       setTarget({ ...target, velUnit: inValue });
@@ -268,6 +282,7 @@ export default function TargetEntry({
   }
 
   const clearForm = () => {
+    invalidatePendingResolve();
     setName('');
     setCoord1('');
     setCoord2('');
@@ -285,6 +300,8 @@ export default function TargetEntry({
 
   const addButton = () => {
     const addButtonAction = () => {
+      invalidatePendingResolve();
+
       if (!formValidation()) {
         return;
       } else {
@@ -451,12 +468,8 @@ export default function TargetEntry({
   };
 
   const resolveButton = () => {
-    const processCoordinatesResults = (response: any, requestId: number, requestName: string) => {
-      if (activeResolveRequestIdRef.current !== requestId) {
-        return;
-      }
-
-      if (name !== requestName) {
+    const processCoordinatesResults = (response: any, requestRevision: number) => {
+      if (resolveRevisionRef.current !== requestRevision) {
         return;
       }
 
@@ -491,21 +504,20 @@ export default function TargetEntry({
     };
 
     const getCoordinates = async () => {
-      const requestId = activeResolveRequestIdRef.current + 1;
-      activeResolveRequestIdRef.current = requestId;
+      const requestRevision = resolveRevisionRef.current;
       const requestName = name;
 
       setResolutionLoading(true);
 
       try {
         const response = await GetCoordinates(requestName, referenceCoordinates);
-        processCoordinatesResults(response, requestId, requestName);
+        processCoordinatesResults(response, requestRevision);
       } catch {
-        if (activeResolveRequestIdRef.current === requestId) {
+        if (resolveRevisionRef.current === requestRevision) {
           setNameFieldError(t('resolve.error'));
         }
       } finally {
-        if (activeResolveRequestIdRef.current === requestId) {
+        if (resolveRevisionRef.current === requestRevision) {
           setResolutionLoading(false);
         }
       }
