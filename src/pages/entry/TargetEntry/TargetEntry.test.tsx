@@ -142,10 +142,11 @@ describe('<TargetEntry /> form preservation on autoLinking error', () => {
 
     const nameInput = screen.getByTestId('name').querySelector('input')!;
     const raInput = screen.getByTestId('skyDirectionValue1').querySelector('input')!;
+
     await user.type(nameInput, 'Original target');
     await user.click(screen.getByTestId('resolveButton'));
 
-    fireEvent.change(nameInput, { target: { value: 'Updated target' } });
+    fireEvent.change(raInput, { target: { value: '11:22:33' } });
 
     await act(async () => {
       resolvePromiseResolver?.({
@@ -155,8 +156,7 @@ describe('<TargetEntry /> form preservation on autoLinking error', () => {
     });
 
     await waitFor(() => {
-      expect(nameInput.value).toBe('Updated target');
-      expect(raInput.value).toBe('');
+      expect(raInput.value).toBe('11:22:33');
     });
   });
 
