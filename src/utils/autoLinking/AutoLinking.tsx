@@ -40,17 +40,26 @@ interface DefaultsResults {
   error?: string;
 }
 
+const RECOGNISED_OBSERVATION_MODES = [TYPE_CONTINUUM, TYPE_ZOOM, TYPE_PST, TYPE_CONTINUUM_SPECTRAL];
+
 export const newObservationForMode = (
   observationMode: string,
   maxZoomChannels?: number
 ): Observation => {
+  const defaultObservation = getDefaultObservationLowAA2(observationMode);
   return {
-    ...getDefaultObservationLowAA2(observationMode),
+    ...defaultObservation,
     id: generateId('obs-', 6),
     // getDefaultObservationLowAA2 falls back to the continuum defaults object for modes that
     // reuse its field values (e.g. combined mode), which bakes in `type: TYPE_CONTINUUM` - force
-    // it back to the actually-selected mode so downstream panel/field selection sees it.
-    type: observationMode,
+    // it back to the actually-selected mode so downstream panel/field selection sees it. Only do
+    // this for a recognised mode though - an unsupported/missing one should keep the continuum
+    // fallback type getDefaultObservationLowAA2 already returned, not the raw (possibly garbage)
+    // input string, which several downstream switches would otherwise silently treat as PST via
+    // their `case TYPE_PST: default:` fallthrough.
+    type: RECOGNISED_OBSERVATION_MODES.includes(observationMode)
+      ? observationMode
+      : defaultObservation.type,
     // DEFAULT_ZOOM_OBSERVATION_LOW's zoomChannels is a static placeholder (1000) with no
     // knowledge of the actual subarray's channel cap - override it with the real cap when the
     // caller has it available, rather than baking the placeholder into the saved observation.
