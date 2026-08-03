@@ -3,7 +3,6 @@ import React from 'react';
 interface NumericInputOptions {
   validate?: (num: number) => string;
   requiredMessage?: string;
-  errorDelayMs?: number;
   step?: number;
   minValue?: number;
   maxValue?: number;
@@ -17,7 +16,6 @@ export const useNumericInput = (
   {
     validate,
     requiredMessage = 'required',
-    errorDelayMs,
     step,
     minValue,
     maxValue,
@@ -87,11 +85,7 @@ export const useNumericInput = (
     const error = runValidation(num);
     if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
     if (error) {
-      if (!errorDelayMs) {
-        setErrorText(error);
-      } else {
-        errorTimerRef.current = setTimeout(() => setErrorText(error), errorDelayMs);
-      }
+      setErrorText(error);
     } else {
       setErrorText('');
       onCommit(num);
