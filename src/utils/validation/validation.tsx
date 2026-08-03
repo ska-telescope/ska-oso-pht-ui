@@ -210,6 +210,9 @@ export const validateTechnicalPage = (proposal: Proposal) => {
   return result[count];
 };
 
+/**
+ * Checks whether the proposal's data product has valid polarisations for its science category.
+ */
 export const checkDP = (proposal: Proposal): number => {
   const validatePolarisations = (
     data: SDPSpectralData | SDPImageContinuumData | SDPFilterbankPSTData | SDPFlowthroughPSTData
@@ -291,6 +294,10 @@ export const useValidateProposal = () => {
   };
 };
 
+/**
+ * Checks whether the proposal can navigate to the given page, e.g. blocking the
+ * Observation/Data Products/Calibration pages until a valid science category and target exist.
+ */
 export const validateProposalNavigation = (proposal: Proposal, page: number, checkLink = false) => {
   if (
     checkLink &&

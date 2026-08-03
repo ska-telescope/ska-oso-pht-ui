@@ -56,6 +56,10 @@ async function getSensCalc(
 const getTelescope = (telNum: number): Telescope =>
   telNum === TELESCOPE_LOW_NUM ? TELESCOPE_LOW : TELESCOPE_MID;
 
+/**
+ * Routes a sensitivity-calculator request to the continuum or spectral (zoom) endpoint based on
+ * the observation's type.
+ */
 async function getSensitivityCalculatorAPIData(
   observation: Observation,
   target: Target,

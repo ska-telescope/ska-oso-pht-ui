@@ -216,6 +216,9 @@ export const getBandwidthLowZoom = (inValue: number) => {
   return obsTelescopeArray?.bandWidth?.find((b) => b.value === inValue);
 };
 
+/**
+ * Maps the cbfModes to the Observing Modes available.
+ */
 export const obTypeTransform = (inData: string[]) => {
   const out: string[] = [];
   inData.forEach((item) => {
@@ -230,6 +233,10 @@ export const obTypeTransform = (inData: string[]) => {
   return out;
 };
 
+/**
+ * Returns the default LOW AA2 observation for the given observing mode, falling back to the
+ * continuum default for combined or unrecognised modes.
+ */
 export const getDefaultObservationLowAA2 = (type: string): Observation => {
   switch (type) {
     case TYPE_ZOOM:

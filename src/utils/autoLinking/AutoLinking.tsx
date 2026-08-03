@@ -42,6 +42,16 @@ interface DefaultsResults {
 
 const RECOGNISED_OBSERVATION_MODES = [TYPE_CONTINUUM, TYPE_ZOOM, TYPE_PST, TYPE_CONTINUUM_SPECTRAL];
 
+/**
+ * Builds a new default observation for the given mode.
+ *
+ * For a recognised mode we deliberately want to force it back to the actually selected mode so
+ * that it can be used downstream in the panel/field selection.
+ * For an unrecognised mode use continuum as a fallback rather than pass on a string that would
+ * not be recognised downstream and silently default to PST.
+ * DEFAULT_ZOOM_OBSERVATION_LOW's zoomChannels is a static placeholder overriden with the real cap
+ * to be used once this is available.
+ */
 export const newObservationForMode = (
   observationMode: string,
   maxZoomChannels?: number
@@ -50,19 +60,9 @@ export const newObservationForMode = (
   return {
     ...defaultObservation,
     id: generateId('obs-', 6),
-    // getDefaultObservationLowAA2 falls back to the continuum defaults object for modes that
-    // reuse its field values (e.g. combined mode), which bakes in `type: TYPE_CONTINUUM` - force
-    // it back to the actually-selected mode so downstream panel/field selection sees it. Only do
-    // this for a recognised mode though - an unsupported/missing one should keep the continuum
-    // fallback type getDefaultObservationLowAA2 already returned, not the raw (possibly garbage)
-    // input string, which several downstream switches would otherwise silently treat as PST via
-    // their `case TYPE_PST: default:` fallthrough.
     type: RECOGNISED_OBSERVATION_MODES.includes(observationMode)
       ? observationMode
       : defaultObservation.type,
-    // DEFAULT_ZOOM_OBSERVATION_LOW's zoomChannels is a static placeholder (1000) with no
-    // knowledge of the actual subarray's channel cap - override it with the real cap when the
-    // caller has it available, rather than baking the placeholder into the saved observation.
     ...(observationMode === TYPE_ZOOM && maxZoomChannels ? { zoomChannels: maxZoomChannels } : {})
   };
 };
@@ -77,6 +77,9 @@ export const newCalibrationStrategy = (observationId: string): CalibrationStrate
   };
 };
 
+/**
+ * Builds the default data product for the given observation's mode.
+ */
 export const SDPData = (
   observation: Observation
 ):
@@ -122,6 +125,10 @@ export const SDPData = (
   }
 };
 
+/**
+ * Builds the hidden companion data product (written to the proposal but not displayed) for the
+ * given observation's mode, or null for modes that don't have one.
+ */
 export const HiddenSDPData = (
   observation: Observation
 ):

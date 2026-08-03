@@ -83,6 +83,9 @@ export default function TargetEntry({
   const [resolutionLoading, setResolutionLoading] = React.useState(false);
   const resolveRevisionRef = React.useRef(0);
 
+  /**
+   * Cancels any in-flight coordinate resolution so a stale response can't overwrite newer edits.
+   */
   const invalidatePendingResolve = () => {
     resolveRevisionRef.current += 1;
     setResolutionLoading(false);
@@ -468,6 +471,9 @@ export default function TargetEntry({
   };
 
   const resolveButton = () => {
+    /**
+     * Applies a coordinate-resolve response to the form, unless it's been superseded.
+     */
     const processCoordinatesResults = (response: any, requestRevision: number) => {
       if (resolveRevisionRef.current !== requestRevision) {
         return;
@@ -503,6 +509,10 @@ export default function TargetEntry({
       }
     };
 
+    /**
+     * Resolves the entered target name to coordinates, tracking the request's revision so a
+     * later edit or resolve click can't be overwritten by an earlier, slower response.
+     */
     const getCoordinates = async () => {
       const requestRevision = resolveRevisionRef.current;
       const requestName = name;

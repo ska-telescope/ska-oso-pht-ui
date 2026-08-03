@@ -340,6 +340,9 @@ export default function DataProduct({ data }: DataProductProps) {
     ];
   };
 
+  /**
+   * Add Observation Data Products (ODPs) for both imaging and visabilities to the proposal.
+   */
   const addToProposal = () => {
     const proposal = getProposal();
     const observation = getObservation();
@@ -353,6 +356,9 @@ export default function DataProduct({ data }: DataProductProps) {
     });
   };
 
+  /**
+   * Update the proposal's Observation Data Products (ODPs) for both imaging and visabilities.
+   */
   const updateToProposal = async () => {
     const proposal = getProposal();
     const observation = getObservation();
@@ -748,6 +754,9 @@ export default function DataProduct({ data }: DataProductProps) {
   const polarisationsValid = () => polarisations.length > 0;
 
   const pageFooter = () => {
+    /**
+     * Update button is only enabled if the details pass basic validation.
+     */
     const enabled = () => {
       switch (getObservation()?.type) {
         case TYPE_ZOOM:

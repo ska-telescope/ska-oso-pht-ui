@@ -178,6 +178,9 @@ export const getCalibrationStrategy = (
   return calibrationOut;
 };
 
+/**
+ * Maps a data product to the backend's script_parameters shape for its observation's type.
+ */
 export const getDataProductScriptParameters = (
   obs: Observation[] | null,
   dp: DataProductSDPNew
@@ -373,6 +376,9 @@ const getSupplied = (inObs: Observation) => {
   };
 };
 
+/**
+ * Maps an observation to the backend's observation_type_details shape for its type.
+ */
 export const getObservationTypeDetails = (obs: Observation) => {
   switch (obs.type) {
     case TYPE_CONTINUUM:

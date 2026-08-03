@@ -14,6 +14,9 @@ interface ChannelsOutFieldProps {
   value: number;
 }
 
+/**
+ * Number of output channels selected, default is the max available.
+ */
 export default function ChannelsOutField({
   disabled = false,
   required = false,
