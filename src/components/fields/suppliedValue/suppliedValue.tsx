@@ -15,7 +15,6 @@ interface SuppliedValueProps {
   maxValue?: number;
   currentUnitLabel?: string;
   step?: number;
-  commitOnBlur?: boolean;
 }
 
 export default function SuppliedValue({
@@ -28,43 +27,37 @@ export default function SuppliedValue({
   minValue,
   maxValue,
   currentUnitLabel,
-  step,
-  commitOnBlur = true
+  step
 }: SuppliedValueProps) {
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const FIELD = 'suppliedValue';
 
-  const { localValue, errorText, handleChange, handleBlur, inputRef } = useNumericInput(
-    value,
-    setValue,
-    {
-      requiredMessage: t(`${FIELD}.required`),
-      validate: (num) => {
-        const belowMin = minValue !== undefined && num <= minValue;
-        const aboveMax = maxValue !== undefined && num > maxValue;
-        if (!belowMin && !aboveMax) return '';
+  const { localValue, errorText, handleChange, inputRef } = useNumericInput(value, setValue, {
+    requiredMessage: t(`${FIELD}.required`),
+    validate: (num) => {
+      const belowMin = minValue !== undefined && num <= minValue;
+      const aboveMax = maxValue !== undefined && num > maxValue;
+      if (!belowMin && !aboveMax) return '';
 
-        // Note explicitily here we only have two scenarios,
-        // - For Integration Time we have a min and max so range error is used
-        // - for Sensitivity we only have a min value so min error is used.
-        // (point being we don't have a scenario where we only have a max value set).
-        if (minValue !== undefined && maxValue !== undefined)
-          return t(`${FIELD}.range.error`, {
-            min: minValue,
-            max: maxValue,
-            units: currentUnitLabel
-          });
-        return t(`${FIELD}.range.minError`, { min: minValue, units: currentUnitLabel });
-      },
-      commitOnBlur,
-      errorDelayMs: ERROR_SECS,
-      step,
-      minValue,
-      maxValue,
-      minInclusive: false
-    }
-  );
+      // Note explicitily here we only have two scenarios,
+      // - For Integration Time we have a min and max so range error is used
+      // - for Sensitivity we only have a min value so min error is used.
+      // (point being we don't have a scenario where we only have a max value set).
+      if (minValue !== undefined && maxValue !== undefined)
+        return t(`${FIELD}.range.error`, {
+          min: minValue,
+          max: maxValue,
+          units: currentUnitLabel
+        });
+      return t(`${FIELD}.range.minError`, { min: minValue, units: currentUnitLabel });
+    },
+    errorDelayMs: ERROR_SECS,
+    step,
+    minValue,
+    maxValue,
+    minInclusive: false
+  });
 
   return (
     <NumberEntry
@@ -76,7 +69,6 @@ export default function SuppliedValue({
       testId={FIELD}
       value={localValue}
       setValue={handleChange}
-      onBlur={handleBlur}
       onFocus={() => setHelp(FIELD)}
       suffix={suffix}
     />

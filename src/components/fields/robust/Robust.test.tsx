@@ -9,14 +9,13 @@ vi.mock('@/services/i18n/useScopedTranslation', () => ({
 
 describe('<Robust /> behavior', () => {
   const getField = () => screen.getByRole('spinbutton');
-  const spinAndBlur = (direction: 'ArrowUp' | 'ArrowDown', nextValue: string) => {
+  const spin = (direction: 'ArrowUp' | 'ArrowDown', nextValue: string) => {
     const field = getField();
-    // In the browser, spinner clicks update the input value and then blur commits.
+    // In the browser, spinner clicks update the input value.
     // In jsdom tests, keyDown does not apply native number-step changes, so we
-    // emulate the resulting value via change while still keeping step+blur separate.
+    // emulate the resulting value via change.
     fireEvent.keyDown(field, { key: direction });
     fireEvent.change(field, { target: { value: nextValue } });
-    fireEvent.blur(field);
   };
 
   test('renders robust NumberEntry input', () => {
@@ -32,24 +31,23 @@ describe('<Robust /> behavior', () => {
     expect(field).toHaveAttribute('max', '2');
   });
 
-  test('commits parsed decimal value on blur when input is valid', () => {
+  test('commits parsed decimal value when input is valid', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={0} setValue={setValue} />);
 
     const field = getField();
     fireEvent.change(field, { target: { value: '1.5' } });
-    fireEvent.blur(field);
 
     expect(setValue).toHaveBeenCalledWith(1.5);
   });
 
-  test('does not commit intermediate valid value before blur', () => {
+  test('commits intermediate valid value immediately', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={0} setValue={setValue} />);
 
     fireEvent.change(getField(), { target: { value: '1' } });
 
-    expect(setValue).not.toHaveBeenCalled();
+    expect(setValue).toHaveBeenCalledWith(1);
   });
 
   test('preserves typed decimal precision when committed', () => {
@@ -58,7 +56,6 @@ describe('<Robust /> behavior', () => {
 
     const field = getField();
     fireEvent.change(field, { target: { value: '1.45' } });
-    fireEvent.blur(field);
 
     expect(setValue).toHaveBeenCalledWith(1.45);
   });
@@ -69,7 +66,6 @@ describe('<Robust /> behavior', () => {
 
     const field = getField();
     fireEvent.change(field, { target: { value: '-2.1' } });
-    fireEvent.blur(field);
 
     expect(setValue).not.toHaveBeenCalled();
     expect(screen.getByText('robust.error')).toBeInTheDocument();
@@ -81,7 +77,6 @@ describe('<Robust /> behavior', () => {
 
     const field = getField();
     fireEvent.change(field, { target: { value: '2.1' } });
-    fireEvent.blur(field);
 
     expect(setValue).not.toHaveBeenCalled();
     expect(screen.getByText('robust.error')).toBeInTheDocument();
@@ -91,7 +86,7 @@ describe('<Robust /> behavior', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={1} setValue={setValue} />);
 
-    spinAndBlur('ArrowUp', '1.1');
+    spin('ArrowUp', '1.1');
 
     expect(setValue).toHaveBeenCalledWith(1.1);
   });
@@ -100,28 +95,28 @@ describe('<Robust /> behavior', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={1} setValue={setValue} />);
 
-    spinAndBlur('ArrowDown', '0.9');
+    spin('ArrowDown', '0.9');
 
     expect(setValue).toHaveBeenCalledWith(0.9);
   });
 
-  test('spinner up at upper bound keeps value at 2 with no error', () => {
+  test('spinner up at upper bound keeps value at 2 with no error and no extra commit', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={2} setValue={setValue} />);
 
-    spinAndBlur('ArrowUp', '2');
+    spin('ArrowUp', '2');
 
-    expect(setValue).toHaveBeenCalledWith(2);
+    expect(setValue).not.toHaveBeenCalled();
     expect(screen.queryByText('robust.error')).not.toBeInTheDocument();
   });
 
-  test('spinner down at lower bound keeps value at -2 with no error', () => {
+  test('spinner down at lower bound keeps value at -2 with no error and no extra commit', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={-2} setValue={setValue} />);
 
-    spinAndBlur('ArrowDown', '-2');
+    spin('ArrowDown', '-2');
 
-    expect(setValue).toHaveBeenCalledWith(-2);
+    expect(setValue).not.toHaveBeenCalled();
     expect(screen.queryByText('robust.error')).not.toBeInTheDocument();
   });
 
@@ -129,7 +124,7 @@ describe('<Robust /> behavior', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={1.45} setValue={setValue} />);
 
-    spinAndBlur('ArrowUp', '1.5');
+    spin('ArrowUp', '1.5');
 
     expect(setValue).toHaveBeenCalledWith(1.5);
   });
@@ -138,7 +133,7 @@ describe('<Robust /> behavior', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={1.45} setValue={setValue} />);
 
-    spinAndBlur('ArrowDown', '1.4');
+    spin('ArrowDown', '1.4');
 
     expect(setValue).toHaveBeenCalledWith(1.4);
   });

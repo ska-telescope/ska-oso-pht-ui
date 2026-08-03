@@ -7,7 +7,6 @@ interface RobustFieldProps {
   onFocus?: () => void;
   label: string;
   required?: boolean;
-  commitOnBlur?: boolean;
   setValue: (nextValue: number) => void;
   suffix?: React.ReactNode;
   value: number;
@@ -21,26 +20,19 @@ export default function RobustField({
   disabled = false,
   onFocus = undefined,
   label,
-  commitOnBlur = true,
   setValue,
   suffix = null,
   value,
   widthButton = 0
 }: RobustFieldProps) {
   const { t } = useScopedTranslation();
-  const { localValue, errorText, handleChange, handleBlur, inputRef } = useNumericInput(
-    value,
-    setValue,
-    {
-      requiredMessage: t('robust.error'),
-      validate: (num) =>
-        num < ROBUST_RANGE.min || num > ROBUST_RANGE.max ? t('robust.error') : '',
-      commitOnBlur,
-      step: ROBUST_STEP,
-      minValue: ROBUST_RANGE.min,
-      maxValue: ROBUST_RANGE.max
-    }
-  );
+  const { localValue, errorText, handleChange, inputRef } = useNumericInput(value, setValue, {
+    requiredMessage: t('robust.error'),
+    validate: (num) => (num < ROBUST_RANGE.min || num > ROBUST_RANGE.max ? t('robust.error') : ''),
+    step: ROBUST_STEP,
+    minValue: ROBUST_RANGE.min,
+    maxValue: ROBUST_RANGE.max
+  });
   const error = !!errorText;
 
   return (
@@ -56,7 +48,6 @@ export default function RobustField({
           value={localValue}
           error={error}
           onChange={(e) => handleChange(e.target.value)}
-          onBlur={handleBlur}
           onFocus={onFocus}
           slotProps={{
             htmlInput: {
