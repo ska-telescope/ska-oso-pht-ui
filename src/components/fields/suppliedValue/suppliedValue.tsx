@@ -1,7 +1,6 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
-import { ERROR_SECS } from '@/utils/constants';
 import { useNumericInput } from '@/utils/hooks/useNumericInput';
 
 interface SuppliedValueProps {
@@ -52,7 +51,6 @@ export default function SuppliedValue({
         });
       return t(`${FIELD}.range.minError`, { min: minValue, units: currentUnitLabel });
     },
-    errorDelayMs: ERROR_SECS,
     step,
     minValue,
     maxValue,

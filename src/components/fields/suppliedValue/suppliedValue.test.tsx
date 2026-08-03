@@ -50,15 +50,10 @@ describe('SuppliedValue component', () => {
     render(<SuppliedValue value={5} setValue={vi.fn()} />);
   });
 
-  it('shows delayed error when typing an invalid value', () => {
-    vi.useFakeTimers();
+  it('shows error when typing an invalid value', () => {
     render(<SuppliedValue value={5} setValue={vi.fn()} minValue={0} />);
     const input = screen.getByTestId('suppliedValue');
     fireEvent.change(input, { target: { value: '0' } });
-    expect(screen.queryByTestId('error')).not.toBeInTheDocument();
-    act(() => {
-      vi.advanceTimersByTime(10);
-    });
     expect(screen.getByTestId('error')).toHaveTextContent('suppliedValue.range.minError');
     vi.useRealTimers();
   });
@@ -91,8 +86,7 @@ describe('SuppliedValue component', () => {
     expect(screen.queryByTestId('error')).not.toBeInTheDocument();
   });
 
-  it('shows delayed error when ArrowDown steps value to or below minimum', () => {
-    vi.useFakeTimers();
+  it('shows error when ArrowDown steps value to or below minimum', () => {
     render(<SuppliedValue value={1800} setValue={vi.fn()} minValue={1200} step={600} />);
     const input = screen.getByTestId('suppliedValue');
 
@@ -100,10 +94,6 @@ describe('SuppliedValue component', () => {
     // 1200 <= minValue(1200) so this is invalid
     fireEvent.keyDown(input, { key: 'ArrowDown' });
     fireEvent.change(input, { target: { value: '1200' } });
-    expect(screen.queryByTestId('error')).not.toBeInTheDocument();
-    act(() => {
-      vi.advanceTimersByTime(10);
-    });
     expect(screen.getByTestId('error')).toHaveTextContent('suppliedValue.range.minError');
     vi.useRealTimers();
   });
