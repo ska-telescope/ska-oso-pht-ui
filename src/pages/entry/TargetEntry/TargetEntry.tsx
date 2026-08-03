@@ -1,7 +1,7 @@
 import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
+import { BorderedSection, TextEntry, Progress } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
 import SolarSystemObjectField from '@components/fields/solarSystemObject/solarSystemObject.tsx';
@@ -80,6 +80,13 @@ export default function TargetEntry({
     DEFAULT_REFERENCE_COORDINATES
   );
   const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
+  const [resolutionLoading, setResolutionLoading] = React.useState(false);
+  const resolveRevisionRef = React.useRef(0);
+
+  const invalidatePendingResolve = () => {
+    resolveRevisionRef.current += 1;
+    setResolutionLoading(false);
+  };
 
   React.useEffect(() => {
     if (nameFieldError === t('addTarget.error')) {
@@ -108,6 +115,7 @@ export default function TargetEntry({
   }, [nameFieldError]);
 
   const setTheName = (inValue: string) => {
+    invalidatePendingResolve();
     setName(inValue);
     if (!inValue.trim()) {
       setNameFieldError(t('addTarget.valueError'));
@@ -124,6 +132,7 @@ export default function TargetEntry({
   const isSSO = referenceCoordinates === REFERENCE_COORDINATE_TYPE_SSO.value;
 
   const setTheCoord1 = (value: string) => {
+    invalidatePendingResolve();
     setCoord1(value);
 
     if (!setTarget) return;
@@ -141,6 +150,7 @@ export default function TargetEntry({
     }
   };
   const setTheCoord2 = (value: string) => {
+    invalidatePendingResolve();
     setCoord2(value);
 
     if (!setTarget) return;
@@ -159,6 +169,8 @@ export default function TargetEntry({
   };
 
   const setTheReferenceCoordinates = (newKind: number) => {
+    invalidatePendingResolve();
+
     if (newKind !== referenceCoordinates) {
       setName('');
       setCoord1('');
@@ -183,6 +195,7 @@ export default function TargetEntry({
   };
 
   const setTheRedshift = (inValue: string) => {
+    invalidatePendingResolve();
     setRedshift(inValue);
     if (setTarget) {
       setTarget({ ...target, redshift: inValue });
@@ -190,6 +203,7 @@ export default function TargetEntry({
   };
 
   const setTheVel = (inValue: string) => {
+    invalidatePendingResolve();
     setVel(inValue);
     if (setTarget) {
       setTarget({ ...target, vel: inValue });
@@ -197,6 +211,7 @@ export default function TargetEntry({
   };
 
   const setTheVelType = (inValue: number) => {
+    invalidatePendingResolve();
     setVelType(inValue);
     if (setTarget) {
       setTarget({ ...target, velType: inValue });
@@ -204,6 +219,7 @@ export default function TargetEntry({
   };
 
   const setTheVelUnit = (inValue: number) => {
+    invalidatePendingResolve();
     setVelUnit(inValue);
     if (setTarget) {
       setTarget({ ...target, velUnit: inValue });
@@ -266,6 +282,7 @@ export default function TargetEntry({
   }
 
   const clearForm = () => {
+    invalidatePendingResolve();
     setName('');
     setCoord1('');
     setCoord2('');
@@ -283,6 +300,8 @@ export default function TargetEntry({
 
   const addButton = () => {
     const addButtonAction = () => {
+      invalidatePendingResolve();
+
       if (!formValidation()) {
         return;
       } else {
@@ -437,7 +456,7 @@ export default function TargetEntry({
         {hasAnyFieldEntered() ? (
           <CancelButton
             action={clearForm}
-            disabled={false}
+            disabled={resolutionLoading}
             primary={false}
             testId={'clearFormButton'}
             title="clearBtn.label"
@@ -449,7 +468,11 @@ export default function TargetEntry({
   };
 
   const resolveButton = () => {
-    const processCoordinatesResults = (response: any) => {
+    const processCoordinatesResults = (response: any, requestRevision: number) => {
+      if (resolveRevisionRef.current !== requestRevision) {
+        return;
+      }
+
       if (response && !response.error) {
         if (response.reference_coordinate.kind === 'galactic') {
           setTheCoord1(String(response.reference_coordinate.l));
@@ -481,12 +504,37 @@ export default function TargetEntry({
     };
 
     const getCoordinates = async () => {
-      const response = await GetCoordinates(name, referenceCoordinates);
-      processCoordinatesResults(response);
+      const requestRevision = resolveRevisionRef.current;
+      const requestName = name;
+
+      setResolutionLoading(true);
+
+      try {
+        const response = await GetCoordinates(requestName, referenceCoordinates);
+        processCoordinatesResults(response, requestRevision);
+      } catch {
+        if (resolveRevisionRef.current === requestRevision) {
+          setNameFieldError(t('resolve.error'));
+        }
+      } finally {
+        if (resolveRevisionRef.current === requestRevision) {
+          setResolutionLoading(false);
+        }
+      }
     };
 
     return (
-      <ResolveButton action={() => getCoordinates()} disabled={!name} testId={'resolveButton'} />
+      <>
+        {resolutionLoading ? (
+          <Progress size={20} />
+        ) : (
+          <ResolveButton
+            action={() => getCoordinates()}
+            disabled={!name || resolutionLoading}
+            testId={'resolveButton'}
+          />
+        )}
+      </>
     );
   };
 
@@ -512,7 +560,7 @@ export default function TargetEntry({
       <ReferenceCoordinatesField
         setValue={setTheReferenceCoordinates}
         value={referenceCoordinates}
-        disabled={isEditMode}
+        disabled={isEditMode || resolutionLoading}
       />
     );
 
@@ -546,6 +594,7 @@ export default function TargetEntry({
         onBlur={blurName}
         onFocus={() => setHelp('name.help')}
         errorText={nameFieldError}
+        disabled={resolutionLoading}
       />
     );
 
