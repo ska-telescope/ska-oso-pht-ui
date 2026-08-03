@@ -16,6 +16,7 @@ import TickIcon from '@components/icon/tickIcon/tickIcon.tsx';
 import TaperDropdown from '@/components/fields/taperDropdown/taperDropdown';
 import { ValueUnitPair } from '@utils/types/typesSensCalc.tsx';
 import PolarisationsField from '@/components/fields/polarisations/polarisations';
+import { HiddenSDPData } from '@/utils/autoLinking/AutoLinking';
 import {
   BAND_LOW_STR,
   BIT_DEPTH_DEFAULT,
@@ -309,10 +310,46 @@ export default function DataProduct({ data }: DataProductProps) {
 
   /* ------------------------------------------- */
 
+  // Combined mode's hidden visibilities ODP (see HiddenSDPData) is created automatically by the
+  // SV auto-linking flow, but a data product added/edited manually here needs the same companion
+  // - add it if this observation doesn't already have one.
+  const ensureHiddenDataProduct = (
+    dataProducts: DataProductSDPNew[],
+    observation?: Observation
+  ): DataProductSDPNew[] => {
+    if (!observation || observation.type !== TYPE_CONTINUUM_SPECTRAL) {
+      return dataProducts;
+    }
+    const alreadyHasHidden = dataProducts.some(
+      (dp) => dp.observationId === observation.id && getDataProductTypeValue(dp) === DP_TYPE_VISIBLE
+    );
+    if (alreadyHasHidden) {
+      return dataProducts;
+    }
+    const hiddenData = HiddenSDPData(observation);
+    if (!hiddenData) {
+      return dataProducts;
+    }
+    return [
+      ...dataProducts,
+      {
+        id: generateId('SDP-', 6),
+        observationId: observation.id,
+        data: hiddenData
+      }
+    ];
+  };
+
   const addToProposal = () => {
+    const proposal = getProposal();
+    const observation = getObservation();
+    const dataProductSDP = ensureHiddenDataProduct(
+      [...(proposal?.dataProductSDP ?? []), dataProductOut()],
+      observation
+    );
     setProposal({
-      ...getProposal(),
-      dataProductSDP: [...(getProposal()?.dataProductSDP ?? []), dataProductOut()]
+      ...proposal,
+      dataProductSDP
     });
   };
 
@@ -322,9 +359,13 @@ export default function DataProduct({ data }: DataProductProps) {
     const newDataProduct: DataProductSDPNew = dataProductOut();
     const oldDataProducts = proposal.dataProductSDP ?? [];
     const to = await updateSensCalc(proposal, observation!, newDataProduct);
+    const dataProductSDP = ensureHiddenDataProduct(
+      updateDataProducts(oldDataProducts, newDataProduct),
+      observation
+    );
     setProposal({
       ...proposal,
-      dataProductSDP: updateDataProducts(oldDataProducts, newDataProduct),
+      dataProductSDP,
       targetObservation: to
     });
   };

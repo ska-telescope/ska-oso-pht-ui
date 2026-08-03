@@ -6,6 +6,7 @@ import { SensCalcResults } from '../../../../../utils/types/sensCalcResults';
 import {
   USE_LOCAL_DATA_SENSITIVITY_CALC,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   SA_CUSTOM,
   TELESCOPE_LOW_NUM,
   TYPE_ZOOM
@@ -13,7 +14,7 @@ import {
 import GetZoomData from '../getZoomData/getZoomData';
 import GetContinuumData from '../getContinuumData/getContinuumData';
 import { SENSCALC_CONTINUUM_MOCKED } from './SensCalcResultsMock';
-import { DataProductSDPNew } from '@/utils/types/dataProduct';
+import { DataProductSDPNew, SDPSpectralData } from '@/utils/types/dataProduct';
 
 type SensCalcAPIError = { error: string };
 
@@ -63,16 +64,27 @@ async function getSensitivityCalculatorAPIData(
 ) {
   const telescope: Telescope = getTelescope(observation.telescope);
 
-  // TODO BTN-3259: TYPE_CONTINUUM_SPECTRAL (combined mode) falls into continuum
-  // fallback (along with any other unhandled type). Its "spectral" figures are therefore whatever
-  // sub-band breakdown comes from the continuum endpoint - NOT derived from the spectral-line
-  // data product's channelsOut, so not certain if they reflect the actual combined-mode setup.
-  // Need to check with Andy if we need to implement a separate combined-mode endpoint.
-  return observation.type === TYPE_CONTINUUM
-    ? GetContinuumData(telescope, observation, target, dataProductSDP)
-    : observation.type === TYPE_ZOOM
-      ? GetZoomData(telescope, observation, target, dataProductSDP)
-      : GetContinuumData(telescope, setMockObservation(observation), target, dataProductSDP);
+  if (observation.type === TYPE_CONTINUUM) {
+    return GetContinuumData(telescope, observation, target, dataProductSDP);
+  }
+  if (observation.type === TYPE_ZOOM) {
+    return GetZoomData(telescope, observation, target, dataProductSDP);
+  }
+  if (observation.type === TYPE_CONTINUUM_SPECTRAL) {
+    // Combined mode: same request as a plain continuum observation, except the bandwidth is the
+    // continuum bandwidth divided by the channel count set on the Data Products page, rather than
+    // the full continuum bandwidth.
+    //
+    // Note: the name continuumBandwidth is misleading here as it actually represents the bandwidth
+    // of a single channel in this case (allows reuse of the GetContinuumData function).
+    const channelsOut = (dataProductSDP?.data as SDPSpectralData)?.channelsOut || 1;
+    const combinedObservation: Observation = {
+      ...setMockObservation(observation),
+      continuumBandwidth: (observation.continuumBandwidth ?? 0) / channelsOut
+    };
+    return GetContinuumData(telescope, combinedObservation, target, dataProductSDP);
+  }
+  return GetContinuumData(telescope, setMockObservation(observation), target, dataProductSDP);
 }
 
 export default getSensCalc;
