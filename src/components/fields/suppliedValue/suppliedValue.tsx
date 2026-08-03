@@ -1,14 +1,13 @@
-import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import { useNumericInput } from '@/utils/hooks/useNumericInput';
+import { TextField } from '@mui/material';
 
 interface SuppliedValueProps {
   disabled?: boolean;
   required?: boolean;
   label?: string;
   setValue: (num: number) => void;
-  suffix?: any;
   value: number;
   minValue?: number;
   maxValue?: number;
@@ -18,10 +17,8 @@ interface SuppliedValueProps {
 
 export default function SuppliedValue({
   disabled = false,
-  required = false,
   label = '',
   setValue,
-  suffix,
   value,
   minValue,
   maxValue,
@@ -57,18 +54,27 @@ export default function SuppliedValue({
     minInclusive: false
   });
 
+  const error = !!errorText;
+
   return (
-    <NumberEntry
+    <TextField
+      variant="standard"
+      type="number"
+      fullWidth
       disabled={disabled}
-      errorText={errorText}
-      inputRef={inputRef}
+      helperText={errorText}
       label={label}
-      required={required}
-      testId={FIELD}
       value={localValue}
-      setValue={handleChange}
+      error={error}
+      onChange={(e) => handleChange(e.target.value)}
       onFocus={() => setHelp(FIELD)}
-      suffix={suffix}
+      slotProps={{
+        htmlInput: {
+          min: minValue,
+          max: maxValue,
+          step: step
+        }
+      }}
     />
   );
 }
