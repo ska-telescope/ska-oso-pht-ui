@@ -1,5 +1,4 @@
-import { Grid } from '@mui/material';
-import { NumberEntry } from '@ska-telescope/ska-gui-components';
+import { Grid, TextField } from '@mui/material';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useNumericInput } from '@/utils/hooks/useNumericInput';
 
@@ -17,13 +16,11 @@ interface RobustFieldProps {
 
 const ROBUST_RANGE = { min: -2, max: 2 };
 const ROBUST_STEP = 0.1;
-const FIELD = 'robust';
 
 export default function RobustField({
   disabled = false,
   onFocus = undefined,
   label,
-  required = false,
   commitOnBlur = true,
   setValue,
   suffix = null,
@@ -44,22 +41,30 @@ export default function RobustField({
       maxValue: ROBUST_RANGE.max
     }
   );
+  const error = !!errorText;
 
   return (
     <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
       <Grid pl={suffix ? 1 : 0} size={{ xs: suffix ? 12 - widthButton : 12 }}>
-        <NumberEntry
+        <TextField
+          variant="standard"
+          type="number"
+          fullWidth
           disabled={disabled}
-          errorText={errorText}
-          inputRef={inputRef}
+          helperText={errorText}
           label={label}
-          required={required}
-          testId={FIELD}
           value={localValue}
-          setValue={handleChange}
+          error={error}
+          onChange={(e) => handleChange(e.target.value)}
           onBlur={handleBlur}
           onFocus={onFocus}
-          suffix={suffix}
+          slotProps={{
+            htmlInput: {
+              min: ROBUST_RANGE.min,
+              max: ROBUST_RANGE.max,
+              step: ROBUST_STEP
+            }
+          }}
         />
       </Grid>
       <Grid size={{ xs: suffix ? widthButton : 0 }}>{suffix}</Grid>
