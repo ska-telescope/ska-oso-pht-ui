@@ -3,7 +3,6 @@ import React from 'react';
 interface NumericInputOptions {
   validate?: (num: number) => string;
   requiredMessage?: string;
-  commitOnBlur?: boolean;
   errorDelayMs?: number;
   step?: number;
   minValue?: number;
@@ -18,7 +17,6 @@ export const useNumericInput = (
   {
     validate,
     requiredMessage = 'required',
-    commitOnBlur = false,
     errorDelayMs,
     step,
     minValue,
@@ -37,7 +35,7 @@ export const useNumericInput = (
       return Number.isFinite(input) ? input : NaN;
     }
     const trimmed = input.trim();
-    // NaN is used as an internal invalid-parse marker; handleBlur guards to prevent commit.
+    // NaN is used as an internal invalid-parse marker
     // Empty/whitespace are handled explicitly because Number('') would otherwise coerce to 0.
     if (trimmed === '') {
       return NaN;
@@ -96,23 +94,9 @@ export const useNumericInput = (
       }
     } else {
       setErrorText('');
-      if (!commitOnBlur) {
-        onCommit(num);
-      }
+      onCommit(num);
     }
   };
 
-  const handleBlur = () => {
-    if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
-    const num = toNumber(localValue);
-    if (!Number.isFinite(num)) {
-      setErrorText(requiredMessage || 'required');
-      return;
-    }
-    const error = runValidation(num);
-    setErrorText(error);
-    if (!error && commitOnBlur) onCommit(num);
-  };
-
-  return { localValue, errorText, handleChange, handleBlur, inputRef };
+  return { localValue, errorText, handleChange, inputRef };
 };
