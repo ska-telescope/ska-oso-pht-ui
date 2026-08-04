@@ -25,7 +25,6 @@ export const useNumericInput = (
 ) => {
   const [localValue, setLocalValue] = React.useState<string>(String(value));
   const [errorText, setErrorText] = React.useState('');
-  const errorTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const toNumber = (input: string | number): number => {
     if (typeof input === 'number') {
@@ -49,18 +48,11 @@ export const useNumericInput = (
     return validate ? validate(num) : '';
   };
 
-  React.useEffect(() => {
-    if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
-    setLocalValue(String(value));
-    setErrorText(runValidation(value));
-  }, [value]);
-
   const handleChange = (input: number | string) => {
     const rawValue = String(input);
     const num = toNumber(rawValue);
     setLocalValue(rawValue);
     const error = runValidation(num);
-    if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
     if (error) {
       setErrorText(error);
     } else {
