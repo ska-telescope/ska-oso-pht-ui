@@ -33,6 +33,32 @@ const wrapper = (component: ReactElement) => {
 
 type MockProposal = Proposal;
 
+const validProposal = {
+  id: 'proposal-1',
+  title: 'Sample Proposal',
+  status: 'Draft',
+  lastUpdated: '2025-09-17T10:00:00Z',
+  lastUpdatedBy: 'tester',
+  createdOn: '2025-09-17T10:00:00Z',
+  createdBy: 'tester',
+  version: 1,
+  cycle: 'SKA_1962_2024',
+  proposalType: 1,
+  scienceCategory: 'biology',
+  calibrationStrategy: [],
+  sciencePDF: null,
+  technicalPDF: null,
+  dataProductSDP: [],
+  dataProductSRC: [],
+  targets: [],
+  observations: [],
+  groupObservations: [],
+  targetObservation: [],
+  investigators: [],
+  abstract: '',
+  pipeline: ''
+} satisfies Proposal;
+
 describe('TableSubmissionsRow', () => {
   let TableSubmissionsRow: typeof import('./TableSubmissionsRow').default;
   let mockProposal: MockProposal;
@@ -79,7 +105,7 @@ describe('TableSubmissionsRow', () => {
 
   const defaultProps = {
     item: mockItem,
-    proposal: {} as MockProposal,
+    proposal: validProposal,
     index: 0,
     expanded: false,
     deleteClicked: vi.fn(),
