@@ -42,14 +42,15 @@ import {
   REFERENCE_COORDINATE_TYPE_SSO
 } from '@utils/constants.ts';
 import {
+  DataProductSDPContinuumVisibilitiesBackend,
   DataProductSDPNew,
   DataProductSDPsBackend,
+  DataProductSDPSpectralImageBackend,
   DataProductSRC,
   DataProductSRCNetBackend,
   SDPFilterbankPSTData,
   SDPFlowthroughPSTData,
   SDPImageContinuumData,
-  SDPSpectralData,
   SDPVisibilitiesContinuumData
 } from '@utils/types/dataProduct.tsx';
 import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
@@ -210,36 +211,50 @@ export const getDataProductScriptParameters = (
         };
       } else {
         const data = dp?.data as SDPVisibilitiesContinuumData;
-        return {
+        const result: DataProductSDPContinuumVisibilitiesBackend = {
           time_averaging: data?.timeAveraging ?? 0,
           frequency_averaging: data?.frequencyAveraging ?? 0,
           kind: 'continuum',
           variant: 'visibilities'
         };
+        return result;
       }
     }
     case TYPE_ZOOM:
-      const data = dp?.data as SDPSpectralData;
-      return {
-        image_size: { value: data?.imageSizeValue, unit: IMAGE_SIZE_UNITS[data?.imageSizeUnits] },
-        image_cellsize: {
-          value: data?.pixelSizeValue,
-          unit: IMAGE_SIZE_UNITS[data?.pixelSizeUnits]
-        },
-        weight: {
-          weighting: IMAGE_WEIGHTING.find((item) => item.value === Number(data?.weighting))
-            ?.label as string,
-          ...(Number(data?.weighting) === IW_BRIGGS && {
-            robust: data?.robust != null ? Number(data?.robust) : undefined
-          })
-        },
-        polarisations: data?.polarisations ?? [],
-        channels_out: data?.channelsOut ?? 0,
-        gaussian_taper: data?.taperValue?.toString() ?? '0',
-        kind: 'spectral',
-        variant: 'spectral image',
-        continuum_subtraction: data?.continuumSubtraction
-      };
+      const data = dp?.data;
+      if (data?.imageSizeValue != undefined) {
+        // This is a hacky way to tell if the dp is the images one
+        const result: DataProductSDPSpectralImageBackend = {
+          image_size: { value: data?.imageSizeValue, unit: IMAGE_SIZE_UNITS[data?.imageSizeUnits] },
+          image_cellsize: {
+            value: data?.pixelSizeValue,
+            unit: IMAGE_SIZE_UNITS[data?.pixelSizeUnits]
+          },
+          weight: {
+            weighting: IMAGE_WEIGHTING.find((item) => item.value === Number(data?.weighting))
+              ?.label as string,
+            ...(Number(data?.weighting) === IW_BRIGGS && {
+              robust: data?.robust != null ? Number(data?.robust) : undefined
+            })
+          },
+          polarisations: data?.polarisations ?? [],
+          channels_out: data?.channelsOut ?? 0,
+          gaussian_taper: data?.taperValue?.toString() ?? '0',
+          kind: 'spectral',
+          variant: 'spectral image',
+          continuum_subtraction: data?.continuumSubtraction
+        };
+        return result;
+      } else {
+        const result: DataProductSDPContinuumVisibilitiesBackend = {
+          time_averaging: data?.timeAveraging ?? 0,
+          frequency_averaging: data?.frequencyAveraging ?? 0,
+          kind: 'continuum', // TODO this should be spectral, but there isn't a SpectralVisibilities type available
+          variant: 'visibilities'
+        };
+        return result;
+      }
+
     case TYPE_PST:
     default:
       const pstMode = obs?.find((o) => o?.id === dp.observationId)?.pstMode;
