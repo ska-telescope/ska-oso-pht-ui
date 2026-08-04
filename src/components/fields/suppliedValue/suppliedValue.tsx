@@ -53,7 +53,8 @@ export default function SuppliedValue({
     rangeMessage: rangeMessage,
     minValue,
     maxValue,
-    minInclusive: false
+    minInclusive: false,
+    maxInclusive: true
   });
 
   const error = !!errorText;

@@ -30,7 +30,9 @@ export default function RobustField({
     requiredMessage: t('robust.error'),
     rangeMessage: t('robust.error'),
     minValue: ROBUST_RANGE.min,
-    maxValue: ROBUST_RANGE.max
+    maxValue: ROBUST_RANGE.max,
+    minInclusive: true,
+    maxInclusive: true
   });
   const error = !!errorText;
 
