@@ -950,12 +950,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
 
     return (
-      <Box pt={2}>
+      <Box pt={2} display="flex" alignItems="flex-end" gap={1}>
         <SuppliedValue
           value={suppliedValue}
           setValue={setSuppliedValue}
-          commitOnBlur={suppliedType !== SUPPLIED_TYPE_INTEGRATION}
-          suffix={suppliedUnitsField()}
           label=""
           minValue={0}
           maxValue={
@@ -973,6 +971,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           currentUnitLabel={getUnitOptions().find((u) => u.value === suppliedUnits)?.label ?? ''}
           required
         />
+        {suppliedUnitsField()}
       </Box>
     );
   };
