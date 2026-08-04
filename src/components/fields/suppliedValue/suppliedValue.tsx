@@ -28,14 +28,29 @@ export default function SuppliedValue({
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const FIELD = 'suppliedValue';
+  let rangeMessage = '';
 
-  const { localValue, errorText, handleChange, inputRef } = useNumericInput(value, setValue, {
-    requiredMessage: t(`${FIELD}.required`),
-    rangeMessage: t(`${FIELD}.range.error`, {
+  if (minValue !== undefined && maxValue !== undefined) {
+    rangeMessage = t(`${FIELD}.range.error`, {
       min: minValue,
       max: maxValue,
       units: currentUnitLabel
-    }),
+    });
+  } else if (minValue !== undefined) {
+    rangeMessage = t(`${FIELD}.range.minError`, {
+      min: minValue,
+      units: currentUnitLabel
+    });
+  } else if (maxValue !== undefined) {
+    rangeMessage = t(`${FIELD}.range.maxError`, {
+      max: maxValue,
+      units: currentUnitLabel
+    });
+  }
+
+  const { localValue, errorText, handleChange, inputRef } = useNumericInput(value, setValue, {
+    requiredMessage: t(`${FIELD}.required`),
+    rangeMessage: rangeMessage,
     step,
     minValue,
     maxValue,
