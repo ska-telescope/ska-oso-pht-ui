@@ -28,7 +28,7 @@ export default function RobustField({
   const { t } = useScopedTranslation();
   const { localValue, errorText, handleChange, inputRef } = useNumericInput(value, setValue, {
     requiredMessage: t('robust.error'),
-    validate: (num) => (num < ROBUST_RANGE.min || num > ROBUST_RANGE.max ? t('robust.error') : ''),
+    rangeMessage: t('robust.error'),
     step: ROBUST_STEP,
     minValue: ROBUST_RANGE.min,
     maxValue: ROBUST_RANGE.max

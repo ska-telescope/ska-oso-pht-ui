@@ -3,6 +3,7 @@ import React from 'react';
 interface NumericInputOptions {
   validate?: (num: number) => string;
   requiredMessage?: string;
+  rangeMessage?: string;
   step?: number;
   minValue?: number;
   maxValue?: number;
@@ -16,6 +17,7 @@ export const useNumericInput = (
   {
     validate,
     requiredMessage = 'required',
+    rangeMessage = 'out of range',
     step,
     minValue,
     maxValue,
@@ -44,6 +46,9 @@ export const useNumericInput = (
 
   const runValidation = (num: number): string => {
     if (!Number.isFinite(num)) return requiredMessage || 'required';
+    const belowMin = minValue !== undefined && (minInclusive ? num < minValue : num <= minValue);
+    const aboveMax = maxValue !== undefined && (maxInclusive ? num > maxValue : num >= maxValue);
+    if (belowMin || aboveMax) return rangeMessage;
     return validate ? validate(num) : '';
   };
 
