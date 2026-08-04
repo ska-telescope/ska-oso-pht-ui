@@ -26,10 +26,9 @@ export default function RobustField({
   widthButton = 0
 }: RobustFieldProps) {
   const { t } = useScopedTranslation();
-  const { localValue, errorText, handleChange, inputRef } = useNumericInput(value, setValue, {
+  const { localValue, errorText, handleChange } = useNumericInput(value, setValue, {
     requiredMessage: t('robust.error'),
     rangeMessage: t('robust.error'),
-    step: ROBUST_STEP,
     minValue: ROBUST_RANGE.min,
     maxValue: ROBUST_RANGE.max
   });

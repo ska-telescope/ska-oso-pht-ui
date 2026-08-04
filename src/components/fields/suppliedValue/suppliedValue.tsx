@@ -48,10 +48,9 @@ export default function SuppliedValue({
     });
   }
 
-  const { localValue, errorText, handleChange, inputRef } = useNumericInput(value, setValue, {
+  const { localValue, errorText, handleChange } = useNumericInput(value, setValue, {
     requiredMessage: t(`${FIELD}.required`),
     rangeMessage: rangeMessage,
-    step,
     minValue,
     maxValue,
     minInclusive: false

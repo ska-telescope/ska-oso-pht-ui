@@ -4,7 +4,6 @@ interface NumericInputOptions {
   validate?: (num: number) => string;
   requiredMessage?: string;
   rangeMessage?: string;
-  step?: number;
   minValue?: number;
   maxValue?: number;
   minInclusive?: boolean;
@@ -18,7 +17,6 @@ export const useNumericInput = (
     validate,
     requiredMessage = 'required',
     rangeMessage = 'out of range',
-    step,
     minValue,
     maxValue,
     minInclusive = true,
@@ -28,7 +26,6 @@ export const useNumericInput = (
   const [localValue, setLocalValue] = React.useState<string>(String(value));
   const [errorText, setErrorText] = React.useState('');
   const errorTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-  const inputRef = React.useRef<HTMLInputElement>(null);
 
   const toNumber = (input: string | number): number => {
     if (typeof input === 'number') {
@@ -58,31 +55,6 @@ export const useNumericInput = (
     setErrorText(runValidation(value));
   }, [value]);
 
-  const getInputMin = (): string => {
-    if (minValue === undefined) return '';
-    if (minInclusive || step === undefined) return String(minValue);
-    return String(minValue + step);
-  };
-
-  const getInputMax = (): string => {
-    if (maxValue === undefined) return '';
-    if (maxInclusive || step === undefined) return String(maxValue);
-    return String(maxValue - step);
-  };
-
-  React.useEffect(() => {
-    if (inputRef.current && step !== undefined) {
-      inputRef.current.step = String(step);
-      inputRef.current.min = getInputMin();
-      inputRef.current.max = getInputMax();
-    }
-    if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
-    setErrorText(runValidation(toNumber(localValue)));
-    return () => {
-      if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
-    };
-  }, [step, minValue, maxValue, minInclusive, maxInclusive]);
-
   const handleChange = (input: number | string) => {
     const rawValue = String(input);
     const num = toNumber(rawValue);
@@ -97,5 +69,5 @@ export const useNumericInput = (
     }
   };
 
-  return { localValue, errorText, handleChange, inputRef };
+  return { localValue, errorText, handleChange };
 };
