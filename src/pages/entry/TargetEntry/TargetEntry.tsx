@@ -84,7 +84,8 @@ export default function TargetEntry({
   const resolveRevisionRef = React.useRef(0);
 
   /**
-   * Cancels any in-flight coordinate resolution so a stale response can't overwrite newer edits.
+   * Invalidates any pending coordinate-resolution response so it can't overwrite newer edits when
+   * it arrives - the underlying GetCoordinates request itself is not aborted.
    */
   const invalidatePendingResolve = () => {
     resolveRevisionRef.current += 1;
