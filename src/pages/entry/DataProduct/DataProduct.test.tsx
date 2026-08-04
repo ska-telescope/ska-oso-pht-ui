@@ -34,13 +34,13 @@ vi.mock('@/utils/constants.ts', async (importOriginal) => {
   return {
     ...actual,
     PAGE_DATA_PRODUCTS: 'PAGE_DATA_PRODUCTS',
-    TYPE_CONTINUUM: 1,
-    TYPE_PST: 2,
-    TYPE_ZOOM: 3,
+    TYPE_CONTINUUM: 'continuum',
+    TYPE_PST: 'pst',
+    TYPE_ZOOM: 'spectral',
     IW_BRIGGS: 99,
-    FLOW_THROUGH_VALUE: 'FLOW',
-    DETECTED_FILTER_BANK_VALUE: 'DFB',
-    PULSAR_TIMING_VALUE: 'PT',
+    FLOW_THROUGH_VALUE: 0,
+    DETECTED_FILTER_BANK_VALUE: 1,
+    PULSAR_TIMING_VALUE: 2,
     NAV: { PAGE_DATA_PRODUCTS: '/mock-nav' },
     FOOTER_HEIGHT_PHT: 0,
     WRAPPER_HEIGHT: 100,
@@ -128,5 +128,26 @@ describe('DataProduct component', () => {
     const addButton = screen.getByTestId('addDataProductButtonEntry');
     expect(addButton).toBeInTheDocument();
     expect(addButton).toHaveAttribute('disabled');
+  });
+
+  it('uses the PST proposal mode for the description when no observation is selected', () => {
+    mockStoreReturn = {
+      application: {
+        content2: {
+          scienceCategory: 'pst',
+          observations: [{ id: 'OBS1', type: 'continuum' }],
+          dataProductSDP: []
+        }
+      },
+      updateAppContent2: vi.fn()
+    };
+
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct />
+      </ThemeProvider>
+    );
+
+    expect(screen.getByText('page.7.descContent.pst.0')).toBeInTheDocument();
   });
 });

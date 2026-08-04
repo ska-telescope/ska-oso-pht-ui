@@ -104,7 +104,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const { osdCyclePolicy } = useOSDAccessors();
   const { setHelp } = useHelp();
 
-  const isEdit = () => locationProperties.state !== null || data !== undefined;
+  const isEdit = () => locationProperties.state != null || data !== undefined;
 
   const { application, updateAppContent2 } = storageObject.useStore();
 
@@ -144,9 +144,28 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const isDataTypeOne = () => dataProductType === DP_TYPE_IMAGES;
 
-  const getObservation = (obsId = observationId) =>
-    baseObservations?.find((obs) => obs.id === obsId) ??
-    getProposal()?.observations?.find((obs) => obs.id === obsId);
+  const getObservation = (obsId = observationId) => {
+    const proposal = getProposal();
+    const proposalObservations = proposal?.observations ?? [];
+    const selectedObservation =
+      baseObservations?.find((obs) => obs.id === obsId) ??
+      proposalObservations.find((obs) => obs.id === obsId);
+
+    if (selectedObservation) {
+      return selectedObservation;
+    }
+
+    const pstObservation = proposalObservations.find((obs) => obs.type === TYPE_PST);
+    if (pstObservation) {
+      return pstObservation;
+    }
+
+    if (proposal?.scienceCategory) {
+      return { type: proposal.scienceCategory } as Observation;
+    }
+
+    return proposalObservations[0];
+  };
 
   const getDataProductTypeValue = (dp?: DataProductSDPNew) =>
     Number(dp?.data?.dataProductType ?? DP_TYPE_IMAGES);
@@ -196,7 +215,10 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const getSuffix = () => {
     if (isContinuum() || isPST()) {
-      return dataProductType.toString();
+      const resolvedType = isPST()
+        ? getDataProductType(getObservation()?.type ?? '', Number(getObservation()?.pstMode))
+        : dataProductType;
+      return resolvedType.toString();
     }
     return '1';
   };
@@ -337,8 +359,11 @@ export default function DataProduct({ data }: DataProductProps) {
   };
 
   // set correct data product type depending on pst mode from obs type
-  const getDataProductType = (obsType: string, pstMode: number): number => {
+  const getDataProductType = (obsType: string, pstMode?: number): number => {
     if (obsType === TYPE_PST) {
+      if (typeof pstMode === 'undefined' || pstMode === null || Number.isNaN(pstMode)) {
+        return FLOW_THROUGH_VALUE;
+      }
       return pstMode;
     }
     return DP_TYPE_IMAGES; // default for non-pst
