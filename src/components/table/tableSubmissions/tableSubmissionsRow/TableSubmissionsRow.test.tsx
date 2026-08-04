@@ -1,14 +1,41 @@
+import type { ReactElement, ReactNode } from 'react';
 import { describe, it, expect, vi, beforeAll } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import type { Proposal } from '@/utils/types/proposal';
 
-const wrapper = (component: React.ReactElement) => {
+vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+  storageObject: {
+    useStore: () => ({
+      application: {
+        content2: {},
+        content4: []
+      }
+    })
+  },
+  StoreProvider: ({ children }: { children: ReactNode }) => <>{children}</>
+}));
+
+vi.mock('@/utils/aaa/aaaUtils', () => ({
+  useInitializeAccessStore: vi.fn(),
+  accessUpdate: () => true
+}));
+
+vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
+  useOSDAccessors: () => ({
+    getCycle: () => null
+  })
+}));
+
+const wrapper = (component: ReactElement) => {
   return render(<StoreProvider>{component}</StoreProvider>);
 };
 
+type MockProposal = Proposal;
+
 describe('TableSubmissionsRow', () => {
-  let TableSubmissionsRow: any;
-  let mockProposal: any;
+  let TableSubmissionsRow: typeof import('./TableSubmissionsRow').default;
+  let mockProposal: MockProposal;
 
   beforeAll(async () => {
     if (!globalThis.localStorage) {
@@ -52,7 +79,7 @@ describe('TableSubmissionsRow', () => {
 
   const defaultProps = {
     item: mockItem,
-    proposal: {} as any,
+    proposal: {} as MockProposal,
     index: 0,
     expanded: false,
     deleteClicked: vi.fn(),
