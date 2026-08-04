@@ -44,8 +44,10 @@ import {
   REFERENCE_COORDINATE_TYPE_SSO
 } from '@utils/constants.ts';
 import {
+  DataProductSDPContinuumVisibilitiesBackend,
   DataProductSDPNew,
   DataProductSDPsBackend,
+  DataProductSDPSpectralImageBackend,
   DataProductSRC,
   DataProductSRCNetBackend,
   SDPFilterbankPSTData,
@@ -215,12 +217,13 @@ export const getDataProductScriptParameters = (
         };
       } else {
         const data = dp?.data as SDPVisibilitiesContinuumData;
-        return {
+        const result: DataProductSDPContinuumVisibilitiesBackend = {
           time_averaging: data?.timeAveraging ?? 0,
           frequency_averaging: data?.frequencyAveraging ?? 0,
           kind: 'continuum',
           variant: 'visibilities'
         };
+        return result;
       }
     }
     case TYPE_ZOOM:
@@ -230,15 +233,16 @@ export const getDataProductScriptParameters = (
       // (kind: continuum / variant: visibilities), regardless of the mode that created it.
       if ((dp?.data as SDPVisibilitiesContinuumData)?.dataProductType === DP_TYPE_VISIBLE) {
         const data = dp?.data as SDPVisibilitiesContinuumData;
-        return {
+        const result: DataProductSDPContinuumVisibilitiesBackend = {
           time_averaging: data?.timeAveraging ?? 0,
           frequency_averaging: data?.frequencyAveraging ?? 0,
           kind: 'continuum',
           variant: 'visibilities'
         };
+        return result;
       }
       const data = dp?.data as SDPSpectralData;
-      return {
+      const result: DataProductSDPSpectralImageBackend = {
         image_size: { value: data?.imageSizeValue, unit: IMAGE_SIZE_UNITS[data?.imageSizeUnits] },
         image_cellsize: {
           value: data?.pixelSizeValue,
@@ -261,6 +265,7 @@ export const getDataProductScriptParameters = (
             : 'spectral image',
         continuum_subtraction: data?.continuumSubtraction
       };
+      return result;
     }
     case TYPE_PST:
     default:
