@@ -9,7 +9,11 @@ import { SENSCALC_CONTINUUM_MOCKED, SENSCALC_SPECTRAL_MOCKED } from './SensCalcR
 import { setMockObservation } from './getSensitivityCalculatorAPIData';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 import * as CONSTANTS from '@/utils/constants';
-import { DataProductSDPNew, SDPImageContinuumData, SDPSpectralData } from '@/utils/types/dataProduct';
+import {
+  DataProductSDPNew,
+  SDPImageContinuumData,
+  SDPSpectralData
+} from '@/utils/types/dataProduct';
 import Observation from '@/utils/types/observation';
 
 const MOCK_CONTINUUM_DATA_PRODUCT: DataProductSDPNew = {
