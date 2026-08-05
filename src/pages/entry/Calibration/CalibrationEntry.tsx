@@ -13,7 +13,12 @@ import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import Proposal from '@/utils/types/proposal';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
-import { CalibrationStrategy, Calibrator } from '@/utils/types/calibrationStrategy';
+import {
+  CalibrationStrategy,
+  CalibrationStrategyBackend,
+  Calibrator,
+  FluxCalBackend
+} from '@/utils/types/calibrationStrategy';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
 import GetCalibratorList from '@/services/axios/get/getCalibratorList/getCalibratorList';
@@ -28,8 +33,45 @@ const WIDTH_FIELD1 = 210;
 const WIDTH_FIELD2 = 220;
 const WIDTH_FIELD3 = 150;
 
+type CalibratorSet = {
+  beforeEachScan: Calibrator | null;
+  afterEachScan: Calibrator | null;
+};
+
 interface CalibrationEntryProps {
   data?: CalibrationStrategy;
+}
+
+// Splits a flat Calibrator[] (as stored on CalibrationStrategy) into the
+// { beforeEachScan, afterEachScan } shape the form actually works with.
+function calibratorArrayToSet(list: Calibrator[]): CalibratorSet {
+  if (!list) {
+    return { beforeEachScan: null, afterEachScan: null };
+  }
+  return {
+    beforeEachScan: list.find(c => c.relativeToScan === 'before_each_scan') ?? null,
+    afterEachScan: list.find(c => c.relativeToScan === 'after_each_scan') ?? null
+  };
+}
+
+function calibratorToFluxCal(calibrator: Calibrator | null): FluxCalBackend | null {
+  if (!calibrator) {
+    return null;
+  }
+  return {
+    kind: 'flux',
+    name: calibrator.name
+  };
+}
+
+function calibratorSetToFluxCalList(calibrators: CalibratorSet): FluxCalBackend[] {
+  if (!calibrators.beforeEachScan || !calibrators.afterEachScan) {
+    throw new Error('error.CALIBRATION_MISSING_BEFORE_OR_AFTER');
+  }
+  return [
+    calibratorToFluxCal(calibrators.beforeEachScan) as FluxCalBackend,
+    calibratorToFluxCal(calibrators.afterEachScan) as FluxCalBackend
+  ];
 }
 
 export default function CalibrationEntry({ data }: CalibrationEntryProps) {
@@ -47,35 +89,54 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
 
   const [, setAxiosViewError] = React.useState('');
-  const [calibrator, setCalibrator] = React.useState<Calibrator>();
   const [target, setTarget] = React.useState<Target>();
   const [observation, setObservation] = React.useState<Observation>();
 
   const [observatoryDefined, setObservatoryDefined] = React.useState(true);
   const [id, setId] = React.useState('');
   const [observationIdRef, setObservationIdRef] = React.useState('');
-  const [calibrators, setCalibrators] = React.useState<Calibrator[] | null>(null);
+  const [calibrators, setCalibrators] = React.useState<CalibratorSet>({
+    beforeEachScan: null,
+    afterEachScan: null
+  });
   const [notes, setNotes] = React.useState('');
 
   const calibrationIn = (inRec: CalibrationStrategy) => {
     setObservatoryDefined(inRec.observatoryDefined);
     setId(inRec.id);
     setObservationIdRef(inRec.observationIdRef);
-    setCalibrators(inRec.calibrators);
+    setCalibrators(calibratorArrayToSet(inRec.calibrators));
     setNotes(inRec.notes ? inRec.notes : '');
   };
 
-  const calibrationOut = (): CalibrationStrategy => {
+  const calibrationOut = (): CalibrationStrategyBackend=> {
     return {
-      observatoryDefined: observatoryDefined,
-      id: id,
-      observationIdRef: observationIdRef,
-      calibrators: calibrators,
+      observatory_defined: observatoryDefined,
+      calibration_id: id,
+      observation_set_ref: observationIdRef,
+      calibrators: calibratorSetToFluxCalList(calibrators),
       notes: notes
-    } as CalibrationStrategy;
+    };
   };
 
   /**************************************************************/
+
+async function getCalibratorData() {
+  const response = await GetCalibratorList();
+  if (typeof response === 'string') {
+    setAxiosViewError(response);
+    return false;
+  }
+
+  const before = response.find(c => c.relativeToScan === "before_each_scan");
+  const after = response.find(c => c.relativeToScan === "after_each_scan");
+
+  setCalibrators({
+    beforeEachScan: before ?? null,
+    afterEachScan: after ?? null,
+  });
+  return true;
+}
 
   React.useEffect(() => {
     setHelp('calibrator.comment.help');
@@ -85,20 +146,9 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
     getCalibratorData();
   }, []);
 
-  async function getCalibratorData() {
-    const response = await GetCalibratorList();
-    if (typeof response === 'string') {
-      setAxiosViewError(response);
-      return false;
-    } else {
-      setCalibrator(response[0]); // NOTE : it is assumed there is only 1 calibrator for now
-      return true;
-    }
-  }
-
   React.useEffect(() => {
     updateStorageProposal();
-  }, [notes]);
+  }, [notes, calibrators]);
 
   // Extend for Proposals when there will be more than one proposal and target as an option
   React.useEffect(() => {
@@ -113,23 +163,19 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
   /**************************************************************/
 
   function updateCalibrationOnProposal() {
-    const newStrategy: CalibrationStrategy = calibrationOut();
-    const record = {
-      ...getProposal(),
-      calibrationStrategy: [
-        ...[
-          {
-            ...(newStrategy as CalibrationStrategy),
-            observatoryDefined: newStrategy?.observatoryDefined,
-            id: newStrategy?.id,
-            observationIdRef: newStrategy?.observationIdRef,
-            calibrators: newStrategy?.calibrators,
-            notes: notes
-          }
-        ]
-      ]
-    };
-    setProposal(record);
+    try {
+      const record = {
+        ...getProposal(),
+        calibrationStrategy: [calibrationOut()]
+      };
+      setProposal(record);
+    } catch (e) {
+      if (e instanceof Error) {
+        setAxiosViewError(e.message);
+      } else {
+        setAxiosViewError('error.API_UNKNOWN_ERROR');
+      }
+    }
   }
 
   const updateStorageProposal = () => {
@@ -152,46 +198,46 @@ export default function CalibrationEntry({ data }: CalibrationEntryProps) {
     </Box>
   );
 
-  const nameField = (inLabel: string) => {
+  const nameField = (inLabel: string, cal: Calibrator | null) => {
     return fieldWrapper(
       <TextEntry
         testId="calibratorName"
-        value={calibrator ? calibrator.name : ''}
+        value={cal ? cal.name : ''}
         disabled={true}
         label={t(inLabel)}
         width="100%"
       />
     );
   };
-  const name1Field = () => nameField('calibrator.calibratorStart');
-  const name2Field = () => nameField('calibrator.calibratorEnd');
+  const name1Field = () => nameField('calibrator.calibratorStart', calibrators.beforeEachScan);
+  const name2Field = () => nameField('calibrator.calibratorEnd', calibrators.afterEachScan);
 
-  const durationField = (inLabel: string) => {
+  const durationField = (inLabel: string, cal: Calibrator | null) => {
     return fieldWrapper(
       <TextEntry
         testId="duration"
-        value={calibrator ? calibrator.durationMin : 0}
+        value={cal ? cal.durationSeconds : 0}
         disabled={true}
         label={t(inLabel)}
-        suffix={t('calibrator.minutes')}
+        suffix={t('calibrator.seconds')}
       />
     );
   };
-  const duration1Field = () => durationField('calibrator.durationStart');
-  const duration2Field = () => durationField('calibrator.durationEnd');
+  const duration1Field = () => durationField('calibrator.durationStart', calibrators.beforeEachScan);
+  const duration2Field = () => durationField('calibrator.durationEnd', calibrators.afterEachScan);
 
-  const intentField = (inLabel: string) => {
+  const intentField = (inLabel: string, cal: Calibrator | null) => {
     return fieldWrapper(
       <TextEntry
         testId="intent"
-        value={calibrator ? calibrator.calibrationIntent : ''}
+        value={cal ? cal.calibrationIntent : ''}
         disabled={true}
         label={t(inLabel)}
       />
     );
   };
-  const intent1Field = () => intentField('calibrator.intentStart');
-  const intent2Field = () => intentField('calibrator.intentEnd');
+  const intent1Field = () => intentField('calibrator.intentStart', calibrators.beforeEachScan);
+  const intent2Field = () => intentField('calibrator.intentEnd', calibrators.afterEachScan);
 
   const targetField = () => {
     return fieldWrapper(
