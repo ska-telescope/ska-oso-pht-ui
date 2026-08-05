@@ -5,18 +5,32 @@
 // } from '@utils/constants.ts';
 // import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.ts';
 import { MockCalibratorBackendList } from './mockCalibratorListBackend.tsx';
-import { Calibrator, CalibratorBackend } from '@/utils/types/calibrationStrategy.tsx';
+import {
+  CalibrationIntent,
+  Calibrator,
+  CalibratorBackend,
+  SelectionStrategy
+} from '@/utils/types/calibrationStrategy.tsx';
 
 /*****************************************************************************************************************************/
 /*********************************************************** mapping *********************************************************/
 
-export function calibratorMapping(data: CalibratorBackend): Calibrator {
+
+// at least duration should eventually come from the backend in future
+const DEFAULT_CALIBRATION_INTENT: CalibrationIntent = "flux";
+const DEFAULT_SELECTION_STRATEGY: SelectionStrategy = "highest_elevation";
+const DEFAULT_DURATION_SECS = 600;
+
+
+function calibratorMapping(data: CalibratorBackend): Calibrator {
   return {
-    calibrationIntent: data.calibration_intent,
-    name: data.name,
-    durationMin: data.duration_min,
-    choice: data.choice,
-    notes: data.notes
+    targetId: data.calibrator.target_id,
+    name: data.calibrator.name,
+    calibrationIntent: DEFAULT_CALIBRATION_INTENT,
+    durationSeconds: DEFAULT_DURATION_SECS,
+    selectionStrategy: DEFAULT_SELECTION_STRATEGY,
+    notes: null,
+    relativeToScan: data.when,
   };
 }
 
