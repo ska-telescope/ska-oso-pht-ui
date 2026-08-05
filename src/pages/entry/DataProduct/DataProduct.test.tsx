@@ -49,6 +49,57 @@ vi.mock('@/utils/constants.ts', async (importOriginal) => {
 });
 
 // Lightweight mocks for child components
+vi.mock('@/components/fields/outputFrequencyResolution/outputFrequencyResolution', () => ({
+  default: () => <div data-testid="OutputFrequencyResolutionField" />
+}));
+vi.mock('@/components/fields/outputSamplingInterval/outputSamplingInterval', () => ({
+  default: () => <div data-testid="OutputSamplingIntervalField" />
+}));
+vi.mock('@/components/fields/dispersionMeasure/dispersionMeasure', () => ({
+  default: () => <div data-testid="DispersionMeasureField" />
+}));
+vi.mock('@/components/fields/rotationMeasure/rotationMeasure', () => ({
+  default: () => <div data-testid="RotationMeasureField" />
+}));
+vi.mock('@/components/fields/bitDepth/bitDepth', () => ({
+  default: () => <div data-testid="BitDepthField" />
+}));
+vi.mock('@/components/fields/polarisations/polarisations', () => ({
+  default: () => <div data-testid="PolarisationsField" />
+}));
+vi.mock('@/components/fields/dataProductType/dataProductType', () => ({
+  default: () => <div data-testid="DataProductTypeField" />
+}));
+vi.mock('@/components/fields/imageSize/imageSize', () => ({
+  default: () => <div data-testid="ImageSizeField" />
+}));
+vi.mock('@/components/fields/pixelSize/pixelSize', () => ({
+  default: () => <div data-testid="PixelSizeField" />
+}));
+vi.mock('@/components/fields/robust/Robust', () => ({
+  default: () => <div data-testid="RobustField" />
+}));
+vi.mock('@/components/fields/channelsOut/channelsOut', () => ({
+  default: () => <div data-testid="ChannelsOutField" />
+}));
+vi.mock('@/components/fields/continuumSubtraction/continuumSubtraction', () => ({
+  default: () => <div data-testid="ContinuumSubtractionField" />
+}));
+vi.mock('@/components/fields/imageWeighting/imageWeighting', () => ({
+  default: () => <div data-testid="ImageWeightingField" />
+}));
+vi.mock('@/components/fields/taper/taper', () => ({
+  default: () => <div data-testid="TaperField" />
+}));
+vi.mock('@/components/fields/taperDropdown/taperDropdown', () => ({
+  default: () => <div data-testid="TaperDropdown" />
+}));
+vi.mock('@/components/fields/timeAveraging/timeAveraging', () => ({
+  default: () => <div data-testid="TimeAveragingField" />
+}));
+vi.mock('@/components/fields/frequencyAveraging/frequencyAveraging', () => ({
+  default: () => <div data-testid="FrequencyAveragingField" />
+}));
 vi.mock('@/components/grid/observation/GridObservation', () => ({
   default: (props: any) => (
     <div data-testid="GridObservation">
@@ -149,5 +200,25 @@ describe('DataProduct component', () => {
     );
 
     expect(screen.getByText('page.7.descContent.pst.0')).toBeInTheDocument();
+  });
+
+  it('uses the detected-filterbank PST description when the observation has that mode', () => {
+    mockStoreReturn = {
+      application: {
+        content2: {
+          observations: [{ id: 'OBS1', type: 'pst', pstMode: 1 }],
+          dataProductSDP: []
+        }
+      },
+      updateAppContent2: vi.fn()
+    };
+
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct />
+      </ThemeProvider>
+    );
+
+    expect(screen.getByText('page.7.descContent.pst.1')).toBeInTheDocument();
   });
 });

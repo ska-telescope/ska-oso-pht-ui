@@ -144,6 +144,8 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const isDataTypeOne = () => dataProductType === DP_TYPE_IMAGES;
 
+  const hasRealObservationSelection = () => Boolean(observationId) || Boolean(getObservation()?.id);
+
   const getObservation = (obsId = observationId) => {
     const proposal = getProposal();
     const proposalObservations = proposal?.observations ?? [];
@@ -198,9 +200,20 @@ export default function DataProduct({ data }: DataProductProps) {
       (dp) => dp.id !== currentDataProductId && getDataProductTypeValue(dp) === nextType
     );
 
-  const isFlowThrough = () => getObservation()?.pstMode === FLOW_THROUGH_VALUE;
-  const isDetectedFilterbank = () => getObservation()?.pstMode === DETECTED_FILTER_BANK_VALUE;
-  const isPulsarTiming = () => getObservation()?.pstMode === PULSAR_TIMING_VALUE;
+  const getResolvedPstMode = () => {
+    const observation = getObservation();
+    const pstMode = observation?.pstMode;
+
+    if (typeof pstMode === 'undefined' || pstMode === null || Number.isNaN(pstMode)) {
+      return FLOW_THROUGH_VALUE;
+    }
+
+    return Number(pstMode);
+  };
+
+  const isFlowThrough = () => getResolvedPstMode() === FLOW_THROUGH_VALUE;
+  const isDetectedFilterbank = () => getResolvedPstMode() === DETECTED_FILTER_BANK_VALUE;
+  const isPulsarTiming = () => getResolvedPstMode() === PULSAR_TIMING_VALUE;
 
   const isContinuum = () =>
     getObservation()?.type === TYPE_CONTINUUM || getProposal()?.scienceCategory === TYPE_CONTINUUM;
@@ -216,7 +229,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const getSuffix = () => {
     if (isContinuum() || isPST()) {
       const resolvedType = isPST()
-        ? getDataProductType(getObservation()?.type ?? '', Number(getObservation()?.pstMode))
+        ? getDataProductType(getObservation()?.type ?? '', getResolvedPstMode())
         : dataProductType;
       return resolvedType.toString();
     }
@@ -323,6 +336,10 @@ export default function DataProduct({ data }: DataProductProps) {
   /* ------------------------------------------- */
 
   const addToProposal = () => {
+    if (!hasRealObservationSelection()) {
+      return;
+    }
+
     setProposal({
       ...getProposal(),
       dataProductSDP: [...(getProposal()?.dataProductSDP ?? []), dataProductOut()]
@@ -330,6 +347,9 @@ export default function DataProduct({ data }: DataProductProps) {
   };
 
   const updateToProposal = async () => {
+    if (!hasRealObservationSelection()) {
+      return;
+    }
     const proposal = getProposal();
     const observation = getObservation();
     const newDataProduct: DataProductSDPNew = dataProductOut();
@@ -364,7 +384,7 @@ export default function DataProduct({ data }: DataProductProps) {
       if (typeof pstMode === 'undefined' || pstMode === null || Number.isNaN(pstMode)) {
         return FLOW_THROUGH_VALUE;
       }
-      return pstMode;
+      return Number(pstMode);
     }
     return DP_TYPE_IMAGES; // default for non-pst
   };
@@ -447,6 +467,10 @@ export default function DataProduct({ data }: DataProductProps) {
 
       dataProductIn(linkedDataProduct ?? selectedDataProduct);
     } else {
+      const fallbackObservation = observations.find((obs) => obs.type === TYPE_PST) ?? observations[0];
+      if (fallbackObservation?.id && !observationId) {
+        setObservationId(fallbackObservation.id);
+      }
       setId(generateId(PAGE_PREFIX, 6));
     }
   }, []);
@@ -461,10 +485,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
   React.useEffect(() => {
     if (!isEdit()) {
-      const sdpType = getDataProductType(
-        getObservation()?.type ?? '',
-        Number(getObservation()?.pstMode)
-      );
+      const sdpType = getDataProductType(getObservation()?.type ?? '', getResolvedPstMode());
       setDataProductType(sdpType);
     }
   }, [observationId]);
@@ -723,6 +744,10 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const pageFooter = () => {
     const enabled = () => {
+      if (!hasRealObservationSelection()) {
+        return false;
+      }
+
       switch (getObservation()?.type) {
         case TYPE_ZOOM:
           return (
