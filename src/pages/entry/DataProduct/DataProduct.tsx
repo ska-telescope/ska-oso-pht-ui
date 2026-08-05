@@ -467,7 +467,8 @@ export default function DataProduct({ data }: DataProductProps) {
 
       dataProductIn(linkedDataProduct ?? selectedDataProduct);
     } else {
-      const fallbackObservation = observations.find((obs) => obs.type === TYPE_PST) ?? observations[0];
+      const fallbackObservation =
+        observations.find((obs) => obs.type === TYPE_PST) ?? observations[0];
       if (fallbackObservation?.id && !observationId) {
         setObservationId(fallbackObservation.id);
       }
