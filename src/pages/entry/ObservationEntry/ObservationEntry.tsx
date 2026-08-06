@@ -1,6 +1,6 @@
 import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Box, Grid, Paper, Typography } from '@mui/material';
+import { Box, Grid, Paper, TextField, Typography } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { isLoggedIn } from '@ska-telescope/ska-login-page';
 import { useTheme } from '@mui/material/styles';
@@ -103,6 +103,7 @@ import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
 import lowAA2Image from '@assets/low_aa2.png';
 import { useIsFrequencyOutOfRange } from '@/utils/validation/validation';
+import { useNumericInput } from '@/utils/hooks/useNumericInput';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_OBSERVATION;
@@ -949,26 +950,74 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       </Box>
     );
 
+    const { t } = useScopedTranslation();
+    const { setHelp } = useHelp();
+    const FIELD = 'suppliedValue';
+    let rangeMessage = '';
+    const minValue = 0;
+    const maxValue =
+      suppliedType === SUPPLIED_TYPE_INTEGRATION
+        ? timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, suppliedUnits)
+        : undefined;
+    const label = '';
+    const currentUnitLabel = getUnitOptions().find((u) => u.value === suppliedUnits)?.label ?? '';
+    const step =
+      suppliedType === SUPPLIED_TYPE_INTEGRATION
+        ? suppliedUnits === TIME_HOURS
+          ? SUPPLIED_INTEGRATION_TIME_STEP_HOURS
+          : SUPPLIED_INTEGRATION_TIME_STEP_MINS
+        : SUPPLIED_SENSITIVITY_STEP;
+
+    if (minValue !== undefined && maxValue !== undefined) {
+      rangeMessage = t(`${FIELD}.range.error`, {
+        min: minValue,
+        max: maxValue,
+        units: currentUnitLabel
+      });
+    } else if (minValue !== undefined) {
+      rangeMessage = t(`${FIELD}.range.minError`, {
+        min: minValue,
+        units: currentUnitLabel
+      });
+    } else if (maxValue !== undefined) {
+      rangeMessage = t(`${FIELD}.range.maxError`, {
+        max: maxValue,
+        units: currentUnitLabel
+      });
+    }
+
+    const { localValue, errorText, handleChange } = useNumericInput(
+      suppliedValue,
+      setSuppliedValue,
+      {
+        requiredMessage: t(`${FIELD}.required`),
+        rangeMessage: rangeMessage,
+        minValue,
+        maxValue,
+        minInclusive: false,
+        maxInclusive: true
+      }
+    );
+
     return (
       <Box pt={2} display="flex" alignItems="flex-end" gap={1}>
-        <SuppliedValue
-          value={suppliedValue}
-          setValue={setSuppliedValue}
-          label=""
-          minValue={0}
-          maxValue={
-            suppliedType === SUPPLIED_TYPE_INTEGRATION
-              ? timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, suppliedUnits)
-              : undefined
-          }
-          step={
-            suppliedType === SUPPLIED_TYPE_INTEGRATION
-              ? suppliedUnits === TIME_HOURS
-                ? SUPPLIED_INTEGRATION_TIME_STEP_HOURS
-                : SUPPLIED_INTEGRATION_TIME_STEP_MINS
-              : SUPPLIED_SENSITIVITY_STEP
-          }
-          currentUnitLabel={getUnitOptions().find((u) => u.value === suppliedUnits)?.label ?? ''}
+        <TextField
+          variant="standard"
+          type="number"
+          fullWidth
+          helperText={errorText}
+          label={label}
+          value={localValue}
+          error={!!errorText}
+          onChange={(e) => handleChange(e.target.value)}
+          onFocus={() => setHelp(FIELD)}
+          slotProps={{
+            htmlInput: {
+              min: minValue,
+              max: maxValue,
+              step: step
+            }
+          }}
           required
         />
         {suppliedUnitsField()}
