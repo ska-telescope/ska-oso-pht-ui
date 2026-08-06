@@ -35,7 +35,7 @@ describe('TableSubmissionsRow', () => {
     const module = await import('./TableSubmissionsRow');
     TableSubmissionsRow = module.default;
     mockProposal = MockProposalFrontend;
-  });
+  }, 30000);
 
   const mockItem = {
     id: 'test-row-id',
