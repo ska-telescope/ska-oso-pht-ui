@@ -1,6 +1,6 @@
 // DataProduct.test.tsx
 import { beforeEach, describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import DataProduct from './DataProduct';
 
@@ -195,7 +195,7 @@ describe('DataProduct component', () => {
     mockStoreReturn = {
       application: {
         content2: {
-          observations: [{ id: 'OBS1', type: 'continuum' }],
+          observations: [],
           dataProductSDP: []
         }
       },
@@ -209,6 +209,38 @@ describe('DataProduct component', () => {
     );
 
     expect(mockStoreReturn.updateAppContent2).not.toHaveBeenCalled();
+  });
+
+  it('persists a data product when a valid observation is explicitly selected', async () => {
+    mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 1 };
+    const updateAppContent2 = vi.fn();
+    mockStoreReturn = {
+      application: {
+        content2: {
+          observations: [
+            {
+              id: 'OBS1',
+              type: 'continuum',
+              centralFrequency: 1,
+              centralFrequencyUnits: 'Hz'
+            }
+          ],
+          dataProductSDP: []
+        }
+      },
+      updateAppContent2
+    };
+
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct />
+      </ThemeProvider>
+    );
+
+    updateAppContent2.mockClear();
+    fireEvent.click(screen.getByText(/Observation OBS1/));
+
+    await waitFor(() => expect(updateAppContent2).toHaveBeenCalled());
   });
 
   it('uses the PST proposal mode for the description when no observation is selected', () => {
