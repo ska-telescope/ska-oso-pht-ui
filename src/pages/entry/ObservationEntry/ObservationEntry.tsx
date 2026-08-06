@@ -140,14 +140,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const [subarrayConfig, setSubarrayConfig] = React.useState(SA_AA2);
   const [observingBand, setObservingBand] = React.useState(BAND_LOW_STR);
-  // In the SV single-target/single-observation case, obsTypeOptions (below) collapses to a
-  // single entry matching the proposal's scienceCategory - seed the initial value the same way,
-  // otherwise a fresh (non-edit) observation starts at TYPE_CONTINUUM and briefly mismatches that
-  // one option before the correcting effect further down fixes it up.
+  // Avoids a mismatch with obsTypeOptions (below), which collapses to a single entry matching
+  // the proposal's scienceCategory for SV.
   const [observationType, setObservationType] = React.useState(() =>
-    osdCyclePolicy?.maxTargets === 1 && osdCyclePolicy?.maxObservations === 1
-      ? (getProposal().scienceCategory ?? TYPE_CONTINUUM)
-      : TYPE_CONTINUUM
+    isSV ? (getProposal().scienceCategory ?? TYPE_CONTINUUM) : TYPE_CONTINUUM
   );
   const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT[TELESCOPE_LOW_NUM - 1]);
   const [weather, setWeather] = React.useState(Number(t('weather.default')));
