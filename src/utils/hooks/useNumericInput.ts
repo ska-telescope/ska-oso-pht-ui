@@ -61,5 +61,10 @@ export const useNumericInput = (
     }
   };
 
+  React.useEffect(() => {
+    setLocalValue(String(value));
+    setErrorText(runValidation(value));
+  }, [value]);
+
   return { localValue, errorText, handleChange };
 };
