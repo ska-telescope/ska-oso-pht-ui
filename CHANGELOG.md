@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Changed: updated documentation for some methods
+* Added: New observing mode for continuum and spectral observing
 * Added: Support for Solar System Objects
 * Bugfix: prevent 401 errors, wait until successful login before requesting observatory data
 * Updated: to 16.1 version of oso-services

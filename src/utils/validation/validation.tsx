@@ -22,6 +22,7 @@ import {
   STATUS_PARTIAL,
   TELESCOPE_LOW_NUM,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
   TYPE_ZOOM,
   ZOOM_BANDWIDTH_DEFAULT_LOW,
@@ -209,6 +210,9 @@ export const validateTechnicalPage = (proposal: Proposal) => {
   return result[count];
 };
 
+/**
+ * Checks whether the proposal's data product has valid polarisations for its science category.
+ */
 export const checkDP = (proposal: Proposal): number => {
   const validatePolarisations = (
     data: SDPSpectralData | SDPImageContinuumData | SDPFilterbankPSTData | SDPFlowthroughPSTData
@@ -225,6 +229,7 @@ export const checkDP = (proposal: Proposal): number => {
     const dataProduct = proposal.dataProductSDP?.[0] as DataProductSDPNew;
     switch (proposal.scienceCategory) {
       case TYPE_ZOOM:
+      case TYPE_CONTINUUM_SPECTRAL:
         return validatePolarisations(dataProduct.data as SDPSpectralData);
       case TYPE_CONTINUUM:
         return (dataProduct?.data as SDPImageContinuumData | SDPVisibilitiesContinuumData)
@@ -289,6 +294,10 @@ export const useValidateProposal = () => {
   };
 };
 
+/**
+ * Checks whether the proposal can navigate to the given page, e.g. blocking the
+ * Observation/Data Products/Calibration pages until a valid science category and target exist.
+ */
 export const validateProposalNavigation = (proposal: Proposal, page: number, checkLink = false) => {
   if (
     checkLink &&
@@ -297,6 +306,7 @@ export const validateProposalNavigation = (proposal: Proposal, page: number, che
     return (
       (proposal.scienceCategory === TYPE_CONTINUUM ||
         proposal.scienceCategory === TYPE_PST ||
+        proposal.scienceCategory === TYPE_CONTINUUM_SPECTRAL ||
         proposal.scienceCategory === TYPE_ZOOM) &&
       Array.isArray(proposal?.targets) &&
       proposal.targets.length > 0
