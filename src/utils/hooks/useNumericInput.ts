@@ -25,6 +25,7 @@ export const useNumericInput = (
 ) => {
   const [localValue, setLocalValue] = React.useState<string>(String(value));
   const [errorText, setErrorText] = React.useState('');
+  const valueRef = React.useRef(value);
 
   const toNumber = (input: string | number): number => {
     if (typeof input === 'number') {
@@ -49,22 +50,51 @@ export const useNumericInput = (
   };
 
   const handleChange = (input: number | string) => {
-    const rawValue = String(input);
-    const num = toNumber(rawValue);
-    setLocalValue(rawValue);
-    const error = runValidation(num);
-    if (error) {
-      setErrorText(error);
-    } else {
-      setErrorText('');
-      onCommit(num);
-    }
+    setLocalValue(String(input));
   };
 
+  const isEquivalentNumericString = (num: number, targetValue: number) =>
+    Number.isFinite(num) && num === targetValue;
+
   React.useEffect(() => {
-    setLocalValue(String(value));
+    const num = toNumber(localValue);
+    const error = runValidation(num);
+    const isEquivalent = isEquivalentNumericString(num, valueRef.current);
+    setErrorText(error);
+    if (!error && !isEquivalent) {
+      onCommit(num);
+    }
+  }, [
+    localValue,
+    onCommit,
+    validate,
+    requiredMessage,
+    rangeMessage,
+    minValue,
+    maxValue,
+    minInclusive,
+    maxInclusive
+  ]);
+
+  React.useEffect(() => {
+    valueRef.current = value;
+    const nextValue = String(value);
+    setLocalValue((current) => {
+      const currentAsNumber = toNumber(current);
+      const isEquivalent = isEquivalentNumericString(currentAsNumber, value);
+      return current === nextValue || isEquivalent ? current : nextValue;
+    });
     setErrorText(runValidation(value));
-  }, [value]);
+  }, [
+    value,
+    validate,
+    requiredMessage,
+    rangeMessage,
+    minValue,
+    maxValue,
+    minInclusive,
+    maxInclusive
+  ]);
 
   return { localValue, errorText, handleChange };
 };
