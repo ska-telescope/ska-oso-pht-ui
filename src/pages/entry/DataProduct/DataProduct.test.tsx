@@ -1,5 +1,5 @@
 // DataProduct.test.tsx
-import { describe, it, expect, vi } from 'vitest';
+import { beforeEach, describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import DataProduct from './DataProduct';
@@ -13,8 +13,9 @@ vi.mock('@/services/i18n/useScopedTranslation', () => ({
   useScopedTranslation: () => ({ t: (key: string) => key })
 }));
 vi.mock('@/utils/help/useHelp', () => ({ useHelp: () => ({ setHelp: vi.fn() }) }));
+let mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 2 };
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
-  useOSDAccessors: () => ({ osdCyclePolicy: { maxObservations: 5, maxDataProducts: 2 } })
+  useOSDAccessors: () => ({ osdCyclePolicy: mockOsdCyclePolicy })
 }));
 
 let mockStoreReturn: any = {
@@ -122,6 +123,14 @@ vi.mock('@/components/button/Add/Add', () => ({
 describe('DataProduct component', () => {
   const theme = createTheme();
 
+  beforeEach(() => {
+    mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 2 };
+    mockStoreReturn = {
+      application: { content2: { observations: [], dataProductSDP: [] } },
+      updateAppContent2: vi.fn()
+    };
+  });
+
   it('renders key input fields', () => {
     wrapper(
       <ThemeProvider theme={theme}>
@@ -179,6 +188,27 @@ describe('DataProduct component', () => {
     const addButton = screen.getByTestId('addDataProductButtonEntry');
     expect(addButton).toBeInTheDocument();
     expect(addButton).toHaveAttribute('disabled');
+  });
+
+  it('does not persist a data product when no real observation has been selected', () => {
+    mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 1 };
+    mockStoreReturn = {
+      application: {
+        content2: {
+          observations: [{ id: 'OBS1', type: 'continuum' }],
+          dataProductSDP: []
+        }
+      },
+      updateAppContent2: vi.fn()
+    };
+
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct />
+      </ThemeProvider>
+    );
+
+    expect(mockStoreReturn.updateAppContent2).not.toHaveBeenCalled();
   });
 
   it('uses the PST proposal mode for the description when no observation is selected', () => {

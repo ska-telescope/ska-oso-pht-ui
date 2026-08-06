@@ -144,7 +144,14 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const isDataTypeOne = () => dataProductType === DP_TYPE_IMAGES;
 
-  const hasRealObservationSelection = () => Boolean(observationId) || Boolean(getObservation()?.id);
+  const hasRealObservationSelection = () => {
+    if (!observationId) {
+      return false;
+    }
+
+    const proposalObservations = getProposal()?.observations ?? [];
+    return proposalObservations.some((obs) => obs.id === observationId);
+  };
 
   const getObservation = (obsId = observationId) => {
     const proposal = getProposal();
@@ -304,7 +311,11 @@ export default function DataProduct({ data }: DataProductProps) {
     setRotationMeasure(data?.rotationMeasure ?? 1);
   };
 
-  const dataProductOut = () => {
+  const dataProductOut = (): DataProductSDPNew | undefined => {
+    if (!id || !hasRealObservationSelection()) {
+      return undefined;
+    }
+
     const taper = isLow() ? taperLowValue : taperMidValue;
     const newDataProduct: DataProductSDPNew = {
       id: id,
@@ -340,9 +351,14 @@ export default function DataProduct({ data }: DataProductProps) {
       return;
     }
 
+    const newDataProduct = dataProductOut();
+    if (!newDataProduct) {
+      return;
+    }
+
     setProposal({
       ...getProposal(),
-      dataProductSDP: [...(getProposal()?.dataProductSDP ?? []), dataProductOut()]
+      dataProductSDP: [...(getProposal()?.dataProductSDP ?? []), newDataProduct]
     });
   };
 
@@ -352,7 +368,10 @@ export default function DataProduct({ data }: DataProductProps) {
     }
     const proposal = getProposal();
     const observation = getObservation();
-    const newDataProduct: DataProductSDPNew = dataProductOut();
+    const newDataProduct = dataProductOut();
+    if (!newDataProduct) {
+      return;
+    }
     const oldDataProducts = proposal.dataProductSDP ?? [];
     const to = await updateSensCalc(proposal, observation!, newDataProduct);
     setProposal({
