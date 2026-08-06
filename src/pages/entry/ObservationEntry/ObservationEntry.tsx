@@ -19,6 +19,7 @@ import {
   NAV,
   SUPPLIED_VALUE_DEFAULT_MID,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_INTEGRATION_TIME_UNITS_M,
   SUPPLIED_VALUE_DEFAULT_LOW,
@@ -139,7 +140,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const [subarrayConfig, setSubarrayConfig] = React.useState(SA_AA2);
   const [observingBand, setObservingBand] = React.useState(BAND_LOW_STR);
-  const [observationType, setObservationType] = React.useState(TYPE_CONTINUUM);
+  // Avoids a mismatch with obsTypeOptions (below), which collapses to a single entry matching
+  // the proposal's scienceCategory for SV.
+  const [observationType, setObservationType] = React.useState(() =>
+    isSV ? (getProposal().scienceCategory ?? TYPE_CONTINUUM) : TYPE_CONTINUUM
+  );
   const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT[TELESCOPE_LOW_NUM - 1]);
   const [weather, setWeather] = React.useState(Number(t('weather.default')));
   const [centralFrequency, setCentralFrequency] = React.useState(0);
@@ -514,7 +519,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     pstMode,
     spectralAveraging,
     spectralResolution,
-    zoomChannels
+    zoomChannels,
+    observationType
   ]);
 
   React.useEffect(() => {
@@ -543,7 +549,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setFrequencyUnits();
   }, [observingBand]);
 
-  const isContinuum = () => observationType === TYPE_CONTINUUM;
+  const isContinuum = () =>
+    observationType === TYPE_CONTINUUM || observationType === TYPE_CONTINUUM_SPECTRAL;
   const isZoom = () => observationType === TYPE_ZOOM;
   const isPST = () => observationType === TYPE_PST;
   const isLow = () => observingBand === BAND_LOW_STR;
