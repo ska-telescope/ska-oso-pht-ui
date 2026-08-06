@@ -35,6 +35,7 @@ import {
   TELESCOPE_MID_BACKEND_MAPPING,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
+  TYPE_CONTINUUM_SPECTRAL_LONG,
   TYPE_PST,
   TYPE_ZOOM,
   VEL_UNITS,
@@ -398,7 +399,7 @@ export const getObservationTypeDetails = (obs: Observation) => {
         bandwidth: getBandwidth(obs),
         central_frequency: getCentralFrequency(obs),
         supplied: getSupplied(obs) as SuppliedBackend,
-        observation_type: TYPE_CONTINUUM_SPECTRAL
+        observation_type: TYPE_CONTINUUM_SPECTRAL_LONG
       };
     case TYPE_ZOOM:
       return {

@@ -149,7 +149,8 @@ export const FREQUENCY_UNITS = [
 export const TYPE_ZOOM = 'spectral';
 export const TYPE_ZOOM_LONG = 'spectral line';
 export const TYPE_CONTINUUM = 'continuum';
-export const TYPE_CONTINUUM_SPECTRAL = 'continuum and spectral line';
+export const TYPE_CONTINUUM_SPECTRAL = 'continuumAndSpectralLine';
+export const TYPE_CONTINUUM_SPECTRAL_LONG = 'continuum and spectral line';
 export const TYPE_PST = 'pst';
 
 export const DETAILS = {

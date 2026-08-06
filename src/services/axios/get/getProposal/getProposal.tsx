@@ -27,6 +27,7 @@ import {
   DETAILS,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
+  TYPE_CONTINUUM_SPECTRAL_LONG,
   TYPE_ZOOM,
   VEL_TYPES,
   VEL_UNITS,
@@ -449,7 +450,9 @@ const getLinked = (
 
 // This is here as there is inconsistent representation of spectral and spectral line.
 const typeCheck = (inType: string | undefined): any => {
-  return inType === TYPE_ZOOM_LONG ? TYPE_ZOOM : inType;
+  if (inType === TYPE_ZOOM_LONG) return TYPE_ZOOM;
+  if (inType === TYPE_CONTINUUM_SPECTRAL_LONG) return TYPE_CONTINUUM_SPECTRAL;
+  return inType;
 };
 
 const getObservations = (
@@ -719,7 +722,7 @@ const getTargetObservation = (
   for (const result of inResults) {
     const resultObsType = getResultObsType(result, inObservationSets);
     const isContinuum =
-      resultObsType === TYPE_CONTINUUM || resultObsType === TYPE_CONTINUUM_SPECTRAL;
+      resultObsType === TYPE_CONTINUUM || resultObsType === TYPE_CONTINUUM_SPECTRAL_LONG;
     const isPST = resultObsType === TYPE_PST;
     const isSensitivity = result.result?.supplied_type === 'sensitivity';
 
