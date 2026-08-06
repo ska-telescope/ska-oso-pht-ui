@@ -935,21 +935,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       return entry.units;
     };
 
-    const suppliedUnitsField = () => (
-      <Box>
-        <DropDown
-          options={getUnitOptions()}
-          testId="suppliedUnits"
-          value={suppliedUnits}
-          disabled={isLow() && !cypressLowUnitsUnlocked}
-          setValue={setSuppliedUnits}
-          label=""
-          onFocus={() => setHelp('suppliedUnits')}
-          InputProps={{ disableUnderline: true }}
-        />
-      </Box>
-    );
-
     const { t } = useScopedTranslation();
     const { setHelp } = useHelp();
     const FIELD = 'suppliedValue';
@@ -1020,7 +1005,16 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           }}
           required
         />
-        {suppliedUnitsField()}
+        <DropDown
+          options={getUnitOptions()}
+          testId="suppliedUnits"
+          value={suppliedUnits}
+          disabled={isLow() && !cypressLowUnitsUnlocked}
+          setValue={setSuppliedUnits}
+          label=""
+          onFocus={() => setHelp('suppliedUnits')}
+          InputProps={{ disableUnderline: true }}
+        />
       </Box>
     );
   };
