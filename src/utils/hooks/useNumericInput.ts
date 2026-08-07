@@ -26,6 +26,8 @@ export const useNumericInput = (
   const [localValue, setLocalValue] = React.useState<string>(String(value));
   const [errorText, setErrorText] = React.useState('');
   const valueRef = React.useRef(value);
+  const localValueRef = React.useRef(localValue);
+  const errorTextRef = React.useRef('');
 
   const toNumber = (input: string | number): number => {
     if (typeof input === 'number') {
@@ -61,7 +63,11 @@ export const useNumericInput = (
     const error = runValidation(num);
     const isEquivalent = isEquivalentNumericString(num, valueRef.current);
     setErrorText(error);
-    if (!error && !isEquivalent) {
+    const localValueChanged = localValueRef.current !== localValue;
+    const becameValid = !!errorTextRef.current && !error;
+    localValueRef.current = localValue;
+    errorTextRef.current = error;
+    if ((localValueChanged || becameValid) && !error && !isEquivalent) {
       onCommit(num);
     }
   }, [
@@ -84,7 +90,9 @@ export const useNumericInput = (
       const isEquivalent = isEquivalentNumericString(currentAsNumber, value);
       return current === nextValue || isEquivalent ? current : nextValue;
     });
-    setErrorText(runValidation(value));
+    const nextError = runValidation(value);
+    setErrorText(nextError);
+    errorTextRef.current = nextError;
   }, [
     value,
     validate,
