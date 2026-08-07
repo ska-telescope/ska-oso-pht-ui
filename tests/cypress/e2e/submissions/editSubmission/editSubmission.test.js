@@ -152,10 +152,12 @@ describe('Edit Proposal', () => {
         clickStatusIconNav('statusId5'); //Click to observation page
         pageConfirmed('OBSERVATION');
         clickObservationSetup();
-        // The default centre frequency (band midpoint) isn't on the coarse-channel grid (see
-        // isCentralFrequencyDivisible) - set a valid one so the observation page doesn't fail
-        // its own validation before the proposal is even submitted.
-        updateFieldValue('centralFrequency', '200.390625');
+        // The band midpoint (200 MHz) isn't a valid centre frequency - a valid one needs the SPW's
+        // first coarse channel to be even (see isCentralFrequencyDivisible), matching ODT's own
+        // validated LOW spectral window schema. 199.609375 MHz is the nearest valid point (also
+        // ODT's own default), so set that explicitly rather than fail the observation page's own
+        // validation before the proposal is even submitted.
+        updateFieldValue('centralFrequency', '199.609375');
         clickAddObservationEntry();
         verifyDataInTable('review-table', 'Continuum');
         clickStatusIconNav('statusId7'); //Click to data product page
