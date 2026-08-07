@@ -27,6 +27,7 @@ import {
   DETAILS,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
+  TYPE_CONTINUUM_SPECTRAL_LEGACY,
   TYPE_CONTINUUM_SPECTRAL_LONG,
   TYPE_ZOOM,
   VEL_TYPES,
@@ -123,6 +124,10 @@ export const getScienceCategory = (scienceCat: string) => {
 };
 
 export const getObservingMode = (observingMode: string) => {
+  // Proposals saved while TYPE_CONTINUUM_SPECTRAL's internal value was still
+  // TYPE_CONTINUUM_SPECTRAL_LEGACY have that raw value in science_category, which won't match any
+  // DETAILS.ObservingMode label below - normalise it first so those proposals still resolve.
+  if (observingMode === TYPE_CONTINUUM_SPECTRAL_LEGACY) return TYPE_CONTINUUM_SPECTRAL;
   const obsMode = DETAILS.ObservingMode?.find(
     (obsMode) => obsMode.label.toLowerCase() === observingMode?.toLowerCase()
   )?.value;
@@ -453,6 +458,9 @@ const getLinked = (
 const typeCheck = (inType: string | undefined): any => {
   if (inType === TYPE_ZOOM_LONG) return TYPE_ZOOM;
   if (inType === TYPE_CONTINUUM_SPECTRAL_LONG) return TYPE_CONTINUUM_SPECTRAL;
+  // Proposals saved while TYPE_CONTINUUM_SPECTRAL's internal value was still
+  // TYPE_CONTINUUM_SPECTRAL_LEGACY have that raw value in observation_type - normalise it too.
+  if (inType === TYPE_CONTINUUM_SPECTRAL_LEGACY) return TYPE_CONTINUUM_SPECTRAL;
   return inType;
 };
 
