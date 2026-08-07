@@ -151,6 +151,10 @@ export const TYPE_ZOOM_LONG = 'spectral line';
 export const TYPE_CONTINUUM = 'continuum';
 export const TYPE_CONTINUUM_SPECTRAL = 'continuumSpectral';
 export const TYPE_CONTINUUM_SPECTRAL_LONG = 'continuum and spectral line';
+// TYPE_CONTINUUM_SPECTRAL's internal value before it was renamed - proposals saved while that
+// value was in effect can still have it stored in science_category/observation_type, so it needs
+// normalising back to TYPE_CONTINUUM_SPECTRAL wherever those fields are read (see getProposal.tsx).
+export const TYPE_CONTINUUM_SPECTRAL_LEGACY = 'continuumAndSpectralLine';
 export const TYPE_PST = 'pst';
 
 export const DETAILS = {
