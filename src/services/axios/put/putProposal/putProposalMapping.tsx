@@ -259,10 +259,10 @@ export const getDataProductScriptParameters = (
         polarisations: data?.polarisations ?? [],
         channels_out: data?.channelsOut ?? 0,
         gaussian_taper: data?.taperValue?.toString() ?? '0',
-        kind: obType === TYPE_CONTINUUM_SPECTRAL ? 'continuum and spectral line' : 'spectral',
+        kind: obType === TYPE_CONTINUUM_SPECTRAL ? TYPE_CONTINUUM_SPECTRAL_LONG : 'spectral',
         variant:
           obType === TYPE_CONTINUUM_SPECTRAL
-            ? 'continuum and spectral line image'
+            ? `${TYPE_CONTINUUM_SPECTRAL_LONG} image`
             : 'spectral image',
         continuum_subtraction: data?.continuumSubtraction
       };

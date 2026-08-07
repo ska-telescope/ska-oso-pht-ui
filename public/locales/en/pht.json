@@ -611,7 +611,7 @@
     "2": "PST",
     "spectral": "Spectral",
     "continuum": "Continuum",
-    "continuumAndSpectralLine": "Continuum and Spectral",
+    "continuumSpectral": "Continuum-Spectral",
     "pst": "PST"
   },
   "observatoryDataProduct": {
@@ -1159,7 +1159,7 @@
     "error": "A value is required",
     "all": "All Science Categories",
     "continuum": "Continuum",
-    "continuumAndSpectralLine": "Continuum and Spectral",
+    "continuumSpectral": "Continuum-Spectral",
     "spectral": "Spectral",
     "pst": "PST"
   },
@@ -1597,7 +1597,7 @@
 
           "2": "In Science Verification, Continuum data products include: \n\n• Calibrated visibilities averaged to the specified values (to enable full verification of the imaging ODPs).\n• MFS image, generated using the Briggs weighting scheme with robust parameter set to 0.\n• Model image\n• PSF image\n• Residual image\n• Ancillary data products including Local Sky Model catalogue and QA report."
         },
-        "continuumAndSpectralLine": {
+        "continuumSpectral": {
           "1": "In Science Verification, Continuum-Spectral data products include:\n\n• Spectral-line cube without continuum subtraction\n• If requested, spectral-line cube after continuum subtraction\n• Model images per channel\n• PSF images per channel\n• Residual images per channel\n• Calibrated visibilities averaged to 3.4 s and native channel width (to enable full verification of the imaging ODPs)\n• Ancillary data product including Local Sky Model catalogue and QA report."
         },
         "pst": {

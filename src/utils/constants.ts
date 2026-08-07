@@ -149,7 +149,7 @@ export const FREQUENCY_UNITS = [
 export const TYPE_ZOOM = 'spectral';
 export const TYPE_ZOOM_LONG = 'spectral line';
 export const TYPE_CONTINUUM = 'continuum';
-export const TYPE_CONTINUUM_SPECTRAL = 'continuumAndSpectralLine';
+export const TYPE_CONTINUUM_SPECTRAL = 'continuumSpectral';
 export const TYPE_CONTINUUM_SPECTRAL_LONG = 'continuum and spectral line';
 export const TYPE_PST = 'pst';
 
@@ -200,7 +200,7 @@ export const DETAILS = {
       observationType: TYPE_CONTINUUM
     },
     {
-      label: 'Continuum and Spectral',
+      label: 'Continuum-Spectral',
       subCategory: [{ label: 'Not specified', value: 1 }],
       value: TYPE_CONTINUUM_SPECTRAL,
       observationType: TYPE_CONTINUUM_SPECTRAL
