@@ -213,7 +213,9 @@ describe('DataProduct component', () => {
 
   it('persists a data product when a valid observation is explicitly selected', async () => {
     mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 1 };
-    const updateAppContent2 = vi.fn();
+    const updateAppContent2 = vi.fn((proposal: any) => {
+      mockStoreReturn.application.content2 = proposal;
+    });
     mockStoreReturn = {
       application: {
         content2: {
@@ -222,6 +224,12 @@ describe('DataProduct component', () => {
               id: 'OBS1',
               type: 'continuum',
               centralFrequency: 1,
+              centralFrequencyUnits: 'Hz'
+            },
+            {
+              id: 'OBS2',
+              type: 'continuum',
+              centralFrequency: 2,
               centralFrequencyUnits: 'Hz'
             }
           ],
@@ -237,10 +245,11 @@ describe('DataProduct component', () => {
       </ThemeProvider>
     );
 
-    updateAppContent2.mockClear();
-    fireEvent.click(screen.getByText(/Observation OBS1/));
+    fireEvent.click(screen.getByText(/Observation OBS2/));
 
-    await waitFor(() => expect(updateAppContent2).toHaveBeenCalled());
+    await waitFor(() => {
+      expect(mockStoreReturn.application.content2.dataProductSDP?.at(-1)?.observationId).toBe('OBS2');
+    });
   });
 
   it('uses the PST proposal mode for the description when no observation is selected', () => {
@@ -248,7 +257,7 @@ describe('DataProduct component', () => {
       application: {
         content2: {
           scienceCategory: 'pst',
-          observations: [{ id: 'OBS1', type: 'continuum' }],
+          observations: [],
           dataProductSDP: []
         }
       },
