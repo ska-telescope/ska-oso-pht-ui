@@ -248,7 +248,9 @@ describe('DataProduct component', () => {
     fireEvent.click(screen.getByText(/Observation OBS2/));
 
     await waitFor(() => {
-      expect(mockStoreReturn.application.content2.dataProductSDP?.at(-1)?.observationId).toBe('OBS2');
+      expect(mockStoreReturn.application.content2.dataProductSDP?.at(-1)?.observationId).toBe(
+        'OBS2'
+      );
     });
   });
 
