@@ -26,7 +26,7 @@ export default function RobustField({
   widthButton = 0
 }: RobustFieldProps) {
   const { t } = useScopedTranslation();
-  const { localValue, errorText, handleChange } = useNumericInput(value, setValue, {
+  const { text, error, handleChange } = useNumericInput(value, setValue, {
     requiredMessage: t('robust.error'),
     rangeMessage: t('robust.error'),
     minValue: ROBUST_RANGE.min,
@@ -34,7 +34,6 @@ export default function RobustField({
     minInclusive: true,
     maxInclusive: true
   });
-  const error = !!errorText;
 
   return (
     <Grid pt={1} spacing={0} container justifyContent="space-between" direction="row">
@@ -44,10 +43,10 @@ export default function RobustField({
           type="number"
           fullWidth
           disabled={disabled}
-          helperText={errorText}
+          helperText={error}
           label={label}
-          value={localValue}
-          error={error}
+          value={text}
+          error={!!error}
           onChange={(e) => handleChange(e.target.value)}
           onFocus={onFocus}
           slotProps={{
