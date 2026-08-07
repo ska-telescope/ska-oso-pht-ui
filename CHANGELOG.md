@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
+* Bugfix: fix name & default no of channels for cs mode and cf logic
 * Changed: updated documentation for some methods
 * Added: New observing mode for continuum and spectral observing
 * Added: Support for Solar System Objects
