@@ -3,6 +3,7 @@ import { describe, it, expect, vi, beforeAll } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import type { Proposal } from '@/utils/types/proposal';
+import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
 
 vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
   storageObject: {
@@ -32,32 +33,6 @@ const wrapper = (component: ReactElement) => {
 };
 
 type MockProposal = Proposal;
-
-const validProposal = {
-  id: 'proposal-1',
-  title: 'Sample Proposal',
-  status: 'Draft',
-  lastUpdated: '2025-09-17T10:00:00Z',
-  lastUpdatedBy: 'tester',
-  createdOn: '2025-09-17T10:00:00Z',
-  createdBy: 'tester',
-  version: 1,
-  cycle: 'SKA_1962_2024',
-  proposalType: 1,
-  scienceCategory: 'biology',
-  calibrationStrategy: [],
-  sciencePDF: null,
-  technicalPDF: null,
-  dataProductSDP: [],
-  dataProductSRC: [],
-  targets: [],
-  observations: [],
-  groupObservations: [],
-  targetObservation: [],
-  investigators: [],
-  abstract: '',
-  pipeline: ''
-} satisfies Proposal;
 
 describe('TableSubmissionsRow', () => {
   let TableSubmissionsRow: typeof import('./TableSubmissionsRow').default;
@@ -105,7 +80,7 @@ describe('TableSubmissionsRow', () => {
 
   const defaultProps = {
     item: mockItem,
-    proposal: validProposal,
+    proposal: MockProposalFrontend,
     index: 0,
     expanded: false,
     deleteClicked: vi.fn(),
