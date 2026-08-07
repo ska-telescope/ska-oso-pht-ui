@@ -43,7 +43,7 @@ export default function QuantityField({
   unitOptions,
   unitsTestId
 }: QuantityFieldProps) {
-  const { localValue, errorText, handleChange } = useNumericInput(value, setValue, {
+  const { text, error, handleChange } = useNumericInput(value, setValue, {
     requiredMessage: requiredMessage,
     rangeMessage: rangeMessage,
     minValue: minValue,
@@ -58,10 +58,10 @@ export default function QuantityField({
         variant="standard"
         type="number"
         fullWidth
-        helperText={errorText}
+        helperText={error}
         label={label}
-        value={localValue}
-        error={!!errorText}
+        value={text}
+        error={!!error}
         onChange={(e) => handleChange(e.target.value)}
         onFocus={onFocus}
         slotProps={{

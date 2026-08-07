@@ -12,7 +12,7 @@ interface NumericInputOptions {
 
 export const useNumericInput = (
   value: number,
-  onCommit: (num: number) => void,
+  setValue: (num: number) => void,
   {
     validate,
     requiredMessage = 'required',
@@ -23,11 +23,11 @@ export const useNumericInput = (
     maxInclusive = true
   }: NumericInputOptions = {}
 ) => {
-  const [localValue, setLocalValue] = React.useState<string>(String(value));
-  const [errorText, setErrorText] = React.useState('');
+  const [text, setText] = React.useState<string>(String(value));
+  const [error, setError] = React.useState('');
   const valueRef = React.useRef(value);
-  const localValueRef = React.useRef(localValue);
-  const errorTextRef = React.useRef('');
+  const textRef = React.useRef(text);
+  const errorRef = React.useRef('');
 
   const toNumber = (input: string | number): number => {
     if (typeof input === 'number') {
@@ -52,27 +52,27 @@ export const useNumericInput = (
   };
 
   const handleChange = (input: number | string) => {
-    setLocalValue(String(input));
+    setText(String(input));
   };
 
-  const isEquivalentNumericString = (num: number, targetValue: number) =>
+  const isEquivalentValue = (num: number, targetValue: number) =>
     Number.isFinite(num) && num === targetValue;
 
   React.useEffect(() => {
-    const num = toNumber(localValue);
-    const error = runValidation(num);
-    const isEquivalent = isEquivalentNumericString(num, valueRef.current);
-    setErrorText(error);
-    const localValueChanged = localValueRef.current !== localValue;
-    const becameValid = !!errorTextRef.current && !error;
-    localValueRef.current = localValue;
-    errorTextRef.current = error;
-    if ((localValueChanged || becameValid) && !error && !isEquivalent) {
-      onCommit(num);
+    const number = toNumber(text);
+    const error = runValidation(number);
+    const isEquivalent = isEquivalentValue(number, valueRef.current);
+    setError(error);
+    const textChanged = textRef.current !== text;
+    const becameValid = !!errorRef.current && !error;
+    textRef.current = text;
+    errorRef.current = error;
+    if ((textChanged || becameValid) && !error && !isEquivalent) {
+      setValue(number);
     }
   }, [
-    localValue,
-    onCommit,
+    text,
+    setValue,
     validate,
     requiredMessage,
     rangeMessage,
@@ -84,15 +84,15 @@ export const useNumericInput = (
 
   React.useEffect(() => {
     valueRef.current = value;
-    const nextValue = String(value);
-    setLocalValue((current) => {
+    const nextText = String(value);
+    setText((current) => {
       const currentAsNumber = toNumber(current);
-      const isEquivalent = isEquivalentNumericString(currentAsNumber, value);
-      return current === nextValue || isEquivalent ? current : nextValue;
+      const isEquivalent = isEquivalentValue(currentAsNumber, value);
+      return current === nextText || isEquivalent ? current : nextText;
     });
     const nextError = runValidation(value);
-    setErrorText(nextError);
-    errorTextRef.current = nextError;
+    setError(nextError);
+    errorRef.current = nextError;
   }, [
     value,
     validate,
@@ -104,5 +104,5 @@ export const useNumericInput = (
     maxInclusive
   ]);
 
-  return { localValue, errorText, handleChange };
+  return { text, error, handleChange };
 };
