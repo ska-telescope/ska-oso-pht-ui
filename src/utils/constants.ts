@@ -238,7 +238,7 @@ export const SET_CONTINUUM_SUBSTRACTION_DEFAULT = true;
 export const BIT_DEPTH_DEFAULT = 1;
 export const TIME_AVERAGING_DEFAULT = 1;
 export const FREQUENCY_AVERAGING_DEFAULT = 1;
-export const POLARISATIONS_DEFAULT = ['I', 'XX'];
+export const POLARISATIONS_DEFAULT = ['I'];
 
 export const BANDWIDTH_LABEL_SELECTOR = 0;
 
