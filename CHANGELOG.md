@@ -6,7 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 UNRELEASED
 ----------
-* Bugfix: fix name & default no of channels for cs mode and cf logic
+* Bugfix: fix new mode name as 'continuum-spectral'. It now has a default of 4000 output channels
+* Bugfix: central frequency step now goes from even channel to next even channel
 * Changed: updated documentation for some methods
 * Added: New observing mode for continuum and spectral observing
 * Added: Support for Solar System Objects
