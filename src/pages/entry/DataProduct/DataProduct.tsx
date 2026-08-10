@@ -130,7 +130,39 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const [weighting, setWeighting] = React.useState(IW_UNIFORM);
   const [robust, setRobust] = React.useState(ROBUST_DEFAULT);
-  const [channelsOut, setChannelsOut] = React.useState(CHANNELS_OUT_DEFAULT);
+
+  // channelsOutMax needs to be usable both as the initial value below and later as the field's
+  // live max/validity bound, so getObservation/isCombined/channelsOutMax are defined here (ahead
+  // of most other helpers in this component) rather than down with the rest of the isXxx() mode
+  // checks.
+  const getObservation = (obsId = observationId) => {
+    const proposal = getProposal();
+    const proposalObservations = proposal?.observations ?? [];
+    const selectedObservation =
+      baseObservations?.find((obs) => obs.id === obsId) ??
+      proposalObservations.find((obs) => obs.id === obsId);
+
+    if (selectedObservation) {
+      return selectedObservation;
+    }
+
+    const pstObservation = proposalObservations.find((obs) => obs.type === TYPE_PST);
+    if (pstObservation) {
+      return pstObservation;
+    }
+
+    if (proposal?.scienceCategory) {
+      return { type: proposal.scienceCategory } as Observation;
+    }
+
+    return proposalObservations[0];
+  };
+  const isCombined = () =>
+    getObservation()?.type === TYPE_CONTINUUM_SPECTRAL ||
+    getProposal()?.scienceCategory === TYPE_CONTINUUM_SPECTRAL;
+  const channelsOutMax = () => (isCombined() ? CHANNELS_OUT_MAX_COMBINED : CHANNELS_OUT_MAX);
+
+  const [channelsOut, setChannelsOut] = React.useState(channelsOutMax);
   const [continuumSubtraction, setContinuumSubtraction] = React.useState(
     SET_CONTINUUM_SUBSTRACTION_DEFAULT
   );
@@ -154,29 +186,6 @@ export default function DataProduct({ data }: DataProductProps) {
 
     const proposalObservations = getProposal()?.observations ?? [];
     return proposalObservations.some((obs) => obs.id === observationId);
-  };
-
-  const getObservation = (obsId = observationId) => {
-    const proposal = getProposal();
-    const proposalObservations = proposal?.observations ?? [];
-    const selectedObservation =
-      baseObservations?.find((obs) => obs.id === obsId) ??
-      proposalObservations.find((obs) => obs.id === obsId);
-
-    if (selectedObservation) {
-      return selectedObservation;
-    }
-
-    const pstObservation = proposalObservations.find((obs) => obs.type === TYPE_PST);
-    if (pstObservation) {
-      return pstObservation;
-    }
-
-    if (proposal?.scienceCategory) {
-      return { type: proposal.scienceCategory } as Observation;
-    }
-
-    return proposalObservations[0];
   };
 
   const getDataProductTypeValue = (dp?: DataProductSDPNew) =>
@@ -234,10 +243,6 @@ export default function DataProduct({ data }: DataProductProps) {
     getProposal()?.scienceCategory === TYPE_CONTINUUM_SPECTRAL;
   const isPST = () =>
     getObservation()?.type === TYPE_PST || getProposal()?.scienceCategory === TYPE_PST;
-  const isCombined = () =>
-    getObservation()?.type === TYPE_CONTINUUM_SPECTRAL ||
-    getProposal()?.scienceCategory === TYPE_CONTINUUM_SPECTRAL;
-  const channelsOutMax = () => (isCombined() ? CHANNELS_OUT_MAX_COMBINED : CHANNELS_OUT_MAX);
 
   const isLow = () => getObservation()?.observingBand === BAND_LOW_STR;
 
@@ -310,7 +315,7 @@ export default function DataProduct({ data }: DataProductProps) {
     setWeighting(data?.weighting ?? IW_UNIFORM);
     setRobust(data?.robust ?? ROBUST_DEFAULT);
     setPolarisations(data?.polarisations ?? []);
-    setChannelsOut(data?.channelsOut ?? CHANNELS_OUT_DEFAULT);
+    setChannelsOut(data?.channelsOut ?? channelsOutMax());
     setTimeAveraging(data?.timeAveraging ?? TIME_AVERAGING_DEFAULT);
     setFrequencyAveraging(data?.frequencyAveraging ?? FREQUENCY_AVERAGING_DEFAULT);
     setContinuumSubtraction(data?.continuumSubtraction ?? SET_CONTINUUM_SUBSTRACTION_DEFAULT);
@@ -563,6 +568,9 @@ export default function DataProduct({ data }: DataProductProps) {
     if (!isEdit()) {
       const sdpType = getDataProductType(getObservation()?.type ?? '', getResolvedPstMode());
       setDataProductType(sdpType);
+      // channelsOut's initial state is set before an observation is selected (so isCombined()
+      // can't see it yet) - re-derive it once the observation for this new data product is known.
+      setChannelsOut(channelsOutMax());
     }
   }, [observationId]);
 

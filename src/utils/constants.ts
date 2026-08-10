@@ -149,7 +149,7 @@ export const FREQUENCY_UNITS = [
 export const TYPE_ZOOM = 'spectral';
 export const TYPE_ZOOM_LONG = 'spectral line';
 export const TYPE_CONTINUUM = 'continuum';
-export const TYPE_CONTINUUM_SPECTRAL = 'continuumAndSpectralLine';
+export const TYPE_CONTINUUM_SPECTRAL = 'continuumSpectral';
 export const TYPE_CONTINUUM_SPECTRAL_LONG = 'continuum and spectral line';
 export const TYPE_PST = 'pst';
 
@@ -200,7 +200,7 @@ export const DETAILS = {
       observationType: TYPE_CONTINUUM
     },
     {
-      label: 'Continuum and Spectral',
+      label: 'Continuum-Spectral',
       subCategory: [{ label: 'Not specified', value: 1 }],
       value: TYPE_CONTINUUM_SPECTRAL,
       observationType: TYPE_CONTINUUM_SPECTRAL
@@ -776,6 +776,9 @@ export const DEFAULT_CONTINUUM_OBSERVATION_LOW: Observation = {
   linked: '0',
   type: TYPE_CONTINUUM,
   observingBand: BAND_LOW_STR,
+  // Not 200 exactly - a valid centre frequency needs the SPW's first coarse channel to be even
+  // (see isCentralFrequencyDivisible); this is the nearest valid point to the 50-350 MHz band
+  // midpoint, and matches ODT's own LowBandDefaults.centreMhz (the validated reference value).
   centralFrequency: 199.609375,
   centralFrequencyUnits: FREQUENCY_MHZ,
   continuumBandwidth: 150,
@@ -827,9 +830,9 @@ export const DEFAULT_PST_OBSERVATION_LOW: Observation = {
   linked: '0',
   type: TYPE_PST,
   observingBand: BAND_LOW_STR,
-  // Not 200 exactly - the real 50-350 MHz band midpoint isn't on the coarse-channel grid (see
-  // isCentralFrequencyDivisible); this is the nearest valid point (781250 Hz coarse channel).
-  centralFrequency: 200.390625,
+  // See DEFAULT_CONTINUUM_OBSERVATION_LOW's centralFrequency comment - same 150 MHz bandwidth, so
+  // the same nearest-valid-point value applies here too.
+  centralFrequency: 199.609375,
   centralFrequencyUnits: FREQUENCY_MHZ,
   continuumBandwidth: 150,
   continuumBandwidthUnits: FREQUENCY_MHZ,

@@ -1,5 +1,6 @@
 import {
   CHANNELS_OUT_DEFAULT,
+  CHANNELS_OUT_MAX_COMBINED,
   DP_TYPE_IMAGES,
   DP_TYPE_VISIBLE,
   IMAGE_SIZE_DEFAULT,
@@ -95,7 +96,6 @@ export const SDPData = (
         dataProductType: PULSAR_TIMING_VALUE
       } as SDPFlowthroughPSTData;
     case TYPE_ZOOM:
-    case TYPE_CONTINUUM_SPECTRAL:
       return {
         imageSizeValue: IMAGE_SIZE_DEFAULT,
         imageSizeUnits: IMAGE_SIZE_UNIT_DEFAULT,
@@ -104,6 +104,19 @@ export const SDPData = (
         weighting: IW_UNIFORM,
         polarisations: POLARISATIONS_DEFAULT,
         channelsOut: CHANNELS_OUT_DEFAULT,
+        robust: ROBUST_DEFAULT,
+        taperValue: TAPER_DEFAULT,
+        continuumSubtraction: true
+      } as SDPSpectralData;
+    case TYPE_CONTINUUM_SPECTRAL:
+      return {
+        imageSizeValue: IMAGE_SIZE_DEFAULT,
+        imageSizeUnits: IMAGE_SIZE_UNIT_DEFAULT,
+        pixelSizeValue: PIXEL_SIZE_DEFAULT,
+        pixelSizeUnits: PIXEL_SIZE_UNIT_DEFAULT,
+        weighting: IW_UNIFORM,
+        polarisations: POLARISATIONS_DEFAULT,
+        channelsOut: CHANNELS_OUT_MAX_COMBINED,
         robust: ROBUST_DEFAULT,
         taperValue: TAPER_DEFAULT,
         continuumSubtraction: true

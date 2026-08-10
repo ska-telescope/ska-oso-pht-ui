@@ -98,8 +98,8 @@ export const isCentralFrequencyOnChannelGrid = (
 // Number.isInteger check can't absorb.
 export const isCentralFrequencyDivisible = (cfValueHz: number, channelWidthHz: number): boolean => {
   if (channelWidthHz <= 0) return true;
-  const nearestOffset = Math.round(cfValueHz / channelWidthHz - 0.5);
-  const gridHz = (nearestOffset + 0.5) * channelWidthHz;
+  const nearestValidChannelPair = Math.round((cfValueHz / channelWidthHz + 0.5) / 2);
+  const gridHz = (2 * nearestValidChannelPair - 0.5) * channelWidthHz;
   return Math.abs(cfValueHz - gridHz) < 1;
 };
 

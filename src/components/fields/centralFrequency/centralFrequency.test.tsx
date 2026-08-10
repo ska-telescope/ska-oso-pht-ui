@@ -104,13 +104,27 @@ describe('CentralFrequency component', () => {
 
   it('Continuum/MID mode steps by one coarse-channel-grid unit on ArrowUp', async () => {
     const setValue = vi.fn();
-    // A valid centre frequency sits at a half-channel offset from 0 Hz (192.5 x 0.78125 MHz
-    // channels here), not merely a multiple of the 1.5625 MHz step from the band minimum.
+    // A valid centre frequency is one where the SPW's first coarse channel is even - bandwidth-
+    // independent, matching ODT's own validated LOW spectral window schema (see
+    // isCentralFrequencyDivisible). 149.609375 MHz sits on that grid (191.5 x 0.78125 MHz channels).
     wrapper(
-      <CentralFrequency observingBand={BAND_LOW_STR} value={150.390625} setValue={setValue} />
+      <CentralFrequency observingBand={BAND_LOW_STR} value={149.609375} setValue={setValue} />
     );
     await pressArrowUp(screen.getByTestId('centralFrequency'));
-    expect(setValue).toHaveBeenCalledWith(151.953125);
+    expect(setValue).toHaveBeenCalledWith(151.171875);
+  });
+
+  it('Continuum/MID mode snaps an off-grid starting value onto the grid before stepping', async () => {
+    const setValue = vi.fn();
+    // 150 MHz is off-grid and unambiguously closer to 149.609375 MHz than to the next valid value
+    // up (151.171875 MHz) - stepping should first snap it down to 149.609375 MHz before adding one
+    // step, landing on the same result as the already-on-grid case above. (150.390625 MHz, the
+    // exact midpoint between those two valid values, is deliberately avoided here - Math.round's
+    // round-half-up tie-break would snap it up instead, which is correct but not what this test is
+    // meant to demonstrate.)
+    wrapper(<CentralFrequency observingBand={BAND_LOW_STR} value={150} setValue={setValue} />);
+    await pressArrowUp(screen.getByTestId('centralFrequency'));
+    expect(setValue).toHaveBeenCalledWith(151.171875);
   });
 
   it('Low zoom mode renders a stepped number field and calls setValue on ArrowUp', async () => {

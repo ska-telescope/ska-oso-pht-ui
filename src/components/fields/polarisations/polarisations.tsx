@@ -1,5 +1,5 @@
 import { Box, Grid } from '@mui/system';
-import { TYPE_CONTINUUM, TYPE_PST, TYPE_ZOOM } from '@utils/constants.ts';
+import { TYPE_CONTINUUM, TYPE_PST } from '@utils/constants.ts';
 import { Typography } from '@mui/material';
 import { LABEL_POSITION, TickBox } from '@ska-telescope/ska-gui-components';
 import { useMemo } from 'react';
@@ -48,11 +48,11 @@ export default function PolarisationsField({
 
   const options = useMemo(() => {
     const base =
-      observationType === TYPE_CONTINUUM || observationType === TYPE_ZOOM
-        ? POLARISATIONS
-        : observationType === TYPE_PST && dataProductType === 1
+      observationType === TYPE_PST
+        ? dataProductType === 1
           ? POLARISATIONS_PST_BANK
-          : POLARISATIONS_PST_FLOW;
+          : POLARISATIONS_PST_FLOW
+        : POLARISATIONS;
 
     return base.map((el) => ({
       label: t(`${FIELD}.${el.value}`),

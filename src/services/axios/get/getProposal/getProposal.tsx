@@ -292,10 +292,11 @@ const getDataProductSRC = (inValue: DataProductSRCNetBackend[] | null): DataProd
     : [];
 };
 
+// The image/visibilities split is carried on `variant`, not `kind` - `kind` is 'continuum' for
+// both a continuum image and its hidden visibilities companion (see getDataProductScriptParameters
+// in putProposalMapping.tsx), so switching on kind here could never actually match either of them.
 const getDataProductType = (el: any) => {
-  switch (el.kind.toLowerCase()) {
-    case 'continuum image':
-      return DP_TYPE_IMAGES;
+  switch ((el.variant ?? '').toLowerCase()) {
     case 'visibilities':
       return DP_TYPE_VISIBLE;
     case 'detected filterbank':
