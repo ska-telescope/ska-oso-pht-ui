@@ -453,9 +453,6 @@ const getLinked = (
 const typeCheck = (inType: string | undefined): any => {
   if (inType === TYPE_ZOOM_LONG) return TYPE_ZOOM;
   if (inType === TYPE_CONTINUUM_SPECTRAL_LONG) return TYPE_CONTINUUM_SPECTRAL;
-  // Proposals saved while TYPE_CONTINUUM_SPECTRAL's internal value was still
-  // TYPE_CONTINUUM_SPECTRAL_LEGACY have that raw value in observation_type - normalise it too.
-  if (inType === TYPE_CONTINUUM_SPECTRAL_LEGACY) return TYPE_CONTINUUM_SPECTRAL;
   return inType;
 };
 
