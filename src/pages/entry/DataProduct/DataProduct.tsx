@@ -16,11 +16,13 @@ import TickIcon from '@components/icon/tickIcon/tickIcon.tsx';
 import TaperDropdown from '@/components/fields/taperDropdown/taperDropdown';
 import { ValueUnitPair } from '@utils/types/typesSensCalc.tsx';
 import PolarisationsField from '@/components/fields/polarisations/polarisations';
+import { HiddenSDPData } from '@/utils/autoLinking/AutoLinking';
 import {
   BAND_LOW_STR,
   BIT_DEPTH_DEFAULT,
   CHANNELS_OUT_DEFAULT,
   CHANNELS_OUT_MAX,
+  CHANNELS_OUT_MAX_COMBINED,
   CHANNELS_OUT_MIN,
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
@@ -49,6 +51,7 @@ import {
   TAPER_DEFAULT,
   TIME_AVERAGING_DEFAULT,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
   TYPE_ZOOM,
   WRAPPER_HEIGHT
@@ -225,9 +228,16 @@ export default function DataProduct({ data }: DataProductProps) {
   const isContinuum = () =>
     getObservation()?.type === TYPE_CONTINUUM || getProposal()?.scienceCategory === TYPE_CONTINUUM;
   const isSpectral = () =>
-    getObservation()?.type === TYPE_ZOOM || getProposal()?.scienceCategory === TYPE_ZOOM;
+    getObservation()?.type === TYPE_ZOOM ||
+    getProposal()?.scienceCategory === TYPE_ZOOM ||
+    getObservation()?.type === TYPE_CONTINUUM_SPECTRAL ||
+    getProposal()?.scienceCategory === TYPE_CONTINUUM_SPECTRAL;
   const isPST = () =>
     getObservation()?.type === TYPE_PST || getProposal()?.scienceCategory === TYPE_PST;
+  const isCombined = () =>
+    getObservation()?.type === TYPE_CONTINUUM_SPECTRAL ||
+    getProposal()?.scienceCategory === TYPE_CONTINUUM_SPECTRAL;
+  const channelsOutMax = () => (isCombined() ? CHANNELS_OUT_MAX_COMBINED : CHANNELS_OUT_MAX);
 
   const isLow = () => getObservation()?.observingBand === BAND_LOW_STR;
 
@@ -346,22 +356,64 @@ export default function DataProduct({ data }: DataProductProps) {
 
   /* ------------------------------------------- */
 
+  // Combined mode's hidden visibilities ODP (see HiddenSDPData) is created automatically by the
+  // SV auto-linking flow, but a data product added/edited manually here needs the same companion
+  // - add it if this observation doesn't already have one.
+  const ensureHiddenDataProduct = (
+    dataProducts: DataProductSDPNew[],
+    observation?: Observation
+  ): DataProductSDPNew[] => {
+    if (!observation || observation.type !== TYPE_CONTINUUM_SPECTRAL) {
+      return dataProducts;
+    }
+    const alreadyHasHidden = dataProducts.some(
+      (dp) => dp.observationId === observation.id && getDataProductTypeValue(dp) === DP_TYPE_VISIBLE
+    );
+    if (alreadyHasHidden) {
+      return dataProducts;
+    }
+    const hiddenData = HiddenSDPData(observation);
+    if (!hiddenData) {
+      return dataProducts;
+    }
+    return [
+      ...dataProducts,
+      {
+        id: generateId('SDP-', 6),
+        observationId: observation.id,
+        data: hiddenData
+      }
+    ];
+  };
+
+  /**
+   * Add Observation Data Products (ODPs) for both imaging and visabilities to the proposal.
+   */
   const addToProposal = () => {
     if (!hasRealObservationSelection()) {
       return;
     }
 
+    const proposal = getProposal();
+    const observation = getObservation();
     const newDataProduct = dataProductOut();
     if (!newDataProduct) {
       return;
     }
 
+    const dataProductSDP = ensureHiddenDataProduct(
+      [...(proposal?.dataProductSDP ?? []), newDataProduct],
+      observation
+    );
     setProposal({
-      ...getProposal(),
-      dataProductSDP: [...(getProposal()?.dataProductSDP ?? []), newDataProduct]
+      ...proposal,
+      dataProductSDP
     });
   };
 
+  /**
+   * Update the proposal's Observation Data Products (ODPs) for both imaging and visabilities.
+   */
   const updateToProposal = async () => {
     if (!hasRealObservationSelection()) {
       return;
@@ -374,9 +426,13 @@ export default function DataProduct({ data }: DataProductProps) {
     }
     const oldDataProducts = proposal.dataProductSDP ?? [];
     const to = await updateSensCalc(proposal, observation!, newDataProduct);
+    const dataProductSDP = ensureHiddenDataProduct(
+      updateDataProducts(oldDataProducts, newDataProduct),
+      observation
+    );
     setProposal({
       ...proposal,
-      dataProductSDP: updateDataProducts(oldDataProducts, newDataProduct),
+      dataProductSDP,
       targetObservation: to
     });
   };
@@ -694,7 +750,8 @@ export default function DataProduct({ data }: DataProductProps) {
   const channelsOutField = () =>
     fieldWrapper(
       <ChannelsOutField
-        onFocus={() => setHelp('channelsOut', { min: CHANNELS_OUT_MIN, max: CHANNELS_OUT_MAX })}
+        maxValue={channelsOutMax()}
+        onFocus={() => setHelp('channelsOut', { min: CHANNELS_OUT_MIN, max: channelsOutMax() })}
         required
         setValue={setChannelsOut}
         value={channelsOut}
@@ -759,10 +816,13 @@ export default function DataProduct({ data }: DataProductProps) {
   const channelsOutValid = () =>
     Number.isInteger(channelsOut) &&
     channelsOut >= CHANNELS_OUT_MIN &&
-    channelsOut <= CHANNELS_OUT_MAX;
+    channelsOut <= channelsOutMax();
   const polarisationsValid = () => polarisations.length > 0;
 
   const pageFooter = () => {
+    /**
+     * Update button is only enabled if the details pass basic validation.
+     */
     const enabled = () => {
       if (!hasRealObservationSelection()) {
         return false;
@@ -770,6 +830,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
       switch (getObservation()?.type) {
         case TYPE_ZOOM:
+        case TYPE_CONTINUUM_SPECTRAL:
           return (
             pixelSizeValid() &&
             imageSizeValid() &&

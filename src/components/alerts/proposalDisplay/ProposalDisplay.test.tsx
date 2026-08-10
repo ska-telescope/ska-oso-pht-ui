@@ -99,4 +99,59 @@ describe('<ProposalDisplay />', () => {
       />
     );
   });
+
+  test('does not show raw latex syntax in rendered title output', () => {
+    const longLatexTitle = '$\\frac{1234567890123456789012345678901234567890}{x}$';
+
+    wrapper(
+      <ProposalDisplay
+        proposal={{
+          id: '',
+          title: longLatexTitle,
+          status: '',
+          lastUpdated: '',
+          lastUpdatedBy: '',
+          createdOn: '',
+          createdBy: '',
+          version: 0,
+          cycle: '',
+          proposalType: 0,
+          proposalSubType: undefined,
+          scienceCategory: 0,
+          scienceSubCategory: undefined,
+          investigators: undefined,
+          abstract: undefined,
+          sciencePDF: null,
+          scienceLoadStatus: undefined,
+          targetOption: undefined,
+          targets: undefined,
+          observations: undefined,
+          groupObservations: undefined,
+          targetObservation: undefined,
+          technicalPDF: null,
+          technicalLoadStatus: undefined,
+          dataProductSDP: undefined,
+          dataProductSRC: undefined,
+          pipeline: undefined,
+          calibrationStrategy: []
+        }}
+        open={true}
+        onClose={mockActionClose}
+        onConfirm={mockActionConfirm}
+      />
+    );
+
+    const renderedFraction = document.querySelector('#title .katex .mfrac');
+    expect(renderedFraction).toBeInTheDocument();
+    const renderedLatex = document.querySelector('#title .katex-html');
+    expect(renderedLatex).toBeInTheDocument();
+    expect(renderedLatex).not.toHaveTextContent(/\\[a-zA-Z]+/);
+
+    const titleContainer = screen.getByTestId('proposal-title-latex');
+    expect(titleContainer).toHaveStyle({
+      overflow: 'hidden',
+      textOverflow: 'ellipsis',
+      whiteSpace: 'nowrap'
+    });
+  });
 });

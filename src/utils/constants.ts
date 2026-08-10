@@ -87,6 +87,7 @@ export const BIT_DEPTH = [
 
 export const CHANNELS_OUT_MIN = 1;
 export const CHANNELS_OUT_MAX = 40;
+export const CHANNELS_OUT_MAX_COMBINED = 4000;
 
 export const CONFLICT_REASONS = [
   'conflict-none',
@@ -148,6 +149,8 @@ export const FREQUENCY_UNITS = [
 export const TYPE_ZOOM = 'spectral';
 export const TYPE_ZOOM_LONG = 'spectral line';
 export const TYPE_CONTINUUM = 'continuum';
+export const TYPE_CONTINUUM_SPECTRAL = 'continuumAndSpectralLine';
+export const TYPE_CONTINUUM_SPECTRAL_LONG = 'continuum and spectral line';
 export const TYPE_PST = 'pst';
 
 export const DETAILS = {
@@ -197,6 +200,12 @@ export const DETAILS = {
       observationType: TYPE_CONTINUUM
     },
     {
+      label: 'Continuum and Spectral',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: TYPE_CONTINUUM_SPECTRAL,
+      observationType: TYPE_CONTINUUM_SPECTRAL
+    },
+    {
       label: 'PST',
       subCategory: [{ label: 'Not specified', value: 1 }],
       value: TYPE_PST,
@@ -229,7 +238,7 @@ export const SET_CONTINUUM_SUBSTRACTION_DEFAULT = true;
 export const BIT_DEPTH_DEFAULT = 1;
 export const TIME_AVERAGING_DEFAULT = 1;
 export const FREQUENCY_AVERAGING_DEFAULT = 1;
-export const POLARISATIONS_DEFAULT = ['I', 'XX'];
+export const POLARISATIONS_DEFAULT = ['I'];
 
 export const BANDWIDTH_LABEL_SELECTOR = 0;
 

@@ -13,6 +13,7 @@ import {
   ROBUST_DEFAULT,
   TAPER_DEFAULT,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
   TYPE_ZOOM
 } from '../constants';
@@ -39,16 +40,29 @@ interface DefaultsResults {
   error?: string;
 }
 
+const RECOGNISED_OBSERVATION_MODES = [TYPE_CONTINUUM, TYPE_ZOOM, TYPE_PST, TYPE_CONTINUUM_SPECTRAL];
+
+/**
+ * Builds a new default observation for the given mode.
+ *
+ * For a recognised mode we deliberately want to force it back to the actually selected mode so
+ * that it can be used downstream in the panel/field selection.
+ * For an unrecognised mode use continuum as a fallback rather than pass on a string that would
+ * not be recognised downstream and silently default to PST.
+ * DEFAULT_ZOOM_OBSERVATION_LOW's zoomChannels is a static placeholder overriden with the real cap
+ * to be used once this is available.
+ */
 export const newObservationForMode = (
   observationMode: string,
   maxZoomChannels?: number
 ): Observation => {
+  const defaultObservation = getDefaultObservationLowAA2(observationMode);
   return {
-    ...getDefaultObservationLowAA2(observationMode),
+    ...defaultObservation,
     id: generateId('obs-', 6),
-    // DEFAULT_ZOOM_OBSERVATION_LOW's zoomChannels is a static placeholder (1000) with no
-    // knowledge of the actual subarray's channel cap - override it with the real cap when the
-    // caller has it available, rather than baking the placeholder into the saved observation.
+    type: RECOGNISED_OBSERVATION_MODES.includes(observationMode)
+      ? observationMode
+      : defaultObservation.type,
     ...(observationMode === TYPE_ZOOM && maxZoomChannels ? { zoomChannels: maxZoomChannels } : {})
   };
 };
@@ -63,6 +77,9 @@ export const newCalibrationStrategy = (observationId: string): CalibrationStrate
   };
 };
 
+/**
+ * Builds the default data product for the given observation's mode.
+ */
 export const SDPData = (
   observation: Observation
 ):
@@ -78,6 +95,7 @@ export const SDPData = (
         dataProductType: PULSAR_TIMING_VALUE
       } as SDPFlowthroughPSTData;
     case TYPE_ZOOM:
+    case TYPE_CONTINUUM_SPECTRAL:
       return {
         imageSizeValue: IMAGE_SIZE_DEFAULT,
         imageSizeUnits: IMAGE_SIZE_UNIT_DEFAULT,
@@ -107,6 +125,10 @@ export const SDPData = (
   }
 };
 
+/**
+ * Builds the hidden companion data product (written to the proposal but not displayed) for the
+ * given observation's mode, or null for modes that don't have one.
+ */
 export const HiddenSDPData = (
   observation: Observation
 ):
@@ -132,13 +154,12 @@ export const HiddenSDPData = (
         timeAveraging: 4,
         frequencyAveraging: 4
       } as SDPVisibilitiesContinuumData;
-    // TODO BTN-3259
-    // case TYPE_CONTINUUM_SPECTRAL:
-    //   return {
-    //     dataProductType: DP_TYPE_VISIBLE,
-    //     timeAveraging: 4,
-    //     frequencyAveraging: 1
-    //   } as SDPVisibilitiesContinuumData;
+    case TYPE_CONTINUUM_SPECTRAL:
+      return {
+        dataProductType: DP_TYPE_VISIBLE,
+        timeAveraging: 4,
+        frequencyAveraging: 1
+      } as SDPVisibilitiesContinuumData;
     default:
       return null;
   }

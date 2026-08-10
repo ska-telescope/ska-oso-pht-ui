@@ -17,6 +17,7 @@ import { SensCalcResultsBackend } from '@utils/types/sensCalcResults.tsx';
 import {
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
+  DP_TYPE_VISIBLE,
   FREQUENCY_UNITS,
   DETAILS,
   IMAGE_WEIGHTING,
@@ -33,6 +34,8 @@ import {
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_BACKEND_MAPPING,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
+  TYPE_CONTINUUM_SPECTRAL_LONG,
   TYPE_PST,
   TYPE_ZOOM,
   VEL_UNITS,
@@ -42,8 +45,10 @@ import {
   REFERENCE_COORDINATE_TYPE_SSO
 } from '@utils/constants.ts';
 import {
+  DataProductSDPContinuumVisibilitiesBackend,
   DataProductSDPNew,
   DataProductSDPsBackend,
+  DataProductSDPSpectralImageBackend,
   DataProductSRC,
   DataProductSRCNetBackend,
   SDPFilterbankPSTData,
@@ -60,7 +65,7 @@ import { getBandwidthZoom, helpers } from '@/utils/helpers';
 import { CalibrationStrategy, CalibrationStrategyBackend } from '@/utils/types/calibrationStrategy';
 import { SuppliedBackend } from '@/utils/types/supplied';
 
-const isContinuum = (type: string) => type === TYPE_CONTINUUM;
+const isContinuum = (type: string) => type === TYPE_CONTINUUM || type === TYPE_CONTINUUM_SPECTRAL;
 const isPST = (type: string) => type === TYPE_PST;
 // const isZoom = (type: number) => type === TYPE_ZOOM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
@@ -176,6 +181,9 @@ export const getCalibrationStrategy = (
   return calibrationOut;
 };
 
+/**
+ * Maps a data product to the backend's script_parameters shape for its observation's type.
+ */
 export const getDataProductScriptParameters = (
   obs: Observation[] | null,
   dp: DataProductSDPNew
@@ -210,17 +218,32 @@ export const getDataProductScriptParameters = (
         };
       } else {
         const data = dp?.data as SDPVisibilitiesContinuumData;
-        return {
+        const result: DataProductSDPContinuumVisibilitiesBackend = {
           time_averaging: data?.timeAveraging ?? 0,
           frequency_averaging: data?.frequencyAveraging ?? 0,
           kind: 'continuum',
           variant: 'visibilities'
         };
+        return result;
       }
     }
     case TYPE_ZOOM:
+    case TYPE_CONTINUUM_SPECTRAL: {
+      // Both modes also produce a hidden visibilities data product (see HiddenSDPData in
+      // AutoLinking.tsx) - the backend only has one "visibilities" script-parameters shape
+      // (kind: continuum / variant: visibilities), regardless of the mode that created it.
+      if ((dp?.data as SDPVisibilitiesContinuumData)?.dataProductType === DP_TYPE_VISIBLE) {
+        const data = dp?.data as SDPVisibilitiesContinuumData;
+        const result: DataProductSDPContinuumVisibilitiesBackend = {
+          time_averaging: data?.timeAveraging ?? 0,
+          frequency_averaging: data?.frequencyAveraging ?? 0,
+          kind: 'continuum',
+          variant: 'visibilities'
+        };
+        return result;
+      }
       const data = dp?.data as SDPSpectralData;
-      return {
+      const result: DataProductSDPSpectralImageBackend = {
         image_size: { value: data?.imageSizeValue, unit: IMAGE_SIZE_UNITS[data?.imageSizeUnits] },
         image_cellsize: {
           value: data?.pixelSizeValue,
@@ -236,10 +259,15 @@ export const getDataProductScriptParameters = (
         polarisations: data?.polarisations ?? [],
         channels_out: data?.channelsOut ?? 0,
         gaussian_taper: data?.taperValue?.toString() ?? '0',
-        kind: 'spectral',
-        variant: 'spectral image',
+        kind: obType === TYPE_CONTINUUM_SPECTRAL ? 'continuum and spectral line' : 'spectral',
+        variant:
+          obType === TYPE_CONTINUUM_SPECTRAL
+            ? 'continuum and spectral line image'
+            : 'spectral image',
         continuum_subtraction: data?.continuumSubtraction
       };
+      return result;
+    }
     case TYPE_PST:
     default:
       const pstMode = obs?.find((o) => o?.id === dp.observationId)?.pstMode;
@@ -354,6 +382,9 @@ const getSupplied = (inObs: Observation) => {
   };
 };
 
+/**
+ * Maps an observation to the backend's observation_type_details shape for its type.
+ */
 export const getObservationTypeDetails = (obs: Observation) => {
   switch (obs.type) {
     case TYPE_CONTINUUM:
@@ -362,6 +393,13 @@ export const getObservationTypeDetails = (obs: Observation) => {
         central_frequency: getCentralFrequency(obs),
         supplied: getSupplied(obs) as SuppliedBackend,
         observation_type: TYPE_CONTINUUM
+      };
+    case TYPE_CONTINUUM_SPECTRAL:
+      return {
+        bandwidth: getBandwidth(obs),
+        central_frequency: getCentralFrequency(obs),
+        supplied: getSupplied(obs) as SuppliedBackend,
+        observation_type: TYPE_CONTINUUM_SPECTRAL_LONG
       };
     case TYPE_ZOOM:
       return {

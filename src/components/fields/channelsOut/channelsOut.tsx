@@ -14,9 +14,13 @@ interface ChannelsOutFieldProps {
   value: number;
 }
 
+/**
+ * Number of output channels selected, default is the max available.
+ */
 export default function ChannelsOutField({
   disabled = false,
   required = false,
+  maxValue = CHANNELS_OUT_MAX,
   onFocus,
   setValue,
   suffix,
@@ -28,7 +32,7 @@ export default function ChannelsOutField({
 
   const checkValue = (e: number) => {
     const num = Number(e);
-    if (Number.isInteger(num) && num >= CHANNELS_OUT_MIN && num <= CHANNELS_OUT_MAX) {
+    if (Number.isInteger(num) && num >= CHANNELS_OUT_MIN && num <= maxValue) {
       setFieldValid(true);
       if (setValue) {
         setValue(num);
@@ -40,7 +44,7 @@ export default function ChannelsOutField({
 
   const errorMessage = fieldValid
     ? ''
-    : t(FIELD + '.error', { min: CHANNELS_OUT_MIN, max: CHANNELS_OUT_MAX });
+    : t(FIELD + '.error', { min: CHANNELS_OUT_MIN, max: maxValue });
 
   React.useEffect(() => {
     let timerId: ReturnType<typeof setTimeout> | null = null;
