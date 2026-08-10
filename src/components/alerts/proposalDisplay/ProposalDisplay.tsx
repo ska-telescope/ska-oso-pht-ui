@@ -2,7 +2,7 @@ import Dialog from '@mui/material/Dialog';
 import { Box, DialogActions, DialogContent, Grid, Typography } from '@mui/material';
 import { AlertColorTypes } from '@ska-telescope/ska-gui-components';
 import { useTheme } from '@mui/material/styles';
-import { presentLatex, trimText } from '@utils/present/present';
+import { presentLatex } from '@utils/present/present';
 import GetPresignedDownloadUrl from '@services/axios/get/getPresignedDownloadUrl/getPresignedDownloadUrl';
 import CancelButton from '../../button/Cancel/Cancel';
 import ConfirmButton from '../../button/Confirm/Confirm';
@@ -122,8 +122,28 @@ export default function ProposalDisplay({
           boxSizing: 'border-box'
         }}
       >
-        <Typography id="title" variant={TITLE_STYLE} style={{ fontWeight: getFont(BOLD_LABEL) }}>
-          {inLabel} {presentLatex(trimText(inValue, 30))}
+        <Typography
+          id="title"
+          variant={TITLE_STYLE}
+          style={{ fontWeight: getFont(BOLD_LABEL) }}
+          sx={{ display: 'flex', alignItems: 'baseline', gap: 0.5, width: '100%' }}
+        >
+          <Box component="span" sx={{ flexShrink: 0 }}>
+            {inLabel}
+          </Box>
+          <Box
+            component="span"
+            data-testid="proposal-title-latex"
+            sx={{
+              minWidth: 0,
+              flex: '1 1 auto',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {presentLatex(inValue)}
+          </Box>
         </Typography>
       </Box>
     );
