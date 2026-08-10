@@ -1,14 +1,42 @@
+import type { ReactElement, ReactNode } from 'react';
 import { describe, it, expect, vi, beforeAll } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
+import type { Proposal } from '@/utils/types/proposal';
+import { MockProposalFrontend } from '@/services/axios/get/getProposal/mockProposalFrontend';
 
-const wrapper = (component: React.ReactElement) => {
+vi.mock('@ska-telescope/ska-gui-local-storage', () => ({
+  storageObject: {
+    useStore: () => ({
+      application: {
+        content2: {},
+        content4: []
+      }
+    })
+  },
+  StoreProvider: ({ children }: { children: ReactNode }) => <>{children}</>
+}));
+
+vi.mock('@/utils/aaa/aaaUtils', () => ({
+  useInitializeAccessStore: vi.fn(),
+  accessUpdate: () => true
+}));
+
+vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
+  useOSDAccessors: () => ({
+    getCycle: () => null
+  })
+}));
+
+const wrapper = (component: ReactElement) => {
   return render(<StoreProvider>{component}</StoreProvider>);
 };
 
+type MockProposal = Proposal;
+
 describe('TableSubmissionsRow', () => {
-  let TableSubmissionsRow: any;
-  let mockProposal: any;
+  let TableSubmissionsRow: typeof import('./TableSubmissionsRow').default;
+  let mockProposal: MockProposal;
 
   beforeAll(async () => {
     if (!globalThis.localStorage) {
@@ -52,7 +80,7 @@ describe('TableSubmissionsRow', () => {
 
   const defaultProps = {
     item: mockItem,
-    proposal: {} as any,
+    proposal: MockProposalFrontend,
     index: 0,
     expanded: false,
     deleteClicked: vi.fn(),
@@ -73,6 +101,27 @@ describe('TableSubmissionsRow', () => {
     wrapper(<TableSubmissionsRow {...defaultProps} proposal={mockProposal} />);
 
     const title = screen.getByTestId('row-title-test-row-id');
+    expect(title).toHaveStyle({ overflow: 'hidden', textOverflow: 'ellipsis' });
+  });
+
+  it('renders latex titles via KaTeX and keeps them truncated with ellipsis', () => {
+    const longLatexTitle = '$\\frac{1234567890123456789012345678901234567890}{x}$';
+
+    wrapper(
+      <TableSubmissionsRow
+        {...defaultProps}
+        proposal={mockProposal}
+        item={{ ...mockItem, title: longLatexTitle }}
+      />
+    );
+
+    const title = screen.getByTestId('row-title-test-row-id');
+    const renderedFraction = title.querySelector('.katex .mfrac');
+    expect(renderedFraction).toBeInTheDocument();
+    const renderedLatex = title.querySelector('.katex-html');
+    expect(renderedLatex).toBeInTheDocument();
+    expect(renderedLatex).not.toHaveTextContent(/\\[a-zA-Z]+/);
+
     expect(title).toHaveStyle({ overflow: 'hidden', textOverflow: 'ellipsis' });
   });
 });

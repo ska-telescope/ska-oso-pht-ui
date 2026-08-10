@@ -6,6 +6,7 @@ import {
   IW_UNIFORM,
   PIXEL_SIZE_DEFAULT,
   PIXEL_SIZE_UNIT_DEFAULT,
+  POLARISATIONS_DEFAULT,
   PULSAR_TIMING_VALUE,
   ROBUST_DEFAULT,
   TAPER_DEFAULT
@@ -36,7 +37,7 @@ export const CONTINUUM_IMAGE_DATA_PRODUCT: DataProductSDPNew = {
     pixelSizeValue: PIXEL_SIZE_DEFAULT,
     pixelSizeUnits: PIXEL_SIZE_UNIT_DEFAULT,
     weighting: IW_UNIFORM,
-    polarisations: ['I', 'XX'],
+    polarisations: POLARISATIONS_DEFAULT,
     channelsOut: CHANNELS_OUT_DEFAULT,
     robust: ROBUST_DEFAULT,
     taperValue: TAPER_DEFAULT
@@ -52,7 +53,7 @@ export const SPECTRAL_DATA_PRODUCT: DataProductSDPNew = {
     pixelSizeValue: PIXEL_SIZE_DEFAULT,
     pixelSizeUnits: PIXEL_SIZE_UNIT_DEFAULT,
     weighting: IW_UNIFORM,
-    polarisations: ['I', 'XX'],
+    polarisations: POLARISATIONS_DEFAULT,
     channelsOut: CHANNELS_OUT_DEFAULT,
     robust: ROBUST_DEFAULT,
     taperValue: TAPER_DEFAULT,
