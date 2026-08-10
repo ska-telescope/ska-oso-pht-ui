@@ -107,7 +107,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const { osdCyclePolicy } = useOSDAccessors();
   const { setHelp } = useHelp();
 
-  const isEdit = () => locationProperties.state !== null || data !== undefined;
+  const isEdit = () => locationProperties.state != null || data !== undefined;
 
   const { application, updateAppContent2 } = storageObject.useStore();
 
@@ -159,6 +159,38 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const isDataTypeOne = () => dataProductType === DP_TYPE_IMAGES;
 
+  const hasRealObservationSelection = () => {
+    if (!observationId) {
+      return false;
+    }
+
+    const proposalObservations = getProposal()?.observations ?? [];
+    return proposalObservations.some((obs) => obs.id === observationId);
+  };
+
+  const getObservation = (obsId = observationId) => {
+    const proposal = getProposal();
+    const proposalObservations = proposal?.observations ?? [];
+    const selectedObservation =
+      baseObservations?.find((obs) => obs.id === obsId) ??
+      proposalObservations.find((obs) => obs.id === obsId);
+
+    if (selectedObservation) {
+      return selectedObservation;
+    }
+
+    const pstObservation = proposalObservations.find((obs) => obs.type === TYPE_PST);
+    if (pstObservation) {
+      return pstObservation;
+    }
+
+    if (proposal?.scienceCategory) {
+      return { type: proposal.scienceCategory } as Observation;
+    }
+
+    return proposalObservations[0];
+  };
+
   const getDataProductTypeValue = (dp?: DataProductSDPNew) =>
     Number(dp?.data?.dataProductType ?? DP_TYPE_IMAGES);
 
@@ -190,9 +222,20 @@ export default function DataProduct({ data }: DataProductProps) {
       (dp) => dp.id !== currentDataProductId && getDataProductTypeValue(dp) === nextType
     );
 
-  const isFlowThrough = () => getObservation()?.pstMode === FLOW_THROUGH_VALUE;
-  const isDetectedFilterbank = () => getObservation()?.pstMode === DETECTED_FILTER_BANK_VALUE;
-  const isPulsarTiming = () => getObservation()?.pstMode === PULSAR_TIMING_VALUE;
+  const getResolvedPstMode = () => {
+    const observation = getObservation();
+    const pstMode = observation?.pstMode;
+
+    if (typeof pstMode === 'undefined' || pstMode === null || Number.isNaN(pstMode)) {
+      return FLOW_THROUGH_VALUE;
+    }
+
+    return Number(pstMode);
+  };
+
+  const isFlowThrough = () => getResolvedPstMode() === FLOW_THROUGH_VALUE;
+  const isDetectedFilterbank = () => getResolvedPstMode() === DETECTED_FILTER_BANK_VALUE;
+  const isPulsarTiming = () => getResolvedPstMode() === PULSAR_TIMING_VALUE;
 
   const isContinuum = () =>
     getObservation()?.type === TYPE_CONTINUUM || getProposal()?.scienceCategory === TYPE_CONTINUUM;
@@ -210,7 +253,10 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const getSuffix = () => {
     if (isContinuum() || isPST()) {
-      return dataProductType.toString();
+      const resolvedType = isPST()
+        ? getDataProductType(getObservation()?.type ?? '', getResolvedPstMode())
+        : dataProductType;
+      return resolvedType.toString();
     }
     return '1';
   };
@@ -283,7 +329,11 @@ export default function DataProduct({ data }: DataProductProps) {
     setRotationMeasure(data?.rotationMeasure ?? 1);
   };
 
-  const dataProductOut = () => {
+  const dataProductOut = (): DataProductSDPNew | undefined => {
+    if (!id || !hasRealObservationSelection()) {
+      return undefined;
+    }
+
     const taper = isLow() ? taperLowValue : taperMidValue;
     const newDataProduct: DataProductSDPNew = {
       id: id,
@@ -348,10 +398,19 @@ export default function DataProduct({ data }: DataProductProps) {
    * Add Observation Data Products (ODPs) for both imaging and visabilities to the proposal.
    */
   const addToProposal = () => {
+    if (!hasRealObservationSelection()) {
+      return;
+    }
+
     const proposal = getProposal();
     const observation = getObservation();
+    const newDataProduct = dataProductOut();
+    if (!newDataProduct) {
+      return;
+    }
+
     const dataProductSDP = ensureHiddenDataProduct(
-      [...(proposal?.dataProductSDP ?? []), dataProductOut()],
+      [...(proposal?.dataProductSDP ?? []), newDataProduct],
       observation
     );
     setProposal({
@@ -364,9 +423,15 @@ export default function DataProduct({ data }: DataProductProps) {
    * Update the proposal's Observation Data Products (ODPs) for both imaging and visabilities.
    */
   const updateToProposal = async () => {
+    if (!hasRealObservationSelection()) {
+      return;
+    }
     const proposal = getProposal();
     const observation = getObservation();
-    const newDataProduct: DataProductSDPNew = dataProductOut();
+    const newDataProduct = dataProductOut();
+    if (!newDataProduct) {
+      return;
+    }
     const oldDataProducts = proposal.dataProductSDP ?? [];
     const to = await updateSensCalc(proposal, observation!, newDataProduct);
     const dataProductSDP = ensureHiddenDataProduct(
@@ -397,9 +462,12 @@ export default function DataProduct({ data }: DataProductProps) {
   };
 
   // set correct data product type depending on pst mode from obs type
-  const getDataProductType = (obsType: string, pstMode: number): number => {
+  const getDataProductType = (obsType: string, pstMode?: number): number => {
     if (obsType === TYPE_PST) {
-      return pstMode;
+      if (typeof pstMode === 'undefined' || pstMode === null || Number.isNaN(pstMode)) {
+        return FLOW_THROUGH_VALUE;
+      }
+      return Number(pstMode);
     }
     return DP_TYPE_IMAGES; // default for non-pst
   };
@@ -482,6 +550,11 @@ export default function DataProduct({ data }: DataProductProps) {
 
       dataProductIn(linkedDataProduct ?? selectedDataProduct);
     } else {
+      const fallbackObservation =
+        observations.find((obs) => obs.type === TYPE_PST) ?? observations[0];
+      if (fallbackObservation?.id && !observationId) {
+        setObservationId(fallbackObservation.id);
+      }
       setId(generateId(PAGE_PREFIX, 6));
     }
   }, []);
@@ -496,10 +569,7 @@ export default function DataProduct({ data }: DataProductProps) {
 
   React.useEffect(() => {
     if (!isEdit()) {
-      const sdpType = getDataProductType(
-        getObservation()?.type ?? '',
-        Number(getObservation()?.pstMode)
-      );
+      const sdpType = getDataProductType(getObservation()?.type ?? '', getResolvedPstMode());
       setDataProductType(sdpType);
       // channelsOut's initial state is set before an observation is selected (so isCombined()
       // can't see it yet) - re-derive it once the observation for this new data product is known.
@@ -765,6 +835,10 @@ export default function DataProduct({ data }: DataProductProps) {
      * Update button is only enabled if the details pass basic validation.
      */
     const enabled = () => {
+      if (!hasRealObservationSelection()) {
+        return false;
+      }
+
       switch (getObservation()?.type) {
         case TYPE_ZOOM:
         case TYPE_CONTINUUM_SPECTRAL:

@@ -1,6 +1,6 @@
 // DataProduct.test.tsx
-import { describe, it, expect, vi } from 'vitest';
-import { render, screen } from '@testing-library/react';
+import { beforeEach, describe, it, expect, vi } from 'vitest';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import DataProduct from './DataProduct';
 
@@ -13,8 +13,9 @@ vi.mock('@/services/i18n/useScopedTranslation', () => ({
   useScopedTranslation: () => ({ t: (key: string) => key })
 }));
 vi.mock('@/utils/help/useHelp', () => ({ useHelp: () => ({ setHelp: vi.fn() }) }));
+let mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 2 };
 vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
-  useOSDAccessors: () => ({ osdCyclePolicy: { maxObservations: 5, maxDataProducts: 2 } })
+  useOSDAccessors: () => ({ osdCyclePolicy: mockOsdCyclePolicy })
 }));
 
 let mockStoreReturn: any = {
@@ -34,13 +35,13 @@ vi.mock('@/utils/constants.ts', async (importOriginal) => {
   return {
     ...actual,
     PAGE_DATA_PRODUCTS: 'PAGE_DATA_PRODUCTS',
-    TYPE_CONTINUUM: 1,
-    TYPE_PST: 2,
-    TYPE_ZOOM: 3,
+    TYPE_CONTINUUM: 'continuum',
+    TYPE_PST: 'pst',
+    TYPE_ZOOM: 'spectral',
     IW_BRIGGS: 99,
-    FLOW_THROUGH_VALUE: 'FLOW',
-    DETECTED_FILTER_BANK_VALUE: 'DFB',
-    PULSAR_TIMING_VALUE: 'PT',
+    FLOW_THROUGH_VALUE: 0,
+    DETECTED_FILTER_BANK_VALUE: 1,
+    PULSAR_TIMING_VALUE: 2,
     NAV: { PAGE_DATA_PRODUCTS: '/mock-nav' },
     FOOTER_HEIGHT_PHT: 0,
     WRAPPER_HEIGHT: 100,
@@ -49,6 +50,57 @@ vi.mock('@/utils/constants.ts', async (importOriginal) => {
 });
 
 // Lightweight mocks for child components
+vi.mock('@/components/fields/outputFrequencyResolution/outputFrequencyResolution', () => ({
+  default: () => <div data-testid="OutputFrequencyResolutionField" />
+}));
+vi.mock('@/components/fields/outputSamplingInterval/outputSamplingInterval', () => ({
+  default: () => <div data-testid="OutputSamplingIntervalField" />
+}));
+vi.mock('@/components/fields/dispersionMeasure/dispersionMeasure', () => ({
+  default: () => <div data-testid="DispersionMeasureField" />
+}));
+vi.mock('@/components/fields/rotationMeasure/rotationMeasure', () => ({
+  default: () => <div data-testid="RotationMeasureField" />
+}));
+vi.mock('@/components/fields/bitDepth/bitDepth', () => ({
+  default: () => <div data-testid="BitDepthField" />
+}));
+vi.mock('@/components/fields/polarisations/polarisations', () => ({
+  default: () => <div data-testid="PolarisationsField" />
+}));
+vi.mock('@/components/fields/dataProductType/dataProductType', () => ({
+  default: () => <div data-testid="DataProductTypeField" />
+}));
+vi.mock('@/components/fields/imageSize/imageSize', () => ({
+  default: () => <div data-testid="ImageSizeField" />
+}));
+vi.mock('@/components/fields/pixelSize/pixelSize', () => ({
+  default: () => <div data-testid="PixelSizeField" />
+}));
+vi.mock('@/components/fields/robust/Robust', () => ({
+  default: () => <div data-testid="RobustField" />
+}));
+vi.mock('@/components/fields/channelsOut/channelsOut', () => ({
+  default: () => <div data-testid="ChannelsOutField" />
+}));
+vi.mock('@/components/fields/continuumSubtraction/continuumSubtraction', () => ({
+  default: () => <div data-testid="ContinuumSubtractionField" />
+}));
+vi.mock('@/components/fields/imageWeighting/imageWeighting', () => ({
+  default: () => <div data-testid="ImageWeightingField" />
+}));
+vi.mock('@/components/fields/taper/taper', () => ({
+  default: () => <div data-testid="TaperField" />
+}));
+vi.mock('@/components/fields/taperDropdown/taperDropdown', () => ({
+  default: () => <div data-testid="TaperDropdown" />
+}));
+vi.mock('@/components/fields/timeAveraging/timeAveraging', () => ({
+  default: () => <div data-testid="TimeAveragingField" />
+}));
+vi.mock('@/components/fields/frequencyAveraging/frequencyAveraging', () => ({
+  default: () => <div data-testid="FrequencyAveragingField" />
+}));
 vi.mock('@/components/grid/observation/GridObservation', () => ({
   default: (props: any) => (
     <div data-testid="GridObservation">
@@ -70,6 +122,14 @@ vi.mock('@/components/button/Add/Add', () => ({
 
 describe('DataProduct component', () => {
   const theme = createTheme();
+
+  beforeEach(() => {
+    mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 2 };
+    mockStoreReturn = {
+      application: { content2: { observations: [], dataProductSDP: [] } },
+      updateAppContent2: vi.fn()
+    };
+  });
 
   it('renders key input fields', () => {
     wrapper(
@@ -128,5 +188,110 @@ describe('DataProduct component', () => {
     const addButton = screen.getByTestId('addDataProductButtonEntry');
     expect(addButton).toBeInTheDocument();
     expect(addButton).toHaveAttribute('disabled');
+  });
+
+  it('does not persist a data product when no real observation has been selected', () => {
+    mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 1 };
+    mockStoreReturn = {
+      application: {
+        content2: {
+          observations: [],
+          dataProductSDP: []
+        }
+      },
+      updateAppContent2: vi.fn()
+    };
+
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct />
+      </ThemeProvider>
+    );
+
+    expect(mockStoreReturn.updateAppContent2).not.toHaveBeenCalled();
+  });
+
+  it('persists a data product when a valid observation is explicitly selected', async () => {
+    mockOsdCyclePolicy = { maxObservations: 5, maxDataProducts: 1 };
+    const updateAppContent2 = vi.fn((proposal: any) => {
+      mockStoreReturn.application.content2 = proposal;
+    });
+    mockStoreReturn = {
+      application: {
+        content2: {
+          observations: [
+            {
+              id: 'OBS1',
+              type: 'continuum',
+              centralFrequency: 1,
+              centralFrequencyUnits: 'Hz'
+            },
+            {
+              id: 'OBS2',
+              type: 'continuum',
+              centralFrequency: 2,
+              centralFrequencyUnits: 'Hz'
+            }
+          ],
+          dataProductSDP: []
+        }
+      },
+      updateAppContent2
+    };
+
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct />
+      </ThemeProvider>
+    );
+
+    fireEvent.click(screen.getByText(/Observation OBS2/));
+
+    await waitFor(() => {
+      expect(mockStoreReturn.application.content2.dataProductSDP?.at(-1)?.observationId).toBe(
+        'OBS2'
+      );
+    });
+  });
+
+  it('uses the PST proposal mode for the description when no observation is selected', () => {
+    mockStoreReturn = {
+      application: {
+        content2: {
+          scienceCategory: 'pst',
+          observations: [],
+          dataProductSDP: []
+        }
+      },
+      updateAppContent2: vi.fn()
+    };
+
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct />
+      </ThemeProvider>
+    );
+
+    expect(screen.getByText('page.7.descContent.pst.0')).toBeInTheDocument();
+  });
+
+  it('uses the detected-filterbank PST description when the observation has that mode', () => {
+    mockStoreReturn = {
+      application: {
+        content2: {
+          observations: [{ id: 'OBS1', type: 'pst', pstMode: 1 }],
+          dataProductSDP: []
+        }
+      },
+      updateAppContent2: vi.fn()
+    };
+
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct />
+      </ThemeProvider>
+    );
+
+    expect(screen.getByText('page.7.descContent.pst.1')).toBeInTheDocument();
   });
 });
