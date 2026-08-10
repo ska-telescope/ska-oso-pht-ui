@@ -222,7 +222,7 @@ export default function DataProduct({ data }: DataProductProps) {
       const continuumImagesData = {
         ...dp,
         data: {
-          ...dp,
+          ...dp.data,
           weighting: IW_BRIGGS,
           robust: ROBUST_DEFAULT,
           polarisations: POLARISATIONS_DEFAULT,
