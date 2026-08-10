@@ -137,8 +137,8 @@ export default function ReviewEntry({ reviewType }: ReviewEntryProps) {
 
   const previewSignedUrl = async (id: string, label: string) => {
     try {
-      const selectedFile = `${id}-` + t(label) + t('fileType.pdf');
-      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
+      const slotKey = label === 'pdfDownload.science.label' ? 'science' : 'technical';
+      const signedUrl = await GetPresignedDownloadUrl(authClient, id, slotKey);
 
       if (label === 'pdfDownload.science.label') {
         setSciPDF(signedUrl);

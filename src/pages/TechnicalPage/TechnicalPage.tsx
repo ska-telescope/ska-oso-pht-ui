@@ -77,7 +77,8 @@ export default function TechnicalPage() {
     try {
       notifyWarning(t('pdfUpload.technical.warning'));
       const proposal = getProposal();
-      const signedUrl = await GetPresignedUploadUrl(authClient, `${proposal.id}-technical.pdf`);
+      const slotKey = 'technical';
+      const signedUrl = await GetPresignedUploadUrl(authClient, proposal.id, slotKey, theFile.name);
       if (typeof signedUrl != 'string') {
         setUploadStatus(FileUploadStatus.ERROR);
         new Error('Not able to Get Technical PDF Upload URL');
@@ -90,7 +91,7 @@ export default function TechnicalPage() {
       }
 
       const technicalPDFUploaded = {
-        documentId: `technical-doc-${proposal.id}`,
+        documentId: slotKey,
         isUploadedPdf: true
       };
 
@@ -109,8 +110,7 @@ export default function TechnicalPage() {
   const downloadPDFToSignedUrl = async () => {
     try {
       const proposal = getProposal();
-      const selectedFile = `${proposal.id}-` + t('pdfDownload.technical.label') + t('fileType.pdf');
-      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
+      const signedUrl = await GetPresignedDownloadUrl(authClient, proposal.id, 'technical');
 
       if (signedUrl === t('pdfDownload.sampleData') || proposal.technicalPDF != null) {
         window.open(signedUrl, '_blank');
@@ -123,7 +123,7 @@ export default function TechnicalPage() {
   const deletePdfUsingSignedUrl = async () => {
     try {
       const proposal = getProposal();
-      const signedUrl = await GetPresignedDeleteUrl(authClient, `${proposal.id}-technical.pdf`);
+      const signedUrl = await GetPresignedDeleteUrl(authClient, proposal.id, 'technical');
 
       if (typeof signedUrl != 'string') new Error('Not able to Get Technical PDF Upload URL');
 
@@ -134,7 +134,7 @@ export default function TechnicalPage() {
       }
 
       const technicalPDFDeleted = {
-        documentId: `technical-doc-${proposal.id}`,
+        documentId: 'technical',
         isUploadedPdf: false
       };
 
@@ -154,8 +154,7 @@ export default function TechnicalPage() {
   const previewSignedUrl = async () => {
     try {
       const proposal = getProposal();
-      const selectedFile = `${proposal.id}-` + t('pdfDownload.technical.label') + t('fileType.pdf');
-      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
+      const signedUrl = await GetPresignedDownloadUrl(authClient, proposal.id, 'technical');
 
       if (signedUrl === t('pdfDownload.sampleData') || proposal.technicalPDF != null) {
         setCurrentFile(signedUrl);

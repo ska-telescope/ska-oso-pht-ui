@@ -270,7 +270,8 @@ export default function SciencePage() {
     try {
       notifyWarning(t('pdfUpload.science.warning'));
       const proposal = getProposal();
-      const signedUrl = await GetPresignedUploadUrl(authClient, `${proposal.id}-science.pdf`);
+      const slotKey = 'science';
+      const signedUrl = await GetPresignedUploadUrl(authClient, proposal.id, slotKey, theFile.name);
 
       if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
 
@@ -282,7 +283,7 @@ export default function SciencePage() {
         throw new Error('Science PDF Not Uploaded');
       }
       const sciencePDFUploaded = {
-        documentId: `science-doc-${proposal.id}`,
+        documentId: slotKey,
         isUploadedPdf: true
       };
 
@@ -302,8 +303,7 @@ export default function SciencePage() {
   const downloadPDFToSignedUrl = async () => {
     try {
       const proposal = getProposal();
-      const selectedFile = `${proposal.id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
-      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
+      const signedUrl = await GetPresignedDownloadUrl(authClient, proposal.id, 'science');
 
       if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {
         window.open(signedUrl, '_blank');
@@ -316,7 +316,7 @@ export default function SciencePage() {
   const deletePdfUsingSignedUrl = async () => {
     try {
       const proposal = getProposal();
-      const signedUrl = await GetPresignedDeleteUrl(authClient, `${proposal.id}-science.pdf`);
+      const signedUrl = await GetPresignedDeleteUrl(authClient, proposal.id, 'science');
 
       if (typeof signedUrl != 'string') new Error('Not able to Get Science PDF Upload URL');
 
@@ -351,8 +351,7 @@ export default function SciencePage() {
   const previewSignedUrl = async () => {
     try {
       const proposal = getProposal();
-      const selectedFile = `${proposal.id}-` + t('pdfDownload.science.label') + t('fileType.pdf');
-      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
+      const signedUrl = await GetPresignedDownloadUrl(authClient, proposal.id, 'science');
 
       if (signedUrl === t('pdfDownload.sampleData') || proposal.sciencePDF != null) {
         setCurrentFile(signedUrl);

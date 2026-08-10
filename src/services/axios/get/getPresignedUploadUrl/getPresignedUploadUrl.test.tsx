@@ -19,11 +19,13 @@ beforeEach(() => {
 });
 
 describe('GetPresignedUploadUrl', () => {
-  const filename = 'upload.pdf';
+  const proposalId = 'prp-123';
+  const slotKey = 'science';
+  const filename = 'science_case_01.pdf';
 
   it('returns dummy upload URL when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(constants, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await GetPresignedUploadUrl(mockedAuthClient, filename);
+    const result = await GetPresignedUploadUrl(mockedAuthClient, proposalId, slotKey, filename);
     expect(result).toBe('https://httpbin.org/put');
   });
 
@@ -31,15 +33,20 @@ describe('GetPresignedUploadUrl', () => {
     vi.spyOn(constants, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockResolvedValue({ data: 'upload-url-success' });
 
-    const result = await GetPresignedUploadUrl(mockedAuthClient, filename);
+    const result = await GetPresignedUploadUrl(mockedAuthClient, proposalId, slotKey, filename);
     expect(result).toBe('upload-url-success');
+    expect(mockedAuthClient.post).toHaveBeenCalledWith(
+      `${constants.SKA_OSO_SERVICES_URL}${constants.OSO_SERVICES_PROPOSAL_PATH}/${proposalId}/s3/upload/${slotKey}`,
+      null,
+      { params: { filename } }
+    );
   });
 
   it('returns API_UNKNOWN_ERROR when post returns undefined', async () => {
     vi.spyOn(constants, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockResolvedValue(undefined);
 
-    const result = await GetPresignedUploadUrl(mockedAuthClient, filename);
+    const result = await GetPresignedUploadUrl(mockedAuthClient, proposalId, slotKey, filename);
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 
@@ -47,7 +54,7 @@ describe('GetPresignedUploadUrl', () => {
     vi.spyOn(constants, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockRejectedValue(new Error('Upload failed'));
 
-    const result = await GetPresignedUploadUrl(mockedAuthClient, filename);
+    const result = await GetPresignedUploadUrl(mockedAuthClient, proposalId, slotKey, filename);
     expect(result).toBe('Upload failed');
   });
 
@@ -55,7 +62,7 @@ describe('GetPresignedUploadUrl', () => {
     vi.spyOn(constants, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockRejectedValue('unexpected string');
 
-    const result = await GetPresignedUploadUrl(mockedAuthClient, filename);
+    const result = await GetPresignedUploadUrl(mockedAuthClient, proposalId, slotKey, filename);
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 });

@@ -70,8 +70,8 @@ export default function ProposalDisplay({
 
   const downloadPdf = async (fileType: string) => {
     try {
-      const selectedFile = `${proposal?.id}-` + fileType + t('fileType.pdf');
-      const signedUrl = await GetPresignedDownloadUrl(authClient, selectedFile);
+      const slotKey = fileType === 'science' ? 'science' : 'technical';
+      const signedUrl = await GetPresignedDownloadUrl(authClient, proposal?.id ?? '', slotKey);
       window.open(signedUrl, '_blank');
     } catch (e) {
       new Error(t('pdfDownload.error'));

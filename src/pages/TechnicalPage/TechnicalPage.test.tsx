@@ -27,7 +27,7 @@ vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
 // Mock storage
 const mockProposal = {
   id: '123',
-  technicalPDF: { documentId: 'technical-doc-123', isUploadedPdf: true },
+  technicalPDF: { documentId: 'technical', isUploadedPdf: true },
   technicalLoadStatus: FileUploadStatus.INITIAL
 };
 const mockStore = {

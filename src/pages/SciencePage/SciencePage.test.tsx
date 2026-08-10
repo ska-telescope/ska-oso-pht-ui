@@ -29,7 +29,7 @@ vi.mock('@/services/axios/axiosAuthClient/axiosAuthClient', () => ({
 // Mock storage
 const mockProposal = {
   id: '123',
-  sciencePDF: { documentId: 'science-doc-123', isUploadedPdf: true },
+  sciencePDF: { documentId: 'science', isUploadedPdf: true },
   scienceLoadStatus: FileUploadStatus.INITIAL
 };
 const mockStore = {
@@ -244,6 +244,7 @@ describe('SciencePage', () => {
       });
 
       expect(GetPresignedUploadUrl).toHaveBeenCalled();
+      expect(GetPresignedUploadUrl).toHaveBeenCalledWith({}, '123', 'science', 'valid.pdf');
       expect(PutUploadPDF).toHaveBeenCalled();
       expect(notifyWarning).toHaveBeenCalledWith('pdfUpload.science.warning');
     });
@@ -392,7 +393,7 @@ describe('SciencePage', () => {
     it('uploaded science PDF disables selection, hides upload/clear controls and changes prompt', () => {
       wrapper(<SciencePage />);
       expect(capturedChooseDisabled).toBe(true);
-      expect(capturedFile).toBe('science-doc-123fileType.pdf');
+      expect(capturedFile).toBe('sciencefileType.pdf');
       expect(capturedUploadDisabled).toBe(true);
       expect(capturedDropzonePrompt).toBe('pdfUpload.science.prompt.deleteToEnableUpload');
     });

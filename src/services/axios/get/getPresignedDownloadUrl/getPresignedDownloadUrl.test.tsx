@@ -19,11 +19,12 @@ beforeEach(() => {
 });
 
 describe('GetPresignedDownloadUrl', () => {
-  const selectedFile = 'example.pdf';
+  const proposalId = 'prp-123';
+  const slotKey = 'science';
 
   it('returns dummy download URL when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(constants, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
-    const result = await GetPresignedDownloadUrl(mockedAuthClient, selectedFile);
+    const result = await GetPresignedDownloadUrl(mockedAuthClient, proposalId, slotKey);
     expect(result).toBe('https://dagrs.berkeley.edu/sites/default/files/2020-01/sample.pdf');
   });
 
@@ -31,15 +32,18 @@ describe('GetPresignedDownloadUrl', () => {
     vi.spyOn(constants, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockResolvedValue({ data: 'download-url-success' });
 
-    const result = await GetPresignedDownloadUrl(mockedAuthClient, selectedFile);
+    const result = await GetPresignedDownloadUrl(mockedAuthClient, proposalId, slotKey);
     expect(result).toBe('download-url-success');
+    expect(mockedAuthClient.post).toHaveBeenCalledWith(
+      `${constants.SKA_OSO_SERVICES_URL}${constants.OSO_SERVICES_PROPOSAL_PATH}/${proposalId}/s3/download/${slotKey}`
+    );
   });
 
   it('returns API_UNKNOWN_ERROR when post returns undefined', async () => {
     vi.spyOn(constants, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockResolvedValue(undefined);
 
-    const result = await GetPresignedDownloadUrl(mockedAuthClient, selectedFile);
+    const result = await GetPresignedDownloadUrl(mockedAuthClient, proposalId, slotKey);
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 
@@ -47,7 +51,7 @@ describe('GetPresignedDownloadUrl', () => {
     vi.spyOn(constants, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockRejectedValue(new Error('Download failed'));
 
-    const result = await GetPresignedDownloadUrl(mockedAuthClient, selectedFile);
+    const result = await GetPresignedDownloadUrl(mockedAuthClient, proposalId, slotKey);
     expect(result).toBe('Download failed');
   });
 
@@ -55,7 +59,7 @@ describe('GetPresignedDownloadUrl', () => {
     vi.spyOn(constants, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
     mockedAuthClient.post.mockRejectedValue('unexpected string');
 
-    const result = await GetPresignedDownloadUrl(mockedAuthClient, selectedFile);
+    const result = await GetPresignedDownloadUrl(mockedAuthClient, proposalId, slotKey);
     expect(result).toBe('error.API_UNKNOWN_ERROR');
   });
 });
