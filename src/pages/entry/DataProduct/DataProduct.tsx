@@ -132,11 +132,31 @@ export default function DataProduct({ data }: DataProductProps) {
   const [robust, setRobust] = React.useState(ROBUST_DEFAULT);
 
   // channelsOutMax needs to be usable both as the initial value below and later as the field's
-  // live max/validity bound, so isCombined/channelsOutMax are defined here (ahead of most other
-  // helpers in this component) rather than down with the rest of the isXxx() mode checks.
-  const getObservation = (obsId = observationId) =>
-    baseObservations?.find((obs) => obs.id === obsId) ??
-    getProposal()?.observations?.find((obs) => obs.id === obsId);
+  // live max/validity bound, so getObservation/isCombined/channelsOutMax are defined here (ahead
+  // of most other helpers in this component) rather than down with the rest of the isXxx() mode
+  // checks.
+  const getObservation = (obsId = observationId) => {
+    const proposal = getProposal();
+    const proposalObservations = proposal?.observations ?? [];
+    const selectedObservation =
+      baseObservations?.find((obs) => obs.id === obsId) ??
+      proposalObservations.find((obs) => obs.id === obsId);
+
+    if (selectedObservation) {
+      return selectedObservation;
+    }
+
+    const pstObservation = proposalObservations.find((obs) => obs.type === TYPE_PST);
+    if (pstObservation) {
+      return pstObservation;
+    }
+
+    if (proposal?.scienceCategory) {
+      return { type: proposal.scienceCategory } as Observation;
+    }
+
+    return proposalObservations[0];
+  };
   const isCombined = () =>
     getObservation()?.type === TYPE_CONTINUUM_SPECTRAL ||
     getProposal()?.scienceCategory === TYPE_CONTINUUM_SPECTRAL;
@@ -166,29 +186,6 @@ export default function DataProduct({ data }: DataProductProps) {
 
     const proposalObservations = getProposal()?.observations ?? [];
     return proposalObservations.some((obs) => obs.id === observationId);
-  };
-
-  const getObservation = (obsId = observationId) => {
-    const proposal = getProposal();
-    const proposalObservations = proposal?.observations ?? [];
-    const selectedObservation =
-      baseObservations?.find((obs) => obs.id === obsId) ??
-      proposalObservations.find((obs) => obs.id === obsId);
-
-    if (selectedObservation) {
-      return selectedObservation;
-    }
-
-    const pstObservation = proposalObservations.find((obs) => obs.type === TYPE_PST);
-    if (pstObservation) {
-      return pstObservation;
-    }
-
-    if (proposal?.scienceCategory) {
-      return { type: proposal.scienceCategory } as Observation;
-    }
-
-    return proposalObservations[0];
   };
 
   const getDataProductTypeValue = (dp?: DataProductSDPNew) =>
