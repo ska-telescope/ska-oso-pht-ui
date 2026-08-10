@@ -271,12 +271,19 @@ describe('isCentralFrequencyOnChannelGrid', () => {
 
 describe('isCentralFrequencyDivisible', () => {
   const channelWidthHz = 781250; // 781250 Hz coarse channel
+  // Bandwidth-independent, matching ODT's validated LOW spectral window schema
+  // (getLowSpectralWindowSchema in ska-oso-odt-ui): valid values sit at (2k - 0.5) * channelWidthHz
+  // for integer k - a grid spaced two channels apart, offset half a channel from 0 Hz.
 
-  test('returns true for a value at a half-channel offset from 0', () => {
-    expect(isCentralFrequencyDivisible(192.5 * channelWidthHz, channelWidthHz)).toBe(true);
+  test('returns true for a value on the valid (2k - 0.5)-channel grid', () => {
+    expect(isCentralFrequencyDivisible(191.5 * channelWidthHz, channelWidthHz)).toBe(true);
   });
 
-  test('returns false for a value at a whole-channel offset from 0', () => {
+  test('returns false for the adjacent half-channel offset (wrong parity)', () => {
+    expect(isCentralFrequencyDivisible(192.5 * channelWidthHz, channelWidthHz)).toBe(false);
+  });
+
+  test('returns false for a whole-channel value with no half-channel offset at all', () => {
     expect(isCentralFrequencyDivisible(192 * channelWidthHz, channelWidthHz)).toBe(false);
   });
 
@@ -289,7 +296,7 @@ describe('isCentralFrequencyDivisible', () => {
   });
 
   test('tolerates ~1 Hz of rounding noise from a 6-d.p. MHz round-trip', () => {
-    const aligned = 192.5 * channelWidthHz;
+    const aligned = 191.5 * channelWidthHz;
     const roundedHz = Number((aligned / 1e6).toFixed(6)) * 1e6;
     expect(isCentralFrequencyDivisible(roundedHz, channelWidthHz)).toBe(true);
   });

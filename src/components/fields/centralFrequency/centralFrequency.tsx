@@ -90,10 +90,7 @@ export default function CentralFrequency({
     if (
       isLowZoom
         ? !isCentralFrequencyOnChannelGrid(cfHz, channelWidthHz, windowBandwidthHz, minHz)
-        : !isCentralFrequencyDivisible(
-            frequencyConversion(cf, units, FREQUENCY_HZ),
-            coarseChannelWidthHz
-          )
+        : !isCentralFrequencyDivisible(cfHz, coarseChannelWidthHz)
     ) {
       return t(FIELD + '.error.divisibility');
     }
@@ -125,22 +122,23 @@ export default function CentralFrequency({
   const channelWidthMHz = frequencyConversion(coarseChannelWidthHz, FREQUENCY_HZ, FREQUENCY_MHZ);
   const stepMHz = channelWidthMHz * 2;
 
-  // A valid central frequency sits at a half-channel offset from absolute 0 Hz (so the SPW's
-  // first coarse channel is even) - see validate()'s divisibility check above, which enforces
-  // the same rule.
+  // A valid central frequency is one where the SPW's first coarse channel is even - bandwidth-
+  // independent, matching ODT's own validated LOW spectral window schema (see
+  // isCentralFrequencyDivisible's comment). Valid values sit at (2k - 0.5) * channelWidthMHz for
+  // integer k, a grid spaced two channels (stepMHz) apart.
   const snapToValidGrid = (currentValue: number) =>
-    (Math.round(currentValue / channelWidthMHz - 0.5) + 0.5) * channelWidthMHz;
+    (2 * Math.round((currentValue / channelWidthMHz + 0.5) / 2) - 0.5) * channelWidthMHz;
   // Directional variants used only to correct a clamped-to-boundary value back onto the grid
   // (see stepChannel below) - rounding towards the interior of [min, max] rather than to the
   // nearest grid point, so the correction can never overshoot back past the boundary it came from.
   const snapToValidGridFloor = (currentValue: number) =>
-    (Math.floor(currentValue / channelWidthMHz - 0.5 + 1e-9) + 0.5) * channelWidthMHz;
+    (2 * Math.floor((currentValue / channelWidthMHz + 0.5) / 2 + 1e-9) - 0.5) * channelWidthMHz;
   const snapToValidGridCeil = (currentValue: number) =>
-    (Math.ceil(currentValue / channelWidthMHz - 0.5 - 1e-9) + 0.5) * channelWidthMHz;
+    (2 * Math.ceil((currentValue / channelWidthMHz + 0.5) / 2 - 1e-9) - 0.5) * channelWidthMHz;
 
   // Steps by one coarse-channel-grid unit (LOW) or a plain 1-unit increment (MID, which has no
   // channel-grid constraint), snapping to the grid first if not already aligned.
-  // Stepping by a full stepMHz (2 channels) preserves the grid's alf-channel-offset parity.
+  // Stepping by a full stepMHz (2 channels) preserves the grid's even-channel-count parity.
   const stepChannel = (currentValue: number, direction: 1 | -1): number => {
     const stepped = isLow
       ? snapToValidGrid(currentValue) + direction * stepMHz
