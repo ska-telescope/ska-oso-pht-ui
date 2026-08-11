@@ -71,6 +71,7 @@ UNRELEASED
 * Fixed: Long titles hidden with ellipsis and wrap across multiple lines for small viewers
 * Fixed: Title LaTeX is now rendered before truncation in proposal validation/confirmation display, preventing raw LaTeX syntax from being shown
 * Changed: Title LaTeX is now rendered in the proposal submissions table
+* Added: Sensitivity Calculator button to the header of the tool.
 
 10.1.0
 ----------
