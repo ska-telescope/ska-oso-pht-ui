@@ -16,14 +16,17 @@ import TickIcon from '@components/icon/tickIcon/tickIcon.tsx';
 import TaperDropdown from '@/components/fields/taperDropdown/taperDropdown';
 import { ValueUnitPair } from '@utils/types/typesSensCalc.tsx';
 import PolarisationsField from '@/components/fields/polarisations/polarisations';
+import { HiddenSDPData } from '@/utils/autoLinking/AutoLinking';
 import {
   BAND_LOW_STR,
   BIT_DEPTH_DEFAULT,
   CHANNELS_OUT_DEFAULT,
   CHANNELS_OUT_MAX,
+  CHANNELS_OUT_MAX_COMBINED,
   CHANNELS_OUT_MIN,
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
+  DP_TYPE_VISIBLE,
   FLOW_THROUGH_VALUE,
   FOOTER_HEIGHT_PHT,
   FOOTER_SPACER,
@@ -38,7 +41,9 @@ import {
   PAGE_DATA_PRODUCTS,
   PIXEL_SIZE_DEFAULT,
   PIXEL_SIZE_UNIT_DEFAULT,
+  POLARISATIONS_DEFAULT,
   PULSAR_TIMING_VALUE,
+  REFERENCE_COORDINATE_TYPE_SSO,
   ROBUST_DEFAULT,
   SA_CUSTOM,
   SET_CONTINUUM_SUBSTRACTION_DEFAULT,
@@ -46,6 +51,7 @@ import {
   TAPER_DEFAULT,
   TIME_AVERAGING_DEFAULT,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
   TYPE_ZOOM,
   WRAPPER_HEIGHT
@@ -71,11 +77,17 @@ import ContinuumSubtractionField from '@/components/fields/continuumSubtraction/
 import SensCalcContent from '@/components/alerts/sensCalcModal/content/SensCalcContent';
 import { updateDataProducts } from '@/utils/update/dataProducts/updateDataProducts';
 import { updateSensCalc } from '@/utils/update/sensCalc/updateSensCalc';
-import { DataProductSDPNew } from '@/utils/types/dataProduct';
+import {
+  DataProductSDPNew,
+  SDPImageContinuumData,
+  SDPVisibilitiesContinuumData
+} from '@/utils/types/dataProduct';
 import OutputFrequencyResolutionField from '@/components/fields/outputFrequencyResolution/outputFrequencyResolution';
 import DispersionMeasureField from '@/components/fields/dispersionMeasure/dispersionMeasure';
 import RotationMeasureField from '@/components/fields/rotationMeasure/rotationMeasure';
 import OutputSamplingIntervalField from '@/components/fields/outputSamplingInterval/outputSamplingInterval';
+import TargetObservation from '@/utils/types/targetObservation';
+import { updateImagesDataProductSizes } from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
 
 const GAP = 5;
 const BACK_PAGE = PAGE_DATA_PRODUCTS;
@@ -95,7 +107,7 @@ export default function DataProduct({ data }: DataProductProps) {
   const { osdCyclePolicy } = useOSDAccessors();
   const { setHelp } = useHelp();
 
-  const isEdit = () => locationProperties.state !== null || data !== undefined;
+  const isEdit = () => locationProperties.state != null || data !== undefined;
 
   const { application, updateAppContent2 } = storageObject.useStore();
 
@@ -118,7 +130,39 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const [weighting, setWeighting] = React.useState(IW_UNIFORM);
   const [robust, setRobust] = React.useState(ROBUST_DEFAULT);
-  const [channelsOut, setChannelsOut] = React.useState(CHANNELS_OUT_DEFAULT);
+
+  // channelsOutMax needs to be usable both as the initial value below and later as the field's
+  // live max/validity bound, so getObservation/isCombined/channelsOutMax are defined here (ahead
+  // of most other helpers in this component) rather than down with the rest of the isXxx() mode
+  // checks.
+  const getObservation = (obsId = observationId) => {
+    const proposal = getProposal();
+    const proposalObservations = proposal?.observations ?? [];
+    const selectedObservation =
+      baseObservations?.find((obs) => obs.id === obsId) ??
+      proposalObservations.find((obs) => obs.id === obsId);
+
+    if (selectedObservation) {
+      return selectedObservation;
+    }
+
+    const pstObservation = proposalObservations.find((obs) => obs.type === TYPE_PST);
+    if (pstObservation) {
+      return pstObservation;
+    }
+
+    if (proposal?.scienceCategory) {
+      return { type: proposal.scienceCategory } as Observation;
+    }
+
+    return proposalObservations[0];
+  };
+  const isCombined = () =>
+    getObservation()?.type === TYPE_CONTINUUM_SPECTRAL ||
+    getProposal()?.scienceCategory === TYPE_CONTINUUM_SPECTRAL;
+  const channelsOutMax = () => (isCombined() ? CHANNELS_OUT_MAX_COMBINED : CHANNELS_OUT_MAX);
+
+  const [channelsOut, setChannelsOut] = React.useState(channelsOutMax);
   const [continuumSubtraction, setContinuumSubtraction] = React.useState(
     SET_CONTINUUM_SUBSTRACTION_DEFAULT
   );
@@ -135,16 +179,68 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const isDataTypeOne = () => dataProductType === DP_TYPE_IMAGES;
 
-  const getObservation = () => baseObservations?.find((obs) => obs.id === observationId);
+  const hasRealObservationSelection = () => {
+    if (!observationId) {
+      return false;
+    }
 
-  const isFlowThrough = () => getObservation()?.pstMode === FLOW_THROUGH_VALUE;
-  const isDetectedFilterbank = () => getObservation()?.pstMode === DETECTED_FILTER_BANK_VALUE;
-  const isPulsarTiming = () => getObservation()?.pstMode === PULSAR_TIMING_VALUE;
+    const proposalObservations = getProposal()?.observations ?? [];
+    return proposalObservations.some((obs) => obs.id === observationId);
+  };
+
+  const getDataProductTypeValue = (dp?: DataProductSDPNew) =>
+    Number(dp?.data?.dataProductType ?? DP_TYPE_IMAGES);
+
+  const getObservationDataProducts = (obsId: string) =>
+    (getProposal()?.dataProductSDP ?? []).filter((dp) => dp.observationId === obsId);
+
+  const getObservationTargetObservations = (obsId: string) =>
+    (getProposal()?.targetObservation ?? []).filter((rec) => rec.observationId === obsId);
+
+  const getLinkedDataProductId = (obsId: string, fallbackId = '') =>
+    getObservationTargetObservations(obsId)[0]?.dataProductsSDPId ?? fallbackId;
+
+  const getLinkedDataProduct = (obsId: string, fallbackId = '') => {
+    const observationDataProducts = getObservationDataProducts(obsId);
+    const linkedDataProductId = getLinkedDataProductId(obsId, fallbackId);
+    return (
+      observationDataProducts.find((dp) => dp.id === linkedDataProductId) ??
+      observationDataProducts.find((dp) => dp.id === fallbackId) ??
+      observationDataProducts[0]
+    );
+  };
+
+  const getSiblingContinuumDataProduct = (
+    obsId: string,
+    currentDataProductId: string,
+    nextType: number
+  ) =>
+    getObservationDataProducts(obsId).find(
+      (dp) => dp.id !== currentDataProductId && getDataProductTypeValue(dp) === nextType
+    );
+
+  const getResolvedPstMode = () => {
+    const observation = getObservation();
+    const pstMode = observation?.pstMode;
+
+    if (typeof pstMode === 'undefined' || pstMode === null || Number.isNaN(pstMode)) {
+      return FLOW_THROUGH_VALUE;
+    }
+
+    return Number(pstMode);
+  };
+
+  const isFlowThrough = () => getResolvedPstMode() === FLOW_THROUGH_VALUE;
+  const isDetectedFilterbank = () => getResolvedPstMode() === DETECTED_FILTER_BANK_VALUE;
+  const isPulsarTiming = () => getResolvedPstMode() === PULSAR_TIMING_VALUE;
 
   const isContinuum = () =>
     getObservation()?.type === TYPE_CONTINUUM || getProposal()?.scienceCategory === TYPE_CONTINUUM;
   const isSpectral = () =>
-    getObservation()?.type === TYPE_ZOOM || getProposal()?.scienceCategory === TYPE_ZOOM;
+    getObservation()?.type === TYPE_ZOOM ||
+    getProposal()?.scienceCategory === TYPE_ZOOM ||
+    getObservation()?.type === TYPE_CONTINUUM_SPECTRAL ||
+    getProposal()?.scienceCategory === TYPE_CONTINUUM_SPECTRAL;
   const isPST = () =>
     getObservation()?.type === TYPE_PST || getProposal()?.scienceCategory === TYPE_PST;
 
@@ -154,10 +250,55 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const getSuffix = () => {
     if (isContinuum() || isPST()) {
-      return dataProductType.toString();
+      const resolvedType = isPST()
+        ? getDataProductType(getObservation()?.type ?? '', getResolvedPstMode())
+        : dataProductType;
+      return resolvedType.toString();
     }
     return '1';
   };
+
+  const resetContinuumDataProduct = (
+    dp: DataProductSDPNew,
+    observation: Observation
+  ): DataProductSDPNew => {
+    // When the user changes between Images and Visibilities for the data product,
+    // the hidden option still exists within the data model, and we need to set
+    // its values to something sensible.
+    if (getDataProductTypeValue(dp) === DP_TYPE_IMAGES) {
+      const continuumImagesData = {
+        ...dp,
+        data: {
+          ...dp.data,
+          weighting: IW_BRIGGS,
+          robust: ROBUST_DEFAULT,
+          polarisations: POLARISATIONS_DEFAULT,
+          channelsOut: CHANNELS_OUT_DEFAULT
+        }
+      };
+      return updateImagesDataProductSizes(continuumImagesData, observation.centralFrequency);
+    }
+
+    const continuumVisibilityData = dp.data as SDPVisibilitiesContinuumData;
+    return {
+      ...dp,
+      data: {
+        ...continuumVisibilityData,
+        dataProductType: DP_TYPE_VISIBLE,
+        timeAveraging: 4,
+        frequencyAveraging: 4
+      }
+    };
+  };
+
+  const updateLinkedDataProductId = (
+    targetObservations: TargetObservation[],
+    obsId: string,
+    dataProductsSDPId: string
+  ) =>
+    targetObservations.map((rec) =>
+      rec.observationId === obsId ? { ...rec, dataProductsSDPId } : rec
+    );
 
   const dataProductIn = (dp: DataProductSDPNew) => {
     const data = dp.data as any;
@@ -174,7 +315,7 @@ export default function DataProduct({ data }: DataProductProps) {
     setWeighting(data?.weighting ?? IW_UNIFORM);
     setRobust(data?.robust ?? ROBUST_DEFAULT);
     setPolarisations(data?.polarisations ?? []);
-    setChannelsOut(data?.channelsOut ?? CHANNELS_OUT_DEFAULT);
+    setChannelsOut(data?.channelsOut ?? channelsOutMax());
     setTimeAveraging(data?.timeAveraging ?? TIME_AVERAGING_DEFAULT);
     setFrequencyAveraging(data?.frequencyAveraging ?? FREQUENCY_AVERAGING_DEFAULT);
     setContinuumSubtraction(data?.continuumSubtraction ?? SET_CONTINUUM_SUBSTRACTION_DEFAULT);
@@ -185,7 +326,11 @@ export default function DataProduct({ data }: DataProductProps) {
     setRotationMeasure(data?.rotationMeasure ?? 1);
   };
 
-  const dataProductOut = () => {
+  const dataProductOut = (): DataProductSDPNew | undefined => {
+    if (!id || !hasRealObservationSelection()) {
+      return undefined;
+    }
+
     const taper = isLow() ? taperLowValue : taperMidValue;
     const newDataProduct: DataProductSDPNew = {
       id: id,
@@ -216,22 +361,83 @@ export default function DataProduct({ data }: DataProductProps) {
 
   /* ------------------------------------------- */
 
+  // Combined mode's hidden visibilities ODP (see HiddenSDPData) is created automatically by the
+  // SV auto-linking flow, but a data product added/edited manually here needs the same companion
+  // - add it if this observation doesn't already have one.
+  const ensureHiddenDataProduct = (
+    dataProducts: DataProductSDPNew[],
+    observation?: Observation
+  ): DataProductSDPNew[] => {
+    if (!observation || observation.type !== TYPE_CONTINUUM_SPECTRAL) {
+      return dataProducts;
+    }
+    const alreadyHasHidden = dataProducts.some(
+      (dp) => dp.observationId === observation.id && getDataProductTypeValue(dp) === DP_TYPE_VISIBLE
+    );
+    if (alreadyHasHidden) {
+      return dataProducts;
+    }
+    const hiddenData = HiddenSDPData(observation);
+    if (!hiddenData) {
+      return dataProducts;
+    }
+    return [
+      ...dataProducts,
+      {
+        id: generateId('SDP-', 6),
+        observationId: observation.id,
+        data: hiddenData
+      }
+    ];
+  };
+
+  /**
+   * Add Observation Data Products (ODPs) for both imaging and visabilities to the proposal.
+   */
   const addToProposal = () => {
+    if (!hasRealObservationSelection()) {
+      return;
+    }
+
+    const proposal = getProposal();
+    const observation = getObservation();
+    const newDataProduct = dataProductOut();
+    if (!newDataProduct) {
+      return;
+    }
+
+    const dataProductSDP = ensureHiddenDataProduct(
+      [...(proposal?.dataProductSDP ?? []), newDataProduct],
+      observation
+    );
     setProposal({
-      ...getProposal(),
-      dataProductSDP: [...(getProposal()?.dataProductSDP ?? []), dataProductOut()]
+      ...proposal,
+      dataProductSDP
     });
   };
 
+  /**
+   * Update the proposal's Observation Data Products (ODPs) for both imaging and visabilities.
+   */
   const updateToProposal = async () => {
+    if (!hasRealObservationSelection()) {
+      return;
+    }
     const proposal = getProposal();
     const observation = getObservation();
-    const newDataProduct: DataProductSDPNew = dataProductOut();
+    const newDataProduct = dataProductOut();
+    if (!newDataProduct) {
+      return;
+    }
     const oldDataProducts = proposal.dataProductSDP ?? [];
     const to = await updateSensCalc(proposal, observation!, newDataProduct);
+    const dataProductSDP = ensureHiddenDataProduct(
+      updateDataProducts(oldDataProducts, newDataProduct),
+      observation
+    );
     setProposal({
       ...proposal,
-      dataProductSDP: updateDataProducts(oldDataProducts, newDataProduct),
+      dataProductSDP,
       targetObservation: to
     });
   };
@@ -253,11 +459,75 @@ export default function DataProduct({ data }: DataProductProps) {
   };
 
   // set correct data product type depending on pst mode from obs type
-  const getDataProductType = (obsType: string, pstMode: number): number => {
+  const getDataProductType = (obsType: string, pstMode?: number): number => {
     if (obsType === TYPE_PST) {
-      return pstMode;
+      if (typeof pstMode === 'undefined' || pstMode === null || Number.isNaN(pstMode)) {
+        return FLOW_THROUGH_VALUE;
+      }
+      return Number(pstMode);
     }
     return DP_TYPE_IMAGES; // default for non-pst
+  };
+
+  const handleDataProductTypeChange = async (nextType: string | number) => {
+    const newDataProductType = Number(nextType);
+
+    if (!isEdit() || newDataProductType === dataProductType) {
+      setDataProductType(newDataProductType);
+      return;
+    }
+
+    if (!isContinuum()) {
+      setDataProductType(newDataProductType);
+      return;
+    }
+
+    const proposal = getProposal();
+    const observation = getObservation();
+
+    if (!observation) {
+      return;
+    }
+
+    const currentLinkedDataProduct = getLinkedDataProduct(observation.id, id) ?? dataProductOut();
+    const currentDataProduct =
+      currentLinkedDataProduct.id === id ? dataProductOut() : currentLinkedDataProduct;
+    const nextLinkedDataProduct = getSiblingContinuumDataProduct(
+      observation.id,
+      currentDataProduct.id,
+      newDataProductType
+    );
+
+    if (!nextLinkedDataProduct) {
+      return;
+    }
+
+    const resetUnlinkedDataProduct = resetContinuumDataProduct(currentDataProduct, observation);
+    const dataProductsAfterReset = updateDataProducts(
+      updateDataProducts(proposal.dataProductSDP ?? [], resetUnlinkedDataProduct),
+      nextLinkedDataProduct
+    );
+    const linkedTargetObservations = updateLinkedDataProductId(
+      proposal.targetObservation ?? [],
+      observation.id,
+      nextLinkedDataProduct.id
+    );
+    const proposalForSensCalc: Proposal = {
+      ...proposal,
+      dataProductSDP: dataProductsAfterReset,
+      targetObservation: linkedTargetObservations
+    };
+    const updatedTargetObservations = await updateSensCalc(
+      proposalForSensCalc,
+      observation,
+      nextLinkedDataProduct
+    );
+
+    setProposal({
+      ...proposalForSensCalc,
+      targetObservation: updatedTargetObservations
+    });
+    dataProductIn(nextLinkedDataProduct);
   };
 
   /* ------------------------------------------- */
@@ -269,8 +539,19 @@ export default function DataProduct({ data }: DataProductProps) {
 
     setBaseObservations(observations);
     if (isEdit()) {
-      dataProductIn(data ? data : (locationProperties.state as DataProductSDPNew));
+      const selectedDataProduct = data ? data : (locationProperties.state as DataProductSDPNew);
+      const linkedDataProduct = getLinkedDataProduct(
+        selectedDataProduct.observationId,
+        selectedDataProduct.id
+      );
+
+      dataProductIn(linkedDataProduct ?? selectedDataProduct);
     } else {
+      const fallbackObservation =
+        observations.find((obs) => obs.type === TYPE_PST) ?? observations[0];
+      if (fallbackObservation?.id && !observationId) {
+        setObservationId(fallbackObservation.id);
+      }
       setId(generateId(PAGE_PREFIX, 6));
     }
   }, []);
@@ -285,11 +566,11 @@ export default function DataProduct({ data }: DataProductProps) {
 
   React.useEffect(() => {
     if (!isEdit()) {
-      const sdpType = getDataProductType(
-        getObservation()?.type ?? '',
-        Number(getObservation()?.pstMode)
-      );
+      const sdpType = getDataProductType(getObservation()?.type ?? '', getResolvedPstMode());
       setDataProductType(sdpType);
+      // channelsOut's initial state is set before an observation is selected (so isCombined()
+      // can't see it yet) - re-derive it once the observation for this new data product is known.
+      setChannelsOut(channelsOutMax());
     }
   }, [observationId]);
 
@@ -459,7 +740,7 @@ export default function DataProduct({ data }: DataProductProps) {
       <DataProductTypeField
         observationType={getObservation()?.type || TYPE_CONTINUUM}
         onFocus={() => setHelp('dataProductType')}
-        setValue={setDataProductType}
+        setValue={handleDataProductTypeChange}
         value={dataProductType}
       />
     );
@@ -477,7 +758,8 @@ export default function DataProduct({ data }: DataProductProps) {
   const channelsOutField = () =>
     fieldWrapper(
       <ChannelsOutField
-        onFocus={() => setHelp('channelsOut', { min: CHANNELS_OUT_MIN, max: CHANNELS_OUT_MAX })}
+        maxValue={channelsOutMax()}
+        onFocus={() => setHelp('channelsOut', { min: CHANNELS_OUT_MIN, max: channelsOutMax() })}
         required
         setValue={setChannelsOut}
         value={channelsOut}
@@ -542,13 +824,21 @@ export default function DataProduct({ data }: DataProductProps) {
   const channelsOutValid = () =>
     Number.isInteger(channelsOut) &&
     channelsOut >= CHANNELS_OUT_MIN &&
-    channelsOut <= CHANNELS_OUT_MAX;
+    channelsOut <= channelsOutMax();
   const polarisationsValid = () => polarisations.length > 0;
 
   const pageFooter = () => {
+    /**
+     * Update button is only enabled if the details pass basic validation.
+     */
     const enabled = () => {
+      if (!hasRealObservationSelection()) {
+        return false;
+      }
+
       switch (getObservation()?.type) {
         case TYPE_ZOOM:
+        case TYPE_CONTINUUM_SPECTRAL:
           return (
             pixelSizeValid() &&
             imageSizeValid() &&
@@ -621,7 +911,18 @@ export default function DataProduct({ data }: DataProductProps) {
     );
   };
 
+  // These two functions only work for the SV call as they assume one target
+  // and access the first element of an array. A better way here might be to find the
+  // targetObservation that is linked to the id of the DataProduct (that is stored in this component state `id`)
+  // and then use this to get the sensCalc and target. At the time of writing, that isn't a
+  // ball of string I want to start pulling..
   const scData = (): any => getProposal()?.targetObservation?.[0]?.sensCalc;
+  const isTargetSSO = (): boolean => {
+    const proposal = getProposal();
+    return proposal.targets?.[0]?.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
+  };
+  const linkedScData = (): any =>
+    getProposal()?.targetObservation?.find((rec) => rec.observationId === observationId)?.sensCalc;
 
   const isCustom = () => getObservation()?.subarray === SA_CUSTOM;
   const isNatural = () =>
@@ -656,10 +957,13 @@ export default function DataProduct({ data }: DataProductProps) {
                 flex: 1,
                 display: 'flex',
                 flexDirection: 'column',
-                border: 'none',
+                border: '1px solid',
                 borderColor: '#ccc',
                 borderRadius: '8px',
-                minHeight: 0
+                minHeight: 0,
+                maxHeight: 'calc(100vh - 260px)',
+                overflowY: 'auto',
+                overflowX: 'hidden'
               }}
             >
               {baseObservations && (
@@ -795,7 +1099,7 @@ export default function DataProduct({ data }: DataProductProps) {
           {showSC && (
             <BorderedSection
               borderColor={
-                isPST()
+                isPST() || isTargetSSO()
                   ? theme.palette.warning.main
                   : scData()?.statusGUI !== STATUS_INITIAL
                     ? theme.palette.success.main
@@ -805,18 +1109,18 @@ export default function DataProduct({ data }: DataProductProps) {
             >
               {isPST() && <Typography variant="subtitle1">{t('page.7.pstUnavailable')}</Typography>}
               {!isPST() && (
-                <SensCalcContent data={scData()} isCustom={isCustom()} isNatural={isNatural()} />
+                <SensCalcContent
+                  data={linkedScData() ?? scData()}
+                  isSSO={isTargetSSO()}
+                  isCustom={isCustom()}
+                  isNatural={isNatural()}
+                />
               )}
             </BorderedSection>
           )}
         </Grid>
       </Grid>
-      {osdCyclePolicy?.maxDataProducts !== 1 && (
-        <>
-          <Spacer size={FOOTER_SPACER} axis={SPACER_VERTICAL} />
-          {pageFooter()}
-        </>
-      )}
+      {osdCyclePolicy?.maxDataProducts !== 1 && pageFooter()}
     </Box>
   );
 }

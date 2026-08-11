@@ -1,9 +1,10 @@
 import React from 'react';
 import { Box, Grid } from '@mui/material';
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
-import { BorderedSection, TextEntry } from '@ska-telescope/ska-gui-components';
+import { BorderedSection, TextEntry, Progress } from '@ska-telescope/ska-gui-components';
 import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 import ReferenceCoordinatesField from '@components/fields/referenceCoordinates/ReferenceCoordinates.tsx';
+import SolarSystemObjectField from '@components/fields/solarSystemObject/solarSystemObject.tsx';
 import { leadZero, trailingZeros } from '@utils/helpers.ts';
 import { Proposal } from '@/utils/types/proposal';
 import AddButton from '@/components/button/Add/Add';
@@ -14,7 +15,9 @@ import SkyDirection2 from '@/components/fields/skyDirection/SkyDirection2';
 import VelocityField from '@/components/fields/velocity/Velocity';
 import Target from '@/utils/types/target';
 import {
+  REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
+  REFERENCE_COORDINATE_TYPE_SSO,
   VELOCITY_TYPE,
   FIELD_PATTERN_POINTING_CENTRES,
   WRAPPER_HEIGHT,
@@ -22,7 +25,7 @@ import {
   TYPE_ZOOM,
   TYPE_CONTINUUM,
   NOTIFICATION_DELAY_IN_SECONDS,
-  REFERENCE_COORDINATE_TYPE_GALACTIC
+  SA_AA2
 } from '@/utils/constants';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
@@ -52,7 +55,7 @@ export default function TargetEntry({
   onNameFieldErrorChange
 }: TargetEntryProps) {
   const { t } = useScopedTranslation();
-  const { autoLink, isSV } = useOSDAccessors();
+  const { autoLink, isSV, osdLOW, osdMID } = useOSDAccessors();
   const { notifyError, notifySuccess } = useNotify();
 
   const { application, updateAppContent2 } = storageObject.useStore();
@@ -77,6 +80,17 @@ export default function TargetEntry({
     DEFAULT_REFERENCE_COORDINATES
   );
   const [fieldPattern, setFieldPattern] = React.useState(FIELD_PATTERN_POINTING_CENTRES);
+  const [resolutionLoading, setResolutionLoading] = React.useState(false);
+  const resolveRevisionRef = React.useRef(0);
+
+  /**
+   * Invalidates any pending coordinate-resolution response so it can't overwrite newer edits when
+   * it arrives - the underlying GetCoordinates request itself is not aborted.
+   */
+  const invalidatePendingResolve = () => {
+    resolveRevisionRef.current += 1;
+    setResolutionLoading(false);
+  };
 
   React.useEffect(() => {
     if (nameFieldError === t('addTarget.error')) {
@@ -105,6 +119,7 @@ export default function TargetEntry({
   }, [nameFieldError]);
 
   const setTheName = (inValue: string) => {
+    invalidatePendingResolve();
     setName(inValue);
     if (!inValue.trim()) {
       setNameFieldError(t('addTarget.valueError'));
@@ -116,9 +131,12 @@ export default function TargetEntry({
     }
   };
 
-  const isICRS = referenceCoordinates === DEFAULT_REFERENCE_COORDINATES;
+  const isICRS = referenceCoordinates === REFERENCE_COORDINATE_TYPE_ICRS.value;
+
+  const isSSO = referenceCoordinates === REFERENCE_COORDINATE_TYPE_SSO.value;
 
   const setTheCoord1 = (value: string) => {
+    invalidatePendingResolve();
     setCoord1(value);
 
     if (!setTarget) return;
@@ -136,6 +154,7 @@ export default function TargetEntry({
     }
   };
   const setTheCoord2 = (value: string) => {
+    invalidatePendingResolve();
     setCoord2(value);
 
     if (!setTarget) return;
@@ -154,6 +173,8 @@ export default function TargetEntry({
   };
 
   const setTheReferenceCoordinates = (newKind: number) => {
+    invalidatePendingResolve();
+
     if (newKind !== referenceCoordinates) {
       setName('');
       setCoord1('');
@@ -178,6 +199,7 @@ export default function TargetEntry({
   };
 
   const setTheRedshift = (inValue: string) => {
+    invalidatePendingResolve();
     setRedshift(inValue);
     if (setTarget) {
       setTarget({ ...target, redshift: inValue });
@@ -185,6 +207,7 @@ export default function TargetEntry({
   };
 
   const setTheVel = (inValue: string) => {
+    invalidatePendingResolve();
     setVel(inValue);
     if (setTarget) {
       setTarget({ ...target, vel: inValue });
@@ -192,6 +215,7 @@ export default function TargetEntry({
   };
 
   const setTheVelType = (inValue: number) => {
+    invalidatePendingResolve();
     setVelType(inValue);
     if (setTarget) {
       setTarget({ ...target, velType: inValue });
@@ -199,6 +223,7 @@ export default function TargetEntry({
   };
 
   const setTheVelUnit = (inValue: number) => {
+    invalidatePendingResolve();
     setVelUnit(inValue);
     if (setTarget) {
       setTarget({ ...target, velUnit: inValue });
@@ -261,6 +286,7 @@ export default function TargetEntry({
   }
 
   const clearForm = () => {
+    invalidatePendingResolve();
     setName('');
     setCoord1('');
     setCoord2('');
@@ -278,6 +304,8 @@ export default function TargetEntry({
 
   const addButton = () => {
     const addButtonAction = () => {
+      invalidatePendingResolve();
+
       if (!formValidation()) {
         return;
       } else {
@@ -293,36 +321,68 @@ export default function TargetEntry({
         : null;
       const highestId = highest ? highest.id : 0;
 
-      const isICRS = referenceCoordinates === REFERENCE_COORDINATE_TYPE_ICRS.value;
-
-      const newTarget: Target = {
+      const baseTarget = {
         kind: referenceCoordinates,
         id: highestId + 1,
         name: name ?? '',
-
-        ...(isICRS
-          ? {
-              raStr: coord1 ?? '',
-              decStr: coord2 ?? ''
-            }
-          : {
-              l: Number(coord1),
-              b: Number(coord2)
-            }),
-
-        redshift: velType === VELOCITY_TYPE.REDSHIFT ? (redshift ?? '') : '',
-        vel: velType === VELOCITY_TYPE.VELOCITY ? (vel ?? '') : '',
-        velType: velType ?? 0,
-        velUnit: velUnit ?? 0
+        velUnit: velUnit ?? DEFAULT_VELOCITY_UNIT
       };
 
+      const buildTarget = (): Target => {
+        switch (referenceCoordinates) {
+          case REFERENCE_COORDINATE_TYPE_SSO.value:
+            return {
+              ...baseTarget,
+              vel: '',
+              redshift: '',
+              velType: DEFAULT_VELOCITY_TYPE
+            };
+
+          case REFERENCE_COORDINATE_TYPE_ICRS.value:
+            return {
+              ...baseTarget,
+              velType: velType ?? DEFAULT_VELOCITY_TYPE,
+              raStr: coord1 ?? '',
+              decStr: coord2 ?? '',
+              redshift: velType === VELOCITY_TYPE.REDSHIFT ? (redshift ?? '') : '',
+              vel: velType === VELOCITY_TYPE.VELOCITY ? (vel ?? '') : ''
+            };
+
+          case REFERENCE_COORDINATE_TYPE_GALACTIC.value:
+            return {
+              ...baseTarget,
+              velType: velType ?? DEFAULT_VELOCITY_TYPE,
+              l: Number(coord1),
+              b: Number(coord2),
+              redshift: velType === VELOCITY_TYPE.REDSHIFT ? (redshift ?? '') : '',
+              vel: velType === VELOCITY_TYPE.VELOCITY ? (vel ?? '') : ''
+            };
+
+          default:
+            throw new Error(`Unsupported reference coordinate kind: ${referenceCoordinates}`);
+        }
+      };
+
+      const newTarget: Target = buildTarget();
+
       const generateAutoLinkData = async () => {
-        const defaults = await autoLinking(newTarget, getProposal, setProposal);
+        // The default zoom observation's zoomChannels is a static placeholder with no knowledge
+        // of the actual subarray's channel cap - pass the real cap through so it isn't baked in.
+        const record = osdLOW ? osdLOW : osdMID;
+        const sArray = record?.subArrays.find((sub: any) => sub.subArray === SA_AA2);
+        const defaults = await autoLinking(
+          newTarget,
+          getProposal,
+          setProposal,
+          undefined,
+          undefined,
+          sArray?.numberZoomChannels
+        );
         if (defaults && defaults.success) {
           notifySuccess(t('autoLink.targetSuccess'), NOTIFICATION_DELAY_IN_SECONDS);
           clearForm();
         } else {
-          notifyError(defaults?.error ?? t('autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
+          notifyError(t(defaults?.error ?? 'autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
         }
       };
 
@@ -354,7 +414,7 @@ export default function TargetEntry({
         skyDirection1Error !== '' ||
         skyDirection2Error !== '' ||
         rmFieldError !== '' ||
-        !(name?.length && coord1?.length && coord2?.length && targetLengthCheck())
+        !(name?.length && (isSSO || (coord1?.length && coord2?.length)) && targetLengthCheck())
       );
     };
 
@@ -400,7 +460,7 @@ export default function TargetEntry({
         {hasAnyFieldEntered() ? (
           <CancelButton
             action={clearForm}
-            disabled={false}
+            disabled={resolutionLoading}
             primary={false}
             testId={'clearFormButton'}
             title="clearBtn.label"
@@ -412,7 +472,14 @@ export default function TargetEntry({
   };
 
   const resolveButton = () => {
-    const processCoordinatesResults = (response: any) => {
+    /**
+     * Applies a coordinate-resolve response to the form, unless it's been superseded.
+     */
+    const processCoordinatesResults = (response: any, requestRevision: number) => {
+      if (resolveRevisionRef.current !== requestRevision) {
+        return;
+      }
+
       if (response && !response.error) {
         if (response.reference_coordinate.kind === 'galactic') {
           setTheCoord1(String(response.reference_coordinate.l));
@@ -443,13 +510,42 @@ export default function TargetEntry({
       }
     };
 
+    /**
+     * Resolves the entered target name to coordinates, tracking the request's revision so a
+     * later edit or resolve click can't be overwritten by an earlier, slower response.
+     */
     const getCoordinates = async () => {
-      const response = await GetCoordinates(name, referenceCoordinates);
-      processCoordinatesResults(response);
+      const requestRevision = resolveRevisionRef.current;
+      const requestName = name;
+
+      setResolutionLoading(true);
+
+      try {
+        const response = await GetCoordinates(requestName, referenceCoordinates);
+        processCoordinatesResults(response, requestRevision);
+      } catch {
+        if (resolveRevisionRef.current === requestRevision) {
+          setNameFieldError(t('resolve.error'));
+        }
+      } finally {
+        if (resolveRevisionRef.current === requestRevision) {
+          setResolutionLoading(false);
+        }
+      }
     };
 
     return (
-      <ResolveButton action={() => getCoordinates()} disabled={!name} testId={'resolveButton'} />
+      <>
+        {resolutionLoading ? (
+          <Progress size={20} />
+        ) : (
+          <ResolveButton
+            action={() => getCoordinates()}
+            disabled={!name || resolutionLoading}
+            testId={'resolveButton'}
+          />
+        )}
+      </>
     );
   };
 
@@ -475,9 +571,12 @@ export default function TargetEntry({
       <ReferenceCoordinatesField
         setValue={setTheReferenceCoordinates}
         value={referenceCoordinates}
-        disabled={isEditMode}
+        disabled={isEditMode || resolutionLoading}
       />
     );
+
+  const solarSystemObjectField = () =>
+    wrapper(<SolarSystemObjectField setValue={setTheName} value={name} />);
 
   const fieldPatternTypeField = () => {
     return wrapper(
@@ -502,10 +601,11 @@ export default function TargetEntry({
         testId={'name'}
         value={name}
         setValue={setTheName}
-        suffix={resolveButton()}
+        suffix={!isSSO ? resolveButton() : undefined}
         onBlur={blurName}
         onFocus={() => setHelp('name.help')}
         errorText={nameFieldError}
+        disabled={resolutionLoading}
       />
     );
 
@@ -574,37 +674,41 @@ export default function TargetEntry({
       <Grid pt={1}>
         <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
           <BorderedSection title={t('coordinate.label')}>
-            {nameField()}
-            <Grid
-              container
-              spacing={GAP}
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Grid size={{ md: 12, lg: 6 }}>{skyDirection1Field()}</Grid>
-              <Grid size={{ md: 12, lg: 6 }}>{skyDirection2Field()}</Grid>
-            </Grid>
+            {isSSO ? solarSystemObjectField() : nameField()}
+            {!isSSO && (
+              <Grid
+                container
+                spacing={GAP}
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Grid size={{ md: 12, lg: 6 }}>{skyDirection1Field()}</Grid>
+                <Grid size={{ md: 12, lg: 6 }}>{skyDirection2Field()}</Grid>
+              </Grid>
+            )}
           </BorderedSection>
         </Box>
       </Grid>
-      <Grid pt={1}>
-        <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
-          <BorderedSection title={t('radialMotion.label')}>
-            <Grid
-              container
-              spacing={GAP}
-              direction="row"
-              justifyContent="space-between"
-              alignItems="center"
-            >
-              <Grid size={{ md: 12, lg: 6 }}>{velocityTypeField()}</Grid>
-              <Grid size={{ md: 12, lg: 6 }}>{velocityField()}</Grid>
-            </Grid>
-            {velType === VELOCITY_TYPE.VELOCITY}
-          </BorderedSection>
-        </Box>
-      </Grid>
+      {!isSSO && (
+        <Grid pt={1}>
+          <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>
+            <BorderedSection title={t('radialMotion.label')}>
+              <Grid
+                container
+                spacing={GAP}
+                direction="row"
+                justifyContent="space-between"
+                alignItems="center"
+              >
+                <Grid size={{ md: 12, lg: 6 }}>{velocityTypeField()}</Grid>
+                <Grid size={{ md: 12, lg: 6 }}>{velocityField()}</Grid>
+              </Grid>
+              {velType === VELOCITY_TYPE.VELOCITY}
+            </BorderedSection>
+          </Box>
+        </Grid>
+      )}
       {!isSV && (
         <Grid pt={1}>
           <Box pl={10} sx={{ justifyContent: 'center', alignItems: 'center', width: '90%' }}>

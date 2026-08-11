@@ -19,6 +19,7 @@ import {
   NAV,
   SUPPLIED_VALUE_DEFAULT_MID,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_INTEGRATION_TIME_UNITS_M,
   SUPPLIED_VALUE_DEFAULT_LOW,
@@ -36,6 +37,7 @@ import {
   PAGE_OBSERVATION_ADD,
   FREQUENCY_HZ,
   ZOOM_BANDWIDTH_DEFAULT_LOW,
+  ZOOM_CHANNELS_DEFAULT_LOW,
   TYPE_PST,
   ZOOM_BANDWIDTH_DEFAULT_MID,
   TEL_UNITS,
@@ -57,11 +59,15 @@ import {
 import {
   frequencyConversion,
   generateId,
-  getBandwidthLowZoom,
   getBandwidthZoom,
   obTypeTransform,
   timeConversion
 } from '@utils/helpers.ts';
+import {
+  channelsToBandwidthHz,
+  getZoomResolutionHz,
+  snapCentralFrequencyToChannelGridHz
+} from '@utils/zoomWindow.ts';
 import WeatherField from '@/components/fields/weather/weather';
 import PageBannerPPT from '@/components/layout/pageBannerPPT/PageBannerPPT';
 import Proposal from '@/utils/types/proposal';
@@ -71,9 +77,7 @@ import Observation from '@/utils/types/observation';
 import SubArrayField from '@/components/fields/subArray/SubArray';
 import ObservingBandField from '@/components/fields/observingBand/ObservingBand';
 import ObservationTypeField from '@/components/fields/observationType/ObservationType';
-import EffectiveResolutionField from '@/components/fields/effectiveResolution/EffectiveResolution';
 import ElevationField, { ELEVATION_DEFAULT } from '@/components/fields/elevation/Elevation';
-import SpectralAveragingField from '@/components/fields/spectralAveraging/SpectralAveraging';
 import SpectralResolutionField from '@/components/fields/spectralResolution/SpectralResolution';
 import NumStations from '@/components/fields/numStations/NumStations';
 import ContinuumBandwidthField from '@/components/fields/bandwidthFields/continuumBandwidth/continuumBandwidth';
@@ -92,7 +96,7 @@ import CentralFrequency from '@/components/fields/centralFrequency/centralFreque
 import ZoomChannels from '@/components/fields/zoomChannels/zoomChannels';
 import SubBands from '@/components/fields/subBands/subBands';
 import updateObservations from '@/utils/update/observations/updateObservations';
-import updateDataProductsPST from '@/utils/update/dataProductsPST/updateDataProductsPST';
+import updateDataProductsOnObservationChange from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
 import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalcPartial';
 import updateSensCalc from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
@@ -136,16 +140,16 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   const [subarrayConfig, setSubarrayConfig] = React.useState(SA_AA2);
   const [observingBand, setObservingBand] = React.useState(BAND_LOW_STR);
-  const [observationType, setObservationType] = React.useState(TYPE_CONTINUUM);
-  const [effectiveResolution, setEffectiveResolution] = React.useState('');
+  // Avoids a mismatch with obsTypeOptions (below), which collapses to a single entry matching
+  // the proposal's scienceCategory for SV.
+  const [observationType, setObservationType] = React.useState(() =>
+    isSV ? (getProposal().scienceCategory ?? TYPE_CONTINUUM) : TYPE_CONTINUUM
+  );
   const [elevation, setElevation] = React.useState(ELEVATION_DEFAULT[TELESCOPE_LOW_NUM - 1]);
   const [weather, setWeather] = React.useState(Number(t('weather.default')));
   const [centralFrequency, setCentralFrequency] = React.useState(0);
   const [centralFrequencyUnits, setCentralFrequencyUnits] = React.useState(FREQUENCY_MHZ);
   const [bandwidth, setBandwidth] = React.useState(ZOOM_BANDWIDTH_DEFAULT_LOW);
-  const [bandwidthLookup, setBandwidthLookup] = React.useState<
-    { label: string; value: number; mapping: string } | undefined
-  >(undefined);
   const [spectralAveraging, setSpectralAveraging] = React.useState(1);
   const [spectralResolution, setSpectralResolution] = React.useState('');
   const [suppliedType, setSuppliedType] = React.useState(SUPPLIED_TYPE_INTEGRATION);
@@ -159,6 +163,17 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const [numOfStations, setNumOfStations] = React.useState<number | undefined>(0);
   const [validateToggle, setValidateToggle] = React.useState(false);
   const [zoomChannels, setZoomChannels] = React.useState<number>(0);
+  // Tracks a genuine user edit, as opposed to the value merely matching the interim default -
+  // e.g. the user deliberately choosing/keeping ZOOM_CHANNELS_DEFAULT_LOW is not "unedited".
+  const zoomChannelsEditedByUser = React.useRef(false);
+  const handleZoomChannelsChange = (newValue: number) => {
+    zoomChannelsEditedByUser.current = true;
+    setZoomChannels(newValue);
+    // Snapped synchronously (same batch as the state update above) rather than left to the
+    // effect further down, so the channel-grid warning never has a render where zoomChannels has
+    // already changed but centralFrequency hasn't caught up yet.
+    snapCentralFrequencyForChannelCount(newValue);
+  };
   const [pstMode, setPstMode] = React.useState(PULSAR_TIMING_VALUE);
   const [maxZoomChannels, setMaxZoomChannels] = React.useState<number>(0);
 
@@ -176,7 +191,10 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setCentralFrequency(ob?.centralFrequency);
     setCentralFrequencyUnits(ob?.centralFrequencyUnits);
     setBandwidth(
-      ob?.bandwidth ?? (isLow() ? ZOOM_BANDWIDTH_DEFAULT_LOW : ZOOM_BANDWIDTH_DEFAULT_MID)
+      ob?.bandwidth ??
+        (ob?.observingBand === BAND_LOW_STR
+          ? ZOOM_BANDWIDTH_DEFAULT_LOW
+          : ZOOM_BANDWIDTH_DEFAULT_MID)
     );
     setContinuumBandwidth(ob?.continuumBandwidth ?? 0);
     setContinuumBandwidthUnits(ob?.continuumBandwidthUnits ?? 0);
@@ -207,8 +225,15 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setNumOf15mAntennas(ob?.num15mAntennas ?? 0);
     setNumOf13mAntennas(ob?.num13mAntennas ?? 0);
     setNumOfStations(ob?.numStations ?? 0);
-    setZoomChannels(ob?.zoomChannels ?? 0);
+    setZoomChannels(ob?.zoomChannels ?? ZOOM_CHANNELS_DEFAULT_LOW);
     setPstMode(ob?.pstMode ?? PULSAR_TIMING_VALUE);
+  };
+
+  // Storing sub-Hz precision doesn't reflect anything a real receiver can tune to, so round to
+  // the nearest Hz at the point of save rather than trusting whatever precision the field held.
+  const roundCentralFrequencyToHz = (value: number, units: number): number => {
+    const hz = Math.round(frequencyConversion(Number(value), units, FREQUENCY_HZ));
+    return Number(frequencyConversion(hz, FREQUENCY_HZ, units).toFixed(6));
   };
 
   const observationOut = () => {
@@ -221,7 +246,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       observingBand,
       weather,
       elevation: elevation,
-      centralFrequency: Number(centralFrequency),
+      centralFrequency: roundCentralFrequencyToHz(centralFrequency, centralFrequencyUnits),
       centralFrequencyUnits: centralFrequencyUnits,
       bandwidth: bandwidth,
       continuumBandwidth: continuumBandwidth,
@@ -233,7 +258,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         units: suppliedUnits
       },
       spectralResolution,
-      effectiveResolution,
+      effectiveResolution: spectralResolution,
       numSubBands: subBands,
       num15mAntennas: numOf15mAntennas,
       num13mAntennas: numOf13mAntennas,
@@ -249,11 +274,17 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   const updateObservationOnProposal = async () => {
     const proposal = getProposal();
     const newObservation: Observation = observationOut();
+
     const oldObservations = proposal.observations ?? [];
     const oldDataProducts = proposal.dataProductSDP ?? [];
+    const linkedDataProductId = proposal.targetObservation?.find(
+      (to) => to.observationId === newObservation.id
+    )?.dataProductsSDPId;
+
     const dataProductSDP: DataProductSDPNew | undefined = proposal.dataProductSDP?.find(
-      (dp) => dp.observationId === newObservation.id
+      (dp) => dp.id === linkedDataProductId
     );
+
     const oldTO = proposal?.targetObservation ?? [];
     const to = dataProductSDP
       ? await updateSensCalc(proposal, newObservation, dataProductSDP)
@@ -262,7 +293,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     const tmp = {
       ...proposal,
       observations: updateObservations(oldObservations ?? [], newObservation),
-      dataProductSDP: updateDataProductsPST(oldDataProducts, newObservation),
+      dataProductSDP: updateDataProductsOnObservationChange(oldDataProducts, newObservation),
       targetObservation: to
     };
     setProposal(tmp);
@@ -335,6 +366,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setDefaultCentralFrequency(String(e));
     setDefaultContinuumBandwidth(String(e));
     setObservingBand(String(e));
+    // The zoom-mode bandwidth default is telescope-specific (MID and LOW use different lookup
+    // tables) - reset it whenever the band changes, otherwise a stale value from the previously
+    // selected telescope can be out of range for the new one.
+    setBandwidth(
+      String(e) === BAND_LOW_STR ? ZOOM_BANDWIDTH_DEFAULT_LOW : ZOOM_BANDWIDTH_DEFAULT_MID
+    );
     updateStorageProposal();
   };
 
@@ -357,29 +394,41 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     updateStorageProposal();
   };
 
-  // STAR-1923 : This will need to be a lookup if/when the OSD correctly provides subarrays in an array
-  const setMaxChannelsZoom = (_subarrayConfig: string) => {
-    const record = isLow() ? osdLOW : osdMID;
+  // Returns the newly computed cap (not just the pending maxZoomChannels state setter) so
+  // callers that need the fresh value in the same tick - e.g. to default zoomChannels to it -
+  // don't read back the stale pre-update state.
+  const setMaxChannelsZoom = (subarrayConfig: string, low = isLow()): number => {
+    const record = low ? osdLOW : osdMID;
     setMaxZoomChannels(0);
     if (record) {
       const sArray = (
         record?.subArrays as (subarrayConfigurationLow | subarrayConfigurationMid)[] | undefined
-      )?.find((sub) => sub.subArray === SA_AA2);
-      setMaxZoomChannels(sArray?.numberZoomChannels ?? 0);
+      )?.find((sub) => sub.subArray === subarrayConfig);
+      const max = sArray?.numberZoomChannels ?? 0;
+      setMaxZoomChannels(max);
+      return max;
     }
+    return 0;
   };
 
   React.useEffect(() => {
     setHelp('observationId');
     if (isEdit()) {
-      observationIn(data ? data : locationProperties.state);
-      setMaxChannelsZoom(subarrayConfig);
-      setOnce(data ? data : locationProperties.state);
+      const loaded = data ? data : locationProperties.state;
+      observationIn(loaded);
+      // observationIn only schedules setObservingBand/setSubarrayConfig - subarrayConfig/isLow()
+      // below would still read the pre-load state in this same tick, so pass the loaded
+      // observation's own band/subarray directly rather than via setMaxChannelsZoom's defaults.
+      setMaxChannelsZoom(
+        loaded?.subarray ?? subarrayConfig,
+        loaded?.observingBand === BAND_LOW_STR
+      );
+      setOnce(loaded);
     } else {
       const obsBand = telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? osdLOW : osdMID;
       setMyObsId(generateId(t('addObservation.idPrefix'), 6));
       setTheSubarrayConfig(subarrayConfig);
-      setMaxChannelsZoom(subarrayConfig);
+      const maxChannels = setMaxChannelsZoom(subarrayConfig);
       setCentralFrequency(
         frequencyConversion(
           calculateCentralFrequency(obsBand, observingBand),
@@ -396,6 +445,13 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         )
       );
       setContinuumBandwidthUnits(isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ);
+      setBandwidth(isLow() ? ZOOM_BANDWIDTH_DEFAULT_LOW : ZOOM_BANDWIDTH_DEFAULT_MID);
+      if (isLow()) {
+        // Default to the subarray's full channel cap rather than an arbitrary fixed count. If
+        // osdLOW/osdMID hasn't loaded yet, maxChannels is 0 - fall back to the old constant until
+        // the catch-up effect below corrects it once the real cap is available.
+        setZoomChannels(maxChannels || ZOOM_CHANNELS_DEFAULT_LOW);
+      }
     }
   }, []);
 
@@ -408,9 +464,38 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setAfterChange();
   }, [subarrayConfig]);
 
+  const hasRefreshedMaxChannelsCap = React.useRef(false);
+
+  // If this mounted before osdLOW/osdMID arrived, setMaxChannelsZoom ran against an undefined
+  // record and fell back to a 0 cap, and (being tied only to mount/subarrayConfig) never
+  // recalculated once the real record loaded. Recalculate once here as soon as it's available -
+  // guarded to fire at most once, since osdLOW/osdMID may be a new object reference on every
+  // render and this would otherwise loop against setAfterChange's own state updates. Only marks
+  // itself done once the lookup actually succeeds (maxChannels > 0) - if subarrayConfig hasn't
+  // settled to a value the loaded record recognises yet, this keeps retrying (also depends on
+  // subarrayConfig) rather than giving up.
   React.useEffect(() => {
-    setBandwidthLookup(getBandwidthLowZoom(bandwidth));
-  }, [bandwidth]);
+    if (hasRefreshedMaxChannelsCap.current) return;
+    const record = isLow() ? osdLOW : osdMID;
+    if (!record) return;
+    const maxChannels = setMaxChannelsZoom(subarrayConfig);
+    if (maxChannels <= 0) return;
+    hasRefreshedMaxChannelsCap.current = true;
+  }, [osdLOW, osdMID, subarrayConfig]);
+
+  const hasSetZoomChannelsDefault = React.useRef(false);
+
+  // Correcting zoomChannels used to be duplicated inside whichever effect happened to first
+  // compute a real maxZoomChannels, which meant it only actually fired for the specific
+  // code path that ref-guard logic anticipated. Driving it directly off maxZoomChannels itself
+  // instead catches the moment the cap becomes valid regardless of which of the several places
+  // that call setMaxChannelsZoom is the one that gets there first.
+  React.useEffect(() => {
+    if (hasSetZoomChannelsDefault.current) return;
+    if (isEdit() || !isLow() || maxZoomChannels <= 0 || zoomChannelsEditedByUser.current) return;
+    hasSetZoomChannelsDefault.current = true;
+    setZoomChannels(maxZoomChannels);
+  }, [maxZoomChannels]);
 
   React.useEffect(() => {
     setValidateToggle(!validateToggle);
@@ -434,8 +519,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     pstMode,
     spectralAveraging,
     spectralResolution,
-    effectiveResolution,
-    zoomChannels
+    zoomChannels,
+    observationType
   ]);
 
   React.useEffect(() => {
@@ -464,7 +549,8 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     setFrequencyUnits();
   }, [observingBand]);
 
-  const isContinuum = () => observationType === TYPE_CONTINUUM;
+  const isContinuum = () =>
+    observationType === TYPE_CONTINUUM || observationType === TYPE_CONTINUUM_SPECTRAL;
   const isZoom = () => observationType === TYPE_ZOOM;
   const isPST = () => observationType === TYPE_PST;
   const isLow = () => observingBand === BAND_LOW_STR;
@@ -475,6 +561,56 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     ? osdLOW?.basicCapabilities?.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
     : 13.44e3;
 
+  // LOW-zoom channel resolution (Hz) for the selected `bandwidth` index, and the total zoom
+  // window bandwidth (Hz) derived from it and the current channel count - replaces the old
+  // bandwidthLookup/getBandwidthLowZoom lookup, which only ever reflected a per-channel value.
+  const getResolutionHz = () => (isLow() && isZoom() ? getZoomResolutionHz(bandwidth) : 0);
+  const getZoomBandwidthHz = () => channelsToBandwidthHz(zoomChannels, getResolutionHz());
+  // continuumBandwidthUnits is explicitly null (not undefined) on zoom/spectral observations
+  // (they have no continuum bandwidth), and the load path folds that null down to 0 - which isn't
+  // a valid FREQUENCY_UNITS index, so it must be treated as "unset" (||) rather than merely
+  // nullish (??).
+  const getContinuumBandwidthHz = () =>
+    frequencyConversion(
+      continuumBandwidth ?? 0,
+      continuumBandwidthUnits || FREQUENCY_HZ,
+      FREQUENCY_HZ
+    );
+  const getCentralFrequencyHz = () =>
+    frequencyConversion(centralFrequency ?? 0, centralFrequencyUnits ?? FREQUENCY_HZ, FREQUENCY_HZ);
+
+  // Changing zoomChannels shifts the channel grid by half a channel whenever channel-count parity
+  // flips (even <-> odd) - re-snap centralFrequency onto the new grid so a previously-valid centre
+  // frequency doesn't spuriously fail the channel-grid check and surface the generic out-of-band
+  // warning purely because the channel count changed underneath it.
+  const snapCentralFrequencyForChannelCount = (channels: number) => {
+    if (!isLow() || !isZoom()) return;
+    const channelWidthHz = getResolutionHz();
+    if (channelWidthHz <= 0) return;
+    const minHz = osdLOW?.basicCapabilities?.minFrequencyHz ?? 0;
+    const cfHz = getCentralFrequencyHz();
+    const snappedHz = snapCentralFrequencyToChannelGridHz(cfHz, channelWidthHz, channels, minHz);
+    if (Math.abs(snappedHz - cfHz) < 1) return;
+    setCentralFrequency(
+      Number(
+        frequencyConversion(
+          snappedHz,
+          FREQUENCY_HZ,
+          centralFrequencyUnits ?? FREQUENCY_MHZ
+        ).toFixed(6)
+      )
+    );
+  };
+
+  // handleZoomChannelsChange (the interactive path) already re-snaps synchronously, in the same
+  // batch as the zoomChannels update, so the warning never has stale state to flash against. This
+  // effect is the fallback for the other, non-interactive places zoomChannels gets set (loading a
+  // saved observation, defaulting to the subarray's channel cap) - those don't go through
+  // handleZoomChannelsChange, so this is what keeps them consistent too.
+  React.useEffect(() => {
+    snapCentralFrequencyForChannelCount(zoomChannels);
+  }, [zoomChannels]);
+
   const fieldWrapper = (children?: React.JSX.Element) => (
     <Box p={0} pt={1} sx={{ height: WRAPPER_HEIGHT }}>
       {children}
@@ -482,7 +618,14 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   );
 
   const showWarning = () => {
-    const useBandwidth = observationType === TYPE_ZOOM ? bandwidth : continuumBandwidth;
+    // For LOW zoom, `bandwidth` is a resolution-mode index, not a real bandwidth - use the actual
+    // channel-count-derived window bandwidth instead (MID zoom is unaffected, out of scope).
+    const useBandwidth =
+      observationType === TYPE_ZOOM
+        ? isLow()
+          ? frequencyConversion(getZoomBandwidthHz(), FREQUENCY_HZ, FREQUENCY_MHZ)
+          : bandwidth
+        : continuumBandwidth;
     return isFrequencyOutOfRange(centralFrequency, useBandwidth, isLow(), String(observingBand));
   };
 
@@ -560,7 +703,9 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
               isContinuum() || isPST()
                 ? (continuumBandwidth ?? 0)
                 : (frequencyConversion(
-                    isLow() ? (bandwidthLookup?.value ?? 0) : getBandwidthZoom(observationOut()),
+                    isLow()
+                      ? frequencyConversion(getZoomBandwidthHz(), FREQUENCY_HZ, FREQUENCY_MHZ)
+                      : getBandwidthZoom(observationOut()),
                     isLow() ? FREQUENCY_MHZ : FREQUENCY_GHZ,
                     FREQUENCY_MHZ
                   ) ?? 0)
@@ -810,6 +955,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         <SuppliedValue
           value={suppliedValue}
           setValue={setSuppliedValue}
+          commitOnBlur={suppliedType !== SUPPLIED_TYPE_INTEGRATION}
           suffix={suppliedUnitsField()}
           label=""
           minValue={0}
@@ -839,7 +985,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           maxValue={maxZoomChannels}
           required
           value={zoomChannels}
-          setValue={setZoomChannels}
+          setValue={handleZoomChannelsChange}
         />
       </Box>
     );
@@ -853,6 +999,11 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           value={centralFrequency}
           setValue={setCentralFrequency}
           suffix={centralFrequencyUnitsField()}
+          isLowZoom={isLow() && isZoom()}
+          channelWidthHz={getResolutionHz()}
+          windowBandwidthHz={getZoomBandwidthHz()}
+          continuumBandwidthHz={getContinuumBandwidthHz()}
+          required
         />
       </Box>
     );
@@ -892,21 +1043,20 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
   };
 
-  const bandwidthField = () => (
-    <Box pt={1}>
+  const bandwidthField = () =>
+    fieldWrapper(
       <BandwidthField
         required
         setValue={setBandwidth}
         value={bandwidth}
         telescope={telescope()}
-        observingBand={observingBand}
-        centralFrequency={centralFrequency}
-        centralFrequencyUnits={centralFrequencyUnits}
-        subarrayConfig={subarrayConfig}
-        minimumChannelWidthHz={minimumChannelWidthHz}
+        zoomChannels={zoomChannels}
+        setZoomChannels={handleZoomChannelsChange}
+        maxZoomChannels={maxZoomChannels}
+        resolutionHz={getResolutionHz()}
+        centralFrequencyHz={getCentralFrequencyHz()}
       />
-    </Box>
-  );
+    );
 
   const spectralResolutionField = () =>
     fieldWrapper(
@@ -915,37 +1065,14 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         bandWidthUnits={isContinuum() ? continuumBandwidthUnits : isLow() ? 3 : 2}
         frequency={centralFrequency}
         frequencyUnits={centralFrequencyUnits}
+        interactive={isLow() && isZoom()}
         label={t('spectralResolution.label')}
         observingBand={observingBand}
         observationType={observationType}
         onFocus={() => setHelp('spectralResolution')}
+        setBandWidth={setBandwidth}
         setValue={setSpectralResolution}
-      />
-    );
-
-  const spectralAveragingField = () =>
-    fieldWrapper(
-      <SpectralAveragingField
-        isLow={isLow()}
-        value={spectralAveraging}
-        setValue={setSpectralAveraging}
-        subarray={subarrayConfig}
-        observationType={observationType}
-      />
-    );
-
-  const effectiveResolutionField = () =>
-    fieldWrapper(
-      <EffectiveResolutionField
-        label={t('effectiveResolution.label')}
-        frequency={centralFrequency}
-        frequencyUnits={centralFrequencyUnits}
-        spectralAveraging={spectralAveraging}
-        spectralResolution={spectralResolution}
-        observingBand={observingBand}
-        observationType={observationType}
-        onFocus={() => setHelp('effectiveResolution')}
-        setValue={setEffectiveResolution}
+        subarrayConfig={subarrayConfig}
       />
     );
 
@@ -982,6 +1109,21 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
 
   const frequencySetUp = () => {
+    // Matches the ticket's described layout: resolution, then bandwidth (freq + channels), then
+    // centre frequency, all in one line. LOW zoom only - MID zoom/continuum/PST keep their
+    // existing layout below.
+    if (isLow() && isZoom()) {
+      return (
+        <>
+          <Grid size={{ md: 12, lg: 12 }} p={2}>
+            {frequencySpectrumField()}
+          </Grid>
+          <Grid size={{ md: 12, lg: 2 }}>{spectralResolutionField()}</Grid>
+          <Grid size={{ md: 12, lg: 7 }}>{bandwidthField()}</Grid>
+          <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
+        </>
+      );
+    }
     return (
       <>
         <Grid size={{ md: 12, lg: 12 }} p={2}>
@@ -995,13 +1137,12 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
           {isPST()
             ? pstModeField()
             : isZoom()
-              ? spectralAveragingField()
+              ? emptyField()
               : isContinuum()
                 ? SubBandsField()
                 : emptyField()}
         </Grid>
         <Grid size={{ md: 12, lg: 6 }}>{isZoom() ? spectralResolutionField() : emptyField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{isZoom() ? effectiveResolutionField() : emptyField()}</Grid>
       </>
     );
   };
@@ -1020,17 +1161,29 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
   };
 
   const frequencySetUpSpectralSV = () => {
+    // Matches the ticket's described layout: resolution, then bandwidth (freq + channels), then
+    // centre frequency, all in one line. LOW only - MID zoom SV keeps its existing layout below.
+    if (isLow()) {
+      return (
+        <>
+          <Grid size={{ md: 12, lg: 12 }} p={2}>
+            {frequencySpectrumField()}
+          </Grid>
+          <Grid size={{ md: 12, lg: 2 }}>{spectralResolutionField()}</Grid>
+          <Grid size={{ md: 12, lg: 7 }}>{bandwidthField()}</Grid>
+          <Grid size={{ md: 12, lg: 3 }}>{centralFrequencyField()}</Grid>
+        </>
+      );
+    }
     return (
       <>
         <Grid size={{ md: 12, lg: 12 }} p={2}>
           {frequencySpectrumField()}
         </Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{spectralAveragingField()}</Grid>
+        <Grid size={{ md: 12, lg: 6 }}>{emptyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{centralFrequencyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{zoomChannelsField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{spectralResolutionField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{effectiveResolutionField()}</Grid>
-        <Grid size={{ md: 12, lg: 6 }}>{emptyField()}</Grid>
         <Grid size={{ md: 12, lg: 6 }}>{bandwidthField()}</Grid>
       </>
     );

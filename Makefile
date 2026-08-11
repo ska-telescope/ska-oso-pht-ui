@@ -8,7 +8,7 @@ K8S_WAIT_LABEL_FILTER_ARGS = -l release=$(HELM_RELEASE)
 
 # JS Template Variables
 JS_E2E_TEST_BASE_URL ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)/pht/
-JS_E2E_COVERAGE_COMMAND_ENABLED = false
+JS_E2E_COVERAGE_ENABLED = false
 JS_ESLINT_CONFIG ?= eslint.config.js
 JS_E2E_TESTS_DIR ?= tests/cypress
 
@@ -29,6 +29,8 @@ js-pre-e2e-test:
 
 js-pre-lint:
 	$(JS_COMMAND_RUNNER) prettier
+js-pre-format:
+	$(JS_COMMAND_RUNNER) prettier:fix
 typecheck:
 	$(JS_COMMAND_RUNNER) typecheck
 
@@ -49,6 +51,7 @@ BACKEND_PROXY ?= $(KUBE_HOST)/$(KUBE_NAMESPACE)
 SENSCALC_API_VERSION ?= v11
 
 K8S_CHART_PARAMS += \
+  --wait \
   --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl="/$(KUBE_NAMESPACE)/oso/api/v$(OSO_SERVICES_MAJOR_VERSION)" \
   --set global.cluster_domain=$(CLUSTER_DOMAIN)
 
@@ -69,12 +72,58 @@ ifneq ($(USE_INDIGO),)
   K8S_CHART_PARAMS += --set ska-oso-pht-ui.runtimeEnv.useIndigo=$(USE_INDIGO)
 endif
 
+# CAR DEPLOYMENT CHART VERSION
+# Staging and production deploy with k8s-install-chart-car, which resolves
+# skatelescope/$(K8S_CHART) to whatever is newest in CAR. Pin the chart to this
+# pipeline's version so a deployment always installs the release it was built
+# from, rather than the latest chart that happens to be published at the time.
+CAR_DEPLOY_CHECK := $(shell echo $(KUBE_NAMESPACE) | egrep 'staging-|prod-')
+ifneq ($(CAR_DEPLOY_CHECK),)
+K8S_CHART_PARAMS += --version $(VERSION)
+endif
+
+# PRODUCTION DEPLOYMENT CONFIG
+ENV_CHECK := $(shell echo $(KUBE_NAMESPACE) | egrep 'prod-ska-oso-pht-ui')
+ifneq ($(ENV_CHECK),)
+
+PRODUCTION_URL=sv-ideas.skao.int
+API_DEPLOY_PATH=/api
+SENSCALC_URL=https://sensitivity-calculator.skao.int/api/v11/
+
+# UI config
+K8S_CHART_PARAMS += --set ska-oso-pht-ui.ingress.host=$(PRODUCTION_URL) \
+  --set ska-oso-pht-ui.ingress.production=true \
+  --set ska-oso-pht-ui.ingress.prependByNamespace=false \
+  --set ska-oso-pht-ui.ingress.path= \
+  --set ska-oso-pht-ui.runtimeEnv.skaOsoServicesUrl=$(API_DEPLOY_PATH) \
+  --set ska-oso-pht-ui.runtimeEnv.skaSensitivityCalcUrl=$(SENSCALC_URL) \
+  --set ska-oso-pht-ui.runtimeEnv.msentraRedirectUri=/
+
+# Backend config
+K8S_CHART_PARAMS += --set ska-ost-senscalc.enabled=false \
+  --set ska-oso-services-umbrella.ska-oso-services.ingress.host=$(PRODUCTION_URL) \
+  --set ska-oso-services-umbrella.ska-oso-services.ingress.pathOverride=$(API_DEPLOY_PATH) \
+  --set ska-oso-services-umbrella.ska-oso-services.rest.engineeringApiEnabled=false \
+  --set ska-oso-services-umbrella.ska-oso-services.s3ServiceAccount.enabled=true \
+  --set ska-oso-services-umbrella.ska-oso-services.vault.mount=aws-eu-west-2 \
+  --set ska-oso-services-umbrella.ska-oso-services.vault.path=production/ska-oso-services
+
+# ODA config
+K8S_CHART_PARAMS += --set ska-oso-services-umbrella.ska-db-oda-umbrella.postgres.enabled=false \
+  --set ska-oso-services-umbrella.ska-db-oda-umbrella.ska-db-oda.ska-db-migrations.liquibase.contextFilter='without-schema-or-extension' \
+  --set ska-oso-services-umbrella.ska-db-oda-umbrella.ska-db-oda.ska-db-migrations.liquibase.liquibaseSchemaName='liquibase' \
+  --set global.oda.postgres.secret.vault.mount=aws-eu-west-2 \
+  --set global.oda.postgres.secret.vault.path=production/ska-ser-postgres/pghqaa/oda/odaadm \
+  --set global.oda.postgres.secret.vault.secretPath=production/ska-ser-postgres/pghqaa/oda/odaadm
+
+endif
+
 # CI_ENVIRONMENT_SLUG should only be defined when running on the CI/CD pipeline, so these variables are set for a local deployment
 # Set cluster_domain to minikube default (cluster.local) in local development
 ifeq ($(CI_ENVIRONMENT_SLUG),)
 SGCLUSTER = oda
 SGCLUSTER_NAMESPACE = oda
-  
+
 K8S_CHART_PARAMS += \
   --set global.cluster_domain="cluster.local" \
   --set ska-oso-pht-ui.vault.enabled=false \
@@ -107,8 +156,6 @@ set-dev-env-vars:
 	REACT_APP_SKA_OSO_SERVICES_URL="/oso/api/v$(OSO_SERVICES_MAJOR_VERSION)" \
 	REACT_APP_SKA_SENSITIVITY_CALC_URL="/senscalc/api/v$(OST_SENSCALC_MAJOR_VERSION)/" \
 	REACT_APP_USE_LOCAL_DATA="false" \
-	REACT_APP_DOMAIN="$(KUBE_HOST)" \
-	REACT_APP_SKA_LOGIN_APP_URL="$(KUBE_HOST)/$(KUBE_NAMESPACE)/login" \
 	MSENTRA_CLIENT_ID="2445e300-54c9-470f-9578-0f54840672af" \
 	MSENTRA_TENANT_ID="78887040-bad7-494b-8760-88dcacfb3805" \
 	MSENTRA_REDIRECT_URI="http://localhost:6101" \

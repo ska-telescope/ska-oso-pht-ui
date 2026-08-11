@@ -11,107 +11,195 @@ import {
 } from '@/utils/constants';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
 import { frequencyConversion } from '@/utils/helpers';
-import { InputAdornment, TextField } from '@mui/material';
+import {
+  isCentralFrequencyDivisible,
+  isCentralFrequencyOnChannelGrid,
+  stepCentralFrequencyHz
+} from '@/utils/zoomWindow';
+import SteppedNumberField from '@/components/wrappers/steppedNumberField/SteppedNumberField';
+
+const clampAndRound = (value: number, min: number, max: number): number =>
+  Number(Math.min(max, Math.max(min, value)).toFixed(6));
 
 interface CentralFrequencyProps {
+  channelWidthHz?: number;
+  continuumBandwidthHz?: number;
   disabled?: boolean;
+  required?: boolean;
   observingBand: string;
   setValue: Function;
+  isLowZoom?: boolean;
   suffix?: any;
   value: number;
+  windowBandwidthHz?: number;
 }
 
 export default function CentralFrequency({
+  channelWidthHz = 0,
+  continuumBandwidthHz = 0,
   disabled = false,
   observingBand,
+  required = false,
   setValue,
+  isLowZoom = false,
   suffix,
-  value
+  value,
+  windowBandwidthHz = 0
 }: CentralFrequencyProps) {
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const FIELD = 'centralFrequency';
-  const [errorMessage, setErrorMessage] = React.useState('');
   const { findBand, telescopeBand, osdLOW } = useOSDAccessors();
-  const band = findBand(observingBand);
   const isLow = observingBand === BAND_LOW_STR;
   const units: number =
     telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? FREQUENCY_MHZ : FREQUENCY_GHZ;
-  const minFreq = frequencyConversion(band?.minFrequencyHz ?? 0, FREQUENCY_HZ, units);
-  const maxFreq = frequencyConversion(band?.maxFrequencyHz ?? 0, FREQUENCY_HZ, units);
-  const stepMHz = frequencyConversion(
-    (osdLOW?.basicCapabilities.coarseChannelWidthHz ?? 1) * 2,
-    FREQUENCY_HZ,
-    FREQUENCY_MHZ
-  );
+  const band = findBand(observingBand);
 
-  const validate = (cfValue: number): string => {
-    const lowStationChannelWidthMHz = frequencyConversion(
-      osdLOW?.basicCapabilities.coarseChannelWidthHz,
-      FREQUENCY_HZ,
-      FREQUENCY_MHZ
-    );
-    if (cfValue < minFreq || cfValue > maxFreq) return t(FIELD + '.error.range');
+  // ----  LOW zoom mode: window-clamped channel-grid validation ----
+  const [errorMessage, setErrorMessage] = React.useState('');
+
+  // band is osdLOW.basicCapabilities itself for LOW (see findBand in useOSDAccessors), which
+  // already carries the coarse-channel-derived edges (see getOSDCycles.tsx) - no need to
+  // recompute them from minCoarseChannel/maxCoarseChannel/coarseChannelWidthHz here too.
+  const minHz = band?.minFrequencyHz ?? 0;
+  const maxHz = band?.maxFrequencyHz ?? 0;
+  // The legal range is inset by half the bandwidth, so the whole window - not just its centre
+  // point - stays within the band. The exact legal-value constraint is still TBC; this is the only
+  // rule applied for now. The inset is applied in Hz first (matching clampCentralFrequencyToWindowHz/stepCentralFrequencyHz's
+  // own arithmetic) and the result rounded to 6 d.p. the same way commit()/step() round a
+  // committed value - otherwise a value that's genuinely exactly at the boundary can differ from
+  // min/max by a fraction of a Hz (from the separate Hz->units conversion, and from that rounding
+  // never being applied here) and get wrongly flagged as out of range.
+  // continuumBandwidthHz can be legitimately 0 for a moment (e.g. the caller's own default hasn't
+  // resolved yet because it depends on OSD data that's still loading) - falling back to a fixed
+  // minimum-bandwidth inset in that case avoids a 0 Hz inset, which would let the real (usually
+  // much wider) bandwidth spill straight past the band edge once it does resolve.
+  const fallbackBandwidthHz = osdLOW?.basicCapabilities.coarseChannelWidthHz
+    ? osdLOW.basicCapabilities.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP
+    : // TODO: Mid values should come from OSD in the future - 13440 is Mid channel width in Hz
+      //  and until AA2 bandwidth has to be multiple of 20 channels.
+      Math.round(20 * 13440 * 1e12) / 1e12;
+  const halfWindowHz =
+    (isLowZoom ? windowBandwidthHz : continuumBandwidthHz || fallbackBandwidthHz) / 2;
+  const min = Number(frequencyConversion(minHz + halfWindowHz, FREQUENCY_HZ, units).toFixed(6));
+  const max = Number(frequencyConversion(maxHz - halfWindowHz, FREQUENCY_HZ, units).toFixed(6));
+
+  const validateStep = (cf: number): string => {
+    if (cf < min || cf > max) return t(FIELD + '.error.range');
+    const cfHz = frequencyConversion(cf, units, FREQUENCY_HZ);
     if (
-      isLow &&
-      !Number.isInteger((cfValue + 0.5 * lowStationChannelWidthMHz) / lowStationChannelWidthMHz)
+      isLowZoom
+        ? !isCentralFrequencyOnChannelGrid(cfHz, channelWidthHz, windowBandwidthHz, minHz)
+        : !isCentralFrequencyDivisible(cfHz, coarseChannelWidthHz)
     ) {
-      return t(FIELD + '.error.divisibility', { value: stepMHz });
+      return t(FIELD + '.error.divisibility');
     }
     return '';
   };
 
-  const checkValue = (cfValue: number) => {
-    if (isLow && Math.abs(Math.abs(cfValue - value) - stepMHz) < 1e-6) {
-      const snapped =
-        cfValue > value
-          ? minFreq + Math.ceil((cfValue - minFreq) / stepMHz) * stepMHz
-          : minFreq + Math.floor((cfValue - minFreq) / stepMHz) * stepMHz;
-      setValue(snapped);
-      setErrorMessage(validate(snapped));
-      return;
-    }
-    setValue(cfValue);
-    setErrorMessage(validate(cfValue));
+  // Always accepts the typed value and flags an error if invalid, rather than silently
+  // rejecting/reverting it.
+  const commit = (cf: number) => {
+    setValue(cf);
+    setErrorMessage(validateStep(cf));
   };
 
-  // The minimum frequency the input should allow should be the minimum valid frequency - this is
-  // not the actual minimum frequency but minFreq + minBandwidth / 2
-  const halfBandwidthMHz =
-    frequencyConversion(
-      osdLOW?.basicCapabilities.coarseChannelWidthHz * LOW_COARSE_CHANNELS_PER_BANDWIDTH_STEP ??
-        // TODO: Mid values should come from OSD in the future - 13440 is Mid channel width in Hz
-        //  and until AA2 bandwidth has to be multiple of 20 channels.
-        Math.round(20 * 13440 * 1e12) / 1e12,
-      FREQUENCY_HZ,
-      FREQUENCY_MHZ
-    ) / 2;
-  const minAllowedFrequency = halfBandwidthMHz + minFreq;
-  const maxAllowedFrequency = maxFreq - halfBandwidthMHz;
+  const stepWindowBandwidth = (currentValue: number, direction: 1 | -1) => {
+    const cfHz = frequencyConversion(currentValue, units, FREQUENCY_HZ);
+    const steppedHz = stepCentralFrequencyHz(
+      cfHz,
+      direction,
+      channelWidthHz,
+      windowBandwidthHz,
+      minHz,
+      maxHz
+    );
+    return clampAndRound(frequencyConversion(steppedHz, FREQUENCY_HZ, units), min, max);
+  };
+
+  // ---- Continuum/MID mode: coarse-channel-grid divisibility validation ----
+  const coarseChannelWidthHz = osdLOW?.basicCapabilities.coarseChannelWidthHz ?? 1;
+  const channelWidthMHz = frequencyConversion(coarseChannelWidthHz, FREQUENCY_HZ, FREQUENCY_MHZ);
+  const stepMHz = channelWidthMHz * 2;
+
+  // A valid central frequency is one where the SPW's first coarse channel is even - bandwidth-
+  // independent, matching ODT's own validated LOW spectral window schema (see
+  // isCentralFrequencyDivisible's comment). Valid values sit at (2k - 0.5) * channelWidthMHz for
+  // integer k, a grid spaced two channels (stepMHz) apart.
+  const snapToValidGrid = (currentValue: number) =>
+    (2 * Math.round((currentValue / channelWidthMHz + 0.5) / 2) - 0.5) * channelWidthMHz;
+  // Directional variants used only to correct a clamped-to-boundary value back onto the grid
+  // (see stepChannel below) - rounding towards the interior of [min, max] rather than to the
+  // nearest grid point, so the correction can never overshoot back past the boundary it came from.
+  const snapToValidGridFloor = (currentValue: number) =>
+    (2 * Math.floor((currentValue / channelWidthMHz + 0.5) / 2 + 1e-9) - 0.5) * channelWidthMHz;
+  const snapToValidGridCeil = (currentValue: number) =>
+    (2 * Math.ceil((currentValue / channelWidthMHz + 0.5) / 2 - 1e-9) - 0.5) * channelWidthMHz;
+
+  // Steps by one coarse-channel-grid unit (LOW) or a plain 1-unit increment (MID, which has no
+  // channel-grid constraint), snapping to the grid first if not already aligned.
+  // Stepping by a full stepMHz (2 channels) preserves the grid's even-channel-count parity.
+  const stepChannel = (currentValue: number, direction: 1 | -1): number => {
+    const stepped = isLow
+      ? snapToValidGrid(currentValue) + direction * stepMHz
+      : currentValue + direction;
+    const clamped = clampAndRound(stepped, min, max);
+    if (!isLow) return clamped;
+    const clampedHz = frequencyConversion(clamped, units, FREQUENCY_HZ);
+    if (isCentralFrequencyDivisible(clampedHz, coarseChannelWidthHz)) return clamped;
+    // Clamping (a raw arithmetic boundary) pulled the value off the channel grid - e.g. when
+    // correcting down from a value way above the band's max with a bandwidth that isn't a whole
+    // multiple of the channel-grid step, the clamp above lands exactly on that boundary, which
+    // usually isn't itself a valid grid point. Re-snap towards the interior of [min, max].
+    const resnapped =
+      clamped < stepped ? snapToValidGridFloor(clamped) : snapToValidGridCeil(clamped);
+    return clampAndRound(resnapped, min, max);
+  };
+
+  // validateStep/validate close over values (e.g. the mocked `t` in tests) that can get a new
+  // identity on every render without the underlying validity actually changing. Reading them via
+  // a ref - updated on every render, but not itself a dependency - keeps the effect below from
+  // re-running (and clobbering an error just set by onCommit) unless value/isLowZoom truly change.
+  const validateStepRef = React.useRef(validateStep);
+  validateStepRef.current = validateStep;
+
+  // Validates the current value whenever it changes for any reason - not just a user edit via
+  // onCommit - e.g. on mount with a value loaded from a saved observation, or once async OSD
+  // band/channel data arrives late. Also re-runs when min/max shift under an unchanged value -
+  // e.g. continuumBandwidthHz moving from its loading fallback to the resolved real bandwidth -
+  // so a value that becomes invalid under the new bounds is flagged without needing a fresh edit.
+  // coarseChannelWidthHz is listed separately from min/max because it can change on its own -
+  // it's a standalone OSD field, not derived from the band edges that produce min/max - so a
+  // width-only OSD update wouldn't otherwise re-run this check.
+  // The value itself is never touched here, only the warning.
+  React.useEffect(() => {
+    setErrorMessage(validateStepRef.current(value));
+  }, [value, min, max, coarseChannelWidthHz]);
+
+  // Native <input type="number"> step attributes - purely a browser-level hint (for the
+  // native spinner and keyboard input restrictions). The actual snap-to-grid stepping always goes
+  // through onStep, which SteppedNumberField calls directly on ArrowUp/ArrowDown.
+  const nativeStep = isLowZoom
+    ? frequencyConversion(channelWidthHz || 1, FREQUENCY_HZ, units)
+    : isLow
+      ? stepMHz
+      : 1;
 
   return (
-    <TextField
-      type="number"
-      variant="standard"
-      fullWidth
-      required
-      disabled={disabled}
+    <SteppedNumberField
+      testId={FIELD}
       label={t(FIELD + '.label')}
       value={value}
-      onChange={(e) => checkValue(Number(e.target.value))}
-      error={!!errorMessage}
-      helperText={errorMessage}
+      onStep={isLowZoom ? stepWindowBandwidth : stepChannel}
+      onCommit={commit}
       onFocus={() => setHelp(FIELD)}
-      slotProps={{
-        htmlInput: {
-          step: isLow ? stepMHz : 1,
-          min: minAllowedFrequency,
-          max: maxAllowedFrequency
-        },
-        input: suffix
-          ? { endAdornment: <InputAdornment position="end">{suffix}</InputAdornment> }
-          : undefined
-      }}
+      disabled={disabled}
+      required={required}
+      errorText={errorMessage}
+      suffix={suffix}
+      min={min}
+      max={max}
+      step={nativeStep}
     />
   );
 }

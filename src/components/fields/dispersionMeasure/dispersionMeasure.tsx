@@ -5,6 +5,7 @@ import { ERROR_SECS } from '@utils/constants.ts';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import { useOSDAccessors } from '@/utils/osd/useOSDAccessors/useOSDAccessors';
+import { useAutoClearingState } from '@/utils/hooks/useAutoClearingState';
 
 interface DispersionMeasureFieldProps {
   disabled?: boolean;
@@ -24,16 +25,8 @@ export default function DispersionMeasureField({
   const { t } = useScopedTranslation();
   const { setHelp } = useHelp();
   const FIELD = 'dispersionMeasure';
-  const [errorText, setErrorText] = React.useState('');
+  const [errorText, setErrorText] = useAutoClearingState('', ERROR_SECS);
   const { observatoryConstants } = useOSDAccessors();
-  React.useEffect(() => {
-    const timer = () => {
-      setTimeout(() => {
-        setErrorText('');
-      }, ERROR_SECS);
-    };
-    timer();
-  }, [errorText]);
 
   const validateValue = (num: number) => {
     if (

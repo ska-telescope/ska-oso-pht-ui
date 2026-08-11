@@ -1,7 +1,8 @@
 import { TableRow, TableCell, Box, Typography, Collapse } from '@mui/material';
 import { useTheme } from '@mui/material/styles';
 import { useMemo } from 'react';
-import { FrequencySpectrum, getColors } from '@ska-telescope/ska-gui-components';
+import { getColors } from '@ska-telescope/ska-gui-components';
+import { FrequencySpectrum } from '@ska-telescope/ska-gui-components';
 import EditIcon from '@/components/icon/editIcon/editIcon';
 import TrashIcon from '@/components/icon/trashIcon/trashIcon';
 import { useInitializeAccessStore } from '@/utils/aaa/aaaUtils';

@@ -9,6 +9,7 @@ import {
   DEFAULT_ZOOM_OBSERVATION_LOW,
   TYPE_ZOOM,
   TYPE_PST,
+  TYPE_CONTINUUM_SPECTRAL,
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
   TIME_UNITS
 } from './constants';
@@ -215,11 +216,14 @@ export const getBandwidthLowZoom = (inValue: number) => {
   return obsTelescopeArray?.bandWidth?.find((b) => b.value === inValue);
 };
 
+/**
+ * Maps the cbfModes to the Observing Modes available.
+ */
 export const obTypeTransform = (inData: string[]) => {
   const out: string[] = [];
   inData.forEach((item) => {
     if (item === 'vis' || item === 'correlation') {
-      out.push('continuum', 'spectral');
+      out.push('continuum', 'spectral', TYPE_CONTINUUM_SPECTRAL);
     } else if (item === 'pst') {
       out.push('pst');
     }
@@ -229,12 +233,17 @@ export const obTypeTransform = (inData: string[]) => {
   return out;
 };
 
-export const getDefaultObservationLowAA2 = (type: string): Observation | null => {
+/**
+ * Returns the default LOW AA2 observation for the given observing mode, falling back to the
+ * continuum default for combined or unrecognised modes.
+ */
+export const getDefaultObservationLowAA2 = (type: string): Observation => {
   switch (type) {
     case TYPE_ZOOM:
       return DEFAULT_ZOOM_OBSERVATION_LOW;
     case TYPE_PST:
       return DEFAULT_PST_OBSERVATION_LOW;
+    case TYPE_CONTINUUM_SPECTRAL:
     default:
       return DEFAULT_CONTINUUM_OBSERVATION_LOW;
   }

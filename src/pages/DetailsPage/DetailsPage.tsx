@@ -8,6 +8,7 @@ import {
   ERROR_SECS,
   PAGE_DETAILS,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
   TYPE_ZOOM,
   NOTIFICATION_DELAY_IN_SECONDS
@@ -130,17 +131,22 @@ export default function DetailsPage() {
 
   const generateAutoLinkData = async () => {
     const target = getProposal().targets![0]; // there should be only 1 target for auto-generation
+    // The default zoom observation's zoomChannels is a static placeholder with no knowledge of
+    // the actual subarray's channel cap - pass the real cap through so it isn't baked in.
+    const record = osdLOW ? osdLOW : osdMID;
+    const sArray = record?.subArrays.find((sub: any) => sub.subArray === SA_AA2);
     const defaults = await autoLinking(
       target,
       getProposal,
       setProposal,
       scienceCategoryId,
-      abstract
+      abstract,
+      sArray?.numberZoomChannels
     );
     if (defaults && defaults.success) {
       notifySuccess(t('autoLink.success'), NOTIFICATION_DELAY_IN_SECONDS);
     } else {
-      notifyError(defaults?.error ?? t('autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
+      notifyError(t(defaults?.error ?? 'autoLink.error'), NOTIFICATION_DELAY_IN_SECONDS);
     }
   };
 
@@ -233,7 +239,8 @@ export default function DetailsPage() {
           isSV
             ? getProposal().scienceCategory === TYPE_CONTINUUM ||
               getProposal().scienceCategory === TYPE_ZOOM ||
-              getProposal().scienceCategory === TYPE_PST
+              getProposal().scienceCategory === TYPE_PST ||
+              getProposal().scienceCategory === TYPE_CONTINUUM_SPECTRAL
               ? ''
               : t('scienceCategory.error')
             : typeof getProposal().scienceCategory === 'number'

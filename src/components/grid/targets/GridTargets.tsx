@@ -7,7 +7,7 @@ import Alert from '../../alerts/standardAlert/StandardAlert';
 import Target from '../../../utils/types/target';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import ChartIcon from '@/components/icon/chartIcon/chartIcon';
-import { REFERENCE_COORDINATE_TYPE_ICRS } from '@utils/constants.ts';
+import { REFERENCE_COORDINATE_TYPE_ICRS, REFERENCE_COORDINATE_TYPE_SSO } from '@utils/constants.ts';
 
 const ROW_HEIGHT = 300;
 
@@ -32,6 +32,7 @@ export default function GridTargets({
   const { t } = useScopedTranslation();
 
   const isICRS = rows?.[0]?.kind === REFERENCE_COORDINATE_TYPE_ICRS.value;
+  const isSSO = rows?.[0]?.kind === REFERENCE_COORDINATE_TYPE_SSO.value;
 
   const coordLabels = isICRS
     ? [t('skyDirection.short.1.0'), t('skyDirection.short.2.0')]
@@ -39,35 +40,39 @@ export default function GridTargets({
 
   const basicColumns = [
     { field: 'name', headerName: t('name.label'), flex: 2 },
-    {
-      field: 'coord1',
-      headerName: coordLabels[0],
-      width: 120
-    },
-    {
-      field: 'coord2',
-      headerName: coordLabels[1],
-      width: 120
-    },
-    {
-      field: 'vel',
-      headerName: t('velocity.0.label'),
-      width: 160,
-      disableClickEventBubbling: true,
-      renderCell: (e: { row: Target }) => {
-        if (e.row.vel === null || e.row.vel === '') {
-          return null;
-        }
-        const units = e.row.velUnit === 1 ? 1 : 0;
-        return e.row.vel + ' ' + t('velocity.units.' + units);
-      }
-    },
-    {
-      field: 'redshift',
-      headerName: t('velocity.1.label'),
-      width: 160,
-      disableClickEventBubbling: true
-    }
+    ...(isSSO
+      ? []
+      : [
+          {
+            field: 'coord1',
+            headerName: coordLabels[0],
+            width: 120
+          },
+          {
+            field: 'coord2',
+            headerName: coordLabels[1],
+            width: 120
+          },
+          {
+            field: 'vel',
+            headerName: t('velocity.0.label'),
+            width: 160,
+            disableClickEventBubbling: true,
+            renderCell: (e: { row: Target }) => {
+              if (e.row.vel === null || e.row.vel === '') {
+                return null;
+              }
+              const units = e.row.velUnit === 1 ? 1 : 0;
+              return e.row.vel + ' ' + t('velocity.units.' + units);
+            }
+          },
+          {
+            field: 'redshift',
+            headerName: t('velocity.1.label'),
+            width: 160,
+            disableClickEventBubbling: true
+          }
+        ])
   ];
 
   const colActions = [

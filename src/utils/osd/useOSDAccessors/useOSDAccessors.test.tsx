@@ -77,6 +77,14 @@ describe('useOSDAccessors', () => {
               mid: [],
               maxTargets: 1,
               maxObservations: 1
+            },
+            capabilities: {
+              low: { basicCapabilities: { lowValue: 1 } },
+              mid: {
+                basicCapabilities: {
+                  receiverInformation: [{ rxId: 'MID1', value: 123 }]
+                }
+              }
             }
           }
         ]

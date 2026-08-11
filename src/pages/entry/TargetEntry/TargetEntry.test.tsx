@@ -1,6 +1,6 @@
 import React from 'react';
 import { describe, test, it, vi, expect, beforeEach } from 'vitest';
-import { render, screen, waitFor, act } from '@testing-library/react';
+import { render, screen, waitFor, act, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
@@ -8,6 +8,7 @@ import { ThemeA11yProvider } from '@/utils/colors/ThemeAllyContext';
 import TargetEntry from './TargetEntry';
 import autoLinking from '@/utils/autoLinking/AutoLinking';
 import { TYPE_ZOOM } from '@/utils/constants';
+import GetCoordinates from '@services/axios/get/getCoordinates/getCoordinates';
 
 const wrapper = (component: React.ReactElement) => {
   return render(
@@ -28,6 +29,10 @@ vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
 }));
 
 vi.mock('@/utils/autoLinking/AutoLinking', () => ({
+  default: vi.fn()
+}));
+
+vi.mock('@services/axios/get/getCoordinates/getCoordinates', () => ({
   default: vi.fn()
 }));
 
@@ -65,10 +70,12 @@ describe('<TargetEntry /> form preservation on autoLinking error', () => {
   });
 
   it('retains field values when the sensitivity calculator returns an error', async () => {
-    vi.mocked(autoLinking as any).mockResolvedValue({
+    const mockedAutoLinking = vi.mocked(autoLinking);
+
+    mockedAutoLinking.mockResolvedValue({
       success: false,
       error: 'Declination not supported by sensitivity calculator'
-    });
+    } as never);
 
     const user = userEvent.setup();
 
@@ -91,12 +98,87 @@ describe('<TargetEntry /> form preservation on autoLinking error', () => {
     await user.click(screen.getByTestId('addTargetButton'));
 
     await waitFor(() => {
-      expect(vi.mocked(autoLinking as any)).toHaveBeenCalled();
+      expect(mockedAutoLinking).toHaveBeenCalled();
     });
 
     expect(nameInput.value).toBe('My Target');
     expect(raInput.value).toBe('12:34:56.000');
     expect(decInput.value).toBe('45:00:00.000');
+  });
+
+  it('shows a loading state while coordinates are resolving', async () => {
+    const mockedGetCoordinates = vi.mocked(GetCoordinates);
+    mockedGetCoordinates.mockReturnValue(new Promise(() => {}) as never);
+
+    const user = userEvent.setup();
+
+    await act(async () => {
+      wrapper(<TargetEntry />);
+    });
+
+    const nameInput = screen.getByTestId('name').querySelector('input')!;
+    await user.type(nameInput, 'Resolving target');
+
+    await user.click(screen.getByTestId('resolveButton'));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId('resolveButton')).not.toBeInTheDocument();
+    });
+  });
+
+  it('ignores stale resolution responses after the form changes', async () => {
+    let resolvePromiseResolver: ((value: unknown) => void) | undefined;
+    const deferredResponse = new Promise<unknown>((resolve) => {
+      resolvePromiseResolver = resolve;
+    });
+
+    vi.mocked(GetCoordinates).mockReturnValue(deferredResponse as never);
+
+    const user = userEvent.setup();
+
+    await act(async () => {
+      wrapper(<TargetEntry />);
+    });
+
+    const nameInput = screen.getByTestId('name').querySelector('input')!;
+    const raInput = screen.getByTestId('skyDirectionValue1').querySelector('input')!;
+
+    await user.type(nameInput, 'Original target');
+    await user.click(screen.getByTestId('resolveButton'));
+
+    fireEvent.change(raInput, { target: { value: '11:22:33' } });
+
+    await act(async () => {
+      resolvePromiseResolver?.({
+        reference_coordinate: { kind: 'icrs', ra_str: '01:02:03', dec_str: '04:05:06' },
+        radial_velocity: { quantity: { value: 5 }, redshift: 0 }
+      });
+    });
+
+    await waitFor(() => {
+      expect(raInput.value).toBe('11:22:33');
+    });
+  });
+
+  it('disables editing and clearing while coordinates are resolving', async () => {
+    const mockedGetCoordinates = vi.mocked(GetCoordinates);
+    mockedGetCoordinates.mockReturnValue(new Promise(() => {}) as never);
+
+    const user = userEvent.setup();
+
+    await act(async () => {
+      wrapper(<TargetEntry />);
+    });
+
+    const nameInput = screen.getByTestId('name').querySelector('input')!;
+    await user.type(nameInput, 'Resolving target');
+
+    await user.click(screen.getByTestId('resolveButton'));
+
+    await waitFor(() => {
+      expect(nameInput).toBeDisabled();
+      expect(screen.getByTestId('clearFormButton')).toBeDisabled();
+    });
   });
 
   it('shows clear button only when at least one field has been entered', async () => {

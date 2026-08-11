@@ -87,6 +87,7 @@ export const BIT_DEPTH = [
 
 export const CHANNELS_OUT_MIN = 1;
 export const CHANNELS_OUT_MAX = 40;
+export const CHANNELS_OUT_MAX_COMBINED = 4000;
 
 export const CONFLICT_REASONS = [
   'conflict-none',
@@ -148,6 +149,8 @@ export const FREQUENCY_UNITS = [
 export const TYPE_ZOOM = 'spectral';
 export const TYPE_ZOOM_LONG = 'spectral line';
 export const TYPE_CONTINUUM = 'continuum';
+export const TYPE_CONTINUUM_SPECTRAL = 'continuumSpectral';
+export const TYPE_CONTINUUM_SPECTRAL_LONG = 'continuum and spectral line';
 export const TYPE_PST = 'pst';
 
 export const DETAILS = {
@@ -197,6 +200,12 @@ export const DETAILS = {
       observationType: TYPE_CONTINUUM
     },
     {
+      label: 'Continuum-Spectral',
+      subCategory: [{ label: 'Not specified', value: 1 }],
+      value: TYPE_CONTINUUM_SPECTRAL,
+      observationType: TYPE_CONTINUUM_SPECTRAL
+    },
+    {
       label: 'PST',
       subCategory: [{ label: 'Not specified', value: 1 }],
       value: TYPE_PST,
@@ -220,15 +229,16 @@ export const IW_NATURAL = 0;
 export const IW_UNIFORM = 1;
 export const ROBUST_DEFAULT = 0;
 export const TAPER_DEFAULT = 0;
-export const CHANNELS_OUT_DEFAULT = 10;
-export const IMAGE_SIZE_DEFAULT = 2.5;
+export const CHANNELS_OUT_DEFAULT = 40;
+export const IMAGE_SIZE_DEFAULT = 2.2;
 export const IMAGE_SIZE_UNIT_DEFAULT = 0;
-export const PIXEL_SIZE_DEFAULT = 1.6;
+export const PIXEL_SIZE_DEFAULT = 1.3;
 export const PIXEL_SIZE_UNIT_DEFAULT = 2;
 export const SET_CONTINUUM_SUBSTRACTION_DEFAULT = true;
 export const BIT_DEPTH_DEFAULT = 1;
 export const TIME_AVERAGING_DEFAULT = 1;
 export const FREQUENCY_AVERAGING_DEFAULT = 1;
+export const POLARISATIONS_DEFAULT = ['I'];
 
 export const BANDWIDTH_LABEL_SELECTOR = 0;
 
@@ -435,6 +445,7 @@ export const PST_MODES = [
 ];
 
 export const SCIENCE_VERIFICATION = 'science_verification';
+export const SCIENCE_VERIFICATION_TYPE_ID = 9;
 
 export const PROPOSAL_STATUS = {
   DRAFT: 'draft',
@@ -515,6 +526,21 @@ export const SA_AA4 = 'aa4';
 export const SA_AA_STAR = 'aa*';
 export const SA_CUSTOM = 'custom';
 
+// Convention is that the zoom modes are listed in frequency order
+// (1-4 are the fine zoom modes, currently restricted for AA2 and AA* subarrays,)
+export const FIRST_COARSE_ZOOM = 5;
+
+// Names of array assemblies
+export const LOW_AA05 = 'AA0.5';
+export const LOW_AA1 = 'AA1';
+export const LOW_AA2 = 'AA2';
+export const LOW_ITF = 'Low_ITF';
+export const LOW_AA2_SV = 'AA2_SV';
+export const MID_AA05 = 'AA0.5';
+export const MID_AA1 = 'AA1';
+export const MID_AA2 = 'AA2';
+export const MID_ITF = 'Mid_ITF';
+
 export const SECOND_LABEL = 's';
 export const MILLISECOND_LABEL = 'ms';
 export const NANOSECOND_LABEL = 'us';
@@ -538,6 +564,7 @@ export const SUPPLIED_SENSITIVITY_STEP = 1;
 
 export const REFERENCE_COORDINATE_TYPE_ICRS = { value: 0, label: 'icrs' };
 export const REFERENCE_COORDINATE_TYPE_GALACTIC = { value: 1, label: 'galactic' };
+export const REFERENCE_COORDINATE_TYPE_SSO = { value: 2, label: 'special' };
 
 export const REFERENCE_COORDINATE_OPTIONS = [
   {
@@ -547,7 +574,23 @@ export const REFERENCE_COORDINATE_OPTIONS = [
   {
     label: 'Galactic',
     value: REFERENCE_COORDINATE_TYPE_GALACTIC.value
+  },
+  {
+    label: 'Solar System Object',
+    value: REFERENCE_COORDINATE_TYPE_SSO.value
   }
+];
+
+export const SSO_OPTIONS = [
+  { label: 'Mercury', value: 'Mercury' },
+  { label: 'Venus', value: 'Venus' },
+  { label: 'Mars', value: 'Mars' },
+  { label: 'Jupiter', value: 'Jupiter' },
+  { label: 'Saturn', value: 'Saturn' },
+  { label: 'Uranus', value: 'Uranus' },
+  { label: 'Neptune', value: 'Neptune' },
+  { label: 'Moon', value: 'Moon' },
+  { label: 'Sun', value: 'Sun' }
 ];
 
 export const SEPARATOR0 = '?';
@@ -604,6 +647,10 @@ export const ZOOM_SPECTRAL_AVERAGING_MAX = 864;
 
 export const SPEED_OF_LIGHT = 299792458; // m/s
 
+// TODO get from OSD
+export const AA2_LOW_LONGEST_BASELINE_M = 79e3;
+export const AA2_LOW_STATION_DIAMETER_M = 39;
+
 export const STATUS_OK = 0;
 export const STATUS_ERROR = 1;
 export const STATUS_ERROR_SYMBOL = '!';
@@ -618,7 +665,8 @@ export const STATUS = {
 export const SUPPLIED_VALUE_DEFAULT_MID = 10;
 export const SUPPLIED_VALUE_DEFAULT_LOW = 1;
 export const ZOOM_BANDWIDTH_DEFAULT_MID = 1;
-export const ZOOM_BANDWIDTH_DEFAULT_LOW = 5;
+export const ZOOM_BANDWIDTH_DEFAULT_LOW = 8;
+export const ZOOM_CHANNELS_DEFAULT_LOW = 1000;
 
 export const TARGET_OPTION = {
   LIST_OF_TARGETS: 1,
@@ -728,7 +776,10 @@ export const DEFAULT_CONTINUUM_OBSERVATION_LOW: Observation = {
   linked: '0',
   type: TYPE_CONTINUUM,
   observingBand: BAND_LOW_STR,
-  centralFrequency: 200,
+  // Not 200 exactly - a valid centre frequency needs the SPW's first coarse channel to be even
+  // (see isCentralFrequencyDivisible); this is the nearest valid point to the 50-350 MHz band
+  // midpoint, and matches ODT's own LowBandDefaults.centreMhz (the validated reference value).
+  centralFrequency: 199.609375,
   centralFrequencyUnits: FREQUENCY_MHZ,
   continuumBandwidth: 150,
   continuumBandwidthUnits: FREQUENCY_MHZ,
@@ -767,8 +818,8 @@ export const DEFAULT_ZOOM_OBSERVATION_LOW: Observation = {
     units: SUPPLIED_INTEGRATION_TIME_UNITS_H
   },
   spectralAveraging: 1,
-  spectralResolution: '226.06 Hz (338.9 m/s)',
-  effectiveResolution: '226.06 Hz (338.9 m/s)',
+  spectralResolution: '1808.45 Hz (2.7 km/s)',
+  effectiveResolution: '1808.45 Hz (2.7 km/s)',
   zoomChannels: 1000
 };
 
@@ -779,7 +830,9 @@ export const DEFAULT_PST_OBSERVATION_LOW: Observation = {
   linked: '0',
   type: TYPE_PST,
   observingBand: BAND_LOW_STR,
-  centralFrequency: 200,
+  // See DEFAULT_CONTINUUM_OBSERVATION_LOW's centralFrequency comment - same 150 MHz bandwidth, so
+  // the same nearest-valid-point value applies here too.
+  centralFrequency: 199.609375,
   centralFrequencyUnits: FREQUENCY_MHZ,
   continuumBandwidth: 150,
   continuumBandwidthUnits: FREQUENCY_MHZ,

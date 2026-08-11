@@ -32,7 +32,6 @@ import {
   mockCreateSVIdeaAPI,
   mockCreateProposalAPI,
   addSubmissionSummary,
-  clickFileUploadArea,
   uploadTestFile,
   verifyTestFileUploaded,
   clickFileUpload,
@@ -116,7 +115,6 @@ describe('Creating Proposal', () => {
       verifyAutoLinkAlertFooter();
       clickStatusIconNav('statusId3'); //Click to description page
       pageConfirmed('DESCRIPTION');
-      clickFileUploadArea();
       uploadTestFile('testFile.pdf');
       verifyTestFileUploaded('testFile.pdf');
       clickFileUpload();
@@ -126,15 +124,15 @@ describe('Creating Proposal', () => {
       verifyData('dataProductType', 'Images');
       //Verify sens calc results
       verifyData('field-targetName', 'M2');
-      verifyData('field-continuumSensitivityWeighted', '193.40 μJy/beam');
-      verifyData('field-continuumConfusionNoise', '1.56 μJy/beam');
-      verifyData('field-continuumTotalSensitivity', '193.40 μJy/beam');
-      verifyData('field-continuumSynthBeamSize', '5.50 x 2.86 arcsec²');
-      verifyData('field-continuumSurfaceBrightnessSensitivity', '375.86 K');
-      verifyData('field-spectralSensitivityWeighted', '42.28 mJy/beam');
-      verifyData('field-spectralConfusionNoise', '2.65 μJy/beam');
-      verifyData('field-spectralTotalSensitivity', '42.28 mJy/beam');
-      verifyData('field-spectralSynthBeamSize', '5.92 x 3.96 arcsec²');
+      verifyData('field-continuumSensitivityWeighted', '193.43 μJy/beam');
+      verifyData('field-continuumConfusionNoise', '1.57 μJy/beam');
+      verifyData('field-continuumTotalSensitivity', '193.44 μJy/beam');
+      verifyData('field-continuumSynthBeamSize', '5.51 x 2.87 arcsec²');
+      verifyData('field-continuumSurfaceBrightnessSensitivity', '375.92 K');
+      verifyData('field-spectralSensitivityWeighted', '42.38 mJy/beam');
+      verifyData('field-spectralConfusionNoise', '2.67 μJy/beam');
+      verifyData('field-spectralTotalSensitivity', '42.38 mJy/beam');
+      verifyData('field-spectralSynthBeamSize', '5.93 x 3.97 arcsec²');
       verifyData('field-spectralSurfaceBrightnessSensitivity', '5.5e+4 K');
       verifyData('field-integrationTime', '1.00 h');
       clickToValidateSV();
@@ -173,7 +171,6 @@ describe('Creating Proposal', () => {
       verifyAutoLinkAlertFooter();
       clickStatusIconNav('statusId3'); //Click to description page
       pageConfirmed('DESCRIPTION');
-      clickFileUploadArea();
       uploadTestFile('testFile.pdf');
       verifyTestFileUploaded('testFile.pdf');
       clickFileUpload();
@@ -182,11 +179,11 @@ describe('Creating Proposal', () => {
       pageConfirmed('DATA PRODUCT');
       //Verify sens calc results
       verifyData('field-targetName', 'M2');
-      verifyData('field-spectralSensitivityWeighted', '207.14 mJy/beam');
+      verifyData('field-spectralSensitivityWeighted', '73.23 mJy/beam');
       verifyData('field-spectralConfusionNoise', '2.65 μJy/beam');
-      verifyData('field-spectralTotalSensitivity', '207.14 mJy/beam');
+      verifyData('field-spectralTotalSensitivity', '73.23 mJy/beam');
       verifyData('field-spectralSynthBeamSize', '5.92 x 3.96 arcsec²');
-      verifyData('field-spectralSurfaceBrightnessSensitivity', '2.7e+5 K');
+      verifyData('field-spectralSurfaceBrightnessSensitivity', '9.5e+4 K');
       verifyData('field-integrationTime', '1.00 h');
       clickToValidateSV();
       cy.wait('@mockValidateSVIdea');
@@ -224,7 +221,6 @@ describe('Creating Proposal', () => {
       verifyAutoLinkAlertFooter();
       clickStatusIconNav('statusId3'); //Click to description page
       pageConfirmed('DESCRIPTION');
-      clickFileUploadArea();
       uploadTestFile('testFile.pdf');
       verifyTestFileUploaded('testFile.pdf');
       clickFileUpload();

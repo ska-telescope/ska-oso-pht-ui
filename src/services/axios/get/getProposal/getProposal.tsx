@@ -13,6 +13,8 @@ import Target, {
   ReferenceCoordinateGalacticBackend,
   ReferenceCoordinateICRS,
   ReferenceCoordinateICRSBackend,
+  ReferenceCoordinateSSO,
+  ReferenceCoordinateSSOBackend,
   TargetBackend
 } from '@utils/types/target.tsx';
 import Observation from '@utils/types/observation.tsx';
@@ -24,19 +26,22 @@ import {
   USE_LOCAL_DATA,
   DETAILS,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
+  TYPE_CONTINUUM_SPECTRAL_LONG,
   TYPE_ZOOM,
   VEL_TYPES,
   VEL_UNITS,
   TELESCOPE_MID_BACKEND_MAPPING,
   TELESCOPE_LOW_BACKEND_MAPPING,
+  SA_AA2,
   FREQUENCY_UNITS,
-  ROBUST,
   OSO_SERVICES_PROPOSAL_PATH,
   PDF_NAME_PREFIXES,
   REFERENCE_COORDINATE_TYPE_ICRS,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   isCypress,
   SCIENCE_VERIFICATION,
+  SCIENCE_VERIFICATION_TYPE_ID,
   TYPE_PST,
   PST_MODES,
   DP_TYPE_IMAGES,
@@ -49,7 +54,8 @@ import {
   DETECTED_FILTER_BANK_VALUE,
   FLOW_THROUGH_VALUE,
   TYPE_ZOOM_LONG,
-  cypressSV
+  cypressSV,
+  REFERENCE_COORDINATE_TYPE_SSO
 } from '@utils/constants.ts';
 import { DocumentBackend, DocumentPDF } from '@utils/types/document.tsx';
 import {
@@ -144,37 +150,59 @@ export const getVelType = (InDefinition: string) => {
 };
 
 export const getReferenceCoordinate = (
-  tar: ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend
-): ReferenceCoordinateICRS | ReferenceCoordinateGalactic => {
-  if ('kind' in tar && tar.kind === REFERENCE_COORDINATE_TYPE_GALACTIC.label) {
-    return {
-      kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
-      l: (tar as ReferenceCoordinateGalacticBackend).l,
-      b: (tar as ReferenceCoordinateGalacticBackend).b,
-      pmL: (tar as ReferenceCoordinateGalacticBackend).pm_l,
-      pmB: (tar as ReferenceCoordinateGalacticBackend).pm_b,
-      epoch: tar.epoch,
-      parallax: tar.parallax
-    };
+  tar:
+    | ReferenceCoordinateICRSBackend
+    | ReferenceCoordinateGalacticBackend
+    | ReferenceCoordinateSSOBackend
+): ReferenceCoordinateICRS | ReferenceCoordinateGalactic | ReferenceCoordinateSSO => {
+  switch (tar.kind) {
+    case REFERENCE_COORDINATE_TYPE_ICRS.label:
+      return {
+        kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
+        raStr: (tar as ReferenceCoordinateICRSBackend).ra_str,
+        decStr: (tar as ReferenceCoordinateICRSBackend).dec_str,
+        pmRa: (tar as ReferenceCoordinateICRSBackend).pm_ra,
+        pmDec: (tar as ReferenceCoordinateICRSBackend).pm_dec,
+        epoch: (tar as ReferenceCoordinateICRSBackend).epoch,
+        parallax: (tar as ReferenceCoordinateICRSBackend).parallax
+      };
+
+    case REFERENCE_COORDINATE_TYPE_GALACTIC.label:
+      return {
+        kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
+        l: (tar as ReferenceCoordinateGalacticBackend).l,
+        b: (tar as ReferenceCoordinateGalacticBackend).b,
+        pmL: (tar as ReferenceCoordinateGalacticBackend).pm_l,
+        pmB: (tar as ReferenceCoordinateGalacticBackend).pm_b,
+        epoch: (tar as ReferenceCoordinateGalacticBackend).epoch,
+        parallax: (tar as ReferenceCoordinateGalacticBackend).parallax
+      };
+
+    case REFERENCE_COORDINATE_TYPE_SSO.label:
+      return {
+        kind: REFERENCE_COORDINATE_TYPE_SSO.label
+      };
+
+    default:
+      throw new Error(`Unsupported reference coordinate kind: ${tar.kind}`);
   }
-  return {
-    kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
-    raStr: (tar as ReferenceCoordinateICRSBackend).ra_str,
-    decStr: (tar as ReferenceCoordinateICRSBackend).dec_str,
-    pmRa: (tar as ReferenceCoordinateICRSBackend).pm_ra,
-    pmDec: (tar as ReferenceCoordinateICRSBackend).pm_dec,
-    epoch: (tar as ReferenceCoordinateICRSBackend).epoch,
-    parallax: (tar as ReferenceCoordinateICRSBackend).parallax
-  };
 };
 
-const isTargetGalactic = (kind: string): boolean =>
-  kind === REFERENCE_COORDINATE_TYPE_GALACTIC.label;
+const getTargetType = (kind: string): number => {
+  switch (kind) {
+    case REFERENCE_COORDINATE_TYPE_ICRS.label:
+      return REFERENCE_COORDINATE_TYPE_ICRS.value;
 
-const getTargetType = (kind: string): number =>
-  kind === REFERENCE_COORDINATE_TYPE_GALACTIC.label
-    ? REFERENCE_COORDINATE_TYPE_GALACTIC.value
-    : REFERENCE_COORDINATE_TYPE_ICRS.value;
+    case REFERENCE_COORDINATE_TYPE_GALACTIC.label:
+      return REFERENCE_COORDINATE_TYPE_GALACTIC.value;
+
+    case REFERENCE_COORDINATE_TYPE_SSO.label:
+      return REFERENCE_COORDINATE_TYPE_SSO.value;
+
+    default:
+      throw new Error(`Unsupported coordinate type: ${kind}`);
+  }
+};
 
 const getTargets = (inRec: TargetBackend[]): Target[] => {
   const results = [];
@@ -207,16 +235,27 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       }
     };
     /*------- reference coordinate properties --------------------- */
-    if (isTargetGalactic(referenceCoordinate)) {
-      target.l = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).l;
-      target.b = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).b;
-      target.pmL = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_l;
-      target.pmB = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_b;
-    } else if (!isTargetGalactic(referenceCoordinate)) {
-      target.raStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).ra_str;
-      target.decStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).dec_str;
-      target.pmRa = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_ra;
-      target.pmDec = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_dec;
+
+    switch (referenceCoordinate) {
+      case REFERENCE_COORDINATE_TYPE_ICRS.label:
+        target.raStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).ra_str;
+        target.decStr = (e.reference_coordinate as ReferenceCoordinateICRSBackend).dec_str;
+        target.pmRa = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_ra;
+        target.pmDec = (e.reference_coordinate as ReferenceCoordinateICRSBackend).pm_dec;
+        break;
+
+      case REFERENCE_COORDINATE_TYPE_GALACTIC.label:
+        target.l = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).l;
+        target.b = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).b;
+        target.pmL = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_l;
+        target.pmB = (e.reference_coordinate as ReferenceCoordinateGalacticBackend).pm_b;
+        break;
+
+      case REFERENCE_COORDINATE_TYPE_SSO.label:
+        break;
+
+      default:
+        throw new Error(`Unsupported coordinate type ${referenceCoordinate}`);
     }
     /*------- end of reference coordinate properties --------------------- */
     results.push(target);
@@ -253,10 +292,11 @@ const getDataProductSRC = (inValue: DataProductSRCNetBackend[] | null): DataProd
     : [];
 };
 
+// The image/visibilities split is carried on `variant`, not `kind` - `kind` is 'continuum' for
+// both a continuum image and its hidden visibilities companion (see getDataProductScriptParameters
+// in putProposalMapping.tsx), so switching on kind here could never actually match either of them.
 const getDataProductType = (el: any) => {
-  switch (el.kind.toLowerCase()) {
-    case 'continuum image':
-      return DP_TYPE_IMAGES;
+  switch ((el.variant ?? '').toLowerCase()) {
     case 'visibilities':
       return DP_TYPE_VISIBLE;
     case 'detected filterbank':
@@ -301,8 +341,7 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
               : 0,
           robust:
             'weight' in script && script.weight?.weighting === 'briggs'
-              ? (ROBUST.find((item) => item.label === String(script.weight?.robust ?? ''))?.value ??
-                0)
+              ? Number(script.weight?.robust ?? 0)
               : 0,
           polarisations: 'polarisations' in script ? script.polarisations : undefined,
           channelsOut: 'channels_out' in script ? (Number(script.channels_out) ?? 0) : 0,
@@ -350,7 +389,7 @@ const getCalibrationStrategy = (
 /*********************************************************** observation parameters mapping *********************************************************/
 const getWeighting = (inImageWeighting: string): number => {
   const weighting = IMAGE_WEIGHTING?.find(
-    (item) => item.lookup.toLowerCase() === inImageWeighting?.toLowerCase()
+    (item) => item.label.toLowerCase() === inImageWeighting?.toLowerCase()
   )?.value;
   return weighting ? weighting : 1; // fallback
 };
@@ -387,11 +426,18 @@ export const getFrequencyAndBandwidthUnits = (
 };
 
 export const getBandwidth = (incBandwidth: number, telescope: number): number => {
-  const array = OSD_CONSTANTS.array?.find((item) => item?.value === telescope);
-  const bandwidth = array?.bandWidth?.find((bandwidth) =>
-    bandwidth?.label?.includes(String(incBandwidth?.toString()))
-  )?.value;
-  return bandwidth ? bandwidth : 1;
+  const options = OSD_CONSTANTS.array?.find((item) => item?.value === telescope)?.bandWidth ?? [];
+  if (options.length === 0) return 1;
+  // Match by nearest numeric value rather than an exact substring of the label, since the
+  // backend can round/reformat the stored number (e.g. 390.625 -> 390.63) - an exact string
+  // match would silently fall through to the default and lose the saved selection.
+  const closest = options.reduce((best, candidate) =>
+    Math.abs(Number(candidate?.label?.split(' ')[0]) - incBandwidth) <
+    Math.abs(Number(best?.label?.split(' ')[0]) - incBandwidth)
+      ? candidate
+      : best
+  );
+  return closest.value;
 };
 
 const getLinked = (
@@ -405,7 +451,9 @@ const getLinked = (
 
 // This is here as there is inconsistent representation of spectral and spectral line.
 const typeCheck = (inType: string | undefined): any => {
-  return inType === TYPE_ZOOM_LONG ? TYPE_ZOOM : inType;
+  if (inType === TYPE_ZOOM_LONG) return TYPE_ZOOM;
+  if (inType === TYPE_CONTINUUM_SPECTRAL_LONG) return TYPE_CONTINUUM_SPECTRAL;
+  return inType;
 };
 
 const getObservations = (
@@ -419,8 +467,12 @@ const getObservations = (
   for (let i = 0; i < inValue?.length; i++) {
     const arr = inValue[i]?.array_details?.array === TELESCOPE_MID_BACKEND_MAPPING ? 1 : 2;
     //TODO: Rework logic to reference array label rather than number
+    // Older observations may have been saved as 'aa2' before the LOW array assembly was
+    // renamed to 'aa2_sv' - normalise so those still resolve to the current SA_AA2 entry.
+    const backendSubarray = inValue[i]?.array_details?.subarray?.toLocaleLowerCase();
+    const normalizedSubarray = backendSubarray === 'aa2' ? SA_AA2 : backendSubarray;
     const sub = OSD_CONSTANTS.array[arr - 1].subarray?.find(
-      (p) => p.value.toLowerCase() === inValue[i]?.array_details?.subarray?.toLocaleLowerCase()
+      (p) => p.value.toLowerCase() === normalizedSubarray
     )?.value;
 
     const type = typeCheck(inValue[i]?.observation_type_details?.observation_type);
@@ -479,11 +531,11 @@ const getObservations = (
       ),
       linked: getLinked(inValue[i], inResults),
       continuumBandwidth:
-        type === TYPE_CONTINUUM || type === TYPE_PST
+        type === TYPE_CONTINUUM || type === TYPE_PST || type === TYPE_CONTINUUM_SPECTRAL
           ? (inValue[i].observation_type_details?.bandwidth?.value ?? null)
           : null,
       continuumBandwidthUnits:
-        type === TYPE_CONTINUUM || type === TYPE_PST
+        type === TYPE_CONTINUUM || type === TYPE_PST || type === TYPE_CONTINUUM_SPECTRAL
           ? getFrequencyAndBandwidthUnits(
               inValue[i]?.observation_type_details?.bandwidth?.unit ?? null,
               observingBand
@@ -670,7 +722,8 @@ const getTargetObservation = (
   }
   for (const result of inResults) {
     const resultObsType = getResultObsType(result, inObservationSets);
-    const isContinuum = resultObsType === TYPE_CONTINUUM;
+    const isContinuum =
+      resultObsType === TYPE_CONTINUUM || resultObsType === TYPE_CONTINUUM_SPECTRAL_LONG;
     const isPST = resultObsType === TYPE_PST;
     const isSensitivity = result.result?.supplied_type === 'sensitivity';
 
@@ -736,7 +789,7 @@ export function mapping(inRec: ProposalBackend): Proposal {
     id: inRec.prsl_id,
     title: inRec.proposal_info?.title,
     proposalType: isSV
-      ? 9
+      ? SCIENCE_VERIFICATION_TYPE_ID
       : PROJECTS?.find((p) => p.mapping === inRec.proposal_info?.proposal_type?.main_type)?.id,
     proposalSubType: isSV
       ? []

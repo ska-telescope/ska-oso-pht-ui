@@ -1,6 +1,6 @@
 import { NumberEntry } from '@ska-telescope/ska-gui-components';
 import { Box } from '@mui/system';
-import { CHANNELS_OUT_MAX, CHANNELS_OUT_MIN } from '@utils/constants.ts';
+import { CHANNELS_OUT_MAX, CHANNELS_OUT_MIN, ERROR_SECS } from '@utils/constants.ts';
 import React from 'react';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 
@@ -14,9 +14,13 @@ interface ChannelsOutFieldProps {
   value: number;
 }
 
+/**
+ * Number of output channels selected, default is the max available.
+ */
 export default function ChannelsOutField({
   disabled = false,
   required = false,
+  maxValue = CHANNELS_OUT_MAX,
   onFocus,
   setValue,
   suffix,
@@ -28,7 +32,7 @@ export default function ChannelsOutField({
 
   const checkValue = (e: number) => {
     const num = Number(e);
-    if (Number.isInteger(num) && num >= CHANNELS_OUT_MIN && num <= CHANNELS_OUT_MAX) {
+    if (Number.isInteger(num) && num >= CHANNELS_OUT_MIN && num <= maxValue) {
       setFieldValid(true);
       if (setValue) {
         setValue(num);
@@ -40,7 +44,19 @@ export default function ChannelsOutField({
 
   const errorMessage = fieldValid
     ? ''
-    : t(FIELD + '.error', { min: CHANNELS_OUT_MIN, max: CHANNELS_OUT_MAX });
+    : t(FIELD + '.error', { min: CHANNELS_OUT_MIN, max: maxValue });
+
+  React.useEffect(() => {
+    let timerId: ReturnType<typeof setTimeout> | null = null;
+    if (!fieldValid) {
+      timerId = setTimeout(() => {
+        setFieldValid(true);
+      }, ERROR_SECS);
+    }
+    return () => {
+      if (timerId !== null) clearTimeout(timerId);
+    };
+  }, [fieldValid]);
 
   return (
     <Box pt={1}>

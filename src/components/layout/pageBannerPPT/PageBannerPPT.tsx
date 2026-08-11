@@ -119,7 +119,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
         }
       }
     });
-    const response = await PostProposalValidate(authClient, getProposal(), isSV);
+    const response = await PostProposalValidate(authClient, getProposal());
 
     if (response.valid && !response.error && results.length === 0) {
       notifySuccess(t(`validationBtn.${response.valid}`));
@@ -154,7 +154,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   const updateProposal = async (proposal: Proposal) => {
     if (!isDisableEndpoints()) {
-      const response = await PutProposal(authClient, proposal, isSV, PROPOSAL_STATUS.DRAFT);
+      const response = await PutProposal(authClient, proposal, PROPOSAL_STATUS.DRAFT);
       updateProposalResponse(response);
     }
   };
@@ -168,7 +168,6 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     const response = await PutProposal(
       authClient,
       application.content2 as Proposal,
-      isSV,
       PROPOSAL_STATUS.SUBMITTED
     );
     if (response && !('error' in response)) {

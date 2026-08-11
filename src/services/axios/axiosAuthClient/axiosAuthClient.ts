@@ -25,6 +25,11 @@ export const loginRequest = {
 
 type MsalInstance = ReturnType<typeof useMsal>['instance'];
 
+// Concurrent requests all failing silent token acquisition at once (e.g. on initial page load)
+// would otherwise each independently call loginRedirect, navigating away repeatedly and
+// cancelling every other in-flight request. Only the first should trigger the redirect.
+let loginRedirectTriggered = false;
+
 export const mapAxiosError = (error: AxiosError): Error => {
   if (error.code === 'ECONNABORTED' && error.message.includes('timeout')) {
     return new Error('Request timed out. Please try again.');
@@ -57,7 +62,8 @@ export const createRequestInterceptor =
         });
         request.headers['Authorization'] = `Bearer ${tokenResponse.accessToken}`;
       } catch (error) {
-        if (error instanceof InteractionRequiredAuthError) {
+        if (error instanceof InteractionRequiredAuthError && !loginRedirectTriggered) {
+          loginRedirectTriggered = true;
           console.warn(
             '[axiosAuthClient] acquireTokenSilent failed, redirecting to login:',
             (error as InteractionRequiredAuthError).errorCode,

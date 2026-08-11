@@ -3,6 +3,8 @@ import Target, {
   ReferenceCoordinateGalacticBackend,
   ReferenceCoordinateICRS,
   ReferenceCoordinateICRSBackend,
+  ReferenceCoordinateSSO,
+  ReferenceCoordinateSSOBackend,
   TargetBackend
 } from '@utils/types/target.tsx';
 import Observation from '@utils/types/observation.tsx';
@@ -15,6 +17,7 @@ import { SensCalcResultsBackend } from '@utils/types/sensCalcResults.tsx';
 import {
   DETECTED_FILTER_BANK_VALUE,
   DP_TYPE_IMAGES,
+  DP_TYPE_VISIBLE,
   FREQUENCY_UNITS,
   DETAILS,
   IMAGE_WEIGHTING,
@@ -25,22 +28,27 @@ import {
   PULSAR_TIMING_VALUE,
   REFERENCE_COORDINATE_TYPE_GALACTIC,
   REFERENCE_COORDINATE_TYPE_ICRS,
-  ROBUST,
   SCIENCE_VERIFICATION,
+  SCIENCE_VERIFICATION_TYPE_ID,
   TELESCOPE_LOW_BACKEND_MAPPING,
   TELESCOPE_LOW_NUM,
   TELESCOPE_MID_BACKEND_MAPPING,
   TYPE_CONTINUUM,
+  TYPE_CONTINUUM_SPECTRAL,
+  TYPE_CONTINUUM_SPECTRAL_LONG,
   TYPE_PST,
   TYPE_ZOOM,
   VEL_UNITS,
   VELOCITY_TYPE,
   TYPE_ZOOM_LONG,
-  SA_AA4
+  SA_AA4,
+  REFERENCE_COORDINATE_TYPE_SSO
 } from '@utils/constants.ts';
 import {
+  DataProductSDPContinuumVisibilitiesBackend,
   DataProductSDPNew,
   DataProductSDPsBackend,
+  DataProductSDPSpectralImageBackend,
   DataProductSRC,
   DataProductSRCNetBackend,
   SDPFilterbankPSTData,
@@ -57,7 +65,7 @@ import { getBandwidthZoom, helpers } from '@/utils/helpers';
 import { CalibrationStrategy, CalibrationStrategyBackend } from '@/utils/types/calibrationStrategy';
 import { SuppliedBackend } from '@/utils/types/supplied';
 
-const isContinuum = (type: string) => type === TYPE_CONTINUUM;
+const isContinuum = (type: string) => type === TYPE_CONTINUUM || type === TYPE_CONTINUUM_SPECTRAL;
 const isPST = (type: string) => type === TYPE_PST;
 // const isZoom = (type: number) => type === TYPE_ZOOM;
 const isVelocity = (type: number) => type === VELOCITY_TYPE.VELOCITY;
@@ -76,28 +84,42 @@ const getSubType = (proposalType: number, proposalSubType: number[]): any => {
 };
 
 export const getReferenceCoordinate = (
-  tar: Target | ReferenceCoordinateICRS | ReferenceCoordinateGalactic
-): ReferenceCoordinateICRSBackend | ReferenceCoordinateGalacticBackend => {
-  if ('kind' in tar && tar.kind === REFERENCE_COORDINATE_TYPE_GALACTIC.value) {
-    return {
-      kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
-      l: (tar as Target).l,
-      b: (tar as Target).b,
-      pm_l: (tar as Target).pmL,
-      pm_b: (tar as Target).pmB,
-      epoch: tar.epoch,
-      parallax: tar.parallax
-    } as ReferenceCoordinateGalacticBackend;
+  tar: Target | ReferenceCoordinateICRS | ReferenceCoordinateGalactic | ReferenceCoordinateSSO
+):
+  | ReferenceCoordinateICRSBackend
+  | ReferenceCoordinateGalacticBackend
+  | ReferenceCoordinateSSOBackend => {
+  switch (tar.kind) {
+    case REFERENCE_COORDINATE_TYPE_ICRS.value:
+      return {
+        kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
+        ra_str: (tar as Target).raStr,
+        dec_str: (tar as Target).decStr,
+        pm_ra: (tar as Target).pmRa,
+        pm_dec: (tar as Target).pmDec,
+        epoch: (tar as Target).epoch,
+        parallax: (tar as Target).parallax
+      } as ReferenceCoordinateICRSBackend;
+
+    case REFERENCE_COORDINATE_TYPE_GALACTIC.value:
+      return {
+        kind: REFERENCE_COORDINATE_TYPE_GALACTIC.label,
+        l: (tar as Target).l,
+        b: (tar as Target).b,
+        pm_l: (tar as Target).pmL,
+        pm_b: (tar as Target).pmB,
+        epoch: (tar as Target).epoch,
+        parallax: (tar as Target).parallax
+      } as ReferenceCoordinateGalacticBackend;
+
+    case REFERENCE_COORDINATE_TYPE_SSO.value:
+      return {
+        kind: REFERENCE_COORDINATE_TYPE_SSO.label,
+        name: (tar as Target).name
+      } as ReferenceCoordinateSSOBackend;
+    default:
+      throw new Error(`Unsupported reference coordinate kind: ${tar.kind}`);
   }
-  return {
-    kind: REFERENCE_COORDINATE_TYPE_ICRS.label,
-    ra_str: ((tar as Target) || (tar as ReferenceCoordinateICRS)).raStr,
-    dec_str: ((tar as Target) || (tar as ReferenceCoordinateICRS)).decStr,
-    pm_ra: ((tar as Target) || (tar as ReferenceCoordinateICRS)).pmRa,
-    pm_dec: ((tar as Target) || (tar as ReferenceCoordinateICRS)).pmDec,
-    epoch: ((tar as Target) || (tar as ReferenceCoordinateICRS)).epoch,
-    parallax: ((tar as Target) || (tar as ReferenceCoordinateICRS)).parallax
-  } as ReferenceCoordinateICRSBackend;
 };
 
 const getTargets = (targets: Target[]): TargetBackend[] => {
@@ -159,6 +181,9 @@ export const getCalibrationStrategy = (
   return calibrationOut;
 };
 
+/**
+ * Maps a data product to the backend's script_parameters shape for its observation's type.
+ */
 export const getDataProductScriptParameters = (
   obs: Observation[] | null,
   dp: DataProductSDPNew
@@ -182,7 +207,7 @@ export const getDataProductScriptParameters = (
             weighting: IMAGE_WEIGHTING.find((item) => item.value === Number(data?.weighting))
               ?.label as string,
             ...(Number(data?.weighting) === IW_BRIGGS && {
-              robust: ROBUST.find((item) => item.value === data?.robust)?.value
+              robust: data?.robust != null ? Number(data?.robust) : undefined
             })
           },
           polarisations: data?.polarisations,
@@ -193,17 +218,32 @@ export const getDataProductScriptParameters = (
         };
       } else {
         const data = dp?.data as SDPVisibilitiesContinuumData;
-        return {
+        const result: DataProductSDPContinuumVisibilitiesBackend = {
           time_averaging: data?.timeAveraging ?? 0,
           frequency_averaging: data?.frequencyAveraging ?? 0,
           kind: 'continuum',
           variant: 'visibilities'
         };
+        return result;
       }
     }
     case TYPE_ZOOM:
+    case TYPE_CONTINUUM_SPECTRAL: {
+      // Both modes also produce a hidden visibilities data product (see HiddenSDPData in
+      // AutoLinking.tsx) - the backend only has one "visibilities" script-parameters shape
+      // (kind: continuum / variant: visibilities), regardless of the mode that created it.
+      if ((dp?.data as SDPVisibilitiesContinuumData)?.dataProductType === DP_TYPE_VISIBLE) {
+        const data = dp?.data as SDPVisibilitiesContinuumData;
+        const result: DataProductSDPContinuumVisibilitiesBackend = {
+          time_averaging: data?.timeAveraging ?? 0,
+          frequency_averaging: data?.frequencyAveraging ?? 0,
+          kind: 'continuum',
+          variant: 'visibilities'
+        };
+        return result;
+      }
       const data = dp?.data as SDPSpectralData;
-      return {
+      const result: DataProductSDPSpectralImageBackend = {
         image_size: { value: data?.imageSizeValue, unit: IMAGE_SIZE_UNITS[data?.imageSizeUnits] },
         image_cellsize: {
           value: data?.pixelSizeValue,
@@ -213,16 +253,21 @@ export const getDataProductScriptParameters = (
           weighting: IMAGE_WEIGHTING.find((item) => item.value === Number(data?.weighting))
             ?.label as string,
           ...(Number(data?.weighting) === IW_BRIGGS && {
-            robust: ROBUST.find((item) => item.value === data?.robust)?.value
+            robust: data?.robust != null ? Number(data?.robust) : undefined
           })
         },
         polarisations: data?.polarisations ?? [],
         channels_out: data?.channelsOut ?? 0,
         gaussian_taper: data?.taperValue?.toString() ?? '0',
-        kind: 'spectral',
-        variant: 'spectral image',
+        kind: obType === TYPE_CONTINUUM_SPECTRAL ? TYPE_CONTINUUM_SPECTRAL_LONG : 'spectral',
+        variant:
+          obType === TYPE_CONTINUUM_SPECTRAL
+            ? `${TYPE_CONTINUUM_SPECTRAL_LONG} image`
+            : 'spectral image',
         continuum_subtraction: data?.continuumSubtraction
       };
+      return result;
+    }
     case TYPE_PST:
     default:
       const pstMode = obs?.find((o) => o?.id === dp.observationId)?.pstMode;
@@ -337,6 +382,9 @@ const getSupplied = (inObs: Observation) => {
   };
 };
 
+/**
+ * Maps an observation to the backend's observation_type_details shape for its type.
+ */
 export const getObservationTypeDetails = (obs: Observation) => {
   switch (obs.type) {
     case TYPE_CONTINUUM:
@@ -345,6 +393,13 @@ export const getObservationTypeDetails = (obs: Observation) => {
         central_frequency: getCentralFrequency(obs),
         supplied: getSupplied(obs) as SuppliedBackend,
         observation_type: TYPE_CONTINUUM
+      };
+    case TYPE_CONTINUUM_SPECTRAL:
+      return {
+        bandwidth: getBandwidth(obs),
+        central_frequency: getCentralFrequency(obs),
+        supplied: getSupplied(obs) as SuppliedBackend,
+        observation_type: TYPE_CONTINUUM_SPECTRAL_LONG
       };
     case TYPE_ZOOM:
       return {
@@ -355,7 +410,7 @@ export const getObservationTypeDetails = (obs: Observation) => {
         spectral_resolution: obs.spectralResolution,
         effective_resolution: obs.effectiveResolution,
         spectral_averaging: obs.spectralAveraging?.toString(),
-        number_of_channels: '1024'
+        number_of_channels: obs.zoomChannels?.toString()
       };
     case TYPE_PST:
     default:
@@ -423,6 +478,10 @@ const getSuppliedFieldsSensitivity = (
   tarObs: TargetObservation,
   spectralSection: string
 ) => {
+  if (!tarObs?.sensCalc) {
+    return null;
+  }
+
   const params: SuppliedRelatedFields = {
     supplied_type: suppliedType
   };
@@ -495,6 +554,10 @@ export const getSuppliedFieldsIntegrationTime = (
   obsType: string,
   tarObs: TargetObservation
 ) => {
+  if (!tarObs?.sensCalc) {
+    return null;
+  }
+
   const params: SuppliedRelatedFields = {
     supplied_type: suppliedType
   };
@@ -524,38 +587,63 @@ export const getDataProductRef = (
   incTarObs: TargetObservation,
   incDataProductSDP: DataProductSDPNew[]
 ) => {
-  return String(incDataProductSDP.find((dp) => dp.observationId === incTarObs.observationId)?.id);
+  return String(
+    incTarObs.dataProductsSDPId ??
+      incDataProductSDP.find((dp) => dp.observationId === incTarObs.observationId)?.id
+  );
 };
 
 const getResults = (
   incTargetObservations: TargetObservation[],
   incObs: Observation[],
-  incDataProductSDP: DataProductSDPNew[]
+  incDataProductSDP: DataProductSDPNew[],
+  incTargets: Target[]
 ) => {
   const resultsArr = [];
   if (incTargetObservations) {
     for (const tarObs of incTargetObservations) {
-      if (tarObs.sensCalc?.error) {
+      // A target-observation that hasn't been (re)calculated yet - e.g. a freshly cloned
+      // proposal, whose links are deliberately reset to this shape with no section3 - has no
+      // sensitivity result to report at all, not just an error one. Skip it rather than reading
+      // section3[0] unguarded, which would throw on the missing array.
+      if (tarObs.sensCalc?.error || !tarObs.sensCalc?.section3?.[0]) {
         continue;
       }
-      const obsType = getObsType(tarObs, incObs); // spectral or continuum
+
+      const hasSensCalc = !!tarObs.sensCalc;
+      const obsType = getObsType(tarObs, incObs);
       const spectralSection = getSpectralSection(obsType);
       const suppliedType =
-        tarObs?.sensCalc?.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
+        tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
 
-      const suppliedRelatedFields =
-        suppliedType === 'sensitivity'
-          ? getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs)
-          : getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection);
+      // refs always populate; result/noise blocks are null when there's no sensCalc (SSO)
       const result: SensCalcResultsBackend = {
         observation_set_ref: tarObs.observationId,
         data_product_ref: tarObs.dataProductsSDPId ?? getDataProductRef(tarObs, incDataProductSDP),
-        target_ref: tarObs.sensCalc?.title,
-        result: {
+        target_ref: tarObs.sensCalc?.title ?? target?.name, // see note below
+        result: null,
+        continuum_confusion_noise: null,
+        spectral_confusion_noise: null,
+        synthesized_beam_size: null
+      };
+
+      if (hasSensCalc) {
+        const suppliedType =
+          tarObs.sensCalc.section3?.[0]?.field === 'sensitivity'
+            ? 'sensitivity'
+            : 'integration_time';
+
+        const suppliedRelatedFields =
+          suppliedType === 'sensitivity'
+            ? getSuppliedFieldsIntegrationTime(suppliedType, obsType, tarObs)
+            : getSuppliedFieldsSensitivity(suppliedType, obsType, tarObs, spectralSection);
+
+        result.result = {
           supplied_type: suppliedType,
           ...suppliedRelatedFields
-        },
-        continuum_confusion_noise: {
+        };
+
+        result.continuum_confusion_noise = {
           value:
             isContinuum(obsType) || isPST(obsType)
               ? Number(
@@ -567,8 +655,9 @@ const getResults = (
             isContinuum(obsType) || isPST(obsType)
               ? tarObs.sensCalc.section1?.find((o) => o.field === 'continuumConfusionNoise')?.units
               : ''
-        },
-        synthesized_beam_size: {
+        };
+
+        result.synthesized_beam_size = {
           spectral: tarObs.sensCalc[spectralSection]?.find(
             (o) => o.field === 'spectralSynthBeamSize'
           )?.value,
@@ -578,16 +667,18 @@ const getResults = (
               : '',
           unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralSynthBeamSize')
             ?.units
-        },
-        spectral_confusion_noise: {
+        };
+
+        result.spectral_confusion_noise = {
           value: Number(
             tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralConfusionNoise')
               ?.value
           ),
           unit: tarObs.sensCalc[spectralSection]?.find((o) => o.field === 'spectralConfusionNoise')
             ?.units
-        }
-      };
+        };
+      }
+
       resultsArr.push(result);
     }
   }
@@ -595,7 +686,12 @@ const getResults = (
 };
 /*************************************************************************************************************************/
 
-export default function MappingPutProposal(proposal: Proposal, isSV: boolean, status: string) {
+export default function MappingPutProposal(proposal: Proposal, status: string) {
+  const projectMapping = PROJECTS.find((item) => item?.id === proposal.proposalType)?.mapping;
+  // proposalType is always resolved before this is called (set explicitly at creation in
+  // PageFooterPPT.tsx), so it alone is authoritative for SV-ness.
+  const proposalIsSV = proposal.proposalType === SCIENCE_VERIFICATION_TYPE_ID;
+
   const transformedProposal: ProposalBackend = {
     prsl_id: proposal?.id,
     status: status,
@@ -608,16 +704,14 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
     proposal_info: {
       title: proposal.title,
       proposal_type: {
-        main_type: isSV
-          ? SCIENCE_VERIFICATION
-          : (PROJECTS.find((item) => item?.id === proposal.proposalType)?.mapping as string),
+        main_type: proposalIsSV ? SCIENCE_VERIFICATION : (projectMapping as string),
         attributes:
-          !isSV && proposal.proposalSubType
+          !proposalIsSV && proposal.proposalSubType
             ? getSubType(proposal.proposalType, proposal.proposalSubType)
             : []
       },
       abstract: proposal.abstract as string,
-      science_category: isSV
+      science_category: proposalIsSV
         ? (DETAILS.ObservingMode?.find((category) => category.value === proposal?.scienceCategory)
             ?.label as string)
         : (DETAILS.ScienceCategory?.find((category) => category.value === proposal?.scienceCategory)
@@ -661,7 +755,8 @@ export default function MappingPutProposal(proposal: Proposal, isSV: boolean, st
       result_details: getResults(
         proposal.targetObservation as TargetObservation[],
         proposal.observations as Observation[],
-        proposal.dataProductSDP as DataProductSDPNew[]
+        proposal.dataProductSDP as DataProductSDPNew[],
+        proposal.targets as Target[]
       )
     }
   };

@@ -1,6 +1,7 @@
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import ProposalAccess from '../types/proposalAccess';
 import {
+  getUserEmail,
   getUserName,
   hasAccess,
   isSoftwareEngineer,
@@ -82,6 +83,27 @@ describe('getUserName', () => {
   it('returns empty string when account is null', () => {
     __setAccount(null);
     expect(getUserName()).toBe('');
+  });
+});
+
+describe('getUserEmail', () => {
+  beforeEach(() => {
+    overrideGroups = '';
+    __setAccount({ username: 'jane.doe@skao.int' });
+  });
+
+  it('returns username when account has username property', () => {
+    expect(getUserEmail()).toBe('jane.doe@skao.int');
+  });
+
+  it('returns empty string when account has no username', () => {
+    __setAccount({});
+    expect(getUserEmail()).toBe('');
+  });
+
+  it('returns empty string when account is null', () => {
+    __setAccount(null);
+    expect(getUserEmail()).toBe('');
   });
 });
 

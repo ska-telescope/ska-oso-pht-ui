@@ -100,7 +100,8 @@
   "autoLink": {
     "targetSuccess": "Target added and auto-linked successfully.",
     "success": "Observation setup auto-linked successfully.",
-    "error": "Error while auto-linking observation setup "
+    "error": "Error while auto-linking observation setup ",
+    "errorNoSensCalcResponse": "Error while auto-linking observation setup, no Sensitivity Calculator Response"
   },
   "authors": {
     "label": "Authors"
@@ -178,7 +179,7 @@
     "label": "Central Frequency",
     "error": {
       "range": "Observing frequency out of range",
-      "divisibility": "The first channel of the SPW must be even"
+      "divisibility": "Invalid central frequency - please adjust using the arrows"
     }
   },
   "changeProposal": {
@@ -230,10 +231,10 @@
     "help": "The continuum bandwidth of the observation. It must be fully contained within the selected band. Note: For LOW, the specified bandwidth must be equal to or larger than 5.43 kHz, which is the width of a LOW continuum channel. The specified bandwidth must be fully contained within the LOW band (50 - 350 MHz). It cannot exceed 75 MHz for the AA0.5 and AA1 configurations, 150 MHz for the AA2 configuration and 300 MHz for the AA* and AA4 configurations. For MID, note that for the AA0.5, AA1 and AA2 configurations, the specified bandwidth cannot exceed 800 MHz.",
     "label": "Bandwidth",
     "range": {
-      "minimumChannelWidthError": "Bandwidth must be larger than the channel width ({{value}} kHz)",
+      "minimumChannelWidthError": "Bandwidth must be larger than the channel width ({{value}} MHz)",
       "contMaximumExceededError": "Maximum bandwidth for this array assembly ({{value}} MHz) exceeded",
       "rangeError": "Bandwidth must be fully contained within the band",
-      "divisibilityError": "Bandwidth must be a multiple of {{value}} kHz"
+      "divisibilityError": "Bandwidth must be a multiple of {{value}} MHz"
     }
   },
   "continuumUnits": {
@@ -405,7 +406,7 @@
     "label": "Frequency Averaging",
     "help": "Frequency Averaging Help",
     "error": "A value greater than zero is required",
-    "0": "MHz"
+    "0": "kHz"
   },
   "frequencyRange": {
     "label": "Frequency Range"
@@ -464,7 +465,7 @@
     "error": "A value greater than zero is required"
   },
   "imageWeighting": {
-    "help": "Select natural, uniform or Briggs weighting.\n\nFor Briggs weighting, the robustness parameter can be set to a value listed below:\n\n-2 (closest to Uniform weighting),\n-1,\n 0,\n 1\n2 (closest to natural weighting).",
+    "help": "Select natural, uniform or Briggs weighting.\n\nFor Briggs weighting, the robustness parameter can be set between -2 (closest to uniform weighting) and 2 (closest to natural weighting).",
     "helpURL": "https://sensitivity-calculator.skao.int/",
     "label": "Image Weighting",
     "0": "Natural",
@@ -610,6 +611,7 @@
     "2": "PST",
     "spectral": "Spectral",
     "continuum": "Continuum",
+    "continuumSpectral": "Continuum-Spectral",
     "pst": "PST"
   },
   "observatoryDataProduct": {
@@ -1110,8 +1112,9 @@
     "label": "Right ascension"
   },
   "robust": {
-    "help": "For Briggs weighting, the robustness parameter can be set to -2 (closest to uniform weighting), -1, 0, 1 or 2 (closest to natural weighting).",
-    "label": "Robust"
+    "help": "For Briggs weighting, the robustness parameter can be set between -2 (closest to uniform weighting) and 2 (closest to natural weighting).",
+    "label": "Robust",
+    "error": "Numeric value between -2 and 2 required"
   },
   "rotationMeasure": {
     "help": "This field displays the rotationMeasure.",
@@ -1156,6 +1159,7 @@
     "error": "A value is required",
     "all": "All Science Categories",
     "continuum": "Continuum",
+    "continuumSpectral": "Continuum-Spectral",
     "spectral": "Spectral",
     "pst": "PST"
   },
@@ -1265,6 +1269,7 @@
     "maxFaradayDepthExtent": "Maximum Faraday Depth Extent",
     "maxFaradayDepth": "Maximum Faraday Extent",
     "noData": "No data available",
+    "notApplicableForSSO": "Currently unavailable for non-sidereal objects",
     "sensitivity": "Sensitivity",
     "spectralSensitivityWeighted": "Weighted spectral sensitivity",
     "spectralConfusionNoise": "Spectral confusion noise",
@@ -1295,7 +1300,7 @@
   },
   "spectralResolution": {
     "help": "",
-    "label": "Spectral Mode"
+    "label": "Spectral Resolution"
   },
   "srcNet": {
     "label": "SRCNet"
@@ -1522,7 +1527,7 @@
   },
   "weighting": {
     "label": "Weighting",
-    "help": "The calculator offers natural, uniform or Briggs weighting. For Briggs weighting, the robustness parameter can be set to -2 (closest to uniform weighting), -1, 0, 1 or 2 (closest to natural weighting)."
+    "help": "The calculator offers natural, uniform or Briggs weighting. For Briggs weighting, the robustness parameter can be set between -2 (closest to uniform weighting) and 2 (closest to natural weighting)."
   },
   "page": {
     "0": {
@@ -1587,16 +1592,20 @@
       "descTitle": "Data Product Description",
       "descContent": {
         "spectral": {
-          "1": "In Science Verification, Spectral line products include: \n\n• Spectral line cube without continuum subtraction.\n• If requested, spectral line cube after continuum subtraction.\n• Model images per channel.\n• PSF images per channel.\n• Residual images per channel.\n• Calibrated visibilities averaged to 3.4 s and native channel width (to enable full verification of the imaging ODPs).\n• Ancillary data product including Local Sky Model catalogue and QA report."
+          "1": "In Science Verification, Spectral Line data products include:\n\n• Spectral-line cube without continuum subtraction\n• If requested, spectral-line cube after continuum subtraction\n• Model images per channel\n• PSF images per channel\n• Residual images per channel\n• Calibrated visibilities averaged to 3.4 s and native channel width (to enable full verification of the imaging ODPs)\n• Ancillary data product including Local Sky Model catalogue and QA report."
         },
         "continuum": {
-          "1": "In Science Verification, Continuum data products include: \n\n• Calibrated visibilities averaged to 3.4 s and 21.7 kHz (to enable full verification of the imaging ODPs).\n• MFS image \n• Channel images for spectral index estimation as specified in 'channels out'. \n• Model images per channel.\n• PSF images per channel.\n• Residual images per channel.\n• Ancillary data product including Local Sky Model catalogue and QA report.",
-          "2": "In Science Verification, Continuum data products include: \n\n• Calibrated visibilities averaged to the specified values (to enable full verification of the imaging ODPs).\n• MFS image, generated using the Briggs weighting scheme with robust parameter set to 0.\n• Model image\n• PSF image\n• Residual image\n• Ancillary data product including Local Sky Model catalogue and QA report."
+          "1": "In Science Verification, Continuum data products include: \n\n• MFS image\n• Channel images for spectral-index estimation\n• Model images per channel\n• PSF images per channel\n• Residual images per channel\n• Calibrated visibilities averaged to 3.4 s and 21.7 kHz (to enable full verification of the imaging ODPs)\n• Ancillary data products including Local Sky Model catalogue and QA report.",
+
+          "2": "In Science Verification, Continuum data products include: \n\n• Calibrated visibilities averaged to the specified values (to enable full verification of the imaging ODPs).\n• MFS image, generated using the Briggs weighting scheme with robust parameter set to 0.\n• Model image\n• PSF image\n• Residual image\n• Ancillary data products including Local Sky Model catalogue and QA report."
+        },
+        "continuumSpectral": {
+          "1": "In Science Verification, Continuum-Spectral data products include:\n\n• Spectral-line cube without continuum subtraction\n• If requested, spectral-line cube after continuum subtraction\n• Model images per channel\n• PSF images per channel\n• Residual images per channel\n• Calibrated visibilities averaged to 3.4 s and native channel width (to enable full verification of the imaging ODPs)\n• Ancillary data product including Local Sky Model catalogue and QA report."
         },
         "pst": {
-          "0": "In Science Verification, PST Flow Through data products include: \n\n• Single or dual-polarisation beam-formed voltages requantised to the specified bit depth.\n• QA report.",
+          "0": "In Science Verification, PST Flow Through data products include: \n\n• Single or dual-polarisation beam-formed voltages requantised to the specified bit depth\n• QA report.",
           "1": "In Science Verification, PST Detected Filterbank data product include: \n\n• Filterbank data, averaged and requantised as specified in the panel on the left.\n• QA report.",
-          "2": "In Science Verification, PST Pulsar Timing data products include: \n\n• Beam-formed voltages.\n• Time of arrival.\n• Residuals from the best-fit timing model for the pulsar. \n• Updated ephemerids. \n• QA report."
+          "2": "In Science Verification, PST Pulsar Timing data products include: \n\n• Beam-formed voltages\n• Time of arrival\n• Residuals from the best-fit timing model for the pulsar \n• Updated ephemerides \n• QA report."
         }
       },
       "status": "Data Product",

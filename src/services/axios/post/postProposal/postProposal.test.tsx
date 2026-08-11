@@ -1,10 +1,10 @@
 import { describe, test, expect } from 'vitest';
 import '@testing-library/jest-dom';
-import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
+import Proposal from '@utils/types/proposal.tsx';
 import { PROPOSAL_STATUS } from '@utils/constants.ts';
 import * as CONSTANTS from '@utils/constants.ts';
 import { mapping } from '../../get/getProposal/getProposal.tsx';
-import PostProposal, { mappingPostProposal, mockPostProposal } from './postProposal.tsx';
+import PostProposal, { mockPostProposal } from './postProposal.tsx';
 import { MockProposalFrontend } from './mockProposalFrontend.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
 
@@ -12,31 +12,6 @@ describe('Helper Functions', () => {
   test('mockPostProposal returns mock proposal', () => {
     const result = mockPostProposal();
     expect(result).to.deep.equal(mapping(MockProposalBackend));
-  });
-
-  test('mappingPostProposal returns mapped proposal from frontend to backend format', () => {
-    const proposalBackEnd: ProposalBackend = mappingPostProposal(
-      MockProposalFrontend,
-      PROPOSAL_STATUS.DRAFT,
-      false
-    );
-    expect(proposalBackEnd).to.deep.equal(MockProposalBackend);
-  });
-
-  test('mappingPostProposal returns mapped proposal and returns empty array of sub-type when not specified', () => {
-    const proposal = { ...MockProposalFrontend, proposalSubType: undefined };
-    const proposalBackEnd: ProposalBackend = mappingPostProposal(
-      proposal,
-      PROPOSAL_STATUS.DRAFT,
-      false
-    );
-    expect(proposalBackEnd).to.deep.equal({
-      ...MockProposalBackend,
-      proposal_info: {
-        ...MockProposalBackend.proposal_info,
-        proposal_type: { ...MockProposalBackend.proposal_info.proposal_type, attributes: [] }
-      }
-    });
   });
 });
 
@@ -108,6 +83,21 @@ describe('PostProposal Service', () => {
       PROPOSAL_STATUS.DRAFT
     );
     expect(result).toStrictEqual({ error: 'error.API_UNKNOWN_ERROR' });
+  });
+
+  test('sends payload with a freshly minted prsl_id, without investigator_refs, or stale result_details', async () => {
+    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(false);
+    mockedAuthClient.post.mockResolvedValue({ data: MockProposalBackend });
+
+    await PostProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
+
+    const [, sentBody] = mockedAuthClient.post.mock.calls[0];
+    // The client mints its own SKUID rather than relying on the backend to generate one - see
+    // postProposal.tsx for why this is safe (ska-db-oda only mints its own as a fallback).
+    expect(sentBody.prsl_id).toMatch(/^prp-[0-9a-z]+$/);
+    expect(sentBody.prsl_id).not.toEqual(MockProposalFrontend.id);
+    expect(sentBody).not.toHaveProperty('investigator_refs');
+    expect(sentBody.observation_info.result_details).toEqual([]);
   });
 
   test('returns error.API_UNKNOWN_ERROR when result null', async () => {

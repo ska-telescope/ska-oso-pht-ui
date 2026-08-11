@@ -1,7 +1,9 @@
 // CentralFrequency.test.tsx
-import { render } from '@testing-library/react';
+import React from 'react';
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
-import { vi } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { StoreProvider } from '@ska-telescope/ska-gui-local-storage';
 import CentralFrequency from './centralFrequency';
 import { BAND_LOW_STR } from '@/utils/constants.ts';
@@ -30,28 +32,23 @@ vi.mock('@/utils/help/useHelp', () => ({
   })
 }));
 
-// Mock NumberEntry component from ska-gui-components
-vi.mock('@ska-telescope/ska-gui-components', () => ({
-  LABEL_POSITION: {
-    CONTAINED: 'contained',
-    START: 'start',
-    TOP: 'top',
-    BOTTOM: 'bottom',
-    END: 'end'
-  },
-  TELESCOPE_MID: 'MID',
-  TELESCOPE_LOW: 'LOW',
-  NumberEntry: ({ errorText, value, setValue, onFocus, testId }: any) => (
-    <div>
-      <input
-        data-testid={testId}
-        value={value}
-        onChange={(e) => setValue(Number(e.target.value))}
-        onFocus={onFocus}
-      />
-      {errorText && <span data-testid="error">{errorText}</span>}
-    </div>
-  )
+// Mock useOSDAccessors so findBand returns a known 50-350 MHz LOW band for the window-clamping
+// tests, and osdLOW provides a coarse channel width for the non-clamped mode's divisibility
+// validation. minCoarseChannel/maxCoarseChannel are set wide enough that the coarse-channel-
+// derived range comfortably contains the whole 50-350 MHz test band, so it never becomes the
+// binding constraint in these tests - only the band edges themselves are meant to be exercised.
+vi.mock('@/utils/osd/useOSDAccessors/useOSDAccessors', () => ({
+  useOSDAccessors: () => ({
+    findBand: () => ({ minFrequencyHz: 50_000_000, maxFrequencyHz: 350_000_000 }),
+    telescopeBand: () => 2, // TELESCOPE_LOW_NUM
+    osdLOW: {
+      basicCapabilities: {
+        coarseChannelWidthHz: 781250,
+        minCoarseChannel: 1,
+        maxCoarseChannel: 1000
+      }
+    }
+  })
 }));
 
 const wrapper = (component: React.ReactElement) => {
@@ -62,8 +59,161 @@ const wrapper = (component: React.ReactElement) => {
   );
 };
 
+const pressArrowUp = async (input: HTMLElement) => {
+  await userEvent.click(input);
+  await userEvent.keyboard('{ArrowUp}');
+};
+
+// On blur, SteppedNumberField resyncs its displayed text from the component's own `value` prop
+// regardless of typing - a mocked setValue that doesn't feed into a re-render would make that
+// resync revert to the stale initial value instead of what was actually typed. This wires value/
+// setValue together like a real caller would.
+const StatefulCentralFrequency = ({
+  initial,
+  isLowZoom,
+  channelWidthHz,
+  windowBandwidthHz
+}: {
+  initial: number;
+  isLowZoom?: boolean;
+  channelWidthHz?: number;
+  windowBandwidthHz?: number;
+}) => {
+  const [value, setValue] = React.useState(initial);
+  return (
+    <CentralFrequency
+      observingBand={BAND_LOW_STR}
+      value={value}
+      setValue={setValue}
+      isLowZoom={isLowZoom}
+      channelWidthHz={channelWidthHz}
+      windowBandwidthHz={windowBandwidthHz}
+    />
+  );
+};
+
 describe('CentralFrequency component', () => {
   it('renders with initial value', () => {
     wrapper(<CentralFrequency observingBand={BAND_LOW_STR} value={150} setValue={vi.fn()} />);
+  });
+
+  it('Continuum/MID mode still renders the stepped number field (same control, coarse-channel-grid stepping instead of window-clamping)', () => {
+    wrapper(<CentralFrequency observingBand={BAND_LOW_STR} value={150} setValue={vi.fn()} />);
+    expect(screen.getByLabelText('centralFrequency.label')).toBeInTheDocument();
+  });
+
+  it('Continuum/MID mode steps by one coarse-channel-grid unit on ArrowUp', async () => {
+    const setValue = vi.fn();
+    // A valid centre frequency is one where the SPW's first coarse channel is even - bandwidth-
+    // independent, matching ODT's own validated LOW spectral window schema (see
+    // isCentralFrequencyDivisible). 149.609375 MHz sits on that grid (191.5 x 0.78125 MHz channels).
+    wrapper(
+      <CentralFrequency observingBand={BAND_LOW_STR} value={149.609375} setValue={setValue} />
+    );
+    await pressArrowUp(screen.getByTestId('centralFrequency'));
+    expect(setValue).toHaveBeenCalledWith(151.171875);
+  });
+
+  it('Continuum/MID mode snaps an off-grid starting value onto the grid before stepping', async () => {
+    const setValue = vi.fn();
+    // 150 MHz is off-grid and unambiguously closer to 149.609375 MHz than to the next valid value
+    // up (151.171875 MHz) - stepping should first snap it down to 149.609375 MHz before adding one
+    // step, landing on the same result as the already-on-grid case above. (150.390625 MHz, the
+    // exact midpoint between those two valid values, is deliberately avoided here - Math.round's
+    // round-half-up tie-break would snap it up instead, which is correct but not what this test is
+    // meant to demonstrate.)
+    wrapper(<CentralFrequency observingBand={BAND_LOW_STR} value={150} setValue={setValue} />);
+    await pressArrowUp(screen.getByTestId('centralFrequency'));
+    expect(setValue).toHaveBeenCalledWith(151.171875);
+  });
+
+  it('Low zoom mode renders a stepped number field and calls setValue on ArrowUp', async () => {
+    const setValue = vi.fn();
+    wrapper(
+      <CentralFrequency
+        observingBand={BAND_LOW_STR}
+        value={200}
+        setValue={setValue}
+        isLowZoom
+        channelWidthHz={1808.449074}
+        windowBandwidthHz={1_808_449.074}
+      />
+    );
+    await pressArrowUp(screen.getByTestId('centralFrequency'));
+    expect(setValue).toHaveBeenCalledWith(200.001808);
+  });
+
+  it(' mode accepts a typed value when the whole window fits in the band', async () => {
+    const setValue = vi.fn();
+    wrapper(
+      <CentralFrequency
+        observingBand={BAND_LOW_STR}
+        value={200}
+        setValue={setValue}
+        isLowZoom
+        channelWidthHz={1808.449074}
+        windowBandwidthHz={1_808_449.074} // 1.808449074 MHz wide window
+      />
+    );
+    const input = screen.getByTestId('centralFrequency');
+    await userEvent.clear(input);
+    await userEvent.type(input, '300');
+    expect(setValue).toHaveBeenCalledWith(300);
+    expect(screen.queryByText('centralFrequency.error.range')).not.toBeInTheDocument();
+  });
+
+  it('Low zoom mode accepts an out-of-range typed value but flags a range error, rather than rejecting it', async () => {
+    const setValue = vi.fn();
+    wrapper(
+      <CentralFrequency
+        observingBand={BAND_LOW_STR}
+        value={200}
+        setValue={setValue}
+        isLowZoom
+        channelWidthHz={1808.449074}
+        windowBandwidthHz={1_808_449.074}
+      />
+    );
+    // Window is ~0.9 MHz either side of centre - centring on 50 MHz would spill below the band.
+    const input = screen.getByTestId('centralFrequency');
+    await userEvent.clear(input);
+    await userEvent.type(input, '50');
+    expect(setValue).toHaveBeenCalledWith(50);
+    expect(screen.getByText('centralFrequency.error.range')).toBeInTheDocument();
+  });
+
+  it('Low zoom mode flags a divisibility error for an off-grid typed value, without auto-snapping it on blur', async () => {
+    wrapper(
+      <StatefulCentralFrequency
+        initial={200}
+        isLowZoom
+        channelWidthHz={1808.449074}
+        windowBandwidthHz={1_808_449.074}
+      />
+    );
+    const input = screen.getByTestId('centralFrequency') as HTMLInputElement;
+    await userEvent.clear(input);
+    await userEvent.type(input, '123.456'); // in range, but not on the channel grid
+    expect(screen.getByText('centralFrequency.error.divisibility')).toBeInTheDocument();
+    await userEvent.tab(); // blur - should not silently correct the value
+    expect(input.value).toBe('123.456');
+    expect(screen.getByText('centralFrequency.error.divisibility')).toBeInTheDocument();
+  });
+
+  it('LOW zoom mode clamps an increment so the window never spills past the band edge', async () => {
+    const setValue = vi.fn();
+    wrapper(
+      <CentralFrequency
+        observingBand={BAND_LOW_STR}
+        value={349.999} // window's upper edge (349.999 + ~0.9 MHz) already exceeds 350 MHz
+        setValue={setValue}
+        isLowZoom
+        channelWidthHz={1808.449074}
+        windowBandwidthHz={1_808_449.074}
+      />
+    );
+    await pressArrowUp(screen.getByTestId('centralFrequency'));
+    const [[committed]] = setValue.mock.calls;
+    expect(committed).toBeLessThanOrEqual(350 - 1_808_449.074 / 1_000_000 / 2 + 1e-6);
   });
 });
