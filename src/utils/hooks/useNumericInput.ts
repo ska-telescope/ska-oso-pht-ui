@@ -64,10 +64,9 @@ export const useNumericInput = (
     const isEquivalent = isEquivalentValue(number, valueRef.current);
     setError(error);
     const textChanged = textRef.current !== text;
-    const becameValid = !!errorRef.current && !error;
     textRef.current = text;
     errorRef.current = error;
-    if ((textChanged || becameValid) && !error && !isEquivalent) {
+    if (textChanged && !isEquivalent) {
       setValue(number);
     }
   }, [
