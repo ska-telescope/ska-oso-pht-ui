@@ -115,11 +115,44 @@ if (dryRun) {
   process.exit(0);
 }
 
+// Cypress bundles its own Xvfb for headless Linux runs, but it hardcodes display :99 - fine for
+// one instance, but concurrent workers all racing to claim :99 collide ("Server is already active
+// for display 99"). xvfb-run --auto-servernum gives each worker its own free display instead, so
+// wrap Cypress with it on Linux. Not needed (and not available) on macOS/Windows, where Cypress
+// either has no Xvfb dependency or uses a real display directly.
+const useXvfbRun = process.platform === 'linux';
+
 const runWorker = (bin, index) =>
   new Promise((resolve) => {
-    const args = ['run', '--spec', bin.specs.join(','), ...reporterArgsFor(index), ...extraArgs];
-    const child = spawn(CYPRESS_BIN, args, { stdio: 'inherit' });
+    const cypressArgs = [
+      'run',
+      '--spec',
+      bin.specs.join(','),
+      ...reporterArgsFor(index),
+      ...extraArgs
+    ];
+    const [cmd, args] = useXvfbRun
+      ? [
+          'xvfb-run',
+          [
+            '--auto-servernum',
+            // xvfb-run's own default screen (unspecified) is often too small/low-colour-depth
+            // for Chromium to render into - match what Cypress's own bundled Xvfb normally sets
+            // up rather than trading the display collision for a blank/broken render.
+            '--server-args=-screen 0 1280x1024x24',
+            CYPRESS_BIN,
+            ...cypressArgs
+          ]
+        ]
+      : [CYPRESS_BIN, cypressArgs];
+    const child = spawn(cmd, args, { stdio: 'inherit' });
     child.on('exit', (code) => resolve({ worker: index + 1, code: code ?? 1 }));
+    // Without this, a spawn failure (e.g. xvfb-run missing) never fires 'exit', so the
+    // Promise.all below would hang forever instead of failing loudly.
+    child.on('error', (err) => {
+      console.error(`Worker ${index + 1} failed to start (${cmd}): ${err.message}`);
+      resolve({ worker: index + 1, code: 1 });
+    });
   });
 
 const results = await Promise.all(bins.map(runWorker));
