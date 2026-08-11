@@ -18,7 +18,7 @@ describe('<Robust /> behavior', () => {
     fireEvent.change(field, { target: { value: nextValue } });
   };
 
-  test('renders robust NumberEntry input', () => {
+  test('renders robust numeric input', () => {
     render(<Robust label="Robust" value={0} />);
     expect(getField()).toBeInTheDocument();
   });
@@ -60,25 +60,45 @@ describe('<Robust /> behavior', () => {
     expect(setValue).toHaveBeenCalledWith(1.45);
   });
 
-  test('rejects values below range and shows an error', () => {
+  test('commits values below range and shows an error', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={0} setValue={setValue} />);
 
     const field = getField();
     fireEvent.change(field, { target: { value: '-2.1' } });
 
-    expect(setValue).not.toHaveBeenCalled();
+    expect(setValue).toHaveBeenCalledWith(-2.1);
     expect(screen.getByText('robust.error')).toBeInTheDocument();
   });
 
-  test('rejects values outside [-2, 2] and shows an error', () => {
+  test('commits values outside [-2, 2] and shows an error', () => {
     const setValue = vi.fn();
     render(<Robust label="Robust" value={0} setValue={setValue} />);
 
     const field = getField();
     fireEvent.change(field, { target: { value: '2.1' } });
 
-    expect(setValue).not.toHaveBeenCalled();
+    expect(setValue).toHaveBeenCalledWith(2.1);
+    expect(screen.getByText('robust.error')).toBeInTheDocument();
+  });
+
+  test('commits NaN for empty string and shows an error', () => {
+    const setValue = vi.fn();
+    render(<Robust label="Robust" value={1} setValue={setValue} />);
+
+    fireEvent.change(getField(), { target: { value: '' } });
+
+    expect(setValue).toHaveBeenCalledWith(NaN);
+    expect(screen.getByText('robust.error')).toBeInTheDocument();
+  });
+
+  test('commits NaN for non-parseable draft and shows an error', () => {
+    const setValue = vi.fn();
+    render(<Robust label="Robust" value={1} setValue={setValue} />);
+
+    fireEvent.change(getField(), { target: { value: '-' } });
+
+    expect(setValue).toHaveBeenCalledWith(NaN);
     expect(screen.getByText('robust.error')).toBeInTheDocument();
   });
 
