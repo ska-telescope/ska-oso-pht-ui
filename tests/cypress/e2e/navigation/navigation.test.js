@@ -12,7 +12,7 @@ describe('Verify navigation', () => {
     clearLocalStorage();
   });
 
-  it('Science verification: Verify navigation functionality is not restricted after science idea creation', () => {
+  it('Science verification: Verify navigation is enabled and page banner has correct items after science idea creation', () => {
     createScienceIdeaSession(standardUser);
     //Verify navigation links are all enabled in page banner after SV creation
     checkStatusIndicatorDisabled('statusId0', false);
@@ -26,10 +26,7 @@ describe('Verify navigation', () => {
     // statusId8 unavailable for science verification
     checkStatusIndicatorDisabled('statusId9', false);
     // See SRCNet INACTIVE - checkStatusIndicatorDisabled('statusId10', false);
-  });
 
-  it('Science verification: Verify page banner has correct items', () => {
-    createScienceIdeaSession(standardUser);
     //Verify navigation in page banner is correct after science idea creation
     verifyStatusIndicatorLabel('statusId0', 'Title');
     verifyStatusIndicatorLabel('statusId1', 'Team');
