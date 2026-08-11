@@ -6,42 +6,20 @@ import {
   clickToObservationPage,
   clickAddObservationEntry,
   clearLocalStorage,
-  initialize,
-  mockOSDAPI,
-  mockCreateProposalAPI,
-  clickAddSubmission,
-  clickCycleSelectionMockProposal,
-  clickCycleConfirm,
-  enterProposalTitle,
-  clickProposalTypePrincipleInvestigator,
-  clickSubProposalTypeTargetOfOpportunity,
-  clickCreateSubmission,
-  verifySubmissionCreatedAlertFooter,
   clickStatusIconNav,
   pageConfirmed,
   clickAddDataProduct,
   clickAddDataProductEntry,
   selectOptionFromDropdown,
-  verifyDataInTable
+  verifyDataInTable,
+  createStandardProposalSession
 } from '../../common/common.js';
 import sensitivityCalculatorResults from '../../../fixtures/sensitivityCalculatorResults.json';
 import { standardUser } from '../../users/users.js';
 
 beforeEach(() => {
   cy.fixture('sensitivityCalculatorResults.json').as('sensitivityCalculatorResults');
-  mockOSDAPI();
-  initialize(standardUser);
-  mockCreateProposalAPI();
-  clickAddSubmission();
-  cy.wait('@mockOSDData');
-  clickCycleSelectionMockProposal();
-  clickCycleConfirm();
-  enterProposalTitle();
-  clickProposalTypePrincipleInvestigator();
-  clickSubProposalTypeTargetOfOpportunity();
-  clickCreateSubmission();
-  cy.wait('@mockCreateProposal');
-  verifySubmissionCreatedAlertFooter();
+  createStandardProposalSession(standardUser);
   clickStatusIconNav('statusId4'); //Click to target page
   pageConfirmed('TARGET');
   addTargetUsingCoordinates();

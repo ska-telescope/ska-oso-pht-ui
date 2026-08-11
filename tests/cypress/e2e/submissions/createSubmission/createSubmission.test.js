@@ -1,54 +1,37 @@
 import {
   clickHome,
-  enterProposalTitle,
   verifyOnLandingPage,
   verifyOnLandingPageFilterIsVisible,
   verifyMockedProposalOnLandingPageIsVisible,
-  initialize,
   clearLocalStorage,
-  clickCycleConfirm,
-  clickAddSubmission,
-  clickCreateSubmission,
-  verifySubmissionCreatedAlertFooter,
-  enterScienceVerificationIdeaTitle,
-  clickCycleSelectionSV,
-  clickCycleSelectionMockProposal,
-  clickProposalTypePrincipleInvestigator,
-  clickSubProposalTypeTargetOfOpportunity,
-  mockOSDAPI,
   verifyOsdDataCycleID,
   verifyOsdDataCycleDescription,
   verifyOsdDataProposalOpen,
   verifyOsdDataProposalClose,
-  pageConfirmed,
-  verifyScienceIdeaCreatedAlertFooter,
-  selectObservingMode,
-  clickStatusIconNav,
-  addM2TargetUsingResolve,
-  clickToAddTarget,
+  addM2TargetAndAutoLink,
   mockResolveTargetAPI,
-  verifyAutoLinkAlertFooter,
   verifyMockedScienceIdeaOnLandingPageIsVisible,
-  mockCreateSVIdeaAPI,
-  mockCreateProposalAPI,
-  addSubmissionSummary,
+  mockValidateSVIdeaAPI,
+  beginScienceIdeaSession,
+  selectScienceVerificationCycle,
+  completeScienceIdeaCreation,
+  createScienceIdeaSession,
+  createStandardProposalSession,
   uploadTestFile,
   verifyTestFileUploaded,
   clickFileUpload,
+  clickStatusIconNav,
+  pageConfirmed,
   clickToValidateSV,
   verifyAlertFooter,
   clickToConfirmProposalSubmission,
-  verifyData,
-  mockValidateSVIdeaAPI
+  verifyData
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
 describe('Creating Proposal', () => {
   beforeEach(() => {
-    mockOSDAPI();
-    initialize(standardUser);
     mockResolveTargetAPI();
-    mockValidateSVIdeaAPI();
   });
 
   afterEach(() => {
@@ -56,31 +39,16 @@ describe('Creating Proposal', () => {
   });
 
   it('SV Flow: Create a basic science verification idea, verify AutoLink', () => {
-    mockCreateSVIdeaAPI();
-    clickAddSubmission();
-    cy.wait('@mockOSDData');
+    // This is the one flow that needs to assert on the raw OSD fixture content mid-creation, so
+    // it uses the finer-grained pieces instead of createScienceIdeaSession.
+    beginScienceIdeaSession(standardUser);
     verifyOsdDataCycleID('SKAO_2027_1_ID');
     verifyOsdDataCycleDescription('Low AA2 Science Verification'); //verify OSD data
     verifyOsdDataProposalOpen('20260327T12:00:00.000Z'); //verify OSD data
     verifyOsdDataProposalClose('20260512T15:00:00.000Z'); //verify OSD data
-    clickCycleSelectionSV();
-    clickCycleConfirm();
-    enterScienceVerificationIdeaTitle();
-    clickCreateSubmission();
-    cy.wait('@mockCreateSVIdea');
-    verifyScienceIdeaCreatedAlertFooter();
-    pageConfirmed('TEAM');
-    clickStatusIconNav('statusId2'); //Click to details page
-    pageConfirmed('DETAILS');
-    selectObservingMode('Continuum');
-    clickStatusIconNav('statusId4'); //Click to target page
-    pageConfirmed('TARGET');
-    //add target
-    addM2TargetUsingResolve();
-    cy.wait('@mockResolveTarget');
-    clickToAddTarget();
-    //Verify AutoLink to OSD data
-    verifyAutoLinkAlertFooter();
+    selectScienceVerificationCycle();
+    completeScienceIdeaCreation();
+    addM2TargetAndAutoLink('Continuum');
     clickHome();
     verifyOnLandingPage();
     verifyOnLandingPageFilterIsVisible();
@@ -91,28 +59,9 @@ describe('Creating Proposal', () => {
     'SV Flow: Create science verification idea, Observing mode Continuum, verify sensitivity calculator results, validate and submit',
     { jiraKey: 'XTP-96352' },
     () => {
-      mockCreateSVIdeaAPI();
-      clickAddSubmission();
-      cy.wait('@mockOSDData');
-      clickCycleSelectionSV();
-      clickCycleConfirm();
-      enterScienceVerificationIdeaTitle();
-      clickCreateSubmission();
-      cy.wait('@mockCreateSVIdea');
-      verifyScienceIdeaCreatedAlertFooter();
-      pageConfirmed('TEAM');
-      clickStatusIconNav('statusId2'); //Click to details page
-      pageConfirmed('DETAILS');
-      selectObservingMode('Continuum');
-      addSubmissionSummary('This is a summary of the science idea.');
-      clickStatusIconNav('statusId4'); //Click to target page
-      pageConfirmed('TARGET');
-      //add target
-      addM2TargetUsingResolve();
-      cy.wait('@mockResolveTarget');
-      clickToAddTarget();
-      //Verify AutoLink to OSD data
-      verifyAutoLinkAlertFooter();
+      createScienceIdeaSession(standardUser);
+      mockValidateSVIdeaAPI();
+      addM2TargetAndAutoLink('Continuum', 'This is a summary of the science idea.');
       clickStatusIconNav('statusId3'); //Click to description page
       pageConfirmed('DESCRIPTION');
       uploadTestFile('testFile.pdf');
@@ -147,28 +96,9 @@ describe('Creating Proposal', () => {
     'SV Flow: Create science verification idea, Observing mode Spectral, verify sensitivity calculator results, validate and submit',
     { jiraKey: 'XTP-96345' },
     () => {
-      mockCreateSVIdeaAPI();
-      clickAddSubmission();
-      cy.wait('@mockOSDData');
-      clickCycleSelectionSV();
-      clickCycleConfirm();
-      enterScienceVerificationIdeaTitle();
-      clickCreateSubmission();
-      cy.wait('@mockCreateSVIdea');
-      verifyScienceIdeaCreatedAlertFooter();
-      pageConfirmed('TEAM');
-      clickStatusIconNav('statusId2'); //Click to details page
-      pageConfirmed('DETAILS');
-      selectObservingMode('Spectral');
-      addSubmissionSummary('This is a summary of the science idea.');
-      clickStatusIconNav('statusId4'); //Click to target page
-      pageConfirmed('TARGET');
-      //add target
-      addM2TargetUsingResolve();
-      cy.wait('@mockResolveTarget');
-      clickToAddTarget();
-      //Verify AutoLink to OSD data
-      verifyAutoLinkAlertFooter();
+      createScienceIdeaSession(standardUser);
+      mockValidateSVIdeaAPI();
+      addM2TargetAndAutoLink('Spectral', 'This is a summary of the science idea.');
       clickStatusIconNav('statusId3'); //Click to description page
       pageConfirmed('DESCRIPTION');
       uploadTestFile('testFile.pdf');
@@ -197,28 +127,9 @@ describe('Creating Proposal', () => {
     'SV Flow: Create science verification idea, Observing mode PST, verify sensitivity calculator results, validate and submit',
     { jiraKey: 'XTP-96353' },
     () => {
-      mockCreateSVIdeaAPI();
-      clickAddSubmission();
-      cy.wait('@mockOSDData');
-      clickCycleSelectionSV();
-      clickCycleConfirm();
-      enterScienceVerificationIdeaTitle();
-      clickCreateSubmission();
-      cy.wait('@mockCreateSVIdea');
-      verifyScienceIdeaCreatedAlertFooter();
-      pageConfirmed('TEAM');
-      clickStatusIconNav('statusId2'); //Click to details page
-      pageConfirmed('DETAILS');
-      selectObservingMode('PST');
-      addSubmissionSummary('This is a summary of the science idea.');
-      clickStatusIconNav('statusId4'); //Click to target page
-      pageConfirmed('TARGET');
-      //add target
-      addM2TargetUsingResolve();
-      cy.wait('@mockResolveTarget');
-      clickToAddTarget();
-      //Verify AutoLink to OSD data
-      verifyAutoLinkAlertFooter();
+      createScienceIdeaSession(standardUser);
+      mockValidateSVIdeaAPI();
+      addM2TargetAndAutoLink('PST', 'This is a summary of the science idea.');
       clickStatusIconNav('statusId3'); //Click to description page
       pageConfirmed('DESCRIPTION');
       uploadTestFile('testFile.pdf');
@@ -241,18 +152,7 @@ describe('Creating Proposal', () => {
   );
 
   it('Proposal Flow: Create a basic proposal', { jiraKey: 'XTP-59739' }, () => {
-    mockCreateProposalAPI();
-    clickAddSubmission();
-    cy.wait('@mockOSDData');
-    clickCycleSelectionMockProposal();
-    clickCycleConfirm();
-    enterProposalTitle();
-    clickProposalTypePrincipleInvestigator();
-    clickSubProposalTypeTargetOfOpportunity();
-    clickCreateSubmission();
-    cy.wait('@mockCreateProposal');
-    verifySubmissionCreatedAlertFooter();
-    pageConfirmed('TEAM');
+    createStandardProposalSession(standardUser);
     clickHome();
     verifyOnLandingPage();
     verifyOnLandingPageFilterIsVisible();

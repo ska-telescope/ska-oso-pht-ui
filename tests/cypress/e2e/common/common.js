@@ -448,22 +448,88 @@ export const validateProposal = () => {
   clickToValidateProposal();
 };
 
-export const createStandardProposalLoggedIn = () => {
+// Composed session setup - most specs were hand-typing the same eight-to-ten step "mock the
+// backend, log in, pick a cycle, create a submission" sequence in their own beforeEach/it. These
+// compose it from the atomic mock*/click*/verify* helpers above, in three layers:
+//   beginXSession    - mocks + logs in + opens the create dialog, stops after the OSD data loads
+//                       (a seam for the one test that asserts on the raw OSD fixture content)
+//   selectXCycle     - picks the cycle and confirms it
+//   completeXCreation - fills in the remaining required fields and submits
+// createXSession chains all three for the common case: a spec that just needs a freshly created
+// submission to start testing from.
+
+export const beginScienceIdeaSession = (user, extras = {}) => {
+  mockOSDAPI();
+  initialize(user, extras);
+  mockCreateSVIdeaAPI();
   clickAddSubmission();
+  cy.wait('@mockOSDData');
+};
+
+export const selectScienceVerificationCycle = () => {
+  clickCycleSelectionSV();
+  clickCycleConfirm();
+};
+
+export const completeScienceIdeaCreation = () => {
+  enterScienceVerificationIdeaTitle();
+  clickCreateSubmission();
+  cy.wait('@mockCreateSVIdea');
+  verifyScienceIdeaCreatedAlertFooter();
+  pageConfirmed('TEAM');
+};
+
+export const createScienceIdeaSession = (user, extras = {}) => {
+  beginScienceIdeaSession(user, extras);
+  selectScienceVerificationCycle();
+  completeScienceIdeaCreation();
+};
+
+export const beginStandardProposalSession = (user, extras = {}) => {
+  mockOSDAPI();
+  initialize(user, extras);
+  mockCreateProposalAPI();
+  clickAddSubmission();
+  cy.wait('@mockOSDData');
+};
+
+export const selectStandardProposalCycle = () => {
   clickCycleSelectionMockProposal();
   clickCycleConfirm();
+};
+
+export const completeStandardProposalCreation = () => {
   enterProposalTitle();
   clickProposalTypePrincipleInvestigator();
   clickSubProposalTypeTargetOfOpportunity();
   clickCreateSubmission();
+  cy.wait('@mockCreateProposal');
+  verifySubmissionCreatedAlertFooter();
+  pageConfirmed('TEAM');
 };
 
-export const createScienceIdeaLoggedIn = () => {
-  clickAddSubmission();
-  clickCycleSelectionSV();
-  clickCycleConfirm();
-  enterScienceVerificationIdeaTitle();
-  clickCreateSubmission();
+export const createStandardProposalSession = (user, extras = {}) => {
+  beginStandardProposalSession(user, extras);
+  selectStandardProposalCycle();
+  completeStandardProposalCreation();
+};
+
+// The "select observing mode, add the M2 target via resolve, confirm auto-link" sub-flow that
+// most SV specs need once a session exists. summary is optional since callers add it at different
+// points (or not at all).
+export const addM2TargetAndAutoLink = (observingMode = 'Continuum', summary = null) => {
+  clickStatusIconNav('statusId2'); // Details page
+  pageConfirmed('DETAILS');
+  selectObservingMode(observingMode);
+  if (summary) {
+    addSubmissionSummary(summary);
+  }
+  clickStatusIconNav('statusId4'); // Target page
+  pageConfirmed('TARGET');
+  addM2TargetUsingResolve();
+  cy.wait('@mockResolveTarget');
+  clickToAddTarget();
+  verifyAutoLinkAlertFooter();
 };
 
 export const clickToObservationPage = () => {

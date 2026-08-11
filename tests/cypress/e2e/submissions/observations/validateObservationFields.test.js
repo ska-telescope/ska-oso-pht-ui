@@ -1,62 +1,34 @@
 import {
-  initialize,
   clearLocalStorage,
-  clickCycleConfirm,
-  clickAddSubmission,
-  clickCreateSubmission,
-  enterScienceVerificationIdeaTitle,
-  clickCycleSelectionSV,
+  pageConfirmed,
+  clickStatusIconNav,
+  updateFieldValue,
+  checkFieldDisabled,
+  mockResolveTargetAPI,
+  addM2TargetAndAutoLink,
   verifyOsdDataCycleID,
   verifyOsdDataCycleDescription,
   verifyOsdDataProposalOpen,
   verifyOsdDataProposalClose,
-  pageConfirmed,
-  verifyScienceIdeaCreatedAlertFooter,
-  selectObservingMode,
-  clickStatusIconNav,
-  addM2TargetUsingResolve,
-  clickToAddTarget,
-  mockResolveTargetAPI,
-  verifyAutoLinkAlertFooter,
-  updateFieldValue,
-  checkFieldDisabled,
-  mockCreateSVIdeaAPI,
-  mockOSDAPI
+  beginScienceIdeaSession,
+  selectScienceVerificationCycle,
+  completeScienceIdeaCreation
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
 describe('SV Flow: Validate Observation Fields', () => {
   beforeEach(() => {
-    mockOSDAPI();
-    initialize(standardUser);
-    mockCreateSVIdeaAPI();
     mockResolveTargetAPI();
 
     //Create autoLink submission
-    clickAddSubmission();
-    cy.wait('@mockOSDData');
+    beginScienceIdeaSession(standardUser);
     verifyOsdDataCycleID('SKAO_2027_1_ID');
     verifyOsdDataCycleDescription('Low AA2 Science Verification'); //verify OSD data
     verifyOsdDataProposalOpen('20260327T12:00:00.000Z'); //verify OSD data
     verifyOsdDataProposalClose('20260512T15:00:00.000Z'); //verify OSD data
-    clickCycleSelectionSV();
-    clickCycleConfirm();
-    enterScienceVerificationIdeaTitle();
-    clickCreateSubmission();
-    cy.wait('@mockCreateSVIdea');
-    verifyScienceIdeaCreatedAlertFooter();
-    pageConfirmed('TEAM');
-    clickStatusIconNav('statusId2'); //Click to details page
-    pageConfirmed('DETAILS');
-    selectObservingMode('Continuum');
-    clickStatusIconNav('statusId4'); //Click to target page
-    pageConfirmed('TARGET');
-    //add target
-    addM2TargetUsingResolve();
-    cy.wait('@mockResolveTarget');
-    clickToAddTarget();
-    //Verify AutoLink to OSD data
-    verifyAutoLinkAlertFooter();
+    selectScienceVerificationCycle();
+    completeScienceIdeaCreation();
+    addM2TargetAndAutoLink('Continuum');
     //verify addTarget is disabled after autoLink
     checkFieldDisabled('addTargetButton', true);
   });

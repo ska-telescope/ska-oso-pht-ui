@@ -1,45 +1,19 @@
 import {
-  initialize,
-  clearLocalStorage,
-  clickCycleConfirm,
-  enterScienceVerificationIdeaTitle,
-  clickAddSubmission,
-  clickCreateSubmission,
-  verifySubmissionCreatedAlertFooter,
-  clickCycleSelectionSV,
+  createScienceIdeaSession,
+  createStandardProposalSession,
   checkStatusIndicatorDisabled,
-  verifyScienceIdeaCreatedAlertFooter,
   verifyStatusIndicatorLabel,
-  clickCycleSelectionMockProposal,
-  enterProposalTitle,
-  clickProposalTypePrincipleInvestigator,
-  clickSubProposalTypeTargetOfOpportunity,
-  mockCreateSVIdeaAPI,
-  mockCreateProposalAPI,
-  mockOSDAPI
+  clearLocalStorage
 } from '../common/common.js';
 import { standardUser } from '../users/users.js';
 
 describe('Verify navigation', () => {
-  beforeEach(() => {
-    mockOSDAPI();
-    initialize(standardUser);
-  });
-
   afterEach(() => {
     clearLocalStorage();
   });
 
   it('Science verification: Verify navigation functionality is not restricted after science idea creation', () => {
-    mockCreateSVIdeaAPI();
-    clickAddSubmission();
-    cy.wait('@mockOSDData');
-    clickCycleSelectionSV();
-    clickCycleConfirm();
-    enterScienceVerificationIdeaTitle();
-    clickCreateSubmission();
-    cy.wait('@mockCreateSVIdea');
-    verifyScienceIdeaCreatedAlertFooter();
+    createScienceIdeaSession(standardUser);
     //Verify navigation links are all enabled in page banner after SV creation
     checkStatusIndicatorDisabled('statusId0', false);
     checkStatusIndicatorDisabled('statusId1', false);
@@ -55,15 +29,7 @@ describe('Verify navigation', () => {
   });
 
   it('Science verification: Verify page banner has correct items', () => {
-    mockCreateSVIdeaAPI();
-    clickAddSubmission();
-    cy.wait('@mockOSDData');
-    clickCycleSelectionSV();
-    clickCycleConfirm();
-    enterScienceVerificationIdeaTitle();
-    clickCreateSubmission();
-    cy.wait('@mockCreateSVIdea');
-    verifyScienceIdeaCreatedAlertFooter();
+    createScienceIdeaSession(standardUser);
     //Verify navigation in page banner is correct after science idea creation
     verifyStatusIndicatorLabel('statusId0', 'Title');
     verifyStatusIndicatorLabel('statusId1', 'Team');
@@ -76,17 +42,7 @@ describe('Verify navigation', () => {
   });
 
   it('Proposal: Verify page banner has correct items', () => {
-    mockCreateProposalAPI();
-    clickAddSubmission();
-    cy.wait('@mockOSDData');
-    clickCycleSelectionMockProposal();
-    clickCycleConfirm();
-    enterProposalTitle();
-    clickProposalTypePrincipleInvestigator();
-    clickSubProposalTypeTargetOfOpportunity();
-    clickCreateSubmission();
-    cy.wait('@mockCreateProposal');
-    verifySubmissionCreatedAlertFooter();
+    createStandardProposalSession(standardUser);
     //Verify navigation in page banner is correct after proposal creation
     verifyStatusIndicatorLabel('statusId0', 'Title');
     verifyStatusIndicatorLabel('statusId1', 'Team');

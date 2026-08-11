@@ -5,19 +5,14 @@ import {
   verifyOnLandingPageFilterIsVisible,
   verifyMockedProposalOnLandingPageIsVisible,
   mockEmailAPI,
-  initialize,
   clearLocalStorage,
-  createScienceIdeaLoggedIn,
   clickStatusIconNav,
   clickToAddTarget,
   addM2TargetUsingResolve,
   clickObservationSetup,
-  verifySubmissionCreatedAlertFooter,
-  verifyScienceIdeaCreatedAlertFooter,
   selectObservingMode,
   verifyAutoLinkAlertFooter,
   mockResolveTargetAPI,
-  createStandardProposalLoggedIn,
   addSubmissionSummary,
   clickEditIconForRow,
   verifyMockedScienceIdeaOnLandingPageIsVisible,
@@ -38,23 +33,16 @@ import {
   verifyAlertFooter,
   clickToSubmitProposal,
   clickToConfirmProposalSubmission,
-  mockCreateSVIdeaAPI,
-  mockCreateProposalAPI,
-  mockOSDAPI
+  createScienceIdeaSession,
+  createStandardProposalSession
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 
 describe('Edit Proposal', () => {
   describe('SV Flow', () => {
     beforeEach(() => {
-      mockOSDAPI();
-      initialize(standardUser, {
-        'cypress:proposalEdit': 'true',
-        'cypress:scienceVerificationIdea': 'true'
-      });
       mockEmailAPI();
       mockResolveTargetAPI();
-      mockValidateAPI();
     });
 
     afterEach(() => {
@@ -62,12 +50,11 @@ describe('Edit Proposal', () => {
     });
 
     it('SV Flow: Edit a basic science idea, ensure science idea is valid and the submit', () => {
-      cy.wait('@mockOSDData');
-      mockCreateSVIdeaAPI();
-      createScienceIdeaLoggedIn();
-      cy.wait('@mockCreateSVIdea');
-      verifyScienceIdeaCreatedAlertFooter();
-      pageConfirmed('TEAM');
+      createScienceIdeaSession(standardUser, {
+        'cypress:proposalEdit': 'true',
+        'cypress:scienceVerificationIdea': 'true'
+      });
+      mockValidateAPI();
 
       //edit existing science verification idea
       clickHome();
@@ -108,11 +95,8 @@ describe('Edit Proposal', () => {
 
   describe('Proposal Flow', () => {
     beforeEach(() => {
-      mockOSDAPI();
-      initialize(standardUser, { 'cypress:proposalEdit': 'true' });
       mockEmailAPI();
       mockResolveTargetAPI();
-      mockValidateAPI();
     });
 
     afterEach(() => {
@@ -123,12 +107,8 @@ describe('Edit Proposal', () => {
       'Proposal Flow: Edit a basic proposal, ensure proposal is valid and then submit',
       { jiraKey: 'XTP-71405' },
       () => {
-        cy.wait('@mockOSDData');
-        mockCreateProposalAPI();
-        createStandardProposalLoggedIn();
-        cy.wait('@mockCreateProposal');
-        verifySubmissionCreatedAlertFooter();
-        pageConfirmed('TEAM');
+        createStandardProposalSession(standardUser, { 'cypress:proposalEdit': 'true' });
+        mockValidateAPI();
 
         //edit existing proposal
         clickHome();

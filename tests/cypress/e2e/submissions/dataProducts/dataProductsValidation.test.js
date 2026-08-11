@@ -1,27 +1,16 @@
 import {
   clearLocalStorage,
   clickStatusIconNav,
-  createScienceIdeaLoggedIn,
-  initialize,
-  mockEmailAPI,
   pageConfirmed,
   updateDataProductField,
   verifyFieldError,
-  verifyScienceIdeaCreatedAlertFooter,
-  selectObservingMode,
-  addM2TargetUsingResolve,
-  clickToAddTarget,
+  addM2TargetAndAutoLink,
   mockResolveTargetAPI,
-  verifyAutoLinkAlertFooter,
-  addSubmissionSummary,
-  mockCreateSVIdeaAPI,
-  mockOSDAPI
+  mockEmailAPI,
+  createScienceIdeaSession
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
 beforeEach(() => {
-  mockOSDAPI();
-  initialize(standardUser);
-  mockCreateSVIdeaAPI();
   mockEmailAPI();
   mockResolveTargetAPI();
 });
@@ -32,24 +21,8 @@ afterEach(() => {
 
 describe('Data product validation', () => {
   it('SV Flow: Verify channels out range', () => {
-    cy.wait('@mockOSDData');
-    createScienceIdeaLoggedIn();
-    cy.wait('@mockCreateSVIdea');
-    verifyScienceIdeaCreatedAlertFooter();
-    pageConfirmed('TEAM');
-
-    clickStatusIconNav('statusId2'); //Click to details page
-    pageConfirmed('DETAILS');
-    selectObservingMode('Continuum');
-    addSubmissionSummary('This is a summary of the science idea.');
-
-    clickStatusIconNav('statusId4'); //Click to target page
-    pageConfirmed('TARGET');
-    //add target
-    addM2TargetUsingResolve();
-    cy.wait('@mockResolveTarget');
-    clickToAddTarget();
-    verifyAutoLinkAlertFooter();
+    createScienceIdeaSession(standardUser);
+    addM2TargetAndAutoLink('Continuum', 'This is a summary of the science idea.');
 
     clickStatusIconNav('statusId7'); //Click to data product page
     pageConfirmed('DATA PRODUCT');

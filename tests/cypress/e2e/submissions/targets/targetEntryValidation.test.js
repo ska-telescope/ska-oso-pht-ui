@@ -2,58 +2,36 @@ import {
   addM2TargetUsingResolve,
   checkFieldDisabled,
   clearLocalStorage,
-  clickAddSubmission,
-  clickCreateSubmission,
-  clickCycleConfirm,
-  clickCycleSelectionMockProposal,
-  clickCycleSelectionSV,
   clickDialogConfirm,
   clickEdit,
   clickFirstRowOfTargetTable,
-  clickProposalTypePrincipleInvestigator,
   clickStatusIconNav,
-  clickSubProposalTypeTargetOfOpportunity,
   clickToAddTarget,
-  enterProposalTitle,
-  enterScienceVerificationIdeaTitle,
   enterTargetField,
-  initialize,
-  mockCreateProposalAPI,
-  mockCreateSVIdeaAPI,
-  mockOSDAPI,
   mockResolveTargetAPI,
   pageConfirmed,
   updateTargetField,
   verifyFieldError,
   verifyInformationBannerText,
   verifyOsdDataMaxTargets,
-  verifyScienceIdeaCreatedAlertFooter,
-  verifySubmissionCreatedAlertFooter,
-  verifyTargetInTargetTable
+  verifyTargetInTargetTable,
+  createScienceIdeaSession,
+  createStandardProposalSession
 } from '../../common/common.js';
 import { standardUser } from '../../users/users.js';
-beforeEach(() => {
-  mockOSDAPI();
-  initialize(standardUser);
-  mockCreateSVIdeaAPI();
-  clickAddSubmission();
-  cy.wait('@mockOSDData');
-  clickCycleSelectionSV();
-  clickCycleConfirm();
-  enterScienceVerificationIdeaTitle();
-  clickCreateSubmission();
-  cy.wait('@mockCreateSVIdea');
-  verifyScienceIdeaCreatedAlertFooter();
-  clickStatusIconNav('statusId4'); //Click to target page
-  pageConfirmed('TARGET');
-  checkFieldDisabled('addTargetButton', true); //verify add target button is disabled when all target fields are incomplete
-});
 
 afterEach(() => {
   clearLocalStorage();
 });
 
 describe('Science Verification: Target entry validation', () => {
+  beforeEach(() => {
+    createScienceIdeaSession(standardUser);
+    clickStatusIconNav('statusId4'); //Click to target page
+    pageConfirmed('TARGET');
+    checkFieldDisabled('addTargetButton', true); //verify add target button is disabled when all target fields are incomplete
+  });
+
   it('SV: Verify add target button is disabled when target coordinate fields are invalid', () => {
     enterTargetField('name', 'M2'); // enter valid target name
 
@@ -170,19 +148,7 @@ describe('Science Verification: Target entry validation', () => {
 
 describe('Proposal Flow: Target entry validation', () => {
   beforeEach(() => {
-    mockOSDAPI();
-    initialize(standardUser);
-    mockCreateProposalAPI();
-    clickAddSubmission();
-    cy.wait('@mockOSDData');
-    clickCycleSelectionMockProposal();
-    clickCycleConfirm();
-    enterProposalTitle();
-    clickProposalTypePrincipleInvestigator();
-    clickSubProposalTypeTargetOfOpportunity();
-    clickCreateSubmission();
-    cy.wait('@mockCreateProposal');
-    verifySubmissionCreatedAlertFooter();
+    createStandardProposalSession(standardUser);
     clickStatusIconNav('statusId4'); //Click to target page
     pageConfirmed('TARGET');
     checkFieldDisabled('addTargetButton', true); //verify add target button is disabled when all target fields are incomplete
