@@ -613,10 +613,8 @@ const getResults = (
       const hasSensCalc = !!tarObs.sensCalc;
       const obsType = getObsType(tarObs, incObs);
       const spectralSection = getSpectralSection(obsType);
-      const suppliedType =
-        tarObs.sensCalc.section3[0]?.field === 'sensitivity' ? 'sensitivity' : 'integration_time';
 
-      // refs always populate; result/noise blocks are null when there's no sensCalc (SSO)
+      // refs always populate; result/noise blocks are null when there's no sensCalc (SSO, PST)
       const result: SensCalcResultsBackend = {
         observation_set_ref: tarObs.observationId,
         data_product_ref: tarObs.dataProductsSDPId ?? getDataProductRef(tarObs, incDataProductSDP),

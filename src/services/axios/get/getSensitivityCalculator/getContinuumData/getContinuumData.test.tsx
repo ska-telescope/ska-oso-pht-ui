@@ -84,7 +84,7 @@ describe('getFinalResults', () => {
 
   test('should return correct structure for continuum, not supplied sensitivity', () => {
     const obs = { ...observationBase, supplied: { ...observationBase.supplied, type: 999 } };
-    const result = getFinalResults(target, resultsBase, obs);
+    const result = getFinalResults(resultsBase, target, obs);
 
     expect(result.id).toBe(target.id);
     expect(result.title).toBe(target.name);
@@ -99,7 +99,7 @@ describe('getFinalResults', () => {
       ...observationBase,
       supplied: { ...observationBase.supplied, type: SUPPLIED_TYPE_SENSITIVITY }
     };
-    const result = getFinalResults(target, resultsBase, obs);
+    const result = getFinalResults(resultsBase, target, obs);
 
     expect(result.section1?.find((r) => r.field.includes('SensitivityWeighted'))).toBeUndefined();
     expect(result.section2?.find((r) => r.field === 'spectralSensitivityWeighted')).toBeUndefined();
@@ -108,7 +108,7 @@ describe('getFinalResults', () => {
 
   test('should handle missing transformed_result gracefully', () => {
     const obs = { ...observationBase };
-    const result = getFinalResults(target, {}, obs);
+    const result = getFinalResults({}, target, obs);
 
     expect(result.section1?.length).toBeGreaterThan(0);
     expect(result.section3?.length).toBe(1);
@@ -116,7 +116,7 @@ describe('getFinalResults', () => {
 
   test('should not include section2 if not continuum', () => {
     const obs = { ...observationBase, type: 1234 };
-    const result = getFinalResults(target, resultsBase, obs);
+    const result = getFinalResults(resultsBase, target, obs);
 
     expect(result.section2).toBeUndefined();
   });

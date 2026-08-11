@@ -42,10 +42,10 @@ import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheck
 import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
 import { generateId } from '@/utils/helpers';
-import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import ObservingBand from '@/components/display/observingBand/observingBand';
 import ObservingType from '@/components/display/observingType/observingType';
+import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
 
 export default function LinkingPage() {
   const DATA_GRID_TARGET = '60vh';
@@ -150,7 +150,7 @@ export default function LinkingPage() {
     target: Target,
     observationId: string,
     dataProductsSDPId: string,
-    results: any
+    results?: SensCalcResults
   ) => {
     const temp = {
       observationId: observationId,
@@ -225,23 +225,13 @@ export default function LinkingPage() {
     target: Target,
     dataProductSDP: DataProductSDPNew
   ) => {
-    const response = await calculateSensCalcData(observation, target, dataProductSDP);
-    if (response) {
-      if (response.error) {
-        const errMsg = response.error;
-        notifyError(errMsg, NOTIFICATION_DELAY_IN_SECONDS);
-      }
-      setSensCalc(response, target, observation.id, dataProductSDP.id);
+    const response = await getSensCalc(observation, target, dataProductSDP);
+    if (response?.error) {
+      const errMsg = response.error;
+      notifyError(errMsg, NOTIFICATION_DELAY_IN_SECONDS);
     }
-  };
 
-  const setSensCalc = (
-    results: any,
-    target: Target,
-    observationId: string,
-    dataProductsSDPId: string
-  ) => {
-    updateTargetObservationStorage(target, observationId, dataProductsSDPId, results);
+    updateTargetObservationStorage(target, observation.id, dataProductSDP.id, response);
   };
 
   const closeDeleteDialog = () => {
@@ -304,7 +294,7 @@ export default function LinkingPage() {
   const checkPartials = () => {
     const proposal = getProposal();
     const results = proposal?.targetObservation?.find(
-      (p) => p.sensCalc.statusGUI === STATUS_PARTIAL
+      (p) => p.sensCalc?.statusGUI === STATUS_PARTIAL
     );
     if (results) {
       const target = proposal.targets?.find((e) => e.id === results.targetId);
@@ -312,12 +302,7 @@ export default function LinkingPage() {
       const dataProductSDP = proposal.dataProductSDP?.find(
         (d) => d.id === results.dataProductsSDPId
       );
-      if (
-        observation &&
-        target &&
-        target.kind !== REFERENCE_COORDINATE_TYPE_SSO.value &&
-        dataProductSDP
-      ) {
+      if (observation && target && dataProductSDP) {
         getSensCalcData(observation, target, dataProductSDP);
       }
     }
@@ -638,7 +623,7 @@ export default function LinkingPage() {
   const filteredByDataProduct = (id: string) => {
     const results: SensCalcResults[] = [];
     getProposal()?.targetObservation?.forEach((rec) => {
-      if (rec.dataProductsSDPId === id) {
+      if (rec.dataProductsSDPId === id && rec.sensCalc != undefined) {
         results.push(rec.sensCalc);
       }
     });

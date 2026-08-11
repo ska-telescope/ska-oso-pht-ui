@@ -1,4 +1,5 @@
 import { ValueUnitPair } from './valueUnitPair';
+import { STATUS, STATUS_ERROR, STATUS_OK } from '@utils/constants.ts';
 
 export type SensCalcResultsBackend = {
   observation_set_ref: string;
@@ -35,9 +36,9 @@ export type SensCalcResultsBackend = {
 };
 
 export type SensCalcResults = {
-  id: number;
-  title: string;
-  statusGUI: number;
+  id?: number;
+  title?: string;
+  statusGUI: STATUS;
   error?: string;
   section1?: ResultsSection[];
   section2?: ResultsSection[];

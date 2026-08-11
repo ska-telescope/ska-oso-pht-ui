@@ -11,11 +11,8 @@ export const cypressLowUnitsUnlocked =
   window.localStorage.getItem('cypress:lowUnitsUnlocked') === 'true' ||
   env.REACT_APP_LOW_UNITS_UNLOCKED === 'true';
 
-export const USE_LOCAL_DATA_SENSITIVITY_CALC =
-  env.REACT_APP_USE_LOCAL_DATA_SENSITIVITY_CALC === 'true';
 export const SKA_OSO_SERVICES_URL = env.REACT_APP_SKA_OSO_SERVICES_URL;
 export const SKA_SENSITIVITY_CALCULATOR_API_URL = env.REACT_APP_SKA_SENSITIVITY_CALC_URL;
-export const API_VERSION = '/senscalc/api/v12';
 
 export const OSO_SERVICES_PHT = '/pht/';
 export const OSO_SERVICES_PANEL_PATH = `${OSO_SERVICES_PHT}panels`;
@@ -146,6 +143,7 @@ export const FREQUENCY_UNITS = [
   { label: FREQUENCY_STR_HZ, value: FREQUENCY_HZ, mapping: FREQUENCY_STR_HZ, toHz: 1000000000 }
 ];
 
+// TODO get rid of the duplication/longs
 export const TYPE_ZOOM = 'spectral';
 export const TYPE_ZOOM_LONG = 'spectral line';
 export const TYPE_CONTINUUM = 'continuum';
@@ -656,12 +654,8 @@ export const STATUS_ERROR = 1;
 export const STATUS_ERROR_SYMBOL = '!';
 export const STATUS_PARTIAL = 3;
 export const STATUS_INITIAL = 5;
-export const STATUS = {
-  OK: STATUS_OK,
-  ERROR: STATUS_ERROR,
-  PARTIAL: STATUS_PARTIAL,
-  INITIAL: STATUS_INITIAL
-};
+export type STATUS =
+  typeof STATUS_OK | typeof STATUS_ERROR | typeof STATUS_PARTIAL | typeof STATUS_INITIAL;
 export const SUPPLIED_VALUE_DEFAULT_MID = 10;
 export const SUPPLIED_VALUE_DEFAULT_LOW = 1;
 export const ZOOM_BANDWIDTH_DEFAULT_MID = 1;
