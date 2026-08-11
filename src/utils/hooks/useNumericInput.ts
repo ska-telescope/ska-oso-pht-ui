@@ -27,7 +27,6 @@ export const useNumericInput = (
   const [error, setError] = React.useState('');
   const valueRef = React.useRef(value);
   const textRef = React.useRef(text);
-  const errorRef = React.useRef('');
 
   const toNumber = (input: string | number): number => {
     if (typeof input === 'number') {
@@ -60,12 +59,11 @@ export const useNumericInput = (
 
   React.useEffect(() => {
     const number = toNumber(text);
-    const error = runValidation(number);
+    const nextError = runValidation(number);
     const isEquivalent = isEquivalentValue(number, valueRef.current);
-    setError(error);
+    setError(nextError);
     const textChanged = textRef.current !== text;
     textRef.current = text;
-    errorRef.current = error;
     if (textChanged && !isEquivalent) {
       setValue(number);
     }
@@ -91,7 +89,6 @@ export const useNumericInput = (
     });
     const nextError = runValidation(value);
     setError(nextError);
-    errorRef.current = nextError;
   }, [
     value,
     validate,
