@@ -30,15 +30,15 @@ export const PSTData = (
         polarisations: ['I'],
         outputFrequencyResolution: 1,
         outputSamplingInterval: 1,
-        bitDepth: 1,
+        bitDepth: 8,
         dispersionMeasure: 1,
         rotationMeasure: 1
       } as SDPFilterbankPSTData;
     default:
       return {
         dataProductType: FLOW_THROUGH_VALUE,
-        polarisations: ['X'],
-        bitDepth: 1
+        polarisations: ['X', 'Y'],
+        bitDepth: 16
       } as SDPFlowthroughPSTData;
   }
 };

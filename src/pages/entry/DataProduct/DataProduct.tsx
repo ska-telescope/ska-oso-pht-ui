@@ -119,6 +119,16 @@ export default function DataProduct({ data }: DataProductProps) {
   const [observationId, setObservationId] = React.useState('');
   const [dataProductType, setDataProductType] = React.useState(DP_TYPE_IMAGES);
   const [bitDepth, setBitDepth] = React.useState(BIT_DEPTH_DEFAULT);
+  const pstFlowThroughBitDepthOptions = [1, 2, 4, 8, 16].map((value) => ({
+    label: value,
+    lookup: String(value),
+    value
+  }));
+  const pstDedicatedFilterbankBitDepthOptions = [1, 2, 4, 8].map((value) => ({
+    label: value,
+    lookup: String(value),
+    value
+  }));
   const [imageSizeValue, setImageSizeValue] = React.useState(IMAGE_SIZE_DEFAULT);
   const [imageSizeUnits, setImageSizeUnits] = React.useState(IMAGE_SIZE_UNIT_DEFAULT);
   const [pixelSizeValue, setPixelSizeValue] = React.useState(PIXEL_SIZE_DEFAULT);
@@ -233,6 +243,9 @@ export default function DataProduct({ data }: DataProductProps) {
   const isFlowThrough = () => getResolvedPstMode() === FLOW_THROUGH_VALUE;
   const isDetectedFilterbank = () => getResolvedPstMode() === DETECTED_FILTER_BANK_VALUE;
   const isPulsarTiming = () => getResolvedPstMode() === PULSAR_TIMING_VALUE;
+  const getPstBitDepthDefault = () => (isFlowThrough() ? 16 : 8);
+  const getDefaultBitDepth = () =>
+    getObservation()?.type === TYPE_PST ? getPstBitDepthDefault() : BIT_DEPTH_DEFAULT;
 
   const isContinuum = () =>
     getObservation()?.type === TYPE_CONTINUUM || getProposal()?.scienceCategory === TYPE_CONTINUUM;
@@ -319,7 +332,7 @@ export default function DataProduct({ data }: DataProductProps) {
     setTimeAveraging(data?.timeAveraging ?? TIME_AVERAGING_DEFAULT);
     setFrequencyAveraging(data?.frequencyAveraging ?? FREQUENCY_AVERAGING_DEFAULT);
     setContinuumSubtraction(data?.continuumSubtraction ?? SET_CONTINUUM_SUBSTRACTION_DEFAULT);
-    setBitDepth(data?.bitDepth ?? BIT_DEPTH_DEFAULT);
+    setBitDepth(typeof data?.bitDepth === 'number' ? data.bitDepth : getDefaultBitDepth());
     setOutputFrequencyResolution(data?.outputFrequencyResolution ?? 1);
     setOutputSamplingInterval(data?.outputSamplingInterval ?? 1);
     setDispersionMeasure(data?.dispersionMeasure ?? 1);
@@ -451,7 +464,7 @@ export default function DataProduct({ data }: DataProductProps) {
   // set correct default polarisations depending on data product type & pst mode from obs type
   const getDefaultPolarisations = (obsType: string, dataProductType: number): string[] => {
     if (obsType === TYPE_PST) {
-      if (dataProductType === FLOW_THROUGH_VALUE) return ['X'];
+      if (dataProductType === FLOW_THROUGH_VALUE) return ['X', 'Y'];
       if (dataProductType === DETECTED_FILTER_BANK_VALUE) return ['I'];
       return [];
     }
@@ -568,6 +581,7 @@ export default function DataProduct({ data }: DataProductProps) {
     if (!isEdit()) {
       const sdpType = getDataProductType(getObservation()?.type ?? '', getResolvedPstMode());
       setDataProductType(sdpType);
+      setBitDepth(getDefaultBitDepth());
       // channelsOut's initial state is set before an observation is selected (so isCombined()
       // can't see it yet) - re-derive it once the observation for this new data product is known.
       setChannelsOut(channelsOutMax());
@@ -732,6 +746,17 @@ export default function DataProduct({ data }: DataProductProps) {
         required
         setValue={setBitDepth}
         value={bitDepth}
+        options={
+          isPST()
+            ? isFlowThrough()
+              ? pstFlowThroughBitDepthOptions
+              : pstDedicatedFilterbankBitDepthOptions
+            : BIT_DEPTH.map((el) => ({
+                label: el.value,
+                lookup: String(el.value),
+                value: el.value
+              }))
+        }
       />
     );
 

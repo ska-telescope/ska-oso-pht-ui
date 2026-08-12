@@ -34,7 +34,7 @@ describe('PSTData', () => {
 
     expect(result.dataProductType).toBe(DETECTED_FILTER_BANK_VALUE);
     expect(result.polarisations).toEqual(['I']);
-    expect(result.bitDepth).toBe(1);
+    expect(result.bitDepth).toBe(8);
   });
 
   it('creates flowthrough PST data for default case', () => {
@@ -42,7 +42,8 @@ describe('PSTData', () => {
     const result = PSTData(obs) as SDPFlowthroughPSTData;
 
     expect(result.dataProductType).toBe(FLOW_THROUGH_VALUE);
-    expect(result.polarisations).toEqual(['X']);
+    expect(result.polarisations).toEqual(['X', 'Y']);
+    expect(result.bitDepth).toBe(16);
   });
 });
 
