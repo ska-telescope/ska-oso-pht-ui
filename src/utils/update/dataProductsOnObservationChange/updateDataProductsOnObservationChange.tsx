@@ -38,7 +38,7 @@ export const PSTData = (
       return {
         dataProductType: FLOW_THROUGH_VALUE,
         polarisations: ['X', 'Y'],
-        bitDepth: 16
+        bitDepth: 8
       } as SDPFlowthroughPSTData;
   }
 };

@@ -43,7 +43,7 @@ describe('PSTData', () => {
 
     expect(result.dataProductType).toBe(FLOW_THROUGH_VALUE);
     expect(result.polarisations).toEqual(['X', 'Y']);
-    expect(result.bitDepth).toBe(16);
+    expect(result.bitDepth).toBe(8);
   });
 });
 
