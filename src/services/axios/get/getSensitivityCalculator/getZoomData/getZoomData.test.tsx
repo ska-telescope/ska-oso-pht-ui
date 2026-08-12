@@ -113,7 +113,6 @@ describe('getFinalResults', () => {
 
   test('should return correct structure for supplied sensitivity', () => {
     const result = getFinalResults(mockResults, mockTarget, mockObservation);
-    expect(result).toHaveProperty('id', 'target1');
     expect(result).toHaveProperty('title', 'Target 1');
     expect(result.section1).toBeInstanceOf(Array);
     expect(result.section3).toBeInstanceOf(Array);

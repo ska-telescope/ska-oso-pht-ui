@@ -1,10 +1,10 @@
 import { ValueUnitPair } from './valueUnitPair';
-import { STATUS, STATUS_ERROR, STATUS_OK } from '@utils/constants.ts';
+import { STATUS } from '@utils/constants.ts';
 
-export type SensCalcResultsBackend = {
+export type ResultsDetailsBackend = {
   observation_set_ref: string;
   data_product_ref: string;
-  target_ref?: string;
+  target_ref: string;
   result?: {
     supplied_type: string;
     // only for Supplied Integration Time - suggested to swap Integration Time/Sensitivity in STAR-670
@@ -36,7 +36,6 @@ export type SensCalcResultsBackend = {
 };
 
 export type SensCalcResults = {
-  id?: number;
   title?: string;
   statusGUI: STATUS;
   error?: string;

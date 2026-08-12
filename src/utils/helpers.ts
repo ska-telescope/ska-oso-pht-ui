@@ -24,6 +24,11 @@ export const arraysAreEqual = (a: any[], b: any[]) => {
   return a.every((val, index) => val === b[index]);
 };
 
+export const generateObsSetId = () => generateId('obs-set-');
+export const generateDataProductId = () => generateId('data-product-');
+export const generateTargetId = () => generateId('target-');
+export const generateCalibrationId = () => generateId('calibration-');
+
 export const generateId = (prefix: string, length: number = 8) => {
   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
   let result = '';

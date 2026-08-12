@@ -14,6 +14,7 @@ import Target from '@/utils/types/target';
 import { useNotify } from '@/utils/notify/useNotify';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
+import { generateTargetId } from '@utils/helpers.ts';
 
 interface TargetFileImportProps {
   referenceCoordinateType: number;
@@ -33,11 +34,11 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
     setHelp('targetImport.help');
   }, []);
 
-  const AddTheTargetGalactic = (id: string, name: string, latitude: string, longitude: string) => {
+  const AddTheTargetGalactic = (name: string, latitude: string, longitude: string) => {
     const newTarget = {
       //Default values from AddTarget.tsx
       kind: REFERENCE_COORDINATE_TYPE_GALACTIC.value,
-      id,
+      id: generateTargetId(),
       name,
       b: Number(latitude),
       l: Number(longitude),
@@ -49,12 +50,12 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
     return newTarget;
   };
 
-  const AddTheTargetEquatorial = (id: number, name: string, ra: string, dec: string): Target => {
+  const AddTheTargetEquatorial = (name: string, ra: string, dec: string): Target => {
     const newTarget = {
       kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
       //Default values from AddTarget.tsx
       decStr: dec,
-      id,
+      id: generateTargetId(),
       name,
       raStr: ra,
       redshift: '',
@@ -81,32 +82,15 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
         complete: (result: { meta: { fields?: any }; data: any[] }) => {
           setUploadButtonStatus(FileUploadStatus.PENDING);
           try {
-            const highestId: number =
-              getProposal()?.targets?.reduce(
-                (acc, target) => (target.id > acc ? target.id : acc),
-                -1
-              ) ?? 1;
-
             let errorInRows = false;
             let targets;
             if (referenceCoordinateType === REFERENCE_COORDINATE_TYPE_ICRS.value) {
               if (!isSameHeader(result.meta.fields, validEquatorialCsvHeader))
                 throw t('uploadCsvBtn.uploadErrorEquatorialNotValidMsg');
               targets = result.data.reduce(
-                (
-                  result: Target[],
-                  target: { name: string; ra: string; dec: string },
-                  index: number
-                ) => {
+                (result: Target[], target: { name: string; ra: string; dec: string }) => {
                   if (target.name && target.ra && target.dec) {
-                    result.push(
-                      AddTheTargetEquatorial(
-                        index + highestId + 1,
-                        target.name,
-                        target.ra,
-                        target.dec
-                      )
-                    );
+                    result.push(AddTheTargetEquatorial(target.name, target.ra, target.dec));
                   } else {
                     errorInRows = true;
                   }
@@ -130,17 +114,11 @@ export default function TargetFileImport({ referenceCoordinateType }: TargetFile
                     vel: string;
                     velUnit: string;
                   }[],
-                  target: { name: string; latitude: string; longitude: string },
-                  index: number
+                  target: { name: string; latitude: string; longitude: string }
                 ) => {
                   if (target.name && target.latitude && target.longitude) {
                     result.push(
-                      AddTheTargetGalactic(
-                        index + highestId.toString() + 1,
-                        target.name,
-                        target.latitude,
-                        target.longitude
-                      )
+                      AddTheTargetGalactic(target.name, target.latitude, target.longitude)
                     );
                   } else {
                     errorInRows = true;

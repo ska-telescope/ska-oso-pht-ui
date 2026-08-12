@@ -63,7 +63,6 @@ export function getFinalResults(
   const individualResults = getFinalIndividualResultsForZoom(sensCalcApiResponse, observation);
 
   const theResults: SensCalcResults = {
-    id: target.id,
     title: target.name,
     statusGUI: STATUS_OK,
     section1: [],

@@ -767,7 +767,6 @@ export const DEFAULT_CONTINUUM_OBSERVATION_LOW: Observation = {
   id: 'obs-0000000',
   telescope: TELESCOPE_LOW_NUM,
   subarray: SA_AA2,
-  linked: '0',
   type: TYPE_CONTINUUM,
   observingBand: BAND_LOW_STR,
   // Not 200 exactly - a valid centre frequency needs the SPW's first coarse channel to be even
@@ -795,7 +794,6 @@ export const DEFAULT_ZOOM_OBSERVATION_LOW: Observation = {
   id: 'obs-0000000',
   telescope: TELESCOPE_LOW_NUM,
   subarray: SA_AA2,
-  linked: '0',
   type: TYPE_ZOOM,
   observingBand: BAND_LOW_STR,
   centralFrequency: 200,
@@ -821,7 +819,6 @@ export const DEFAULT_PST_OBSERVATION_LOW: Observation = {
   id: 'obs-0000000',
   telescope: TELESCOPE_LOW_NUM,
   subarray: SA_AA2,
-  linked: '0',
   type: TYPE_PST,
   observingBand: BAND_LOW_STR,
   // See DEFAULT_CONTINUUM_OBSERVATION_LOW's centralFrequency comment - same 150 MHz bandwidth, so

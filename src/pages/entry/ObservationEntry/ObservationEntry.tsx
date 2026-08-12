@@ -58,7 +58,7 @@ import {
 } from '@utils/constants.ts';
 import {
   frequencyConversion,
-  generateId,
+  generateObsSetId,
   getBandwidthZoom,
   obTypeTransform,
   timeConversion
@@ -241,7 +241,6 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       id: myObsId,
       telescope: telescope(),
       subarray: subarrayConfig,
-      linked: '0',
       type: observationType,
       observingBand,
       weather,
@@ -426,7 +425,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       setOnce(loaded);
     } else {
       const obsBand = telescopeBand(observingBand) === TELESCOPE_LOW_NUM ? osdLOW : osdMID;
-      setMyObsId(generateId(t('addObservation.idPrefix'), 6));
+      setMyObsId(generateObsSetId());
       setTheSubarrayConfig(subarrayConfig);
       const maxChannels = setMaxChannelsZoom(subarrayConfig);
       setCentralFrequency(

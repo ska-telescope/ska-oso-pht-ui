@@ -56,11 +56,11 @@ it('should handle error with title and detail from response.data', async () => {
     mockBaseUrl,
     mockProperties,
     mockMapping,
-    mockTarget
+    mockTarget,
+    mockObservation
   );
 
   expect(result).toEqual({
-    id: 1,
     statusGUI: STATUS_ERROR,
     title: 'Sensitivity Calculator API error',
     error: 'Detailed error message'
@@ -82,11 +82,11 @@ it('should handle error with message fallback', async () => {
     mockBaseUrl,
     mockProperties,
     mockMapping,
-    mockTarget
+    mockTarget,
+    mockObservation
   );
 
   expect(result).toEqual({
-    id: 1,
     statusGUI: STATUS_ERROR,
     title: 'Sensitivity Calculator API error',
     error: 'Fallback error message'
@@ -106,11 +106,11 @@ it('should handle error with generic string fallback', async () => {
     mockBaseUrl,
     mockProperties,
     mockMapping,
-    mockTarget
+    mockTarget,
+    mockObservation
   );
 
   expect(result).toEqual({
-    id: 1,
     statusGUI: STATUS_ERROR,
     title: 'Sensitivity Calculator API error',
     error: 'api.error'

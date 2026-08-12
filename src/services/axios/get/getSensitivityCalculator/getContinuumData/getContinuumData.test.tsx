@@ -86,7 +86,6 @@ describe('getFinalResults', () => {
     const obs = { ...observationBase, supplied: { ...observationBase.supplied, type: 999 } };
     const result = getFinalResults(resultsBase, target, obs);
 
-    expect(result.id).toBe(target.id);
     expect(result.title).toBe(target.name);
     expect(result.statusGUI).toBe(STATUS_OK);
     expect(result.section1?.length).toBeGreaterThan(0);

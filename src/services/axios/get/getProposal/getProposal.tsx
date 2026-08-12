@@ -4,7 +4,7 @@ import { ArrayDetailsLowBackend, ArrayDetailsMidBackend } from '@utils/types/arr
 import {
   ResultsSection,
   SensCalcResults,
-  SensCalcResultsBackend
+  ResultsDetailsBackend
 } from '@utils/types/sensCalcResults.tsx';
 import Proposal, { ProposalBackend } from '@utils/types/proposal.tsx';
 import Target, {
@@ -213,8 +213,8 @@ const getTargets = (inRec: TargetBackend[]): Target[] => {
       kind: getTargetType(referenceCoordinate),
       epoch: e?.reference_coordinate?.epoch,
       parallax: e?.reference_coordinate?.parallax,
-      id: i + 1, // only used in the front-end
-      name: e?.target_id,
+      id: e.target_id,
+      name: e?.name,
       b: undefined,
       l: undefined,
       redshift: e.radial_velocity.redshift.toString(),
@@ -440,15 +440,6 @@ export const getBandwidth = (incBandwidth: number, telescope: number): number =>
   return closest.value;
 };
 
-const getLinked = (
-  inObservation: ObservationSetBackend,
-  inResults: SensCalcResultsBackend[] | null
-) => {
-  const obsRef = inObservation.observation_set_id;
-  const linkedTargetRef = inResults?.find((res) => res?.observation_set_ref === obsRef)?.target_ref;
-  return linkedTargetRef ? linkedTargetRef : '';
-};
-
 // This is here as there is inconsistent representation of spectral and spectral line.
 const typeCheck = (inType: string | undefined): any => {
   if (inType === TYPE_ZOOM_LONG) return TYPE_ZOOM;
@@ -456,10 +447,7 @@ const typeCheck = (inType: string | undefined): any => {
   return inType;
 };
 
-const getObservations = (
-  inValue: ObservationSetBackend[] | null,
-  inResults: SensCalcResultsBackend[] | null
-): Observation[] => {
+const getObservations = (inValue: ObservationSetBackend[] | null): Observation[] => {
   const results: Observation[] = [];
   if (!inValue || inValue.length === 0) {
     return results;
@@ -529,7 +517,6 @@ const getObservations = (
         (inValue[i].observation_type_details as ObservationTypeDetailsSpectralBackend)
           ?.spectral_averaging
       ),
-      linked: getLinked(inValue[i], inResults),
       continuumBandwidth:
         type === TYPE_CONTINUUM || type === TYPE_PST || type === TYPE_CONTINUUM_SPECTRAL
           ? (inValue[i].observation_type_details?.bandwidth?.value ?? null)
@@ -564,7 +551,7 @@ const getObservations = (
 /*********************************************************** sensitivity calculator results mapping *********************************************************/
 
 const getResultsSection1 = (
-  inResult: SensCalcResultsBackend,
+  inResult: ResultsDetailsBackend,
   isContinuum: boolean,
   isPST: boolean,
   isSensitivity: boolean,
@@ -631,7 +618,7 @@ const getResultsSection1 = (
 };
 
 const getResultsSection2 = (
-  inResult: SensCalcResultsBackend,
+  inResult: ResultsDetailsBackend,
   isSensitivity: boolean,
   inObservationSets: ObservationSetBackend[],
   inResultObservationRef: string | null
@@ -682,7 +669,7 @@ const getResultsSection2 = (
 const getResultsSection3 = (
   inResultObservationRef: string | null,
   inObservationSets: ObservationSetBackend[],
-  _inResult: SensCalcResultsBackend,
+  _inResult: ResultsDetailsBackend,
   isSensitivity: boolean
 ): SensCalcResults['section3'] => {
   const obs = inObservationSets?.find((o) => o.observation_set_id === inResultObservationRef);
@@ -697,7 +684,7 @@ const getResultsSection3 = (
 };
 
 const getResultObsType = (
-  result: SensCalcResultsBackend,
+  result: ResultsDetailsBackend,
   inObservationSets: ObservationSetBackend[]
 ) => {
   const obsSetRef = result.observation_set_ref;
@@ -706,7 +693,7 @@ const getResultObsType = (
 };
 
 const getTargetObservation = (
-  inResults: SensCalcResultsBackend[] | null,
+  inResults: ResultsDetailsBackend[] | null,
   inObservationSets: ObservationSetBackend[] | null,
   // inTargets: TargetBackend[],
   outTargets: Target[]
@@ -728,11 +715,13 @@ const getTargetObservation = (
     const isSensitivity = result.result?.supplied_type === 'sensitivity';
 
     const targetObs: TargetObservation = {
-      targetId: outTargets.find((tar) => tar.name === result.target_ref)?.id as number,
-      observationId: result.observation_set_ref as string,
-      dataProductsSDPId: result?.data_product_ref,
-      sensCalc: {
-        id: inResults?.indexOf(result) + 1, // only for UI
+      targetId: result.target_ref,
+      observationId: result.observation_set_ref,
+      dataProductsSDPId: result?.data_product_ref
+    };
+
+    if (result.result != undefined) {
+      targetObs.sensCalc = {
         title: result.target_ref as string,
         statusGUI: 0, // only for UI
         error: '', // only for UI
@@ -759,8 +748,9 @@ const getTargetObservation = (
           result,
           isSensitivity
         )
-      }
-    };
+      };
+    }
+
     targetObsArray.push(targetObs);
   }
   return targetObsArray;
@@ -813,19 +803,13 @@ export function mapping(inRec: ProposalBackend): Proposal {
     scienceLoadStatus: sciencePDF?.isUploadedPdf ? FileUploadStatus.OK : FileUploadStatus.INITIAL,
     targetOption: 1, // TODO check what to map to
     targets: targets,
-    observations: getObservations(
-      inRec.observation_info?.observation_sets,
-      inRec.observation_info?.result_details
-    ),
+    observations: getObservations(inRec.observation_info?.observation_sets),
     groupObservations: getGroupObservations(inRec.observation_info?.observation_sets),
-    targetObservation:
-      inRec?.observation_info?.result_details && inRec.observation_info?.result_details.length > 0
-        ? getTargetObservation(
-            inRec.observation_info?.result_details,
-            inRec.observation_info?.observation_sets,
-            targets
-          )
-        : [],
+    targetObservation: getTargetObservation(
+      inRec.observation_info?.result_details,
+      inRec.observation_info?.observation_sets,
+      targets
+    ),
     calibrationStrategy: getCalibrationStrategy(inRec.observation_info?.calibration_strategy),
     technicalPDF: isSV ? undefined : technicalPDF,
     technicalLoadStatus: isSV

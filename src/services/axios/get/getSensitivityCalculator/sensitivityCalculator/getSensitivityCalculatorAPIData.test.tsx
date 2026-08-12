@@ -121,7 +121,6 @@ describe('getSensitivityCalculatorAPIData Service', () => {
       MOCK_CONTINUUM_DATA_PRODUCT
     );
     expect(result).to.deep.equal({
-      id: 1,
       statusGUI: CONSTANTS.STATUS_ERROR,
       title: 'Sensitivity Calculator API error',
       error: 'Network Error'
@@ -144,7 +143,6 @@ describe('getSensitivityCalculatorAPIData Service', () => {
       MOCK_CONTINUUM_DATA_PRODUCT
     );
     expect(result).to.deep.equal({
-      id: 1,
       statusGUI: CONSTANTS.STATUS_ERROR,
       title: 'Validation Error',
       error: 'Specified pointing centre is always below the horizon from the SKA LOW site'

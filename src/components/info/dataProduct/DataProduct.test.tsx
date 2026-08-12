@@ -86,7 +86,6 @@ const baseObservation: Observation = {
   id: '',
   telescope: 0,
   subarray: '',
-  linked: '',
   observingBand: BAND_LOW_STR,
   elevation: 0,
   centralFrequency: 0,

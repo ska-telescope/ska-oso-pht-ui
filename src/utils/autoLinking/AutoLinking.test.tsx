@@ -39,29 +39,29 @@ const validMockSensCal = {
 
 describe('autoLinking, newObservationForMode', () => {
   test('creates continuum observation', () => {
-    vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
+    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('obs-0000000');
     expect(newObservationForMode(TYPE_CONTINUUM)).deep.equal(DEFAULT_CONTINUUM_OBSERVATION_LOW);
   });
   test('creates zoom observation', () => {
-    vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
+    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('obs-0000000');
     expect(newObservationForMode(TYPE_ZOOM)).deep.equal(DEFAULT_ZOOM_OBSERVATION_LOW);
   });
   test('creates pst observation', () => {
-    vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
+    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('obs-0000000');
     expect(newObservationForMode(TYPE_PST)).deep.equal(DEFAULT_PST_OBSERVATION_LOW);
   });
   test('observationOut zoom overrides the static zoomChannels placeholder with the real cap', () => {
-    vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
+    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('obs-0000000');
     const result = newObservationForMode(TYPE_ZOOM, 4000);
     expect(result.zoomChannels).toBe(4000);
     expect(result).toEqual({ ...DEFAULT_ZOOM_OBSERVATION_LOW, zoomChannels: 4000 });
   });
   test('observationOut zoom keeps the static placeholder when no cap is provided', () => {
-    vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
+    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('obs-0000000');
     expect(newObservationForMode(TYPE_ZOOM)).deep.equal(DEFAULT_ZOOM_OBSERVATION_LOW);
   });
   test('observationOut continuum ignores maxZoomChannels (not a zoom observation)', () => {
-    vi.spyOn(helpers, 'generateId').mockReturnValue('obs-0000000');
+    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('obs-0000000');
     expect(newObservationForMode(TYPE_CONTINUUM, 4000)).deep.equal(
       DEFAULT_CONTINUUM_OBSERVATION_LOW
     );
@@ -70,7 +70,7 @@ describe('autoLinking, newObservationForMode', () => {
 
 describe('autoLinking, newDataProductsForMode', () => {
   test('SDP default continuum', () => {
-    vi.spyOn(helpers, 'generateId')
+    vi.spyOn(helpers, 'generateDataProductId')
       .mockReturnValueOnce('SDP-0000000')
       .mockReturnValueOnce('SDP-0000001');
     const obs: Observation = {
@@ -85,7 +85,7 @@ describe('autoLinking, newDataProductsForMode', () => {
   });
 
   test('SDP default spectral', () => {
-    vi.spyOn(helpers, 'generateId')
+    vi.spyOn(helpers, 'generateDataProductId')
       .mockReturnValueOnce('SDP-0000000')
       .mockReturnValueOnce('SDP-0000001');
     const obs: Observation = {
@@ -100,7 +100,7 @@ describe('autoLinking, newDataProductsForMode', () => {
   });
 
   test('SDP default PST', () => {
-    vi.spyOn(helpers, 'generateId').mockReturnValue('SDP-0000000');
+    vi.spyOn(helpers, 'generateDataProductId').mockReturnValue('SDP-0000000');
     const obs: Observation = {
       ...getDefaultObservationLowAA2(TYPE_PST),
       id: 'obs-123'
@@ -113,7 +113,7 @@ describe('autoLinking, newDataProductsForMode', () => {
 
 describe('autoLinking, newCalibrationStrategy', () => {
   test('creates default calibration strategy', () => {
-    vi.spyOn(helpers, 'generateId').mockReturnValue('cal-0000000');
+    vi.spyOn(helpers, 'generateCalibrationId').mockReturnValue('cal-0000000');
     const calibration = newCalibrationStrategy('obs-123');
     expect(calibration).to.deep.equal(mockCalibration);
   });
@@ -133,7 +133,9 @@ describe('autoLinking()', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(helpers, 'generateId').mockReturnValue('mock-0000000');
+    vi.spyOn(helpers, 'generateCalibrationId').mockReturnValue('mock-0000000');
+    vi.spyOn(helpers, 'generateDataProductId').mockReturnValue('mock-0000000');
+    vi.spyOn(helpers, 'generateObsSetId').mockReturnValue('mock-0000000');
 
     // Start with an existing set of entities so we can assert replacement
     proposal = {

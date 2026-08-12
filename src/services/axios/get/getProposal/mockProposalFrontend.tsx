@@ -41,7 +41,7 @@ export const MockProposalFrontend: Proposal = {
       kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
       epoch: 2000,
       decStr: '00:00:00.0',
-      id: 1,
+      id: 'target-123',
       name: 'target',
       b: undefined,
       l: undefined,
@@ -71,7 +71,7 @@ export const MockProposalFrontend: Proposal = {
       kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
       epoch: 2000,
       decStr: '+22:00:53.000',
-      id: 2,
+      id: 'target-456',
       name: 'target2',
       b: undefined,
       l: undefined,
@@ -101,7 +101,7 @@ export const MockProposalFrontend: Proposal = {
       kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
       epoch: 2000,
       decStr: '-00:49:23.700',
-      id: 3,
+      id: 'target-789',
       name: 'M2',
       b: undefined,
       l: undefined,
@@ -147,7 +147,6 @@ export const MockProposalFrontend: Proposal = {
       spectralResolution: '5.43 kHz (8.1 km/s)',
       effectiveResolution: '5.43 kHz (8.1 km/s)',
       spectralAveraging: 1,
-      linked: 'M2',
       bandwidth: null,
       weather: undefined,
       continuumBandwidth: 150,
@@ -160,12 +159,11 @@ export const MockProposalFrontend: Proposal = {
   groupObservations: [],
   targetObservation: [
     {
-      targetId: 3,
+      targetId: 'target-789',
       observationId: 'obs-obR1Ej',
       dataProductsSDPId: 'SDP-2',
       sensCalc: {
-        id: 1,
-        title: 'M2',
+        title: 'target-789',
         statusGUI: 0,
         error: '',
         section1: [
@@ -315,8 +313,8 @@ export const MockProposalFrontendZoom: Proposal = {
       kind: REFERENCE_COORDINATE_TYPE_ICRS.value,
       epoch: 2000,
       decStr: '-00:49:23.700',
-      id: 1,
-      name: 'm2',
+      id: 'target-123',
+      name: 'target',
       b: undefined,
       l: undefined,
       parallax: undefined,
@@ -365,7 +363,6 @@ export const MockProposalFrontendZoom: Proposal = {
       spectralResolution: '14.13 Hz (21.2 m/s)',
       effectiveResolution: '14.13 Hz (21.2 m/s)',
       spectralAveraging: 1,
-      linked: 'm2',
       numStations: 68,
       num13mAntennas: undefined,
       num15mAntennas: undefined
@@ -374,12 +371,11 @@ export const MockProposalFrontendZoom: Proposal = {
   groupObservations: [],
   targetObservation: [
     {
-      targetId: 1,
+      targetId: 'target-789',
       observationId: 'obs-arMIoY',
       dataProductsSDPId: 'SDP-1',
       sensCalc: {
-        id: 1,
-        title: 'm2',
+        title: 'target-789',
         statusGUI: 0,
         error: '',
         section1: [

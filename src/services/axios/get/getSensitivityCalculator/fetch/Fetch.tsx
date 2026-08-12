@@ -30,7 +30,6 @@ const Fetch = async (
     const errMsg = e?.response?.data?.detail || e?.message || e?.toString();
 
     return {
-      id: 1,
       statusGUI: STATUS_ERROR,
       title: title,
       error: errMsg

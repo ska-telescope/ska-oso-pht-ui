@@ -18,7 +18,12 @@ import {
   TYPE_PST,
   TYPE_ZOOM
 } from '../constants';
-import { generateId, getDefaultObservationLowAA2 } from '../helpers';
+import {
+  generateCalibrationId,
+  generateDataProductId,
+  generateObsSetId,
+  getDefaultObservationLowAA2
+} from '../helpers';
 import { CalibrationStrategy } from '../types/calibrationStrategy';
 import {
   DataProductSDPNew,
@@ -59,7 +64,7 @@ export const newObservationForMode = (
   const defaultObservation = getDefaultObservationLowAA2(observationMode);
   return {
     ...defaultObservation,
-    id: generateId('obs-', 6),
+    id: generateObsSetId(),
     type: RECOGNISED_OBSERVATION_MODES.includes(observationMode)
       ? observationMode
       : defaultObservation.type,
@@ -70,7 +75,7 @@ export const newObservationForMode = (
 export const newCalibrationStrategy = (observationId: string): CalibrationStrategy => {
   return {
     observatoryDefined: true,
-    id: generateId('cal-', 6),
+    id: generateCalibrationId(),
     observationIdRef: observationId,
     calibrators: null,
     notes: null
@@ -180,7 +185,7 @@ export const HiddenSDPData = (
 export const newDataProductsForMode = (observation: Observation) => {
   const data = SDPData(observation);
   const newDSP: DataProductSDPNew = {
-    id: generateId('SDP-', 6),
+    id: generateDataProductId(),
     observationId: observation.id,
     data
   };
@@ -188,7 +193,7 @@ export const newDataProductsForMode = (observation: Observation) => {
   const hiddenData = HiddenSDPData(observation);
   if (hiddenData) {
     const hiddenDataProduct = {
-      id: generateId('SDP-', 6),
+      id: generateDataProductId(),
       observationId: observation.id,
       data: hiddenData
     };

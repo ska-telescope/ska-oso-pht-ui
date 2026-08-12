@@ -19,7 +19,6 @@ import {
   PAGE_CALIBRATION,
   PAGE_LINKING,
   REFERENCE_COORDINATE_TYPE_ICRS,
-  REFERENCE_COORDINATE_TYPE_SSO,
   STATUS_ERROR,
   STATUS_INITIAL,
   STATUS_OK,
@@ -41,7 +40,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import TriStateCheckbox from '@/components/fields/triStateCheckbox/TriStateCheckbox';
 import { SensCalcResults } from '@/utils/types/sensCalcResults';
 import { CalibrationStrategy } from '@/utils/types/calibrationStrategy';
-import { generateId } from '@/utils/helpers';
+import { generateCalibrationId } from '@/utils/helpers';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import ObservingBand from '@/components/display/observingBand/observingBand';
 import ObservingType from '@/components/display/observingType/observingType';
@@ -172,7 +171,7 @@ export default function LinkingPage() {
   };
 
   const deleteObservationTargetAndCalibration = (row: any) => {
-    function filterRecords(id: number) {
+    function filterRecords(id: string) {
       return getProposal().targetObservation?.filter(
         (item) => !(item.observationId === currRec?.id2 && item.targetId === id)
       );
@@ -203,7 +202,7 @@ export default function LinkingPage() {
 
   /* This type is required for the DataGrid showing the Targets */
   type ElementT = {
-    id: number;
+    id: string;
     name: string;
     raStr: string;
     decStr: string;
@@ -262,7 +261,6 @@ export default function LinkingPage() {
       targetId: target.id,
       dataProductsSDPId: currRec.id ?? '',
       sensCalc: {
-        id: target.id,
         title: target.name,
         statusGUI: STATUS_PARTIAL,
         error: ''
@@ -270,7 +268,7 @@ export default function LinkingPage() {
     };
     const calibration: CalibrationStrategy = {
       observatoryDefined: true,
-      id: generateId('cal-'),
+      id: generateCalibrationId(),
       observationIdRef: currRec.id2,
       calibrators: null,
       notes: null
@@ -278,7 +276,7 @@ export default function LinkingPage() {
     addTargetObservationAndCalibrationStorage(targetObs, calibration);
   };
 
-  const isTargetSelected = (targetId: number) =>
+  const isTargetSelected = (targetId: string) =>
     (getProposal().targetObservation ?? []).filter(
       (entry) => entry.dataProductsSDPId === currRec?.id && entry.targetId === targetId
     ).length > 0;
@@ -348,7 +346,7 @@ export default function LinkingPage() {
 
   const hasObservations = () => elementsO?.length > 0;
 
-  const getSensCalcForTargetGrid = (targetId: number) =>
+  const getSensCalcForTargetGrid = (targetId: string) =>
     getProposal()?.targetObservation?.find(
       (p) => p.observationId === currRec?.id2 && p.targetId === targetId
     )?.sensCalc;
@@ -361,7 +359,7 @@ export default function LinkingPage() {
     return currRec?.Obs?.subarray !== SA_CUSTOM && weighting === IW_NATURAL;
   };
 
-  const getSensCalcSingle = (id: number, field: string) => {
+  const getSensCalcSingle = (id: string, field: string) => {
     const isPST = elementsO.find((e) => e.id2 === currRec?.id2)?.type === TYPE_PST;
     return (
       <SensCalcDisplaySingle
