@@ -140,11 +140,22 @@ export default function CentralFrequency({
   // channel-grid constraint), snapping to the grid first if not already aligned.
   // Stepping by a full stepMHz (2 channels) preserves the grid's even-channel-count parity.
   const stepChannel = (currentValue: number, direction: 1 | -1): number => {
-    const stepped = isLow
+    if (!isLow) {
+      return clampAndRound(currentValue + direction, min, max);
+    }
+    // An already-on-grid value steps by a full stepMHz as before. An off-grid value snaps
+    // directly onto the adjacent grid point in the direction pressed (floor for down, ceil for
+    // up), rather than snapping to the *nearest* point and then also adding a step - the latter
+    // overshoots whenever the nearest point already lies in the direction being pressed (e.g.
+    // 200 MHz is closer to 199.609375 than to 201.171875, so stepping down from it must land on
+    // 199.609375, not one further step past it).
+    const currentHz = frequencyConversion(currentValue, units, FREQUENCY_HZ);
+    const stepped = isCentralFrequencyDivisible(currentHz, coarseChannelWidthHz)
       ? snapToValidGrid(currentValue) + direction * stepMHz
-      : currentValue + direction;
+      : direction === 1
+        ? snapToValidGridCeil(currentValue)
+        : snapToValidGridFloor(currentValue);
     const clamped = clampAndRound(stepped, min, max);
-    if (!isLow) return clamped;
     const clampedHz = frequencyConversion(clamped, units, FREQUENCY_HZ);
     if (isCentralFrequencyDivisible(clampedHz, coarseChannelWidthHz)) return clamped;
     // Clamping (a raw arithmetic boundary) pulled the value off the channel grid - e.g. when
