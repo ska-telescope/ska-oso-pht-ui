@@ -344,4 +344,56 @@ describe('DataProduct component', () => {
 
     expect(screen.getByText('page.7.descContent.pst.1')).toBeInTheDocument();
   });
+
+  it('loads and saves legacy string bit depths in edit mode', async () => {
+    const updateAppContent2 = vi.fn((proposal: any) => {
+      mockStoreReturn.application.content2 = proposal;
+    });
+    mockStoreReturn = {
+      application: {
+        content2: {
+          observations: [{ id: 'OBS1', type: 'pst', pstMode: 1, observingBand: 'low' }],
+          dataProductSDP: []
+        }
+      },
+      updateAppContent2
+    };
+
+    const legacyBitDepth = '8';
+    const legacyData = {
+      id: 'DP-LEGACY-8',
+      observationId: 'OBS1',
+      data: {
+        dataProductType: 1,
+        bitDepth: legacyBitDepth,
+        polarisations: ['I'],
+        outputFrequencyResolution: 1,
+        outputSamplingInterval: 1,
+        dispersionMeasure: 1,
+        rotationMeasure: 1
+      }
+    };
+
+    wrapper(
+      <ThemeProvider theme={theme}>
+        <DataProduct data={legacyData as any} />
+      </ThemeProvider>
+    );
+
+    await waitFor(() => {
+      expect(screen.getByTestId('BitDepthField')).toHaveAttribute(
+        'data-value',
+        String(Number(legacyBitDepth))
+      );
+    });
+
+    fireEvent.click(screen.getByTestId('addDataProductButtonEntry'));
+
+    await waitFor(() => {
+      expect(updateAppContent2).toHaveBeenCalled();
+      const savedProposal = updateAppContent2.mock.calls.at(-1)[0];
+      const savedDataProduct = savedProposal.dataProductSDP.at(-1);
+      expect(savedDataProduct.data.bitDepth).toBe(Number(legacyBitDepth));
+    });
+  });
 });

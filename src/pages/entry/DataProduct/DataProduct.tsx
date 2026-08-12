@@ -332,7 +332,15 @@ export default function DataProduct({ data }: DataProductProps) {
     setTimeAveraging(data?.timeAveraging ?? TIME_AVERAGING_DEFAULT);
     setFrequencyAveraging(data?.frequencyAveraging ?? FREQUENCY_AVERAGING_DEFAULT);
     setContinuumSubtraction(data?.continuumSubtraction ?? SET_CONTINUUM_SUBSTRACTION_DEFAULT);
-    setBitDepth(typeof data?.bitDepth === 'number' ? data.bitDepth : getDefaultBitDepth());
+    const parsedBitDepth =
+      typeof data?.bitDepth === 'string' && data.bitDepth.trim() !== ''
+        ? Number(data.bitDepth)
+        : data?.bitDepth;
+    setBitDepth(
+      typeof parsedBitDepth === 'number' && Number.isFinite(parsedBitDepth)
+        ? parsedBitDepth
+        : getDefaultBitDepth()
+    );
     setOutputFrequencyResolution(data?.outputFrequencyResolution ?? 1);
     setOutputSamplingInterval(data?.outputSamplingInterval ?? 1);
     setDispersionMeasure(data?.dispersionMeasure ?? 1);
