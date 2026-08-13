@@ -4,9 +4,9 @@ import { Grid, Typography, Card, CardContent, CardActionArea, Tooltip } from '@m
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import Shell from '../../components/layout/Shell/Shell';
-import { validateTargetPage } from '../../utils/validation/validation';
+import { validateTargetPage, validateObservationPage, validateSDPPage, validateLinkingPage, validateCalibrationPage } from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
-import { PAGE_TARGET, TARGET_OPTION } from '../../utils/constants';
+import { PAGE_TARGET, PAGE_OBSERVATION, STATUS_OK, TARGET_OPTION, PAGE_DATA_PRODUCTS, PAGE_LINKING, PAGE_CALIBRATION } from '../../utils/constants';
 import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';
 import TargetNoSpecificSection from './TargetNoSpecificSection/targetNoSpecificSection';
 import TargetListSection from './TargetListSection/targetListSection';
@@ -24,12 +24,34 @@ export default function TargetPage() {
 
   const getProposal = () => application.content2 as Proposal;
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
-  const { isSV } = useOSDAccessors();
-
+  const { isSV, autoLink } = useOSDAccessors();
   const getProposalState = () => application.content1 as number[];
+  
   const setTheProposalState = () => {
-    const status = validateTargetPage(getProposal());
-    updateAppContent1(getProposalState().map((v, i) => (i === PAGE ? status : v)));
+    const proposal = getProposal();
+    const currentState = getProposalState();
+    const targetStatus = validateTargetPage(proposal);
+
+    if (targetStatus === STATUS_OK) {
+      const nextState = currentState.map((v, i) => {
+        switch (i) {
+          case PAGE_TARGET:
+            return targetStatus;
+          case PAGE_OBSERVATION:
+            return validateObservationPage(proposal, autoLink);
+          case PAGE_DATA_PRODUCTS:
+            return validateSDPPage(proposal);
+          case PAGE_LINKING:
+            return validateLinkingPage(proposal);
+          case PAGE_CALIBRATION:
+            return validateCalibrationPage(proposal);
+          default:
+            return v;
+        }
+      });
+
+      updateAppContent1(nextState);
+    }
   };
 
   React.useEffect(() => {
