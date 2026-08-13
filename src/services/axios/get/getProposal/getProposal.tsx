@@ -74,11 +74,12 @@ import {
 import Investigator, { InvestigatorBackend } from '@utils/types/investigator.tsx';
 import { OSD_CONSTANTS } from '@utils/OSDConstants.ts';
 import useAxiosAuthClient from '../../axiosAuthClient/axiosAuthClient.tsx';
-import { calibratorMapping } from '../getCalibratorList/getCalibratorList.tsx';
 import { MockProposalBackend } from './mockProposalBackend.tsx';
 import {
   CalibrationStrategy,
-  CalibrationStrategyBackend
+  CalibrationStrategyBackend,
+  Calibrator,
+  FluxCalBackend
 } from '@/utils/types/calibrationStrategy.tsx';
 
 export const getInvestigators = (inValue: InvestigatorBackend[] | null) => {
@@ -369,7 +370,19 @@ const getDataProductSDP = (inValue: DataProductSDPsBackend[] | null): DataProduc
       };
     }) ?? []
   );
-};
+}
+
+function fluxCalToCalibrator(data: FluxCalBackend, index: number): Calibrator {
+  return {
+    targetId: '',
+    name: data.name,
+    calibrationIntent: 'flux',
+    durationSeconds: 600,
+    selectionStrategy: 'highest_elevation',
+    relativeToScan: index === 0 ? 'before_each_scan' : 'after_each_scan',
+    notes: null
+  };
+}
 
 const getCalibrationStrategy = (
   inValue: CalibrationStrategyBackend[] | null
@@ -380,7 +393,7 @@ const getCalibrationStrategy = (
         id: strategy?.calibration_id,
         observationIdRef: strategy?.observation_set_ref,
         calibrators: strategy?.calibrators
-          ? strategy?.calibrators?.map((calibrator) => calibratorMapping(calibrator))
+          ? strategy.calibrators.map((calibrator, index) => fluxCalToCalibrator(calibrator, index))
           : null,
         notes: strategy.notes
       }))
