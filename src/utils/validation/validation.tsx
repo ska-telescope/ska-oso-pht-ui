@@ -14,6 +14,7 @@ import {
   FREQUENCY_GHZ,
   FREQUENCY_HZ,
   FREQUENCY_MHZ,
+  IW_BRIGGS,
   PAGE_CALIBRATION,
   PAGE_DATA_PRODUCTS,
   PAGE_OBSERVATION,
@@ -31,6 +32,7 @@ import {
 import Proposal from './../types/proposal';
 import { countWords, frequencyConversion, isFrequencyRangeOutOfBand } from '../helpers';
 import { useOSDAccessors } from '../osd/useOSDAccessors/useOSDAccessors';
+import { ROBUST_RANGE } from '../../components/fields/robust/Robust';
 import {
   channelsToBandwidthHz,
   getZoomResolutionHz,
@@ -247,11 +249,32 @@ export const checkDP = (proposal: Proposal): number => {
   return 0;
 };
 
+const isRobustInRange = (value: unknown): boolean =>
+  typeof value === 'number' &&
+  Number.isFinite(value) &&
+  value >= ROBUST_RANGE.min &&
+  value <= ROBUST_RANGE.max;
+
+export const isDataProductRobustValid = (dataProduct: DataProductSDPNew): boolean => {
+  const data = dataProduct?.data as SDPImageContinuumData | SDPSpectralData | undefined;
+  const dataProductType = Number(
+    (data as SDPImageContinuumData | undefined)?.dataProductType ?? DP_TYPE_IMAGES
+  );
+  const usesRobust = Number(data?.weighting) === IW_BRIGGS && dataProductType === DP_TYPE_IMAGES;
+  // Mirrors RobustField constraints in UI: robust is only active/required for BRIGGS image modes.
+  if (!usesRobust) return true;
+  return isRobustInRange(data?.robust);
+};
+
 export const validateSDPPage = (proposal: Proposal) => {
-  const result = [STATUS_ERROR, STATUS_OK];
-  const count =
-    Array.isArray(proposal?.dataProductSDP) && proposal.dataProductSDP.length > 0 ? 1 : 0;
-  return result[count];
+  const dataProducts = proposal?.dataProductSDP;
+  if (!Array.isArray(dataProducts) || dataProducts.length === 0) {
+    return STATUS_ERROR;
+  }
+  const hasInvalidRobust = dataProducts.some(
+    (dataProduct) => !isDataProductRobustValid(dataProduct)
+  );
+  return hasInvalidRobust ? STATUS_ERROR : STATUS_OK;
 };
 
 export const validateSRCPage = () => STATUS_OK;

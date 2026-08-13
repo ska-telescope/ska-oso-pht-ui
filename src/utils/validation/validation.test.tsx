@@ -14,17 +14,20 @@ import {
   FLOW_THROUGH_VALUE,
   IMAGE_SIZE_DEFAULT,
   IMAGE_SIZE_UNIT_DEFAULT,
+  IW_BRIGGS,
   IW_UNIFORM,
   PIXEL_SIZE_DEFAULT,
   PIXEL_SIZE_UNIT_DEFAULT,
   PULSAR_TIMING_VALUE,
   ROBUST_DEFAULT,
+  STATUS_ERROR,
+  STATUS_OK,
   TAPER_DEFAULT,
   TYPE_CONTINUUM,
   TYPE_PST,
   TYPE_ZOOM
 } from '../constants';
-import { checkDP } from './validation';
+import { checkDP, validateSDPPage } from './validation';
 
 describe('checkDP for spectral data product', () => {
   it('returns 1 for valid spectral data product', () => {
@@ -366,5 +369,58 @@ describe('checkDP for pst data product', () => {
       ] as DataProductSDPNew[]
     };
     expect(checkDP(proposal as any)).toEqual(1);
+  });
+});
+
+describe('validateSDPPage robust rules', () => {
+  const makeProposalWithDataProduct = (data: any) =>
+    ({
+      dataProductSDP: [
+        {
+          id: 'SDP-1',
+          observationId: 'obs-1',
+          data
+        } as DataProductSDPNew
+      ]
+    }) as any;
+
+  it('returns STATUS_ERROR when no data products exist', () => {
+    expect(validateSDPPage({ dataProductSDP: [] } as any)).toBe(STATUS_ERROR);
+  });
+
+  it('returns STATUS_OK for non-BRIGGS weighting (robust inactive)', () => {
+    const proposal = makeProposalWithDataProduct({
+      dataProductType: DP_TYPE_IMAGES,
+      weighting: IW_UNIFORM,
+      robust: 99
+    });
+    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
+  });
+
+  it('returns STATUS_OK for BRIGGS image data with robust in range', () => {
+    const proposal = makeProposalWithDataProduct({
+      dataProductType: DP_TYPE_IMAGES,
+      weighting: IW_BRIGGS,
+      robust: 1.5
+    });
+    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
+  });
+
+  it('returns STATUS_ERROR for BRIGGS image data with robust out of range', () => {
+    const proposal = makeProposalWithDataProduct({
+      dataProductType: DP_TYPE_IMAGES,
+      weighting: IW_BRIGGS,
+      robust: 2.1
+    });
+    expect(validateSDPPage(proposal)).toBe(STATUS_ERROR);
+  });
+
+  it('returns STATUS_OK for BRIGGS visibilities data (robust inactive)', () => {
+    const proposal = makeProposalWithDataProduct({
+      dataProductType: DP_TYPE_VISIBLE,
+      weighting: IW_BRIGGS,
+      robust: 999
+    });
+    expect(validateSDPPage(proposal)).toBe(STATUS_OK);
   });
 });

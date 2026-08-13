@@ -13,7 +13,7 @@ interface RobustFieldProps {
   widthButton?: number;
 }
 
-const ROBUST_RANGE = { min: -2, max: 2 };
+export const ROBUST_RANGE = { min: -2, max: 2 };
 const ROBUST_STEP = 0.1;
 
 export default function RobustField({
