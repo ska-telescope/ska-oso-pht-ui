@@ -1,4 +1,6 @@
+import React from 'react';
 import { Grid, TextField } from '@mui/material';
+import { z } from 'zod';
 import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useNumericInput } from '@/utils/hooks/useNumericInput';
 
@@ -14,6 +16,7 @@ interface RobustFieldProps {
 }
 
 export const ROBUST_RANGE = { min: -2, max: 2 };
+export const robustSchema = z.number().min(ROBUST_RANGE.min).max(ROBUST_RANGE.max);
 const ROBUST_STEP = 0.1;
 
 export default function RobustField({
@@ -26,13 +29,15 @@ export default function RobustField({
   widthButton = 0
 }: RobustFieldProps) {
   const { t } = useScopedTranslation();
+  const robustErrorMessage = t('robust.error');
+  const validateRobust = React.useCallback(
+    (num: number) => (robustSchema.safeParse(num).success ? '' : robustErrorMessage),
+    [robustErrorMessage]
+  );
   const { text, error, handleChange } = useNumericInput(value, setValue, {
-    requiredMessage: t('robust.error'),
-    rangeMessage: t('robust.error'),
-    minValue: ROBUST_RANGE.min,
-    maxValue: ROBUST_RANGE.max,
-    minInclusive: true,
-    maxInclusive: true
+    validate: validateRobust,
+    requiredMessage: robustErrorMessage,
+    rangeMessage: robustErrorMessage
   });
 
   return (

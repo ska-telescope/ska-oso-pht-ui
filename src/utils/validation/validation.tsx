@@ -41,7 +41,7 @@ import {
   timeConversion
 } from '../helpers';
 import { useOSDAccessors } from '../osd/useOSDAccessors/useOSDAccessors';
-import { ROBUST_RANGE } from '../../components/fields/robust/Robust';
+import { robustSchema } from '../../components/fields/robust/Robust';
 import {
   channelsToBandwidthHz,
   getZoomResolutionHz,
@@ -280,10 +280,7 @@ export const checkDP = (proposal: Proposal): number => {
 };
 
 const isRobustInRange = (value: unknown): boolean =>
-  typeof value === 'number' &&
-  Number.isFinite(value) &&
-  value >= ROBUST_RANGE.min &&
-  value <= ROBUST_RANGE.max;
+  typeof value === 'number' && Number.isFinite(value) && robustSchema.safeParse(value).success;
 
 export const isDataProductRobustValid = (dataProduct: DataProductSDPNew): boolean => {
   const data = dataProduct?.data as SDPImageContinuumData | SDPSpectralData | undefined;
