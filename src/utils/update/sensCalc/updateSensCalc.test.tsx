@@ -1,15 +1,18 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import updateSensCalc from './updateSensCalc';
 import { STATUS_PARTIAL } from '@/utils/constants';
-import { calculateSensCalcData } from '@/utils/sensCalc/sensCalc';
 import Observation from '@/utils/types/observation';
 import TargetObservation from '@/utils/types/targetObservation';
 import Proposal from '@/utils/types/proposal';
+import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
 
-// Mock calculateSensCalcData
-vi.mock('@/utils/sensCalc/sensCalc', () => ({
-  calculateSensCalcData: vi.fn()
-}));
+// Mock getSensCalc
+vi.mock(
+  '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData',
+  () => ({
+    default: vi.fn()
+  })
+);
 
 describe('updateSensCalc', () => {
   const observation: Observation = { id: 'obs1' } as Observation;
@@ -58,8 +61,8 @@ describe('updateSensCalc', () => {
     expect(result).toEqual([]);
   });
 
-  it('updates sensCalc with result from calculateSensCalcData', async () => {
-    (calculateSensCalcData as any).mockResolvedValue({
+  it('updates sensCalc with result from getSensCalc', async () => {
+    (getSensCalc as any).mockResolvedValue({
       id: 't1',
       title: 'calc result',
       statusGUI: 42,
@@ -76,16 +79,14 @@ describe('updateSensCalc', () => {
     });
   });
 
-  it('falls back to default sensCalc when calculateSensCalcData returns null', async () => {
-    (calculateSensCalcData as any).mockResolvedValue({
+  it('falls back to default sensCalc when getSensCalc returns null', async () => {
+    (getSensCalc as any).mockResolvedValue({
       error: 'SensCalc error message'
     });
 
     const result = await updateSensCalc(proposalBase, observation, dp);
 
     expect(result[0].sensCalc).toMatchObject({
-      id: 't1',
-      title: '',
       statusGUI: STATUS_PARTIAL, // override applied
       error: 'SensCalc error message'
     });
@@ -98,7 +99,7 @@ describe('updateSensCalc', () => {
         {
           observationId: 'obs2',
           targetId: 't2',
-          dataProductsSDPId: 'dp2'
+          dataProductsSDPId: 'dp1'
         } as unknown as TargetObservation
       ]
     };

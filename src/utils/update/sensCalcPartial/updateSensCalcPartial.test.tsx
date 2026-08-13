@@ -8,9 +8,8 @@ import Observation from '@/utils/types/observation';
 describe('updateSensCalcPartial', () => {
   const baseTargetObs: TargetObservation = {
     observationId: 'obs1',
-    targetId: 1,
+    targetId: 'target-1',
     sensCalc: {
-      id: 1,
       title: 'original',
       statusGUI: 0,
       error: 'none'
@@ -20,9 +19,8 @@ describe('updateSensCalcPartial', () => {
 
   const otherTargetObs: TargetObservation = {
     observationId: 'obs2',
-    targetId: 2,
+    targetId: 'target-2',
     sensCalc: {
-      id: 2,
       title: 'original',
       statusGUI: 0,
       error: 'none'
@@ -46,7 +44,7 @@ describe('updateSensCalcPartial', () => {
 
     expect(result).toHaveLength(1);
     expect(result[0].observationId).toBe('obs1');
-    expect(result[0].targetId).toBe(1);
+    expect(result[0].targetId).toBe('target-1');
     expect(result[0].sensCalc.statusGUI).toBe(STATUS_PARTIAL);
     expect(result[0].sensCalc.title).toBe('');
     expect(result[0].sensCalc.error).toBe('');

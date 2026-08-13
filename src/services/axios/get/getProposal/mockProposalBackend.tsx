@@ -30,7 +30,7 @@ export const MockProposalBackend: ProposalBackend = {
   observation_info: {
     targets: [
       {
-        target_id: 'target',
+        target_id: 'target-123',
         name: 'target',
         pointing_pattern: {
           active: 'SinglePointParameters',
@@ -59,7 +59,7 @@ export const MockProposalBackend: ProposalBackend = {
         }
       },
       {
-        target_id: 'target2',
+        target_id: 'target-456',
         name: 'target2',
         pointing_pattern: {
           active: 'SinglePointParameters',
@@ -88,7 +88,7 @@ export const MockProposalBackend: ProposalBackend = {
         }
       },
       {
-        target_id: 'M2',
+        target_id: 'target-789',
         name: 'M2',
         pointing_pattern: {
           active: 'SinglePointParameters',
@@ -190,7 +190,7 @@ export const MockProposalBackend: ProposalBackend = {
     result_details: [
       {
         observation_set_ref: 'obs-obR1Ej',
-        target_ref: 'M2',
+        target_ref: 'target-789',
         data_product_ref: 'SDP-2',
         result: {
           supplied_type: 'integration_time',
@@ -263,7 +263,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
     data_product_src_nets: [],
     targets: [
       {
-        target_id: 'm2',
+        target_id: 'target-123',
         name: 'target',
         pointing_pattern: {
           active: 'SinglePointParameters',
@@ -362,7 +362,7 @@ export const MockProposalBackendZoom: ProposalBackend = {
     result_details: [
       {
         observation_set_ref: 'obs-arMIoY',
-        target_ref: 'm2',
+        target_ref: 'target-789',
         data_product_ref: 'SDP-1',
         result: {
           supplied_type: 'integration_time',

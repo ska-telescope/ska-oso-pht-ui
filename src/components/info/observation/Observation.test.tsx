@@ -14,7 +14,7 @@ describe('ObservationInfo', () => {
     type: 0,
     telescope: 0,
     subarray: '',
-    linked: '',
+
     observingBand: BAND_LOW_STR,
     weather: 0,
     elevation: 0,

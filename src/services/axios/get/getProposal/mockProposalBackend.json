@@ -23,7 +23,7 @@
     "science_category": "Science Category",
     "targets": [
       {
-        "target_id": "M28",
+        "target_id": "target-123",
         "pointing_pattern": {
           "active": "SinglePointParameters",
           "parameters": [

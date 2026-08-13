@@ -1,10 +1,10 @@
 import { SensCalcResults } from '../../utils/types/sensCalcResults';
 
 type TargetObservation = {
-  targetId: number;
+  targetId: string;
   observationId: string;
   dataProductsSDPId: string;
-  sensCalc: SensCalcResults;
+  sensCalc?: SensCalcResults;
 };
 
 export default TargetObservation;
