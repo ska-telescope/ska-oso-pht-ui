@@ -101,7 +101,7 @@ import updateSensCalc from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
 import lowAA2Image from '@assets/low_aa2.png';
-import { useIsFrequencyOutOfRange } from '@/utils/validation/validation';
+import { isSuppliedValueValid, useIsFrequencyOutOfRange } from '@/utils/validation/validation';
 import QuantityField from '@/components/fields/quantity/quantity';
 
 const GAP = 5;
@@ -964,6 +964,14 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         units: currentUnitLabel
       });
     }
+    const validateSuppliedValue = (nextValue: number) =>
+      isSuppliedValueValid({
+        type: suppliedType,
+        value: nextValue,
+        units: suppliedUnits
+      })
+        ? ''
+        : rangeMessage;
 
     return (
       <QuantityField
@@ -984,6 +992,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
         setUnits={setSuppliedUnits}
         unitOptions={getUnitOptions()}
         unitsTestId="suppliedUnits"
+        validate={validateSuppliedValue}
         required
       />
     );

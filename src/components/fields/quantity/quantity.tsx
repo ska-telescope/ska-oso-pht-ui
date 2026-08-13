@@ -15,6 +15,7 @@ interface QuantityFieldProps {
   step?: number;
   requiredMessage: string;
   rangeMessage: string;
+  validate?: (value: number) => string;
   onFocus?: () => void;
   onUnitsFocus?: () => void;
   units?: number;
@@ -36,6 +37,7 @@ export default function QuantityField({
   step,
   requiredMessage,
   rangeMessage,
+  validate,
   onFocus = undefined,
   onUnitsFocus = undefined,
   units,
@@ -46,10 +48,11 @@ export default function QuantityField({
   const { text, error, handleChange } = useNumericInput(value, setValue, {
     requiredMessage: requiredMessage,
     rangeMessage: rangeMessage,
-    minValue: minValue,
-    maxValue: maxValue,
-    minInclusive: minInclusive,
-    maxInclusive: maxInclusive
+    minValue: validate ? undefined : minValue,
+    maxValue: validate ? undefined : maxValue,
+    minInclusive: validate ? true : minInclusive,
+    maxInclusive: validate ? true : maxInclusive,
+    validate
   });
 
   return (

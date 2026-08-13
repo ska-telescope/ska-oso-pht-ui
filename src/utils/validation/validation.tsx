@@ -6,6 +6,7 @@ import {
   SDPSpectralData,
   SDPVisibilitiesContinuumData
 } from '../types/dataProduct';
+import { z } from 'zod';
 import Observation from '../types/observation';
 import {
   DETECTED_FILTER_BANK_VALUE,
@@ -24,8 +25,10 @@ import {
   STATUS_PARTIAL,
   SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
   SUPPLIED_TYPE_INTEGRATION,
+  SUPPLIED_TYPE_SENSITIVITY,
   TELESCOPE_LOW_NUM,
   TIME_HOURS,
+  TIME_UNITS,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
@@ -49,6 +52,52 @@ import {
   isCentralFrequencyOnChannelGrid
 } from '../zoomWindow';
 import phtTranslations from '../../../public/locales/en/pht.json';
+
+type SuppliedValueInput = {
+  type?: number;
+  value?: number;
+  units?: number;
+};
+
+const SuppliedUnitsEnum = TIME_UNITS.reduce<Record<string, number>>((acc, unit) => {
+  acc[unit.value] = unit.id;
+  return acc;
+}, {});
+const IntegrationUnitsEnum = INTEGRATION_TIME_UNITS.reduce<Record<string, number>>((acc, unit) => {
+  acc[unit.value] = unit.id;
+  return acc;
+}, {});
+
+const suppliedValueBaseSchema = z.object({
+  value: z.number().finite().gt(0)
+});
+const suppliedIntegrationSchema = suppliedValueBaseSchema
+  .extend({
+    type: z.literal(SUPPLIED_TYPE_INTEGRATION),
+    units: z.nativeEnum(IntegrationUnitsEnum)
+  })
+  .superRefine((supplied, ctx) => {
+    const maxValue = timeConversion(
+      SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
+      TIME_HOURS,
+      supplied.units
+    );
+    if (supplied.value > maxValue) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: `Supplied value must be <= ${maxValue} for selected unit.`
+      });
+    }
+  });
+const suppliedSensitivitySchema = suppliedValueBaseSchema.extend({
+  type: z.literal(SUPPLIED_TYPE_SENSITIVITY),
+  units: z.nativeEnum(SuppliedUnitsEnum)
+});
+
+export const suppliedValueSchema = z.union([suppliedIntegrationSchema, suppliedSensitivitySchema]);
+
+export const isSuppliedValueValid = (supplied: SuppliedValueInput): boolean =>
+  suppliedValueSchema.safeParse(supplied).success;
 
 export const validateTitlePage = (proposal: Proposal) => {
   const maxTitleWords = Number(phtTranslations.title.maxWord);
@@ -101,21 +150,11 @@ export const validateTargetPage = (proposal: Proposal) =>
 
 const hasValidSuppliedValue = (observation: Observation): boolean => {
   const supplied = observation?.supplied;
-  const suppliedValue = supplied?.value;
-  if (!Number.isFinite(suppliedValue) || suppliedValue <= 0) {
-    return false;
-  }
-  if (supplied?.type !== SUPPLIED_TYPE_INTEGRATION) {
-    return true;
-  }
-  const usesSupportedIntegrationUnit = INTEGRATION_TIME_UNITS.some(
-    (unit) => unit.id === supplied?.units
-  );
-  if (!usesSupportedIntegrationUnit) {
-    return false;
-  }
-  const maxValue = timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, supplied.units);
-  return suppliedValue <= maxValue;
+  return isSuppliedValueValid({
+    type: supplied?.type,
+    value: supplied?.value,
+    units: supplied?.units
+  });
 };
 
 export const validateObservationPage = (proposal: Proposal, autoLink: boolean) => {
