@@ -22,12 +22,19 @@ import {
   ROBUST_DEFAULT,
   STATUS_ERROR,
   STATUS_OK,
+  SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
+  SUPPLIED_INTEGRATION_TIME_UNITS_H,
+  SUPPLIED_INTEGRATION_TIME_UNITS_M,
+  SUPPLIED_TYPE_INTEGRATION,
+  SUPPLIED_TYPE_SENSITIVITY,
   TAPER_DEFAULT,
+  TIME_HOURS,
   TYPE_CONTINUUM,
   TYPE_PST,
   TYPE_ZOOM
 } from '../constants';
-import { checkDP, validateSDPPage } from './validation';
+import { timeConversion } from '../helpers';
+import { checkDP, validateObservationPage, validateSDPPage } from './validation';
 
 describe('checkDP for spectral data product', () => {
   it('returns 1 for valid spectral data product', () => {
@@ -422,5 +429,78 @@ describe('validateSDPPage robust rules', () => {
       robust: 999
     });
     expect(validateSDPPage(proposal)).toBe(STATUS_OK);
+  });
+});
+
+describe('validateObservationPage supplied rules', () => {
+  const baseObservation = {
+    supplied: {
+      type: SUPPLIED_TYPE_INTEGRATION,
+      value: 1,
+      units: SUPPLIED_INTEGRATION_TIME_UNITS_H
+    }
+  };
+
+  it('returns STATUS_OK for non-autoLink when observations exist with valid supplied values', () => {
+    const proposal = {
+      observations: [baseObservation],
+      targetObservation: []
+    };
+    expect(validateObservationPage(proposal as any, false)).toBe(STATUS_OK);
+  });
+
+  it('returns STATUS_ERROR for non-autoLink when supplied value is not greater than zero', () => {
+    const proposal = {
+      observations: [{ ...baseObservation, supplied: { ...baseObservation.supplied, value: 0 } }],
+      targetObservation: []
+    };
+    expect(validateObservationPage(proposal as any, false)).toBe(STATUS_ERROR);
+  });
+
+  it('returns STATUS_ERROR for integration supplied values above the converted max', () => {
+    const maxMinutes = timeConversion(
+      SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
+      TIME_HOURS,
+      SUPPLIED_INTEGRATION_TIME_UNITS_M
+    );
+    const proposal = {
+      observations: [
+        {
+          ...baseObservation,
+          supplied: {
+            type: SUPPLIED_TYPE_INTEGRATION,
+            value: maxMinutes + 1,
+            units: SUPPLIED_INTEGRATION_TIME_UNITS_M
+          }
+        }
+      ],
+      targetObservation: []
+    };
+    expect(validateObservationPage(proposal as any, false)).toBe(STATUS_ERROR);
+  });
+
+  it('returns STATUS_OK for sensitivity supplied values greater than zero', () => {
+    const proposal = {
+      observations: [
+        {
+          ...baseObservation,
+          supplied: {
+            type: SUPPLIED_TYPE_SENSITIVITY,
+            value: 5,
+            units: 1
+          }
+        }
+      ],
+      targetObservation: []
+    };
+    expect(validateObservationPage(proposal as any, false)).toBe(STATUS_OK);
+  });
+
+  it('returns STATUS_ERROR for autoLink when target observations exist but supplied is invalid', () => {
+    const proposal = {
+      observations: [{ ...baseObservation, supplied: { ...baseObservation.supplied, value: -1 } }],
+      targetObservation: [{ targetId: '1', observationId: 'obs-1' }]
+    };
+    expect(validateObservationPage(proposal as any, true)).toBe(STATUS_ERROR);
   });
 });

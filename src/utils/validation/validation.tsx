@@ -14,6 +14,7 @@ import {
   FREQUENCY_GHZ,
   FREQUENCY_HZ,
   FREQUENCY_MHZ,
+  INTEGRATION_TIME_UNITS,
   IW_BRIGGS,
   PAGE_CALIBRATION,
   PAGE_DATA_PRODUCTS,
@@ -21,7 +22,10 @@ import {
   STATUS_ERROR,
   STATUS_OK,
   STATUS_PARTIAL,
+  SUPPLIED_INTEGRATION_TIME_MAX_HOURS,
+  SUPPLIED_TYPE_INTEGRATION,
   TELESCOPE_LOW_NUM,
+  TIME_HOURS,
   TYPE_CONTINUUM,
   TYPE_CONTINUUM_SPECTRAL,
   TYPE_PST,
@@ -30,7 +34,12 @@ import {
   ZOOM_CHANNELS_DEFAULT_LOW
 } from './../constants';
 import Proposal from './../types/proposal';
-import { countWords, frequencyConversion, isFrequencyRangeOutOfBand } from '../helpers';
+import {
+  countWords,
+  frequencyConversion,
+  isFrequencyRangeOutOfBand,
+  timeConversion
+} from '../helpers';
 import { useOSDAccessors } from '../osd/useOSDAccessors/useOSDAccessors';
 import { ROBUST_RANGE } from '../../components/fields/robust/Robust';
 import {
@@ -90,18 +99,39 @@ export const validateSciencePage = (proposal: Proposal) => {
 export const validateTargetPage = (proposal: Proposal) =>
   proposal?.targets?.length ? STATUS_OK : STATUS_ERROR;
 
+const hasValidSuppliedValue = (observation: Observation): boolean => {
+  const supplied = observation?.supplied;
+  const suppliedValue = supplied?.value;
+  if (!Number.isFinite(suppliedValue) || suppliedValue <= 0) {
+    return false;
+  }
+  if (supplied?.type !== SUPPLIED_TYPE_INTEGRATION) {
+    return true;
+  }
+  const usesSupportedIntegrationUnit = INTEGRATION_TIME_UNITS.some(
+    (unit) => unit.id === supplied?.units
+  );
+  if (!usesSupportedIntegrationUnit) {
+    return false;
+  }
+  const maxValue = timeConversion(SUPPLIED_INTEGRATION_TIME_MAX_HOURS, TIME_HOURS, supplied.units);
+  return suppliedValue <= maxValue;
+};
+
 export const validateObservationPage = (proposal: Proposal, autoLink: boolean) => {
   const result = [STATUS_ERROR, STATUS_PARTIAL, STATUS_OK];
   const hasObservations = () =>
     Array.isArray(proposal?.observations) && proposal.observations.length > 0;
+  const hasSuppliedErrors = () =>
+    (proposal?.observations ?? []).some((obs) => !hasValidSuppliedValue(obs));
 
   const hasTargetObservations = () => (proposal?.targetObservation?.length ?? 0) > 0;
 
   if (autoLink) {
-    const count = hasTargetObservations() ? 2 : 0;
+    const count = hasTargetObservations() && !hasSuppliedErrors() ? 2 : 0;
     return result[count];
   } else {
-    const count = hasObservations() ? 2 : 0;
+    const count = hasObservations() && !hasSuppliedErrors() ? 2 : 0;
     return result[count];
   }
 };
