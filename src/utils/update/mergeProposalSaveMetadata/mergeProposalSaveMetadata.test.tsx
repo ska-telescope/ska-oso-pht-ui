@@ -93,8 +93,9 @@ describe('mergeProposalSaveMetadata', () => {
   });
 
   test('applies a response at the same instant but a higher version', () => {
-    // Date.parse truncates the backend's microseconds, so two saves inside the
-    // same millisecond compare equal on time alone - version breaks the tie.
+    // The backend bumps version and last_modified_on together on every save,
+    // so a higher version alone is enough to know this response is newer,
+    // even when both land at the same instant.
     const current = proposal();
 
     const result = mergeProposalSaveMetadata(
@@ -118,6 +119,22 @@ describe('mergeProposalSaveMetadata', () => {
 
     expect(result.lastUpdated).toBe(OLD_STAMP);
     expect(result.version).toBe(1);
+  });
+
+  test('applies the first save, when the held version itself is missing rather than zero', () => {
+    // A proposal snapshot taken before any version has ever been recorded
+    // (e.g. straight off the store, cast loosely at a boundary) can lack a
+    // version field entirely rather than defaulting it to 0 - undefined must
+    // not be compared numerically against the incoming version.
+    const current = { id: 'prsl-t0001-20260813-00001' } as unknown as Proposal;
+
+    const result = mergeProposalSaveMetadata(
+      current,
+      response({ metadata: metadata({ version: 2, last_modified_on: NEW_STAMP }) })
+    );
+
+    expect(result.lastUpdated).toBe(NEW_STAMP);
+    expect(result.version).toBe(2);
   });
 
   test('ignores a response for a different proposal', () => {

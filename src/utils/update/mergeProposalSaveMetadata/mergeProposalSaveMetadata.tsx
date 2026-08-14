@@ -1,6 +1,5 @@
 import { Metadata } from '../../types/metadata';
 import { Proposal, ProposalBackend } from '../../types/proposal';
-import { parseDate } from '../../present/present';
 
 /**
  * Whether `incoming` describes a save later than the one already held.
@@ -9,34 +8,27 @@ import { parseDate } from '../../present/present';
  * so their responses can land in either order. Applying the older one would
  * step the last-saved label backwards and drop the in-memory version below the
  * backend's, which surfaces later as an optimistic-concurrency failure.
+ *
+ * Ordering on version rather than last_modified_on: the backend bumps both in
+ * the same atomic upsert, so version already carries the same order without
+ * the timestamp-parsing edge cases (truncated microseconds, unparseable
+ * formats) that a date comparison would need to work around.
  */
 const isNewerThanHeld = (current: Proposal, incoming: Metadata): boolean => {
-  // parseDate, rather than Date.parse, so the compact YYYYMMDDT... form the
-  // backend also emits is understood here as it is everywhere else.
-  const held = parseDate(current.metadata?.last_modified_on ?? current.lastUpdated);
-  const incomingDate = parseDate(incoming.last_modified_on);
+  // Proposal.version is typed as a required number, but the value actually
+  // held in the store (e.g. a freshly loaded or in-flight proposal) can still
+  // arrive without one - so this side needs the same runtime guard as
+  // incoming, which crosses a wire boundary and can legitimately arrive
+  // partial.
+  const heldVersion = current.metadata?.version ?? current.version;
 
-  // Nothing to order by - an absent stamp on a freshly created proposal, or an
-  // unparseable one from either side. Accept, rather than freeze the label on
-  // the strength of a comparison that never worked.
-  if (!held || !incomingDate) {
+  // No version to order by on either side - a malformed/partial response, or
+  // nothing held yet to compare against. Accept, rather than freeze the label
+  // on the strength of a comparison that never worked.
+  if (typeof incoming.version !== 'number' || typeof heldVersion !== 'number') {
     return true;
   }
-  const heldTime = held.getTime();
-  const incomingTime = incomingDate.getTime();
-  if (incomingTime !== heldTime) {
-    return incomingTime > heldTime;
-  }
-
-  // Same instant: only a higher version carries anything new. Parsing truncates
-  // the backend's microseconds, so two saves within the same millisecond land
-  // here rather than ordering on time alone.
-  const heldVersion = current.metadata?.version ?? current.version;
-  return (
-    typeof incoming.version === 'number' &&
-    typeof heldVersion === 'number' &&
-    incoming.version > heldVersion
-  );
+  return incoming.version > heldVersion;
 };
 
 /**
