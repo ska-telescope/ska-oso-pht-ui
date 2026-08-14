@@ -75,6 +75,8 @@ UNRELEASED
 * Changed: More permissive TextField schema for robust and integration time fields allows users to backspace to clear the field and type out-of-range values
 * Changed: Robust and integration time field validation errors propagated to breadcrumbs and gate SensCalc API calls
 * Changed: Debounce SensCalc API calls
+* Changed: toast is displayed on a manual save
+* Changed: time (plus date, if not today) of the last save operation is displayed alongside the save button.
 
 10.1.0
 ----------
