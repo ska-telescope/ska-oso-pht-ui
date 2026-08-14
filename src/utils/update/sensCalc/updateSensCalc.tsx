@@ -1,9 +1,10 @@
-import { STATUS_PARTIAL } from '@/utils/constants';
+import { STATUS_INITIAL, STATUS_PARTIAL } from '@/utils/constants';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import Observation from '@/utils/types/observation';
 import Proposal from '@/utils/types/proposal';
 import TargetObservation from '@/utils/types/targetObservation';
 import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
+import { isDataProductRobustValid, isSuppliedValueValid } from '@/utils/validation/validation';
 
 /**
  * Recalculates the sensitivity calculator results for any TargetObservation within the Proposal
@@ -17,6 +18,12 @@ export const updateSensCalc = async (
   dp: DataProductSDPNew
 ): Promise<TargetObservation[]> => {
   if (!proposal.targetObservation) return [];
+  const inputsAreValid =
+    isSuppliedValueValid({
+      type: ob?.supplied?.type,
+      value: ob?.supplied?.value,
+      units: ob?.supplied?.units
+    }) && isDataProductRobustValid(dp);
 
   const updated = await Promise.all(
     proposal.targetObservation
@@ -26,6 +33,17 @@ export const updateSensCalc = async (
       )
       .map(async (targetObservation: TargetObservation) => {
         const target = proposal.targets?.find((t) => t.id === targetObservation.targetId);
+        if (!inputsAreValid) {
+          return {
+            ...targetObservation,
+            sensCalc: {
+              title: '',
+              statusGUI: STATUS_INITIAL,
+              error: ''
+            }
+          };
+        }
+
         if (!target || !dp) {
           return targetObservation;
         }
@@ -45,14 +63,18 @@ export const updateSensCalc = async (
       (targetObservation) =>
         targetObservation.observationId === ob.id || targetObservation.dataProductsSDPId === dp.id
     )
-    .map((targetObservation) =>
-      targetObservation.sensCalc === undefined
-        ? targetObservation
-        : {
-            ...targetObservation,
-            sensCalc: { ...targetObservation.sensCalc, statusGUI: STATUS_PARTIAL }
-          }
-    );
+    .map((targetObservation) => {
+      if (targetObservation.sensCalc === undefined) {
+        return targetObservation;
+      }
+      if (targetObservation.sensCalc.statusGUI === STATUS_INITIAL) {
+        return targetObservation;
+      }
+      return {
+        ...targetObservation,
+        sensCalc: { ...targetObservation.sensCalc, statusGUI: STATUS_PARTIAL }
+      };
+    });
 };
 
 export default updateSensCalc;

@@ -1,6 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import updateSensCalc from './updateSensCalc';
-import { STATUS_PARTIAL } from '@/utils/constants';
+import {
+  DP_TYPE_IMAGES,
+  IW_BRIGGS,
+  STATUS_INITIAL,
+  STATUS_PARTIAL,
+  SUPPLIED_INTEGRATION_TIME_UNITS_H,
+  SUPPLIED_TYPE_INTEGRATION
+} from '@/utils/constants';
 import Observation from '@/utils/types/observation';
 import TargetObservation from '@/utils/types/targetObservation';
 import Proposal from '@/utils/types/proposal';
@@ -15,7 +22,14 @@ vi.mock(
 );
 
 describe('updateSensCalc', () => {
-  const observation: Observation = { id: 'obs1' } as Observation;
+  const observation: Observation = {
+    id: 'obs1',
+    supplied: {
+      type: SUPPLIED_TYPE_INTEGRATION,
+      value: 1,
+      units: SUPPLIED_INTEGRATION_TIME_UNITS_H
+    }
+  } as Observation;
 
   const proposalBase: Proposal = {
     targetObservation: [
@@ -105,5 +119,45 @@ describe('updateSensCalc', () => {
     };
     const result = await updateSensCalc(proposal, observation, dp);
     expect(result[0].sensCalc).toBeUndefined();
+  });
+
+  it('does not call sensitivity calculator when supplied input is invalid', async () => {
+    const observationWithInvalidSupplied = {
+      ...observation,
+      supplied: {
+        type: SUPPLIED_TYPE_INTEGRATION,
+        value: Number.NaN,
+        units: SUPPLIED_INTEGRATION_TIME_UNITS_H
+      }
+    } as Observation;
+
+    const result = await updateSensCalc(proposalBase, observationWithInvalidSupplied, dp);
+
+    expect(getSensCalc).not.toHaveBeenCalled();
+    expect(result[0].sensCalc).toMatchObject({
+      title: '',
+      statusGUI: STATUS_INITIAL,
+      error: ''
+    });
+  });
+
+  it('does not call sensitivity calculator when Briggs robust input is invalid', async () => {
+    const dataProductWithInvalidRobust = {
+      id: 'dp1',
+      data: {
+        dataProductType: DP_TYPE_IMAGES,
+        weighting: IW_BRIGGS,
+        robust: Number.NaN
+      }
+    } as any;
+
+    const result = await updateSensCalc(proposalBase, observation, dataProductWithInvalidRobust);
+
+    expect(getSensCalc).not.toHaveBeenCalled();
+    expect(result[0].sensCalc).toMatchObject({
+      title: '',
+      statusGUI: STATUS_INITIAL,
+      error: ''
+    });
   });
 });
