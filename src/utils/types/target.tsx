@@ -117,7 +117,7 @@ export type ReferenceCoordinateSSO = {
 };
 
 type Target = {
-  id: number;
+  id: string;
   name: string;
   redshift?: string;
   raReferenceFrame?: string; // NOT USED

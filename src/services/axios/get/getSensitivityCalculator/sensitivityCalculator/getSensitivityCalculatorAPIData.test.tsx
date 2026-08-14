@@ -6,7 +6,6 @@ import {
   sensCalcResultsAPIResponseMockSpectral
 } from './SensCalcResultsAPIResponseMOCK';
 import { SENSCALC_CONTINUUM_MOCKED, SENSCALC_SPECTRAL_MOCKED } from './SensCalcResultsMock';
-import { setMockObservation } from './getSensitivityCalculatorAPIData';
 import axiosClient from '@/services/axios/axiosClient/axiosClient';
 import * as CONSTANTS from '@/utils/constants';
 import {
@@ -63,18 +62,7 @@ describe('getSensitivityCalculatorAPIData Service', () => {
     }));
   });
 
-  test('returns mapped mock data when USE_LOCAL_DATA_SENSITIVITY_CALC is true', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA_SENSITIVITY_CALC', 'get').mockReturnValue(true);
-    const result = await getSensCalc(
-      CONSTANTS.DEFAULT_CONTINUUM_OBSERVATION_LOW,
-      CONSTANTS.DEFAULT_TARGETS,
-      MOCK_CONTINUUM_DATA_PRODUCT
-    );
-    expect(result).toEqual(SENSCALC_CONTINUUM_MOCKED);
-  });
-
   test('returns continuum mapped data from API', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA_SENSITIVITY_CALC', 'get').mockReturnValue(false);
     vi.spyOn(axiosClient, 'get').mockResolvedValue({
       data: sensCalcResultsAPIResponseMockContinuum
     });
@@ -87,7 +75,6 @@ describe('getSensitivityCalculatorAPIData Service', () => {
   });
 
   test('returns spectral mapped data from API', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA_SENSITIVITY_CALC', 'get').mockReturnValue(false);
     vi.spyOn(axiosClient, 'get').mockResolvedValue({
       data: sensCalcResultsAPIResponseMockSpectral
     });
@@ -105,7 +92,6 @@ describe('getSensitivityCalculatorAPIData Service', () => {
   ])(
     'returns continuum mapped data for combined mode with channelsOut=$channelsOut, using continuumBandwidth / channelsOut as the request bandwidth',
     async ({ channelsOut, expectedBandwidthMhz }) => {
-      vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA_SENSITIVITY_CALC', 'get').mockReturnValue(false);
       const getSpy = vi
         .spyOn(axiosClient, 'get')
         .mockResolvedValue({ data: sensCalcResultsAPIResponseMockContinuum });
@@ -128,18 +114,20 @@ describe('getSensitivityCalculatorAPIData Service', () => {
   // IMPROVEMENT add tests for custom and natural
 
   test('returns error message on API failure', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA_SENSITIVITY_CALC', 'get').mockReturnValue(false);
     vi.spyOn(axiosClient, 'get').mockRejectedValue(new Error('Network Error'));
     const result = await getSensCalc(
       CONSTANTS.DEFAULT_CONTINUUM_OBSERVATION_LOW,
       CONSTANTS.DEFAULT_TARGETS,
       MOCK_CONTINUUM_DATA_PRODUCT
     );
-    expect(result).to.deep.equal({ error: 'Sensitivity Calculator API error: Network Error' });
+    expect(result).to.deep.equal({
+      statusGUI: CONSTANTS.STATUS_ERROR,
+      title: 'Sensitivity Calculator API error',
+      error: 'Network Error'
+    });
   });
 
   test('returns error message on Sensitivity Calculator Error', async () => {
-    vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA_SENSITIVITY_CALC', 'get').mockReturnValue(false);
     const errorOut = {
       title: 'Validation Error',
       detail: 'Specified pointing centre is always below the horizon from the SKA LOW site'
@@ -155,19 +143,9 @@ describe('getSensitivityCalculatorAPIData Service', () => {
       MOCK_CONTINUUM_DATA_PRODUCT
     );
     expect(result).to.deep.equal({
-      error:
-        'Validation Error: Specified pointing centre is always below the horizon from the SKA LOW site'
+      statusGUI: CONSTANTS.STATUS_ERROR,
+      title: 'Validation Error',
+      error: 'Specified pointing centre is always below the horizon from the SKA LOW site'
     });
-  });
-});
-
-describe('setMockObservation', () => {
-  it('returns a new object and does not mutate the input', () => {
-    const original: Observation = CONSTANTS.DEFAULT_PST_OBSERVATION_LOW;
-    const copy = setMockObservation(original);
-    expect(original.type).toBe(CONSTANTS.TYPE_PST);
-    expect(copy.type).toBe(CONSTANTS.TYPE_CONTINUUM);
-    expect(copy).not.toBe(original);
-    expect(copy.id).toBe(original.id);
   });
 });

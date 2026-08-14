@@ -1,5 +1,4 @@
 export const SENSCALC_CONTINUUM_MOCKED = {
-  id: 1,
   title: 'DUMMY',
   section1: [
     {
@@ -66,7 +65,6 @@ export const SENSCALC_CONTINUUM_MOCKED = {
 };
 
 export const SENSCALC_SPECTRAL_MOCKED = {
-  id: 1,
   title: 'DUMMY',
   section1: [
     {

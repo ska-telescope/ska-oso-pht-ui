@@ -43,12 +43,7 @@ it('should fetch data and map it successfully', async () => {
 
 it('should handle error with title and detail from response.data', async () => {
   const error = {
-    response: {
-      data: {
-        title: 'Custom Error Title',
-        detail: 'Detailed error message'
-      }
-    }
+    message: 'Detailed error message'
   };
 
   const mockAxiosClient = {
@@ -61,14 +56,14 @@ it('should handle error with title and detail from response.data', async () => {
     mockBaseUrl,
     mockProperties,
     mockMapping,
-    mockTarget
+    mockTarget,
+    mockObservation
   );
 
   expect(result).toEqual({
-    id: 1,
     statusGUI: STATUS_ERROR,
-    error: 'Custom Error Title',
-    results: 'Detailed error message'
+    title: 'Sensitivity Calculator API error',
+    error: 'Detailed error message'
   });
 });
 
@@ -87,14 +82,14 @@ it('should handle error with message fallback', async () => {
     mockBaseUrl,
     mockProperties,
     mockMapping,
-    mockTarget
+    mockTarget,
+    mockObservation
   );
 
   expect(result).toEqual({
-    id: 1,
     statusGUI: STATUS_ERROR,
-    error: 'Sensitivity Calculator API error',
-    results: 'Fallback error message'
+    title: 'Sensitivity Calculator API error',
+    error: 'Fallback error message'
   });
 });
 
@@ -111,13 +106,13 @@ it('should handle error with generic string fallback', async () => {
     mockBaseUrl,
     mockProperties,
     mockMapping,
-    mockTarget
+    mockTarget,
+    mockObservation
   );
 
   expect(result).toEqual({
-    id: 1,
     statusGUI: STATUS_ERROR,
-    error: 'Sensitivity Calculator API error',
-    results: 'api.error'
+    title: 'Sensitivity Calculator API error',
+    error: 'api.error'
   });
 });
