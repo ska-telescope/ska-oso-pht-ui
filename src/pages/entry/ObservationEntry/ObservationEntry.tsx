@@ -289,7 +289,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
       ...proposal,
       observations: updateObservations(oldObservations ?? [], newObservation),
       dataProductSDP: updateDataProductsOnObservationChange(oldDataProducts, newObservation),
-      targetObservation: updateSensCalcPartial(oldTO, newObservation)
+      targetObservation: dataProductSDP ? oldTO : updateSensCalcPartial(oldTO, newObservation)
     };
     setProposal(tmp);
 

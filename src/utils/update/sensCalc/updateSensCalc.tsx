@@ -1,4 +1,4 @@
-import { STATUS_INITIAL, STATUS_PARTIAL } from '@/utils/constants';
+import { STATUS_INITIAL } from '@/utils/constants';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import Observation from '@/utils/types/observation';
 import Proposal from '@/utils/types/proposal';
@@ -61,24 +61,7 @@ export const updateSensCalc = async (
       })
   );
 
-  // TODO figure out why the status is set to STATUS_PARTIAL here
-  return updated
-    .filter(
-      (targetObservation) =>
-        targetObservation.observationId === ob.id || targetObservation.dataProductsSDPId === dp.id
-    )
-    .map((targetObservation) => {
-      if (targetObservation.sensCalc === undefined) {
-        return targetObservation;
-      }
-      if (targetObservation.sensCalc.statusGUI === STATUS_INITIAL) {
-        return targetObservation;
-      }
-      return {
-        ...targetObservation,
-        sensCalc: { ...targetObservation.sensCalc, statusGUI: STATUS_PARTIAL }
-      };
-    });
+  return updated;
 };
 
 let sensCalcDebounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -88,7 +71,8 @@ export const updateSensCalcDebounced = (
   proposal: Proposal,
   ob: Observation,
   dp: DataProductSDPNew,
-  setProposal: (proposal: Proposal) => void
+  setProposal: (proposal: Proposal) => void,
+  debounce = true
 ) => {
   if (sensCalcDebounceTimer) {
     clearTimeout(sensCalcDebounceTimer);
@@ -103,7 +87,7 @@ export const updateSensCalcDebounced = (
     }
   };
 
-  if (areSensCalcInputsValid(ob, dp)) {
+  if (debounce && areSensCalcInputsValid(ob, dp)) {
     sensCalcDebounceTimer = setTimeout(() => void applyUpdate(), SENS_CALC_DEBOUNCE_MS);
   } else {
     void applyUpdate();

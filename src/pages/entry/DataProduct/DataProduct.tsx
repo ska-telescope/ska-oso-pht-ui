@@ -167,6 +167,10 @@ export default function DataProduct({ data }: DataProductProps) {
   const [rotationMeasure, setRotationMeasure] = React.useState(1);
 
   const [polarisationsError, setPolarisationsError] = React.useState('');
+  const dataProductUpdateToSkip = React.useRef<{
+    id: string;
+    observationId: string;
+  } | null>(null);
 
   const maxObservationsReached = () =>
     baseObservations.length >= (osdCyclePolicy?.maxObservations ?? 0);
@@ -190,6 +194,15 @@ export default function DataProduct({ data }: DataProductProps) {
 
   const getObservationTargetObservations = (obsId: string) =>
     (getProposal()?.targetObservation ?? []).filter((rec) => rec.observationId === obsId);
+
+  const hasSensCalcResults = (proposal: Proposal, obsId: string) => {
+    const sensCalc = proposal.targetObservation?.find(
+      (rec) => rec.observationId === obsId
+    )?.sensCalc;
+    return Boolean(
+      sensCalc?.section1?.length || sensCalc?.section2?.length || sensCalc?.section3?.length
+    );
+  };
 
   const getLinkedDataProductId = (obsId: string, fallbackId = '') =>
     getObservationTargetObservations(obsId)[0]?.dataProductsSDPId ?? fallbackId;
@@ -423,6 +436,19 @@ export default function DataProduct({ data }: DataProductProps) {
     if (!newDataProduct) {
       return;
     }
+    const updateToSkip = dataProductUpdateToSkip.current;
+    if (updateToSkip) {
+      dataProductUpdateToSkip.current = null;
+      if (
+        updateToSkip.id === newDataProduct.id &&
+        updateToSkip.observationId === newDataProduct.observationId
+      ) {
+        if (!hasSensCalcResults(proposal, newDataProduct.observationId)) {
+          updateSensCalcDebounced(proposal, observation!, newDataProduct, setProposal, false);
+        }
+        return;
+      }
+    }
     const oldDataProducts = proposal.dataProductSDP ?? [];
     const dataProductSDP = ensureHiddenDataProduct(
       updateDataProducts(oldDataProducts, newDataProduct),
@@ -531,7 +557,9 @@ export default function DataProduct({ data }: DataProductProps) {
         selectedDataProduct.id
       );
 
-      dataProductIn(linkedDataProduct ?? selectedDataProduct);
+      const dataProductToLoad = linkedDataProduct ?? selectedDataProduct;
+      dataProductUpdateToSkip.current = dataProductToLoad;
+      dataProductIn(dataProductToLoad);
     } else {
       const fallbackObservation =
         observations.find((obs) => obs.type === TYPE_PST) ?? observations[0];

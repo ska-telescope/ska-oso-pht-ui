@@ -3,8 +3,9 @@ import updateSensCalc, { updateSensCalcDebounced } from './updateSensCalc';
 import {
   DP_TYPE_IMAGES,
   IW_BRIGGS,
+  STATUS_ERROR,
   STATUS_INITIAL,
-  STATUS_PARTIAL,
+  STATUS_OK,
   SUPPLIED_INTEGRATION_TIME_UNITS_H,
   SUPPLIED_TYPE_INTEGRATION
 } from '@/utils/constants';
@@ -83,7 +84,7 @@ describe('updateSensCalc', () => {
     (getSensCalc as any).mockResolvedValue({
       id: 't1',
       title: 'calc result',
-      statusGUI: 42,
+      statusGUI: STATUS_OK,
       error: ''
     });
 
@@ -92,20 +93,21 @@ describe('updateSensCalc', () => {
     expect(result[0].sensCalc).toMatchObject({
       id: 't1',
       title: 'calc result',
-      statusGUI: STATUS_PARTIAL, // forced override
+      statusGUI: STATUS_OK,
       error: ''
     });
   });
 
-  it('falls back to default sensCalc when getSensCalc returns null', async () => {
+  it('preserves sensitivity calculator errors', async () => {
     (getSensCalc as any).mockResolvedValue({
+      statusGUI: STATUS_ERROR,
       error: 'SensCalc error message'
     });
 
     const result = await updateSensCalc(proposalBase, observation, dp);
 
     expect(result[0].sensCalc).toMatchObject({
-      statusGUI: STATUS_PARTIAL, // override applied
+      statusGUI: STATUS_ERROR,
       error: 'SensCalc error message'
     });
   });
@@ -170,7 +172,7 @@ describe('updateSensCalc', () => {
     (getSensCalc as any).mockResolvedValue({
       id: 't1',
       title: 'calc result',
-      statusGUI: 42,
+      statusGUI: STATUS_OK,
       error: ''
     });
     const setProposal = vi.fn();
@@ -188,6 +190,12 @@ describe('updateSensCalc', () => {
     expect(getSensCalc).toHaveBeenCalledWith(latestObservation, proposalBase.targets?.[0], dp);
     expect(setProposal).toHaveBeenCalledTimes(1);
     vi.clearAllMocks();
+
+    updateSensCalcDebounced(proposalBase, observation, dp, setProposal, false);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(getSensCalc).toHaveBeenCalledTimes(1);
+    vi.clearAllMocks();
+
     const invalidObservation = {
       ...observation,
       supplied: { ...observation.supplied, value: Number.NaN }
