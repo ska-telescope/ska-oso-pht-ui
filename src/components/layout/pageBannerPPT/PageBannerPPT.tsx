@@ -31,6 +31,8 @@ import ValidateButton from '../../button/Validate/Validate';
 import ProposalDisplay from '../../alerts/proposalDisplay/ProposalDisplay';
 import ValidationResults from '../../alerts/validationResults/ValidationResults';
 import PreviousPageButton from '../../button/PreviousPage/PreviousPage';
+import LastSaved from '../../text/lastSaved/LastSaved';
+import { useApplySaveMetadata } from '@/utils/update/mergeProposalSaveMetadata/useApplySaveMetadata';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { useNotify } from '@/utils/notify/useNotify';
 import { accessSubmit } from '@/utils/aaa/aaaUtils';
@@ -72,6 +74,7 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
 
   const authClient = useAxiosAuthClient();
   const { notifyError, notifySuccess } = useNotify();
+  const applySaveMetadata = useApplySaveMetadata();
 
   const loggedIn = isLoggedIn();
 
@@ -144,18 +147,26 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     }
   };
 
-  const updateProposalResponse = (response: ProposalBackend | { error: string }) => {
+  const updateProposalResponse = (
+    response: ProposalBackend | { error: string },
+    isAuto?: boolean
+  ) => {
     if (response && !('error' in response)) {
-      // Not needed as the save is not automatic : notifySuccess(t('saveBtn.success'));
+      applySaveMetadata(response);
+      // Automatic saves update the label only - a toast every 30 seconds
+      // would be noise.
+      if (!isAuto) {
+        notifySuccess(t('saveBtn.success'));
+      }
     } else {
       notifyError('error' in response ? response.error : 'An unknown error occurred');
     }
   };
 
-  const updateProposal = async (proposal: Proposal) => {
+  const updateProposal = async (proposal: Proposal, isAuto?: boolean) => {
     if (!isDisableEndpoints()) {
       const response = await PutProposal(authClient, proposal, PROPOSAL_STATUS.DRAFT);
-      updateProposalResponse(response);
+      updateProposalResponse(response, isAuto);
     }
   };
 
@@ -194,9 +205,12 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
     </Typography>
   );
 
-  const handleSave = React.useCallback(() => {
-    updateProposal(application.content2 as Proposal);
-  }, [application.content2]);
+  const handleSave = React.useCallback(
+    (isAuto?: boolean) => {
+      updateProposal(application.content2 as Proposal, isAuto);
+    },
+    [application.content2]
+  );
 
   React.useEffect(() => {
     if (!isSV) {
@@ -238,6 +252,11 @@ export default function PageBannerPPT({ pageNo, backPage }: PageBannerPPTProps) 
             action={handleSave}
             autoSaveInterval={AUTO_SAVE_INTERVAL}
           />
+        )}
+      </Grid>
+      <Grid>
+        {(loggedIn || cypressToken) && getProposal().id !== null && pages.includes(pageNo) && (
+          <LastSaved lastUpdated={getProposal().lastUpdated} />
         )}
       </Grid>
     </Grid>
