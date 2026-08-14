@@ -11,11 +11,13 @@ import {
   TYPE_PST,
   TYPE_CONTINUUM_SPECTRAL,
   DEFAULT_CONTINUUM_OBSERVATION_LOW,
-  TIME_UNITS
+  TIME_UNITS, TELESCOPE_LOW_NUM
 } from './constants';
 import Observation from './types/observation';
 import { ValueUnitPair } from './types/valueUnitPair';
 import { OSD_CONSTANTS } from './OSDConstants';
+import { Telescope } from '@ska-telescope/ska-gui-local-storage';
+import { TELESCOPE_LOW, TELESCOPE_MID } from '@ska-telescope/ska-gui-components';
 
 export const arraysAreEqual = (a: any[], b: any[]) => {
   if (a === b) return true;
@@ -260,3 +262,6 @@ export const timeConversion = (inValue: number, from: number, to: number) => {
   if (!fromUnit || !toUnit) return inValue;
   return (inValue * toUnit.toDay) / fromUnit.toDay;
 };
+
+export const getTelescope = (telNum: number): Telescope =>
+  telNum === TELESCOPE_LOW_NUM ? TELESCOPE_LOW : TELESCOPE_MID;

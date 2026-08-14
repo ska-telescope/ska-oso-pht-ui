@@ -17,6 +17,7 @@ import {
 import GetZoomData from '../getZoomData/getZoomData';
 import GetContinuumData from '../getContinuumData/getContinuumData';
 import { DataProductSDPNew, SDPSpectralData } from '@/utils/types/dataProduct';
+import { getTelescope } from '@utils/helpers.ts';
 
 async function getSensCalc(
   observation: Observation,
@@ -63,8 +64,5 @@ async function getSensCalc(
       };
   }
 }
-
-const getTelescope = (telNum: number): Telescope =>
-  telNum === TELESCOPE_LOW_NUM ? TELESCOPE_LOW : TELESCOPE_MID;
 
 export default getSensCalc;
