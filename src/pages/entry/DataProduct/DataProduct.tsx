@@ -75,7 +75,7 @@ import { useHelp } from '@/utils/help/useHelp';
 import ContinuumSubtractionField from '@/components/fields/continuumSubtraction/continuumSubtraction';
 import SensCalcContent from '@/components/alerts/sensCalcModal/content/SensCalcContent';
 import { updateDataProducts } from '@/utils/update/dataProducts/updateDataProducts';
-import { updateSensCalc } from '@/utils/update/sensCalc/updateSensCalc';
+import { updateSensCalcDebounced } from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDPNew, SDPVisibilitiesContinuumData } from '@/utils/types/dataProduct';
 import OutputFrequencyResolutionField from '@/components/fields/outputFrequencyResolution/outputFrequencyResolution';
 import DispersionMeasureField from '@/components/fields/dispersionMeasure/dispersionMeasure';
@@ -413,7 +413,7 @@ export default function DataProduct({ data }: DataProductProps) {
   /**
    * Update the proposal's Observation Data Products (ODPs) for both imaging and visabilities.
    */
-  const updateToProposal = async () => {
+  const updateToProposal = () => {
     if (!hasRealObservationSelection()) {
       return;
     }
@@ -424,16 +424,16 @@ export default function DataProduct({ data }: DataProductProps) {
       return;
     }
     const oldDataProducts = proposal.dataProductSDP ?? [];
-    const to = await updateSensCalc(proposal, observation!, newDataProduct);
     const dataProductSDP = ensureHiddenDataProduct(
       updateDataProducts(oldDataProducts, newDataProduct),
       observation
     );
-    setProposal({
+    const proposalForSensCalc = {
       ...proposal,
-      dataProductSDP,
-      targetObservation: to
-    });
+      dataProductSDP
+    };
+    setProposal(proposalForSensCalc);
+    updateSensCalcDebounced(proposalForSensCalc, observation!, newDataProduct, setProposal);
   };
 
   const updateStorageProposal = () => {
@@ -463,7 +463,7 @@ export default function DataProduct({ data }: DataProductProps) {
     return DP_TYPE_IMAGES; // default for non-pst
   };
 
-  const handleDataProductTypeChange = async (nextType: string | number) => {
+  const handleDataProductTypeChange = (nextType: string | number) => {
     const newDataProductType = Number(nextType);
 
     if (!isEdit() || newDataProductType === dataProductType) {
@@ -511,17 +511,9 @@ export default function DataProduct({ data }: DataProductProps) {
       dataProductSDP: dataProductsAfterReset,
       targetObservation: linkedTargetObservations
     };
-    const updatedTargetObservations = await updateSensCalc(
-      proposalForSensCalc,
-      observation,
-      nextLinkedDataProduct
-    );
-
-    setProposal({
-      ...proposalForSensCalc,
-      targetObservation: updatedTargetObservations
-    });
+    setProposal(proposalForSensCalc);
     dataProductIn(nextLinkedDataProduct);
+    updateSensCalcDebounced(proposalForSensCalc, observation, nextLinkedDataProduct, setProposal);
   };
 
   /* ------------------------------------------- */

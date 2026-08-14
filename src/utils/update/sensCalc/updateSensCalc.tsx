@@ -6,6 +6,15 @@ import TargetObservation from '@/utils/types/targetObservation';
 import getSensCalc from '@services/axios/get/getSensitivityCalculator/sensitivityCalculator/getSensitivityCalculatorAPIData.ts';
 import { isDataProductRobustValid, isSuppliedValueValid } from '@/utils/validation/validation';
 
+const SENS_CALC_DEBOUNCE_MS = 500;
+
+const areSensCalcInputsValid = (ob: Observation, dp: DataProductSDPNew) =>
+  isSuppliedValueValid({
+    type: ob?.supplied?.type,
+    value: ob?.supplied?.value,
+    units: ob?.supplied?.units
+  }) && isDataProductRobustValid(dp);
+
 /**
  * Recalculates the sensitivity calculator results for any TargetObservation within the Proposal
  * that references either the observation or the data product
@@ -18,12 +27,7 @@ export const updateSensCalc = async (
   dp: DataProductSDPNew
 ): Promise<TargetObservation[]> => {
   if (!proposal.targetObservation) return [];
-  const inputsAreValid =
-    isSuppliedValueValid({
-      type: ob?.supplied?.type,
-      value: ob?.supplied?.value,
-      units: ob?.supplied?.units
-    }) && isDataProductRobustValid(dp);
+  const inputsAreValid = areSensCalcInputsValid(ob, dp);
 
   const updated = await Promise.all(
     proposal.targetObservation
@@ -75,6 +79,35 @@ export const updateSensCalc = async (
         sensCalc: { ...targetObservation.sensCalc, statusGUI: STATUS_PARTIAL }
       };
     });
+};
+
+let sensCalcDebounceTimer: ReturnType<typeof setTimeout> | null = null;
+let latestSensCalcRequestId = 0;
+
+export const updateSensCalcDebounced = (
+  proposal: Proposal,
+  ob: Observation,
+  dp: DataProductSDPNew,
+  setProposal: (proposal: Proposal) => void
+) => {
+  if (sensCalcDebounceTimer) {
+    clearTimeout(sensCalcDebounceTimer);
+  }
+  const requestId = ++latestSensCalcRequestId;
+
+  const applyUpdate = async () => {
+    sensCalcDebounceTimer = null;
+    const targetObservation = await updateSensCalc(proposal, ob, dp);
+    if (requestId === latestSensCalcRequestId) {
+      setProposal({ ...proposal, targetObservation });
+    }
+  };
+
+  if (areSensCalcInputsValid(ob, dp)) {
+    sensCalcDebounceTimer = setTimeout(() => void applyUpdate(), SENS_CALC_DEBOUNCE_MS);
+  } else {
+    void applyUpdate();
+  }
 };
 
 export default updateSensCalc;

@@ -97,7 +97,7 @@ import SubBands from '@/components/fields/subBands/subBands';
 import updateObservations from '@/utils/update/observations/updateObservations';
 import updateDataProductsOnObservationChange from '@utils/update/dataProductsOnObservationChange/updateDataProductsOnObservationChange.tsx';
 import updateSensCalcPartial from '@/utils/update/sensCalcPartial/updateSensCalcPartial';
-import updateSensCalc from '@/utils/update/sensCalc/updateSensCalc';
+import { updateSensCalcDebounced } from '@/utils/update/sensCalc/updateSensCalc';
 import { DataProductSDPNew } from '@/utils/types/dataProduct';
 import { subarrayConfigurationLow, subarrayConfigurationMid } from '@/utils/types/observatoryData';
 import lowAA2Image from '@assets/low_aa2.png';
@@ -270,7 +270,7 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
 
   /*--------------------------------------------------*/
 
-  const updateObservationOnProposal = async () => {
+  const updateObservationOnProposal = () => {
     const proposal = getProposal();
     const newObservation: Observation = observationOut();
 
@@ -285,17 +285,18 @@ export default function ObservationEntry({ data }: ObservationEntryProps) {
     );
 
     const oldTO = proposal?.targetObservation ?? [];
-    const to = dataProductSDP
-      ? await updateSensCalc(proposal, newObservation, dataProductSDP)
-      : updateSensCalcPartial(oldTO, newObservation);
-
     const tmp = {
       ...proposal,
       observations: updateObservations(oldObservations ?? [], newObservation),
       dataProductSDP: updateDataProductsOnObservationChange(oldDataProducts, newObservation),
-      targetObservation: to
+      targetObservation: updateSensCalcPartial(oldTO, newObservation)
     };
     setProposal(tmp);
+
+    if (!dataProductSDP) {
+      return;
+    }
+    updateSensCalcDebounced(tmp, newObservation, dataProductSDP, setProposal);
   };
 
   const addObservationToProposal = () => {

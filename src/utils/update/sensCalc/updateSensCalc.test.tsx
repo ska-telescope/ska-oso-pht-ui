@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
-import updateSensCalc from './updateSensCalc';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import updateSensCalc, { updateSensCalcDebounced } from './updateSensCalc';
 import {
   DP_TYPE_IMAGES,
   IW_BRIGGS,
@@ -67,6 +67,10 @@ describe('updateSensCalc', () => {
 
   beforeEach(() => {
     vi.resetAllMocks();
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it('returns empty array if proposal.targetObservation is missing', async () => {
@@ -159,5 +163,44 @@ describe('updateSensCalc', () => {
       statusGUI: STATUS_INITIAL,
       error: ''
     });
+  });
+
+  it('debounces valid updates but applies invalid state immediately', async () => {
+    vi.useFakeTimers();
+    (getSensCalc as any).mockResolvedValue({
+      id: 't1',
+      title: 'calc result',
+      statusGUI: 42,
+      error: ''
+    });
+    const setProposal = vi.fn();
+    const latestObservation = {
+      ...observation,
+      supplied: { ...observation.supplied, value: 2 }
+    };
+
+    updateSensCalcDebounced(proposalBase, observation, dp, setProposal);
+    updateSensCalcDebounced(proposalBase, latestObservation, dp, setProposal);
+
+    expect(getSensCalc).not.toHaveBeenCalled();
+    await vi.advanceTimersByTimeAsync(500);
+    expect(getSensCalc).toHaveBeenCalledTimes(1);
+    expect(getSensCalc).toHaveBeenCalledWith(latestObservation, proposalBase.targets?.[0], dp);
+    expect(setProposal).toHaveBeenCalledTimes(1);
+    vi.clearAllMocks();
+    const invalidObservation = {
+      ...observation,
+      supplied: { ...observation.supplied, value: Number.NaN }
+    };
+
+    updateSensCalcDebounced(proposalBase, observation, dp, setProposal);
+    updateSensCalcDebounced(proposalBase, invalidObservation, dp, setProposal);
+    await vi.advanceTimersByTimeAsync(0);
+    expect(getSensCalc).not.toHaveBeenCalled();
+    expect(setProposal.mock.calls[0][0].targetObservation?.[0].sensCalc?.statusGUI).toBe(
+      STATUS_INITIAL
+    );
+    await vi.advanceTimersByTimeAsync(500);
+    expect(getSensCalc).not.toHaveBeenCalled();
   });
 });
