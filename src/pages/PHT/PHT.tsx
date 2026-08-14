@@ -59,6 +59,7 @@ import { useScopedTranslation } from '@/services/i18n/useScopedTranslation';
 import { useHelp } from '@/utils/help/useHelp';
 import { useNotify } from '@/utils/notify/useNotify';
 import autoLinking from '@/utils/autoLinking/AutoLinking';
+import { useApplySaveMetadata } from '@/utils/update/mergeProposalSaveMetadata/useApplySaveMetadata';
 import useAxiosAuthClient from '@/services/axios/axiosAuthClient/axiosAuthClient';
 import { Experimental_CssVarsProvider as CssVarsProvider } from '@mui/material/styles';
 import { useTheme } from '@mui/material/styles';
@@ -119,6 +120,7 @@ export default function PHT({
   const authClient = useAxiosAuthClient();
   const { setHelp } = useHelp();
   const { notifyWarning, notifyError } = useNotify();
+  const applySaveMetadata = useApplySaveMetadata();
   const theme = useTheme();
   const previousPathRef = React.useRef(location.pathname);
 
@@ -193,6 +195,9 @@ export default function PHT({
         const response = await PutProposal(authClient, proposal, PROPOSAL_STATUS.DRAFT);
         if ('error' in response) {
           notifyError(response.error);
+        } else {
+          // No success toast here - navigation saves are automatic.
+          applySaveMetadata(response);
         }
       })();
     }

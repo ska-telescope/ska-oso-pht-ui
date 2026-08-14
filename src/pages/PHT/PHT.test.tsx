@@ -204,6 +204,37 @@ describe('<PHT />', () => {
       expect(PutProposal).toHaveBeenCalledWith({}, { id: 'prsl-123' }, PROPOSAL_STATUS.DRAFT);
     });
   });
+
+  test('navigation auto-save stores the response timestamp without a toast', async () => {
+    const NEW_STAMP = '2026-08-13T10:00:00.000000Z';
+    vi.mocked(PutProposal).mockResolvedValue({
+      prsl_id: 'prsl-123',
+      metadata: {
+        version: 2,
+        created_by: 'creator',
+        created_on: '2026-01-01T00:00:00.000000Z',
+        pdm_version: '18.0.0',
+        last_modified_by: 'newuser',
+        last_modified_on: NEW_STAMP
+      }
+    } as any);
+
+    const { rerenderPHT } = renderPHT();
+
+    mockPathname.current = NAV[1];
+    rerenderPHT();
+
+    mockPathname.current = NAV[2];
+    rerenderPHT();
+
+    await waitFor(() => {
+      expect(mockUpdateAppContent2).toHaveBeenCalled();
+    });
+    expect(mockUpdateAppContent2.mock.calls[0][0]).toMatchObject({
+      id: 'prsl-123',
+      lastUpdated: NEW_STAMP
+    });
+  });
 });
 
 describe('<PHT /> auto-repair for a linked target with no observation', () => {
