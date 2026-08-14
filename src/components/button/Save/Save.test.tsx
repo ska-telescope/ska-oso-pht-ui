@@ -45,6 +45,19 @@ describe('Save Button', () => {
     // Should not throw or call anything
     expect(mockAction).not.toHaveBeenCalled();
   });
+
+  test('passes true on auto-save and no arguments on click', () => {
+    wrapper(<SaveButton action={mockAction} autoSaveInterval={2} />);
+
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+    expect(mockAction).toHaveBeenCalledWith(true);
+
+    mockAction.mockClear();
+    screen.getByTestId('saveButtonTestId').click();
+    expect(mockAction).toHaveBeenCalledWith();
+  });
 });
 
 describe('SaveButton iconWithCountdown', () => {

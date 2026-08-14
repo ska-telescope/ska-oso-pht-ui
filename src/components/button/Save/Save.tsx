@@ -35,7 +35,7 @@ export default function SaveButton({
         setCountdown((prev) => {
           if (prev <= 1) {
             if (typeof action === 'function') {
-              action(); // trigger auto-save
+              action(true); // trigger auto-save; the flag suppresses the success toast
               setWarn(true); // switch to warning color
               setTimeout(() => setWarn(false), 600); // revert after 600ms
             }
