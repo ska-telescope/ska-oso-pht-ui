@@ -98,6 +98,18 @@ describe('useNumericInput', () => {
     expect(result.current.error).toBe('required');
   });
 
+  test('preserves transient invalid text when parent value becomes NaN', () => {
+    const { result, rerender } = renderNumericHook();
+
+    act(() => result.current.handleChange('-'));
+    expect(result.current.text).toBe('-');
+    expect(result.current.error).toBe('required');
+
+    rerender({ ...testConfig, value: Number.NaN });
+    expect(result.current.text).toBe('-');
+    expect(result.current.error).toBe('required');
+  });
+
   test('syncs text from external value changes', () => {
     const { result, rerender } = renderNumericHook();
 

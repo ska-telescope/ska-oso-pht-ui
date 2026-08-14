@@ -23,7 +23,8 @@ export const useNumericInput = (
     maxInclusive = true
   }: NumericInputOptions = {}
 ) => {
-  const [text, setText] = React.useState<string>(String(value));
+  const formatFiniteValue = (num: number) => (Number.isFinite(num) ? String(num) : null);
+  const [text, setText] = React.useState<string>(formatFiniteValue(value) ?? '');
   const [error, setError] = React.useState('');
   const valueRef = React.useRef(value);
   const textRef = React.useRef(text);
@@ -55,16 +56,15 @@ export const useNumericInput = (
   };
 
   const isEquivalentValue = (num: number, targetValue: number) =>
-    Number.isFinite(num) && num === targetValue;
+    (Number.isFinite(num) && num === targetValue) ||
+    (!Number.isFinite(num) && !Number.isFinite(targetValue));
 
   React.useEffect(() => {
     const number = toNumber(text);
-    const nextError = runValidation(number);
-    const isEquivalent = isEquivalentValue(number, valueRef.current);
-    setError(nextError);
-    const textChanged = textRef.current !== text;
+    setError(runValidation(number));
+    if (textRef.current === text) return;
     textRef.current = text;
-    if (textChanged && !isEquivalent) {
+    if (!isEquivalentValue(number, valueRef.current)) {
       setValue(number);
     }
   }, [
@@ -81,12 +81,14 @@ export const useNumericInput = (
 
   React.useEffect(() => {
     valueRef.current = value;
-    const nextText = String(value);
-    setText((current) => {
-      const currentAsNumber = toNumber(current);
-      const isEquivalent = isEquivalentValue(currentAsNumber, value);
-      return current === nextText || isEquivalent ? current : nextText;
-    });
+    const nextText = formatFiniteValue(value);
+    if (nextText !== null) {
+      setText((current) => {
+        const currentAsNumber = toNumber(current);
+        const isEquivalent = isEquivalentValue(currentAsNumber, value);
+        return current === nextText || isEquivalent ? current : nextText;
+      });
+    }
     const nextError = runValidation(value);
     setError(nextError);
   }, [
