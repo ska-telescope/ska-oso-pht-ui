@@ -29,20 +29,24 @@ export default function SaveButton({
   const [countdown, setCountdown] = React.useState(autoSaveInterval);
   const [warn, setWarn] = React.useState(false);
 
+  // The countdown is tracked here as well as in state so the tick can decide
+  // whether to save *outside* any setState updater. StrictMode double-invokes
+  // updater functions in development, so triggering the save from inside one
+  // sent two PutProposal calls - and two whole-proposal store writes - per tick.
+  const countdownRef = React.useRef(autoSaveInterval);
+
   React.useEffect(() => {
     if (autoSaveInterval > 0) {
       const intervalId = setInterval(() => {
-        setCountdown((prev) => {
-          if (prev <= 1) {
-            if (typeof action === 'function') {
-              action(true); // trigger auto-save; the flag suppresses the success toast
-              setWarn(true); // switch to warning color
-              setTimeout(() => setWarn(false), 600); // revert after 600ms
-            }
-            return autoSaveInterval; // reset countdown
-          }
-          return prev - 1;
-        });
+        const elapsed = countdownRef.current <= 1;
+        countdownRef.current = elapsed ? autoSaveInterval : countdownRef.current - 1; // reset or decrement
+        setCountdown(countdownRef.current);
+
+        if (elapsed && typeof action === 'function') {
+          action(true); // trigger auto-save; the flag suppresses the success toast
+          setWarn(true); // switch to warning color
+          setTimeout(() => setWarn(false), 600); // revert after 600ms
+        }
       }, 1000);
 
       return () => clearInterval(intervalId); // cleanup

@@ -58,6 +58,40 @@ describe('Save Button', () => {
     screen.getByTestId('saveButtonTestId').click();
     expect(mockAction).toHaveBeenCalledWith();
   });
+
+  test('fires the auto-save once per interval under StrictMode', () => {
+    // The save must not be triggered from inside the setCountdown updater:
+    // StrictMode double-invokes updater functions in development, and the app is
+    // wrapped in StrictMode in main.tsx. Two PutProposal calls and two
+    // whole-proposal store writes per tick is a dev-only bug that no other test
+    // would catch.
+    render(
+      <React.StrictMode>
+        <StoreProvider>
+          <ThemeA11yProvider>
+            <SaveButton action={mockAction} autoSaveInterval={2} />
+          </ThemeA11yProvider>
+        </StoreProvider>
+      </React.StrictMode>
+    );
+
+    act(() => {
+      vi.advanceTimersByTime(2000);
+    });
+
+    expect(mockAction).toHaveBeenCalledTimes(1);
+    expect(mockAction).toHaveBeenCalledWith(true);
+  });
+
+  test('keeps firing on every later interval', () => {
+    wrapper(<SaveButton action={mockAction} autoSaveInterval={2} />);
+
+    act(() => {
+      vi.advanceTimersByTime(6000);
+    });
+
+    expect(mockAction).toHaveBeenCalledTimes(3);
+  });
 });
 
 describe('SaveButton iconWithCountdown', () => {
