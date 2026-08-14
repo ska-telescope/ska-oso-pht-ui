@@ -39,9 +39,28 @@ import MappingPutProposal, {
 } from './putProposalMapping.tsx';
 
 describe('Helper Functions', () => {
-  test('mockPutProposal returns mock proposal', () => {
-    const result = mockPutProposal();
-    expect(result).to.deep.equal(MockProposalBackend);
+  test('mockPutProposal returns mock proposal, with save metadata', () => {
+    const { metadata, ...rest } = mockPutProposal();
+    expect(rest).to.deep.equal(MockProposalBackend);
+    // The last-saved label is driven entirely by the response metadata, which
+    // MappingPutProposal - a request-body mapper - does not produce. Without it
+    // the feature is inert under USE_LOCAL_DATA and cypressToken.
+    expect(Number.isNaN(Date.parse(metadata.last_modified_on))).toBe(false);
+    expect(metadata.version).toBeGreaterThan(0);
+  });
+
+  test('mockPutProposal echoes the id of the proposal being saved', () => {
+    // mergeProposalSaveMetadata drops a response whose prsl_id is not the
+    // proposal in hand, so a mock returning the fixture's id would leave the
+    // label inert for every other proposal.
+    const result = mockPutProposal({ ...MockProposalFrontend, id: 'prsl-elsewhere-0001' });
+    expect(result.prsl_id).toBe('prsl-elsewhere-0001');
+  });
+
+  test('mockPutProposal advances the version on every save', () => {
+    const first = mockPutProposal();
+    const second = mockPutProposal();
+    expect(second.metadata.version).toBeGreaterThan(first.metadata.version);
   });
 
   test('mappingPutProposal returns mapped proposal from frontend to backend format', () => {
@@ -89,10 +108,12 @@ describe('PutProposal Service', () => {
     };
   });
 
-  test('returns mock data when USE_LOCAL_DATA is true', async () => {
+  test('returns mock data, carrying save metadata, when USE_LOCAL_DATA is true', async () => {
     vi.spyOn(CONSTANTS, 'USE_LOCAL_DATA', 'get').mockReturnValue(true);
     const result = await PutProposal(mockedAuthClient, MockProposalFrontend, PROPOSAL_STATUS.DRAFT);
-    expect(result).to.deep.equal(MockProposalBackend);
+    const { metadata, ...rest } = result as ProposalBackend;
+    expect(rest).to.deep.equal(MockProposalBackend);
+    expect(metadata?.last_modified_on).toBeTruthy();
   });
 
   test('returns data from API when USE_LOCAL_DATA is false', async () => {
