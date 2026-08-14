@@ -4,9 +4,23 @@ import { Grid, Typography, Card, CardContent, CardActionArea, Tooltip } from '@m
 import { storageObject } from '@ska-telescope/ska-gui-local-storage';
 import { useOSDAccessors } from '@utils/osd/useOSDAccessors/useOSDAccessors.tsx';
 import Shell from '../../components/layout/Shell/Shell';
-import { validateTargetPage, validateObservationPage, validateSDPPage, validateLinkingPage, validateCalibrationPage } from '../../utils/validation/validation';
+import {
+  validateTargetPage,
+  validateObservationPage,
+  validateSDPPage,
+  validateLinkingPage,
+  validateCalibrationPage
+} from '../../utils/validation/validation';
 import { Proposal } from '../../utils/types/proposal';
-import { PAGE_TARGET, PAGE_OBSERVATION, STATUS_OK, TARGET_OPTION, PAGE_DATA_PRODUCTS, PAGE_LINKING, PAGE_CALIBRATION } from '../../utils/constants';
+import {
+  PAGE_TARGET,
+  PAGE_OBSERVATION,
+  STATUS_OK,
+  TARGET_OPTION,
+  PAGE_DATA_PRODUCTS,
+  PAGE_LINKING,
+  PAGE_CALIBRATION
+} from '../../utils/constants';
 import TargetMosaicSection from './TargetMosaicSection/targetMosaicSection';
 import TargetNoSpecificSection from './TargetNoSpecificSection/targetNoSpecificSection';
 import TargetListSection from './TargetListSection/targetListSection';
@@ -26,7 +40,7 @@ export default function TargetPage() {
   const setProposal = (proposal: Proposal) => updateAppContent2(proposal);
   const { isSV, autoLink } = useOSDAccessors();
   const getProposalState = () => application.content1 as number[];
-  
+
   const setTheProposalState = () => {
     const proposal = getProposal();
     const currentState = getProposalState();
