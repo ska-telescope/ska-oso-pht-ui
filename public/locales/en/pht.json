@@ -1134,7 +1134,8 @@
   },
   "saveBtn": {
     "label": "Save",
-    "success": "Save was successful",
+    "lastSaved": "Last saved: {{value}}",
+    "success": "Saved",
     "tooltip": "Saves the proposal in the current state to the database"
   },
   "scienceCategory": {
