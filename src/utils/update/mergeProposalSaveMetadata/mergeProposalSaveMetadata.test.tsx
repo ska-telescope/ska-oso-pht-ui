@@ -65,6 +65,88 @@ describe('mergeProposalSaveMetadata', () => {
     expect(mergeProposalSaveMetadata(current, response({ metadata: partial }))).toBe(current);
   });
 
+  test('ignores a response older than what is already held', () => {
+    // Nothing serialises the SaveButton interval save against the navigation
+    // save, so responses can land out of order. Applying the older one would
+    // step the label backwards and drop the in-memory version below the
+    // backend's, setting up a later optimistic-concurrency failure.
+    const current = proposal({
+      lastUpdated: NEW_STAMP,
+      lastUpdatedBy: 'newuser',
+      version: 2,
+      metadata: metadata({ version: 2, last_modified_by: 'newuser', last_modified_on: NEW_STAMP })
+    });
+
+    const result = mergeProposalSaveMetadata(
+      current,
+      response({
+        metadata: metadata({ version: 1, last_modified_by: 'olduser', last_modified_on: OLD_STAMP })
+      })
+    );
+
+    expect(result).toBe(current);
+  });
+
+  test('ignores a response carrying the same instant and version', () => {
+    const current = proposal();
+    expect(mergeProposalSaveMetadata(current, response({ metadata: metadata() }))).toBe(current);
+  });
+
+  test('applies a response at the same instant but a higher version', () => {
+    // Date.parse truncates the backend's microseconds, so two saves inside the
+    // same millisecond compare equal on time alone - version breaks the tie.
+    const current = proposal();
+
+    const result = mergeProposalSaveMetadata(
+      current,
+      response({ metadata: metadata({ version: 2, last_modified_by: 'newuser' }) })
+    );
+
+    expect(result.version).toBe(2);
+    expect(result.lastUpdatedBy).toBe('newuser');
+  });
+
+  test('applies the first save, when nothing is held to compare against', () => {
+    const current = proposal({
+      lastUpdated: '',
+      lastUpdatedBy: '',
+      version: 0,
+      metadata: undefined
+    });
+
+    const result = mergeProposalSaveMetadata(current, response({ metadata: metadata() }));
+
+    expect(result.lastUpdated).toBe(OLD_STAMP);
+    expect(result.version).toBe(1);
+  });
+
+  test('ignores a response for a different proposal', () => {
+    // Leave proposal A with its navigation PUT in flight, open proposal B, and
+    // A's response must not stamp B's metadata with A's save time and version.
+    const current = proposal({ id: 'prsl-t0001-20260813-00002' });
+
+    const result = mergeProposalSaveMetadata(
+      current,
+      response({
+        prsl_id: 'prsl-t0001-20260813-00001',
+        metadata: metadata({ version: 2, last_modified_on: NEW_STAMP })
+      })
+    );
+
+    expect(result).toBe(current);
+  });
+
+  test('applies when either side carries no id, which is not evidence of a mismatch', () => {
+    const current = proposal({ id: undefined as unknown as string });
+
+    const result = mergeProposalSaveMetadata(
+      current,
+      response({ metadata: metadata({ version: 2, last_modified_on: NEW_STAMP }) })
+    );
+
+    expect(result.lastUpdated).toBe(NEW_STAMP);
+  });
+
   test('a partial response leaves scalars and metadata in agreement', () => {
     const current = proposal();
     const partial = { last_modified_on: NEW_STAMP } as Metadata;

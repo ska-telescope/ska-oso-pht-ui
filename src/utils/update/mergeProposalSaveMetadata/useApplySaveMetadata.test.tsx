@@ -83,7 +83,33 @@ describe('useApplySaveMetadata', () => {
     });
   });
 
-  test('does not write after unmount', () => {
+  test('a response landing after its own component unmounted still applies', () => {
+    // PHT - the route shell holding <Routes> - calls this hook too, and outlives
+    // the banner and dialogs that also call it. So a save that resolves after
+    // the banner unmounted has both a live dispatch and a current snapshot to
+    // merge into; dropping it would leave the label and version stale while the
+    // user has already been told the save succeeded.
+    const shell = renderHook(() => useApplySaveMetadata());
+    const banner = renderHook(() => useApplySaveMetadata());
+
+    banner.unmount();
+    // The shell re-renders on a store change the unmounted banner never saw.
+    mockContent2.current = { ...mockContent2.current, title: 'Edited after unmount' } as Proposal;
+    shell.rerender();
+
+    banner.result.current(withMetadata());
+
+    expect(mockUpdateAppContent2).toHaveBeenCalledTimes(1);
+    expect(mockUpdateAppContent2.mock.calls[0][0]).toMatchObject({
+      title: 'Edited after unmount',
+      lastUpdated: NEW_STAMP
+    });
+  });
+
+  test('does not write once every consumer has unmounted', () => {
+    // With nothing mounted there is no tree left to render the result, and
+    // nothing keeping the shared snapshot current - so it could only be written
+    // back stale.
     const { result, unmount } = renderHook(() => useApplySaveMetadata());
 
     unmount();
